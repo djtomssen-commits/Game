@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>Grow Legends V0.1</title>
+  <style>
+    :root{
+      --bg:#11140f;--panel:#1b2118;--panel2:#242c20;--text:#f4f7ef;--muted:#a7b19f;
+      --accent:#8ccf62;--gold:#f0c75e;--danger:#e66a6a;--line:#34402e;
+    }
+    *{box-sizing:border-box} body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:linear-gradient(#0f130d,#181d15);color:var(--text)}
+    button{font:inherit} .app{max-width:760px;margin:0 auto;min-height:100vh;padding-bottom:86px}
+    header{position:sticky;top:0;z-index:4;background:rgba(15,19,13,.95);backdrop-filter:blur(8px);padding:14px 14px 10px;border-bottom:1px solid var(--line)}
+    h1{font-size:22px;margin:0 0 8px}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}.stat{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:8px;text-align:center;font-size:12px}.stat b{display:block;font-size:15px;color:var(--gold)}
+    main{padding:14px}.screen{display:none}.screen.active{display:block}.card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:14px;margin-bottom:12px;box-shadow:0 8px 25px rgba(0,0,0,.16)}
+    .card h2,.card h3{margin:0 0 10px}.muted{color:var(--muted);font-size:13px}.btn{border:0;border-radius:12px;padding:11px 14px;background:var(--accent);color:#10200b;font-weight:800;cursor:pointer}.btn.secondary{background:#35432e;color:var(--text)}.btn.danger{background:var(--danger);color:white}.btn:disabled{opacity:.45}
+    .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}.char-wrap{display:grid;grid-template-columns:1fr 1.4fr 1fr;gap:8px;align-items:center}.slot{min-height:64px;border:1px dashed #62715a;border-radius:12px;padding:8px;background:var(--panel2);font-size:12px}.slot b{display:block;color:var(--gold);margin-bottom:4px}.avatar{height:270px;border-radius:18px;border:1px solid var(--line);background:radial-gradient(circle at 50% 30%,#35432e,#171c14 70%);display:flex;align-items:center;justify-content:center;text-align:center;font-weight:800;font-size:24px;padding:12px}.attrs{display:grid;grid-template-columns:1fr 1fr;gap:8px}.attr{display:flex;justify-content:space-between;align-items:center;background:var(--panel2);border-radius:10px;padding:9px}.attr button{width:30px;height:30px;border-radius:8px;border:0;background:var(--accent);font-weight:900}
+    .plant{display:grid;grid-template-columns:72px 1fr;gap:12px;align-items:center}.plant-icon{font-size:48px;text-align:center}.progress{height:10px;background:#0f130d;border-radius:999px;overflow:hidden;border:1px solid var(--line)}.bar{height:100%;background:var(--accent);width:0%}.loot{padding:8px;border-radius:10px;background:var(--panel2);margin-top:8px}.enemy{font-size:58px;text-align:center;margin:8px}.hp{color:#ff8f8f;font-weight:800}.bottom{position:fixed;left:0;right:0;bottom:0;background:#11150f;border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(4,1fr);z-index:5}.nav{background:none;border:0;color:var(--muted);padding:10px 4px 12px;font-size:11px}.nav span{display:block;font-size:22px}.nav.active{color:var(--accent)}
+    .inv-item{display:flex;justify-content:space-between;gap:8px;align-items:center;border:1px solid var(--line);border-radius:10px;padding:9px;margin-top:8px}.good{color:var(--accent)}
+    @media(max-width:520px){.char-wrap{grid-template-columns:1fr 1.2fr 1fr}.avatar{height:220px;font-size:19px}.stats{grid-template-columns:repeat(2,1fr)}}
+  </style>
+</head>
+<body>
+<div class="app">
+<header>
+  <h1>🌿 Grow Legends <small style="font-size:11px;color:#8ccf62">V0.1</small></h1>
+  <div class="stats">
+    <div class="stat">Level<b id="level">1</b></div>
+    <div class="stat">XP<b id="xp">0 / 100</b></div>
+    <div class="stat">Gold<b id="gold">120</b></div>
+    <div class="stat">Skillpunkte<b id="points">0</b></div>
+  </div>
+</header>
+<main>
+<section id="character" class="screen active">
+  <div class="card">
+    <h2>🧙 Charakter</h2><p class="muted">Rüste deinen Grow-Abenteurer aus und verbessere seine Werte.</p>
+    <div class="char-wrap">
+      <div>
+        <div class="slot" id="slot-head"><b>🧢 Kopf</b>Leer</div>
+        <div class="slot" id="slot-weapon"><b>⚔️ Waffe</b>Leer</div>
+        <div class="slot" id="slot-ring"><b>💍 Ring</b>Leer</div>
+      </div>
+      <div class="avatar">🧑‍🌾<br>Grow-Abenteurer</div>
+      <div>
+        <div class="slot" id="slot-body"><b>🥼 Körper</b>Leer</div>
+        <div class="slot" id="slot-boots"><b>🥾 Schuhe</b>Leer</div>
+        <div class="slot" id="slot-amulet"><b>📿 Amulett</b>Leer</div>
+      </div>
+    </div>
+  </div>
+  <div class="card"><h3>Attribute</h3><div class="attrs" id="attrs"></div></div>
+  <div class="card"><h3>🎒 Inventar</h3><div id="inventory" class="muted">Noch leer.</div></div>
+</section>
+
+<section id="grow" class="screen">
+  <div class="card"><h2>🌱 Growroom</h2><p class="muted">Deine Pflanzen erzeugen nach einiger Zeit verkaufbaren Ertrag. Rein fiktives Spielsystem.</p></div>
+  <div class="card plant">
+    <div class="plant-icon" id="plantIcon">🪴</div>
+    <div><h3 id="plantName">Leerer Topf</h3><div class="progress"><div class="bar" id="growBar"></div></div><p class="muted" id="growText">Noch nichts gepflanzt.</p>
+    <button class="btn" id="plantBtn">Samen pflanzen – 25 Gold</button> <button class="btn secondary" id="harvestBtn" disabled>Ernten</button></div>
+  </div>
+  <div class="card"><h3>Growroom Level <span id="roomLevel">1</span></h3><p class="muted">Upgrade erhöht den Verkaufsertrag.</p><button class="btn secondary" id="upgradeRoom">Upgrade – 150 Gold</button></div>
+</section>
+
+<section id="dungeon" class="screen">
+  <div class="card"><h2>👹 Dungeon</h2><p class="muted">Der verseuchte Keller – besiege alle Räume bis zum Milbenboss.</p></div>
+  <div class="card"><div class="enemy" id="enemyIcon">🪰</div><h3 id="enemyName" style="text-align:center">Trauermücken-Schwarm</h3><p style="text-align:center">Gegner-Leben: <span class="hp" id="enemyHp">45</span></p><p class="muted" id="battleLog">Raum 1 von 5</p><button class="btn" id="fightBtn" style="width:100%">⚔️ Kämpfen</button><div id="loot"></div></div>
+</section>
+
+<section id="shop" class="screen">
+  <div class="card"><h2>🛒 Ausrüstungsladen</h2><p class="muted">Kaufe einfache Ausrüstung oder finde stärkere Items im Dungeon.</p><div id="shopItems"></div></div>
+  <div class="card"><button class="btn danger" id="resetBtn" style="width:100%">Spielstand zurücksetzen</button></div>
+</section>
+</main>
+</div>
+<nav class="bottom">
+<button class="nav active" data-screen="character"><span>🧙</span>Charakter</button>
+<button class="nav" data-screen="grow"><span>🌱</span>Growroom</button>
+<button class="nav" data-screen="dungeon"><span>👹</span>Dungeon</button>
+<button class="nav" data-screen="shop"><span>🛒</span>Shop</button>
+</nav>
+<script>
+const KEY='growLegendsV01';
+const defaultState={level:1,xp:0,gold:120,points:0,attrs:{staerke:5,geschick:5,ausdauer:5,glueck:5,growSkill:1},equipment:{head:null,weapon:null,ring:null,body:null,boots:null,amulet:null},inventory:[],grow:{planted:false,start:0,duration:60000,ready:false,roomLevel:1},dungeon:{room:0}};
+let s=JSON.parse(localStorage.getItem(KEY)||'null')||structuredClone(defaultState);
+const enemies=[
+{name:'Trauermücken-Schwarm',icon:'🪰',hp:45,xp:22,gold:18},
+{name:'Pilzmutant',icon:'🍄',hp:62,xp:30,gold:24},
+{name:'Schimmelgolem',icon:'🪨',hp:82,xp:38,gold:30},
+{name:'Milbenkrieger',icon:'🕷️',hp:105,xp:48,gold:40},
+{name:'Milbenkönigin – BOSS',icon:'🕸️',hp:145,xp:80,gold:85,boss:true}
+];
+const items=[
+{id:'cap',name:'Grower-Cap',slot:'head',price:70,bonus:{geschick:2}},
+{id:'gloves',name:'Harz-Handschuhe',slot:'weapon',price:95,bonus:{staerke:3}},
+{id:'hoodie',name:'Keller-Hoodie',slot:'body',price:110,bonus:{ausdauer:3}},
+{id:'boots',name:'Gummistiefel +1',slot:'boots',price:80,bonus:{ausdauer:2}},
+{id:'amulet',name:'Blatt-Amulett',slot:'amulet',price:140,bonus:{glueck:3}}
+];
+function save(){localStorage.setItem(KEY,JSON.stringify(s));render();}
+function xpNeed(){return s.level*100}
+function addXp(n){s.xp+=n;while(s.xp>=xpNeed()){s.xp-=xpNeed();s.level++;s.points+=2;s.gold+=50;}}
+function totalAttr(k){let v=s.attrs[k]||0;Object.values(s.equipment).forEach(it=>{if(it?.bonus?.[k])v+=it.bonus[k]});return v}
+function render(){
+ document.querySelector('#level').textContent=s.level;document.querySelector('#xp').textContent=`${s.xp} / ${xpNeed()}`;document.querySelector('#gold').textContent=s.gold;document.querySelector('#points').textContent=s.points;
+ const map=[['staerke','💪 Stärke'],['geschick','🎯 Geschick'],['ausdauer','❤️ Ausdauer'],['glueck','🍀 Glück'],['growSkill','🌱 Grow-Skill']];
+ document.querySelector('#attrs').innerHTML=map.map(([k,n])=>`<div class="attr"><span>${n}: <b>${totalAttr(k)}</b></span><button onclick="incAttr('${k}')" ${s.points<1?'disabled':''}>+</button></div>`).join('');
+ ['head','weapon','ring','body','boots','amulet'].forEach(sl=>{const el=document.querySelector('#slot-'+sl); const labels={head:'🧢 Kopf',weapon:'⚔️ Waffe',ring:'💍 Ring',body:'🥼 Körper',boots:'🥾 Schuhe',amulet:'📿 Amulett'};const it=s.equipment[sl];el.innerHTML=`<b>${labels[sl]}</b>${it?it.name:'Leer'}`});
+ document.querySelector('#inventory').innerHTML=s.inventory.length?s.inventory.map((it,i)=>`<div class="inv-item"><span>${it.name}<br><small class="muted">${Object.entries(it.bonus||{}).map(([k,v])=>`+${v} ${k}`).join(', ')}</small></span><button class="btn secondary" onclick="equip(${i})">Anlegen</button></div>`).join(''):'Noch leer.';
+ renderGrow();renderDungeon();renderShop();
+}
+window.incAttr=k=>{if(s.points>0){s.points--;s.attrs[k]++;save()}};
+window.equip=i=>{const it=s.inventory[i]; if(!it)return; const old=s.equipment[it.slot]; s.equipment[it.slot]=it;s.inventory.splice(i,1);if(old)s.inventory.push(old);save()};
+function renderGrow(){const g=s.grow;document.querySelector('#roomLevel').textContent=g.roomLevel;document.querySelector('#upgradeRoom').textContent=`Upgrade – ${150*g.roomLevel} Gold`;
+ if(g.planted){const elapsed=Date.now()-g.start;const pct=Math.min(100,elapsed/g.duration*100);g.ready=pct>=100;document.querySelector('#growBar').style.width=pct+'%';document.querySelector('#plantName').textContent=g.ready?'Erntereife Pflanze':'Wachsende Pflanze';document.querySelector('#plantIcon').textContent=g.ready?'🌿':'🌱';document.querySelector('#growText').textContent=g.ready?'Bereit zur Ernte.':`Wachstum: ${Math.floor(pct)}%`;document.querySelector('#plantBtn').disabled=true;document.querySelector('#harvestBtn').disabled=!g.ready}
+ else{document.querySelector('#growBar').style.width='0%';document.querySelector('#plantName').textContent='Leerer Topf';document.querySelector('#plantIcon').textContent='🪴';document.querySelector('#growText').textContent='Noch nichts gepflanzt.';document.querySelector('#plantBtn').disabled=false;document.querySelector('#harvestBtn').disabled=true}}
+document.querySelector('#plantBtn').onclick=()=>{if(s.gold<25)return alert('Zu wenig Gold.');s.gold-=25;s.grow.planted=true;s.grow.start=Date.now();s.grow.ready=false;save()};
+document.querySelector('#harvestBtn').onclick=()=>{if(!s.grow.ready)return;const income=65+(s.grow.roomLevel-1)*25+totalAttr('growSkill')*5;s.gold+=income;s.grow.planted=false;s.grow.ready=false;addXp(10);alert(`Ernte verkauft: +${income} Gold`);save()};
+document.querySelector('#upgradeRoom').onclick=()=>{const c=150*s.grow.roomLevel;if(s.gold<c)return alert('Zu wenig Gold.');s.gold-=c;s.grow.roomLevel++;save()};
+function renderDungeon(){const e=enemies[s.dungeon.room%enemies.length];document.querySelector('#enemyIcon').textContent=e.icon;document.querySelector('#enemyName').textContent=e.name;document.querySelector('#enemyHp').textContent=e.hp;document.querySelector('#battleLog').textContent=`Raum ${s.dungeon.room%5+1} von 5`;}
+document.querySelector('#fightBtn').onclick=()=>{const e=enemies[s.dungeon.room%enemies.length];const power=totalAttr('staerke')*3+totalAttr('geschick')*2+totalAttr('ausdauer')+s.level*4+Math.floor(Math.random()*20);const enemyPower=e.hp+Math.floor(Math.random()*25);const loot=document.querySelector('#loot');if(power>=enemyPower){s.gold+=e.gold;addXp(e.xp);let txt=`<div class="loot good">Sieg! +${e.xp} XP, +${e.gold} Gold</div>`;if(Math.random()<(e.boss?.65:.22)){const pool=items.filter(x=>!s.inventory.some(i=>i.id===x.id));const drop=(pool.length?pool:items)[Math.floor(Math.random()*(pool.length?pool.length:items.length))];const found={...drop,price:0,name:(e.boss?'Episch: ':'Gefunden: ')+drop.name,bonus:Object.fromEntries(Object.entries(drop.bonus).map(([k,v])=>[k,v+(e.boss?3:1)]))};s.inventory.push(found);txt+=`<div class="loot">🎁 ${found.name}</div>`}s.dungeon.room=(s.dungeon.room+1)%5;loot.innerHTML=txt;save()}else{loot.innerHTML='<div class="loot" style="color:#ff8f8f">Niederlage. Verbessere Attribute oder Ausrüstung.</div>'}};
+function renderShop(){document.querySelector('#shopItems').innerHTML=items.map(it=>`<div class="inv-item"><span><b>${it.name}</b><br><small class="muted">${Object.entries(it.bonus).map(([k,v])=>`+${v} ${k}`).join(', ')}</small></span><button class="btn" onclick="buy('${it.id}')">${it.price} Gold</button></div>`).join('')}
+window.buy=id=>{const it=items.find(x=>x.id===id);if(s.gold<it.price)return alert('Zu wenig Gold.');s.gold-=it.price;s.inventory.push({...it});save()};
+document.querySelector('#resetBtn').onclick=()=>{if(confirm('Spielstand wirklich löschen?')){localStorage.removeItem(KEY);location.reload()}};
+document.querySelectorAll('.nav').forEach(b=>b.onclick=()=>{document.querySelectorAll('.nav').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.querySelectorAll('.screen').forEach(x=>x.classList.remove('active'));document.querySelector('#'+b.dataset.screen).classList.add('active');render()});
+setInterval(()=>{if(s.grow.planted)renderGrow()},1000);render();
+</script>
+</body>
+</html>
