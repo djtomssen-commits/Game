@@ -145,6 +145,18 @@ main{padding:12px}
 .grow-feedback{display:none;margin-top:8px;padding:8px 10px;border-radius:10px;background:#142115;border:1px solid #395439;font-size:11px;color:#b8e9a7}
 .grow-feedback.show{display:block}
 .seed-card.selected{border-color:#76c45b!important;box-shadow:0 0 0 1px #76c45b55 inset}
+
+/* v0.15 dungeon map + grow slot interactions */
+.dungeon-select-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-bottom:12px}
+.dungeon-card{border:1px solid var(--line);border-radius:13px;background:var(--panel2);padding:10px;position:relative}
+.dungeon-card.active{border-color:var(--gold);box-shadow:0 0 0 1px rgba(240,199,94,.22) inset}
+.dungeon-card.locked{opacity:.62}
+.dungeon-card .dungeon-number{font-size:9px;color:var(--muted);font-weight:800;letter-spacing:.08em}
+.dungeon-card h3{font-size:13px;margin:4px 0}
+.dungeon-card .key-state{font-size:10px;margin-top:4px}
+.dungeon-map{overflow-x:auto;justify-content:flex-start;padding-bottom:5px}.room-node{min-width:54px;flex:0 0 54px}
+.grow-slot.open-slot{cursor:pointer}.grow-slot.open-slot:hover{border-color:#76c45b;box-shadow:0 0 0 1px #76c45b44 inset}.slot-plant-btn{margin-top:5px;padding:5px 7px;font-size:9px}
+@media(max-width:560px){.dungeon-select-grid{grid-template-columns:1fr}.dungeon-card{padding:9px}}
 </style>
 </head>
 <body>
@@ -239,7 +251,7 @@ main{padding:12px}
 </section>
 
 <section id="dungeon" class="screen">
-  <div class="card"><div class="section-title"><div><h2>👹 Der verseuchte Keller</h2><div class="muted">5 Räume · Boss: Milbenkönigin</div></div><span class="pill" id="dungeonProgress">1 / 5</span></div><div class="ticket-box"><div><b>🎟️ Dungeon-Versuch</b></div><div class="tiny">1 Versuch pro Stunde gratis. Weitere Versuche kosten 1 🟢 Harz-Taler.</div><div class="ticket-time" id="dungeonTicketText">Gratisversuch bereit</div></div><div id="dungeonSelect" class="shop-grid" style="margin-bottom:12px"></div><div class="dungeon-map" id="dungeonMap"></div></div>
+  <div class="card"><div class="section-title"><div><h2 id="dungeonTitle">👹 Der verseuchte Keller</h2><div class="muted" id="dungeonSubtitle">10 Gegner · Endboss mit garantiertem Epic</div></div><span class="pill" id="dungeonProgress">1 / 10</span></div><div class="ticket-box"><div><b>🎟️ Dungeon-Versuch</b></div><div class="tiny">1 Versuch pro Stunde gratis. Weitere Versuche kosten 1 🟢 Harz-Taler.</div><div class="ticket-time" id="dungeonTicketText">Gratisversuch bereit</div></div><div id="dungeonSelect" class="dungeon-select-grid"></div><div class="dungeon-map" id="dungeonMap"></div></div>
   <div class="card"><div class="section-title"><h3 id="enemyName">Trauermücken-Schwarm</h3><span class="pill" id="enemyTier">Raum 1</span></div><div class="battle-stage" id="battleStage"><div class="damage left" id="damagePlayer"></div><div class="damage right" id="damageEnemy"></div><div class="fighter player" id="playerFighter"><div class="fighter-avatar">🧑‍🌾</div><div class="fighter-name">Du · Lv. <span id="battleLevel">1</span></div><div class="hpbar"><div class="hpfill" id="playerHpBar"></div></div><div class="tiny"><span id="playerHpText">100</span> HP</div></div><div class="fighter enemy-side" id="enemyFighter"><div class="fighter-avatar" id="enemyIcon">🪰</div><div class="fighter-name" id="enemyBattleName">Trauermücken</div><div class="hpbar"><div class="hpfill" id="enemyHpBar"></div></div><div class="tiny"><span id="enemyHpText">45</span> HP</div></div></div><div class="battle-log" id="battleLog">Der Gegner wartet auf dich.</div><button class="btn" id="fightBtn" style="width:100%">⚔️ Kampf starten</button><div id="loot"></div></div>
 </section>
 
@@ -251,10 +263,10 @@ main{padding:12px}
 </div>
 <nav class="bottom"><button class="nav active" data-screen="world"><span>🗺️</span>Welt</button><button class="nav" data-screen="character"><span>🧙</span>Held</button><button class="nav" data-screen="grow"><span>🌱</span>Grow</button><button class="nav" data-screen="quests"><span>🍺</span>Quests</button><button class="nav" data-screen="dungeon"><span>👹</span>Dungeon</button></nav>
 <script>
-const KEY='growLegendsV014', OLD_KEYS=['growLegendsV013','growLegendsV0121','growLegendsV012','growLegendsV011','growLegendsV010','growLegendsV09','growLegendsV08','growLegendsV07','growLegendsV06','growLegendsV05','growLegendsV04','growLegendsV03','growLegendsV02','growLegendsV01'];
-const defaultState={playerClass:null,classLocked:false,skillPoints:0,classSkills:{},harzTaler:6,shopRefreshes:0,lastShopSeed:0,dungeonPass:{lastFree:0},story:{chapter:1,bossesDefeated:0},level:1,xp:0,gold:120,points:0,energy:100,lastEnergy:Date.now(),attrs:{staerke:5,geschick:5,ausdauer:5,glueck:5,growSkill:1},equipment:{head:null,weapon:null,ring:null,body:null,boots:null,amulet:null},inventory:[],grow:{planted:false,start:0,duration:60000,ready:false,roomLevel:1,plants:[],seeds:{moss:2},equipment:{lamp:0,pots:0},selectedSeed:'moss'},dungeon:{room:0},quests:{offers:[],active:null}};
+const KEY='growLegendsV015', OLD_KEYS=['growLegendsV014','growLegendsV013','growLegendsV0121','growLegendsV012','growLegendsV011','growLegendsV010','growLegendsV09','growLegendsV08','growLegendsV07','growLegendsV06','growLegendsV05','growLegendsV04','growLegendsV03','growLegendsV02','growLegendsV01'];
+const defaultState={playerClass:null,classLocked:false,skillPoints:0,classSkills:{},harzTaler:6,shopRefreshes:0,lastShopSeed:0,dungeonPass:{lastFree:0},story:{chapter:1,bossesDefeated:0},level:1,xp:0,gold:120,points:0,energy:100,lastEnergy:Date.now(),attrs:{staerke:5,geschick:5,ausdauer:5,glueck:5,growSkill:1},equipment:{head:null,weapon:null,ring:null,body:null,boots:null,amulet:null},inventory:[],grow:{planted:false,start:0,duration:60000,ready:false,roomLevel:1,plants:[],seeds:{moss:2},equipment:{lamp:0,pots:0},selectedSeed:'moss'},dungeon:{room:0,selected:0,unlocked:[0],completed:[]},quests:{offers:[],active:null}};
 let raw=localStorage.getItem(KEY);if(!raw){for(const k of OLD_KEYS){if(localStorage.getItem(k)){raw=localStorage.getItem(k);break}}}
-let s=raw?JSON.parse(raw):structuredClone(defaultState);s.skillPoints??=Math.max(0,Math.floor((s.level-1)/2));s.classSkills??={};s.playerClass??=null;s.classLocked??=!!s.playerClass;s.harzTaler??=6;s.shopRefreshes??=0;s.lastShopSeed??=0;s.dungeonPass??={lastFree:0};s.dungeonPass.lastFree??=0;if(s.playerClass&&!s.classLocked)s.classLocked=true;s.story??={chapter:1,bossesDefeated:0};s.story.chapter??=1;s.story.bossesDefeated??=0;s.energy??=100;s.lastEnergy??=Date.now();s.quests??={offers:[],active:null};s.quests.offers??=[];s.quests.active??=null;s.grow??={roomLevel:1,plants:[]};s.grow.roomLevel??=1;s.grow.plants??=[];s.grow.seeds??={moss:2};s.grow.equipment??={lamp:0,pots:0};s.grow.selectedSeed??='moss';if(s.grow.planted&&s.grow.plants.length===0)s.grow.plants.push({start:s.grow.start||Date.now(),duration:s.grow.duration||60000});s.dungeon??={room:0,selected:0};s.dungeon.room??=0;s.dungeon.selected??=0;
+let s=raw?JSON.parse(raw):structuredClone(defaultState);s.skillPoints??=Math.max(0,Math.floor((s.level-1)/2));s.classSkills??={};s.playerClass??=null;s.classLocked??=!!s.playerClass;s.harzTaler??=6;s.shopRefreshes??=0;s.lastShopSeed??=0;s.dungeonPass??={lastFree:0};s.dungeonPass.lastFree??=0;if(s.playerClass&&!s.classLocked)s.classLocked=true;s.story??={chapter:1,bossesDefeated:0};s.story.chapter??=1;s.story.bossesDefeated??=0;s.energy??=100;s.lastEnergy??=Date.now();s.quests??={offers:[],active:null};s.quests.offers??=[];s.quests.active??=null;s.grow??={roomLevel:1,plants:[]};s.grow.roomLevel??=1;s.grow.plants??=[];s.grow.seeds??={moss:2};s.grow.equipment??={lamp:0,pots:0};s.grow.selectedSeed??='moss';if(s.grow.planted&&s.grow.plants.length===0)s.grow.plants.push({start:s.grow.start||Date.now(),duration:s.grow.duration||60000});s.dungeon??={room:0,selected:0,unlocked:[0],completed:[]};s.dungeon.room??=0;s.dungeon.selected??=0;s.dungeon.unlocked??=[0];s.dungeon.completed??=[];if(!s.dungeon.unlocked.includes(0))s.dungeon.unlocked.push(0);
 
 const classes={
  grower:{name:'Bud-Barbar',icon:'⚔️',text:'Brutal und zäh. Viel Stärke und Ausdauer. Chance auf Wuchtschlag.',bonus:{staerke:4,ausdauer:3}},
@@ -399,26 +411,25 @@ const questTemplates=[
 {name:'Spuren zum alten Labor',icon:'🧪',text:'Seltsame grüne Spuren führen aus einem zugemauerten Tunnel Richtung Labor.',base:4},
 {name:'Der nächtliche Dachgarten',icon:'🌙',text:'Auf den Dächern bewegen sich Schatten. Rudi zahlt für jede brauchbare Information.',base:4}
 ]
-const dungeons=[
-{name:'Der verseuchte Keller',minLevel:1,enemies:[
-{name:'Trauermücken-Schwarm',short:'Trauermücken',icon:'🪰',hp:45,xp:22,gold:18},
-{name:'Pilzmutant',short:'Pilzmutant',icon:'🍄',hp:62,xp:30,gold:24},
-{name:'Schimmelgolem',short:'Schimmelgolem',icon:'🪨',hp:82,xp:38,gold:30},
-{name:'Milbenkrieger',short:'Milbenkrieger',icon:'🕷️',hp:105,xp:48,gold:40},
-{name:'Milbenkönigin – BOSS',short:'Milbenkönigin',icon:'🕸️',hp:145,xp:80,gold:85,boss:true}]},
-{name:'Das überwucherte Labor',minLevel:3,enemies:[
-{name:'Mutierte Blattlaus',short:'Blattlaus',icon:'🐛',hp:95,xp:45,gold:36},
-{name:'Sporenwächter',short:'Sporenwächter',icon:'🍄',hp:125,xp:55,gold:45},
-{name:'Rankenbestie',short:'Rankenbestie',icon:'🌿',hp:155,xp:68,gold:58},
-{name:'Labor-Hüter',short:'Labor-Hüter',icon:'🥼',hp:190,xp:82,gold:72},
-{name:'Dr. Chlorophyll – BOSS',short:'Dr. Chlorophyll',icon:'🧪',hp:245,xp:130,gold:135,boss:true}]},
-{name:'Der toxische Dachgarten',minLevel:6,enemies:[
-{name:'Sturmwespe',short:'Sturmwespe',icon:'🐝',hp:175,xp:75,gold:65},
-{name:'Dornenläufer',short:'Dornenläufer',icon:'🌵',hp:215,xp:90,gold:78},
-{name:'Kompostkoloss',short:'Kompostkoloss',icon:'🗿',hp:260,xp:105,gold:92},
-{name:'Nachtfalter-Elite',short:'Nachtfalter',icon:'🦋',hp:310,xp:125,gold:110},
-{name:'Der Schädlingsfürst – BOSS',short:'Schädlingsfürst',icon:'👑',hp:390,xp:190,gold:190,boss:true}]}
+const dungeonNames=[
+ 'Der verseuchte Keller','Das überwucherte Labor','Der toxische Dachgarten','Die Sporenkatakomben','Der Harz-Sumpf',
+ 'Die Schimmelminen','Der verbotene Gewächshaustrakt','Die Nebelkanäle','Der Dornenfriedhof','Das Labor unter Grünhain',
+ 'Die Kristall-Growhöhle','Der Schädlingsbunker','Die Wurzelgruft','Der Pilztempel','Das verseuchte Hochhaus',
+ 'Der Tunnel der Blattjäger','Die Harzfestung','Das schwarze Gewächshaus','Die Kammer des Grünfluchs','Der Thron der Milbenkaiserin'
 ];
+const enemyWords=['Trauermücke','Blattlaus','Sporenwächter','Rankenbestie','Schimmelgolem','Milbenkrieger','Dornenläufer','Pilzmutant','Nachtfalter'];
+const enemyIcons=['🪰','🐛','🍄','🌿','🪨','🕷️','🌵','🧟','🦋'];
+const bossNames=['Milbenkönigin','Dr. Chlorophyll','Schädlingsfürst','Sporenfürst','Sumpfkoloss','Schimmelbaron','Gewächshaus-Wächter','Nebelkönig','Dornenhexer','Labor-Tyrann','Kristallbestie','Bunkerbrut','Wurzelkönig','Pilzorakel','Hochhaus-Mutant','Blattjäger-General','Harzritter','Schwarzer Gärtner','Grünfluch','Milbenkaiserin'];
+function buildDungeon(i){
+ const minLevel=i===0?1:i*10,scale=1+i*0.72;
+ const enemies=Array.from({length:10},(_,r)=>{
+   const boss=r===9,baseHp=42+r*18;
+   return boss?{name:`${bossNames[i]} – BOSS`,short:bossNames[i],icon:i===19?'👑':'💀',hp:Math.round((baseHp+95)*scale),xp:Math.round((65+i*18)*scale),gold:Math.round((70+i*20)*scale),boss:true}
+   :{name:`${enemyWords[(r+i)%enemyWords.length]} ${i+1}.${r+1}`,short:enemyWords[(r+i)%enemyWords.length],icon:enemyIcons[(r+i)%enemyIcons.length],hp:Math.round(baseHp*scale),xp:Math.round((20+r*5+i*4)*scale),gold:Math.round((15+r*4+i*3)*scale)};
+ });
+ return {name:dungeonNames[i],minLevel,keyId:i===0?null:`stein_${i+1}`,keyName:i===0?null:`Schlüsselstein ${i+1}`,enemies};
+}
+const dungeons=Array.from({length:20},(_,i)=>buildDungeon(i));
 const enemies=dungeons[0].enemies;
 const items=[
 {id:'cap',name:'Grower-Cap',slot:'head',icon:'🧢',price:70,bonus:{geschick:2}},
@@ -585,36 +596,49 @@ function growCapacity(){return Math.min(6,1+(s.grow.roomLevel-1)*2)}
 function renderGrow(){
  renderSeedShop();renderGrowEquipment();
  const g=s.grow;g.plants??=[];g.seeds??={moss:2};g.equipment??={lamp:0,pots:0};g.selectedSeed??='moss';
- const cap=growCapacity(),now=Date.now(),readyPlants=g.plants.filter(p=>now-p.start>=p.duration),ready=readyPlants.length;
+ const cap=growCapacity(),now=Date.now(),readyPlants=g.plants.filter(p=>p&&now-p.start>=p.duration),ready=readyPlants.length,occupied=g.plants.filter(Boolean).length;
  document.querySelector('#roomLevel').textContent=g.roomLevel;
  document.querySelector('#upgradeRoom').textContent=`🏗️ Raum-Upgrade – ${150*g.roomLevel} Gold`;
- const avg=g.plants.length?g.plants.reduce((a,p)=>a+Math.min(100,(now-p.start)/p.duration*100),0)/g.plants.length:0;
+ const avg=occupied?g.plants.filter(Boolean).reduce((a,p)=>a+Math.min(100,(now-p.start)/p.duration*100),0)/occupied:0;
  document.querySelector('#growBar').style.width=avg+'%';
- document.querySelector('#plantName').textContent=!g.plants.length?'Leere Pflanzenplätze':ready?`${ready} Ernte(n) bereit`:`${g.plants.length} Pflanze(n) wachsen`;
- document.querySelector('#growText').textContent=`${g.plants.length}/${cap} Plätze belegt · ${ready} bereit · Auswahl: ${seedTypes[g.selectedSeed]?.name||'Moos-Mix'}`;
- document.querySelector('#plantBtn').disabled=g.plants.length>=cap;
+ document.querySelector('#plantName').textContent=!occupied?'Leere Pflanzenplätze':ready?`${ready} Ernte(n) bereit`:`${occupied} Pflanze(n) wachsen`;
+ document.querySelector('#growText').textContent=`${occupied}/${cap} Plätze belegt · ${ready} bereit · Auswahl: ${seedTypes[g.selectedSeed]?.name||'Moos-Mix'}`;
+ document.querySelector('#plantBtn').disabled=occupied>=cap;
  document.querySelector('#plantBtn').textContent=`🌱 ${seedTypes[g.selectedSeed]?.name||'Samen'} pflanzen`;
  document.querySelector('#harvestBtn').disabled=ready===0;
  document.querySelector('#growShelf').innerHTML=Array.from({length:6},(_,i)=>{
    if(i>=cap)return`<div class="grow-slot locked"><span class="grow-slot-label">🔒 Raum-Upgrade</span><div class="plant-visual">🔒</div></div>`;
    const p=g.plants[i];
-   if(!p)return`<div class="grow-slot"><span class="grow-slot-label">Platz ${i+1}</span><div class="plant-visual">🪴</div></div>`;
+   if(!p)return`<div class="grow-slot open-slot" data-grow-slot="${i}"><span class="grow-slot-label">Platz ${i+1}</span><div class="plant-visual">🪴</div><button class="btn secondary slot-plant-btn" data-grow-slot="${i}">🌱 Hier pflanzen</button></div>`;
    const pct=Math.min(100,(now-p.start)/p.duration*100),stage=pct<25?'🌱':pct<65?'🌿':pct<100?'🌳':'✨🌳',seed=seedTypes[p.seed]||seedTypes.moss;
    return`<div class="grow-slot"><span class="grow-slot-label">${seed.icon} ${pct>=100?'Bereit':Math.floor(pct)+'%'}</span><div class="plant-visual">${stage}</div><div class="tiny">${seed.name}</div><div class="pot">🪴</div></div>`;
  }).join('');
 }
-function plantSelectedSeed(){
+function plantSelectedSeed(targetSlot=null){
  const g=s.grow,id=g.selectedSeed||'moss',seed=seedTypes[id];
- if(g.plants.length>=growCapacity()){growMessage('Alle Pflanzenplätze sind belegt.');return}
- if((g.seeds[id]||0)<1){growMessage(`Keine Samen von ${seed.name} vorhanden.`);return}
- g.seeds[id]--;g.plants.push({start:Date.now(),duration:Math.round(seed.growMs*lampSpeed()),seed:id});
+ if(!seed){growMessage('Bitte zuerst einen Samen auswählen.');return}
+ if(g.plants.filter(Boolean).length>=growCapacity()){growMessage('Alle freigeschalteten Pflanzenplätze sind belegt.');return}
+ if((g.seeds[id]||0)<1){growMessage(`Keine Samen von ${seed.name} vorhanden. Kaufe zuerst Samen.`);return}
+ const plant={start:Date.now(),duration:Math.round(seed.growMs*lampSpeed()),seed:id};
+ if(targetSlot!==null&&Number.isInteger(+targetSlot)){
+   const slot=+targetSlot;
+   if(slot<0||slot>=growCapacity()){growMessage('Dieser Pflanzenplatz ist noch gesperrt.');return}
+   if(g.plants[slot]){growMessage('Dieser Pflanzenplatz ist bereits belegt.');return}
+   while(g.plants.length<slot)g.plants.push(null);
+   g.plants[slot]=plant;
+ }else{
+   let slot=g.plants.findIndex(x=>!x);
+   if(slot<0)slot=g.plants.length;
+   g.plants[slot]=plant;
+ }
+ g.seeds[id]--;g.plants=g.plants.slice(0,growCapacity());
  growMessage(`${seed.name} wurde gepflanzt.`);persist();
 }
 function harvestReadyPlants(){
- const now=Date.now(),readyPlants=s.grow.plants.filter(p=>now-p.start>=p.duration);
+ const now=Date.now(),readyPlants=s.grow.plants.filter(p=>p&&now-p.start>=p.duration);
  if(!readyPlants.length){growMessage('Noch keine Pflanze ist erntereif.');return}
  let income=0;readyPlants.forEach(p=>{const seed=seedTypes[p.seed]||seedTypes.moss;income+=Math.round(seed.sell*potYield()*(1+totalAttr('growSkill')*.03))});
- s.gold+=income;s.grow.plants=s.grow.plants.filter(p=>now-p.start<p.duration);addXp(10*readyPlants.length);growMessage(`${readyPlants.length} Ernte(n) verkauft: +${income} Gold.`);persist();
+ s.gold+=income;s.grow.plants=s.grow.plants.map(p=>(p&&now-p.start>=p.duration)?null:p);while(s.grow.plants.length&&!s.grow.plants[s.grow.plants.length-1])s.grow.plants.pop();addXp(10*readyPlants.length);growMessage(`${readyPlants.length} Ernte(n) verkauft: +${income} Gold.`);persist();
 }
 function upgradeRoomAction(){
  const c=150*s.grow.roomLevel;if(s.gold<c){growMessage('Nicht genug Gold für das Raum-Upgrade.');return}
@@ -622,7 +646,10 @@ function upgradeRoomAction(){
 }
 function renderQuests(){const q=s.quests.active,card=document.querySelector('#activeQuestCard'),box=document.querySelector('#activeQuest');if(q){card.style.display='block';const left=Math.max(0,Math.ceil((q.ends-Date.now())/1000)),done=left<=0;box.innerHTML=`<div class="quest active-q"><div class="quest-top"><div class="quest-icon">${q.icon}</div><div><h3>${q.name}</h3><div class="muted">${q.text}</div></div></div><div class="quest-meta"><span>⭐ ${q.xp} XP</span><span>💰 ${q.gold}</span><span>⚡ ${q.energy}</span></div><div class="timer">${done?'✅ Auftrag abgeschlossen':`⏳ Noch ${left} Sek.`}</div>${done?'<button class="btn" id="claimQuest" style="width:100%;margin-top:9px">Belohnung abholen</button>':''}</div>`;if(done)document.querySelector('#claimQuest').onclick=claimQuest}else card.style.display='none';
  document.querySelector('#questList').innerHTML=s.quests.offers.map((x,i)=>`<div class="quest"><div class="quest-top"><div class="quest-icon">${x.icon}</div><div><h3>${x.name}</h3><div class="muted">${x.text}</div></div></div><div class="quest-meta"><span>☠️ Stufe ${x.tier}</span><span>⏱️ ${x.duration}s</span><span>⚡ ${x.energy}</span><span>⭐ ${x.xp}</span><span>💰 ${x.gold}</span></div><button class="btn" style="width:100%" onclick="startQuest(${i})" ${s.quests.active||s.energy<x.energy?'disabled':''}>Auftrag starten</button></div>`).join('')}
-window.startQuest=i=>{if(s.quests.active)return;const q=s.quests.offers[i];if(!q||s.energy<q.energy)return alert('Nicht genug Energie.');s.energy-=q.energy;s.quests.active={...q,ends:Date.now()+q.duration*1000};s.quests.offers=[];persist()};function claimQuest(){const q=s.quests.active;if(!q||Date.now()<q.ends)return;const bonus=Math.random()<Math.min(.35,.08+totalAttr('glueck')*.01);s.gold+=q.gold;addXp(q.xp);let msg=`Auftrag geschafft: +${q.xp} XP, +${q.gold} Gold.`;if(bonus){let found;if(Math.random()<0.015){const slot=setBases[Math.floor(Math.random()*setBases.length)].slot;found=makeSetItem(s.playerClass||'grower',slot)}else{if(Math.random()<0.75){found=makeClassLoot(s.playerClass||'grower','normal')}else{const other=['grower','bruiser','scout'].filter(x=>x!==s.playerClass);found=makeClassLoot(other[Math.floor(Math.random()*other.length)],'normal')}}s.inventory.push(found);msg+=`\nItem gefunden: ${found.name}`}s.quests.active=null;s.quests.offers=[makeQuest(),makeQuest(),makeQuest()];alert(msg);persist()}
+window.startQuest=i=>{if(s.quests.active)return;const q=s.quests.offers[i];if(!q||s.energy<q.energy)return alert('Nicht genug Energie.');s.energy-=q.energy;s.quests.active={...q,ends:Date.now()+q.duration*1000};s.quests.offers=[];persist()};function claimQuest(){const q=s.quests.active;if(!q||Date.now()<q.ends)return;const bonus=Math.random()<Math.min(.35,.08+totalAttr('glueck')*.01);s.gold+=q.gold;addXp(q.xp);let msg=`Auftrag geschafft: +${q.xp} XP, +${q.gold} Gold.`;
+ const lockedCandidates=dungeons.map((d,i)=>({d,i})).filter(x=>x.i>0&&s.level>=0&&!s.dungeon.unlocked.includes(x.i));
+ if(lockedCandidates.length&&Math.random()<0.18){const pick=lockedCandidates[Math.floor(Math.random()*lockedCandidates.length)];s.dungeon.unlocked.push(pick.i);msg+=`\n🗿 ${pick.d.keyName} gefunden! ${pick.d.name} kann ab Level ${pick.d.minLevel} betreten werden.`;}
+ if(bonus){let found;if(Math.random()<0.015){const slot=setBases[Math.floor(Math.random()*setBases.length)].slot;found=makeSetItem(s.playerClass||'grower',slot)}else{if(Math.random()<0.75){found=makeClassLoot(s.playerClass||'grower','normal')}else{const other=['grower','bruiser','scout'].filter(x=>x!==s.playerClass);found=makeClassLoot(other[Math.floor(Math.random()*other.length)],'normal')}}s.inventory.push(found);msg+=`\nItem gefunden: ${found.name}`}s.quests.active=null;s.quests.offers=[makeQuest(),makeQuest(),makeQuest()];alert(msg);persist()}
 document.querySelector('#refreshQuests').onclick=()=>{if(s.quests.active)return alert('Beende erst deinen aktiven Auftrag.');if(s.gold<10)return alert('Zu wenig Gold.');s.gold-=10;s.quests.offers=[makeQuest(),makeQuest(),makeQuest()];persist()};
 
 function freeDungeonReady(){return Date.now()-s.dungeonPass.lastFree>=3600000}
@@ -633,12 +660,30 @@ function consumeDungeonAttempt(){
  alert('Kein Gratisversuch bereit und keine Harz-Taler vorhanden.');return false
 }
 function currentDungeon(){return dungeons[Math.max(0,Math.min(dungeons.length-1,s.dungeon.selected||0))]}
-window.selectDungeon=i=>{const d=dungeons[i];if(s.level<d.minLevel)return alert(`Ab Level ${d.minLevel} verfügbar.`);s.dungeon.selected=i;s.dungeon.room=0;persist()}
-function renderDungeon(){const d=currentDungeon(),ens=d.enemies,idx=s.dungeon.room%5,e=ens[idx];document.querySelector('#dungeonTicketText')&&(document.querySelector('#dungeonTicketText').textContent=dungeonWaitText());
- document.querySelector('#dungeonSelect').innerHTML=dungeons.map((x,i)=>`<div class="shop-item"><h3>${x.name}</h3><div class="tiny">${s.level>=x.minLevel?'Freigeschaltet':`🔒 Ab Level ${x.minLevel}`}</div><button class="btn ${i===s.dungeon.selected?'secondary':''}" style="width:100%;padding:8px;margin-top:8px" onclick="selectDungeon(${i})" ${s.level<x.minLevel?'disabled':''}>${i===s.dungeon.selected?'Aktiv':'Auswählen'}</button></div>`).join('');
- document.querySelector('#enemyName').textContent=e.name;document.querySelector('#enemyBattleName').textContent=e.short;document.querySelector('#enemyIcon').textContent=e.icon;document.querySelector('#enemyTier').textContent=e.boss?'BOSS':`Raum ${idx+1}`;document.querySelector('#dungeonProgress').textContent=`${idx+1} / 5`;document.querySelector('#enemyHpText').textContent=e.hp;document.querySelector('#enemyHpBar').style.width='100%';document.querySelector('#playerHpText').textContent=maxHp();document.querySelector('#playerHpBar').style.width='100%';document.querySelector('#dungeonMap').innerHTML=ens.map((x,i)=>`<div class="room-node ${i<idx?'done':''} ${i===idx?'current':''}"><div class="node-circle">${i<idx?'✓':x.icon}</div><small>${i===4?'BOSS':i+1}</small></div>`).join('');if(!battleBusy)document.querySelector('#battleLog').textContent=`${d.name}: ${e.name} wartet auf dich.`}
+function dungeonUnlocked(i){return i===0||s.dungeon.unlocked.includes(i)}
+function dungeonAvailable(i){const d=dungeons[i];return s.level>=d.minLevel&&dungeonUnlocked(i)}
+window.selectDungeon=i=>{
+ const d=dungeons[i];if(!d)return;
+ if(s.level<d.minLevel)return alert(`Dieser Dungeon ist erst ab Level ${d.minLevel} verfügbar.`);
+ if(!dungeonUnlocked(i))return alert(`${d.keyName} fehlt. Den Stein kannst du beim Questen finden.`);
+ s.dungeon.selected=i;s.dungeon.room=0;persist();
+}
+function renderDungeon(){
+ let selected=Math.max(0,Math.min(dungeons.length-1,s.dungeon.selected||0));
+ if(!dungeonAvailable(selected)){selected=0;s.dungeon.selected=0;s.dungeon.room=0;}
+ const d=dungeons[selected],ens=d.enemies,idx=Math.max(0,Math.min(9,s.dungeon.room||0)),e=ens[idx];
+ document.querySelector('#dungeonTicketText')&&(document.querySelector('#dungeonTicketText').textContent=dungeonWaitText());
+ document.querySelector('#dungeonTitle')&&(document.querySelector('#dungeonTitle').textContent=`👹 ${d.name}`);
+ document.querySelector('#dungeonSubtitle')&&(document.querySelector('#dungeonSubtitle').textContent=`10 Gegner · ab Level ${d.minLevel}${d.keyName?' · '+d.keyName:''} · Endboss: 100 % Epic`);
+ document.querySelector('#dungeonSelect').innerHTML=dungeons.map((x,i)=>{
+   const hasKey=dungeonUnlocked(i),levelOk=s.level>=x.minLevel,available=hasKey&&levelOk;
+   const state=i===0?'✅ Start-Dungeon':!hasKey?`🗿 ${x.keyName} fehlt`:!levelOk?`🔒 Level ${x.minLevel} nötig`:'✅ Freigeschaltet';
+   return `<div class="dungeon-card ${i===selected?'active':''} ${available?'':'locked'}"><div class="dungeon-number">DUNGEON ${i+1} · LV. ${x.minLevel}+</div><h3>${x.name}</h3><div class="key-state">${state}</div><button class="btn ${i===selected?'secondary':''}" style="width:100%;padding:7px;margin-top:8px" onclick="selectDungeon(${i})" ${available?'':'disabled'}>${i===selected?'Aktiv':'Auswählen'}</button></div>`;
+ }).join('');
+ document.querySelector('#enemyName').textContent=e.name;document.querySelector('#enemyBattleName').textContent=e.short;document.querySelector('#enemyIcon').textContent=e.icon;document.querySelector('#enemyTier').textContent=e.boss?'BOSS':`Gegner ${idx+1}`;document.querySelector('#dungeonProgress').textContent=`${idx+1} / 10`;document.querySelector('#enemyHpText').textContent=e.hp;document.querySelector('#enemyHpBar').style.width='100%';document.querySelector('#playerHpText').textContent=maxHp();document.querySelector('#playerHpBar').style.width='100%';document.querySelector('#dungeonMap').innerHTML=ens.map((x,i)=>`<div class="room-node ${i<idx?'done':''} ${i===idx?'current':''}"><div class="node-circle">${i<idx?'✓':x.icon}</div><small>${i===9?'BOSS':i+1}</small></div>`).join('');if(!battleBusy)document.querySelector('#battleLog').textContent=`${d.name}: ${e.name} wartet auf dich.`;
+}
 function animClass(el,cl,ms=400){el.classList.remove(cl);void el.offsetWidth;el.classList.add(cl);setTimeout(()=>el.classList.remove(cl),ms)}function popDamage(el,text){el.textContent=text;animClass(el,'pop',650)}
-document.querySelector('#fightBtn').onclick=()=>{if(battleBusy)return;if(!s.playerClass)return alert('Wähle zuerst im Heldenquartier deine Klasse.');if(!consumeDungeonAttempt())return;persist(false);battleBusy=true;const btn=document.querySelector('#fightBtn');btn.disabled=true;document.querySelector('#loot').innerHTML='';const d=currentDungeon(),idx=s.dungeon.room%5,e=d.enemies[idx],maxP=maxHp();let pHp=maxP,eHp=e.hp;const pBar=document.querySelector('#playerHpBar'),eBar=document.querySelector('#enemyHpBar'),pTxt=document.querySelector('#playerHpText'),eTxt=document.querySelector('#enemyHpText'),log=document.querySelector('#battleLog');let round=0;
+document.querySelector('#fightBtn').onclick=()=>{if(battleBusy)return;if(!s.playerClass)return alert('Wähle zuerst im Heldenquartier deine Klasse.');if(!consumeDungeonAttempt())return;persist(false);battleBusy=true;const btn=document.querySelector('#fightBtn');btn.disabled=true;document.querySelector('#loot').innerHTML='';const d=currentDungeon(),idx=Math.max(0,Math.min(9,s.dungeon.room||0)),e=d.enemies[idx],maxP=maxHp();let pHp=maxP,eHp=e.hp;const pBar=document.querySelector('#playerHpBar'),eBar=document.querySelector('#enemyHpBar'),pTxt=document.querySelector('#playerHpText'),eTxt=document.querySelector('#enemyHpText'),log=document.querySelector('#battleLog');let round=0;
  const step=()=>{round++;let critChance=Math.min(.35,.05+totalAttr('glueck')*.015);if(s.playerClass==='bruiser')critChance+=.10+setBonusValue('critChance')+skillValue('nebel')*.03;if(s.playerClass==='scout')critChance+=skillValue('praez')*.02;
  const crit=Math.random()<critChance;let pDmg=Math.max(5,Math.floor(totalAttr('staerke')*1.9+totalAttr('geschick')*.8+s.level*2+Math.random()*10))*(crit?2:1);
  let special='';if(s.playerClass==='grower'&&Math.random()<(.18+setBonusValue('wuchtChance')+skillValue('wucht')*.03)){pDmg=Math.floor(pDmg*1.75);special=' WUCHTSCHLAG!';}
@@ -648,7 +693,7 @@ document.querySelector('#fightBtn').onclick=()=>{if(battleBusy)return;if(!s.play
  setTimeout(()=>{const reduction=Math.floor(totalAttr('ausdauer')*.45);let eDmg=Math.max(2,Math.floor(e.hp/12+Math.random()*8)-reduction);
  const skillReduce=s.playerClass==='grower'?skillValue('fell')*.04:s.playerClass==='bruiser'?skillValue('mantel')*.03:s.playerClass==='scout'?skillValue('tarn')*.03:0;
  eDmg=Math.max(1,Math.floor(eDmg*(1-skillReduce)));animClass(document.querySelector('#enemyFighter'),'attack-left');setTimeout(()=>{pHp=Math.max(0,pHp-eDmg);pBar.style.width=(pHp/maxP*100)+'%';pTxt.textContent=pHp;popDamage(document.querySelector('#damagePlayer'),`-${eDmg}`);animClass(document.querySelector('#playerFighter'),'hit');log.textContent+=` Gegner verursacht ${eDmg}.`;if(pHp<=0)return finish(false);setTimeout(step,380)},260)},420)},260)};
- const finish=win=>{setTimeout(()=>{battleBusy=false;btn.disabled=false;if(win){s.gold+=e.gold;addXp(e.xp);let html=`<div class="loot good">🏆 Sieg! +${e.xp} XP · +${e.gold} Gold</div>`;if(Math.random()<(e.boss?.65:.22)){let found;if(e.boss&&Math.random()<0.07){const slot=setBases[Math.floor(Math.random()*setBases.length)].slot;found=makeSetItem(s.playerClass||'grower',slot)}else{if(Math.random()<0.8){found=makeClassLoot(s.playerClass||'grower','dungeon')}else{const other=['grower','bruiser','scout'].filter(x=>x!==s.playerClass);found=makeClassLoot(other[Math.floor(Math.random()*other.length)],'dungeon')}}s.inventory.push(found);html+=`<div class="loot">🎁 ${found.icon||'🎁'} ${found.name}<br><span class="tiny">${itemBonus(found)}</span></div>`}if(e.boss){s.story.bossesDefeated++;s.story.chapter=Math.min(4,1+Math.floor(s.story.bossesDefeated/2));if(Math.random()<0.22){s.harzTaler++;html+=`<div class="loot">🟢 Harz-Taler gefunden!</div>`;}}s.dungeon.room=(s.dungeon.room+1)%5;document.querySelector('#loot').innerHTML=html;persist();document.querySelector('#battleLog').textContent=e.boss?'Die Milbenkönigin fällt. Der Keller ist vorerst gesäubert!':'Gegner besiegt. Der nächste Raum ist offen.'}else{document.querySelector('#loot').innerHTML='<div class="loot" style="color:#ff9895">💀 Niederlage. Verbessere Attribute oder Ausrüstung.</div>';document.querySelector('#battleLog').textContent='Du wurdest besiegt. Es geht nichts verloren.'}},450)};step()};
+ const finish=win=>{setTimeout(()=>{battleBusy=false;btn.disabled=false;if(win){s.gold+=e.gold;addXp(e.xp);let html=`<div class="loot good">🏆 Sieg! +${e.xp} XP · +${e.gold} Gold</div>`;if(e.boss||Math.random()<.22){let found;if(e.boss){if(Math.random()<0.12){const slot=setBases[Math.floor(Math.random()*setBases.length)].slot;found=makeSetItem(s.playerClass||'grower',slot)}else{found=makeClassLoot(s.playerClass||'grower','dungeon');found.quality='purple';found.rarity='epic';found.name=`Episch: ${found.name.replace(/^.*?:\s*/,'')}`;}}else{if(Math.random()<0.8){found=makeClassLoot(s.playerClass||'grower','dungeon')}else{const other=['grower','bruiser','scout'].filter(x=>x!==s.playerClass);found=makeClassLoot(other[Math.floor(Math.random()*other.length)],'dungeon')}}s.inventory.push(found);html+=`<div class="loot">🎁 ${found.icon||'🎁'} ${found.name}<br><span class="tiny">${itemBonus(found)}</span></div>`}if(e.boss){s.story.bossesDefeated++;s.story.chapter=Math.min(4,1+Math.floor(s.story.bossesDefeated/2));if(Math.random()<0.22){s.harzTaler++;html+=`<div class="loot">🟢 Harz-Taler gefunden!</div>`;}}if(e.boss){if(!s.dungeon.completed.includes(s.dungeon.selected))s.dungeon.completed.push(s.dungeon.selected);s.dungeon.room=0;html+=`<div class="loot good">♾️ Dungeon abgeschlossen. Du kannst ihn sofort wieder von Gegner 1 starten.</div>`;}else{s.dungeon.room=idx+1;}document.querySelector('#loot').innerHTML=html;persist();document.querySelector('#battleLog').textContent=e.boss?'Endboss besiegt – garantiertes Epic erhalten. Der Dungeon startet wieder bei Gegner 1.':'Gegner besiegt. Der nächste Gegner ist offen.'}else{document.querySelector('#loot').innerHTML='<div class="loot" style="color:#ff9895">💀 Niederlage. Verbessere Attribute oder Ausrüstung.</div>';document.querySelector('#battleLog').textContent='Du wurdest besiegt. Es geht nichts verloren.'}},450)};step()};
 function shopStock(){const daily=Math.floor(Date.now()/86400000),seed=daily+s.shopRefreshes*17,generic=Array.from({length:3},(_,i)=>items[(seed*3+i*5)%items.length]),specific=classGear[s.playerClass||'grower'].slice().sort((a,b)=>((a.id.charCodeAt(0)+seed)%7)-((b.id.charCodeAt(0)+seed)%7)).slice(0,3);return [...specific,...generic]}
 function renderShop(){document.querySelector('#shopItems').innerHTML=shopStock().map(it=>`<div class="shop-item"><div class="shop-icon">${it.icon}</div><h3>${it.name}</h3><div class="tiny">${itemBonus(it)}</div>${it.classId?`<div class="set-tag">${classLabel(it.classId)}</div>`:''}<div class="price" style="margin:7px 0">💰 ${it.price} Gold</div><button class="btn" style="width:100%;padding:8px" onclick="buy('${it.id}')">Kaufen</button></div>`).join('')}
 window.buy=id=>{const it=[...items,...allClassGear].find(x=>x.id===id);if(!it)return;if(s.gold<it.price)return alert('Zu wenig Gold.');s.gold-=it.price;s.inventory.push({...it});persist()};
@@ -663,11 +708,12 @@ document.addEventListener('click',e=>{
  const buy=e.target.closest?.('.seed-buy');if(buy){e.preventDefault();buySeedAction(buy.dataset.seed);return}
  const sel=e.target.closest?.('.seed-select');if(sel){e.preventDefault();selectSeedAction(sel.dataset.seed);return}
  const up=e.target.closest?.('.grow-upgrade');if(up){e.preventDefault();upgradeGrowAction(up.dataset.upgrade);return}
+ const slot=e.target.closest?.('[data-grow-slot]');if(slot){e.preventDefault();plantSelectedSeed(Number(slot.dataset.growSlot));return}
 });
-document.querySelector('#plantBtn').addEventListener('click',plantSelectedSeed);
+document.querySelector('#plantBtn').addEventListener('click',()=>plantSelectedSeed());
 document.querySelector('#harvestBtn').addEventListener('click',harvestReadyPlants);
 document.querySelector('#upgradeRoom').addEventListener('click',upgradeRoomAction);
-ensureQuests();setInterval(()=>{if(s.grow.plants?.length)renderGrow();if(s.quests.active)renderQuests();regenEnergy();document.querySelector('#energy')&&(document.querySelector('#energy').textContent=`${s.energy}/100`);document.querySelector('#dungeonTicketText')&&(document.querySelector('#dungeonTicketText').textContent=dungeonWaitText())},1000);persist();
+ensureQuests();setInterval(()=>{if(s.grow.plants?.filter(Boolean).length)renderGrow();if(s.quests.active)renderQuests();regenEnergy();document.querySelector('#energy')&&(document.querySelector('#energy').textContent=`${s.energy}/100`);document.querySelector('#dungeonTicketText')&&(document.querySelector('#dungeonTicketText').textContent=dungeonWaitText())},1000);persist();
 </script>
 </body>
 </html>
