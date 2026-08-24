@@ -146,23 +146,28 @@ main{padding:12px}
 .grow-feedback.show{display:block}
 .seed-card.selected{border-color:#76c45b!important;box-shadow:0 0 0 1px #76c45b55 inset}
 
-/* v0.15 dungeon map + grow slot interactions */
-.dungeon-select-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-bottom:12px}
-.dungeon-card{border:1px solid var(--line);border-radius:13px;background:var(--panel2);padding:10px;position:relative}
-.dungeon-card.active{border-color:var(--gold);box-shadow:0 0 0 1px rgba(240,199,94,.22) inset}
-.dungeon-card.locked{opacity:.62}
-.dungeon-card .dungeon-number{font-size:9px;color:var(--muted);font-weight:800;letter-spacing:.08em}
-.dungeon-card h3{font-size:13px;margin:4px 0}
-.dungeon-card .key-state{font-size:10px;margin-top:4px}
+/* v0.16 adventure dungeon map + grow slot interactions */
+.dungeon-map-shell{overflow:auto;border:1px solid #5b4a31;border-radius:16px;background:#17130f;padding:8px;box-shadow:inset 0 0 30px #0008}
+.adventure-map{position:relative;width:980px;height:620px;min-width:980px;border-radius:12px;overflow:hidden;background:
+ radial-gradient(circle at 16% 20%,#6f8050 0 7%,transparent 8%),radial-gradient(circle at 76% 18%,#536e45 0 9%,transparent 10%),
+ radial-gradient(circle at 55% 72%,#76613c 0 8%,transparent 9%),linear-gradient(135deg,#927b50,#65583d 48%,#3f4932 100%);box-shadow:inset 0 0 70px #231a10}
+.adventure-map:before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(18deg,transparent 0 34px,#ffffff08 35px 36px),radial-gradient(circle at 35% 45%,transparent 0 14%,#0002 44%,#0005 100%);pointer-events:none}
+.map-title-ribbon{position:absolute;left:26px;top:22px;padding:10px 18px;border-radius:6px;background:#2a2117;border:2px solid #9a7e4d;color:#f0d793;font-weight:1000;letter-spacing:.06em;box-shadow:0 5px 15px #0007;z-index:3}
+.map-scenery{position:absolute;font-size:34px;filter:drop-shadow(0 4px 3px #0008);opacity:.82;z-index:1;pointer-events:none}.map-scenery.s1{left:95px;top:120px}.map-scenery.s2{left:450px;top:70px}.map-scenery.s3{right:80px;top:245px}.map-scenery.s4{left:300px;bottom:85px}.map-scenery.s5{right:265px;bottom:55px}
+.map-path{position:absolute;inset:0;width:100%;height:100%;z-index:1;pointer-events:none}.map-path polyline{fill:none;stroke:#d2bd7d;stroke-width:7;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:3 13;opacity:.72;filter:drop-shadow(0 2px 1px #0008)}
+.dungeon-node{position:absolute;width:92px;height:92px;transform:translate(-50%,-50%);border-radius:50%;border:4px solid #6f5d3d;background:radial-gradient(circle at 38% 30%,#403725,#211b13 68%);box-shadow:0 6px 14px #000a,inset 0 0 0 3px #1118;z-index:4;color:#fff;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:5px;transition:.16s}
+.dungeon-node:hover{transform:translate(-50%,-50%) scale(1.06)}.dungeon-node.available{border-color:#d8bd68;box-shadow:0 0 18px #d8bd6855,0 6px 14px #000a}.dungeon-node.active{border-color:#7ed65d;box-shadow:0 0 22px #7ed65d77,0 6px 14px #000a}.dungeon-node.locked{filter:grayscale(.8);opacity:.68;cursor:not-allowed}.dungeon-node.completed{border-color:#665d59;background:radial-gradient(circle,#2b2927,#141312);filter:grayscale(1);cursor:not-allowed}.dungeon-node.completed:after{content:'⛓️';position:absolute;right:-10px;bottom:-8px;font-size:28px}.dungeon-node .nicon{font-size:28px;line-height:1}.dungeon-node .nnum{font-size:10px;font-weight:1000;margin-top:2px}.dungeon-node .nlvl{font-size:8px;color:#d8c991}.dungeon-node .nlock{position:absolute;right:-6px;top:-9px;font-size:24px}
+.map-legend{display:flex;gap:8px;flex-wrap:wrap;margin-top:9px}.map-legend span{font-size:9px;border:1px solid var(--line);border-radius:999px;padding:5px 8px;background:#171c16}
+.dungeon-detail{margin-top:10px;border:1px solid #4c493d;border-radius:12px;padding:10px;background:#171813}.dungeon-detail.completed{border-color:#61554f;background:#1b1716}.dungeon-detail h3{margin:0 0 5px;font-size:14px}.dungeon-detail .state{font-size:10px;color:var(--muted)}
 .dungeon-map{overflow-x:auto;justify-content:flex-start;padding-bottom:5px}.room-node{min-width:54px;flex:0 0 54px}
 .grow-slot.open-slot{cursor:pointer}.grow-slot.open-slot:hover{border-color:#76c45b;box-shadow:0 0 0 1px #76c45b44 inset}.slot-plant-btn{margin-top:5px;padding:5px 7px;font-size:9px}
-@media(max-width:560px){.dungeon-select-grid{grid-template-columns:1fr}.dungeon-card{padding:9px}}
+@media(max-width:560px){.dungeon-map-shell{margin-left:-2px;margin-right:-2px}.adventure-map{transform-origin:top left}.map-legend{gap:5px}.dungeon-node{width:86px;height:86px}}
 </style>
 </head>
 <body>
 <div class="app">
 <header>
-  <div class="brand"><h1>🌿 Grow Legends</h1><span class="version">V0.14 RPG</span><div class="power">Kampfkraft <b id="power">0</b></div></div>
+  <div class="brand"><h1>🌿 Grow Legends</h1><span class="version">V0.16 RPG</span><div class="power">Kampfkraft <b id="power">0</b></div></div>
   <div class="stats resource-stats"><div class="stat">GOLD<b id="gold">120</b></div><div class="stat">SKILL<b id="points">0</b></div><div class="stat">ENERGIE<b id="energy">100/100</b></div><div class="stat harz-stat">HARZ-TALER<b>🟢 <span id="topHarz">0</span></b></div></div>
 </header>
 <main>
@@ -251,7 +256,7 @@ main{padding:12px}
 </section>
 
 <section id="dungeon" class="screen">
-  <div class="card"><div class="section-title"><div><h2 id="dungeonTitle">👹 Der verseuchte Keller</h2><div class="muted" id="dungeonSubtitle">10 Gegner · Endboss mit garantiertem Epic</div></div><span class="pill" id="dungeonProgress">1 / 10</span></div><div class="ticket-box"><div><b>🎟️ Dungeon-Versuch</b></div><div class="tiny">1 Versuch pro Stunde gratis. Weitere Versuche kosten 1 🟢 Harz-Taler.</div><div class="ticket-time" id="dungeonTicketText">Gratisversuch bereit</div></div><div id="dungeonSelect" class="dungeon-select-grid"></div><div class="dungeon-map" id="dungeonMap"></div></div>
+  <div class="card"><div class="section-title"><div><h2>🗺️ Verseuchte Gebiete</h2><div class="muted">20 Dungeons auf einer Abenteuerkarte. Besiegte Dungeons werden dauerhaft versiegelt.</div></div><span class="pill" id="dungeonProgress">1 / 10</span></div><div class="ticket-box"><div><b>🎟️ Dungeon-Versuch</b></div><div class="tiny">1 Versuch pro Stunde gratis. Weitere Versuche kosten 1 🟢 Harz-Taler.</div><div class="ticket-time" id="dungeonTicketText">Gratisversuch bereit</div></div><div class="dungeon-map-shell"><div id="dungeonSelect" class="adventure-map"></div></div><div class="map-legend"><span>🟢 aktiv</span><span>🟡 betretbar</span><span>🔒 Level/Stein fehlt</span><span>⛓️ abgeschlossen</span></div><div id="dungeonDetail" class="dungeon-detail"></div><div class="dungeon-map" id="dungeonMap"></div></div>
   <div class="card"><div class="section-title"><h3 id="enemyName">Trauermücken-Schwarm</h3><span class="pill" id="enemyTier">Raum 1</span></div><div class="battle-stage" id="battleStage"><div class="damage left" id="damagePlayer"></div><div class="damage right" id="damageEnemy"></div><div class="fighter player" id="playerFighter"><div class="fighter-avatar">🧑‍🌾</div><div class="fighter-name">Du · Lv. <span id="battleLevel">1</span></div><div class="hpbar"><div class="hpfill" id="playerHpBar"></div></div><div class="tiny"><span id="playerHpText">100</span> HP</div></div><div class="fighter enemy-side" id="enemyFighter"><div class="fighter-avatar" id="enemyIcon">🪰</div><div class="fighter-name" id="enemyBattleName">Trauermücken</div><div class="hpbar"><div class="hpfill" id="enemyHpBar"></div></div><div class="tiny"><span id="enemyHpText">45</span> HP</div></div></div><div class="battle-log" id="battleLog">Der Gegner wartet auf dich.</div><button class="btn" id="fightBtn" style="width:100%">⚔️ Kampf starten</button><div id="loot"></div></div>
 </section>
 
@@ -263,10 +268,10 @@ main{padding:12px}
 </div>
 <nav class="bottom"><button class="nav active" data-screen="world"><span>🗺️</span>Welt</button><button class="nav" data-screen="character"><span>🧙</span>Held</button><button class="nav" data-screen="grow"><span>🌱</span>Grow</button><button class="nav" data-screen="quests"><span>🍺</span>Quests</button><button class="nav" data-screen="dungeon"><span>👹</span>Dungeon</button></nav>
 <script>
-const KEY='growLegendsV015', OLD_KEYS=['growLegendsV014','growLegendsV013','growLegendsV0121','growLegendsV012','growLegendsV011','growLegendsV010','growLegendsV09','growLegendsV08','growLegendsV07','growLegendsV06','growLegendsV05','growLegendsV04','growLegendsV03','growLegendsV02','growLegendsV01'];
+const KEY='growLegendsV016', OLD_KEYS=['growLegendsV015','growLegendsV014','growLegendsV013','growLegendsV0121','growLegendsV012','growLegendsV011','growLegendsV010','growLegendsV09','growLegendsV08','growLegendsV07','growLegendsV06','growLegendsV05','growLegendsV04','growLegendsV03','growLegendsV02','growLegendsV01'];
 const defaultState={playerClass:null,classLocked:false,skillPoints:0,classSkills:{},harzTaler:6,shopRefreshes:0,lastShopSeed:0,dungeonPass:{lastFree:0},story:{chapter:1,bossesDefeated:0},level:1,xp:0,gold:120,points:0,energy:100,lastEnergy:Date.now(),attrs:{staerke:5,geschick:5,ausdauer:5,glueck:5,growSkill:1},equipment:{head:null,weapon:null,ring:null,body:null,boots:null,amulet:null},inventory:[],grow:{planted:false,start:0,duration:60000,ready:false,roomLevel:1,plants:[],seeds:{moss:2},equipment:{lamp:0,pots:0},selectedSeed:'moss'},dungeon:{room:0,selected:0,unlocked:[0],completed:[]},quests:{offers:[],active:null}};
 let raw=localStorage.getItem(KEY);if(!raw){for(const k of OLD_KEYS){if(localStorage.getItem(k)){raw=localStorage.getItem(k);break}}}
-let s=raw?JSON.parse(raw):structuredClone(defaultState);s.skillPoints??=Math.max(0,Math.floor((s.level-1)/2));s.classSkills??={};s.playerClass??=null;s.classLocked??=!!s.playerClass;s.harzTaler??=6;s.shopRefreshes??=0;s.lastShopSeed??=0;s.dungeonPass??={lastFree:0};s.dungeonPass.lastFree??=0;if(s.playerClass&&!s.classLocked)s.classLocked=true;s.story??={chapter:1,bossesDefeated:0};s.story.chapter??=1;s.story.bossesDefeated??=0;s.energy??=100;s.lastEnergy??=Date.now();s.quests??={offers:[],active:null};s.quests.offers??=[];s.quests.active??=null;s.grow??={roomLevel:1,plants:[]};s.grow.roomLevel??=1;s.grow.plants??=[];s.grow.seeds??={moss:2};s.grow.equipment??={lamp:0,pots:0};s.grow.selectedSeed??='moss';if(s.grow.planted&&s.grow.plants.length===0)s.grow.plants.push({start:s.grow.start||Date.now(),duration:s.grow.duration||60000});s.dungeon??={room:0,selected:0,unlocked:[0],completed:[]};s.dungeon.room??=0;s.dungeon.selected??=0;s.dungeon.unlocked??=[0];s.dungeon.completed??=[];if(!s.dungeon.unlocked.includes(0))s.dungeon.unlocked.push(0);
+let s=raw?JSON.parse(raw):structuredClone(defaultState);s.skillPoints??=Math.max(0,Math.floor((s.level-1)/2));s.classSkills??={};s.playerClass??=null;s.classLocked??=!!s.playerClass;s.harzTaler??=6;s.shopRefreshes??=0;s.lastShopSeed??=0;s.dungeonPass??={lastFree:0};s.dungeonPass.lastFree??=0;if(s.playerClass&&!s.classLocked)s.classLocked=true;s.story??={chapter:1,bossesDefeated:0};s.story.chapter??=1;s.story.bossesDefeated??=0;s.energy??=100;s.lastEnergy??=Date.now();s.quests??={offers:[],active:null};s.quests.offers??=[];s.quests.active??=null;s.grow??={roomLevel:1,plants:[]};s.grow.roomLevel??=1;s.grow.plants??=[];s.grow.seeds??={moss:2};s.grow.equipment??={lamp:0,pots:0};s.grow.selectedSeed??='moss';if(s.grow.planted&&s.grow.plants.length===0)s.grow.plants.push({start:s.grow.start||Date.now(),duration:s.grow.duration||60000});s.dungeon??={room:0,selected:0,unlocked:[0],completed:[]};s.dungeon.room??=0;s.dungeon.selected??=0;s.dungeon.unlocked??=[0];s.dungeon.completed??=[];s.dungeon.progress??={};if(s.dungeon.progress[s.dungeon.selected]==null)s.dungeon.progress[s.dungeon.selected]=s.dungeon.room||0;if(!s.dungeon.unlocked.includes(0))s.dungeon.unlocked.push(0);
 
 const classes={
  grower:{name:'Bud-Barbar',icon:'⚔️',text:'Brutal und zäh. Viel Stärke und Ausdauer. Chance auf Wuchtschlag.',bonus:{staerke:4,ausdauer:3}},
@@ -661,29 +666,59 @@ function consumeDungeonAttempt(){
 }
 function currentDungeon(){return dungeons[Math.max(0,Math.min(dungeons.length-1,s.dungeon.selected||0))]}
 function dungeonUnlocked(i){return i===0||s.dungeon.unlocked.includes(i)}
-function dungeonAvailable(i){const d=dungeons[i];return s.level>=d.minLevel&&dungeonUnlocked(i)}
+function dungeonCompleted(i){return s.dungeon.completed.includes(i)}
+function dungeonAvailable(i){const d=dungeons[i];return s.level>=d.minLevel&&dungeonUnlocked(i)&&!dungeonCompleted(i)}
+const dungeonMapPositions=[
+ [9,78],[18,64],[29,73],[39,58],[49,69],[60,55],[72,64],[84,50],[91,34],[79,26],
+ [67,37],[57,25],[46,37],[35,25],[24,38],[13,27],[20,13],[38,12],[61,12],[85,12]
+];
+function dungeonStateText(i){
+ const d=dungeons[i];
+ if(dungeonCompleted(i))return '⛓️ Abgeschlossen und dauerhaft versiegelt';
+ if(!dungeonUnlocked(i))return `🔒 ${d.keyName} fehlt – beim Questen auffindbar`;
+ if(s.level<d.minLevel)return `🔒 Benötigt Level ${d.minLevel}`;
+ return '⚔️ Betretbar';
+}
 window.selectDungeon=i=>{
  const d=dungeons[i];if(!d)return;
+ if(dungeonCompleted(i))return alert(`${d.name} wurde bereits abgeschlossen und ist dauerhaft versiegelt.`);
  if(s.level<d.minLevel)return alert(`Dieser Dungeon ist erst ab Level ${d.minLevel} verfügbar.`);
  if(!dungeonUnlocked(i))return alert(`${d.keyName} fehlt. Den Stein kannst du beim Questen finden.`);
- s.dungeon.selected=i;s.dungeon.room=0;persist();
+ s.dungeon.selected=i;s.dungeon.room=Math.max(0,Math.min(9,s.dungeon.progress?.[i]??0));persist();
 }
 function renderDungeon(){
  let selected=Math.max(0,Math.min(dungeons.length-1,s.dungeon.selected||0));
- if(!dungeonAvailable(selected)){selected=0;s.dungeon.selected=0;s.dungeon.room=0;}
- const d=dungeons[selected],ens=d.enemies,idx=Math.max(0,Math.min(9,s.dungeon.room||0)),e=ens[idx];
+ const selectedDone=dungeonCompleted(selected);
+ const d=dungeons[selected],ens=d.enemies,idx=Math.max(0,Math.min(9,(s.dungeon.progress?.[selected] ?? s.dungeon.room ?? 0))),e=ens[idx];s.dungeon.room=idx;
  document.querySelector('#dungeonTicketText')&&(document.querySelector('#dungeonTicketText').textContent=dungeonWaitText());
- document.querySelector('#dungeonTitle')&&(document.querySelector('#dungeonTitle').textContent=`👹 ${d.name}`);
- document.querySelector('#dungeonSubtitle')&&(document.querySelector('#dungeonSubtitle').textContent=`10 Gegner · ab Level ${d.minLevel}${d.keyName?' · '+d.keyName:''} · Endboss: 100 % Epic`);
- document.querySelector('#dungeonSelect').innerHTML=dungeons.map((x,i)=>{
-   const hasKey=dungeonUnlocked(i),levelOk=s.level>=x.minLevel,available=hasKey&&levelOk;
-   const state=i===0?'✅ Start-Dungeon':!hasKey?`🗿 ${x.keyName} fehlt`:!levelOk?`🔒 Level ${x.minLevel} nötig`:'✅ Freigeschaltet';
-   return `<div class="dungeon-card ${i===selected?'active':''} ${available?'':'locked'}"><div class="dungeon-number">DUNGEON ${i+1} · LV. ${x.minLevel}+</div><h3>${x.name}</h3><div class="key-state">${state}</div><button class="btn ${i===selected?'secondary':''}" style="width:100%;padding:7px;margin-top:8px" onclick="selectDungeon(${i})" ${available?'':'disabled'}>${i===selected?'Aktiv':'Auswählen'}</button></div>`;
+ const pts=dungeonMapPositions.map(p=>`${p[0]*9.8},${p[1]*6.2}`).join(' ');
+ document.querySelector('#dungeonSelect').innerHTML=`<div class="map-title-ribbon">VERSEUCHTE GEBIETE</div><div class="map-scenery s1">🌲🌲</div><div class="map-scenery s2">🏚️</div><div class="map-scenery s3">⛰️</div><div class="map-scenery s4">🌫️🌲</div><div class="map-scenery s5">🏰</div><svg class="map-path" viewBox="0 0 980 620" preserveAspectRatio="none"><polyline points="${pts}"/></svg>`+dungeons.map((x,i)=>{
+   const done=dungeonCompleted(i),hasKey=dungeonUnlocked(i),levelOk=s.level>=x.minLevel,available=hasKey&&levelOk&&!done;
+   const pos=dungeonMapPositions[i];
+   const cl=done?'completed':available?(i===selected?'active':'available'):'locked';
+   const icon=done?'🏚️':i===19?'👑':i%5===0?'🏰':i%3===0?'🕳️':'☠️';
+   const lock=!done&&!available?'<span class="nlock">🔒</span>':'';
+   return `<button class="dungeon-node ${cl}" style="left:${pos[0]}%;top:${pos[1]}%" onclick="selectDungeon(${i})" title="${x.name} – ${dungeonStateText(i)}"><span class="nicon">${icon}</span><span class="nnum">${i+1}. ${x.name}</span><span class="nlvl">Lv. ${x.minLevel}+</span>${lock}</button>`;
  }).join('');
- document.querySelector('#enemyName').textContent=e.name;document.querySelector('#enemyBattleName').textContent=e.short;document.querySelector('#enemyIcon').textContent=e.icon;document.querySelector('#enemyTier').textContent=e.boss?'BOSS':`Gegner ${idx+1}`;document.querySelector('#dungeonProgress').textContent=`${idx+1} / 10`;document.querySelector('#enemyHpText').textContent=e.hp;document.querySelector('#enemyHpBar').style.width='100%';document.querySelector('#playerHpText').textContent=maxHp();document.querySelector('#playerHpBar').style.width='100%';document.querySelector('#dungeonMap').innerHTML=ens.map((x,i)=>`<div class="room-node ${i<idx?'done':''} ${i===idx?'current':''}"><div class="node-circle">${i<idx?'✓':x.icon}</div><small>${i===9?'BOSS':i+1}</small></div>`).join('');if(!battleBusy)document.querySelector('#battleLog').textContent=`${d.name}: ${e.name} wartet auf dich.`;
+ const detail=document.querySelector('#dungeonDetail');
+ detail.className='dungeon-detail'+(selectedDone?' completed':'');
+ detail.innerHTML=`<h3>${selectedDone?'⛓️':'👹'} Dungeon ${selected+1}: ${d.name}</h3><div class="state">${dungeonStateText(selected)} · 10 Gegner · Boss garantiert 1 Epic</div>${d.keyName?`<div class="tiny" style="margin-top:4px">🗿 Zugang: ${d.keyName}</div>`:''}`;
+ document.querySelector('#enemyName').textContent=selectedDone?'Dungeon versiegelt':e.name;
+ document.querySelector('#enemyBattleName').textContent=selectedDone?'Abgeschlossen':e.short;
+ document.querySelector('#enemyIcon').textContent=selectedDone?'⛓️':e.icon;
+ document.querySelector('#enemyTier').textContent=selectedDone?'GESCHLOSSEN':(e.boss?'BOSS':`Gegner ${idx+1}`);
+ document.querySelector('#dungeonProgress').textContent=selectedDone?'10 / 10':`${idx+1} / 10`;
+ document.querySelector('#enemyHpText').textContent=selectedDone?'0':e.hp;
+ document.querySelector('#enemyHpBar').style.width=selectedDone?'0%':'100%';
+ document.querySelector('#playerHpText').textContent=maxHp();document.querySelector('#playerHpBar').style.width='100%';
+ document.querySelector('#dungeonMap').innerHTML=ens.map((x,i)=>`<div class="room-node ${selectedDone||i<idx?'done':''} ${!selectedDone&&i===idx?'current':''}"><div class="node-circle">${selectedDone||i<idx?'✓':x.icon}</div><small>${i===9?'BOSS':i+1}</small></div>`).join('');
+ const btn=document.querySelector('#fightBtn');
+ btn.disabled=selectedDone||!dungeonAvailable(selected);
+ btn.textContent=selectedDone?'⛓️ Dungeon dauerhaft geschlossen':'⚔️ Kampf starten';
+ if(!battleBusy)document.querySelector('#battleLog').textContent=selectedDone?'Dieser Dungeon wurde vollständig abgeschlossen. Der Eingang ist dauerhaft versiegelt.':`${d.name}: ${e.name} wartet auf dich.`;
 }
 function animClass(el,cl,ms=400){el.classList.remove(cl);void el.offsetWidth;el.classList.add(cl);setTimeout(()=>el.classList.remove(cl),ms)}function popDamage(el,text){el.textContent=text;animClass(el,'pop',650)}
-document.querySelector('#fightBtn').onclick=()=>{if(battleBusy)return;if(!s.playerClass)return alert('Wähle zuerst im Heldenquartier deine Klasse.');if(!consumeDungeonAttempt())return;persist(false);battleBusy=true;const btn=document.querySelector('#fightBtn');btn.disabled=true;document.querySelector('#loot').innerHTML='';const d=currentDungeon(),idx=Math.max(0,Math.min(9,s.dungeon.room||0)),e=d.enemies[idx],maxP=maxHp();let pHp=maxP,eHp=e.hp;const pBar=document.querySelector('#playerHpBar'),eBar=document.querySelector('#enemyHpBar'),pTxt=document.querySelector('#playerHpText'),eTxt=document.querySelector('#enemyHpText'),log=document.querySelector('#battleLog');let round=0;
+document.querySelector('#fightBtn').onclick=()=>{if(battleBusy)return;if(dungeonCompleted(s.dungeon.selected||0))return alert('Dieser Dungeon ist bereits abgeschlossen und dauerhaft versiegelt.');if(!dungeonAvailable(s.dungeon.selected||0))return alert('Dieser Dungeon ist noch nicht betretbar.');if(!s.playerClass)return alert('Wähle zuerst im Heldenquartier deine Klasse.');if(!consumeDungeonAttempt())return;persist(false);battleBusy=true;const btn=document.querySelector('#fightBtn');btn.disabled=true;document.querySelector('#loot').innerHTML='';const d=currentDungeon(),idx=Math.max(0,Math.min(9,(s.dungeon.progress?.[s.dungeon.selected] ?? s.dungeon.room ?? 0))),e=d.enemies[idx],maxP=maxHp();let pHp=maxP,eHp=e.hp;const pBar=document.querySelector('#playerHpBar'),eBar=document.querySelector('#enemyHpBar'),pTxt=document.querySelector('#playerHpText'),eTxt=document.querySelector('#enemyHpText'),log=document.querySelector('#battleLog');let round=0;
  const step=()=>{round++;let critChance=Math.min(.35,.05+totalAttr('glueck')*.015);if(s.playerClass==='bruiser')critChance+=.10+setBonusValue('critChance')+skillValue('nebel')*.03;if(s.playerClass==='scout')critChance+=skillValue('praez')*.02;
  const crit=Math.random()<critChance;let pDmg=Math.max(5,Math.floor(totalAttr('staerke')*1.9+totalAttr('geschick')*.8+s.level*2+Math.random()*10))*(crit?2:1);
  let special='';if(s.playerClass==='grower'&&Math.random()<(.18+setBonusValue('wuchtChance')+skillValue('wucht')*.03)){pDmg=Math.floor(pDmg*1.75);special=' WUCHTSCHLAG!';}
@@ -693,7 +728,7 @@ document.querySelector('#fightBtn').onclick=()=>{if(battleBusy)return;if(!s.play
  setTimeout(()=>{const reduction=Math.floor(totalAttr('ausdauer')*.45);let eDmg=Math.max(2,Math.floor(e.hp/12+Math.random()*8)-reduction);
  const skillReduce=s.playerClass==='grower'?skillValue('fell')*.04:s.playerClass==='bruiser'?skillValue('mantel')*.03:s.playerClass==='scout'?skillValue('tarn')*.03:0;
  eDmg=Math.max(1,Math.floor(eDmg*(1-skillReduce)));animClass(document.querySelector('#enemyFighter'),'attack-left');setTimeout(()=>{pHp=Math.max(0,pHp-eDmg);pBar.style.width=(pHp/maxP*100)+'%';pTxt.textContent=pHp;popDamage(document.querySelector('#damagePlayer'),`-${eDmg}`);animClass(document.querySelector('#playerFighter'),'hit');log.textContent+=` Gegner verursacht ${eDmg}.`;if(pHp<=0)return finish(false);setTimeout(step,380)},260)},420)},260)};
- const finish=win=>{setTimeout(()=>{battleBusy=false;btn.disabled=false;if(win){s.gold+=e.gold;addXp(e.xp);let html=`<div class="loot good">🏆 Sieg! +${e.xp} XP · +${e.gold} Gold</div>`;if(e.boss||Math.random()<.22){let found;if(e.boss){if(Math.random()<0.12){const slot=setBases[Math.floor(Math.random()*setBases.length)].slot;found=makeSetItem(s.playerClass||'grower',slot)}else{found=makeClassLoot(s.playerClass||'grower','dungeon');found.quality='purple';found.rarity='epic';found.name=`Episch: ${found.name.replace(/^.*?:\s*/,'')}`;}}else{if(Math.random()<0.8){found=makeClassLoot(s.playerClass||'grower','dungeon')}else{const other=['grower','bruiser','scout'].filter(x=>x!==s.playerClass);found=makeClassLoot(other[Math.floor(Math.random()*other.length)],'dungeon')}}s.inventory.push(found);html+=`<div class="loot">🎁 ${found.icon||'🎁'} ${found.name}<br><span class="tiny">${itemBonus(found)}</span></div>`}if(e.boss){s.story.bossesDefeated++;s.story.chapter=Math.min(4,1+Math.floor(s.story.bossesDefeated/2));if(Math.random()<0.22){s.harzTaler++;html+=`<div class="loot">🟢 Harz-Taler gefunden!</div>`;}}if(e.boss){if(!s.dungeon.completed.includes(s.dungeon.selected))s.dungeon.completed.push(s.dungeon.selected);s.dungeon.room=0;html+=`<div class="loot good">♾️ Dungeon abgeschlossen. Du kannst ihn sofort wieder von Gegner 1 starten.</div>`;}else{s.dungeon.room=idx+1;}document.querySelector('#loot').innerHTML=html;persist();document.querySelector('#battleLog').textContent=e.boss?'Endboss besiegt – garantiertes Epic erhalten. Der Dungeon startet wieder bei Gegner 1.':'Gegner besiegt. Der nächste Gegner ist offen.'}else{document.querySelector('#loot').innerHTML='<div class="loot" style="color:#ff9895">💀 Niederlage. Verbessere Attribute oder Ausrüstung.</div>';document.querySelector('#battleLog').textContent='Du wurdest besiegt. Es geht nichts verloren.'}},450)};step()};
+ const finish=win=>{setTimeout(()=>{battleBusy=false;btn.disabled=false;if(win){s.gold+=e.gold;addXp(e.xp);let html=`<div class="loot good">🏆 Sieg! +${e.xp} XP · +${e.gold} Gold</div>`;if(e.boss||Math.random()<.22){let found;if(e.boss){if(Math.random()<0.12){const slot=setBases[Math.floor(Math.random()*setBases.length)].slot;found=makeSetItem(s.playerClass||'grower',slot)}else{found=makeClassLoot(s.playerClass||'grower','dungeon');found.quality='purple';found.rarity='epic';found.name=`Episch: ${found.name.replace(/^.*?:\s*/,'')}`;}}else{if(Math.random()<0.8){found=makeClassLoot(s.playerClass||'grower','dungeon')}else{const other=['grower','bruiser','scout'].filter(x=>x!==s.playerClass);found=makeClassLoot(other[Math.floor(Math.random()*other.length)],'dungeon')}}s.inventory.push(found);html+=`<div class="loot">🎁 ${found.icon||'🎁'} ${found.name}<br><span class="tiny">${itemBonus(found)}</span></div>`}if(e.boss){s.story.bossesDefeated++;s.story.chapter=Math.min(4,1+Math.floor(s.story.bossesDefeated/2));if(Math.random()<0.22){s.harzTaler++;html+=`<div class="loot">🟢 Harz-Taler gefunden!</div>`;}}if(e.boss){if(!s.dungeon.completed.includes(s.dungeon.selected))s.dungeon.completed.push(s.dungeon.selected);s.dungeon.room=9;s.dungeon.progress[s.dungeon.selected]=9;html+=`<div class="loot good">⛓️ Dungeon abgeschlossen! Der Eingang wurde dauerhaft versiegelt.</div>`;}else{s.dungeon.room=idx+1;s.dungeon.progress[s.dungeon.selected]=idx+1;}document.querySelector('#loot').innerHTML=html;persist();document.querySelector('#battleLog').textContent=e.boss?'Endboss besiegt – garantiertes Epic erhalten. Dieser Dungeon ist jetzt dauerhaft geschlossen.':'Gegner besiegt. Der nächste Gegner ist offen.'}else{document.querySelector('#loot').innerHTML='<div class="loot" style="color:#ff9895">💀 Niederlage. Verbessere Attribute oder Ausrüstung.</div>';document.querySelector('#battleLog').textContent='Du wurdest besiegt. Es geht nichts verloren.'}},450)};step()};
 function shopStock(){const daily=Math.floor(Date.now()/86400000),seed=daily+s.shopRefreshes*17,generic=Array.from({length:3},(_,i)=>items[(seed*3+i*5)%items.length]),specific=classGear[s.playerClass||'grower'].slice().sort((a,b)=>((a.id.charCodeAt(0)+seed)%7)-((b.id.charCodeAt(0)+seed)%7)).slice(0,3);return [...specific,...generic]}
 function renderShop(){document.querySelector('#shopItems').innerHTML=shopStock().map(it=>`<div class="shop-item"><div class="shop-icon">${it.icon}</div><h3>${it.name}</h3><div class="tiny">${itemBonus(it)}</div>${it.classId?`<div class="set-tag">${classLabel(it.classId)}</div>`:''}<div class="price" style="margin:7px 0">💰 ${it.price} Gold</div><button class="btn" style="width:100%;padding:8px" onclick="buy('${it.id}')">Kaufen</button></div>`).join('')}
 window.buy=id=>{const it=[...items,...allClassGear].find(x=>x.id===id);if(!it)return;if(s.gold<it.price)return alert('Zu wenig Gold.');s.gold-=it.price;s.inventory.push({...it});persist()};
