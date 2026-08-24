@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#10170f">
-<title>Grow Legends V0.11</title>
+<title>Grow Legends V0.12</title>
 <style>
 :root{--bg:#0b100b;--panel:#151d14;--panel2:#1c281a;--panel3:#253423;--line:#354933;--text:#f2f5ed;--muted:#9fad99;--green:#83d65d;--green2:#b2f07e;--gold:#f2c75a;--red:#ee6b68;--blue:#68a7ea;--purple:#ad7bea;--shadow:0 12px 30px rgba(0,0,0,.28)}
 *{box-sizing:border-box}html{background:var(--bg)}body{margin:0;color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:radial-gradient(circle at 50% -10%,#253821 0,#10170f 40%,#090d09 100%);min-height:100vh}button{font:inherit}.app{max-width:820px;margin:auto;min-height:100vh;padding-bottom:88px}
@@ -71,15 +71,26 @@ main{padding:12px}.screen{display:none}.screen.active{display:block}.hero-card,.
 .ticket-box{border:1px solid #4d6648;border-radius:14px;padding:10px;background:#111811;margin-bottom:10px}
 .ticket-time{font-size:13px;font-weight:700;color:var(--green2)}
 .q-gray{color:#a4aaa4}.q-green{color:#70d181}.q-blue{color:#74a8f0}.q-purple{color:#c18af0}.q-orange{color:#f3a64d}.q-cyan{color:#55e0df}
+
+.resource-stats{grid-template-columns:repeat(4,1fr)!important}.harz-stat b{color:#9ce86f!important}
+.center-hero{position:relative;text-align:center;min-height:390px;padding:8px 0 4px}
+.avatar-scene{height:280px;display:flex;align-items:flex-end;justify-content:center;position:relative}
+.avatar-scene:before{content:"";position:absolute;width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,#46753b55 0,#1b2a1d22 55%,transparent 72%);bottom:18px}
+.class-avatar-big{font-size:148px;line-height:1;position:relative;z-index:2;filter:drop-shadow(0 14px 8px #0008)}
+.avatar-prop{position:absolute;z-index:3;font-size:70px;right:calc(50% - 100px);top:55px;transform:rotate(-15deg);filter:drop-shadow(0 5px 3px #0008)}
+.avatar-leaf{position:absolute;z-index:4;font-size:43px;left:calc(50% + 20px);top:35px}
+.center-name{font-size:22px;font-weight:900;margin-top:3px}.center-class{color:var(--green2);font-weight:800;margin-top:2px}
+.level-shield{display:inline-block;margin-top:10px;padding:6px 15px;border:2px solid #a87c2d;border-radius:12px;background:#1a1a12;font-weight:800}.level-shield b{font-size:22px;color:#f4d06f}
+.center-xp{max-width:270px;margin:8px auto 0}.center-xp-row{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-bottom:4px}
+.center-xp-track{height:13px;background:#0b100b;border:1px solid #40583c;border-radius:999px;overflow:hidden}.center-xp-fill{height:100%;background:linear-gradient(90deg,#62b843,#b1e96f)}
+@media(max-width:520px){.resource-stats{grid-template-columns:repeat(2,1fr)!important}.class-avatar-big{font-size:125px}.avatar-scene{height:245px}.center-hero{min-height:355px}}
 </style>
 </head>
 <body>
 <div class="app">
 <header>
-  <div class="brand"><h1>🌿 Grow Legends</h1><span class="version">V0.3 RPG</span><div class="power">Kampfkraft <b id="power">0</b></div></div>
-  <div class="stats">
-    <div class="stat">LEVEL<b id="level">1</b></div><div class="stat">XP<b id="xp">0/100</b></div><div class="stat">GOLD<b id="gold">120</b></div><div class="stat">SKILL<b id="points">0</b></div><div class="stat">ENERGIE<b id="energy">100/100</b></div>
-  </div>
+  <div class="brand"><h1>🌿 Grow Legends</h1><span class="version">V0.12 RPG</span><div class="power">Kampfkraft <b id="power">0</b></div></div>
+  <div class="stats resource-stats"><div class="stat">GOLD<b id="gold">120</b></div><div class="stat">SKILL<b id="points">0</b></div><div class="stat">ENERGIE<b id="energy">100/100</b></div><div class="stat harz-stat">HARZ-TALER<b>🟢 <span id="topHarz">0</span></b></div></div>
 </header>
 <main>
 <section id="world" class="screen active">
@@ -116,10 +127,17 @@ main{padding:12px}.screen{display:none}.screen.active{display:block}.hero-card,.
 <section id="character" class="screen">
   <div class="hero-card">
     <div class="character-stage">
-      <div class="char-head"><div><div class="char-title">Grow-Abenteurer</div><div class="tiny">Klasse: <span id="className">Grower</span></div></div><div class="level-badge">⭐ Level <b id="charLevel">1</b></div></div>
+      <div class="char-head"><div><div class="char-title">Grow-Abenteurer</div><div class="tiny">Klasse: <span id="className">Grower</span></div></div></div>
       <div class="equipment-grid">
         <div class="equip-col"><div class="slot" id="slot-head"></div><div class="slot" id="slot-weapon"></div><div class="slot" id="slot-ring"></div></div>
-        <div><div class="character-figure"><div class="figure-glow"></div><div class="person"><div class="hair"></div><div class="cap"></div><div class="head"></div><div class="neck"></div><div class="arm left"></div><div class="arm right"></div><div class="torso"></div><div class="leg left"></div><div class="leg right"></div><div class="shoe left"></div><div class="shoe right"></div></div></div><div class="char-name">Der Grow-Abenteurer</div><div class="char-sub">Bezwinger des verseuchten Kellers</div></div>
+        <div class="center-hero">
+  <div class="avatar-scene"><div class="class-avatar-big" id="classAvatarBig">🧔‍♂️</div><div class="avatar-prop" id="avatarProp">🌿</div><div class="avatar-leaf" id="avatarLeaf">🍃</div></div>
+  <div class="center-name" id="avatarTitle">Bud-Barbar</div>
+  <div class="center-class" id="avatarSubtitle">Der Harzbrecher</div>
+  <div class="level-shield">LEVEL <b id="centerLevel">1</b></div>
+  <div class="center-xp"><div class="center-xp-row"><span>XP</span><span id="centerXpText">0 / 100</span></div><div class="center-xp-track"><div class="center-xp-fill" id="centerXpFill" style="width:0%"></div></div></div>
+  <div class="char-sub" style="margin-top:9px">Bezwinger des verseuchten Kellers</div>
+</div>
         <div class="equip-col"><div class="slot" id="slot-body"></div><div class="slot" id="slot-boots"></div><div class="slot" id="slot-amulet"></div></div>
       </div>
     </div>
@@ -168,7 +186,7 @@ main{padding:12px}.screen{display:none}.screen.active{display:block}.hero-card,.
 </div>
 <nav class="bottom"><button class="nav active" data-screen="world"><span>🗺️</span>Welt</button><button class="nav" data-screen="character"><span>🧙</span>Held</button><button class="nav" data-screen="grow"><span>🌱</span>Grow</button><button class="nav" data-screen="quests"><span>🍺</span>Quests</button><button class="nav" data-screen="dungeon"><span>👹</span>Dungeon</button></nav>
 <script>
-const KEY='growLegendsV011', OLD_KEYS=['growLegendsV010','growLegendsV09','growLegendsV08','growLegendsV07','growLegendsV06','growLegendsV05','growLegendsV04','growLegendsV03','growLegendsV02','growLegendsV01'];
+const KEY='growLegendsV012', OLD_KEYS=['growLegendsV011','growLegendsV010','growLegendsV09','growLegendsV08','growLegendsV07','growLegendsV06','growLegendsV05','growLegendsV04','growLegendsV03','growLegendsV02','growLegendsV01'];
 const defaultState={playerClass:null,classLocked:false,harzTaler:6,shopRefreshes:0,lastShopSeed:0,dungeonPass:{lastFree:0},story:{chapter:1,bossesDefeated:0},level:1,xp:0,gold:120,points:0,energy:100,lastEnergy:Date.now(),attrs:{staerke:5,geschick:5,ausdauer:5,glueck:5,growSkill:1},equipment:{head:null,weapon:null,ring:null,body:null,boots:null,amulet:null},inventory:[],grow:{planted:false,start:0,duration:60000,ready:false,roomLevel:1,plants:[],seeds:{moss:2},equipment:{lamp:0,pots:0},selectedSeed:'moss'},dungeon:{room:0},quests:{offers:[],active:null}};
 let raw=localStorage.getItem(KEY);if(!raw){for(const k of OLD_KEYS){if(localStorage.getItem(k)){raw=localStorage.getItem(k);break}}}
 let s=raw?JSON.parse(raw):structuredClone(defaultState);s.playerClass??=null;s.classLocked??=!!s.playerClass;s.harzTaler??=6;s.shopRefreshes??=0;s.lastShopSeed??=0;s.dungeonPass??={lastFree:0};s.dungeonPass.lastFree??=0;if(s.playerClass&&!s.classLocked)s.classLocked=true;s.story??={chapter:1,bossesDefeated:0};s.story.chapter??=1;s.story.bossesDefeated??=0;s.energy??=100;s.lastEnergy??=Date.now();s.quests??={offers:[],active:null};s.quests.offers??=[];s.quests.active??=null;s.grow??={roomLevel:1,plants:[]};s.grow.roomLevel??=1;s.grow.plants??=[];s.grow.seeds??={moss:2};s.grow.equipment??={lamp:0,pots:0};s.grow.selectedSeed??='moss';if(s.grow.planted&&s.grow.plants.length===0)s.grow.plants.push({start:s.grow.start||Date.now(),duration:s.grow.duration||60000});s.dungeon??={room:0,selected:0};s.dungeon.room??=0;s.dungeon.selected??=0;
@@ -373,8 +391,26 @@ function renderSetPanel(){
  box.innerHTML=`<div class="set-panel"><div class="set-title">${set.name} · ${n}/6 Teile</div>
  ${[2,4,6].map(x=>`<div class="set-bonus ${n>=x?'active':''}">${n>=x?'✅':'⬜'} ${set.bonuses[x]}</div>`).join('')}</div>`;
 }
-function render(){regenEnergy();ensureQuests();renderClasses();renderSetPanel();document.querySelector('#className')&&(document.querySelector('#className').textContent=classes[s.playerClass]?.name||'Noch nicht gewählt');
- document.querySelector('#level').textContent=s.level;document.querySelector('#charLevel').textContent=s.level;document.querySelector('#battleLevel').textContent=s.level;document.querySelector('#xp').textContent=`${s.xp}/${xpNeed()}`;document.querySelector('#gold').textContent=s.gold;document.querySelector('#shopGold').textContent=s.gold;document.querySelector('#shopHarz')&&(document.querySelector('#shopHarz').textContent=s.harzTaler);document.querySelector('#points').textContent=s.points;document.querySelector('#energy').textContent=`${s.energy}/100`;document.querySelector('#dungeonTicketText')&&(document.querySelector('#dungeonTicketText').textContent=dungeonWaitText());document.querySelector('#power').textContent=combatPower();document.querySelector('#charPower').textContent=combatPower();document.querySelector('#charHp').textContent=maxHp();document.querySelector('#storyChapter')&&(document.querySelector('#storyChapter').textContent=s.story.chapter);const bp=Math.min(100,(s.story.bossesDefeated/6)*100);document.querySelector('#bossProgressBar')&&(document.querySelector('#bossProgressBar').style.width=bp+'%');document.querySelector('#bossProgressText')&&(document.querySelector('#bossProgressText').textContent=s.story.bossesDefeated?`${s.story.bossesDefeated} Boss${s.story.bossesDefeated===1?'':'e'} besiegt · Kapitel ${s.story.chapter}`:'Noch kein Dungeonboss besiegt.');
+
+function renderClassAvatar(){
+ const data={
+  grower:{face:'🧔‍♂️',prop:'🌿',leaf:'🍃',title:'Bud-Barbar',sub:'Der Harzbrecher'},
+  bruiser:{face:'🧙‍♂️',prop:'💨',leaf:'🔮',title:'Bong-Magier',sub:'Meister des Nebelzirkels'},
+  scout:{face:'🧝‍♂️',prop:'🏹',leaf:'🍃',title:'Blatt-Schütze',sub:'Jäger des Grünpfeils'}
+ }[s.playerClass]||{face:'❓',prop:'🌱',leaf:'',title:'Klasse wählen',sub:'Wähle deine Klasse im Heldenquartier'};
+ const xpNeed=s.level*100,pct=Math.min(100,(s.xp/xpNeed)*100);
+ document.querySelector('#classAvatarBig')&&(document.querySelector('#classAvatarBig').textContent=data.face);
+ document.querySelector('#avatarProp')&&(document.querySelector('#avatarProp').textContent=data.prop);
+ document.querySelector('#avatarLeaf')&&(document.querySelector('#avatarLeaf').textContent=data.leaf);
+ document.querySelector('#avatarTitle')&&(document.querySelector('#avatarTitle').textContent=data.title);
+ document.querySelector('#avatarSubtitle')&&(document.querySelector('#avatarSubtitle').textContent=data.sub);
+ document.querySelector('#centerLevel')&&(document.querySelector('#centerLevel').textContent=s.level);
+ document.querySelector('#centerXpText')&&(document.querySelector('#centerXpText').textContent=`${s.xp} / ${xpNeed}`);
+ document.querySelector('#centerXpFill')&&(document.querySelector('#centerXpFill').style.width=pct+'%');
+ document.querySelector('#topHarz')&&(document.querySelector('#topHarz').textContent=s.harzTaler);
+}
+function render(){regenEnergy();ensureQuests();renderClasses();renderSetPanel();renderClassAvatar();document.querySelector('#className')&&(document.querySelector('#className').textContent=classes[s.playerClass]?.name||'Noch nicht gewählt');
+ document.querySelector('#level')&&(document.querySelector('#level').textContent=s.level);document.querySelector('#charLevel')&&(document.querySelector('#charLevel').textContent=s.level);document.querySelector('#battleLevel').textContent=s.level;document.querySelector('#xp').textContent=`${s.xp}/${xpNeed()}`;document.querySelector('#gold').textContent=s.gold;document.querySelector('#shopGold').textContent=s.gold;document.querySelector('#shopHarz')&&(document.querySelector('#shopHarz').textContent=s.harzTaler);document.querySelector('#points').textContent=s.points;document.querySelector('#energy').textContent=`${s.energy}/100`;document.querySelector('#dungeonTicketText')&&(document.querySelector('#dungeonTicketText').textContent=dungeonWaitText());document.querySelector('#power').textContent=combatPower();document.querySelector('#charPower').textContent=combatPower();document.querySelector('#charHp').textContent=maxHp();document.querySelector('#storyChapter')&&(document.querySelector('#storyChapter').textContent=s.story.chapter);const bp=Math.min(100,(s.story.bossesDefeated/6)*100);document.querySelector('#bossProgressBar')&&(document.querySelector('#bossProgressBar').style.width=bp+'%');document.querySelector('#bossProgressText')&&(document.querySelector('#bossProgressText').textContent=s.story.bossesDefeated?`${s.story.bossesDefeated} Boss${s.story.bossesDefeated===1?'':'e'} besiegt · Kapitel ${s.story.chapter}`:'Noch kein Dungeonboss besiegt.');
  const map=[['staerke','💪 Stärke'],['geschick','🎯 Geschick'],['ausdauer','❤️ Ausdauer'],['glueck','🍀 Glück'],['growSkill','🌱 Grow-Skill']];document.querySelector('#attrs').innerHTML=map.map(([k,n])=>`<div class="attr"><span>${n}: <b>${totalAttr(k)}</b></span><button onclick="incAttr('${k}')" ${s.points<1?'disabled':''}>+</button></div>`).join('');
  Object.keys(slotLabels).forEach(sl=>{const el=document.querySelector('#slot-'+sl),it=s.equipment[sl],[ic,la]=slotLabels[sl];el.className='slot'+(it?.rarity?(' '+it.rarity):'');el.innerHTML=`<div class="slot-icon">${it?.icon||ic}</div><div class="slot-label">${la}</div><div class="slot-name">${it?it.name:'Leer'}</div>${it?`<div class="tiny">${itemBonus(it)}</div>${it.setName?`<div class="set-tag">${it.setName}-Set</div>`:''}<div class="slot-actions"><button class="mini-btn" onclick="unequip('${sl}')">Ablegen</button><button class="mini-btn" onclick="sellEquipped('${sl}')">💰 ${sellValue(it)}</button></div>`:''}`});
  document.querySelector('#invCount').textContent=`${s.inventory.length} Item${s.inventory.length===1?'':'s'}`;document.querySelector('#inventory').innerHTML=s.inventory.length?`<div class="inventory-grid">${s.inventory.map((it,i)=>`<div class="inv-item ${it.rarity||""}"><div class="item-name">${it.icon||'🎁'} ${it.name}</div>${it.quality?`<div class="${qualityMeta(it.quality).color}">${qualityMeta(it.quality).label}</div>`:''}${it.setName?`<div class="set-tag">${it.setName}-Set</div>`:''}${it.classId?`<div class="set-tag">Klasse: ${classLabel(it.classId)}</div>`:''}<div class="item-bonus">${itemBonus(it)}</div><div class="compare">${comparison(it)}</div><div class="sell-price">Verkaufswert: 💰 ${sellValue(it)}</div><div class="inv-actions"><button class="btn secondary" style="padding:8px" onclick="equip(${i})">Anlegen</button><button class="btn sell-btn" style="padding:8px" onclick="sellItem(${i})">Verkaufen</button></div></div>`).join('')}</div>`:'<div class="empty">Noch keine Ausrüstung gefunden.</div>';
