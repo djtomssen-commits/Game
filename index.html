@@ -1157,6 +1157,107 @@ document.querySelector('#fightBtn').onclick=()=>{
 try{renderDungeon()}catch(e){console.error('V0.25 combat balance',e)}
 </script>
 
+
+<script>
+/* ===== V0.26 Daily "Dampf" system ===== */
+const V026_DAILY_DAMPF=100;
+const V026_MAX_DAMPF=300;
+const V026_REFILL=20;
+
+function v026DayKey(){
+  const d=new Date();
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+function v026DailyReset(forceRender=false){
+  const today=v026DayKey();
+  if(s.v026DampfDay!==today){
+    s.energy=V026_DAILY_DAMPF;
+    s.v026DampfDay=today;
+    s.lastEnergy=Date.now();
+    localStorage.setItem(KEY,JSON.stringify(s));
+    if(forceRender)try{render()}catch(e){}
+    return true;
+  }
+  return false;
+}
+
+/* Migration: on first V0.26 launch, start the new daily system at 100. */
+if(!s.v026DampfInit){
+  s.energy=V026_DAILY_DAMPF;
+  s.v026DampfDay=v026DayKey();
+  s.v026DampfInit=true;
+  s.lastEnergy=Date.now();
+  localStorage.setItem(KEY,JSON.stringify(s));
+}else{
+  v026DailyReset(false);
+}
+
+/* Disable old time-based regeneration. Keep timestamp current so old logic cannot accumulate. */
+setInterval(()=>{
+  s.lastEnergy=Date.now();
+  v026DailyReset(true);
+  localStorage.setItem(KEY,JSON.stringify(s));
+},30000);
+
+/* Rename visible energy wording to Dampf and show 300 cap. */
+function v026PaintDampf(){
+  document.querySelectorAll('body *').forEach(el=>{
+    if(el.children.length===0 && typeof el.textContent==='string'){
+      el.textContent=el.textContent
+        .replace(/Energie/g,'Dampf')
+        .replace(/⚡/g,'🌿');
+    }
+  });
+  const energyEl=document.querySelector('#energy');
+  if(energyEl)energyEl.textContent=`${Math.floor(s.energy||0)}/${V026_MAX_DAMPF}`;
+}
+
+/* Add refill control to the top/resource area. */
+function v026AddRefill(){
+  if(document.querySelector('#v026Refill'))return;
+  const energyEl=document.querySelector('#energy');
+  if(!energyEl)return;
+  const host=energyEl.parentElement;
+  const box=document.createElement('span');
+  box.id='v026Refill';
+  box.style.marginLeft='8px';
+  box.innerHTML=`<button id="v026RefillBtn" class="small">🟢 +20 Dampf</button>`;
+  host.appendChild(box);
+  document.querySelector('#v026RefillBtn').onclick=()=>{
+    v026DailyReset(false);
+    if((s.energy||0)>=V026_MAX_DAMPF)return alert('Dein Dampf ist bereits voll: 300/300.');
+    if((s.harzTaler||0)<1)return alert('Du hast keinen Harz-Taler mehr.');
+    const add=Math.min(V026_REFILL,V026_MAX_DAMPF-(s.energy||0));
+    if(!confirm(`1 Harz-Taler einsetzen und +${add} Dampf erhalten?\n\nNicht verbrauchter Dampf verfällt beim täglichen Reset.`))return;
+    s.harzTaler--;
+    s.energy=Math.min(V026_MAX_DAMPF,(s.energy||0)+V026_REFILL);
+    persist(false);
+    render();
+    v026PaintDampf();
+    v026AddRefill();
+  };
+}
+
+/* Wrap render so a date change resets before UI is painted. */
+const v026OldRender=render;
+render=function(){
+  v026DailyReset(false);
+  v026OldRender();
+  v026PaintDampf();
+  v026AddRefill();
+};
+
+/* Old regen() may still be called by existing timers. Neutralize its regeneration effect. */
+regen=function(){
+  v026DailyReset(false);
+  s.lastEnergy=Date.now();
+  localStorage.setItem(KEY,JSON.stringify(s));
+  try{v026PaintDampf();v026AddRefill()}catch(e){}
+};
+
+try{render()}catch(e){console.error('V0.26 Dampf init',e)}
+</script>
+
 </body>
 </html>
 <style>
