@@ -167,7 +167,7 @@ main{padding:12px}
 <body>
 <div class="app">
 <header>
-  <div class="brand"><h1>🌿 Grow Legends</h1><span class="version">V0.16 RPG</span><div class="power">Kampfkraft <b id="power">0</b></div></div>
+  <div class="brand"><h1>🌿 Grow Legends</h1><span class="version">V0.17 RPG</span><div class="power">Kampfkraft <b id="power">0</b></div></div>
   <div class="stats resource-stats"><div class="stat">GOLD<b id="gold">120</b></div><div class="stat">SKILL<b id="points">0</b></div><div class="stat">ENERGIE<b id="energy">100/100</b></div><div class="stat harz-stat">HARZ-TALER<b>🟢 <span id="topHarz">0</span></b></div></div>
 </header>
 <main>
@@ -752,3 +752,33 @@ ensureQuests();setInterval(()=>{if(s.grow.plants?.filter(Boolean).length)renderG
 </script>
 </body>
 </html>
+<style>
+/* v0.17 mobile-first vertical dungeon world map */
+.dungeon-map-shell{overflow-y:auto;overflow-x:hidden;max-height:760px;padding:0;background:#10170f;border-color:#365038;scrollbar-width:thin}
+.adventure-map{width:100%;min-width:0;height:1680px;border-radius:14px;background:linear-gradient(180deg,#21371f 0%,#3c5130 22%,#766a3f 45%,#4b4930 68%,#262c20 100%);box-shadow:inset 0 0 60px #0009}
+.adventure-map:before{background:radial-gradient(circle at 18% 12%,#8da45b55 0 7%,transparent 8%),radial-gradient(circle at 82% 31%,#263f2855 0 10%,transparent 11%),radial-gradient(circle at 28% 56%,#8b784c55 0 9%,transparent 10%),radial-gradient(circle at 75% 78%,#202d2255 0 12%,transparent 13%),repeating-linear-gradient(25deg,transparent 0 45px,#ffffff08 46px 47px)}
+.map-title-ribbon{position:sticky;left:14px;top:10px;display:inline-block;margin:12px;z-index:8;font-size:11px;padding:8px 12px}
+.map-scenery{font-size:28px}.map-scenery.s1{left:7%;top:10%}.map-scenery.s2{left:68%;top:27%}.map-scenery.s3{right:6%;top:47%}.map-scenery.s4{left:8%;bottom:23%}.map-scenery.s5{right:8%;bottom:5%}
+.map-path polyline{stroke-width:10;stroke-dasharray:4 18;opacity:.78}
+.dungeon-node{width:76px;height:76px;border-width:3px;padding:4px}.dungeon-node .nicon{font-size:24px}.dungeon-node .nnum{font-size:8px;max-width:68px;line-height:1.05}.dungeon-node .nlvl{font-size:7px}.dungeon-node .nlock{font-size:19px;right:-4px;top:-7px}
+@media(max-width:560px){.adventure-map{height:1680px}.dungeon-node{width:72px;height:72px}.dungeon-map-shell{max-height:690px}}
+</style>
+<script>
+// V17 override: vertical, phone-friendly map coordinates.
+dungeonMapPositions.splice(0,dungeonMapPositions.length,
+ [24,6],[66,10],[35,15],[76,20],[47,25],[18,30],[55,35],[82,40],[42,45],[16,50],
+ [55,55],[80,60],[38,65],[15,70],[52,75],[80,80],[45,85],[18,90],[56,94],[82,97]
+);
+const _renderDungeonV16=renderDungeon;
+renderDungeon=function(){
+ _renderDungeonV16();
+ const map=document.querySelector('#dungeonSelect');
+ const path=map?.querySelector('.map-path');
+ if(path){
+   path.setAttribute('viewBox','0 0 1000 1680');
+   const poly=path.querySelector('polyline');
+   if(poly) poly.setAttribute('points',dungeonMapPositions.map(p=>`${p[0]*10},${p[1]*16.8}`).join(' '));
+ }
+};
+try{renderDungeon()}catch(e){console.error('V17 dungeon render',e)}
+</script>
