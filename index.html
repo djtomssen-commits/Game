@@ -89,7 +89,7 @@ main{padding:12px}.screen{display:none}.screen.active{display:block}.hero-card,.
 <section id="character" class="screen">
   <div class="hero-card">
     <div class="character-stage">
-      <div class="char-head"><div><div class="char-title">Grow-Abenteurer</div><div class="tiny">Klasse: Keller-Ranger</div></div><div class="level-badge">⭐ Level <b id="charLevel">1</b></div></div>
+      <div class="char-head"><div><div class="char-title">Grow-Abenteurer</div><div class="tiny">Klasse: <span id="className">Grower</span></div></div><div class="level-badge">⭐ Level <b id="charLevel">1</b></div></div>
       <div class="equipment-grid">
         <div class="equip-col"><div class="slot" id="slot-head"></div><div class="slot" id="slot-weapon"></div><div class="slot" id="slot-ring"></div></div>
         <div><div class="character-figure"><div class="figure-glow"></div><div class="person"><div class="hair"></div><div class="cap"></div><div class="head"></div><div class="neck"></div><div class="arm left"></div><div class="arm right"></div><div class="torso"></div><div class="leg left"></div><div class="leg right"></div><div class="shoe left"></div><div class="shoe right"></div></div></div><div class="char-name">Der Grow-Abenteurer</div><div class="char-sub">Bezwinger des verseuchten Kellers</div></div>
@@ -97,6 +97,10 @@ main{padding:12px}.screen{display:none}.screen.active{display:block}.hero-card,.
       </div>
     </div>
     <div class="char-bottom"><div class="combat-row"><div class="combat-box"><span>❤️ Lebenspunkte</span><b id="charHp">100</b></div><div class="combat-box"><span>⚔️ Kampfkraft</span><b id="charPower">0</b></div></div><div class="attrs" id="attrs"></div></div>
+  </div>
+  <div class="card">
+    <div class="section-title"><div><h2>🧬 Klasse</h2><div class="muted">Wähle deine Spezialisierung. Die Boni werden direkt auf deine Werte gerechnet.</div></div></div>
+    <div class="class-grid" id="classGrid"></div>
   </div>
   <div class="card"><div class="section-title"><h3>🎒 Inventar</h3><span class="pill" id="invCount">0 Items</span></div><div id="inventory"></div></div>
 </section>
@@ -215,7 +219,7 @@ function renderClasses(){
 }
 window.chooseClass=id=>{if(!classes[id])return;if(s.playerClass===id)return; if(!confirm(`Klasse zu ${classes[id].name} wechseln?`))return;s.playerClass=id;persist()};
 window.sellItem=i=>{const it=s.inventory[i];if(!it)return;const value=sellValue(it);if(!confirm(`${it.name} für ${value} Gold verkaufen?`))return;s.gold+=value;s.inventory.splice(i,1);persist()};
-function render(){regenEnergy();ensureQuests();renderClasses();
+function render(){regenEnergy();ensureQuests();renderClasses();document.querySelector('#className')&&(document.querySelector('#className').textContent=classes[s.playerClass]?.name||'Grower');
  document.querySelector('#level').textContent=s.level;document.querySelector('#charLevel').textContent=s.level;document.querySelector('#battleLevel').textContent=s.level;document.querySelector('#xp').textContent=`${s.xp}/${xpNeed()}`;document.querySelector('#gold').textContent=s.gold;document.querySelector('#shopGold').textContent=s.gold;document.querySelector('#points').textContent=s.points;document.querySelector('#energy').textContent=`${s.energy}/100`;document.querySelector('#power').textContent=combatPower();document.querySelector('#charPower').textContent=combatPower();document.querySelector('#charHp').textContent=maxHp();document.querySelector('#storyChapter')&&(document.querySelector('#storyChapter').textContent=s.story.chapter);const bp=Math.min(100,(s.story.bossesDefeated/6)*100);document.querySelector('#bossProgressBar')&&(document.querySelector('#bossProgressBar').style.width=bp+'%');document.querySelector('#bossProgressText')&&(document.querySelector('#bossProgressText').textContent=s.story.bossesDefeated?`${s.story.bossesDefeated} Boss${s.story.bossesDefeated===1?'':'e'} besiegt · Kapitel ${s.story.chapter}`:'Noch kein Dungeonboss besiegt.');
  const map=[['staerke','💪 Stärke'],['geschick','🎯 Geschick'],['ausdauer','❤️ Ausdauer'],['glueck','🍀 Glück'],['growSkill','🌱 Grow-Skill']];document.querySelector('#attrs').innerHTML=map.map(([k,n])=>`<div class="attr"><span>${n}: <b>${totalAttr(k)}</b></span><button onclick="incAttr('${k}')" ${s.points<1?'disabled':''}>+</button></div>`).join('');
  Object.keys(slotLabels).forEach(sl=>{const el=document.querySelector('#slot-'+sl),it=s.equipment[sl],[ic,la]=slotLabels[sl];el.className='slot'+(it?.rarity?(' '+it.rarity):'');el.innerHTML=`<div class="slot-icon">${it?.icon||ic}</div><div class="slot-label">${la}</div><div class="slot-name">${it?it.name:'Leer'}</div>${it?`<div class="tiny">${itemBonus(it)}</div>`:''}`});
