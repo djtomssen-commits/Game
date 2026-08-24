@@ -168,7 +168,7 @@ main{padding:12px}
 <div class="app">
 <header>
   <div class="brand"><h1>🌿 Grow Legends</h1><span class="version">V0.19 FULL FIX</span><div class="power">Kampfkraft <b id="power">0</b></div></div>
-  <div class="stats resource-stats"><div class="stat">GOLD<b id="gold">120</b></div><div class="stat">SKILL<b id="points">0</b></div><div class="stat">ENERGIE<b id="energy">100/100</b></div><div class="stat harz-stat">HARZ-TALER<b>🟢 <span id="topHarz">0</span></b></div></div>
+  <div class="stats resource-stats"><div class="stat">GOLD<b id="gold">120</b></div><div class="stat">SKILL<b id="points">0</b></div><div class="stat">DAMPF<b id="energy">💨 100/300</b></div><div class="stat harz-stat">HARZ-TALER<b>🟢 <span id="topHarz">0</span></b></div></div>
 </header>
 <main>
 <section id="world" class="screen active">
@@ -250,7 +250,7 @@ main{padding:12px}
 </section>
 
 <section id="quests" class="screen">
-  <div class="hero-card"><div class="tavern-scene"><div class="scene-label">🍺 Zur krummen Gießkanne</div><div class="quest-giver">🧔</div></div><div class="char-bottom"><h2 style="margin:0 0 4px">Aufträge</h2><div class="muted">Wähle einen Auftrag. Schwierige Aufträge kosten mehr Energie, bringen aber mehr Beute.</div></div></div>
+  <div class="hero-card"><div class="tavern-scene"><div class="scene-label">🍺 Zur krummen Gießkanne</div><div class="quest-giver">🧔</div></div><div class="char-bottom"><h2 style="margin:0 0 4px">Aufträge</h2><div class="muted">Wähle einen Auftrag. Schwierige Aufträge kosten mehr Dampf, bringen aber mehr Beute.</div></div></div>
   <div class="card" id="activeQuestCard" style="display:none"><div class="section-title"><h3>⏳ Aktiver Auftrag</h3></div><div id="activeQuest"></div></div>
   <div class="card"><div class="section-title"><h3>📜 Schwarzes Brett</h3><span class="pill">3 Angebote</span></div><div id="questList"></div><button class="btn secondary" id="refreshQuests" style="width:100%;margin-top:10px">🔄 Neue Aufträge – 10 Gold</button></div>
 </section>
@@ -753,7 +753,7 @@ function upgradeRoomAction(){
 }
 function renderQuests(){const q=s.quests.active,card=document.querySelector('#activeQuestCard'),box=document.querySelector('#activeQuest');if(q){card.style.display='block';const left=Math.max(0,Math.ceil((q.ends-Date.now())/1000)),done=left<=0;box.innerHTML=`<div class="quest active-q"><div class="quest-top"><div class="quest-icon">${q.icon}</div><div><h3>${q.name}</h3><div class="muted">${q.text}</div></div></div><div class="quest-meta"><span>⭐ ${q.xp} XP</span><span>💰 ${q.gold}</span><span>⚡ ${q.energy}</span></div><div class="timer">${done?'✅ Auftrag abgeschlossen':`⏳ Noch ${left} Sek.`}</div>${done?'<button class="btn" id="claimQuest" style="width:100%;margin-top:9px">Belohnung abholen</button>':''}</div>`;if(done)document.querySelector('#claimQuest').onclick=claimQuest}else card.style.display='none';
  document.querySelector('#questList').innerHTML=s.quests.offers.map((x,i)=>`<div class="quest"><div class="quest-top"><div class="quest-icon">${x.icon}</div><div><h3>${x.name}</h3><div class="muted">${x.text}</div></div></div><div class="quest-meta"><span>☠️ Stufe ${x.tier}</span><span>⏱️ ${x.duration}s</span><span>⚡ ${x.energy}</span><span>⭐ ${x.xp}</span><span>💰 ${x.gold}</span></div><button class="btn" style="width:100%" onclick="startQuest(${i})" ${s.quests.active||s.energy<x.energy?'disabled':''}>Auftrag starten</button></div>`).join('')}
-window.startQuest=i=>{if(s.quests.active)return;const q=s.quests.offers[i];if(!q||s.energy<q.energy)return alert('Nicht genug Energie.');s.energy-=q.energy;s.quests.active={...q,ends:Date.now()+q.duration*1000};s.quests.offers=[];persist()};function claimQuest(){const q=s.quests.active;if(!q||Date.now()<q.ends)return;const bonus=Math.random()<Math.min(.35,.08+totalAttr('glueck')*.01);s.gold+=q.gold;addXp(q.xp);let msg=`Auftrag geschafft: +${q.xp} XP, +${q.gold} Gold.`;
+window.startQuest=i=>{if(s.quests.active)return;const q=s.quests.offers[i];if(!q||s.energy<q.energy)return alert('Nicht genug Dampf.');s.energy-=q.energy;s.quests.active={...q,ends:Date.now()+q.duration*1000};s.quests.offers=[];persist()};function claimQuest(){const q=s.quests.active;if(!q||Date.now()<q.ends)return;const bonus=Math.random()<Math.min(.35,.08+totalAttr('glueck')*.01);s.gold+=q.gold;addXp(q.xp);let msg=`Auftrag geschafft: +${q.xp} XP, +${q.gold} Gold.`;
  // Schlüsselsteine gibt es nicht mehr beliebig früh. Nur der nächste Dungeon kann freigeschaltet werden,
  // sobald sein Level erreicht und der vorherige Dungeon abgeschlossen wurde.
  const nextIndex=s.dungeon.completed.length?Math.min(...Array.from({length:dungeons.length-1},(_,n)=>n+1).filter(i=>!s.dungeon.unlocked.includes(i)&&s.dungeon.completed.includes(i-1)).concat([999])):999;
@@ -1204,7 +1204,7 @@ function v026PaintDampf(){
   document.querySelectorAll('body *').forEach(el=>{
     if(el.children.length===0 && typeof el.textContent==='string'){
       el.textContent=el.textContent
-        .replace(/Energie/g,'Dampf')
+        .replace(/Dampf/g,'Dampf')
         .replace(/⚡/g,'🌿');
     }
   });
@@ -1396,6 +1396,66 @@ v024Item=function(base,source='normal',forced=null){
 };
 
 try{v027SanitizeShop();render()}catch(e){console.error('V0.27 rarity economy',e)}
+</script>
+
+
+<script>
+/* ===== V0.28 Dampf UI Cleanup ===== */
+const V028_DAMPF_ICON='💨';
+
+function v028ApplyDampfUI(){
+  // Top resource label/value
+  const energyEl=document.querySelector('#energy');
+  if(energyEl){
+    energyEl.textContent=`${V028_DAMPF_ICON} ${Math.floor(s.energy||0)}/300`;
+    const stat=energyEl.parentElement;
+    if(stat){
+      // Preserve only the resource label before the <b>
+      const first=stat.childNodes[0];
+      if(first && first.nodeType===3) first.nodeValue='DAMPF';
+    }
+  }
+
+  // Quest costs: replace old symbols/text in rendered quest area only.
+  const quests=document.querySelector('#quests');
+  if(quests){
+    quests.querySelectorAll('*').forEach(el=>{
+      if(el.children.length===0 && typeof el.textContent==='string'){
+        el.textContent=el.textContent
+          .replace(/⚡\s*/g,`${V028_DAMPF_ICON} `)
+          .replace(/🍀\s*(\d+)/g,`${V028_DAMPF_ICON} $1`)
+          .replace(/\bEnergie\b/g,'Dampf');
+      }
+    });
+  }
+
+  // Refill button/labels
+  const refill=document.querySelector('#v026RefillBtn');
+  if(refill) refill.textContent=`🟢 +20 ${V028_DAMPF_ICON} Dampf`;
+
+  // Any leftover simple "Energie" labels anywhere in the app.
+  document.querySelectorAll('body *').forEach(el=>{
+    if(el.children.length===0 && typeof el.textContent==='string'){
+      el.textContent=el.textContent.replace(/\bEnergie\b/g,'Dampf');
+    }
+  });
+}
+
+// Replace old V0.26 painter if present.
+v026PaintDampf=function(){
+  const energyEl=document.querySelector('#energy');
+  if(energyEl)energyEl.textContent=`${V028_DAMPF_ICON} ${Math.floor(s.energy||0)}/300`;
+  v028ApplyDampfUI();
+};
+
+// Make sure the UI is cleaned after every render.
+const v028OldRender=render;
+render=function(){
+  v028OldRender();
+  v028ApplyDampfUI();
+};
+
+try{v028ApplyDampfUI();render()}catch(e){console.error('V0.28 Dampf UI',e)}
 </script>
 
 </body>
