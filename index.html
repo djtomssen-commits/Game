@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#10170f">
-<title>Grow Legends V0.5</title>
+<title>Grow Legends V0.6</title>
 <style>
 :root{--bg:#0b100b;--panel:#151d14;--panel2:#1c281a;--panel3:#253423;--line:#354933;--text:#f2f5ed;--muted:#9fad99;--green:#83d65d;--green2:#b2f07e;--gold:#f2c75a;--red:#ee6b68;--blue:#68a7ea;--purple:#ad7bea;--shadow:0 12px 30px rgba(0,0,0,.28)}
 *{box-sizing:border-box}html{background:var(--bg)}body{margin:0;color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:radial-gradient(circle at 50% -10%,#253821 0,#10170f 40%,#090d09 100%);min-height:100vh}button{font:inherit}.app{max-width:820px;margin:auto;min-height:100vh;padding-bottom:88px}
@@ -28,6 +28,14 @@ main{padding:12px}.screen{display:none}.screen.active{display:block}.hero-card,.
 .world-place:active{transform:scale(.98)}.world-place .place-icon{font-size:36px}.world-place h3{margin:6px 0 4px}.world-place p{margin:0;font-size:12px;color:var(--muted);line-height:1.35}
 .world-place .badge{display:inline-block;margin-top:8px;font-size:10px;border:1px solid #53734d;border-radius:999px;padding:4px 7px;color:var(--green2)}
 @media(min-width:720px){.world-grid{grid-template-columns:repeat(3,1fr)}}
+
+.story-card{background:linear-gradient(145deg,#18231a,#101710);border:1px solid var(--line);border-radius:18px;padding:14px;margin-bottom:12px}
+.story-row{display:flex;gap:12px;align-items:flex-start}.npc-avatar{width:58px;height:58px;display:grid;place-items:center;border-radius:16px;background:#263725;font-size:34px;flex:0 0 58px}
+.story-card h3{margin:0 0 4px}.story-card p{margin:0;color:var(--muted);line-height:1.45}
+.story-chip{display:inline-block;margin-top:8px;padding:4px 8px;border:1px solid #496946;border-radius:999px;font-size:11px;color:var(--green2)}
+.rare{border-color:#5f82c4!important;box-shadow:0 0 0 1px #5f82c433 inset}.epic{border-color:#8f61c9!important;box-shadow:0 0 0 1px #8f61c933 inset}.legendary{border-color:#c69a3a!important;box-shadow:0 0 0 1px #c69a3a33 inset}
+.progress-wrap{margin-top:10px}.progress-line{height:10px;background:#0c120c;border-radius:999px;overflow:hidden;border:1px solid #31442f}.progress-fill{height:100%;background:linear-gradient(90deg,#6db454,#b8e67c)}
+.boss-title{font-weight:800;margin-bottom:5px}.world-place .npc-mini{font-size:12px;color:#d7e3d2;margin-top:6px}
 </style>
 </head>
 <body>
@@ -44,12 +52,28 @@ main{padding:12px}.screen{display:none}.screen.active{display:block}.hero-card,.
     <div class="world-title"><h2>🌿 Grünhain</h2><p class="muted">Deine Basis zwischen Taverne, Händler, Growroom und den verseuchten Gebieten außerhalb der Stadt.</p></div>
     <div class="world-town"><span>🏚️</span><span>🍺</span><span>🏪</span><span>🏰</span><span>🌲</span></div>
   </div>
-  <div class="world-grid">
+  
+<div class="story-card">
+  <div class="story-row">
+    <div class="npc-avatar">🧔</div>
+    <div>
+      <h3>Rudi vom Schwarzen Brett</h3>
+      <p>„Grünhain war mal ruhig. Seit die Schädlingsnester außerhalb der Stadt wachsen, kommen immer mehr Kreaturen durch die Keller und Gärten. Wenn du hier bleiben willst, mach dich nützlich.“</p>
+      <span class="story-chip">Hauptgeschichte · Kapitel <span id="storyChapter">1</span></span>
+    </div>
+  </div>
+</div>
+<div class="story-card">
+  <div class="boss-title">🏆 Boss-Fortschritt</div>
+  <div class="muted" id="bossProgressText">Noch kein Dungeonboss besiegt.</div>
+  <div class="progress-wrap"><div class="progress-line"><div class="progress-fill" id="bossProgressBar" style="width:0%"></div></div></div>
+</div>
+<div class="world-grid">
     <button class="world-place" data-go="character"><div class="place-icon">🧙</div><h3>Heldenquartier</h3><p>Ausrüstung wechseln, Attribute verbessern und deine Kampfkraft prüfen.</p><span class="badge">CHARAKTER</span></button>
-    <button class="world-place" data-go="quests"><div class="place-icon">🍺</div><h3>Zur krummen Gießkanne</h3><p>Die Taverne ist voller Gerüchte und bezahlter Aufträge.</p><span class="badge">QUESTS</span></button>
-    <button class="world-place" data-go="shop"><div class="place-icon">🏪</div><h3>Schrott & Söhne</h3><p>Der Händler verkauft täglich wechselnde Ausrüstung.</p><span class="badge">HÄNDLER</span></button>
+    <button class="world-place" data-go="quests"><div class="place-icon">🍺</div><h3>Zur krummen Gießkanne</h3><p>Die Taverne ist voller Gerüchte und bezahlter Aufträge.</p><div class="npc-mini">👩 Mira kennt jeden Auftrag.</div><span class="badge">QUESTS</span></button>
+    <button class="world-place" data-go="shop"><div class="place-icon">🏪</div><h3>Schrott & Söhne</h3><p>Der Händler verkauft täglich wechselnde Ausrüstung.</p><div class="npc-mini">🧓 Bork feilscht um jedes Goldstück.</div><span class="badge">HÄNDLER</span></button>
     <button class="world-place" data-go="grow"><div class="place-icon">🌱</div><h3>Dein Growroom</h3><p>Deine wirtschaftliche Basis. Pflanzen, ernten, verkaufen und ausbauen.</p><span class="badge">GROWROOM</span></button>
-    <button class="world-place" data-go="dungeon"><div class="place-icon">👹</div><h3>Verseuchte Gebiete</h3><p>Betritt Dungeons, besiege Kreaturen und jage seltene Beute.</p><span class="badge">DUNGEONS</span></button>
+    <button class="world-place" data-go="dungeon"><div class="place-icon">👹</div><h3>Verseuchte Gebiete</h3><p>Betritt Dungeons, besiege Kreaturen und jage seltene Beute.</p><div class="npc-mini">🛡️ Wächter Henk hält den Zugang offen.</div><span class="badge">DUNGEONS</span></button>
     <button class="world-place" data-go="quests"><div class="place-icon">📜</div><h3>Schwarzes Brett</h3><p>Sieh nach, welche Aufträge gerade in Grünhain verfügbar sind.</p><span class="badge">AUFTRÄGE</span></button>
   </div>
 </section>
@@ -93,12 +117,20 @@ main{padding:12px}.screen{display:none}.screen.active{display:block}.hero-card,.
 </div>
 <nav class="bottom"><button class="nav active" data-screen="world"><span>🗺️</span>Welt</button><button class="nav" data-screen="character"><span>🧙</span>Held</button><button class="nav" data-screen="grow"><span>🌱</span>Grow</button><button class="nav" data-screen="quests"><span>🍺</span>Quests</button><button class="nav" data-screen="dungeon"><span>👹</span>Dungeon</button></nav>
 <script>
-const KEY='growLegendsV05', OLD_KEYS=['growLegendsV04','growLegendsV03','growLegendsV02','growLegendsV01'];
-const defaultState={level:1,xp:0,gold:120,points:0,energy:100,lastEnergy:Date.now(),attrs:{staerke:5,geschick:5,ausdauer:5,glueck:5,growSkill:1},equipment:{head:null,weapon:null,ring:null,body:null,boots:null,amulet:null},inventory:[],grow:{planted:false,start:0,duration:60000,ready:false,roomLevel:1,plants:[]},dungeon:{room:0},quests:{offers:[],active:null}};
+const KEY='growLegendsV06', OLD_KEYS=['growLegendsV05','growLegendsV04','growLegendsV03','growLegendsV02','growLegendsV01'];
+const defaultState={story:{chapter:1,bossesDefeated:0},level:1,xp:0,gold:120,points:0,energy:100,lastEnergy:Date.now(),attrs:{staerke:5,geschick:5,ausdauer:5,glueck:5,growSkill:1},equipment:{head:null,weapon:null,ring:null,body:null,boots:null,amulet:null},inventory:[],grow:{planted:false,start:0,duration:60000,ready:false,roomLevel:1,plants:[]},dungeon:{room:0},quests:{offers:[],active:null}};
 let raw=localStorage.getItem(KEY);if(!raw){for(const k of OLD_KEYS){if(localStorage.getItem(k)){raw=localStorage.getItem(k);break}}}
-let s=raw?JSON.parse(raw):structuredClone(defaultState);s.energy??=100;s.lastEnergy??=Date.now();s.quests??={offers:[],active:null};s.quests.offers??=[];s.quests.active??=null;s.grow??={roomLevel:1,plants:[]};s.grow.roomLevel??=1;s.grow.plants??=[];if(s.grow.planted&&s.grow.plants.length===0)s.grow.plants.push({start:s.grow.start||Date.now(),duration:s.grow.duration||60000});s.dungeon??={room:0,selected:0};s.dungeon.room??=0;s.dungeon.selected??=0;
+let s=raw?JSON.parse(raw):structuredClone(defaultState);s.story??={chapter:1,bossesDefeated:0};s.story.chapter??=1;s.story.bossesDefeated??=0;s.energy??=100;s.lastEnergy??=Date.now();s.quests??={offers:[],active:null};s.quests.offers??=[];s.quests.active??=null;s.grow??={roomLevel:1,plants:[]};s.grow.roomLevel??=1;s.grow.plants??=[];if(s.grow.planted&&s.grow.plants.length===0)s.grow.plants.push({start:s.grow.start||Date.now(),duration:s.grow.duration||60000});s.dungeon??={room:0,selected:0};s.dungeon.room??=0;s.dungeon.selected??=0;
 const questTemplates=[
-{name:'Die verschwundene Gießkanne',icon:'🪣',text:'Ein Gärtner schwört, seine beste Gießkanne sei nachts einfach verschwunden.',base:1},{name:'Ungeziefer im Hinterhof',icon:'🪲',text:'Etwas frisst sich durch die Pflanzen. Finde heraus, was dahintersteckt.',base:2},{name:'Der fluchende Gartenzwerg',icon:'🧙',text:'Ein Gartenzwerg terrorisiert die Nachbarschaft. Zeit für ein ernstes Gespräch.',base:2},{name:'Nebel über dem Gewächshaus',icon:'🌫️',text:'Aus einem verlassenen Gewächshaus dringen seltsame Geräusche.',base:3},{name:'Jagd auf die Riesentrauerfliege',icon:'🪰',text:'Eine ungewöhnlich große Trauerfliege wurde am Stadtrand gesichtet.',base:3},{name:'Lieferung durch den Sumpf',icon:'📦',text:'Eine wertvolle Kiste muss durch gefährliches Gelände gebracht werden.',base:1}];
+{name:'Miras verschwundene Lieferung',icon:'📦',text:'Mira aus der Taverne wartet auf eine Kiste, die nie angekommen ist.',base:1},
+{name:'Borks verlorene Werkzeugkiste',icon:'🧰',text:'Der Händler Bork behauptet, seine beste Werkzeugkiste sei im alten Keller verschwunden.',base:1},
+{name:'Ungeziefer im Hinterhof',icon:'🪲',text:'Rudi meldet, dass sich etwas durch die Beete am Schwarzen Brett frisst.',base:2},
+{name:'Der fluchende Gartenzwerg',icon:'🧙',text:'Ein verzauberter Gartenzwerg vertreibt Händler und Gäste aus der Gasse.',base:2},
+{name:'Nebel über dem Gewächshaus',icon:'🌫️',text:'Henk hat Licht im verlassenen Gewächshaus gesehen. Niemand soll dort sein.',base:3},
+{name:'Jagd auf die Riesentrauerfliege',icon:'🪰',text:'Eine riesige Trauerfliege kreist über den Dächern von Grünhain.',base:3},
+{name:'Spuren zum alten Labor',icon:'🧪',text:'Seltsame grüne Spuren führen aus einem zugemauerten Tunnel Richtung Labor.',base:4},
+{name:'Der nächtliche Dachgarten',icon:'🌙',text:'Auf den Dächern bewegen sich Schatten. Rudi zahlt für jede brauchbare Information.',base:4}
+]
 const dungeons=[
 {name:'Der verseuchte Keller',minLevel:1,enemies:[
 {name:'Trauermücken-Schwarm',short:'Trauermücken',icon:'🪰',hp:45,xp:22,gold:18},
@@ -143,12 +175,25 @@ function persist(draw=true){localStorage.setItem(KEY,JSON.stringify(s));if(draw)
 function xpNeed(){return s.level*100}function addXp(n){s.xp+=n;while(s.xp>=xpNeed()){s.xp-=xpNeed();s.level++;s.points+=2;s.gold+=50}}
 function totalAttr(k){let v=s.attrs[k]||0;Object.values(s.equipment).forEach(it=>{if(it?.bonus?.[k])v+=it.bonus[k]});return v}
 function combatPower(){return totalAttr('staerke')*5+totalAttr('geschick')*3+totalAttr('ausdauer')*2+totalAttr('glueck')+s.level*6}function maxHp(){return 80+totalAttr('ausdauer')*8+s.level*5}
+
+function rollRarity(forceBoss=false){
+ const r=Math.random();
+ if(forceBoss && r<0.12)return['legendary',4,'Legendär'];
+ if(r<(forceBoss?0.42:0.08))return['epic',3,'Episch'];
+ if(r<(forceBoss?0.82:0.28))return['rare',2,'Selten'];
+ return['common',1,'Gewöhnlich'];
+}
+function makeLoot(base,forceBoss=false){
+ const [rarity,mult,label]=rollRarity(forceBoss);
+ const bonus=Object.fromEntries(Object.entries(base.bonus).map(([k,v])=>[k,v+mult]));
+ return {...base,price:0,name:`${label}: ${base.name}`,rarity,bonus};
+}
 function itemBonus(it){return Object.entries(it?.bonus||{}).map(([k,v])=>`+${v} ${k.replace('staerke','Stärke').replace('geschick','Geschick').replace('ausdauer','Ausdauer').replace('glueck','Glück').replace('growSkill','Grow')}`).join(' · ')}
 function render(){regenEnergy();ensureQuests();
- document.querySelector('#level').textContent=s.level;document.querySelector('#charLevel').textContent=s.level;document.querySelector('#battleLevel').textContent=s.level;document.querySelector('#xp').textContent=`${s.xp}/${xpNeed()}`;document.querySelector('#gold').textContent=s.gold;document.querySelector('#shopGold').textContent=s.gold;document.querySelector('#points').textContent=s.points;document.querySelector('#energy').textContent=`${s.energy}/100`;document.querySelector('#power').textContent=combatPower();document.querySelector('#charPower').textContent=combatPower();document.querySelector('#charHp').textContent=maxHp();
+ document.querySelector('#level').textContent=s.level;document.querySelector('#charLevel').textContent=s.level;document.querySelector('#battleLevel').textContent=s.level;document.querySelector('#xp').textContent=`${s.xp}/${xpNeed()}`;document.querySelector('#gold').textContent=s.gold;document.querySelector('#shopGold').textContent=s.gold;document.querySelector('#points').textContent=s.points;document.querySelector('#energy').textContent=`${s.energy}/100`;document.querySelector('#power').textContent=combatPower();document.querySelector('#charPower').textContent=combatPower();document.querySelector('#charHp').textContent=maxHp();document.querySelector('#storyChapter')&&(document.querySelector('#storyChapter').textContent=s.story.chapter);const bp=Math.min(100,(s.story.bossesDefeated/6)*100);document.querySelector('#bossProgressBar')&&(document.querySelector('#bossProgressBar').style.width=bp+'%');document.querySelector('#bossProgressText')&&(document.querySelector('#bossProgressText').textContent=s.story.bossesDefeated?`${s.story.bossesDefeated} Boss${s.story.bossesDefeated===1?'':'e'} besiegt · Kapitel ${s.story.chapter}`:'Noch kein Dungeonboss besiegt.');
  const map=[['staerke','💪 Stärke'],['geschick','🎯 Geschick'],['ausdauer','❤️ Ausdauer'],['glueck','🍀 Glück'],['growSkill','🌱 Grow-Skill']];document.querySelector('#attrs').innerHTML=map.map(([k,n])=>`<div class="attr"><span>${n}: <b>${totalAttr(k)}</b></span><button onclick="incAttr('${k}')" ${s.points<1?'disabled':''}>+</button></div>`).join('');
- Object.keys(slotLabels).forEach(sl=>{const el=document.querySelector('#slot-'+sl),it=s.equipment[sl],[ic,la]=slotLabels[sl];el.className='slot'+(it?.name?.startsWith('Episch:')?' rarity-epic':'');el.innerHTML=`<div class="slot-icon">${it?.icon||ic}</div><div class="slot-label">${la}</div><div class="slot-name">${it?it.name:'Leer'}</div>${it?`<div class="tiny">${itemBonus(it)}</div>`:''}`});
- document.querySelector('#invCount').textContent=`${s.inventory.length} Item${s.inventory.length===1?'':'s'}`;document.querySelector('#inventory').innerHTML=s.inventory.length?`<div class="inventory-grid">${s.inventory.map((it,i)=>`<div class="inv-item"><div class="item-name">${it.icon||'🎁'} ${it.name}</div><div class="item-bonus">${itemBonus(it)}</div><button class="btn secondary" style="width:100%;padding:8px" onclick="equip(${i})">Anlegen</button></div>`).join('')}</div>`:'<div class="empty">Noch keine Ausrüstung gefunden.</div>';
+ Object.keys(slotLabels).forEach(sl=>{const el=document.querySelector('#slot-'+sl),it=s.equipment[sl],[ic,la]=slotLabels[sl];el.className='slot'+(it?.rarity?(' '+it.rarity):'');el.innerHTML=`<div class="slot-icon">${it?.icon||ic}</div><div class="slot-label">${la}</div><div class="slot-name">${it?it.name:'Leer'}</div>${it?`<div class="tiny">${itemBonus(it)}</div>`:''}`});
+ document.querySelector('#invCount').textContent=`${s.inventory.length} Item${s.inventory.length===1?'':'s'}`;document.querySelector('#inventory').innerHTML=s.inventory.length?`<div class="inventory-grid">${s.inventory.map((it,i)=>`<div class="inv-item ${it.rarity||""}"><div class="item-name">${it.icon||'🎁'} ${it.name}</div><div class="item-bonus">${itemBonus(it)}</div><button class="btn secondary" style="width:100%;padding:8px" onclick="equip(${i})">Anlegen</button></div>`).join('')}</div>`:'<div class="empty">Noch keine Ausrüstung gefunden.</div>';
  renderGrow();renderQuests();renderDungeon();renderShop();}
 window.incAttr=k=>{if(s.points>0){s.points--;s.attrs[k]++;persist()}};window.equip=i=>{const it=s.inventory[i];if(!it)return;const old=s.equipment[it.slot];s.equipment[it.slot]=it;s.inventory.splice(i,1);if(old)s.inventory.push(old);persist()};
 function growCapacity(){return Math.min(6,1+(s.grow.roomLevel-1)*2)}
@@ -161,7 +206,7 @@ document.querySelector('#harvestBtn').onclick=()=>{const now=Date.now(),ready=s.
 document.querySelector('#upgradeRoom').onclick=()=>{const c=150*s.grow.roomLevel;if(s.gold<c)return alert('Zu wenig Gold.');s.gold-=c;s.grow.roomLevel++;persist()};
 function renderQuests(){const q=s.quests.active,card=document.querySelector('#activeQuestCard'),box=document.querySelector('#activeQuest');if(q){card.style.display='block';const left=Math.max(0,Math.ceil((q.ends-Date.now())/1000)),done=left<=0;box.innerHTML=`<div class="quest active-q"><div class="quest-top"><div class="quest-icon">${q.icon}</div><div><h3>${q.name}</h3><div class="muted">${q.text}</div></div></div><div class="quest-meta"><span>⭐ ${q.xp} XP</span><span>💰 ${q.gold}</span><span>⚡ ${q.energy}</span></div><div class="timer">${done?'✅ Auftrag abgeschlossen':`⏳ Noch ${left} Sek.`}</div>${done?'<button class="btn" id="claimQuest" style="width:100%;margin-top:9px">Belohnung abholen</button>':''}</div>`;if(done)document.querySelector('#claimQuest').onclick=claimQuest}else card.style.display='none';
  document.querySelector('#questList').innerHTML=s.quests.offers.map((x,i)=>`<div class="quest"><div class="quest-top"><div class="quest-icon">${x.icon}</div><div><h3>${x.name}</h3><div class="muted">${x.text}</div></div></div><div class="quest-meta"><span>☠️ Stufe ${x.tier}</span><span>⏱️ ${x.duration}s</span><span>⚡ ${x.energy}</span><span>⭐ ${x.xp}</span><span>💰 ${x.gold}</span></div><button class="btn" style="width:100%" onclick="startQuest(${i})" ${s.quests.active||s.energy<x.energy?'disabled':''}>Auftrag starten</button></div>`).join('')}
-window.startQuest=i=>{if(s.quests.active)return;const q=s.quests.offers[i];if(!q||s.energy<q.energy)return alert('Nicht genug Energie.');s.energy-=q.energy;s.quests.active={...q,ends:Date.now()+q.duration*1000};s.quests.offers=[];persist()};function claimQuest(){const q=s.quests.active;if(!q||Date.now()<q.ends)return;const bonus=Math.random()<Math.min(.35,.08+totalAttr('glueck')*.01);s.gold+=q.gold;addXp(q.xp);let msg=`Auftrag geschafft: +${q.xp} XP, +${q.gold} Gold.`;if(bonus){const base=items[Math.floor(Math.random()*items.length)],found={...base,price:0,name:'Questfund: '+base.name,bonus:Object.fromEntries(Object.entries(base.bonus).map(([k,v])=>[k,v+1]))};s.inventory.push(found);msg+=`\nItem gefunden: ${found.name}`}s.quests.active=null;s.quests.offers=[makeQuest(),makeQuest(),makeQuest()];alert(msg);persist()}
+window.startQuest=i=>{if(s.quests.active)return;const q=s.quests.offers[i];if(!q||s.energy<q.energy)return alert('Nicht genug Energie.');s.energy-=q.energy;s.quests.active={...q,ends:Date.now()+q.duration*1000};s.quests.offers=[];persist()};function claimQuest(){const q=s.quests.active;if(!q||Date.now()<q.ends)return;const bonus=Math.random()<Math.min(.35,.08+totalAttr('glueck')*.01);s.gold+=q.gold;addXp(q.xp);let msg=`Auftrag geschafft: +${q.xp} XP, +${q.gold} Gold.`;if(bonus){const base=items[Math.floor(Math.random()*items.length)],found=makeLoot(base,false);s.inventory.push(found);msg+=`\nItem gefunden: ${found.name}`}s.quests.active=null;s.quests.offers=[makeQuest(),makeQuest(),makeQuest()];alert(msg);persist()}
 document.querySelector('#refreshQuests').onclick=()=>{if(s.quests.active)return alert('Beende erst deinen aktiven Auftrag.');if(s.gold<10)return alert('Zu wenig Gold.');s.gold-=10;s.quests.offers=[makeQuest(),makeQuest(),makeQuest()];persist()};
 function currentDungeon(){return dungeons[Math.max(0,Math.min(dungeons.length-1,s.dungeon.selected||0))]}
 window.selectDungeon=i=>{const d=dungeons[i];if(s.level<d.minLevel)return alert(`Ab Level ${d.minLevel} verfügbar.`);s.dungeon.selected=i;s.dungeon.room=0;persist()}
@@ -172,7 +217,7 @@ function animClass(el,cl,ms=400){el.classList.remove(cl);void el.offsetWidth;el.
 document.querySelector('#fightBtn').onclick=()=>{if(battleBusy)return;battleBusy=true;const btn=document.querySelector('#fightBtn');btn.disabled=true;document.querySelector('#loot').innerHTML='';const d=currentDungeon(),idx=s.dungeon.room%5,e=d.enemies[idx],maxP=maxHp();let pHp=maxP,eHp=e.hp;const pBar=document.querySelector('#playerHpBar'),eBar=document.querySelector('#enemyHpBar'),pTxt=document.querySelector('#playerHpText'),eTxt=document.querySelector('#enemyHpText'),log=document.querySelector('#battleLog');let round=0;
  const step=()=>{round++;const crit=Math.random()<Math.min(.35,.05+totalAttr('glueck')*.015),pDmg=Math.max(5,Math.floor(totalAttr('staerke')*1.9+totalAttr('geschick')*.8+s.level*2+Math.random()*10))*(crit?2:1);animClass(document.querySelector('#playerFighter'),'attack-right');setTimeout(()=>{eHp=Math.max(0,eHp-pDmg);eBar.style.width=(eHp/e.hp*100)+'%';eTxt.textContent=eHp;popDamage(document.querySelector('#damageEnemy'),`${crit?'KRIT! ':''}-${pDmg}`);animClass(document.querySelector('#enemyFighter'),'hit');log.textContent=`Runde ${round}: Du triffst für ${pDmg} Schaden${crit?' – kritischer Treffer!':''}.`;if(eHp<=0)return finish(true);
  setTimeout(()=>{const reduction=Math.floor(totalAttr('ausdauer')*.45),eDmg=Math.max(2,Math.floor(e.hp/12+Math.random()*8)-reduction);animClass(document.querySelector('#enemyFighter'),'attack-left');setTimeout(()=>{pHp=Math.max(0,pHp-eDmg);pBar.style.width=(pHp/maxP*100)+'%';pTxt.textContent=pHp;popDamage(document.querySelector('#damagePlayer'),`-${eDmg}`);animClass(document.querySelector('#playerFighter'),'hit');log.textContent+=` Gegner verursacht ${eDmg}.`;if(pHp<=0)return finish(false);setTimeout(step,380)},260)},420)},260)};
- const finish=win=>{setTimeout(()=>{battleBusy=false;btn.disabled=false;if(win){s.gold+=e.gold;addXp(e.xp);let html=`<div class="loot good">🏆 Sieg! +${e.xp} XP · +${e.gold} Gold</div>`;if(Math.random()<(e.boss?.65:.22)){const base=items[Math.floor(Math.random()*items.length)],found={...base,price:0,name:(e.boss?'Episch: ':'Gefunden: ')+base.name,bonus:Object.fromEntries(Object.entries(base.bonus).map(([k,v])=>[k,v+(e.boss?3:1)]))};s.inventory.push(found);html+=`<div class="loot">🎁 ${found.icon||'🎁'} ${found.name}<br><span class="tiny">${itemBonus(found)}</span></div>`}s.dungeon.room=(s.dungeon.room+1)%5;document.querySelector('#loot').innerHTML=html;persist();document.querySelector('#battleLog').textContent=e.boss?'Die Milbenkönigin fällt. Der Keller ist vorerst gesäubert!':'Gegner besiegt. Der nächste Raum ist offen.'}else{document.querySelector('#loot').innerHTML='<div class="loot" style="color:#ff9895">💀 Niederlage. Verbessere Attribute oder Ausrüstung.</div>';document.querySelector('#battleLog').textContent='Du wurdest besiegt. Es geht nichts verloren.'}},450)};step()};
+ const finish=win=>{setTimeout(()=>{battleBusy=false;btn.disabled=false;if(win){s.gold+=e.gold;addXp(e.xp);let html=`<div class="loot good">🏆 Sieg! +${e.xp} XP · +${e.gold} Gold</div>`;if(Math.random()<(e.boss?.65:.22)){const base=items[Math.floor(Math.random()*items.length)],found=makeLoot(base,!!e.boss);s.inventory.push(found);html+=`<div class="loot">🎁 ${found.icon||'🎁'} ${found.name}<br><span class="tiny">${itemBonus(found)}</span></div>`}if(e.boss){s.story.bossesDefeated++;s.story.chapter=Math.min(4,1+Math.floor(s.story.bossesDefeated/2));}s.dungeon.room=(s.dungeon.room+1)%5;document.querySelector('#loot').innerHTML=html;persist();document.querySelector('#battleLog').textContent=e.boss?'Die Milbenkönigin fällt. Der Keller ist vorerst gesäubert!':'Gegner besiegt. Der nächste Raum ist offen.'}else{document.querySelector('#loot').innerHTML='<div class="loot" style="color:#ff9895">💀 Niederlage. Verbessere Attribute oder Ausrüstung.</div>';document.querySelector('#battleLog').textContent='Du wurdest besiegt. Es geht nichts verloren.'}},450)};step()};
 function shopStock(){const seed=Math.floor(Date.now()/86400000);return Array.from({length:6},(_,i)=>items[(seed*3+i*5)%items.length])}
 function renderShop(){document.querySelector('#shopItems').innerHTML=shopStock().map(it=>`<div class="shop-item"><div class="shop-icon">${it.icon}</div><h3>${it.name}</h3><div class="tiny">${itemBonus(it)}</div><div class="price" style="margin:7px 0">💰 ${it.price} Gold</div><button class="btn" style="width:100%;padding:8px" onclick="buy('${it.id}')">Kaufen</button></div>`).join('')}
 window.buy=id=>{const it=items.find(x=>x.id===id);if(s.gold<it.price)return alert('Zu wenig Gold.');s.gold-=it.price;s.inventory.push({...it});persist()};
