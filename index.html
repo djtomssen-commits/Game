@@ -2719,7 +2719,7 @@ header{
 
 function v037SyncVersion(){
   document.querySelectorAll('.version').forEach(el=>{
-    el.textContent='V0.41 RPG';
+    el.textContent='V0.42 RPG';
   });
 }
 
@@ -3074,7 +3074,7 @@ render=function(){
   v038BaseRender();
   v038BindReroll();
   v038LocationPolish();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.41 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.42 RPG');
 };
 
 try{
@@ -3145,7 +3145,7 @@ try{
 <script>
 /* V0.39 keep version label synced */
 (function(){
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.41 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.42 RPG');
 })();
 </script>
 
@@ -3594,7 +3594,7 @@ header{
 <script>
 /* V0.40 unified visual behavior + version sync */
 function v040Polish(){
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.41 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.42 RPG');
   document.querySelectorAll('.btn').forEach(b=>b.setAttribute('type','button'));
   document.querySelectorAll('.shop-item,.inv-item,.skill-card,.seed-card,.equip-card,.quest,.slot').forEach(el=>{
     el.style.willChange='transform';
@@ -3866,7 +3866,7 @@ function v41UpgradeWorldPlaces(){
 const v41BaseRender=render;
 render=function(){
   v41BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.41 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.42 RPG');
   v41InstallPortrait();
   v41InstallNpcBanners();
   v41UpgradeShopIcons();
@@ -3878,6 +3878,207 @@ render=function(){
 try{
   render();
 }catch(e){console.error('V0.41 art layer',e);}
+</script>
+
+
+<style id="v042-shop-grid">
+/* ===== V0.42 3x3 RPG shop grid ===== */
+
+#shop .shop-grid,
+#weaponShopItems,
+#v030MagicShop .shop-grid{
+  display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:9px!important;
+  align-items:stretch!important;
+}
+
+#shop .shop-item{
+  min-width:0!important;
+  width:100%!important;
+  padding:9px!important;
+  border-radius:14px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:flex-start!important;
+}
+
+#shop .shop-item .shop-icon,
+#shop .shop-item .v41-shop-icon{
+  width:48px!important;
+  height:48px!important;
+  margin:0 auto 7px!important;
+}
+
+#shop .shop-item h3{
+  font-size:11px!important;
+  line-height:1.15!important;
+  min-height:38px!important;
+  margin:3px 0 4px!important;
+  text-align:center!important;
+  overflow-wrap:anywhere!important;
+}
+
+#shop .shop-item .tiny{
+  font-size:9px!important;
+  line-height:1.25!important;
+  text-align:center!important;
+  min-height:34px!important;
+}
+
+#shop .shop-item .price{
+  margin:7px auto!important;
+  font-size:10px!important;
+  padding:4px 6px!important;
+  white-space:nowrap!important;
+}
+
+#shop .shop-item .btn{
+  margin-top:auto!important;
+  width:100%!important;
+  padding:8px 4px!important;
+  font-size:10px!important;
+}
+
+#shop .shop-item .q-gray,
+#shop .shop-item .q-green,
+#shop .shop-item .q-blue,
+#shop .shop-item .q-purple,
+#shop .shop-item .q-orange,
+#shop .shop-item .q-cyan{
+  text-align:center!important;
+  font-size:9px!important;
+  font-weight:900!important;
+}
+
+/* Give both shops exactly 9 visible offers */
+#weaponShopItems,
+#v030MagicShop .shop-grid{
+  grid-auto-rows:1fr!important;
+}
+
+/* Phone remains 3 columns as requested, but compact */
+@media(max-width:560px){
+  #shop .shop-grid,
+  #weaponShopItems,
+  #v030MagicShop .shop-grid{
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+    gap:6px!important;
+  }
+
+  #shop .shop-item{
+    padding:7px 5px!important;
+  }
+
+  #shop .shop-item .shop-icon,
+  #shop .shop-item .v41-shop-icon{
+    width:42px!important;
+    height:42px!important;
+  }
+
+  #shop .shop-item h3{
+    font-size:9px!important;
+    min-height:34px!important;
+  }
+
+  #shop .shop-item .tiny{
+    font-size:8px!important;
+    min-height:31px!important;
+  }
+
+  #shop .shop-item .price{
+    font-size:8px!important;
+    padding:3px 5px!important;
+  }
+
+  #shop .shop-item .btn{
+    font-size:9px!important;
+    padding:7px 2px!important;
+  }
+}
+
+@media(max-width:360px){
+  #shop .shop-item h3{font-size:8px!important}
+  #shop .shop-item .tiny{font-size:7px!important}
+}
+</style>
+
+<script>
+/* ===== V0.42 expand both shops to 9 slots ===== */
+
+function v042EnsureNineShopSlots(){
+  if(typeof v030MakeWeaponOffer==='function'){
+    s.weaponShop ??= [];
+    while(s.weaponShop.length<9) s.weaponShop.push(v030MakeWeaponOffer());
+    if(s.weaponShop.length>9) s.weaponShop=s.weaponShop.slice(0,9);
+  }
+
+  if(typeof v030MakeJewelryOffer==='function' && typeof v030MakeMaterialOffer==='function'){
+    s.magicShop ??= [];
+    while(s.magicShop.length<9){
+      const i=s.magicShop.length;
+      s.magicShop.push(i<3 ? v030MakeJewelryOffer() : v030MakeMaterialOffer());
+    }
+    if(s.magicShop.length>9) s.magicShop=s.magicShop.slice(0,9);
+  }
+
+  localStorage.setItem(KEY,JSON.stringify(s));
+}
+
+/* Override shop fill so rerolls also regenerate 9 items */
+const v042OldFillShops = typeof v030FillShops==='function' ? v030FillShops : null;
+if(v042OldFillShops){
+  v030FillShops=function(force=false){
+    if(force || !Array.isArray(s.weaponShop) || s.weaponShop.length!==9){
+      s.weaponShop=Array.from({length:9},()=>v030MakeWeaponOffer());
+    }
+    if(force || !Array.isArray(s.magicShop) || s.magicShop.length!==9){
+      s.magicShop=Array.from({length:9},(_,i)=>i<3?v030MakeJewelryOffer():v030MakeMaterialOffer());
+    }
+    localStorage.setItem(KEY,JSON.stringify(s));
+  };
+}
+
+/* Correct replacement category after purchase */
+const v042OldBuyMagic = window.v030BuyMagic;
+if(typeof v042OldBuyMagic==='function'){
+  window.v030BuyMagic=function(i){
+    const it=s.magicShop?.[i];
+    if(!it)return;
+    if(s.gold<it.price){
+      if(typeof v037NoGold==='function')v037NoGold();
+      else alert('Nicht genug Gold.');
+      return;
+    }
+
+    s.gold-=it.price;
+
+    if(it.type==='gem'||it.type==='scroll'){
+      s.materials.push({...it});
+      if(typeof v037BoughtMessage==='function')v037BoughtMessage(it,'Material-Inventar');
+    }else{
+      const bought={...it,id:it.uid||`jewel_${Date.now()}_${Math.random().toString(36).slice(2,7)}`};
+      s.inventory.push(bought);
+      if(typeof v037BoughtMessage==='function')v037BoughtMessage(bought,'Inventar');
+    }
+
+    s.magicShop[i]=i<3?v030MakeJewelryOffer():v030MakeMaterialOffer();
+    localStorage.setItem(KEY,JSON.stringify(s));
+    render();
+  };
+}
+
+const v042BaseRender=render;
+render=function(){
+  v042EnsureNineShopSlots();
+  v042BaseRender();
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.42 RPG');
+};
+
+try{
+  v042EnsureNineShopSlots();
+  render();
+}catch(e){console.error('V0.42 shop grid',e);}
 </script>
 
 </body>
