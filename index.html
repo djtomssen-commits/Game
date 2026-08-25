@@ -1971,153 +1971,7 @@ function v032InstallWorldMap(){const world=document.querySelector('#world');if(!
 const v032BaseRender=render;render=function(){v032BaseRender();v032InstallMenu();v032InstallWorldMap();};try{v032InstallMenu();v032InstallWorldMap();render();}catch(e){console.error('V0.32 init',e);}
 </script>
 
-<script>
-/* ===== V0.33 Dungeon flow fix ===== */
 
-/* Ensure battle section can be shown/hidden independently from the map card */
-function v033DungeonParts(){
-  const screen=document.querySelector('#dungeon');
-  if(!screen)return {};
-  const cards=[...screen.querySelectorAll(':scope > .card')];
-  return {screen,mapCard:cards[0]||null,battleCard:cards[1]||null};
-}
-
-function v033ShowDungeonMap(){
-  const {mapCard,battleCard}=v033DungeonParts();
-  if(mapCard)mapCard.style.display='';
-  if(battleCard)battleCard.style.display='none';
-
-  const loot=document.querySelector('#loot');
-  if(loot)loot.innerHTML='';
-
-  const log=document.querySelector('#battleLog');
-  if(log)log.textContent='Wähle auf der Karte deinen aktuellen Dungeon.';
-
-  try{renderDungeon()}catch(e){}
-  window.scrollTo({top:0,behavior:'smooth'});
-}
-
-function v033OpenDungeonFight(i){
-  if(typeof i==='number'){
-    const d=dungeons[i];
-    if(!d)return;
-    if(dungeonCompleted(i))return alert(`${d.name} wurde bereits abgeschlossen.`);
-    if(s.level<d.minLevel)return alert(`Dieser Dungeon ist erst ab Level ${d.minLevel} verfügbar.`);
-    if(!dungeonUnlocked(i))return alert(`${d.keyName} fehlt. Den Stein kannst du beim Questen finden.`);
-    s.dungeon.selected=i;
-    s.dungeon.room=Math.max(0,Math.min(9,s.dungeon.progress?.[i]??0));
-    localStorage.setItem(KEY,JSON.stringify(s));
-  }
-
-  const {mapCard,battleCard}=v033DungeonParts();
-  if(mapCard)mapCard.style.display='none';
-  if(battleCard)battleCard.style.display='';
-
-  const loot=document.querySelector('#loot');
-  if(loot)loot.innerHTML='';
-
-  try{renderDungeon()}catch(e){}
-
-  const di=s.dungeon.selected||0;
-  const idx=Math.max(0,Math.min(9,(s.dungeon.progress?.[di] ?? s.dungeon.room ?? 0)));
-  const e=dungeons[di]?.enemies?.[idx];
-  const log=document.querySelector('#battleLog');
-  if(log && e)log.textContent=`${e.name} wartet auf dich.`;
-
-  window.scrollTo({top:0,behavior:'smooth'});
-}
-
-/* Override dungeon selection: map click opens fight view */
-window.selectDungeon=function(i){
-  v033OpenDungeonFight(i);
-};
-
-/* Replace fight finish UX by observing loot after battle and adding confirm button */
-function v033InstallRewardObserver(){
-  const loot=document.querySelector('#loot');
-  if(!loot || loot.dataset.v033Observed)return;
-  loot.dataset.v033Observed='1';
-
-  const obs=new MutationObserver(()=>{
-    if(!loot.innerHTML.trim())return;
-    if(loot.querySelector('#v033RewardConfirm'))return;
-
-    const win=loot.textContent.includes('Sieg') || loot.textContent.includes('Dungeon abgeschlossen');
-    const loss=loot.textContent.includes('Niederlage');
-
-    if(win){
-      const b=document.createElement('button');
-      b.className='btn';
-      b.id='v033RewardConfirm';
-      b.style.cssText='width:100%;margin-top:10px';
-      b.textContent='🎁 Belohnung bestätigen · Zur Dungeon-Karte';
-      b.onclick=()=>v033ShowDungeonMap();
-      loot.appendChild(b);
-    }else if(loss){
-      const b=document.createElement('button');
-      b.className='btn secondary';
-      b.id='v033RewardConfirm';
-      b.style.cssText='width:100%;margin-top:10px';
-      b.textContent='🗺️ Zurück zur Dungeon-Karte';
-      b.onclick=()=>v033ShowDungeonMap();
-      loot.appendChild(b);
-    }
-  });
-  obs.observe(loot,{childList:true,subtree:true});
-}
-
-/* Remove/repair stray n/n text on dungeon screen */
-function v033FixDungeonText(){
-  const screen=document.querySelector('#dungeon');
-  if(!screen)return;
-
-  screen.querySelectorAll('*').forEach(el=>{
-    if(el.children.length===0){
-      const t=(el.textContent||'').trim();
-      if(/^n\s*\/\s*n$/i.test(t) || /^NaN\s*\/\s*NaN$/i.test(t)){
-        el.textContent='';
-        el.style.display='none';
-      }
-    }
-  });
-
-  const prog=document.querySelector('#dungeonProgress');
-  if(prog){
-    const di=Math.max(0,Math.min(dungeons.length-1,s.dungeon.selected||0));
-    const idx=Math.max(0,Math.min(9,(s.dungeon.progress?.[di] ?? s.dungeon.room ?? 0)));
-    prog.textContent=dungeonCompleted(di)?'10 / 10':`${idx+1} / 10`;
-  }
-}
-
-/* When entering dungeon screen, always start on the map */
-const v033OldGo = (typeof v032Go==='function') ? v032Go : null;
-if(v033OldGo){
-  v032Go=function(id){
-    v033OldGo(id);
-    if(id==='dungeon'){
-      setTimeout(()=>{
-        v033InstallRewardObserver();
-        v033FixDungeonText();
-        v033ShowDungeonMap();
-      },0);
-    }
-  };
-}
-
-/* Keep UI stable after renders */
-const v033BaseRender=render;
-render=function(){
-  v033BaseRender();
-  v033InstallRewardObserver();
-  v033FixDungeonText();
-};
-
-try{
-  v033InstallRewardObserver();
-  v033FixDungeonText();
-  if(document.querySelector('#dungeon')?.classList.contains('active'))v033ShowDungeonMap();
-}catch(e){console.error('V0.33 dungeon flow',e);}
-</script>
 
 
 <script>
@@ -2719,7 +2573,7 @@ header{
 
 function v037SyncVersion(){
   document.querySelectorAll('.version').forEach(el=>{
-    el.textContent='V0.47 RPG';
+    el.textContent='V0.48 RPG';
   });
 }
 
@@ -3074,7 +2928,7 @@ render=function(){
   v038BaseRender();
   v038BindReroll();
   v038LocationPolish();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.47 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.48 RPG');
 };
 
 try{
@@ -3145,7 +2999,7 @@ try{
 <script>
 /* V0.39 keep version label synced */
 (function(){
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.47 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.48 RPG');
 })();
 </script>
 
@@ -3594,7 +3448,7 @@ header{
 <script>
 /* V0.40 unified visual behavior + version sync */
 function v040Polish(){
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.47 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.48 RPG');
   document.querySelectorAll('.btn').forEach(b=>b.setAttribute('type','button'));
   document.querySelectorAll('.shop-item,.inv-item,.skill-card,.seed-card,.equip-card,.quest,.slot').forEach(el=>{
     el.style.willChange='transform';
@@ -3866,7 +3720,7 @@ function v41UpgradeWorldPlaces(){
 const v41BaseRender=render;
 render=function(){
   v41BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.47 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.48 RPG');
   v41InstallPortrait();
   v41InstallNpcBanners();
   v41UpgradeShopIcons();
@@ -4072,7 +3926,7 @@ const v042BaseRender=render;
 render=function(){
   v042EnsureNineShopSlots();
   v042BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.47 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.48 RPG');
 };
 
 try{
@@ -4455,7 +4309,7 @@ function v043EmptyStates(){
 const v043BaseRender=render;
 render=function(){
   v043BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.47 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.48 RPG');
   v043EquipSlotArt();
   v043BattlePlayerArt();
   v043SceneLabels();
@@ -4751,7 +4605,7 @@ function v044MapTitles(){
 const v044BaseRender=render;
 render=function(){
   v044BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.47 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.48 RPG');
   v044AddWorldRegions();
   v044AddDungeonRegions();
   v044MapTitles();
@@ -4763,179 +4617,7 @@ try{
 </script>
 
 
-<script>
-/* ===== V0.45 Dungeon navigation state fix ===== */
 
-/* Explicit dungeon UI state. */
-s.ui ??= {};
-s.ui.dungeonMode ??= 'map';
-
-function v045DungeonCards(){
-  const screen=document.querySelector('#dungeon');
-  if(!screen)return {};
-  const cards=[...screen.querySelectorAll(':scope > .card')];
-  return {
-    screen,
-    mapCard:cards[0]||null,
-    battleCard:cards[1]||null
-  };
-}
-
-function v045ApplyDungeonMode(){
-  const {mapCard,battleCard}=v045DungeonCards();
-  if(!mapCard || !battleCard)return;
-
-  if(s.ui.dungeonMode==='battle'){
-    mapCard.style.display='none';
-    battleCard.style.display='';
-  }else{
-    mapCard.style.display='';
-    battleCard.style.display='none';
-  }
-}
-
-function v045ShowDungeonMap(){
-  s.ui.dungeonMode='map';
-  localStorage.setItem(KEY,JSON.stringify(s));
-
-  const loot=document.querySelector('#loot');
-  if(loot)loot.innerHTML='';
-
-  try{renderDungeon()}catch(e){}
-  v045ApplyDungeonMode();
-
-  const log=document.querySelector('#battleLog');
-  if(log)log.textContent='Wähle auf der Karte den Dungeon, den du betreten möchtest.';
-
-  window.scrollTo({top:0,behavior:'smooth'});
-}
-
-function v045ShowDungeonBattle(i){
-  if(typeof i==='number'){
-    const d=dungeons[i];
-    if(!d)return;
-    if(dungeonCompleted(i))return alert(`${d.name} wurde bereits abgeschlossen.`);
-    if(s.level<d.minLevel)return alert(`Dieser Dungeon ist erst ab Level ${d.minLevel} verfügbar.`);
-    if(!dungeonUnlocked(i))return alert(`${d.keyName} fehlt. Den Stein kannst du beim Questen finden.`);
-
-    s.dungeon.selected=i;
-    s.dungeon.room=Math.max(0,Math.min(9,s.dungeon.progress?.[i]??0));
-  }
-
-  s.ui.dungeonMode='battle';
-  localStorage.setItem(KEY,JSON.stringify(s));
-
-  const loot=document.querySelector('#loot');
-  if(loot)loot.innerHTML='';
-
-  try{renderDungeon()}catch(e){}
-  v045ApplyDungeonMode();
-
-  const di=s.dungeon.selected||0;
-  const idx=Math.max(0,Math.min(9,(s.dungeon.progress?.[di] ?? s.dungeon.room ?? 0)));
-  const e=dungeons[di]?.enemies?.[idx];
-  const log=document.querySelector('#battleLog');
-  if(log && e)log.textContent=`${e.name} wartet auf dich.`;
-
-  window.scrollTo({top:0,behavior:'smooth'});
-}
-
-/* Dungeon map node click opens fight only. */
-window.selectDungeon=function(i){
-  v045ShowDungeonBattle(i);
-};
-
-/* Replace old V0.33 helpers if still referenced */
-window.v033ShowDungeonMap=v045ShowDungeonMap;
-window.v033OpenDungeonFight=v045ShowDungeonBattle;
-
-/* Ensure reward/return button always goes to map and stays there */
-function v045BindRewardReturn(){
-  const loot=document.querySelector('#loot');
-  if(!loot)return;
-
-  loot.querySelectorAll('#v033RewardConfirm,[data-v045-return]').forEach(btn=>{
-    btn.onclick=()=>{
-      v045ShowDungeonMap();
-    };
-  });
-}
-
-/* Observe loot creation and normalize the return button */
-function v045InstallLootObserver(){
-  const loot=document.querySelector('#loot');
-  if(!loot || loot.dataset.v045Observed)return;
-  loot.dataset.v045Observed='1';
-
-  const obs=new MutationObserver(()=>{
-    if(!loot.innerHTML.trim())return;
-
-    let btn=loot.querySelector('#v033RewardConfirm');
-    if(btn){
-      btn.textContent=loot.textContent.includes('Niederlage')
-        ? '🗺️ Zurück zur Dungeon-Karte'
-        : '🎁 Belohnung bestätigen · Zur Dungeon-Karte';
-      btn.onclick=v045ShowDungeonMap;
-      btn.dataset.v045Return='1';
-    }else{
-      const hasWin=loot.textContent.includes('Sieg') || loot.textContent.includes('Dungeon abgeschlossen');
-      const hasLoss=loot.textContent.includes('Niederlage');
-      if(hasWin || hasLoss){
-        btn=document.createElement('button');
-        btn.className=hasLoss?'btn secondary':'btn';
-        btn.style.cssText='width:100%;margin-top:10px';
-        btn.dataset.v045Return='1';
-        btn.textContent=hasLoss
-          ? '🗺️ Zurück zur Dungeon-Karte'
-          : '🎁 Belohnung bestätigen · Zur Dungeon-Karte';
-        btn.onclick=v045ShowDungeonMap;
-        loot.appendChild(btn);
-      }
-    }
-  });
-
-  obs.observe(loot,{childList:true,subtree:true});
-}
-
-/* Entering Dungeon from menu/world must always show the map first */
-if(typeof v032Go==='function'){
-  const v045OldGo=v032Go;
-  v032Go=function(id){
-    v045OldGo(id);
-    if(id==='dungeon'){
-      s.ui.dungeonMode='map';
-      localStorage.setItem(KEY,JSON.stringify(s));
-      setTimeout(()=>{
-        try{renderDungeon()}catch(e){}
-        v045ApplyDungeonMode();
-        v045InstallLootObserver();
-      },0);
-    }
-  };
-}
-
-const v045BaseRender=render;
-render=function(){
-  v045BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.47 RPG');
-  v045InstallLootObserver();
-  v045ApplyDungeonMode();
-  v045BindRewardReturn();
-};
-
-/* On first load keep Dungeon on map unless user is already fighting */
-if(document.querySelector('#dungeon')?.classList.contains('active')){
-  s.ui.dungeonMode='map';
-  localStorage.setItem(KEY,JSON.stringify(s));
-}
-
-try{
-  render();
-  if(document.querySelector('#dungeon')?.classList.contains('active')){
-    v045ShowDungeonMap();
-  }
-}catch(e){console.error('V0.45 dungeon nav',e);}
-</script>
 
 
 <style id="v046-visual-and-flow">
@@ -5099,177 +4781,311 @@ header{
 }
 </style>
 
-<script>
-/* ===== V0.46 guaranteed dungeon return button ===== */
 
-function v046EnsureReturnButton(type='loss'){
-  const loot=document.querySelector('#loot');
-  if(!loot)return;
 
-  let btn=loot.querySelector('[data-v046-return]');
-  if(!btn){
-    btn=document.createElement('button');
-    btn.dataset.v046Return='1';
-    btn.className=type==='win'?'btn v046-return-btn':'btn secondary v046-return-btn';
-    btn.textContent=type==='win'
-      ? '🎁 Belohnung bestätigen · Zur Dungeon-Karte'
-      : '🗺️ Zurück zur Dungeon-Karte';
-    btn.onclick=()=>v045ShowDungeonMap();
-    loot.appendChild(btn);
-  }else{
-    btn.className=type==='win'?'btn v046-return-btn':'btn secondary v046-return-btn';
-    btn.textContent=type==='win'
-      ? '🎁 Belohnung bestätigen · Zur Dungeon-Karte'
-      : '🗺️ Zurück zur Dungeon-Karte';
-    btn.onclick=()=>v045ShowDungeonMap();
-  }
-}
 
-function v046ObserveLoot(){
-  const loot=document.querySelector('#loot');
-  if(!loot || loot.dataset.v046Observed)return;
-  loot.dataset.v046Observed='1';
 
-  const obs=new MutationObserver(()=>{
-    const txt=(loot.textContent||'').trim();
-    if(!txt)return;
-
-    if(txt.includes('Niederlage') || txt.includes('zu stark')){
-      v046EnsureReturnButton('loss');
-    }else if(txt.includes('Sieg') || txt.includes('Dungeon abgeschlossen') || txt.includes('Belohnung')){
-      v046EnsureReturnButton('win');
-    }
-  });
-
-  obs.observe(loot,{childList:true,subtree:true,characterData:true});
-}
-
-/* Hard fallback: after battle button becomes enabled again and loot exists,
-   ensure an appropriate return button is present. */
-function v046BattleFallback(){
-  const loot=document.querySelector('#loot');
-  if(!loot)return;
-  const txt=loot.textContent||'';
-  if(txt.includes('Niederlage'))v046EnsureReturnButton('loss');
-  if(txt.includes('Sieg')||txt.includes('Dungeon abgeschlossen'))v046EnsureReturnButton('win');
-}
-
-setInterval(v046BattleFallback,800);
-
-const v046BaseRender=render;
-render=function(){
-  v046BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.47 RPG');
-  v046ObserveLoot();
-  v046BattleFallback();
-};
-
-try{
-  v046ObserveLoot();
-  render();
-}catch(e){console.error('V0.46 init',e);}
-</script>
 
 
 <script>
-/* ===== V0.47 post-battle freeze fix ===== */
+/* ===== V0.48 CLEAN DUNGEON STATE MACHINE =====
+   One flow only: map -> battle -> reward -> map.
+   No MutationObserver. No post-battle polling. No recurring battle timers.
+*/
 
-/* Stop the V0.46 repeating fallback from causing repeated DOM churn. */
-try{
-  if(typeof v046BattleFallback==='function'){
-    v046BattleFallback=function(){};
-  }
-}catch(e){}
+s.dungeon ??= {};
+s.dungeon.view ??= 'map';
 
-/* Safe one-shot return button helper. */
-function v047SetReturnButton(type){
-  const loot=document.querySelector('#loot');
-  if(!loot)return;
-
-  let btn=loot.querySelector('[data-v047-return], [data-v046-return], #v033RewardConfirm');
-  if(!btn){
-    btn=document.createElement('button');
-    btn.dataset.v047Return='1';
-    loot.appendChild(btn);
-  }
-
-  const isWin=type==='win';
-  const wantedClass=isWin?'btn v046-return-btn':'btn secondary v046-return-btn';
-  const wantedText=isWin
-    ? '🎁 Belohnung bestätigen · Zur Dungeon-Karte'
-    : '🗺️ Zurück zur Dungeon-Karte';
-
-  if(btn.className!==wantedClass)btn.className=wantedClass;
-  if(btn.textContent!==wantedText)btn.textContent=wantedText;
-  btn.onclick=v045ShowDungeonMap;
+function v048DungeonIndex(){
+  return Math.max(0, Math.min(dungeons.length-1, Number(s.dungeon.selected)||0));
 }
-
-/* Install a guarded observer that only reacts when battle result content changes. */
-function v047InstallSafeLootObserver(){
-  const loot=document.querySelector('#loot');
-  if(!loot || loot.dataset.v047Observed)return;
-
-  loot.dataset.v047Observed='1';
-  let lastState='';
-
-  const check=()=>{
-    const txt=(loot.textContent||'').trim();
-    let state='';
-    if(txt.includes('Niederlage') || txt.includes('zu stark'))state='loss';
-    else if(txt.includes('Sieg') || txt.includes('Dungeon abgeschlossen'))state='win';
-
-    if(!state || state===lastState)return;
-    lastState=state;
-    v047SetReturnButton(state);
-  };
-
-  const obs=new MutationObserver(check);
-  obs.observe(loot,{childList:true,subtree:true,characterData:true});
-  check();
+function v048RoomIndex(di=v048DungeonIndex()){
+  return Math.max(0, Math.min(9, Number(s.dungeon.progress?.[di] ?? s.dungeon.room ?? 0)||0));
 }
-
-/* Remove any existing V0.46 observer marker so the old install function no longer matters. */
-try{
+function v048GoMap(){
+  s.dungeon.view='map';
   const loot=document.querySelector('#loot');
-  if(loot){
-    delete loot.dataset.v046Observed;
-  }
-}catch(e){}
-
-/* Disable old observer/fallback installers after this point. */
-try{v046ObserveLoot=function(){};}catch(e){}
-try{v046EnsureReturnButton=function(type){v047SetReturnButton(type);};}catch(e){}
-
-/* Wrap render without repeatedly touching battle-result DOM. */
-const v047BaseRender=render;
-render=function(){
-  v047BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.47 RPG');
-  v047InstallSafeLootObserver();
-};
-
-/* Extra safety: clicking map return clears battle result and restores map state. */
-const v047OldShowMap=v045ShowDungeonMap;
-v045ShowDungeonMap=function(){
-  s.ui??={};
-  s.ui.dungeonMode='map';
+  if(loot) loot.innerHTML='';
   localStorage.setItem(KEY,JSON.stringify(s));
+  render();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function v048GoBattle(i){
+  const d=dungeons[i];
+  if(!d)return;
+  if(dungeonCompleted(i))return alert(`${d.name} wurde bereits abgeschlossen.`);
+  if(s.level<d.minLevel)return alert(`Dieser Dungeon ist erst ab Level ${d.minLevel} verfügbar.`);
+  if(!dungeonUnlocked(i))return alert(`${d.keyName} fehlt. Den Stein kannst du beim Questen finden.`);
+
+  s.dungeon.selected=i;
+  s.dungeon.room=Math.max(0,Math.min(9,s.dungeon.progress?.[i]??0));
+  s.dungeon.view='battle';
 
   const loot=document.querySelector('#loot');
   if(loot)loot.innerHTML='';
 
-  const cards=v045DungeonCards();
-  if(cards.mapCard)cards.mapCard.style.display='';
-  if(cards.battleCard)cards.battleCard.style.display='none';
-
-  try{renderDungeon()}catch(e){}
+  localStorage.setItem(KEY,JSON.stringify(s));
+  render();
   window.scrollTo({top:0,behavior:'smooth'});
+}
+
+window.selectDungeon=v048GoBattle;
+
+/* Make entering the Dungeon screen always start on the map. */
+if(typeof v032Go==='function'){
+  const v048OldGo=v032Go;
+  v032Go=function(id){
+    if(id==='dungeon'){
+      s.dungeon.view='map';
+      localStorage.setItem(KEY,JSON.stringify(s));
+    }
+    v048OldGo(id);
+  };
+}
+
+/* Make renderDungeon obey ONLY s.dungeon.view. */
+const v048OldRenderDungeon=renderDungeon;
+renderDungeon=function(){
+  v048OldRenderDungeon();
+
+  const mapCard=document.querySelector('#dungeonMapCard') || document.querySelector('#dungeon > .card:first-of-type');
+  const battleCard=document.querySelector('#dungeonBattleCard') || document.querySelectorAll('#dungeon > .card')[1];
+
+  if(s.dungeon.view==='map'){
+    if(mapCard)mapCard.style.display='';
+    if(battleCard)battleCard.style.display='none';
+  }else{
+    if(mapCard)mapCard.style.display='none';
+    if(battleCard)battleCard.style.display='';
+  }
+};
+
+/* Install one deterministic battle handler. */
+function v048InstallFight(){
+  const btn=document.querySelector('#fightBtn');
+  if(!btn)return;
+
+  btn.onclick=()=>{
+    if(battleBusy)return;
+
+    const di=v048DungeonIndex();
+    const d=dungeons[di];
+    const idx=v048RoomIndex(di);
+    const e=d?.enemies?.[idx];
+    if(!d||!e)return;
+
+    if(dungeonCompleted(di))return alert('Dieser Dungeon ist bereits abgeschlossen.');
+    if(!dungeonAvailable(di))return alert('Dieser Dungeon ist noch nicht betretbar.');
+    if(!s.playerClass)return alert('Wähle zuerst deine Klasse.');
+    if(!consumeDungeonAttempt())return;
+
+    s.dungeon.view='battle';
+    localStorage.setItem(KEY,JSON.stringify(s));
+
+    battleBusy=true;
+    btn.disabled=true;
+
+    const loot=document.querySelector('#loot');
+    if(loot)loot.innerHTML='';
+
+    const bal=(typeof v025EnemyStats==='function')
+      ? v025EnemyStats(di,idx,e)
+      : {rec:e.requiredLevel||d.minLevel,hp:e.hp,attack:Math.max(8,Math.round(e.hp/10))};
+
+    const maxP=maxHp();
+    let pHp=maxP;
+    let eHp=bal.hp;
+    let round=0;
+
+    const pBar=document.querySelector('#playerHpBar');
+    const eBar=document.querySelector('#enemyHpBar');
+    const pTxt=document.querySelector('#playerHpText');
+    const eTxt=document.querySelector('#enemyHpText');
+    const log=document.querySelector('#battleLog');
+
+    if(pTxt)pTxt.textContent=pHp;
+    if(eTxt)eTxt.textContent=eHp;
+    if(pBar)pBar.style.width='100%';
+    if(eBar)eBar.style.width='100%';
+
+    const showResult=(win)=>{
+      battleBusy=false;
+      btn.disabled=false;
+      s.dungeon.view='reward';
+
+      if(win){
+        s.gold+=e.gold;
+        addXp(e.xp);
+
+        let html=`<div class="loot good">🏆 Sieg! +${e.xp} XP · +${e.gold} Gold</div>`;
+
+        if(e.boss || Math.random()<.22){
+          let found;
+          if(e.boss){
+            if(Math.random()<.12){
+              const slot=setBases[Math.floor(Math.random()*setBases.length)].slot;
+              found=makeSetItem(s.playerClass||'grower',slot);
+            }else{
+              found=makeClassLoot(s.playerClass||'grower','boss');
+            }
+          }else if(Math.random()<.8){
+            found=makeClassLoot(s.playerClass||'grower','dungeon');
+          }else{
+            const other=['grower','bruiser','scout'].filter(x=>x!==s.playerClass);
+            found=makeClassLoot(other[Math.floor(Math.random()*other.length)],'dungeon');
+          }
+
+          if(found){
+            s.inventory.push(found);
+            html+=`<div class="loot">🎁 ${found.name}<br><span class="tiny">${itemBonus(found)}</span></div>`;
+          }
+        }
+
+        if(e.boss){
+          s.story.bossesDefeated=(s.story.bossesDefeated||0)+1;
+          s.story.chapter=Math.min(4,1+Math.floor(s.story.bossesDefeated/2));
+
+          if(Math.random()<.22){
+            s.harzTaler++;
+            html+='<div class="loot">🟢 Harz-Taler gefunden!</div>';
+          }
+
+          if(!s.dungeon.completed.includes(di))s.dungeon.completed.push(di);
+          s.dungeon.room=9;
+          s.dungeon.progress[di]=9;
+          html+='<div class="loot good">⛓️ Dungeon abgeschlossen! Der Eingang wurde versiegelt.</div>';
+        }else{
+          s.dungeon.room=idx+1;
+          s.dungeon.progress[di]=idx+1;
+        }
+
+        html+='<button class="btn gold" id="v048ReturnMap" style="width:100%;margin-top:10px">🎁 Belohnung bestätigen · Zur Dungeon-Karte</button>';
+        loot.innerHTML=html;
+        if(log)log.textContent=e.boss
+          ? 'Boss besiegt. Bestätige deine Belohnung.'
+          : 'Gegner besiegt. Bestätige deine Belohnung.';
+      }else{
+        loot.innerHTML=
+          '<div class="loot" style="color:#ff9895">💀 Niederlage. Der Gegner war zu stark. Verbessere deinen Helden und versuche es erneut.</div>'+
+          '<button class="btn secondary" id="v048ReturnMap" style="width:100%;margin-top:10px">🗺️ Zurück zur Dungeon-Karte</button>';
+        if(log)log.textContent='Du wurdest besiegt. Es geht nichts verloren.';
+      }
+
+      localStorage.setItem(KEY,JSON.stringify(s));
+
+      const back=document.querySelector('#v048ReturnMap');
+      if(back)back.onclick=v048GoMap;
+    };
+
+    const step=()=>{
+      if(!battleBusy)return;
+      round++;
+
+      let critChance=Math.min(.30,.04+totalAttr('glueck')*.012);
+      if(s.playerClass==='bruiser')critChance+=.07+setBonusValue('critChance')+skillValue('nebel')*.025;
+      if(s.playerClass==='scout')critChance+=skillValue('praez')*.018;
+      const crit=Math.random()<critChance;
+
+      const primary=(typeof v029PrimaryStat==='function')
+        ? v029PrimaryStat()
+        : totalAttr('staerke');
+
+      let pDmg=Math.max(4,Math.floor(primary*1.9+s.level*1.55+Math.random()*7));
+      if(crit)pDmg=Math.floor(pDmg*1.75);
+
+      let special='';
+      if(s.playerClass==='grower'&&Math.random()<(.13+setBonusValue('wuchtChance')+skillValue('wucht')*.025)){
+        pDmg=Math.floor(pDmg*1.55);special=' WUCHTSCHLAG!';
+      }
+      if(s.playerClass==='scout'&&Math.random()<(.15+setBonusValue('doubleChance')+skillValue('schnell')*.025)){
+        pDmg=Math.floor(pDmg*(1.42+setBonusValue('doubleDamage')));special=' DOPPELTREFFER!';
+      }
+      if(s.playerClass==='bruiser'&&crit){
+        pDmg=Math.floor(pDmg*(1+setBonusValue('critDamage')+skillValue('overload')*.055));special=' MAGIE-KRIT!';
+      }
+      if(s.playerClass==='grower'&&skillValue('raserei')){
+        pDmg=Math.floor(pDmg*(1+skillValue('raserei')*.03));
+      }
+
+      animClass(document.querySelector('#playerFighter'),'attack-right');
+
+      setTimeout(()=>{
+        if(!battleBusy)return;
+
+        eHp=Math.max(0,eHp-pDmg);
+        if(eBar)eBar.style.width=(eHp/bal.hp*100)+'%';
+        if(eTxt)eTxt.textContent=eHp;
+        popDamage(document.querySelector('#damageEnemy'),`${crit||special?'KRIT! ':''}-${pDmg}`);
+        animClass(document.querySelector('#enemyFighter'),'hit');
+        if(log)log.textContent=`Runde ${round}: Du verursachst ${pDmg} Schaden.${special}`;
+
+        if(eHp<=0){
+          showResult(true);
+          return;
+        }
+
+        setTimeout(()=>{
+          if(!battleBusy)return;
+
+          const defense=totalAttr('ausdauer')*.38;
+          let eDmg=Math.max(2,Math.floor(bal.attack+Math.random()*7-defense));
+
+          const skillReduce=
+            s.playerClass==='grower'?skillValue('fell')*.035:
+            s.playerClass==='bruiser'?skillValue('mantel')*.028:
+            s.playerClass==='scout'?skillValue('tarn')*.028:0;
+
+          eDmg=Math.max(1,Math.floor(eDmg*(1-skillReduce)));
+
+          animClass(document.querySelector('#enemyFighter'),'attack-left');
+
+          setTimeout(()=>{
+            if(!battleBusy)return;
+
+            pHp=Math.max(0,pHp-eDmg);
+            if(pBar)pBar.style.width=(pHp/maxP*100)+'%';
+            if(pTxt)pTxt.textContent=pHp;
+            popDamage(document.querySelector('#damagePlayer'),`-${eDmg}`);
+            animClass(document.querySelector('#playerFighter'),'hit');
+            if(log)log.textContent+=` Gegner trifft dich für ${eDmg}.`;
+
+            if(pHp<=0){
+              showResult(false);
+              return;
+            }
+
+            setTimeout(step,360);
+          },240);
+        },380);
+      },240);
+    };
+
+    step();
+  };
+}
+
+const v048BaseRender=render;
+render=function(){
+  v048BaseRender();
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.48 RPG');
+  v048InstallFight();
+  renderDungeon();
+
+  if(s.dungeon.view==='reward'){
+    const back=document.querySelector('#v048ReturnMap');
+    if(back)back.onclick=v048GoMap;
+  }
 };
 
 try{
-  v047InstallSafeLootObserver();
+  if(document.querySelector('#dungeon')?.classList.contains('active')){
+    s.dungeon.view='map';
+  }
+  localStorage.setItem(KEY,JSON.stringify(s));
   render();
-}catch(e){console.error('V0.47 freeze fix',e);}
+}catch(e){
+  console.error('V0.48 clean dungeon flow',e);
+}
 </script>
 
 </body>
