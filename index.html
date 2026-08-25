@@ -2719,7 +2719,7 @@ header{
 
 function v037SyncVersion(){
   document.querySelectorAll('.version').forEach(el=>{
-    el.textContent='V0.39 RPG';
+    el.textContent='V0.40 RPG';
   });
 }
 
@@ -3074,7 +3074,7 @@ render=function(){
   v038BaseRender();
   v038BindReroll();
   v038LocationPolish();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.39 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.40 RPG');
 };
 
 try{
@@ -3145,8 +3145,470 @@ try{
 <script>
 /* V0.39 keep version label synced */
 (function(){
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.39 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.40 RPG');
 })();
+</script>
+
+
+<style id="v040-premium-rpg">
+/* ==========================================================
+   V0.40 — PREMIUM RPG FRONTEND LAYER
+   Goal: remove generic website feel and unify the whole game
+   ========================================================== */
+
+:root{
+  --v40-bg:#07100a;
+  --v40-bg2:#0b160e;
+  --v40-panel:#101a12;
+  --v40-panel2:#17231a;
+  --v40-panel3:#1c2a1f;
+  --v40-edge:#35513a;
+  --v40-edge-soft:rgba(91,131,91,.28);
+  --v40-text:#f5f7f1;
+  --v40-muted:#9daa9b;
+  --v40-green:#7ed15d;
+  --v40-green2:#b9ef95;
+  --v40-gold:#e6bd57;
+  --v40-red:#e56b66;
+  --v40-blue:#67a1ea;
+  --v40-purple:#ad71e8;
+  --v40-shadow:0 18px 46px rgba(0,0,0,.46);
+  --v40-inset:inset 0 1px rgba(255,255,255,.035);
+}
+
+html,body{
+  background:
+    radial-gradient(circle at 50% -5%,rgba(77,123,69,.22),transparent 28%),
+    radial-gradient(circle at 10% 35%,rgba(31,70,39,.12),transparent 32%),
+    linear-gradient(180deg,#08110a 0%,#071009 55%,#050a06 100%) !important;
+}
+
+body{
+  max-width:860px!important;
+  color:var(--v40-text)!important;
+  font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif!important;
+  letter-spacing:.005em;
+}
+
+.app{max-width:860px!important}
+main{padding:14px 12px 22px!important}
+
+/* ---------- Header / HUD ---------- */
+header{
+  position:sticky!important;
+  top:0!important;
+  z-index:50!important;
+  background:
+    linear-gradient(180deg,rgba(14,24,16,.98),rgba(7,13,9,.96))!important;
+  border-bottom:1px solid rgba(111,154,106,.22)!important;
+  box-shadow:0 12px 34px rgba(0,0,0,.36)!important;
+  padding:12px 14px 13px!important;
+}
+
+.brand{
+  display:flex!important;
+  align-items:center!important;
+  gap:10px!important;
+  margin-bottom:10px!important;
+}
+
+.brand h1{
+  margin:0!important;
+  font-size:22px!important;
+  font-weight:1000!important;
+  letter-spacing:-.7px!important;
+  text-shadow:0 2px 10px #0008!important;
+}
+
+.version{
+  padding:4px 9px!important;
+  border-radius:999px!important;
+  background:linear-gradient(180deg,#253a27,#17251a)!important;
+  border:1px solid #466447!important;
+  color:#c9f3b4!important;
+  font-size:10px!important;
+  font-weight:900!important;
+  box-shadow:var(--v40-inset),0 5px 14px #0005!important;
+}
+
+.power{
+  margin-left:auto!important;
+  padding:7px 10px!important;
+  border-radius:12px!important;
+  background:linear-gradient(180deg,#18251a,#0f1711)!important;
+  border:1px solid #334c35!important;
+  color:#b6c1b3!important;
+  box-shadow:var(--v40-inset)!important;
+}
+
+.power b{color:var(--v40-gold)!important}
+
+.stats{
+  display:grid!important;
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  gap:8px!important;
+}
+
+.stat{
+  min-width:0!important;
+  padding:10px 7px!important;
+  border-radius:14px!important;
+  background:
+    radial-gradient(circle at 50% 0%,rgba(126,184,112,.08),transparent 55%),
+    linear-gradient(180deg,#17251a,#0f1811)!important;
+  border:1px solid #2f4933!important;
+  box-shadow:var(--v40-inset),0 7px 18px rgba(0,0,0,.22)!important;
+  color:#94a293!important;
+  font-size:9px!important;
+  letter-spacing:.08em!important;
+  text-transform:uppercase!important;
+}
+.stat b{
+  display:block!important;
+  margin-top:3px!important;
+  color:#fff!important;
+  font-size:14px!important;
+  letter-spacing:0!important;
+  text-transform:none!important;
+}
+
+/* ---------- General panels ---------- */
+.card,.hero-card,.story-card{
+  position:relative!important;
+  overflow:hidden!important;
+  border-radius:20px!important;
+  background:
+    radial-gradient(circle at 100% 0%,rgba(93,145,81,.08),transparent 32%),
+    linear-gradient(155deg,#152219,#0d1510 78%)!important;
+  border:1px solid var(--v40-edge-soft)!important;
+  box-shadow:var(--v40-shadow)!important;
+}
+.card{padding:16px!important}
+.card:before,.hero-card:before,.story-card:before{
+  content:""!important;
+  position:absolute!important;
+  left:0!important;right:0!important;top:0!important;
+  height:1px!important;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.08),transparent)!important;
+  pointer-events:none!important;
+}
+
+.section-title{
+  display:flex!important;
+  align-items:flex-start!important;
+  justify-content:space-between!important;
+  gap:12px!important;
+  margin-bottom:12px!important;
+  padding-bottom:10px!important;
+  border-bottom:1px solid rgba(95,132,92,.13)!important;
+}
+.section-title h2,.section-title h3{
+  margin:0!important;
+  font-size:18px!important;
+  font-weight:1000!important;
+  letter-spacing:-.35px!important;
+}
+.muted{color:var(--v40-muted)!important;line-height:1.48!important}
+.tiny{color:#91a091!important;line-height:1.4!important}
+
+/* ---------- Buttons ---------- */
+.btn{
+  border:0!important;
+  border-radius:12px!important;
+  padding:11px 14px!important;
+  font-weight:950!important;
+  background:linear-gradient(180deg,#93df6f,#60b649)!important;
+  color:#0c170c!important;
+  box-shadow:0 8px 18px rgba(73,128,56,.28),inset 0 1px rgba(255,255,255,.28)!important;
+  transition:transform .14s ease,filter .14s ease,box-shadow .14s ease!important;
+}
+.btn:hover{filter:brightness(1.06)!important}
+.btn:active{transform:translateY(1px) scale(.99)!important}
+.btn.secondary{
+  background:linear-gradient(180deg,#2e4231,#1b2a1e)!important;
+  color:#edf4e9!important;
+  border:1px solid #405d43!important;
+  box-shadow:0 7px 16px #0005!important;
+}
+.btn.gold{
+  background:linear-gradient(180deg,#f0d174,#d3a649)!important;
+  color:#2b1e08!important;
+}
+.btn.danger{
+  background:linear-gradient(180deg,#ef7772,#ce5353)!important;
+  color:white!important;
+}
+
+/* ---------- Menu ---------- */
+.top-menu-btn{
+  width:46px!important;height:46px!important;
+  border-radius:14px!important;
+  background:linear-gradient(180deg,#1e2d20,#101813)!important;
+  border:1px solid #456346!important;
+  box-shadow:0 12px 28px #0009!important;
+}
+.top-menu-panel{
+  width:240px!important;
+  background:linear-gradient(180deg,rgba(18,29,20,.995),rgba(8,14,10,.995))!important;
+  border:1px solid #3e5b40!important;
+  border-radius:16px!important;
+  padding:9px!important;
+  box-shadow:0 20px 50px #000c!important;
+}
+.top-menu-item{
+  border:1px solid transparent!important;
+  background:transparent!important;
+  border-radius:11px!important;
+  padding:11px 12px!important;
+  transition:.14s ease!important;
+}
+.top-menu-item:hover{
+  background:#1a2a1d!important;
+  border-color:#344f36!important;
+}
+.top-menu-item.active{
+  background:linear-gradient(180deg,#2a452d,#1c321f)!important;
+  border-color:#4a714d!important;
+  color:#caf4b6!important;
+}
+
+/* ---------- World / dungeon maps ---------- */
+.world-map-shell,.dungeon-map-shell{
+  border-radius:20px!important;
+  border:1px solid #3d5940!important;
+  background:#0a130c!important;
+  box-shadow:0 16px 36px #0007,inset 0 0 54px #000d!important;
+}
+.world-map,.adventure-map{
+  filter:saturate(1.05) contrast(1.03)!important;
+}
+.world-map:after,.adventure-map:after{
+  content:""!important;
+  position:absolute!important;
+  inset:0!important;
+  pointer-events:none!important;
+  background:
+    linear-gradient(180deg,rgba(255,255,255,.015),transparent 20%),
+    radial-gradient(circle at center,transparent 0 57%,rgba(0,0,0,.26) 100%)!important;
+}
+.world-map-title,.map-title-ribbon{
+  background:linear-gradient(180deg,#283a2b,#18231b)!important;
+  border:1px solid #6b855f!important;
+  color:#e6f6dc!important;
+  box-shadow:0 8px 18px #0008!important;
+}
+.world-map-place,.dungeon-node{
+  box-shadow:0 11px 26px #000a,inset 0 1px rgba(255,255,255,.05)!important;
+  transition:transform .16s ease,filter .16s ease!important;
+}
+.world-map-place{
+  min-height:98px!important;
+  background:
+    radial-gradient(circle at 50% 0%,rgba(255,255,255,.05),transparent 30%),
+    linear-gradient(180deg,rgba(34,51,37,.98),rgba(16,25,18,.98))!important;
+  border-radius:20px!important;
+}
+.world-map-place .wicon{
+  font-size:34px!important;
+  filter:drop-shadow(0 4px 5px #0008)!important;
+}
+.world-map-place .wname{
+  font-size:11px!important;
+  font-weight:1000!important;
+  text-shadow:0 2px 4px #000!important;
+}
+.world-map-place .wsub{
+  color:#b7c2b5!important;
+}
+.dungeon-node{
+  background:
+    radial-gradient(circle at 50% 15%,rgba(255,255,255,.04),transparent 28%),
+    radial-gradient(circle at 35% 25%,#493d2c,#1b1713 72%)!important;
+}
+.dungeon-node.active{
+  box-shadow:0 0 26px #78d95b66,0 11px 26px #000a!important;
+}
+
+/* ---------- Character ---------- */
+.character-stage{
+  background:
+    radial-gradient(circle at 50% 34%,rgba(87,145,76,.26),transparent 32%),
+    linear-gradient(180deg,#17271a,#0c150e 74%)!important;
+}
+.slot{
+  background:
+    radial-gradient(circle at 100% 0%,rgba(111,157,103,.04),transparent 34%),
+    linear-gradient(180deg,#1b2a1e,#101813)!important;
+  border:1px solid #3e5940!important;
+  border-radius:15px!important;
+  box-shadow:inset 0 0 18px #0004!important;
+  transition:.14s ease!important;
+}
+.slot:hover{
+  border-color:#5b795e!important;
+  transform:translateY(-1px)!important;
+}
+.center-hero{
+  background:radial-gradient(circle at 50% 45%,rgba(101,162,85,.12),transparent 52%)!important;
+  border-radius:18px!important;
+}
+.level-shield{
+  background:linear-gradient(180deg,#2c2516,#19150d)!important;
+  border-color:#a98237!important;
+  box-shadow:0 6px 14px #0007!important;
+}
+.center-xp-track{
+  background:#070d08!important;
+  border-color:#3b543d!important;
+}
+.center-xp-fill{
+  background:linear-gradient(90deg,#6fbd50,#b6ef86)!important;
+  box-shadow:0 0 12px #8bd96866!important;
+}
+
+/* ---------- Inventory / shop ---------- */
+.inventory-grid,.shop-grid{
+  gap:10px!important;
+}
+.inv-item,.shop-item,.skill-card,.seed-card,.equip-card,.quest{
+  position:relative!important;
+  overflow:hidden!important;
+  background:
+    radial-gradient(circle at 100% 0%,rgba(103,157,91,.07),transparent 32%),
+    linear-gradient(155deg,#17241a,#0f1711)!important;
+  border:1px solid #344c36!important;
+  border-radius:15px!important;
+  box-shadow:0 7px 18px #0004!important;
+}
+.inv-item:before,.shop-item:before,.skill-card:before,.seed-card:before,.equip-card:before,.quest:before{
+  content:""!important;
+  position:absolute!important;
+  left:0!important;top:0!important;bottom:0!important;
+  width:3px!important;
+  background:linear-gradient(180deg,#6ba451,#29482c)!important;
+  opacity:.72!important;
+}
+.common-gray:before{background:#6d756e!important}
+.uncommon:before{background:#54be69!important}
+.rare:before{background:#5a91e7!important}
+.epic:before{background:#aa6bec!important}
+.legendary:before{background:#e79b38!important}
+.mythic:before{background:#2fd4d3!important}
+
+.shop-icon{
+  width:46px!important;height:46px!important;
+  display:grid!important;place-items:center!important;
+  border-radius:13px!important;
+  background:linear-gradient(180deg,#243728,#17231a)!important;
+  border:1px solid #3c5740!important;
+  margin-bottom:7px!important;
+}
+.item-name,.shop-item h3{
+  font-weight:950!important;
+  letter-spacing:-.1px!important;
+}
+.compare{
+  background:#0b120d!important;
+  border:1px solid #283b2b!important;
+}
+.price,.sell-price{
+  color:var(--v40-gold)!important;
+}
+.inv-actions{
+  gap:8px!important;
+}
+
+/* ---------- Growroom ---------- */
+.grow-room{
+  background:
+    radial-gradient(circle at 50% 6%,rgba(220,255,211,.14),transparent 32%),
+    linear-gradient(180deg,#1b3420,#0c170f)!important;
+}
+.grow-slot{
+  background:linear-gradient(180deg,#17261a,#0f1811)!important;
+  border-color:#3b543d!important;
+  box-shadow:inset 0 0 22px #0004!important;
+}
+.grow-slot.open-slot:hover{
+  box-shadow:inset 0 0 0 1px #77c65c55,0 8px 18px #0005!important;
+}
+
+/* ---------- Tavern / quests ---------- */
+.tavern-scene{
+  min-height:190px!important;
+  background:
+    radial-gradient(circle at 76% 26%,rgba(220,145,57,.34),transparent 18%),
+    linear-gradient(180deg,#46311f,#1d150f)!important;
+}
+.quest{
+  margin-top:10px!important;
+}
+.quest-icon{
+  background:#0d150f!important;
+  border:1px solid #2f4431!important;
+}
+
+/* ---------- Battle ---------- */
+.battle-stage{
+  min-height:330px!important;
+  border-radius:18px!important;
+  background:
+    radial-gradient(circle at 50% 35%,rgba(84,102,77,.28),transparent 34%),
+    linear-gradient(180deg,#252e25,#121812)!important;
+  border:1px solid #394b38!important;
+  box-shadow:inset 0 0 34px #0009!important;
+}
+.fighter-avatar{
+  filter:drop-shadow(0 14px 10px #0009)!important;
+}
+.battle-log{
+  min-height:52px!important;
+  background:#09100b!important;
+  border-color:#304332!important;
+  border-radius:12px!important;
+  padding:10px!important;
+}
+
+/* ---------- Rarity glow ---------- */
+.inv-item.epic,.shop-item.epic{box-shadow:0 7px 18px #0004,0 0 18px rgba(169,101,236,.12)!important}
+.inv-item.legendary,.shop-item.legendary{box-shadow:0 7px 18px #0004,0 0 20px rgba(231,155,56,.14)!important}
+.inv-item.mythic,.shop-item.mythic{box-shadow:0 7px 18px #0004,0 0 22px rgba(47,212,211,.15)!important}
+
+/* ---------- Responsive ---------- */
+@media(max-width:620px){
+  main{padding:10px!important}
+  .card{padding:13px!important}
+  .stats{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  .brand h1{font-size:20px!important}
+}
+@media(max-width:430px){
+  .inventory-grid,.shop-grid{grid-template-columns:1fr!important}
+  .inv-item,.shop-item{width:100%!important}
+  .inv-actions{grid-template-columns:1fr 1fr!important}
+}
+@media(max-width:360px){
+  .inv-actions{grid-template-columns:1fr!important}
+}
+</style>
+
+<script>
+/* V0.40 unified visual behavior + version sync */
+function v040Polish(){
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.40 RPG');
+  document.querySelectorAll('.btn').forEach(b=>b.setAttribute('type','button'));
+  document.querySelectorAll('.shop-item,.inv-item,.skill-card,.seed-card,.equip-card,.quest,.slot').forEach(el=>{
+    el.style.willChange='transform';
+  });
+}
+const v040BaseRender=render;
+render=function(){
+  v040BaseRender();
+  v040Polish();
+};
+try{
+  v040Polish();
+  render();
+}catch(e){console.error('V0.40 premium UI',e);}
 </script>
 
 </body>
