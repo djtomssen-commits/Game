@@ -2719,7 +2719,7 @@ header{
 
 function v037SyncVersion(){
   document.querySelectorAll('.version').forEach(el=>{
-    el.textContent='V0.42 RPG';
+    el.textContent='V0.43 RPG';
   });
 }
 
@@ -3074,7 +3074,7 @@ render=function(){
   v038BaseRender();
   v038BindReroll();
   v038LocationPolish();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.42 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.43 RPG');
 };
 
 try{
@@ -3145,7 +3145,7 @@ try{
 <script>
 /* V0.39 keep version label synced */
 (function(){
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.42 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.43 RPG');
 })();
 </script>
 
@@ -3594,7 +3594,7 @@ header{
 <script>
 /* V0.40 unified visual behavior + version sync */
 function v040Polish(){
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.42 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.43 RPG');
   document.querySelectorAll('.btn').forEach(b=>b.setAttribute('type','button'));
   document.querySelectorAll('.shop-item,.inv-item,.skill-card,.seed-card,.equip-card,.quest,.slot').forEach(el=>{
     el.style.willChange='transform';
@@ -3866,7 +3866,7 @@ function v41UpgradeWorldPlaces(){
 const v41BaseRender=render;
 render=function(){
   v41BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.42 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.43 RPG');
   v41InstallPortrait();
   v41InstallNpcBanners();
   v41UpgradeShopIcons();
@@ -4072,13 +4072,399 @@ const v042BaseRender=render;
 render=function(){
   v042EnsureNineShopSlots();
   v042BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.42 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.43 RPG');
 };
 
 try{
   v042EnsureNineShopSlots();
   render();
 }catch(e){console.error('V0.42 shop grid',e);}
+</script>
+
+
+<style id="v043-rpg-scenes">
+/* ===== V0.43 stronger game-scene presentation ===== */
+
+/* --- Screen atmosphere --- */
+.screen{
+  position:relative;
+}
+.screen:after{
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  background:linear-gradient(180deg,rgba(255,255,255,.008),transparent 18%,rgba(0,0,0,.035));
+  z-index:-1;
+}
+
+/* --- Character screen becomes a real hero panel --- */
+#character .hero-card{
+  border:1px solid #446147!important;
+  background:
+    radial-gradient(circle at 50% 20%,rgba(118,190,96,.13),transparent 32%),
+    linear-gradient(180deg,#15241a,#0c140f 76%)!important;
+}
+#character .character-stage{
+  min-height:510px!important;
+  padding-top:18px!important;
+}
+#character .char-title{
+  font-size:22px!important;
+  text-shadow:0 2px 8px #0008;
+}
+#character .equipment-grid{
+  gap:12px!important;
+}
+#character .slot{
+  min-height:102px!important;
+  background:
+    radial-gradient(circle at 50% 0%,rgba(106,164,95,.05),transparent 34%),
+    linear-gradient(180deg,#1a281d,#0e1710)!important;
+  border:1px solid #405a43!important;
+}
+#character .slot-icon{
+  font-size:0!important;
+}
+#character .slot-icon svg{
+  width:36px!important;height:36px!important;
+}
+#character .slot-label{
+  font-size:8px!important;
+  color:#879486!important;
+}
+#character .slot-name{
+  font-size:9px!important;
+  min-height:22px;
+}
+#character .center-name{
+  font-size:22px!important;
+  letter-spacing:-.4px!important;
+}
+#character .center-class{
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  font-size:10px!important;
+}
+#character .level-shield{
+  margin-top:12px!important;
+  padding:7px 16px!important;
+}
+#character .combat-row{
+  gap:10px!important;
+}
+#character .combat-box{
+  padding:12px!important;
+  background:
+    linear-gradient(180deg,#16231a,#0e1610)!important;
+  border-color:#344e37!important;
+}
+#character .combat-box b{
+  font-size:19px!important;
+}
+
+/* --- Attributes look like stat rows --- */
+#attrs{
+  grid-template-columns:1fr!important;
+}
+#attrs .attr{
+  min-height:44px;
+  padding:8px 10px!important;
+  border-radius:11px!important;
+  background:linear-gradient(180deg,#152118,#0d1510)!important;
+}
+#attrs .attr span{
+  font-size:12px!important;
+}
+#attrs .attr button{
+  width:34px!important;height:30px!important;
+}
+
+/* --- Inventory feels like RPG loot --- */
+#inventory .inventory-grid{
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:10px!important;
+}
+#inventory .inv-item{
+  padding:11px!important;
+  min-height:210px;
+}
+#inventory .item-name{
+  display:flex!important;
+  align-items:center!important;
+  gap:8px!important;
+  min-height:44px!important;
+  font-size:11px!important;
+}
+#inventory .v41-badge-art{
+  width:42px!important;height:42px!important;
+  flex:0 0 42px;
+  border-radius:11px;
+  background:#111a13;
+  border:1px solid #38513b;
+  padding:3px;
+}
+#inventory .item-bonus{
+  min-height:42px;
+  font-size:9px!important;
+  line-height:1.35!important;
+}
+#inventory .compare{
+  min-height:38px;
+  font-size:9px!important;
+}
+#inventory .sell-price{
+  font-size:9px!important;
+}
+#inventory .inv-actions{
+  margin-top:auto!important;
+}
+
+/* --- Shop as dense RPG merchant board --- */
+#shop .card{
+  background:
+    radial-gradient(circle at 100% 0%,rgba(153,118,59,.07),transparent 30%),
+    linear-gradient(155deg,#172119,#0c130f 80%)!important;
+}
+#shop .v41-npc-banner{
+  background:
+    radial-gradient(circle at 10% 15%,rgba(192,149,73,.08),transparent 30%),
+    linear-gradient(145deg,#1a241b,#0e1510)!important;
+  border-color:#5b5138!important;
+}
+#shop .shop-grid{
+  gap:8px!important;
+}
+#shop .shop-item{
+  min-height:188px!important;
+  padding:8px!important;
+  background:
+    linear-gradient(180deg,rgba(27,39,29,.98),rgba(13,20,15,.98))!important;
+}
+#shop .shop-item h3{
+  font-size:9px!important;
+  line-height:1.2!important;
+}
+#shop .shop-item .tiny{
+  font-size:7px!important;
+  line-height:1.25!important;
+}
+#shop .shop-item .price{
+  margin-top:auto!important;
+}
+#shop .shop-item .btn{
+  border-radius:9px!important;
+}
+
+/* --- World map presentation --- */
+#world .card:first-child{
+  padding:10px!important;
+}
+#world .world-map-shell{
+  border-radius:22px!important;
+}
+#world .world-map{
+  min-height:980px!important;
+}
+#world .world-map-place{
+  width:112px!important;
+  min-height:104px!important;
+  border-width:2px!important;
+}
+#world .world-map-place .wicon{
+  width:58px;height:58px;
+  margin:0 auto 3px;
+}
+#world .world-map-place .wname{
+  font-size:10px!important;
+}
+#world .world-map-place .wsub{
+  font-size:7px!important;
+}
+#world .world-map-place.hero{box-shadow:0 0 20px rgba(92,137,179,.18),0 12px 24px #0008!important}
+#world .world-map-place.shop{box-shadow:0 0 20px rgba(189,148,69,.18),0 12px 24px #0008!important}
+#world .world-map-place.grow{box-shadow:0 0 20px rgba(103,174,90,.18),0 12px 24px #0008!important}
+#world .world-map-place.dungeon{box-shadow:0 0 20px rgba(176,90,81,.22),0 12px 24px #0008!important}
+
+/* --- Battle becomes centerpiece --- */
+#dungeon .battle-stage{
+  height:390px!important;
+  background:
+    radial-gradient(circle at 22% 28%,rgba(69,93,61,.19),transparent 28%),
+    radial-gradient(circle at 78% 26%,rgba(109,58,57,.14),transparent 30%),
+    linear-gradient(180deg,#20291f 0%,#161d17 58%,#0e140f 100%)!important;
+}
+#dungeon .fighter{
+  bottom:56px!important;
+}
+#dungeon .fighter.player{
+  left:1%!important;
+}
+#dungeon .fighter.enemy-side{
+  right:1%!important;
+}
+#dungeon .fighter-avatar{
+  min-height:125px;
+}
+#dungeon .v41-enemy-art{
+  width:128px!important;height:128px!important;
+}
+#dungeon .hpbar{
+  height:11px!important;
+  border-radius:999px!important;
+}
+#dungeon .battle-log{
+  font-size:11px!important;
+  line-height:1.45!important;
+  padding:12px!important;
+}
+
+/* --- Quest screen scene-based --- */
+#quests .v41-npc-banner{
+  margin-bottom:14px!important;
+}
+#quests .quest{
+  padding:12px!important;
+}
+#quests .quest h3{
+  font-size:13px!important;
+}
+#quests .quest-meta span{
+  padding:5px 8px!important;
+}
+
+/* --- Grow screen --- */
+#grow .grow-room{
+  min-height:330px!important;
+}
+#grow .grow-slot{
+  min-height:190px!important;
+  border-radius:14px!important;
+}
+#grow .plant-visual{
+  filter:drop-shadow(0 8px 8px #0006);
+}
+
+/* --- Location tag upgrade --- */
+.v038-location{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  padding:5px 8px;
+  border-radius:999px;
+  background:#111a13;
+  border:1px solid #304632;
+  margin-bottom:10px!important;
+}
+
+/* --- Mobile polish --- */
+@media(max-width:560px){
+  #character .equipment-grid{
+    grid-template-columns:68px minmax(138px,1fr) 68px!important;
+    gap:5px!important;
+  }
+  #character .slot{
+    min-height:88px!important;
+    padding:5px!important;
+  }
+  #character .slot-name{
+    font-size:7px!important;
+  }
+  #inventory .inventory-grid{
+    grid-template-columns:1fr!important;
+  }
+  #inventory .inv-item{
+    min-height:0!important;
+  }
+  #world .world-map-place{
+    width:98px!important;
+    min-height:94px!important;
+  }
+  #world .world-map-place .wicon{
+    width:48px;height:48px;
+  }
+  #dungeon .battle-stage{
+    height:345px!important;
+  }
+  #dungeon .v41-enemy-art{
+    width:105px!important;height:105px!important;
+  }
+}
+
+/* --- Very small screens --- */
+@media(max-width:380px){
+  #character .equipment-grid{
+    grid-template-columns:62px minmax(125px,1fr) 62px!important;
+  }
+}
+</style>
+
+<script>
+/* ===== V0.43 scene and art integration ===== */
+
+/* Use vector item art in equipped slots too */
+function v043EquipSlotArt(){
+  const slots=['head','weapon','ring','body','boots','amulet'];
+  slots.forEach(slot=>{
+    const el=document.querySelector('#slot-'+slot);
+    if(!el)return;
+    const it=s.equipment?.[slot];
+    const icon=el.querySelector('.slot-icon');
+    if(icon){
+      icon.innerHTML=v41ItemArt(it||{slot});
+    }
+  });
+}
+
+/* Replace player battle emoji with class portrait */
+function v043BattlePlayerArt(){
+  const avatar=document.querySelector('#playerFighter .fighter-avatar');
+  if(!avatar)return;
+  avatar.innerHTML=`<div class="v41-enemy-art">${v41ClassPortrait()}</div>`;
+}
+
+/* Add scene title bars to key content cards */
+function v043SceneLabels(){
+  const labels=[
+    ['#character .hero-card','HELDENQUARTIER'],
+    ['#grow .hero-card','DEIN GROWROOM'],
+    ['#dungeon .card:first-child','VERSEUCHTE GEBIETE'],
+    ['#shop .card:not(#v030MagicShop)','BORKS AUSRÜSTUNG'],
+    ['#v030MagicShop','SCHMUCK & VERZAUBERUNG']
+  ];
+  labels.forEach(([sel,title])=>{
+    const el=document.querySelector(sel);
+    if(!el || el.querySelector(':scope > .v043-scene-title'))return;
+    const tag=document.createElement('div');
+    tag.className='v043-scene-title';
+    tag.style.cssText='position:absolute;right:12px;top:10px;z-index:3;font-size:8px;font-weight:1000;letter-spacing:.12em;color:#7f927f;background:#0c140e;border:1px solid #2d422f;border-radius:999px;padding:4px 7px';
+    tag.textContent=title;
+    el.appendChild(tag);
+  });
+}
+
+/* Stronger empty state copy */
+function v043EmptyStates(){
+  document.querySelectorAll('.empty').forEach(el=>{
+    if(el.textContent.includes('Noch keine Ausrüstung gefunden')){
+      el.innerHTML='🎒 <b>Noch keine Ausrüstung</b><br><span class="tiny">Besiege Gegner oder besuche den Händler.</span>';
+    }
+  });
+}
+
+const v043BaseRender=render;
+render=function(){
+  v043BaseRender();
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.43 RPG');
+  v043EquipSlotArt();
+  v043BattlePlayerArt();
+  v043SceneLabels();
+  v043EmptyStates();
+};
+
+try{
+  render();
+}catch(e){console.error('V0.43 scene layer',e);}
 </script>
 
 </body>
