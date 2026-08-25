@@ -2573,7 +2573,7 @@ header{
 
 function v037SyncVersion(){
   document.querySelectorAll('.version').forEach(el=>{
-    el.textContent='V0.50 RPG';
+    el.textContent='V0.51 RPG';
   });
 }
 
@@ -2928,7 +2928,7 @@ render=function(){
   v038BaseRender();
   v038BindReroll();
   v038LocationPolish();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.50 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.51 RPG');
 };
 
 try{
@@ -2999,7 +2999,7 @@ try{
 <script>
 /* V0.39 keep version label synced */
 (function(){
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.50 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.51 RPG');
 })();
 </script>
 
@@ -3448,7 +3448,7 @@ header{
 <script>
 /* V0.40 unified visual behavior + version sync */
 function v040Polish(){
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.50 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.51 RPG');
   document.querySelectorAll('.btn').forEach(b=>b.setAttribute('type','button'));
   document.querySelectorAll('.shop-item,.inv-item,.skill-card,.seed-card,.equip-card,.quest,.slot').forEach(el=>{
     el.style.willChange='transform';
@@ -3720,7 +3720,7 @@ function v41UpgradeWorldPlaces(){
 const v41BaseRender=render;
 render=function(){
   v41BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.50 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.51 RPG');
   v41InstallPortrait();
   v41InstallNpcBanners();
   v41UpgradeShopIcons();
@@ -3926,7 +3926,7 @@ const v042BaseRender=render;
 render=function(){
   v042EnsureNineShopSlots();
   v042BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.50 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.51 RPG');
 };
 
 try{
@@ -4309,7 +4309,7 @@ function v043EmptyStates(){
 const v043BaseRender=render;
 render=function(){
   v043BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.50 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.51 RPG');
   v043EquipSlotArt();
   v043BattlePlayerArt();
   v043SceneLabels();
@@ -4605,7 +4605,7 @@ function v044MapTitles(){
 const v044BaseRender=render;
 render=function(){
   v044BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.50 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.51 RPG');
   v044AddWorldRegions();
   v044AddDungeonRegions();
   v044MapTitles();
@@ -5067,7 +5067,7 @@ function v048InstallFight(){
 const v048BaseRender=render;
 render=function(){
   v048BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.50 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.51 RPG');
   v048InstallFight();
   renderDungeon();
 
@@ -5318,7 +5318,7 @@ header{
 <script>
 /* V0.49 visual-only hooks */
 function v049Polish(){
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.50 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.51 RPG');
 
   document.querySelectorAll('.inv-item,.shop-item,.skill-card,.quest,.slot,.grow-slot').forEach(el=>{
     el.style.willChange='transform';
@@ -5574,7 +5574,7 @@ header{
 <script>
 /* V0.50 visual hooks only */
 function v050Polish(){
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.50 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.51 RPG');
 
   /* Add section-specific body classes for easier game theming */
   document.querySelectorAll('.screen').forEach(screen=>{
@@ -5597,6 +5597,197 @@ try{
   render();
 }catch(e){
   console.error('V0.50 gamefeel',e);
+}
+</script>
+
+
+<style id="v051-unified-look">
+/* ===== V0.51 unified premium game look ===== */
+
+/* Typography hierarchy */
+h1,h2,h3,h4,.item-name,.shop-item h3,.skill-title,.center-name,.char-title{
+  letter-spacing:-.25px!important;
+}
+.section-title h2,.section-title h3{
+  text-shadow:0 2px 8px rgba(0,0,0,.35);
+}
+
+/* Card chrome */
+.card,.hero-card,.story-card{
+  border:1px solid rgba(101,145,98,.34)!important;
+}
+.card:after,.hero-card:after,.story-card:after{
+  content:"";
+  position:absolute;
+  inset:6px;
+  border-radius:15px;
+  border:1px solid rgba(255,255,255,.018);
+  pointer-events:none;
+}
+
+/* HUD resource accents */
+.stat:nth-child(1) b{color:#f0c86a!important}
+.stat:nth-child(2) b{color:#c1a6ff!important}
+.stat:nth-child(3) b{color:#a9e6e3!important}
+.stat:nth-child(4) b{color:#a5e77f!important}
+
+/* Character screen */
+#character .char-head{
+  padding:0 4px 12px!important;
+}
+#character .char-sub{
+  font-size:10px!important;
+  opacity:.85;
+}
+#character .combat-box{
+  position:relative;
+  overflow:hidden;
+}
+#character .combat-box:before{
+  content:"";
+  position:absolute;
+  left:0;top:0;bottom:0;width:3px;
+  background:#5f8d56;
+  opacity:.75;
+}
+
+/* Attribute presentation */
+#attrs .attr{
+  box-shadow:inset 0 1px rgba(255,255,255,.02),0 4px 10px #0003!important;
+}
+#attrs .attr b{
+  color:#e8f1e5!important;
+}
+
+/* Inventory */
+#inventory .inv-item{
+  background:
+    radial-gradient(circle at 100% 0%,rgba(125,180,108,.05),transparent 34%),
+    linear-gradient(160deg,#17241a,#0d1510)!important;
+}
+#inventory .item-bonus{
+  color:#bdc8bb!important;
+}
+#inventory .sell-price{
+  display:inline-block;
+  width:max-content;
+  padding:3px 6px;
+  border-radius:999px;
+  background:#141b12;
+  border:1px solid #4b4e2c;
+}
+
+/* Shop */
+#shop .shop-item{
+  background:
+    radial-gradient(circle at 100% 0%,rgba(182,139,70,.045),transparent 32%),
+    linear-gradient(160deg,#172219,#0d1510)!important;
+}
+#shop .shop-item .price{
+  box-shadow:inset 0 1px rgba(255,255,255,.03);
+}
+#shop .shop-item .btn{
+  font-weight:900!important;
+}
+
+/* World */
+#world .world-map-place{
+  backdrop-filter:blur(2px);
+}
+#world .world-map-place .wsub{
+  opacity:.9;
+}
+
+/* Dungeon map visuals */
+#dungeon .dungeon-node{
+  backdrop-filter:blur(1px);
+}
+#dungeon .dungeon-node .nnum{
+  text-shadow:0 2px 5px #000!important;
+}
+#dungeon .map-legend span{
+  background:#111711!important;
+  border-color:#384c37!important;
+}
+
+/* Battle HUD */
+#dungeon .fighter-name{
+  min-width:90px;
+  text-align:center;
+}
+#dungeon .hpbar{
+  background:#1d0f0f!important;
+}
+#dungeon .hpfill{
+  background:linear-gradient(90deg,#c44e48,#ef7c68)!important;
+}
+#dungeon .battle-log{
+  box-shadow:inset 0 0 12px #0005;
+}
+
+/* Quest */
+#quests .quest-meta span{
+  background:#101711!important;
+}
+#quests .timer{
+  color:#e8c66a!important;
+}
+
+/* Grow */
+#grow .seed-card.selected{
+  box-shadow:0 0 0 1px #75c45a44 inset,0 8px 18px #0004!important;
+}
+#grow .equip-card .big,
+#grow .seed-card .big{
+  filter:drop-shadow(0 5px 5px #0006);
+}
+
+/* Modal / menus */
+.top-menu-btn{
+  font-size:22px!important;
+}
+.top-menu-item{
+  font-size:12px!important;
+}
+
+/* micro interactions */
+.btn,.slot,.inv-item,.shop-item,.quest,.skill-card,.seed-card,.equip-card{
+  transition:transform .14s ease,filter .14s ease,box-shadow .14s ease,border-color .14s ease!important;
+}
+.inv-item:hover,.shop-item:hover,.quest:hover,.skill-card:hover,.seed-card:hover,.equip-card:hover{
+  transform:translateY(-1px);
+}
+
+/* Mobile cleanup */
+@media(max-width:560px){
+  .card{padding:12px!important}
+  .section-title h2,.section-title h3{font-size:17px!important}
+  #character .combat-box b{font-size:18px!important}
+  #shop .shop-item{min-height:176px!important}
+}
+</style>
+
+<script>
+/* V0.51 visual-only continuation */
+function v051Polish(){
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.51 RPG');
+
+  document.querySelectorAll('.shop-item,.inv-item,.quest,.skill-card,.seed-card,.equip-card').forEach(el=>{
+    el.style.willChange='transform';
+  });
+}
+
+const v051BaseRender=render;
+render=function(){
+  v051BaseRender();
+  v051Polish();
+};
+
+try{
+  v051Polish();
+  render();
+}catch(e){
+  console.error('V0.51 polish',e);
 }
 </script>
 
