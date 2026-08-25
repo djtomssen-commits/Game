@@ -2719,7 +2719,7 @@ header{
 
 function v037SyncVersion(){
   document.querySelectorAll('.version').forEach(el=>{
-    el.textContent='V0.37 RPG';
+    el.textContent='V0.38 RPG';
   });
 }
 
@@ -2861,6 +2861,227 @@ try{
   v037SyncVersion();
   render();
 }catch(e){console.error('V0.37 init',e);}
+</script>
+
+
+<style>
+/* ===== V0.38 Game UI overhaul ===== */
+:root{
+  --glass:rgba(14,23,16,.88);
+  --glass2:rgba(22,35,24,.92);
+  --accent:#8fdd67;
+  --accent2:#c9f79f;
+  --panelEdge:rgba(109,151,104,.34);
+}
+body{
+  background:
+    radial-gradient(circle at 50% -15%,rgba(91,145,80,.25),transparent 32%),
+    radial-gradient(circle at 15% 38%,rgba(43,84,50,.13),transparent 28%),
+    linear-gradient(180deg,#071009,#09130b 55%,#060c07)!important;
+}
+.screen{padding-bottom:6px}
+.card,.hero-card,.story-card{
+  border:1px solid var(--panelEdge)!important;
+  box-shadow:0 18px 46px rgba(0,0,0,.42),inset 0 1px rgba(255,255,255,.025)!important;
+}
+.section-title{
+  padding-bottom:8px;
+  border-bottom:1px solid rgba(112,150,108,.13);
+}
+.section-title h2,.section-title h3{
+  font-size:18px!important;
+}
+.world-map-shell,.dungeon-map-shell{
+  box-shadow:0 16px 34px #0007,inset 0 0 52px #000c!important;
+}
+.world-map-place{
+  min-height:98px!important;
+  padding:9px!important;
+  background:
+    radial-gradient(circle at 50% 0%,rgba(255,255,255,.06),transparent 32%),
+    linear-gradient(180deg,rgba(35,53,38,.98),rgba(16,25,18,.98))!important;
+}
+.world-map-place .wicon{
+  font-size:35px!important;
+  filter:drop-shadow(0 4px 5px #0008);
+}
+.world-map-place .wname{
+  font-size:11px!important;
+  letter-spacing:.02em;
+}
+.world-map-place .wsub{
+  color:#b5c3b2!important;
+}
+.dungeon-node{
+  background:
+    radial-gradient(circle at 50% 18%,rgba(255,255,255,.05),transparent 30%),
+    radial-gradient(circle at 35% 25%,#473b2a,#1b1713 72%)!important;
+}
+.character-stage{
+  border-radius:18px 18px 0 0;
+}
+.center-hero{
+  padding:8px 4px 12px;
+}
+.slot{
+  transition:transform .14s ease,border-color .14s ease,box-shadow .14s ease;
+}
+.slot:hover{
+  transform:translateY(-1px);
+  box-shadow:inset 0 0 20px rgba(0,0,0,.24),0 8px 18px #0005!important;
+}
+.inv-item,.shop-item,.skill-card,.seed-card,.equip-card,.quest{
+  position:relative;
+  overflow:hidden;
+}
+.inv-item:before,.shop-item:before,.skill-card:before,.seed-card:before,.equip-card:before,.quest:before{
+  content:"";
+  position:absolute;left:0;top:0;bottom:0;width:3px;
+  background:linear-gradient(180deg,#6ba451,#29482c);
+  opacity:.7;
+}
+.shop-item.common-gray:before,.inv-item.common-gray:before{background:#707770}
+.shop-item.uncommon:before,.inv-item.uncommon:before{background:#53bd69}
+.shop-item.rare:before,.inv-item.rare:before{background:#5b91e8}
+.shop-item.epic:before,.inv-item.epic:before{background:#a96aeb}
+.shop-item.legendary:before,.inv-item.legendary:before{background:#ea9b35}
+.shop-item.mythic:before,.inv-item.mythic:before{background:#2ed6d3}
+.price{
+  display:inline-block;
+  padding:5px 8px;
+  border-radius:999px;
+  background:#161d13;
+  border:1px solid #4f5530;
+}
+.battle-stage{
+  min-height:330px;
+}
+.fighter-avatar{
+  filter:drop-shadow(0 14px 10px #0009)!important;
+}
+.battle-log{
+  min-height:52px!important;
+}
+.grow-slot{
+  box-shadow:inset 0 0 22px #0004;
+}
+.top-menu-panel{
+  box-shadow:0 18px 44px #000b!important;
+}
+</style>
+
+<script>
+/* ===== V0.38 shop reroll + game UI behavior ===== */
+
+function v038Toast(msg,type='success'){
+  if(typeof v037Toast==='function')return v037Toast(msg,type);
+  alert(msg);
+}
+
+/* True reroll: regenerate every visible slot with fresh randomized offers. */
+function v038RerollAllShops(){
+  if((s.harzTaler||0)<1){
+    v038Toast('❌ Du brauchst 1 Harz-Taler zum Neu-Würfeln.','error');
+    return;
+  }
+
+  s.harzTaler--;
+
+  /* Force different random seed markers so offers are rebuilt instead of reusing state. */
+  s.shopRefreshes=(s.shopRefreshes||0)+1;
+  s.weaponShop=[];
+  s.magicShop=[];
+
+  if(typeof v030FillShops==='function'){
+    v030FillShops(true);
+  }else{
+    if(typeof refreshShop==='function')refreshShop(true);
+  }
+
+  localStorage.setItem(KEY,JSON.stringify(s));
+  v038Toast('🔄 Händler neu gewürfelt – neue Angebote sind da.','success');
+  render();
+}
+
+/* Make reroll button always call the fixed function. */
+function v038BindReroll(){
+  const btn=document.querySelector('#v030RefreshAll') || document.querySelector('#refreshShop');
+  if(btn){
+    btn.onclick=v038RerollAllShops;
+    btn.textContent='🔄 Beide Händler neu würfeln – 1 🟢 Harz-Taler';
+  }
+}
+
+/* Extra safety: if a shop item is bought, its slot must visibly change immediately. */
+const v038OldBuyWeapon = window.v030BuyWeapon;
+if(typeof v038OldBuyWeapon==='function'){
+  window.v030BuyWeapon=function(i){
+    const before=s.weaponShop?.[i]?.uid || s.weaponShop?.[i]?.id || '';
+    v038OldBuyWeapon(i);
+    if(s.weaponShop?.[i]){
+      const after=s.weaponShop[i]?.uid || s.weaponShop[i]?.id || '';
+      if(before===after && typeof v030MakeWeaponOffer==='function'){
+        s.weaponShop[i]=v030MakeWeaponOffer();
+        localStorage.setItem(KEY,JSON.stringify(s));
+        render();
+      }
+    }
+  };
+}
+
+const v038OldBuyMagic = window.v030BuyMagic;
+if(typeof v038OldBuyMagic==='function'){
+  window.v030BuyMagic=function(i){
+    const before=s.magicShop?.[i]?.uid || s.magicShop?.[i]?.id || '';
+    v038OldBuyMagic(i);
+    if(s.magicShop?.[i]){
+      const after=s.magicShop[i]?.uid || s.magicShop[i]?.id || '';
+      if(before===after){
+        s.magicShop[i]=(i<2 && typeof v030MakeJewelryOffer==='function')
+          ? v030MakeJewelryOffer()
+          : (typeof v030MakeMaterialOffer==='function'?v030MakeMaterialOffer():s.magicShop[i]);
+        localStorage.setItem(KEY,JSON.stringify(s));
+        render();
+      }
+    }
+  };
+}
+
+/* Visual labels that make screens feel more like game locations. */
+function v038LocationPolish(){
+  const labels={
+    world:'🗺️ Grünhain',
+    character:'🧙 Heldenquartier',
+    grow:'🌱 Growroom',
+    quests:'🍺 Zur krummen Gießkanne',
+    dungeon:'👹 Verseuchte Gebiete',
+    shop:'🏪 Händlergasse'
+  };
+
+  Object.entries(labels).forEach(([id,title])=>{
+    const screen=document.querySelector('#'+id);
+    if(!screen || screen.querySelector(':scope > .v038-location'))return;
+    const tag=document.createElement('div');
+    tag.className='v038-location';
+    tag.style.cssText='font-size:11px;font-weight:900;letter-spacing:.08em;color:#9fbe99;margin:2px 2px 9px;text-transform:uppercase';
+    tag.textContent=title;
+    screen.insertBefore(tag,screen.firstChild);
+  });
+}
+
+const v038BaseRender=render;
+render=function(){
+  v038BaseRender();
+  v038BindReroll();
+  v038LocationPolish();
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.38 RPG');
+};
+
+try{
+  v038BindReroll();
+  v038LocationPolish();
+  render();
+}catch(e){console.error('V0.38 init',e);}
 </script>
 
 </body>
