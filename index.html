@@ -2719,7 +2719,7 @@ header{
 
 function v037SyncVersion(){
   document.querySelectorAll('.version').forEach(el=>{
-    el.textContent='V0.46 RPG';
+    el.textContent='V0.47 RPG';
   });
 }
 
@@ -3074,7 +3074,7 @@ render=function(){
   v038BaseRender();
   v038BindReroll();
   v038LocationPolish();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.46 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.47 RPG');
 };
 
 try{
@@ -3145,7 +3145,7 @@ try{
 <script>
 /* V0.39 keep version label synced */
 (function(){
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.46 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.47 RPG');
 })();
 </script>
 
@@ -3594,7 +3594,7 @@ header{
 <script>
 /* V0.40 unified visual behavior + version sync */
 function v040Polish(){
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.46 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.47 RPG');
   document.querySelectorAll('.btn').forEach(b=>b.setAttribute('type','button'));
   document.querySelectorAll('.shop-item,.inv-item,.skill-card,.seed-card,.equip-card,.quest,.slot').forEach(el=>{
     el.style.willChange='transform';
@@ -3866,7 +3866,7 @@ function v41UpgradeWorldPlaces(){
 const v41BaseRender=render;
 render=function(){
   v41BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.46 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.47 RPG');
   v41InstallPortrait();
   v41InstallNpcBanners();
   v41UpgradeShopIcons();
@@ -4072,7 +4072,7 @@ const v042BaseRender=render;
 render=function(){
   v042EnsureNineShopSlots();
   v042BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.46 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.47 RPG');
 };
 
 try{
@@ -4455,7 +4455,7 @@ function v043EmptyStates(){
 const v043BaseRender=render;
 render=function(){
   v043BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.46 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.47 RPG');
   v043EquipSlotArt();
   v043BattlePlayerArt();
   v043SceneLabels();
@@ -4751,7 +4751,7 @@ function v044MapTitles(){
 const v044BaseRender=render;
 render=function(){
   v044BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.46 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.47 RPG');
   v044AddWorldRegions();
   v044AddDungeonRegions();
   v044MapTitles();
@@ -4917,7 +4917,7 @@ if(typeof v032Go==='function'){
 const v045BaseRender=render;
 render=function(){
   v045BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.46 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.47 RPG');
   v045InstallLootObserver();
   v045ApplyDungeonMode();
   v045BindRewardReturn();
@@ -5159,7 +5159,7 @@ setInterval(v046BattleFallback,800);
 const v046BaseRender=render;
 render=function(){
   v046BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.46 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.47 RPG');
   v046ObserveLoot();
   v046BattleFallback();
 };
@@ -5168,6 +5168,108 @@ try{
   v046ObserveLoot();
   render();
 }catch(e){console.error('V0.46 init',e);}
+</script>
+
+
+<script>
+/* ===== V0.47 post-battle freeze fix ===== */
+
+/* Stop the V0.46 repeating fallback from causing repeated DOM churn. */
+try{
+  if(typeof v046BattleFallback==='function'){
+    v046BattleFallback=function(){};
+  }
+}catch(e){}
+
+/* Safe one-shot return button helper. */
+function v047SetReturnButton(type){
+  const loot=document.querySelector('#loot');
+  if(!loot)return;
+
+  let btn=loot.querySelector('[data-v047-return], [data-v046-return], #v033RewardConfirm');
+  if(!btn){
+    btn=document.createElement('button');
+    btn.dataset.v047Return='1';
+    loot.appendChild(btn);
+  }
+
+  const isWin=type==='win';
+  const wantedClass=isWin?'btn v046-return-btn':'btn secondary v046-return-btn';
+  const wantedText=isWin
+    ? '🎁 Belohnung bestätigen · Zur Dungeon-Karte'
+    : '🗺️ Zurück zur Dungeon-Karte';
+
+  if(btn.className!==wantedClass)btn.className=wantedClass;
+  if(btn.textContent!==wantedText)btn.textContent=wantedText;
+  btn.onclick=v045ShowDungeonMap;
+}
+
+/* Install a guarded observer that only reacts when battle result content changes. */
+function v047InstallSafeLootObserver(){
+  const loot=document.querySelector('#loot');
+  if(!loot || loot.dataset.v047Observed)return;
+
+  loot.dataset.v047Observed='1';
+  let lastState='';
+
+  const check=()=>{
+    const txt=(loot.textContent||'').trim();
+    let state='';
+    if(txt.includes('Niederlage') || txt.includes('zu stark'))state='loss';
+    else if(txt.includes('Sieg') || txt.includes('Dungeon abgeschlossen'))state='win';
+
+    if(!state || state===lastState)return;
+    lastState=state;
+    v047SetReturnButton(state);
+  };
+
+  const obs=new MutationObserver(check);
+  obs.observe(loot,{childList:true,subtree:true,characterData:true});
+  check();
+}
+
+/* Remove any existing V0.46 observer marker so the old install function no longer matters. */
+try{
+  const loot=document.querySelector('#loot');
+  if(loot){
+    delete loot.dataset.v046Observed;
+  }
+}catch(e){}
+
+/* Disable old observer/fallback installers after this point. */
+try{v046ObserveLoot=function(){};}catch(e){}
+try{v046EnsureReturnButton=function(type){v047SetReturnButton(type);};}catch(e){}
+
+/* Wrap render without repeatedly touching battle-result DOM. */
+const v047BaseRender=render;
+render=function(){
+  v047BaseRender();
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.47 RPG');
+  v047InstallSafeLootObserver();
+};
+
+/* Extra safety: clicking map return clears battle result and restores map state. */
+const v047OldShowMap=v045ShowDungeonMap;
+v045ShowDungeonMap=function(){
+  s.ui??={};
+  s.ui.dungeonMode='map';
+  localStorage.setItem(KEY,JSON.stringify(s));
+
+  const loot=document.querySelector('#loot');
+  if(loot)loot.innerHTML='';
+
+  const cards=v045DungeonCards();
+  if(cards.mapCard)cards.mapCard.style.display='';
+  if(cards.battleCard)cards.battleCard.style.display='none';
+
+  try{renderDungeon()}catch(e){}
+  window.scrollTo({top:0,behavior:'smooth'});
+};
+
+try{
+  v047InstallSafeLootObserver();
+  render();
+}catch(e){console.error('V0.47 freeze fix',e);}
 </script>
 
 </body>
