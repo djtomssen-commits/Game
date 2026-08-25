@@ -2719,7 +2719,7 @@ header{
 
 function v037SyncVersion(){
   document.querySelectorAll('.version').forEach(el=>{
-    el.textContent='V0.43 RPG';
+    el.textContent='V0.44 RPG';
   });
 }
 
@@ -3074,7 +3074,7 @@ render=function(){
   v038BaseRender();
   v038BindReroll();
   v038LocationPolish();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.43 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.44 RPG');
 };
 
 try{
@@ -3145,7 +3145,7 @@ try{
 <script>
 /* V0.39 keep version label synced */
 (function(){
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.43 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.44 RPG');
 })();
 </script>
 
@@ -3594,7 +3594,7 @@ header{
 <script>
 /* V0.40 unified visual behavior + version sync */
 function v040Polish(){
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.43 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.44 RPG');
   document.querySelectorAll('.btn').forEach(b=>b.setAttribute('type','button'));
   document.querySelectorAll('.shop-item,.inv-item,.skill-card,.seed-card,.equip-card,.quest,.slot').forEach(el=>{
     el.style.willChange='transform';
@@ -3866,7 +3866,7 @@ function v41UpgradeWorldPlaces(){
 const v41BaseRender=render;
 render=function(){
   v41BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.43 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.44 RPG');
   v41InstallPortrait();
   v41InstallNpcBanners();
   v41UpgradeShopIcons();
@@ -4072,7 +4072,7 @@ const v042BaseRender=render;
 render=function(){
   v042EnsureNineShopSlots();
   v042BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.43 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.44 RPG');
 };
 
 try{
@@ -4455,7 +4455,7 @@ function v043EmptyStates(){
 const v043BaseRender=render;
 render=function(){
   v043BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.43 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.44 RPG');
   v043EquipSlotArt();
   v043BattlePlayerArt();
   v043SceneLabels();
@@ -4465,6 +4465,301 @@ render=function(){
 try{
   render();
 }catch(e){console.error('V0.43 scene layer',e);}
+</script>
+
+
+<style id="v044-map-overhaul">
+/* ===== V0.44 World + Dungeon map overhaul ===== */
+
+/* -------- World map -------- */
+.world-map-shell{
+  overflow:hidden!important;
+  border-radius:24px!important;
+  border:1px solid #486249!important;
+  box-shadow:0 20px 45px #0009,inset 0 0 70px #000d!important;
+}
+
+.world-map{
+  height:1080px!important;
+  background:
+    radial-gradient(circle at 18% 15%,rgba(119,153,82,.75) 0 6%,transparent 7%),
+    radial-gradient(circle at 77% 14%,rgba(52,79,49,.88) 0 10%,transparent 11%),
+    radial-gradient(circle at 29% 42%,rgba(117,98,57,.82) 0 9%,transparent 10%),
+    radial-gradient(circle at 77% 52%,rgba(42,64,46,.9) 0 12%,transparent 13%),
+    radial-gradient(circle at 36% 74%,rgba(70,83,52,.88) 0 13%,transparent 14%),
+    linear-gradient(180deg,#365738 0%,#4b653e 23%,#756b47 46%,#47543a 68%,#253328 100%)!important;
+}
+
+.world-map:before{
+  background:
+    repeating-linear-gradient(22deg,transparent 0 52px,rgba(255,255,255,.025) 53px 54px),
+    radial-gradient(circle at 50% 45%,transparent 0 40%,rgba(0,0,0,.15) 72%,rgba(0,0,0,.45) 100%)!important;
+}
+
+.world-map:after{
+  content:""!important;
+  position:absolute!important;
+  inset:0!important;
+  z-index:1!important;
+  pointer-events:none!important;
+  background:
+    linear-gradient(90deg,transparent 0 8%,rgba(0,0,0,.08) 50%,transparent 92%),
+    radial-gradient(circle at 50% 50%,transparent 0 62%,rgba(0,0,0,.25) 100%)!important;
+}
+
+.world-path polyline{
+  stroke:#e0c982!important;
+  stroke-width:10!important;
+  stroke-dasharray:4 16!important;
+  opacity:.74!important;
+  filter:drop-shadow(0 3px 2px #0009)!important;
+}
+
+.world-map-place{
+  width:118px!important;
+  min-height:110px!important;
+  padding:9px!important;
+  border-radius:22px!important;
+  background:
+    radial-gradient(circle at 50% 8%,rgba(255,255,255,.06),transparent 30%),
+    linear-gradient(180deg,rgba(35,51,38,.98),rgba(15,23,17,.98))!important;
+  border:2px solid #607b61!important;
+  box-shadow:0 14px 28px #000a,inset 0 1px rgba(255,255,255,.05)!important;
+}
+
+.world-map-place .wicon{
+  width:64px!important;
+  height:64px!important;
+  margin:0 auto 4px!important;
+  filter:drop-shadow(0 6px 6px #0009)!important;
+}
+.world-map-place .wname{
+  font-size:10px!important;
+  line-height:1.15!important;
+  font-weight:1000!important;
+}
+.world-map-place .wsub{
+  font-size:7px!important;
+  line-height:1.15!important;
+  color:#b7c3b6!important;
+}
+.world-map-place.hero{border-color:#658bb1!important}
+.world-map-place.shop{border-color:#c09a55!important}
+.world-map-place.grow{border-color:#75b667!important}
+.world-map-place.quest{border-color:#987c50!important}
+.world-map-place.dungeon{border-color:#b5685e!important}
+.world-map-place.event{border-color:#976cae!important}
+
+.world-map-scenery{
+  font-size:0!important;
+  opacity:1!important;
+}
+.world-map-scenery:before{
+  display:block;
+  font-size:38px;
+  filter:drop-shadow(0 5px 5px #0008);
+}
+.world-map-scenery.s1:before{content:"🌲🌲🌲"}
+.world-map-scenery.s2:before{content:"⛰️⛰️"}
+.world-map-scenery.s3:before{content:"🌾🌾"}
+.world-map-scenery.s4:before{content:"🌲🏚️🌲"}
+.world-map-scenery.s5:before{content:"🌫️🌫️"}
+.world-map-scenery.s6:before{content:"🌲🌲"}
+
+/* Region labels */
+.v044-region{
+  position:absolute;
+  z-index:3;
+  padding:4px 7px;
+  border-radius:999px;
+  background:rgba(10,16,11,.75);
+  border:1px solid rgba(82,112,81,.45);
+  color:#c9d7c6;
+  font-size:8px;
+  font-weight:1000;
+  letter-spacing:.1em;
+  text-transform:uppercase;
+  box-shadow:0 4px 10px #0006;
+  pointer-events:none;
+}
+
+/* -------- Dungeon map -------- */
+.dungeon-map-shell{
+  max-height:760px!important;
+  border-radius:24px!important;
+  border:1px solid #5e4b37!important;
+  box-shadow:0 20px 45px #000a,inset 0 0 70px #000d!important;
+}
+.adventure-map{
+  height:1880px!important;
+  background:
+    radial-gradient(circle at 18% 10%,rgba(87,104,63,.9) 0 7%,transparent 8%),
+    radial-gradient(circle at 80% 24%,rgba(41,52,37,.95) 0 10%,transparent 11%),
+    radial-gradient(circle at 28% 45%,rgba(104,85,49,.88) 0 10%,transparent 11%),
+    radial-gradient(circle at 72% 67%,rgba(58,49,43,.95) 0 12%,transparent 13%),
+    linear-gradient(180deg,#233622 0%,#445436 18%,#78694a 38%,#4e4938 62%,#312d2b 82%,#1d2020 100%)!important;
+}
+.adventure-map:before{
+  background:
+    repeating-linear-gradient(22deg,transparent 0 54px,rgba(255,255,255,.02) 55px 56px),
+    radial-gradient(circle at 50% 50%,transparent 0 42%,rgba(0,0,0,.18) 72%,rgba(0,0,0,.48) 100%)!important;
+}
+.map-path polyline{
+  stroke:#d8c27d!important;
+  stroke-width:11!important;
+  stroke-dasharray:5 19!important;
+  opacity:.72!important;
+  filter:drop-shadow(0 3px 2px #0009)!important;
+}
+
+.dungeon-node{
+  width:84px!important;
+  height:84px!important;
+  border-width:3px!important;
+  background:
+    radial-gradient(circle at 50% 10%,rgba(255,255,255,.05),transparent 28%),
+    radial-gradient(circle at 40% 32%,#4b4030,#1c1714 72%)!important;
+}
+.dungeon-node .nicon{
+  font-size:27px!important;
+}
+.dungeon-node .nnum{
+  max-width:74px!important;
+  font-size:8px!important;
+  line-height:1.05!important;
+}
+.dungeon-node .nlvl{
+  font-size:7px!important;
+}
+.dungeon-node.available{
+  border-color:#dec46e!important;
+  box-shadow:0 0 24px rgba(222,196,110,.25),0 12px 26px #000a!important;
+}
+.dungeon-node.active{
+  border-color:#7ddd62!important;
+  box-shadow:0 0 28px rgba(125,221,98,.35),0 12px 26px #000a!important;
+}
+.dungeon-node.locked{
+  opacity:.58!important;
+  filter:grayscale(.78) brightness(.8)!important;
+}
+.dungeon-node.completed{
+  opacity:.62!important;
+  filter:grayscale(1)!important;
+}
+
+.map-scenery{
+  font-size:0!important;
+}
+.map-scenery:before{
+  display:block;
+  font-size:40px;
+  filter:drop-shadow(0 6px 6px #0009);
+}
+.map-scenery.s1:before{content:"🌲🌲🌲"}
+.map-scenery.s2:before{content:"🏚️"}
+.map-scenery.s3:before{content:"⛰️"}
+.map-scenery.s4:before{content:"🌫️🌲"}
+.map-scenery.s5:before{content:"🏰"}
+
+.v044-dungeon-region{
+  position:absolute;
+  z-index:3;
+  padding:4px 7px;
+  border-radius:999px;
+  background:rgba(16,13,11,.78);
+  border:1px solid rgba(113,91,59,.48);
+  color:#d1c4aa;
+  font-size:8px;
+  font-weight:1000;
+  letter-spacing:.1em;
+  text-transform:uppercase;
+  pointer-events:none;
+}
+
+@media(max-width:560px){
+  .world-map{height:1020px!important}
+  .world-map-place{width:102px!important;min-height:98px!important}
+  .world-map-place .wicon{width:54px!important;height:54px!important}
+  .adventure-map{height:1880px!important}
+  .dungeon-node{width:76px!important;height:76px!important}
+}
+</style>
+
+<script>
+/* ===== V0.44 map labels and layout polish ===== */
+
+function v044AddWorldRegions(){
+  const map=document.querySelector('#v032WorldMap');
+  if(!map || map.querySelector('.v044-region'))return;
+
+  const regions=[
+    ['Dorfkern',48,6],
+    ['Tavernenviertel',14,22],
+    ['Händlergasse',67,31],
+    ['Grow-Bezirk',17,48],
+    ['Verseuchte Grenze',62,57],
+    ['Eventwiese',20,74],
+    ['Schwarzes Brett',55,86]
+  ];
+
+  regions.forEach(([name,left,top])=>{
+    const el=document.createElement('div');
+    el.className='v044-region';
+    el.style.left=left+'%';
+    el.style.top=top+'%';
+    el.textContent=name;
+    map.appendChild(el);
+  });
+}
+
+function v044AddDungeonRegions(){
+  const map=document.querySelector('#dungeonSelect');
+  if(!map || map.querySelector('.v044-dungeon-region'))return;
+
+  const regions=[
+    ['Grünhains Rand',10,5],
+    ['Verlassene Keller',60,18],
+    ['Verseuchte Felder',20,36],
+    ['Sporenlande',62,53],
+    ['Nebelgrenze',18,70],
+    ['Schwarze Zitadelle',57,88]
+  ];
+
+  regions.forEach(([name,left,top])=>{
+    const el=document.createElement('div');
+    el.className='v044-dungeon-region';
+    el.style.left=left+'%';
+    el.style.top=top+'%';
+    el.textContent=name;
+    map.appendChild(el);
+  });
+}
+
+/* Give map cards dedicated title strips */
+function v044MapTitles(){
+  const w=document.querySelector('#world .card');
+  if(w && !w.querySelector('.v044-map-head')){
+    const h=document.createElement('div');
+    h.className='v044-map-head';
+    h.style.cssText='margin:-6px -4px 10px;padding:9px 11px;border-radius:12px;background:linear-gradient(180deg,#1b2a1e,#101813);border:1px solid #354f37;font-size:11px;font-weight:1000;letter-spacing:.08em;color:#c8d9c3';
+    h.textContent='🗺️ GRÜNHAIN · WELTKARTE';
+    w.insertBefore(h,w.firstChild);
+  }
+}
+
+const v044BaseRender=render;
+render=function(){
+  v044BaseRender();
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.44 RPG');
+  v044AddWorldRegions();
+  v044AddDungeonRegions();
+  v044MapTitles();
+};
+
+try{
+  render();
+}catch(e){console.error('V0.44 map overhaul',e);}
 </script>
 
 </body>
