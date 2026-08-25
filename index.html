@@ -1911,6 +1911,155 @@ function v032WorldMapHTML(){return `<div class="world-map-shell"><div class="wor
 function v032InstallWorldMap(){const world=document.querySelector('#world');if(!world)return;world.querySelectorAll('.world-hero,.world-grid').forEach(x=>x.remove());if(!document.querySelector('#v032WorldMap')){const holder=document.createElement('div');holder.id='v032WorldMapHolder';holder.innerHTML=`<div class="card"><div class="section-title"><div><h2>🗺️ Weltkarte von Grünhain</h2><div class="muted">Tippe auf einen Ort, um ihn zu betreten.</div></div></div>${v032WorldMapHTML()}</div>`;world.insertBefore(holder,world.firstChild);}world.querySelectorAll('[data-v032-go]').forEach(b=>b.onclick=()=>v032Go(b.dataset.v032Go));const ev=world.querySelector('[data-v032-event]');if(ev)ev.onclick=()=>alert('Events kommen später. Mystische türkisfarbene Items gibt es ausschließlich dort.');}
 const v032BaseRender=render;render=function(){v032BaseRender();v032InstallMenu();v032InstallWorldMap();};try{v032InstallMenu();v032InstallWorldMap();render();}catch(e){console.error('V0.32 init',e);}
 </script>
+
+<script>
+/* ===== V0.33 Dungeon flow fix ===== */
+
+/* Ensure battle section can be shown/hidden independently from the map card */
+function v033DungeonParts(){
+  const screen=document.querySelector('#dungeon');
+  if(!screen)return {};
+  const cards=[...screen.querySelectorAll(':scope > .card')];
+  return {screen,mapCard:cards[0]||null,battleCard:cards[1]||null};
+}
+
+function v033ShowDungeonMap(){
+  const {mapCard,battleCard}=v033DungeonParts();
+  if(mapCard)mapCard.style.display='';
+  if(battleCard)battleCard.style.display='none';
+
+  const loot=document.querySelector('#loot');
+  if(loot)loot.innerHTML='';
+
+  const log=document.querySelector('#battleLog');
+  if(log)log.textContent='Wähle auf der Karte deinen aktuellen Dungeon.';
+
+  try{renderDungeon()}catch(e){}
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function v033OpenDungeonFight(i){
+  if(typeof i==='number'){
+    const d=dungeons[i];
+    if(!d)return;
+    if(dungeonCompleted(i))return alert(`${d.name} wurde bereits abgeschlossen.`);
+    if(s.level<d.minLevel)return alert(`Dieser Dungeon ist erst ab Level ${d.minLevel} verfügbar.`);
+    if(!dungeonUnlocked(i))return alert(`${d.keyName} fehlt. Den Stein kannst du beim Questen finden.`);
+    s.dungeon.selected=i;
+    s.dungeon.room=Math.max(0,Math.min(9,s.dungeon.progress?.[i]??0));
+    localStorage.setItem(KEY,JSON.stringify(s));
+  }
+
+  const {mapCard,battleCard}=v033DungeonParts();
+  if(mapCard)mapCard.style.display='none';
+  if(battleCard)battleCard.style.display='';
+
+  const loot=document.querySelector('#loot');
+  if(loot)loot.innerHTML='';
+
+  try{renderDungeon()}catch(e){}
+
+  const di=s.dungeon.selected||0;
+  const idx=Math.max(0,Math.min(9,(s.dungeon.progress?.[di] ?? s.dungeon.room ?? 0)));
+  const e=dungeons[di]?.enemies?.[idx];
+  const log=document.querySelector('#battleLog');
+  if(log && e)log.textContent=`${e.name} wartet auf dich.`;
+
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* Override dungeon selection: map click opens fight view */
+window.selectDungeon=function(i){
+  v033OpenDungeonFight(i);
+};
+
+/* Replace fight finish UX by observing loot after battle and adding confirm button */
+function v033InstallRewardObserver(){
+  const loot=document.querySelector('#loot');
+  if(!loot || loot.dataset.v033Observed)return;
+  loot.dataset.v033Observed='1';
+
+  const obs=new MutationObserver(()=>{
+    if(!loot.innerHTML.trim())return;
+    if(loot.querySelector('#v033RewardConfirm'))return;
+
+    const win=loot.textContent.includes('Sieg') || loot.textContent.includes('Dungeon abgeschlossen');
+    const loss=loot.textContent.includes('Niederlage');
+
+    if(win){
+      const b=document.createElement('button');
+      b.className='btn';
+      b.id='v033RewardConfirm';
+      b.style.cssText='width:100%;margin-top:10px';
+      b.textContent='🎁 Belohnung bestätigen · Zur Dungeon-Karte';
+      b.onclick=()=>v033ShowDungeonMap();
+      loot.appendChild(b);
+    }else if(loss){
+      const b=document.createElement('button');
+      b.className='btn secondary';
+      b.id='v033RewardConfirm';
+      b.style.cssText='width:100%;margin-top:10px';
+      b.textContent='🗺️ Zurück zur Dungeon-Karte';
+      b.onclick=()=>v033ShowDungeonMap();
+      loot.appendChild(b);
+    }
+  });
+  obs.observe(loot,{childList:true,subtree:true});
+}
+
+/* Remove/repair stray n/n text on dungeon screen */
+function v033FixDungeonText(){
+  const screen=document.querySelector('#dungeon');
+  if(!screen)return;
+
+  screen.querySelectorAll('*').forEach(el=>{
+    if(el.children.length===0){
+      const t=(el.textContent||'').trim();
+      if(/^n\s*\/\s*n$/i.test(t) || /^NaN\s*\/\s*NaN$/i.test(t)){
+        el.textContent='';
+        el.style.display='none';
+      }
+    }
+  });
+
+  const prog=document.querySelector('#dungeonProgress');
+  if(prog){
+    const di=Math.max(0,Math.min(dungeons.length-1,s.dungeon.selected||0));
+    const idx=Math.max(0,Math.min(9,(s.dungeon.progress?.[di] ?? s.dungeon.room ?? 0)));
+    prog.textContent=dungeonCompleted(di)?'10 / 10':`${idx+1} / 10`;
+  }
+}
+
+/* When entering dungeon screen, always start on the map */
+const v033OldGo = (typeof v032Go==='function') ? v032Go : null;
+if(v033OldGo){
+  v032Go=function(id){
+    v033OldGo(id);
+    if(id==='dungeon'){
+      setTimeout(()=>{
+        v033InstallRewardObserver();
+        v033FixDungeonText();
+        v033ShowDungeonMap();
+      },0);
+    }
+  };
+}
+
+/* Keep UI stable after renders */
+const v033BaseRender=render;
+render=function(){
+  v033BaseRender();
+  v033InstallRewardObserver();
+  v033FixDungeonText();
+};
+
+try{
+  v033InstallRewardObserver();
+  v033FixDungeonText();
+  if(document.querySelector('#dungeon')?.classList.contains('active'))v033ShowDungeonMap();
+}catch(e){console.error('V0.33 dungeon flow',e);}
+</script>
+
 </body>
 </html>
 <style>
