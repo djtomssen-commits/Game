@@ -2573,7 +2573,7 @@ header{
 
 function v037SyncVersion(){
   document.querySelectorAll('.version').forEach(el=>{
-    el.textContent='V0.53 RPG';
+    el.textContent='V0.54 RPG';
   });
 }
 
@@ -2928,7 +2928,7 @@ render=function(){
   v038BaseRender();
   v038BindReroll();
   v038LocationPolish();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.53 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.54 RPG');
 };
 
 try{
@@ -2999,7 +2999,7 @@ try{
 <script>
 /* V0.39 keep version label synced */
 (function(){
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.53 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.54 RPG');
 })();
 </script>
 
@@ -3448,7 +3448,7 @@ header{
 <script>
 /* V0.40 unified visual behavior + version sync */
 function v040Polish(){
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.53 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.54 RPG');
   document.querySelectorAll('.btn').forEach(b=>b.setAttribute('type','button'));
   document.querySelectorAll('.shop-item,.inv-item,.skill-card,.seed-card,.equip-card,.quest,.slot').forEach(el=>{
     el.style.willChange='transform';
@@ -3720,7 +3720,7 @@ function v41UpgradeWorldPlaces(){
 const v41BaseRender=render;
 render=function(){
   v41BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.53 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.54 RPG');
   v41InstallPortrait();
   v41InstallNpcBanners();
   v41UpgradeShopIcons();
@@ -3926,7 +3926,7 @@ const v042BaseRender=render;
 render=function(){
   v042EnsureNineShopSlots();
   v042BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.53 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.54 RPG');
 };
 
 try{
@@ -4309,7 +4309,7 @@ function v043EmptyStates(){
 const v043BaseRender=render;
 render=function(){
   v043BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.53 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.54 RPG');
   v043EquipSlotArt();
   v043BattlePlayerArt();
   v043SceneLabels();
@@ -4605,7 +4605,7 @@ function v044MapTitles(){
 const v044BaseRender=render;
 render=function(){
   v044BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.53 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.54 RPG');
   v044AddWorldRegions();
   v044AddDungeonRegions();
   v044MapTitles();
@@ -5067,7 +5067,7 @@ function v048InstallFight(){
 const v048BaseRender=render;
 render=function(){
   v048BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.53 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.54 RPG');
   v048InstallFight();
   renderDungeon();
 
@@ -5318,7 +5318,7 @@ header{
 <script>
 /* V0.49 visual-only hooks */
 function v049Polish(){
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.53 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.54 RPG');
 
   document.querySelectorAll('.inv-item,.shop-item,.skill-card,.quest,.slot,.grow-slot').forEach(el=>{
     el.style.willChange='transform';
@@ -5574,7 +5574,7 @@ header{
 <script>
 /* V0.50 visual hooks only */
 function v050Polish(){
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.53 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.54 RPG');
 
   /* Add section-specific body classes for easier game theming */
   document.querySelectorAll('.screen').forEach(screen=>{
@@ -5770,7 +5770,7 @@ h1,h2,h3,h4,.item-name,.shop-item h3,.skill-title,.center-name,.char-title{
 <script>
 /* V0.51 visual-only continuation */
 function v051Polish(){
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.53 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.54 RPG');
 
   document.querySelectorAll('.shop-item,.inv-item,.quest,.skill-card,.seed-card,.equip-card').forEach(el=>{
     el.style.willChange='transform';
@@ -5993,7 +5993,7 @@ function v052InstallSceneBanners(){
 }
 
 function v052Polish(){
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.53 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.54 RPG');
   v052InstallSceneBanners();
 }
 
@@ -6218,7 +6218,7 @@ header:after{
 <script>
 /* V0.53 visual-only continuation */
 function v053Polish(){
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.53 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.54 RPG');
 
   document.querySelectorAll('.btn,.stat,.shop-item,.inv-item,.quest,.skill-card,.grow-slot,.world-map-place,.dungeon-node').forEach(el=>{
     el.style.willChange='transform';
@@ -6236,6 +6236,448 @@ try{
   render();
 }catch(e){
   console.error('V0.53 premium detail',e);
+}
+</script>
+
+
+<style id="v054-inventory-shop-feedback">
+/* ===== V0.54 compact 3x3 inventory + stronger game visuals ===== */
+
+/* ---------- Reliable purchase toast ---------- */
+.v054-toast{
+  position:fixed;
+  left:50%;
+  bottom:20px;
+  z-index:20000;
+  width:min(92vw,460px);
+  transform:translate(-50%,18px);
+  opacity:0;
+  pointer-events:none;
+  padding:12px 14px;
+  border-radius:14px;
+  border:1px solid #4d704d;
+  background:
+    radial-gradient(circle at 50% 0%,rgba(137,204,111,.10),transparent 42%),
+    linear-gradient(180deg,#1a2b1d,#101813);
+  color:#f2f6ef;
+  box-shadow:0 16px 36px rgba(0,0,0,.56);
+  font-size:12px;
+  font-weight:900;
+  text-align:center;
+  transition:opacity .18s ease,transform .18s ease;
+}
+.v054-toast.show{
+  opacity:1;
+  transform:translate(-50%,0);
+}
+.v054-toast.error{
+  border-color:#925050;
+  background:linear-gradient(180deg,#342020,#1d1212);
+}
+.v054-toast.success{
+  border-color:#568256;
+}
+.v054-toast .sub{
+  display:block;
+  margin-top:3px;
+  color:#b6c3b3;
+  font-size:9px;
+  font-weight:700;
+}
+
+/* ---------- Inventory becomes a real 3x3 grid ---------- */
+#inventory .inventory-grid{
+  display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:7px!important;
+  align-items:stretch!important;
+}
+
+#inventory .inv-item{
+  min-width:0!important;
+  min-height:150px!important;
+  padding:7px!important;
+  border-radius:13px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  overflow:hidden!important;
+}
+
+#inventory .item-name{
+  display:block!important;
+  min-height:48px!important;
+  padding:0 0 5px!important;
+  margin-bottom:4px!important;
+  text-align:center!important;
+  font-size:8px!important;
+  line-height:1.12!important;
+  overflow-wrap:anywhere!important;
+  border-bottom:1px solid rgba(93,129,91,.11)!important;
+}
+
+#inventory .v41-badge-art{
+  display:block!important;
+  width:40px!important;
+  height:40px!important;
+  margin:0 auto 4px!important;
+  padding:3px!important;
+  border-radius:10px!important;
+}
+
+#inventory .item-bonus{
+  min-height:30px!important;
+  font-size:7px!important;
+  line-height:1.2!important;
+  text-align:center!important;
+  overflow-wrap:anywhere!important;
+}
+
+#inventory .compare{
+  min-height:28px!important;
+  padding:4px!important;
+  font-size:7px!important;
+  line-height:1.15!important;
+  text-align:center!important;
+}
+
+#inventory .sell-price{
+  margin:4px auto!important;
+  font-size:7px!important;
+  padding:2px 5px!important;
+}
+
+#inventory .inv-actions{
+  display:grid!important;
+  grid-template-columns:1fr!important;
+  gap:4px!important;
+  margin-top:auto!important;
+}
+
+#inventory .inv-actions .btn{
+  min-width:0!important;
+  width:100%!important;
+  min-height:29px!important;
+  padding:6px 2px!important;
+  border-radius:8px!important;
+  font-size:8px!important;
+  line-height:1.05!important;
+  white-space:normal!important;
+}
+
+/* Compact rarity chips */
+#inventory .q-gray,
+#inventory .q-green,
+#inventory .q-blue,
+#inventory .q-purple,
+#inventory .q-orange,
+#inventory .q-cyan{
+  display:block!important;
+  width:max-content!important;
+  max-width:100%!important;
+  margin:3px auto!important;
+  padding:2px 5px!important;
+  font-size:7px!important;
+  border-radius:999px!important;
+}
+
+/* Materials also use a compact 3x3 board */
+#v030Materials .inventory-grid{
+  display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:7px!important;
+}
+#v030Materials .inv-item{
+  min-height:130px!important;
+  padding:7px!important;
+}
+#v030Materials .item-name{
+  font-size:8px!important;
+  line-height:1.15!important;
+}
+#v030Materials .item-bonus{
+  font-size:7px!important;
+}
+#v030Materials .btn{
+  font-size:8px!important;
+  padding:6px 3px!important;
+}
+
+/* ---------- RPG inventory board styling ---------- */
+#inventory{
+  position:relative;
+}
+#inventory:before{
+  content:"";
+  position:absolute;
+  inset:-7px;
+  border-radius:17px;
+  border:1px solid rgba(92,134,91,.13);
+  background:
+    linear-gradient(90deg,rgba(255,255,255,.012),transparent 15%,transparent 85%,rgba(255,255,255,.012)),
+    radial-gradient(circle at 50% 0%,rgba(105,166,91,.035),transparent 32%);
+  pointer-events:none;
+}
+#inventory .inv-item:after{
+  content:"";
+  position:absolute;
+  inset:3px;
+  border-radius:9px;
+  border:1px solid rgba(255,255,255,.018);
+  pointer-events:none;
+}
+
+/* ---------- Further graphic polish ---------- */
+#character .hero-card{
+  background:
+    radial-gradient(circle at 50% 22%,rgba(112,185,92,.10),transparent 30%),
+    linear-gradient(155deg,#152319,#0b130e 82%)!important;
+}
+#shop .shop-item .v41-shop-icon,
+#inventory .v41-badge-art{
+  background:
+    radial-gradient(circle at 50% 25%,rgba(255,255,255,.055),transparent 36%),
+    linear-gradient(180deg,#223326,#141f17)!important;
+  box-shadow:inset 0 0 14px #0005,0 5px 12px #0004!important;
+}
+#shop .shop-item,
+#inventory .inv-item{
+  border-color:#344d36!important;
+}
+#shop .shop-item:hover,
+#inventory .inv-item:hover{
+  border-color:#527153!important;
+}
+
+/* Slightly richer world markers */
+.world-map-place{
+  background:
+    radial-gradient(circle at 50% 5%,rgba(255,255,255,.065),transparent 30%),
+    linear-gradient(180deg,rgba(34,52,37,.99),rgba(14,22,16,.99))!important;
+}
+
+/* Battle reward visual */
+#loot .loot.good{
+  background:
+    radial-gradient(circle at 50% 0%,rgba(123,196,96,.08),transparent 38%),
+    linear-gradient(180deg,#18251a,#0e1610)!important;
+}
+
+/* Mobile: keep 3 columns as requested */
+@media(max-width:560px){
+  #inventory .inventory-grid,
+  #v030Materials .inventory-grid{
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+    gap:5px!important;
+  }
+  #inventory .inv-item{
+    padding:5px!important;
+    min-height:145px!important;
+  }
+  #inventory .v41-badge-art{
+    width:36px!important;height:36px!important;
+  }
+  #inventory .item-name{
+    font-size:7px!important;
+    min-height:45px!important;
+  }
+  #inventory .item-bonus,
+  #inventory .compare,
+  #inventory .sell-price{
+    font-size:6px!important;
+  }
+  #inventory .inv-actions .btn{
+    font-size:7px!important;
+    padding:5px 1px!important;
+  }
+}
+
+@media(max-width:350px){
+  #inventory .inventory-grid,
+  #v030Materials .inventory-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  }
+}
+</style>
+
+<script>
+/* ===== V0.54 reliable buying feedback ===== */
+
+function v054Toast(message,type='success',sub=''){
+  let toast=document.querySelector('#v054Toast');
+  if(!toast){
+    toast=document.createElement('div');
+    toast.id='v054Toast';
+    toast.className='v054-toast';
+    document.body.appendChild(toast);
+  }
+
+  toast.className=`v054-toast ${type}`;
+  toast.innerHTML=`${message}${sub?`<span class="sub">${sub}</span>`:''}`;
+
+  clearTimeout(window.__v054ToastTimer);
+  requestAnimationFrame(()=>toast.classList.add('show'));
+  window.__v054ToastTimer=setTimeout(()=>toast.classList.remove('show'),2600);
+}
+
+function v054NotEnoughGold(){
+  v054Toast('❌ Nicht genug Gold','error','Du kannst diesen Gegenstand noch nicht kaufen.');
+}
+
+function v054Purchased(item,destination='Inventar'){
+  const name=item?.name||'Gegenstand';
+  v054Toast(`✅ ${name} gekauft`,'success',`Der Gegenstand liegt jetzt im ${destination}.`);
+}
+
+/* Override all active purchase functions at the end of the file,
+   so older versions cannot silently replace the feedback. */
+
+window.v030BuyWeapon=function(i){
+  const it=s.weaponShop?.[i];
+  if(!it)return;
+
+  if(s.gold<Number(it.price||0)){
+    v054NotEnoughGold();
+    return;
+  }
+
+  s.gold-=Number(it.price||0);
+  const bought={
+    ...it,
+    id:it.uid||`gear_${Date.now()}_${Math.random().toString(36).slice(2,8)}`
+  };
+  s.inventory.push(bought);
+
+  if(typeof v030MakeWeaponOffer==='function'){
+    s.weaponShop[i]=v030MakeWeaponOffer();
+  }
+
+  localStorage.setItem(KEY,JSON.stringify(s));
+  v054Purchased(bought,'Inventar');
+  render();
+};
+
+window.v030BuyMagic=function(i){
+  const it=s.magicShop?.[i];
+  if(!it)return;
+
+  if(s.gold<Number(it.price||0)){
+    v054NotEnoughGold();
+    return;
+  }
+
+  s.gold-=Number(it.price||0);
+
+  if(it.type==='gem'||it.type==='scroll'){
+    const bought={...it};
+    s.materials??=[];
+    s.materials.push(bought);
+
+    if(typeof v030MakeJewelryOffer==='function' && typeof v030MakeMaterialOffer==='function'){
+      s.magicShop[i]=i<3?v030MakeJewelryOffer():v030MakeMaterialOffer();
+    }
+
+    localStorage.setItem(KEY,JSON.stringify(s));
+    v054Purchased(bought,'Material-Inventar');
+    render();
+    return;
+  }
+
+  const bought={
+    ...it,
+    id:it.uid||`jewel_${Date.now()}_${Math.random().toString(36).slice(2,8)}`
+  };
+  s.inventory.push(bought);
+
+  if(typeof v030MakeJewelryOffer==='function' && typeof v030MakeMaterialOffer==='function'){
+    s.magicShop[i]=i<3?v030MakeJewelryOffer():v030MakeMaterialOffer();
+  }
+
+  localStorage.setItem(KEY,JSON.stringify(s));
+  v054Purchased(bought,'Inventar');
+  render();
+};
+
+/* Legacy standard shop, if still used anywhere */
+window.buy=function(id){
+  let all=[];
+  try{
+    if(typeof items!=='undefined')all.push(...items);
+    if(typeof allClassGear!=='undefined')all.push(...allClassGear);
+    Object.values(classGear||{}).forEach(arr=>all.push(...arr));
+  }catch(e){}
+
+  const it=all.find(x=>x.id===id);
+  if(!it)return;
+
+  if(s.gold<Number(it.price||0)){
+    v054NotEnoughGold();
+    return;
+  }
+
+  s.gold-=Number(it.price||0);
+  const bought={
+    ...it,
+    id:`${it.id}_${Date.now()}_${Math.random().toString(36).slice(2,8)}`
+  };
+  s.inventory.push(bought);
+
+  localStorage.setItem(KEY,JSON.stringify(s));
+  v054Purchased(bought,'Inventar');
+  render();
+};
+
+/* Seed purchases also get the same feedback style */
+if(typeof buySeedAction==='function'){
+  window.buySeed=function(id){
+    const x=seedTypes?.[id];
+    if(!x)return;
+
+    if(s.gold<Number(x.buy||0)){
+      v054NotEnoughGold();
+      return;
+    }
+
+    s.gold-=Number(x.buy||0);
+    s.grow.seeds[id]=(s.grow.seeds[id]||0)+1;
+
+    localStorage.setItem(KEY,JSON.stringify(s));
+    v054Toast(`✅ ${x.name} gekauft`,'success',`Samen-Vorrat: ${s.grow.seeds[id]}`);
+    if(typeof growMessage==='function')growMessage(`${x.name}: 1 Samen gekauft.`);
+    render();
+  };
+}
+
+/* After every render, re-bind shop buttons to the final purchase functions
+   in case older renderers assigned stale handlers. */
+function v054BindShopButtons(){
+  document.querySelectorAll('#weaponShopItems .shop-item').forEach((card,i)=>{
+    const btn=card.querySelector('button');
+    if(btn){
+      btn.onclick=()=>window.v030BuyWeapon(i);
+      btn.removeAttribute('onclick');
+    }
+  });
+
+  document.querySelectorAll('#v030MagicShop .shop-grid .shop-item').forEach((card,i)=>{
+    const btn=card.querySelector('button');
+    if(btn){
+      btn.onclick=()=>window.v030BuyMagic(i);
+      btn.removeAttribute('onclick');
+    }
+  });
+}
+
+const v054BaseRender=render;
+render=function(){
+  v054BaseRender();
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.54 RPG');
+  v054BindShopButtons();
+};
+
+try{
+  render();
+}catch(e){
+  console.error('V0.54 inventory/shop',e);
 }
 </script>
 
