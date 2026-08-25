@@ -2573,7 +2573,7 @@ header{
 
 function v037SyncVersion(){
   document.querySelectorAll('.version').forEach(el=>{
-    el.textContent='V0.48 RPG';
+    el.textContent='V0.49 RPG';
   });
 }
 
@@ -2928,7 +2928,7 @@ render=function(){
   v038BaseRender();
   v038BindReroll();
   v038LocationPolish();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.48 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.49 RPG');
 };
 
 try{
@@ -2999,7 +2999,7 @@ try{
 <script>
 /* V0.39 keep version label synced */
 (function(){
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.48 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.49 RPG');
 })();
 </script>
 
@@ -3448,7 +3448,7 @@ header{
 <script>
 /* V0.40 unified visual behavior + version sync */
 function v040Polish(){
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.48 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.49 RPG');
   document.querySelectorAll('.btn').forEach(b=>b.setAttribute('type','button'));
   document.querySelectorAll('.shop-item,.inv-item,.skill-card,.seed-card,.equip-card,.quest,.slot').forEach(el=>{
     el.style.willChange='transform';
@@ -3720,7 +3720,7 @@ function v41UpgradeWorldPlaces(){
 const v41BaseRender=render;
 render=function(){
   v41BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.48 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.49 RPG');
   v41InstallPortrait();
   v41InstallNpcBanners();
   v41UpgradeShopIcons();
@@ -3926,7 +3926,7 @@ const v042BaseRender=render;
 render=function(){
   v042EnsureNineShopSlots();
   v042BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.48 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.49 RPG');
 };
 
 try{
@@ -4309,7 +4309,7 @@ function v043EmptyStates(){
 const v043BaseRender=render;
 render=function(){
   v043BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.48 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.49 RPG');
   v043EquipSlotArt();
   v043BattlePlayerArt();
   v043SceneLabels();
@@ -4605,7 +4605,7 @@ function v044MapTitles(){
 const v044BaseRender=render;
 render=function(){
   v044BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.48 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.49 RPG');
   v044AddWorldRegions();
   v044AddDungeonRegions();
   v044MapTitles();
@@ -5067,7 +5067,7 @@ function v048InstallFight(){
 const v048BaseRender=render;
 render=function(){
   v048BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.48 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.49 RPG');
   v048InstallFight();
   renderDungeon();
 
@@ -5085,6 +5085,270 @@ try{
   render();
 }catch(e){
   console.error('V0.48 clean dungeon flow',e);
+}
+</script>
+
+
+<style id="v049-rpg-polish">
+/* ===== V0.49 premium RPG polish without touching dungeon logic ===== */
+
+/* Global depth */
+.screen.active{
+  animation:v049In .18s ease-out;
+}
+@keyframes v049In{
+  from{opacity:.78;transform:translateY(3px)}
+  to{opacity:1;transform:none}
+}
+.card,.hero-card,.story-card{
+  backdrop-filter:blur(2px);
+}
+
+/* Header becomes more game HUD-like */
+header{
+  background:
+    radial-gradient(circle at 50% -30%,rgba(119,179,103,.10),transparent 45%),
+    linear-gradient(180deg,rgba(14,24,16,.99),rgba(7,13,9,.97))!important;
+}
+.brand h1{
+  font-size:23px!important;
+}
+.stats .stat{
+  min-height:54px;
+}
+.stats .stat b{
+  font-size:15px!important;
+}
+
+/* Hero quarter */
+#character .hero-card{
+  overflow:visible!important;
+}
+#character .character-stage{
+  border-radius:20px!important;
+  overflow:hidden!important;
+  box-shadow:inset 0 0 40px #0006;
+}
+#character .center-hero{
+  transform:translateY(-2px);
+}
+#character .v41-portrait{
+  width:190px!important;
+  height:230px!important;
+}
+#character .slot{
+  position:relative;
+}
+#character .slot:after{
+  content:"";
+  position:absolute;
+  inset:4px;
+  border-radius:10px;
+  border:1px solid rgba(255,255,255,.025);
+  pointer-events:none;
+}
+#character .slot-name{
+  font-weight:900!important;
+}
+
+/* Stat panels */
+#character .char-bottom{
+  background:
+    radial-gradient(circle at 50% 0%,rgba(94,146,84,.05),transparent 32%),
+    linear-gradient(180deg,#101a12,#0b120d)!important;
+}
+#attrs .attr{
+  border-left:3px solid #5f8d56!important;
+}
+#attrs .attr button{
+  box-shadow:0 4px 12px rgba(91,152,68,.22)!important;
+}
+
+/* Skill tree more game-like */
+.skill-card{
+  border-left:3px solid #5e8757!important;
+}
+.skill-icon{
+  border:1px solid #3c5b3d;
+  box-shadow:inset 0 0 16px #0004;
+}
+.rank-dot{
+  height:7px!important;
+}
+
+/* Inventory as loot cards */
+#inventory .inv-item{
+  display:flex!important;
+  flex-direction:column!important;
+}
+#inventory .item-name{
+  font-size:12px!important;
+}
+#inventory .v41-badge-art{
+  box-shadow:inset 0 0 14px #0005;
+}
+#inventory .inv-actions{
+  margin-top:auto!important;
+}
+#inventory .inv-actions .btn{
+  min-height:38px!important;
+}
+
+/* Material panel */
+#v030Materials .inv-item{
+  min-height:150px!important;
+}
+
+/* Merchant look */
+#shop .v41-npc-banner{
+  min-height:102px;
+}
+#shop .v41-npc-title{
+  font-size:17px!important;
+}
+#shop .shop-item{
+  transition:transform .14s ease,box-shadow .14s ease,border-color .14s ease;
+}
+#shop .shop-item:hover{
+  transform:translateY(-2px);
+}
+#shop .shop-item .v41-shop-icon{
+  box-shadow:inset 0 0 14px #0005;
+}
+#shop .shop-item .btn{
+  min-height:34px!important;
+}
+
+/* World map feels like a board */
+#world .world-map-shell{
+  position:relative;
+}
+#world .world-map-shell:after{
+  content:"";
+  position:absolute;
+  inset:8px;
+  border-radius:18px;
+  border:1px solid rgba(225,210,155,.06);
+  pointer-events:none;
+}
+#world .world-map-place{
+  transition:transform .16s ease,box-shadow .16s ease,filter .16s ease;
+}
+#world .world-map-place:hover{
+  transform:translate(-50%,-50%) scale(1.07)!important;
+}
+
+/* Dungeon visuals only, no state logic */
+#dungeon .dungeon-detail{
+  border-radius:14px!important;
+  box-shadow:inset 0 0 16px #0004;
+}
+#dungeon .dungeon-node{
+  transition:transform .16s ease,filter .16s ease,box-shadow .16s ease!important;
+}
+#dungeon .battle-stage{
+  border-width:1px!important;
+  box-shadow:inset 0 0 46px #0009,0 10px 24px #0005!important;
+}
+#dungeon .fighter-name{
+  font-size:10px!important;
+}
+#dungeon .damage{
+  font-size:34px!important;
+}
+
+/* Quest board */
+#quests .quest{
+  position:relative;
+  padding-left:14px!important;
+}
+#quests .quest:after{
+  content:"";
+  position:absolute;
+  right:10px;top:10px;
+  width:7px;height:7px;
+  border-radius:50%;
+  background:#6fa85d;
+  box-shadow:0 0 10px rgba(111,168,93,.35);
+}
+#quests .quest-meta span{
+  border:1px solid #2f4330;
+}
+
+/* Growroom */
+#grow .grow-room{
+  box-shadow:inset 0 0 44px #0007;
+}
+#grow .lamp{
+  box-shadow:0 0 34px rgba(225,255,205,.34)!important;
+}
+#grow .grow-slot{
+  transition:.14s ease;
+}
+#grow .grow-slot.open-slot:hover{
+  transform:translateY(-1px);
+}
+
+/* Resource chips */
+.pill,.currency-pill,.skill-point-pill{
+  box-shadow:inset 0 1px rgba(255,255,255,.03),0 4px 10px #0003;
+}
+
+/* Better modal/card spacing */
+.set-panel{
+  padding:12px!important;
+}
+.set-title{
+  font-size:13px!important;
+}
+
+/* Mobile */
+@media(max-width:560px){
+  .brand h1{font-size:20px!important}
+  #character .v41-portrait{
+    width:155px!important;
+    height:195px!important;
+  }
+  #shop .v41-npc-banner{
+    min-height:86px;
+  }
+}
+</style>
+
+<script>
+/* V0.49 visual-only hooks */
+function v049Polish(){
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.49 RPG');
+
+  document.querySelectorAll('.inv-item,.shop-item,.skill-card,.quest,.slot,.grow-slot').forEach(el=>{
+    el.style.willChange='transform';
+  });
+
+  /* Add subtle rarity label chip if absent */
+  document.querySelectorAll('#inventory .inv-item').forEach(card=>{
+    const q=card.querySelector('.q-gray,.q-green,.q-blue,.q-purple,.q-orange,.q-cyan');
+    if(q){
+      q.style.display='inline-block';
+      q.style.padding='3px 6px';
+      q.style.borderRadius='999px';
+      q.style.background='rgba(10,16,11,.55)';
+      q.style.border='1px solid rgba(255,255,255,.05)';
+      q.style.marginTop='3px';
+    }
+  });
+}
+
+const v049BaseRender=render;
+render=function(){
+  v049BaseRender();
+  v049Polish();
+};
+
+try{
+  v049Polish();
+  render();
+}catch(e){
+  console.error('V0.49 visual polish',e);
 }
 </script>
 
