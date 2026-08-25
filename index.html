@@ -2185,6 +2185,356 @@ try{
 }catch(e){console.error('V0.34 progress fix',e);}
 </script>
 
+
+<style>
+/* ===== V0.35 Modern UI Redesign ===== */
+:root{
+  --bg:#08100b;
+  --bg2:#0c1710;
+  --panel:#111c14;
+  --panel2:#17241a;
+  --panel3:#1d2d20;
+  --line:#2f4732;
+  --line2:#46664a;
+  --text:#f6f8f4;
+  --muted:#99a69b;
+  --green:#84d45e;
+  --green2:#baf29c;
+  --gold:#f0c767;
+  --red:#ef6a6a;
+  --blue:#6ea8ff;
+  --purple:#bc82ff;
+  --shadow:0 16px 40px rgba(0,0,0,.38);
+  --softshadow:0 8px 24px rgba(0,0,0,.25);
+  --radius:18px;
+}
+
+html{background:var(--bg)}
+body{
+  background:
+    radial-gradient(circle at 50% -10%,rgba(78,128,74,.22),transparent 32%),
+    linear-gradient(180deg,#0a140d 0%,#071009 100%)!important;
+  color:var(--text);
+  font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+  letter-spacing:.01em;
+}
+
+.app{max-width:860px!important}
+main{padding:14px!important}
+
+header{
+  background:linear-gradient(180deg,rgba(13,22,15,.96),rgba(8,14,10,.92))!important;
+  border-bottom:1px solid rgba(118,166,112,.22)!important;
+  box-shadow:0 10px 30px rgba(0,0,0,.28)!important;
+  padding:12px 14px!important;
+}
+.brand h1{
+  font-size:22px!important;
+  font-weight:1000!important;
+  letter-spacing:-.6px!important;
+}
+.version{
+  background:linear-gradient(180deg,#253a27,#18271a)!important;
+  border-color:#4a6a4c!important;
+  color:#c8f5b5!important;
+  font-weight:800;
+}
+.power{
+  background:linear-gradient(180deg,#1a261c,#101812)!important;
+  border:1px solid #344d36!important;
+  border-radius:12px!important;
+  padding:7px 10px!important;
+}
+
+.stats{
+  gap:8px!important;
+  margin-top:10px!important;
+}
+.stat{
+  background:linear-gradient(180deg,rgba(29,45,32,.96),rgba(17,27,19,.96))!important;
+  border:1px solid rgba(89,126,89,.38)!important;
+  box-shadow:inset 0 1px rgba(255,255,255,.03),0 6px 18px rgba(0,0,0,.18);
+  border-radius:13px!important;
+  padding:8px 6px!important;
+  text-transform:uppercase;
+  letter-spacing:.06em;
+}
+.stat b{
+  font-size:14px!important;
+  letter-spacing:0!important;
+  text-transform:none;
+}
+
+.card,.hero-card,.story-card{
+  background:
+    linear-gradient(155deg,rgba(23,36,26,.98),rgba(12,20,14,.98))!important;
+  border:1px solid rgba(89,127,91,.34)!important;
+  border-radius:20px!important;
+  box-shadow:var(--shadow)!important;
+  overflow:hidden;
+}
+.card{padding:16px!important}
+.story-card{padding:15px!important}
+
+.section-title h2,.section-title h3{
+  font-weight:1000!important;
+  letter-spacing:-.35px!important;
+}
+.muted{color:#a2afa5!important;line-height:1.45}
+.tiny{color:#91a091!important}
+
+.btn{
+  border-radius:12px!important;
+  padding:11px 14px!important;
+  background:linear-gradient(180deg,#9ce777,#68bc4c)!important;
+  color:#0d1a0d!important;
+  font-weight:950!important;
+  box-shadow:0 7px 16px rgba(69,125,52,.28),inset 0 1px rgba(255,255,255,.3)!important;
+  transition:transform .14s ease,filter .14s ease,box-shadow .14s ease;
+}
+.btn:hover{filter:brightness(1.06)}
+.btn:active{transform:translateY(1px) scale(.99)}
+.btn.secondary{
+  background:linear-gradient(180deg,#304435,#202f24)!important;
+  color:#edf5ea!important;
+  border:1px solid #48634a!important;
+  box-shadow:0 6px 14px rgba(0,0,0,.24)!important;
+}
+.btn.gold{
+  background:linear-gradient(180deg,#f4d87d,#d6a94b)!important;
+  color:#2e2109!important;
+}
+.btn.danger{
+  background:linear-gradient(180deg,#f47b78,#d45656)!important;
+  color:#fff!important;
+}
+
+.pill,.currency-pill{
+  background:linear-gradient(180deg,#1a2a1d,#132016)!important;
+  border:1px solid #405d42!important;
+  color:#c4d0c2!important;
+  box-shadow:inset 0 1px rgba(255,255,255,.03);
+}
+
+.top-menu-btn{
+  width:48px!important;height:48px!important;
+  border-radius:14px!important;
+  background:linear-gradient(180deg,#1d2c20,#101812)!important;
+  border:1px solid #466348!important;
+  box-shadow:0 10px 28px #0009!important;
+}
+.top-menu-panel{
+  width:236px!important;
+  background:linear-gradient(180deg,rgba(18,29,20,.99),rgba(9,15,11,.99))!important;
+  border:1px solid #3f5c41!important;
+  border-radius:16px!important;
+  padding:9px!important;
+}
+.top-menu-item{
+  background:transparent!important;
+  border:1px solid transparent!important;
+  margin:3px 0!important;
+  transition:.14s ease;
+}
+.top-menu-item:hover{background:#1b2b1e!important;border-color:#345037!important}
+.top-menu-item.active{
+  background:linear-gradient(180deg,#2b462d,#1d3320)!important;
+  border-color:#4d734e!important;
+  color:#c9f7b2!important;
+}
+
+.world-map-shell,.dungeon-map-shell{
+  border-radius:20px!important;
+  border:1px solid rgba(103,142,99,.45)!important;
+  background:#0b140d!important;
+  box-shadow:inset 0 0 40px #000b,0 10px 26px #0005!important;
+}
+.world-map{
+  background:
+    radial-gradient(circle at 20% 18%,#63805a 0 7%,transparent 8%),
+    radial-gradient(circle at 81% 24%,#2b4b32 0 11%,transparent 12%),
+    radial-gradient(circle at 34% 66%,#806d47 0 10%,transparent 11%),
+    radial-gradient(circle at 68% 78%,#26372a 0 12%,transparent 13%),
+    linear-gradient(180deg,#314d33 0%,#455f3c 26%,#746b49 55%,#3b4632 77%,#1d2b20 100%)!important;
+}
+.world-map:after{
+  content:"";
+  position:absolute;inset:0;pointer-events:none;
+  background:
+    linear-gradient(90deg,rgba(255,255,255,.018),transparent 24%,rgba(255,255,255,.012) 55%,transparent),
+    radial-gradient(circle at center,transparent 0 55%,rgba(0,0,0,.28) 100%);
+}
+.world-map-title,.map-title-ribbon{
+  background:linear-gradient(180deg,#263729,#18231b)!important;
+  border:1px solid #6d885f!important;
+  color:#e5f6dc!important;
+  box-shadow:0 8px 18px #0008!important;
+}
+
+.world-map-place,.dungeon-node{
+  backdrop-filter:blur(3px);
+  box-shadow:0 10px 24px #000a,inset 0 1px rgba(255,255,255,.06)!important;
+  transition:transform .16s ease,filter .16s ease,box-shadow .16s ease!important;
+}
+.world-map-place:hover,.dungeon-node:hover{
+  filter:brightness(1.08);
+}
+.world-map-place{
+  border-radius:20px!important;
+  background:linear-gradient(180deg,rgba(32,47,34,.96),rgba(17,27,20,.96))!important;
+  border:1px solid #58745b!important;
+}
+.world-map-place.shop{border-color:#b18d48!important}
+.world-map-place.grow{border-color:#69a95e!important}
+.world-map-place.quest{border-color:#8b744f!important}
+.world-map-place.hero{border-color:#6487ab!important}
+.world-map-place.dungeon{border-color:#aa665d!important}
+.world-map-place.event{border-color:#9069a8!important}
+
+.dungeon-node{
+  background:radial-gradient(circle at 35% 25%,#40382a,#1e1914 70%)!important;
+}
+.dungeon-node.available{border-color:#dfc26f!important}
+.dungeon-node.active{border-color:#85dd67!important;box-shadow:0 0 26px #78d85a66,0 10px 24px #000a!important}
+
+.character-stage{
+  background:
+    radial-gradient(circle at 50% 33%,rgba(83,139,76,.28),transparent 31%),
+    linear-gradient(180deg,#17261a,#0d160f 72%)!important;
+}
+.slot{
+  background:linear-gradient(180deg,#1e2c20,#121b14)!important;
+  border:1px solid #405a42!important;
+  border-radius:15px!important;
+  box-shadow:inset 0 0 18px rgba(0,0,0,.2)!important;
+}
+.slot:hover{border-color:#5d7a60!important}
+.center-hero{
+  background:radial-gradient(circle at 50% 45%,rgba(96,157,81,.12),transparent 52%);
+  border-radius:18px;
+}
+.level-shield{
+  background:linear-gradient(180deg,#2a2416,#18140d)!important;
+  border-color:#b0893a!important;
+  box-shadow:0 5px 14px #0007;
+}
+.center-xp-track{
+  height:14px!important;
+  background:#070d08!important;
+  border:1px solid #3b543d!important;
+}
+.center-xp-fill{
+  background:linear-gradient(90deg,#6fbe50,#b7ef86)!important;
+  box-shadow:0 0 12px #8cd96766!important;
+}
+
+.combat-box,.attr,.set-panel,.skill-card,.seed-card,.equip-card,.inv-item,.shop-item,.quest{
+  background:linear-gradient(150deg,#18251b,#101811)!important;
+  border:1px solid #344c36!important;
+  border-radius:14px!important;
+  box-shadow:0 5px 14px rgba(0,0,0,.18);
+}
+.attr button{
+  background:linear-gradient(180deg,#91da6c,#5faf45)!important;
+  color:#10200d!important;
+  box-shadow:0 4px 10px rgba(70,130,52,.25);
+}
+
+.inv-item,.shop-item{
+  transition:transform .14s ease,border-color .14s ease,box-shadow .14s ease;
+}
+.inv-item:hover,.shop-item:hover{
+  transform:translateY(-1px);
+  border-color:#557358!important;
+  box-shadow:0 8px 20px rgba(0,0,0,.28);
+}
+
+.common-gray{border-color:#666f68!important}
+.uncommon{border-color:#4eb866!important}
+.rare{border-color:#568fe6!important}
+.epic{border-color:#a965ec!important}
+.legendary{border-color:#e79a36!important}
+.mythic{border-color:#2ad1d1!important}
+
+.tavern-scene{
+  min-height:190px!important;
+  background:
+    radial-gradient(circle at 75% 26%,rgba(215,142,56,.34),transparent 18%),
+    linear-gradient(180deg,#46311f,#201711)!important;
+}
+.grow-room{
+  background:
+    radial-gradient(circle at 50% 8%,rgba(215,255,204,.16),transparent 32%),
+    linear-gradient(180deg,#1d3421,#0d1810)!important;
+}
+.grow-slot{
+  background:linear-gradient(180deg,#1a2a1d,#101812)!important;
+  border-color:#3d573f!important;
+}
+.grow-slot.open-slot:hover{
+  box-shadow:0 0 0 1px #78c95d55 inset,0 8px 18px #0005!important;
+}
+
+.battle-stage{
+  background:
+    radial-gradient(circle at 50% 36%,rgba(78,95,70,.32),transparent 34%),
+    linear-gradient(180deg,#252d24,#121812)!important;
+  border-radius:18px!important;
+  border-color:#3a4b38!important;
+  box-shadow:inset 0 0 30px #0008!important;
+}
+.battle-log{
+  background:#0b120d!important;
+  border-color:#314432!important;
+  border-radius:12px!important;
+  padding:10px!important;
+}
+
+.empty{
+  background:rgba(14,22,15,.58);
+  border-color:#3a4e3b!important;
+  border-radius:14px!important;
+}
+
+@media(max-width:560px){
+  main{padding:10px!important}
+  .card{padding:13px!important}
+  .brand h1{font-size:19px!important}
+  .top-menu-wrap{top:8px!important;left:8px!important}
+  .top-menu-btn{width:44px!important;height:44px!important}
+}
+</style>
+
+<script>
+/* V0.35 small UX polish */
+function v035Polish(){
+  document.querySelectorAll('.card,.hero-card').forEach(el=>{
+    if(!el.dataset.v035){
+      el.dataset.v035='1';
+    }
+  });
+
+  document.querySelectorAll('.btn').forEach(btn=>{
+    btn.setAttribute('type','button');
+  });
+
+  document.querySelectorAll('.shop-item,.inv-item,.skill-card,.seed-card,.equip-card').forEach(el=>{
+    el.style.willChange='transform';
+  });
+}
+
+const v035BaseRender=render;
+render=function(){
+  v035BaseRender();
+  v035Polish();
+};
+
+try{
+  v035Polish();
+  render();
+}catch(e){console.error('V0.35 UI',e);}
+</script>
+
 </body>
 </html>
 <style>
