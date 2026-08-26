@@ -14073,7 +14073,7 @@ async function v083FixHallList(){
 const v083BaseRender=render;
 render=function(){
   v083BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.89 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.91 RPG');
   setTimeout(v083FixHallList,0);
 };
 
@@ -14237,7 +14237,7 @@ v073ProfilePayload=function(){
 const v084BaseRender=render;
 render=function(){
   v084BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.89 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.91 RPG');
 };
 </script>
 
@@ -14362,6 +14362,21 @@ function v085ActiveEvents(){
 function v085NewsHtml(){
   const news=[
     {
+      v:'V0.90',
+      title:'Händler-Vergleich',
+      text:'Ausrüstungsitems beim Händler zeigen jetzt direkt, ob sie besser, schlechter oder gleichwertig zum aktuell angelegten Item sind.'
+    },
+    {
+      v:'V0.88',
+      title:'Charakteranzeige verbessert',
+      text:'Die Hauptattribut-Anzeige im Charakterprofil wurde neu positioniert und übersichtlicher dargestellt.'
+    },
+    {
+      v:'V0.86',
+      title:'Neue Welt-Startseite',
+      text:'Neue Begrüßung nach Tageszeit, aktive Events, Update-News, Schnellzugriffe und ein vollständigeres Menü.'
+    },
+    {
       v:'V0.84',
       title:'Hall of Haze verbessert',
       text:'Dungeon und Boss-Fortschritt anderer Spieler werden jetzt genauer angezeigt.'
@@ -14370,11 +14385,6 @@ function v085NewsHtml(){
       v:'V0.82',
       title:'Dungeon 1 neu ausbalanciert',
       text:'Der verseuchte Keller soll jetzt deutlich länger beschäftigen und bis etwa Level 22–25 fordern.'
-    },
-    {
-      v:'V0.80',
-      title:'Neue Klassen-Avatare',
-      text:'Bud-Barbar, Blatt-Schütze und Bong-Magier haben jetzt eigene Charakterbilder.'
     }
   ];
   return news.map(n=>`
@@ -14453,7 +14463,7 @@ v032Go=function(id){
 const v085BaseRender=render;
 render=function(){
   v085BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.89 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.91 RPG');
 
   if(document.querySelector('#world')?.classList.contains('active')){
     v085InstallWorld();
@@ -14605,7 +14615,7 @@ v032Go=function(id){
 const v086BaseRender=render;
 render=function(){
   v086BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.89 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.91 RPG');
   v086PolishBrand();
   v086RemoveSlashNArtifacts();
   v086BuildCompleteMenu();
@@ -14681,7 +14691,7 @@ function v087FixMainAttributeBadge(){
 const v087BaseRender=render;
 render=function(){
   v087BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.89 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.91 RPG');
   requestAnimationFrame(v087FixMainAttributeBadge);
 };
 
@@ -14713,7 +14723,7 @@ try{
 const v088BaseRender=render;
 render=function(){
   v088BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.89 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.91 RPG');
 };
 </script>
 
@@ -14840,9 +14850,130 @@ v030Offer=function(it,fn,i){
 const v089BaseRender=render;
 render=function(){
   v089BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.89 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.91 RPG');
   try{renderShop()}catch(e){console.error('V0.89 shop comparison',e)}
 };
+</script>
+
+
+<style id="v090-shop-comparison-fix">
+.v090-shop-compare{
+  margin:8px 0 7px;
+  padding:7px 8px;
+  border-radius:9px;
+  border:1px solid #344934;
+  background:#101711;
+  font-size:9px;
+  line-height:1.35;
+  font-weight:800;
+}
+.v090-shop-compare.better{border-color:#4d7b45;background:#142115;color:#a9e893}
+.v090-shop-compare.worse{border-color:#75423e;background:#211312;color:#ef9d98}
+.v090-shop-compare.same{border-color:#4b5149;color:#b5bdb2}
+.v090-shop-compare.empty{border-color:#74683f;color:#e2cf85}
+</style>
+
+<script id="v090-shop-comparison-fix-script">
+/* ===== V0.90 comparison on the ACTUAL v057 shop renderer ===== */
+
+function v090Score(it){
+  if(!it)return 0;
+
+  const weights={
+    staerke:1,
+    geschick:1,
+    intelligenz:1,
+    ausdauer:1,
+    glueck:.8,
+    growSkill:.7
+  };
+
+  let total=0;
+  Object.entries(it.bonus||{}).forEach(([k,v])=>{
+    total+=(Number(v)||0)*(weights[k]??1);
+  });
+
+  if(it.gem?.value)total+=(Number(it.gem.value)||0);
+
+  const enchants=Array.isArray(it.enchants)
+    ? it.enchants
+    : it.enchant ? [it.enchant] : [];
+
+  enchants.forEach(e=>{
+    const v=Number(e?.value)||0;
+    if(e?.effect==='primaryPct')total+=v*1.4;
+    else if(e?.effect==='crit')total+=v;
+    else if(e?.effect==='damageReduce')total+=v*1.1;
+    else total+=v*.8;
+  });
+
+  return Math.round(total*10)/10;
+}
+
+function v090ComparisonHtml(it){
+  if(!it?.slot)return '';
+
+  if(it.classId && it.classId!==s.playerClass){
+    return `<div class="v090-shop-compare worse">Nicht für deine Klasse</div>`;
+  }
+
+  const old=s.equipment?.[it.slot];
+
+  if(!old){
+    return `<div class="v090-shop-compare empty">▲ Slot leer · Verbesserung</div>`;
+  }
+
+  const neu=v090Score(it);
+  const alt=v090Score(old);
+  const diff=Math.round((neu-alt)*10)/10;
+
+  if(diff>0){
+    return `<div class="v090-shop-compare better">▲ BESSER · +${diff} Gesamtwerte</div>`;
+  }
+
+  if(diff<0){
+    return `<div class="v090-shop-compare worse">▼ SCHLECHTER · ${diff} Gesamtwerte</div>`;
+  }
+
+  return `<div class="v090-shop-compare same">= GLEICHWERTIG</div>`;
+}
+
+/* Override the actual offer renderer used by V0.57+ */
+v057OfferHtml=function(it,i,kind){
+  const info=it.type==='gem'
+    ? `💎 +${it.value} ${v030StatLabel(it.stat)}`
+    : it.type==='scroll'
+      ? `✨ ${v030EffectLabel(it.effect,it.value)}`
+      : itemBonus(it);
+
+  const comparison=(it.type==='gem'||it.type==='scroll')
+    ? ''
+    : v090ComparisonHtml(it);
+
+  return `
+    <div class="shop-item ${it.rarity||''}">
+      <div class="shop-icon">${it.icon||'🎁'}</div>
+      <h3>${it.name}</h3>
+      <div class="${qualityMeta(it.quality||'gray').color}">
+        ${qualityMeta(it.quality||'gray').label}
+      </div>
+      <div class="tiny" style="margin-top:5px">${info}</div>
+      ${comparison}
+      <div class="price" style="margin:7px 0">💰 ${it.price} Gold</div>
+      <button type="button" class="btn v057-buy" data-kind="${kind}" data-index="${i}">
+        Kaufen
+      </button>
+    </div>`;
+};
+
+const v090BaseRender=render;
+render=function(){
+  v090BaseRender();
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.91 RPG');
+  try{renderShop()}catch(e){console.error('V0.90 shop comparison',e)}
+};
+
+try{renderShop()}catch(e){}
 </script>
 
 </body>
