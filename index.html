@@ -264,6 +264,72 @@ main{padding:12px}
   <div class="card"><div class="section-title"><div><h2>🛒 Händler</h2><div class="muted">Ausrüstung für deinen nächsten Dungeon.</div></div><div class="currency-row"><span class="pill">Gold: <b id="shopGold">0</b></span><span class="currency-pill">🟢 Harz-Taler: <b id="shopHarz">0</b></span></div></div><div class="shop-grid" id="shopItems"></div><div style="margin-top:10px"><button class="btn secondary" id="refreshShop" style="width:100%">🔄 Händler neu würfeln – 1 🟢 Harz-Taler</button><div class="tiny" style="margin-top:6px">Harz-Taler bekommst du selten aus Bossen und später aus Events.</div></div></div>
   <div class="card"><button class="btn danger" id="resetBtn" style="width:100%">Spielstand zurücksetzen</button></div>
 </section>
+
+<section id="hall" class="screen">
+  <div class="v052-scene-banner v052-character">
+    <div>
+      <div class="v052-title">🏆 Hall of Haze</div>
+      <div class="v052-sub">Rangliste, Spielerprofile und die größten Grow-Legenden.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">
+      <div>
+        <h2>Hall of Haze</h2>
+        <div class="muted">Andere Spieler und ihre Fortschritte.</div>
+      </div>
+      <span class="pill" id="v072OnlineState">OFFLINE</span>
+    </div>
+
+    <div class="v072-profile-card" id="v072OwnProfile"></div>
+
+    <div class="v072-tabs">
+      <button class="btn secondary v072-tab active" data-v072-tab="ranking">Rangliste</button>
+      <button class="btn secondary v072-tab" data-v072-tab="search">Spieler suchen</button>
+    </div>
+
+    <div id="v072HallRanking" class="v072-panel"></div>
+    <div id="v072HallSearch" class="v072-panel" style="display:none"></div>
+  </div>
+</section>
+
+<section id="friends" class="screen">
+  <div class="v052-scene-banner v052-character">
+    <div>
+      <div class="v052-title">🤝 Nebel-Crew</div>
+      <div class="v052-sub">Freunde, Anfragen und Spielerprofile.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">
+      <div>
+        <h2>Nebel-Crew</h2>
+        <div class="muted">Deine Freunde in Grow Legends.</div>
+      </div>
+      <span class="pill" id="v072FriendCount">0 Freunde</span>
+    </div>
+
+    <div class="v072-friend-actions">
+      <input id="v072FriendSearchInput" class="v071-name-input" placeholder="Charaktername suchen">
+      <button class="btn" id="v072FriendSearchBtn">Suchen</button>
+    </div>
+
+    <div class="v072-friend-section">
+      <h3>Freundschaftsanfragen</h3>
+      <div id="v072RequestsList"></div>
+    </div>
+
+    <div class="v072-friend-section">
+      <h3>Freundesliste</h3>
+      <div id="v072FriendsList"></div>
+    </div>
+
+    <div id="v072FriendSearchResults"></div>
+  </div>
+</section>
+
 </main>
 </div>
 <nav class="bottom"><button class="nav active" data-screen="world"><span>🗺️</span>Welt</button><button class="nav" data-screen="character"><span>🧙</span>Held</button><button class="nav" data-screen="grow"><span>🌱</span>Grow</button><button class="nav" data-screen="quests"><span>🍺</span>Quests</button><button class="nav" data-screen="dungeon"><span>👹</span>Dungeon</button></nav>
@@ -2573,7 +2639,7 @@ header{
 
 function v037SyncVersion(){
   document.querySelectorAll('.version').forEach(el=>{
-    el.textContent='V0.71 RPG';
+    el.textContent='V0.72 RPG';
   });
 }
 
@@ -2928,7 +2994,7 @@ render=function(){
   v038BaseRender();
   v038BindReroll();
   v038LocationPolish();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.71 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.72 RPG');
 };
 
 try{
@@ -2999,7 +3065,7 @@ try{
 <script>
 /* V0.39 keep version label synced */
 (function(){
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.71 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.72 RPG');
 })();
 </script>
 
@@ -3448,7 +3514,7 @@ header{
 <script>
 /* V0.40 unified visual behavior + version sync */
 function v040Polish(){
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.71 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.72 RPG');
   document.querySelectorAll('.btn').forEach(b=>b.setAttribute('type','button'));
   document.querySelectorAll('.shop-item,.inv-item,.skill-card,.seed-card,.equip-card,.quest,.slot').forEach(el=>{
     el.style.willChange='transform';
@@ -3720,7 +3786,7 @@ function v41UpgradeWorldPlaces(){
 const v41BaseRender=render;
 render=function(){
   v41BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.71 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.72 RPG');
   v41InstallPortrait();
   v41InstallNpcBanners();
   v41UpgradeShopIcons();
@@ -3926,7 +3992,7 @@ const v042BaseRender=render;
 render=function(){
   v042EnsureNineShopSlots();
   v042BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.71 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.72 RPG');
 };
 
 try{
@@ -4309,7 +4375,7 @@ function v043EmptyStates(){
 const v043BaseRender=render;
 render=function(){
   v043BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.71 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.72 RPG');
   v043EquipSlotArt();
   v043BattlePlayerArt();
   v043SceneLabels();
@@ -4605,7 +4671,7 @@ function v044MapTitles(){
 const v044BaseRender=render;
 render=function(){
   v044BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.71 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.72 RPG');
   v044AddWorldRegions();
   v044AddDungeonRegions();
   v044MapTitles();
@@ -5067,7 +5133,7 @@ function v048InstallFight(){
 const v048BaseRender=render;
 render=function(){
   v048BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.71 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.72 RPG');
   v048InstallFight();
   renderDungeon();
 
@@ -5318,7 +5384,7 @@ header{
 <script>
 /* V0.49 visual-only hooks */
 function v049Polish(){
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.71 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.72 RPG');
 
   document.querySelectorAll('.inv-item,.shop-item,.skill-card,.quest,.slot,.grow-slot').forEach(el=>{
     el.style.willChange='transform';
@@ -5574,7 +5640,7 @@ header{
 <script>
 /* V0.50 visual hooks only */
 function v050Polish(){
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.71 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.72 RPG');
 
   /* Add section-specific body classes for easier game theming */
   document.querySelectorAll('.screen').forEach(screen=>{
@@ -5770,7 +5836,7 @@ h1,h2,h3,h4,.item-name,.shop-item h3,.skill-title,.center-name,.char-title{
 <script>
 /* V0.51 visual-only continuation */
 function v051Polish(){
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.71 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.72 RPG');
 
   document.querySelectorAll('.shop-item,.inv-item,.quest,.skill-card,.seed-card,.equip-card').forEach(el=>{
     el.style.willChange='transform';
@@ -5993,7 +6059,7 @@ function v052InstallSceneBanners(){
 }
 
 function v052Polish(){
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.71 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.72 RPG');
   v052InstallSceneBanners();
 }
 
@@ -6218,7 +6284,7 @@ header:after{
 <script>
 /* V0.53 visual-only continuation */
 function v053Polish(){
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.71 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.72 RPG');
 
   document.querySelectorAll('.btn,.stat,.shop-item,.inv-item,.quest,.skill-card,.grow-slot,.world-map-place,.dungeon-node').forEach(el=>{
     el.style.willChange='transform';
@@ -6670,7 +6736,7 @@ function v054BindShopButtons(){
 const v054BaseRender=render;
 render=function(){
   v054BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.71 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.72 RPG');
   v054BindShopButtons();
 };
 
@@ -6847,7 +6913,7 @@ function v055AddRarityHint(){
 const v055BaseRender=render;
 render=function(){
   v055BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.71 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.72 RPG');
   v055AddRarityHint();
 };
 
@@ -7173,7 +7239,7 @@ function v056AddShopHint(){
 const v056BaseRender=render;
 render=function(){
   v056BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.71 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.72 RPG');
   v056AddShopHint();
 
   /* Rebind current shop cards after each render. */
@@ -7518,7 +7584,7 @@ if(!s.v057ShopCore){
 const v057BaseRender=render;
 render=function(){
   v057BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.71 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.72 RPG');
   renderShop();
 };
 
@@ -7681,7 +7747,7 @@ render=function(){
     v058SafeRefreshAfterPurchase();
   }
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.71 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.72 RPG');
   v058EnsureLegacyRenderAnchors();
 };
 
@@ -7942,7 +8008,7 @@ function v059BindMaterialButtons(){
 const v059BaseRender=render;
 render=function(){
   v059BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.71 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.72 RPG');
   v059BindMaterialButtons();
 };
 
@@ -8211,7 +8277,7 @@ renderDungeon=function(){
 const v060BaseRender=render;
 render=function(){
   v060BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.71 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.72 RPG');
   v060InstallFight();
 };
 
@@ -8239,7 +8305,7 @@ animClass=function(el,cl,ms=400){
 const v061BaseRender=render;
 render=function(){
   v061BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.71 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.72 RPG');
 };
 
 try{render();}catch(e){console.error('V0.61 init',e);}
@@ -8287,7 +8353,7 @@ render=function(){
   }
 
   v062BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.71 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.72 RPG');
 };
 
 try{render();}catch(e){console.error('V0.62 shop size',e);}
@@ -8778,7 +8844,7 @@ render=function(){
   v063EnsureUi();
   v063BindResetButtons();
   v063PatchClassChoice();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.71 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.72 RPG');
 };
 
 try{
@@ -9247,13 +9313,13 @@ renderDungeon=function(){
     v064UpgradeBattle();
   }
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.71 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.72 RPG');
 };
 
 const v064BaseRender=render;
 render=function(){
   v064BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.71 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.72 RPG');
   try{
     if(document.querySelector('#dungeon')?.classList.contains('active')){
       renderDungeon();
@@ -9640,7 +9706,7 @@ const v065BaseRenderDungeon=renderDungeon;
 renderDungeon=function(){
   if(s.dungeon.layer==='world'){
     v065RenderWorld();
-    document.querySelectorAll('.version').forEach(el=>el.textContent='V0.71 RPG');
+    document.querySelectorAll('.version').forEach(el=>el.textContent='V0.72 RPG');
     return;
   }
 
@@ -9651,13 +9717,13 @@ renderDungeon=function(){
     v065BindRoomNodes();
   }
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.71 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.72 RPG');
 };
 
 const v065BaseRender=render;
 render=function(){
   v065BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.71 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.72 RPG');
 
   if(document.querySelector('#dungeon')?.classList.contains('active')){
     try{renderDungeon();}catch(e){console.error('V0.65 dungeon render',e);}
@@ -9797,7 +9863,7 @@ function v066OpenDungeon(i){
       v065BindRoomNodes();
     }
 
-    document.querySelectorAll('.version').forEach(el=>el.textContent='V0.71 RPG');
+    document.querySelectorAll('.version').forEach(el=>el.textContent='V0.72 RPG');
     window.scrollTo({top:0,behavior:'smooth'});
   }catch(e){
     console.error('V0.66 open dungeon',e);
@@ -9844,7 +9910,7 @@ v065RenderWorld=function(){
 const v066BaseRender=render;
 render=function(){
   v066BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.71 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.72 RPG');
 
   if(document.querySelector('#dungeon')?.classList.contains('active') &&
      s.dungeon?.layer==='world'){
@@ -10159,7 +10225,7 @@ if(typeof v032Go==='function'){
 const v067OldRender=render;
 render=function(){
   v067OldRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.71 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.72 RPG');
 
   if(document.querySelector('#dungeon')?.classList.contains('active')){
     try{renderDungeon();}catch(e){console.error('V0.67 renderDungeon',e);}
@@ -10497,13 +10563,13 @@ renderDungeon=function(){
     try{v064RenderMap();}catch(e){}
   }
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.71 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.72 RPG');
 };
 
 const v068BaseRender=render;
 render=function(){
   v068BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.71 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.72 RPG');
 
   if(document.querySelector('#dungeon')?.classList.contains('active')){
     try{renderDungeon();}catch(e){console.error('V0.68 dungeon render',e);}
@@ -10581,7 +10647,7 @@ const v069BaseRender=render;
 render=function(){
   v069BaseRender();
   v069SyncCurrencies();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.71 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.72 RPG');
 };
 
 try{
@@ -10679,7 +10745,7 @@ const v070BaseRender=render;
 render=function(){
   v070BaseRender();
   v070HighlightPrimaryAttribute();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.71 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.72 RPG');
 };
 
 try{
@@ -10925,7 +10991,7 @@ const v071BaseRender=render;
 render=function(){
   v071BaseRender();
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.71 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.72 RPG');
 
   v071PatchClassModal();
   v071ApplyNameToUi();
@@ -10936,6 +11002,378 @@ try{
   render();
 }catch(e){
   console.error('V0.71 character naming',e);
+}
+</script>
+
+
+<style id="v072-social-system">
+/* ===== V0.72 Hall of Haze + Friends ===== */
+.v072-profile-card{
+  padding:12px;
+  border-radius:14px;
+  border:1px solid #3d583f;
+  background:linear-gradient(180deg,#16221a,#0e1610);
+  margin-bottom:12px;
+}
+.v072-profile-name{
+  font-size:17px;
+  font-weight:1000;
+  color:#eff4ec;
+}
+.v072-profile-meta{
+  margin-top:4px;
+  font-size:9px;
+  color:#a9b5a6;
+}
+.v072-profile-stats{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:6px;
+  margin-top:10px;
+}
+.v072-profile-stat{
+  padding:7px;
+  border-radius:9px;
+  border:1px solid #304632;
+  background:#0d150f;
+  text-align:center;
+}
+.v072-profile-stat span{
+  display:block;
+  font-size:7px;
+  color:#8e9e8d;
+  text-transform:uppercase;
+  letter-spacing:.06em;
+}
+.v072-profile-stat b{
+  display:block;
+  margin-top:2px;
+  font-size:12px;
+}
+.v072-tabs{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:7px;
+  margin-bottom:10px;
+}
+.v072-tab.active{
+  border-color:#6e9f61!important;
+  color:#c9f2b6!important;
+}
+.v072-player-row{
+  display:grid;
+  grid-template-columns:34px 1fr auto;
+  gap:9px;
+  align-items:center;
+  padding:9px;
+  border-radius:11px;
+  border:1px solid #304632;
+  background:linear-gradient(180deg,#151f17,#0d140f);
+  margin-bottom:6px;
+}
+.v072-rank{
+  width:30px;height:30px;
+  display:grid;
+  place-items:center;
+  border-radius:50%;
+  background:#0c130e;
+  border:1px solid #475e43;
+  font-size:10px;
+  font-weight:1000;
+}
+.v072-player-name{
+  font-size:11px;
+  font-weight:950;
+}
+.v072-player-sub{
+  margin-top:2px;
+  font-size:8px;
+  color:#91a08f;
+}
+.v072-status-offline{
+  padding:12px;
+  border:1px dashed #475443;
+  border-radius:12px;
+  background:#0e140f;
+  color:#9eaa9b;
+  font-size:10px;
+  line-height:1.45;
+}
+.v072-friend-actions{
+  display:grid;
+  grid-template-columns:1fr auto;
+  gap:7px;
+  margin-bottom:14px;
+}
+.v072-friend-section{
+  margin-top:14px;
+}
+.v072-friend-section h3{
+  margin:0 0 7px;
+  font-size:13px;
+}
+.v072-empty{
+  padding:11px;
+  border-radius:10px;
+  background:#0e150f;
+  border:1px solid #2e4230;
+  color:#8e9a8d;
+  font-size:9px;
+}
+.v072-online{
+  color:#9ade83!important;
+  border-color:#527b4c!important;
+}
+.v072-offline{
+  color:#d7a36b!important;
+  border-color:#725a3a!important;
+}
+@media(max-width:560px){
+  .v072-profile-stats{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+  }
+}
+</style>
+
+<script>
+/* ===== V0.72 social frontend foundation ===== */
+
+s.social ??= {};
+s.social.playerId ??= localStorage.getItem('growLegendsPlayerId') || crypto.randomUUID();
+s.social.friends ??= [];
+s.social.requests ??= [];
+s.social.pending ??= [];
+localStorage.setItem('growLegendsPlayerId',s.social.playerId);
+localStorage.setItem(KEY,JSON.stringify(s));
+
+/*
+  Online adapter.
+  In V0.72 intentionally disabled until a real backend is configured.
+  Frontend is complete so backend integration can be added without redesign.
+*/
+const V072_ONLINE = {
+  enabled:false,
+  baseUrl:'',
+  apiKey:''
+};
+
+function v072ClassName(){
+  return classes?.[s.playerClass]?.name || 'Unbekannt';
+}
+
+function v072GearScore(){
+  return Object.values(s.equipment||{}).reduce((sum,it)=>{
+    if(!it)return sum;
+    const bonus=Object.values(it.bonus||{}).reduce((a,b)=>a+(Number(b)||0),0);
+    const rarity={gray:1,green:2,blue:4,purple:7,orange:11,cyan:16}[it.quality||'gray']||1;
+    return sum+bonus+rarity;
+  },0);
+}
+
+function v072Profile(){
+  return {
+    id:s.social.playerId,
+    name:v071CleanName(s.characterName)||'Unbenannt',
+    classId:s.playerClass,
+    className:v072ClassName(),
+    level:Number(s.level)||1,
+    bosses:Number(s.story?.bossesDefeated)||0,
+    gearScore:v072GearScore(),
+    dungeon:Number(s.dungeon?.completed?.length)||0
+  };
+}
+
+function v072OnlineState(){
+  const el=document.querySelector('#v072OnlineState');
+  if(!el)return;
+  if(V072_ONLINE.enabled){
+    el.textContent='ONLINE';
+    el.classList.add('v072-online');
+    el.classList.remove('v072-offline');
+  }else{
+    el.textContent='BACKEND OFFLINE';
+    el.classList.add('v072-offline');
+    el.classList.remove('v072-online');
+  }
+}
+
+function v072RenderOwnProfile(){
+  const el=document.querySelector('#v072OwnProfile');
+  if(!el)return;
+  const p=v072Profile();
+
+  el.innerHTML=`
+    <div class="v072-profile-name">${p.name}</div>
+    <div class="v072-profile-meta">${p.className} · Spieler-ID ${p.id.slice(0,8)}</div>
+    <div class="v072-profile-stats">
+      <div class="v072-profile-stat"><span>Level</span><b>${p.level}</b></div>
+      <div class="v072-profile-stat"><span>Bosse</span><b>${p.bosses}</b></div>
+      <div class="v072-profile-stat"><span>Ausrüstung</span><b>${p.gearScore}</b></div>
+      <div class="v072-profile-stat"><span>Dungeons</span><b>${p.dungeon}</b></div>
+    </div>`;
+}
+
+function v072RenderRanking(){
+  const el=document.querySelector('#v072HallRanking');
+  if(!el)return;
+
+  if(!V072_ONLINE.enabled){
+    el.innerHTML=`
+      <div class="v072-status-offline">
+        <b>Online-Rangliste vorbereitet.</b><br>
+        Für echte andere Spieler fehlt nur noch die gemeinsame Datenbank.
+        Dein eigenes Profil und deine Spieler-ID sind bereits angelegt.
+      </div>`;
+    return;
+  }
+}
+
+function v072RenderSearchPanel(){
+  const el=document.querySelector('#v072HallSearch');
+  if(!el)return;
+  el.innerHTML=`
+    <div class="v072-friend-actions">
+      <input id="v072HallSearchInput" class="v071-name-input" placeholder="Spielername suchen">
+      <button class="btn" id="v072HallSearchBtn">Suchen</button>
+    </div>
+    <div id="v072HallSearchResults"></div>`;
+
+  const btn=document.querySelector('#v072HallSearchBtn');
+  if(btn)btn.onclick=()=>v072SearchPlayer(
+    document.querySelector('#v072HallSearchInput')?.value||'',
+    '#v072HallSearchResults'
+  );
+}
+
+function v072RenderTabs(){
+  document.querySelectorAll('.v072-tab').forEach(btn=>{
+    btn.onclick=()=>{
+      document.querySelectorAll('.v072-tab').forEach(x=>x.classList.remove('active'));
+      btn.classList.add('active');
+
+      const tab=btn.dataset.v072Tab;
+      document.querySelector('#v072HallRanking').style.display=tab==='ranking'?'':'none';
+      document.querySelector('#v072HallSearch').style.display=tab==='search'?'':'none';
+    };
+  });
+}
+
+function v072SearchPlayer(name,targetSelector){
+  const target=document.querySelector(targetSelector);
+  if(!target)return;
+
+  name=String(name||'').trim();
+
+  if(name.length<2){
+    v063Toast('Mindestens 2 Zeichen eingeben','warn');
+    return;
+  }
+
+  if(!V072_ONLINE.enabled){
+    target.innerHTML=`
+      <div class="v072-status-offline">
+        Die Spielersuche ist technisch vorbereitet, aber noch nicht mit dem Online-Backend verbunden.
+      </div>`;
+    return;
+  }
+}
+
+function v072RenderFriends(){
+  const friends=document.querySelector('#v072FriendsList');
+  const requests=document.querySelector('#v072RequestsList');
+  const count=document.querySelector('#v072FriendCount');
+  if(!friends||!requests)return;
+
+  count.textContent=`${s.social.friends.length} Freunde`;
+
+  friends.innerHTML=s.social.friends.length
+    ? s.social.friends.map(f=>`
+        <div class="v072-player-row">
+          <div class="v072-rank">F</div>
+          <div>
+            <div class="v072-player-name">${f.name||'Spieler'}</div>
+            <div class="v072-player-sub">${f.className||''} · Lv. ${f.level||1}</div>
+          </div>
+          <button class="btn secondary" disabled>Profil</button>
+        </div>`).join('')
+    : '<div class="v072-empty">Noch keine Freunde.</div>';
+
+  requests.innerHTML=s.social.requests.length
+    ? s.social.requests.map(r=>`
+        <div class="v072-player-row">
+          <div class="v072-rank">?</div>
+          <div>
+            <div class="v072-player-name">${r.name||'Spieler'}</div>
+            <div class="v072-player-sub">Freundschaftsanfrage</div>
+          </div>
+          <button class="btn secondary" disabled>Antworten</button>
+        </div>`).join('')
+    : '<div class="v072-empty">Keine offenen Anfragen.</div>';
+}
+
+function v072BindFriendSearch(){
+  const btn=document.querySelector('#v072FriendSearchBtn');
+  if(!btn)return;
+  btn.onclick=()=>{
+    const name=document.querySelector('#v072FriendSearchInput')?.value||'';
+    v072SearchPlayer(name,'#v072FriendSearchResults');
+  };
+}
+
+function v072AddMenuItems(){
+  const panel=document.querySelector('.top-menu-panel');
+  if(!panel)return;
+
+  if(!panel.querySelector('[data-screen="hall"]')){
+    const btn=document.createElement('button');
+    btn.className='top-menu-item';
+    btn.dataset.screen='hall';
+    btn.innerHTML='<span>🏆</span> Hall of Haze';
+    panel.appendChild(btn);
+  }
+
+  if(!panel.querySelector('[data-screen="friends"]')){
+    const btn=document.createElement('button');
+    btn.className='top-menu-item';
+    btn.dataset.screen='friends';
+    btn.innerHTML='<span>🤝</span> Nebel-Crew';
+    panel.appendChild(btn);
+  }
+
+  panel.querySelectorAll('[data-screen="hall"],[data-screen="friends"]').forEach(btn=>{
+    btn.onclick=()=>{
+      const id=btn.dataset.screen;
+      document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+      document.querySelector('#'+id)?.classList.add('active');
+      document.querySelector('.top-menu-panel')?.classList.remove('open');
+      render();
+      window.scrollTo({top:0,behavior:'smooth'});
+    };
+  });
+}
+
+function v072RenderSocial(){
+  v072OnlineState();
+  v072RenderOwnProfile();
+  v072RenderRanking();
+  v072RenderSearchPanel();
+  v072RenderTabs();
+  v072RenderFriends();
+  v072BindFriendSearch();
+  v072AddMenuItems();
+}
+
+const v072BaseRender=render;
+render=function(){
+  v072BaseRender();
+  v072RenderSocial();
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.72 RPG');
+};
+
+try{
+  render();
+}catch(e){
+  console.error('V0.72 social system',e);
 }
 </script>
 
