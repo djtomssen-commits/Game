@@ -14160,7 +14160,7 @@ async function v083FixHallList(){
 const v083BaseRender=render;
 render=function(){
   v083BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.95 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.97 RPG');
   setTimeout(v083FixHallList,0);
 };
 
@@ -14324,7 +14324,7 @@ v073ProfilePayload=function(){
 const v084BaseRender=render;
 render=function(){
   v084BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.95 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.97 RPG');
 };
 </script>
 
@@ -14550,7 +14550,7 @@ v032Go=function(id){
 const v085BaseRender=render;
 render=function(){
   v085BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.95 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.97 RPG');
 
   if(document.querySelector('#world')?.classList.contains('active')){
     v085InstallWorld();
@@ -14702,7 +14702,7 @@ v032Go=function(id){
 const v086BaseRender=render;
 render=function(){
   v086BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.95 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.97 RPG');
   v086PolishBrand();
   v086RemoveSlashNArtifacts();
   v086BuildCompleteMenu();
@@ -14778,7 +14778,7 @@ function v087FixMainAttributeBadge(){
 const v087BaseRender=render;
 render=function(){
   v087BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.95 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.97 RPG');
   requestAnimationFrame(v087FixMainAttributeBadge);
 };
 
@@ -14810,7 +14810,7 @@ try{
 const v088BaseRender=render;
 render=function(){
   v088BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.95 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.97 RPG');
 };
 </script>
 
@@ -14937,7 +14937,7 @@ v030Offer=function(it,fn,i){
 const v089BaseRender=render;
 render=function(){
   v089BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.95 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.97 RPG');
   try{renderShop()}catch(e){console.error('V0.89 shop comparison',e)}
 };
 </script>
@@ -15056,7 +15056,7 @@ v057OfferHtml=function(it,i,kind){
 const v090BaseRender=render;
 render=function(){
   v090BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.95 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.97 RPG');
   try{renderShop()}catch(e){console.error('V0.90 shop comparison',e)}
 };
 
@@ -15085,7 +15085,7 @@ localStorage.setItem(KEY,JSON.stringify(s));
 const v092BaseRender=render;
 render=function(){
   v092BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.95 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.97 RPG');
 };
 </script>
 
@@ -15413,7 +15413,7 @@ document.querySelector('#v093SaveNews')?.addEventListener('click',v093SaveNews);
 const v093BaseRender=render;
 render=function(){
   v093BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.95 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.97 RPG');
   v093BuildMenu();
 };
 
@@ -15536,7 +15536,7 @@ v085ActiveEvents=function(){
 const v094BaseRender=render;
 render=function(){
   v094BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.95 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.97 RPG');
 
   /* Update visible quest XP previews to show doubled amount while event is live. */
   if(v094XpEventActive()){
@@ -15641,7 +15641,7 @@ document.addEventListener('click',()=>{
 const v095BaseRender=render;
 render=function(){
   v095BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.95 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.97 RPG');
   requestAnimationFrame(v095DecorateXp);
 };
 
@@ -15651,6 +15651,118 @@ setInterval(()=>{
 },15000);
 
 try{v095DecorateXp()}catch(e){}
+</script>
+
+
+<style id="v096-quest-xp-star-fix">
+/* Quest reward uses ⭐ + number instead of XP text. */
+.v096-quest-xp2{
+  display:inline-block;
+  margin-left:5px;
+  padding:2px 6px;
+  border-radius:999px;
+  border:1px solid #8c6b25;
+  background:#2b1e08;
+  color:#ffe177;
+  font-size:8px;
+  font-weight:1000;
+  text-shadow:0 0 7px #ffd34f,0 0 13px #ffb52f;
+  box-shadow:0 0 10px rgba(255,207,65,.42);
+  animation:v095XpGlow .8s ease-in-out infinite alternate;
+}
+</style>
+
+<script id="v096-quest-xp-star-fix-script">
+/* V0.96: quests display XP as a star icon + number, so decorate that exact UI. */
+function v096DecorateQuestXp(){
+  document.querySelectorAll('.v096-quest-xp2').forEach(x=>x.remove());
+  if(!v094XpEventActive())return;
+
+  document.querySelectorAll('#questList .quest-card').forEach((card,i)=>{
+    const q=s.quest?.options?.[i];
+    if(!q)return;
+
+    const base=Number(q.v094BaseXp ?? q.xp ?? 0);
+    const doubled=base*2;
+
+    /* Find the leaf containing the star reward and its XP number. */
+    const leaves=[...card.querySelectorAll('*')].filter(el=>el.children.length===0);
+    let reward=leaves.find(el=>{
+      const t=(el.textContent||'').trim();
+      return (t.includes('⭐') || t.includes('★') || t.includes('☆')) &&
+             /\d/.test(t);
+    });
+
+    if(!reward){
+      /* Fallback: find text that contains the original XP number. */
+      reward=leaves.find(el=>{
+        const t=(el.textContent||'').trim();
+        return t.includes(String(base)) && !/Gold|💰/i.test(t);
+      });
+    }
+
+    if(!reward)return;
+
+    /* Replace only the displayed XP number where possible. */
+    const original=reward.textContent;
+    if(original.includes(String(base))){
+      reward.textContent=original.replace(String(base),String(doubled));
+    }
+
+    const badge=document.createElement('span');
+    badge.className='v096-quest-xp2';
+    badge.textContent='×2 EXP';
+    reward.appendChild(badge);
+  });
+}
+
+const v096BaseRender=render;
+render=function(){
+  v096BaseRender();
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.97 RPG');
+  requestAnimationFrame(v096DecorateQuestXp);
+};
+
+document.addEventListener('click',()=>setTimeout(v096DecorateQuestXp,30),true);
+try{v096DecorateQuestXp()}catch(e){}
+</script>
+
+
+<script id="v097-exp-labels">
+/* V0.97: replace quest XP star icon with clear EXP label everywhere in quest UI. */
+function v097ReplaceQuestStars(){
+  const root=document.querySelector('#questList');
+  if(!root)return;
+
+  const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);
+  const nodes=[];
+  while(walker.nextNode()) nodes.push(walker.currentNode);
+
+  nodes.forEach(node=>{
+    if(node.parentElement?.closest('.v096-quest-xp2'))return;
+    if(/[⭐★☆]/.test(node.nodeValue||'')){
+      node.nodeValue=node.nodeValue.replace(/[⭐★☆]\s*/g,'EXP ');
+    }
+  });
+
+  /* Also make the active/running quest reward clearer if it uses the star. */
+  document.querySelectorAll('#quests *').forEach(el=>{
+    if(el.children.length!==0 || el.closest('.v096-quest-xp2'))return;
+    if(/[⭐★☆]/.test(el.textContent||'')){
+      el.textContent=el.textContent.replace(/[⭐★☆]\s*/g,'EXP ');
+    }
+  });
+}
+
+const v097BaseRender=render;
+render=function(){
+  v097BaseRender();
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.97 RPG');
+  requestAnimationFrame(v097ReplaceQuestStars);
+};
+
+document.addEventListener('click',()=>setTimeout(v097ReplaceQuestStars,40),true);
+try{v097ReplaceQuestStars()}catch(e){}
 </script>
 
 </body>
