@@ -164,6 +164,34 @@ main{padding:12px}
 @media(max-width:560px){.dungeon-map-shell{margin-left:-2px;margin-right:-2px}.adventure-map{transform-origin:top left}.map-legend{gap:5px}.dungeon-node{width:86px;height:86px}}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style id="v081-avatar-size-fix">
+/* Avatar kleiner halten, damit Level- und XP-Anzeige nicht überdeckt werden */
+#character .avatar-scene{
+  height:220px !important;
+  overflow:hidden !important;
+  align-items:center !important;
+}
+#character .v41-portrait{
+  width:min(100%,210px) !important;
+  height:210px !important;
+  margin:0 auto !important;
+}
+#character .v41-portrait .v080-class-avatar-img{
+  width:100% !important;
+  height:100% !important;
+  object-fit:cover !important;
+  object-position:center 24% !important;
+}
+@media(max-width:520px){
+  #character .avatar-scene{height:190px !important;}
+  #character .v41-portrait{
+    width:180px !important;
+    height:180px !important;
+  }
+}
+</style>
+
 </head>
 <body>
 <div class="app">
