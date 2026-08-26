@@ -14073,13 +14073,13 @@ async function v083FixHallList(){
 const v083BaseRender=render;
 render=function(){
   v083BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.85 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.86 RPG');
   setTimeout(v083FixHallList,0);
 };
 
 setTimeout(v083FixHallList,1200);
 </script>
-\n
+
 <style id="v084-hall-dungeon-display-fix">
 .v084-progress-inline{color:#d8c06a;font-weight:700}
 </style>
@@ -14237,7 +14237,7 @@ v073ProfilePayload=function(){
 const v084BaseRender=render;
 render=function(){
   v084BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.85 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.86 RPG');
 };
 </script>
 
@@ -14453,7 +14453,7 @@ v032Go=function(id){
 const v085BaseRender=render;
 render=function(){
   v085BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.85 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.86 RPG');
 
   if(document.querySelector('#world')?.classList.contains('active')){
     v085InstallWorld();
@@ -14465,6 +14465,159 @@ try{
   render();
 }catch(e){
   console.error('V0.85 world dashboard',e);
+}
+</script>
+
+
+<style id="v086-polish">
+/* ===== V0.86 Header + complete menu polish ===== */
+.brand{
+  padding-left:48px!important;
+  min-height:48px;
+}
+.v086-logo{
+  display:flex;
+  flex-direction:column;
+  line-height:.92;
+  text-transform:uppercase;
+  font-weight:1000;
+  letter-spacing:-1px;
+  filter:drop-shadow(0 3px 5px #0009);
+}
+.v086-logo-grow{
+  font-size:21px;
+  background:linear-gradient(180deg,#c8ff8c 0%,#75d64f 48%,#39952e 100%);
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent;
+  text-shadow:0 0 16px rgba(111,208,75,.16);
+}
+.v086-logo-legends{
+  margin-top:2px;
+  font-size:15px;
+  letter-spacing:1.2px;
+  background:linear-gradient(180deg,#ffe59a,#d6a541 58%,#93671d);
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent;
+}
+.v086-logo-leaf{
+  display:inline-block;
+  margin-right:3px;
+  color:#7fe45c;
+  -webkit-text-fill-color:#7fe45c;
+  filter:drop-shadow(0 0 5px rgba(126,228,92,.4));
+}
+.top-menu-panel{
+  max-height:calc(100vh - 78px)!important;
+  overflow-y:auto!important;
+  scrollbar-width:thin;
+}
+.v086-menu-separator{
+  height:1px;
+  background:#2b402c;
+  margin:6px 5px;
+}
+</style>
+
+<script id="v086-polish-script">
+/* ===== V0.86 greeting, title, artifact cleanup, complete menu ===== */
+
+/* Explicit time-of-day greeting. */
+v085Greeting=function(){
+  const h=new Date().getHours();
+  if(h>=5 && h<11)return 'Guten Morgen';
+  if(h>=11 && h<17)return 'Guten Tag';
+  if(h>=17 && h<22)return 'Guten Abend';
+  return 'Willkommen zurück';
+};
+
+function v086PolishBrand(){
+  const brand=document.querySelector('.brand h1');
+  if(!brand)return;
+  brand.className='v086-logo';
+  brand.innerHTML=`
+    <span class="v086-logo-grow"><span class="v086-logo-leaf">🌿</span>Grow</span>
+    <span class="v086-logo-legends">Legends</span>`;
+}
+
+/* Removes visible standalone "\n" artifacts that may remain from older appended patches. */
+function v086RemoveSlashNArtifacts(){
+  const walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);
+  const remove=[];
+  while(walker.nextNode()){
+    const n=walker.currentNode;
+    if(/^\s*\\n\s*$/.test(n.nodeValue||''))remove.push(n);
+  }
+  remove.forEach(n=>n.remove());
+}
+
+/* Rebuild menu from every actual game screen, so no page can silently go missing. */
+function v086BuildCompleteMenu(){
+  let wrap=document.querySelector('#v032TopMenu');
+  if(!wrap){
+    try{v032InstallMenu()}catch(e){}
+    wrap=document.querySelector('#v032TopMenu');
+  }
+  const panel=wrap?.querySelector('.top-menu-panel');
+  if(!panel)return;
+
+  const pages=[
+    ['world','⌂','Startseite'],
+    ['character','🧙','Charakter'],
+    ['grow','🌱','Growroom'],
+    ['quests','📜','Quests'],
+    ['dungeon','⚔️','Dungeons'],
+    ['shop','🛒','Händler'],
+    ['hall','🏆','Hall of Haze'],
+    ['friends','🤝','Nebel-Crew']
+  ].filter(([id])=>document.querySelector('#'+id));
+
+  panel.innerHTML=pages.map(([id,icon,label],i)=>`
+    ${i===6?'<div class="v086-menu-separator"></div>':''}
+    <button class="top-menu-item ${document.querySelector('#'+id)?.classList.contains('active')?'active':''}" data-screen="${id}">
+      <span>${icon}</span>${label}
+    </button>`).join('');
+
+  panel.querySelectorAll('.top-menu-item').forEach(btn=>{
+    btn.onclick=()=>v032Go(btn.dataset.screen);
+  });
+}
+
+/* Ensure navigation can reach every screen, including social pages. */
+const v086OldGo=v032Go;
+v032Go=function(id){
+  const target=document.querySelector('#'+id);
+  if(!target)return;
+
+  document.querySelectorAll('.screen').forEach(x=>x.classList.remove('active'));
+  target.classList.add('active');
+
+  document.querySelectorAll('.top-menu-item').forEach(x=>
+    x.classList.toggle('active',x.dataset.screen===id)
+  );
+  document.querySelector('#v032MenuPanel')?.classList.remove('open');
+
+  try{render()}catch(e){}
+  window.scrollTo({top:0,behavior:'smooth'});
+};
+
+const v086BaseRender=render;
+render=function(){
+  v086BaseRender();
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.86 RPG');
+  v086PolishBrand();
+  v086RemoveSlashNArtifacts();
+  v086BuildCompleteMenu();
+};
+
+try{
+  v086PolishBrand();
+  v086RemoveSlashNArtifacts();
+  v086BuildCompleteMenu();
+  render();
+}catch(e){
+  console.error('V0.86 polish',e);
 }
 </script>
 
