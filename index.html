@@ -13913,9 +13913,171 @@ setTimeout(async()=>{
 const v081BaseRender=render;
 render=function(){
   v081BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.81 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.82 RPG');
 };
 </script>
 
-</body>
+
+<script id="v082-dungeon-balance">
+/* ===== V0.82 Dungeon 1 rebalance =====
+   Goal:
+   - Lv.14: normally around enemy 5-6
+   - enemies 7+ become a real wall
+   - final boss aimed around Lv.22-25
+   - NO hard per-enemy level lock
+*/
+const V082_D1_LEVELS=[2,4,7,10,12,14,17,20,22,24];
+
+v025RecommendedLevel=function(di,ri){
+  ri=Math.max(0,Math.min(9,Number(ri)||0));
+  if(di===0)return V082_D1_LEVELS[ri];
+  const start=25+(di-1)*11;
+  return start+Math.round(ri*1.15);
+};
+
+v025EnemyStats=function(di,ri,enemy){
+  ri=Math.max(0,Math.min(9,Number(ri)||0));
+  const rec=v025RecommendedLevel(di,ri);
+  const boss=ri===9||enemy?.boss;
+
+  if(di===0){
+    /* Stronger from enemy 5 onward instead of merely inflating fight duration. */
+    const hp      =[120,190,290,420,610,850,1180,1580,2050,2900][ri];
+    const attack  =[17,23,31,41,54,70,91,116,143,185][ri];
+    const defense =[ 2, 4, 7,11,16,23, 32, 43, 56, 75][ri];
+    return {rec,hp,attack,defense};
+  }
+
+  const dungeonMult=1+di*.16;
+  return {
+    rec,
+    hp:Math.round((120+rec*28+ri*18)*dungeonMult*(boss?1.48:1)),
+    attack:Math.round((12+rec*4.2+ri*1.4)*dungeonMult*(boss?1.25:1)),
+    defense:Math.round((rec*1.8+ri*1.1)*dungeonMult)
+  };
+};
+
+/* Underlevel players lose damage and receive more damage.
+   Still no hard lock: a very strong build can beat content early. */
+v060PlayerDamageFactor=function(rec){
+  const gap=Math.max(0,rec-(Number(s.level)||1));
+  if(gap<=0)return 1;
+  if(gap===1)return .94;
+  return Math.max(.18,.94-(gap-1)*.105);
+};
+
+v060EnemyDamageFactor=function(rec){
+  const gap=Math.max(0,rec-(Number(s.level)||1));
+  if(gap<=0)return 1;
+  if(gap===1)return 1.08;
+  return Math.min(2.65,1.08+(gap-1)*.12);
+};
+
+/* Make sure old enemy requiredLevel metadata is informational only.
+   The final V0.68 fight handler intentionally has no per-enemy level gate. */
+document.querySelectorAll('.version').forEach(el=>el.textContent='V0.82 RPG');
+</script>
+
+
+<style id="v083-hall-progress-fix">
+.v083-hall-progress{margin-top:5px;font-size:8px;color:#aeb7aa}
+.v083-hall-progress b{color:#e0c46f}
+</style>
+<script id="v083-hall-progress-fix-script">
+function v083ProfileProgress(profile){
+  const dp=(profile?.dungeon_progress&&typeof profile.dungeon_progress==='object')?profile.dungeon_progress:{};
+  const completed=Array.isArray(dp.completed)?dp.completed.map(Number).filter(Number.isFinite):[];
+  const bosses=Math.max(0,completed.length,Number(profile?.bosses)||0);
+  let selected=Number.isFinite(Number(dp.selected))?Math.max(0,Math.min(19,Number(dp.selected))):null;
+
+  if(selected===null){
+    const entries=Object.entries(dp.progress||{}).map(([k,v])=>[Number(k),Number(v)])
+      .filter(([k,v])=>Number.isFinite(k)&&Number.isFinite(v)&&k>=0&&k<20)
+      .sort((a,b)=>b[0]-a[0]);
+    if(entries.length)selected=entries[0][0];
+    else if(completed.length)selected=Math.min(19,Math.max(...completed)+1);
+    else selected=Math.max(0,Math.min(19,(Number(profile?.dungeons)||1)-1));
+  }
+
+  const rawRoom=dp.progress?.[selected] ?? (Number(dp.selected)===selected?dp.room:undefined);
+  const room=(rawRoom!==undefined&&rawRoom!==null&&Number.isFinite(Number(rawRoom)))
+    ? Math.max(0,Math.min(9,Number(rawRoom)))+1
+    : null;
+
+  return {
+    dungeon:Math.max(1,selected+1,Number(profile?.dungeons)||0),
+    bosses,
+    room
+  };
+}
+
+function v083FixLegacyProfileMetrics(content,p){
+  if(!content||!p)return;
+  const pr=v083ProfileProgress(p);
+  [...content.querySelectorAll('*')].forEach(el=>{
+    if(el.id==='v081DungeonStatus')return;
+    if(el.children.length===0){
+      const t=(el.textContent||'').trim();
+      if(/^Dungeon\s*\d+$/i.test(t))el.textContent=`Dungeon ${pr.dungeon}`;
+      if(/^Boss(?:e)?\s*\d+$/i.test(t))el.textContent=`Bosse ${pr.bosses}`;
+    }
+  });
+}
+
+const v083OldOpenProfile=v074OpenProfile;
+v074OpenProfile=async function(id){
+  await v083OldOpenProfile(id);
+  try{
+    const {data:p,error}=await v073Db.from('profiles')
+      .select('id,bosses,dungeons,dungeon_progress')
+      .eq('id',id).single();
+    if(error||!p)return;
+    v083FixLegacyProfileMetrics(document.querySelector('#v074ProfileContent'),p);
+  }catch(e){console.error('V0.83 profile fix',e)}
+};
+
+async function v083FixHallList(){
+  if(!v073Ready||!v073Db)return;
+  try{
+    const {data,error}=await v073Db.from('profiles')
+      .select('id,bosses,dungeons,dungeon_progress')
+      .limit(100);
+    if(error||!Array.isArray(data))return;
+
+    const byId=Object.fromEntries(data.map(p=>[p.id,p]));
+    const hall=document.querySelector('#hall');
+    if(!hall)return;
+
+    hall.querySelectorAll('[data-player-id],[data-v073-player],[data-v074-player]').forEach(card=>{
+      const id=card.dataset.playerId||card.dataset.v073Player||card.dataset.v074Player;
+      const p=byId[id];
+      if(!p)return;
+      const pr=v083ProfileProgress(p);
+
+      card.querySelectorAll('.v083-hall-progress').forEach(x=>x.remove());
+
+      [...card.querySelectorAll('*')].forEach(el=>{
+        if(el.children.length!==0)return;
+        const t=(el.textContent||'').trim();
+        if(/^Dungeon\s*0$/i.test(t)||/^Boss(?:e)?\s*0$/i.test(t))el.style.display='none';
+      });
+
+      const line=document.createElement('div');
+      line.className='v083-hall-progress';
+      line.innerHTML=`Dungeon <b>${pr.dungeon}</b> · Bosse <b>${pr.bosses}</b>${pr.room?` · Gegner <b>${pr.room}/10</b>`:''}`;
+      card.appendChild(line);
+    });
+  }catch(e){console.error('V0.83 hall list fix',e)}
+}
+
+const v083BaseRender=render;
+render=function(){
+  v083BaseRender();
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.83 RPG');
+  setTimeout(v083FixHallList,0);
+};
+
+setTimeout(v083FixHallList,1200);
+</script>
+\n</body>
 </html>
