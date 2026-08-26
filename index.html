@@ -14160,7 +14160,7 @@ async function v083FixHallList(){
 const v083BaseRender=render;
 render=function(){
   v083BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.94 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.95 RPG');
   setTimeout(v083FixHallList,0);
 };
 
@@ -14324,7 +14324,7 @@ v073ProfilePayload=function(){
 const v084BaseRender=render;
 render=function(){
   v084BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.94 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.95 RPG');
 };
 </script>
 
@@ -14550,7 +14550,7 @@ v032Go=function(id){
 const v085BaseRender=render;
 render=function(){
   v085BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.94 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.95 RPG');
 
   if(document.querySelector('#world')?.classList.contains('active')){
     v085InstallWorld();
@@ -14702,7 +14702,7 @@ v032Go=function(id){
 const v086BaseRender=render;
 render=function(){
   v086BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.94 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.95 RPG');
   v086PolishBrand();
   v086RemoveSlashNArtifacts();
   v086BuildCompleteMenu();
@@ -14778,7 +14778,7 @@ function v087FixMainAttributeBadge(){
 const v087BaseRender=render;
 render=function(){
   v087BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.94 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.95 RPG');
   requestAnimationFrame(v087FixMainAttributeBadge);
 };
 
@@ -14810,7 +14810,7 @@ try{
 const v088BaseRender=render;
 render=function(){
   v088BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.94 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.95 RPG');
 };
 </script>
 
@@ -14937,7 +14937,7 @@ v030Offer=function(it,fn,i){
 const v089BaseRender=render;
 render=function(){
   v089BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.94 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.95 RPG');
   try{renderShop()}catch(e){console.error('V0.89 shop comparison',e)}
 };
 </script>
@@ -15056,7 +15056,7 @@ v057OfferHtml=function(it,i,kind){
 const v090BaseRender=render;
 render=function(){
   v090BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.94 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.95 RPG');
   try{renderShop()}catch(e){console.error('V0.90 shop comparison',e)}
 };
 
@@ -15085,7 +15085,7 @@ localStorage.setItem(KEY,JSON.stringify(s));
 const v092BaseRender=render;
 render=function(){
   v092BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.94 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.95 RPG');
 };
 </script>
 
@@ -15413,7 +15413,7 @@ document.querySelector('#v093SaveNews')?.addEventListener('click',v093SaveNews);
 const v093BaseRender=render;
 render=function(){
   v093BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.94 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.95 RPG');
   v093BuildMenu();
 };
 
@@ -15536,7 +15536,7 @@ v085ActiveEvents=function(){
 const v094BaseRender=render;
 render=function(){
   v094BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.94 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.95 RPG');
 
   /* Update visible quest XP previews to show doubled amount while event is live. */
   if(v094XpEventActive()){
@@ -15552,6 +15552,105 @@ render=function(){
     });
   }
 };
+</script>
+
+
+<style id="v095-global-xp-event-fx">
+/* ===== V0.95 global 2x EXP visual ===== */
+.v095-xp2{
+  display:inline-block;
+  margin-left:5px;
+  padding:2px 6px;
+  border-radius:999px;
+  border:1px solid #8c6b25;
+  background:linear-gradient(180deg,#38280b,#1e1608);
+  color:#ffe177!important;
+  font-size:8px!important;
+  font-weight:1000!important;
+  letter-spacing:.04em;
+  text-shadow:0 0 7px #ffd34f,0 0 14px #ffb52f;
+  box-shadow:0 0 7px rgba(255,207,65,.32),inset 0 0 6px rgba(255,224,111,.12);
+  animation:v095XpGlow .8s ease-in-out infinite alternate;
+  vertical-align:middle;
+}
+.v095-xp-text-active{
+  color:#ffe177!important;
+  text-shadow:0 0 5px rgba(255,211,79,.75);
+}
+@keyframes v095XpGlow{
+  from{filter:brightness(.95);box-shadow:0 0 5px rgba(255,207,65,.25)}
+  to{filter:brightness(1.28);box-shadow:0 0 15px rgba(255,207,65,.62)}
+}
+</style>
+
+<script id="v095-global-xp-event-fx-script">
+/* ===== V0.95 mark every visible EXP/Erfahrung source while 2x event is active ===== */
+
+function v095DecorateXp(){
+  const active=v094XpEventActive();
+
+  /* Remove our old markers first, so rerenders never duplicate them. */
+  document.querySelectorAll('.v095-xp2').forEach(el=>el.remove());
+  document.querySelectorAll('.v095-xp-text-active').forEach(el=>el.classList.remove('v095-xp-text-active'));
+
+  if(!active)return;
+
+  /* Search visible game UI for XP / EXP / Erfahrung labels.
+     Skip scripts/styles and the event badge itself. */
+  const root=document.querySelector('main')||document.body;
+  const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);
+  const found=[];
+
+  while(walker.nextNode()){
+    const node=walker.currentNode;
+    const parent=node.parentElement;
+    if(!parent)continue;
+    if(['SCRIPT','STYLE','TEXTAREA','INPUT','OPTION'].includes(parent.tagName))continue;
+    if(parent.closest('.v095-xp2,.v094-event-bonus'))continue;
+
+    const text=(node.nodeValue||'').trim();
+    if(!text)continue;
+
+    if(/\b(XP|EXP|Erfahrung)\b/i.test(text)){
+      found.push(parent);
+    }
+  }
+
+  [...new Set(found)].forEach(el=>{
+    /* Avoid giant containers; mark the closest useful leaf-ish element. */
+    let target=el;
+    if(target.children.length>3)return;
+
+    target.classList.add('v095-xp-text-active');
+
+    if(!target.querySelector(':scope > .v095-xp2')){
+      const badge=document.createElement('span');
+      badge.className='v095-xp2';
+      badge.textContent='×2';
+      badge.title='2× Erfahrungsevent aktiv';
+      target.appendChild(badge);
+    }
+  });
+}
+
+/* Also decorate common dynamically opened overlays/modals after clicks. */
+document.addEventListener('click',()=>{
+  if(v094XpEventActive())setTimeout(v095DecorateXp,30);
+},true);
+
+const v095BaseRender=render;
+render=function(){
+  v095BaseRender();
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.95 RPG');
+  requestAnimationFrame(v095DecorateXp);
+};
+
+/* Event state can change while the game stays open. */
+setInterval(()=>{
+  try{v095DecorateXp()}catch(e){}
+},15000);
+
+try{v095DecorateXp()}catch(e){}
 </script>
 
 </body>
