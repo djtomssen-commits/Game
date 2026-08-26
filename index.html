@@ -14073,7 +14073,7 @@ async function v083FixHallList(){
 const v083BaseRender=render;
 render=function(){
   v083BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.84 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.85 RPG');
   setTimeout(v083FixHallList,0);
 };
 
@@ -14237,8 +14237,235 @@ v073ProfilePayload=function(){
 const v084BaseRender=render;
 render=function(){
   v084BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.84 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.85 RPG');
 };
+</script>
+
+
+<style id="v085-world-dashboard">
+/* ===== V0.85 world dashboard ===== */
+.v085-dashboard{display:grid;gap:12px}
+.v085-welcome{
+  position:relative;overflow:hidden;
+  padding:20px 16px;
+  border-radius:18px;
+  border:1px solid #3d563a;
+  background:
+    radial-gradient(circle at 85% 0%,rgba(115,195,82,.16),transparent 34%),
+    linear-gradient(160deg,#1c2d1d,#101812 70%);
+  box-shadow:0 12px 28px #0007;
+}
+.v085-welcome:after{
+  content:"";
+  position:absolute;right:-24px;bottom:-28px;
+  width:150px;height:150px;border-radius:50%;
+  background:radial-gradient(circle,#6db85733,transparent 70%);
+}
+.v085-greeting{font-size:24px;font-weight:1000;letter-spacing:-.4px}
+.v085-sub{margin-top:4px;color:#9eaa9d;font-size:11px;line-height:1.45}
+.v085-return{
+  display:inline-block;margin-top:10px;padding:5px 9px;
+  border-radius:999px;border:1px solid #456744;
+  background:#152318;color:#b9e4aa;font-size:9px;font-weight:900;
+}
+.v085-section{
+  border:1px solid #334831;border-radius:16px;
+  background:linear-gradient(160deg,#151f16,#0e150f);
+  padding:13px;
+}
+.v085-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
+.v085-head h2{margin:0;font-size:17px}
+.v085-event-card{
+  padding:12px;border-radius:13px;border:1px solid #4f4a35;
+  background:
+    radial-gradient(circle at 100% 0%,rgba(209,171,76,.10),transparent 34%),
+    linear-gradient(160deg,#1c1c13,#12150f);
+}
+.v085-event-title{font-size:13px;font-weight:1000;color:#e4c56d}
+.v085-event-sub{margin-top:3px;font-size:9px;color:#a5aca1}
+.v085-event-status{
+  display:inline-block;margin-top:7px;padding:4px 7px;border-radius:999px;
+  border:1px solid #6c5730;background:#20190d;color:#edc873;font-size:8px;font-weight:1000;
+}
+.v085-news-list{display:grid;gap:8px}
+.v085-news{
+  padding:10px;border-radius:12px;border:1px solid #30442f;background:#111812
+}
+.v085-news-top{display:flex;justify-content:space-between;gap:8px;align-items:center}
+.v085-news-title{font-size:11px;font-weight:1000}
+.v085-news-version{font-size:7px;padding:3px 6px;border-radius:999px;border:1px solid #4b633f;color:#b9dea9}
+.v085-news-text{margin-top:4px;font-size:9px;color:#9da99b;line-height:1.4}
+.v085-quick-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.v085-quick{
+  min-height:92px;padding:11px;border-radius:14px;border:1px solid #344934;
+  background:linear-gradient(155deg,#182319,#101711);color:#eef4ed;text-align:left
+}
+.v085-quick .ico{font-size:27px}
+.v085-quick b{display:block;margin-top:5px;font-size:12px}
+.v085-quick span{display:block;margin-top:2px;font-size:8px;color:#95a093}
+@media(min-width:600px){
+  .v085-quick-grid{grid-template-columns:repeat(3,1fr)}
+}
+</style>
+
+<script id="v085-world-dashboard-script">
+/* ===== V0.85 redesigned world page ===== */
+
+function v085Greeting(){
+  const h=new Date().getHours();
+  if(h<11)return 'Guten Morgen';
+  if(h<17)return 'Guten Tag';
+  if(h<22)return 'Guten Abend';
+  return 'Willkommen zurück';
+}
+
+function v085PlayerName(){
+  return String(s.characterName||s.character_name||'Legende').trim()||'Legende';
+}
+
+function v085ReturnText(){
+  const key='growLegendsLastVisit';
+  const now=Date.now();
+  const last=Number(localStorage.getItem(key)||0);
+  localStorage.setItem(key,String(now));
+
+  if(!last)return 'Schön, dass du da bist.';
+  const mins=Math.floor((now-last)/60000);
+  if(mins<5)return 'Willkommen zurück.';
+  if(mins<60)return `Zurück nach ${mins} Minuten.`;
+  const hrs=Math.floor(mins/60);
+  if(hrs<24)return `Zurück nach ${hrs} Stunde${hrs===1?'':'n'}.`;
+  const days=Math.floor(hrs/24);
+  return `Zurück nach ${days} Tag${days===1?'':'en'}.`;
+}
+
+function v085ActiveEvents(){
+  /* Future event system can populate s.events.active.
+     Until then, show a clean "none active" state instead of fake content. */
+  const active=Array.isArray(s.events?.active)?s.events.active:[];
+  if(active.length){
+    return active.map(ev=>`
+      <div class="v085-event-card">
+        <div class="v085-event-title">${v073Escape(ev.name||'Event')}</div>
+        <div class="v085-event-sub">${v073Escape(ev.description||'Zeitlich begrenztes Event.')}</div>
+        <div class="v085-event-status">AKTIV</div>
+      </div>`).join('');
+  }
+  return `
+    <div class="v085-event-card">
+      <div class="v085-event-title">Aktuell kein Event aktiv</div>
+      <div class="v085-event-sub">Sobald ein Event startet, erscheint es hier direkt auf der Startseite.</div>
+      <div class="v085-event-status">KEIN EVENT</div>
+    </div>`;
+}
+
+function v085NewsHtml(){
+  const news=[
+    {
+      v:'V0.84',
+      title:'Hall of Haze verbessert',
+      text:'Dungeon und Boss-Fortschritt anderer Spieler werden jetzt genauer angezeigt.'
+    },
+    {
+      v:'V0.82',
+      title:'Dungeon 1 neu ausbalanciert',
+      text:'Der verseuchte Keller soll jetzt deutlich länger beschäftigen und bis etwa Level 22–25 fordern.'
+    },
+    {
+      v:'V0.80',
+      title:'Neue Klassen-Avatare',
+      text:'Bud-Barbar, Blatt-Schütze und Bong-Magier haben jetzt eigene Charakterbilder.'
+    }
+  ];
+  return news.map(n=>`
+    <div class="v085-news">
+      <div class="v085-news-top">
+        <div class="v085-news-title">${n.title}</div>
+        <div class="v085-news-version">${n.v}</div>
+      </div>
+      <div class="v085-news-text">${n.text}</div>
+    </div>`).join('');
+}
+
+function v085WorldHtml(){
+  return `
+    <div class="v085-dashboard">
+      <div class="v085-welcome">
+        <div class="v085-greeting">${v085Greeting()}, ${v073Escape(v085PlayerName())}</div>
+        <div class="v085-sub">
+          Dein Held wartet auf den nächsten Auftrag. Prüfe Events, Neuigkeiten und deinen Fortschritt.
+        </div>
+        <div class="v085-return">${v085ReturnText()}</div>
+      </div>
+
+      <div class="v085-section">
+        <div class="v085-head">
+          <h2>🎪 Aktive Events</h2>
+          <span class="pill">LIVE</span>
+        </div>
+        ${v085ActiveEvents()}
+      </div>
+
+      <div class="v085-section">
+        <div class="v085-head">
+          <h2>📰 Update-News</h2>
+          <span class="pill">NEU</span>
+        </div>
+        <div class="v085-news-list">${v085NewsHtml()}</div>
+      </div>
+
+      <div class="v085-section">
+        <div class="v085-head"><h2>⚡ Schnellzugriff</h2></div>
+        <div class="v085-quick-grid">
+          <button class="v085-quick" data-v085-go="quests"><div class="ico">🍺</div><b>Quests</b><span>Aufträge starten</span></button>
+          <button class="v085-quick" data-v085-go="dungeon"><div class="ico">👹</div><b>Dungeons</b><span>Gegner besiegen</span></button>
+          <button class="v085-quick" data-v085-go="grow"><div class="ico">🌱</div><b>Growroom</b><span>Pflanzen & ernten</span></button>
+          <button class="v085-quick" data-v085-go="shop"><div class="ico">🛒</div><b>Händler</b><span>Ausrüstung kaufen</span></button>
+          <button class="v085-quick" data-v085-go="character"><div class="ico">🧙</div><b>Charakter</b><span>Werte & Ausrüstung</span></button>
+          <button class="v085-quick" data-v085-go="hall"><div class="ico">🏆</div><b>Hall of Haze</b><span>Spieler & PvP</span></button>
+        </div>
+      </div>
+    </div>`;
+}
+
+function v085InstallWorld(){
+  const world=document.querySelector('#world');
+  if(!world)return;
+
+  /* Replace prior map/dashboard content only. */
+  world.innerHTML=v085WorldHtml();
+
+  world.querySelectorAll('[data-v085-go]').forEach(btn=>{
+    btn.onclick=()=>v032Go(btn.dataset.v085Go);
+  });
+}
+
+/* Stop V0.32 from reinstalling its old world map. */
+v032InstallWorldMap=function(){};
+
+/* Make world navigation always use the new dashboard. */
+const v085OldGo=v032Go;
+v032Go=function(id){
+  if(id==='world')v085InstallWorld();
+  return v085OldGo(id);
+};
+
+const v085BaseRender=render;
+render=function(){
+  v085BaseRender();
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.85 RPG');
+
+  if(document.querySelector('#world')?.classList.contains('active')){
+    v085InstallWorld();
+  }
+};
+
+try{
+  v085InstallWorld();
+  render();
+}catch(e){
+  console.error('V0.85 world dashboard',e);
+}
 </script>
 
 </body>
