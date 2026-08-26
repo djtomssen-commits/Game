@@ -227,7 +227,7 @@ main{padding:12px}
     <button class="world-place" data-go="shop"><div class="place-icon">🏪</div><h3>Schrott & Söhne</h3><p>Der Händler verkauft täglich wechselnde Ausrüstung.</p><div class="npc-mini">🧓 Bork feilscht um jedes Goldstück.</div><span class="badge">HÄNDLER</span></button>
     <button class="world-place" data-go="grow"><div class="place-icon">🌱</div><h3>Dein Growroom</h3><p>Deine wirtschaftliche Basis. Pflanzen, ernten, verkaufen und ausbauen.</p><span class="badge">GROWROOM</span></button>
     <button class="world-place" data-go="dungeon"><div class="place-icon">👹</div><h3>Verseuchte Gebiete</h3><p>Betritt Dungeons, besiege Kreaturen und jage seltene Beute.</p><div class="npc-mini">🛡️ Wächter Henk hält den Zugang offen.</div><span class="badge">DUNGEONS</span></button>
-    <button class="world-place" onclick="alert('Events kommen in einer späteren Version. Mystische türkisfarbene Items werden ausschließlich dort erhältlich sein.')"><div class="place-icon">🎪</div><h3>Event-Platz</h3><p>Zeitlich begrenzte Events mit exklusiven mystischen Items.</p><span class="badge">BALD · MYSTISCH</span></button><button class="world-place" data-go="quests"><div class="place-icon">📜</div><h3>Schwarzes Brett</h3><p>Sieh nach, welche Aufträge gerade in Grünhain verfügbar sind.</p><span class="badge">AUFTRÄGE</span></button>
+    <button class="world-place" onclick="v115Alert('Events kommen in einer späteren Version. Mystische türkisfarbene Items werden ausschließlich dort erhältlich sein.')"><div class="place-icon">🎪</div><h3>Event-Platz</h3><p>Zeitlich begrenzte Events mit exklusiven mystischen Items.</p><span class="badge">BALD · MYSTISCH</span></button><button class="world-place" data-go="quests"><div class="place-icon">📜</div><h3>Schwarzes Brett</h3><p>Sieh nach, welche Aufträge gerade in Grünhain verfügbar sind.</p><span class="badge">AUFTRÄGE</span></button>
   </div>
 </section>
 
@@ -536,8 +536,8 @@ function renderSkillTree(){
 window.upgradeSkill=id=>{
  if(!s.playerClass)return;
  const sk=(skillDefs[s.playerClass]||[]).find(x=>x.id===id);if(!sk)return;
- if(s.level<sk.unlock)return alert(`Ab Level ${sk.unlock} verfügbar.`);
- if(s.skillPoints<1)return alert('Keine Talentpunkte übrig.');
+ if(s.level<sk.unlock)return v115Alert(`Ab Level ${sk.unlock} verfügbar.`);
+ if(s.skillPoints<1)return v115Alert('Keine Talentpunkte übrig.');
  if(skillRank(id)>=5)return;
  s.skillPoints--;s.classSkills[id]=skillRank(id)+1;persist();
 }
@@ -750,7 +750,7 @@ function renderClasses(){
  (s.classLocked?`<div class="lock-note" style="grid-column:1/-1">🔒 Klasse festgelegt: <b>${classes[s.playerClass]?.name}</b>. Die Klasse kann für diesen Charakter nicht mehr gewechselt werden.</div>`:`<div class="lock-note" style="grid-column:1/-1">Wähle deine Klasse einmalig. Danach ist sie für diesen Charakter fest.</div>`);
 }
 
-window.chooseClass=id=>{if(!classes[id])return;if(s.classLocked)return alert('Deine Klasse ist bereits festgelegt.');if(!confirm(`${classes[id].name} wirklich als feste Klasse wählen?`))return;s.playerClass=id;s.classLocked=true;persist()};
+window.chooseClass=id=>{if(!classes[id])return;if(s.classLocked)return v115Alert('Deine Klasse ist bereits festgelegt.');if(!confirm(`${classes[id].name} wirklich als feste Klasse wählen?`))return;s.playerClass=id;s.classLocked=true;persist()};
 window.sellItem=i=>{const it=s.inventory[i];if(!it)return;const value=sellValue(it);if(!confirm(`${it.name} für ${value} Gold verkaufen?`))return;s.gold+=value;s.inventory.splice(i,1);persist()};
 
 function renderSetPanel(){
@@ -829,7 +829,7 @@ function render(){regenEnergy();ensureQuests();renderClasses();renderSetPanel();
  Object.keys(slotLabels).forEach(sl=>{const el=document.querySelector('#slot-'+sl),it=s.equipment[sl],[ic,la]=slotLabels[sl];el.className='slot'+(it?.rarity?(' '+it.rarity):'');el.innerHTML=`<div class="slot-icon">${it?.icon||ic}</div><div class="slot-label">${la}</div><div class="slot-name">${it?it.name:'Leer'}</div>${it?`<div class="tiny">${itemBonus(it)}</div>${it.setName?`<div class="set-tag">${it.setName}-Set</div>`:''}<div class="slot-actions"><button class="mini-btn" onclick="unequip('${sl}')">Ablegen</button><button class="mini-btn" onclick="sellEquipped('${sl}')">💰 ${sellValue(it)}</button></div>`:''}`});
  renderInventory();
  renderGrow();renderQuests();renderDungeon();renderShop();}
-window.incAttr=k=>{if(s.points>0){s.points--;s.attrs[k]++;persist()}};window.equip=i=>{const it=s.inventory[i];if(!it)return;if(it.classId&&it.classId!==s.playerClass)return alert(`Dieses Item ist nur für ${classLabel(it.classId)}.`);const old=s.equipment[it.slot];s.equipment[it.slot]=it;s.inventory.splice(i,1);if(old)s.inventory.push(old);persist()};
+window.incAttr=k=>{if(s.points>0){s.points--;s.attrs[k]++;persist()}};window.equip=i=>{const it=s.inventory[i];if(!it)return;if(it.classId&&it.classId!==s.playerClass)return v115Alert(`Dieses Item ist nur für ${classLabel(it.classId)}.`);const old=s.equipment[it.slot];s.equipment[it.slot]=it;s.inventory.splice(i,1);if(old)s.inventory.push(old);persist()};
 
 
 const seedTypes={
@@ -907,7 +907,7 @@ function plantSelectedSeed(targetSlot=null){
  const g=s.grow,id=g.selectedSeed||'moss',seed=seedTypes[id];
  if(!seed){growMessage('Bitte zuerst einen Samen auswählen.');return}
  if(g.plants.filter(Boolean).length>=growCapacity()){growMessage('Alle freigeschalteten Pflanzenplätze sind belegt.');return}
- if((g.seeds[id]||0)<1){const msg=`Keine Samen von ${seed.name} vorhanden. Kaufe zuerst im Samen-Shop neue Samen.`;growMessage(msg);alert('🌰 '+msg);return}
+ if((g.seeds[id]||0)<1){const msg=`Keine Samen von ${seed.name} vorhanden. Kaufe zuerst im Samen-Shop neue Samen.`;growMessage(msg);v115Alert('🌰 '+msg);return}
  const plant={start:Date.now(),duration:Math.round(seed.growMs*lampSpeed()),seed:id};
  if(targetSlot!==null&&Number.isInteger(+targetSlot)){
    const slot=+targetSlot;
@@ -935,7 +935,7 @@ function upgradeRoomAction(){
 }
 function renderQuests(){const q=s.quests.active,card=document.querySelector('#activeQuestCard'),box=document.querySelector('#activeQuest');if(q){card.style.display='block';const left=Math.max(0,Math.ceil((q.ends-Date.now())/1000)),done=left<=0;box.innerHTML=`<div class="quest active-q"><div class="quest-top"><div class="quest-icon">${q.icon}</div><div><h3>${q.name}</h3><div class="muted">${q.text}</div></div></div><div class="quest-meta"><span>⭐ ${q.xp} XP</span><span>💰 ${q.gold}</span><span>⚡ ${q.energy}</span></div><div class="timer">${done?'✅ Auftrag abgeschlossen':`⏳ Noch ${left} Sek.`}</div>${done?'<button class="btn" id="claimQuest" style="width:100%;margin-top:9px">Belohnung abholen</button>':''}</div>`;if(done)document.querySelector('#claimQuest').onclick=claimQuest}else card.style.display='none';
  document.querySelector('#questList').innerHTML=s.quests.offers.map((x,i)=>`<div class="quest"><div class="quest-top"><div class="quest-icon">${x.icon}</div><div><h3>${x.name}</h3><div class="muted">${x.text}</div></div></div><div class="quest-meta"><span>☠️ Stufe ${x.tier}</span><span>⏱️ ${x.duration}s</span><span>⚡ ${x.energy}</span><span>⭐ ${x.xp}</span><span>💰 ${x.gold}</span></div><button class="btn" style="width:100%" onclick="startQuest(${i})" ${s.quests.active||s.energy<x.energy?'disabled':''}>Auftrag starten</button></div>`).join('')}
-window.startQuest=i=>{if(s.quests.active)return;const q=s.quests.offers[i];if(!q||s.energy<q.energy)return alert('Nicht genug Dampf.');s.energy-=q.energy;s.quests.active={...q,ends:Date.now()+q.duration*1000};s.quests.offers=[];persist()};function claimQuest(){const q=s.quests.active;if(!q||Date.now()<q.ends)return;const bonus=Math.random()<Math.min(.35,.08+totalAttr('glueck')*.01);s.gold+=q.gold;addXp(q.xp);let msg=`Auftrag geschafft: +${q.xp} XP, +${q.gold} Gold.`;
+window.startQuest=i=>{if(s.quests.active)return;const q=s.quests.offers[i];if(!q||s.energy<q.energy)return v115Alert('Nicht genug Dampf.');s.energy-=q.energy;s.quests.active={...q,ends:Date.now()+q.duration*1000};s.quests.offers=[];persist()};function claimQuest(){const q=s.quests.active;if(!q||Date.now()<q.ends)return;const bonus=Math.random()<Math.min(.35,.08+totalAttr('glueck')*.01);s.gold+=q.gold;addXp(q.xp);let msg=`Auftrag geschafft: +${q.xp} XP, +${q.gold} Gold.`;
  // Schlüsselsteine gibt es nicht mehr beliebig früh. Nur der nächste Dungeon kann freigeschaltet werden,
  // sobald sein Level erreicht und der vorherige Dungeon abgeschlossen wurde.
  const nextIndex=s.dungeon.completed.length?Math.min(...Array.from({length:dungeons.length-1},(_,n)=>n+1).filter(i=>!s.dungeon.unlocked.includes(i)&&s.dungeon.completed.includes(i-1)).concat([999])):999;
@@ -943,15 +943,15 @@ window.startQuest=i=>{if(s.quests.active)return;const q=s.quests.offers[i];if(!q
    const nextD=dungeons[nextIndex];
    if(s.level>=nextD.minLevel&&Math.random()<0.22){s.dungeon.unlocked.push(nextIndex);msg+=`\n🗿 ${nextD.keyName} gefunden! ${nextD.name} wurde freigeschaltet.`;}
  }
- if(bonus){let found;if(Math.random()<0.015){const slot=setBases[Math.floor(Math.random()*setBases.length)].slot;found=makeSetItem(s.playerClass||'grower',slot)}else{if(Math.random()<0.75){found=makeClassLoot(s.playerClass||'grower','normal')}else{const other=['grower','bruiser','scout'].filter(x=>x!==s.playerClass);found=makeClassLoot(other[Math.floor(Math.random()*other.length)],'normal')}}s.inventory.push(found);msg+=`\nItem gefunden: ${found.name}`}s.quests.active=null;s.quests.offers=[makeQuest(),makeQuest(),makeQuest()];alert(msg);persist()}
-document.querySelector('#refreshQuests').onclick=()=>{if(s.quests.active)return alert('Beende erst deinen aktiven Auftrag.');if(s.gold<10)return alert('Zu wenig Gold.');s.gold-=10;s.quests.offers=[makeQuest(),makeQuest(),makeQuest()];persist()};
+ if(bonus){let found;if(Math.random()<0.015){const slot=setBases[Math.floor(Math.random()*setBases.length)].slot;found=makeSetItem(s.playerClass||'grower',slot)}else{if(Math.random()<0.75){found=makeClassLoot(s.playerClass||'grower','normal')}else{const other=['grower','bruiser','scout'].filter(x=>x!==s.playerClass);found=makeClassLoot(other[Math.floor(Math.random()*other.length)],'normal')}}s.inventory.push(found);msg+=`\nItem gefunden: ${found.name}`}s.quests.active=null;s.quests.offers=[makeQuest(),makeQuest(),makeQuest()];v115Alert(msg);persist()}
+document.querySelector('#refreshQuests').onclick=()=>{if(s.quests.active)return v115Alert('Beende erst deinen aktiven Auftrag.');if(s.gold<10)return v115Alert('Zu wenig Gold.');s.gold-=10;s.quests.offers=[makeQuest(),makeQuest(),makeQuest()];persist()};
 
 function freeDungeonReady(){return Date.now()-s.dungeonPass.lastFree>=3600000}
 function dungeonWaitText(){const left=Math.max(0,3600000-(Date.now()-s.dungeonPass.lastFree));if(left<=0)return '✅ Gratisversuch bereit';const m=Math.floor(left/60000),sec=Math.floor((left%60000)/1000);return `⏳ Nächster Gratisversuch in ${m}:${String(sec).padStart(2,'0')}`;}
 function consumeDungeonAttempt(){
  if(freeDungeonReady()){s.dungeonPass.lastFree=Date.now();return true}
  if(s.harzTaler>=1){if(!confirm('Gratisversuch noch nicht bereit. 1 Harz-Taler für einen weiteren Versuch ausgeben?'))return false;s.harzTaler--;return true}
- alert('Kein Gratisversuch bereit und keine Harz-Taler vorhanden.');return false
+ v115Alert('Kein Gratisversuch bereit und keine Harz-Taler vorhanden.');return false
 }
 function currentDungeon(){return dungeons[Math.max(0,Math.min(dungeons.length-1,s.dungeon.selected||0))]}
 function currentDungeonEnemy(){const d=currentDungeon(),i=Math.max(0,Math.min(9,(s.dungeon.progress?.[s.dungeon.selected||0]??s.dungeon.room??0)));return d.enemies[i]}
@@ -972,9 +972,9 @@ function dungeonStateText(i){
 }
 window.selectDungeon=i=>{
  const d=dungeons[i];if(!d)return;
- if(dungeonCompleted(i))return alert(`${d.name} wurde bereits abgeschlossen und ist dauerhaft versiegelt.`);
- if(s.level<d.minLevel)return alert(`Dieser Dungeon ist erst ab Level ${d.minLevel} verfügbar.`);
- if(!dungeonUnlocked(i))return alert(`${d.keyName} fehlt. Den Stein kannst du beim Questen finden.`);
+ if(dungeonCompleted(i))return v115Alert(`${d.name} wurde bereits abgeschlossen und ist dauerhaft versiegelt.`);
+ if(s.level<d.minLevel)return v115Alert(`Dieser Dungeon ist erst ab Level ${d.minLevel} verfügbar.`);
+ if(!dungeonUnlocked(i))return v115Alert(`${d.keyName} fehlt. Den Stein kannst du beim Questen finden.`);
  s.dungeon.selected=i;s.dungeon.room=Math.max(0,Math.min(9,s.dungeon.progress?.[i]??0));s.dungeon.view='battle';const lootBox=document.querySelector('#loot');if(lootBox)lootBox.innerHTML='';const logBox=document.querySelector('#battleLog');if(logBox)logBox.textContent=`${d.name}: Gegner ${s.dungeon.room+1} wartet auf dich.`;persist();
 }
 function renderDungeon(){
@@ -1013,7 +1013,7 @@ function renderDungeon(){
  if(!battleBusy)document.querySelector('#battleLog').textContent=selectedDone?'Dieser Dungeon wurde vollständig abgeschlossen. Der Eingang ist dauerhaft versiegelt.':`${d.name}: ${e.name} wartet auf dich.`;
 }
 function animClass(el,cl,ms=400){el.classList.remove(cl);void el.offsetWidth;el.classList.add(cl);setTimeout(()=>el.classList.remove(cl),ms)}function popDamage(el,text){el.textContent=text;animClass(el,'pop',650)}
-document.querySelector('#fightBtn').onclick=()=>{if(battleBusy)return;if(dungeonCompleted(s.dungeon.selected||0))return alert('Dieser Dungeon ist bereits abgeschlossen und dauerhaft versiegelt.');if(!dungeonAvailable(s.dungeon.selected||0))return alert('Dieser Dungeon ist noch nicht betretbar.');const gateEnemy=currentDungeonEnemy();if(s.level<(gateEnemy?.requiredLevel||1))return alert(`Dieser Gegner ist für Level ${gateEnemy?.requiredLevel||1} ausgelegt. Erledige zuerst Quests und verbessere deinen Helden.`);if(!s.playerClass)return alert('Wähle zuerst im Heldenquartier deine Klasse.');if(!consumeDungeonAttempt())return;persist(false);battleBusy=true;const btn=document.querySelector('#fightBtn');btn.disabled=true;document.querySelector('#loot').innerHTML='';const d=currentDungeon(),idx=Math.max(0,Math.min(9,(s.dungeon.progress?.[s.dungeon.selected] ?? s.dungeon.room ?? 0))),e=d.enemies[idx],maxP=maxHp();let pHp=maxP,eHp=e.hp;const pBar=document.querySelector('#playerHpBar'),eBar=document.querySelector('#enemyHpBar'),pTxt=document.querySelector('#playerHpText'),eTxt=document.querySelector('#enemyHpText'),log=document.querySelector('#battleLog');let round=0;
+document.querySelector('#fightBtn').onclick=()=>{if(battleBusy)return;if(dungeonCompleted(s.dungeon.selected||0))return v115Alert('Dieser Dungeon ist bereits abgeschlossen und dauerhaft versiegelt.');if(!dungeonAvailable(s.dungeon.selected||0))return v115Alert('Dieser Dungeon ist noch nicht betretbar.');const gateEnemy=currentDungeonEnemy();if(s.level<(gateEnemy?.requiredLevel||1))return v115Alert(`Dieser Gegner ist für Level ${gateEnemy?.requiredLevel||1} ausgelegt. Erledige zuerst Quests und verbessere deinen Helden.`);if(!s.playerClass)return v115Alert('Wähle zuerst im Heldenquartier deine Klasse.');if(!consumeDungeonAttempt())return;persist(false);battleBusy=true;const btn=document.querySelector('#fightBtn');btn.disabled=true;document.querySelector('#loot').innerHTML='';const d=currentDungeon(),idx=Math.max(0,Math.min(9,(s.dungeon.progress?.[s.dungeon.selected] ?? s.dungeon.room ?? 0))),e=d.enemies[idx],maxP=maxHp();let pHp=maxP,eHp=e.hp;const pBar=document.querySelector('#playerHpBar'),eBar=document.querySelector('#enemyHpBar'),pTxt=document.querySelector('#playerHpText'),eTxt=document.querySelector('#enemyHpText'),log=document.querySelector('#battleLog');let round=0;
  const step=()=>{round++;let critChance=Math.min(.35,.05+totalAttr('glueck')*.015);if(s.playerClass==='bruiser')critChance+=.10+setBonusValue('critChance')+skillValue('nebel')*.03;if(s.playerClass==='scout')critChance+=skillValue('praez')*.02;
  const crit=Math.random()<critChance;let pDmg=Math.max(5,Math.floor(totalAttr('staerke')*1.9+totalAttr('geschick')*.8+s.level*2+Math.random()*10))*(crit?2:1);
  let special='';if(s.playerClass==='grower'&&Math.random()<(.18+setBonusValue('wuchtChance')+skillValue('wucht')*.03)){pDmg=Math.floor(pDmg*1.75);special=' WUCHTSCHLAG!';}
@@ -1026,8 +1026,8 @@ document.querySelector('#fightBtn').onclick=()=>{if(battleBusy)return;if(dungeon
  const finish=win=>{setTimeout(()=>{battleBusy=false;btn.disabled=false;if(win){s.gold+=e.gold;addXp(e.xp);let html=`<div class="loot good">🏆 Sieg! +${e.xp} XP · +${e.gold} Gold</div>`;if(e.boss||Math.random()<.22){let found;if(e.boss){if(Math.random()<0.12){const slot=setBases[Math.floor(Math.random()*setBases.length)].slot;found=makeSetItem(s.playerClass||'grower',slot)}else{found=makeClassLoot(s.playerClass||'grower','dungeon');found.quality='purple';found.rarity='epic';found.name=`Episch: ${found.name.replace(/^.*?:\s*/,'')}`;}}else{if(Math.random()<0.8){found=makeClassLoot(s.playerClass||'grower','dungeon')}else{const other=['grower','bruiser','scout'].filter(x=>x!==s.playerClass);found=makeClassLoot(other[Math.floor(Math.random()*other.length)],'dungeon')}}s.inventory.push(found);html+=`<div class="loot">🎁 ${found.icon||'🎁'} ${found.name}<br><span class="tiny">${itemBonus(found)}</span></div>`}if(e.boss){s.story.bossesDefeated++;s.story.chapter=Math.min(4,1+Math.floor(s.story.bossesDefeated/2));if(Math.random()<0.22){s.harzTaler++;html+=`<div class="loot">🟢 Harz-Taler gefunden!</div>`;}}if(e.boss){if(!s.dungeon.completed.includes(s.dungeon.selected))s.dungeon.completed.push(s.dungeon.selected);s.dungeon.room=9;s.dungeon.progress[s.dungeon.selected]=9;html+=`<div class="loot good">⛓️ Dungeon abgeschlossen! Der Eingang wurde dauerhaft versiegelt.</div>`;}else{s.dungeon.room=idx+1;s.dungeon.progress[s.dungeon.selected]=idx+1;}s.dungeon.view='reward';html+=`<button class="btn gold" id="claimDungeonReward" style="width:100%;margin-top:10px">✅ Belohnung bestätigen</button>`;document.querySelector('#loot').innerHTML=html;persist(false);document.querySelector('#battleLog').textContent=e.boss?'Endboss besiegt – garantiertes Epic erhalten. Bestätige die Belohnung.':'Gegner besiegt. Bestätige die Belohnung.';setTimeout(()=>{const c=document.querySelector('#claimDungeonReward');if(c)c.onclick=()=>{const lootBox=document.querySelector('#loot');if(lootBox)lootBox.innerHTML='';s.dungeon.view='map';persist();};},0)}else{s.dungeon.view='reward';document.querySelector('#loot').innerHTML='<div class="loot" style="color:#ff9895">💀 Niederlage. Verbessere Attribute oder Ausrüstung.</div><button class="btn secondary" id="claimDungeonReward" style="width:100%;margin-top:10px">🗺️ Zurück zur Dungeon-Karte</button>';document.querySelector('#battleLog').textContent='Du wurdest besiegt. Es geht nichts verloren.';persist(false);setTimeout(()=>{const c=document.querySelector('#claimDungeonReward');if(c)c.onclick=()=>{const lootBox=document.querySelector('#loot');if(lootBox)lootBox.innerHTML='';s.dungeon.view='map';persist();};},0)}},450)};step()};
 function shopStock(){const daily=Math.floor(Date.now()/86400000),seed=daily+s.shopRefreshes*17,generic=Array.from({length:3},(_,i)=>items[(seed*3+i*5)%items.length]),specific=classGear[s.playerClass||'grower'].slice().sort((a,b)=>((a.id.charCodeAt(0)+seed)%7)-((b.id.charCodeAt(0)+seed)%7)).slice(0,3);return [...specific,...generic]}
 function renderShop(){document.querySelector('#shopItems').innerHTML=shopStock().map(it=>`<div class="shop-item"><div class="shop-icon">${it.icon}</div><h3>${it.name}</h3><div class="tiny">${itemBonus(it)}</div>${it.classId?`<div class="set-tag">${classLabel(it.classId)}</div>`:''}<div class="price" style="margin:7px 0">💰 ${it.price} Gold</div><button class="btn" style="width:100%;padding:8px" onclick="buy('${it.id}')">Kaufen</button></div>`).join('')}
-window.buy=id=>{const it=[...items,...allClassGear].find(x=>x.id===id);if(!it)return;if(s.gold<it.price)return alert('Zu wenig Gold.');s.gold-=it.price;s.inventory.push({...it});persist()};
-document.querySelector('#refreshShop').onclick=()=>{if(s.harzTaler<1)return alert('Du brauchst 1 Harz-Taler.');s.harzTaler--;s.shopRefreshes++;persist()};
+window.buy=id=>{const it=[...items,...allClassGear].find(x=>x.id===id);if(!it)return;if(s.gold<it.price)return v115Alert('Zu wenig Gold.');s.gold-=it.price;s.inventory.push({...it});persist()};
+document.querySelector('#refreshShop').onclick=()=>{if(s.harzTaler<1)return v115Alert('Du brauchst 1 Harz-Taler.');s.harzTaler--;s.shopRefreshes++;persist()};
 document.querySelector('#resetBtn').onclick=()=>{if(confirm('Spielstand wirklich löschen?')){localStorage.removeItem(KEY);OLD_KEYS.forEach(k=>localStorage.removeItem(k));location.reload()}};
 document.querySelectorAll('.nav').forEach(b=>b.onclick=()=>{if(b.dataset.screen==='dungeon')s.dungeon.view='map';document.querySelectorAll('.nav').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.querySelectorAll('.screen').forEach(x=>x.classList.remove('active'));document.querySelector('#'+b.dataset.screen).classList.add('active');render()});
 
@@ -1175,9 +1175,9 @@ renderDungeon=function(){
 document.querySelector('#fightBtn').onclick=()=>{
   if(battleBusy)return;
   const di=Math.max(0,Math.min(dungeons.length-1,s.dungeon.selected||0));
-  if(dungeonCompleted(di))return alert('Dieser Dungeon ist bereits abgeschlossen.');
-  if(!dungeonAvailable(di))return alert('Dieser Dungeon ist noch nicht betretbar.');
-  if(!s.playerClass)return alert('Wähle zuerst im Heldenquartier deine Klasse.');
+  if(dungeonCompleted(di))return v115Alert('Dieser Dungeon ist bereits abgeschlossen.');
+  if(!dungeonAvailable(di))return v115Alert('Dieser Dungeon ist noch nicht betretbar.');
+  if(!s.playerClass)return v115Alert('Wähle zuerst im Heldenquartier deine Klasse.');
   if(!consumeDungeonAttempt())return;
 
   persist(false);
@@ -1407,8 +1407,8 @@ function v026AddRefill(){
   host.appendChild(box);
   document.querySelector('#v026RefillBtn').onclick=()=>{
     v026DailyReset(false);
-    if((s.energy||0)>=V026_MAX_DAMPF)return alert('Dein Dampf ist bereits voll: 300/300.');
-    if((s.harzTaler||0)<1)return alert('Du hast keinen Harz-Taler mehr.');
+    if((s.energy||0)>=V026_MAX_DAMPF)return v115Alert('Dein Dampf ist bereits voll: 300/300.');
+    if((s.harzTaler||0)<1)return v115Alert('Du hast keinen Harz-Taler mehr.');
     const add=Math.min(V026_REFILL,V026_MAX_DAMPF-(s.energy||0));
     if(!confirm(`1 Harz-Taler einsetzen und +${add} Dampf erhalten?\n\nNicht verbrauchter Dampf verfällt beim täglichen Reset.`))return;
     s.harzTaler--;
@@ -1815,9 +1815,9 @@ function v029InstallFightHandler(){
     if(battleBusy) return;
 
     const di = Math.max(0,Math.min(dungeons.length-1,s.dungeon.selected||0));
-    if(dungeonCompleted(di)) return alert('Dieser Dungeon ist bereits abgeschlossen.');
-    if(!dungeonAvailable(di)) return alert('Dieser Dungeon ist noch nicht betretbar.');
-    if(!s.playerClass) return alert('Wähle zuerst deine Klasse.');
+    if(dungeonCompleted(di)) return v115Alert('Dieser Dungeon ist bereits abgeschlossen.');
+    if(!dungeonAvailable(di)) return v115Alert('Dieser Dungeon ist noch nicht betretbar.');
+    if(!s.playerClass) return v115Alert('Wähle zuerst deine Klasse.');
     if(!consumeDungeonAttempt()) return;
 
     persist(false);
@@ -2060,10 +2060,10 @@ function v030MakeMaterial(){
  const r=v030Scrolls[Math.floor(Math.random()*v030Scrolls.length)],q=v027ShopQuality(),boost={gray:0,green:0,blue:1,purple:2}[q]||0,v=v030Rand(r.min,r.max)+boost;return{uid:v030Uid(r.id),baseId:r.id,type:'scroll',name:r.name,icon:r.icon,quality:q,rarity:qualityMeta(q).cls,effect:r.effect,value:v,price:Math.round((100+v*45)*({gray:1,green:1.35,blue:2.2,purple:4}[q]||1))}}
 function v030Fill(force=false){if(force||s.weaponShop.length!==6)s.weaponShop=Array.from({length:6},()=>v030MakeGear(v030WeaponBase()));if(force||s.magicShop.length!==6)s.magicShop=Array.from({length:6},(_,i)=>i<2?v030MakeJewelry():v030MakeMaterial());localStorage.setItem(KEY,JSON.stringify(s))}
 if(!s.v030Init){s.weaponShop=[];s.magicShop=[];v030Fill(true);s.v030Init=true;localStorage.setItem(KEY,JSON.stringify(s))}else v030Fill(false);
-window.v030BuyWeapon=i=>{const it=s.weaponShop[i];if(!it)return;if(s.gold<it.price)return alert('Zu wenig Gold.');s.gold-=it.price;s.inventory.push({...it,id:it.uid});s.weaponShop[i]=v030MakeGear(v030WeaponBase());persist()};
-window.v030BuyMagic=i=>{const it=s.magicShop[i];if(!it)return;if(s.gold<it.price)return alert('Zu wenig Gold.');s.gold-=it.price;if(it.type==='gem'||it.type==='scroll')s.materials.push({...it});else s.inventory.push({...it,id:it.uid});s.magicShop[i]=i<2?v030MakeJewelry():v030MakeMaterial();persist()};
+window.v030BuyWeapon=i=>{const it=s.weaponShop[i];if(!it)return;if(s.gold<it.price)return v115Alert('Zu wenig Gold.');s.gold-=it.price;s.inventory.push({...it,id:it.uid});s.weaponShop[i]=v030MakeGear(v030WeaponBase());persist()};
+window.v030BuyMagic=i=>{const it=s.magicShop[i];if(!it)return;if(s.gold<it.price)return v115Alert('Zu wenig Gold.');s.gold-=it.price;if(it.type==='gem'||it.type==='scroll')s.materials.push({...it});else s.inventory.push({...it,id:it.uid});s.magicShop[i]=i<2?v030MakeJewelry():v030MakeMaterial();persist()};
 function v030Choices(){return Object.entries(s.equipment||{}).filter(([,it])=>!!it)}
-function v030Pick(title){const a=v030Choices();if(!a.length){alert('Du hast noch keinen Gegenstand angelegt.');return null}const ans=prompt(`${title}\n\n${a.map(([sl,it],i)=>`${i+1}: ${it.icon||'🎁'} ${it.name}`).join('\n')}\n\nNummer eingeben:`);if(ans===null)return null;const n=Number(ans)-1;if(!Number.isInteger(n)||n<0||n>=a.length){alert('Ungültige Auswahl.');return null}return a[n]}
+function v030Pick(title){const a=v030Choices();if(!a.length){v115Alert('Du hast noch keinen Gegenstand angelegt.');return null}const ans=prompt(`${title}\n\n${a.map(([sl,it],i)=>`${i+1}: ${it.icon||'🎁'} ${it.name}`).join('\n')}\n\nNummer eingeben:`);if(ans===null)return null;const n=Number(ans)-1;if(!Number.isInteger(n)||n<0||n>=a.length){v115Alert('Ungültige Auswahl.');return null}return a[n]}
 window.v030UseMaterial=i=>{const m=s.materials[i];if(!m)return;const c=v030Pick(`${m.icon} ${m.name} anwenden auf:`);if(!c)return;const[slot,it]=c;it.bonus??={};
  if(m.type==='gem'){if(it.gem&&!confirm(`Auf diesem Item steckt bereits ${it.gem.name}. Ersetzen?`))return;if(it.gem?.stat&&it.gem?.value)it.bonus[it.gem.stat]=Math.max(0,(it.bonus[it.gem.stat]||0)-it.gem.value);it.gem={name:m.name,stat:m.stat,value:m.value,icon:m.icon};it.bonus[m.stat]=(it.bonus[m.stat]||0)+m.value}
  else{it.enchants??=[];const oi=it.enchants.findIndex(x=>x.effect===m.effect),en={name:m.name,effect:m.effect,value:m.value,icon:m.icon};if(oi>=0){if(!confirm('Diese Verzauberung ist bereits vorhanden. Ersetzen?'))return;it.enchants[oi]=en}else it.enchants.push(en);if(m.effect==='luck')it.bonus.glueck=(it.bonus.glueck||0)+m.value}
@@ -2073,7 +2073,7 @@ const v030BasePrimary=v029PrimaryStat;v029PrimaryStat=function(){return v030Base
 const v030BaseTotal=totalAttr;totalAttr=function(k){let v=v030BaseTotal(k);if(k==='glueck')v+=v030EnchantSum('crit')/1.2;if(k==='ausdauer')v+=v030EnchantSum('damageReduce')*.8;return v};
 const v030BaseBonus=itemBonus;itemBonus=function(it){let t=v030BaseBonus(it);if(it?.gem)t+=`${t?' · ':''}${it.gem.icon||'💎'} ${it.gem.name}: +${it.gem.value} ${v030StatLabel(it.gem.stat)}`;if(it?.enchants?.length)t+=`${t?' · ':''}`+it.enchants.map(e=>`${e.icon||'📜'} ${v030EffectLabel(e.effect,e.value)}`).join(' · ');return t};
 function v030Offer(it,fn,i){const info=it.type==='gem'?`💎 +${it.value} ${v030StatLabel(it.stat)}`:it.type==='scroll'?`✨ ${v030EffectLabel(it.effect,it.value)}`:itemBonus(it);return`<div class="shop-item ${it.rarity||''}"><div class="shop-icon">${it.icon||'🎁'}</div><h3>${it.name}</h3><div class="${qualityMeta(it.quality||'gray').color}">${qualityMeta(it.quality||'gray').label}</div><div class="tiny" style="margin-top:5px">${info}</div><div class="price" style="margin:7px 0">💰 ${it.price} Gold</div><button class="btn" style="width:100%;padding:8px" onclick="${fn}(${i})">Kaufen</button></div>`}
-renderShop=function(){v030Fill(false);const old=document.querySelector('#shopItems');if(!old)return;const card=old.closest('.card');if(card){card.innerHTML=`<div class="section-title"><div><h2>⚔️ Waffen & Rüstung</h2><div class="muted">Nach jedem Kauf wird genau dieser Händlerplatz sofort durch ein neues Angebot ersetzt.</div></div><div class="currency-row"><span class="pill">Gold: <b id="shopGold">${s.gold}</b></span><span class="currency-pill">🟢 Harz-Taler: <b id="shopHarz">${s.harzTaler}</b></span></div></div><div class="shop-grid">${s.weaponShop.map((it,i)=>v030Offer(it,'v030BuyWeapon',i)).join('')}</div><div style="margin-top:10px"><button class="btn secondary" id="v030Refresh" style="width:100%">🔄 Beide Händler neu würfeln – 1 🟢 Harz-Taler</button></div>`;card.querySelector('#v030Refresh').onclick=()=>{if(s.harzTaler<1)return alert('Du brauchst 1 Harz-Taler.');s.harzTaler--;v030Fill(true);persist()}}
+renderShop=function(){v030Fill(false);const old=document.querySelector('#shopItems');if(!old)return;const card=old.closest('.card');if(card){card.innerHTML=`<div class="section-title"><div><h2>⚔️ Waffen & Rüstung</h2><div class="muted">Nach jedem Kauf wird genau dieser Händlerplatz sofort durch ein neues Angebot ersetzt.</div></div><div class="currency-row"><span class="pill">Gold: <b id="shopGold">${s.gold}</b></span><span class="currency-pill">🟢 Harz-Taler: <b id="shopHarz">${s.harzTaler}</b></span></div></div><div class="shop-grid">${s.weaponShop.map((it,i)=>v030Offer(it,'v030BuyWeapon',i)).join('')}</div><div style="margin-top:10px"><button class="btn secondary" id="v030Refresh" style="width:100%">🔄 Beide Händler neu würfeln – 1 🟢 Harz-Taler</button></div>`;card.querySelector('#v030Refresh').onclick=()=>{if(s.harzTaler<1)return v115Alert('Du brauchst 1 Harz-Taler.');s.harzTaler--;v030Fill(true);persist()}}
  let magic=document.querySelector('#v030MagicShop');if(!magic){magic=document.createElement('div');magic.className='card';magic.id='v030MagicShop';document.querySelector('#shop').appendChild(magic)}magic.innerHTML=`<div class="section-title"><div><h2>💎 Schmuck & Verzauberung</h2><div class="muted">Ringe, Amulette, Edelsteine und Rollen.</div></div></div><div class="shop-grid">${s.magicShop.map((it,i)=>v030Offer(it,'v030BuyMagic',i)).join('')}</div><div class="tiny" style="margin-top:8px">Ein Item kann 1 Edelstein tragen. Rollen können auf jedes angelegte Item angewendet werden.</div>`};
 function v030Materials(){let p=document.querySelector('#v030Materials'),ch=document.querySelector('#character');if(!ch)return;if(!p){p=document.createElement('div');p.className='card';p.id='v030Materials';ch.appendChild(p)}p.innerHTML=`<div class="section-title"><div><h2>💎 Edelsteine & Rollen</h2><div class="muted">Material auswählen und auf ein angelegtes Item anwenden.</div></div><span class="pill">${s.materials.length}</span></div>${s.materials.length?`<div class="inventory-grid">${s.materials.map((m,i)=>`<div class="inv-item ${m.rarity||''}"><div class="item-name">${m.icon} ${m.name}</div><div class="${qualityMeta(m.quality||'gray').color}">${qualityMeta(m.quality||'gray').label}</div><div class="item-bonus">${m.type==='gem'?`+${m.value} ${v030StatLabel(m.stat)}`:v030EffectLabel(m.effect,m.value)}</div><button class="btn" style="width:100%;padding:8px" onclick="v030UseMaterial(${i})">Auf Item anwenden</button></div>`).join('')}</div>`:'<div class="empty">Noch keine Edelsteine oder Rollen.</div>'}`}
 const v030BaseRender=render;render=function(){v030BaseRender();renderShop();v030Materials()};
@@ -2149,7 +2149,7 @@ body{padding-bottom:18px!important}.app{padding-bottom:18px!important}.bottom{di
 function v032Go(id){document.querySelectorAll('.screen').forEach(x=>x.classList.remove('active'));document.querySelector('#'+id)?.classList.add('active');document.querySelectorAll('.top-menu-item').forEach(x=>x.classList.toggle('active',x.dataset.screen===id));document.querySelector('#v032MenuPanel')?.classList.remove('open');try{render()}catch(e){}window.scrollTo({top:0,behavior:'smooth'});}
 function v032InstallMenu(){document.querySelector('.bottom')?.remove();if(document.querySelector('#v032TopMenu'))return;const wrap=document.createElement('div');wrap.className='top-menu-wrap';wrap.id='v032TopMenu';wrap.innerHTML=`<button class="top-menu-btn" id="v032MenuBtn" aria-label="Menü">☰</button><div class="top-menu-panel" id="v032MenuPanel"><button class="top-menu-item active" data-screen="world"><span>🗺️</span>Welt</button><button class="top-menu-item" data-screen="character"><span>🧙</span>Held</button><button class="top-menu-item" data-screen="grow"><span>🌱</span>Growroom</button><button class="top-menu-item" data-screen="quests"><span>🍺</span>Quests</button><button class="top-menu-item" data-screen="dungeon"><span>👹</span>Dungeons</button><button class="top-menu-item" data-screen="shop"><span>🛒</span>Händler</button></div>`;document.body.appendChild(wrap);document.querySelector('#v032MenuBtn').onclick=()=>document.querySelector('#v032MenuPanel').classList.toggle('open');wrap.querySelectorAll('.top-menu-item').forEach(b=>b.onclick=()=>v032Go(b.dataset.screen));document.addEventListener('click',e=>{if(!wrap.contains(e.target))document.querySelector('#v032MenuPanel')?.classList.remove('open')});}
 function v032WorldMapHTML(){return `<div class="world-map-shell"><div class="world-map" id="v032WorldMap"><div class="world-map-title">🌿 GRÜNHAIN</div><svg class="world-path" viewBox="0 0 1000 950" preserveAspectRatio="none"><polyline points="500,115 265,250 680,335 315,465 720,575 365,720 650,835"/></svg><div class="world-map-scenery s1">🌲🌲</div><div class="world-map-scenery s2">🏔️</div><div class="world-map-scenery s3">🌾</div><div class="world-map-scenery s4">🌲🏚️</div><div class="world-map-scenery s5">🌫️</div><div class="world-map-scenery s6">🌲</div><button class="world-map-place hero" style="left:50%;top:12%" data-v032-go="character"><div class="wicon">🧙</div><div class="wname">Heldenquartier</div><div class="wsub">Ausrüstung & Skills</div></button><button class="world-map-place quest" style="left:26%;top:27%" data-v032-go="quests"><div class="wicon">🍺</div><div class="wname">Krummen Gießkanne</div><div class="wsub">Quests & Gerüchte</div></button><button class="world-map-place shop" style="left:68%;top:36%" data-v032-go="shop"><div class="wicon">🏪</div><div class="wname">Händler</div><div class="wsub">Waffen, Schmuck & Rollen</div></button><button class="world-map-place grow" style="left:31%;top:50%" data-v032-go="grow"><div class="wicon">🌱</div><div class="wname">Growroom</div><div class="wsub">Samen & Ausbau</div></button><button class="world-map-place dungeon" style="left:72%;top:61%" data-v032-go="dungeon"><div class="wicon">👹</div><div class="wname">Verseuchte Gebiete</div><div class="wsub">20 Dungeons</div></button><button class="world-map-place event" style="left:36%;top:76%" data-v032-event><div class="wicon">🎪</div><div class="wname">Event-Platz</div><div class="wsub">Mystische Beute</div></button><button class="world-map-place quest" style="left:65%;top:88%" data-v032-go="quests"><div class="wicon">📜</div><div class="wname">Schwarzes Brett</div><div class="wsub">Neue Aufträge</div></button></div></div>`;}
-function v032InstallWorldMap(){const world=document.querySelector('#world');if(!world)return;world.querySelectorAll('.world-hero,.world-grid').forEach(x=>x.remove());if(!document.querySelector('#v032WorldMap')){const holder=document.createElement('div');holder.id='v032WorldMapHolder';holder.innerHTML=`<div class="card"><div class="section-title"><div><h2>🗺️ Weltkarte von Grünhain</h2><div class="muted">Tippe auf einen Ort, um ihn zu betreten.</div></div></div>${v032WorldMapHTML()}</div>`;world.insertBefore(holder,world.firstChild);}world.querySelectorAll('[data-v032-go]').forEach(b=>b.onclick=()=>v032Go(b.dataset.v032Go));const ev=world.querySelector('[data-v032-event]');if(ev)ev.onclick=()=>alert('Events kommen später. Mystische türkisfarbene Items gibt es ausschließlich dort.');}
+function v032InstallWorldMap(){const world=document.querySelector('#world');if(!world)return;world.querySelectorAll('.world-hero,.world-grid').forEach(x=>x.remove());if(!document.querySelector('#v032WorldMap')){const holder=document.createElement('div');holder.id='v032WorldMapHolder';holder.innerHTML=`<div class="card"><div class="section-title"><div><h2>🗺️ Weltkarte von Grünhain</h2><div class="muted">Tippe auf einen Ort, um ihn zu betreten.</div></div></div>${v032WorldMapHTML()}</div>`;world.insertBefore(holder,world.firstChild);}world.querySelectorAll('[data-v032-go]').forEach(b=>b.onclick=()=>v032Go(b.dataset.v032Go));const ev=world.querySelector('[data-v032-event]');if(ev)ev.onclick=()=>v115Alert('Events kommen später. Mystische türkisfarbene Items gibt es ausschließlich dort.');}
 const v032BaseRender=render;render=function(){v032BaseRender();v032InstallMenu();v032InstallWorldMap();};try{v032InstallMenu();v032InstallWorldMap();render();}catch(e){console.error('V0.32 init',e);}
 </script>
 
@@ -3011,7 +3011,7 @@ body{
 
 function v038Toast(msg,type='success'){
   if(typeof v037Toast==='function')return v037Toast(msg,type);
-  alert(msg);
+  v115Alert(msg);
 }
 
 /* True reroll: regenerate every visible slot with fresh randomized offers. */
@@ -4083,7 +4083,7 @@ if(typeof v042OldBuyMagic==='function'){
     if(!it)return;
     if(s.gold<it.price){
       if(typeof v037NoGold==='function')v037NoGold();
-      else alert('Nicht genug Gold.');
+      else v115Alert('Nicht genug Gold.');
       return;
     }
 
@@ -4995,9 +4995,9 @@ function v048GoMap(){
 function v048GoBattle(i){
   const d=dungeons[i];
   if(!d)return;
-  if(dungeonCompleted(i))return alert(`${d.name} wurde bereits abgeschlossen.`);
-  if(s.level<d.minLevel)return alert(`Dieser Dungeon ist erst ab Level ${d.minLevel} verfügbar.`);
-  if(!dungeonUnlocked(i))return alert(`${d.keyName} fehlt. Den Stein kannst du beim Questen finden.`);
+  if(dungeonCompleted(i))return v115Alert(`${d.name} wurde bereits abgeschlossen.`);
+  if(s.level<d.minLevel)return v115Alert(`Dieser Dungeon ist erst ab Level ${d.minLevel} verfügbar.`);
+  if(!dungeonUnlocked(i))return v115Alert(`${d.keyName} fehlt. Den Stein kannst du beim Questen finden.`);
 
   s.dungeon.selected=i;
   s.dungeon.room=Math.max(0,Math.min(9,s.dungeon.progress?.[i]??0));
@@ -5056,9 +5056,9 @@ function v048InstallFight(){
     const e=d?.enemies?.[idx];
     if(!d||!e)return;
 
-    if(dungeonCompleted(di))return alert('Dieser Dungeon ist bereits abgeschlossen.');
-    if(!dungeonAvailable(di))return alert('Dieser Dungeon ist noch nicht betretbar.');
-    if(!s.playerClass)return alert('Wähle zuerst deine Klasse.');
+    if(dungeonCompleted(di))return v115Alert('Dieser Dungeon ist bereits abgeschlossen.');
+    if(!dungeonAvailable(di))return v115Alert('Dieser Dungeon ist noch nicht betretbar.');
+    if(!s.playerClass)return v115Alert('Wähle zuerst deine Klasse.');
     if(!consumeDungeonAttempt())return;
 
     s.dungeon.view='battle';
@@ -7263,7 +7263,7 @@ window.v030BuyWeapon=function(i){
 
   if(s.gold<Number(it.price||0)){
     if(typeof v054NotEnoughGold==='function')v054NotEnoughGold();
-    else alert('Nicht genug Gold.');
+    else v115Alert('Nicht genug Gold.');
     return;
   }
 
@@ -7291,7 +7291,7 @@ window.v030BuyMagic=function(i){
 
   if(s.gold<Number(it.price||0)){
     if(typeof v054NotEnoughGold==='function')v054NotEnoughGold();
-    else alert('Nicht genug Gold.');
+    else v115Alert('Nicht genug Gold.');
     return;
   }
 
@@ -7396,7 +7396,7 @@ function v057ToastOk(item,destination='Inventar'){
   }else if(typeof v054Toast==='function'){
     v054Toast(`✅ ${item?.name||'Gegenstand'} gekauft`,'success',`Liegt jetzt im ${destination}.`);
   }else{
-    alert(`${item?.name||'Gegenstand'} gekauft und im ${destination} abgelegt.`);
+    v115Alert(`${item?.name||'Gegenstand'} gekauft und im ${destination} abgelegt.`);
   }
 }
 function v057ToastNoGold(){
@@ -7405,7 +7405,7 @@ function v057ToastNoGold(){
   }else if(typeof v054Toast==='function'){
     v054Toast('❌ Nicht genug Gold','error');
   }else{
-    alert('Nicht genug Gold.');
+    v115Alert('Nicht genug Gold.');
   }
 }
 
@@ -7669,7 +7669,7 @@ renderShop=function(){
         if(typeof v054Toast==='function'){
           v054Toast('❌ Du brauchst 1 Harz-Taler','error');
         }else{
-          alert('Du brauchst 1 Harz-Taler.');
+          v115Alert('Du brauchst 1 Harz-Taler.');
         }
         return;
       }
@@ -7762,7 +7762,7 @@ window.v030BuyWeapon=function(i){
   const price=Number(it.price)||0;
   if(s.gold<price){
     if(typeof v054NotEnoughGold==='function')v054NotEnoughGold();
-    else alert('Nicht genug Gold.');
+    else v115Alert('Nicht genug Gold.');
     return;
   }
 
@@ -7785,7 +7785,7 @@ window.v030BuyWeapon=function(i){
   if(typeof v054Purchased==='function'){
     v054Purchased(bought,'Inventar');
   }else{
-    alert(`${bought.name} gekauft und im Inventar abgelegt.`);
+    v115Alert(`${bought.name} gekauft und im Inventar abgelegt.`);
   }
 
   v058EnsureLegacyRenderAnchors();
@@ -7800,7 +7800,7 @@ window.v030BuyMagic=function(i){
   const price=Number(it.price)||0;
   if(s.gold<price){
     if(typeof v054NotEnoughGold==='function')v054NotEnoughGold();
-    else alert('Nicht genug Gold.');
+    else v115Alert('Nicht genug Gold.');
     return;
   }
 
@@ -7820,7 +7820,7 @@ window.v030BuyMagic=function(i){
     if(typeof v054Purchased==='function'){
       v054Purchased(bought,'Edelstein- & Rollen-Inventar');
     }else{
-      alert(`${bought.name} gekauft.`);
+      v115Alert(`${bought.name} gekauft.`);
     }
 
     v058EnsureLegacyRenderAnchors();
@@ -7843,7 +7843,7 @@ window.v030BuyMagic=function(i){
   if(typeof v054Purchased==='function'){
     v054Purchased(bought,'Inventar');
   }else{
-    alert(`${bought.name} gekauft und im Inventar abgelegt.`);
+    v115Alert(`${bought.name} gekauft und im Inventar abgelegt.`);
   }
 
   v058EnsureLegacyRenderAnchors();
@@ -7912,7 +7912,7 @@ function v059EquippedEntries(){
 function v059ChooseEquippedItem(material){
   const entries=v059EquippedEntries();
   if(!entries.length){
-    alert('Du hast noch keinen Gegenstand angelegt. Lege zuerst ein Item an.');
+    v115Alert('Du hast noch keinen Gegenstand angelegt. Lege zuerst ein Item an.');
     return null;
   }
 
@@ -7930,7 +7930,7 @@ function v059ChooseEquippedItem(material){
 
   const idx=Number(input)-1;
   if(!Number.isInteger(idx) || idx<0 || idx>=entries.length){
-    alert('Ungültige Auswahl.');
+    v115Alert('Ungültige Auswahl.');
     return null;
   }
 
@@ -7982,7 +7982,7 @@ window.v030UseMaterial=function(index){
     const value=Number(mat.value)||0;
 
     if(!stat || value<=0){
-      alert('Dieser Edelstein hat ungültige Werte.');
+      v115Alert('Dieser Edelstein hat ungültige Werte.');
       return;
     }
 
@@ -8007,7 +8007,7 @@ window.v030UseMaterial=function(index){
         `${it.name}: +${value} ${v030StatLabel(stat)}`
       );
     }else{
-      alert(`${mat.name} wurde auf ${it.name} angewendet.`);
+      v115Alert(`${mat.name} wurde auf ${it.name} angewendet.`);
     }
 
   }else if(mat.type==='scroll'){
@@ -8024,7 +8024,7 @@ window.v030UseMaterial=function(index){
     const value=Number(mat.value)||0;
 
     if(!effect || value<=0){
-      alert('Diese Rolle hat ungültige Werte.');
+      v115Alert('Diese Rolle hat ungültige Werte.');
       return;
     }
 
@@ -8052,11 +8052,11 @@ window.v030UseMaterial=function(index){
         `${it.name}: ${v030EffectLabel(effect,value)}`
       );
     }else{
-      alert(`${mat.name} wurde auf ${it.name} angewendet.`);
+      v115Alert(`${mat.name} wurde auf ${it.name} angewendet.`);
     }
 
   }else{
-    alert('Dieses Material kann nicht angewendet werden.');
+    v115Alert('Dieses Material kann nicht angewendet werden.');
     return;
   }
 
@@ -8203,9 +8203,9 @@ function v060InstallFight(){
     const e=d?.enemies?.[idx];
     if(!d||!e)return;
 
-    if(dungeonCompleted(di))return alert('Dieser Dungeon ist bereits abgeschlossen.');
-    if(!dungeonAvailable(di))return alert('Dieser Dungeon ist noch nicht betretbar.');
-    if(!s.playerClass)return alert('Wähle zuerst deine Klasse.');
+    if(dungeonCompleted(di))return v115Alert('Dieser Dungeon ist bereits abgeschlossen.');
+    if(!dungeonAvailable(di))return v115Alert('Dieser Dungeon ist noch nicht betretbar.');
+    if(!s.playerClass)return v115Alert('Wähle zuerst deine Klasse.');
     if(!consumeDungeonAttempt())return;
 
     s.dungeon.view='battle';
@@ -14160,7 +14160,7 @@ async function v083FixHallList(){
 const v083BaseRender=render;
 render=function(){
   v083BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V1.14 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V1.16 RPG');
   setTimeout(v083FixHallList,0);
 };
 
@@ -14324,7 +14324,7 @@ v073ProfilePayload=function(){
 const v084BaseRender=render;
 render=function(){
   v084BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V1.14 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V1.16 RPG');
 };
 </script>
 
@@ -14550,7 +14550,7 @@ v032Go=function(id){
 const v085BaseRender=render;
 render=function(){
   v085BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V1.14 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V1.16 RPG');
 
   if(document.querySelector('#world')?.classList.contains('active')){
     v085InstallWorld();
@@ -14702,7 +14702,7 @@ v032Go=function(id){
 const v086BaseRender=render;
 render=function(){
   v086BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V1.14 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V1.16 RPG');
   v086PolishBrand();
   v086RemoveSlashNArtifacts();
   v086BuildCompleteMenu();
@@ -14778,7 +14778,7 @@ function v087FixMainAttributeBadge(){
 const v087BaseRender=render;
 render=function(){
   v087BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V1.14 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V1.16 RPG');
   requestAnimationFrame(v087FixMainAttributeBadge);
 };
 
@@ -14810,7 +14810,7 @@ try{
 const v088BaseRender=render;
 render=function(){
   v088BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V1.14 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V1.16 RPG');
 };
 </script>
 
@@ -14937,7 +14937,7 @@ v030Offer=function(it,fn,i){
 const v089BaseRender=render;
 render=function(){
   v089BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V1.14 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V1.16 RPG');
   try{renderShop()}catch(e){console.error('V0.89 shop comparison',e)}
 };
 </script>
@@ -15056,7 +15056,7 @@ v057OfferHtml=function(it,i,kind){
 const v090BaseRender=render;
 render=function(){
   v090BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V1.14 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V1.16 RPG');
   try{renderShop()}catch(e){console.error('V0.90 shop comparison',e)}
 };
 
@@ -15085,7 +15085,7 @@ localStorage.setItem(KEY,JSON.stringify(s));
 const v092BaseRender=render;
 render=function(){
   v092BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V1.14 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V1.16 RPG');
 };
 </script>
 
@@ -15413,7 +15413,7 @@ document.querySelector('#v093SaveNews')?.addEventListener('click',v093SaveNews);
 const v093BaseRender=render;
 render=function(){
   v093BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V1.14 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V1.16 RPG');
   v093BuildMenu();
 };
 
@@ -15536,7 +15536,7 @@ v085ActiveEvents=function(){
 const v094BaseRender=render;
 render=function(){
   v094BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V1.14 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V1.16 RPG');
 
   /* Update visible quest XP previews to show doubled amount while event is live. */
   if(v094XpEventActive()){
@@ -15641,7 +15641,7 @@ document.addEventListener('click',()=>{
 const v095BaseRender=render;
 render=function(){
   v095BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V1.14 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V1.16 RPG');
   requestAnimationFrame(v095DecorateXp);
 };
 
@@ -15719,7 +15719,7 @@ function v096DecorateQuestXp(){
 const v096BaseRender=render;
 render=function(){
   v096BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V1.14 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V1.16 RPG');
   requestAnimationFrame(v096DecorateQuestXp);
 };
 
@@ -15757,7 +15757,7 @@ function v097ReplaceQuestStars(){
 const v097BaseRender=render;
 render=function(){
   v097BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V1.14 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V1.16 RPG');
   requestAnimationFrame(v097ReplaceQuestStars);
 };
 
@@ -15853,7 +15853,7 @@ function v098QuestPreview(){
 const v098BaseRender=render;
 render=function(){
   v098BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V1.14 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V1.16 RPG');
   requestAnimationFrame(v098QuestPreview);
 };
 
@@ -15930,7 +15930,7 @@ claimQuest=function(){
       v063Toast('Quest abgeschlossen','success',`${actualXp} EXP erhalten`);
     }
   }else{
-    alert(msg);
+    v115Alert(msg);
   }
 
   log(msg);
@@ -15984,7 +15984,7 @@ function v099PaintQuestXp(){
 const v099BaseRender=render;
 render=function(){
   v099BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V1.14 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V1.16 RPG');
   requestAnimationFrame(v099PaintQuestXp);
 };
 
@@ -16141,7 +16141,7 @@ function v100PaintDungeonXp(){
 const v100BaseRender=render;
 render=function(){
   v100BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V1.14 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V1.16 RPG');
   requestAnimationFrame(v100PaintDungeonXp);
   setTimeout(()=>{
     try{v068InstallFight()}catch(e){}
@@ -16247,7 +16247,7 @@ addXp=function(n){
 const v101BaseRender=render;
 render=function(){
   v101BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V1.14 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V1.16 RPG');
 };
 </script>
 
@@ -16374,7 +16374,7 @@ render=function(){
   const before=Number(s.level)||1;
   const result=v102BaseRender();
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V1.14 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V1.16 RPG');
 
   requestAnimationFrame(()=>{
     try{v102DetectLevelChange()}catch(e){console.error('V1.02 level detection',e)}
@@ -16639,7 +16639,7 @@ v093AdminLoadLists=async function(){
 const v103BaseRender=render;
 render=function(){
   v103BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V1.14 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V1.16 RPG');
   if(v093IsAdmin)v103InstallPlayerAdmin();
 };
 
@@ -16793,7 +16793,7 @@ setInterval(()=>{
 const v104BaseRender=render;
 render=function(){
   const result=v104BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V1.14 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V1.16 RPG');
   return result;
 };
 
@@ -16917,7 +16917,7 @@ v103InstallPlayerAdmin=function(){
 const v105BaseRender=render;
 render=function(){
   const result=v105BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V1.14 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V1.16 RPG');
   if(v093IsAdmin){
     v103InstallPlayerAdmin();
     v105InstallRewards();
@@ -17115,7 +17115,7 @@ claimQuest=function(){
 const v106BaseRender=render;
 render=function(){
   const result=v106BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V1.14 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V1.16 RPG');
   v106InstallBook();
   v106CheckAchievements(true);
   return result;
@@ -17180,7 +17180,7 @@ v106InstallBook=function(){
 const v107BaseRender=render;
 render=function(){
   const result=v107BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V1.14 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V1.16 RPG');
   requestAnimationFrame(v107PlaceBook);
   return result;
 };
@@ -17279,7 +17279,7 @@ const v108OldBuy=window.buy;
 window.buy=id=>{
   const expanded=v108FindBaseItem(id);
   if(!expanded)return v108OldBuy(id);
-  if(s.gold<expanded.price)return alert('Zu wenig Gold.');
+  if(s.gold<expanded.price)return v115Alert('Zu wenig Gold.');
   s.gold-=expanded.price;
   s.inventory.push({...expanded});
   persist();
@@ -17299,7 +17299,7 @@ if(!s.v108ItemPool){
 const v108BaseRender=render;
 render=function(){
   const result=v108BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V1.14 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V1.16 RPG');
   return result;
 };
 </script>
@@ -17458,7 +17458,7 @@ const v109BaseRender=render;
 render=function(){
   v109ResetDaily();
   const result=v109BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V1.14 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V1.16 RPG');
   return result;
 };
 </script>
@@ -17652,7 +17652,7 @@ v085ActiveEvents=function(){
 const v110BaseRender=render;
 render=function(){
   const result=v110BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V1.14 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V1.16 RPG');
   requestAnimationFrame(v110InstallEventButton);
   return result;
 };
@@ -17982,7 +17982,7 @@ v110InstallEventButton=function(){v111InstallWorldBossCard()};
 const v111BaseRender=render;
 render=function(){
   const result=v111BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V1.14 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V1.16 RPG');
   requestAnimationFrame(v111InstallWorldBossCard);
   return result;
 };
@@ -18067,7 +18067,7 @@ render=function(){
   const result=v112BaseRender();
 
   v112EnsureWorldBossState();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V1.14 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V1.16 RPG');
 
   return result;
 };
@@ -18136,7 +18136,7 @@ v110Fight=function(){
 const v113BaseRender=render;
 render=function(){
   const result=v113BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V1.14 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V1.16 RPG');
   return result;
 };
 </script>
@@ -18308,11 +18308,394 @@ v110Fight=async function(){
 const v114BaseRender=render;
 render=function(){
   const result=v114BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V1.14 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V1.16 RPG');
   return result;
 };
 
 setTimeout(v114EnsureConfirmModal,200);
+</script>
+
+
+<style id="v115-global-ui-dialogs">
+.v115-ui-overlay{
+  position:fixed;inset:0;z-index:1000000;
+  display:none;align-items:center;justify-content:center;
+  padding:18px;background:rgba(2,6,4,.78);backdrop-filter:blur(5px);
+}
+.v115-ui-overlay.show{display:flex}
+.v115-ui-card{
+  width:min(90vw,370px);
+  border:1px solid #516748;border-radius:18px;
+  padding:18px;
+  background:
+    radial-gradient(circle at 50% 0%,rgba(129,224,91,.12),transparent 38%),
+    linear-gradient(180deg,#152016,#0b110d);
+  box-shadow:0 24px 70px #000d,0 0 28px rgba(125,220,93,.14);
+  text-align:center;
+  animation:v115Pop .22s ease-out;
+}
+.v115-ui-icon{
+  width:62px;height:62px;margin:0 auto 10px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  border:1px solid #627c51;background:#182417;font-size:30px;
+  box-shadow:0 0 18px rgba(136,226,99,.15);
+}
+.v115-ui-title{font-size:20px;font-weight:1000;color:#eef5ea}
+.v115-ui-text{margin-top:8px;font-size:10px;line-height:1.55;color:#aebbaa;white-space:pre-line}
+.v115-ui-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}
+.v115-ui-actions.single{grid-template-columns:1fr}
+.v115-ui-actions .btn{width:100%}
+.v115-ui-card.warn{border-color:#8a7136;background:radial-gradient(circle at 50% 0%,rgba(255,207,84,.13),transparent 38%),linear-gradient(180deg,#211b0f,#0d0f0b)}
+.v115-ui-card.error{border-color:#8a4747;background:radial-gradient(circle at 50% 0%,rgba(255,84,84,.12),transparent 38%),linear-gradient(180deg,#211010,#0d0b0b)}
+.v115-ui-card.success{border-color:#557d47}
+@keyframes v115Pop{from{opacity:0;transform:scale(.91)}to{opacity:1;transform:scale(1)}}
+</style>
+
+<script id="v115-global-ui-dialogs-script">
+/* ===== V1.15 Central Grow Legends dialog system ===== */
+function v115EnsureUi(){
+  if(document.querySelector('#v115UiOverlay'))return;
+  const ov=document.createElement('div');
+  ov.id='v115UiOverlay';ov.className='v115-ui-overlay';
+  ov.innerHTML=`<div class="v115-ui-card" id="v115UiCard">
+    <div class="v115-ui-icon" id="v115UiIcon">🌿</div>
+    <div class="v115-ui-title" id="v115UiTitle">Grow Legends</div>
+    <div class="v115-ui-text" id="v115UiText"></div>
+    <div class="v115-ui-actions" id="v115UiActions">
+      <button class="btn secondary" id="v115UiCancel">Abbrechen</button>
+      <button class="btn gold" id="v115UiOk">Bestätigen</button>
+    </div>
+  </div>`;
+  document.body.appendChild(ov);
+}
+function v115Icon(type){
+  return type==='success'?'✅':type==='warn'?'⚠️':type==='error'?'❌':type==='confirm'?'❓':'🌿';
+}
+function v115Show({title='Grow Legends',text='',type='info',confirmMode=false,okText='OK',cancelText='Abbrechen'}={}){
+  v115EnsureUi();
+  return new Promise(resolve=>{
+    const ov=document.querySelector('#v115UiOverlay');
+    const card=document.querySelector('#v115UiCard');
+    const actions=document.querySelector('#v115UiActions');
+    const ok=document.querySelector('#v115UiOk');
+    const cancel=document.querySelector('#v115UiCancel');
+
+    card.className=`v115-ui-card ${type}`;
+    document.querySelector('#v115UiIcon').textContent=v115Icon(type);
+    document.querySelector('#v115UiTitle').textContent=title;
+    document.querySelector('#v115UiText').textContent=String(text??'');
+    ok.textContent=okText;
+    cancel.textContent=cancelText;
+
+    actions.classList.toggle('single',!confirmMode);
+    cancel.style.display=confirmMode?'block':'none';
+    ov.classList.add('show');
+
+    const done=value=>{
+      ov.classList.remove('show');
+      ok.onclick=null;cancel.onclick=null;
+      resolve(value);
+    };
+    ok.onclick=()=>done(true);
+    cancel.onclick=()=>done(false);
+  });
+}
+function v115Alert(message,title='Hinweis',type='info'){
+  v115Show({title,text:String(message??''),type,confirmMode:false,okText:'OK'});
+}
+function v115Confirm(message,opts={}){
+  return v115Show({
+    title:opts.title||'Bestätigen',
+    text:String(message??''),
+    type:opts.type||'confirm',
+    confirmMode:true,
+    okText:opts.okText||'Bestätigen',
+    cancelText:opts.cancelText||'Abbrechen'
+  });
+}
+
+/* New global standard for future systems. */
+window.GL_UI={
+  info:(title,text)=>v115Show({title,text,type:'info'}),
+  success:(title,text)=>v115Show({title,text,type:'success'}),
+  warn:(title,text)=>v115Show({title,text,type:'warn'}),
+  error:(title,text)=>v115Show({title,text,type:'error'}),
+  confirm:(title,text,okText='Bestätigen')=>v115Confirm(text,{title,okText})
+};
+
+/* Current admin confirmations migrated to the global standard. */
+window.v093DeleteEvent=async(id)=>{
+  if(!v093IsAdmin)return;
+  if(!(await v115Confirm('Dieses Event wirklich dauerhaft löschen?',{title:'Event löschen',type:'warn',okText:'Löschen'})))return;
+  await v073Db.from('game_events').delete().eq('id',id);
+  await v093AdminLoadLists();await v093LoadPublicContent();
+};
+window.v093DeleteNews=async(id)=>{
+  if(!v093IsAdmin)return;
+  if(!(await v115Confirm('Diese Update-News wirklich dauerhaft löschen?',{title:'News löschen',type:'warn',okText:'Löschen'})))return;
+  await v073Db.from('game_news').delete().eq('id',id);
+  await v093AdminLoadLists();await v093LoadPublicContent();
+};
+
+/* Player admin save migrated. */
+const v115OldAdminSave=v103SavePlayer;
+v103SavePlayer=async function(){
+  if(!v093IsAdmin||!v103SelectedPlayer)return;
+  const payload={
+    target_user:v103SelectedPlayer.user_id,
+    new_level:v103Number('#v103Level',1,999),
+    new_xp:v103Number('#v103Xp',0,2000000000),
+    new_gold:v103Number('#v103Gold',0,2000000000),
+    new_harz_taler:v103Number('#v103Harz',0,2000000000),
+    new_energy:v103Number('#v103Energy',0,300),
+    new_points:v103Number('#v103Points',0,2000000000),
+    new_skill_points:v103Number('#v103SkillPoints',0,2000000000)
+  };
+  const ok=await v115Confirm(
+    `Level ${payload.new_level}\nGold ${payload.new_gold}\nHarz-Taler ${payload.new_harz_taler}`,
+    {title:`Spielerwerte ändern – ${v103SelectedPlayer.character_name}`,type:'warn',okText:'Speichern'}
+  );
+  if(!ok)return;
+  const {error}=await v073Db.rpc('admin_update_player_values',payload);
+  if(error)return v063Toast('Änderung fehlgeschlagen','error',error.message);
+  v063Toast('Spielerwerte gespeichert','success',`${v103SelectedPlayer.character_name} wurde aktualisiert.`);
+  await v103LoadPlayer(v103SelectedPlayer.user_id);
+};
+
+/* Reward confirmation migrated. */
+v105SendReward=async function(){
+  if(!v093IsAdmin||!v103SelectedPlayer)return;
+  const gold=v103Number('#v105RewardGold',0,2000000000);
+  const harz=v103Number('#v105RewardHarz',0,2000000000);
+  const seeds=v103Number('#v105RewardSeeds',0,1000000);
+  if(gold===0&&harz===0&&seeds===0)return v063Toast('Keine Belohnung gewählt','warn','Trage mindestens einen Wert ein.');
+  const ok=await v115Confirm(
+    `Gold: +${gold}\nHarz-Taler: +${harz}\nLegendäre Samen: +${seeds}`,
+    {title:`Belohnung an ${v103SelectedPlayer.character_name}`,okText:'Belohnung senden'}
+  );
+  if(!ok)return;
+  const {error}=await v073Db.rpc('admin_grant_player_reward',{
+    target_user:v103SelectedPlayer.user_id,add_gold:gold,add_harz_taler:harz,add_legendary_seeds:seeds
+  });
+  if(error)return v063Toast('Belohnung fehlgeschlagen','error',error.message);
+  document.querySelector('#v105RewardGold').value=0;
+  document.querySelector('#v105RewardHarz').value=0;
+  document.querySelector('#v105RewardSeeds').value=0;
+  v063Toast('🎁 Belohnung gesendet','success',`${v103SelectedPlayer.character_name} erhält die Belohnung.`);
+  await v103LoadPlayer(v103SelectedPlayer.user_id);
+};
+
+/* Worldboss retry uses exactly the same global dialog now. */
+v114AskRetry=function(){
+  return v115Confirm(
+    `Dein kostenloser Weltboss-Versuch für heute wurde bereits benutzt.\n\nAktuell: ${s.harzTaler||0} Harz-Taler`,
+    {title:'Weiteren Versuch starten?',type:'warn',okText:'10 Harz-Taler nutzen'}
+  );
+};
+
+const v115BaseRender=render;
+render=function(){
+  const result=v115BaseRender();
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V1.16 RPG');
+  return result;
+};
+
+setTimeout(v115EnsureUi,150);
+</script>
+
+
+<style id="v116-worldboss-profile-stats">
+.v116-wb-inline{
+  display:inline-flex;gap:5px;align-items:center;margin-left:4px;
+  padding:2px 6px;border:1px solid #2b8f86;border-radius:999px;
+  color:#79e8df;background:#0a1b18;font-size:7px;font-weight:900;
+}
+.v116-wb-card{
+  margin:10px 0;padding:10px;border:1px solid #2e8c83;border-radius:12px;
+  background:linear-gradient(145deg,#0b1c19,#0b120f);
+  box-shadow:0 0 16px rgba(39,204,188,.10);
+}
+.v116-wb-card-title{
+  font-size:9px;text-transform:uppercase;letter-spacing:.05em;
+  color:#79e8df;margin-bottom:7px;font-weight:1000
+}
+.v116-wb-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.v116-wb-stat{
+  padding:8px;border:1px solid #29453f;border-radius:9px;background:#08110e;
+  text-align:center;font-size:8px;color:#96aaa5
+}
+.v116-wb-stat b{display:block;margin-top:2px;font-size:15px;color:#ecfffb}
+</style>
+
+<script id="v116-worldboss-profile-stats-script">
+/* ===== V1.16 public worldboss stats in Hall of Haze ===== */
+
+const v116OldProfilePayload=v073ProfilePayload;
+v073ProfilePayload=function(){
+  const p=v116OldProfilePayload();
+  v112EnsureWorldBossState();
+  p.worldboss_attempts=Number(s.v110WorldBoss?.attempts)||0;
+  p.worldboss_wins=Number(s.v110WorldBoss?.wins)||0;
+  return p;
+};
+
+/* Ranking rows: show only while mystic event is active. */
+const v116OldPlayerRow=v073PlayerRow;
+v073PlayerRow=function(p,i=null,actions=''){
+  const base=v116OldPlayerRow(p,i,actions);
+  if(!v110MysticEventActive())return base;
+
+  const a=Number(p.worldboss_attempts)||0;
+  const w=Number(p.worldboss_wins)||0;
+
+  return base.replace(
+    /(<div class="v072-player-sub">[\s\S]*?<\/div>)/,
+    `$1<div class="v116-wb-inline">🔷 Versuche ${a} · Siege ${w}</div>`
+  );
+};
+
+/* Current V0.84 row override also needs the same data. */
+const v116OldV084Row=typeof v084PlayerRow==='function'?v084PlayerRow:null;
+if(v116OldV084Row){
+  v084PlayerRow=function(p,i=null,actions=''){
+    const base=v116OldV084Row(p,i,actions);
+    if(!v110MysticEventActive())return base;
+    const a=Number(p.worldboss_attempts)||0,w=Number(p.worldboss_wins)||0;
+    return base.replace(
+      /(<div class="v072-player-sub">[\s\S]*?<\/div>)/,
+      `$1<div class="v116-wb-inline">🔷 Weltboss: ${a} Versuche · ${w} Siege</div>`
+    );
+  };
+  v073PlayerRow=v084PlayerRow;
+}
+
+/* Override ranking/search so the new columns are actually fetched. */
+v073LoadRanking=async function(){
+  const el=document.querySelector('#v072HallRanking');
+  if(!el)return;
+  if(!(await v073Init())){
+    el.innerHTML='<div class="v072-status-offline">Online-Rangliste momentan nicht erreichbar.</div>';
+    return;
+  }
+
+  await v073SyncProfile(false);
+  el.innerHTML='<div class="v072-empty">Rangliste wird geladen...</div>';
+
+  const {data,error}=await v073Db.from('profiles')
+    .select('id,character_name,class_name,level,bosses,gear_score,dungeons,combat_power,dungeon_progress,worldboss_attempts,worldboss_wins')
+    .order('level',{ascending:false})
+    .order('combat_power',{ascending:false})
+    .limit(50);
+
+  if(error){
+    console.error(error);
+    el.innerHTML='<div class="v072-status-offline">Rangliste konnte nicht geladen werden.</div>';
+    return;
+  }
+
+  el.innerHTML=(data||[]).length
+    ? data.map((p,i)=>v073PlayerRow(
+        p,i,
+        p.id===v073User.id
+          ? '<span class="pill">DU</span>'
+          : `<button class="btn secondary" data-v073-add="${p.id}" data-name="${v073Escape(p.character_name)}">Freund</button>`
+      )).join('')
+    : '<div class="v072-empty">Noch keine Spieler.</div>';
+
+  v073BindAddButtons(el);
+  try{v074BindProfileRows(el)}catch(e){}
+};
+
+v073SearchPlayer=async function(name,targetSelector){
+  const target=document.querySelector(targetSelector);
+  if(!target)return;
+  name=String(name||'').trim();
+
+  if(name.length<2){
+    v063Toast('Mindestens 2 Zeichen eingeben','warn');
+    return;
+  }
+  if(!(await v073Init()))return;
+
+  target.innerHTML='<div class="v072-empty">Suche...</div>';
+  const safe=name.replace(/[%_,]/g,'');
+
+  const {data,error}=await v073Db.from('profiles')
+    .select('id,character_name,class_name,level,bosses,gear_score,dungeons,combat_power,dungeon_progress,worldboss_attempts,worldboss_wins')
+    .ilike('character_name',`%${safe}%`)
+    .limit(20);
+
+  if(error){
+    console.error(error);
+    target.innerHTML='<div class="v072-status-offline">Suche fehlgeschlagen.</div>';
+    return;
+  }
+
+  const rows=(data||[]).filter(p=>p.id!==v073User.id);
+  target.innerHTML=rows.length
+    ? rows.map(p=>v073PlayerRow(
+        p,null,
+        `<button class="btn" data-v073-add="${p.id}" data-name="${v073Escape(p.character_name)}">Anfrage senden</button>`
+      )).join('')
+    : '<div class="v072-empty">Keinen Spieler gefunden.</div>';
+
+  v073BindAddButtons(target);
+  try{v074BindProfileRows(target)}catch(e){}
+};
+
+/* Public profile modal: fetch and display attempts/wins while event is active. */
+const v116OldOpenProfile=v074OpenProfile;
+v074OpenProfile=async function(id){
+  await v116OldOpenProfile(id);
+  if(!v110MysticEventActive()||!v073Ready)return;
+
+  try{
+    const {data:p,error}=await v073Db.from('profiles')
+      .select('id,worldboss_attempts,worldboss_wins')
+      .eq('id',id)
+      .single();
+
+    if(error||!p)return;
+
+    const content=document.querySelector('#v074ProfileContent');
+    if(!content)return;
+
+    content.querySelector('#v116WorldbossStats')?.remove();
+
+    const box=document.createElement('div');
+    box.id='v116WorldbossStats';
+    box.className='v116-wb-card';
+    box.innerHTML=`
+      <div class="v116-wb-card-title">🔷 Mystischer Weltboss · Smaragd-Koloss</div>
+      <div class="v116-wb-grid">
+        <div class="v116-wb-stat">VERSUCHE<b>${Number(p.worldboss_attempts)||0}</b></div>
+        <div class="v116-wb-stat">SIEGE<b>${Number(p.worldboss_wins)||0}</b></div>
+      </div>`;
+
+    const dungeon=document.querySelector('#v081DungeonStatus');
+    if(dungeon) dungeon.insertAdjacentElement('afterend',box);
+    else content.appendChild(box);
+  }catch(e){
+    console.error('V1.16 worldboss profile stats',e);
+  }
+};
+
+const v116BaseRender=render;
+render=function(){
+  const result=v116BaseRender();
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V1.16 RPG');
+  return result;
+};
+
+/* Push current stats once after upgrade. */
+setTimeout(async()=>{
+  try{
+    if(v073Ready){
+      v112EnsureWorldBossState();
+      await v073SyncProfile(true);
+    }
+  }catch(e){}
+},1800);
 </script>
 
 </body>
