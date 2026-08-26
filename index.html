@@ -359,6 +359,93 @@ main{padding:12px}
   </div>
 </section>
 
+
+<section id="admin" class="screen">
+  <div class="card">
+    <div class="section-title">
+      <div>
+        <h2>🛡️ Admin-Zentrale</h2>
+        <div class="muted">Events, Update-News und Live-Inhalte verwalten.</div>
+      </div>
+      <span class="pill" id="v093AdminState">PRÜFUNG</span>
+    </div>
+
+    <div id="v093AdminDenied" style="display:none" class="empty">
+      Kein Admin-Zugriff.
+    </div>
+
+    <div id="v093AdminContent" style="display:none">
+      <div class="card" style="margin:0 0 12px">
+        <div class="section-title">
+          <div>
+            <h3>🎪 Events</h3>
+            <div class="muted">Aktivieren, deaktivieren und Zeiträume festlegen.</div>
+          </div>
+        </div>
+
+        <div class="v093-admin-grid">
+          <div>
+            <label class="v093-label">Event-Name</label>
+            <input id="v093EventName" class="v093-input" placeholder="z. B. Erntefest">
+          </div>
+          <div>
+            <label class="v093-label">Kurzbeschreibung</label>
+            <input id="v093EventDesc" class="v093-input" placeholder="Was passiert im Event?">
+          </div>
+          <div>
+            <label class="v093-label">Start</label>
+            <input id="v093EventStart" class="v093-input" type="datetime-local">
+          </div>
+          <div>
+            <label class="v093-label">Ende</label>
+            <input id="v093EventEnd" class="v093-input" type="datetime-local">
+          </div>
+        </div>
+
+        <label class="v093-toggle">
+          <input id="v093EventActive" type="checkbox">
+          <span>Event sofort aktiv schalten</span>
+        </label>
+
+        <button class="btn" id="v093SaveEvent" style="width:100%;margin-top:10px">
+          Event speichern
+        </button>
+
+        <div id="v093EventList" class="v093-admin-list"></div>
+      </div>
+
+      <div class="card" style="margin:0">
+        <div class="section-title">
+          <div>
+            <h3>📰 Update-News</h3>
+            <div class="muted">Neuigkeiten auf der Welt-Startseite veröffentlichen.</div>
+          </div>
+        </div>
+
+        <div class="v093-admin-grid">
+          <div>
+            <label class="v093-label">Version</label>
+            <input id="v093NewsVersion" class="v093-input" placeholder="z. B. V0.93">
+          </div>
+          <div>
+            <label class="v093-label">Titel</label>
+            <input id="v093NewsTitle" class="v093-input" placeholder="Kurzer Titel">
+          </div>
+        </div>
+
+        <label class="v093-label">Text</label>
+        <textarea id="v093NewsText" class="v093-input v093-textarea" placeholder="Was wurde geändert?"></textarea>
+
+        <button class="btn" id="v093SaveNews" style="width:100%;margin-top:10px">
+          News veröffentlichen
+        </button>
+
+        <div id="v093NewsList" class="v093-admin-list"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
 </main>
 </div>
 <nav class="bottom"><button class="nav active" data-screen="world"><span>🗺️</span>Welt</button><button class="nav" data-screen="character"><span>🧙</span>Held</button><button class="nav" data-screen="grow"><span>🌱</span>Grow</button><button class="nav" data-screen="quests"><span>🍺</span>Quests</button><button class="nav" data-screen="dungeon"><span>👹</span>Dungeon</button></nav>
@@ -14073,7 +14160,7 @@ async function v083FixHallList(){
 const v083BaseRender=render;
 render=function(){
   v083BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.92 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.93 RPG');
   setTimeout(v083FixHallList,0);
 };
 
@@ -14237,7 +14324,7 @@ v073ProfilePayload=function(){
 const v084BaseRender=render;
 render=function(){
   v084BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.92 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.93 RPG');
 };
 </script>
 
@@ -14463,7 +14550,7 @@ v032Go=function(id){
 const v085BaseRender=render;
 render=function(){
   v085BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.92 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.93 RPG');
 
   if(document.querySelector('#world')?.classList.contains('active')){
     v085InstallWorld();
@@ -14615,7 +14702,7 @@ v032Go=function(id){
 const v086BaseRender=render;
 render=function(){
   v086BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.92 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.93 RPG');
   v086PolishBrand();
   v086RemoveSlashNArtifacts();
   v086BuildCompleteMenu();
@@ -14691,7 +14778,7 @@ function v087FixMainAttributeBadge(){
 const v087BaseRender=render;
 render=function(){
   v087BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.92 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.93 RPG');
   requestAnimationFrame(v087FixMainAttributeBadge);
 };
 
@@ -14723,7 +14810,7 @@ try{
 const v088BaseRender=render;
 render=function(){
   v088BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.92 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.93 RPG');
 };
 </script>
 
@@ -14850,7 +14937,7 @@ v030Offer=function(it,fn,i){
 const v089BaseRender=render;
 render=function(){
   v089BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.92 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.93 RPG');
   try{renderShop()}catch(e){console.error('V0.89 shop comparison',e)}
 };
 </script>
@@ -14969,7 +15056,7 @@ v057OfferHtml=function(it,i,kind){
 const v090BaseRender=render;
 render=function(){
   v090BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.92 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.93 RPG');
   try{renderShop()}catch(e){console.error('V0.90 shop comparison',e)}
 };
 
@@ -14998,8 +15085,345 @@ localStorage.setItem(KEY,JSON.stringify(s));
 const v092BaseRender=render;
 render=function(){
   v092BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.92 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.93 RPG');
 };
+</script>
+
+
+<style id="v093-admin-style">
+.v093-admin-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:9px;
+}
+.v093-label{
+  display:block;
+  margin:7px 0 4px;
+  font-size:8px;
+  font-weight:1000;
+  color:#9ba99a;
+  text-transform:uppercase;
+  letter-spacing:.06em;
+}
+.v093-input{
+  width:100%;
+  padding:10px 11px;
+  border-radius:10px;
+  border:1px solid #385139;
+  background:#0b120d;
+  color:#eef4ec;
+  outline:none;
+}
+.v093-textarea{min-height:95px;resize:vertical}
+.v093-toggle{
+  display:flex;
+  gap:8px;
+  align-items:center;
+  margin-top:10px;
+  font-size:10px;
+  color:#c9d3c7;
+}
+.v093-admin-list{
+  display:grid;
+  gap:7px;
+  margin-top:10px;
+}
+.v093-admin-item{
+  padding:9px;
+  border:1px solid #344934;
+  border-radius:10px;
+  background:#101711;
+}
+.v093-admin-item-top{
+  display:flex;
+  justify-content:space-between;
+  gap:8px;
+  align-items:center;
+}
+.v093-admin-actions{
+  display:flex;
+  gap:6px;
+  margin-top:7px;
+}
+.v093-admin-actions .btn{
+  flex:1;
+  padding:7px 8px;
+}
+@media(max-width:560px){
+  .v093-admin-grid{grid-template-columns:1fr}
+}
+</style>
+
+<script id="v093-admin-script">
+/* ===== V0.93 Supabase Admin Panel ===== */
+let v093IsAdmin=false;
+let v093Events=[];
+let v093News=[];
+
+function v093Esc(v){return v073Escape(String(v??''))}
+
+async function v093CheckAdmin(){
+  if(!(await v073Init()) || !v073User)return false;
+
+  const {data,error}=await v073Db
+    .from('game_admins')
+    .select('user_id')
+    .eq('user_id',v073User.id)
+    .maybeSingle();
+
+  v093IsAdmin=!error && !!data;
+
+  const state=document.querySelector('#v093AdminState');
+  const content=document.querySelector('#v093AdminContent');
+  const denied=document.querySelector('#v093AdminDenied');
+
+  if(state){
+    state.textContent=v093IsAdmin?'ADMIN':'KEIN ZUGRIFF';
+    state.style.color=v093IsAdmin?'#a9e893':'#ef9d98';
+  }
+  if(content)content.style.display=v093IsAdmin?'block':'none';
+  if(denied)denied.style.display=v093IsAdmin?'none':'block';
+
+  v093BuildMenu();
+  return v093IsAdmin;
+}
+
+async function v093LoadPublicContent(){
+  if(!(await v073Init()))return;
+
+  try{
+    const now=new Date().toISOString();
+
+    const ev=await v073Db
+      .from('game_events')
+      .select('id,name,description,starts_at,ends_at,is_active,created_at')
+      .order('created_at',{ascending:false});
+
+    if(!ev.error)v093Events=ev.data||[];
+
+    const nw=await v073Db
+      .from('game_news')
+      .select('id,version,title,body,is_published,created_at')
+      .eq('is_published',true)
+      .order('created_at',{ascending:false})
+      .limit(8);
+
+    if(!nw.error)v093News=nw.data||[];
+
+    if(document.querySelector('#world')?.classList.contains('active')){
+      v085InstallWorld();
+    }
+  }catch(e){
+    console.error('V0.93 public content',e);
+  }
+}
+
+v085ActiveEvents=function(){
+  const now=Date.now();
+  const active=(v093Events||[]).filter(ev=>{
+    if(!ev.is_active)return false;
+    const start=ev.starts_at?new Date(ev.starts_at).getTime():0;
+    const end=ev.ends_at?new Date(ev.ends_at).getTime():Infinity;
+    return now>=start && now<=end;
+  });
+
+  if(!active.length){
+    return `
+      <div class="v085-event-card">
+        <div class="v085-event-title">Aktuell kein Event aktiv</div>
+        <div class="v085-event-sub">Sobald ein Event startet, erscheint es hier direkt.</div>
+        <div class="v085-event-status">KEIN EVENT</div>
+      </div>`;
+  }
+
+  return active.map(ev=>`
+    <div class="v085-event-card">
+      <div class="v085-event-title">${v093Esc(ev.name)}</div>
+      <div class="v085-event-sub">${v093Esc(ev.description||'Zeitlich begrenztes Event.')}</div>
+      <div class="v085-event-status">AKTIV</div>
+    </div>`).join('');
+};
+
+v085NewsHtml=function(){
+  const source=(v093News||[]).length?v093News:[
+    {version:'V0.92',title:'Dampf-System korrigiert',body:'Keine ungewollte Zeit-Regeneration mehr.'},
+    {version:'V0.90',title:'Händler-Vergleich',body:'Shop-Items zeigen besser, schlechter oder gleichwertig.'},
+    {version:'V0.86',title:'Neue Welt-Startseite',body:'Begrüßung, Events, Update-News und Schnellzugriffe.'}
+  ];
+
+  return source.map(n=>`
+    <div class="v085-news">
+      <div class="v085-news-top">
+        <div class="v085-news-title">${v093Esc(n.title)}</div>
+        <div class="v085-news-version">${v093Esc(n.version||'NEWS')}</div>
+      </div>
+      <div class="v085-news-text">${v093Esc(n.body||n.text||'')}</div>
+    </div>`).join('');
+};
+
+async function v093AdminLoadLists(){
+  if(!v093IsAdmin)return;
+
+  const ev=await v073Db.from('game_events')
+    .select('*').order('created_at',{ascending:false});
+
+  if(!ev.error)v093Events=ev.data||[];
+
+  const nw=await v073Db.from('game_news')
+    .select('*').order('created_at',{ascending:false}).limit(20);
+
+  const eventList=document.querySelector('#v093EventList');
+  if(eventList){
+    eventList.innerHTML=(v093Events||[]).map(ev=>`
+      <div class="v093-admin-item">
+        <div class="v093-admin-item-top">
+          <b>${v093Esc(ev.name)}</b>
+          <span class="pill">${ev.is_active?'AKTIV':'AUS'}</span>
+        </div>
+        <div class="tiny">${v093Esc(ev.description||'')}</div>
+        <div class="v093-admin-actions">
+          <button class="btn secondary" onclick="v093ToggleEvent('${ev.id}',${!ev.is_active})">${ev.is_active?'Deaktivieren':'Aktivieren'}</button>
+          <button class="btn danger" onclick="v093DeleteEvent('${ev.id}')">Löschen</button>
+        </div>
+      </div>`).join('') || '<div class="empty">Noch keine Events.</div>';
+  }
+
+  const newsList=document.querySelector('#v093NewsList');
+  if(newsList && !nw.error){
+    newsList.innerHTML=(nw.data||[]).map(n=>`
+      <div class="v093-admin-item">
+        <div class="v093-admin-item-top">
+          <b>${v093Esc(n.title)}</b>
+          <span class="pill">${v093Esc(n.version||'NEWS')}</span>
+        </div>
+        <div class="tiny">${v093Esc(n.body||'')}</div>
+        <div class="v093-admin-actions">
+          <button class="btn secondary" onclick="v093ToggleNews('${n.id}',${!n.is_published})">${n.is_published?'Ausblenden':'Veröffentlichen'}</button>
+          <button class="btn danger" onclick="v093DeleteNews('${n.id}')">Löschen</button>
+        </div>
+      </div>`).join('') || '<div class="empty">Noch keine News.</div>';
+  }
+}
+
+async function v093SaveEvent(){
+  if(!v093IsAdmin)return;
+
+  const name=document.querySelector('#v093EventName')?.value.trim();
+  const description=document.querySelector('#v093EventDesc')?.value.trim();
+  const start=document.querySelector('#v093EventStart')?.value;
+  const end=document.querySelector('#v093EventEnd')?.value;
+  const active=!!document.querySelector('#v093EventActive')?.checked;
+
+  if(!name)return v063Toast('Event-Name fehlt','warn');
+
+  const {error}=await v073Db.from('game_events').insert({
+    name,
+    description,
+    starts_at:start?new Date(start).toISOString():new Date().toISOString(),
+    ends_at:end?new Date(end).toISOString():new Date(Date.now()+7*86400000).toISOString(),
+    is_active:active,
+    created_by:v073User.id
+  });
+
+  if(error)return v063Toast('Event konnte nicht gespeichert werden','error',error.message);
+
+  v063Toast('Event gespeichert','success',name);
+  await v093AdminLoadLists();
+  await v093LoadPublicContent();
+}
+
+async function v093SaveNews(){
+  if(!v093IsAdmin)return;
+
+  const version=document.querySelector('#v093NewsVersion')?.value.trim()||'NEWS';
+  const title=document.querySelector('#v093NewsTitle')?.value.trim();
+  const body=document.querySelector('#v093NewsText')?.value.trim();
+
+  if(!title||!body)return v063Toast('Titel und Text fehlen','warn');
+
+  const {error}=await v073Db.from('game_news').insert({
+    version,title,body,is_published:true,created_by:v073User.id
+  });
+
+  if(error)return v063Toast('News konnte nicht gespeichert werden','error',error.message);
+
+  v063Toast('Update-News veröffentlicht','success',title);
+  await v093AdminLoadLists();
+  await v093LoadPublicContent();
+}
+
+window.v093ToggleEvent=async(id,state)=>{
+  if(!v093IsAdmin)return;
+  await v073Db.from('game_events').update({is_active:state}).eq('id',id);
+  await v093AdminLoadLists();
+  await v093LoadPublicContent();
+};
+
+window.v093DeleteEvent=async(id)=>{
+  if(!v093IsAdmin||!confirm('Event wirklich löschen?'))return;
+  await v073Db.from('game_events').delete().eq('id',id);
+  await v093AdminLoadLists();
+  await v093LoadPublicContent();
+};
+
+window.v093ToggleNews=async(id,state)=>{
+  if(!v093IsAdmin)return;
+  await v073Db.from('game_news').update({is_published:state}).eq('id',id);
+  await v093AdminLoadLists();
+  await v093LoadPublicContent();
+};
+
+window.v093DeleteNews=async(id)=>{
+  if(!v093IsAdmin||!confirm('News wirklich löschen?'))return;
+  await v073Db.from('game_news').delete().eq('id',id);
+  await v093AdminLoadLists();
+  await v093LoadPublicContent();
+};
+
+function v093BuildMenu(){
+  const panel=document.querySelector('#v032MenuPanel');
+  if(!panel)return;
+
+  const adminExisting=panel.querySelector('[data-screen="admin"]');
+
+  if(v093IsAdmin && !adminExisting){
+    const sep=document.createElement('div');
+    sep.className='v086-menu-separator';
+    const btn=document.createElement('button');
+    btn.className='top-menu-item';
+    btn.dataset.screen='admin';
+    btn.innerHTML='<span>🛡️</span>Admin';
+    btn.onclick=async()=>{
+      v032Go('admin');
+      await v093CheckAdmin();
+      await v093AdminLoadLists();
+    };
+    panel.append(sep,btn);
+  }
+
+  if(!v093IsAdmin && adminExisting){
+    adminExisting.previousElementSibling?.classList.contains('v086-menu-separator') && adminExisting.previousElementSibling.remove();
+    adminExisting.remove();
+  }
+}
+
+document.querySelector('#v093SaveEvent')?.addEventListener('click',v093SaveEvent);
+document.querySelector('#v093SaveNews')?.addEventListener('click',v093SaveNews);
+
+const v093BaseRender=render;
+render=function(){
+  v093BaseRender();
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.93 RPG');
+  v093BuildMenu();
+};
+
+(async()=>{
+  try{
+    await v093LoadPublicContent();
+    await v093CheckAdmin();
+    if(v093IsAdmin)await v093AdminLoadLists();
+  }catch(e){console.error('V0.93 admin init',e)}
+})();
 </script>
 
 </body>
