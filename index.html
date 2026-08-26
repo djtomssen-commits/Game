@@ -14073,7 +14073,7 @@ async function v083FixHallList(){
 const v083BaseRender=render;
 render=function(){
   v083BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.88 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.89 RPG');
   setTimeout(v083FixHallList,0);
 };
 
@@ -14237,7 +14237,7 @@ v073ProfilePayload=function(){
 const v084BaseRender=render;
 render=function(){
   v084BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.88 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.89 RPG');
 };
 </script>
 
@@ -14453,7 +14453,7 @@ v032Go=function(id){
 const v085BaseRender=render;
 render=function(){
   v085BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.88 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.89 RPG');
 
   if(document.querySelector('#world')?.classList.contains('active')){
     v085InstallWorld();
@@ -14605,7 +14605,7 @@ v032Go=function(id){
 const v086BaseRender=render;
 render=function(){
   v086BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.88 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.89 RPG');
   v086PolishBrand();
   v086RemoveSlashNArtifacts();
   v086BuildCompleteMenu();
@@ -14681,7 +14681,7 @@ function v087FixMainAttributeBadge(){
 const v087BaseRender=render;
 render=function(){
   v087BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.88 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.89 RPG');
   requestAnimationFrame(v087FixMainAttributeBadge);
 };
 
@@ -14713,7 +14713,135 @@ try{
 const v088BaseRender=render;
 render=function(){
   v088BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.88 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.89 RPG');
+};
+</script>
+
+
+<style id="v089-shop-comparison">
+/* ===== V0.89 Shop item comparison ===== */
+.v089-shop-compare{
+  margin:8px 0 7px;
+  padding:7px 8px;
+  border-radius:9px;
+  border:1px solid #344934;
+  background:#101711;
+  font-size:9px;
+  line-height:1.35;
+}
+.v089-shop-compare.better{
+  border-color:#4d7b45;
+  background:#142115;
+  color:#a9e893;
+}
+.v089-shop-compare.worse{
+  border-color:#75423e;
+  background:#211312;
+  color:#ef9d98;
+}
+.v089-shop-compare.same{
+  border-color:#4b5149;
+  color:#b5bdb2;
+}
+.v089-shop-compare.empty{
+  border-color:#57663e;
+  color:#d4df9d;
+}
+</style>
+
+<script id="v089-shop-comparison-script">
+/* ===== V0.89 show whether shop gear is better than equipped ===== */
+
+function v089ItemScore(it){
+  if(!it)return 0;
+
+  let score=0;
+  const weights={
+    staerke:1,
+    geschick:1,
+    intelligenz:1,
+    ausdauer:1,
+    glueck:.8,
+    growSkill:.7
+  };
+
+  Object.entries(it.bonus||{}).forEach(([k,v])=>{
+    score+=(Number(v)||0)*(weights[k]??1);
+  });
+
+  /* Include gem/enchant bonuses already stored on the item. */
+  if(it.gem?.value)score+=(Number(it.gem.value)||0);
+  (it.enchants||[]).forEach(e=>{
+    if(e.effect==='primaryPct')score+=(Number(e.value)||0)*1.4;
+    else if(e.effect==='crit')score+=(Number(e.value)||0)*1.0;
+    else if(e.effect==='damageReduce')score+=(Number(e.value)||0)*1.1;
+    else score+=(Number(e.value)||0)*.8;
+  });
+
+  return Math.round(score*10)/10;
+}
+
+function v089ShopComparison(it){
+  if(!it?.slot)return '';
+
+  if(it.classId && it.classId!==s.playerClass){
+    return `<div class="v089-shop-compare worse">Nicht für deine Klasse</div>`;
+  }
+
+  const equipped=s.equipment?.[it.slot];
+
+  if(!equipped){
+    return `<div class="v089-shop-compare empty">▲ Slot leer · Verbesserung möglich</div>`;
+  }
+
+  const newScore=v089ItemScore(it);
+  const oldScore=v089ItemScore(equipped);
+  const diff=Math.round((newScore-oldScore)*10)/10;
+
+  if(diff>0){
+    return `<div class="v089-shop-compare better">▲ BESSER · +${diff} Gesamtwerte</div>`;
+  }
+
+  if(diff<0){
+    return `<div class="v089-shop-compare worse">▼ SCHLECHTER · ${diff} Gesamtwerte</div>`;
+  }
+
+  return `<div class="v089-shop-compare same">= GLEICHWERTIG</div>`;
+}
+
+/* Replace the current shop offer renderer so comparison appears on every gear/jewelry card.
+   Materials like gems/scrolls stay unchanged. */
+v030Offer=function(it,fn,i){
+  const info=it.type==='gem'
+    ? `💎 +${it.value} ${v030StatLabel(it.stat)}`
+    : it.type==='scroll'
+      ? `✨ ${v030EffectLabel(it.effect,it.value)}`
+      : itemBonus(it);
+
+  const compare=(it.type==='gem'||it.type==='scroll')
+    ? ''
+    : v089ShopComparison(it);
+
+  return `
+    <div class="shop-item ${it.rarity||''}">
+      <div class="shop-icon">${it.icon||'🎁'}</div>
+      <h3>${it.name}</h3>
+      <div class="${qualityMeta(it.quality||'gray').color}">
+        ${qualityMeta(it.quality||'gray').label}
+      </div>
+      <div class="tiny" style="margin-top:5px">${info}</div>
+      ${compare}
+      <div class="price" style="margin:7px 0">💰 ${it.price} Gold</div>
+      <button class="btn" style="width:100%;padding:8px" onclick="${fn}(${i})">Kaufen</button>
+    </div>`;
+};
+
+/* Repaint shop whenever character gear changes or page renders. */
+const v089BaseRender=render;
+render=function(){
+  v089BaseRender();
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.89 RPG');
+  try{renderShop()}catch(e){console.error('V0.89 shop comparison',e)}
 };
 </script>
 
