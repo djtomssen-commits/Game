@@ -14073,7 +14073,7 @@ async function v083FixHallList(){
 const v083BaseRender=render;
 render=function(){
   v083BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.86 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.87 RPG');
   setTimeout(v083FixHallList,0);
 };
 
@@ -14237,7 +14237,7 @@ v073ProfilePayload=function(){
 const v084BaseRender=render;
 render=function(){
   v084BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.86 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.87 RPG');
 };
 </script>
 
@@ -14453,7 +14453,7 @@ v032Go=function(id){
 const v085BaseRender=render;
 render=function(){
   v085BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.86 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.87 RPG');
 
   if(document.querySelector('#world')?.classList.contains('active')){
     v085InstallWorld();
@@ -14605,7 +14605,7 @@ v032Go=function(id){
 const v086BaseRender=render;
 render=function(){
   v086BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.86 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.87 RPG');
   v086PolishBrand();
   v086RemoveSlashNArtifacts();
   v086BuildCompleteMenu();
@@ -14619,6 +14619,76 @@ try{
 }catch(e){
   console.error('V0.86 polish',e);
 }
+</script>
+
+
+<style id="v087-main-attribute-fix">
+/* Hauptattribut-Label: weg vom Plus-Button und sauber mittig über der Zeile */
+.stat-main, .main-stat, [data-main-stat="true"] {
+  position: relative;
+}
+
+/* vorhandenes HAUPTATTRIBUT-Badge gezielt nach links/mittig ziehen */
+.main-attribute-badge,
+.mainAttrBadge,
+.main-attr-badge,
+.primary-attribute-badge,
+.hauptattribut-badge {
+  position: absolute !important;
+  right: 92px !important;
+  top: 8px !important;
+  z-index: 2 !important;
+  pointer-events: none !important;
+  white-space: nowrap !important;
+}
+
+/* Falls das Badge im aktuellen Build über Klassen/Attribute anders erzeugt wird */
+.stat-row .main-badge,
+.stat-row [class*="main"][class*="badge"],
+.stat-row [class*="haupt"] {
+  right: 92px !important;
+  max-width: 120px !important;
+}
+
+/* Plus-Button bekommt seinen eigenen freien Bereich */
+.stat-row button,
+.stat-row .plus,
+.stat-row .stat-plus {
+  position: relative;
+  z-index: 3;
+}
+</style>
+
+<script id="v087-main-attribute-runtime-fix">
+function v087FixMainAttributeBadge(){
+  const candidates=[...document.querySelectorAll('*')].filter(el =>
+    el.children.length===0 &&
+    (el.textContent||'').trim().toUpperCase()==='HAUPTATTRIBUT'
+  );
+  candidates.forEach(badge=>{
+    badge.style.position='absolute';
+    badge.style.right='92px';
+    badge.style.top='8px';
+    badge.style.zIndex='2';
+    badge.style.whiteSpace='nowrap';
+    badge.style.pointerEvents='none';
+
+    const row=badge.closest('.stat-row') || badge.parentElement;
+    if(row && getComputedStyle(row).position==='static') row.style.position='relative';
+  });
+}
+
+const v087BaseRender=render;
+render=function(){
+  v087BaseRender();
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.87 RPG');
+  requestAnimationFrame(v087FixMainAttributeBadge);
+};
+
+try{
+  v087FixMainAttributeBadge();
+  render();
+}catch(e){console.error('V0.87 main attribute fix',e);}
 </script>
 
 </body>
