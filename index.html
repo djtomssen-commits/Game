@@ -14160,7 +14160,7 @@ async function v083FixHallList(){
 const v083BaseRender=render;
 render=function(){
   v083BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.98 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V1.00 RPG');
   setTimeout(v083FixHallList,0);
 };
 
@@ -14324,7 +14324,7 @@ v073ProfilePayload=function(){
 const v084BaseRender=render;
 render=function(){
   v084BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.98 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V1.00 RPG');
 };
 </script>
 
@@ -14550,7 +14550,7 @@ v032Go=function(id){
 const v085BaseRender=render;
 render=function(){
   v085BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.98 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V1.00 RPG');
 
   if(document.querySelector('#world')?.classList.contains('active')){
     v085InstallWorld();
@@ -14702,7 +14702,7 @@ v032Go=function(id){
 const v086BaseRender=render;
 render=function(){
   v086BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.98 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V1.00 RPG');
   v086PolishBrand();
   v086RemoveSlashNArtifacts();
   v086BuildCompleteMenu();
@@ -14778,7 +14778,7 @@ function v087FixMainAttributeBadge(){
 const v087BaseRender=render;
 render=function(){
   v087BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.98 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V1.00 RPG');
   requestAnimationFrame(v087FixMainAttributeBadge);
 };
 
@@ -14810,7 +14810,7 @@ try{
 const v088BaseRender=render;
 render=function(){
   v088BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.98 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V1.00 RPG');
 };
 </script>
 
@@ -14937,7 +14937,7 @@ v030Offer=function(it,fn,i){
 const v089BaseRender=render;
 render=function(){
   v089BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.98 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V1.00 RPG');
   try{renderShop()}catch(e){console.error('V0.89 shop comparison',e)}
 };
 </script>
@@ -15056,7 +15056,7 @@ v057OfferHtml=function(it,i,kind){
 const v090BaseRender=render;
 render=function(){
   v090BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.98 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V1.00 RPG');
   try{renderShop()}catch(e){console.error('V0.90 shop comparison',e)}
 };
 
@@ -15085,7 +15085,7 @@ localStorage.setItem(KEY,JSON.stringify(s));
 const v092BaseRender=render;
 render=function(){
   v092BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.98 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V1.00 RPG');
 };
 </script>
 
@@ -15413,7 +15413,7 @@ document.querySelector('#v093SaveNews')?.addEventListener('click',v093SaveNews);
 const v093BaseRender=render;
 render=function(){
   v093BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.98 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V1.00 RPG');
   v093BuildMenu();
 };
 
@@ -15536,7 +15536,7 @@ v085ActiveEvents=function(){
 const v094BaseRender=render;
 render=function(){
   v094BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.98 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V1.00 RPG');
 
   /* Update visible quest XP previews to show doubled amount while event is live. */
   if(v094XpEventActive()){
@@ -15641,7 +15641,7 @@ document.addEventListener('click',()=>{
 const v095BaseRender=render;
 render=function(){
   v095BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.98 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V1.00 RPG');
   requestAnimationFrame(v095DecorateXp);
 };
 
@@ -15719,7 +15719,7 @@ function v096DecorateQuestXp(){
 const v096BaseRender=render;
 render=function(){
   v096BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.98 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V1.00 RPG');
   requestAnimationFrame(v096DecorateQuestXp);
 };
 
@@ -15757,7 +15757,7 @@ function v097ReplaceQuestStars(){
 const v097BaseRender=render;
 render=function(){
   v097BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.98 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V1.00 RPG');
   requestAnimationFrame(v097ReplaceQuestStars);
 };
 
@@ -15853,11 +15853,309 @@ function v098QuestPreview(){
 const v098BaseRender=render;
 render=function(){
   v098BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.98 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V1.00 RPG');
   requestAnimationFrame(v098QuestPreview);
 };
 
 document.addEventListener('click',()=>setTimeout(v098QuestPreview,40),true);
+</script>
+
+
+<script id="v099-real-quest-xp-fix">
+/* ===== V0.99 REAL quest XP event fix =====
+   The actual quest completion path is claimQuest(), not finishQuest().
+*/
+claimQuest=function(){
+  const q=s.quests.active;
+  if(!q || Date.now()<q.ends)return;
+
+  const bonus=Math.random()<Math.min(.35,.08+totalAttr('glueck')*.01);
+
+  const baseXp=Number(q.v094BaseXp ?? q.xp ?? 0);
+  const xpMult=v094XpEventActive()?2:1;
+  const actualXp=Math.round(baseXp*xpMult);
+
+  s.gold+=q.gold;
+  addXp(actualXp);
+
+  let msg=`Auftrag geschafft: +${actualXp} EXP, +${q.gold} Gold.`;
+  if(xpMult===2){
+    msg=`Auftrag geschafft: ${baseXp} EXP ×2 = ${actualXp} EXP, +${q.gold} Gold.`;
+  }
+
+  /* Keep the existing next-dungeon key logic. */
+  try{
+    const nextIdx=(s.dungeon?.completed||[]).length;
+    if(nextIdx>0 && nextIdx<dungeons.length){
+      const d=dungeons[nextIdx];
+      const prevDone=(s.dungeon.completed||[]).includes(nextIdx-1);
+      const levelOk=s.level>=d.minLevel;
+      const alreadyKey=!!s.dungeon.keys?.[nextIdx];
+
+      if(prevDone && levelOk && !alreadyKey){
+        const keyChance=Math.min(.30,.08+totalAttr('glueck')*.01);
+        if(Math.random()<keyChance){
+          s.dungeon.keys[nextIdx]=true;
+          msg+=` Schlüsselstein für "${d.name}" gefunden!`;
+        }
+      }
+    }
+  }catch(e){
+    console.error('V0.99 dungeon key logic',e);
+  }
+
+  /* Existing random item reward behavior. */
+  if(bonus){
+    try{
+      const it=makeItem();
+      s.inventory.push(it);
+      msg+=` Fund: ${it.name}.`;
+    }catch(e){}
+  }
+
+  s.quests.active=null;
+  s.quests.offers=[makeQuest(),makeQuest(),makeQuest()];
+
+  persist(false);
+  render();
+
+  if(typeof v063Toast==='function'){
+    if(xpMult===2){
+      v063Toast(
+        '⚡ 2× EXP Event',
+        'success',
+        `${baseXp} EXP ×2 = ${actualXp} EXP erhalten`
+      );
+    }else{
+      v063Toast('Quest abgeschlossen','success',`${actualXp} EXP erhalten`);
+    }
+  }else{
+    alert(msg);
+  }
+
+  log(msg);
+};
+
+/* Make active quest card and offers explicitly show base -> doubled value. */
+function v099PaintQuestXp(){
+  const active=v094XpEventActive();
+
+  document.querySelectorAll('#quests .v099-xp-event').forEach(x=>x.remove());
+
+  if(!active)return;
+
+  /* Quest offers */
+  document.querySelectorAll('#questList .quest').forEach((card,i)=>{
+    const q=s.quests?.offers?.[i];
+    if(!q)return;
+
+    const base=Number(q.v094BaseXp ?? q.xp ?? 0);
+    const actual=base*2;
+
+    const spans=[...card.querySelectorAll('.quest-meta span')];
+    const xpSpan=spans.find(el=>/\bEXP\b/i.test(el.textContent||''));
+
+    if(xpSpan){
+      xpSpan.textContent=`EXP ${base} → ${actual}`;
+      const badge=document.createElement('span');
+      badge.className='v095-xp2 v099-xp-event';
+      badge.textContent='×2';
+      xpSpan.appendChild(badge);
+    }
+  });
+
+  /* Running quest */
+  const q=s.quests?.active;
+  if(q){
+    const base=Number(q.v094BaseXp ?? q.xp ?? 0);
+    const actual=base*2;
+    const spans=[...document.querySelectorAll('#activeQuest .quest-meta span')];
+    const xpSpan=spans.find(el=>/\b(EXP|XP)\b/i.test(el.textContent||''));
+    if(xpSpan){
+      xpSpan.textContent=`EXP ${base} → ${actual}`;
+      const badge=document.createElement('span');
+      badge.className='v095-xp2 v099-xp-event';
+      badge.textContent='×2';
+      xpSpan.appendChild(badge);
+    }
+  }
+}
+
+const v099BaseRender=render;
+render=function(){
+  v099BaseRender();
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V1.00 RPG');
+  requestAnimationFrame(v099PaintQuestXp);
+};
+
+document.addEventListener('click',()=>setTimeout(v099PaintQuestXp,40),true);
+</script>
+
+
+<style id="v100-dungeon-xp-event">
+.v100-dungeon-xp2{
+  display:inline-block;
+  margin-left:5px;
+  padding:2px 6px;
+  border-radius:999px;
+  border:1px solid #8c6b25;
+  background:#2b1e08;
+  color:#ffe177;
+  font-size:8px;
+  font-weight:1000;
+  text-shadow:0 0 7px #ffd34f,0 0 13px #ffb52f;
+  box-shadow:0 0 10px rgba(255,207,65,.42);
+  animation:v095XpGlow .8s ease-in-out infinite alternate;
+}
+</style>
+
+<script id="v100-dungeon-xp-event-script">
+/* ===== V1.00: 2x EXP also applies to dungeon enemies and bosses ===== */
+
+function v100DungeonXp(baseXp){
+  const base=Number(baseXp)||0;
+  const mult=v094XpEventActive()?2:1;
+  return {
+    base,
+    mult,
+    actual:Math.round(base*mult)
+  };
+}
+
+/* Wrap central addXp only while a dungeon reward is being paid.
+   This avoids double-doubling quest EXP. */
+let v100DungeonRewardContext=false;
+const v100OriginalAddXp=addXp;
+
+addXp=function(amount){
+  if(v100DungeonRewardContext){
+    const r=v100DungeonXp(amount);
+    v100OriginalAddXp(r.actual);
+
+    if(r.mult===2){
+      window.v100LastDungeonXpReward=r;
+    }else{
+      window.v100LastDungeonXpReward=null;
+    }
+    return;
+  }
+
+  return v100OriginalAddXp(amount);
+};
+
+/* Detect the real dungeon reward call by wrapping the final dungeon fight installer.
+   During victory resolution, any addXp(e.xp) is multiplied here. */
+const v100OldInstallFight=v068InstallFight;
+v068InstallFight=function(){
+  v100OldInstallFight();
+
+  const fightBtn=document.querySelector('#dungeonFightBtn');
+  if(!fightBtn || fightBtn.dataset.v100Wrapped==='1')return;
+  fightBtn.dataset.v100Wrapped='1';
+
+  const old=fightBtn.onclick;
+  if(typeof old==='function'){
+    fightBtn.onclick=async function(...args){
+      v100DungeonRewardContext=true;
+      window.v100LastDungeonXpReward=null;
+
+      try{
+        return await old.apply(this,args);
+      }finally{
+        /* Keep context through synchronous victory payout and immediate microtasks. */
+        setTimeout(()=>{
+          v100DungeonRewardContext=false;
+
+          const r=window.v100LastDungeonXpReward;
+          if(r?.mult===2 && typeof v063Toast==='function'){
+            v063Toast(
+              '⚡ 2× EXP Event',
+              'success',
+              `${r.base} EXP ×2 = ${r.actual} EXP im Dungeon`
+            );
+          }
+        },0);
+      }
+    };
+  }
+};
+
+/* Fallback: if the current build attaches the fight via addEventListener instead of onclick,
+   mark context while a visible dungeon combat button is clicked. */
+document.addEventListener('click',e=>{
+  const btn=e.target.closest('#dungeonFightBtn,[data-dungeon-fight],.dungeon-fight-btn');
+  if(!btn)return;
+
+  v100DungeonRewardContext=true;
+  window.v100LastDungeonXpReward=null;
+
+  setTimeout(()=>{
+    v100DungeonRewardContext=false;
+
+    const r=window.v100LastDungeonXpReward;
+    if(r?.mult===2 && typeof v063Toast==='function'){
+      v063Toast(
+        '⚡ 2× EXP Event',
+        'success',
+        `${r.base} EXP ×2 = ${r.actual} EXP im Dungeon`
+      );
+    }
+  },1200);
+},true);
+
+/* Visual indicator on dungeon reward text while event is active. */
+function v100PaintDungeonXp(){
+  document.querySelectorAll('.v100-dungeon-xp2').forEach(x=>x.remove());
+  if(!v094XpEventActive())return;
+
+  const root=document.querySelector('#dungeon');
+  if(!root)return;
+
+  const leaves=[...root.querySelectorAll('*')].filter(el=>el.children.length===0);
+
+  leaves.forEach(el=>{
+    const t=(el.textContent||'').trim();
+    if(!/\b(EXP|XP)\b/i.test(t) || !/\d/.test(t))return;
+
+    const m=t.match(/(\d+)\s*(?:EXP|XP)/i) || t.match(/(?:EXP|XP)\s*(\d+)/i);
+    if(!m)return;
+
+    const base=Number(m[1])||0;
+    if(!base)return;
+
+    const actual=base*2;
+
+    if(/(\d+)\s*(?:EXP|XP)/i.test(t)){
+      el.textContent=t.replace(/(\d+)\s*(?:EXP|XP)/i,`${base} EXP → ${actual}`);
+    }else{
+      el.textContent=t.replace(/(?:EXP|XP)\s*(\d+)/i,`EXP ${base} → ${actual}`);
+    }
+
+    const badge=document.createElement('span');
+    badge.className='v100-dungeon-xp2';
+    badge.textContent='×2';
+    el.appendChild(badge);
+  });
+}
+
+const v100BaseRender=render;
+render=function(){
+  v100BaseRender();
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V1.00 RPG');
+  requestAnimationFrame(v100PaintDungeonXp);
+  setTimeout(()=>{
+    try{v068InstallFight()}catch(e){}
+  },0);
+};
+
+document.addEventListener('click',()=>setTimeout(v100PaintDungeonXp,40),true);
+
+try{
+  v068InstallFight();
+  v100PaintDungeonXp();
+}catch(e){
+  console.error('V1.00 dungeon XP event',e);
+}
 </script>
 
 </body>
