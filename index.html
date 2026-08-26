@@ -14073,7 +14073,7 @@ async function v083FixHallList(){
 const v083BaseRender=render;
 render=function(){
   v083BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.87 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.88 RPG');
   setTimeout(v083FixHallList,0);
 };
 
@@ -14237,7 +14237,7 @@ v073ProfilePayload=function(){
 const v084BaseRender=render;
 render=function(){
   v084BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.87 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.88 RPG');
 };
 </script>
 
@@ -14453,7 +14453,7 @@ v032Go=function(id){
 const v085BaseRender=render;
 render=function(){
   v085BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.87 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.88 RPG');
 
   if(document.querySelector('#world')?.classList.contains('active')){
     v085InstallWorld();
@@ -14605,7 +14605,7 @@ v032Go=function(id){
 const v086BaseRender=render;
 render=function(){
   v086BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.87 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.88 RPG');
   v086PolishBrand();
   v086RemoveSlashNArtifacts();
   v086BuildCompleteMenu();
@@ -14681,7 +14681,7 @@ function v087FixMainAttributeBadge(){
 const v087BaseRender=render;
 render=function(){
   v087BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.87 RPG');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.88 RPG');
   requestAnimationFrame(v087FixMainAttributeBadge);
 };
 
@@ -14689,6 +14689,32 @@ try{
   v087FixMainAttributeBadge();
   render();
 }catch(e){console.error('V0.87 main attribute fix',e);}
+</script>
+
+
+<style id="v088-primary-label-center-fix">
+/* Exact fix for the real V0.70 HAUPTATTRIBUT pseudo-element */
+#attrs .attr.v070-primary{
+  position:relative!important;
+  padding-top:22px!important;
+}
+#attrs .attr.v070-primary:before{
+  left:50%!important;
+  right:auto!important;
+  top:5px!important;
+  transform:translateX(-50%)!important;
+  text-align:center!important;
+  white-space:nowrap!important;
+  z-index:2!important;
+}
+</style>
+
+<script id="v088-version">
+const v088BaseRender=render;
+render=function(){
+  v088BaseRender();
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.88 RPG');
+};
 </script>
 
 </body>
