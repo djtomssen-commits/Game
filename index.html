@@ -205,7 +205,7 @@ main{padding:12px}
 
 
 <style id="v200-stable-ui">
-/* ===== Grow Legends V2.11 Stable: consolidated auth UI ===== */
+/* ===== Grow Legends V2.12 Stable: consolidated auth UI ===== */
 html,body{max-width:100%;overflow-x:hidden}
 
 body:has(#v075AuthOverlay.show) > .app,
@@ -467,34 +467,6 @@ body:has(#v075AuthOverlay.show) > nav.bottom{
 </header>
 <main>
 <section id="world" class="screen active">
-  <div class="world-hero">
-    <div class="world-title"><h2>🌿 Grünhain</h2><p class="muted">Deine Basis zwischen Taverne, Händler, Growroom und den verseuchten Gebieten außerhalb der Stadt.</p></div>
-    <div class="world-town"><span>🏚️</span><span>🍺</span><span>🏪</span><span>🏰</span><span>🌲</span></div>
-  </div>
-  
-<div class="story-card">
-  <div class="story-row">
-    <div class="npc-avatar">🧔</div>
-    <div>
-      <h3>Rudi vom Schwarzen Brett</h3>
-      <p>„Grünhain war mal ruhig. Seit die Schädlingsnester außerhalb der Stadt wachsen, kommen immer mehr Kreaturen durch die Keller und Gärten. Wenn du hier bleiben willst, mach dich nützlich.“</p>
-      <span class="story-chip">Hauptgeschichte · Kapitel <span id="storyChapter">1</span></span>
-    </div>
-  </div>
-</div>
-<div class="story-card">
-  <div class="boss-title">🏆 Boss-Fortschritt</div>
-  <div class="muted" id="bossProgressText">Noch kein Dungeonboss besiegt.</div>
-  <div class="progress-wrap"><div class="progress-line"><div class="progress-fill" id="bossProgressBar" style="width:0%"></div></div></div>
-</div>
-<div class="world-grid">
-    <button class="world-place" data-go="character"><div class="place-icon">🧙</div><h3>Heldenquartier</h3><p>Ausrüstung wechseln, Attribute verbessern und deine Kampfkraft prüfen.</p><span class="badge">CHARAKTER</span></button>
-    <button class="world-place" data-go="quests"><div class="place-icon">🍺</div><h3>Zur krummen Gießkanne</h3><p>Die Taverne ist voller Gerüchte und bezahlter Aufträge.</p><div class="npc-mini">👩 Mira kennt jeden Auftrag.</div><span class="badge">QUESTS</span></button>
-    <button class="world-place" data-go="shop"><div class="place-icon">🏪</div><h3>Schrott & Söhne</h3><p>Der Händler verkauft täglich wechselnde Ausrüstung.</p><div class="npc-mini">🧓 Bork feilscht um jedes Goldstück.</div><span class="badge">HÄNDLER</span></button>
-    <button class="world-place" data-go="grow"><div class="place-icon">🌱</div><h3>Dein Growroom</h3><p>Deine wirtschaftliche Basis. Pflanzen, ernten, verkaufen und ausbauen.</p><span class="badge">GROWROOM</span></button>
-    <button class="world-place" data-go="dungeon"><div class="place-icon">👹</div><h3>Verseuchte Gebiete</h3><p>Betritt Dungeons, besiege Kreaturen und jage seltene Beute.</p><div class="npc-mini">🛡️ Wächter Henk hält den Zugang offen.</div><span class="badge">DUNGEONS</span></button>
-    <button class="world-place" onclick="v115Alert('Events kommen in einer späteren Version. Mystische türkisfarbene Items werden ausschließlich dort erhältlich sein.')"><div class="place-icon">🎪</div><h3>Event-Platz</h3><p>Zeitlich begrenzte Events mit exklusiven mystischen Items.</p><span class="badge">BALD · MYSTISCH</span></button><button class="world-place" data-go="quests"><div class="place-icon">📜</div><h3>Schwarzes Brett</h3><p>Sieh nach, welche Aufträge gerade in Grünhain verfügbar sind.</p><span class="badge">AUFTRÄGE</span></button>
-  </div>
 </section>
 
 <section id="character" class="screen">
@@ -2452,7 +2424,7 @@ body{padding-bottom:18px!important}.app{padding-bottom:18px!important}.bottom{di
 function v032Go(id){document.querySelectorAll('.screen').forEach(x=>x.classList.remove('active'));document.querySelector('#'+id)?.classList.add('active');document.querySelectorAll('.top-menu-item').forEach(x=>x.classList.toggle('active',x.dataset.screen===id));document.querySelector('#v032MenuPanel')?.classList.remove('open');try{render()}catch(e){}window.scrollTo({top:0,behavior:'smooth'});}
 function v032InstallMenu(){document.querySelector('.bottom')?.remove();if(document.querySelector('#v032TopMenu'))return;const wrap=document.createElement('div');wrap.className='top-menu-wrap';wrap.id='v032TopMenu';wrap.innerHTML=`<button class="top-menu-btn" id="v032MenuBtn" aria-label="Menü">☰</button><div class="top-menu-panel" id="v032MenuPanel"><button class="top-menu-item active" data-screen="world"><span>🗺️</span>Welt</button><button class="top-menu-item" data-screen="character"><span>🧙</span>Held</button><button class="top-menu-item" data-screen="grow"><span>🌱</span>Growroom</button><button class="top-menu-item" data-screen="quests"><span>🍺</span>Quests</button><button class="top-menu-item" data-screen="dungeon"><span>👹</span>Dungeons</button><button class="top-menu-item" data-screen="shop"><span>🛒</span>Händler</button></div>`;document.body.appendChild(wrap);document.querySelector('#v032MenuBtn').onclick=()=>document.querySelector('#v032MenuPanel').classList.toggle('open');wrap.querySelectorAll('.top-menu-item').forEach(b=>b.onclick=()=>v032Go(b.dataset.screen));document.addEventListener('click',e=>{if(!wrap.contains(e.target))document.querySelector('#v032MenuPanel')?.classList.remove('open')});}
 function v032WorldMapHTML(){return `<div class="world-map-shell"><div class="world-map" id="v032WorldMap"><div class="world-map-title">🌿 GRÜNHAIN</div><svg class="world-path" viewBox="0 0 1000 950" preserveAspectRatio="none"><polyline points="500,115 265,250 680,335 315,465 720,575 365,720 650,835"/></svg><div class="world-map-scenery s1">🌲🌲</div><div class="world-map-scenery s2">🏔️</div><div class="world-map-scenery s3">🌾</div><div class="world-map-scenery s4">🌲🏚️</div><div class="world-map-scenery s5">🌫️</div><div class="world-map-scenery s6">🌲</div><button class="world-map-place hero" style="left:50%;top:12%" data-v032-go="character"><div class="wicon">🧙</div><div class="wname">Heldenquartier</div><div class="wsub">Ausrüstung & Skills</div></button><button class="world-map-place quest" style="left:26%;top:27%" data-v032-go="quests"><div class="wicon">🍺</div><div class="wname">Krummen Gießkanne</div><div class="wsub">Quests & Gerüchte</div></button><button class="world-map-place shop" style="left:68%;top:36%" data-v032-go="shop"><div class="wicon">🏪</div><div class="wname">Händler</div><div class="wsub">Waffen, Schmuck & Rollen</div></button><button class="world-map-place grow" style="left:31%;top:50%" data-v032-go="grow"><div class="wicon">🌱</div><div class="wname">Growroom</div><div class="wsub">Samen & Ausbau</div></button><button class="world-map-place dungeon" style="left:72%;top:61%" data-v032-go="dungeon"><div class="wicon">👹</div><div class="wname">Verseuchte Gebiete</div><div class="wsub">20 Dungeons</div></button><button class="world-map-place event" style="left:36%;top:76%" data-v032-event><div class="wicon">🎪</div><div class="wname">Event-Platz</div><div class="wsub">Mystische Beute</div></button><button class="world-map-place quest" style="left:65%;top:88%" data-v032-go="quests"><div class="wicon">📜</div><div class="wname">Schwarzes Brett</div><div class="wsub">Neue Aufträge</div></button></div></div>`;}
-function v032InstallWorldMap(){const world=document.querySelector('#world');if(!world)return;world.querySelectorAll('.world-hero,.world-grid').forEach(x=>x.remove());if(!document.querySelector('#v032WorldMap')){const holder=document.createElement('div');holder.id='v032WorldMapHolder';holder.innerHTML=`<div class="card"><div class="section-title"><div><h2>🗺️ Weltkarte von Grünhain</h2><div class="muted">Tippe auf einen Ort, um ihn zu betreten.</div></div></div>${v032WorldMapHTML()}</div>`;world.insertBefore(holder,world.firstChild);}world.querySelectorAll('[data-v032-go]').forEach(b=>b.onclick=()=>v032Go(b.dataset.v032Go));const ev=world.querySelector('[data-v032-event]');if(ev)ev.onclick=()=>v115Alert('Events kommen später. Mystische türkisfarbene Items gibt es ausschließlich dort.');}
+function v032InstallWorldMap(){/* V2.12 legacy map retired */}
 const v032BaseRender=render;render=function(){v032BaseRender();v032InstallMenu();v032InstallWorldMap();};try{v032InstallMenu();v032InstallWorldMap();render();}catch(e){console.error('V0.32 init',e);}
 </script>
 
@@ -13455,7 +13427,7 @@ async function v083FixHallList(){
 const v083BaseRender=render;
 render=function(){
   v083BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.11 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.12 Stable');
   setTimeout(v083FixHallList,0);
 };
 
@@ -13619,7 +13591,7 @@ v073ProfilePayload=function(){
 const v084BaseRender=render;
 render=function(){
   v084BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.11 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.12 Stable');
 };
 </script>
 
@@ -13846,7 +13818,7 @@ v032Go=function(id){
 const v085BaseRender=render;
 render=function(){
   v085BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.11 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.12 Stable');
 
   if(document.querySelector('#world')?.classList.contains('active')){
     v085InstallWorld();
@@ -13998,7 +13970,7 @@ v032Go=function(id){
 const v086BaseRender=render;
 render=function(){
   v086BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.11 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.12 Stable');
   v086PolishBrand();
   v086RemoveSlashNArtifacts();
   v086BuildCompleteMenu();
@@ -14074,7 +14046,7 @@ function v087FixMainAttributeBadge(){
 const v087BaseRender=render;
 render=function(){
   v087BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.11 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.12 Stable');
   requestAnimationFrame(v087FixMainAttributeBadge);
 };
 
@@ -14106,7 +14078,7 @@ try{
 const v088BaseRender=render;
 render=function(){
   v088BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.11 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.12 Stable');
 };
 </script>
 
@@ -14233,7 +14205,7 @@ v030Offer=function(it,fn,i){
 const v089BaseRender=render;
 render=function(){
   v089BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.11 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.12 Stable');
   try{renderShop()}catch(e){console.error('V0.89 shop comparison',e)}
 };
 </script>
@@ -14352,7 +14324,7 @@ v057OfferHtml=function(it,i,kind){
 const v090BaseRender=render;
 render=function(){
   v090BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.11 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.12 Stable');
   try{renderShop()}catch(e){console.error('V0.90 shop comparison',e)}
 };
 
@@ -14381,7 +14353,7 @@ localStorage.setItem(KEY,JSON.stringify(s));
 const v092BaseRender=render;
 render=function(){
   v092BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.11 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.12 Stable');
 };
 </script>
 
@@ -14709,7 +14681,7 @@ document.querySelector('#v093SaveNews')?.addEventListener('click',v093SaveNews);
 const v093BaseRender=render;
 render=function(){
   v093BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.11 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.12 Stable');
   v093BuildMenu();
 };
 
@@ -14832,7 +14804,7 @@ v085ActiveEvents=function(){
 const v094BaseRender=render;
 render=function(){
   v094BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.11 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.12 Stable');
 
   /* Update visible quest XP previews to show doubled amount while event is live. */
   if(v094XpEventActive()){
@@ -14937,7 +14909,7 @@ document.addEventListener('click',()=>{
 const v095BaseRender=render;
 render=function(){
   v095BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.11 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.12 Stable');
   requestAnimationFrame(v095DecorateXp);
 };
 
@@ -15015,7 +14987,7 @@ function v096DecorateQuestXp(){
 const v096BaseRender=render;
 render=function(){
   v096BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.11 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.12 Stable');
   requestAnimationFrame(v096DecorateQuestXp);
 };
 
@@ -15053,7 +15025,7 @@ function v097ReplaceQuestStars(){
 const v097BaseRender=render;
 render=function(){
   v097BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.11 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.12 Stable');
   requestAnimationFrame(v097ReplaceQuestStars);
 };
 
@@ -15149,7 +15121,7 @@ function v098QuestPreview(){
 const v098BaseRender=render;
 render=function(){
   v098BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.11 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.12 Stable');
   requestAnimationFrame(v098QuestPreview);
 };
 
@@ -15280,7 +15252,7 @@ function v099PaintQuestXp(){
 const v099BaseRender=render;
 render=function(){
   v099BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.11 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.12 Stable');
   requestAnimationFrame(v099PaintQuestXp);
 };
 
@@ -15437,7 +15409,7 @@ function v100PaintDungeonXp(){
 const v100BaseRender=render;
 render=function(){
   v100BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.11 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.12 Stable');
   requestAnimationFrame(v100PaintDungeonXp);
   setTimeout(()=>{
     try{v068InstallFight()}catch(e){}
@@ -15543,7 +15515,7 @@ addXp=function(n){
 const v101BaseRender=render;
 render=function(){
   v101BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.11 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.12 Stable');
 };
 </script>
 
@@ -15670,7 +15642,7 @@ render=function(){
   const before=Number(s.level)||1;
   const result=v102BaseRender();
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.11 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.12 Stable');
 
   requestAnimationFrame(()=>{
     try{v102DetectLevelChange()}catch(e){console.error('V1.02 level detection',e)}
@@ -15935,7 +15907,7 @@ v093AdminLoadLists=async function(){
 const v103BaseRender=render;
 render=function(){
   v103BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.11 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.12 Stable');
   if(v093IsAdmin)v103InstallPlayerAdmin();
 };
 
@@ -16061,7 +16033,7 @@ v103InstallPlayerAdmin=function(){
 const v105BaseRender=render;
 render=function(){
   const result=v105BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.11 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.12 Stable');
   if(v093IsAdmin){
     v103InstallPlayerAdmin();
     v105InstallRewards();
@@ -16259,7 +16231,7 @@ claimQuest=function(){
 const v106BaseRender=render;
 render=function(){
   const result=v106BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.11 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.12 Stable');
   v106InstallBook();
   v106CheckAchievements(true);
   return result;
@@ -16324,7 +16296,7 @@ v106InstallBook=function(){
 const v107BaseRender=render;
 render=function(){
   const result=v107BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.11 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.12 Stable');
   requestAnimationFrame(v107PlaceBook);
   return result;
 };
@@ -16443,7 +16415,7 @@ if(!s.v108ItemPool){
 const v108BaseRender=render;
 render=function(){
   const result=v108BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.11 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.12 Stable');
   return result;
 };
 </script>
@@ -16602,7 +16574,7 @@ const v109BaseRender=render;
 render=function(){
   v109ResetDaily();
   const result=v109BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.11 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.12 Stable');
   return result;
 };
 </script>
@@ -16796,7 +16768,7 @@ v085ActiveEvents=function(){
 const v110BaseRender=render;
 render=function(){
   const result=v110BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.11 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.12 Stable');
   requestAnimationFrame(v110InstallEventButton);
   return result;
 };
@@ -17126,7 +17098,7 @@ v110InstallEventButton=function(){v111InstallWorldBossCard()};
 const v111BaseRender=render;
 render=function(){
   const result=v111BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.11 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.12 Stable');
   requestAnimationFrame(v111InstallWorldBossCard);
   return result;
 };
@@ -17211,7 +17183,7 @@ render=function(){
   const result=v112BaseRender();
 
   v112EnsureWorldBossState();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.11 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.12 Stable');
 
   return result;
 };
@@ -17280,7 +17252,7 @@ v110Fight=function(){
 const v113BaseRender=render;
 render=function(){
   const result=v113BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.11 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.12 Stable');
   return result;
 };
 </script>
@@ -17452,7 +17424,7 @@ v110Fight=async function(){
 const v114BaseRender=render;
 render=function(){
   const result=v114BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.11 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.12 Stable');
   return result;
 };
 
@@ -17640,7 +17612,7 @@ v114AskRetry=function(){
 const v115BaseRender=render;
 render=function(){
   const result=v115BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.11 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.12 Stable');
   return result;
 };
 
@@ -17827,7 +17799,7 @@ v074OpenProfile=async function(id){
 const v116BaseRender=render;
 render=function(){
   const result=v116BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.11 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.12 Stable');
   return result;
 };
 
@@ -18006,7 +17978,7 @@ document.addEventListener('click',async e=>{
 const v117BaseRender=render;
 render=function(){
   const result=v117BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.11 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.12 Stable');
   setTimeout(()=>{v117BindDampf();v117BindReset();v117PatchClassModal()},0);
   return result;
 };
@@ -18407,7 +18379,7 @@ v085InstallWorld=function(){
 const v118BaseRender=render;
 render=function(){
   const result=v118BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.11 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.12 Stable');
   requestAnimationFrame(v111InstallWorldBossCard);
   return result;
 };
@@ -18599,7 +18571,7 @@ header .resource-stats .stat:nth-child(4) b{
 const v119BaseRender=render;
 render=function(){
   const result=v119BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.11 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.12 Stable');
   return result;
 };
 </script>
@@ -18736,7 +18708,7 @@ function v120InstallCountdown(){
 const v120BaseRender=render;
 render=function(){
   const result=v120BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.11 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.12 Stable');
   requestAnimationFrame(v120InstallCountdown);
   return result;
 };
@@ -18950,7 +18922,7 @@ const v121BaseRender=render;
 render=function(){
   v121SanitizeMagicStock();
   const result=v121BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.11 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.12 Stable');
   requestAnimationFrame(v121PaintShopInfo);
   return result;
 };
@@ -19293,7 +19265,7 @@ const v122BaseRender=render;
 render=function(){
   v122MigrateAllSockets();
   const result=v122BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.11 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.12 Stable');
   return result;
 };
 
@@ -19621,7 +19593,7 @@ function v123PolishEquipment(){
 const v123BaseRender=render;
 render=function(){
   const result=v123BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.11 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.12 Stable');
   requestAnimationFrame(v123PolishEquipment);
   return result;
 };
@@ -19871,7 +19843,7 @@ function v124ClampCharacterWidth(){
 const v124BaseRender=render;
 render=function(){
   const result=v124BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.11 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.12 Stable');
   requestAnimationFrame(v124ClampCharacterWidth);
   return result;
 };
@@ -20239,10 +20211,7 @@ setTimeout(()=>{
 /* ===== V1.25 Bild 1 implementation ===== */
 function v125Fmt(value){
   const n=Number(value)||0;
-  const rounded=Math.round(n*10)/10;
-  return Number.isInteger(rounded)
-    ? String(rounded)
-    : rounded.toLocaleString('de-DE',{minimumFractionDigits:1,maximumFractionDigits:1});
+  return String(Math.round(n));
 }
 function v125PrimaryKey(){
   return s.playerClass==='scout'?'geschick':s.playerClass==='bruiser'?'intelligenz':'staerke';
@@ -20337,7 +20306,7 @@ render=function(){
   if(hp)hp.textContent=v125Fmt(maxHp());
   if(cp)cp.textContent=v125Fmt(combatPower());
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.11 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.12 Stable');
   return result;
 };
 
@@ -20481,7 +20450,7 @@ if(typeof V125_ATTRS!=='undefined'){
 const v126BaseRender=render;
 render=function(){
   const result=v126BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.11 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.12 Stable');
   requestAnimationFrame(()=>v126RepairCharacter(false));
   return result;
 };
@@ -20671,7 +20640,7 @@ render=function(){
   const energyEl=document.querySelector('#energy');
   if(energyEl)energyEl.textContent=`${Math.floor(Number(s.energy)||0)}/300`;
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.11 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.12 Stable');
   requestAnimationFrame(v127AddResetInfo);
   return result;
 };
@@ -20952,7 +20921,7 @@ setTimeout(()=>{
 
 <script id="v128-premium-skill-ui-script">
 function v128SkillPolish(){
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.11 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.12 Stable');
   const card=document.querySelector('#character .card:has(#skillTree)');
   if(card)card.setAttribute('data-v128','premium-skills');
 }
@@ -21382,7 +21351,7 @@ function v129PolishDynamicCards(){
     if(it)el.classList.add(v129RarityClass(it));
   });
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.11 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.12 Stable');
 }
 const v129BaseRender=render;
 render=function(){
@@ -21544,7 +21513,7 @@ function v130InventoryHeadings(){
 function v130Polish(){
   v130RemoveMerchantCopy();
   v130InventoryHeadings();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.11 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.12 Stable');
 }
 const v130BaseRender=render;
 render=function(){
@@ -21577,7 +21546,7 @@ function v131CleanShop(){
     }
   });
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.11 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.12 Stable');
 }
 const v131BaseRender=render;
 render=function(){
@@ -21844,7 +21813,7 @@ function v132Polish(){
     });
   }
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.11 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.12 Stable');
 }
 const v132BaseRender=render;
 render=function(){
@@ -22057,7 +22026,7 @@ function v133Polish(){
       }
     });
   }
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.11 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.12 Stable');
 }
 const v133BaseRender=render;
 render=function(){
@@ -22242,7 +22211,7 @@ function v134Apply(){
    l.innerHTML='<span class="g0">Normal</span><span class="g1">Gewöhnlich</span><span class="g2">Selten</span><span class="g3">Episch</span><span class="g4">Legendär</span><span class="g5">Mystisch</span>';
    card.appendChild(l);
  }
- document.querySelectorAll('.version').forEach(el=>el.textContent='V2.11 Stable');
+ document.querySelectorAll('.version').forEach(el=>el.textContent='V2.12 Stable');
 }
 const v134BaseRender=render;
 render=function(){const r=v134BaseRender();requestAnimationFrame(v134Apply);return r;};
@@ -22405,7 +22374,7 @@ function v135PaintShop(){
       if(arr[i])el.classList.add(v135QualityClassFromItem(arr[i]));
     });
   });
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.11 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.12 Stable');
 }
 
 /* Existing V1.34 stock may be based on old weak scaling: refresh once for free. */
@@ -22640,7 +22609,7 @@ function v138PaintMerchant(){
     });
   });
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.11 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.12 Stable');
 }
 
 const v138BaseRender=render;
@@ -22838,7 +22807,7 @@ v030Offer=function(it,fn,i){
 
 function v139RepaintShop(){
   try{renderShop()}catch(e){console.error('V1.39 shop repaint',e)}
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.11 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.12 Stable');
 }
 
 const v139BaseRender=render;
@@ -23201,7 +23170,7 @@ function v141BuildSettings(){
           <button type="button" class="btn" id="v141Delete">🗑️ Account löschen</button>
         </div>
 
-        <div class="v141-version-line" id="v141VersionLine">V2.11 Stable</div>
+        <div class="v141-version-line" id="v141VersionLine">V2.12 Stable</div>
       </div>`;
   }
 
@@ -23394,7 +23363,7 @@ setTimeout(()=>{
 const v141BaseRender=render;
 render=function(){
   const r=v141BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.11 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.12 Stable');
   requestAnimationFrame(()=>{
     v141BuildSettings();
     v141ApplySettings();
@@ -23451,7 +23420,7 @@ window.addEventListener('scroll',v142PositionSettings,{passive:true});
 const v142BaseRender=render;
 render=function(){
   const r=v142BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.11 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.12 Stable');
   requestAnimationFrame(v142PositionSettings);
   return r;
 };
@@ -23666,7 +23635,7 @@ render=function(){
     v145SaveScopedLocal();
   }
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.11 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.12 Stable');
   return r;
 };
 
@@ -23682,7 +23651,7 @@ setTimeout(()=>{
 
 
 <script id="v200-stable-core">
-/* ===== Grow Legends V2.11 Stable =====
+/* ===== Grow Legends V2.12 Stable =====
    One auth listener. One email handler. One Google handler.
    One cloud resolver. One character creator. One admin poll.
 */
@@ -23921,7 +23890,7 @@ function v200RenderLoginInfo(){
     let n=null;
     try{ n=(window.v093News||[]).find(x=>x && x.is_published!==false)||null; }catch(e){}
 
-    const title=n?.title||'V2.11 Stable';
+    const title=n?.title||'V2.12 Stable';
     const version=n?.version||'V2.00';
     const text=n?.body||n?.text||'Technische Stabilisierung von Login, Cloud-Speicherung und Charaktererstellung.';
 
@@ -24519,7 +24488,7 @@ function v200BindSettings(){
   if(cancel)cancel.onclick=v141CloseDelete;
 
   const version=document.querySelector('#v141VersionLine');
-  if(version)version.textContent='V2.11 Stable';
+  if(version)version.textContent='V2.12 Stable';
 }
 
 /* One admin poll, content-aware. */
@@ -24648,7 +24617,7 @@ const v200BaseRender=render;
 render=function(){
   const r=v200BaseRender();
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.11 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.12 Stable');
 
   if(v200DurableUser() && v200CharacterComplete() && v075CloudLoadedFor===v073User.id){
     v075ScheduleSave();
@@ -24821,7 +24790,7 @@ render=function(){
   const result=v201BaseRender();
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V2.11 Stable');
+    .forEach(el=>el.textContent='V2.12 Stable');
 
   const world=document.querySelector('#world');
   if(world?.classList.contains('active')){
@@ -25209,7 +25178,7 @@ setInterval(()=>{
 const v204BaseRender=render;
 render=function(){
   const r=v204BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.11 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.12 Stable');
   requestAnimationFrame(()=>{
     v086BuildCompleteMenu();
     v204InstallAvatarBadge();
@@ -25261,7 +25230,7 @@ function v205InstallBudScale(){
 const v205BaseRender=render;
 render=function(){
   const r=v205BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.11 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.12 Stable');
   requestAnimationFrame(v205InstallBudScale);
   return r;
 };
@@ -25562,7 +25531,7 @@ render=function(){
   const r=v206BaseRender();
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V2.11 Stable');
+    .forEach(el=>el.textContent='V2.12 Stable');
 
   requestAnimationFrame(()=>{
     const find=document.querySelector('#v204FindBtn');
@@ -25735,7 +25704,7 @@ render=function(){
   const r=v207BaseRender();
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V2.11 Stable');
+    .forEach(el=>el.textContent='V2.12 Stable');
 
   requestAnimationFrame(()=>{
     v207EnsurePvpState();
@@ -26182,7 +26151,7 @@ render=function(){
   const r=v209BaseRender();
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V2.11 Stable');
+    .forEach(el=>el.textContent='V2.12 Stable');
 
   requestAnimationFrame(()=>{
     const fight=document.querySelector('#v204FightBtn');
@@ -26511,19 +26480,7 @@ v074EquipmentHtml=function(eq){
 function v210FormatNumber(value){
   const n=Number(value);
   if(!Number.isFinite(n))return '0';
-
-  if(Math.abs(n-Math.round(n))<0.00001){
-    return String(Math.round(n));
-  }
-
-  /*
-    Attribute displays should never show floating point garbage such as
-    20.6666666668. One decimal is enough for the player-facing value.
-  */
-  return n.toLocaleString('de-DE',{
-    minimumFractionDigits:0,
-    maximumFractionDigits:1
-  });
+  return String(Math.round(n));
 }
 
 function v210FormatCharacterAttributes(){
@@ -26734,7 +26691,7 @@ render=function(){
   const r=v210BaseRender();
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V2.11 Stable');
+    .forEach(el=>el.textContent='V2.12 Stable');
 
   requestAnimationFrame(()=>{
     v210FormatCharacterAttributes();
@@ -27117,7 +27074,7 @@ render=function(){
   const r=v211BaseRender();
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V2.11 Stable');
+    .forEach(el=>el.textContent='V2.12 Stable');
 
   return r;
 };
