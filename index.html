@@ -205,7 +205,7 @@ main{padding:12px}
 
 
 <style id="v200-stable-ui">
-/* ===== Grow Legends V2.03 Stable: consolidated auth UI ===== */
+/* ===== Grow Legends V2.04 Stable: consolidated auth UI ===== */
 html,body{max-width:100%;overflow-x:hidden}
 
 body:has(#v075AuthOverlay.show) > .app,
@@ -558,6 +558,43 @@ body:has(#v075AuthOverlay.show) > nav.bottom{
 <section id="shop" class="screen">
   <div class="card"><div class="section-title"><div><h2>🛒 Händler</h2><div class="muted">Ausrüstung für deinen nächsten Dungeon.</div></div><div class="currency-row"><span class="pill">Gold: <b id="shopGold">0</b></span><span class="currency-pill">🟢 Harz-Taler: <b id="shopHarz">0</b></span></div></div><div class="shop-grid" id="shopItems"></div><div style="margin-top:10px"><button class="btn secondary" id="refreshShop" style="width:100%">🔄 Händler neu würfeln – 1 🟢 Harz-Taler</button><div class="tiny" style="margin-top:6px">Harz-Taler bekommst du selten aus Bossen und später aus Events.</div></div></div>
   <div class="card"><button class="btn danger" id="resetBtn" style="width:100%">Spielstand zurücksetzen</button></div>
+</section>
+
+
+<section id="pvp" class="screen">
+  <div class="v204-pvp-shell">
+    <div class="v204-pvp-hero">
+      <div>
+        <div class="v204-kicker">⚔️ HALL OF HAZE · PVP</div>
+        <h2>Nebel-Arena</h2>
+        <p>Alle 30 Minuten wird dir ein zufälliger Gegner aus deinem Stärke-Bereich zugeteilt.</p>
+      </div>
+      <div class="v204-pvp-buds">🌿 <b id="v204Buds">0</b><span>PvP-Buds</span></div>
+    </div>
+
+    <div class="v204-pvp-status">
+      <div><span>NÄCHSTER KAMPF</span><b id="v204Cooldown">Bereit</b></div>
+      <div><span>SIEGE</span><b id="v204Wins">0</b></div>
+      <div><span>KÄMPFE</span><b id="v204Fights">0</b></div>
+    </div>
+
+    <div class="v204-match-card" id="v204MatchCard">
+      <div class="v204-empty-match">
+        <div class="ico">🌫️</div>
+        <b>Noch kein Gegner ausgewählt</b>
+        <span>Das Matchmaking sucht nach ähnlichem Level und ähnlicher Kampfkraft.</span>
+      </div>
+    </div>
+
+    <button type="button" class="btn v204-find-btn" id="v204FindBtn">🎯 Gegner suchen</button>
+
+    <div class="v204-rules">
+      <b>So funktioniert PvP</b>
+      <span>Matchmaking: bevorzugt ±2 Level und etwa ±20 % Kampfkraft. Falls kein Spieler passt, wird der Bereich vorsichtig erweitert.</span>
+      <span>Sieg: Gold + Erfahrung + PvP-Buds. Niederlage: kleine Teilnahmebelohnung, keine Buds verloren.</span>
+      <span>Nach einem Kampf beginnt ein serverseitiger Cooldown von 30 Minuten.</span>
+    </div>
+  </div>
 </section>
 
 <section id="hall" class="screen">
@@ -12644,220 +12681,7 @@ render();
   </div>
 </div>
 
-<script>
-/* ===== V0.78 PvP ===== */
-const V078_PVP_COOLDOWN=30*60*1000;
-let v078BattleBusy=false;
 
-function v078FmtCooldown(ms){
-  ms=Math.max(0,ms); const s=Math.ceil(ms/1000),m=Math.floor(s/60);
-  return `${m}:${String(s%60).padStart(2,'0')}`;
-}
-
-/* Server-side claim. Requires SQL function claim_pvp_attempt(uuid). */
-async function v078ClaimAttempt(targetId){
-  if(!(await v073Init())) return {allowed:false,message:'Offline'};
-  const {data,error}=await v073Db.rpc('claim_pvp_attempt',{target_user:targetId});
-  if(error){
-    console.error('PvP claim',error);
-    return {allowed:false,message:'PvP-Backend noch nicht eingerichtet.'};
-  }
-  const row=Array.isArray(data)?data[0]:data;
-  return row || {allowed:false,message:'PvP nicht verfügbar.'};
-}
-
-async function v078LoadCooldown(){
-  if(!v073Ready||!v073Db||!v073User)return 0;
-  const {data,error}=await v073Db.from('pvp_attacks')
-    .select('attacked_at')
-    .eq('attacker_id',v073User.id)
-    .order('attacked_at',{ascending:false})
-    .limit(1);
-  if(error || !data?.length)return 0;
-  return Math.max(0,V078_PVP_COOLDOWN-(Date.now()-new Date(data[0].attacked_at).getTime()));
-}
-
-async function v078InjectProfilePvp(profile){
-  const content=document.querySelector('#v074ProfileContent');
-  if(!content || !profile || profile.id===v073User?.id)return;
-
-  let card=document.querySelector('#v078PvpCard');
-  if(card)card.remove();
-
-  const left=await v078LoadCooldown();
-  card=document.createElement('div');
-  card.id='v078PvpCard';
-  card.className='v078-pvp-card';
-  card.innerHTML=`
-    <div class="v078-pvp-title">Hall of Haze Duell</div>
-    <div class="v078-pvp-sub">
-      Alle 30 Minuten kannst du einen Spieler herausfordern.
-      Sieg: 1× Wundertüte OG garantiert. Niederlage: keine Strafe.
-    </div>
-    <button class="btn v078-attack-btn" id="v078AttackBtn" ${left>0?'disabled':''}>
-      ${left>0?`Nächster Angriff in ${v078FmtCooldown(left)}`:'ANGREIFEN'}
-    </button>`;
-  content.appendChild(card);
-
-  const btn=document.querySelector('#v078AttackBtn');
-  if(btn && left<=0)btn.onclick=()=>v078StartPvp(profile);
-}
-
-async function v078FetchProfile(id){
-  const {data,error}=await v073Db.from('profiles')
-    .select('id,character_name,class_name,level,bosses,gear_score,dungeons,combat_power,equipment,dungeon_progress')
-    .eq('id',id).single();
-  if(error)throw error;
-  return data;
-}
-
-async function v078StartPvp(targetProfile){
-  if(v078BattleBusy)return;
-  if(!targetProfile?.id)return;
-
-  const claim=await v078ClaimAttempt(targetProfile.id);
-  if(!claim.allowed){
-    v063Toast('PvP noch nicht verfügbar','warn',claim.message||(
-      claim.remaining_seconds?`Noch ${v078FmtCooldown(claim.remaining_seconds*1000)}`:''
-    ));
-    return;
-  }
-
-  let enemy;
-  try{enemy=await v078FetchProfile(targetProfile.id)}
-  catch(e){v063Toast('Gegnerprofil konnte nicht geladen werden','error');return}
-
-  v074CloseProfile();
-  v078BattleBusy=true;
-
-  const overlay=document.querySelector('#v078BattleOverlay');
-  overlay?.classList.add('show');
-
-  const myPower=Math.max(1,v074CombatPower());
-  const enemyPower=Math.max(1,Number(enemy.combat_power)||1);
-  const buff=v077Buff();
-
-  /* Main-attribute buff contributes to PvP combat power. */
-  const buffFactor=buff?.type==='main'?1.20:1;
-  const effectiveMyPower=Math.round(myPower*buffFactor);
-
-  let myHp=Math.max(120,Math.round(140+(Number(s.level)||1)*17+effectiveMyPower*.42));
-  let enHp=Math.max(120,Math.round(140+(Number(enemy.level)||1)*17+enemyPower*.42));
-  const maxMy=myHp,maxEn=enHp;
-
-  const meName=document.querySelector('#v078MeName');
-  const enName=document.querySelector('#v078EnemyName');
-  const meMeta=document.querySelector('#v078MeMeta');
-  const enMeta=document.querySelector('#v078EnemyMeta');
-  const meBar=document.querySelector('#v078MeHp');
-  const enBar=document.querySelector('#v078EnemyHp');
-  const log=document.querySelector('#v078BattleLog');
-  const result=document.querySelector('#v078BattleResult');
-
-  if(meName)meName.textContent=s.characterName||'Du';
-  if(enName)enName.textContent=enemy.character_name||'Gegner';
-  if(meMeta)meMeta.textContent=`${v072ClassName()} · Lv. ${s.level} · Kampfwert ${effectiveMyPower}`;
-  if(enMeta)enMeta.textContent=`${enemy.class_name||''} · Lv. ${enemy.level} · Kampfwert ${enemyPower}`;
-  if(meBar)meBar.style.width='100%';
-  if(enBar)enBar.style.width='100%';
-  if(result)result.innerHTML='';
-
-  let round=0;
-  const step=()=>{
-    round++;
-    const myRoll=.82+Math.random()*.36;
-    const enRoll=.82+Math.random()*.36;
-
-    const myDmg=Math.max(7,Math.round((effectiveMyPower*.10+8)*myRoll));
-    const enDmg=Math.max(7,Math.round((enemyPower*.10+8)*enRoll));
-
-    enHp=Math.max(0,enHp-myDmg);
-    if(enBar)enBar.style.width=`${enHp/maxEn*100}%`;
-    if(log)log.textContent=`Runde ${round}: Du verursachst ${myDmg} Schaden.`;
-
-    if(enHp<=0){v078FinishPvp(true,enemy);return}
-
-    setTimeout(()=>{
-      myHp=Math.max(0,myHp-enDmg);
-      if(meBar)meBar.style.width=`${myHp/maxMy*100}%`;
-      if(log)log.textContent+=` ${enemy.character_name} trifft für ${enDmg}.`;
-
-      if(myHp<=0){v078FinishPvp(false,enemy);return}
-      if(round>=35){v078FinishPvp((myHp/maxMy)>=(enHp/maxEn),enemy);return}
-
-      setTimeout(step,420);
-    },420);
-  };
-  setTimeout(step,450);
-}
-
-async function v078FinishPvp(win,enemy){
-  v078BattleBusy=false;
-  const result=document.querySelector('#v078BattleResult');
-
-  if(win){
-    s.v077 ??={seeds:0,lastPlantAt:0,planted:null,buff:null};
-    s.v077.seeds=(s.v077.seeds||0)+1;
-    localStorage.setItem(KEY,JSON.stringify(s));
-    try{await v075WriteCloudSave(true)}catch(e){}
-
-    if(result)result.innerHTML=`
-      <div class="v078-result win">
-        Sieg gegen ${v073Escape(enemy.character_name)}.<br>
-        Belohnung: <b>1× Wundertüte OG</b>
-      </div>
-      <button class="btn" id="v078CloseBattle" style="width:100%;margin-top:9px">Zurück zur Hall of Haze</button>`;
-
-    v063Toast('PvP-Sieg','success','1× Wundertüte OG erhalten.');
-  }else{
-    if(result)result.innerHTML=`
-      <div class="v078-result loss">
-        Niederlage gegen ${v073Escape(enemy.character_name)}.<br>
-        Dir geht nichts verloren.
-      </div>
-      <button class="btn secondary" id="v078CloseBattle" style="width:100%;margin-top:9px">Zurück zur Hall of Haze</button>`;
-
-    v063Toast('PvP-Niederlage','warn','Keine Strafe.');
-  }
-
-  const close=document.querySelector('#v078CloseBattle');
-  if(close)close.onclick=()=>{
-    document.querySelector('#v078BattleOverlay')?.classList.remove('show');
-    v073LoadRanking();
-  };
-}
-
-/* Extend public profile modal */
-const v078OldOpenProfile=v074OpenProfile;
-v074OpenProfile=async function(id){
-  await v078OldOpenProfile(id);
-  if(!v073Ready || id===v073User?.id)return;
-  try{
-    const p=await v078FetchProfile(id);
-    await v078InjectProfilePvp(p);
-  }catch(e){console.error('PvP profile injection',e)}
-};
-
-/* Keep cooldown button live while profile is open. */
-setInterval(async()=>{
-  const btn=document.querySelector('#v078AttackBtn');
-  if(!btn)return;
-  const left=await v078LoadCooldown();
-  if(left>0){
-    btn.disabled=true;
-    btn.textContent=`Nächster Angriff in ${v078FmtCooldown(left)}`;
-  }else if(!v078BattleBusy){
-    btn.disabled=false;
-    btn.textContent='ANGREIFEN';
-  }
-},1000);
-
-const v078BaseRender=render;
-render=function(){
-  v078BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V0.80 RPG');
-};
-</script>
 
 
 <style id="v079-buff-fix">
@@ -13631,7 +13455,7 @@ async function v083FixHallList(){
 const v083BaseRender=render;
 render=function(){
   v083BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.03 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.04 Stable');
   setTimeout(v083FixHallList,0);
 };
 
@@ -13795,7 +13619,7 @@ v073ProfilePayload=function(){
 const v084BaseRender=render;
 render=function(){
   v084BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.03 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.04 Stable');
 };
 </script>
 
@@ -14022,7 +13846,7 @@ v032Go=function(id){
 const v085BaseRender=render;
 render=function(){
   v085BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.03 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.04 Stable');
 
   if(document.querySelector('#world')?.classList.contains('active')){
     v085InstallWorld();
@@ -14174,7 +13998,7 @@ v032Go=function(id){
 const v086BaseRender=render;
 render=function(){
   v086BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.03 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.04 Stable');
   v086PolishBrand();
   v086RemoveSlashNArtifacts();
   v086BuildCompleteMenu();
@@ -14250,7 +14074,7 @@ function v087FixMainAttributeBadge(){
 const v087BaseRender=render;
 render=function(){
   v087BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.03 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.04 Stable');
   requestAnimationFrame(v087FixMainAttributeBadge);
 };
 
@@ -14282,7 +14106,7 @@ try{
 const v088BaseRender=render;
 render=function(){
   v088BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.03 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.04 Stable');
 };
 </script>
 
@@ -14409,7 +14233,7 @@ v030Offer=function(it,fn,i){
 const v089BaseRender=render;
 render=function(){
   v089BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.03 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.04 Stable');
   try{renderShop()}catch(e){console.error('V0.89 shop comparison',e)}
 };
 </script>
@@ -14528,7 +14352,7 @@ v057OfferHtml=function(it,i,kind){
 const v090BaseRender=render;
 render=function(){
   v090BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.03 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.04 Stable');
   try{renderShop()}catch(e){console.error('V0.90 shop comparison',e)}
 };
 
@@ -14557,7 +14381,7 @@ localStorage.setItem(KEY,JSON.stringify(s));
 const v092BaseRender=render;
 render=function(){
   v092BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.03 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.04 Stable');
 };
 </script>
 
@@ -14885,7 +14709,7 @@ document.querySelector('#v093SaveNews')?.addEventListener('click',v093SaveNews);
 const v093BaseRender=render;
 render=function(){
   v093BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.03 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.04 Stable');
   v093BuildMenu();
 };
 
@@ -15008,7 +14832,7 @@ v085ActiveEvents=function(){
 const v094BaseRender=render;
 render=function(){
   v094BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.03 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.04 Stable');
 
   /* Update visible quest XP previews to show doubled amount while event is live. */
   if(v094XpEventActive()){
@@ -15113,7 +14937,7 @@ document.addEventListener('click',()=>{
 const v095BaseRender=render;
 render=function(){
   v095BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.03 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.04 Stable');
   requestAnimationFrame(v095DecorateXp);
 };
 
@@ -15191,7 +15015,7 @@ function v096DecorateQuestXp(){
 const v096BaseRender=render;
 render=function(){
   v096BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.03 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.04 Stable');
   requestAnimationFrame(v096DecorateQuestXp);
 };
 
@@ -15229,7 +15053,7 @@ function v097ReplaceQuestStars(){
 const v097BaseRender=render;
 render=function(){
   v097BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.03 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.04 Stable');
   requestAnimationFrame(v097ReplaceQuestStars);
 };
 
@@ -15325,7 +15149,7 @@ function v098QuestPreview(){
 const v098BaseRender=render;
 render=function(){
   v098BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.03 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.04 Stable');
   requestAnimationFrame(v098QuestPreview);
 };
 
@@ -15456,7 +15280,7 @@ function v099PaintQuestXp(){
 const v099BaseRender=render;
 render=function(){
   v099BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.03 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.04 Stable');
   requestAnimationFrame(v099PaintQuestXp);
 };
 
@@ -15613,7 +15437,7 @@ function v100PaintDungeonXp(){
 const v100BaseRender=render;
 render=function(){
   v100BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.03 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.04 Stable');
   requestAnimationFrame(v100PaintDungeonXp);
   setTimeout(()=>{
     try{v068InstallFight()}catch(e){}
@@ -15719,7 +15543,7 @@ addXp=function(n){
 const v101BaseRender=render;
 render=function(){
   v101BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.03 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.04 Stable');
 };
 </script>
 
@@ -15846,7 +15670,7 @@ render=function(){
   const before=Number(s.level)||1;
   const result=v102BaseRender();
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.03 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.04 Stable');
 
   requestAnimationFrame(()=>{
     try{v102DetectLevelChange()}catch(e){console.error('V1.02 level detection',e)}
@@ -16111,7 +15935,7 @@ v093AdminLoadLists=async function(){
 const v103BaseRender=render;
 render=function(){
   v103BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.03 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.04 Stable');
   if(v093IsAdmin)v103InstallPlayerAdmin();
 };
 
@@ -16237,7 +16061,7 @@ v103InstallPlayerAdmin=function(){
 const v105BaseRender=render;
 render=function(){
   const result=v105BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.03 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.04 Stable');
   if(v093IsAdmin){
     v103InstallPlayerAdmin();
     v105InstallRewards();
@@ -16435,7 +16259,7 @@ claimQuest=function(){
 const v106BaseRender=render;
 render=function(){
   const result=v106BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.03 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.04 Stable');
   v106InstallBook();
   v106CheckAchievements(true);
   return result;
@@ -16500,7 +16324,7 @@ v106InstallBook=function(){
 const v107BaseRender=render;
 render=function(){
   const result=v107BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.03 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.04 Stable');
   requestAnimationFrame(v107PlaceBook);
   return result;
 };
@@ -16619,7 +16443,7 @@ if(!s.v108ItemPool){
 const v108BaseRender=render;
 render=function(){
   const result=v108BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.03 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.04 Stable');
   return result;
 };
 </script>
@@ -16778,7 +16602,7 @@ const v109BaseRender=render;
 render=function(){
   v109ResetDaily();
   const result=v109BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.03 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.04 Stable');
   return result;
 };
 </script>
@@ -16972,7 +16796,7 @@ v085ActiveEvents=function(){
 const v110BaseRender=render;
 render=function(){
   const result=v110BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.03 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.04 Stable');
   requestAnimationFrame(v110InstallEventButton);
   return result;
 };
@@ -17302,7 +17126,7 @@ v110InstallEventButton=function(){v111InstallWorldBossCard()};
 const v111BaseRender=render;
 render=function(){
   const result=v111BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.03 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.04 Stable');
   requestAnimationFrame(v111InstallWorldBossCard);
   return result;
 };
@@ -17387,7 +17211,7 @@ render=function(){
   const result=v112BaseRender();
 
   v112EnsureWorldBossState();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.03 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.04 Stable');
 
   return result;
 };
@@ -17456,7 +17280,7 @@ v110Fight=function(){
 const v113BaseRender=render;
 render=function(){
   const result=v113BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.03 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.04 Stable');
   return result;
 };
 </script>
@@ -17628,7 +17452,7 @@ v110Fight=async function(){
 const v114BaseRender=render;
 render=function(){
   const result=v114BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.03 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.04 Stable');
   return result;
 };
 
@@ -17816,7 +17640,7 @@ v114AskRetry=function(){
 const v115BaseRender=render;
 render=function(){
   const result=v115BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.03 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.04 Stable');
   return result;
 };
 
@@ -18003,7 +17827,7 @@ v074OpenProfile=async function(id){
 const v116BaseRender=render;
 render=function(){
   const result=v116BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.03 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.04 Stable');
   return result;
 };
 
@@ -18182,7 +18006,7 @@ document.addEventListener('click',async e=>{
 const v117BaseRender=render;
 render=function(){
   const result=v117BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.03 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.04 Stable');
   setTimeout(()=>{v117BindDampf();v117BindReset();v117PatchClassModal()},0);
   return result;
 };
@@ -18583,7 +18407,7 @@ v085InstallWorld=function(){
 const v118BaseRender=render;
 render=function(){
   const result=v118BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.03 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.04 Stable');
   requestAnimationFrame(v111InstallWorldBossCard);
   return result;
 };
@@ -18775,7 +18599,7 @@ header .resource-stats .stat:nth-child(4) b{
 const v119BaseRender=render;
 render=function(){
   const result=v119BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.03 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.04 Stable');
   return result;
 };
 </script>
@@ -18912,7 +18736,7 @@ function v120InstallCountdown(){
 const v120BaseRender=render;
 render=function(){
   const result=v120BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.03 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.04 Stable');
   requestAnimationFrame(v120InstallCountdown);
   return result;
 };
@@ -19126,7 +18950,7 @@ const v121BaseRender=render;
 render=function(){
   v121SanitizeMagicStock();
   const result=v121BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.03 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.04 Stable');
   requestAnimationFrame(v121PaintShopInfo);
   return result;
 };
@@ -19469,7 +19293,7 @@ const v122BaseRender=render;
 render=function(){
   v122MigrateAllSockets();
   const result=v122BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.03 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.04 Stable');
   return result;
 };
 
@@ -19797,7 +19621,7 @@ function v123PolishEquipment(){
 const v123BaseRender=render;
 render=function(){
   const result=v123BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.03 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.04 Stable');
   requestAnimationFrame(v123PolishEquipment);
   return result;
 };
@@ -20047,7 +19871,7 @@ function v124ClampCharacterWidth(){
 const v124BaseRender=render;
 render=function(){
   const result=v124BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.03 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.04 Stable');
   requestAnimationFrame(v124ClampCharacterWidth);
   return result;
 };
@@ -20513,7 +20337,7 @@ render=function(){
   if(hp)hp.textContent=v125Fmt(maxHp());
   if(cp)cp.textContent=v125Fmt(combatPower());
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.03 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.04 Stable');
   return result;
 };
 
@@ -20657,7 +20481,7 @@ if(typeof V125_ATTRS!=='undefined'){
 const v126BaseRender=render;
 render=function(){
   const result=v126BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.03 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.04 Stable');
   requestAnimationFrame(()=>v126RepairCharacter(false));
   return result;
 };
@@ -20847,7 +20671,7 @@ render=function(){
   const energyEl=document.querySelector('#energy');
   if(energyEl)energyEl.textContent=`${Math.floor(Number(s.energy)||0)}/300`;
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.03 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.04 Stable');
   requestAnimationFrame(v127AddResetInfo);
   return result;
 };
@@ -21128,7 +20952,7 @@ setTimeout(()=>{
 
 <script id="v128-premium-skill-ui-script">
 function v128SkillPolish(){
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.03 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.04 Stable');
   const card=document.querySelector('#character .card:has(#skillTree)');
   if(card)card.setAttribute('data-v128','premium-skills');
 }
@@ -21558,7 +21382,7 @@ function v129PolishDynamicCards(){
     if(it)el.classList.add(v129RarityClass(it));
   });
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.03 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.04 Stable');
 }
 const v129BaseRender=render;
 render=function(){
@@ -21720,7 +21544,7 @@ function v130InventoryHeadings(){
 function v130Polish(){
   v130RemoveMerchantCopy();
   v130InventoryHeadings();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.03 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.04 Stable');
 }
 const v130BaseRender=render;
 render=function(){
@@ -21753,7 +21577,7 @@ function v131CleanShop(){
     }
   });
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.03 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.04 Stable');
 }
 const v131BaseRender=render;
 render=function(){
@@ -22020,7 +21844,7 @@ function v132Polish(){
     });
   }
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.03 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.04 Stable');
 }
 const v132BaseRender=render;
 render=function(){
@@ -22233,7 +22057,7 @@ function v133Polish(){
       }
     });
   }
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.03 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.04 Stable');
 }
 const v133BaseRender=render;
 render=function(){
@@ -22418,7 +22242,7 @@ function v134Apply(){
    l.innerHTML='<span class="g0">Normal</span><span class="g1">Gewöhnlich</span><span class="g2">Selten</span><span class="g3">Episch</span><span class="g4">Legendär</span><span class="g5">Mystisch</span>';
    card.appendChild(l);
  }
- document.querySelectorAll('.version').forEach(el=>el.textContent='V2.03 Stable');
+ document.querySelectorAll('.version').forEach(el=>el.textContent='V2.04 Stable');
 }
 const v134BaseRender=render;
 render=function(){const r=v134BaseRender();requestAnimationFrame(v134Apply);return r;};
@@ -22581,7 +22405,7 @@ function v135PaintShop(){
       if(arr[i])el.classList.add(v135QualityClassFromItem(arr[i]));
     });
   });
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.03 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.04 Stable');
 }
 
 /* Existing V1.34 stock may be based on old weak scaling: refresh once for free. */
@@ -22816,7 +22640,7 @@ function v138PaintMerchant(){
     });
   });
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.03 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.04 Stable');
 }
 
 const v138BaseRender=render;
@@ -23014,7 +22838,7 @@ v030Offer=function(it,fn,i){
 
 function v139RepaintShop(){
   try{renderShop()}catch(e){console.error('V1.39 shop repaint',e)}
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.03 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.04 Stable');
 }
 
 const v139BaseRender=render;
@@ -23377,7 +23201,7 @@ function v141BuildSettings(){
           <button type="button" class="btn" id="v141Delete">🗑️ Account löschen</button>
         </div>
 
-        <div class="v141-version-line" id="v141VersionLine">V2.03 Stable</div>
+        <div class="v141-version-line" id="v141VersionLine">V2.04 Stable</div>
       </div>`;
   }
 
@@ -23570,7 +23394,7 @@ setTimeout(()=>{
 const v141BaseRender=render;
 render=function(){
   const r=v141BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.03 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.04 Stable');
   requestAnimationFrame(()=>{
     v141BuildSettings();
     v141ApplySettings();
@@ -23627,7 +23451,7 @@ window.addEventListener('scroll',v142PositionSettings,{passive:true});
 const v142BaseRender=render;
 render=function(){
   const r=v142BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.03 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.04 Stable');
   requestAnimationFrame(v142PositionSettings);
   return r;
 };
@@ -23842,7 +23666,7 @@ render=function(){
     v145SaveScopedLocal();
   }
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.03 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.04 Stable');
   return r;
 };
 
@@ -23858,7 +23682,7 @@ setTimeout(()=>{
 
 
 <script id="v200-stable-core">
-/* ===== Grow Legends V2.03 Stable =====
+/* ===== Grow Legends V2.04 Stable =====
    One auth listener. One email handler. One Google handler.
    One cloud resolver. One character creator. One admin poll.
 */
@@ -24097,7 +23921,7 @@ function v200RenderLoginInfo(){
     let n=null;
     try{ n=(window.v093News||[]).find(x=>x && x.is_published!==false)||null; }catch(e){}
 
-    const title=n?.title||'V2.03 Stable';
+    const title=n?.title||'V2.04 Stable';
     const version=n?.version||'V2.00';
     const text=n?.body||n?.text||'Technische Stabilisierung von Login, Cloud-Speicherung und Charaktererstellung.';
 
@@ -24695,7 +24519,7 @@ function v200BindSettings(){
   if(cancel)cancel.onclick=v141CloseDelete;
 
   const version=document.querySelector('#v141VersionLine');
-  if(version)version.textContent='V2.03 Stable';
+  if(version)version.textContent='V2.04 Stable';
 }
 
 /* One admin poll, content-aware. */
@@ -24824,7 +24648,7 @@ const v200BaseRender=render;
 render=function(){
   const r=v200BaseRender();
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.03 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.04 Stable');
 
   if(v200DurableUser() && v200CharacterComplete() && v075CloudLoadedFor===v073User.id){
     v075ScheduleSave();
@@ -24997,7 +24821,7 @@ render=function(){
   const result=v201BaseRender();
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V2.03 Stable');
+    .forEach(el=>el.textContent='V2.04 Stable');
 
   const world=document.querySelector('#world');
   if(world?.classList.contains('active')){
@@ -25021,6 +24845,380 @@ render=function(){
 
   return result;
 };
+</script>
+
+
+<style id="v204-pvp-system-style">
+#pvp{padding-bottom:28px}
+.v204-pvp-shell{max-width:900px;margin:0 auto}
+.v204-pvp-hero{
+  display:flex;justify-content:space-between;align-items:center;gap:14px;
+  padding:17px;border:1px solid #356a5a;border-radius:18px;
+  background:radial-gradient(circle at 90% 15%,rgba(69,230,186,.12),transparent 30%),linear-gradient(145deg,#102019,#08120d);
+  box-shadow:0 14px 32px #0007,inset 0 0 28px #0005
+}
+.v204-kicker{font-size:7px;font-weight:1000;color:#73d9af;letter-spacing:.08em}
+.v204-pvp-hero h2{margin:5px 0 4px;font-size:20px;color:#eff8f2}
+.v204-pvp-hero p{margin:0;color:#91a39a;font-size:8px;line-height:1.5}
+.v204-pvp-buds{
+  flex:0 0 auto;min-width:100px;padding:10px;border:1px solid #587a39;border-radius:13px;
+  background:#0a160d;text-align:center;color:#aee978;box-shadow:0 0 18px rgba(126,220,84,.10)
+}
+.v204-pvp-buds b{display:block;font-size:22px}
+.v204-pvp-buds span{display:block;font-size:6px;color:#829281;text-transform:uppercase}
+.v204-pvp-status{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0}
+.v204-pvp-status>div{padding:10px;border:1px solid #2d4938;border-radius:12px;background:#09130d;text-align:center}
+.v204-pvp-status span{display:block;font-size:6px;color:#75877b}
+.v204-pvp-status b{display:block;margin-top:3px;color:#e3eee5;font-size:12px}
+.v204-match-card{min-height:240px;padding:14px;border:1px solid #304a38;border-radius:18px;background:linear-gradient(145deg,#101913,#07100b)}
+.v204-empty-match{min-height:210px;display:grid;place-content:center;text-align:center;color:#819087}
+.v204-empty-match .ico{font-size:38px}.v204-empty-match b{color:#dce7de;font-size:12px}.v204-empty-match span{max-width:340px;margin-top:4px;font-size:7px}
+.v204-opponent{display:grid;grid-template-columns:180px 1fr;gap:15px;align-items:center}
+.v204-opponent-avatar{
+  height:210px;border:1px solid #39614b;border-radius:16px;overflow:hidden;
+  background:radial-gradient(circle at 50% 38%,rgba(94,205,126,.12),transparent 52%),#07100b
+}
+.v204-opponent-avatar img{width:100%;height:100%;object-fit:contain;object-position:center bottom}
+.v204-opponent h3{margin:0;color:#f1f6ef;font-size:18px}
+.v204-opponent-class{margin-top:3px;color:#79d6ad;font-size:8px}
+.v204-opponent-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:12px}
+.v204-opponent-stats div{padding:9px;border:1px solid #294335;border-radius:10px;background:#08110c;text-align:center}
+.v204-opponent-stats span{display:block;color:#718176;font-size:5.8px}.v204-opponent-stats b{display:block;margin-top:2px;color:#dce7de;font-size:11px}
+.v204-match-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.v204-find-btn{width:100%;margin-top:10px;min-height:45px!important}
+.v204-rules{display:grid;gap:5px;margin-top:10px;padding:11px;border:1px solid #263c2e;border-radius:12px;background:#07100b}
+.v204-rules b{color:#bfddaf;font-size:8px}.v204-rules span{color:#718177;font-size:6.4px;line-height:1.4}
+.v204-battle-log{margin-top:10px;padding:10px;border:1px solid #2b4636;border-radius:10px;background:#050a07;color:#a9bbb0;font-size:7px;line-height:1.5;white-space:pre-line}
+.v204-result-win{color:#b7ed7d}.v204-result-loss{color:#e8a397}
+.v204-avatar-badge{
+  display:inline-flex;align-items:center;gap:4px;margin-top:6px;padding:4px 7px;border:1px solid #577b38;border-radius:999px;
+  background:#0a150c;color:#ade878;font-size:7px;font-weight:1000
+}
+.v204-hall-buds{color:#9fe66e!important;font-weight:1000}
+@media(max-width:600px){
+  .v204-pvp-hero{align-items:flex-start}.v204-pvp-buds{min-width:82px}
+  .v204-opponent{grid-template-columns:120px 1fr}.v204-opponent-avatar{height:165px}
+  .v204-opponent-stats{grid-template-columns:1fr}.v204-match-actions{grid-template-columns:1fr}
+}
+</style>
+
+<script id="v204-pvp-system">
+/* ===== V2.04 PvP System ===== */
+const V204_COOLDOWN=30*60*1000;
+let v204Opponent=null;
+let v204BattleBusy=false;
+let v204CooldownLeft=0;
+
+s.v204Pvp ??={buds:0,wins:0,losses:0,fights:0,lastOpponent:null};
+
+function v204ClassIdFromProfile(p){
+  if(p?.class_id && classes[p.class_id])return p.class_id;
+  const n=String(p?.class_name||'').toLowerCase();
+  if(n.includes('mag'))return 'bruiser';
+  if(n.includes('schütz')||n.includes('blatt'))return 'scout';
+  return 'grower';
+}
+function v204Fmt(ms){
+  ms=Math.max(0,ms);
+  const sec=Math.ceil(ms/1000), min=Math.floor(sec/60);
+  return `${min}:${String(sec%60).padStart(2,'0')}`;
+}
+async function v204LoadCooldown(){
+  if(!v200DurableUser())return 0;
+  const {data,error}=await v073Db.from('pvp_attacks')
+    .select('attacked_at').eq('attacker_id',v073User.id)
+    .order('attacked_at',{ascending:false}).limit(1);
+  if(error||!data?.length)return 0;
+  return Math.max(0,V204_COOLDOWN-(Date.now()-new Date(data[0].attacked_at).getTime()));
+}
+function v204SyncLocalStatsFromProfile(row){
+  if(!row)return;
+  s.v204Pvp.buds=Number(row.pvp_buds)||0;
+  s.v204Pvp.wins=Number(row.pvp_wins)||0;
+  s.v204Pvp.losses=Number(row.pvp_losses)||0;
+  s.v204Pvp.fights=Number(row.pvp_fights)||0;
+}
+async function v204RefreshStats(){
+  if(!v200DurableUser())return;
+  try{
+    const {data,error}=await v073Db.from('profiles')
+      .select('pvp_buds,pvp_wins,pvp_losses,pvp_fights')
+      .eq('id',v073User.id).maybeSingle();
+    if(!error&&data)v204SyncLocalStatsFromProfile(data);
+  }catch(e){}
+  v204CooldownLeft=await v204LoadCooldown();
+  v204RenderPage();
+}
+function v204RenderPage(){
+  const buds=document.querySelector('#v204Buds'), wins=document.querySelector('#v204Wins'), fights=document.querySelector('#v204Fights'), cd=document.querySelector('#v204Cooldown');
+  if(buds)buds.textContent=s.v204Pvp?.buds||0;
+  if(wins)wins.textContent=s.v204Pvp?.wins||0;
+  if(fights)fights.textContent=s.v204Pvp?.fights||0;
+  if(cd)cd.textContent=v204CooldownLeft>0?v204Fmt(v204CooldownLeft):'Bereit';
+
+  const btn=document.querySelector('#v204FindBtn');
+  if(btn){
+    btn.disabled=v204CooldownLeft>0||v204BattleBusy;
+    btn.textContent=v204CooldownLeft>0?`⏳ Neuer Kampf in ${v204Fmt(v204CooldownLeft)}`:'🎯 Gegner suchen';
+  }
+}
+async function v204FindOpponent(){
+  if(v204BattleBusy||v204CooldownLeft>0)return;
+  if(!v200DurableUser())return v063Toast('PvP benötigt einen Account','warn');
+
+  const btn=document.querySelector('#v204FindBtn');
+  if(btn){btn.disabled=true;btn.textContent='🔎 Passenden Gegner suchen…';}
+
+  try{
+    await v073SyncProfile(true);
+    const {data,error}=await v073Db.rpc('v204_find_pvp_match');
+    if(error)throw error;
+    const row=Array.isArray(data)?data[0]:data;
+
+    if(!row?.allowed){
+      if(row?.remaining_seconds){
+        v204CooldownLeft=Number(row.remaining_seconds)*1000;
+        v204RenderPage();
+        return;
+      }
+      v063Toast('Kein passender Gegner gefunden','warn','Momentan ist kein Spieler in deinem Level-/Kampfkraftbereich verfügbar.');
+      return;
+    }
+
+    v204Opponent={
+      id:row.target_id,character_name:row.character_name,class_id:row.class_id,class_name:row.class_name,
+      level:Number(row.level)||1,combat_power:Number(row.combat_power)||1,pvp_buds:Number(row.pvp_buds)||0
+    };
+    s.v204Pvp.lastOpponent=v204Opponent.id;
+    v204CooldownLeft=V204_COOLDOWN;
+    v204RenderOpponent();
+    v204RenderPage();
+  }catch(e){
+    console.error('V2.04 matchmaking',e);
+    const msg=/function.*does not exist|v204_find_pvp_match/i.test(String(e?.message||''))
+      ?'Bitte zuerst V204_PVP_SQL.sql in Supabase ausführen.'
+      :(e?.message||'Matchmaking fehlgeschlagen.');
+    v063Toast('PvP nicht bereit','error',msg);
+  }finally{
+    if(btn&&!v204Opponent)v204RenderPage();
+  }
+}
+function v204RenderOpponent(){
+  const box=document.querySelector('#v204MatchCard');
+  if(!box||!v204Opponent)return;
+  const cls=v204ClassIdFromProfile(v204Opponent);
+  box.innerHTML=`
+    <div class="v204-opponent">
+      <div class="v204-opponent-avatar">
+        <img src="${v080AvatarFor(cls)}" alt="${v073Escape(v204Opponent.character_name)}">
+      </div>
+      <div>
+        <h3>${v073Escape(v204Opponent.character_name)}</h3>
+        <div class="v204-opponent-class">${v073Escape(v204Opponent.class_name||classes[cls]?.name||'')}</div>
+        <div class="v204-opponent-stats">
+          <div><span>LEVEL</span><b>${v204Opponent.level}</b></div>
+          <div><span>KAMPFKRAFT</span><b>${v204Opponent.combat_power}</b></div>
+          <div><span>PVP-BUDS</span><b>🌿 ${v204Opponent.pvp_buds}</b></div>
+        </div>
+        <div class="v204-match-actions">
+          <button type="button" class="btn" id="v204FightBtn">⚔️ Kampf starten</button>
+          <button type="button" class="btn secondary" id="v204ProfileBtn">👤 Profil ansehen</button>
+        </div>
+      </div>
+    </div>
+    <div class="v204-battle-log" id="v204BattleLog">Gegner gefunden. Der Kampf kann beginnen.</div>`;
+  document.querySelector('#v204FightBtn').onclick=v204Fight;
+  document.querySelector('#v204ProfileBtn').onclick=()=>v074OpenProfile(v204Opponent.id);
+}
+async function v204Fight(){
+  if(v204BattleBusy||!v204Opponent)return;
+  v204BattleBusy=true;
+  const fightBtn=document.querySelector('#v204FightBtn');
+  if(fightBtn)fightBtn.disabled=true;
+
+  const log=document.querySelector('#v204BattleLog');
+  const myPower=Math.max(1,combatPower());
+  const enPower=Math.max(1,v204Opponent.combat_power);
+  let myHp=Math.max(120,maxHp());
+  let enHp=Math.max(120,Math.round(100+v204Opponent.level*11+enPower*.35));
+  const maxMy=myHp,maxEn=enHp;
+  let round=0;
+
+  await new Promise(resolve=>{
+    const step=()=>{
+      round++;
+      const myDmg=Math.max(6,Math.round((myPower*.10+8)*(.84+Math.random()*.32)));
+      const enDmg=Math.max(6,Math.round((enPower*.10+8)*(.84+Math.random()*.32)));
+      enHp=Math.max(0,enHp-myDmg);
+      if(log)log.textContent=`Runde ${round}: ${s.characterName} trifft für ${myDmg}. Gegner: ${enHp}/${maxEn} HP`;
+      if(enHp<=0)return resolve(true);
+      myHp=Math.max(0,myHp-enDmg);
+      if(log)log.textContent+=`\n${v204Opponent.character_name} trifft für ${enDmg}. Du: ${myHp}/${maxMy} HP`;
+      if(myHp<=0)return resolve(false);
+      if(round>=30)return resolve((myHp/maxMy)>=(enHp/maxEn));
+      setTimeout(step,420);
+    };
+    setTimeout(step,350);
+  }).then(win=>v204Finish(win));
+}
+async function v204Finish(win){
+  const enemy=v204Opponent;
+  const gold=Math.max(25,Math.round(35+s.level*7+(win?combatPower()*.035:combatPower()*.01)));
+  const xp=Math.max(10,Math.round(18+s.level*4+(win?s.level*2:s.level)));
+  if(win){s.gold+=gold;s.xp+=xp;}else{s.gold+=Math.round(gold*.35);s.xp+=Math.round(xp*.45);}
+
+  s.v106Achievements??={done:{},stats:{}};
+  s.v106Achievements.stats??={};
+  s.v106Achievements.stats.pvpFights=(s.v106Achievements.stats.pvpFights||0)+1;
+  if(win)s.v106Achievements.stats.pvpWins=(s.v106Achievements.stats.pvpWins||0)+1;
+
+  try{
+    const {data,error}=await v073Db.rpc('v204_finish_pvp',{target_user:enemy.id,won:!!win});
+    if(error)throw error;
+    const row=Array.isArray(data)?data[0]:data;
+    if(row)v204SyncLocalStatsFromProfile(row);
+  }catch(e){
+    console.error('V2.04 finish rpc',e);
+  }
+
+  try{v106CheckAchievements(false)}catch(e){}
+  persist();
+  try{await v075WriteCloudSave(true)}catch(e){}
+
+  const log=document.querySelector('#v204BattleLog');
+  if(log){
+    log.innerHTML=win
+      ? `<span class="v204-result-win">🏆 SIEG gegen ${v073Escape(enemy.character_name)}<br>+${gold} Gold · +${xp} EXP · +1 PvP-Bud 🌿</span>`
+      : `<span class="v204-result-loss">💀 NIEDERLAGE gegen ${v073Escape(enemy.character_name)}<br>+${Math.round(gold*.35)} Gold · +${Math.round(xp*.45)} EXP · keine Buds verloren</span>`;
+  }
+  v204BattleBusy=false;
+  v204Opponent=null;
+  v204CooldownLeft=await v204LoadCooldown();
+  v204RenderPage();
+  await v073SyncProfile(true);
+}
+
+/* Profile payload: PvP ranking fields */
+const v204BaseProfilePayload=v073ProfilePayload;
+v073ProfilePayload=function(){
+  const p=v204BaseProfilePayload();
+  p.combat_power=Math.max(0,Math.round(combatPower()));
+  p.pvp_buds=Number(s.v204Pvp?.buds)||0;
+  p.pvp_wins=Number(s.v204Pvp?.wins)||0;
+  p.pvp_losses=Number(s.v204Pvp?.losses)||0;
+  p.pvp_fights=Number(s.v204Pvp?.fights)||0;
+  return p;
+};
+
+/* Hall ranking: Level first, then PvP-Buds, then gear score */
+v073PlayerRow=function(p,i=null,actions=''){
+  const rank=i===null?'':`<div class="v072-rank ${v073RankClass(i)}">${i+1}</div>`;
+  const left=i===null?'<div class="v072-rank">P</div>':rank;
+  return `<div class="v072-player-row" data-profile-id="${v073Escape(p.id)}">
+    ${left}
+    <div>
+      <div class="v072-player-name">${v073Escape(p.character_name)}</div>
+      <div class="v072-player-sub">
+        ${v073Escape(p.class_name||'')} · Lv. ${Number(p.level)||1} ·
+        <span class="v204-hall-buds">🌿 ${Number(p.pvp_buds)||0} PvP-Buds</span> ·
+        Kampfkraft ${Number(p.combat_power)||0} · Ausrüstung ${Number(p.gear_score)||0}
+      </div>
+    </div>
+    <div class="v073-row-actions">${actions}</div>
+  </div>`;
+};
+v073LoadRanking=async function(){
+  const el=document.querySelector('#v072HallRanking');
+  if(!el)return;
+  if(!(await v073Init()))return;
+  el.innerHTML='<div class="v072-empty">Rangliste wird geladen...</div>';
+  const {data,error}=await v073Db.from('profiles')
+    .select('id,character_name,class_name,level,bosses,gear_score,dungeons,combat_power,pvp_buds,pvp_wins')
+    .order('level',{ascending:false})
+    .order('pvp_buds',{ascending:false})
+    .order('gear_score',{ascending:false})
+    .limit(50);
+  if(error){
+    console.error(error);
+    el.innerHTML='<div class="v072-status-offline">Rangliste konnte nicht geladen werden. V204_PVP_SQL.sql ausgeführt?</div>';
+    return;
+  }
+  el.innerHTML=(data||[]).length
+    ?data.map((p,i)=>v073PlayerRow(p,i,p.id===v073User.id?'<span class="pill">DU</span>':`<button class="btn secondary" data-v073-add="${p.id}" data-name="${v073Escape(p.character_name)}">Freund</button>`)).join('')
+    :'<div class="v072-empty">Noch keine Spieler in der Hall of Haze.</div>';
+  v073BindAddButtons(el);
+};
+
+/* PvP in top dropdown */
+const v204BaseMenu=v086BuildCompleteMenu;
+v086BuildCompleteMenu=function(){
+  v204BaseMenu();
+  const panel=document.querySelector('#v032MenuPanel');
+  if(!panel||panel.querySelector('[data-screen="pvp"]'))return;
+  const hall=panel.querySelector('[data-screen="hall"]');
+  const btn=document.createElement('button');
+  btn.className='top-menu-item';
+  btn.dataset.screen='pvp';
+  btn.innerHTML='<span>⚔️</span>PvP-Arena';
+  btn.onclick=()=>v032Go('pvp');
+  if(hall)panel.insertBefore(btn,hall);else panel.appendChild(btn);
+};
+
+/* Avatar badge */
+function v204InstallAvatarBadge(){
+  const center=document.querySelector('#character .center-hero');
+  if(!center)return;
+  let badge=center.querySelector('.v204-avatar-badge');
+  if(!badge){
+    badge=document.createElement('div');
+    badge.className='v204-avatar-badge';
+    center.appendChild(badge);
+  }
+  badge.innerHTML=`🌿 <b>${Number(s.v204Pvp?.buds)||0}</b> PvP-Buds`;
+}
+
+/* 5 new Illegal Book achievements */
+if(typeof V106_ACH!=='undefined'){
+  const pvpAchievements=[
+    ['pvp_fight1','Erste Nebelschlacht','Bestreite deinen ersten PvP-Kampf.',()=>s.v106Achievements?.stats?.pvpFights||0,1],
+    ['pvp_win1','Erstes Blut','Gewinne deinen ersten PvP-Kampf.',()=>s.v106Achievements?.stats?.pvpWins||0,1],
+    ['pvp_win10','Bud-Raufbold','Gewinne 10 PvP-Kämpfe.',()=>s.v106Achievements?.stats?.pvpWins||0,10],
+    ['pvp_win50','Nebel-Champion','Gewinne 50 PvP-Kämpfe.',()=>s.v106Achievements?.stats?.pvpWins||0,50],
+    ['pvp_buds100','König der PvP-Buds','Sammle 100 PvP-Buds.',()=>s.v204Pvp?.buds||0,100]
+  ];
+  pvpAchievements.forEach(a=>{if(!V106_ACH.some(x=>x[0]===a[0]))V106_ACH.push(a)});
+}
+
+/* Screen open + timers */
+const v204BaseGo=v032Go;
+v032Go=function(id){
+  const r=v204BaseGo(id);
+  if(id==='pvp')setTimeout(v204RefreshStats,0);
+  return r;
+};
+document.querySelector('#v204FindBtn')?.addEventListener('click',v204FindOpponent);
+
+setInterval(()=>{
+  if(v204CooldownLeft>0)v204CooldownLeft=Math.max(0,v204CooldownLeft-1000);
+  if(document.querySelector('#pvp')?.classList.contains('active'))v204RenderPage();
+},1000);
+
+const v204BaseRender=render;
+render=function(){
+  const r=v204BaseRender();
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.04 Stable');
+  requestAnimationFrame(()=>{
+    v086BuildCompleteMenu();
+    v204InstallAvatarBadge();
+    if(document.querySelector('#pvp')?.classList.contains('active'))v204RenderPage();
+  });
+  return r;
+};
+
+setTimeout(()=>{
+  v086BuildCompleteMenu();
+  v204InstallAvatarBadge();
+},220);
 </script>
 
 </body>
