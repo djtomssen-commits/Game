@@ -205,7 +205,7 @@ main{padding:12px}
 
 
 <style id="v200-stable-ui">
-/* ===== Grow Legends V2.12 Stable: consolidated auth UI ===== */
+/* ===== Grow Legends V2.13 Stable: consolidated auth UI ===== */
 html,body{max-width:100%;overflow-x:hidden}
 
 body:has(#v075AuthOverlay.show) > .app,
@@ -967,7 +967,14 @@ let battleBusy=false;
 function makeQuest(){const t=questTemplates[Math.floor(Math.random()*questTemplates.length)],tier=Math.max(1,Math.min(5,Math.floor(s.level/4)+t.base)),duration=12+tier*8+Math.floor(Math.random()*10);const xp=Math.round(65+tier*28+s.level*4);return{id:Date.now()+Math.random(),name:t.name,icon:t.icon,text:t.text,tier,duration,energy:8+tier*4,xp,gold:14+tier*13}}
 function ensureQuests(){if(!s.quests.offers.length&&!s.quests.active)s.quests.offers=[makeQuest(),makeQuest(),makeQuest()]}
 function regenEnergy(){const now=Date.now(),step=180000,gained=Math.floor((now-s.lastEnergy)/step);if(gained>0){s.energy=Math.min(100,s.energy+gained);s.lastEnergy+=gained*step;if(s.energy>=100)s.lastEnergy=now;persist(false)}}
-function persist(draw=true){try{normalizeState()}catch(e){} localStorage.setItem(KEY,JSON.stringify(s));if(draw)render()}
+function persist(draw=true){
+ try{normalizeState()}catch(e){}
+ localStorage.setItem(KEY,JSON.stringify(s));
+ try{
+   if(typeof v213LocalCheckpoint==='function')v213LocalCheckpoint('persist');
+ }catch(e){}
+ if(draw)render();
+}
 function xpNeed(){return s.level*100}
 function addXp(n){
  s.xp+=n;
@@ -13427,7 +13434,7 @@ async function v083FixHallList(){
 const v083BaseRender=render;
 render=function(){
   v083BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.12 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.13 Stable');
   setTimeout(v083FixHallList,0);
 };
 
@@ -13591,7 +13598,7 @@ v073ProfilePayload=function(){
 const v084BaseRender=render;
 render=function(){
   v084BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.12 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.13 Stable');
 };
 </script>
 
@@ -13818,7 +13825,7 @@ v032Go=function(id){
 const v085BaseRender=render;
 render=function(){
   v085BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.12 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.13 Stable');
 
   if(document.querySelector('#world')?.classList.contains('active')){
     v085InstallWorld();
@@ -13970,7 +13977,7 @@ v032Go=function(id){
 const v086BaseRender=render;
 render=function(){
   v086BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.12 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.13 Stable');
   v086PolishBrand();
   v086RemoveSlashNArtifacts();
   v086BuildCompleteMenu();
@@ -14046,7 +14053,7 @@ function v087FixMainAttributeBadge(){
 const v087BaseRender=render;
 render=function(){
   v087BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.12 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.13 Stable');
   requestAnimationFrame(v087FixMainAttributeBadge);
 };
 
@@ -14078,7 +14085,7 @@ try{
 const v088BaseRender=render;
 render=function(){
   v088BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.12 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.13 Stable');
 };
 </script>
 
@@ -14205,7 +14212,7 @@ v030Offer=function(it,fn,i){
 const v089BaseRender=render;
 render=function(){
   v089BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.12 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.13 Stable');
   try{renderShop()}catch(e){console.error('V0.89 shop comparison',e)}
 };
 </script>
@@ -14324,7 +14331,7 @@ v057OfferHtml=function(it,i,kind){
 const v090BaseRender=render;
 render=function(){
   v090BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.12 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.13 Stable');
   try{renderShop()}catch(e){console.error('V0.90 shop comparison',e)}
 };
 
@@ -14353,7 +14360,7 @@ localStorage.setItem(KEY,JSON.stringify(s));
 const v092BaseRender=render;
 render=function(){
   v092BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.12 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.13 Stable');
 };
 </script>
 
@@ -14681,7 +14688,7 @@ document.querySelector('#v093SaveNews')?.addEventListener('click',v093SaveNews);
 const v093BaseRender=render;
 render=function(){
   v093BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.12 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.13 Stable');
   v093BuildMenu();
 };
 
@@ -14804,7 +14811,7 @@ v085ActiveEvents=function(){
 const v094BaseRender=render;
 render=function(){
   v094BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.12 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.13 Stable');
 
   /* Update visible quest XP previews to show doubled amount while event is live. */
   if(v094XpEventActive()){
@@ -14909,7 +14916,7 @@ document.addEventListener('click',()=>{
 const v095BaseRender=render;
 render=function(){
   v095BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.12 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.13 Stable');
   requestAnimationFrame(v095DecorateXp);
 };
 
@@ -14987,7 +14994,7 @@ function v096DecorateQuestXp(){
 const v096BaseRender=render;
 render=function(){
   v096BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.12 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.13 Stable');
   requestAnimationFrame(v096DecorateQuestXp);
 };
 
@@ -15025,7 +15032,7 @@ function v097ReplaceQuestStars(){
 const v097BaseRender=render;
 render=function(){
   v097BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.12 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.13 Stable');
   requestAnimationFrame(v097ReplaceQuestStars);
 };
 
@@ -15121,7 +15128,7 @@ function v098QuestPreview(){
 const v098BaseRender=render;
 render=function(){
   v098BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.12 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.13 Stable');
   requestAnimationFrame(v098QuestPreview);
 };
 
@@ -15252,7 +15259,7 @@ function v099PaintQuestXp(){
 const v099BaseRender=render;
 render=function(){
   v099BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.12 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.13 Stable');
   requestAnimationFrame(v099PaintQuestXp);
 };
 
@@ -15409,7 +15416,7 @@ function v100PaintDungeonXp(){
 const v100BaseRender=render;
 render=function(){
   v100BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.12 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.13 Stable');
   requestAnimationFrame(v100PaintDungeonXp);
   setTimeout(()=>{
     try{v068InstallFight()}catch(e){}
@@ -15515,7 +15522,7 @@ addXp=function(n){
 const v101BaseRender=render;
 render=function(){
   v101BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.12 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.13 Stable');
 };
 </script>
 
@@ -15642,7 +15649,7 @@ render=function(){
   const before=Number(s.level)||1;
   const result=v102BaseRender();
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.12 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.13 Stable');
 
   requestAnimationFrame(()=>{
     try{v102DetectLevelChange()}catch(e){console.error('V1.02 level detection',e)}
@@ -15907,7 +15914,7 @@ v093AdminLoadLists=async function(){
 const v103BaseRender=render;
 render=function(){
   v103BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.12 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.13 Stable');
   if(v093IsAdmin)v103InstallPlayerAdmin();
 };
 
@@ -16033,7 +16040,7 @@ v103InstallPlayerAdmin=function(){
 const v105BaseRender=render;
 render=function(){
   const result=v105BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.12 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.13 Stable');
   if(v093IsAdmin){
     v103InstallPlayerAdmin();
     v105InstallRewards();
@@ -16231,7 +16238,7 @@ claimQuest=function(){
 const v106BaseRender=render;
 render=function(){
   const result=v106BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.12 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.13 Stable');
   v106InstallBook();
   v106CheckAchievements(true);
   return result;
@@ -16296,7 +16303,7 @@ v106InstallBook=function(){
 const v107BaseRender=render;
 render=function(){
   const result=v107BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.12 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.13 Stable');
   requestAnimationFrame(v107PlaceBook);
   return result;
 };
@@ -16415,7 +16422,7 @@ if(!s.v108ItemPool){
 const v108BaseRender=render;
 render=function(){
   const result=v108BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.12 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.13 Stable');
   return result;
 };
 </script>
@@ -16574,7 +16581,7 @@ const v109BaseRender=render;
 render=function(){
   v109ResetDaily();
   const result=v109BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.12 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.13 Stable');
   return result;
 };
 </script>
@@ -16768,7 +16775,7 @@ v085ActiveEvents=function(){
 const v110BaseRender=render;
 render=function(){
   const result=v110BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.12 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.13 Stable');
   requestAnimationFrame(v110InstallEventButton);
   return result;
 };
@@ -17098,7 +17105,7 @@ v110InstallEventButton=function(){v111InstallWorldBossCard()};
 const v111BaseRender=render;
 render=function(){
   const result=v111BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.12 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.13 Stable');
   requestAnimationFrame(v111InstallWorldBossCard);
   return result;
 };
@@ -17183,7 +17190,7 @@ render=function(){
   const result=v112BaseRender();
 
   v112EnsureWorldBossState();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.12 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.13 Stable');
 
   return result;
 };
@@ -17252,7 +17259,7 @@ v110Fight=function(){
 const v113BaseRender=render;
 render=function(){
   const result=v113BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.12 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.13 Stable');
   return result;
 };
 </script>
@@ -17424,7 +17431,7 @@ v110Fight=async function(){
 const v114BaseRender=render;
 render=function(){
   const result=v114BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.12 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.13 Stable');
   return result;
 };
 
@@ -17612,7 +17619,7 @@ v114AskRetry=function(){
 const v115BaseRender=render;
 render=function(){
   const result=v115BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.12 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.13 Stable');
   return result;
 };
 
@@ -17799,7 +17806,7 @@ v074OpenProfile=async function(id){
 const v116BaseRender=render;
 render=function(){
   const result=v116BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.12 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.13 Stable');
   return result;
 };
 
@@ -17978,7 +17985,7 @@ document.addEventListener('click',async e=>{
 const v117BaseRender=render;
 render=function(){
   const result=v117BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.12 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.13 Stable');
   setTimeout(()=>{v117BindDampf();v117BindReset();v117PatchClassModal()},0);
   return result;
 };
@@ -18379,7 +18386,7 @@ v085InstallWorld=function(){
 const v118BaseRender=render;
 render=function(){
   const result=v118BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.12 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.13 Stable');
   requestAnimationFrame(v111InstallWorldBossCard);
   return result;
 };
@@ -18571,7 +18578,7 @@ header .resource-stats .stat:nth-child(4) b{
 const v119BaseRender=render;
 render=function(){
   const result=v119BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.12 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.13 Stable');
   return result;
 };
 </script>
@@ -18708,7 +18715,7 @@ function v120InstallCountdown(){
 const v120BaseRender=render;
 render=function(){
   const result=v120BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.12 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.13 Stable');
   requestAnimationFrame(v120InstallCountdown);
   return result;
 };
@@ -18922,7 +18929,7 @@ const v121BaseRender=render;
 render=function(){
   v121SanitizeMagicStock();
   const result=v121BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.12 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.13 Stable');
   requestAnimationFrame(v121PaintShopInfo);
   return result;
 };
@@ -19265,7 +19272,7 @@ const v122BaseRender=render;
 render=function(){
   v122MigrateAllSockets();
   const result=v122BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.12 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.13 Stable');
   return result;
 };
 
@@ -19593,7 +19600,7 @@ function v123PolishEquipment(){
 const v123BaseRender=render;
 render=function(){
   const result=v123BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.12 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.13 Stable');
   requestAnimationFrame(v123PolishEquipment);
   return result;
 };
@@ -19843,7 +19850,7 @@ function v124ClampCharacterWidth(){
 const v124BaseRender=render;
 render=function(){
   const result=v124BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.12 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.13 Stable');
   requestAnimationFrame(v124ClampCharacterWidth);
   return result;
 };
@@ -20306,7 +20313,7 @@ render=function(){
   if(hp)hp.textContent=v125Fmt(maxHp());
   if(cp)cp.textContent=v125Fmt(combatPower());
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.12 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.13 Stable');
   return result;
 };
 
@@ -20450,7 +20457,7 @@ if(typeof V125_ATTRS!=='undefined'){
 const v126BaseRender=render;
 render=function(){
   const result=v126BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.12 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.13 Stable');
   requestAnimationFrame(()=>v126RepairCharacter(false));
   return result;
 };
@@ -20640,7 +20647,7 @@ render=function(){
   const energyEl=document.querySelector('#energy');
   if(energyEl)energyEl.textContent=`${Math.floor(Number(s.energy)||0)}/300`;
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.12 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.13 Stable');
   requestAnimationFrame(v127AddResetInfo);
   return result;
 };
@@ -20921,7 +20928,7 @@ setTimeout(()=>{
 
 <script id="v128-premium-skill-ui-script">
 function v128SkillPolish(){
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.12 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.13 Stable');
   const card=document.querySelector('#character .card:has(#skillTree)');
   if(card)card.setAttribute('data-v128','premium-skills');
 }
@@ -21351,7 +21358,7 @@ function v129PolishDynamicCards(){
     if(it)el.classList.add(v129RarityClass(it));
   });
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.12 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.13 Stable');
 }
 const v129BaseRender=render;
 render=function(){
@@ -21513,7 +21520,7 @@ function v130InventoryHeadings(){
 function v130Polish(){
   v130RemoveMerchantCopy();
   v130InventoryHeadings();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.12 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.13 Stable');
 }
 const v130BaseRender=render;
 render=function(){
@@ -21546,7 +21553,7 @@ function v131CleanShop(){
     }
   });
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.12 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.13 Stable');
 }
 const v131BaseRender=render;
 render=function(){
@@ -21813,7 +21820,7 @@ function v132Polish(){
     });
   }
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.12 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.13 Stable');
 }
 const v132BaseRender=render;
 render=function(){
@@ -22026,7 +22033,7 @@ function v133Polish(){
       }
     });
   }
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.12 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.13 Stable');
 }
 const v133BaseRender=render;
 render=function(){
@@ -22211,7 +22218,7 @@ function v134Apply(){
    l.innerHTML='<span class="g0">Normal</span><span class="g1">Gewöhnlich</span><span class="g2">Selten</span><span class="g3">Episch</span><span class="g4">Legendär</span><span class="g5">Mystisch</span>';
    card.appendChild(l);
  }
- document.querySelectorAll('.version').forEach(el=>el.textContent='V2.12 Stable');
+ document.querySelectorAll('.version').forEach(el=>el.textContent='V2.13 Stable');
 }
 const v134BaseRender=render;
 render=function(){const r=v134BaseRender();requestAnimationFrame(v134Apply);return r;};
@@ -22374,7 +22381,7 @@ function v135PaintShop(){
       if(arr[i])el.classList.add(v135QualityClassFromItem(arr[i]));
     });
   });
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.12 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.13 Stable');
 }
 
 /* Existing V1.34 stock may be based on old weak scaling: refresh once for free. */
@@ -22609,7 +22616,7 @@ function v138PaintMerchant(){
     });
   });
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.12 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.13 Stable');
 }
 
 const v138BaseRender=render;
@@ -22807,7 +22814,7 @@ v030Offer=function(it,fn,i){
 
 function v139RepaintShop(){
   try{renderShop()}catch(e){console.error('V1.39 shop repaint',e)}
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.12 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.13 Stable');
 }
 
 const v139BaseRender=render;
@@ -23170,7 +23177,7 @@ function v141BuildSettings(){
           <button type="button" class="btn" id="v141Delete">🗑️ Account löschen</button>
         </div>
 
-        <div class="v141-version-line" id="v141VersionLine">V2.12 Stable</div>
+        <div class="v141-version-line" id="v141VersionLine">V2.13 Stable</div>
       </div>`;
   }
 
@@ -23363,7 +23370,7 @@ setTimeout(()=>{
 const v141BaseRender=render;
 render=function(){
   const r=v141BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.12 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.13 Stable');
   requestAnimationFrame(()=>{
     v141BuildSettings();
     v141ApplySettings();
@@ -23420,7 +23427,7 @@ window.addEventListener('scroll',v142PositionSettings,{passive:true});
 const v142BaseRender=render;
 render=function(){
   const r=v142BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.12 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.13 Stable');
   requestAnimationFrame(v142PositionSettings);
   return r;
 };
@@ -23635,7 +23642,7 @@ render=function(){
     v145SaveScopedLocal();
   }
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.12 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.13 Stable');
   return r;
 };
 
@@ -23651,7 +23658,7 @@ setTimeout(()=>{
 
 
 <script id="v200-stable-core">
-/* ===== Grow Legends V2.12 Stable =====
+/* ===== Grow Legends V2.13 Stable =====
    One auth listener. One email handler. One Google handler.
    One cloud resolver. One character creator. One admin poll.
 */
@@ -23890,7 +23897,7 @@ function v200RenderLoginInfo(){
     let n=null;
     try{ n=(window.v093News||[]).find(x=>x && x.is_published!==false)||null; }catch(e){}
 
-    const title=n?.title||'V2.12 Stable';
+    const title=n?.title||'V2.13 Stable';
     const version=n?.version||'V2.00';
     const text=n?.body||n?.text||'Technische Stabilisierung von Login, Cloud-Speicherung und Charaktererstellung.';
 
@@ -23928,6 +23935,139 @@ function v200RenderLoginInfo(){
   }
 }
 
+/* ===== V2.13 Save Integrity =====
+   Goal:
+   - Never overwrite a newer account-scoped local checkpoint with an older cloud save.
+   - Every gameplay mutation can create an immediate local checkpoint.
+   - Cloud writes are serialized and carry revision/timestamp metadata.
+*/
+let v213SaveRevision=Math.max(0,Number(s.__saveRevision)||0);
+let v213Dirty=false;
+let v213LastComparable='';
+let v213SaveChain=Promise.resolve();
+let v213MonitorReady=false;
+
+function v213Comparable(obj){
+  try{
+    const copy=JSON.parse(JSON.stringify(obj||{}));
+    delete copy.__savedAt;
+    delete copy.__saveRevision;
+    return JSON.stringify(copy);
+  }catch(e){
+    return '';
+  }
+}
+
+function v213MetaTime(obj){
+  const t=Number(obj?.__savedAt)||0;
+  return Number.isFinite(t)?t:0;
+}
+
+function v213MetaRevision(obj){
+  const r=Number(obj?.__saveRevision)||0;
+  return Number.isFinite(r)?r:0;
+}
+
+function v213BelongsTo(obj,uid){
+  if(!obj || typeof obj!=='object')return false;
+  return !obj.__accountOwnerId || obj.__accountOwnerId===uid;
+}
+
+function v213StampState(){
+  if(!v200DurableUser())return;
+  v213SaveRevision=Math.max(v213SaveRevision,v213MetaRevision(s))+1;
+  s.__saveRevision=v213SaveRevision;
+  s.__savedAt=Date.now();
+  s.__accountOwnerId=v073User.id;
+  s.social??={};
+  s.social.playerId=v073User.id;
+}
+
+function v213LocalCheckpoint(reason='change'){
+  if(!v200DurableUser())return false;
+  if(v075ApplyingCloud || v200Deleting)return false;
+
+  v213StampState();
+  v213Dirty=true;
+
+  try{
+    localStorage.setItem(KEY,JSON.stringify(s));
+    v200SaveScopedLocal();
+  }catch(e){
+    console.warn('V2.13 local checkpoint',e);
+  }
+
+  v213LastComparable=v213Comparable(s);
+
+  if(v075CloudLoadedFor===v073User.id && v200CharacterComplete()){
+    v075ScheduleSave();
+  }
+  return true;
+}
+
+function v213PickNewestSave(uid,cloudData,scoped,current){
+  const candidates=[];
+
+  if(cloudData && v213BelongsTo(cloudData,uid)){
+    candidates.push({source:'cloud',data:cloudData});
+  }
+
+  if(scoped && v213BelongsTo(scoped,uid)){
+    candidates.push({source:'local',data:scoped});
+  }
+
+  /*
+    Generic KEY is considered only when it is explicitly stamped for this
+    exact account. This prevents two Google/email accounts sharing a save.
+  */
+  if(current && current.__accountOwnerId===uid){
+    candidates.push({source:'current',data:current});
+  }
+
+  if(!candidates.length)return null;
+
+  const hasMetadata=candidates.some(x=>
+    v213MetaTime(x.data)>0 || v213MetaRevision(x.data)>0
+  );
+
+  if(!hasMetadata){
+    /*
+      Legacy saves have no trustworthy timestamp. Keep cloud authoritative.
+      From V2.13 onward every mutation gets metadata.
+    */
+    return candidates.find(x=>x.source==='cloud') || candidates[0];
+  }
+
+  candidates.sort((a,b)=>{
+    const ta=v213MetaTime(a.data),tb=v213MetaTime(b.data);
+    if(tb!==ta)return tb-ta;
+    return v213MetaRevision(b.data)-v213MetaRevision(a.data);
+  });
+
+  return candidates[0];
+}
+
+function v213StartMonitor(){
+  if(v213MonitorReady)return;
+  v213MonitorReady=true;
+  v213LastComparable=v213Comparable(s);
+
+  setInterval(()=>{
+    try{
+      if(!v200DurableUser())return;
+      if(v075CloudLoadedFor!==v073User.id)return;
+      if(v075ApplyingCloud || v200Deleting)return;
+
+      const now=v213Comparable(s);
+      if(now && now!==v213LastComparable){
+        v213LocalCheckpoint('monitor');
+      }
+    }catch(e){
+      console.warn('V2.13 save monitor',e);
+    }
+  },750);
+}
+
 async function v075GetCloudSave(){
   if(!v073Db || !v200DurableUser())return null;
 
@@ -23952,6 +24092,7 @@ async function v075ApplyCloudSave(data){
   if(!loaded)return false;
 
   v075ApplyingCloud=true;
+
   try{
     Object.keys(s).forEach(k=>delete s[k]);
     Object.assign(s,loaded);
@@ -23960,62 +24101,118 @@ async function v075ApplyCloudSave(data){
     s.social.playerId=v073User.id;
     s.__accountOwnerId=v073User.id;
 
+    v213SaveRevision=Math.max(
+      v213SaveRevision,
+      v213MetaRevision(s)
+    );
+
     localStorage.setItem(KEY,JSON.stringify(s));
     localStorage.setItem('growLegendsPlayerId',v073User.id);
+
     v075CloudLoadedFor=v073User.id;
     v200SaveScopedLocal();
 
+    v213Dirty=false;
+    v213LastComparable=v213Comparable(s);
+
     try{render()}catch(e){}
+
     return true;
+
   }finally{
     v075ApplyingCloud=false;
   }
 }
 
-async function v075ResolveCloudAfterLogin(){
+function v075ResolveCloudAfterLogin(){
   if(!v200DurableUser() || !v073Db)return false;
 
   const uid=v073User.id;
 
-  if(v200CloudPromise && v200CloudPromiseUser===uid)return v200CloudPromise;
+  if(v200CloudPromise && v200CloudPromiseUser===uid){
+    return v200CloudPromise;
+  }
 
   v200CloudPromiseUser=uid;
+
   v200CloudPromise=(async()=>{
     try{
-      const cloud=await v075GetCloudSave();
+      /*
+        Save is locked until the resolver has finished.
+        No render-triggered auto-save may write before this point.
+      */
+      v075CloudLoadedFor=null;
+      v213Dirty=false;
 
-      if(cloud?.save_data && Object.keys(cloud.save_data).length){
-        await v075ApplyCloudSave(cloud.save_data);
-        v200LastCloudStamp=cloud.updated_at||null;
+      const cloud=await v075GetCloudSave();
+      const scoped=v200LoadScopedLocal(uid);
+
+      let current=null;
+      try{
+        if(s?.__accountOwnerId===uid){
+          current=JSON.parse(JSON.stringify(s));
+        }
+      }catch(e){}
+
+      const chosen=v213PickNewestSave(
+        uid,
+        cloud?.save_data||null,
+        scoped,
+        current
+      );
+
+      if(chosen?.data && Object.keys(chosen.data).length){
+        await v075ApplyCloudSave(chosen.data);
+
+        v200LastCloudStamp=cloud?.updated_at||null;
+        v213SaveRevision=Math.max(
+          v213SaveRevision,
+          v213MetaRevision(chosen.data)
+        );
+        v213LastComparable=v213Comparable(s);
+
+        /*
+          If local was newer than cloud, immediately repair cloud from the
+          selected local checkpoint before normal gameplay continues.
+        */
+        if(chosen.source!=='cloud'){
+          v075CloudLoadedFor=uid;
+          await v075WriteCloudSave(true);
+        }
 
         if(v200CharacterComplete()){
           await v073SyncProfile(true);
         }
 
+        v075CloudLoadedFor=uid;
+        v200SaveScopedLocal();
+        v213StartMonitor();
         return true;
       }
 
-      const scoped=v200LoadScopedLocal(uid);
-      if(
-        scoped &&
-        scoped.playerClass &&
-        scoped.characterNameSet &&
-        v071NameValid(scoped.characterName)
-      ){
-        await v075ApplyCloudSave(scoped);
-        await v073SyncProfile(true);
-        await v075WriteCloudSave(true);
-        return true;
-      }
-
+      /*
+        No save anywhere: create a fresh account state, but do not overwrite
+        anything belonging to another user.
+      */
       v200FreshState(uid);
+      v213StampState();
       v075CloudLoadedFor=uid;
       v200LastCloudStamp=null;
+      v200SaveScopedLocal();
+      v213LastComparable=v213Comparable(s);
+      v213StartMonitor();
+
       return true;
+
     }catch(e){
-      console.error('V2.00 cloud resolve',e);
-      v063Toast('Cloud-Spielstand konnte nicht geladen werden','error',e?.message||'');
+      console.error('V2.13 cloud resolve',e);
+      v063Toast(
+        'Cloud-Spielstand konnte nicht geladen werden',
+        'error',
+        e?.message||''
+      );
       return false;
+
     }finally{
       v200CloudPromise=null;
       v200CloudPromiseUser=null;
@@ -24026,54 +24223,106 @@ async function v075ResolveCloudAfterLogin(){
 }
 
 async function v075WriteCloudSave(force=false){
-  if(!v200DurableUser() || !v073Db || v075ApplyingCloud || v200Deleting)return false;
-  if(!v200CharacterComplete())return false;
-  if(v075Saving)return false;
-  if(!force && v075CloudLoadedFor!==v073User.id)return false;
-
-  v075Saving=true;
-  try{
-    /* Profile first because player_saves has depended on the user/profile row. */
-    const profileOk=await v073SyncProfile(true);
-    if(!profileOk)return false;
-
-    s.social??={};
-    s.social.playerId=v073User.id;
-    s.__accountOwnerId=v073User.id;
-
-    const {error}=await v073Db
-      .from('player_saves')
-      .upsert({
-        user_id:v073User.id,
-        save_data:JSON.parse(JSON.stringify(s)),
-        updated_at:new Date().toISOString()
-      },{onConflict:'user_id'});
-
-    if(error)throw error;
-
-    const {data:stamp}=await v073Db
-      .from('player_saves')
-      .select('updated_at')
-      .eq('user_id',v073User.id)
-      .maybeSingle();
-
-    v200LastCloudStamp=stamp?.updated_at||v200LastCloudStamp;
-    v075CloudLoadedFor=v073User.id;
-    v200SaveScopedLocal();
-    return true;
-  }catch(e){
-    console.error('V2.00 cloud save',e);
-    v063Toast('Cloud-Speicherung fehlgeschlagen','error',e?.message||'');
+  if(!v200DurableUser() || !v073Db || v075ApplyingCloud || v200Deleting){
     return false;
-  }finally{
-    v075Saving=false;
   }
+
+  if(!v200CharacterComplete())return false;
+
+  if(!force && v075CloudLoadedFor!==v073User.id){
+    return false;
+  }
+
+  const uid=v073User.id;
+
+  /*
+    Every outgoing save receives an explicit revision/time stamp.
+    This makes future index updates able to decide which copy is newer.
+  */
+  if(v213Dirty || !v213MetaTime(s)){
+    v213StampState();
+  }
+
+  const snapshot=JSON.parse(JSON.stringify(s));
+  snapshot.__accountOwnerId=uid;
+  snapshot.social??={};
+  snapshot.social.playerId=uid;
+
+  const doWrite=async()=>{
+    if(!v200DurableUser() || v073User.id!==uid || v200Deleting)return false;
+
+    v075Saving=true;
+
+    try{
+      const profileOk=await v073SyncProfile(true);
+      if(!profileOk)return false;
+
+      const {error}=await v073Db
+        .from('player_saves')
+        .upsert({
+          user_id:uid,
+          save_data:snapshot,
+          updated_at:new Date().toISOString()
+        },{onConflict:'user_id'});
+
+      if(error)throw error;
+
+      const {data:stamp,error:stampError}=await v073Db
+        .from('player_saves')
+        .select('updated_at')
+        .eq('user_id',uid)
+        .maybeSingle();
+
+      if(stampError)throw stampError;
+
+      v200LastCloudStamp=stamp?.updated_at||v200LastCloudStamp;
+      v075CloudLoadedFor=uid;
+
+      /*
+        Mark clean only if state did not change again while this request
+        was in flight. Otherwise the next queued save will carry the newer copy.
+      */
+      if(v213Comparable(snapshot)===v213Comparable(s)){
+        v213Dirty=false;
+      }
+
+      v200SaveScopedLocal();
+      v213LastComparable=v213Comparable(s);
+
+      return true;
+
+    }catch(e){
+      console.error('V2.13 cloud save',e);
+      v213Dirty=true;
+      v063Toast(
+        'Cloud-Speicherung fehlgeschlagen',
+        'error',
+        e?.message||''
+      );
+      return false;
+
+    }finally{
+      v075Saving=false;
+    }
+  };
+
+  /*
+    Serialize writes. The old implementation discarded a save request when
+    another save was already running.
+  */
+  v213SaveChain=v213SaveChain.then(doWrite,doWrite);
+  return v213SaveChain;
 }
 
 function v075ScheduleSave(){
   clearTimeout(v075SaveTimer);
+
   if(!v200DurableUser() || !v200CharacterComplete())return;
-  v075SaveTimer=setTimeout(()=>v075WriteCloudSave(false),1200);
+  if(v075CloudLoadedFor!==v073User.id)return;
+
+  v075SaveTimer=setTimeout(()=>{
+    v075WriteCloudSave(false);
+  },450);
 }
 
 async function v200NameAvailable(name){
@@ -24488,7 +24737,7 @@ function v200BindSettings(){
   if(cancel)cancel.onclick=v141CloseDelete;
 
   const version=document.querySelector('#v141VersionLine');
-  if(version)version.textContent='V2.12 Stable';
+  if(version)version.textContent='V2.13 Stable';
 }
 
 /* One admin poll, content-aware. */
@@ -24617,7 +24866,7 @@ const v200BaseRender=render;
 render=function(){
   const r=v200BaseRender();
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.12 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.13 Stable');
 
   if(v200DurableUser() && v200CharacterComplete() && v075CloudLoadedFor===v073User.id){
     v075ScheduleSave();
@@ -24790,7 +25039,7 @@ render=function(){
   const result=v201BaseRender();
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V2.12 Stable');
+    .forEach(el=>el.textContent='V2.13 Stable');
 
   const world=document.querySelector('#world');
   if(world?.classList.contains('active')){
@@ -25178,7 +25427,7 @@ setInterval(()=>{
 const v204BaseRender=render;
 render=function(){
   const r=v204BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.12 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.13 Stable');
   requestAnimationFrame(()=>{
     v086BuildCompleteMenu();
     v204InstallAvatarBadge();
@@ -25230,7 +25479,7 @@ function v205InstallBudScale(){
 const v205BaseRender=render;
 render=function(){
   const r=v205BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.12 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.13 Stable');
   requestAnimationFrame(v205InstallBudScale);
   return r;
 };
@@ -25531,7 +25780,7 @@ render=function(){
   const r=v206BaseRender();
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V2.12 Stable');
+    .forEach(el=>el.textContent='V2.13 Stable');
 
   requestAnimationFrame(()=>{
     const find=document.querySelector('#v204FindBtn');
@@ -25704,7 +25953,7 @@ render=function(){
   const r=v207BaseRender();
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V2.12 Stable');
+    .forEach(el=>el.textContent='V2.13 Stable');
 
   requestAnimationFrame(()=>{
     v207EnsurePvpState();
@@ -26151,7 +26400,7 @@ render=function(){
   const r=v209BaseRender();
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V2.12 Stable');
+    .forEach(el=>el.textContent='V2.13 Stable');
 
   requestAnimationFrame(()=>{
     const fight=document.querySelector('#v204FightBtn');
@@ -26691,7 +26940,7 @@ render=function(){
   const r=v210BaseRender();
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V2.12 Stable');
+    .forEach(el=>el.textContent='V2.13 Stable');
 
   requestAnimationFrame(()=>{
     v210FormatCharacterAttributes();
@@ -27074,7 +27323,7 @@ render=function(){
   const r=v211BaseRender();
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V2.12 Stable');
+    .forEach(el=>el.textContent='V2.13 Stable');
 
   return r;
 };
@@ -27083,6 +27332,47 @@ setTimeout(()=>{
   v211EnsureResultUi();
   v211HideOldBattleResult();
 },120);
+</script>
+
+
+<script id="v213-save-integrity-final">
+/* Final V2.13 safety hooks */
+window.addEventListener('pagehide',()=>{
+  try{
+    if(v200DurableUser() && v075CloudLoadedFor===v073User.id){
+      v213LocalCheckpoint('pagehide');
+    }
+  }catch(e){}
+});
+
+document.addEventListener('visibilitychange',()=>{
+  try{
+    if(document.visibilityState==='hidden' &&
+       v200DurableUser() &&
+       v075CloudLoadedFor===v073User.id){
+      v213LocalCheckpoint('hidden');
+      v075WriteCloudSave(false);
+    }
+  }catch(e){}
+});
+
+/* Once auth/cloud are ready, the monitor catches direct state mutations
+   that bypass the old persist() helper. */
+setTimeout(()=>{
+  try{
+    if(v200DurableUser() && v075CloudLoadedFor===v073User.id){
+      v213StartMonitor();
+    }
+  }catch(e){}
+},1200);
+
+const v213BaseRender=render;
+render=function(){
+  const r=v213BaseRender();
+  document.querySelectorAll('.version')
+    .forEach(el=>el.textContent='V2.13 Stable');
+  return r;
+};
 </script>
 
 </body>
