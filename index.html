@@ -205,7 +205,7 @@ main{padding:12px}
 
 
 <style id="v200-stable-ui">
-/* ===== Grow Legends V2.53 Stable: consolidated auth UI ===== */
+/* ===== Grow Legends V2.55 Stable: consolidated auth UI ===== */
 html,body{max-width:100%;overflow-x:hidden}
 
 body:has(#v075AuthOverlay.show) > .app,
@@ -516,7 +516,7 @@ document.documentElement.classList.remove('v224-app-ready');
 <body>
 <div class="app">
 <header>
-  <div class="brand"><h1>🌿 Grow Legends</h1><span class="version">V2.53 Stable</span><div class="power">Kampfkraft <b id="power">—</b></div></div>
+  <div class="brand"><h1>🌿 Grow Legends</h1><span class="version">V2.55 Stable</span><div class="power">Kampfkraft <b id="power">—</b></div></div>
   <div class="stats resource-stats"><div class="stat">GOLD<b id="gold">—</b></div><div class="stat">SKILL<b id="points">—</b></div><div class="stat">DAMPF<b id="energy">—</b></div><div class="stat harz-stat">HARZ-TALER<b>🟢 <span id="topHarz">—</span></b></div></div>
 </header>
 <main>
@@ -618,6 +618,138 @@ document.documentElement.classList.remove('v224-app-ready');
       <span>Matchmaking: bevorzugt ±2 Level und etwa ±20 % Kampfkraft. Falls kein Spieler passt, wird der Bereich vorsichtig erweitert.</span>
       <span>Sieg: Gold + Erfahrung + PvP-Buds. Je stärker der besiegte Gegner im Vergleich zu dir war, desto mehr Buds erhältst du. Niederlage: kleine Teilnahmebelohnung, niemals Bud-Abzug.</span>
       <span>Nach einem Kampf beginnt ein serverseitiger Cooldown von 30 Minuten.</span>
+    </div>
+  </div>
+</section>
+
+
+<section id="guild" class="screen">
+  <div class="v254-guild-shell">
+    <div class="v254-guild-hero">
+      <div>
+        <div class="v254-kicker">🌿 GEMEINSAM STÄRKER</div>
+        <h2>Gilden</h2>
+        <p>Gründe eine Gilde, kämpft gemeinsam gegen den täglichen Gildenboss und tretet im Gildenkrieg gegen andere Gilden an.</p>
+      </div>
+      <div class="v254-buds">🌿 <b id="v254GuildBuds">0</b><span>Gilden-Buds</span></div>
+    </div>
+
+    <div id="v254GuildNoGuild" class="v254-card">
+      <div class="v254-empty-icon">🏰</div>
+      <h3>Du bist noch in keiner Gilde</h3>
+      <p>In einer Gilde schaltest du dauerhafte EXP-/Gold-Boni, den täglichen Gildenboss und Gilde-gegen-Gilde frei.</p>
+      <div class="v254-create-row">
+        <input id="v254GuildName" maxlength="24" placeholder="Gildenname">
+        <input id="v254GuildTag" maxlength="5" placeholder="TAG">
+        <button type="button" class="btn" id="v254CreateGuild">Gilde gründen</button>
+      </div>
+      <div class="v254-note">Online-Feature · benötigt einen eingeloggten Grow-Legends-Account.</div>
+    </div>
+
+    <div id="v254GuildDashboard" style="display:none">
+      <div class="v254-guild-head v254-card">
+        <div>
+          <div class="v254-tag" id="v254GuildTagView">[GL]</div>
+          <h3 id="v254GuildNameView">Grow Legends</h3>
+          <div class="muted" id="v254GuildMeta">0 Mitglieder</div>
+        </div>
+        <div class="v254-guild-level">
+          <span>GILDEN-BUDS</span>
+          <b id="v254GuildBudsTop">0</b>
+        </div>
+      </div>
+
+      <div class="v254-tabs">
+        <button class="v254-tab active" data-v254-tab="overview">🏰 Übersicht</button>
+        <button class="v254-tab" data-v254-tab="boss">👹 Gildenboss</button>
+        <button class="v254-tab" data-v254-tab="war">⚔️ Gildenkrieg</button>
+      </div>
+
+      <div id="v254GuildOverview" class="v254-panel">
+        <div class="v254-upgrade-grid">
+          <div class="v254-upgrade">
+            <div class="v254-upgrade-icon">⭐</div>
+            <div>
+              <b>EXP-Bonus</b>
+              <span>Alle Mitglieder erhalten dauerhaft mehr Erfahrung.</span>
+              <strong id="v254XpBonus">Stufe 0 · +0%</strong>
+            </div>
+            <button class="btn secondary" id="v254UpgradeXp">100 🌿</button>
+          </div>
+          <div class="v254-upgrade">
+            <div class="v254-upgrade-icon">💰</div>
+            <div>
+              <b>Gold-Bonus</b>
+              <span>Alle Mitglieder erhalten dauerhaft mehr Gold.</span>
+              <strong id="v254GoldBonus">Stufe 0 · +0%</strong>
+            </div>
+            <button class="btn secondary" id="v254UpgradeGold">100 🌿</button>
+          </div>
+        </div>
+
+        <div class="v254-card v254-inner">
+          <div class="section-title">
+            <div>
+              <h3>👥 Mitglieder</h3>
+              <div class="muted">Anmeldung für Angriff und Verteidigung ist für alle sichtbar.</div>
+            </div>
+          </div>
+          <div id="v254GuildMembers"></div>
+        </div>
+      </div>
+
+      <div id="v254GuildBoss" class="v254-panel" style="display:none">
+        <div class="v254-boss-stage">
+          <div class="v254-boss-copy">
+            <div class="v254-kicker">TÄGLICHER GILDENBOSS</div>
+            <h3>Der Verseuchte Titan</h3>
+            <p>Der Boss skaliert beim Anmeldeschluss anhand der tatsächlichen Level und Kampfkraft aller gemeldeten Mitglieder.</p>
+            <div class="v254-boss-rule">🎯 Zielbalance: durchschnittliche Gilde ca. 25–35 % Siegchance</div>
+          </div>
+          <div class="v254-boss-monster">👹</div>
+        </div>
+
+        <div class="v254-status-grid">
+          <div><span>ANMELDUNG</span><b id="v254BossSignupState">Offen</b></div>
+          <div><span>TEILNEHMER</span><b id="v254BossCount">0</b></div>
+          <div><span>START</span><b>20:00</b></div>
+        </div>
+
+        <button class="btn v254-wide" id="v254BossSignup">👹 Für Gildenboss anmelden</button>
+
+        <div id="v255BossLive" class="v255-boss-live">
+          <div class="v255-boss-hp-head"><b id="v255BossHpText">Boss wird vorbereitet …</b><span id="v255BossResult"></span></div>
+          <div class="v255-hpbar"><i id="v255BossHpFill"></i></div>
+          <div id="v255BossTimeline" class="v255-timeline"></div>
+          <button type="button" class="btn gold v255-wide" id="v255ClaimBossReward" style="display:none">🎁 Gildenboss-Belohnung abholen</button>
+        </div>
+
+        <div class="v254-card v254-inner">
+          <b>Boss-Ablauf</b>
+          <p class="muted">Die gemeldeten Spieler greifen nacheinander an. Die verbleibenden Boss-HP bleiben zwischen den Spielern bestehen. Bei Sieg erhalten Teilnehmer Harz-Taler sowie levelabhängige EXP und Gold.</p>
+        </div>
+      </div>
+
+      <div id="v254GuildWar" class="v254-panel" style="display:none">
+        <div class="v254-war-head">
+          <div>
+            <div class="v254-kicker">GILDE GEGEN GILDE</div>
+            <h3>Kriegsvorbereitung</h3>
+            <p>Entscheide selbst, ob du beim nächsten Krieg angreifst, verteidigst oder beides machst.</p>
+          </div>
+          <div class="v254-war-shield">⚔️🛡️</div>
+        </div>
+
+        <div class="v254-signup-grid">
+          <button class="v254-signup" id="v254AttackSignup"><span>⚔️</span><b>Angriff</b><small>Nicht angemeldet</small></button>
+          <button class="v254-signup" id="v254DefenseSignup"><span>🛡️</span><b>Verteidigung</b><small>Nicht angemeldet</small></button>
+        </div>
+
+        <div class="v254-card v254-inner">
+          <b>So funktioniert der Gildenkrieg</b>
+          <p class="muted">Beim Start werden Teilnehmer und Werte eingefroren. Das Matchmaking sucht eine ähnlich starke Gilde anhand der tatsächlich gemeldeten Kämpfer. Erfolgreiche Angriffe bringen Punkte; die Siegergilde erhält Gilden-Buds.</p>
+        </div>
+      </div>
     </div>
   </div>
 </section>
@@ -3065,7 +3197,7 @@ header{
 
 function v037SyncVersion(){
   document.querySelectorAll('.version').forEach(el=>{
-    el.textContent='V2.53 Stable';
+    el.textContent='V2.55 Stable';
   });
 }
 
@@ -3420,7 +3552,7 @@ render=function(){
   v038BaseRender();
   v038BindReroll();
   v038LocationPolish();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.53 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.55 Stable');
 };
 
 try{
@@ -3491,7 +3623,7 @@ try{
 <script>
 /* V0.39 keep version label synced */
 (function(){
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.53 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.55 Stable');
 })();
 </script>
 
@@ -3940,7 +4072,7 @@ header{
 <script>
 /* V0.40 unified visual behavior + version sync */
 function v040Polish(){
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.53 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.55 Stable');
   document.querySelectorAll('.btn').forEach(b=>b.setAttribute('type','button'));
   document.querySelectorAll('.shop-item,.inv-item,.skill-card,.seed-card,.equip-card,.quest,.slot').forEach(el=>{
     el.style.willChange='transform';
@@ -4212,7 +4344,7 @@ function v41UpgradeWorldPlaces(){
 const v41BaseRender=render;
 render=function(){
   v41BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.53 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.55 Stable');
   v41InstallPortrait();
   v41InstallNpcBanners();
   v41UpgradeShopIcons();
@@ -4418,7 +4550,7 @@ const v042BaseRender=render;
 render=function(){
   v042EnsureNineShopSlots();
   v042BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.53 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.55 Stable');
 };
 
 try{
@@ -4801,7 +4933,7 @@ function v043EmptyStates(){
 const v043BaseRender=render;
 render=function(){
   v043BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.53 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.55 Stable');
   v043EquipSlotArt();
   v043BattlePlayerArt();
   v043SceneLabels();
@@ -5097,7 +5229,7 @@ function v044MapTitles(){
 const v044BaseRender=render;
 render=function(){
   v044BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.53 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.55 Stable');
   v044AddWorldRegions();
   v044AddDungeonRegions();
   v044MapTitles();
@@ -5559,7 +5691,7 @@ function v048InstallFight(){
 const v048BaseRender=render;
 render=function(){
   v048BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.53 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.55 Stable');
   v048InstallFight();
   renderDungeon();
 
@@ -5810,7 +5942,7 @@ header{
 <script>
 /* V0.49 visual-only hooks */
 function v049Polish(){
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.53 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.55 Stable');
 
   document.querySelectorAll('.inv-item,.shop-item,.skill-card,.quest,.slot,.grow-slot').forEach(el=>{
     el.style.willChange='transform';
@@ -6066,7 +6198,7 @@ header{
 <script>
 /* V0.50 visual hooks only */
 function v050Polish(){
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.53 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.55 Stable');
 
   /* Add section-specific body classes for easier game theming */
   document.querySelectorAll('.screen').forEach(screen=>{
@@ -6262,7 +6394,7 @@ h1,h2,h3,h4,.item-name,.shop-item h3,.skill-title,.center-name,.char-title{
 <script>
 /* V0.51 visual-only continuation */
 function v051Polish(){
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.53 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.55 Stable');
 
   document.querySelectorAll('.shop-item,.inv-item,.quest,.skill-card,.seed-card,.equip-card').forEach(el=>{
     el.style.willChange='transform';
@@ -6485,7 +6617,7 @@ function v052InstallSceneBanners(){
 }
 
 function v052Polish(){
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.53 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.55 Stable');
   v052InstallSceneBanners();
 }
 
@@ -6710,7 +6842,7 @@ header:after{
 <script>
 /* V0.53 visual-only continuation */
 function v053Polish(){
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.53 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.55 Stable');
 
   document.querySelectorAll('.btn,.stat,.shop-item,.inv-item,.quest,.skill-card,.grow-slot,.world-map-place,.dungeon-node').forEach(el=>{
     el.style.willChange='transform';
@@ -7162,7 +7294,7 @@ function v054BindShopButtons(){
 const v054BaseRender=render;
 render=function(){
   v054BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.53 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.55 Stable');
   v054BindShopButtons();
 };
 
@@ -7339,7 +7471,7 @@ function v055AddRarityHint(){
 const v055BaseRender=render;
 render=function(){
   v055BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.53 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.55 Stable');
   v055AddRarityHint();
 };
 
@@ -7665,7 +7797,7 @@ function v056AddShopHint(){
 const v056BaseRender=render;
 render=function(){
   v056BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.53 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.55 Stable');
   v056AddShopHint();
 
   /* Rebind current shop cards after each render. */
@@ -8010,7 +8142,7 @@ if(!s.v057ShopCore){
 const v057BaseRender=render;
 render=function(){
   v057BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.53 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.55 Stable');
   renderShop();
 };
 
@@ -8173,7 +8305,7 @@ render=function(){
     v058SafeRefreshAfterPurchase();
   }
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.53 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.55 Stable');
   v058EnsureLegacyRenderAnchors();
 };
 
@@ -8434,7 +8566,7 @@ function v059BindMaterialButtons(){
 const v059BaseRender=render;
 render=function(){
   v059BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.53 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.55 Stable');
   v059BindMaterialButtons();
 };
 
@@ -8703,7 +8835,7 @@ renderDungeon=function(){
 const v060BaseRender=render;
 render=function(){
   v060BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.53 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.55 Stable');
   v060InstallFight();
 };
 
@@ -8731,7 +8863,7 @@ animClass=function(el,cl,ms=400){
 const v061BaseRender=render;
 render=function(){
   v061BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.53 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.55 Stable');
 };
 
 try{render();}catch(e){console.error('V0.61 init',e);}
@@ -8779,7 +8911,7 @@ render=function(){
   }
 
   v062BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.53 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.55 Stable');
 };
 
 try{render();}catch(e){console.error('V0.62 shop size',e);}
@@ -9270,7 +9402,7 @@ render=function(){
   v063EnsureUi();
   v063BindResetButtons();
   v063PatchClassChoice();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.53 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.55 Stable');
 };
 
 try{
@@ -9739,13 +9871,13 @@ renderDungeon=function(){
     v064UpgradeBattle();
   }
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.53 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.55 Stable');
 };
 
 const v064BaseRender=render;
 render=function(){
   v064BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.53 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.55 Stable');
   try{
     if(document.querySelector('#dungeon')?.classList.contains('active')){
       renderDungeon();
@@ -10132,7 +10264,7 @@ const v065BaseRenderDungeon=renderDungeon;
 renderDungeon=function(){
   if(s.dungeon.layer==='world'){
     v065RenderWorld();
-    document.querySelectorAll('.version').forEach(el=>el.textContent='V2.53 Stable');
+    document.querySelectorAll('.version').forEach(el=>el.textContent='V2.55 Stable');
     return;
   }
 
@@ -10143,13 +10275,13 @@ renderDungeon=function(){
     v065BindRoomNodes();
   }
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.53 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.55 Stable');
 };
 
 const v065BaseRender=render;
 render=function(){
   v065BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.53 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.55 Stable');
 
   if(document.querySelector('#dungeon')?.classList.contains('active')){
     try{renderDungeon();}catch(e){console.error('V0.65 dungeon render',e);}
@@ -10289,7 +10421,7 @@ function v066OpenDungeon(i){
       v065BindRoomNodes();
     }
 
-    document.querySelectorAll('.version').forEach(el=>el.textContent='V2.53 Stable');
+    document.querySelectorAll('.version').forEach(el=>el.textContent='V2.55 Stable');
     window.scrollTo({top:0,behavior:'smooth'});
   }catch(e){
     console.error('V0.66 open dungeon',e);
@@ -10336,7 +10468,7 @@ v065RenderWorld=function(){
 const v066BaseRender=render;
 render=function(){
   v066BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.53 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.55 Stable');
 
   if(document.querySelector('#dungeon')?.classList.contains('active') &&
      s.dungeon?.layer==='world'){
@@ -10651,7 +10783,7 @@ if(typeof v032Go==='function'){
 const v067OldRender=render;
 render=function(){
   v067OldRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.53 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.55 Stable');
 
   if(document.querySelector('#dungeon')?.classList.contains('active')){
     try{renderDungeon();}catch(e){console.error('V0.67 renderDungeon',e);}
@@ -10989,13 +11121,13 @@ renderDungeon=function(){
     try{v064RenderMap();}catch(e){}
   }
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.53 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.55 Stable');
 };
 
 const v068BaseRender=render;
 render=function(){
   v068BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.53 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.55 Stable');
 
   if(document.querySelector('#dungeon')?.classList.contains('active')){
     try{renderDungeon();}catch(e){console.error('V0.68 dungeon render',e);}
@@ -11073,7 +11205,7 @@ const v069BaseRender=render;
 render=function(){
   v069BaseRender();
   v069SyncCurrencies();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.53 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.55 Stable');
 };
 
 try{
@@ -11171,7 +11303,7 @@ const v070BaseRender=render;
 render=function(){
   v070BaseRender();
   v070HighlightPrimaryAttribute();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.53 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.55 Stable');
 };
 
 try{
@@ -11624,7 +11756,7 @@ const v072BaseRender=render;
 render=function(){
   v072BaseRender();
   v072RenderSocial();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.53 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.55 Stable');
 };
 
 try{
@@ -12176,7 +12308,7 @@ function v073ScheduleProfileSync(){
 const v073BaseRender=render;
 render=function(){
   v073BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.53 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.55 Stable');
   v073ScheduleProfileSync();
 };
 
@@ -12375,7 +12507,7 @@ v072SearchPlayer=v073SearchPlayer;
 const v074BaseRender=render;
 render=function(){
   v074BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.53 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.55 Stable');
   setTimeout(()=>v074BindProfileRows(),0);
 };
 (async()=>{if(await v073Init()){await v073SyncProfile(true)}})();
@@ -12596,7 +12728,7 @@ const v077OldAddXp=addXp;
 addXp=function(n){return v077OldAddXp(v077ModifyXp(n))};
 
 const v077BaseRender=render;
-render=function(){v077BaseRender();document.querySelectorAll('.version').forEach(e=>e.textContent='V2.53 Stable');v077InjectGrow();setTimeout(v077InjectCharacterFx,0)};
+render=function(){v077BaseRender();document.querySelectorAll('.version').forEach(e=>e.textContent='V2.55 Stable');v077InjectGrow();setTimeout(v077InjectCharacterFx,0)};
 
 setInterval(()=>{
   const b=v077Buff();
@@ -12900,7 +13032,7 @@ const v079BaseRender=render;
 render=function(){
   v079BaseRender();
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.53 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.55 Stable');
 
   setTimeout(()=>{
     try{v079UpdateBuffFx();}catch(e){console.error('V0.79 buff fx',e);}
@@ -13099,7 +13231,7 @@ v029ShowClassChoice=function(){
 const v080BaseRender=render;
 render=function(){
   v080BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.53 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.55 Stable');
   try{v41InstallPortrait()}catch(e){console.error('V0.80 portrait',e)}
   /* V0.79 glitter is attached after portrait exists. */
   setTimeout(()=>{
@@ -13462,7 +13594,7 @@ async function v083FixHallList(){
 const v083BaseRender=render;
 render=function(){
   v083BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.53 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.55 Stable');
   setTimeout(v083FixHallList,0);
 };
 
@@ -13626,7 +13758,7 @@ v073ProfilePayload=function(){
 const v084BaseRender=render;
 render=function(){
   v084BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.53 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.55 Stable');
 };
 </script>
 
@@ -13853,7 +13985,7 @@ v032Go=function(id){
 const v085BaseRender=render;
 render=function(){
   v085BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.53 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.55 Stable');
 
   if(document.querySelector('#world')?.classList.contains('active')){
     v085InstallWorld();
@@ -14005,7 +14137,7 @@ v032Go=function(id){
 const v086BaseRender=render;
 render=function(){
   v086BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.53 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.55 Stable');
   v086PolishBrand();
   v086RemoveSlashNArtifacts();
   v086BuildCompleteMenu();
@@ -14081,7 +14213,7 @@ function v087FixMainAttributeBadge(){
 const v087BaseRender=render;
 render=function(){
   v087BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.53 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.55 Stable');
   requestAnimationFrame(v087FixMainAttributeBadge);
 };
 
@@ -14113,7 +14245,7 @@ try{
 const v088BaseRender=render;
 render=function(){
   v088BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.53 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.55 Stable');
 };
 </script>
 
@@ -14240,7 +14372,7 @@ v030Offer=function(it,fn,i){
 const v089BaseRender=render;
 render=function(){
   v089BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.53 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.55 Stable');
   try{renderShop()}catch(e){console.error('V0.89 shop comparison',e)}
 };
 </script>
@@ -14359,7 +14491,7 @@ v057OfferHtml=function(it,i,kind){
 const v090BaseRender=render;
 render=function(){
   v090BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.53 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.55 Stable');
   try{renderShop()}catch(e){console.error('V0.90 shop comparison',e)}
 };
 
@@ -14388,7 +14520,7 @@ localStorage.setItem(KEY,JSON.stringify(s));
 const v092BaseRender=render;
 render=function(){
   v092BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.53 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.55 Stable');
 };
 </script>
 
@@ -14716,7 +14848,7 @@ document.querySelector('#v093SaveNews')?.addEventListener('click',v093SaveNews);
 const v093BaseRender=render;
 render=function(){
   v093BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.53 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.55 Stable');
   v093BuildMenu();
 };
 
@@ -14839,7 +14971,7 @@ v085ActiveEvents=function(){
 const v094BaseRender=render;
 render=function(){
   v094BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.53 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.55 Stable');
 
   /* Update visible quest XP previews to show doubled amount while event is live. */
   if(v094XpEventActive()){
@@ -14944,7 +15076,7 @@ document.addEventListener('click',()=>{
 const v095BaseRender=render;
 render=function(){
   v095BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.53 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.55 Stable');
   requestAnimationFrame(v095DecorateXp);
 };
 
@@ -15022,7 +15154,7 @@ function v096DecorateQuestXp(){
 const v096BaseRender=render;
 render=function(){
   v096BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.53 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.55 Stable');
   requestAnimationFrame(v096DecorateQuestXp);
 };
 
@@ -15060,7 +15192,7 @@ function v097ReplaceQuestStars(){
 const v097BaseRender=render;
 render=function(){
   v097BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.53 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.55 Stable');
   requestAnimationFrame(v097ReplaceQuestStars);
 };
 
@@ -15156,7 +15288,7 @@ function v098QuestPreview(){
 const v098BaseRender=render;
 render=function(){
   v098BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.53 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.55 Stable');
   requestAnimationFrame(v098QuestPreview);
 };
 
@@ -15287,7 +15419,7 @@ function v099PaintQuestXp(){
 const v099BaseRender=render;
 render=function(){
   v099BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.53 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.55 Stable');
   requestAnimationFrame(v099PaintQuestXp);
 };
 
@@ -15444,7 +15576,7 @@ function v100PaintDungeonXp(){
 const v100BaseRender=render;
 render=function(){
   v100BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.53 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.55 Stable');
   requestAnimationFrame(v100PaintDungeonXp);
   setTimeout(()=>{
     try{v068InstallFight()}catch(e){}
@@ -15550,7 +15682,7 @@ addXp=function(n){
 const v101BaseRender=render;
 render=function(){
   v101BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.53 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.55 Stable');
 };
 </script>
 
@@ -15677,7 +15809,7 @@ render=function(){
   const before=Number(s.level)||1;
   const result=v102BaseRender();
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.53 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.55 Stable');
 
   requestAnimationFrame(()=>{
     try{v102DetectLevelChange()}catch(e){console.error('V1.02 level detection',e)}
@@ -15942,7 +16074,7 @@ v093AdminLoadLists=async function(){
 const v103BaseRender=render;
 render=function(){
   v103BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.53 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.55 Stable');
   if(v093IsAdmin)v103InstallPlayerAdmin();
 };
 
@@ -16068,7 +16200,7 @@ v103InstallPlayerAdmin=function(){
 const v105BaseRender=render;
 render=function(){
   const result=v105BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.53 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.55 Stable');
   if(v093IsAdmin){
     v103InstallPlayerAdmin();
     v105InstallRewards();
@@ -16266,7 +16398,7 @@ claimQuest=function(){
 const v106BaseRender=render;
 render=function(){
   const result=v106BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.53 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.55 Stable');
   v106InstallBook();
   v106CheckAchievements(true);
   return result;
@@ -16331,7 +16463,7 @@ v106InstallBook=function(){
 const v107BaseRender=render;
 render=function(){
   const result=v107BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.53 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.55 Stable');
   requestAnimationFrame(v107PlaceBook);
   return result;
 };
@@ -16450,7 +16582,7 @@ if(!s.v108ItemPool){
 const v108BaseRender=render;
 render=function(){
   const result=v108BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.53 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.55 Stable');
   return result;
 };
 </script>
@@ -16609,7 +16741,7 @@ const v109BaseRender=render;
 render=function(){
   v109ResetDaily();
   const result=v109BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.53 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.55 Stable');
   return result;
 };
 </script>
@@ -16803,7 +16935,7 @@ v085ActiveEvents=function(){
 const v110BaseRender=render;
 render=function(){
   const result=v110BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.53 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.55 Stable');
   requestAnimationFrame(v110InstallEventButton);
   return result;
 };
@@ -17133,7 +17265,7 @@ v110InstallEventButton=function(){v111InstallWorldBossCard()};
 const v111BaseRender=render;
 render=function(){
   const result=v111BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.53 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.55 Stable');
   requestAnimationFrame(v111InstallWorldBossCard);
   return result;
 };
@@ -17218,7 +17350,7 @@ render=function(){
   const result=v112BaseRender();
 
   v112EnsureWorldBossState();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.53 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.55 Stable');
 
   return result;
 };
@@ -17287,7 +17419,7 @@ v110Fight=function(){
 const v113BaseRender=render;
 render=function(){
   const result=v113BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.53 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.55 Stable');
   return result;
 };
 </script>
@@ -17459,7 +17591,7 @@ v110Fight=async function(){
 const v114BaseRender=render;
 render=function(){
   const result=v114BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.53 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.55 Stable');
   return result;
 };
 
@@ -17647,7 +17779,7 @@ v114AskRetry=function(){
 const v115BaseRender=render;
 render=function(){
   const result=v115BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.53 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.55 Stable');
   return result;
 };
 
@@ -17834,7 +17966,7 @@ v074OpenProfile=async function(id){
 const v116BaseRender=render;
 render=function(){
   const result=v116BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.53 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.55 Stable');
   return result;
 };
 
@@ -18013,7 +18145,7 @@ document.addEventListener('click',async e=>{
 const v117BaseRender=render;
 render=function(){
   const result=v117BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.53 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.55 Stable');
   setTimeout(()=>{v117BindDampf();v117BindReset();v117PatchClassModal()},0);
   return result;
 };
@@ -18414,7 +18546,7 @@ v085InstallWorld=function(){
 const v118BaseRender=render;
 render=function(){
   const result=v118BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.53 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.55 Stable');
   requestAnimationFrame(v111InstallWorldBossCard);
   return result;
 };
@@ -18606,7 +18738,7 @@ header .resource-stats .stat:nth-child(4) b{
 const v119BaseRender=render;
 render=function(){
   const result=v119BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.53 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.55 Stable');
   return result;
 };
 </script>
@@ -18743,7 +18875,7 @@ function v120InstallCountdown(){
 const v120BaseRender=render;
 render=function(){
   const result=v120BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.53 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.55 Stable');
   requestAnimationFrame(v120InstallCountdown);
   return result;
 };
@@ -18957,7 +19089,7 @@ const v121BaseRender=render;
 render=function(){
   v121SanitizeMagicStock();
   const result=v121BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.53 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.55 Stable');
   requestAnimationFrame(v121PaintShopInfo);
   return result;
 };
@@ -19300,7 +19432,7 @@ const v122BaseRender=render;
 render=function(){
   v122MigrateAllSockets();
   const result=v122BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.53 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.55 Stable');
   return result;
 };
 
@@ -19628,7 +19760,7 @@ function v123PolishEquipment(){
 const v123BaseRender=render;
 render=function(){
   const result=v123BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.53 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.55 Stable');
   requestAnimationFrame(v123PolishEquipment);
   return result;
 };
@@ -19878,7 +20010,7 @@ function v124ClampCharacterWidth(){
 const v124BaseRender=render;
 render=function(){
   const result=v124BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.53 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.55 Stable');
   requestAnimationFrame(v124ClampCharacterWidth);
   return result;
 };
@@ -20341,7 +20473,7 @@ render=function(){
   if(hp)hp.textContent=v125Fmt(maxHp());
   if(cp)cp.textContent=v125Fmt(combatPower());
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.53 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.55 Stable');
   return result;
 };
 
@@ -20485,7 +20617,7 @@ if(typeof V125_ATTRS!=='undefined'){
 const v126BaseRender=render;
 render=function(){
   const result=v126BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.53 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.55 Stable');
   requestAnimationFrame(()=>v126RepairCharacter(false));
   return result;
 };
@@ -20675,7 +20807,7 @@ render=function(){
   const energyEl=document.querySelector('#energy');
   if(energyEl)energyEl.textContent=`${Math.floor(Number(s.energy)||0)}/300`;
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.53 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.55 Stable');
   requestAnimationFrame(v127AddResetInfo);
   return result;
 };
@@ -20956,7 +21088,7 @@ setTimeout(()=>{
 
 <script id="v128-premium-skill-ui-script">
 function v128SkillPolish(){
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.53 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.55 Stable');
   const card=document.querySelector('#character .card:has(#skillTree)');
   if(card)card.setAttribute('data-v128','premium-skills');
 }
@@ -21386,7 +21518,7 @@ function v129PolishDynamicCards(){
     if(it)el.classList.add(v129RarityClass(it));
   });
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.53 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.55 Stable');
 }
 const v129BaseRender=render;
 render=function(){
@@ -21548,7 +21680,7 @@ function v130InventoryHeadings(){
 function v130Polish(){
   v130RemoveMerchantCopy();
   v130InventoryHeadings();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.53 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.55 Stable');
 }
 const v130BaseRender=render;
 render=function(){
@@ -21581,7 +21713,7 @@ function v131CleanShop(){
     }
   });
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.53 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.55 Stable');
 }
 const v131BaseRender=render;
 render=function(){
@@ -21848,7 +21980,7 @@ function v132Polish(){
     });
   }
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.53 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.55 Stable');
 }
 const v132BaseRender=render;
 render=function(){
@@ -22061,7 +22193,7 @@ function v133Polish(){
       }
     });
   }
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.53 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.55 Stable');
 }
 const v133BaseRender=render;
 render=function(){
@@ -22246,7 +22378,7 @@ function v134Apply(){
    l.innerHTML='<span class="g0">Normal</span><span class="g1">Gewöhnlich</span><span class="g2">Selten</span><span class="g3">Episch</span><span class="g4">Legendär</span><span class="g5">Mystisch</span>';
    card.appendChild(l);
  }
- document.querySelectorAll('.version').forEach(el=>el.textContent='V2.53 Stable');
+ document.querySelectorAll('.version').forEach(el=>el.textContent='V2.55 Stable');
 }
 const v134BaseRender=render;
 render=function(){const r=v134BaseRender();requestAnimationFrame(v134Apply);return r;};
@@ -22409,7 +22541,7 @@ function v135PaintShop(){
       if(arr[i])el.classList.add(v135QualityClassFromItem(arr[i]));
     });
   });
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.53 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.55 Stable');
 }
 
 /* Existing V1.34 stock may be based on old weak scaling: refresh once for free. */
@@ -22644,7 +22776,7 @@ function v138PaintMerchant(){
     });
   });
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.53 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.55 Stable');
 }
 
 const v138BaseRender=render;
@@ -22842,7 +22974,7 @@ v030Offer=function(it,fn,i){
 
 function v139RepaintShop(){
   try{renderShop()}catch(e){console.error('V1.39 shop repaint',e)}
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.53 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.55 Stable');
 }
 
 const v139BaseRender=render;
@@ -23205,7 +23337,7 @@ function v141BuildSettings(){
           <button type="button" class="btn" id="v141Delete">🗑️ Account löschen</button>
         </div>
 
-        <div class="v141-version-line" id="v141VersionLine">V2.53 Stable</div>
+        <div class="v141-version-line" id="v141VersionLine">V2.55 Stable</div>
       </div>`;
   }
 
@@ -23398,7 +23530,7 @@ setTimeout(()=>{
 const v141BaseRender=render;
 render=function(){
   const r=v141BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.53 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.55 Stable');
   requestAnimationFrame(()=>{
     v141BuildSettings();
     v141ApplySettings();
@@ -23455,7 +23587,7 @@ window.addEventListener('scroll',v142PositionSettings,{passive:true});
 const v142BaseRender=render;
 render=function(){
   const r=v142BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.53 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.55 Stable');
   requestAnimationFrame(v142PositionSettings);
   return r;
 };
@@ -23670,7 +23802,7 @@ render=function(){
     v145SaveScopedLocal();
   }
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.53 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.55 Stable');
   return r;
 };
 
@@ -23686,7 +23818,7 @@ setTimeout(()=>{
 
 
 <script id="v200-stable-core">
-/* ===== Grow Legends V2.53 Stable =====
+/* ===== Grow Legends V2.55 Stable =====
    One auth listener. One email handler. One Google handler.
    One cloud resolver. One character creator. One admin poll.
 */
@@ -23925,7 +24057,7 @@ function v200RenderLoginInfo(){
     let n=null;
     try{ n=(window.v093News||[]).find(x=>x && x.is_published!==false)||null; }catch(e){}
 
-    const title=n?.title||'V2.53 Stable';
+    const title=n?.title||'V2.55 Stable';
     const version=n?.version||'V2.00';
     const text=n?.body||n?.text||'Technische Stabilisierung von Login, Cloud-Speicherung und Charaktererstellung.';
 
@@ -24765,7 +24897,7 @@ function v200BindSettings(){
   if(cancel)cancel.onclick=v141CloseDelete;
 
   const version=document.querySelector('#v141VersionLine');
-  if(version)version.textContent='V2.53 Stable';
+  if(version)version.textContent='V2.55 Stable';
 }
 
 /* One admin poll, content-aware. */
@@ -24894,7 +25026,7 @@ const v200BaseRender=render;
 render=function(){
   const r=v200BaseRender();
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.53 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.55 Stable');
 
   if(v200DurableUser() && v200CharacterComplete() && v075CloudLoadedFor===v073User.id){
     v075ScheduleSave();
@@ -25067,7 +25199,7 @@ render=function(){
   const result=v201BaseRender();
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V2.53 Stable');
+    .forEach(el=>el.textContent='V2.55 Stable');
 
   const world=document.querySelector('#world');
   if(world?.classList.contains('active')){
@@ -25455,7 +25587,7 @@ setInterval(()=>{
 const v204BaseRender=render;
 render=function(){
   const r=v204BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.53 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.55 Stable');
   requestAnimationFrame(()=>{
     v086BuildCompleteMenu();
     v204InstallAvatarBadge();
@@ -25507,7 +25639,7 @@ function v205InstallBudScale(){
 const v205BaseRender=render;
 render=function(){
   const r=v205BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.53 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.55 Stable');
   requestAnimationFrame(v205InstallBudScale);
   return r;
 };
@@ -25808,7 +25940,7 @@ render=function(){
   const r=v206BaseRender();
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V2.53 Stable');
+    .forEach(el=>el.textContent='V2.55 Stable');
 
   requestAnimationFrame(()=>{
     const find=document.querySelector('#v204FindBtn');
@@ -25981,7 +26113,7 @@ render=function(){
   const r=v207BaseRender();
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V2.53 Stable');
+    .forEach(el=>el.textContent='V2.55 Stable');
 
   requestAnimationFrame(()=>{
     v207EnsurePvpState();
@@ -26428,7 +26560,7 @@ render=function(){
   const r=v209BaseRender();
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V2.53 Stable');
+    .forEach(el=>el.textContent='V2.55 Stable');
 
   requestAnimationFrame(()=>{
     const fight=document.querySelector('#v204FightBtn');
@@ -26968,7 +27100,7 @@ render=function(){
   const r=v210BaseRender();
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V2.53 Stable');
+    .forEach(el=>el.textContent='V2.55 Stable');
 
   requestAnimationFrame(()=>{
     v210FormatCharacterAttributes();
@@ -27351,7 +27483,7 @@ render=function(){
   const r=v211BaseRender();
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V2.53 Stable');
+    .forEach(el=>el.textContent='V2.55 Stable');
 
   return r;
 };
@@ -27398,7 +27530,7 @@ const v213BaseRender=render;
 render=function(){
   const r=v213BaseRender();
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V2.53 Stable');
+    .forEach(el=>el.textContent='V2.55 Stable');
   return r;
 };
 </script>
@@ -27644,7 +27776,7 @@ function v224BuildCurrentUi(){
     }catch(e){}
 
     document.querySelectorAll('.version')
-      .forEach(el=>el.textContent='V2.53 Stable');
+      .forEach(el=>el.textContent='V2.55 Stable');
 
     return true;
   }catch(e){
@@ -27784,7 +27916,7 @@ function v225EnsureSettingsAccountActions(){
     menu.appendChild(version);
   }
 
-  version.textContent='V2.53 Stable';
+  version.textContent='V2.55 Stable';
 
   const logout=menu.querySelector('#v141Logout');
   if(logout){
@@ -27853,7 +27985,7 @@ setTimeout(()=>{
 
 setTimeout(()=>{
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V2.53 Stable');
+    .forEach(el=>el.textContent='V2.55 Stable');
 },300);
 </script>
 
@@ -28185,7 +28317,7 @@ setTimeout(()=>{
 
 setTimeout(()=>{
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V2.53 Stable');
+    .forEach(el=>el.textContent='V2.55 Stable');
 },300);
 </script>
 
@@ -28404,7 +28536,7 @@ setTimeout(()=>{
 
 setTimeout(()=>{
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V2.53 Stable');
+    .forEach(el=>el.textContent='V2.55 Stable');
 },350);
 </script>
 
@@ -28618,10 +28750,10 @@ setInterval(v230LiveTick,1000);
 
 function v230Version(){
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V2.53 Stable');
+    .forEach(el=>el.textContent='V2.55 Stable');
 
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V2.53 Stable';
+  if(line)line.textContent='V2.55 Stable';
 }
 
 
@@ -29072,10 +29204,10 @@ setTimeout(()=>{
   }catch(e){}
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V2.53 Stable');
+    .forEach(el=>el.textContent='V2.55 Stable');
 
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V2.53 Stable';
+  if(line)line.textContent='V2.55 Stable';
 },300);
 </script>
 
@@ -29820,10 +29952,10 @@ setTimeout(()=>{
   }catch(e){}
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V2.53 Stable');
+    .forEach(el=>el.textContent='V2.55 Stable');
 
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V2.53 Stable';
+  if(line)line.textContent='V2.55 Stable';
 },300);
 </script>
 
@@ -30057,10 +30189,10 @@ setTimeout(()=>{
   }catch(e){}
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V2.53 Stable');
+    .forEach(el=>el.textContent='V2.55 Stable');
 
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V2.53 Stable';
+  if(line)line.textContent='V2.55 Stable';
 },300);
 </script>
 
@@ -30401,10 +30533,10 @@ setTimeout(()=>{
   }
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V2.53 Stable');
+    .forEach(el=>el.textContent='V2.55 Stable');
 
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V2.53 Stable';
+  if(line)line.textContent='V2.55 Stable';
 },320);
 </script>
 
@@ -30788,10 +30920,10 @@ setTimeout(()=>{
   }catch(e){}
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V2.53 Stable');
+    .forEach(el=>el.textContent='V2.55 Stable');
 
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V2.53 Stable';
+  if(line)line.textContent='V2.55 Stable';
 },350);
 </script>
 
@@ -31429,10 +31561,10 @@ setTimeout(()=>{
   }catch(e){}
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V2.53 Stable');
+    .forEach(el=>el.textContent='V2.55 Stable');
 
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V2.53 Stable';
+  if(line)line.textContent='V2.55 Stable';
 },360);
 </script>
 
@@ -31614,9 +31746,9 @@ setTimeout(()=>{
   try{
     if(document.querySelector('#grow')?.classList.contains('active'))renderGrow();
   }catch(e){}
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.53 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.55 Stable');
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V2.53 Stable';
+  if(line)line.textContent='V2.55 Stable';
 },380);
 </script>
 
@@ -31735,9 +31867,9 @@ v238SyncQuestDungeonKeys();
 
 setTimeout(()=>{
   try{v238SyncQuestDungeonKeys()}catch(e){}
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.53 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.55 Stable');
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V2.53 Stable';
+  if(line)line.textContent='V2.55 Stable';
 },400);
 </script>
 
@@ -31875,9 +32007,9 @@ window.addEventListener('focus',()=>{
 setTimeout(()=>{
   try{v239UpdateGrowLive()}catch(e){}
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V2.53 Stable');
+    .forEach(el=>el.textContent='V2.55 Stable');
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V2.53 Stable';
+  if(line)line.textContent='V2.55 Stable';
 },420);
 </script>
 
@@ -32270,10 +32402,10 @@ setTimeout(()=>{
   }catch(e){}
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V2.53 Stable');
+    .forEach(el=>el.textContent='V2.55 Stable');
 
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V2.53 Stable';
+  if(line)line.textContent='V2.55 Stable';
 },440);
 </script>
 
@@ -32504,10 +32636,10 @@ setTimeout(()=>{
   }catch(e){}
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V2.53 Stable');
+    .forEach(el=>el.textContent='V2.55 Stable');
 
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V2.53 Stable';
+  if(line)line.textContent='V2.55 Stable';
 },460);
 </script>
 
@@ -32753,9 +32885,9 @@ setTimeout(()=>{
     }
   }catch(e){}
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.53 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.55 Stable');
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V2.53 Stable';
+  if(line)line.textContent='V2.55 Stable';
 },480);
 </script>
 
@@ -32954,10 +33086,10 @@ setTimeout(()=>{
   }catch(e){}
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V2.53 Stable');
+    .forEach(el=>el.textContent='V2.55 Stable');
 
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V2.53 Stable';
+  if(line)line.textContent='V2.55 Stable';
 },500);
 </script>
 
@@ -33247,10 +33379,10 @@ setTimeout(()=>{
   }catch(e){}
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V2.53 Stable');
+    .forEach(el=>el.textContent='V2.55 Stable');
 
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V2.53 Stable';
+  if(line)line.textContent='V2.55 Stable';
 },520);
 </script>
 
@@ -33378,10 +33510,10 @@ setTimeout(()=>{
   }catch(e){}
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V2.53 Stable');
+    .forEach(el=>el.textContent='V2.55 Stable');
 
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V2.53 Stable';
+  if(line)line.textContent='V2.55 Stable';
 },540);
 </script>
 
@@ -34180,10 +34312,10 @@ setTimeout(()=>{
   }catch(e){}
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V2.53 Stable');
+    .forEach(el=>el.textContent='V2.55 Stable');
 
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V2.53 Stable';
+  if(line)line.textContent='V2.55 Stable';
 },560);
 </script>
 
@@ -34440,10 +34572,10 @@ function v247ShowDungeonReward(data){
 /* Final version stamp. */
 setTimeout(()=>{
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V2.53 Stable');
+    .forEach(el=>el.textContent='V2.55 Stable');
 
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V2.53 Stable';
+  if(line)line.textContent='V2.55 Stable';
 },580);
 </script>
 
@@ -34642,10 +34774,10 @@ setTimeout(()=>{
   }catch(e){}
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V2.53 Stable');
+    .forEach(el=>el.textContent='V2.55 Stable');
 
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V2.53 Stable';
+  if(line)line.textContent='V2.55 Stable';
 },600);
 </script>
 
@@ -34767,10 +34899,10 @@ setTimeout(()=>{
   }
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V2.53 Stable');
+    .forEach(el=>el.textContent='V2.55 Stable');
 
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V2.53 Stable';
+  if(line)line.textContent='V2.55 Stable';
 },640);
 </script>
 
@@ -35160,10 +35292,10 @@ setTimeout(()=>{
   }catch(e){}
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V2.53 Stable');
+    .forEach(el=>el.textContent='V2.55 Stable');
 
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V2.53 Stable';
+  if(line)line.textContent='V2.55 Stable';
 },680);
 </script>
 
@@ -36152,10 +36284,10 @@ setTimeout(()=>{
   }catch(e){}
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V2.53 Stable');
+    .forEach(el=>el.textContent='V2.55 Stable');
 
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V2.53 Stable';
+  if(line)line.textContent='V2.55 Stable';
 },720);
 </script>
 
@@ -36510,8 +36642,8 @@ renderDungeon=function(){
 };
 setTimeout(()=>{
   try{v252ModernizeBattle()}catch(e){}
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.53 Stable');
-  const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V2.53 Stable';
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.55 Stable');
+  const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V2.55 Stable';
 },780);
 </script>
 
@@ -37109,11 +37241,350 @@ setTimeout(()=>{
   }catch(e){}
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V2.53 Stable');
+    .forEach(el=>el.textContent='V2.55 Stable');
 
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V2.53 Stable';
+  if(line)line.textContent='V2.55 Stable';
 },820);
+</script>
+
+
+<style id="v254-guild-foundation-style">
+#guild{padding-bottom:32px}
+.v254-guild-shell{max-width:900px;margin:0 auto}
+.v254-guild-hero,.v254-card,.v254-boss-stage,.v254-war-head{
+  border:1px solid #315039;border-radius:20px;
+  background:radial-gradient(circle at 80% 0,rgba(86,207,66,.09),transparent 32%),linear-gradient(180deg,#0d1a11,#08100b);
+  box-shadow:0 16px 36px #0008,inset 0 0 26px #0005;
+}
+.v254-guild-hero{display:flex;justify-content:space-between;gap:16px;align-items:center;padding:22px;margin-bottom:12px}
+.v254-guild-hero h2{font-size:30px;margin:3px 0 5px}.v254-guild-hero p{max-width:590px;color:#94a398;font-size:11px;line-height:1.5}
+.v254-kicker{color:#79df5f;font-size:8px;font-weight:1000;letter-spacing:.15em}
+.v254-buds{min-width:120px;padding:12px;border:1px solid #3b6442;border-radius:14px;background:#08110a;text-align:center}
+.v254-buds b{display:block;color:#84eb65;font-size:22px}.v254-buds span{font-size:7px;color:#8b9b8e}
+.v254-card{padding:16px;margin-bottom:12px}.v254-empty-icon{text-align:center;font-size:48px}.v254-card h3{text-align:center;font-size:18px;margin:7px 0}.v254-card>p{text-align:center;color:#8fa093;font-size:10px}
+.v254-create-row{display:grid;grid-template-columns:1fr 90px auto;gap:8px;margin-top:15px}
+.v254-create-row input{min-width:0;border:1px solid #35523b;border-radius:10px;background:#07100a;color:#e6eee4;padding:11px}
+.v254-note{text-align:center;margin-top:10px;color:#68776c;font-size:7px}
+.v254-guild-head{display:flex;justify-content:space-between;align-items:center}.v254-guild-head h3{text-align:left;margin:3px 0}
+.v254-tag{color:#86e96a;font-weight:1000;font-size:10px}.v254-guild-level{text-align:right}.v254-guild-level span{display:block;color:#738078;font-size:6px}.v254-guild-level b{color:#84e965;font-size:21px}
+.v254-tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:12px 0}
+.v254-tab{border:1px solid #304a35;border-radius:11px;background:#0a120c;color:#8f9e91;padding:11px 6px;font-weight:900;font-size:8px}
+.v254-tab.active{border-color:#68bc50;color:#a8ef91;background:#102016;box-shadow:0 0 14px rgba(98,218,73,.1)}
+.v254-upgrade-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.v254-upgrade{display:grid;grid-template-columns:44px 1fr auto;gap:9px;align-items:center;padding:13px;border:1px solid #314b36;border-radius:15px;background:#0a130d}
+.v254-upgrade-icon{width:42px;height:42px;display:grid;place-items:center;border:1px solid #49654d;border-radius:12px;background:#07100a;font-size:22px}
+.v254-upgrade b,.v254-upgrade span,.v254-upgrade strong{display:block}.v254-upgrade b{font-size:10px}.v254-upgrade span{font-size:7px;color:#819084;margin:2px 0 5px}.v254-upgrade strong{font-size:8px;color:#86e86b}
+.v254-inner{border-radius:14px!important;box-shadow:none!important}.v254-inner h3{text-align:left}
+.v254-member{display:grid;grid-template-columns:42px 1fr auto;gap:9px;align-items:center;padding:9px 0;border-bottom:1px solid #233328}
+.v254-member:last-child{border:0}.v254-member img{width:40px;height:40px;object-fit:cover;border-radius:10px;border:1px solid #405845}
+.v254-member b,.v254-member small{display:block}.v254-member small{color:#7f8e82;font-size:6.5px;margin-top:2px}.v254-member-flags{display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end}
+.v254-flag{padding:4px 6px;border:1px solid #344a38;border-radius:99px;font-size:6px;color:#8b988e}.v254-flag.on{color:#a5ef8e;border-color:#5ca94c;background:#102015}
+.v254-boss-stage,.v254-war-head{display:flex;align-items:center;justify-content:space-between;padding:18px;margin-bottom:10px}
+.v254-boss-copy{max-width:560px}.v254-boss-copy h3,.v254-war-head h3{font-size:21px;margin:5px 0}.v254-boss-copy p,.v254-war-head p{font-size:9px;color:#8e9d91;line-height:1.45}
+.v254-boss-rule{display:inline-block;margin-top:8px;padding:6px 8px;border:1px solid #624477;border-radius:8px;color:#d58bf1;background:#160d1c;font-size:7px;font-weight:900}
+.v254-boss-monster{font-size:74px;filter:drop-shadow(0 0 17px #8138a5);animation:v254BossFloat 2s ease-in-out infinite}
+.v254-status-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-bottom:9px}.v254-status-grid div{padding:10px;border:1px solid #304735;border-radius:10px;background:#08100a;text-align:center}.v254-status-grid span,.v254-status-grid b{display:block}.v254-status-grid span{font-size:6px;color:#748078}.v254-status-grid b{font-size:10px;color:#a7e994;margin-top:3px}.v254-wide{width:100%;margin-bottom:10px}
+.v254-war-shield{font-size:58px}.v254-signup-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}.v254-signup{padding:15px;border:1px solid #344b39;border-radius:14px;background:#0a120c;color:#c9d3c8}.v254-signup span,.v254-signup b,.v254-signup small{display:block}.v254-signup span{font-size:26px}.v254-signup b{font-size:11px;margin:4px}.v254-signup small{font-size:7px;color:#78877b}.v254-signup.on{border-color:#68bc50;background:#102016;box-shadow:0 0 15px rgba(96,220,71,.12)}.v254-signup.on small{color:#91e876}
+@keyframes v254BossFloat{50%{transform:translateY(-7px) scale(1.03)}}
+@media(max-width:620px){.v254-guild-hero{align-items:flex-start}.v254-buds{min-width:92px}.v254-create-row{grid-template-columns:1fr 72px}.v254-create-row button{grid-column:1/-1}.v254-upgrade-grid{grid-template-columns:1fr}.v254-upgrade{grid-template-columns:38px 1fr}.v254-upgrade button{grid-column:1/-1}.v254-boss-monster,.v254-war-shield{font-size:45px}.v254-tabs{gap:4px}.v254-tab{font-size:6.7px}}
+</style>
+
+<script id="v254-guild-foundation-core">
+/*
+ V2.54 GUILD FOUNDATION
+ Server tables are intentionally defined in V254_GUILD_SQL.sql.
+ All guild membership, Buds and upgrade purchases are server authoritative.
+*/
+s.guildUi??={attack:false,defense:false,boss:false};
+
+function v254GuildEsc(v){
+  return typeof v073Escape==='function'?v073Escape(v):String(v??'');
+}
+function v254UpgradeCost(level){
+  const costs=[100,300,700,1500,3000,6000,12000,24000];
+  return costs[Math.min(costs.length-1,Math.max(0,Number(level)||0))];
+}
+function v254BonusPct(level){return Math.max(0,Number(level)||0)*2}
+
+let v254Guild=null;
+let v254Membership=null;
+let v254Members=[];
+let v254Loading=false;
+
+async function v254EnsureOnline(){
+  if(typeof v073Init!=='function')return false;
+  if(!(await v073Init()))return false;
+  return !!v073User && !!v073Db && !v073User.is_anonymous;
+}
+
+async function v254LoadGuild(){
+  if(v254Loading)return;
+  v254Loading=true;
+  try{
+    if(!(await v254EnsureOnline())){
+      v254Guild=null;v254Membership=null;v254Members=[];
+      v254RenderGuild();
+      return;
+    }
+
+    const {data:membership,error:me}=await v073Db
+      .from('guild_members')
+      .select('guild_id,role,attack_signed,defense_signed,boss_signed,joined_at')
+      .eq('user_id',v073User.id)
+      .maybeSingle();
+    if(me)throw me;
+
+    v254Membership=membership||null;
+    if(!membership){
+      v254Guild=null;v254Members=[];
+      v254RenderGuild();
+      return;
+    }
+
+    const {data:guild,error:ge}=await v073Db
+      .from('guilds')
+      .select('id,name,tag,leader_id,guild_buds,xp_level,gold_level,created_at')
+      .eq('id',membership.guild_id)
+      .maybeSingle();
+    if(ge)throw ge;
+    v254Guild=guild||null;
+
+    const {data:members,error:merr}=await v073Db
+      .from('guild_members')
+      .select('user_id,role,attack_signed,defense_signed,boss_signed,joined_at,profiles(character_name,class_id,class_name,level,combat_power)')
+      .eq('guild_id',membership.guild_id)
+      .order('joined_at',{ascending:true});
+    if(merr)throw merr;
+    v254Members=members||[];
+
+    v254RenderGuild();
+  }catch(e){
+    console.error('V2.54 guild load',e);
+    if(typeof v063Toast==='function'){
+      const sqlMissing=/relation.*guild|guild_members|does not exist/i.test(String(e?.message||''));
+      v063Toast('Gilden noch nicht bereit','warn',sqlMissing?'Bitte V254_GUILD_SQL.sql einmal in Supabase ausführen.':(e?.message||'Gildendaten konnten nicht geladen werden.'));
+    }
+    v254Guild=null;v254Membership=null;v254Members=[];
+    v254RenderGuild();
+  }finally{v254Loading=false}
+}
+
+function v254MemberHtml(m){
+  const p=Array.isArray(m.profiles)?m.profiles[0]:m.profiles;
+  const cls=p?.class_id||'grower';
+  const avatar=typeof v080AvatarFor==='function'?v080AvatarFor(cls):'';
+  const role=m.role==='leader'?'Anführer':m.role==='officer'?'Offizier':'Mitglied';
+  return `<div class="v254-member">
+    <img src="${v254GuildEsc(avatar)}" alt="">
+    <div><b>${v254GuildEsc(p?.character_name||'Spieler')}</b><small>${v254GuildEsc(p?.class_name||'')} · Lv. ${Number(p?.level)||1} · ${role}</small></div>
+    <div class="v254-member-flags">
+      <span class="v254-flag ${m.attack_signed?'on':''}">⚔ ${m.attack_signed?'Angriff':'—'}</span>
+      <span class="v254-flag ${m.defense_signed?'on':''}">🛡 ${m.defense_signed?'Verteidigung':'—'}</span>
+      <span class="v254-flag ${m.boss_signed?'on':''}">👹 ${m.boss_signed?'Boss':'—'}</span>
+    </div>
+  </div>`;
+}
+
+function v254RenderGuild(){
+  const no=document.querySelector('#v254GuildNoGuild');
+  const dash=document.querySelector('#v254GuildDashboard');
+  if(!no||!dash)return;
+
+  const has=!!v254Guild&&!!v254Membership;
+  no.style.display=has?'none':'';
+  dash.style.display=has?'':'none';
+
+  if(!has)return;
+
+  const buds=Number(v254Guild.guild_buds)||0;
+  const xp=Number(v254Guild.xp_level)||0;
+  const gold=Number(v254Guild.gold_level)||0;
+
+  ['v254GuildBuds','v254GuildBudsTop'].forEach(id=>{
+    const el=document.getElementById(id);if(el)el.textContent=buds;
+  });
+  document.querySelector('#v254GuildNameView').textContent=v254Guild.name||'Gilde';
+  document.querySelector('#v254GuildTagView').textContent=`[${v254Guild.tag||'GL'}]`;
+  document.querySelector('#v254GuildMeta').textContent=`${v254Members.length} Mitglieder`;
+  document.querySelector('#v254XpBonus').textContent=`Stufe ${xp} · +${v254BonusPct(xp)}%`;
+  document.querySelector('#v254GoldBonus').textContent=`Stufe ${gold} · +${v254BonusPct(gold)}%`;
+  document.querySelector('#v254UpgradeXp').textContent=`${v254UpgradeCost(xp)} 🌿`;
+  document.querySelector('#v254UpgradeGold').textContent=`${v254UpgradeCost(gold)} 🌿`;
+  document.querySelector('#v254GuildMembers').innerHTML=v254Members.length?v254Members.map(v254MemberHtml).join(''):'<div class="empty">Noch keine Mitglieder.</div>';
+
+  const attack=!!v254Membership.attack_signed;
+  const defense=!!v254Membership.defense_signed;
+  const boss=!!v254Membership.boss_signed;
+  const a=document.querySelector('#v254AttackSignup'),d=document.querySelector('#v254DefenseSignup'),b=document.querySelector('#v254BossSignup');
+  if(a){a.classList.toggle('on',attack);a.querySelector('small').textContent=attack?'Angemeldet':'Nicht angemeldet'}
+  if(d){d.classList.toggle('on',defense);d.querySelector('small').textContent=defense?'Angemeldet':'Nicht angemeldet'}
+  if(b){b.textContent=boss?'✓ Für Gildenboss angemeldet':'👹 Für Gildenboss anmelden'}
+  const count=v254Members.filter(x=>x.boss_signed).length;
+  const ce=document.querySelector('#v254BossCount');if(ce)ce.textContent=count;
+}
+
+async function v254CreateGuild(){
+  const name=String(document.querySelector('#v254GuildName')?.value||'').trim();
+  const tag=String(document.querySelector('#v254GuildTag')?.value||'').trim().toUpperCase();
+  if(name.length<3||name.length>24)return v063Toast('Gildenname ungültig','warn','3–24 Zeichen.');
+  if(!/^[A-Z0-9ÄÖÜ]{2,5}$/i.test(tag))return v063Toast('Gilden-Tag ungültig','warn','2–5 Buchstaben/Zahlen.');
+  if(!(await v254EnsureOnline()))return v063Toast('Account erforderlich','warn');
+
+  const {error}=await v073Db.rpc('v254_create_guild',{p_name:name,p_tag:tag});
+  if(error)return v063Toast('Gilde konnte nicht gegründet werden','error',error.message||'');
+  v063Toast('Gilde gegründet','success',`${name} [${tag}]`);
+  await v254LoadGuild();
+}
+
+async function v254ToggleSignup(kind){
+  if(!v254Membership||!(await v254EnsureOnline()))return;
+  const field={attack:'attack_signed',defense:'defense_signed',boss:'boss_signed'}[kind];
+  if(!field)return;
+  const next=!v254Membership[field];
+  const {error}=await v073Db.rpc('v254_set_guild_signup',{p_kind:kind,p_value:next});
+  if(error)return v063Toast('Anmeldung fehlgeschlagen','error',error.message||'');
+  v254Membership[field]=next;
+  await v254LoadGuild();
+}
+
+async function v254BuyUpgrade(kind){
+  if(!v254Guild||!(await v254EnsureOnline()))return;
+  const {data,error}=await v073Db.rpc('v254_buy_guild_upgrade',{p_kind:kind});
+  if(error)return v063Toast('Upgrade nicht möglich','warn',error.message||'');
+  v063Toast('Gildenbonus verbessert','success',kind==='xp'?'Mehr EXP für alle Mitglieder.':'Mehr Gold für alle Mitglieder.');
+  await v254LoadGuild();
+}
+
+function v254BindGuild(){
+  document.querySelector('#v254CreateGuild')?.addEventListener('click',v254CreateGuild);
+  document.querySelector('#v254AttackSignup')?.addEventListener('click',()=>v254ToggleSignup('attack'));
+  document.querySelector('#v254DefenseSignup')?.addEventListener('click',()=>v254ToggleSignup('defense'));
+  document.querySelector('#v254BossSignup')?.addEventListener('click',()=>v254ToggleSignup('boss'));
+  document.querySelector('#v254UpgradeXp')?.addEventListener('click',()=>v254BuyUpgrade('xp'));
+  document.querySelector('#v254UpgradeGold')?.addEventListener('click',()=>v254BuyUpgrade('gold'));
+  document.querySelectorAll('[data-v254-tab]').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      document.querySelectorAll('[data-v254-tab]').forEach(x=>x.classList.toggle('active',x===btn));
+      const tab=btn.dataset.v254Tab;
+      document.querySelector('#v254GuildOverview').style.display=tab==='overview'?'':'none';
+      document.querySelector('#v254GuildBoss').style.display=tab==='boss'?'':'none';
+      document.querySelector('#v254GuildWar').style.display=tab==='war'?'':'none';
+    });
+  });
+}
+
+/* Add Guild to the existing complete menu. */
+const v254BaseMenu=v086BuildCompleteMenu;
+v086BuildCompleteMenu=function(){
+  v254BaseMenu();
+  const panel=document.querySelector('#v032MenuPanel');
+  if(!panel||panel.querySelector('[data-screen="guild"]'))return;
+  const hall=panel.querySelector('[data-screen="hall"]');
+  const btn=document.createElement('button');
+  btn.className='top-menu-item';
+  btn.dataset.screen='guild';
+  btn.innerHTML='<span>🏰</span>Gilde';
+  btn.onclick=()=>v032Go('guild');
+  if(hall)panel.insertBefore(btn,hall);else panel.appendChild(btn);
+};
+
+/* Open/refresh Guild screen without changing existing navigation behavior. */
+const v254BaseGo=v032Go;
+v032Go=function(id){
+  const r=v254BaseGo(id);
+  if(id==='guild')setTimeout(v254LoadGuild,0);
+  return r;
+};
+
+setTimeout(()=>{
+  v254BindGuild();
+  try{v086BuildCompleteMenu()}catch(e){}
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.55 Stable');
+  const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V2.55 Stable';
+},700);
+</script>
+
+
+<style id="v255-daily-guild-boss-style">
+.v255-boss-live{margin:0 0 10px;padding:13px;border:1px solid #3a4d3e;border-radius:15px;background:linear-gradient(180deg,#09110b,#070b08)}
+.v255-boss-hp-head{display:flex;justify-content:space-between;gap:8px;align-items:center;font-size:8px;margin-bottom:6px}.v255-boss-hp-head span{font-weight:1000;color:#b985d5}
+.v255-hpbar{height:14px;border:1px solid #51365d;border-radius:99px;background:#160b19;overflow:hidden;box-shadow:inset 0 0 10px #000}.v255-hpbar i{display:block;width:100%;height:100%;background:linear-gradient(90deg,#74368f,#bd62e4);transition:width .5s ease}
+.v255-timeline{margin-top:10px;display:grid;gap:6px}.v255-fighter{display:grid;grid-template-columns:34px 1fr auto;gap:8px;align-items:center;padding:7px;border:1px solid #28392c;border-radius:10px;background:#0a120c}.v255-fighter img{width:32px;height:32px;border-radius:8px;object-fit:cover}.v255-fighter b,.v255-fighter small{display:block}.v255-fighter small{font-size:6px;color:#78867b;margin-top:2px}.v255-damage{font-size:8px;font-weight:1000;color:#ef9f72;text-align:right}.v255-rank{color:#87e96d!important}.v255-empty{padding:12px;text-align:center;color:#758179;font-size:8px}.v255-wide{width:100%;margin-top:9px}
+.v255-countdown{margin-top:7px;font-size:7px;color:#8b998e}.v255-reward-preview{display:flex;gap:5px;flex-wrap:wrap;margin-top:7px}.v255-reward-preview span{padding:4px 6px;border:1px solid #344a38;border-radius:99px;font-size:6px;color:#9fb0a2}
+</style>
+<script id="v255-daily-guild-boss-core">
+/* V2.55 DAILY GUILD BOSS — one server-authoritative round per guild/day. */
+let v255BossRound=null,v255BossParticipants=[];
+function v255Fmt(n){return Math.max(0,Math.round(Number(n)||0)).toLocaleString('de-DE')}
+function v255LocalPhase(){
+  const now=new Date(),h=now.getHours();
+  if(h<19)return {label:'Offen bis 19:00',open:true};
+  if(h<20)return {label:'Anmeldung geschlossen',open:false};
+  return {label:'Kampf läuft / beendet',open:false};
+}
+function v255BossParticipantHtml(x,i){
+  const avatar=typeof v080AvatarFor==='function'?v080AvatarFor(x.class_id||'grower'):'';
+  return `<div class="v255-fighter"><img src="${v254GuildEsc(avatar)}" alt=""><div><b>${i+1}. ${v254GuildEsc(x.character_name||'Spieler')}</b><small>${v254GuildEsc(x.class_name||'')} · Lv. ${Number(x.level)||1} · Kampfkraft ${v255Fmt(x.combat_power)}</small></div><div class="v255-damage">${x.damage_done==null?'ANGEMELDET':`-${v255Fmt(x.damage_done)}<small class="v255-rank">${x.damage_done>0?'Schaden':''}</small>`}</div></div>`;
+}
+function v255RenderBoss(){
+  const phase=v255LocalPhase(), state=document.querySelector('#v254BossSignupState'), btn=document.querySelector('#v254BossSignup');
+  if(state)state.textContent=phase.label;
+  if(btn){btn.disabled=!phase.open; if(!phase.open)btn.textContent=v254Membership?.boss_signed?'✓ Anmeldung gespeichert':'Anmeldung geschlossen'}
+  const count=document.querySelector('#v254BossCount');if(count)count.textContent=v255BossParticipants.length||v254Members.filter(x=>x.boss_signed).length;
+  const hpText=document.querySelector('#v255BossHpText'),fill=document.querySelector('#v255BossHpFill'),result=document.querySelector('#v255BossResult'),list=document.querySelector('#v255BossTimeline'),claim=document.querySelector('#v255ClaimBossReward');
+  if(!hpText||!fill||!list)return;
+  if(!v255BossRound){
+    hpText.textContent=phase.open?'Heute noch kein Kampf gestartet.':'Bossrunde wird beim ersten Abruf nach 20:00 serverseitig ausgewertet.';
+    fill.style.width='100%';result.textContent='';
+    list.innerHTML=v255BossParticipants.length?v255BossParticipants.map(v255BossParticipantHtml).join(''):'<div class="v255-empty">Noch keine Boss-Teilnehmer.</div>';
+    if(claim)claim.style.display='none'; return;
+  }
+  const max=Math.max(1,Number(v255BossRound.boss_max_hp)||1),hp=Math.max(0,Number(v255BossRound.boss_hp)||0);
+  hpText.textContent=`Der Verseuchte Titan · ${v255Fmt(hp)} / ${v255Fmt(max)} HP`;
+  fill.style.width=`${Math.max(0,Math.min(100,hp/max*100))}%`;
+  result.textContent=v255BossRound.status==='won'?'🏆 BESIEGT':v255BossRound.status==='lost'?'💀 ENTKOMMEN':'⚔️ KAMPF';
+  list.innerHTML=v255BossParticipants.length?v255BossParticipants.map(v255BossParticipantHtml).join(''):'<div class="v255-empty">Keine Teilnehmer.</div>';
+  if(claim)claim.style.display=v255BossRound.can_claim?'':'none';
+}
+async function v255LoadBoss(){
+  if(!v254Membership||!(await v254EnsureOnline())){v255BossRound=null;v255BossParticipants=[];v255RenderBoss();return}
+  try{
+    const {data,error}=await v073Db.rpc('v255_get_guild_boss');
+    if(error)throw error;
+    const payload=Array.isArray(data)?data[0]:data;
+    v255BossRound=payload?.round||null;
+    v255BossParticipants=payload?.participants||[];
+    v255RenderBoss();
+  }catch(e){
+    console.error('V2.55 boss load',e);v255BossRound=null;v255BossParticipants=[];v255RenderBoss();
+    if(/v255_get_guild_boss|does not exist|schema cache/i.test(String(e?.message||'')))v063Toast('Gildenboss noch nicht bereit','warn','Bitte V255_GUILD_BOSS_SQL.sql einmal in Supabase ausführen.');
+  }
+}
+async function v255ClaimBossReward(){
+  if(!(await v254EnsureOnline()))return;
+  const btn=document.querySelector('#v255ClaimBossReward');if(btn){btn.disabled=true;btn.textContent='Belohnung wird geprüft …'}
+  try{
+    const {data,error}=await v073Db.rpc('v255_claim_guild_boss_reward');if(error)throw error;
+    const r=Array.isArray(data)?data[0]:data;if(!r)throw new Error('Keine Belohnung erhalten.');
+    const gold=Math.max(0,Number(r.gold)||0),xp=Math.max(0,Number(r.xp)||0),harz=Math.max(0,Number(r.harz)||0);
+    s.gold=(Number(s.gold)||0)+gold;
+    if(typeof addXp==='function')addXp(xp);else s.xp=(Number(s.xp)||0)+xp;
+    s.harzTaler=(Number(s.harzTaler)||0)+harz;
+    try{persist(false)}catch(e){} try{render()}catch(e){}
+    v063Toast(r.won?'Gildenboss besiegt!':'Teilnahmebelohnung',r.won?'success':'info',`+${v255Fmt(xp)} EXP · +${v255Fmt(gold)} Gold${harz?` · +${harz} Harz-Taler`:''}`);
+    await v254LoadGuild();await v255LoadBoss();
+  }catch(e){v063Toast('Belohnung nicht verfügbar','warn',e?.message||'');}
+  finally{if(btn){btn.disabled=false;btn.textContent='🎁 Gildenboss-Belohnung abholen'}}
+}
+/* Refresh boss after the existing signup RPC completes. */
+const v255BaseToggleSignup=v254ToggleSignup;
+v254ToggleSignup=async function(kind){const r=await v255BaseToggleSignup(kind);if(kind==='boss')await v255LoadBoss();return r};
+const v255BaseLoadGuild=v254LoadGuild;
+v254LoadGuild=async function(){const r=await v255BaseLoadGuild();if(document.querySelector('#guild')?.classList.contains('active')&&v254Membership)await v255LoadBoss();return r};
+document.querySelector('#v255ClaimBossReward')?.addEventListener('click',v255ClaimBossReward);
+setInterval(()=>{if(document.querySelector('#guild')?.classList.contains('active'))v255RenderBoss()},30000);
+setTimeout(()=>{document.querySelectorAll('.version').forEach(el=>el.textContent='V2.55 Stable');const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V2.55 Stable';},760);
 </script>
 
 </body>
