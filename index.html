@@ -205,7 +205,7 @@ main{padding:12px}
 
 
 <style id="v200-stable-ui">
-/* ===== Grow Legends V2.30 Stable: consolidated auth UI ===== */
+/* ===== Grow Legends V2.31 Stable: consolidated auth UI ===== */
 html,body{max-width:100%;overflow-x:hidden}
 
 body:has(#v075AuthOverlay.show) > .app,
@@ -516,7 +516,7 @@ document.documentElement.classList.remove('v224-app-ready');
 <body>
 <div class="app">
 <header>
-  <div class="brand"><h1>🌿 Grow Legends</h1><span class="version">V2.30 Stable</span><div class="power">Kampfkraft <b id="power">—</b></div></div>
+  <div class="brand"><h1>🌿 Grow Legends</h1><span class="version">V2.31 Stable</span><div class="power">Kampfkraft <b id="power">—</b></div></div>
   <div class="stats resource-stats"><div class="stat">GOLD<b id="gold">—</b></div><div class="stat">SKILL<b id="points">—</b></div><div class="stat">DAMPF<b id="energy">—</b></div><div class="stat harz-stat">HARZ-TALER<b>🟢 <span id="topHarz">—</span></b></div></div>
 </header>
 <main>
@@ -1138,9 +1138,18 @@ function renderInventory(){
    try{
      const it=normalizeItem(raw)||{name:'Unbekanntes Item',slot:'ring',icon:'🎁',bonus:{},price:0,rarity:'common-gray'};
      s.inventory[i]=it;
-     const card=document.createElement('div');card.className=`inv-item ${it.rarity||''}`;
+     const card=document.createElement('div');
+     const v231RarityClass={
+       gray:'common-gray',
+       green:'common-green',
+       blue:'rare-blue',
+       purple:'epic-purple',
+       orange:'legendary-orange',
+       cyan:'mystic-cyan'
+     }[it.quality] || it.rarity || 'common-gray';
+     card.className=`inv-item ${v231RarityClass} ${it.rarity||''}`;
      const name=document.createElement('div');name.className='item-name';name.textContent=`${it.icon||'🎁'} ${it.name||'Unbekanntes Item'}`;card.appendChild(name);
-     if(it.quality){const q=document.createElement('div');let qm={label:String(it.quality),color:'q-gray'};try{qm=qualityMeta(it.quality)||qm}catch(e){}q.className=qm.color||'q-gray';q.textContent=qm.label||String(it.quality);card.appendChild(q)}
+     if(it.quality){const q=document.createElement('div');let qm={label:String(it.quality),color:'q-gray'};try{qm=qualityMeta(it.quality)||qm}catch(e){}q.className=`rarity-badge ${qm.color||'q-gray'}`;q.textContent=qm.label||String(it.quality);card.appendChild(q)}
      if(it.setName){const tag=document.createElement('div');tag.className='set-tag';tag.textContent=`${it.setName}-Set`;card.appendChild(tag)}
      if(it.classId){const tag=document.createElement('div');tag.className='set-tag';tag.textContent=`Klasse: ${classLabel(it.classId)}`;card.appendChild(tag)}
      const bonus=document.createElement('div');bonus.className='item-bonus';bonus.textContent=itemBonus(it)||'Keine Boni';card.appendChild(bonus);
@@ -1277,7 +1286,7 @@ window.startQuest=i=>{if(s.quests.active)return;const q=s.quests.offers[i];if(!q
    const nextD=dungeons[nextIndex];
    if(s.level>=nextD.minLevel&&Math.random()<0.22){s.dungeon.unlocked.push(nextIndex);msg+=`\n🗿 ${nextD.keyName} gefunden! ${nextD.name} wurde freigeschaltet.`;}
  }
- if(bonus){let found;if(Math.random()<0.015){const slot=setBases[Math.floor(Math.random()*setBases.length)].slot;found=makeSetItem(s.playerClass||'grower',slot)}else{if(Math.random()<0.75){found=makeClassLoot(s.playerClass||'grower','normal')}else{const other=['grower','bruiser','scout'].filter(x=>x!==s.playerClass);found=makeClassLoot(other[Math.floor(Math.random()*other.length)],'normal')}}s.inventory.push(found);msg+=`\nItem gefunden: ${found.name}`}s.quests.active=null;s.quests.offers=[makeQuest(),makeQuest(),makeQuest()];v115Alert(msg);persist()}
+ if(bonus){let found;if(Math.random()<0.015){const slot=setBases[Math.floor(Math.random()*setBases.length)].slot;found=makeSetItem(s.playerClass||'grower',slot)}else{if(Math.random()<0.75){found=makeClassLoot(s.playerClass||'grower','normal')}else{const other=['grower','bruiser','scout'].filter(x=>x!==s.playerClass);found=makeClassLoot(other[Math.floor(Math.random()*other.length)],'normal')}}s.inventory.push(found);msg+=`\nItem gefunden: ${found.name}`}s.quests.active=null;s.quests.offers=[makeQuest(),makeQuest(),makeQuest()];v231ShowQuestReward(msg,q);persist()}
 document.querySelector('#refreshQuests').onclick=()=>{if(s.quests.active)return v115Alert('Beende erst deinen aktiven Auftrag.');if(s.gold<10)return v115Alert('Zu wenig Gold.');s.gold-=10;s.quests.offers=[makeQuest(),makeQuest(),makeQuest()];persist()};
 
 function freeDungeonReady(){return Date.now()-s.dungeonPass.lastFree>=3600000}
@@ -3056,7 +3065,7 @@ header{
 
 function v037SyncVersion(){
   document.querySelectorAll('.version').forEach(el=>{
-    el.textContent='V2.30 Stable';
+    el.textContent='V2.31 Stable';
   });
 }
 
@@ -3411,7 +3420,7 @@ render=function(){
   v038BaseRender();
   v038BindReroll();
   v038LocationPolish();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.30 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.31 Stable');
 };
 
 try{
@@ -3482,7 +3491,7 @@ try{
 <script>
 /* V0.39 keep version label synced */
 (function(){
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.30 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.31 Stable');
 })();
 </script>
 
@@ -3931,7 +3940,7 @@ header{
 <script>
 /* V0.40 unified visual behavior + version sync */
 function v040Polish(){
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.30 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.31 Stable');
   document.querySelectorAll('.btn').forEach(b=>b.setAttribute('type','button'));
   document.querySelectorAll('.shop-item,.inv-item,.skill-card,.seed-card,.equip-card,.quest,.slot').forEach(el=>{
     el.style.willChange='transform';
@@ -4203,7 +4212,7 @@ function v41UpgradeWorldPlaces(){
 const v41BaseRender=render;
 render=function(){
   v41BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.30 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.31 Stable');
   v41InstallPortrait();
   v41InstallNpcBanners();
   v41UpgradeShopIcons();
@@ -4409,7 +4418,7 @@ const v042BaseRender=render;
 render=function(){
   v042EnsureNineShopSlots();
   v042BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.30 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.31 Stable');
 };
 
 try{
@@ -4792,7 +4801,7 @@ function v043EmptyStates(){
 const v043BaseRender=render;
 render=function(){
   v043BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.30 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.31 Stable');
   v043EquipSlotArt();
   v043BattlePlayerArt();
   v043SceneLabels();
@@ -5088,7 +5097,7 @@ function v044MapTitles(){
 const v044BaseRender=render;
 render=function(){
   v044BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.30 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.31 Stable');
   v044AddWorldRegions();
   v044AddDungeonRegions();
   v044MapTitles();
@@ -5550,7 +5559,7 @@ function v048InstallFight(){
 const v048BaseRender=render;
 render=function(){
   v048BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.30 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.31 Stable');
   v048InstallFight();
   renderDungeon();
 
@@ -5801,7 +5810,7 @@ header{
 <script>
 /* V0.49 visual-only hooks */
 function v049Polish(){
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.30 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.31 Stable');
 
   document.querySelectorAll('.inv-item,.shop-item,.skill-card,.quest,.slot,.grow-slot').forEach(el=>{
     el.style.willChange='transform';
@@ -6057,7 +6066,7 @@ header{
 <script>
 /* V0.50 visual hooks only */
 function v050Polish(){
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.30 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.31 Stable');
 
   /* Add section-specific body classes for easier game theming */
   document.querySelectorAll('.screen').forEach(screen=>{
@@ -6253,7 +6262,7 @@ h1,h2,h3,h4,.item-name,.shop-item h3,.skill-title,.center-name,.char-title{
 <script>
 /* V0.51 visual-only continuation */
 function v051Polish(){
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.30 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.31 Stable');
 
   document.querySelectorAll('.shop-item,.inv-item,.quest,.skill-card,.seed-card,.equip-card').forEach(el=>{
     el.style.willChange='transform';
@@ -6476,7 +6485,7 @@ function v052InstallSceneBanners(){
 }
 
 function v052Polish(){
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.30 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.31 Stable');
   v052InstallSceneBanners();
 }
 
@@ -6701,7 +6710,7 @@ header:after{
 <script>
 /* V0.53 visual-only continuation */
 function v053Polish(){
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.30 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.31 Stable');
 
   document.querySelectorAll('.btn,.stat,.shop-item,.inv-item,.quest,.skill-card,.grow-slot,.world-map-place,.dungeon-node').forEach(el=>{
     el.style.willChange='transform';
@@ -7153,7 +7162,7 @@ function v054BindShopButtons(){
 const v054BaseRender=render;
 render=function(){
   v054BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.30 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.31 Stable');
   v054BindShopButtons();
 };
 
@@ -7330,7 +7339,7 @@ function v055AddRarityHint(){
 const v055BaseRender=render;
 render=function(){
   v055BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.30 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.31 Stable');
   v055AddRarityHint();
 };
 
@@ -7656,7 +7665,7 @@ function v056AddShopHint(){
 const v056BaseRender=render;
 render=function(){
   v056BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.30 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.31 Stable');
   v056AddShopHint();
 
   /* Rebind current shop cards after each render. */
@@ -8001,7 +8010,7 @@ if(!s.v057ShopCore){
 const v057BaseRender=render;
 render=function(){
   v057BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.30 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.31 Stable');
   renderShop();
 };
 
@@ -8164,7 +8173,7 @@ render=function(){
     v058SafeRefreshAfterPurchase();
   }
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.30 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.31 Stable');
   v058EnsureLegacyRenderAnchors();
 };
 
@@ -8425,7 +8434,7 @@ function v059BindMaterialButtons(){
 const v059BaseRender=render;
 render=function(){
   v059BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.30 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.31 Stable');
   v059BindMaterialButtons();
 };
 
@@ -8694,7 +8703,7 @@ renderDungeon=function(){
 const v060BaseRender=render;
 render=function(){
   v060BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.30 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.31 Stable');
   v060InstallFight();
 };
 
@@ -8722,7 +8731,7 @@ animClass=function(el,cl,ms=400){
 const v061BaseRender=render;
 render=function(){
   v061BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.30 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.31 Stable');
 };
 
 try{render();}catch(e){console.error('V0.61 init',e);}
@@ -8770,7 +8779,7 @@ render=function(){
   }
 
   v062BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.30 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.31 Stable');
 };
 
 try{render();}catch(e){console.error('V0.62 shop size',e);}
@@ -9261,7 +9270,7 @@ render=function(){
   v063EnsureUi();
   v063BindResetButtons();
   v063PatchClassChoice();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.30 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.31 Stable');
 };
 
 try{
@@ -9730,13 +9739,13 @@ renderDungeon=function(){
     v064UpgradeBattle();
   }
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.30 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.31 Stable');
 };
 
 const v064BaseRender=render;
 render=function(){
   v064BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.30 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.31 Stable');
   try{
     if(document.querySelector('#dungeon')?.classList.contains('active')){
       renderDungeon();
@@ -10123,7 +10132,7 @@ const v065BaseRenderDungeon=renderDungeon;
 renderDungeon=function(){
   if(s.dungeon.layer==='world'){
     v065RenderWorld();
-    document.querySelectorAll('.version').forEach(el=>el.textContent='V2.30 Stable');
+    document.querySelectorAll('.version').forEach(el=>el.textContent='V2.31 Stable');
     return;
   }
 
@@ -10134,13 +10143,13 @@ renderDungeon=function(){
     v065BindRoomNodes();
   }
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.30 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.31 Stable');
 };
 
 const v065BaseRender=render;
 render=function(){
   v065BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.30 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.31 Stable');
 
   if(document.querySelector('#dungeon')?.classList.contains('active')){
     try{renderDungeon();}catch(e){console.error('V0.65 dungeon render',e);}
@@ -10280,7 +10289,7 @@ function v066OpenDungeon(i){
       v065BindRoomNodes();
     }
 
-    document.querySelectorAll('.version').forEach(el=>el.textContent='V2.30 Stable');
+    document.querySelectorAll('.version').forEach(el=>el.textContent='V2.31 Stable');
     window.scrollTo({top:0,behavior:'smooth'});
   }catch(e){
     console.error('V0.66 open dungeon',e);
@@ -10327,7 +10336,7 @@ v065RenderWorld=function(){
 const v066BaseRender=render;
 render=function(){
   v066BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.30 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.31 Stable');
 
   if(document.querySelector('#dungeon')?.classList.contains('active') &&
      s.dungeon?.layer==='world'){
@@ -10642,7 +10651,7 @@ if(typeof v032Go==='function'){
 const v067OldRender=render;
 render=function(){
   v067OldRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.30 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.31 Stable');
 
   if(document.querySelector('#dungeon')?.classList.contains('active')){
     try{renderDungeon();}catch(e){console.error('V0.67 renderDungeon',e);}
@@ -10980,13 +10989,13 @@ renderDungeon=function(){
     try{v064RenderMap();}catch(e){}
   }
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.30 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.31 Stable');
 };
 
 const v068BaseRender=render;
 render=function(){
   v068BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.30 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.31 Stable');
 
   if(document.querySelector('#dungeon')?.classList.contains('active')){
     try{renderDungeon();}catch(e){console.error('V0.68 dungeon render',e);}
@@ -11064,7 +11073,7 @@ const v069BaseRender=render;
 render=function(){
   v069BaseRender();
   v069SyncCurrencies();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.30 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.31 Stable');
 };
 
 try{
@@ -11162,7 +11171,7 @@ const v070BaseRender=render;
 render=function(){
   v070BaseRender();
   v070HighlightPrimaryAttribute();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.30 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.31 Stable');
 };
 
 try{
@@ -11615,7 +11624,7 @@ const v072BaseRender=render;
 render=function(){
   v072BaseRender();
   v072RenderSocial();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.30 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.31 Stable');
 };
 
 try{
@@ -12167,7 +12176,7 @@ function v073ScheduleProfileSync(){
 const v073BaseRender=render;
 render=function(){
   v073BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.30 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.31 Stable');
   v073ScheduleProfileSync();
 };
 
@@ -12366,7 +12375,7 @@ v072SearchPlayer=v073SearchPlayer;
 const v074BaseRender=render;
 render=function(){
   v074BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.30 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.31 Stable');
   setTimeout(()=>v074BindProfileRows(),0);
 };
 (async()=>{if(await v073Init()){await v073SyncProfile(true)}})();
@@ -12587,7 +12596,7 @@ const v077OldAddXp=addXp;
 addXp=function(n){return v077OldAddXp(v077ModifyXp(n))};
 
 const v077BaseRender=render;
-render=function(){v077BaseRender();document.querySelectorAll('.version').forEach(e=>e.textContent='V2.30 Stable');v077InjectGrow();setTimeout(v077InjectCharacterFx,0)};
+render=function(){v077BaseRender();document.querySelectorAll('.version').forEach(e=>e.textContent='V2.31 Stable');v077InjectGrow();setTimeout(v077InjectCharacterFx,0)};
 
 setInterval(()=>{
   const b=v077Buff();
@@ -12891,7 +12900,7 @@ const v079BaseRender=render;
 render=function(){
   v079BaseRender();
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.30 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.31 Stable');
 
   setTimeout(()=>{
     try{v079UpdateBuffFx();}catch(e){console.error('V0.79 buff fx',e);}
@@ -13090,7 +13099,7 @@ v029ShowClassChoice=function(){
 const v080BaseRender=render;
 render=function(){
   v080BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.30 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.31 Stable');
   try{v41InstallPortrait()}catch(e){console.error('V0.80 portrait',e)}
   /* V0.79 glitter is attached after portrait exists. */
   setTimeout(()=>{
@@ -13453,7 +13462,7 @@ async function v083FixHallList(){
 const v083BaseRender=render;
 render=function(){
   v083BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.30 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.31 Stable');
   setTimeout(v083FixHallList,0);
 };
 
@@ -13617,7 +13626,7 @@ v073ProfilePayload=function(){
 const v084BaseRender=render;
 render=function(){
   v084BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.30 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.31 Stable');
 };
 </script>
 
@@ -13844,7 +13853,7 @@ v032Go=function(id){
 const v085BaseRender=render;
 render=function(){
   v085BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.30 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.31 Stable');
 
   if(document.querySelector('#world')?.classList.contains('active')){
     v085InstallWorld();
@@ -13996,7 +14005,7 @@ v032Go=function(id){
 const v086BaseRender=render;
 render=function(){
   v086BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.30 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.31 Stable');
   v086PolishBrand();
   v086RemoveSlashNArtifacts();
   v086BuildCompleteMenu();
@@ -14072,7 +14081,7 @@ function v087FixMainAttributeBadge(){
 const v087BaseRender=render;
 render=function(){
   v087BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.30 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.31 Stable');
   requestAnimationFrame(v087FixMainAttributeBadge);
 };
 
@@ -14104,7 +14113,7 @@ try{
 const v088BaseRender=render;
 render=function(){
   v088BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.30 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.31 Stable');
 };
 </script>
 
@@ -14231,7 +14240,7 @@ v030Offer=function(it,fn,i){
 const v089BaseRender=render;
 render=function(){
   v089BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.30 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.31 Stable');
   try{renderShop()}catch(e){console.error('V0.89 shop comparison',e)}
 };
 </script>
@@ -14350,7 +14359,7 @@ v057OfferHtml=function(it,i,kind){
 const v090BaseRender=render;
 render=function(){
   v090BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.30 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.31 Stable');
   try{renderShop()}catch(e){console.error('V0.90 shop comparison',e)}
 };
 
@@ -14379,7 +14388,7 @@ localStorage.setItem(KEY,JSON.stringify(s));
 const v092BaseRender=render;
 render=function(){
   v092BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.30 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.31 Stable');
 };
 </script>
 
@@ -14707,7 +14716,7 @@ document.querySelector('#v093SaveNews')?.addEventListener('click',v093SaveNews);
 const v093BaseRender=render;
 render=function(){
   v093BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.30 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.31 Stable');
   v093BuildMenu();
 };
 
@@ -14830,7 +14839,7 @@ v085ActiveEvents=function(){
 const v094BaseRender=render;
 render=function(){
   v094BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.30 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.31 Stable');
 
   /* Update visible quest XP previews to show doubled amount while event is live. */
   if(v094XpEventActive()){
@@ -14935,7 +14944,7 @@ document.addEventListener('click',()=>{
 const v095BaseRender=render;
 render=function(){
   v095BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.30 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.31 Stable');
   requestAnimationFrame(v095DecorateXp);
 };
 
@@ -15013,7 +15022,7 @@ function v096DecorateQuestXp(){
 const v096BaseRender=render;
 render=function(){
   v096BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.30 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.31 Stable');
   requestAnimationFrame(v096DecorateQuestXp);
 };
 
@@ -15051,7 +15060,7 @@ function v097ReplaceQuestStars(){
 const v097BaseRender=render;
 render=function(){
   v097BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.30 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.31 Stable');
   requestAnimationFrame(v097ReplaceQuestStars);
 };
 
@@ -15147,7 +15156,7 @@ function v098QuestPreview(){
 const v098BaseRender=render;
 render=function(){
   v098BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.30 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.31 Stable');
   requestAnimationFrame(v098QuestPreview);
 };
 
@@ -15278,7 +15287,7 @@ function v099PaintQuestXp(){
 const v099BaseRender=render;
 render=function(){
   v099BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.30 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.31 Stable');
   requestAnimationFrame(v099PaintQuestXp);
 };
 
@@ -15435,7 +15444,7 @@ function v100PaintDungeonXp(){
 const v100BaseRender=render;
 render=function(){
   v100BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.30 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.31 Stable');
   requestAnimationFrame(v100PaintDungeonXp);
   setTimeout(()=>{
     try{v068InstallFight()}catch(e){}
@@ -15541,7 +15550,7 @@ addXp=function(n){
 const v101BaseRender=render;
 render=function(){
   v101BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.30 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.31 Stable');
 };
 </script>
 
@@ -15668,7 +15677,7 @@ render=function(){
   const before=Number(s.level)||1;
   const result=v102BaseRender();
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.30 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.31 Stable');
 
   requestAnimationFrame(()=>{
     try{v102DetectLevelChange()}catch(e){console.error('V1.02 level detection',e)}
@@ -15933,7 +15942,7 @@ v093AdminLoadLists=async function(){
 const v103BaseRender=render;
 render=function(){
   v103BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.30 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.31 Stable');
   if(v093IsAdmin)v103InstallPlayerAdmin();
 };
 
@@ -16059,7 +16068,7 @@ v103InstallPlayerAdmin=function(){
 const v105BaseRender=render;
 render=function(){
   const result=v105BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.30 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.31 Stable');
   if(v093IsAdmin){
     v103InstallPlayerAdmin();
     v105InstallRewards();
@@ -16257,7 +16266,7 @@ claimQuest=function(){
 const v106BaseRender=render;
 render=function(){
   const result=v106BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.30 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.31 Stable');
   v106InstallBook();
   v106CheckAchievements(true);
   return result;
@@ -16322,7 +16331,7 @@ v106InstallBook=function(){
 const v107BaseRender=render;
 render=function(){
   const result=v107BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.30 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.31 Stable');
   requestAnimationFrame(v107PlaceBook);
   return result;
 };
@@ -16441,7 +16450,7 @@ if(!s.v108ItemPool){
 const v108BaseRender=render;
 render=function(){
   const result=v108BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.30 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.31 Stable');
   return result;
 };
 </script>
@@ -16600,7 +16609,7 @@ const v109BaseRender=render;
 render=function(){
   v109ResetDaily();
   const result=v109BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.30 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.31 Stable');
   return result;
 };
 </script>
@@ -16794,7 +16803,7 @@ v085ActiveEvents=function(){
 const v110BaseRender=render;
 render=function(){
   const result=v110BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.30 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.31 Stable');
   requestAnimationFrame(v110InstallEventButton);
   return result;
 };
@@ -17124,7 +17133,7 @@ v110InstallEventButton=function(){v111InstallWorldBossCard()};
 const v111BaseRender=render;
 render=function(){
   const result=v111BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.30 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.31 Stable');
   requestAnimationFrame(v111InstallWorldBossCard);
   return result;
 };
@@ -17209,7 +17218,7 @@ render=function(){
   const result=v112BaseRender();
 
   v112EnsureWorldBossState();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.30 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.31 Stable');
 
   return result;
 };
@@ -17278,7 +17287,7 @@ v110Fight=function(){
 const v113BaseRender=render;
 render=function(){
   const result=v113BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.30 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.31 Stable');
   return result;
 };
 </script>
@@ -17450,7 +17459,7 @@ v110Fight=async function(){
 const v114BaseRender=render;
 render=function(){
   const result=v114BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.30 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.31 Stable');
   return result;
 };
 
@@ -17638,7 +17647,7 @@ v114AskRetry=function(){
 const v115BaseRender=render;
 render=function(){
   const result=v115BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.30 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.31 Stable');
   return result;
 };
 
@@ -17825,7 +17834,7 @@ v074OpenProfile=async function(id){
 const v116BaseRender=render;
 render=function(){
   const result=v116BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.30 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.31 Stable');
   return result;
 };
 
@@ -18004,7 +18013,7 @@ document.addEventListener('click',async e=>{
 const v117BaseRender=render;
 render=function(){
   const result=v117BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.30 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.31 Stable');
   setTimeout(()=>{v117BindDampf();v117BindReset();v117PatchClassModal()},0);
   return result;
 };
@@ -18405,7 +18414,7 @@ v085InstallWorld=function(){
 const v118BaseRender=render;
 render=function(){
   const result=v118BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.30 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.31 Stable');
   requestAnimationFrame(v111InstallWorldBossCard);
   return result;
 };
@@ -18597,7 +18606,7 @@ header .resource-stats .stat:nth-child(4) b{
 const v119BaseRender=render;
 render=function(){
   const result=v119BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.30 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.31 Stable');
   return result;
 };
 </script>
@@ -18734,7 +18743,7 @@ function v120InstallCountdown(){
 const v120BaseRender=render;
 render=function(){
   const result=v120BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.30 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.31 Stable');
   requestAnimationFrame(v120InstallCountdown);
   return result;
 };
@@ -18948,7 +18957,7 @@ const v121BaseRender=render;
 render=function(){
   v121SanitizeMagicStock();
   const result=v121BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.30 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.31 Stable');
   requestAnimationFrame(v121PaintShopInfo);
   return result;
 };
@@ -19291,7 +19300,7 @@ const v122BaseRender=render;
 render=function(){
   v122MigrateAllSockets();
   const result=v122BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.30 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.31 Stable');
   return result;
 };
 
@@ -19619,7 +19628,7 @@ function v123PolishEquipment(){
 const v123BaseRender=render;
 render=function(){
   const result=v123BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.30 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.31 Stable');
   requestAnimationFrame(v123PolishEquipment);
   return result;
 };
@@ -19869,7 +19878,7 @@ function v124ClampCharacterWidth(){
 const v124BaseRender=render;
 render=function(){
   const result=v124BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.30 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.31 Stable');
   requestAnimationFrame(v124ClampCharacterWidth);
   return result;
 };
@@ -20332,7 +20341,7 @@ render=function(){
   if(hp)hp.textContent=v125Fmt(maxHp());
   if(cp)cp.textContent=v125Fmt(combatPower());
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.30 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.31 Stable');
   return result;
 };
 
@@ -20476,7 +20485,7 @@ if(typeof V125_ATTRS!=='undefined'){
 const v126BaseRender=render;
 render=function(){
   const result=v126BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.30 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.31 Stable');
   requestAnimationFrame(()=>v126RepairCharacter(false));
   return result;
 };
@@ -20666,7 +20675,7 @@ render=function(){
   const energyEl=document.querySelector('#energy');
   if(energyEl)energyEl.textContent=`${Math.floor(Number(s.energy)||0)}/300`;
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.30 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.31 Stable');
   requestAnimationFrame(v127AddResetInfo);
   return result;
 };
@@ -20947,7 +20956,7 @@ setTimeout(()=>{
 
 <script id="v128-premium-skill-ui-script">
 function v128SkillPolish(){
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.30 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.31 Stable');
   const card=document.querySelector('#character .card:has(#skillTree)');
   if(card)card.setAttribute('data-v128','premium-skills');
 }
@@ -21377,7 +21386,7 @@ function v129PolishDynamicCards(){
     if(it)el.classList.add(v129RarityClass(it));
   });
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.30 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.31 Stable');
 }
 const v129BaseRender=render;
 render=function(){
@@ -21539,7 +21548,7 @@ function v130InventoryHeadings(){
 function v130Polish(){
   v130RemoveMerchantCopy();
   v130InventoryHeadings();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.30 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.31 Stable');
 }
 const v130BaseRender=render;
 render=function(){
@@ -21572,7 +21581,7 @@ function v131CleanShop(){
     }
   });
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.30 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.31 Stable');
 }
 const v131BaseRender=render;
 render=function(){
@@ -21839,7 +21848,7 @@ function v132Polish(){
     });
   }
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.30 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.31 Stable');
 }
 const v132BaseRender=render;
 render=function(){
@@ -22052,7 +22061,7 @@ function v133Polish(){
       }
     });
   }
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.30 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.31 Stable');
 }
 const v133BaseRender=render;
 render=function(){
@@ -22237,7 +22246,7 @@ function v134Apply(){
    l.innerHTML='<span class="g0">Normal</span><span class="g1">Gewöhnlich</span><span class="g2">Selten</span><span class="g3">Episch</span><span class="g4">Legendär</span><span class="g5">Mystisch</span>';
    card.appendChild(l);
  }
- document.querySelectorAll('.version').forEach(el=>el.textContent='V2.30 Stable');
+ document.querySelectorAll('.version').forEach(el=>el.textContent='V2.31 Stable');
 }
 const v134BaseRender=render;
 render=function(){const r=v134BaseRender();requestAnimationFrame(v134Apply);return r;};
@@ -22400,7 +22409,7 @@ function v135PaintShop(){
       if(arr[i])el.classList.add(v135QualityClassFromItem(arr[i]));
     });
   });
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.30 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.31 Stable');
 }
 
 /* Existing V1.34 stock may be based on old weak scaling: refresh once for free. */
@@ -22635,7 +22644,7 @@ function v138PaintMerchant(){
     });
   });
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.30 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.31 Stable');
 }
 
 const v138BaseRender=render;
@@ -22833,7 +22842,7 @@ v030Offer=function(it,fn,i){
 
 function v139RepaintShop(){
   try{renderShop()}catch(e){console.error('V1.39 shop repaint',e)}
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.30 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.31 Stable');
 }
 
 const v139BaseRender=render;
@@ -23196,7 +23205,7 @@ function v141BuildSettings(){
           <button type="button" class="btn" id="v141Delete">🗑️ Account löschen</button>
         </div>
 
-        <div class="v141-version-line" id="v141VersionLine">V2.30 Stable</div>
+        <div class="v141-version-line" id="v141VersionLine">V2.31 Stable</div>
       </div>`;
   }
 
@@ -23389,7 +23398,7 @@ setTimeout(()=>{
 const v141BaseRender=render;
 render=function(){
   const r=v141BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.30 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.31 Stable');
   requestAnimationFrame(()=>{
     v141BuildSettings();
     v141ApplySettings();
@@ -23446,7 +23455,7 @@ window.addEventListener('scroll',v142PositionSettings,{passive:true});
 const v142BaseRender=render;
 render=function(){
   const r=v142BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.30 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.31 Stable');
   requestAnimationFrame(v142PositionSettings);
   return r;
 };
@@ -23661,7 +23670,7 @@ render=function(){
     v145SaveScopedLocal();
   }
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.30 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.31 Stable');
   return r;
 };
 
@@ -23677,7 +23686,7 @@ setTimeout(()=>{
 
 
 <script id="v200-stable-core">
-/* ===== Grow Legends V2.30 Stable =====
+/* ===== Grow Legends V2.31 Stable =====
    One auth listener. One email handler. One Google handler.
    One cloud resolver. One character creator. One admin poll.
 */
@@ -23916,7 +23925,7 @@ function v200RenderLoginInfo(){
     let n=null;
     try{ n=(window.v093News||[]).find(x=>x && x.is_published!==false)||null; }catch(e){}
 
-    const title=n?.title||'V2.30 Stable';
+    const title=n?.title||'V2.31 Stable';
     const version=n?.version||'V2.00';
     const text=n?.body||n?.text||'Technische Stabilisierung von Login, Cloud-Speicherung und Charaktererstellung.';
 
@@ -24756,7 +24765,7 @@ function v200BindSettings(){
   if(cancel)cancel.onclick=v141CloseDelete;
 
   const version=document.querySelector('#v141VersionLine');
-  if(version)version.textContent='V2.30 Stable';
+  if(version)version.textContent='V2.31 Stable';
 }
 
 /* One admin poll, content-aware. */
@@ -24885,7 +24894,7 @@ const v200BaseRender=render;
 render=function(){
   const r=v200BaseRender();
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.30 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.31 Stable');
 
   if(v200DurableUser() && v200CharacterComplete() && v075CloudLoadedFor===v073User.id){
     v075ScheduleSave();
@@ -25058,7 +25067,7 @@ render=function(){
   const result=v201BaseRender();
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V2.30 Stable');
+    .forEach(el=>el.textContent='V2.31 Stable');
 
   const world=document.querySelector('#world');
   if(world?.classList.contains('active')){
@@ -25446,7 +25455,7 @@ setInterval(()=>{
 const v204BaseRender=render;
 render=function(){
   const r=v204BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.30 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.31 Stable');
   requestAnimationFrame(()=>{
     v086BuildCompleteMenu();
     v204InstallAvatarBadge();
@@ -25498,7 +25507,7 @@ function v205InstallBudScale(){
 const v205BaseRender=render;
 render=function(){
   const r=v205BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.30 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.31 Stable');
   requestAnimationFrame(v205InstallBudScale);
   return r;
 };
@@ -25799,7 +25808,7 @@ render=function(){
   const r=v206BaseRender();
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V2.30 Stable');
+    .forEach(el=>el.textContent='V2.31 Stable');
 
   requestAnimationFrame(()=>{
     const find=document.querySelector('#v204FindBtn');
@@ -25972,7 +25981,7 @@ render=function(){
   const r=v207BaseRender();
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V2.30 Stable');
+    .forEach(el=>el.textContent='V2.31 Stable');
 
   requestAnimationFrame(()=>{
     v207EnsurePvpState();
@@ -26419,7 +26428,7 @@ render=function(){
   const r=v209BaseRender();
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V2.30 Stable');
+    .forEach(el=>el.textContent='V2.31 Stable');
 
   requestAnimationFrame(()=>{
     const fight=document.querySelector('#v204FightBtn');
@@ -26959,7 +26968,7 @@ render=function(){
   const r=v210BaseRender();
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V2.30 Stable');
+    .forEach(el=>el.textContent='V2.31 Stable');
 
   requestAnimationFrame(()=>{
     v210FormatCharacterAttributes();
@@ -27342,7 +27351,7 @@ render=function(){
   const r=v211BaseRender();
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V2.30 Stable');
+    .forEach(el=>el.textContent='V2.31 Stable');
 
   return r;
 };
@@ -27389,7 +27398,7 @@ const v213BaseRender=render;
 render=function(){
   const r=v213BaseRender();
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V2.30 Stable');
+    .forEach(el=>el.textContent='V2.31 Stable');
   return r;
 };
 </script>
@@ -27635,7 +27644,7 @@ function v224BuildCurrentUi(){
     }catch(e){}
 
     document.querySelectorAll('.version')
-      .forEach(el=>el.textContent='V2.30 Stable');
+      .forEach(el=>el.textContent='V2.31 Stable');
 
     return true;
   }catch(e){
@@ -27775,7 +27784,7 @@ function v225EnsureSettingsAccountActions(){
     menu.appendChild(version);
   }
 
-  version.textContent='V2.30 Stable';
+  version.textContent='V2.31 Stable';
 
   const logout=menu.querySelector('#v141Logout');
   if(logout){
@@ -27844,7 +27853,7 @@ setTimeout(()=>{
 
 setTimeout(()=>{
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V2.30 Stable');
+    .forEach(el=>el.textContent='V2.31 Stable');
 },300);
 </script>
 
@@ -28176,7 +28185,7 @@ setTimeout(()=>{
 
 setTimeout(()=>{
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V2.30 Stable');
+    .forEach(el=>el.textContent='V2.31 Stable');
 },300);
 </script>
 
@@ -28395,7 +28404,7 @@ setTimeout(()=>{
 
 setTimeout(()=>{
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V2.30 Stable');
+    .forEach(el=>el.textContent='V2.31 Stable');
 },350);
 </script>
 
@@ -28609,10 +28618,10 @@ setInterval(v230LiveTick,1000);
 
 function v230Version(){
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V2.30 Stable');
+    .forEach(el=>el.textContent='V2.31 Stable');
 
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V2.30 Stable';
+  if(line)line.textContent='V2.31 Stable';
 }
 
 
@@ -28634,6 +28643,440 @@ setTimeout(()=>{
     console.error('V2.30 startup',e);
   }
 },250);
+</script>
+
+
+<style id="v231-notify-inventory-quest-style">
+/* ===== V2.31 notifications + inventory rarity + quest reward ===== */
+
+/* Strong, unmistakable inventory rarity identity. */
+#character #inventory .inv-item{
+  position:relative!important;
+  overflow:hidden!important;
+  border-width:1.5px!important;
+}
+
+#character #inventory .inv-item.common-gray{
+  --v231-r:#b5beb8;--v231-rgb:181,190,184;
+}
+#character #inventory .inv-item.common-green{
+  --v231-r:#72df52;--v231-rgb:114,223,82;
+}
+#character #inventory .inv-item.rare-blue{
+  --v231-r:#4ba8ff;--v231-rgb:75,168,255;
+}
+#character #inventory .inv-item.epic-purple{
+  --v231-r:#c66bff;--v231-rgb:198,107,255;
+}
+#character #inventory .inv-item.legendary-orange{
+  --v231-r:#ff9c39;--v231-rgb:255,156,57;
+}
+#character #inventory .inv-item.mystic-cyan{
+  --v231-r:#45ebe4;--v231-rgb:69,235,228;
+}
+
+#character #inventory .inv-item[class*="common-"],
+#character #inventory .inv-item.rare-blue,
+#character #inventory .inv-item.epic-purple,
+#character #inventory .inv-item.legendary-orange,
+#character #inventory .inv-item.mystic-cyan{
+  border-color:var(--v231-r)!important;
+  background:
+    radial-gradient(circle at 50% 0%,rgba(var(--v231-rgb),.20),transparent 38%),
+    linear-gradient(155deg,rgba(var(--v231-rgb),.08),#07100b 62%)!important;
+  box-shadow:
+    inset 0 0 30px rgba(var(--v231-rgb),.11),
+    0 0 15px rgba(var(--v231-rgb),.16)!important;
+}
+
+#character #inventory .inv-item:before{
+  content:"";
+  position:absolute;
+  left:7px;right:7px;top:0;
+  height:3px;
+  background:linear-gradient(90deg,transparent,var(--v231-r),transparent);
+  box-shadow:0 0 12px var(--v231-r);
+  pointer-events:none;
+}
+
+#character #inventory .inv-item .item-name{
+  color:var(--v231-r,#f2f5f1)!important;
+  text-shadow:0 0 10px rgba(var(--v231-rgb,255,255,255),.18)!important;
+}
+
+#character #inventory .inv-item .rarity-badge{
+  display:inline-flex!important;
+  width:auto!important;
+  margin:5px 0 7px!important;
+  padding:3px 7px!important;
+  border-radius:999px!important;
+  border:1px solid var(--v231-r,#667)!important;
+  color:var(--v231-r,#ccd)!important;
+  background:rgba(var(--v231-rgb,120,120,120),.10)!important;
+  box-shadow:0 0 9px rgba(var(--v231-rgb,120,120,120),.12)!important;
+  font-size:6.5px!important;
+  font-weight:1000!important;
+}
+
+
+/* Quest reward modal */
+#v231QuestReward{
+  position:fixed;
+  inset:0;
+  z-index:2147482500;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:16px;
+  background:rgba(2,7,4,.86);
+  backdrop-filter:blur(8px);
+}
+#v231QuestReward.show{display:flex}
+
+.v231-quest-card{
+  width:min(420px,100%);
+  overflow:hidden;
+  border:1px solid #72b857;
+  border-radius:18px;
+  background:
+    radial-gradient(circle at 50% 0%,rgba(111,210,80,.18),transparent 34%),
+    linear-gradient(155deg,#142119,#07100a);
+  box-shadow:0 28px 90px #000e,0 0 30px rgba(100,211,70,.15);
+}
+
+.v231-quest-head{
+  padding:18px 16px 12px;
+  text-align:center;
+}
+.v231-quest-icon{font-size:33px}
+.v231-quest-title{
+  margin-top:5px;
+  color:#baf28c;
+  font-size:20px;
+  font-weight:1000;
+}
+.v231-quest-name{
+  margin-top:4px;
+  color:#8fa393;
+  font-size:8px;
+}
+
+.v231-quest-loot{
+  margin:0 14px 12px;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:7px;
+}
+.v231-quest-loot > div{
+  padding:11px 7px;
+  border:1px solid #304c37;
+  border-radius:11px;
+  background:#07110b;
+  text-align:center;
+}
+.v231-quest-loot span{
+  display:block;
+  color:#7c8e80;
+  font-size:6px;
+  text-transform:uppercase;
+}
+.v231-quest-loot b{
+  display:block;
+  margin-top:3px;
+  color:#f1f6ef;
+  font-size:14px;
+}
+.v231-quest-extra{
+  margin:0 14px 12px;
+  padding:10px;
+  border:1px solid #405640;
+  border-radius:11px;
+  background:#0a130d;
+  color:#b7c8b8;
+  font-size:8px;
+  line-height:1.5;
+  white-space:pre-line;
+}
+#v231QuestRewardOk{
+  width:calc(100% - 28px)!important;
+  margin:0 14px 14px!important;
+  min-height:44px!important;
+}
+
+@media(max-width:480px){
+  .v231-quest-loot{grid-template-columns:1fr 1fr}
+}
+</style>
+
+<script id="v231-notify-inventory-quest-script">
+/* ===== V2.31 robust notifications ===== */
+
+function v231NotificationsEnabled(){
+  return !window.v141Settings || v141Settings.notifications !== false;
+}
+
+
+/*
+  Replace V2.10 notify output.
+  In-game toast is always shown while notifications are enabled.
+  A browser notification is also attempted whenever permission is granted,
+  including after returning from a sleeping/background tab.
+*/
+v210NotifyOnce=function(key,title,detail,icon='🔔'){
+  if(!v231NotificationsEnabled())return false;
+  if(v210Seen[key])return false;
+
+  v210Seen[key]=Date.now();
+  v210SaveSeen();
+
+  try{
+    if(typeof v063Toast==='function'){
+      v063Toast(`${icon} ${title}`,'success',detail);
+    }
+  }catch(e){}
+
+  if(
+    typeof Notification!=='undefined' &&
+    Notification.permission==='granted'
+  ){
+    try{
+      const n=new Notification(`Grow Legends – ${title}`,{
+        body:detail
+      });
+      setTimeout(()=>{try{n.close()}catch(e){}},7000);
+    }catch(e){
+      /* Android browsers can reject Notification() without a worker.
+         The in-game toast remains the reliable fallback. */
+    }
+  }
+
+  return true;
+};
+
+
+/* ---------- Reliable PvP ready transition ---------- */
+
+let v231PvpPrevious=Number(v204CooldownLeft)||0;
+let v231PvpReadyNotified=false;
+
+function v231CheckPvpLocal(){
+  if(!v231NotificationsEnabled())return;
+
+  const current=Math.max(0,Number(v204CooldownLeft)||0);
+
+  if(current>0){
+    v231PvpReadyNotified=false;
+  }
+
+  if(
+    v231PvpPrevious>0 &&
+    current<=0 &&
+    !v231PvpReadyNotified
+  ){
+    v231PvpReadyNotified=true;
+
+    v210NotifyOnce(
+      `pvp-ready:${Date.now()}`,
+      'PvP wieder bereit',
+      'Dein PvP-Cooldown ist abgelaufen. Du kannst wieder kämpfen.',
+      '⚔️'
+    );
+  }
+
+  v231PvpPrevious=current;
+}
+
+
+/*
+  Run all local completion checks once per second. They are guarded by
+  v210Seen, so each event only produces one notification.
+*/
+function v231NotificationTick(){
+  if(!v231NotificationsEnabled())return;
+
+  const now=Date.now();
+
+  try{v210QuestCheck(now)}catch(e){}
+  try{v210PlantCheck(now)}catch(e){}
+  try{v210DungeonCheck()}catch(e){}
+  try{v231CheckPvpLocal()}catch(e){}
+}
+
+setInterval(v231NotificationTick,1000);
+
+
+/*
+  When Android/browser resumes from background, timers may have been paused.
+  Re-check everything immediately and query the server PvP cooldown.
+*/
+function v231ResumeNotifications(){
+  if(!v231NotificationsEnabled())return;
+
+  try{v231NotificationTick()}catch(e){}
+
+  try{
+    void v210PvpCheck();
+  }catch(e){}
+}
+
+document.addEventListener('visibilitychange',()=>{
+  if(document.visibilityState==='visible'){
+    setTimeout(v231ResumeNotifications,100);
+  }
+});
+
+window.addEventListener('focus',()=>{
+  setTimeout(v231ResumeNotifications,100);
+});
+
+
+/* Ask permission again only from a user gesture in settings. */
+const v231BaseBindNotificationPermission=v210BindNotificationPermission;
+v210BindNotificationPermission=function(){
+  const r=v231BaseBindNotificationPermission();
+
+  const toggle=document.querySelector('#v141Notifications');
+  if(toggle && toggle.dataset.v231Bound!=='1'){
+    toggle.dataset.v231Bound='1';
+
+    toggle.addEventListener('change',()=>{
+      if(toggle.checked){
+        try{void v210AskNotificationPermission()}catch(e){}
+        setTimeout(v231ResumeNotifications,100);
+      }
+    });
+  }
+
+  return r;
+};
+
+
+/* ===== Quest reward confirmation ===== */
+
+function v231EnsureQuestReward(){
+  let overlay=document.querySelector('#v231QuestReward');
+  if(overlay)return overlay;
+
+  overlay=document.createElement('div');
+  overlay.id='v231QuestReward';
+  overlay.innerHTML=`
+    <div class="v231-quest-card">
+      <div class="v231-quest-head">
+        <div class="v231-quest-icon">📜</div>
+        <div class="v231-quest-title">QUEST ABGESCHLOSSEN</div>
+        <div class="v231-quest-name" id="v231QuestRewardName"></div>
+      </div>
+
+      <div class="v231-quest-loot">
+        <div>
+          <span>Erfahrung</span>
+          <b id="v231QuestRewardXp">+0</b>
+        </div>
+        <div>
+          <span>Gold</span>
+          <b id="v231QuestRewardGold">+0</b>
+        </div>
+      </div>
+
+      <div class="v231-quest-extra" id="v231QuestRewardExtra"></div>
+
+      <button type="button" class="btn" id="v231QuestRewardOk">
+        Belohnung bestätigen
+      </button>
+    </div>
+  `;
+
+  document.body.appendChild(overlay);
+
+  overlay.querySelector('#v231QuestRewardOk').onclick=()=>{
+    overlay.classList.remove('show');
+  };
+
+  return overlay;
+}
+
+
+function v231ShowQuestReward(message,q){
+  const overlay=v231EnsureQuestReward();
+
+  const text=String(message||'');
+  const lines=text.split('\n').map(x=>x.trim()).filter(Boolean);
+
+  document.querySelector('#v231QuestRewardName').textContent=
+    q?.name||'Auftrag abgeschlossen';
+
+  document.querySelector('#v231QuestRewardXp').textContent=
+    `+${Math.max(0,Number(q?.xp)||0)}`;
+
+  document.querySelector('#v231QuestRewardGold').textContent=
+    `+${Math.max(0,Number(q?.gold)||0)}`;
+
+  const extras=lines.slice(1);
+  const extra=document.querySelector('#v231QuestRewardExtra');
+
+  if(extras.length){
+    extra.style.display='';
+    extra.textContent=extras.join('\n');
+  }else{
+    extra.style.display='none';
+    extra.textContent='';
+  }
+
+  overlay.classList.add('show');
+
+  /*
+    Also repaint inventory immediately when an item reward was found.
+  */
+  try{renderInventory()}catch(e){}
+}
+
+
+/*
+  Final inventory repaint helper for existing items with old rarity strings.
+*/
+function v231RepairInventoryClasses(){
+  const map={
+    gray:'common-gray',
+    green:'common-green',
+    blue:'rare-blue',
+    purple:'epic-purple',
+    orange:'legendary-orange',
+    cyan:'mystic-cyan'
+  };
+
+  const cards=document.querySelectorAll('#character #inventory .inv-item');
+
+  cards.forEach((card,i)=>{
+    const it=s.inventory?.[i];
+    if(!it)return;
+
+    Object.values(map).forEach(c=>card.classList.remove(c));
+    card.classList.add(map[it.quality]||'common-gray');
+  });
+}
+
+const v231BaseRenderInventory=renderInventory;
+renderInventory=function(){
+  const r=v231BaseRenderInventory();
+  v231RepairInventoryClasses();
+  return r;
+};
+
+
+/* Version */
+setTimeout(()=>{
+  try{
+    v210BindNotificationPermission();
+    v231ResumeNotifications();
+    v231RepairInventoryClasses();
+  }catch(e){}
+
+  document.querySelectorAll('.version')
+    .forEach(el=>el.textContent='V2.31 Stable');
+
+  const line=document.querySelector('#v141VersionLine');
+  if(line)line.textContent='V2.31 Stable';
+},300);
 </script>
 
 </body>
