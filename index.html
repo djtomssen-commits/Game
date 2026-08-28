@@ -205,7 +205,7 @@ main{padding:12px}
 
 
 <style id="v200-stable-ui">
-/* ===== Grow Legends V2.60 Stable: consolidated auth UI ===== */
+/* ===== Grow Legends V2.61 Stable: consolidated auth UI ===== */
 html,body{max-width:100%;overflow-x:hidden}
 
 body:has(#v075AuthOverlay.show) > .app,
@@ -516,7 +516,7 @@ document.documentElement.classList.remove('v224-app-ready');
 <body>
 <div class="app">
 <header>
-  <div class="brand"><h1>🌿 Grow Legends</h1><span class="version">V2.60 Stable</span><div class="power">Kampfkraft <b id="power">—</b></div></div>
+  <div class="brand"><h1>🌿 Grow Legends</h1><span class="version">V2.61 Stable</span><div class="power">Kampfkraft <b id="power">—</b></div></div>
   <div class="stats resource-stats"><div class="stat">GOLD<b id="gold">—</b></div><div class="stat">SKILL<b id="points">—</b></div><div class="stat">DAMPF<b id="energy">—</b></div><div class="stat harz-stat">HARZ-TALER<b>🟢 <span id="topHarz">—</span></b></div></div>
 </header>
 <main>
@@ -772,13 +772,56 @@ document.documentElement.classList.remove('v224-app-ready');
             </div>
             <div class="v259-vs">⚔️</div>
             <div class="v259-boss-side">
-              <div class="v259-titan" id="v260Titan">
-                <div class="v259-titan-aura"></div>
-                <div class="v259-titan-head">☣</div>
-                <div class="v259-titan-body"></div>
-                <div class="v259-titan-arm left"></div>
-                <div class="v259-titan-arm right"></div>
-              </div>
+              <div class="v259-titan v261-titan-art" id="v260Titan"><svg class="v261-titan-svg" viewBox="0 0 220 260" aria-label="Verseuchter Titan" role="img">
+  <defs>
+    <radialGradient id="v261Aura" cx="50%" cy="42%" r="58%">
+      <stop offset="0%" stop-color="#d46aff" stop-opacity=".55"/>
+      <stop offset="55%" stop-color="#8b36a6" stop-opacity=".18"/>
+      <stop offset="100%" stop-color="#2a102f" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="v261Body" x1="0" x2="1">
+      <stop offset="0%" stop-color="#26142b"/>
+      <stop offset="46%" stop-color="#6f2f7d"/>
+      <stop offset="100%" stop-color="#1b101f"/>
+    </linearGradient>
+    <linearGradient id="v261Skin" x1="0" x2="1">
+      <stop offset="0%" stop-color="#55624a"/>
+      <stop offset="50%" stop-color="#8a9a69"/>
+      <stop offset="100%" stop-color="#384032"/>
+    </linearGradient>
+    <filter id="v261Glow">
+      <feGaussianBlur stdDeviation="4" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <ellipse cx="110" cy="128" rx="101" ry="113" fill="url(#v261Aura)"/>
+  <g class="v261-titan-shadow">
+    <ellipse cx="110" cy="236" rx="73" ry="13" fill="#000" opacity=".48"/>
+  </g>
+  <g class="v261-titan-creature">
+    <path d="M61 87 C36 102 28 134 35 175 C39 200 53 218 72 226 L83 179 L77 117 Z" fill="#412048" stroke="#8e3fa0" stroke-width="5"/>
+    <path d="M159 87 C184 102 192 134 185 175 C181 200 167 218 148 226 L137 179 L143 117 Z" fill="#412048" stroke="#8e3fa0" stroke-width="5"/>
+    <path d="M68 92 C71 68 87 54 110 52 C133 54 149 68 152 92 L153 179 C149 213 133 229 110 233 C87 229 71 213 67 179 Z" fill="url(#v261Body)" stroke="#a44ab6" stroke-width="6"/>
+    <path d="M78 63 C73 42 83 23 102 19 L99 43 Z" fill="#5a673f" stroke="#a7bd75" stroke-width="4"/>
+    <path d="M142 63 C147 42 137 23 118 19 L121 43 Z" fill="#5a673f" stroke="#a7bd75" stroke-width="4"/>
+    <path d="M82 69 C83 39 137 39 138 69 C137 95 127 108 110 111 C93 108 83 95 82 69 Z" fill="url(#v261Skin)" stroke="#b3c58b" stroke-width="5"/>
+    <path d="M89 79 Q99 71 105 79" fill="none" stroke="#f4f36c" stroke-width="5" stroke-linecap="round"/>
+    <path d="M115 79 Q121 71 131 79" fill="none" stroke="#f4f36c" stroke-width="5" stroke-linecap="round"/>
+    <path d="M96 94 Q110 103 124 94" fill="none" stroke="#291727" stroke-width="5" stroke-linecap="round"/>
+    <circle cx="110" cy="139" r="25" fill="#4b1b57" stroke="#db65ef" stroke-width="5"/>
+    <path d="M110 119 L121 138 L112 139 L120 158 L100 142 L108 140 Z" fill="#e575ff" filter="url(#v261Glow)"/>
+    <g fill="#8ff06f" filter="url(#v261Glow)">
+      <circle cx="70" cy="127" r="6"/><circle cx="150" cy="120" r="5"/><circle cx="80" cy="183" r="5"/><circle cx="144" cy="185" r="7"/>
+    </g>
+    <g stroke="#8ff06f" stroke-width="4" fill="none" stroke-linecap="round">
+      <path d="M70 127 l-13 -11"/><path d="M150 120 l13 -13"/><path d="M80 183 l-15 12"/><path d="M144 185 l15 13"/>
+    </g>
+    <path d="M52 92 l-18 -17 M168 92 l18 -17" stroke="#b868ce" stroke-width="6" stroke-linecap="round"/>
+  </g>
+  <g class="v261-spores" fill="#a7ff7b">
+    <circle cx="35" cy="58" r="3"/><circle cx="182" cy="51" r="4"/><circle cx="28" cy="146" r="2.5"/><circle cx="190" cy="161" r="3"/>
+  </g>
+</svg></div>
               <b>Verseuchter Titan</b>
             </div>
             <div id="v260DamagePop" class="v259-damage-pop"></div>
@@ -802,13 +845,56 @@ document.documentElement.classList.remove('v224-app-ready');
               </div>
               <div class="v259-vs">⚔️</div>
               <div class="v259-boss-side">
-                <div class="v259-titan" id="v259Titan">
-                  <div class="v259-titan-aura"></div>
-                  <div class="v259-titan-head">☣</div>
-                  <div class="v259-titan-body"></div>
-                  <div class="v259-titan-arm left"></div>
-                  <div class="v259-titan-arm right"></div>
-                </div>
+                <div class="v259-titan v261-titan-art" id="v259Titan"><svg class="v261-titan-svg" viewBox="0 0 220 260" aria-label="Verseuchter Titan" role="img">
+  <defs>
+    <radialGradient id="v261Aura" cx="50%" cy="42%" r="58%">
+      <stop offset="0%" stop-color="#d46aff" stop-opacity=".55"/>
+      <stop offset="55%" stop-color="#8b36a6" stop-opacity=".18"/>
+      <stop offset="100%" stop-color="#2a102f" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="v261Body" x1="0" x2="1">
+      <stop offset="0%" stop-color="#26142b"/>
+      <stop offset="46%" stop-color="#6f2f7d"/>
+      <stop offset="100%" stop-color="#1b101f"/>
+    </linearGradient>
+    <linearGradient id="v261Skin" x1="0" x2="1">
+      <stop offset="0%" stop-color="#55624a"/>
+      <stop offset="50%" stop-color="#8a9a69"/>
+      <stop offset="100%" stop-color="#384032"/>
+    </linearGradient>
+    <filter id="v261Glow">
+      <feGaussianBlur stdDeviation="4" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <ellipse cx="110" cy="128" rx="101" ry="113" fill="url(#v261Aura)"/>
+  <g class="v261-titan-shadow">
+    <ellipse cx="110" cy="236" rx="73" ry="13" fill="#000" opacity=".48"/>
+  </g>
+  <g class="v261-titan-creature">
+    <path d="M61 87 C36 102 28 134 35 175 C39 200 53 218 72 226 L83 179 L77 117 Z" fill="#412048" stroke="#8e3fa0" stroke-width="5"/>
+    <path d="M159 87 C184 102 192 134 185 175 C181 200 167 218 148 226 L137 179 L143 117 Z" fill="#412048" stroke="#8e3fa0" stroke-width="5"/>
+    <path d="M68 92 C71 68 87 54 110 52 C133 54 149 68 152 92 L153 179 C149 213 133 229 110 233 C87 229 71 213 67 179 Z" fill="url(#v261Body)" stroke="#a44ab6" stroke-width="6"/>
+    <path d="M78 63 C73 42 83 23 102 19 L99 43 Z" fill="#5a673f" stroke="#a7bd75" stroke-width="4"/>
+    <path d="M142 63 C147 42 137 23 118 19 L121 43 Z" fill="#5a673f" stroke="#a7bd75" stroke-width="4"/>
+    <path d="M82 69 C83 39 137 39 138 69 C137 95 127 108 110 111 C93 108 83 95 82 69 Z" fill="url(#v261Skin)" stroke="#b3c58b" stroke-width="5"/>
+    <path d="M89 79 Q99 71 105 79" fill="none" stroke="#f4f36c" stroke-width="5" stroke-linecap="round"/>
+    <path d="M115 79 Q121 71 131 79" fill="none" stroke="#f4f36c" stroke-width="5" stroke-linecap="round"/>
+    <path d="M96 94 Q110 103 124 94" fill="none" stroke="#291727" stroke-width="5" stroke-linecap="round"/>
+    <circle cx="110" cy="139" r="25" fill="#4b1b57" stroke="#db65ef" stroke-width="5"/>
+    <path d="M110 119 L121 138 L112 139 L120 158 L100 142 L108 140 Z" fill="#e575ff" filter="url(#v261Glow)"/>
+    <g fill="#8ff06f" filter="url(#v261Glow)">
+      <circle cx="70" cy="127" r="6"/><circle cx="150" cy="120" r="5"/><circle cx="80" cy="183" r="5"/><circle cx="144" cy="185" r="7"/>
+    </g>
+    <g stroke="#8ff06f" stroke-width="4" fill="none" stroke-linecap="round">
+      <path d="M70 127 l-13 -11"/><path d="M150 120 l13 -13"/><path d="M80 183 l-15 12"/><path d="M144 185 l15 13"/>
+    </g>
+    <path d="M52 92 l-18 -17 M168 92 l18 -17" stroke="#b868ce" stroke-width="6" stroke-linecap="round"/>
+  </g>
+  <g class="v261-spores" fill="#a7ff7b">
+    <circle cx="35" cy="58" r="3"/><circle cx="182" cy="51" r="4"/><circle cx="28" cy="146" r="2.5"/><circle cx="190" cy="161" r="3"/>
+  </g>
+</svg></div>
                 <b>Verseuchter Titan</b>
               </div>
               <div id="v259DamagePop" class="v259-damage-pop"></div>
@@ -3291,7 +3377,7 @@ header{
 
 function v037SyncVersion(){
   document.querySelectorAll('.version').forEach(el=>{
-    el.textContent='V2.60 Stable';
+    el.textContent='V2.61 Stable';
   });
 }
 
@@ -3646,7 +3732,7 @@ render=function(){
   v038BaseRender();
   v038BindReroll();
   v038LocationPolish();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.60 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
 };
 
 try{
@@ -3717,7 +3803,7 @@ try{
 <script>
 /* V0.39 keep version label synced */
 (function(){
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.60 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
 })();
 </script>
 
@@ -4166,7 +4252,7 @@ header{
 <script>
 /* V0.40 unified visual behavior + version sync */
 function v040Polish(){
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.60 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
   document.querySelectorAll('.btn').forEach(b=>b.setAttribute('type','button'));
   document.querySelectorAll('.shop-item,.inv-item,.skill-card,.seed-card,.equip-card,.quest,.slot').forEach(el=>{
     el.style.willChange='transform';
@@ -4438,7 +4524,7 @@ function v41UpgradeWorldPlaces(){
 const v41BaseRender=render;
 render=function(){
   v41BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.60 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
   v41InstallPortrait();
   v41InstallNpcBanners();
   v41UpgradeShopIcons();
@@ -4644,7 +4730,7 @@ const v042BaseRender=render;
 render=function(){
   v042EnsureNineShopSlots();
   v042BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.60 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
 };
 
 try{
@@ -5027,7 +5113,7 @@ function v043EmptyStates(){
 const v043BaseRender=render;
 render=function(){
   v043BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.60 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
   v043EquipSlotArt();
   v043BattlePlayerArt();
   v043SceneLabels();
@@ -5323,7 +5409,7 @@ function v044MapTitles(){
 const v044BaseRender=render;
 render=function(){
   v044BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.60 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
   v044AddWorldRegions();
   v044AddDungeonRegions();
   v044MapTitles();
@@ -5785,7 +5871,7 @@ function v048InstallFight(){
 const v048BaseRender=render;
 render=function(){
   v048BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.60 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
   v048InstallFight();
   renderDungeon();
 
@@ -6036,7 +6122,7 @@ header{
 <script>
 /* V0.49 visual-only hooks */
 function v049Polish(){
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.60 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
 
   document.querySelectorAll('.inv-item,.shop-item,.skill-card,.quest,.slot,.grow-slot').forEach(el=>{
     el.style.willChange='transform';
@@ -6292,7 +6378,7 @@ header{
 <script>
 /* V0.50 visual hooks only */
 function v050Polish(){
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.60 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
 
   /* Add section-specific body classes for easier game theming */
   document.querySelectorAll('.screen').forEach(screen=>{
@@ -6488,7 +6574,7 @@ h1,h2,h3,h4,.item-name,.shop-item h3,.skill-title,.center-name,.char-title{
 <script>
 /* V0.51 visual-only continuation */
 function v051Polish(){
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.60 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
 
   document.querySelectorAll('.shop-item,.inv-item,.quest,.skill-card,.seed-card,.equip-card').forEach(el=>{
     el.style.willChange='transform';
@@ -6711,7 +6797,7 @@ function v052InstallSceneBanners(){
 }
 
 function v052Polish(){
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.60 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
   v052InstallSceneBanners();
 }
 
@@ -6936,7 +7022,7 @@ header:after{
 <script>
 /* V0.53 visual-only continuation */
 function v053Polish(){
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.60 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
 
   document.querySelectorAll('.btn,.stat,.shop-item,.inv-item,.quest,.skill-card,.grow-slot,.world-map-place,.dungeon-node').forEach(el=>{
     el.style.willChange='transform';
@@ -7388,7 +7474,7 @@ function v054BindShopButtons(){
 const v054BaseRender=render;
 render=function(){
   v054BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.60 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
   v054BindShopButtons();
 };
 
@@ -7565,7 +7651,7 @@ function v055AddRarityHint(){
 const v055BaseRender=render;
 render=function(){
   v055BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.60 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
   v055AddRarityHint();
 };
 
@@ -7891,7 +7977,7 @@ function v056AddShopHint(){
 const v056BaseRender=render;
 render=function(){
   v056BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.60 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
   v056AddShopHint();
 
   /* Rebind current shop cards after each render. */
@@ -8236,7 +8322,7 @@ if(!s.v057ShopCore){
 const v057BaseRender=render;
 render=function(){
   v057BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.60 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
   renderShop();
 };
 
@@ -8399,7 +8485,7 @@ render=function(){
     v058SafeRefreshAfterPurchase();
   }
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.60 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
   v058EnsureLegacyRenderAnchors();
 };
 
@@ -8660,7 +8746,7 @@ function v059BindMaterialButtons(){
 const v059BaseRender=render;
 render=function(){
   v059BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.60 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
   v059BindMaterialButtons();
 };
 
@@ -8929,7 +9015,7 @@ renderDungeon=function(){
 const v060BaseRender=render;
 render=function(){
   v060BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.60 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
   v060InstallFight();
 };
 
@@ -8957,7 +9043,7 @@ animClass=function(el,cl,ms=400){
 const v061BaseRender=render;
 render=function(){
   v061BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.60 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
 };
 
 try{render();}catch(e){console.error('V0.61 init',e);}
@@ -9005,7 +9091,7 @@ render=function(){
   }
 
   v062BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.60 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
 };
 
 try{render();}catch(e){console.error('V0.62 shop size',e);}
@@ -9496,7 +9582,7 @@ render=function(){
   v063EnsureUi();
   v063BindResetButtons();
   v063PatchClassChoice();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.60 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
 };
 
 try{
@@ -9965,13 +10051,13 @@ renderDungeon=function(){
     v064UpgradeBattle();
   }
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.60 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
 };
 
 const v064BaseRender=render;
 render=function(){
   v064BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.60 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
   try{
     if(document.querySelector('#dungeon')?.classList.contains('active')){
       renderDungeon();
@@ -10358,7 +10444,7 @@ const v065BaseRenderDungeon=renderDungeon;
 renderDungeon=function(){
   if(s.dungeon.layer==='world'){
     v065RenderWorld();
-    document.querySelectorAll('.version').forEach(el=>el.textContent='V2.60 Stable');
+    document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
     return;
   }
 
@@ -10369,13 +10455,13 @@ renderDungeon=function(){
     v065BindRoomNodes();
   }
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.60 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
 };
 
 const v065BaseRender=render;
 render=function(){
   v065BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.60 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
 
   if(document.querySelector('#dungeon')?.classList.contains('active')){
     try{renderDungeon();}catch(e){console.error('V0.65 dungeon render',e);}
@@ -10515,7 +10601,7 @@ function v066OpenDungeon(i){
       v065BindRoomNodes();
     }
 
-    document.querySelectorAll('.version').forEach(el=>el.textContent='V2.60 Stable');
+    document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
     window.scrollTo({top:0,behavior:'smooth'});
   }catch(e){
     console.error('V0.66 open dungeon',e);
@@ -10562,7 +10648,7 @@ v065RenderWorld=function(){
 const v066BaseRender=render;
 render=function(){
   v066BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.60 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
 
   if(document.querySelector('#dungeon')?.classList.contains('active') &&
      s.dungeon?.layer==='world'){
@@ -10877,7 +10963,7 @@ if(typeof v032Go==='function'){
 const v067OldRender=render;
 render=function(){
   v067OldRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.60 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
 
   if(document.querySelector('#dungeon')?.classList.contains('active')){
     try{renderDungeon();}catch(e){console.error('V0.67 renderDungeon',e);}
@@ -11215,13 +11301,13 @@ renderDungeon=function(){
     try{v064RenderMap();}catch(e){}
   }
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.60 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
 };
 
 const v068BaseRender=render;
 render=function(){
   v068BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.60 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
 
   if(document.querySelector('#dungeon')?.classList.contains('active')){
     try{renderDungeon();}catch(e){console.error('V0.68 dungeon render',e);}
@@ -11299,7 +11385,7 @@ const v069BaseRender=render;
 render=function(){
   v069BaseRender();
   v069SyncCurrencies();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.60 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
 };
 
 try{
@@ -11397,7 +11483,7 @@ const v070BaseRender=render;
 render=function(){
   v070BaseRender();
   v070HighlightPrimaryAttribute();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.60 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
 };
 
 try{
@@ -11850,7 +11936,7 @@ const v072BaseRender=render;
 render=function(){
   v072BaseRender();
   v072RenderSocial();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.60 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
 };
 
 try{
@@ -12402,7 +12488,7 @@ function v073ScheduleProfileSync(){
 const v073BaseRender=render;
 render=function(){
   v073BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.60 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
   v073ScheduleProfileSync();
 };
 
@@ -12601,7 +12687,7 @@ v072SearchPlayer=v073SearchPlayer;
 const v074BaseRender=render;
 render=function(){
   v074BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.60 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
   setTimeout(()=>v074BindProfileRows(),0);
 };
 (async()=>{if(await v073Init()){await v073SyncProfile(true)}})();
@@ -12822,7 +12908,7 @@ const v077OldAddXp=addXp;
 addXp=function(n){return v077OldAddXp(v077ModifyXp(n))};
 
 const v077BaseRender=render;
-render=function(){v077BaseRender();document.querySelectorAll('.version').forEach(e=>e.textContent='V2.60 Stable');v077InjectGrow();setTimeout(v077InjectCharacterFx,0)};
+render=function(){v077BaseRender();document.querySelectorAll('.version').forEach(e=>e.textContent='V2.61 Stable');v077InjectGrow();setTimeout(v077InjectCharacterFx,0)};
 
 setInterval(()=>{
   const b=v077Buff();
@@ -13126,7 +13212,7 @@ const v079BaseRender=render;
 render=function(){
   v079BaseRender();
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.60 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
 
   setTimeout(()=>{
     try{v079UpdateBuffFx();}catch(e){console.error('V0.79 buff fx',e);}
@@ -13325,7 +13411,7 @@ v029ShowClassChoice=function(){
 const v080BaseRender=render;
 render=function(){
   v080BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.60 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
   try{v41InstallPortrait()}catch(e){console.error('V0.80 portrait',e)}
   /* V0.79 glitter is attached after portrait exists. */
   setTimeout(()=>{
@@ -13688,7 +13774,7 @@ async function v083FixHallList(){
 const v083BaseRender=render;
 render=function(){
   v083BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.60 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
   setTimeout(v083FixHallList,0);
 };
 
@@ -13852,7 +13938,7 @@ v073ProfilePayload=function(){
 const v084BaseRender=render;
 render=function(){
   v084BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.60 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
 };
 </script>
 
@@ -14079,7 +14165,7 @@ v032Go=function(id){
 const v085BaseRender=render;
 render=function(){
   v085BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.60 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
 
   if(document.querySelector('#world')?.classList.contains('active')){
     v085InstallWorld();
@@ -14231,7 +14317,7 @@ v032Go=function(id){
 const v086BaseRender=render;
 render=function(){
   v086BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.60 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
   v086PolishBrand();
   v086RemoveSlashNArtifacts();
   v086BuildCompleteMenu();
@@ -14307,7 +14393,7 @@ function v087FixMainAttributeBadge(){
 const v087BaseRender=render;
 render=function(){
   v087BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.60 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
   requestAnimationFrame(v087FixMainAttributeBadge);
 };
 
@@ -14339,7 +14425,7 @@ try{
 const v088BaseRender=render;
 render=function(){
   v088BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.60 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
 };
 </script>
 
@@ -14466,7 +14552,7 @@ v030Offer=function(it,fn,i){
 const v089BaseRender=render;
 render=function(){
   v089BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.60 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
   try{renderShop()}catch(e){console.error('V0.89 shop comparison',e)}
 };
 </script>
@@ -14585,7 +14671,7 @@ v057OfferHtml=function(it,i,kind){
 const v090BaseRender=render;
 render=function(){
   v090BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.60 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
   try{renderShop()}catch(e){console.error('V0.90 shop comparison',e)}
 };
 
@@ -14614,7 +14700,7 @@ localStorage.setItem(KEY,JSON.stringify(s));
 const v092BaseRender=render;
 render=function(){
   v092BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.60 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
 };
 </script>
 
@@ -14942,7 +15028,7 @@ document.querySelector('#v093SaveNews')?.addEventListener('click',v093SaveNews);
 const v093BaseRender=render;
 render=function(){
   v093BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.60 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
   v093BuildMenu();
 };
 
@@ -15065,7 +15151,7 @@ v085ActiveEvents=function(){
 const v094BaseRender=render;
 render=function(){
   v094BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.60 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
 
   /* Update visible quest XP previews to show doubled amount while event is live. */
   if(v094XpEventActive()){
@@ -15170,7 +15256,7 @@ document.addEventListener('click',()=>{
 const v095BaseRender=render;
 render=function(){
   v095BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.60 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
   requestAnimationFrame(v095DecorateXp);
 };
 
@@ -15248,7 +15334,7 @@ function v096DecorateQuestXp(){
 const v096BaseRender=render;
 render=function(){
   v096BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.60 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
   requestAnimationFrame(v096DecorateQuestXp);
 };
 
@@ -15286,7 +15372,7 @@ function v097ReplaceQuestStars(){
 const v097BaseRender=render;
 render=function(){
   v097BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.60 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
   requestAnimationFrame(v097ReplaceQuestStars);
 };
 
@@ -15382,7 +15468,7 @@ function v098QuestPreview(){
 const v098BaseRender=render;
 render=function(){
   v098BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.60 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
   requestAnimationFrame(v098QuestPreview);
 };
 
@@ -15513,7 +15599,7 @@ function v099PaintQuestXp(){
 const v099BaseRender=render;
 render=function(){
   v099BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.60 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
   requestAnimationFrame(v099PaintQuestXp);
 };
 
@@ -15670,7 +15756,7 @@ function v100PaintDungeonXp(){
 const v100BaseRender=render;
 render=function(){
   v100BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.60 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
   requestAnimationFrame(v100PaintDungeonXp);
   setTimeout(()=>{
     try{v068InstallFight()}catch(e){}
@@ -15776,7 +15862,7 @@ addXp=function(n){
 const v101BaseRender=render;
 render=function(){
   v101BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.60 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
 };
 </script>
 
@@ -15903,7 +15989,7 @@ render=function(){
   const before=Number(s.level)||1;
   const result=v102BaseRender();
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.60 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
 
   requestAnimationFrame(()=>{
     try{v102DetectLevelChange()}catch(e){console.error('V1.02 level detection',e)}
@@ -16168,7 +16254,7 @@ v093AdminLoadLists=async function(){
 const v103BaseRender=render;
 render=function(){
   v103BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.60 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
   if(v093IsAdmin)v103InstallPlayerAdmin();
 };
 
@@ -16294,7 +16380,7 @@ v103InstallPlayerAdmin=function(){
 const v105BaseRender=render;
 render=function(){
   const result=v105BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.60 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
   if(v093IsAdmin){
     v103InstallPlayerAdmin();
     v105InstallRewards();
@@ -16492,7 +16578,7 @@ claimQuest=function(){
 const v106BaseRender=render;
 render=function(){
   const result=v106BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.60 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
   v106InstallBook();
   v106CheckAchievements(true);
   return result;
@@ -16557,7 +16643,7 @@ v106InstallBook=function(){
 const v107BaseRender=render;
 render=function(){
   const result=v107BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.60 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
   requestAnimationFrame(v107PlaceBook);
   return result;
 };
@@ -16676,7 +16762,7 @@ if(!s.v108ItemPool){
 const v108BaseRender=render;
 render=function(){
   const result=v108BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.60 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
   return result;
 };
 </script>
@@ -16835,7 +16921,7 @@ const v109BaseRender=render;
 render=function(){
   v109ResetDaily();
   const result=v109BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.60 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
   return result;
 };
 </script>
@@ -17029,7 +17115,7 @@ v085ActiveEvents=function(){
 const v110BaseRender=render;
 render=function(){
   const result=v110BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.60 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
   requestAnimationFrame(v110InstallEventButton);
   return result;
 };
@@ -17359,7 +17445,7 @@ v110InstallEventButton=function(){v111InstallWorldBossCard()};
 const v111BaseRender=render;
 render=function(){
   const result=v111BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.60 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
   requestAnimationFrame(v111InstallWorldBossCard);
   return result;
 };
@@ -17444,7 +17530,7 @@ render=function(){
   const result=v112BaseRender();
 
   v112EnsureWorldBossState();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.60 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
 
   return result;
 };
@@ -17513,7 +17599,7 @@ v110Fight=function(){
 const v113BaseRender=render;
 render=function(){
   const result=v113BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.60 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
   return result;
 };
 </script>
@@ -17685,7 +17771,7 @@ v110Fight=async function(){
 const v114BaseRender=render;
 render=function(){
   const result=v114BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.60 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
   return result;
 };
 
@@ -17873,7 +17959,7 @@ v114AskRetry=function(){
 const v115BaseRender=render;
 render=function(){
   const result=v115BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.60 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
   return result;
 };
 
@@ -18060,7 +18146,7 @@ v074OpenProfile=async function(id){
 const v116BaseRender=render;
 render=function(){
   const result=v116BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.60 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
   return result;
 };
 
@@ -18239,7 +18325,7 @@ document.addEventListener('click',async e=>{
 const v117BaseRender=render;
 render=function(){
   const result=v117BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.60 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
   setTimeout(()=>{v117BindDampf();v117BindReset();v117PatchClassModal()},0);
   return result;
 };
@@ -18640,7 +18726,7 @@ v085InstallWorld=function(){
 const v118BaseRender=render;
 render=function(){
   const result=v118BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.60 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
   requestAnimationFrame(v111InstallWorldBossCard);
   return result;
 };
@@ -18832,7 +18918,7 @@ header .resource-stats .stat:nth-child(4) b{
 const v119BaseRender=render;
 render=function(){
   const result=v119BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.60 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
   return result;
 };
 </script>
@@ -18969,7 +19055,7 @@ function v120InstallCountdown(){
 const v120BaseRender=render;
 render=function(){
   const result=v120BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.60 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
   requestAnimationFrame(v120InstallCountdown);
   return result;
 };
@@ -19183,7 +19269,7 @@ const v121BaseRender=render;
 render=function(){
   v121SanitizeMagicStock();
   const result=v121BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.60 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
   requestAnimationFrame(v121PaintShopInfo);
   return result;
 };
@@ -19526,7 +19612,7 @@ const v122BaseRender=render;
 render=function(){
   v122MigrateAllSockets();
   const result=v122BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.60 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
   return result;
 };
 
@@ -19854,7 +19940,7 @@ function v123PolishEquipment(){
 const v123BaseRender=render;
 render=function(){
   const result=v123BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.60 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
   requestAnimationFrame(v123PolishEquipment);
   return result;
 };
@@ -20104,7 +20190,7 @@ function v124ClampCharacterWidth(){
 const v124BaseRender=render;
 render=function(){
   const result=v124BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.60 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
   requestAnimationFrame(v124ClampCharacterWidth);
   return result;
 };
@@ -20567,7 +20653,7 @@ render=function(){
   if(hp)hp.textContent=v125Fmt(maxHp());
   if(cp)cp.textContent=v125Fmt(combatPower());
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.60 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
   return result;
 };
 
@@ -20711,7 +20797,7 @@ if(typeof V125_ATTRS!=='undefined'){
 const v126BaseRender=render;
 render=function(){
   const result=v126BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.60 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
   requestAnimationFrame(()=>v126RepairCharacter(false));
   return result;
 };
@@ -20901,7 +20987,7 @@ render=function(){
   const energyEl=document.querySelector('#energy');
   if(energyEl)energyEl.textContent=`${Math.floor(Number(s.energy)||0)}/300`;
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.60 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
   requestAnimationFrame(v127AddResetInfo);
   return result;
 };
@@ -21182,7 +21268,7 @@ setTimeout(()=>{
 
 <script id="v128-premium-skill-ui-script">
 function v128SkillPolish(){
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.60 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
   const card=document.querySelector('#character .card:has(#skillTree)');
   if(card)card.setAttribute('data-v128','premium-skills');
 }
@@ -21612,7 +21698,7 @@ function v129PolishDynamicCards(){
     if(it)el.classList.add(v129RarityClass(it));
   });
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.60 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
 }
 const v129BaseRender=render;
 render=function(){
@@ -21774,7 +21860,7 @@ function v130InventoryHeadings(){
 function v130Polish(){
   v130RemoveMerchantCopy();
   v130InventoryHeadings();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.60 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
 }
 const v130BaseRender=render;
 render=function(){
@@ -21807,7 +21893,7 @@ function v131CleanShop(){
     }
   });
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.60 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
 }
 const v131BaseRender=render;
 render=function(){
@@ -22074,7 +22160,7 @@ function v132Polish(){
     });
   }
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.60 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
 }
 const v132BaseRender=render;
 render=function(){
@@ -22287,7 +22373,7 @@ function v133Polish(){
       }
     });
   }
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.60 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
 }
 const v133BaseRender=render;
 render=function(){
@@ -22472,7 +22558,7 @@ function v134Apply(){
    l.innerHTML='<span class="g0">Normal</span><span class="g1">Gewöhnlich</span><span class="g2">Selten</span><span class="g3">Episch</span><span class="g4">Legendär</span><span class="g5">Mystisch</span>';
    card.appendChild(l);
  }
- document.querySelectorAll('.version').forEach(el=>el.textContent='V2.60 Stable');
+ document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
 }
 const v134BaseRender=render;
 render=function(){const r=v134BaseRender();requestAnimationFrame(v134Apply);return r;};
@@ -22635,7 +22721,7 @@ function v135PaintShop(){
       if(arr[i])el.classList.add(v135QualityClassFromItem(arr[i]));
     });
   });
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.60 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
 }
 
 /* Existing V1.34 stock may be based on old weak scaling: refresh once for free. */
@@ -22870,7 +22956,7 @@ function v138PaintMerchant(){
     });
   });
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.60 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
 }
 
 const v138BaseRender=render;
@@ -23068,7 +23154,7 @@ v030Offer=function(it,fn,i){
 
 function v139RepaintShop(){
   try{renderShop()}catch(e){console.error('V1.39 shop repaint',e)}
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.60 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
 }
 
 const v139BaseRender=render;
@@ -23431,7 +23517,7 @@ function v141BuildSettings(){
           <button type="button" class="btn" id="v141Delete">🗑️ Account löschen</button>
         </div>
 
-        <div class="v141-version-line" id="v141VersionLine">V2.60 Stable</div>
+        <div class="v141-version-line" id="v141VersionLine">V2.61 Stable</div>
       </div>`;
   }
 
@@ -23624,7 +23710,7 @@ setTimeout(()=>{
 const v141BaseRender=render;
 render=function(){
   const r=v141BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.60 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
   requestAnimationFrame(()=>{
     v141BuildSettings();
     v141ApplySettings();
@@ -23681,7 +23767,7 @@ window.addEventListener('scroll',v142PositionSettings,{passive:true});
 const v142BaseRender=render;
 render=function(){
   const r=v142BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.60 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
   requestAnimationFrame(v142PositionSettings);
   return r;
 };
@@ -23896,7 +23982,7 @@ render=function(){
     v145SaveScopedLocal();
   }
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.60 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
   return r;
 };
 
@@ -23912,7 +23998,7 @@ setTimeout(()=>{
 
 
 <script id="v200-stable-core">
-/* ===== Grow Legends V2.60 Stable =====
+/* ===== Grow Legends V2.61 Stable =====
    One auth listener. One email handler. One Google handler.
    One cloud resolver. One character creator. One admin poll.
 */
@@ -24151,7 +24237,7 @@ function v200RenderLoginInfo(){
     let n=null;
     try{ n=(window.v093News||[]).find(x=>x && x.is_published!==false)||null; }catch(e){}
 
-    const title=n?.title||'V2.60 Stable';
+    const title=n?.title||'V2.61 Stable';
     const version=n?.version||'V2.00';
     const text=n?.body||n?.text||'Technische Stabilisierung von Login, Cloud-Speicherung und Charaktererstellung.';
 
@@ -24991,7 +25077,7 @@ function v200BindSettings(){
   if(cancel)cancel.onclick=v141CloseDelete;
 
   const version=document.querySelector('#v141VersionLine');
-  if(version)version.textContent='V2.60 Stable';
+  if(version)version.textContent='V2.61 Stable';
 }
 
 /* One admin poll, content-aware. */
@@ -25120,7 +25206,7 @@ const v200BaseRender=render;
 render=function(){
   const r=v200BaseRender();
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.60 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
 
   if(v200DurableUser() && v200CharacterComplete() && v075CloudLoadedFor===v073User.id){
     v075ScheduleSave();
@@ -25293,7 +25379,7 @@ render=function(){
   const result=v201BaseRender();
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V2.60 Stable');
+    .forEach(el=>el.textContent='V2.61 Stable');
 
   const world=document.querySelector('#world');
   if(world?.classList.contains('active')){
@@ -25681,7 +25767,7 @@ setInterval(()=>{
 const v204BaseRender=render;
 render=function(){
   const r=v204BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.60 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
   requestAnimationFrame(()=>{
     v086BuildCompleteMenu();
     v204InstallAvatarBadge();
@@ -25733,7 +25819,7 @@ function v205InstallBudScale(){
 const v205BaseRender=render;
 render=function(){
   const r=v205BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.60 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
   requestAnimationFrame(v205InstallBudScale);
   return r;
 };
@@ -26034,7 +26120,7 @@ render=function(){
   const r=v206BaseRender();
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V2.60 Stable');
+    .forEach(el=>el.textContent='V2.61 Stable');
 
   requestAnimationFrame(()=>{
     const find=document.querySelector('#v204FindBtn');
@@ -26207,7 +26293,7 @@ render=function(){
   const r=v207BaseRender();
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V2.60 Stable');
+    .forEach(el=>el.textContent='V2.61 Stable');
 
   requestAnimationFrame(()=>{
     v207EnsurePvpState();
@@ -26654,7 +26740,7 @@ render=function(){
   const r=v209BaseRender();
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V2.60 Stable');
+    .forEach(el=>el.textContent='V2.61 Stable');
 
   requestAnimationFrame(()=>{
     const fight=document.querySelector('#v204FightBtn');
@@ -27194,7 +27280,7 @@ render=function(){
   const r=v210BaseRender();
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V2.60 Stable');
+    .forEach(el=>el.textContent='V2.61 Stable');
 
   requestAnimationFrame(()=>{
     v210FormatCharacterAttributes();
@@ -27577,7 +27663,7 @@ render=function(){
   const r=v211BaseRender();
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V2.60 Stable');
+    .forEach(el=>el.textContent='V2.61 Stable');
 
   return r;
 };
@@ -27624,7 +27710,7 @@ const v213BaseRender=render;
 render=function(){
   const r=v213BaseRender();
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V2.60 Stable');
+    .forEach(el=>el.textContent='V2.61 Stable');
   return r;
 };
 </script>
@@ -27870,7 +27956,7 @@ function v224BuildCurrentUi(){
     }catch(e){}
 
     document.querySelectorAll('.version')
-      .forEach(el=>el.textContent='V2.60 Stable');
+      .forEach(el=>el.textContent='V2.61 Stable');
 
     return true;
   }catch(e){
@@ -28010,7 +28096,7 @@ function v225EnsureSettingsAccountActions(){
     menu.appendChild(version);
   }
 
-  version.textContent='V2.60 Stable';
+  version.textContent='V2.61 Stable';
 
   const logout=menu.querySelector('#v141Logout');
   if(logout){
@@ -28079,7 +28165,7 @@ setTimeout(()=>{
 
 setTimeout(()=>{
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V2.60 Stable');
+    .forEach(el=>el.textContent='V2.61 Stable');
 },300);
 </script>
 
@@ -28411,7 +28497,7 @@ setTimeout(()=>{
 
 setTimeout(()=>{
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V2.60 Stable');
+    .forEach(el=>el.textContent='V2.61 Stable');
 },300);
 </script>
 
@@ -28630,7 +28716,7 @@ setTimeout(()=>{
 
 setTimeout(()=>{
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V2.60 Stable');
+    .forEach(el=>el.textContent='V2.61 Stable');
 },350);
 </script>
 
@@ -28844,10 +28930,10 @@ setInterval(v230LiveTick,1000);
 
 function v230Version(){
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V2.60 Stable');
+    .forEach(el=>el.textContent='V2.61 Stable');
 
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V2.60 Stable';
+  if(line)line.textContent='V2.61 Stable';
 }
 
 
@@ -29298,10 +29384,10 @@ setTimeout(()=>{
   }catch(e){}
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V2.60 Stable');
+    .forEach(el=>el.textContent='V2.61 Stable');
 
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V2.60 Stable';
+  if(line)line.textContent='V2.61 Stable';
 },300);
 </script>
 
@@ -30046,10 +30132,10 @@ setTimeout(()=>{
   }catch(e){}
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V2.60 Stable');
+    .forEach(el=>el.textContent='V2.61 Stable');
 
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V2.60 Stable';
+  if(line)line.textContent='V2.61 Stable';
 },300);
 </script>
 
@@ -30283,10 +30369,10 @@ setTimeout(()=>{
   }catch(e){}
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V2.60 Stable');
+    .forEach(el=>el.textContent='V2.61 Stable');
 
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V2.60 Stable';
+  if(line)line.textContent='V2.61 Stable';
 },300);
 </script>
 
@@ -30627,10 +30713,10 @@ setTimeout(()=>{
   }
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V2.60 Stable');
+    .forEach(el=>el.textContent='V2.61 Stable');
 
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V2.60 Stable';
+  if(line)line.textContent='V2.61 Stable';
 },320);
 </script>
 
@@ -31014,10 +31100,10 @@ setTimeout(()=>{
   }catch(e){}
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V2.60 Stable');
+    .forEach(el=>el.textContent='V2.61 Stable');
 
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V2.60 Stable';
+  if(line)line.textContent='V2.61 Stable';
 },350);
 </script>
 
@@ -31655,10 +31741,10 @@ setTimeout(()=>{
   }catch(e){}
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V2.60 Stable');
+    .forEach(el=>el.textContent='V2.61 Stable');
 
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V2.60 Stable';
+  if(line)line.textContent='V2.61 Stable';
 },360);
 </script>
 
@@ -31840,9 +31926,9 @@ setTimeout(()=>{
   try{
     if(document.querySelector('#grow')?.classList.contains('active'))renderGrow();
   }catch(e){}
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.60 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V2.60 Stable';
+  if(line)line.textContent='V2.61 Stable';
 },380);
 </script>
 
@@ -31961,9 +32047,9 @@ v238SyncQuestDungeonKeys();
 
 setTimeout(()=>{
   try{v238SyncQuestDungeonKeys()}catch(e){}
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.60 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V2.60 Stable';
+  if(line)line.textContent='V2.61 Stable';
 },400);
 </script>
 
@@ -32101,9 +32187,9 @@ window.addEventListener('focus',()=>{
 setTimeout(()=>{
   try{v239UpdateGrowLive()}catch(e){}
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V2.60 Stable');
+    .forEach(el=>el.textContent='V2.61 Stable');
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V2.60 Stable';
+  if(line)line.textContent='V2.61 Stable';
 },420);
 </script>
 
@@ -32496,10 +32582,10 @@ setTimeout(()=>{
   }catch(e){}
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V2.60 Stable');
+    .forEach(el=>el.textContent='V2.61 Stable');
 
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V2.60 Stable';
+  if(line)line.textContent='V2.61 Stable';
 },440);
 </script>
 
@@ -32730,10 +32816,10 @@ setTimeout(()=>{
   }catch(e){}
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V2.60 Stable');
+    .forEach(el=>el.textContent='V2.61 Stable');
 
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V2.60 Stable';
+  if(line)line.textContent='V2.61 Stable';
 },460);
 </script>
 
@@ -32979,9 +33065,9 @@ setTimeout(()=>{
     }
   }catch(e){}
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.60 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V2.60 Stable';
+  if(line)line.textContent='V2.61 Stable';
 },480);
 </script>
 
@@ -33180,10 +33266,10 @@ setTimeout(()=>{
   }catch(e){}
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V2.60 Stable');
+    .forEach(el=>el.textContent='V2.61 Stable');
 
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V2.60 Stable';
+  if(line)line.textContent='V2.61 Stable';
 },500);
 </script>
 
@@ -33473,10 +33559,10 @@ setTimeout(()=>{
   }catch(e){}
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V2.60 Stable');
+    .forEach(el=>el.textContent='V2.61 Stable');
 
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V2.60 Stable';
+  if(line)line.textContent='V2.61 Stable';
 },520);
 </script>
 
@@ -33604,10 +33690,10 @@ setTimeout(()=>{
   }catch(e){}
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V2.60 Stable');
+    .forEach(el=>el.textContent='V2.61 Stable');
 
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V2.60 Stable';
+  if(line)line.textContent='V2.61 Stable';
 },540);
 </script>
 
@@ -34406,10 +34492,10 @@ setTimeout(()=>{
   }catch(e){}
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V2.60 Stable');
+    .forEach(el=>el.textContent='V2.61 Stable');
 
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V2.60 Stable';
+  if(line)line.textContent='V2.61 Stable';
 },560);
 </script>
 
@@ -34666,10 +34752,10 @@ function v247ShowDungeonReward(data){
 /* Final version stamp. */
 setTimeout(()=>{
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V2.60 Stable');
+    .forEach(el=>el.textContent='V2.61 Stable');
 
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V2.60 Stable';
+  if(line)line.textContent='V2.61 Stable';
 },580);
 </script>
 
@@ -34868,10 +34954,10 @@ setTimeout(()=>{
   }catch(e){}
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V2.60 Stable');
+    .forEach(el=>el.textContent='V2.61 Stable');
 
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V2.60 Stable';
+  if(line)line.textContent='V2.61 Stable';
 },600);
 </script>
 
@@ -34993,10 +35079,10 @@ setTimeout(()=>{
   }
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V2.60 Stable');
+    .forEach(el=>el.textContent='V2.61 Stable');
 
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V2.60 Stable';
+  if(line)line.textContent='V2.61 Stable';
 },640);
 </script>
 
@@ -35386,10 +35472,10 @@ setTimeout(()=>{
   }catch(e){}
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V2.60 Stable');
+    .forEach(el=>el.textContent='V2.61 Stable');
 
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V2.60 Stable';
+  if(line)line.textContent='V2.61 Stable';
 },680);
 </script>
 
@@ -36378,10 +36464,10 @@ setTimeout(()=>{
   }catch(e){}
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V2.60 Stable');
+    .forEach(el=>el.textContent='V2.61 Stable');
 
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V2.60 Stable';
+  if(line)line.textContent='V2.61 Stable';
 },720);
 </script>
 
@@ -36736,8 +36822,8 @@ renderDungeon=function(){
 };
 setTimeout(()=>{
   try{v252ModernizeBattle()}catch(e){}
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.60 Stable');
-  const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V2.60 Stable';
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
+  const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V2.61 Stable';
 },780);
 </script>
 
@@ -37335,10 +37421,10 @@ setTimeout(()=>{
   }catch(e){}
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V2.60 Stable');
+    .forEach(el=>el.textContent='V2.61 Stable');
 
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V2.60 Stable';
+  if(line)line.textContent='V2.61 Stable';
 },820);
 </script>
 
@@ -37614,8 +37700,8 @@ v032Go=function(id){
 setTimeout(()=>{
   v254BindGuild();
   try{v086BuildCompleteMenu()}catch(e){}
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.60 Stable');
-  const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V2.60 Stable';
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
+  const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V2.61 Stable';
 },700);
 </script>
 
@@ -37698,7 +37784,7 @@ const v255BaseLoadGuild=v254LoadGuild;
 v254LoadGuild=async function(){const r=await v255BaseLoadGuild();if(document.querySelector('#guild')?.classList.contains('active')&&v254Membership)await v255LoadBoss();return r};
 document.querySelector('#v255ClaimBossReward')?.addEventListener('click',v255ClaimBossReward);
 setInterval(()=>{if(document.querySelector('#guild')?.classList.contains('active'))v255RenderBoss()},30000);
-setTimeout(()=>{document.querySelectorAll('.version').forEach(el=>el.textContent='V2.60 Stable');const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V2.60 Stable';},760);
+setTimeout(()=>{document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V2.61 Stable';},760);
 </script>
 
 
@@ -37933,8 +38019,8 @@ function v257BindGuildManagement(){
 setTimeout(()=>{
   v257BindGuildManagement();
   if(!v254Guild)v257SearchGuilds();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.60 Stable');
-  const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V2.60 Stable';
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
+  const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V2.61 Stable';
 },760);
 </script>
 
@@ -37982,7 +38068,7 @@ async function v258RunBossTest(){
     box.innerHTML=`
       <div class="v258-test-head"><b>Test abgeschlossen</b><span>${r?.status==='won'?'🏆 TEST-SIEG':'💀 TEST-NIEDERLAGE'}</span></div>
       <div class="v258-test-note">${parts.length} Teilnehmer · ${v255Fmt(totalDamage)} Gesamtschaden · ${v255Fmt(hp)} Boss-HP übrig.<br>Keine Tagesrunde, Belohnungen oder Gilden-Buds verändert.</div>`;
-    v063Toast('Boss-Test abgeschlossen',r?.status==='won'?'success':'info',`${parts.length} Teilnehmer · ${r?.status==='won'?'Sieg':'Niederlage'}`);
+    /* V2.61: result is already visible in the arena; no duplicate toast. */
   }catch(e){
     console.error('V2.58 boss test',e);
     v063Toast('Boss-Test fehlgeschlagen','warn',e?.message||'Bitte V258_GUILD_BOSS_TEST_SQL.sql in Supabase ausführen.');
@@ -37996,8 +38082,8 @@ const v258BaseRenderGuild=v254RenderGuild;
 v254RenderGuild=function(){v258BaseRenderGuild();v258RenderTestAccess();};
 setTimeout(()=>{
   v258RenderTestAccess();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.60 Stable');
-  const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V2.60 Stable';
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
+  const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V2.61 Stable';
 },820);
 </script>
 
@@ -38050,7 +38136,8 @@ async function v259AnimateBossResult(r){
   const max=Math.max(1,Number(r?.boss_max_hp)||1);
   let hp=max;
   arena.style.display='';
-  arena.classList.remove('attack','hit','win');
+  arena.classList.remove('attack','hit','win','v261-final');
+  arena.querySelectorAll('.v261-fight-finished').forEach(el=>el.classList.remove('v261-fight-finished'));
   v259SetBossHp(hp,max);
   const name=document.querySelector('#v259FighterName'),meta=document.querySelector('#v259FighterMeta'),
         avatar=document.querySelector('#v259FighterAvatar'),text=document.querySelector('#v259FightText'),
@@ -38082,6 +38169,11 @@ async function v259AnimateBossResult(r){
     await v259Sleep(650);
   }
 
+  const fighterSide=arena.querySelector('.v259-fighter-side');
+  const vs=arena.querySelector('.v259-vs');
+  if(fighterSide)fighterSide.classList.add('v261-fight-finished');
+  if(vs)vs.classList.add('v261-fight-finished');
+  arena.classList.add('v261-final');
   if(hp<=0){
     arena.classList.add('win');
     if(text)text.textContent='🏆 Der Verseuchte Titan wurde besiegt!';
@@ -38140,7 +38232,8 @@ async function v260AnimateDailyBoss(){
   const max=Math.max(1,Number(v255BossRound.boss_max_hp)||1);
   let hp=max;
   arena.style.display='';
-  arena.classList.remove('attack','hit','win');
+  arena.classList.remove('attack','hit','win','v261-final');
+  arena.querySelectorAll('.v261-fight-finished').forEach(el=>el.classList.remove('v261-fight-finished'));
   v260SetRealBossHp(hp,max);
 
   const name=document.querySelector('#v260FighterName'),
@@ -38182,6 +38275,11 @@ async function v260AnimateDailyBoss(){
   }
 
   const won=v255BossRound.status==='won' || hp<=0;
+  const fighterSide=arena.querySelector('.v259-fighter-side');
+  const vs=arena.querySelector('.v259-vs');
+  if(fighterSide)fighterSide.classList.add('v261-fight-finished');
+  if(vs)vs.classList.add('v261-fight-finished');
+  arena.classList.add('v261-final');
   if(won){
     arena.classList.add('win');
     if(text)text.textContent='🏆 GILDENSIEG – Der Verseuchte Titan wurde besiegt!';
@@ -38226,10 +38324,28 @@ const v260BossClock=setInterval(async()=>{
 
 setTimeout(()=>{
   v260RenderDailyControls();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.60 Stable');
-  const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V2.60 Stable';
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
+  const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V2.61 Stable';
 },900);
 </script>
+
+
+<style id="v261-guild-boss-polish">
+.v261-titan-art{width:142px!important;height:168px!important;filter:drop-shadow(0 0 22px rgba(182,77,213,.38))!important}
+.v261-titan-svg{width:100%;height:100%;overflow:visible}
+.v261-titan-creature{transform-origin:110px 230px;animation:v261TitanIdle 2.2s ease-in-out infinite}
+.v261-spores circle{animation:v261Spore 2.4s ease-in-out infinite}
+.v261-spores circle:nth-child(2){animation-delay:.45s}.v261-spores circle:nth-child(3){animation-delay:.9s}.v261-spores circle:nth-child(4){animation-delay:1.35s}
+@keyframes v261TitanIdle{50%{transform:translateY(-4px) scale(1.015)}}
+@keyframes v261Spore{50%{transform:translateY(-9px);opacity:.4}}
+.v259-arena.hit .v261-titan-creature{animation:v259BossHit .55s ease}
+.v259-arena.win .v261-titan-creature{animation:v259Defeat 1s ease forwards}
+.v261-fight-finished{display:none!important}
+.v259-arena.v261-final .v259-stage{grid-template-columns:1fr;justify-items:center;min-height:190px}
+.v259-arena.v261-final .v259-boss-side{grid-column:1;transform:scale(1.06)}
+.v259-arena.v261-final .v259-damage-pop{display:none}
+.v259-arena.v261-final .v259-fight-text{font-size:9px;padding:10px 6px}
+</style>
 
 </body>
 </html>
