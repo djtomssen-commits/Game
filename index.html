@@ -205,7 +205,7 @@ main{padding:12px}
 
 
 <style id="v200-stable-ui">
-/* ===== Grow Legends V2.61 Stable: consolidated auth UI ===== */
+/* ===== Grow Legends V2.62 Stable: consolidated auth UI ===== */
 html,body{max-width:100%;overflow-x:hidden}
 
 body:has(#v075AuthOverlay.show) > .app,
@@ -516,7 +516,7 @@ document.documentElement.classList.remove('v224-app-ready');
 <body>
 <div class="app">
 <header>
-  <div class="brand"><h1>🌿 Grow Legends</h1><span class="version">V2.61 Stable</span><div class="power">Kampfkraft <b id="power">—</b></div></div>
+  <div class="brand"><h1>🌿 Grow Legends</h1><span class="version">V2.62 Stable</span><div class="power">Kampfkraft <b id="power">—</b></div></div>
   <div class="stats resource-stats"><div class="stat">GOLD<b id="gold">—</b></div><div class="stat">SKILL<b id="points">—</b></div><div class="stat">DAMPF<b id="energy">—</b></div><div class="stat harz-stat">HARZ-TALER<b>🟢 <span id="topHarz">—</span></b></div></div>
 </header>
 <main>
@@ -926,8 +926,14 @@ document.documentElement.classList.remove('v224-app-ready');
         </div>
 
         <div class="v254-card v254-inner">
-          <b>So funktioniert der Gildenkrieg</b>
-          <p class="muted">Beim Start werden Teilnehmer und Werte eingefroren. Das Matchmaking sucht eine ähnlich starke Gilde anhand der tatsächlich gemeldeten Kämpfer. Erfolgreiche Angriffe bringen Punkte; die Siegergilde erhält Gilden-Buds.</p>
+          <div class="section-title"><div><b>⚔️ Täglicher Gildenkrieg</b><div class="muted">Anmeldung bis 18:00 · Kampf ab 19:00 · Gildenboss um 20:00.</div></div><span class="pill" id="v262WarPhase">ANMELDUNG</span></div>
+          <div class="v262-war-score"><div><small>DEINE GILDE</small><b id="v262WarOwnName">—</b><strong id="v262WarOwnScore">0</strong></div><span>:</span><div><small>GEGNER</small><b id="v262WarEnemyName">Noch kein Gegner</b><strong id="v262WarEnemyScore">0</strong></div></div>
+          <div id="v262WarStatus" class="v262-war-status">Melde Mitglieder für Angriff und Verteidigung an.</div>
+          <div id="v262WarStats" class="v262-war-stats"></div>
+          <button type="button" class="btn secondary v255-wide" id="v262WarRefresh">↻ Gildenkrieg aktualisieren</button>
+          <button type="button" class="btn gold v255-wide" id="v262WarWatch" style="display:none">🎬 Gildenkrieg ansehen</button>
+          <button type="button" class="btn gold v255-wide" id="v262WarClaim" style="display:none">🎁 Teilnahmebelohnung abholen</button>
+          <div id="v262WarReplay" class="v262-war-replay"></div>
         </div>
       </div>
     </div>
@@ -3377,7 +3383,7 @@ header{
 
 function v037SyncVersion(){
   document.querySelectorAll('.version').forEach(el=>{
-    el.textContent='V2.61 Stable';
+    el.textContent='V2.62 Stable';
   });
 }
 
@@ -3732,7 +3738,7 @@ render=function(){
   v038BaseRender();
   v038BindReroll();
   v038LocationPolish();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.62 Stable');
 };
 
 try{
@@ -3803,7 +3809,7 @@ try{
 <script>
 /* V0.39 keep version label synced */
 (function(){
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.62 Stable');
 })();
 </script>
 
@@ -4252,7 +4258,7 @@ header{
 <script>
 /* V0.40 unified visual behavior + version sync */
 function v040Polish(){
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.62 Stable');
   document.querySelectorAll('.btn').forEach(b=>b.setAttribute('type','button'));
   document.querySelectorAll('.shop-item,.inv-item,.skill-card,.seed-card,.equip-card,.quest,.slot').forEach(el=>{
     el.style.willChange='transform';
@@ -4524,7 +4530,7 @@ function v41UpgradeWorldPlaces(){
 const v41BaseRender=render;
 render=function(){
   v41BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.62 Stable');
   v41InstallPortrait();
   v41InstallNpcBanners();
   v41UpgradeShopIcons();
@@ -4730,7 +4736,7 @@ const v042BaseRender=render;
 render=function(){
   v042EnsureNineShopSlots();
   v042BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.62 Stable');
 };
 
 try{
@@ -5113,7 +5119,7 @@ function v043EmptyStates(){
 const v043BaseRender=render;
 render=function(){
   v043BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.62 Stable');
   v043EquipSlotArt();
   v043BattlePlayerArt();
   v043SceneLabels();
@@ -5409,7 +5415,7 @@ function v044MapTitles(){
 const v044BaseRender=render;
 render=function(){
   v044BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.62 Stable');
   v044AddWorldRegions();
   v044AddDungeonRegions();
   v044MapTitles();
@@ -5871,7 +5877,7 @@ function v048InstallFight(){
 const v048BaseRender=render;
 render=function(){
   v048BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.62 Stable');
   v048InstallFight();
   renderDungeon();
 
@@ -6122,7 +6128,7 @@ header{
 <script>
 /* V0.49 visual-only hooks */
 function v049Polish(){
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.62 Stable');
 
   document.querySelectorAll('.inv-item,.shop-item,.skill-card,.quest,.slot,.grow-slot').forEach(el=>{
     el.style.willChange='transform';
@@ -6378,7 +6384,7 @@ header{
 <script>
 /* V0.50 visual hooks only */
 function v050Polish(){
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.62 Stable');
 
   /* Add section-specific body classes for easier game theming */
   document.querySelectorAll('.screen').forEach(screen=>{
@@ -6574,7 +6580,7 @@ h1,h2,h3,h4,.item-name,.shop-item h3,.skill-title,.center-name,.char-title{
 <script>
 /* V0.51 visual-only continuation */
 function v051Polish(){
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.62 Stable');
 
   document.querySelectorAll('.shop-item,.inv-item,.quest,.skill-card,.seed-card,.equip-card').forEach(el=>{
     el.style.willChange='transform';
@@ -6797,7 +6803,7 @@ function v052InstallSceneBanners(){
 }
 
 function v052Polish(){
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.62 Stable');
   v052InstallSceneBanners();
 }
 
@@ -7022,7 +7028,7 @@ header:after{
 <script>
 /* V0.53 visual-only continuation */
 function v053Polish(){
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.62 Stable');
 
   document.querySelectorAll('.btn,.stat,.shop-item,.inv-item,.quest,.skill-card,.grow-slot,.world-map-place,.dungeon-node').forEach(el=>{
     el.style.willChange='transform';
@@ -7474,7 +7480,7 @@ function v054BindShopButtons(){
 const v054BaseRender=render;
 render=function(){
   v054BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.62 Stable');
   v054BindShopButtons();
 };
 
@@ -7651,7 +7657,7 @@ function v055AddRarityHint(){
 const v055BaseRender=render;
 render=function(){
   v055BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.62 Stable');
   v055AddRarityHint();
 };
 
@@ -7977,7 +7983,7 @@ function v056AddShopHint(){
 const v056BaseRender=render;
 render=function(){
   v056BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.62 Stable');
   v056AddShopHint();
 
   /* Rebind current shop cards after each render. */
@@ -8322,7 +8328,7 @@ if(!s.v057ShopCore){
 const v057BaseRender=render;
 render=function(){
   v057BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.62 Stable');
   renderShop();
 };
 
@@ -8485,7 +8491,7 @@ render=function(){
     v058SafeRefreshAfterPurchase();
   }
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.62 Stable');
   v058EnsureLegacyRenderAnchors();
 };
 
@@ -8746,7 +8752,7 @@ function v059BindMaterialButtons(){
 const v059BaseRender=render;
 render=function(){
   v059BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.62 Stable');
   v059BindMaterialButtons();
 };
 
@@ -9015,7 +9021,7 @@ renderDungeon=function(){
 const v060BaseRender=render;
 render=function(){
   v060BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.62 Stable');
   v060InstallFight();
 };
 
@@ -9043,7 +9049,7 @@ animClass=function(el,cl,ms=400){
 const v061BaseRender=render;
 render=function(){
   v061BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.62 Stable');
 };
 
 try{render();}catch(e){console.error('V0.61 init',e);}
@@ -9091,7 +9097,7 @@ render=function(){
   }
 
   v062BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.62 Stable');
 };
 
 try{render();}catch(e){console.error('V0.62 shop size',e);}
@@ -9582,7 +9588,7 @@ render=function(){
   v063EnsureUi();
   v063BindResetButtons();
   v063PatchClassChoice();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.62 Stable');
 };
 
 try{
@@ -10051,13 +10057,13 @@ renderDungeon=function(){
     v064UpgradeBattle();
   }
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.62 Stable');
 };
 
 const v064BaseRender=render;
 render=function(){
   v064BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.62 Stable');
   try{
     if(document.querySelector('#dungeon')?.classList.contains('active')){
       renderDungeon();
@@ -10444,7 +10450,7 @@ const v065BaseRenderDungeon=renderDungeon;
 renderDungeon=function(){
   if(s.dungeon.layer==='world'){
     v065RenderWorld();
-    document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
+    document.querySelectorAll('.version').forEach(el=>el.textContent='V2.62 Stable');
     return;
   }
 
@@ -10455,13 +10461,13 @@ renderDungeon=function(){
     v065BindRoomNodes();
   }
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.62 Stable');
 };
 
 const v065BaseRender=render;
 render=function(){
   v065BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.62 Stable');
 
   if(document.querySelector('#dungeon')?.classList.contains('active')){
     try{renderDungeon();}catch(e){console.error('V0.65 dungeon render',e);}
@@ -10601,7 +10607,7 @@ function v066OpenDungeon(i){
       v065BindRoomNodes();
     }
 
-    document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
+    document.querySelectorAll('.version').forEach(el=>el.textContent='V2.62 Stable');
     window.scrollTo({top:0,behavior:'smooth'});
   }catch(e){
     console.error('V0.66 open dungeon',e);
@@ -10648,7 +10654,7 @@ v065RenderWorld=function(){
 const v066BaseRender=render;
 render=function(){
   v066BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.62 Stable');
 
   if(document.querySelector('#dungeon')?.classList.contains('active') &&
      s.dungeon?.layer==='world'){
@@ -10963,7 +10969,7 @@ if(typeof v032Go==='function'){
 const v067OldRender=render;
 render=function(){
   v067OldRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.62 Stable');
 
   if(document.querySelector('#dungeon')?.classList.contains('active')){
     try{renderDungeon();}catch(e){console.error('V0.67 renderDungeon',e);}
@@ -11301,13 +11307,13 @@ renderDungeon=function(){
     try{v064RenderMap();}catch(e){}
   }
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.62 Stable');
 };
 
 const v068BaseRender=render;
 render=function(){
   v068BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.62 Stable');
 
   if(document.querySelector('#dungeon')?.classList.contains('active')){
     try{renderDungeon();}catch(e){console.error('V0.68 dungeon render',e);}
@@ -11385,7 +11391,7 @@ const v069BaseRender=render;
 render=function(){
   v069BaseRender();
   v069SyncCurrencies();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.62 Stable');
 };
 
 try{
@@ -11483,7 +11489,7 @@ const v070BaseRender=render;
 render=function(){
   v070BaseRender();
   v070HighlightPrimaryAttribute();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.62 Stable');
 };
 
 try{
@@ -11936,7 +11942,7 @@ const v072BaseRender=render;
 render=function(){
   v072BaseRender();
   v072RenderSocial();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.62 Stable');
 };
 
 try{
@@ -12488,7 +12494,7 @@ function v073ScheduleProfileSync(){
 const v073BaseRender=render;
 render=function(){
   v073BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.62 Stable');
   v073ScheduleProfileSync();
 };
 
@@ -12687,7 +12693,7 @@ v072SearchPlayer=v073SearchPlayer;
 const v074BaseRender=render;
 render=function(){
   v074BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.62 Stable');
   setTimeout(()=>v074BindProfileRows(),0);
 };
 (async()=>{if(await v073Init()){await v073SyncProfile(true)}})();
@@ -12908,7 +12914,7 @@ const v077OldAddXp=addXp;
 addXp=function(n){return v077OldAddXp(v077ModifyXp(n))};
 
 const v077BaseRender=render;
-render=function(){v077BaseRender();document.querySelectorAll('.version').forEach(e=>e.textContent='V2.61 Stable');v077InjectGrow();setTimeout(v077InjectCharacterFx,0)};
+render=function(){v077BaseRender();document.querySelectorAll('.version').forEach(e=>e.textContent='V2.62 Stable');v077InjectGrow();setTimeout(v077InjectCharacterFx,0)};
 
 setInterval(()=>{
   const b=v077Buff();
@@ -13212,7 +13218,7 @@ const v079BaseRender=render;
 render=function(){
   v079BaseRender();
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.62 Stable');
 
   setTimeout(()=>{
     try{v079UpdateBuffFx();}catch(e){console.error('V0.79 buff fx',e);}
@@ -13411,7 +13417,7 @@ v029ShowClassChoice=function(){
 const v080BaseRender=render;
 render=function(){
   v080BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.62 Stable');
   try{v41InstallPortrait()}catch(e){console.error('V0.80 portrait',e)}
   /* V0.79 glitter is attached after portrait exists. */
   setTimeout(()=>{
@@ -13774,7 +13780,7 @@ async function v083FixHallList(){
 const v083BaseRender=render;
 render=function(){
   v083BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.62 Stable');
   setTimeout(v083FixHallList,0);
 };
 
@@ -13938,7 +13944,7 @@ v073ProfilePayload=function(){
 const v084BaseRender=render;
 render=function(){
   v084BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.62 Stable');
 };
 </script>
 
@@ -14165,7 +14171,7 @@ v032Go=function(id){
 const v085BaseRender=render;
 render=function(){
   v085BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.62 Stable');
 
   if(document.querySelector('#world')?.classList.contains('active')){
     v085InstallWorld();
@@ -14317,7 +14323,7 @@ v032Go=function(id){
 const v086BaseRender=render;
 render=function(){
   v086BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.62 Stable');
   v086PolishBrand();
   v086RemoveSlashNArtifacts();
   v086BuildCompleteMenu();
@@ -14393,7 +14399,7 @@ function v087FixMainAttributeBadge(){
 const v087BaseRender=render;
 render=function(){
   v087BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.62 Stable');
   requestAnimationFrame(v087FixMainAttributeBadge);
 };
 
@@ -14425,7 +14431,7 @@ try{
 const v088BaseRender=render;
 render=function(){
   v088BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.62 Stable');
 };
 </script>
 
@@ -14552,7 +14558,7 @@ v030Offer=function(it,fn,i){
 const v089BaseRender=render;
 render=function(){
   v089BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.62 Stable');
   try{renderShop()}catch(e){console.error('V0.89 shop comparison',e)}
 };
 </script>
@@ -14671,7 +14677,7 @@ v057OfferHtml=function(it,i,kind){
 const v090BaseRender=render;
 render=function(){
   v090BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.62 Stable');
   try{renderShop()}catch(e){console.error('V0.90 shop comparison',e)}
 };
 
@@ -14700,7 +14706,7 @@ localStorage.setItem(KEY,JSON.stringify(s));
 const v092BaseRender=render;
 render=function(){
   v092BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.62 Stable');
 };
 </script>
 
@@ -15028,7 +15034,7 @@ document.querySelector('#v093SaveNews')?.addEventListener('click',v093SaveNews);
 const v093BaseRender=render;
 render=function(){
   v093BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.62 Stable');
   v093BuildMenu();
 };
 
@@ -15151,7 +15157,7 @@ v085ActiveEvents=function(){
 const v094BaseRender=render;
 render=function(){
   v094BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.62 Stable');
 
   /* Update visible quest XP previews to show doubled amount while event is live. */
   if(v094XpEventActive()){
@@ -15256,7 +15262,7 @@ document.addEventListener('click',()=>{
 const v095BaseRender=render;
 render=function(){
   v095BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.62 Stable');
   requestAnimationFrame(v095DecorateXp);
 };
 
@@ -15334,7 +15340,7 @@ function v096DecorateQuestXp(){
 const v096BaseRender=render;
 render=function(){
   v096BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.62 Stable');
   requestAnimationFrame(v096DecorateQuestXp);
 };
 
@@ -15372,7 +15378,7 @@ function v097ReplaceQuestStars(){
 const v097BaseRender=render;
 render=function(){
   v097BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.62 Stable');
   requestAnimationFrame(v097ReplaceQuestStars);
 };
 
@@ -15468,7 +15474,7 @@ function v098QuestPreview(){
 const v098BaseRender=render;
 render=function(){
   v098BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.62 Stable');
   requestAnimationFrame(v098QuestPreview);
 };
 
@@ -15599,7 +15605,7 @@ function v099PaintQuestXp(){
 const v099BaseRender=render;
 render=function(){
   v099BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.62 Stable');
   requestAnimationFrame(v099PaintQuestXp);
 };
 
@@ -15756,7 +15762,7 @@ function v100PaintDungeonXp(){
 const v100BaseRender=render;
 render=function(){
   v100BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.62 Stable');
   requestAnimationFrame(v100PaintDungeonXp);
   setTimeout(()=>{
     try{v068InstallFight()}catch(e){}
@@ -15862,7 +15868,7 @@ addXp=function(n){
 const v101BaseRender=render;
 render=function(){
   v101BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.62 Stable');
 };
 </script>
 
@@ -15989,7 +15995,7 @@ render=function(){
   const before=Number(s.level)||1;
   const result=v102BaseRender();
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.62 Stable');
 
   requestAnimationFrame(()=>{
     try{v102DetectLevelChange()}catch(e){console.error('V1.02 level detection',e)}
@@ -16254,7 +16260,7 @@ v093AdminLoadLists=async function(){
 const v103BaseRender=render;
 render=function(){
   v103BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.62 Stable');
   if(v093IsAdmin)v103InstallPlayerAdmin();
 };
 
@@ -16380,7 +16386,7 @@ v103InstallPlayerAdmin=function(){
 const v105BaseRender=render;
 render=function(){
   const result=v105BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.62 Stable');
   if(v093IsAdmin){
     v103InstallPlayerAdmin();
     v105InstallRewards();
@@ -16578,7 +16584,7 @@ claimQuest=function(){
 const v106BaseRender=render;
 render=function(){
   const result=v106BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.62 Stable');
   v106InstallBook();
   v106CheckAchievements(true);
   return result;
@@ -16643,7 +16649,7 @@ v106InstallBook=function(){
 const v107BaseRender=render;
 render=function(){
   const result=v107BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.62 Stable');
   requestAnimationFrame(v107PlaceBook);
   return result;
 };
@@ -16762,7 +16768,7 @@ if(!s.v108ItemPool){
 const v108BaseRender=render;
 render=function(){
   const result=v108BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.62 Stable');
   return result;
 };
 </script>
@@ -16921,7 +16927,7 @@ const v109BaseRender=render;
 render=function(){
   v109ResetDaily();
   const result=v109BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.62 Stable');
   return result;
 };
 </script>
@@ -17115,7 +17121,7 @@ v085ActiveEvents=function(){
 const v110BaseRender=render;
 render=function(){
   const result=v110BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.62 Stable');
   requestAnimationFrame(v110InstallEventButton);
   return result;
 };
@@ -17445,7 +17451,7 @@ v110InstallEventButton=function(){v111InstallWorldBossCard()};
 const v111BaseRender=render;
 render=function(){
   const result=v111BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.62 Stable');
   requestAnimationFrame(v111InstallWorldBossCard);
   return result;
 };
@@ -17530,7 +17536,7 @@ render=function(){
   const result=v112BaseRender();
 
   v112EnsureWorldBossState();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.62 Stable');
 
   return result;
 };
@@ -17599,7 +17605,7 @@ v110Fight=function(){
 const v113BaseRender=render;
 render=function(){
   const result=v113BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.62 Stable');
   return result;
 };
 </script>
@@ -17771,7 +17777,7 @@ v110Fight=async function(){
 const v114BaseRender=render;
 render=function(){
   const result=v114BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.62 Stable');
   return result;
 };
 
@@ -17959,7 +17965,7 @@ v114AskRetry=function(){
 const v115BaseRender=render;
 render=function(){
   const result=v115BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.62 Stable');
   return result;
 };
 
@@ -18146,7 +18152,7 @@ v074OpenProfile=async function(id){
 const v116BaseRender=render;
 render=function(){
   const result=v116BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.62 Stable');
   return result;
 };
 
@@ -18325,7 +18331,7 @@ document.addEventListener('click',async e=>{
 const v117BaseRender=render;
 render=function(){
   const result=v117BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.62 Stable');
   setTimeout(()=>{v117BindDampf();v117BindReset();v117PatchClassModal()},0);
   return result;
 };
@@ -18726,7 +18732,7 @@ v085InstallWorld=function(){
 const v118BaseRender=render;
 render=function(){
   const result=v118BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.62 Stable');
   requestAnimationFrame(v111InstallWorldBossCard);
   return result;
 };
@@ -18918,7 +18924,7 @@ header .resource-stats .stat:nth-child(4) b{
 const v119BaseRender=render;
 render=function(){
   const result=v119BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.62 Stable');
   return result;
 };
 </script>
@@ -19055,7 +19061,7 @@ function v120InstallCountdown(){
 const v120BaseRender=render;
 render=function(){
   const result=v120BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.62 Stable');
   requestAnimationFrame(v120InstallCountdown);
   return result;
 };
@@ -19269,7 +19275,7 @@ const v121BaseRender=render;
 render=function(){
   v121SanitizeMagicStock();
   const result=v121BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.62 Stable');
   requestAnimationFrame(v121PaintShopInfo);
   return result;
 };
@@ -19612,7 +19618,7 @@ const v122BaseRender=render;
 render=function(){
   v122MigrateAllSockets();
   const result=v122BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.62 Stable');
   return result;
 };
 
@@ -19940,7 +19946,7 @@ function v123PolishEquipment(){
 const v123BaseRender=render;
 render=function(){
   const result=v123BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.62 Stable');
   requestAnimationFrame(v123PolishEquipment);
   return result;
 };
@@ -20190,7 +20196,7 @@ function v124ClampCharacterWidth(){
 const v124BaseRender=render;
 render=function(){
   const result=v124BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.62 Stable');
   requestAnimationFrame(v124ClampCharacterWidth);
   return result;
 };
@@ -20653,7 +20659,7 @@ render=function(){
   if(hp)hp.textContent=v125Fmt(maxHp());
   if(cp)cp.textContent=v125Fmt(combatPower());
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.62 Stable');
   return result;
 };
 
@@ -20797,7 +20803,7 @@ if(typeof V125_ATTRS!=='undefined'){
 const v126BaseRender=render;
 render=function(){
   const result=v126BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.62 Stable');
   requestAnimationFrame(()=>v126RepairCharacter(false));
   return result;
 };
@@ -20987,7 +20993,7 @@ render=function(){
   const energyEl=document.querySelector('#energy');
   if(energyEl)energyEl.textContent=`${Math.floor(Number(s.energy)||0)}/300`;
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.62 Stable');
   requestAnimationFrame(v127AddResetInfo);
   return result;
 };
@@ -21268,7 +21274,7 @@ setTimeout(()=>{
 
 <script id="v128-premium-skill-ui-script">
 function v128SkillPolish(){
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.62 Stable');
   const card=document.querySelector('#character .card:has(#skillTree)');
   if(card)card.setAttribute('data-v128','premium-skills');
 }
@@ -21698,7 +21704,7 @@ function v129PolishDynamicCards(){
     if(it)el.classList.add(v129RarityClass(it));
   });
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.62 Stable');
 }
 const v129BaseRender=render;
 render=function(){
@@ -21860,7 +21866,7 @@ function v130InventoryHeadings(){
 function v130Polish(){
   v130RemoveMerchantCopy();
   v130InventoryHeadings();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.62 Stable');
 }
 const v130BaseRender=render;
 render=function(){
@@ -21893,7 +21899,7 @@ function v131CleanShop(){
     }
   });
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.62 Stable');
 }
 const v131BaseRender=render;
 render=function(){
@@ -22160,7 +22166,7 @@ function v132Polish(){
     });
   }
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.62 Stable');
 }
 const v132BaseRender=render;
 render=function(){
@@ -22373,7 +22379,7 @@ function v133Polish(){
       }
     });
   }
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.62 Stable');
 }
 const v133BaseRender=render;
 render=function(){
@@ -22558,7 +22564,7 @@ function v134Apply(){
    l.innerHTML='<span class="g0">Normal</span><span class="g1">Gewöhnlich</span><span class="g2">Selten</span><span class="g3">Episch</span><span class="g4">Legendär</span><span class="g5">Mystisch</span>';
    card.appendChild(l);
  }
- document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
+ document.querySelectorAll('.version').forEach(el=>el.textContent='V2.62 Stable');
 }
 const v134BaseRender=render;
 render=function(){const r=v134BaseRender();requestAnimationFrame(v134Apply);return r;};
@@ -22721,7 +22727,7 @@ function v135PaintShop(){
       if(arr[i])el.classList.add(v135QualityClassFromItem(arr[i]));
     });
   });
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.62 Stable');
 }
 
 /* Existing V1.34 stock may be based on old weak scaling: refresh once for free. */
@@ -22956,7 +22962,7 @@ function v138PaintMerchant(){
     });
   });
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.62 Stable');
 }
 
 const v138BaseRender=render;
@@ -23154,7 +23160,7 @@ v030Offer=function(it,fn,i){
 
 function v139RepaintShop(){
   try{renderShop()}catch(e){console.error('V1.39 shop repaint',e)}
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.62 Stable');
 }
 
 const v139BaseRender=render;
@@ -23517,7 +23523,7 @@ function v141BuildSettings(){
           <button type="button" class="btn" id="v141Delete">🗑️ Account löschen</button>
         </div>
 
-        <div class="v141-version-line" id="v141VersionLine">V2.61 Stable</div>
+        <div class="v141-version-line" id="v141VersionLine">V2.62 Stable</div>
       </div>`;
   }
 
@@ -23710,7 +23716,7 @@ setTimeout(()=>{
 const v141BaseRender=render;
 render=function(){
   const r=v141BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.62 Stable');
   requestAnimationFrame(()=>{
     v141BuildSettings();
     v141ApplySettings();
@@ -23767,7 +23773,7 @@ window.addEventListener('scroll',v142PositionSettings,{passive:true});
 const v142BaseRender=render;
 render=function(){
   const r=v142BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.62 Stable');
   requestAnimationFrame(v142PositionSettings);
   return r;
 };
@@ -23982,7 +23988,7 @@ render=function(){
     v145SaveScopedLocal();
   }
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.62 Stable');
   return r;
 };
 
@@ -23998,7 +24004,7 @@ setTimeout(()=>{
 
 
 <script id="v200-stable-core">
-/* ===== Grow Legends V2.61 Stable =====
+/* ===== Grow Legends V2.62 Stable =====
    One auth listener. One email handler. One Google handler.
    One cloud resolver. One character creator. One admin poll.
 */
@@ -24237,7 +24243,7 @@ function v200RenderLoginInfo(){
     let n=null;
     try{ n=(window.v093News||[]).find(x=>x && x.is_published!==false)||null; }catch(e){}
 
-    const title=n?.title||'V2.61 Stable';
+    const title=n?.title||'V2.62 Stable';
     const version=n?.version||'V2.00';
     const text=n?.body||n?.text||'Technische Stabilisierung von Login, Cloud-Speicherung und Charaktererstellung.';
 
@@ -25077,7 +25083,7 @@ function v200BindSettings(){
   if(cancel)cancel.onclick=v141CloseDelete;
 
   const version=document.querySelector('#v141VersionLine');
-  if(version)version.textContent='V2.61 Stable';
+  if(version)version.textContent='V2.62 Stable';
 }
 
 /* One admin poll, content-aware. */
@@ -25206,7 +25212,7 @@ const v200BaseRender=render;
 render=function(){
   const r=v200BaseRender();
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.62 Stable');
 
   if(v200DurableUser() && v200CharacterComplete() && v075CloudLoadedFor===v073User.id){
     v075ScheduleSave();
@@ -25379,7 +25385,7 @@ render=function(){
   const result=v201BaseRender();
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V2.61 Stable');
+    .forEach(el=>el.textContent='V2.62 Stable');
 
   const world=document.querySelector('#world');
   if(world?.classList.contains('active')){
@@ -25767,7 +25773,7 @@ setInterval(()=>{
 const v204BaseRender=render;
 render=function(){
   const r=v204BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.62 Stable');
   requestAnimationFrame(()=>{
     v086BuildCompleteMenu();
     v204InstallAvatarBadge();
@@ -25819,7 +25825,7 @@ function v205InstallBudScale(){
 const v205BaseRender=render;
 render=function(){
   const r=v205BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.62 Stable');
   requestAnimationFrame(v205InstallBudScale);
   return r;
 };
@@ -26120,7 +26126,7 @@ render=function(){
   const r=v206BaseRender();
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V2.61 Stable');
+    .forEach(el=>el.textContent='V2.62 Stable');
 
   requestAnimationFrame(()=>{
     const find=document.querySelector('#v204FindBtn');
@@ -26293,7 +26299,7 @@ render=function(){
   const r=v207BaseRender();
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V2.61 Stable');
+    .forEach(el=>el.textContent='V2.62 Stable');
 
   requestAnimationFrame(()=>{
     v207EnsurePvpState();
@@ -26740,7 +26746,7 @@ render=function(){
   const r=v209BaseRender();
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V2.61 Stable');
+    .forEach(el=>el.textContent='V2.62 Stable');
 
   requestAnimationFrame(()=>{
     const fight=document.querySelector('#v204FightBtn');
@@ -27280,7 +27286,7 @@ render=function(){
   const r=v210BaseRender();
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V2.61 Stable');
+    .forEach(el=>el.textContent='V2.62 Stable');
 
   requestAnimationFrame(()=>{
     v210FormatCharacterAttributes();
@@ -27663,7 +27669,7 @@ render=function(){
   const r=v211BaseRender();
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V2.61 Stable');
+    .forEach(el=>el.textContent='V2.62 Stable');
 
   return r;
 };
@@ -27710,7 +27716,7 @@ const v213BaseRender=render;
 render=function(){
   const r=v213BaseRender();
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V2.61 Stable');
+    .forEach(el=>el.textContent='V2.62 Stable');
   return r;
 };
 </script>
@@ -27956,7 +27962,7 @@ function v224BuildCurrentUi(){
     }catch(e){}
 
     document.querySelectorAll('.version')
-      .forEach(el=>el.textContent='V2.61 Stable');
+      .forEach(el=>el.textContent='V2.62 Stable');
 
     return true;
   }catch(e){
@@ -28096,7 +28102,7 @@ function v225EnsureSettingsAccountActions(){
     menu.appendChild(version);
   }
 
-  version.textContent='V2.61 Stable';
+  version.textContent='V2.62 Stable';
 
   const logout=menu.querySelector('#v141Logout');
   if(logout){
@@ -28165,7 +28171,7 @@ setTimeout(()=>{
 
 setTimeout(()=>{
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V2.61 Stable');
+    .forEach(el=>el.textContent='V2.62 Stable');
 },300);
 </script>
 
@@ -28497,7 +28503,7 @@ setTimeout(()=>{
 
 setTimeout(()=>{
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V2.61 Stable');
+    .forEach(el=>el.textContent='V2.62 Stable');
 },300);
 </script>
 
@@ -28716,7 +28722,7 @@ setTimeout(()=>{
 
 setTimeout(()=>{
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V2.61 Stable');
+    .forEach(el=>el.textContent='V2.62 Stable');
 },350);
 </script>
 
@@ -28930,10 +28936,10 @@ setInterval(v230LiveTick,1000);
 
 function v230Version(){
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V2.61 Stable');
+    .forEach(el=>el.textContent='V2.62 Stable');
 
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V2.61 Stable';
+  if(line)line.textContent='V2.62 Stable';
 }
 
 
@@ -29384,10 +29390,10 @@ setTimeout(()=>{
   }catch(e){}
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V2.61 Stable');
+    .forEach(el=>el.textContent='V2.62 Stable');
 
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V2.61 Stable';
+  if(line)line.textContent='V2.62 Stable';
 },300);
 </script>
 
@@ -30132,10 +30138,10 @@ setTimeout(()=>{
   }catch(e){}
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V2.61 Stable');
+    .forEach(el=>el.textContent='V2.62 Stable');
 
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V2.61 Stable';
+  if(line)line.textContent='V2.62 Stable';
 },300);
 </script>
 
@@ -30369,10 +30375,10 @@ setTimeout(()=>{
   }catch(e){}
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V2.61 Stable');
+    .forEach(el=>el.textContent='V2.62 Stable');
 
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V2.61 Stable';
+  if(line)line.textContent='V2.62 Stable';
 },300);
 </script>
 
@@ -30713,10 +30719,10 @@ setTimeout(()=>{
   }
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V2.61 Stable');
+    .forEach(el=>el.textContent='V2.62 Stable');
 
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V2.61 Stable';
+  if(line)line.textContent='V2.62 Stable';
 },320);
 </script>
 
@@ -31100,10 +31106,10 @@ setTimeout(()=>{
   }catch(e){}
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V2.61 Stable');
+    .forEach(el=>el.textContent='V2.62 Stable');
 
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V2.61 Stable';
+  if(line)line.textContent='V2.62 Stable';
 },350);
 </script>
 
@@ -31741,10 +31747,10 @@ setTimeout(()=>{
   }catch(e){}
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V2.61 Stable');
+    .forEach(el=>el.textContent='V2.62 Stable');
 
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V2.61 Stable';
+  if(line)line.textContent='V2.62 Stable';
 },360);
 </script>
 
@@ -31926,9 +31932,9 @@ setTimeout(()=>{
   try{
     if(document.querySelector('#grow')?.classList.contains('active'))renderGrow();
   }catch(e){}
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.62 Stable');
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V2.61 Stable';
+  if(line)line.textContent='V2.62 Stable';
 },380);
 </script>
 
@@ -32047,9 +32053,9 @@ v238SyncQuestDungeonKeys();
 
 setTimeout(()=>{
   try{v238SyncQuestDungeonKeys()}catch(e){}
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.62 Stable');
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V2.61 Stable';
+  if(line)line.textContent='V2.62 Stable';
 },400);
 </script>
 
@@ -32187,9 +32193,9 @@ window.addEventListener('focus',()=>{
 setTimeout(()=>{
   try{v239UpdateGrowLive()}catch(e){}
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V2.61 Stable');
+    .forEach(el=>el.textContent='V2.62 Stable');
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V2.61 Stable';
+  if(line)line.textContent='V2.62 Stable';
 },420);
 </script>
 
@@ -32582,10 +32588,10 @@ setTimeout(()=>{
   }catch(e){}
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V2.61 Stable');
+    .forEach(el=>el.textContent='V2.62 Stable');
 
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V2.61 Stable';
+  if(line)line.textContent='V2.62 Stable';
 },440);
 </script>
 
@@ -32816,10 +32822,10 @@ setTimeout(()=>{
   }catch(e){}
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V2.61 Stable');
+    .forEach(el=>el.textContent='V2.62 Stable');
 
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V2.61 Stable';
+  if(line)line.textContent='V2.62 Stable';
 },460);
 </script>
 
@@ -33065,9 +33071,9 @@ setTimeout(()=>{
     }
   }catch(e){}
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.62 Stable');
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V2.61 Stable';
+  if(line)line.textContent='V2.62 Stable';
 },480);
 </script>
 
@@ -33266,10 +33272,10 @@ setTimeout(()=>{
   }catch(e){}
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V2.61 Stable');
+    .forEach(el=>el.textContent='V2.62 Stable');
 
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V2.61 Stable';
+  if(line)line.textContent='V2.62 Stable';
 },500);
 </script>
 
@@ -33559,10 +33565,10 @@ setTimeout(()=>{
   }catch(e){}
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V2.61 Stable');
+    .forEach(el=>el.textContent='V2.62 Stable');
 
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V2.61 Stable';
+  if(line)line.textContent='V2.62 Stable';
 },520);
 </script>
 
@@ -33690,10 +33696,10 @@ setTimeout(()=>{
   }catch(e){}
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V2.61 Stable');
+    .forEach(el=>el.textContent='V2.62 Stable');
 
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V2.61 Stable';
+  if(line)line.textContent='V2.62 Stable';
 },540);
 </script>
 
@@ -34492,10 +34498,10 @@ setTimeout(()=>{
   }catch(e){}
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V2.61 Stable');
+    .forEach(el=>el.textContent='V2.62 Stable');
 
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V2.61 Stable';
+  if(line)line.textContent='V2.62 Stable';
 },560);
 </script>
 
@@ -34752,10 +34758,10 @@ function v247ShowDungeonReward(data){
 /* Final version stamp. */
 setTimeout(()=>{
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V2.61 Stable');
+    .forEach(el=>el.textContent='V2.62 Stable');
 
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V2.61 Stable';
+  if(line)line.textContent='V2.62 Stable';
 },580);
 </script>
 
@@ -34954,10 +34960,10 @@ setTimeout(()=>{
   }catch(e){}
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V2.61 Stable');
+    .forEach(el=>el.textContent='V2.62 Stable');
 
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V2.61 Stable';
+  if(line)line.textContent='V2.62 Stable';
 },600);
 </script>
 
@@ -35079,10 +35085,10 @@ setTimeout(()=>{
   }
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V2.61 Stable');
+    .forEach(el=>el.textContent='V2.62 Stable');
 
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V2.61 Stable';
+  if(line)line.textContent='V2.62 Stable';
 },640);
 </script>
 
@@ -35472,10 +35478,10 @@ setTimeout(()=>{
   }catch(e){}
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V2.61 Stable');
+    .forEach(el=>el.textContent='V2.62 Stable');
 
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V2.61 Stable';
+  if(line)line.textContent='V2.62 Stable';
 },680);
 </script>
 
@@ -36464,10 +36470,10 @@ setTimeout(()=>{
   }catch(e){}
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V2.61 Stable');
+    .forEach(el=>el.textContent='V2.62 Stable');
 
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V2.61 Stable';
+  if(line)line.textContent='V2.62 Stable';
 },720);
 </script>
 
@@ -36822,8 +36828,8 @@ renderDungeon=function(){
 };
 setTimeout(()=>{
   try{v252ModernizeBattle()}catch(e){}
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
-  const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V2.61 Stable';
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.62 Stable');
+  const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V2.62 Stable';
 },780);
 </script>
 
@@ -37421,10 +37427,10 @@ setTimeout(()=>{
   }catch(e){}
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V2.61 Stable');
+    .forEach(el=>el.textContent='V2.62 Stable');
 
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V2.61 Stable';
+  if(line)line.textContent='V2.62 Stable';
 },820);
 </script>
 
@@ -37700,8 +37706,8 @@ v032Go=function(id){
 setTimeout(()=>{
   v254BindGuild();
   try{v086BuildCompleteMenu()}catch(e){}
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
-  const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V2.61 Stable';
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.62 Stable');
+  const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V2.62 Stable';
 },700);
 </script>
 
@@ -37784,7 +37790,7 @@ const v255BaseLoadGuild=v254LoadGuild;
 v254LoadGuild=async function(){const r=await v255BaseLoadGuild();if(document.querySelector('#guild')?.classList.contains('active')&&v254Membership)await v255LoadBoss();return r};
 document.querySelector('#v255ClaimBossReward')?.addEventListener('click',v255ClaimBossReward);
 setInterval(()=>{if(document.querySelector('#guild')?.classList.contains('active'))v255RenderBoss()},30000);
-setTimeout(()=>{document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V2.61 Stable';},760);
+setTimeout(()=>{document.querySelectorAll('.version').forEach(el=>el.textContent='V2.62 Stable');const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V2.62 Stable';},760);
 </script>
 
 
@@ -38019,8 +38025,8 @@ function v257BindGuildManagement(){
 setTimeout(()=>{
   v257BindGuildManagement();
   if(!v254Guild)v257SearchGuilds();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
-  const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V2.61 Stable';
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.62 Stable');
+  const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V2.62 Stable';
 },760);
 </script>
 
@@ -38082,8 +38088,8 @@ const v258BaseRenderGuild=v254RenderGuild;
 v254RenderGuild=function(){v258BaseRenderGuild();v258RenderTestAccess();};
 setTimeout(()=>{
   v258RenderTestAccess();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
-  const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V2.61 Stable';
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.62 Stable');
+  const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V2.62 Stable';
 },820);
 </script>
 
@@ -38324,8 +38330,8 @@ const v260BossClock=setInterval(async()=>{
 
 setTimeout(()=>{
   v260RenderDailyControls();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.61 Stable');
-  const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V2.61 Stable';
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.62 Stable');
+  const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V2.62 Stable';
 },900);
 </script>
 
@@ -38346,6 +38352,25 @@ setTimeout(()=>{
 .v259-arena.v261-final .v259-damage-pop{display:none}
 .v259-arena.v261-final .v259-fight-text{font-size:9px;padding:10px 6px}
 </style>
+
+
+<style id="v262-guild-war-style">
+.v262-war-score{display:grid;grid-template-columns:1fr 26px 1fr;align-items:center;text-align:center;gap:5px;margin:10px 0;padding:12px;border:1px solid #344c39;border-radius:13px;background:#08100a}.v262-war-score>div{display:grid;gap:4px}.v262-war-score small{font-size:6px;color:#738078}.v262-war-score b{font-size:9px}.v262-war-score strong{font-size:23px;color:#9be981}.v262-war-score>span{font-size:18px;font-weight:1000;color:#5e6b62}.v262-war-status{padding:9px;border:1px solid #2e4133;border-radius:10px;background:#0a120c;font-size:8px;color:#a2afa5;line-height:1.45}.v262-war-stats{display:grid;grid-template-columns:repeat(2,1fr);gap:7px;margin:8px 0}.v262-war-stat{padding:8px;border:1px solid #2c4031;border-radius:9px;background:#08100a;text-align:center}.v262-war-stat small,.v262-war-stat b{display:block}.v262-war-stat small{font-size:6px;color:#748078}.v262-war-stat b{font-size:9px;margin-top:3px}.v262-war-replay{display:none;margin-top:10px}.v262-war-replay.on{display:block}.v262-duel{padding:10px;margin-top:7px;border:1px solid #314637;border-radius:11px;background:#08100a}.v262-duel-head{display:flex;justify-content:space-between;gap:8px;font-size:7px;color:#7f8e83;margin-bottom:7px}.v262-duel-line{display:grid;grid-template-columns:1fr 28px 1fr;gap:6px;align-items:center;text-align:center}.v262-duel-line b{font-size:8px}.v262-duel-line small{display:block;font-size:6px;color:#76837a;margin-top:3px}.v262-duel-line span{font-size:12px}.v262-duel.winner-left .v262-left b,.v262-duel.winner-right .v262-right b{color:#a3ed89}
+</style>
+<script id="v262-guild-war-core">
+let v262War=null,v262WarDuels=[];
+function v262WarLocalPhase(){const h=new Date().getHours();return h<18?'signup':h<19?'matching':'battle'}
+function v262RenderWar(){const phase=document.querySelector('#v262WarPhase'),status=document.querySelector('#v262WarStatus'),own=document.querySelector('#v262WarOwnName'),enemy=document.querySelector('#v262WarEnemyName'),os=document.querySelector('#v262WarOwnScore'),es=document.querySelector('#v262WarEnemyScore'),stats=document.querySelector('#v262WarStats'),watch=document.querySelector('#v262WarWatch'),claim=document.querySelector('#v262WarClaim');if(!status)return;const local=v262WarLocalPhase();if(phase)phase.textContent=local==='signup'?'ANMELDUNG':local==='matching'?'MATCHMAKING':'KAMPF';if(own)own.textContent=v254Guild?.name||'Deine Gilde';if(!v262War){if(enemy)enemy.textContent='Noch kein Gegner';if(os)os.textContent='0';if(es)es.textContent='0';status.textContent=local==='signup'?'Melde Mitglieder bis 18:00 Uhr für Angriff und/oder Verteidigung an.':local==='matching'?'Matchmaking läuft. Ab 19:00 Uhr steht das Ergebnis bereit.':'Für heute wurde noch kein passender Gildenkrieg gefunden.';if(stats)stats.innerHTML='';if(watch)watch.style.display='none';if(claim)claim.style.display='none';return}const mine=v262War.my_guild_id===v262War.guild_a_id?'a':'b',myScore=mine==='a'?v262War.score_a:v262War.score_b,enemyScore=mine==='a'?v262War.score_b:v262War.score_a,enemyName=mine==='a'?v262War.guild_b_name:v262War.guild_a_name;if(enemy)enemy.textContent=enemyName||'Gegnergilde';if(os)os.textContent=String(myScore||0);if(es)es.textContent=String(enemyScore||0);const resolved=['a_won','b_won','draw'].includes(v262War.status),won=(v262War.status==='a_won'&&mine==='a')||(v262War.status==='b_won'&&mine==='b');status.textContent=!resolved?'Gildenkrieg vorbereitet. Ergebnis ab 19:00 Uhr.':won?'🏆 Gildensieg! +30 Gilden-Buds.':v262War.status==='draw'?'🤝 Unentschieden.':'💀 Niederlage. +10 Gilden-Buds.';if(stats)stats.innerHTML=`<div class="v262-war-stat"><small>ANGRIFF GEMELDET</small><b>${Number(v262War.my_attackers)||0}</b></div><div class="v262-war-stat"><small>VERTEIDIGUNG GEMELDET</small><b>${Number(v262War.my_defenders)||0}</b></div>`;if(watch)watch.style.display=resolved&&v262WarDuels.length?'':'none';if(claim)claim.style.display=resolved&&v262War.i_participated&&!v262War.reward_claimed?'':'none'}
+async function v262LoadWar(){if(!v254Membership||!v073Db){v262War=null;v262WarDuels=[];v262RenderWar();return}const {data,error}=await v073Db.rpc('v262_get_guild_war');if(error){console.info('V2.62 war foundation: matchmaking RPC follows in V2.63');v262War=null;v262WarDuels=[];v262RenderWar();return}v262War=data?.war||null;v262WarDuels=Array.isArray(data?.duels)?data.duels:[];v262RenderWar()}
+function v262DuelHtml(d,i){const leftWin=d.winner_side==='attacker';return `<div class="v262-duel ${leftWin?'winner-left':'winner-right'}"><div class="v262-duel-head"><span>Duell ${i+1}</span><span>${leftWin?'⚔️ Angriff gewinnt':'🛡️ Verteidigung gewinnt'}</span></div><div class="v262-duel-line"><div class="v262-left"><b>${v254GuildEsc(d.attacker_name||'Angreifer')}</b><small>Lv. ${Number(d.attacker_level)||1} · ${v255Fmt(d.attacker_power)} KP · ${v255Fmt(d.attacker_hp_after)} HP</small></div><span>⚔️</span><div class="v262-right"><b>${v254GuildEsc(d.defender_name||'Verteidiger')}</b><small>Lv. ${Number(d.defender_level)||1} · ${v255Fmt(d.defender_power)} KP · ${v255Fmt(d.defender_hp_after)} HP</small></div></div></div>`}
+async function v262WatchWar(){const box=document.querySelector('#v262WarReplay');if(!box||!v262WarDuels.length)return;box.classList.add('on');box.innerHTML='';for(let i=0;i<v262WarDuels.length;i++){box.insertAdjacentHTML('beforeend',v262DuelHtml(v262WarDuels[i],i));await v259Sleep(450)}}
+async function v262ClaimWar(){const {data,error}=await v073Db.rpc('v262_claim_guild_war_reward');if(error)return v063Toast('Belohnung fehlgeschlagen','warn',error.message||'');const r=data||{};s.gold=(Number(s.gold)||0)+(Number(r.gold)||0);addXp(Number(r.xp)||0);s.premium=(Number(s.premium)||0)+(Number(r.harz)||0);persist();render();v063Toast('Gildenkrieg-Belohnung','success',`+${v255Fmt(r.gold)} Gold · +${v255Fmt(r.xp)} EXP · +${r.harz||0} Harz-Taler`);await v262LoadWar()}
+document.querySelector('#v262WarRefresh')?.addEventListener('click',v262LoadWar);document.querySelector('#v262WarWatch')?.addEventListener('click',v262WatchWar);document.querySelector('#v262WarClaim')?.addEventListener('click',v262ClaimWar);
+const v262BaseLoadGuild=v254LoadGuild;v254LoadGuild=async function(){const r=await v262BaseLoadGuild();await v262LoadWar();return r};
+const v262BaseSignup=v254ToggleSignup;v254ToggleSignup=async function(kind){const r=await v262BaseSignup(kind);if(kind==='attack'||kind==='defense')await v262LoadWar();return r};
+setInterval(async()=>{if(document.querySelector('#guild')?.classList.contains('active')&&v254Membership)await v262LoadWar()},60000);
+setTimeout(()=>{v262RenderWar();document.querySelectorAll('.version').forEach(el=>el.textContent='V2.62 Stable');const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V2.62 Stable'},950);
+</script>
 
 </body>
 </html>
