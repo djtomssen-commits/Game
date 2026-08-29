@@ -516,7 +516,7 @@ document.documentElement.classList.remove('v224-app-ready');
 <body>
 <div class="app">
 <header>
-  <div class="brand"><h1>🌿 Grow Legends</h1><span class="version">V2.91 Stable</span><div class="power">Kampfkraft <b id="power">—</b></div></div>
+  <div class="brand"><h1>🌿 Grow Legends</h1><span class="version">V2.92 Stable</span><div class="power">Kampfkraft <b id="power">—</b></div></div>
   <div class="stats resource-stats"><div class="stat">GOLD<b id="gold">—</b></div><div class="stat">SKILL<b id="points">—</b></div><div class="stat">DAMPF<b id="energy">—</b></div><div class="stat harz-stat v277-harz-card v280-harz-card">
   <div class="v280-harz-label">HARZ-TALER</div>
   <b class="v280-harz-value"><span id="topHarz">—</span></b>
@@ -42302,4 +42302,240 @@ renderInventory=function(){
  v268PaintSellbar();return r;
 };
 setTimeout(()=>{document.querySelectorAll('.version').forEach(el=>el.textContent='V2.91 Stable');const x=document.querySelector('#v141VersionLine');if(x)x.textContent='V2.91 Stable';try{renderInventory()}catch(e){}},350);
+</script>
+
+<!-- ===== V2.92 Smaragd-Koloss + Mystische Item-Hierarchie ===== -->
+<script id="v292-worldboss-mystic-final-balance">
+/*
+  V2.92 canonical hotfix
+  - Smaragd-Koloss: +6% Boss-HP. With the existing loss-streak protection this
+    moves "very good" gear toward the intended rare-mythic reward range instead
+    of making roughly every second attempt a win.
+  - Mystic gear: same-level cyan gear is always generated above the canonical
+    legendary tier. Legacy weak cyan drops are raised to the new minimum once.
+  - Worldboss crit remains normalized by V2.90/V2.91; this patch never reads
+    player Crit/Glück bonuses for the worldboss.
+*/
+
+/* ---------- Worldboss: slightly harder, no crit loophole ---------- */
+const v292BaseWorldBossModel = v290WorldBossModel;
+v290WorldBossModel = function(){
+  const m = v292BaseWorldBossModel();
+  m.bossHp = Math.max(1, Math.round(Number(m.bossHp || 1) * 1.06));
+  return m;
+};
+
+/* ---------- Canonical mystic item scaling ---------- */
+const V292_MYSTIC_SLOT_BASES = {
+  grower:{
+    weapon:{id:'bb_axe',name:'Harzspalter',slot:'weapon',icon:'🪓',classId:'grower',bonus:{staerke:6}},
+    head:{id:'bb_helm',name:'Knospen-Kriegshelm',slot:'head',icon:'🪖',classId:'grower',bonus:{ausdauer:4,staerke:2}},
+    body:{id:'bb_armor',name:'Verdichtete Harzrüstung',slot:'body',icon:'🛡️',classId:'grower',bonus:{ausdauer:7}},
+    boots:{id:'bb_boots',name:'Stampferstiefel',slot:'boots',icon:'🥾',classId:'grower',bonus:{staerke:3,ausdauer:2}},
+    ring:{id:'bb_ring',name:'Smaragdring des Harzbrechers',slot:'ring',icon:'💍',classId:'grower',bonus:{staerke:4,glueck:2}},
+    amulet:{id:'bb_amulet',name:'Smaragd-Amulett des Harzbrechers',slot:'amulet',icon:'📿',classId:'grower',bonus:{ausdauer:4,staerke:2}}
+  },
+  scout:{
+    weapon:{id:'bs_bow',name:'Grünpfeil-Bogen',slot:'weapon',icon:'🏹',classId:'scout',bonus:{geschick:7}},
+    head:{id:'bs_hood',name:'Blattkapuze',slot:'head',icon:'🥷',classId:'scout',bonus:{geschick:4,glueck:2}},
+    body:{id:'bs_armor',name:'Rankenleder',slot:'body',icon:'🥼',classId:'scout',bonus:{geschick:4,ausdauer:3}},
+    boots:{id:'bs_boots',name:'Leisetreter',slot:'boots',icon:'👟',classId:'scout',bonus:{geschick:5}},
+    ring:{id:'bs_ring',name:'Smaragdring des Grünpfeils',slot:'ring',icon:'💍',classId:'scout',bonus:{geschick:4,glueck:2}},
+    amulet:{id:'bs_amulet',name:'Smaragd-Amulett des Grünpfeils',slot:'amulet',icon:'📿',classId:'scout',bonus:{geschick:4,ausdauer:2}}
+  },
+  bruiser:{
+    weapon:{id:'bm_staff',name:'Nebelstab',slot:'weapon',icon:'🪄',classId:'bruiser',bonus:{glueck:5,geschick:3}},
+    head:{id:'bm_hat',name:'Kapuze des Dunstes',slot:'head',icon:'🧙',classId:'bruiser',bonus:{glueck:5}},
+    body:{id:'bm_robe',name:'Robe des Nebelzirkels',slot:'body',icon:'🥋',classId:'bruiser',bonus:{glueck:4,ausdauer:3}},
+    boots:{id:'bm_boots',name:'Schwebeschuhe',slot:'boots',icon:'👢',classId:'bruiser',bonus:{geschick:4,glueck:2}},
+    ring:{id:'bm_ring',name:'Smaragdring des Nebelzirkels',slot:'ring',icon:'💍',classId:'bruiser',bonus:{glueck:5,geschick:2}},
+    amulet:{id:'bm_amulet',name:'Smaragd-Amulett des Nebelzirkels',slot:'amulet',icon:'📿',classId:'bruiser',bonus:{glueck:4,ausdauer:3}}
+  }
+};
+
+function v292MysticBase(cls,slot){
+  cls = V292_MYSTIC_SLOT_BASES[cls] ? cls : 'grower';
+  const map = V292_MYSTIC_SLOT_BASES[cls];
+  return map[slot] || map.weapon;
+}
+
+function v292MysticBonus(baseBonus,level,setBoost=false){
+  const lvl = Math.max(1,Number(level)||1);
+  const levelGrowth = Math.floor((lvl-1)/2);
+  const out = {};
+
+  Object.entries(baseBonus||{}).forEach(([stat,raw])=>{
+    const b = Math.max(1,Number(raw)||1);
+    const baseAtLevel = b + levelGrowth;
+
+    /* Same progression family as the current shop balance, but cyan is
+       deliberately above orange at every level. */
+    const legendary = Math.max(baseAtLevel+4,Math.round(baseAtLevel*1.82)+7);
+    let mystic = Math.max(baseAtLevel+5,Math.round(baseAtLevel*2.18)+10);
+
+    /* Hard invariant: Mystic must be visibly stronger than Legendary. */
+    mystic = Math.max(mystic, legendary + Math.max(3,Math.ceil(legendary*.12)));
+    if(setBoost)mystic = Math.ceil(mystic*1.08);
+    out[stat] = mystic;
+  });
+
+  return out;
+}
+
+function v292MysticSpecial(cls){
+  const pool = cls==='grower'
+    ?[
+      {key:'hpPct',label:'+5 % Leben',value:.05},
+      {key:'mainPct',label:'+5 % Hauptattribut',value:.05},
+      {key:'wuchtChance',label:'+3 % Wuchtschlag',value:.03}
+    ]
+    :cls==='scout'
+    ?[
+      {key:'dodgeChance',label:'+3 % Ausweichen',value:.03},
+      {key:'mainPct',label:'+5 % Hauptattribut',value:.05},
+      {key:'doubleChance',label:'+3 % Doppeltreffer',value:.03}
+    ]
+    :[
+      {key:'critChance',label:'+3 % Krit',value:.03},
+      {key:'mainPct',label:'+5 % Hauptattribut',value:.05},
+      {key:'critDamage',label:'+8 % Krit-Schaden',value:.08}
+    ];
+  return pool[Math.floor(Math.random()*pool.length)];
+}
+
+v110MakeMysticItem = function(){
+  const cls = V292_MYSTIC_SLOT_BASES[s.playerClass] ? s.playerClass : 'grower';
+  const slots = ['weapon','head','body','boots','ring','amulet'];
+  const slot = slots[Math.floor(Math.random()*slots.length)];
+  const base = v292MysticBase(cls,slot);
+  const lvl = Math.max(1,Number(s.level)||1);
+
+  return {
+    ...base,
+    id:`mythic_${cls}_${slot}_${Date.now()}_${Math.random().toString(36).slice(2,8)}`,
+    baseId:base.id,
+    price:0,
+    quality:'cyan',
+    rarity:'mythic',
+    name:`Mystisch: ${base.name} [Lv.${lvl}]`,
+    dropLevel:lvl,
+    bonus:v292MysticBonus(base.bonus,lvl,false),
+    mysticSpecial:v292MysticSpecial(cls),
+    setName:null
+  };
+};
+
+v110MakeRareMysticSet = function(){
+  const cls = V292_MYSTIC_SLOT_BASES[s.playerClass] ? s.playerClass : 'grower';
+  const slots = ['weapon','head','body','boots','ring','amulet'];
+  const slot = slots[Math.floor(Math.random()*slots.length)];
+  const base = v292MysticBase(cls,slot);
+  const lvl = Math.max(1,Number(s.level)||1);
+  const setName = (V110_MYSTIC_NAMES?.[cls]?.[0]) || 'Smaragd-Erbe';
+
+  return {
+    ...base,
+    id:`myset_${cls}_${slot}_${Date.now()}_${Math.random().toString(36).slice(2,8)}`,
+    baseId:base.id,
+    price:0,
+    quality:'cyan',
+    rarity:'mythic',
+    mysticSetId:`v110_${cls}`,
+    setName:`Set des ${setName}`,
+    name:`Mystisch: ${setName} – ${base.name} [Lv.${lvl}]`,
+    dropLevel:lvl,
+    bonus:v292MysticBonus(base.bonus,lvl,true),
+    mysticSpecial:{key:'mainPct',label:'+5 % Hauptattribut',value:.05}
+  };
+};
+
+/* Raise old weak cyan drops to the new canonical minimum. Never lowers a stat. */
+function v292RepairMysticItem(it){
+  if(!it)return false;
+  const isMystic = String(it.quality||'').toLowerCase()==='cyan' ||
+                   String(it.rarity||'').toLowerCase()==='mythic';
+  if(!isMystic)return false;
+
+  const cls = V292_MYSTIC_SLOT_BASES[it.classId]
+    ? it.classId
+    : (V292_MYSTIC_SLOT_BASES[s.playerClass] ? s.playerClass : 'grower');
+  const slot = String(it.slot||'weapon');
+  const base = v292MysticBase(cls,slot);
+  const lvl = Math.max(1,Number(it.dropLevel)||Number(s.level)||1);
+  const minimum = v292MysticBonus(base.bonus,lvl,Boolean(it.mysticSetId||it.setName));
+
+  let changed = false;
+  it.bonus = (it.bonus && typeof it.bonus==='object') ? it.bonus : {};
+  Object.entries(minimum).forEach(([stat,value])=>{
+    if((Number(it.bonus[stat])||0) < value){
+      it.bonus[stat] = value;
+      changed = true;
+    }
+  });
+
+  if(it.quality!=='cyan'){it.quality='cyan';changed=true;}
+  if(it.rarity!=='mythic'){it.rarity='mythic';changed=true;}
+  if(!it.mysticSpecial){it.mysticSpecial=v292MysticSpecial(cls);changed=true;}
+  return changed;
+}
+
+function v292MigrateWeakMystics(){
+  let changed = false;
+  (s.inventory||[]).forEach(it=>{if(v292RepairMysticItem(it))changed=true;});
+  Object.values(s.equipment||{}).forEach(it=>{if(v292RepairMysticItem(it))changed=true;});
+
+  if(!s.v292MysticBalanceMigrated){
+    s.v292MysticBalanceMigrated=true;
+    changed=true;
+  }
+
+  if(changed){
+    try{persist(false);}catch(e){try{persist();}catch(_){} }
+  }
+}
+
+/* Final worldboss hint: show the intended rarity and preserve the V2.91
+   gem/enchantment readiness information. */
+const v292BaseRefresh = v110Refresh;
+v110Refresh = function(){
+  const r = v292BaseRefresh();
+  try{
+    const box=document.querySelector('#v290BossBalance');
+    if(box && !box.querySelector('.v292-mythic-note')){
+      box.insertAdjacentHTML(
+        'beforeend',
+        '<br><span class="v292-mythic-note">🔷 Mystische Beute ist die höchste Item-Stufe und liegt wertetechnisch über Legendär.</span>'
+      );
+    }
+  }catch(e){}
+  return r;
+};
+
+v292MigrateWeakMystics();
+
+/* Version owner must be last so historical render wrappers cannot repaint 2.91. */
+const v292BaseRender = render;
+render = function(){
+  const r = v292BaseRender();
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.92 Stable');
+  const line=document.querySelector('#v141VersionLine');
+  if(line)line.textContent='V2.92 Stable';
+  return r;
+};
+
+function v292PaintVersion(){
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V2.92 Stable');
+  const line=document.querySelector('#v141VersionLine');
+  if(line)line.textContent='V2.92 Stable';
+}
+
+v292PaintVersion();
+setTimeout(()=>{
+  try{
+    v292MigrateWeakMystics();
+    v292PaintVersion();
+    if(document.querySelector('#v110Overlay.show'))v110Refresh();
+    if(typeof renderInventory==='function')renderInventory();
+  }catch(e){console.error('V2.92 balance init',e);}
+},500);
 </script>
