@@ -45278,3 +45278,196 @@ setTimeout(()=>{try{v322InstallMenuEntry();v322InstallHarzPlus()}catch(e){consol
   if(line)line.textContent='V3.23 Stable';
 })();
 </script>
+
+
+<!-- ===== V3.24 Stable: Dungeon 1h countdown / 1 Harz direct fight ===== -->
+<style id="v324-dungeon-countdown-css">
+#v324DungeonCountdown{margin:8px 0 6px;padding:9px 11px;border:1px solid #465640;border-radius:10px;background:#10170f;text-align:center;font-size:12px;font-weight:900;color:#d8e4d4}
+#v324DungeonCountdown.ready{border-color:#4f8b48;color:#9fe895}
+#v324DungeonCountdown.wait{border-color:#7a6531;color:#f0cf72}
+</style>
+<script id="v324-dungeon-countdown">
+(function(){
+  function v324LeftMs(){
+    const last=Number(s.dungeonPass?.lastFree)||0;
+    return Math.max(0,3600000-(Date.now()-last));
+  }
+  function v324Time(ms){
+    const total=Math.max(0,Math.ceil(ms/1000));
+    const h=Math.floor(total/3600);
+    const m=Math.floor((total%3600)/60);
+    const sec=total%60;
+    return `${h}:${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`;
+  }
+  function v324EnsureBox(){
+    const btn=document.querySelector('#fightBtn');
+    if(!btn)return null;
+    let box=document.querySelector('#v324DungeonCountdown');
+    if(!box){
+      box=document.createElement('div');
+      box.id='v324DungeonCountdown';
+      btn.parentNode?.insertBefore(box,btn);
+    }
+    return box;
+  }
+  function v324Paint(){
+    const box=v324EnsureBox();
+    const btn=document.querySelector('#fightBtn');
+    if(!box||!btn)return;
+    const left=v324LeftMs();
+    const di=Math.max(0,Math.min((dungeons?.length||1)-1,Number(s.dungeon?.selected)||0));
+    const done=typeof dungeonCompleted==='function' && dungeonCompleted(di);
+    if(done){box.style.display='none';return;}
+    box.style.display='block';
+    if(left<=0){
+      box.className='ready';
+      box.textContent='✅ Nächster Dungeon-Kampf kostenlos bereit';
+    }else{
+      box.className='wait';
+      box.textContent=`⏳ Nächster kostenloser Kampf in ${v324Time(left)} · oder sofort für 1 Harz-Taler`;
+      if(!battleBusy && !btn.disabled) btn.textContent='🟢 Sofort kämpfen · 1 Harz-Taler';
+    }
+  }
+  const baseRenderDungeon=renderDungeon;
+  renderDungeon=function(){
+    const r=baseRenderDungeon.apply(this,arguments);
+    v324Paint();
+    return r;
+  };
+  setInterval(v324Paint,1000);
+  setTimeout(v324Paint,250);
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.24 Stable');
+  const line=document.querySelector('#v141VersionLine');
+  if(line)line.textContent='V3.24 Stable';
+})();
+</script>
+
+<!-- ===== V3.25 Stable: Mythic item stat balance ===== -->
+<script id="v325-mythic-item-balance">
+(function(){
+  const V325_SET_BASE = {
+    grower:{
+      head:{ausdauer:4,staerke:2}, weapon:{staerke:6}, body:{ausdauer:6},
+      boots:{staerke:3,ausdauer:2}, ring:{staerke:4}, amulet:{ausdauer:3,staerke:2}
+    },
+    scout:{
+      head:{geschick:4,glueck:2}, weapon:{geschick:6}, body:{ausdauer:3,geschick:3},
+      boots:{geschick:5}, ring:{geschick:3,glueck:2}, amulet:{geschick:3,glueck:2}
+    },
+    bruiser:{
+      head:{glueck:4,ausdauer:2}, weapon:{glueck:5,geschick:2}, body:{ausdauer:4,glueck:2},
+      boots:{geschick:3,glueck:2}, ring:{glueck:5}, amulet:{glueck:3,geschick:2}
+    }
+  };
+
+  function v325Clone(x){
+    try{return JSON.parse(JSON.stringify(x||{}))}catch(e){return {...(x||{})}}
+  }
+
+  function v325ClassForItem(it){
+    if(it?.classId && classGear?.[it.classId])return it.classId;
+    if(it?.mysticSetId){
+      const m=String(it.mysticSetId).match(/^v110_(.+)$/);
+      if(m && classGear?.[m[1]])return m[1];
+    }
+    return s.playerClass||'grower';
+  }
+
+  function v325FindBase(it){
+    if(it?.baseBonusV055 && Object.keys(it.baseBonusV055).length){
+      return v325Clone(it.baseBonusV055);
+    }
+    const cls=v325ClassForItem(it);
+    const pool=classGear?.[cls]||[];
+    const clean=String(it?.name||'')
+      .replace(/^(Normal|Gewöhnlich|Rare|Episch|Legendär|Mystisch):\s*/,'')
+      .replace(/\s*\[Lv\.\d+\]\s*$/,'');
+    const hit=pool.find(x =>
+      (it?.slot && x.slot===it.slot && clean.includes(x.name)) ||
+      clean.includes(x.name)
+    );
+    if(hit)return v325Clone(hit.bonus||{});
+
+    if(it?.mysticSetId){
+      return v325Clone(V325_SET_BASE?.[cls]?.[it.slot]||{});
+    }
+    return null;
+  }
+
+  function v325CyanFloor(base,lvl){
+    if(typeof v024Bonus==='function')return v024Bonus(base,'cyan',lvl);
+    const scale=1+(Math.max(1,lvl)-1)*.05;
+    const out={};
+    Object.entries(base||{}).forEach(([k,v])=>{
+      out[k]=Math.max(6,Math.round((Number(v)||0)*scale*2.18+5));
+    });
+    return out;
+  }
+
+  function v325FixMystic(it){
+    if(!it || (it.quality!=='cyan' && it.rarity!=='mythic'))return false;
+    const lvl=Math.max(1,Number(it.dropLevel)||Number(s.level)||1);
+    const base=v325FindBase(it);
+    if(!base || !Object.keys(base).length)return false;
+
+    const floor=v325CyanFloor(base,lvl);
+    const old=it.bonus&&typeof it.bonus==='object'?it.bonus:{};
+    const merged={...old};
+    Object.entries(floor).forEach(([k,v])=>{
+      merged[k]=Math.max(Number(merged[k])||0,Number(v)||0);
+    });
+
+    /* Mystic set pieces keep their extra secondary stats, but may never
+       fall below the normal cyan curve for their slot/level. */
+    it.quality='cyan';
+    it.rarity='mythic';
+    it.dropLevel=lvl;
+    it.baseBonusV055=v325Clone(base);
+    it.bonus=merged;
+    return JSON.stringify(old)!==JSON.stringify(merged);
+  }
+
+  /* Future normal mythic world-boss drops use the same rarity curve as all
+     other item qualities. This guarantees cyan > orange for same base+level. */
+  if(typeof v110MakeMysticItem==='function'){
+    const v325OldMakeMystic=v110MakeMysticItem;
+    v110MakeMysticItem=function(){
+      const item=v325OldMakeMystic.apply(this,arguments);
+      v325FixMystic(item);
+      return item;
+    };
+  }
+
+  if(typeof v110MakeRareMysticSet==='function'){
+    const v325OldMakeMysticSet=v110MakeRareMysticSet;
+    v110MakeRareMysticSet=function(){
+      const item=v325OldMakeMysticSet.apply(this,arguments);
+      v325FixMystic(item);
+      return item;
+    };
+  }
+
+  /* Repair already-owned/equipped mystic items once, without touching
+     legendary/epic/normal items or reducing any existing stat. */
+  let changed=false;
+  (s.inventory||[]).forEach(it=>{ if(v325FixMystic(it))changed=true; });
+  Object.values(s.equipment||{}).forEach(it=>{ if(v325FixMystic(it))changed=true; });
+
+  s.v325MysticBalanceMigrated=true;
+  try{
+    localStorage.setItem(KEY,JSON.stringify(s));
+    if(changed && typeof v063Toast==='function'){
+      setTimeout(()=>v063Toast(
+        '🔷 Mystische Items korrigiert',
+        'success',
+        'Mystische Ausrüstung nutzt jetzt die höchste Raritäts-Skalierung.'
+      ),350);
+    }
+  }catch(e){console.error('V3.25 mythic migration',e)}
+
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.25 Stable');
+  const line=document.querySelector('#v141VersionLine');
+  if(line)line.textContent='V3.25 Stable';
+  try{render()}catch(e){}
+})();
+</script>
