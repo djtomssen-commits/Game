@@ -2697,7 +2697,7 @@ render = function(){
       ['intelligenz','🧠 Intelligenz'],
       ['ausdauer','❤️ Ausdauer'],
       ['glueck','🍀 Glück'],
-      ['growSkill','🌱 Grow-Skill']
+
     ];
     attrs.innerHTML = list.map(([k,n]) =>
       `<div class="attr"><span>${n}: <b>${totalAttr(k)}</b></span><button onclick="incAttr('${k}')" ${s.points<1?'disabled':''}>+</button></div>`
@@ -14573,7 +14573,7 @@ function v089ItemScore(it){
     intelligenz:1,
     ausdauer:1,
     glueck:.8,
-    growSkill:.7
+
   };
 
   Object.entries(it.bonus||{}).forEach(([k,v])=>{
@@ -14686,7 +14686,7 @@ function v090Score(it){
     intelligenz:1,
     ausdauer:1,
     glueck:.8,
-    growSkill:.7
+
   };
 
   let total=0;
@@ -20683,7 +20683,7 @@ const V125_ATTRS=[
   ['intelligenz','🧠','Intelligenz','Erhöht Magieschaden'],
   ['ausdauer','❤️','Ausdauer','Erhöht deine Lebenspunkte'],
   ['glueck','🍀','Glück','Verbessert Krit-Chance & Beute'],
-  ['growSkill','🌱','Grow-Skill','Verbessert Pflanzen-Ertrag']
+
 ];
 function v125RenderAttrs(){
   const box=document.querySelector('#attrs');if(!box)return;
@@ -20903,7 +20903,7 @@ if(typeof V125_ATTRS!=='undefined'){
     intelligenz:'Hauptschaden beim Bong-Magier',
     ausdauer:'Erhöht Lebenspunkte und Verteidigung',
     glueck:'Erhöht Krit-Chance und beeinflusst Beute',
-    growSkill:'Erhöht den Verkaufsertrag deiner Ernten'
+
   };
   V125_ATTRS.forEach(row=>{if(exact[row[0]])row[3]=exact[row[0]]});
 }
@@ -45986,5 +45986,54 @@ setTimeout(()=>{try{v322InstallMenuEntry();v322InstallHarzPlus()}catch(e){consol
     render();
   }catch(e){console.error('V3.27 migration',e)}
   setTimeout(v327EnsureConfirm,200);
+})();
+</script>
+
+<!-- ===== V3.28 Stable: Grow-Skill fully removed ===== -->
+<script id="v328-growskill-fully-removed">
+(function(){
+  const purge=(obj)=>{
+    if(!obj||typeof obj!=='object')return;
+    if(Object.prototype.hasOwnProperty.call(obj,'growSkill'))delete obj.growSkill;
+  };
+
+  purge(s.attrs);
+  try{
+    (s.inventory||[]).forEach(it=>{purge(it?.bonus);purge(it?.baseBonusV055)});
+    Object.values(s.equipment||{}).forEach(it=>{purge(it?.bonus);purge(it?.baseBonusV055)});
+  }catch(e){}
+
+  /* Only the five real character attributes may be requested. */
+  const allowed=new Set(['staerke','geschick','intelligenz','ausdauer','glueck']);
+  const v328TotalAttr=totalAttr;
+  totalAttr=function(k){
+    if(!allowed.has(k))return 0;
+    return Math.round(Number(v328TotalAttr(k))||0);
+  };
+
+  const v328IncAttr=incAttr;
+  incAttr=function(k){
+    if(!allowed.has(k))return;
+    return v328IncAttr(k);
+  };
+
+  /* Remove any legacy DOM fragment even if an old renderer tries to recreate it. */
+  function purgeDom(){
+    document.querySelectorAll('#attrs > *').forEach(el=>{
+      if(/grow[\s-]*skill/i.test(el.textContent||''))el.remove();
+    });
+  }
+  const v328Render=render;
+  render=function(){
+    const r=v328Render.apply(this,arguments);
+    purge(s.attrs);
+    purgeDom();
+    document.querySelectorAll('.version').forEach(el=>el.textContent='V3.28 Stable');
+    const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.28 Stable';
+    return r;
+  };
+
+  try{localStorage.setItem(KEY,JSON.stringify(s))}catch(e){}
+  try{render()}catch(e){}
 })();
 </script>
