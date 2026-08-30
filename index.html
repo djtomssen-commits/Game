@@ -46434,3 +46434,206 @@ setTimeout(()=>{try{v322InstallMenuEntry();v322InstallHarzPlus()}catch(e){consol
   const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.31 Stable';
 })();
 </script>
+
+<!-- ===== V3.32 Stable: paid dungeon fights do NOT reset free countdown ===== -->
+<script id="v332-dungeon-paid-no-timer-reset">
+(function(){
+  /* Preserve the free-fight timestamp across a paid Harz-Taler dungeon fight.
+     The existing fight code may write dungeonPass.lastFree; after a paid fight
+     we restore the exact timestamp that was running before the fight. */
+  let v332PaidFight=false;
+  let v332SavedLastFree=0;
+
+  const v332BaseDungeonFight = fightDungeon;
+  fightDungeon = async function(){
+    const before=Number(s.dungeonPass?.lastFree)||0;
+    const left=Math.max(0,3600000-(Date.now()-before));
+    const isPaid=left>0;
+
+    if(isPaid){
+      v332PaidFight=true;
+      v332SavedLastFree=before;
+    }
+
+    try{
+      const result=await v332BaseDungeonFight.apply(this,arguments);
+      return result;
+    }finally{
+      if(isPaid){
+        s.dungeonPass??={};
+        s.dungeonPass.lastFree=v332SavedLastFree;
+        v332PaidFight=false;
+        try{localStorage.setItem(KEY,JSON.stringify(s))}catch(e){}
+        try{if(typeof v324Paint==='function')v324Paint()}catch(e){}
+        try{renderDungeon()}catch(e){}
+      }
+    }
+  };
+
+  /* Safety net: if any nested legacy handler tries to reset the timestamp
+     during the paid fight, persist() cannot make that reset permanent. */
+  const v332BasePersist=persist;
+  persist=function(){
+    if(v332PaidFight){
+      s.dungeonPass??={};
+      s.dungeonPass.lastFree=v332SavedLastFree;
+    }
+    return v332BasePersist.apply(this,arguments);
+  };
+
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.32 Stable');
+  const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.32 Stable';
+})();
+</script>
+
+<!-- ===== V3.33 Stable: Nebel-Crew friend online status ===== -->
+<script id="v333-friends-online-status">
+(function(){
+  const V333_ONLINE_MS=2*60*1000;
+  let v333LastRefresh=0;
+  let v333Loading=false;
+
+  function v333FriendOnline(p){
+    try{
+      if(typeof v073User!=='undefined' && v073User && p?.id===v073User.id)return true;
+      const ts=new Date(p?.updated_at||'').getTime();
+      return Number.isFinite(ts) && (Date.now()-ts)<=V333_ONLINE_MS;
+    }catch(e){return false}
+  }
+
+  function v333FriendRow(p,actions=''){
+    const online=v333FriendOnline(p);
+    return `
+      <div class="v072-player-row" data-profile-id="${v073Escape(p.id)}">
+        <div class="v072-rank">P</div>
+        <div>
+          <div class="v072-player-name">
+            ${v073Escape(p.character_name)}
+            <span class="v329-presence ${online?'online':'offline'}">${online?'Online':'Offline'}</span>
+          </div>
+          <div class="v072-player-sub">
+            ${v073Escape(p.class_name||'')} · Lv. ${Number(p.level)||1}
+            · Ausrüstung ${Number(p.gear_score)||0}
+            · Bosse ${Number(p.bosses)||0}
+          </div>
+        </div>
+        <div class="v073-row-actions">${actions}</div>
+      </div>`;
+  }
+
+  async function v333ProfileMap(ids){
+    ids=[...new Set((ids||[]).filter(Boolean))];
+    if(!ids.length)return new Map();
+
+    const {data,error}=await v073Db
+      .from('profiles')
+      .select('id,character_name,class_name,level,bosses,gear_score,dungeons,updated_at')
+      .in('id',ids);
+
+    if(error){
+      console.error('V3.33 friend profile load',error);
+      return new Map();
+    }
+    return new Map((data||[]).map(p=>[p.id,p]));
+  }
+
+  /* Only the accepted Nebel-Crew friend list receives presence badges.
+     Hall of Haze / player search stays unchanged. */
+  v073LoadFriends=async function(){
+    const friendsEl=document.querySelector('#v072FriendsList');
+    const requestsEl=document.querySelector('#v072RequestsList');
+    const countEl=document.querySelector('#v072FriendCount');
+    if(!friendsEl||!requestsEl||v333Loading)return;
+
+    if(!(await v073Init()))return;
+    v333Loading=true;
+
+    try{
+      friendsEl.innerHTML='<div class="v072-empty">Lade Freunde...</div>';
+      requestsEl.innerHTML='<div class="v072-empty">Lade Anfragen...</div>';
+
+      const {data,error}=await v073Db
+        .from('friend_requests')
+        .select('id,sender_id,receiver_id,status,created_at')
+        .or(`sender_id.eq.${v073User.id},receiver_id.eq.${v073User.id}`)
+        .order('created_at',{ascending:false});
+
+      if(error)throw error;
+
+      const rows=data||[];
+      const incoming=rows.filter(r=>r.status==='pending' && r.receiver_id===v073User.id);
+      const accepted=rows.filter(r=>r.status==='accepted');
+
+      const ids=[
+        ...incoming.map(r=>r.sender_id),
+        ...accepted.map(r=>r.sender_id===v073User.id?r.receiver_id:r.sender_id)
+      ];
+      const profiles=await v333ProfileMap(ids);
+
+      requestsEl.innerHTML=incoming.length
+        ? incoming.map(r=>{
+            const p=profiles.get(r.sender_id)||{id:r.sender_id,character_name:'Spieler',level:1,class_name:''};
+            /* Requests intentionally use the normal row without presence. */
+            return v073PlayerRow(
+              p,
+              null,
+              `<button class="btn" data-v073-accept="${r.id}">Annehmen</button>
+               <button class="btn secondary" data-v073-decline="${r.id}">Ablehnen</button>`
+            );
+          }).join('')
+        : '<div class="v072-empty">Keine offenen Anfragen.</div>';
+
+      const friendProfiles=accepted.map(r=>{
+        const other=r.sender_id===v073User.id?r.receiver_id:r.sender_id;
+        return profiles.get(other);
+      }).filter(Boolean);
+
+      if(countEl)countEl.textContent=`${friendProfiles.length} Freunde`;
+
+      friendsEl.innerHTML=friendProfiles.length
+        ? friendProfiles.map(p=>v333FriendRow(
+            p,
+            `<button class="btn secondary" data-v073-remove="${p.id}">Entfernen</button>`
+          )).join('')
+        : '<div class="v072-empty">Noch keine Freunde.</div>';
+
+      document.querySelectorAll('[data-v073-accept]').forEach(btn=>{
+        btn.onclick=()=>v073AnswerRequest(Number(btn.dataset.v073Accept),'accepted');
+      });
+      document.querySelectorAll('[data-v073-decline]').forEach(btn=>{
+        btn.onclick=()=>v073AnswerRequest(Number(btn.dataset.v073Decline),'declined');
+      });
+      document.querySelectorAll('[data-v073-remove]').forEach(btn=>{
+        btn.onclick=()=>v073RemoveFriend(btn.dataset.v073Remove);
+      });
+
+      v333LastRefresh=Date.now();
+    }catch(e){
+      console.error('V3.33 friends load',e);
+      friendsEl.innerHTML='<div class="v072-status-offline">Freundesliste konnte nicht geladen werden.</div>';
+      requestsEl.innerHTML='';
+    }finally{
+      v333Loading=false;
+    }
+  };
+
+  /* Presence is refreshed while Nebel-Crew is open. The existing V3.29
+     heartbeat updates profiles.updated_at once per minute. */
+  setInterval(()=>{
+    const screen=document.querySelector('#friends');
+    if(!screen?.classList.contains('active'))return;
+    if(Date.now()-v333LastRefresh<55000)return;
+    v073LoadFriends();
+  },15000);
+
+  document.addEventListener('visibilitychange',()=>{
+    if(!document.hidden && document.querySelector('#friends')?.classList.contains('active')){
+      setTimeout(v073LoadFriends,350);
+    }
+  });
+
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.33 Stable');
+  const line=document.querySelector('#v141VersionLine');
+  if(line)line.textContent='V3.33 Stable';
+})();
+</script>
