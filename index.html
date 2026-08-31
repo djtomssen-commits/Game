@@ -546,7 +546,7 @@ document.documentElement.classList.remove('v224-app-ready');
 <body>
 <div class="app">
 <header>
-  <div class="brand"><h1>🌿 Grow Legends</h1><span class="version">V3.69 Stable</span><div class="power">Kampfkraft <b id="power">—</b></div></div>
+  <div class="brand"><h1>🌿 Grow Legends</h1><span class="version">V3.70 Stable</span><div class="power">Kampfkraft <b id="power">—</b></div></div>
   <div class="stats resource-stats"><div class="stat">GOLD<b id="gold">—</b></div><div class="stat">SKILL<b id="points">—</b></div><div class="stat">DAMPF<b id="energy">—</b></div><div class="stat harz-stat v277-harz-card v280-harz-card">
   <div class="v280-harz-label">HARZ-TALER</div>
   <b class="v280-harz-value"><span id="topHarz">—</span></b>
@@ -50148,7 +50148,7 @@ body:has(#world.active) #v032MenuBtn{
 
 <script id="v358-global-header">
 (function(){
-  const V358_VERSION='V3.69 Stable';
+  const V358_VERSION='V3.70 Stable';
 
   function num(v){
     return Math.max(0,Math.round(Number(v)||0)).toLocaleString('de-DE');
@@ -50311,7 +50311,7 @@ html body .app > header > .stats.resource-stats{
 
 <script id="v359-header-duplicate-hard-fix">
 (function(){
-  const V359_VERSION='V3.69 Stable';
+  const V359_VERSION='V3.70 Stable';
 
   function hideLegacyHeaderPieces(){
     const header=document.querySelector('.app > header');
@@ -51799,5 +51799,163 @@ html,body{
   version();
   document.addEventListener('DOMContentLoaded',()=>{applyRealCharacter();version()},{once:true});
   setTimeout(()=>{applyRealCharacter();version()},350);
+})();
+</script>
+
+<!-- ===== V3.70 Stable: mobile top bar matches approved reference ===== -->
+<style id="v370-mobile-topbar-reference-css">
+/* Phone: use the full viewport width. The old header inherited the desktop
+   max-width/centering, which wasted ~120px on the left in the screenshot. */
+@media (max-width:599px){
+  .app > header{
+    width:100vw!important;
+    max-width:none!important;
+    margin:0!important;
+    padding:0!important;
+    left:0!important;
+    right:auto!important;
+    transform:none!important;
+    overflow:visible!important;
+  }
+
+  .app > header > .v366-topbar{
+    box-sizing:border-box!important;
+    width:100vw!important;
+    max-width:none!important;
+    margin:0!important;
+    padding:5px 6px!important;
+    min-height:58px!important;
+    display:grid!important;
+    grid-template-columns:46px minmax(82px,1fr) 76px 68px 86px 32px 32px 32px!important;
+    gap:4px!important;
+    align-items:center!important;
+    border-radius:0!important;
+    border-left:0!important;
+    border-right:0!important;
+  }
+
+  .v366-menu{
+    width:44px!important;
+    height:46px!important;
+    margin:0!important;
+    justify-self:start!important;
+    font-size:27px!important;
+    line-height:1!important;
+    z-index:10004!important;
+    pointer-events:auto!important;
+  }
+
+  .v366-logo{
+    min-width:0!important;
+    overflow:visible!important;
+    justify-self:start!important;
+  }
+  .v366-logo strong{
+    font-size:17px!important;
+    line-height:.84!important;
+    white-space:nowrap!important;
+  }
+  .v366-logo span{font-size:8px!important;margin-left:4px!important}
+  .v366-ver{font-size:6px!important;margin:2px 0 0 4px!important}
+
+  .v366-res{
+    min-width:0!important;
+    height:42px!important;
+    padding:3px 3px!important;
+    grid-template-columns:15px minmax(0,1fr) 17px!important;
+    gap:2px!important;
+    border-radius:8px!important;
+  }
+  .v366-res .ico{font-size:13px!important}
+  .v366-res small{font-size:5px!important;line-height:1!important}
+  .v366-res .val{
+    font-size:9px!important;
+    line-height:1.05!important;
+    white-space:nowrap!important;
+    overflow:visible!important;
+    text-overflow:clip!important;
+  }
+  .v366-plus{
+    width:17px!important;
+    height:25px!important;
+    min-width:17px!important;
+    padding:0!important;
+    font-size:14px!important;
+  }
+  .v366-iconbtn{
+    width:30px!important;
+    height:34px!important;
+    min-width:30px!important;
+    padding:0!important;
+    font-size:16px!important;
+  }
+
+  /* Dropdown belongs to the hamburger, not to the centered desktop shell. */
+  #v032MenuPanel{
+    position:fixed!important;
+    left:4px!important;
+    right:auto!important;
+    top:58px!important;
+    width:min(280px,calc(100vw - 8px))!important;
+    max-width:calc(100vw - 8px)!important;
+    margin:0!important;
+    transform:none!important;
+    z-index:100000!important;
+  }
+}
+
+/* Very narrow phones: keep all three resources and three icons visible. */
+@media (max-width:390px){
+  .app > header > .v366-topbar{
+    grid-template-columns:44px 74px 70px 62px 78px 29px 29px 29px!important;
+    gap:2px!important;
+    padding-left:3px!important;
+    padding-right:3px!important;
+  }
+  .v366-logo strong{font-size:15px!important}
+  .v366-res{padding-left:2px!important;padding-right:2px!important}
+  .v366-res .val{font-size:8px!important}
+  .v366-iconbtn{width:27px!important;min-width:27px!important;font-size:14px!important}
+}
+</style>
+
+<script id="v370-mobile-topbar-reference">
+(function(){
+  const V370_VERSION='V3.70 Stable';
+
+  function paintVersion(){
+    document.querySelectorAll(
+      '.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version'
+    ).forEach(el=>{if(el)el.textContent=V370_VERSION});
+    document.querySelectorAll('.v366-ver').forEach(el=>el.textContent='V3.70');
+  }
+
+  function hardenMenu(){
+    const btn=document.querySelector('.app > header .v366-menu');
+    const panel=document.querySelector('#v032MenuPanel');
+    if(!btn || !panel)return;
+
+    /* Keep the dropdown physically attached to the left edge on mobile. */
+    if(matchMedia('(max-width:599px)').matches){
+      panel.style.setProperty('left','4px','important');
+      panel.style.setProperty('right','auto','important');
+      panel.style.setProperty('top','58px','important');
+      panel.style.setProperty('transform','none','important');
+    }
+
+    if(btn.dataset.v370Bound==='1')return;
+    btn.dataset.v370Bound='1';
+    btn.addEventListener('click',function(e){
+      e.preventDefault();
+      e.stopPropagation();
+      panel.classList.toggle('open');
+    },true);
+  }
+
+  paintVersion();
+  hardenMenu();
+  document.addEventListener('DOMContentLoaded',()=>{paintVersion();hardenMenu()},{once:true});
+  window.addEventListener('resize',hardenMenu,{passive:true});
+  setTimeout(()=>{paintVersion();hardenMenu()},300);
 })();
 </script>
