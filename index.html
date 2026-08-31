@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#10170f">
-<title>Grow Legends V4.12</title>
+<title>Grow Legends V4.17</title>
 <style>
 :root{--bg:#0b100b;--panel:#151d14;--panel2:#1c281a;--panel3:#253423;--line:#354933;--text:#f2f5ed;--muted:#9fad99;--green:#83d65d;--green2:#b2f07e;--gold:#f2c75a;--red:#ee6b68;--blue:#68a7ea;--purple:#ad7bea;--shadow:0 12px 30px rgba(0,0,0,.28)}
 *{box-sizing:border-box}html{background:var(--bg)}body{margin:0;color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:radial-gradient(circle at 50% -10%,#253821 0,#10170f 40%,#090d09 100%);min-height:100vh}button{font:inherit}.app{max-width:820px;margin:auto;min-height:100vh;padding-bottom:88px}
@@ -43296,10 +43296,10 @@ const v306Line=document.querySelector('#v141VersionLine');if(v306Line)v306Line.t
 <script id="v412-stability-audit">
 (function(){
   const VERSION='V4.17 Stable';
-  const SHORT='V4.12';
+  const SHORT='V4.17';
 
   function paintVersion(){
-    try{document.title='Grow Legends V4.12'}catch(e){}
+    try{document.title='Grow Legends V4.17'}catch(e){}
     document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version')
       .forEach(el=>{if(el)el.textContent=VERSION});
     document.querySelectorAll('.v366-ver,.v371-logo em,.v372-logo em')
@@ -43328,7 +43328,7 @@ const v306Line=document.querySelector('#v141VersionLine');if(v306Line)v306Line.t
       let box=document.querySelector('.v409-guild-progress');
       if(!box){box=document.createElement('div');box.className='v409-guild-progress';head.insertAdjacentElement('afterend',box)}
       box.innerHTML=`<div class="v409-guild-progress-top"><span>🏰 GILDENFORTSCHRITT</span><b>Gildenlevel ${z.lv}</b></div><div class="v409-guild-progress-bar"><i style="width:${z.pct}%"></i></div><small class="v411-xp-note">${z.text}</small>`;
-    }catch(e){console.warn('V4.12 guild XP paint',e)}
+    }catch(e){console.warn('V4.17 guild XP paint',e)}
   }
 
   async function awardGuildActivity(kind){
@@ -43344,7 +43344,7 @@ const v306Line=document.querySelector('#v141VersionLine');if(v306Line)v306Line.t
         v254Guild.guild_xp=Number(r.guild_xp)||0;
         paintGuildXp();
       }
-    }catch(e){console.warn('V4.12 guild activity',e)}
+    }catch(e){console.warn('V4.17 guild activity',e)}
   }
   window.v411AwardGuildActivity=awardGuildActivity;
 
@@ -51372,7 +51372,7 @@ html body .app > header > .stats.resource-stats{
     white-space:nowrap!important;
   }
   .app > header .v358-logo::after{
-    content:"V4.12";
+    content:"V4.17";
     display:block;
     margin:4px 0 0 10px;
     color:#75d8d9;
@@ -51531,7 +51531,7 @@ html body .app > header > .stats.resource-stats{
   }
 
   .app > header .v358-logo::after{
-    content:"V4.12"!important;
+    content:"V4.17"!important;
     display:block!important;
     margin:3px 0 0 10px!important;
     font-size:5.3px!important;
@@ -52074,7 +52074,7 @@ html,body{
       bar.className='v366-topbar';
       bar.innerHTML=`
         <button class="v366-menu" type="button">☰</button>
-        <div class="v366-logo"><strong>🌿 GROW</strong><span>LEGENDS</span><i class="v366-ver">V4.12</i></div>
+        <div class="v366-logo"><strong>🌿 GROW</strong><span>LEGENDS</span><i class="v366-ver">V4.17</i></div>
         <div class="v366-res"><span class="ico">🪙</span><div><small>Gold</small><span class="val" id="v366Gold"></span></div><button class="v366-plus" data-plus="gold">+</button></div>
         <div class="v366-res"><span class="ico">💎</span><div><small>Harz</small><span class="val" id="v366Harz"></span></div><button class="v366-plus" data-plus="harz">+</button></div>
         <div class="v366-res"><span class="ico">💨</span><div><small>Dampf</small><span class="val" id="v366Dampf"></span></div><button class="v366-plus" data-plus="dampf">+</button></div>
@@ -52297,7 +52297,7 @@ html,body{
       top.style.setProperty('visibility','visible','important');
       top.style.setProperty('opacity','1','important');
       const ver=top.querySelector('.v366-ver');
-      if(ver)ver.textContent='V4.12';
+      if(ver)ver.textContent='V4.17';
     }
 
     const modern=world?.querySelector(':scope > .v366-world');
@@ -52896,7 +52896,7 @@ body.v371-game-ui .app > header{
       shell.innerHTML=`
         <div class="v371-topbar">
           <button type="button" class="v371-menu" aria-label="Menü">☰</button>
-          <div class="v371-logo"><strong>🌿 GROW</strong><span>LEGENDS</span><em>V4.12</em></div>
+          <div class="v371-logo"><strong>🌿 GROW</strong><span>LEGENDS</span><em>V4.17</em></div>
 
           <div class="v371-res gold">
             <span class="ico">🪙</span>
@@ -53103,7 +53103,7 @@ body.v371-game-ui .app > header{
 <script id="v372-authoritative-header">
 (function(){
   const VERSION='V4.17 Stable';
-  const SHORT='V4.12';
+  const SHORT='V4.17';
   const num=v=>Math.max(0,Math.round(Number(v)||0)).toLocaleString('de-DE');
   function cap(){try{return typeof v271DampfCap==='function'?v271DampfCap():100}catch(e){return 100}}
 
@@ -53269,7 +53269,7 @@ body.v371-game-ui .app > header{
     '.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version,.v366-ver'
   ).forEach(el=>{
     if(!el)return;
-    el.textContent=el.classList?.contains('v366-ver')?'V4.12':VERSION;
+    el.textContent=el.classList?.contains('v366-ver')?'V4.17':VERSION;
   });
 })();
 </script>
