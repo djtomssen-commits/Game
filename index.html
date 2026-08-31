@@ -46956,3 +46956,463 @@ setTimeout(()=>{try{v322InstallMenuEntry();v322InstallHarzPlus()}catch(e){consol
   setTimeout(v336ApplyVersion,2000);
 })();
 </script>
+
+<!-- ===== V3.37 Stable: Harz Dealer in dropdown + copyright/footer ===== -->
+<style id="v337-footer-style">
+  #v337LegalFooter{
+    margin:28px auto 12px;
+    padding:14px 16px;
+    max-width:1100px;
+    text-align:center;
+    font-size:12px;
+    line-height:1.5;
+    opacity:.78;
+  }
+  #v337LegalFooter a{
+    text-decoration:underline;
+    cursor:pointer;
+  }
+</style>
+
+<script id="v337-harz-dealer-menu-copyright">
+(function(){
+  const V337_VERSION='V3.37 Stable';
+
+  function v337OpenHarzDealer(){
+    try{
+      if(typeof v322OpenDealer==='function')return v322OpenDealer();
+      if(typeof openHarzDealer==='function')return openHarzDealer();
+      const existing=document.querySelector('#v322HarzDealer,#harzDealer,.harz-dealer');
+      if(existing){
+        existing.scrollIntoView({behavior:'smooth',block:'start'});
+        return;
+      }
+      if(typeof toast==='function')toast('Harz Dealer konnte nicht geöffnet werden.');
+    }catch(e){console.warn('V3.37 Harz dealer open',e)}
+  }
+  window.v337OpenHarzDealer=v337OpenHarzDealer;
+
+  function v337AddDealerMenuItem(){
+    const candidates=[
+      document.querySelector('#menuDropdown'),
+      document.querySelector('.dropdown-menu'),
+      document.querySelector('#mainMenu'),
+      document.querySelector('.menu-dropdown'),
+      document.querySelector('[data-main-menu]')
+    ].filter(Boolean);
+
+    if(!candidates.length)return false;
+    const menu=candidates[0];
+    if(menu.querySelector('[data-v337-harz-dealer]'))return true;
+
+    const tag=(menu.querySelector('button')?'button':'div');
+    const item=document.createElement(tag);
+    item.setAttribute('data-v337-harz-dealer','1');
+    item.className='v337-harz-menu-item';
+    item.textContent='💎 Harz Dealer';
+    item.style.cursor='pointer';
+    if(tag==='button')item.type='button';
+    item.onclick=(e)=>{
+      e.preventDefault();
+      e.stopPropagation();
+      v337OpenHarzDealer();
+    };
+
+    menu.appendChild(item);
+    return true;
+  }
+
+  function v337EnsureFooter(){
+    if(document.querySelector('#v337LegalFooter'))return;
+    const footer=document.createElement('footer');
+    footer.id='v337LegalFooter';
+    footer.innerHTML=`
+      © ${new Date().getFullYear()} Grow Legends · Alle Rechte vorbehalten.<br>
+      Grow Legends ist ein eigenständiges Fan-/Indie-Spielprojekt. Genannte Marken,
+      Produktnamen und sonstige Kennzeichen gehören ihren jeweiligen Inhabern.
+    `;
+    const target=document.querySelector('main')||document.body;
+    target.appendChild(footer);
+  }
+
+  /* Keep menu/footer present even if later render functions rebuild the DOM. */
+  const v337Observer=new MutationObserver(()=>{
+    v337AddDealerMenuItem();
+    v337EnsureFooter();
+  });
+  try{
+    v337Observer.observe(document.body,{childList:true,subtree:true});
+  }catch(e){}
+
+  function v337ApplyVersion(){
+    document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version]').forEach(el=>{
+      if(el)el.textContent=V337_VERSION;
+    });
+  }
+
+  v337AddDealerMenuItem();
+  v337EnsureFooter();
+  v337ApplyVersion();
+  setTimeout(v337AddDealerMenuItem,500);
+  setTimeout(v337EnsureFooter,500);
+  setTimeout(v337ApplyVersion,500);
+  setTimeout(v337AddDealerMenuItem,1800);
+  setTimeout(v337EnsureFooter,1800);
+  setTimeout(v337ApplyVersion,1800);
+})();
+</script>
+
+<!-- ===== V3.38 Stable: modern animated Harz Dealer redesign ===== -->
+<style id="v338-harz-dealer-modern-css">
+#harzDealer{
+  position:relative;
+  overflow:hidden;
+  min-height:100vh;
+  isolation:isolate;
+}
+#harzDealer::before{
+  content:"";
+  position:absolute;inset:-20%;
+  z-index:-2;
+  background:
+    radial-gradient(circle at 15% 15%,rgba(116,42,189,.24),transparent 24%),
+    radial-gradient(circle at 85% 25%,rgba(30,194,121,.18),transparent 25%),
+    radial-gradient(circle at 55% 80%,rgba(206,158,51,.13),transparent 24%),
+    linear-gradient(180deg,#08090d 0%,#0b0d12 48%,#080a0d 100%);
+}
+#harzDealer::after{
+  content:"";
+  position:absolute;inset:0;z-index:-1;pointer-events:none;
+  opacity:.3;
+  background-image:
+    radial-gradient(circle,rgba(255,255,255,.7) 0 1px,transparent 1.4px),
+    radial-gradient(circle,rgba(126,255,194,.55) 0 1px,transparent 1.3px);
+  background-size:70px 70px,110px 110px;
+  background-position:0 0,35px 45px;
+  animation:v338Stars 18s linear infinite;
+}
+@keyframes v338Stars{to{background-position:0 140px,35px 265px}}
+@keyframes v338Glow{0%,100%{box-shadow:0 0 0 rgba(122,255,179,0)}50%{box-shadow:0 0 28px rgba(122,255,179,.17)}}
+@keyframes v338Shine{0%{transform:translateX(-140%) skewX(-18deg)}100%{transform:translateX(240%) skewX(-18deg)}}
+@keyframes v338Float{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+
+#harzDealer .v322-dealer-card{
+  max-width:1040px;
+  padding:0;
+  border:0;
+  background:transparent;
+  box-shadow:none;
+}
+.v338-hero{
+  position:relative;
+  overflow:hidden;
+  border:1px solid rgba(173,132,255,.28);
+  border-radius:20px;
+  padding:22px;
+  background:
+    linear-gradient(120deg,rgba(15,18,27,.97),rgba(28,15,41,.92) 55%,rgba(8,31,24,.9));
+  box-shadow:0 16px 50px rgba(0,0,0,.35);
+}
+.v338-hero::before{
+  content:"";
+  position:absolute;
+  width:260px;height:260px;border-radius:50%;
+  right:-70px;top:-100px;
+  background:radial-gradient(circle,rgba(153,72,255,.34),transparent 66%);
+}
+.v338-hero::after{
+  content:"";
+  position:absolute;
+  width:220px;height:220px;border-radius:50%;
+  left:-80px;bottom:-140px;
+  background:radial-gradient(circle,rgba(62,238,157,.2),transparent 66%);
+}
+.v338-hero-main{position:relative;z-index:1;display:flex;justify-content:space-between;gap:18px;align-items:center}
+.v338-title-wrap{max-width:650px}
+.v338-kicker{
+  display:inline-flex;align-items:center;gap:7px;
+  padding:5px 9px;border-radius:999px;
+  border:1px solid rgba(161,120,255,.35);
+  background:rgba(99,43,161,.16);
+  color:#d4baff;font-size:8px;font-weight:1000;letter-spacing:.08em
+}
+.v338-title{
+  margin:9px 0 6px;
+  font-size:clamp(28px,5vw,48px);
+  line-height:1;
+  letter-spacing:-.03em;
+  background:linear-gradient(90deg,#fff4c7,#e9c66c 42%,#c79aff 78%,#89f1b8);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.v338-sub{
+  margin:0;color:#c7cbd3;font-size:11px;line-height:1.55;max-width:620px
+}
+.v338-balance{
+  min-width:155px;
+  padding:13px 14px;border-radius:15px;
+  border:1px solid rgba(91,231,151,.32);
+  background:rgba(8,18,14,.82);
+  text-align:center;
+  animation:v338Glow 3.3s ease-in-out infinite;
+}
+.v338-balance span{display:block;font-size:7px;color:#8e9a92;text-transform:uppercase;letter-spacing:.08em}
+.v338-balance strong{display:block;margin-top:3px;font-size:22px;color:#a5f5bd}
+.v338-benefits{
+  position:relative;z-index:1;
+  display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:16px
+}
+.v338-benefit{
+  padding:10px;border-radius:12px;
+  border:1px solid rgba(255,255,255,.07);
+  background:rgba(5,7,10,.38)
+}
+.v338-benefit b{display:block;font-size:8px;color:#f2f3f5;margin-bottom:2px}
+.v338-benefit small{display:block;font-size:6.5px;color:#8f99a5;line-height:1.35}
+
+.v338-featured{
+  margin-top:16px;
+  padding:14px;
+  border-radius:18px;
+  border:1px solid rgba(230,185,77,.3);
+  background:linear-gradient(135deg,rgba(55,37,8,.46),rgba(19,12,31,.58));
+}
+.v338-section-label{
+  display:flex;align-items:center;gap:8px;margin-bottom:10px;
+  color:#e7d8a1;font-size:8px;font-weight:1000;letter-spacing:.08em;text-transform:uppercase
+}
+.v338-section-label::before,.v338-section-label::after{content:"";height:1px;flex:1;background:linear-gradient(90deg,transparent,rgba(215,175,75,.36),transparent)}
+.v338-feature-card{
+  position:relative;
+  overflow:hidden;
+  display:grid;grid-template-columns:1.2fr .8fr;gap:18px;align-items:center;
+  padding:16px;border-radius:15px;
+  border:1px solid rgba(203,158,61,.45);
+  background:linear-gradient(130deg,rgba(18,21,28,.96),rgba(57,34,10,.73));
+}
+.v338-feature-card::after{
+  content:"";position:absolute;top:-30%;bottom:-30%;width:24%;
+  left:-35%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.12),transparent);
+  animation:v338Shine 5.5s ease-in-out infinite;
+}
+.v338-feature-card h3{margin:0 0 4px;font-size:18px;color:#ffe59a}
+.v338-feature-card p{margin:0;color:#aeb5bf;font-size:8px;line-height:1.45}
+.v338-feature-price{text-align:right}
+.v338-feature-price .amt{font-size:26px;font-weight:1000;color:#b9ffc8}
+.v338-feature-price .price{font-size:17px;font-weight:1000;margin-top:3px}
+.v338-feature-price .save{font-size:7px;color:#e9cb74;margin-top:3px}
+
+#harzDealer .v322-pack-grid{
+  margin-top:16px;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:12px;
+}
+#harzDealer .v322-pack{
+  min-height:176px;
+  display:flex;flex-direction:column;
+  padding:14px;
+  border:1px solid rgba(116,132,145,.25);
+  border-radius:16px;
+  background:
+    linear-gradient(160deg,rgba(22,25,34,.94),rgba(8,11,15,.97));
+  box-shadow:0 8px 25px rgba(0,0,0,.18);
+  transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease;
+}
+#harzDealer .v322-pack:hover{
+  transform:translateY(-4px);
+  border-color:rgba(140,226,177,.4);
+  box-shadow:0 14px 35px rgba(0,0,0,.32),0 0 24px rgba(86,223,145,.08);
+}
+#harzDealer .v322-pack.best{
+  border-color:rgba(238,191,75,.72);
+  background:linear-gradient(160deg,rgba(50,36,11,.93),rgba(16,12,22,.98));
+}
+#harzDealer .v322-pack.best:hover{box-shadow:0 14px 36px rgba(0,0,0,.34),0 0 25px rgba(238,191,75,.12)}
+#harzDealer .v322-best{
+  right:9px;top:9px;
+  padding:4px 7px;
+  background:linear-gradient(90deg,#7a5512,#b67b18);
+  box-shadow:0 0 16px rgba(235,184,70,.18)
+}
+#harzDealer .v322-pack-amount{
+  padding-right:54px;
+  font-size:18px;color:#b8f6c5
+}
+#harzDealer .v322-pack-price{font-size:16px;margin-top:7px}
+#harzDealer .v322-pack-save{font-size:7px;color:#e0c66d;margin-top:5px;min-height:20px}
+#harzDealer .v322-pack-unit{font-size:6.5px;color:#7f8993;margin-top:1px}
+#harzDealer .v322-pack button{
+  margin-top:auto;
+  min-height:36px;
+  border-radius:10px;
+  font-weight:1000;
+  position:relative;overflow:hidden
+}
+#harzDealer .v322-pack button::after{
+  content:"";position:absolute;top:-60%;bottom:-60%;width:22%;left:-38%;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.17),transparent);
+  transition:left .55s ease
+}
+#harzDealer .v322-pack button:hover::after{left:120%}
+
+.v338-bottom-info{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px
+}
+.v338-info-box{
+  border:1px solid rgba(255,255,255,.07);
+  border-radius:13px;padding:11px;
+  background:rgba(8,10,14,.72)
+}
+.v338-info-box b{display:block;font-size:8px;color:#d8dde5;margin-bottom:4px}
+.v338-info-box span{font-size:6.5px;color:#8f98a4;line-height:1.4}
+#harzDealer .v322-pay-note{
+  margin-top:13px;padding:10px 12px;
+  border-color:rgba(220,174,62,.28);
+  background:rgba(49,37,8,.36);
+  color:#e1c87c;font-size:7px
+}
+
+@media(max-width:760px){
+  .v338-hero-main{display:block}
+  .v338-balance{margin-top:13px;width:100%}
+  .v338-benefits{grid-template-columns:1fr}
+  .v338-feature-card{grid-template-columns:1fr}
+  .v338-feature-price{text-align:left}
+  #harzDealer .v322-pack-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .v338-bottom-info{grid-template-columns:1fr}
+}
+@media(max-width:500px){
+  #harzDealer .v322-pack-grid{grid-template-columns:1fr}
+  .v338-title{font-size:34px}
+}
+@media(prefers-reduced-motion:reduce){
+  #harzDealer::after,.v338-balance,.v338-feature-card::after{animation:none!important}
+}
+</style>
+
+<script id="v338-harz-dealer-modern">
+(function(){
+  const V338_VERSION='V3.38 Stable';
+
+  function v338Saving(p){
+    try{return Math.max(0,Math.round((1-(p.price/((p.harz/25)*1.99)))*100))}catch(e){return 0}
+  }
+
+  function v338ModernizeDealer(){
+    const screen=document.querySelector('#harzDealer');
+    if(!screen)return;
+    const card=screen.querySelector('.v322-dealer-card');
+    const box=screen.querySelector('#v322DealerPackages');
+    const oldHead=screen.querySelector('.v322-dealer-head');
+    if(!card||!box)return;
+
+    if(!screen.querySelector('.v338-hero')){
+      const hero=document.createElement('div');
+      hero.className='v338-hero';
+      hero.innerHTML=`
+        <div class="v338-hero-main">
+          <div class="v338-title-wrap">
+            <div class="v338-kicker">✦ PREMIUM-WÄHRUNG · GROW LEGENDS</div>
+            <h2 class="v338-title">Harz Dealer</h2>
+            <p class="v338-sub">Hol dir Harz-Taler für zusätzliche Dungeon-Versuche, Komfortfunktionen und besondere Spielmomente. Größere Pakete bieten einen besseren Preis pro Harz-Taler.</p>
+          </div>
+          <div class="v338-balance">
+            <span>Dein Bestand</span>
+            <strong><span id="v338DealerHarz">0</span> 💎</strong>
+          </div>
+        </div>
+        <div class="v338-benefits">
+          <div class="v338-benefit"><b>⚔️ Sofort weiterspielen</b><small>Zusätzliche Dungeon-Versuche ohne auf den kostenlosen Timer zu warten.</small></div>
+          <div class="v338-benefit"><b>✨ Besserer Paketwert</b><small>Je größer das Paket, desto günstiger wird ein einzelner Harz-Taler.</small></div>
+          <div class="v338-benefit"><b>🌿 Unterstützt das Projekt</b><small>Premium-Käufe sollen die Weiterentwicklung von Grow Legends unterstützen.</small></div>
+        </div>
+      `;
+      card.insertBefore(hero,oldHead||card.firstChild);
+      if(oldHead)oldHead.style.display='none';
+    }
+
+    if(!screen.querySelector('.v338-featured') && typeof V322_HARZ_PACKAGES!=='undefined'){
+      const p=V322_HARZ_PACKAGES[4]||V322_HARZ_PACKAGES[0];
+      const idx=V322_HARZ_PACKAGES.indexOf(p);
+      const featured=document.createElement('div');
+      featured.className='v338-featured';
+      featured.innerHTML=`
+        <div class="v338-section-label">Beliebtes Paket</div>
+        <div class="v338-feature-card">
+          <div>
+            <h3>💎 ${p.harz} Harz-Taler</h3>
+            <p>Ein ausgewogenes Paket für Spieler, die regelmäßig Dungeons, Events und Komfortfunktionen nutzen.</p>
+          </div>
+          <div class="v338-feature-price">
+            <div class="amt">${p.harz} Harz</div>
+            <div class="price">${v322Money(p.price)}</div>
+            <div class="save">${v338Saving(p)>0?`ca. ${v338Saving(p)}% günstiger als der 25er-Preis`:'Guter Einstieg'}</div>
+            <button type="button" class="btn gold" data-v338-feature-buy="${idx}" style="margin-top:9px;min-width:150px">Paket ansehen</button>
+          </div>
+        </div>
+      `;
+      box.parentNode.insertBefore(featured,box);
+      featured.querySelector('[data-v338-feature-buy]')?.addEventListener('click',()=>{
+        const target=box.querySelector(`[data-v322-buy="${idx}"]`);
+        if(target){
+          target.closest('.v322-pack')?.scrollIntoView({behavior:'smooth',block:'center'});
+          target.closest('.v322-pack')?.animate(
+            [{transform:'scale(1)'},{transform:'scale(1.025)'},{transform:'scale(1)'}],
+            {duration:520,easing:'ease-out'}
+          );
+        }
+      });
+    }
+
+    if(!screen.querySelector('.v338-bottom-info')){
+      const info=document.createElement('div');
+      info.className='v338-bottom-info';
+      info.innerHTML=`
+        <div class="v338-info-box"><b>🛡️ Transparente Preise</b><span>Preis, Paketgröße und Preis pro Harz-Taler werden direkt angezeigt.</span></div>
+        <div class="v338-info-box"><b>⏱️ Direkt verfügbar</b><span>Sobald eine echte Zahlungsanbindung eingerichtet ist, sollen gekaufte Harz-Taler unmittelbar verfügbar sein.</span></div>
+        <div class="v338-info-box"><b>ℹ️ Aktueller Status</b><span>Der Zahlungsanbieter ist noch nicht verbunden. Der Kaufen-Button führt deshalb derzeit keine Echtgeldzahlung aus.</span></div>
+      `;
+      const note=screen.querySelector('.v322-pay-note');
+      if(note)note.parentNode.insertBefore(info,note);
+      else card.appendChild(info);
+    }
+
+    const bal=Math.max(0,Number(s.harzTaler)||0);
+    const balNew=screen.querySelector('#v338DealerHarz');
+    if(balNew)balNew.textContent=bal.toLocaleString('de-DE');
+  }
+
+  const v338BaseDealerRender=window.v322RenderDealer;
+  if(typeof v338BaseDealerRender==='function'){
+    window.v322RenderDealer=function(){
+      const r=v338BaseDealerRender.apply(this,arguments);
+      v338ModernizeDealer();
+      return r;
+    };
+  }
+
+  const v338BaseRender=render;
+  render=function(){
+    const r=v338BaseRender.apply(this,arguments);
+    if(document.querySelector('#harzDealer')?.classList.contains('active')){
+      requestAnimationFrame(v338ModernizeDealer);
+    }
+    return r;
+  };
+
+  const v338BaseGo=v032Go;
+  v032Go=function(id){
+    const r=v338BaseGo.apply(this,arguments);
+    if(id==='harzDealer')requestAnimationFrame(v338ModernizeDealer);
+    return r;
+  };
+
+  function v338ApplyVersion(){
+    document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version]').forEach(el=>{
+      if(el)el.textContent=V338_VERSION;
+    });
+  }
+
+  setTimeout(()=>{v338ModernizeDealer();v338ApplyVersion()},300);
+  setTimeout(()=>{v338ModernizeDealer();v338ApplyVersion()},1500);
+})();
+</script>
