@@ -53625,94 +53625,493 @@ create index if not exists player_messages_sender_idx on public.player_messages(
 })();
 </script>
 
-<style id="v386-quest-visual-redesign-css">
-/* ===== V3.86 QUEST HUB — visual-only redesign ===== */
-#quests{--qgreen:#8cff4f;--qdark:#08100a;--qpanel:#101812;--qline:#315638}
-#quests>.hero-card:first-child{display:none!important}
-#quests .v386-quest-hub{position:relative;overflow:hidden;margin:0 0 12px;border:1px solid #315b39;border-radius:18px;min-height:210px;background:radial-gradient(circle at 78% 20%,rgba(105,255,67,.18),transparent 26%),linear-gradient(135deg,#07120b 0%,#102017 52%,#08100b 100%);box-shadow:0 18px 40px rgba(0,0,0,.32),inset 0 0 45px rgba(72,170,55,.05)}
-#quests .v386-quest-hub:before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(0,0,0,.06),rgba(0,0,0,.48)),repeating-linear-gradient(90deg,transparent 0 58px,rgba(119,255,76,.025) 59px 60px);pointer-events:none}
-#quests .v386-mira{position:absolute;left:10px;bottom:-5px;width:112px;height:185px;display:flex;align-items:flex-end;justify-content:center;filter:drop-shadow(0 12px 12px #000);z-index:2}
-#quests .v386-mira:before{content:"👩🏽‍🎤";font-size:92px;line-height:1;transform:rotate(-2deg)}
-#quests .v386-mira:after{content:"";position:absolute;left:28px;bottom:15px;width:64px;height:70px;border-radius:48% 48% 12px 12px;background:linear-gradient(145deg,#35144b,#121512);z-index:-1;border:1px solid #793ca0}
-#quests .v386-hub-copy{position:relative;z-index:3;margin-left:120px;padding:18px 14px 16px 8px;min-height:142px}
-#quests .v386-kicker{font-size:8px;font-weight:1000;letter-spacing:.13em;color:#91ff55;text-transform:uppercase}
-#quests .v386-hub-copy h2{margin:3px 0 7px;font-size:25px;line-height:1;color:#b967ff;text-shadow:0 2px 0 #35104f,0 0 16px rgba(181,84,255,.25)}
-#quests .v386-speech{padding:10px 11px;border:1px solid #53664f;border-radius:12px;background:rgba(238,229,197,.96);color:#1c201a;font-size:10px;line-height:1.45;font-weight:800;box-shadow:0 7px 20px rgba(0,0,0,.25)}
-#quests .v386-tabs{position:relative;z-index:4;display:grid;grid-template-columns:repeat(3,1fr);gap:6px;padding:0 10px 10px;margin-top:-2px}
-#quests .v386-tab{padding:9px 5px;border-radius:11px;border:1px solid #304b35;background:#0b120d;text-align:center;font-size:8px;font-weight:1000;letter-spacing:.04em}
-#quests .v386-tab.quick{border-color:#287d91;color:#78e9ff;box-shadow:inset 0 0 14px rgba(36,190,226,.08)}
-#quests .v386-tab.normal{border-color:#5f772b;color:#c9ee6a;box-shadow:inset 0 0 14px rgba(152,205,56,.08)}
-#quests .v386-tab.heavy{border-color:#873e38;color:#ff8b7e;box-shadow:inset 0 0 14px rgba(220,63,45,.08)}
-#quests>.card:not(#activeQuestCard){background:transparent!important;border:0!important;padding:0!important;box-shadow:none!important}
-#quests>.card:not(#activeQuestCard)>.section-title{display:none!important}
-#questList{display:grid;gap:12px}
-#questList>.quest{position:relative;overflow:hidden;min-height:260px;margin:0!important;padding:0!important;border-radius:17px!important;background:#0b120d!important;border:1px solid #31573a!important;box-shadow:0 13px 28px rgba(0,0,0,.28)!important}
-#questList>.quest:before{content:"";display:block;height:122px;background:radial-gradient(circle at 74% 25%,rgba(104,255,66,.22),transparent 22%),linear-gradient(145deg,#122b18,#07100a 65%);border-bottom:1px solid #294b31}
-#questList>.quest:after{content:"🌿";position:absolute;right:16px;top:18px;font-size:70px;opacity:.25;filter:drop-shadow(0 0 16px rgba(104,255,66,.25));transform:rotate(14deg)}
-#questList>.quest.v386-quick:before{background:radial-gradient(circle at 20% 30%,rgba(73,219,255,.24),transparent 22%),linear-gradient(145deg,#0b2930,#071317 62%,#09100b)}
-#questList>.quest.v386-quick:after{content:"🪰";opacity:.9;filter:drop-shadow(0 8px 8px #000);transform:rotate(-8deg)}
-#questList>.quest.v386-normal:before{background:radial-gradient(circle at 75% 24%,rgba(112,255,72,.23),transparent 24%),linear-gradient(145deg,#172815,#0b160d 62%,#17110b)}
-#questList>.quest.v386-normal:after{content:"📦";opacity:.95;filter:drop-shadow(0 8px 8px #000);transform:rotate(-5deg)}
-#questList>.quest.v386-heavy:before{background:radial-gradient(circle at 78% 35%,rgba(238,68,55,.20),transparent 24%),linear-gradient(145deg,#29130e,#100c0b 65%,#08100a)}
-#questList>.quest.v386-heavy:after{content:"🪲";opacity:.95;filter:drop-shadow(0 8px 8px #000);transform:rotate(8deg)}
-#questList>.quest.v310-elite-quest:before{background:radial-gradient(circle at 75% 30%,rgba(206,73,255,.26),transparent 24%),linear-gradient(145deg,#2c1136,#130a18 62%,#080d09)}
-#questList>.quest.v310-elite-quest:after{content:"👑";opacity:.95;filter:drop-shadow(0 8px 10px #000);transform:rotate(5deg)}
-#questList>.quest .quest-top{position:absolute;left:14px;right:88px;top:39px;z-index:3;align-items:flex-start!important}
-#questList>.quest .quest-icon{display:none!important}
-#questList>.quest .quest-top h3{margin:0 0 5px!important;color:#fff!important;font-size:17px!important;line-height:1.05!important;text-transform:uppercase;text-shadow:0 2px 3px #000,0 0 12px #000}
-#questList>.quest .quest-top .muted{color:#d5ded3!important;font-size:9px!important;line-height:1.35!important;text-shadow:0 1px 2px #000}
-#questList>.quest>.v309-quest-role,#questList>.quest>.v310-elite-badge{position:absolute;left:12px;top:10px;z-index:5;margin:0!important}
-#questList>.quest .quest-meta{display:grid!important;grid-template-columns:repeat(3,1fr);gap:6px;margin:0!important;padding:10px 10px 6px!important;background:#0b120d}
-#questList>.quest .quest-meta span{display:flex!important;align-items:center;justify-content:center;min-height:34px;padding:5px!important;border:1px solid #28432e;border-radius:10px;background:#0d1710;color:#d8e1d6!important;font-size:8px!important;text-align:center}
-#questList>.quest .quest-meta span:nth-last-child(-n+2){color:#ffe478!important;border-color:#5f5927;box-shadow:inset 0 0 12px rgba(255,218,74,.06)}
-#questList>.quest>.btn{width:calc(100% - 20px)!important;margin:6px 10px 10px!important;min-height:48px;border-radius:13px!important;font-size:15px!important;font-weight:1000!important;background:linear-gradient(#9df36f,#61cf42)!important;color:#0b1708!important;border:1px solid #a9ff7d!important;box-shadow:0 6px 18px rgba(89,214,56,.18)!important}
-#questList>.quest>.btn:disabled{filter:grayscale(.75);opacity:.48}
-#questList .v386-reward-title{padding:1px 11px 0;color:#86e65c;font-size:7px;font-weight:1000;letter-spacing:.12em;text-align:center;text-transform:uppercase}
-#questList .v386-recommend{position:absolute;left:12px;top:96px;z-index:4;padding:4px 7px;border:1px solid rgba(140,255,79,.35);border-radius:999px;background:rgba(5,13,7,.82);color:#b7ee91;font-size:7px;font-weight:900}
-#refreshQuests{margin-top:12px!important;border-radius:12px!important}
-#activeQuestCard{overflow:hidden;border-color:#436c48!important;background:linear-gradient(145deg,#101b12,#0a100b)!important}
-#activeQuestCard>.section-title h3{color:#91ef67}
-#activeQuest .quest{border:0!important;background:transparent!important;padding:4px!important}
-#activeQuest .quest-top h3{font-size:18px!important;color:#fff!important}
-#activeQuest .timer{margin-top:9px;padding:10px;border-radius:10px;background:#07120a;border:1px solid #315f38;color:#a6f77f;font-weight:900;text-align:center}
-@media(max-width:520px){#quests .v386-quest-hub{min-height:195px}#quests .v386-mira{width:95px;height:170px}#quests .v386-mira:before{font-size:78px}#quests .v386-hub-copy{margin-left:98px;padding-right:10px}#quests .v386-hub-copy h2{font-size:22px}#questList>.quest{min-height:255px}#questList>.quest:before{height:118px}#questList>.quest .quest-top h3{font-size:15px!important}}
+<!-- ===== V3.86 Stable: Quest page visual redesign (mobile-safe) ===== -->
+<style id="v386-quest-redesign-style">
+#quests{
+  --v386-bg:#071109;
+  --v386-panel:#0d1710;
+  --v386-line:#284630;
+  --v386-green:#8ef45d;
+  --v386-gold:#e6c45d;
+}
+#quests .v386-shell{
+  display:grid;
+  gap:14px;
+}
+#quests .v386-mira{
+  position:relative;
+  overflow:hidden;
+  border:1px solid #315439;
+  border-radius:18px;
+  background:
+    radial-gradient(circle at 80% 20%,rgba(102,255,78,.12),transparent 38%),
+    linear-gradient(160deg,#101b12,#091109);
+  min-height:180px;
+  padding:18px;
+  box-shadow:inset 0 0 30px rgba(85,210,68,.06);
+}
+#quests .v386-mira::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:
+    linear-gradient(90deg,rgba(7,17,9,.08),rgba(7,17,9,.72)),
+    radial-gradient(circle at 22% 70%,rgba(163,79,255,.13),transparent 30%);
+  pointer-events:none;
+}
+#quests .v386-mira-art{
+  position:absolute;
+  left:10px;
+  bottom:0;
+  width:130px;
+  height:160px;
+  border-radius:24px 24px 0 0;
+  background:
+    radial-gradient(circle at 50% 28%,#c99072 0 18%,transparent 19%),
+    radial-gradient(circle at 47% 32%,#2b1713 0 5%,transparent 6%),
+    linear-gradient(180deg,transparent 0 34%,#2a1735 35% 48%,#171c16 49% 100%);
+  filter:drop-shadow(0 10px 14px rgba(0,0,0,.55));
+  opacity:.95;
+}
+#quests .v386-mira-copy{
+  position:relative;
+  z-index:1;
+  margin-left:120px;
+}
+#quests .v386-kicker{
+  font-size:8px;
+  letter-spacing:1.4px;
+  font-weight:1000;
+  color:#8cf06c;
+  text-transform:uppercase;
+}
+#quests .v386-mira-name{
+  margin:5px 0 8px;
+  font-size:26px;
+  font-weight:1000;
+  color:#d782ff;
+  text-shadow:0 0 14px rgba(188,91,255,.25);
+}
+#quests .v386-bubble{
+  background:#eadfbd;
+  color:#171612;
+  border-radius:16px;
+  padding:12px 14px;
+  font-size:13px;
+  font-weight:800;
+  line-height:1.45;
+  box-shadow:0 10px 25px rgba(0,0,0,.25);
+}
+#quests .v386-tabs{
+  position:relative;
+  z-index:2;
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:8px;
+  margin-top:14px;
+}
+#quests .v386-tab{
+  border-radius:12px;
+  padding:9px 6px;
+  text-align:center;
+  background:#0a130c;
+  border:1px solid #2f4734;
+  font-size:9px;
+  font-weight:1000;
+}
+#quests .v386-tab.fast{color:#7ee8ff;border-color:#2b8190}
+#quests .v386-tab.normal{color:#b7f56f;border-color:#627f36}
+#quests .v386-tab.hard{color:#ff8c7e;border-color:#8d463e}
+
+#quests .v386-list{
+  display:grid;
+  gap:14px;
+}
+#quests .v386-card{
+  border:1px solid #2d4c33;
+  border-radius:18px;
+  overflow:hidden;
+  background:linear-gradient(180deg,#0d1710,#081009);
+  box-shadow:0 14px 34px rgba(0,0,0,.22);
+}
+#quests .v386-card.fast{border-color:#2e6e78}
+#quests .v386-card.normal{border-color:#526b2e}
+#quests .v386-card.hard{border-color:#6e3630}
+#quests .v386-scene{
+  position:relative;
+  min-height:170px;
+  padding:16px;
+  display:flex;
+  flex-direction:column;
+  justify-content:flex-end;
+  isolation:isolate;
+}
+#quests .v386-scene::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:-2;
+  background:
+    radial-gradient(circle at 25% 30%,rgba(119,255,104,.18),transparent 25%),
+    linear-gradient(180deg,rgba(5,10,6,.05),rgba(5,10,6,.88));
+}
+#quests .v386-scene.fast{
+  background:
+    radial-gradient(circle at 14% 50%,rgba(84,225,255,.18),transparent 20%),
+    linear-gradient(145deg,#10211b,#102a20 35%,#0d1510 70%);
+}
+#quests .v386-scene.normal{
+  background:
+    radial-gradient(circle at 15% 45%,rgba(255,178,82,.2),transparent 22%),
+    linear-gradient(145deg,#24160f,#332113 38%,#0c1510 74%);
+}
+#quests .v386-scene.hard{
+  background:
+    radial-gradient(circle at 18% 48%,rgba(255,79,58,.17),transparent 22%),
+    linear-gradient(145deg,#26100f,#2b1412 36%,#0c1210 74%);
+}
+#quests .v386-scene-art{
+  position:absolute;
+  inset:0;
+  z-index:-1;
+  opacity:.55;
+  pointer-events:none;
+}
+#quests .v386-scene.fast .v386-scene-art{
+  background:
+    radial-gradient(ellipse at 18% 58%,#141414 0 6%,transparent 7%),
+    radial-gradient(ellipse at 23% 55%,#1b1b1b 0 3%,transparent 4%),
+    radial-gradient(circle at 34% 70%,rgba(98,204,85,.22),transparent 16%),
+    repeating-linear-gradient(90deg,rgba(44,79,43,.3) 0 2px,transparent 2px 28px);
+}
+#quests .v386-scene.normal .v386-scene-art{
+  background:
+    linear-gradient(20deg,transparent 0 45%,rgba(84,50,25,.75) 46% 57%,transparent 58%),
+    radial-gradient(circle at 28% 70%,rgba(108,255,78,.12),transparent 18%),
+    repeating-linear-gradient(90deg,rgba(139,94,50,.18) 0 3px,transparent 3px 38px);
+}
+#quests .v386-scene.hard .v386-scene-art{
+  background:
+    radial-gradient(circle at 15% 72%,rgba(117,210,65,.22),transparent 8%),
+    radial-gradient(circle at 28% 78%,rgba(117,210,65,.18),transparent 7%),
+    radial-gradient(circle at 42% 70%,rgba(117,210,65,.14),transparent 6%),
+    repeating-linear-gradient(100deg,rgba(91,51,34,.2) 0 4px,transparent 4px 34px);
+}
+#quests .v386-type{
+  display:inline-flex;
+  align-self:flex-start;
+  margin-bottom:auto;
+  padding:5px 9px;
+  border-radius:999px;
+  background:rgba(5,9,6,.78);
+  border:1px solid currentColor;
+  font-size:8px;
+  font-weight:1000;
+}
+#quests .v386-card.fast .v386-type{color:#77e8ff}
+#quests .v386-card.normal .v386-type{color:#d6ef71}
+#quests .v386-card.hard .v386-type{color:#ff9284}
+#quests .v386-title{
+  margin:8px 0 5px;
+  font-size:20px;
+  line-height:1.06;
+  font-weight:1000;
+  color:#fff;
+  text-shadow:0 2px 12px rgba(0,0,0,.75);
+}
+#quests .v386-desc{
+  max-width:92%;
+  font-size:11px;
+  color:#d5ded4;
+  line-height:1.45;
+  text-shadow:0 2px 8px rgba(0,0,0,.8);
+}
+#quests .v386-card-body{
+  display:grid;
+  gap:10px;
+  padding:12px;
+}
+#quests .v386-meta,
+#quests .v386-rewards{
+  display:grid;
+  gap:8px;
+}
+#quests .v386-meta{grid-template-columns:repeat(3,1fr)}
+#quests .v386-rewards{grid-template-columns:repeat(3,1fr)}
+#quests .v386-box{
+  min-width:0;
+  border:1px solid #29432f;
+  border-radius:12px;
+  background:#09110b;
+  padding:9px 7px;
+  text-align:center;
+}
+#quests .v386-box b{
+  display:block;
+  font-size:12px;
+  color:#f5f7ef;
+  white-space:nowrap;
+}
+#quests .v386-box span{
+  display:block;
+  margin-top:2px;
+  font-size:7px;
+  color:#89978c;
+}
+#quests .v386-reward b{color:#e6cd67}
+#quests .v386-reward.xp b{color:#b9f16f}
+#quests .v386-reward.item b{color:#d8a6ff}
+#quests .v386-start{
+  width:100%;
+  min-height:54px;
+  border:none;
+  border-radius:14px;
+  background:linear-gradient(180deg,#8df66b,#63d847);
+  color:#071006;
+  font-size:17px;
+  font-weight:1000;
+  box-shadow:0 0 24px rgba(108,240,75,.2),inset 0 1px 0 rgba(255,255,255,.35);
+}
+#quests .v386-note{
+  font-size:8px;
+  color:#89a28d;
+  text-align:center;
+  padding-top:2px;
+}
+
+#quests > .v052-scene,
+#quests > .v038-location,
+#quests .v041-npc,
+#quests .scene-label,
+#quests .v386-old-hidden{
+  display:none!important;
+}
+
+@media(max-width:520px){
+  #quests .v386-mira{
+    min-height:156px;
+    padding:14px;
+  }
+  #quests .v386-mira-art{
+    width:102px;
+    height:132px;
+  }
+  #quests .v386-mira-copy{margin-left:88px}
+  #quests .v386-mira-name{font-size:22px}
+  #quests .v386-bubble{font-size:11px;padding:10px 11px}
+  #quests .v386-scene{min-height:156px}
+  #quests .v386-title{font-size:18px}
+  #quests .v386-desc{font-size:10px}
+  #quests .v386-meta,
+  #quests .v386-rewards{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
 </style>
 
-<script id="v386-quest-visual-redesign">
+<script id="v386-quest-redesign-script">
 (function(){
- const VERSION='V3.86 Stable';
- function roleFor(q,i){if(q?.v310Elite||q?.v309Role==='elite')return'elite';return q?.v309Role||['quick','normal','heavy'][i]||'normal'}
- function ensureHub(){
-   const screen=document.querySelector('#quests');if(!screen)return;
-   let hub=screen.querySelector('.v386-quest-hub');
-   if(!hub){
-     hub=document.createElement('div');hub.className='v386-quest-hub';
-     hub.innerHTML=`<div class="v386-mira" aria-hidden="true"></div><div class="v386-hub-copy"><div class="v386-kicker">🌿 Zur krummen Gießkanne · Questgeberin</div><h2>Mira</h2><div class="v386-speech">Ich hab da ein paar Aufträge für dich. Wähle deinen Job und zeig, was du drauf hast!</div></div><div class="v386-tabs"><div class="v386-tab quick">⚡ SCHNELL<br><small>Schnell erledigt</small></div><div class="v386-tab normal">🌿 NORMAL<br><small>Gute Belohnung</small></div><div class="v386-tab heavy">☠️ SCHWER<br><small>Große Gefahr</small></div></div>`;
-     screen.insertBefore(hub,screen.firstChild);
-   }
- }
- function decorate(){
-   ensureHub();
-   const cards=[...document.querySelectorAll('#questList>.quest')];
-   cards.forEach((card,i)=>{
-     const q=s.quests?.offers?.[i];if(!q)return;
-     card.classList.remove('v386-quick','v386-normal','v386-heavy','v386-elite');
-     const role=roleFor(q,i);card.classList.add('v386-'+role);
-     card.querySelectorAll('.v386-reward-title,.v386-recommend').forEach(x=>x.remove());
-     const meta=card.querySelector('.quest-meta');
-     if(meta){const t=document.createElement('div');t.className='v386-reward-title';t.textContent='— Belohnungen & Auftrag —';meta.before(t)}
-     const rec=document.createElement('div');rec.className='v386-recommend';
-     const lvl=Math.max(1,Number(q.v316BalancedAtLevel)||Number(s.level)||1);
-     const off=role==='quick'?-7:role==='heavy'?3:0;rec.textContent=`★ Empfohlen ab Stufe ${Math.max(1,lvl+off)}`;
-     card.appendChild(rec);
-     const btn=card.querySelector(':scope>.btn');if(btn){btn.textContent='Auftrag starten';const cost=document.createElement('span');cost.style.cssText='display:inline-block;margin-left:8px;font-size:9px';cost.textContent=`♨ ${q.energy}`;btn.appendChild(cost)}
-   });
- }
- const base=renderQuests;
- renderQuests=function(){const r=base.apply(this,arguments);decorate();return r};
- const baseGo=v032Go;v032Go=function(id){const r=baseGo.apply(this,arguments);if(id==='quests')requestAnimationFrame(decorate);return r};
- setTimeout(()=>{try{decorate()}catch(e){console.error('V3.86 quest visuals',e)}},350);
- document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version').forEach(el=>{if(el)el.textContent=VERSION});
- document.querySelectorAll('.v366-ver').forEach(el=>el.textContent='V3.86');
+  const VERSION='V3.86 Stable';
+
+  function esc(s){
+    return String(s??'')
+      .replaceAll('&','&amp;').replaceAll('<','&lt;')
+      .replaceAll('>','&gt;').replaceAll('"','&quot;');
+  }
+
+  function typeMeta(i){
+    return [
+      {cls:'fast',label:'⚡ SCHNELL',hint:'Schnell erledigt'},
+      {cls:'normal',label:'🌿 NORMAL',hint:'Gute Belohnung'},
+      {cls:'hard',label:'☠️ SCHWER',hint:'Große Gefahr'}
+    ][i]||{cls:'normal',label:'🌿 NORMAL',hint:'Gute Belohnung'};
+  }
+
+  function getQuestCost(q){
+    try{
+      if(typeof v309QuestCost==='function')return Math.max(0,Number(v309QuestCost(q))||0);
+      if(typeof questEnergyCost==='function')return Math.max(0,Number(questEnergyCost(q))||0);
+    }catch(e){}
+    return Math.max(0,Number(q?.energy)||0);
+  }
+
+  function getQuestSeconds(q){
+    const sec=Math.max(1,Math.round(Number(q?.duration||q?.seconds||q?.time||60)));
+    return sec;
+  }
+
+  function getReward(q,key){
+    if(key==='xp') return Math.max(0,Number(q?.xp||q?.exp)||0);
+    if(key==='gold') return Math.max(0,Number(q?.gold)||0);
+    return 0;
+  }
+
+  function questTitle(q,i){
+    return q?.title||q?.name||['Jagd auf die Riesentrauerfliege','Miras verschwundene Lieferung','Ungeziefer im Hinterhof'][i]||'Auftrag';
+  }
+
+  function questDesc(q,i){
+    return q?.desc||q?.description||[
+      'Eine riesige Trauerfliege kreist über den Dächern von Grünhain.',
+      'Mira wartet auf eine Lieferung, die nie angekommen ist.',
+      'Im Hinterhof frisst sich etwas durch die Beete.'
+    ][i]||'Ein neuer Auftrag wartet auf dich.';
+  }
+
+  function recommended(q,i){
+    const lvl=Math.max(1,Number(s?.level)||1);
+    const base=[Math.max(1,lvl-7),lvl,Math.max(1,lvl+3)][i]||lvl;
+    return Math.max(1,Number(q?.recommendedLevel)||base);
+  }
+
+  function startQuestByIndex(i){
+    try{
+      if(typeof window.startQuest==='function')return window.startQuest(i);
+      if(typeof startQuest==='function')return startQuest(i);
+    }catch(e){
+      console.error('V3.86 quest start',e);
+    }
+  }
+
+  function buildCard(q,i){
+    const meta=typeMeta(i);
+    const cost=getQuestCost(q);
+    const sec=getQuestSeconds(q);
+    const xp=getReward(q,'xp');
+    const gold=getReward(q,'gold');
+    const itemText=i===2?'Selten+':'Chance';
+    return `
+      <article class="v386-card ${meta.cls}" data-v386-index="${i}">
+        <div class="v386-scene ${meta.cls}">
+          <div class="v386-scene-art"></div>
+          <div class="v386-type">${meta.label}</div>
+          <div class="v386-title">${esc(questTitle(q,i))}</div>
+          <div class="v386-desc">${esc(questDesc(q,i))}</div>
+        </div>
+        <div class="v386-card-body">
+          <div class="v386-meta">
+            <div class="v386-box"><b>☠️ Stufe ${Math.max(1,Number(s?.level)||1)}</b><span>Deine Stufe</span></div>
+            <div class="v386-box"><b>⏱️ ${sec}s</b><span>Dauer</span></div>
+            <div class="v386-box"><b>💨 ${cost} Dampf</b><span>Kosten</span></div>
+          </div>
+          <div class="v386-rewards">
+            <div class="v386-box v386-reward xp"><b>EXP ${xp}</b><span>${v094XpEventActive?.()?'×2 Event aktiv':'Belohnung'}</span></div>
+            <div class="v386-box v386-reward"><b>${gold} Gold</b><span>${v274GoldEventActive?.()?'×2 Event aktiv':'Belohnung'}</span></div>
+            <div class="v386-box v386-reward item"><b>${itemText}</b><span>Zufalls-Item</span></div>
+          </div>
+          <button class="v386-start" type="button" data-v386-start="${i}">Auftrag starten · 💨 ${cost}</button>
+          <div class="v386-note">Empfohlen ab Stufe ${recommended(q,i)}</div>
+        </div>
+      </article>`;
+  }
+
+  function findQuestContainer(){
+    return document.querySelector('#quests .quest-list')
+      || document.querySelector('#quests #questList')
+      || document.querySelector('#quests .quests-list')
+      || document.querySelector('#quests .v009-quest-list')
+      || document.querySelector('#quests');
+  }
+
+  function currentQuestSet(){
+    try{
+      if(Array.isArray(s?.quests?.offers) && s.quests.offers.length)return s.quests.offers.slice(0,3);
+      if(Array.isArray(s?.quests?.available) && s.quests.available.length)return s.quests.available.slice(0,3);
+      if(Array.isArray(s?.quests?.list) && s.quests.list.length)return s.quests.list.slice(0,3);
+      if(Array.isArray(window.currentQuests) && window.currentQuests.length)return window.currentQuests.slice(0,3);
+      if(Array.isArray(window.questOptions) && window.questOptions.length)return window.questOptions.slice(0,3);
+    }catch(e){}
+    return [0,1,2].map(i=>({title:['Jagd auf die Riesentrauerfliege','Miras verschwundene Lieferung','Ungeziefer im Hinterhof'][i],description:[
+      'Eine riesige Trauerfliege kreist über den Dächern von Grünhain.',
+      'Mira aus der Taverne wartet auf eine Kiste, die nie angekommen ist.',
+      'Rudi meldet, dass sich etwas durch die Beete am Schwarzen Brett frisst.'
+    ][i],energy:[5,6,7][i],duration:[38,61,94][i],xp:[587,752,1090][i],gold:[1334,1754,2632][i]}));
+  }
+
+  function hideOldQuestBlocks(){
+    const root=document.querySelector('#quests');
+    if(!root)return;
+    root.querySelectorAll(
+      '.v052-scene,.v038-location,.v041-npc,.scene-label,.v386-generated-old,'+
+      '.quest-hero,.questgiver-card,.quest-intro,.v041-scene,.v052-banner'
+    ).forEach(el=>{
+      if(!el.closest('.v386-shell'))el.classList.add('v386-old-hidden');
+    });
+  }
+
+  function install(){
+    const root=document.querySelector('#quests');
+    if(!root || root.querySelector('.v386-shell'))return;
+
+    hideOldQuestBlocks();
+
+    const shell=document.createElement('div');
+    shell.className='v386-shell';
+    shell.innerHTML=`
+      <section class="v386-mira">
+        <div class="v386-mira-art"></div>
+        <div class="v386-mira-copy">
+          <div class="v386-kicker">🌿 Zur krummen Gießkanne · Questgeberin</div>
+          <div class="v386-mira-name">Mira</div>
+          <div class="v386-bubble">Ich hab da ein paar Aufträge für dich. Wähle deinen Job und zeig, was du drauf hast!</div>
+        </div>
+        <div class="v386-tabs">
+          <div class="v386-tab fast">⚡ SCHNELL<br><small>Schnell erledigt</small></div>
+          <div class="v386-tab normal">🌿 NORMAL<br><small>Gute Belohnung</small></div>
+          <div class="v386-tab hard">☠️ SCHWER<br><small>Große Gefahr</small></div>
+        </div>
+      </section>
+      <div class="v386-list"></div>
+    `;
+
+    const target=findQuestContainer();
+    if(target===root)root.prepend(shell);
+    else target.parentNode.insertBefore(shell,target);
+
+    renderCards();
+  }
+
+  function renderCards(){
+    const list=document.querySelector('#quests .v386-list');
+    if(!list)return;
+    const qs=currentQuestSet();
+    list.innerHTML=qs.slice(0,3).map((q,i)=>buildCard(q,i)).join('');
+    list.querySelectorAll('[data-v386-start]').forEach(btn=>{
+      btn.onclick=()=>{
+        const i=Number(btn.dataset.v386Start)||0;
+        startQuestByIndex(i);
+      };
+    });
+  }
+
+  const baseRenderQuests=renderQuests;
+  renderQuests=function(){
+    const result=baseRenderQuests.apply(this,arguments);
+    install();
+    hideOldQuestBlocks();
+    renderCards();
+    return result;
+  };
+
+  const baseGo=v032Go;
+  v032Go=function(id){
+    const result=baseGo.apply(this,arguments);
+    if(id==='quests'){
+      setTimeout(()=>{
+        install();
+        hideOldQuestBlocks();
+        renderCards();
+      },30);
+    }
+    return result;
+  };
+
+  setTimeout(()=>{
+    install();
+    hideOldQuestBlocks();
+    renderCards();
+    document.querySelectorAll(
+      '.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version'
+    ).forEach(el=>{if(el)el.textContent=VERSION});
+    document.querySelectorAll('.v366-ver').forEach(el=>el.textContent='V3.86');
+  },550);
 })();
 </script>
