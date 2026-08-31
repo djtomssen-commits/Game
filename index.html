@@ -205,7 +205,7 @@ main{padding:12px}
 
 
 <style id="v200-stable-ui">
-/* ===== Grow Legends V3.89 Stable: consolidated auth UI ===== */
+/* ===== Grow Legends V3.90 Stable: consolidated auth UI ===== */
 html,body{max-width:100%;overflow-x:hidden}
 
 body:has(#v075AuthOverlay.show) > .app,
@@ -546,7 +546,7 @@ document.documentElement.classList.remove('v224-app-ready');
 <body>
 <div class="app">
 <header>
-  <div class="brand"><h1>🌿 Grow Legends</h1><span class="version">V3.89 Stable</span><div class="power">Kampfkraft <b id="power">—</b></div></div>
+  <div class="brand"><h1>🌿 Grow Legends</h1><span class="version">V3.90 Stable</span><div class="power">Kampfkraft <b id="power">—</b></div></div>
   <div class="stats resource-stats"><div class="stat">GOLD<b id="gold">—</b></div><div class="stat">SKILL<b id="points">—</b></div><div class="stat">DAMPF<b id="energy">—</b></div><div class="stat harz-stat v277-harz-card v280-harz-card">
   <div class="v280-harz-label">HARZ-TALER</div>
   <b class="v280-harz-value"><span id="topHarz">—</span></b>
@@ -1818,7 +1818,7 @@ document.addEventListener('click',e=>{
 document.querySelector('#plantBtn').addEventListener('click',()=>plantSelectedSeed());
 document.querySelector('#harvestBtn').addEventListener('click',harvestReadyPlants);
 document.querySelector('#upgradeRoom').addEventListener('click',upgradeRoomAction);
-ensureQuests();setInterval(()=>{if(!document.hidden&&document.querySelector('#grow')?.classList.contains('active')&&s.grow.plants?.filter(Boolean).length)renderGrow();/* V3.89: never repaint hidden Growroom every second */regenEnergy();document.querySelector('#energy')&&(document.querySelector('#energy').textContent=`${s.energy}/100`);document.querySelector('#dungeonTicketText')&&(document.querySelector('#dungeonTicketText').textContent=dungeonWaitText())},1000);persist();
+ensureQuests();setInterval(()=>{if(!document.hidden&&document.querySelector('#grow')?.classList.contains('active')&&s.grow.plants?.filter(Boolean).length)renderGrow();/* V3.90: never repaint hidden Growroom every second */regenEnergy();document.querySelector('#energy')&&(document.querySelector('#energy').textContent=`${s.energy}/100`);document.querySelector('#dungeonTicketText')&&(document.querySelector('#dungeonTicketText').textContent=dungeonWaitText())},1000);persist();
 </script>
 
 <script>
@@ -3497,7 +3497,7 @@ header{
 
 function v037SyncVersion(){
   document.querySelectorAll('.version').forEach(el=>{
-    el.textContent='V3.89 Stable';
+    el.textContent='V3.90 Stable';
   });
 }
 
@@ -3852,7 +3852,7 @@ render=function(){
   v038BaseRender();
   v038BindReroll();
   v038LocationPolish();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
 };
 
 try{
@@ -3923,7 +3923,7 @@ try{
 <script>
 /* V0.39 keep version label synced */
 (function(){
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
 })();
 </script>
 
@@ -4372,7 +4372,7 @@ header{
 <script>
 /* V0.40 unified visual behavior + version sync */
 function v040Polish(){
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
   document.querySelectorAll('.btn').forEach(b=>b.setAttribute('type','button'));
   document.querySelectorAll('.shop-item,.inv-item,.skill-card,.seed-card,.equip-card,.quest,.slot').forEach(el=>{
     el.style.willChange='transform';
@@ -4644,7 +4644,7 @@ function v41UpgradeWorldPlaces(){
 const v41BaseRender=render;
 render=function(){
   v41BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
   v41InstallPortrait();
   v41InstallNpcBanners();
   v41UpgradeShopIcons();
@@ -4850,7 +4850,7 @@ const v042BaseRender=render;
 render=function(){
   v042EnsureNineShopSlots();
   v042BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
 };
 
 try{
@@ -5233,7 +5233,7 @@ function v043EmptyStates(){
 const v043BaseRender=render;
 render=function(){
   v043BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
   v043EquipSlotArt();
   v043BattlePlayerArt();
   v043SceneLabels();
@@ -5529,7 +5529,7 @@ function v044MapTitles(){
 const v044BaseRender=render;
 render=function(){
   v044BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
   v044AddWorldRegions();
   v044AddDungeonRegions();
   v044MapTitles();
@@ -5991,7 +5991,7 @@ function v048InstallFight(){
 const v048BaseRender=render;
 render=function(){
   v048BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
   v048InstallFight();
   renderDungeon();
 
@@ -6242,7 +6242,7 @@ header{
 <script>
 /* V0.49 visual-only hooks */
 function v049Polish(){
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
 
   document.querySelectorAll('.inv-item,.shop-item,.skill-card,.quest,.slot,.grow-slot').forEach(el=>{
     el.style.willChange='transform';
@@ -6498,7 +6498,7 @@ header{
 <script>
 /* V0.50 visual hooks only */
 function v050Polish(){
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
 
   /* Add section-specific body classes for easier game theming */
   document.querySelectorAll('.screen').forEach(screen=>{
@@ -6694,7 +6694,7 @@ h1,h2,h3,h4,.item-name,.shop-item h3,.skill-title,.center-name,.char-title{
 <script>
 /* V0.51 visual-only continuation */
 function v051Polish(){
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
 
   document.querySelectorAll('.shop-item,.inv-item,.quest,.skill-card,.seed-card,.equip-card').forEach(el=>{
     el.style.willChange='transform';
@@ -6917,7 +6917,7 @@ function v052InstallSceneBanners(){
 }
 
 function v052Polish(){
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
   v052InstallSceneBanners();
 }
 
@@ -7142,7 +7142,7 @@ header:after{
 <script>
 /* V0.53 visual-only continuation */
 function v053Polish(){
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
 
   document.querySelectorAll('.btn,.stat,.shop-item,.inv-item,.quest,.skill-card,.grow-slot,.world-map-place,.dungeon-node').forEach(el=>{
     el.style.willChange='transform';
@@ -7594,7 +7594,7 @@ function v054BindShopButtons(){
 const v054BaseRender=render;
 render=function(){
   v054BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
   v054BindShopButtons();
 };
 
@@ -7771,7 +7771,7 @@ function v055AddRarityHint(){
 const v055BaseRender=render;
 render=function(){
   v055BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
   v055AddRarityHint();
 };
 
@@ -8097,7 +8097,7 @@ function v056AddShopHint(){
 const v056BaseRender=render;
 render=function(){
   v056BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
   v056AddShopHint();
 
   /* Rebind current shop cards after each render. */
@@ -8442,7 +8442,7 @@ if(!s.v057ShopCore){
 const v057BaseRender=render;
 render=function(){
   v057BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
   renderShop();
 };
 
@@ -8605,7 +8605,7 @@ render=function(){
     v058SafeRefreshAfterPurchase();
   }
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
   v058EnsureLegacyRenderAnchors();
 };
 
@@ -8866,7 +8866,7 @@ function v059BindMaterialButtons(){
 const v059BaseRender=render;
 render=function(){
   v059BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
   v059BindMaterialButtons();
 };
 
@@ -9135,7 +9135,7 @@ renderDungeon=function(){
 const v060BaseRender=render;
 render=function(){
   v060BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
   v060InstallFight();
 };
 
@@ -9163,7 +9163,7 @@ animClass=function(el,cl,ms=400){
 const v061BaseRender=render;
 render=function(){
   v061BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
 };
 
 try{render();}catch(e){console.error('V0.61 init',e);}
@@ -9211,7 +9211,7 @@ render=function(){
   }
 
   v062BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
 };
 
 try{render();}catch(e){console.error('V0.62 shop size',e);}
@@ -9702,7 +9702,7 @@ render=function(){
   v063EnsureUi();
   v063BindResetButtons();
   v063PatchClassChoice();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
 };
 
 try{
@@ -10171,13 +10171,13 @@ renderDungeon=function(){
     v064UpgradeBattle();
   }
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
 };
 
 const v064BaseRender=render;
 render=function(){
   v064BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
   try{
     if(document.querySelector('#dungeon')?.classList.contains('active')){
       renderDungeon();
@@ -10564,7 +10564,7 @@ const v065BaseRenderDungeon=renderDungeon;
 renderDungeon=function(){
   if(s.dungeon.layer==='world'){
     v065RenderWorld();
-    document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+    document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
     return;
   }
 
@@ -10575,13 +10575,13 @@ renderDungeon=function(){
     v065BindRoomNodes();
   }
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
 };
 
 const v065BaseRender=render;
 render=function(){
   v065BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
 
   if(document.querySelector('#dungeon')?.classList.contains('active')){
     try{renderDungeon();}catch(e){console.error('V0.65 dungeon render',e);}
@@ -10721,7 +10721,7 @@ function v066OpenDungeon(i){
       v065BindRoomNodes();
     }
 
-    document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+    document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
     window.scrollTo({top:0,behavior:'smooth'});
   }catch(e){
     console.error('V0.66 open dungeon',e);
@@ -10768,7 +10768,7 @@ v065RenderWorld=function(){
 const v066BaseRender=render;
 render=function(){
   v066BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
 
   if(document.querySelector('#dungeon')?.classList.contains('active') &&
      s.dungeon?.layer==='world'){
@@ -11083,7 +11083,7 @@ if(typeof v032Go==='function'){
 const v067OldRender=render;
 render=function(){
   v067OldRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
 
   if(document.querySelector('#dungeon')?.classList.contains('active')){
     try{renderDungeon();}catch(e){console.error('V0.67 renderDungeon',e);}
@@ -11421,13 +11421,13 @@ renderDungeon=function(){
     try{v064RenderMap();}catch(e){}
   }
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
 };
 
 const v068BaseRender=render;
 render=function(){
   v068BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
 
   if(document.querySelector('#dungeon')?.classList.contains('active')){
     try{renderDungeon();}catch(e){console.error('V0.68 dungeon render',e);}
@@ -11505,7 +11505,7 @@ const v069BaseRender=render;
 render=function(){
   v069BaseRender();
   v069SyncCurrencies();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
 };
 
 try{
@@ -11603,7 +11603,7 @@ const v070BaseRender=render;
 render=function(){
   v070BaseRender();
   v070HighlightPrimaryAttribute();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
 };
 
 try{
@@ -12056,7 +12056,7 @@ const v072BaseRender=render;
 render=function(){
   v072BaseRender();
   v072RenderSocial();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
 };
 
 try{
@@ -12608,7 +12608,7 @@ function v073ScheduleProfileSync(){
 const v073BaseRender=render;
 render=function(){
   v073BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
   v073ScheduleProfileSync();
 };
 
@@ -12813,7 +12813,7 @@ v072SearchPlayer=v073SearchPlayer;
 const v074BaseRender=render;
 render=function(){
   v074BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
   setTimeout(()=>v074BindProfileRows(),0);
 };
 (async()=>{if(await v073Init()){await v073SyncProfile(true)}})();
@@ -13034,7 +13034,7 @@ const v077OldAddXp=addXp;
 addXp=function(n){return v077OldAddXp(v077ModifyXp(n))};
 
 const v077BaseRender=render;
-render=function(){v077BaseRender();document.querySelectorAll('.version').forEach(e=>e.textContent='V3.89 Stable');v077InjectGrow();setTimeout(v077InjectCharacterFx,0)};
+render=function(){v077BaseRender();document.querySelectorAll('.version').forEach(e=>e.textContent='V3.90 Stable');v077InjectGrow();setTimeout(v077InjectCharacterFx,0)};
 
 setInterval(()=>{
   const b=v077Buff();
@@ -13338,7 +13338,7 @@ const v079BaseRender=render;
 render=function(){
   v079BaseRender();
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
 
   setTimeout(()=>{
     try{v079UpdateBuffFx();}catch(e){console.error('V0.79 buff fx',e);}
@@ -13537,7 +13537,7 @@ v029ShowClassChoice=function(){
 const v080BaseRender=render;
 render=function(){
   v080BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
   try{v41InstallPortrait()}catch(e){console.error('V0.80 portrait',e)}
   /* V0.79 glitter is attached after portrait exists. */
   setTimeout(()=>{
@@ -13740,7 +13740,7 @@ setTimeout(async()=>{
 const v081BaseRender=render;
 render=function(){
   v081BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
 };
 </script>
 
@@ -13802,7 +13802,7 @@ v060EnemyDamageFactor=function(rec){
 
 /* Make sure old enemy requiredLevel metadata is informational only.
    The final V0.68 fight handler intentionally has no per-enemy level gate. */
-document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
 </script>
 
 
@@ -13900,7 +13900,7 @@ async function v083FixHallList(){
 const v083BaseRender=render;
 render=function(){
   v083BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
   setTimeout(v083FixHallList,0);
 };
 
@@ -14064,7 +14064,7 @@ v073ProfilePayload=function(){
 const v084BaseRender=render;
 render=function(){
   v084BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
 };
 </script>
 
@@ -14291,7 +14291,7 @@ v032Go=function(id){
 const v085BaseRender=render;
 render=function(){
   v085BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
 
   if(document.querySelector('#world')?.classList.contains('active')){
     v085InstallWorld();
@@ -14443,7 +14443,7 @@ v032Go=function(id){
 const v086BaseRender=render;
 render=function(){
   v086BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
   v086PolishBrand();
   v086RemoveSlashNArtifacts();
   v086BuildCompleteMenu();
@@ -14519,7 +14519,7 @@ function v087FixMainAttributeBadge(){
 const v087BaseRender=render;
 render=function(){
   v087BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
   requestAnimationFrame(v087FixMainAttributeBadge);
 };
 
@@ -14551,7 +14551,7 @@ try{
 const v088BaseRender=render;
 render=function(){
   v088BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
 };
 </script>
 
@@ -14678,7 +14678,7 @@ v030Offer=function(it,fn,i){
 const v089BaseRender=render;
 render=function(){
   v089BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
   try{renderShop()}catch(e){console.error('V0.89 shop comparison',e)}
 };
 </script>
@@ -14797,7 +14797,7 @@ v057OfferHtml=function(it,i,kind){
 const v090BaseRender=render;
 render=function(){
   v090BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
   try{renderShop()}catch(e){console.error('V0.90 shop comparison',e)}
 };
 
@@ -14826,7 +14826,7 @@ localStorage.setItem(KEY,JSON.stringify(s));
 const v092BaseRender=render;
 render=function(){
   v092BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
 };
 </script>
 
@@ -15154,7 +15154,7 @@ document.querySelector('#v093SaveNews')?.addEventListener('click',v093SaveNews);
 const v093BaseRender=render;
 render=function(){
   v093BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
   v093BuildMenu();
 };
 
@@ -15277,7 +15277,7 @@ v085ActiveEvents=function(){
 const v094BaseRender=render;
 render=function(){
   v094BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
 
   /* Update visible quest XP previews to show doubled amount while event is live. */
   if(v094XpEventActive()){
@@ -15382,7 +15382,7 @@ document.addEventListener('click',()=>{
 const v095BaseRender=render;
 render=function(){
   v095BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
   requestAnimationFrame(v095DecorateXp);
 };
 
@@ -15460,7 +15460,7 @@ function v096DecorateQuestXp(){
 const v096BaseRender=render;
 render=function(){
   v096BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
   requestAnimationFrame(v096DecorateQuestXp);
 };
 
@@ -15498,7 +15498,7 @@ function v097ReplaceQuestStars(){
 const v097BaseRender=render;
 render=function(){
   v097BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
   requestAnimationFrame(v097ReplaceQuestStars);
 };
 
@@ -15594,7 +15594,7 @@ function v098QuestPreview(){
 const v098BaseRender=render;
 render=function(){
   v098BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
   requestAnimationFrame(v098QuestPreview);
 };
 
@@ -15725,7 +15725,7 @@ function v099PaintQuestXp(){
 const v099BaseRender=render;
 render=function(){
   v099BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
   requestAnimationFrame(v099PaintQuestXp);
 };
 
@@ -15882,7 +15882,7 @@ function v100PaintDungeonXp(){
 const v100BaseRender=render;
 render=function(){
   v100BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
   requestAnimationFrame(v100PaintDungeonXp);
   setTimeout(()=>{
     try{v068InstallFight()}catch(e){}
@@ -15988,7 +15988,7 @@ addXp=function(n){
 const v101BaseRender=render;
 render=function(){
   v101BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
 };
 </script>
 
@@ -16115,7 +16115,7 @@ render=function(){
   const before=Number(s.level)||1;
   const result=v102BaseRender();
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
 
   requestAnimationFrame(()=>{
     try{v102DetectLevelChange()}catch(e){console.error('V1.02 level detection',e)}
@@ -16381,7 +16381,7 @@ v093AdminLoadLists=async function(){
 const v103BaseRender=render;
 render=function(){
   v103BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
   if(v093IsAdmin)v103InstallPlayerAdmin();
 };
 
@@ -16507,7 +16507,7 @@ v103InstallPlayerAdmin=function(){
 const v105BaseRender=render;
 render=function(){
   const result=v105BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
   if(v093IsAdmin){
     v103InstallPlayerAdmin();
     v105InstallRewards();
@@ -16705,7 +16705,7 @@ claimQuest=function(){
 const v106BaseRender=render;
 render=function(){
   const result=v106BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
   v106InstallBook();
   v106CheckAchievements(true);
   return result;
@@ -16770,7 +16770,7 @@ v106InstallBook=function(){
 const v107BaseRender=render;
 render=function(){
   const result=v107BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
   requestAnimationFrame(v107PlaceBook);
   return result;
 };
@@ -16889,7 +16889,7 @@ if(!s.v108ItemPool){
 const v108BaseRender=render;
 render=function(){
   const result=v108BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
   return result;
 };
 </script>
@@ -17063,7 +17063,7 @@ const v109BaseRender=render;
 render=function(){
   v109ResetDaily();
   const result=v109BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
   return result;
 };
 </script>
@@ -17257,7 +17257,7 @@ v085ActiveEvents=function(){
 const v110BaseRender=render;
 render=function(){
   const result=v110BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
   requestAnimationFrame(v110InstallEventButton);
   return result;
 };
@@ -17587,7 +17587,7 @@ v110InstallEventButton=function(){v111InstallWorldBossCard()};
 const v111BaseRender=render;
 render=function(){
   const result=v111BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
   requestAnimationFrame(v111InstallWorldBossCard);
   return result;
 };
@@ -17672,7 +17672,7 @@ render=function(){
   const result=v112BaseRender();
 
   v112EnsureWorldBossState();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
 
   return result;
 };
@@ -17741,7 +17741,7 @@ v110Fight=function(){
 const v113BaseRender=render;
 render=function(){
   const result=v113BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
   return result;
 };
 </script>
@@ -17913,7 +17913,7 @@ v110Fight=async function(){
 const v114BaseRender=render;
 render=function(){
   const result=v114BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
   return result;
 };
 
@@ -18101,7 +18101,7 @@ v114AskRetry=function(){
 const v115BaseRender=render;
 render=function(){
   const result=v115BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
   return result;
 };
 
@@ -18288,7 +18288,7 @@ v074OpenProfile=async function(id){
 const v116BaseRender=render;
 render=function(){
   const result=v116BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
   return result;
 };
 
@@ -18467,7 +18467,7 @@ document.addEventListener('click',async e=>{
 const v117BaseRender=render;
 render=function(){
   const result=v117BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
   setTimeout(()=>{v117BindDampf();v117BindReset();v117PatchClassModal()},0);
   return result;
 };
@@ -18868,7 +18868,7 @@ v085InstallWorld=function(){
 const v118BaseRender=render;
 render=function(){
   const result=v118BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
   requestAnimationFrame(v111InstallWorldBossCard);
   return result;
 };
@@ -19060,7 +19060,7 @@ header .resource-stats .stat:nth-child(4) b{
 const v119BaseRender=render;
 render=function(){
   const result=v119BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
   return result;
 };
 </script>
@@ -19197,7 +19197,7 @@ function v120InstallCountdown(){
 const v120BaseRender=render;
 render=function(){
   const result=v120BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
   requestAnimationFrame(v120InstallCountdown);
   return result;
 };
@@ -19411,7 +19411,7 @@ const v121BaseRender=render;
 render=function(){
   v121SanitizeMagicStock();
   const result=v121BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
   requestAnimationFrame(v121PaintShopInfo);
   return result;
 };
@@ -19754,7 +19754,7 @@ const v122BaseRender=render;
 render=function(){
   v122MigrateAllSockets();
   const result=v122BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
   return result;
 };
 
@@ -20082,7 +20082,7 @@ function v123PolishEquipment(){
 const v123BaseRender=render;
 render=function(){
   const result=v123BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
   requestAnimationFrame(v123PolishEquipment);
   return result;
 };
@@ -20332,7 +20332,7 @@ function v124ClampCharacterWidth(){
 const v124BaseRender=render;
 render=function(){
   const result=v124BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
   requestAnimationFrame(v124ClampCharacterWidth);
   return result;
 };
@@ -20795,7 +20795,7 @@ render=function(){
   if(hp)hp.textContent=v125Fmt(maxHp());
   if(cp)cp.textContent=v125Fmt(combatPower());
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
   return result;
 };
 
@@ -20939,7 +20939,7 @@ if(typeof V125_ATTRS!=='undefined'){
 const v126BaseRender=render;
 render=function(){
   const result=v126BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
   requestAnimationFrame(()=>v126RepairCharacter(false));
   return result;
 };
@@ -21129,7 +21129,7 @@ render=function(){
   const energyEl=document.querySelector('#energy');
   if(energyEl)energyEl.textContent=`${Math.floor(Number(s.energy)||0)}/300`;
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
   requestAnimationFrame(v127AddResetInfo);
   return result;
 };
@@ -21410,7 +21410,7 @@ setTimeout(()=>{
 
 <script id="v128-premium-skill-ui-script">
 function v128SkillPolish(){
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
   const card=document.querySelector('#character .card:has(#skillTree)');
   if(card)card.setAttribute('data-v128','premium-skills');
 }
@@ -21840,7 +21840,7 @@ function v129PolishDynamicCards(){
     if(it)el.classList.add(v129RarityClass(it));
   });
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
 }
 const v129BaseRender=render;
 render=function(){
@@ -22002,7 +22002,7 @@ function v130InventoryHeadings(){
 function v130Polish(){
   v130RemoveMerchantCopy();
   v130InventoryHeadings();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
 }
 const v130BaseRender=render;
 render=function(){
@@ -22035,7 +22035,7 @@ function v131CleanShop(){
     }
   });
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
 }
 const v131BaseRender=render;
 render=function(){
@@ -22302,7 +22302,7 @@ function v132Polish(){
     });
   }
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
 }
 const v132BaseRender=render;
 render=function(){
@@ -22515,7 +22515,7 @@ function v133Polish(){
       }
     });
   }
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
 }
 const v133BaseRender=render;
 render=function(){
@@ -22700,7 +22700,7 @@ function v134Apply(){
    l.innerHTML='<span class="g0">Normal</span><span class="g1">Gewöhnlich</span><span class="g2">Selten</span><span class="g3">Episch</span><span class="g4">Legendär</span><span class="g5">Mystisch</span>';
    card.appendChild(l);
  }
- document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+ document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
 }
 const v134BaseRender=render;
 render=function(){const r=v134BaseRender();requestAnimationFrame(v134Apply);return r;};
@@ -22863,7 +22863,7 @@ function v135PaintShop(){
       if(arr[i])el.classList.add(v135QualityClassFromItem(arr[i]));
     });
   });
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
 }
 
 /* Existing V1.34 stock may be based on old weak scaling: refresh once for free. */
@@ -23098,7 +23098,7 @@ function v138PaintMerchant(){
     });
   });
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
 }
 
 const v138BaseRender=render;
@@ -23296,7 +23296,7 @@ v030Offer=function(it,fn,i){
 
 function v139RepaintShop(){
   try{renderShop()}catch(e){console.error('V1.39 shop repaint',e)}
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
 }
 
 const v139BaseRender=render;
@@ -23659,7 +23659,7 @@ function v141BuildSettings(){
           <button type="button" class="btn" id="v141Delete">🗑️ Account löschen</button>
         </div>
 
-        <div class="v141-version-line" id="v141VersionLine">V3.89 Stable</div>
+        <div class="v141-version-line" id="v141VersionLine">V3.90 Stable</div>
       </div>`;
   }
 
@@ -23852,7 +23852,7 @@ setTimeout(()=>{
 const v141BaseRender=render;
 render=function(){
   const r=v141BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
   requestAnimationFrame(()=>{
     v141BuildSettings();
     v141ApplySettings();
@@ -23909,7 +23909,7 @@ window.addEventListener('scroll',v142PositionSettings,{passive:true});
 const v142BaseRender=render;
 render=function(){
   const r=v142BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
   requestAnimationFrame(v142PositionSettings);
   return r;
 };
@@ -24124,7 +24124,7 @@ render=function(){
     v145SaveScopedLocal();
   }
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
   return r;
 };
 
@@ -24140,7 +24140,7 @@ setTimeout(()=>{
 
 
 <script id="v200-stable-core">
-/* ===== Grow Legends V3.89 Stable =====
+/* ===== Grow Legends V3.90 Stable =====
    One auth listener. One email handler. One Google handler.
    One cloud resolver. One character creator. One admin poll.
 */
@@ -24379,7 +24379,7 @@ function v200RenderLoginInfo(){
     let n=null;
     try{ n=(window.v093News||[]).find(x=>x && x.is_published!==false)||null; }catch(e){}
 
-    const title=n?.title||'V3.89 Stable';
+    const title=n?.title||'V3.90 Stable';
     const version=n?.version||'V2.00';
     const text=n?.body||n?.text||'Technische Stabilisierung von Login, Cloud-Speicherung und Charaktererstellung.';
 
@@ -25121,7 +25121,7 @@ async function v136Logout(reason='manual'){
   console.warn('V3.01 logout',e);
  }finally{
   /*
-    V3.89 hard local logout:
+    V3.90 hard local logout:
     Supabase signOut may fail or a mobile browser may resume in the middle of
     the request. The browser must still end in ONE unambiguous logged-out state.
   */
@@ -25264,7 +25264,7 @@ function v200BindSettings(){
   if(cancel)cancel.onclick=v141CloseDelete;
 
   const version=document.querySelector('#v141VersionLine');
-  if(version)version.textContent='V3.89 Stable';
+  if(version)version.textContent='V3.90 Stable';
 }
 
 /* One admin poll, content-aware. */
@@ -25328,7 +25328,7 @@ function v200InstallAuthListener(){
   v073Db.auth.onAuthStateChange((event,session)=>{
     const user=session?.user||null;
 
-    /* V3.89: token refresh / session callbacks can arrive while an idle logout
+    /* V3.90: token refresh / session callbacks can arrive while an idle logout
        is still saving/signing out. Never let those callbacks reopen the app. */
     if(window.__V301_LOGOUT_IN_PROGRESS__ && event!=='SIGNED_OUT')return;
 
@@ -25398,7 +25398,7 @@ const v200BaseRender=render;
 render=function(){
   const r=v200BaseRender();
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
 
   if(v200DurableUser() && v200CharacterComplete() && v075CloudLoadedFor===v073User.id){
     v075ScheduleSave();
@@ -25563,7 +25563,7 @@ render=function(){
   const result=v201BaseRender();
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V3.89 Stable');
+    .forEach(el=>el.textContent='V3.90 Stable');
 
   const world=document.querySelector('#world');
   if(world?.classList.contains('active')){
@@ -25951,7 +25951,7 @@ setInterval(()=>{
 const v204BaseRender=render;
 render=function(){
   const r=v204BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
   requestAnimationFrame(()=>{
     v086BuildCompleteMenu();
     v204InstallAvatarBadge();
@@ -26003,7 +26003,7 @@ function v205InstallBudScale(){
 const v205BaseRender=render;
 render=function(){
   const r=v205BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
   requestAnimationFrame(v205InstallBudScale);
   return r;
 };
@@ -26304,7 +26304,7 @@ render=function(){
   const r=v206BaseRender();
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V3.89 Stable');
+    .forEach(el=>el.textContent='V3.90 Stable');
 
   requestAnimationFrame(()=>{
     const find=document.querySelector('#v204FindBtn');
@@ -26477,7 +26477,7 @@ render=function(){
   const r=v207BaseRender();
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V3.89 Stable');
+    .forEach(el=>el.textContent='V3.90 Stable');
 
   requestAnimationFrame(()=>{
     v207EnsurePvpState();
@@ -26924,7 +26924,7 @@ render=function(){
   const r=v209BaseRender();
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V3.89 Stable');
+    .forEach(el=>el.textContent='V3.90 Stable');
 
   requestAnimationFrame(()=>{
     const fight=document.querySelector('#v204FightBtn');
@@ -27481,7 +27481,7 @@ render=function(){
   const r=v210BaseRender();
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V3.89 Stable');
+    .forEach(el=>el.textContent='V3.90 Stable');
 
   requestAnimationFrame(()=>{
     v210FormatCharacterAttributes();
@@ -27864,7 +27864,7 @@ render=function(){
   const r=v211BaseRender();
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V3.89 Stable');
+    .forEach(el=>el.textContent='V3.90 Stable');
 
   return r;
 };
@@ -27911,7 +27911,7 @@ const v213BaseRender=render;
 render=function(){
   const r=v213BaseRender();
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V3.89 Stable');
+    .forEach(el=>el.textContent='V3.90 Stable');
   return r;
 };
 </script>
@@ -28157,7 +28157,7 @@ function v224BuildCurrentUi(){
     }catch(e){}
 
     document.querySelectorAll('.version')
-      .forEach(el=>el.textContent='V3.89 Stable');
+      .forEach(el=>el.textContent='V3.90 Stable');
 
     return true;
   }catch(e){
@@ -28297,7 +28297,7 @@ function v225EnsureSettingsAccountActions(){
     menu.appendChild(version);
   }
 
-  version.textContent='V3.89 Stable';
+  version.textContent='V3.90 Stable';
 
   const logout=menu.querySelector('#v141Logout');
   if(logout){
@@ -28366,7 +28366,7 @@ setTimeout(()=>{
 
 setTimeout(()=>{
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V3.89 Stable');
+    .forEach(el=>el.textContent='V3.90 Stable');
 },300);
 </script>
 
@@ -28698,7 +28698,7 @@ setTimeout(()=>{
 
 setTimeout(()=>{
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V3.89 Stable');
+    .forEach(el=>el.textContent='V3.90 Stable');
 },300);
 </script>
 
@@ -28917,7 +28917,7 @@ setTimeout(()=>{
 
 setTimeout(()=>{
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V3.89 Stable');
+    .forEach(el=>el.textContent='V3.90 Stable');
 },350);
 </script>
 
@@ -29131,10 +29131,10 @@ setInterval(v230LiveTick,1000);
 
 function v230Version(){
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V3.89 Stable');
+    .forEach(el=>el.textContent='V3.90 Stable');
 
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V3.89 Stable';
+  if(line)line.textContent='V3.90 Stable';
 }
 
 
@@ -29585,10 +29585,10 @@ setTimeout(()=>{
   }catch(e){}
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V3.89 Stable');
+    .forEach(el=>el.textContent='V3.90 Stable');
 
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V3.89 Stable';
+  if(line)line.textContent='V3.90 Stable';
 },300);
 </script>
 
@@ -30333,10 +30333,10 @@ setTimeout(()=>{
   }catch(e){}
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V3.89 Stable');
+    .forEach(el=>el.textContent='V3.90 Stable');
 
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V3.89 Stable';
+  if(line)line.textContent='V3.90 Stable';
 },300);
 </script>
 
@@ -30570,10 +30570,10 @@ setTimeout(()=>{
   }catch(e){}
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V3.89 Stable');
+    .forEach(el=>el.textContent='V3.90 Stable');
 
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V3.89 Stable';
+  if(line)line.textContent='V3.90 Stable';
 },300);
 </script>
 
@@ -30914,10 +30914,10 @@ setTimeout(()=>{
   }
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V3.89 Stable');
+    .forEach(el=>el.textContent='V3.90 Stable');
 
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V3.89 Stable';
+  if(line)line.textContent='V3.90 Stable';
 },320);
 </script>
 
@@ -31350,10 +31350,10 @@ setTimeout(()=>{
   }catch(e){}
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V3.89 Stable');
+    .forEach(el=>el.textContent='V3.90 Stable');
 
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V3.89 Stable';
+  if(line)line.textContent='V3.90 Stable';
 },350);
 </script>
 
@@ -31991,10 +31991,10 @@ setTimeout(()=>{
   }catch(e){}
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V3.89 Stable');
+    .forEach(el=>el.textContent='V3.90 Stable');
 
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V3.89 Stable';
+  if(line)line.textContent='V3.90 Stable';
 },360);
 </script>
 
@@ -32176,9 +32176,9 @@ setTimeout(()=>{
   try{
     if(document.querySelector('#grow')?.classList.contains('active'))renderGrow();
   }catch(e){}
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V3.89 Stable';
+  if(line)line.textContent='V3.90 Stable';
 },380);
 </script>
 
@@ -32297,9 +32297,9 @@ v238SyncQuestDungeonKeys();
 
 setTimeout(()=>{
   try{v238SyncQuestDungeonKeys()}catch(e){}
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V3.89 Stable';
+  if(line)line.textContent='V3.90 Stable';
 },400);
 </script>
 
@@ -32437,9 +32437,9 @@ window.addEventListener('focus',()=>{
 setTimeout(()=>{
   try{v239UpdateGrowLive()}catch(e){}
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V3.89 Stable');
+    .forEach(el=>el.textContent='V3.90 Stable');
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V3.89 Stable';
+  if(line)line.textContent='V3.90 Stable';
 },420);
 </script>
 
@@ -32833,10 +32833,10 @@ setTimeout(()=>{
   }catch(e){}
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V3.89 Stable');
+    .forEach(el=>el.textContent='V3.90 Stable');
 
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V3.89 Stable';
+  if(line)line.textContent='V3.90 Stable';
 },440);
 </script>
 
@@ -33081,10 +33081,10 @@ setTimeout(()=>{
   }catch(e){}
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V3.89 Stable');
+    .forEach(el=>el.textContent='V3.90 Stable');
 
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V3.89 Stable';
+  if(line)line.textContent='V3.90 Stable';
 },460);
 </script>
 
@@ -33330,9 +33330,9 @@ setTimeout(()=>{
     }
   }catch(e){}
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V3.89 Stable';
+  if(line)line.textContent='V3.90 Stable';
 },480);
 </script>
 
@@ -33531,10 +33531,10 @@ setTimeout(()=>{
   }catch(e){}
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V3.89 Stable');
+    .forEach(el=>el.textContent='V3.90 Stable');
 
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V3.89 Stable';
+  if(line)line.textContent='V3.90 Stable';
 },500);
 </script>
 
@@ -33824,10 +33824,10 @@ setTimeout(()=>{
   }catch(e){}
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V3.89 Stable');
+    .forEach(el=>el.textContent='V3.90 Stable');
 
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V3.89 Stable';
+  if(line)line.textContent='V3.90 Stable';
 },520);
 </script>
 
@@ -33955,10 +33955,10 @@ setTimeout(()=>{
   }catch(e){}
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V3.89 Stable');
+    .forEach(el=>el.textContent='V3.90 Stable');
 
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V3.89 Stable';
+  if(line)line.textContent='V3.90 Stable';
 },540);
 </script>
 
@@ -34674,10 +34674,10 @@ setTimeout(()=>{
   }catch(e){}
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V3.89 Stable');
+    .forEach(el=>el.textContent='V3.90 Stable');
 
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V3.89 Stable';
+  if(line)line.textContent='V3.90 Stable';
 },560);
 </script>
 
@@ -34934,10 +34934,10 @@ function v247ShowDungeonReward(data){
 /* Final version stamp. */
 setTimeout(()=>{
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V3.89 Stable');
+    .forEach(el=>el.textContent='V3.90 Stable');
 
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V3.89 Stable';
+  if(line)line.textContent='V3.90 Stable';
 },580);
 </script>
 
@@ -35136,10 +35136,10 @@ setTimeout(()=>{
   }catch(e){}
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V3.89 Stable');
+    .forEach(el=>el.textContent='V3.90 Stable');
 
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V3.89 Stable';
+  if(line)line.textContent='V3.90 Stable';
 },600);
 </script>
 
@@ -35261,10 +35261,10 @@ setTimeout(()=>{
   }
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V3.89 Stable');
+    .forEach(el=>el.textContent='V3.90 Stable');
 
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V3.89 Stable';
+  if(line)line.textContent='V3.90 Stable';
 },640);
 </script>
 
@@ -35656,10 +35656,10 @@ setTimeout(()=>{
   }catch(e){}
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V3.89 Stable');
+    .forEach(el=>el.textContent='V3.90 Stable');
 
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V3.89 Stable';
+  if(line)line.textContent='V3.90 Stable';
 },680);
 </script>
 
@@ -36648,10 +36648,10 @@ setTimeout(()=>{
   }catch(e){}
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V3.89 Stable');
+    .forEach(el=>el.textContent='V3.90 Stable');
 
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V3.89 Stable';
+  if(line)line.textContent='V3.90 Stable';
 },720);
 </script>
 
@@ -37006,8 +37006,8 @@ renderDungeon=function(){
 };
 setTimeout(()=>{
   try{v252ModernizeBattle()}catch(e){}
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
-  const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.89 Stable';
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
+  const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.90 Stable';
 },780);
 </script>
 
@@ -37605,10 +37605,10 @@ setTimeout(()=>{
   }catch(e){}
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V3.89 Stable');
+    .forEach(el=>el.textContent='V3.90 Stable');
 
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V3.89 Stable';
+  if(line)line.textContent='V3.90 Stable';
 },820);
 </script>
 
@@ -37884,8 +37884,8 @@ v032Go=function(id){
 setTimeout(()=>{
   v254BindGuild();
   try{v086BuildCompleteMenu()}catch(e){}
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
-  const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.89 Stable';
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
+  const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.90 Stable';
 },700);
 </script>
 
@@ -37968,7 +37968,7 @@ const v255BaseLoadGuild=v254LoadGuild;
 v254LoadGuild=async function(){const r=await v255BaseLoadGuild();if(document.querySelector('#guild')?.classList.contains('active')&&v254Membership)await v255LoadBoss();return r};
 document.querySelector('#v255ClaimBossReward')?.addEventListener('click',v255ClaimBossReward);
 setInterval(()=>{if(document.querySelector('#guild')?.classList.contains('active'))v255RenderBoss()},30000);
-setTimeout(()=>{document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.89 Stable';},760);
+setTimeout(()=>{document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.90 Stable';},760);
 </script>
 
 
@@ -38203,8 +38203,8 @@ function v257BindGuildManagement(){
 setTimeout(()=>{
   v257BindGuildManagement();
   if(!v254Guild)v257SearchGuilds();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
-  const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.89 Stable';
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
+  const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.90 Stable';
 },760);
 </script>
 
@@ -38266,8 +38266,8 @@ const v258BaseRenderGuild=v254RenderGuild;
 v254RenderGuild=function(){v258BaseRenderGuild();v258RenderTestAccess();};
 setTimeout(()=>{
   v258RenderTestAccess();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
-  const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.89 Stable';
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
+  const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.90 Stable';
 },820);
 </script>
 
@@ -38508,8 +38508,8 @@ const v260BossClock=setInterval(async()=>{
 
 setTimeout(()=>{
   v260RenderDailyControls();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
-  const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.89 Stable';
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
+  const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.90 Stable';
 },900);
 </script>
 
@@ -38547,7 +38547,7 @@ document.querySelector('#v262WarRefresh')?.addEventListener('click',v262LoadWar)
 const v262BaseLoadGuild=v254LoadGuild;v254LoadGuild=async function(){const r=await v262BaseLoadGuild();await v262LoadWar();return r};
 const v262BaseSignup=v254ToggleSignup;v254ToggleSignup=async function(kind){const r=await v262BaseSignup(kind);if(kind==='attack'||kind==='defense')await v262LoadWar();return r};
 setInterval(async()=>{if(document.querySelector('#guild')?.classList.contains('active')&&v254Membership)await v262LoadWar()},60000);
-setTimeout(()=>{v262RenderWar();document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.89 Stable'},950);
+setTimeout(()=>{v262RenderWar();document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.90 Stable'},950);
 </script>
 
 
@@ -38574,7 +38574,7 @@ v262RenderWar=function(){
   if(b)b.style.display=v263WarLeader()?'':'none';
 };
 
-setTimeout(()=>{document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.89 Stable'},1100);
+setTimeout(()=>{document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.90 Stable'},1100);
 </script>
 
 <style id="v265-war-arena-css">
@@ -38653,7 +38653,7 @@ v262RenderWar=function(){
  const mine=v265Mine(),myScore=mine==='a'?Number(v262War.score_a):Number(v262War.score_b),enScore=mine==='a'?Number(v262War.score_b):Number(v262War.score_a),myHp=mine==='a'?Number(v262War.hp_a):Number(v262War.hp_b),enHp=mine==='a'?Number(v262War.hp_b):Number(v262War.hp_a),resolved=['a_won','b_won','draw'].includes(v262War.status),won=(v262War.status==='a_won'&&mine==='a')||(v262War.status==='b_won'&&mine==='b'),status=document.querySelector('#v262WarStatus');
  if(resolved&&status){const tie=myScore===enScore;status.textContent=won?(tie?`🏆 Gildensieg nach Rest-HP! ${v255Fmt(myHp)} : ${v255Fmt(enHp)} HP.`:'🏆 Gildensieg! +30 Gilden-Buds.'):(v262War.status==='draw'?'🤝 Unentschieden.':tie?`💀 Niederlage nach Rest-HP. ${v255Fmt(myHp)} : ${v255Fmt(enHp)} HP.`:'💀 Niederlage. +10 Gilden-Buds.')}
 };
-setTimeout(()=>{document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');const x=document.querySelector('#v141VersionLine');if(x)x.textContent='V3.89 Stable'},1200);
+setTimeout(()=>{document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');const x=document.querySelector('#v141VersionLine');if(x)x.textContent='V3.90 Stable'},1200);
 </script>
 
 <style id="v266-war-real-avatars-css">
@@ -38770,8 +38770,8 @@ v262WatchWar=async function(){
 };
 
 setTimeout(()=>{
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
-  const x=document.querySelector('#v141VersionLine');if(x)x.textContent='V3.89 Stable';
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
+  const x=document.querySelector('#v141VersionLine');if(x)x.textContent='V3.90 Stable';
 },1250);
 </script>
 
@@ -38853,8 +38853,8 @@ render=function(){
 /* Update profile sync before its existing upload path reads combatPower(). */
 setTimeout(()=>{try{render()}catch(e){}},300);
 setTimeout(()=>{
- document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
- const x=document.querySelector('#v141VersionLine');if(x)x.textContent='V3.89 Stable';
+ document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
+ const x=document.querySelector('#v141VersionLine');if(x)x.textContent='V3.90 Stable';
 },1300);
 </script>
 
@@ -39053,8 +39053,8 @@ setTimeout(()=>{if(v073User&&!v073User.is_anonymous)v269LoadMine()},2500);
 setInterval(()=>{if(v073User&&!v073User.is_anonymous)v269LoadMine()},120000);
 
 setTimeout(()=>{
- document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
- const x=document.querySelector('#v141VersionLine');if(x)x.textContent='V3.89 Stable';
+ document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
+ const x=document.querySelector('#v141VersionLine');if(x)x.textContent='V3.90 Stable';
 },1450);
 </script>
 
@@ -39387,8 +39387,8 @@ render=function(){
   v026AddRefill();
   v271PaintDampf();
   try{renderQuests()}catch(e){}
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
-  const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.89 Stable';
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
+  const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.90 Stable';
   return r;
 };
 
@@ -39403,8 +39403,8 @@ if(!s.v271DampfMigration){
 
 setTimeout(()=>{
   try{v026AddRefill();v271PaintDampf();renderQuests()}catch(e){}
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
-  const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.89 Stable';
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
+  const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.90 Stable';
 },1700);
 </script>
 
@@ -39571,15 +39571,15 @@ const v272BaseRender=render;
 render=function(){
   const r=v272BaseRender();
   requestAnimationFrame(v272PaintCharacterIdentity);
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
-  const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.89 Stable';
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
+  const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.90 Stable';
   return r;
 };
 
 setTimeout(()=>{
   try{v272PaintCharacterIdentity()}catch(e){}
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
-  const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.89 Stable';
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
+  const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.90 Stable';
 },1800);
 </script>
 
@@ -39703,8 +39703,8 @@ const v273BaseRender=render;
 render=function(){
   const r=v273BaseRender();
   if(v093IsAdmin)v273EnsureAdminMenu();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
-  const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.89 Stable';
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
+  const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.90 Stable';
   return r;
 };
 </script>
@@ -39918,8 +39918,8 @@ const v274BaseRender=render;
 render=function(){
   const r=v274BaseRender();
   if(v093IsAdmin)v274InstallEventPresets();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
-  const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.89 Stable';
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
+  const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.90 Stable';
   return r;
 };
 
@@ -39928,8 +39928,8 @@ setTimeout(()=>{
     if(v093IsAdmin)v274InstallEventPresets();
     renderQuests();
   }catch(e){}
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
-  const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.89 Stable';
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
+  const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.90 Stable';
 },2100);
 </script>
 
@@ -39968,15 +39968,15 @@ const v275BaseRender=render;
 render=function(){
   const r=v275BaseRender();
   v275PaintCharacterName();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
-  const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.89 Stable';
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
+  const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.90 Stable';
   return r;
 };
 
 setTimeout(()=>{
   try{v275PaintCharacterName()}catch(e){}
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
-  const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.89 Stable';
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
+  const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.90 Stable';
 },300);
 </script>
 
@@ -40140,8 +40140,8 @@ render=function(){
     v276DecorateQuestGold();
     v276DecorateGold();
   });
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
-  const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.89 Stable';
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
+  const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.90 Stable';
   return r;
 };
 
@@ -40157,8 +40157,8 @@ setTimeout(async()=>{
   if(v073User?.id && !v073User.is_anonymous){
     await v276RefreshEventsForCurrentCharacter();
   }
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
-  const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.89 Stable';
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
+  const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.90 Stable';
 },2300);
 </script>
 
@@ -40434,8 +40434,8 @@ render=function(){
     v277PrepareResourceCards();
     v276DecorateGold();
   });
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
-  const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.89 Stable';
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
+  const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.90 Stable';
   return r;
 };
 
@@ -40444,8 +40444,8 @@ setTimeout(()=>{
     v277PrepareResourceCards();
     v276DecorateGold();
   }catch(e){console.error('V2.77 resource cards',e)}
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
-  const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.89 Stable';
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
+  const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.90 Stable';
 },400);
 </script>
 
@@ -40592,17 +40592,17 @@ const v278BaseRender=render;
 render=function(){
   const r=v278BaseRender();
   requestAnimationFrame(v278StabilizeResources);
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
-  const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.89 Stable';
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
+  const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.90 Stable';
   return r;
 };
 
 setTimeout(v278StabilizeResources,250);
 setTimeout(v278StabilizeResources,900);
 
-document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
 const v278Line=document.querySelector('#v141VersionLine');
-if(v278Line)v278Line.textContent='V3.89 Stable';
+if(v278Line)v278Line.textContent='V3.90 Stable';
 </script>
 
 <style id="v279-resource-root-fix-css">
@@ -40816,9 +40816,9 @@ render=function(){
     v279BuildHarzCard();
     v271PaintDampf();
   });
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V3.89 Stable';
+  if(line)line.textContent='V3.90 Stable';
   return r;
 };
 
@@ -40932,17 +40932,17 @@ render=function(){
     v279BuildHarzCard();
     v271PaintDampf();
   });
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V3.89 Stable';
+  if(line)line.textContent='V3.90 Stable';
   return r;
 };
 
 setTimeout(()=>{
   try{v279BuildHarzCard();v271PaintDampf()}catch(e){}
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V3.89 Stable';
+  if(line)line.textContent='V3.90 Stable';
 },300);
 </script>
 
@@ -40992,8 +40992,8 @@ const v281BaseRender=render;
 render=function(){
   const r=v281BaseRender();
   requestAnimationFrame(v281PaintHarzAmount);
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
-  const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.89 Stable';
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
+  const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.90 Stable';
   return r;
 };
 
@@ -41066,8 +41066,8 @@ const v282BaseRender=render;
 render=function(){
   const r=v282BaseRender();
   requestAnimationFrame(v282PaintHarzCard);
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
-  const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.89 Stable';
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
+  const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.90 Stable';
   return r;
 };
 
@@ -41190,9 +41190,9 @@ render=function(){
     v283CleanHarzAmount();
     v271PaintDampf();
   });
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V3.89 Stable';
+  if(line)line.textContent='V3.90 Stable';
   return r;
 };
 
@@ -41201,9 +41201,9 @@ setTimeout(v283CleanHarzAmount,250);
 setTimeout(v283CleanHarzAmount,1100);
 setTimeout(v283CleanHarzAmount,1800);
 
-document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
 const v283Line=document.querySelector('#v141VersionLine');
-if(v283Line)v283Line.textContent='V3.89 Stable';
+if(v283Line)v283Line.textContent='V3.90 Stable';
 </script>
 
 <style id="v284-dampf-card-redesign-css">
@@ -41403,9 +41403,9 @@ const v284BaseRender=render;
 render=function(){
   const r=v284BaseRender();
   requestAnimationFrame(v271PaintDampf);
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V3.89 Stable';
+  if(line)line.textContent='V3.90 Stable';
   return r;
 };
 
@@ -41413,9 +41413,9 @@ setTimeout(v271PaintDampf,150);
 setTimeout(v271PaintDampf,650);
 setTimeout(v271PaintDampf,1500);
 
-document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
 const v284Line=document.querySelector('#v141VersionLine');
-if(v284Line)v284Line.textContent='V3.89 Stable';
+if(v284Line)v284Line.textContent='V3.90 Stable';
 </script>
 
 <script id="v285-gold-event-payout-guard">
@@ -41490,15 +41490,15 @@ if(typeof v235ShowQuestReward==='function'){
 const v285BaseRender=render;
 render=function(){
   const r=v285BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V3.89 Stable';
+  if(line)line.textContent='V3.90 Stable';
   return r;
 };
 
-document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
 const v285Line=document.querySelector('#v141VersionLine');
-if(v285Line)v285Line.textContent='V3.89 Stable';
+if(v285Line)v285Line.textContent='V3.90 Stable';
 </script>
 
 <style id="v286-dungeon-event-css">
@@ -41678,16 +41678,16 @@ render=function(){
     try{v276DecorateGold()}catch(e){}
   });
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V3.89 Stable';
+  if(line)line.textContent='V3.90 Stable';
 
   return r;
 };
 
-document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
 const v286Line=document.querySelector('#v141VersionLine');
-if(v286Line)v286Line.textContent='V3.89 Stable';
+if(v286Line)v286Line.textContent='V3.90 Stable';
 </script>
 
 <script id="v287-dampf-subtitle-cleanup">
@@ -41701,16 +41701,16 @@ const v287BaseRender=render;
 render=function(){
   const r=v287BaseRender();
   requestAnimationFrame(v287RemoveDampfSubtitle);
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V3.89 Stable';
+  if(line)line.textContent='V3.90 Stable';
   return r;
 };
 
 setTimeout(v287RemoveDampfSubtitle,250);
-document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
 const v287Line=document.querySelector('#v141VersionLine');
-if(v287Line)v287Line.textContent='V3.89 Stable';
+if(v287Line)v287Line.textContent='V3.90 Stable';
 </script>
 
 <style id="v288-resource-event-clarity-css">
@@ -41857,9 +41857,9 @@ render=function(){
       v276DecorateGold();
     }catch(e){}
   });
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V3.89 Stable';
+  if(line)line.textContent='V3.90 Stable';
   return r;
 };
 
@@ -41867,9 +41867,9 @@ setTimeout(()=>{
   try{v271PaintDampf();v276DecorateGold()}catch(e){}
 },300);
 
-document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
 const v288Line=document.querySelector('#v141VersionLine');
-if(v288Line)v288Line.textContent='V3.89 Stable';
+if(v288Line)v288Line.textContent='V3.90 Stable';
 </script>
 
 <script id="v289-harvest-gold-event-version">
@@ -41878,14 +41878,14 @@ if(v288Line)v288Line.textContent='V3.89 Stable';
 const v289BaseRender=render;
 render=function(){
   const r=v289BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V3.89 Stable';
+  if(line)line.textContent='V3.90 Stable';
   return r;
 };
-document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
 const v289Line=document.querySelector('#v141VersionLine');
-if(v289Line)v289Line.textContent='V3.89 Stable';
+if(v289Line)v289Line.textContent='V3.90 Stable';
 </script>
 
 <style id="v290-worldboss-balance-css">
@@ -42218,9 +42218,9 @@ const v290BaseRender=render;
 render=function(){
   const r=v290BaseRender();
   v290EnsureWorldBossState();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V3.89 Stable';
+  if(line)line.textContent='V3.90 Stable';
   return r;
 };
 
@@ -42231,9 +42231,9 @@ setTimeout(()=>{
   }catch(e){}
 },350);
 
-document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
 const v290Line=document.querySelector('#v141VersionLine');
-if(v290Line)v290Line.textContent='V3.89 Stable';
+if(v290Line)v290Line.textContent='V3.90 Stable';
 </script>
 
 <script id="v291-worldboss-upgrades-balance">
@@ -42405,9 +42405,9 @@ v110Refresh=function(){
 const v291BaseRender=render;
 render=function(){
   const r=v291BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V3.89 Stable';
+  if(line)line.textContent='V3.90 Stable';
   return r;
 };
 
@@ -42417,9 +42417,9 @@ setTimeout(()=>{
   }catch(e){}
 },350);
 
-document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
 const v291Line=document.querySelector('#v141VersionLine');
-if(v291Line)v291Line.textContent='V3.89 Stable';
+if(v291Line)v291Line.textContent='V3.90 Stable';
 </script>
 
 
@@ -42484,38 +42484,38 @@ const v294BaseRender=render;
 render=function(){
   const r=v294BaseRender.apply(this,arguments);
   v271PaintDampf();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V3.89 Stable';
+  if(line)line.textContent='V3.90 Stable';
   return r;
 };
 
 try{v271PaintDampf();}catch(e){}
 
-document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
 const v294Line=document.querySelector('#v141VersionLine');
-if(v294Line)v294Line.textContent='V3.89 Stable';
+if(v294Line)v294Line.textContent='V3.90 Stable';
 </script>
 <script id="v295-book-mainattr-fix">
-document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
 const v295Line=document.querySelector('#v141VersionLine');
-if(v295Line)v295Line.textContent='V3.89 Stable';
+if(v295Line)v295Line.textContent='V3.90 Stable';
 </script>
 
 <script id="v296-version">
-document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
 const v296Line=document.querySelector('#v141VersionLine');
-if(v296Line)v296Line.textContent='V3.89 Stable';
+if(v296Line)v296Line.textContent='V3.90 Stable';
 </script>
 
 <script id="v297-version">
-document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
 const v297Line=document.querySelector('#v141VersionLine');
-if(v297Line)v297Line.textContent='V3.89 Stable';
+if(v297Line)v297Line.textContent='V3.90 Stable';
 </script>
 <script id="v298-version">
-document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
-const v298Line=document.querySelector('#v141VersionLine');if(v298Line)v298Line.textContent='V3.89 Stable';
+document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
+const v298Line=document.querySelector('#v141VersionLine');if(v298Line)v298Line.textContent='V3.90 Stable';
 </script>
 
 <script id="v299-hall-mystic-profile-sync-fix">
@@ -42537,9 +42537,9 @@ v200FinalizeUser=async function(){
 
 setTimeout(v299RefreshPublicEquipment,1200);
 
-document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
 const v299Line=document.querySelector('#v141VersionLine');
-if(v299Line)v299Line.textContent='V3.89 Stable';
+if(v299Line)v299Line.textContent='V3.90 Stable';
 </script>
 <script id="v300-event-expiry-dampf-fix">
 let v300LastDampfActive=null;
@@ -42556,8 +42556,8 @@ function v300ReconcileTimedEvents(){
 }
 setInterval(v300ReconcileTimedEvents,30000);
 setTimeout(v300ReconcileTimedEvents,1000);
-document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
-const v300Line=document.querySelector('#v141VersionLine');if(v300Line)v300Line.textContent='V3.89 Stable';
+document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
+const v300Line=document.querySelector('#v141VersionLine');if(v300Line)v300Line.textContent='V3.90 Stable';
 </script>
 
 <script id="v301-auth-idle-hard-lock">
@@ -42653,9 +42653,9 @@ if(typeof v200FinalizeUser==='function'){
   };
 }
 
-document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
 const v301Line=document.querySelector('#v141VersionLine');
-if(v301Line)v301Line.textContent='V3.89 Stable';
+if(v301Line)v301Line.textContent='V3.90 Stable';
 </script>
 <script id="v302-dungeon-progress-source-fix">
 function v302EnsureDungeonProgress(){
@@ -42697,8 +42697,8 @@ v048GoBattle=function(i){
 };
 window.selectDungeon=v048GoBattle;
 v302RepairReportedDungeon3();
-document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
-const v302Line=document.querySelector('#v141VersionLine');if(v302Line)v302Line.textContent='V3.89 Stable';
+document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
+const v302Line=document.querySelector('#v141VersionLine');if(v302Line)v302Line.textContent='V3.90 Stable';
 </script>
 
 <style id="v306-first-daily-quest-harz-style">
@@ -42741,8 +42741,8 @@ if(typeof v235ShowQuestReward==='function'){
  };
 }
 setTimeout(v306PaintFirstDailyQuestHarz,300);
-document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
-const v306Line=document.querySelector('#v141VersionLine');if(v306Line)v306Line.textContent='V3.89 Stable';
+document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
+const v306Line=document.querySelector('#v141VersionLine');if(v306Line)v306Line.textContent='V3.90 Stable';
 </script>
 </body>
 </html>
@@ -42802,7 +42802,7 @@ renderInventory=function(){
  });
  v268PaintSellbar();return r;
 };
-setTimeout(()=>{document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');const x=document.querySelector('#v141VersionLine');if(x)x.textContent='V3.89 Stable';try{renderInventory()}catch(e){}},350);
+setTimeout(()=>{document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');const x=document.querySelector('#v141VersionLine');if(x)x.textContent='V3.90 Stable';try{renderInventory()}catch(e){}},350);
 </script>
 
 
@@ -42951,8 +42951,8 @@ renderQuests=function(){
 /* Keep rerolled/new offers visibly different immediately. */
 setTimeout(()=>{
  try{v309EnsureCurrentOffers();renderQuests()}catch(e){}
- document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
- const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.89 Stable';
+ document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
+ const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.90 Stable';
 },250);
 </script>
 
@@ -43122,8 +43122,8 @@ renderQuests=function(){
 };
 setTimeout(()=>{
  try{renderQuests()}catch(e){}
- document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
- const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.89 Stable';
+ document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
+ const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.90 Stable';
 },300);
 </script>
 
@@ -43294,8 +43294,8 @@ const v311BaseRender=render;
 render=function(){
  const r=v311BaseRender();
  try{if(s.v110WorldBoss)s.v110WorldBoss.lossStreak=0}catch(e){}
- document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
- const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.89 Stable';
+ document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
+ const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.90 Stable';
  return r;
 };
 </script>
@@ -43531,8 +43531,8 @@ const v314BaseRender=render;
 render=function(){
  const r=v314BaseRender();
  try{renderSkillTree()}catch(e){console.error('V3.14 talent render',e)}
- document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
- const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.89 Stable';
+ document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
+ const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.90 Stable';
  return r;
 };
 </script>
@@ -43602,8 +43602,8 @@ setTimeout(()=>{
 const v315BaseRender=render;
 render=function(){
  const r=v315BaseRender();
- document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
- const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.89 Stable';
+ document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
+ const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.90 Stable';
  return r;
 };
 </script>
@@ -43745,8 +43745,8 @@ setTimeout(()=>{
 const v316BaseRender=render;
 render=function(){
  const r=v316BaseRender();
- document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
- const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.89 Stable';
+ document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
+ const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.90 Stable';
  return r;
 };
 </script>
@@ -43773,8 +43773,8 @@ window.v317QuestDurations=v317QuestDurations;
 const v317BaseRender=render;
 render=function(){
  const r=v317BaseRender();
- document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
- const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.89 Stable';
+ document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
+ const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.90 Stable';
  return r;
 };
 </script>
@@ -44286,8 +44286,8 @@ const v318BaseRender=render;
 render=function(){
  const r=v318BaseRender();
  try{v106CheckAchievements(true)}catch(e){}
- document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
- const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.89 Stable';
+ document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
+ const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.90 Stable';
  return r;
 };
 </script>
@@ -44789,8 +44789,8 @@ setTimeout(()=>{
 const v319BaseRender=render;
 render=function(){
  const r=v319BaseRender();
- document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
- const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.89 Stable';
+ document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
+ const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.90 Stable';
  return r;
 };
 </script>
@@ -44920,8 +44920,8 @@ const v320BaseRender=render;
 render=function(){
  const r=v320BaseRender();
  try{renderSkillTree()}catch(e){console.error('V3.20 talent point detail render',e)}
- document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
- const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.89 Stable';
+ document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
+ const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.90 Stable';
  return r;
 };
 </script>
@@ -45187,9 +45187,9 @@ const v321BaseRender=render;
 render=function(){
  const r=v321BaseRender();
  try{v271NormalizeQuestOffers()}catch(e){}
- document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+ document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
  const line=document.querySelector('#v141VersionLine');
- if(line)line.textContent='V3.89 Stable';
+ if(line)line.textContent='V3.90 Stable';
  return r;
 };
 
@@ -45252,12 +45252,12 @@ v032InstallMenu=function(){const r=v322BaseInstallMenu.apply(this,arguments);v32
 const v322BaseGo=v032Go;
 v032Go=function(id){const r=v322BaseGo(id);if(id==='harzDealer')requestAnimationFrame(v322RenderDealer);return r};
 const v322BaseRender=render;
-render=function(){const r=v322BaseRender();v322InstallMenuEntry();v322InstallHarzPlus();if(document.querySelector('#harzDealer')?.classList.contains('active'))v322RenderDealer();document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.89 Stable';return r};
+render=function(){const r=v322BaseRender();v322InstallMenuEntry();v322InstallHarzPlus();if(document.querySelector('#harzDealer')?.classList.contains('active'))v322RenderDealer();document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.90 Stable';return r};
 setTimeout(()=>{try{v322InstallMenuEntry();v322InstallHarzPlus()}catch(e){console.error('V3.22 Harz Dealer init',e)}},350);
 </script>
 
 
-<!-- ===== V3.89 Stable: canonical public dungeon profile position ===== -->
+<!-- ===== V3.90 Stable: canonical public dungeon profile position ===== -->
 <script id="v323-profile-dungeon-canonical-fix">
 (function(){
   function v323CanonicalDungeonPosition(dp, legacyDungeons=0){
@@ -45334,14 +45334,14 @@ setTimeout(()=>{try{v322InstallMenuEntry();v322InstallHarzPlus()}catch(e){consol
     }
   },1600);
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V3.89 Stable';
+  if(line)line.textContent='V3.90 Stable';
 })();
 </script>
 
 
-<!-- ===== V3.89 Stable: Dungeon 1h countdown / 1 Harz direct fight ===== -->
+<!-- ===== V3.90 Stable: Dungeon 1h countdown / 1 Harz direct fight ===== -->
 <style id="v324-dungeon-countdown-css">
 #v324DungeonCountdown{margin:8px 0 6px;padding:9px 11px;border:1px solid #465640;border-radius:10px;background:#10170f;text-align:center;font-size:12px;font-weight:900;color:#d8e4d4}
 #v324DungeonCountdown.ready{border-color:#4f8b48;color:#9fe895}
@@ -45398,13 +45398,13 @@ setTimeout(()=>{try{v322InstallMenuEntry();v322InstallHarzPlus()}catch(e){consol
   };
   setInterval(v324Paint,1000);
   setTimeout(v324Paint,250);
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V3.89 Stable';
+  if(line)line.textContent='V3.90 Stable';
 })();
 </script>
 
-<!-- ===== V3.89 Stable: Mythic item stat balance ===== -->
+<!-- ===== V3.90 Stable: Mythic item stat balance ===== -->
 <script id="v325-mythic-item-balance">
 (function(){
   const V325_SET_BASE = {
@@ -45527,14 +45527,14 @@ setTimeout(()=>{try{v322InstallMenuEntry();v322InstallHarzPlus()}catch(e){consol
     }
   }catch(e){console.error('V3.25 mythic migration',e)}
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V3.89 Stable';
+  if(line)line.textContent='V3.90 Stable';
   try{render()}catch(e){}
 })();
 </script>
 
-<!-- ===== V3.89 Stable: canonical Hall of Haze profile ===== -->
+<!-- ===== V3.90 Stable: canonical Hall of Haze profile ===== -->
 <style id="v326-hall-profile-css">
 .v326-profile-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin:10px 0}
 .v326-profile-stat{padding:9px;border:1px solid #344735;border-radius:10px;background:#0d140f;text-align:center;color:#8fa08d;font-size:7px}
@@ -45826,13 +45826,13 @@ setTimeout(()=>{try{v322InstallMenuEntry();v322InstallHarzPlus()}catch(e){consol
     }catch(e){}
   },1500);
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V3.89 Stable';
+  if(line)line.textContent='V3.90 Stable';
 })();
 </script>
 
-<!-- ===== V3.89 Stable: worldboss retry confirm + no Grow-Skill + integer attributes ===== -->
+<!-- ===== V3.90 Stable: worldboss retry confirm + no Grow-Skill + integer attributes ===== -->
 <style id="v327-worldboss-confirm-css">
 #v327BossConfirm{
   position:fixed;inset:0;z-index:1000003;display:none;align-items:center;justify-content:center;
@@ -46038,8 +46038,8 @@ setTimeout(()=>{try{v322InstallMenuEntry();v322InstallHarzPlus()}catch(e){consol
       if(s.attrs && 'growSkill' in s.attrs)delete s.attrs.growSkill;
       v327CleanAttributeUi();
     }catch(e){}
-    document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
-    const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.89 Stable';
+    document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
+    const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.90 Stable';
     return r;
   };
 
@@ -46051,7 +46051,7 @@ setTimeout(()=>{try{v322InstallMenuEntry();v322InstallHarzPlus()}catch(e){consol
 })();
 </script>
 
-<!-- ===== V3.89 Stable: Grow-Skill fully removed ===== -->
+<!-- ===== V3.90 Stable: Grow-Skill fully removed ===== -->
 <script id="v328-growskill-fully-removed">
 (function(){
   const purge=(obj)=>{
@@ -46090,8 +46090,8 @@ setTimeout(()=>{try{v322InstallMenuEntry();v322InstallHarzPlus()}catch(e){consol
     const r=v328Render.apply(this,arguments);
     purge(s.attrs);
     purgeDom();
-    document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
-    const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.89 Stable';
+    document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
+    const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.90 Stable';
     return r;
   };
 
@@ -46100,7 +46100,7 @@ setTimeout(()=>{try{v322InstallMenuEntry();v322InstallHarzPlus()}catch(e){consol
 })();
 </script>
 
-<!-- ===== V3.89 Stable: Guild-only online status ===== -->
+<!-- ===== V3.90 Stable: Guild-only online status ===== -->
 <style id="v329-guild-online-css">
 .v329-presence{
   display:inline-flex;align-items:center;gap:5px;margin-left:7px;
@@ -46273,13 +46273,13 @@ setTimeout(()=>{try{v322InstallMenuEntry();v322InstallHarzPlus()}catch(e){consol
     }
   });
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V3.89 Stable';
+  if(line)line.textContent='V3.90 Stable';
 })();
 </script>
 
-<!-- ===== V3.89 Stable: Mythic true upgrade over equipped item ===== -->
+<!-- ===== V3.90 Stable: Mythic true upgrade over equipped item ===== -->
 <script id="v330-mythic-true-upgrade">
 (function(){
   function v330IsMystic(it){return !!it && (it.quality==='cyan'||it.rarity==='mythic'||it.mysticSetId)}
@@ -46383,12 +46383,12 @@ setTimeout(()=>{try{v322InstallMenuEntry();v322InstallHarzPlus()}catch(e){consol
   };
 
   try{render()}catch(e){}
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
-  const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.89 Stable';
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
+  const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.90 Stable';
 })();
 </script>
 
-<!-- ===== V3.89 Stable: stronger item level scaling / rarity crossover ===== -->
+<!-- ===== V3.90 Stable: stronger item level scaling / rarity crossover ===== -->
 <script id="v331-item-level-scaling">
 (function(){
   const V331_RARITY={
@@ -46492,12 +46492,12 @@ setTimeout(()=>{try{v322InstallMenuEntry();v322InstallHarzPlus()}catch(e){consol
     if(changed && typeof v063Toast==='function')setTimeout(()=>v063Toast('⚖️ Item-Skalierung aktualisiert','success','Höhere Item-Level haben jetzt deutlich mehr Gewicht.'),300);
   }catch(e){console.error('V3.31 item scaling migration',e)}
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
-  const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.89 Stable';
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
+  const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.90 Stable';
 })();
 </script>
 
-<!-- ===== V3.89 Stable: paid dungeon fights do NOT reset free countdown ===== -->
+<!-- ===== V3.90 Stable: paid dungeon fights do NOT reset free countdown ===== -->
 <script id="v332-dungeon-paid-no-timer-reset">
 (function(){
   /* Preserve the free-fight timestamp across a paid Harz-Taler dungeon fight.
@@ -46543,12 +46543,12 @@ setTimeout(()=>{try{v322InstallMenuEntry();v322InstallHarzPlus()}catch(e){consol
     return v332BasePersist.apply(this,arguments);
   };
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
-  const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.89 Stable';
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
+  const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.90 Stable';
 })();
 </script>
 
-<!-- ===== V3.89 Stable: Nebel-Crew friend online status ===== -->
+<!-- ===== V3.90 Stable: Nebel-Crew friend online status ===== -->
 <script id="v333-friends-online-status">
 (function(){
   const V333_ONLINE_MS=2*60*1000;
@@ -46694,16 +46694,16 @@ setTimeout(()=>{try{v322InstallMenuEntry();v322InstallHarzPlus()}catch(e){consol
     }
   });
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.89 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.90 Stable');
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V3.89 Stable';
+  if(line)line.textContent='V3.90 Stable';
 })();
 </script>
 
-<!-- ===== V3.89 Stable: returning-login name fix + global version sync ===== -->
+<!-- ===== V3.90 Stable: returning-login name fix + global version sync ===== -->
 <script id="v334-login-name-version-fix">
 (function(){
-  const V334_VERSION='V3.89 Stable';
+  const V334_VERSION='V3.90 Stable';
 
   function v334ApplyVersion(){
     document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version]').forEach(el=>{
@@ -46823,10 +46823,10 @@ setTimeout(()=>{try{v322InstallMenuEntry();v322InstallHarzPlus()}catch(e){consol
 })();
 </script>
 
-<!-- ===== V3.89 Stable: no Level-Up popup on returning login ===== -->
+<!-- ===== V3.90 Stable: no Level-Up popup on returning login ===== -->
 <script id="v335-no-levelup-popup-login">
 (function(){
-  const V335_VERSION='V3.89 Stable';
+  const V335_VERSION='V3.90 Stable';
   const V335_LOGIN_GRACE_MS=8000;
   const v335BootAt=Date.now();
   const v335InitialLevel=Math.max(1,Number(s?.level)||1);
@@ -46899,10 +46899,10 @@ setTimeout(()=>{try{v322InstallMenuEntry();v322InstallHarzPlus()}catch(e){consol
 })();
 </script>
 
-<!-- ===== V3.89 Stable: Illegal Book quest + dungeon enemy progress fix ===== -->
+<!-- ===== V3.90 Stable: Illegal Book quest + dungeon enemy progress fix ===== -->
 <script id="v336-illegal-book-progress-fix">
 (function(){
-  const V336_VERSION='V3.89 Stable';
+  const V336_VERSION='V3.90 Stable';
 
   function v336Ach(){
     s.v106Achievements??={done:{},stats:{}};
@@ -47019,7 +47019,7 @@ setTimeout(()=>{try{v322InstallMenuEntry();v322InstallHarzPlus()}catch(e){consol
 })();
 </script>
 
-<!-- ===== V3.89 Stable: Harz Dealer in dropdown + copyright/footer ===== -->
+<!-- ===== V3.90 Stable: Harz Dealer in dropdown + copyright/footer ===== -->
 <style id="v337-footer-style">
   #v337LegalFooter{
     margin:28px auto 12px;
@@ -47038,7 +47038,7 @@ setTimeout(()=>{try{v322InstallMenuEntry();v322InstallHarzPlus()}catch(e){consol
 
 <script id="v337-harz-dealer-menu-copyright">
 (function(){
-  const V337_VERSION='V3.89 Stable';
+  const V337_VERSION='V3.90 Stable';
 
   function v337OpenHarzDealer(){
     try{
@@ -47124,7 +47124,7 @@ setTimeout(()=>{try{v322InstallMenuEntry();v322InstallHarzPlus()}catch(e){consol
 })();
 </script>
 
-<!-- ===== V3.89 Stable: modern animated Harz Dealer redesign ===== -->
+<!-- ===== V3.90 Stable: modern animated Harz Dealer redesign ===== -->
 <style id="v338-harz-dealer-modern-css">
 #harzDealer{
   position:relative;
@@ -47353,7 +47353,7 @@ setTimeout(()=>{try{v322InstallMenuEntry();v322InstallHarzPlus()}catch(e){consol
 
 <script id="v338-harz-dealer-modern">
 (function(){
-  const V338_VERSION='V3.89 Stable';
+  const V338_VERSION='V3.90 Stable';
 
   function v338Saving(p){
     try{return Math.max(0,Math.round((1-(p.price/((p.harz/25)*1.99)))*100))}catch(e){return 0}
@@ -47479,7 +47479,7 @@ setTimeout(()=>{try{v322InstallMenuEntry();v322InstallHarzPlus()}catch(e){consol
 })();
 </script>
 
-<!-- ===== V3.89 Stable: Harz Dealer redesign closer to approved reference ===== -->
+<!-- ===== V3.90 Stable: Harz Dealer redesign closer to approved reference ===== -->
 <style id="v339-dealer-reference-css">
 #harzDealer{
   position:relative!important;
@@ -47704,7 +47704,7 @@ setTimeout(()=>{try{v322InstallMenuEntry();v322InstallHarzPlus()}catch(e){consol
 
 <script id="v339-dealer-reference-redesign">
 (function(){
- const V339_VERSION='V3.89 Stable';
+ const V339_VERSION='V3.90 Stable';
 
  function money(n){
    try{return Number(n).toLocaleString('de-DE',{minimumFractionDigits:2,maximumFractionDigits:2})+' €'}
@@ -47824,7 +47824,7 @@ setTimeout(()=>{try{v322InstallMenuEntry();v322InstallHarzPlus()}catch(e){consol
 })();
 </script>
 
-<!-- ===== V3.89 Stable: hard version-display fix ===== -->
+<!-- ===== V3.90 Stable: hard version-display fix ===== -->
 <script id="v340-version-hard-fix">
 (function(){
   /* V3.52: historical version observer retired.
@@ -47832,7 +47832,7 @@ setTimeout(()=>{try{v322InstallMenuEntry();v322InstallHarzPlus()}catch(e){consol
 })();
 </script>
 
-<!-- ===== V3.89 Stable: Harz Dealer reliably added to actual dropdown menu ===== -->
+<!-- ===== V3.90 Stable: Harz Dealer reliably added to actual dropdown menu ===== -->
 <style id="v341-harz-menu-css">
 [data-v341-harz-menu]{
   display:flex!important;
@@ -47843,7 +47843,7 @@ setTimeout(()=>{try{v322InstallMenuEntry();v322InstallHarzPlus()}catch(e){consol
 
 <script id="v341-harz-dealer-dropdown-fix">
 (function(){
-  const V341_VERSION='V3.89 Stable';
+  const V341_VERSION='V3.90 Stable';
 
   function v341OpenDealer(){
     try{
@@ -47956,7 +47956,7 @@ setTimeout(()=>{try{v322InstallMenuEntry();v322InstallHarzPlus()}catch(e){consol
 })();
 </script>
 
-<!-- ===== V3.89 Stable: event Dampf capacity/state sync fix ===== -->
+<!-- ===== V3.90 Stable: event Dampf capacity/state sync fix ===== -->
 <script id="v342-event-dampf-300-fix">
 (function(){
   /* V3.45: minimal event-Dampf safety.
@@ -48016,7 +48016,7 @@ setTimeout(()=>{try{v322InstallMenuEntry();v322InstallHarzPlus()}catch(e){consol
 })();
 </script>
 
-<!-- ===== V3.89 Stable: server selection foundation (Beta active, Server 1 locked) ===== -->
+<!-- ===== V3.90 Stable: server selection foundation (Beta active, Server 1 locked) ===== -->
 <style id="v343-server-select-css">
 #v075AuthOverlay .v343-server-select{margin:12px 0 14px}
 #v075AuthOverlay .v343-server-title{
@@ -48044,7 +48044,7 @@ setTimeout(()=>{try{v322InstallMenuEntry();v322InstallHarzPlus()}catch(e){consol
 
 <script id="v343-server-selection-beta">
 (function(){
-  const V346_VERSION='V3.89 Stable';
+  const V346_VERSION='V3.90 Stable';
   const V343_DEFAULT_SERVER='beta';
   const V343_SERVER_KEY='growLegendsSelectedServer';
 
@@ -48234,10 +48234,10 @@ setTimeout(()=>{try{v322InstallMenuEntry();v322InstallHarzPlus()}catch(e){consol
 })();
 </script>
 
-<!-- ===== V3.89 Stable: page-load recovery ===== -->
+<!-- ===== V3.90 Stable: page-load recovery ===== -->
 <script id="v345-page-load-recovery">
 (function(){
-  const V345_VERSION='V3.89 Stable';
+  const V345_VERSION='V3.90 Stable';
   function version(){
     document.querySelectorAll('.version').forEach(el=>el.textContent=V345_VERSION);
   }
@@ -48247,10 +48247,10 @@ setTimeout(()=>{try{v322InstallMenuEntry();v322InstallHarzPlus()}catch(e){consol
 })();
 </script>
 
-<!-- ===== V3.89 Stable: login/page-load recursion fix ===== -->
+<!-- ===== V3.90 Stable: login/page-load recursion fix ===== -->
 <script id="v346-load-recovery-release">
 (function(){
-  const V346_VERSION='V3.89 Stable';
+  const V346_VERSION='V3.90 Stable';
   function v346Version(){document.querySelectorAll('.version').forEach(el=>el.textContent=V346_VERSION)}
   v346Version();
   document.addEventListener('DOMContentLoaded',v346Version,{once:true});
@@ -48259,7 +48259,7 @@ setTimeout(()=>{try{v322InstallMenuEntry();v322InstallHarzPlus()}catch(e){consol
 </script>
 
 <style id="v347-login-reference-css">
-/* ===== V3.89 Stable: Login design matched to approved reference ===== */
+/* ===== V3.90 Stable: Login design matched to approved reference ===== */
 body:has(#v075AuthOverlay.show){background:#020704!important}
 #v075AuthOverlay{
   position:fixed!important;inset:0!important;z-index:100400!important;
@@ -48478,7 +48478,7 @@ body:has(#v075AuthOverlay.show){background:#020704!important}
 
 <script id="v347-login-reference-design">
 (function(){
-  const V347_VERSION='V3.89 Stable';
+  const V347_VERSION='V3.90 Stable';
 
   function v347EnsureLayout(){
     const overlay=document.querySelector('#v075AuthOverlay');
@@ -48576,7 +48576,7 @@ body:has(#v075AuthOverlay.show){background:#020704!important}
 </script>
 
 <style id="v349-world-mobile-reference-css">
-/* V3.89 Stable — start screen rebuilt from V3.47, mobile-first */
+/* V3.90 Stable — start screen rebuilt from V3.47, mobile-first */
 body:has(#world.active){
   background:#020704!important;
   max-width:1100px!important;
@@ -48752,7 +48752,7 @@ body:has(#world.active) .v280-harz-sub{display:none!important}
 
 <script id="v349-world-mobile-reference">
 (function(){
-  const V349_VERSION='V3.89 Stable';
+  const V349_VERSION='V3.90 Stable';
   const esc=v=>typeof v073Escape==='function'?v073Escape(String(v??'')):String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
   function name(){return String(s?.characterName||s?.playerName||s?.name||'Legende').trim()||'Legende'}
@@ -48942,7 +48942,7 @@ body:has(#world.active) .v280-harz-sub{display:none!important}
 })();
 </script>
 
-<!-- ===== V3.89 Stable: isolate new world screen from legacy world injectors ===== -->
+<!-- ===== V3.90 Stable: isolate new world screen from legacy world injectors ===== -->
 <style id="v350-world-isolation-css">
 /* Legacy world/event installers are still allowed to run for compatibility,
    but on the new home screen only the V3.49/V3.50 root is visible. */
@@ -48976,7 +48976,7 @@ body:has(#world.active) .v280-harz-sub{display:none!important}
 
 <script id="v350-world-isolation-fix">
 (function(){
-  const V350_VERSION='V3.89 Stable';
+  const V350_VERSION='V3.90 Stable';
 
   function v350InstallCleanWorld(force){
     const world=document.querySelector('#world');
@@ -49171,7 +49171,7 @@ body:has(#world.active) #v032MenuPanel{top:64px!important}
 
 <script id="v351-world-mobile-header-cleanup">
 (function(){
-  const V351_VERSION='V3.89 Stable';
+  const V351_VERSION='V3.90 Stable';
 
   function v351TopbarHtml(){
     const gold=Math.max(0,Math.round(Number(s?.gold)||0)).toLocaleString('de-DE');
@@ -49251,7 +49251,7 @@ body:has(#world.active) #v032MenuPanel{top:64px!important}
 })();
 </script>
 
-<!-- ===== V3.89 Stable: exact header + ghost-overlay cleanup ===== -->
+<!-- ===== V3.90 Stable: exact header + ghost-overlay cleanup ===== -->
 <style id="v352-world-header-ghost-cleanup-css">
 /* The real old header is inside .app. V3.51 targeted body > header, so it never matched. */
 body:has(#world.active) .app > header{
@@ -49303,7 +49303,7 @@ body:has(#world.active) #v032MenuBtn{
 
 <script id="v352-world-header-ghost-cleanup">
 (function(){
-  const V352_VERSION='V3.89 Stable';
+  const V352_VERSION='V3.90 Stable';
 
   function v352CleanWorld(){
     const world=document.querySelector('#world');
@@ -49360,7 +49360,7 @@ body:has(#world.active) #v032MenuBtn{
 </script>
 
 <style id="v353-world-mobile-polish-css">
-/* ===== V3.89 Stable: focused mobile polish, hero intentionally untouched ===== */
+/* ===== V3.90 Stable: focused mobile polish, hero intentionally untouched ===== */
 
 /* Replace only the contaminated card artwork. */
 #world.active .v349-card.quest .v349-art{
@@ -49519,7 +49519,7 @@ body:has(#world.active) #v032MenuBtn{
 
 <script id="v353-world-mobile-polish">
 (function(){
-  const V353_VERSION='V3.89 Stable';
+  const V353_VERSION='V3.90 Stable';
 
   function v353FixDealerPlacement(){
     const dock=document.querySelector('#world .v349-dock');
@@ -49583,10 +49583,10 @@ body:has(#world.active) #v032MenuBtn{
 })();
 </script>
 
-<!-- ===== V3.89 Stable: home dungeon progress fix ===== -->
+<!-- ===== V3.90 Stable: home dungeon progress fix ===== -->
 <script id="v354-home-dungeon-progress-fix">
 (function(){
-  const V354_VERSION='V3.89 Stable';
+  const V354_VERSION='V3.90 Stable';
 
   function v354RefreshWorld(){
     try{
@@ -49607,7 +49607,7 @@ body:has(#world.active) #v032MenuBtn{
 })();
 </script>
 
-<!-- ===== V3.89 Stable: home character portrait + EXP/Gold event cards ===== -->
+<!-- ===== V3.90 Stable: home character portrait + EXP/Gold event cards ===== -->
 <style id="v355-home-avatar-events-css">
 #world.active .v349-avatar{
   overflow:hidden!important;
@@ -49644,7 +49644,7 @@ body:has(#world.active) #v032MenuBtn{
 
 <script id="v355-home-avatar-events-fix">
 (function(){
-  const V355_VERSION='V3.89 Stable';
+  const V355_VERSION='V3.90 Stable';
 
   function refreshWorld(){
     try{
@@ -49666,7 +49666,7 @@ body:has(#world.active) #v032MenuBtn{
 })();
 </script>
 
-<!-- ===== V3.89 Stable: exact Character-screen avatar on home ===== -->
+<!-- ===== V3.90 Stable: exact Character-screen avatar on home ===== -->
 <style id="v356-home-real-character-css">
 #world.active .v349-avatar{
   overflow:hidden!important;
@@ -49688,7 +49688,7 @@ body:has(#world.active) #v032MenuBtn{
 
 <script id="v356-home-real-character-fix">
 (function(){
-  const V356_VERSION='V3.89 Stable';
+  const V356_VERSION='V3.90 Stable';
 
   function preload(){
     try{
@@ -49728,7 +49728,7 @@ body:has(#world.active) #v032MenuBtn{
 })();
 </script>
 
-<!-- ===== V3.89 Stable: unified in-game style + global resource header ===== -->
+<!-- ===== V3.90 Stable: unified in-game style + global resource header ===== -->
 <style id="v357-global-game-style-css">
 /* ---------------------------------------------------------
    GLOBAL GAME CHROME
@@ -49989,7 +49989,7 @@ body:has(#world.active) #v032MenuBtn{
 
 <script id="v357-global-game-style">
 (function(){
-  const V357_VERSION='V3.89 Stable';
+  const V357_VERSION='V3.90 Stable';
 
   function v357RemoveWorldDuplicateBar(){
     document.querySelectorAll('#world .v351-topbar').forEach(el=>el.remove());
@@ -50027,7 +50027,7 @@ body:has(#world.active) #v032MenuBtn{
 })();
 </script>
 
-<!-- ===== V3.89 Stable: real compact global header replacement ===== -->
+<!-- ===== V3.90 Stable: real compact global header replacement ===== -->
 <style id="v358-global-header-css">
 /* Hide the old resource-card presentation, but keep its live elements in DOM.
    We move the live value elements into our new compact header via JS. */
@@ -50210,7 +50210,7 @@ body:has(#world.active) #v032MenuBtn{
 
 <script id="v358-global-header">
 (function(){
-  const V358_VERSION='V3.89 Stable';
+  const V358_VERSION='V3.90 Stable';
 
   function num(v){
     return Math.max(0,Math.round(Number(v)||0)).toLocaleString('de-DE');
@@ -50242,7 +50242,7 @@ body:has(#world.active) #v032MenuBtn{
       const sub=document.createElement('div');
       sub.className='v358-subbar';
       sub.innerHTML=`
-        <span class="v358-version">V3.89 Stable</span>
+        <span class="v358-version">V3.90 Stable</span>
         <span class="v358-power">Kampfkraft <b id="v358Power">0</b></span>
         <button type="button" class="v358-settings">⚙️ Einstellungen</button>
       `;
@@ -50306,10 +50306,10 @@ body:has(#world.active) #v032MenuBtn{
 })();
 </script>
 
-<!-- ===== V3.89 Stable: hard-remove duplicate legacy header UI ===== -->
+<!-- ===== V3.90 Stable: hard-remove duplicate legacy header UI ===== -->
 <style id="v359-header-duplicate-hard-fix-css">
 /* The legacy header children have stronger historical !important rules.
-   V3.89 also hides them inline in JS; these selectors are a second guard. */
+   V3.90 also hides them inline in JS; these selectors are a second guard. */
 html body .app > header > .brand,
 html body .app > header > .stats.resource-stats{
   display:none!important;
@@ -50322,7 +50322,7 @@ html body .app > header > .stats.resource-stats{
   overflow:hidden!important;
 }
 
-/* V3.89 custom hamburger is replaced by the original real menu button. */
+/* V3.90 custom hamburger is replaced by the original real menu button. */
 .v358-global-header > .v358-menu{
   display:none!important;
 }
@@ -50373,14 +50373,14 @@ html body .app > header > .stats.resource-stats{
 
 <script id="v359-header-duplicate-hard-fix">
 (function(){
-  const V359_VERSION='V3.89 Stable';
+  const V359_VERSION='V3.90 Stable';
 
   function hideLegacyHeaderPieces(){
     const header=document.querySelector('.app > header');
     if(!header)return;
 
     /* Inline !important beats the old highly-specific !important rules that
-       caused the giant Gold/Dampf/Harz cards to remain visible in V3.89. */
+       caused the giant Gold/Dampf/Harz cards to remain visible in V3.90. */
     header.querySelectorAll(':scope > .brand,:scope > .stats.resource-stats').forEach(el=>{
       el.style.setProperty('display','none','important');
       el.style.setProperty('visibility','hidden','important');
@@ -50435,11 +50435,11 @@ html body .app > header > .stats.resource-stats{
   }
 
   function fix(){
-    /* Let V3.89 create its compact header first if needed. */
+    /* Let V3.90 create its compact header first if needed. */
     try{
       const header=document.querySelector('.app > header');
       if(header && !header.querySelector('.v358-global-header')){
-        /* Re-run V3.89 boot behavior by navigation-independent DOM setup. */
+        /* Re-run V3.90 boot behavior by navigation-independent DOM setup. */
         const root=document.createElement('div');
         root.className='v358-global-header';
         root.innerHTML=`
@@ -50452,10 +50452,10 @@ html body .app > header > .stats.resource-stats{
 
         const sub=document.createElement('div');
         sub.className='v358-subbar';
-        sub.innerHTML=`<span class="v358-version">V3.89 Stable</span><span class="v358-power">Kampfkraft <b id="v358Power">0</b></span><button type="button" class="v358-settings">⚙️ Einstellungen</button>`;
+        sub.innerHTML=`<span class="v358-version">V3.90 Stable</span><span class="v358-power">Kampfkraft <b id="v358Power">0</b></span><button type="button" class="v358-settings">⚙️ Einstellungen</button>`;
         header.appendChild(sub);
       }
-    }catch(e){console.warn('V3.89 header build',e)}
+    }catch(e){console.warn('V3.90 header build',e)}
 
     hideLegacyHeaderPieces();
     moveRealMenuButton();
@@ -50486,10 +50486,10 @@ html body .app > header > .stats.resource-stats{
 })();
 </script>
 
-<!-- ===== V3.89 Stable: eliminate version race permanently ===== -->
+<!-- ===== V3.90 Stable: eliminate version race permanently ===== -->
 <script id="v360-version-race-fix">
 (function(){
-  const V360_VERSION='V3.89 Stable';
+  const V360_VERSION='V3.90 Stable';
 
   function writeVersion(){
     document.querySelectorAll(
@@ -50507,7 +50507,7 @@ html body .app > header > .stats.resource-stats{
 })();
 </script>
 
-<!-- ===== V3.89 Stable: mobile header fit ===== -->
+<!-- ===== V3.90 Stable: mobile header fit ===== -->
 <style id="v361-header-mobile-fit-css">
 /* Mobile header: values must be fully readable, not squeezed/truncated. */
 @media(max-width:599px){
@@ -50610,7 +50610,7 @@ html body .app > header > .stats.resource-stats{
 
 <script id="v361-header-mobile-fit">
 (function(){
-  const V361_VERSION='V3.89 Stable';
+  const V361_VERSION='V3.90 Stable';
 
   function updateValues(){
     const num=v=>Math.max(0,Math.round(Number(v)||0)).toLocaleString('de-DE');
@@ -50641,7 +50641,7 @@ html body .app > header > .stats.resource-stats{
 })();
 </script>
 
-<!-- ===== V3.89 Stable: exact compact one-row mobile header ===== -->
+<!-- ===== V3.90 Stable: exact compact one-row mobile header ===== -->
 <style id="v362-header-exact-compact-css">
 /* Mobile: one single row like the approved mockup.
    No giant stacked resource blocks and no second row. */
@@ -50702,7 +50702,7 @@ html body .app > header > .stats.resource-stats{
     white-space:nowrap!important;
   }
   .app > header .v358-logo::after{
-    content:"V3.89";
+    content:"V3.90";
     display:block;
     margin:4px 0 0 10px;
     color:#75d8d9;
@@ -50759,7 +50759,7 @@ html body .app > header > .stats.resource-stats{
     top:64px!important;
   }
 
-  /* Remove V3.89 stacked-grid rules by overriding every row placement. */
+  /* Remove V3.90 stacked-grid rules by overriding every row placement. */
   .app > header .v358-global-header{
     grid-auto-rows:auto!important;
   }
@@ -50783,7 +50783,7 @@ html body .app > header > .stats.resource-stats{
 
 <script id="v362-header-exact-compact">
 (function(){
-  const V362_VERSION='V3.89 Stable';
+  const V362_VERSION='V3.90 Stable';
 
   function update(){
     const num=v=>Math.max(0,Math.round(Number(v)||0)).toLocaleString('de-DE');
@@ -50820,7 +50820,7 @@ html body .app > header > .stats.resource-stats{
 })();
 </script>
 
-<!-- ===== V3.89 Stable: header alignment polish only ===== -->
+<!-- ===== V3.90 Stable: header alignment polish only ===== -->
 <style id="v363-header-alignment-polish-css">
 @media(max-width:599px){
   .app > header .v358-global-header{
@@ -50861,7 +50861,7 @@ html body .app > header > .stats.resource-stats{
   }
 
   .app > header .v358-logo::after{
-    content:"V3.89"!important;
+    content:"V3.90"!important;
     display:block!important;
     margin:3px 0 0 10px!important;
     font-size:5.3px!important;
@@ -50920,7 +50920,7 @@ html body .app > header > .stats.resource-stats{
 
 <script id="v363-header-alignment-polish">
 (function(){
-  const V363_VERSION='V3.89 Stable';
+  const V363_VERSION='V3.90 Stable';
 
   function update(){
     document.querySelectorAll(
@@ -50939,7 +50939,7 @@ html body .app > header > .stats.resource-stats{
 })();
 </script>
 
-<!-- ===== V3.89 Stable: dropdown position + clickability fix ===== -->
+<!-- ===== V3.90 Stable: dropdown position + clickability fix ===== -->
 <style id="v364-dropdown-fix-css">
 /* Put the real dropdown further left and above all game layers. */
 #v032TopMenu{
@@ -50999,7 +50999,7 @@ body:has(#v032MenuPanel.open) [class*="ticket" i]{
 
 <script id="v364-dropdown-position-click-fix">
 (function(){
-  const V364_VERSION='V3.89 Stable';
+  const V364_VERSION='V3.90 Stable';
 
   function getPanel(){return document.querySelector('#v032MenuPanel')}
   function getButton(){return document.querySelector('#v032MenuBtn')}
@@ -51090,7 +51090,7 @@ body:has(#v032MenuPanel.open) [class*="ticket" i]{
 })();
 </script>
 
-<!-- ===== V3.89 Stable: move global menu/header fully left ===== -->
+<!-- ===== V3.90 Stable: move global menu/header fully left ===== -->
 <style id="v365-header-menu-left-align-css">
 /* The compact header was still inheriting an old centered/max-width header geometry.
    Force the global header to span the full viewport, so the hamburger sits at the left edge. */
@@ -51148,7 +51148,7 @@ html,body{
 
 <script id="v365-header-menu-left-align">
 (function(){
-  const V365_VERSION='V3.89 Stable';
+  const V365_VERSION='V3.90 Stable';
 
   function align(){
     const header=document.querySelector('.app > header');
@@ -51194,9 +51194,9 @@ html,body{
 </script>
 
 <style id="v366-world-reference-rebuild-css">
-/* ===== V3.89 Stable — clean rebuild of header + world to match approved reference ===== */
+/* ===== V3.90 Stable — clean rebuild of header + world to match approved reference ===== */
 
-/* Only V3.89 header is visible. */
+/* Only V3.90 header is visible. */
 .app > header{
   display:block!important;
   position:sticky!important;
@@ -51343,7 +51343,7 @@ html,body{
 
 <script id="v366-world-reference-rebuild">
 (function(){
-  const V366_VERSION='V3.89 Stable';
+  const V366_VERSION='V3.90 Stable';
   const esc=v=>typeof v073Escape==='function'?v073Escape(String(v??'')):String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const num=v=>Math.max(0,Math.round(Number(v)||0)).toLocaleString('de-DE');
 
@@ -51404,7 +51404,7 @@ html,body{
       bar.className='v366-topbar';
       bar.innerHTML=`
         <button class="v366-menu" type="button">☰</button>
-        <div class="v366-logo"><strong>🌿 GROW</strong><span>LEGENDS</span><i class="v366-ver">V3.89</i></div>
+        <div class="v366-logo"><strong>🌿 GROW</strong><span>LEGENDS</span><i class="v366-ver">V3.90</i></div>
         <div class="v366-res"><span class="ico">🪙</span><div><small>Gold</small><span class="val" id="v366Gold"></span></div><button class="v366-plus" data-plus="gold">+</button></div>
         <div class="v366-res"><span class="ico">💎</span><div><small>Harz</small><span class="val" id="v366Harz"></span></div><button class="v366-plus" data-plus="harz">+</button></div>
         <div class="v366-res"><span class="ico">💨</span><div><small>Dampf</small><span class="val" id="v366Dampf"></span></div><button class="v366-plus" data-plus="dampf">+</button></div>
@@ -51523,14 +51523,14 @@ html,body{
 })();
 </script>
 
-<!-- ===== V3.89 Stable: make V3.89 rebuild actually visible ===== -->
+<!-- ===== V3.90 Stable: make V3.90 rebuild actually visible ===== -->
 <style id="v367-v366-visibility-fix-css">
 /* Root cause:
-   V3.89 still had ".app > header > :not(.v358-global-header){display:none!important}"
+   V3.90 still had ".app > header > :not(.v358-global-header){display:none!important}"
    which ALSO matched the new .v366-topbar.
    V3.50 still had "#world.v350-isolated > :not(.v349-home){display:none!important}"
    which ALSO matched the new .v366-world.
-   Explicitly make the new V3.89 owners visible and retire the old owners. */
+   Explicitly make the new V3.90 owners visible and retire the old owners. */
 
 .app > header > .v366-topbar{
   display:grid!important;
@@ -51592,30 +51592,30 @@ html,body{
 
 <script id="v367-v366-visibility-fix">
 (function(){
-  const V367_VERSION='V3.89 Stable';
+  const V367_VERSION='V3.90 Stable';
 
   function repair(){
     const header=document.querySelector('.app > header');
     const world=document.querySelector('#world');
 
-    /* Re-run the V3.89 builders if their nodes are missing. */
+    /* Re-run the V3.90 builders if their nodes are missing. */
     try{
       if(header && !header.querySelector(':scope > .v366-topbar')){
         const go=window.v032Go;
-        /* V3.89 buildHeader is lexical, but navigating to current screen
-           runs the V3.89 wrapped v032Go and rebuilds the header. */
+        /* V3.90 buildHeader is lexical, but navigating to current screen
+           runs the V3.90 wrapped v032Go and rebuilds the header. */
         if(typeof go==='function'){
           const active=document.querySelector('.screen.active')?.id || 'world';
           go(active);
         }
       }
-    }catch(e){console.warn('V3.89 header repair',e)}
+    }catch(e){console.warn('V3.90 header repair',e)}
 
     try{
       if(world && !world.querySelector(':scope > .v366-world') && typeof v085InstallWorld==='function'){
         v085InstallWorld(true);
       }
-    }catch(e){console.warn('V3.89 world repair',e)}
+    }catch(e){console.warn('V3.90 world repair',e)}
 
     /* Remove the legacy isolation class that was written for V3.49 only. */
     if(world)world.classList.remove('v350-isolated');
@@ -51627,7 +51627,7 @@ html,body{
       top.style.setProperty('visibility','visible','important');
       top.style.setProperty('opacity','1','important');
       const ver=top.querySelector('.v366-ver');
-      if(ver)ver.textContent='V3.89';
+      if(ver)ver.textContent='V3.90';
     }
 
     const modern=world?.querySelector(':scope > .v366-world');
@@ -51649,7 +51649,7 @@ html,body{
     document.querySelectorAll(
       '.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version'
     ).forEach(el=>{if(el)el.textContent=V367_VERSION});
-    document.querySelectorAll('.v366-ver').forEach(el=>el.textContent='V3.89');
+    document.querySelectorAll('.v366-ver').forEach(el=>el.textContent='V3.90');
   }
 
   repair();version();
@@ -51660,9 +51660,9 @@ html,body{
 })();
 </script>
 
-<!-- ===== V3.89 Stable: single world DOM only ===== -->
+<!-- ===== V3.90 Stable: single world DOM only ===== -->
 <style id="v368-single-world-dom-css">
-/* Absolute rule: only the V3.89 world is allowed to render inside #world. */
+/* Absolute rule: only the V3.90 world is allowed to render inside #world. */
 #world.active > :not(.v366-world){
   display:none!important;
   visibility:hidden!important;
@@ -51691,7 +51691,7 @@ html,body{
 
 <script id="v368-single-world-dom">
 (function(){
-  const V368_VERSION='V3.89 Stable';
+  const V368_VERSION='V3.90 Stable';
 
   function purgeLegacyWorld(){
     const world=document.querySelector('#world');
@@ -51699,15 +51699,15 @@ html,body{
 
     let modern=world.querySelector(':scope > .v366-world');
 
-    /* If the V3.89 world was nested by an older installer, move it to root. */
+    /* If the V3.90 world was nested by an older installer, move it to root. */
     if(!modern){
       modern=world.querySelector('.v366-world');
       if(modern)world.insertBefore(modern,world.firstChild);
     }
 
-    /* If still missing, ask the V3.89 installer to create it once. */
+    /* If still missing, ask the V3.90 installer to create it once. */
     if(!modern && typeof v085InstallWorld==='function'){
-      try{v085InstallWorld(true)}catch(e){console.warn('V3.89 install world',e)}
+      try{v085InstallWorld(true)}catch(e){console.warn('V3.90 install world',e)}
       modern=world.querySelector(':scope > .v366-world') || world.querySelector('.v366-world');
       if(modern && modern.parentElement!==world)world.insertBefore(modern,world.firstChild);
     }
@@ -51731,7 +51731,7 @@ html,body{
   }
 
   /* Stop old world HTML ownership from returning legacy markup.
-     V3.89 already assigned v085WorldHtml/v085InstallWorld; retain that owner,
+     V3.90 already assigned v085WorldHtml/v085InstallWorld; retain that owner,
      then purge anything historical code adds after navigation. */
   const baseInstall=v085InstallWorld;
   v085InstallWorld=function(force){
@@ -51753,7 +51753,7 @@ html,body{
     document.querySelectorAll(
       '.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version'
     ).forEach(el=>{if(el)el.textContent=V368_VERSION});
-    document.querySelectorAll('.v366-ver').forEach(el=>el.textContent='V3.89');
+    document.querySelectorAll('.v366-ver').forEach(el=>el.textContent='V3.90');
   }
 
   purgeLegacyWorld();
@@ -51764,9 +51764,9 @@ html,body{
 })();
 </script>
 
-<!-- ===== V3.89 Stable: remove baked screenshot UI from all art ===== -->
+<!-- ===== V3.90 Stable: remove baked screenshot UI from all art ===== -->
 <style id="v369-clean-art-css">
-/* V3.89 accidentally used crops from the full UI mockup as backgrounds.
+/* V3.90 accidentally used crops from the full UI mockup as backgrounds.
    Those crops contained the old name, stats, event cards and card text as pixels.
    Use the previously verified clean artwork crops instead. */
 #world.active .v366-hero{
@@ -51821,7 +51821,7 @@ html,body{
 
 <script id="v369-clean-art-fix">
 (function(){
-  const V369_VERSION='V3.89 Stable';
+  const V369_VERSION='V3.90 Stable';
 
   function applyRealCharacter(){
     const el=document.querySelector('#world .v366-character');
@@ -51841,7 +51841,7 @@ html,body{
     document.querySelectorAll(
       '.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version'
     ).forEach(el=>{if(el)el.textContent=V369_VERSION});
-    document.querySelectorAll('.v366-ver').forEach(el=>el.textContent='V3.89');
+    document.querySelectorAll('.v366-ver').forEach(el=>el.textContent='V3.90');
   }
 
   const baseInstall=v085InstallWorld;
@@ -51865,7 +51865,7 @@ html,body{
 })();
 </script>
 
-<!-- ===== V3.89 Stable: mobile top bar matches approved reference ===== -->
+<!-- ===== V3.90 Stable: mobile top bar matches approved reference ===== -->
 <style id="v370-mobile-topbar-reference-css">
 /* Phone: use the full viewport width. The old header inherited the desktop
    max-width/centering, which wasted ~120px on the left in the screenshot. */
@@ -51984,13 +51984,13 @@ html,body{
 
 <script id="v370-mobile-topbar-reference">
 (function(){
-  const V370_VERSION='V3.89 Stable';
+  const V370_VERSION='V3.90 Stable';
 
   function paintVersion(){
     document.querySelectorAll(
       '.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version'
     ).forEach(el=>{if(el)el.textContent=V370_VERSION});
-    document.querySelectorAll('.v366-ver').forEach(el=>el.textContent='V3.89');
+    document.querySelectorAll('.v366-ver').forEach(el=>el.textContent='V3.90');
   }
 
   function hardenMenu(){
@@ -52023,7 +52023,7 @@ html,body{
 })();
 </script>
 
-<!-- ===== V3.89 Stable: true viewport topbar outside centered app ===== -->
+<!-- ===== V3.90 Stable: true viewport topbar outside centered app ===== -->
 <style id="v371-true-fullwidth-topbar-css">
 /* Hide every previous in-app header implementation while logged in. */
 body.v371-game-ui .app > header{
@@ -52208,7 +52208,7 @@ body.v371-game-ui .app > header{
 
 <script id="v371-true-fullwidth-topbar">
 (function(){
-  const V371_VERSION='V3.89 Stable';
+  const V371_VERSION='V3.90 Stable';
 
   const num=v=>Math.max(0,Math.round(Number(v)||0)).toLocaleString('de-DE');
   function cap(){try{return typeof v271DampfCap==='function'?v271DampfCap():100}catch(e){return 100}}
@@ -52226,7 +52226,7 @@ body.v371-game-ui .app > header{
       shell.innerHTML=`
         <div class="v371-topbar">
           <button type="button" class="v371-menu" aria-label="Menü">☰</button>
-          <div class="v371-logo"><strong>🌿 GROW</strong><span>LEGENDS</span><em>V3.89</em></div>
+          <div class="v371-logo"><strong>🌿 GROW</strong><span>LEGENDS</span><em>V3.90</em></div>
 
           <div class="v371-res gold">
             <span class="ico">🪙</span>
@@ -52302,7 +52302,7 @@ body.v371-game-ui .app > header{
     if(h)h.textContent=num(s?.harzTaler);
     if(d)d.textContent=num(s?.energy)+'/'+num(cap());
 
-    shell.querySelectorAll('.v371-logo em').forEach(el=>el.textContent='V3.89');
+    shell.querySelectorAll('.v371-logo em').forEach(el=>el.textContent='V3.90');
     document.querySelectorAll(
       '.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version'
     ).forEach(el=>{if(el)el.textContent=V371_VERSION});
@@ -52322,7 +52322,7 @@ body.v371-game-ui .app > header{
 })();
 </script>
 
-<!-- ===== V3.89 Stable: authoritative header + version owner ===== -->
+<!-- ===== V3.90 Stable: authoritative header + version owner ===== -->
 <style id="v372-authoritative-header-css">
 /* There must be exactly one visible in-game header. */
 .app > header,
@@ -52432,8 +52432,8 @@ body.v371-game-ui .app > header{
 
 <script id="v372-authoritative-header">
 (function(){
-  const VERSION='V3.89 Stable';
-  const SHORT='V3.89';
+  const VERSION='V3.90 Stable';
+  const SHORT='V3.90';
   const num=v=>Math.max(0,Math.round(Number(v)||0)).toLocaleString('de-DE');
   function cap(){try{return typeof v271DampfCap==='function'?v271DampfCap():100}catch(e){return 100}}
 
@@ -52513,10 +52513,10 @@ body.v371-game-ui .app > header{
 })();
 </script>
 
-<!-- ===== V3.89 Stable: dropdown closes after navigation ===== -->
+<!-- ===== V3.90 Stable: dropdown closes after navigation ===== -->
 <script id="v373-dropdown-autoclose">
 (function(){
-  const VERSION='V3.89 Stable';
+  const VERSION='V3.90 Stable';
 
   function closeMainMenu(){
     const panel=document.querySelector('#v032MenuPanel');
@@ -52549,7 +52549,7 @@ body.v371-game-ui .app > header{
 })();
 </script>
 
-<!-- ===== V3.89 Stable: EXP event card visual stays stable ===== -->
+<!-- ===== V3.90 Stable: EXP event card visual stays stable ===== -->
 <style id="v374-exp-event-visual-fix-css">
 /* V0.95 is useful for quest/EXP labels, but never inside the event cards themselves. */
 .v366-event .v095-xp2,
@@ -52564,7 +52564,7 @@ body.v371-game-ui .app > header{
 
 <script id="v374-exp-event-visual-fix">
 (function(){
-  const VERSION='V3.89 Stable';
+  const VERSION='V3.90 Stable';
 
   function cleanEventCards(){
     document.querySelectorAll('.v366-event .v095-xp2,.v349-event .v095-xp2').forEach(el=>el.remove());
@@ -52599,12 +52599,12 @@ body.v371-game-ui .app > header{
     '.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version,.v366-ver'
   ).forEach(el=>{
     if(!el)return;
-    el.textContent=el.classList?.contains('v366-ver')?'V3.89':VERSION;
+    el.textContent=el.classList?.contains('v366-ver')?'V3.90':VERSION;
   });
 })();
 </script>
 
-<!-- ===== V3.89 Stable: Glück attribute on home ===== -->
+<!-- ===== V3.90 Stable: Glück attribute on home ===== -->
 <style id="v375-home-luck-attribute-css">
 #world.active .v366-attrs{
   gap:4px!important;
@@ -52616,7 +52616,7 @@ body.v371-game-ui .app > header{
 
 <script id="v375-home-luck-attribute">
 (function(){
-  const VERSION='V3.89 Stable';
+  const VERSION='V3.90 Stable';
 
   function refresh(){
     try{
@@ -52627,7 +52627,7 @@ body.v371-game-ui .app > header{
     document.querySelectorAll(
       '.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version'
     ).forEach(el=>{if(el)el.textContent=VERSION});
-    document.querySelectorAll('.v366-ver').forEach(el=>el.textContent='V3.89');
+    document.querySelectorAll('.v366-ver').forEach(el=>el.textContent='V3.90');
   }
 
   refresh();
@@ -52635,10 +52635,10 @@ body.v371-game-ui .app > header{
 })();
 </script>
 
-<!-- ===== V3.89 Stable: quest destination/title appears only once ===== -->
+<!-- ===== V3.90 Stable: quest destination/title appears only once ===== -->
 <script id="v376-quest-destination-dedupe">
 (function(){
-  const VERSION='V3.89 Stable';
+  const VERSION='V3.90 Stable';
 
   function norm(s){
     return String(s||'').replace(/\s+/g,' ').trim().toLocaleLowerCase('de-DE');
@@ -52689,11 +52689,11 @@ body.v371-game-ui .app > header{
   document.querySelectorAll(
     '.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version'
   ).forEach(el=>{if(el)el.textContent=VERSION});
-  document.querySelectorAll('.v366-ver').forEach(el=>el.textContent='V3.89');
+  document.querySelectorAll('.v366-ver').forEach(el=>el.textContent='V3.90');
 })();
 </script>
 
-<!-- ===== V3.89 Stable: visible settings gear + real settings dropdown ===== -->
+<!-- ===== V3.90 Stable: visible settings gear + real settings dropdown ===== -->
 <style id="v377-settings-gear-css">
 /* Make sure all right-side topbar buttons fit on a phone so the gear is never clipped. */
 @media(max-width:430px){
@@ -52749,7 +52749,7 @@ body > #v141SettingsMenu.v377-open{
 
 <script id="v377-settings-gear-dropdown-fix">
 (function(){
-  const VERSION='V3.89 Stable';
+  const VERSION='V3.90 Stable';
 
   function closeSettings(){
     const menu=document.querySelector('#v141SettingsMenu');
@@ -52823,7 +52823,7 @@ body > #v141SettingsMenu.v377-open{
     document.querySelectorAll(
       '.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version'
     ).forEach(el=>{if(el)el.textContent=VERSION});
-    document.querySelectorAll('.v366-ver').forEach(el=>el.textContent='V3.89');
+    document.querySelectorAll('.v366-ver').forEach(el=>el.textContent='V3.90');
   }
 
   bindGear();version();
@@ -52833,7 +52833,7 @@ body > #v141SettingsMenu.v377-open{
 })();
 </script>
 
-<!-- ===== V3.89 Stable: "Zur krummen Gießkanne" only once on quest page ===== -->
+<!-- ===== V3.90 Stable: "Zur krummen Gießkanne" only once on quest page ===== -->
 <style id="v378-quest-location-single-title-css">
 /* Keep only the main V0.52 quest location banner at the very top. */
 #quests > .v038-location{
@@ -52846,7 +52846,7 @@ body > #v141SettingsMenu.v377-open{
 
 <script id="v378-quest-location-single-title">
 (function(){
-  const VERSION='V3.89 Stable';
+  const VERSION='V3.90 Stable';
 
   function cleanQuestLocation(){
     const quests=document.querySelector('#quests');
@@ -52888,14 +52888,14 @@ body > #v141SettingsMenu.v377-open{
   document.querySelectorAll(
     '.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version'
   ).forEach(el=>{if(el)el.textContent=VERSION});
-  document.querySelectorAll('.v366-ver').forEach(el=>el.textContent='V3.89');
+  document.querySelectorAll('.v366-ver').forEach(el=>el.textContent='V3.90');
 })();
 </script>
 
-<!-- ===== V3.89 Stable: Quest-Kampfanimation ein/aus in Einstellungen ===== -->
+<!-- ===== V3.90 Stable: Quest-Kampfanimation ein/aus in Einstellungen ===== -->
 <script id="v379-quest-battle-animation-setting">
 (function(){
-  const VERSION='V3.89 Stable';
+  const VERSION='V3.90 Stable';
 
   /* Existing users get the current behavior by default: animation ON. */
   if(typeof v141Settings==='object' &&
@@ -52978,13 +52978,13 @@ body > #v141SettingsMenu.v377-open{
   document.querySelectorAll(
     '.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version'
   ).forEach(el=>{if(el)el.textContent=VERSION});
-  document.querySelectorAll('.v366-ver').forEach(el=>el.textContent='V3.89');
+  document.querySelectorAll('.v366-ver').forEach(el=>el.textContent='V3.90');
 
   setTimeout(v379EnsureSettingRow,300);
 })();
 </script>
 
-<!-- ===== V3.89 Stable: Guild membership load + incoming applications ===== -->
+<!-- ===== V3.90 Stable: Guild membership load + incoming applications ===== -->
 <style id="v380-guild-fix-css">
 #v257RequestsCard.v380-visible{display:block!important}
 #v257RequestsCard .v380-request-head{
@@ -53000,14 +53000,14 @@ body > #v141SettingsMenu.v377-open{
 
 <script id="v380-guild-membership-requests-fix">
 (function(){
-  const VERSION='V3.89 Stable';
+  const VERSION='V3.90 Stable';
   let loadPromise=null;
 
   function v380Version(){
     document.querySelectorAll(
       '.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version'
     ).forEach(el=>{if(el)el.textContent=VERSION});
-    document.querySelectorAll('.v366-ver').forEach(el=>el.textContent='V3.89');
+    document.querySelectorAll('.v366-ver').forEach(el=>el.textContent='V3.90');
   }
 
   /*
@@ -53036,7 +53036,7 @@ body > #v141SettingsMenu.v377-open{
 
     /* Defensive: one account should never have multiple guild memberships. */
     if(rows.length>1){
-      console.warn('V3.89: multiple guild memberships detected for user',v073User.id);
+      console.warn('V3.90: multiple guild memberships detected for user',v073User.id);
     }
 
     v254Membership=membership;
@@ -53097,7 +53097,7 @@ body > #v141SettingsMenu.v377-open{
       try{
         await v380LoadGuildCore();
       }catch(e){
-        console.error('V3.89 guild load',e);
+        console.error('V3.90 guild load',e);
         /*
           Important: do not falsely tell an existing member "no guild" just because
           a network/RLS/backend read failed. Show a loading/error state instead.
@@ -53171,7 +53171,7 @@ body > #v141SettingsMenu.v377-open{
 
     const {data,error}=await v073Db.rpc('v257_get_guild_requests');
     if(error){
-      console.error('V3.89 request load',error);
+      console.error('V3.90 request load',error);
       if(list)list.innerHTML=`<div class="v257-search-empty">Anfragen konnten nicht geladen werden: ${v254GuildEsc(error.message||'Serverfehler')}</div>`;
       if(manual && typeof v063Toast==='function'){
         v063Toast('Gildenanfragen konnten nicht geladen werden','warn',error.message||'');
@@ -53254,7 +53254,7 @@ body > #v141SettingsMenu.v377-open{
 })();
 </script>
 
-<!-- ===== V3.89 Stable: Player mail system ===== -->
+<!-- ===== V3.90 Stable: Player mail system ===== -->
 <style id="v381-mail-style">
 #mail .v381-mail-card{max-width:900px;margin-left:auto;margin-right:auto}
 .v381-tabs{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:12px}.v381-tabs .active{border-color:#78c969!important;color:#b8f2aa!important}
@@ -53269,7 +53269,7 @@ body > #v141SettingsMenu.v377-open{
 </style>
 <script id="v381-player-mail-system">
 (function(){
- const VERSION='V3.89 Stable';
+ const VERSION='V3.90 Stable';
  let inbox=[],sent=[],loading=false,unreadBusy=false;
  const esc=s=>typeof v073Escape==='function'?v073Escape(String(s??'')):String(s??'').replace(/[&<>\"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;'}[c]));
  const fmt=d=>{try{return new Date(d).toLocaleString('de-DE',{dateStyle:'short',timeStyle:'short'})}catch(e){return ''}};
@@ -53285,7 +53285,7 @@ body > #v141SettingsMenu.v377-open{
    unreadBusy=true;
    try{
      const {count,error}=await v073Db.from('player_messages').select('id',{count:'exact',head:true}).eq('receiver_id',v073User.id).eq('is_read',false).is('deleted_by_receiver',false);
-     if(error){console.warn('V3.89 unread',error);return}
+     if(error){console.warn('V3.90 unread',error);return}
      badge(count||0); const p=document.querySelector('#v381UnreadPill');if(p)p.textContent=`${count||0} ungelesen`;
    }finally{unreadBusy=false}
  }
@@ -53309,7 +53309,7 @@ body > #v141SettingsMenu.v377-open{
      const ids=[...(a.data||[]).map(x=>x.sender_id),...(b.data||[]).map(x=>x.receiver_id)].filter(Boolean);
      let profiles=[]; if(ids.length){const r=await v073Db.from('profiles').select('id,character_name').in('id',[...new Set(ids)]);if(r.error)throw r.error;profiles=r.data||[]}
      const map=new Map(profiles.map(p=>[p.id,p])); inbox=(a.data||[]).map(x=>({...x,sender:map.get(x.sender_id)}));sent=(b.data||[]).map(x=>({...x,receiver:map.get(x.receiver_id)})); render();await unread();
-   }catch(e){console.error('V3.89 mail load',e);const i=document.querySelector('#v381Inbox');if(i)i.innerHTML='<div class="v381-empty">Postfach konnte nicht geladen werden. Falls das Nachrichtensystem neu eingerichtet wird, muss zuerst die V3.89-SQL in Supabase ausgeführt werden.</div>'}
+   }catch(e){console.error('V3.90 mail load',e);const i=document.querySelector('#v381Inbox');if(i)i.innerHTML='<div class="v381-empty">Postfach konnte nicht geladen werden. Falls das Nachrichtensystem neu eingerichtet wird, muss zuerst die V3.90-SQL in Supabase ausgeführt werden.</div>'}
    finally{loading=false}
  }
  async function send(){
@@ -53326,7 +53326,7 @@ body > #v141SettingsMenu.v377-open{
  async function remove(id,box){if(!(await online()))return;const {error}=await v073Db.rpc('v384_delete_message',{p_message_id:Number(id)});if(error)return v063Toast?.('Nachricht konnte nicht gelöscht werden','warn',/v384_delete_message|function .* does not exist|schema cache/i.test(String(error.message||''))?'Bitte zuerst V384_SECURITY_SQL.sql in Supabase ausführen.':(error.message||''));await load()}
  async function openMessage(id,box){
    const m=(box==='in'?inbox:sent).find(x=>String(x.id)===String(id));if(!m)return;
-   if(box==='in'&&!m.is_read){const {error}=await v073Db.rpc('v384_mark_message_read',{p_message_id:Number(id)});if(!error){m.is_read=true;render();unread()}else{console.warn('V3.89 mark read',error)}}
+   if(box==='in'&&!m.is_read){const {error}=await v073Db.rpc('v384_mark_message_read',{p_message_id:Number(id)});if(!error){m.is_read=true;render();unread()}else{console.warn('V3.90 mark read',error)}}
    const other=box==='in'?m.sender:m.receiver;const modal=document.createElement('div');modal.className='v381-modal';modal.innerHTML=`<div class="v381-modal-card"><div class="v381-modal-head"><div><b>${box==='in'?'Von':'An'}: ${esc(other?.character_name||'Spieler')}</b><div class="v381-modal-meta">${fmt(m.created_at)}</div></div><button class="btn secondary" data-close>✕</button></div><div class="v381-modal-body">${esc(m.body||'')}</div><div class="v381-modal-actions">${box==='in'?`<button class="btn secondary" data-reply>Antworten</button>`:''}<button class="btn secondary" data-delete>Löschen</button></div></div>`;document.body.appendChild(modal);
    const close=()=>modal.remove();modal.querySelector('[data-close]').onclick=close;modal.onclick=e=>{if(e.target===modal)close()};modal.querySelector('[data-delete]').onclick=async()=>{await remove(id,box);close()};
    modal.querySelector('[data-reply]')?.addEventListener('click',()=>{close();tab('compose');document.querySelector('#v381Recipient').value=other?.character_name||'';document.querySelector('#v381Body').focus()});
@@ -53341,11 +53341,11 @@ body > #v141SettingsMenu.v377-open{
  const baseGo=v032Go;v032Go=function(id){const r=baseGo.apply(this,arguments);requestAnimationFrame(bind);if(id==='mail')setTimeout(load,0);return r};
  bind();unread();setTimeout(()=>{bind();unread()},500);setInterval(()=>{if(!document.hidden)unread()},60000);
  document.addEventListener('visibilitychange',()=>{if(!document.hidden)unread()});
- document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version').forEach(el=>{if(el)el.textContent=VERSION});document.querySelectorAll('.v366-ver').forEach(el=>el.textContent='V3.89');
+ document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version').forEach(el=>{if(el)el.textContent=VERSION});document.querySelectorAll('.v366-ver').forEach(el=>el.textContent='V3.90');
 })();
 </script>
 
-<!-- V3.89 Supabase setup reference (run once in SQL Editor):
+<!-- V3.90 Supabase setup reference (run once in SQL Editor):
 create table if not exists public.player_messages (
   id bigint generated by default as identity primary key,
   sender_id uuid not null references auth.users(id) on delete cascade,
@@ -53363,9 +53363,9 @@ create policy "sender inserts messages" on public.player_messages for insert wit
 create policy "participants update messages" on public.player_messages for update using (auth.uid()=sender_id or auth.uid()=receiver_id) with check (auth.uid()=sender_id or auth.uid()=receiver_id);
 create index if not exists player_messages_receiver_idx on public.player_messages(receiver_id,created_at desc);
 create index if not exists player_messages_sender_idx on public.player_messages(sender_id,created_at desc);
--- ===== end V3.89 SQL ===== -->
+-- ===== end V3.90 SQL ===== -->
 
-<!-- ===== V3.89 Stable: Message buttons in ranking + friends ===== -->
+<!-- ===== V3.90 Stable: Message buttons in ranking + friends ===== -->
 <style id="v382-social-mail-buttons-style">
 .v382-message-btn{
   display:inline-flex!important;align-items:center;justify-content:center;gap:4px;
@@ -53380,13 +53380,13 @@ create index if not exists player_messages_sender_idx on public.player_messages(
 
 <script id="v382-social-mail-buttons">
 (function(){
-  const VERSION='V3.89 Stable';
+  const VERSION='V3.90 Stable';
 
   function v382Version(){
     document.querySelectorAll(
       '.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version'
     ).forEach(el=>{if(el)el.textContent=VERSION});
-    document.querySelectorAll('.v366-ver').forEach(el=>el.textContent='V3.89');
+    document.querySelectorAll('.v366-ver').forEach(el=>el.textContent='V3.90');
   }
 
   function v382OpenMailTo(name){
@@ -53474,10 +53474,10 @@ create index if not exists player_messages_sender_idx on public.player_messages(
 })();
 </script>
 
-<!-- ===== V3.89 Stable: Friend mail recipient name fix ===== -->
+<!-- ===== V3.90 Stable: Friend mail recipient name fix ===== -->
 <script id="v383-friend-mail-name-fix">
 (function(){
-  const VERSION='V3.89 Stable';
+  const VERSION='V3.90 Stable';
 
   function v383CleanPlayerName(row){
     const nameEl=row?.querySelector('.v072-player-name');
@@ -53551,21 +53551,21 @@ create index if not exists player_messages_sender_idx on public.player_messages(
     document.querySelectorAll(
       '.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version'
     ).forEach(el=>{if(el)el.textContent=VERSION});
-    document.querySelectorAll('.v366-ver').forEach(el=>el.textContent='V3.89');
+    document.querySelectorAll('.v366-ver').forEach(el=>el.textContent='V3.90');
   },750);
 })();
 </script>
 
-<!-- ===== V3.89 Stable: Stability diagnostics + safe error boundary ===== -->
+<!-- ===== V3.90 Stable: Stability diagnostics + safe error boundary ===== -->
 <script id="v384-stability-security">
 (function(){
-  const VERSION='V3.89 Stable';
+  const VERSION='V3.90 Stable';
   let lastErrorAt=0;
   function report(kind,detail){
     const now=Date.now();
     if(now-lastErrorAt<1500)return;
     lastErrorAt=now;
-    try{console.error(`[V3.89 ${kind}]`,detail)}catch(e){}
+    try{console.error(`[V3.90 ${kind}]`,detail)}catch(e){}
   }
   window.addEventListener('error',e=>report('runtime',e?.error||e?.message||'Unbekannter Laufzeitfehler'));
   window.addEventListener('unhandledrejection',e=>report('promise',e?.reason||'Unbehandelter Promise-Fehler'));
@@ -53583,14 +53583,14 @@ create index if not exists player_messages_sender_idx on public.player_messages(
   document.querySelectorAll(
     '.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version'
   ).forEach(el=>{if(el)el.textContent=VERSION});
-  document.querySelectorAll('.v366-ver').forEach(el=>el.textContent='V3.89');
+  document.querySelectorAll('.v366-ver').forEach(el=>el.textContent='V3.90');
 })();
 </script>
 
-<!-- ===== V3.89 Stable: Auth state consistency guard ===== -->
+<!-- ===== V3.90 Stable: Auth state consistency guard ===== -->
 <script id="v385-auth-consistency-guard">
 (function(){
-  const VERSION='V3.89 Stable';
+  const VERSION='V3.90 Stable';
 
   async function v385VerifyLoggedOutState(){
     if(window.__V301_LOGOUT_IN_PROGRESS__)return;
@@ -53621,11 +53621,11 @@ create index if not exists player_messages_sender_idx on public.player_messages(
   document.querySelectorAll(
     '.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version'
   ).forEach(el=>{if(el)el.textContent=VERSION});
-  document.querySelectorAll('.v366-ver').forEach(el=>el.textContent='V3.89');
+  document.querySelectorAll('.v366-ver').forEach(el=>el.textContent='V3.90');
 })();
 </script>
 
-<!-- ===== V3.89 Stable: Quest page visual redesign (mobile-safe) ===== -->
+<!-- ===== V3.90 Stable: Quest page visual redesign (mobile-safe) ===== -->
 <style id="v386-quest-redesign-style">
 #quests{
   --v386-bg:#071109;
@@ -53909,7 +53909,7 @@ create index if not exists player_messages_sender_idx on public.player_messages(
 
 <script id="v386-quest-redesign-script">
 (function(){
-  const VERSION='V3.89 Stable';
+  const VERSION='V3.90 Stable';
 
   function esc(s){
     return String(s??'')
@@ -53967,7 +53967,7 @@ create index if not exists player_messages_sender_idx on public.player_messages(
       if(typeof window.startQuest==='function')return window.startQuest(i);
       if(typeof startQuest==='function')return startQuest(i);
     }catch(e){
-      console.error('V3.89 quest start',e);
+      console.error('V3.90 quest start',e);
     }
   }
 
@@ -54111,12 +54111,12 @@ create index if not exists player_messages_sender_idx on public.player_messages(
     document.querySelectorAll(
       '.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version'
     ).forEach(el=>{if(el)el.textContent=VERSION});
-    document.querySelectorAll('.v366-ver').forEach(el=>el.textContent='V3.89');
+    document.querySelectorAll('.v366-ver').forEach(el=>el.textContent='V3.90');
   },550);
 })();
 </script>
 
-<!-- ===== V3.89 Stable: Quest page final cleanup ===== -->
+<!-- ===== V3.90 Stable: Quest page final cleanup ===== -->
 <style id="v387-quest-page-final-style">
 /* Remove the old quest introduction completely. */
 #quests > .hero-card{display:none!important}
@@ -54236,7 +54236,7 @@ create index if not exists player_messages_sender_idx on public.player_messages(
 
 <script id="v387-quest-page-final-script">
 (function(){
-  const VERSION='V3.89 Stable';
+  const VERSION='V3.90 Stable';
 
   function v387LegacyBoard(){
     const list=document.querySelector('#quests #questList');
@@ -54269,7 +54269,7 @@ create index if not exists player_messages_sender_idx on public.player_messages(
 
     v387LegacyBoard();
 
-    /* V3.89 placeholder portrait was only a temporary graphic. */
+    /* V3.90 placeholder portrait was only a temporary graphic. */
     root.querySelectorAll('.v386-mira-art').forEach(el=>el.remove());
 
     v387EnsureRefresh();
@@ -54294,15 +54294,15 @@ create index if not exists player_messages_sender_idx on public.player_messages(
     document.querySelectorAll(
       '.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version'
     ).forEach(el=>{if(el)el.textContent=VERSION});
-    document.querySelectorAll('.v366-ver').forEach(el=>el.textContent='V3.89');
+    document.querySelectorAll('.v366-ver').forEach(el=>el.textContent='V3.90');
   },650);
 })();
 </script>
 
-<!-- ===== V3.89 Stable: Worldboss attack button hard fix ===== -->
+<!-- ===== V3.90 Stable: Worldboss attack button hard fix ===== -->
 <script id="v388-worldboss-attack-fix">
 (function(){
-  const VERSION='V3.89 Stable';
+  const VERSION='V3.90 Stable';
   let v388Starting=false;
 
   /*
@@ -54321,7 +54321,7 @@ create index if not exists player_messages_sender_idx on public.player_messages(
       if(result && typeof result.then==='function')await result;
       return result;
     }catch(e){
-      console.error('V3.89 worldboss fight start',e);
+      console.error('V3.90 worldboss fight start',e);
       if(btn)btn.disabled=false;
       if(typeof v063Toast==='function'){
         v063Toast(
@@ -54402,187 +54402,247 @@ create index if not exists player_messages_sender_idx on public.player_messages(
     document.querySelectorAll(
       '.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version'
     ).forEach(el=>{if(el)el.textContent=VERSION});
-    document.querySelectorAll('.v366-ver').forEach(el=>el.textContent='V3.89');
+    document.querySelectorAll('.v366-ver').forEach(el=>el.textContent='V3.90');
   },500);
 })();
 </script>
 
-<!-- ===== V3.89 Stable: Quest visual final - one header, real illustrations ===== -->
-<style id="v389-quest-visual-final-style">
+
+<!-- ===== V3.90 Stable: Quest art upgrade - comic/mobile target ===== -->
+<style id="v390-quest-art-upgrade-style">
 #quests > .v052-scene-banner,
 #quests > .v41-npc-banner,
 #quests > .hero-card{display:none!important}
-#quests .v386-shell{margin-top:0!important}
+
+#quests .v386-shell{margin-top:0!important;gap:12px!important}
 #quests .v386-mira{
-  position:relative!important;min-height:188px!important;padding:14px 14px 14px 132px!important;
-  overflow:hidden!important;background:
-    radial-gradient(circle at 24% 22%,rgba(180,74,255,.18),transparent 27%),
-    radial-gradient(circle at 85% 15%,rgba(94,255,72,.12),transparent 30%),
-    linear-gradient(145deg,#0c1910,#081009)!important;
+  position:relative!important;
+  min-height:204px!important;
+  padding:16px 16px 14px 148px!important;
+  overflow:hidden!important;
+  border:1px solid #2d6238!important;
+  background:
+    radial-gradient(circle at 18% 20%,rgba(173,64,255,.22),transparent 28%),
+    radial-gradient(circle at 84% 12%,rgba(94,255,72,.12),transparent 34%),
+    linear-gradient(145deg,#0d1b11,#071009)!important;
+  box-shadow:0 18px 46px rgba(0,0,0,.36),inset 0 0 40px rgba(68,180,61,.05)!important;
 }
 #quests .v386-mira-copy{margin:0!important;position:relative!important;z-index:3!important}
-#quests .v389-mira-portrait{
-  position:absolute;left:8px;bottom:-5px;width:122px;height:178px;z-index:2;
-  filter:drop-shadow(0 12px 14px rgba(0,0,0,.7));pointer-events:none
+#quests .v390-mira-portrait{
+  position:absolute;left:5px;bottom:-3px;width:140px;height:195px;z-index:2;
+  filter:drop-shadow(0 12px 16px rgba(0,0,0,.72));pointer-events:none
 }
-#quests .v386-bubble{position:relative;border:1px solid rgba(255,255,255,.34)}
+#quests .v386-kicker{font-size:7px!important;letter-spacing:1.25px!important}
+#quests .v386-mira-name{
+  margin:3px 0 8px!important;font-size:24px!important;color:#d968ff!important;
+  text-shadow:0 0 16px rgba(204,85,255,.28)!important
+}
+#quests .v386-bubble{
+  position:relative;max-width:none!important;padding:11px 12px!important;
+  border:1px solid rgba(255,255,255,.38)!important;border-radius:15px!important;
+  background:#efe4c5!important;color:#171510!important;font-size:10.6px!important;line-height:1.42!important;
+  box-shadow:0 10px 24px rgba(0,0,0,.22)!important
+}
 #quests .v386-bubble:before{
-  content:"";position:absolute;left:-12px;top:28px;width:18px;height:18px;background:#eadfbd;
-  transform:rotate(45deg);border-left:1px solid rgba(255,255,255,.34);border-bottom:1px solid rgba(255,255,255,.34)
+  content:"";position:absolute;left:-11px;top:27px;width:17px;height:17px;background:#efe4c5;
+  transform:rotate(45deg);border-left:1px solid rgba(255,255,255,.38);border-bottom:1px solid rgba(255,255,255,.38)
 }
-#quests .v386-tabs{grid-column:1/-1;margin-left:-118px!important;margin-top:12px!important}
-#quests .v386-scene{min-height:205px!important;overflow:hidden!important;background:#08100a!important}
+#quests .v386-tabs{margin-left:-132px!important;margin-top:12px!important;gap:7px!important}
+#quests .v386-tab{
+  min-height:54px!important;padding:8px 6px!important;border-radius:14px!important;
+  background:linear-gradient(180deg,#0c1510,#08100a)!important;
+  box-shadow:inset 0 0 16px rgba(255,255,255,.015)!important
+}
+
+#quests .v386-card{
+  overflow:hidden!important;border-radius:18px!important;
+  background:linear-gradient(180deg,#0b140d,#070d09)!important;
+}
+#quests .v386-scene{
+  min-height:218px!important;padding:14px!important;overflow:hidden!important;background:#08100a!important;
+}
 #quests .v386-scene:before{
-  z-index:1!important;background:linear-gradient(180deg,rgba(4,8,5,.05) 0%,rgba(4,8,5,.18) 34%,rgba(4,8,5,.92) 100%)!important
+  z-index:1!important;
+  background:linear-gradient(180deg,rgba(3,7,5,.02) 0%,rgba(3,7,5,.10) 35%,rgba(3,7,5,.91) 100%)!important
 }
-#quests .v386-scene-art{position:absolute!important;inset:0!important;opacity:1!important;z-index:0!important}
+#quests .v386-scene-art{position:absolute!important;inset:0!important;z-index:0!important;opacity:1!important}
 #quests .v386-scene-art svg{width:100%;height:100%;display:block}
 #quests .v386-type,#quests .v386-title,#quests .v386-desc{position:relative;z-index:2}
-#quests .v386-type{margin-bottom:auto!important;backdrop-filter:blur(5px)}
-#quests .v386-title{text-shadow:0 3px 10px #000,0 0 18px #000!important}
-#quests .v386-desc{color:#e1e7df!important;text-shadow:0 2px 8px #000!important}
+#quests .v386-type{
+  margin-bottom:auto!important;background:rgba(5,10,7,.76)!important;
+  backdrop-filter:blur(6px);box-shadow:0 4px 14px rgba(0,0,0,.24)
+}
+#quests .v386-title{font-size:18px!important;text-shadow:0 3px 10px #000,0 0 20px #000!important}
+#quests .v386-desc{font-size:10px!important;color:#e3e9e1!important;text-shadow:0 2px 8px #000!important}
+
+#quests .v386-card-body{padding:11px!important;gap:9px!important}
+#quests .v386-meta,#quests .v386-rewards{gap:7px!important}
+#quests .v386-box{
+  border-color:#294b31!important;background:linear-gradient(180deg,#0b140d,#08100a)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.02)!important
+}
+#quests .v386-reward.xp{border-color:#5f531e!important}
+#quests .v386-reward.item{border-color:#57326a!important}
+#quests .v386-start{
+  min-height:52px!important;border-radius:14px!important;
+  background:linear-gradient(180deg,#8ef76b,#61d845)!important;
+  box-shadow:0 0 24px rgba(99,236,70,.18),inset 0 1px 0 rgba(255,255,255,.35)!important
+}
+#quests .v387-refresh{
+  min-height:46px!important;border-color:#365f3d!important;background:linear-gradient(180deg,#0d1a10,#08100a)!important;
+  color:#d5dfd5!important;font-size:9px!important
+}
+
 @media(max-width:520px){
-  #quests .v386-mira{min-height:176px!important;padding:13px 12px 12px 112px!important}
-  #quests .v389-mira-portrait{width:105px;height:158px;left:3px}
-  #quests .v386-tabs{margin-left:-100px!important}
-  #quests .v386-kicker{font-size:6.8px!important}
+  #quests .v386-mira{min-height:190px!important;padding:14px 12px 12px 118px!important}
+  #quests .v390-mira-portrait{width:112px;height:170px;left:1px}
+  #quests .v386-tabs{margin-left:-106px!important}
   #quests .v386-mira-name{font-size:21px!important}
-  #quests .v386-bubble{font-size:9.4px!important;padding:9px 10px!important}
-  #quests .v386-scene{min-height:185px!important}
+  #quests .v386-bubble{font-size:9.3px!important}
+  #quests .v386-scene{min-height:190px!important}
 }
 </style>
 
-<script id="v389-quest-visual-final-script">
+<script id="v390-quest-art-upgrade-script">
 (function(){
-  const VERSION='V3.89 Stable';
+  const VERSION='V3.90 Stable';
 
   function miraSvg(){
-    return `<svg viewBox="0 0 150 210" aria-hidden="true">
+    return `<svg viewBox="0 0 180 235" aria-hidden="true">
       <defs>
-        <linearGradient id="miraHair" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#8b2cc7"/><stop offset="1" stop-color="#d15bf5"/></linearGradient>
-        <linearGradient id="miraTop" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#253126"/><stop offset="1" stop-color="#111713"/></linearGradient>
+        <linearGradient id="mh" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#6720ad"/><stop offset=".52" stop-color="#b83ae7"/><stop offset="1" stop-color="#e76bf9"/></linearGradient>
+        <linearGradient id="mt" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#243727"/><stop offset="1" stop-color="#101612"/></linearGradient>
       </defs>
-      <ellipse cx="73" cy="203" rx="61" ry="14" fill="#000" opacity=".45"/>
-      <path d="M30 199 Q33 140 54 126 Q75 113 96 126 Q120 144 123 199Z" fill="url(#miraTop)" stroke="#324d36" stroke-width="3"/>
-      <path d="M44 130 Q25 91 35 49 Q43 13 76 12 Q112 14 119 54 Q125 96 103 135Z" fill="url(#miraHair)" stroke="#4d1d69" stroke-width="4"/>
-      <path d="M48 64 Q50 31 77 28 Q103 31 106 64 L101 100 Q94 121 76 123 Q57 120 50 99Z" fill="#c98e72" stroke="#5c3a31" stroke-width="3"/>
-      <path d="M39 37 Q43 20 61 19 Q77 20 82 38" fill="none" stroke="#2d1836" stroke-width="7"/>
-      <path d="M52 45 Q70 24 102 39" fill="none" stroke="#d95dfa" stroke-width="8" stroke-linecap="round"/>
-      <ellipse cx="64" cy="70" rx="4" ry="5" fill="#15100f"/><ellipse cx="90" cy="70" rx="4" ry="5" fill="#15100f"/>
-      <path d="M61 91 Q77 101 94 90" fill="none" stroke="#7d3544" stroke-width="4" stroke-linecap="round"/>
-      <path d="M56 124 L43 178 M97 124 L112 178" stroke="#c98e72" stroke-width="15" stroke-linecap="round"/>
-      <path d="M58 130 Q77 142 95 130 L105 194 H49Z" fill="#141b15" stroke="#3a5e3d" stroke-width="3"/>
-      <path d="M67 145 l9 -10 10 10 -5 11 -10 0z" fill="#74cf48"/>
-      <path d="M41 167 Q27 163 25 175 Q27 185 41 183" fill="#c98e72"/>
-      <path d="M112 167 Q129 160 131 174 Q129 186 113 184" fill="#c98e72"/>
-      <path d="M27 174 q-11 -11 -17 -2 q4 8 16 7" fill="none" stroke="#d9d9d9" stroke-width="4" opacity=".8"/>
-      <circle cx="14" cy="166" r="5" fill="#c6c6c6" opacity=".45"/><circle cx="8" cy="156" r="7" fill="#c6c6c6" opacity=".25"/>
+      <ellipse cx="88" cy="226" rx="68" ry="10" fill="#000" opacity=".45"/>
+      <path d="M27 221 Q31 159 55 144 Q88 124 119 144 Q148 161 151 221Z" fill="url(#mt)" stroke="#34543a" stroke-width="4"/>
+      <path d="M36 151 Q13 109 26 58 Q37 13 86 10 Q136 14 150 63 Q161 108 137 154Z" fill="url(#mh)" stroke="#45175f" stroke-width="5"/>
+      <path d="M52 72 Q54 37 87 31 Q122 36 127 73 L120 115 Q111 139 88 142 Q64 139 55 113Z" fill="#c88a6d" stroke="#5d3a31" stroke-width="4"/>
+      <path d="M43 61 Q58 24 92 28 Q120 31 135 65 Q111 50 88 51 Q66 50 43 61Z" fill="#2a1633"/>
+      <path d="M53 42 Q85 18 126 41" fill="none" stroke="#db5bf8" stroke-width="10" stroke-linecap="round"/>
+      <path d="M62 67 Q69 60 77 67M99 67 Q108 60 116 67" fill="none" stroke="#40252a" stroke-width="4"/>
+      <ellipse cx="72" cy="81" rx="4.5" ry="6" fill="#16110f"/><ellipse cx="108" cy="81" rx="4.5" ry="6" fill="#16110f"/>
+      <circle cx="73" cy="79" r="1.6" fill="#f6e9dc"/><circle cx="109" cy="79" r="1.6" fill="#f6e9dc"/>
+      <path d="M73 111 Q89 121 106 109" fill="none" stroke="#7f3346" stroke-width="5" stroke-linecap="round"/>
+      <path d="M58 142 L41 198 M120 143 L138 196" stroke="#c88a6d" stroke-width="17" stroke-linecap="round"/>
+      <path d="M63 149 Q88 161 115 149 L126 218 H51Z" fill="#141b15" stroke="#3b653f" stroke-width="4"/>
+      <path d="M76 162 l12 -13 13 13 -6 14 -13 0z" fill="#75d54e"/>
+      <path d="M57 151 q-17 13 -22 28" fill="none" stroke="#2b3a2e" stroke-width="5"/>
+      <path d="M39 172 q-13 2 -15 14 q4 13 18 10" fill="#c88a6d"/>
+      <path d="M139 171 q15 -2 17 12 q-3 13 -17 12" fill="#c88a6d"/>
+      <path d="M29 185 q-14 -11 -21 -2 q4 10 18 8" fill="none" stroke="#d9d9d9" stroke-width="4" opacity=".8"/>
+      <circle cx="13" cy="174" r="7" fill="#d6d6d6" opacity=".34"/><circle cx="7" cy="160" r="9" fill="#d6d6d6" opacity=".2"/>
     </svg>`;
   }
 
-  function sceneSvg(kind){
-    if(kind==='fast')return `<svg viewBox="0 0 720 300" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-      <defs><linearGradient id="fbg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#10251e"/><stop offset="1" stop-color="#07100a"/></linearGradient>
-      <radialGradient id="flight"><stop stop-color="#b7fff5" stop-opacity=".7"/><stop offset="1" stop-color="#4fe4d0" stop-opacity="0"/></radialGradient></defs>
-      <rect width="720" height="300" fill="url(#fbg)"/>
-      <rect x="55" y="30" width="250" height="240" rx="12" fill="#17251d" stroke="#31513b"/>
-      <g stroke="#2d4b36" stroke-width="4"><path d="M90 30v240M140 30v240M190 30v240M240 30v240"/><path d="M55 85h250M55 145h250M55 205h250"/></g>
-      <ellipse cx="570" cy="82" rx="110" ry="78" fill="url(#flight)"/>
-      <g transform="translate(505 72) rotate(-7)">
-        <ellipse cx="58" cy="56" rx="38" ry="27" fill="#17191a" stroke="#61706a" stroke-width="5"/>
-        <circle cx="23" cy="52" r="23" fill="#202427" stroke="#65726e" stroke-width="5"/>
-        <circle cx="14" cy="47" r="7" fill="#ef4d51"/><circle cx="30" cy="48" r="7" fill="#ef4d51"/>
-        <ellipse cx="61" cy="16" rx="45" ry="17" fill="#b8f5ff" opacity=".65" transform="rotate(-20 61 16)"/>
-        <ellipse cx="67" cy="95" rx="48" ry="18" fill="#b8f5ff" opacity=".5" transform="rotate(18 67 95)"/>
-        <path d="M78 48 l42 -23M80 63 l46 17M48 31 l-20 -30M42 80 l-25 27" stroke="#313739" stroke-width="5" stroke-linecap="round"/>
+  function fastSvg(){
+    return `<svg viewBox="0 0 720 320" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+      <defs>
+        <linearGradient id="fb" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#112822"/><stop offset=".55" stop-color="#0b1711"/><stop offset="1" stop-color="#06100a"/></linearGradient>
+        <radialGradient id="fl"><stop stop-color="#bafcff" stop-opacity=".75"/><stop offset="1" stop-color="#5cead0" stop-opacity="0"/></radialGradient>
+      </defs>
+      <rect width="720" height="320" fill="url(#fb)"/>
+      <rect x="28" y="26" width="310" height="248" rx="12" fill="#132219" stroke="#35583d" stroke-width="3"/>
+      <g stroke="#2e5137" stroke-width="4"><path d="M76 26v248M128 26v248M180 26v248M232 26v248M284 26v248"/><path d="M28 78h310M28 130h310M28 182h310M28 234h310"/></g>
+      <ellipse cx="585" cy="92" rx="122" ry="92" fill="url(#fl)"/>
+      <g transform="translate(492 62) rotate(-6)">
+        <ellipse cx="78" cy="74" rx="52" ry="38" fill="#171b1c" stroke="#62726d" stroke-width="6"/>
+        <circle cx="32" cy="70" r="30" fill="#23282a" stroke="#6f7c78" stroke-width="6"/>
+        <circle cx="22" cy="65" r="9" fill="#f05155"/><circle cx="43" cy="66" r="9" fill="#f05155"/>
+        <ellipse cx="87" cy="24" rx="61" ry="22" fill="#c8f8ff" opacity=".72" transform="rotate(-18 87 24)"/>
+        <ellipse cx="92" cy="125" rx="62" ry="23" fill="#c8f8ff" opacity=".56" transform="rotate(18 92 125)"/>
+        <path d="M103 63 l58 -32M108 85 l60 18M60 40 l-33 -35M54 104 l-38 38" stroke="#333a3b" stroke-width="6" stroke-linecap="round"/>
       </g>
-      <g fill="#3c6f3d"><path d="M0 250 Q55 190 110 255 Q165 185 225 258 Q300 210 360 267 V300H0Z"/><path d="M330 265 Q400 190 470 262 Q535 205 610 270 Q665 220 720 270V300H330Z"/></g>
+      <g fill="#2e6537"><path d="M0 274 Q70 210 140 284 Q205 212 275 286 Q350 220 420 289V320H0Z"/><path d="M380 289 Q455 214 525 291 Q590 228 658 293 Q695 256 720 278V320H380Z"/></g>
+      <g fill="#74bd4c"><circle cx="125" cy="260" r="11"/><circle cx="164" cy="272" r="10"/><circle cx="456" cy="267" r="10"/><circle cx="498" cy="278" r="9"/></g>
     </svg>`;
+  }
 
-    if(kind==='normal')return `<svg viewBox="0 0 720 300" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-      <defs><linearGradient id="nbg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#302014"/><stop offset=".65" stop-color="#10170f"/><stop offset="1" stop-color="#07100a"/></linearGradient></defs>
-      <rect width="720" height="300" fill="url(#nbg)"/>
-      <g fill="#2a2218" stroke="#5a4228" stroke-width="4"><rect x="40" y="28" width="165" height="218"/><rect x="515" y="18" width="170" height="228"/></g>
-      <g fill="#e3a84e"><rect x="78" y="60" width="26" height="44" rx="4"/><rect x="580" y="50" width="26" height="44" rx="4"/></g>
-      <path d="M0 238 Q110 212 205 238 Q330 205 455 245 Q590 215 720 246V300H0Z" fill="#131914"/>
-      <g transform="translate(255 112)">
-        <rect x="0" y="15" width="210" height="120" rx="5" fill="#6e4b2d" stroke="#332117" stroke-width="6"/>
-        <path d="M0 45h210M70 15v120M140 15v120" stroke="#3d291d" stroke-width="5"/>
-        <path d="M85 0h40l8 28H77Z" fill="#8d633c" stroke="#3b291d" stroke-width="5"/>
-        <path d="M101 50 l14 17 -14 18 -14 -18z" fill="#6cc64e"/>
+  function normalSvg(){
+    return `<svg viewBox="0 0 720 320" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+      <defs><linearGradient id="nb" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#382317"/><stop offset=".6" stop-color="#141910"/><stop offset="1" stop-color="#07100a"/></linearGradient></defs>
+      <rect width="720" height="320" fill="url(#nb)"/>
+      <g fill="#251e17" stroke="#5b4028" stroke-width="4"><rect x="25" y="26" width="185" height="232"/><rect x="515" y="18" width="175" height="240"/></g>
+      <g fill="#f0b35b"><rect x="72" y="57" width="30" height="48" rx="5"/><rect x="575" y="48" width="30" height="48" rx="5"/></g>
+      <path d="M0 250 Q120 214 235 252 Q365 211 485 260 Q600 222 720 254V320H0Z" fill="#121713"/>
+      <g transform="translate(246 104)">
+        <rect x="0" y="20" width="230" height="142" rx="6" fill="#714d2e" stroke="#342219" stroke-width="7"/>
+        <path d="M0 55h230M76 20v142M153 20v142" stroke="#3c291e" stroke-width="6"/>
+        <path d="M92 0h48l10 34H82Z" fill="#8e663f" stroke="#3a291e" stroke-width="5"/>
+        <path d="M116 63 l17 20 -17 22 -18 -22z" fill="#64c449"/>
+        <path d="M116 64 q-20 -18 -35 -5 q17 7 35 22 q17 -15 35 -22 q-15 -13 -35 5" fill="#4b9e38"/>
       </g>
+      <rect x="545" y="120" width="118" height="90" fill="#e2d1a7" opacity=".88" transform="rotate(-5 545 120)"/>
+      <text x="558" y="151" font-size="24" font-family="sans-serif" font-weight="900" fill="#3b2a1c">VERMISST!</text>
+      <path d="M572 175h60M572 190h46" stroke="#6c5035" stroke-width="5"/>
     </svg>`;
+  }
 
-    return `<svg viewBox="0 0 720 300" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-      <defs><linearGradient id="hbg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#321310"/><stop offset=".58" stop-color="#15130f"/><stop offset="1" stop-color="#07100a"/></linearGradient></defs>
-      <rect width="720" height="300" fill="url(#hbg)"/>
-      <path d="M0 75 L720 18 V300H0Z" fill="#0d130e" opacity=".55"/>
-      <g stroke="#41291d" stroke-width="8"><path d="M60 0v300M180 0v300M300 0v300M420 0v300M540 0v300M660 0v300"/></g>
-      <g fill="#254d28"><path d="M0 260 Q55 170 112 270 Q165 175 230 270 Q285 185 350 270V300H0Z"/><path d="M350 270 Q420 160 485 270 Q555 175 620 270 Q675 200 720 260V300H350Z"/></g>
-      <g transform="translate(150 145)" fill="#75a84c" stroke="#263822" stroke-width="4">
-        <ellipse cx="0" cy="40" rx="38" ry="26"/><circle cx="-28" cy="18" r="14"/><circle cx="28" cy="18" r="14"/>
-        <path d="M-18 43 l-42 25M18 43 l42 25M-20 30 l-42 -8M20 30 l42 -8" fill="none" stroke-linecap="round"/>
-        <circle cx="-12" cy="34" r="5" fill="#df4a42"/><circle cx="12" cy="34" r="5" fill="#df4a42"/>
+  function hardSvg(){
+    return `<svg viewBox="0 0 720 320" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+      <defs><linearGradient id="hb" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#421612"/><stop offset=".5" stop-color="#17140f"/><stop offset="1" stop-color="#07100a"/></linearGradient></defs>
+      <rect width="720" height="320" fill="url(#hb)"/>
+      <path d="M0 68 L720 8 V320H0Z" fill="#0b100c" opacity=".42"/>
+      <g stroke="#4c3021" stroke-width="9"><path d="M48 0v320M168 0v320M288 0v320M408 0v320M528 0v320M648 0v320"/></g>
+      <g fill="#23472a"><path d="M0 277 Q65 188 135 286 Q197 185 270 288 Q345 210 420 290V320H0Z"/><path d="M385 291 Q455 185 525 291 Q595 198 660 291 Q697 250 720 275V320H385Z"/></g>
+      <g transform="translate(140 139)" fill="#6fa246" stroke="#283a24" stroke-width="4">
+        <ellipse cx="0" cy="48" rx="47" ry="31"/><circle cx="-34" cy="22" r="18"/><circle cx="34" cy="22" r="18"/>
+        <path d="M-22 52 l-58 32M22 52 l58 32M-23 34 l-57 -12M23 34 l57 -12" fill="none" stroke-linecap="round"/>
+        <circle cx="-15" cy="41" r="6" fill="#ef4b46"/><circle cx="15" cy="41" r="6" fill="#ef4b46"/>
       </g>
-      <g transform="translate(420 128) scale(1.25)" fill="#8cb24f" stroke="#293c22" stroke-width="4">
-        <ellipse cx="0" cy="40" rx="38" ry="26"/><circle cx="-28" cy="18" r="14"/><circle cx="28" cy="18" r="14"/>
-        <path d="M-18 43 l-42 25M18 43 l42 25M-20 30 l-42 -8M20 30 l42 -8" fill="none" stroke-linecap="round"/>
-        <circle cx="-12" cy="34" r="5" fill="#ff5a4f"/><circle cx="12" cy="34" r="5" fill="#ff5a4f"/>
+      <g transform="translate(390 118) scale(1.22)" fill="#86ae4d" stroke="#293c22" stroke-width="4">
+        <ellipse cx="0" cy="48" rx="47" ry="31"/><circle cx="-34" cy="22" r="18"/><circle cx="34" cy="22" r="18"/>
+        <path d="M-22 52 l-58 32M22 52 l58 32M-23 34 l-57 -12M23 34 l57 -12" fill="none" stroke-linecap="round"/>
+        <circle cx="-15" cy="41" r="6" fill="#ff5c50"/><circle cx="15" cy="41" r="6" fill="#ff5c50"/>
+      </g>
+      <g transform="translate(610 170) scale(.74)" fill="#769c48" stroke="#293c22" stroke-width="4">
+        <ellipse cx="0" cy="48" rx="47" ry="31"/><circle cx="-34" cy="22" r="18"/><circle cx="34" cy="22" r="18"/>
+        <path d="M-22 52 l-58 32M22 52 l58 32M-23 34 l-57 -12M23 34 l57 -12" fill="none" stroke-linecap="round"/>
+        <circle cx="-15" cy="41" r="6" fill="#ff5c50"/><circle cx="15" cy="41" r="6" fill="#ff5c50"/>
       </g>
     </svg>`;
   }
 
-  function removeLegacyQuestIntro(){
-    const root=document.querySelector('#quests');
-    if(!root)return;
+  function removeLegacy(){
+    const root=document.querySelector('#quests');if(!root)return;
     root.querySelectorAll(':scope > .v052-scene-banner,:scope > .v41-npc-banner,:scope > .hero-card').forEach(el=>el.remove());
   }
 
-  function installMiraPortrait(){
-    const card=document.querySelector('#quests .v386-mira');
-    if(!card || card.querySelector('.v389-mira-portrait'))return;
-    const art=document.createElement('div');
-    art.className='v389-mira-portrait';
-    art.innerHTML=miraSvg();
-    card.prepend(art);
+  function installMira(){
+    const card=document.querySelector('#quests .v386-mira');if(!card)return;
+    card.querySelector('.v389-mira-portrait')?.remove();
+    if(card.querySelector('.v390-mira-portrait'))return;
+    const art=document.createElement('div');art.className='v390-mira-portrait';art.innerHTML=miraSvg();card.prepend(art);
   }
 
-  function installQuestScenes(){
+  function installScenes(){
     document.querySelectorAll('#quests .v386-card').forEach(card=>{
-      const art=card.querySelector('.v386-scene-art');
-      if(!art || art.dataset.v389Art==='1')return;
+      const art=card.querySelector('.v386-scene-art');if(!art)return;
       const kind=card.classList.contains('fast')?'fast':card.classList.contains('hard')?'hard':'normal';
-      art.innerHTML=sceneSvg(kind);
-      art.dataset.v389Art='1';
+      art.innerHTML=kind==='fast'?fastSvg():kind==='hard'?hardSvg():normalSvg();
+      art.dataset.v390Art='1';
     });
   }
 
-  function clean(){removeLegacyQuestIntro();installMiraPortrait();installQuestScenes();}
+  function clean(){removeLegacy();installMira();installScenes();}
 
   if(typeof v052InstallSceneBanners==='function'){
-    const baseSceneBanners=v052InstallSceneBanners;
-    v052InstallSceneBanners=function(){const r=baseSceneBanners.apply(this,arguments);removeLegacyQuestIntro();return r;};
+    const old=v052InstallSceneBanners;v052InstallSceneBanners=function(){const r=old.apply(this,arguments);removeLegacy();return r;};
   }
   if(typeof v41InstallNpcBanners==='function'){
-    const baseNpcBanners=v41InstallNpcBanners;
-    v41InstallNpcBanners=function(){const r=baseNpcBanners.apply(this,arguments);removeLegacyQuestIntro();return r;};
+    const old=v41InstallNpcBanners;v41InstallNpcBanners=function(){const r=old.apply(this,arguments);removeLegacy();return r;};
   }
 
   const baseRenderQuests=renderQuests;
   renderQuests=function(){const r=baseRenderQuests.apply(this,arguments);clean();return r;};
 
   const baseGo=v032Go;
-  v032Go=function(id){
-    const r=baseGo.apply(this,arguments);
-    if(id==='quests'){requestAnimationFrame(clean);setTimeout(clean,40);}
-    return r;
-  };
+  v032Go=function(id){const r=baseGo.apply(this,arguments);if(id==='quests'){requestAnimationFrame(clean);setTimeout(clean,40)}return r;};
 
   setTimeout(()=>{
     clean();
     document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version')
       .forEach(el=>{if(el)el.textContent=VERSION});
-    document.querySelectorAll('.v366-ver').forEach(el=>el.textContent='V3.89');
+    document.querySelectorAll('.v366-ver').forEach(el=>el.textContent='V3.90');
   },700);
 })();
 </script>
