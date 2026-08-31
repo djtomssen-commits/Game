@@ -205,7 +205,7 @@ main{padding:12px}
 
 
 <style id="v200-stable-ui">
-/* ===== Grow Legends V3.80 Stable: consolidated auth UI ===== */
+/* ===== Grow Legends V3.81 Stable: consolidated auth UI ===== */
 html,body{max-width:100%;overflow-x:hidden}
 
 body:has(#v075AuthOverlay.show) > .app,
@@ -546,7 +546,7 @@ document.documentElement.classList.remove('v224-app-ready');
 <body>
 <div class="app">
 <header>
-  <div class="brand"><h1>🌿 Grow Legends</h1><span class="version">V3.80 Stable</span><div class="power">Kampfkraft <b id="power">—</b></div></div>
+  <div class="brand"><h1>🌿 Grow Legends</h1><span class="version">V3.81 Stable</span><div class="power">Kampfkraft <b id="power">—</b></div></div>
   <div class="stats resource-stats"><div class="stat">GOLD<b id="gold">—</b></div><div class="stat">SKILL<b id="points">—</b></div><div class="stat">DAMPF<b id="energy">—</b></div><div class="stat harz-stat v277-harz-card v280-harz-card">
   <div class="v280-harz-label">HARZ-TALER</div>
   <b class="v280-harz-value"><span id="topHarz">—</span></b>
@@ -1040,6 +1040,33 @@ document.documentElement.classList.remove('v224-app-ready');
   </div>
 </section>
 
+
+
+<section id="mail" class="screen">
+  <div class="v052-scene-banner v052-character">
+    <div>
+      <div class="v052-title">✉️ Nebel-Post</div>
+      <div class="v052-sub">Private Nachrichten zwischen Spielern.</div>
+    </div>
+  </div>
+  <div class="card v381-mail-card">
+    <div class="section-title"><div><h2>Postfach</h2><div class="muted">Eingang, Gesendet und neue Nachricht.</div></div><span class="pill" id="v381UnreadPill">0 ungelesen</span></div>
+    <div class="v381-tabs">
+      <button class="btn secondary active" data-v381-tab="inbox">📥 Eingang</button>
+      <button class="btn secondary" data-v381-tab="sent">📤 Gesendet</button>
+      <button class="btn secondary" data-v381-tab="compose">✍️ Neue Nachricht</button>
+    </div>
+    <div id="v381Inbox" class="v381-panel"></div>
+    <div id="v381Sent" class="v381-panel" style="display:none"></div>
+    <div id="v381Compose" class="v381-panel" style="display:none">
+      <label class="v381-label">Empfänger</label>
+      <input id="v381Recipient" class="v071-name-input" maxlength="24" placeholder="Charaktername">
+      <label class="v381-label">Nachricht</label>
+      <textarea id="v381Body" maxlength="1000" placeholder="Nachricht schreiben …"></textarea>
+      <div class="v381-compose-foot"><span id="v381Chars">0 / 1000</span><button class="btn" id="v381Send">Nachricht senden</button></div>
+    </div>
+  </div>
+</section>
 
 <section id="admin" class="screen">
   <div class="card">
@@ -3470,7 +3497,7 @@ header{
 
 function v037SyncVersion(){
   document.querySelectorAll('.version').forEach(el=>{
-    el.textContent='V3.80 Stable';
+    el.textContent='V3.81 Stable';
   });
 }
 
@@ -3825,7 +3852,7 @@ render=function(){
   v038BaseRender();
   v038BindReroll();
   v038LocationPolish();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
 };
 
 try{
@@ -3896,7 +3923,7 @@ try{
 <script>
 /* V0.39 keep version label synced */
 (function(){
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
 })();
 </script>
 
@@ -4345,7 +4372,7 @@ header{
 <script>
 /* V0.40 unified visual behavior + version sync */
 function v040Polish(){
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
   document.querySelectorAll('.btn').forEach(b=>b.setAttribute('type','button'));
   document.querySelectorAll('.shop-item,.inv-item,.skill-card,.seed-card,.equip-card,.quest,.slot').forEach(el=>{
     el.style.willChange='transform';
@@ -4617,7 +4644,7 @@ function v41UpgradeWorldPlaces(){
 const v41BaseRender=render;
 render=function(){
   v41BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
   v41InstallPortrait();
   v41InstallNpcBanners();
   v41UpgradeShopIcons();
@@ -4823,7 +4850,7 @@ const v042BaseRender=render;
 render=function(){
   v042EnsureNineShopSlots();
   v042BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
 };
 
 try{
@@ -5206,7 +5233,7 @@ function v043EmptyStates(){
 const v043BaseRender=render;
 render=function(){
   v043BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
   v043EquipSlotArt();
   v043BattlePlayerArt();
   v043SceneLabels();
@@ -5502,7 +5529,7 @@ function v044MapTitles(){
 const v044BaseRender=render;
 render=function(){
   v044BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
   v044AddWorldRegions();
   v044AddDungeonRegions();
   v044MapTitles();
@@ -5964,7 +5991,7 @@ function v048InstallFight(){
 const v048BaseRender=render;
 render=function(){
   v048BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
   v048InstallFight();
   renderDungeon();
 
@@ -6215,7 +6242,7 @@ header{
 <script>
 /* V0.49 visual-only hooks */
 function v049Polish(){
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
 
   document.querySelectorAll('.inv-item,.shop-item,.skill-card,.quest,.slot,.grow-slot').forEach(el=>{
     el.style.willChange='transform';
@@ -6471,7 +6498,7 @@ header{
 <script>
 /* V0.50 visual hooks only */
 function v050Polish(){
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
 
   /* Add section-specific body classes for easier game theming */
   document.querySelectorAll('.screen').forEach(screen=>{
@@ -6667,7 +6694,7 @@ h1,h2,h3,h4,.item-name,.shop-item h3,.skill-title,.center-name,.char-title{
 <script>
 /* V0.51 visual-only continuation */
 function v051Polish(){
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
 
   document.querySelectorAll('.shop-item,.inv-item,.quest,.skill-card,.seed-card,.equip-card').forEach(el=>{
     el.style.willChange='transform';
@@ -6890,7 +6917,7 @@ function v052InstallSceneBanners(){
 }
 
 function v052Polish(){
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
   v052InstallSceneBanners();
 }
 
@@ -7115,7 +7142,7 @@ header:after{
 <script>
 /* V0.53 visual-only continuation */
 function v053Polish(){
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
 
   document.querySelectorAll('.btn,.stat,.shop-item,.inv-item,.quest,.skill-card,.grow-slot,.world-map-place,.dungeon-node').forEach(el=>{
     el.style.willChange='transform';
@@ -7567,7 +7594,7 @@ function v054BindShopButtons(){
 const v054BaseRender=render;
 render=function(){
   v054BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
   v054BindShopButtons();
 };
 
@@ -7744,7 +7771,7 @@ function v055AddRarityHint(){
 const v055BaseRender=render;
 render=function(){
   v055BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
   v055AddRarityHint();
 };
 
@@ -8070,7 +8097,7 @@ function v056AddShopHint(){
 const v056BaseRender=render;
 render=function(){
   v056BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
   v056AddShopHint();
 
   /* Rebind current shop cards after each render. */
@@ -8415,7 +8442,7 @@ if(!s.v057ShopCore){
 const v057BaseRender=render;
 render=function(){
   v057BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
   renderShop();
 };
 
@@ -8578,7 +8605,7 @@ render=function(){
     v058SafeRefreshAfterPurchase();
   }
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
   v058EnsureLegacyRenderAnchors();
 };
 
@@ -8839,7 +8866,7 @@ function v059BindMaterialButtons(){
 const v059BaseRender=render;
 render=function(){
   v059BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
   v059BindMaterialButtons();
 };
 
@@ -9108,7 +9135,7 @@ renderDungeon=function(){
 const v060BaseRender=render;
 render=function(){
   v060BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
   v060InstallFight();
 };
 
@@ -9136,7 +9163,7 @@ animClass=function(el,cl,ms=400){
 const v061BaseRender=render;
 render=function(){
   v061BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
 };
 
 try{render();}catch(e){console.error('V0.61 init',e);}
@@ -9184,7 +9211,7 @@ render=function(){
   }
 
   v062BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
 };
 
 try{render();}catch(e){console.error('V0.62 shop size',e);}
@@ -9675,7 +9702,7 @@ render=function(){
   v063EnsureUi();
   v063BindResetButtons();
   v063PatchClassChoice();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
 };
 
 try{
@@ -10144,13 +10171,13 @@ renderDungeon=function(){
     v064UpgradeBattle();
   }
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
 };
 
 const v064BaseRender=render;
 render=function(){
   v064BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
   try{
     if(document.querySelector('#dungeon')?.classList.contains('active')){
       renderDungeon();
@@ -10537,7 +10564,7 @@ const v065BaseRenderDungeon=renderDungeon;
 renderDungeon=function(){
   if(s.dungeon.layer==='world'){
     v065RenderWorld();
-    document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+    document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
     return;
   }
 
@@ -10548,13 +10575,13 @@ renderDungeon=function(){
     v065BindRoomNodes();
   }
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
 };
 
 const v065BaseRender=render;
 render=function(){
   v065BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
 
   if(document.querySelector('#dungeon')?.classList.contains('active')){
     try{renderDungeon();}catch(e){console.error('V0.65 dungeon render',e);}
@@ -10694,7 +10721,7 @@ function v066OpenDungeon(i){
       v065BindRoomNodes();
     }
 
-    document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+    document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
     window.scrollTo({top:0,behavior:'smooth'});
   }catch(e){
     console.error('V0.66 open dungeon',e);
@@ -10741,7 +10768,7 @@ v065RenderWorld=function(){
 const v066BaseRender=render;
 render=function(){
   v066BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
 
   if(document.querySelector('#dungeon')?.classList.contains('active') &&
      s.dungeon?.layer==='world'){
@@ -11056,7 +11083,7 @@ if(typeof v032Go==='function'){
 const v067OldRender=render;
 render=function(){
   v067OldRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
 
   if(document.querySelector('#dungeon')?.classList.contains('active')){
     try{renderDungeon();}catch(e){console.error('V0.67 renderDungeon',e);}
@@ -11394,13 +11421,13 @@ renderDungeon=function(){
     try{v064RenderMap();}catch(e){}
   }
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
 };
 
 const v068BaseRender=render;
 render=function(){
   v068BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
 
   if(document.querySelector('#dungeon')?.classList.contains('active')){
     try{renderDungeon();}catch(e){console.error('V0.68 dungeon render',e);}
@@ -11478,7 +11505,7 @@ const v069BaseRender=render;
 render=function(){
   v069BaseRender();
   v069SyncCurrencies();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
 };
 
 try{
@@ -11576,7 +11603,7 @@ const v070BaseRender=render;
 render=function(){
   v070BaseRender();
   v070HighlightPrimaryAttribute();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
 };
 
 try{
@@ -12029,7 +12056,7 @@ const v072BaseRender=render;
 render=function(){
   v072BaseRender();
   v072RenderSocial();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
 };
 
 try{
@@ -12581,7 +12608,7 @@ function v073ScheduleProfileSync(){
 const v073BaseRender=render;
 render=function(){
   v073BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
   v073ScheduleProfileSync();
 };
 
@@ -12786,7 +12813,7 @@ v072SearchPlayer=v073SearchPlayer;
 const v074BaseRender=render;
 render=function(){
   v074BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
   setTimeout(()=>v074BindProfileRows(),0);
 };
 (async()=>{if(await v073Init()){await v073SyncProfile(true)}})();
@@ -13007,7 +13034,7 @@ const v077OldAddXp=addXp;
 addXp=function(n){return v077OldAddXp(v077ModifyXp(n))};
 
 const v077BaseRender=render;
-render=function(){v077BaseRender();document.querySelectorAll('.version').forEach(e=>e.textContent='V3.80 Stable');v077InjectGrow();setTimeout(v077InjectCharacterFx,0)};
+render=function(){v077BaseRender();document.querySelectorAll('.version').forEach(e=>e.textContent='V3.81 Stable');v077InjectGrow();setTimeout(v077InjectCharacterFx,0)};
 
 setInterval(()=>{
   const b=v077Buff();
@@ -13311,7 +13338,7 @@ const v079BaseRender=render;
 render=function(){
   v079BaseRender();
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
 
   setTimeout(()=>{
     try{v079UpdateBuffFx();}catch(e){console.error('V0.79 buff fx',e);}
@@ -13510,7 +13537,7 @@ v029ShowClassChoice=function(){
 const v080BaseRender=render;
 render=function(){
   v080BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
   try{v41InstallPortrait()}catch(e){console.error('V0.80 portrait',e)}
   /* V0.79 glitter is attached after portrait exists. */
   setTimeout(()=>{
@@ -13713,7 +13740,7 @@ setTimeout(async()=>{
 const v081BaseRender=render;
 render=function(){
   v081BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
 };
 </script>
 
@@ -13775,7 +13802,7 @@ v060EnemyDamageFactor=function(rec){
 
 /* Make sure old enemy requiredLevel metadata is informational only.
    The final V0.68 fight handler intentionally has no per-enemy level gate. */
-document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
 </script>
 
 
@@ -13873,7 +13900,7 @@ async function v083FixHallList(){
 const v083BaseRender=render;
 render=function(){
   v083BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
   setTimeout(v083FixHallList,0);
 };
 
@@ -14037,7 +14064,7 @@ v073ProfilePayload=function(){
 const v084BaseRender=render;
 render=function(){
   v084BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
 };
 </script>
 
@@ -14264,7 +14291,7 @@ v032Go=function(id){
 const v085BaseRender=render;
 render=function(){
   v085BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
 
   if(document.querySelector('#world')?.classList.contains('active')){
     v085InstallWorld();
@@ -14416,7 +14443,7 @@ v032Go=function(id){
 const v086BaseRender=render;
 render=function(){
   v086BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
   v086PolishBrand();
   v086RemoveSlashNArtifacts();
   v086BuildCompleteMenu();
@@ -14492,7 +14519,7 @@ function v087FixMainAttributeBadge(){
 const v087BaseRender=render;
 render=function(){
   v087BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
   requestAnimationFrame(v087FixMainAttributeBadge);
 };
 
@@ -14524,7 +14551,7 @@ try{
 const v088BaseRender=render;
 render=function(){
   v088BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
 };
 </script>
 
@@ -14651,7 +14678,7 @@ v030Offer=function(it,fn,i){
 const v089BaseRender=render;
 render=function(){
   v089BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
   try{renderShop()}catch(e){console.error('V0.89 shop comparison',e)}
 };
 </script>
@@ -14770,7 +14797,7 @@ v057OfferHtml=function(it,i,kind){
 const v090BaseRender=render;
 render=function(){
   v090BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
   try{renderShop()}catch(e){console.error('V0.90 shop comparison',e)}
 };
 
@@ -14799,7 +14826,7 @@ localStorage.setItem(KEY,JSON.stringify(s));
 const v092BaseRender=render;
 render=function(){
   v092BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
 };
 </script>
 
@@ -15127,7 +15154,7 @@ document.querySelector('#v093SaveNews')?.addEventListener('click',v093SaveNews);
 const v093BaseRender=render;
 render=function(){
   v093BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
   v093BuildMenu();
 };
 
@@ -15250,7 +15277,7 @@ v085ActiveEvents=function(){
 const v094BaseRender=render;
 render=function(){
   v094BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
 
   /* Update visible quest XP previews to show doubled amount while event is live. */
   if(v094XpEventActive()){
@@ -15355,7 +15382,7 @@ document.addEventListener('click',()=>{
 const v095BaseRender=render;
 render=function(){
   v095BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
   requestAnimationFrame(v095DecorateXp);
 };
 
@@ -15433,7 +15460,7 @@ function v096DecorateQuestXp(){
 const v096BaseRender=render;
 render=function(){
   v096BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
   requestAnimationFrame(v096DecorateQuestXp);
 };
 
@@ -15471,7 +15498,7 @@ function v097ReplaceQuestStars(){
 const v097BaseRender=render;
 render=function(){
   v097BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
   requestAnimationFrame(v097ReplaceQuestStars);
 };
 
@@ -15567,7 +15594,7 @@ function v098QuestPreview(){
 const v098BaseRender=render;
 render=function(){
   v098BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
   requestAnimationFrame(v098QuestPreview);
 };
 
@@ -15698,7 +15725,7 @@ function v099PaintQuestXp(){
 const v099BaseRender=render;
 render=function(){
   v099BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
   requestAnimationFrame(v099PaintQuestXp);
 };
 
@@ -15855,7 +15882,7 @@ function v100PaintDungeonXp(){
 const v100BaseRender=render;
 render=function(){
   v100BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
   requestAnimationFrame(v100PaintDungeonXp);
   setTimeout(()=>{
     try{v068InstallFight()}catch(e){}
@@ -15961,7 +15988,7 @@ addXp=function(n){
 const v101BaseRender=render;
 render=function(){
   v101BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
 };
 </script>
 
@@ -16088,7 +16115,7 @@ render=function(){
   const before=Number(s.level)||1;
   const result=v102BaseRender();
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
 
   requestAnimationFrame(()=>{
     try{v102DetectLevelChange()}catch(e){console.error('V1.02 level detection',e)}
@@ -16353,7 +16380,7 @@ v093AdminLoadLists=async function(){
 const v103BaseRender=render;
 render=function(){
   v103BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
   if(v093IsAdmin)v103InstallPlayerAdmin();
 };
 
@@ -16479,7 +16506,7 @@ v103InstallPlayerAdmin=function(){
 const v105BaseRender=render;
 render=function(){
   const result=v105BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
   if(v093IsAdmin){
     v103InstallPlayerAdmin();
     v105InstallRewards();
@@ -16677,7 +16704,7 @@ claimQuest=function(){
 const v106BaseRender=render;
 render=function(){
   const result=v106BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
   v106InstallBook();
   v106CheckAchievements(true);
   return result;
@@ -16742,7 +16769,7 @@ v106InstallBook=function(){
 const v107BaseRender=render;
 render=function(){
   const result=v107BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
   requestAnimationFrame(v107PlaceBook);
   return result;
 };
@@ -16861,7 +16888,7 @@ if(!s.v108ItemPool){
 const v108BaseRender=render;
 render=function(){
   const result=v108BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
   return result;
 };
 </script>
@@ -17035,7 +17062,7 @@ const v109BaseRender=render;
 render=function(){
   v109ResetDaily();
   const result=v109BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
   return result;
 };
 </script>
@@ -17229,7 +17256,7 @@ v085ActiveEvents=function(){
 const v110BaseRender=render;
 render=function(){
   const result=v110BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
   requestAnimationFrame(v110InstallEventButton);
   return result;
 };
@@ -17559,7 +17586,7 @@ v110InstallEventButton=function(){v111InstallWorldBossCard()};
 const v111BaseRender=render;
 render=function(){
   const result=v111BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
   requestAnimationFrame(v111InstallWorldBossCard);
   return result;
 };
@@ -17644,7 +17671,7 @@ render=function(){
   const result=v112BaseRender();
 
   v112EnsureWorldBossState();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
 
   return result;
 };
@@ -17713,7 +17740,7 @@ v110Fight=function(){
 const v113BaseRender=render;
 render=function(){
   const result=v113BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
   return result;
 };
 </script>
@@ -17885,7 +17912,7 @@ v110Fight=async function(){
 const v114BaseRender=render;
 render=function(){
   const result=v114BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
   return result;
 };
 
@@ -18073,7 +18100,7 @@ v114AskRetry=function(){
 const v115BaseRender=render;
 render=function(){
   const result=v115BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
   return result;
 };
 
@@ -18260,7 +18287,7 @@ v074OpenProfile=async function(id){
 const v116BaseRender=render;
 render=function(){
   const result=v116BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
   return result;
 };
 
@@ -18439,7 +18466,7 @@ document.addEventListener('click',async e=>{
 const v117BaseRender=render;
 render=function(){
   const result=v117BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
   setTimeout(()=>{v117BindDampf();v117BindReset();v117PatchClassModal()},0);
   return result;
 };
@@ -18840,7 +18867,7 @@ v085InstallWorld=function(){
 const v118BaseRender=render;
 render=function(){
   const result=v118BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
   requestAnimationFrame(v111InstallWorldBossCard);
   return result;
 };
@@ -19032,7 +19059,7 @@ header .resource-stats .stat:nth-child(4) b{
 const v119BaseRender=render;
 render=function(){
   const result=v119BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
   return result;
 };
 </script>
@@ -19169,7 +19196,7 @@ function v120InstallCountdown(){
 const v120BaseRender=render;
 render=function(){
   const result=v120BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
   requestAnimationFrame(v120InstallCountdown);
   return result;
 };
@@ -19383,7 +19410,7 @@ const v121BaseRender=render;
 render=function(){
   v121SanitizeMagicStock();
   const result=v121BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
   requestAnimationFrame(v121PaintShopInfo);
   return result;
 };
@@ -19726,7 +19753,7 @@ const v122BaseRender=render;
 render=function(){
   v122MigrateAllSockets();
   const result=v122BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
   return result;
 };
 
@@ -20054,7 +20081,7 @@ function v123PolishEquipment(){
 const v123BaseRender=render;
 render=function(){
   const result=v123BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
   requestAnimationFrame(v123PolishEquipment);
   return result;
 };
@@ -20304,7 +20331,7 @@ function v124ClampCharacterWidth(){
 const v124BaseRender=render;
 render=function(){
   const result=v124BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
   requestAnimationFrame(v124ClampCharacterWidth);
   return result;
 };
@@ -20767,7 +20794,7 @@ render=function(){
   if(hp)hp.textContent=v125Fmt(maxHp());
   if(cp)cp.textContent=v125Fmt(combatPower());
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
   return result;
 };
 
@@ -20911,7 +20938,7 @@ if(typeof V125_ATTRS!=='undefined'){
 const v126BaseRender=render;
 render=function(){
   const result=v126BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
   requestAnimationFrame(()=>v126RepairCharacter(false));
   return result;
 };
@@ -21101,7 +21128,7 @@ render=function(){
   const energyEl=document.querySelector('#energy');
   if(energyEl)energyEl.textContent=`${Math.floor(Number(s.energy)||0)}/300`;
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
   requestAnimationFrame(v127AddResetInfo);
   return result;
 };
@@ -21382,7 +21409,7 @@ setTimeout(()=>{
 
 <script id="v128-premium-skill-ui-script">
 function v128SkillPolish(){
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
   const card=document.querySelector('#character .card:has(#skillTree)');
   if(card)card.setAttribute('data-v128','premium-skills');
 }
@@ -21812,7 +21839,7 @@ function v129PolishDynamicCards(){
     if(it)el.classList.add(v129RarityClass(it));
   });
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
 }
 const v129BaseRender=render;
 render=function(){
@@ -21974,7 +22001,7 @@ function v130InventoryHeadings(){
 function v130Polish(){
   v130RemoveMerchantCopy();
   v130InventoryHeadings();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
 }
 const v130BaseRender=render;
 render=function(){
@@ -22007,7 +22034,7 @@ function v131CleanShop(){
     }
   });
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
 }
 const v131BaseRender=render;
 render=function(){
@@ -22274,7 +22301,7 @@ function v132Polish(){
     });
   }
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
 }
 const v132BaseRender=render;
 render=function(){
@@ -22487,7 +22514,7 @@ function v133Polish(){
       }
     });
   }
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
 }
 const v133BaseRender=render;
 render=function(){
@@ -22672,7 +22699,7 @@ function v134Apply(){
    l.innerHTML='<span class="g0">Normal</span><span class="g1">Gewöhnlich</span><span class="g2">Selten</span><span class="g3">Episch</span><span class="g4">Legendär</span><span class="g5">Mystisch</span>';
    card.appendChild(l);
  }
- document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+ document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
 }
 const v134BaseRender=render;
 render=function(){const r=v134BaseRender();requestAnimationFrame(v134Apply);return r;};
@@ -22835,7 +22862,7 @@ function v135PaintShop(){
       if(arr[i])el.classList.add(v135QualityClassFromItem(arr[i]));
     });
   });
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
 }
 
 /* Existing V1.34 stock may be based on old weak scaling: refresh once for free. */
@@ -23070,7 +23097,7 @@ function v138PaintMerchant(){
     });
   });
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
 }
 
 const v138BaseRender=render;
@@ -23268,7 +23295,7 @@ v030Offer=function(it,fn,i){
 
 function v139RepaintShop(){
   try{renderShop()}catch(e){console.error('V1.39 shop repaint',e)}
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
 }
 
 const v139BaseRender=render;
@@ -23631,7 +23658,7 @@ function v141BuildSettings(){
           <button type="button" class="btn" id="v141Delete">🗑️ Account löschen</button>
         </div>
 
-        <div class="v141-version-line" id="v141VersionLine">V3.80 Stable</div>
+        <div class="v141-version-line" id="v141VersionLine">V3.81 Stable</div>
       </div>`;
   }
 
@@ -23824,7 +23851,7 @@ setTimeout(()=>{
 const v141BaseRender=render;
 render=function(){
   const r=v141BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
   requestAnimationFrame(()=>{
     v141BuildSettings();
     v141ApplySettings();
@@ -23881,7 +23908,7 @@ window.addEventListener('scroll',v142PositionSettings,{passive:true});
 const v142BaseRender=render;
 render=function(){
   const r=v142BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
   requestAnimationFrame(v142PositionSettings);
   return r;
 };
@@ -24096,7 +24123,7 @@ render=function(){
     v145SaveScopedLocal();
   }
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
   return r;
 };
 
@@ -24112,7 +24139,7 @@ setTimeout(()=>{
 
 
 <script id="v200-stable-core">
-/* ===== Grow Legends V3.80 Stable =====
+/* ===== Grow Legends V3.81 Stable =====
    One auth listener. One email handler. One Google handler.
    One cloud resolver. One character creator. One admin poll.
 */
@@ -24351,7 +24378,7 @@ function v200RenderLoginInfo(){
     let n=null;
     try{ n=(window.v093News||[]).find(x=>x && x.is_published!==false)||null; }catch(e){}
 
-    const title=n?.title||'V3.80 Stable';
+    const title=n?.title||'V3.81 Stable';
     const version=n?.version||'V2.00';
     const text=n?.body||n?.text||'Technische Stabilisierung von Login, Cloud-Speicherung und Charaktererstellung.';
 
@@ -25209,7 +25236,7 @@ function v200BindSettings(){
   if(cancel)cancel.onclick=v141CloseDelete;
 
   const version=document.querySelector('#v141VersionLine');
-  if(version)version.textContent='V3.80 Stable';
+  if(version)version.textContent='V3.81 Stable';
 }
 
 /* One admin poll, content-aware. */
@@ -25338,7 +25365,7 @@ const v200BaseRender=render;
 render=function(){
   const r=v200BaseRender();
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
 
   if(v200DurableUser() && v200CharacterComplete() && v075CloudLoadedFor===v073User.id){
     v075ScheduleSave();
@@ -25503,7 +25530,7 @@ render=function(){
   const result=v201BaseRender();
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V3.80 Stable');
+    .forEach(el=>el.textContent='V3.81 Stable');
 
   const world=document.querySelector('#world');
   if(world?.classList.contains('active')){
@@ -25891,7 +25918,7 @@ setInterval(()=>{
 const v204BaseRender=render;
 render=function(){
   const r=v204BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
   requestAnimationFrame(()=>{
     v086BuildCompleteMenu();
     v204InstallAvatarBadge();
@@ -25943,7 +25970,7 @@ function v205InstallBudScale(){
 const v205BaseRender=render;
 render=function(){
   const r=v205BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
   requestAnimationFrame(v205InstallBudScale);
   return r;
 };
@@ -26244,7 +26271,7 @@ render=function(){
   const r=v206BaseRender();
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V3.80 Stable');
+    .forEach(el=>el.textContent='V3.81 Stable');
 
   requestAnimationFrame(()=>{
     const find=document.querySelector('#v204FindBtn');
@@ -26417,7 +26444,7 @@ render=function(){
   const r=v207BaseRender();
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V3.80 Stable');
+    .forEach(el=>el.textContent='V3.81 Stable');
 
   requestAnimationFrame(()=>{
     v207EnsurePvpState();
@@ -26864,7 +26891,7 @@ render=function(){
   const r=v209BaseRender();
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V3.80 Stable');
+    .forEach(el=>el.textContent='V3.81 Stable');
 
   requestAnimationFrame(()=>{
     const fight=document.querySelector('#v204FightBtn');
@@ -27421,7 +27448,7 @@ render=function(){
   const r=v210BaseRender();
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V3.80 Stable');
+    .forEach(el=>el.textContent='V3.81 Stable');
 
   requestAnimationFrame(()=>{
     v210FormatCharacterAttributes();
@@ -27804,7 +27831,7 @@ render=function(){
   const r=v211BaseRender();
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V3.80 Stable');
+    .forEach(el=>el.textContent='V3.81 Stable');
 
   return r;
 };
@@ -27851,7 +27878,7 @@ const v213BaseRender=render;
 render=function(){
   const r=v213BaseRender();
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V3.80 Stable');
+    .forEach(el=>el.textContent='V3.81 Stable');
   return r;
 };
 </script>
@@ -28097,7 +28124,7 @@ function v224BuildCurrentUi(){
     }catch(e){}
 
     document.querySelectorAll('.version')
-      .forEach(el=>el.textContent='V3.80 Stable');
+      .forEach(el=>el.textContent='V3.81 Stable');
 
     return true;
   }catch(e){
@@ -28237,7 +28264,7 @@ function v225EnsureSettingsAccountActions(){
     menu.appendChild(version);
   }
 
-  version.textContent='V3.80 Stable';
+  version.textContent='V3.81 Stable';
 
   const logout=menu.querySelector('#v141Logout');
   if(logout){
@@ -28306,7 +28333,7 @@ setTimeout(()=>{
 
 setTimeout(()=>{
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V3.80 Stable');
+    .forEach(el=>el.textContent='V3.81 Stable');
 },300);
 </script>
 
@@ -28638,7 +28665,7 @@ setTimeout(()=>{
 
 setTimeout(()=>{
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V3.80 Stable');
+    .forEach(el=>el.textContent='V3.81 Stable');
 },300);
 </script>
 
@@ -28857,7 +28884,7 @@ setTimeout(()=>{
 
 setTimeout(()=>{
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V3.80 Stable');
+    .forEach(el=>el.textContent='V3.81 Stable');
 },350);
 </script>
 
@@ -29071,10 +29098,10 @@ setInterval(v230LiveTick,1000);
 
 function v230Version(){
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V3.80 Stable');
+    .forEach(el=>el.textContent='V3.81 Stable');
 
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V3.80 Stable';
+  if(line)line.textContent='V3.81 Stable';
 }
 
 
@@ -29525,10 +29552,10 @@ setTimeout(()=>{
   }catch(e){}
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V3.80 Stable');
+    .forEach(el=>el.textContent='V3.81 Stable');
 
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V3.80 Stable';
+  if(line)line.textContent='V3.81 Stable';
 },300);
 </script>
 
@@ -30273,10 +30300,10 @@ setTimeout(()=>{
   }catch(e){}
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V3.80 Stable');
+    .forEach(el=>el.textContent='V3.81 Stable');
 
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V3.80 Stable';
+  if(line)line.textContent='V3.81 Stable';
 },300);
 </script>
 
@@ -30510,10 +30537,10 @@ setTimeout(()=>{
   }catch(e){}
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V3.80 Stable');
+    .forEach(el=>el.textContent='V3.81 Stable');
 
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V3.80 Stable';
+  if(line)line.textContent='V3.81 Stable';
 },300);
 </script>
 
@@ -30854,10 +30881,10 @@ setTimeout(()=>{
   }
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V3.80 Stable');
+    .forEach(el=>el.textContent='V3.81 Stable');
 
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V3.80 Stable';
+  if(line)line.textContent='V3.81 Stable';
 },320);
 </script>
 
@@ -31290,10 +31317,10 @@ setTimeout(()=>{
   }catch(e){}
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V3.80 Stable');
+    .forEach(el=>el.textContent='V3.81 Stable');
 
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V3.80 Stable';
+  if(line)line.textContent='V3.81 Stable';
 },350);
 </script>
 
@@ -31931,10 +31958,10 @@ setTimeout(()=>{
   }catch(e){}
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V3.80 Stable');
+    .forEach(el=>el.textContent='V3.81 Stable');
 
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V3.80 Stable';
+  if(line)line.textContent='V3.81 Stable';
 },360);
 </script>
 
@@ -32116,9 +32143,9 @@ setTimeout(()=>{
   try{
     if(document.querySelector('#grow')?.classList.contains('active'))renderGrow();
   }catch(e){}
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V3.80 Stable';
+  if(line)line.textContent='V3.81 Stable';
 },380);
 </script>
 
@@ -32237,9 +32264,9 @@ v238SyncQuestDungeonKeys();
 
 setTimeout(()=>{
   try{v238SyncQuestDungeonKeys()}catch(e){}
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V3.80 Stable';
+  if(line)line.textContent='V3.81 Stable';
 },400);
 </script>
 
@@ -32377,9 +32404,9 @@ window.addEventListener('focus',()=>{
 setTimeout(()=>{
   try{v239UpdateGrowLive()}catch(e){}
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V3.80 Stable');
+    .forEach(el=>el.textContent='V3.81 Stable');
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V3.80 Stable';
+  if(line)line.textContent='V3.81 Stable';
 },420);
 </script>
 
@@ -32773,10 +32800,10 @@ setTimeout(()=>{
   }catch(e){}
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V3.80 Stable');
+    .forEach(el=>el.textContent='V3.81 Stable');
 
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V3.80 Stable';
+  if(line)line.textContent='V3.81 Stable';
 },440);
 </script>
 
@@ -33021,10 +33048,10 @@ setTimeout(()=>{
   }catch(e){}
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V3.80 Stable');
+    .forEach(el=>el.textContent='V3.81 Stable');
 
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V3.80 Stable';
+  if(line)line.textContent='V3.81 Stable';
 },460);
 </script>
 
@@ -33270,9 +33297,9 @@ setTimeout(()=>{
     }
   }catch(e){}
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V3.80 Stable';
+  if(line)line.textContent='V3.81 Stable';
 },480);
 </script>
 
@@ -33471,10 +33498,10 @@ setTimeout(()=>{
   }catch(e){}
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V3.80 Stable');
+    .forEach(el=>el.textContent='V3.81 Stable');
 
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V3.80 Stable';
+  if(line)line.textContent='V3.81 Stable';
 },500);
 </script>
 
@@ -33764,10 +33791,10 @@ setTimeout(()=>{
   }catch(e){}
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V3.80 Stable');
+    .forEach(el=>el.textContent='V3.81 Stable');
 
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V3.80 Stable';
+  if(line)line.textContent='V3.81 Stable';
 },520);
 </script>
 
@@ -33895,10 +33922,10 @@ setTimeout(()=>{
   }catch(e){}
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V3.80 Stable');
+    .forEach(el=>el.textContent='V3.81 Stable');
 
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V3.80 Stable';
+  if(line)line.textContent='V3.81 Stable';
 },540);
 </script>
 
@@ -34614,10 +34641,10 @@ setTimeout(()=>{
   }catch(e){}
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V3.80 Stable');
+    .forEach(el=>el.textContent='V3.81 Stable');
 
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V3.80 Stable';
+  if(line)line.textContent='V3.81 Stable';
 },560);
 </script>
 
@@ -34874,10 +34901,10 @@ function v247ShowDungeonReward(data){
 /* Final version stamp. */
 setTimeout(()=>{
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V3.80 Stable');
+    .forEach(el=>el.textContent='V3.81 Stable');
 
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V3.80 Stable';
+  if(line)line.textContent='V3.81 Stable';
 },580);
 </script>
 
@@ -35076,10 +35103,10 @@ setTimeout(()=>{
   }catch(e){}
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V3.80 Stable');
+    .forEach(el=>el.textContent='V3.81 Stable');
 
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V3.80 Stable';
+  if(line)line.textContent='V3.81 Stable';
 },600);
 </script>
 
@@ -35201,10 +35228,10 @@ setTimeout(()=>{
   }
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V3.80 Stable');
+    .forEach(el=>el.textContent='V3.81 Stable');
 
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V3.80 Stable';
+  if(line)line.textContent='V3.81 Stable';
 },640);
 </script>
 
@@ -35596,10 +35623,10 @@ setTimeout(()=>{
   }catch(e){}
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V3.80 Stable');
+    .forEach(el=>el.textContent='V3.81 Stable');
 
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V3.80 Stable';
+  if(line)line.textContent='V3.81 Stable';
 },680);
 </script>
 
@@ -36588,10 +36615,10 @@ setTimeout(()=>{
   }catch(e){}
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V3.80 Stable');
+    .forEach(el=>el.textContent='V3.81 Stable');
 
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V3.80 Stable';
+  if(line)line.textContent='V3.81 Stable';
 },720);
 </script>
 
@@ -36946,8 +36973,8 @@ renderDungeon=function(){
 };
 setTimeout(()=>{
   try{v252ModernizeBattle()}catch(e){}
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
-  const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.80 Stable';
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
+  const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.81 Stable';
 },780);
 </script>
 
@@ -37545,10 +37572,10 @@ setTimeout(()=>{
   }catch(e){}
 
   document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V3.80 Stable');
+    .forEach(el=>el.textContent='V3.81 Stable');
 
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V3.80 Stable';
+  if(line)line.textContent='V3.81 Stable';
 },820);
 </script>
 
@@ -37824,8 +37851,8 @@ v032Go=function(id){
 setTimeout(()=>{
   v254BindGuild();
   try{v086BuildCompleteMenu()}catch(e){}
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
-  const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.80 Stable';
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
+  const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.81 Stable';
 },700);
 </script>
 
@@ -37908,7 +37935,7 @@ const v255BaseLoadGuild=v254LoadGuild;
 v254LoadGuild=async function(){const r=await v255BaseLoadGuild();if(document.querySelector('#guild')?.classList.contains('active')&&v254Membership)await v255LoadBoss();return r};
 document.querySelector('#v255ClaimBossReward')?.addEventListener('click',v255ClaimBossReward);
 setInterval(()=>{if(document.querySelector('#guild')?.classList.contains('active'))v255RenderBoss()},30000);
-setTimeout(()=>{document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.80 Stable';},760);
+setTimeout(()=>{document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.81 Stable';},760);
 </script>
 
 
@@ -38143,8 +38170,8 @@ function v257BindGuildManagement(){
 setTimeout(()=>{
   v257BindGuildManagement();
   if(!v254Guild)v257SearchGuilds();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
-  const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.80 Stable';
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
+  const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.81 Stable';
 },760);
 </script>
 
@@ -38206,8 +38233,8 @@ const v258BaseRenderGuild=v254RenderGuild;
 v254RenderGuild=function(){v258BaseRenderGuild();v258RenderTestAccess();};
 setTimeout(()=>{
   v258RenderTestAccess();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
-  const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.80 Stable';
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
+  const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.81 Stable';
 },820);
 </script>
 
@@ -38448,8 +38475,8 @@ const v260BossClock=setInterval(async()=>{
 
 setTimeout(()=>{
   v260RenderDailyControls();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
-  const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.80 Stable';
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
+  const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.81 Stable';
 },900);
 </script>
 
@@ -38487,7 +38514,7 @@ document.querySelector('#v262WarRefresh')?.addEventListener('click',v262LoadWar)
 const v262BaseLoadGuild=v254LoadGuild;v254LoadGuild=async function(){const r=await v262BaseLoadGuild();await v262LoadWar();return r};
 const v262BaseSignup=v254ToggleSignup;v254ToggleSignup=async function(kind){const r=await v262BaseSignup(kind);if(kind==='attack'||kind==='defense')await v262LoadWar();return r};
 setInterval(async()=>{if(document.querySelector('#guild')?.classList.contains('active')&&v254Membership)await v262LoadWar()},60000);
-setTimeout(()=>{v262RenderWar();document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.80 Stable'},950);
+setTimeout(()=>{v262RenderWar();document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.81 Stable'},950);
 </script>
 
 
@@ -38514,7 +38541,7 @@ v262RenderWar=function(){
   if(b)b.style.display=v263WarLeader()?'':'none';
 };
 
-setTimeout(()=>{document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.80 Stable'},1100);
+setTimeout(()=>{document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.81 Stable'},1100);
 </script>
 
 <style id="v265-war-arena-css">
@@ -38593,7 +38620,7 @@ v262RenderWar=function(){
  const mine=v265Mine(),myScore=mine==='a'?Number(v262War.score_a):Number(v262War.score_b),enScore=mine==='a'?Number(v262War.score_b):Number(v262War.score_a),myHp=mine==='a'?Number(v262War.hp_a):Number(v262War.hp_b),enHp=mine==='a'?Number(v262War.hp_b):Number(v262War.hp_a),resolved=['a_won','b_won','draw'].includes(v262War.status),won=(v262War.status==='a_won'&&mine==='a')||(v262War.status==='b_won'&&mine==='b'),status=document.querySelector('#v262WarStatus');
  if(resolved&&status){const tie=myScore===enScore;status.textContent=won?(tie?`🏆 Gildensieg nach Rest-HP! ${v255Fmt(myHp)} : ${v255Fmt(enHp)} HP.`:'🏆 Gildensieg! +30 Gilden-Buds.'):(v262War.status==='draw'?'🤝 Unentschieden.':tie?`💀 Niederlage nach Rest-HP. ${v255Fmt(myHp)} : ${v255Fmt(enHp)} HP.`:'💀 Niederlage. +10 Gilden-Buds.')}
 };
-setTimeout(()=>{document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');const x=document.querySelector('#v141VersionLine');if(x)x.textContent='V3.80 Stable'},1200);
+setTimeout(()=>{document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');const x=document.querySelector('#v141VersionLine');if(x)x.textContent='V3.81 Stable'},1200);
 </script>
 
 <style id="v266-war-real-avatars-css">
@@ -38710,8 +38737,8 @@ v262WatchWar=async function(){
 };
 
 setTimeout(()=>{
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
-  const x=document.querySelector('#v141VersionLine');if(x)x.textContent='V3.80 Stable';
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
+  const x=document.querySelector('#v141VersionLine');if(x)x.textContent='V3.81 Stable';
 },1250);
 </script>
 
@@ -38793,8 +38820,8 @@ render=function(){
 /* Update profile sync before its existing upload path reads combatPower(). */
 setTimeout(()=>{try{render()}catch(e){}},300);
 setTimeout(()=>{
- document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
- const x=document.querySelector('#v141VersionLine');if(x)x.textContent='V3.80 Stable';
+ document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
+ const x=document.querySelector('#v141VersionLine');if(x)x.textContent='V3.81 Stable';
 },1300);
 </script>
 
@@ -38993,8 +39020,8 @@ setTimeout(()=>{if(v073User&&!v073User.is_anonymous)v269LoadMine()},2500);
 setInterval(()=>{if(v073User&&!v073User.is_anonymous)v269LoadMine()},120000);
 
 setTimeout(()=>{
- document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
- const x=document.querySelector('#v141VersionLine');if(x)x.textContent='V3.80 Stable';
+ document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
+ const x=document.querySelector('#v141VersionLine');if(x)x.textContent='V3.81 Stable';
 },1450);
 </script>
 
@@ -39327,8 +39354,8 @@ render=function(){
   v026AddRefill();
   v271PaintDampf();
   try{renderQuests()}catch(e){}
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
-  const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.80 Stable';
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
+  const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.81 Stable';
   return r;
 };
 
@@ -39343,8 +39370,8 @@ if(!s.v271DampfMigration){
 
 setTimeout(()=>{
   try{v026AddRefill();v271PaintDampf();renderQuests()}catch(e){}
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
-  const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.80 Stable';
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
+  const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.81 Stable';
 },1700);
 </script>
 
@@ -39511,15 +39538,15 @@ const v272BaseRender=render;
 render=function(){
   const r=v272BaseRender();
   requestAnimationFrame(v272PaintCharacterIdentity);
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
-  const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.80 Stable';
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
+  const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.81 Stable';
   return r;
 };
 
 setTimeout(()=>{
   try{v272PaintCharacterIdentity()}catch(e){}
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
-  const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.80 Stable';
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
+  const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.81 Stable';
 },1800);
 </script>
 
@@ -39643,8 +39670,8 @@ const v273BaseRender=render;
 render=function(){
   const r=v273BaseRender();
   if(v093IsAdmin)v273EnsureAdminMenu();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
-  const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.80 Stable';
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
+  const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.81 Stable';
   return r;
 };
 </script>
@@ -39858,8 +39885,8 @@ const v274BaseRender=render;
 render=function(){
   const r=v274BaseRender();
   if(v093IsAdmin)v274InstallEventPresets();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
-  const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.80 Stable';
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
+  const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.81 Stable';
   return r;
 };
 
@@ -39868,8 +39895,8 @@ setTimeout(()=>{
     if(v093IsAdmin)v274InstallEventPresets();
     renderQuests();
   }catch(e){}
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
-  const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.80 Stable';
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
+  const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.81 Stable';
 },2100);
 </script>
 
@@ -39908,15 +39935,15 @@ const v275BaseRender=render;
 render=function(){
   const r=v275BaseRender();
   v275PaintCharacterName();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
-  const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.80 Stable';
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
+  const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.81 Stable';
   return r;
 };
 
 setTimeout(()=>{
   try{v275PaintCharacterName()}catch(e){}
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
-  const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.80 Stable';
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
+  const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.81 Stable';
 },300);
 </script>
 
@@ -40080,8 +40107,8 @@ render=function(){
     v276DecorateQuestGold();
     v276DecorateGold();
   });
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
-  const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.80 Stable';
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
+  const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.81 Stable';
   return r;
 };
 
@@ -40097,8 +40124,8 @@ setTimeout(async()=>{
   if(v073User?.id && !v073User.is_anonymous){
     await v276RefreshEventsForCurrentCharacter();
   }
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
-  const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.80 Stable';
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
+  const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.81 Stable';
 },2300);
 </script>
 
@@ -40374,8 +40401,8 @@ render=function(){
     v277PrepareResourceCards();
     v276DecorateGold();
   });
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
-  const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.80 Stable';
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
+  const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.81 Stable';
   return r;
 };
 
@@ -40384,8 +40411,8 @@ setTimeout(()=>{
     v277PrepareResourceCards();
     v276DecorateGold();
   }catch(e){console.error('V2.77 resource cards',e)}
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
-  const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.80 Stable';
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
+  const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.81 Stable';
 },400);
 </script>
 
@@ -40532,17 +40559,17 @@ const v278BaseRender=render;
 render=function(){
   const r=v278BaseRender();
   requestAnimationFrame(v278StabilizeResources);
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
-  const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.80 Stable';
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
+  const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.81 Stable';
   return r;
 };
 
 setTimeout(v278StabilizeResources,250);
 setTimeout(v278StabilizeResources,900);
 
-document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
 const v278Line=document.querySelector('#v141VersionLine');
-if(v278Line)v278Line.textContent='V3.80 Stable';
+if(v278Line)v278Line.textContent='V3.81 Stable';
 </script>
 
 <style id="v279-resource-root-fix-css">
@@ -40756,9 +40783,9 @@ render=function(){
     v279BuildHarzCard();
     v271PaintDampf();
   });
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V3.80 Stable';
+  if(line)line.textContent='V3.81 Stable';
   return r;
 };
 
@@ -40872,17 +40899,17 @@ render=function(){
     v279BuildHarzCard();
     v271PaintDampf();
   });
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V3.80 Stable';
+  if(line)line.textContent='V3.81 Stable';
   return r;
 };
 
 setTimeout(()=>{
   try{v279BuildHarzCard();v271PaintDampf()}catch(e){}
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V3.80 Stable';
+  if(line)line.textContent='V3.81 Stable';
 },300);
 </script>
 
@@ -40932,8 +40959,8 @@ const v281BaseRender=render;
 render=function(){
   const r=v281BaseRender();
   requestAnimationFrame(v281PaintHarzAmount);
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
-  const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.80 Stable';
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
+  const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.81 Stable';
   return r;
 };
 
@@ -41006,8 +41033,8 @@ const v282BaseRender=render;
 render=function(){
   const r=v282BaseRender();
   requestAnimationFrame(v282PaintHarzCard);
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
-  const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.80 Stable';
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
+  const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.81 Stable';
   return r;
 };
 
@@ -41130,9 +41157,9 @@ render=function(){
     v283CleanHarzAmount();
     v271PaintDampf();
   });
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V3.80 Stable';
+  if(line)line.textContent='V3.81 Stable';
   return r;
 };
 
@@ -41141,9 +41168,9 @@ setTimeout(v283CleanHarzAmount,250);
 setTimeout(v283CleanHarzAmount,1100);
 setTimeout(v283CleanHarzAmount,1800);
 
-document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
 const v283Line=document.querySelector('#v141VersionLine');
-if(v283Line)v283Line.textContent='V3.80 Stable';
+if(v283Line)v283Line.textContent='V3.81 Stable';
 </script>
 
 <style id="v284-dampf-card-redesign-css">
@@ -41343,9 +41370,9 @@ const v284BaseRender=render;
 render=function(){
   const r=v284BaseRender();
   requestAnimationFrame(v271PaintDampf);
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V3.80 Stable';
+  if(line)line.textContent='V3.81 Stable';
   return r;
 };
 
@@ -41353,9 +41380,9 @@ setTimeout(v271PaintDampf,150);
 setTimeout(v271PaintDampf,650);
 setTimeout(v271PaintDampf,1500);
 
-document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
 const v284Line=document.querySelector('#v141VersionLine');
-if(v284Line)v284Line.textContent='V3.80 Stable';
+if(v284Line)v284Line.textContent='V3.81 Stable';
 </script>
 
 <script id="v285-gold-event-payout-guard">
@@ -41430,15 +41457,15 @@ if(typeof v235ShowQuestReward==='function'){
 const v285BaseRender=render;
 render=function(){
   const r=v285BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V3.80 Stable';
+  if(line)line.textContent='V3.81 Stable';
   return r;
 };
 
-document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
 const v285Line=document.querySelector('#v141VersionLine');
-if(v285Line)v285Line.textContent='V3.80 Stable';
+if(v285Line)v285Line.textContent='V3.81 Stable';
 </script>
 
 <style id="v286-dungeon-event-css">
@@ -41618,16 +41645,16 @@ render=function(){
     try{v276DecorateGold()}catch(e){}
   });
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V3.80 Stable';
+  if(line)line.textContent='V3.81 Stable';
 
   return r;
 };
 
-document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
 const v286Line=document.querySelector('#v141VersionLine');
-if(v286Line)v286Line.textContent='V3.80 Stable';
+if(v286Line)v286Line.textContent='V3.81 Stable';
 </script>
 
 <script id="v287-dampf-subtitle-cleanup">
@@ -41641,16 +41668,16 @@ const v287BaseRender=render;
 render=function(){
   const r=v287BaseRender();
   requestAnimationFrame(v287RemoveDampfSubtitle);
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V3.80 Stable';
+  if(line)line.textContent='V3.81 Stable';
   return r;
 };
 
 setTimeout(v287RemoveDampfSubtitle,250);
-document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
 const v287Line=document.querySelector('#v141VersionLine');
-if(v287Line)v287Line.textContent='V3.80 Stable';
+if(v287Line)v287Line.textContent='V3.81 Stable';
 </script>
 
 <style id="v288-resource-event-clarity-css">
@@ -41797,9 +41824,9 @@ render=function(){
       v276DecorateGold();
     }catch(e){}
   });
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V3.80 Stable';
+  if(line)line.textContent='V3.81 Stable';
   return r;
 };
 
@@ -41807,9 +41834,9 @@ setTimeout(()=>{
   try{v271PaintDampf();v276DecorateGold()}catch(e){}
 },300);
 
-document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
 const v288Line=document.querySelector('#v141VersionLine');
-if(v288Line)v288Line.textContent='V3.80 Stable';
+if(v288Line)v288Line.textContent='V3.81 Stable';
 </script>
 
 <script id="v289-harvest-gold-event-version">
@@ -41818,14 +41845,14 @@ if(v288Line)v288Line.textContent='V3.80 Stable';
 const v289BaseRender=render;
 render=function(){
   const r=v289BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V3.80 Stable';
+  if(line)line.textContent='V3.81 Stable';
   return r;
 };
-document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
 const v289Line=document.querySelector('#v141VersionLine');
-if(v289Line)v289Line.textContent='V3.80 Stable';
+if(v289Line)v289Line.textContent='V3.81 Stable';
 </script>
 
 <style id="v290-worldboss-balance-css">
@@ -42158,9 +42185,9 @@ const v290BaseRender=render;
 render=function(){
   const r=v290BaseRender();
   v290EnsureWorldBossState();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V3.80 Stable';
+  if(line)line.textContent='V3.81 Stable';
   return r;
 };
 
@@ -42171,9 +42198,9 @@ setTimeout(()=>{
   }catch(e){}
 },350);
 
-document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
 const v290Line=document.querySelector('#v141VersionLine');
-if(v290Line)v290Line.textContent='V3.80 Stable';
+if(v290Line)v290Line.textContent='V3.81 Stable';
 </script>
 
 <script id="v291-worldboss-upgrades-balance">
@@ -42345,9 +42372,9 @@ v110Refresh=function(){
 const v291BaseRender=render;
 render=function(){
   const r=v291BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V3.80 Stable';
+  if(line)line.textContent='V3.81 Stable';
   return r;
 };
 
@@ -42357,9 +42384,9 @@ setTimeout(()=>{
   }catch(e){}
 },350);
 
-document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
 const v291Line=document.querySelector('#v141VersionLine');
-if(v291Line)v291Line.textContent='V3.80 Stable';
+if(v291Line)v291Line.textContent='V3.81 Stable';
 </script>
 
 
@@ -42424,38 +42451,38 @@ const v294BaseRender=render;
 render=function(){
   const r=v294BaseRender.apply(this,arguments);
   v271PaintDampf();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V3.80 Stable';
+  if(line)line.textContent='V3.81 Stable';
   return r;
 };
 
 try{v271PaintDampf();}catch(e){}
 
-document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
 const v294Line=document.querySelector('#v141VersionLine');
-if(v294Line)v294Line.textContent='V3.80 Stable';
+if(v294Line)v294Line.textContent='V3.81 Stable';
 </script>
 <script id="v295-book-mainattr-fix">
-document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
 const v295Line=document.querySelector('#v141VersionLine');
-if(v295Line)v295Line.textContent='V3.80 Stable';
+if(v295Line)v295Line.textContent='V3.81 Stable';
 </script>
 
 <script id="v296-version">
-document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
 const v296Line=document.querySelector('#v141VersionLine');
-if(v296Line)v296Line.textContent='V3.80 Stable';
+if(v296Line)v296Line.textContent='V3.81 Stable';
 </script>
 
 <script id="v297-version">
-document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
 const v297Line=document.querySelector('#v141VersionLine');
-if(v297Line)v297Line.textContent='V3.80 Stable';
+if(v297Line)v297Line.textContent='V3.81 Stable';
 </script>
 <script id="v298-version">
-document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
-const v298Line=document.querySelector('#v141VersionLine');if(v298Line)v298Line.textContent='V3.80 Stable';
+document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
+const v298Line=document.querySelector('#v141VersionLine');if(v298Line)v298Line.textContent='V3.81 Stable';
 </script>
 
 <script id="v299-hall-mystic-profile-sync-fix">
@@ -42477,9 +42504,9 @@ v200FinalizeUser=async function(){
 
 setTimeout(v299RefreshPublicEquipment,1200);
 
-document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
 const v299Line=document.querySelector('#v141VersionLine');
-if(v299Line)v299Line.textContent='V3.80 Stable';
+if(v299Line)v299Line.textContent='V3.81 Stable';
 </script>
 <script id="v300-event-expiry-dampf-fix">
 let v300LastDampfActive=null;
@@ -42496,8 +42523,8 @@ function v300ReconcileTimedEvents(){
 }
 setInterval(v300ReconcileTimedEvents,30000);
 setTimeout(v300ReconcileTimedEvents,1000);
-document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
-const v300Line=document.querySelector('#v141VersionLine');if(v300Line)v300Line.textContent='V3.80 Stable';
+document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
+const v300Line=document.querySelector('#v141VersionLine');if(v300Line)v300Line.textContent='V3.81 Stable';
 </script>
 
 <script id="v301-auth-idle-hard-lock">
@@ -42592,9 +42619,9 @@ if(typeof v200FinalizeUser==='function'){
   };
 }
 
-document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
 const v301Line=document.querySelector('#v141VersionLine');
-if(v301Line)v301Line.textContent='V3.80 Stable';
+if(v301Line)v301Line.textContent='V3.81 Stable';
 </script>
 <script id="v302-dungeon-progress-source-fix">
 function v302EnsureDungeonProgress(){
@@ -42636,8 +42663,8 @@ v048GoBattle=function(i){
 };
 window.selectDungeon=v048GoBattle;
 v302RepairReportedDungeon3();
-document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
-const v302Line=document.querySelector('#v141VersionLine');if(v302Line)v302Line.textContent='V3.80 Stable';
+document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
+const v302Line=document.querySelector('#v141VersionLine');if(v302Line)v302Line.textContent='V3.81 Stable';
 </script>
 
 <style id="v306-first-daily-quest-harz-style">
@@ -42680,8 +42707,8 @@ if(typeof v235ShowQuestReward==='function'){
  };
 }
 setTimeout(v306PaintFirstDailyQuestHarz,300);
-document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
-const v306Line=document.querySelector('#v141VersionLine');if(v306Line)v306Line.textContent='V3.80 Stable';
+document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
+const v306Line=document.querySelector('#v141VersionLine');if(v306Line)v306Line.textContent='V3.81 Stable';
 </script>
 </body>
 </html>
@@ -42741,7 +42768,7 @@ renderInventory=function(){
  });
  v268PaintSellbar();return r;
 };
-setTimeout(()=>{document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');const x=document.querySelector('#v141VersionLine');if(x)x.textContent='V3.80 Stable';try{renderInventory()}catch(e){}},350);
+setTimeout(()=>{document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');const x=document.querySelector('#v141VersionLine');if(x)x.textContent='V3.81 Stable';try{renderInventory()}catch(e){}},350);
 </script>
 
 
@@ -42890,8 +42917,8 @@ renderQuests=function(){
 /* Keep rerolled/new offers visibly different immediately. */
 setTimeout(()=>{
  try{v309EnsureCurrentOffers();renderQuests()}catch(e){}
- document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
- const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.80 Stable';
+ document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
+ const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.81 Stable';
 },250);
 </script>
 
@@ -43061,8 +43088,8 @@ renderQuests=function(){
 };
 setTimeout(()=>{
  try{renderQuests()}catch(e){}
- document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
- const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.80 Stable';
+ document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
+ const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.81 Stable';
 },300);
 </script>
 
@@ -43233,8 +43260,8 @@ const v311BaseRender=render;
 render=function(){
  const r=v311BaseRender();
  try{if(s.v110WorldBoss)s.v110WorldBoss.lossStreak=0}catch(e){}
- document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
- const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.80 Stable';
+ document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
+ const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.81 Stable';
  return r;
 };
 </script>
@@ -43470,8 +43497,8 @@ const v314BaseRender=render;
 render=function(){
  const r=v314BaseRender();
  try{renderSkillTree()}catch(e){console.error('V3.14 talent render',e)}
- document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
- const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.80 Stable';
+ document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
+ const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.81 Stable';
  return r;
 };
 </script>
@@ -43541,8 +43568,8 @@ setTimeout(()=>{
 const v315BaseRender=render;
 render=function(){
  const r=v315BaseRender();
- document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
- const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.80 Stable';
+ document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
+ const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.81 Stable';
  return r;
 };
 </script>
@@ -43684,8 +43711,8 @@ setTimeout(()=>{
 const v316BaseRender=render;
 render=function(){
  const r=v316BaseRender();
- document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
- const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.80 Stable';
+ document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
+ const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.81 Stable';
  return r;
 };
 </script>
@@ -43712,8 +43739,8 @@ window.v317QuestDurations=v317QuestDurations;
 const v317BaseRender=render;
 render=function(){
  const r=v317BaseRender();
- document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
- const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.80 Stable';
+ document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
+ const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.81 Stable';
  return r;
 };
 </script>
@@ -44225,8 +44252,8 @@ const v318BaseRender=render;
 render=function(){
  const r=v318BaseRender();
  try{v106CheckAchievements(true)}catch(e){}
- document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
- const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.80 Stable';
+ document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
+ const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.81 Stable';
  return r;
 };
 </script>
@@ -44728,8 +44755,8 @@ setTimeout(()=>{
 const v319BaseRender=render;
 render=function(){
  const r=v319BaseRender();
- document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
- const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.80 Stable';
+ document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
+ const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.81 Stable';
  return r;
 };
 </script>
@@ -44859,8 +44886,8 @@ const v320BaseRender=render;
 render=function(){
  const r=v320BaseRender();
  try{renderSkillTree()}catch(e){console.error('V3.20 talent point detail render',e)}
- document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
- const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.80 Stable';
+ document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
+ const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.81 Stable';
  return r;
 };
 </script>
@@ -45126,9 +45153,9 @@ const v321BaseRender=render;
 render=function(){
  const r=v321BaseRender();
  try{v271NormalizeQuestOffers()}catch(e){}
- document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+ document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
  const line=document.querySelector('#v141VersionLine');
- if(line)line.textContent='V3.80 Stable';
+ if(line)line.textContent='V3.81 Stable';
  return r;
 };
 
@@ -45191,12 +45218,12 @@ v032InstallMenu=function(){const r=v322BaseInstallMenu.apply(this,arguments);v32
 const v322BaseGo=v032Go;
 v032Go=function(id){const r=v322BaseGo(id);if(id==='harzDealer')requestAnimationFrame(v322RenderDealer);return r};
 const v322BaseRender=render;
-render=function(){const r=v322BaseRender();v322InstallMenuEntry();v322InstallHarzPlus();if(document.querySelector('#harzDealer')?.classList.contains('active'))v322RenderDealer();document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.80 Stable';return r};
+render=function(){const r=v322BaseRender();v322InstallMenuEntry();v322InstallHarzPlus();if(document.querySelector('#harzDealer')?.classList.contains('active'))v322RenderDealer();document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.81 Stable';return r};
 setTimeout(()=>{try{v322InstallMenuEntry();v322InstallHarzPlus()}catch(e){console.error('V3.22 Harz Dealer init',e)}},350);
 </script>
 
 
-<!-- ===== V3.80 Stable: canonical public dungeon profile position ===== -->
+<!-- ===== V3.81 Stable: canonical public dungeon profile position ===== -->
 <script id="v323-profile-dungeon-canonical-fix">
 (function(){
   function v323CanonicalDungeonPosition(dp, legacyDungeons=0){
@@ -45273,14 +45300,14 @@ setTimeout(()=>{try{v322InstallMenuEntry();v322InstallHarzPlus()}catch(e){consol
     }
   },1600);
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V3.80 Stable';
+  if(line)line.textContent='V3.81 Stable';
 })();
 </script>
 
 
-<!-- ===== V3.80 Stable: Dungeon 1h countdown / 1 Harz direct fight ===== -->
+<!-- ===== V3.81 Stable: Dungeon 1h countdown / 1 Harz direct fight ===== -->
 <style id="v324-dungeon-countdown-css">
 #v324DungeonCountdown{margin:8px 0 6px;padding:9px 11px;border:1px solid #465640;border-radius:10px;background:#10170f;text-align:center;font-size:12px;font-weight:900;color:#d8e4d4}
 #v324DungeonCountdown.ready{border-color:#4f8b48;color:#9fe895}
@@ -45336,13 +45363,13 @@ setTimeout(()=>{try{v322InstallMenuEntry();v322InstallHarzPlus()}catch(e){consol
   };
   setInterval(v324Paint,1000);
   setTimeout(v324Paint,250);
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V3.80 Stable';
+  if(line)line.textContent='V3.81 Stable';
 })();
 </script>
 
-<!-- ===== V3.80 Stable: Mythic item stat balance ===== -->
+<!-- ===== V3.81 Stable: Mythic item stat balance ===== -->
 <script id="v325-mythic-item-balance">
 (function(){
   const V325_SET_BASE = {
@@ -45465,14 +45492,14 @@ setTimeout(()=>{try{v322InstallMenuEntry();v322InstallHarzPlus()}catch(e){consol
     }
   }catch(e){console.error('V3.25 mythic migration',e)}
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V3.80 Stable';
+  if(line)line.textContent='V3.81 Stable';
   try{render()}catch(e){}
 })();
 </script>
 
-<!-- ===== V3.80 Stable: canonical Hall of Haze profile ===== -->
+<!-- ===== V3.81 Stable: canonical Hall of Haze profile ===== -->
 <style id="v326-hall-profile-css">
 .v326-profile-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin:10px 0}
 .v326-profile-stat{padding:9px;border:1px solid #344735;border-radius:10px;background:#0d140f;text-align:center;color:#8fa08d;font-size:7px}
@@ -45764,13 +45791,13 @@ setTimeout(()=>{try{v322InstallMenuEntry();v322InstallHarzPlus()}catch(e){consol
     }catch(e){}
   },1500);
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V3.80 Stable';
+  if(line)line.textContent='V3.81 Stable';
 })();
 </script>
 
-<!-- ===== V3.80 Stable: worldboss retry confirm + no Grow-Skill + integer attributes ===== -->
+<!-- ===== V3.81 Stable: worldboss retry confirm + no Grow-Skill + integer attributes ===== -->
 <style id="v327-worldboss-confirm-css">
 #v327BossConfirm{
   position:fixed;inset:0;z-index:1000003;display:none;align-items:center;justify-content:center;
@@ -45976,8 +46003,8 @@ setTimeout(()=>{try{v322InstallMenuEntry();v322InstallHarzPlus()}catch(e){consol
       if(s.attrs && 'growSkill' in s.attrs)delete s.attrs.growSkill;
       v327CleanAttributeUi();
     }catch(e){}
-    document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
-    const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.80 Stable';
+    document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
+    const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.81 Stable';
     return r;
   };
 
@@ -45989,7 +46016,7 @@ setTimeout(()=>{try{v322InstallMenuEntry();v322InstallHarzPlus()}catch(e){consol
 })();
 </script>
 
-<!-- ===== V3.80 Stable: Grow-Skill fully removed ===== -->
+<!-- ===== V3.81 Stable: Grow-Skill fully removed ===== -->
 <script id="v328-growskill-fully-removed">
 (function(){
   const purge=(obj)=>{
@@ -46028,8 +46055,8 @@ setTimeout(()=>{try{v322InstallMenuEntry();v322InstallHarzPlus()}catch(e){consol
     const r=v328Render.apply(this,arguments);
     purge(s.attrs);
     purgeDom();
-    document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
-    const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.80 Stable';
+    document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
+    const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.81 Stable';
     return r;
   };
 
@@ -46038,7 +46065,7 @@ setTimeout(()=>{try{v322InstallMenuEntry();v322InstallHarzPlus()}catch(e){consol
 })();
 </script>
 
-<!-- ===== V3.80 Stable: Guild-only online status ===== -->
+<!-- ===== V3.81 Stable: Guild-only online status ===== -->
 <style id="v329-guild-online-css">
 .v329-presence{
   display:inline-flex;align-items:center;gap:5px;margin-left:7px;
@@ -46211,13 +46238,13 @@ setTimeout(()=>{try{v322InstallMenuEntry();v322InstallHarzPlus()}catch(e){consol
     }
   });
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V3.80 Stable';
+  if(line)line.textContent='V3.81 Stable';
 })();
 </script>
 
-<!-- ===== V3.80 Stable: Mythic true upgrade over equipped item ===== -->
+<!-- ===== V3.81 Stable: Mythic true upgrade over equipped item ===== -->
 <script id="v330-mythic-true-upgrade">
 (function(){
   function v330IsMystic(it){return !!it && (it.quality==='cyan'||it.rarity==='mythic'||it.mysticSetId)}
@@ -46321,12 +46348,12 @@ setTimeout(()=>{try{v322InstallMenuEntry();v322InstallHarzPlus()}catch(e){consol
   };
 
   try{render()}catch(e){}
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
-  const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.80 Stable';
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
+  const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.81 Stable';
 })();
 </script>
 
-<!-- ===== V3.80 Stable: stronger item level scaling / rarity crossover ===== -->
+<!-- ===== V3.81 Stable: stronger item level scaling / rarity crossover ===== -->
 <script id="v331-item-level-scaling">
 (function(){
   const V331_RARITY={
@@ -46430,12 +46457,12 @@ setTimeout(()=>{try{v322InstallMenuEntry();v322InstallHarzPlus()}catch(e){consol
     if(changed && typeof v063Toast==='function')setTimeout(()=>v063Toast('⚖️ Item-Skalierung aktualisiert','success','Höhere Item-Level haben jetzt deutlich mehr Gewicht.'),300);
   }catch(e){console.error('V3.31 item scaling migration',e)}
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
-  const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.80 Stable';
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
+  const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.81 Stable';
 })();
 </script>
 
-<!-- ===== V3.80 Stable: paid dungeon fights do NOT reset free countdown ===== -->
+<!-- ===== V3.81 Stable: paid dungeon fights do NOT reset free countdown ===== -->
 <script id="v332-dungeon-paid-no-timer-reset">
 (function(){
   /* Preserve the free-fight timestamp across a paid Harz-Taler dungeon fight.
@@ -46481,12 +46508,12 @@ setTimeout(()=>{try{v322InstallMenuEntry();v322InstallHarzPlus()}catch(e){consol
     return v332BasePersist.apply(this,arguments);
   };
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
-  const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.80 Stable';
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
+  const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V3.81 Stable';
 })();
 </script>
 
-<!-- ===== V3.80 Stable: Nebel-Crew friend online status ===== -->
+<!-- ===== V3.81 Stable: Nebel-Crew friend online status ===== -->
 <script id="v333-friends-online-status">
 (function(){
   const V333_ONLINE_MS=2*60*1000;
@@ -46632,16 +46659,16 @@ setTimeout(()=>{try{v322InstallMenuEntry();v322InstallHarzPlus()}catch(e){consol
     }
   });
 
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.80 Stable');
+  document.querySelectorAll('.version').forEach(el=>el.textContent='V3.81 Stable');
   const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V3.80 Stable';
+  if(line)line.textContent='V3.81 Stable';
 })();
 </script>
 
-<!-- ===== V3.80 Stable: returning-login name fix + global version sync ===== -->
+<!-- ===== V3.81 Stable: returning-login name fix + global version sync ===== -->
 <script id="v334-login-name-version-fix">
 (function(){
-  const V334_VERSION='V3.80 Stable';
+  const V334_VERSION='V3.81 Stable';
 
   function v334ApplyVersion(){
     document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version]').forEach(el=>{
@@ -46761,10 +46788,10 @@ setTimeout(()=>{try{v322InstallMenuEntry();v322InstallHarzPlus()}catch(e){consol
 })();
 </script>
 
-<!-- ===== V3.80 Stable: no Level-Up popup on returning login ===== -->
+<!-- ===== V3.81 Stable: no Level-Up popup on returning login ===== -->
 <script id="v335-no-levelup-popup-login">
 (function(){
-  const V335_VERSION='V3.80 Stable';
+  const V335_VERSION='V3.81 Stable';
   const V335_LOGIN_GRACE_MS=8000;
   const v335BootAt=Date.now();
   const v335InitialLevel=Math.max(1,Number(s?.level)||1);
@@ -46837,10 +46864,10 @@ setTimeout(()=>{try{v322InstallMenuEntry();v322InstallHarzPlus()}catch(e){consol
 })();
 </script>
 
-<!-- ===== V3.80 Stable: Illegal Book quest + dungeon enemy progress fix ===== -->
+<!-- ===== V3.81 Stable: Illegal Book quest + dungeon enemy progress fix ===== -->
 <script id="v336-illegal-book-progress-fix">
 (function(){
-  const V336_VERSION='V3.80 Stable';
+  const V336_VERSION='V3.81 Stable';
 
   function v336Ach(){
     s.v106Achievements??={done:{},stats:{}};
@@ -46957,7 +46984,7 @@ setTimeout(()=>{try{v322InstallMenuEntry();v322InstallHarzPlus()}catch(e){consol
 })();
 </script>
 
-<!-- ===== V3.80 Stable: Harz Dealer in dropdown + copyright/footer ===== -->
+<!-- ===== V3.81 Stable: Harz Dealer in dropdown + copyright/footer ===== -->
 <style id="v337-footer-style">
   #v337LegalFooter{
     margin:28px auto 12px;
@@ -46976,7 +47003,7 @@ setTimeout(()=>{try{v322InstallMenuEntry();v322InstallHarzPlus()}catch(e){consol
 
 <script id="v337-harz-dealer-menu-copyright">
 (function(){
-  const V337_VERSION='V3.80 Stable';
+  const V337_VERSION='V3.81 Stable';
 
   function v337OpenHarzDealer(){
     try{
@@ -47062,7 +47089,7 @@ setTimeout(()=>{try{v322InstallMenuEntry();v322InstallHarzPlus()}catch(e){consol
 })();
 </script>
 
-<!-- ===== V3.80 Stable: modern animated Harz Dealer redesign ===== -->
+<!-- ===== V3.81 Stable: modern animated Harz Dealer redesign ===== -->
 <style id="v338-harz-dealer-modern-css">
 #harzDealer{
   position:relative;
@@ -47291,7 +47318,7 @@ setTimeout(()=>{try{v322InstallMenuEntry();v322InstallHarzPlus()}catch(e){consol
 
 <script id="v338-harz-dealer-modern">
 (function(){
-  const V338_VERSION='V3.80 Stable';
+  const V338_VERSION='V3.81 Stable';
 
   function v338Saving(p){
     try{return Math.max(0,Math.round((1-(p.price/((p.harz/25)*1.99)))*100))}catch(e){return 0}
@@ -47417,7 +47444,7 @@ setTimeout(()=>{try{v322InstallMenuEntry();v322InstallHarzPlus()}catch(e){consol
 })();
 </script>
 
-<!-- ===== V3.80 Stable: Harz Dealer redesign closer to approved reference ===== -->
+<!-- ===== V3.81 Stable: Harz Dealer redesign closer to approved reference ===== -->
 <style id="v339-dealer-reference-css">
 #harzDealer{
   position:relative!important;
@@ -47642,7 +47669,7 @@ setTimeout(()=>{try{v322InstallMenuEntry();v322InstallHarzPlus()}catch(e){consol
 
 <script id="v339-dealer-reference-redesign">
 (function(){
- const V339_VERSION='V3.80 Stable';
+ const V339_VERSION='V3.81 Stable';
 
  function money(n){
    try{return Number(n).toLocaleString('de-DE',{minimumFractionDigits:2,maximumFractionDigits:2})+' €'}
@@ -47762,7 +47789,7 @@ setTimeout(()=>{try{v322InstallMenuEntry();v322InstallHarzPlus()}catch(e){consol
 })();
 </script>
 
-<!-- ===== V3.80 Stable: hard version-display fix ===== -->
+<!-- ===== V3.81 Stable: hard version-display fix ===== -->
 <script id="v340-version-hard-fix">
 (function(){
   /* V3.52: historical version observer retired.
@@ -47770,7 +47797,7 @@ setTimeout(()=>{try{v322InstallMenuEntry();v322InstallHarzPlus()}catch(e){consol
 })();
 </script>
 
-<!-- ===== V3.80 Stable: Harz Dealer reliably added to actual dropdown menu ===== -->
+<!-- ===== V3.81 Stable: Harz Dealer reliably added to actual dropdown menu ===== -->
 <style id="v341-harz-menu-css">
 [data-v341-harz-menu]{
   display:flex!important;
@@ -47781,7 +47808,7 @@ setTimeout(()=>{try{v322InstallMenuEntry();v322InstallHarzPlus()}catch(e){consol
 
 <script id="v341-harz-dealer-dropdown-fix">
 (function(){
-  const V341_VERSION='V3.80 Stable';
+  const V341_VERSION='V3.81 Stable';
 
   function v341OpenDealer(){
     try{
@@ -47894,7 +47921,7 @@ setTimeout(()=>{try{v322InstallMenuEntry();v322InstallHarzPlus()}catch(e){consol
 })();
 </script>
 
-<!-- ===== V3.80 Stable: event Dampf capacity/state sync fix ===== -->
+<!-- ===== V3.81 Stable: event Dampf capacity/state sync fix ===== -->
 <script id="v342-event-dampf-300-fix">
 (function(){
   /* V3.45: minimal event-Dampf safety.
@@ -47954,7 +47981,7 @@ setTimeout(()=>{try{v322InstallMenuEntry();v322InstallHarzPlus()}catch(e){consol
 })();
 </script>
 
-<!-- ===== V3.80 Stable: server selection foundation (Beta active, Server 1 locked) ===== -->
+<!-- ===== V3.81 Stable: server selection foundation (Beta active, Server 1 locked) ===== -->
 <style id="v343-server-select-css">
 #v075AuthOverlay .v343-server-select{margin:12px 0 14px}
 #v075AuthOverlay .v343-server-title{
@@ -47982,7 +48009,7 @@ setTimeout(()=>{try{v322InstallMenuEntry();v322InstallHarzPlus()}catch(e){consol
 
 <script id="v343-server-selection-beta">
 (function(){
-  const V346_VERSION='V3.80 Stable';
+  const V346_VERSION='V3.81 Stable';
   const V343_DEFAULT_SERVER='beta';
   const V343_SERVER_KEY='growLegendsSelectedServer';
 
@@ -48172,10 +48199,10 @@ setTimeout(()=>{try{v322InstallMenuEntry();v322InstallHarzPlus()}catch(e){consol
 })();
 </script>
 
-<!-- ===== V3.80 Stable: page-load recovery ===== -->
+<!-- ===== V3.81 Stable: page-load recovery ===== -->
 <script id="v345-page-load-recovery">
 (function(){
-  const V345_VERSION='V3.80 Stable';
+  const V345_VERSION='V3.81 Stable';
   function version(){
     document.querySelectorAll('.version').forEach(el=>el.textContent=V345_VERSION);
   }
@@ -48185,10 +48212,10 @@ setTimeout(()=>{try{v322InstallMenuEntry();v322InstallHarzPlus()}catch(e){consol
 })();
 </script>
 
-<!-- ===== V3.80 Stable: login/page-load recursion fix ===== -->
+<!-- ===== V3.81 Stable: login/page-load recursion fix ===== -->
 <script id="v346-load-recovery-release">
 (function(){
-  const V346_VERSION='V3.80 Stable';
+  const V346_VERSION='V3.81 Stable';
   function v346Version(){document.querySelectorAll('.version').forEach(el=>el.textContent=V346_VERSION)}
   v346Version();
   document.addEventListener('DOMContentLoaded',v346Version,{once:true});
@@ -48197,7 +48224,7 @@ setTimeout(()=>{try{v322InstallMenuEntry();v322InstallHarzPlus()}catch(e){consol
 </script>
 
 <style id="v347-login-reference-css">
-/* ===== V3.80 Stable: Login design matched to approved reference ===== */
+/* ===== V3.81 Stable: Login design matched to approved reference ===== */
 body:has(#v075AuthOverlay.show){background:#020704!important}
 #v075AuthOverlay{
   position:fixed!important;inset:0!important;z-index:100400!important;
@@ -48416,7 +48443,7 @@ body:has(#v075AuthOverlay.show){background:#020704!important}
 
 <script id="v347-login-reference-design">
 (function(){
-  const V347_VERSION='V3.80 Stable';
+  const V347_VERSION='V3.81 Stable';
 
   function v347EnsureLayout(){
     const overlay=document.querySelector('#v075AuthOverlay');
@@ -48514,7 +48541,7 @@ body:has(#v075AuthOverlay.show){background:#020704!important}
 </script>
 
 <style id="v349-world-mobile-reference-css">
-/* V3.80 Stable — start screen rebuilt from V3.47, mobile-first */
+/* V3.81 Stable — start screen rebuilt from V3.47, mobile-first */
 body:has(#world.active){
   background:#020704!important;
   max-width:1100px!important;
@@ -48690,7 +48717,7 @@ body:has(#world.active) .v280-harz-sub{display:none!important}
 
 <script id="v349-world-mobile-reference">
 (function(){
-  const V349_VERSION='V3.80 Stable';
+  const V349_VERSION='V3.81 Stable';
   const esc=v=>typeof v073Escape==='function'?v073Escape(String(v??'')):String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
   function name(){return String(s?.characterName||s?.playerName||s?.name||'Legende').trim()||'Legende'}
@@ -48880,7 +48907,7 @@ body:has(#world.active) .v280-harz-sub{display:none!important}
 })();
 </script>
 
-<!-- ===== V3.80 Stable: isolate new world screen from legacy world injectors ===== -->
+<!-- ===== V3.81 Stable: isolate new world screen from legacy world injectors ===== -->
 <style id="v350-world-isolation-css">
 /* Legacy world/event installers are still allowed to run for compatibility,
    but on the new home screen only the V3.49/V3.50 root is visible. */
@@ -48914,7 +48941,7 @@ body:has(#world.active) .v280-harz-sub{display:none!important}
 
 <script id="v350-world-isolation-fix">
 (function(){
-  const V350_VERSION='V3.80 Stable';
+  const V350_VERSION='V3.81 Stable';
 
   function v350InstallCleanWorld(force){
     const world=document.querySelector('#world');
@@ -49109,7 +49136,7 @@ body:has(#world.active) #v032MenuPanel{top:64px!important}
 
 <script id="v351-world-mobile-header-cleanup">
 (function(){
-  const V351_VERSION='V3.80 Stable';
+  const V351_VERSION='V3.81 Stable';
 
   function v351TopbarHtml(){
     const gold=Math.max(0,Math.round(Number(s?.gold)||0)).toLocaleString('de-DE');
@@ -49189,7 +49216,7 @@ body:has(#world.active) #v032MenuPanel{top:64px!important}
 })();
 </script>
 
-<!-- ===== V3.80 Stable: exact header + ghost-overlay cleanup ===== -->
+<!-- ===== V3.81 Stable: exact header + ghost-overlay cleanup ===== -->
 <style id="v352-world-header-ghost-cleanup-css">
 /* The real old header is inside .app. V3.51 targeted body > header, so it never matched. */
 body:has(#world.active) .app > header{
@@ -49241,7 +49268,7 @@ body:has(#world.active) #v032MenuBtn{
 
 <script id="v352-world-header-ghost-cleanup">
 (function(){
-  const V352_VERSION='V3.80 Stable';
+  const V352_VERSION='V3.81 Stable';
 
   function v352CleanWorld(){
     const world=document.querySelector('#world');
@@ -49298,7 +49325,7 @@ body:has(#world.active) #v032MenuBtn{
 </script>
 
 <style id="v353-world-mobile-polish-css">
-/* ===== V3.80 Stable: focused mobile polish, hero intentionally untouched ===== */
+/* ===== V3.81 Stable: focused mobile polish, hero intentionally untouched ===== */
 
 /* Replace only the contaminated card artwork. */
 #world.active .v349-card.quest .v349-art{
@@ -49457,7 +49484,7 @@ body:has(#world.active) #v032MenuBtn{
 
 <script id="v353-world-mobile-polish">
 (function(){
-  const V353_VERSION='V3.80 Stable';
+  const V353_VERSION='V3.81 Stable';
 
   function v353FixDealerPlacement(){
     const dock=document.querySelector('#world .v349-dock');
@@ -49521,10 +49548,10 @@ body:has(#world.active) #v032MenuBtn{
 })();
 </script>
 
-<!-- ===== V3.80 Stable: home dungeon progress fix ===== -->
+<!-- ===== V3.81 Stable: home dungeon progress fix ===== -->
 <script id="v354-home-dungeon-progress-fix">
 (function(){
-  const V354_VERSION='V3.80 Stable';
+  const V354_VERSION='V3.81 Stable';
 
   function v354RefreshWorld(){
     try{
@@ -49545,7 +49572,7 @@ body:has(#world.active) #v032MenuBtn{
 })();
 </script>
 
-<!-- ===== V3.80 Stable: home character portrait + EXP/Gold event cards ===== -->
+<!-- ===== V3.81 Stable: home character portrait + EXP/Gold event cards ===== -->
 <style id="v355-home-avatar-events-css">
 #world.active .v349-avatar{
   overflow:hidden!important;
@@ -49582,7 +49609,7 @@ body:has(#world.active) #v032MenuBtn{
 
 <script id="v355-home-avatar-events-fix">
 (function(){
-  const V355_VERSION='V3.80 Stable';
+  const V355_VERSION='V3.81 Stable';
 
   function refreshWorld(){
     try{
@@ -49604,7 +49631,7 @@ body:has(#world.active) #v032MenuBtn{
 })();
 </script>
 
-<!-- ===== V3.80 Stable: exact Character-screen avatar on home ===== -->
+<!-- ===== V3.81 Stable: exact Character-screen avatar on home ===== -->
 <style id="v356-home-real-character-css">
 #world.active .v349-avatar{
   overflow:hidden!important;
@@ -49626,7 +49653,7 @@ body:has(#world.active) #v032MenuBtn{
 
 <script id="v356-home-real-character-fix">
 (function(){
-  const V356_VERSION='V3.80 Stable';
+  const V356_VERSION='V3.81 Stable';
 
   function preload(){
     try{
@@ -49666,7 +49693,7 @@ body:has(#world.active) #v032MenuBtn{
 })();
 </script>
 
-<!-- ===== V3.80 Stable: unified in-game style + global resource header ===== -->
+<!-- ===== V3.81 Stable: unified in-game style + global resource header ===== -->
 <style id="v357-global-game-style-css">
 /* ---------------------------------------------------------
    GLOBAL GAME CHROME
@@ -49927,7 +49954,7 @@ body:has(#world.active) #v032MenuBtn{
 
 <script id="v357-global-game-style">
 (function(){
-  const V357_VERSION='V3.80 Stable';
+  const V357_VERSION='V3.81 Stable';
 
   function v357RemoveWorldDuplicateBar(){
     document.querySelectorAll('#world .v351-topbar').forEach(el=>el.remove());
@@ -49965,7 +49992,7 @@ body:has(#world.active) #v032MenuBtn{
 })();
 </script>
 
-<!-- ===== V3.80 Stable: real compact global header replacement ===== -->
+<!-- ===== V3.81 Stable: real compact global header replacement ===== -->
 <style id="v358-global-header-css">
 /* Hide the old resource-card presentation, but keep its live elements in DOM.
    We move the live value elements into our new compact header via JS. */
@@ -50148,7 +50175,7 @@ body:has(#world.active) #v032MenuBtn{
 
 <script id="v358-global-header">
 (function(){
-  const V358_VERSION='V3.80 Stable';
+  const V358_VERSION='V3.81 Stable';
 
   function num(v){
     return Math.max(0,Math.round(Number(v)||0)).toLocaleString('de-DE');
@@ -50180,7 +50207,7 @@ body:has(#world.active) #v032MenuBtn{
       const sub=document.createElement('div');
       sub.className='v358-subbar';
       sub.innerHTML=`
-        <span class="v358-version">V3.80 Stable</span>
+        <span class="v358-version">V3.81 Stable</span>
         <span class="v358-power">Kampfkraft <b id="v358Power">0</b></span>
         <button type="button" class="v358-settings">⚙️ Einstellungen</button>
       `;
@@ -50244,10 +50271,10 @@ body:has(#world.active) #v032MenuBtn{
 })();
 </script>
 
-<!-- ===== V3.80 Stable: hard-remove duplicate legacy header UI ===== -->
+<!-- ===== V3.81 Stable: hard-remove duplicate legacy header UI ===== -->
 <style id="v359-header-duplicate-hard-fix-css">
 /* The legacy header children have stronger historical !important rules.
-   V3.80 also hides them inline in JS; these selectors are a second guard. */
+   V3.81 also hides them inline in JS; these selectors are a second guard. */
 html body .app > header > .brand,
 html body .app > header > .stats.resource-stats{
   display:none!important;
@@ -50260,7 +50287,7 @@ html body .app > header > .stats.resource-stats{
   overflow:hidden!important;
 }
 
-/* V3.80 custom hamburger is replaced by the original real menu button. */
+/* V3.81 custom hamburger is replaced by the original real menu button. */
 .v358-global-header > .v358-menu{
   display:none!important;
 }
@@ -50311,14 +50338,14 @@ html body .app > header > .stats.resource-stats{
 
 <script id="v359-header-duplicate-hard-fix">
 (function(){
-  const V359_VERSION='V3.80 Stable';
+  const V359_VERSION='V3.81 Stable';
 
   function hideLegacyHeaderPieces(){
     const header=document.querySelector('.app > header');
     if(!header)return;
 
     /* Inline !important beats the old highly-specific !important rules that
-       caused the giant Gold/Dampf/Harz cards to remain visible in V3.80. */
+       caused the giant Gold/Dampf/Harz cards to remain visible in V3.81. */
     header.querySelectorAll(':scope > .brand,:scope > .stats.resource-stats').forEach(el=>{
       el.style.setProperty('display','none','important');
       el.style.setProperty('visibility','hidden','important');
@@ -50373,11 +50400,11 @@ html body .app > header > .stats.resource-stats{
   }
 
   function fix(){
-    /* Let V3.80 create its compact header first if needed. */
+    /* Let V3.81 create its compact header first if needed. */
     try{
       const header=document.querySelector('.app > header');
       if(header && !header.querySelector('.v358-global-header')){
-        /* Re-run V3.80 boot behavior by navigation-independent DOM setup. */
+        /* Re-run V3.81 boot behavior by navigation-independent DOM setup. */
         const root=document.createElement('div');
         root.className='v358-global-header';
         root.innerHTML=`
@@ -50390,10 +50417,10 @@ html body .app > header > .stats.resource-stats{
 
         const sub=document.createElement('div');
         sub.className='v358-subbar';
-        sub.innerHTML=`<span class="v358-version">V3.80 Stable</span><span class="v358-power">Kampfkraft <b id="v358Power">0</b></span><button type="button" class="v358-settings">⚙️ Einstellungen</button>`;
+        sub.innerHTML=`<span class="v358-version">V3.81 Stable</span><span class="v358-power">Kampfkraft <b id="v358Power">0</b></span><button type="button" class="v358-settings">⚙️ Einstellungen</button>`;
         header.appendChild(sub);
       }
-    }catch(e){console.warn('V3.80 header build',e)}
+    }catch(e){console.warn('V3.81 header build',e)}
 
     hideLegacyHeaderPieces();
     moveRealMenuButton();
@@ -50424,10 +50451,10 @@ html body .app > header > .stats.resource-stats{
 })();
 </script>
 
-<!-- ===== V3.80 Stable: eliminate version race permanently ===== -->
+<!-- ===== V3.81 Stable: eliminate version race permanently ===== -->
 <script id="v360-version-race-fix">
 (function(){
-  const V360_VERSION='V3.80 Stable';
+  const V360_VERSION='V3.81 Stable';
 
   function writeVersion(){
     document.querySelectorAll(
@@ -50445,7 +50472,7 @@ html body .app > header > .stats.resource-stats{
 })();
 </script>
 
-<!-- ===== V3.80 Stable: mobile header fit ===== -->
+<!-- ===== V3.81 Stable: mobile header fit ===== -->
 <style id="v361-header-mobile-fit-css">
 /* Mobile header: values must be fully readable, not squeezed/truncated. */
 @media(max-width:599px){
@@ -50548,7 +50575,7 @@ html body .app > header > .stats.resource-stats{
 
 <script id="v361-header-mobile-fit">
 (function(){
-  const V361_VERSION='V3.80 Stable';
+  const V361_VERSION='V3.81 Stable';
 
   function updateValues(){
     const num=v=>Math.max(0,Math.round(Number(v)||0)).toLocaleString('de-DE');
@@ -50579,7 +50606,7 @@ html body .app > header > .stats.resource-stats{
 })();
 </script>
 
-<!-- ===== V3.80 Stable: exact compact one-row mobile header ===== -->
+<!-- ===== V3.81 Stable: exact compact one-row mobile header ===== -->
 <style id="v362-header-exact-compact-css">
 /* Mobile: one single row like the approved mockup.
    No giant stacked resource blocks and no second row. */
@@ -50640,7 +50667,7 @@ html body .app > header > .stats.resource-stats{
     white-space:nowrap!important;
   }
   .app > header .v358-logo::after{
-    content:"V3.80";
+    content:"V3.81";
     display:block;
     margin:4px 0 0 10px;
     color:#75d8d9;
@@ -50697,7 +50724,7 @@ html body .app > header > .stats.resource-stats{
     top:64px!important;
   }
 
-  /* Remove V3.80 stacked-grid rules by overriding every row placement. */
+  /* Remove V3.81 stacked-grid rules by overriding every row placement. */
   .app > header .v358-global-header{
     grid-auto-rows:auto!important;
   }
@@ -50721,7 +50748,7 @@ html body .app > header > .stats.resource-stats{
 
 <script id="v362-header-exact-compact">
 (function(){
-  const V362_VERSION='V3.80 Stable';
+  const V362_VERSION='V3.81 Stable';
 
   function update(){
     const num=v=>Math.max(0,Math.round(Number(v)||0)).toLocaleString('de-DE');
@@ -50758,7 +50785,7 @@ html body .app > header > .stats.resource-stats{
 })();
 </script>
 
-<!-- ===== V3.80 Stable: header alignment polish only ===== -->
+<!-- ===== V3.81 Stable: header alignment polish only ===== -->
 <style id="v363-header-alignment-polish-css">
 @media(max-width:599px){
   .app > header .v358-global-header{
@@ -50799,7 +50826,7 @@ html body .app > header > .stats.resource-stats{
   }
 
   .app > header .v358-logo::after{
-    content:"V3.80"!important;
+    content:"V3.81"!important;
     display:block!important;
     margin:3px 0 0 10px!important;
     font-size:5.3px!important;
@@ -50858,7 +50885,7 @@ html body .app > header > .stats.resource-stats{
 
 <script id="v363-header-alignment-polish">
 (function(){
-  const V363_VERSION='V3.80 Stable';
+  const V363_VERSION='V3.81 Stable';
 
   function update(){
     document.querySelectorAll(
@@ -50877,7 +50904,7 @@ html body .app > header > .stats.resource-stats{
 })();
 </script>
 
-<!-- ===== V3.80 Stable: dropdown position + clickability fix ===== -->
+<!-- ===== V3.81 Stable: dropdown position + clickability fix ===== -->
 <style id="v364-dropdown-fix-css">
 /* Put the real dropdown further left and above all game layers. */
 #v032TopMenu{
@@ -50937,7 +50964,7 @@ body:has(#v032MenuPanel.open) [class*="ticket" i]{
 
 <script id="v364-dropdown-position-click-fix">
 (function(){
-  const V364_VERSION='V3.80 Stable';
+  const V364_VERSION='V3.81 Stable';
 
   function getPanel(){return document.querySelector('#v032MenuPanel')}
   function getButton(){return document.querySelector('#v032MenuBtn')}
@@ -51028,7 +51055,7 @@ body:has(#v032MenuPanel.open) [class*="ticket" i]{
 })();
 </script>
 
-<!-- ===== V3.80 Stable: move global menu/header fully left ===== -->
+<!-- ===== V3.81 Stable: move global menu/header fully left ===== -->
 <style id="v365-header-menu-left-align-css">
 /* The compact header was still inheriting an old centered/max-width header geometry.
    Force the global header to span the full viewport, so the hamburger sits at the left edge. */
@@ -51086,7 +51113,7 @@ html,body{
 
 <script id="v365-header-menu-left-align">
 (function(){
-  const V365_VERSION='V3.80 Stable';
+  const V365_VERSION='V3.81 Stable';
 
   function align(){
     const header=document.querySelector('.app > header');
@@ -51132,9 +51159,9 @@ html,body{
 </script>
 
 <style id="v366-world-reference-rebuild-css">
-/* ===== V3.80 Stable — clean rebuild of header + world to match approved reference ===== */
+/* ===== V3.81 Stable — clean rebuild of header + world to match approved reference ===== */
 
-/* Only V3.80 header is visible. */
+/* Only V3.81 header is visible. */
 .app > header{
   display:block!important;
   position:sticky!important;
@@ -51281,7 +51308,7 @@ html,body{
 
 <script id="v366-world-reference-rebuild">
 (function(){
-  const V366_VERSION='V3.80 Stable';
+  const V366_VERSION='V3.81 Stable';
   const esc=v=>typeof v073Escape==='function'?v073Escape(String(v??'')):String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const num=v=>Math.max(0,Math.round(Number(v)||0)).toLocaleString('de-DE');
 
@@ -51342,7 +51369,7 @@ html,body{
       bar.className='v366-topbar';
       bar.innerHTML=`
         <button class="v366-menu" type="button">☰</button>
-        <div class="v366-logo"><strong>🌿 GROW</strong><span>LEGENDS</span><i class="v366-ver">V3.80</i></div>
+        <div class="v366-logo"><strong>🌿 GROW</strong><span>LEGENDS</span><i class="v366-ver">V3.81</i></div>
         <div class="v366-res"><span class="ico">🪙</span><div><small>Gold</small><span class="val" id="v366Gold"></span></div><button class="v366-plus" data-plus="gold">+</button></div>
         <div class="v366-res"><span class="ico">💎</span><div><small>Harz</small><span class="val" id="v366Harz"></span></div><button class="v366-plus" data-plus="harz">+</button></div>
         <div class="v366-res"><span class="ico">💨</span><div><small>Dampf</small><span class="val" id="v366Dampf"></span></div><button class="v366-plus" data-plus="dampf">+</button></div>
@@ -51461,14 +51488,14 @@ html,body{
 })();
 </script>
 
-<!-- ===== V3.80 Stable: make V3.80 rebuild actually visible ===== -->
+<!-- ===== V3.81 Stable: make V3.81 rebuild actually visible ===== -->
 <style id="v367-v366-visibility-fix-css">
 /* Root cause:
-   V3.80 still had ".app > header > :not(.v358-global-header){display:none!important}"
+   V3.81 still had ".app > header > :not(.v358-global-header){display:none!important}"
    which ALSO matched the new .v366-topbar.
    V3.50 still had "#world.v350-isolated > :not(.v349-home){display:none!important}"
    which ALSO matched the new .v366-world.
-   Explicitly make the new V3.80 owners visible and retire the old owners. */
+   Explicitly make the new V3.81 owners visible and retire the old owners. */
 
 .app > header > .v366-topbar{
   display:grid!important;
@@ -51530,30 +51557,30 @@ html,body{
 
 <script id="v367-v366-visibility-fix">
 (function(){
-  const V367_VERSION='V3.80 Stable';
+  const V367_VERSION='V3.81 Stable';
 
   function repair(){
     const header=document.querySelector('.app > header');
     const world=document.querySelector('#world');
 
-    /* Re-run the V3.80 builders if their nodes are missing. */
+    /* Re-run the V3.81 builders if their nodes are missing. */
     try{
       if(header && !header.querySelector(':scope > .v366-topbar')){
         const go=window.v032Go;
-        /* V3.80 buildHeader is lexical, but navigating to current screen
-           runs the V3.80 wrapped v032Go and rebuilds the header. */
+        /* V3.81 buildHeader is lexical, but navigating to current screen
+           runs the V3.81 wrapped v032Go and rebuilds the header. */
         if(typeof go==='function'){
           const active=document.querySelector('.screen.active')?.id || 'world';
           go(active);
         }
       }
-    }catch(e){console.warn('V3.80 header repair',e)}
+    }catch(e){console.warn('V3.81 header repair',e)}
 
     try{
       if(world && !world.querySelector(':scope > .v366-world') && typeof v085InstallWorld==='function'){
         v085InstallWorld(true);
       }
-    }catch(e){console.warn('V3.80 world repair',e)}
+    }catch(e){console.warn('V3.81 world repair',e)}
 
     /* Remove the legacy isolation class that was written for V3.49 only. */
     if(world)world.classList.remove('v350-isolated');
@@ -51565,7 +51592,7 @@ html,body{
       top.style.setProperty('visibility','visible','important');
       top.style.setProperty('opacity','1','important');
       const ver=top.querySelector('.v366-ver');
-      if(ver)ver.textContent='V3.80';
+      if(ver)ver.textContent='V3.81';
     }
 
     const modern=world?.querySelector(':scope > .v366-world');
@@ -51587,7 +51614,7 @@ html,body{
     document.querySelectorAll(
       '.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version'
     ).forEach(el=>{if(el)el.textContent=V367_VERSION});
-    document.querySelectorAll('.v366-ver').forEach(el=>el.textContent='V3.80');
+    document.querySelectorAll('.v366-ver').forEach(el=>el.textContent='V3.81');
   }
 
   repair();version();
@@ -51598,9 +51625,9 @@ html,body{
 })();
 </script>
 
-<!-- ===== V3.80 Stable: single world DOM only ===== -->
+<!-- ===== V3.81 Stable: single world DOM only ===== -->
 <style id="v368-single-world-dom-css">
-/* Absolute rule: only the V3.80 world is allowed to render inside #world. */
+/* Absolute rule: only the V3.81 world is allowed to render inside #world. */
 #world.active > :not(.v366-world){
   display:none!important;
   visibility:hidden!important;
@@ -51629,7 +51656,7 @@ html,body{
 
 <script id="v368-single-world-dom">
 (function(){
-  const V368_VERSION='V3.80 Stable';
+  const V368_VERSION='V3.81 Stable';
 
   function purgeLegacyWorld(){
     const world=document.querySelector('#world');
@@ -51637,15 +51664,15 @@ html,body{
 
     let modern=world.querySelector(':scope > .v366-world');
 
-    /* If the V3.80 world was nested by an older installer, move it to root. */
+    /* If the V3.81 world was nested by an older installer, move it to root. */
     if(!modern){
       modern=world.querySelector('.v366-world');
       if(modern)world.insertBefore(modern,world.firstChild);
     }
 
-    /* If still missing, ask the V3.80 installer to create it once. */
+    /* If still missing, ask the V3.81 installer to create it once. */
     if(!modern && typeof v085InstallWorld==='function'){
-      try{v085InstallWorld(true)}catch(e){console.warn('V3.80 install world',e)}
+      try{v085InstallWorld(true)}catch(e){console.warn('V3.81 install world',e)}
       modern=world.querySelector(':scope > .v366-world') || world.querySelector('.v366-world');
       if(modern && modern.parentElement!==world)world.insertBefore(modern,world.firstChild);
     }
@@ -51669,7 +51696,7 @@ html,body{
   }
 
   /* Stop old world HTML ownership from returning legacy markup.
-     V3.80 already assigned v085WorldHtml/v085InstallWorld; retain that owner,
+     V3.81 already assigned v085WorldHtml/v085InstallWorld; retain that owner,
      then purge anything historical code adds after navigation. */
   const baseInstall=v085InstallWorld;
   v085InstallWorld=function(force){
@@ -51691,7 +51718,7 @@ html,body{
     document.querySelectorAll(
       '.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version'
     ).forEach(el=>{if(el)el.textContent=V368_VERSION});
-    document.querySelectorAll('.v366-ver').forEach(el=>el.textContent='V3.80');
+    document.querySelectorAll('.v366-ver').forEach(el=>el.textContent='V3.81');
   }
 
   purgeLegacyWorld();
@@ -51702,9 +51729,9 @@ html,body{
 })();
 </script>
 
-<!-- ===== V3.80 Stable: remove baked screenshot UI from all art ===== -->
+<!-- ===== V3.81 Stable: remove baked screenshot UI from all art ===== -->
 <style id="v369-clean-art-css">
-/* V3.80 accidentally used crops from the full UI mockup as backgrounds.
+/* V3.81 accidentally used crops from the full UI mockup as backgrounds.
    Those crops contained the old name, stats, event cards and card text as pixels.
    Use the previously verified clean artwork crops instead. */
 #world.active .v366-hero{
@@ -51759,7 +51786,7 @@ html,body{
 
 <script id="v369-clean-art-fix">
 (function(){
-  const V369_VERSION='V3.80 Stable';
+  const V369_VERSION='V3.81 Stable';
 
   function applyRealCharacter(){
     const el=document.querySelector('#world .v366-character');
@@ -51779,7 +51806,7 @@ html,body{
     document.querySelectorAll(
       '.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version'
     ).forEach(el=>{if(el)el.textContent=V369_VERSION});
-    document.querySelectorAll('.v366-ver').forEach(el=>el.textContent='V3.80');
+    document.querySelectorAll('.v366-ver').forEach(el=>el.textContent='V3.81');
   }
 
   const baseInstall=v085InstallWorld;
@@ -51803,7 +51830,7 @@ html,body{
 })();
 </script>
 
-<!-- ===== V3.80 Stable: mobile top bar matches approved reference ===== -->
+<!-- ===== V3.81 Stable: mobile top bar matches approved reference ===== -->
 <style id="v370-mobile-topbar-reference-css">
 /* Phone: use the full viewport width. The old header inherited the desktop
    max-width/centering, which wasted ~120px on the left in the screenshot. */
@@ -51922,13 +51949,13 @@ html,body{
 
 <script id="v370-mobile-topbar-reference">
 (function(){
-  const V370_VERSION='V3.80 Stable';
+  const V370_VERSION='V3.81 Stable';
 
   function paintVersion(){
     document.querySelectorAll(
       '.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version'
     ).forEach(el=>{if(el)el.textContent=V370_VERSION});
-    document.querySelectorAll('.v366-ver').forEach(el=>el.textContent='V3.80');
+    document.querySelectorAll('.v366-ver').forEach(el=>el.textContent='V3.81');
   }
 
   function hardenMenu(){
@@ -51961,7 +51988,7 @@ html,body{
 })();
 </script>
 
-<!-- ===== V3.80 Stable: true viewport topbar outside centered app ===== -->
+<!-- ===== V3.81 Stable: true viewport topbar outside centered app ===== -->
 <style id="v371-true-fullwidth-topbar-css">
 /* Hide every previous in-app header implementation while logged in. */
 body.v371-game-ui .app > header{
@@ -52146,7 +52173,7 @@ body.v371-game-ui .app > header{
 
 <script id="v371-true-fullwidth-topbar">
 (function(){
-  const V371_VERSION='V3.80 Stable';
+  const V371_VERSION='V3.81 Stable';
 
   const num=v=>Math.max(0,Math.round(Number(v)||0)).toLocaleString('de-DE');
   function cap(){try{return typeof v271DampfCap==='function'?v271DampfCap():100}catch(e){return 100}}
@@ -52164,7 +52191,7 @@ body.v371-game-ui .app > header{
       shell.innerHTML=`
         <div class="v371-topbar">
           <button type="button" class="v371-menu" aria-label="Menü">☰</button>
-          <div class="v371-logo"><strong>🌿 GROW</strong><span>LEGENDS</span><em>V3.80</em></div>
+          <div class="v371-logo"><strong>🌿 GROW</strong><span>LEGENDS</span><em>V3.81</em></div>
 
           <div class="v371-res gold">
             <span class="ico">🪙</span>
@@ -52240,7 +52267,7 @@ body.v371-game-ui .app > header{
     if(h)h.textContent=num(s?.harzTaler);
     if(d)d.textContent=num(s?.energy)+'/'+num(cap());
 
-    shell.querySelectorAll('.v371-logo em').forEach(el=>el.textContent='V3.80');
+    shell.querySelectorAll('.v371-logo em').forEach(el=>el.textContent='V3.81');
     document.querySelectorAll(
       '.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version'
     ).forEach(el=>{if(el)el.textContent=V371_VERSION});
@@ -52260,7 +52287,7 @@ body.v371-game-ui .app > header{
 })();
 </script>
 
-<!-- ===== V3.80 Stable: authoritative header + version owner ===== -->
+<!-- ===== V3.81 Stable: authoritative header + version owner ===== -->
 <style id="v372-authoritative-header-css">
 /* There must be exactly one visible in-game header. */
 .app > header,
@@ -52370,8 +52397,8 @@ body.v371-game-ui .app > header{
 
 <script id="v372-authoritative-header">
 (function(){
-  const VERSION='V3.80 Stable';
-  const SHORT='V3.80';
+  const VERSION='V3.81 Stable';
+  const SHORT='V3.81';
   const num=v=>Math.max(0,Math.round(Number(v)||0)).toLocaleString('de-DE');
   function cap(){try{return typeof v271DampfCap==='function'?v271DampfCap():100}catch(e){return 100}}
 
@@ -52451,10 +52478,10 @@ body.v371-game-ui .app > header{
 })();
 </script>
 
-<!-- ===== V3.80 Stable: dropdown closes after navigation ===== -->
+<!-- ===== V3.81 Stable: dropdown closes after navigation ===== -->
 <script id="v373-dropdown-autoclose">
 (function(){
-  const VERSION='V3.80 Stable';
+  const VERSION='V3.81 Stable';
 
   function closeMainMenu(){
     const panel=document.querySelector('#v032MenuPanel');
@@ -52487,7 +52514,7 @@ body.v371-game-ui .app > header{
 })();
 </script>
 
-<!-- ===== V3.80 Stable: EXP event card visual stays stable ===== -->
+<!-- ===== V3.81 Stable: EXP event card visual stays stable ===== -->
 <style id="v374-exp-event-visual-fix-css">
 /* V0.95 is useful for quest/EXP labels, but never inside the event cards themselves. */
 .v366-event .v095-xp2,
@@ -52502,7 +52529,7 @@ body.v371-game-ui .app > header{
 
 <script id="v374-exp-event-visual-fix">
 (function(){
-  const VERSION='V3.80 Stable';
+  const VERSION='V3.81 Stable';
 
   function cleanEventCards(){
     document.querySelectorAll('.v366-event .v095-xp2,.v349-event .v095-xp2').forEach(el=>el.remove());
@@ -52537,12 +52564,12 @@ body.v371-game-ui .app > header{
     '.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version,.v366-ver'
   ).forEach(el=>{
     if(!el)return;
-    el.textContent=el.classList?.contains('v366-ver')?'V3.80':VERSION;
+    el.textContent=el.classList?.contains('v366-ver')?'V3.81':VERSION;
   });
 })();
 </script>
 
-<!-- ===== V3.80 Stable: Glück attribute on home ===== -->
+<!-- ===== V3.81 Stable: Glück attribute on home ===== -->
 <style id="v375-home-luck-attribute-css">
 #world.active .v366-attrs{
   gap:4px!important;
@@ -52554,7 +52581,7 @@ body.v371-game-ui .app > header{
 
 <script id="v375-home-luck-attribute">
 (function(){
-  const VERSION='V3.80 Stable';
+  const VERSION='V3.81 Stable';
 
   function refresh(){
     try{
@@ -52565,7 +52592,7 @@ body.v371-game-ui .app > header{
     document.querySelectorAll(
       '.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version'
     ).forEach(el=>{if(el)el.textContent=VERSION});
-    document.querySelectorAll('.v366-ver').forEach(el=>el.textContent='V3.80');
+    document.querySelectorAll('.v366-ver').forEach(el=>el.textContent='V3.81');
   }
 
   refresh();
@@ -52573,10 +52600,10 @@ body.v371-game-ui .app > header{
 })();
 </script>
 
-<!-- ===== V3.80 Stable: quest destination/title appears only once ===== -->
+<!-- ===== V3.81 Stable: quest destination/title appears only once ===== -->
 <script id="v376-quest-destination-dedupe">
 (function(){
-  const VERSION='V3.80 Stable';
+  const VERSION='V3.81 Stable';
 
   function norm(s){
     return String(s||'').replace(/\s+/g,' ').trim().toLocaleLowerCase('de-DE');
@@ -52627,11 +52654,11 @@ body.v371-game-ui .app > header{
   document.querySelectorAll(
     '.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version'
   ).forEach(el=>{if(el)el.textContent=VERSION});
-  document.querySelectorAll('.v366-ver').forEach(el=>el.textContent='V3.80');
+  document.querySelectorAll('.v366-ver').forEach(el=>el.textContent='V3.81');
 })();
 </script>
 
-<!-- ===== V3.80 Stable: visible settings gear + real settings dropdown ===== -->
+<!-- ===== V3.81 Stable: visible settings gear + real settings dropdown ===== -->
 <style id="v377-settings-gear-css">
 /* Make sure all right-side topbar buttons fit on a phone so the gear is never clipped. */
 @media(max-width:430px){
@@ -52687,7 +52714,7 @@ body > #v141SettingsMenu.v377-open{
 
 <script id="v377-settings-gear-dropdown-fix">
 (function(){
-  const VERSION='V3.80 Stable';
+  const VERSION='V3.81 Stable';
 
   function closeSettings(){
     const menu=document.querySelector('#v141SettingsMenu');
@@ -52761,7 +52788,7 @@ body > #v141SettingsMenu.v377-open{
     document.querySelectorAll(
       '.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version'
     ).forEach(el=>{if(el)el.textContent=VERSION});
-    document.querySelectorAll('.v366-ver').forEach(el=>el.textContent='V3.80');
+    document.querySelectorAll('.v366-ver').forEach(el=>el.textContent='V3.81');
   }
 
   bindGear();version();
@@ -52771,7 +52798,7 @@ body > #v141SettingsMenu.v377-open{
 })();
 </script>
 
-<!-- ===== V3.80 Stable: "Zur krummen Gießkanne" only once on quest page ===== -->
+<!-- ===== V3.81 Stable: "Zur krummen Gießkanne" only once on quest page ===== -->
 <style id="v378-quest-location-single-title-css">
 /* Keep only the main V0.52 quest location banner at the very top. */
 #quests > .v038-location{
@@ -52784,7 +52811,7 @@ body > #v141SettingsMenu.v377-open{
 
 <script id="v378-quest-location-single-title">
 (function(){
-  const VERSION='V3.80 Stable';
+  const VERSION='V3.81 Stable';
 
   function cleanQuestLocation(){
     const quests=document.querySelector('#quests');
@@ -52826,14 +52853,14 @@ body > #v141SettingsMenu.v377-open{
   document.querySelectorAll(
     '.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version'
   ).forEach(el=>{if(el)el.textContent=VERSION});
-  document.querySelectorAll('.v366-ver').forEach(el=>el.textContent='V3.80');
+  document.querySelectorAll('.v366-ver').forEach(el=>el.textContent='V3.81');
 })();
 </script>
 
-<!-- ===== V3.80 Stable: Quest-Kampfanimation ein/aus in Einstellungen ===== -->
+<!-- ===== V3.81 Stable: Quest-Kampfanimation ein/aus in Einstellungen ===== -->
 <script id="v379-quest-battle-animation-setting">
 (function(){
-  const VERSION='V3.80 Stable';
+  const VERSION='V3.81 Stable';
 
   /* Existing users get the current behavior by default: animation ON. */
   if(typeof v141Settings==='object' &&
@@ -52916,13 +52943,13 @@ body > #v141SettingsMenu.v377-open{
   document.querySelectorAll(
     '.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version'
   ).forEach(el=>{if(el)el.textContent=VERSION});
-  document.querySelectorAll('.v366-ver').forEach(el=>el.textContent='V3.80');
+  document.querySelectorAll('.v366-ver').forEach(el=>el.textContent='V3.81');
 
   setTimeout(v379EnsureSettingRow,300);
 })();
 </script>
 
-<!-- ===== V3.80 Stable: Guild membership load + incoming applications ===== -->
+<!-- ===== V3.81 Stable: Guild membership load + incoming applications ===== -->
 <style id="v380-guild-fix-css">
 #v257RequestsCard.v380-visible{display:block!important}
 #v257RequestsCard .v380-request-head{
@@ -52938,14 +52965,14 @@ body > #v141SettingsMenu.v377-open{
 
 <script id="v380-guild-membership-requests-fix">
 (function(){
-  const VERSION='V3.80 Stable';
+  const VERSION='V3.81 Stable';
   let loadPromise=null;
 
   function v380Version(){
     document.querySelectorAll(
       '.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version'
     ).forEach(el=>{if(el)el.textContent=VERSION});
-    document.querySelectorAll('.v366-ver').forEach(el=>el.textContent='V3.80');
+    document.querySelectorAll('.v366-ver').forEach(el=>el.textContent='V3.81');
   }
 
   /*
@@ -52974,7 +53001,7 @@ body > #v141SettingsMenu.v377-open{
 
     /* Defensive: one account should never have multiple guild memberships. */
     if(rows.length>1){
-      console.warn('V3.80: multiple guild memberships detected for user',v073User.id);
+      console.warn('V3.81: multiple guild memberships detected for user',v073User.id);
     }
 
     v254Membership=membership;
@@ -53035,7 +53062,7 @@ body > #v141SettingsMenu.v377-open{
       try{
         await v380LoadGuildCore();
       }catch(e){
-        console.error('V3.80 guild load',e);
+        console.error('V3.81 guild load',e);
         /*
           Important: do not falsely tell an existing member "no guild" just because
           a network/RLS/backend read failed. Show a loading/error state instead.
@@ -53109,7 +53136,7 @@ body > #v141SettingsMenu.v377-open{
 
     const {data,error}=await v073Db.rpc('v257_get_guild_requests');
     if(error){
-      console.error('V3.80 request load',error);
+      console.error('V3.81 request load',error);
       if(list)list.innerHTML=`<div class="v257-search-empty">Anfragen konnten nicht geladen werden: ${v254GuildEsc(error.message||'Serverfehler')}</div>`;
       if(manual && typeof v063Toast==='function'){
         v063Toast('Gildenanfragen konnten nicht geladen werden','warn',error.message||'');
@@ -53191,3 +53218,107 @@ body > #v141SettingsMenu.v377-open{
   },350);
 })();
 </script>
+
+<!-- ===== V3.81 Stable: Player mail system ===== -->
+<style id="v381-mail-style">
+#mail .v381-mail-card{max-width:900px;margin-left:auto;margin-right:auto}
+.v381-tabs{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:12px}.v381-tabs .active{border-color:#78c969!important;color:#b8f2aa!important}
+.v381-panel{display:grid;gap:8px}.v381-empty{padding:18px;text-align:center;color:#819087;border:1px dashed #304238;border-radius:12px}
+.v381-msg{display:grid;grid-template-columns:1fr auto;gap:10px;padding:11px;border:1px solid #304238;border-radius:12px;background:#08110b;cursor:pointer}
+.v381-msg.unread{border-color:#65a958;background:#0b170d}.v381-msg b,.v381-msg small{display:block}.v381-msg small{font-size:7px;color:#849188;margin-top:3px}.v381-preview{font-size:8px;color:#b5c0b8;margin-top:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:620px}
+.v381-msg-actions{display:flex;align-items:center;gap:5px}.v381-dot{width:8px;height:8px;border-radius:50%;background:#7ee56d;box-shadow:0 0 8px #7ee56d}.v381-delete{font-size:7px!important;padding:6px 8px!important}
+.v381-label{font-size:8px;font-weight:900;margin-top:5px}.v381-panel input,.v381-panel textarea{width:100%;box-sizing:border-box;border:1px solid #35523b;border-radius:10px;background:#07100a;color:#e6eee4;padding:10px}.v381-panel textarea{min-height:130px;resize:vertical;font-family:inherit}.v381-compose-foot{display:flex;justify-content:space-between;align-items:center;gap:10px}.v381-compose-foot span{font-size:7px;color:#819087}
+#v372TopbarShell [data-head="mail"]{position:relative}#v381MailBadge{position:absolute;right:-4px;top:-5px;min-width:15px;height:15px;padding:0 3px;display:none;align-items:center;justify-content:center;border-radius:99px;background:#b82e39;color:white;font-size:7px;font-weight:1000;border:1px solid #ff9aa1;box-sizing:border-box}
+.v381-modal{position:fixed;inset:0;z-index:2147483642;background:rgba(0,0,0,.72);display:flex;align-items:center;justify-content:center;padding:14px}.v381-modal-card{width:min(520px,100%);max-height:82vh;overflow:auto;border:1px solid #45604b;border-radius:15px;background:#07100a;padding:15px;box-shadow:0 18px 70px #000}.v381-modal-head{display:flex;justify-content:space-between;gap:10px}.v381-modal-head button{width:auto!important}.v381-modal-body{white-space:pre-wrap;line-height:1.55;margin:14px 0;color:#d8e2da;font-size:9px}.v381-modal-meta{font-size:7px;color:#829087;margin-top:4px}.v381-modal-actions{display:flex;gap:7px;justify-content:flex-end;flex-wrap:wrap}
+@media(max-width:520px){.v381-msg{grid-template-columns:1fr}.v381-msg-actions{justify-content:flex-end}.v381-tabs .btn{flex:1;min-width:90px}}
+</style>
+<script id="v381-player-mail-system">
+(function(){
+ const VERSION='V3.81 Stable';
+ let inbox=[],sent=[],loading=false;
+ const esc=s=>typeof v073Escape==='function'?v073Escape(String(s??'')):String(s??'').replace(/[&<>\"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;'}[c]));
+ const fmt=d=>{try{return new Date(d).toLocaleString('de-DE',{dateStyle:'short',timeStyle:'short'})}catch(e){return ''}};
+ async function online(){return typeof v073Init==='function' && await v073Init() && v073User?.id && v073Db}
+ function badge(n){
+   const gear=document.querySelector('#v372TopbarShell [data-head="mail"]'); if(!gear)return;
+   let b=gear.querySelector('#v381MailBadge'); if(!b){b=document.createElement('span');b.id='v381MailBadge';gear.appendChild(b)}
+   n=Math.max(0,Number(n)||0); b.textContent=n>99?'99+':String(n); b.style.display=n?'flex':'none'; gear.setAttribute('aria-label',n?`Nachrichten, ${n} ungelesen`:'Nachrichten');
+ }
+ async function unread(){
+   if(!(await online()))return badge(0);
+   const {count,error}=await v073Db.from('player_messages').select('id',{count:'exact',head:true}).eq('receiver_id',v073User.id).eq('is_read',false).is('deleted_by_receiver',false);
+   if(error){console.warn('V3.81 unread',error);return} badge(count||0); const p=document.querySelector('#v381UnreadPill');if(p)p.textContent=`${count||0} ungelesen`;
+ }
+ function row(m,box){const other=box==='in'?m.sender:m.receiver;return `<div class="v381-msg ${box==='in'&&!m.is_read?'unread':''}" data-v381-open="${esc(m.id)}" data-box="${box}"><div><b>${box==='in'?'Von':'An'}: ${esc(other?.character_name||'Spieler')}</b><small>${fmt(m.created_at)}</small><div class="v381-preview">${esc(m.body||'')}</div></div><div class="v381-msg-actions">${box==='in'&&!m.is_read?'<span class="v381-dot" title="Ungelesen"></span>':''}<button class="btn secondary v381-delete" data-v381-delete="${esc(m.id)}" data-box="${box}">Löschen</button></div></div>`}
+ function render(){
+   const i=document.querySelector('#v381Inbox'),s=document.querySelector('#v381Sent'); if(!i||!s)return;
+   i.innerHTML=inbox.length?inbox.map(m=>row(m,'in')).join(''):'<div class="v381-empty">Keine Nachrichten im Eingang.</div>';
+   s.innerHTML=sent.length?sent.map(m=>row(m,'out')).join(''):'<div class="v381-empty">Noch keine Nachrichten gesendet.</div>';
+   document.querySelectorAll('[data-v381-open]').forEach(el=>el.onclick=e=>{if(e.target.closest('[data-v381-delete]'))return;openMessage(el.dataset.v381Open,el.dataset.box)});
+   document.querySelectorAll('[data-v381-delete]').forEach(b=>b.onclick=e=>{e.stopPropagation();remove(b.dataset.v381Delete,b.dataset.box)});
+ }
+ async function load(){
+   if(loading||!(await online()))return; loading=true;
+   try{
+     const cols='id,sender_id,receiver_id,body,is_read,created_at,deleted_by_sender,deleted_by_receiver';
+     const [a,b]=await Promise.all([
+       v073Db.from('player_messages').select(cols).eq('receiver_id',v073User.id).is('deleted_by_receiver',false).order('created_at',{ascending:false}).limit(100),
+       v073Db.from('player_messages').select(cols).eq('sender_id',v073User.id).is('deleted_by_sender',false).order('created_at',{ascending:false}).limit(100)
+     ]);
+     if(a.error)throw a.error;if(b.error)throw b.error;
+     const ids=[...(a.data||[]).map(x=>x.sender_id),...(b.data||[]).map(x=>x.receiver_id)].filter(Boolean);
+     let profiles=[]; if(ids.length){const r=await v073Db.from('profiles').select('id,character_name').in('id',[...new Set(ids)]);if(r.error)throw r.error;profiles=r.data||[]}
+     const map=new Map(profiles.map(p=>[p.id,p])); inbox=(a.data||[]).map(x=>({...x,sender:map.get(x.sender_id)}));sent=(b.data||[]).map(x=>({...x,receiver:map.get(x.receiver_id)})); render();await unread();
+   }catch(e){console.error('V3.81 mail load',e);const i=document.querySelector('#v381Inbox');if(i)i.innerHTML='<div class="v381-empty">Postfach konnte nicht geladen werden. Falls das Nachrichtensystem neu eingerichtet wird, muss zuerst die V3.81-SQL in Supabase ausgeführt werden.</div>'}
+   finally{loading=false}
+ }
+ async function send(){
+   const name=String(document.querySelector('#v381Recipient')?.value||'').trim(),body=String(document.querySelector('#v381Body')?.value||'').trim();
+   if(!name)return v063Toast?.('Empfänger fehlt','warn','Bitte einen Charakternamen eingeben.');if(!body)return v063Toast?.('Nachricht leer','warn');if(body.length>1000)return v063Toast?.('Nachricht zu lang','warn','Maximal 1000 Zeichen.');if(!(await online()))return;
+   const p=await v073Db.from('profiles').select('id,character_name').ilike('character_name',name).limit(2);if(p.error)return v063Toast?.('Spieler konnte nicht gesucht werden','warn',p.error.message||'');
+   const exact=(p.data||[]).find(x=>String(x.character_name).toLocaleLowerCase('de-DE')===name.toLocaleLowerCase('de-DE'));
+   if(!exact)return v063Toast?.('Spieler nicht gefunden','warn','Prüfe den Charakternamen.');if(exact.id===v073User.id)return v063Toast?.('Nicht möglich','warn','Du kannst dir nicht selbst schreiben.');
+   const r=await v073Db.from('player_messages').insert({sender_id:v073User.id,receiver_id:exact.id,body});if(r.error)return v063Toast?.('Nachricht konnte nicht gesendet werden','warn',r.error.message||'');
+   document.querySelector('#v381Body').value='';document.querySelector('#v381Chars').textContent='0 / 1000';v063Toast?.('Nachricht gesendet','success',`An ${exact.character_name}`);await load();tab('sent');
+ }
+ async function remove(id,box){if(!(await online()))return;const field=box==='in'?'deleted_by_receiver':'deleted_by_sender';const r=await v073Db.from('player_messages').update({[field]:true}).eq('id',id);if(r.error)return v063Toast?.('Nachricht konnte nicht gelöscht werden','warn',r.error.message||'');await load()}
+ async function openMessage(id,box){
+   const m=(box==='in'?inbox:sent).find(x=>String(x.id)===String(id));if(!m)return;
+   if(box==='in'&&!m.is_read){const r=await v073Db.from('player_messages').update({is_read:true}).eq('id',id).eq('receiver_id',v073User.id);if(!r.error){m.is_read=true;render();unread()}}
+   const other=box==='in'?m.sender:m.receiver;const modal=document.createElement('div');modal.className='v381-modal';modal.innerHTML=`<div class="v381-modal-card"><div class="v381-modal-head"><div><b>${box==='in'?'Von':'An'}: ${esc(other?.character_name||'Spieler')}</b><div class="v381-modal-meta">${fmt(m.created_at)}</div></div><button class="btn secondary" data-close>✕</button></div><div class="v381-modal-body">${esc(m.body||'')}</div><div class="v381-modal-actions">${box==='in'?`<button class="btn secondary" data-reply>Antworten</button>`:''}<button class="btn secondary" data-delete>Löschen</button></div></div>`;document.body.appendChild(modal);
+   const close=()=>modal.remove();modal.querySelector('[data-close]').onclick=close;modal.onclick=e=>{if(e.target===modal)close()};modal.querySelector('[data-delete]').onclick=async()=>{await remove(id,box);close()};
+   modal.querySelector('[data-reply]')?.addEventListener('click',()=>{close();tab('compose');document.querySelector('#v381Recipient').value=other?.character_name||'';document.querySelector('#v381Body').focus()});
+ }
+ function tab(which){document.querySelectorAll('[data-v381-tab]').forEach(b=>b.classList.toggle('active',b.dataset.v381Tab===which));[['inbox','v381Inbox'],['sent','v381Sent'],['compose','v381Compose']].forEach(([k,id])=>{const e=document.getElementById(id);if(e)e.style.display=k===which?'':'none'})}
+ function bind(){
+   document.querySelectorAll('[data-v381-tab]').forEach(b=>{if(b.dataset.bound)return;b.dataset.bound='1';b.onclick=()=>tab(b.dataset.v381Tab)});
+   const sendBtn=document.querySelector('#v381Send');if(sendBtn&&!sendBtn.dataset.bound){sendBtn.dataset.bound='1';sendBtn.onclick=send}
+   const body=document.querySelector('#v381Body');if(body&&!body.dataset.bound){body.dataset.bound='1';body.oninput=()=>{document.querySelector('#v381Chars').textContent=`${body.value.length} / 1000`}}
+   const mail=document.querySelector('#v372TopbarShell [data-head="mail"]');if(mail&&!mail.dataset.v381Bound){mail.dataset.v381Bound='1';mail.onclick=()=>v032Go('mail')}
+ }
+ const baseGo=v032Go;v032Go=function(id){const r=baseGo.apply(this,arguments);requestAnimationFrame(bind);if(id==='mail')setTimeout(load,0);return r};
+ bind();unread();setTimeout(()=>{bind();unread()},500);setInterval(()=>{if(!document.hidden)unread()},60000);
+ document.addEventListener('visibilitychange',()=>{if(!document.hidden)unread()});
+ document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version').forEach(el=>{if(el)el.textContent=VERSION});document.querySelectorAll('.v366-ver').forEach(el=>el.textContent='V3.81');
+})();
+</script>
+
+<!-- V3.81 Supabase setup reference (run once in SQL Editor):
+create table if not exists public.player_messages (
+  id bigint generated by default as identity primary key,
+  sender_id uuid not null references auth.users(id) on delete cascade,
+  receiver_id uuid not null references auth.users(id) on delete cascade,
+  body text not null check (char_length(body) between 1 and 1000),
+  is_read boolean not null default false,
+  deleted_by_sender boolean not null default false,
+  deleted_by_receiver boolean not null default false,
+  created_at timestamptz not null default now(),
+  check (sender_id <> receiver_id)
+);
+alter table public.player_messages enable row level security;
+create policy "message participants read" on public.player_messages for select using (auth.uid()=sender_id or auth.uid()=receiver_id);
+create policy "sender inserts messages" on public.player_messages for insert with check (auth.uid()=sender_id);
+create policy "participants update messages" on public.player_messages for update using (auth.uid()=sender_id or auth.uid()=receiver_id) with check (auth.uid()=sender_id or auth.uid()=receiver_id);
+create index if not exists player_messages_receiver_idx on public.player_messages(receiver_id,created_at desc);
+create index if not exists player_messages_sender_idx on public.player_messages(sender_id,created_at desc);
+-- ===== end V3.81 SQL ===== -->
