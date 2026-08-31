@@ -46760,3 +46760,199 @@ setTimeout(()=>{try{v322InstallMenuEntry();v322InstallHarzPlus()}catch(e){consol
   setTimeout(v334ApplyVersion,1800);
 })();
 </script>
+
+<!-- ===== V3.35 Stable: no Level-Up popup on returning login ===== -->
+<script id="v335-no-levelup-popup-login">
+(function(){
+  const V335_VERSION='V3.35 Stable';
+  const V335_LOGIN_GRACE_MS=8000;
+  const v335BootAt=Date.now();
+  const v335InitialLevel=Math.max(1,Number(s?.level)||1);
+
+  function v335InLoginGrace(){
+    return (Date.now()-v335BootAt)<V335_LOGIN_GRACE_MS;
+  }
+
+  function v335LooksLikeLevelUp(text){
+    return /level[\s-]*up|stufe\s+\d+.*erreicht|neue\s+stufe/i.test(String(text||''));
+  }
+
+  /* Returning-login hydration can replay old Level-Up UI. During the short
+     boot/auth window suppress presentation only; real gameplay state/level
+     remains untouched. */
+  ['v063Toast','toast'].forEach(name=>{
+    const old=window[name];
+    if(typeof old!=='function')return;
+    window[name]=function(msg){
+      if(v335InLoginGrace() && v335LooksLikeLevelUp(msg))return;
+      return old.apply(this,arguments);
+    };
+  });
+
+  /* Catch legacy modal/notification functions if present. */
+  [
+    'showLevelUp','showLevelUpPopup','openLevelUpPopup','levelUpPopup',
+    'v125ShowLevelUp','v141ShowLevelUp'
+  ].forEach(name=>{
+    const old=window[name];
+    if(typeof old!=='function')return;
+    window[name]=function(){
+      if(v335InLoginGrace())return;
+      return old.apply(this,arguments);
+    };
+  });
+
+  /* Remove a legacy Level-Up dialog that was already inserted by an earlier
+     boot script. Only during login grace and only when its text is Level-Up. */
+  const v335Observer=new MutationObserver(()=>{
+    if(!v335InLoginGrace()){
+      v335Observer.disconnect();
+      return;
+    }
+    document.querySelectorAll('[role="dialog"],.modal,.popup,.overlay').forEach(el=>{
+      if(v335LooksLikeLevelUp(el.textContent||'')){
+        const levelNow=Math.max(1,Number(s?.level)||1);
+        /* At login, unchanged/restored level is not a new level-up event. */
+        if(levelNow===v335InitialLevel || Date.now()-v335BootAt<2500){
+          const close=el.querySelector('[data-close],.close,.modal-close,.popup-close');
+          if(close)close.click();
+          else el.remove();
+        }
+      }
+    });
+  });
+  try{
+    v335Observer.observe(document.documentElement,{childList:true,subtree:true});
+    setTimeout(()=>v335Observer.disconnect(),V335_LOGIN_GRACE_MS+500);
+  }catch(e){}
+
+  function v335ApplyVersion(){
+    document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version]').forEach(el=>{
+      if(el)el.textContent=V335_VERSION;
+    });
+  }
+  v335ApplyVersion();
+  setTimeout(v335ApplyVersion,600);
+  setTimeout(v335ApplyVersion,2000);
+})();
+</script>
+
+<!-- ===== V3.36 Stable: Illegal Book quest + dungeon enemy progress fix ===== -->
+<script id="v336-illegal-book-progress-fix">
+(function(){
+  const V336_VERSION='V3.36 Stable';
+
+  function v336Ach(){
+    s.v106Achievements??={done:{},stats:{}};
+    s.v106Achievements.done??={};
+    s.v106Achievements.stats??={};
+    s.v106Achievements.stats.questsDone=Math.max(0,Number(s.v106Achievements.stats.questsDone)||0);
+    s.v106Achievements.stats.dungeonWins=Math.max(0,Number(s.v106Achievements.stats.dungeonWins)||0);
+    return s.v106Achievements;
+  }
+
+  /* Canonical dungeon enemies defeated can be reconstructed from real dungeon
+     progression. A completed dungeon equals 10 defeated enemies; otherwise
+     progress[n] equals the number of defeated rooms (0..9). */
+  function v336CanonicalDungeonWins(){
+    let total=0;
+    const completed=new Set((s.dungeon?.completed||[]).map(Number));
+    const progress=s.dungeon?.progress||{};
+    const dungeonCount=Array.isArray(dungeons)?dungeons.length:20;
+
+    for(let i=0;i<dungeonCount;i++){
+      if(completed.has(i)){
+        total+=10;
+      }else{
+        total+=Math.max(0,Math.min(9,Number(progress[i])||0));
+      }
+    }
+    return total;
+  }
+
+  function v336RepairDungeonWins(){
+    const a=v336Ach();
+    const canonical=v336CanonicalDungeonWins();
+    /* Never decrease an already legitimately higher lifetime counter. */
+    if(canonical>a.stats.dungeonWins){
+      a.stats.dungeonWins=canonical;
+      return true;
+    }
+    return false;
+  }
+
+  /* The old V1.06 quest wrapper was later bypassed by newer claim handlers.
+     Wrap the FINAL V3.11/V2.33 payout owner. Count only when the exact active
+     quest actually disappears after a successful claim. */
+  if(typeof v233ClaimQuest==='function'){
+    const v336Base233ClaimQuest=v233ClaimQuest;
+    v233ClaimQuest=async function(){
+      const before=s.quests?.active;
+      if(!before || Date.now()<Number(before.ends||0)){
+        return v336Base233ClaimQuest.apply(this,arguments);
+      }
+
+      const token=String(
+        before.v336ProgressToken ||
+        before.id ||
+        `${before.name||'quest'}|${before.ends||0}|${before.energy||0}|${before.xp||0}|${before.gold||0}`
+      );
+
+      s.v336QuestProgressSeen??={};
+      if(!before.v336ProgressToken)before.v336ProgressToken=token;
+
+      const result=await v336Base233ClaimQuest.apply(this,arguments);
+
+      /* Successful payout removes/replaces the active quest. */
+      if(s.quests?.active!==before && !s.v336QuestProgressSeen[token]){
+        s.v336QuestProgressSeen[token]=Date.now();
+        const a=v336Ach();
+        a.stats.questsDone=(Number(a.stats.questsDone)||0)+1;
+        try{v106CheckAchievements(true)}catch(e){}
+        try{localStorage.setItem(KEY,JSON.stringify(s))}catch(e){}
+        try{v075ScheduleSave()}catch(e){}
+      }
+      return result;
+    };
+  }
+
+  /* Dungeon progress is repaired from the actual dungeon state on every
+     persistence/render cycle, so all current/future fight handlers are covered. */
+  const v336BasePersist=persist;
+  persist=function(){
+    try{
+      if(v336RepairDungeonWins()){
+        try{v106CheckAchievements(true)}catch(e){}
+      }
+    }catch(e){console.warn('V3.36 dungeon achievement repair',e)}
+    return v336BasePersist.apply(this,arguments);
+  };
+
+  const v336BaseRender=render;
+  render=function(){
+    try{v336RepairDungeonWins()}catch(e){}
+    const r=v336BaseRender.apply(this,arguments);
+    try{v106CheckAchievements(true)}catch(e){}
+    return r;
+  };
+
+  /* Immediate migration/repair for existing dungeon progress. */
+  try{
+    const changed=v336RepairDungeonWins();
+    if(changed){
+      localStorage.setItem(KEY,JSON.stringify(s));
+      try{v075ScheduleSave()}catch(e){}
+    }
+    v106CheckAchievements(false);
+  }catch(e){console.warn('V3.36 initial achievement repair',e)}
+
+  function v336ApplyVersion(){
+    document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version]').forEach(el=>{
+      if(el)el.textContent=V336_VERSION;
+    });
+  }
+  v336ApplyVersion();
+  setTimeout(v336ApplyVersion,600);
+  setTimeout(v336ApplyVersion,2000);
+})();
+</script>
