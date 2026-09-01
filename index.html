@@ -616,6 +616,11 @@ document.documentElement.classList.remove('v224-app-ready');
 <style id="v298-hall-mystic-special-style">
 .v298-profile-mystic{margin-top:7px;padding:5px 7px;border:1px solid rgba(69,228,223,.42);border-radius:8px;background:rgba(22,120,116,.13);color:#8ffff5;font-size:6.4px;line-height:1.4;font-weight:1000}
 </style>
+
+<style id="v481-first-paint-version">
+.app > header .v358-logo::after{content:"V4.81"!important}
+.app > header .v366-ver::after,.app > header .v371-logo em::after,.app > header .v372-logo em::after{content:"V4.81"!important;font-size:5px!important;color:#63cdd1!important;font-style:normal!important;font-weight:900!important}
+</style>
 </head>
 <body>
 <div class="app">
@@ -1922,7 +1927,7 @@ document.addEventListener('click',e=>{
 document.querySelector('#plantBtn').addEventListener('click',()=>plantSelectedSeed());
 document.querySelector('#harvestBtn').addEventListener('click',harvestReadyPlants);
 document.querySelector('#upgradeRoom').addEventListener('click',upgradeRoomAction);
-ensureQuests();setInterval(()=>{if(!document.hidden&&document.querySelector('#grow')?.classList.contains('active')&&s.grow.plants?.filter(Boolean).length)renderGrow();/* V4.02: never repaint hidden Growroom every second */regenEnergy();document.querySelector('#energy')&&(document.querySelector('#energy').textContent=`${s.energy}/100`);document.querySelector('#dungeonTicketText')&&(document.querySelector('#dungeonTicketText').textContent=dungeonWaitText())},1000);persist();
+ensureQuests();setInterval(()=>{/* V4.81: live Growroom is owned by v239; do not rebuild the full Growroom every second. */regenEnergy();document.querySelector('#energy')&&(document.querySelector('#energy').textContent=`${s.energy}/100`);document.querySelector('#dungeonTicketText')&&(document.querySelector('#dungeonTicketText').textContent=dungeonWaitText())},1000);persist();
 </script>
 
 <script>
@@ -16815,7 +16820,7 @@ render=function(){
   return result;
 };
 
-setInterval(()=>{try{v106CheckAchievements(true)}catch(e){}},3000);
+setInterval(()=>{if(document.hidden)return;try{v106CheckAchievements(true)}catch(e){}},12000);
 setTimeout(()=>{try{v106InstallBook();v106CheckAchievements(false)}catch(e){}},300);
 </script>
 
@@ -17365,7 +17370,7 @@ render=function(){
   requestAnimationFrame(v110InstallEventButton);
   return result;
 };
-setInterval(()=>{try{v110InstallEventButton()}catch(e){}},2500);
+setInterval(()=>{if(document.hidden)return;try{v110InstallEventButton()}catch(e){}},10000);
 </script>
 
 
@@ -17697,8 +17702,9 @@ render=function(){
 };
 
 setInterval(()=>{
+  if(document.hidden)return;
   try{v111InstallWorldBossCard()}catch(e){}
-},2000);
+},10000);
 
 setTimeout(()=>{
   try{v111InstallWorldBossCard()}catch(e){}
@@ -17782,8 +17788,9 @@ render=function(){
 };
 
 setInterval(()=>{
+  if(document.hidden)return;
   try{v112EnsureWorldBossState()}catch(e){}
-},2000);
+},10000);
 
 try{
   v112EnsureWorldBossState();
@@ -18575,7 +18582,7 @@ render=function(){
   setTimeout(()=>{v117BindDampf();v117BindReset();v117PatchClassModal()},0);
   return result;
 };
-setInterval(()=>{try{v117BindDampf();v117BindReset();v117PatchClassModal()}catch(e){}},1500);
+setTimeout(()=>{try{v117BindDampf();v117BindReset();v117PatchClassModal()}catch(e){}},700);
 </script>
 
 
@@ -27568,8 +27575,8 @@ function v210RunLocalNotifications(){
 }
 
 /* Local timers are cheap; PvP needs a DB lookup and runs less frequently. */
-setInterval(v210RunLocalNotifications,5000);
-setInterval(v210PvpCheck,20000);
+/* V4.81: v231NotificationTick is the canonical local completion checker. */
+setInterval(v210PvpCheck,60000);
 
 /* ===== V4.02 hooks ===== */
 
@@ -29226,7 +29233,7 @@ function v230LiveTick(){
   One V4.02 timer. It does no full render and performs only visible-screen
   live updates. Existing unrelated game timers are intentionally untouched.
 */
-setInterval(v230LiveTick,1000);
+/* V4.81: retired duplicate v230 live interval; dedicated screen timers own these values. */
 
 
 /* ---------------------------------------------------------
@@ -58408,7 +58415,7 @@ create index if not exists player_messages_sender_idx on public.player_messages(
   repaint();stamp();
   /* Older compatibility blocks still contain historic version stamps. During the
      first seconds keep the visible label pinned to the current build, then stop. */
-  const versionGuard=setInterval(stamp,250);
+  const versionGuard=setTimeout(stamp,250);
   setTimeout(()=>clearInterval(versionGuard),9000);
   document.addEventListener('DOMContentLoaded',()=>{repaint();stamp()},{once:true});
   document.addEventListener('click',()=>setTimeout(()=>{repaint();stamp()},0),true);
@@ -58930,7 +58937,7 @@ create index if not exists player_messages_sender_idx on public.player_messages(
   }
 
   stamp();
-  const guard=setInterval(stamp,250);
+  const guard=setTimeout(stamp,250);
   setTimeout(()=>clearInterval(guard),15000);
   document.addEventListener('DOMContentLoaded',stamp,{once:true});
   window.addEventListener('pageshow',stamp,{passive:true});
@@ -59770,7 +59777,7 @@ create index if not exists player_messages_sender_idx on public.player_messages(
   bindShop();settle();stamp();
   document.addEventListener('DOMContentLoaded',()=>{bindShop();observe(document.querySelector('.app > header'));observe(document.querySelector('#shop'));settle();stamp()},{once:true});
   window.addEventListener('pageshow',()=>{bindShop();settle();stamp()},{passive:true});
-  const versionGuard=setInterval(stamp,400);
+  const versionGuard=setTimeout(stamp,400);
   setTimeout(()=>clearInterval(versionGuard),18000);
   setTimeout(()=>{bindShop();settle();stamp()},1000);
   setTimeout(()=>{bindShop();settle();stamp()},5000);
@@ -59910,7 +59917,7 @@ create index if not exists player_messages_sender_idx on public.player_messages(
   setTimeout(refreshVisiblePrices,250);
   setTimeout(()=>{moveInventory();cleanArtifacts();stamp()},1600);
   setTimeout(()=>{moveInventory();cleanArtifacts();stamp()},5200);
-  const versionGuard=setInterval(stamp,400);
+  const versionGuard=setTimeout(stamp,400);
   setTimeout(()=>clearInterval(versionGuard),18000);
 })();
 </script>
@@ -60392,7 +60399,7 @@ create index if not exists player_messages_sender_idx on public.player_messages(
   setTimeout(()=>{repaint();stamp()},300);
   setTimeout(()=>{repaint();stamp()},1600);
   setTimeout(()=>{repaint();stamp()},5200);
-  const guard=setInterval(stamp,400);setTimeout(()=>clearInterval(guard),18000);
+  const guard=setTimeout(stamp,400);setTimeout(()=>clearInterval(guard),18000);
 })();
 </script>
 
@@ -60908,7 +60915,7 @@ create index if not exists player_messages_sender_idx on public.player_messages(
   document.addEventListener('DOMContentLoaded',()=>{all();stamp()},{once:true});
   window.addEventListener('pageshow',()=>{all();stamp()},{passive:true});
   setTimeout(()=>{all();stamp()},700);setTimeout(()=>{all();stamp()},2600);setTimeout(()=>{all();stamp()},6000);
-  const vg=setInterval(stamp,350);setTimeout(()=>clearInterval(vg),19000);
+  const vg=setTimeout(stamp,350);setTimeout(()=>clearInterval(vg),19000);
 })();
 </script>
 
@@ -61688,7 +61695,7 @@ create index if not exists player_messages_sender_idx on public.player_messages(
   document.addEventListener('DOMContentLoaded',()=>{stamp();capture()},{once:true});
   window.addEventListener('pageshow',()=>{stamp();capture()},{passive:true});
   [250,900,2200,5200].forEach(ms=>setTimeout(()=>{stamp();capture()},ms));
-  const vg=setInterval(stamp,300);setTimeout(()=>clearInterval(vg),22000);
+  const vg=setTimeout(stamp,300);setTimeout(()=>clearInterval(vg),22000);
 })();
 </script>
 
@@ -61963,7 +61970,7 @@ create index if not exists player_messages_sender_idx on public.player_messages(
   document.addEventListener('DOMContentLoaded',stamp,{once:true});
   window.addEventListener('pageshow',stamp,{passive:true});
   [250,800,1800,4200].forEach(ms=>setTimeout(stamp,ms));
-  const vg=setInterval(stamp,250);setTimeout(()=>clearInterval(vg),30000);
+  const vg=setTimeout(stamp,250);setTimeout(()=>clearInterval(vg),30000);
 })();
 </script>
 
@@ -62104,7 +62111,7 @@ create index if not exists player_messages_sender_idx on public.player_messages(
   document.addEventListener('DOMContentLoaded',()=>{stamp();const uid=uidNow();if(uid&&gateReady(uid))void reconcile('dom')},{once:true});
   window.addEventListener('pageshow',()=>{stamp();const uid=uidNow();if(uid&&gateReady(uid))void reconcile('pageshow')},{passive:true});
   [250,900,2200,5200].forEach(ms=>setTimeout(()=>{stamp();const uid=uidNow();if(uid&&gateReady(uid)&&reconciledUid!==uid)void reconcile('timer')},ms));
-  const guard=setInterval(stamp,300);setTimeout(()=>clearInterval(guard),30000);
+  const guard=setTimeout(stamp,300);setTimeout(()=>clearInterval(guard),30000);
 })();
 </script>
 
@@ -62220,7 +62227,7 @@ create index if not exists player_messages_sender_idx on public.player_messages(
   document.addEventListener('DOMContentLoaded',()=>{normalize();stamp()},{once:true});
   window.addEventListener('pageshow',()=>{normalize();stamp()},{passive:true});
   [250,900,2200,5200].forEach(ms=>setTimeout(()=>{normalize();stamp()},ms));
-  const g=setInterval(stamp,300);setTimeout(()=>clearInterval(g),30000);
+  const g=setTimeout(stamp,300);setTimeout(()=>clearInterval(g),30000);
 })();
 </script>
 
@@ -62320,7 +62327,7 @@ create index if not exists player_messages_sender_idx on public.player_messages(
   document.addEventListener('DOMContentLoaded',()=>{maxLevelUi();stamp()},{once:true});
   window.addEventListener('pageshow',()=>{maxLevelUi();stamp()},{passive:true});
   [250,900,2200,5200].forEach(ms=>setTimeout(()=>{maxLevelUi();stamp()},ms));
-  const g=setInterval(stamp,300);setTimeout(()=>clearInterval(g),30000);
+  const g=setTimeout(stamp,300);setTimeout(()=>clearInterval(g),30000);
 })();
 </script>
 
@@ -62408,7 +62415,7 @@ create index if not exists player_messages_sender_idx on public.player_messages(
   try{if(typeof render==='function'&&!window.__v457RenderWrapped){const base=render;render=function(){const r=base.apply(this,arguments);install();return r};window.render=render;window.__v457RenderWrapped=true}}catch(e){}
   try{if(typeof v075ApplyCloudSave==='function'&&!window.__v457CloudWrapped){const base=v075ApplyCloudSave;v075ApplyCloudSave=function(){const r=base.apply(this,arguments);if(r&&typeof r.then==='function')return r.then(x=>{install();return x});install();return r};window.v075ApplyCloudSave=v075ApplyCloudSave;window.__v457CloudWrapped=true}}catch(e){}
   try{if(typeof v032Go==='function'&&!window.__v457GoWrapped){const base=v032Go;v032Go=function(id){const r=base.apply(this,arguments);if(id==='endgame')renderEndgame();else if(id==='world')ensureWorldLink();ensureMenu();stamp();return r};window.v032Go=v032Go;window.__v457GoWrapped=true}}catch(e){}
-  install();document.addEventListener('DOMContentLoaded',install,{once:true});window.addEventListener('pageshow',install,{passive:true});[250,900,2200,5200].forEach(ms=>setTimeout(install,ms));const g=setInterval(stamp,350);setTimeout(()=>clearInterval(g),35000);
+  install();document.addEventListener('DOMContentLoaded',install,{once:true});window.addEventListener('pageshow',install,{passive:true});[250,900,2200,5200].forEach(ms=>setTimeout(install,ms));const g=setTimeout(stamp,350);setTimeout(()=>clearInterval(g),35000);
 })();
 </script>
 
@@ -62571,7 +62578,7 @@ create index if not exists player_messages_sender_idx on public.player_messages(
   document.addEventListener('DOMContentLoaded',()=>{normalizeKeys();stamp()},{once:true});
   window.addEventListener('pageshow',()=>{normalizeKeys();stamp()},{passive:true});
   [250,900,2200,5200].forEach(ms=>setTimeout(stamp,ms));
-  const g=setInterval(stamp,350);setTimeout(()=>clearInterval(g),42000);
+  const g=setTimeout(stamp,350);setTimeout(()=>clearInterval(g),42000);
 })();
 </script>
 
@@ -64080,6 +64087,7 @@ create index if not exists player_messages_sender_idx on public.player_messages(
     generic:{metal:'#b0b8b2',dark:'#525f57',accent:'#79d760',leather:'#67503a'}
   };
   const SLOTS=new Set(['weapon','head','body','boots','ring','amulet']);
+  const URI_CACHE=new Map();
   function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
   function hash(v){let h=2166136261;for(const ch of String(v||'')){h^=ch.charCodeAt(0);h=Math.imul(h,16777619)}return h>>>0}
   function plain(it){return String(it?.name||'Item').replace(/^(Normal|Gewöhnlich|Rare|Selten|Episch|Legendär|Mystisch):\s*/i,'').replace(/\s*\[Lv\.\d+\]\s*$/i,'').trim()}
@@ -64220,9 +64228,22 @@ create index if not exists player_messages_sender_idx on public.player_messages(
     if(!art)return'';
     return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="${esc(plain(it))}">${frameStart(d,it)}<g filter="url(#${d.id}glow)">${art}</g>${specialOverlay(it,d)}</svg>`;
   }
-  function uri(it){const s=fullSvg(it);return s?'data:image/svg+xml;charset=UTF-8,'+encodeURIComponent(s):''}
+  function uri(it){
+    if(!it)return'';
+    const ck=key(it)+'|'+quality(it)+'|'+clsId(it);
+    const cached=URI_CACHE.get(ck);if(cached)return cached;
+    const svg=fullSvg(it),u=svg?'data:image/svg+xml;charset=UTF-8,'+encodeURIComponent(svg):'';
+    if(u){if(URI_CACHE.size>512)URI_CACHE.clear();URI_CACHE.set(ck,u)}
+    return u;
+  }
   function img(it){const u=uri(it);if(!u)return null;const el=document.createElement('img');el.className='v466-item-art';el.src=u;el.alt=plain(it);el.loading='lazy';el.decoding='async';return el}
-  function replace(box,it){if(!box||!it)return false;const el=img(it);if(!el)return false;box.replaceChildren(el);box.dataset.v466Art='1';return true}
+  function replace(box,it){
+    if(!box||!it)return false;const u=uri(it);if(!u)return false;
+    const current=box.querySelector(':scope > img.v466-item-art');
+    if(current&&current.getAttribute('src')===u&&box.childElementCount===1)return true;
+    const el=document.createElement('img');el.className='v466-item-art';el.src=u;el.alt=plain(it);el.loading='lazy';el.decoding='async';
+    box.replaceChildren(el);box.dataset.v466Art='1';return true;
+  }
   window.v466ItemArtUri=uri;window.v466ItemArtSvg=fullSvg;
 
   function decorateShop(){
@@ -64246,7 +64267,12 @@ create index if not exists player_messages_sender_idx on public.player_messages(
     });
   }
   function decorateSheet(i){const it=s?.inventory?.[Number(i)];if(it)replace(document.querySelector('#v459InventorySheet .v459-sheet-icon'),it)}
-  function decorateAll(){decorateShop();decorateInventory();decorateEquipment();decorateMaterials()}
+  function decorateAll(){
+    const shopActive=!!document.querySelector('#shop')?.classList.contains('active');
+    const charActive=!!document.querySelector('#character')?.classList.contains('active');
+    if(shopActive)decorateShop();
+    if(charActive){decorateInventory();decorateEquipment();decorateMaterials()}
+  }
 
   /* Reward cards use the same artwork as shop/inventory. */
   try{
@@ -64340,16 +64366,17 @@ create index if not exists player_messages_sender_idx on public.player_messages(
   try{if(typeof v030Materials==='function'&&!window.__v466MaterialsWrapped){const base=v030Materials;v030Materials=function(){const r=base.apply(this,arguments);decorateMaterials();return r};window.__v466MaterialsWrapped=true}}catch(e){}
   try{if(typeof renderShop==='function'&&!window.__v466ShopWrapped){const base=renderShop;renderShop=function(){const r=base.apply(this,arguments);rebindShopButtons();decorateShop();return r};window.renderShop=renderShop;window.__v466ShopWrapped=true}}catch(e){}
   try{if(typeof renderInventory==='function'&&!window.__v466InventoryWrapped){const base=renderInventory;renderInventory=function(){const r=base.apply(this,arguments);decorateInventory();decorateEquipment();return r};window.renderInventory=renderInventory;window.__v466InventoryWrapped=true}}catch(e){}
-  try{if(typeof render==='function'&&!window.__v466RenderWrapped){const base=render;render=function(){const r=base.apply(this,arguments);rebindShopButtons();decorateAll();stamp();return r};window.render=render;window.__v466RenderWrapped=true}}catch(e){}
+  try{if(typeof render==='function'&&!window.__v466RenderWrapped){const base=render;render=function(){const r=base.apply(this,arguments);if(document.querySelector('#shop')?.classList.contains('active'))rebindShopButtons();decorateAll();stamp();return r};window.render=render;window.__v466RenderWrapped=true}}catch(e){}
   function stamp(){
     try{document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version').forEach(el=>{if(el)el.textContent=VERSION})}catch(e){}
     try{document.querySelectorAll('.v366-ver,.v371-logo em,.v372-logo em').forEach(el=>{if(el)el.textContent=SHORT})}catch(e){}
     try{document.title='Grow Legends '+SHORT}catch(e){}
   }
-  document.addEventListener('DOMContentLoaded',()=>{rebindShopButtons();decorateAll();stamp()},{once:true});
-  window.addEventListener('pageshow',()=>{rebindShopButtons();decorateAll();stamp()},{passive:true});
-  [120,450,1100,2600,5600,10500,17000].forEach(ms=>setTimeout(()=>{rebindShopButtons();decorateAll();stamp()},ms));
-  rebindShopButtons();decorateAll();stamp();
+  function bootDecorate(){if(document.querySelector('#shop')?.classList.contains('active'))rebindShopButtons();decorateAll();stamp()}
+  document.addEventListener('DOMContentLoaded',bootDecorate,{once:true});
+  window.addEventListener('pageshow',bootDecorate,{passive:true});
+  [250,1200,2600].forEach(ms=>setTimeout(bootDecorate,ms));
+  bootDecorate();
 })();
 </script>
 
@@ -64946,7 +64973,7 @@ create index if not exists player_messages_sender_idx on public.player_messages(
   document.addEventListener('DOMContentLoaded',settle,{once:true});
   window.addEventListener('pageshow',settle,{passive:true});
   [100,350,900,1800,4200,8200,12500].forEach(ms=>setTimeout(settle,ms));
-  const vg=setInterval(stamp,350);setTimeout(()=>clearInterval(vg),46000);
+  const vg=setTimeout(stamp,350);setTimeout(()=>clearInterval(vg),46000);
 })();
 </script>
 
@@ -66053,6 +66080,8 @@ create index if not exists player_messages_sender_idx on public.player_messages(
   }
   function updateBars(){
     try{
+      const character=document.getElementById('character');
+      if(!character||!character.classList.contains('active')){stamp();return}
       const invPanel=document.getElementById('v459PanelInventory');
       const matPanel=document.getElementById('v459PanelMaterials');
       const improvements=autoEquipCount();
@@ -66076,5 +66105,33 @@ create index if not exists player_messages_sender_idx on public.player_messages(
   document.addEventListener('DOMContentLoaded',()=>{stamp();updateBars()},{once:true});
   window.addEventListener('pageshow',()=>{stamp();updateBars()},{passive:true});
   [150,650,1600].forEach(ms=>setTimeout(updateBars,ms));
+})();
+</script>
+
+
+<!-- ===== V4.81: performance update ===== -->
+<style id="v481-performance-css">
+.app > header .v358-logo::after{content:"V4.81"!important}
+.app > header .v366-ver::after,.app > header .v371-logo em::after,.app > header .v372-logo em::after{content:"V4.81"!important;font-size:5px!important;color:#63cdd1!important;font-style:normal!important;font-weight:900!important}
+html.v481-hidden *,html.v481-hidden *::before,html.v481-hidden *::after{animation-play-state:paused!important}
+@media(max-width:600px){
+  .v366-topbar,.v371-topbar,.v372-topbar,.v115-ui-overlay,#v247DungeonReward,.v381-modal{backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+  #shop .shop-item,#character .inv-item{will-change:auto!important}
+}
+</style>
+<script id="v481-performance-owner">
+(function(){
+  const VERSION='V4.81',SHORT='V4.81';
+  function stamp(){
+    try{document.title='Grow Legends '+SHORT}catch(e){}
+    try{document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version').forEach(el=>{if(el&&el.textContent!==VERSION)el.textContent=VERSION})}catch(e){}
+    try{document.querySelectorAll('.v366-ver,.v371-logo em,.v372-logo em').forEach(el=>{if(el&&el.textContent!==SHORT)el.textContent=SHORT})}catch(e){}
+  }
+  function visibility(){try{document.documentElement.classList.toggle('v481-hidden',document.hidden)}catch(e){}}
+  visibility();stamp();
+  document.addEventListener('visibilitychange',()=>{visibility();if(!document.hidden){try{if(typeof v229UpdateQuestTimer==='function')v229UpdateQuestTimer()}catch(e){}try{if(typeof v239UpdateGrowLive==='function')v239UpdateGrowLive()}catch(e){}try{if(typeof v324Paint==='function')v324Paint()}catch(e){}stamp()}},{passive:true});
+  document.addEventListener('DOMContentLoaded',()=>{visibility();stamp()},{once:true});
+  window.addEventListener('pageshow',()=>{visibility();stamp()},{passive:true});
+  window.__V481_PERFORMANCE__={version:VERSION,itemArtCache:true,duplicateLiveTickRetired:true,fullGrowSecondRenderRetired:true,backgroundAnimationsPaused:true};
 })();
 </script>
