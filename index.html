@@ -62969,7 +62969,12 @@ create index if not exists player_messages_sender_idx on public.player_messages(
       const name=card.querySelector('.item-name');
       if(name){
         name.replaceChildren();
-        const icon=document.createElement('span');icon.className='v459-inv-icon';icon.textContent=it.icon||'🎁';
+        const icon=document.createElement('span');icon.className='v459-inv-icon';
+        try{
+          const u=typeof window.v466ItemArtUri==='function'?window.v466ItemArtUri(it):'';
+          if(u){const im=document.createElement('img');im.className='v466-item-art';im.src=u;im.alt=String(it.name||'Item');im.decoding='async';icon.appendChild(im)}
+          else icon.textContent=it.icon||'🎁';
+        }catch(e){icon.textContent=it.icon||'🎁'};
         const txt=document.createElement('span');txt.className='v459-inv-name';
         txt.textContent=String(it.name||'Unbekanntes Item').replace(/^(Normal|Gewöhnlich|Rare|Episch|Legendär|Mystisch):\s*/i,'').replace(/\s*\[Lv\.\d+\]\s*$/i,'');
         name.append(icon,txt);
@@ -63788,9 +63793,9 @@ create index if not exists player_messages_sender_idx on public.player_messages(
 })();
 </script>
 
-<!-- ===== V4.67 Stable: procedural fantasy item art for gear ===== -->
+<!-- ===== V4.68 Stable: procedural fantasy item art for gear ===== -->
 <style id="v465-item-art-css">
-.app > header .v358-logo::after{content:"V4.67"!important}
+.app > header .v358-logo::after{content:"V4.68"!important}
 .v465-item-art{
   display:block!important;
   width:100%!important;
@@ -63842,7 +63847,7 @@ create index if not exists player_messages_sender_idx on public.player_messages(
 </style>
 <script id="v465-item-art-script">
 (function(){
-  const VERSION='V4.67 Stable',SHORT='V4.67';
+  const VERSION='V4.68 Stable',SHORT='V4.68';
   const GEAR_SLOTS=new Set(['weapon','head','body','boots']);
   const Q={
     gray:{rim:'#aeb7b2',glow:'#7d8881'},green:{rim:'#7ee04f',glow:'#49a63f'},blue:{rim:'#43a7ff',glow:'#266cc4'},
@@ -63949,6 +63954,14 @@ create index if not exists player_messages_sender_idx on public.player_messages(
   }
   function decorateAll(){decorateShop();decorateInventory();decorateEquipment();}
 
+  /* V4.68: V4.65 is generator-only. The V4.66 canonical renderer below owns every visible item.
+     This prevents old delayed V4.65 timers/wrappers from repainting cards with another appearance. */
+  decorateShop=function(){};
+  decorateInventory=function(){};
+  decorateEquipment=function(){};
+  decorateSheet=function(){};
+  decorateAll=function(){};
+
   try{if(typeof window.v459CompactInventory==='function'&&!window.__v465CompactWrapped){const base=window.v459CompactInventory;window.v459CompactInventory=function(){const r=base.apply(this,arguments);decorateInventory();decorateEquipment();return r};window.__v465CompactWrapped=true}}catch(e){}
   try{if(typeof window.v459OpenInventoryItem==='function'&&!window.__v465SheetWrapped){const base=window.v459OpenInventoryItem;window.v459OpenInventoryItem=function(i){const r=base.apply(this,arguments);decorateSheet(i);return r};window.__v465SheetWrapped=true}}catch(e){}
   try{if(typeof renderShop==='function'&&!window.__v465ShopWrapped){const base=renderShop;renderShop=function(){const r=base.apply(this,arguments);decorateShop();return r};window.renderShop=renderShop;window.__v465ShopWrapped=true}}catch(e){}
@@ -63965,260 +63978,9 @@ create index if not exists player_messages_sender_idx on public.player_messages(
 })();
 </script>
 
-<!-- ===== V4.67 Stable: unique art for ALL items + purchase inventory durability ===== -->
+<!-- ===== V4.68 Stable: unique visuals for ALL items + purchase durability fix ===== -->
 <style id="v466-all-item-art-css">
-.app > header .v358-logo::after{content:"V4.67"!important}
-.v466-item-art{display:block!important;width:100%!important;height:100%!important;object-fit:contain!important;filter:drop-shadow(0 5px 7px rgba(0,0,0,.58))!important;pointer-events:none!important;user-select:none!important}
-#shop .shop-item .shop-icon,#shop .shop-item .v41-shop-icon{overflow:hidden!important;padding:2px!important}
-#shop .shop-item .shop-icon .v466-item-art,#shop .shop-item .v41-shop-icon .v466-item-art{width:100%!important;height:100%!important}
-#character.v459-character-hub #inventory .v459-inv-icon .v466-item-art{width:48px!important;height:48px!important}
-#character.v459-character-hub .slot .slot-icon .v466-item-art{width:42px!important;height:42px!important}
-#v459InventorySheet .v459-sheet-icon .v466-item-art{width:86px!important;height:86px!important}
-#character.v459-character-hub #v030Materials .v466-material-art{
-  width:54px!important;height:54px!important;margin:0 auto 6px!important;display:grid!important;place-items:center!important;
-  border-radius:12px!important;overflow:hidden!important;background:radial-gradient(circle,rgba(107,191,121,.13),#07100b 72%)!important;
-  border:1px solid #35533c!important;
-}
-#character.v459-character-hub #v030Materials .v466-material-art .v466-item-art{width:50px!important;height:50px!important}
-#character.v459-character-hub #v030Materials .inv-item{position:relative!important}
-</style>
-<script id="v466-all-item-art-purchase-fix">
-(function(){
-  const VERSION='V4.67 Stable',SHORT='V4.67';
-  const ALL_GEAR=new Set(['weapon','head','body','boots','ring','amulet']);
-  const Q={
-    gray:{rim:'#aeb7b2',glow:'#6e7a72'},green:{rim:'#7ee04f',glow:'#45a33f'},blue:{rim:'#43a7ff',glow:'#236cc6'},
-    purple:{rim:'#c66cff',glow:'#7e38ad'},orange:{rim:'#ff9a35',glow:'#b85c17'},cyan:{rim:'#42ece7',glow:'#159c98'}
-  };
-  const CLASS={
-    grower:{metal:'#abb5ad',metal2:'#58645b',accent:'#79d857',leather:'#755038',cloth:'#344733'},
-    bruiser:{metal:'#a49ab8',metal2:'#50495f',accent:'#9873ff',leather:'#50384e',cloth:'#342942'},
-    scout:{metal:'#a3b9b0',metal2:'#4b6259',accent:'#55d4a0',leather:'#5b4a32',cloth:'#283f36'},
-    generic:{metal:'#aeb7b2',metal2:'#59635d',accent:'#7fd65f',leather:'#66503a',cloth:'#304234'}
-  };
-  function esc(x){return String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
-  function hash(s){let h=2166136261;for(const ch of String(s||'')){h^=ch.charCodeAt(0);h=Math.imul(h,16777619)}return h>>>0}
-  function plain(it){return String(it?.name||it?.id||'Item').replace(/^(Normal|Gewöhnlich|Rare|Selten|Episch|Legendär|Mystisch):\s*/i,'').replace(/\s*\[Lv\.\d+\]\s*$/i,'')}
-  function qOf(it){const q=String(it?.quality||'').toLowerCase();if(Q[q])return q;const r=String(it?.rarity||'').toLowerCase();if(/myth|myst|cyan/.test(r))return'cyan';if(/legend|orange/.test(r))return'orange';if(/epic|purple/.test(r))return'purple';if(/rare|blue/.test(r))return'blue';if(/green|uncommon/.test(r))return'green';return'gray'}
-  function clsOf(it){return CLASS[it?.classId]||CLASS.generic}
-  function typeOf(it){
-    if(it?.type==='gem')return'gem';
-    if(it?.type==='scroll')return'scroll';
-    if(it?.slot==='ring')return'ring';
-    if(it?.slot==='amulet')return'amulet';
-    if(it?.slot==='head')return'head';
-    if(it?.slot==='body')return'body';
-    if(it?.slot==='boots')return'boots';
-    if(it?.slot==='weapon')return'weapon';
-    return'generic';
-  }
-  function weaponKind(it){
-    const n=plain(it).toLowerCase(),ic=String(it?.icon||'');
-    if(/bogen|bow/.test(n)||ic==='🏹')return'bow';
-    if(/stab|zepter|kristall|wand|orb/.test(n)||/[🪄🔮]/u.test(ic))return'staff';
-    if(/schere/.test(n)||ic==='✂️')return'shears';
-    if(/handschuh/.test(n)||ic==='🧤')return'gloves';
-    if(/hammer|kolben|keule/.test(n)||ic==='🔨')return'hammer';
-    if(/axt|spalter|beißer|beisser/.test(n)||ic==='🪓')return'axe';
-    return'sword';
-  }
-  function defs(it){
-    const q=Q[qOf(it)],c=clsOf(it),h=hash(plain(it)),id='i'+(h%999983),v=h%7;
-    return {q,c,h,id,v,v2:(h>>>8)%7,v3:(h>>>16)%7,defs:`<defs>
-      <radialGradient id="${id}bg" cx="50%" cy="43%" r="72%"><stop offset="0" stop-color="${q.glow}" stop-opacity=".24"/><stop offset=".56" stop-color="#0c1711" stop-opacity=".62"/><stop offset="1" stop-color="#040806" stop-opacity=".97"/></radialGradient>
-      <linearGradient id="${id}metal" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#e6ece7"/><stop offset=".30" stop-color="${c.metal}"/><stop offset=".70" stop-color="${c.metal2}"/><stop offset="1" stop-color="#2c332f"/></linearGradient>
-      <linearGradient id="${id}wood" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#a4784c"/><stop offset=".54" stop-color="${c.leather}"/><stop offset="1" stop-color="#2f2117"/></linearGradient>
-      <linearGradient id="${id}accent" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#e0f8d5"/><stop offset=".34" stop-color="${c.accent}"/><stop offset="1" stop-color="${q.rim}"/></linearGradient>
-      <linearGradient id="${id}cloth" x1="0" y1="0" x2="1" y2="1"><stop stop-color="${c.cloth}"/><stop offset="1" stop-color="#111a14"/></linearGradient>
-      <filter id="${id}glow"><feGaussianBlur stdDeviation="3.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-    </defs>`};
-  }
-  function leaf(d,x,y,s=1,r=0){return `<g transform="translate(${x} ${y}) rotate(${r}) scale(${s})"><path d="M0 0 C9-12 17-9 20-3 C13 0 8 5 3 11 C4 6 2 2 0 0Z" fill="url(#${d.id}accent)" opacity=".92"/><path d="M2 1 L15-4" stroke="#e1f3da" stroke-width="1.3" opacity=".6"/></g>`}
-  function ornament(d){
-    const v=d.v;
-    if(v===0)return `${leaf(d,128,54,.72,0)}${leaf(d,93,70,.48,-32)}`;
-    if(v===1)return `<path d="M86 53 L101 74 L91 82 L74 62Z M170 53 L155 74 L165 82 L182 62Z" fill="url(#${d.id}accent)" opacity=".78"/>`;
-    if(v===2)return `<circle cx="128" cy="62" r="11" fill="url(#${d.id}accent)" stroke="${d.q.rim}" stroke-width="2"/>`;
-    if(v===3)return `<path d="M105 54 L128 35 L151 54 L141 72 H115Z" fill="url(#${d.id}accent)" opacity=".75"/>`;
-    if(v===4)return `<path d="M92 64 Q128 35 164 64" fill="none" stroke="${d.q.rim}" stroke-width="5" stroke-linecap="round"/>`;
-    if(v===5)return `<path d="M110 56 L118 36 L128 58 L138 36 L146 56" fill="none" stroke="${d.c.accent}" stroke-width="5" stroke-linecap="round"/>`;
-    return `${leaf(d,103,59,.52,-28)}${leaf(d,153,59,.52,28)}`;
-  }
-  function weaponArt(it,d){
-    const k=weaponKind(it),v=d.v,w=d.v2,z=d.v3,h=d.h;
-    const tilt=[-30,-22,-14,12,20,28,34][(v+w)%7];
-    if(k==='axe'){
-      const second=w%3===0?`<path d="M123 69 C100 52 78 58 60 77 C81 81 98 94 113 114 C126 104 132 87 132 76Z" fill="url(#${d.id}metal)" opacity=".76" stroke="${d.q.rim}" stroke-width="2"/>`:'';
-      const spikes=z>=3?`<path d="M169 64 L205 48 L187 78Z" fill="url(#${d.id}accent)"/><path d="M168 104 L205 122 L184 92Z" fill="url(#${d.id}accent)"/>`:'';
-      return `<g transform="rotate(${tilt} 128 128)"><rect x="119" y="66" width="18" height="139" rx="8" fill="url(#${d.id}wood)" stroke="#2b1d14" stroke-width="4"/><path d="M132 66 C159 48 193 55 207 80 C183 81 169 95 157 119 C145 111 133 99 124 89Z" fill="url(#${d.id}metal)" stroke="${d.q.rim}" stroke-width="3"/>${second}${spikes}<circle cx="128" cy="75" r="8" fill="url(#${d.id}accent)"/>${leaf(d,109,124,.78,-20)}</g>`;
-    }
-    if(k==='hammer'){
-      const head=w%2?`<path d="M70 54 H181 L195 74 L181 105 H70 L58 81Z" fill="url(#${d.id}metal)" stroke="${d.q.rim}" stroke-width="3"/>`:`<rect x="68" y="51" width="119" height="60" rx="${8+((v+w)%7)}" fill="url(#${d.id}metal)" stroke="${d.q.rim}" stroke-width="3"/>`;
-      const spike=z>=3?`<path d="M187 68 L220 79 L187 94Z" fill="url(#${d.id}accent)"/>`:'';
-      return `<g transform="rotate(${tilt} 128 128)"><rect x="119" y="73" width="18" height="135" rx="8" fill="url(#${d.id}wood)" stroke="#2d2118" stroke-width="4"/>${head}${spike}<circle cx="128" cy="80" r="10" fill="#233028" stroke="${d.q.rim}" stroke-width="3"/>${ornament(d)}</g>`;
-    }
-    if(k==='staff'){
-      const crystal=[[128,24,148,53,129,85,105,52],[128,20,151,43,144,74,128,91,106,73,103,44],[128,20,139,46,165,50,143,68,150,91,128,75,106,91,113,68,91,50,117,46]][w%3];
-      const pts=[];for(let i=0;i<crystal.length;i+=2)pts.push(crystal[i]+','+crystal[i+1]);
-      const branch=z%2?`<path d="M113 70 C88 65 78 51 82 37 C94 48 104 53 119 54" fill="none" stroke="${d.c.metal}" stroke-width="7" stroke-linecap="round"/>`:'';
-      return `<g transform="rotate(${5+v*2+w*2} 128 128)"><path d="M121 56 C117 91 118 165 130 216" fill="none" stroke="url(#${d.id}wood)" stroke-width="18" stroke-linecap="round"/><circle cx="128" cy="53" r="34" fill="${d.q.glow}" opacity=".23" filter="url(#${d.id}glow)"/><polygon points="${pts.join(' ')}" fill="url(#${d.id}accent)" stroke="#dcefe4" stroke-width="3"/>${branch}${leaf(d,139,124,.65,22)}</g>`;
-    }
-    if(k==='bow'){
-      const bend=66+(v*3)+(z%3)*2,wide=45+(w%4)*6;
-      return `<g transform="rotate(${-14+v*2+z} 128 128)"><path d="M${wide} 34 C${wide-22} ${bend},${wide-17} 176,${wide+8} 220" fill="none" stroke="url(#${d.id}wood)" stroke-width="${11+(v%3)*2}" stroke-linecap="round"/><path d="M${wide} 34 L${wide+8} 220" stroke="#dfe9dd" stroke-width="2" opacity=".86"/><path d="M${wide+4} 126 L186 ${102+v}" stroke="url(#${d.id}metal)" stroke-width="6" stroke-linecap="round"/><path d="M187 ${102+v} L166 ${91+v} L169 ${111+v}Z" fill="url(#${d.id}accent)"/>${ornament(d)}</g>`;
-    }
-    if(k==='shears')return `<g><g transform="rotate(${29+v} 128 128)"><path d="M120 48 L141 145 L126 151 L91 55Z" fill="url(#${d.id}metal)" stroke="${d.q.rim}" stroke-width="2"/><circle cx="132" cy="166" r="${21+v%3}" fill="none" stroke="url(#${d.id}wood)" stroke-width="10"/></g><g transform="rotate(${-29-v} 128 128)"><path d="M136 48 L115 145 L130 151 L165 55Z" fill="url(#${d.id}metal)" stroke="${d.q.rim}" stroke-width="2"/><circle cx="124" cy="166" r="${21+v%3}" fill="none" stroke="url(#${d.id}wood)" stroke-width="10"/></g><circle cx="128" cy="140" r="9" fill="url(#${d.id}accent)"/>${ornament(d)}</g>`;
-    if(k==='gloves')return `<g><path d="M64 91 C75 70 96 69 108 88 L111 134 C103 158 91 178 71 183 C57 164 55 145 58 123Z" fill="url(#${d.id}wood)" stroke="${d.q.rim}" stroke-width="4"/><path d="M148 91 C159 70 180 69 192 88 L195 134 C187 158 175 178 155 183 C141 164 139 145 142 123Z" fill="url(#${d.id}wood)" stroke="${d.q.rim}" stroke-width="4"/><path d="M68 113 H104 M152 113 H188" stroke="url(#${d.id}accent)" stroke-width="${4+v%3}"/>${ornament(d)}</g>`;
-    const blade=w%3===0?`M128 32 L148 56 L139 158 H117 L108 56Z`:w%3===1?`M128 27 L143 51 L146 123 L136 162 H120 L110 123 L113 51Z`:`M128 28 L151 58 L141 155 L128 169 L115 155 L105 58Z`;
-    return `<g transform="rotate(${8+v*2+z*2} 128 128)"><path d="${blade}" fill="url(#${d.id}metal)" stroke="${d.q.rim}" stroke-width="3"/><path d="M96 157 H160" stroke="url(#${d.id}accent)" stroke-width="11" stroke-linecap="round"/><rect x="120" y="157" width="16" height="57" rx="7" fill="url(#${d.id}wood)"/>${z>=3?`<path d="M95 157 L78 142 M161 157 L178 142" stroke="${d.q.rim}" stroke-width="6" stroke-linecap="round"/>`:''}${ornament(d)}</g>`;
-  }
-  function headArt(it,d){
-    const n=plain(it).toLowerCase(),v=d.v,w=d.v2,z=d.v3;
-    const kind=/krone/.test(n)||it?.icon==='👑'?'crown':/maske/.test(n)||/[🥽🎭]/u.test(String(it?.icon||''))?'mask':/kapuze|kappe|hood/.test(n)||/[🧙🥷🧢]/u.test(String(it?.icon||''))?'hood':'helmet';
-    if(kind==='crown')return `<g><path d="M52 148 L${66+v} 77 L105 113 L128 ${52-v*2} L151 113 L${190-v} 77 L204 148Z" fill="url(#${d.id}metal)" stroke="${d.q.rim}" stroke-width="5"/><rect x="60" y="140" width="136" height="38" rx="10" fill="url(#${d.id}wood)" stroke="${d.q.rim}" stroke-width="3"/>${ornament(d)}</g>`;
-    if(kind==='mask')return `<g><path d="M${58+v} 75 C83 ${46+v},173 ${46+v},${198-v} 75 L${184-v} 165 C163 194 94 194 72 165Z" fill="url(#${d.id}metal)" stroke="${d.q.rim}" stroke-width="4"/><path d="M83 111 L117 102 L109 128 L84 131Z M173 111 L139 102 L147 128 L172 131Z" fill="#071009" stroke="${d.c.accent}" stroke-width="3"/>${v%2?`<path d="M128 126 L114 158 L142 158Z" fill="${d.c.metal2}"/>`:''}${ornament(d)}</g>`;
-    if(kind==='hood')return `<g><path d="M128 ${40+v} C${74-v} 44 ${50+v} 87 60 147 C70 184 93 204 128 213 C164 204 187 182 196 147 C205 87 181 44 128 ${40+v}Z" fill="url(#${d.id}cloth)" stroke="${d.q.rim}" stroke-width="4"/><path d="M128 72 C94 72 77 100 84 141 C91 165 106 179 128 182 C151 178 166 164 173 140 C180 100 162 72 128 72Z" fill="#08100b"/>${v>=3?`<path d="M80 104 L58 83 M176 104 L198 83" stroke="${d.c.accent}" stroke-width="7" stroke-linecap="round"/>`:''}${ornament(d)}</g>`;
-    const horns=(v+w)%3===1?`<path d="M77 75 C54 55 47 36 61 26 C69 47 80 53 96 58Z M179 75 C202 55 209 36 195 26 C187 47 176 53 160 58Z" fill="url(#${d.id}metal)" stroke="${d.q.rim}" stroke-width="3"/>`:'';
-    const crest=(v+z)%3===2?`<path d="M128 39 C113 46 106 62 107 83 H149 C150 62 143 46 128 39Z" fill="url(#${d.id}accent)" opacity=".8"/>`:'';
-    const visor=(v+w+z)%2?`<path d="M76 117 H180 V148 H76Z" fill="#071009" opacity=".92"/><path d="M87 132 H169" stroke="${d.c.accent}" stroke-width="4"/>`:`<path d="M84 121 H172 V145 H84Z" fill="#0a120d" opacity=".86"/>`;
-    return `<g>${horns}${crest}<path d="M${52+v} 126 C58 73 90 47 128 47 C166 47 198 73 ${204-v} 126 L188 178 H68Z" fill="url(#${d.id}metal)" stroke="${d.q.rim}" stroke-width="4"/>${visor}${ornament(d)}</g>`;
-  }
-  function bodyArt(it,d){
-    const n=plain(it).toLowerCase(),v=d.v,w=d.v2,z=d.v3,robe=/robe|gewand|mantel|hoodie/.test(n)||/[🥋🧥]/u.test(String(it?.icon||''));
-    if(robe)return `<g><path d="M${82-v} 48 L110 67 H146 L${174+v} 48 L210 83 L184 119 L169 105 L${180+v} 213 H${76-v} L87 105 L72 119 L46 83Z" fill="url(#${d.id}cloth)" stroke="${d.q.rim}" stroke-width="4"/><path d="M110 67 L128 ${91+v} L146 67" fill="none" stroke="${d.c.accent}" stroke-width="6"/><path d="M${92-v} 135 H${164+v}" stroke="${d.c.metal}" stroke-width="${5+v%3}" opacity=".7"/>${ornament(d)}</g>`;
-    const shoulder=(v+w)>=6?`<path d="M73 67 L42 83 L53 113 L86 101Z M183 67 L214 83 L203 113 L170 101Z" fill="url(#${d.id}metal)" stroke="${d.q.rim}" stroke-width="3"/>`:'';
-    const plates=Array.from({length:2+(z%3)},(_,i)=>`<path d="M${100+i*15} ${100+i*22} H${156-i*15}" stroke="${d.c.accent}" stroke-width="5" opacity="${.45+i*.1}"/>`).join('');
-    return `<g>${shoulder}<path d="M80 54 L108 68 H148 L176 54 L213 92 L184 126 L169 111 L176 207 H80 L87 111 L72 126 L43 92Z" fill="url(#${d.id}metal)" stroke="${d.q.rim}" stroke-width="4"/><path d="M104 69 L128 94 L152 69 L167 113 L152 173 H104 L89 113Z" fill="${d.c.metal2}" opacity=".88"/>${plates}${ornament(d)}</g>`;
-  }
-  function bootsArt(it,d){
-    const v=d.v,w=d.v2,z=d.v3,cuff=72+v*3+w,plate=(w+z)%2?`<path d="M59 119 H112 M144 119 H197" stroke="url(#${d.id}metal)" stroke-width="9"/>`:'';
-    return `<g><path d="M62 61 H114 V151 C109 174 94 189 64 193 C49 187 43 176 47 160 L67 142Z" fill="url(#${d.id}wood)" stroke="${d.q.rim}" stroke-width="4"/><path d="M142 61 H194 V151 C189 174 174 189 144 193 C129 187 123 176 127 160 L147 142Z" fill="url(#${d.id}wood)" stroke="${d.q.rim}" stroke-width="4"/><path d="M68 ${cuff} H108 M148 ${cuff} H188" stroke="${d.c.accent}" stroke-width="${4+v%3}"/>${plate}<path d="M50 164 C76 159 101 163 120 180 C102 198 66 205 44 191Z M129 180 C148 163 173 159 199 164 L205 191 C183 205 147 198 129 180Z" fill="url(#${d.id}metal)"/>${ornament(d)}</g>`;
-  }
-  function ringArt(it,d){
-    const v=(d.v+d.v2*2+d.v3)%7,gemShapes=[`<circle cx="128" cy="91" r="25"/>`,`<polygon points="128,58 155,91 128,120 101,91"/>`,`<polygon points="128,58 154,77 145,111 111,111 102,77"/>`,`<rect x="103" y="66" width="50" height="50" rx="9"/>`,`<polygon points="128,55 157,82 147,117 109,117 99,82"/>`,`<ellipse cx="128" cy="88" rx="30" ry="23"/>`,`<path d="M128 55 C158 74 160 105 128 122 C96 105 98 74 128 55Z"/>`];
-    return `<g><ellipse cx="128" cy="142" rx="61" ry="54" fill="none" stroke="url(#${d.id}metal)" stroke-width="22"/><g fill="url(#${d.id}accent)" stroke="${d.q.rim}" stroke-width="4" filter="url(#${d.id}glow)">${gemShapes[v]}</g><path d="M95 105 L78 123 M161 105 L178 123" stroke="${d.c.metal}" stroke-width="7" stroke-linecap="round"/>${ornament(d)}</g>`;
-  }
-  function amuletArt(it,d){
-    const v=(d.v+d.v2*3+d.v3)%7,pend=[`<circle cx="128" cy="139" r="31"/>`,`<polygon points="128,103 160,137 128,177 96,137"/>`,`<path d="M128 101 C165 121 166 153 128 180 C90 153 91 121 128 101Z"/>`,`<polygon points="128,101 163,129 151,172 105,172 93,129"/>`,`<path d="M128 101 L157 122 L151 158 L128 181 L105 158 L99 122Z"/>`,`<ellipse cx="128" cy="142" rx="37" ry="30"/>`,`<path d="M128 99 C145 112 160 121 162 142 C159 166 144 179 128 187 C112 179 97 166 94 142 C96 121 111 112 128 99Z"/>`];
-    return `<g><path d="M71 42 C72 98 91 119 128 124 C165 119 184 98 185 42" fill="none" stroke="url(#${d.id}metal)" stroke-width="8" stroke-linecap="round"/><g fill="url(#${d.id}accent)" stroke="${d.q.rim}" stroke-width="4" filter="url(#${d.id}glow)">${pend[v]}</g>${ornament(d)}</g>`;
-  }
-  function gemArt(it,d){
-    const v=(d.v+d.v2*4+d.v3)%7,pts=[`128,36 175,88 154,188 102,188 81,88`,`128,35 174,75 165,164 128,210 91,164 82,75`,`128,33 166,72 194,115 154,197 102,197 62,115 90,72`,`128,35 181,91 160,190 96,190 75,91`,`128,30 153,75 190,87 164,125 175,188 128,210 81,188 92,125 66,87 103,75`,`128,32 179,84 150,205 106,205 77,84`,`128,30 157,68 187,110 161,194 95,194 69,110 99,68`];
-    const side=v%2?`<polygon points="72,117 100,91 96,189 55,171" fill="${d.q.glow}" opacity=".55"/><polygon points="184,117 156,91 160,189 201,171" fill="${d.q.glow}" opacity=".55"/>`:'';
-    return `<g filter="url(#${d.id}glow)">${side}<polygon points="${pts[v]}" fill="url(#${d.id}accent)" stroke="#dff9ee" stroke-width="4"/><path d="M128 42 L128 194 M88 92 L168 92" stroke="#eafff6" stroke-opacity=".36" stroke-width="3"/>${ornament(d)}</g>`;
-  }
-  function scrollArt(it,d){
-    const v=(d.v+d.v2+d.v3*2)%7,runes=['✦','ᚱ','⌁','☘','✧','ᚷ','◈'],rot=[-4,4,-8,7,-2,9,-6][v];
-    return `<g transform="rotate(${rot} 128 128)"><path d="M73 52 C58 52 53 70 65 80 L72 181 C59 190 64 207 80 207 H178 C194 207 199 190 186 181 L193 80 C205 70 200 52 185 52Z" fill="#d5c49b" stroke="${d.q.rim}" stroke-width="4"/><path d="M77 65 H181 M77 193 H181" stroke="url(#${d.id}wood)" stroke-width="14" stroke-linecap="round"/><text x="128" y="139" text-anchor="middle" font-size="52" fill="${d.c.accent}" font-family="serif" filter="url(#${d.id}glow)">${runes[v]}</text><path d="M95 154 H161 M101 168 H155" stroke="#735d3c" stroke-width="4" opacity=".55"/>${ornament(d)}</g>`;
-  }
-  function genericArt(it,d){return `<g><circle cx="128" cy="128" r="62" fill="url(#${d.id}metal)" stroke="${d.q.rim}" stroke-width="4"/><circle cx="128" cy="128" r="37" fill="url(#${d.id}accent)" filter="url(#${d.id}glow)"/>${ornament(d)}</g>`}
-  function svg(it){
-    if(!it)return'';const t=typeOf(it),d=defs(it);let art='';
-    if(t==='weapon')art=weaponArt(it,d);else if(t==='head')art=headArt(it,d);else if(t==='body')art=bodyArt(it,d);else if(t==='boots')art=bootsArt(it,d);else if(t==='ring')art=ringArt(it,d);else if(t==='amulet')art=amuletArt(it,d);else if(t==='gem')art=gemArt(it,d);else if(t==='scroll')art=scrollArt(it,d);else art=genericArt(it,d);
-    const specks=Array.from({length:6+(d.h%5)},(_,i)=>{const x=22+((d.h>>(i%15))%210),y=22+((d.h>>(i%12+2))%210),r=1+(i%3);return `<circle cx="${x}" cy="${y}" r="${r}" fill="${d.q.rim}" opacity="${.13+(i%3)*.08}"/>`}).join('');
-    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="${esc(plain(it))}">${d.defs}<rect x="7" y="7" width="242" height="242" rx="33" fill="url(#${d.id}bg)"/><rect x="12" y="12" width="232" height="232" rx="29" fill="none" stroke="${d.q.rim}" stroke-opacity=".28" stroke-width="2"/>${specks}<g filter="url(#${d.id}glow)">${art}</g></svg>`;
-  }
-  function uri(it){const x=svg(it);return x?'data:image/svg+xml;charset=UTF-8,'+encodeURIComponent(x):''}
-  function img(it){const u=uri(it);if(!u)return null;const e=document.createElement('img');e.className='v466-item-art';e.src=u;e.alt=plain(it);e.loading='lazy';e.decoding='async';return e}
-  window.v466ItemArtSvg=svg;window.v466ItemArtUri=uri;
-  /* Keep consumers of the previous public helper compatible. */
-  window.v465ItemArtSvg=svg;window.v465ItemArtUri=uri;
-  function replace(box,it){if(!box||!it)return false;const e=img(it);if(!e)return false;box.replaceChildren(e);box.dataset.v466Art='1';return true}
-  function decorateShop(){
-    [['#v057WeaponGrid .shop-item',s?.weaponShop||[]],['#v057MagicGrid .shop-item',s?.magicShop||[]]].forEach(([sel,arr])=>document.querySelectorAll(sel).forEach((card,i)=>replace(card.querySelector('.shop-icon,.v41-shop-icon'),arr[i])));
-  }
-  function decorateInventory(){document.querySelectorAll('#character #inventory .inventory-grid > .inv-item').forEach((card,i)=>{const it=s?.inventory?.[i];if(!it)return;const box=card.querySelector('.v459-inv-icon');if(box)replace(box,it)})}
-  function decorateEquipment(){ALL_GEAR.forEach(slot=>{const it=s?.equipment?.[slot];if(it)replace(document.querySelector('#slot-'+slot+' .slot-icon'),it)})}
-  function decorateSheet(index){const it=s?.inventory?.[Number(index)];if(it)replace(document.querySelector('#v459InventorySheet .v459-sheet-icon'),it)}
-  function decorateMaterials(){
-    const cards=[...document.querySelectorAll('#character #v030Materials .inventory-grid > .inv-item')];
-    cards.forEach((card,i)=>{const it=s?.materials?.[i];if(!it)return;let box=card.querySelector('.v466-material-art');if(!box){box=document.createElement('div');box.className='v466-material-art';card.insertBefore(box,card.firstChild)}replace(box,it)});
-  }
-  function decorateAll(){decorateShop();decorateInventory();decorateEquipment();decorateMaterials()}
-
-  /* Purchase durability: the V4.58 clean buyer only wrote generic localStorage.
-     Use the normal persist/checkpoint path so the verified account cloud save cannot later
-     restore the pre-purchase inventory. */
-  function accountSafeCloudNudge(){
-    try{
-      if(typeof v073User==='undefined'||!v073User||v073User.is_anonymous)return;
-      if(typeof window.v452AccountVerified==='function'&&!window.v452AccountVerified(v073User.id))return;
-      if(typeof v075ScheduleSave==='function')v075ScheduleSave();
-    }catch(e){}
-  }
-  function durableSave(){
-    try{if(typeof persist==='function')persist(false);else localStorage.setItem(KEY,JSON.stringify(s))}catch(e){try{localStorage.setItem(KEY,JSON.stringify(s))}catch(_){}}
-    accountSafeCloudNudge();
-  }
-  function refreshAfterBuy(){
-    try{if(typeof renderInventory==='function')renderInventory()}catch(e){console.warn('V4.67 inventory refresh',e)}
-    try{if(typeof v030Materials==='function')v030Materials()}catch(e){}
-    try{if(typeof renderShop==='function')renderShop()}catch(e){console.warn('V4.67 shop refresh',e)}
-    try{if(typeof window.v459ArrangeCharacter==='function')window.v459ArrangeCharacter()}catch(e){}
-    try{if(typeof window.v459CompactInventory==='function')window.v459CompactInventory()}catch(e){}
-    decorateAll();
-    try{if(typeof window.v441PaintResources==='function')window.v441PaintResources()}catch(e){}
-  }
-  function idFor(it,prefix){return String(it?.uid||`${prefix}_${it?.baseId||it?.id||'item'}_${Date.now()}_${Math.random().toString(36).slice(2,9)}`)}
-  function successToast(item,destination,count){
-    const detail=`${item?.name||'Item'} gekauft · ${destination}: ${count}`;
-    try{if(typeof v063Toast==='function')return v063Toast('🛒 Kauf erfolgreich','success',detail)}catch(e){}
-    try{if(typeof v054Purchased==='function')return v054Purchased(item,destination)}catch(e){}
-  }
-  window.v030BuyWeapon=function(i){
-    const it=s?.weaponShop?.[Number(i)];if(!it)return false;const price=Math.max(0,Number(it.price)||0);
-    if((Number(s.gold)||0)<price){try{if(typeof v054NotEnoughGold==='function')v054NotEnoughGold();else v115Alert('Nicht genug Gold.')}catch(e){}return false}
-    const before=(s.inventory||[]).length,bought={...it,id:idFor(it,'gear')};
-    s.gold=(Number(s.gold)||0)-price;s.inventory??=[];s.inventory.push(bought);
-    try{s.weaponShop[Number(i)]=v057Replacement(s.weaponShop,Number(i),v057WeaponOffer)}catch(e){try{v057FillShops(true)}catch(_){}}
-    durableSave();
-    const exists=s.inventory.some(x=>x&&x.id===bought.id);
-    window.__V466_LAST_PURCHASE__={kind:'weapon',id:bought.id,before,after:s.inventory.length,exists,at:Date.now()};
-    refreshAfterBuy();successToast(bought,'Inventar',s.inventory.length);return exists;
-  };
-  window.v030BuyMagic=function(i){
-    const idx=Number(i),it=s?.magicShop?.[idx];if(!it)return false;const price=Math.max(0,Number(it.price)||0);
-    if((Number(s.gold)||0)<price){try{if(typeof v054NotEnoughGold==='function')v054NotEnoughGold();else v115Alert('Nicht genug Gold.')}catch(e){}return false}
-    s.gold=(Number(s.gold)||0)-price;
-    if(it.type==='gem'||it.type==='scroll'){
-      const before=(s.materials||[]).length,bought={...it,id:idFor(it,it.type)};s.materials??=[];s.materials.push(bought);
-      try{s.magicShop[idx]=v057Replacement(s.magicShop,idx,v057MaterialOffer)}catch(e){try{v057FillShops(true)}catch(_){}}
-      durableSave();const exists=s.materials.some(x=>x&&x.id===bought.id);
-      window.__V466_LAST_PURCHASE__={kind:it.type,id:bought.id,before,after:s.materials.length,exists,at:Date.now()};
-      refreshAfterBuy();successToast(bought,'Materialien',s.materials.length);return exists;
-    }
-    const before=(s.inventory||[]).length,bought={...it,id:idFor(it,'jewel')};s.inventory??=[];s.inventory.push(bought);
-    try{s.magicShop[idx]=v057Replacement(s.magicShop,idx,v057JewelryOffer)}catch(e){try{v057FillShops(true)}catch(_){}}
-    durableSave();const exists=s.inventory.some(x=>x&&x.id===bought.id);
-    window.__V466_LAST_PURCHASE__={kind:'jewelry',id:bought.id,before,after:s.inventory.length,exists,at:Date.now()};
-    refreshAfterBuy();successToast(bought,'Inventar',s.inventory.length);return exists;
-  };
-
-  /* Rebind current and future shop buttons to the durable purchase owners. */
-  function bindShopBuys(){
-    document.querySelectorAll('#shop .v057-buy').forEach(btn=>{const idx=Number(btn.dataset.index);btn.onclick=()=>btn.dataset.kind==='weapon'?window.v030BuyWeapon(idx):window.v030BuyMagic(idx)});
-  }
-  try{if(typeof renderShop==='function'&&!window.__v466ShopWrapped){const base=renderShop;renderShop=function(){const r=base.apply(this,arguments);bindShopBuys();decorateShop();return r};window.renderShop=renderShop;window.__v466ShopWrapped=true}}catch(e){}
-  try{if(typeof renderInventory==='function'&&!window.__v466InvWrapped){const base=renderInventory;renderInventory=function(){const r=base.apply(this,arguments);decorateInventory();decorateEquipment();return r};window.renderInventory=renderInventory;window.__v466InvWrapped=true}}catch(e){}
-  try{if(typeof window.v459CompactInventory==='function'&&!window.__v466CompactWrapped){const base=window.v459CompactInventory;window.v459CompactInventory=function(){const r=base.apply(this,arguments);decorateInventory();decorateEquipment();return r};window.__v466CompactWrapped=true}}catch(e){}
-  try{if(typeof window.v459OpenInventoryItem==='function'&&!window.__v466SheetWrapped){const base=window.v459OpenInventoryItem;window.v459OpenInventoryItem=function(i){const r=base.apply(this,arguments);decorateSheet(i);return r};window.__v466SheetWrapped=true}}catch(e){}
-  try{if(typeof v030Materials==='function'&&!window.__v466MaterialsWrapped){const base=v030Materials;v030Materials=function(){const r=base.apply(this,arguments);decorateMaterials();return r};window.v030Materials=v030Materials;window.__v466MaterialsWrapped=true}}catch(e){}
-  try{if(typeof render==='function'&&!window.__v466RenderWrapped){const base=render;render=function(){const r=base.apply(this,arguments);bindShopBuys();decorateAll();stamp();return r};window.render=render;window.__v466RenderWrapped=true}}catch(e){}
-  function stamp(){
-    try{document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version').forEach(el=>{if(el)el.textContent=VERSION})}catch(e){}
-    try{document.querySelectorAll('.v366-ver,.v371-logo em,.v372-logo em').forEach(el=>{if(el)el.textContent=SHORT})}catch(e){}
-    try{document.title='Grow Legends '+SHORT}catch(e){}
-  }
-  bindShopBuys();decorateAll();stamp();
-  document.addEventListener('DOMContentLoaded',()=>{bindShopBuys();decorateAll();stamp()},{once:true});
-  window.addEventListener('pageshow',()=>{bindShopBuys();decorateAll();stamp()},{passive:true});
-  [100,350,900,2200,5200,9800,15000,22000,24500].forEach(ms=>setTimeout(()=>{bindShopBuys();decorateAll();stamp()},ms));
-})();
-</script>
-
-<!-- ===== V4.67 Stable: unique visuals for ALL items + purchase durability fix ===== -->
-<style id="v466-all-item-art-css">
-.app > header .v358-logo::after{content:"V4.67"!important}
+.app > header .v358-logo::after{content:"V4.68"!important}
 .v466-item-art{display:block;width:100%;height:100%;object-fit:contain;pointer-events:none;user-select:none}
 #shop .shop-icon .v466-item-art,#shop .v41-shop-icon .v466-item-art{width:100%!important;height:100%!important}
 #character.v459-character-hub #inventory .v459-inv-icon .v466-item-art{width:43px!important;height:43px!important;margin:0 auto!important;filter:drop-shadow(0 5px 8px #0009)}
@@ -64232,7 +63994,7 @@ create index if not exists player_messages_sender_idx on public.player_messages(
 </style>
 <script id="v466-all-item-art-purchase-fix">
 (function(){
-  const VERSION='V4.67 Stable',SHORT='V4.67';
+  const VERSION='V4.68 Stable',SHORT='V4.68';
   const Q={
     gray:{rim:'#aeb7b2',glow:'#66736b'},green:{rim:'#7ee04f',glow:'#3e9c3b'},blue:{rim:'#43a7ff',glow:'#286ab0'},
     purple:{rim:'#c66cff',glow:'#763ca0'},orange:{rim:'#ff9a35',glow:'#aa5b1d'},cyan:{rim:'#42ece7',glow:'#168f8c'}
@@ -64439,8 +64201,8 @@ create index if not exists player_messages_sender_idx on public.player_messages(
     }catch(e){}
   }
   function focusedRefresh(){
-    try{if(typeof renderShop==='function')renderShop()}catch(e){console.warn('V4.67 shop refresh',e)}
-    try{if(typeof renderInventory==='function')renderInventory()}catch(e){console.warn('V4.67 inventory refresh',e)}
+    try{if(typeof renderShop==='function')renderShop()}catch(e){console.warn('V4.68 shop refresh',e)}
+    try{if(typeof renderInventory==='function')renderInventory()}catch(e){console.warn('V4.68 inventory refresh',e)}
     try{if(typeof v030Materials==='function')v030Materials()}catch(e){}
     try{if(typeof window.v459ArrangeCharacter==='function')window.v459ArrangeCharacter()}catch(e){}
     try{if(typeof window.v459CompactInventory==='function')window.v459CompactInventory()}catch(e){}
@@ -64457,9 +64219,11 @@ create index if not exists player_messages_sender_idx on public.player_messages(
   function noGold(){try{if(typeof v054NotEnoughGold==='function')return v054NotEnoughGold();if(typeof v115Alert==='function')return v115Alert('Nicht genug Gold.')}catch(e){}}
   function commitPurchase(kind,i){
     const shop=kind==='weapon'?s?.weaponShop:s?.magicShop,it=shop?.[i];if(!it)return false;
-    const price=Math.max(0,Number(it.price)||0);if(Number(s.gold)||0<price){noGold();return false}
+    const price=Math.max(0,Number(it.price)||0);
+    const currentGold=Math.max(0,Number(s.gold)||0);
+    if(currentGold<price){noGold();return false}
     s.inventory=Array.isArray(s.inventory)?s.inventory:[];s.materials=Array.isArray(s.materials)?s.materials:[];
-    const before={gold:Number(s.gold)||0,inv:s.inventory.slice(),mat:s.materials.slice(),shop:shop.slice()};
+    const before={gold:currentGold,inv:s.inventory.slice(),mat:s.materials.slice(),shop:shop.slice()};
     const isMaterial=kind==='magic'&&(it.type==='gem'||it.type==='scroll');
     const bought=deepClone(it);bought.id=uniqueId(it,isMaterial?'material':'purchase');bought.v466PurchasedAt=Date.now();bought.v466PurchaseSource=kind;
     try{
@@ -64515,13 +64279,13 @@ create index if not exists player_messages_sender_idx on public.player_messages(
 })();
 </script>
 
-<!-- ===== V4.67 Stable: hard live dungeon-key authority ===== -->
+<!-- ===== V4.68 Stable: hard live dungeon-key authority ===== -->
 <style id="v467-key-authority-css">
-.app > header .v358-logo::after{content:"V4.67"!important}
+.app > header .v358-logo::after{content:"V4.68"!important}
 </style>
 <script id="v467-hard-live-dungeon-key-authority">
 (function(){
-  const VERSION='V4.67 Stable',SHORT='V4.67';
+  const VERSION='V4.68 Stable',SHORT='V4.68';
   let lastSig='';
   let repainting=false;
 
@@ -64609,7 +64373,7 @@ create index if not exists player_messages_sender_idx on public.player_messages(
         else if(typeof v230ShowDungeonWorld==='function')ok=!!v230ShowDungeonWorld();
         else if(typeof v065RenderWorld==='function'){v065RenderWorld();ok=true}
         else if(typeof renderDungeon==='function'){renderDungeon();ok=true}
-      }catch(e){console.warn('V4.67 dungeon world rebuild',reason,e)}
+      }catch(e){console.warn('V4.68 dungeon world rebuild',reason,e)}
 
       try{if(typeof v242PaintDungeonWorldStatus==='function')v242PaintDungeonWorldStatus()}catch(e){}
       try{if(typeof v250PaintKeyProgress==='function')v250PaintKeyProgress()}catch(e){}
@@ -64646,7 +64410,7 @@ create index if not exists player_messages_sender_idx on public.player_messages(
       };
       window.v250GrantKey=v250GrantKey;window.__v467GrantWrapped=true;
     }
-  }catch(e){console.warn('V4.67 grant wrap',e)}
+  }catch(e){console.warn('V4.68 grant wrap',e)}
 
   function wrapClaim(name){
     try{
@@ -64665,7 +64429,7 @@ create index if not exists player_messages_sender_idx on public.player_messages(
       wrapped.__v467KeyWrapped=true;
       window[name]=wrapped;
       try{if(name==='claimQuest')claimQuest=wrapped;if(name==='v233ClaimQuest')v233ClaimQuest=wrapped}catch(e){}
-    }catch(e){console.warn('V4.67 claim wrap',name,e)}
+    }catch(e){console.warn('V4.68 claim wrap',name,e)}
   }
   wrapClaim('claimQuest');
   wrapClaim('v233ClaimQuest');
@@ -64690,7 +64454,7 @@ create index if not exists player_messages_sender_idx on public.player_messages(
       };
       window.v032Go=v032Go;window.__v467DungeonGoWrapped=true;
     }
-  }catch(e){console.warn('V4.67 dungeon nav wrap',e)}
+  }catch(e){console.warn('V4.68 dungeon nav wrap',e)}
 
   /* Every opener re-checks the live key state before old guards run. */
   ['v067OpenDungeon','v066OpenDungeon','selectDungeon'].forEach(name=>{
@@ -64727,5 +64491,113 @@ create index if not exists player_messages_sender_idx on public.player_messages(
   document.addEventListener('DOMContentLoaded',()=>{ensure();lastSig=signature();stamp()},{once:true});
   window.addEventListener('pageshow',()=>{ensure();lastSig=signature();stamp()},{passive:true});
   [200,700,1800,4200].forEach(ms=>setTimeout(stamp,ms));
+})();
+</script>
+
+
+<!-- ===== V4.68 Stable: single authoritative item-art owner ===== -->
+<style id="v468-item-art-stability-css">
+.app > header .v358-logo::after{content:"V4.68"!important}
+#character.v459-character-hub #inventory .v459-inv-icon{contain:content!important}
+#character.v459-character-hub #inventory .v459-inv-icon > .v466-item-art{display:block!important;width:43px!important;height:43px!important;margin:auto!important}
+</style>
+<script id="v468-single-item-art-owner">
+(function(){
+  const VERSION='V4.68 Stable',SHORT='V4.68';
+  let painting=false;
+  function artUri(it){try{return typeof window.v466ItemArtUri==='function'?window.v466ItemArtUri(it):''}catch(e){return''}}
+  function setArt(box,it){
+    if(!box||!it)return false;
+    const uri=artUri(it);if(!uri)return false;
+    const current=box.querySelector(':scope > img.v466-item-art');
+    if(current&&current.src===uri&&box.childElementCount===1)return true;
+    const img=document.createElement('img');img.className='v466-item-art';img.src=uri;img.alt=String(it.name||'Item');img.decoding='async';
+    box.replaceChildren(img);box.dataset.v468Art='1';return true;
+  }
+  function paintInventory(){
+    if(painting)return;painting=true;
+    try{
+      document.querySelectorAll('#character #inventory .inventory-grid > .inv-item').forEach((card,i)=>{
+        const it=s?.inventory?.[i];if(it)setArt(card.querySelector('.v459-inv-icon'),it);
+      });
+    }finally{painting=false}
+  }
+  function stamp(){
+    try{document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version').forEach(el=>{if(el)el.textContent=VERSION})}catch(e){}
+    try{document.querySelectorAll('.v366-ver,.v371-logo em,.v372-logo em').forEach(el=>{if(el)el.textContent=SHORT})}catch(e){}
+    try{document.title='Grow Legends '+SHORT}catch(e){}
+  }
+  try{
+    if(typeof renderInventory==='function'&&!window.__v468InventoryWrapped){
+      const base=renderInventory;
+      renderInventory=function(){const r=base.apply(this,arguments);paintInventory();return r};
+      window.renderInventory=renderInventory;window.__v468InventoryWrapped=true;
+    }
+  }catch(e){}
+  try{
+    if(typeof window.v459CompactInventory==='function'&&!window.__v468CompactWrapped){
+      const base=window.v459CompactInventory;
+      window.v459CompactInventory=function(){const r=base.apply(this,arguments);paintInventory();return r};
+      window.__v468CompactWrapped=true;
+    }
+  }catch(e){}
+  try{
+    if(typeof render==='function'&&!window.__v468RenderWrapped){
+      const base=render;
+      render=function(){const r=base.apply(this,arguments);paintInventory();stamp();return r};
+      window.render=render;window.__v468RenderWrapped=true;
+    }
+  }catch(e){}
+
+  /* Watch only the inventory container. If a legacy painter replaces an icon later,
+     immediately restore the one canonical V4.66/V4.68 art. No global DOM observer. */
+  function installObserver(){
+    const root=document.querySelector('#character #inventory .inventory-grid');
+    if(!root||root.dataset.v468Observed==='1')return;
+    root.dataset.v468Observed='1';
+    const mo=new MutationObserver(muts=>{
+      if(painting)return;
+      let needs=false;
+      for(const m of muts){
+        const t=m.target?.nodeType===1?m.target:m.target?.parentElement;
+        if(t?.closest?.('.v459-inv-icon')){needs=true;break}
+      }
+      if(needs)queueMicrotask(paintInventory);
+    });
+    mo.observe(root,{childList:true,subtree:true});
+    window.__V468_ITEM_ART_OBSERVER__=mo;
+  }
+  function init(){paintInventory();installObserver();stamp()}
+  document.addEventListener('DOMContentLoaded',init,{once:true});
+  window.addEventListener('pageshow',init,{passive:true});
+  try{init()}catch(e){}
+})();
+</script>
+
+
+<!-- ===== V4.69 Stable: shop gold purchase comparison fix ===== -->
+<style id="v469-shop-gold-fix-css">
+.app > header .v358-logo::after{content:"V4.69"!important}
+</style>
+<script id="v469-shop-gold-purchase-fix">
+(function(){
+  const VERSION='V4.69 Stable',SHORT='V4.69';
+  /* V4.66 had a precedence bug in its central purchase guard:
+     Number(s.gold)||0<price was truthy whenever Gold was non-zero.
+     The authoritative handler above now compares (Number(s.gold)||0) < price. */
+  window.v469ShopGoldCheck=function(price){
+    const gold=Math.max(0,Number(s?.gold)||0),cost=Math.max(0,Number(price)||0);
+    return {gold,cost,enough:gold>=cost};
+  };
+  function stamp(){
+    try{document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version').forEach(el=>{if(el)el.textContent=VERSION})}catch(e){}
+    try{document.querySelectorAll('.v366-ver,.v371-logo em,.v372-logo em').forEach(el=>{if(el)el.textContent=SHORT})}catch(e){}
+    try{document.title='Grow Legends '+SHORT}catch(e){}
+  }
+  function paint(){try{window.v441PaintResources?.()}catch(e){}}
+  stamp();paint();
+  document.addEventListener('DOMContentLoaded',()=>{stamp();paint()},{once:true});
+  window.addEventListener('pageshow',()=>{stamp();paint()},{passive:true});
+  [200,800,2200,5000].forEach(ms=>setTimeout(()=>{stamp();paint()},ms));
 })();
 </script>
