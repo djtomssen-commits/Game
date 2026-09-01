@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#10170f">
-<title>Grow Legends V4.44</title>
+<title>Grow Legends V4.46</title>
 <style>
 :root{--bg:#0b100b;--panel:#151d14;--panel2:#1c281a;--panel3:#253423;--line:#354933;--text:#f2f5ed;--muted:#9fad99;--green:#83d65d;--green2:#b2f07e;--gold:#f2c75a;--red:#ee6b68;--blue:#68a7ea;--purple:#ad7bea;--shadow:0 12px 30px rgba(0,0,0,.28)}
 *{box-sizing:border-box}html{background:var(--bg)}body{margin:0;color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:radial-gradient(circle at 50% -10%,#253821 0,#10170f 40%,#090d09 100%);min-height:100vh}button{font:inherit}.app{max-width:820px;margin:auto;min-height:100vh;padding-bottom:88px}
@@ -546,7 +546,7 @@ document.documentElement.classList.remove('v224-app-ready');
 <body>
 <div class="app">
 <header>
-  <div class="brand"><h1>🌿 Grow Legends</h1><span class="version">V4.44 Stable</span><div class="power">Kampfkraft <b id="power">—</b></div></div>
+  <div class="brand"><h1>🌿 Grow Legends</h1><span class="version">V4.46 Stable</span><div class="power">Kampfkraft <b id="power">—</b></div></div>
   <div class="stats resource-stats"><div class="stat">GOLD<b id="gold">—</b></div><div class="stat">SKILL<b id="points">—</b></div><div class="stat">DAMPF<b id="energy">—</b></div><div class="stat harz-stat v277-harz-card v280-harz-card">
   <div class="v280-harz-label">HARZ-TALER</div>
   <b class="v280-harz-value"><span id="topHarz">—</span></b>
@@ -12689,10 +12689,8 @@ v073Init().catch(e=>console.error('V4.02 initial Supabase init',e));
 <script>
 /* ===== V4.02 public player profiles ===== */
 function v074CombatPower(){
-  const attrs=['staerke','geschick','intelligenz','ausdauer','glueck'];
-  let stats=0;
-  attrs.forEach(k=>{try{stats+=Number(totalAttr(k))||0}catch(e){}});
-  return Math.max(1,Math.round((Number(s.level)||1)*12 + stats*2.2 + v072GearScore()*3.5 + (Number(s.story?.bossesDefeated)||0)*20));
+  /* V4.46: public/online power is exactly the character-page combatPower(). */
+  try{return Math.max(0,Math.round(Number(combatPower())||0))}catch(e){return 0}
 }
 function v074SafeEquipment(){
  const out={};
@@ -59938,7 +59936,7 @@ create index if not exists player_messages_sender_idx on public.player_messages(
 
 <!-- ===== V4.44 Stable: character inventory/material order authority ===== -->
 <style id="v444-character-inventory-order-css">
-.app > header .v358-logo::after{content:"V4.44"!important}
+.app > header .v358-logo::after{content:"V4.45"!important}
 #character .char-bottom > .v442-inventory-card,
 #character .char-bottom > .v444-material-card{
   width:100%!important;
@@ -60054,5 +60052,534 @@ create index if not exists player_messages_sender_idx on public.player_messages(
   [300,900,1800,3600,5400,8000].forEach(ms=>setTimeout(()=>{arrangeCharacter();stamp()},ms));
   const guard=setInterval(()=>{arrangeCharacter();stamp()},400);
   setTimeout(()=>clearInterval(guard),12000);
+})();
+</script>
+
+<!-- ===== V4.45 Stable: compact mobile item comparison ===== -->
+<style id="v445-item-compare-mobile-css">
+/* The inventory uses narrow RPG cards on mobile. Keep comparison information
+   vertical and readable instead of squeezing several labels into one row. */
+#inventory .compare{
+  width:100%!important;
+  min-width:0!important;
+  min-height:0!important;
+  height:auto!important;
+  margin:7px 0 5px!important;
+  padding:0!important;
+  overflow:visible!important;
+  background:transparent!important;
+  border:0!important;
+  text-align:left!important;
+}
+#inventory .compare .v445-compare{
+  display:grid!important;
+  grid-template-columns:1fr!important;
+  gap:5px!important;
+  width:100%!important;
+  min-width:0!important;
+  padding:7px!important;
+  border:1px solid rgba(106,151,101,.38)!important;
+  border-radius:10px!important;
+  background:linear-gradient(180deg,rgba(11,24,14,.96),rgba(7,15,9,.96))!important;
+  box-sizing:border-box!important;
+  overflow:hidden!important;
+  font-size:8px!important;
+  line-height:1.25!important;
+}
+#inventory .compare .v445-title{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:5px!important;
+  min-width:0!important;
+  padding-bottom:4px!important;
+  border-bottom:1px solid rgba(106,151,101,.22)!important;
+  color:#dce8d9!important;
+  font-size:8px!important;
+  font-weight:950!important;
+  letter-spacing:.02em!important;
+}
+#inventory .compare .v445-lines{
+  display:grid!important;
+  grid-template-columns:1fr!important;
+  gap:3px!important;
+  min-width:0!important;
+}
+#inventory .compare .v445-line{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) auto!important;
+  gap:6px!important;
+  align-items:center!important;
+  min-width:0!important;
+  padding:3px 5px!important;
+  border-radius:7px!important;
+  background:rgba(255,255,255,.025)!important;
+}
+#inventory .compare .v445-line span{
+  min-width:0!important;
+  overflow-wrap:anywhere!important;
+  word-break:normal!important;
+  color:#9fb09d!important;
+  font-size:7.5px!important;
+  text-align:left!important;
+}
+#inventory .compare .v445-line b{
+  color:#f0f5ed!important;
+  font-size:8px!important;
+  font-weight:950!important;
+  white-space:nowrap!important;
+  text-align:right!important;
+}
+#inventory .compare .v445-bonus{
+  min-width:0!important;
+  padding:4px 5px!important;
+  border-radius:7px!important;
+  background:rgba(63,164,193,.07)!important;
+  color:#93dfe7!important;
+  font-size:7px!important;
+  line-height:1.3!important;
+  overflow-wrap:anywhere!important;
+}
+#inventory .compare .v445-result{
+  padding:6px 5px!important;
+  border-radius:8px!important;
+  text-align:center!important;
+  font-size:8.5px!important;
+  line-height:1.2!important;
+  font-weight:1000!important;
+  overflow-wrap:anywhere!important;
+}
+#inventory .compare .v445-result.up{
+  color:#9ff47d!important;
+  border:1px solid rgba(118,222,82,.32)!important;
+  background:rgba(79,168,56,.10)!important;
+}
+#inventory .compare .v445-result.down{
+  color:#ff8b8b!important;
+  border:1px solid rgba(225,91,91,.32)!important;
+  background:rgba(174,53,53,.10)!important;
+}
+#inventory .compare .v445-result.same{
+  color:#d1d8cf!important;
+  border:1px solid rgba(180,190,178,.22)!important;
+  background:rgba(150,160,148,.06)!important;
+}
+#inventory .compare .v445-levels{
+  color:#81917f!important;
+  font-size:6.8px!important;
+  text-align:center!important;
+  line-height:1.2!important;
+}
+#inventory .compare .v445-special{
+  color:#78d8d2!important;
+  font-size:6.8px!important;
+  line-height:1.25!important;
+  text-align:center!important;
+  overflow-wrap:anywhere!important;
+}
+/* Never inherit the old V4.32 row layout inside the new owner. */
+#inventory .compare .v445-compare .v432-row,
+#inventory .compare .v445-compare .v432-addon,
+#inventory .compare .v445-compare .v432-result{display:none!important}
+
+@media(max-width:520px){
+  #inventory .compare .v445-compare{padding:6px!important;gap:4px!important}
+  #inventory .compare .v445-line{grid-template-columns:minmax(0,1fr) auto!important;padding:3px 4px!important}
+  #inventory .compare .v445-line span{font-size:7px!important}
+  #inventory .compare .v445-line b{font-size:7.5px!important}
+  #inventory .compare .v445-result{font-size:8px!important;padding:5px 4px!important}
+}
+</style>
+<script id="v445-item-compare-mobile-fix">
+(function(){
+  const VERSION='V4.45 Stable', SHORT='V4.45';
+  const COMBAT=['staerke','geschick','intelligenz','ausdauer','glueck'];
+  const LABEL={staerke:'Stärke',geschick:'Geschick',intelligenz:'Intelligenz',ausdauer:'Ausdauer',glueck:'Glück'};
+
+  function enchantOf(it){return it?.enchant || (Array.isArray(it?.enchants)?it.enchants[0]:null) || null}
+  function addonMap(it){
+    const out={};
+    if(it?.gem?.stat&&COMBAT.includes(it.gem.stat)){
+      const v=Number(it.gem.value)||0;if(v)out[it.gem.stat]=(Number(out[it.gem.stat])||0)+v;
+    }
+    const e=enchantOf(it);
+    if(e?.effect==='luck'){
+      const v=Number(e.value)||0;if(v)out.glueck=(Number(out.glueck)||0)+v;
+    }
+    return out;
+  }
+  function nativeMap(it){
+    if(it?.v429StatLock?.native&&typeof it.v429StatLock.native==='object'){
+      const out={};COMBAT.forEach(k=>{const v=Number(it.v429StatLock.native[k])||0;if(v)out[k]=v});return out;
+    }
+    const add=addonMap(it),out={};
+    COMBAT.forEach(k=>{const v=(Number(it?.bonus?.[k])||0)-(Number(add[k])||0);if(v)out[k]=v});
+    return out;
+  }
+  function baseTotal(it){const m=nativeMap(it);return COMBAT.reduce((n,k)=>n+(Number(m[k])||0),0)}
+  function fullTotal(it){return COMBAT.reduce((n,k)=>n+(Number(it?.bonus?.[k])||0),0)}
+  function bonusText(it){
+    const p=[];
+    if(it?.gem?.stat&&COMBAT.includes(it.gem.stat)&&Number(it.gem.value))p.push(`💎 +${Number(it.gem.value)} ${LABEL[it.gem.stat]||it.gem.stat}`);
+    const e=enchantOf(it);
+    if(e?.effect==='luck'&&Number(e.value))p.push(`📜 +${Number(e.value)} Glück`);
+    return p.join(' · ');
+  }
+  function specialText(it){
+    const p=[];
+    const e=enchantOf(it);
+    if(e&&e.effect!=='luck'){
+      if(e.effect==='crit')p.push(`📜 +${Number(e.value)||0}% Krit`);
+      else if(e.effect==='primaryPct')p.push(`📜 +${Number(e.value)||0}% Hauptattribut-Schaden`);
+      else if(e.effect==='damageReduce')p.push(`📜 -${Number(e.value)||0}% erlittener Schaden`);
+      else p.push(`📜 Spezialeffekt`);
+    }
+    if(it?.mysticSpecial)p.push('✨ Mystischer Spezialeffekt');
+    return p.join(' · ');
+  }
+  function esc(x){return String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+
+  comparison=function(it){
+    if(!it?.slot||it.type==='material')return '';
+    const old=s.equipment?.[it.slot]||null;
+    const ib=baseTotal(it), itot=fullTotal(it), ilv=Math.max(1,Number(it.dropLevel)||1);
+    const iBonus=bonusText(it), iSpecial=specialText(it);
+
+    if(!old){
+      return `<div class="v445-compare">
+        <div class="v445-title"><span>⚖️ Vergleich</span><span>Freier Slot</span></div>
+        <div class="v445-lines">
+          <div class="v445-line"><span>Dieses Item</span><b>${itot} Punkte</b></div>
+          ${itot!==ib?`<div class="v445-line"><span>Grundwerte</span><b>${ib}</b></div>`:''}
+        </div>
+        ${iBonus?`<div class="v445-bonus">${esc(iBonus)}</div>`:''}
+        <div class="v445-result up">▲ Kann direkt angelegt werden</div>
+        <div class="v445-levels">Item Lv.${ilv}</div>
+        ${iSpecial?`<div class="v445-special">${esc(iSpecial)} · separat bewertet</div>`:''}
+      </div>`;
+    }
+
+    const ob=baseTotal(old), otot=fullTotal(old), olv=Math.max(1,Number(old.dropLevel)||1);
+    const d=itot-otot;
+    const cls=d>0?'up':d<0?'down':'same';
+    const result=d>0?`▲ +${d} Punkte besser`:d<0?`▼ ${Math.abs(d)} Punkte schlechter`:'◆ Gleich stark';
+    const oBonus=bonusText(old), oSpecial=specialText(old);
+    const bonusParts=[];
+    if(iBonus)bonusParts.push(`Dieses: ${iBonus}`);
+    if(oBonus)bonusParts.push(`Angelegt: ${oBonus}`);
+    const specials=[iSpecial,oSpecial].filter(Boolean);
+
+    return `<div class="v445-compare">
+      <div class="v445-title"><span>⚖️ Vergleich</span><span>${it?.slot?esc(String(it.slot).toUpperCase()):''}</span></div>
+      <div class="v445-lines">
+        <div class="v445-line"><span>Dieses Item</span><b>${itot} Punkte</b></div>
+        <div class="v445-line"><span>Angelegt</span><b>${otot} Punkte</b></div>
+        ${(itot!==ib||otot!==ob)?`<div class="v445-line"><span>Grundwerte</span><b>${ib} / ${ob}</b></div>`:''}
+      </div>
+      ${bonusParts.length?`<div class="v445-bonus">${esc(bonusParts.join(' · '))}</div>`:''}
+      <div class="v445-result ${cls}">${result}</div>
+      <div class="v445-levels">Dieses Lv.${ilv} · Angelegt Lv.${olv}</div>
+      ${specials.length?`<div class="v445-special">✨ Spezialeffekte werden separat bewertet</div>`:''}
+    </div>`;
+  };
+  try{window.comparison=comparison}catch(e){}
+
+  /* Older inventory renderers already call comparison(). Repaint after their full
+     chain as a final UI authority so delayed legacy painters cannot restore V4.32. */
+  function repaint(){
+    [...document.querySelectorAll('#inventory .inv-item')].forEach((card,i)=>{
+      const it=s.inventory?.[i],box=card.querySelector('.compare');
+      if(it&&box)try{box.innerHTML=comparison(it)}catch(e){console.warn('V4.45 item comparison',e)}
+    });
+  }
+  window.v445RepaintItemComparison=repaint;
+
+  if(typeof renderInventory==='function'&&!window.__v445RenderInventoryWrapped){
+    const base=renderInventory;
+    renderInventory=function(){const r=base.apply(this,arguments);repaint();return r};
+    try{window.renderInventory=renderInventory}catch(e){}
+    window.__v445RenderInventoryWrapped=true;
+  }
+  if(typeof render==='function'&&!window.__v445RenderWrapped){
+    const base=render;
+    render=function(){const r=base.apply(this,arguments);repaint();stamp();return r};
+    try{window.render=render}catch(e){}
+    window.__v445RenderWrapped=true;
+  }
+
+  function stamp(){
+    document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version')
+      .forEach(el=>{if(el&&el.textContent!==VERSION)el.textContent=VERSION});
+    document.querySelectorAll('.v366-ver,.v371-logo em,.v372-logo em').forEach(el=>{if(el&&el.textContent!==SHORT)el.textContent=SHORT});
+    document.title='Grow Legends '+SHORT;
+  }
+  repaint();stamp();
+  document.addEventListener('DOMContentLoaded',()=>{repaint();stamp()},{once:true});
+  window.addEventListener('pageshow',()=>{repaint();stamp()},{passive:true});
+  document.addEventListener('click',()=>setTimeout(repaint,0),true);
+  setTimeout(()=>{repaint();stamp()},300);
+  setTimeout(()=>{repaint();stamp()},1600);
+  setTimeout(()=>{repaint();stamp()},5200);
+  const guard=setInterval(stamp,400);setTimeout(()=>clearInterval(guard),18000);
+})();
+</script>
+
+
+<!-- ===== V4.46 Stable: one global combat-power authority ===== -->
+<style id="v446-global-combat-power-css">
+.app > header .v358-logo::after{content:"V4.46"!important}
+</style>
+<script id="v446-global-combat-power-authority">
+(function(){
+  const VERSION='V4.46 Stable', SHORT='V4.46';
+  let ownProfileOpenId='', syncTimer=0, syncBusy=false, lastSyncedPower=null, painting=false;
+
+  /* ONE combat-power source for the whole game: exactly the same global function
+     that paints #charPower on the character page. */
+  function livePower(){
+    try{return Math.max(0,Math.round(Number(combatPower())||0))}catch(e){return 0}
+  }
+  window.v446CombatPower=livePower;
+
+  /* Remove the last historical second formula. Any old profile code that still
+     calls v074CombatPower now receives the character-page value too. */
+  try{
+    v074CombatPower=function(){return livePower()};
+    window.v074CombatPower=v074CombatPower;
+  }catch(e){}
+
+  /* Every profile write, regardless of which historical wrapper owns it, carries
+     the exact current combatPower(). */
+  if(typeof v073ProfilePayload==='function'&&!window.__v446ProfilePayloadWrapped){
+    const basePayload=v073ProfilePayload;
+    v073ProfilePayload=function(){
+      const p=basePayload.apply(this,arguments)||{};
+      p.combat_power=livePower();
+      return p;
+    };
+    try{window.v073ProfilePayload=v073ProfilePayload}catch(e){}
+    window.__v446ProfilePayloadWrapped=true;
+  }
+
+  function ownUserId(){
+    try{return typeof v073User!=='undefined'&&v073User?.id?String(v073User.id):''}catch(e){return ''}
+  }
+  function setText(el,value){
+    if(!el)return;
+    const v=String(value);
+    if(el.textContent!==v)el.textContent=v;
+  }
+  function replacePowerText(el,cp){
+    if(!el)return;
+    const txt=String(el.textContent||'');
+    if(/Kampfkraft\s*[\d.]+/i.test(txt)){
+      const next=txt.replace(/Kampfkraft\s*[\d.]+/i,`Kampfkraft ${cp}`);
+      if(next!==txt)el.textContent=next;
+    }
+  }
+  function paintProfileStat(root,cp){
+    if(!root)return;
+    [...root.querySelectorAll('.v326-profile-stat,.v072-profile-stat,.v074-power')].forEach(box=>{
+      if(!/Kampf(?:kraft|wert)/i.test(box.textContent||''))return;
+      const b=box.querySelector('b');
+      if(b)setText(b,cp);
+    });
+  }
+
+  function paintLocalPower(){
+    if(painting)return;
+    painting=true;
+    try{
+      const cp=livePower();
+
+      /* Character / legacy header / global header / worldboss. */
+      ['#power','#charPower','#v358Power','#v110Cp'].forEach(sel=>setText(document.querySelector(sel),cp));
+
+      /* World layouts that already intend to show the player's own power. */
+      document.querySelectorAll('.v349-power b,.v366-power b,.v251-detail-bottom .v251-mini-stat:first-child b')
+        .forEach(el=>setText(el,cp));
+
+      /* PvP: only the local/player side. Enemy power remains the opponent's synced value. */
+      replacePowerText(document.querySelector('#v209PlayerSub'),cp);
+
+      const uid=ownUserId();
+      if(uid){
+        /* Hall/search rows for the logged-in user. Closed-over historical row renderers
+           are corrected at DOM level, so they cannot reintroduce a cached DB value. */
+        document.querySelectorAll('.v072-player-row[data-profile-id]').forEach(row=>{
+          if(String(row.getAttribute('data-profile-id')||'')!==uid)return;
+          const sub=row.querySelector('.v072-player-sub');
+          if(sub)replacePowerText(sub,cp);
+        });
+
+        paintProfileStat(document.querySelector('#v072OwnProfile'),cp);
+        if(String(ownProfileOpenId||'')===uid)paintProfileStat(document.querySelector('#v074ProfileContent'),cp);
+
+        /* Guild boss participant/test rows may contain the local player as a server
+           snapshot. Repaint only when the participant object can be tied to our user id. */
+        try{
+          if(Array.isArray(v255BossParticipants))v255BossParticipants.forEach(x=>{
+            if(String(x?.user_id||x?.id||'')===uid)x.combat_power=cp;
+          });
+        }catch(e){}
+        try{
+          if(Array.isArray(v254Members))v254Members.forEach(m=>{
+            if(String(m?.user_id||'')===uid&&m.profile)m.profile.combat_power=cp;
+          });
+        }catch(e){}
+      }
+    }finally{painting=false}
+  }
+  window.v446PaintCombatPower=paintLocalPower;
+
+  /* Direct server repair. This is independent of legacy sync return values and makes
+     Hall/PvP/Guild reads use the same formula for this player. */
+  async function writeLivePower(force=false){
+    if(syncBusy)return true;
+    try{
+      if(typeof v073Init==='function')await v073Init();
+      if(typeof v073Db==='undefined'||!v073Db||typeof v073User==='undefined'||!v073User||v073User.is_anonymous)return false;
+      if(!s?.characterNameSet)return false;
+      if(typeof v071NameValid==='function'&&!v071NameValid(s.characterName))return false;
+      const cp=livePower();
+      if(!force&&lastSyncedPower===cp)return true;
+      syncBusy=true;
+      const {error}=await v073Db.from('profiles').update({combat_power:cp,updated_at:new Date().toISOString()}).eq('id',v073User.id);
+      if(error)throw error;
+      lastSyncedPower=cp;
+      return true;
+    }catch(e){
+      console.warn('V4.46 combat power sync',e);
+      return false;
+    }finally{syncBusy=false}
+  }
+  window.v446SyncCombatPower=writeLivePower;
+
+  function scheduleSync(force=false){
+    clearTimeout(syncTimer);
+    syncTimer=setTimeout(async()=>{
+      await writeLivePower(force);
+      paintLocalPower();
+    },force?0:450);
+  }
+
+  /* Ensure profile sync itself cannot finish with another combat-power value. */
+  if(typeof v073SyncProfile==='function'&&!window.__v446ProfileSyncWrapped){
+    const baseSync=v073SyncProfile;
+    v073SyncProfile=async function(force=false){
+      let ok=false;
+      try{ok=!!(await baseSync.apply(this,arguments))}catch(e){console.warn('V4.46 base profile sync',e)}
+      const powerOk=await writeLivePower(!!force);
+      paintLocalPower();
+      return ok||powerOk;
+    };
+    try{window.v073SyncProfile=v073SyncProfile}catch(e){}
+    window.__v446ProfileSyncWrapped=true;
+  }
+
+  /* Public profile modal: own profile is live; other players keep their own synced DB value. */
+  if(typeof v074OpenProfile==='function'&&!window.__v446OpenProfileWrapped){
+    const baseOpen=v074OpenProfile;
+    v074OpenProfile=async function(id){
+      ownProfileOpenId=String(id||'');
+      const own=ownUserId()&&ownProfileOpenId===ownUserId();
+      if(own)await writeLivePower(true);
+      const r=await baseOpen.apply(this,arguments);
+      if(own){paintLocalPower();requestAnimationFrame(paintLocalPower);setTimeout(paintLocalPower,80)}
+      return r;
+    };
+    try{window.v074OpenProfile=v074OpenProfile}catch(e){}
+    window.__v446OpenProfileWrapped=true;
+  }
+
+  /* Existing own-row renderer, if called directly, gets the same value before HTML is built. */
+  if(typeof v073PlayerRow==='function'&&!window.__v446PlayerRowWrapped){
+    const baseRow=v073PlayerRow;
+    v073PlayerRow=function(p,i,actions){
+      const uid=ownUserId();
+      if(p&&uid&&String(p.id||'')===uid)p={...p,combat_power:livePower()};
+      return baseRow.call(this,p,i,actions);
+    };
+    try{window.v073PlayerRow=v073PlayerRow}catch(e){}
+    window.__v446PlayerRowWrapped=true;
+  }
+
+  /* Local changes (level, attributes, equipment, gems/scrolls, talents) all persist.
+     Repaint instantly and debounce one server write. */
+  if(typeof persist==='function'&&!window.__v446PersistWrapped){
+    const basePersist=persist;
+    persist=function(){
+      const r=basePersist.apply(this,arguments);
+      paintLocalPower();
+      requestAnimationFrame(paintLocalPower);
+      scheduleSync(false);
+      stamp();
+      return r;
+    };
+    try{window.persist=persist}catch(e){}
+    window.__v446PersistWrapped=true;
+  }
+
+  if(typeof render==='function'&&!window.__v446RenderWrapped){
+    const baseRender=render;
+    render=function(){
+      const r=baseRender.apply(this,arguments);
+      paintLocalPower();
+      requestAnimationFrame(paintLocalPower);
+      stamp();
+      return r;
+    };
+    try{window.render=render}catch(e){}
+    window.__v446RenderWrapped=true;
+  }
+
+  if(typeof v032Go==='function'&&!window.__v446GoWrapped){
+    const baseGo=v032Go;
+    v032Go=function(id){
+      const r=baseGo.apply(this,arguments);
+      requestAnimationFrame(paintLocalPower);
+      setTimeout(paintLocalPower,80);
+      if(['hall','pvp','guild','friends','character','world'].includes(String(id||'')))scheduleSync(false);
+      return r;
+    };
+    try{window.v032Go=v032Go}catch(e){}
+    window.__v446GoWrapped=true;
+  }
+
+  if(typeof v110Refresh==='function'&&!window.__v446WorldbossWrapped){
+    const baseRefresh=v110Refresh;
+    v110Refresh=function(){
+      const r=baseRefresh.apply(this,arguments);
+      paintLocalPower();
+      return r;
+    };
+    try{window.v110Refresh=v110Refresh}catch(e){}
+    window.__v446WorldbossWrapped=true;
+  }
+
+  if(typeof v255RenderBoss==='function'&&!window.__v446GuildBossRenderWrapped){
+    const baseBoss=v255RenderBoss;
+    v255RenderBoss=function(){paintLocalPower();const r=baseBoss.apply(this,arguments);paintLocalPower();return r};
+    try{window.v255RenderBoss=v255RenderBoss}catch(e){}
+    window.__v446GuildBossRenderWrapped=true;
+  }
+
+  function stamp(){
+    document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version')
+      .forEach(el=>{if(el&&el.textContent!==VERSION)el.textContent=VERSION});
+    document.querySelectorAll('.v366-ver,.v371-logo em,.v372-logo em')
+      .forEach(el=>{if(el&&el.textContent!==SHORT)el.textContent=SHORT});
+    document.title='Grow Legends '+SHORT;
+  }
+
+  paintLocalPower();stamp();scheduleSync(true);
+  document.addEventListener('DOMContentLoaded',()=>{paintLocalPower();stamp();scheduleSync(true)},{once:true});
+  window.addEventListener('pageshow',()=>{paintLocalPower();stamp();scheduleSync(true)},{passive:true});
+  document.addEventListener('click',()=>{requestAnimationFrame(paintLocalPower);setTimeout(paintLocalPower,60)},true);
+  setTimeout(()=>{paintLocalPower();stamp();scheduleSync(true)},600);
+  setTimeout(()=>{paintLocalPower();stamp()},1800);
+  setTimeout(()=>{paintLocalPower();stamp();scheduleSync(true)},5200);
+  const guard=setInterval(()=>{paintLocalPower();stamp()},400);
+  setTimeout(()=>clearInterval(guard),18000);
 })();
 </script>
