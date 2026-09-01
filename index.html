@@ -59520,7 +59520,7 @@ create index if not exists player_messages_sender_idx on public.player_messages(
           }
         }catch(e){}
       }else{
-        toast('Gilden-EP','info','Für diese Quest wurden 0 Gilden-EP vergeben. Dein Quest-/Tageslimit kann bereits erreicht sein.');
+        toast('Gilden-EP','info','Für diese Quest wurden 0 Gilden-EP vergeben. Das gemeinsame Tageslimit von 625 Gilden-EP kann erreicht sein oder es besteht keine aktive Gildenmitgliedschaft.');
       }
     }catch(e){
       const raw=String(e?.message||e?.details||e?.hint||e||'Unbekannter Fehler');
@@ -65248,7 +65248,7 @@ create index if not exists player_messages_sender_idx on public.player_messages(
       line.className='v247-dungeon-line v473-guild-xp-line'+(awarded>0?'':' zero');
       line.textContent=awarded>0
         ?`🏰 +${awarded} Gilden-EP${Number.isFinite(dailyTotal)?` · heute ${dailyTotal}`:''}`
-        :'🏰 0 Gilden-EP · Tageslimit oder Serverregel erreicht';
+        :'🏰 0 Gilden-EP · Tageslimit 625 erreicht oder keine aktive Gilde';
       extra.appendChild(line);
     }catch(e){}
   }
@@ -65450,7 +65450,7 @@ create index if not exists player_messages_sender_idx on public.player_messages(
           v063Toast('🏰 Gilden-EP','success',`${label}: +${awarded} Gilden-EP${extra}`);
         }
       }else if(typeof v063Toast==='function'){
-        v063Toast('🏰 Gilden-EP','info',`${label}: 0 Gilden-EP · Tageslimit erreicht oder keine aktive Gildenmitgliedschaft.`);
+        v063Toast('🏰 Gilden-EP','info',`${label}: 0 Gilden-EP · Tageslimit 625 erreicht oder keine aktive Gildenmitgliedschaft.`);
       }
     }catch(e){}
   }
@@ -65788,5 +65788,293 @@ create index if not exists player_messages_sender_idx on public.player_messages(
   document.addEventListener('DOMContentLoaded',()=>{stamp();exposeModernHome()},{once:true});
   window.addEventListener('pageshow',()=>{stamp();exposeModernHome()},{passive:true});
   [150,800,1800].forEach(ms=>setTimeout(()=>{stamp();exposeModernHome()},ms));
+})();
+</script>
+
+
+<!-- ===== V4.79: shared guild XP daily cap 625 ===== -->
+<style id="v479-guildxp-version-css">
+.app > header .v358-logo::after{content:"V4.79"!important}
+.app > header .v366-ver::after,.app > header .v371-logo em::after,.app > header .v372-logo em::after{content:"V4.79"!important;font-size:5px!important;color:#63cdd1!important;font-style:normal!important;font-weight:900!important}
+</style>
+<script id="v479-guildxp-limit-ui-script">
+(function(){
+  const VERSION='V4.79',SHORT='V4.79';
+  function stamp(){
+    try{document.title='Grow Legends '+SHORT}catch(e){}
+    try{document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version').forEach(el=>{if(el)el.textContent=VERSION})}catch(e){}
+    try{document.querySelectorAll('.v366-ver,.v371-logo em,.v372-logo em').forEach(el=>{if(el)el.textContent=SHORT})}catch(e){}
+  }
+  stamp();
+  document.addEventListener('DOMContentLoaded',stamp,{once:true});
+  window.addEventListener('pageshow',stamp,{passive:true});
+})();
+</script>
+
+<!-- ===== V4.80: auto-equip + auto socket/scroll quality-of-life ===== -->
+<style id="v480-auto-gear-material-css">
+.app > header .v358-logo::after{content:"V4.80"!important}
+.app > header .v366-ver::after,.app > header .v371-logo em::after,.app > header .v372-logo em::after{content:"V4.80"!important;font-size:5px!important;color:#63cdd1!important;font-style:normal!important;font-weight:900!important}
+#character.v459-character-hub .v480-auto-bar{
+  display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;gap:8px!important;align-items:center!important;
+  margin:0 0 9px!important;padding:8px!important;border:1px solid #405b35!important;border-radius:12px!important;
+  background:linear-gradient(180deg,#172315,#0c150d)!important;box-shadow:inset 0 1px rgba(255,255,255,.025)!important;
+}
+#character.v459-character-hub .v480-auto-copy{min-width:0!important}
+#character.v459-character-hub .v480-auto-copy b{display:block!important;font-size:9px!important;color:#e7edd9!important;line-height:1.25!important}
+#character.v459-character-hub .v480-auto-copy span{display:block!important;margin-top:2px!important;font-size:7px!important;color:#8fa18e!important;line-height:1.3!important}
+#character.v459-character-hub .v480-auto-btn{
+  min-width:128px!important;padding:8px 9px!important;border-radius:9px!important;font-size:7.6px!important;line-height:1.15!important;white-space:normal!important
+}
+#character.v459-character-hub #v480MaterialAutoBar{border-color:#5e5231!important;background:linear-gradient(180deg,#211c10,#121008)!important}
+#character.v459-character-hub #v480MaterialAutoBar .v480-auto-copy b{color:#f0dda1!important}
+#character.v459-character-hub #v480MaterialAutoBtn{background:linear-gradient(180deg,#d8bd67,#ab8337)!important;color:#211708!important}
+@media(max-width:560px){
+  #character.v459-character-hub .v480-auto-bar{grid-template-columns:1fr!important}
+  #character.v459-character-hub .v480-auto-btn{width:100%!important;min-width:0!important;font-size:8px!important;padding:9px!important}
+}
+</style>
+<script id="v480-auto-gear-material-script">
+(function(){
+  const VERSION='V4.80',SHORT='V4.80';
+  const SLOTS=['head','weapon','body','boots','ring','amulet'];
+  const COMBAT=['staerke','geschick','intelligenz','ausdauer','glueck'];
+  const QUALITY={gray:0,green:1,blue:2,purple:3,orange:4,cyan:5};
+  let busy=false;
+
+  function stamp(){
+    try{document.title='Grow Legends '+SHORT}catch(e){}
+    try{document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version').forEach(el=>{if(el)el.textContent=VERSION})}catch(e){}
+    try{document.querySelectorAll('.v366-ver,.v371-logo em,.v372-logo em').forEach(el=>{if(el)el.textContent=SHORT})}catch(e){}
+  }
+  function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+  function qRank(x){return QUALITY[String(x?.quality||'gray').toLowerCase()]??0}
+  function accountReady(){
+    try{
+      const u=typeof v073User!=='undefined'?v073User:null;
+      if(u?.id&&!u.is_anonymous&&typeof window.v452AccountVerified==='function'&&!window.v452AccountVerified(String(u.id)))return false;
+    }catch(e){}
+    return true;
+  }
+  function isGear(it){return !!(it&&typeof it==='object'&&it.slot&&SLOTS.includes(it.slot)&&it.type!=='gem'&&it.type!=='scroll'&&it.type!=='material')}
+  function classOk(it){return !it?.classId||!s?.playerClass||String(it.classId)===String(s.playerClass)}
+  function normalize(it){
+    if(!it||typeof it!=='object')return it;
+    try{if(typeof v447ApplyItemCurve==='function')v447ApplyItemCurve(it)}catch(e){}
+    try{if(typeof v122NormalizeSocketState==='function')v122NormalizeSocketState(it)}catch(e){}
+    return it;
+  }
+  function pointTotal(it){normalize(it);return COMBAT.reduce((n,k)=>n+(Number(it?.bonus?.[k])||0),0)}
+  function fallbackCompare(it){
+    if(!isGear(it)||!classOk(it))return null;
+    const old=s?.equipment?.[it.slot]||null,nt=pointTotal(it),ot=old?pointTotal(old):0,diff=nt-ot;
+    return {state:!old?'free':diff>0?'better':diff<0?'worse':'same',newTotal:nt,oldTotal:ot,diff};
+  }
+  function compare(it){
+    try{if(typeof window.v470CompareItem==='function')return window.v470CompareItem(it)}catch(e){}
+    return fallbackCompare(it);
+  }
+  function betterTie(a,b){
+    if(!b)return true;
+    const ac=compare(a),bc=compare(b),as=Number(ac?.newTotal??pointTotal(a))||0,bs=Number(bc?.newTotal??pointTotal(b))||0;
+    if(as!==bs)return as>bs;
+    const aq=qRank(a),bq=qRank(b);if(aq!==bq)return aq>bq;
+    return (Number(a?.dropLevel)||0)>(Number(b?.dropLevel)||0);
+  }
+  function autoEquipPlan(){
+    const inv=Array.isArray(s?.inventory)?s.inventory:[];
+    const plan=[];
+    SLOTS.forEach(slot=>{
+      const current=s?.equipment?.[slot]||null;
+      let best=null,bestCmp=null;
+      inv.forEach(it=>{
+        if(!isGear(it)||it.slot!==slot||!classOk(it))return;
+        normalize(it);const c=compare(it);if(!c)return;
+        const eligible=!current?c.state==='free':c.state==='better';
+        if(!eligible)return;
+        if(!best||betterTie(it,best)){best=it;bestCmp=c}
+      });
+      if(best)plan.push({slot,item:best,comparison:bestCmp,current});
+    });
+    return plan;
+  }
+  function autoEquipCount(){return autoEquipPlan().length}
+
+  function primaryKey(){
+    try{if(typeof v267PrimaryKey==='function')return v267PrimaryKey()}catch(e){}
+    return s?.playerClass==='scout'?'geschick':s?.playerClass==='bruiser'?'intelligenz':'staerke';
+  }
+  function gemScore(g){
+    if(!g)return -1;
+    const v=Math.max(0,Number(g.value)||0),stat=String(g.stat||''),pk=primaryKey();
+    const w=stat===pk?6:stat==='ausdauer'?2:stat==='glueck'?1:.15;
+    return v*w;
+  }
+  function scrollScore(r){
+    if(!r)return -1;
+    const v=Math.max(0,Number(r.value)||0),e=String(r.effect||'');
+    const w=e==='primaryPct'?1.4:e==='damageReduce'?1.1:e==='crit'?1:e==='luck'?0.8:0.7;
+    return v*w;
+  }
+  function materialTie(a,b,scoreFn){
+    const as=scoreFn(a),bs=scoreFn(b);if(as!==bs)return bs-as;
+    const aq=qRank(a),bq=qRank(b);if(aq!==bq)return bq-aq;
+    return (Number(b?.value)||0)-(Number(a?.value)||0);
+  }
+  function currentEnchant(it){return it?.enchant||(Array.isArray(it?.enchants)?it.enchants[0]:null)||null}
+  function materialPlan(){
+    const equipped=SLOTS.map(slot=>({slot,it:s?.equipment?.[slot]})).filter(x=>x.it&&typeof x.it==='object');
+    equipped.forEach(x=>normalize(x.it));
+    const mats=Array.isArray(s?.materials)?s.materials:[];
+    const gems=mats.filter(m=>m?.type==='gem'&&Number(m.value)>0&&m.stat).slice().sort((a,b)=>materialTie(a,b,gemScore));
+    const scrolls=mats.filter(m=>m?.type==='scroll'&&Number(m.value)>0&&m.effect).slice().sort((a,b)=>materialTie(a,b,scrollScore));
+
+    function assign(materials,existingFn,scoreFn){
+      const targets=equipped.map(x=>({...x,current:existingFn(x.it)}));
+      const out=[];
+      materials.forEach(mat=>{
+        let chosenIndex=-1,chosenPriority=Infinity;
+        targets.forEach((t,i)=>{
+          if(t.used)return;
+          const cur=t.current,curScore=cur?scoreFn(cur):-1,newScore=scoreFn(mat);
+          const eligible=!cur || newScore>curScore+1e-9;
+          if(!eligible)return;
+          /* Fill empty/weakest slots first. Strongest materials are processed first. */
+          const priority=cur?curScore:-1000000;
+          if(priority<chosenPriority){chosenPriority=priority;chosenIndex=i}
+        });
+        if(chosenIndex>=0){const t=targets[chosenIndex];t.used=true;out.push({slot:t.slot,it:t.it,material:mat,replaces:t.current||null})}
+      });
+      return out;
+    }
+    const gemAssignments=assign(gems,it=>it?.gem||null,gemScore);
+    const scrollAssignments=assign(scrolls,currentEnchant,scrollScore);
+    return {gemAssignments,scrollAssignments};
+  }
+
+  function removeGem(it){
+    try{if(typeof v122RemoveGem==='function'){v122RemoveGem(it);return}}catch(e){}
+    const g=it?.gem;if(!g)return;const v=Number(g.value)||0,stat=g.stat;
+    if(stat&&v&&it?.bonus)it.bonus[stat]=Math.max(0,(Number(it.bonus[stat])||0)-v);
+    it.gem=null;
+  }
+  function removeEnchant(it){
+    try{if(typeof v122RemoveEnchant==='function'){v122RemoveEnchant(it);return}}catch(e){}
+    const e=currentEnchant(it);if(e?.effect==='luck'&&Number(e.value)&&it?.bonus)it.bonus.glueck=Math.max(0,(Number(it.bonus.glueck)||0)-Number(e.value));
+    it.enchant=null;it.enchants=[];
+  }
+  function applyGem(it,mat){
+    it.bonus??={};removeGem(it);
+    const value=Math.max(0,Number(mat.value)||0),stat=String(mat.stat||'');
+    it.gem={name:mat.name,icon:mat.icon||'💎',stat,value,quality:mat.quality||'gray'};
+    it.bonus[stat]=(Number(it.bonus[stat])||0)+value;
+  }
+  function applyScroll(it,mat){
+    it.bonus??={};removeEnchant(it);
+    const value=Math.max(0,Number(mat.value)||0),effect=String(mat.effect||'');
+    const e={name:mat.name,icon:mat.icon||'📜',effect,value,quality:mat.quality||'gray'};
+    it.enchant=e;it.enchants=[e];
+    if(effect==='luck')it.bonus.glueck=(Number(it.bonus.glueck)||0)+value;
+  }
+  function saveAndRender(){
+    try{if(typeof persist==='function')persist(false);else localStorage.setItem(KEY,JSON.stringify(s))}catch(e){console.warn('V4.80 persist',e)}
+    try{if(typeof v075ScheduleSave==='function')v075ScheduleSave()}catch(e){}
+    try{if(typeof v106CheckAchievements==='function')v106CheckAchievements(true)}catch(e){}
+    try{if(typeof render==='function')render()}catch(e){console.warn('V4.80 render',e)}
+    try{window.v470PaintEquipmentSlots?.()}catch(e){}
+    try{window.v459CompactInventory?.()}catch(e){}
+    try{window.v459ArrangeCharacter?.()}catch(e){}
+    setTimeout(updateBars,20);
+  }
+  function toast(title,type,text){
+    try{if(typeof v063Toast==='function')return v063Toast(title,type,text)}catch(e){}
+    try{if(typeof v115Alert==='function')return v115Alert(text,title,type)}catch(e){}
+  }
+
+  async function autoEquip(){
+    if(busy)return;if(!accountReady())return toast('Account wird geladen','info','Bitte kurz warten, bis dein Charakter vollständig geladen ist.');
+    const plan=autoEquipPlan();
+    if(!plan.length)return toast('Ausrüstung bereits optimal','info','Im Inventar liegt aktuell kein Item, das laut Vergleich besser ist als deine angelegte Ausrüstung.');
+    busy=true;
+    try{
+      const before=(()=>{try{return Number(combatPower())||0}catch(e){return 0}})();
+      let done=0;
+      plan.forEach(p=>{
+        const idx=s.inventory.indexOf(p.item);if(idx<0)return;
+        const old=s.equipment?.[p.slot]||null;
+        const next=s.inventory.splice(idx,1)[0];
+        s.equipment[p.slot]=next;
+        if(old)s.inventory.push(old);
+        done++;
+      });
+      saveAndRender();
+      const after=(()=>{try{return Number(combatPower())||0}catch(e){return before}})();
+      const delta=after-before;
+      toast('⚡ Beste Ausrüstung angelegt','success',`${done} Gegenständ${done===1?'':'e'} automatisch angelegt${delta!==0?` · Kampfkraft ${delta>0?'+':''}${delta}`:''}.`);
+    }finally{busy=false;updateBars()}
+  }
+  window.v480AutoEquip=autoEquip;
+
+  async function autoMaterials(){
+    if(busy)return;if(!accountReady())return toast('Account wird geladen','info','Bitte kurz warten, bis dein Charakter vollständig geladen ist.');
+    const plan=materialPlan(),g=plan.gemAssignments.length,r=plan.scrollAssignments.length;
+    if(!g&&!r)return toast('Keine bessere automatische Verwendung','info','Alle ausgerüsteten Plätze haben bereits gleichwertige/bessere Materialien oder es sind keine passenden Steine/Rollen vorhanden.');
+    const replacements=plan.gemAssignments.filter(x=>x.replaces).length+plan.scrollAssignments.filter(x=>x.replaces).length;
+    let ok=true;
+    if(typeof v115Confirm==='function'){
+      ok=await v115Confirm(
+        `Automatisch werden ${g} Edelstein${g===1?'':'e'} und ${r} Rolle${r===1?'':'n'} eingesetzt.\n\nDie stärksten Materialien werden zuerst verwendet.${replacements?` ${replacements} vorhandene schwächere Sockel/Verzauberung${replacements===1?' wird':'en werden'} ersetzt und dabei entfernt.`:''}\n\nSchwächere übrige Materialien bleiben im Inventar.`,
+        {title:'✨ Auto-Sockeln & Rollen',type:'confirm',okText:'Automatisch einsetzen'}
+      );
+    }
+    if(!ok)return;
+    busy=true;
+    try{
+      const used=new Set();
+      plan.gemAssignments.forEach(x=>{applyGem(x.it,x.material);used.add(x.material)});
+      plan.scrollAssignments.forEach(x=>{applyScroll(x.it,x.material);used.add(x.material)});
+      s.materials=(Array.isArray(s.materials)?s.materials:[]).filter(m=>!used.has(m));
+      saveAndRender();
+      toast('✨ Materialien automatisch eingesetzt','success',`${g} Edelstein${g===1?'':'e'} · ${r} Rolle${r===1?'':'n'} verwendet. Die stärksten wurden zuerst verteilt.`);
+    }finally{busy=false;updateBars()}
+  }
+  window.v480AutoMaterials=autoMaterials;
+
+  function ensureBar(panel,id,title,sub,buttonText,onclick){
+    if(!panel)return null;
+    let bar=document.getElementById(id);
+    if(!bar){
+      bar=document.createElement('div');bar.id=id;bar.className='v480-auto-bar';
+      bar.innerHTML=`<div class="v480-auto-copy"><b>${esc(title)}</b><span>${esc(sub)}</span></div><button type="button" class="btn v480-auto-btn"></button>`;
+    }
+    if(bar.parentElement!==panel)panel.insertBefore(bar,panel.firstChild);
+    const btn=bar.querySelector('button');if(btn){btn.textContent=buttonText;btn.onclick=onclick;btn.disabled=busy}
+    return bar;
+  }
+  function updateBars(){
+    try{
+      const invPanel=document.getElementById('v459PanelInventory');
+      const matPanel=document.getElementById('v459PanelMaterials');
+      const improvements=autoEquipCount();
+      const p=materialPlan(),uses=p.gemAssignments.length+p.scrollAssignments.length;
+      const ib=ensureBar(invPanel,'v480EquipAutoBar','⚡ Automatische Ausrüstung',improvements?`${improvements} echte Verbesserung${improvements===1?'':'en'} im Inventar gefunden.`:'Keine bessere Ausrüstung gefunden.','⚡ Beste Ausrüstung anlegen',autoEquip);
+      if(ib){const btn=ib.querySelector('button');if(btn)btn.disabled=busy||improvements===0}
+      const mb=ensureBar(matPanel,'v480MaterialAutoBar','💎 Auto-Sockeln & Rollen',uses?`${p.gemAssignments.length} Stein${p.gemAssignments.length===1?'':'e'} + ${p.scrollAssignments.length} Rolle${p.scrollAssignments.length===1?'':'n'} sinnvoll einsetzbar.`:'Keine bessere automatische Belegung möglich.','✨ Beste Steine & Rollen einsetzen',autoMaterials);
+      if(mb){const btn=mb.querySelector('button');if(btn)btn.disabled=busy||uses===0}
+    }catch(e){console.warn('V4.80 bars',e)}
+    stamp();
+  }
+  window.v480UpdateAutoBars=updateBars;
+
+  /* Targeted hooks only; no permanent MutationObservers or fast intervals. */
+  try{if(typeof window.v459ArrangeCharacter==='function'&&!window.__v480ArrangeWrapped){const base=window.v459ArrangeCharacter;window.v459ArrangeCharacter=function(){const x=base.apply(this,arguments);updateBars();return x};window.__v480ArrangeWrapped=true}}catch(e){}
+  try{if(typeof renderInventory==='function'&&!window.__v480InventoryWrapped){const base=renderInventory;renderInventory=function(){const x=base.apply(this,arguments);updateBars();return x};window.renderInventory=renderInventory;window.__v480InventoryWrapped=true}}catch(e){}
+  try{if(typeof v030RenderMaterials==='function'&&!window.__v480MaterialsWrapped){const base=v030RenderMaterials;v030RenderMaterials=function(){const x=base.apply(this,arguments);updateBars();return x};window.v030RenderMaterials=v030RenderMaterials;window.__v480MaterialsWrapped=true}}catch(e){}
+  try{if(typeof v032Go==='function'&&!window.__v480GoWrapped){const base=v032Go;v032Go=function(id){const x=base.apply(this,arguments);if(id==='character')requestAnimationFrame(updateBars);return x};window.v032Go=v032Go;window.__v480GoWrapped=true}}catch(e){}
+
+  stamp();updateBars();
+  document.addEventListener('DOMContentLoaded',()=>{stamp();updateBars()},{once:true});
+  window.addEventListener('pageshow',()=>{stamp();updateBars()},{passive:true});
+  [150,650,1600].forEach(ms=>setTimeout(updateBars,ms));
 })();
 </script>
