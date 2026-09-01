@@ -61375,7 +61375,7 @@ create index if not exists player_messages_sender_idx on public.player_messages(
 </style>
 <script id="v450-account-save-isolation-recovery">
 (function(){
-  const VERSION='V4.50 Stable', SHORT='V4.50';
+  const VERSION='V4.51 Stable', SHORT='V4.51';
   const ACCOUNT_PREFIX='growLegendsAccountSave:';
   const BEST_PREFIX='growLegendsBestSave:';
   const FLOOR_PREFIX='growLegendsProgressFloor:';
@@ -61623,5 +61623,210 @@ create index if not exists player_messages_sender_idx on public.player_messages(
   window.addEventListener('pageshow',()=>{stamp();capture()},{passive:true});
   [250,900,2200,5200].forEach(ms=>setTimeout(()=>{stamp();capture()},ms));
   const vg=setInterval(stamp,300);setTimeout(()=>clearInterval(vg),22000);
+})();
+</script>
+
+
+<!-- ===== V4.51 Stable: full local save rescue scanner ===== -->
+<style id="v451-save-rescue-css">
+#v451RescueOverlay{position:fixed;inset:0;z-index:2147483500;background:rgba(2,6,3,.94);display:none;align-items:flex-start;justify-content:center;padding:14px;overflow:auto}
+#v451RescueOverlay.open{display:flex}
+#v451RescueCard{width:min(760px,100%);margin:24px auto;background:#0c1510;border:1px solid #416047;border-radius:18px;box-shadow:0 20px 55px #000b;color:#edf6e9;overflow:hidden}
+#v451RescueHead{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;padding:15px;border-bottom:1px solid #2c4030;background:linear-gradient(180deg,#132019,#0c1510)}
+#v451RescueHead h2{margin:0;font-size:18px}#v451RescueHead p{margin:5px 0 0;color:#93a596;font-size:11px;line-height:1.4}
+#v451RescueClose{min-width:44px!important;width:44px!important;padding:9px!important}
+#v451RescueBody{padding:12px}.v451-current{padding:10px;border:1px solid #31513a;border-radius:12px;background:#101c14;margin-bottom:10px;font-size:11px;line-height:1.5}
+.v451-candidate{padding:11px;border:1px solid #314737;border-radius:13px;background:#0b120d;margin:9px 0}.v451-candidate.good{border-color:#5e8d4e;background:linear-gradient(145deg,#102011,#0b120d)}.v451-candidate.warn{border-color:#80623b}
+.v451-top{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}.v451-name{font-size:14px;font-weight:1000}.v451-level{font-size:17px;font-weight:1000;color:#b8ef7c;white-space:nowrap}
+.v451-meta{margin-top:6px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px;font-size:10px;color:#b9c8ba}.v451-meta span{padding:5px 6px;border-radius:8px;background:#111b14;overflow-wrap:anywhere}
+.v451-source{margin-top:6px;font-size:8px;color:#708474;overflow-wrap:anywhere}.v451-badge{display:inline-block;margin-top:6px;padding:4px 7px;border-radius:999px;font-size:8px;font-weight:900;border:1px solid #3a583f;color:#b8c9ba}.v451-badge.match{border-color:#5d8d4d;color:#baf58c}.v451-badge.foreign{border-color:#8e663f;color:#efbd83}
+.v451-actions{display:flex;gap:7px;margin-top:9px;flex-wrap:wrap}.v451-actions button{flex:1;min-width:170px}.v451-empty{padding:16px;text-align:center;border:1px dashed #3b4d3d;border-radius:12px;color:#91a292;font-size:11px;line-height:1.5}
+#v451RescueRow{cursor:pointer}#v451RescueRow button{pointer-events:none}
+#v451RestoreNotice{position:fixed;z-index:2147483600;left:10px;right:10px;bottom:12px;max-width:760px;margin:auto;padding:11px;border:1px solid #5f964c;border-radius:13px;background:rgba(11,29,14,.98);color:#eaffdf;box-shadow:0 12px 35px #000a;font-size:11px;line-height:1.45}
+@media(max-width:520px){#v451RescueOverlay{padding:7px}#v451RescueCard{margin:8px auto}.v451-meta{grid-template-columns:1fr}.v451-actions button{min-width:100%}}
+</style>
+<script id="v451-save-rescue-scanner">
+(function(){
+  const VERSION='V4.51 Stable', SHORT='V4.51';
+  const EMERGENCY_PREFIX='growLegendsEmergencyBeforeRestore:';
+  let profileCache=null, scanBusy=false, restoreBusy=false;
+
+  function uidNow(){try{return v073User&&!v073User.is_anonymous&&v073User.id?String(v073User.id):''}catch(e){return ''}}
+  function clean(x){return String(x||'').trim()}
+  function levelOf(x){return Math.max(1,Math.floor(Number(x?.level)||1))}
+  function nameOf(x){return clean(x?.characterName||x?.playerName||x?.name||'')}
+  function classOf(x){return clean(x?.playerClass||x?.classId||'')}
+  function ownerOf(x){return clean(x?.__accountOwnerId||x?.social?.playerId||'')}
+  function savedAt(x){return Math.max(0,Number(x?.__savedAt)||0)}
+  function revision(x){return Math.max(0,Number(x?.__saveRevision)||0)}
+  function clone(x){try{return JSON.parse(JSON.stringify(x))}catch(e){return null}}
+  function esc(x){return String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+  function plausible(x){
+    if(!x||typeof x!=='object'||Array.isArray(x))return false;
+    const lvl=Number(x.level);
+    if(!Number.isFinite(lvl)||lvl<1||lvl>100000)return false;
+    let score=0;
+    if(Array.isArray(x.inventory))score++;
+    if(x.equipment&&typeof x.equipment==='object')score++;
+    if(x.attrs&&typeof x.attrs==='object')score++;
+    if(x.dungeon&&typeof x.dungeon==='object')score++;
+    if(x.story&&typeof x.story==='object')score++;
+    if('gold' in x||'harzTaler' in x||'energy' in x)score++;
+    return score>=2;
+  }
+  function json(v){try{return JSON.parse(v)}catch(e){return null}}
+  function extractObjects(key,obj){
+    const out=[];
+    const add=(suffix,x)=>{if(plausible(x))out.push({key:key+suffix,data:x})};
+    add('',obj);
+    if(obj&&typeof obj==='object'){
+      ['save_data','save','state','snapshot','data'].forEach(k=>{if(obj[k]&&typeof obj[k]==='object')add(' → '+k,obj[k])});
+    }
+    return out;
+  }
+  function dungeonText(x){
+    try{
+      const comp=Array.isArray(x?.dungeon?.completed)?x.dungeon.completed.length:0;
+      const sel=Math.max(0,Number(x?.dungeon?.selected)||0)+1;
+      const room=Math.max(0,Number(x?.dungeon?.room)||0)+1;
+      return comp?`${comp} abgeschlossen · aktuell ${sel}/${room}`:`${sel}/${room}`;
+    }catch(e){return '—'}
+  }
+  function timestampText(x){const t=savedAt(x);if(!t)return 'ohne Zeitstempel';try{return new Date(t).toLocaleString('de-DE')}catch(e){return String(t)}}
+  async function ownProfile(){
+    const uid=uidNow();if(!uid)return null;
+    if(profileCache&&String(profileCache.id||'')===uid)return profileCache;
+    try{
+      if(typeof v073Init==='function')await v073Init();
+      if(typeof v073Db!=='undefined'&&v073Db){
+        const {data,error}=await v073Db.from('profiles').select('id,character_name,class_id,level').eq('id',uid).maybeSingle();
+        if(!error&&data){profileCache=data;return data}
+      }
+    }catch(e){console.warn('V4.51 profile lookup',e)}
+    return null;
+  }
+  async function scanAll(){
+    if(scanBusy)return [];scanBusy=true;
+    try{
+      const uid=uidNow(), prof=await ownProfile();
+      const expectedName=clean(prof?.character_name||s?.characterName||'').toLocaleLowerCase();
+      const rows=[],seen=new Set();
+      try{
+        for(let i=0;i<localStorage.length;i++){
+          const key=localStorage.key(i)||'';
+          const raw=localStorage.getItem(key);
+          if(!raw||raw.length<30)continue;
+          const obj=json(raw);if(!obj)continue;
+          for(const ex of extractObjects(key,obj)){
+            const d=ex.data, name=nameOf(d), owner=ownerOf(d);
+            let sig='';try{sig=[levelOf(d),name,classOf(d),owner,savedAt(d),revision(d),JSON.stringify(d.equipment||{}),Array.isArray(d.inventory)?d.inventory.length:0].join('|')}catch(e){sig=ex.key}
+            if(seen.has(sig))continue;seen.add(sig);
+            const nameMatch=!!(expectedName&&name&&name.toLocaleLowerCase()===expectedName);
+            const ownerMatch=!!(uid&&owner===uid);
+            const ownerForeign=!!(uid&&owner&&owner!==uid);
+            const keyMatch=!!(uid&&ex.key.includes(uid));
+            const confidence=ownerMatch?4:(nameMatch?3:(keyMatch?2:(!owner?1:0)));
+            rows.push({key:ex.key,data:d,name,owner,nameMatch,ownerMatch,ownerForeign,keyMatch,confidence});
+          }
+        }
+      }catch(e){console.warn('V4.51 localStorage scan',e)}
+      try{
+        if(plausible(s)){
+          const d=clone(s),name=nameOf(d),owner=ownerOf(d),nameMatch=!!(expectedName&&name&&name.toLocaleLowerCase()===expectedName),ownerMatch=owner===uid;
+          rows.push({key:'AKTUELL GELADENER SPIELSTAND',data:d,name,owner,nameMatch,ownerMatch,ownerForeign:!!owner&&!ownerMatch,keyMatch:true,confidence:ownerMatch?4:(nameMatch?3:2)});
+        }
+      }catch(e){}
+      rows.sort((a,b)=>{
+        if(b.confidence!==a.confidence)return b.confidence-a.confidence;
+        if(levelOf(b.data)!==levelOf(a.data))return levelOf(b.data)-levelOf(a.data);
+        if(savedAt(b.data)!==savedAt(a.data))return savedAt(b.data)-savedAt(a.data);
+        return revision(b.data)-revision(a.data);
+      });
+      return rows;
+    }finally{scanBusy=false}
+  }
+
+  function ensureOverlay(){
+    let ov=document.querySelector('#v451RescueOverlay');if(ov)return ov;
+    ov=document.createElement('div');ov.id='v451RescueOverlay';ov.innerHTML=`<div id="v451RescueCard"><div id="v451RescueHead"><div><h2>🛟 Spielstand-Rettung</h2><p>Durchsucht ausschließlich die lokalen Grow-Legends-Daten dieses Browsers. Nichts wird automatisch überschrieben.</p></div><button class="btn secondary" id="v451RescueClose">✕</button></div><div id="v451RescueBody"><div class="v451-empty">Suche läuft …</div></div></div>`;
+    document.body?.appendChild(ov);
+    ov.querySelector('#v451RescueClose')?.addEventListener('click',()=>ov.classList.remove('open'));
+    ov.addEventListener('click',e=>{if(e.target===ov)ov.classList.remove('open')});
+    return ov;
+  }
+  async function openRecovery(){
+    const ov=ensureOverlay(),body=ov?.querySelector('#v451RescueBody');if(!ov||!body)return;
+    ov.classList.add('open');body.innerHTML='<div class="v451-empty">🔎 Lokale Spielstände werden durchsucht …</div>';
+    const uid=uidNow(),prof=await ownProfile(),rows=await scanAll(),cur=levelOf(s);
+    const expectedName=clean(prof?.character_name||s?.characterName||'');
+    const candidates=rows.filter(r=>levelOf(r.data)>cur || r.ownerMatch || r.nameMatch);
+    body.innerHTML=`<div class="v451-current"><b>Aktuell angemeldet:</b> ${esc(expectedName||nameOf(s)||'Unbekannt')} · Level ${cur}${prof?`<br><span style="color:#8fa28f">Onlineprofil: Level ${Number(prof.level)||1} · Account ${esc(uid.slice(0,8))}…</span>`:''}</div>`;
+    if(!candidates.length){body.insertAdjacentHTML('beforeend','<div class="v451-empty"><b>Keine weitere lokale Spielstand-Kopie gefunden.</b><br>Dann ist der alte Stand in diesem Browser wahrscheinlich bereits überschrieben oder gelöscht. Die Rettungssuche verändert nichts.</div>');return}
+    candidates.forEach((r,idx)=>{
+      const d=r.data,lvl=levelOf(d),name=nameOf(d)||'Unbenannt',cls=classOf(d)||'—',gold=Math.max(0,Math.round(Number(d.gold)||0)),harz=Math.max(0,Math.round(Number(d.harzTaler)||0));
+      const inv=Array.isArray(d.inventory)?d.inventory.length:0,eq=d.equipment&&typeof d.equipment==='object'?Object.values(d.equipment).filter(Boolean).length:0;
+      const exact=r.ownerMatch, likely=r.nameMatch, foreign=r.ownerForeign;
+      const canRestore=lvl>cur && (exact||likely||r.keyMatch||!r.owner);
+      const badge=exact?'✅ Account-ID passt':likely?'✅ Charaktername passt':foreign?'⚠️ anderer/alter Owner-Stempel':'ℹ️ alter Spielstand ohne eindeutigen Owner';
+      const c=document.createElement('div');c.className='v451-candidate '+((exact||likely)&&lvl>cur?'good':(foreign?'warn':''));
+      c.innerHTML=`<div class="v451-top"><div><div class="v451-name">${esc(name)}</div><div class="v451-badge ${exact||likely?'match':foreign?'foreign':''}">${badge}</div></div><div class="v451-level">Lv. ${lvl}</div></div><div class="v451-meta"><span>Klasse: <b>${esc(cls)}</b></span><span>Dungeon: <b>${esc(dungeonText(d))}</b></span><span>Gold: <b>${gold.toLocaleString('de-DE')}</b></span><span>Harz: <b>${harz.toLocaleString('de-DE')}</b></span><span>Inventar: <b>${inv}</b></span><span>Ausgerüstet: <b>${eq}</b></span><span>Gespeichert: <b>${esc(timestampText(d))}</b></span><span>Revision: <b>${revision(d)}</b></span></div><div class="v451-source">Quelle: ${esc(r.key)}${r.owner?` · Owner: ${esc(r.owner.slice(0,12))}…`:''}</div><div class="v451-actions">${canRestore?`<button class="btn gold" data-v451-restore="${idx}">↩ Diesen Stand wiederherstellen</button>`:'<button class="btn secondary" disabled>Kein sicherer Wiederherstellungskandidat</button>'}</div>`;
+      body.appendChild(c);
+      c.querySelector('[data-v451-restore]')?.addEventListener('click',()=>restoreCandidate(r));
+    });
+  }
+
+  async function askRestore(r){
+    const text=`${nameOf(r.data)||'Charakter'} · Level ${levelOf(r.data)}\n\nDer aktuelle Level-${levelOf(s)}-Stand wird vorher als Notfallkopie gesichert. Danach wird dieser Kandidat als Spielstand des aktuell angemeldeten Accounts übernommen.`;
+    try{if(typeof v115Confirm==='function')return !!(await v115Confirm(text,{title:'Spielstand wiederherstellen?',type:'warn',okText:'Wiederherstellen'}))}catch(e){}
+    return confirm('Spielstand wiederherstellen?\n\n'+text);
+  }
+  async function restoreCandidate(r){
+    if(restoreBusy)return;const uid=uidNow();if(!uid)return;
+    if(!(await askRestore(r)))return;
+    restoreBusy=true;
+    try{
+      const current=clone(s);if(current){try{localStorage.setItem(EMERGENCY_PREFIX+uid+':'+Date.now(),JSON.stringify(current))}catch(e){}}
+      const next=clone(r.data);if(!next)throw new Error('Rettungsstand konnte nicht gelesen werden.');
+      next.__accountOwnerId=uid;next.social??={};next.social.playerId=uid;next.__savedAt=Date.now();next.__saveRevision=Math.max(Number(next.__saveRevision)||0,Number(s?.__saveRevision)||0)+1;
+      if(typeof v075ApplyCloudSave!=='function')throw new Error('Cloud-Spielstand-Lader fehlt.');
+      const ok=await v075ApplyCloudSave(next);if(!ok)throw new Error('Rettungsstand konnte nicht angewendet werden.');
+      try{localStorage.setItem(KEY,JSON.stringify(s))}catch(e){}
+      try{if(typeof v200SaveScopedLocal==='function')v200SaveScopedLocal()}catch(e){}
+      try{if(typeof render==='function')render()}catch(e){}
+      document.querySelector('#v451RescueOverlay')?.classList.remove('open');
+      let note=document.querySelector('#v451RestoreNotice');if(!note){note=document.createElement('div');note.id='v451RestoreNotice';document.body?.appendChild(note)}
+      if(note)note.innerHTML=`✅ <b>Rettungsstand Level ${levelOf(s)} geladen.</b><br>Er wird jetzt für diesen Google-Account gespeichert. Eine Notfallkopie des vorherigen Level-${levelOf(current)}-Stands wurde lokal behalten.`;
+      let saved=false;
+      try{if(typeof v073SyncProfile==='function')await v073SyncProfile(true);if(typeof v075WriteCloudSave==='function')saved=!!(await v075WriteCloudSave(true))}catch(e){console.warn('V4.51 rescued cloud save',e)}
+      if(note)note.innerHTML=saved?`✅ <b>Rettungsstand Level ${levelOf(s)} wiederhergestellt und in der Cloud gespeichert.</b>`:`⚠️ <b>Rettungsstand Level ${levelOf(s)} ist lokal geladen.</b><br>Cloud-Speicherung wurde noch blockiert. Nicht ausloggen und mir diese Meldung schicken.`;
+      try{if(typeof v063Toast==='function')v063Toast(saved?'✅ Spielstand gerettet':'⚠️ Rettungsstand lokal geladen',saved?'success':'warn',`Level ${levelOf(s)}`)}catch(e){}
+      setTimeout(()=>{if(saved)document.querySelector('#v451RestoreNotice')?.remove()},9000);
+    }catch(e){console.error('V4.51 restore',e);try{v063Toast?.('Wiederherstellung fehlgeschlagen','error',e?.message||String(e))}catch(_){}
+    }finally{restoreBusy=false}
+  }
+
+  function installSettings(){
+    try{if(typeof v141BuildSettings==='function')v141BuildSettings()}catch(e){}
+    const menu=document.querySelector('#v141SettingsMenu');if(!menu||document.querySelector('#v451RescueRow'))return;
+    const row=document.createElement('div');row.id='v451RescueRow';row.className='v141-setting-row';row.innerHTML=`<span class="v141-setting-icon">🛟</span><span class="v141-setting-copy"><b>Spielstand-Rettung</b><span>Lokale ältere Spielstände suchen und gezielt wiederherstellen.</span></span><button type="button" class="btn secondary" style="max-width:120px">Öffnen</button>`;
+    const account=menu.querySelector('.v141-account-box');if(account)menu.insertBefore(row,account);else menu.appendChild(row);
+    row.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();void openRecovery()});
+  }
+  window.v451OpenRecovery=openRecovery;window.v451ScanRecovery=scanAll;
+
+  /* Automatically offer rescue only when this browser still contains a HIGHER plausible
+     save for the currently logged in character. Never auto-apply it. */
+  async function autoOffer(){
+    const uid=uidNow();if(!uid)return;const prof=await ownProfile(),expected=clean(prof?.character_name||s?.characterName||'').toLocaleLowerCase(),cur=levelOf(s),rows=await scanAll();
+    const higher=rows.filter(r=>levelOf(r.data)>cur && (r.ownerMatch || (expected&&nameOf(r.data).toLocaleLowerCase()===expected)));
+    if(higher.length){try{v063Toast?.('🛟 Alter Spielstand gefunden','warn',`Es gibt lokal mindestens einen höheren Stand (bis Level ${Math.max(...higher.map(r=>levelOf(r.data)))}). Öffne Einstellungen → Spielstand-Rettung.`)}catch(e){}}
+  }
+
+  function stamp(){document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version').forEach(el=>{if(el&&el.textContent!==VERSION)el.textContent=VERSION});document.querySelectorAll('.v366-ver,.v371-logo em,.v372-logo em').forEach(el=>{if(el&&el.textContent!==SHORT)el.textContent=SHORT});document.title='Grow Legends '+SHORT}
+  installSettings();stamp();
+  document.addEventListener('DOMContentLoaded',()=>{installSettings();stamp();setTimeout(autoOffer,1200)},{once:true});
+  window.addEventListener('pageshow',()=>{installSettings();stamp();setTimeout(autoOffer,800)},{passive:true});
+  [250,900,2200,5000].forEach(ms=>setTimeout(()=>{installSettings();stamp()},ms));
+  const g=setInterval(()=>{installSettings();stamp()},350);setTimeout(()=>clearInterval(g),25000);
 })();
 </script>
