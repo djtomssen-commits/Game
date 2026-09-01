@@ -60192,7 +60192,7 @@ create index if not exists player_messages_sender_idx on public.player_messages(
 </style>
 <script id="v445-item-compare-mobile-fix">
 (function(){
-  const VERSION='V4.48 Stable', SHORT='V4.48';
+  const VERSION='V4.49 Stable', SHORT='V4.49';
   const COMBAT=['staerke','geschick','intelligenz','ausdauer','glueck'];
   const LABEL={staerke:'Stärke',geschick:'Geschick',intelligenz:'Intelligenz',ausdauer:'Ausdauer',glueck:'Glück'};
 
@@ -61120,9 +61120,13 @@ create index if not exists player_messages_sender_idx on public.player_messages(
     try{
       document.querySelectorAll('#inventory .inv-item').forEach((card,i)=>{
         const it=s.inventory?.[i],box=card.querySelector('.compare');
-        if(it&&box)box.innerHTML=comparison(it);
+        if(!it||!box)return;
+        const html=comparison(it);
+        /* Idempotent repaint: do not rebuild identical DOM. This avoids waking old
+           layout observers and keeps mobile rendering cheap. */
+        if(box.innerHTML!==html)box.innerHTML=html;
       });
-    }catch(e){console.warn('V4.48 item verdict repaint',e)}
+    }catch(e){console.warn('V4.49 item verdict repaint',e)}
   }
   window.v448RepaintItemVerdicts=repaintItems;
 
@@ -61318,10 +61322,20 @@ create index if not exists player_messages_sender_idx on public.player_messages(
     try{window.v032Go=v032Go}catch(e){}window.__v448GoWrapped=true;
   }
 
-  const charRoot=document.querySelector('#character');
-  if(charRoot){
-    const mo=new MutationObserver(()=>{queueMicrotask(()=>{paintPower();repaintItems();applyTrusted()})});
-    mo.observe(charRoot,{subtree:true,childList:true,characterData:true});
+  /* V4.49: never observe the whole character subtree. V4.48 did that and its
+     callback repainted item HTML, which itself created another mutation and could
+     starve the browser in an endless microtask loop during startup. Only watch the
+     single Kampfkraft value; paintPower() is idempotent and never rewrites it when
+     the value is already correct. */
+  const charPowerNode=document.querySelector('#charPower');
+  if(charPowerNode){
+    let powerQueued=false;
+    const mo=new MutationObserver(()=>{
+      if(powerQueued)return;
+      powerQueued=true;
+      requestAnimationFrame(()=>{powerQueued=false;paintPower()});
+    });
+    mo.observe(charPowerNode,{subtree:true,childList:true,characterData:true});
   }
 
   repaintItems();paintPower();stamp();
@@ -61336,3 +61350,20 @@ create index if not exists player_messages_sender_idx on public.player_messages(
 })();
 </script>
 
+
+
+<!-- ===== V4.49 Stable: startup hang regression fix ===== -->
+<script id="v449-startup-hang-regression-fix">
+(function(){
+  const VERSION='V4.49 Stable', SHORT='V4.49';
+  function stamp(){
+    document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version').forEach(el=>{if(el)el.textContent=VERSION});
+    document.querySelectorAll('.v366-ver,.v371-logo em,.v372-logo em').forEach(el=>{if(el)el.textContent=SHORT});
+    document.title='Grow Legends '+SHORT;
+  }
+  stamp();
+  document.addEventListener('DOMContentLoaded',stamp,{once:true});
+  window.addEventListener('pageshow',stamp,{passive:true});
+  [300,1000,2500,6000].forEach(ms=>setTimeout(stamp,ms));
+})();
+</script>
