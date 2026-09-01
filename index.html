@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#10170f">
-<title>Grow Legends V4.47</title>
+<title>Grow Legends V4.53</title>
 <style>
 :root{--bg:#0b100b;--panel:#151d14;--panel2:#1c281a;--panel3:#253423;--line:#354933;--text:#f2f5ed;--muted:#9fad99;--green:#83d65d;--green2:#b2f07e;--gold:#f2c75a;--red:#ee6b68;--blue:#68a7ea;--purple:#ad7bea;--shadow:0 12px 30px rgba(0,0,0,.28)}
 *{box-sizing:border-box}html{background:var(--bg)}body{margin:0;color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:radial-gradient(circle at 50% -10%,#253821 0,#10170f 40%,#090d09 100%);min-height:100vh}button{font:inherit}.app{max-width:820px;margin:auto;min-height:100vh;padding-bottom:88px}
@@ -546,7 +546,7 @@ document.documentElement.classList.remove('v224-app-ready');
 <body>
 <div class="app">
 <header>
-  <div class="brand"><h1>🌿 Grow Legends</h1><span class="version">V4.48 Stable</span><div class="power">Kampfkraft <b id="power">—</b></div></div>
+  <div class="brand"><h1>🌿 Grow Legends</h1><span class="version">V4.53 Stable</span><div class="power">Kampfkraft <b id="power">—</b></div></div>
   <div class="stats resource-stats"><div class="stat">GOLD<b id="gold">—</b></div><div class="stat">SKILL<b id="points">—</b></div><div class="stat">DAMPF<b id="energy">—</b></div><div class="stat harz-stat v277-harz-card v280-harz-card">
   <div class="v280-harz-label">HARZ-TALER</div>
   <b class="v280-harz-value"><span id="topHarz">—</span></b>
@@ -59534,11 +59534,11 @@ create index if not exists player_messages_sender_idx on public.player_messages(
 <!-- ===== V4.41 Stable: authoritative Harz/Dampf immediate UI authority ===== -->
 <style id="v441-resource-live-authority-css">
 /* Final version badge under the compact logo; older pseudo-content must not win. */
-.app > header .v358-logo::after{content:"V4.52"!important}
+.app > header .v358-logo::after{content:"V4.53"!important}
 </style>
 <script id="v441-resource-live-authority">
 (function(){
-  const VERSION='V4.52 Stable', SHORT='V4.52';
+  const VERSION='V4.53 Stable', SHORT='V4.53';
   let painting=false;
 
   function n(v){return Math.max(0,Math.floor(Number(v)||0))}
@@ -59728,11 +59728,11 @@ create index if not exists player_messages_sender_idx on public.player_messages(
   box-shadow:none!important;
 }
 #character .char-bottom > .v442-inventory-card + #attrs{margin-top:0!important}
-.app > header .v358-logo::after{content:"V4.52"!important}
+.app > header .v358-logo::after{content:"V4.53"!important}
 </style>
 <script id="v442-character-layout-economy-fix">
 (function(){
-  const VERSION='V4.52 Stable', SHORT='V4.52';
+  const VERSION='V4.53 Stable', SHORT='V4.53';
   const COMBAT=['staerke','geschick','intelligenz','ausdauer','glueck'];
   const PRICE_MULT={gray:1,green:1.45,blue:2.35,purple:4.6,orange:7.2,cyan:10};
   const RARITY_MAP={
@@ -59853,11 +59853,11 @@ create index if not exists player_messages_sender_idx on public.player_messages(
 
 <!-- ===== V4.43 Stable: quest Dampf immediate live sync ===== -->
 <style id="v443-quest-dampf-live-css">
-.app > header .v358-logo::after{content:"V4.52"!important}
+.app > header .v358-logo::after{content:"V4.53"!important}
 </style>
 <script id="v443-quest-dampf-live-fix">
 (function(){
-  const VERSION='V4.52 Stable', SHORT='V4.52';
+  const VERSION='V4.53 Stable', SHORT='V4.53';
   function n(v){return Math.max(0,Math.floor(Number(v)||0))}
   function cap(){
     try{if(typeof v271DampfCap==='function')return Math.max(100,n(v271DampfCap()))}catch(e){}
@@ -59943,7 +59943,7 @@ create index if not exists player_messages_sender_idx on public.player_messages(
 
 <!-- ===== V4.44 Stable: character inventory/material order authority ===== -->
 <style id="v444-character-inventory-order-css">
-.app > header .v358-logo::after{content:"V4.52"!important}
+.app > header .v358-logo::after{content:"V4.53"!important}
 #character .char-bottom > .v442-inventory-card,
 #character .char-bottom > .v444-material-card{
   width:100%!important;
@@ -59967,7 +59967,7 @@ create index if not exists player_messages_sender_idx on public.player_messages(
 </style>
 <script id="v444-character-inventory-order-fix">
 (function(){
-  const VERSION='V4.52 Stable', SHORT='V4.52';
+  const VERSION='V4.53 Stable', SHORT='V4.53';
   let arranging=false;
 
   function setText(el,text){if(el&&el.textContent!==text)el.textContent=text}
@@ -60199,7 +60199,7 @@ create index if not exists player_messages_sender_idx on public.player_messages(
 </style>
 <script id="v445-item-compare-mobile-fix">
 (function(){
-  const VERSION='V4.52 Stable', SHORT='V4.52';
+  const VERSION='V4.53 Stable', SHORT='V4.53';
   const COMBAT=['staerke','geschick','intelligenz','ausdauer','glueck'];
   const LABEL={staerke:'Stärke',geschick:'Geschick',intelligenz:'Intelligenz',ausdauer:'Ausdauer',glueck:'Glück'};
 
@@ -60334,11 +60334,11 @@ create index if not exists player_messages_sender_idx on public.player_messages(
 
 <!-- ===== V4.47 Stable: one global combat-power authority ===== -->
 <style id="v446-global-combat-power-css">
-.app > header .v358-logo::after{content:"V4.52"!important}
+.app > header .v358-logo::after{content:"V4.53"!important}
 </style>
 <script id="v446-global-combat-power-authority">
 (function(){
-  const VERSION='V4.52 Stable', SHORT='V4.52';
+  const VERSION='V4.53 Stable', SHORT='V4.53';
   let ownProfileOpenId='', syncTimer=0, syncBusy=false, lastSyncedPower=null, painting=false;
 
   /* ONE combat-power source for the whole game: exactly the same global function
@@ -60595,11 +60595,11 @@ create index if not exists player_messages_sender_idx on public.player_messages(
 
 <!-- ===== V4.47 Stable: unified item level/rarity curve ===== -->
 <style id="v447-item-balance-css">
-.app > header .v358-logo::after{content:"V4.52"!important}
+.app > header .v358-logo::after{content:"V4.53"!important}
 </style>
 <script id="v447-unified-item-balance">
 (function(){
-  const VERSION='V4.52 Stable', SHORT='V4.52', CURVE_VERSION=1;
+  const VERSION='V4.53 Stable', SHORT='V4.53', CURVE_VERSION=1;
   const COMBAT=['staerke','geschick','intelligenz','ausdauer','glueck'];
   const RARITY_BONUS={gray:0,green:1.5,blue:3,purple:4.5,orange:6,cyan:8.5};
   const LEVEL_GAIN=0.72;
@@ -60849,7 +60849,7 @@ create index if not exists player_messages_sender_idx on public.player_messages(
 
 <!-- ===== V4.48 Stable: readable item verdict + final power + account identity isolation ===== -->
 <style id="v448-item-verdict-account-css">
-.app > header .v358-logo::after{content:"V4.52"!important}
+.app > header .v358-logo::after{content:"V4.53"!important}
 
 /* IMPORTANT: old CSS targets every class containing the word "compare".
    Only the outer legacy .compare remains; all inner V4.48 class names avoid it. */
@@ -61000,7 +61000,7 @@ create index if not exists player_messages_sender_idx on public.player_messages(
 </style>
 <script id="v448-final-ui-power-account-integrity">
 (function(){
-  const VERSION='V4.52 Stable', SHORT='V4.52';
+  const VERSION='V4.53 Stable', SHORT='V4.53';
   const COMBAT=['staerke','geschick','intelligenz','ausdauer','glueck'];
   const LABEL={staerke:'Stärke',geschick:'Geschick',intelligenz:'Intelligenz',ausdauer:'Ausdauer',glueck:'Glück'};
   const ID_PREFIX='growLegendsCharacterIdentity:';
@@ -61364,7 +61364,7 @@ create index if not exists player_messages_sender_idx on public.player_messages(
 <!-- ===== V4.49 Stable: startup hang regression fix ===== -->
 <script id="v449-startup-hang-regression-fix">
 (function(){
-  const VERSION='V4.52 Stable', SHORT='V4.52';
+  const VERSION='V4.53 Stable', SHORT='V4.53';
   function stamp(){
     document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version').forEach(el=>{if(el)el.textContent=VERSION});
     document.querySelectorAll('.v366-ver,.v371-logo em,.v372-logo em').forEach(el=>{if(el)el.textContent=SHORT});
@@ -61384,7 +61384,7 @@ create index if not exists player_messages_sender_idx on public.player_messages(
 </style>
 <script id="v450-account-save-isolation-recovery">
 (function(){
-  const VERSION='V4.52 Stable', SHORT='V4.52';
+  const VERSION='V4.53 Stable', SHORT='V4.53';
   const ACCOUNT_PREFIX='growLegendsAccountSave:';
   const BEST_PREFIX='growLegendsBestSave:';
   const FLOOR_PREFIX='growLegendsProgressFloor:';
@@ -61651,7 +61651,7 @@ create index if not exists player_messages_sender_idx on public.player_messages(
 </style>
 <script id="v451-save-rescue-scanner">
 (function(){
-  const VERSION='V4.52 Stable', SHORT='V4.52';
+  const VERSION='V4.53 Stable', SHORT='V4.53';
   const EMERGENCY_PREFIX='growLegendsEmergencyBeforeRestore:';
   let profileCache=null, scanBusy=false, restoreBusy=false;
 
@@ -61838,7 +61838,7 @@ create index if not exists player_messages_sender_idx on public.player_messages(
 <!-- ===== V4.52 Stable: hard account isolation gate ===== -->
 <script id="v452-hard-account-isolation">
 (function(){
-  const VERSION='V4.52 Stable', SHORT='V4.52';
+  const VERSION='V4.53 Stable', SHORT='V4.53';
   const EMERGENCY_PREFIX='growLegendsAccountTransitionBackup:';
   const gate={phase:'idle',resolvedUid:'',transitionUid:'',seq:0,lastReason:'',finalizeUid:'',finalizePromise:null};
   window.__V452_ACCOUNT_GATE__=gate;
@@ -62104,5 +62104,146 @@ create index if not exists player_messages_sender_idx on public.player_messages(
   window.addEventListener('pageshow',stamp,{passive:true});
   [250,800,1800,4200].forEach(ms=>setTimeout(stamp,ms));
   const vg=setInterval(stamp,250);setTimeout(()=>clearInterval(vg),30000);
+})();
+</script>
+
+<!-- ===== V4.53 Stable: profile level floor + integrity error dedupe ===== -->
+<script id="v453-profile-floor-reconcile">
+(function(){
+  const VERSION='V4.53 Stable', SHORT='V4.53';
+  let reconcileBusy=false,reconciledUid='',lastIntegrityToast='',lastIntegrityAt=0;
+
+  function uidNow(){try{return v073User&&!v073User.is_anonymous&&v073User.id?String(v073User.id):''}catch(e){return ''}}
+  function clean(x){return String(x||'').trim()}
+  function validName(x){try{return typeof v071NameValid==='function'?v071NameValid(x):clean(x).length>=2}catch(e){return clean(x).length>=2}}
+  function gateReady(uid){
+    try{
+      if(typeof window.v452AccountVerified==='function')return !!window.v452AccountVerified(uid);
+      return !!uid && String(s?.__accountOwnerId||'')===uid && String(s?.social?.playerId||'')===uid && String(v075CloudLoadedFor||'')===uid;
+    }catch(e){return false}
+  }
+  function stamp(){
+    document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version')
+      .forEach(el=>{if(el&&el.textContent!==VERSION)el.textContent=VERSION});
+    document.querySelectorAll('.v366-ver,.v371-logo em,.v372-logo em')
+      .forEach(el=>{if(el&&el.textContent!==SHORT)el.textContent=SHORT});
+    document.title='Grow Legends '+SHORT;
+  }
+
+  async function ownProfile(uid){
+    try{
+      if(typeof v073Init==='function')await v073Init();
+      if(typeof v073Db==='undefined'||!v073Db)return null;
+      const {data,error}=await v073Db.from('profiles')
+        .select('id,character_name,class_id,class_name,level')
+        .eq('id',uid).maybeSingle();
+      if(error)throw error;
+      return data||null;
+    }catch(e){console.warn('V4.53 profile floor lookup',e);return null}
+  }
+
+  async function reconcile(reason='login'){
+    const uid=uidNow();
+    if(!uid||reconcileBusy||!gateReady(uid))return false;
+    reconcileBusy=true;
+    try{
+      const p=await ownProfile(uid);if(!p)return false;
+      let changed=false;
+      const profileLevel=Math.max(1,Math.floor(Number(p.level)||1));
+      const localLevel=Math.max(1,Math.floor(Number(s.level)||1));
+
+      /* The server profile is a monotonic safety floor. A verified save for the SAME
+         authenticated account may move upward to that floor, never downward. */
+      if(profileLevel>localLevel){s.level=profileLevel;changed=true}
+
+      /* Existing server identity is authoritative for this account. This repairs only
+         name/class identity, never inventory, attributes, currency or progression. */
+      const profileName=clean(p.character_name);
+      if(validName(profileName)&&clean(s.characterName)!==profileName){
+        s.characterName=profileName;s.playerName=profileName;s.name=profileName;s.characterNameSet=true;changed=true;
+      }
+      if(p.class_id&&String(s.playerClass||'')!==String(p.class_id)){
+        s.playerClass=p.class_id;s.classLocked=true;changed=true;
+      }
+
+      if(changed){
+        s.__accountOwnerId=uid;s.social??={};s.social.playerId=uid;
+        try{localStorage.setItem(KEY,JSON.stringify(s))}catch(e){}
+        try{if(typeof v200SaveScopedLocal==='function')v200SaveScopedLocal()}catch(e){}
+        try{if(typeof v145SaveScopedLocal==='function')v145SaveScopedLocal()}catch(e){}
+        try{if(typeof v213LocalCheckpoint==='function')v213LocalCheckpoint('v453-profile-floor')}catch(e){}
+        try{if(typeof render==='function')render()}catch(e){}
+        try{if(typeof v071ApplyNameToUi==='function')v071ApplyNameToUi()}catch(e){}
+      }
+      reconciledUid=uid;
+      return changed;
+    }finally{reconcileBusy=false}
+  }
+  window.v453ReconcileProfileFloor=reconcile;
+
+  /* Run after the complete V4.52 finalizer. Its post-login cloud write is queued with
+     setTimeout(0), so this reconciliation finishes first and the outgoing snapshot can
+     no longer contain a lower level than the verified server profile. */
+  if(typeof v200FinalizeUser==='function'&&!window.__v453FinalizeWrapped){
+    const base=v200FinalizeUser;
+    v200FinalizeUser=async function(user){
+      const r=await base.apply(this,arguments);
+      const uid=uidNow();
+      if(r&&uid&&gateReady(uid))await reconcile('finalize');
+      stamp();
+      return r;
+    };
+    try{window.v200FinalizeUser=v200FinalizeUser}catch(e){}
+    window.__v453FinalizeWrapped=true;
+  }
+
+  /* Before any verified cloud/profile write, enforce the profile floor once. This also
+     covers pageshow/session restore paths where no fresh finalizer fires. */
+  if(typeof v075WriteCloudSave==='function'&&!window.__v453CloudFloor){
+    const base=v075WriteCloudSave;
+    v075WriteCloudSave=async function(){
+      const uid=uidNow();if(uid&&gateReady(uid)&&reconciledUid!==uid)await reconcile('cloud-write');
+      return base.apply(this,arguments);
+    };
+    try{window.v075WriteCloudSave=v075WriteCloudSave}catch(e){}window.__v453CloudFloor=true;
+  }
+  if(typeof v073SyncProfile==='function'&&!window.__v453ProfileFloor){
+    const base=v073SyncProfile;
+    v073SyncProfile=async function(){
+      const uid=uidNow();if(uid&&gateReady(uid)&&reconciledUid!==uid)await reconcile('profile-write');
+      return base.apply(this,arguments);
+    };
+    try{window.v073SyncProfile=v073SyncProfile}catch(e){}window.__v453ProfileFloor=true;
+  }
+
+  /* A server integrity rejection is important, but hundreds of identical red cards are
+     not. Keep the first warning visible and suppress identical repeats for 12 seconds. */
+  try{
+    if(typeof v063Toast==='function'&&!window.__v453IntegrityToastDedupe){
+      const base=v063Toast;
+      v063Toast=function(title,type,detail){
+        const all=[title,detail].map(x=>String(x||'')).join(' ');
+        if(/ACCOUNT_INTEGRITY/i.test(all)){
+          const now=Date.now(),key=all.replace(/\s+/g,' ').trim();
+          if(key===lastIntegrityToast&&now-lastIntegrityAt<12000)return;
+          lastIntegrityToast=key;lastIntegrityAt=now;
+        }
+        return base.apply(this,arguments);
+      };
+      try{window.v063Toast=v063Toast}catch(e){}
+      window.__v453IntegrityToastDedupe=true;
+    }
+  }catch(e){}
+
+  if(typeof render==='function'&&!window.__v453RenderStamp){
+    const base=render;render=function(){const r=base.apply(this,arguments);stamp();return r};
+    try{window.render=render}catch(e){}window.__v453RenderStamp=true;
+  }
+
+  stamp();
+  document.addEventListener('DOMContentLoaded',()=>{stamp();const uid=uidNow();if(uid&&gateReady(uid))void reconcile('dom')},{once:true});
+  window.addEventListener('pageshow',()=>{stamp();const uid=uidNow();if(uid&&gateReady(uid))void reconcile('pageshow')},{passive:true});
+  [250,900,2200,5200].forEach(ms=>setTimeout(()=>{stamp();const uid=uidNow();if(uid&&gateReady(uid)&&reconciledUid!==uid)void reconcile('timer')},ms));
+  const guard=setInterval(stamp,300);setTimeout(()=>clearInterval(guard),30000);
 })();
 </script>
