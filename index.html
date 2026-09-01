@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#10170f">
-<title>Grow Legends V4.41</title>
+<title>Grow Legends V4.42</title>
 <style>
 :root{--bg:#0b100b;--panel:#151d14;--panel2:#1c281a;--panel3:#253423;--line:#354933;--text:#f2f5ed;--muted:#9fad99;--green:#83d65d;--green2:#b2f07e;--gold:#f2c75a;--red:#ee6b68;--blue:#68a7ea;--purple:#ad7bea;--shadow:0 12px 30px rgba(0,0,0,.28)}
 *{box-sizing:border-box}html{background:var(--bg)}body{margin:0;color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:radial-gradient(circle at 50% -10%,#253821 0,#10170f 40%,#090d09 100%);min-height:100vh}button{font:inherit}.app{max-width:820px;margin:auto;min-height:100vh;padding-bottom:88px}
@@ -546,7 +546,7 @@ document.documentElement.classList.remove('v224-app-ready');
 <body>
 <div class="app">
 <header>
-  <div class="brand"><h1>🌿 Grow Legends</h1><span class="version">V4.41 Stable</span><div class="power">Kampfkraft <b id="power">—</b></div></div>
+  <div class="brand"><h1>🌿 Grow Legends</h1><span class="version">V4.42 Stable</span><div class="power">Kampfkraft <b id="power">—</b></div></div>
   <div class="stats resource-stats"><div class="stat">GOLD<b id="gold">—</b></div><div class="stat">SKILL<b id="points">—</b></div><div class="stat">DAMPF<b id="energy">—</b></div><div class="stat harz-stat v277-harz-card v280-harz-card">
   <div class="v280-harz-label">HARZ-TALER</div>
   <b class="v280-harz-value"><span id="topHarz">—</span></b>
@@ -42941,7 +42941,7 @@ const v306Line=document.querySelector('#v141VersionLine');if(v306Line)v306Line.t
   Lamp/Pot upgrades capped effectively at level 5; room upgrades stop at level 4 / 6 slots.
   Existing saves remain compatible. No harvest flow or Gold Event logic replaced.
 ===== -->
-\n<!-- ===== V4.29 Stable: Illegales Buch long-term milestones ===== -->
+<!-- ===== V4.29 Stable: Illegales Buch long-term milestones ===== -->
 <script id="v403-illegal-book-longterm">
 (function(){
   const V403_VERSION='V4.29 Stable';
@@ -43805,7 +43805,7 @@ const v306Line=document.querySelector('#v141VersionLine');if(v306Line)v306Line.t
   stamp();
 })();
 </script>
-\n\n<!-- ===== V4.29 Stable: Hall sync + quest rarity colors ===== -->
+<!-- ===== V4.29 Stable: Hall sync + quest rarity colors ===== -->
 <style id="v427-quest-rarity-colors">
 #v231QuestReward .v395-loot-card.item.q-gray{border-color:#5c645e;background:linear-gradient(180deg,#151915,#0b0e0c)}
 #v231QuestReward .v395-loot-card.item.q-gray b{color:#c7ceca}
@@ -43925,7 +43925,7 @@ const v306Line=document.querySelector('#v141VersionLine');if(v306Line)v306Line.t
   setTimeout(stamp,800);
   setTimeout(stamp,2600);
 })();
-</script>\n
+</script>
 
 <script id="v428-dungeon-rebalance">
 /* V4.28 Dungeon rebalance
@@ -57539,7 +57539,7 @@ create index if not exists player_messages_sender_idx on public.player_messages(
   document.title='Grow Legends V4.29';
 })();
 </script>
-\n<!-- ===== V4.29 Stable: inventory/equipment item stat consistency ===== -->
+<!-- ===== V4.29 Stable: inventory/equipment item stat consistency ===== -->
 <script id="v422-item-stat-consistency">
 (function(){
   /* One canonical stat curve for BOTH inventory and equipped gear.
@@ -59705,5 +59705,142 @@ create index if not exists player_messages_sender_idx on public.player_messages(
   setTimeout(()=>{bindShop();settle();stamp()},1000);
   setTimeout(()=>{bindShop();settle();stamp()},5000);
   setTimeout(()=>{bindShop();settle();stamp()},11000);
+})();
+</script>
+
+
+<!-- ===== V4.42 Stable: character layout + sale economy + stray text cleanup ===== -->
+<style id="v442-character-layout-economy-css">
+/* Inventory belongs directly above the attribute grid on the character screen. */
+#character .char-bottom > .v442-inventory-card{
+  width:100%!important;
+  margin:0 0 12px!important;
+  padding:12px!important;
+  overflow:visible!important;
+  background:linear-gradient(150deg,#182319,#101711)!important;
+  border:1px solid #374d34!important;
+  border-radius:13px!important;
+  box-shadow:none!important;
+}
+#character .char-bottom > .v442-inventory-card + #attrs{margin-top:0!important}
+.app > header .v358-logo::after{content:"V4.42"!important}
+</style>
+<script id="v442-character-layout-economy-fix">
+(function(){
+  const VERSION='V4.42 Stable', SHORT='V4.42';
+  const COMBAT=['staerke','geschick','intelligenz','ausdauer','glueck'];
+  const PRICE_MULT={gray:1,green:1.45,blue:2.35,purple:4.6,orange:7.2,cyan:10};
+  const RARITY_MAP={
+    common:'gray','common-gray':'gray',uncommon:'green',rare:'blue',
+    epic:'purple',legendary:'orange',mythic:'cyan','mystic-cyan':'cyan'
+  };
+
+  function quality(it){
+    const q=String(it?.quality||'').toLowerCase();
+    if(PRICE_MULT[q])return q;
+    return RARITY_MAP[String(it?.rarity||'').toLowerCase()]||'gray';
+  }
+  function enchantOf(it){
+    return it?.enchant || (Array.isArray(it?.enchants)?it.enchants[0]:null) || null;
+  }
+  function baseStatTotal(it){
+    const locked=it?.v429StatLock?.native;
+    if(locked&&typeof locked==='object'){
+      return COMBAT.reduce((n,k)=>n+Math.max(0,Number(locked[k])||0),0);
+    }
+    let total=COMBAT.reduce((n,k)=>n+Math.max(0,Number(it?.bonus?.[k])||0),0);
+    /* Sockets/stat scrolls improve combat, but should not become a Gold-printing loop. */
+    if(it?.gem?.stat&&COMBAT.includes(it.gem.stat))total-=Math.max(0,Number(it.gem.value)||0);
+    const e=enchantOf(it);
+    if(e?.effect==='luck')total-=Math.max(0,Number(e.value)||0);
+    return Math.max(0,total);
+  }
+
+  /* Sale economy: about 2% of an equivalent merchant price. The old formula paid
+     several thousand Gold for high-level drops and made selling loot the dominant
+     income source. Purchase prices, quest rewards and dungeon rewards stay untouched. */
+  function saleValue(it){
+    if(!it)return 0;
+    const q=quality(it);
+    const lvl=Math.max(1,Math.floor(Number(it.dropLevel)||Number(s?.level)||1));
+    const stats=baseStatTotal(it);
+    const knownPrice=Math.max(0,Number(it.price)||0);
+    const estimatedPrice=Math.max(30,Math.round((35+lvl*12+stats*11)*(PRICE_MULT[q]||1)));
+    const reference=knownPrice>0?knownPrice:estimatedPrice;
+    return Math.max(5,Math.round(reference*0.02));
+  }
+  try{sellValue=saleValue}catch(e){}
+  try{window.sellValue=saleValue}catch(e){}
+  window.v442SellValue=saleValue;
+
+  function moveInventory(){
+    const inv=document.querySelector('#character #inventory');
+    const card=inv?.closest('.card');
+    const attrs=document.querySelector('#character #attrs');
+    const bottom=attrs?.closest('.char-bottom');
+    if(!card||!attrs||!bottom)return false;
+    card.classList.add('v442-inventory-card');
+    if(card.parentElement!==bottom || card.nextElementSibling!==attrs){
+      bottom.insertBefore(card,attrs);
+    }
+    return true;
+  }
+  window.v442MoveInventory=moveInventory;
+
+  /* Remove literal old patch artifacts such as "\\n" / "\\n\\n" or "n/n/"
+     when they exist as standalone visible text nodes. Never touches script/style text. */
+  function cleanArtifacts(root=document.body){
+    if(!root)return;
+    const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);
+    const bad=[];
+    while(walker.nextNode()){
+      const node=walker.currentNode;
+      const parent=node.parentElement;
+      if(!parent||['SCRIPT','STYLE','TEXTAREA'].includes(parent.tagName))continue;
+      const t=String(node.nodeValue||'');
+      if(/^\s*(?:\\n\s*)+$/i.test(t) || /^\s*\/?n\s*\/\s*n\s*\/?\s*$/i.test(t))bad.push(node);
+    }
+    bad.forEach(node=>{node.nodeValue=''});
+  }
+  window.v442CleanArtifacts=cleanArtifacts;
+
+  function stamp(){
+    document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version')
+      .forEach(el=>{if(el&&el.textContent!==VERSION)el.textContent=VERSION});
+    document.querySelectorAll('.v366-ver,.v371-logo em,.v372-logo em')
+      .forEach(el=>{if(el&&el.textContent!==SHORT)el.textContent=SHORT});
+    if(document.title!=='Grow Legends '+SHORT)document.title='Grow Legends '+SHORT;
+  }
+
+  /* Keep the requested order after any historical render wrapper runs. */
+  if(typeof render==='function'&&!window.__v442RenderWrapped){
+    const baseRender=render;
+    render=function(){
+      const r=baseRender.apply(this,arguments);
+      moveInventory();
+      cleanArtifacts();
+      stamp();
+      return r;
+    };
+    try{window.render=render}catch(e){}
+    window.__v442RenderWrapped=true;
+  }
+
+  function refreshVisiblePrices(){
+    try{if(typeof renderInventory==='function')renderInventory()}catch(e){console.warn('V4.42 inventory price repaint',e)}
+    /* Equipment price labels are rendered by the main render path; one safe boot pass
+       updates them to the new sale formula as well. */
+    try{if(typeof render==='function')render()}catch(e){console.warn('V4.42 character repaint',e)}
+    moveInventory();cleanArtifacts();stamp();
+  }
+
+  moveInventory();cleanArtifacts();stamp();
+  document.addEventListener('DOMContentLoaded',refreshVisiblePrices,{once:true});
+  window.addEventListener('pageshow',()=>{moveInventory();cleanArtifacts();stamp()},{passive:true});
+  setTimeout(refreshVisiblePrices,250);
+  setTimeout(()=>{moveInventory();cleanArtifacts();stamp()},1600);
+  setTimeout(()=>{moveInventory();cleanArtifacts();stamp()},5200);
+  const versionGuard=setInterval(stamp,400);
+  setTimeout(()=>clearInterval(versionGuard),18000);
 })();
 </script>
