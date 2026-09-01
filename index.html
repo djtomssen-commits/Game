@@ -62999,3 +62999,265 @@ create index if not exists player_messages_sender_idx on public.player_messages(
 })();
 </script>
 
+
+<!-- ===== V4.60 Stable: hero stat cleanup + direct inventory better/worse indicators ===== -->
+<style id="v460-char-ui-css">
+.app > header .v358-logo::after{content:"V4.60"!important}
+#character.v459-character-hub .v459-hero-bottom .combat-box{
+  position:relative!important;
+  min-height:62px!important;
+  padding:9px 10px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:center!important;
+  align-items:flex-start!important;
+  gap:3px!important;
+}
+#character.v459-character-hub .v459-hero-bottom .combat-box:before{
+  content:none!important;
+  display:none!important;
+}
+#character.v459-character-hub .v459-hero-bottom .combat-box span{
+  display:flex!important;
+  align-items:center!important;
+  gap:6px!important;
+  font-size:8px!important;
+  letter-spacing:.08em!important;
+  text-transform:uppercase!important;
+  color:#91a592!important;
+}
+#character.v459-character-hub .v459-hero-bottom .combat-box span em{
+  display:inline-grid!important;
+  place-items:center!important;
+  width:18px!important;
+  height:18px!important;
+  border-radius:999px!important;
+  background:#0b120d!important;
+  border:1px solid #37503a!important;
+  font-style:normal!important;
+  font-size:11px!important;
+  line-height:1!important;
+}
+#character.v459-character-hub .v459-hero-bottom .combat-box b{
+  display:block!important;
+  margin:0!important;
+  line-height:1.05!important;
+  font-size:20px!important;
+}
+#character.v459-character-hub .v459-hero-bottom .combat-box.hp b{color:#ef8f8f!important}
+#character.v459-character-hub .v459-hero-bottom .combat-box.power b{color:#e8bd58!important}
+
+#character.v459-character-hub #inventory .inv-item{
+  position:relative!important;
+  overflow:hidden!important;
+}
+#character.v459-character-hub #inventory .inv-item .v460-compare-flag{
+  position:absolute!important;
+  left:7px!important;
+  top:7px!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  gap:4px!important;
+  max-width:calc(100% - 44px)!important;
+  min-height:18px!important;
+  padding:2px 7px!important;
+  border-radius:999px!important;
+  border:1px solid #40523f!important;
+  background:rgba(8,14,10,.88)!important;
+  font-size:8px!important;
+  font-weight:900!important;
+  letter-spacing:.02em!important;
+  line-height:1!important;
+  z-index:2!important;
+  box-shadow:0 4px 10px rgba(0,0,0,.22)!important;
+}
+#character.v459-character-hub #inventory .inv-item .v460-compare-flag .v460-diff{
+  font-size:8px!important;
+  font-weight:1000!important;
+}
+#character.v459-character-hub #inventory .inv-item .v460-compare-flag .v460-reason{
+  font-size:7px!important;
+  color:#c6d2c6!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+}
+#character.v459-character-hub #inventory .inv-item.v460-better{
+  border-color:#4b8b56!important;
+  box-shadow:inset 0 0 0 1px rgba(97,198,113,.15),0 0 0 1px rgba(97,198,113,.08)!important;
+}
+#character.v459-character-hub #inventory .inv-item.v460-better::after,
+#character.v459-character-hub #inventory .inv-item.v460-worse::after,
+#character.v459-character-hub #inventory .inv-item.v460-same::after,
+#character.v459-character-hub #inventory .inv-item.v460-free::after{
+  content:'';
+  position:absolute;
+  left:0;top:0;bottom:0;
+  width:4px;
+  border-radius:12px 0 0 12px;
+}
+#character.v459-character-hub #inventory .inv-item.v460-better::after{background:#68d87a}
+#character.v459-character-hub #inventory .inv-item.v460-worse::after{background:#e27572}
+#character.v459-character-hub #inventory .inv-item.v460-same::after{background:#b8c0b5}
+#character.v459-character-hub #inventory .inv-item.v460-free::after{background:#e4ca77}
+#character.v459-character-hub #inventory .inv-item.v460-better .v460-compare-flag{
+  border-color:#456f4c!important;background:rgba(15,30,16,.92)!important;color:#97eca5!important;
+}
+#character.v459-character-hub #inventory .inv-item.v460-worse .v460-compare-flag{
+  border-color:#6a3d3a!important;background:rgba(32,13,13,.92)!important;color:#f0a29a!important;
+}
+#character.v459-character-hub #inventory .inv-item.v460-same .v460-compare-flag{
+  border-color:#4a504a!important;background:rgba(19,22,19,.92)!important;color:#d1d8d1!important;
+}
+#character.v459-character-hub #inventory .inv-item.v460-free .v460-compare-flag{
+  border-color:#706741!important;background:rgba(28,25,13,.92)!important;color:#ead98b!important;
+}
+#character.v459-character-hub #inventory .inv-item .item-name{
+  padding-top:22px!important;
+}
+#character.v459-character-hub #inventory .v460-status-spacer{display:none}
+@media (max-width:420px){
+  #character.v459-character-hub .v459-hero-bottom .combat-box{min-height:58px!important;padding:8px 9px!important}
+  #character.v459-character-hub .v459-hero-bottom .combat-box b{font-size:18px!important}
+  #character.v459-character-hub #inventory .inv-item .v460-compare-flag{left:6px!important;top:6px!important;padding:2px 6px!important}
+  #character.v459-character-hub #inventory .inv-item .v460-compare-flag .v460-reason{max-width:72px!important}
+}
+</style>
+<script id="v460-char-ui-script">
+(function(){
+  const VERSION='V4.60 Stable',SHORT='V4.60';
+  const COMBAT=['staerke','geschick','intelligenz','ausdauer','glueck'];
+  function enchantOf(it){return it?.enchant || (Array.isArray(it?.enchants)?it.enchants[0]:null) || null}
+  function addonMap(it){
+    const out={};
+    if(it?.gem?.stat&&COMBAT.includes(it.gem.stat)){
+      const v=Number(it.gem.value)||0;if(v)out[it.gem.stat]=(Number(out[it.gem.stat])||0)+v;
+    }
+    const e=enchantOf(it);
+    if(e?.effect==='luck'){
+      const v=Number(e.value)||0;if(v)out.glueck=(Number(out.glueck)||0)+v;
+    }
+    return out;
+  }
+  function nativeMap(it){
+    if(it?.v429StatLock?.native&&typeof it.v429StatLock.native==='object'){
+      const out={};COMBAT.forEach(k=>{const v=Number(it.v429StatLock.native[k])||0;if(v)out[k]=v});return out;
+    }
+    const add=addonMap(it),out={};
+    COMBAT.forEach(k=>{const v=(Number(it?.bonus?.[k])||0)-(Number(add[k])||0);if(v)out[k]=v});
+    return out;
+  }
+  function baseTotal(it){const m=nativeMap(it);return COMBAT.reduce((n,k)=>n+(Number(m[k])||0),0)}
+  function fullTotal(it){return COMBAT.reduce((n,k)=>n+(Number(it?.bonus?.[k])||0),0)}
+  function addonTotal(it){const a=addonMap(it);return COMBAT.reduce((n,k)=>n+(Number(a[k])||0),0)}
+  function sanitize(txt){return String(txt??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
+  function compareState(it){
+    if(!it?.slot||it.type==='material')return null;
+    const old=s?.equipment?.[it.slot]||null;
+    if(it.classId&&s?.playerClass&&it.classId!==s.playerClass){
+      return {cls:'worse',mark:'⛔',diff:'Falsch',reason:'falsche Klasse'};
+    }
+    if(!old)return {cls:'free',mark:'▲',diff:'+?',reason:'Slot frei'};
+    const newBase=baseTotal(it), oldBase=baseTotal(old), newFull=fullTotal(it), oldFull=fullTotal(old);
+    const d=newFull-oldFull, baseDiff=newBase-oldBase, addDiff=addonTotal(it)-addonTotal(old);
+    let cls='same',mark='◆',diff='±0',reason='gleichwertig';
+    if(d>0){
+      cls='better';mark='▲';diff='+'+d;
+      if(baseDiff>0 && addDiff>0)reason='Basis + Sockel';
+      else if(baseDiff>0 && addDiff<=0)reason='Basiswert besser';
+      else if(baseDiff<=0 && addDiff>0)reason='durch Stein/Rolle';
+      else reason='knapp besser';
+    }else if(d<0){
+      cls='worse';mark='▼';diff=String(d);
+      if(baseDiff<0 && addDiff<0)reason='Basis + Sockel';
+      else if(baseDiff<0 && addDiff>=0)reason='Basiswert schlechter';
+      else if(baseDiff>=0 && addDiff<0)reason='wegen Stein/Rolle';
+      else reason='knapp schlechter';
+    }
+    return {cls,mark,diff,reason};
+  }
+
+  function fixHeroStats(){
+    const boxes=[...document.querySelectorAll('#character.v459-character-hub .v459-hero-bottom .combat-box')];
+    boxes.forEach((box,i)=>{
+      box.classList.remove('hp','power');
+      const label=box.querySelector('span');
+      if(!label)return;
+      if(i===0){
+        box.classList.add('hp');
+        label.innerHTML='<em>❤️</em> Lebenspunkte';
+      }else if(i===1){
+        box.classList.add('power');
+        label.innerHTML='<em>⚔️</em> Kampfkraft';
+      }
+    });
+  }
+
+  function paintInventoryIndicators(){
+    const cards=[...document.querySelectorAll('#character #inventory .inventory-grid > .inv-item')];
+    cards.forEach((card,i)=>{
+      card.classList.remove('v460-better','v460-worse','v460-same','v460-free');
+      const old=card.querySelector('.v460-compare-flag'); if(old) old.remove();
+      const it=s?.inventory?.[i]; if(!it) return;
+      const st=compareState(it); if(!st) return;
+      card.classList.add('v460-'+st.cls);
+      const flag=document.createElement('div');
+      flag.className='v460-compare-flag';
+      flag.innerHTML=`<span class="v460-diff">${sanitize(st.mark+' '+st.diff)}</span><span class="v460-reason">${sanitize(st.reason)}</span>`;
+      card.appendChild(flag);
+      const chk=card.querySelector('.v268-pick'); if(chk) chk.style.zIndex='3';
+      const title=`${st.mark} ${st.diff} · ${st.reason}`;
+      card.title=title;
+      card.setAttribute('aria-label',`${it.name||'Item'}: ${title}`);
+    });
+  }
+
+  function stampVersion(){
+    try{document.querySelector('header .version').textContent=VERSION}catch(e){}
+    try{document.title=document.title.replace(/V4\.59|V4\.60/g,'V4.60')}catch(e){}
+  }
+
+  function apply(){
+    fixHeroStats();
+    paintInventoryIndicators();
+    stampVersion();
+  }
+
+  try{
+    if(typeof window.v459CompactInventory==='function'&&!window.__v460InventoryWrapped){
+      const base=window.v459CompactInventory;
+      window.v459CompactInventory=function(){const r=base.apply(this,arguments);apply();return r};
+      window.__v460InventoryWrapped=true;
+    }
+  }catch(e){}
+  try{
+    if(typeof renderInventory==='function'&&!window.__v460RenderInventoryWrapped){
+      const base=renderInventory;
+      renderInventory=function(){const r=base.apply(this,arguments);apply();return r};
+      window.renderInventory=renderInventory;
+      window.__v460RenderInventoryWrapped=true;
+    }
+  }catch(e){}
+  try{
+    if(typeof render==='function'&&!window.__v460RenderWrapped){
+      const base=render;
+      render=function(){const r=base.apply(this,arguments);apply();return r};
+      window.render=render;
+      window.__v460RenderWrapped=true;
+    }
+  }catch(e){}
+  try{
+    if(typeof v032Go==='function'&&!window.__v460GoWrapped){
+      const base=v032Go;
+      v032Go=function(id){const r=base.apply(this,arguments);if(id==='character')requestAnimationFrame(apply);return r};
+      window.v032Go=v032Go;
+      window.__v460GoWrapped=true;
+    }
+  }catch(e){}
+
+  document.addEventListener('DOMContentLoaded',apply,{once:true});
+  window.addEventListener('pageshow',apply,{passive:true});
+  [120,450,1200,2600,5200,9800].forEach(ms=>setTimeout(apply,ms));
+  apply();
+})();
+</script>
