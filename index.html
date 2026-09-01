@@ -4,6 +4,55 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#10170f">
+<style id="v477-runtime-governor-css">
+/* V4.77: never depend on a JS class to remove the startup splash. The retired
+   home stays hidden; the modern home becomes visible as soon as it exists. */
+#world.active:not(.v474-home-ready)::before{display:none!important}
+#world.active > .v349-home{display:none!important;visibility:hidden!important;opacity:0!important;pointer-events:none!important}
+#world.active > .v366-world{display:grid!important;visibility:visible!important;opacity:1!important}
+.app > header .v358-logo::after{content:"V4.77"!important}
+.app > header .v366-ver,.app > header .v371-logo em,.app > header .v372-logo em{font-size:0!important;color:transparent!important}
+.app > header .v366-ver::after,.app > header .v371-logo em::after,.app > header .v372-logo em::after{content:"V4.77"!important;font-size:5px!important;color:#63cdd1!important;font-style:normal!important;font-weight:900!important}
+</style>
+<script id="v477-runtime-governor-head">
+(function(){
+  /* Historic patches installed dozens of UI/version guards at 250-500 ms.
+     They are compatibility painters, not game clocks. Slow only sub-800 ms
+     recurring intervals; real 1 s quest/grow clocks and long timers stay exact. */
+  const nativeSetInterval=window.setInterval.bind(window);
+  let fastSeq=0;
+  window.setInterval=function(fn,delay){
+    const args=[].slice.call(arguments,2);
+    let d=Number(delay)||0;
+    if(d>0&&d<800){d=2200+(fastSeq++%6)*180}
+    return nativeSetInterval(function(){return fn.apply(this,args)},d);
+  };
+
+  /* Header/shop MutationObservers were only used to fight old visual painters.
+     On mobile they can feed back into those painters. Explicit render hooks own
+     these areas now, so observers aimed at header/shop are intentionally ignored. */
+  const NativeMO=window.MutationObserver;
+  if(typeof NativeMO==='function'){
+    function SafeMO(cb){
+      const obs=new NativeMO(cb);
+      const nativeObserve=obs.observe.bind(obs);
+      obs.observe=function(target,opts){
+        try{
+          if(target&&target.nodeType===1){
+            if(target.matches?.('.app > header,#shop')||target.closest?.('.app > header,#shop'))return;
+          }
+        }catch(e){}
+        return nativeObserve(target,opts);
+      };
+      return obs;
+    }
+    SafeMO.prototype=NativeMO.prototype;
+    try{Object.setPrototypeOf(SafeMO,NativeMO)}catch(e){}
+    window.MutationObserver=SafeMO;
+  }
+  window.__V477_RUNTIME_GOVERNOR__=true;
+})();
+</script>
 <style id="v474-first-paint-guard-css">
 /* V4.74: first-paint authority. Never expose retired header/world DOM while
    the late modern builders are still parsing. */
@@ -65335,13 +65384,9 @@ create index if not exists player_messages_sender_idx on public.player_messages(
       if(!world)return false;
       if(!world.classList.contains('active')&&!force)return false;
 
-      let modern=world.querySelector(':scope > .v366-world');
-      if(!modern&&typeof v085InstallWorld==='function'){
-        try{v085InstallWorld(true)}catch(e){}
-        modern=world.querySelector(':scope > .v366-world')||world.querySelector('.v366-world');
-        if(modern&&modern.parentElement!==world)world.insertBefore(modern,world.firstChild);
-      }
+      let modern=world.querySelector(':scope > .v366-world')||world.querySelector('.v366-world');
       if(!modern)return false;
+      if(modern.parentElement!==world)world.insertBefore(modern,world.firstChild);
 
       [...world.children].forEach(el=>{if(el!==modern)el.style.setProperty('display','none','important')});
       modern.style.setProperty('display','grid','important');
@@ -65559,14 +65604,15 @@ create index if not exists player_messages_sender_idx on public.player_messages(
 
   /* V4.76: visible version is CSS-owned. Do not fight historical writers
      with a MutationObserver on the whole header. */
-  function observeVersion(){return false}
+  /* V4.77: no header MutationObserver; visible version is CSS-owned. */
+
 
   installGuildRpcGuard();
   markModernHomeReady(true);
-  stamp();observeVersion();
-  document.addEventListener('DOMContentLoaded',()=>{installGuildRpcGuard();markModernHomeReady(true);stamp();observeVersion()},{once:true});
+  stamp();
+  document.addEventListener('DOMContentLoaded',()=>{installGuildRpcGuard();markModernHomeReady(true);stamp()},{once:true});
   window.addEventListener('pageshow',()=>{installGuildRpcGuard();markModernHomeReady(true);stamp()},{passive:true});
-  [60,180,500,1200,3000,6000,12000,19000].forEach(ms=>setTimeout(()=>{installGuildRpcGuard();markModernHomeReady();stamp()},ms));
+  [180,900,2200].forEach(ms=>setTimeout(()=>{installGuildRpcGuard();markModernHomeReady();stamp()},ms));
 })();
 </script>
 
@@ -65609,9 +65655,9 @@ create index if not exists player_messages_sender_idx on public.player_messages(
 #shop .shop-item .v090-shop-compare,#shop .shop-item .v089-shop-compare{font-size:8px!important;min-height:36px!important}
 
 /* Final top-bar version ownership. */
-.app > header .v358-logo::after{content:"V4.75"!important}
+.app > header .v358-logo::after{content:"V4.77"!important}
 .app > header .v366-ver,.app > header .v371-logo em,.app > header .v372-logo em{font-size:0!important;color:transparent!important}
-.app > header .v366-ver::after,.app > header .v371-logo em::after,.app > header .v372-logo em::after{content:"V4.75"!important;font-size:5px!important;color:#63cdd1!important;font-style:normal!important;font-weight:900!important}
+.app > header .v366-ver::after,.app > header .v371-logo em::after,.app > header .v372-logo em::after{content:"V4.77"!important;font-size:5px!important;color:#63cdd1!important;font-style:normal!important;font-weight:900!important}
 
 @media(max-width:560px){
   #shop #v461ShopHero.v472-dual-hero.v464-magic .v472-hero-magic{left:31%!important;background-position:51% center!important}
@@ -65628,7 +65674,7 @@ create index if not exists player_messages_sender_idx on public.player_messages(
 (function(){
   const VERSION='V4.75',SHORT='V4.75';
   const rarityPrefix=/^(?:normal|gewöhnlich|gewoehnlich|selten|episch|legendär|legendaer|mystisch)\s*:\s*/i;
-  let shopObserver=null,queued=false;
+  let queued=false;
 
   function stamp(){
     try{document.title='Grow Legends '+SHORT}catch(e){}
@@ -65688,13 +65734,13 @@ create index if not exists player_messages_sender_idx on public.player_messages(
 
   /* V4.76: no perpetual DOM observers here. They caused an endless
      observer -> polish -> DOM mutation -> observer loop on mobile. */
-  function observeShop(){return false}
-  function observeVersion(){return false}
+  /* V4.77: no permanent MutationObservers here. Shop polish is driven only by
+     renderShop/render/v032Go hooks above, preventing self-triggering DOM loops. */
 
-  stamp();queue();observeShop();observeVersion();
-  document.addEventListener('DOMContentLoaded',()=>{stamp();queue();observeShop();observeVersion()},{once:true});
+  stamp();queue();
+  document.addEventListener('DOMContentLoaded',()=>{stamp();queue()},{once:true});
   window.addEventListener('pageshow',()=>{stamp();queue()},{passive:true});
-  [50,200,700,1600].forEach(ms=>setTimeout(()=>{stamp();queue()},ms));
+  [80,500,1400].forEach(ms=>setTimeout(()=>{stamp();queue()},ms));
 })();
 </script>
 
@@ -65707,22 +65753,27 @@ create index if not exists player_messages_sender_idx on public.player_messages(
 /* Hard failsafe: the first-paint splash is never allowed to stay forever. */
 #world.active.v476-home-failsafe:not(.v474-home-ready)::before{display:none!important}
 </style>
-<script id="v476-runtime-safety-script">
+<script id="v476-runtime-safety-script">/* Retired by V4.77 runtime governor. */</script>
+
+
+<!-- ===== V4.77: final mobile runtime stability owner ===== -->
+<style id="v477-final-runtime-css">
+.app > header .v358-logo::after{content:"V4.77"!important}
+.app > header .v366-ver,.app > header .v371-logo em,.app > header .v372-logo em{font-size:0!important;color:transparent!important}
+.app > header .v366-ver::after,.app > header .v371-logo em::after,.app > header .v372-logo em::after{content:"V4.77"!important;font-size:5px!important;color:#63cdd1!important;font-style:normal!important;font-weight:900!important}
+#world.active:not(.v474-home-ready)::before{display:none!important}
+</style>
+<script id="v477-final-runtime-script">
 (function(){
-  const VERSION='V4.76',SHORT='V4.76';
-  function stampOnce(){
+  const VERSION='V4.77',SHORT='V4.77';
+  function stamp(){
     try{document.title='Grow Legends '+SHORT}catch(e){}
-    try{
-      document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version')
-        .forEach(el=>{if(el&&el.textContent!==VERSION)el.textContent=VERSION});
-      document.querySelectorAll('.v366-ver,.v371-logo em,.v372-logo em')
-        .forEach(el=>{if(el&&el.textContent!==SHORT)el.textContent=SHORT});
-    }catch(e){}
+    try{document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version').forEach(el=>{if(el&&el.textContent!==VERSION)el.textContent=VERSION})}catch(e){}
+    try{document.querySelectorAll('.v366-ver,.v371-logo em,.v372-logo em').forEach(el=>{if(el&&el.textContent!==SHORT)el.textContent=SHORT})}catch(e){}
   }
-  function releaseHomeSplash(){
+  function exposeModernHome(){
     try{
-      const world=document.querySelector('#world');
-      if(!world)return;
+      const world=document.querySelector('#world');if(!world)return;
       const modern=world.querySelector(':scope > .v366-world')||world.querySelector('.v366-world');
       if(modern){
         if(modern.parentElement!==world)world.insertBefore(modern,world.firstChild);
@@ -65730,17 +65781,12 @@ create index if not exists player_messages_sender_idx on public.player_messages(
         modern.style.setProperty('visibility','visible','important');
         modern.style.setProperty('opacity','1','important');
         world.classList.add('v474-home-ready');
-      }else{
-        /* Never trap the user behind a permanent pseudo-loader. */
-        world.classList.add('v476-home-failsafe');
       }
     }catch(e){}
   }
-  stampOnce();
-  document.addEventListener('DOMContentLoaded',()=>{stampOnce();setTimeout(releaseHomeSplash,80)},{once:true});
-  window.addEventListener('pageshow',()=>{stampOnce();setTimeout(releaseHomeSplash,60)},{passive:true});
-  setTimeout(releaseHomeSplash,1200);
-  setTimeout(releaseHomeSplash,2600);
-  setTimeout(()=>document.querySelector('#world')?.classList.add('v476-home-failsafe'),3200);
+  stamp();exposeModernHome();
+  document.addEventListener('DOMContentLoaded',()=>{stamp();exposeModernHome()},{once:true});
+  window.addEventListener('pageshow',()=>{stamp();exposeModernHome()},{passive:true});
+  [150,800,1800].forEach(ms=>setTimeout(()=>{stamp();exposeModernHome()},ms));
 })();
 </script>
