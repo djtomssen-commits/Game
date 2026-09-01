@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#10170f">
-<title>Grow Legends V4.46</title>
+<title>Grow Legends V4.47</title>
 <style>
 :root{--bg:#0b100b;--panel:#151d14;--panel2:#1c281a;--panel3:#253423;--line:#354933;--text:#f2f5ed;--muted:#9fad99;--green:#83d65d;--green2:#b2f07e;--gold:#f2c75a;--red:#ee6b68;--blue:#68a7ea;--purple:#ad7bea;--shadow:0 12px 30px rgba(0,0,0,.28)}
 *{box-sizing:border-box}html{background:var(--bg)}body{margin:0;color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:radial-gradient(circle at 50% -10%,#253821 0,#10170f 40%,#090d09 100%);min-height:100vh}button{font:inherit}.app{max-width:820px;margin:auto;min-height:100vh;padding-bottom:88px}
@@ -546,7 +546,7 @@ document.documentElement.classList.remove('v224-app-ready');
 <body>
 <div class="app">
 <header>
-  <div class="brand"><h1>🌿 Grow Legends</h1><span class="version">V4.46 Stable</span><div class="power">Kampfkraft <b id="power">—</b></div></div>
+  <div class="brand"><h1>🌿 Grow Legends</h1><span class="version">V4.47 Stable</span><div class="power">Kampfkraft <b id="power">—</b></div></div>
   <div class="stats resource-stats"><div class="stat">GOLD<b id="gold">—</b></div><div class="stat">SKILL<b id="points">—</b></div><div class="stat">DAMPF<b id="energy">—</b></div><div class="stat harz-stat v277-harz-card v280-harz-card">
   <div class="v280-harz-label">HARZ-TALER</div>
   <b class="v280-harz-value"><span id="topHarz">—</span></b>
@@ -60325,13 +60325,13 @@ create index if not exists player_messages_sender_idx on public.player_messages(
 </script>
 
 
-<!-- ===== V4.46 Stable: one global combat-power authority ===== -->
+<!-- ===== V4.47 Stable: one global combat-power authority ===== -->
 <style id="v446-global-combat-power-css">
-.app > header .v358-logo::after{content:"V4.46"!important}
+.app > header .v358-logo::after{content:"V4.47"!important}
 </style>
 <script id="v446-global-combat-power-authority">
 (function(){
-  const VERSION='V4.46 Stable', SHORT='V4.46';
+  const VERSION='V4.47 Stable', SHORT='V4.47';
   let ownProfileOpenId='', syncTimer=0, syncBusy=false, lastSyncedPower=null, painting=false;
 
   /* ONE combat-power source for the whole game: exactly the same global function
@@ -60581,5 +60581,260 @@ create index if not exists player_messages_sender_idx on public.player_messages(
   setTimeout(()=>{paintLocalPower();stamp();scheduleSync(true)},5200);
   const guard=setInterval(()=>{paintLocalPower();stamp()},400);
   setTimeout(()=>clearInterval(guard),18000);
+})();
+</script>
+
+
+<!-- ===== V4.47 Stable: unified item level/rarity curve ===== -->
+<style id="v447-item-balance-css">
+.app > header .v358-logo::after{content:"V4.47"!important}
+</style>
+<script id="v447-unified-item-balance">
+(function(){
+  const VERSION='V4.47 Stable', SHORT='V4.47', CURVE_VERSION=1;
+  const COMBAT=['staerke','geschick','intelligenz','ausdauer','glueck'];
+  const RARITY_BONUS={gray:0,green:1.5,blue:3,purple:4.5,orange:6,cyan:8.5};
+  const LEVEL_GAIN=0.72;
+
+  /* Standard class-set distribution. Total budget is still the SAME shared slot
+     budget as regular gear; the map only decides which attributes receive it. */
+  const SET_PATTERN={
+    grower:{
+      head:{ausdauer:4},weapon:{staerke:6},body:{ausdauer:6},
+      boots:{staerke:3,ausdauer:2},ring:{staerke:3},amulet:{ausdauer:3,glueck:1}
+    },
+    scout:{
+      head:{geschick:4},weapon:{geschick:6},body:{ausdauer:3,geschick:3},
+      boots:{geschick:5},ring:{glueck:3,geschick:2},amulet:{geschick:3,glueck:2}
+    },
+    bruiser:{
+      head:{glueck:4},weapon:{staerke:3,glueck:3},body:{ausdauer:4,glueck:2},
+      boots:{geschick:3,glueck:2},ring:{glueck:5},amulet:{geschick:2,glueck:3}
+    }
+  };
+  /* Mystic-set pieces keep their intended two-stat flavour, but no extra hidden
+     raw-stat budget. Their actual advantage comes from cyan rarity + special effect. */
+  const MYSTIC_SET_PATTERN={
+    grower:{
+      head:{ausdauer:4,staerke:2},weapon:{staerke:6},body:{ausdauer:6},
+      boots:{staerke:3,ausdauer:2},ring:{staerke:4},amulet:{ausdauer:3,staerke:2}
+    },
+    scout:{
+      head:{geschick:4,glueck:2},weapon:{geschick:6},body:{ausdauer:3,geschick:3},
+      boots:{geschick:5},ring:{geschick:3,glueck:2},amulet:{geschick:3,glueck:2}
+    },
+    bruiser:{
+      head:{glueck:4,ausdauer:2},weapon:{glueck:5,geschick:2},body:{ausdauer:4,glueck:2},
+      boots:{geschick:3,glueck:2},ring:{glueck:5},amulet:{glueck:3,geschick:2}
+    }
+  };
+
+  function q(it){
+    const x=String(it?.quality||'').toLowerCase();
+    if(RARITY_BONUS[x]!=null)return x;
+    const r=String(it?.rarity||'').toLowerCase();
+    if(r.includes('myth')||r.includes('mystic')||r.includes('cyan'))return'cyan';
+    if(r.includes('legend')||r.includes('orange'))return'orange';
+    if(r.includes('epic')||r.includes('purple'))return'purple';
+    if(r==='rare'||r.includes('blue'))return'blue';
+    if(r.includes('uncommon')||r.includes('green'))return'green';
+    return'gray';
+  }
+  function cls(it){
+    const c=String(it?.classId||s?.playerClass||'grower');
+    return ['grower','scout','bruiser'].includes(c)?c:'grower';
+  }
+  function isGear(it){
+    return !!(it&&typeof it==='object'&&it.slot&&it.type!=='material'&&it.type!=='gem'&&it.type!=='scroll');
+  }
+  function enchantOf(it){return it?.enchant||(Array.isArray(it?.enchants)?it.enchants[0]:null)||null}
+  function addonMap(it){
+    const out={};
+    if(it?.gem?.stat&&COMBAT.includes(it.gem.stat)){
+      const v=Number(it.gem.value)||0;if(v)out[it.gem.stat]=(Number(out[it.gem.stat])||0)+v;
+    }
+    const e=enchantOf(it);
+    if(e?.effect==='luck'){
+      const v=Number(e.value)||0;if(v)out.glueck=(Number(out.glueck)||0)+v;
+    }
+    return out;
+  }
+  function nativeFromCurrent(it){
+    if(it?.v429StatLock?.native&&typeof it.v429StatLock.native==='object'){
+      const out={};COMBAT.forEach(k=>{const v=Number(it.v429StatLock.native[k])||0;if(v>0)out[k]=v});
+      if(Object.keys(out).length)return out;
+    }
+    const add=addonMap(it),out={};
+    COMBAT.forEach(k=>{const v=(Number(it?.bonus?.[k])||0)-(Number(add[k])||0);if(v>0)out[k]=v});
+    return out;
+  }
+  function cleanName(it){
+    return String(it?.name||'')
+      .replace(/^(Normal|Gewöhnlich|Rare|Episch|Legendär|Mystisch):\s*/i,'')
+      .replace(/\s*\[Lv\.\d+\]\s*$/i,'');
+  }
+  function poolFor(it){
+    try{
+      const pool=classGear?.[cls(it)];
+      return Array.isArray(pool)?pool:[];
+    }catch(e){return []}
+  }
+  function templateFor(it){
+    const pool=poolFor(it), name=cleanName(it), bid=String(it?.baseId||'');
+    return pool.find(x=>bid&&String(x.id)===bid)
+      ||pool.find(x=>it?.id&&String(it.id).startsWith(String(x.id)))
+      ||pool.find(x=>it?.slot&&x.slot===it.slot&&(name===x.name||name.includes(x.name)))
+      ||null;
+  }
+  function patternFor(it){
+    const c=cls(it),slot=it?.slot;
+    if(it?.mysticSetId&&MYSTIC_SET_PATTERN[c]?.[slot])return {...MYSTIC_SET_PATTERN[c][slot]};
+    if(it?.setId&&SET_PATTERN[c]?.[slot])return {...SET_PATTERN[c][slot]};
+    const hit=templateFor(it);
+    if(hit?.bonus){
+      const out={};COMBAT.forEach(k=>{const v=Number(hit.bonus[k])||0;if(v>0)out[k]=v});
+      if(Object.keys(out).length)return out;
+    }
+    if(it?.baseBonusV055&&typeof it.baseBonusV055==='object'){
+      const out={};COMBAT.forEach(k=>{const v=Number(it.baseBonusV055[k])||0;if(v>0)out[k]=v});
+      if(Object.keys(out).length)return out;
+    }
+    const old=nativeFromCurrent(it);
+    if(Object.keys(old).length)return old;
+    const primary=c==='scout'?'geschick':c==='bruiser'?'intelligenz':'staerke';
+    return {[primary]:1};
+  }
+  function slotBaseBudget(it,pattern){
+    const slot=it?.slot;
+    const totals=poolFor(it).filter(x=>x?.slot===slot).map(x=>
+      COMBAT.reduce((n,k)=>n+Math.max(0,Number(x?.bonus?.[k])||0),0)
+    ).filter(n=>n>0);
+    /* Set patterns can legitimately contain a stronger distribution than an old
+       base pool. Use the larger template total only as slot baseline, never as a
+       rarity multiplier. */
+    const own=COMBAT.reduce((n,k)=>n+Math.max(0,Number(pattern?.[k])||0),0);
+    return Math.max(1,own,...totals);
+  }
+  function targetNativeTotal(it,pattern){
+    const lvl=Math.max(1,Math.floor(Number(it?.dropLevel)||Number(s?.level)||1));
+    return Math.max(1,Math.round(slotBaseBudget(it,pattern)+(lvl-1)*LEVEL_GAIN+RARITY_BONUS[q(it)]));
+  }
+  function distribute(pattern,total){
+    const rows=Object.entries(pattern||{}).filter(([k,v])=>COMBAT.includes(k)&&(Number(v)||0)>0);
+    if(!rows.length)return {};
+    if(rows.length===1)return {[rows[0][0]]:Math.max(1,total)};
+    const sum=rows.reduce((n,[,v])=>n+Number(v),0)||1;
+    const parts=rows.map(([k,v])=>{const raw=total*Number(v)/sum;return{k,val:Math.max(1,Math.floor(raw)),frac:raw-Math.floor(raw)}});
+    let used=parts.reduce((n,x)=>n+x.val,0);
+    parts.sort((a,b)=>b.frac-a.frac);
+    for(let i=0;used<total;i=(i+1)%parts.length){parts[i].val++;used++}
+    parts.sort((a,b)=>a.frac-b.frac);
+    for(let i=0;used>total&&i<parts.length*30;i++){const x=parts[i%parts.length];if(x.val>1){x.val--;used--}}
+    return Object.fromEntries(parts.map(x=>[x.k,x.val]));
+  }
+  function apply(it){
+    if(!isGear(it))return false;
+    const pattern=patternFor(it), total=targetNativeTotal(it,pattern), native=distribute(pattern,total);
+    const add=addonMap(it), keep={};
+    Object.entries(it.bonus||{}).forEach(([k,v])=>{if(!COMBAT.includes(k)&&k!=='growSkill')keep[k]=v});
+    const full={...native};
+    Object.entries(add).forEach(([k,v])=>full[k]=(Number(full[k])||0)+(Number(v)||0));
+    const before=JSON.stringify({bonus:it.bonus||{},lock:it.v429StatLock||null,curve:it.v447Curve||null});
+    it.bonus={...full,...keep};
+    /* V4.29 immutable-stat guard remains useful. Feed it the NEW native curve so
+       inventory/equipment moves cannot resurrect an old pre-V4.47 roll. */
+    it.v429StatLock={version:1,native:{...native}};
+    it.v447Curve={version:CURVE_VERSION,quality:q(it),level:Math.max(1,Math.floor(Number(it.dropLevel)||Number(s?.level)||1)),nativeTotal:total};
+    /* Keep a clean pattern for old generators that still inspect baseBonusV055. */
+    it.baseBonusV055={...pattern};
+    return before!==JSON.stringify({bonus:it.bonus||{},lock:it.v429StatLock||null,curve:it.v447Curve||null});
+  }
+  function all(){
+    let changed=false;
+    const lists=[s?.inventory,s?.weaponShop,s?.magicShop];
+    lists.forEach(list=>{if(Array.isArray(list))list.forEach(it=>{if(apply(it))changed=true})});
+    Object.values(s?.equipment||{}).forEach(it=>{if(apply(it))changed=true});
+    return changed;
+  }
+  function nativeTotal(it){
+    apply(it);
+    return COMBAT.reduce((n,k)=>n+(Number(it?.v429StatLock?.native?.[k])||0),0);
+  }
+  window.v447ApplyItemCurve=apply;
+  window.v447NormalizeAllItems=all;
+  window.v447NativeTotal=nativeTotal;
+  window.v447ItemCurve={levelGain:LEVEL_GAIN,rarityBonus:{...RARITY_BONUS}};
+
+  /* Normalize at creation time so reward overlays already show final values. */
+  function wrapGlobal(name){
+    try{
+      const fn=window[name];
+      if(typeof fn!=='function'||fn.__v447Wrapped)return;
+      const wrapped=function(){const it=fn.apply(this,arguments);if(it&&typeof it.then==='function')return it.then(x=>{apply(x);return x});apply(it);return it};
+      wrapped.__v447Wrapped=true;window[name]=wrapped;
+      try{eval(name+'=window["'+name+'"]')}catch(e){}
+    }catch(e){console.warn('V4.47 generator wrap',name,e)}
+  }
+  ['v024Item','makeClassLoot','makeLoot','makeSetItem','v027ShopItem','v030MakeGear','v030MakeJewelry','v110MakeMysticItem','v110MakeRareMysticSet']
+    .forEach(wrapGlobal);
+
+  /* Some functions are top-level lexical bindings and may not be window properties. */
+  try{if(typeof makeClassLoot==='function'&&!makeClassLoot.__v447Wrapped){const b=makeClassLoot;makeClassLoot=function(){const it=b.apply(this,arguments);apply(it);return it};makeClassLoot.__v447Wrapped=true}}catch(e){}
+  try{if(typeof makeLoot==='function'&&!makeLoot.__v447Wrapped){const b=makeLoot;makeLoot=function(){const it=b.apply(this,arguments);apply(it);return it};makeLoot.__v447Wrapped=true}}catch(e){}
+  try{if(typeof makeSetItem==='function'&&!makeSetItem.__v447Wrapped){const b=makeSetItem;makeSetItem=function(){const it=b.apply(this,arguments);apply(it);return it};makeSetItem.__v447Wrapped=true}}catch(e){}
+  try{if(typeof v024Item==='function'&&!v024Item.__v447Wrapped){const b=v024Item;v024Item=function(){const it=b.apply(this,arguments);apply(it);return it};v024Item.__v447Wrapped=true}}catch(e){}
+  try{if(typeof v027ShopItem==='function'&&!v027ShopItem.__v447Wrapped){const b=v027ShopItem;v027ShopItem=function(){const it=b.apply(this,arguments);apply(it);return it};v027ShopItem.__v447Wrapped=true}}catch(e){}
+  try{if(typeof v110MakeMysticItem==='function'&&!v110MakeMysticItem.__v447Wrapped){const b=v110MakeMysticItem;v110MakeMysticItem=function(){const it=b.apply(this,arguments);apply(it);return it};v110MakeMysticItem.__v447Wrapped=true}}catch(e){}
+  try{if(typeof v110MakeRareMysticSet==='function'&&!v110MakeRareMysticSet.__v447Wrapped){const b=v110MakeRareMysticSet;v110MakeRareMysticSet=function(){const it=b.apply(this,arguments);apply(it);return it};v110MakeRareMysticSet.__v447Wrapped=true}}catch(e){}
+
+  /* Final owners: old V4.23/V4.25/V4.29 wrappers may temporarily paint their former
+     curve. Restore V4.47 both before and after them and persist only the final data. */
+  if(typeof renderInventory==='function'&&!window.__v447InventoryWrapped){
+    const base=renderInventory;
+    renderInventory=function(){all();const r=base.apply(this,arguments);all();return r};
+    try{window.renderInventory=renderInventory}catch(e){}
+    window.__v447InventoryWrapped=true;
+  }
+  if(typeof persist==='function'&&!window.__v447PersistWrapped){
+    const base=persist;
+    persist=function(){all();const r=base.apply(this,arguments);all();try{localStorage.setItem(KEY,JSON.stringify(s))}catch(e){}return r};
+    try{window.persist=persist}catch(e){}
+    window.__v447PersistWrapped=true;
+  }
+  if(typeof render==='function'&&!window.__v447RenderWrapped){
+    const base=render;
+    render=function(){all();const r=base.apply(this,arguments);all();return r};
+    try{window.render=render}catch(e){}
+    window.__v447RenderWrapped=true;
+  }
+  if(typeof window.equip==='function'&&!window.__v447EquipWrapped){
+    const base=window.equip;
+    window.equip=function(i){if(s.inventory?.[i])apply(s.inventory[i]);const r=base.apply(this,arguments);all();try{localStorage.setItem(KEY,JSON.stringify(s))}catch(e){}return r};
+    window.__v447EquipWrapped=true;
+  }
+  if(typeof window.unequip==='function'&&!window.__v447UnequipWrapped){
+    const base=window.unequip;
+    window.unequip=function(slot){if(s.equipment?.[slot])apply(s.equipment[slot]);const r=base.apply(this,arguments);all();try{localStorage.setItem(KEY,JSON.stringify(s))}catch(e){}return r};
+    window.__v447UnequipWrapped=true;
+  }
+
+  function stamp(){
+    document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version')
+      .forEach(el=>{if(el&&el.textContent!==VERSION)el.textContent=VERSION});
+    document.querySelectorAll('.v366-ver,.v371-logo em,.v372-logo em')
+      .forEach(el=>{if(el&&el.textContent!==SHORT)el.textContent=SHORT});
+    document.title='Grow Legends '+SHORT;
+  }
+
+  const changed=all();
+  s.v447ItemCurveMigrated=CURVE_VERSION;
+  try{localStorage.setItem(KEY,JSON.stringify(s))}catch(e){}
+  try{if(typeof render==='function')render()}catch(e){console.error('V4.47 initial item balance render',e)}
+  stamp();
+  if(changed&&typeof v063Toast==='function')setTimeout(()=>v063Toast('⚖️ Item-Balance V4.47','success','Mystisch ist auf gleichem Level Best-in-Slot, wird aber nach wenigen Leveln eingeholt.'),350);
+  document.addEventListener('DOMContentLoaded',()=>{all();stamp()},{once:true});
+  window.addEventListener('pageshow',()=>{all();stamp()},{passive:true});
+  setTimeout(()=>{all();stamp()},700);setTimeout(()=>{all();stamp()},2600);setTimeout(()=>{all();stamp()},6000);
+  const vg=setInterval(stamp,350);setTimeout(()=>clearInterval(vg),19000);
 })();
 </script>
