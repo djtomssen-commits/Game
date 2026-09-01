@@ -63611,3 +63611,274 @@ create index if not exists player_messages_sender_idx on public.player_messages(
   [250,1000].forEach(ms=>setTimeout(()=>{try{syncVersion()}catch(e){}},ms));
 })();
 </script>
+
+<!-- ===== V4.62 Stable: Shop atmosphere + NPC tabs ===== -->
+<style id="v462-shop-atmosphere-css">
+.app > header .v358-logo::after{content:"V4.62"!important}
+#shop.v462-shop-world{
+  --v462-line:#38543d;
+  --v462-bg:#07110b;
+  --v462-panel:#0d1911;
+  max-width:760px!important;
+  margin:0 auto!important;
+}
+#shop .v462-market-scene{
+  position:relative!important;
+  min-height:190px!important;
+  margin-bottom:10px!important;
+  overflow:hidden!important;
+  border:1px solid #39563f!important;
+  border-radius:20px!important;
+  background:
+    radial-gradient(circle at 16% 20%,rgba(209,168,79,.16),transparent 18%),
+    radial-gradient(circle at 82% 28%,rgba(75,200,164,.13),transparent 21%),
+    linear-gradient(180deg,rgba(10,28,18,.15),rgba(4,10,7,.88)),
+    linear-gradient(135deg,#1b2b1c 0,#0d1710 48%,#101c14 100%)!important;
+  box-shadow:0 12px 32px #0008,inset 0 0 50px rgba(59,119,67,.08)!important;
+}
+#shop .v462-market-scene:before{
+  content:'';position:absolute;left:0;right:0;bottom:0;height:62px;
+  background:
+    linear-gradient(90deg,transparent 0 8%,rgba(71,55,33,.44) 8% 9%,transparent 9% 31%,rgba(71,55,33,.40) 31% 32%,transparent 32% 68%,rgba(71,55,33,.40) 68% 69%,transparent 69% 91%,rgba(71,55,33,.44) 91% 92%,transparent 92%),
+    linear-gradient(180deg,rgba(50,40,23,.18),rgba(8,13,9,.88));
+  border-top:1px solid rgba(144,111,54,.16);
+}
+#shop .v462-market-scene:after{
+  content:'';position:absolute;inset:0;pointer-events:none;
+  background:
+    radial-gradient(circle at 10% 52%,rgba(91,192,85,.07),transparent 19%),
+    radial-gradient(circle at 72% 57%,rgba(99,214,180,.07),transparent 22%),
+    repeating-linear-gradient(115deg,transparent 0 30px,rgba(255,255,255,.012) 31px 32px);
+}
+#shop .v462-market-copy{position:relative;z-index:2;padding:16px 15px 10px;text-align:center}
+#shop .v462-market-copy .v462-kicker{
+  display:inline-flex;align-items:center;gap:5px;padding:4px 9px;border-radius:999px;
+  border:1px solid #526c42;background:#101d12;color:#b7dd8e;font-size:8px;font-weight:1000;
+  letter-spacing:.08em;text-transform:uppercase;
+}
+#shop .v462-market-copy h2{margin:8px 0 4px;font-size:23px;color:#f1f4ec;text-shadow:0 2px 9px #000}
+#shop .v462-market-copy p{margin:0 auto;max-width:560px;color:#aebcaf;font-size:9px;line-height:1.45}
+#shop .v462-market-resources{display:flex;justify-content:center;gap:7px;flex-wrap:wrap;margin-top:10px}
+#shop .v462-market-resources span{
+  display:inline-flex;align-items:center;gap:5px;min-height:30px;padding:6px 10px;border:1px solid #38513a;border-radius:10px;
+  background:rgba(5,12,8,.82);color:#dce6dc;font-size:9px;font-weight:900;
+}
+#shop .v462-stall-silhouette{position:absolute;z-index:1;bottom:16px;width:80px;height:68px;opacity:.52;filter:drop-shadow(0 8px 8px #0008)}
+#shop .v462-stall-silhouette.left{left:8px}
+#shop .v462-stall-silhouette.right{right:8px;transform:scaleX(-1)}
+#shop .v462-stall-silhouette:before{
+  content:'';position:absolute;left:9px;right:9px;bottom:0;height:44px;border-radius:9px 9px 3px 3px;
+  background:linear-gradient(180deg,#342819,#17140e);border:1px solid #5d4829;
+}
+#shop .v462-stall-silhouette:after{
+  content:'';position:absolute;left:0;right:0;top:0;height:22px;clip-path:polygon(8% 100%,18% 0,82% 0,94% 100%);
+  background:repeating-linear-gradient(90deg,#3b683c 0 13px,#253c27 13px 26px);border-bottom:2px solid #755b31;
+}
+
+#shop .v462-shop-tabs{
+  position:sticky!important;top:66px!important;z-index:12!important;
+  display:grid!important;grid-template-columns:1fr 1fr!important;gap:5px!important;
+  padding:5px!important;margin:0 0 10px!important;border:1px solid #314934!important;border-radius:15px!important;
+  background:rgba(6,13,8,.94)!important;backdrop-filter:blur(10px)!important;box-shadow:0 8px 20px #0007!important;
+}
+#shop .v462-shop-tabs button{
+  min-width:0!important;min-height:54px!important;padding:7px 6px!important;border:1px solid transparent!important;border-radius:11px!important;
+  background:#101a12!important;color:#8fa090!important;font-size:7px!important;font-weight:900!important;cursor:pointer!important;
+}
+#shop .v462-shop-tabs button strong{display:block;font-size:18px;line-height:1;margin-bottom:3px}
+#shop .v462-shop-tabs button span{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#shop .v462-shop-tabs button.active{
+  color:#f0f7ee!important;border-color:#5b8a55!important;
+  background:linear-gradient(180deg,#1d3420,#112015)!important;box-shadow:inset 0 0 18px rgba(101,190,89,.10),0 0 12px rgba(75,156,71,.09)!important;
+}
+#shop .v462-shop-panel{display:none!important}
+#shop .v462-shop-panel.active{display:block!important;animation:v462ShopIn .18s ease-out both}
+@keyframes v462ShopIn{from{opacity:.3;transform:translateY(5px)}to{opacity:1;transform:none}}
+
+#shop .v462-dealer-banner{
+  position:relative!important;display:grid!important;grid-template-columns:72px minmax(0,1fr)!important;gap:10px!important;align-items:center!important;
+  min-height:92px!important;padding:10px 11px!important;margin:0!important;overflow:hidden!important;
+  border-bottom:1px solid rgba(85,124,85,.24)!important;
+}
+#shop .v462-dealer-banner.weapon{
+  background:radial-gradient(circle at 9% 42%,rgba(226,174,77,.13),transparent 22%),linear-gradient(105deg,#1b2115,#0f1b12 55%,#0b130d)!important;
+}
+#shop .v462-dealer-banner.magic{
+  background:radial-gradient(circle at 9% 42%,rgba(86,214,207,.14),transparent 22%),linear-gradient(105deg,#102020,#0d1b17 55%,#09120e)!important;
+}
+#shop .v462-dealer-avatar{
+  position:relative!important;width:68px!important;height:68px!important;display:grid!important;place-items:center!important;
+  border-radius:50%!important;border:1px solid #4d674e!important;background:#08100a!important;font-size:39px!important;
+  box-shadow:inset 0 0 18px #000b,0 0 20px rgba(103,181,91,.10)!important;
+}
+#shop .v462-dealer-banner.magic .v462-dealer-avatar{border-color:#407a77!important;box-shadow:inset 0 0 18px #000b,0 0 20px rgba(66,218,210,.11)!important}
+#shop .v462-dealer-avatar:after{
+  content:'';position:absolute;left:8px;right:8px;bottom:-5px;height:11px;border-radius:50%;background:#0008;filter:blur(5px);z-index:-1;
+}
+#shop .v462-dealer-copy{min-width:0}
+#shop .v462-dealer-copy small{display:block;color:#7f9381;font-size:7px;font-weight:1000;text-transform:uppercase;letter-spacing:.09em}
+#shop .v462-dealer-copy h2{margin:2px 0 4px!important;font-size:17px!important;color:#f2f5ef!important}
+#shop .v462-dealer-copy p{margin:0;color:#a7b4a8;font-size:8px;line-height:1.4}
+#shop .v462-dealer-status{
+  display:inline-flex;align-items:center;gap:4px;margin-top:6px;padding:3px 7px;border:1px solid #38523b;border-radius:999px;background:#09120c;color:#b9d7b7;font-size:7px;font-weight:900;
+}
+#shop .v462-dealer-status i{width:6px;height:6px;border-radius:50%;background:#79d16c;box-shadow:0 0 7px #79d16c;display:block}
+
+#shop .v462-shop-panel .v461-shop-head{display:none!important}
+#shop .v462-shop-panel .v461-shop-card{margin:0!important;border-radius:0 0 18px 18px!important}
+#shop .v462-shop-panel > .v461-shop-card{
+  border-top:0!important;
+}
+#shop .v462-shop-panel .v461-shop-grid-wrap{padding-top:11px!important}
+#shop .v462-shop-panel .v461-shop-actions{
+  position:sticky!important;bottom:6px!important;z-index:8!important;
+  margin:0 8px 8px!important;padding:7px!important;border:1px solid #354d38!important;border-radius:12px!important;
+  background:rgba(7,15,10,.93)!important;backdrop-filter:blur(9px)!important;box-shadow:0 8px 22px #0008!important;
+}
+#shop .v462-shop-panel .v461-shop-note{display:none!important}
+#shop .v462-shop-panel .v461-shop-actions .btn{min-height:42px!important;font-size:10px!important}
+
+#shop .v462-shop-shell{
+  border:1px solid #334d38!important;border-radius:19px!important;overflow:hidden!important;
+  background:linear-gradient(180deg,#0d1810,#071009)!important;box-shadow:0 10px 30px #0007!important;
+}
+#shop .v462-shop-shell.magic{border-color:#31514f!important}
+#shop .v462-shop-shell.weapon{border-color:#3d5638!important}
+
+@media(max-width:560px){
+  #shop .v462-market-scene{min-height:170px!important;border-radius:17px!important}
+  #shop .v462-market-copy{padding:13px 10px 8px!important}
+  #shop .v462-market-copy h2{font-size:19px!important}
+  #shop .v462-market-copy p{font-size:8px!important}
+  #shop .v462-stall-silhouette{width:61px;height:54px;bottom:11px;opacity:.42}
+  #shop .v462-shop-tabs{top:58px!important}
+  #shop .v462-shop-tabs button{min-height:49px!important}
+  #shop .v462-dealer-banner{grid-template-columns:61px minmax(0,1fr)!important;min-height:80px!important;padding:8px 9px!important}
+  #shop .v462-dealer-avatar{width:57px!important;height:57px!important;font-size:33px!important}
+  #shop .v462-dealer-copy h2{font-size:14px!important}
+  #shop .v462-dealer-copy p{font-size:7px!important}
+  #shop .v462-shop-panel .v461-shop-actions{bottom:4px!important;margin:0 6px 6px!important}
+}
+</style>
+<script id="v462-shop-atmosphere-script">
+(function(){
+  const VERSION='V4.62 Stable',SHORT='V4.62';
+  function esc(x){return String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+  function activeTab(){try{return sessionStorage.getItem('growLegends:v462ShopTab')||'weapon'}catch(e){return'weapon'}}
+  function stamp(){
+    try{document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version').forEach(el=>{if(el)el.textContent=VERSION})}catch(e){}
+    try{document.querySelectorAll('.v366-ver,.v371-logo em,.v372-logo em').forEach(el=>{if(el)el.textContent=SHORT})}catch(e){}
+    try{document.title='Grow Legends '+SHORT}catch(e){}
+  }
+  function selectTab(name,scroll=false){
+    name=name==='magic'?'magic':'weapon';
+    const shop=document.querySelector('#shop');if(!shop)return;
+    shop.querySelectorAll('.v462-shop-tabs button').forEach(b=>b.classList.toggle('active',b.dataset.shopTab===name));
+    shop.querySelectorAll('.v462-shop-panel').forEach(p=>p.classList.toggle('active',p.dataset.shopPanel===name));
+    try{sessionStorage.setItem('growLegends:v462ShopTab',name)}catch(e){}
+    if(scroll){
+      try{shop.querySelector('.v462-shop-tabs')?.scrollIntoView({behavior:'smooth',block:'start'})}catch(e){}
+    }
+  }
+  window.v462ShopTab=selectTab;
+
+  function makeHero(shop){
+    let hero=shop.querySelector('#v462MarketScene');
+    if(!hero){
+      hero=document.createElement('div');hero.id='v462MarketScene';hero.className='v462-market-scene';
+      shop.insertBefore(hero,shop.firstChild);
+    }
+    hero.innerHTML=`
+      <div class="v462-stall-silhouette left"></div><div class="v462-stall-silhouette right"></div>
+      <div class="v462-market-copy">
+        <div class="v462-kicker">🏪 Händlergasse · Grünhain</div>
+        <h2>Der Nebelmarkt</h2>
+        <p>Wähle deinen Händler. Bork verkauft kampfbereite Ausrüstung, Mira handelt mit Schmuck, Edelsteinen und seltenen Rollen.</p>
+        <div class="v462-market-resources">
+          <span>🪙 Gold <b id="shopGold">${(Number(s?.gold)||0).toLocaleString('de-DE')}</b></span>
+          <span>🟢 Harz-Taler <b id="shopHarz">${(Number(s?.harzTaler)||0).toLocaleString('de-DE')}</b></span>
+        </div>
+      </div>`;
+    const old=shop.querySelector('#v461ShopHero');if(old&&old!==hero)old.remove();
+    return hero;
+  }
+  function makeTabs(shop){
+    let tabs=shop.querySelector('#v462ShopTabs');
+    if(!tabs){
+      tabs=document.createElement('nav');tabs.id='v462ShopTabs';tabs.className='v462-shop-tabs';tabs.setAttribute('aria-label','Händler auswählen');
+      const hero=shop.querySelector('#v462MarketScene');hero?.insertAdjacentElement('afterend',tabs);
+    }
+    tabs.innerHTML=`
+      <button type="button" data-shop-tab="weapon"><strong>⚔️</strong><span>Bork · Waffen & Rüstung</span></button>
+      <button type="button" data-shop-tab="magic"><strong>💎</strong><span>Mira · Schmuck & Magie</span></button>`;
+    tabs.querySelectorAll('button').forEach(b=>b.onclick=()=>selectTab(b.dataset.shopTab,true));
+    return tabs;
+  }
+  function dealerBanner(kind){
+    if(kind==='magic')return `<div class="v462-dealer-banner magic"><div class="v462-dealer-avatar">🧙‍♀️</div><div class="v462-dealer-copy"><small>Mystikhändlerin</small><h2>Miras Nebelvitrine</h2><p>Ringe, Amulette, Edelsteine und Verzauberungsrollen aus den verborgenen Gassen Grünhains.</p><div class="v462-dealer-status"><i></i>${(s?.magicShop||[]).length} Angebote bereit</div></div></div>`;
+    return `<div class="v462-dealer-banner weapon"><div class="v462-dealer-avatar">🧔‍♂️</div><div class="v462-dealer-copy"><small>Waffenhändler</small><h2>Borks Kampfladen</h2><p>Waffen und Rüstung für den nächsten Dungeon. Gute Angebote erkennst du direkt an ihrer Seltenheit.</p><div class="v462-dealer-status"><i></i>${(s?.weaponShop||[]).length} Angebote bereit</div></div></div>`;
+  }
+  function arrange(){
+    const shop=document.querySelector('#shop');if(!shop)return false;
+    shop.classList.add('v462-shop-world');
+    makeHero(shop);makeTabs(shop);
+    const gear=document.querySelector('#v057GearShopCard');
+    const magic=document.querySelector('#v030MagicShop');
+    if(!gear||!magic)return false;
+
+    let wp=shop.querySelector('#v462WeaponPanel');
+    if(!wp){wp=document.createElement('section');wp.id='v462WeaponPanel';wp.className='v462-shop-panel';wp.dataset.shopPanel='weapon'}
+    let mp=shop.querySelector('#v462MagicPanel');
+    if(!mp){mp=document.createElement('section');mp.id='v462MagicPanel';mp.className='v462-shop-panel';mp.dataset.shopPanel='magic'}
+
+    const tabs=shop.querySelector('#v462ShopTabs');
+    if(wp.parentElement!==shop)tabs.insertAdjacentElement('afterend',wp);
+    if(mp.parentElement!==shop)wp.insertAdjacentElement('afterend',mp);
+
+    let ws=wp.querySelector('.v462-shop-shell');
+    if(!ws){ws=document.createElement('div');ws.className='v462-shop-shell weapon';wp.appendChild(ws)}
+    let ms=mp.querySelector('.v462-shop-shell');
+    if(!ms){ms=document.createElement('div');ms.className='v462-shop-shell magic';mp.appendChild(ms)}
+
+    let wb=ws.querySelector('.v462-dealer-banner');
+    if(!wb){ws.insertAdjacentHTML('afterbegin',dealerBanner('weapon'))}else wb.outerHTML=dealerBanner('weapon');
+    let mb=ms.querySelector('.v462-dealer-banner');
+    if(!mb){ms.insertAdjacentHTML('afterbegin',dealerBanner('magic'))}else mb.outerHTML=dealerBanner('magic');
+
+    if(gear.parentElement!==ws)ws.appendChild(gear);
+    if(magic.parentElement!==ms)ms.appendChild(magic);
+    gear.classList.add('v461-shop-card');magic.classList.add('v461-shop-card');
+    selectTab(activeTab(),false);
+    stamp();
+    return true;
+  }
+
+  /* V4.61 remains the shop-content owner. V4.62 only owns presentation/navigation. */
+  try{
+    if(typeof renderShop==='function'&&!window.__v462RenderShopWrapped){
+      const base=renderShop;
+      renderShop=function(){const r=base.apply(this,arguments);arrange();return r};
+      window.renderShop=renderShop;window.__v462RenderShopWrapped=true;
+    }
+  }catch(e){}
+  try{
+    if(typeof render==='function'&&!window.__v462RenderWrapped){
+      const base=render;
+      render=function(){const r=base.apply(this,arguments);arrange();stamp();return r};
+      window.render=render;window.__v462RenderWrapped=true;
+    }
+  }catch(e){}
+  try{
+    if(typeof v032Go==='function'&&!window.__v462GoWrapped){
+      const base=v032Go;
+      v032Go=function(id){const r=base.apply(this,arguments);if(id==='shop')requestAnimationFrame(()=>{try{renderShop();arrange();stamp()}catch(e){}});return r};
+      window.v032Go=v032Go;window.__v462GoWrapped=true;
+    }
+  }catch(e){}
+
+  try{renderShop();arrange()}catch(e){console.warn('V4.62 shop arrange',e)}
+  document.addEventListener('DOMContentLoaded',()=>{try{renderShop();arrange();stamp()}catch(e){}},{once:true});
+  window.addEventListener('pageshow',()=>{try{arrange();stamp()}catch(e){}},{passive:true});
+  [180,600,1400,3200,6500,10500,14500,17500].forEach(ms=>setTimeout(()=>{try{arrange();stamp()}catch(e){}},ms));
+})();
+</script>
