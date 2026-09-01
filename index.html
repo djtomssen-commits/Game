@@ -546,7 +546,7 @@ document.documentElement.classList.remove('v224-app-ready');
 <body>
 <div class="app">
 <header>
-  <div class="brand"><h1>🌿 Grow Legends</h1><span class="version">V4.56 Stable</span><div class="power">Kampfkraft <b id="power">—</b></div></div>
+  <div class="brand"><h1>🌿 Grow Legends</h1><span class="version">V4.59 Stable</span><div class="power">Kampfkraft <b id="power">—</b></div></div>
   <div class="stats resource-stats"><div class="stat">GOLD<b id="gold">—</b></div><div class="stat">SKILL<b id="points">—</b></div><div class="stat">DAMPF<b id="energy">—</b></div><div class="stat harz-stat v277-harz-card v280-harz-card">
   <div class="v280-harz-label">HARZ-TALER</div>
   <b class="v280-harz-value"><span id="topHarz">—</span></b>
@@ -59525,11 +59525,11 @@ create index if not exists player_messages_sender_idx on public.player_messages(
 <!-- ===== V4.41 Stable: authoritative Harz/Dampf immediate UI authority ===== -->
 <style id="v441-resource-live-authority-css">
 /* Final version badge under the compact logo; older pseudo-content must not win. */
-.app > header .v358-logo::after{content:"V4.56"!important}
+.app > header .v358-logo::after{content:"V4.59"!important}
 </style>
 <script id="v441-resource-live-authority">
 (function(){
-  const VERSION='V4.56 Stable', SHORT='V4.56';
+  const VERSION='V4.59 Stable', SHORT='V4.59';
   let painting=false;
 
   function n(v){return Math.max(0,Math.floor(Number(v)||0))}
@@ -59719,11 +59719,11 @@ create index if not exists player_messages_sender_idx on public.player_messages(
   box-shadow:none!important;
 }
 #character .char-bottom > .v442-inventory-card + #attrs{margin-top:0!important}
-.app > header .v358-logo::after{content:"V4.56"!important}
+.app > header .v358-logo::after{content:"V4.59"!important}
 </style>
 <script id="v442-character-layout-economy-fix">
 (function(){
-  const VERSION='V4.56 Stable', SHORT='V4.56';
+  const VERSION='V4.59 Stable', SHORT='V4.59';
   const COMBAT=['staerke','geschick','intelligenz','ausdauer','glueck'];
   const PRICE_MULT={gray:1,green:1.45,blue:2.35,purple:4.6,orange:7.2,cyan:10};
   const RARITY_MAP={
@@ -59844,11 +59844,11 @@ create index if not exists player_messages_sender_idx on public.player_messages(
 
 <!-- ===== V4.43 Stable: quest Dampf immediate live sync ===== -->
 <style id="v443-quest-dampf-live-css">
-.app > header .v358-logo::after{content:"V4.56"!important}
+.app > header .v358-logo::after{content:"V4.59"!important}
 </style>
 <script id="v443-quest-dampf-live-fix">
 (function(){
-  const VERSION='V4.56 Stable', SHORT='V4.56';
+  const VERSION='V4.59 Stable', SHORT='V4.59';
   function n(v){return Math.max(0,Math.floor(Number(v)||0))}
   function cap(){
     try{if(typeof v271DampfCap==='function')return Math.max(100,n(v271DampfCap()))}catch(e){}
@@ -59934,7 +59934,7 @@ create index if not exists player_messages_sender_idx on public.player_messages(
 
 <!-- ===== V4.44 Stable: character inventory/material order authority ===== -->
 <style id="v444-character-inventory-order-css">
-.app > header .v358-logo::after{content:"V4.56"!important}
+.app > header .v358-logo::after{content:"V4.59"!important}
 #character .char-bottom > .v442-inventory-card,
 #character .char-bottom > .v444-material-card{
   width:100%!important;
@@ -59958,7 +59958,7 @@ create index if not exists player_messages_sender_idx on public.player_messages(
 </style>
 <script id="v444-character-inventory-order-fix">
 (function(){
-  const VERSION='V4.56 Stable', SHORT='V4.56';
+  const VERSION='V4.59 Stable', SHORT='V4.59';
   let arranging=false;
 
   function setText(el,text){if(el&&el.textContent!==text)el.textContent=text}
@@ -60190,7 +60190,7 @@ create index if not exists player_messages_sender_idx on public.player_messages(
 </style>
 <script id="v445-item-compare-mobile-fix">
 (function(){
-  const VERSION='V4.56 Stable', SHORT='V4.56';
+  const VERSION='V4.59 Stable', SHORT='V4.59';
   const COMBAT=['staerke','geschick','intelligenz','ausdauer','glueck'];
   const LABEL={staerke:'Stärke',geschick:'Geschick',intelligenz:'Intelligenz',ausdauer:'Ausdauer',glueck:'Glück'};
 
@@ -60325,11 +60325,11 @@ create index if not exists player_messages_sender_idx on public.player_messages(
 
 <!-- ===== V4.47 Stable: one global combat-power authority ===== -->
 <style id="v446-global-combat-power-css">
-.app > header .v358-logo::after{content:"V4.56"!important}
+.app > header .v358-logo::after{content:"V4.59"!important}
 </style>
 <script id="v446-global-combat-power-authority">
 (function(){
-  const VERSION='V4.56 Stable', SHORT='V4.56';
+  const VERSION='V4.59 Stable', SHORT='V4.59';
   let ownProfileOpenId='', syncTimer=0, syncBusy=false, lastSyncedPower=null, painting=false;
 
   /* ONE combat-power source for the whole game: exactly the same global function
@@ -60586,11 +60586,11 @@ create index if not exists player_messages_sender_idx on public.player_messages(
 
 <!-- ===== V4.47 Stable: unified item level/rarity curve ===== -->
 <style id="v447-item-balance-css">
-.app > header .v358-logo::after{content:"V4.56"!important}
+.app > header .v358-logo::after{content:"V4.59"!important}
 </style>
 <script id="v447-unified-item-balance">
 (function(){
-  const VERSION='V4.56 Stable', SHORT='V4.56', CURVE_VERSION=1;
+  const VERSION='V4.59 Stable', SHORT='V4.59', CURVE_VERSION=1;
   const COMBAT=['staerke','geschick','intelligenz','ausdauer','glueck'];
   const RARITY_BONUS={gray:0,green:1.5,blue:3,purple:4.5,orange:6,cyan:8.5};
   const LEVEL_GAIN=0.72;
@@ -60840,7 +60840,7 @@ create index if not exists player_messages_sender_idx on public.player_messages(
 
 <!-- ===== V4.48 Stable: readable item verdict + final power + account identity isolation ===== -->
 <style id="v448-item-verdict-account-css">
-.app > header .v358-logo::after{content:"V4.56"!important}
+.app > header .v358-logo::after{content:"V4.59"!important}
 
 /* IMPORTANT: old CSS targets every class containing the word "compare".
    Only the outer legacy .compare remains; all inner V4.48 class names avoid it. */
@@ -60991,7 +60991,7 @@ create index if not exists player_messages_sender_idx on public.player_messages(
 </style>
 <script id="v448-final-ui-power-account-integrity">
 (function(){
-  const VERSION='V4.56 Stable', SHORT='V4.56';
+  const VERSION='V4.59 Stable', SHORT='V4.59';
   const COMBAT=['staerke','geschick','intelligenz','ausdauer','glueck'];
   const LABEL={staerke:'Stärke',geschick:'Geschick',intelligenz:'Intelligenz',ausdauer:'Ausdauer',glueck:'Glück'};
   const ID_PREFIX='growLegendsCharacterIdentity:';
@@ -61355,7 +61355,7 @@ create index if not exists player_messages_sender_idx on public.player_messages(
 <!-- ===== V4.49 Stable: startup hang regression fix ===== -->
 <script id="v449-startup-hang-regression-fix">
 (function(){
-  const VERSION='V4.56 Stable', SHORT='V4.56';
+  const VERSION='V4.59 Stable', SHORT='V4.59';
   function stamp(){
     document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version').forEach(el=>{if(el)el.textContent=VERSION});
     document.querySelectorAll('.v366-ver,.v371-logo em,.v372-logo em').forEach(el=>{if(el)el.textContent=SHORT});
@@ -61375,7 +61375,7 @@ create index if not exists player_messages_sender_idx on public.player_messages(
 </style>
 <script id="v450-account-save-isolation-recovery">
 (function(){
-  const VERSION='V4.56 Stable', SHORT='V4.56';
+  const VERSION='V4.59 Stable', SHORT='V4.59';
   const ACCOUNT_PREFIX='growLegendsAccountSave:';
   const BEST_PREFIX='growLegendsBestSave:';
   const FLOOR_PREFIX='growLegendsProgressFloor:';
@@ -61624,7 +61624,7 @@ create index if not exists player_messages_sender_idx on public.player_messages(
 <!-- ===== V4.52 Stable: hard account isolation gate ===== -->
 <script id="v452-hard-account-isolation">
 (function(){
-  const VERSION='V4.56 Stable', SHORT='V4.56';
+  const VERSION='V4.59 Stable', SHORT='V4.59';
   const EMERGENCY_PREFIX='growLegendsAccountTransitionBackup:';
   const gate={phase:'idle',resolvedUid:'',transitionUid:'',seq:0,lastReason:'',finalizeUid:'',finalizePromise:null};
   window.__V452_ACCOUNT_GATE__=gate;
@@ -61896,7 +61896,7 @@ create index if not exists player_messages_sender_idx on public.player_messages(
 <!-- ===== V4.53 Stable: profile level floor + integrity error dedupe ===== -->
 <script id="v453-profile-floor-reconcile">
 (function(){
-  const VERSION='V4.56 Stable', SHORT='V4.56';
+  const VERSION='V4.59 Stable', SHORT='V4.59';
   let reconcileBusy=false,reconciledUid='',lastIntegrityToast='',lastIntegrityAt=0;
 
   function uidNow(){try{return v073User&&!v073User.is_anonymous&&v073User.id?String(v073User.id):''}catch(e){return ''}}
@@ -62038,7 +62038,7 @@ create index if not exists player_messages_sender_idx on public.player_messages(
 <!-- ===== V4.54 Stable: recovery UI removed, account protection retained ===== -->
 <script id="v454-remove-save-rescue-ui">
 (function(){
-  const VERSION='V4.56 Stable', SHORT='V4.56';
+  const VERSION='V4.59 Stable', SHORT='V4.59';
   function cleanup(){
     ['#v451RescueOverlay','#v451RestoreNotice','#v451RescueRow'].forEach(sel=>document.querySelectorAll(sel).forEach(el=>el.remove()));
     document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version').forEach(el=>{if(el&&el.textContent!==VERSION)el.textContent=VERSION});
@@ -62058,11 +62058,11 @@ create index if not exists player_messages_sender_idx on public.player_messages(
 
 <!-- ===== V4.56 Stable: Level 1-300 item / loot balance contract ===== -->
 <style id="v455-item-loot-balance-css">
-.app > header .v358-logo::after{content:"V4.56"!important}
+.app > header .v358-logo::after{content:"V4.59"!important}
 </style>
 <script id="v455-item-loot-balance-contract">
 (function(){
-  const VERSION='V4.56 Stable', SHORT='V4.56';
+  const VERSION='V4.59 Stable', SHORT='V4.59';
   function stamp(){
     document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version')
       .forEach(el=>{if(el&&el.textContent!==VERSION)el.textContent=VERSION});
@@ -62152,11 +62152,11 @@ create index if not exists player_messages_sender_idx on public.player_messages(
 
 <!-- ===== V4.56 Stable: Level-300 progression authority ===== -->
 <style id="v456-level300-progression-css">
-.app > header .v358-logo::after{content:"V4.56"!important}
+.app > header .v358-logo::after{content:"V4.59"!important}
 </style>
 <script id="v456-level300-progression-authority">
 (function(){
-  const VERSION='V4.56 Stable', SHORT='V4.56', MAX_LEVEL=300;
+  const VERSION='V4.59 Stable', SHORT='V4.59', MAX_LEVEL=300;
   window.GROW_LEGENDS_MAX_LEVEL=MAX_LEVEL;
 
   function stamp(){
@@ -62247,6 +62247,755 @@ create index if not exists player_messages_sender_idx on public.player_messages(
   window.addEventListener('pageshow',()=>{maxLevelUi();stamp()},{passive:true});
   [250,900,2200,5200].forEach(ms=>setTimeout(()=>{maxLevelUi();stamp()},ms));
   const g=setInterval(stamp,300);setTimeout(()=>clearInterval(g),30000);
+})();
+</script>
+
+
+
+<!-- ===== V4.58 Stable: Level 211-300 Nebelriss Endgame ===== -->
+<style id="v457-endgame-style">
+.app > header .v358-logo::after{content:"V4.59"!important}
+#endgame{padding-bottom:26px}
+.v457-shell{display:grid;gap:12px}
+.v457-hero{position:relative;overflow:hidden;border:1px solid #5f3e78;border-radius:18px;padding:16px;background:radial-gradient(circle at 78% 8%,rgba(183,86,255,.19),transparent 34%),linear-gradient(155deg,#181021,#0b1010 62%,#08100b);box-shadow:0 18px 42px #0008}
+.v457-hero:after{content:'🌌';position:absolute;right:15px;top:7px;font-size:74px;opacity:.20;filter:drop-shadow(0 0 18px #b05cff)}
+.v457-kicker{font-size:9px;font-weight:1000;letter-spacing:.13em;color:#d9adff;text-transform:uppercase}.v457-hero h2{margin:5px 0 5px;font-size:24px}.v457-hero p{margin:0;max-width:560px;color:#aeb9af;font-size:11px;line-height:1.5}
+.v457-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:12px}.v457-stat{padding:9px;border:1px solid #463452;border-radius:11px;background:#0c1010cc;text-align:center}.v457-stat span{display:block;color:#8f9c91;font-size:8px}.v457-stat b{display:block;margin-top:2px;font-size:15px;color:#f0d7ff}
+.v457-lock{padding:14px;border:1px solid #604b34;border-radius:14px;background:#18140d;color:#d4c39b;font-size:11px;line-height:1.55}
+.v457-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.v457-tier{position:relative;text-align:left;padding:11px;border:1px solid #3b4c3d;border-radius:14px;background:linear-gradient(160deg,#151e17,#0b110d);color:#eef4ec;min-height:112px}.v457-tier.current{border-color:#a765d2;box-shadow:0 0 18px rgba(172,91,226,.16)}.v457-tier.done{border-color:#507d4c;background:linear-gradient(160deg,#17251a,#0a130c)}.v457-tier.locked{opacity:.52;filter:grayscale(.45)}.v457-tier-num{font-size:8px;color:#9c8aaa;font-weight:1000;letter-spacing:.10em}.v457-tier-name{font-size:12px;font-weight:1000;margin:5px 0}.v457-tier-range{font-size:9px;color:#b7c2b6}.v457-tier-progress{margin-top:8px;font-size:9px;color:#e0c4f5}.v457-mini-track{height:5px;border-radius:999px;background:#080b09;overflow:hidden;margin-top:5px}.v457-mini-track i{display:block;height:100%;background:linear-gradient(90deg,#79429d,#c17af0)}
+.v457-fight{border:1px solid #4e365d;border-radius:16px;padding:13px;background:linear-gradient(160deg,#14101a,#09100c)}.v457-fight-head{display:flex;align-items:flex-start;justify-content:space-between;gap:9px}.v457-enemy{display:flex;gap:10px;align-items:center}.v457-enemy-icon{font-size:42px;filter:drop-shadow(0 0 12px #a65ed066)}.v457-enemy-name{font-size:14px;font-weight:1000}.v457-enemy-sub{font-size:9px;color:#a9b3aa;margin-top:2px}.v457-rec{flex:0 0 auto;border:1px solid #624276;border-radius:999px;padding:5px 8px;font-size:8px;color:#e5bfff;background:#1d1025}
+.v457-bars{display:grid;gap:7px;margin:11px 0}.v457-bar-label{display:flex;justify-content:space-between;font-size:8px;color:#9ead9f;margin-bottom:3px}.v457-bar{height:10px;border:1px solid #38443a;border-radius:999px;background:#070a08;overflow:hidden}.v457-bar i{display:block;height:100%;transition:width .22s}.v457-bar.player i{background:linear-gradient(90deg,#497c43,#8ed56d)}.v457-bar.enemy i{background:linear-gradient(90deg,#7b3a83,#d26bd5)}
+.v457-log{min-height:54px;padding:9px;border:1px solid #343f36;border-radius:10px;background:#070b08;font-size:9px;line-height:1.45;color:#bcc7bd;white-space:pre-line;margin-bottom:9px}.v457-reward{margin-top:9px;padding:9px;border:1px solid #65502f;border-radius:10px;background:#181309;font-size:9px;line-height:1.45;color:#e8d19d}.v457-actions{display:grid;grid-template-columns:1fr auto;gap:7px}.v457-actions .btn{width:100%}
+.v457-world-link{grid-column:1/-1!important;border-color:#754a91!important;background:radial-gradient(circle at 25% 0,rgba(179,92,235,.18),transparent 45%),#111813!important}
+@media(max-width:560px){.v457-grid{grid-template-columns:repeat(2,1fr)}.v457-summary{grid-template-columns:1fr 1fr 1fr}.v457-tier{min-height:105px;padding:9px}.v457-actions{grid-template-columns:1fr}.v457-actions .btn.secondary{display:none}}
+</style>
+<script id="v457-level300-endgame">
+(function(){
+  const VERSION='V4.59 Stable',SHORT='V4.59',TIER_COUNT=9;
+  const TIER_NAMES=['Der violette Riss','Schattenplantage','Nebelarchiv','Sporenabgrund','Harz-Nekropole','Kristallfäule','Dunstzitadelle','Leere Gewächshäuser','Thron jenseits des Nebels'];
+  const ENEMY_NAMES=['Rissläufer','Nebelwächter','Sporenbestie','Kristallzehrer','Harzphantom','Dunsthexer','Leerenranke','Schattenkoloss','Nebeljäger'];
+  const ENEMY_ICONS=['👤','🗿','🍄','💠','👻','🧙','🌿','🦍','🥷'];
+  const BOSS_NAMES=['Rissfürst','Mutter der Schatten','Archivar des Nebels','Sporen-Avatar','Nekropolenkönig','Kristall-Parasit','Dunstimperator','Gewächshaus-Leviathan','Der Letzte Grünfluch'];
+  let busy=false;
+
+  function uidReady(){
+    try{if(typeof v073User!=='undefined'&&v073User&&!v073User.is_anonymous&&typeof window.v452AccountVerified==='function')return !!window.v452AccountVerified(v073User.id)}catch(e){}
+    return true;
+  }
+  function ensureState(){
+    if(!s.v457Endgame||typeof s.v457Endgame!=='object')s.v457Endgame={progress:{},completed:[],selected:0,wins:0,bossWins:0};
+    const x=s.v457Endgame;if(!x.progress||typeof x.progress!=='object')x.progress={};if(!Array.isArray(x.completed))x.completed=[];
+    x.completed=[...new Set(x.completed.map(Number).filter(n=>Number.isInteger(n)&&n>=0&&n<TIER_COUNT))];x.selected=Math.max(0,Math.min(TIER_COUNT-1,Math.floor(Number(x.selected)||0)));x.wins=Math.max(0,Math.floor(Number(x.wins)||0));x.bossWins=Math.max(0,Math.floor(Number(x.bossWins)||0));
+    for(let i=0;i<TIER_COUNT;i++)x.progress[i]=Math.max(0,Math.min(10,Math.floor(Number(x.progress[i])||0)));return x;
+  }
+  function dungeon20Done(){return Array.isArray(s?.dungeon?.completed)&&s.dungeon.completed.map(Number).includes(19)}
+  function minLevel(i){return 211+i*10}
+  function requiredLevel(i,r){return Math.min(300,minLevel(i)+r)}
+  function complete(i){return ensureState().completed.includes(i)}
+  function unlocked(i){if(!dungeon20Done())return false;if((Number(s.level)||1)<minLevel(i))return false;return i===0||complete(i-1)}
+  function currentRoom(i){return Math.max(0,Math.min(9,Number(ensureState().progress[i])||0))}
+  function enemy(i,r){const rec=requiredLevel(i,r),boss=r===9;const hpBase=75+rec*17.5+r*15;const hp=Math.round(hpBase*(2.35+i*.10)*(boss?1.48:1));const atkBase=15+rec*1.60+r*1.2;const attack=Math.round(atkBase*(1.45+i*.025)*(boss?1.18:1));const xp=Math.round(rec*7+250+r*42+(boss?700:0));const gold=Math.round(rec*20+350+r*125+(boss?1600:0));return{rec,boss,hp,attack,xp,gold,name:boss?BOSS_NAMES[i]:`${ENEMY_NAMES[(i+r)%ENEMY_NAMES.length]} ${i+1}.${r+1}`,icon:boss?'👑':ENEMY_ICONS[(i+r)%ENEMY_ICONS.length]}}
+  function primary(){try{return typeof v267PrimaryStat==='function'?Number(v267PrimaryStat())||0:typeof v029PrimaryStat==='function'?Number(v029PrimaryStat())||0:Number(totalAttr('staerke'))||0}catch(e){return 0}}
+  function setVal(k){try{return typeof setBonusValue==='function'?Number(setBonusValue(k))||0:0}catch(e){return 0}}
+  function skill(id){try{return typeof skillValue==='function'?Number(skillValue(id))||0:0}catch(e){return 0}}
+  function safePersist(){try{persist(false)}catch(e){console.warn('V4.58 endgame save',e)}}
+
+  function restampLevel(it,level){if(!it||!it.slot)return it;it.dropLevel=Math.min(300,Math.max(1,Math.floor(Number(level)||Number(s.level)||1)));const plain=String(it.name||'Ausrüstung').replace(/\s*\[Lv\.\d+\]\s*$/i,'');it.name=`${plain} [Lv.${it.dropLevel}]`;try{window.v447ApplyItemCurve?.(it)}catch(_){}try{window.v456ClampItemLevel?.(it)}catch(_){}return it}
+  function makeLegendary(dropLevel){
+    const cls=s.playerClass||'grower',pool=(classGear?.[cls]||classGear?.grower||[]),base=pool[Math.floor(Math.random()*Math.max(1,pool.length))];if(!base)return null;let it=null;
+    try{if(typeof v024Item==='function')it=v024Item(base,'boss','orange')}catch(e){}if(!it){try{it=makeClassLoot(cls,'normal')}catch(e){return null}}
+    try{const m=qualityMeta('orange');it.quality='orange';it.rarity=m.cls}catch(e){it.quality='orange';it.rarity='legendary'}it.classId=cls;
+    const plain=String(base.name||it.name||'Ausrüstung').replace(/^(Normal|Gewöhnlich|Rare|Episch|Legendär|Mystisch):\s*/i,'').replace(/\s*\[Lv\.\d+\]\s*$/i,'');it.name=`Legendär: ${plain}`;return restampLevel(it,dropLevel);
+  }
+  function makeRoomLoot(dropLevel){
+    if(Math.random()>=.30)return null;try{let it;if(Math.random()<.05&&typeof makeSetItem==='function')it=makeSetItem(s.playerClass||'grower',setBases[Math.floor(Math.random()*setBases.length)].slot);else it=makeClassLoot(s.playerClass||'grower','dungeon');return restampLevel(it,dropLevel)}catch(e){return null}
+  }
+
+  function ensureSection(){let sec=document.getElementById('endgame');if(!sec){sec=document.createElement('section');sec.id='endgame';sec.className='screen';const dungeon=document.getElementById('dungeon');(dungeon?.parentNode||document.querySelector('main'))?.insertBefore(sec,dungeon?.nextSibling||null)}return sec}
+  function ensureMenu(){const panel=document.querySelector('.top-menu-panel');if(!panel)return;let btn=panel.querySelector('[data-screen="endgame"]');if(!btn){btn=document.createElement('button');btn.className='top-menu-item';btn.dataset.screen='endgame';btn.innerHTML='<span>🌌</span>Endgame';const dungeonBtn=panel.querySelector('[data-screen="dungeon"]');if(dungeonBtn)dungeonBtn.insertAdjacentElement('afterend',btn);else panel.appendChild(btn)}btn.classList.toggle('active',document.getElementById('endgame')?.classList.contains('active'));btn.onclick=()=>{try{v032Go('endgame')}catch(e){document.querySelectorAll('.screen').forEach(x=>x.classList.remove('active'));ensureSection().classList.add('active');renderEndgame()}}}
+  function ensureWorldLink(){const grid=document.querySelector('#world .v085-quick-grid');if(!grid||grid.querySelector('[data-v457-go]'))return;const b=document.createElement('button');b.className='v085-quick v457-world-link';b.dataset.v457Go='1';const open=dungeon20Done()&&(Number(s.level)||1)>=211;b.innerHTML=`<div class="ico">🌌</div><b>Nebelrisse</b><span>${open?'Endgame Level 211–300':'Ab Level 211 · nach Dungeon 20'}</span>`;b.onclick=()=>v032Go('endgame');grid.appendChild(b)}
+
+  function renderEndgame(){
+    const sec=ensureSection(),st=ensureState();if(!sec)return;const selected=st.selected,prog=Number(st.progress[selected])||0,room=Math.min(9,prog),en=enemy(selected,room),d20=dungeon20Done(),lvl=Number(s.level)||1,canTier=unlocked(selected),canLevel=lvl>=en.rec,isDone=complete(selected),finished=st.completed.length;
+    sec.innerHTML=`<div class="v457-shell"><div class="v457-hero"><div class="v457-kicker">🌌 ENDGAME · LEVEL 211–300</div><h2>Die Nebelrisse</h2><p>Jenseits der 20 verseuchten Gebiete zerbricht die Welt. Jeder Riss umfasst zehn Stufen und folgt exakt deiner Level-Progression. Mystische Ausrüstung bleibt exklusiv beim Smaragd-Koloss.</p><div class="v457-summary"><div class="v457-stat"><span>Risse bezwungen</span><b>${finished} / 9</b></div><div class="v457-stat"><span>Endgame-Siege</span><b>${st.wins} / 90</b></div><div class="v457-stat"><span>Endgegner</span><b>${st.bossWins} / 9</b></div></div></div>${!d20?'<div class="v457-lock">🔒 <b>Endgame noch versiegelt.</b><br>Schließe zuerst Dungeon 20 „Der Thron der Milbenkaiserin“ ab. Der erste Nebelriss öffnet sich anschließend ab Level 211.</div>':lvl<211?`<div class="v457-lock">🔒 Dungeon 20 ist abgeschlossen. Der erste Nebelriss öffnet sich mit <b>Level 211</b>. Aktuell: Level ${lvl}.</div>`:''}<div class="v457-grid">${Array.from({length:TIER_COUNT},(_,i)=>{const p=Number(st.progress[i])||0,done=complete(i),open=unlocked(i),pct=done?100:Math.min(100,p*10);return`<button class="v457-tier ${i===selected?'current':''} ${done?'done':''} ${!open&&!done?'locked':''}" data-v457-tier="${i}"><div class="v457-tier-num">RISS ${i+1}</div><div class="v457-tier-name">${TIER_NAMES[i]}</div><div class="v457-tier-range">Level ${minLevel(i)}–${minLevel(i)+9}</div><div class="v457-tier-progress">${done?'✅ Bezwingt':!open?'🔒 Gesperrt':`${Math.min(10,p+1)} / 10 · nächster Gegner Lv. ${requiredLevel(i,Math.min(9,p))}`}</div><div class="v457-mini-track"><i style="width:${pct}%"></i></div></button>`}).join('')}</div><div class="v457-fight"><div class="v457-fight-head"><div class="v457-enemy"><div class="v457-enemy-icon">${isDone?'✅':en.icon}</div><div><div class="v457-enemy-name">${isDone?'Riss vollständig bezwungen':en.name}</div><div class="v457-enemy-sub">${TIER_NAMES[selected]} · ${isDone?'10 / 10':`Gegner ${room+1} / 10`}${en.boss&&!isDone?' · ENDBOSS':''}</div></div></div><div class="v457-rec">${isDone?'ABGESCHLOSSEN':`EMPFOHLEN LV. ${en.rec}`}</div></div><div class="v457-bars"><div><div class="v457-bar-label"><span>Dein Held</span><span id="v457PlayerText">${Math.round(maxHp())} HP</span></div><div class="v457-bar player"><i id="v457PlayerBar" style="width:100%"></i></div></div><div><div class="v457-bar-label"><span>${isDone?'Riss versiegelt':en.name}</span><span id="v457EnemyText">${isDone?'—':en.hp+' HP'}</span></div><div class="v457-bar enemy"><i id="v457EnemyBar" style="width:${isDone?0:100}%"></i></div></div></div><div class="v457-log" id="v457Log">${isDone?'Dieser Riss ist abgeschlossen. Wähle den nächsten Nebelriss.':!canTier?`Riss ${selected+1} ist noch gesperrt.`:!canLevel?`Du brauchst Level ${en.rec} für den nächsten Gegner.`:`${en.name} wartet im Nebel. Niederlagen kosten nichts.`}</div><div id="v457Reward"></div><div class="v457-actions"><button class="btn ${en.boss?'gold':''}" id="v457Fight" ${isDone||!canTier||!canLevel||busy?'disabled':''}>${isDone?'✅ Riss bezwungen':en.boss?'👑 Endboss herausfordern':'⚔️ Gegner bekämpfen'}</button><button class="btn secondary" id="v457Back">🗺️ Welt</button></div></div></div>`;
+    sec.querySelectorAll('[data-v457-tier]').forEach(b=>b.onclick=()=>{st.selected=Number(b.dataset.v457Tier)||0;renderEndgame()});sec.querySelector('#v457Back').onclick=()=>v032Go('world');const f=sec.querySelector('#v457Fight');if(f)f.onclick=fight;
+  }
+
+  function fight(){
+    if(busy)return;const st=ensureState();if(!uidReady())return v063Toast?.('Account wird geprüft','warn','Bitte einen Moment warten, bevor du den Endgame-Kampf startest.');const i=st.selected,r=currentRoom(i);if(complete(i)||!unlocked(i))return renderEndgame();const en=enemy(i,r),lvl=Number(s.level)||1;if(lvl<en.rec)return v063Toast?.('Noch zu früh','warn',`Dieser Gegner ist für Level ${en.rec} vorgesehen.`);
+    busy=true;renderEndgame();const log=document.getElementById('v457Log'),pBar=document.getElementById('v457PlayerBar'),eBar=document.getElementById('v457EnemyBar'),pTxt=document.getElementById('v457PlayerText'),eTxt=document.getElementById('v457EnemyText');const maxP=Math.max(1,Math.round(maxHp())),maxE=en.hp;let p=maxP,e=maxE,round=0,talent=null;try{if(typeof v318NewCombatState==='function')talent=v318NewCombatState('dungeon',maxP)}catch(_){}
+    const finish=win=>{busy=false;if(!win){if(log)log.textContent=`Niederlage gegen ${en.name}. Verbessere Ausrüstung, Attribute oder Talente und versuche es erneut.`;return setTimeout(renderEndgame,700)}let xp=en.xp,gold=en.gold;try{if(typeof v408GuildGold==='function')gold=v408GuildGold(gold)}catch(_){}s.gold=(Number(s.gold)||0)+gold;try{addXp(xp)}catch(err){s.xp=(Number(s.xp)||0)+xp}st.wins++;let item=null,harz=0;if(en.boss){item=makeLegendary(en.rec);harz=1+(Math.random()<.35?1:0);s.harzTaler=(Number(s.harzTaler)||0)+harz;st.bossWins++;st.progress[i]=10;if(!st.completed.includes(i))st.completed.push(i)}else{st.progress[i]=Math.min(10,r+1);item=makeRoomLoot(en.rec)}if(item){s.inventory??=[];s.inventory.push(item)}if(en.boss&&i<TIER_COUNT-1)st.selected=i+1;safePersist();try{window.v411AwardGuildActivity?.('dungeon')}catch(_){}const reward=document.getElementById('v457Reward');if(reward)reward.innerHTML=`<div class="v457-reward">🏆 Sieg · +${xp} XP · +${gold} Gold${harz?` · +${harz} 🟢 Harz-Taler`:''}${item?`<br>🎁 ${item.name} · ${typeof itemBonus==='function'?itemBonus(item):''}`:'<br>Keine zusätzliche Ausrüstung gefunden.'}</div>`;if(log)log.textContent=en.boss?'Der Endboss ist gefallen. Der nächste Nebelriss kann nach Erreichen des nötigen Levels betreten werden.':'Gegner bezwungen. Die nächste Stufe des Risses ist freigeschaltet.';try{if(typeof v069SyncCurrencies==='function')v069SyncCurrencies();if(typeof renderInventory==='function')renderInventory()}catch(_){}setTimeout(()=>{try{renderEndgame()}catch(_){}},1500)};
+    const step=()=>{if(!busy)return;round++;const base=Math.max(4,Math.floor(primary()*1.9+lvl*1.55+Math.random()*9));let dmg=base,crit=false,heal=0,text='Du triffst';try{if(talent&&typeof v318ResolvePlayerAttack==='function'){const a=v318ResolvePlayerAttack(talent,{baseDamage:base,enemyHp:e,enemyMax:maxE,playerHp:p,playerMax:maxP,baseCrit:Math.min(.30,.04+(Number(totalAttr('glueck'))||0)*.012),setCrit:s.playerClass==='bruiser'?( .07+setVal('critChance') ):0,baseWucht:s.playerClass==='grower'?( .13+setVal('wuchtChance') ):0,baseDouble:s.playerClass==='scout'?( .15+setVal('doubleChance') ):0,setDoubleDamage:setVal('doubleDamage')});dmg=Math.max(1,Math.round(a.damage||base));crit=!!a.crit;heal=Math.max(0,Number(a.heal)||0);text=a.text||text}else{let cc=Math.min(.35,.05+(Number(totalAttr('glueck'))||0)*.004);if(s.playerClass==='bruiser')cc+=.07+setVal('critChance')+skill('nebel')*.025;crit=Math.random()<cc;if(crit)dmg=Math.floor(dmg*1.75)}}catch(_){}p=Math.min(maxP,p+heal);e=Math.max(0,e-dmg);if(eBar)eBar.style.width=`${Math.max(0,e/maxE*100)}%`;if(eTxt)eTxt.textContent=`${e} HP`;if(pBar)pBar.style.width=`${Math.max(0,p/maxP*100)}%`;if(pTxt)pTxt.textContent=`${p} HP`;if(log)log.textContent=`Runde ${round}: ${text} · ${dmg} Schaden${crit?' · KRIT!':''}${heal?` · +${heal} HP`:''}`;if(e<=0)return finish(true);setTimeout(()=>{let raw=Math.max(3,Math.floor(en.attack+Math.random()*12-(Number(totalAttr('ruestung'))||0)*.34)),taken=raw,counter=0,defHeal=0,prevent=false;try{if(talent&&typeof v318ResolveEnemyAttack==='function'){const d=v318ResolveEnemyAttack(talent,{damage:raw,playerHp:p,playerMax:maxP});taken=Math.max(0,Math.round(d.damage||0));counter=Math.max(0,Math.round(d.counterDamage||0));defHeal=Math.max(0,Math.round(d.heal||0));prevent=!!d.preventLethal}}catch(_){}p=Math.min(maxP,p+defHeal);p=Math.max(0,p-taken);if(prevent&&p<=0)p=1;if(counter)e=Math.max(0,e-counter);if(pBar)pBar.style.width=`${Math.max(0,p/maxP*100)}%`;if(pTxt)pTxt.textContent=`${p} HP`;if(eBar)eBar.style.width=`${Math.max(0,e/maxE*100)}%`;if(eTxt)eTxt.textContent=`${e} HP`;if(log)log.textContent+=`\n${en.name} verursacht ${taken} Schaden${counter?` · Konter ${counter}`:''}.`;if(e<=0)return finish(true);if(p<=0)return finish(false);if(round>=45)return finish(e/maxE<p/maxP);setTimeout(step,260)},320)};step();
+  }
+
+  function stamp(){document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version').forEach(el=>{if(el&&el.textContent!==VERSION)el.textContent=VERSION});document.querySelectorAll('.v366-ver,.v371-logo em,.v372-logo em').forEach(el=>{if(el&&el.textContent!==SHORT)el.textContent=SHORT});document.title='Grow Legends '+SHORT}
+  function install(){ensureState();ensureSection();ensureMenu();ensureWorldLink();if(document.getElementById('endgame')?.classList.contains('active'))renderEndgame();stamp()}
+  window.v457RenderEndgame=renderEndgame;window.v457EndgameEnemy=enemy;window.v457EndgameUnlocked=unlocked;
+  try{if(typeof render==='function'&&!window.__v457RenderWrapped){const base=render;render=function(){const r=base.apply(this,arguments);install();return r};window.render=render;window.__v457RenderWrapped=true}}catch(e){}
+  try{if(typeof v075ApplyCloudSave==='function'&&!window.__v457CloudWrapped){const base=v075ApplyCloudSave;v075ApplyCloudSave=function(){const r=base.apply(this,arguments);if(r&&typeof r.then==='function')return r.then(x=>{install();return x});install();return r};window.v075ApplyCloudSave=v075ApplyCloudSave;window.__v457CloudWrapped=true}}catch(e){}
+  try{if(typeof v032Go==='function'&&!window.__v457GoWrapped){const base=v032Go;v032Go=function(id){const r=base.apply(this,arguments);if(id==='endgame')renderEndgame();else if(id==='world')ensureWorldLink();ensureMenu();stamp();return r};window.v032Go=v032Go;window.__v457GoWrapped=true}}catch(e){}
+  install();document.addEventListener('DOMContentLoaded',install,{once:true});window.addEventListener('pageshow',install,{passive:true});[250,900,2200,5200].forEach(ms=>setTimeout(install,ms));const g=setInterval(stamp,350);setTimeout(()=>clearInterval(g),35000);
+})();
+</script>
+
+
+<!-- ===== V4.58 Stable: Schlüsselstein sofort live freischalten ===== -->
+<style id="v458-key-live-unlock-css">
+.app > header .v358-logo::after{content:"V4.59"!important}
+</style>
+<script id="v458-key-live-unlock">
+(function(){
+  const VERSION='V4.59 Stable', SHORT='V4.59';
+  let refreshQueued=false;
+
+  function stamp(){
+    document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version')
+      .forEach(el=>{if(el&&el.textContent!==VERSION)el.textContent=VERSION});
+    document.querySelectorAll('.v366-ver,.v371-logo em,.v372-logo em')
+      .forEach(el=>{if(el&&el.textContent!==SHORT)el.textContent=SHORT});
+    document.title='Grow Legends '+SHORT;
+  }
+
+  function normalizeKeys(){
+    try{
+      if(typeof v243EnsureDungeonKeyState==='function'){
+        v243EnsureDungeonKeyState();
+        return;
+      }
+    }catch(e){}
+
+    s.dungeon=(s.dungeon&&typeof s.dungeon==='object')?s.dungeon:{};
+    s.dungeon.keys=(s.dungeon.keys&&typeof s.dungeon.keys==='object')?s.dungeon.keys:{};
+    s.dungeon.unlocked=Array.isArray(s.dungeon.unlocked)?s.dungeon.unlocked.map(Number):[0];
+    if(!s.dungeon.unlocked.includes(0))s.dungeon.unlocked.push(0);
+    Object.keys(s.dungeon.keys).forEach(raw=>{
+      const i=Number(raw);
+      if(s.dungeon.keys[raw]&&Number.isInteger(i)&&i>0&&!s.dungeon.unlocked.includes(i))s.dungeon.unlocked.push(i);
+    });
+    s.dungeon.unlocked=[...new Set(s.dungeon.unlocked.filter(Number.isInteger))].sort((a,b)=>a-b);
+  }
+
+  function keySignature(){
+    normalizeKeys();
+    const keys=Object.keys(s.dungeon?.keys||{}).filter(k=>s.dungeon.keys[k]).map(Number).filter(Number.isInteger).sort((a,b)=>a-b);
+    const unlocked=(s.dungeon?.unlocked||[]).map(Number).filter(Number.isInteger).sort((a,b)=>a-b);
+    return JSON.stringify({keys,unlocked});
+  }
+
+  function repaintDungeon(reason='key-change'){
+    normalizeKeys();
+
+    const screen=document.querySelector('#dungeon');
+    const active=!!screen?.classList?.contains('active');
+    const layer=String(s.dungeon?.layer||'world');
+    const view=String(s.dungeon?.view||'map');
+
+    /* Never replace an active battle DOM. A key can only be earned from quests,
+       but this keeps the live refresh safe against future reward sources. */
+    if(active && layer==='dungeon' && view==='battle')return false;
+
+    let painted=false;
+    try{
+      /* Rebuild the hidden world card too. This is important: when the player finds
+         the stone on the quest screen, the Dungeon page is already fresh BEFORE the
+         next navigation and cannot retain an old lock icon. */
+      if(!active || layer==='world'){
+        if(typeof v251RenderWorld==='function')painted=!!v251RenderWorld();
+        else if(typeof v230ShowDungeonWorld==='function')painted=!!v230ShowDungeonWorld();
+        else if(typeof v065RenderWorld==='function'){v065RenderWorld();painted=true;}
+      }else if(layer==='dungeon' && view==='map'){
+        if(typeof v251RenderDetail==='function')painted=!!v251RenderDetail();
+        else if(typeof renderDungeon==='function'){renderDungeon();painted=true;}
+      }
+    }catch(e){console.warn('V4.58 Dungeon live refresh',reason,e)}
+
+    try{if(typeof v242PaintDungeonWorldStatus==='function')v242PaintDungeonWorldStatus()}catch(e){}
+    try{if(typeof v250PaintKeyProgress==='function')v250PaintKeyProgress()}catch(e){}
+    try{if(typeof v067BindWorldMap==='function')v067BindWorldMap()}catch(e){}
+    stamp();
+    return painted;
+  }
+
+  function scheduleRefresh(reason='key-change'){
+    if(!refreshQueued){
+      refreshQueued=true;
+      queueMicrotask(()=>{
+        refreshQueued=false;
+        repaintDungeon(reason);
+      });
+    }
+    requestAnimationFrame(()=>repaintDungeon(reason+'-raf'));
+    setTimeout(()=>repaintDungeon(reason+'-50'),50);
+    setTimeout(()=>repaintDungeon(reason+'-220'),220);
+  }
+  window.v458RefreshDungeonUnlocks=scheduleRefresh;
+
+  /* The canonical pity system grants every Dungeon-2..20 stone here. Repaint in
+     the SAME transaction instead of waiting for a page reload. */
+  try{
+    if(typeof v250GrantKey==='function'&&!window.__v458GrantKeyWrapped){
+      const baseGrant=v250GrantKey;
+      v250GrantKey=function(i){
+        const before=keySignature();
+        const ok=baseGrant.apply(this,arguments);
+        normalizeKeys();
+        const after=keySignature();
+        if(ok && after!==before){
+          scheduleRefresh('grant-'+Number(i));
+          try{document.dispatchEvent(new CustomEvent('growlegends:dungeon-key-changed',{detail:{index:Number(i)}}))}catch(e){}
+        }
+        return ok;
+      };
+      try{window.v250GrantKey=v250GrantKey}catch(e){}
+      window.__v458GrantKeyWrapped=true;
+    }
+  }catch(e){console.warn('V4.58 key grant wrapper',e)}
+
+  /* Defense in depth: the visible quest-claim owner has accumulated many historical
+     wrappers. Compare the actual key state before/after a claim so ANY legitimate
+     key source gets an immediate repaint, even if it bypasses v250GrantKey later. */
+  try{
+    if(typeof v233ClaimQuest==='function'&&!window.__v458QuestKeyLiveWrapped){
+      const baseClaim=v233ClaimQuest;
+      v233ClaimQuest=function(){
+        const before=keySignature();
+        let result;
+        try{result=baseClaim.apply(this,arguments)}catch(err){
+          if(keySignature()!==before)scheduleRefresh('quest-claim-error');
+          throw err;
+        }
+        const finish=()=>{if(keySignature()!==before)scheduleRefresh('quest-claim')};
+        if(result&&typeof result.then==='function'){
+          return result.then(x=>{finish();return x},err=>{finish();throw err});
+        }
+        finish();
+        return result;
+      };
+      try{window.v233ClaimQuest=v233ClaimQuest}catch(e){}
+      window.__v458QuestKeyLiveWrapped=true;
+    }
+  }catch(e){console.warn('V4.58 quest key wrapper',e)}
+
+  /* Always normalize/repaint again when Dungeon is opened. This makes navigation
+     independent from whichever old renderer happened to own the previous DOM. */
+  try{
+    if(typeof v032Go==='function'&&!window.__v458DungeonGoWrapped){
+      const baseGo=v032Go;
+      v032Go=function(id){
+        if(id==='dungeon')normalizeKeys();
+        const r=baseGo.apply(this,arguments);
+        if(id==='dungeon')scheduleRefresh('open-dungeon');
+        return r;
+      };
+      try{window.v032Go=v032Go}catch(e){}
+      window.__v458DungeonGoWrapped=true;
+    }
+  }catch(e){console.warn('V4.58 dungeon navigation wrapper',e)}
+
+  document.addEventListener('growlegends:dungeon-key-changed',()=>scheduleRefresh('event'));
+  stamp();
+  document.addEventListener('DOMContentLoaded',()=>{normalizeKeys();stamp()},{once:true});
+  window.addEventListener('pageshow',()=>{normalizeKeys();stamp()},{passive:true});
+  [250,900,2200,5200].forEach(ms=>setTimeout(stamp,ms));
+  const g=setInterval(stamp,350);setTimeout(()=>clearInterval(g),42000);
+})();
+</script>
+
+<!-- ===== V4.59 Stable: compact RPG character hub with tabs ===== -->
+<style id="v459-character-hub-css">
+.app > header .v358-logo::after{content:"V4.59"!important}
+
+/* Character page becomes one compact RPG hub instead of a long stack of cards. */
+#character.v459-character-hub{
+  padding:8px!important;
+  overflow-x:hidden!important;
+}
+#character.v459-character-hub > .hero-card{
+  margin:0 0 9px!important;
+  border:1px solid #3e5840!important;
+  border-radius:18px!important;
+  background:linear-gradient(180deg,#111c14,#09110c)!important;
+  box-shadow:0 18px 40px #0008!important;
+}
+#character.v459-character-hub .character-stage{
+  min-height:0!important;
+  padding:9px 7px 7px!important;
+  overflow:hidden!important;
+  background:
+    radial-gradient(circle at 50% 31%,rgba(103,211,83,.18),transparent 31%),
+    radial-gradient(circle at 12% 12%,rgba(218,175,70,.08),transparent 26%),
+    linear-gradient(180deg,#17251a,#0a120d 88%)!important;
+}
+#character.v459-character-hub .char-head{display:none!important}
+#character.v459-character-hub .char-head .tiny{font-size:8px!important;color:#89a18b!important}
+#character.v459-character-hub .equipment-grid{
+  display:grid!important;
+  grid-template-columns:66px minmax(0,1fr) 66px!important;
+  gap:7px!important;
+  align-items:center!important;
+  min-height:0!important;
+  width:100%!important;
+  overflow:visible!important;
+}
+#character.v459-character-hub .equip-col{
+  display:grid!important;
+  grid-template-columns:1fr!important;
+  gap:7px!important;
+  min-width:0!important;
+}
+#character.v459-character-hub .slot{
+  width:100%!important;
+  min-width:0!important;
+  min-height:64px!important;
+  height:64px!important;
+  padding:5px 3px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:1px!important;
+  border-radius:12px!important;
+  overflow:hidden!important;
+  cursor:pointer!important;
+  background:radial-gradient(circle at 50% 22%,rgba(255,255,255,.05),transparent 35%),#0c1510!important;
+  box-shadow:inset 0 0 18px #0007,0 4px 11px #0005!important;
+}
+#character.v459-character-hub .slot-icon{
+  width:auto!important;height:auto!important;min-height:27px!important;
+  display:grid!important;place-items:center!important;
+  font-size:25px!important;line-height:1!important;
+  background:none!important;border:0!important;
+}
+#character.v459-character-hub .slot-label{
+  font-size:6.2px!important;line-height:1!important;letter-spacing:.08em!important;
+  color:#829484!important;text-align:center!important;
+}
+/* Slot detail belongs to the tap overlay, not the hero itself. */
+#character.v459-character-hub .slot-name,
+#character.v459-character-hub .slot > .tiny,
+#character.v459-character-hub .slot .slot-actions,
+#character.v459-character-hub .slot .v123-item-effects,
+#character.v459-character-hub .slot .set-tag,
+#character.v459-character-hub .slot .v296-mystic-special{display:none!important}
+
+#character.v459-character-hub .center-hero{
+  min-width:0!important;
+  min-height:0!important;
+  height:auto!important;
+  padding:2px 3px 4px!important;
+  border:0!important;
+  border-radius:16px!important;
+  background:radial-gradient(circle at 50% 40%,rgba(99,206,83,.13),transparent 40%)!important;
+}
+#character.v459-character-hub .v123-gear-summary{display:none!important}
+#character.v459-character-hub .avatar-scene{
+  width:100%!important;height:128px!important;min-height:0!important;
+  overflow:hidden!important;display:flex!important;align-items:flex-end!important;justify-content:center!important;
+}
+#character.v459-character-hub .avatar-scene:before{
+  width:126px!important;height:126px!important;bottom:0!important;
+  background:radial-gradient(circle,rgba(103,215,83,.22),rgba(38,77,39,.08) 58%,transparent 72%)!important;
+}
+#character.v459-character-hub .class-avatar-big{font-size:82px!important;line-height:1!important}
+#character.v459-character-hub .v41-portrait{
+  width:100%!important;max-width:145px!important;max-height:132px!important;
+  transform:scale(.80)!important;transform-origin:center bottom!important;
+}
+#character.v459-character-hub .avatar-prop{font-size:38px!important;transform:scale(.76)!important}
+#character.v459-character-hub .avatar-leaf{font-size:24px!important;transform:scale(.78)!important}
+#character.v459-character-hub .center-name{
+  margin-top:1px!important;font-size:17px!important;line-height:1.05!important;
+  white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;
+}
+#character.v459-character-hub .center-class{font-size:7.3px!important;line-height:1.2!important;margin-top:2px!important}
+#character.v459-character-hub .level-shield{
+  margin-top:5px!important;padding:4px 9px!important;border-radius:9px!important;font-size:8px!important;
+}
+#character.v459-character-hub .level-shield b{font-size:15px!important}
+#character.v459-character-hub .center-xp{max-width:170px!important;margin:5px auto 0!important}
+#character.v459-character-hub .center-xp-row{font-size:7px!important;margin-bottom:2px!important}
+#character.v459-character-hub .center-xp-track{height:8px!important}
+#character.v459-character-hub .center-hero > .char-sub{display:none!important}
+#character.v459-character-hub #v106BookBtn{
+  transform:scale(.78)!important;transform-origin:center top!important;margin:3px auto -4px!important;
+}
+
+/* Former .char-bottom is intentionally renamed by V4.59 so V4.42/V4.44 cannot
+   drag inventory/materials back into the hero during their old boot timers. */
+#character.v459-character-hub .v459-hero-bottom{
+  padding:8px!important;border-top:1px solid #304633!important;background:#0a120d!important;
+}
+#character.v459-character-hub .v459-hero-bottom .combat-row{
+  display:grid!important;grid-template-columns:1fr 1fr!important;gap:7px!important;margin:0!important;
+}
+#character.v459-character-hub .v459-hero-bottom .combat-box{
+  min-height:50px!important;padding:7px 8px!important;border-radius:11px!important;
+  background:linear-gradient(180deg,#142019,#0c1410)!important;border:1px solid #334b37!important;
+}
+#character.v459-character-hub .v459-hero-bottom .combat-box span{font-size:7px!important}
+#character.v459-character-hub .v459-hero-bottom .combat-box b{font-size:16px!important}
+#v459SetSummary{
+  display:flex;align-items:center;justify-content:center;gap:5px;flex-wrap:wrap;
+  min-height:25px;margin-top:6px;padding:5px 7px;border:1px solid #304b35;border-radius:9px;
+  background:#0b160e;color:#9fb3a0;font-size:7px;font-weight:900;text-align:center;
+}
+#v459SetSummary b{color:#e7c96d}
+
+/* Main navigation inside the character screen. */
+#v459CharacterShell{width:100%;min-width:0}
+#v459CharacterTabs{
+  position:relative;z-index:18;
+  display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px;
+  padding:6px;margin:0 0 8px;border:1px solid #344c37;border-radius:14px;
+  background:rgba(8,15,10,.95);backdrop-filter:blur(8px);box-shadow:0 9px 25px #0007;
+}
+#v459CharacterTabs button{
+  min-width:0;min-height:45px;padding:5px 2px;border:1px solid transparent;border-radius:10px;
+  background:#111c14;color:#8fa091;font:900 7px/1.15 system-ui;cursor:pointer;
+}
+#v459CharacterTabs button span{display:block;font-size:18px;line-height:1.05;margin-bottom:2px}
+#v459CharacterTabs button em{display:block;font-style:normal;font-size:6.4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#v459CharacterTabs button.active{
+  color:#dff7d0;border-color:#619455;background:linear-gradient(180deg,#213a25,#122217);
+  box-shadow:inset 0 0 16px rgba(107,211,88,.08),0 0 12px rgba(107,211,88,.08);
+}
+.v459-panel{display:none;min-width:0}
+.v459-panel.active{display:block}
+.v459-panel > .card,
+#v459AttrCard{
+  margin:0 0 9px!important;padding:11px!important;border-radius:15px!important;
+  border:1px solid #354d39!important;background:linear-gradient(160deg,#142019,#09110d 78%)!important;
+  box-shadow:none!important;
+}
+#v459AttrCard .v459-panel-head{
+  display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:9px;
+}
+#v459AttrCard .v459-panel-head h2{margin:0;font-size:15px}
+#v459AttrPoints{
+  padding:5px 8px;border:1px solid #806b35;border-radius:999px;background:#1d180c;color:#e9cc6a;
+  font-size:8px;font-weight:1000;white-space:nowrap;
+}
+#character.v459-character-hub #attrs{
+  display:grid!important;grid-template-columns:1fr!important;gap:6px!important;margin:0!important;
+}
+#character.v459-character-hub #attrs .attr{
+  min-height:43px!important;padding:7px 9px!important;border-radius:10px!important;
+  background:#0e1912!important;border:1px solid #314a35!important;
+}
+#character.v459-character-hub #attrs .attr span{font-size:10px!important}
+#character.v459-character-hub #attrs .attr button{width:31px!important;height:31px!important;border-radius:9px!important}
+
+/* Set and class configuration stay available, but no longer occupy the page all the time. */
+.v459-extra{
+  margin:0 0 8px;border:1px solid #304833;border-radius:12px;background:#0c1510;overflow:hidden;
+}
+.v459-extra > summary{
+  list-style:none;display:flex;align-items:center;justify-content:space-between;min-height:44px;
+  padding:8px 11px;color:#c8dcc5;font-size:10px;font-weight:1000;cursor:pointer;
+}
+.v459-extra > summary::-webkit-details-marker{display:none}
+.v459-extra > summary:after{content:'＋';color:#78c968;font-size:15px}
+.v459-extra[open] > summary:after{content:'−'}
+.v459-extra > .card{margin:0!important;border:0!important;border-top:1px solid #2e4431!important;border-radius:0!important;box-shadow:none!important}
+
+/* Compact 3-column inventory. Card tap opens V4.59 detail sheet. */
+#character.v459-character-hub #inventory .inventory-grid{
+  display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:6px!important;
+}
+#character.v459-character-hub #inventory .v268-sellbar{grid-column:1/-1!important;margin:0 0 2px!important}
+#character.v459-character-hub #inventory .inv-item{
+  min-width:0!important;min-height:102px!important;padding:8px 5px 7px!important;border-radius:12px!important;
+  display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;
+  cursor:pointer!important;overflow:hidden!important;text-align:center!important;
+}
+#character.v459-character-hub #inventory .inv-item .item-name{
+  width:100%!important;margin:0!important;display:flex!important;flex-direction:column!important;align-items:center!important;
+  gap:4px!important;font-size:7px!important;line-height:1.1!important;min-width:0!important;
+}
+#character.v459-character-hub #inventory .v459-inv-icon{font-size:27px!important;line-height:1!important;filter:drop-shadow(0 5px 5px #0008)}
+#character.v459-character-hub #inventory .v459-inv-name{
+  width:100%;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;
+  min-height:15px;font-size:7px;font-weight:900;overflow-wrap:anywhere;
+}
+#character.v459-character-hub #inventory .rarity-badge{
+  margin-top:3px!important;padding:2px 5px!important;font-size:5.8px!important;border-radius:999px!important;
+}
+#character.v459-character-hub #inventory .v459-inv-level{
+  margin-top:4px;padding:2px 5px;border:1px solid #3d5940;border-radius:999px;background:#0a120d;
+  color:#a9bcaa;font-size:6px;font-weight:900;
+}
+#character.v459-character-hub #inventory .item-bonus,
+#character.v459-character-hub #inventory .compare,
+#character.v459-character-hub #inventory .sell-price,
+#character.v459-character-hub #inventory .inv-actions,
+#character.v459-character-hub #inventory .set-tag,
+#character.v459-character-hub #inventory .v296-mystic-special{display:none!important}
+#character.v459-character-hub #inventory .v268-pick{
+  top:4px!important;right:4px!important;width:23px!important;height:23px!important;border-radius:7px!important;
+}
+#character.v459-character-hub #inventory .v268-pick input{width:14px!important;height:14px!important}
+
+/* Materials get their own tab and a denser grid, without changing apply handlers. */
+#character.v459-character-hub #v030Materials .inventory-grid{
+  display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:7px!important;
+}
+#character.v459-character-hub #v030Materials .inv-item{min-width:0!important;padding:9px!important;border-radius:12px!important}
+#character.v459-character-hub #v030Materials .item-name{font-size:9px!important}
+#character.v459-character-hub #v030Materials .item-bonus{font-size:8px!important;line-height:1.25!important}
+#character.v459-character-hub #v030Materials .btn{font-size:8px!important;min-height:34px!important}
+
+/* Talent tree keeps every existing node/mechanic, but now owns the full content width. */
+#v459PanelTalents .card{padding:10px!important}
+#v459PanelTalents .section-title{margin-bottom:8px!important}
+#v459PanelTalents .section-title h2{font-size:17px!important}
+#v459PanelTalents .skill-point-pill{font-size:8px!important}
+#v459PanelTalents .v314-tree{gap:9px!important}
+#v459PanelTalents .v314-branch{border-radius:14px!important}
+
+/* Inventory detail bottom sheet */
+#v459InventoryOverlay{
+  position:fixed;inset:0;z-index:1000015;display:none;align-items:flex-end;justify-content:center;
+  padding:12px;background:rgba(2,6,4,.84);backdrop-filter:blur(6px);
+}
+#v459InventoryOverlay.show{display:flex}
+#v459InventorySheet{
+  width:min(100%,440px);max-height:84vh;overflow:auto;padding:14px;border:1px solid #45634a;border-radius:20px 20px 14px 14px;
+  background:radial-gradient(circle at 50% 0,rgba(102,213,83,.10),transparent 34%),linear-gradient(180deg,#142119,#080f0b);
+  box-shadow:0 -12px 60px #000d;
+}
+.v459-sheet-head{text-align:center;padding-bottom:6px}
+.v459-sheet-icon{font-size:46px;line-height:1}
+.v459-sheet-name{margin:5px 0 2px;font-size:15px;font-weight:1000;line-height:1.2}
+.v459-sheet-rarity{font-size:7px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:#9eb0a0}
+.v459-sheet-section{margin-top:8px;padding:9px;border:1px solid #304735;border-radius:10px;background:#0a130e;font-size:9px;line-height:1.45;color:#c7d4c5}
+.v459-sheet-section > b{display:block;margin-bottom:4px;color:#90a592;font-size:7px;text-transform:uppercase;letter-spacing:.08em}
+.v459-sheet-actions{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:10px}
+.v459-sheet-actions .btn{min-height:42px;font-size:9px}
+#v459InventorySheet .v445-compare{font-size:8px!important}
+
+@media(min-width:700px){
+  #character.v459-character-hub{max-width:760px!important;margin:0 auto!important}
+  #character.v459-character-hub .equipment-grid{grid-template-columns:82px minmax(0,1fr) 82px!important}
+  #character.v459-character-hub .slot{height:72px!important;min-height:72px!important}
+  #character.v459-character-hub .avatar-scene{height:150px!important}
+  #character.v459-character-hub #inventory .inventory-grid{grid-template-columns:repeat(4,minmax(0,1fr))!important}
+  #v459InventoryOverlay{align-items:center!important}
+  #v459InventorySheet{border-radius:20px!important}
+}
+@media(max-width:380px){
+  #character.v459-character-hub .equipment-grid{grid-template-columns:59px minmax(0,1fr) 59px!important;gap:5px!important}
+  #character.v459-character-hub .slot{height:59px!important;min-height:59px!important}
+  #character.v459-character-hub .slot-icon{font-size:22px!important}
+  #character.v459-character-hub .avatar-scene{height:116px!important}
+  #character.v459-character-hub .class-avatar-big{font-size:74px!important}
+  #v459CharacterTabs{gap:3px;padding:5px!important}
+  #v459CharacterTabs button{font-size:6.4px!important}
+  #character.v459-character-hub #inventory .inv-item{min-height:96px!important}
+}
+</style>
+<script id="v459-character-hub">
+(function(){
+  const VERSION='V4.59 Stable',SHORT='V4.59';
+  let layingOut=false;
+  const esc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+  function stamp(){
+    document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version')
+      .forEach(el=>{if(el&&el.textContent!==VERSION)el.textContent=VERSION});
+    document.querySelectorAll('.v366-ver,.v371-logo em,.v372-logo em')
+      .forEach(el=>{if(el&&el.textContent!==SHORT)el.textContent=SHORT});
+    document.title='Grow Legends '+SHORT;
+  }
+
+  function activeTab(){
+    try{return sessionStorage.getItem('growLegends:v459CharacterTab')||'inventory'}catch(e){return'inventory'}
+  }
+  function activate(name,scroll=false){
+    const shell=document.getElementById('v459CharacterShell');if(!shell)return;
+    if(!['inventory','attributes','talents','materials'].includes(name))name='inventory';
+    shell.querySelectorAll('#v459CharacterTabs button').forEach(b=>b.classList.toggle('active',b.dataset.tab===name));
+    shell.querySelectorAll('.v459-panel').forEach(p=>p.classList.toggle('active',p.dataset.panel===name));
+    try{sessionStorage.setItem('growLegends:v459CharacterTab',name)}catch(e){}
+    if(scroll)try{shell.scrollIntoView({behavior:'smooth',block:'start'})}catch(e){}
+  }
+  window.v459CharacterTab=activate;
+
+  function ensureShell(character,hero){
+    let shell=document.getElementById('v459CharacterShell');
+    if(shell)return shell;
+    shell=document.createElement('div');shell.id='v459CharacterShell';
+    shell.innerHTML=`
+      <nav id="v459CharacterTabs" aria-label="Charakterbereiche">
+        <button type="button" data-tab="inventory"><span>🎒</span><em>Inventar</em></button>
+        <button type="button" data-tab="attributes"><span>💪</span><em>Attribute</em></button>
+        <button type="button" data-tab="talents"><span>🌳</span><em>Talente</em></button>
+        <button type="button" data-tab="materials"><span>💎</span><em>Materialien</em></button>
+      </nav>
+      <div class="v459-panel" id="v459PanelInventory" data-panel="inventory"></div>
+      <div class="v459-panel" id="v459PanelAttributes" data-panel="attributes"></div>
+      <div class="v459-panel" id="v459PanelTalents" data-panel="talents"></div>
+      <div class="v459-panel" id="v459PanelMaterials" data-panel="materials"></div>`;
+    if(hero.nextSibling)character.insertBefore(shell,hero.nextSibling);else character.appendChild(shell);
+    shell.querySelectorAll('#v459CharacterTabs button').forEach(b=>b.onclick=()=>activate(b.dataset.tab,true));
+    return shell;
+  }
+
+  function ensureAttrCard(panel){
+    let card=document.getElementById('v459AttrCard');
+    if(!card){
+      card=document.createElement('div');card.id='v459AttrCard';
+      card.innerHTML=`<div class="v459-panel-head"><h2>💪 Attribute</h2><span id="v459AttrPoints">0 Punkte</span></div>`;
+      panel.prepend(card);
+    }
+    return card;
+  }
+
+  function detailsWrap(panel,id,label,card,open=false){
+    if(!card)return null;
+    let d=document.getElementById(id);
+    if(!d){
+      d=document.createElement('details');d.id=id;d.className='v459-extra';d.open=!!open;
+      const sm=document.createElement('summary');sm.textContent=label;d.appendChild(sm);panel.appendChild(d);
+    }
+    if(card.parentElement!==d)d.appendChild(card);
+    return d;
+  }
+
+  function updateHero(){
+    const cls=s?.playerClass||'';
+    let count=0;try{count=typeof equippedSetCount==='function'?Number(equippedSetCount(cls))||0:Object.values(s?.equipment||{}).filter(x=>x?.setId===cls).length}catch(e){}
+    const setName=(()=>{try{return classSets?.[cls]?.name||''}catch(e){return''}})();
+    let talents=Math.max(0,Number(s?.skillPoints)||0);try{if(typeof v314Available==='function')talents=Math.max(0,Number(v314Available())||0)}catch(e){}
+    const box=document.getElementById('v459SetSummary');
+    if(box)box.innerHTML=cls?`🧩 ${esc(setName||'Klassen-Set')} <b>${count}/6</b> · 🌳 Talentpunkte <b>${talents}</b>`:'🧬 Wähle zuerst deine Klasse';
+    const ap=document.getElementById('v459AttrPoints');if(ap)ap.textContent=`${Math.max(0,Number(s?.points)||0)} Punkte`;
+    const invBtn=document.querySelector('#v459CharacterTabs [data-tab="inventory"] em');if(invBtn)invBtn.textContent=`Inventar · ${(s?.inventory||[]).length}`;
+    const talBtn=document.querySelector('#v459CharacterTabs [data-tab="talents"] em');if(talBtn)talBtn.textContent=`Talente · ${talents}`;
+    const matBtn=document.querySelector('#v459CharacterTabs [data-tab="materials"] em');if(matBtn)matBtn.textContent=`Materialien · ${(s?.materials||[]).length}`;
+  }
+
+  function layout(){
+    if(layingOut)return false;layingOut=true;
+    try{
+      const character=document.getElementById('character');
+      const hero=character?.querySelector(':scope > .hero-card');
+      if(!character||!hero)return false;
+      character.classList.add('v459-character-hub');
+      const shell=ensureShell(character,hero);
+      const invPanel=document.getElementById('v459PanelInventory');
+      const attrPanel=document.getElementById('v459PanelAttributes');
+      const talentPanel=document.getElementById('v459PanelTalents');
+      const materialPanel=document.getElementById('v459PanelMaterials');
+
+      /* Disable the obsolete V4.42/V4.44 layout owner without touching its save logic. */
+      const bottom=hero.querySelector('.char-bottom,.v459-hero-bottom');
+      if(bottom){
+        bottom.classList.remove('char-bottom');bottom.classList.add('v459-hero-bottom');
+        const combat=bottom.querySelector('.combat-row');
+        let setSummary=document.getElementById('v459SetSummary');
+        if(!setSummary){setSummary=document.createElement('div');setSummary.id='v459SetSummary';bottom.appendChild(setSummary)}
+        if(combat&&bottom.firstElementChild!==combat)bottom.insertBefore(combat,bottom.firstElementChild);
+      }
+
+      const inv=document.getElementById('inventory');const invCard=inv?.closest('.card');
+      if(invCard&&invCard.parentElement!==invPanel)invPanel.appendChild(invCard);
+
+      const attrs=document.getElementById('attrs');const attrCard=ensureAttrCard(attrPanel);
+      if(attrs&&attrs.parentElement!==attrCard)attrCard.appendChild(attrs);
+
+      const skill=document.getElementById('skillTree');const skillCard=skill?.closest('.card');
+      if(skillCard&&skillCard.parentElement!==talentPanel)talentPanel.appendChild(skillCard);
+
+      const set=document.getElementById('setPanel');const setCard=set?.closest('.card');
+      detailsWrap(attrPanel,'v459SetDetails','🧩 Set-Boni ansehen',setCard,false);
+      const classesEl=document.getElementById('classGrid');const classCard=classesEl?.closest('.card');
+      detailsWrap(attrPanel,'v459ClassDetails','🧬 Klasse & Spezialisierung',classCard,!s?.playerClass);
+
+      const materials=document.getElementById('v030Materials');
+      if(materials&&materials.parentElement!==materialPanel)materialPanel.appendChild(materials);
+      if(!materials && !materialPanel.querySelector('.v459-material-placeholder')){
+        const e=document.createElement('div');e.className='empty v459-material-placeholder';e.textContent='Noch keine Edelsteine oder Rollen.';materialPanel.appendChild(e);
+      }
+      if(materials)materialPanel.querySelector('.v459-material-placeholder')?.remove();
+
+      updateHero();activate(activeTab(),false);stamp();
+      return true;
+    }catch(e){console.warn('V4.59 character layout',e);return false}
+    finally{layingOut=false}
+  }
+  window.v459ArrangeCharacter=layout;
+
+  function ensureInventoryOverlay(){
+    let ov=document.getElementById('v459InventoryOverlay');if(ov)return ov;
+    ov=document.createElement('div');ov.id='v459InventoryOverlay';ov.innerHTML='<div id="v459InventorySheet"></div>';
+    ov.onclick=e=>{if(e.target===ov)ov.classList.remove('show')};document.body.appendChild(ov);return ov;
+  }
+  function closeInventory(){document.getElementById('v459InventoryOverlay')?.classList.remove('show')}
+  window.v459CloseInventory=closeInventory;
+
+  function openInventory(i){
+    const it=s?.inventory?.[i];if(!it)return;
+    const ov=ensureInventoryOverlay(),box=document.getElementById('v459InventorySheet');if(!box)return;
+    let rarity=String(it.quality||it.rarity||'Normal');try{rarity=qualityMeta(it.quality||'gray')?.label||rarity}catch(e){}
+    let bonus='Keine Werte';try{bonus=typeof v123BaseBonusText==='function'?(v123BaseBonusText(it)||bonus):(itemBonus(it)||bonus)}catch(e){}
+    let cmp='';try{cmp=typeof comparison==='function'?comparison(it):''}catch(e){}
+    let sv=0;try{sv=sellValue(it)}catch(e){}
+    const ench=it.enchant||(Array.isArray(it.enchants)?it.enchants[0]:null);
+    const extra=[
+      it.gem?`<div class="v459-sheet-section"><b>💎 Edelstein</b>${esc(it.gem.name||'Edelstein')} · +${Number(it.gem.value)||0} ${esc(typeof v030StatLabel==='function'?v030StatLabel(it.gem.stat):it.gem.stat)}</div>`:'',
+      ench?`<div class="v459-sheet-section"><b>📜 Verzauberung</b>${esc(ench.name||'Rolle')} · ${esc(typeof v030EffectLabel==='function'?v030EffectLabel(ench.effect,ench.value):ench.effect)}</div>`:'',
+      it.setName?`<div class="v459-sheet-section"><b>🧩 Set</b>${esc(it.setName)}-Set</div>`:'',
+      it.mysticSpecial?`<div class="v459-sheet-section"><b>✨ Mystischer Spezialeffekt</b>${esc(typeof v296MysticSpecialText==='function'?v296MysticSpecialText(it):it.mysticSpecial.label||'Spezialeffekt')}</div>`:''
+    ].join('');
+    box.innerHTML=`
+      <div class="v459-sheet-head"><div class="v459-sheet-icon">${esc(it.icon||'🎁')}</div><div class="v459-sheet-name">${esc(it.name||'Unbekanntes Item')}</div><div class="v459-sheet-rarity">${esc(rarity)} · Level ${Math.max(1,Number(it.dropLevel)||Number(s.level)||1)}</div></div>
+      <div class="v459-sheet-section"><b>Attribute & Effekte</b>${esc(bonus)}</div>
+      ${extra}
+      ${cmp?`<div class="v459-sheet-section"><b>⚖️ Vergleich mit angelegt</b>${cmp}</div>`:''}
+      <div class="v459-sheet-actions"><button class="btn" id="v459EquipItem">Anlegen</button><button class="btn gold" id="v459SellItem">💰 ${sv}</button></div>
+      <button class="btn secondary" id="v459CloseItem" style="width:100%;margin-top:7px">Schließen</button>`;
+    box.querySelector('#v459EquipItem').onclick=()=>{closeInventory();window.equip?.(i)};
+    box.querySelector('#v459SellItem').onclick=()=>{closeInventory();window.sellItem?.(i)};
+    box.querySelector('#v459CloseItem').onclick=closeInventory;
+    ov.classList.add('show');
+  }
+  window.v459OpenInventoryItem=openInventory;
+
+  function compactInventory(){
+    const cards=[...document.querySelectorAll('#character #inventory .inventory-grid > .inv-item')];
+    cards.forEach((card,i)=>{
+      const it=s?.inventory?.[i];if(!it)return;
+      card.dataset.v459Index=String(i);card.setAttribute('role','button');card.setAttribute('tabindex','0');
+      const name=card.querySelector('.item-name');
+      if(name){
+        name.replaceChildren();
+        const icon=document.createElement('span');icon.className='v459-inv-icon';icon.textContent=it.icon||'🎁';
+        const txt=document.createElement('span');txt.className='v459-inv-name';
+        txt.textContent=String(it.name||'Unbekanntes Item').replace(/^(Normal|Gewöhnlich|Rare|Episch|Legendär|Mystisch):\s*/i,'').replace(/\s*\[Lv\.\d+\]\s*$/i,'');
+        name.append(icon,txt);
+      }
+      let lv=card.querySelector('.v459-inv-level');if(!lv){lv=document.createElement('span');lv.className='v459-inv-level';card.appendChild(lv)}
+      lv.textContent=`Lv.${Math.max(1,Number(it.dropLevel)||Number(s.level)||1)}`;
+      const open=e=>{if(e.target.closest('.v268-pick,input,button,label'))return;openInventory(i)};
+      card.onclick=open;card.onkeydown=e=>{if((e.key==='Enter'||e.key===' ')&&!e.target.closest('input,button')){e.preventDefault();openInventory(i)}};
+    });
+    updateHero();
+  }
+  window.v459CompactInventory=compactInventory;
+
+  /* Final UI owners only. Game mechanics and save functions are intentionally untouched. */
+  try{if(typeof renderInventory==='function'&&!window.__v459InventoryWrapped){const base=renderInventory;renderInventory=function(){const r=base.apply(this,arguments);layout();compactInventory();return r};try{window.renderInventory=renderInventory}catch(e){}window.__v459InventoryWrapped=true}}catch(e){}
+  try{if(typeof renderSkillTree==='function'&&!window.__v459TalentWrapped){const base=renderSkillTree;renderSkillTree=function(){const r=base.apply(this,arguments);layout();updateHero();return r};try{window.renderSkillTree=renderSkillTree}catch(e){}window.__v459TalentWrapped=true}}catch(e){}
+  try{if(typeof v030Materials==='function'&&!window.__v459MaterialsWrapped){const base=v030Materials;v030Materials=function(){const r=base.apply(this,arguments);layout();updateHero();return r};try{window.v030Materials=v030Materials}catch(e){}window.__v459MaterialsWrapped=true}}catch(e){}
+  try{if(typeof render==='function'&&!window.__v459RenderWrapped){const base=render;render=function(){const r=base.apply(this,arguments);layout();compactInventory();updateHero();stamp();return r};try{window.render=render}catch(e){}window.__v459RenderWrapped=true}}catch(e){}
+  try{if(typeof v032Go==='function'&&!window.__v459GoWrapped){const base=v032Go;v032Go=function(id){const r=base.apply(this,arguments);if(id==='character')requestAnimationFrame(()=>{layout();compactInventory();updateHero();stamp()});return r};try{window.v032Go=v032Go}catch(e){}window.__v459GoWrapped=true}}catch(e){}
+
+  layout();compactInventory();stamp();
+  document.addEventListener('DOMContentLoaded',()=>{layout();compactInventory();stamp()},{once:true});
+  window.addEventListener('pageshow',()=>{layout();compactInventory();stamp()},{passive:true});
+  [250,700,1400,3000,6200,10500,13500].forEach(ms=>setTimeout(()=>{layout();compactInventory();stamp()},ms));
+  /* Outlast the obsolete V4.44 12-second layout guard, then stop completely. */
+  const guard=setInterval(()=>{layout();stamp()},450);setTimeout(()=>clearInterval(guard),16000);
 })();
 </script>
 
