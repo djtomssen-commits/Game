@@ -64601,3 +64601,277 @@ create index if not exists player_messages_sender_idx on public.player_messages(
   [200,800,2200,5000].forEach(ms=>setTimeout(()=>{stamp();paint()},ms));
 })();
 </script>
+
+<!-- ===== V4.70 Stable: character slot artwork + one canonical item comparison ===== -->
+<style id="v470-slot-art-comparison-css">
+.app > header .v358-logo::after{content:"V4.70"!important}
+#character.v459-character-hub .slot .slot-icon{
+  width:42px!important;height:42px!important;min-width:42px!important;min-height:42px!important;
+  display:grid!important;place-items:center!important;overflow:visible!important;
+}
+#character.v459-character-hub .slot .slot-icon > img.v466-item-art,
+#character.v459-character-hub .slot .slot-icon > img.v470-slot-art{
+  display:block!important;width:40px!important;height:40px!important;max-width:40px!important;max-height:40px!important;
+  object-fit:contain!important;margin:0 auto!important;opacity:1!important;visibility:visible!important;
+  filter:drop-shadow(0 5px 7px rgba(0,0,0,.72))!important;
+}
+#character.v459-character-hub .slot.v470-equipped{
+  background:radial-gradient(circle at 50% 28%,rgba(109,211,91,.10),transparent 52%),#0c1510!important;
+}
+#character.v459-character-hub #inventory .inv-item .v460-compare-flag.v470-final-compare{
+  z-index:5!important;
+}
+</style>
+<script id="v470-character-slot-art-canonical-comparison">
+(function(){
+  const VERSION='V4.70 Stable',SHORT='V4.70';
+  const COMBAT=['staerke','geschick','intelligenz','ausdauer','glueck'];
+  let paintingSlots=false,paintingCompare=false,shopRendering=false;
+
+  function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+  function normalize(it){
+    if(!it||typeof it!=='object')return it;
+    try{if(typeof v447ApplyItemCurve==='function')v447ApplyItemCurve(it)}catch(e){}
+    return it;
+  }
+  function normalizeShopItems(){
+    try{(s?.weaponShop||[]).forEach(normalize)}catch(e){}
+    try{(s?.magicShop||[]).forEach(normalize)}catch(e){}
+  }
+  function enchantOf(it){return it?.enchant||(Array.isArray(it?.enchants)?it.enchants[0]:null)||null}
+  function nativeMap(it){
+    normalize(it);
+    if(it?.v429StatLock?.native&&typeof it.v429StatLock.native==='object'){
+      const out={};COMBAT.forEach(k=>{const v=Number(it.v429StatLock.native[k])||0;if(v)out[k]=v});return out;
+    }
+    const out={},gem=it?.gem,e=enchantOf(it);
+    COMBAT.forEach(k=>{
+      let v=Number(it?.bonus?.[k])||0;
+      if(gem?.stat===k)v-=Number(gem.value)||0;
+      if(k==='glueck'&&e?.effect==='luck')v-=Number(e.value)||0;
+      if(v)out[k]=v;
+    });
+    return out;
+  }
+  function nativeTotal(it){const m=nativeMap(it);return COMBAT.reduce((n,k)=>n+(Number(m[k])||0),0)}
+  function pointTotal(it){normalize(it);return COMBAT.reduce((n,k)=>n+(Number(it?.bonus?.[k])||0),0)}
+  function addonTotal(it){return pointTotal(it)-nativeTotal(it)}
+  function specialCount(it){
+    let n=0;const e=enchantOf(it);
+    if(e&&e.effect!=='luck')n++;
+    if(it?.mysticSpecial)n++;
+    return n;
+  }
+  function compare(it){
+    if(!it?.slot||it.type==='material'||it.type==='gem'||it.type==='scroll')return null;
+    normalize(it);
+    if(it.classId&&s?.playerClass&&it.classId!==s.playerClass){
+      return {state:'worse',mark:'⛔',label:'FALSCHE KLASSE',diff:null,reason:'Nicht für deine Klasse',newTotal:pointTotal(it),oldTotal:0,baseDiff:0};
+    }
+    const old=s?.equipment?.[it.slot]||null;
+    if(!old){
+      return {state:'free',mark:'▲',label:'FREIER SLOT',diff:null,reason:'Direkte Verbesserung',newTotal:pointTotal(it),oldTotal:0,baseDiff:nativeTotal(it)};
+    }
+    normalize(old);
+    const nt=pointTotal(it),ot=pointTotal(old),nb=nativeTotal(it),ob=nativeTotal(old);
+    const diff=Math.round((nt-ot)*100)/100,baseDiff=Math.round((nb-ob)*100)/100;
+    const newAdd=addonTotal(it),oldAdd=addonTotal(old);
+    let state='same',mark='◆',label='GLEICH',reason='Gleiche Attributwerte';
+    if(diff>0){
+      state='better';mark='▲';label='BESSER';
+      if(baseDiff>0&&newAdd>oldAdd)reason='Bessere Basis + Extras';
+      else if(baseDiff>0)reason='Bessere Grundwerte';
+      else if(newAdd>oldAdd)reason='Besser durch Stein/Stat-Rolle';
+      else reason='Insgesamt bessere Werte';
+    }else if(diff<0){
+      state='worse';mark='▼';label='SCHLECHTER';
+      if(baseDiff<0&&newAdd<oldAdd)reason='Schlechtere Basis + Extras';
+      else if(baseDiff<0)reason='Schlechtere Grundwerte';
+      else if(newAdd<oldAdd)reason='Angelegt gewinnt durch Extras';
+      else reason='Insgesamt schwächere Werte';
+    }else if(baseDiff!==0){
+      reason=baseDiff>0?'Bessere Basis, Extras gleichen aus':'Schwächere Basis, Extras gleichen aus';
+    }else if(specialCount(it)||specialCount(old)){
+      reason='Attributwerte gleich · Spezialeffekte separat';
+    }
+    return {state,mark,label,diff,reason,newTotal:nt,oldTotal:ot,baseDiff};
+  }
+  window.v470CompareItem=compare;
+
+  function signed(n){n=Math.round((Number(n)||0)*100)/100;return n>0?'+'+n:String(n)}
+  function compactComparisonHtml(it,cls='v090-shop-compare'){
+    const c=compare(it);if(!c)return'';
+    const css=c.state==='free'?'empty':c.state;
+    if(c.state==='free')return `<div class="${cls} ${css}">▲ FREIER SLOT · Verbesserung</div>`;
+    if(c.diff==null)return `<div class="${cls} ${css}">${esc(c.label)} · ${esc(c.reason)}</div>`;
+    return `<div class="${cls} ${css}">${c.mark} ${c.label} · ${signed(c.diff)} Gesamtwerte</div>`;
+  }
+  try{v090ComparisonHtml=function(it){return compactComparisonHtml(it,'v090-shop-compare')};window.v090ComparisonHtml=v090ComparisonHtml}catch(e){}
+  try{v089ShopComparison=function(it){return compactComparisonHtml(it,'v089-shop-compare')};window.v089ShopComparison=v089ShopComparison}catch(e){}
+
+  const detailedComparison=function(it){
+    const c=compare(it);if(!c)return'';
+    if(c.state==='free')return '<span class="better">▲ Freier Slot · direkte Verbesserung</span>';
+    if(c.diff==null)return `<span class="worse">⛔ ${esc(c.reason)}</span>`;
+    const css=c.state==='better'?'better':c.state==='worse'?'worse':'same';
+    return `<span class="${css}">${c.mark} ${esc(c.label)} · ${signed(c.diff)} Gesamtwerte · ${esc(c.reason)}</span>`;
+  };
+  try{comparison=detailedComparison;window.comparison=detailedComparison}catch(e){}
+
+  function paintInventoryComparisons(){
+    if(paintingCompare)return;paintingCompare=true;
+    try{
+      document.querySelectorAll('#character #inventory .inventory-grid > .inv-item').forEach((card,i)=>{
+        const it=s?.inventory?.[i],c=compare(it);
+        card.classList.remove('v460-better','v460-worse','v460-same','v460-free');
+        if(!c){card.querySelectorAll('.v460-compare-flag').forEach(x=>x.remove());delete card.dataset.v470CompareKey;return}
+        card.classList.add('v460-'+c.state);
+        const diff=c.state==='free'?'+?':c.diff==null?'—':signed(c.diff);
+        const key=[c.state,c.mark,diff,c.reason,c.label].join('|');
+        const final=card.querySelector('.v460-compare-flag.v470-final-compare');
+        const legacy=[...card.querySelectorAll('.v460-compare-flag:not(.v470-final-compare)')];
+        legacy.forEach(x=>x.remove());
+        if(final&&card.dataset.v470CompareKey===key){
+          card.title=`${c.label} · ${c.diff==null?'':signed(c.diff)+' · '}${c.reason}`;
+          return;
+        }
+        if(final)final.remove();
+        const flag=document.createElement('div');flag.className='v460-compare-flag v470-final-compare';
+        flag.innerHTML=`<span class="v460-diff">${esc(c.mark+' '+diff)}</span><span class="v460-reason">${esc(c.reason)}</span>`;
+        card.appendChild(flag);card.dataset.v470CompareKey=key;
+        card.title=`${c.label} · ${c.diff==null?'':signed(c.diff)+' · '}${c.reason}`;
+      });
+    }finally{paintingCompare=false}
+  }
+
+  function artUri(it){try{return typeof window.v466ItemArtUri==='function'?window.v466ItemArtUri(it):''}catch(e){return''}}
+  function paintOneSlot(slot){
+    const root=document.querySelector('#slot-'+slot);if(!root)return;
+    const box=root.querySelector('.slot-icon');if(!box)return;
+    const it=s?.equipment?.[slot]||null;
+    root.classList.toggle('v470-equipped',!!it);
+    if(!it)return;
+    const uri=artUri(it);
+    if(uri){
+      const current=box.querySelector(':scope > img.v470-slot-art,:scope > img.v466-item-art');
+      if(current&&box.dataset.v470Uri===uri&&box.childElementCount===1)return;
+      const img=document.createElement('img');img.className='v466-item-art v470-slot-art';img.src=uri;img.alt=String(it.name||'Item');img.decoding='async';
+      box.replaceChildren(img);box.dataset.v470Art='1';box.dataset.v470Uri=uri;
+    }else if(box.textContent!==String(it.icon||'🎁')){
+      box.textContent=it.icon||'🎁';delete box.dataset.v470Uri;
+    }
+  }
+  function paintEquipmentSlots(){
+    if(paintingSlots)return;paintingSlots=true;
+    try{['head','weapon','ring','body','boots','amulet'].forEach(paintOneSlot)}finally{paintingSlots=false}
+  }
+  window.v470PaintEquipmentSlots=paintEquipmentSlots;
+
+  /* A freshly generated replacement offer must be normalized BEFORE its text and
+     comparison are rendered. This keeps shop -> purchase -> inventory identical. */
+  try{
+    if(typeof renderShop==='function'&&!window.__v470ShopWrapped){
+      const base=renderShop;
+      renderShop=function(){
+        if(shopRendering)return base.apply(this,arguments);
+        shopRendering=true;
+        try{normalizeShopItems();return base.apply(this,arguments)}
+        finally{shopRendering=false;requestAnimationFrame(()=>{paintInventoryComparisons();paintEquipmentSlots()})}
+      };
+      window.renderShop=renderShop;window.__v470ShopWrapped=true;
+    }
+  }catch(e){}
+
+  /* Normalize the exact offer once more before V4.66 clones it into the inventory. */
+  try{
+    if(typeof window.v030BuyWeapon==='function'&&!window.__v470BuyWeaponWrapped){
+      const base=window.v030BuyWeapon;
+      window.v030BuyWeapon=function(i){normalize(s?.weaponShop?.[Number(i)]);return base.apply(this,arguments)};
+      window.__v470BuyWeaponWrapped=true;
+    }
+    if(typeof window.v030BuyMagic==='function'&&!window.__v470BuyMagicWrapped){
+      const base=window.v030BuyMagic;
+      window.v030BuyMagic=function(i){normalize(s?.magicShop?.[Number(i)]);return base.apply(this,arguments)};
+      window.__v470BuyMagicWrapped=true;
+    }
+  }catch(e){}
+
+  try{
+    if(typeof renderInventory==='function'&&!window.__v470InventoryWrapped){
+      const base=renderInventory;
+      renderInventory=function(){const r=base.apply(this,arguments);paintInventoryComparisons();paintEquipmentSlots();return r};
+      window.renderInventory=renderInventory;window.__v470InventoryWrapped=true;
+    }
+  }catch(e){}
+  try{
+    if(typeof window.v459CompactInventory==='function'&&!window.__v470CompactWrapped){
+      const base=window.v459CompactInventory;
+      window.v459CompactInventory=function(){const r=base.apply(this,arguments);paintInventoryComparisons();paintEquipmentSlots();return r};
+      window.__v470CompactWrapped=true;
+    }
+  }catch(e){}
+  try{
+    if(typeof window.equip==='function'&&!window.__v470EquipWrapped){
+      const base=window.equip;
+      window.equip=function(){const r=base.apply(this,arguments);requestAnimationFrame(()=>{paintEquipmentSlots();paintInventoryComparisons();try{renderShop()}catch(e){}});return r};
+      window.__v470EquipWrapped=true;
+    }
+    if(typeof window.unequip==='function'&&!window.__v470UnequipWrapped){
+      const base=window.unequip;
+      window.unequip=function(){const r=base.apply(this,arguments);requestAnimationFrame(()=>{paintEquipmentSlots();paintInventoryComparisons();try{renderShop()}catch(e){}});return r};
+      window.__v470UnequipWrapped=true;
+    }
+  }catch(e){}
+  try{
+    if(typeof render==='function'&&!window.__v470RenderWrapped){
+      const base=render;
+      render=function(){normalizeShopItems();const r=base.apply(this,arguments);paintEquipmentSlots();paintInventoryComparisons();stamp();return r};
+      window.render=render;window.__v470RenderWrapped=true;
+    }
+  }catch(e){}
+  try{
+    if(typeof v032Go==='function'&&!window.__v470GoWrapped){
+      const base=v032Go;
+      v032Go=function(id){const r=base.apply(this,arguments);if(id==='character')requestAnimationFrame(()=>{paintEquipmentSlots();paintInventoryComparisons()});return r};
+      window.v032Go=v032Go;window.__v470GoWrapped=true;
+    }
+  }catch(e){}
+
+  function installObservers(){
+    const eq=document.querySelector('#character .equipment-grid');
+    if(eq&&eq.dataset.v470Observed!=='1'){
+      eq.dataset.v470Observed='1';
+      const mo=new MutationObserver(()=>{if(!paintingSlots)queueMicrotask(paintEquipmentSlots)});
+      mo.observe(eq,{childList:true,subtree:true});window.__V470_SLOT_OBSERVER__=mo;
+    }
+    const inv=document.querySelector('#character #inventory .inventory-grid');
+    if(inv&&inv.dataset.v470CompareObserved!=='1'){
+      inv.dataset.v470CompareObserved='1';
+      const mo=new MutationObserver(()=>{if(!paintingCompare)queueMicrotask(paintInventoryComparisons)});
+      mo.observe(inv,{childList:true,subtree:true});window.__V470_COMPARE_OBSERVER__=mo;
+    }
+  }
+  function stamp(){
+    try{document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version').forEach(el=>{if(el&&el.textContent!==VERSION)el.textContent=VERSION})}catch(e){}
+    try{document.querySelectorAll('.v366-ver,.v371-logo em,.v372-logo em').forEach(el=>{if(el&&el.textContent!==SHORT)el.textContent=SHORT})}catch(e){}
+    try{document.title='Grow Legends '+SHORT}catch(e){}
+  }
+  function settle(){
+    normalizeShopItems();paintEquipmentSlots();paintInventoryComparisons();installObservers();stamp();
+  }
+
+  window.v470TestComparisonConsistency=function(it){
+    const a=compare(it);if(!a)return null;
+    let clone=null;try{clone=typeof structuredClone==='function'?structuredClone(it):JSON.parse(JSON.stringify(it))}catch(e){clone={...it,bonus:{...(it?.bonus||{})}}}
+    normalize(clone);const b=compare(clone);
+    return {before:a,afterClone:b,consistent:JSON.stringify(a)===JSON.stringify(b)};
+  };
+
+  try{if(typeof renderShop==='function')renderShop()}catch(e){}
+  settle();
+  document.addEventListener('DOMContentLoaded',settle,{once:true});
+  window.addEventListener('pageshow',settle,{passive:true});
+  [100,350,900,1800,4200,8200,12500].forEach(ms=>setTimeout(settle,ms));
+  const vg=setInterval(stamp,350);setTimeout(()=>clearInterval(vg),46000);
+})();
+</script>
