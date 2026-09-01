@@ -546,7 +546,7 @@ document.documentElement.classList.remove('v224-app-ready');
 <body>
 <div class="app">
 <header>
-  <div class="brand"><h1>🌿 Grow Legends</h1><span class="version">V4.53 Stable</span><div class="power">Kampfkraft <b id="power">—</b></div></div>
+  <div class="brand"><h1>🌿 Grow Legends</h1><span class="version">V4.56 Stable</span><div class="power">Kampfkraft <b id="power">—</b></div></div>
   <div class="stats resource-stats"><div class="stat">GOLD<b id="gold">—</b></div><div class="stat">SKILL<b id="points">—</b></div><div class="stat">DAMPF<b id="energy">—</b></div><div class="stat harz-stat v277-harz-card v280-harz-card">
   <div class="v280-harz-label">HARZ-TALER</div>
   <b class="v280-harz-value"><span id="topHarz">—</span></b>
@@ -1273,7 +1273,7 @@ window.upgradeSkill=id=>{
 }
 const classSets={
  grower:{name:'Harzbrecher',className:'Bud-Barbar',bonuses:{2:'2 Teile: +5 Stärke',4:'4 Teile: +10 % Lebenspunkte',6:'6 Teile: +8 % Wuchtschlag-Chance'}},
- bruiser:{name:'Nebelzirkel',className:'Bong-Magier',bonuses:{2:'2 Teile: +5 Glück',4:'4 Teile: +10 % Crit-Chance',6:'6 Teile: Krits verursachen +25 % Schaden'}},
+ bruiser:{name:'Nebelzirkel',className:'Bong-Magier',bonuses:{2:'2 Teile: +5 Intelligenz',4:'4 Teile: +10 % Crit-Chance',6:'6 Teile: Krits verursachen +25 % Schaden'}},
  scout:{name:'Grünpfeil',className:'Blatt-Schütze',bonuses:{2:'2 Teile: +5 Geschick',4:'4 Teile: +10 % Doppeltreffer-Chance',6:'6 Teile: Doppeltreffer +20 % Schaden'}}
 };
 const setBases=[
@@ -1293,10 +1293,10 @@ const classGear={
   {id:'bb_boots',name:'Stampferstiefel',slot:'boots',icon:'🥾',price:190,classId:'grower',bonus:{staerke:3,ausdauer:2}}
  ],
  bruiser:[
-  {id:'bm_staff',name:'Nebelstab',slot:'weapon',icon:'🪄',price:250,classId:'bruiser',bonus:{glueck:5,geschick:3}},
-  {id:'bm_hat',name:'Kapuze des Dunstes',slot:'head',icon:'🧙',price:220,classId:'bruiser',bonus:{glueck:5}},
-  {id:'bm_robe',name:'Robe des Nebelzirkels',slot:'body',icon:'🥋',price:320,classId:'bruiser',bonus:{glueck:4,ausdauer:3}},
-  {id:'bm_boots',name:'Schwebeschuhe',slot:'boots',icon:'👢',price:200,classId:'bruiser',bonus:{geschick:4,glueck:2}}
+  {id:'bm_staff',name:'Nebelstab',slot:'weapon',icon:'🪄',price:250,classId:'bruiser',bonus:{intelligenz:7}},
+  {id:'bm_hat',name:'Kapuze des Dunstes',slot:'head',icon:'🧙',price:220,classId:'bruiser',bonus:{intelligenz:4,glueck:2}},
+  {id:'bm_robe',name:'Robe des Nebelzirkels',slot:'body',icon:'🥋',price:320,classId:'bruiser',bonus:{intelligenz:4,ausdauer:3}},
+  {id:'bm_boots',name:'Schwebeschuhe',slot:'boots',icon:'👢',price:200,classId:'bruiser',bonus:{intelligenz:3,geschick:2}}
  ],
  scout:[
   {id:'bs_bow',name:'Grünpfeil-Bogen',slot:'weapon',icon:'🏹',price:250,classId:'scout',bonus:{geschick:7}},
@@ -1336,7 +1336,7 @@ function makeSetItem(classId,slot){
  const set=classSets[classId],base=setBases.find(x=>x.slot===slot)||setBases[0];
  const statMap={
   grower:{head:{ausdauer:4},weapon:{staerke:6},body:{ausdauer:6},boots:{staerke:3,ausdauer:2},ring:{staerke:3},amulet:{ausdauer:3,glueck:1}},
-  bruiser:{head:{glueck:4},weapon:{staerke:3,glueck:3},body:{ausdauer:4,glueck:2},boots:{geschick:3,glueck:2},ring:{glueck:5},amulet:{geschick:2,glueck:3}},
+  bruiser:{head:{intelligenz:4,glueck:2},weapon:{intelligenz:6},body:{intelligenz:4,ausdauer:2},boots:{intelligenz:3,glueck:2},ring:{intelligenz:5},amulet:{intelligenz:3,glueck:2}},
   scout:{head:{geschick:4},weapon:{geschick:6},body:{ausdauer:3,geschick:3},boots:{geschick:5},ring:{glueck:3,geschick:2},amulet:{geschick:3,glueck:2}}
  };
  const levelBoost=Math.max(0,Math.floor((s.level-1)/3));
@@ -1352,7 +1352,7 @@ function setBonusValue(kind){
    if(kind==='wuchtChance'&&n>=6)return .08;
  }
  if(s.playerClass==='bruiser'){
-   if(kind==='glueck'&&n>=2)return 5;
+   if(kind==='intelligenz'&&n>=2)return 5;
    if(kind==='critChance'&&n>=4)return .10;
    if(kind==='critDamage'&&n>=6)return .25;
  }
@@ -1441,10 +1441,11 @@ function persist(draw=true){
 function xpNeed(){return s.level*100}
 function addXp(n){
  s.xp+=n;
- while(s.xp>=xpNeed()){
+ while(s.level<300 && s.xp>=xpNeed()){
    s.xp-=xpNeed();s.level++;s.points+=2;
    if(s.level%2===0)s.skillPoints++;
  }
+ if(s.level>=300)s.xp=0;
 }
 function totalAttr(k){let v=s.attrs[k]||0;const cb=classes[s.playerClass]?.bonus?.[k]||0;v+=cb;Object.values(s.equipment).forEach(it=>{if(it?.bonus?.[k])v+=it.bonus[k]});v+=setBonusValue(k);return v}
 function combatPower(){return totalAttr('staerke')*5+totalAttr('geschick')*3+totalAttr('ausdauer')*2+totalAttr('glueck')+s.level*6}function maxHp(){const base=80+totalAttr('ausdauer')*8+s.level*5;return Math.round(base*(1+setBonusValue('hpPct')))}
@@ -16834,24 +16835,24 @@ const V108_GEAR={
     ['v108_gm3','Talisman des Dickichts','amulet','🧿',290,{ausdauer:5,glueck:3}]
   ],
   bruiser:[
-    ['v108_mw1','Stab der violetten Glut','weapon','🪄',270,{glueck:6,staerke:2}],
-    ['v108_mw2','Nebelzepter','weapon','🔮',295,{glueck:5,geschick:4}],
-    ['v108_mw3','Sporkristall-Stab','weapon','🪄',320,{glueck:7,ausdauer:2}],
-    ['v108_mh1','Kapuze der violetten Spore','head','🧙',230,{glueck:5,ausdauer:2}],
-    ['v108_mh2','Nebelkrone','head','👑',250,{glueck:6,geschick:2}],
-    ['v108_mh3','Maske des Dunstsehers','head','🎭',270,{glueck:4,ausdauer:4}],
-    ['v108_ma1','Mantel des Nebelzirkels','body','🥋',340,{glueck:5,ausdauer:5}],
-    ['v108_ma2','Sporenrobe','body','🥼',360,{glueck:7,ausdauer:3}],
-    ['v108_ma3','Gewand der Purpurnacht','body','🧥',390,{ausdauer:6,glueck:4}],
-    ['v108_mb1','Nebelwanderer','boots','👢',205,{geschick:4,glueck:3}],
-    ['v108_mb2','Sporenschritte','boots','👢',225,{glueck:5,ausdauer:2}],
-    ['v108_mb3','Schuhe des Dunstes','boots','👞',240,{geschick:5,glueck:2}],
-    ['v108_mr1','Ring des Nebelauges','ring','💍',245,{glueck:6}],
-    ['v108_mr2','Sporenring','ring','💍',260,{glueck:4,geschick:3}],
-    ['v108_mr3','Siegel des Bong-Zirkels','ring','💍',280,{glueck:5,ausdauer:3}],
-    ['v108_mm1','Amulett des Dunstes','amulet','📿',255,{glueck:5,ausdauer:3}],
-    ['v108_mm2','Violetter Kristalltalisman','amulet','💎',275,{glueck:6,geschick:2}],
-    ['v108_mm3','Auge des Nebels','amulet','🧿',300,{glueck:7,ausdauer:2}]
+    ['v108_mw1','Stab der violetten Glut','weapon','🪄',270,{intelligenz:6,glueck:2}],
+    ['v108_mw2','Nebelzepter','weapon','🔮',295,{intelligenz:5,glueck:4}],
+    ['v108_mw3','Sporkristall-Stab','weapon','🪄',320,{intelligenz:7,ausdauer:2}],
+    ['v108_mh1','Kapuze der violetten Spore','head','🧙',230,{intelligenz:5,ausdauer:2}],
+    ['v108_mh2','Nebelkrone','head','👑',250,{intelligenz:6,glueck:2}],
+    ['v108_mh3','Maske des Dunstsehers','head','🎭',270,{intelligenz:4,ausdauer:4}],
+    ['v108_ma1','Mantel des Nebelzirkels','body','🥋',340,{intelligenz:5,ausdauer:5}],
+    ['v108_ma2','Sporenrobe','body','🥼',360,{intelligenz:7,ausdauer:3}],
+    ['v108_ma3','Gewand der Purpurnacht','body','🧥',390,{ausdauer:6,intelligenz:4}],
+    ['v108_mb1','Nebelwanderer','boots','👢',205,{intelligenz:4,glueck:3}],
+    ['v108_mb2','Sporenschritte','boots','👢',225,{intelligenz:5,ausdauer:2}],
+    ['v108_mb3','Schuhe des Dunstes','boots','👞',240,{intelligenz:5,glueck:2}],
+    ['v108_mr1','Ring des Nebelauges','ring','💍',245,{intelligenz:6}],
+    ['v108_mr2','Sporenring','ring','💍',260,{intelligenz:4,glueck:3}],
+    ['v108_mr3','Siegel des Bong-Zirkels','ring','💍',280,{intelligenz:5,ausdauer:3}],
+    ['v108_mm1','Amulett des Dunstes','amulet','📿',255,{intelligenz:5,ausdauer:3}],
+    ['v108_mm2','Violetter Kristalltalisman','amulet','💎',275,{intelligenz:6,glueck:2}],
+    ['v108_mm3','Auge des Nebels','amulet','🧿',300,{intelligenz:7,ausdauer:2}]
   ],
   scout:[
     ['v108_sw1','Dornenbogen','weapon','🏹',270,{geschick:8}],
@@ -17132,7 +17133,7 @@ function v110ResetDay(){
   if(s.v110WorldBoss.day!==key)s.v110WorldBoss={...s.v110WorldBoss,day:key,freeUsed:false};
 }
 function v110MainStat(){
-  const k=s.playerClass==='scout'?'geschick':s.playerClass==='bruiser'?'glueck':'staerke';
+  const k=s.playerClass==='scout'?'geschick':s.playerClass==='bruiser'?'intelligenz':'staerke';
   return totalAttr(k);
 }
 function v110BossScale(){
@@ -17167,7 +17168,7 @@ function v110MakeMysticItem(){
 function v110MakeRareMysticSet(){
   const cls=s.playerClass||'grower', [setName]=V110_MYSTIC_NAMES[cls];
   const base=setBases[Math.floor(Math.random()*setBases.length)];
-  const main=cls==='grower'?'staerke':cls==='scout'?'geschick':'glueck';
+  const main=cls==='grower'?'staerke':cls==='scout'?'geschick':'intelligenz';
   return {id:`myset_${cls}_${base.slot}_${Date.now()}`,classId:cls,slot:base.slot,icon:base.icon,price:0,
     quality:'cyan',rarity:'mythic',mysticSetId:`v110_${cls}`,setName:`Set des ${setName}`,
     name:`Mystisch: ${setName} – ${base.label} [Lv.${s.level}]`,
@@ -39830,19 +39831,9 @@ claimQuest=function(...args){
       }catch(e){}
     }
 
-    /* Mystic items remain event-only.
-       10% per completed quest keeps them special instead of flooding inventory. */
-    if(v274MysticEventActive() && Math.random()<0.10){
-      try{
-        const mystic=makeClassLoot(s.playerClass||'grower','event');
-        s.inventory.push(mystic);
-        persist(false);
-        try{renderInventory()}catch(e){}
-        v063Toast?.('🔷 Mystischer Fund!','success',mystic.name);
-      }catch(e){
-        console.error('V4.02 mystic event drop',e);
-      }
-    }
+    /* V4.56 loot contract:
+       Mythic/cyan equipment is exclusive to an actual Smaragd-Koloss victory.
+       A mystic event may activate the boss, but completed quests never mint cyan gear. */
   }
 
   return result;
@@ -59534,11 +59525,11 @@ create index if not exists player_messages_sender_idx on public.player_messages(
 <!-- ===== V4.41 Stable: authoritative Harz/Dampf immediate UI authority ===== -->
 <style id="v441-resource-live-authority-css">
 /* Final version badge under the compact logo; older pseudo-content must not win. */
-.app > header .v358-logo::after{content:"V4.53"!important}
+.app > header .v358-logo::after{content:"V4.56"!important}
 </style>
 <script id="v441-resource-live-authority">
 (function(){
-  const VERSION='V4.53 Stable', SHORT='V4.53';
+  const VERSION='V4.56 Stable', SHORT='V4.56';
   let painting=false;
 
   function n(v){return Math.max(0,Math.floor(Number(v)||0))}
@@ -59728,11 +59719,11 @@ create index if not exists player_messages_sender_idx on public.player_messages(
   box-shadow:none!important;
 }
 #character .char-bottom > .v442-inventory-card + #attrs{margin-top:0!important}
-.app > header .v358-logo::after{content:"V4.53"!important}
+.app > header .v358-logo::after{content:"V4.56"!important}
 </style>
 <script id="v442-character-layout-economy-fix">
 (function(){
-  const VERSION='V4.53 Stable', SHORT='V4.53';
+  const VERSION='V4.56 Stable', SHORT='V4.56';
   const COMBAT=['staerke','geschick','intelligenz','ausdauer','glueck'];
   const PRICE_MULT={gray:1,green:1.45,blue:2.35,purple:4.6,orange:7.2,cyan:10};
   const RARITY_MAP={
@@ -59853,11 +59844,11 @@ create index if not exists player_messages_sender_idx on public.player_messages(
 
 <!-- ===== V4.43 Stable: quest Dampf immediate live sync ===== -->
 <style id="v443-quest-dampf-live-css">
-.app > header .v358-logo::after{content:"V4.53"!important}
+.app > header .v358-logo::after{content:"V4.56"!important}
 </style>
 <script id="v443-quest-dampf-live-fix">
 (function(){
-  const VERSION='V4.53 Stable', SHORT='V4.53';
+  const VERSION='V4.56 Stable', SHORT='V4.56';
   function n(v){return Math.max(0,Math.floor(Number(v)||0))}
   function cap(){
     try{if(typeof v271DampfCap==='function')return Math.max(100,n(v271DampfCap()))}catch(e){}
@@ -59943,7 +59934,7 @@ create index if not exists player_messages_sender_idx on public.player_messages(
 
 <!-- ===== V4.44 Stable: character inventory/material order authority ===== -->
 <style id="v444-character-inventory-order-css">
-.app > header .v358-logo::after{content:"V4.53"!important}
+.app > header .v358-logo::after{content:"V4.56"!important}
 #character .char-bottom > .v442-inventory-card,
 #character .char-bottom > .v444-material-card{
   width:100%!important;
@@ -59967,7 +59958,7 @@ create index if not exists player_messages_sender_idx on public.player_messages(
 </style>
 <script id="v444-character-inventory-order-fix">
 (function(){
-  const VERSION='V4.53 Stable', SHORT='V4.53';
+  const VERSION='V4.56 Stable', SHORT='V4.56';
   let arranging=false;
 
   function setText(el,text){if(el&&el.textContent!==text)el.textContent=text}
@@ -60199,7 +60190,7 @@ create index if not exists player_messages_sender_idx on public.player_messages(
 </style>
 <script id="v445-item-compare-mobile-fix">
 (function(){
-  const VERSION='V4.53 Stable', SHORT='V4.53';
+  const VERSION='V4.56 Stable', SHORT='V4.56';
   const COMBAT=['staerke','geschick','intelligenz','ausdauer','glueck'];
   const LABEL={staerke:'Stärke',geschick:'Geschick',intelligenz:'Intelligenz',ausdauer:'Ausdauer',glueck:'Glück'};
 
@@ -60334,11 +60325,11 @@ create index if not exists player_messages_sender_idx on public.player_messages(
 
 <!-- ===== V4.47 Stable: one global combat-power authority ===== -->
 <style id="v446-global-combat-power-css">
-.app > header .v358-logo::after{content:"V4.53"!important}
+.app > header .v358-logo::after{content:"V4.56"!important}
 </style>
 <script id="v446-global-combat-power-authority">
 (function(){
-  const VERSION='V4.53 Stable', SHORT='V4.53';
+  const VERSION='V4.56 Stable', SHORT='V4.56';
   let ownProfileOpenId='', syncTimer=0, syncBusy=false, lastSyncedPower=null, painting=false;
 
   /* ONE combat-power source for the whole game: exactly the same global function
@@ -60595,11 +60586,11 @@ create index if not exists player_messages_sender_idx on public.player_messages(
 
 <!-- ===== V4.47 Stable: unified item level/rarity curve ===== -->
 <style id="v447-item-balance-css">
-.app > header .v358-logo::after{content:"V4.53"!important}
+.app > header .v358-logo::after{content:"V4.56"!important}
 </style>
 <script id="v447-unified-item-balance">
 (function(){
-  const VERSION='V4.53 Stable', SHORT='V4.53', CURVE_VERSION=1;
+  const VERSION='V4.56 Stable', SHORT='V4.56', CURVE_VERSION=1;
   const COMBAT=['staerke','geschick','intelligenz','ausdauer','glueck'];
   const RARITY_BONUS={gray:0,green:1.5,blue:3,purple:4.5,orange:6,cyan:8.5};
   const LEVEL_GAIN=0.72;
@@ -60616,8 +60607,8 @@ create index if not exists player_messages_sender_idx on public.player_messages(
       boots:{geschick:5},ring:{glueck:3,geschick:2},amulet:{geschick:3,glueck:2}
     },
     bruiser:{
-      head:{glueck:4},weapon:{staerke:3,glueck:3},body:{ausdauer:4,glueck:2},
-      boots:{geschick:3,glueck:2},ring:{glueck:5},amulet:{geschick:2,glueck:3}
+      head:{intelligenz:4,glueck:2},weapon:{intelligenz:6},body:{intelligenz:4,ausdauer:2},
+      boots:{intelligenz:3,glueck:2},ring:{intelligenz:5},amulet:{intelligenz:3,glueck:2}
     }
   };
   /* Mystic-set pieces keep their intended two-stat flavour, but no extra hidden
@@ -60632,8 +60623,8 @@ create index if not exists player_messages_sender_idx on public.player_messages(
       boots:{geschick:5},ring:{geschick:3,glueck:2},amulet:{geschick:3,glueck:2}
     },
     bruiser:{
-      head:{glueck:4,ausdauer:2},weapon:{glueck:5,geschick:2},body:{ausdauer:4,glueck:2},
-      boots:{geschick:3,glueck:2},ring:{glueck:5},amulet:{glueck:3,geschick:2}
+      head:{intelligenz:4,ausdauer:2},weapon:{intelligenz:5,glueck:2},body:{intelligenz:4,ausdauer:2},
+      boots:{intelligenz:3,glueck:2},ring:{intelligenz:5},amulet:{intelligenz:3,glueck:2}
     }
   };
 
@@ -60849,7 +60840,7 @@ create index if not exists player_messages_sender_idx on public.player_messages(
 
 <!-- ===== V4.48 Stable: readable item verdict + final power + account identity isolation ===== -->
 <style id="v448-item-verdict-account-css">
-.app > header .v358-logo::after{content:"V4.53"!important}
+.app > header .v358-logo::after{content:"V4.56"!important}
 
 /* IMPORTANT: old CSS targets every class containing the word "compare".
    Only the outer legacy .compare remains; all inner V4.48 class names avoid it. */
@@ -61000,7 +60991,7 @@ create index if not exists player_messages_sender_idx on public.player_messages(
 </style>
 <script id="v448-final-ui-power-account-integrity">
 (function(){
-  const VERSION='V4.53 Stable', SHORT='V4.53';
+  const VERSION='V4.56 Stable', SHORT='V4.56';
   const COMBAT=['staerke','geschick','intelligenz','ausdauer','glueck'];
   const LABEL={staerke:'Stärke',geschick:'Geschick',intelligenz:'Intelligenz',ausdauer:'Ausdauer',glueck:'Glück'};
   const ID_PREFIX='growLegendsCharacterIdentity:';
@@ -61364,7 +61355,7 @@ create index if not exists player_messages_sender_idx on public.player_messages(
 <!-- ===== V4.49 Stable: startup hang regression fix ===== -->
 <script id="v449-startup-hang-regression-fix">
 (function(){
-  const VERSION='V4.53 Stable', SHORT='V4.53';
+  const VERSION='V4.56 Stable', SHORT='V4.56';
   function stamp(){
     document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version').forEach(el=>{if(el)el.textContent=VERSION});
     document.querySelectorAll('.v366-ver,.v371-logo em,.v372-logo em').forEach(el=>{if(el)el.textContent=SHORT});
@@ -61384,7 +61375,7 @@ create index if not exists player_messages_sender_idx on public.player_messages(
 </style>
 <script id="v450-account-save-isolation-recovery">
 (function(){
-  const VERSION='V4.53 Stable', SHORT='V4.53';
+  const VERSION='V4.56 Stable', SHORT='V4.56';
   const ACCOUNT_PREFIX='growLegendsAccountSave:';
   const BEST_PREFIX='growLegendsBestSave:';
   const FLOOR_PREFIX='growLegendsProgressFloor:';
@@ -61491,11 +61482,9 @@ create index if not exists player_messages_sender_idx on public.player_messages(
     let box=document.querySelector('#v450RecoveryWarning');
     if(!box){box=document.createElement('div');box.id='v450RecoveryWarning';document.body?.appendChild(box)}
     if(!box)return;
-    const high=highestLocal(uid), cur=levelOf(s), floor=readFloor(uid);
-    const canRestore=!!(high&&levelOf(high.data)>cur);
-    box.innerHTML=`<b>⚠️ Spielstand-Schutz aktiv</b><div style="margin-top:5px">${holdReason}</div><div style="margin-top:4px">Geladen: Level ${cur} · bisher bekannte höchste Stufe: Level ${floor}${high?` · lokaler Rettungsstand: Level ${levelOf(high.data)}`:''}</div><div class="v450-actions">${canRestore?'<button class="btn gold" id="v450RestoreBtn">↩ Höheren Spielstand laden</button>':''}<button class="btn secondary" id="v450DismissBtn">Hinweis schließen</button></div>`;
+    const cur=levelOf(s), floor=readFloor(uid);
+    box.innerHTML=`<b>⚠️ Spielstand-Schutz aktiv</b><div style="margin-top:5px">${holdReason}</div><div style="margin-top:4px">Geladen: Level ${cur} · serverseitig/ lokal bekannte Mindeststufe: Level ${floor}</div><div class="v450-actions"><button class="btn secondary" id="v450DismissBtn">Hinweis schließen</button></div>`;
     box.querySelector('#v450DismissBtn')?.addEventListener('click',()=>box.remove());
-    box.querySelector('#v450RestoreBtn')?.addEventListener('click',()=>{void restoreHighestLocal(uid)});
     try{if(typeof v063Toast==='function')v063Toast('⚠️ Spielstand-Schutz','error',holdReason)}catch(e){}
   }
   function clearHold(){holdReason='';holdShown='';document.querySelector('#v450RecoveryWarning')?.remove()}
@@ -61515,8 +61504,7 @@ create index if not exists player_messages_sender_idx on public.player_messages(
       return true;
     }finally{restoreBusy=false}
   }
-  window.v450RestoreHighestLocal=restoreHighestLocal;
-  window.v450RecoveryCandidates=function(){const uid=uidNow();return uid?storageCandidates(uid).map(x=>({source:x.source,level:levelOf(x.data),name:nameOf(x.data),savedAt:savedAt(x.data),revision:revisionOf(x.data)})):[]};
+  /* V4.54: no public/manual recovery controls. Internal high-water protection remains. */
 
   /* Level is monotonic. A newer timestamp must NEVER replace a higher-level save
      of the same account. This is the core recovery rule for the Lv50 -> Lv15 incident. */
@@ -61631,214 +61619,12 @@ create index if not exists player_messages_sender_idx on public.player_messages(
 </script>
 
 
-<!-- ===== V4.51 Stable: full local save rescue scanner ===== -->
-<style id="v451-save-rescue-css">
-#v451RescueOverlay{position:fixed;inset:0;z-index:2147483500;background:rgba(2,6,3,.94);display:none;align-items:flex-start;justify-content:center;padding:14px;overflow:auto}
-#v451RescueOverlay.open{display:flex}
-#v451RescueCard{width:min(760px,100%);margin:24px auto;background:#0c1510;border:1px solid #416047;border-radius:18px;box-shadow:0 20px 55px #000b;color:#edf6e9;overflow:hidden}
-#v451RescueHead{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;padding:15px;border-bottom:1px solid #2c4030;background:linear-gradient(180deg,#132019,#0c1510)}
-#v451RescueHead h2{margin:0;font-size:18px}#v451RescueHead p{margin:5px 0 0;color:#93a596;font-size:11px;line-height:1.4}
-#v451RescueClose{min-width:44px!important;width:44px!important;padding:9px!important}
-#v451RescueBody{padding:12px}.v451-current{padding:10px;border:1px solid #31513a;border-radius:12px;background:#101c14;margin-bottom:10px;font-size:11px;line-height:1.5}
-.v451-candidate{padding:11px;border:1px solid #314737;border-radius:13px;background:#0b120d;margin:9px 0}.v451-candidate.good{border-color:#5e8d4e;background:linear-gradient(145deg,#102011,#0b120d)}.v451-candidate.warn{border-color:#80623b}
-.v451-top{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}.v451-name{font-size:14px;font-weight:1000}.v451-level{font-size:17px;font-weight:1000;color:#b8ef7c;white-space:nowrap}
-.v451-meta{margin-top:6px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px;font-size:10px;color:#b9c8ba}.v451-meta span{padding:5px 6px;border-radius:8px;background:#111b14;overflow-wrap:anywhere}
-.v451-source{margin-top:6px;font-size:8px;color:#708474;overflow-wrap:anywhere}.v451-badge{display:inline-block;margin-top:6px;padding:4px 7px;border-radius:999px;font-size:8px;font-weight:900;border:1px solid #3a583f;color:#b8c9ba}.v451-badge.match{border-color:#5d8d4d;color:#baf58c}.v451-badge.foreign{border-color:#8e663f;color:#efbd83}
-.v451-actions{display:flex;gap:7px;margin-top:9px;flex-wrap:wrap}.v451-actions button{flex:1;min-width:170px}.v451-empty{padding:16px;text-align:center;border:1px dashed #3b4d3d;border-radius:12px;color:#91a292;font-size:11px;line-height:1.5}
-#v451RescueRow{cursor:pointer}#v451RescueRow button{pointer-events:none}
-#v451RestoreNotice{position:fixed;z-index:2147483600;left:10px;right:10px;bottom:12px;max-width:760px;margin:auto;padding:11px;border:1px solid #5f964c;border-radius:13px;background:rgba(11,29,14,.98);color:#eaffdf;box-shadow:0 12px 35px #000a;font-size:11px;line-height:1.45}
-@media(max-width:520px){#v451RescueOverlay{padding:7px}#v451RescueCard{margin:8px auto}.v451-meta{grid-template-columns:1fr}.v451-actions button{min-width:100%}}
-</style>
-<script id="v451-save-rescue-scanner">
-(function(){
-  const VERSION='V4.53 Stable', SHORT='V4.53';
-  const EMERGENCY_PREFIX='growLegendsEmergencyBeforeRestore:';
-  let profileCache=null, scanBusy=false, restoreBusy=false;
-
-  function uidNow(){try{return v073User&&!v073User.is_anonymous&&v073User.id?String(v073User.id):''}catch(e){return ''}}
-  function clean(x){return String(x||'').trim()}
-  function levelOf(x){return Math.max(1,Math.floor(Number(x?.level)||1))}
-  function nameOf(x){return clean(x?.characterName||x?.playerName||x?.name||'')}
-  function classOf(x){return clean(x?.playerClass||x?.classId||'')}
-  function ownerOf(x){return clean(x?.__accountOwnerId||x?.social?.playerId||'')}
-  function savedAt(x){return Math.max(0,Number(x?.__savedAt)||0)}
-  function revision(x){return Math.max(0,Number(x?.__saveRevision)||0)}
-  function clone(x){try{return JSON.parse(JSON.stringify(x))}catch(e){return null}}
-  function esc(x){return String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
-  function plausible(x){
-    if(!x||typeof x!=='object'||Array.isArray(x))return false;
-    const lvl=Number(x.level);
-    if(!Number.isFinite(lvl)||lvl<1||lvl>100000)return false;
-    let score=0;
-    if(Array.isArray(x.inventory))score++;
-    if(x.equipment&&typeof x.equipment==='object')score++;
-    if(x.attrs&&typeof x.attrs==='object')score++;
-    if(x.dungeon&&typeof x.dungeon==='object')score++;
-    if(x.story&&typeof x.story==='object')score++;
-    if('gold' in x||'harzTaler' in x||'energy' in x)score++;
-    return score>=2;
-  }
-  function json(v){try{return JSON.parse(v)}catch(e){return null}}
-  function extractObjects(key,obj){
-    const out=[];
-    const add=(suffix,x)=>{if(plausible(x))out.push({key:key+suffix,data:x})};
-    add('',obj);
-    if(obj&&typeof obj==='object'){
-      ['save_data','save','state','snapshot','data'].forEach(k=>{if(obj[k]&&typeof obj[k]==='object')add(' → '+k,obj[k])});
-    }
-    return out;
-  }
-  function dungeonText(x){
-    try{
-      const comp=Array.isArray(x?.dungeon?.completed)?x.dungeon.completed.length:0;
-      const sel=Math.max(0,Number(x?.dungeon?.selected)||0)+1;
-      const room=Math.max(0,Number(x?.dungeon?.room)||0)+1;
-      return comp?`${comp} abgeschlossen · aktuell ${sel}/${room}`:`${sel}/${room}`;
-    }catch(e){return '—'}
-  }
-  function timestampText(x){const t=savedAt(x);if(!t)return 'ohne Zeitstempel';try{return new Date(t).toLocaleString('de-DE')}catch(e){return String(t)}}
-  async function ownProfile(){
-    const uid=uidNow();if(!uid)return null;
-    if(profileCache&&String(profileCache.id||'')===uid)return profileCache;
-    try{
-      if(typeof v073Init==='function')await v073Init();
-      if(typeof v073Db!=='undefined'&&v073Db){
-        const {data,error}=await v073Db.from('profiles').select('id,character_name,class_id,level').eq('id',uid).maybeSingle();
-        if(!error&&data){profileCache=data;return data}
-      }
-    }catch(e){console.warn('V4.51 profile lookup',e)}
-    return null;
-  }
-  async function scanAll(){
-    if(scanBusy)return [];scanBusy=true;
-    try{
-      const uid=uidNow(), prof=await ownProfile();
-      const expectedName=clean(prof?.character_name||s?.characterName||'').toLocaleLowerCase();
-      const rows=[],seen=new Set();
-      try{
-        for(let i=0;i<localStorage.length;i++){
-          const key=localStorage.key(i)||'';
-          const raw=localStorage.getItem(key);
-          if(!raw||raw.length<30)continue;
-          const obj=json(raw);if(!obj)continue;
-          for(const ex of extractObjects(key,obj)){
-            const d=ex.data, name=nameOf(d), owner=ownerOf(d);
-            let sig='';try{sig=[levelOf(d),name,classOf(d),owner,savedAt(d),revision(d),JSON.stringify(d.equipment||{}),Array.isArray(d.inventory)?d.inventory.length:0].join('|')}catch(e){sig=ex.key}
-            if(seen.has(sig))continue;seen.add(sig);
-            const nameMatch=!!(expectedName&&name&&name.toLocaleLowerCase()===expectedName);
-            const ownerMatch=!!(uid&&owner===uid);
-            const ownerForeign=!!(uid&&owner&&owner!==uid);
-            const keyMatch=!!(uid&&ex.key.includes(uid));
-            const confidence=ownerMatch?4:(nameMatch?3:(keyMatch?2:(!owner?1:0)));
-            rows.push({key:ex.key,data:d,name,owner,nameMatch,ownerMatch,ownerForeign,keyMatch,confidence});
-          }
-        }
-      }catch(e){console.warn('V4.51 localStorage scan',e)}
-      try{
-        if(plausible(s)){
-          const d=clone(s),name=nameOf(d),owner=ownerOf(d),nameMatch=!!(expectedName&&name&&name.toLocaleLowerCase()===expectedName),ownerMatch=owner===uid;
-          rows.push({key:'AKTUELL GELADENER SPIELSTAND',data:d,name,owner,nameMatch,ownerMatch,ownerForeign:!!owner&&!ownerMatch,keyMatch:true,confidence:ownerMatch?4:(nameMatch?3:2)});
-        }
-      }catch(e){}
-      rows.sort((a,b)=>{
-        if(b.confidence!==a.confidence)return b.confidence-a.confidence;
-        if(levelOf(b.data)!==levelOf(a.data))return levelOf(b.data)-levelOf(a.data);
-        if(savedAt(b.data)!==savedAt(a.data))return savedAt(b.data)-savedAt(a.data);
-        return revision(b.data)-revision(a.data);
-      });
-      return rows;
-    }finally{scanBusy=false}
-  }
-
-  function ensureOverlay(){
-    let ov=document.querySelector('#v451RescueOverlay');if(ov)return ov;
-    ov=document.createElement('div');ov.id='v451RescueOverlay';ov.innerHTML=`<div id="v451RescueCard"><div id="v451RescueHead"><div><h2>🛟 Spielstand-Rettung</h2><p>Durchsucht ausschließlich die lokalen Grow-Legends-Daten dieses Browsers. Nichts wird automatisch überschrieben.</p></div><button class="btn secondary" id="v451RescueClose">✕</button></div><div id="v451RescueBody"><div class="v451-empty">Suche läuft …</div></div></div>`;
-    document.body?.appendChild(ov);
-    ov.querySelector('#v451RescueClose')?.addEventListener('click',()=>ov.classList.remove('open'));
-    ov.addEventListener('click',e=>{if(e.target===ov)ov.classList.remove('open')});
-    return ov;
-  }
-  async function openRecovery(){
-    const ov=ensureOverlay(),body=ov?.querySelector('#v451RescueBody');if(!ov||!body)return;
-    ov.classList.add('open');body.innerHTML='<div class="v451-empty">🔎 Lokale Spielstände werden durchsucht …</div>';
-    const uid=uidNow(),prof=await ownProfile(),rows=await scanAll(),cur=levelOf(s);
-    const expectedName=clean(prof?.character_name||s?.characterName||'');
-    const candidates=rows.filter(r=>levelOf(r.data)>cur || r.ownerMatch || r.nameMatch);
-    body.innerHTML=`<div class="v451-current"><b>Aktuell angemeldet:</b> ${esc(expectedName||nameOf(s)||'Unbekannt')} · Level ${cur}${prof?`<br><span style="color:#8fa28f">Onlineprofil: Level ${Number(prof.level)||1} · Account ${esc(uid.slice(0,8))}…</span>`:''}</div>`;
-    if(!candidates.length){body.insertAdjacentHTML('beforeend','<div class="v451-empty"><b>Keine weitere lokale Spielstand-Kopie gefunden.</b><br>Dann ist der alte Stand in diesem Browser wahrscheinlich bereits überschrieben oder gelöscht. Die Rettungssuche verändert nichts.</div>');return}
-    candidates.forEach((r,idx)=>{
-      const d=r.data,lvl=levelOf(d),name=nameOf(d)||'Unbenannt',cls=classOf(d)||'—',gold=Math.max(0,Math.round(Number(d.gold)||0)),harz=Math.max(0,Math.round(Number(d.harzTaler)||0));
-      const inv=Array.isArray(d.inventory)?d.inventory.length:0,eq=d.equipment&&typeof d.equipment==='object'?Object.values(d.equipment).filter(Boolean).length:0;
-      const exact=r.ownerMatch, likely=r.nameMatch, foreign=r.ownerForeign;
-      const canRestore=lvl>cur && (exact||likely||r.keyMatch||!r.owner);
-      const badge=exact?'✅ Account-ID passt':likely?'✅ Charaktername passt':foreign?'⚠️ anderer/alter Owner-Stempel':'ℹ️ alter Spielstand ohne eindeutigen Owner';
-      const c=document.createElement('div');c.className='v451-candidate '+((exact||likely)&&lvl>cur?'good':(foreign?'warn':''));
-      c.innerHTML=`<div class="v451-top"><div><div class="v451-name">${esc(name)}</div><div class="v451-badge ${exact||likely?'match':foreign?'foreign':''}">${badge}</div></div><div class="v451-level">Lv. ${lvl}</div></div><div class="v451-meta"><span>Klasse: <b>${esc(cls)}</b></span><span>Dungeon: <b>${esc(dungeonText(d))}</b></span><span>Gold: <b>${gold.toLocaleString('de-DE')}</b></span><span>Harz: <b>${harz.toLocaleString('de-DE')}</b></span><span>Inventar: <b>${inv}</b></span><span>Ausgerüstet: <b>${eq}</b></span><span>Gespeichert: <b>${esc(timestampText(d))}</b></span><span>Revision: <b>${revision(d)}</b></span></div><div class="v451-source">Quelle: ${esc(r.key)}${r.owner?` · Owner: ${esc(r.owner.slice(0,12))}…`:''}</div><div class="v451-actions">${canRestore?`<button class="btn gold" data-v451-restore="${idx}">↩ Diesen Stand wiederherstellen</button>`:'<button class="btn secondary" disabled>Kein sicherer Wiederherstellungskandidat</button>'}</div>`;
-      body.appendChild(c);
-      c.querySelector('[data-v451-restore]')?.addEventListener('click',()=>restoreCandidate(r));
-    });
-  }
-
-  async function askRestore(r){
-    const text=`${nameOf(r.data)||'Charakter'} · Level ${levelOf(r.data)}\n\nDer aktuelle Level-${levelOf(s)}-Stand wird vorher als Notfallkopie gesichert. Danach wird dieser Kandidat als Spielstand des aktuell angemeldeten Accounts übernommen.`;
-    try{if(typeof v115Confirm==='function')return !!(await v115Confirm(text,{title:'Spielstand wiederherstellen?',type:'warn',okText:'Wiederherstellen'}))}catch(e){}
-    return confirm('Spielstand wiederherstellen?\n\n'+text);
-  }
-  async function restoreCandidate(r){
-    if(restoreBusy)return;const uid=uidNow();if(!uid)return;
-    if(!(await askRestore(r)))return;
-    restoreBusy=true;
-    try{
-      const current=clone(s);if(current){try{localStorage.setItem(EMERGENCY_PREFIX+uid+':'+Date.now(),JSON.stringify(current))}catch(e){}}
-      const next=clone(r.data);if(!next)throw new Error('Rettungsstand konnte nicht gelesen werden.');
-      next.__accountOwnerId=uid;next.social??={};next.social.playerId=uid;next.__savedAt=Date.now();next.__saveRevision=Math.max(Number(next.__saveRevision)||0,Number(s?.__saveRevision)||0)+1;
-      if(typeof v075ApplyCloudSave!=='function')throw new Error('Cloud-Spielstand-Lader fehlt.');
-      const ok=await v075ApplyCloudSave(next);if(!ok)throw new Error('Rettungsstand konnte nicht angewendet werden.');
-      try{localStorage.setItem(KEY,JSON.stringify(s))}catch(e){}
-      try{if(typeof v200SaveScopedLocal==='function')v200SaveScopedLocal()}catch(e){}
-      try{if(typeof render==='function')render()}catch(e){}
-      document.querySelector('#v451RescueOverlay')?.classList.remove('open');
-      let note=document.querySelector('#v451RestoreNotice');if(!note){note=document.createElement('div');note.id='v451RestoreNotice';document.body?.appendChild(note)}
-      if(note)note.innerHTML=`✅ <b>Rettungsstand Level ${levelOf(s)} geladen.</b><br>Er wird jetzt für diesen Google-Account gespeichert. Eine Notfallkopie des vorherigen Level-${levelOf(current)}-Stands wurde lokal behalten.`;
-      let saved=false;
-      try{if(typeof v073SyncProfile==='function')await v073SyncProfile(true);if(typeof v075WriteCloudSave==='function')saved=!!(await v075WriteCloudSave(true))}catch(e){console.warn('V4.51 rescued cloud save',e)}
-      if(note)note.innerHTML=saved?`✅ <b>Rettungsstand Level ${levelOf(s)} wiederhergestellt und in der Cloud gespeichert.</b>`:`⚠️ <b>Rettungsstand Level ${levelOf(s)} ist lokal geladen.</b><br>Cloud-Speicherung wurde noch blockiert. Nicht ausloggen und mir diese Meldung schicken.`;
-      try{if(typeof v063Toast==='function')v063Toast(saved?'✅ Spielstand gerettet':'⚠️ Rettungsstand lokal geladen',saved?'success':'warn',`Level ${levelOf(s)}`)}catch(e){}
-      setTimeout(()=>{if(saved)document.querySelector('#v451RestoreNotice')?.remove()},9000);
-    }catch(e){console.error('V4.51 restore',e);try{v063Toast?.('Wiederherstellung fehlgeschlagen','error',e?.message||String(e))}catch(_){}
-    }finally{restoreBusy=false}
-  }
-
-  function installSettings(){
-    try{if(typeof v141BuildSettings==='function')v141BuildSettings()}catch(e){}
-    const menu=document.querySelector('#v141SettingsMenu');if(!menu||document.querySelector('#v451RescueRow'))return;
-    const row=document.createElement('div');row.id='v451RescueRow';row.className='v141-setting-row';row.innerHTML=`<span class="v141-setting-icon">🛟</span><span class="v141-setting-copy"><b>Spielstand-Rettung</b><span>Lokale ältere Spielstände suchen und gezielt wiederherstellen.</span></span><button type="button" class="btn secondary" style="max-width:120px">Öffnen</button>`;
-    const account=menu.querySelector('.v141-account-box');if(account)menu.insertBefore(row,account);else menu.appendChild(row);
-    row.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();void openRecovery()});
-  }
-  window.v451OpenRecovery=openRecovery;window.v451ScanRecovery=scanAll;
-
-  /* Automatically offer rescue only when this browser still contains a HIGHER plausible
-     save for the currently logged in character. Never auto-apply it. */
-  async function autoOffer(){
-    const uid=uidNow();if(!uid)return;const prof=await ownProfile(),expected=clean(prof?.character_name||s?.characterName||'').toLocaleLowerCase(),cur=levelOf(s),rows=await scanAll();
-    const higher=rows.filter(r=>levelOf(r.data)>cur && (r.ownerMatch || (expected&&nameOf(r.data).toLocaleLowerCase()===expected)));
-    if(higher.length){try{v063Toast?.('🛟 Alter Spielstand gefunden','warn',`Es gibt lokal mindestens einen höheren Stand (bis Level ${Math.max(...higher.map(r=>levelOf(r.data)))}). Öffne Einstellungen → Spielstand-Rettung.`)}catch(e){}}
-  }
-
-  function stamp(){document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version').forEach(el=>{if(el&&el.textContent!==VERSION)el.textContent=VERSION});document.querySelectorAll('.v366-ver,.v371-logo em,.v372-logo em').forEach(el=>{if(el&&el.textContent!==SHORT)el.textContent=SHORT});document.title='Grow Legends '+SHORT}
-  installSettings();stamp();
-  document.addEventListener('DOMContentLoaded',()=>{installSettings();stamp();setTimeout(autoOffer,1200)},{once:true});
-  window.addEventListener('pageshow',()=>{installSettings();stamp();setTimeout(autoOffer,800)},{passive:true});
-  [250,900,2200,5000].forEach(ms=>setTimeout(()=>{installSettings();stamp()},ms));
-  const g=setInterval(()=>{installSettings();stamp()},350);setTimeout(()=>clearInterval(g),25000);
-})();
-</script>
+<!-- V4.54: temporary V4.51 save-rescue UI removed after account isolation was verified stable. -->
 
 <!-- ===== V4.52 Stable: hard account isolation gate ===== -->
 <script id="v452-hard-account-isolation">
 (function(){
-  const VERSION='V4.53 Stable', SHORT='V4.53';
+  const VERSION='V4.56 Stable', SHORT='V4.56';
   const EMERGENCY_PREFIX='growLegendsAccountTransitionBackup:';
   const gate={phase:'idle',resolvedUid:'',transitionUid:'',seq:0,lastReason:'',finalizeUid:'',finalizePromise:null};
   window.__V452_ACCOUNT_GATE__=gate;
@@ -62110,7 +61896,7 @@ create index if not exists player_messages_sender_idx on public.player_messages(
 <!-- ===== V4.53 Stable: profile level floor + integrity error dedupe ===== -->
 <script id="v453-profile-floor-reconcile">
 (function(){
-  const VERSION='V4.53 Stable', SHORT='V4.53';
+  const VERSION='V4.56 Stable', SHORT='V4.56';
   let reconcileBusy=false,reconciledUid='',lastIntegrityToast='',lastIntegrityAt=0;
 
   function uidNow(){try{return v073User&&!v073User.is_anonymous&&v073User.id?String(v073User.id):''}catch(e){return ''}}
@@ -62247,3 +62033,220 @@ create index if not exists player_messages_sender_idx on public.player_messages(
   const guard=setInterval(stamp,300);setTimeout(()=>clearInterval(guard),30000);
 })();
 </script>
+
+
+<!-- ===== V4.54 Stable: recovery UI removed, account protection retained ===== -->
+<script id="v454-remove-save-rescue-ui">
+(function(){
+  const VERSION='V4.56 Stable', SHORT='V4.56';
+  function cleanup(){
+    ['#v451RescueOverlay','#v451RestoreNotice','#v451RescueRow'].forEach(sel=>document.querySelectorAll(sel).forEach(el=>el.remove()));
+    document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version').forEach(el=>{if(el&&el.textContent!==VERSION)el.textContent=VERSION});
+    document.querySelectorAll('.v366-ver,.v371-logo em,.v372-logo em').forEach(el=>{if(el&&el.textContent!==SHORT)el.textContent=SHORT});
+    document.title='Grow Legends '+SHORT;
+  }
+  try{delete window.v451OpenRecovery;delete window.v451ScanRecovery;delete window.v450RestoreHighestLocal;delete window.v450RecoveryCandidates}catch(e){}
+  if(typeof v141BuildSettings==='function'&&!window.__v454SettingsCleanup){const base=v141BuildSettings;v141BuildSettings=function(){const r=base.apply(this,arguments);cleanup();return r};try{window.v141BuildSettings=v141BuildSettings}catch(e){}window.__v454SettingsCleanup=true}
+  cleanup();
+  document.addEventListener('DOMContentLoaded',cleanup,{once:true});
+  window.addEventListener('pageshow',cleanup,{passive:true});
+  [250,900,2200,5200].forEach(ms=>setTimeout(cleanup,ms));
+  const g=setInterval(cleanup,300);setTimeout(()=>clearInterval(g),30000);
+})();
+</script>
+
+
+<!-- ===== V4.56 Stable: Level 1-300 item / loot balance contract ===== -->
+<style id="v455-item-loot-balance-css">
+.app > header .v358-logo::after{content:"V4.56"!important}
+</style>
+<script id="v455-item-loot-balance-contract">
+(function(){
+  const VERSION='V4.56 Stable', SHORT='V4.56';
+  function stamp(){
+    document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version')
+      .forEach(el=>{if(el&&el.textContent!==VERSION)el.textContent=VERSION});
+    document.querySelectorAll('.v366-ver,.v371-logo em,.v372-logo em')
+      .forEach(el=>{if(el&&el.textContent!==SHORT)el.textContent=SHORT});
+    document.title='Grow Legends '+SHORT;
+  }
+
+  /* Defense in depth for the final loot hierarchy:
+     - Shop / Quest / Dungeon rooms: at most Epic
+     - Dungeon boss: Legendary is allowed/guaranteed by v246
+     - Smaragd-Koloss: the only source allowed to create Mythic/cyan gear
+     The boss generators v110MakeMysticItem / v110MakeRareMysticSet are direct and
+     intentionally do not pass through these generic source guards. */
+  function downgradeToEpic(it){
+    if(!it||typeof it!=='object')return it;
+    const q=String(it.quality||'').toLowerCase(),r=String(it.rarity||'').toLowerCase();
+    const high=q==='orange'||q==='cyan'||/legend|orange|myth|mystic|cyan/.test(r);
+    if(!high)return it;
+    const lvl=Math.max(1,Math.floor(Number(it.dropLevel)||Number(s?.level)||1));
+    it.quality='purple';
+    try{it.rarity=qualityMeta('purple').cls}catch(e){it.rarity='epic'}
+    delete it.mysticSpecial;
+    delete it.mysticSetId;
+    if(it.setName&&/^Set des /i.test(String(it.setName)))delete it.setName;
+    const plain=String(it.name||'Ausrüstung')
+      .replace(/^(Normal|Gewöhnlich|Rare|Episch|Legendär|Mystisch):\s*/i,'')
+      .replace(/\s*\[Lv\.\d+\]\s*$/i,'');
+    it.name=`Episch: ${plain} [Lv.${lvl}]`;
+    try{if(typeof window.v447ApplyItemCurve==='function')window.v447ApplyItemCurve(it)}catch(e){}
+    return it;
+  }
+  function enforceSource(it,source){
+    return ['quest','dungeon','event'].includes(String(source||'').toLowerCase())?downgradeToEpic(it):it;
+  }
+  window.v455EnforceLootSource=enforceSource;
+
+  if(typeof makeClassLoot==='function'&&!window.__v455LootSourceGuard){
+    const base=makeClassLoot;
+    makeClassLoot=function(classId,source='normal'){
+      return enforceSource(base.apply(this,arguments),source);
+    };
+    try{window.makeClassLoot=makeClassLoot}catch(e){}
+    window.__v455LootSourceGuard=true;
+  }
+  if(typeof v024Item==='function'&&!window.__v455ItemSourceGuard){
+    const base=v024Item;
+    v024Item=function(baseItem,source='normal'){
+      return enforceSource(base.apply(this,arguments),source);
+    };
+    try{window.v024Item=v024Item}catch(e){}
+    window.__v455ItemSourceGuard=true;
+  }
+
+  function normalize(){
+    try{
+      if(typeof window.v447NormalizeAllItems==='function')window.v447NormalizeAllItems();
+      else if(typeof window.v447ApplyItemCurve==='function'){
+        const apply=window.v447ApplyItemCurve;
+        [s?.inventory,s?.weaponShop,s?.magicShop].forEach(arr=>Array.isArray(arr)&&arr.forEach(apply));
+        Object.values(s?.equipment||{}).forEach(apply);
+      }
+      s.v455ItemLootBalance=1;
+      try{localStorage.setItem(KEY,JSON.stringify(s))}catch(e){}
+    }catch(e){console.warn('V4.56 item normalization',e)}
+  }
+  window.v455NormalizeItemLootBalance=normalize;
+
+  if(typeof v075ApplyCloudSave==='function'&&!window.__v455CloudItemNormalize){
+    const base=v075ApplyCloudSave;
+    v075ApplyCloudSave=function(){
+      const r=base.apply(this,arguments);
+      if(r&&typeof r.then==='function')return r.then(x=>{normalize();return x});
+      normalize();return r;
+    };
+    try{window.v075ApplyCloudSave=v075ApplyCloudSave}catch(e){}
+    window.__v455CloudItemNormalize=true;
+  }
+
+  normalize();stamp();
+  document.addEventListener('DOMContentLoaded',()=>{normalize();stamp()},{once:true});
+  window.addEventListener('pageshow',()=>{normalize();stamp()},{passive:true});
+  [250,900,2200,5200].forEach(ms=>setTimeout(()=>{normalize();stamp()},ms));
+  const g=setInterval(stamp,300);setTimeout(()=>clearInterval(g),30000);
+})();
+</script>
+
+<!-- ===== V4.56 Stable: Level-300 progression authority ===== -->
+<style id="v456-level300-progression-css">
+.app > header .v358-logo::after{content:"V4.56"!important}
+</style>
+<script id="v456-level300-progression-authority">
+(function(){
+  const VERSION='V4.56 Stable', SHORT='V4.56', MAX_LEVEL=300;
+  window.GROW_LEGENDS_MAX_LEVEL=MAX_LEVEL;
+
+  function stamp(){
+    document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version')
+      .forEach(el=>{if(el&&el.textContent!==VERSION)el.textContent=VERSION});
+    document.querySelectorAll('.v366-ver,.v371-logo em,.v372-logo em')
+      .forEach(el=>{if(el&&el.textContent!==SHORT)el.textContent=SHORT});
+    document.title='Grow Legends '+SHORT;
+  }
+
+  /* Canonical core addXp() is capped in-place at Level 300 so every historical
+     XP modifier (events, Grow buff, guild bonus, level-up overlay) still runs through
+     the same transaction and can never create Level 301. */
+  function maxLevelUi(){
+    const lvl=Math.max(1,Math.floor(Number(s?.level)||1));
+    if(lvl<MAX_LEVEL)return;
+    if(Number(s.xp)!==0)s.xp=0;
+    const center=document.querySelector('#centerXpText');
+    const fill=document.querySelector('#centerXpFill');
+    const xp=document.querySelector('#xp');
+    if(center)center.textContent='MAX LEVEL · 300';
+    if(fill)fill.style.width='100%';
+    if(xp)xp.textContent='MAX';
+  }
+
+  /* Merchant stock may normally roll +1 item level. At Level 300 that must not
+     create Level-301 gear. Lower levels retain the exact existing -1/0/+1 roll. */
+  try{
+    if(typeof v135ShopLevel==='function'&&!window.__v456ShopLevelCap){
+      const base=v135ShopLevel;
+      v135ShopLevel=function(){return Math.min(MAX_LEVEL,Math.max(1,Math.floor(Number(base.apply(this,arguments))||1)))};
+      try{window.v135ShopLevel=v135ShopLevel}catch(e){}
+      window.__v456ShopLevelCap=true;
+    }
+  }catch(e){}
+
+  function clampItemLevel(it){
+    if(!it||typeof it!=='object'||!it.slot)return it;
+    const raw=Math.floor(Number(it.dropLevel)||Number(s?.level)||1);
+    if(raw>MAX_LEVEL){
+      it.dropLevel=MAX_LEVEL;
+      it.name=String(it.name||'Ausrüstung').replace(/\[Lv\.\d+\]/i,'[Lv.300]');
+      try{if(typeof window.v447ApplyItemCurve==='function')window.v447ApplyItemCurve(it)}catch(e){}
+    }
+    return it;
+  }
+  window.v456ClampItemLevel=clampItemLevel;
+
+  /* Defense in depth for all current item factories. */
+  ['makeClassLoot','makeLoot','makeSetItem','v027ShopItem','v030MakeGear','v030MakeJewelry','v110MakeMysticItem','v110MakeRareMysticSet'].forEach(name=>{
+    try{
+      const fn=window[name];
+      if(typeof fn!=='function'||fn.__v456LevelCap)return;
+      const wrapped=function(){
+        const out=fn.apply(this,arguments);
+        if(out&&typeof out.then==='function')return out.then(x=>clampItemLevel(x));
+        return clampItemLevel(out);
+      };
+      wrapped.__v456LevelCap=true;window[name]=wrapped;
+      try{eval(name+'=window["'+name+'"]')}catch(e){}
+    }catch(e){}
+  });
+
+  /* Current formulas were audited at 1/50/100/150/200/250/300:
+     - V4.47 item curve is linear (+0.72 native total / level), so rarity catch-up
+       distances stay constant all the way to 300.
+     - V4.02 quest curve explicitly scales heavy quest duration to L300=30 min and
+       bases XP on the current level-up requirement.
+     - Existing 20-dungeon campaign keeps its established recommended endpoint ~210;
+       211-300 is intentionally NOT produced by stretching old one-time dungeons. */
+  window.v456ProgressionContract={
+    maxLevel:MAX_LEVEL,
+    maxItemLevel:MAX_LEVEL,
+    itemLevelGain:0.72,
+    rarityCatchup:{legendary:4,epic:6,rare:8,green:10,gray:12},
+    dungeonCampaignRecommendedEnd:210,
+    endgameReserved:[211,300]
+  };
+
+  if(typeof render==='function'&&!window.__v456RenderMaxPaint){
+    const base=render;
+    render=function(){const r=base.apply(this,arguments);maxLevelUi();stamp();return r};
+    try{window.render=render}catch(e){}window.__v456RenderMaxPaint=true;
+  }
+
+  maxLevelUi();stamp();
+  document.addEventListener('DOMContentLoaded',()=>{maxLevelUi();stamp()},{once:true});
+  window.addEventListener('pageshow',()=>{maxLevelUi();stamp()},{passive:true});
+  [250,900,2200,5200].forEach(ms=>setTimeout(()=>{maxLevelUi();stamp()},ms));
+  const g=setInterval(stamp,300);setTimeout(()=>clearInterval(g),30000);
+})();
+</script>
+
