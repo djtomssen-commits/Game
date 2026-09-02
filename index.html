@@ -69585,3 +69585,177 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();i
 <script id="v4113-version-owner">
 (()=>{const stamp=()=>{try{document.title='Grow Legends V4.113';document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version').forEach(e=>e&&(e.textContent='V4.113 Stable'));document.querySelectorAll('.v366-ver,.v371-logo em,.v372-logo em,.v4107-version').forEach(e=>e&&(e.textContent='V4.113'))}catch(e){}};stamp();document.addEventListener('DOMContentLoaded',stamp,{once:true});window.addEventListener('pageshow',stamp,{passive:true});[100,700,2200].forEach(ms=>setTimeout(stamp,ms));})();
 </script>
+
+<style id="v4114-grow-care-css">
+/* V4.114: Pflege direkt im Pflanzenslot */
+.v492-plant{position:relative!important;padding-bottom:34px!important}
+.v4114-slot-care{
+ position:absolute;left:7px;right:7px;bottom:7px;z-index:12;
+ min-height:25px;padding:5px 7px;border:1px solid #9edb55;border-radius:8px;
+ background:linear-gradient(180deg,#456f24,#234016);color:#fff6cf;
+ box-shadow:0 3px 9px #0009,0 0 10px #75d23a33;
+ display:flex;align-items:center;justify-content:center;gap:5px;
+ font-size:7px;font-weight:1000;line-height:1.1;text-transform:none;
+ cursor:pointer;touch-action:manipulation
+}
+.v4114-slot-care:active{transform:translateY(1px);filter:brightness(.92)}
+.v4114-slot-care.done{border-color:#4f6a48;background:#111b12;color:#93aa91;box-shadow:none;cursor:default}
+.v4114-care-mini{position:absolute;right:6px;top:6px;z-index:11;display:flex;gap:2px;padding:3px 4px;border:1px solid #43533f;border-radius:999px;background:#081008dd}
+.v4114-care-mini i{width:5px;height:5px;border-radius:50%;background:#2b342b;border:1px solid #556150}
+.v4114-care-mini i.done{background:#8cdf50;border-color:#bdf37c;box-shadow:0 0 5px #8cdf5088}
+.v4114-care-mini i.missed{background:#81443d;border-color:#bd6558}
+@media(max-width:560px){
+ .v4114-slot-care{font-size:7.3px;min-height:27px;left:5px;right:5px;bottom:5px}
+ .v492-plant{padding-bottom:36px!important}
+}
+</style>
+<script id="v4114-grow-care-authority">
+(()=>{
+ 'use strict';
+ const VERSION='V4.114 Stable',SHORT='V4.114',PREFIX='growLegendsCareLedgerV4114:';
+ const AT=[.20,.45,.70,.88];
+ const LABELS=[['💧','Gießen'],['💡','Licht'],['✂️','Beschneiden'],['🧪','Nährstoffe']];
+ let internal=false;
+ const clone=v=>{try{return JSON.parse(JSON.stringify(v))}catch(e){return null}};
+ function owner(){try{return String((typeof v073User!=='undefined'&&v073User?.id)||s?.__accountOwnerId||s?.social?.playerId||'local')}catch(e){return'local'}}
+ function key(){return PREFIX+owner()}
+ function plants(){try{return Array.isArray(s?.grow?.plants)?s.grow.plants:[]}catch(e){return[]}}
+ function shapePlant(p){
+  if(!p||typeof p!=='object')return null;
+  p.uid=String(p.uid||`v4114_${Number(p.start)||Date.now()}_${Math.random().toString(36).slice(2,7)}`);
+  p.care=Array.isArray(p.care)?[0,1,2,3].map(i=>!!p.care[i]):[false,false,false,false];
+  p.careDoneAt=Array.isArray(p.careDoneAt)?[0,1,2,3].map(i=>Math.max(0,Number(p.careDoneAt[i])||0)):[0,0,0,0];
+  return p;
+ }
+ function embedded(){
+  s.grow=(s.grow&&typeof s.grow==='object')?s.grow:{};
+  s.grow.v492=(s.grow.v492&&typeof s.grow.v492==='object')?s.grow.v492:{};
+  const z=s.grow.v492;
+  z.careLedger=(z.careLedger&&typeof z.careLedger==='object')?z.careLedger:{};
+  z.careRevision=Math.max(0,Number(z.careRevision)||0);
+  return z.careLedger;
+ }
+ function readLocal(){try{const x=JSON.parse(localStorage.getItem(key())||'null');return x&&x.owner===owner()&&x.entries&&typeof x.entries==='object'?x:{owner:owner(),rev:0,entries:{}}}catch(e){return{owner:owner(),rev:0,entries:{}}}}
+ function writeLocal(entries,rev){try{localStorage.setItem(key(),JSON.stringify({owner:owner(),rev:Math.max(0,Number(rev)||0),savedAt:Date.now(),entries}))}catch(e){}}
+ function entryFromPlant(p){
+  p=shapePlant(p); if(!p)return null;
+  return {uid:p.uid,seed:String(p.seed||''),start:Number(p.start)||0,care:p.care.slice(0,4),doneAt:p.careDoneAt.slice(0,4),updatedAt:Date.now()};
+ }
+ function mergeEntry(a,b){
+  const out={...(a||{}),...(b||{})};
+  out.care=[0,1,2,3].map(i=>!!(a?.care?.[i]||b?.care?.[i]));
+  out.doneAt=[0,1,2,3].map(i=>Math.max(Number(a?.doneAt?.[i])||0,Number(b?.doneAt?.[i])||0));
+  out.updatedAt=Math.max(Number(a?.updatedAt)||0,Number(b?.updatedAt)||0,Date.now());
+  return out;
+ }
+ function syncLedger(reason='sync'){
+  if(internal)return false; internal=true;
+  try{
+   const z=s.grow?.v492||(s.grow.v492={}), emb=embedded(), loc=readLocal(), merged={...loc.entries};
+   Object.entries(emb).forEach(([uid,e])=>merged[uid]=mergeEntry(merged[uid],e));
+   plants().filter(Boolean).forEach(p=>{shapePlant(p);merged[p.uid]=mergeEntry(merged[p.uid],entryFromPlant(p))});
+   let changed=false;
+   plants().filter(Boolean).forEach(p=>{
+    const e=merged[p.uid]; if(!e)return;
+    for(let i=0;i<4;i++){
+     if(e.care[i]&&!p.care[i]){p.care[i]=true;changed=true}
+     const ts=Math.max(Number(p.careDoneAt[i])||0,Number(e.doneAt[i])||0);if(ts!==p.careDoneAt[i]){p.careDoneAt[i]=ts;changed=true}
+    }
+    merged[p.uid]=mergeEntry(e,entryFromPlant(p));
+   });
+   /* Keep active/recent plant ledgers only. Unique UIDs make stale entries harmless, but prune old noise. */
+   const live=new Set(plants().filter(Boolean).map(p=>String(p.uid))),now=Date.now();
+   Object.keys(merged).forEach(uid=>{if(!live.has(uid)&&now-Number(merged[uid]?.updatedAt||0)>72*3600000)delete merged[uid]});
+   const rev=Math.max(Number(z.careRevision)||0,Number(loc.rev)||0)+(changed?1:0);
+   z.careLedger=merged;z.careRevision=rev;writeLocal(merged,rev);
+   return changed;
+  }finally{internal=false}
+ }
+ function commit(p,idx){
+  p=shapePlant(p);if(!p||idx<0||idx>3)return false;
+  const now=Date.now();p.care[idx]=true;p.careDoneAt[idx]=Math.max(now,Number(p.careDoneAt[idx])||0);
+  const led=embedded(),loc=readLocal(),e=mergeEntry(mergeEntry(loc.entries[p.uid],led[p.uid]),entryFromPlant(p));
+  led[p.uid]=e;const rev=Math.max(Number(s.grow.v492.careRevision)||0,Number(loc.rev)||0)+1;s.grow.v492.careRevision=rev;
+  loc.entries[p.uid]=e;writeLocal(loc.entries,rev);
+  return true;
+ }
+ function progress(p){return Math.max(0,Math.min(1,(Date.now()-Number(p?.start||0))/Math.max(1,Number(p?.duration)||1)))}
+ function careState(p){shapePlant(p);const x=progress(p);let available=-1,missed=0;for(let i=0;i<4;i++){const end=i===3?1:AT[i+1];if(p.care[i])continue;if(x>=end){missed++;continue}if(x>=AT[i]&&x<end){available=i;break}}return{available,missed,x}}
+ function persistCare(){
+  syncLedger('before-save');
+  try{if(typeof persist==='function')persist(false);else localStorage.setItem(KEY,JSON.stringify(s))}catch(e){try{localStorage.setItem(KEY,JSON.stringify(s))}catch(_){} }
+  syncLedger('after-save');
+  try{if(typeof v075WriteCloudSave==='function')setTimeout(()=>v075WriteCloudSave(false),0)}catch(e){}
+ }
+ function toast(title,detail){try{if(typeof v063Toast==='function')return v063Toast(title,'success',detail)}catch(e){} }
+ function doCare(uid,intended){
+  syncLedger('action-start');
+  const p=plants().find(x=>x&&String(x.uid)===String(uid));if(!p)return false;
+  const st=careState(p),raw=Number(intended);let idx=Number.isInteger(raw)&&raw>=0&&raw<4?raw:st.available;
+  if(idx<0||idx>3)return false;
+  if(p.care[idx])return true;
+  const x=progress(p),end=idx===3?1:AT[idx+1],endAt=Number(p.start||0)+Number(p.duration||0)*end;
+  /* Generous tap grace for mobile boundary transitions. */
+  if(x>=end&&Date.now()-endAt>15000){idx=careState(p).available;if(idx<0)return false}
+  if(!commit(p,idx))return false;
+  persistCare();
+  try{if(typeof renderGrow==='function')renderGrow()}catch(e){}
+  setTimeout(()=>{syncLedger('post-action');decorateSlots()},30);
+  toast(`${LABELS[idx][0]} ${LABELS[idx][1]} gespeichert`,`Pflege ${p.care.filter(Boolean).length}/4 · bleibt auch nach Reload erhalten.`);
+  return true;
+ }
+ window.v4114CarePlant=doCare;window.v4114SyncCare=syncLedger;
+
+ function decorateSlots(){
+  try{
+   syncLedger('decorate');
+   document.querySelectorAll('#grow .v492-plant[data-v492-detail]').forEach(card=>{
+    const uid=String(card.dataset.v492Detail||''),p=plants().find(x=>x&&String(x.uid)===uid);if(!p)return;
+    shapePlant(p);const st=careState(p);
+    card.querySelectorAll('.v4114-slot-care,.v4114-care-mini').forEach(x=>x.remove());
+    const mini=document.createElement('span');mini.className='v4114-care-mini';mini.setAttribute('aria-label',`Pflege ${p.care.filter(Boolean).length} von 4`);
+    mini.innerHTML=[0,1,2,3].map(i=>{const end=i===3?1:AT[i+1],miss=!p.care[i]&&st.x>=end;return `<i class="${p.care[i]?'done':miss?'missed':''}"></i>`}).join('');card.appendChild(mini);
+    const b=document.createElement('span');b.className='v4114-slot-care';b.setAttribute('role','button');b.setAttribute('tabindex','0');
+    if(st.available>=0){const [ico,name]=LABELS[st.available];b.dataset.v4114Care=uid;b.dataset.v4114CareIndex=String(st.available);b.textContent=`${ico} ${name} · ${p.care.filter(Boolean).length}/4`;b.title=`${name} jetzt durchführen`}
+    else{b.classList.add('done');b.textContent=`🌿 Pflege ${p.care.filter(Boolean).length}/4`;b.title='Aktuell keine Pflegeaktion verfügbar'}
+    card.appendChild(b);
+   });
+  }catch(e){}
+ }
+ window.v4114DecorateCareSlots=decorateSlots;
+ /* Window capture fires before the historical document capture listener. */
+ window.addEventListener('click',e=>{
+  const t=e.target instanceof Element?e.target.closest('[data-v4114-care]'):null;if(!t)return;
+  e.preventDefault();e.stopPropagation();e.stopImmediatePropagation();doCare(t.dataset.v4114Care,Number(t.dataset.v4114CareIndex));
+ },true);
+ window.addEventListener('keydown',e=>{const t=e.target instanceof Element?e.target.closest('[data-v4114-care]'):null;if(!t||!['Enter',' '].includes(e.key))return;e.preventDefault();e.stopPropagation();doCare(t.dataset.v4114Care,Number(t.dataset.v4114CareIndex))},true);
+
+ /* Make care monotonic across every legacy normalizer/save/cloud/navigation path. */
+ try{if(typeof normalizeState==='function'&&!window.__v4114Normalize){const base=normalizeState;normalizeState=function(){syncLedger('normalize-before');const r=base.apply(this,arguments);syncLedger('normalize-after');return r};try{window.normalizeState=normalizeState}catch(e){}window.__v4114Normalize=true}}catch(e){}
+ try{if(typeof persist==='function'&&!window.__v4114Persist){const base=persist;persist=function(){syncLedger('persist-before');const r=base.apply(this,arguments);syncLedger('persist-after');return r};try{window.persist=persist}catch(e){}window.__v4114Persist=true}}catch(e){}
+ try{if(typeof v075ApplyCloudSave==='function'&&!window.__v4114CloudApply){const base=v075ApplyCloudSave;v075ApplyCloudSave=async function(){syncLedger('cloud-before');const r=await base.apply(this,arguments);const changed=syncLedger('cloud-after');if(changed){try{if(typeof persist==='function')persist(false)}catch(e){}}return r};try{window.v075ApplyCloudSave=v075ApplyCloudSave}catch(e){}window.__v4114CloudApply=true}}catch(e){}
+ try{if(typeof v032Go==='function'&&!window.__v4114Go){const base=v032Go;v032Go=function(id){syncLedger('nav-before');const r=base.apply(this,arguments);[0,80,300,900].forEach(ms=>setTimeout(()=>{const changed=syncLedger('nav-after');if(changed)try{persist(false)}catch(e){};if(id==='grow')decorateSlots()},ms));return r};try{window.v032Go=v032Go}catch(e){}window.__v4114Go=true}}catch(e){}
+
+ function addQaTests(){
+  try{
+   const runner=window.v4107RunQA||window.v4102RunQA;if(typeof runner!=='function'||window.__v4114QaWrapped)return;
+   const wrapped=function(){
+    syncLedger('qa');const r=runner.apply(this,arguments);if(!r||!Array.isArray(r.results))return r;
+    const tests=[];const T=(name,fn)=>{let pass=false,detail='';try{const x=fn();pass=typeof x==='object'?!!x.pass:!!x;detail=typeof x==='object'?String(x.detail||''):''}catch(e){detail=e.message||String(e)}tests.push({category:'Growroom Pflege',name,pass,severity:'error',detail})};
+    T('Pflege-Ledger accountgebunden aktiv',()=>typeof window.v4114SyncCare==='function'&&!!embedded());
+    T('Erledigte Pflege ist monoton (true kann nicht zurück auf false)',()=>{const p={uid:'qa_care_monotonic',seed:'moss',start:Date.now()-30000,duration:100000,care:[false,false,false,false],careDoneAt:[0,0,0,0]};const z=embedded(),old=z[p.uid];z[p.uid]={uid:p.uid,care:[false,true,false,false],doneAt:[0,123456,0,0],updatedAt:Date.now()};const oldPlants=s.grow.plants;try{s.grow.plants=[p];syncLedger('qa-monotonic');return p.care[1]===true&&p.careDoneAt[1]>=123456}finally{s.grow.plants=oldPlants;if(old)z[p.uid]=old;else delete z[p.uid]}});
+    T('Pflegebutton direkt im Pflanzenslot implementiert',()=>typeof window.v4114DecorateCareSlots==='function'&&document.getElementById('v4114-grow-care-css'));
+    r.results.push(...tests);r.total=r.results.length;r.passed=r.results.filter(x=>x.pass).length;r.failed=r.results.filter(x=>!x.pass&&x.severity!=='warn').length;r.warnings=r.results.filter(x=>!x.pass&&x.severity==='warn').length;r.ok=r.failed===0;return r;
+   };
+   window.v4107RunQA=wrapped;if(window.v4102RunQA===runner)window.v4102RunQA=wrapped;window.__v4114QaWrapped=true;
+  }catch(e){}
+ }
+ function stamp(){try{document.title='Grow Legends '+SHORT;document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version').forEach(x=>x&&(x.textContent=VERSION));document.querySelectorAll('.v366-ver,.v371-logo em,.v372-logo em,.v4107-version').forEach(x=>x&&(x.textContent=SHORT))}catch(e){}}
+ syncLedger('startup');decorateSlots();addQaTests();stamp();
+ const mo=new MutationObserver(()=>{clearTimeout(window.__v4114DecorateTimer);window.__v4114DecorateTimer=setTimeout(()=>{syncLedger('mutation');decorateSlots();addQaTests();stamp()},40)});try{mo.observe(document.body,{childList:true,subtree:true})}catch(e){}
+ document.addEventListener('visibilitychange',()=>{if(!document.hidden){const c=syncLedger('visible');if(c)try{persist(false)}catch(e){};decorateSlots();stamp()}},{passive:true});
+ window.addEventListener('pageshow',()=>{const c=syncLedger('pageshow');if(c)try{persist(false)}catch(e){};decorateSlots();stamp()},{passive:true});
+ [120,600,1800,5000,12000].forEach(ms=>setTimeout(()=>{syncLedger('delayed');decorateSlots();addQaTests();stamp()},ms));
+})();
+</script>
+
