@@ -44215,7 +44215,7 @@ const v306Line=document.querySelector('#v141VersionLine');if(v306Line)v306Line.t
 
 
 <style id="v497-plant-art-economy-css">
-/* V4.98 — illustrated plants + Growroom economy aligned to the main RPG loop. */
+/* V4.99 — illustrated plants + Growroom economy aligned to the main RPG loop. */
 .v492-plant{overflow:hidden;min-height:156px!important;padding-top:5px!important}
 .v497-plant-art{height:86px;display:flex;align-items:flex-end;justify-content:center;margin:-2px auto 1px;position:relative;pointer-events:none}
 .v497-plant-art img{display:block;max-width:100%;width:auto;height:100%;object-fit:contain;filter:drop-shadow(0 7px 7px #000b);border-radius:15px;-webkit-mask-image:radial-gradient(ellipse 68% 68% at 50% 52%,#000 58%,transparent 100%);mask-image:radial-gradient(ellipse 68% 68% at 50% 52%,#000 58%,transparent 100%)}
@@ -44239,7 +44239,225 @@ const v306Line=document.querySelector('#v141VersionLine');if(v306Line)v306Line.t
 @media(max-width:760px){.v492-plant{min-height:144px!important}.v497-plant-art{height:78px}.v497-stage-seedling{height:60px}.v497-stage-growth{height:70px}.v497-stage-flower{height:80px}.v497-stage-harvest{height:82px}.v497-detail-head{grid-template-columns:76px 1fr}.v497-plant-art.detail{width:76px;height:76px}.v497-yield{grid-template-columns:1fr 1fr!important}.v497-yield>div:last-child{grid-column:1/-1}}
 @media(max-width:390px){.v492-plant{min-height:136px!important}.v497-plant-art{height:72px}}
 </style>
-<script id="v497-version-stamp">(()=>{const f=()=>{try{document.title='Grow Legends V4.98';document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version').forEach(e=>e&&(e.textContent='V4.98 Stable'));document.querySelectorAll('.v366-ver,.v371-logo em,.v372-logo em').forEach(e=>e&&(e.textContent='V4.98'))}catch(_){}};f();[250,1200,5000,15000,30000].forEach(t=>setTimeout(f,t));document.addEventListener('visibilitychange',()=>!document.hidden&&f(),{passive:true});window.addEventListener('pageshow',f,{passive:true})})();</script>
+<script id="v497-version-stamp">(()=>{const f=()=>{try{document.title='Grow Legends V4.99';document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version').forEach(e=>e&&(e.textContent='V4.99 Stable'));document.querySelectorAll('.v366-ver,.v371-logo em,.v372-logo em').forEach(e=>e&&(e.textContent='V4.99'))}catch(_){}};f();[250,1200,5000,15000,30000].forEach(t=>setTimeout(f,t));document.addEventListener('visibilitychange',()=>!document.hidden&&f(),{passive:true});window.addEventListener('pageshow',f,{passive:true})})();</script>
+
+<!-- ===== V4.99 Stable: authoritative Growroom persistence across navigation/cloud/render ===== -->
+<style id="v499-grow-persistence-css">
+.app > header .v358-logo::after{content:"V4.99"!important}
+.app > header .v366-ver::after,.app > header .v371-logo em::after,.app > header .v372-logo em::after{content:"V4.99"!important}
+</style>
+<script id="v499-grow-authority">
+(()=>{
+ 'use strict';
+ const VERSION='V4.99 Stable', SHORT='V4.99', PREFIX='growLegendsGrowStateV499:';
+ let internal=false, intentionalUntil=0, remoteAcceptUntil=0;
+
+ const clone=v=>{try{return JSON.parse(JSON.stringify(v))}catch(e){return null}};
+ const count=g=>Array.isArray(g?.plants)?g.plants.filter(Boolean).length:0;
+ const owner=()=>{
+   try{
+     const uid=String((typeof v073User!=='undefined'&&v073User?.id)||s?.__accountOwnerId||s?.social?.playerId||'').trim();
+     return uid||'local';
+   }catch(e){return 'local'}
+ };
+ const key=(id=owner())=>PREFIX+id;
+ const seedOk=id=>{try{return !!(typeof seedTypes!=='undefined'&&seedTypes?.[id])||!!(typeof SEEDS!=='undefined'&&SEEDS?.[id])}catch(e){return !!id}};
+ const seedMs=id=>{try{return Number((typeof SEEDS!=='undefined'&&SEEDS?.[id]?.growMs)||(typeof seedTypes!=='undefined'&&seedTypes?.[id]?.growMs))||60000}catch(e){return 60000}};
+
+ function normalizePlant(p,i=0){
+   if(!p||typeof p!=='object')return null;
+   const x={...p};
+   let seed=String(x.seed||x.seedId||'moss'); if(!seedOk(seed))seed='moss';
+   const start=Number(x.start),duration=Number(x.duration);
+   x.seed=seed; delete x.seedId;
+   x.start=Number.isFinite(start)&&start>0?start:Date.now();
+   x.duration=Math.max(1000,Number.isFinite(duration)&&duration>0?duration:seedMs(seed));
+   x.uid=String(x.uid||`v499_${x.start}_${i}_${Math.random().toString(36).slice(2,7)}`);
+   x.care=Array.isArray(x.care)?[0,1,2,3].map(n=>!!x.care[n]):[false,false,false,false];
+   x.mutation=(x.mutation==null||typeof x.mutation==='string')?x.mutation:null;
+   x.mutationChecked=!!x.mutationChecked;
+   return x;
+ }
+ function normalizeGrow(g){
+   const x=(g&&typeof g==='object')?clone(g)||{}:{};
+   x.plants=Array.isArray(x.plants)?x.plants.map((p,i)=>normalizePlant(p,i)):[];
+   x.seeds=(x.seeds&&typeof x.seeds==='object')?x.seeds:{};
+   x.equipment=(x.equipment&&typeof x.equipment==='object')?x.equipment:{lamp:0,pots:0};
+   x.v492=(x.v492&&typeof x.v492==='object')?x.v492:{};
+   x.v499Revision=Math.max(0,Math.floor(Number(x.v499Revision)||0));
+   return x;
+ }
+ function core(g){
+   const x=normalizeGrow(g); delete x.v499Revision;
+   try{return JSON.stringify(x)}catch(e){return ''}
+ }
+ function read(id=owner()){
+   try{
+     const x=JSON.parse(localStorage.getItem(key(id))||'null');
+     if(!x||x.owner!==id||!x.grow||typeof x.grow!=='object')return null;
+     x.grow=normalizeGrow(x.grow); x.rev=Math.max(0,Math.floor(Number(x.rev)||Number(x.grow.v499Revision)||0));
+     return x;
+   }catch(e){return null}
+ }
+ function write(g,rev,reason='save',id=owner()){
+   try{
+     const grow=normalizeGrow(g); grow.v499Revision=Math.max(0,Math.floor(Number(rev)||0));
+     const snap={owner:id,rev:grow.v499Revision,savedAt:Date.now(),reason,core:core(grow),grow};
+     localStorage.setItem(key(id),JSON.stringify(snap));
+     return snap;
+   }catch(e){return null}
+ }
+ function restore(snap,reason='repair'){
+   if(!snap?.grow)return false;
+   internal=true;
+   try{
+     s.grow=normalizeGrow(snap.grow);
+     s.grow.v499Revision=Math.max(Number(s.grow.v499Revision)||0,Number(snap.rev)||0);
+     try{localStorage.setItem(KEY,JSON.stringify(s))}catch(e){}
+     return true;
+   }finally{internal=false}
+ }
+
+ /* Called before every normal persist. A spontaneous plant-count drop is treated as
+    corruption. Only an explicit harvest/reset may lower the authoritative count. */
+ function prepare(reason='persist'){
+   if(internal)return false;
+   const id=owner(), prev=read(id), cur=normalizeGrow(s?.grow);
+   if(!prev){
+     const rev=Math.max(1,Number(cur.v499Revision)||0); cur.v499Revision=rev; s.grow=cur; write(cur,rev,reason,id); return true;
+   }
+   const pc=count(prev.grow),cc=count(cur),now=Date.now();
+   const remoteAllowed=now<remoteAcceptUntil;
+   const intentional=now<intentionalUntil;
+   if(pc>cc && !intentional && !remoteAllowed){
+     restore(prev,'blocked-empty-overwrite');
+     return true;
+   }
+   const ch=core(cur),ph=prev.core||core(prev.grow);
+   if(ch!==ph){
+     const rev=Math.max(Number(prev.rev)||0,Number(cur.v499Revision)||0)+1;
+     cur.v499Revision=rev; s.grow=cur; write(cur,rev,reason,id); return true;
+   }
+   cur.v499Revision=Math.max(Number(cur.v499Revision)||0,Number(prev.rev)||0); s.grow=cur;
+   return false;
+ }
+ function reconcile(reason='reconcile'){
+   if(internal)return false;
+   const id=owner(), snap=read(id), cur=normalizeGrow(s?.grow);
+   if(!snap){write(cur,Math.max(1,Number(cur.v499Revision)||0),reason,id);return false}
+   const sr=Math.max(Number(snap.rev)||0,Number(snap.grow?.v499Revision)||0),cr=Math.max(0,Number(cur.v499Revision)||0);
+   const lost=count(snap.grow)>count(cur),older=cr<sr;
+   if((older||lost)&&Date.now()>=remoteAcceptUntil){
+     restore(snap,reason);
+     try{if(typeof renderGrow==='function'&&document.querySelector('#grow')?.classList.contains('active'))renderGrow()}catch(e){}
+     return true;
+   }
+   if(cr>sr || core(cur)!==(snap.core||core(snap.grow)))write(cur,Math.max(cr,sr+1),reason,id);
+   return false;
+ }
+
+ /* Explicit removal actions are the only paths allowed to reduce plant count. */
+ window.addEventListener('click',e=>{
+   try{
+     const t=e.target instanceof Element?e.target:null;if(!t)return;
+     if(t.closest('[data-v492-harvest],#harvestBtn,[data-v117-reset],#resetBtn'))intentionalUntil=Date.now()+4000;
+   }catch(_){ }
+ },true);
+
+ try{
+   if(typeof normalizeState==='function'&&!normalizeState.__v499){
+     const base=normalizeState;
+     const wrapped=function(){
+       const before=normalizeGrow(s?.grow); const r=base.apply(this,arguments);
+       /* Historical normalizers may sanitize the rest of the account, but they no
+          longer own modern Growroom state. */
+       s.grow=before; return r;
+     };
+     wrapped.__v499=true; normalizeState=wrapped; try{window.normalizeState=wrapped}catch(e){}
+   }
+ }catch(e){console.warn('V4.99 normalize guard',e)}
+
+ try{
+   if(typeof persist==='function'&&!persist.__v499){
+     const base=persist;
+     const wrapped=function(){
+       if(!internal)prepare('persist-before');
+       const r=base.apply(this,arguments);
+       if(!internal)prepare('persist-after');
+       return r;
+     };
+     wrapped.__v499=true; persist=wrapped; try{window.persist=wrapped}catch(e){}
+   }
+ }catch(e){console.warn('V4.99 persist guard',e)}
+
+ /* A stale cloud/account copy may arrive after the user has already planted.
+    Growroom revision is compared independently from the rest of the save. */
+ try{
+   if(typeof v075ApplyCloudSave==='function'&&!v075ApplyCloudSave.__v499){
+     const base=v075ApplyCloudSave;
+     const wrapped=async function(data){
+       let incoming=(data&&typeof data==='object')?clone(data):data;
+       const id=owner(),local=read(id);
+       if(incoming&&typeof incoming==='object'&&local){
+         const rr=Math.max(0,Number(incoming?.grow?.v499Revision)||0),lr=Math.max(0,Number(local.rev)||0);
+         if(lr>=rr){incoming.grow=clone(local.grow)}
+         else remoteAcceptUntil=Date.now()+5000;
+       }
+       const r=await base.call(this,incoming);
+       if(Date.now()<remoteAcceptUntil){
+         const g=normalizeGrow(s?.grow),rev=Math.max(Number(g.v499Revision)||0,Number(incoming?.grow?.v499Revision)||0);g.v499Revision=rev;s.grow=g;write(g,rev,'cloud-newer',owner());
+       }else reconcile('cloud-apply');
+       return r;
+     };
+     wrapped.__v499=true; v075ApplyCloudSave=wrapped; try{window.v075ApplyCloudSave=wrapped}catch(e){}
+   }
+ }catch(e){console.warn('V4.99 cloud apply guard',e)}
+
+ try{
+   if(typeof v075WriteCloudSave==='function'&&!v075WriteCloudSave.__v499){
+     const base=v075WriteCloudSave;
+     const wrapped=async function(){prepare('cloud-write');return base.apply(this,arguments)};
+     wrapped.__v499=true;v075WriteCloudSave=wrapped;try{window.v075WriteCloudSave=wrapped}catch(e){}
+   }
+ }catch(e){console.warn('V4.99 cloud write guard',e)}
+
+ try{
+   if(typeof v032Go==='function'&&!v032Go.__v499){
+     const base=v032Go;
+     const wrapped=function(id){
+       prepare('navigation-before');
+       const r=base.apply(this,arguments);
+       [0,40,180,650,1600,3200].forEach(ms=>setTimeout(()=>{reconcile(`navigation-${id}-${ms}`);if(id==='grow'&&ms<=180)try{renderGrow()}catch(e){}},ms));
+       return r;
+     };
+     wrapped.__v499=true;v032Go=wrapped;try{window.v032Go=wrapped}catch(e){}
+   }
+ }catch(e){console.warn('V4.99 navigation guard',e)}
+
+ /* Account reset must not resurrect an old Growroom. */
+ try{
+   if(typeof v117ResetGame==='function'&&!v117ResetGame.__v499){
+     const base=v117ResetGame;v117ResetGame=async function(){intentionalUntil=Date.now()+10000;const id=owner();const r=await base.apply(this,arguments);try{localStorage.removeItem(key(id))}catch(e){}return r};v117ResetGame.__v499=true;try{window.v117ResetGame=v117ResetGame}catch(e){}
+   }
+ }catch(e){}
+
+ function stamp(){
+   try{document.title='Grow Legends '+SHORT}catch(e){}
+   try{document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version').forEach(el=>el&&(el.textContent=VERSION));document.querySelectorAll('.v366-ver,.v371-logo em,.v372-logo em').forEach(el=>el&&(el.textContent=SHORT))}catch(e){}
+ }
+
+ /* Do NOT overwrite a non-empty shadow during startup. Restore first, then seed a
+    snapshot only if none exists. This fixes the main V4.98 backup flaw. */
+ const first=read(owner());
+ if(first)reconcile('startup');else write(normalizeGrow(s?.grow),Math.max(1,Number(s?.grow?.v499Revision)||0),'startup',owner());
+ stamp();
+ document.addEventListener('visibilitychange',()=>{if(!document.hidden){reconcile('visibility');stamp()}},{passive:true});
+ window.addEventListener('pageshow',()=>{reconcile('pageshow');stamp()},{passive:true});
+ [100,350,900,1800,3500,7000,12000,20000,30000].forEach(ms=>setTimeout(()=>{reconcile('delayed');stamp()},ms));
+ const guard=setInterval(()=>{if(!document.hidden)reconcile('guard')},1500);setTimeout(()=>clearInterval(guard),45000);
+ window.v499RepairGrowroom=()=>reconcile('manual');
+})();
+</script>
 
 </body>
 </html>
@@ -66633,9 +66851,9 @@ html.v481-hidden *,html.v481-hidden *::before,html.v481-hidden *::after{animatio
 <!-- ===== V4.91 Stable: HARZSCHMIEDE ===== -->
 <style id="v488-harzschmiede-css">
 /* Grow Legends V4.91 – comic Harzschmiede, integrated into the existing game. */
-.app > header .v358-logo::after{content:"V4.98"!important}
+.app > header .v358-logo::after{content:"V4.99"!important}
 #v372TopbarShell .v372-logo em::after,
-.app > header .v366-ver::after,.app > header .v371-logo em::after,.app > header .v372-logo em::after{content:"V4.98"!important}
+.app > header .v366-ver::after,.app > header .v371-logo em::after,.app > header .v372-logo em::after{content:"V4.99"!important}
 
 #forge.screen{padding:10px 10px 88px!important;max-width:1180px;margin:0 auto}
 .v488-shell{--ink:#17130b;--panel:#182318;--panel2:#0e160f;--green:#7bc84d;--gold:#e9b94f;--line:#4d633d;position:relative;overflow:hidden;border:1px solid #40543a;border-radius:22px;background:linear-gradient(180deg,#152018,#09110c 76%);box-shadow:0 18px 50px #0008,inset 0 0 45px #0007;color:#ecf3e8}
@@ -66871,7 +67089,7 @@ html.v481-hidden *,html.v481-hidden *::before,html.v481-hidden *::after{animatio
 
 <script id="v488-harzschmiede-core">
 (function(){
-  const VERSION='V4.98 Stable', SHORT='V4.98';
+  const VERSION='V4.99 Stable', SHORT='V4.99';
   const selected=new Set();
   let listScroll=0,lastCraft=null,busy=false;
   const YIELD={gray:1,green:3,blue:7,purple:15,orange:30};
@@ -67121,8 +67339,8 @@ html.v481-hidden *,html.v481-hidden *::before,html.v481-hidden *::after{animatio
 
 \n\n<!-- ===== V4.92 Stable: Growroom 2.0 / comic RPG grow loop ===== -->
 <style id="v492-growroom2-css">
-.app > header .v358-logo::after{content:"V4.98"!important}
-.app > header .v366-ver::after,.app > header .v371-logo em::after,.app > header .v372-logo em::after{content:"V4.98"!important;font-size:5px!important;color:#63cdd1!important;font-style:normal!important;font-weight:900!important}
+.app > header .v358-logo::after{content:"V4.99"!important}
+.app > header .v366-ver::after,.app > header .v371-logo em::after,.app > header .v372-logo em::after{content:"V4.99"!important;font-size:5px!important;color:#63cdd1!important;font-style:normal!important;font-weight:900!important}
 #grow.screen{padding:10px 8px 88px!important;max-width:1180px;margin:0 auto}
 #grow>.v052-scene-banner,#grow>.card,#grow>.hero-card{display:none!important}
 .v492-grow{--g:#77cf44;--g2:#b7ef5d;--gold:#f1bd48;--wood:#684317;--ink:#081008;position:relative;color:#edf5e9;border:2px solid #6b4a22;border-radius:22px;background:#0a100a;box-shadow:0 18px 50px #0009,inset 0 0 40px #0008;overflow:hidden}
@@ -67137,7 +67355,7 @@ html.v481-hidden *,html.v481-hidden *::before,html.v481-hidden *::after{animatio
 <script id="v492-growroom2-script">
 (function(){
  'use strict';
- const VERSION='V4.98 Stable',SHORT='V4.98';
+ const VERSION='V4.99 Stable',SHORT='V4.99';
  const GRADES=['C','B','A','S','S+'];
  const QMULT={C:.82,B:.92,A:1,S:1.14,'S+':1.30};
  const CARE=[
@@ -67401,7 +67619,7 @@ html.v481-hidden *,html.v481-hidden *::before,html.v481-hidden *::after{animatio
  document.addEventListener('click',e=>{const t=e.target instanceof Element?e.target:null;if(!t)return;const toggle=t.closest('[data-v493-seeds]');if(toggle){e.preventDefault();const root=document.querySelector('.v492-grow');if(root){root.classList.toggle('v493-seeds-open');syncToggle()}return}
    const seed=t.closest('[data-v492-seed]');if(seed&&!t.closest('[data-v492-buy]')&&window.matchMedia('(max-width:760px)').matches){setTimeout(()=>{const root=document.querySelector('.v492-grow');if(root){root.classList.remove('v493-seeds-open');syncToggle();document.querySelector('.v492-scene')?.scrollIntoView({block:'start',behavior:'smooth'})}},40)}
  },true);
- const keepVersion=()=>{try{document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version').forEach(el=>{if(el)el.textContent='V4.98 Stable'});document.querySelectorAll('.v366-ver,.v371-logo em,.v372-logo em').forEach(el=>{if(el)el.textContent='V4.98'})}catch(e){}};
+ const keepVersion=()=>{try{document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version').forEach(el=>{if(el)el.textContent='V4.99 Stable'});document.querySelectorAll('.v366-ver,.v371-logo em,.v372-logo em').forEach(el=>{if(el)el.textContent='V4.99'})}catch(e){}};
  [0,500,2500,7000,17000].forEach(ms=>setTimeout(keepVersion,ms));
 })();
 </script>
@@ -67434,7 +67652,7 @@ body.v495-seed-open{overflow:hidden!important}
 </style>
 <script id="v495-seed-inventory-popup-js">
 (()=>{
- const VERSION='V4.98 Stable',SHORT='V4.98';
+ const VERSION='V4.99 Stable',SHORT='V4.99';
  function stamp(){try{document.title='Grow Legends '+SHORT;document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version').forEach(el=>{if(el)el.textContent=VERSION});document.querySelectorAll('.v366-ver,.v371-logo em,.v372-logo em').forEach(el=>{if(el)el.textContent=SHORT})}catch(e){}}
  document.addEventListener('click',e=>{const t=e.target instanceof Element?e.target:null;if(!t)return;const b=t.closest('[data-v493-seeds]');if(b){setTimeout(()=>{try{window.v495OpenSeedInventory?.()}catch(_){}},0)}},true);
  document.addEventListener('keydown',e=>{if(e.key==='Escape')try{window.v495CloseSeedInventory?.()}catch(_){}});
@@ -67444,17 +67662,17 @@ body.v495-seed-open{overflow:hidden!important}
 </script>
 
 
-<!-- ===== V4.98 Stable: Wundertüte OG retired + Growroom fragment economy ===== -->
+<!-- ===== V4.99 Stable: Wundertüte OG retired + Growroom fragment economy ===== -->
 <style id="v496-og-retire-fragment-balance-css">
 /* The legacy Wundertüte OG no longer exists as a playable seed. */
 #v077SeedPanel,.v495-og-wrap{display:none!important}
-.app > header .v358-logo::after{content:"V4.98"!important}
-.app > header .v366-ver::after,.app > header .v371-logo em::after,.app > header .v372-logo em::after{content:"V4.98"!important}
+.app > header .v358-logo::after{content:"V4.99"!important}
+.app > header .v366-ver::after,.app > header .v371-logo em::after,.app > header .v372-logo em::after{content:"V4.99"!important}
 </style>
 <script id="v496-og-retire-fragment-balance-js">
 (()=>{
  'use strict';
- const VERSION='V4.98 Stable',SHORT='V4.98',EPIC=['nebula','lemon','gorilla','greencrack','amnesia'];
+ const VERSION='V4.99 Stable',SHORT='V4.99',EPIC=['nebula','lemon','gorilla','greencrack','amnesia'];
  function stamp(){
   try{document.title='Grow Legends '+SHORT}catch(e){}
   try{document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version').forEach(el=>{if(el)el.textContent=VERSION});document.querySelectorAll('.v366-ver,.v371-logo em,.v372-logo em').forEach(el=>{if(el)el.textContent=SHORT})}catch(e){}
@@ -67489,11 +67707,11 @@ body.v495-seed-open{overflow:hidden!important}
 </script>
 
 
-<!-- ===== V4.98 Stable: Growroom plant persistence / navigation integrity ===== -->
+<!-- ===== V4.99 Stable: Growroom plant persistence / navigation integrity ===== -->
 <script id="v498-growroom-persistence-fix">
 (()=>{
  'use strict';
- const VERSION='V4.98 Stable',SHORT='V4.98';
+ const VERSION='V4.99 Stable',SHORT='V4.99';
  const SNAP_KEY='growLegendsGrowPlantsV498';
 
  function clone(v){try{return JSON.parse(JSON.stringify(v))}catch(e){return null}}
@@ -67576,7 +67794,7 @@ body.v495-seed-open{overflow:hidden!important}
      normalizeState=wrapped;
      try{window.normalizeState=wrapped}catch(e){}
    }
- }catch(e){console.warn('V4.98 normalizeState guard',e)}
+ }catch(e){console.warn('V4.99 normalizeState guard',e)}
 
  /* Persist the exact plant state after every normal game save. This also means
     intentional harvest/reset writes an empty snapshot, so old plants are not
@@ -67593,7 +67811,7 @@ body.v495-seed-open{overflow:hidden!important}
      persist=wrapped;
      try{window.persist=wrapped}catch(e){}
    }
- }catch(e){console.warn('V4.98 persist guard',e)}
+ }catch(e){console.warn('V4.99 persist guard',e)}
 
  /* Exact bug guard: navigation is not allowed to turn a non-empty Growroom into
     an empty one. We keep the pre-navigation array in memory and restore it if
@@ -67610,7 +67828,7 @@ body.v495-seed-open{overflow:hidden!important}
          restore(before,selected);
          try{persist(false)}catch(e){try{localStorage.setItem(KEY,JSON.stringify(s))}catch(_){}}
          if(id==='grow')try{renderGrow()}catch(e){}
-         console.warn('V4.98 restored Growroom plants after navigation');
+         console.warn('V4.99 restored Growroom plants after navigation');
        }else{
          writeSnapshot(s?.grow?.plants);
        }
@@ -67620,7 +67838,7 @@ body.v495-seed-open{overflow:hidden!important}
      v032Go=wrapped;
      try{window.v032Go=wrapped}catch(e){}
    }
- }catch(e){console.warn('V4.98 navigation guard',e)}
+ }catch(e){console.warn('V4.99 navigation guard',e)}
 
  /* If a previous render already blanked the array in this session, use the
     newest same-account snapshot only when it is at least as new as the state. */
@@ -67634,7 +67852,7 @@ body.v495-seed-open{overflow:hidden!important}
      try{persist(false)}catch(e){try{localStorage.setItem(KEY,JSON.stringify(s))}catch(_){}}
      try{renderGrow()}catch(e){}
      return true;
-   }catch(e){console.warn('V4.98 snapshot repair',e);return false}
+   }catch(e){console.warn('V4.99 snapshot repair',e);return false}
  }
  window.v498RepairGrowPlants=repairFromSnapshot;
 
