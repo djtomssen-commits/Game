@@ -38721,7 +38721,7 @@ function v262RenderWar(){const phase=document.querySelector('#v262WarPhase'),sta
 async function v262LoadWar(){if(!v254Membership||!v073Db){v262War=null;v262WarDuels=[];v262RenderWar();return}const {data,error}=await v073Db.rpc('v262_get_guild_war');if(error){console.info('V4.02 war foundation: matchmaking RPC follows in V4.02');v262War=null;v262WarDuels=[];v262RenderWar();return}v262War=data?.war||null;v262WarDuels=Array.isArray(data?.duels)?data.duels:[];v262RenderWar()}
 function v262DuelHtml(d,i){const leftWin=d.winner_side==='attacker';return `<div class="v262-duel ${leftWin?'winner-left':'winner-right'}"><div class="v262-duel-head"><span>Duell ${i+1}</span><span>${leftWin?'⚔️ Angriff gewinnt':'🛡️ Verteidigung gewinnt'}</span></div><div class="v262-duel-line"><div class="v262-left"><b>${v254GuildEsc(d.attacker_name||'Angreifer')}</b><small>Lv. ${Number(d.attacker_level)||1} · ${v255Fmt(d.attacker_power)} KP · ${v255Fmt(d.attacker_hp_after)} HP</small></div><span>⚔️</span><div class="v262-right"><b>${v254GuildEsc(d.defender_name||'Verteidiger')}</b><small>Lv. ${Number(d.defender_level)||1} · ${v255Fmt(d.defender_power)} KP · ${v255Fmt(d.defender_hp_after)} HP</small></div></div></div>`}
 async function v262WatchWar(){const box=document.querySelector('#v262WarReplay');if(!box||!v262WarDuels.length)return;box.classList.add('on');box.innerHTML='';for(let i=0;i<v262WarDuels.length;i++){box.insertAdjacentHTML('beforeend',v262DuelHtml(v262WarDuels[i],i));await v259Sleep(450)}}
-async function v262ClaimWar(){const {data,error}=await v073Db.rpc('v262_claim_guild_war_reward');if(error)return v063Toast('Belohnung fehlgeschlagen','warn',error.message||'');const r=data||{};s.gold=(Number(s.gold)||0)+v408GuildGold(Number(r.gold)||0);addXp(Number(r.xp)||0);s.premium=(Number(s.premium)||0)+(Number(r.harz)||0);persist();render();v063Toast('Gildenkrieg-Belohnung','success',`+${v255Fmt(r.gold)} Gold · +${v255Fmt(r.xp)} EXP · +${r.harz||0} Harz-Taler`);await v262LoadWar()}
+async function v262ClaimWar(){const {data,error}=await v073Db.rpc('v262_claim_guild_war_reward');if(error)return v063Toast('Belohnung fehlgeschlagen','warn',error.message||'');const r=data||{};s.gold=(Number(s.gold)||0)+v408GuildGold(Number(r.gold)||0);addXp(Number(r.xp)||0);s.harzTaler=(Number(s.harzTaler)||0)+(Number(r.harz)||0);persist();render();v063Toast('Gildenkrieg-Belohnung','success',`+${v255Fmt(r.gold)} Gold · +${v255Fmt(r.xp)} EXP · +${r.harz||0} Harz-Taler`);await v262LoadWar()}
 document.querySelector('#v262WarRefresh')?.addEventListener('click',v262LoadWar);document.querySelector('#v262WarWatch')?.addEventListener('click',v262WatchWar);document.querySelector('#v262WarClaim')?.addEventListener('click',v262ClaimWar);
 const v262BaseLoadGuild=v254LoadGuild;v254LoadGuild=async function(){const r=await v262BaseLoadGuild();await v262LoadWar();return r};
 const v262BaseSignup=v254ToggleSignup;v254ToggleSignup=async function(kind){const r=await v262BaseSignup(kind);if(kind==='attack'||kind==='defense')await v262LoadWar();return r};
@@ -69414,8 +69414,12 @@ function fullReport(){
  T('Performance & Altlasten','Keine sehr großen Timer-Mengen >80',()=>({pass:ti.ints.length+ti.tos.length<80,detail:`${ti.ints.length} Intervalle + ${ti.tos.length} Timeouts`}), 'warn');
  T('Performance & Altlasten','Netzwerkaufrufe ohne Fehlerquote >20 %',()=>({pass:network.calls.length<5||network.errors/network.calls.length<=.2,detail:`${network.errors}/${network.calls.length} Fehler`}), 'warn');
  T('Performance & Altlasten','Keine sichtbaren Legacy-Item-Fallbacks',()=>({pass:[...document.querySelectorAll('.v4103-item-fallback')].filter(visible).length===0,detail:'sichtbare Fallbacks'}), 'warn');
- const oldVersionScriptsCount=historicalScriptCount();
+ const oldVersionScriptsCount=(typeof historicalScriptCount==='function'?historicalScriptCount():0);
  T('Performance & Altlasten','Historische Versions-Skripte werden inventarisiert',()=>({pass:oldVersionScriptsCount<180,detail:`${oldVersionScriptsCount} historische Scriptblöcke im Build`}), 'warn');
+
+ T('Growroom Pflege','V4.120 Fingerprint-Pflegeautorität aktiv',()=>typeof window.v4120RestoreCare==='function'&&typeof window.v4120CaptureCare==='function');
+ T('Growroom Pflege','Pflanzen-Fingerprint bleibt bei UID-Wechsel identisch',()=>{if(typeof window.v4120CareFingerprint!=='function')return false;const a={uid:'alt',seed:'moss',start:123456789,duration:60000,care:[true,false,false,false]},b={uid:'neu',seed:'moss',start:123456789,duration:60000,care:[false,false,false,false]};return window.v4120CareFingerprint(a)===window.v4120CareFingerprint(b)});
+ T('Systemtechnik UI','Historische Scriptzählung ist ausfallsicher',()=>typeof window.historicalScriptCount==='function');
 
  T('Browser & Sicherheit','Keine ungefangenen JS-Fehler seit Start',()=>({pass:!allRuntime().some(x=>x.code==='JS_ERROR'),detail:`JS-Fehler: ${allRuntime().filter(x=>x.code==='JS_ERROR').length}`}));
  T('Browser & Sicherheit','Keine unbehandelten Promise-Fehler',()=>({pass:!allRuntime().some(x=>x.code==='UNHANDLED_REJECTION'),detail:`Promise-Fehler: ${allRuntime().filter(x=>x.code==='UNHANDLED_REJECTION').length}`}));
@@ -69445,13 +69449,13 @@ function perfMetrics(){
  const t=timerInfo(),r=renderStats(),dom=document.getElementsByTagName('*').length,heap=performance.memory?performance.memory.usedJSHeapSize/1048576:null,long=(tech().longTasks||[]).filter(x=>Date.now()-x.at<60000),ls=localStorageKb();
  const score=Math.max(0,100-Math.min(25,t.dupInts.length*8)-Math.min(20,t.legacy.length*2)-Math.min(15,long.filter(x=>x.duration>150).length*4)-Math.min(20,Math.max(0,r.max.ms-60)/4)-Math.min(20,Math.max(0,dom-5000)/150));
  const state=score>=85?'OPTIMAL':score>=65?'BEOBACHTEN':'BELASTET';
- return{score,state,dom,ints:t.ints.length,timeouts:t.tos.length,dup:t.dupInts.length,legacy:t.legacy.length,legacyListeners:(typeof legacyListenerInfo==='function'?legacyListenerInfo():[]).length,historicScripts:historicalScriptCount(),stale:t.staleTimeouts.length,listeners:tech().listeners.size,long:long.length,renderMax:r.max.ms,renderAvg:r.avg,heap,ls,network:network.calls.length,netErrors:network.errors};
+ return{score,state,dom,ints:t.ints.length,timeouts:t.tos.length,dup:t.dupInts.length,legacy:t.legacy.length,legacyListeners:(typeof legacyListenerInfo==='function'?legacyListenerInfo():[]).length,historicScripts:(typeof historicalScriptCount==='function'?historicalScriptCount():0),stale:t.staleTimeouts.length,listeners:tech().listeners.size,long:long.length,renderMax:r.max.ms,renderAvg:r.avg,heap,ls,network:network.calls.length,netErrors:network.errors};
 }
 function ensureScreen(){
  const main=document.querySelector('main');if(!main)return null;
  let sec=document.getElementById('systemtech');if(!sec){sec=document.createElement('section');sec.id='systemtech';sec.className='screen';const footer=document.getElementById('v337LegalFooter');if(footer&&footer.parentElement===main)main.insertBefore(sec,footer);else main.appendChild(sec)}
  if(!sec.dataset.built){sec.dataset.built='1';sec.innerHTML=`<div class="v4107-page">
-  <div class="v4107-top"><div class="v4107-brand"><div class="v4107-brand-mark">🌿⚙️</div><div><h1>GROW LEGENDS <span>SYSTEMTEST & TECHNIK</span></h1><p>AUTOMATISCHE PRÜFUNG ALLER SYSTEME · FLOW · UI/PIXEL · SAVE · PERFORMANCE · ALTLASTEN</p></div></div><div class="v4107-version">V4.116</div></div>
+  <div class="v4107-top"><div class="v4107-brand"><div class="v4107-brand-mark">🌿⚙️</div><div><h1>GROW LEGENDS <span>SYSTEMTEST & TECHNIK</span></h1><p>AUTOMATISCHE PRÜFUNG ALLER SYSTEME · FLOW · UI/PIXEL · SAVE · PERFORMANCE · ALTLASTEN</p></div></div><div class="v4107-version">V4.120</div></div>
   <div class="v4107-layout">
    <aside class="v4107-sidebar"><div class="v4107-side-title">⚙️ SYSTEMTECHNIK</div>
     <button class="v4107-nav active" data-v4107-jump="status"><i>🧪</i>Systemtest</button>
@@ -70085,3 +70089,370 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();i
  window.addEventListener('pageshow',()=>{stamp();setTimeout(refreshBoss,100)},{passive:true});
 })();
 </script>
+
+<!-- ===== V4.119 Stable: final guild orchestration + boss progress reliability ===== -->
+<style id="v4119-guild-reliability-css">
+#v414BossStageBox{display:none!important}
+.v4119-boss-progress{margin:0 0 10px;padding:11px;border:1px solid #50613d;border-radius:12px;background:linear-gradient(135deg,#11190e,#080e09);box-shadow:inset 0 0 18px #0005}
+.v4119-boss-progress.ok{border-color:#526b40}.v4119-boss-progress.warn{border-color:#9d6e35;background:linear-gradient(135deg,#20170c,#100b07)}.v4119-boss-progress.bad{border-color:#9a4449;background:linear-gradient(135deg,#241012,#100708)}
+.v4119-boss-progress-top{display:flex;justify-content:space-between;gap:9px;align-items:center}.v4119-boss-progress-top span{font-size:7px;font-weight:1000;letter-spacing:.08em;color:#a6b797}.v4119-boss-progress-top b{font-size:10px;color:#e1f1a7}.v4119-boss-progress.warn .v4119-boss-progress-top b{color:#ffd18a}.v4119-boss-progress.bad .v4119-boss-progress-top b{color:#ffaaa9}
+.v4119-boss-progress small{display:block;margin-top:5px;font-size:6.6px;line-height:1.5;color:#8d9b8d}.v4119-boss-progress strong{color:#d9a8ef}.v4119-boss-progress .v4119-diag{margin-top:6px;padding-top:6px;border-top:1px solid #ffffff12;color:#b7a384}
+.v4119-guild-health{margin:8px 0 0;padding:7px 9px;border:1px solid #314638;border-radius:9px;background:#08110b;font-size:6.5px;color:#7f9083;display:none}.v4119-guild-health.show{display:block}.v4119-guild-health.bad{border-color:#8b4045;color:#f2a3a5;background:#18090b}
+</style>
+<script id="v4119-guild-reliability">
+(()=>{
+ 'use strict';
+ const VERSION='V4.119 Stable',SHORT='V4.119';
+ const baseGuildLoad=typeof v254LoadGuild==='function'?v254LoadGuild:null;
+ const state={refreshing:false,promise:null,stage:null,stageError:'',stageAt:0,lastBossAt:0,lastWarAt:0,guildId:'',issues:[]};
+ const dayKey=()=>{const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`};
+ const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+ const fmt=n=>Math.max(0,Math.round(Number(n)||0)).toLocaleString('de-DE');
+ function gid(){return String((typeof v254Membership!=='undefined'&&v254Membership?.guild_id)||(typeof v254Guild!=='undefined'&&v254Guild?.id)||'')}
+ function cacheKey(){return `growLegendsGuildBossStage:v4119:${gid()||'none'}`}
+ function readCache(){try{return JSON.parse(localStorage.getItem(cacheKey())||'null')}catch(e){return null}}
+ function writeCache(x){try{if(gid())localStorage.setItem(cacheKey(),JSON.stringify(x))}catch(e){}}
+ function normalizeStage(raw){
+   const r=Array.isArray(raw)?raw[0]:raw;
+   if(!r||typeof r!=='object')return null;
+   const stage=Math.max(1,Math.floor(Number(r.stage)||1));
+   const wins=Math.max(0,Math.floor(Number(r.wins)||0));
+   const next_hp=Math.max(1,Math.floor(Number(r.next_hp)||12000));
+   const reward_buds=Math.max(0,Math.floor(Number(r.reward_buds)||20));
+   return {stage,wins,next_hp,reward_buds,at:Date.now(),day:dayKey()};
+ }
+ function expectedHp(stage){return Math.max(12000,Math.round(12000*Math.pow(1.28,Math.max(0,Number(stage)-1))))}
+ function stageFromHp(hp){hp=Math.max(1,Number(hp)||1);return Math.max(1,Math.round(Math.log(hp/12000)/Math.log(1.28))+1)}
+ function roundStageFromHp(){try{const hp=Number(v255BossRound?.boss_max_hp)||0;return hp?stageFromHp(hp):0}catch(e){return 0}}
+ function resolved(){try{return !!v255BossRound&&['won','lost'].includes(String(v255BossRound.status||''))}catch(e){return false}}
+ function currentRoundStage(meta){
+   const hpStage=roundStageFromHp();
+   if(hpStage>0)return hpStage;
+   if(!meta)return 1;
+   return v255BossRound?.status==='won'?Math.max(1,meta.stage-1):meta.stage;
+ }
+ function reconcileStage(fresh){
+   const old=readCache();
+   if(!fresh)return old||null;
+   let out={...fresh};
+   if(old&&String(old.guild_id||gid())===gid()){
+     /* Server progress must be monotonic. Never silently paint a lower historical value. */
+     if(Number(old.wins)>out.wins||Number(old.stage)>out.stage){
+       state.issues.push(`Bossfortschritt fiel zurück: Server Stufe ${out.stage}/${out.wins} Siege, zuletzt Stufe ${old.stage}/${old.wins}.`);
+       out.wins=Math.max(out.wins,Number(old.wins)||0);
+       out.stage=Math.max(out.stage,Number(old.stage)||1);
+       out.next_hp=Math.max(out.next_hp,Number(old.next_hp)||expectedHp(out.stage));
+       out.regression=true;
+     }
+   }
+   const hpStage=roundStageFromHp();
+   if(hpStage>out.stage){out.stage=hpStage+(v255BossRound?.status==='won'?1:0);out.wins=Math.max(out.wins,out.stage-1);out.next_hp=Math.max(out.next_hp,expectedHp(out.stage));out.derivedFromRound=true;}
+   out.guild_id=gid(); writeCache(out); return out;
+ }
+ async function loadStage(){
+   state.stageError='';
+   if(!gid()||typeof v073Db==='undefined'||!v073Db){state.stage=readCache();paintBossProgress();return state.stage}
+   try{
+     const {data,error}=await v073Db.rpc('v414_get_guild_boss_stage');
+     if(error)throw error;
+     const n=normalizeStage(data);
+     if(!n)throw new Error('Gildenboss-Fortschritt lieferte keine gültigen Daten.');
+     state.stage=reconcileStage(n);state.stageAt=Date.now();
+   }catch(e){
+     state.stageError=String(e?.message||e||'Unbekannter Fehler');
+     state.stageAt=Date.now();
+     state.stage=readCache();
+     state.issues.push('Bossfortschritt-RPC: '+state.stageError);
+   }
+   paintBossProgress();return state.stage;
+ }
+ function ensureProgressBox(){
+   const live=document.getElementById('v255BossLive');if(!live)return null;
+   let box=document.getElementById('v4119BossProgress');
+   if(!box){box=document.createElement('div');box.id='v4119BossProgress';box.className='v4119-boss-progress';live.prepend(box)}
+   return box;
+ }
+ function paintBossProgress(){
+   const box=ensureProgressBox();if(!box)return;
+   const m=state.stage,err=state.stageError,cache=readCache();
+   if(!m){
+     box.className='v4119-boss-progress bad';
+     box.innerHTML=`<div class="v4119-boss-progress-top"><span>☣ LANGZEIT-GILDENBOSS</span><b>FORTSCHRITT NICHT GELADEN</b></div><small>Der Bossfortschritt konnte nicht sicher vom Server gelesen werden. Es wird deshalb <strong>nicht fälschlich „0 Titanen“</strong> angezeigt.</small>${err?`<small class="v4119-diag">${esc(err)}</small>`:''}`;
+     return;
+   }
+   const won=v255BossRound?.status==='won',roundStage=currentRoundStage(m),next=m.stage;
+   const inconsistent=m.stage<Math.max(1,m.wins+1)||m.regression;
+   box.className='v4119-boss-progress '+(inconsistent?'warn':'ok');
+   let text='';
+   if(won)text=`Stufe <strong>${roundStage}</strong> besiegt · nächste Herausforderung: <strong>Stufe ${Math.max(next,roundStage+1)}</strong> mit ca. ${fmt(Math.max(m.next_hp,expectedHp(Math.max(next,roundStage+1))))} HP.`;
+   else text=`Aktuelle Herausforderung: <strong>Stufe ${roundStage}</strong> · ca. ${fmt(v255BossRound?.boss_max_hp||m.next_hp||expectedHp(roundStage))} HP.`;
+   text+=`<br><strong>${m.wins}</strong> Titan${m.wins===1?'':'e'} dauerhaft besiegt.`;
+   let diag='';
+   if(m.regression)diag='⚠️ Der Server meldete einen niedrigeren Bossfortschritt als zuvor. Der Rücksprung wird angezeigt und nicht stillschweigend übernommen.';
+   else if(state.stageError)diag='⚠️ Serverabfrage fehlgeschlagen; letzter bestätigter Fortschritt wird angezeigt.';
+   else if(roundStageFromHp()&&Math.abs(roundStageFromHp()-roundStage)>1)diag=`⚠️ Boss-HP und Stufenmetadaten passen nicht zusammen (HP≈Stufe ${roundStageFromHp()}).`;
+   box.innerHTML=`<div class="v4119-boss-progress-top"><span>☣ LANGZEIT-GILDENBOSS</span><b>BOSS-STUFE ${roundStage}</b></div><small>${text}</small>${diag?`<small class="v4119-diag">${diag}</small>`:''}`;
+   const hpText=document.getElementById('v255BossHpText');
+   if(hpText&&v255BossRound){const max=Math.max(1,Number(v255BossRound.boss_max_hp)||1),hp=Math.max(0,Number(v255BossRound.boss_hp)||0);hpText.textContent=`Verseuchter Titan · Stufe ${roundStage} · ${fmt(hp)} / ${fmt(max)} HP`}
+   document.querySelectorAll('#v260DailyBossArena .v259-boss-title b,#v258BossArena .v259-boss-title b').forEach(el=>el.textContent=`☣ Verseuchter Titan · Stufe ${roundStage}`);
+ }
+
+ /* Final boss render/load wrappers: old V414 may paint stale/default values after the core render.
+    Always repaint with the verified V4119 state last. */
+ try{
+   if(typeof v255RenderBoss==='function'&&!window.__v4119BossRenderWrapped){
+     const base=v255RenderBoss;
+     v255RenderBoss=function(){const r=base.apply(this,arguments);paintBossProgress();return r};
+     window.v255RenderBoss=v255RenderBoss;window.__v4119BossRenderWrapped=true;
+   }
+ }catch(e){}
+ try{
+   if(typeof v255LoadBoss==='function'&&!window.__v4119BossLoadWrapped){
+     const base=v255LoadBoss;
+     v255LoadBoss=async function(){const r=await base.apply(this,arguments);state.lastBossAt=Date.now();await loadStage();paintBossProgress();return r};
+     window.v255LoadBoss=v255LoadBoss;window.__v4119BossLoadWrapped=true;
+   }
+ }catch(e){}
+ async function refreshSubsystems(reason='guild-load'){
+   if(state.refreshing)return state.promise;
+   state.refreshing=true;
+   state.promise=(async()=>{
+     try{
+       state.guildId=gid();
+       if(!state.guildId)return;
+       const jobs=[];
+       if(typeof v255LoadBoss==='function')jobs.push(Promise.resolve().then(()=>v255LoadBoss()).then(()=>{state.lastBossAt=Date.now()}).catch(e=>state.issues.push('Boss laden: '+String(e?.message||e))));
+       if(typeof v262LoadWar==='function')jobs.push(Promise.resolve().then(()=>v262LoadWar()).then(()=>{state.lastWarAt=Date.now()}).catch(e=>state.issues.push('Gildenkrieg laden: '+String(e?.message||e))));
+       await Promise.allSettled(jobs);
+       if(Date.now()-Number(state.stageAt||0)>1200)await loadStage();
+       try{v255RenderBoss?.()}catch(e){}
+       try{v262RenderWar?.()}catch(e){}
+       paintBossProgress();
+     }finally{state.refreshing=false;state.promise=null}
+   })();
+   return state.promise;
+ }
+ /* FINAL guild loader owner: preserve V380 membership/request reliability, then always refresh Boss + War. */
+ if(baseGuildLoad){
+   v254LoadGuild=async function(){
+     const r=await baseGuildLoad.apply(this,arguments);
+     if(typeof v254Membership!=='undefined'&&v254Membership?.guild_id)await refreshSubsystems('guild-load');
+     else{state.stage=null;state.stageError='';}
+     return r;
+   };
+   try{window.v254LoadGuild=v254LoadGuild}catch(e){}
+ }
+ /* Fresh data when switching guild tabs; old code only changed display:none. */
+ document.addEventListener('click',e=>{
+   const b=e.target?.closest?.('[data-v254-tab]');if(!b)return;
+   const tab=String(b.dataset.v254Tab||'');
+   if(tab==='boss')setTimeout(async()=>{await refreshSubsystems('boss-tab');paintBossProgress()},0);
+   if(tab==='war')setTimeout(async()=>{try{await v262LoadWar?.();state.lastWarAt=Date.now();v262RenderWar?.()}catch(err){state.issues.push('Gildenkrieg-Tab: '+String(err?.message||err))}},0);
+ },true);
+ /* Boss reward already calls v254LoadGuild() and v255LoadBoss(); the final loader above now refreshes the stage too. */
+ function health(){
+   const issues=[];
+   if(typeof v254Membership!=='undefined'&&v254Membership?.guild_id&&!v254Guild)issues.push('Mitgliedschaft vorhanden, aber Gilde fehlt');
+   const signed=(Array.isArray(v254Members)?v254Members:[]).filter(x=>x?.boss_signed).length;
+   const visible=typeof window.v4118VisibleBossParticipants==='function'?window.v4118VisibleBossParticipants().length:0;
+   if(visible<signed)issues.push(`Boss-Anmeldungen: ${signed} gespeichert, ${visible} sichtbar`);
+   if(state.stageError)issues.push('Bossfortschritt konnte nicht vom Server geladen werden');
+   if(state.stage&&state.stage.wins>0&&state.stage.stage<=state.stage.wins)issues.push(`Bossstufe unplausibel: Stufe ${state.stage.stage}, Siege ${state.stage.wins}`);
+   const hs=roundStageFromHp();if(hs&&state.stage&&Math.abs(hs-currentRoundStage(state.stage))>1)issues.push(`Boss-HP entspricht Stufe ${hs}, Anzeige ${currentRoundStage(state.stage)}`);
+   return issues;
+ }
+ window.v4119GuildHealth=health;
+ window.v4119GuildState=state;
+ window.v4119RefreshGuild=async()=>{if(typeof v254LoadGuild==='function')return v254LoadGuild()};
+ window.v4119LoadBossStage=loadStage;
+ /* Add synchronous diagnostics to the existing systemtechnik report. */
+ function installQA(){
+   const runner=window.v4107RunQA||window.v4102RunQA;if(typeof runner!=='function'||window.__v4119QaWrapped)return;
+   const wrapped=function(){
+     const r=runner.apply(this,arguments);if(!r||!Array.isArray(r.results))return r;
+     const add=(name,pass,detail='',severity='error')=>r.results.push({category:'Gilde Deep-Test',name,pass:!!pass,detail:String(detail||''),severity});
+     add('Finaler Gildenloader lädt Boss + Gildenkrieg nach',String(v254LoadGuild).includes('refreshSubsystems'));
+     add('Mitgliedschaft und Gildenobjekt konsistent',!(v254Membership?.guild_id&&!v254Guild),v254Membership?.guild_id&&!v254Guild?'Membership ohne Guild-Objekt':'');
+     const signed=(Array.isArray(v254Members)?v254Members:[]).filter(x=>x?.boss_signed).length,visible=window.v4118VisibleBossParticipants?.().length||0;
+     add('Boss-Anmeldungen vollständig sichtbar',visible>=signed,`${visible} sichtbar / ${signed} gespeichert`);
+     add('Gildenkrieg-Harz geht auf Harz-Taler',typeof v262ClaimWar==='function'&&String(v262ClaimWar).includes('s.harzTaler')&&!String(v262ClaimWar).includes('s.premium'),typeof v262ClaimWar==='function'?'Belohnungspfad geprüft':'v262ClaimWar fehlt');
+     add('Langzeit-Bossfortschritt nicht blind auf 0 gesetzt',!!state.stage||!!state.stageError,state.stage?`Stufe ${state.stage.stage} · Siege ${state.stage.wins}`:state.stageError||'noch nicht geladen','warn');
+     add('Bossfortschritt monoton',!state.stage?.regression,state.stage?.regression?'Server-Rücksprung erkannt':'');
+     {const hs=roundStageFromHp(),ds=state.stage?currentRoundStage(state.stage):0;add('Boss-HP und Stufe konsistent',!hs||!ds||Math.abs(hs-ds)<=1,hs&&ds?`HP≈Stufe ${hs} · Anzeige ${ds}`:'keine aktive Bossrunde','warn');}
+     const h=health();add('Gilden-Laufzeitstatus ohne kritische Inkonsistenz',h.length===0,h.join(' · '),h.length?'warn':'error');
+     r.total=r.results.length;r.passed=r.results.filter(x=>x.pass).length;r.failed=r.results.filter(x=>!x.pass&&x.severity!=='warn').length;r.warnings=r.results.filter(x=>!x.pass&&x.severity==='warn').length;r.ok=r.failed===0;return r;
+   };
+   window.v4107RunQA=wrapped;if(window.v4102RunQA===runner)window.v4102RunQA=wrapped;window.__v4119QaWrapped=true;
+ }
+ function stamp(){
+   try{document.title='Grow Legends '+SHORT}catch(e){}
+   try{document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version').forEach(x=>x&&(x.textContent=VERSION));document.querySelectorAll('.v366-ver,.v371-logo em,.v372-logo em,.v4107-version').forEach(x=>x&&(x.textContent=SHORT))}catch(e){}
+ }
+ installQA();stamp();
+ setTimeout(()=>{installQA();stamp();if(document.getElementById('guild')?.classList.contains('active'))v254LoadGuild?.()},500);
+ [1800,5000,15000].forEach(ms=>setTimeout(()=>{installQA();stamp()},ms));
+ window.addEventListener('pageshow',()=>{stamp();installQA();if(document.getElementById('guild')?.classList.contains('active'))setTimeout(()=>v254LoadGuild?.(),120)},{passive:true});
+})();
+</script>
+
+
+
+<!-- ===== V4.120 Stable: QA helper hardening + fingerprint care authority ===== -->
+<style id="v4120-final-version-css">
+.app > header .v358-logo::after{content:"V4.120"!important}
+.app > header .v366-ver::after,.app > header .v371-logo em::after,.app > header .v372-logo em::after{content:"V4.120"!important}
+#systemtech .v4107-version{color:#9af46f!important}
+</style>
+<script id="v4120-care-fingerprint-authority">
+(()=>{
+ 'use strict';
+ const VERSION='V4.120 Stable',SHORT='V4.120';
+ const PREFIX='growLegendsCareAuthorityV4120:';
+ const OLD_PREFIX='growLegendsCareLedgerV4114:';
+ let internal=false;
+ const now=()=>Date.now();
+ function owner(){
+  try{return String((typeof v073User!=='undefined'&&v073User?.id)||s?.__accountOwnerId||s?.social?.playerId||'local').trim()||'local'}catch(e){return'local'}
+ }
+ function key(){return PREFIX+owner()}
+ function plants(){try{return Array.isArray(s?.grow?.plants)?s.grow.plants:[]}catch(e){return[]}}
+ function shape(p){
+  if(!p||typeof p!=='object')return null;
+  p.seed=String(p.seed||p.seedId||'moss');
+  p.start=Math.max(0,Number(p.start)||0);
+  p.duration=Math.max(1,Number(p.duration)||1);
+  p.uid=String(p.uid||`v4120_${p.start}_${p.seed}_${Math.random().toString(36).slice(2,7)}`);
+  p.care=Array.isArray(p.care)?[0,1,2,3].map(i=>!!p.care[i]):[false,false,false,false];
+  p.careDoneAt=Array.isArray(p.careDoneAt)?[0,1,2,3].map(i=>Math.max(0,Number(p.careDoneAt[i])||0)):[0,0,0,0];
+  return p;
+ }
+ function fp(v){
+  const p=shape(v);if(!p)return'';
+  /* start+seed survive the historical V4.02 normalizer exactly. Duration is
+     kept as a discriminator but we also support seed+start fallback below. */
+  return `${p.seed}|${Math.round(p.start)}|${Math.round(p.duration)}`;
+ }
+ function shortFp(v){const p=shape(v);return p?`${p.seed}|${Math.round(p.start)}`:''}
+ function merge(a,b){
+  const out={...(a||{}),...(b||{})};
+  out.seed=String(b?.seed||a?.seed||'');
+  out.start=Math.max(0,Number(b?.start||a?.start)||0);
+  out.duration=Math.max(1,Number(b?.duration||a?.duration)||1);
+  out.uid=String(b?.uid||a?.uid||'');
+  out.care=[0,1,2,3].map(i=>!!(a?.care?.[i]||b?.care?.[i]));
+  out.doneAt=[0,1,2,3].map(i=>Math.max(Number(a?.doneAt?.[i])||0,Number(b?.doneAt?.[i])||0));
+  out.updatedAt=Math.max(Number(a?.updatedAt)||0,Number(b?.updatedAt)||0,now());
+  return out;
+ }
+ function fromPlant(p){p=shape(p);return p?{uid:p.uid,seed:p.seed,start:p.start,duration:p.duration,care:p.care.slice(0,4),doneAt:p.careDoneAt.slice(0,4),updatedAt:now()}:null}
+ function readOwn(){
+  try{const x=JSON.parse(localStorage.getItem(key())||'null');return x&&x.entries&&typeof x.entries==='object'?x:{owner:owner(),rev:0,entries:{}}}catch(e){return{owner:owner(),rev:0,entries:{}}}
+ }
+ function writeOwn(entries,rev){try{localStorage.setItem(key(),JSON.stringify({owner:owner(),rev:Math.max(0,Number(rev)||0),savedAt:now(),entries}))}catch(e){}}
+ function importOld(){
+  const out={};
+  try{
+   for(let i=0;i<localStorage.length;i++){
+    const k=String(localStorage.key(i)||'');if(!k.startsWith(OLD_PREFIX))continue;
+    let x=null;try{x=JSON.parse(localStorage.getItem(k)||'null')}catch(e){}
+    const entries=x?.entries&&typeof x.entries==='object'?x.entries:{};
+    Object.values(entries).forEach(e=>{
+     if(!e||typeof e!=='object'||!e.start||!e.seed)return;
+     const temp={uid:e.uid||'',seed:e.seed,start:e.start,duration:e.duration||1,care:Array.isArray(e.care)?e.care:[false,false,false,false],careDoneAt:Array.isArray(e.doneAt)?e.doneAt:[0,0,0,0]};
+     const rec=fromPlant(temp),k1=fp(temp);if(!k1)return;out[k1]=merge(out[k1],rec);
+    });
+   }
+  }catch(e){}
+  /* Embedded ledger can survive cloud/local restoration even if a browser key changed. */
+  try{
+   const emb=s?.grow?.v492?.careLedger||{};
+   Object.values(emb).forEach(e=>{
+    if(!e||typeof e!=='object'||!e.start||!e.seed)return;
+    const temp={uid:e.uid||'',seed:e.seed,start:e.start,duration:e.duration||1,care:Array.isArray(e.care)?e.care:[false,false,false,false],careDoneAt:Array.isArray(e.doneAt)?e.doneAt:[0,0,0,0]};
+    const rec=fromPlant(temp),k1=fp(temp);if(k1)out[k1]=merge(out[k1],rec);
+   });
+  }catch(e){}
+  return out;
+ }
+ function capture(reason='capture'){
+  if(internal)return false;
+  const own=readOwn(),entries={...(own.entries||{})};let touched=false;
+  plants().filter(Boolean).forEach(p=>{
+   shape(p);const rec=fromPlant(p),k1=fp(p);if(!k1)return;
+   const old=entries[k1];entries[k1]=merge(old,rec);
+   if(!old||rec.care.some((v,i)=>v&&!old?.care?.[i]))touched=true;
+  });
+  writeOwn(entries,Math.max(Number(own.rev)||0,Number(s?.grow?.v492?.careRevision)||0)+(touched?1:0));
+  return touched;
+ }
+ function restore(reason='restore'){
+  if(internal)return false;internal=true;
+  try{
+   const own=readOwn(),old=importOld(),exact={...old,...(own.entries||{})},short=new Map();
+   Object.values(exact).forEach(e=>{if(!e)return;const k=shortFp({seed:e.seed,start:e.start,duration:e.duration||1,care:e.care||[],careDoneAt:e.doneAt||[]});if(k)short.set(k,merge(short.get(k),e))});
+   let changed=false,migrated=false;
+   const finalEntries={...(own.entries||{})};
+   plants().filter(Boolean).forEach(p=>{
+    shape(p);const k1=fp(p),k2=shortFp(p);let e=exact[k1]||short.get(k2)||null;
+    if(!e)return;
+    for(let i=0;i<4;i++){
+     if(e.care?.[i]&&!p.care[i]){p.care[i]=true;changed=true}
+     const ts=Math.max(Number(p.careDoneAt[i])||0,Number(e.doneAt?.[i])||0);if(ts!==p.careDoneAt[i]){p.careDoneAt[i]=ts;changed=true}
+    }
+    /* Migrate old UID-based care to the new fingerprint/UID immediately. */
+    const rec=fromPlant(p);finalEntries[k1]=merge(e,rec);if(!own.entries?.[k1])migrated=true;
+   });
+   if(changed||migrated)writeOwn(finalEntries,Math.max(Number(own.rev)||0,Number(s?.grow?.v492?.careRevision)||0)+1);
+   /* Also repopulate the embedded ledger for cloud/local save payloads. */
+   try{
+    s.grow=(s.grow&&typeof s.grow==='object')?s.grow:{};s.grow.v492=(s.grow.v492&&typeof s.grow.v492==='object')?s.grow.v492:{};
+    s.grow.v492.careLedger=(s.grow.v492.careLedger&&typeof s.grow.v492.careLedger==='object')?s.grow.v492.careLedger:{};
+    plants().filter(Boolean).forEach(p=>{const rec=fromPlant(p);s.grow.v492.careLedger[p.uid]={uid:p.uid,seed:p.seed,start:p.start,duration:p.duration,care:rec.care.slice(),doneAt:rec.doneAt.slice(),updatedAt:rec.updatedAt}});
+    if(changed||migrated)s.grow.v492.careRevision=Math.max(0,Number(s.grow.v492.careRevision)||0)+1;
+   }catch(e){}
+   return changed;
+  }finally{internal=false}
+ }
+ function repairAndPersist(reason){
+  const changed=restore(reason);capture(reason+'-capture');
+  if(changed){
+   try{internal=true;if(typeof persist==='function')persist(false);else if(typeof KEY==='string')localStorage.setItem(KEY,JSON.stringify(s))}catch(e){}finally{internal=false}
+  }
+  try{window.v4114DecorateCareSlots?.()}catch(e){}
+  return changed;
+ }
+ window.v4120CareFingerprint=fp;
+ window.v4120RestoreCare=restore;
+ window.v4120CaptureCare=capture;
+ window.v4120RepairCare=repairAndPersist;
+
+ /* Wrap the FINAL functions, after all historical wrappers have loaded. */
+ try{if(typeof normalizeState==='function'&&!window.__v4120Normalize){const base=normalizeState;normalizeState=function(){capture('normalize-before');const r=base.apply(this,arguments);restore('normalize-after');return r};window.normalizeState=normalizeState;window.__v4120Normalize=true}}catch(e){}
+ try{if(typeof persist==='function'&&!window.__v4120Persist){const base=persist;persist=function(){if(internal)return base.apply(this,arguments);capture('persist-before');const r=base.apply(this,arguments);const changed=restore('persist-after');if(changed){try{internal=true;base.apply(this,arguments)}catch(e){}finally{internal=false}}capture('persist-final');return r};window.persist=persist;window.__v4120Persist=true}}catch(e){}
+ try{if(typeof v075ApplyCloudSave==='function'&&!window.__v4120CloudApply){const base=v075ApplyCloudSave;v075ApplyCloudSave=async function(){capture('cloud-before');const r=await base.apply(this,arguments);repairAndPersist('cloud-after');return r};window.v075ApplyCloudSave=v075ApplyCloudSave;window.__v4120CloudApply=true}}catch(e){}
+ try{if(typeof v075WriteCloudSave==='function'&&!window.__v4120CloudWrite){const base=v075WriteCloudSave;v075WriteCloudSave=async function(){restore('cloud-write-before');capture('cloud-write-before');return await base.apply(this,arguments)};window.v075WriteCloudSave=v075WriteCloudSave;window.__v4120CloudWrite=true}}catch(e){}
+ try{if(typeof v032Go==='function'&&!window.__v4120Go){const base=v032Go;v032Go=function(id){capture('nav-before');const r=base.apply(this,arguments);[0,60,250,900].forEach(ms=>setTimeout(()=>repairAndPersist('nav-after-'+ms),ms));return r};window.v032Go=v032Go;window.__v4120Go=true}}catch(e){}
+ try{if(typeof renderGrow==='function'&&!window.__v4120GrowRender){const base=renderGrow;renderGrow=function(){restore('render-grow-before');const r=base.apply(this,arguments);requestAnimationFrame(()=>{restore('render-grow-after');try{window.v4114DecorateCareSlots?.()}catch(e){}});return r};window.renderGrow=renderGrow;window.__v4120GrowRender=true}}catch(e){}
+
+ /* The original V4.110 deep test references this helper outside its old IIFE.
+    Publish a safe global fallback so one test can never abort the whole page. */
+ if(typeof window.historicalScriptCount!=='function'){
+  window.historicalScriptCount=function(){try{return [...document.scripts].filter(sc=>/V4\.(?:0[0-9]|[1-9][0-9]) Stable/.test(sc.textContent||'')).length}catch(e){return 0}};
+ }
+ if(typeof window.legacyListenerInfo!=='function'){
+  window.legacyListenerInfo=function(){try{const t=window.__V4106_TECH__;if(!t?.listeners)return[];return [...t.listeners.values()].filter(x=>Number(x?.count||0)>1)}catch(e){return[]}};
+ }
+ function stamp(){
+  try{document.title='Grow Legends '+SHORT}catch(e){}
+  try{document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version').forEach(x=>x&&(x.textContent=VERSION));document.querySelectorAll('.v366-ver,.v371-logo em,.v372-logo em,.v4107-version').forEach(x=>x&&(x.textContent=SHORT))}catch(e){}
+ }
+ /* Immediate repair is specifically for the reload path where V4.02 already
+    stripped the plant before this final script got control. */
+ setTimeout(()=>repairAndPersist('startup-0'),0);
+ [60,220,700,1800,4200,9000].forEach(ms=>setTimeout(()=>{repairAndPersist('startup-'+ms);stamp()},ms));
+ window.addEventListener('pageshow',()=>setTimeout(()=>{repairAndPersist('pageshow');stamp()},30),{passive:true});
+ document.addEventListener('visibilitychange',()=>{if(!document.hidden){repairAndPersist('visible');stamp()}},{passive:true});
+ stamp();
+})();
+</script>
+
