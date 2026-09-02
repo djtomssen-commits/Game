@@ -48550,16 +48550,21 @@ setTimeout(()=>{try{v322InstallMenuEntry();v322InstallHarzPlus()}catch(e){consol
   }
 
   function v337EnsureFooter(){
-    if(document.querySelector('#v337LegalFooter'))return;
-    const footer=document.createElement('footer');
-    footer.id='v337LegalFooter';
-    footer.innerHTML=`
-      © ${new Date().getFullYear()} Grow Legends · Alle Rechte vorbehalten.<br>
-      Grow Legends ist ein eigenständiges Fan-/Indie-Spielprojekt. Genannte Marken,
-      Produktnamen und sonstige Kennzeichen gehören ihren jeweiligen Inhabern.
-    `;
     const target=document.querySelector('main')||document.body;
-    target.appendChild(footer);
+    let footer=document.querySelector('#v337LegalFooter');
+    if(!footer){
+      footer=document.createElement('footer');
+      footer.id='v337LegalFooter';
+      footer.innerHTML=`
+        © ${new Date().getFullYear()} Grow Legends · Alle Rechte vorbehalten.<br>
+        Grow Legends ist ein eigenständiges Fan-/Indie-Spielprojekt. Genannte Marken,
+        Produktnamen und sonstige Kennzeichen gehören ihren jeweiligen Inhabern.
+      `;
+    }
+    /* V4.91: Legal footer must remain below every dynamically added game screen. */
+    if(footer.parentElement!==target || target.lastElementChild!==footer){
+      target.appendChild(footer);
+    }
   }
 
   /* Keep menu/footer present even if later render functions rebuild the DOM. */
@@ -66591,12 +66596,12 @@ html.v481-hidden *,html.v481-hidden *::before,html.v481-hidden *::after{animatio
 })();
 </script>
 
-<!-- ===== V4.90 Stable: HARZSCHMIEDE ===== -->
+<!-- ===== V4.91 Stable: HARZSCHMIEDE ===== -->
 <style id="v488-harzschmiede-css">
-/* Grow Legends V4.90 – comic Harzschmiede, integrated into the existing game. */
-.app > header .v358-logo::after{content:"V4.90"!important}
+/* Grow Legends V4.91 – comic Harzschmiede, integrated into the existing game. */
+.app > header .v358-logo::after{content:"V4.91"!important}
 #v372TopbarShell .v372-logo em::after,
-.app > header .v366-ver::after,.app > header .v371-logo em::after,.app > header .v372-logo em::after{content:"V4.90"!important}
+.app > header .v366-ver::after,.app > header .v371-logo em::after,.app > header .v372-logo em::after{content:"V4.91"!important}
 
 #forge.screen{padding:10px 10px 88px!important;max-width:1180px;margin:0 auto}
 .v488-shell{--ink:#17130b;--panel:#182318;--panel2:#0e160f;--green:#7bc84d;--gold:#e9b94f;--line:#4d633d;position:relative;overflow:hidden;border:1px solid #40543a;border-radius:22px;background:linear-gradient(180deg,#152018,#09110c 76%);box-shadow:0 18px 50px #0008,inset 0 0 45px #0007;color:#ecf3e8}
@@ -66667,7 +66672,7 @@ html.v481-hidden *,html.v481-hidden *::before,html.v481-hidden *::after{animatio
 </style>
 
 <style id="v490-harzschmiede-comic-ui">
-/* V4.90 – Harzschmiede comic layout matched to the approved Grow-Legends mockup.
+/* V4.91 – Harzschmiede comic layout matched to the approved Grow-Legends mockup.
    Functionality remains in the existing V4.88/V4.89 forge core; this layer is visual/layout only. */
 #forge.screen{padding:7px 6px 90px!important;max-width:1180px;margin:0 auto}
 .v488-shell.v490-shell{
@@ -66832,7 +66837,7 @@ html.v481-hidden *,html.v481-hidden *::before,html.v481-hidden *::after{animatio
 
 <script id="v488-harzschmiede-core">
 (function(){
-  const VERSION='V4.90 Stable', SHORT='V4.90';
+  const VERSION='V4.91 Stable', SHORT='V4.91';
   const selected=new Set();
   let listScroll=0,lastCraft=null,busy=false;
   const YIELD={gray:1,green:3,blue:7,purple:15,orange:30};
