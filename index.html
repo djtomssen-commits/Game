@@ -5,16 +5,16 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#10170f">
 <style id="v483-startup-clean-css">
-/* V4.85: the retired world must never paint. Keep combat power visually stable
+/* V4.86: the retired world must never paint. Keep combat power visually stable
    until the authenticated account state has finished resolving. */
 #world.active > .v349-home,#world.active > .v085-dashboard{display:none!important;visibility:hidden!important;opacity:0!important;pointer-events:none!important}
 #v372TopbarShell .v372-logo em{font-size:0!important;color:transparent!important}
-#v372TopbarShell .v372-logo em::after{content:"V4.85"!important;font-size:5px!important;color:#63cdd1!important;font-style:normal!important;font-weight:900!important}
+#v372TopbarShell .v372-logo em::after{content:"V4.86"!important;font-size:5px!important;color:#63cdd1!important;font-style:normal!important;font-weight:900!important}
 html:not(.v483-power-ready) #world.active .v366-power b{font-size:0!important;display:inline-block!important;min-width:22px!important;text-align:center!important}
 html:not(.v483-power-ready) #world.active .v366-power b::after{content:"…"!important;font-size:15px!important;color:#f3ae2d!important}
-.app > header .v358-logo::after{content:"V4.85"!important}
+.app > header .v358-logo::after{content:"V4.86"!important}
 .app > header .v366-ver,.app > header .v371-logo em,.app > header .v372-logo em{font-size:0!important;color:transparent!important}
-.app > header .v366-ver::after,.app > header .v371-logo em::after,.app > header .v372-logo em::after{content:"V4.85"!important;font-size:5px!important;color:#63cdd1!important;font-style:normal!important;font-weight:900!important}
+.app > header .v366-ver::after,.app > header .v371-logo em::after,.app > header .v372-logo em::after{content:"V4.86"!important;font-size:5px!important;color:#63cdd1!important;font-style:normal!important;font-weight:900!important}
 </style>
 <script id="v483-startup-flags">
 window.__V483_MODERN_WORLD_ONLY__=true;
@@ -26,9 +26,9 @@ window.__V483_POWER_READY__=false;
 #world.active:not(.v474-home-ready)::before{display:none!important}
 #world.active > .v349-home{display:none!important;visibility:hidden!important;opacity:0!important;pointer-events:none!important}
 #world.active > .v366-world{display:grid!important;visibility:visible!important;opacity:1!important}
-.app > header .v358-logo::after{content:"V4.85"!important}
+.app > header .v358-logo::after{content:"V4.86"!important}
 .app > header .v366-ver,.app > header .v371-logo em,.app > header .v372-logo em{font-size:0!important;color:transparent!important}
-.app > header .v366-ver::after,.app > header .v371-logo em::after,.app > header .v372-logo em::after{content:"V4.85"!important;font-size:5px!important;color:#63cdd1!important;font-style:normal!important;font-weight:900!important}
+.app > header .v366-ver::after,.app > header .v371-logo em::after,.app > header .v372-logo em::after{content:"V4.86"!important;font-size:5px!important;color:#63cdd1!important;font-style:normal!important;font-weight:900!important}
 </style>
 <script id="v477-runtime-governor-head">
 (function(){
@@ -36,7 +36,7 @@ window.__V483_POWER_READY__=false;
      They are compatibility painters, not game clocks. Slow only sub-800 ms
      recurring intervals; real 1 s quest/grow clocks and long timers stay exact. */
   const nativeSetInterval=window.setInterval.bind(window);
-  /* V4.85: real combat loops may opt out of UI-guard throttling. */
+  /* V4.86: real combat loops may opt out of UI-guard throttling. */
   window.__V477_NATIVE_SET_INTERVAL__=nativeSetInterval;
   let fastSeq=0;
   window.setInterval=function(fn,delay){
@@ -92,11 +92,11 @@ window.__V483_POWER_READY__=false;
 <style id="v475-first-paint-version-owner">
 /* V4.75 top-bar version is CSS-owned from first paint. Historical timer writers may
    still mutate text nodes internally, but their text is never visible in the logo. */
-.app > header .v358-logo::after{content:"V4.85"!important}
+.app > header .v358-logo::after{content:"V4.86"!important}
 .app > header .v366-ver,.app > header .v371-logo em,.app > header .v372-logo em{font-size:0!important;color:transparent!important}
-.app > header .v366-ver::after,.app > header .v371-logo em::after,.app > header .v372-logo em::after{content:"V4.85"!important;font-size:5px!important;color:#63cdd1!important;font-style:normal!important;font-weight:900!important}
+.app > header .v366-ver::after,.app > header .v371-logo em::after,.app > header .v372-logo em::after{content:"V4.86"!important;font-size:5px!important;color:#63cdd1!important;font-style:normal!important;font-weight:900!important}
 </style>
-<title>Grow Legends V4.85</title>
+<title>Grow Legends V4.86</title>
 <style>
 :root{--bg:#0b100b;--panel:#151d14;--panel2:#1c281a;--panel3:#253423;--line:#354933;--text:#f2f5ed;--muted:#9fad99;--green:#83d65d;--green2:#b2f07e;--gold:#f2c75a;--red:#ee6b68;--blue:#68a7ea;--purple:#ad7bea;--shadow:0 12px 30px rgba(0,0,0,.28)}
 *{box-sizing:border-box}html{background:var(--bg)}body{margin:0;color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:radial-gradient(circle at 50% -10%,#253821 0,#10170f 40%,#090d09 100%);min-height:100vh}button{font:inherit}.app{max-width:820px;margin:auto;min-height:100vh;padding-bottom:88px}
@@ -17389,7 +17389,7 @@ render=function(){
   if(!window.__V483_MODERN_WORLD_ONLY__)requestAnimationFrame(v110InstallEventButton);
   return result;
 };
-/* V4.85: current V366 home owns the worldboss entry; old-home installer retired. */
+/* V4.86: current V366 home owns the worldboss entry; old-home installer retired. */
 </script>
 
 
@@ -17721,7 +17721,7 @@ render=function(){
   return result;
 };
 
-/* V4.85: retired old-world Smaragd-Koloss card installer. The modern V4.366
+/* V4.86: retired old-world Smaragd-Koloss card installer. The modern V4.366
    home already owns the boss entry; combat/overlay functions remain active. */
 </script>
 
@@ -18984,7 +18984,7 @@ render=function(){
   return result;
 };
 
-/* V4.85: retired V118 old-home worldboss hero startup install. */
+/* V4.86: retired V118 old-home worldboss hero startup install. */
 </script>
 
 
@@ -43815,7 +43815,7 @@ const v306Line=document.querySelector('#v141VersionLine');if(v306Line)v306Line.t
   if(changed&&!s.v423ItemCurveNotice){
     s.v423ItemCurveNotice=true;
     try{localStorage.setItem(KEY,JSON.stringify(s))}catch(e){}
-    /* V4.85: obsolete one-time item migration notice retired; migration remains silent. */
+    /* V4.86: obsolete one-time item migration notice retired; migration remains silent. */
   }
 
   document.querySelectorAll('.version').forEach(el=>el.textContent=VERSION);
@@ -45731,7 +45731,7 @@ v110Fight=function(){
      }
      persist();v110Refresh();
    }
- },430); /* V4.85: native combat cadence; never pass through UI interval throttling. */
+ },430); /* V4.86: native combat cadence; never pass through UI interval throttling. */
 };
 
 /* Refresh text must match the real no-pity + talent model. */
@@ -46990,7 +46990,7 @@ setTimeout(()=>{try{v322InstallMenuEntry();v322InstallHarzPlus()}catch(e){consol
   s.v325MysticBalanceMigrated=true;
   try{
     localStorage.setItem(KEY,JSON.stringify(s));
-    /* V4.85: obsolete mythic migration notice retired; correction stays silent. */
+    /* V4.86: obsolete mythic migration notice retired; correction stays silent. */
   }catch(e){console.error('V4.02 mythic migration',e)}
 
   document.querySelectorAll('.version').forEach(el=>el.textContent='V4.29 Stable');
@@ -60653,7 +60653,7 @@ create index if not exists player_messages_sender_idx on public.player_messages(
   setTimeout(()=>{paintLocalPower();stamp();scheduleSync(true)},600);
   setTimeout(()=>{paintLocalPower();stamp()},1800);
   setTimeout(()=>{paintLocalPower();stamp();scheduleSync(true)},5200);
-  /* V4.85: retired 18 s combat-power polling guard. Event/render hooks above are authoritative. */
+  /* V4.86: retired 18 s combat-power polling guard. Event/render hooks above are authoritative. */
 })();
 </script>
 
@@ -60904,7 +60904,7 @@ create index if not exists player_messages_sender_idx on public.player_messages(
   try{localStorage.setItem(KEY,JSON.stringify(s))}catch(e){}
   try{if(typeof render==='function')render()}catch(e){console.error('V4.47 initial item balance render',e)}
   stamp();
-  /* V4.85: canonical item-balance migration is intentionally silent at login/refresh. */
+  /* V4.86: canonical item-balance migration is intentionally silent at login/refresh. */
   document.addEventListener('DOMContentLoaded',()=>{all();stamp()},{once:true});
   window.addEventListener('pageshow',()=>{all();stamp()},{passive:true});
   setTimeout(()=>{all();stamp()},700);setTimeout(()=>{all();stamp()},2600);setTimeout(()=>{all();stamp()},6000);
@@ -61420,7 +61420,7 @@ create index if not exists player_messages_sender_idx on public.player_messages(
   setTimeout(()=>{repaintItems();paintPower();applyTrusted();stamp()},900);
   setTimeout(()=>{repaintItems();paintPower();applyTrusted();stamp()},1900);
   setTimeout(()=>{repaintItems();paintPower();applyTrusted();stamp()},5200);
-  /* V4.85: retired 20 s duplicate combat-power/identity polling guard. */
+  /* V4.86: retired 20 s duplicate combat-power/identity polling guard. */
 })();
 </script>
 
@@ -65869,13 +65869,25 @@ create index if not exists player_messages_sender_idx on public.player_messages(
   }
   function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
   function qRank(x){return QUALITY[String(x?.quality||'gray').toLowerCase()]??0}
-  function accountReady(){
-    try{
-      const u=typeof v073User!=='undefined'?v073User:null;
-      if(u?.id&&!u.is_anonymous&&typeof window.v452AccountVerified==='function'&&!window.v452AccountVerified(String(u.id)))return false;
-    }catch(e){}
-    return true;
+  function currentUid(){try{const u=typeof v073User!=='undefined'?v073User:null;return u?.id&&!u.is_anonymous?String(u.id):''}catch(e){return ''}}
+  function accountVerified(){const id=currentUid();if(!id)return true;try{return typeof window.v452AccountVerified==='function'?!!window.v452AccountVerified(id):true}catch(e){return false}}
+  function accountOwned(){
+    const id=currentUid();if(!id)return true;
+    try{return String(s?.__accountOwnerId||'')===id && String(s?.social?.playerId||'')===id}catch(e){return false}
   }
+  function accountReady(){return accountVerified()||accountOwned()}
+  const PENDING_PREFIX='growLegendsV486AutoPending:';
+  function pendingKey(){const id=currentUid();return id?PENDING_PREFIX+id:''}
+  function readPending(){
+    const k=pendingKey();if(!k)return {};
+    try{const x=JSON.parse(sessionStorage.getItem(k)||'{}');return x&&typeof x==='object'?x:{}}catch(e){return {}}
+  }
+  function queuePending(kind){
+    const k=pendingKey();if(!k)return;
+    const x=readPending();x[kind]=true;x.at=Date.now();
+    try{sessionStorage.setItem(k,JSON.stringify(x))}catch(e){}
+  }
+  function clearPending(){const k=pendingKey();if(k)try{sessionStorage.removeItem(k)}catch(e){}}
   function isGear(it){return !!(it&&typeof it==='object'&&it.slot&&SLOTS.includes(it.slot)&&it.type!=='gem'&&it.type!=='scroll'&&it.type!=='material')}
   function classOk(it){return !it?.classId||!s?.playerClass||String(it.classId)===String(s.playerClass)}
   function normalize(it){
@@ -65996,47 +66008,62 @@ create index if not exists player_messages_sender_idx on public.player_messages(
     it.enchant=e;it.enchants=[e];
     if(effect==='luck')it.bonus.glueck=(Number(it.bonus.glueck)||0)+value;
   }
-  function saveAndRender(){
-    try{if(typeof persist==='function')persist(false);else localStorage.setItem(KEY,JSON.stringify(s))}catch(e){console.warn('V4.80 persist',e)}
-    try{if(typeof v075ScheduleSave==='function')v075ScheduleSave()}catch(e){}
-    try{if(typeof v106CheckAchievements==='function')v106CheckAchievements(true)}catch(e){}
-    try{if(typeof render==='function')render()}catch(e){console.warn('V4.80 render',e)}
+  function paintImmediate(){
+    try{if(typeof render==='function')render()}catch(e){console.warn('V4.86 render',e)}
     try{window.v470PaintEquipmentSlots?.()}catch(e){}
     try{window.v459CompactInventory?.()}catch(e){}
     try{window.v459ArrangeCharacter?.()}catch(e){}
     setTimeout(updateBars,20);
+  }
+  function persistBackground(){
+    setTimeout(()=>{
+      try{if(typeof persist==='function')persist(false);else localStorage.setItem(KEY,JSON.stringify(s))}catch(e){console.warn('V4.86 persist',e)}
+      try{if(typeof v075ScheduleSave==='function')v075ScheduleSave()}catch(e){}
+      try{if(typeof v106CheckAchievements==='function')v106CheckAchievements(true)}catch(e){}
+    },0);
+  }
+  function saveAndRender(deferKind=''){
+    /* V4.86: gameplay reacts first. Account/cloud persistence must never hold up the tap. */
+    paintImmediate();
+    if(deferKind&&!accountVerified()){queuePending(deferKind);setTimeout(flushPending,1000);return false}
+    persistBackground();
+    return true;
   }
   function toast(title,type,text){
     try{if(typeof v063Toast==='function')return v063Toast(title,type,text)}catch(e){}
     try{if(typeof v115Alert==='function')return v115Alert(text,title,type)}catch(e){}
   }
 
+  function applyAutoEquipPlan(){
+    const plan=autoEquipPlan();let done=0;
+    plan.forEach(p=>{
+      const idx=s.inventory.indexOf(p.item);if(idx<0)return;
+      const old=s.equipment?.[p.slot]||null;
+      const next=s.inventory.splice(idx,1)[0];
+      s.equipment[p.slot]=next;if(old)s.inventory.push(old);done++;
+    });
+    return done;
+  }
   async function autoEquip(){
-    if(busy)return;if(!accountReady())return toast('Account wird geladen','info','Bitte kurz warten, bis dein Charakter vollständig geladen ist.');
+    if(busy)return;
+    if(!accountReady())return toast('Accountwechsel läuft','info','Der sichtbare Spielstand gehört noch nicht eindeutig zu diesem Account. Bitte einen Moment warten.');
     const plan=autoEquipPlan();
     if(!plan.length)return toast('Ausrüstung bereits optimal','info','Im Inventar liegt aktuell kein Item, das laut Vergleich besser ist als deine angelegte Ausrüstung.');
     busy=true;
     try{
       const before=(()=>{try{return Number(combatPower())||0}catch(e){return 0}})();
-      let done=0;
-      plan.forEach(p=>{
-        const idx=s.inventory.indexOf(p.item);if(idx<0)return;
-        const old=s.equipment?.[p.slot]||null;
-        const next=s.inventory.splice(idx,1)[0];
-        s.equipment[p.slot]=next;
-        if(old)s.inventory.push(old);
-        done++;
-      });
-      saveAndRender();
+      const done=applyAutoEquipPlan();
+      const deferred=!accountVerified();
+      saveAndRender(deferred?'equip':'');
       const after=(()=>{try{return Number(combatPower())||0}catch(e){return before}})();
       const delta=after-before;
-      toast('⚡ Beste Ausrüstung angelegt','success',`${done} Gegenständ${done===1?'':'e'} automatisch angelegt${delta!==0?` · Kampfkraft ${delta>0?'+':''}${delta}`:''}.`);
+      toast('⚡ Beste Ausrüstung angelegt','success',`${done} Gegenständ${done===1?'':'e'} automatisch angelegt${delta!==0?` · Kampfkraft ${delta>0?'+':''}${delta}`:''}${deferred?' · Speicherung läuft im Hintergrund':''}.`);
     }finally{busy=false;updateBars()}
   }
   window.v480AutoEquip=autoEquip;
 
   async function autoMaterials(){
-    if(busy)return;if(!accountReady())return toast('Account wird geladen','info','Bitte kurz warten, bis dein Charakter vollständig geladen ist.');
+    if(busy)return;if(!accountReady())return toast('Accountwechsel läuft','info','Der sichtbare Spielstand gehört noch nicht eindeutig zu diesem Account. Bitte einen Moment warten.');
     const plan=materialPlan(),g=plan.gemAssignments.length,r=plan.scrollAssignments.length;
     if(!g&&!r)return toast('Keine bessere automatische Verwendung','info','Alle ausgerüsteten Plätze haben bereits gleichwertige/bessere Materialien oder es sind keine passenden Steine/Rollen vorhanden.');
     const replacements=plan.gemAssignments.filter(x=>x.replaces).length+plan.scrollAssignments.filter(x=>x.replaces).length;
@@ -66054,11 +66081,29 @@ create index if not exists player_messages_sender_idx on public.player_messages(
       plan.gemAssignments.forEach(x=>{applyGem(x.it,x.material);used.add(x.material)});
       plan.scrollAssignments.forEach(x=>{applyScroll(x.it,x.material);used.add(x.material)});
       s.materials=(Array.isArray(s.materials)?s.materials:[]).filter(m=>!used.has(m));
-      saveAndRender();
-      toast('✨ Materialien automatisch eingesetzt','success',`${g} Edelstein${g===1?'':'e'} · ${r} Rolle${r===1?'':'n'} verwendet. Die stärksten wurden zuerst verteilt.`);
+      const deferred=!accountVerified();
+      saveAndRender(deferred?'materials':'');
+      toast('✨ Materialien automatisch eingesetzt','success',`${g} Edelstein${g===1?'':'e'} · ${r} Rolle${r===1?'':'n'} verwendet. Die stärksten wurden zuerst verteilt.${deferred?' Speicherung läuft im Hintergrund.':''}`);
     }finally{busy=false;updateBars()}
   }
   window.v480AutoMaterials=autoMaterials;
+
+  function flushPending(){
+    if(!accountVerified())return false;
+    const pending=readPending();if(!pending.equip&&!pending.materials)return false;
+    try{
+      if(pending.equip)applyAutoEquipPlan();
+      if(pending.materials){
+        const p=materialPlan(),used=new Set();
+        p.gemAssignments.forEach(x=>{applyGem(x.it,x.material);used.add(x.material)});
+        p.scrollAssignments.forEach(x=>{applyScroll(x.it,x.material);used.add(x.material)});
+        if(used.size)s.materials=(Array.isArray(s.materials)?s.materials:[]).filter(m=>!used.has(m));
+      }
+      clearPending();paintImmediate();persistBackground();
+      return true;
+    }catch(e){console.warn('V4.86 pending auto action',e);return false}
+  }
+  window.v486FlushPendingAuto=flushPending;
 
   function ensureBar(panel,id,title,sub,buttonText,onclick){
     if(!panel)return null;
@@ -66088,6 +66133,14 @@ create index if not exists player_messages_sender_idx on public.player_messages(
   }
   window.v480UpdateAutoBars=updateBars;
 
+  /* V4.86: if the user taps while the same-account cloud handshake is still finishing,
+     replay the intent once the verified state is final. This preserves account isolation
+     without blocking inventory interaction. */
+  try{if(typeof v200FinalizeUser==='function'&&!window.__v486AutoFinalizeWrapped){
+    const base=v200FinalizeUser;v200FinalizeUser=async function(){const r=await base.apply(this,arguments);setTimeout(flushPending,0);return r};
+    try{window.v200FinalizeUser=v200FinalizeUser}catch(e){}window.__v486AutoFinalizeWrapped=true;
+  }}catch(e){}
+
   /* Targeted hooks only; no permanent MutationObservers or fast intervals. */
   try{if(typeof window.v459ArrangeCharacter==='function'&&!window.__v480ArrangeWrapped){const base=window.v459ArrangeCharacter;window.v459ArrangeCharacter=function(){const x=base.apply(this,arguments);updateBars();return x};window.__v480ArrangeWrapped=true}}catch(e){}
   try{if(typeof renderInventory==='function'&&!window.__v480InventoryWrapped){const base=renderInventory;renderInventory=function(){const x=base.apply(this,arguments);updateBars();return x};window.renderInventory=renderInventory;window.__v480InventoryWrapped=true}}catch(e){}
@@ -66097,7 +66150,7 @@ create index if not exists player_messages_sender_idx on public.player_messages(
   stamp();updateBars();
   document.addEventListener('DOMContentLoaded',()=>{stamp();updateBars()},{once:true});
   window.addEventListener('pageshow',()=>{stamp();updateBars()},{passive:true});
-  [150,650,1600].forEach(ms=>setTimeout(updateBars,ms));
+  [150,650,1600].forEach(ms=>setTimeout(updateBars,ms));[1000,3000,7000].forEach(ms=>setTimeout(flushPending,ms));
 })();
 </script>
 
@@ -66131,8 +66184,8 @@ html.v481-hidden *,html.v481-hidden *::before,html.v481-hidden *::after{animatio
 
 <!-- ===== V4.82: paid dungeon attempt must preserve free-timer anchor ===== -->
 <style id="v482-dungeon-paid-timer-css">
-.app > header .v358-logo::after{content:"V4.85"!important}
-.app > header .v366-ver::after,.app > header .v371-logo em::after,.app > header .v372-logo em::after{content:"V4.85"!important;font-size:5px!important;color:#63cdd1!important;font-style:normal!important;font-weight:900!important}
+.app > header .v358-logo::after{content:"V4.86"!important}
+.app > header .v366-ver::after,.app > header .v371-logo em::after,.app > header .v372-logo em::after{content:"V4.86"!important;font-size:5px!important;color:#63cdd1!important;font-style:normal!important;font-weight:900!important}
 </style>
 <script id="v482-dungeon-paid-timer-owner">
 (function(){
@@ -66228,15 +66281,15 @@ html.v481-hidden *,html.v481-hidden *::before,html.v481-hidden *::after{animatio
 </script>
 
 
-<!-- ===== V4.85: modern-home only + stable startup combat power ===== -->
+<!-- ===== V4.86: modern-home only + stable startup combat power ===== -->
 <style id="v483-final-css">
-.app > header .v358-logo::after{content:"V4.85"!important}
-.app > header .v366-ver::after,.app > header .v371-logo em::after,.app > header .v372-logo em::after{content:"V4.85"!important;font-size:5px!important;color:#63cdd1!important;font-style:normal!important;font-weight:900!important}
+.app > header .v358-logo::after{content:"V4.86"!important}
+.app > header .v366-ver::after,.app > header .v371-logo em::after,.app > header .v372-logo em::after{content:"V4.86"!important;font-size:5px!important;color:#63cdd1!important;font-style:normal!important;font-weight:900!important}
 #world.active > .v349-home,#world.active > .v085-dashboard{display:none!important}
 </style>
 <script id="v483-modern-home-power-stability">
 (function(){
-  const VERSION='V4.85',SHORT='V4.85',boot=Date.now();
+  const VERSION='V4.86',SHORT='V4.86',boot=Date.now();
   let released=false;
   function stamp(){
     try{document.title='Grow Legends '+SHORT}catch(e){}
@@ -66296,10 +66349,10 @@ html.v481-hidden *,html.v481-hidden *::before,html.v481-hidden *::after{animatio
 </script>
 
 
-<!-- ===== V4.85: 7-day daily login gifts ===== -->
+<!-- ===== V4.86: 7-day daily login gifts ===== -->
 <style id="v484-daily-login-css">
-.app > header .v358-logo::after{content:"V4.85"!important}
-.app > header .v366-ver::after,.app > header .v371-logo em::after,.app > header .v372-logo em::after{content:"V4.85"!important;font-size:5px!important;color:#63cdd1!important;font-style:normal!important;font-weight:900!important}
+.app > header .v358-logo::after{content:"V4.86"!important}
+.app > header .v366-ver::after,.app > header .v371-logo em::after,.app > header .v372-logo em::after{content:"V4.86"!important;font-size:5px!important;color:#63cdd1!important;font-style:normal!important;font-weight:900!important}
 #v484DailyLogin{
   position:fixed;inset:0;z-index:2147483300;display:none;align-items:center;justify-content:center;
   padding:14px;background:rgba(2,6,3,.91);backdrop-filter:blur(9px);
@@ -66344,7 +66397,7 @@ html.v481-hidden *,html.v481-hidden *::before,html.v481-hidden *::after{animatio
 </style>
 <script id="v484-daily-login-core">
 (function(){
-  const VERSION='V4.85',SHORT='V4.85';
+  const VERSION='V4.86',SHORT='V4.86';
   let openedKey='',claimBusy=false;
 
   function stamp(){
@@ -66494,7 +66547,7 @@ html.v481-hidden *,html.v481-hidden *::before,html.v481-hidden *::after{animatio
     try{if(typeof v441PaintResources==='function')v441PaintResources()}catch(e){}
     try{if(typeof v446PaintCombatPower==='function')v446PaintCombatPower()}catch(e){}
     try{if(typeof render==='function')render()}catch(e){}
-    const id=uid();setTimeout(async()=>{try{if(id&&typeof v452AccountVerified==='function'&&v452AccountVerified(id)&&typeof v075WriteCloudSave==='function')await v075WriteCloudSave(true)}catch(e){console.warn('V4.85 login reward cloud save',e)}},50);
+    const id=uid();setTimeout(async()=>{try{if(id&&typeof v452AccountVerified==='function'&&v452AccountVerified(id)&&typeof v075WriteCloudSave==='function')await v075WriteCloudSave(true)}catch(e){console.warn('V4.86 login reward cloud save',e)}},50);
   }
   async function claim(day){
     if(claimBusy||!accountReady()||!due()||day!==nextDay())return;
