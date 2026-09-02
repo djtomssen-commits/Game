@@ -19531,19 +19531,33 @@ function v121SanitizeMagicStock(){
   }
 }
 
+function v121PaintShopInfo(){
+  const box=document.querySelector('#v030MagicShop');
+  if(!box)return;
+  let info=box.querySelector('.v121-rarity-info');
+  if(!info){
+    info=document.createElement('div');
+    info.className='tiny v121-rarity-info';
+    info.style.marginTop='8px';
+    box.appendChild(info);
+  }
+  info.innerHTML=v121RarityInfo();
+}
+try{window.v121PaintShopInfo=v121PaintShopInfo}catch(e){}
+
 const v121BaseRender=render;
 render=function(){
   v121SanitizeMagicStock();
   const result=v121BaseRender();
   document.querySelectorAll('.version').forEach(el=>el.textContent='V4.29 Stable');
-  requestAnimationFrame(v121PaintShopInfo);
+  if(typeof v121PaintShopInfo==='function')requestAnimationFrame(v121PaintShopInfo);
   return result;
 };
 
 setTimeout(()=>{
   try{
     v121SanitizeMagicStock();
-    v121PaintShopInfo();
+    if(typeof v121PaintShopInfo==='function')v121PaintShopInfo();
     renderShop();
   }catch(e){}
 },200);
@@ -69516,7 +69530,7 @@ function scheduleRender(){if(renderTimer)return;renderTimer=setTimeout(()=>{rend
 window.addEventListener('error',e=>pushErr('JS_ERROR',`${e.message||'Fehler'}${e.filename?` · ${String(e.filename).split('/').pop()}:${e.lineno||0}`:''}`,'error'));
 window.addEventListener('unhandledrejection',e=>pushErr('UNHANDLED_REJECTION',String(e.reason?.message||e.reason||'Promise abgelehnt'),'error'));
 /* Network timing without changing request semantics. */
-try{if(typeof window.fetch==='function'&&!window.fetch.__v4107){const nf=window.fetch.bind(window),w=async function(){const started=performance.now();let ok=false,status=0,url='',retried=false;const input=arguments[0],init=arguments[1]||{};try{url=String(input?.url||input||'').slice(0,180);const method=String(init?.method||input?.method||'GET').toUpperCase();const canRetry=method==='GET'&&/\/rest\/v1\/player_saves(?:\?|$)/.test(url);let r;try{r=await nf(...arguments)}catch(first){if(!canRetry)throw first;retried=true;await new Promise(resolve=>setTimeout(resolve,350));r=await nf(...arguments)}ok=r.ok;status=r.status;if(retried){network.retries=(network.retries||0)+1}return r}catch(e){network.errors++;pushErr('NETWORK_ERROR',`${url} · ${e.message||e}`,'warn');throw e}finally{const ms=performance.now()-started;network.calls.push({at:Date.now(),url,ms,status,ok,retried});while(network.calls.length>80)network.calls.shift();if(ms>2500){network.slow++;pushErr('SLOW_NETWORK',`${Math.round(ms)} ms · ${url}`,'warn')}if(status>=400){network.errors++;pushErr('HTTP_'+status,url,'warn')}}};w.__v4107=true;w.__v4123PlayerSaveGetRetry=true;window.fetch=w}}catch(e){}
+try{if(typeof window.fetch==='function'&&!window.fetch.__v4107){const nf=window.fetch.bind(window),w=async function(){const started=performance.now();let ok=false,status=0,url='',retried=false,expectedRpcReject=false;const input=arguments[0],init=arguments[1]||{};try{url=String(input?.url||input||'').slice(0,180);const method=String(init?.method||input?.method||'GET').toUpperCase();const canRetry=method==='GET'&&/\/rest\/v1\/player_saves(?:\?|$)/.test(url);let r;try{r=await nf(...arguments)}catch(first){if(!canRetry)throw first;retried=true;await new Promise(resolve=>setTimeout(resolve,350));r=await nf(...arguments)}ok=r.ok;status=r.status;if(status===400&&/\/rest\/v1\/rpc\/v254_buy_guild_upgrade(?:\?|$)/.test(url)){try{const body=await r.clone().text();if(/Nicht genug Gilden-Buds/i.test(body))expectedRpcReject=true}catch(_){}}if(retried){network.retries=(network.retries||0)+1}return r}catch(e){network.errors++;pushErr('NETWORK_ERROR',`${url} · ${e.message||e}`,'warn');throw e}finally{const ms=performance.now()-started;network.calls.push({at:Date.now(),url,ms,status,ok,retried});while(network.calls.length>80)network.calls.shift();if(ms>2500){network.slow++;pushErr('SLOW_NETWORK',`${Math.round(ms)} ms · ${url}`,'warn')}if(status>=400&&!expectedRpcReject){network.errors++;pushErr('HTTP_'+status,url,'warn')}else if(status>=400&&expectedRpcReject){pushErr('RPC_REJECTED',url,'warn')}}};w.__v4107=true;w.__v4123PlayerSaveGetRetry=true;window.fetch=w}}catch(e){}
 /* Cache Storage estimate where supported. */
 try{navigator.storage?.estimate?.().then(x=>storageEstimate=x).catch(()=>{})}catch(e){}
 /* Make Systemtechnik the canonical QA destination. */
@@ -70728,15 +70742,15 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();i
 })();
 </script>
 
-<!-- ===== V4.125 Stable: stable public combat power + RPC detail diagnostics ===== -->
-<style id="v4125-power-rpc-css">
-.app > header .v358-logo::after{content:"V4.125"!important}
-.app > header .v366-ver::after,.app > header .v371-logo em::after,.app > header .v372-logo em::after{content:"V4.125"!important}
+<!-- ===== V4.126 Stable: stable public combat power + RPC detail diagnostics ===== -->
+<style id="v4126-power-rpc-css">
+.app > header .v358-logo::after{content:"V4.126"!important}
+.app > header .v366-ver::after,.app > header .v371-logo em::after,.app > header .v372-logo em::after{content:"V4.126"!important}
 </style>
-<script id="v4125-power-rpc-diagnostics">
+<script id="v4126-power-rpc-diagnostics">
 (()=>{
  'use strict';
- const VERSION='V4.125 Stable',SHORT='V4.125';
+ const VERSION='V4.126 Stable',SHORT='V4.126';
  let calculating=false;
 
  /* Public/character Kampfkraft must never depend on which screen is open.
@@ -70810,12 +70824,12 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();i
    const wrapped=async function(){
     const input=arguments[0],url=String(input?.url||input||'');
     const response=await baseFetch.apply(this,arguments);
-    if(response && response.status>=400 && /\/rest\/v1\/rpc\/v254_(?:buy_guild_upgrade|set_guild_signup)(?:\?|$)/.test(url)){
+    if(response && response.status>=400 && /\/rest\/v1\/rpc\/(?:v254_(?:buy_guild_upgrade|set_guild_signup)|v269_admin_ticket_action)(?:\?|$)/.test(url)){
      try{
       const body=(await response.clone().text()).slice(0,420);
       const detail=`${response.status} · ${url.split('/rpc/')[1]?.split('?')[0]||'Gilden-RPC'} · ${body||'keine Serverdetails'}`;
       window.__V4125_LAST_GUILD_RPC_ERROR__=detail;
-      window.v4125QaPushErr?.('GUILD_RPC_DETAIL',detail,'warn');
+      window.v4125QaPushErr?.(/v269_admin_ticket_action/.test(url)?'TICKET_RPC_DETAIL':'GUILD_RPC_DETAIL',detail,'warn');
      }catch(e){}
     }
     return response;
@@ -70839,3 +70853,5 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();i
  document.addEventListener('visibilitychange',()=>{if(!document.hidden){repaintPower();stamp()}},{passive:true});
 })();
 </script>
+
+<!-- V4.126: v121 shop painter restored; expected guild-budget RPC rejection no longer counted as network failure; ticket RPC detail logging extended. -->
