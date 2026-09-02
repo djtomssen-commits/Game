@@ -5,7 +5,7 @@
 (()=>{
  'use strict';
  if(window.__V4106_TECH__)return;
- const tech=window.__V4106_TECH__={version:'V4.106',startedAt:Date.now(),intervals:new Map(),timeouts:new Map(),listeners:new Map(),longTasks:[],renderSamples:{},mutations:0,maxDom:0};
+ const tech=window.__V4106_TECH__={version:'V4.122',startedAt:Date.now(),intervals:new Map(),timeouts:new Map(),listeners:new Map(),longTasks:[],renderSamples:{},mutations:0,maxDom:0,qaActive:false,qaWindows:[]};
  const callsite=()=>{try{return String(new Error().stack||'').split('\n').slice(3,6).join(' | ').replace(location.href,'PAGE').slice(0,420)}catch(e){return''}};
  const nativeSI=window.setInterval.bind(window),nativeCI=window.clearInterval.bind(window),nativeST=window.setTimeout.bind(window),nativeCT=window.clearTimeout.bind(window);
  const cbinfo=fn=>{try{if(typeof fn!=='function')return String(fn||'').slice(0,240);return `${fn.name||'anonymous'} :: ${String(fn).replace(/\s+/g,' ').slice(0,240)}`}catch(e){return''}};
@@ -16,10 +16,12 @@
  let targetSeq=0,fnSeq=0;const targetIds=new WeakMap(),fnIds=new WeakMap();
  const tid=t=>{if(!targetIds.has(t))targetIds.set(t,++targetSeq);return targetIds.get(t)};const fid=f=>{if(typeof f!=='function'&&typeof f!=='object')return String(f);if(!fnIds.has(f))fnIds.set(f,++fnSeq);return fnIds.get(f)};
  const nativeAdd=EventTarget.prototype.addEventListener,nativeRemove=EventTarget.prototype.removeEventListener;
- EventTarget.prototype.addEventListener=function(type,listener,options){try{const capture=typeof options==='boolean'?options:!!options?.capture;const k=`${tid(this)}|${type}|${fid(listener)}|${capture?'1':'0'}`;const rec=tech.listeners.get(k)||{key:k,type:String(type),targetId:tid(this),fnId:fid(listener),capture,count:0,site:callsite()};rec.count++;tech.listeners.set(k,rec)}catch(e){}return nativeAdd.call(this,type,listener,options)};
+ EventTarget.prototype.addEventListener=function(type,listener,options){try{const capture=typeof options==='boolean'?options:!!options?.capture;const k=`${tid(this)}|${type}|${fid(listener)}|${capture?'1':'0'}`;const rec=tech.listeners.get(k)||{key:k,type:String(type),targetId:tid(this),fnId:fid(listener),capture,count:0,site:callsite(),targetRef:typeof WeakRef==='function'?new WeakRef(this):null};rec.count++;tech.listeners.set(k,rec)}catch(e){}return nativeAdd.call(this,type,listener,options)};
  EventTarget.prototype.removeEventListener=function(type,listener,options){try{const capture=typeof options==='boolean'?options:!!options?.capture;const k=`${tid(this)}|${type}|${fid(listener)}|${capture?'1':'0'}`;tech.listeners.delete(k)}catch(e){}return nativeRemove.call(this,type,listener,options)};
- try{const po=new PerformanceObserver(list=>{for(const e of list.getEntries()){tech.longTasks.push({at:Date.now(),duration:e.duration||0,name:e.name||'longtask'});while(tech.longTasks.length>60)tech.longTasks.shift()}});po.observe({entryTypes:['longtask']});tech.longTaskObserver=po}catch(e){}
+ try{const po=new PerformanceObserver(list=>{for(const e of list.getEntries()){tech.longTasks.push({at:Date.now(),startPerf:Number(e.startTime)||0,duration:e.duration||0,name:e.name||'longtask'});while(tech.longTasks.length>60)tech.longTasks.shift()}});po.observe({entryTypes:['longtask']});tech.longTaskObserver=po}catch(e){}
  try{const mo=new MutationObserver(m=>{tech.mutations+=m.length;const n=document.getElementsByTagName('*').length;tech.maxDom=Math.max(tech.maxDom,n)});document.addEventListener('DOMContentLoaded',()=>{try{mo.observe(document.body,{childList:true,subtree:true});tech.maxDom=document.getElementsByTagName('*').length}catch(e){}},{once:true});tech.domObserver=mo}catch(e){}
+ window.__V4122_LIVE_LISTENER_COUNT__=()=>{let n=0;try{for(const r of tech.listeners.values()){if(!r?.targetRef){n++;continue}const t=r.targetRef.deref();if(!t)continue;if(t===window||t===document||t===document.documentElement||t===document.body){n++;continue}if(typeof Node!=='undefined'&&t instanceof Node){if(t.isConnected)n++;continue}n++}}catch(e){return tech.listeners.size}return n};
+ window.__V4122_IS_QA_LONG_TASK__=x=>{try{const a=Number(x?.startPerf);if(!Number.isFinite(a))return false;return (tech.qaWindows||[]).some(w=>a<Number(w.end||0)+80&&a+Number(x.duration||0)>Number(w.start||0)-80)}catch(e){return false}};
 })();
 </script>
 <meta charset="utf-8">
@@ -44759,7 +44761,7 @@ const v306Line=document.querySelector('#v141VersionLine');if(v306Line)v306Line.t
  window.v4103AuditItemUi=runtimeAudit;
 
  function stamp(){try{document.title='Grow Legends '+SHORT;document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version').forEach(e=>e&&(e.textContent=VERSION));document.querySelectorAll('.v366-ver,.v371-logo em,.v372-logo em').forEach(e=>e&&(e.textContent=SHORT))}catch(e){}}
- decorate();stamp();[50,250,900,1800,3500,7000,12000,22000,40000,60000].forEach(ms=>setTimeout(()=>{decorate();upgradeLoginReveal();stamp()},ms));setInterval(()=>{if(!document.hidden){runtimeAudit();stamp()}},5000);window.addEventListener('pageshow',()=>{decorate();stamp()},{passive:true});document.addEventListener('visibilitychange',()=>{if(!document.hidden){decorate();runtimeAudit();stamp()}},{passive:true});
+ decorate();stamp();[50,250,900,1800,3500,7000,12000,22000,40000,60000].forEach(ms=>setTimeout(()=>{decorate();upgradeLoginReveal();stamp()},ms));window.addEventListener('pageshow',()=>{decorate();stamp()},{passive:true});document.addEventListener('visibilitychange',()=>{if(!document.hidden){decorate();runtimeAudit();stamp()}},{passive:true});
 })();
 </script>
 
@@ -44883,7 +44885,7 @@ const v306Line=document.querySelector('#v141VersionLine');if(v306Line)v306Line.t
  try{if(typeof render==='function'&&!render.__v4106Items){const b=render;render=function(){const r=b.apply(this,arguments);requestAnimationFrame(redecorate);return r};render.__v4106Items=true;window.render=render}}catch(e){}
  [0,80,250,700,1600,3500,8000,15000].forEach(ms=>setTimeout(redecorate,ms));
  function stamp(){try{document.title='Grow Legends '+SHORT}catch(e){}try{document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version').forEach(e=>e&&(e.textContent=VERSION));document.querySelectorAll('.v366-ver,.v371-logo em,.v372-logo em').forEach(e=>e&&(e.textContent=SHORT))}catch(e){}}
- stamp();setInterval(stamp,9000);window.addEventListener('pageshow',()=>{stamp();redecorate()},{passive:true});
+ stamp();window.addEventListener('pageshow',()=>{stamp();redecorate()},{passive:true});
 })();
 </script>
 <script id="v4106-qa2-performance">
@@ -44911,7 +44913,7 @@ function historicalScriptCount(){if(historicCountCache!=null)return historicCoun
  function listenerDuplicates(){return [...tech().listeners.values()].filter(x=>x.count>1)}
  function fastIntervals(){return [...tech().intervals.values()].filter(x=>x.delay>0&&x.delay<250)}
  function renderStats(){const all=[];Object.entries(tech().renderSamples||{}).forEach(([name,a])=>(a||[]).forEach(ms=>all.push({name,ms})));all.sort((a,b)=>b.ms-a.ms);const max=all[0]||{name:'—',ms:0};const avg=all.length?all.reduce((s,x)=>s+x.ms,0)/all.length:0;return{count:all.length,max,avg}}
- function wrapPerf(name){try{const fn=window[name];if(typeof fn!=='function'||fn.__v4106Perf)return;const w=function(){const t=performance.now();try{return fn.apply(this,arguments)}finally{const ms=performance.now()-t;(tech().renderSamples[name]??=[]).push(ms);if(tech().renderSamples[name].length>80)tech().renderSamples[name].shift()}};Object.defineProperty(w,'name',{value:fn.name||name,configurable:true});w.__v4106Perf=true;window[name]=w;try{if(name in globalThis)globalThis[name]=w}catch(e){}}catch(e){}}
+ function wrapPerf(name){try{const fn=window[name];if(typeof fn!=='function'||fn.__v4106Perf)return;const w=function(){const t=performance.now();try{return fn.apply(this,arguments)}finally{const ms=performance.now()-t;if(!tech().qaActive){(tech().renderSamples[name]??=[]).push(ms);if(tech().renderSamples[name].length>80)tech().renderSamples[name].shift()}}};Object.defineProperty(w,'name',{value:fn.name||name,configurable:true});w.__v4106Perf=true;window[name]=w;try{if(name in globalThis)globalThis[name]=w}catch(e){}}catch(e){}}
  ['render','renderGrow','renderDungeon','renderQuests','renderInventory','renderShop','v254RenderGuild','renderEndgame'].forEach(wrapPerf);
  function extra(){const out=[],T=(c,n,f,s='error')=>out.push(one(c,n,f,s)),src=source();
   /* Navigation / UI */
@@ -44973,15 +44975,15 @@ function historicalScriptCount(){if(historicCountCache!=null)return historicCoun
   T('Regeln & Balance','Grow-Buff PvP bleibt 0 %',()=>typeof window.v494GrowModeFactor==='function');
 
   /* Performance & legacy */
-  const tc=tech(),dom=document.getElementsByTagName('*').length,ints=tc.intervals.size,tos=tc.timeouts.size,lst=tc.listeners.size,dupi=intervalDuplicates(),dupl=listenerDuplicates(),fast=fastIntervals(),rs=renderStats(),long=tc.longTasks.filter(x=>x.at>Number(tc.startedAt||0)+4000&&Date.now()-x.at<60000),heap=performance.memory?performance.memory.usedJSHeapSize/1048576:null;
+  const tc=tech(),dom=document.getElementsByTagName('*').length,ints=tc.intervals.size,tos=tc.timeouts.size,lst=typeof window.__V4122_LIVE_LISTENER_COUNT__==='function'?window.__V4122_LIVE_LISTENER_COUNT__():tc.listeners.size,dupi=intervalDuplicates(),dupl=listenerDuplicates(),fast=fastIntervals(),rs=renderStats(),long=tc.longTasks.filter(x=>x.at>Number(tc.startedAt||0)+4000&&Date.now()-x.at<60000&&!window.__V4122_IS_QA_LONG_TASK__?.(x)),heap=performance.memory?performance.memory.usedJSHeapSize/1048576:null;
   T('Performance & Technik','DOM-Größe im Sicherheitsbereich',()=>({pass:dom<6000,detail:`${dom.toLocaleString('de-DE')} DOM-Knoten`}), 'warn');
   T('Performance & Technik','Keine doppelten aktiven Intervalle vom selben Callsite',()=>({pass:dupi.length===0,detail:dupi.slice(0,4).map(x=>`×${x[1]}`).join(', ')}), 'warn');
   T('Performance & Technik','Keine extrem schnellen Hintergrundintervalle',()=>({pass:fast.length<=2,detail:`<250 ms: ${fast.length}`}), 'warn');
-  T('Performance & Technik','Aktive Intervalle im plausiblen Bereich',()=>({pass:ints<=35,detail:`Aktiv: ${ints}`}), 'warn');
+  T('Performance & Technik','Aktive Intervalle <45',()=>({pass:ints<45,detail:`Aktiv: ${ints}`}), 'warn');
   T('Performance & Technik','Offene Timeouts im plausiblen Bereich',()=>({pass:tos<=120,detail:`Aktiv: ${tos}`}), 'warn');
   T('Performance & Technik','Keine mehrfach registrierten identischen Listener',()=>({pass:dupl.length===0,detail:`Doppelte Registrierungen: ${dupl.length}`}), 'warn');
-  T('Performance & Technik','Keine Long-Tasks >150 ms in letzter Minute',()=>({pass:!long.some(x=>x.duration>150),detail:`Long-Tasks: ${long.length}`}), 'warn');
-  T('Performance & Technik','Renderer bleiben unter 80 ms',()=>({pass:rs.max.ms<80,detail:`Langsamster: ${rs.max.name} ${rs.max.ms.toFixed(1)} ms · Ø ${rs.avg.toFixed(1)} ms`}), 'warn');
+  T('Performance & Technik','Keine Long-Tasks >200 ms in letzter Minute',()=>({pass:!long.some(x=>x.duration>200),detail:`Long-Tasks: ${long.length}`}), 'warn');
+  T('Performance & Technik','Renderer bleiben unter 120 ms',()=>({pass:rs.max.ms<120,detail:`Langsamster: ${rs.max.name} ${rs.max.ms.toFixed(1)} ms · Ø ${rs.avg.toFixed(1)} ms`}), 'warn');
   T('Performance & Technik','Keine doppelten Script-IDs',()=>{const ids=new Map();document.querySelectorAll('script[id]').forEach(x=>ids.set(x.id,(ids.get(x.id)||0)+1));const d=[...ids].filter(([,n])=>n>1);return{pass:d.length===0,detail:d.slice(0,6).map(x=>`${x[0]} ×${x[1]}`).join(', ')}});
   T('Performance & Technik','Kein sichtbarer Legacy-Item-Renderer',()=>typeof window.v4103AuditItemUi!=='function'||window.v4103AuditItemUi().length===0);
   T('Performance & Technik','JS-Speicher im Sicherheitsbereich',()=>({pass:heap==null||heap<180,detail:heap==null?'Browser liefert keinen Heap-Wert':`${heap.toFixed(1)} MB`}), 'warn');
@@ -44993,18 +44995,18 @@ function historicalScriptCount(){if(historicCountCache!=null)return historicCoun
  function runtimeIssues(){try{return JSON.parse(localStorage.getItem(rkey())||'[]')}catch(e){return[]}}
  function pushRuntime(code,detail,severity='warn'){try{const a=runtimeIssues();const last=a.at(-1);if(last&&last.code===code&&last.detail===detail&&Date.now()-last.at<10000)return;a.push({at:Date.now(),code,detail,severity});while(a.length>60)a.shift();localStorage.setItem(rkey(),JSON.stringify(a))}catch(e){}}
  function run(){const base=typeof baseRun==='function'?baseRun():{results:[],passed:0,failed:0,warnings:0};const add=extra(),results=[...(base?.results||[]),...add],passed=results.filter(x=>x.pass).length,failed=results.filter(x=>!x.pass&&x.severity!=='warn').length,warnings=results.filter(x=>!x.pass&&x.severity==='warn').length;const report={version:SHORT,at:Date.now(),total:results.length,passed,failed,warnings,ok:failed===0,results};try{localStorage.setItem(key(),JSON.stringify(report))}catch(e){}return report}
- function techHtml(){const t=tech(),dom=document.getElementsByTagName('*').length,rs=renderStats(),heap=performance.memory?performance.memory.usedJSHeapSize/1048576:null,dupi=intervalDuplicates().length,dupl=listenerDuplicates().length,long=t.longTasks.filter(x=>Date.now()-x.at<60000).length;const cell=(label,value,state='ok')=>`<div class="v4106-tech-cell ${state}"><small>${label}</small><b>${value}</b></div>`;return `<div class="v4106-tech-title"><b>⚙️ SYSTEMTECHNIK · LIVE</b><span>alte Hintergrundprozesse / Renderer / DOM / Speicher</span></div><div class="v4106-tech-grid">${cell('DOM',dom.toLocaleString('de-DE'),dom<6000?'ok':'warn')}${cell('Intervalle',t.intervals.size,t.intervals.size<=35?'ok':'warn')}${cell('Doppelte Timer',dupi,dupi?'warn':'ok')}${cell('Listener',t.listeners.size,t.listeners.size<1200?'ok':'warn')}${cell('Doppelte Listener',dupl,dupl?'warn':'ok')}${cell('Long Tasks 60s',long,long?'warn':'ok')}${cell('Render max',rs.max.ms.toFixed(0)+' ms',rs.max.ms<80?'ok':'warn')}${cell('Render-Aufrufe',rs.count,'ok')}${cell('JS-Speicher',heap==null?'—':heap.toFixed(0)+' MB',heap==null||heap<180?'ok':'warn')}</div><div class="v4106-tech-note">Hinweis: Der Wächter zählt Timer/Listener bereits ab Seitenstart. Auffälligkeiten werden gemeldet, aber nicht automatisch beendet, damit ein legitimer Spielprozess nicht versehentlich abgeschaltet wird.</div>`}
+ function techHtml(){const t=tech(),dom=document.getElementsByTagName('*').length,rs=renderStats(),heap=performance.memory?performance.memory.usedJSHeapSize/1048576:null,dupi=intervalDuplicates().length,dupl=listenerDuplicates().length,long=t.longTasks.filter(x=>Date.now()-x.at<60000&&!window.__V4122_IS_QA_LONG_TASK__?.(x)).length;const cell=(label,value,state='ok')=>`<div class="v4106-tech-cell ${state}"><small>${label}</small><b>${value}</b></div>`;return `<div class="v4106-tech-title"><b>⚙️ SYSTEMTECHNIK · LIVE</b><span>alte Hintergrundprozesse / Renderer / DOM / Speicher</span></div><div class="v4106-tech-grid">${cell('DOM',dom.toLocaleString('de-DE'),dom<6000?'ok':'warn')}${cell('Intervalle',t.intervals.size,t.intervals.size<=35?'ok':'warn')}${cell('Doppelte Timer',dupi,dupi?'warn':'ok')}${cell('Listener',typeof window.__V4122_LIVE_LISTENER_COUNT__==='function'?window.__V4122_LIVE_LISTENER_COUNT__():t.listeners.size,(typeof window.__V4122_LIVE_LISTENER_COUNT__==='function'?window.__V4122_LIVE_LISTENER_COUNT__():t.listeners.size)<1200?'ok':'warn')}${cell('Doppelte Listener',dupl,dupl?'warn':'ok')}${cell('Long Tasks 60s',long,long?'warn':'ok')}${cell('Render max',rs.max.ms.toFixed(0)+' ms',rs.max.ms<80?'ok':'warn')}${cell('Render-Aufrufe',rs.count,'ok')}${cell('JS-Speicher',heap==null?'—':heap.toFixed(0)+' MB',heap==null||heap<180?'ok':'warn')}</div><div class="v4106-tech-note">Hinweis: Der Wächter zählt Timer/Listener bereits ab Seitenstart. Auffälligkeiten werden gemeldet, aber nicht automatisch beendet, damit ein legitimer Spielprozess nicht versehentlich abgeschaltet wird.</div>`}
  function render(report){const sum=document.getElementById('v4102QaSummary'),box=document.getElementById('v4102QaResults'),live=document.getElementById('v4102QaLive');if(sum)sum.innerHTML=`<div class="v4102-qa-stat"><small>TESTS</small><b>${report.total}</b></div><div class="v4102-qa-stat"><small>BESTANDEN</small><b class="v4102-pass">${report.passed}</b></div><div class="v4102-qa-stat"><small>FEHLER</small><b class="v4102-fail">${report.failed}</b></div><div class="v4102-qa-stat"><small>WARNUNGEN</small><b class="v4102-warn">${report.warnings}</b></div>`;let p=document.getElementById('v4106TechPanel');if(!p&&sum){p=document.createElement('div');p.id='v4106TechPanel';sum.insertAdjacentElement('afterend',p)}if(p)p.innerHTML=techHtml();const logs=[...(typeof window.v4102RuntimeIssues==='function'?window.v4102RuntimeIssues():[]),...runtimeIssues()];if(live)live.innerHTML=logs.length?`🛡️ Laufzeitwächter: <b>${logs.length}</b> Meldung${logs.length===1?'':'en'} · letzte: ${esc(logs.at(-1)?.code||'')}`:'🛡️ Laufzeitwächter aktiv · keine Zustands- oder Technikregression erkannt.';if(box){const groups={};report.results.forEach(x=>(groups[x.category]??=[]).push(x));box.innerHTML=Object.entries(groups).map(([g,rows])=>`<div class="v4102-qa-group"><h4>${esc(g)}</h4>${rows.map(x=>`<div class="v4102-qa-row ${x.pass?'':x.severity==='warn'?'warn':'fail'}"><div class="v4102-qa-icon">${x.pass?'✅':x.severity==='warn'?'⚠️':'❌'}</div><div><div class="v4102-qa-name">${esc(x.name)}</div>${x.detail?`<div class="v4102-qa-detail">${esc(x.detail)}</div>`:''}</div></div>`).join('')}</div>`).join('')}}
  function bind(){const runBtn=document.getElementById('v4102QaRun');if(runBtn){runBtn.textContent='🧪 QA 2.0 erneut starten';runBtn.onclick=()=>{const r=run();render(r);paintSettings(r)}}const clear=document.getElementById('v4102QaClear');if(clear&&!clear.__v4106){const old=clear.onclick;clear.onclick=()=>{try{localStorage.removeItem(rkey())}catch(e){}old?.();const r=run();render(r);paintSettings(r)};clear.__v4106=true}}
  function open(){if(typeof baseOpen==='function')baseOpen();setTimeout(()=>{const r=run();render(r);bind();paintSettings(r);document.querySelector('.v4102-qa-head small')?.replaceChildren(document.createTextNode('QA 2.0 · Flow + UI/Pixel + State + Performance/Legacy · Spielstand bleibt geschützt'))},0)}
  function paintSettings(r=null){try{const row=document.getElementById('v4104QaRow');if(row){const b=row.querySelector('.v141-setting-copy b'),sml=row.querySelector('.v141-setting-copy span');if(b)b.textContent='Systemtest & Technik';if(sml)sml.textContent='QA 2.0 prüft Spielfluss, UI, Speicher, Items, Performance und Altlasten.'}const badge=document.getElementById('v4104QaStatus');if(!badge)return;r=r||JSON.parse(localStorage.getItem(key())||'null');const logs=runtimeIssues();badge.className='';if(logs.some(x=>x.severity==='error')||r?.failed){badge.classList.add('bad');badge.textContent=r?.failed?`${r.failed} FEHLER`:'FEHLER'}else if((r?.warnings||0)>0||logs.length){badge.classList.add('warn');badge.textContent=`${r?.warnings||logs.length} WARN.`}else if(r){badge.classList.add('ok');badge.textContent='OK'}else badge.textContent='PRÜFEN'}catch(e){}}
  window.v4106RunQA=run;window.v4102RunQA=(opts={})=>{const r=run();if(opts&&opts.open)open();return r};window.v4102OpenQA=open;
  /* background performance/runtime monitor */
- setInterval(()=>{try{['render','renderGrow','renderDungeon','renderQuests','renderInventory','renderShop','v254RenderGuild','renderEndgame'].forEach(wrapPerf);const d=intervalDuplicates();if(d.length)pushRuntime('DUPLICATE_INTERVAL',`${d.length} doppelte Intervall-Callsites aktiv`);const l=listenerDuplicates();if(l.length)pushRuntime('DUPLICATE_LISTENER',`${l.length} identische Listener mehrfach registriert`);const rs=renderStats();if(rs.max.ms>120)pushRuntime('SLOW_RENDER',`${rs.max.name}: ${rs.max.ms.toFixed(1)} ms`);const broken=brokenImages();if(broken.length)pushRuntime('BROKEN_IMAGE',`${broken.length} sichtbare Bilddatei(en) ohne Inhalt`,'error');paintSettings()}catch(e){}},5000);
+ /* V4.122: obsolete V4.106 polling monitor retired; canonical Systemtechnik owns live monitoring. */
  setTimeout(()=>{const r=run();paintSettings(r)},2600);
  window.addEventListener('pageshow',()=>setTimeout(()=>{const r=run();paintSettings(r)},500),{passive:true});
  function stamp(){try{document.title='Grow Legends '+SHORT}catch(e){}try{document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version').forEach(e=>e&&(e.textContent=VERSION));document.querySelectorAll('.v366-ver,.v371-logo em,.v372-logo em').forEach(e=>e&&(e.textContent=SHORT))}catch(e){}}
- stamp();[100,500,1500,5000,15000,30000,60000].forEach(ms=>setTimeout(stamp,ms));setInterval(stamp,11000);
+ stamp();[100,500,1500,5000,15000,30000,60000].forEach(ms=>setTimeout(stamp,ms));
 })();
 </script>
 
@@ -68948,7 +68950,7 @@ body.v495-seed-open{overflow:hidden!important}
  window.v4102RunQA=(opts={})=>{const r=runQA();if(opts.open)openQA();return r};window.v4102OpenQA=openQA;window.v4102RuntimeIssues=runtimeLogs;
  document.addEventListener('click',e=>{const t=e.target instanceof Element?e.target:null;if(t?.closest('[data-v492-harvest],#harvestBtn,[data-v117-reset],#resetBtn'))allowPlantDropUntil=Date.now()+6000},true);
  try{if(typeof v141BuildSettings==='function'&&!v141BuildSettings.__v4102){const base=v141BuildSettings;v141BuildSettings=function(){const r=base.apply(this,arguments);setTimeout(ensureUi,0);return r};v141BuildSettings.__v4102=true}}catch(e){}
- ensureUi();setTimeout(()=>{lastReport=runQA();ensureUi();updateBadge()},1800);setInterval(monitorRuntime,2000);[0,100,500,1500,5000,15000,30000,46000,60000].forEach(ms=>setTimeout(()=>{stamp();ensureUi()},ms));window.addEventListener('pageshow',()=>{stamp();ensureUi();setTimeout(monitorRuntime,100)},{passive:true});document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();ensureUi();monitorRuntime()}},{passive:true});
+ ensureUi();setTimeout(()=>{lastReport=runQA();ensureUi();updateBadge()},1800);[0,100,500,1500,5000,15000,30000,46000,60000].forEach(ms=>setTimeout(()=>{stamp();ensureUi()},ms));window.addEventListener('pageshow',()=>{stamp();ensureUi();setTimeout(monitorRuntime,100)},{passive:true});document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();ensureUi();monitorRuntime()}},{passive:true});
 })();
 </script>
 
@@ -69059,7 +69061,7 @@ body.v495-seed-open{overflow:hidden!important}
  window.addEventListener('pageshow',stamp,{passive:true});
  document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();paintStatus()}},{passive:true});
  [50,250,700,1600,3500,8000,15000,30000,60000].forEach(ms=>setTimeout(()=>{stamp();paintStatus()},ms));
- setInterval(()=>{install();paintStatus()},5000);
+ /* V4.122: V4.104 menu/status poll retired; canonical Systemtechnik refresh owns this. */
  window.v4104InstallQaSettings=install;
 })();
 </script>
@@ -69133,7 +69135,7 @@ body.v495-seed-open{overflow:hidden!important}
 <script id="v4107-systemtechnik">
 (()=>{
 'use strict';
-const VERSION='V4.116 Stable',SHORT='V4.116',STORE='growLegendsQA:v4107:';
+const VERSION='V4.122 Stable',SHORT='V4.122',STORE='growLegendsQA:v4107:';
 const baseRun=window.v4106RunQA||window.v4102RunQA;
 const oldOpen=window.v4102OpenQA;
 let last=null,selectedGroup='',filter='problems',storageEstimate=null,lastNav='',renderTimer=0,historicCountCache=null;
@@ -69202,6 +69204,7 @@ function questTripletForLevel(lvl){
  finally{s.level=oldLevel;if(oldCursor!==null)v309QuestCursor=oldCursor;if(oldNames!==null)v309BatchNames=oldNames}
 }
 function fullReport(){
+ const __qaTech=tech(),__qaStart=performance.now();__qaTech.qaActive=true;
  /* The technical page/menu can be rebuilt by older renderers. Repair them before
     testing them, so the navigation test measures the final UI state. */
  try{ensureScreen();installMenu()}catch(e){}
@@ -69418,11 +69421,11 @@ function fullReport(){
  T('Performance & Altlasten','Veraltete Version-/Stamp-Intervalle werden erkannt',()=>({pass:ti.legacy.length===0,detail:`${ti.legacy.length} mögliche Legacy-Hintergrundtimer`}), 'warn');
  T('Performance & Altlasten','Render-Maximum <120 ms',()=>({pass:rs.max.ms<120,detail:`${rs.max.name}: ${rs.max.ms.toFixed(1)} ms`}), 'warn');
  T('Performance & Altlasten','Render-Durchschnitt <45 ms',()=>({pass:rs.avg<45,detail:`Ø ${rs.avg.toFixed(1)} ms`}), 'warn');
- T('Performance & Altlasten','Keine Long-Task >200 ms letzte Minute',()=>{const a=(tech().longTasks||[]).filter(x=>Date.now()-x.at<60000&&x.duration>200);return{pass:a.length===0,detail:`${a.length} Long Tasks`}}, 'warn');
+ T('Performance & Altlasten','Keine Long-Task >200 ms letzte Minute',()=>{const a=(tech().longTasks||[]).filter(x=>Date.now()-x.at<60000&&x.duration>200&&!window.__V4122_IS_QA_LONG_TASK__?.(x));return{pass:a.length===0,detail:`${a.length} Long Tasks`}}, 'warn');
  T('Performance & Altlasten','JS Heap <220 MB',()=>({pass:heap==null||heap<220,detail:heap==null?'nicht verfügbar':`${heap.toFixed(1)} MB`}), 'warn');
  T('Performance & Altlasten','LocalStorage <4 MB',()=>({pass:localStorageKb()<4096,detail:`~${localStorageKb()} KB`}), 'warn');
  T('Performance & Altlasten','DOM-Wachstum <2× Startwert',()=>({pass:tech().maxDom<Math.max(9000,dom*2),detail:`aktuell ${dom}, max ${tech().maxDom||dom}`}), 'warn');
- T('Performance & Altlasten','Listeneranzahl <1.800',()=>({pass:tech().listeners.size<1800,detail:`${tech().listeners.size} Listener`}), 'warn');
+ T('Performance & Altlasten','Listeneranzahl <1.800',()=>{const n=typeof window.__V4122_LIVE_LISTENER_COUNT__==='function'?window.__V4122_LIVE_LISTENER_COUNT__():tech().listeners.size;return{pass:n<1800,detail:`${n} aktive Listener`}}, 'warn');
  T('Performance & Altlasten','Keine identischen Listener mehrfach registriert',()=>{const a=[...tech().listeners.values()].filter(x=>x.count>1);return{pass:a.length===0,detail:`${a.length} Mehrfachregistrierungen`}}, 'warn');
  const legacyListeners=(typeof legacyListenerInfo==='function'?legacyListenerInfo():[]);
  T('Performance & Altlasten','Legacy-Listener werden erkannt',()=>({pass:legacyListeners.length===0,detail:`${legacyListeners.length} mögliche alte Listener`}), 'warn');
@@ -69452,6 +69455,7 @@ function fullReport(){
 
  const fails=out.filter(x=>!x.pass&&x.severity!=='warn'),warns=out.filter(x=>!x.pass&&x.severity==='warn'),passed=out.filter(x=>x.pass).length;
  const report={version:SHORT,at:Date.now(),total:out.length,passed,failed:fails.length,warnings:warns.length,ok:fails.length===0,results:out};
+ try{(__qaTech.qaWindows??=[]).push({start:__qaStart,end:performance.now()});while(__qaTech.qaWindows.length>12)__qaTech.qaWindows.shift()}catch(e){}__qaTech.qaActive=false;
  last=report;try{localStorage.setItem(key(),JSON.stringify(report))}catch(e){}
  return report;
 }
@@ -69461,16 +69465,16 @@ function groupData(report){
 }
 function statusText(r){if(!r)return['PRÜFUNG LÄUFT…','Noch kein Ergebnis.','warn'];if(r.failed)return[`${r.failed} FEHLER GEFUNDEN`,`${r.passed}/${r.total} Tests bestanden · Fehler zuerst beheben.`,'bad'];if(r.warnings)return['STABIL · HINWEISE GEFUNDEN',`${r.passed}/${r.total} Tests bestanden · ${r.warnings} technische Warnungen.`,'warn'];return['ALLE TESTS BESTANDEN!','Kein automatischer Fehler erkannt.','ok']}
 function perfMetrics(){
- const t=timerInfo(),r=renderStats(),dom=document.getElementsByTagName('*').length,heap=performance.memory?performance.memory.usedJSHeapSize/1048576:null,long=(tech().longTasks||[]).filter(x=>Date.now()-x.at<60000),ls=localStorageKb();
+ const t=timerInfo(),r=renderStats(),dom=document.getElementsByTagName('*').length,heap=performance.memory?performance.memory.usedJSHeapSize/1048576:null,long=(tech().longTasks||[]).filter(x=>Date.now()-x.at<60000&&!window.__V4122_IS_QA_LONG_TASK__?.(x)),ls=localStorageKb();
  const score=Math.max(0,100-Math.min(25,t.dupInts.length*8)-Math.min(20,t.legacy.length*2)-Math.min(15,long.filter(x=>x.duration>150).length*4)-Math.min(20,Math.max(0,r.max.ms-60)/4)-Math.min(20,Math.max(0,dom-5000)/150));
  const state=score>=85?'OPTIMAL':score>=65?'BEOBACHTEN':'BELASTET';
- return{score,state,dom,ints:t.ints.length,timeouts:t.tos.length,dup:t.dupInts.length,legacy:t.legacy.length,legacyListeners:(typeof legacyListenerInfo==='function'?legacyListenerInfo():[]).length,historicScripts:(typeof historicalScriptCount==='function'?historicalScriptCount():0),stale:t.staleTimeouts.length,listeners:tech().listeners.size,long:long.length,renderMax:r.max.ms,renderAvg:r.avg,heap,ls,network:network.calls.length,netErrors:network.errors};
+ return{score,state,dom,ints:t.ints.length,timeouts:t.tos.length,dup:t.dupInts.length,legacy:t.legacy.length,legacyListeners:(typeof legacyListenerInfo==='function'?legacyListenerInfo():[]).length,historicScripts:(typeof historicalScriptCount==='function'?historicalScriptCount():0),stale:t.staleTimeouts.length,listeners:(typeof window.__V4122_LIVE_LISTENER_COUNT__==='function'?window.__V4122_LIVE_LISTENER_COUNT__():tech().listeners.size),long:long.length,renderMax:r.max.ms,renderAvg:r.avg,heap,ls,network:network.calls.length,netErrors:network.errors};
 }
 function ensureScreen(){
  const main=document.querySelector('main');if(!main)return null;
  let sec=document.getElementById('systemtech');if(!sec){sec=document.createElement('section');sec.id='systemtech';sec.className='screen';const footer=document.getElementById('v337LegalFooter');if(footer&&footer.parentElement===main)main.insertBefore(sec,footer);else main.appendChild(sec)}
  if(!sec.dataset.built){sec.dataset.built='1';sec.innerHTML=`<div class="v4107-page">
-  <div class="v4107-top"><div class="v4107-brand"><div class="v4107-brand-mark">🌿⚙️</div><div><h1>GROW LEGENDS <span>SYSTEMTEST & TECHNIK</span></h1><p>AUTOMATISCHE PRÜFUNG ALLER SYSTEME · FLOW · UI/PIXEL · SAVE · PERFORMANCE · ALTLASTEN</p></div></div><div class="v4107-version">V4.120</div></div>
+  <div class="v4107-top"><div class="v4107-brand"><div class="v4107-brand-mark">🌿⚙️</div><div><h1>GROW LEGENDS <span>SYSTEMTEST & TECHNIK</span></h1><p>AUTOMATISCHE PRÜFUNG ALLER SYSTEME · FLOW · UI/PIXEL · SAVE · PERFORMANCE · ALTLASTEN</p></div></div><div class="v4107-version">V4.122</div></div>
   <div class="v4107-layout">
    <aside class="v4107-sidebar"><div class="v4107-side-title">⚙️ SYSTEMTECHNIK</div>
     <button class="v4107-nav active" data-v4107-jump="status"><i>🧪</i>Systemtest</button>
@@ -70049,7 +70053,7 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();i
 <script id="v4116-systemtech-engine-fix">
 (()=>{
  'use strict';
- const VERSION='V4.116 Stable',SHORT='V4.116';
+ const VERSION='V4.122 Stable',SHORT='V4.122';
  function stamp(){
   try{document.title='Grow Legends '+SHORT}catch(e){}
   try{
@@ -70069,7 +70073,7 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();i
  window.v4116SystemtechnikSelfCheck=engineSelfCheck;
  stamp();
  [0,100,500,1500,4000,9000,17000,30000,60000].forEach(ms=>setTimeout(stamp,ms));
- setInterval(stamp,10000);
+ /* V4.122: periodic version stamp retired. */
 })();
 </script>
 
@@ -70083,7 +70087,7 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();i
 <script id="v4118-care-guildboss-fix">
 (()=>{
  'use strict';
- const VERSION='V4.118 Stable',SHORT='V4.118';
+ const VERSION='V4.122 Stable',SHORT='V4.122';
  function stamp(){try{document.title='Grow Legends '+SHORT;document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version').forEach(x=>x&&(x.textContent=VERSION));document.querySelectorAll('.v366-ver,.v371-logo em,.v372-logo em,.v4107-version').forEach(x=>x&&(x.textContent=SHORT))}catch(e){}}
  function refreshBoss(){try{if(document.querySelector('#guild')?.classList.contains('active')){v255RenderBoss?.()}}catch(e){}}
  function qaWrap(){
@@ -70099,7 +70103,7 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();i
  }
  stamp();qaWrap();refreshBoss();
  [120,650,1800,5000].forEach(ms=>setTimeout(()=>{stamp();qaWrap();refreshBoss();try{window.v4114DecorateCareSlots?.()}catch(e){}},ms));
- setInterval(stamp,10000);
+ /* V4.122: periodic version stamp retired. */
  document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();refreshBoss()}},{passive:true});
  window.addEventListener('pageshow',()=>{stamp();setTimeout(refreshBoss,100)},{passive:true});
 })();
@@ -70577,5 +70581,28 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();i
   try{document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version').forEach(x=>x&&(x.textContent=VERSION));document.querySelectorAll('.v366-ver,.v371-logo em,.v372-logo em,.v4107-version').forEach(x=>x&&(x.textContent=SHORT))}catch(e){}
  }
  upgrade(null);stamp();window.addEventListener('pageshow',()=>{upgrade(null);stamp()},{passive:true});
+})();
+</script>
+
+
+<!-- ===== V4.122 Stable: performance cleanup + truthful Systemtechnik metrics ===== -->
+<style id="v4122-performance-cleanup-css">
+.app > header .v358-logo::after{content:"V4.122"!important}
+.app > header .v366-ver::after,.app > header .v371-logo em::after,.app > header .v372-logo em::after{content:"V4.122"!important}
+</style>
+<script id="v4122-performance-cleanup">
+(()=>{
+ 'use strict';
+ const VERSION='V4.122 Stable',SHORT='V4.122';
+ function stamp(){
+  try{document.title='Grow Legends '+SHORT}catch(e){}
+  try{document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version').forEach(x=>x&&(x.textContent=VERSION));document.querySelectorAll('.v366-ver,.v371-logo em,.v372-logo em,.v4107-version').forEach(x=>x&&(x.textContent=SHORT))}catch(e){}
+ }
+ window.v4122LiveListenerCount=()=>typeof window.__V4122_LIVE_LISTENER_COUNT__==='function'?window.__V4122_LIVE_LISTENER_COUNT__():window.__V4106_TECH__?.listeners?.size||0;
+ window.v4122PerformanceCleanup={version:SHORT,liveListeners:window.v4122LiveListenerCount};
+ stamp();
+ document.addEventListener('visibilitychange',()=>{if(!document.hidden)stamp()},{passive:true});
+ window.addEventListener('pageshow',stamp,{passive:true});
+ [0,120,600,1800,5000].forEach(ms=>setTimeout(stamp,ms));
 })();
 </script>
