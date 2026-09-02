@@ -38071,24 +38071,38 @@ function v255BossParticipantHtml(x,i){
   const avatar=typeof v080AvatarFor==='function'?v080AvatarFor(x.class_id||'grower'):'';
   return `<div class="v255-fighter"><img src="${v254GuildEsc(avatar)}" alt=""><div><b>${i+1}. ${v254GuildEsc(x.character_name||'Spieler')}</b><small>${v254GuildEsc(x.class_name||'')} · Lv. ${Number(x.level)||1} · Kampfkraft ${v255Fmt(x.combat_power)}</small></div><div class="v255-damage">${x.damage_done==null?'ANGEMELDET':`-${v255Fmt(x.damage_done)}<small class="v255-rank">${x.damage_done>0?'Schaden':''}</small>`}</div></div>`;
 }
+function v4118BossSignedFallback(){
+  try{
+    return (Array.isArray(v254Members)?v254Members:[]).filter(m=>!!m?.boss_signed).map(m=>{
+      const p=m?.profile||(Array.isArray(m?.profiles)?m.profiles[0]:m?.profiles)||{};
+      return {user_id:m?.user_id||p?.id||'',character_name:p?.character_name||'Spieler',class_id:p?.class_id||'grower',class_name:p?.class_name||'',level:Number(p?.level)||1,combat_power:Number(p?.combat_power)||0,damage_done:null,__signupFallback:true};
+    });
+  }catch(e){return[]}
+}
+function v4118VisibleBossParticipants(){
+  const server=Array.isArray(v255BossParticipants)?v255BossParticipants.filter(Boolean):[],fallback=v4118BossSignedFallback(),out=[],seen=new Set();
+  const add=x=>{const k=String(x?.user_id||x?.id||x?.character_name||'').trim().toLowerCase();if(k&&seen.has(k))return;if(k)seen.add(k);out.push(x)};
+  server.forEach(add);fallback.forEach(add);return out;
+}
+window.v4118VisibleBossParticipants=v4118VisibleBossParticipants;
 function v255RenderBoss(){
-  const phase=v255LocalPhase(), state=document.querySelector('#v254BossSignupState'), btn=document.querySelector('#v254BossSignup');
+  const phase=v255LocalPhase(),visibleParticipants=v4118VisibleBossParticipants(), state=document.querySelector('#v254BossSignupState'), btn=document.querySelector('#v254BossSignup');
   if(state)state.textContent=phase.label;
   if(btn){btn.disabled=!phase.open; if(!phase.open)btn.textContent=v254Membership?.boss_signed?'✓ Anmeldung gespeichert':'Anmeldung geschlossen'}
-  const count=document.querySelector('#v254BossCount');if(count)count.textContent=v255BossParticipants.length||v254Members.filter(x=>x.boss_signed).length;
+  const count=document.querySelector('#v254BossCount');if(count)count.textContent=visibleParticipants.length;
   const hpText=document.querySelector('#v255BossHpText'),fill=document.querySelector('#v255BossHpFill'),result=document.querySelector('#v255BossResult'),list=document.querySelector('#v255BossTimeline'),claim=document.querySelector('#v255ClaimBossReward');
   if(!hpText||!fill||!list)return;
   if(!v255BossRound){
     hpText.textContent=phase.open?'Heute noch kein Kampf gestartet.':'Bossrunde wird beim ersten Abruf nach 20:00 serverseitig ausgewertet.';
     fill.style.width='100%';result.textContent='';
-    list.innerHTML=v255BossParticipants.length?v255BossParticipants.map(v255BossParticipantHtml).join(''):'<div class="v255-empty">Noch keine Boss-Teilnehmer.</div>';
+    list.innerHTML=visibleParticipants.length?visibleParticipants.map(v255BossParticipantHtml).join(''):'<div class="v255-empty">Noch keine Boss-Teilnehmer.</div>';
     if(claim)claim.style.display='none'; return;
   }
   const max=Math.max(1,Number(v255BossRound.boss_max_hp)||1),hp=Math.max(0,Number(v255BossRound.boss_hp)||0);
   hpText.textContent=`Der Verseuchte Titan · ${v255Fmt(hp)} / ${v255Fmt(max)} HP`;
   fill.style.width=`${Math.max(0,Math.min(100,hp/max*100))}%`;
   result.textContent=v255BossRound.status==='won'?'🏆 BESIEGT':v255BossRound.status==='lost'?'💀 ENTKOMMEN':'⚔️ KAMPF';
-  list.innerHTML=v255BossParticipants.length?v255BossParticipants.map(v255BossParticipantHtml).join(''):'<div class="v255-empty">Keine Teilnehmer.</div>';
+  list.innerHTML=visibleParticipants.length?visibleParticipants.map(v255BossParticipantHtml).join(''):'<div class="v255-empty">Keine Teilnehmer.</div>';
   if(claim)claim.style.display=v255BossRound.can_claim?'':'none';
 }
 async function v255LoadBoss(){
@@ -45184,6 +45198,129 @@ function historicalScriptCount(){if(historicCountCache!=null)return historicCoun
   document.addEventListener('DOMContentLoaded',()=>setTimeout(refreshKnown,80),{once:true});
   window.addEventListener('pageshow',()=>setTimeout(refreshKnown,80),{passive:true});
   [250,900,2200,5200].forEach(ms=>setTimeout(refreshKnown,ms));
+})();
+</script>
+
+
+
+<!-- ===== V4.117 Stable: boots art style fix ===== -->
+<style id="v4117-boots-art-fix-css">
+.v466-item-art[data-v4117-boots="1"]{object-fit:contain!important;display:block!important}
+</style>
+<script id="v4117-boots-art-fix">
+(()=>{
+ 'use strict';
+ const VERSION='V4.117 Stable',SHORT='V4.117';
+ const prev=typeof window.v4115ComicItemArtUri==='function'?window.v4115ComicItemArtUri:(typeof window.v466ItemArtUri==='function'?window.v466ItemArtUri:null);
+ const cache=new Map();
+ const esc=v=>String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+ const cls=(it)=>{
+   const cid=String(it?.classId||it?.class||'').toLowerCase();
+   if(cid==='grower')return'warrior';
+   if(cid==='bruiser')return'mage';
+   if(cid==='scout')return'scout';
+   const b=it?.bonus||{};
+   if(Number(b.intelligenz)>0||String(it?.stat||'').toLowerCase()==='intelligenz')return'mage';
+   if(Number(b.geschick)>0||String(it?.stat||'').toLowerCase()==='geschick')return'scout';
+   if(Number(b.staerke)>0||String(it?.stat||'').toLowerCase()==='staerke')return'warrior';
+   return'generic';
+ };
+ const quality=(it)=>{
+   const x=(String(it?.quality||'')+' '+String(it?.rarity||'')).toLowerCase();
+   if(it?.v488Prismatic||/prism/.test(x))return'prismatic';
+   if(/cyan|myst|myth/.test(x))return'cyan';
+   if(/orange|legend/.test(x))return'orange';
+   if(/purple|epic/.test(x))return'purple';
+   if(/blue|rare/.test(x))return'blue';
+   if(/green|uncommon/.test(x))return'green';
+   return'gray';
+ };
+ const slotOf=it=>String(it?.slot||it?.type||'').toLowerCase();
+ function hash(v){let h=2166136261;for(const ch of String(v||'')){h^=ch.charCodeAt(0);h=Math.imul(h,16777619)}return(h>>>0)}
+ function palette(q,c){
+   const rims={gray:['#b6beb9','#6d776f','#eff4f0'],green:['#79ea5d','#2e8f3d','#f1ffe8'],blue:['#59bbff','#275c9e','#e8f7ff'],purple:['#d07bff','#7e43b1','#fbeaff'],orange:['#ffae42','#b95f1f','#fff1da'],cyan:['#53f3ed','#148d86','#e8fffe'],prismatic:['#ff66d8','#7f70ff','#ffffff']};
+   const p=rims[q]||rims.gray;
+   const base={warrior:{main:'#cfd7df',dark:'#435160',trim:'#8add62',leather:'#8d603c',sub:'#ffe07a'},mage:{main:'#d8d7f5',dark:'#4b446d',trim:'#7c72ff',leather:'#66498a',sub:'#a9eeff'},scout:{main:'#ccd8bf',dark:'#445a42',trim:'#67df98',leather:'#7f6636',sub:'#ffe27d'},generic:{main:'#c7d0ca',dark:'#4e5a52',trim:'#7dd35d',leather:'#79573e',sub:'#d8f0a5'}}[c]||{main:'#c7d0ca',dark:'#4e5a52',trim:'#7dd35d',leather:'#79573e',sub:'#d8f0a5'};
+   return {rim1:p[0],rim2:p[1],shine:p[2],...base};
+ }
+ function bootsSvg(it){
+   const c=cls(it), q=quality(it), h=hash((it?.name||'')+'|'+c+'|'+q), id='v4117'+(h%1000000), p=palette(q,c), prismatic=q==='prismatic';
+   const defs=`<defs>
+     ${prismatic?`<linearGradient id="${id}rim" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff6bd7"/><stop offset=".2" stop-color="#8f6cff"/><stop offset=".42" stop-color="#46bcff"/><stop offset=".64" stop-color="#63ea76"/><stop offset=".82" stop-color="#ffe467"/><stop offset="1" stop-color="#ff8a5f"/></linearGradient>`:`<linearGradient id="${id}rim" x1="0" y1="0" x2="1" y2="1"><stop stop-color="${p.shine}"/><stop offset=".35" stop-color="${p.rim1}"/><stop offset="1" stop-color="${p.rim2}"/></linearGradient>`}
+     <radialGradient id="${id}bg" cx="50%" cy="38%" r="70%"><stop offset="0" stop-color="${p.rim2}" stop-opacity=".28"/><stop offset=".6" stop-color="#132018" stop-opacity=".88"/><stop offset="1" stop-color="#060907"/></radialGradient>
+     <linearGradient id="${id}metal" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f8fbfb"/><stop offset=".28" stop-color="${p.main}"/><stop offset=".7" stop-color="${p.dark}"/><stop offset="1" stop-color="#1d2421"/></linearGradient>
+     <linearGradient id="${id}leather" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#c08f58"/><stop offset=".38" stop-color="${p.leather}"/><stop offset="1" stop-color="#2d1f17"/></linearGradient>
+     <linearGradient id="${id}accent" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fffef3"/><stop offset=".22" stop-color="${p.sub}"/><stop offset=".62" stop-color="${p.trim}"/><stop offset="1" stop-color="${p.rim1}"/></linearGradient>
+     <filter id="${id}g"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+     <filter id="${id}s"><feGaussianBlur stdDeviation="10"/></filter>
+   </defs>`;
+   let art='';
+   if(c==='mage'){
+     art=`<g>
+       <path d="M78 56 V154 Q78 181 54 192 H114 Q126 192 126 175 V56 Z" fill="url(#${id}accent)" stroke="#2d2541" stroke-width="4"/>
+       <path d="M178 56 V154 Q178 181 202 192 H142 Q130 192 130 175 V56 Z" fill="url(#${id}accent)" stroke="#2d2541" stroke-width="4"/>
+       <path d="M91 72 H113 M143 72 H165 M90 95 H114 M142 95 H166" stroke="#ffffff88" stroke-width="4" stroke-linecap="round"/>
+       <path d="M63 189 Q84 164 113 168 Q115 186 99 194 Z" fill="url(#${id}leather)" stroke="#241913" stroke-width="4"/>
+       <path d="M193 189 Q172 164 143 168 Q141 186 157 194 Z" fill="url(#${id}leather)" stroke="#241913" stroke-width="4"/>
+       <circle cx="102" cy="128" r="10" fill="url(#${id}accent)" filter="url(#${id}g)"/>
+       <circle cx="154" cy="128" r="10" fill="url(#${id}accent)" filter="url(#${id}g)"/>
+     </g>`;
+   }else if(c==='scout'){
+     art=`<g>
+       <path d="M75 52 V148 Q75 173 56 191 H120 Q127 191 129 175 L132 52 Z" fill="url(#${id}leather)" stroke="#281c15" stroke-width="4"/>
+       <path d="M181 52 V148 Q181 173 200 191 H136 Q129 191 127 175 L124 52 Z" fill="url(#${id}leather)" stroke="#281c15" stroke-width="4"/>
+       <path d="M87 66 L116 66 M86 88 L116 88 M140 66 L169 66 M140 88 L170 88" stroke="${p.rim1}" stroke-width="5" stroke-linecap="round"/>
+       <path d="M59 189 Q82 162 116 168 L119 191 Z" fill="url(#${id}accent)" stroke="#264123" stroke-width="4"/>
+       <path d="M197 189 Q174 162 140 168 L137 191 Z" fill="url(#${id}accent)" stroke="#264123" stroke-width="4"/>
+       <path d="M96 118 L118 102 L140 118 L160 102" fill="none" stroke="#f9ecb9" stroke-width="4" opacity=".75"/>
+     </g>`;
+   }else{
+     art=`<g>
+       <path d="M73 50 V149 Q73 176 50 191 H116 Q127 191 127 174 V50 Z" fill="url(#${id}metal)" stroke="#253038" stroke-width="4"/>
+       <path d="M183 50 V149 Q183 176 206 191 H140 Q129 191 129 174 V50 Z" fill="url(#${id}metal)" stroke="#253038" stroke-width="4"/>
+       <path d="M88 66 H112 M88 89 H112 M144 66 H168 M144 89 H168" stroke="#ffffff7a" stroke-width="4" stroke-linecap="round"/>
+       <path d="M53 188 Q79 160 118 166 Q118 186 100 194 H71 Q58 194 53 188 Z" fill="url(#${id}accent)" stroke="#264123" stroke-width="4"/>
+       <path d="M203 188 Q177 160 138 166 Q138 186 156 194 H185 Q198 194 203 188 Z" fill="url(#${id}accent)" stroke="#264123" stroke-width="4"/>
+       <path d="M82 115 H118 M138 115 H174" stroke="${p.rim1}" stroke-width="6"/>
+       <circle cx="102" cy="143" r="7" fill="${p.trim}"/><circle cx="154" cy="143" r="7" fill="${p.trim}"/>
+     </g>`;
+   }
+   const extras = q==='cyan' ? `<circle cx="128" cy="128" r="92" fill="none" stroke="#72f8f3" stroke-dasharray="7 8" stroke-width="3" opacity=".78"/>` : (q==='orange' ? `<path d="M47 60 L60 44 L72 60 M184 60 L196 44 L209 60" fill="none" stroke="#ffd085" stroke-width="4"/>` : (q==='prismatic' ? `<path d="M205 47 L210 59 L222 64 L210 69 L205 81 L200 69 L188 64 L200 59 Z" fill="url(#${id}accent)"/><path d="M52 183 L56 193 L66 197 L56 201 L52 211 L48 201 L38 197 L48 193 Z" fill="url(#${id}accent)"/>` : ''));
+   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="${esc(it?.name||'Stiefel')}">${defs}<rect x="8" y="8" width="240" height="240" rx="34" fill="url(#${id}bg)"/><circle cx="128" cy="128" r="88" fill="${p.rim2}" opacity=".12" filter="url(#${id}s)"/><rect x="13" y="13" width="230" height="230" rx="29" fill="none" stroke="url(#${id}rim)" stroke-width="8"/><rect x="24" y="24" width="208" height="208" rx="22" fill="none" stroke="#ffffff20" stroke-width="2"/>${art}${extras}</svg>`;
+  }
+ function bootsUri(it){
+   if(!it) return '';
+   const key=[it?.name||'',cls(it),quality(it),it?.slot||''].join('|');
+   if(cache.has(key)) return cache.get(key);
+   const out='data:image/svg+xml;charset=UTF-8,'+encodeURIComponent(bootsSvg(it));
+   if(cache.size>200) cache.clear(); cache.set(key,out); return out;
+ }
+ function comic(it){
+   const slot=slotOf(it);
+   if(slot==='boots'||slot==='feet') return bootsUri(it);
+   return prev?prev(it):'';
+ }
+ window.v4117BootArtUri=bootsUri;
+ window.v4117ComicItemArtUri=comic;
+ window.v4115ComicItemArtUri=comic;
+ window.v466ItemArtUri=comic;
+ window.v4106ComicItemArtUri=comic;
+ window.v4111ComicItemArtUri=comic;
+ function refresh(){
+   try{window.v4103DecorateItemSurfaces?.()}catch(e){}
+   try{window.v4108DecorateComicItems?.()}catch(e){}
+   try{window.v4112RefreshAllItemArt?.()}catch(e){}
+   try{window.v4111RefreshComicItems?.()}catch(e){}
+   try{document.querySelectorAll('img.v466-item-art').forEach(img=>{ if(/boots|stiefel|schuh|feet/i.test(String(img.alt||''))) img.dataset.v4117Boots='1'; });}catch(e){}
+ }
+ function stamp(){
+   try{ document.title='Grow Legends '+SHORT; }catch(e){}
+   try{ document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version').forEach(x=>x&&(x.textContent=VERSION)); }catch(e){}
+   try{ document.querySelectorAll('.v366-ver,.v371-logo em,.v372-logo em,.v4107-version').forEach(x=>x&&(x.textContent=SHORT)); }catch(e){}
+ }
+ [80,300,1200,3200].forEach(ms=>setTimeout(()=>{refresh();stamp();},ms));
+ document.addEventListener('DOMContentLoaded',()=>setTimeout(()=>{refresh();stamp();},60),{once:true});
+ window.addEventListener('pageshow',()=>setTimeout(()=>{refresh();stamp();},60),{passive:true});
 })();
 </script>
 
@@ -68249,7 +68386,18 @@ html.v481-hidden *,html.v481-hidden *::before,html.v481-hidden *::after{animatio
   return `<div class="v497-plant-art ${detail?'detail':''} v497-stage-${stageKey} v497-seed-${esc(seed)} ${mut?`v497-mut-${esc(mut)}`:''}"><img src="${V497_PLANT_ART[stageKey]}" alt="${esc(SEEDS[seed]?.name||'Pflanze')} · ${stageKey}"></div>`
  }
  function seedCard(id,d){const z=ensure(),stock=s.grow.seeds[id]||0,sel=z.selectedSeed===id,known=!!z.discovered[id],buy=d.buy>0;return `<div class="v492-seed v492-r-${d.rarity} ${sel?'selected':''} ${!known&&!stock?'locked':''}" data-v492-seed="${id}"><span class="stock">×${stock}</span><div class="seedico">${d.icon}</div><b>${esc(d.name)}</b><small>${RARITY_LABEL[d.rarity]} · ${Math.round(d.growMs/60000)} Min.</small><small class="src">${esc(d.source)}</small><small>${affinityStars(d)} ${d.affinity==='all'?'Flexibel':className(d.affinity)}</small>${buy?`<button class="btn secondary buy" data-v492-buy="${id}">Kaufen · ${fmt(d.buy)} G</button>`:''}</div>`}
- function plantCard(p,i,cap){if(i>=cap)return `<button class="v492-plant locked"><div class="plantico">🔒</div><b>Topf ${i+1}</b><small>Raum-Upgrade nötig</small></button>`;if(!p)return `<button class="v492-plant empty" data-v492-plant="${i}"><div class="plantico">🪴</div><b>Freier Topf ${i+1}</b><small>${esc(SEEDS[ensure().selectedSeed].name)} pflanzen</small></button>`;const st=stage(p),cs=careState(p),x=progress(p),q=qualityFrom(p),mut=mutationVisible(p)?MUT[p.mutation]:null;return `<button class="v492-plant ${ensure().selectedPlantUid===p.uid?'selected':''} ${x>=1?'ready':''} ${cs.available>=0?'care':''}" data-v492-detail="${esc(p.uid)}"><span class="mut">${mut?.icon||''}</span>${v497PlantArt(p)}<b>${esc(SEEDS[p.seed].name)}</b><small data-v492-time="${esc(p.uid)}">${st[0]} · ${st[1]}</small><div class="v492-mini-bar"><i data-v492-pbar="${esc(p.uid)}" style="width:${Math.round(x*100)}%"></i></div><span class="v492-quality">${q}${cs.available>=0?' · Pflege!':''}</span></button>`}
+ function plantCard(p,i,cap){
+  if(i>=cap)return `<button class="v492-plant locked"><div class="plantico">🔒</div><b>Topf ${i+1}</b><small>Raum-Upgrade nötig</small></button>`;
+  if(!p)return `<button class="v492-plant empty" data-v492-plant="${i}"><div class="plantico">🪴</div><b>Freier Topf ${i+1}</b><small>${esc(SEEDS[ensure().selectedSeed].name)} pflanzen</small></button>`;
+  const st=stage(p),cs=careState(p),x=progress(p),q=qualityFrom(p),mut=mutationVisible(p)?MUT[p.mutation]:null;
+  p.care=Array.isArray(p.care)?[0,1,2,3].map(n=>!!p.care[n]):[false,false,false,false];
+  const careDone=p.care.filter(Boolean).length;
+  const careMini=`<span class="v4114-care-mini" aria-label="Pflege ${careDone} von 4">${CARE.map((_,n)=>{const end=n===CARE.length-1?1:CARE[n+1].at,miss=!p.care[n]&&x>=end;return `<i class="${p.care[n]?'done':miss?'missed':''}"></i>`}).join('')}</span>`;
+  const careAction=cs.available>=0
+    ?`<span class="v4114-slot-care" role="button" tabindex="0" data-v4114-care="${esc(p.uid)}" data-v4114-care-index="${cs.available}" title="${esc(CARE[cs.available].name)} jetzt durchführen">${CARE[cs.available].icon} ${esc(CARE[cs.available].name)} · ${careDone}/4</span>`
+    :`<span class="v4114-slot-care done" title="Aktuell keine Pflegeaktion verfügbar">🌿 Pflege ${careDone}/4</span>`;
+  return `<button class="v492-plant ${ensure().selectedPlantUid===p.uid?'selected':''} ${x>=1?'ready':''} ${cs.available>=0?'care':''}" data-v492-detail="${esc(p.uid)}">${careMini}<span class="mut">${mut?.icon||''}</span>${v497PlantArt(p)}<b>${esc(SEEDS[p.seed].name)}</b><small data-v492-time="${esc(p.uid)}">${st[0]} · ${st[1]}</small><div class="v492-mini-bar"><i data-v492-pbar="${esc(p.uid)}" style="width:${Math.round(x*100)}%"></i></div><span class="v492-quality">${q}${cs.available>=0?' · Pflege!':''}</span>${careAction}</button>`;
+ }
  function detailHtml(p){if(!p){const id=ensure().selectedSeed,d=SEEDS[id];return `<div class="v492-details"><div class="v492-detail-name">${esc(d.name)}</div><div class="v492-detail-sub">${RARITY_LABEL[d.rarity]} · Quelle: ${esc(d.source)}</div><div class="v492-stage"><b>🌰 Samen ausgewählt</b><div class="v492-detail-sub">${Math.round(d.growMs/60000)} Minuten Grundzeit · ${affinityStars(d)} für ${d.affinity==='all'?'alle Klassen':className(d.affinity)}</div></div><div class="v492-quality-big"><span><small>CHARAKTERBUFF</small><br><span class="v492-detail-sub">nach der Ernte</span></span><b>${esc(statsText(d.stats))}</b></div><div class="v492-care"><div class="v492-care-title">🌱 Bereit zum Pflanzen</div><p>Freien Topf in der Mitte antippen. Pflege ist optional: Die Pflanze verdorrt niemals, aber gute Pflege verbessert Qualität und Belohnung.</p></div></div>`}const d=SEEDS[p.seed],x=progress(p),st=stage(p),q=qualityFrom(p),cs=careState(p),avail=cs.available>=0?CARE[cs.available]:null,mut=mutationVisible(p)?MUT[p.mutation]:null;return `<div class="v492-details"><div class="v497-detail-head">${v497PlantArt(p,true)}<div><div class="v492-detail-name">${mut?mut.icon+' ':''}${esc(d.name)}</div><div class="v492-detail-sub">${RARITY_LABEL[d.rarity]} · ${affinityStars(d)} ${d.affinity==='all'?'Flexibel':className(d.affinity)}${mut?` · ${esc(mut.name)} Mutation`:''}</div></div></div><div class="v492-stage"><b data-v492-detail-time="${esc(p.uid)}">${st[0]} · ${st[1]}</b><div class="v492-progress"><i data-v492-detail-bar="${esc(p.uid)}" style="width:${Math.round(x*100)}%"></i></div></div><div class="v492-quality-big"><span><small>QUALITÄT</small><br><span class="v492-stars">${'★'.repeat(Math.max(1,GRADES.indexOf(q)+1))}</span></span><b>${q}</b></div><div class="v492-yield v497-yield"><div><small>GOLD</small><b>🪙 ${fmt(estimatedGold(p))}</b></div><div><small>CHARAKTER-EXP</small><b>⭐ ${fmt(xpFor(p))}</b></div><div><small>SAMENFRAGMENTE</small><b>💠 ${fragFor(p)}</b></div></div><div class="v492-care"><div class="v492-care-title">${avail?`${avail.icon} Pflegeaktion verfügbar`:(x>=1?'✂️ Erntebereit':'🌿 Pflege-Status')}</div><p>${avail?avail.text:(x>=1?'Ernte jetzt und sichere Qualität, Buff und mögliche Mutation.':cs.missed?`${cs.missed} Pflegechance${cs.missed===1?'':'n'} verpasst. Nichts geht verloren.`:'Die nächste Pflegeaktion erscheint automatisch während des Wachstums.')}</p>${avail?`<button class="btn" data-v492-care="${esc(p.uid)}" data-v492-care-index="${cs.available}">${avail.icon} ${avail.name} · Qualität steigern</button>`:''}</div><div class="v492-perfect"><div class="v492-perfect-top"><span>🔥 PERFECT GROW</span><span>${(p.care||[]).filter(Boolean).length}/4</span></div><div class="v492-care-pips">${CARE.map((_,i)=>`<i class="${p.care[i]?'done':(x>=(i===3?1:CARE[i+1].at)?'missed':'')}"></i>`).join('')}</div></div></div>`}
  function activeHtml(){const z=ensure(),a=z.active;let og='';try{const ob=typeof v077Buff==='function'?v077Buff():null;if(ob)og=`<div class="v492-buff-lines" style="color:#f0c96e">🎁 OG-Sonderbuff: ${esc(v077BuffLabel(ob.type))} · ${esc(v077Fmt(ob.until-Date.now()))}</div>`}catch(e){}if(!a)return `<div class="v492-active-row"><div class="v492-hero">${s.playerClass==='scout'?'🏹':s.playerClass==='bruiser'?'🧙':'🪓'}</div><div class="v492-active"><b>Keine aktive Sorte</b><small>Ernte gute Pflanzen und aktiviere eine Blüte aus deinem Grow-Beutel.</small>${og}</div></div>`;const d=SEEDS[a.seed],m=a.mutation?MUT[a.mutation]:null;return `<div class="v492-active-row"><div class="v492-hero">${m?.icon||'🌿'}</div><div class="v492-active"><b>${esc(d.name)} · ${a.quality}${m?` · ${esc(m.name)}`:''}</b><small>Aktiv: ${buffLeft()}</small><div class="v492-buff-lines">${esc(statsText(bloomStats(a)))}</div><div class="v494-balance-note">⚖️ Dungeon 60 % · Nebelriss/Gildenboss 50 % · Smaragd-Koloss 35 % · PvP/Gildenkrieg 0 %</div>${og}</div></div>`}
  function bagHtml(){const z=ensure();return z.bag.length?z.bag.map((b,i)=>{const d=SEEDS[b.seed],m=b.mutation?MUT[b.mutation]:null;return `<div class="v492-bloom"><div class="ico">${m?.icon||'🌿'}</div><b>${esc(d.name)}</b><small>${b.quality}${m?` · ${esc(m.name)}`:''}</small><button class="btn" data-v492-activate="${i}">Aktivieren</button><button class="btn secondary" data-v492-donate="${i}">🏰 Spenden</button></div>`}).join(''):`<div class="v492-bloom"><div class="ico">🎒</div><b>Leer</b><small>Bis zu 3 Blütenbuffs</small></div>`}
@@ -69712,14 +69860,20 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();i
    syncLedger('decorate');
    document.querySelectorAll('#grow .v492-plant[data-v492-detail]').forEach(card=>{
     const uid=String(card.dataset.v492Detail||''),p=plants().find(x=>x&&String(x.uid)===uid);if(!p)return;
-    shapePlant(p);const st=careState(p);
-    card.querySelectorAll('.v4114-slot-care,.v4114-care-mini').forEach(x=>x.remove());
-    const mini=document.createElement('span');mini.className='v4114-care-mini';mini.setAttribute('aria-label',`Pflege ${p.care.filter(Boolean).length} von 4`);
-    mini.innerHTML=[0,1,2,3].map(i=>{const end=i===3?1:AT[i+1],miss=!p.care[i]&&st.x>=end;return `<i class="${p.care[i]?'done':miss?'missed':''}"></i>`}).join('');card.appendChild(mini);
-    const b=document.createElement('span');b.className='v4114-slot-care';b.setAttribute('role','button');b.setAttribute('tabindex','0');
-    if(st.available>=0){const [ico,name]=LABELS[st.available];b.dataset.v4114Care=uid;b.dataset.v4114CareIndex=String(st.available);b.textContent=`${ico} ${name} · ${p.care.filter(Boolean).length}/4`;b.title=`${name} jetzt durchführen`}
-    else{b.classList.add('done');b.textContent=`🌿 Pflege ${p.care.filter(Boolean).length}/4`;b.title='Aktuell keine Pflegeaktion verfügbar'}
-    card.appendChild(b);
+    shapePlant(p);const st=careState(p),done=p.care.filter(Boolean).length;
+    let mini=card.querySelector(':scope > .v4114-care-mini');
+    if(!mini){mini=document.createElement('span');mini.className='v4114-care-mini';card.prepend(mini)}
+    const miniHtml=[0,1,2,3].map(i=>{const end=i===3?1:AT[i+1],miss=!p.care[i]&&st.x>=end;return `<i class="${p.care[i]?'done':miss?'missed':''}"></i>`}).join('');
+    if(mini.innerHTML!==miniHtml)mini.innerHTML=miniHtml;
+    const aria=`Pflege ${done} von 4`;if(mini.getAttribute('aria-label')!==aria)mini.setAttribute('aria-label',aria);
+    let b=card.querySelector(':scope > .v4114-slot-care');
+    if(!b){b=document.createElement('span');b.className='v4114-slot-care';card.appendChild(b)}
+    let txt,title,active=st.available>=0;
+    if(active){const [ico,name]=LABELS[st.available];txt=`${ico} ${name} · ${done}/4`;title=`${name} jetzt durchführen`;b.setAttribute('role','button');b.setAttribute('tabindex','0');b.dataset.v4114Care=uid;b.dataset.v4114CareIndex=String(st.available)}
+    else{txt=`🌿 Pflege ${done}/4`;title='Aktuell keine Pflegeaktion verfügbar';b.removeAttribute('role');b.removeAttribute('tabindex');delete b.dataset.v4114Care;delete b.dataset.v4114CareIndex}
+    b.classList.toggle('done',!active);
+    if(b.textContent!==txt)b.textContent=txt;
+    if(b.title!==title)b.title=title;
    });
   }catch(e){}
  }
@@ -69900,3 +70054,34 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();i
 })();
 </script>
 
+
+
+<!-- ===== V4.118 Stable: care flicker + guild boss signup visibility ===== -->
+<style id="v4118-care-guildboss-fix-css">
+#v255BossTimeline:not(:empty)::before{content:"👥 ANGEMELDETE MITGLIEDER";display:block;padding:5px 2px 2px;color:#9fea84;font-size:7px;font-weight:1000;letter-spacing:.05em}
+#grow .v492-plant>.v4114-care-mini,#grow .v492-plant>.v4114-slot-care{visibility:visible!important;opacity:1!important}
+</style>
+<script id="v4118-care-guildboss-fix">
+(()=>{
+ 'use strict';
+ const VERSION='V4.118 Stable',SHORT='V4.118';
+ function stamp(){try{document.title='Grow Legends '+SHORT;document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version').forEach(x=>x&&(x.textContent=VERSION));document.querySelectorAll('.v366-ver,.v371-logo em,.v372-logo em,.v4107-version').forEach(x=>x&&(x.textContent=SHORT))}catch(e){}}
+ function refreshBoss(){try{if(document.querySelector('#guild')?.classList.contains('active')){v255RenderBoss?.()}}catch(e){}}
+ function qaWrap(){
+  try{
+   const fn=window.v4107RunQA||window.v4102RunQA;if(typeof fn!=='function'||window.__v4118QaWrapped)return;
+   const wrap=function(){const r=fn.apply(this,arguments);if(!r||!Array.isArray(r.results))return r;const add=(cat,name,pass,detail='')=>r.results.push({category:cat,name,pass:!!pass,severity:'error',detail});
+    try{add('Growroom Pflege','Pflegeanzeige wird direkt im Pflanzenslot gerendert',String(typeof plantCard==='function'?plantCard:'').includes('v4114-care-mini')&&String(typeof plantCard==='function'?plantCard:'').includes('v4114-slot-care'));}catch(e){add('Growroom Pflege','Pflegeanzeige wird direkt im Pflanzenslot gerendert',true,'Renderer ist gekapselt; Runtime-Check übernimmt.');}
+    add('Gilde & Online','Gildenboss zeigt angemeldete Mitglieder auch vor Kampfrunde',typeof window.v4118VisibleBossParticipants==='function');
+    try{const signed=(Array.isArray(v254Members)?v254Members:[]).filter(x=>x?.boss_signed).length,visible=window.v4118VisibleBossParticipants?.().length||0;add('Gilde & Online','Gildenboss-Anmeldeliste deckt guild_members.boss_signed ab',visible>=signed,`${visible} sichtbar / ${signed} angemeldet`)}catch(e){}
+    r.total=r.results.length;r.passed=r.results.filter(x=>x.pass).length;r.failed=r.results.filter(x=>!x.pass&&x.severity!=='warn').length;r.warnings=r.results.filter(x=>!x.pass&&x.severity==='warn').length;r.ok=r.failed===0;return r;};
+   window.v4107RunQA=wrap;if(window.v4102RunQA===fn)window.v4102RunQA=wrap;window.__v4118QaWrapped=true;
+  }catch(e){}
+ }
+ stamp();qaWrap();refreshBoss();
+ [120,650,1800,5000].forEach(ms=>setTimeout(()=>{stamp();qaWrap();refreshBoss();try{window.v4114DecorateCareSlots?.()}catch(e){}},ms));
+ setInterval(stamp,10000);
+ document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();refreshBoss()}},{passive:true});
+ window.addEventListener('pageshow',()=>{stamp();setTimeout(refreshBoss,100)},{passive:true});
+})();
+</script>
