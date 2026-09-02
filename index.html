@@ -5,7 +5,7 @@
 (()=>{
  'use strict';
  if(window.__V4106_TECH__)return;
- const tech=window.__V4106_TECH__={version:'V4.122',startedAt:Date.now(),intervals:new Map(),timeouts:new Map(),listeners:new Map(),longTasks:[],renderSamples:{},mutations:0,maxDom:0,qaActive:false,qaWindows:[]};
+ const tech=window.__V4106_TECH__={version:'V4.123',startedAt:Date.now(),intervals:new Map(),timeouts:new Map(),listeners:new Map(),longTasks:[],renderSamples:{},mutations:0,maxDom:0,qaActive:false,qaWindows:[]};
  const callsite=()=>{try{return String(new Error().stack||'').split('\n').slice(3,6).join(' | ').replace(location.href,'PAGE').slice(0,420)}catch(e){return''}};
  const nativeSI=window.setInterval.bind(window),nativeCI=window.clearInterval.bind(window),nativeST=window.setTimeout.bind(window),nativeCT=window.clearTimeout.bind(window);
  const cbinfo=fn=>{try{if(typeof fn!=='function')return String(fn||'').slice(0,240);return `${fn.name||'anonymous'} :: ${String(fn).replace(/\s+/g,' ').slice(0,240)}`}catch(e){return''}};
@@ -4522,7 +4522,7 @@ header{
 <script>
 /* V4.02 unified visual behavior + version sync */
 function v040Polish(){
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V4.29 Stable');
+  /* V4.123: version paint retired. */
   document.querySelectorAll('.btn').forEach(b=>b.setAttribute('type','button'));
   document.querySelectorAll('.shop-item,.inv-item,.skill-card,.seed-card,.equip-card,.quest,.slot').forEach(el=>{
     el.style.willChange='transform';
@@ -6648,7 +6648,7 @@ header{
 <script>
 /* V4.02 visual hooks only */
 function v050Polish(){
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V4.29 Stable');
+  /* V4.123: version paint retired. */
 
   /* Add section-specific body classes for easier game theming */
   document.querySelectorAll('.screen').forEach(screen=>{
@@ -6844,7 +6844,7 @@ h1,h2,h3,h4,.item-name,.shop-item h3,.skill-title,.center-name,.char-title{
 <script>
 /* V4.02 visual-only continuation */
 function v051Polish(){
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V4.29 Stable');
+  /* V4.123: version paint retired. */
 
   document.querySelectorAll('.shop-item,.inv-item,.quest,.skill-card,.seed-card,.equip-card').forEach(el=>{
     el.style.willChange='transform';
@@ -7292,7 +7292,7 @@ header:after{
 <script>
 /* V4.02 visual-only continuation */
 function v053Polish(){
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V4.29 Stable');
+  /* V4.123: version paint retired. */
 
   document.querySelectorAll('.btn,.stat,.shop-item,.inv-item,.quest,.skill-card,.grow-slot,.world-map-place,.dungeon-node').forEach(el=>{
     el.style.willChange='transform';
@@ -9319,13 +9319,7 @@ animClass=function(el,cl,ms=400){
   return v061OldAnimClass(el,cl,ms);
 };
 
-const v061BaseRender=render;
-render=function(){
-  v061BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V4.29 Stable');
-};
-
-try{render();}catch(e){console.error('V4.02 init',e);}
+/* V4.123: obsolete version-only render wrapper retired. */
 </script>
 
 
@@ -14708,11 +14702,7 @@ try{
 </style>
 
 <script id="v088-version">
-const v088BaseRender=render;
-render=function(){
-  v088BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V4.29 Stable');
-};
+/* V4.123: retired. This block only wrote an obsolete version label and had no gameplay authority. */
 </script>
 
 
@@ -14983,11 +14973,7 @@ regenEnergy=function(){
 s.lastEnergy=Date.now();
 localStorage.setItem(KEY,JSON.stringify(s));
 
-const v092BaseRender=render;
-render=function(){
-  v092BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V4.29 Stable');
-};
+/* V4.123: Dampf fix remains active; obsolete version-only render wrapper retired. */
 </script>
 
 
@@ -19200,12 +19186,7 @@ header .resource-stats .stat:nth-child(4) b{
 </style>
 
 <script id="v119-mystic-turquoise-theme-script">
-const v119BaseRender=render;
-render=function(){
-  const result=v119BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V4.29 Stable');
-  return result;
-};
+/* V4.123: retired. This block only wrote an obsolete version label and had no gameplay authority. */
 </script>
 
 
@@ -21553,7 +21534,7 @@ setTimeout(()=>{
 
 <script id="v128-premium-skill-ui-script">
 function v128SkillPolish(){
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V4.29 Stable');
+  /* V4.123: version paint retired. */
   const card=document.querySelector('#character .card:has(#skillTree)');
   if(card)card.setAttribute('data-v128','premium-skills');
 }
@@ -32333,9 +32314,7 @@ setTimeout(()=>{
   try{
     if(document.querySelector('#grow')?.classList.contains('active'))renderGrow();
   }catch(e){}
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V4.29 Stable');
-  const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V4.29 Stable';
+  /* V4.123: obsolete version paint retired. */
 },380);
 </script>
 
@@ -41883,7 +41862,7 @@ const v287BaseRender=render;
 render=function(){
   const r=v287BaseRender();
   requestAnimationFrame(v287RemoveDampfSubtitle);
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V4.29 Stable');
+  /* V4.123: version paint retired. */
   const line=document.querySelector('#v141VersionLine');
   if(line)line.textContent='V4.29 Stable';
   return r;
@@ -42055,19 +42034,7 @@ if(v288Line)v288Line.textContent='V4.29 Stable';
 </script>
 
 <script id="v289-harvest-gold-event-version">
-/* V4.02: Gold event also doubles actual Growroom harvest Gold.
-   Item sales, shops and other trading remain unchanged. */
-const v289BaseRender=render;
-render=function(){
-  const r=v289BaseRender();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V4.29 Stable');
-  const line=document.querySelector('#v141VersionLine');
-  if(line)line.textContent='V4.29 Stable';
-  return r;
-};
-document.querySelectorAll('.version').forEach(el=>el.textContent='V4.29 Stable');
-const v289Line=document.querySelector('#v141VersionLine');
-if(v289Line)v289Line.textContent='V4.29 Stable';
+/* V4.123: retired obsolete version-only render wrapper. Gold-event payout logic lives in the active reward path. */
 </script>
 
 <style id="v290-worldboss-balance-css">
@@ -44285,7 +44252,9 @@ const v306Line=document.querySelector('#v141VersionLine');if(v306Line)v306Line.t
 @media(max-width:760px){.v492-plant{min-height:144px!important}.v497-plant-art{height:78px}.v497-stage-seedling{height:60px}.v497-stage-growth{height:70px}.v497-stage-flower{height:80px}.v497-stage-harvest{height:82px}.v497-detail-head{grid-template-columns:76px 1fr}.v497-plant-art.detail{width:76px;height:76px}.v497-yield{grid-template-columns:1fr 1fr!important}.v497-yield>div:last-child{grid-column:1/-1}}
 @media(max-width:390px){.v492-plant{min-height:136px!important}.v497-plant-art{height:72px}}
 </style>
-<script id="v497-version-stamp">(()=>{const f=()=>{try{document.title='Grow Legends V4.99';document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version').forEach(e=>e&&(e.textContent='V4.99 Stable'));document.querySelectorAll('.v366-ver,.v371-logo em,.v372-logo em').forEach(e=>e&&(e.textContent='V4.99'))}catch(_){}};f();[250,1200,5000,15000,30000].forEach(t=>setTimeout(f,t));document.addEventListener('visibilitychange',()=>!document.hidden&&f(),{passive:true});window.addEventListener('pageshow',f,{passive:true})})();</script>
+<script id="v497-version-stamp">
+/* V4.123: retired. This block only wrote an obsolete version label and had no gameplay authority. */
+</script>
 
 <!-- ===== V4.99 Stable: authoritative Growroom persistence across navigation/cloud/render ===== -->
 <style id="v499-grow-persistence-css">
@@ -44672,17 +44641,7 @@ const v306Line=document.querySelector('#v141VersionLine');if(v306Line)v306Line.t
 .app > header .v366-ver::after,.app > header .v371-logo em::after,.app > header .v372-logo em::after{content:"V4.101"!important}
 </style>
 <script id="v4101-grow-care-race-version">
-(()=>{
- 'use strict';
- const VERSION='V4.101 Stable',SHORT='V4.101';
- function stamp(){
-  try{document.title='Grow Legends '+SHORT}catch(e){}
-  try{document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version').forEach(el=>{if(el)el.textContent=VERSION});document.querySelectorAll('.v366-ver,.v371-logo em,.v372-logo em').forEach(el=>{if(el)el.textContent=SHORT})}catch(e){}
- }
- stamp();[100,500,1500,5000,15000,30000,45000].forEach(ms=>setTimeout(stamp,ms));
- document.addEventListener('visibilitychange',()=>{if(!document.hidden)stamp()},{passive:true});
- window.addEventListener('pageshow',stamp,{passive:true});
-})();
+/* V4.123: retired. This block only wrote an obsolete version label and had no gameplay authority. */
 </script>
 
 
@@ -44913,7 +44872,7 @@ function historicalScriptCount(){if(historicCountCache!=null)return historicCoun
  function listenerDuplicates(){return [...tech().listeners.values()].filter(x=>x.count>1)}
  function fastIntervals(){return [...tech().intervals.values()].filter(x=>x.delay>0&&x.delay<250)}
  function renderStats(){const all=[];Object.entries(tech().renderSamples||{}).forEach(([name,a])=>(a||[]).forEach(ms=>all.push({name,ms})));all.sort((a,b)=>b.ms-a.ms);const max=all[0]||{name:'—',ms:0};const avg=all.length?all.reduce((s,x)=>s+x.ms,0)/all.length:0;return{count:all.length,max,avg}}
- function wrapPerf(name){try{const fn=window[name];if(typeof fn!=='function'||fn.__v4106Perf)return;const w=function(){const t=performance.now();try{return fn.apply(this,arguments)}finally{const ms=performance.now()-t;if(!tech().qaActive){(tech().renderSamples[name]??=[]).push(ms);if(tech().renderSamples[name].length>80)tech().renderSamples[name].shift()}}};Object.defineProperty(w,'name',{value:fn.name||name,configurable:true});w.__v4106Perf=true;window[name]=w;try{if(name in globalThis)globalThis[name]=w}catch(e){}}catch(e){}}
+ function wrapPerf(name){try{const fn=window[name];if(typeof fn!=='function'||fn.__v4106Perf)return;const w=function(){const t=performance.now();try{return fn.apply(this,arguments)}finally{const ms=performance.now()-t,tc=tech();if(!tc.qaActive&&Date.now()>Number(tc.startedAt||0)+6000){(tc.renderSamples[name]??=[]).push(ms);if(tc.renderSamples[name].length>80)tc.renderSamples[name].shift();if(ms>100){tc.slowRenders??=[];tc.slowRenders.push({at:Date.now(),name,ms,screen:document.querySelector('section.screen.active')?.id||'—'});while(tc.slowRenders.length>20)tc.slowRenders.shift()}}}};Object.defineProperty(w,'name',{value:fn.name||name,configurable:true});w.__v4106Perf=true;window[name]=w;try{if(name in globalThis)globalThis[name]=w}catch(e){}}catch(e){}}
  ['render','renderGrow','renderDungeon','renderQuests','renderInventory','renderShop','v254RenderGuild','renderEndgame'].forEach(wrapPerf);
  function extra(){const out=[],T=(c,n,f,s='error')=>out.push(one(c,n,f,s)),src=source();
   /* Navigation / UI */
@@ -44966,6 +44925,7 @@ function historicalScriptCount(){if(historicCountCache!=null)return historicCoun
   T('Account & Save','Cloud-Save Schreiben vorhanden',()=>typeof v075WriteCloudSave==='function');
   T('Account & Save','Account-Owner für Grow-Schutz auflösbar',()=>String(owner()).length>0);
   T('Account & Save','Pflanzenpflege bleibt boolesch',()=> (s.grow?.plants||[]).filter(Boolean).every(p=>Array.isArray(p.care)&&p.care.every(v=>typeof v==='boolean')));
+  T('Account & Save','Cloud-Lesezugriff besitzt sicheren Transport-Retry',()=>!!window.fetch?.__v4123PlayerSaveGetRetry);
 
   /* Talent/rules */
   T('Regeln & Balance','Exakte Talentwerte verfügbar',()=>typeof v319ExactTalentStats==='function');
@@ -44975,7 +44935,7 @@ function historicalScriptCount(){if(historicCountCache!=null)return historicCoun
   T('Regeln & Balance','Grow-Buff PvP bleibt 0 %',()=>typeof window.v494GrowModeFactor==='function');
 
   /* Performance & legacy */
-  const tc=tech(),dom=document.getElementsByTagName('*').length,ints=tc.intervals.size,tos=tc.timeouts.size,lst=typeof window.__V4122_LIVE_LISTENER_COUNT__==='function'?window.__V4122_LIVE_LISTENER_COUNT__():tc.listeners.size,dupi=intervalDuplicates(),dupl=listenerDuplicates(),fast=fastIntervals(),rs=renderStats(),long=tc.longTasks.filter(x=>x.at>Number(tc.startedAt||0)+4000&&Date.now()-x.at<60000&&!window.__V4122_IS_QA_LONG_TASK__?.(x)),heap=performance.memory?performance.memory.usedJSHeapSize/1048576:null;
+  const tc=tech(),dom=document.getElementsByTagName('*').length,ints=tc.intervals.size,tos=tc.timeouts.size,lst=typeof window.__V4122_LIVE_LISTENER_COUNT__==='function'?window.__V4122_LIVE_LISTENER_COUNT__():tc.listeners.size,dupi=intervalDuplicates(),dupl=listenerDuplicates(),fast=fastIntervals(),rs=renderStats(),long=tc.longTasks.filter(x=>x.at>Number(tc.startedAt||0)+6000&&Date.now()-x.at<60000&&!window.__V4122_IS_QA_LONG_TASK__?.(x)),heap=performance.memory?performance.memory.usedJSHeapSize/1048576:null;
   T('Performance & Technik','DOM-Größe im Sicherheitsbereich',()=>({pass:dom<6000,detail:`${dom.toLocaleString('de-DE')} DOM-Knoten`}), 'warn');
   T('Performance & Technik','Keine doppelten aktiven Intervalle vom selben Callsite',()=>({pass:dupi.length===0,detail:dupi.slice(0,4).map(x=>`×${x[1]}`).join(', ')}), 'warn');
   T('Performance & Technik','Keine extrem schnellen Hintergrundintervalle',()=>({pass:fast.length<=2,detail:`<250 ms: ${fast.length}`}), 'warn');
@@ -44995,14 +44955,14 @@ function historicalScriptCount(){if(historicCountCache!=null)return historicCoun
  function runtimeIssues(){try{return JSON.parse(localStorage.getItem(rkey())||'[]')}catch(e){return[]}}
  function pushRuntime(code,detail,severity='warn'){try{const a=runtimeIssues();const last=a.at(-1);if(last&&last.code===code&&last.detail===detail&&Date.now()-last.at<10000)return;a.push({at:Date.now(),code,detail,severity});while(a.length>60)a.shift();localStorage.setItem(rkey(),JSON.stringify(a))}catch(e){}}
  function run(){const base=typeof baseRun==='function'?baseRun():{results:[],passed:0,failed:0,warnings:0};const add=extra(),results=[...(base?.results||[]),...add],passed=results.filter(x=>x.pass).length,failed=results.filter(x=>!x.pass&&x.severity!=='warn').length,warnings=results.filter(x=>!x.pass&&x.severity==='warn').length;const report={version:SHORT,at:Date.now(),total:results.length,passed,failed,warnings,ok:failed===0,results};try{localStorage.setItem(key(),JSON.stringify(report))}catch(e){}return report}
- function techHtml(){const t=tech(),dom=document.getElementsByTagName('*').length,rs=renderStats(),heap=performance.memory?performance.memory.usedJSHeapSize/1048576:null,dupi=intervalDuplicates().length,dupl=listenerDuplicates().length,long=t.longTasks.filter(x=>Date.now()-x.at<60000&&!window.__V4122_IS_QA_LONG_TASK__?.(x)).length;const cell=(label,value,state='ok')=>`<div class="v4106-tech-cell ${state}"><small>${label}</small><b>${value}</b></div>`;return `<div class="v4106-tech-title"><b>⚙️ SYSTEMTECHNIK · LIVE</b><span>alte Hintergrundprozesse / Renderer / DOM / Speicher</span></div><div class="v4106-tech-grid">${cell('DOM',dom.toLocaleString('de-DE'),dom<6000?'ok':'warn')}${cell('Intervalle',t.intervals.size,t.intervals.size<=35?'ok':'warn')}${cell('Doppelte Timer',dupi,dupi?'warn':'ok')}${cell('Listener',typeof window.__V4122_LIVE_LISTENER_COUNT__==='function'?window.__V4122_LIVE_LISTENER_COUNT__():t.listeners.size,(typeof window.__V4122_LIVE_LISTENER_COUNT__==='function'?window.__V4122_LIVE_LISTENER_COUNT__():t.listeners.size)<1200?'ok':'warn')}${cell('Doppelte Listener',dupl,dupl?'warn':'ok')}${cell('Long Tasks 60s',long,long?'warn':'ok')}${cell('Render max',rs.max.ms.toFixed(0)+' ms',rs.max.ms<80?'ok':'warn')}${cell('Render-Aufrufe',rs.count,'ok')}${cell('JS-Speicher',heap==null?'—':heap.toFixed(0)+' MB',heap==null||heap<180?'ok':'warn')}</div><div class="v4106-tech-note">Hinweis: Der Wächter zählt Timer/Listener bereits ab Seitenstart. Auffälligkeiten werden gemeldet, aber nicht automatisch beendet, damit ein legitimer Spielprozess nicht versehentlich abgeschaltet wird.</div>`}
+ function techHtml(){const t=tech(),dom=document.getElementsByTagName('*').length,rs=renderStats(),heap=performance.memory?performance.memory.usedJSHeapSize/1048576:null,dupi=intervalDuplicates().length,dupl=listenerDuplicates().length,long=t.longTasks.filter(x=>x.at>Number(tech().startedAt||0)+6000&&Date.now()-x.at<60000&&!window.__V4122_IS_QA_LONG_TASK__?.(x)).length;const cell=(label,value,state='ok')=>`<div class="v4106-tech-cell ${state}"><small>${label}</small><b>${value}</b></div>`;return `<div class="v4106-tech-title"><b>⚙️ SYSTEMTECHNIK · LIVE</b><span>alte Hintergrundprozesse / Renderer / DOM / Speicher</span></div><div class="v4106-tech-grid">${cell('DOM',dom.toLocaleString('de-DE'),dom<6000?'ok':'warn')}${cell('Intervalle',t.intervals.size,t.intervals.size<=35?'ok':'warn')}${cell('Doppelte Timer',dupi,dupi?'warn':'ok')}${cell('Listener',typeof window.__V4122_LIVE_LISTENER_COUNT__==='function'?window.__V4122_LIVE_LISTENER_COUNT__():t.listeners.size,(typeof window.__V4122_LIVE_LISTENER_COUNT__==='function'?window.__V4122_LIVE_LISTENER_COUNT__():t.listeners.size)<1200?'ok':'warn')}${cell('Doppelte Listener',dupl,dupl?'warn':'ok')}${cell('Long Tasks 60s',long,long?'warn':'ok')}${cell('Render max',rs.max.ms.toFixed(0)+' ms',rs.max.ms<80?'ok':'warn')}${cell('Render-Aufrufe',rs.count,'ok')}${cell('JS-Speicher',heap==null?'—':heap.toFixed(0)+' MB',heap==null||heap<180?'ok':'warn')}</div><div class="v4106-tech-note">Hinweis: Der Wächter zählt Timer/Listener bereits ab Seitenstart. Auffälligkeiten werden gemeldet, aber nicht automatisch beendet, damit ein legitimer Spielprozess nicht versehentlich abgeschaltet wird.</div>`}
  function render(report){const sum=document.getElementById('v4102QaSummary'),box=document.getElementById('v4102QaResults'),live=document.getElementById('v4102QaLive');if(sum)sum.innerHTML=`<div class="v4102-qa-stat"><small>TESTS</small><b>${report.total}</b></div><div class="v4102-qa-stat"><small>BESTANDEN</small><b class="v4102-pass">${report.passed}</b></div><div class="v4102-qa-stat"><small>FEHLER</small><b class="v4102-fail">${report.failed}</b></div><div class="v4102-qa-stat"><small>WARNUNGEN</small><b class="v4102-warn">${report.warnings}</b></div>`;let p=document.getElementById('v4106TechPanel');if(!p&&sum){p=document.createElement('div');p.id='v4106TechPanel';sum.insertAdjacentElement('afterend',p)}if(p)p.innerHTML=techHtml();const logs=[...(typeof window.v4102RuntimeIssues==='function'?window.v4102RuntimeIssues():[]),...runtimeIssues()];if(live)live.innerHTML=logs.length?`🛡️ Laufzeitwächter: <b>${logs.length}</b> Meldung${logs.length===1?'':'en'} · letzte: ${esc(logs.at(-1)?.code||'')}`:'🛡️ Laufzeitwächter aktiv · keine Zustands- oder Technikregression erkannt.';if(box){const groups={};report.results.forEach(x=>(groups[x.category]??=[]).push(x));box.innerHTML=Object.entries(groups).map(([g,rows])=>`<div class="v4102-qa-group"><h4>${esc(g)}</h4>${rows.map(x=>`<div class="v4102-qa-row ${x.pass?'':x.severity==='warn'?'warn':'fail'}"><div class="v4102-qa-icon">${x.pass?'✅':x.severity==='warn'?'⚠️':'❌'}</div><div><div class="v4102-qa-name">${esc(x.name)}</div>${x.detail?`<div class="v4102-qa-detail">${esc(x.detail)}</div>`:''}</div></div>`).join('')}</div>`).join('')}}
  function bind(){const runBtn=document.getElementById('v4102QaRun');if(runBtn){runBtn.textContent='🧪 QA 2.0 erneut starten';runBtn.onclick=()=>{const r=run();render(r);paintSettings(r)}}const clear=document.getElementById('v4102QaClear');if(clear&&!clear.__v4106){const old=clear.onclick;clear.onclick=()=>{try{localStorage.removeItem(rkey())}catch(e){}old?.();const r=run();render(r);paintSettings(r)};clear.__v4106=true}}
  function open(){if(typeof baseOpen==='function')baseOpen();setTimeout(()=>{const r=run();render(r);bind();paintSettings(r);document.querySelector('.v4102-qa-head small')?.replaceChildren(document.createTextNode('QA 2.0 · Flow + UI/Pixel + State + Performance/Legacy · Spielstand bleibt geschützt'))},0)}
  function paintSettings(r=null){try{const row=document.getElementById('v4104QaRow');if(row){const b=row.querySelector('.v141-setting-copy b'),sml=row.querySelector('.v141-setting-copy span');if(b)b.textContent='Systemtest & Technik';if(sml)sml.textContent='QA 2.0 prüft Spielfluss, UI, Speicher, Items, Performance und Altlasten.'}const badge=document.getElementById('v4104QaStatus');if(!badge)return;r=r||JSON.parse(localStorage.getItem(key())||'null');const logs=runtimeIssues();badge.className='';if(logs.some(x=>x.severity==='error')||r?.failed){badge.classList.add('bad');badge.textContent=r?.failed?`${r.failed} FEHLER`:'FEHLER'}else if((r?.warnings||0)>0||logs.length){badge.classList.add('warn');badge.textContent=`${r?.warnings||logs.length} WARN.`}else if(r){badge.classList.add('ok');badge.textContent='OK'}else badge.textContent='PRÜFEN'}catch(e){}}
  window.v4106RunQA=run;window.v4102RunQA=(opts={})=>{const r=run();if(opts&&opts.open)open();return r};window.v4102OpenQA=open;
  /* background performance/runtime monitor */
- /* V4.122: obsolete V4.106 polling monitor retired; canonical Systemtechnik owns live monitoring. */
+ /* V4.123: obsolete V4.106 polling monitor retired; canonical Systemtechnik owns live monitoring. */
  setTimeout(()=>{const r=run();paintSettings(r)},2600);
  window.addEventListener('pageshow',()=>setTimeout(()=>{const r=run();paintSettings(r)},500),{passive:true});
  function stamp(){try{document.title='Grow Legends '+SHORT}catch(e){}try{document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version').forEach(e=>e&&(e.textContent=VERSION));document.querySelectorAll('.v366-ver,.v371-logo em,.v372-logo em').forEach(e=>e&&(e.textContent=SHORT))}catch(e){}}
@@ -45049,7 +45009,7 @@ function historicalScriptCount(){if(historicCountCache!=null)return historicCoun
 
 <!-- ===== V4.110 Stable: Samen-Händler Live-Kauf Regression Contract ===== -->
 <script id="v4109-seed-buy-regression-stamp">
-(()=>{const f=()=>{try{document.title='Grow Legends V4.110';document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version').forEach(e=>e&&(e.textContent='V4.110 Stable'));document.querySelectorAll('.v366-ver,.v371-logo em,.v372-logo em').forEach(e=>e&&(e.textContent='V4.110'))}catch(e){}};f();[150,900,3000,9000,20000,45000].forEach(ms=>setTimeout(f,ms));window.addEventListener('pageshow',f,{passive:true});document.addEventListener('visibilitychange',()=>!document.hidden&&f(),{passive:true})})();
+/* V4.123: retired. This block only wrote an obsolete version label and had no gameplay authority. */
 </script>
 
 <!-- ===== V4.110 Stable: fail-first Systemtechnik visibility guard ===== -->
@@ -46362,13 +46322,7 @@ function v317QuestDurations(level=Number(s.level)||1){
 }
 window.v317QuestDurations=v317QuestDurations;
 
-const v317BaseRender=render;
-render=function(){
- const r=v317BaseRender();
- document.querySelectorAll('.version').forEach(el=>el.textContent='V4.29 Stable');
- const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V4.29 Stable';
- return r;
-};
+/* V4.123: quest duration curve remains active; obsolete version-only render wrapper retired. */
 </script>
 
 
@@ -49296,11 +49250,7 @@ setTimeout(()=>{try{v322InstallMenuEntry();v322InstallHarzPlus()}catch(e){consol
 (function(){
   const V334_VERSION='V4.29 Stable';
 
-  function v334ApplyVersion(){
-    document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version]').forEach(el=>{
-      if(el)el.textContent=V334_VERSION;
-    });
-  }
+  function v334ApplyVersion(){ /* V4.123: current release owns version UI. */ }
 
   async function v334OwnProfile(){
     try{
@@ -49407,10 +49357,7 @@ setTimeout(()=>{try{v322InstallMenuEntry();v322InstallHarzPlus()}catch(e){consol
   document.addEventListener('visibilitychange',()=>{
     if(!document.hidden)setTimeout(v334RepairReturningLogin,300);
   });
-
-  v334ApplyVersion();
-  setTimeout(v334ApplyVersion,500);
-  setTimeout(v334ApplyVersion,1800);
+  /* V4.123: obsolete delayed version writes removed. */
 })();
 </script>
 
@@ -53084,23 +53031,7 @@ html body .app > header > .stats.resource-stats{
 
 <!-- ===== V4.29 Stable: eliminate version race permanently ===== -->
 <script id="v360-version-race-fix">
-(function(){
-  const V360_VERSION='V4.29 Stable';
-
-  function writeVersion(){
-    document.querySelectorAll(
-      '.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version'
-    ).forEach(el=>{if(el && el.textContent!==V360_VERSION)el.textContent=V360_VERSION});
-  }
-
-  /* One final pass after every historical startup timeout has finished.
-     No recurring timer is needed. */
-  writeVersion();
-  document.addEventListener('DOMContentLoaded',writeVersion,{once:true});
-  setTimeout(writeVersion,400);
-  setTimeout(writeVersion,1300);
-  setTimeout(writeVersion,2700);
-})();
+/* V4.123: retired. This block only wrote an obsolete version label and had no gameplay authority. */
 </script>
 
 <!-- ===== V4.29 Stable: mobile header fit ===== -->
@@ -59539,8 +59470,7 @@ create index if not exists player_messages_sender_idx on public.player_messages(
   repaint();stamp();
   /* Older compatibility blocks still contain historic version stamps. During the
      first seconds keep the visible label pinned to the current build, then stop. */
-  const versionGuard=setTimeout(stamp,250);
-  setTimeout(()=>clearInterval(versionGuard),9000);
+  setTimeout(stamp,250); /* V4.123: removed useless late clear of already-fired one-shot timeout. */
   document.addEventListener('DOMContentLoaded',()=>{repaint();stamp()},{once:true});
   document.addEventListener('click',()=>setTimeout(()=>{repaint();stamp()},0),true);
   setTimeout(()=>{repaint();stamp()},1000);
@@ -60061,8 +59991,7 @@ create index if not exists player_messages_sender_idx on public.player_messages(
   }
 
   stamp();
-  const guard=setTimeout(stamp,250);
-  setTimeout(()=>clearInterval(guard),15000);
+  setTimeout(stamp,250); /* V4.123: removed useless late clear of already-fired one-shot timeout. */
   document.addEventListener('DOMContentLoaded',stamp,{once:true});
   window.addEventListener('pageshow',stamp,{passive:true});
   setTimeout(stamp,1200);
@@ -60901,8 +60830,7 @@ create index if not exists player_messages_sender_idx on public.player_messages(
   bindShop();settle();stamp();
   document.addEventListener('DOMContentLoaded',()=>{bindShop();observe(document.querySelector('.app > header'));observe(document.querySelector('#shop'));settle();stamp()},{once:true});
   window.addEventListener('pageshow',()=>{bindShop();settle();stamp()},{passive:true});
-  const versionGuard=setTimeout(stamp,400);
-  setTimeout(()=>clearInterval(versionGuard),18000);
+  setTimeout(stamp,400); /* V4.123: removed useless late clear of already-fired one-shot timeout. */
   setTimeout(()=>{bindShop();settle();stamp()},1000);
   setTimeout(()=>{bindShop();settle();stamp()},5000);
   setTimeout(()=>{bindShop();settle();stamp()},11000);
@@ -61041,8 +60969,7 @@ create index if not exists player_messages_sender_idx on public.player_messages(
   setTimeout(refreshVisiblePrices,250);
   setTimeout(()=>{moveInventory();cleanArtifacts();stamp()},1600);
   setTimeout(()=>{moveInventory();cleanArtifacts();stamp()},5200);
-  const versionGuard=setTimeout(stamp,400);
-  setTimeout(()=>clearInterval(versionGuard),18000);
+  setTimeout(stamp,400); /* V4.123: removed useless late clear of already-fired one-shot timeout. */
 })();
 </script>
 
@@ -61523,7 +61450,7 @@ create index if not exists player_messages_sender_idx on public.player_messages(
   setTimeout(()=>{repaint();stamp()},300);
   setTimeout(()=>{repaint();stamp()},1600);
   setTimeout(()=>{repaint();stamp()},5200);
-  const guard=setTimeout(stamp,400);setTimeout(()=>clearInterval(guard),18000);
+  setTimeout(stamp,400); /* V4.123: removed useless late clear of already-fired one-shot timeout. */
 })();
 </script>
 
@@ -62038,7 +61965,7 @@ create index if not exists player_messages_sender_idx on public.player_messages(
   document.addEventListener('DOMContentLoaded',()=>{all();stamp()},{once:true});
   window.addEventListener('pageshow',()=>{all();stamp()},{passive:true});
   setTimeout(()=>{all();stamp()},700);setTimeout(()=>{all();stamp()},2600);setTimeout(()=>{all();stamp()},6000);
-  const vg=setTimeout(stamp,350);setTimeout(()=>clearInterval(vg),19000);
+  setTimeout(stamp,350); /* V4.123: removed useless late clear of already-fired one-shot timeout. */
 })();
 </script>
 
@@ -62818,7 +62745,7 @@ create index if not exists player_messages_sender_idx on public.player_messages(
   document.addEventListener('DOMContentLoaded',()=>{stamp();capture()},{once:true});
   window.addEventListener('pageshow',()=>{stamp();capture()},{passive:true});
   [250,900,2200,5200].forEach(ms=>setTimeout(()=>{stamp();capture()},ms));
-  const vg=setTimeout(stamp,300);setTimeout(()=>clearInterval(vg),22000);
+  setTimeout(stamp,300); /* V4.123: removed useless late clear of already-fired one-shot timeout. */
 })();
 </script>
 
@@ -63093,7 +63020,7 @@ create index if not exists player_messages_sender_idx on public.player_messages(
   document.addEventListener('DOMContentLoaded',stamp,{once:true});
   window.addEventListener('pageshow',stamp,{passive:true});
   [250,800,1800,4200].forEach(ms=>setTimeout(stamp,ms));
-  const vg=setTimeout(stamp,250);setTimeout(()=>clearInterval(vg),30000);
+  setTimeout(stamp,250); /* V4.123: removed useless late clear of already-fired one-shot timeout. */
 })();
 </script>
 
@@ -63234,7 +63161,7 @@ create index if not exists player_messages_sender_idx on public.player_messages(
   document.addEventListener('DOMContentLoaded',()=>{stamp();const uid=uidNow();if(uid&&gateReady(uid))void reconcile('dom')},{once:true});
   window.addEventListener('pageshow',()=>{stamp();const uid=uidNow();if(uid&&gateReady(uid))void reconcile('pageshow')},{passive:true});
   [250,900,2200,5200].forEach(ms=>setTimeout(()=>{stamp();const uid=uidNow();if(uid&&gateReady(uid)&&reconciledUid!==uid)void reconcile('timer')},ms));
-  const guard=setTimeout(stamp,300);setTimeout(()=>clearInterval(guard),30000);
+  setTimeout(stamp,300); /* V4.123: removed useless late clear of already-fired one-shot timeout. */
 })();
 </script>
 
@@ -63350,7 +63277,7 @@ create index if not exists player_messages_sender_idx on public.player_messages(
   document.addEventListener('DOMContentLoaded',()=>{normalize();stamp()},{once:true});
   window.addEventListener('pageshow',()=>{normalize();stamp()},{passive:true});
   [250,900,2200,5200].forEach(ms=>setTimeout(()=>{normalize();stamp()},ms));
-  const g=setTimeout(stamp,300);setTimeout(()=>clearInterval(g),30000);
+  setTimeout(stamp,300); /* V4.123: removed useless late clear of already-fired one-shot timeout. */
 })();
 </script>
 
@@ -63450,7 +63377,7 @@ create index if not exists player_messages_sender_idx on public.player_messages(
   document.addEventListener('DOMContentLoaded',()=>{maxLevelUi();stamp()},{once:true});
   window.addEventListener('pageshow',()=>{maxLevelUi();stamp()},{passive:true});
   [250,900,2200,5200].forEach(ms=>setTimeout(()=>{maxLevelUi();stamp()},ms));
-  const g=setTimeout(stamp,300);setTimeout(()=>clearInterval(g),30000);
+  setTimeout(stamp,300); /* V4.123: removed useless late clear of already-fired one-shot timeout. */
 })();
 </script>
 
@@ -63538,7 +63465,7 @@ create index if not exists player_messages_sender_idx on public.player_messages(
   try{if(typeof render==='function'&&!window.__v457RenderWrapped){const base=render;render=function(){const r=base.apply(this,arguments);install();return r};window.render=render;window.__v457RenderWrapped=true}}catch(e){}
   try{if(typeof v075ApplyCloudSave==='function'&&!window.__v457CloudWrapped){const base=v075ApplyCloudSave;v075ApplyCloudSave=function(){const r=base.apply(this,arguments);if(r&&typeof r.then==='function')return r.then(x=>{install();return x});install();return r};window.v075ApplyCloudSave=v075ApplyCloudSave;window.__v457CloudWrapped=true}}catch(e){}
   try{if(typeof v032Go==='function'&&!window.__v457GoWrapped){const base=v032Go;v032Go=function(id){const r=base.apply(this,arguments);if(id==='endgame')renderEndgame();else if(id==='world')ensureWorldLink();ensureMenu();stamp();return r};window.v032Go=v032Go;window.__v457GoWrapped=true}}catch(e){}
-  install();document.addEventListener('DOMContentLoaded',install,{once:true});window.addEventListener('pageshow',install,{passive:true});[250,900,2200,5200].forEach(ms=>setTimeout(install,ms));const g=setTimeout(stamp,350);setTimeout(()=>clearInterval(g),35000);
+  install();document.addEventListener('DOMContentLoaded',install,{once:true});window.addEventListener('pageshow',install,{passive:true});[250,900,2200,5200].forEach(ms=>setTimeout(install,ms));setTimeout(stamp,350); /* V4.123: removed useless late clear of already-fired one-shot timeout. */
 })();
 </script>
 
@@ -63701,7 +63628,7 @@ create index if not exists player_messages_sender_idx on public.player_messages(
   document.addEventListener('DOMContentLoaded',()=>{normalizeKeys();stamp()},{once:true});
   window.addEventListener('pageshow',()=>{normalizeKeys();stamp()},{passive:true});
   [250,900,2200,5200].forEach(ms=>setTimeout(stamp,ms));
-  const g=setTimeout(stamp,350);setTimeout(()=>clearInterval(g),42000);
+  setTimeout(stamp,350); /* V4.123: removed useless late clear of already-fired one-shot timeout. */
 })();
 </script>
 
@@ -66096,7 +66023,7 @@ create index if not exists player_messages_sender_idx on public.player_messages(
   document.addEventListener('DOMContentLoaded',settle,{once:true});
   window.addEventListener('pageshow',settle,{passive:true});
   [100,350,900,1800,4200,8200,12500].forEach(ms=>setTimeout(settle,ms));
-  const vg=setTimeout(stamp,350);setTimeout(()=>clearInterval(vg),46000);
+  setTimeout(stamp,350); /* V4.123: removed useless late clear of already-fired one-shot timeout. */
 })();
 </script>
 
@@ -69061,7 +68988,7 @@ body.v495-seed-open{overflow:hidden!important}
  window.addEventListener('pageshow',stamp,{passive:true});
  document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();paintStatus()}},{passive:true});
  [50,250,700,1600,3500,8000,15000,30000,60000].forEach(ms=>setTimeout(()=>{stamp();paintStatus()},ms));
- /* V4.122: V4.104 menu/status poll retired; canonical Systemtechnik refresh owns this. */
+ /* V4.123: V4.104 menu/status poll retired; canonical Systemtechnik refresh owns this. */
  window.v4104InstallQaSettings=install;
 })();
 </script>
@@ -69135,7 +69062,7 @@ body.v495-seed-open{overflow:hidden!important}
 <script id="v4107-systemtechnik">
 (()=>{
 'use strict';
-const VERSION='V4.122 Stable',SHORT='V4.122',STORE='growLegendsQA:v4107:';
+const VERSION='V4.123 Stable',SHORT='V4.123',STORE='growLegendsQA:v4107:';
 const baseRun=window.v4106RunQA||window.v4102RunQA;
 const oldOpen=window.v4102OpenQA;
 let last=null,selectedGroup='',filter='problems',storageEstimate=null,lastNav='',renderTimer=0,historicCountCache=null;
@@ -69421,7 +69348,7 @@ function fullReport(){
  T('Performance & Altlasten','Veraltete Version-/Stamp-Intervalle werden erkannt',()=>({pass:ti.legacy.length===0,detail:`${ti.legacy.length} mögliche Legacy-Hintergrundtimer`}), 'warn');
  T('Performance & Altlasten','Render-Maximum <120 ms',()=>({pass:rs.max.ms<120,detail:`${rs.max.name}: ${rs.max.ms.toFixed(1)} ms`}), 'warn');
  T('Performance & Altlasten','Render-Durchschnitt <45 ms',()=>({pass:rs.avg<45,detail:`Ø ${rs.avg.toFixed(1)} ms`}), 'warn');
- T('Performance & Altlasten','Keine Long-Task >200 ms letzte Minute',()=>{const a=(tech().longTasks||[]).filter(x=>Date.now()-x.at<60000&&x.duration>200&&!window.__V4122_IS_QA_LONG_TASK__?.(x));return{pass:a.length===0,detail:`${a.length} Long Tasks`}}, 'warn');
+ T('Performance & Altlasten','Keine Long-Task >200 ms letzte Minute',()=>{const a=(tech().longTasks||[]).filter(x=>x.at>Number(tech().startedAt||0)+6000&&Date.now()-x.at<60000&&x.duration>200&&!window.__V4122_IS_QA_LONG_TASK__?.(x));return{pass:a.length===0,detail:`${a.length} Long Tasks`}}, 'warn');
  T('Performance & Altlasten','JS Heap <220 MB',()=>({pass:heap==null||heap<220,detail:heap==null?'nicht verfügbar':`${heap.toFixed(1)} MB`}), 'warn');
  T('Performance & Altlasten','LocalStorage <4 MB',()=>({pass:localStorageKb()<4096,detail:`~${localStorageKb()} KB`}), 'warn');
  T('Performance & Altlasten','DOM-Wachstum <2× Startwert',()=>({pass:tech().maxDom<Math.max(9000,dom*2),detail:`aktuell ${dom}, max ${tech().maxDom||dom}`}), 'warn');
@@ -69465,7 +69392,7 @@ function groupData(report){
 }
 function statusText(r){if(!r)return['PRÜFUNG LÄUFT…','Noch kein Ergebnis.','warn'];if(r.failed)return[`${r.failed} FEHLER GEFUNDEN`,`${r.passed}/${r.total} Tests bestanden · Fehler zuerst beheben.`,'bad'];if(r.warnings)return['STABIL · HINWEISE GEFUNDEN',`${r.passed}/${r.total} Tests bestanden · ${r.warnings} technische Warnungen.`,'warn'];return['ALLE TESTS BESTANDEN!','Kein automatischer Fehler erkannt.','ok']}
 function perfMetrics(){
- const t=timerInfo(),r=renderStats(),dom=document.getElementsByTagName('*').length,heap=performance.memory?performance.memory.usedJSHeapSize/1048576:null,long=(tech().longTasks||[]).filter(x=>Date.now()-x.at<60000&&!window.__V4122_IS_QA_LONG_TASK__?.(x)),ls=localStorageKb();
+ const t=timerInfo(),r=renderStats(),dom=document.getElementsByTagName('*').length,heap=performance.memory?performance.memory.usedJSHeapSize/1048576:null,long=(tech().longTasks||[]).filter(x=>x.at>Number(tech().startedAt||0)+6000&&Date.now()-x.at<60000&&!window.__V4122_IS_QA_LONG_TASK__?.(x)),ls=localStorageKb();
  const score=Math.max(0,100-Math.min(25,t.dupInts.length*8)-Math.min(20,t.legacy.length*2)-Math.min(15,long.filter(x=>x.duration>150).length*4)-Math.min(20,Math.max(0,r.max.ms-60)/4)-Math.min(20,Math.max(0,dom-5000)/150));
  const state=score>=85?'OPTIMAL':score>=65?'BEOBACHTEN':'BELASTET';
  return{score,state,dom,ints:t.ints.length,timeouts:t.tos.length,dup:t.dupInts.length,legacy:t.legacy.length,legacyListeners:(typeof legacyListenerInfo==='function'?legacyListenerInfo():[]).length,historicScripts:(typeof historicalScriptCount==='function'?historicalScriptCount():0),stale:t.staleTimeouts.length,listeners:(typeof window.__V4122_LIVE_LISTENER_COUNT__==='function'?window.__V4122_LIVE_LISTENER_COUNT__():tech().listeners.size),long:long.length,renderMax:r.max.ms,renderAvg:r.avg,heap,ls,network:network.calls.length,netErrors:network.errors};
@@ -69474,7 +69401,7 @@ function ensureScreen(){
  const main=document.querySelector('main');if(!main)return null;
  let sec=document.getElementById('systemtech');if(!sec){sec=document.createElement('section');sec.id='systemtech';sec.className='screen';const footer=document.getElementById('v337LegalFooter');if(footer&&footer.parentElement===main)main.insertBefore(sec,footer);else main.appendChild(sec)}
  if(!sec.dataset.built){sec.dataset.built='1';sec.innerHTML=`<div class="v4107-page">
-  <div class="v4107-top"><div class="v4107-brand"><div class="v4107-brand-mark">🌿⚙️</div><div><h1>GROW LEGENDS <span>SYSTEMTEST & TECHNIK</span></h1><p>AUTOMATISCHE PRÜFUNG ALLER SYSTEME · FLOW · UI/PIXEL · SAVE · PERFORMANCE · ALTLASTEN</p></div></div><div class="v4107-version">V4.122</div></div>
+  <div class="v4107-top"><div class="v4107-brand"><div class="v4107-brand-mark">🌿⚙️</div><div><h1>GROW LEGENDS <span>SYSTEMTEST & TECHNIK</span></h1><p>AUTOMATISCHE PRÜFUNG ALLER SYSTEME · FLOW · UI/PIXEL · SAVE · PERFORMANCE · ALTLASTEN</p></div></div><div class="v4107-version">V4.123</div></div>
   <div class="v4107-layout">
    <aside class="v4107-sidebar"><div class="v4107-side-title">⚙️ SYSTEMTECHNIK</div>
     <button class="v4107-nav active" data-v4107-jump="status"><i>🧪</i>Systemtest</button>
@@ -69559,7 +69486,7 @@ function renderRight(r){
 }
 function copyReport(r){
  const groups=groupData(r),p=perfMetrics(),logs=allRuntime();
- const text=[`Grow Legends ${SHORT} – Systemtechnik`,`Tests: ${r.total} | Bestanden: ${r.passed} | Fehler: ${r.failed} | Warnungen: ${r.warnings}`,`Performance: ${p.state} ${Math.round(p.score)}% | DOM ${p.dom} | Intervalle ${p.ints} | Listener ${p.listeners} | Render max ${p.renderMax.toFixed(1)} ms`,'',...groups.map(g=>`${g.name}: ${g.passed}/${g.total} | Fehler ${g.failed} | Warnungen ${g.warnings}`),'',...r.results.filter(x=>!x.pass).map(x=>`${x.severity==='warn'?'WARN':'FEHLER'} | ${x.category} | ${x.name}${x.detail?' | '+x.detail:''}`),'',...logs.slice(-20).map(x=>`RUNTIME | ${x.code} | ${x.detail}`)].join('\n');
+ const diag=typeof window.v4123TimerDiagnostics==='function'?window.v4123TimerDiagnostics().slice(0,8):[],slow=typeof window.v4123SlowRenders==='function'?window.v4123SlowRenders().slice(-6):[];const text=[`Grow Legends ${SHORT} – Systemtechnik`,`Tests: ${r.total} | Bestanden: ${r.passed} | Fehler: ${r.failed} | Warnungen: ${r.warnings}`,`Performance: ${p.state} ${Math.round(p.score)}% | DOM ${p.dom} | Intervalle ${p.ints} | Listener ${p.listeners} | Render max ${p.renderMax.toFixed(1)} ms`,'',...groups.map(g=>`${g.name}: ${g.passed}/${g.total} | Fehler ${g.failed} | Warnungen ${g.warnings}`),'',...r.results.filter(x=>!x.pass).map(x=>`${x.severity==='warn'?'WARN':'FEHLER'} | ${x.category} | ${x.name}${x.detail?' | '+x.detail:''}`),'',...logs.slice(-20).map(x=>`RUNTIME | ${x.code} | ${x.detail}`),...(diag.length?['','TIMER-DIAGNOSE',...diag.map(x=>`TIMER | ${x.count}x | ${x.delay} ms | ${x.callback} | ${x.site}`)]:[]),...(slow.length?['','LANGSAME RENDER',...slow.map(x=>`RENDER | ${x.name} | ${Number(x.ms).toFixed(1)} ms | Seite ${x.screen}`)]:[])].join('\n');
  try{navigator.clipboard?.writeText(text).then(()=>window.v063Toast?.('QA-Bericht kopiert','success','Kann direkt geschickt werden.')).catch(()=>{})}catch(e){}
 }
 function openPage(){
@@ -69580,7 +69507,7 @@ function scheduleRender(){if(renderTimer)return;renderTimer=setTimeout(()=>{rend
 window.addEventListener('error',e=>pushErr('JS_ERROR',`${e.message||'Fehler'}${e.filename?` · ${String(e.filename).split('/').pop()}:${e.lineno||0}`:''}`,'error'));
 window.addEventListener('unhandledrejection',e=>pushErr('UNHANDLED_REJECTION',String(e.reason?.message||e.reason||'Promise abgelehnt'),'error'));
 /* Network timing without changing request semantics. */
-try{if(typeof window.fetch==='function'&&!window.fetch.__v4107){const nf=window.fetch.bind(window),w=async function(){const started=performance.now();let ok=false,status=0,url='';try{url=String(arguments[0]?.url||arguments[0]||'').slice(0,180);const r=await nf(...arguments);ok=r.ok;status=r.status;return r}catch(e){network.errors++;pushErr('NETWORK_ERROR',`${url} · ${e.message||e}`,'warn');throw e}finally{const ms=performance.now()-started;network.calls.push({at:Date.now(),url,ms,status,ok});while(network.calls.length>80)network.calls.shift();if(ms>2500){network.slow++;pushErr('SLOW_NETWORK',`${Math.round(ms)} ms · ${url}`,'warn')}if(status>=400){network.errors++;pushErr('HTTP_'+status,url,'warn')}}};w.__v4107=true;window.fetch=w}}catch(e){}
+try{if(typeof window.fetch==='function'&&!window.fetch.__v4107){const nf=window.fetch.bind(window),w=async function(){const started=performance.now();let ok=false,status=0,url='',retried=false;const input=arguments[0],init=arguments[1]||{};try{url=String(input?.url||input||'').slice(0,180);const method=String(init?.method||input?.method||'GET').toUpperCase();const canRetry=method==='GET'&&/\/rest\/v1\/player_saves(?:\?|$)/.test(url);let r;try{r=await nf(...arguments)}catch(first){if(!canRetry)throw first;retried=true;await new Promise(resolve=>setTimeout(resolve,350));r=await nf(...arguments)}ok=r.ok;status=r.status;if(retried){network.retries=(network.retries||0)+1}return r}catch(e){network.errors++;pushErr('NETWORK_ERROR',`${url} · ${e.message||e}`,'warn');throw e}finally{const ms=performance.now()-started;network.calls.push({at:Date.now(),url,ms,status,ok,retried});while(network.calls.length>80)network.calls.shift();if(ms>2500){network.slow++;pushErr('SLOW_NETWORK',`${Math.round(ms)} ms · ${url}`,'warn')}if(status>=400){network.errors++;pushErr('HTTP_'+status,url,'warn')}}};w.__v4107=true;w.__v4123PlayerSaveGetRetry=true;window.fetch=w}}catch(e){}
 /* Cache Storage estimate where supported. */
 try{navigator.storage?.estimate?.().then(x=>storageEstimate=x).catch(()=>{})}catch(e){}
 /* Make Systemtechnik the canonical QA destination. */
@@ -69592,7 +69519,7 @@ setInterval(()=>{try{installMenu();paintSettingsBadge(last);if(document.getEleme
 function stamp(){try{document.title='Grow Legends '+SHORT}catch(e){}try{document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version').forEach(e=>e&&(e.textContent=VERSION));document.querySelectorAll('.v366-ver,.v371-logo em,.v372-logo em').forEach(e=>e&&(e.textContent=SHORT))}catch(e){}}
 ensureScreen();installMenu();stamp();
 setTimeout(()=>{try{const c=cachedReport();if(c){last=c;paintSettingsBadge(c);if(document.getElementById('systemtech')?.classList.contains('active'))renderPage(c)}const r=fullReport();last=r;paintSettingsBadge(r);if(document.getElementById('systemtech')?.classList.contains('active'))renderPage(r)}catch(e){pushErr('QA_START_ERROR',e.message||String(e));if(document.getElementById('systemtech')?.classList.contains('active'))renderFatal(e)}},2600);
-[100,500,1500,5000,15000,30000,60000].forEach(ms=>setTimeout(()=>{stamp();installMenu()},ms));
+[120,900,2600].forEach(ms=>setTimeout(()=>{stamp();installMenu()},ms)); /* V4.123: long obsolete version/menu fan-out retired. */
 window.addEventListener('pageshow',()=>{stamp();installMenu();setTimeout(()=>{try{last=fullReport();paintSettingsBadge(last)}catch(e){}},700)},{passive:true});
 document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();installMenu();scheduleRender()}},{passive:true});
 })();
@@ -69755,7 +69682,7 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();i
 .app > header .v358-logo::after{content:"V4.113"!important}
 </style>
 <script id="v4113-version-owner">
-(()=>{const stamp=()=>{try{document.title='Grow Legends V4.113';document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version').forEach(e=>e&&(e.textContent='V4.113 Stable'));document.querySelectorAll('.v366-ver,.v371-logo em,.v372-logo em,.v4107-version').forEach(e=>e&&(e.textContent='V4.113'))}catch(e){}};stamp();document.addEventListener('DOMContentLoaded',stamp,{once:true});window.addEventListener('pageshow',stamp,{passive:true});[100,700,2200].forEach(ms=>setTimeout(stamp,ms));})();
+/* V4.123: retired. This block only wrote an obsolete version label and had no gameplay authority. */
 </script>
 
 <style id="v4114-grow-care-css">
@@ -70053,7 +69980,7 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();i
 <script id="v4116-systemtech-engine-fix">
 (()=>{
  'use strict';
- const VERSION='V4.122 Stable',SHORT='V4.122';
+ const VERSION='V4.123 Stable',SHORT='V4.123';
  function stamp(){
   try{document.title='Grow Legends '+SHORT}catch(e){}
   try{
@@ -70073,7 +70000,7 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();i
  window.v4116SystemtechnikSelfCheck=engineSelfCheck;
  stamp();
  [0,100,500,1500,4000,9000,17000,30000,60000].forEach(ms=>setTimeout(stamp,ms));
- /* V4.122: periodic version stamp retired. */
+ /* V4.123: periodic version stamp retired. */
 })();
 </script>
 
@@ -70087,7 +70014,7 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();i
 <script id="v4118-care-guildboss-fix">
 (()=>{
  'use strict';
- const VERSION='V4.122 Stable',SHORT='V4.122';
+ const VERSION='V4.123 Stable',SHORT='V4.123';
  function stamp(){try{document.title='Grow Legends '+SHORT;document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version').forEach(x=>x&&(x.textContent=VERSION));document.querySelectorAll('.v366-ver,.v371-logo em,.v372-logo em,.v4107-version').forEach(x=>x&&(x.textContent=SHORT))}catch(e){}}
  function refreshBoss(){try{if(document.querySelector('#guild')?.classList.contains('active')){v255RenderBoss?.()}}catch(e){}}
  function qaWrap(){
@@ -70103,7 +70030,7 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();i
  }
  stamp();qaWrap();refreshBoss();
  [120,650,1800,5000].forEach(ms=>setTimeout(()=>{stamp();qaWrap();refreshBoss();try{window.v4114DecorateCareSlots?.()}catch(e){}},ms));
- /* V4.122: periodic version stamp retired. */
+ /* V4.123: periodic version stamp retired. */
  document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();refreshBoss()}},{passive:true});
  window.addEventListener('pageshow',()=>{stamp();setTimeout(refreshBoss,100)},{passive:true});
 })();
@@ -70585,24 +70512,28 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();i
 </script>
 
 
-<!-- ===== V4.122 Stable: performance cleanup + truthful Systemtechnik metrics ===== -->
-<style id="v4122-performance-cleanup-css">
-.app > header .v358-logo::after{content:"V4.122"!important}
-.app > header .v366-ver::after,.app > header .v371-logo em::after,.app > header .v372-logo em::after{content:"V4.122"!important}
+<!-- ===== V4.123 Stable: safe legacy retirement + runtime diagnostics ===== -->
+<style id="v4123-performance-cleanup-css">
+.app > header .v358-logo::after{content:"V4.123"!important}
+.app > header .v366-ver::after,.app > header .v371-logo em::after,.app > header .v372-logo em::after{content:"V4.123"!important}
 </style>
-<script id="v4122-performance-cleanup">
+<script id="v4123-performance-cleanup">
 (()=>{
  'use strict';
- const VERSION='V4.122 Stable',SHORT='V4.122';
+ const VERSION='V4.123 Stable',SHORT='V4.123';
  function stamp(){
   try{document.title='Grow Legends '+SHORT}catch(e){}
   try{document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version').forEach(x=>x&&(x.textContent=VERSION));document.querySelectorAll('.v366-ver,.v371-logo em,.v372-logo em,.v4107-version').forEach(x=>x&&(x.textContent=SHORT))}catch(e){}
  }
  window.v4122LiveListenerCount=()=>typeof window.__V4122_LIVE_LISTENER_COUNT__==='function'?window.__V4122_LIVE_LISTENER_COUNT__():window.__V4106_TECH__?.listeners?.size||0;
  window.v4122PerformanceCleanup={version:SHORT,liveListeners:window.v4122LiveListenerCount};
+ window.v4123LiveListenerCount=window.v4122LiveListenerCount;
+ window.v4123TimerDiagnostics=()=>{const t=window.__V4106_TECH__||{};const rows=[...(t.intervals?.values?.()||[]),...(t.timeouts?.values?.()||[])];const map=new Map();for(const x of rows){const key=`${x.delay}|${String(x.callback||'').slice(0,90)}`;const r=map.get(key)||{delay:x.delay,count:0,callback:String(x.callback||'').slice(0,120),site:String(x.site||'').slice(0,180)};r.count++;map.set(key,r)}return[...map.values()].sort((a,b)=>b.count-a.count||a.delay-b.delay).slice(0,20)};
+ window.v4123SlowRenders=()=>[...((window.__V4106_TECH__?.slowRenders)||[])];
+ window.v4123PerformanceCleanup={version:SHORT,liveListeners:window.v4123LiveListenerCount,timers:window.v4123TimerDiagnostics,slowRenders:window.v4123SlowRenders};
  stamp();
  document.addEventListener('visibilitychange',()=>{if(!document.hidden)stamp()},{passive:true});
  window.addEventListener('pageshow',stamp,{passive:true});
- [0,120,600,1800,5000].forEach(ms=>setTimeout(stamp,ms));
+ setTimeout(stamp,900); /* V4.123: single settle pass; pageshow/visibility own later refreshes. */
 })();
 </script>
