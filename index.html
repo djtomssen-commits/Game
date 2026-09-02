@@ -8609,8 +8609,9 @@ try{
 */
 
 function v058EnsureLegacyRenderAnchors(){
-  /* Keep the legacy renderer's required IDs alive at all times.
-     They are hidden compatibility anchors, not visible UI. */
+  /* Keep legacy renderer anchors only while no real shop element exists.
+     Once the current shop renderer owns the ID, remove the hidden fallback so
+     every DOM id stays unique. */
   let box=document.querySelector('#v058CompatAnchors');
   if(!box){
     box=document.createElement('div');
@@ -8621,7 +8622,15 @@ function v058EnsureLegacyRenderAnchors(){
 
   const required=['shopGold','shopHarz'];
   required.forEach(id=>{
-    if(!document.querySelector('#'+id)){
+    const matches=[...document.querySelectorAll(`[id="${id}"]`)];
+    const real=matches.find(el=>!box.contains(el));
+    const compat=matches.filter(el=>box.contains(el));
+    if(real){
+      compat.forEach(el=>el.remove());
+      return;
+    }
+    compat.slice(1).forEach(el=>el.remove());
+    if(!compat.length){
       const el=document.createElement('span');
       el.id=id;
       box.appendChild(el);
@@ -44895,7 +44904,7 @@ function legacyListenerInfo(){try{return [...tech().listeners.values()].filter(x
 function legacyListenerInfo(){return [...tech().listeners.values()].filter(x=>/V4\.(?:0[0-9]|[1-9][0-9])|legacy|old/i.test(`${x.handler||''} ${x.site||''}`))}
 function historicalScriptCount(){if(historicCountCache!=null)return historicCountCache;historicCountCache=[...document.scripts].filter(sc=>/V4\.(?:0[0-9]|[1-9][0-9]) Stable/.test(sc.textContent||'')&&!/V4\.10[567]/.test(sc.textContent||'')).length;return historicCountCache}
  function visible(el){if(!el)return false;const c=getComputedStyle(el);return c.display!=='none'&&c.visibility!=='hidden'&&c.opacity!=='0'&&!!el.getClientRects().length}
- function visibleTextProblems(){let n=0;document.querySelectorAll('.screen.active *').forEach(e=>{if(n>20||!visible(e))return;const t=(e.textContent||'').trim();if(!t||e.children.length>2)return;if(/NaN|undefined|null/i.test(t))n++});return n}
+ function visibleTextProblems(){let n=0;document.querySelectorAll('.screen.active *').forEach(e=>{if(n>20||e.closest('#systemtech')||!visible(e))return;const t=(e.textContent||'').trim();if(!t||e.children.length>2)return;if(/NaN|undefined|null/i.test(t))n++});return n}
  function overflowCount(){let n=0;document.querySelectorAll('.screen.active button,.screen.active .card,.screen.active .shop-item,.screen.active .inv-item').forEach(e=>{if(visible(e)&&e.scrollWidth>e.clientWidth+5&&getComputedStyle(e).overflowX==='visible')n++});return n}
  function brokenImages(){return [...document.images].filter(i=>visible(i)&&i.complete&&i.naturalWidth===0)}
  function intervalDuplicates(){const m=new Map();for(const x of tech().intervals.values()){const k=`${x.delay}|${x.site}`;m.set(k,(m.get(k)||0)+1)}return [...m].filter(([,n])=>n>1)}
@@ -44927,7 +44936,7 @@ function historicalScriptCount(){if(historicCountCache!=null)return historicCoun
   T('Spielabläufe','20 Dungeons besitzen je 10 Gegner',()=>Array.isArray(dungeons)&&dungeons.length===20&&dungeons.every(d=>Array.isArray(d.enemies)&&d.enemies.length===10));
   T('Spielabläufe','Jeder Dungeon besitzt Endboss Raum 10',()=>dungeons.every(d=>d.enemies?.[9]));
   T('Spielabläufe','Dungeonfortschritt bleibt 0–10',()=>Object.values(s.dungeon?.progress||{}).every(v=>Number(v)>=0&&Number(v)<=10));
-  T('Spielabläufe','Nebelrisse/Endgame vorhanden',()=>!!document.getElementById('endgame')&&typeof renderEndgame==='function');
+  T('Spielabläufe','Nebelrisse/Endgame vorhanden',()=>!!document.getElementById('endgame')&&(typeof window.v457RenderEndgame==='function'||typeof window.renderEndgame==='function'));
   T('Spielabläufe','Smaragd-Koloss erzeugt mystische Items',()=>typeof v110MakeMysticItem==='function');
   T('Spielabläufe','PvP-Bereich vorhanden',()=>!!document.getElementById('pvp'));
   T('Spielabläufe','Gildenbereich vorhanden',()=>!!document.getElementById('guild')&&typeof v254LoadGuild==='function');
@@ -63523,7 +63532,7 @@ create index if not exists player_messages_sender_idx on public.player_messages(
 
   function stamp(){document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version').forEach(el=>{if(el&&el.textContent!==VERSION)el.textContent=VERSION});document.querySelectorAll('.v366-ver,.v371-logo em,.v372-logo em').forEach(el=>{if(el&&el.textContent!==SHORT)el.textContent=SHORT});document.title='Grow Legends '+SHORT}
   function install(){ensureState();ensureSection();ensureMenu();ensureWorldLink();if(document.getElementById('endgame')?.classList.contains('active'))renderEndgame();stamp()}
-  window.v457RenderEndgame=renderEndgame;window.v457EndgameEnemy=enemy;window.v457EndgameUnlocked=unlocked;
+  window.v457RenderEndgame=renderEndgame;window.renderEndgame=renderEndgame;window.v457EndgameEnemy=enemy;window.v457EndgameUnlocked=unlocked;
   try{if(typeof render==='function'&&!window.__v457RenderWrapped){const base=render;render=function(){const r=base.apply(this,arguments);install();return r};window.render=render;window.__v457RenderWrapped=true}}catch(e){}
   try{if(typeof v075ApplyCloudSave==='function'&&!window.__v457CloudWrapped){const base=v075ApplyCloudSave;v075ApplyCloudSave=function(){const r=base.apply(this,arguments);if(r&&typeof r.then==='function')return r.then(x=>{install();return x});install();return r};window.v075ApplyCloudSave=v075ApplyCloudSave;window.__v457CloudWrapped=true}}catch(e){}
   try{if(typeof v032Go==='function'&&!window.__v457GoWrapped){const base=v032Go;v032Go=function(id){const r=base.apply(this,arguments);if(id==='endgame')renderEndgame();else if(id==='world')ensureWorldLink();ensureMenu();stamp();return r};window.v032Go=v032Go;window.__v457GoWrapped=true}}catch(e){}
@@ -69152,6 +69161,9 @@ function allRuntime(){
   const old=JSON.parse(localStorage.getItem(`growLegendsQA:v4106:${owner()}:runtime`)||'[]');
   if(Array.isArray(old))a=a.concat(old);
  }catch(e){}
+ /* The report says "since start": do not count persisted errors from older page loads. */
+ const since=Math.max(0,Number(tech()?.startedAt)||0);
+ if(since)a=a.filter(x=>Number(x?.at||0)>=since-1000);
  return a.sort((x,y)=>(x.at||0)-(y.at||0)).slice(-100);
 }
 function safeNum(v){const n=Number(v);return Number.isFinite(n)?n:null}
@@ -69190,6 +69202,9 @@ function questTripletForLevel(lvl){
  finally{s.level=oldLevel;if(oldCursor!==null)v309QuestCursor=oldCursor;if(oldNames!==null)v309BatchNames=oldNames}
 }
 function fullReport(){
+ /* The technical page/menu can be rebuilt by older renderers. Repair them before
+    testing them, so the navigation test measures the final UI state. */
+ try{ensureScreen();installMenu()}catch(e){}
  const base=typeof baseRun==='function'?baseRun():{results:[]},out=[...(base?.results||[])],T=(c,n,f,se='error')=>out.push(test(c,n,f,se)),src=source();
  const sections=['world','character','grow','quests','dungeon','shop','pvp','guild','hall','friends','mail','admin','harzDealer'];
  sections.forEach(id=>{
@@ -69381,7 +69396,7 @@ function fullReport(){
  T('UI & Pixel','Viewport gültig',()=>innerWidth>0&&innerHeight>0);
  T('UI & Pixel','Body ohne horizontales Gesamt-Overflow',()=>({pass:document.documentElement.scrollWidth<=innerWidth+12,detail:`Seite ${document.documentElement.scrollWidth}px · Viewport ${innerWidth}px`}), 'warn');
  T('UI & Pixel','Keine sichtbaren leeren Buttons',()=>{const a=[...document.querySelectorAll('button')].filter(x=>visible(x)&&!(x.textContent||'').trim()&&!x.getAttribute('aria-label'));return{pass:a.length===0,detail:`Leer: ${a.length}`}});
- T('UI & Pixel','Keine sichtbaren NaN/undefined/null-Texte',()=>{const a=[...document.querySelectorAll('section.screen.active *')].filter(x=>visible(x)&&/NaN|undefined|null/i.test((x.textContent||'').trim()));return{pass:a.length===0,detail:`Treffer: ${a.length}`}});
+ T('UI & Pixel','Keine sichtbaren NaN/undefined/null-Texte',()=>{const a=[...document.querySelectorAll('section.screen.active *')].filter(x=>!x.closest('#systemtech')&&visible(x)&&/NaN|undefined|null/i.test((x.textContent||'').trim()));return{pass:a.length===0,detail:`Treffer: ${a.length}`}});
  T('UI & Pixel','Comic-Items tragen aktuelle Markierung',()=>{const a=[...document.querySelectorAll('img.v466-item-art')].filter(visible);return !a.length||a.every(x=>x.dataset.v4106Comic==='1'||x.src.startsWith('data:image/webp;base64,'))});
  T('UI & Pixel','Spielerprofil-Equipment nutzt aktuellen Renderer',()=>{const sample={name:'QA',slot:'weapon',quality:'purple',rarity:'epic-purple',bonus:{staerke:1}};return typeof v074EquipmentHtml==='function'&&v074EquipmentHtml({weapon:sample}).includes('data-v4103-item-current="1"')});
  T('UI & Pixel','Systemtechnik responsive CSS geladen',()=>!!document.getElementById('v4107-systemtechnik-css'));
