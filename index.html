@@ -68286,3 +68286,115 @@ body.v495-seed-open{overflow:hidden!important}
  ensureUi();setTimeout(()=>{lastReport=runQA();ensureUi();updateBadge()},1800);setInterval(monitorRuntime,2000);[0,100,500,1500,5000,15000,30000,46000,60000].forEach(ms=>setTimeout(()=>{stamp();ensureUi()},ms));window.addEventListener('pageshow',()=>{stamp();ensureUi();setTimeout(monitorRuntime,100)},{passive:true});document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();ensureUi();monitorRuntime()}},{passive:true});
 })();
 </script>
+
+<!-- ===== V4.104 Stable: QA entry always visible in Settings ===== -->
+<style id="v4104-qa-settings-visible-css">
+.app > header .v358-logo::after{content:"V4.104"!important}
+.app > header .v366-ver::after,.app > header .v371-logo em::after,.app > header .v372-logo em::after{content:"V4.104"!important}
+/* Old QA action stays available internally, but the visible entry now lives at the top. */
+#v4102QaButton{display:none!important}
+#v4104QaRow{
+  width:100%;border:0;border-bottom:1px solid #31503a!important;border-radius:0!important;
+  background:linear-gradient(90deg,#142b1a,#0c1710)!important;color:inherit!important;
+  cursor:pointer;text-align:left;font:inherit;
+}
+#v4104QaRow:hover,#v4104QaRow:active{background:linear-gradient(90deg,#1b3a23,#102017)!important}
+#v4104QaRow .v141-setting-icon{border-color:#4f8a5f!important;background:#0e2114!important}
+#v4104QaStatus{
+  display:inline-flex;align-items:center;justify-content:center;min-width:48px;padding:4px 7px;
+  border:1px solid #526158;border-radius:999px;background:#101711;color:#9cac9f;
+  font-size:6px;font-weight:1000;white-space:nowrap
+}
+#v4104QaStatus.ok{border-color:#4e8b58;background:#102114;color:#8ce89a}
+#v4104QaStatus.warn{border-color:#9a7934;background:#241c0d;color:#ffd873}
+#v4104QaStatus.bad{border-color:#9b4040;background:#250d0d;color:#ff8e88}
+/* The settings menu has grown over time. Never let lower controls disappear off-screen. */
+@media(max-width:700px){
+  body > #v141SettingsMenu.open,#v141SettingsMenu.open{
+    max-height:calc(100vh - 16px)!important;
+    overflow-y:auto!important;
+    overscroll-behavior:contain!important;
+    scrollbar-width:thin;
+  }
+}
+</style>
+<script id="v4104-qa-settings-visible">
+(()=>{
+ 'use strict';
+ const VERSION='V4.104 Stable',SHORT='V4.104';
+ let installing=false;
+ function owner(){try{return String((typeof v073User!=='undefined'&&v073User?.id)||s?.__accountOwnerId||s?.social?.playerId||'local')}catch(e){return'local'}}
+ function report(){
+  try{
+   const keys=[`growLegendsQA:v4103:${owner()}`,`growLegendsQA:v4102:${owner()}`];
+   for(const k of keys){const r=JSON.parse(localStorage.getItem(k)||'null');if(r&&typeof r==='object')return r}
+  }catch(e){}
+  return null;
+ }
+ function runtimeIssues(){
+  try{
+   const keys=[`growLegendsQA:v4103:${owner()}:runtime`,`growLegendsQA:v4102:${owner()}:runtime`];
+   for(const k of keys){const a=JSON.parse(localStorage.getItem(k)||'[]');if(Array.isArray(a)&&a.length)return a}
+  }catch(e){}
+  return [];
+ }
+ function paintStatus(){
+  const b=document.getElementById('v4104QaStatus');if(!b)return;
+  const r=report(),logs=runtimeIssues();
+  b.className='';
+  if(logs.some(x=>x?.severity!=='warn')){b.classList.add('bad');b.textContent='FEHLER';return}
+  if(r?.failed){b.classList.add('bad');b.textContent=`${r.failed} FEHLER`;return}
+  if((r?.warnings||0)>0||logs.length){b.classList.add('warn');b.textContent='WARNUNG';return}
+  if(r){b.classList.add('ok');b.textContent='OK';return}
+  b.textContent='PRÜFEN';
+ }
+ function openQA(){
+  try{
+   if(typeof window.v4102OpenQA==='function'){window.v4102OpenQA();return true}
+   if(typeof window.v4102RunQA==='function'){window.v4102RunQA({open:true});return true}
+  }catch(e){console.warn('V4.104 QA open',e)}
+  return false;
+ }
+ function install(){
+  if(installing)return false;installing=true;
+  try{
+   const menu=document.querySelector('#v141SettingsMenu');if(!menu)return false;
+   let row=menu.querySelector('#v4104QaRow');
+   if(!row){
+    row=document.createElement('button');row.type='button';row.id='v4104QaRow';row.className='v141-setting-row';
+    row.innerHTML='<span class="v141-setting-icon">🧪</span><span class="v141-setting-copy"><b>Systemtest</b><span>Automatische Fehlerprüfung aktiv · antippen für den vollständigen Bericht.</span></span><span id="v4104QaStatus">PRÜFEN</span>';
+    const head=menu.querySelector('.v141-settings-head');
+    if(head&&head.nextSibling)menu.insertBefore(row,head.nextSibling);else if(head)head.insertAdjacentElement('afterend',row);else menu.prepend(row);
+   }
+   if(row.dataset.bound!=='1'){
+    row.dataset.bound='1';row.onclick=e=>{e.preventDefault();e.stopPropagation();openQA();setTimeout(paintStatus,80)};
+   }
+   paintStatus();return true;
+  }finally{installing=false}
+ }
+ function stamp(){
+  try{document.title='Grow Legends '+SHORT}catch(e){}
+  try{
+   document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version').forEach(el=>el&&(el.textContent=VERSION));
+   document.querySelectorAll('.v366-ver,.v371-logo em,.v372-logo em').forEach(el=>el&&(el.textContent=SHORT));
+  }catch(e){}
+  install();
+ }
+ try{
+  if(typeof v141BuildSettings==='function'&&!window.__v4104SettingsQa){
+   const base=v141BuildSettings;v141BuildSettings=function(){const r=base.apply(this,arguments);queueMicrotask(install);requestAnimationFrame(install);return r};
+   try{window.v141BuildSettings=v141BuildSettings}catch(e){}window.__v4104SettingsQa=true;
+  }
+ }catch(e){console.warn('V4.104 settings wrapper',e)}
+ document.addEventListener('click',e=>{if(e.target instanceof Element&&e.target.closest('#v141SettingsBtn')){requestAnimationFrame(()=>{install();paintStatus()});setTimeout(()=>{install();paintStatus()},80)}},true);
+ const mo=new MutationObserver(()=>{if(document.querySelector('#v141SettingsMenu')&&!document.querySelector('#v4104QaRow'))install()});
+ try{mo.observe(document.body,{childList:true,subtree:true})}catch(e){}
+ stamp();
+ document.addEventListener('DOMContentLoaded',stamp,{once:true});
+ window.addEventListener('pageshow',stamp,{passive:true});
+ document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();paintStatus()}},{passive:true});
+ [50,250,700,1600,3500,8000,15000,30000,60000].forEach(ms=>setTimeout(()=>{stamp();paintStatus()},ms));
+ setInterval(()=>{install();paintStatus()},5000);
+ window.v4104InstallQaSettings=install;
+})();
+</script>
