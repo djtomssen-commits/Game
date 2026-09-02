@@ -1,6 +1,10 @@
 <!doctype html>
 <html lang="de">
 <head>
+<script id="v4128-version-source">
+window.GROW_LEGENDS_VERSION=Object.freeze({short:'V4.128',label:'V4.128 Stable',number:'4.128'});
+</script>
+
 <script id="v4106-preboot-tech">
 (()=>{
  'use strict';
@@ -119,7 +123,7 @@ window.__V483_POWER_READY__=false;
 .app > header .v366-ver,.app > header .v371-logo em,.app > header .v372-logo em{font-size:0!important;color:transparent!important}
 .app > header .v366-ver::after,.app > header .v371-logo em::after,.app > header .v372-logo em::after{content:"V4.86"!important;font-size:5px!important;color:#63cdd1!important;font-style:normal!important;font-weight:900!important}
 </style>
-<title>Grow Legends V4.86</title>
+<title>Grow Legends V4.128</title>
 <style>
 :root{--bg:#0b100b;--panel:#151d14;--panel2:#1c281a;--panel3:#253423;--line:#354933;--text:#f2f5ed;--muted:#9fad99;--green:#83d65d;--green2:#b2f07e;--gold:#f2c75a;--red:#ee6b68;--blue:#68a7ea;--purple:#ad7bea;--shadow:0 12px 30px rgba(0,0,0,.28)}
 *{box-sizing:border-box}html{background:var(--bg)}body{margin:0;color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:radial-gradient(circle at 50% -10%,#253821 0,#10170f 40%,#090d09 100%);min-height:100vh}button{font:inherit}.app{max-width:820px;margin:auto;min-height:100vh;padding-bottom:88px}
@@ -666,7 +670,7 @@ document.documentElement.classList.remove('v224-app-ready');
 <body>
 <div class="app">
 <header>
-  <div class="brand"><h1>🌿 Grow Legends</h1><span class="version">V4.67 Stable</span><div class="power">Kampfkraft <b id="power">—</b></div></div>
+  <div class="brand"><h1>🌿 Grow Legends</h1><span class="version">V4.128 Stable</span><div class="power">Kampfkraft <b id="power">—</b></div></div>
   <div class="stats resource-stats"><div class="stat">GOLD<b id="gold">—</b></div><div class="stat">SKILL<b id="points">—</b></div><div class="stat">DAMPF<b id="energy">—</b></div><div class="stat harz-stat v277-harz-card v280-harz-card">
   <div class="v280-harz-label">HARZ-TALER</div>
   <b class="v280-harz-value"><span id="topHarz">—</span></b>
@@ -45312,6 +45316,125 @@ function historicalScriptCount(){if(historicCountCache!=null)return historicCoun
 })();
 </script>
 
+\n<!-- ===== V4.128 Stable: instant account-safe start power + one central version owner ===== -->
+<style id="v4128-fast-power-version-css">
+.app > header .v358-logo::after{content:"V4.128"!important}
+.app > header .v366-ver,.app > header .v371-logo em,.app > header .v372-logo em{font-size:0!important;color:transparent!important}
+.app > header .v366-ver::after,.app > header .v371-logo em::after,.app > header .v372-logo em::after{content:"V4.128"!important;font-size:5.5px!important;color:#63cdd1!important;font-style:normal!important;font-weight:1000!important}
+</style>
+<script id="v4128-fast-start-power-central-version">
+(()=>{
+ 'use strict';
+ const V=window.GROW_LEGENDS_VERSION||{short:'V4.128',label:'V4.128 Stable'};
+ let versionQueued=false;
+
+ function applyVersion(){
+  versionQueued=false;
+  try{if(document.title!=='Grow Legends '+V.short)document.title='Grow Legends '+V.short}catch(e){}
+  try{
+   document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version')
+    .forEach(el=>{if(el&&el.textContent!==V.label)el.textContent=V.label});
+   document.querySelectorAll('.v366-ver,.v371-logo em,.v372-logo em,.v4107-version')
+    .forEach(el=>{if(el&&el.textContent!==V.short)el.textContent=V.short});
+  }catch(e){}
+ }
+ window.v4128ApplyVersion=applyVersion;
+ function queueVersion(){if(versionQueued)return;versionQueued=true;queueMicrotask(applyVersion)}
+
+ function uidOf(user){
+  try{
+   const u=user||(typeof v073User!=='undefined'?v073User:null);
+   return u&&u.id&&!u.is_anonymous?String(u.id):'';
+  }catch(e){return''}
+ }
+ function stateOwned(uid){
+  if(!uid)return false;
+  try{
+   const owner=String(s?.__accountOwnerId||'');
+   const social=String(s?.social?.playerId||'');
+   return owner===uid && (!social||social===uid);
+  }catch(e){return false}
+ }
+ function verified(uid){
+  try{return !!(uid&&typeof window.v452AccountVerified==='function'&&window.v452AccountVerified(uid))}catch(e){return false}
+ }
+ function stablePower(){
+  try{
+   const fn=window.v4125StableCombatPower;
+   const n=typeof fn==='function'?Number(fn()):Number(typeof combatPower==='function'?combatPower():0);
+   return Math.max(0,Math.round(Number.isFinite(n)?n:0));
+  }catch(e){return 0}
+ }
+ function paintPower(cp){
+  const value=String(Math.max(0,Math.round(Number(cp)||0)));
+  try{
+   ['#power','#charPower','#v358Power','#v110Cp'].forEach(sel=>{const el=document.querySelector(sel);if(el&&el.textContent!==value)el.textContent=value});
+   document.querySelectorAll('.v349-power b,.v366-power b,.v251-detail-bottom .v251-mini-stat:first-child b')
+    .forEach(el=>{if(el.textContent!==value)el.textContent=value});
+  }catch(e){}
+ }
+ function releaseOwnedPreview(explicitUid=''){
+  const uid=String(explicitUid||uidOf()||'');
+  let safe=false;
+  if(uid)safe=verified(uid)||stateOwned(uid);
+  else{
+   try{safe=window.__V200_AUTH_READY__===true && !(typeof v073User!=='undefined'&&v073User&&!v073User.is_anonymous)}catch(e){safe=false}
+  }
+  if(!safe)return false;
+
+  /* V4.86 intentionally hid power until cloud verification. If the in-memory save is
+     explicitly stamped for THIS authenticated uid, it is safe to show that local value
+     immediately. Cloud resolution may still replace it later and the normal painters then
+     update the number, but the player no longer stares at an ellipsis for seconds. */
+  try{window.__V483_POWER_READY__=true;document.documentElement.classList.add('v483-power-ready')}catch(e){}
+  const cp=stablePower();
+  paintPower(cp);
+  try{if(uid)localStorage.setItem('growLegendsPowerPreviewV4128:'+uid,JSON.stringify({power:cp,at:Date.now()}))}catch(e){}
+  return true;
+ }
+ window.v4128ReleaseOwnedPower=releaseOwnedPreview;
+
+ /* Auth is the earliest reliable moment we know which account is being opened. Preview
+    before the cloud request only when the currently loaded state already carries that uid. */
+ try{
+  if(typeof v200FinalizeUser==='function'&&!window.__v4128FinalizePower){
+   const base=v200FinalizeUser;
+   const wrapped=function(user){
+    const uid=uidOf(user);
+    try{releaseOwnedPreview(uid)}catch(e){}
+    const r=base.apply(this,arguments);
+    if(r&&typeof r.then==='function')return r.finally(()=>{try{releaseOwnedPreview(uid);applyVersion()}catch(e){}});
+    try{releaseOwnedPreview(uid);applyVersion()}catch(e){}
+    return r;
+   };
+   wrapped.__v4128FastPower=true;
+   v200FinalizeUser=wrapped;try{window.v200FinalizeUser=wrapped}catch(e){}
+   window.__v4128FinalizePower=true;
+  }
+ }catch(e){}
+
+ function kick(){applyVersion();releaseOwnedPreview()}
+ applyVersion();releaseOwnedPreview();
+ requestAnimationFrame(kick);
+ document.addEventListener('DOMContentLoaded',kick,{once:true});
+ window.addEventListener('pageshow',kick,{passive:true});
+ document.addEventListener('visibilitychange',()=>{if(!document.hidden)kick()},{passive:true});
+ [35,90,180,360,700,1200].forEach(ms=>setTimeout(kick,ms));
+
+ /* Old patches can still rewrite the visible version after their own timeout. Watch only
+    the header/title, not the whole app, so this does not add a heavy global observer. */
+ try{
+  const obs=new MutationObserver(queueVersion);
+  const h=document.querySelector('.app > header');if(h)obs.observe(h,{subtree:true,childList:true,characterData:true});
+  const t=document.querySelector('title');if(t)obs.observe(t,{childList:true,characterData:true});
+  window.__V4128_VERSION_OBSERVER__=obs;
+ }catch(e){}
+
+ window.v4128Diagnostics=()=>({version:V.short,powerReady:window.__V483_POWER_READY__===true,uid:uidOf(),stateOwned:stateOwned(uidOf()),verified:verified(uidOf()),power:stablePower()});
+})();
+</script>
+<!-- V4.128: startup combat power may use the explicitly account-owned local state immediately; cloud verification remains authoritative for data writes. Version display/reporting is centrally owned by GROW_LEGENDS_VERSION. -->
+
 </body>
 </html>
 <style id="v268-inventory-multisell-css">
@@ -53951,7 +54074,7 @@ html,body{
       bar.className='v366-topbar';
       bar.innerHTML=`
         <button class="v366-menu" type="button">☰</button>
-        <div class="v366-logo"><strong>🌿 GROW</strong><span>LEGENDS</span><i class="v366-ver">V4.21</i></div>
+        <div class="v366-logo"><strong>🌿 GROW</strong><span>LEGENDS</span><i class="v366-ver">${window.GROW_LEGENDS_VERSION?.short||'V4.128'}</i></div>
         <div class="v366-res"><span class="ico">🪙</span><div><small>Gold</small><span class="val" id="v366Gold"></span></div><button class="v366-plus" data-plus="gold">+</button></div>
         <div class="v366-res"><span class="ico">💎</span><div><small>Harz</small><span class="val" id="v366Harz"></span></div><button class="v366-plus" data-plus="harz">+</button></div>
         <div class="v366-res"><span class="ico">💨</span><div><small>Dampf</small><span class="val" id="v366Dampf"></span></div><button class="v366-plus" data-plus="dampf">+</button></div>
@@ -69084,7 +69207,7 @@ body.v495-seed-open{overflow:hidden!important}
 <script id="v4107-systemtechnik">
 (()=>{
 'use strict';
-const VERSION='V4.125 Stable',SHORT='V4.125',STORE='growLegendsQA:v4107:';
+const VERSION=window.GROW_LEGENDS_VERSION?.label||'V4.128 Stable',SHORT=window.GROW_LEGENDS_VERSION?.short||'V4.128',STORE='growLegendsQA:v4107:';
 const baseRun=window.v4106RunQA||window.v4102RunQA;
 const oldOpen=window.v4102OpenQA;
 let last=null,selectedGroup='',filter='problems',storageEstimate=null,lastNav='',renderTimer=0,historicCountCache=null;
@@ -69530,7 +69653,7 @@ function scheduleRender(){if(renderTimer)return;renderTimer=setTimeout(()=>{rend
 window.addEventListener('error',e=>pushErr('JS_ERROR',`${e.message||'Fehler'}${e.filename?` · ${String(e.filename).split('/').pop()}:${e.lineno||0}`:''}`,'error'));
 window.addEventListener('unhandledrejection',e=>pushErr('UNHANDLED_REJECTION',String(e.reason?.message||e.reason||'Promise abgelehnt'),'error'));
 /* Network timing without changing request semantics. */
-try{if(typeof window.fetch==='function'&&!window.fetch.__v4107){const nf=window.fetch.bind(window),w=async function(){const started=performance.now();let ok=false,status=0,url='',retried=false,expectedRpcReject=false;const input=arguments[0],init=arguments[1]||{};try{url=String(input?.url||input||'').slice(0,180);const method=String(init?.method||input?.method||'GET').toUpperCase();const canRetry=method==='GET'&&/\/rest\/v1\/player_saves(?:\?|$)/.test(url);let r;try{r=await nf(...arguments)}catch(first){if(!canRetry)throw first;retried=true;await new Promise(resolve=>setTimeout(resolve,350));r=await nf(...arguments)}ok=r.ok;status=r.status;if(status===400&&/\/rest\/v1\/rpc\/v254_buy_guild_upgrade(?:\?|$)/.test(url)){try{const body=await r.clone().text();if(/Nicht genug Gilden-Buds/i.test(body))expectedRpcReject=true}catch(_){}}if(retried){network.retries=(network.retries||0)+1}return r}catch(e){network.errors++;pushErr('NETWORK_ERROR',`${url} · ${e.message||e}`,'warn');throw e}finally{const ms=performance.now()-started;network.calls.push({at:Date.now(),url,ms,status,ok,retried});while(network.calls.length>80)network.calls.shift();if(ms>2500){network.slow++;pushErr('SLOW_NETWORK',`${Math.round(ms)} ms · ${url}`,'warn')}if(status>=400&&!expectedRpcReject){network.errors++;pushErr('HTTP_'+status,url,'warn')}else if(status>=400&&expectedRpcReject){pushErr('RPC_REJECTED',url,'warn')}}};w.__v4107=true;w.__v4123PlayerSaveGetRetry=true;window.fetch=w}}catch(e){}
+try{if(typeof window.fetch==='function'&&!window.fetch.__v4107){const nf=window.fetch.bind(window),w=async function(){const started=performance.now();let ok=false,status=0,url='',retried=false,expectedRpcReject=false;const input=arguments[0],init=arguments[1]||{};try{url=String(input?.url||input||'').slice(0,180);const method=String(init?.method||input?.method||'GET').toUpperCase();const canRetry=method==='GET'&&/\/rest\/v1\/player_saves(?:\?|$)/.test(url);let r;try{r=await nf(...arguments)}catch(first){if(!canRetry)throw first;retried=true;await new Promise(resolve=>setTimeout(resolve,350));r=await nf(...arguments)}ok=r.ok;status=r.status;if(status===400&&/\/rest\/v1\/rpc\/v254_(?:buy_guild_upgrade|set_guild_signup)(?:\?|$)/.test(url)){try{const body=await r.clone().text();if(/Nicht genug Gilden-Buds|Gildenkrieg-Anmeldung.*geschlossen/i.test(body))expectedRpcReject=true}catch(_){}}if(retried){network.retries=(network.retries||0)+1}return r}catch(e){network.errors++;pushErr('NETWORK_ERROR',`${url} · ${e.message||e}`,'warn');throw e}finally{const ms=performance.now()-started;network.calls.push({at:Date.now(),url,ms,status,ok,retried});while(network.calls.length>80)network.calls.shift();if(ms>2500){network.slow++;pushErr('SLOW_NETWORK',`${Math.round(ms)} ms · ${url}`,'warn')}if(status>=400&&!expectedRpcReject){network.errors++;pushErr('HTTP_'+status,url,'warn')}else if(status>=400&&expectedRpcReject){pushErr('RPC_REJECTED',url,'warn')}}};w.__v4107=true;w.__v4123PlayerSaveGetRetry=true;window.fetch=w}}catch(e){}
 /* Cache Storage estimate where supported. */
 try{navigator.storage?.estimate?.().then(x=>storageEstimate=x).catch(()=>{})}catch(e){}
 /* Make Systemtechnik the canonical QA destination. */
@@ -70003,7 +70126,7 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();i
 <script id="v4116-systemtech-engine-fix">
 (()=>{
  'use strict';
- const VERSION='V4.125 Stable',SHORT='V4.125';
+ const VERSION=window.GROW_LEGENDS_VERSION?.label||'V4.128 Stable',SHORT=window.GROW_LEGENDS_VERSION?.short||'V4.128';
  function stamp(){
   try{document.title='Grow Legends '+SHORT}catch(e){}
   try{
@@ -70037,7 +70160,7 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();i
 <script id="v4118-care-guildboss-fix">
 (()=>{
  'use strict';
- const VERSION='V4.125 Stable',SHORT='V4.125';
+ const VERSION=window.GROW_LEGENDS_VERSION?.label||'V4.128 Stable',SHORT=window.GROW_LEGENDS_VERSION?.short||'V4.128';
  function stamp(){try{document.title='Grow Legends '+SHORT;document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version').forEach(x=>x&&(x.textContent=VERSION));document.querySelectorAll('.v366-ver,.v371-logo em,.v372-logo em,.v4107-version').forEach(x=>x&&(x.textContent=SHORT))}catch(e){}}
  function refreshBoss(){try{if(document.querySelector('#guild')?.classList.contains('active')){v255RenderBoss?.()}}catch(e){}}
  function qaWrap(){
@@ -70543,7 +70666,7 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();i
 <script id="v4123-performance-cleanup">
 (()=>{
  'use strict';
- const VERSION='V4.125 Stable',SHORT='V4.125';
+ const VERSION=window.GROW_LEGENDS_VERSION?.label||'V4.128 Stable',SHORT=window.GROW_LEGENDS_VERSION?.short||'V4.128';
  function stamp(){
   try{document.title='Grow Legends '+SHORT}catch(e){}
   try{document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version').forEach(x=>x&&(x.textContent=VERSION));document.querySelectorAll('.v366-ver,.v371-logo em,.v372-logo em,.v4107-version').forEach(x=>x&&(x.textContent=SHORT))}catch(e){}
@@ -70574,7 +70697,7 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();i
 <script id="v4124-social-quest-fix">
 (()=>{
  'use strict';
- const VERSION='V4.125 Stable',SHORT='V4.125';
+ const VERSION=window.GROW_LEGENDS_VERSION?.label||'V4.128 Stable',SHORT=window.GROW_LEGENDS_VERSION?.short||'V4.128';
  const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
  const PROFILE_SELECT='id,character_name,class_id,class_name,level,bosses,gear_score,dungeons,combat_power,equipment,dungeon_progress,worldboss_attempts,worldboss_wins,pvp_buds,pvp_wins,pvp_losses,pvp_fights,updated_at';
 
@@ -70750,7 +70873,7 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();i
 <script id="v4126-power-rpc-diagnostics">
 (()=>{
  'use strict';
- const VERSION='V4.126 Stable',SHORT='V4.126';
+ const VERSION=window.GROW_LEGENDS_VERSION?.label||'V4.128 Stable',SHORT=window.GROW_LEGENDS_VERSION?.short||'V4.128';
  let calculating=false;
 
  /* Public/character Kampfkraft must never depend on which screen is open.
@@ -70865,7 +70988,7 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();i
 <script id="v4127-quest-skip-stable">
 (()=>{
  'use strict';
- const VERSION='V4.127 Stable',SHORT='V4.127';
+ const VERSION=window.GROW_LEGENDS_VERSION?.label||'V4.128 Stable',SHORT=window.GROW_LEGENDS_VERSION?.short||'V4.128';
  let scheduled=false;
 
  function seedCount(){
