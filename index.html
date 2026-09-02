@@ -66591,12 +66591,12 @@ html.v481-hidden *,html.v481-hidden *::before,html.v481-hidden *::after{animatio
 })();
 </script>
 
-<!-- ===== V4.88 Stable: HARZSCHMIEDE ===== -->
+<!-- ===== V4.89 Stable: HARZSCHMIEDE ===== -->
 <style id="v488-harzschmiede-css">
-/* Grow Legends V4.88 – comic Harzschmiede, integrated into the existing game. */
-.app > header .v358-logo::after{content:"V4.88"!important}
+/* Grow Legends V4.89 – comic Harzschmiede, integrated into the existing game. */
+.app > header .v358-logo::after{content:"V4.89"!important}
 #v372TopbarShell .v372-logo em::after,
-.app > header .v366-ver::after,.app > header .v371-logo em::after,.app > header .v372-logo em::after{content:"V4.88"!important}
+.app > header .v366-ver::after,.app > header .v371-logo em::after,.app > header .v372-logo em::after{content:"V4.89"!important}
 
 #forge.screen{padding:10px 10px 88px!important;max-width:1180px;margin:0 auto}
 .v488-shell{--ink:#17130b;--panel:#182318;--panel2:#0e160f;--green:#7bc84d;--gold:#e9b94f;--line:#4d633d;position:relative;overflow:hidden;border:1px solid #40543a;border-radius:22px;background:linear-gradient(180deg,#152018,#09110c 76%);box-shadow:0 18px 50px #0008,inset 0 0 45px #0007;color:#ecf3e8}
@@ -66667,7 +66667,7 @@ html.v481-hidden *,html.v481-hidden *::before,html.v481-hidden *::after{animatio
 </style>
 <script id="v488-harzschmiede-core">
 (function(){
-  const VERSION='V4.88 Stable', SHORT='V4.88';
+  const VERSION='V4.89 Stable', SHORT='V4.89';
   const selected=new Set();
   let listScroll=0,lastCraft=null,busy=false;
   const YIELD={gray:1,green:3,blue:7,purple:15,orange:30};
@@ -66689,6 +66689,15 @@ html.v481-hidden *,html.v481-hidden *::before,html.v481-hidden *::after{animatio
   const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const fmt=v=>Math.max(0,Math.round(Number(v)||0)).toLocaleString('de-DE');
   const forged=it=>!!(it&&it.v488Prismatic===true);
+  /* Edelsteine und Verzauberungsrollen sind reine Veredelungsmaterialien und nie Schmiede-Schrott.
+     Der Check ist absichtlich redundant, damit auch ältere/verschobene Saves geschützt bleiben. */
+  function forgeMaterialExcluded(it){
+    if(!it||typeof it!=='object')return false;
+    const type=String(it.type||'').toLowerCase();
+    const baseId=String(it.baseId||'').toLowerCase();
+    const id=String(it.id||it.uid||'').toLowerCase();
+    return type==='gem'||type==='scroll'||/^gem[_-]/.test(baseId)||/^scroll[_-]/.test(baseId)||(!it.slot&&(/^gem[_-]/.test(id)||/^scroll[_-]/.test(id)));
+  }
   function state(){
     s.v488Forge=(s.v488Forge&&typeof s.v488Forge==='object')?s.v488Forge:{};
     s.v488Forge.fragments=Math.max(0,Math.floor(Number(s.v488Forge.fragments)||0));
@@ -66707,7 +66716,7 @@ html.v481-hidden *,html.v481-hidden *::before,html.v481-hidden *::after{animatio
     return'gray';
   }
   function yieldOf(it){
-    if(!it||forged(it)||q(it)==='cyan')return 0;
+    if(!it||forgeMaterialExcluded(it)||forged(it)||q(it)==='cyan')return 0;
     return YIELD[q(it)]||0;
   }
   function level(){return Math.max(1,Math.min(300,Math.floor(Number(s?.level)||1)))}
@@ -66747,9 +66756,9 @@ html.v481-hidden *,html.v481-hidden *::before,html.v481-hidden *::after{animatio
     const nav=home.querySelector('.v366-dock');if(nav)nav.insertAdjacentElement('beforebegin',b);else home.appendChild(b);
   }
   function renderItems(){
-    const inv=Array.isArray(s.inventory)?s.inventory:[];
-    if(!inv.length)return '<div class="empty" style="grid-column:1/-1;font-size:8px;padding:16px">Dein Inventar ist leer.</div>';
-    return inv.map((it,i)=>{
+    const inv=(Array.isArray(s.inventory)?s.inventory:[]).map((it,i)=>({it,i})).filter(x=>!forgeMaterialExcluded(x.it));
+    if(!inv.length)return '<div class="empty" style="grid-column:1/-1;font-size:8px;padding:16px">Keine zerlegbare Ausrüstung im Inventar.</div>';
+    return inv.map(({it,i})=>{
       const key=ensureItemId(it,i),qq=q(it),y=yieldOf(it),blocked=!y,sel=selected.has(key),reason=forged(it)?'Geschmiedet':qq==='cyan'?'Mystisch geschützt':'';
       return `<button type="button" class="v488-item ${qq} ${blocked?'blocked':''} ${sel?'selected':''}" data-v488-key="${esc(key)}" ${blocked?'disabled':''}><span class="ico">${esc(it?.icon||SLOT_META[it?.slot]?.icon||'🎁')}</span><div class="nm">${esc(String(it?.name||'Item').replace(/^\w+\s*:\s*/,'').replace(/\s*\[Lv\.\d+\]\s*$/i,''))}</div><div class="yield">${blocked?esc(reason):`+${y} Frag.`}</div>${blocked?'<span class="lock">🔒</span>':''}</button>`;
     }).join('');
@@ -66760,7 +66769,7 @@ html.v481-hidden *,html.v481-hidden *::before,html.v481-hidden *::after{animatio
       <div class="v488-titlebar"><div><h2>🌿 <span>Harz</span>schmiede</h2><p>ZERLEGEN · FRAGMENTE SAMMELN · PRISMATISCHE AUSRÜSTUNG SCHMIEDEN</p></div><div class="v488-frag-pill"><span class="v488-frag-gem">💠</span><span><small>Samenfragmente</small><b>${fmt(z.fragments)}</b></span></div></div>
       <div class="v488-stage" id="v488Stage"><div class="v488-chain c1"></div><div class="v488-chain c2"></div><div class="v488-banner">DER AMBOSS DER EWIGEN BLÜTE</div><div class="v488-fire"></div><div class="v488-hammer">🔨</div><div class="v488-anvil"></div><div class="v488-stage-label"><b>PRISMATISCH</b><span>Stärker als legendär.<br>Ohne mystischen Spezialeffekt.</span></div></div>
       <div class="v488-workgrid">
-        <section class="v488-panel"><div class="v488-panel-head"><h3>🔨 Zerlegen</h3><small>Mehrfachauswahl</small></div><div class="v488-inventory" id="v488ForgeInventory">${renderItems()}</div><div class="v488-selection"><span>${rows.length} ausgewählt</span><b>+${fmt(sum)} Samenfragmente</b></div><button type="button" class="v488-btn" id="v488Dismantle" ${rows.length&&!busy?'':'disabled'}>🔨 ${rows.length?rows.length+' Item'+(rows.length===1?'':'s')+' zerlegen':'Items auswählen'}</button><div class="v488-hint">Normal +1 · Gewöhnlich +3 · Rare +7 · Episch +15 · Legendär +30. Mystische und prismatische Gegenstände können nicht zerlegt werden.</div></section>
+        <section class="v488-panel"><div class="v488-panel-head"><h3>🔨 Zerlegen</h3><small>Mehrfachauswahl</small></div><div class="v488-inventory" id="v488ForgeInventory">${renderItems()}</div><div class="v488-selection"><span>${rows.length} ausgewählt</span><b>+${fmt(sum)} Samenfragmente</b></div><button type="button" class="v488-btn" id="v488Dismantle" ${rows.length&&!busy?'':'disabled'}>🔨 ${rows.length?rows.length+' Item'+(rows.length===1?'':'s')+' zerlegen':'Items auswählen'}</button><div class="v488-hint">Normal +1 · Gewöhnlich +3 · Rare +7 · Episch +15 · Legendär +30. Edelsteine, Verzauberungsrollen, mystische und prismatische Gegenstände sind vom Zerlegen ausgeschlossen.</div></section>
         <section class="v488-panel"><div class="v488-panel-head"><h3>🌈 Prismatisch schmieden</h3><small>zufälliger Slot · deine Klasse</small></div><div class="v488-recipe"><div class="v488-recipe-title">Rezept · Stufe ${level()}</div><div class="v488-costs"><div class="v488-cost ${z.fragments>=c.fragments?'ok':'bad'}"><div class="ico">💠</div><b>Samenfragmente</b><span>${fmt(z.fragments)} / ${fmt(c.fragments)}</span></div><div class="v488-plus">+</div><div class="v488-cost ${(Number(s.gold)||0)>=c.gold?'ok':'bad'}"><div class="ico">🪙</div><b>Gold</b><span>${fmt(s.gold)} / ${fmt(c.gold)}</span></div></div><div class="v488-equals">↓ wird zu ↓</div><div class="v488-prism-preview"><div><div class="big">🌈⚔️</div><b>1 zufälliges prismatisches Item</b><small>Aktuelles Level · passende Klasse · +8 % Schmiede-Essenz auf seine Grundwerte im Kampf</small></div></div><button type="button" class="v488-btn v488-craft-btn" id="v488Craft" ${can?'':'disabled'}>🌈 PRISMATISCHES ITEM SCHMIEDEN</button>${lastCraft?`<div class="v488-last"><b>✨ Geschmiedet:</b><br>${esc(lastCraft.icon)} ${esc(lastCraft.name)}<br>${esc(typeof itemBonus==='function'?itemBonus(lastCraft):'')}</div>`:''}<div class="v488-rules"><div class="v488-rule"><strong>🔒 Gebunden</strong>0 Gold Verkaufswert</div><div class="v488-rule"><strong>🛑 Nicht zerlegbar</strong>Keine Endlosschleife</div><div class="v488-rule"><strong>🌈 Über Legendär</strong>Prisma-Essenz +8 %</div><div class="v488-rule"><strong>💠 Unter Mystisch</strong>Kein Weltboss-Spezialeffekt</div></div></div></section>
       </div>
       <div class="v488-legend"><div class="v488-leg"><i style="--c:#9aa29e"></i><span>Normal</span></div><div class="v488-leg"><i style="--c:#66d24c"></i><span>Gewöhnlich</span></div><div class="v488-leg"><i style="--c:#3f9df4"></i><span>Rare</span></div><div class="v488-leg"><i style="--c:#ba65ef"></i><span>Episch</span></div><div class="v488-leg"><i style="--c:#f19a34"></i><span>Legendär</span></div><div class="v488-leg prism"><i style="--c:#e77bff"></i><span>Prismatisch</span></div></div>
