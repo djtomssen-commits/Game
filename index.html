@@ -45609,10 +45609,9 @@ function v318ResolveEnemyAttack(st,ctx){
 /* Additional HP milestones that are discrete abilities, not normal nodes. */
 const v318BaseMaxHp=maxHp;
 maxHp=function(){
- let hp=Number(v318BaseMaxHp())||1;
- if(s.playerClass==='grower'&&v318Has('tank',1))hp*=1.10;
- if(s.playerClass==='grower'&&v318Has('tank',5))hp*=1.15;
- return Math.round(hp);
+ /* V4.87: Tank-Meilensteine +10 % / +15 % LP sind bereits in
+    v319ExactTalentStats().hpPct enthalten. Hier nicht erneut multiplizieren. */
+ return Math.round(Number(v318BaseMaxHp())||1);
 };
 
 /* Five new Illegales-Buch achievements around the talent tree. */
