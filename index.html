@@ -69759,3 +69759,114 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();i
 })();
 </script>
 
+
+
+<!-- ===== V4.115 Stable: authoritative comic item artwork owner ===== -->
+<style id="v4115-authoritative-comic-items-css">
+/* One final artwork owner. Historical renderers may remain for compatibility,
+   but every actual item image is now fed from the approved V4.106 comic set. */
+.v466-item-art{object-fit:contain!important;display:block!important}
+</style>
+<script id="v4115-authoritative-comic-items">
+(()=>{
+ 'use strict';
+ const VERSION='V4.115 Stable',SHORT='V4.115';
+ const A=window.v4106ComicAssets||{};
+ const bootsFallback=typeof window.v4111ComicItemArtUri==='function'?window.v4111ComicItemArtUri:null;
+ const original4106=typeof window.v4106ComicItemArtUri==='function'?window.v4106ComicItemArtUri:null;
+ const text=it=>String(it?.name||'').toLowerCase();
+ const prism=it=>!!(it?.v488Prismatic||String(it?.quality||'').toLowerCase()==='prismatic'||/prism/i.test(String(it?.rarity||'')));
+ const mystic=it=>/cyan|myst|myth/i.test(String(it?.quality||'')+' '+String(it?.rarity||''));
+ function cls(it){
+  const cid=String(it?.classId||it?.class||'').toLowerCase();
+  if(cid==='grower')return'warrior';
+  if(cid==='bruiser')return'mage';
+  if(cid==='scout')return'scout';
+  const b=it?.bonus||{};
+  if(Number(b.intelligenz)>0||String(it?.stat||'').toLowerCase()==='intelligenz')return'mage';
+  if(Number(b.geschick)>0||String(it?.stat||'').toLowerCase()==='geschick')return'scout';
+  if(Number(b.staerke)>0||String(it?.stat||'').toLowerCase()==='staerke')return'warrior';
+  return'generic';
+ }
+ function weapon(it){
+  if(prism(it)&&A.weapon_prismatic)return A.weapon_prismatic;
+  if(mystic(it)&&A.weapon_cyan)return A.weapon_cyan;
+  const n=text(it),c=cls(it),ic=String(it?.icon||'');
+  if(c==='mage')return A.weapon_staff||A.weapon_sword||'';
+  if(c==='scout')return A.weapon_blade||A.weapon_sword||'';
+  if(/handschuh|faust|klaue/.test(n)||ic==='🧤')return A.weapon_glove||A.weapon_sickle||'';
+  if(/stab|zepter|keule|hammer|kolben|bong/.test(n)||/[🪄🔮🔨]/u.test(ic))return A.weapon_staff||A.weapon_sword||'';
+  if(/axt|sichel|schere|spalter/.test(n)||/[🪓✂️]/u.test(ic))return A.weapon_sickle||A.weapon_sword||'';
+  if(/bogen|pfeil|klinge|dolch/.test(n)||ic==='🏹')return A.weapon_blade||A.weapon_sword||'';
+  return c==='warrior'?(A.weapon_sickle||A.weapon_sword||''):(A.weapon_sword||'');
+ }
+ function comic(it){
+  if(!it)return'';
+  if(it.type==='gem')return A.gem||'';
+  if(it.type==='scroll')return A.scroll||'';
+  const slot=String(it.slot||'').toLowerCase();
+  if(slot==='weapon')return weapon(it);
+  if(slot==='head')return A.head||'';
+  if(slot==='body'||slot==='chest')return A.body||'';
+  if(slot==='ring'||slot==='amulet')return A.amulet||'';
+  if(slot==='set'||it.type==='set')return A.set||'';
+  if(slot==='boots'||slot==='feet'){
+   try{return bootsFallback?bootsFallback(it):(original4106?original4106(it):'')}catch(e){return''}
+  }
+  try{return original4106?original4106(it):(bootsFallback?bootsFallback(it):'')}catch(e){return''}
+ }
+ /* Critical fix: all historical item systems now point at ONE resolver.
+    This stops v466, v4106, v4108, v4111 and v4112 from repainting each other. */
+ window.v4115ComicItemArtUri=comic;
+ window.v466ItemArtUri=comic;
+ window.v4106ComicItemArtUri=comic;
+ window.v4111ComicItemArtUri=comic;
+
+ function refresh(){
+  try{window.v4103DecorateItemSurfaces?.()}catch(e){}
+  try{window.v4108DecorateComicItems?.()}catch(e){}
+  try{window.v4112RefreshAllItemArt?.()}catch(e){}
+  try{window.v4111RefreshComicItems?.()}catch(e){}
+  try{
+   document.querySelectorAll('img.v466-item-art').forEach(img=>{
+    const card=img.closest('.v4103-item-card,.inv-item,.shop-item,.slot,.v210-profile-item,.v240-loot-item,[data-v488-key]');
+    if(!card)return;
+    img.dataset.v4115Comic='1';
+   });
+  }catch(e){}
+ }
+ function qa(){
+  const same=window.v466ItemArtUri===comic&&window.v4106ComicItemArtUri===comic&&window.v4111ComicItemArtUri===comic;
+  const samples=[
+   {name:'QA Krieger',slot:'weapon',classId:'grower',quality:'blue',bonus:{staerke:1}},
+   {name:'QA Magier',slot:'weapon',classId:'bruiser',quality:'purple',bonus:{intelligenz:1}},
+   {name:'QA Schütze',slot:'weapon',classId:'scout',quality:'green',bonus:{geschick:1}},
+   {name:'QA Helm',slot:'head',classId:'grower',quality:'orange'},
+   {name:'QA Rüstung',slot:'body',classId:'bruiser',quality:'blue'},
+   {name:'QA Amulett',slot:'amulet',quality:'purple'},
+   {name:'QA Stein',type:'gem',quality:'green'},
+   {name:'QA Rolle',type:'scroll',quality:'blue'}
+  ];
+  const resolved=samples.map(x=>comic(x));
+  return {same,resolved:resolved.every(Boolean),webp:resolved.every((u,i)=>i<3?u.startsWith('data:image/webp;base64,'):!!u)};
+ }
+ window.v4115ItemArtQA=qa;
+ function addQa(){
+  try{
+   const runner=window.v4107RunQA||window.v4102RunQA;if(typeof runner!=='function'||window.__v4115QaWrapped)return;
+   const wrapped=function(){const r=runner.apply(this,arguments);if(!r||!Array.isArray(r.results))return r;const q=qa();const rows=[
+    {category:'Item-Art final',name:'Alle historischen Item-Resolver zeigen auf dieselbe Comic-Quelle',pass:q.same,severity:'error',detail:q.same?'V4.115 ist alleiniger Artwork-Owner':'Ein alter Renderer besitzt noch eine andere Quelle'},
+    {category:'Item-Art final',name:'Krieger/Magier/Schütze + Ausrüstung/Materialien lösen Comic-Art auf',pass:q.resolved,severity:'error',detail:q.resolved?'Alle Testitems liefern Artwork':'Mindestens ein Itemtyp ohne Artwork'},
+    {category:'Item-Art final',name:'V4.106 Comic-WebP-Set ist die aktive Hauptquelle',pass:q.webp,severity:'error',detail:q.webp?'Freigegebenes Comic-Set aktiv':'Artwork fällt auf eine falsche Quelle zurück'}
+   ];r.results.push(...rows);r.total=r.results.length;r.passed=r.results.filter(x=>x.pass).length;r.failed=r.results.filter(x=>!x.pass&&x.severity!=='warn').length;r.warnings=r.results.filter(x=>!x.pass&&x.severity==='warn').length;r.ok=r.failed===0;return r};
+   window.v4107RunQA=wrapped;if(window.v4102RunQA===runner)window.v4102RunQA=wrapped;window.__v4115QaWrapped=true;
+  }catch(e){}
+ }
+ function stamp(){try{document.title='Grow Legends '+SHORT;document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version').forEach(x=>x&&(x.textContent=VERSION));document.querySelectorAll('.v366-ver,.v371-logo em,.v372-logo em,.v4107-version').forEach(x=>x&&(x.textContent=SHORT))}catch(e){}}
+ refresh();addQa();stamp();
+ /* Existing observers and render hooks do the ongoing work now that their resolver aliases agree. */
+ [80,300,900,2200,5200,12500].forEach(ms=>setTimeout(()=>{refresh();addQa();stamp()},ms));
+ window.addEventListener('pageshow',()=>{refresh();addQa();stamp()},{passive:true});
+ document.addEventListener('visibilitychange',()=>{if(!document.hidden){refresh();stamp()}},{passive:true});
+})();
+</script>
