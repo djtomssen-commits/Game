@@ -43913,7 +43913,10 @@ const v306Line=document.querySelector('#v141VersionLine');if(v306Line)v306Line.t
 (function(){
   const VERSION='V4.29 Stable';
   function livePower(){
-    try{return Math.max(0,Math.round(Number(combatPower())||0))}catch(e){return 0}
+    try{
+      const fn=window.v4125StableCombatPower;
+      return Math.max(0,Math.round(Number(typeof fn==='function'?fn():combatPower())||0))
+    }catch(e){return 0}
   }
   function wbState(){
     try{
@@ -48097,7 +48100,10 @@ setTimeout(()=>{try{v322InstallMenuEntry();v322InstallHarzPlus()}catch(e){consol
 <script id="v326-hall-profile-canonical">
 (function(){
   function v326CurrentPower(){
-    try{return Math.max(0,Math.round(Number(combatPower())||0))}catch(e){return 0}
+    try{
+      const fn=window.v4125StableCombatPower;
+      return Math.max(0,Math.round(Number(typeof fn==='function'?fn():combatPower())||0))
+    }catch(e){return 0}
   }
   function v326Wb(){
     try{
@@ -68232,6 +68238,8 @@ html.v481-hidden *,html.v481-hidden *::before,html.v481-hidden *::after{animatio
  function v494Visible(el){if(!el)return false;try{return getComputedStyle(el).display!=='none'&&getComputedStyle(el).visibility!=='hidden'}catch(e){return el.style?.display!=='none'}}
  function v494GrowModeFactor(){
   try{
+   const forced=Number(window.__v494ModeFactorOverride);
+   if(Number.isFinite(forced))return Math.max(0,Math.min(1,forced));
    if(document.querySelector('#pvp.active'))return 0;
    if(document.querySelector('#guild.active')){
     if(v494Visible(document.querySelector('#v254GuildWar')))return 0;
@@ -69062,7 +69070,7 @@ body.v495-seed-open{overflow:hidden!important}
 <script id="v4107-systemtechnik">
 (()=>{
 'use strict';
-const VERSION='V4.124 Stable',SHORT='V4.124',STORE='growLegendsQA:v4107:';
+const VERSION='V4.125 Stable',SHORT='V4.125',STORE='growLegendsQA:v4107:';
 const baseRun=window.v4106RunQA||window.v4102RunQA;
 const oldOpen=window.v4102OpenQA;
 let last=null,selectedGroup='',filter='problems',storageEstimate=null,lastNav='',renderTimer=0,historicCountCache=null;
@@ -69078,6 +69086,7 @@ function test(c,n,fn,severity='error'){try{const x=fn();if(x&&typeof x==='object
 function source(){try{return [...document.scripts].map(x=>x.textContent||'').join('\n')}catch(e){return''}}
 function pushErr(code,detail,severity='error'){
  const rec={at:Date.now(),code:String(code),detail:String(detail||''),severity};
+ window.v4125QaPushErr=pushErr;
  const prev=errlog.at(-1);if(prev&&prev.code===rec.code&&prev.detail===rec.detail&&rec.at-prev.at<10000)return;
  errlog.push(rec);while(errlog.length>80)errlog.shift();
  try{const a=JSON.parse(localStorage.getItem(runtimeKey())||'[]');a.push(rec);while(a.length>80)a.shift();localStorage.setItem(runtimeKey(),JSON.stringify(a))}catch(e){}
@@ -69513,7 +69522,7 @@ try{navigator.storage?.estimate?.().then(x=>storageEstimate=x).catch(()=>{})}cat
 /* Make Systemtechnik the canonical QA destination. */
 window.v4107RunQA=fullReport;window.v4107OpenSystemtechnik=openPage;window.v4102OpenQA=openPage;window.v4102RunQA=(opts={})=>{const r=fullReport();if(opts.open)openPage();return r};
 /* Keep our page integrated with the many historical navigation wrappers. */
-try{if(typeof v032Go==='function'&&!window.__v4107Go){const base=v032Go;const wrap=function(id){ensureScreen();installMenu();let p0=null,sig='';try{p0=typeof combatPower==='function'?Number(combatPower()):null;sig=corePowerSignature()}catch(e){}const r=base.apply(this,arguments);if(id==='systemtech')setTimeout(runAndRender,0);else lastNav=id||lastNav;setTimeout(()=>{try{if(id!=='systemtech'&&p0!=null&&sig===corePowerSignature()){const p1=Number(combatPower());if(Number.isFinite(p1)&&p1!==p0)pushErr('POWER_NAVIGATION_DRIFT',`Kampfkraft änderte sich nur durch Seitenwechsel: ${p0} → ${p1}`,'warn')}}catch(e){}},180);return r};v032Go=wrap;window.v032Go=wrap;window.__v4107Go=true}}catch(e){}
+try{if(typeof v032Go==='function'&&!window.__v4107Go){const base=v032Go;const wrap=function(id){ensureScreen();installMenu();let p0=null,sig='';try{const pf=window.v4125StableCombatPower;p0=typeof pf==='function'?Number(pf()):(typeof combatPower==='function'?Number(combatPower()):null);sig=corePowerSignature()}catch(e){}const r=base.apply(this,arguments);if(id==='systemtech')setTimeout(runAndRender,0);else lastNav=id||lastNav;setTimeout(()=>{try{if(id!=='systemtech'&&p0!=null&&sig===corePowerSignature()){const pf=window.v4125StableCombatPower;const p1=typeof pf==='function'?Number(pf()):Number(combatPower());if(Number.isFinite(p1)&&p1!==p0)pushErr('POWER_NAVIGATION_DRIFT',`Kampfkraft änderte sich nur durch Seitenwechsel: ${p0} → ${p1}`,'warn')}}catch(e){}},180);return r};v032Go=wrap;window.v032Go=wrap;window.__v4107Go=true}}catch(e){}
 /* Lightweight live refresh; no full source scan unless Systemtechnik is open. */
 setInterval(()=>{try{installMenu();paintSettingsBadge(last);if(document.getElementById('systemtech')?.classList.contains('active')){const r=last||cachedReport();if(r)renderRight(r)}}catch(e){}},3500);
 function stamp(){try{document.title='Grow Legends '+SHORT}catch(e){}try{document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version').forEach(e=>e&&(e.textContent=VERSION));document.querySelectorAll('.v366-ver,.v371-logo em,.v372-logo em').forEach(e=>e&&(e.textContent=SHORT))}catch(e){}}
@@ -69980,7 +69989,7 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();i
 <script id="v4116-systemtech-engine-fix">
 (()=>{
  'use strict';
- const VERSION='V4.124 Stable',SHORT='V4.124';
+ const VERSION='V4.125 Stable',SHORT='V4.125';
  function stamp(){
   try{document.title='Grow Legends '+SHORT}catch(e){}
   try{
@@ -70014,7 +70023,7 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();i
 <script id="v4118-care-guildboss-fix">
 (()=>{
  'use strict';
- const VERSION='V4.124 Stable',SHORT='V4.124';
+ const VERSION='V4.125 Stable',SHORT='V4.125';
  function stamp(){try{document.title='Grow Legends '+SHORT;document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version').forEach(x=>x&&(x.textContent=VERSION));document.querySelectorAll('.v366-ver,.v371-logo em,.v372-logo em,.v4107-version').forEach(x=>x&&(x.textContent=SHORT))}catch(e){}}
  function refreshBoss(){try{if(document.querySelector('#guild')?.classList.contains('active')){v255RenderBoss?.()}}catch(e){}}
  function qaWrap(){
@@ -70514,13 +70523,13 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();i
 
 <!-- ===== V4.124 Stable: safe legacy retirement + runtime diagnostics ===== -->
 <style id="v4123-performance-cleanup-css">
-.app > header .v358-logo::after{content:"V4.124"!important}
-.app > header .v366-ver::after,.app > header .v371-logo em::after,.app > header .v372-logo em::after{content:"V4.124"!important}
+.app > header .v358-logo::after{content:"V4.125"!important}
+.app > header .v366-ver::after,.app > header .v371-logo em::after,.app > header .v372-logo em::after{content:"V4.125"!important}
 </style>
 <script id="v4123-performance-cleanup">
 (()=>{
  'use strict';
- const VERSION='V4.124 Stable',SHORT='V4.124';
+ const VERSION='V4.125 Stable',SHORT='V4.125';
  function stamp(){
   try{document.title='Grow Legends '+SHORT}catch(e){}
   try{document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version').forEach(x=>x&&(x.textContent=VERSION));document.querySelectorAll('.v366-ver,.v371-logo em,.v372-logo em,.v4107-version').forEach(x=>x&&(x.textContent=SHORT))}catch(e){}
@@ -70540,8 +70549,8 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();i
 
 <!-- ===== V4.124 Stable: canonical Hall/Nebel-Crew values + quest grow-seed reward ===== -->
 <style id="v4124-social-quest-fix-css">
-.app > header .v358-logo::after{content:"V4.124"!important}
-.app > header .v366-ver::after,.app > header .v371-logo em::after,.app > header .v372-logo em::after{content:"V4.124"!important}
+.app > header .v358-logo::after{content:"V4.125"!important}
+.app > header .v366-ver::after,.app > header .v371-logo em::after,.app > header .v372-logo em::after{content:"V4.125"!important}
 .v4124-social-lines{margin-top:3px;display:grid;gap:2px}
 .v4124-social-line{font-size:7.5px;color:#9eada0;line-height:1.35}
 .v4124-social-line strong{color:#e7d27d;font-weight:900}
@@ -70551,7 +70560,7 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();i
 <script id="v4124-social-quest-fix">
 (()=>{
  'use strict';
- const VERSION='V4.124 Stable',SHORT='V4.124';
+ const VERSION='V4.125 Stable',SHORT='V4.125';
  const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
  const PROFILE_SELECT='id,character_name,class_id,class_name,level,bosses,gear_score,dungeons,combat_power,equipment,dungeon_progress,worldboss_attempts,worldboss_wins,pvp_buds,pvp_wins,pvp_losses,pvp_fights,updated_at';
 
@@ -70584,7 +70593,7 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();i
    const p=base.apply(this,arguments)||{};
    const dp=liveDp(),pos=canonicalPos(dp,dp.completed.length);
    p.level=Math.max(1,Number(s?.level)||1);
-   try{p.combat_power=Math.max(0,Math.round(Number(combatPower())||0))}catch(e){p.combat_power=Math.max(0,Number(p.combat_power)||0)}
+   try{const fn=window.v4125StableCombatPower;p.combat_power=Math.max(0,Math.round(Number(typeof fn==='function'?fn():combatPower())||0))}catch(e){p.combat_power=Math.max(0,Number(p.combat_power)||0)}
    try{p.gear_score=typeof v072GearScore==='function'?Math.max(0,Number(v072GearScore())||0):Math.max(0,Number(p.gear_score)||0)}catch(e){}
    p.dungeons=dp.completed.length;
    p.dungeon_progress={...dp,selected:pos.dungeonIndex,room:Math.max(0,pos.enemyNumber-1)};
@@ -70656,7 +70665,7 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();i
  v072RenderOwnProfile=function(){
   const el=document.getElementById('v072OwnProfile');if(!el)return;
   const p=typeof v072Profile==='function'?v072Profile():{name:s?.characterName||'Spieler',className:'',level:s?.level||1,id:v073User?.id||''};
-  const dp=liveDp(),pos=canonicalPos(dp,dp.completed.length);let cp=0;try{cp=Math.max(0,Math.round(Number(combatPower())||0))}catch(e){}
+  const dp=liveDp(),pos=canonicalPos(dp,dp.completed.length);let cp=0;try{const fn=window.v4125StableCombatPower;cp=Math.max(0,Math.round(Number(typeof fn==='function'?fn():combatPower())||0))}catch(e){}
   el.innerHTML=`<div class="v072-profile-name">${esc(p.name)}</div><div class="v072-profile-meta">${esc(p.className||'')} · Spieler-ID ${String(p.id||v073User?.id||'').slice(0,8)}</div><div class="v072-profile-stats"><div class="v072-profile-stat"><span>Level</span><b>${Math.max(1,Number(s?.level)||1)}</b></div><div class="v072-profile-stat"><span>Kampfkraft</span><b>${cp}</b></div><div class="v072-profile-stat"><span>Dungeon</span><b>${pos.dungeonNumber}</b></div><div class="v072-profile-stat"><span>${pos.enemyNumber>=10?'Boss':'Gegner'}</span><b>${pos.enemyNumber}/10</b></div></div><div class="v4124-social-line" style="margin-top:7px">🏁 ${dp.completed.length} Dungeons abgeschlossen · 🌿 PvP-Buds ${Math.max(0,Number(s?.v204Pvp?.buds)||0)}</div>`;
  };
  try{window.v072RenderOwnProfile=v072RenderOwnProfile}catch(e){}
@@ -70716,5 +70725,117 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();i
  window.v4124SocialDiagnostics=()=>({profileSelect:PROFILE_SELECT,dungeon:liveDp(),hallLoader:window.v073LoadRanking===v073LoadRanking,friendsLoader:window.v073LoadFriends===v073LoadFriends,questSeedReward:typeof window.v4124AppendQuestSeedReward==='function'});
  function stamp(){try{document.title='Grow Legends '+SHORT}catch(e){}try{document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version').forEach(x=>x&&(x.textContent=VERSION));document.querySelectorAll('.v366-ver,.v371-logo em,.v372-logo em,.v4107-version').forEach(x=>x&&(x.textContent=SHORT))}catch(e){}}
  try{v072RenderOwnProfile()}catch(e){}stamp();window.addEventListener('pageshow',()=>{stamp();try{v072RenderOwnProfile()}catch(e){}},{passive:true});
+})();
+</script>
+
+<!-- ===== V4.125 Stable: stable public combat power + RPC detail diagnostics ===== -->
+<style id="v4125-power-rpc-css">
+.app > header .v358-logo::after{content:"V4.125"!important}
+.app > header .v366-ver::after,.app > header .v371-logo em::after,.app > header .v372-logo em::after{content:"V4.125"!important}
+</style>
+<script id="v4125-power-rpc-diagnostics">
+(()=>{
+ 'use strict';
+ const VERSION='V4.125 Stable',SHORT='V4.125';
+ let calculating=false;
+
+ /* Public/character Kampfkraft must never depend on which screen is open.
+    Grow buffs may still be context-dampened inside combat, but the displayed/synced
+    character power is measured with the full active character buff (factor 1). */
+ function stablePower(){
+  if(calculating){
+   try{return Math.max(0,Math.round(Number(combatPower())||0))}catch(e){return 0}
+  }
+  calculating=true;
+  const had=Object.prototype.hasOwnProperty.call(window,'__v494ModeFactorOverride');
+  const old=window.__v494ModeFactorOverride;
+  try{
+   window.__v494ModeFactorOverride=1;
+   return Math.max(0,Math.round(Number(combatPower())||0));
+  }catch(e){
+   return 0;
+  }finally{
+   if(had)window.__v494ModeFactorOverride=old;
+   else try{delete window.__v494ModeFactorOverride}catch(e){window.__v494ModeFactorOverride=undefined}
+   calculating=false;
+  }
+ }
+ window.v4125StableCombatPower=stablePower;
+
+ function repaintPower(){
+  const cp=stablePower();
+  ['#power','#charPower','#v358Power','#v110Cp'].forEach(sel=>{const el=document.querySelector(sel);if(el)el.textContent=cp});
+  try{
+   document.querySelectorAll('.v349-power b,.v366-power b').forEach(el=>el.textContent=cp);
+   const own=typeof v073User!=='undefined'&&v073User?.id?String(v073User.id):'';
+   if(own){
+    document.querySelectorAll('.v072-player-row[data-profile-id]').forEach(row=>{
+     if(String(row.dataset.profileId||'')!==own)return;
+     const sub=row.querySelector('.v072-player-sub,.v4124-social-line');
+     if(sub&&/Kampfkraft\s+\d+/i.test(sub.textContent||'')){
+      const walker=document.createTreeWalker(sub,NodeFilter.SHOW_TEXT);
+      while(walker.nextNode()){
+       const n=walker.currentNode;
+       if(/Kampfkraft\s+\d+/i.test(n.nodeValue||'')){n.nodeValue=(n.nodeValue||'').replace(/Kampfkraft\s+\d+/i,`Kampfkraft ${cp}`);break}
+      }
+     }
+    });
+    document.querySelectorAll('#v072OwnProfile .v072-profile-stat,#v074ProfileContent .v326-profile-stat,#v074ProfileContent .v072-profile-stat').forEach(box=>{
+     if(/Kampf(?:kraft|wert)/i.test(box.textContent||'')){const b=box.querySelector('b');if(b)b.textContent=cp}
+    });
+   }
+  }catch(e){}
+ }
+ window.v4125PaintStablePower=repaintPower;
+
+ /* Repaint after the existing render/navigation stack without replacing gameplay renderers. */
+ try{
+  if(typeof render==='function'&&!window.__v4125RenderPower){
+   const base=render;render=function(){const r=base.apply(this,arguments);repaintPower();requestAnimationFrame(repaintPower);return r};
+   try{window.render=render}catch(e){}window.__v4125RenderPower=true;
+  }
+ }catch(e){}
+ try{
+  if(typeof v032Go==='function'&&!window.__v4125GoPower){
+   const base=v032Go;v032Go=function(id){const r=base.apply(this,arguments);repaintPower();requestAnimationFrame(repaintPower);setTimeout(repaintPower,90);return r};
+   try{window.v032Go=v032Go}catch(e){}window.__v4125GoPower=true;
+  }
+ }catch(e){}
+
+ /* Preserve the exact Supabase/PostgREST error body for guild RPC 4xx responses.
+    This does not retry writes and does not alter request semantics. */
+ try{
+  const baseFetch=window.fetch;
+  if(typeof baseFetch==='function'&&!baseFetch.__v4125RpcDetail){
+   const wrapped=async function(){
+    const input=arguments[0],url=String(input?.url||input||'');
+    const response=await baseFetch.apply(this,arguments);
+    if(response && response.status>=400 && /\/rest\/v1\/rpc\/v254_(?:buy_guild_upgrade|set_guild_signup)(?:\?|$)/.test(url)){
+     try{
+      const body=(await response.clone().text()).slice(0,420);
+      const detail=`${response.status} · ${url.split('/rpc/')[1]?.split('?')[0]||'Gilden-RPC'} · ${body||'keine Serverdetails'}`;
+      window.__V4125_LAST_GUILD_RPC_ERROR__=detail;
+      window.v4125QaPushErr?.('GUILD_RPC_DETAIL',detail,'warn');
+     }catch(e){}
+    }
+    return response;
+   };
+   wrapped.__v4125RpcDetail=true;
+   try{Object.assign(wrapped,baseFetch)}catch(e){}
+   window.fetch=wrapped;
+  }
+ }catch(e){}
+
+ function stamp(){
+  try{document.title='Grow Legends '+SHORT}catch(e){}
+  try{
+   document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version').forEach(x=>x&&(x.textContent=VERSION));
+   document.querySelectorAll('.v366-ver,.v371-logo em,.v372-logo em,.v4107-version').forEach(x=>x&&(x.textContent=SHORT));
+  }catch(e){}
+ }
+ window.v4125Diagnostics=()=>({stablePower:stablePower(),rawPower:(()=>{try{return Number(combatPower())||0}catch(e){return 0}})(),activeScreen:document.querySelector('section.screen.active')?.id||'',lastGuildRpcError:window.__V4125_LAST_GUILD_RPC_ERROR__||''});
+ repaintPower();stamp();
+ window.addEventListener('pageshow',()=>{repaintPower();stamp()},{passive:true});
+ document.addEventListener('visibilitychange',()=>{if(!document.hidden){repaintPower();stamp()}},{passive:true});
 })();
 </script>
