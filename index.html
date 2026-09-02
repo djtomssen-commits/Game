@@ -66590,3 +66590,278 @@ html.v481-hidden *,html.v481-hidden *::before,html.v481-hidden *::after{animatio
   [250,700,1400,2600,4500,7500,11000].forEach(ms=>setTimeout(tryOpen,ms));
 })();
 </script>
+
+<!-- ===== V4.88 Stable: HARZSCHMIEDE ===== -->
+<style id="v488-harzschmiede-css">
+/* Grow Legends V4.88 – comic Harzschmiede, integrated into the existing game. */
+.app > header .v358-logo::after{content:"V4.88"!important}
+#v372TopbarShell .v372-logo em::after,
+.app > header .v366-ver::after,.app > header .v371-logo em::after,.app > header .v372-logo em::after{content:"V4.88"!important}
+
+#forge.screen{padding:10px 10px 88px!important;max-width:1180px;margin:0 auto}
+.v488-shell{--ink:#17130b;--panel:#182318;--panel2:#0e160f;--green:#7bc84d;--gold:#e9b94f;--line:#4d633d;position:relative;overflow:hidden;border:1px solid #40543a;border-radius:22px;background:linear-gradient(180deg,#152018,#09110c 76%);box-shadow:0 18px 50px #0008,inset 0 0 45px #0007;color:#ecf3e8}
+.v488-shell:before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.32;background:repeating-linear-gradient(90deg,transparent 0 58px,#ffffff08 59px 60px),repeating-linear-gradient(0deg,transparent 0 45px,#0005 46px 47px)}
+.v488-titlebar{position:relative;z-index:2;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:13px 14px;background:linear-gradient(180deg,#684719,#35260f);border-bottom:2px solid #8b6429;box-shadow:0 7px 16px #0008}
+.v488-titlebar h2{margin:0;font-size:25px;line-height:1;color:#fff2bd;text-shadow:0 3px 0 #3b2309,0 0 16px #e4a62b66;letter-spacing:.01em}
+.v488-titlebar h2 span{color:#8fe45d}
+.v488-titlebar p{margin:4px 0 0;color:#d8cba3;font-size:9px;font-weight:800}
+.v488-frag-pill{flex:0 0 auto;display:flex;align-items:center;gap:7px;border:2px solid #80602d;border-radius:13px;padding:7px 10px;background:#17150d;box-shadow:inset 0 0 12px #0008;font-size:10px}
+.v488-frag-gem{font-size:25px;filter:drop-shadow(0 0 7px #c758ff)}
+.v488-frag-pill b{display:block;font-size:15px;color:#fff}
+.v488-frag-pill small{display:block;color:#9fab97;font-size:7px;text-transform:uppercase;letter-spacing:.08em}
+
+.v488-stage{position:relative;height:360px;overflow:hidden;border-bottom:1px solid #34452f;background:radial-gradient(circle at 50% 86%,#85ea4a44 0 12%,transparent 31%),radial-gradient(circle at 50% 43%,#213d24 0 12%,#122015 38%,#070c08 75%),linear-gradient(180deg,#0c120d,#111b12);isolation:isolate}
+.v488-stage:before{content:"🌿";position:absolute;left:50%;top:36px;transform:translateX(-50%);font-size:150px;opacity:.12;filter:drop-shadow(0 0 18px #6ccb50);z-index:-1}
+.v488-stage:after{content:"";position:absolute;left:0;right:0;bottom:0;height:100px;background:linear-gradient(180deg,transparent,#020503dd);z-index:-1}
+.v488-chain{position:absolute;top:-15px;width:5px;height:178px;background:repeating-linear-gradient(180deg,#574f3b 0 7px,#171711 8px 15px);opacity:.6;transform-origin:top}.v488-chain.c1{left:10%;transform:rotate(7deg)}.v488-chain.c2{right:10%;transform:rotate(-7deg)}
+.v488-banner{position:absolute;left:50%;top:13px;transform:translateX(-50%);padding:7px 17px;border:2px solid #80602a;border-radius:10px;background:linear-gradient(#2c2414,#17150e);font-size:9px;font-weight:1000;color:#d9c584;white-space:nowrap;box-shadow:0 5px 14px #0009}
+.v488-fire{position:absolute;left:50%;bottom:28px;width:220px;height:120px;transform:translateX(-50%);background:radial-gradient(ellipse at 50% 100%,#b7ff5caa 0 9%,#56d83e88 22%,#148d3366 38%,transparent 63%);filter:blur(2px);animation:v488Fire 1.25s ease-in-out infinite alternate}
+@keyframes v488Fire{to{transform:translateX(-50%) scale(1.08,.92);filter:blur(3px) brightness(1.25)}}
+.v488-anvil{position:absolute;left:50%;bottom:44px;transform:translateX(-50%);width:208px;height:93px;background:linear-gradient(180deg,#48504a 0 19%,#1c211e 20% 100%);border:4px solid #0b0c0b;clip-path:polygon(0 4%,100% 4%,89% 26%,68% 31%,62% 52%,66% 100%,34% 100%,38% 52%,32% 31%,10% 26%);filter:drop-shadow(0 14px 7px #000b);z-index:4}
+.v488-anvil:after{content:"🌿";position:absolute;left:50%;top:35px;transform:translateX(-50%);font-size:34px;filter:grayscale(.3) brightness(.7)}
+.v488-hammer{position:absolute;left:28%;bottom:147px;font-size:74px;transform:rotate(-27deg);transform-origin:70% 80%;z-index:7;filter:drop-shadow(0 8px 4px #000a)}
+.v488-stage.hit .v488-hammer{animation:v488Hammer .46s cubic-bezier(.2,.8,.3,1)}
+@keyframes v488Hammer{0%{transform:rotate(-27deg)}55%{transform:rotate(18deg) translate(21px,18px)}100%{transform:rotate(-27deg)}}
+.v488-stage.crafting .v488-anvil{animation:v488AnvilGlow 1s ease}
+@keyframes v488AnvilGlow{50%{filter:drop-shadow(0 0 28px #7cff67) drop-shadow(0 0 40px #d259ff)}}
+.v488-stage-label{position:absolute;z-index:6;right:7%;top:92px;width:136px;text-align:center;padding:10px;border:1px solid #79582b;border-radius:13px;background:#0b100dda;box-shadow:0 8px 18px #0009}
+.v488-stage-label b{display:block;font-size:15px;background:linear-gradient(90deg,#fa74dc,#7fc6ff,#7bff7f,#ffd85c,#ff856b);-webkit-background-clip:text;background-clip:text;color:transparent}.v488-stage-label span{display:block;margin-top:4px;font-size:7px;color:#b7c2b1;line-height:1.35}
+.v488-shard{position:absolute;left:50%;bottom:128px;width:12px;height:18px;z-index:12;clip-path:polygon(50% 0,100% 40%,65% 100%,10% 75%,0 28%);background:var(--c,#76d45b);filter:drop-shadow(0 0 7px var(--c,#76d45b));animation:v488Shard .72s ease-out forwards;animation-delay:var(--d,0ms)}
+@keyframes v488Shard{from{transform:translate(-50%,0) scale(.2);opacity:1}to{transform:translate(calc(-50% + var(--x)),var(--y)) rotate(var(--r));opacity:0}}
+
+.v488-workgrid{position:relative;z-index:2;display:grid;grid-template-columns:minmax(0,1.12fr) minmax(0,.88fr);gap:9px;padding:9px}
+.v488-panel{min-width:0;border:1px solid #3f533a;border-radius:15px;background:linear-gradient(160deg,#172319,#0c130e);box-shadow:inset 0 0 20px #0005;padding:10px}
+.v488-panel-head{display:flex;justify-content:space-between;align-items:center;gap:7px;margin-bottom:8px}.v488-panel-head h3{margin:0;font-size:15px;color:#f0d99b}.v488-panel-head small{font-size:7px;color:#98aa92}
+.v488-inventory{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;max-height:306px;overflow:auto;padding:1px;scrollbar-width:thin}
+.v488-item{position:relative;min-width:0;min-height:84px;padding:7px 4px 5px;border:2px solid #4a524a;border-radius:10px;background:#111712;text-align:center;cursor:pointer;overflow:hidden;box-shadow:0 5px 10px #0008;transition:.12s transform,.12s border-color,.12s box-shadow}
+.v488-item:active{transform:scale(.97)}.v488-item.selected{outline:2px solid #88e05a;outline-offset:-4px;box-shadow:0 0 16px #70df5066}.v488-item.blocked{opacity:.43;cursor:not-allowed;filter:grayscale(.5)}
+.v488-item .ico{font-size:26px;line-height:1}.v488-item .nm{margin-top:4px;font-size:7px;font-weight:1000;line-height:1.12;min-height:23px;overflow:hidden}.v488-item .yield{font-size:7px;margin-top:3px;color:#a6db87}.v488-item .lock{position:absolute;right:3px;top:3px;font-size:11px}
+.v488-item.gray{border-color:#707875}.v488-item.green{border-color:#5ab644}.v488-item.blue{border-color:#3289db}.v488-item.purple{border-color:#a55add}.v488-item.orange{border-color:#e6902e}.v488-item.cyan{border-color:#34d5d0}.v488-item.prism{border-color:#ef83e9;background:linear-gradient(145deg,#181123,#0e1915)}
+.v488-selection{display:flex;justify-content:space-between;gap:7px;margin:8px 0;padding:7px 8px;border:1px solid #344833;border-radius:10px;background:#0b120d;font-size:8px}.v488-selection b{color:#c8f4a8}.v488-btn{width:100%;border:2px solid #476d33;border-radius:11px;padding:10px 8px;background:linear-gradient(#6ea936,#39651f);color:#fff;font-weight:1000;font-size:12px;text-shadow:0 2px 2px #18320f;box-shadow:inset 0 1px #b9ed8b66,0 5px 0 #17350f;cursor:pointer}.v488-btn:active{transform:translateY(3px);box-shadow:inset 0 1px #b9ed8b66,0 2px 0 #17350f}.v488-btn:disabled{opacity:.42;filter:grayscale(.8);cursor:not-allowed}
+.v488-hint{font-size:7px;color:#9cad97;line-height:1.35;margin-top:7px}
+
+.v488-recipe{padding:9px;border:1px solid #50452d;border-radius:12px;background:#12130d}.v488-recipe-title{text-align:center;font-size:9px;font-weight:1000;color:#e8ca75;text-transform:uppercase;letter-spacing:.08em}.v488-costs{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:5px;margin-top:8px}.v488-cost{min-width:0;text-align:center;padding:9px 3px;border:1px solid #3f4934;border-radius:10px;background:#0d130e}.v488-cost .ico{font-size:25px}.v488-cost b{display:block;font-size:9px;margin-top:3px}.v488-cost span{display:block;font-size:8px;color:#99ae92}.v488-cost.ok span{color:#8ee56b}.v488-cost.bad span{color:#ff7676}.v488-plus{font-size:20px;color:#b5964b;font-weight:1000}.v488-equals{text-align:center;color:#8ba17d;font-size:9px;margin:7px 0}
+.v488-prism-preview{position:relative;overflow:hidden;min-height:118px;border:2px solid transparent;border-radius:13px;background:linear-gradient(#17151d,#0f1410) padding-box,linear-gradient(110deg,#ff5f85,#b05cff,#43a7ff,#69ef75,#ffd85d,#ff795d) border-box;display:grid;place-items:center;text-align:center;padding:10px}.v488-prism-preview:before{content:"";position:absolute;inset:-60%;background:conic-gradient(transparent,#ffffff33,transparent 22%);animation:v488Spin 3.4s linear infinite}@keyframes v488Spin{to{transform:rotate(1turn)}}.v488-prism-preview>*{position:relative;z-index:1}.v488-prism-preview .big{font-size:38px;filter:drop-shadow(0 0 10px #7de6ff)}.v488-prism-preview b{display:block;font-size:11px;background:linear-gradient(90deg,#ff8ddd,#7dbdff,#79f38c,#ffe574);-webkit-background-clip:text;background-clip:text;color:transparent}.v488-prism-preview small{display:block;margin-top:4px;font-size:7px;color:#aab8a4;line-height:1.35}
+.v488-craft-btn{margin-top:8px;background:linear-gradient(90deg,#b64fca,#4a84db,#43a864,#d59c2d,#d55379);border-color:#f2d188;box-shadow:inset 0 1px #ffffff66,0 5px 0 #5a3158;text-shadow:0 2px 2px #221129}
+.v488-last{margin-top:8px;padding:8px;border:1px solid #704b82;border-radius:10px;background:#171021;font-size:8px;line-height:1.35}.v488-last b{color:#f7baff}
+.v488-rules{display:grid;grid-template-columns:repeat(2,1fr);gap:5px;margin-top:8px}.v488-rule{padding:6px;border:1px solid #33402e;border-radius:8px;background:#0d120e;font-size:7px;color:#a8b7a1}.v488-rule strong{display:block;color:#e2ecd9;font-size:7px;margin-bottom:2px}
+.v488-legend{position:relative;z-index:2;display:grid;grid-template-columns:repeat(6,1fr);gap:4px;padding:8px 10px 11px;border-top:1px solid #34452e;background:#0a100b}.v488-leg{text-align:center;font-size:6px;color:#9ca99a}.v488-leg i{display:block;margin:auto auto 3px;width:15px;height:20px;clip-path:polygon(50% 0,100% 42%,68% 100%,10% 74%,0 27%);background:var(--c);filter:drop-shadow(0 0 5px var(--c))}.v488-leg.prism span{background:linear-gradient(90deg,#ff75d7,#70a9ff,#62e778,#ffd45c);-webkit-background-clip:text;background-clip:text;color:transparent;font-weight:1000}
+
+.v488-home-link{width:100%;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:9px 11px;margin:0;border:1px solid #6b572b;border-radius:13px;background:linear-gradient(100deg,#152317,#2d2613,#151d16);color:#fff;box-shadow:0 5px 14px #0007;cursor:pointer;text-align:left}.v488-home-link .left{display:flex;align-items:center;gap:9px}.v488-home-link .ico{font-size:27px}.v488-home-link b{display:block;color:#f2d88c;font-size:10px}.v488-home-link small{display:block;color:#a9b49e;font-size:6px}.v488-home-link .go{font-size:18px;color:#8ddf66}
+
+/* Prismatische Items use rainbow comic rarity, but remain internally separate from mystic achievements/drops. */
+.q-prismatic{display:inline-block!important;background:linear-gradient(90deg,#ff6ad7,#8d6cff,#4bb7ff,#5de97c,#ffe162,#ff805d)!important;color:#111!important;border:0!important;font-weight:1000!important;text-shadow:none!important;padding:2px 6px!important;border-radius:999px!important}
+#character #inventory .inv-item.prismatic-cyan,#character #inventory .inv-item.prismatic-orange,
+#character .slot.prismatic-cyan,#character .slot.prismatic-orange{position:relative!important;border:2px solid transparent!important;background:linear-gradient(#111a14,#0b120e) padding-box,linear-gradient(115deg,#ff69ce,#886cff,#45b5ff,#5ae676,#ffd65a,#ff7c58) border-box!important;box-shadow:0 0 16px #8e72ff33,inset 0 0 18px #ffffff08!important}
+#character #inventory .inv-item.prismatic-cyan:before,#character #inventory .inv-item.prismatic-orange:before{background:linear-gradient(90deg,#ff69ce,#886cff,#45b5ff,#5ae676,#ffd65a,#ff7c58)!important}
+#character #inventory .inv-item.prismatic-cyan:after{content:"✦";position:absolute;right:7px;bottom:7px;color:#fff;animation:v488Twinkle 1.3s ease-in-out infinite alternate;text-shadow:0 0 8px #fff,0 0 13px #8ef}
+@keyframes v488Twinkle{to{transform:scale(1.45) rotate(30deg);opacity:.48}}
+.v488-bound-tag{margin:6px 0 2px;padding:5px 6px;border:1px solid #7d5482;border-radius:8px;background:#1a1020;color:#eeb8f5;font-size:7px;font-weight:900;text-align:center}
+#character #inventory .inv-item.v488-prismatic-card .sell-btn{opacity:.48!important;filter:grayscale(1)!important;pointer-events:none!important}
+#character #inventory .inv-item.v488-prismatic-card .v268-pick{opacity:.35!important;pointer-events:none!important}
+
+@media(max-width:620px){
+ #forge.screen{padding:7px 6px 82px!important}.v488-titlebar{padding:10px}.v488-titlebar h2{font-size:21px}.v488-frag-pill{padding:6px 7px}.v488-stage{height:318px}.v488-hammer{left:19%;bottom:135px;font-size:65px}.v488-anvil{width:185px;height:86px;bottom:42px}.v488-stage-label{right:3%;top:78px;width:116px;padding:7px}.v488-workgrid{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:6px;padding:6px}.v488-panel{padding:7px}.v488-panel-head h3{font-size:12px}.v488-inventory{grid-template-columns:repeat(2,minmax(0,1fr));gap:5px;max-height:290px}.v488-item{min-height:77px}.v488-item .ico{font-size:23px}.v488-item .nm{font-size:6.4px}.v488-costs{grid-template-columns:1fr;gap:4px}.v488-plus{line-height:1;text-align:center}.v488-cost{padding:6px 3px}.v488-cost .ico{font-size:20px}.v488-prism-preview{min-height:102px}.v488-rules{grid-template-columns:1fr}.v488-legend{padding-left:5px;padding-right:5px;gap:2px}.v488-leg{font-size:5px}.v488-leg i{width:12px;height:16px}
+}
+@media(max-width:380px){.v488-workgrid{grid-template-columns:1fr}.v488-inventory{grid-template-columns:repeat(3,minmax(0,1fr));max-height:230px}.v488-costs{grid-template-columns:1fr auto 1fr}.v488-plus{font-size:18px}.v488-stage-label{right:2%;width:105px}.v488-legend{grid-template-columns:repeat(3,1fr)}}
+</style>
+<script id="v488-harzschmiede-core">
+(function(){
+  const VERSION='V4.88 Stable', SHORT='V4.88';
+  const selected=new Set();
+  let listScroll=0,lastCraft=null,busy=false;
+  const YIELD={gray:1,green:3,blue:7,purple:15,orange:30};
+  const COLORS={gray:'#9aa29e',green:'#66d24c',blue:'#3f9df4',purple:'#ba65ef',orange:'#f19a34',cyan:'#45ddd7',prism:'#e77bff'};
+  const SLOT_META={
+    head:{icon:'🪖',label:'Kopfschutz'},weapon:{icon:'⚔️',label:'Waffe'},body:{icon:'🛡️',label:'Rüstung'},
+    boots:{icon:'🥾',label:'Stiefel'},ring:{icon:'💍',label:'Ring'},amulet:{icon:'📿',label:'Amulett'}
+  };
+  const PATTERN={
+    grower:{head:{ausdauer:4,staerke:2},weapon:{staerke:6},body:{ausdauer:6},boots:{staerke:3,ausdauer:2},ring:{staerke:4},amulet:{ausdauer:3,staerke:2}},
+    scout:{head:{geschick:4,glueck:2},weapon:{geschick:6},body:{ausdauer:3,geschick:3},boots:{geschick:5},ring:{geschick:3,glueck:2},amulet:{geschick:3,glueck:2}},
+    bruiser:{head:{intelligenz:4,glueck:2},weapon:{intelligenz:6},body:{intelligenz:4,ausdauer:2},boots:{intelligenz:3,glueck:2},ring:{intelligenz:5},amulet:{intelligenz:3,glueck:2}}
+  };
+  const NAMES={
+    grower:{head:['Prisma-Kriegshelm','Aurora-Helm'],weapon:['Spektralspalter','Prisma-Harzaxt'],body:['Chroma-Harzpanzer','Aurora-Rüstung'],boots:['Regenbogenstampfer','Spektralstiefel'],ring:['Chromaring','Prismaring'],amulet:['Aurora-Amulett','Spektraltalisman']},
+    scout:{head:['Prisma-Blattkapuze','Aurora-Kapuze'],weapon:['Spektralbogen','Prisma-Grünpfeil'],body:['Chroma-Rankenleder','Aurora-Leder'],boots:['Spektral-Leisetreter','Prismastiefel'],ring:['Prisma-Zielring','Chromaring'],amulet:['Aurora-Talisman','Spektralamulett']},
+    bruiser:{head:['Prisma-Nebelkapuze','Aurora-Haube'],weapon:['Spektral-Nebelstab','Prisma-Bongstab'],body:['Chroma-Nebelrobe','Aurora-Robe'],boots:['Spektral-Schwebeschuhe','Prismastiefel'],ring:['Prisma-Fokusring','Chromaring'],amulet:['Aurora-Nebelamulett','Spektraltalisman']}
+  };
+  const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const fmt=v=>Math.max(0,Math.round(Number(v)||0)).toLocaleString('de-DE');
+  const forged=it=>!!(it&&it.v488Prismatic===true);
+  function state(){
+    s.v488Forge=(s.v488Forge&&typeof s.v488Forge==='object')?s.v488Forge:{};
+    s.v488Forge.fragments=Math.max(0,Math.floor(Number(s.v488Forge.fragments)||0));
+    s.v488Forge.crafted=Math.max(0,Math.floor(Number(s.v488Forge.crafted)||0));
+    s.v488Forge.dismantled=Math.max(0,Math.floor(Number(s.v488Forge.dismantled)||0));
+    return s.v488Forge;
+  }
+  function q(it){
+    if(forged(it)||String(it?.quality||'').toLowerCase()==='prismatic')return'prism';
+    const x=(String(it?.quality||'')+' '+String(it?.rarity||'')).toLowerCase();
+    if(/cyan|myth|myst/.test(x))return'cyan';
+    if(/orange|legend/.test(x))return'orange';
+    if(/purple|epic|lila/.test(x))return'purple';
+    if(/blue|rare/.test(x))return'blue';
+    if(/green|uncommon|gewöhn/.test(x))return'green';
+    return'gray';
+  }
+  function yieldOf(it){
+    if(!it||forged(it)||q(it)==='cyan')return 0;
+    return YIELD[q(it)]||0;
+  }
+  function level(){return Math.max(1,Math.min(300,Math.floor(Number(s?.level)||1)))}
+  function cost(){const l=level();return{fragments:180+l*3,gold:50000+l*l*350}}
+  function ensureItemId(it,i){if(it&&!it.id)it.id=`v488_legacy_${Date.now()}_${i}_${Math.random().toString(36).slice(2)}`;return String(it?.id||i)}
+  function selectedRows(){
+    return (Array.isArray(s.inventory)?s.inventory:[]).map((it,i)=>({it,i,key:ensureItemId(it,i)})).filter(x=>selected.has(x.key)&&yieldOf(x.it)>0);
+  }
+  function selectedFragments(){return selectedRows().reduce((n,x)=>n+yieldOf(x.it),0)}
+  function confirmBox(text,opt={}){
+    try{if(typeof v115Confirm==='function')return v115Confirm(text,opt)}catch(e){}
+    return Promise.resolve(window.confirm(text));
+  }
+  function alertBox(text,title='Harzschmiede',type='info'){
+    try{if(typeof v115Alert==='function')return v115Alert(text,title,type)}catch(e){}
+    window.alert(text);
+  }
+  function save(draw=false){
+    try{if(typeof persist==='function')persist(draw);else localStorage.setItem(KEY,JSON.stringify(s))}catch(e){try{localStorage.setItem(KEY,JSON.stringify(s))}catch(_){}}
+    try{if(typeof v075WriteCloudSave==='function')setTimeout(()=>v075WriteCloudSave(false),0)}catch(e){}
+  }
+  function ensureScreen(){
+    let sec=document.getElementById('forge');if(sec)return sec;
+    sec=document.createElement('section');sec.id='forge';sec.className='screen';
+    const main=document.querySelector('main')||document.querySelector('.app')||document.body;main.appendChild(sec);return sec;
+  }
+  function ensureMenu(){
+    const panel=document.querySelector('.top-menu-panel');if(!panel)return;
+    let b=panel.querySelector('[data-screen="forge"]');
+    if(!b){b=document.createElement('button');b.className='top-menu-item';b.dataset.screen='forge';b.innerHTML='<span>🔨</span>Harzschmiede';const shop=panel.querySelector('[data-screen="shop"]');if(shop)shop.insertAdjacentElement('afterend',b);else panel.appendChild(b);b.onclick=()=>v032Go('forge')}
+    b.classList.toggle('active',document.getElementById('forge')?.classList.contains('active'));
+  }
+  function ensureHomeLink(){
+    const home=document.querySelector('#world .v366-world');if(!home)return;
+    let b=home.querySelector('.v488-home-link');if(b)return;
+    b=document.createElement('button');b.type='button';b.className='v488-home-link';b.innerHTML='<span class="left"><span class="ico">🔨🌿</span><span><b>Harzschmiede</b><small>Alte Ausrüstung zerlegen · prismatische Items schmieden</small></span></span><span class="go">›</span>';b.onclick=()=>v032Go('forge');
+    const nav=home.querySelector('.v366-dock');if(nav)nav.insertAdjacentElement('beforebegin',b);else home.appendChild(b);
+  }
+  function renderItems(){
+    const inv=Array.isArray(s.inventory)?s.inventory:[];
+    if(!inv.length)return '<div class="empty" style="grid-column:1/-1;font-size:8px;padding:16px">Dein Inventar ist leer.</div>';
+    return inv.map((it,i)=>{
+      const key=ensureItemId(it,i),qq=q(it),y=yieldOf(it),blocked=!y,sel=selected.has(key),reason=forged(it)?'Geschmiedet':qq==='cyan'?'Mystisch geschützt':'';
+      return `<button type="button" class="v488-item ${qq} ${blocked?'blocked':''} ${sel?'selected':''}" data-v488-key="${esc(key)}" ${blocked?'disabled':''}><span class="ico">${esc(it?.icon||SLOT_META[it?.slot]?.icon||'🎁')}</span><div class="nm">${esc(String(it?.name||'Item').replace(/^\w+\s*:\s*/,'').replace(/\s*\[Lv\.\d+\]\s*$/i,''))}</div><div class="yield">${blocked?esc(reason):`+${y} Frag.`}</div>${blocked?'<span class="lock">🔒</span>':''}</button>`;
+    }).join('');
+  }
+  function renderForge(){
+    const sec=ensureScreen(),z=state(),c=cost(),rows=selectedRows(),sum=selectedFragments(),can=z.fragments>=c.fragments&&(Number(s.gold)||0)>=c.gold&&!busy;
+    sec.innerHTML=`<div class="v488-shell">
+      <div class="v488-titlebar"><div><h2>🌿 <span>Harz</span>schmiede</h2><p>ZERLEGEN · FRAGMENTE SAMMELN · PRISMATISCHE AUSRÜSTUNG SCHMIEDEN</p></div><div class="v488-frag-pill"><span class="v488-frag-gem">💠</span><span><small>Samenfragmente</small><b>${fmt(z.fragments)}</b></span></div></div>
+      <div class="v488-stage" id="v488Stage"><div class="v488-chain c1"></div><div class="v488-chain c2"></div><div class="v488-banner">DER AMBOSS DER EWIGEN BLÜTE</div><div class="v488-fire"></div><div class="v488-hammer">🔨</div><div class="v488-anvil"></div><div class="v488-stage-label"><b>PRISMATISCH</b><span>Stärker als legendär.<br>Ohne mystischen Spezialeffekt.</span></div></div>
+      <div class="v488-workgrid">
+        <section class="v488-panel"><div class="v488-panel-head"><h3>🔨 Zerlegen</h3><small>Mehrfachauswahl</small></div><div class="v488-inventory" id="v488ForgeInventory">${renderItems()}</div><div class="v488-selection"><span>${rows.length} ausgewählt</span><b>+${fmt(sum)} Samenfragmente</b></div><button type="button" class="v488-btn" id="v488Dismantle" ${rows.length&&!busy?'':'disabled'}>🔨 ${rows.length?rows.length+' Item'+(rows.length===1?'':'s')+' zerlegen':'Items auswählen'}</button><div class="v488-hint">Normal +1 · Gewöhnlich +3 · Rare +7 · Episch +15 · Legendär +30. Mystische und prismatische Gegenstände können nicht zerlegt werden.</div></section>
+        <section class="v488-panel"><div class="v488-panel-head"><h3>🌈 Prismatisch schmieden</h3><small>zufälliger Slot · deine Klasse</small></div><div class="v488-recipe"><div class="v488-recipe-title">Rezept · Stufe ${level()}</div><div class="v488-costs"><div class="v488-cost ${z.fragments>=c.fragments?'ok':'bad'}"><div class="ico">💠</div><b>Samenfragmente</b><span>${fmt(z.fragments)} / ${fmt(c.fragments)}</span></div><div class="v488-plus">+</div><div class="v488-cost ${(Number(s.gold)||0)>=c.gold?'ok':'bad'}"><div class="ico">🪙</div><b>Gold</b><span>${fmt(s.gold)} / ${fmt(c.gold)}</span></div></div><div class="v488-equals">↓ wird zu ↓</div><div class="v488-prism-preview"><div><div class="big">🌈⚔️</div><b>1 zufälliges prismatisches Item</b><small>Aktuelles Level · passende Klasse · +8 % Schmiede-Essenz auf seine Grundwerte im Kampf</small></div></div><button type="button" class="v488-btn v488-craft-btn" id="v488Craft" ${can?'':'disabled'}>🌈 PRISMATISCHES ITEM SCHMIEDEN</button>${lastCraft?`<div class="v488-last"><b>✨ Geschmiedet:</b><br>${esc(lastCraft.icon)} ${esc(lastCraft.name)}<br>${esc(typeof itemBonus==='function'?itemBonus(lastCraft):'')}</div>`:''}<div class="v488-rules"><div class="v488-rule"><strong>🔒 Gebunden</strong>0 Gold Verkaufswert</div><div class="v488-rule"><strong>🛑 Nicht zerlegbar</strong>Keine Endlosschleife</div><div class="v488-rule"><strong>🌈 Über Legendär</strong>Prisma-Essenz +8 %</div><div class="v488-rule"><strong>💠 Unter Mystisch</strong>Kein Weltboss-Spezialeffekt</div></div></div></section>
+      </div>
+      <div class="v488-legend"><div class="v488-leg"><i style="--c:#9aa29e"></i><span>Normal</span></div><div class="v488-leg"><i style="--c:#66d24c"></i><span>Gewöhnlich</span></div><div class="v488-leg"><i style="--c:#3f9df4"></i><span>Rare</span></div><div class="v488-leg"><i style="--c:#ba65ef"></i><span>Episch</span></div><div class="v488-leg"><i style="--c:#f19a34"></i><span>Legendär</span></div><div class="v488-leg prism"><i style="--c:#e77bff"></i><span>Prismatisch</span></div></div>
+    </div>`;
+    const list=sec.querySelector('#v488ForgeInventory');if(list){list.scrollTop=listScroll;list.addEventListener('scroll',()=>listScroll=list.scrollTop,{passive:true})}
+    sec.querySelectorAll('[data-v488-key]').forEach(card=>card.onclick=()=>{const k=card.dataset.v488Key;if(!k)return;listScroll=list?.scrollTop||0;selected.has(k)?selected.delete(k):selected.add(k);renderForge()});
+    sec.querySelector('#v488Dismantle')?.addEventListener('click',dismantle);
+    sec.querySelector('#v488Craft')?.addEventListener('click',craft);
+  }
+  function burst(kind='dismantle',quality='green'){
+    const st=document.getElementById('v488Stage');if(!st)return;
+    st.classList.remove('hit','crafting');void st.offsetWidth;st.classList.add(kind==='craft'?'crafting':'hit');
+    const palette=kind==='craft'?['#ff69ce','#886cff','#45b5ff','#5ae676','#ffd65a','#ff7c58']:[COLORS[quality]||'#71d958'];
+    for(let i=0;i<22;i++){
+      const x=document.createElement('i');x.className='v488-shard';x.style.setProperty('--c',palette[i%palette.length]);x.style.setProperty('--x',`${Math.round((Math.random()-.5)*250)}px`);x.style.setProperty('--y',`${-35-Math.round(Math.random()*155)}px`);x.style.setProperty('--r',`${Math.round(Math.random()*360)}deg`);x.style.setProperty('--d',`${Math.round(Math.random()*90)}ms`);st.appendChild(x);setTimeout(()=>x.remove(),900)
+    }
+    setTimeout(()=>st.classList.remove('hit','crafting'),1050);
+  }
+  async function dismantle(){
+    if(busy)return;const rows=selectedRows();if(!rows.length)return;
+    const total=rows.reduce((n,x)=>n+yieldOf(x.it),0),valuable=rows.filter(x=>['purple','orange'].includes(q(x.it)));
+    const warning=valuable.length?`\n\n⚠️ ${valuable.length} epische/legendäre Gegenstände sind ausgewählt.`:'';
+    const ok=await confirmBox(`${rows.length} Gegenstand${rows.length===1?'':'e'} wirklich zerlegen?\n\nDu erhältst ${total} Samenfragmente.${warning}`,{title:'In der Harzschmiede zerlegen?',type:valuable.length?'error':'warn',okText:`Zerlegen · +${total} Fragmente`});
+    if(!ok)return;busy=true;
+    burst('dismantle',q(rows[0].it));await new Promise(r=>setTimeout(r,430));
+    const ids=new Set(rows.map(x=>x.key));s.inventory=(s.inventory||[]).filter((it,i)=>!ids.has(ensureItemId(it,i)));const z=state();z.fragments+=total;z.dismantled+=rows.length;selected.clear();save(false);busy=false;renderForge();
+    try{if(typeof render==='function')render()}catch(e){}
+    try{if(typeof v063Toast==='function')v063Toast(`+${total} Samenfragmente`,'success',`${rows.length} Item${rows.length===1?'':'s'} zerlegt`)}catch(e){}
+  }
+  function createPrismatic(){
+    const cls=['grower','scout','bruiser'].includes(String(s.playerClass))?String(s.playerClass):'grower';const slots=Object.keys(SLOT_META),slot=slots[Math.floor(Math.random()*slots.length)],names=NAMES[cls][slot],name=names[Math.floor(Math.random()*names.length)],lvl=level(),pat={...(PATTERN[cls][slot]||{})};
+    const item={id:`prism_${cls}_${slot}_${Date.now()}_${Math.random().toString(36).slice(2)}`,classId:cls,slot,icon:SLOT_META[slot].icon,name:`Prismatisch: ${name} [Lv.${lvl}]`,price:0,quality:'prismatic',rarity:'prismatic-orange',dropLevel:lvl,bonus:{...pat},baseBonusV055:{...pat},v488Prismatic:true,v488Bound:true,v488EssencePct:.08,v488CreatedAt:Date.now()};
+    try{if(typeof window.v447ApplyItemCurve==='function')window.v447ApplyItemCurve(item)}catch(e){console.warn('Harzschmiede Itemkurve',e)}
+    return item;
+  }
+  async function craft(){
+    if(busy)return;const z=state(),c=cost();if(z.fragments<c.fragments)return alertBox(`Dir fehlen ${fmt(c.fragments-z.fragments)} Samenfragmente.`,'Zu wenig Fragmente','warn');if((Number(s.gold)||0)<c.gold)return alertBox(`Dir fehlen ${fmt(c.gold-(Number(s.gold)||0))} Gold.`,'Zu wenig Gold','warn');
+    const ok=await confirmBox(`Prismatisches Item schmieden?\n\nKosten:\n${fmt(c.fragments)} Samenfragmente\n${fmt(c.gold)} Gold\n\nDer Slot wird zufällig bestimmt. Das Item gehört immer zu deiner aktuellen Klasse.`,{title:'🌈 Prismatisches Item schmieden',type:'confirm',okText:'Jetzt schmieden'});if(!ok)return;
+    busy=true;z.fragments-=c.fragments;s.gold=(Number(s.gold)||0)-c.gold;const item=createPrismatic();s.inventory=Array.isArray(s.inventory)?s.inventory:[];s.inventory.push(item);z.crafted++;lastCraft=item;save(false);burst('craft','prism');busy=false;renderForge();try{if(typeof render==='function')render()}catch(e){}setTimeout(()=>{if(document.getElementById('forge')?.classList.contains('active')){renderForge();burst('craft','prism')}},30);try{if(typeof v063Toast==='function')v063Toast('🌈 Prismatisches Item geschmiedet!','success',item.name)}catch(e){}
+  }
+
+  /* UI rarity support. The save quality remains "prismatic", so mystic-only achievements/drops stay isolated. */
+  try{
+    if(typeof qualityMeta==='function'&&!window.__v488QualityMeta){const base=qualityMeta;qualityMeta=function(x){if(String(x).toLowerCase()==='prismatic')return{label:'Prismatisch',cls:'prismatic-orange',color:'q-prismatic',mult:6};return base.apply(this,arguments)};window.__v488QualityMeta=true}
+  }catch(e){}
+  try{
+    if(typeof v123RarityLabel==='function'&&!window.__v488RarityLabel){const base=v123RarityLabel;v123RarityLabel=function(it){return forged(it)?'Prismatisch':base.apply(this,arguments)};window.__v488RarityLabel=true}
+  }catch(e){}
+
+  /* Prismatische Ausrüstung gets +8% effective item stats while equipped. This is a combat/stat bonus,
+     not a mystic special effect, and leaves the unified V4.47 item curve untouched. */
+  try{
+    if(typeof totalAttr==='function'&&!window.__v488TotalAttr){const base=totalAttr;totalAttr=function(k){const raw=Number(base.apply(this,arguments))||0;let p=0;Object.values(s?.equipment||{}).forEach(it=>{if(forged(it))p+=Number(it?.v429StatLock?.native?.[k] ?? it?.bonus?.[k])||0});return Math.round(raw+p*.08)};window.__v488TotalAttr=true}
+  }catch(e){}
+
+  /* Hard economy guards: crafted items can never be sold, including equipped and multi-sell paths. */
+  try{
+    if(typeof sellValue==='function'&&!window.__v488SellValue){const base=sellValue;sellValue=function(it){return forged(it)?0:base.apply(this,arguments)};window.__v488SellValue=true}
+  }catch(e){}
+  try{
+    if(typeof window.sellItem==='function'&&!window.__v488SellItem){const base=window.sellItem;window.sellItem=async function(i){const it=s.inventory?.[i];if(forged(it))return alertBox('Prismatische Schmiede-Items sind gebunden und können nicht verkauft werden.','Nicht verkaufbar','warn');return base.apply(this,arguments)};window.__v488SellItem=true}
+  }catch(e){}
+  try{
+    if(typeof window.sellEquipped==='function'&&!window.__v488SellEquipped){const base=window.sellEquipped;window.sellEquipped=async function(slot){const it=s.equipment?.[slot];if(forged(it))return alertBox('Prismatische Schmiede-Items sind gebunden und können nicht verkauft werden.','Nicht verkaufbar','warn');return base.apply(this,arguments)};window.__v488SellEquipped=true}
+  }catch(e){}
+  try{
+    if(typeof v268SellSelected==='function'&&!window.__v488MultiSell){const base=v268SellSelected;v268SellSelected=async function(){const bad=typeof v268SelectedRows==='function'?v268SelectedRows().filter(x=>forged(x.it)):[];if(bad.length)return alertBox('Prismatische Items sind in der Auswahl. Entferne sie zuerst – sie können nicht verkauft werden.','Prismatisch gebunden','warn');return base.apply(this,arguments)};window.__v488MultiSell=true}
+  }catch(e){}
+
+  function paintPrismaticInventory(){
+    const cards=[...document.querySelectorAll('#character #inventory .inventory-grid .inv-item')];cards.forEach((card,i)=>{const it=s.inventory?.[i];if(!forged(it))return;card.classList.add('prismatic-orange','v488-prismatic-card');const price=card.querySelector('.sell-price');if(price)price.textContent='Verkaufswert: 🔒 0 Gold · gebunden';const sell=card.querySelector('.sell-btn');if(sell){sell.disabled=true;sell.textContent='🔒 Gebunden'}const pick=card.querySelector('.v268-pick input');if(pick){pick.disabled=true;pick.checked=false}if(!card.querySelector('.v488-bound-tag')){const t=document.createElement('div');t.className='v488-bound-tag';t.textContent='🌈 PRISMATISCH · +8 % Schmiede-Essenz · nicht verkaufbar';const actions=card.querySelector('.inv-actions');if(actions)card.insertBefore(t,actions);else card.appendChild(t)}});
+    Object.entries(s.equipment||{}).forEach(([slot,it])=>{if(!forged(it))return;const el=document.getElementById('slot-'+slot);if(!el)return;el.classList.add('prismatic-orange');const buttons=[...el.querySelectorAll('button')];buttons.forEach(b=>{if(/💰|verkauf/i.test(b.textContent||'')){b.disabled=true;b.textContent='🔒 Gebunden'}});if(!el.querySelector('.v488-bound-tag')){const t=document.createElement('div');t.className='v488-bound-tag';t.textContent='🌈 Prismatisch · +8 %';el.appendChild(t)}});
+  }
+  try{
+    if(typeof renderInventory==='function'&&!window.__v488InventoryRender){const base=renderInventory;renderInventory=function(){const r=base.apply(this,arguments);paintPrismaticInventory();return r};try{window.renderInventory=renderInventory}catch(e){}window.__v488InventoryRender=true}
+  }catch(e){}
+  try{
+    if(typeof v123OpenItem==='function'&&!window.__v488ItemOverlay){const base=v123OpenItem;v123OpenItem=function(slot){const r=base.apply(this,arguments);setTimeout(()=>{const it=s.equipment?.[slot];if(forged(it)){const ov=document.getElementById('v123ItemOverlay');ov?.querySelectorAll('button').forEach(b=>{if(/💰|verkauf/i.test(b.textContent||'')){b.disabled=true;b.textContent='🔒 Nicht verkaufbar'}})}},0);return r};window.__v488ItemOverlay=true}
+  }catch(e){}
+
+  function stamp(){
+    document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version').forEach(el=>{if(el)el.textContent=VERSION});
+    document.querySelectorAll('.v366-ver,.v371-logo em,.v372-logo em').forEach(el=>{if(el)el.textContent=SHORT});document.title='Grow Legends '+SHORT;
+  }
+
+  ensureScreen();state();ensureMenu();ensureHomeLink();
+  try{
+    if(typeof v032Go==='function'&&!window.__v488Go){const base=v032Go;v032Go=function(id){ensureScreen();const r=base.apply(this,arguments);ensureMenu();if(id==='forge')renderForge();if(id==='world'){setTimeout(ensureHomeLink,20);setTimeout(ensureHomeLink,140)}stamp();return r};try{window.v032Go=v032Go}catch(e){}window.__v488Go=true}
+  }catch(e){}
+  try{
+    if(typeof render==='function'&&!window.__v488Render){const base=render;render=function(){const r=base.apply(this,arguments);ensureScreen();ensureMenu();ensureHomeLink();paintPrismaticInventory();if(document.getElementById('forge')?.classList.contains('active'))renderForge();stamp();return r};try{window.render=render}catch(e){}window.__v488Render=true}
+  }catch(e){}
+  try{
+    if(typeof persist==='function'&&!window.__v488Persist){const base=persist;persist=function(){const r=base.apply(this,arguments);try{localStorage.setItem(KEY,JSON.stringify(s))}catch(e){}return r};try{window.persist=persist}catch(e){}window.__v488Persist=true}
+  }catch(e){}
+
+  if(document.getElementById('forge')?.classList.contains('active'))renderForge();paintPrismaticInventory();stamp();
+  document.addEventListener('DOMContentLoaded',()=>{ensureScreen();ensureMenu();ensureHomeLink();paintPrismaticInventory();stamp()},{once:true});
+  window.addEventListener('pageshow',()=>{ensureMenu();ensureHomeLink();paintPrismaticInventory();stamp()},{passive:true});
+  [250,900,2200,5200,10200,16200].forEach(ms=>setTimeout(()=>{ensureMenu();ensureHomeLink();paintPrismaticInventory();stamp()},ms));
+  window.v488OpenForge=()=>v032Go('forge');window.v488ForgeState=state;window.v488ForgeRender=renderForge;
+})();
+</script>
+
