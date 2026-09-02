@@ -44989,14 +44989,14 @@ function historicalScriptCount(){if(historicCountCache!=null)return historicCoun
 
 
 
-<!-- ===== V4.108 Stable: Systemtechnik ohne Item-Galerie + Comic-Icons nur im echten Spiel ===== -->
+<!-- ===== V4.110 Stable: Systemtechnik ohne Item-Galerie + Comic-Icons nur im echten Spiel ===== -->
 <style id="v4108-item-placement-fix-css">
 #v4107ItemShowcase,[data-v4107-jump="items"]{display:none!important}
 </style>
 <script id="v4108-item-placement-fix">
 (()=>{
  'use strict';
- const VERSION='V4.108 Stable',SHORT='V4.108';
+ const VERSION='V4.110 Stable',SHORT='V4.110';
  function stamp(){try{document.title='Grow Legends '+SHORT}catch(e){}try{document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version').forEach(e=>e&&(e.textContent=VERSION));document.querySelectorAll('.v366-ver,.v371-logo em,.v372-logo em').forEach(e=>e&&(e.textContent=SHORT));document.querySelectorAll('.v4107-version').forEach(e=>e&&(e.textContent=SHORT))}catch(e){}}
  function comicUri(it){try{return String(window.v4106ComicItemArtUri?.(it)||window.v466ItemArtUri?.(it)||'')}catch(e){return''}}
  function setArt(box,it){if(!box||!it)return false;const uri=comicUri(it);if(!uri)return false;let img=box.querySelector(':scope > img.v466-item-art');if(!img){img=document.createElement('img');img.className='v466-item-art';box.replaceChildren(img)}img.src=uri;img.alt=String(it.name||'Gegenstand');img.dataset.v4106Comic='1';img.dataset.v4108Current='1';return true}
@@ -45020,6 +45020,21 @@ function historicalScriptCount(){if(historicCountCache!=null)return historicCoun
 })();
 </script>
 
+
+<!-- ===== V4.110 Stable: Samen-Händler Live-Kauf Regression Contract ===== -->
+<script id="v4109-seed-buy-regression-stamp">
+(()=>{const f=()=>{try{document.title='Grow Legends V4.110';document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version').forEach(e=>e&&(e.textContent='V4.110 Stable'));document.querySelectorAll('.v366-ver,.v371-logo em,.v372-logo em').forEach(e=>e&&(e.textContent='V4.110'))}catch(e){}};f();[150,900,3000,9000,20000,45000].forEach(ms=>setTimeout(f,ms));window.addEventListener('pageshow',f,{passive:true});document.addEventListener('visibilitychange',()=>!document.hidden&&f(),{passive:true})})();
+</script>
+
+<!-- ===== V4.110 Stable: fail-first Systemtechnik visibility guard ===== -->
+<script id="v4110-systemtechnik-visibility-guard">
+(()=>{
+ const VERSION='V4.110 Stable',SHORT='V4.110';
+ function stamp(){try{document.title='Grow Legends '+SHORT;document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version').forEach(e=>e&&(e.textContent=VERSION));document.querySelectorAll('.v366-ver,.v371-logo em,.v372-logo em,.v4107-version').forEach(e=>e&&(e.textContent=SHORT))}catch(e){}}
+ function guard(){try{stamp();const sec=document.getElementById('systemtech');if(!sec?.classList.contains('active'))return;const panels=['v4107Status','v4107Groups','v4107Tests'];for(const id of panels){const el=document.getElementById(id);if(el&&!String(el.textContent||'').trim()){el.innerHTML='<div class="v4110-loading"><b>🛡️ Anzeige wird wiederhergestellt…</b>Systemtechnik hat einen leeren Bereich erkannt und lädt den letzten Bericht neu.</div>';try{window.v4107OpenSystemtechnik?.()}catch(e){}}}}catch(e){}}
+ stamp();[0,120,600,1800,5000,12000,30000,60000].forEach(ms=>setTimeout(guard,ms));window.addEventListener('pageshow',guard,{passive:true});document.addEventListener('visibilitychange',()=>!document.hidden&&guard(),{passive:true});
+})();
+</script>
 </body>
 </html>
 <style id="v268-inventory-multisell-css">
@@ -68014,7 +68029,37 @@ html.v481-hidden *,html.v481-hidden *::before,html.v481-hidden *::after{animatio
  function buffLeft(){const a=ensure().active;if(!a)return'Kein Buff aktiv';const ms=Math.max(0,a.expiresAt-Date.now()),m=Math.floor(ms/60000),sec=Math.floor(ms%60000/1000);return `${m}:${String(sec).padStart(2,'0')}`}
  function addSeed(id,n=1,reason='Fund'){ensure();if(!SEEDS[id])return;s.grow.seeds[id]=(Number(s.grow.seeds[id])||0)+n;const z=ensure();z.discovered[id]=true;z.stats.seedsFound+=n;save(false);toast(`🌰 ${SEEDS[id].name}`,'success',`${reason}: +${n} Samen`);try{renderGrow()}catch(e){}}
  function randomSeed(pool){const a=pool.filter(id=>SEEDS[id]);return a[Math.floor(Math.random()*a.length)]||'moss'}
- function buySeed(id){ensure();const d=SEEDS[id];if(!d||!d.buy)return toast('Dieser Samen ist nicht käuflich','info',d?.source||'Nur als Beute erhältlich.');if((Number(s.gold)||0)<d.buy)return toast('Nicht genug Gold','warn',`${d.name} kostet ${fmt(d.buy)} Gold.`);s.gold-=d.buy;s.grow.seeds[id]++;ensure().discovered[id]=true;save(false);renderGrow();try{if(typeof v069SyncCurrencies==='function')v069SyncCurrencies()}catch(e){}toast(`🌰 ${d.name} gekauft`,'success',`Vorrat: ${s.grow.seeds[id]}`)}
+ function v4109ApplySeedPurchase(state,id){
+  const d=SEEDS[id];
+  if(!state||!d||!Number(d.buy))return {ok:false,reason:'not-buyable'};
+  state.grow=(state.grow&&typeof state.grow==='object')?state.grow:{};
+  state.grow.seeds=(state.grow.seeds&&typeof state.grow.seeds==='object')?state.grow.seeds:{};
+  const gold=Math.max(0,Number(state.gold)||0),price=Math.max(0,Number(d.buy)||0);
+  if(gold<price)return {ok:false,reason:'gold',gold,price};
+  state.gold=gold-price;
+  state.grow.seeds[id]=Math.max(0,Math.floor(Number(state.grow.seeds[id])||0))+1;
+  state.grow.v492=(state.grow.v492&&typeof state.grow.v492==='object')?state.grow.v492:{};
+  state.grow.v492.discovered=(state.grow.v492.discovered&&typeof state.grow.v492.discovered==='object')?state.grow.v492.discovered:{};
+  state.grow.v492.discovered[id]=true;
+  return {ok:true,id,price,stock:state.grow.seeds[id],gold:state.gold};
+ }
+ function v4109RefreshSeedPurchaseUi(){
+  try{renderGrow()}catch(e){}
+  try{if(typeof v495RenderSeedInventory==='function')v495RenderSeedInventory()}catch(e){}
+  try{if(typeof v069SyncCurrencies==='function')v069SyncCurrencies()}catch(e){}
+ }
+ function buySeed(id){
+  ensure();const d=SEEDS[id];
+  if(!d||!d.buy)return toast('Dieser Samen ist nicht käuflich','info',d?.source||'Nur als Beute erhältlich.');
+  if((Number(s.gold)||0)<d.buy)return toast('Nicht genug Gold','warn',`${d.name} kostet ${fmt(d.buy)} Gold.`);
+  const r=v4109ApplySeedPurchase(s,id);if(!r.ok)return;
+  save(false);
+  v4109RefreshSeedPurchaseUi();
+  try{queueMicrotask(()=>{try{if(typeof v495RenderSeedInventory==='function')v495RenderSeedInventory()}catch(e){}})}catch(e){}
+  setTimeout(()=>{try{if(typeof v495RenderSeedInventory==='function')v495RenderSeedInventory()}catch(e){}},80);
+  toast(`🌰 ${d.name} gekauft`,'success',`Vorrat: ${r.stock}`)
+ }
+ window.v4109ApplySeedPurchase=v4109ApplySeedPurchase;window.v4109RefreshSeedPurchaseUi=v4109RefreshSeedPurchaseUi;
  function selectSeed(id){if(!SEEDS[id])return;ensure().selectedSeed=id;s.grow.selectedSeed=id;save(false);renderGrow()}
  window.buySeed=buySeed;window.selectSeed=selectSeed;try{buySeedAction=buySeed;selectSeedAction=selectSeed}catch(e){}
  function plant(slot=null){const z=ensure(),id=z.selectedSeed,d=SEEDS[id];if(!d)return;if((s.grow.seeds[id]||0)<1)return toast('Keine Samen','warn',`${d.name} ist leer. Quelle: ${d.source}`);const cap=typeof growCapacity==='function'?growCapacity():Math.min(6,1+(s.grow.roomLevel-1)*2),plants=s.grow.plants;let idx=slot==null?plants.findIndex(x=>!x):Number(slot);if(idx<0)idx=plants.length;if(idx>=cap||plants[idx])return toast('Pflanzenplatz nicht verfügbar','warn','Wähle einen freien, freigeschalteten Topf.');while(plants.length<=idx)plants.push(null);plants[idx]={uid:`v492_${Date.now()}_${Math.random().toString(36).slice(2,7)}`,seed:id,start:Date.now(),duration:Math.round(d.growMs*(typeof lampSpeed==='function'?lampSpeed():1)),care:[false,false,false,false],mutation:null,mutationChecked:false};s.grow.seeds[id]--;z.discovered[id]=true;z.selectedPlantUid=plants[idx].uid;try{if(s.v106Achievements?.stats)s.v106Achievements.stats.plantsGrown=(Number(s.v106Achievements.stats.plantsGrown)||0)+1}catch(e){}save(false);renderGrow();try{if(typeof v106CheckAchievements==='function')v106CheckAchievements()}catch(e){}toast(`🌱 ${d.name} gepflanzt`,'success','Pflegefenster erscheinen während des Wachstums. Nichts verdorrt, wenn du eines verpasst.')}
@@ -68101,9 +68146,17 @@ html.v481-hidden *,html.v481-hidden *::before,html.v481-hidden *::after{animatio
   return map[id]||`🎁 ${d.source}`;
  }
  function v495SeedInventoryCard(id,d){
-  const z=ensure(),stock=Math.max(0,Number(s.grow.seeds[id])||0),selected=z.selectedSeed===id,owned=stock>0,buy=d.buy>0;
-  return `<div class="v495-seed-card v492-r-${d.rarity} ${selected?'selected':''} ${!owned&&!buy?'locked':''}" ${owned?`data-v492-seed="${id}"`:''}><span class="v495-stock">×${stock}</span><div class="v495-seed-icon">${d.icon}</div><div class="v495-seed-name">${esc(d.name)}</div><div class="v495-rarity">${RARITY_LABEL[d.rarity]} · ${Math.round(d.growMs/60000)} Min.</div><div class="v495-source">${esc(v495SeedSourceHint(id,d))}</div><div class="v495-affinity">${affinityStars(d)} ${d.affinity==='all'?'Alle Klassen':className(d.affinity)}</div><div class="v495-buff">🌿 ${esc(statsText(d.stats))}</div>${selected?'<div class="v495-selected">✓ AUSGEWÄHLT</div>':owned?'<div class="v495-choose">Antippen zum Auswählen</div>':buy?`<button class="btn secondary v495-buy" data-v492-buy="${id}">Kaufen · ${fmt(d.buy)} G</button>`:'<div class="v495-find">Noch nicht im Lager</div>'}</div>`;
+  const z=ensure(),stock=Math.max(0,Number(s.grow.seeds[id])||0),selected=z.selectedSeed===id,owned=stock>0,buy=Number(d.buy)>0;
+  const selectState=selected?'<div class="v495-selected">✓ AUSGEWÄHLT</div>':owned?'<div class="v495-choose">Antippen zum Auswählen</div>':buy?'<div class="v495-find">Noch nicht im Lager</div>':'<div class="v495-find">Noch nicht im Lager</div>';
+  const buyButton=buy?`<button class="btn secondary v495-buy" data-v492-buy="${id}">Kaufen · ${fmt(d.buy)} G</button>`:'';
+  const selectable=(owned||selected)?`data-v492-seed="${id}"`:'';
+  return `<div class="v495-seed-card v492-r-${d.rarity} ${selected?'selected':''} ${!owned&&!buy?'locked':''}" ${selectable}><span class="v495-stock">×${stock}</span><div class="v495-seed-icon">${d.icon}</div><div class="v495-seed-name">${esc(d.name)}</div><div class="v495-rarity">${RARITY_LABEL[d.rarity]} · ${Math.round(d.growMs/60000)} Min.</div><div class="v495-source">${esc(v495SeedSourceHint(id,d))}</div><div class="v495-affinity">${affinityStars(d)} ${d.affinity==='all'?'Alle Klassen':className(d.affinity)}</div><div class="v495-buff">🌿 ${esc(statsText(d.stats))}</div>${selectState}${buyButton}</div>`;
  }
+ window.v4109SelectedSeedKeepsBuyButton=function(id='moss'){
+  const d=SEEDS[id];if(!d||!Number(d.buy))return false;const z=ensure(),oldZ=z.selectedSeed,oldG=s.grow.selectedSeed;
+  try{z.selectedSeed=id;s.grow.selectedSeed=id;return v495SeedInventoryCard(id,d).includes(`data-v492-buy="${id}"`)}
+  finally{z.selectedSeed=oldZ;s.grow.selectedSeed=oldG}
+ };
  function v495RenderSeedInventory(){
   const ov=v495EnsureSeedInventory(),z=ensure(),grid=ov.querySelector('#v495SeedGrid'),meta=ov.querySelector('#v495SeedMeta');if(!grid||!meta)return;
   const owned=Object.keys(SEEDS).filter(id=>(Number(s.grow.seeds[id])||0)>0).length,total=Object.keys(SEEDS).length,units=Object.keys(SEEDS).reduce((n,id)=>n+(Number(s.grow.seeds[id])||0),0);
@@ -68702,10 +68755,10 @@ body.v495-seed-open{overflow:hidden!important}
 })();
 </script>
 
-<!-- ===== V4.108 Stable: full Systemtechnik page + deep QA matrix ===== -->
+<!-- ===== V4.110 Stable: full Systemtechnik page + deep QA matrix ===== -->
 <style id="v4107-systemtechnik-css">
-.app > header .v358-logo::after{content:"V4.108"!important}
-.app > header .v366-ver::after,.app > header .v371-logo em::after,.app > header .v372-logo em::after{content:"V4.108"!important}
+.app > header .v358-logo::after{content:"V4.110"!important}
+.app > header .v366-ver::after,.app > header .v371-logo em::after,.app > header .v372-logo em::after{content:"V4.110"!important}
 #v4102QaOverlay{display:none!important}
 #systemtech.screen{padding:0 0 18px!important}
 .v4107-page{--st-green:#81ef48;--st-line:#537236;--st-gold:#d8a43c;--st-bg:#07100a;--st-panel:#0b1710;color:#e8f1e4;font-family:inherit}
@@ -68759,11 +68812,19 @@ body.v495-seed-open{overflow:hidden!important}
  .v4107-right{display:grid;grid-template-columns:1fr;margin-top:7px}.v4107-status{grid-template-columns:58px 1fr}.v4107-shield{width:52px;height:52px;font-size:28px}.v4107-score{grid-column:1/-1}.v4107-summary{grid-template-columns:1fr 1fr}.v4107-groups{grid-template-columns:1fr 1fr}.v4107-rarity-row{grid-template-columns:repeat(2,1fr)}.v4107-cat-row{grid-template-columns:repeat(2,1fr)}.v4107-footerbar{grid-template-columns:repeat(2,1fr)}
 }
 @media(max-width:390px){.v4107-groups{grid-template-columns:1fr}.v4107-actions{flex-direction:column}.v4107-test-row{grid-template-columns:18px 1fr}.v4107-test-row em{display:none}}
+.v4110-problems{margin-top:8px;padding:9px;border:2px solid #6f3434;border-radius:12px;background:linear-gradient(180deg,#1d0b0b,#0d0707)}
+.v4110-problems.warnonly{border-color:#6b572b;background:linear-gradient(180deg,#1b1508,#0d0b05)}
+.v4110-problems.clean{border-color:#35613c;background:linear-gradient(180deg,#102615,#08120b)}
+.v4110-problems-head{display:flex;justify-content:space-between;gap:8px;align-items:center;margin-bottom:6px}.v4110-problems-head b{font-size:9px;color:#ff928b}.v4110-problems.warnonly .v4110-problems-head b{color:#f1cd68}.v4110-problems.clean .v4110-problems-head b{color:#91ed77}.v4110-problems-head span{font-size:6px;color:#9aa69a}
+.v4110-problem-row{display:grid;grid-template-columns:18px minmax(0,1fr) auto;gap:6px;align-items:start;padding:6px 5px;border-top:1px solid #482020}.v4110-problem-row:first-of-type{border-top:0}.v4110-problem-row .ico{font-size:10px}.v4110-problem-row b{font-size:7px;color:#f0e7e4}.v4110-problem-row small{display:block;margin-top:2px;color:#a58d8a;font-size:5.8px;line-height:1.35;word-break:break-word}.v4110-problem-row em{font-style:normal;font-size:5.5px;color:#ff8a82;font-weight:1000}.v4110-problem-row.warn em{color:#f0c85f}
+.v4110-loading{padding:13px;border:1px solid #3b563d;border-radius:11px;background:#08120a;color:#a9bba7;font-size:7px;line-height:1.5}.v4110-loading b{display:block;color:#91e873;font-size:9px;margin-bottom:3px}
+.v4110-fatal{padding:11px;border:2px solid #7b3434;border-radius:11px;background:#200b0b;color:#e7c0bc}.v4110-fatal b{display:block;color:#ff8c84;font-size:10px}.v4110-fatal small{display:block;margin-top:4px;font-size:6px;line-height:1.4;word-break:break-word}
+@media(max-width:520px){.v4110-problem-row{grid-template-columns:18px minmax(0,1fr)}.v4110-problem-row em{grid-column:2}}
 </style>
 <script id="v4107-systemtechnik">
 (()=>{
 'use strict';
-const VERSION='V4.108 Stable',SHORT='V4.108',STORE='growLegendsQA:v4107:';
+const VERSION='V4.110 Stable',SHORT='V4.110',STORE='growLegendsQA:v4107:';
 const baseRun=window.v4106RunQA||window.v4102RunQA;
 const oldOpen=window.v4102OpenQA;
 let last=null,selectedGroup='',filter='problems',storageEstimate=null,lastNav='',renderTimer=0,historicCountCache=null;
@@ -68894,6 +68955,10 @@ function fullReport(){
  T('Growroom-Matrix','Grow-Beutel maximal 3',()=>Array.isArray(s.grow?.v492?.bag||[])&&(s.grow.v492.bag||[]).length<=3);
  T('Growroom-Matrix','Aktiver Grow-Buff besitzt Ablaufzeit',()=>!s.grow?.v492?.active||Number(s.grow.v492.active.expiresAt)>0);
  T('Growroom-Matrix','Keine negative Samenmenge',()=>Object.values(s.grow?.seeds||{}).every(x=>Number.isFinite(Number(x))&&Number(x)>=0));
+ T('Samenkauf Live','Ausgewählter kaufbarer Samen behält Kaufen-Button',()=>typeof window.v4109SelectedSeedKeepsBuyButton==='function'&&window.v4109SelectedSeedKeepsBuyButton('moss'));
+ T('Samenkauf Live','Kauftransaktion erhöht Bestand sofort und zieht Gold exakt ab',()=>{if(typeof window.v4109ApplySeedPurchase!=='function')return false;const c=clone(s)||{};c.gold=10000;c.grow=(c.grow&&typeof c.grow==='object')?c.grow:{};c.grow.seeds=(c.grow.seeds&&typeof c.grow.seeds==='object')?c.grow.seeds:{};c.grow.seeds.moss=3;c.grow.selectedSeed='moss';c.grow.v492=(c.grow.v492&&typeof c.grow.v492==='object')?c.grow.v492:{};c.grow.v492.selectedSeed='moss';const beforeGold=c.gold,beforeStock=c.grow.seeds.moss,sel=c.grow.v492.selectedSeed;const r=window.v4109ApplySeedPurchase(c,'moss');return !!r?.ok&&c.grow.seeds.moss===beforeStock+1&&c.gold===beforeGold-180&&c.grow.v492.selectedSeed===sel});
+ T('Samenkauf Live','Kauf aktualisiert Samenlager ohne Seiten-Reload',()=>typeof window.v4109RefreshSeedPurchaseUi==='function'&&src.includes('v495RenderSeedInventory'));
+ T('Samenkauf Live','Samenkauf lässt ausgewählte Sorte unverändert',()=>{if(typeof window.v4109ApplySeedPurchase!=='function')return false;const c=clone(s)||{};c.gold=10000;c.grow=(c.grow&&typeof c.grow==='object')?c.grow:{};c.grow.seeds=(c.grow.seeds&&typeof c.grow.seeds==='object')?c.grow.seeds:{};c.grow.v492=(c.grow.v492&&typeof c.grow.v492==='object')?c.grow.v492:{};c.grow.v492.selectedSeed='jack';c.grow.selectedSeed='jack';window.v4109ApplySeedPurchase(c,'moss');return c.grow.v492.selectedSeed==='jack'&&c.grow.selectedSeed==='jack'});
  T('Growroom-Matrix','Mutation nur gültiger Typ',()=>{const ok=['purple','frost','black','golden','emerald','prismatic'];return(s.grow?.plants||[]).filter(Boolean).every(p=>!p.mutation||ok.includes(p.mutation))});
 
  const classIds=['grower','scout','bruiser'];
@@ -69061,6 +69126,10 @@ function fullReport(){
  T('Browser & Sicherheit','MutationObserver verfügbar',()=>typeof MutationObserver==='function');
  T('Browser & Sicherheit','requestAnimationFrame verfügbar',()=>typeof requestAnimationFrame==='function');
  T('Browser & Sicherheit','Keine fehlenden kritischen Globals',()=>['render','persist','v032Go'].every(k=>typeof window[k]==='function'||typeof globalThis[k]==='function'));
+ T('Systemtechnik UI','Fehlerübersicht ist fest eingebaut',()=>typeof problemSummaryHtml==='function'&&src.includes('AKTUELLE FEHLER'));
+ T('Systemtechnik UI','Leere Panels haben Lade-Fallback',()=>src.includes('Systemtest wird vorbereitet')&&src.includes('Fehlerdetails'));
+ T('Systemtechnik UI','Test-Engine-Fehler werden sichtbar dargestellt',()=>typeof renderFatal==='function'&&src.includes('SYSTEMTECH_RENDER_ERROR'));
+ T('Systemtechnik UI','Systemtechnik kann letzten Bericht sofort laden',()=>typeof cachedReport==='function');
 
  const fails=out.filter(x=>!x.pass&&x.severity!=='warn'),warns=out.filter(x=>!x.pass&&x.severity==='warn'),passed=out.filter(x=>x.pass).length;
  const report={version:SHORT,at:Date.now(),total:out.length,passed,failed:fails.length,warnings:warns.length,ok:fails.length===0,results:out};
@@ -69082,7 +69151,7 @@ function ensureScreen(){
  const main=document.querySelector('main');if(!main)return null;
  let sec=document.getElementById('systemtech');if(!sec){sec=document.createElement('section');sec.id='systemtech';sec.className='screen';const footer=document.getElementById('v337LegalFooter');if(footer&&footer.parentElement===main)main.insertBefore(sec,footer);else main.appendChild(sec)}
  if(!sec.dataset.built){sec.dataset.built='1';sec.innerHTML=`<div class="v4107-page">
-  <div class="v4107-top"><div class="v4107-brand"><div class="v4107-brand-mark">🌿⚙️</div><div><h1>GROW LEGENDS <span>SYSTEMTEST & TECHNIK</span></h1><p>AUTOMATISCHE PRÜFUNG ALLER SYSTEME · FLOW · UI/PIXEL · SAVE · PERFORMANCE · ALTLASTEN</p></div></div><div class="v4107-version">V4.108</div></div>
+  <div class="v4107-top"><div class="v4107-brand"><div class="v4107-brand-mark">🌿⚙️</div><div><h1>GROW LEGENDS <span>SYSTEMTEST & TECHNIK</span></h1><p>AUTOMATISCHE PRÜFUNG ALLER SYSTEME · FLOW · UI/PIXEL · SAVE · PERFORMANCE · ALTLASTEN</p></div></div><div class="v4107-version">V4.110</div></div>
   <div class="v4107-layout">
    <aside class="v4107-sidebar"><div class="v4107-side-title">⚙️ SYSTEMTECHNIK</div>
     <button class="v4107-nav active" data-v4107-jump="status"><i>🧪</i>Systemtest</button>
@@ -69093,9 +69162,9 @@ function ensureScreen(){
     <div class="v4107-left-foot">Automatische Tests verändern deinen echten Spielstand nicht absichtlich. Verdächtige Hintergrundprozesse werden gemeldet, nicht blind beendet.</div>
    </aside>
    <div class="v4107-main">
-    <div class="v4107-panel" id="v4107Status"></div>
-    <div class="v4107-panel" id="v4107Groups"></div>
-    <div class="v4107-panel" id="v4107Tests"></div>
+    <div class="v4107-panel" id="v4107Status"><div class="v4110-loading"><b>🧪 Systemtest wird vorbereitet…</b>Letzter gespeicherter Bericht wird geladen. Danach startet die Tiefenprüfung im Hintergrund.</div></div>
+    <div class="v4107-panel" id="v4107Groups"><div class="v4110-loading"><b>🎮 Test-Matrix</b>Bereiche werden geladen…</div></div>
+    <div class="v4107-panel" id="v4107Tests"><div class="v4110-loading"><b>🛡️ Fehlerdetails</b>Fehler und Warnungen werden hier immer sichtbar aufgelistet.</div></div>
    </div>
    <aside class="v4107-right" id="v4107Right"></aside>
   </div>
@@ -69105,12 +69174,41 @@ function ensureScreen(){
   const b=e.target.closest?.('[data-v4107-jump]');if(b){const map={status:'v4107Status',groups:'v4107Groups',tests:'v4107Tests',performance:'v4107PerfCard',errors:'v4107ErrorCard'};document.getElementById(map[b.dataset.v4107Jump])?.scrollIntoView({behavior:'smooth',block:'start'});sec.querySelectorAll('.v4107-nav').forEach(x=>x.classList.toggle('active',x===b));return}
   const g=e.target.closest?.('[data-v4107-group]');if(g){selectedGroup=decodeURIComponent(g.dataset.v4107Group);renderPage(last||fullReport());document.getElementById('v4107Tests')?.scrollIntoView({behavior:'smooth',block:'start'});return}
   const f=e.target.closest?.('[data-v4107-filter]');if(f){filter=f.dataset.v4107Filter;renderPage(last||fullReport());return}
-  if(e.target.closest?.('#v4107Run')){const r=fullReport();renderPage(r);return}
+  if(e.target.closest?.('#v4107Run')){renderLoading();setTimeout(()=>{try{const r=fullReport();renderPage(r)}catch(err){renderFatal(err)}},50);return}
   if(e.target.closest?.('#v4107Clear')){try{localStorage.removeItem(runtimeKey());localStorage.removeItem(`growLegendsQA:v4106:${owner()}:runtime`)}catch(_){}errlog.length=0;renderPage(last||fullReport());return}
   if(e.target.closest?.('#v4107Copy')){copyReport(last||fullReport());return}
  });
  }
  return sec
+}
+function cachedReport(){
+ try{const r=JSON.parse(localStorage.getItem(key())||'null');return r&&Array.isArray(r.results)?r:null}catch(e){return null}
+}
+function problemSummaryHtml(r){
+ const all=(r?.results||[]).filter(x=>!x.pass),fails=all.filter(x=>x.severity!=='warn'),warns=all.filter(x=>x.severity==='warn');
+ if(!fails.length&&!warns.length)return `<div class="v4110-problems clean"><div class="v4110-problems-head"><b>✅ AKTUELLE FEHLER</b><span>0 Fehler · 0 Warnungen</span></div><div class="v4107-clean">Kein automatischer Fehler im letzten vollständigen Lauf.</div></div>`;
+ const rows=[...fails,...warns].slice(0,30);
+ return `<div class="v4110-problems ${fails.length?'':'warnonly'}"><div class="v4110-problems-head"><b>${fails.length?'❌ AKTUELLE FEHLER':'⚠️ AKTUELLE WARNUNGEN'}</b><span>${fails.length} Fehler · ${warns.length} Warnungen</span></div>${rows.map(x=>`<div class="v4110-problem-row ${x.severity==='warn'?'warn':''}"><span class="ico">${x.severity==='warn'?'⚠️':'❌'}</span><div><b>${esc(x.category)} · ${esc(x.name)}</b>${x.detail?`<small>${esc(x.detail)}</small>`:''}</div><em>${x.severity==='warn'?'WARNUNG':'FEHLER'}</em></div>`).join('')}${all.length>30?`<div class="v4110-loading">Weitere ${all.length-30} Meldungen stehen in der jeweiligen Testgruppe.</div>`:''}</div>`
+}
+function renderFatal(e){
+ const msg=String(e?.stack||e?.message||e||'Unbekannter Fehler');
+ const status=document.getElementById('v4107Status'),groups=document.getElementById('v4107Groups'),tests=document.getElementById('v4107Tests'),right=document.getElementById('v4107Right');
+ if(status)status.innerHTML=`<div class="v4110-fatal"><b>❌ SYSTEMTECHNIK KONNTE DEN TEST NICHT VOLLSTÄNDIG RENDERN</b><small>${esc(msg)}</small></div>`;
+ if(groups)groups.innerHTML='<div class="v4110-loading"><b>Testlauf abgebrochen</b>Die Seite bleibt sichtbar. Der technische Fehler steht oben und kann gemeldet werden.</div>';
+ if(tests)tests.innerHTML='<div class="v4110-loading"><b>Keine leere Fehlerseite mehr</b>Ein interner Testfehler wird jetzt selbst als Fehler angezeigt.</div>';
+ if(right)right.innerHTML=`<div class="v4107-right-card"><h3>🛡️ TEST-ENGINE-FEHLER</h3><div class="v4110-fatal"><small>${esc(msg)}</small></div></div>`;
+ try{pushErr('SYSTEMTECH_RENDER_ERROR',msg,'error')}catch(_){}
+}
+function renderLoading(){
+ const status=document.getElementById('v4107Status');if(status&&!status.querySelector('.v4107-status'))status.innerHTML='<div class="v4110-loading"><b>🧪 Tiefentest läuft…</b>Die letzten bekannten Fehler werden zuerst angezeigt; der neue vollständige Bericht folgt automatisch.</div>'
+}
+let v4110RunPending=false;
+function runAndRender(){
+ if(v4110RunPending){const cached=last||cachedReport();if(cached){try{renderPage(cached)}catch(e){renderFatal(e)}}return}
+ const cached=last||cachedReport();
+ if(cached){try{last=cached;renderPage(cached)}catch(e){renderFatal(e);return}}
+ else renderLoading();
+ v4110RunPending=true;setTimeout(()=>{try{const r=fullReport();renderPage(r)}catch(e){renderFatal(e)}finally{v4110RunPending=false}},80);
 }
 function rowsForGroup(g){
  let rows=g?.rows||[];if(filter==='problems')rows=rows.filter(x=>!x.pass);else if(filter==='errors')rows=rows.filter(x=>!x.pass&&x.severity!=='warn');else if(filter==='warnings')rows=rows.filter(x=>!x.pass&&x.severity==='warn');
@@ -69121,7 +69219,7 @@ function renderPage(r){
  const sec=ensureScreen();if(!sec||!r)return;
  const groups=groupData(r);if(!selectedGroup||!groups.some(x=>x.name===selectedGroup)){selectedGroup=(groups.find(x=>x.failed)?.name||groups.find(x=>x.warnings)?.name||groups[0]?.name||'')}
  const st=statusText(r),pct=r.total?Math.round(r.passed/r.total*100):0;
- const status=document.getElementById('v4107Status');if(status)status.innerHTML=`<div class="v4107-status" data-v4107-anchor="status"><div class="v4107-shield">${r.failed?'!':'✓'}</div><div class="v4107-status-copy"><small>SYSTEMSTATUS</small><h2 class="${st[2]==='bad'?'v4107-bad':st[2]==='warn'?'v4107-warn':'v4107-ok'}">${esc(st[0])}</h2><p>${esc(st[1])}</p></div><div class="v4107-score"><small>TESTABDECKUNG</small><strong>${pct}%</strong><span>${r.passed} / ${r.total}</span></div><div class="v4107-progress"><i style="width:${pct}%"></i></div></div><div class="v4107-summary"><div class="v4107-stat"><small>TESTS</small><b>${r.total}</b></div><div class="v4107-stat"><small>BESTANDEN</small><b class="v4107-ok">${r.passed}</b></div><div class="v4107-stat"><small>WARNUNGEN</small><b class="v4107-warn">${r.warnings}</b></div><div class="v4107-stat"><small>FEHLER</small><b class="v4107-bad">${r.failed}</b></div></div><div class="v4107-actions"><button class="btn" id="v4107Run">↻ Tests erneut starten</button><button class="btn secondary" id="v4107Copy">📋 Bericht kopieren</button><button class="btn secondary" id="v4107Clear">🧹 Fehlerlog löschen</button></div>`;
+ const status=document.getElementById('v4107Status');if(status)status.innerHTML=`<div class="v4107-status" data-v4107-anchor="status"><div class="v4107-shield">${r.failed?'!':'✓'}</div><div class="v4107-status-copy"><small>SYSTEMSTATUS</small><h2 class="${st[2]==='bad'?'v4107-bad':st[2]==='warn'?'v4107-warn':'v4107-ok'}">${esc(st[0])}</h2><p>${esc(st[1])}</p></div><div class="v4107-score"><small>TESTABDECKUNG</small><strong>${pct}%</strong><span>${r.passed} / ${r.total}</span></div><div class="v4107-progress"><i style="width:${pct}%"></i></div></div><div class="v4107-summary"><div class="v4107-stat"><small>TESTS</small><b>${r.total}</b></div><div class="v4107-stat"><small>BESTANDEN</small><b class="v4107-ok">${r.passed}</b></div><div class="v4107-stat"><small>WARNUNGEN</small><b class="v4107-warn">${r.warnings}</b></div><div class="v4107-stat"><small>FEHLER</small><b class="v4107-bad">${r.failed}</b></div></div><div class="v4107-actions"><button class="btn" id="v4107Run">↻ Tests erneut starten</button><button class="btn secondary" id="v4107Copy">📋 Bericht kopieren</button><button class="btn secondary" id="v4107Clear">🧹 Fehlerlog löschen</button></div>${problemSummaryHtml(r)}`;
  const grp=document.getElementById('v4107Groups');if(grp)grp.innerHTML=`<div class="v4107-section-head"><h3>TEST-MATRIX · ${groups.length} BEREICHE</h3><span>Gruppe antippen für Details</span></div><div class="v4107-groups">${groups.map(g=>`<div class="v4107-group ${g.name===selectedGroup?'active':''}" data-v4107-group="${encodeURIComponent(g.name)}"><div class="v4107-group-top"><div class="v4107-group-title">${esc(g.name)}</div><div class="v4107-group-score">${g.passed}/${g.total}</div></div><div class="v4107-group-mini"><span>${g.passed} ✅</span>${g.warnings?` · <span class="warn">${g.warnings} ⚠️</span>`:''}${g.failed?` · <span class="fail">${g.failed} ❌</span>`:''}<br>${g.failed?'Fehler vorhanden':g.warnings?'Technische Hinweise':'Bereich ohne Fehler'}</div></div>`).join('')}</div>`;
  const cur=groups.find(x=>x.name===selectedGroup);const tests=document.getElementById('v4107Tests');if(tests)tests.innerHTML=`<div class="v4107-section-head"><h3>${esc(selectedGroup||'TESTDETAILS')}</h3><span>${cur?.total||0} Prüfungen</span></div><div class="v4107-test-tools"><button class="v4107-filter ${filter==='problems'?'active':''}" data-v4107-filter="problems">FEHLER + WARNUNGEN</button><button class="v4107-filter ${filter==='errors'?'active':''}" data-v4107-filter="errors">NUR FEHLER</button><button class="v4107-filter ${filter==='warnings'?'active':''}" data-v4107-filter="warnings">NUR WARNUNGEN</button><button class="v4107-filter ${filter==='all'?'active':''}" data-v4107-filter="all">ALLE</button></div>${rowsForGroup(cur)}`;
  renderRight(r);
@@ -69145,7 +69243,7 @@ function openPage(){
  const sec=ensureScreen();if(!sec)return false;
  lastNav=document.querySelector('section.screen.active')?.id||'world';
  try{v032Go('systemtech')}catch(e){document.querySelectorAll('section.screen').forEach(x=>x.classList.remove('active'));sec.classList.add('active')}
- const r=fullReport();renderPage(r);setTimeout(()=>renderPage(last||r),500);return true
+ runAndRender();return true
 }
 function installMenu(){
  const panel=document.getElementById('v032MenuPanel');if(panel&&!panel.querySelector('[data-screen="systemtech"]')){const b=document.createElement('button');b.className='top-menu-item';b.dataset.screen='systemtech';b.innerHTML='<span>⚙️</span>Systemtechnik';b.onclick=()=>openPage();panel.appendChild(b)}
@@ -69165,12 +69263,12 @@ try{navigator.storage?.estimate?.().then(x=>storageEstimate=x).catch(()=>{})}cat
 /* Make Systemtechnik the canonical QA destination. */
 window.v4107RunQA=fullReport;window.v4107OpenSystemtechnik=openPage;window.v4102OpenQA=openPage;window.v4102RunQA=(opts={})=>{const r=fullReport();if(opts.open)openPage();return r};
 /* Keep our page integrated with the many historical navigation wrappers. */
-try{if(typeof v032Go==='function'&&!window.__v4107Go){const base=v032Go;const wrap=function(id){ensureScreen();installMenu();let p0=null,sig='';try{p0=typeof combatPower==='function'?Number(combatPower()):null;sig=corePowerSignature()}catch(e){}const r=base.apply(this,arguments);if(id==='systemtech')setTimeout(()=>renderPage(last||fullReport()),0);else lastNav=id||lastNav;setTimeout(()=>{try{if(id!=='systemtech'&&p0!=null&&sig===corePowerSignature()){const p1=Number(combatPower());if(Number.isFinite(p1)&&p1!==p0)pushErr('POWER_NAVIGATION_DRIFT',`Kampfkraft änderte sich nur durch Seitenwechsel: ${p0} → ${p1}`,'warn')}}catch(e){}},180);return r};v032Go=wrap;window.v032Go=wrap;window.__v4107Go=true}}catch(e){}
+try{if(typeof v032Go==='function'&&!window.__v4107Go){const base=v032Go;const wrap=function(id){ensureScreen();installMenu();let p0=null,sig='';try{p0=typeof combatPower==='function'?Number(combatPower()):null;sig=corePowerSignature()}catch(e){}const r=base.apply(this,arguments);if(id==='systemtech')setTimeout(runAndRender,0);else lastNav=id||lastNav;setTimeout(()=>{try{if(id!=='systemtech'&&p0!=null&&sig===corePowerSignature()){const p1=Number(combatPower());if(Number.isFinite(p1)&&p1!==p0)pushErr('POWER_NAVIGATION_DRIFT',`Kampfkraft änderte sich nur durch Seitenwechsel: ${p0} → ${p1}`,'warn')}}catch(e){}},180);return r};v032Go=wrap;window.v032Go=wrap;window.__v4107Go=true}}catch(e){}
 /* Lightweight live refresh; no full source scan unless Systemtechnik is open. */
-setInterval(()=>{try{installMenu();paintSettingsBadge(last);if(document.getElementById('systemtech')?.classList.contains('active'))renderRight(last||fullReport())}catch(e){}},3500);
+setInterval(()=>{try{installMenu();paintSettingsBadge(last);if(document.getElementById('systemtech')?.classList.contains('active')){const r=last||cachedReport();if(r)renderRight(r)}}catch(e){}},3500);
 function stamp(){try{document.title='Grow Legends '+SHORT}catch(e){}try{document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version').forEach(e=>e&&(e.textContent=VERSION));document.querySelectorAll('.v366-ver,.v371-logo em,.v372-logo em').forEach(e=>e&&(e.textContent=SHORT))}catch(e){}}
 ensureScreen();installMenu();stamp();
-setTimeout(()=>{try{last=fullReport();paintSettingsBadge(last);if(document.getElementById('systemtech')?.classList.contains('active'))renderPage(last)}catch(e){pushErr('QA_START_ERROR',e.message||String(e))}},2600);
+setTimeout(()=>{try{const c=cachedReport();if(c){last=c;paintSettingsBadge(c);if(document.getElementById('systemtech')?.classList.contains('active'))renderPage(c)}const r=fullReport();last=r;paintSettingsBadge(r);if(document.getElementById('systemtech')?.classList.contains('active'))renderPage(r)}catch(e){pushErr('QA_START_ERROR',e.message||String(e));if(document.getElementById('systemtech')?.classList.contains('active'))renderFatal(e)}},2600);
 [100,500,1500,5000,15000,30000,60000].forEach(ms=>setTimeout(()=>{stamp();installMenu()},ms));
 window.addEventListener('pageshow',()=>{stamp();installMenu();setTimeout(()=>{try{last=fullReport();paintSettingsBadge(last)}catch(e){}},700)},{passive:true});
 document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();installMenu();scheduleRender()}},{passive:true});
