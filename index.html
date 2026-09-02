@@ -44901,6 +44901,7 @@ function historicalScriptCount(){if(historicCountCache!=null)return historicCoun
   T('UI & Pixel','Aktuelle Comic-Item-Assets geladen',()=>typeof window.v4106ComicItemArtUri==='function'&&Object.keys(window.v4106ComicAssets||{}).length>=10);
   T('UI & Pixel','Sichtbare Itemgrafiken ohne Emoji-Fallback',()=>{const bad=[...document.querySelectorAll('.v4103-item-fallback')].filter(visible);return{pass:bad.length===0,detail:`Fallbacks sichtbar: ${bad.length}`}});
   T('UI & Pixel','Spielerprofil nutzt Comic-Art-Pipeline',()=>{const sample={name:'QA Klinge',slot:'weapon',quality:'blue',rarity:'rare',dropLevel:80,bonus:{staerke:10}};const h=typeof v074EquipmentHtml==='function'?v074EquipmentHtml({weapon:sample}):'';return h.includes('v466-item-art')&&window.v4106ComicItemArtUri(sample).startsWith('data:image/webp;base64,')});
+  T('UI & Pixel','Systemtechnik enthält keine Item-Galerie',()=>!document.getElementById('v4107ItemShowcase'));
 
   /* Core gameplay flows */
   T('Spielabläufe','Quest-Renderer vorhanden',()=>typeof renderQuests==='function');
@@ -44985,6 +44986,39 @@ function historicalScriptCount(){if(historicCountCache!=null)return historicCoun
 
 
 
+
+
+
+<!-- ===== V4.108 Stable: Systemtechnik ohne Item-Galerie + Comic-Icons nur im echten Spiel ===== -->
+<style id="v4108-item-placement-fix-css">
+#v4107ItemShowcase,[data-v4107-jump="items"]{display:none!important}
+</style>
+<script id="v4108-item-placement-fix">
+(()=>{
+ 'use strict';
+ const VERSION='V4.108 Stable',SHORT='V4.108';
+ function stamp(){try{document.title='Grow Legends '+SHORT}catch(e){}try{document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version').forEach(e=>e&&(e.textContent=VERSION));document.querySelectorAll('.v366-ver,.v371-logo em,.v372-logo em').forEach(e=>e&&(e.textContent=SHORT));document.querySelectorAll('.v4107-version').forEach(e=>e&&(e.textContent=SHORT))}catch(e){}}
+ function comicUri(it){try{return String(window.v4106ComicItemArtUri?.(it)||window.v466ItemArtUri?.(it)||'')}catch(e){return''}}
+ function setArt(box,it){if(!box||!it)return false;const uri=comicUri(it);if(!uri)return false;let img=box.querySelector(':scope > img.v466-item-art');if(!img){img=document.createElement('img');img.className='v466-item-art';box.replaceChildren(img)}img.src=uri;img.alt=String(it.name||'Gegenstand');img.dataset.v4106Comic='1';img.dataset.v4108Current='1';return true}
+ function cleanSystemtechnik(){try{document.getElementById('v4107ItemShowcase')?.remove();document.querySelectorAll('[data-v4107-jump="items"]').forEach(x=>x.remove())}catch(e){}}
+ function decorateAll(){
+  try{window.v4103DecorateItemSurfaces?.()}catch(e){}
+  try{document.querySelectorAll('#character #inventory .inventory-grid > .inv-item').forEach((c,i)=>{const it=s.inventory?.[i];if(it)setArt(c.querySelector('.v459-inv-icon,.inv-icon,.ico'),it)})}catch(e){}
+  try{Object.entries(s.equipment||{}).forEach(([slot,it])=>{if(!it)return;const c=document.getElementById('slot-'+slot);if(c)setArt(c.querySelector('.slot-icon,.ico'),it)})}catch(e){}
+  try{document.querySelectorAll('#v057WeaponGrid .shop-item').forEach((c,i)=>{const it=s.weaponShop?.[i];if(it)setArt(c.querySelector('.shop-icon,.v41-shop-icon,.ico'),it)});document.querySelectorAll('#v057MagicGrid .shop-item').forEach((c,i)=>{const it=s.magicShop?.[i];if(it)setArt(c.querySelector('.shop-icon,.v41-shop-icon,.ico'),it)})}catch(e){}
+  try{document.querySelectorAll('#character #v030Materials .inventory-grid > .inv-item').forEach((c,i)=>{const it=s.materials?.[i];if(it)setArt(c.querySelector('.v459-inv-icon,.inv-icon,.ico'),it)})}catch(e){}
+  try{document.querySelectorAll('#v488ForgeInventory [data-v488-key]').forEach(c=>{const key=String(c.dataset.v488Key||''),it=(s.inventory||[]).find(x=>String(x?.id||x?.uid||'')===key);if(it)setArt(c.querySelector('.ico'),it)})}catch(e){}
+  cleanSystemtechnik();stamp();
+ }
+ function audit(){const bad=[];const check=(sel,name)=>{document.querySelectorAll(sel).forEach(c=>{if(c.offsetParent===null)return;const img=c.querySelector('img.v466-item-art');if(!img||(!img.dataset.v4106Comic&&!img.src.startsWith('data:image/webp;base64,')))bad.push(name)})};check('#character #inventory .inventory-grid > .inv-item','Inventar');check('#v057WeaponGrid .shop-item,#v057MagicGrid .shop-item','Händler');check('#v488ForgeInventory [data-v488-key]','Harzschmiede');check('#v074ProfileContent .v4103-item-card','Spielerprofil');return [...new Set(bad)]}
+ window.v4108DecorateComicItems=decorateAll;window.v4108AuditComicItems=audit;
+ const mo=new MutationObserver(()=>{clearTimeout(window.__v4108DecorateTimer);window.__v4108DecorateTimer=setTimeout(decorateAll,35)});try{mo.observe(document.body,{childList:true,subtree:true})}catch(e){}
+ [0,80,250,700,1600,3500,8000,15000,30000].forEach(ms=>setTimeout(decorateAll,ms));
+ setInterval(()=>{if(!document.hidden)decorateAll()},5000);
+ window.addEventListener('pageshow',decorateAll,{passive:true});document.addEventListener('visibilitychange',()=>{if(!document.hidden)decorateAll()},{passive:true});
+ decorateAll();
+})();
+</script>
 
 </body>
 </html>
@@ -68668,10 +68702,10 @@ body.v495-seed-open{overflow:hidden!important}
 })();
 </script>
 
-<!-- ===== V4.107 Stable: full Systemtechnik page + deep QA matrix ===== -->
+<!-- ===== V4.108 Stable: full Systemtechnik page + deep QA matrix ===== -->
 <style id="v4107-systemtechnik-css">
-.app > header .v358-logo::after{content:"V4.107"!important}
-.app > header .v366-ver::after,.app > header .v371-logo em::after,.app > header .v372-logo em::after{content:"V4.107"!important}
+.app > header .v358-logo::after{content:"V4.108"!important}
+.app > header .v366-ver::after,.app > header .v371-logo em::after,.app > header .v372-logo em::after{content:"V4.108"!important}
 #v4102QaOverlay{display:none!important}
 #systemtech.screen{padding:0 0 18px!important}
 .v4107-page{--st-green:#81ef48;--st-line:#537236;--st-gold:#d8a43c;--st-bg:#07100a;--st-panel:#0b1710;color:#e8f1e4;font-family:inherit}
@@ -68687,7 +68721,7 @@ body.v495-seed-open{overflow:hidden!important}
 .v4107-brand h1 span{color:#7ff14c}.v4107-brand p{margin:3px 0 0;color:#a9bca6;font-size:8px;font-weight:800}
 .v4107-version{padding:7px 10px;border:2px solid #57923b;border-radius:10px;background:#112415;color:#96f26a;font-size:10px;font-weight:1000;white-space:nowrap}
 .v4107-layout{display:grid;grid-template-columns:205px minmax(0,1fr) 235px;gap:8px;align-items:start}
-.v4107-sidebar,.v4107-panel,.v4107-right-card,.v4107-items{
+.v4107-sidebar,.v4107-panel,.v4107-right-card{
  border:2px solid #4b613a;border-radius:15px;background:linear-gradient(180deg,#101c12,#071009);
  box-shadow:inset 0 0 0 1px #1e311e,0 7px 19px #0008
 }
@@ -68711,12 +68745,6 @@ body.v495-seed-open{overflow:hidden!important}
 .v4107-actions{display:flex;gap:6px;margin-top:8px}.v4107-actions .btn{flex:1;min-height:35px!important;font-size:7px!important}
 .v4107-test-tools{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:6px}.v4107-filter{padding:5px 8px;border:1px solid #344a35;border-radius:999px;background:#08110a;color:#91a091;font:900 6px/1 inherit;cursor:pointer}.v4107-filter.active{border-color:#70b84c;color:#9aef73;background:#112616}
 .v4107-test-list{max-height:360px;overflow:auto;padding-right:2px}.v4107-test-row{display:grid;grid-template-columns:20px 1fr auto;gap:6px;align-items:center;padding:6px 7px;margin:4px 0;border:1px solid #273a2b;border-radius:8px;background:#071009}.v4107-test-row.fail{border-color:#6a3030;background:#180a0a}.v4107-test-row.warn{border-color:#665126;background:#161207}.v4107-test-row .ico{font-size:10px;text-align:center}.v4107-test-row b{font-size:7px}.v4107-test-row small{display:block;margin-top:2px;color:#78877a;font-size:5.6px;line-height:1.35}.v4107-test-row em{font-style:normal;font-size:5.5px;color:#839084}
-.v4107-items{padding:9px;overflow:hidden}
-.v4107-rarity-row{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px}
-.v4107-show-item{--q:#8b948b;position:relative;min-width:0;padding:6px;border:2px solid var(--q);border-radius:10px;background:radial-gradient(circle at 50% 10%,color-mix(in srgb,var(--q) 18%,transparent),transparent 45%),linear-gradient(#111a12,#070b08);box-shadow:0 0 12px color-mix(in srgb,var(--q) 18%,transparent),inset 0 0 12px #0008;text-align:center;overflow:hidden}
-.v4107-show-item img{width:100%;aspect-ratio:1/1;object-fit:cover;border:1px solid color-mix(in srgb,var(--q) 70%,#51401c);border-radius:8px;background:#050906;filter:saturate(1.12) contrast(1.04)}
-.v4107-show-item b{display:block;margin-top:4px;font-size:6.5px;color:#f4edcf;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.v4107-show-item small{font-size:5.3px;color:var(--q);font-weight:1000}
-.v4107-cat-row{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px;margin-top:7px}.v4107-cat-row .v4107-show-item b{font-size:6px}
 .v4107-right{display:grid;gap:8px;position:sticky;top:7px}.v4107-right-card{padding:8px}.v4107-right-card h3{margin:0 0 7px;color:#e3d184;font-size:9px}
 .v4107-gauge{position:relative;width:130px;height:68px;margin:2px auto 8px;overflow:hidden}.v4107-gauge-ring{position:absolute;left:5px;top:4px;width:120px;height:120px;border-radius:50%;background:conic-gradient(from 270deg,#69df4a 0 22%,#c8d743 22% 38%,#e59b37 38% 48%,#c14838 48% 50%,#132016 50% 100%);mask:radial-gradient(circle,#0000 0 51%,#000 52%)}.v4107-gauge-needle{position:absolute;left:64px;bottom:4px;width:3px;height:51px;border-radius:3px;background:#f5cf5c;transform-origin:50% 100%;transform:rotate(-55deg);box-shadow:0 0 7px #eab13d}.v4107-gauge-dot{position:absolute;left:57px;bottom:-2px;width:17px;height:17px;border-radius:50%;background:#cc8a24;border:3px solid #5a3511}.v4107-perf-state{text-align:center;color:#82ed63;font-size:10px;font-weight:1000}
 .v4107-metrics{display:grid;grid-template-columns:1fr auto;gap:5px 7px;margin-top:7px;font-size:6px}.v4107-metrics span{color:#89988b}.v4107-metrics b{color:#dce9d9;text-align:right}.v4107-metrics b.warn{color:#f0c55b}.v4107-metrics b.bad{color:#ff8178}
@@ -68735,7 +68763,7 @@ body.v495-seed-open{overflow:hidden!important}
 <script id="v4107-systemtechnik">
 (()=>{
 'use strict';
-const VERSION='V4.107 Stable',SHORT='V4.107',STORE='growLegendsQA:v4107:';
+const VERSION='V4.108 Stable',SHORT='V4.108',STORE='growLegendsQA:v4107:';
 const baseRun=window.v4106RunQA||window.v4102RunQA;
 const oldOpen=window.v4102OpenQA;
 let last=null,selectedGroup='',filter='problems',storageEstimate=null,lastNav='',renderTimer=0,historicCountCache=null;
@@ -68992,7 +69020,7 @@ function fullReport(){
  T('UI & Pixel','Comic-Items tragen aktuelle Markierung',()=>{const a=[...document.querySelectorAll('img.v466-item-art')].filter(visible);return !a.length||a.every(x=>x.dataset.v4106Comic==='1'||x.src.startsWith('data:image/webp;base64,'))});
  T('UI & Pixel','Spielerprofil-Equipment nutzt aktuellen Renderer',()=>{const sample={name:'QA',slot:'weapon',quality:'purple',rarity:'epic-purple',bonus:{staerke:1}};return typeof v074EquipmentHtml==='function'&&v074EquipmentHtml({weapon:sample}).includes('data-v4103-item-current="1"')});
  T('UI & Pixel','Systemtechnik responsive CSS geladen',()=>!!document.getElementById('v4107-systemtechnik-css'));
- T('UI & Pixel','Systemtechnik hat Comic-Item-Vorschau',()=>!!document.getElementById('v4107ItemShowcase'));
+ T('UI & Pixel','Systemtechnik bleibt reine Technikseite ohne Item-Galerie',()=>!document.getElementById('v4107ItemShowcase')&&!document.querySelector('[data-v4107-jump="items"]'));
  const activeScreen=document.querySelector('section.screen.active');
  T('UI & Pixel','Aktive Seite ragt nicht massiv horizontal heraus',()=>({pass:!activeScreen||activeScreen.scrollWidth<=innerWidth+24,detail:activeScreen?`${activeScreen.scrollWidth}px / ${innerWidth}px`:'kein Screen'}),'warn');
  T('UI & Pixel','Sichtbare Bilder besitzen natürliche Größe',()=>{const a=[...document.images].filter(visible);return{pass:a.every(i=>!i.complete||i.naturalWidth>0),detail:`${a.length} sichtbare Bilder`}});
@@ -69044,32 +69072,6 @@ function groupData(report){
  return Object.values(m);
 }
 function statusText(r){if(!r)return['PRÜFUNG LÄUFT…','Noch kein Ergebnis.','warn'];if(r.failed)return[`${r.failed} FEHLER GEFUNDEN`,`${r.passed}/${r.total} Tests bestanden · Fehler zuerst beheben.`,'bad'];if(r.warnings)return['STABIL · HINWEISE GEFUNDEN',`${r.passed}/${r.total} Tests bestanden · ${r.warnings} technische Warnungen.`,'warn'];return['ALLE TESTS BESTANDEN!','Kein automatischer Fehler erkannt.','ok']}
-function qualityColor(q){return({gray:'#9a9d9a',green:'#58d64c',blue:'#49a8ef',purple:'#c96ae8',orange:'#f2a133',prismatic:'#f46ef2',cyan:'#41e6df'})[q]||'#9a9d9a'}
-function itemCard(it,label){
- let uri='';try{uri=window.v4106ComicItemArtUri?.(it)||window.v466ItemArtUri?.(it)||''}catch(e){}
- const q=it.v488Prismatic?'prismatic':String(it.quality||'gray').toLowerCase()==='cyan'?'cyan':String(it.quality||'gray').toLowerCase();
- return `<div class="v4107-show-item" style="--q:${qualityColor(q)}">${uri?`<img src="${uri}" alt="${esc(it.name)}">`:'<div style="aspect-ratio:1;display:grid;place-items:center;font-size:30px">🎁</div>'}<b>${esc(it.name)}</b><small>${esc(label)}</small></div>`
-}
-function itemShowcase(){
- const items=[
-  [{name:'Hanfsichel',slot:'weapon',quality:'gray',icon:'🪓'},'GRAU'],
-  [{name:'Grow-Messer',slot:'weapon',quality:'green',icon:'🗡️'},'GRÜN'],
-  [{name:'Harz-Klinge',slot:'weapon',quality:'blue',icon:'🏹'},'BLAU'],
-  [{name:'OG-Kriegerstab',slot:'weapon',quality:'purple',icon:'🪄'},'LILA'],
-  [{name:'Legendäre Blütenfaust',slot:'weapon',quality:'orange',icon:'🧤'},'ORANGE'],
-  [{name:'Rainbow-Phönix',slot:'weapon',quality:'prismatic',v488Prismatic:true,icon:'⚔️'},'PRISMATISCH'],
-  [{name:'Smaragd-Seele',slot:'weapon',quality:'cyan',rarity:'mythic',icon:'⚔️'},'MYSTISCH']
- ];
- const cats=[
-  [{name:'Harzpanzer',slot:'body',quality:'orange'},'RÜSTUNG'],
-  [{name:'Blattkrone',slot:'head',quality:'purple'},'HELM'],
-  [{name:'Smaragd-Amulett',slot:'amulet',quality:'blue'},'SCHMUCK'],
-  [{name:'White Widow Stein',type:'gem',quality:'green'},'EDELSTEIN'],
-  [{name:'Rolle des Grow',type:'scroll',quality:'orange'},'ROLLE'],
-  [{name:'Cannabis-Kodex',slot:'set',type:'set',quality:'purple'},'KLASSEN-SET']
- ];
- return `<div class="v4107-section-head"><h3>NEUE COMIC-ITEMS · UNSER STIL</h3><span>ein Renderer · alle Screens</span></div><div class="v4107-rarity-row">${items.map(x=>itemCard(x[0],x[1])).join('')}</div><div class="v4107-cat-row">${cats.map(x=>itemCard(x[0],x[1])).join('')}</div>`;
-}
 function perfMetrics(){
  const t=timerInfo(),r=renderStats(),dom=document.getElementsByTagName('*').length,heap=performance.memory?performance.memory.usedJSHeapSize/1048576:null,long=(tech().longTasks||[]).filter(x=>Date.now()-x.at<60000),ls=localStorageKb();
  const score=Math.max(0,100-Math.min(25,t.dupInts.length*8)-Math.min(20,t.legacy.length*2)-Math.min(15,long.filter(x=>x.duration>150).length*4)-Math.min(20,Math.max(0,r.max.ms-60)/4)-Math.min(20,Math.max(0,dom-5000)/150));
@@ -69080,13 +69082,12 @@ function ensureScreen(){
  const main=document.querySelector('main');if(!main)return null;
  let sec=document.getElementById('systemtech');if(!sec){sec=document.createElement('section');sec.id='systemtech';sec.className='screen';const footer=document.getElementById('v337LegalFooter');if(footer&&footer.parentElement===main)main.insertBefore(sec,footer);else main.appendChild(sec)}
  if(!sec.dataset.built){sec.dataset.built='1';sec.innerHTML=`<div class="v4107-page">
-  <div class="v4107-top"><div class="v4107-brand"><div class="v4107-brand-mark">🌿⚙️</div><div><h1>GROW LEGENDS <span>SYSTEMTEST & TECHNIK</span></h1><p>AUTOMATISCHE PRÜFUNG ALLER SYSTEME · FLOW · UI/PIXEL · SAVE · PERFORMANCE · ALTLASTEN</p></div></div><div class="v4107-version">V4.107</div></div>
+  <div class="v4107-top"><div class="v4107-brand"><div class="v4107-brand-mark">🌿⚙️</div><div><h1>GROW LEGENDS <span>SYSTEMTEST & TECHNIK</span></h1><p>AUTOMATISCHE PRÜFUNG ALLER SYSTEME · FLOW · UI/PIXEL · SAVE · PERFORMANCE · ALTLASTEN</p></div></div><div class="v4107-version">V4.108</div></div>
   <div class="v4107-layout">
    <aside class="v4107-sidebar"><div class="v4107-side-title">⚙️ SYSTEMTECHNIK</div>
     <button class="v4107-nav active" data-v4107-jump="status"><i>🧪</i>Systemtest</button>
     <button class="v4107-nav" data-v4107-jump="groups"><i>🎮</i>Spielabläufe</button>
     <button class="v4107-nav" data-v4107-jump="tests"><i>👁️</i>UI & Pixel</button>
-    <button class="v4107-nav" data-v4107-jump="items"><i>🗡️</i>Item-System</button>
     <button class="v4107-nav" data-v4107-jump="performance"><i>⚙️</i>Performance</button>
     <button class="v4107-nav" data-v4107-jump="errors"><i>🛡️</i>Fehlerlog</button>
     <div class="v4107-left-foot">Automatische Tests verändern deinen echten Spielstand nicht absichtlich. Verdächtige Hintergrundprozesse werden gemeldet, nicht blind beendet.</div>
@@ -69095,14 +69096,13 @@ function ensureScreen(){
     <div class="v4107-panel" id="v4107Status"></div>
     <div class="v4107-panel" id="v4107Groups"></div>
     <div class="v4107-panel" id="v4107Tests"></div>
-    <div class="v4107-items" id="v4107ItemShowcase">${itemShowcase()}</div>
    </div>
    <aside class="v4107-right" id="v4107Right"></aside>
   </div>
   <div class="v4107-footerbar" id="v4107Footerbar"></div>
  </div>`;
  sec.addEventListener('click',e=>{
-  const b=e.target.closest?.('[data-v4107-jump]');if(b){const map={status:'v4107Status',groups:'v4107Groups',tests:'v4107Tests',items:'v4107ItemShowcase',performance:'v4107PerfCard',errors:'v4107ErrorCard'};document.getElementById(map[b.dataset.v4107Jump])?.scrollIntoView({behavior:'smooth',block:'start'});sec.querySelectorAll('.v4107-nav').forEach(x=>x.classList.toggle('active',x===b));return}
+  const b=e.target.closest?.('[data-v4107-jump]');if(b){const map={status:'v4107Status',groups:'v4107Groups',tests:'v4107Tests',performance:'v4107PerfCard',errors:'v4107ErrorCard'};document.getElementById(map[b.dataset.v4107Jump])?.scrollIntoView({behavior:'smooth',block:'start'});sec.querySelectorAll('.v4107-nav').forEach(x=>x.classList.toggle('active',x===b));return}
   const g=e.target.closest?.('[data-v4107-group]');if(g){selectedGroup=decodeURIComponent(g.dataset.v4107Group);renderPage(last||fullReport());document.getElementById('v4107Tests')?.scrollIntoView({behavior:'smooth',block:'start'});return}
   const f=e.target.closest?.('[data-v4107-filter]');if(f){filter=f.dataset.v4107Filter;renderPage(last||fullReport());return}
   if(e.target.closest?.('#v4107Run')){const r=fullReport();renderPage(r);return}
