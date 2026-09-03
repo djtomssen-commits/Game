@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
 <script id="v4131-version-source">
-window.GROW_LEGENDS_VERSION=Object.freeze({short:'V4.142',label:'V4.142 Stable',number:'4.142'});
+window.GROW_LEGENDS_VERSION=Object.freeze({short:'V4.144',label:'V4.144 Stable',number:'4.144'});
 </script>
 
 <script id="v4106-preboot-tech">
@@ -123,7 +123,7 @@ window.__V483_POWER_READY__=false;
 .app > header .v366-ver,.app > header .v371-logo em,.app > header .v372-logo em{font-size:0!important;color:transparent!important}
 .app > header .v366-ver::after,.app > header .v371-logo em::after,.app > header .v372-logo em::after{content:"V4.86"!important;font-size:5px!important;color:#63cdd1!important;font-style:normal!important;font-weight:900!important}
 </style>
-<title>Grow Legends V4.142</title>
+<title>Grow Legends V4.144</title>
 <style>
 :root{--bg:#0b100b;--panel:#151d14;--panel2:#1c281a;--panel3:#253423;--line:#354933;--text:#f2f5ed;--muted:#9fad99;--green:#83d65d;--green2:#b2f07e;--gold:#f2c75a;--red:#ee6b68;--blue:#68a7ea;--purple:#ad7bea;--shadow:0 12px 30px rgba(0,0,0,.28)}
 *{box-sizing:border-box}html{background:var(--bg)}body{margin:0;color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:radial-gradient(circle at 50% -10%,#253821 0,#10170f 40%,#090d09 100%);min-height:100vh}button{font:inherit}.app{max-width:820px;margin:auto;min-height:100vh;padding-bottom:88px}
@@ -670,7 +670,7 @@ document.documentElement.classList.remove('v224-app-ready');
 <body>
 <div class="app">
 <header>
-  <div class="brand"><h1>🌿 Grow Legends</h1><span class="version">V4.142 Stable</span><div class="power">Kampfkraft <b id="power">—</b></div></div>
+  <div class="brand"><h1>🌿 Grow Legends</h1><span class="version">V4.144 Stable</span><div class="power">Kampfkraft <b id="power">—</b></div></div>
   <div class="stats resource-stats"><div class="stat">GOLD<b id="gold">—</b></div><div class="stat">SKILL<b id="points">—</b></div><div class="stat">DAMPF<b id="energy">—</b></div><div class="stat harz-stat v277-harz-card v280-harz-card">
   <div class="v280-harz-label">HARZ-TALER</div>
   <b class="v280-harz-value"><span id="topHarz">—</span></b>
@@ -13015,6 +13015,27 @@ render=function(){
 .v075-cloud-pill.error{color:#e19a8e;border-color:#78473f}
 </style>
 
+<style id="v4143-session-restore-splash-css">
+/* V4.144: refresh/session restore uses a neutral loading splash, never the login form. */
+#v075AuthOverlay .v4143-boot-card{display:none}
+#v075AuthOverlay.v4143-restoring{display:flex!important;align-items:center!important;justify-content:center!important;padding:18px!important}
+#v075AuthOverlay.v4143-restoring > .v075-auth-card,
+#v075AuthOverlay.v4143-restoring > .v200-login-stack{display:none!important}
+#v075AuthOverlay.v4143-restoring > .v4143-boot-card{
+ position:relative;z-index:4;display:flex!important;flex-direction:column;align-items:center;justify-content:center;
+ width:min(88vw,360px);min-height:230px;padding:28px 24px;border:1px solid #45684a;border-radius:24px;
+ background:radial-gradient(circle at 50% 5%,rgba(111,224,82,.16),transparent 36%),linear-gradient(160deg,rgba(18,32,23,.98),rgba(5,14,9,.99));
+ box-shadow:0 28px 90px #000e,inset 0 0 36px #0007;text-align:center;color:#edf7ea
+}
+.v4143-boot-logo{font-size:48px;line-height:1;filter:drop-shadow(0 5px 10px #000)}
+.v4143-boot-title{margin-top:13px;font-size:20px;font-weight:1000;color:#e9f7e4}
+.v4143-boot-text{margin-top:7px;min-height:18px;font-size:9px;font-weight:800;color:#9fb29e;line-height:1.45}
+.v4143-boot-spinner{width:36px;height:36px;margin-top:20px;border:3px solid #2d4933;border-top-color:#85e762;border-radius:50%;animation:v4143spin .8s linear infinite;box-shadow:0 0 18px rgba(105,218,80,.12)}
+.v4143-boot-note{margin-top:13px;font-size:7px;color:#6f8372;letter-spacing:.04em}
+@keyframes v4143spin{to{transform:rotate(360deg)}}
+@media(max-width:420px){#v075AuthOverlay.v4143-restoring > .v4143-boot-card{min-height:205px;padding:24px 18px}.v4143-boot-title{font-size:18px}}
+</style>
+
 <div id="v075AuthOverlay" class="v075-auth-overlay">
   <div class="v075-auth-card">
     <div class="v075-auth-title">Grow Legends Account</div>
@@ -13046,7 +13067,18 @@ render=function(){
       Bestehende anonyme Charaktere können beim Registrieren direkt übernommen werden.
     </div>
   </div>
+  <div class="v4143-boot-card" role="status" aria-live="polite" aria-label="Grow Legends wird geladen">
+    <div class="v4143-boot-logo">🌿</div>
+    <div class="v4143-boot-title">Grow Legends wird geladen</div>
+    <div class="v4143-boot-text" id="v4143BootText">Account wird geprüft …</div>
+    <div class="v4143-boot-spinner" aria-hidden="true"></div>
+    <div class="v4143-boot-note">Dein Spielstand bleibt während der Prüfung gesperrt.</div>
+  </div>
 </div>
+<script id="v4143-early-session-restore-flag">
+window.__V4143_AUTH_BOOTING__=true;
+(()=>{const ov=document.getElementById('v075AuthOverlay');if(ov)ov.classList.add('show','v4143-restoring')})();
+</script>
 
 
 <script>
@@ -24480,12 +24512,33 @@ function v200BuildLogin(){
   v075SetAuthMode(v075AuthMode);
 }
 
+function v4143SetAuthBoot(active=true,text='Account wird geprüft …'){
+  const overlay=document.querySelector('#v075AuthOverlay');
+  window.__V4143_AUTH_BOOTING__=!!active;
+  if(!overlay)return;
+  overlay.classList.toggle('v4143-restoring',!!active);
+  if(active){
+    const t=document.querySelector('#v4143BootText');if(t)t.textContent=String(text||'Account wird geprüft …');
+    overlay.classList.add('show');
+  }
+}
+window.v4143SetAuthBoot=v4143SetAuthBoot;
+
 function v075Overlay(show=true){
   const overlay=document.querySelector('#v075AuthOverlay');
   if(!overlay)return;
-
-  if(show)v200BuildLogin();
-  overlay.classList.toggle('show',!!show);
+  if(!show){
+    v4143SetAuthBoot(false);
+    overlay.classList.remove('show');
+    return;
+  }
+  if(window.__V4143_AUTH_BOOTING__===true){
+    overlay.classList.add('show','v4143-restoring');
+    return;
+  }
+  overlay.classList.remove('v4143-restoring');
+  v200BuildLogin();
+  overlay.classList.add('show');
 }
 
 async function v200RefreshLoginInfo(){
@@ -25483,7 +25536,7 @@ function v200InstallAuthListener(){
     const nextId=String(user.id||'');
     const currentId=String(v073User?.id||'');
 
-    /* V4.142: token refresh for the same account updates the auth object only.
+    /* V4.144: token refresh for the same account updates the auth object only.
        It must never reopen the save resolver and reset/reselect the character. */
     if(currentId===nextId && window.__V200_AUTH_READY__===true){
       /* Same account: refresh the auth object only. SIGNED_IN can also be emitted
@@ -25571,50 +25624,67 @@ async function v200Boot(){
   if(v200Booted)return;
   v200Booted=true;
 
-  v200BuildLogin();
+  /* V4.144: on refresh, show a neutral loading state until the persisted session
+     and its account-owned player_saves row have been resolved. */
+  v4143SetAuthBoot(true,'Sitzung wird wiederhergestellt …');
   v075BindAuthUi();
   v200BindSettings();
 
   const ok=await v073Init();
   if(!ok){
+    v4143SetAuthBoot(false);
+    v075SetAuthMode('login');
     v075Overlay(true);
+    try{void v200RefreshLoginInfo()}catch(e){}
     return;
   }
 
   v200InstallAuthListener();
-  await v200RefreshLoginInfo();
 
   try{
-    if(await v200HandleOAuthReturn())return;
+    v4143SetAuthBoot(true,'Google-Sitzung wird geprüft …');
+    if(await v200HandleOAuthReturn()){v075Overlay(false);return;}
   }catch(e){
-    console.error('V4.02 OAuth return',e);
+    console.error('V4.144 OAuth return',e);
     v200AuthStatus(e?.message||'Google-Anmeldung konnte nicht abgeschlossen werden.','error');
   }
 
+  v4143SetAuthBoot(true,'Account wird geprüft …');
   const {data:{session},error}=await v073Db.auth.getSession();
-  if(error){
-    console.error('V4.02 session restore',error);
-  }
+  if(error)console.error('V4.02 session restore',error);
 
   if(session?.user && !session.user.is_anonymous){
-    await v200FinalizeUser(session.user);
-  }else{
-    v073User=null;
-    window.__V200_AUTH_READY__=false;
+    v4143SetAuthBoot(true,'Spielstand wird geladen …');
+    const loaded=await v200FinalizeUser(session.user);
+    if(loaded){v075Overlay(false);return;}
+    v4143SetAuthBoot(false);
     v075SetAuthMode('login');
     v075Overlay(true);
+    try{void v200RefreshLoginInfo()}catch(e){}
+    return;
   }
+
+  v073User=null;
+  window.__V200_AUTH_READY__=false;
+  v4143SetAuthBoot(false);
+  v075SetAuthMode('login');
+  v075Overlay(true);
+  /* Login decoration is no longer on the session-restore critical path. */
+  try{void v200RefreshLoginInfo()}catch(e){}
 }
 
-/* V4.142: do NOT start auth/cloud resolution while the HTML parser is still loading
+/* V4.144: do NOT start auth/cloud resolution while the HTML parser is still loading
    hundreds of later compatibility patches. Starting here used to create a race where a
    refresh could resolve the account with an OLD save picker before the final account
    isolation owner existed. Start only after the complete document has been parsed. */
 function v4137StartBoot(){
   v200Boot().catch(e=>{
-    console.error('V4.142 boot',e);
+    console.error('V4.144 boot',e);
     v200AuthStatus(e?.message||'Startfehler','error');
+    try{v4143SetAuthBoot(false)}catch(_){}
+    v075SetAuthMode('login');
     v075Overlay(true);
+    try{void v200RefreshLoginInfo()}catch(_){}
   });
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',v4137StartBoot,{once:true});
@@ -28398,7 +28468,7 @@ setTimeout(v224TryRelease,800);
 */
 setTimeout(()=>{
   if(!v224Released){
-    /* V4.142: an unresolved/login state stays behind the auth overlay. Never reveal
+    /* V4.144: an unresolved/login state stays behind the auth overlay. Never reveal
        an old character just because authentication took longer than 1.6 seconds. */
     try{document.documentElement.classList.remove('v224-app-ready');v075Overlay(true)}catch(e){}
   }
@@ -28906,7 +28976,7 @@ function v229UpdateQuestTimer(){
     v229QuestTimerDonePainted=false;
   }
 
-  /* V4.142: V392 replaced the old #activeQuest timer with #v392QuestTimer.
+  /* V4.144: V392 replaced the old #activeQuest timer with #v392QuestTimer.
      The interval below captured THIS original function when it was created, so a later
      reassignment of v229UpdateQuestTimer cannot make that interval call V392's wrapper.
      Update both live timer surfaces directly from this authoritative one-second callback. */
@@ -34415,7 +34485,7 @@ function v246InstallFight(){
 
     if(!fightDungeon||!fightEnemy)return;
 
-    /* V4.142: Hall of Haze must reflect the dungeon actually fought, not a merely viewed map. */
+    /* V4.144: Hall of Haze must reflect the dungeon actually fought, not a merely viewed map. */
     s.dungeon.lastActive=fightDi;
     s.dungeon.lastActiveAt=Date.now();
     s.dungeon.view='battle';
@@ -39649,7 +39719,7 @@ async function v272OwnProfile(){
 
 /* Existing own profile is authoritative for the name only when the save lost it. */
 async function v272RepairNameFromOwnProfile(){
-  /* V4.142 ACCOUNT RULE: profiles is a public/social mirror only.
+  /* V4.144 ACCOUNT RULE: profiles is a public/social mirror only.
      It must never create/repair the authoritative character identity. */
   return false;
 }
@@ -39726,7 +39796,7 @@ v200FinalizeUser=async function(user){
   const ok=await v075ResolveCloudAfterLogin();
   if(!ok)return false;
 
-  /* V4.142: profiles is a public mirror only. Do not block login with a second
+  /* V4.144: profiles is a public mirror only. Do not block login with a second
      profile read and never hydrate name/class from profiles during account switching. */
 
   window.__V200_AUTH_READY__=true;
@@ -39862,7 +39932,7 @@ if(typeof v200FinalizeUser==='function'){
   const v273BaseFinalizeUser=v200FinalizeUser;
   v200FinalizeUser=async function(user){
     const r=await v273BaseFinalizeUser(user);
-    /* V4.142: admin/menu hydration is non-critical and runs after gameplay is released. */
+    /* V4.144: admin/menu hydration is non-critical and runs after gameplay is released. */
     setTimeout(async()=>{
       try{
         if(v073User?.id && !v073User.is_anonymous){
@@ -39870,7 +39940,7 @@ if(typeof v200FinalizeUser==='function'){
           if(v093IsAdmin)await v093AdminLoadLists();
         }
       }catch(e){
-        console.error('V4.142 admin check after login',e);
+        console.error('V4.144 admin check after login',e);
       }
     },0);
     return r;
@@ -40221,7 +40291,7 @@ if(typeof v200FinalizeUser==='function'){
   const v276BaseFinalizeUser=v200FinalizeUser;
   v200FinalizeUser=async function(user){
     const r=await v276BaseFinalizeUser(user);
-    /* V4.142: event refresh continues in background; it must not delay entering the game. */
+    /* V4.144: event refresh continues in background; it must not delay entering the game. */
     if(r && v073User?.id && !v073User.is_anonymous){
       setTimeout(()=>{void v276RefreshEventsForCurrentCharacter()},0);
     }
@@ -42715,7 +42785,7 @@ async function v299RefreshPublicEquipment(){
 const v299BaseFinalizeUser=v200FinalizeUser;
 v200FinalizeUser=async function(){
   const r=await v299BaseFinalizeUser.apply(this,arguments);
-  /* V4.142: Hall/profile mirror refresh runs after login release. */
+  /* V4.144: Hall/profile mirror refresh runs after login release. */
   setTimeout(()=>{void v299RefreshPublicEquipment()},0);
   return r;
 };
@@ -44839,7 +44909,7 @@ const v306Line=document.querySelector('#v141VersionLine');if(v306Line)v306Line.t
 
  /* Existing QA runner owns the panel. Run it once more after V4.105 has installed so
     the corrected test contract and guild lazy-load test are immediately visible. */
- /* V4.142: retired automatic full QA on every page load. Systemtechnik now runs only when opened or explicitly restarted. */
+ /* V4.144: retired automatic full QA on every page load. Systemtechnik now runs only when opened or explicitly restarted. */
  stamp();
  [250,1200,5000,15000,30000,60000].forEach(ms=>setTimeout(stamp,ms));
  window.addEventListener('pageshow',stamp,{passive:true});
@@ -45335,16 +45405,16 @@ function historicalScriptCount(){if(historicCountCache!=null)return historicCoun
 })();
 </script>
 
-\n<!-- ===== V4.142 Stable: responsive boot + instant account-safe power + central version ===== -->
+\n<!-- ===== V4.144 Stable: responsive boot + instant account-safe power + central version ===== -->
 <style id="v4129-fast-power-version-css">
-.app > header .v358-logo::after{content:"V4.142"!important}
+.app > header .v358-logo::after{content:"V4.144"!important}
 .app > header .v366-ver,.app > header .v371-logo em,.app > header .v372-logo em{font-size:0!important;color:transparent!important}
-.app > header .v366-ver::after,.app > header .v371-logo em::after,.app > header .v372-logo em::after{content:"V4.142"!important;font-size:5.5px!important;color:#63cdd1!important;font-style:normal!important;font-weight:1000!important}
+.app > header .v366-ver::after,.app > header .v371-logo em::after,.app > header .v372-logo em::after{content:"V4.144"!important;font-size:5.5px!important;color:#63cdd1!important;font-style:normal!important;font-weight:1000!important}
 </style>
 <script id="v4129-responsive-boot-central-version">
 (()=>{
  'use strict';
- const V=window.GROW_LEGENDS_VERSION||{short:'V4.142',label:'V4.142 Stable'};
+ const V=window.GROW_LEGENDS_VERSION||{short:'V4.144',label:'V4.144 Stable'};
  function applyVersion(){
   try{if(document.title!=='Grow Legends '+V.short)document.title='Grow Legends '+V.short}catch(e){}
   try{
@@ -45385,13 +45455,13 @@ function historicalScriptCount(){if(historicCountCache!=null)return historicCoun
  window.v4129Diagnostics=()=>({version:V.short,powerReady:window.__V483_POWER_READY__===true,uid:uidOf(),stateOwned:stateOwned(uidOf()),verified:verified(uidOf()),power:stablePower(),autoQaDisabled:true});
 })();
 </script>
-<!-- V4.142: full Systemtechnik QA no longer runs during login/startup or pageshow. It runs only when Systemtechnik is opened/restarted. Central version ownership uses bounded hooks, never a MutationObserver feedback loop. -->
+<!-- V4.144: full Systemtechnik QA no longer runs during login/startup or pageshow. It runs only when Systemtechnik is opened/restarted. Central version ownership uses bounded hooks, never a MutationObserver feedback loop. -->
 
 
-<!-- V4.142: Quest-Countdown updates the current V392 timer directly from the existing single v229 one-second interval; no additional quest interval added. -->
+<!-- V4.144: Quest-Countdown updates the current V392 timer directly from the existing single v229 one-second interval; no additional quest interval added. -->
 
 
-<!-- ===== V4.142 Stable: single canonical attribute renderer ===== -->
+<!-- ===== V4.144 Stable: single canonical attribute renderer ===== -->
 <style id="v4140-attribute-display-fix">
 #character.v459-character-hub #attrs{display:grid!important;grid-template-columns:1fr!important;gap:10px!important}
 #character.v459-character-hub #attrs > .v4140-attr{
@@ -45437,7 +45507,7 @@ function historicalScriptCount(){if(historicCountCache!=null)return historicCoun
 <script id="v4140-attribute-display-owner">
 (()=>{
  'use strict';
- const V=window.GROW_LEGENDS_VERSION||{short:'V4.142',label:'V4.142 Stable'};
+ const V=window.GROW_LEGENDS_VERSION||{short:'V4.144',label:'V4.144 Stable'};
  const DEF=[
   ['staerke','💪','Stärke','Erhöht deinen Schaden'],
   ['geschick','🎯','Geschick','Erhöht Präzision und Tempo'],
@@ -45455,7 +45525,7 @@ function historicalScriptCount(){if(historicCountCache!=null)return historicCoun
   const p=primary(),pts=points();
   const ordered=[...DEF.filter(x=>x[0]===p),...DEF.filter(x=>x[0]!==p)];
   box.innerHTML=ordered.map(([k,icon,name,desc])=>`<div class="v4140-attr ${k===p?'v4140-primary':''}" data-v4140-attr="${k}"><div class="v4140-attr-icon">${icon}</div><div class="v4140-attr-copy"><div class="v4140-attr-name">${esc(name)}</div><div class="v4140-attr-value">${value(k)}</div><div class="v4140-attr-desc">${esc(desc)}</div><div class="v4140-attr-role">${esc(role(k))}</div></div><button type="button" data-v4140-plus="${k}" ${pts<1?'disabled':''} aria-label="${esc(name)} erhöhen">+</button></div>`).join('');
-  box.querySelectorAll('[data-v4140-plus]').forEach(btn=>{btn.onclick=()=>{const k=String(btn.dataset.v4140Plus||'');if(!DEF.some(x=>x[0]===k)||points()<1)return;try{if(typeof incAttr==='function')incAttr(k)}catch(e){console.warn('V4.142 attribute spend',e)};requestAnimationFrame(paint)}});
+  box.querySelectorAll('[data-v4140-plus]').forEach(btn=>{btn.onclick=()=>{const k=String(btn.dataset.v4140Plus||'');if(!DEF.some(x=>x[0]===k)||points()<1)return;try{if(typeof incAttr==='function')incAttr(k)}catch(e){console.warn('V4.144 attribute spend',e)};requestAnimationFrame(paint)}});
   const ap=document.getElementById('v459AttrPoints');if(ap)ap.textContent=`${pts} Punkte`;
   document.getElementById('v419AttrPoints')?.remove();
   return true;
@@ -45473,24 +45543,24 @@ function historicalScriptCount(){if(historicCountCache!=null)return historicCoun
  window.v4140AttributeDiagnostics=()=>{const rows=[...document.querySelectorAll('#attrs > [data-v4140-attr]')];return{version:V.short,rowCount:rows.length,keys:rows.map(x=>x.dataset.v4140Attr),duplicates:rows.length-new Set(rows.map(x=>x.dataset.v4140Attr)).size,primary:primary(),points:points()}};
 })();
 </script>
-<!-- V4.142: Attribute tab has one canonical five-row renderer; the obsolete V4.27 intelligence clone can no longer create a duplicate/malformed row. -->
+<!-- V4.144: Attribute tab has one canonical five-row renderer; the obsolete V4.27 intelligence clone can no longer create a duplicate/malformed row. -->
 
 
-<!-- ===== V4.142 Stable: non-blocking login hydration ===== -->
+<!-- ===== V4.144 Stable: non-blocking login hydration ===== -->
 <style id="v4141-version-authority-css">
-.app > header .v358-logo::after{content:"V4.142"!important}
-.app > header .v366-ver::after,.app > header .v371-logo em::after,.app > header .v372-logo em::after{content:"V4.142"!important}
+.app > header .v358-logo::after{content:"V4.144"!important}
+.app > header .v366-ver::after,.app > header .v371-logo em::after,.app > header .v372-logo em::after{content:"V4.144"!important}
 </style>
 <script id="v4141-login-fast-release">
 (()=>{
  'use strict';
- const V=window.GROW_LEGENDS_VERSION||{short:'V4.142',label:'V4.142 Stable'};
+ const V=window.GROW_LEGENDS_VERSION||{short:'V4.144',label:'V4.144 Stable'};
  function stamp(){try{document.title='Grow Legends '+V.short;document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version').forEach(x=>x&&(x.textContent=V.label));document.querySelectorAll('.v366-ver,.v371-logo em,.v372-logo em,.v4107-version').forEach(x=>x&&(x.textContent=V.short))}catch(e){}}
  window.v4141LoginTiming=()=>window.__V4141_LOGIN_TIMING__||null;
  stamp();document.addEventListener('DOMContentLoaded',stamp,{once:true});window.addEventListener('pageshow',stamp,{passive:true});
 })();
 </script>
-<!-- V4.142: login critical path is auth + authoritative player_saves/account-scoped resolution only. Admin checks, event refresh and public profile/Hall refresh run after gameplay release. profiles no longer hydrates character identity during login. -->
+<!-- V4.144: refresh/session restore shows a neutral loading splash instead of flashing the login form. Session restoration + authoritative player_saves resolution remain account-isolated; login news/events are fetched only when login is actually needed. -->
 
 
 
@@ -49515,7 +49585,7 @@ setTimeout(()=>{try{v322InstallMenuEntry();v322InstallHarzPlus()}catch(e){consol
   });
 
   async function v334RepairReturningLogin(){
-    /* V4.142: delayed login helpers may repaint UI, but may not copy profile
+    /* V4.144: delayed login helpers may repaint UI, but may not copy profile
        name/class into s. The account save owns character identity. */
     return false;
   }
@@ -54119,7 +54189,7 @@ html,body{
       bar.className='v366-topbar';
       bar.innerHTML=`
         <button class="v366-menu" type="button">☰</button>
-        <div class="v366-logo"><strong>🌿 GROW</strong><span>LEGENDS</span><i class="v366-ver">${window.GROW_LEGENDS_VERSION?.short||'V4.142'}</i></div>
+        <div class="v366-logo"><strong>🌿 GROW</strong><span>LEGENDS</span><i class="v366-ver">${window.GROW_LEGENDS_VERSION?.short||'V4.144'}</i></div>
         <div class="v366-res"><span class="ico">🪙</span><div><small>Gold</small><span class="val" id="v366Gold"></span></div><button class="v366-plus" data-plus="gold">+</button></div>
         <div class="v366-res"><span class="ico">💎</span><div><small>Harz</small><span class="val" id="v366Harz"></span></div><button class="v366-plus" data-plus="harz">+</button></div>
         <div class="v366-res"><span class="ico">💨</span><div><small>Dampf</small><span class="val" id="v366Dampf"></span></div><button class="v366-plus" data-plus="dampf">+</button></div>
@@ -56309,6 +56379,8 @@ create index if not exists player_messages_sender_idx on public.player_messages(
 
   async function v385VerifyLoggedOutState(){
     if(window.__V301_LOGOUT_IN_PROGRESS__)return;
+    /* V4.144: pageshow/focus can fire before Supabase restores a persisted session. */
+    if(window.__V4143_AUTH_BOOTING__===true)return;
     if(window.__V200_AUTH_READY__ || v073User)return;
 
     /* If the app considers itself logged out, the login overlay must stay
@@ -62511,7 +62583,7 @@ create index if not exists player_messages_sender_idx on public.player_messages(
     const uid=uidNow();if(!uid)return false;
     identityBusy=true;
     try{
-      /* V4.142: never resurrect identity from profiles or an old identity cache.
+      /* V4.144: never resurrect identity from profiles or an old identity cache.
          Only a complete, already account-owned save may refresh the helper cache. */
       if(!s?.characterNameSet||!validName(s?.characterName)||!s?.playerClass){trusted=null;return false}
       trusted={userId:uid,name:cleanName(s.characterName),classId:s.playerClass||null,lockedAt:Date.now()};
@@ -62705,12 +62777,12 @@ create index if not exists player_messages_sender_idx on public.player_messages(
     return x&&String(x.userId||'')===uid?Math.max(1,Number(x.level)||1):1;
   }
   function writeFloor(uid,lvl,name){
-    /* V4.142: historical level-floor recovery retired. Account saves are selected
+    /* V4.144: historical level-floor recovery retired. Account saves are selected
        by account container + identity + revision/time, never by highest level. */
     return Math.max(1,Number(lvl)||1);
   }
   function storeBest(uid,data){
-    /* V4.142: no more best/highest-level shadow saves. */
+    /* V4.144: no more best/highest-level shadow saves. */
     return false;
   }
   function storageCandidates(uid){
@@ -62741,7 +62813,7 @@ create index if not exists player_messages_sender_idx on public.player_messages(
   function highestLocal(uid){return storageCandidates(uid).reduce((best,x)=>better(best,x),null)}
 
   async function loadExpected(uid){
-    /* V4.142: public profile rows are never a progression floor. */
+    /* V4.144: public profile rows are never a progression floor. */
     expectedProfile=null;
     return null;
   }
@@ -62872,7 +62944,7 @@ create index if not exists player_messages_sender_idx on public.player_messages(
   }
 
   /* Once a healthy resolved account is active, remember its highest safe snapshot. */
-  function capture(){/* V4.142: historical high-water capture retired. */}
+  function capture(){/* V4.144: historical high-water capture retired. */}
 
   function stamp(){
     document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version').forEach(el=>{if(el&&el.textContent!==VERSION)el.textContent=VERSION});
@@ -63203,7 +63275,7 @@ create index if not exists player_messages_sender_idx on public.player_messages(
   async function reconcile(reason='login'){
     const uid=uidNow();
     if(!uid||reconcileBusy||!gateReady(uid))return false;
-    /* V4.142: profiles is a public/display mirror only. It may never mutate the
+    /* V4.144: profiles is a public/display mirror only. It may never mutate the
        authoritative character save (level, name or class). Earlier V4.53 logic could
        promote a fresh/other account from a stale profile row (e.g. 57 -> fresh char).
        Canonical recovery is handled only from player_saves/account-scoped snapshots. */
@@ -69181,7 +69253,7 @@ body.v495-seed-open{overflow:hidden!important}
 <script id="v4107-systemtechnik">
 (()=>{
 'use strict';
-const VERSION=window.GROW_LEGENDS_VERSION?.label||'V4.142 Stable',SHORT=window.GROW_LEGENDS_VERSION?.short||'V4.142',STORE='growLegendsQA:v4107:';
+const VERSION=window.GROW_LEGENDS_VERSION?.label||'V4.144 Stable',SHORT=window.GROW_LEGENDS_VERSION?.short||'V4.144',STORE='growLegendsQA:v4107:';
 const baseRun=window.v4106RunQA||window.v4102RunQA;
 const oldOpen=window.v4102OpenQA;
 let last=null,selectedGroup='',filter='problems',storageEstimate=null,lastNav='',renderTimer=0,historicCountCache=null;
@@ -69642,9 +69714,9 @@ try{if(typeof v032Go==='function'&&!window.__v4107Go){const base=v032Go;const wr
 setInterval(()=>{try{installMenu();paintSettingsBadge(last);if(document.getElementById('systemtech')?.classList.contains('active')){const r=last||cachedReport();if(r)renderRight(r)}}catch(e){}},3500);
 function stamp(){try{document.title='Grow Legends '+SHORT}catch(e){}try{document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version').forEach(e=>e&&(e.textContent=VERSION));document.querySelectorAll('.v366-ver,.v371-logo em,.v372-logo em').forEach(e=>e&&(e.textContent=SHORT))}catch(e){}}
 ensureScreen();installMenu();stamp();
-setTimeout(()=>{try{const c=cachedReport();if(c){last=c;paintSettingsBadge(c);if(document.getElementById('systemtech')?.classList.contains('active'))renderPage(c)}}catch(e){pushErr('QA_CACHE_ERROR',e.message||String(e),'warn')}},2600); /* V4.142: never run ~3k QA tests during normal boot/login. */
+setTimeout(()=>{try{const c=cachedReport();if(c){last=c;paintSettingsBadge(c);if(document.getElementById('systemtech')?.classList.contains('active'))renderPage(c)}}catch(e){pushErr('QA_CACHE_ERROR',e.message||String(e),'warn')}},2600); /* V4.144: never run ~3k QA tests during normal boot/login. */
 [120,900,2600].forEach(ms=>setTimeout(()=>{stamp();installMenu()},ms)); /* V4.123: long obsolete version/menu fan-out retired. */
-window.addEventListener('pageshow',()=>{stamp();installMenu();setTimeout(()=>{try{const c=last||cachedReport();if(c){last=c;paintSettingsBadge(c)}}catch(e){}},700)},{passive:true}); /* V4.142: no full QA on pageshow. */
+window.addEventListener('pageshow',()=>{stamp();installMenu();setTimeout(()=>{try{const c=last||cachedReport();if(c){last=c;paintSettingsBadge(c)}}catch(e){}},700)},{passive:true}); /* V4.144: no full QA on pageshow. */
 document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();installMenu();scheduleRender()}},{passive:true});
 })();
 </script>
@@ -70104,7 +70176,7 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();i
 <script id="v4116-systemtech-engine-fix">
 (()=>{
  'use strict';
- const VERSION=window.GROW_LEGENDS_VERSION?.label||'V4.142 Stable',SHORT=window.GROW_LEGENDS_VERSION?.short||'V4.142';
+ const VERSION=window.GROW_LEGENDS_VERSION?.label||'V4.144 Stable',SHORT=window.GROW_LEGENDS_VERSION?.short||'V4.144';
  function stamp(){
   try{document.title='Grow Legends '+SHORT}catch(e){}
   try{
@@ -70138,7 +70210,7 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();i
 <script id="v4118-care-guildboss-fix">
 (()=>{
  'use strict';
- const VERSION=window.GROW_LEGENDS_VERSION?.label||'V4.142 Stable',SHORT=window.GROW_LEGENDS_VERSION?.short||'V4.142';
+ const VERSION=window.GROW_LEGENDS_VERSION?.label||'V4.144 Stable',SHORT=window.GROW_LEGENDS_VERSION?.short||'V4.144';
  function stamp(){try{document.title='Grow Legends '+SHORT;document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version').forEach(x=>x&&(x.textContent=VERSION));document.querySelectorAll('.v366-ver,.v371-logo em,.v372-logo em,.v4107-version').forEach(x=>x&&(x.textContent=SHORT))}catch(e){}}
  function refreshBoss(){try{if(document.querySelector('#guild')?.classList.contains('active')){v255RenderBoss?.()}}catch(e){}}
  function qaWrap(){
@@ -70644,7 +70716,7 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();i
 <script id="v4123-performance-cleanup">
 (()=>{
  'use strict';
- const VERSION=window.GROW_LEGENDS_VERSION?.label||'V4.142 Stable',SHORT=window.GROW_LEGENDS_VERSION?.short||'V4.142';
+ const VERSION=window.GROW_LEGENDS_VERSION?.label||'V4.144 Stable',SHORT=window.GROW_LEGENDS_VERSION?.short||'V4.144';
  function stamp(){
   try{document.title='Grow Legends '+SHORT}catch(e){}
   try{document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version').forEach(x=>x&&(x.textContent=VERSION));document.querySelectorAll('.v366-ver,.v371-logo em,.v372-logo em,.v4107-version').forEach(x=>x&&(x.textContent=SHORT))}catch(e){}
@@ -70675,7 +70747,7 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();i
 <script id="v4124-social-quest-fix">
 (()=>{
  'use strict';
- const VERSION=window.GROW_LEGENDS_VERSION?.label||'V4.142 Stable',SHORT=window.GROW_LEGENDS_VERSION?.short||'V4.142';
+ const VERSION=window.GROW_LEGENDS_VERSION?.label||'V4.144 Stable',SHORT=window.GROW_LEGENDS_VERSION?.short||'V4.144';
  const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
  const PROFILE_SELECT='id,character_name,class_id,class_name,level,bosses,gear_score,dungeons,combat_power,equipment,dungeon_progress,worldboss_attempts,worldboss_wins,pvp_buds,pvp_wins,pvp_losses,pvp_fights,updated_at';
 
@@ -70851,7 +70923,7 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();i
 <script id="v4126-power-rpc-diagnostics">
 (()=>{
  'use strict';
- const VERSION=window.GROW_LEGENDS_VERSION?.label||'V4.142 Stable',SHORT=window.GROW_LEGENDS_VERSION?.short||'V4.142';
+ const VERSION=window.GROW_LEGENDS_VERSION?.label||'V4.144 Stable',SHORT=window.GROW_LEGENDS_VERSION?.short||'V4.144';
  let calculating=false;
 
  /* Public/character Kampfkraft must never depend on which screen is open.
@@ -70966,7 +71038,7 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();i
 <script id="v4127-quest-skip-stable">
 (()=>{
  'use strict';
- const VERSION=window.GROW_LEGENDS_VERSION?.label||'V4.142 Stable',SHORT=window.GROW_LEGENDS_VERSION?.short||'V4.142';
+ const VERSION=window.GROW_LEGENDS_VERSION?.label||'V4.144 Stable',SHORT=window.GROW_LEGENDS_VERSION?.short||'V4.144';
  let scheduled=false;
 
  function seedCount(){
@@ -71089,17 +71161,17 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();i
 <!-- V4.127: final quest-start hook guarantees the Zeit-Samen skip control after every successful quest start without adding another interval. -->
 
 
-<!-- ===== V4.142 Stable: Hall of Haze authoritative dungeon progress ===== -->
+<!-- ===== V4.144 Stable: Hall of Haze authoritative dungeon progress ===== -->
 <style id="v4130-hall-dungeon-authority-css">
-.app > header .v358-logo::after{content:"V4.142"!important}
-.app > header .v366-ver::after,.app > header .v371-logo em::after,.app > header .v372-logo em::after{content:"V4.142"!important}
+.app > header .v358-logo::after{content:"V4.144"!important}
+.app > header .v366-ver::after,.app > header .v371-logo em::after,.app > header .v372-logo em::after{content:"V4.144"!important}
 .v4130-dungeon-line{margin-top:4px;font-size:7.5px;color:#b6c2b2;line-height:1.35}
 .v4130-dungeon-line strong{color:#e7d27d;font-weight:1000}
 </style>
 <script id="v4130-hall-dungeon-authority">
 (()=>{
  'use strict';
- const V=window.GROW_LEGENDS_VERSION||{short:'V4.142',label:'V4.142 Stable'};
+ const V=window.GROW_LEGENDS_VERSION||{short:'V4.144',label:'V4.144 Stable'};
  const VERSION=V.label,SHORT=V.short;
  const PROFILE_SELECT='id,character_name,class_id,class_name,level,bosses,gear_score,dungeons,combat_power,equipment,dungeon_progress,worldboss_attempts,worldboss_wins,pvp_buds,pvp_wins,pvp_losses,pvp_fights,updated_at';
  const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -71249,7 +71321,7 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();i
   try{await v073SyncProfile(true)}catch(e){}
   el.innerHTML='<div class="v072-empty">Rangliste wird geladen...</div>';
   const {data,error}=await v073Db.from('profiles').select(PROFILE_SELECT).order('level',{ascending:false}).order('combat_power',{ascending:false}).limit(50);
-  if(error){console.error('V4.142 Hall',error);el.innerHTML='<div class="v072-status-offline">Rangliste konnte nicht geladen werden.</div>';return}
+  if(error){console.error('V4.144 Hall',error);el.innerHTML='<div class="v072-status-offline">Rangliste konnte nicht geladen werden.</div>';return}
   el.innerHTML=(data||[]).length?(data||[]).map((p,i)=>socialRow(p,i,String(p.id)===String(v073User?.id)?'<span class="pill">DU</span>':`<button class="btn secondary" data-v073-add="${esc(p.id)}" data-name="${esc(p.character_name)}">Freund</button>${mailButton(p)}`,false)).join(''):'<div class="v072-empty">Noch keine Spieler in der Hall of Haze.</div>';
   try{v073BindAddButtons(el)}catch(e){}bindRows(el);
  };
@@ -71259,19 +71331,19 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();i
   const target=document.querySelector(targetSelector);if(!target)return;name=String(name||'').trim();if(name.length<2){v063Toast?.('Mindestens 2 Zeichen eingeben','warn');return}if(!(await v073Init()))return;
   target.innerHTML='<div class="v072-empty">Suche...</div>';const safe=name.replace(/[%_,]/g,'');
   const {data,error}=await v073Db.from('profiles').select(PROFILE_SELECT).ilike('character_name',`%${safe}%`).limit(20);
-  if(error){console.error('V4.142 Hall search',error);target.innerHTML='<div class="v072-status-offline">Suche fehlgeschlagen.</div>';return}
+  if(error){console.error('V4.144 Hall search',error);target.innerHTML='<div class="v072-status-offline">Suche fehlgeschlagen.</div>';return}
   const rows=(data||[]).filter(p=>String(p.id)!==String(v073User?.id));
   target.innerHTML=rows.length?rows.map(p=>socialRow(p,null,`<button class="btn" data-v073-add="${esc(p.id)}" data-name="${esc(p.character_name)}">Anfrage senden</button>${mailButton(p)}`,false)).join(''):'<div class="v072-empty">Keinen Spieler gefunden.</div>';
   try{v073BindAddButtons(target)}catch(e){}bindRows(target);
  };
  try{window.v073SearchPlayer=v073SearchPlayer;v072SearchPlayer=v073SearchPlayer}catch(e){}
 
- async function profileMap(ids){ids=[...new Set((ids||[]).filter(Boolean))];if(!ids.length)return new Map();const {data,error}=await v073Db.from('profiles').select(PROFILE_SELECT).in('id',ids);if(error){console.error('V4.142 Nebel-Crew profile load',error);return new Map()}return new Map((data||[]).map(p=>[String(p.id),p]))}
+ async function profileMap(ids){ids=[...new Set((ids||[]).filter(Boolean))];if(!ids.length)return new Map();const {data,error}=await v073Db.from('profiles').select(PROFILE_SELECT).in('id',ids);if(error){console.error('V4.144 Nebel-Crew profile load',error);return new Map()}return new Map((data||[]).map(p=>[String(p.id),p]))}
  v073LoadFriends=async function(){
   const friendsEl=document.getElementById('v072FriendsList'),requestsEl=document.getElementById('v072RequestsList'),countEl=document.getElementById('v072FriendCount');if(!friendsEl||!requestsEl)return;if(!(await v073Init()))return;
   friendsEl.innerHTML='<div class="v072-empty">Lade Freunde...</div>';requestsEl.innerHTML='<div class="v072-empty">Lade Anfragen...</div>';
   const {data,error}=await v073Db.from('friend_requests').select('id,sender_id,receiver_id,status,created_at').or(`sender_id.eq.${v073User.id},receiver_id.eq.${v073User.id}`).order('created_at',{ascending:false});
-  if(error){console.error('V4.142 Nebel-Crew',error);friendsEl.innerHTML='<div class="v072-status-offline">Freundesliste konnte nicht geladen werden.</div>';requestsEl.innerHTML='';return}
+  if(error){console.error('V4.144 Nebel-Crew',error);friendsEl.innerHTML='<div class="v072-status-offline">Freundesliste konnte nicht geladen werden.</div>';requestsEl.innerHTML='';return}
   const rows=data||[],incoming=rows.filter(r=>r.status==='pending'&&String(r.receiver_id)===String(v073User.id)),accepted=rows.filter(r=>r.status==='accepted');
   const ids=[...incoming.map(r=>r.sender_id),...accepted.map(r=>String(r.sender_id)===String(v073User.id)?r.receiver_id:r.sender_id)],profiles=await profileMap(ids);
   requestsEl.innerHTML=incoming.length?incoming.map(r=>{const p=profiles.get(String(r.sender_id))||{id:r.sender_id,character_name:'Spieler',level:1};return socialRow(p,null,`<button class="btn" data-v073-accept="${r.id}">Annehmen</button><button class="btn secondary" data-v073-decline="${r.id}">Ablehnen</button>`,false)}).join(''):'<div class="v072-empty">Keine offenen Anfragen.</div>';
@@ -71291,18 +71363,18 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();i
  window.v4130HallDiagnostics=()=>{const dp=liveDp(),pos=canonicalPos(dp,dp.completed.length);return{selected:dp.selected,lastActive:dp.lastActive,unlocked:dp.unlocked,completed:dp.completed,progress:dp.progress,display:pos}};
 })();
 </script>
-<!-- V4.142: Hall/Nebel-Crew use the last actually fought dungeon plus exact room progress. Merely opening another dungeon map no longer changes the public dungeon value. -->
+<!-- V4.144: Hall/Nebel-Crew use the last actually fought dungeon plus exact room progress. Merely opening another dungeon map no longer changes the public dungeon value. -->
 
 
-<!-- ===== V4.142 Stable: atomic new-character persistence ===== -->
+<!-- ===== V4.144 Stable: atomic new-character persistence ===== -->
 <style id="v4131-character-persistence-css">
-.app > header .v358-logo::after{content:"V4.142"!important}
-.app > header .v366-ver::after,.app > header .v371-logo em::after,.app > header .v372-logo em::after{content:"V4.142"!important}
+.app > header .v358-logo::after{content:"V4.144"!important}
+.app > header .v366-ver::after,.app > header .v371-logo em::after,.app > header .v372-logo em::after{content:"V4.144"!important}
 </style>
 <script id="v4131-character-persistence">
 (()=>{
  'use strict';
- const V=window.GROW_LEGENDS_VERSION||{short:'V4.142',label:'V4.142 Stable'};
+ const V=window.GROW_LEGENDS_VERSION||{short:'V4.144',label:'V4.144 Stable'};
  const VERSION=V.label,SHORT=V.short,SCOPED_PREFIX='growLegendsAccountSave:',IDENTITY_PREFIX='growLegendsCharacterIdentity:';
  let serverSaveBusy=false;
 
@@ -71319,7 +71391,7 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();i
  function checkpointCharacter(){
   const id=uid();if(!id||!complete()||!owned(id))return false;
   try{
-   /* V4.142 HARD RULE: a checkpoint may persist an already-owned state, but it may
+   /* V4.144 HARD RULE: a checkpoint may persist an already-owned state, but it may
       never claim/relabel a foreign in-memory character for the currently signed-in account. */
    const prev=Math.max(0,Number(s.__saveRevision)||0);
    try{if(typeof v213StampState==='function')v213StampState()}catch(e){}
@@ -71332,7 +71404,7 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();i
    try{if(typeof v200SaveScopedLocal==='function')v200SaveScopedLocal()}catch(e){}
    try{if(typeof v145SaveScopedLocal==='function')v145SaveScopedLocal()}catch(e){}
    return true;
-  }catch(e){console.error('V4.142 character checkpoint',e);return false}
+  }catch(e){console.error('V4.144 character checkpoint',e);return false}
  }
  window.v4131CheckpointCharacter=checkpointCharacter;
 
@@ -71350,7 +71422,7 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();i
    try{v200LastCloudStamp=now}catch(e){}
    checkpointCharacter();
    return true;
-  }catch(e){console.warn('V4.142 direct new-character cloud fallback',e);return false}
+  }catch(e){console.warn('V4.144 direct new-character cloud fallback',e);return false}
  }
  window.v4131DirectCharacterCloudSave=directCloudFallback;
 
@@ -71361,10 +71433,10 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();i
   try{
    checkpointCharacter();
    let profileOk=false,cloudOk=false;
-   try{if(typeof v073SyncProfile==='function')profileOk=!!(await v073SyncProfile(true))}catch(e){console.warn('V4.142 initial profile save',e)}
+   try{if(typeof v073SyncProfile==='function')profileOk=!!(await v073SyncProfile(true))}catch(e){console.warn('V4.144 initial profile save',e)}
    /* Always ask the normal cloud writer, even if the separate profile call above failed.
       It owns the usual save chain and remains the preferred path. */
-   try{if(typeof v075WriteCloudSave==='function')cloudOk=!!(await v075WriteCloudSave(true))}catch(e){console.warn('V4.142 initial cloud save',e)}
+   try{if(typeof v075WriteCloudSave==='function')cloudOk=!!(await v075WriteCloudSave(true))}catch(e){console.warn('V4.144 initial cloud save',e)}
    /* The old writer intentionally refuses player_saves when profile sync returns false.
       For a verified, account-owned NEW character only, preserve the character snapshot
       anyway so the next login cannot fall back to the empty creation state. */
@@ -71433,15 +71505,15 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();i
  window.v4131CharacterSaveDiagnostics=()=>{const id=uid(),k=id?scopedKey(id):'',x=(()=>{try{return JSON.parse(localStorage.getItem(k)||'null')}catch(e){return null}})();return{uid:id,complete:complete(),owned:owned(id),verified:verified(id),cloudLoaded:String(typeof v075CloudLoadedFor==='undefined'?'':v075CloudLoadedFor||''),stateOwner:String(s?.__accountOwnerId||''),socialOwner:String(s?.social?.playerId||''),scopedOwner:String(x?.__accountOwnerId||''),scopedMatch:!!x&&String(x.characterName||'')===String(s?.characterName||'')&&String(x.playerClass||'')===String(s?.playerClass||'')&&String(x.__accountOwnerId||'')===id}};
 })();
 </script>
-<!-- V4.142: new character is checkpointed to the account-scoped local save BEFORE UI success; cloud persistence no longer disappears just because the first profile sync failed. -->
+<!-- V4.144: new character is checkpointed to the account-scoped local save BEFORE UI success; cloud persistence no longer disappears just because the first profile sync failed. -->
 
-<!-- V4.142: Startseite Quest-Karte gegen globale .quest-Abstände isoliert; margin/padding entsprechen Dungeon und Growroom. -->
+<!-- V4.144: Startseite Quest-Karte gegen globale .quest-Abstände isoliert; margin/padding entsprechen Dungeon und Growroom. -->
 
-<!-- ===== V4.142 Stable: emergency cross-account save isolation ===== -->
+<!-- ===== V4.144 Stable: emergency cross-account save isolation ===== -->
 <script id="v4134-cross-account-isolation-hotfix">
 (()=>{
  'use strict';
- const V=window.GROW_LEGENDS_VERSION||{short:'V4.142',label:'V4.142 Stable'};
+ const V=window.GROW_LEGENDS_VERSION||{short:'V4.144',label:'V4.144 Stable'};
  function uid(){try{return v073User&&!v073User.is_anonymous&&v073User.id?String(v073User.id):''}catch(e){return ''}}
  function stateOwner(){try{return String(s?.__accountOwnerId||'')}catch(e){return ''}}
  function socialOwner(){try{return String(s?.social?.playerId||'')}catch(e){return ''}}
@@ -71449,25 +71521,25 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();i
  function status(){const id=uid(),o=stateOwner(),so=socialOwner();return{version:V.short,uid:id,stateOwner:o,socialOwner:so,owned:!!id&&o===id&&so===id,verified:verified(id),blocked:!!id&&(o!==id||so!==id||!verified(id))}}
  window.v4134AccountIsolationDiagnostics=status;
  /* Never attempt a compatibility checkpoint from this final layer. It is diagnostics-only;
-    the actual V4.142 checkpoint above now refuses any state whose ownership is not already exact. */
+    the actual V4.144 checkpoint above now refuses any state whose ownership is not already exact. */
  try{document.title='Grow Legends '+V.short}catch(e){}
  try{document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version').forEach(x=>x&&(x.textContent=V.label));document.querySelectorAll('.v366-ver,.v371-logo em,.v372-logo em,.v4107-version').forEach(x=>x&&(x.textContent=V.short))}catch(e){}
 })();
 </script>
-<!-- V4.142: account-scoped checkpoints can no longer relabel a foreign character; background character repair runs only after exact account verification. -->
+<!-- V4.144: account-scoped checkpoints can no longer relabel a foreign character; background character repair runs only after exact account verification. -->
 
 
 
-<!-- ===== V4.142 Stable: atomic character creation + logout save barrier ===== -->
+<!-- ===== V4.144 Stable: atomic character creation + logout save barrier ===== -->
 <style id="v4135-character-save-barrier-css">
-.app > header .v358-logo::after{content:"V4.142"!important}
-.app > header .v366-ver::after,.app > header .v371-logo em::after,.app > header .v372-logo em::after{content:"V4.142"!important}
+.app > header .v358-logo::after{content:"V4.144"!important}
+.app > header .v366-ver::after,.app > header .v371-logo em::after,.app > header .v372-logo em::after{content:"V4.144"!important}
 #v200CharacterModal #v4135RetrySave{width:100%;margin-top:10px}
 </style>
 <script id="v4135-character-save-barrier">
 (()=>{
  'use strict';
- const V=window.GROW_LEGENDS_VERSION||{short:'V4.142',label:'V4.142 Stable'};
+ const V=window.GROW_LEGENDS_VERSION||{short:'V4.144',label:'V4.144 Stable'};
  let flushPromise=null;
 
  function uid(){try{return v073User&&!v073User.is_anonymous&&v073User.id?String(v073User.id):''}catch(e){return ''}}
@@ -71488,7 +71560,7 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();i
    localStorage.setItem(KEY,JSON.stringify(snap));
    localStorage.setItem(scopedKey(id),JSON.stringify(snap));
    return true;
-  }catch(e){console.error('V4.142 local character checkpoint',e);return false}
+  }catch(e){console.error('V4.144 local character checkpoint',e);return false}
  }
 
  async function readCloud(id){
@@ -71499,7 +71571,7 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();i
    const {data,error}=await v073Db.from('player_saves').select('save_data,updated_at').eq('user_id',id).maybeSingle();
    if(error)throw error;
    return data||null;
-  }catch(e){console.warn('V4.142 cloud verify read',e);return null}
+  }catch(e){console.warn('V4.144 cloud verify read',e);return null}
  }
 
  async function forceOwnedCloudWrite(id){
@@ -71515,7 +71587,7 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();i
    if(error)throw error;
    try{v075CloudLoadedFor=id;v200LastCloudStamp=now}catch(e){}
    return true;
-  }catch(e){console.warn('V4.142 direct owned cloud write',e);return false}
+  }catch(e){console.warn('V4.144 direct owned cloud write',e);return false}
  }
 
  async function verifyCharacterPersisted(id,name,classId){
@@ -71530,9 +71602,9 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();i
   flushPromise=(async()=>{
    localCheckpoint();
    if(await verifyCharacterPersisted(id,name,classId))return true;
-   try{if(typeof window.v4131SaveCharacterServer==='function')await window.v4131SaveCharacterServer()}catch(e){console.warn('V4.142 normal new-character save',e)}
+   try{if(typeof window.v4131SaveCharacterServer==='function')await window.v4131SaveCharacterServer()}catch(e){console.warn('V4.144 normal new-character save',e)}
    if(await verifyCharacterPersisted(id,name,classId))return true;
-   try{if(typeof window.v4131DirectCharacterCloudSave==='function')await window.v4131DirectCharacterCloudSave()}catch(e){console.warn('V4.142 fallback new-character save',e)}
+   try{if(typeof window.v4131DirectCharacterCloudSave==='function')await window.v4131DirectCharacterCloudSave()}catch(e){console.warn('V4.144 fallback new-character save',e)}
    if(await verifyCharacterPersisted(id,name,classId))return true;
    if(await forceOwnedCloudWrite(id))return await verifyCharacterPersisted(id,name,classId);
    return false;
@@ -71558,7 +71630,7 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();i
    try{window.v213PickNewestSave=v213PickNewestSave}catch(e){}
    window.__v4135PickerGuard=true;
   }
- }catch(e){console.warn('V4.142 save picker guard',e)}
+ }catch(e){console.warn('V4.144 save picker guard',e)}
 
  function installRetry(modal,status,id,name,classId){
   if(!modal||!modal.isConnected)return;
@@ -71635,14 +71707,14 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();i
       if(!ok){try{v063Toast('Abmelden gestoppt','error','Der neue Charakter ist noch nicht sicher in der Cloud gespeichert. Bitte die Speicherung erneut versuchen.')}catch(e){};return false}
       window.__V4135_NEW_CHARACTER_PENDING__=null;
      }
-     try{if(typeof v075WriteCloudSave==='function')await v075WriteCloudSave(true)}catch(e){console.warn('V4.142 pre-logout save',e)}
+     try{if(typeof v075WriteCloudSave==='function')await v075WriteCloudSave(true)}catch(e){console.warn('V4.144 pre-logout save',e)}
     }
     return await base.apply(this,arguments);
    };
    try{window.v136Logout=v136Logout}catch(e){}
    window.__v4135LogoutBarrier=true;
   }
- }catch(e){console.warn('V4.142 logout barrier install',e)}
+ }catch(e){console.warn('V4.144 logout barrier install',e)}
 
  function stamp(){
   try{document.title='Grow Legends '+V.short}catch(e){}
@@ -71652,19 +71724,19 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();i
  window.v4135CharacterPersistenceDiagnostics=()=>{const id=uid(),key=id?scopedKey(id):'',local=(()=>{try{return JSON.parse(localStorage.getItem(key)||'null')}catch(e){return null}})();return{version:V.short,uid:id,authReady:window.__V200_AUTH_READY__===true,verified:verified(id),owned:ownedState(s,id),complete:completeState(s),pending:window.__V4135_NEW_CHARACTER_PENDING__||null,localComplete:exactCharacter(local,id,local?.characterName,local?.playerClass),scopedKey:key}};
 })();
 </script>
-<!-- V4.142: character creation is not declared successful until player_saves is read-back verified; immediate logout waits for/blocks on that save. A complete account-scoped local character outranks an incomplete cloud placeholder on the next login. -->
+<!-- V4.144: character creation is not declared successful until player_saves is read-back verified; immediate logout waits for/blocks on that save. A complete account-scoped local character outranks an incomplete cloud placeholder on the next login. -->
 
 
-<!-- ===== V4.142 Stable: canonical account save owner + contaminated profile recovery ===== -->
+<!-- ===== V4.144 Stable: canonical account save owner + contaminated profile recovery ===== -->
 <style id="v4136-account-save-owner-css">
-.app > header .v358-logo::after{content:"V4.142"!important}
-.app > header .v366-ver::after,.app > header .v371-logo em::after,.app > header .v372-logo em::after{content:"V4.142"!important}
+.app > header .v358-logo::after{content:"V4.144"!important}
+.app > header .v366-ver::after,.app > header .v371-logo em::after,.app > header .v372-logo em::after{content:"V4.144"!important}
 #v200CharacterModal #v4136RetrySave{width:100%;margin-top:10px}
 </style>
 <script id="v4136-account-save-owner">
 (()=>{
  'use strict';
- const V=window.GROW_LEGENDS_VERSION||{short:'V4.142',label:'V4.142 Stable'};
+ const V=window.GROW_LEGENDS_VERSION||{short:'V4.144',label:'V4.144 Stable'};
  const ACCOUNT_PREFIX='growLegendsAccountSave:';
  const BEST_PREFIX='growLegendsBestSave:';
  const FLOOR_PREFIX='growLegendsProgressFloor:';
@@ -71712,12 +71784,12 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();i
    localStorage.setItem(scopedKey(id),JSON.stringify(snap));
    localStorage.setItem(ID_PREFIX+id,JSON.stringify({userId:id,name:clean(snap.characterName),classId:String(snap.playerClass||''),lockedAt:Date.now()}));
    return true;
-  }catch(e){console.error('V4.142 canonical local save',e);return false}
+  }catch(e){console.error('V4.144 canonical local save',e);return false}
  }
 
  async function initDb(){try{if(typeof v073Init==='function')await v073Init();return typeof v073Db!=='undefined'&&!!v073Db}catch(e){return false}}
  async function readCloud(id){
-  try{if(!id||uid()!==id||!(await initDb()))return null;const {data,error}=await v073Db.from('player_saves').select('save_data,updated_at').eq('user_id',id).maybeSingle();if(error)throw error;return data||null}catch(e){console.warn('V4.142 cloud read',e);return null}
+  try{if(!id||uid()!==id||!(await initDb()))return null;const {data,error}=await v073Db.from('player_saves').select('save_data,updated_at').eq('user_id',id).maybeSingle();if(error)throw error;return data||null}catch(e){console.warn('V4.144 cloud read',e);return null}
  }
  async function readProfile(id,force=false){
   try{
@@ -71725,7 +71797,7 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();i
    if(!force&&profileCache&&Date.now()-profileCacheAt<2500&&String(profileCache.id||'')===id)return profileCache;
    const {data,error}=await v073Db.from('profiles').select('id,character_name,class_id,class_name,level').eq('id',id).maybeSingle();if(error)throw error;
    profileCache=data||null;profileCacheAt=Date.now();return profileCache;
-  }catch(e){console.warn('V4.142 profile read',e);return null}
+  }catch(e){console.warn('V4.144 profile read',e);return null}
  }
 
  function chooseSameIdentity(rows,anchor){
@@ -71780,7 +71852,7 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();i
    if(typeof v075ApplyCloudSave==='function'){const ok=await v075ApplyCloudSave(clone(best.data));if(!ok)return false}
    else{Object.keys(s).forEach(k=>delete s[k]);Object.assign(s,clone(best.data));try{render()}catch(e){}}
    writeLocalCanonical(id,s);return true;
-  }catch(e){console.warn('V4.142 recovery apply',e);return false}
+  }catch(e){console.warn('V4.144 recovery apply',e);return false}
  }
 
  async function directCloudWrite(id){
@@ -71790,7 +71862,7 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();i
    const {error}=await v073Db.from('player_saves').upsert({user_id:id,save_data:snap,updated_at:now},{onConflict:'user_id'});if(error)throw error;
    try{v075CloudLoadedFor=id;v200LastCloudStamp=now}catch(e){}
    const row=await readCloud(id);return !!row?.save_data&&complete(row.save_data)&&owned(row.save_data,id,true)&&sameIdentity(row.save_data,snap);
-  }catch(e){console.warn('V4.142 direct cloud write',e);return false}
+  }catch(e){console.warn('V4.144 direct cloud write',e);return false}
  }
 
  function clearContaminatedHighWater(id){
@@ -71802,7 +71874,7 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();i
  }
 
  async function resetOwnProfileForConfirmedNewCharacter(id){
-  /* V4.142: profiles is ONLY a public mirror. Never delete the profile row from the
+  /* V4.144: profiles is ONLY a public mirror. Never delete the profile row from the
      client after saving a character. A delete can invalidate/cascade related account
      data depending on the database relation, and it is not required for player_saves. */
   if(!id||uid()!==id||!complete(s)||!owned(s,id,false))return false;
@@ -71818,7 +71890,7 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();i
     return true;
    }
    return true;
-  }catch(e){console.warn('V4.142 profile mirror check',e);return true}
+  }catch(e){console.warn('V4.144 profile mirror check',e);return true}
  }
 
  /* Final profile guard: never send a lower level into the integrity trigger. If the
@@ -71834,7 +71906,7 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();i
     profileGuardBusy=true;
     try{
      const p=await readProfile(id,false),pl=Math.max(1,Number(p?.level)||1),ll=level(s);
-     /* V4.142: profile mirror problems must NEVER block player_saves. The historical
+     /* V4.144: profile mirror problems must NEVER block player_saves. The historical
         v075WriteCloudSave() aborts its real save when v073SyncProfile() returns false.
         Therefore a stale/higher/mismatching public profile is treated as "mirror skipped"
         while the account-owned player_saves continues. */
@@ -71852,7 +71924,7 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();i
    };
    try{window.v073SyncProfile=v073SyncProfile}catch(e){}
   }
- }catch(e){console.warn('V4.142 profile guard install',e)}
+ }catch(e){console.warn('V4.144 profile guard install',e)}
 
  async function flushNewCharacter(id,name,classId){
   id=String(id||'');name=clean(name);classId=String(classId||'');
@@ -71866,7 +71938,7 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();i
    if(!writeLocalCanonical(id,s))return false;
    /* Profile maintenance is intentionally non-destructive and may be skipped. */
    await resetOwnProfileForConfirmedNewCharacter(id);
-   /* Critical V4.142 read-back happens AFTER every post-save step. The creator is not
+   /* Critical V4.144 read-back happens AFTER every post-save step. The creator is not
       released unless the authoritative row still exists with the same account identity. */
    const finalRow=await readCloud(id);
    return !!finalRow?.save_data&&complete(finalRow.save_data)&&owned(finalRow.save_data,id,true)&&sameIdentity(finalRow.save_data,{characterName:name,playerClass:classId});
@@ -71898,7 +71970,7 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();i
    if(!(await v200NameAvailable(name))){buttons.forEach(x=>x.disabled=false);status.className='error';status.textContent='Dieser Charaktername ist bereits vergeben.';return}
    const classId=String(btn.dataset.v4136Class||'');const ok=await v115Confirm(`${classes[classId].name} als Klasse für ${name} wählen?\n\nDie Klasse kann später nicht gewechselt werden.`,{title:'Charakter erstellen',type:'warn',okText:'Charakter erstellen'});if(!ok){buttons.forEach(x=>x.disabled=false);return}
    if(uid()!==id||window.__V200_AUTH_READY__!==true||!owned(s,id,false)){status.className='error';status.textContent='Account-Zuordnung hat sich geändert. Bitte neu anmelden.';return}
-   /* V4.142: a NEW character must start from a genuinely fresh account state.
+   /* V4.144: a NEW character must start from a genuinely fresh account state.
       Never preserve level/xp/items from an incomplete or contaminated pre-creation state. */
    try{
     if(typeof v200FreshState==='function')v200FreshState(id);
@@ -71907,7 +71979,7 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();i
      fresh.playerClass=null;fresh.classLocked=false;fresh.characterName='';fresh.characterNameSet=false;fresh.social=(fresh.social&&typeof fresh.social==='object')?fresh.social:{};fresh.social.playerId=id;fresh.__accountOwnerId=id;
      Object.keys(s).forEach(k=>delete s[k]);Object.assign(s,fresh);
     }
-   }catch(e){console.error('V4.142 fresh character baseline',e);status.className='error';status.textContent='Frischer Charakter-Start konnte nicht vorbereitet werden.';buttons.forEach(x=>x.disabled=false);return}
+   }catch(e){console.error('V4.144 fresh character baseline',e);status.className='error';status.textContent='Frischer Charakter-Start konnte nicht vorbereitet werden.';buttons.forEach(x=>x.disabled=false);return}
    s.playerClass=classId;s.classLocked=true;s.characterName=name;s.characterNameSet=true;s.social=(s.social&&typeof s.social==='object')?s.social:{};s.social.playerId=id;s.__accountOwnerId=id;s.level=1;s.xp=0;
    window.__V4136_NEW_CHARACTER_PENDING__={uid:id,name,classId,startedAt:Date.now()};status.textContent='Charakter wird accountgebunden gespeichert …';
    if(!writeLocalCanonical(id,s)){status.className='error';status.textContent='Lokale Speicherung fehlgeschlagen.';installRetry(modal,status,id,name,classId);return}
@@ -71919,7 +71991,7 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();i
  }
  try{v029ShowClassChoice=creator;window.v029ShowClassChoice=creator}catch(e){window.v029ShowClassChoice=creator}
 
- /* V4.142: the login resolver runs exactly once. No second cloud/local candidate
+ /* V4.144: the login resolver runs exactly once. No second cloud/local candidate
     is applied after finalize; that historical second pass was a source of account drift. */
  try{
   if(typeof v200FinalizeUser==='function'){
@@ -71931,7 +72003,7 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();i
    };
    try{window.v200FinalizeUser=v200FinalizeUser}catch(e){}
   }
- }catch(e){console.warn('V4.142 finalize install',e)}
+ }catch(e){console.warn('V4.144 finalize install',e)}
 
  /* Save player_saves directly before logout while auth is intact. Do not make character
     survival depend on the public profiles mirror. */
@@ -71947,7 +72019,7 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();i
    };
    try{window.v136Logout=v136Logout}catch(e){}
   }
- }catch(e){console.warn('V4.142 logout install',e)}
+ }catch(e){console.warn('V4.144 logout install',e)}
 
  /* Final toast dedupe for legacy integrity errors. The final profile guard prevents new
     downward writes; this also stops already-scheduled historical attempts flooding mobile UI. */
@@ -71964,23 +72036,23 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();i
  window.v4136AccountSaveDiagnostics=async()=>{const id=uid(),cloud=await readCloud(id),p=await readProfile(id,true),scoped=readJson(scopedKey(id));return{version:V.short,uid:id,authReady:window.__V200_AUTH_READY__===true,stateOwned:owned(s,id,false),stateComplete:complete(s),stateLevel:level(s),stateName:clean(s?.characterName),cloudComplete:complete(cloud?.save_data),cloudLevel:level(cloud?.save_data),cloudName:clean(cloud?.save_data?.characterName),scopedComplete:complete(scoped),scopedLevel:level(scoped),profileLevel:Math.max(0,Number(p?.level)||0),profileName:clean(p?.character_name),pending:window.__V4136_NEW_CHARACTER_PENDING__||null}};
 })();
 </script>
-<!-- V4.142: player_saves/account-scoped save is authoritative. New character creation now resets to a true level-1 defaultState before name/class are applied, preventing inherited progression from any incomplete/contaminated pre-creation state. -->
+<!-- V4.144: player_saves/account-scoped save is authoritative. New character creation now resets to a true level-1 defaultState before name/class are applied, preventing inherited progression from any incomplete/contaminated pre-creation state. -->
 
 
-<!-- V4.142: temporary player-repair control removed; normal account isolation/character creation remains authoritative. -->
+<!-- V4.144: temporary player-repair control removed; normal account isolation/character creation remains authoritative. -->
 
 
-<!-- ===== V4.142 Stable: final version authority ===== -->
+<!-- ===== V4.144 Stable: final version authority ===== -->
 <style id="v4139-version-authority-css">
-.app > header .v358-logo::after{content:"V4.142"!important}
-.app > header .v366-ver::after,.app > header .v371-logo em::after,.app > header .v372-logo em::after{content:"V4.142"!important}
+.app > header .v358-logo::after{content:"V4.144"!important}
+.app > header .v366-ver::after,.app > header .v371-logo em::after,.app > header .v372-logo em::after{content:"V4.144"!important}
 </style>
 
-<!-- ===== V4.142 Stable: single authoritative account switch / save isolation ===== -->
+<!-- ===== V4.144 Stable: single authoritative account switch / save isolation ===== -->
 <script id="v4139-account-switch-authority">
 (()=>{
  'use strict';
- const V=window.GROW_LEGENDS_VERSION||{short:'V4.142',label:'V4.142 Stable'};
+ const V=window.GROW_LEGENDS_VERSION||{short:'V4.144',label:'V4.144 Stable'};
  const ACCOUNT_PREFIX='growLegendsAccountSave:';
  const ID_PREFIX='growLegendsCharacterIdentity:';
  const LOCK_PREFIX='growLegendsCharacterLockV4139:';
@@ -72070,7 +72142,7 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();i
    if(complete(y)){localStorage.setItem(ID_PREFIX+id,JSON.stringify({userId:id,name:clean(y.characterName),classId:String(y.playerClass||''),lockedAt:Date.now()}));writeLock(id,y)}
    else{localStorage.removeItem(ID_PREFIX+id);localStorage.removeItem(lockKey(id))}
    return true;
-  }catch(e){console.warn('V4.142 local mirror write',e);return false}
+  }catch(e){console.warn('V4.144 local mirror write',e);return false}
  }
  function backupCurrent(nextId){
   try{const old=owner(s);if(!old||old===nextId||!exactOwned(s,old))return;const snap=clone(s);if(snap)localStorage.setItem(TRANSITION_PREFIX+old+':'+Date.now(),JSON.stringify(snap))}catch(e){}
@@ -72145,7 +72217,7 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();i
     v075CloudLoadedFor=id;
     try{v213LastComparable=typeof v213Comparable==='function'?v213Comparable(s):'';v213StartMonitor?.()}catch(e){}
     return true;
-   }catch(e){console.error('V4.142 account resolver',e);warn('Account-Spielstand konnte nicht geladen werden',e?.message||String(e));return false}
+   }catch(e){console.error('V4.144 account resolver',e);warn('Account-Spielstand konnte nicht geladen werden',e?.message||String(e));return false}
    finally{resolvePromise=null;resolveUid=''}
   })();
   return resolvePromise;
@@ -72187,7 +72259,7 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();i
     /* profiles is only a mirror. Its failure never controls player_saves. */
     setTimeout(async()=>{try{if(uid()===id&&window.__V200_AUTH_READY__===true&&typeof v073SyncProfile==='function')await v073SyncProfile(true)}catch(e){}},0);
     return true;
-   }catch(e){try{v213Dirty=true}catch(_){};console.error('V4.142 cloud save',e);warn('Cloud-Speicherung fehlgeschlagen',e?.message||String(e));return false}
+   }catch(e){try{v213Dirty=true}catch(_){};console.error('V4.144 cloud save',e);warn('Cloud-Speicherung fehlgeschlagen',e?.message||String(e));return false}
   };
   writeChain=writeChain.then(task,task);return writeChain;
  }
@@ -72236,7 +72308,7 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();i
    };
    try{window.v200FinalizeUser=v200FinalizeUser}catch(e){}
   }
- }catch(e){console.warn('V4.142 finalize authority',e)}
+ }catch(e){console.warn('V4.144 finalize authority',e)}
 
  /* Final logout cleanup: scoped/cloud save survives; generic in-memory session does not. */
  try{
@@ -72249,7 +72321,7 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();i
    };
    try{window.v136Logout=v136Logout}catch(e){}
   }
- }catch(e){console.warn('V4.142 logout authority',e)}
+ }catch(e){console.warn('V4.144 logout authority',e)}
 
  /* Account-specific notification memory instead of one browser-wide seen list. */
  try{
@@ -72277,9 +72349,9 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();i
  stamp();document.addEventListener('DOMContentLoaded',stamp,{once:true});window.addEventListener('pageshow',stamp,{passive:true});
 })();
 </script>
-<!-- V4.142: account switching consolidated. Generic browser state is never a resolver source; profiles never hydrate character state; cloud/local conflicts are blocked instead of guessed; runtime caches reset on transitions/logout. -->
+<!-- V4.144: account switching consolidated. Generic browser state is never a resolver source; profiles never hydrate character state; cloud/local conflicts are blocked instead of guessed; runtime caches reset on transitions/logout. -->
 
-<!-- ===== V4.142 Stable: admin-only Systemtechnik + repair UI removal authority ===== -->
+<!-- ===== V4.144 Stable: admin-only Systemtechnik + repair UI removal authority ===== -->
 <style id="v4142-admin-systemtechnik-css">
 html:not(.v4142-systemtech-admin) #v4104QaRow,
 html:not(.v4142-systemtech-admin) #v032MenuPanel [data-screen="systemtech"],
@@ -72288,7 +72360,7 @@ html:not(.v4142-systemtech-admin) #v4102QaButton{display:none!important}
 <script id="v4142-admin-systemtechnik-authority">
 (()=>{
  'use strict';
- const V=window.GROW_LEGENDS_VERSION||{short:'V4.142',label:'V4.142 Stable'};
+ const V=window.GROW_LEGENDS_VERSION||{short:'V4.144',label:'V4.144 Stable'};
  function admin(){try{return typeof v093IsAdmin!=='undefined'&&v093IsAdmin===true&&!!v073User&&!v073User.is_anonymous}catch(e){return false}}
  function leaveSystemtech(){
   const sec=document.getElementById('systemtech');if(!sec?.classList.contains('active'))return;
@@ -72337,4 +72409,150 @@ html:not(.v4142-systemtech-admin) #v4102QaButton{display:none!important}
  stamp();sync();
 })();
 </script>
-<!-- V4.142: temporary player-repair setting removed. Systemtechnik/Systemtest UI is visible only for a confirmed admin account; direct non-admin navigation is blocked. -->
+<!-- V4.144: temporary player-repair setting removed. Systemtechnik/Systemtest UI is visible only for a confirmed admin account; direct non-admin navigation is blocked. -->
+
+
+<!-- ===== V4.144 Stable: global fold-out guild chat ===== -->
+<style id="v4144-guild-chat-css">
+#v4144GuildChatTab{
+ position:fixed;right:0;top:69%;z-index:12005;transform:translateY(-50%);
+ display:none;align-items:center;justify-content:center;
+ border:1px solid #52704e;border-right:0;border-radius:14px 0 0 14px;
+ background:linear-gradient(180deg,#1d3320,#101b12);color:#eaf4e5;
+ padding:12px 8px;writing-mode:vertical-rl;cursor:pointer;font-weight:1000;font-size:9px;
+ box-shadow:0 8px 26px #0008;letter-spacing:.04em
+}
+#v4144GuildChatTab.show{display:flex}
+#v4144GuildChatPanel{
+ position:fixed;right:0;top:0;bottom:0;z-index:12020;width:min(94vw,410px);
+ transform:translateX(103%);transition:transform .22s ease;
+ background:radial-gradient(circle at 70% 0,rgba(90,210,73,.10),transparent 31%),linear-gradient(180deg,#101b12,#07100a 78%);
+ border-left:1px solid #405840;box-shadow:-18px 0 45px #000b;padding:14px;
+ display:flex;flex-direction:column;overflow:hidden
+}
+#v4144GuildChatPanel.open{transform:translateX(0)}
+.v4144-chat-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding-bottom:10px;border-bottom:1px solid #293d2e}
+.v4144-chat-head h3{margin:0;font-size:17px}.v4144-chat-head .tiny{margin-top:2px;color:#839487}
+#v4144GuildChatClose{border:0;background:#263627;color:#fff;border-radius:9px;padding:7px 10px;cursor:pointer}
+#v4144GuildChatList{flex:1;min-height:160px;overflow:auto;padding:10px 2px 12px;scrollbar-width:thin}
+.v4144-chat-empty{padding:18px 10px;text-align:center;color:#829087;font-size:9px;line-height:1.5}
+.v4144-chat-row{display:flex;margin:8px 0}.v4144-chat-row.own{justify-content:flex-end}
+.v4144-chat-bubble{max-width:86%;padding:9px 10px;border:1px solid #314a36;border-radius:13px 13px 13px 4px;background:#0b1510;box-shadow:0 4px 12px #0004}
+.v4144-chat-row.own .v4144-chat-bubble{border-color:#4e774d;border-radius:13px 13px 4px 13px;background:#122319}
+.v4144-chat-meta{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:4px;color:#819085;font-size:6.5px}
+.v4144-chat-meta b{color:#9de681;font-size:7.5px}.v4144-chat-row.own .v4144-chat-meta b{color:#e1cd77}
+.v4144-chat-text{white-space:pre-wrap;overflow-wrap:anywhere;color:#e0e8df;font-size:9.5px;line-height:1.4}
+.v4144-chat-compose{padding-top:10px;border-top:1px solid #293d2e}
+#v4144GuildChatInput{width:100%;min-height:72px;max-height:130px;resize:none;border:1px solid #35523b;border-radius:11px;background:#07100a;color:#eef4ec;padding:10px;font:inherit;font-size:10px;line-height:1.35}
+.v4144-chat-actions{display:grid;grid-template-columns:1fr auto;gap:7px;align-items:center;margin-top:7px}
+#v4144GuildChatHint{font-size:6.5px;color:#748278;min-width:0}
+#v4144GuildChatSend{min-width:92px}
+@media(max-width:560px){#v4144GuildChatTab{top:73%}#v4144GuildChatPanel{width:100vw;padding:12px}.v4144-chat-bubble{max-width:91%}}
+</style>
+
+<div id="v4144GuildChatTab" role="button" tabindex="0" aria-label="Gildenchat öffnen">💬 GILDENCHAT</div>
+<aside id="v4144GuildChatPanel" aria-hidden="true">
+ <div class="v4144-chat-head">
+  <div><h3>💬 Gildenchat</h3><div class="tiny" id="v4144GuildChatGuild">Nur für Mitglieder deiner Gilde</div></div>
+  <button type="button" id="v4144GuildChatClose" aria-label="Gildenchat schließen">✕</button>
+ </div>
+ <div id="v4144GuildChatList"><div class="v4144-chat-empty">Chat wird geladen …</div></div>
+ <div class="v4144-chat-compose">
+  <textarea id="v4144GuildChatInput" maxlength="400" placeholder="Nachricht an deine Gilde …"></textarea>
+  <div class="v4144-chat-actions"><span id="v4144GuildChatHint">Enter senden · Shift+Enter neue Zeile</span><button type="button" class="btn" id="v4144GuildChatSend">Senden</button></div>
+ </div>
+</aside>
+
+<script id="v4144-guild-chat">
+(()=>{
+ 'use strict';
+ const V=window.GROW_LEGENDS_VERSION||{short:'V4.144',label:'V4.144 Stable'};
+ const TABLE='guild_chat_messages';
+ let open=false,refreshTimer=0,loading=false,lastSendAt=0,lastGuildId='';
+ const q=id=>document.getElementById(id);
+ const esc=x=>String(x??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+ function online(){try{return !!v073Db&&!!v073User&&!v073User.is_anonymous&&window.__V200_AUTH_READY__===true}catch(e){return false}}
+ function guildId(){try{return String(v254Membership?.guild_id||v254Guild?.id||'')}catch(e){return''}}
+ function member(){return online()&&!!guildId()&&!!v254Membership&&!!v254Guild}
+ function ownId(){try{return String(v073User?.id||'')}catch(e){return''}}
+ function guildLabel(){try{return `${v254Guild?.name||'Gilde'}${v254Guild?.tag?` [${v254Guild.tag}]`:''}`}catch(e){return'Gilde'}}
+ function setList(html){const box=q('v4144GuildChatList');if(box)box.innerHTML=html}
+ function close(){open=false;clearTimeout(refreshTimer);refreshTimer=0;const p=q('v4144GuildChatPanel');if(p){p.classList.remove('open');p.setAttribute('aria-hidden','true')}}
+ window.v4144CloseGuildChat=close;
+ function syncVisibility(){
+  const tab=q('v4144GuildChatTab');if(!tab)return false;
+  const ok=member();tab.classList.toggle('show',ok);tab.setAttribute('aria-hidden',ok?'false':'true');
+  const sub=q('v4144GuildChatGuild');if(sub)sub.textContent=ok?guildLabel():'Nur für Mitglieder deiner Gilde';
+  if(!ok)close();
+  return ok;
+ }
+ window.v4144SyncGuildChat=syncVisibility;
+ function fmtTime(x){try{const d=new Date(x),today=new Date();const same=d.toDateString()===today.toDateString();return same?d.toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'}):d.toLocaleDateString('de-DE',{day:'2-digit',month:'2-digit'})+' '+d.toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'})}catch(e){return''}}
+ function render(rows){
+  const box=q('v4144GuildChatList');if(!box)return;
+  if(!rows?.length){box.innerHTML='<div class="v4144-chat-empty">Noch keine Nachrichten. Schreib deiner Gilde die erste Nachricht. 🌿</div>';return}
+  const me=ownId();
+  box.innerHTML=rows.map(r=>`<div class="v4144-chat-row ${String(r.user_id||'')===me?'own':''}"><div class="v4144-chat-bubble"><div class="v4144-chat-meta"><b>${esc(r.character_name||'Spieler')}</b><span>${esc(fmtTime(r.created_at))}</span></div><div class="v4144-chat-text">${esc(r.body||'')}</div></div></div>`).join('');
+  requestAnimationFrame(()=>{box.scrollTop=box.scrollHeight});
+ }
+ function missingTable(e){return /guild_chat_messages|relation.*does not exist|schema cache/i.test(String(e?.message||e||''))}
+ async function load({silent=false}={}){
+  if(loading||!open||!member())return false;const gid=guildId();if(!gid)return false;loading=true;
+  try{
+   const {data,error}=await v073Db.from(TABLE).select('id,guild_id,user_id,character_name,body,created_at').eq('guild_id',gid).order('created_at',{ascending:false}).limit(50);
+   if(error)throw error;if(!open||gid!==guildId())return false;lastGuildId=gid;render([...(data||[])].reverse());return true;
+  }catch(e){
+   console.warn('V4.144 guild chat load',e);
+   if(!silent)setList(`<div class="v4144-chat-empty">${missingTable(e)?'Gildenchat ist serverseitig noch nicht eingerichtet.':'Gildenchat konnte gerade nicht geladen werden.'}</div>`);
+   return false;
+  }finally{loading=false}
+ }
+ function schedule(){clearTimeout(refreshTimer);refreshTimer=0;if(!open||!member())return;refreshTimer=setTimeout(async()=>{if(open&&!document.hidden){await load({silent:true})}schedule()},12000)}
+ async function openPanel(){
+  if(!syncVisibility())return;
+  try{if(typeof v269CloseTicket==='function')v269CloseTicket()}catch(e){}
+  const p=q('v4144GuildChatPanel');if(!p)return;open=true;p.classList.add('open');p.setAttribute('aria-hidden','false');
+  const gid=guildId();if(gid!==lastGuildId)setList('<div class="v4144-chat-empty">Chat wird geladen …</div>');
+  await load();schedule();setTimeout(()=>q('v4144GuildChatInput')?.focus(),80);
+ }
+ window.v4144OpenGuildChat=openPanel;
+ async function send(){
+  if(!member())return close();const input=q('v4144GuildChatInput'),btn=q('v4144GuildChatSend');const body=String(input?.value||'').trim();if(!body)return;
+  if(body.length>400){try{v063Toast('Nachricht zu lang','warn','Maximal 400 Zeichen.')}catch(e){}return}
+  const now=Date.now();if(now-lastSendAt<1200)return;lastSendAt=now;const gid=guildId(),uid=ownId();if(!gid||!uid)return;
+  if(btn){btn.disabled=true;btn.textContent='…'}
+  try{
+   const payload={guild_id:gid,user_id:uid,character_name:String(s?.characterName||'Spieler').trim().slice(0,40)||'Spieler',body};
+   const {error}=await v073Db.from(TABLE).insert(payload);if(error)throw error;if(input)input.value='';await load();
+  }catch(e){console.warn('V4.144 guild chat send',e);try{v063Toast('Gildenchat','warn',missingTable(e)?'Gildenchat-Tabelle fehlt noch in Supabase.':'Nachricht konnte nicht gesendet werden.')}catch(_){}
+  }finally{if(btn){btn.disabled=false;btn.textContent='Senden'}}
+ }
+ function bind(){
+  q('v4144GuildChatTab')?.addEventListener('click',openPanel);q('v4144GuildChatTab')?.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openPanel()}});
+  q('v4144GuildChatClose')?.addEventListener('click',close);q('v4144GuildChatSend')?.addEventListener('click',send);
+  q('v4144GuildChatInput')?.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send()}});
+ }
+ bind();
+ try{
+  if(typeof v269OpenTicket==='function'&&!window.__v4144TicketWrap){const base=v269OpenTicket;v269OpenTicket=function(){close();return base.apply(this,arguments)};try{window.v269OpenTicket=v269OpenTicket}catch(e){}window.__v4144TicketWrap=true}
+ }catch(e){}
+ try{
+  if(typeof v254RenderGuild==='function'&&!window.__v4144GuildRenderWrap){const base=v254RenderGuild;v254RenderGuild=function(){const r=base.apply(this,arguments);syncVisibility();return r};try{window.v254RenderGuild=v254RenderGuild}catch(e){}window.__v4144GuildRenderWrap=true}
+ }catch(e){}
+ try{
+  if(typeof v254LoadGuild==='function'&&!window.__v4144GuildLoadWrap){const base=v254LoadGuild;v254LoadGuild=async function(){const r=await base.apply(this,arguments);syncVisibility();if(open)await load({silent:true});return r};try{window.v254LoadGuild=v254LoadGuild}catch(e){}window.__v4144GuildLoadWrap=true}
+ }catch(e){}
+ try{
+  if(typeof v200FinalizeUser==='function'&&!window.__v4144LoginGuildLoadWrap){const base=v200FinalizeUser;v200FinalizeUser=async function(){const r=await base.apply(this,arguments);if(r)setTimeout(()=>{try{const p=v254LoadGuild?.();if(p&&typeof p.then==='function')p.then(syncVisibility).catch(()=>{})}catch(e){}},0);return r};try{window.v200FinalizeUser=v200FinalizeUser}catch(e){}window.__v4144LoginGuildLoadWrap=true}
+ }catch(e){}
+ try{
+  if(typeof v136Logout==='function'&&!window.__v4144LogoutChatWrap){const base=v136Logout;v136Logout=async function(){close();const r=await base.apply(this,arguments);syncVisibility();return r};try{window.v136Logout=v136Logout}catch(e){}window.__v4144LogoutChatWrap=true}
+ }catch(e){}
+ document.addEventListener('visibilitychange',()=>{if(document.hidden){clearTimeout(refreshTimer);refreshTimer=0}else if(open){void load({silent:true});schedule()}},{passive:true});
+ window.addEventListener('pageshow',()=>setTimeout(syncVisibility,120),{passive:true});
+ setTimeout(syncVisibility,0);setTimeout(syncVisibility,600);setTimeout(syncVisibility,1800);
+ function stamp(){try{document.title='Grow Legends '+V.short;document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version').forEach(x=>x&&(x.textContent=V.label));document.querySelectorAll('.v366-ver,.v371-logo em,.v372-logo em,.v4107-version').forEach(x=>x&&(x.textContent=V.short))}catch(e){}}
+ stamp();
+})();
+</script>
+<!-- V4.144: Guild chat is a ticket-style fold-out side panel. It is visible only for authenticated guild members and refreshes only while open. -->
