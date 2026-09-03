@@ -45895,6 +45895,113 @@ function historicalScriptCount(){if(historicCountCache!=null)return historicCoun
 </script>
 <!-- V4.159: Gildenkrieg ist jetzt eine echte Herausforderung zwischen zwei Gilden. Anführer/Offiziere wählen die Gegnergilde, die Zielgilde erhält sofort Ingame-/Menü- und Gildenchat-Hinweise, Mitglieder melden sich bis 18:00 für Angriff/Verteidigung, ab 19:00 wird serverseitig ausgewertet. -->
 
+
+
+<!-- ===== V4.160 Native Push registration test (Capacitor Android) ===== -->
+<script id="v4160-native-push-test">
+(()=>{
+  'use strict';
+  if(window.__V4160_NATIVE_PUSH__)return;
+  window.__V4160_NATIVE_PUSH__=true;
+
+  const TOKEN_KEY='grow_legends_fcm_token';
+  let started=false;
+
+  function plugin(){
+    try{
+      const C=window.Capacitor;
+      if(!C || typeof C.isNativePlatform!=='function' || !C.isNativePlatform())return null;
+      return C.Plugins?.PushNotifications || null;
+    }catch(e){return null}
+  }
+
+  function durableUser(){
+    try{return !!(window.__V200_AUTH_READY__===true && typeof v073User!=='undefined' && v073User?.id && !v073User.is_anonymous)}catch(e){return false}
+  }
+
+  function toast(title,detail,type='success'){
+    try{if(typeof v063Toast==='function'){v063Toast(title,type,detail);return}}catch(e){}
+    console.log('[Grow Legends Push]',title,detail||'');
+  }
+
+  async function saveToken(token){
+    const value=String(token?.value||'').trim();
+    if(!value)return;
+    try{localStorage.setItem(TOKEN_KEY,value)}catch(e){}
+    window.__GROW_LEGENDS_FCM_TOKEN__=value;
+    console.log('[Grow Legends Push] FCM token registered:',value);
+    showTokenButton();
+    toast('🔔 Push verbunden','FCM-Gerät wurde erfolgreich registriert.');
+  }
+
+  function showTokenButton(){
+    if(document.querySelector('#v4160PushTokenButton'))return;
+    const btn=document.createElement('button');
+    btn.id='v4160PushTokenButton';
+    btn.type='button';
+    btn.textContent='🔔 Push-Token kopieren';
+    btn.style.cssText='position:fixed;right:10px;bottom:82px;z-index:100500;border:1px solid #76c45b;border-radius:11px;padding:10px 12px;background:#142319;color:#baf09f;font:800 11px system-ui;box-shadow:0 6px 20px #0009';
+    btn.addEventListener('click',async()=>{
+      const value=window.v4160GetFcmToken?.()||'';
+      if(!value)return;
+      try{await navigator.clipboard.writeText(value)}catch(e){
+        const ta=document.createElement('textarea');ta.value=value;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();try{document.execCommand('copy')}catch(_){}ta.remove();
+      }
+      btn.textContent='✅ Token kopiert';
+      setTimeout(()=>{btn.textContent='🔔 Push-Token kopieren'},1800);
+    });
+    document.body.appendChild(btn);
+  }
+
+  async function start(){
+    if(started || !durableUser())return false;
+    const Push=plugin();
+    if(!Push)return false;
+    started=true;
+    try{
+      await Push.removeAllListeners();
+      await Push.addListener('registration',saveToken);
+      await Push.addListener('registrationError',err=>{
+        console.error('[Grow Legends Push] registrationError',err);
+        toast('Push-Registrierung fehlgeschlagen',String(err?.error||err||'Unbekannter Fehler'),'error');
+      });
+      await Push.addListener('pushNotificationReceived',notification=>{
+        try{toast(`🔔 ${notification?.title||'Grow Legends'}`,notification?.body||'Neue Nachricht')}catch(e){}
+      });
+      await Push.addListener('pushNotificationActionPerformed',notification=>{
+        console.log('[Grow Legends Push] opened',notification);
+      });
+
+      let perm=await Push.checkPermissions();
+      if(perm?.receive==='prompt' || perm?.receive==='prompt-with-rationale'){
+        perm=await Push.requestPermissions();
+      }
+      if(perm?.receive!=='granted'){
+        started=false;
+        toast('Benachrichtigungen deaktiviert','Aktiviere Benachrichtigungen für Grow Legends in den Android-Einstellungen.','error');
+        return false;
+      }
+      await Push.register();
+      return true;
+    }catch(e){
+      started=false;
+      console.error('[Grow Legends Push] init failed',e);
+      return false;
+    }
+  }
+
+  window.v4160NativePushStart=start;
+  window.v4160GetFcmToken=()=>{try{return localStorage.getItem(TOKEN_KEY)||''}catch(e){return ''}};
+
+  /* Auth boot is asynchronous. This short-lived probe stops once native push starts. */
+  let tries=0;
+  const timer=setInterval(async()=>{
+    tries++;
+    if(await start() || tries>=40)clearInterval(timer);
+  },750);
+  window.addEventListener('pageshow',()=>setTimeout(start,250),{passive:true});
+})();
+</script>
 </body>
 </html>
 <style id="v268-inventory-multisell-css">
