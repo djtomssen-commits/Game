@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
 <script id="v4131-version-source">
-window.GROW_LEGENDS_VERSION=Object.freeze({short:'V4.131',label:'V4.131 Stable',number:'4.130'});
+window.GROW_LEGENDS_VERSION=Object.freeze({short:'V4.133',label:'V4.133 Stable',number:'4.133'});
 </script>
 
 <script id="v4106-preboot-tech">
@@ -123,7 +123,7 @@ window.__V483_POWER_READY__=false;
 .app > header .v366-ver,.app > header .v371-logo em,.app > header .v372-logo em{font-size:0!important;color:transparent!important}
 .app > header .v366-ver::after,.app > header .v371-logo em::after,.app > header .v372-logo em::after{content:"V4.86"!important;font-size:5px!important;color:#63cdd1!important;font-style:normal!important;font-weight:900!important}
 </style>
-<title>Grow Legends V4.131</title>
+<title>Grow Legends V4.133</title>
 <style>
 :root{--bg:#0b100b;--panel:#151d14;--panel2:#1c281a;--panel3:#253423;--line:#354933;--text:#f2f5ed;--muted:#9fad99;--green:#83d65d;--green2:#b2f07e;--gold:#f2c75a;--red:#ee6b68;--blue:#68a7ea;--purple:#ad7bea;--shadow:0 12px 30px rgba(0,0,0,.28)}
 *{box-sizing:border-box}html{background:var(--bg)}body{margin:0;color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:radial-gradient(circle at 50% -10%,#253821 0,#10170f 40%,#090d09 100%);min-height:100vh}button{font:inherit}.app{max-width:820px;margin:auto;min-height:100vh;padding-bottom:88px}
@@ -670,7 +670,7 @@ document.documentElement.classList.remove('v224-app-ready');
 <body>
 <div class="app">
 <header>
-  <div class="brand"><h1>🌿 Grow Legends</h1><span class="version">V4.131 Stable</span><div class="power">Kampfkraft <b id="power">—</b></div></div>
+  <div class="brand"><h1>🌿 Grow Legends</h1><span class="version">V4.133 Stable</span><div class="power">Kampfkraft <b id="power">—</b></div></div>
   <div class="stats resource-stats"><div class="stat">GOLD<b id="gold">—</b></div><div class="stat">SKILL<b id="points">—</b></div><div class="stat">DAMPF<b id="energy">—</b></div><div class="stat harz-stat v277-harz-card v280-harz-card">
   <div class="v280-harz-label">HARZ-TALER</div>
   <b class="v280-harz-value"><span id="topHarz">—</span></b>
@@ -28889,12 +28889,17 @@ function v229UpdateQuestTimer(){
     v229QuestTimerDonePainted=false;
   }
 
+  /* V4.133: V392 replaced the old #activeQuest timer with #v392QuestTimer.
+     The interval below captured THIS original function when it was created, so a later
+     reassignment of v229UpdateQuestTimer cannot make that interval call V392's wrapper.
+     Update both live timer surfaces directly from this authoritative one-second callback. */
   const timer=document.querySelector('#activeQuest .timer');
+  const modernTimer=document.querySelector('#v392QuestTimer');
 
   if(left>0){
-    if(timer){
-      timer.textContent=`⏳ Noch ${v229FormatQuestLeft(left)}`;
-    }
+    const text=v229FormatQuestLeft(left);
+    if(timer)timer.textContent=`⏳ Noch ${text}`;
+    if(modernTimer&&modernTimer.textContent!==text)modernTimer.textContent=text;
     return;
   }
 
@@ -28910,9 +28915,8 @@ function v229UpdateQuestTimer(){
     }catch(e){
       console.warn('V4.02 quest completion render',e);
 
-      if(timer){
-        timer.textContent='✅ Auftrag abgeschlossen';
-      }
+      if(timer)timer.textContent='✅ Auftrag abgeschlossen';
+      if(modernTimer)modernTimer.textContent='✅ Bereit zum Abholen';
     }
   }
 }
@@ -34394,7 +34398,7 @@ function v246InstallFight(){
 
     if(!fightDungeon||!fightEnemy)return;
 
-    /* V4.131: Hall of Haze must reflect the dungeon actually fought, not a merely viewed map. */
+    /* V4.133: Hall of Haze must reflect the dungeon actually fought, not a merely viewed map. */
     s.dungeon.lastActive=fightDi;
     s.dungeon.lastActiveAt=Date.now();
     s.dungeon.view='battle';
@@ -44824,7 +44828,7 @@ const v306Line=document.querySelector('#v141VersionLine');if(v306Line)v306Line.t
 
  /* Existing QA runner owns the panel. Run it once more after V4.105 has installed so
     the corrected test contract and guild lazy-load test are immediately visible. */
- /* V4.131: retired automatic full QA on every page load. Systemtechnik now runs only when opened or explicitly restarted. */
+ /* V4.133: retired automatic full QA on every page load. Systemtechnik now runs only when opened or explicitly restarted. */
  stamp();
  [250,1200,5000,15000,30000,60000].forEach(ms=>setTimeout(stamp,ms));
  window.addEventListener('pageshow',stamp,{passive:true});
@@ -45320,16 +45324,16 @@ function historicalScriptCount(){if(historicCountCache!=null)return historicCoun
 })();
 </script>
 
-\n<!-- ===== V4.131 Stable: responsive boot + instant account-safe power + central version ===== -->
+\n<!-- ===== V4.133 Stable: responsive boot + instant account-safe power + central version ===== -->
 <style id="v4129-fast-power-version-css">
-.app > header .v358-logo::after{content:"V4.131"!important}
+.app > header .v358-logo::after{content:"V4.133"!important}
 .app > header .v366-ver,.app > header .v371-logo em,.app > header .v372-logo em{font-size:0!important;color:transparent!important}
-.app > header .v366-ver::after,.app > header .v371-logo em::after,.app > header .v372-logo em::after{content:"V4.131"!important;font-size:5.5px!important;color:#63cdd1!important;font-style:normal!important;font-weight:1000!important}
+.app > header .v366-ver::after,.app > header .v371-logo em::after,.app > header .v372-logo em::after{content:"V4.133"!important;font-size:5.5px!important;color:#63cdd1!important;font-style:normal!important;font-weight:1000!important}
 </style>
 <script id="v4129-responsive-boot-central-version">
 (()=>{
  'use strict';
- const V=window.GROW_LEGENDS_VERSION||{short:'V4.131',label:'V4.131 Stable'};
+ const V=window.GROW_LEGENDS_VERSION||{short:'V4.133',label:'V4.133 Stable'};
  function applyVersion(){
   try{if(document.title!=='Grow Legends '+V.short)document.title='Grow Legends '+V.short}catch(e){}
   try{
@@ -45370,8 +45374,10 @@ function historicalScriptCount(){if(historicCountCache!=null)return historicCoun
  window.v4129Diagnostics=()=>({version:V.short,powerReady:window.__V483_POWER_READY__===true,uid:uidOf(),stateOwned:stateOwned(uidOf()),verified:verified(uidOf()),power:stablePower(),autoQaDisabled:true});
 })();
 </script>
-<!-- V4.131: full Systemtechnik QA no longer runs during login/startup or pageshow. It runs only when Systemtechnik is opened/restarted. Central version ownership uses bounded hooks, never a MutationObserver feedback loop. -->
+<!-- V4.133: full Systemtechnik QA no longer runs during login/startup or pageshow. It runs only when Systemtechnik is opened/restarted. Central version ownership uses bounded hooks, never a MutationObserver feedback loop. -->
 
+
+<!-- V4.133: Quest-Countdown updates the current V392 timer directly from the existing single v229 one-second interval; no additional quest interval added. -->
 </body>
 </html>
 <style id="v268-inventory-multisell-css">
@@ -53909,6 +53915,7 @@ html,body{
 
 .v366-main{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
 .v366-card{overflow:hidden;border:1px solid #557221;border-radius:10px;background:#061008;box-shadow:0 8px 18px rgba(0,0,0,.38)}
+.v366-main > .v366-card.quest{margin-top:0!important;padding:0!important}
 .v366-card.dungeon{border-color:#8d5918}
 .v366-card-art{height:118px;background:center/cover no-repeat;position:relative}
 .v366-card-art:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 40%,#061008 100%)}
@@ -54011,7 +54018,7 @@ html,body{
       bar.className='v366-topbar';
       bar.innerHTML=`
         <button class="v366-menu" type="button">☰</button>
-        <div class="v366-logo"><strong>🌿 GROW</strong><span>LEGENDS</span><i class="v366-ver">${window.GROW_LEGENDS_VERSION?.short||'V4.131'}</i></div>
+        <div class="v366-logo"><strong>🌿 GROW</strong><span>LEGENDS</span><i class="v366-ver">${window.GROW_LEGENDS_VERSION?.short||'V4.133'}</i></div>
         <div class="v366-res"><span class="ico">🪙</span><div><small>Gold</small><span class="val" id="v366Gold"></span></div><button class="v366-plus" data-plus="gold">+</button></div>
         <div class="v366-res"><span class="ico">💎</span><div><small>Harz</small><span class="val" id="v366Harz"></span></div><button class="v366-plus" data-plus="harz">+</button></div>
         <div class="v366-res"><span class="ico">💨</span><div><small>Dampf</small><span class="val" id="v366Dampf"></span></div><button class="v366-plus" data-plus="dampf">+</button></div>
@@ -69144,7 +69151,7 @@ body.v495-seed-open{overflow:hidden!important}
 <script id="v4107-systemtechnik">
 (()=>{
 'use strict';
-const VERSION=window.GROW_LEGENDS_VERSION?.label||'V4.131 Stable',SHORT=window.GROW_LEGENDS_VERSION?.short||'V4.131',STORE='growLegendsQA:v4107:';
+const VERSION=window.GROW_LEGENDS_VERSION?.label||'V4.133 Stable',SHORT=window.GROW_LEGENDS_VERSION?.short||'V4.133',STORE='growLegendsQA:v4107:';
 const baseRun=window.v4106RunQA||window.v4102RunQA;
 const oldOpen=window.v4102OpenQA;
 let last=null,selectedGroup='',filter='problems',storageEstimate=null,lastNav='',renderTimer=0,historicCountCache=null;
@@ -69601,9 +69608,9 @@ try{if(typeof v032Go==='function'&&!window.__v4107Go){const base=v032Go;const wr
 setInterval(()=>{try{installMenu();paintSettingsBadge(last);if(document.getElementById('systemtech')?.classList.contains('active')){const r=last||cachedReport();if(r)renderRight(r)}}catch(e){}},3500);
 function stamp(){try{document.title='Grow Legends '+SHORT}catch(e){}try{document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version').forEach(e=>e&&(e.textContent=VERSION));document.querySelectorAll('.v366-ver,.v371-logo em,.v372-logo em').forEach(e=>e&&(e.textContent=SHORT))}catch(e){}}
 ensureScreen();installMenu();stamp();
-setTimeout(()=>{try{const c=cachedReport();if(c){last=c;paintSettingsBadge(c);if(document.getElementById('systemtech')?.classList.contains('active'))renderPage(c)}}catch(e){pushErr('QA_CACHE_ERROR',e.message||String(e),'warn')}},2600); /* V4.131: never run ~3k QA tests during normal boot/login. */
+setTimeout(()=>{try{const c=cachedReport();if(c){last=c;paintSettingsBadge(c);if(document.getElementById('systemtech')?.classList.contains('active'))renderPage(c)}}catch(e){pushErr('QA_CACHE_ERROR',e.message||String(e),'warn')}},2600); /* V4.133: never run ~3k QA tests during normal boot/login. */
 [120,900,2600].forEach(ms=>setTimeout(()=>{stamp();installMenu()},ms)); /* V4.123: long obsolete version/menu fan-out retired. */
-window.addEventListener('pageshow',()=>{stamp();installMenu();setTimeout(()=>{try{const c=last||cachedReport();if(c){last=c;paintSettingsBadge(c)}}catch(e){}},700)},{passive:true}); /* V4.131: no full QA on pageshow. */
+window.addEventListener('pageshow',()=>{stamp();installMenu();setTimeout(()=>{try{const c=last||cachedReport();if(c){last=c;paintSettingsBadge(c)}}catch(e){}},700)},{passive:true}); /* V4.133: no full QA on pageshow. */
 document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();installMenu();scheduleRender()}},{passive:true});
 })();
 </script>
@@ -70063,7 +70070,7 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();i
 <script id="v4116-systemtech-engine-fix">
 (()=>{
  'use strict';
- const VERSION=window.GROW_LEGENDS_VERSION?.label||'V4.131 Stable',SHORT=window.GROW_LEGENDS_VERSION?.short||'V4.131';
+ const VERSION=window.GROW_LEGENDS_VERSION?.label||'V4.133 Stable',SHORT=window.GROW_LEGENDS_VERSION?.short||'V4.133';
  function stamp(){
   try{document.title='Grow Legends '+SHORT}catch(e){}
   try{
@@ -70097,7 +70104,7 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();i
 <script id="v4118-care-guildboss-fix">
 (()=>{
  'use strict';
- const VERSION=window.GROW_LEGENDS_VERSION?.label||'V4.131 Stable',SHORT=window.GROW_LEGENDS_VERSION?.short||'V4.131';
+ const VERSION=window.GROW_LEGENDS_VERSION?.label||'V4.133 Stable',SHORT=window.GROW_LEGENDS_VERSION?.short||'V4.133';
  function stamp(){try{document.title='Grow Legends '+SHORT;document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version').forEach(x=>x&&(x.textContent=VERSION));document.querySelectorAll('.v366-ver,.v371-logo em,.v372-logo em,.v4107-version').forEach(x=>x&&(x.textContent=SHORT))}catch(e){}}
  function refreshBoss(){try{if(document.querySelector('#guild')?.classList.contains('active')){v255RenderBoss?.()}}catch(e){}}
  function qaWrap(){
@@ -70603,7 +70610,7 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();i
 <script id="v4123-performance-cleanup">
 (()=>{
  'use strict';
- const VERSION=window.GROW_LEGENDS_VERSION?.label||'V4.131 Stable',SHORT=window.GROW_LEGENDS_VERSION?.short||'V4.131';
+ const VERSION=window.GROW_LEGENDS_VERSION?.label||'V4.133 Stable',SHORT=window.GROW_LEGENDS_VERSION?.short||'V4.133';
  function stamp(){
   try{document.title='Grow Legends '+SHORT}catch(e){}
   try{document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version').forEach(x=>x&&(x.textContent=VERSION));document.querySelectorAll('.v366-ver,.v371-logo em,.v372-logo em,.v4107-version').forEach(x=>x&&(x.textContent=SHORT))}catch(e){}
@@ -70634,7 +70641,7 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();i
 <script id="v4124-social-quest-fix">
 (()=>{
  'use strict';
- const VERSION=window.GROW_LEGENDS_VERSION?.label||'V4.131 Stable',SHORT=window.GROW_LEGENDS_VERSION?.short||'V4.131';
+ const VERSION=window.GROW_LEGENDS_VERSION?.label||'V4.133 Stable',SHORT=window.GROW_LEGENDS_VERSION?.short||'V4.133';
  const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
  const PROFILE_SELECT='id,character_name,class_id,class_name,level,bosses,gear_score,dungeons,combat_power,equipment,dungeon_progress,worldboss_attempts,worldboss_wins,pvp_buds,pvp_wins,pvp_losses,pvp_fights,updated_at';
 
@@ -70810,7 +70817,7 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();i
 <script id="v4126-power-rpc-diagnostics">
 (()=>{
  'use strict';
- const VERSION=window.GROW_LEGENDS_VERSION?.label||'V4.131 Stable',SHORT=window.GROW_LEGENDS_VERSION?.short||'V4.131';
+ const VERSION=window.GROW_LEGENDS_VERSION?.label||'V4.133 Stable',SHORT=window.GROW_LEGENDS_VERSION?.short||'V4.133';
  let calculating=false;
 
  /* Public/character Kampfkraft must never depend on which screen is open.
@@ -70925,7 +70932,7 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();i
 <script id="v4127-quest-skip-stable">
 (()=>{
  'use strict';
- const VERSION=window.GROW_LEGENDS_VERSION?.label||'V4.131 Stable',SHORT=window.GROW_LEGENDS_VERSION?.short||'V4.131';
+ const VERSION=window.GROW_LEGENDS_VERSION?.label||'V4.133 Stable',SHORT=window.GROW_LEGENDS_VERSION?.short||'V4.133';
  let scheduled=false;
 
  function seedCount(){
@@ -71048,17 +71055,17 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();i
 <!-- V4.127: final quest-start hook guarantees the Zeit-Samen skip control after every successful quest start without adding another interval. -->
 
 
-<!-- ===== V4.131 Stable: Hall of Haze authoritative dungeon progress ===== -->
+<!-- ===== V4.133 Stable: Hall of Haze authoritative dungeon progress ===== -->
 <style id="v4130-hall-dungeon-authority-css">
-.app > header .v358-logo::after{content:"V4.131"!important}
-.app > header .v366-ver::after,.app > header .v371-logo em::after,.app > header .v372-logo em::after{content:"V4.131"!important}
+.app > header .v358-logo::after{content:"V4.133"!important}
+.app > header .v366-ver::after,.app > header .v371-logo em::after,.app > header .v372-logo em::after{content:"V4.133"!important}
 .v4130-dungeon-line{margin-top:4px;font-size:7.5px;color:#b6c2b2;line-height:1.35}
 .v4130-dungeon-line strong{color:#e7d27d;font-weight:1000}
 </style>
 <script id="v4130-hall-dungeon-authority">
 (()=>{
  'use strict';
- const V=window.GROW_LEGENDS_VERSION||{short:'V4.131',label:'V4.131 Stable'};
+ const V=window.GROW_LEGENDS_VERSION||{short:'V4.133',label:'V4.133 Stable'};
  const VERSION=V.label,SHORT=V.short;
  const PROFILE_SELECT='id,character_name,class_id,class_name,level,bosses,gear_score,dungeons,combat_power,equipment,dungeon_progress,worldboss_attempts,worldboss_wins,pvp_buds,pvp_wins,pvp_losses,pvp_fights,updated_at';
  const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -71208,7 +71215,7 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();i
   try{await v073SyncProfile(true)}catch(e){}
   el.innerHTML='<div class="v072-empty">Rangliste wird geladen...</div>';
   const {data,error}=await v073Db.from('profiles').select(PROFILE_SELECT).order('level',{ascending:false}).order('combat_power',{ascending:false}).limit(50);
-  if(error){console.error('V4.131 Hall',error);el.innerHTML='<div class="v072-status-offline">Rangliste konnte nicht geladen werden.</div>';return}
+  if(error){console.error('V4.133 Hall',error);el.innerHTML='<div class="v072-status-offline">Rangliste konnte nicht geladen werden.</div>';return}
   el.innerHTML=(data||[]).length?(data||[]).map((p,i)=>socialRow(p,i,String(p.id)===String(v073User?.id)?'<span class="pill">DU</span>':`<button class="btn secondary" data-v073-add="${esc(p.id)}" data-name="${esc(p.character_name)}">Freund</button>${mailButton(p)}`,false)).join(''):'<div class="v072-empty">Noch keine Spieler in der Hall of Haze.</div>';
   try{v073BindAddButtons(el)}catch(e){}bindRows(el);
  };
@@ -71218,19 +71225,19 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();i
   const target=document.querySelector(targetSelector);if(!target)return;name=String(name||'').trim();if(name.length<2){v063Toast?.('Mindestens 2 Zeichen eingeben','warn');return}if(!(await v073Init()))return;
   target.innerHTML='<div class="v072-empty">Suche...</div>';const safe=name.replace(/[%_,]/g,'');
   const {data,error}=await v073Db.from('profiles').select(PROFILE_SELECT).ilike('character_name',`%${safe}%`).limit(20);
-  if(error){console.error('V4.131 Hall search',error);target.innerHTML='<div class="v072-status-offline">Suche fehlgeschlagen.</div>';return}
+  if(error){console.error('V4.133 Hall search',error);target.innerHTML='<div class="v072-status-offline">Suche fehlgeschlagen.</div>';return}
   const rows=(data||[]).filter(p=>String(p.id)!==String(v073User?.id));
   target.innerHTML=rows.length?rows.map(p=>socialRow(p,null,`<button class="btn" data-v073-add="${esc(p.id)}" data-name="${esc(p.character_name)}">Anfrage senden</button>${mailButton(p)}`,false)).join(''):'<div class="v072-empty">Keinen Spieler gefunden.</div>';
   try{v073BindAddButtons(target)}catch(e){}bindRows(target);
  };
  try{window.v073SearchPlayer=v073SearchPlayer;v072SearchPlayer=v073SearchPlayer}catch(e){}
 
- async function profileMap(ids){ids=[...new Set((ids||[]).filter(Boolean))];if(!ids.length)return new Map();const {data,error}=await v073Db.from('profiles').select(PROFILE_SELECT).in('id',ids);if(error){console.error('V4.131 Nebel-Crew profile load',error);return new Map()}return new Map((data||[]).map(p=>[String(p.id),p]))}
+ async function profileMap(ids){ids=[...new Set((ids||[]).filter(Boolean))];if(!ids.length)return new Map();const {data,error}=await v073Db.from('profiles').select(PROFILE_SELECT).in('id',ids);if(error){console.error('V4.133 Nebel-Crew profile load',error);return new Map()}return new Map((data||[]).map(p=>[String(p.id),p]))}
  v073LoadFriends=async function(){
   const friendsEl=document.getElementById('v072FriendsList'),requestsEl=document.getElementById('v072RequestsList'),countEl=document.getElementById('v072FriendCount');if(!friendsEl||!requestsEl)return;if(!(await v073Init()))return;
   friendsEl.innerHTML='<div class="v072-empty">Lade Freunde...</div>';requestsEl.innerHTML='<div class="v072-empty">Lade Anfragen...</div>';
   const {data,error}=await v073Db.from('friend_requests').select('id,sender_id,receiver_id,status,created_at').or(`sender_id.eq.${v073User.id},receiver_id.eq.${v073User.id}`).order('created_at',{ascending:false});
-  if(error){console.error('V4.131 Nebel-Crew',error);friendsEl.innerHTML='<div class="v072-status-offline">Freundesliste konnte nicht geladen werden.</div>';requestsEl.innerHTML='';return}
+  if(error){console.error('V4.133 Nebel-Crew',error);friendsEl.innerHTML='<div class="v072-status-offline">Freundesliste konnte nicht geladen werden.</div>';requestsEl.innerHTML='';return}
   const rows=data||[],incoming=rows.filter(r=>r.status==='pending'&&String(r.receiver_id)===String(v073User.id)),accepted=rows.filter(r=>r.status==='accepted');
   const ids=[...incoming.map(r=>r.sender_id),...accepted.map(r=>String(r.sender_id)===String(v073User.id)?r.receiver_id:r.sender_id)],profiles=await profileMap(ids);
   requestsEl.innerHTML=incoming.length?incoming.map(r=>{const p=profiles.get(String(r.sender_id))||{id:r.sender_id,character_name:'Spieler',level:1};return socialRow(p,null,`<button class="btn" data-v073-accept="${r.id}">Annehmen</button><button class="btn secondary" data-v073-decline="${r.id}">Ablehnen</button>`,false)}).join(''):'<div class="v072-empty">Keine offenen Anfragen.</div>';
@@ -71250,18 +71257,18 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();i
  window.v4130HallDiagnostics=()=>{const dp=liveDp(),pos=canonicalPos(dp,dp.completed.length);return{selected:dp.selected,lastActive:dp.lastActive,unlocked:dp.unlocked,completed:dp.completed,progress:dp.progress,display:pos}};
 })();
 </script>
-<!-- V4.131: Hall/Nebel-Crew use the last actually fought dungeon plus exact room progress. Merely opening another dungeon map no longer changes the public dungeon value. -->
+<!-- V4.133: Hall/Nebel-Crew use the last actually fought dungeon plus exact room progress. Merely opening another dungeon map no longer changes the public dungeon value. -->
 
 
-<!-- ===== V4.131 Stable: atomic new-character persistence ===== -->
+<!-- ===== V4.133 Stable: atomic new-character persistence ===== -->
 <style id="v4131-character-persistence-css">
-.app > header .v358-logo::after{content:"V4.131"!important}
-.app > header .v366-ver::after,.app > header .v371-logo em::after,.app > header .v372-logo em::after{content:"V4.131"!important}
+.app > header .v358-logo::after{content:"V4.133"!important}
+.app > header .v366-ver::after,.app > header .v371-logo em::after,.app > header .v372-logo em::after{content:"V4.133"!important}
 </style>
 <script id="v4131-character-persistence">
 (()=>{
  'use strict';
- const V=window.GROW_LEGENDS_VERSION||{short:'V4.131',label:'V4.131 Stable'};
+ const V=window.GROW_LEGENDS_VERSION||{short:'V4.133',label:'V4.133 Stable'};
  const VERSION=V.label,SHORT=V.short,SCOPED_PREFIX='growLegendsAccountSave:',IDENTITY_PREFIX='growLegendsCharacterIdentity:';
  let serverSaveBusy=false;
 
@@ -71290,7 +71297,7 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();i
    try{if(typeof v200SaveScopedLocal==='function')v200SaveScopedLocal()}catch(e){}
    try{if(typeof v145SaveScopedLocal==='function')v145SaveScopedLocal()}catch(e){}
    return true;
-  }catch(e){console.error('V4.131 character checkpoint',e);return false}
+  }catch(e){console.error('V4.133 character checkpoint',e);return false}
  }
  window.v4131CheckpointCharacter=checkpointCharacter;
 
@@ -71308,7 +71315,7 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();i
    try{v200LastCloudStamp=now}catch(e){}
    checkpointCharacter();
    return true;
-  }catch(e){console.warn('V4.131 direct new-character cloud fallback',e);return false}
+  }catch(e){console.warn('V4.133 direct new-character cloud fallback',e);return false}
  }
  window.v4131DirectCharacterCloudSave=directCloudFallback;
 
@@ -71319,10 +71326,10 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();i
   try{
    checkpointCharacter();
    let profileOk=false,cloudOk=false;
-   try{if(typeof v073SyncProfile==='function')profileOk=!!(await v073SyncProfile(true))}catch(e){console.warn('V4.131 initial profile save',e)}
+   try{if(typeof v073SyncProfile==='function')profileOk=!!(await v073SyncProfile(true))}catch(e){console.warn('V4.133 initial profile save',e)}
    /* Always ask the normal cloud writer, even if the separate profile call above failed.
       It owns the usual save chain and remains the preferred path. */
-   try{if(typeof v075WriteCloudSave==='function')cloudOk=!!(await v075WriteCloudSave(true))}catch(e){console.warn('V4.131 initial cloud save',e)}
+   try{if(typeof v075WriteCloudSave==='function')cloudOk=!!(await v075WriteCloudSave(true))}catch(e){console.warn('V4.133 initial cloud save',e)}
    /* The old writer intentionally refuses player_saves when profile sync returns false.
       For a verified, account-owned NEW character only, preserve the character snapshot
       anyway so the next login cannot fall back to the empty creation state. */
@@ -71373,7 +71380,7 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();i
  try{v029ShowClassChoice=fixedCharacterCreator;window.v029ShowClassChoice=fixedCharacterCreator}catch(e){window.v029ShowClassChoice=fixedCharacterCreator}
 
  /* Repair existing complete characters too: if V4.130 created one but cloud failed,
-    opening V4.131 while still signed in immediately creates the scoped recovery copy. */
+    opening V4.133 while still signed in immediately creates the scoped recovery copy. */
  try{if(complete())checkpointCharacter()}catch(e){}
  window.addEventListener('pageshow',()=>{try{if(complete())checkpointCharacter()}catch(e){}},{passive:true});
  document.addEventListener('visibilitychange',()=>{if(!document.hidden)try{if(complete())checkpointCharacter()}catch(e){}},{passive:true});
@@ -71383,4 +71390,6 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();i
  window.v4131CharacterSaveDiagnostics=()=>{const id=uid(),k=id?scopedKey(id):'',x=(()=>{try{return JSON.parse(localStorage.getItem(k)||'null')}catch(e){return null}})();return{uid:id,complete:complete(),owned:owned(id),verified:verified(id),cloudLoaded:String(typeof v075CloudLoadedFor==='undefined'?'':v075CloudLoadedFor||''),scopedMatch:!!x&&String(x.characterName||'')===String(s?.characterName||'')&&String(x.playerClass||'')===String(s?.playerClass||'')&&String(x.__accountOwnerId||'')===id}};
 })();
 </script>
-<!-- V4.131: new character is checkpointed to the account-scoped local save BEFORE UI success; cloud persistence no longer disappears just because the first profile sync failed. -->
+<!-- V4.133: new character is checkpointed to the account-scoped local save BEFORE UI success; cloud persistence no longer disappears just because the first profile sync failed. -->
+
+<!-- V4.133: Startseite Quest-Karte gegen globale .quest-Abstände isoliert; margin/padding entsprechen Dungeon und Growroom. -->
