@@ -25255,6 +25255,18 @@ async function v200GoogleAuth(){
       provider:'google',
       options:{
         redirectTo:(()=>{
+          /*
+            The APK displays the remote game through Capacitor server.url.
+            On that remote page window.Capacitor is not a reliable native
+            detector. The Android wrapper therefore marks its WebView with
+            ?gl_native=1. Browser users keep the normal web callback.
+          */
+          try{
+            const u=new URL(window.location.href);
+            if(u.searchParams.get('gl_native')==='1'){
+              return 'de.growlegends.app://auth-callback';
+            }
+          }catch(e){}
           try{
             const C=window.Capacitor;
             if(C && typeof C.isNativePlatform==='function' && C.isNativePlatform()){
