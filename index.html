@@ -25254,27 +25254,7 @@ async function v200GoogleAuth(){
     const {error}=await v073Db.auth.signInWithOAuth({
       provider:'google',
       options:{
-        redirectTo:(()=>{
-          /*
-            The APK displays the remote game through Capacitor server.url.
-            On that remote page window.Capacitor is not a reliable native
-            detector. The Android wrapper therefore marks its WebView with
-            ?gl_native=1. Browser users keep the normal web callback.
-          */
-          try{
-            const u=new URL(window.location.href);
-            if(u.searchParams.get('gl_native')==='1'){
-              return 'de.growlegends.app://auth-callback';
-            }
-          }catch(e){}
-          try{
-            const C=window.Capacitor;
-            if(C && typeof C.isNativePlatform==='function' && C.isNativePlatform()){
-              return 'de.growlegends.app://auth-callback';
-            }
-          }catch(e){}
-          return V075_SITE_URL;
-        })(),
+        redirectTo:V075_SITE_URL,
         queryParams:{prompt:'select_account'}
       }
     });
@@ -45915,120 +45895,93 @@ function historicalScriptCount(){if(historicCountCache!=null)return historicCoun
 </script>
 <!-- V4.159: Gildenkrieg ist jetzt eine echte Herausforderung zwischen zwei Gilden. Anführer/Offiziere wählen die Gegnergilde, die Zielgilde erhält sofort Ingame-/Menü- und Gildenchat-Hinweise, Mitglieder melden sich bis 18:00 für Angriff/Verteidigung, ab 19:00 wird serverseitig ausgewertet. -->
 
-
-<!-- ===== Native Android FCM -> Supabase push_devices bridge ===== -->
-<script id="grow-legends-native-push-bridge">
+\n\n<!-- GROW LEGENDS PUSH SCHEDULING V1 -->
+<script>
 (()=>{
   'use strict';
+  if(window.__glPushSchedulingV1)return;
+  window.__glPushSchedulingV1=true;
 
-  const TOKEN_KEY='grow_legends_fcm_token';
-
-  function durableUser(){
+  async function glPushUser(){
     try{
-      return (
-        window.__V200_AUTH_READY__===true &&
-        typeof v073User!=='undefined' &&
-        !!v073User?.id &&
-        !v073User.is_anonymous
-      );
-    }catch(e){
-      return false;
-    }
+      if(!window.v073Db?.auth)return null;
+      const {data,error}=await window.v073Db.auth.getUser();
+      if(error)return null;
+      return data?.user||null;
+    }catch(e){return null;}
   }
 
-  async function syncTokenToSupabase(raw){
-    const value=String(raw?.value||raw||'').trim();
-    if(!value)return false;
-
+  function glNextGrowReadyAt(){
     try{
-      localStorage.setItem(TOKEN_KEY,value);
-    }catch(e){}
+      const plants=window.s?.grow?.plants||[];
+      const now=Date.now();
+      const times=plants
+        .filter(Boolean)
+        .map(p=>(Number(p.start)||0)+(Number(p.duration)||0))
+        .filter(t=>Number.isFinite(t)&&t>now);
+      return times.length?Math.min(...times):null;
+    }catch(e){return null;}
+  }
 
-    window.__GROW_LEGENDS_FCM_TOKEN__=value;
-
+  async function glSyncGrowPushJob(){
     try{
-      if(typeof v073Init==='function')await v073Init();
+      const user=await glPushUser();
+      if(!user)return false;
+      const db=window.v073Db;
+      const nowIso=new Date().toISOString();
 
-      if(
-        typeof v073Db==='undefined' ||
-        !v073Db ||
-        typeof v073User==='undefined' ||
-        !v073User?.id ||
-        v073User.is_anonymous ||
-        window.__V200_AUTH_READY__!==true
-      ){
-        return false;
-      }
+      // Cancel only still-pending Growroom reminders for this player.
+      await db.from('push_jobs')
+        .update({cancelled_at:nowIso,updated_at:nowIso})
+        .eq('user_id',user.id)
+        .eq('type','grow_ready')
+        .is('sent_at',null)
+        .is('cancelled_at',null);
 
-      const {error}=await v073Db
-        .from('push_devices')
-        .upsert({
-          user_id:v073User.id,
-          fcm_token:value,
-          platform:'android',
-          updated_at:new Date().toISOString()
-        },{onConflict:'fcm_token'});
+      const readyAt=glNextGrowReadyAt();
+      if(!readyAt)return true;
 
+      const {error}=await db.from('push_jobs').insert({
+        user_id:user.id,
+        type:'grow_ready',
+        title:'Grow Legends',
+        body:'🌱 Deine Pflanze ist erntereif!',
+        send_at:new Date(readyAt).toISOString()
+      });
       if(error)throw error;
-
-      console.info('[Grow Legends Push] FCM token synced');
       return true;
     }catch(e){
-      console.error('[Grow Legends Push] Supabase token sync failed',e);
+      console.warn('[Grow Legends] Grow-Push konnte nicht geplant werden:',e);
       return false;
     }
   }
+  window.glSyncGrowPushJob=glSyncGrowPushJob;
 
-  async function acceptNativeToken(raw){
-    const value=String(raw?.value||raw||'').trim();
-    if(!value)return false;
-
-    try{localStorage.setItem(TOKEN_KEY,value)}catch(e){}
-    window.__GROW_LEGENDS_FCM_TOKEN__=value;
-
-    if(!durableUser())return false;
-    return await syncTokenToSupabase(value);
+  // Wrap the final canonical planting function without changing game state logic.
+  if(typeof window.plantSelectedSeed==='function'){
+    const basePlant=window.plantSelectedSeed;
+    window.plantSelectedSeed=function(...args){
+      const result=basePlant.apply(this,args);
+      Promise.resolve(result).finally(()=>setTimeout(glSyncGrowPushJob,0));
+      return result;
+    };
   }
 
-  function currentNativeToken(){
-    try{
-      return String(
-        window.__GROW_LEGENDS_NATIVE_FCM_TOKEN__ ||
-        window.__GROW_LEGENDS_FCM_TOKEN__ ||
-        localStorage.getItem(TOKEN_KEY) ||
-        ''
-      ).trim();
-    }catch(e){
-      return String(
-        window.__GROW_LEGENDS_NATIVE_FCM_TOKEN__ ||
-        window.__GROW_LEGENDS_FCM_TOKEN__ ||
-        ''
-      ).trim();
-    }
+  // Recalculate the next reminder after a harvest as well.
+  if(typeof window.harvestReadyPlants==='function'){
+    const baseHarvest=window.harvestReadyPlants;
+    window.harvestReadyPlants=function(...args){
+      const result=baseHarvest.apply(this,args);
+      Promise.resolve(result).finally(()=>setTimeout(glSyncGrowPushJob,0));
+      return result;
+    };
   }
-
-  window.addEventListener('growlegends:native-fcm-token',e=>{
-    void acceptNativeToken(e?.detail?.value||'');
-  });
 
   window.addEventListener('growlegends:account-ready',()=>{
-    const value=currentNativeToken();
-    if(value){
-      [100,500,1500].forEach(ms=>
-        setTimeout(()=>void acceptNativeToken(value),ms)
-      );
-    }
+    setTimeout(glSyncGrowPushJob,1200);
   });
-
-  const existing=currentNativeToken();
-  if(existing){
-    [300,1200,3500,7000].forEach(ms=>
-      setTimeout(()=>void acceptNativeToken(existing),ms)
-    );
-  }
 })();
 </script>
-
 </body>
 </html>
 <style id="v268-inventory-multisell-css">
