@@ -75246,3 +75246,84 @@ html:not(.v4142-systemtech-admin) #v4102QaButton{display:none!important}
 })();
 </script>
 
+
+
+<!-- ===== Grow Legends: native FCM token -> current Supabase account ===== -->
+<script id="gl-native-fcm-account-sync-v1">
+(()=>{
+ 'use strict';
+ if(window.__GL_NATIVE_FCM_ACCOUNT_SYNC_V1__)return;
+ window.__GL_NATIVE_FCM_ACCOUNT_SYNC_V1__=true;
+
+ let lastRegisteredKey='';
+ let registering=false;
+ let retryTimer=0;
+
+ function token(){
+  try{return String(window.__GROW_LEGENDS_NATIVE_FCM_TOKEN__||'').trim()}catch(e){return ''}
+ }
+
+ async function currentUser(){
+  try{
+   if(typeof v073Db==='undefined'||!v073Db?.auth)return null;
+   const {data}=await v073Db.auth.getSession();
+   if(data?.session?.user)return data.session.user;
+   const r=await v073Db.auth.getUser();
+   return r?.data?.user||null;
+  }catch(e){
+   console.warn('[GL FCM] Benutzer konnte nicht gelesen werden',e);
+   return null;
+  }
+ }
+
+ async function syncNativeToken(force=false){
+  if(registering)return false;
+  const t=token();
+  if(!t)return false;
+  const user=await currentUser();
+  if(!user?.id)return false;
+  const key=user.id+'|'+t;
+  if(!force&&key===lastRegisteredKey)return true;
+
+  registering=true;
+  try{
+   const {error}=await v073Db.rpc('v520_register_push_device',{p_fcm_token:t});
+   if(error)throw error;
+   lastRegisteredKey=key;
+   console.info('[GL FCM] Gerät für aktuellen Account registriert',user.id);
+   try{window.dispatchEvent(new CustomEvent('growlegends:push-device-ready',{detail:{user_id:user.id}}))}catch(e){}
+   return true;
+  }catch(e){
+   console.warn('[GL FCM] Geräte-Registrierung fehlgeschlagen',e);
+   return false;
+  }finally{
+   registering=false;
+  }
+ }
+
+ function soon(force=false,delay=150){
+  clearTimeout(retryTimer);
+  retryTimer=setTimeout(()=>{void syncNativeToken(force)},delay);
+ }
+
+ window.glRegisterNativePushDevice=()=>syncNativeToken(true);
+
+ window.addEventListener('growlegends:native-fcm-token',()=>soon(true,50));
+ window.addEventListener('growlegends:account-ready',()=>soon(true,250));
+ window.addEventListener('pageshow',()=>soon(false,500),{passive:true});
+ document.addEventListener('visibilitychange',()=>{
+  if(document.visibilityState==='visible')soon(false,500);
+ },{passive:true});
+
+ /* The native shell injects the token several times while the WebView boots.
+    These checks also cover a token event that happened before this script loaded. */
+ [0,500,1500,3000,6000,10000].forEach(ms=>setTimeout(()=>{void syncNativeToken(false)},ms));
+
+ /* Supabase may restore/switch the session after the native token already exists. */
+ try{
+  if(typeof v073Db!=='undefined'&&v073Db?.auth?.onAuthStateChange){
+   v073Db.auth.onAuthStateChange(()=>setTimeout(()=>{void syncNativeToken(true)},250));
+  }
+ }catch(e){console.warn('[GL FCM] Auth listener',e)}
+})();
+</script>
