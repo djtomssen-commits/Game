@@ -1833,8 +1833,14 @@ function plantSelectedSeed(targetSlot=null){
  }
  g.seeds[id]--;g.plants=g.plants.slice(0,growCapacity());
  persist(false);renderGrow();growMessage(`${seed.name} wurde gepflanzt.`);
- /* Authoritative push hook: runs only after a plant was really created. */
- setTimeout(()=>{try{if(typeof window.glSyncGrowPushJob==='function')void window.glSyncGrowPushJob();}catch(e){console.warn('[GL Push] base plant hook',e)}},200);
+ /* Authoritative push hook: schedule from the exact plant timestamp just created.
+    Do not depend on later Growroom wrappers/state normalization to rediscover it. */
+ const glReadyAt=(Number(plant.start)||Date.now())+(Number(plant.duration)||0);
+ [0,1200,3500].forEach(delay=>setTimeout(()=>{
+   try{
+     if(typeof window.glSyncGrowPushJob==='function')void window.glSyncGrowPushJob(glReadyAt);
+   }catch(e){console.warn('[GL Push] direct plant schedule',e)}
+ },delay));
 
 }
 function harvestReadyPlants(){
@@ -74495,6 +74501,12 @@ html:not(.v4142-systemtech-admin) #v4102QaButton{display:none!important}
   async function glPushUser(){
     try{
       if(typeof v073Db==='undefined'||!v073Db?.auth)return null;
+      /* Prefer the already-persisted session. This works immediately in the APK
+         even when a network getUser() validation is temporarily delayed. */
+      try{
+        const {data}=await v073Db.auth.getSession();
+        if(data?.session?.user)return data.session.user;
+      }catch(e){}
       const {data,error}=await v073Db.auth.getUser();
       if(error)return null;
       return data?.user||null;
@@ -74512,12 +74524,13 @@ html:not(.v4142-systemtech-admin) #v4102QaButton{display:none!important}
     }catch(e){console.warn('[GL Push] readyAt',e);return null;}
   }
 
-  async function glSyncGrowPushJob(){
+  async function glSyncGrowPushJob(forcedReadyAt=null){
     try{
       const user=await glPushUser();
-      if(!user)return false;
+      if(!user){console.warn('[GL Push] keine eingeloggte Session');return false;}
       const db=v073Db;
-      const readyAt=glNextGrowReadyAt();
+      const forced=Number(forcedReadyAt);
+      const readyAt=(Number.isFinite(forced)&&forced>Date.now())?forced:glNextGrowReadyAt();
       const nowIso=new Date().toISOString();
 
       /* Keine Pflanze mehr offen: vorhandenen aktiven Job sauber abbrechen. */
@@ -74571,20 +74584,8 @@ html:not(.v4142-systemtech-admin) #v4102QaButton{display:none!important}
 
   function installHooks(){
     try{
-      /* FINALER Hook: wird am Dateiende auf die zuletzt definierte Pflanzfunktion gelegt. */
-      if(typeof plantSelectedSeed==='function'&&!plantSelectedSeed.__glPushV2){
-        const basePlant=plantSelectedSeed;
-        const wrappedPlant=function(...args){
-          const before=((s&&s.grow&&s.grow.plants)||[]).filter(Boolean).length;
-          const result=basePlant.apply(this,args);
-          const after=((s&&s.grow&&s.grow.plants)||[]).filter(Boolean).length;
-          /* Push scheduling is owned by the base planting path above. */
-          return result;
-        };
-        wrappedPlant.__glPushV2=true;
-        plantSelectedSeed=wrappedPlant;
-        try{window.plantSelectedSeed=wrappedPlant}catch(e){}
-      }
+      /* Plant scheduling is owned exclusively by plantSelectedSeed(), which passes
+         the exact ready timestamp into glSyncGrowPushJob(). No extra plant wrapper. */
       if(typeof harvestReadyPlants==='function'&&!harvestReadyPlants.__glPushV2){
         const base=harvestReadyPlants;
         const wrapped=function(...args){
