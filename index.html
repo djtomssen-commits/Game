@@ -74497,36 +74497,63 @@ html:not(.v4142-systemtech-admin) #v4102QaButton{display:none!important}
     }catch(e){console.warn('[GL Push] readyAt',e);return null;}
   }
 
-  async function glSyncGrowPushJob(){
+  let glGrowPushSyncQueue=Promise.resolve();
+
+  async function glSyncGrowPushJobNow(){
     try{
       const user=await glPushUser();
       if(!user)return false;
       const db=v073Db;
-      const nowIso=new Date().toISOString();
-
-      const {error:cancelError}=await db.from('push_jobs')
-        .update({cancelled_at:nowIso,updated_at:nowIso})
-        .eq('user_id',user.id).eq('type','grow_ready')
-        .is('sent_at',null).is('cancelled_at',null);
-      if(cancelError)throw cancelError;
-
       const readyAt=glNextGrowReadyAt();
-      if(!readyAt)return true;
+      const readyIso=readyAt?new Date(readyAt).toISOString():null;
+
+      /* First inspect the active reminder. If it already points at the same
+         earliest plant, keep it instead of creating a duplicate. */
+      const {data:active,error:readError}=await db.from('push_jobs')
+        .select('id,send_at')
+        .eq('user_id',user.id).eq('type','grow_ready')
+        .is('sent_at',null).is('cancelled_at',null)
+        .order('id',{ascending:true});
+      if(readError)throw readError;
+
+      const same=(active||[]).filter(j=>readyIso&&new Date(j.send_at).toISOString()===readyIso);
+      if(readyIso&&same.length===1&&(active||[]).length===1)return true;
+
+      const nowIso=new Date().toISOString();
+      if((active||[]).length){
+        const {error:cancelError}=await db.from('push_jobs')
+          .update({cancelled_at:nowIso,updated_at:nowIso})
+          .eq('user_id',user.id).eq('type','grow_ready')
+          .is('sent_at',null).is('cancelled_at',null);
+        if(cancelError)throw cancelError;
+      }
+
+      if(!readyIso)return true;
 
       const {error}=await db.from('push_jobs').insert({
         user_id:user.id,
         type:'grow_ready',
         title:'Grow Legends',
         body:'🌱 Deine Pflanze ist erntereif!',
-        send_at:new Date(readyAt).toISOString()
+        send_at:readyIso
       });
       if(error)throw error;
-      console.info('[GL Push] grow_ready geplant',new Date(readyAt).toISOString());
+      console.info('[GL Push] grow_ready geplant',readyIso);
       return true;
     }catch(e){
       console.warn('[Grow Legends] Grow-Push konnte nicht geplant werden:',e);
       return false;
     }
+  }
+
+  function glSyncGrowPushJob(){
+    /* Serialize rapid plant/harvest/account-ready calls. This prevents two
+       simultaneous cancel+insert cycles from producing duplicate jobs. */
+    glGrowPushSyncQueue=glGrowPushSyncQueue.then(
+      ()=>glSyncGrowPushJobNow(),
+      ()=>glSyncGrowPushJobNow()
+    );
+    return glGrowPushSyncQueue;
   }
   window.glSyncGrowPushJob=glSyncGrowPushJob;
 
