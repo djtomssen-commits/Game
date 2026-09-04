@@ -25254,21 +25254,7 @@ async function v200GoogleAuth(){
     const {error}=await v073Db.auth.signInWithOAuth({
       provider:'google',
       options:{
-        redirectTo:(()=>{
-          try{
-            const u=new URL(window.location.href);
-            if(u.searchParams.get('gl_native')==='1'){
-              return 'de.growlegends.app://auth-callback';
-            }
-          }catch(e){}
-          try{
-            const C=window.Capacitor;
-            if(C && typeof C.isNativePlatform==='function' && C.isNativePlatform()){
-              return 'de.growlegends.app://auth-callback';
-            }
-          }catch(e){}
-          return V075_SITE_URL;
-        })(),
+        redirectTo:(()=>{try{const u=new URL(window.location.href);if(u.searchParams.get('gl_native')==='1')return 'de.growlegends.app://auth-callback';}catch(e){} try{const C=window.Capacitor;if(C&&typeof C.isNativePlatform==='function'&&C.isNativePlatform())return 'de.growlegends.app://auth-callback';}catch(e){} return V075_SITE_URL;})(),
         queryParams:{prompt:'select_account'}
       }
     });
@@ -74544,17 +74530,11 @@ html:not(.v4142-systemtech-admin) #v4102QaButton{display:none!important}
   }
   window.glSyncGrowPushJob=glSyncGrowPushJob;
 
-  /* Debounce only the trigger. The proven cancel+insert sync above stays unchanged.
-     Two plants placed directly after each other now collapse into one final sync. */
-  let glGrowPushDebounceTimer=null;
-  function glRequestGrowPushSync(delay=500){
-    try{if(glGrowPushDebounceTimer)clearTimeout(glGrowPushDebounceTimer);}catch(e){}
-    glGrowPushDebounceTimer=setTimeout(()=>{
-      glGrowPushDebounceTimer=null;
-      void glSyncGrowPushJob();
-    },Math.max(100,Number(delay)||500));
+  let glPushDebounceTimer=null;
+  function glScheduleGrowPushSync(){
+    clearTimeout(glPushDebounceTimer);
+    glPushDebounceTimer=setTimeout(()=>void glSyncGrowPushJob(),500);
   }
-  window.glRequestGrowPushSync=glRequestGrowPushSync;
 
   function installHooks(){
     try{
@@ -74565,7 +74545,7 @@ html:not(.v4142-systemtech-admin) #v4102QaButton{display:none!important}
           const result=base.apply(this,args);
           setTimeout(()=>{
             const after=((typeof s!=='undefined'&&s?.grow?.plants)||[]).filter(Boolean).length;
-            if(after>before)glRequestGrowPushSync(500);
+            if(after>before)glScheduleGrowPushSync();
           },100);
           return result;
         };
@@ -74577,7 +74557,7 @@ html:not(.v4142-systemtech-admin) #v4102QaButton{display:none!important}
         const base=harvestReadyPlants;
         const wrapped=function(...args){
           const result=base.apply(this,args);
-          glRequestGrowPushSync(500);
+          glScheduleGrowPushSync();
           return result;
         };
         wrapped.__glPushV2=true;
@@ -74592,31 +74572,8 @@ html:not(.v4142-systemtech-admin) #v4102QaButton{display:none!important}
   setTimeout(installHooks,2000);
   window.addEventListener('growlegends:account-ready',()=>{
     installHooks();
-    glRequestGrowPushSync(1000);
+    setTimeout(()=>void glSyncGrowPushJob(),1000);
   });
-
-  /* V5 reliability: observe the actual grow state instead of relying only on
-     function wrappers. Grow Legends has several historical wrappers/listeners
-     for planting, so a later/captured handler can bypass our wrapper. This
-     watcher notices a real plant-state change and then uses the same proven
-     cancel+insert sync. */
-  let glLastGrowPushState='';
-  function glGrowPushStateKey(){
-    try{
-      const plants=(typeof s!=='undefined'&&s?.grow?.plants)||[];
-      return plants.map((p,i)=>p?`${i}:${Number(p.start)||0}:${Number(p.duration)||0}`:`${i}:-`).join('|');
-    }catch(e){return '';}
-  }
-  function glWatchGrowPushState(){
-    const key=glGrowPushStateKey();
-    if(!glLastGrowPushState){glLastGrowPushState=key;return;}
-    if(key!==glLastGrowPushState){
-      glLastGrowPushState=key;
-      glRequestGrowPushSync(700);
-    }
-  }
-  glLastGrowPushState=glGrowPushStateKey();
-  setInterval(glWatchGrowPushState,750);
 })();
 </script>
 
