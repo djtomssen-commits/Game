@@ -76746,3 +76746,41 @@ body:has(#world.active){background:#010302!important}
   setTimeout(update,1500);
 })();
 </script>
+
+<!-- ===== V4.187 REMOVE DUPLICATE DUNGEON HEADINGS ===== -->
+<style id="v4187-remove-duplicate-dungeon-headings">
+/* Remove the two old "Verseuchte Gebiete" blocks above the redesigned dungeon card. */
+#dungeons.active > .sectionTitle,
+#dungeons.active > .section-title,
+#dungeons.active > .pageTitle,
+#dungeons.active > .page-title,
+#dungeons.active > .v251-kicker,
+#dungeons.active > .v251-page-kicker{
+  display:none!important;
+}
+</style>
+<script id="v4187-remove-duplicate-dungeon-headings-js">
+(function(){
+  function clean(){
+    const card=document.getElementById('dungeonMapCard');
+    if(!card)return;
+    let p=card.previousElementSibling;
+    let removed=0;
+    while(p && removed<4){
+      const prev=p.previousElementSibling;
+      const t=(p.textContent||'').replace(/\s+/g,' ').trim().toLowerCase();
+      if(t.includes('verseuchte gebiete') &&
+         !t.includes('dungeons') &&
+         !p.closest('#dungeonMapCard')){
+        p.style.setProperty('display','none','important');
+        removed++;
+      }
+      p=prev;
+    }
+  }
+  document.addEventListener('DOMContentLoaded',clean);
+  window.addEventListener('pageshow',clean);
+  setTimeout(clean,400);
+  setTimeout(clean,1200);
+})();
+</script>
