@@ -1835,8 +1835,7 @@ function plantSelectedSeed(targetSlot=null){
  persist(false);renderGrow();growMessage(`${seed.name} wurde gepflanzt.`);
  setTimeout(()=>{
    try{
-     if(typeof window.glPushDiagnose==='function') void window.glPushDiagnose();
-     else if(typeof window.glSyncGrowPushJob==='function') void window.glSyncGrowPushJob();
+     if(typeof window.glSyncGrowPushJob==='function') void window.glSyncGrowPushJob();
    }catch(e){console.warn('[GL Push] direkter Pflanz-Hook',e);}
  },150);
 }
@@ -74520,26 +74519,50 @@ html:not(.v4142-systemtech-admin) #v4102QaButton{display:none!important}
       const user=await glPushUser();
       if(!user)return false;
       const db=v073Db;
+      const readyAt=glNextGrowReadyAt();
       const nowIso=new Date().toISOString();
 
-      const {error:cancelError}=await db.from('push_jobs')
-        .update({cancelled_at:nowIso,updated_at:nowIso})
+      /* Keine Pflanze mehr offen: vorhandenen aktiven Job sauber abbrechen. */
+      if(!readyAt){
+        const {error}=await db.from('push_jobs')
+          .update({cancelled_at:nowIso,updated_at:nowIso})
+          .eq('user_id',user.id).eq('type','grow_ready')
+          .is('sent_at',null).is('cancelled_at',null);
+        if(error)throw error;
+        return true;
+      }
+
+      const sendAt=new Date(readyAt).toISOString();
+
+      /* Erst vorhandenen EINEN aktiven Job aktualisieren. Der partielle
+         Unique-Index in Supabase garantiert maximal einen aktiven grow_ready-Job. */
+      const {data:updated,error:updateError}=await db.from('push_jobs')
+        .update({title:'Grow Legends',body:'🌱 Deine Pflanze ist erntereif!',send_at:sendAt,updated_at:nowIso})
         .eq('user_id',user.id).eq('type','grow_ready')
-        .is('sent_at',null).is('cancelled_at',null);
-      if(cancelError)throw cancelError;
+        .is('sent_at',null).is('cancelled_at',null)
+        .select('id');
+      if(updateError)throw updateError;
+      if(Array.isArray(updated)&&updated.length){
+        console.info('[GL Push] grow_ready aktualisiert',updated[0].id,sendAt);
+        return true;
+      }
 
-      const readyAt=glNextGrowReadyAt();
-      if(!readyAt)return true;
-
-      const {error}=await db.from('push_jobs').insert({
-        user_id:user.id,
-        type:'grow_ready',
-        title:'Grow Legends',
-        body:'🌱 Deine Pflanze ist erntereif!',
-        send_at:new Date(readyAt).toISOString()
+      /* Noch kein aktiver Job: genau einen anlegen. Falls zwei Aufrufe exakt
+         gleichzeitig hier landen, gewinnt einer den INSERT; der andere
+         aktualisiert danach den durch den Unique-Index geschützten Job. */
+      const {error:insertError}=await db.from('push_jobs').insert({
+        user_id:user.id,type:'grow_ready',title:'Grow Legends',
+        body:'🌱 Deine Pflanze ist erntereif!',send_at:sendAt
       });
-      if(error)throw error;
-      console.info('[GL Push] grow_ready geplant',new Date(readyAt).toISOString());
+      if(insertError){
+        if(String(insertError.code||'')!=='23505')throw insertError;
+        const {error:retryError}=await db.from('push_jobs')
+          .update({send_at:sendAt,updated_at:nowIso})
+          .eq('user_id',user.id).eq('type','grow_ready')
+          .is('sent_at',null).is('cancelled_at',null);
+        if(retryError)throw retryError;
+      }
+      console.info('[GL Push] grow_ready geplant',sendAt);
       return true;
     }catch(e){
       console.warn('[Grow Legends] Grow-Push konnte nicht geplant werden:',e);
@@ -74577,94 +74600,5 @@ html:not(.v4142-systemtech-admin) #v4102QaButton{display:none!important}
 
 
 
-<script id="gl-push-diagnostic-v1">
-(()=>{
-  'use strict';
-  if(window.__glPushDiagnosticV1)return;
-  window.__glPushDiagnosticV1=true;
 
-  function show(msg, ok=false){
-    try{
-      let el=document.getElementById('glPushDiag');
-      if(!el){
-        el=document.createElement('div');
-        el.id='glPushDiag';
-        el.style.cssText='position:fixed;left:8px;right:8px;bottom:10px;z-index:2147483647;padding:10px 12px;border-radius:10px;background:#171b18;color:#fff;border:1px solid #5d745f;font:12px/1.35 sans-serif;box-shadow:0 4px 20px #0008;white-space:pre-wrap';
-        document.body.appendChild(el);
-      }
-      el.textContent='PUSH TEST: '+msg;
-      el.style.borderColor=ok?'#59c76d':'#d49a55';
-    }catch(e){}
-  }
-
-  async function diagnose(){
-    show('Pflanze erkannt – prüfe Anmeldung …');
-    try{
-      if(typeof v073Db==='undefined'||!v073Db?.auth){
-        show('FEHLER: Supabase-Client v073Db ist nicht verfügbar.');
-        return;
-      }
-      const {data:ud,error:ue}=await v073Db.auth.getUser();
-      if(ue){ show('AUTH-FEHLER: '+(ue.message||String(ue))); return; }
-      const user=ud?.user;
-      if(!user){ show('FEHLER: Kein angemeldeter Supabase-Benutzer gefunden.'); return; }
-
-      const plants=(typeof s!=='undefined'&&s?.grow?.plants)||[];
-      const now=Date.now();
-      const times=plants.filter(Boolean)
-        .map(p=>(Number(p.start)||0)+(Number(p.duration)||0))
-        .filter(t=>Number.isFinite(t)&&t>now);
-      if(!times.length){ show('FEHLER: Pflanze vorhanden, aber keine zukünftige Reifezeit erkannt.'); return; }
-      const sendAt=new Date(Math.min(...times)).toISOString();
-
-      show('Angemeldet – teste push_jobs INSERT …');
-      const nowIso=new Date().toISOString();
-      const {error:cancelError}=await v073Db.from('push_jobs')
-        .update({cancelled_at:nowIso,updated_at:nowIso})
-        .eq('user_id',user.id).eq('type','grow_ready')
-        .is('sent_at',null).is('cancelled_at',null);
-      if(cancelError){ show('SUPABASE UPDATE-FEHLER: '+(cancelError.message||JSON.stringify(cancelError))); return; }
-
-      const {data:ins,error:insertError}=await v073Db.from('push_jobs')
-        .insert({
-          user_id:user.id,
-          type:'grow_ready',
-          title:'Grow Legends',
-          body:'🌱 Deine Pflanze ist erntereif!',
-          send_at:sendAt
-        })
-        .select('id,send_at')
-        .single();
-      if(insertError){ show('SUPABASE INSERT-FEHLER: '+(insertError.message||JSON.stringify(insertError))); return; }
-
-      show('OK – Job angelegt: ID '+ins.id+' · '+ins.send_at, true);
-    }catch(e){
-      show('JS-FEHLER: '+(e?.message||String(e)));
-    }
-  }
-
-  window.glPushDiagnose=diagnose;
-
-  function hook(){
-    try{
-      if(typeof plantSelectedSeed!=='function'||plantSelectedSeed.__glDiag)return;
-      const base=plantSelectedSeed;
-      const wrapped=function(...args){
-        const before=((typeof s!=='undefined'&&s?.grow?.plants)||[]).filter(Boolean).length;
-        const r=base.apply(this,args);
-        setTimeout(()=>{
-          const after=((typeof s!=='undefined'&&s?.grow?.plants)||[]).filter(Boolean).length;
-          if(after>before) diagnose();
-        },250);
-        return r;
-      };
-      wrapped.__glDiag=true;
-      plantSelectedSeed=wrapped;
-      try{window.plantSelectedSeed=wrapped}catch(e){}
-    }catch(e){ show('HOOK-FEHLER: '+(e?.message||String(e))); }
-  }
-  /* Pflanz-Diagnose wird direkt aus plantSelectedSeed() gestartet.
-     Kein zusätzlicher Wrapper: verhindert doppelte Aufrufe. */
-})();
-</script>
 
