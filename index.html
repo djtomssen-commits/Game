@@ -45895,93 +45895,7 @@ function historicalScriptCount(){if(historicCountCache!=null)return historicCoun
 </script>
 <!-- V4.159: Gildenkrieg ist jetzt eine echte Herausforderung zwischen zwei Gilden. Anführer/Offiziere wählen die Gegnergilde, die Zielgilde erhält sofort Ingame-/Menü- und Gildenchat-Hinweise, Mitglieder melden sich bis 18:00 für Angriff/Verteidigung, ab 19:00 wird serverseitig ausgewertet. -->
 
-\n\n<!-- GROW LEGENDS PUSH SCHEDULING V1 -->
-<script>
-(()=>{
-  'use strict';
-  if(window.__glPushSchedulingV1)return;
-  window.__glPushSchedulingV1=true;
-
-  async function glPushUser(){
-    try{
-      if(!window.v073Db?.auth)return null;
-      const {data,error}=await window.v073Db.auth.getUser();
-      if(error)return null;
-      return data?.user||null;
-    }catch(e){return null;}
-  }
-
-  function glNextGrowReadyAt(){
-    try{
-      const plants=window.s?.grow?.plants||[];
-      const now=Date.now();
-      const times=plants
-        .filter(Boolean)
-        .map(p=>(Number(p.start)||0)+(Number(p.duration)||0))
-        .filter(t=>Number.isFinite(t)&&t>now);
-      return times.length?Math.min(...times):null;
-    }catch(e){return null;}
-  }
-
-  async function glSyncGrowPushJob(){
-    try{
-      const user=await glPushUser();
-      if(!user)return false;
-      const db=window.v073Db;
-      const nowIso=new Date().toISOString();
-
-      // Cancel only still-pending Growroom reminders for this player.
-      await db.from('push_jobs')
-        .update({cancelled_at:nowIso,updated_at:nowIso})
-        .eq('user_id',user.id)
-        .eq('type','grow_ready')
-        .is('sent_at',null)
-        .is('cancelled_at',null);
-
-      const readyAt=glNextGrowReadyAt();
-      if(!readyAt)return true;
-
-      const {error}=await db.from('push_jobs').insert({
-        user_id:user.id,
-        type:'grow_ready',
-        title:'Grow Legends',
-        body:'🌱 Deine Pflanze ist erntereif!',
-        send_at:new Date(readyAt).toISOString()
-      });
-      if(error)throw error;
-      return true;
-    }catch(e){
-      console.warn('[Grow Legends] Grow-Push konnte nicht geplant werden:',e);
-      return false;
-    }
-  }
-  window.glSyncGrowPushJob=glSyncGrowPushJob;
-
-  // Wrap the final canonical planting function without changing game state logic.
-  if(typeof window.plantSelectedSeed==='function'){
-    const basePlant=window.plantSelectedSeed;
-    window.plantSelectedSeed=function(...args){
-      const result=basePlant.apply(this,args);
-      Promise.resolve(result).finally(()=>setTimeout(glSyncGrowPushJob,0));
-      return result;
-    };
-  }
-
-  // Recalculate the next reminder after a harvest as well.
-  if(typeof window.harvestReadyPlants==='function'){
-    const baseHarvest=window.harvestReadyPlants;
-    window.harvestReadyPlants=function(...args){
-      const result=baseHarvest.apply(this,args);
-      Promise.resolve(result).finally(()=>setTimeout(glSyncGrowPushJob,0));
-      return result;
-    };
-  }
-
-  window.addEventListener('growlegends:account-ready',()=>{
-    setTimeout(glSyncGrowPushJob,1200);
-  });
-})();
-</script>
+\n\n
 </body>
 </html>
 <style id="v268-inventory-multisell-css">
@@ -74555,3 +74469,105 @@ html:not(.v4142-systemtech-admin) #v4102QaButton{display:none!important}
 })();
 </script>
 <!-- V4.159: Dungeon 1 is always open from Level 1 unless genuinely completed at its boss; stale early completion flags are repaired after cloud/account load. Frost auto-equip continues to choose two weapons. Public profile integer fields are rounded to prevent Supabase integer errors such as 39.2. -->
+
+<!-- GROW LEGENDS PUSH SCHEDULING V2 - final EOF hook -->
+<script id="gl-push-scheduling-v2">
+(()=>{
+  'use strict';
+  if(window.__glPushSchedulingV2)return;
+  window.__glPushSchedulingV2=true;
+
+  async function glPushUser(){
+    try{
+      if(typeof v073Db==='undefined'||!v073Db?.auth)return null;
+      const {data,error}=await v073Db.auth.getUser();
+      if(error)return null;
+      return data?.user||null;
+    }catch(e){console.warn('[GL Push] user',e);return null;}
+  }
+
+  function glNextGrowReadyAt(){
+    try{
+      const plants=(typeof s!=='undefined'&&s?.grow?.plants)||[];
+      const now=Date.now();
+      const times=plants.filter(Boolean)
+        .map(p=>(Number(p.start)||0)+(Number(p.duration)||0))
+        .filter(t=>Number.isFinite(t)&&t>now);
+      return times.length?Math.min(...times):null;
+    }catch(e){console.warn('[GL Push] readyAt',e);return null;}
+  }
+
+  async function glSyncGrowPushJob(){
+    try{
+      const user=await glPushUser();
+      if(!user)return false;
+      const db=v073Db;
+      const nowIso=new Date().toISOString();
+
+      const {error:cancelError}=await db.from('push_jobs')
+        .update({cancelled_at:nowIso,updated_at:nowIso})
+        .eq('user_id',user.id).eq('type','grow_ready')
+        .is('sent_at',null).is('cancelled_at',null);
+      if(cancelError)throw cancelError;
+
+      const readyAt=glNextGrowReadyAt();
+      if(!readyAt)return true;
+
+      const {error}=await db.from('push_jobs').insert({
+        user_id:user.id,
+        type:'grow_ready',
+        title:'Grow Legends',
+        body:'🌱 Deine Pflanze ist erntereif!',
+        send_at:new Date(readyAt).toISOString()
+      });
+      if(error)throw error;
+      console.info('[GL Push] grow_ready geplant',new Date(readyAt).toISOString());
+      return true;
+    }catch(e){
+      console.warn('[Grow Legends] Grow-Push konnte nicht geplant werden:',e);
+      return false;
+    }
+  }
+  window.glSyncGrowPushJob=glSyncGrowPushJob;
+
+  function installHooks(){
+    try{
+      if(typeof plantSelectedSeed==='function'&&!plantSelectedSeed.__glPushV2){
+        const base=plantSelectedSeed;
+        const wrapped=function(...args){
+          const before=((typeof s!=='undefined'&&s?.grow?.plants)||[]).filter(Boolean).length;
+          const result=base.apply(this,args);
+          setTimeout(()=>{
+            const after=((typeof s!=='undefined'&&s?.grow?.plants)||[]).filter(Boolean).length;
+            if(after>before)void glSyncGrowPushJob();
+          },100);
+          return result;
+        };
+        wrapped.__glPushV2=true;
+        plantSelectedSeed=wrapped;
+        try{window.plantSelectedSeed=wrapped}catch(e){}
+      }
+      if(typeof harvestReadyPlants==='function'&&!harvestReadyPlants.__glPushV2){
+        const base=harvestReadyPlants;
+        const wrapped=function(...args){
+          const result=base.apply(this,args);
+          setTimeout(()=>void glSyncGrowPushJob(),100);
+          return result;
+        };
+        wrapped.__glPushV2=true;
+        harvestReadyPlants=wrapped;
+        try{window.harvestReadyPlants=wrapped}catch(e){}
+      }
+    }catch(e){console.warn('[GL Push] hook install',e);}
+  }
+
+  installHooks();
+  setTimeout(installHooks,500);
+  setTimeout(installHooks,2000);
+  window.addEventListener('growlegends:account-ready',()=>{
+    installHooks();
+    setTimeout(()=>void glSyncGrowPushJob(),1000);
+  });
+})();
+</script>
+
