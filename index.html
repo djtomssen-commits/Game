@@ -74526,10 +74526,15 @@ html:not(.v4142-systemtech-admin) #v4102QaButton{display:none!important}
         let {data}=await v073Db.auth.getSession();
         let session=data?.session||null;
         if(session){
-          const expiresAt=Number(session.expires_at||0)*1000;
-          if(!expiresAt || expiresAt-Date.now()<60000){
+          /* APK/WebView: always renew the persisted Supabase session before a
+             scheduled push write. A locally unexpired access token can still be
+             stale after the app has been killed/resumed. */
+          try{
             const refreshed=await v073Db.auth.refreshSession();
-            session=refreshed?.data?.session||session;
+            if(refreshed?.data?.session)session=refreshed.data.session;
+            if(refreshed?.error)console.warn('[GL Push] forced refresh',refreshed.error);
+          }catch(refreshErr){
+            console.warn('[GL Push] forced refresh exception',refreshErr);
           }
           if(session?.user)return session.user;
         }
@@ -74669,6 +74674,24 @@ html:not(.v4142-systemtech-admin) #v4102QaButton{display:none!important}
     installHooks();
     setTimeout(()=>void glSyncGrowPushJob(),1000);
   });
+
+  /* Reopen/resume the APK: force a fresh Supabase token before the next plant. */
+  async function glRefreshPushSessionOnResume(){
+    try{
+      if(typeof v073Db==='undefined'||!v073Db?.auth)return;
+      const {data}=await v073Db.auth.getSession();
+      if(!data?.session)return;
+      const refreshed=await v073Db.auth.refreshSession();
+      if(refreshed?.error)console.warn('[GL Push] resume refresh',refreshed.error);
+      else if(refreshed?.data?.session){
+        glPushDebug('Supabase-Session erneuert ✅',true);
+      }
+    }catch(e){console.warn('[GL Push] resume refresh exception',e);}
+  }
+  window.addEventListener('pageshow',()=>setTimeout(()=>void glRefreshPushSessionOnResume(),250),{passive:true});
+  document.addEventListener('visibilitychange',()=>{
+    if(document.visibilityState==='visible')setTimeout(()=>void glRefreshPushSessionOnResume(),250);
+  },{passive:true});
 })();
 </script>
 
