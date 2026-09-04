@@ -74615,8 +74615,39 @@ html:not(.v4142-systemtech-admin) #v4102QaButton{display:none!important}
 
   function installHooks(){
     try{
-      /* Plant scheduling is owned exclusively by plantSelectedSeed(), which passes
-         the exact ready timestamp into glSyncGrowPushJob(). No extra plant wrapper. */
+      /* Wrap the FINAL planting function at EOF. Several older game patches wrap
+         plantSelectedSeed earlier, so relying only on the original base function
+         is fragile. This hook runs after all of them and reacts only when the
+         number of planted plants actually increased. */
+      if(typeof plantSelectedSeed==='function'&&!plantSelectedSeed.__glPushV2){
+        const basePlant=plantSelectedSeed;
+        const wrappedPlant=function(...args){
+          const before=((typeof s!=='undefined'&&s?.grow?.plants)||[]).filter(Boolean).length;
+          const result=basePlant.apply(this,args);
+          setTimeout(()=>{
+            try{
+              const plants=((typeof s!=='undefined'&&s?.grow?.plants)||[]).filter(Boolean);
+              const after=plants.length;
+              if(after<=before)return;
+              const now=Date.now();
+              const readyTimes=plants.map(p=>(Number(p?.start)||0)+(Number(p?.duration)||0))
+                .filter(t=>Number.isFinite(t)&&t>now);
+              const readyAt=readyTimes.length?Math.min(...readyTimes):null;
+              glPushDebug('Pflanze erkannt – Push wird geplant…'+(readyAt?'\nsend_at: '+new Date(readyAt).toISOString():''));
+              void glSyncGrowPushJob(readyAt);
+            }catch(e){
+              console.warn('[GL Push] final plant hook',e);
+              glPushDebug('FEHLER im Pflanzen-Hook ❌\n'+String(e?.message||e));
+            }
+          },150);
+          return result;
+        };
+        wrappedPlant.__glPushV2=true;
+        wrappedPlant.__glPushBase=basePlant;
+        plantSelectedSeed=wrappedPlant;
+        try{window.plantSelectedSeed=wrappedPlant}catch(e){}
+      }
+
       if(typeof harvestReadyPlants==='function'&&!harvestReadyPlants.__glPushV2){
         const base=harvestReadyPlants;
         const wrapped=function(...args){
