@@ -74594,6 +74594,29 @@ html:not(.v4142-systemtech-admin) #v4102QaButton{display:none!important}
     installHooks();
     glRequestGrowPushSync(1000);
   });
+
+  /* V5 reliability: observe the actual grow state instead of relying only on
+     function wrappers. Grow Legends has several historical wrappers/listeners
+     for planting, so a later/captured handler can bypass our wrapper. This
+     watcher notices a real plant-state change and then uses the same proven
+     cancel+insert sync. */
+  let glLastGrowPushState='';
+  function glGrowPushStateKey(){
+    try{
+      const plants=(typeof s!=='undefined'&&s?.grow?.plants)||[];
+      return plants.map((p,i)=>p?`${i}:${Number(p.start)||0}:${Number(p.duration)||0}`:`${i}:-`).join('|');
+    }catch(e){return '';}
+  }
+  function glWatchGrowPushState(){
+    const key=glGrowPushStateKey();
+    if(!glLastGrowPushState){glLastGrowPushState=key;return;}
+    if(key!==glLastGrowPushState){
+      glLastGrowPushState=key;
+      glRequestGrowPushSync(700);
+    }
+  }
+  glLastGrowPushState=glGrowPushStateKey();
+  setInterval(glWatchGrowPushState,750);
 })();
 </script>
 
