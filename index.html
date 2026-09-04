@@ -75691,3 +75691,38 @@ body:has(#world.active){background:#010302!important}
  #world.active .v366-dock .ico{font-size:18px!important}
 }
 </style>
+
+
+<!-- ===== V4.163 AVATAR CROP FIX — home + Heldenquartier only ===== -->
+<style id="v4163-avatar-crop-fix">
+/* Heldenquartier: Gesicht + Oberkörper statt Bildmitte. Gilt für alle Klassen. */
+#character .avatar-scene .v080-class-avatar-img,
+#character .v41-portrait .v080-class-avatar-img{
+  width:100%!important;
+  height:100%!important;
+  object-fit:cover!important;
+  object-position:center 20%!important;
+}
+
+/* Startseite: Artwork füllt den unteren Charakterbereich; Fokus auf Kopf/Oberkörper. */
+#world.active .v366-character.v369-real-character{
+  left:4%!important;
+  bottom:-1%!important;
+  width:43%!important;
+  height:55%!important;
+  background-size:cover!important;
+  background-position:center 20%!important;
+  background-repeat:no-repeat!important;
+  -webkit-mask-image:linear-gradient(90deg,#000 0 78%,transparent 100%)!important;
+  mask-image:linear-gradient(90deg,#000 0 78%,transparent 100%)!important;
+}
+@media(max-width:390px){
+  #world.active .v366-character.v369-real-character{
+    left:4%!important;
+    bottom:-1%!important;
+    width:44%!important;
+    height:54%!important;
+    background-position:center 20%!important;
+  }
+}
+</style>
