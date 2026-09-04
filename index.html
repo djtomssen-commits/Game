@@ -76498,3 +76498,89 @@ body:has(#world.active){background:#010302!important}
   setTimeout(tick,250);
 })();
 </script>
+
+<!-- ===== V4.179 DUNGEON MAP CLEAN OVERLAY ===== -->
+<style id="v4179-dungeon-clean-overlay">
+/* Keep the connected illustrated world map, but remove the old card/raster look. */
+#dungeonMapCard.v251-world-card .v251-world-grid{
+  grid-template-columns:repeat(5,minmax(0,1fr))!important;
+  gap:3px!important;
+}
+#dungeonMapCard.v251-world-card .v251-portal{
+  min-height:137px!important;height:137px!important;
+  padding:0 2px 3px!important;
+  border:0!important;background:transparent!important;
+  box-shadow:none!important;overflow:visible!important;
+  justify-content:flex-end!important;
+}
+#dungeonMapCard.v251-world-card .v251-portal:before{
+  content:none!important;
+}
+#dungeonMapCard.v251-world-card .v251-portal-ring{
+  top:4px!important;width:31px!important;height:31px!important;
+  background:rgba(10,13,11,.88)!important;
+  border:2px solid #a88c55!important;
+  box-shadow:0 2px 7px #000!important;
+}
+#dungeonMapCard.v251-world-card .v251-portal-lock{
+  top:45px!important;font-size:17px!important;
+  filter:drop-shadow(0 2px 3px #000)!important;
+}
+#dungeonMapCard.v251-world-card .v251-portal-name{
+  width:96%!important;min-height:0!important;
+  padding:3px 2px!important;margin:0 auto 1px!important;
+  border-radius:6px!important;
+  background:rgba(4,7,5,.82)!important;
+  border:1px solid rgba(155,132,79,.55)!important;
+  color:#f0eee7!important;
+  font-size:5.2px!important;line-height:1.08!important;font-weight:900!important;
+  text-shadow:0 1px 2px #000!important;
+}
+#dungeonMapCard.v251-world-card .v251-portal-state{
+  width:auto!important;min-width:72%!important;
+  margin:0 auto!important;padding:2px 3px!important;
+  border-radius:6px!important;
+  background:rgba(4,7,5,.88)!important;
+  border:1px solid rgba(120,108,73,.5)!important;
+  color:#cfcfc8!important;
+  font-size:4.9px!important;line-height:1.05!important;font-weight:900!important;
+  text-shadow:0 1px 2px #000!important;
+}
+#dungeonMapCard.v251-world-card .v251-portal.completed .v251-portal-name,
+#dungeonMapCard.v251-world-card .v251-portal.completed .v251-portal-state{
+  border-color:#45c83d!important;
+}
+#dungeonMapCard.v251-world-card .v251-portal.completed .v251-portal-state{
+  color:#73f16a!important;background:rgba(7,35,10,.9)!important;
+}
+#dungeonMapCard.v251-world-card .v251-portal.current{
+  filter:none!important;
+  border-radius:12px!important;
+  outline:2px solid #62ff4f!important;
+  outline-offset:-2px!important;
+  box-shadow:0 0 17px #4cff42cc,inset 0 0 18px rgba(76,255,66,.15)!important;
+}
+#dungeonMapCard.v251-world-card .v251-portal.current .v251-portal-name,
+#dungeonMapCard.v251-world-card .v251-portal.current .v251-portal-state{
+  border-color:#62ff4f!important;background:rgba(5,38,10,.94)!important;
+}
+#dungeonMapCard.v251-world-card .v251-portal.current .v251-portal-state{
+  color:#7cff6d!important;
+}
+#dungeonMapCard.v251-world-card .v251-portal.locked{
+  opacity:.62!important;filter:saturate(.28) brightness(.68)!important;
+}
+#dungeonMapCard.v251-world-card .v251-portal.locked .v251-portal-name,
+#dungeonMapCard.v251-world-card .v251-portal.locked .v251-portal-state{
+  background:rgba(3,5,4,.78)!important;border-color:rgba(95,95,86,.42)!important;
+}
+@media(max-width:420px){
+ #dungeonMapCard.v251-world-card .v251-world-grid{
+   grid-template-columns:repeat(5,minmax(0,1fr))!important;
+   gap:2px!important;min-height:585px!important;padding:12px 2px!important;
+ }
+ #dungeonMapCard.v251-world-card .v251-portal{height:136px!important;min-height:136px!important}
+ #dungeonMapCard.v251-world-card .v251-portal-name{font-size:4.7px!important;padding:3px 1px!important}
+ #dungeonMapCard.v251-world-card .v251-portal-state{font-size:4.5px!important}
+}
+</style>
