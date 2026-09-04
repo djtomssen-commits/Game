@@ -1833,6 +1833,8 @@ function plantSelectedSeed(targetSlot=null){
  }
  g.seeds[id]--;g.plants=g.plants.slice(0,growCapacity());
  persist(false);renderGrow();growMessage(`${seed.name} wurde gepflanzt.`);
+ /* Authoritative push hook: runs only after a plant was really created. */
+ setTimeout(()=>{try{if(typeof window.glSyncGrowPushJob==='function')void window.glSyncGrowPushJob();}catch(e){console.warn('[GL Push] base plant hook',e)}},200);
 
 }
 function harvestReadyPlants(){
@@ -74576,9 +74578,7 @@ html:not(.v4142-systemtech-admin) #v4102QaButton{display:none!important}
           const before=((s&&s.grow&&s.grow.plants)||[]).filter(Boolean).length;
           const result=basePlant.apply(this,args);
           const after=((s&&s.grow&&s.grow.plants)||[]).filter(Boolean).length;
-          if(after>before){
-            setTimeout(()=>void glSyncGrowPushJob(),200);
-          }
+          /* Push scheduling is owned by the base planting path above. */
           return result;
         };
         wrappedPlant.__glPushV2=true;
