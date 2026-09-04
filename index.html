@@ -45918,6 +45918,72 @@ function historicalScriptCount(){if(historicCountCache!=null)return historicCoun
 <!-- V4.159: Gildenkrieg ist jetzt eine echte Herausforderung zwischen zwei Gilden. Anführer/Offiziere wählen die Gegnergilde, die Zielgilde erhält sofort Ingame-/Menü- und Gildenchat-Hinweise, Mitglieder melden sich bis 18:00 für Angriff/Verteidigung, ab 19:00 wird serverseitig ausgewertet. -->
 
 \n\n
+
+<!-- ===== V5.25 STARTSEITE FINAL PASS — layout polish only ===== -->
+<style id="v525-home-final-polish">
+/* Keep the approved comic skin, but remove the stretched/empty mobile layout. */
+body:has(#world.active) #v337LegalFooter{display:none!important}
+#world.active{padding-bottom:8px!important}
+#world.active .v366-world{gap:7px!important;padding-bottom:0!important}
+
+/* Hero: less empty space, more focus on character + live data. */
+#world.active .v366-hero{height:370px!important;min-height:370px!important}
+#world.active .v366-profile{top:9px!important;left:9px!important;width:54%!important;padding:8px!important}
+#world.active .v366-events{top:9px!important;right:8px!important;width:40%!important;gap:4px!important}
+#world.active .v366-event{min-height:48px!important;padding:5px 6px!important}
+#world.active .v366-event b{font-size:7.4px!important}
+#world.active .v366-event span{font-size:5.9px!important}
+#world.active .v366-character{left:1%!important;bottom:-1%!important;width:46%!important;height:58%!important;background-size:contain!important;background-position:left bottom!important}
+#world.active .v366-welcome{left:42%!important;right:3%!important;bottom:14px!important}
+#world.active .v366-welcome h1{font-size:25px!important}
+#world.active .v366-welcome small{font-size:6.5px!important}
+#world.active .v366-welcome p{font-size:6px!important;margin-top:3px!important}
+
+/* Three primary destinations: same height, less vertical stretching. */
+#world.active .v366-main{align-items:stretch!important}
+#world.active .v366-card{display:flex!important;flex-direction:column!important;min-height:0!important}
+#world.active .v366-card-art{height:102px!important;min-height:102px!important}
+#world.active .v366-cardbody{display:flex!important;flex:1!important;flex-direction:column!important;padding:6px 5px 7px!important}
+#world.active .v366-card h2{margin:0 0 3px!important;font-size:9.4px!important}
+#world.active .v366-card p{margin:0 0 4px!important;min-height:29px!important}
+#world.active .v366-card .v366-status{margin-top:auto!important;min-height:22px!important}
+#world.active .v366-card .v366-go{margin:4px 0 0!important;min-height:32px!important}
+
+/* Daily goals / boss / book become a clean equal-height row. */
+#world.active .v366-lower{align-items:stretch!important}
+#world.active .v366-lower>.v366-panel{height:245px!important;min-height:245px!important}
+#world.active .v366-goals-title{padding:7px 7px 4px!important;font-size:10px!important}
+#world.active .v366-goals{padding:0 5px 4px!important}
+#world.active .v366-goal{min-height:49px!important;padding:5px 3px!important}
+#world.active .v366-goal i{font-size:14px!important}
+#world.active .v366-goal b{font-size:6.2px!important}
+#world.active .v366-goal span{font-size:6px!important}
+#world.active .v366-feature{display:flex!important;flex-direction:column!important;text-align:center!important}
+#world.active .v366-feature-art{height:112px!important;min-height:112px!important}
+#world.active .v366-feature h2{margin-top:4px!important}
+#world.active .v366-feature p{margin:1px 4px!important}
+#world.active .v366-feature .v366-status{margin-top:auto!important}
+#world.active .v366-feature .v366-go{margin:4px 6px 7px!important;min-height:32px!important}
+
+/* Forge + navigation should read as one game HUD, not a long web page. */
+#world.active .v488-home-link{min-height:52px!important;margin-top:0!important}
+#world.active .v366-dock{margin-top:0!important;padding:4px 2px!important}
+#world.active .v366-dock button{min-height:49px!important;font-size:5px!important}
+#world.active .v366-dock .ico{font-size:19px!important;margin-bottom:2px!important}
+#world.active #v492HomeGrowStatus{margin:0!important;min-height:48px!important;padding:8px 10px!important}
+
+@media(max-width:390px){
+ #world.active .v366-hero{height:350px!important;min-height:350px!important}
+ #world.active .v366-profile{width:55%!important;padding:6px!important}
+ #world.active .v366-avatar{width:50px!important;height:50px!important;flex-basis:50px!important}
+ #world.active .v366-pname{font-size:15px!important}
+ #world.active .v366-events{width:39%!important}
+ #world.active .v366-event{min-height:44px!important;padding:4px!important}
+ #world.active .v366-card-art{height:94px!important;min-height:94px!important}
+ #world.active .v366-lower>.v366-panel{height:232px!important;min-height:232px!important}
+ #world.active .v366-feature-art{height:104px!important;min-height:104px!important}
+}
+</style>
 </body>
 </html>
 <style id="v268-inventory-multisell-css">
