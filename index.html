@@ -76285,3 +76285,35 @@ body:has(#world.active){background:#010302!important}
   #quests .v4172-giver-art::after{height:50px;}
 }
 </style>
+
+<style id="v4175-dungeon-map-redesign">
+/* V4.175 Dungeon page 1 visual redesign only */
+#dungeonMapCard{background:linear-gradient(180deg,#07130f,#0a1813)!important;border:1px solid #725628!important;border-radius:20px!important;padding:14px!important;box-shadow:inset 0 0 45px #000b,0 8px 25px #0008!important;overflow:hidden}
+#dungeonMapCard>.section-title{background:linear-gradient(180deg,#342514,#171109)!important;border:2px solid #8e692f!important;border-radius:15px!important;padding:16px 14px!important;margin-bottom:10px!important;text-align:center!important;display:block!important}
+#dungeonMapCard>.section-title h2{font-family:Georgia,serif!important;font-size:34px!important;letter-spacing:.04em!important;color:#f3cf78!important;text-shadow:0 2px 0 #4d2600,0 0 12px #d18a2455!important;margin:0!important}
+#dungeonMapCard>.section-title .muted{color:#d7c7a2!important;margin-top:4px!important}
+#dungeonMapCard>.section-title .pill{display:none!important}
+#dungeonMapCard .ticket-box{background:#08150f!important;border:1px solid #6f542b!important;border-radius:12px!important;margin:8px 0 12px!important;padding:9px 12px!important;box-shadow:inset 0 0 15px #0009!important}
+#dungeonMapCard .dungeon-map-shell{overflow:visible!important;background:linear-gradient(#1d3440cc,#16261dcc),radial-gradient(circle at 50% 10%,#4e7080,#17251d 55%,#09110d)!important;border:2px solid #725628!important;border-radius:16px!important;padding:10px!important;box-shadow:inset 0 0 50px #000b!important}
+#dungeonMapCard .adventure-map{width:100%!important;min-width:0!important;height:auto!important;display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:9px!important;padding:76px 6px 12px!important;box-sizing:border-box!important;overflow:visible!important;background:linear-gradient(180deg,#18343b99,#11271bcc 48%,#101b15)!important;border-radius:12px!important;position:relative!important;transform:none!important}
+#dungeonMapCard .adventure-map:before{background:radial-gradient(circle at 50% 0,#7db0b033,transparent 38%),repeating-linear-gradient(115deg,transparent 0 70px,#b59b6130 72px 76px,transparent 78px 150px)!important;border-radius:12px!important}
+#dungeonMapCard .map-title-ribbon{left:12px!important;right:12px!important;top:10px!important;text-align:center!important;padding:11px!important;background:linear-gradient(#3d2a14,#1d1309)!important;border:2px solid #9a7438!important;border-radius:10px!important;color:#f2d17d!important;font-family:Georgia,serif!important;font-size:26px!important;letter-spacing:.08em!important;box-shadow:0 4px 14px #000b!important}
+#dungeonMapCard .map-title-ribbon:after{content:' · 20 GEBIETE · JE 10 GEGNER';display:block;font:700 10px system-ui;color:#cdbb8e;letter-spacing:.08em;margin-top:2px}
+#dungeonMapCard .map-scenery,#dungeonMapCard .map-path{display:none!important}
+#dungeonMapCard .dungeon-node{position:relative!important;left:auto!important;top:auto!important;transform:none!important;width:100%!important;height:152px!important;border-radius:14px!important;padding:8px 5px 7px!important;background:linear-gradient(180deg,#13251d,#09110e)!important;border:1px solid #4f674e!important;box-shadow:inset 0 0 22px #000a,0 3px 8px #0007!important;color:#eee!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:3px!important}
+#dungeonMapCard .dungeon-node .nicon{font-size:34px!important;filter:drop-shadow(0 0 7px #64ff7166)!important}
+#dungeonMapCard .dungeon-node .nnum{font-size:11px!important;line-height:1.15!important;font-weight:900!important;color:#eee!important;text-align:center!important;min-height:26px!important}
+#dungeonMapCard .dungeon-node .nlvl{font-size:10px!important;color:#bdbdbd!important;font-weight:800!important}
+#dungeonMapCard .dungeon-node.completed{border-color:#55a94e!important;background:linear-gradient(#18301d,#0b160e)!important}
+#dungeonMapCard .dungeon-node.completed:after{content:'✓ ABGESCHLOSSEN';font-size:9px;font-weight:1000;color:#67ed5f;background:#0d2b10;border:1px solid #46a83f;border-radius:8px;padding:3px 5px}
+#dungeonMapCard .dungeon-node.active{border:2px solid #68ff55!important;background:radial-gradient(circle at 50% 35%,#214e2c,#0a1710 68%)!important;box-shadow:0 0 16px #48ff4f88,inset 0 0 24px #45ff4130!important}
+#dungeonMapCard .dungeon-node.active:after{content:'AKTUELL';font-size:10px;font-weight:1000;color:#75ff67;background:#12391a;border:1px solid #60e653;border-radius:8px;padding:3px 8px}
+#dungeonMapCard .dungeon-node.locked{filter:saturate(.3);opacity:.66!important;border-color:#46504a!important}
+#dungeonMapCard .dungeon-node.locked .nicon{filter:grayscale(1)!important;opacity:.6}
+#dungeonMapCard .dungeon-node .nlock{position:absolute!important;right:7px!important;top:7px!important;font-size:15px!important}
+#dungeonMapCard .map-legend{display:none!important}
+#dungeonMapCard .dungeon-detail{margin-top:12px!important;background:linear-gradient(90deg,#101b15,#08120d)!important;border:1px solid #6c542e!important;border-radius:13px!important;padding:12px!important}
+#dungeonMapCard .dungeon-detail h3{color:#f0d17d!important;font-family:Georgia,serif!important;margin:0 0 4px!important}
+#dungeonMapCard .dungeon-detail .state{color:#7de76e!important;font-weight:800!important}
+@media(max-width:390px){#dungeonMapCard{padding:10px!important}#dungeonMapCard .adventure-map{gap:6px!important;padding-left:3px!important;padding-right:3px!important}#dungeonMapCard .dungeon-node{height:145px!important;padding:6px 3px!important}#dungeonMapCard .dungeon-node .nnum{font-size:10px!important}#dungeonMapCard .map-title-ribbon{font-size:23px!important}}
+</style>
