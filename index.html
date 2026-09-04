@@ -75826,3 +75826,30 @@ body:has(#world.active){background:#010302!important}
   }
 }
 </style>
+
+<!-- ===== V4.168 HOME PROFILE FIXED GEOMETRY ===== -->
+<style id="v4168-home-profile-fixed-geometry">
+/* Home only: power + attributes use fixed coordinates inside the profile.
+   This prevents delayed XP/stat refreshes from changing their vertical position. */
+#world.active .v366-profile{position:absolute!important;}
+#world.active .v366-power{
+  position:absolute!important;
+  left:7px!important;
+  top:91px!important;
+  margin:0!important;
+  z-index:6!important;
+}
+#world.active .v366-attrs{
+  position:absolute!important;
+  left:7px!important;
+  right:7px!important;
+  top:121px!important;
+  margin:0!important;
+  width:auto!important;
+  z-index:5!important;
+}
+@media(max-width:390px){
+  #world.active .v366-power{left:6px!important;top:86px!important;}
+  #world.active .v366-attrs{left:6px!important;right:6px!important;top:114px!important;}
+}
+</style>
