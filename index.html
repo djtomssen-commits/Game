@@ -32671,8 +32671,17 @@ setInterval(v239UpdateGrowLive,1000);
 
 const v239BasePlantSelectedSeed=plantSelectedSeed;
 plantSelectedSeed=function(...args){
+  const before=((s?.grow?.plants)||[]).filter(Boolean).length;
   const result=v239BasePlantSelectedSeed.apply(this,args);
   requestAnimationFrame(v239UpdateGrowLive);
+  const after=((s?.grow?.plants)||[]).filter(Boolean).length;
+  if(after>before){
+    clearTimeout(window.__glGrowPushPlantTimer);
+    window.__glGrowPushPlantTimer=setTimeout(()=>{
+      try{ if(typeof window.glSyncGrowPushJob==='function') void window.glSyncGrowPushJob(); }
+      catch(e){ console.warn('[GL Push] direct plant sync',e); }
+    },500);
+  }
   return result;
 };
 
@@ -74530,22 +74539,16 @@ html:not(.v4142-systemtech-admin) #v4102QaButton{display:none!important}
   }
   window.glSyncGrowPushJob=glSyncGrowPushJob;
 
-  let glPushDebounceTimer=null;
-  function glScheduleGrowPushSync(){
-    clearTimeout(glPushDebounceTimer);
-    glPushDebounceTimer=setTimeout(()=>void glSyncGrowPushJob(),500);
-  }
-
   function installHooks(){
     try{
-      if(typeof plantSelectedSeed==='function'&&!plantSelectedSeed.__glPushV2){
+      if(false && typeof plantSelectedSeed==='function'&&!plantSelectedSeed.__glPushV2){
         const base=plantSelectedSeed;
         const wrapped=function(...args){
           const before=((typeof s!=='undefined'&&s?.grow?.plants)||[]).filter(Boolean).length;
           const result=base.apply(this,args);
           setTimeout(()=>{
             const after=((typeof s!=='undefined'&&s?.grow?.plants)||[]).filter(Boolean).length;
-            if(after>before)glScheduleGrowPushSync();
+            if(after>before)void glSyncGrowPushJob();
           },100);
           return result;
         };
@@ -74557,7 +74560,7 @@ html:not(.v4142-systemtech-admin) #v4102QaButton{display:none!important}
         const base=harvestReadyPlants;
         const wrapped=function(...args){
           const result=base.apply(this,args);
-          glScheduleGrowPushSync();
+          setTimeout(()=>void glSyncGrowPushJob(),100);
           return result;
         };
         wrapped.__glPushV2=true;
