@@ -75423,3 +75423,69 @@ html:not(.v4142-systemtech-admin) #v4102QaButton{display:none!important}
  }catch(e){console.warn('[GL FCM] Auth listener',e)}
 })();
 </script>
+
+<!-- ===== V5.23 APPROVED STARTSEITE — visual-only comic RPG redesign ===== -->
+<style id="v523-approved-home-comic-css">
+/* Visual layer only. Existing V366 renderers, handlers and game state remain owners. */
+body:has(#world.active){background:#020603!important}
+#world.active{padding:7px 7px 18px!important;background:
+ radial-gradient(circle at 50% 0,rgba(87,190,35,.12),transparent 30%),
+ linear-gradient(180deg,#030805 0,#010402 100%)!important}
+.v366-world{gap:9px!important}
+
+/* top HUD */
+.v366-topbar{min-height:61px!important;padding:6px!important;gap:4px!important;
+ background:linear-gradient(180deg,#10130b 0,#050805 100%)!important;
+ border-bottom:2px solid #51471d!important;box-shadow:0 5px 0 #010201,0 10px 24px #000!important}
+.v366-menu,.v366-iconbtn,.v366-res{border:1px solid #766326!important;box-shadow:inset 0 0 0 1px #171006,0 2px 5px #000!important;background:linear-gradient(180deg,#17170e,#080a07)!important}
+.v366-menu{border-radius:7px!important;color:#f1d58a!important}
+.v366-logo strong{font-family:Georgia,serif!important;color:#a7e34c!important;text-shadow:0 2px #18350e,0 0 8px rgba(101,255,40,.18)!important}
+.v366-logo span{color:#e0b85a!important;letter-spacing:.4px!important}
+.v366-plus{background:linear-gradient(180deg,#174b16,#0a250b)!important;border-color:#72ad2e!important;color:#d9ff91!important;box-shadow:inset 0 0 8px rgba(88,255,58,.15)!important}
+
+/* main hero */
+.v366-hero{height:500px!important;border:2px solid #6e5a24!important;border-radius:11px!important;box-shadow:inset 0 0 0 1px #1a1208,0 5px 15px #000!important}
+.v366-hero:after{content:"";position:absolute;inset:0;pointer-events:none;z-index:2;border-radius:9px;box-shadow:inset 0 0 35px rgba(0,0,0,.55),inset 0 0 0 1px rgba(206,170,65,.15)}
+.v366-profile{background:linear-gradient(135deg,rgba(3,10,6,.88),rgba(3,9,6,.58))!important;border:1px solid rgba(151,128,45,.52)!important;border-radius:12px!important;padding:10px!important;box-shadow:0 8px 22px rgba(0,0,0,.36)!important;backdrop-filter:blur(2px)}
+.v366-avatar{border:2px solid #c5a43e!important;box-shadow:0 0 0 2px #14220c,0 0 14px rgba(106,222,46,.24)!important}
+.v366-pname{font-family:Georgia,serif!important;letter-spacing:.2px!important}
+.v366-class{color:#cf77ff!important;text-shadow:0 0 7px rgba(194,77,255,.35)!important}
+.v366-xpbar{height:8px!important;border-color:#806820!important;background:#101108!important}
+.v366-xpfill{background:linear-gradient(90deg,#f5a51e,#ffd44e)!important;box-shadow:0 0 7px rgba(255,190,40,.42)!important}
+.v366-power b{color:#f4bd3c!important;text-shadow:0 0 8px rgba(255,185,42,.22)!important}
+.v366-attrs{background:rgba(4,11,6,.82)!important;border:1px solid rgba(91,110,37,.55)!important;border-radius:9px!important;padding:7px!important}
+.v366-event{border-width:1px!important;border-color:#8a6d2b!important;border-radius:10px!important;background:linear-gradient(180deg,rgba(12,15,10,.94),rgba(4,8,5,.92))!important;box-shadow:inset 0 0 0 1px rgba(222,177,65,.08),0 5px 14px rgba(0,0,0,.42)!important}
+.v366-event.purple{border-color:#8843b9!important}.v366-event.gold{border-color:#9b6721!important}.v366-event.cyan{border-color:#168b99!important}
+.v366-welcome h1{font-family:Georgia,serif!important;color:#8fe33c!important;text-shadow:0 2px #18370d,0 0 12px rgba(100,255,45,.18)!important}
+
+/* quest / dungeon / growroom cards */
+.v366-main,.v366-lower{gap:7px!important}
+.v366-card,.v366-panel{overflow:hidden!important;border:2px solid #6d5722!important;border-radius:10px!important;background:#050906!important;box-shadow:inset 0 0 0 1px #181006,0 4px 12px rgba(0,0,0,.5)!important}
+.v366-card-art,.v366-feature-art{filter:saturate(1.12) contrast(1.05)!important}
+.v366-cardbody{background:linear-gradient(180deg,rgba(6,11,7,.90),#030604 90%)!important;border-top:1px solid rgba(154,126,40,.32)!important}
+.v366-card h2,.v366-goals-title,.v366-feature h2{font-family:Georgia,serif!important;letter-spacing:.3px!important;text-shadow:0 2px #000!important}
+.v366-card.quest h2,.v366-card.grow h2{color:#9ae64a!important}.v366-card.dungeon h2{color:#e3a335!important}
+.v366-status{color:#8fe14a!important}
+.v366-go{min-height:35px!important;border:1px solid #79a82d!important;border-radius:7px!important;background:linear-gradient(180deg,#287d10,#145006)!important;color:#fff!important;font-weight:1000!important;text-shadow:0 1px #183107!important;box-shadow:inset 0 1px rgba(255,255,255,.15),0 2px 5px #000!important}
+.v366-card.dungeon .v366-go{border-color:#aa6d1b!important;background:linear-gradient(180deg,#a65c08,#6b3304)!important}
+.v366-feature.boss .v366-go{border-color:#1aa2aa!important;background:linear-gradient(180deg,#087f88,#04505a)!important}
+.v366-go:active{transform:translateY(1px)!important;filter:brightness(.9)!important}
+
+/* daily goals / lower panels */
+.v366-goal{border-bottom-color:rgba(115,100,39,.28)!important}.v366-goal:last-child{border-bottom:0!important}
+.v366-goal span{color:#8cd941!important}.v366-feature.book h2{color:#a8e95b!important}
+
+/* dock */
+.v366-dock{padding:7px 2px 4px!important;border:2px solid #59481e!important;border-radius:9px!important;background:linear-gradient(180deg,#0c0d09,#030504)!important;box-shadow:inset 0 0 0 1px #171006,0 4px 10px #000!important;overflow:hidden!important}
+.v366-dock button{min-height:54px!important;color:#d6b269!important;border-right:1px solid rgba(106,83,30,.38)!important;text-shadow:0 1px #000!important}
+.v366-dock button:last-child{border-right:0!important}.v366-dock .ico{filter:drop-shadow(0 2px 2px #000)!important}
+.v366-dock button.active{border:1px solid #72a626!important;background:linear-gradient(180deg,#1b4211,#0a1b08)!important;color:#efff9e!important;box-shadow:inset 0 0 12px rgba(98,255,48,.14)!important}
+
+/* side tabs + menu keep their real click handlers, only reskinned */
+#v032MenuPanel{background:linear-gradient(180deg,#071009,#020603)!important;border:1px solid #675824!important;box-shadow:8px 12px 30px rgba(0,0,0,.72)!important}
+
+@media(max-width:390px){
+ .v366-hero{height:475px!important}.v366-profile{padding:8px!important}.v366-avatar{width:58px!important;height:58px!important;flex-basis:58px!important}
+ .v366-event{padding:7px!important}.v366-dock button{min-height:50px!important}
+}
+</style>
