@@ -46021,6 +46021,19 @@ body:has(#world.active) #v337LegalFooter{display:none!important}
   }
 }
 </style>
+
+<!-- ===== V4.167 HOME KAMPFKRAFT VISIBILITY FIX ===== -->
+<style id="v4167-home-power-fix">
+/* Home only: move Kampfkraft slightly upward so the fixed attribute panel never covers it. */
+#world.active .v366-power{
+  position:relative!important;
+  top:-10px!important;
+  z-index:5!important;
+}
+@media(max-width:390px){
+  #world.active .v366-power{top:-9px!important;}
+}
+</style>
 </body>
 </html>
 <style id="v268-inventory-multisell-css">
