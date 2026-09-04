@@ -666,6 +666,22 @@ document.documentElement.classList.remove('v224-app-ready');
 .app > header .v358-logo::after{content:"V4.81"!important}
 .app > header .v366-ver::after,.app > header .v371-logo em::after,.app > header .v372-logo em::after{content:"V4.81"!important;font-size:5px!important;color:#63cdd1!important;font-style:normal!important;font-weight:900!important}
 </style>
+
+<style id="v4162-character-portrait-fix">
+/* Heldenquartier: Portrait auf Gesicht + Oberkörper ausrichten, ohne Layout zu verändern */
+#character .v41-portrait .v080-class-avatar-img{
+  object-fit:cover !important;
+  object-position:center 8% !important;
+  transform:scale(1.02);
+  transform-origin:center top;
+}
+@media(max-width:520px){
+  #character .v41-portrait .v080-class-avatar-img{
+    object-position:center 6% !important;
+    transform:scale(1.01);
+  }
+}
+</style>
 </head>
 <body>
 <div class="app">
@@ -45982,6 +45998,27 @@ body:has(#world.active) #v337LegalFooter{display:none!important}
  #world.active .v366-card-art{height:94px!important;min-height:94px!important}
  #world.active .v366-lower>.v366-panel{height:232px!important;min-height:232px!important}
  #world.active .v366-feature-art{height:104px!important;min-height:104px!important}
+}
+</style>
+
+<!-- ===== V4.161 HOME AVATAR POSITION FIX ===== -->
+<style id="v4161-home-avatar-position-fix">
+/* Startseite: großen Klassen-Avatar unter den Attributen besser sichtbar machen. */
+#world.active .v366-character.v369-real-character{
+  left:8%!important;
+  bottom:-2%!important;
+  width:55%!important;
+  height:68%!important;
+  background-size:contain!important;
+  background-position:left bottom!important;
+}
+@media(max-width:390px){
+  #world.active .v366-character.v369-real-character{
+    left:7%!important;
+    bottom:-2%!important;
+    width:57%!important;
+    height:66%!important;
+  }
 }
 </style>
 </body>
