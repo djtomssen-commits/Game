@@ -1833,11 +1833,7 @@ function plantSelectedSeed(targetSlot=null){
  }
  g.seeds[id]--;g.plants=g.plants.slice(0,growCapacity());
  persist(false);renderGrow();growMessage(`${seed.name} wurde gepflanzt.`);
- setTimeout(()=>{
-   try{
-     if(typeof window.glSyncGrowPushJob==='function') void window.glSyncGrowPushJob();
-   }catch(e){console.warn('[GL Push] direkter Pflanz-Hook',e);}
- },150);
+
 }
 function harvestReadyPlants(){
  const now=Date.now(),readyPlants=s.grow.plants.filter(p=>p&&now-p.start>=p.duration);
@@ -74573,7 +74569,22 @@ html:not(.v4142-systemtech-admin) #v4102QaButton{display:none!important}
 
   function installHooks(){
     try{
-      /* Pflanzen-Push läuft direkt in plantSelectedSeed(); kein Wrapper mehr. */
+      /* FINALER Hook: wird am Dateiende auf die zuletzt definierte Pflanzfunktion gelegt. */
+      if(typeof plantSelectedSeed==='function'&&!plantSelectedSeed.__glPushV2){
+        const basePlant=plantSelectedSeed;
+        const wrappedPlant=function(...args){
+          const before=((s&&s.grow&&s.grow.plants)||[]).filter(Boolean).length;
+          const result=basePlant.apply(this,args);
+          const after=((s&&s.grow&&s.grow.plants)||[]).filter(Boolean).length;
+          if(after>before){
+            setTimeout(()=>void glSyncGrowPushJob(),200);
+          }
+          return result;
+        };
+        wrappedPlant.__glPushV2=true;
+        plantSelectedSeed=wrappedPlant;
+        try{window.plantSelectedSeed=wrappedPlant}catch(e){}
+      }
       if(typeof harvestReadyPlants==='function'&&!harvestReadyPlants.__glPushV2){
         const base=harvestReadyPlants;
         const wrapped=function(...args){
