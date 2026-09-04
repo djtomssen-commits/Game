@@ -75746,3 +75746,51 @@ body:has(#world.active){background:#010302!important}
   }
 }
 </style>
+
+<!-- ===== V4.165 HOME STABILITY + AVATAR ZOOM OUT ===== -->
+<style id="v4165-home-stability-avatar-zoom">
+/* Home only: keep profile/attributes at a fixed geometry so late stat refreshes cannot push them down. */
+#world.active .v366-profile{
+  height:225px!important;
+  max-height:225px!important;
+  box-sizing:border-box!important;
+}
+#world.active .v366-attrs{
+  position:absolute!important;
+  left:7px!important;
+  right:7px!important;
+  top:143px!important;
+  width:auto!important;
+  margin-top:0!important;
+  box-sizing:border-box!important;
+}
+/* Slightly zoom the large home class artwork out. Round avatar + Heldenquartier stay untouched. */
+#world.active .v366-character.v369-real-character{
+  left:9%!important;
+  bottom:-5%!important;
+  width:43%!important;
+  height:55%!important;
+  background-size:90% auto!important;
+  background-position:center 23%!important;
+  background-repeat:no-repeat!important;
+}
+@media(max-width:390px){
+  #world.active .v366-profile{
+    height:215px!important;
+    max-height:215px!important;
+  }
+  #world.active .v366-attrs{
+    top:136px!important;
+    left:6px!important;
+    right:6px!important;
+  }
+  #world.active .v366-character.v369-real-character{
+    left:9%!important;
+    bottom:-5%!important;
+    width:44%!important;
+    height:54%!important;
+    background-size:90% auto!important;
+    background-position:center 23%!important;
+  }
+}
+</style>
