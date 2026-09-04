@@ -74978,12 +74978,23 @@ html:not(.v4142-systemtech-admin) #v4102QaButton{display:none!important}
     }
   }
 
+  let dungeonSyncPromise=null;
+  let dungeonSyncQueuedReadyAt=0;
+
   async function syncDungeonPush(forcedReadyAt=null){
+    const requested=Number(forcedReadyAt);
+    if(Number.isFinite(requested)&&requested>0){
+      dungeonSyncQueuedReadyAt=Math.max(dungeonSyncQueuedReadyAt,requested);
+    }
+    if(dungeonSyncPromise)return dungeonSyncPromise;
+
+    dungeonSyncPromise=(async()=>{
     try{
       const user=await dungeonPushUser();
       if(!user)return false;
 
-      const forced=Number(forcedReadyAt);
+      const forced=Number(dungeonSyncQueuedReadyAt||forcedReadyAt);
+      dungeonSyncQueuedReadyAt=0;
       const lastFree=Math.max(0,Number(
         (typeof s!=='undefined'&&s?.dungeonPass?.lastFree)||0
       ));
@@ -75038,6 +75049,13 @@ html:not(.v4142-systemtech-admin) #v4102QaButton{display:none!important}
     }catch(e){
       console.warn('[Grow Legends] Dungeon-Push konnte nicht geplant werden:',e);
       return false;
+    }
+    })();
+
+    try{
+      return await dungeonSyncPromise;
+    }finally{
+      dungeonSyncPromise=null;
     }
   }
 
