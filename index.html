@@ -68795,7 +68795,7 @@ html.v481-hidden *,html.v481-hidden *::before,html.v481-hidden *::after{animatio
  window.v4109ApplySeedPurchase=v4109ApplySeedPurchase;window.v4109RefreshSeedPurchaseUi=v4109RefreshSeedPurchaseUi;
  function selectSeed(id){if(!SEEDS[id])return;ensure().selectedSeed=id;s.grow.selectedSeed=id;save(false);renderGrow()}
  window.buySeed=buySeed;window.selectSeed=selectSeed;try{buySeedAction=buySeed;selectSeedAction=selectSeed}catch(e){}
- function plant(slot=null){const z=ensure(),id=z.selectedSeed,d=SEEDS[id];if(!d)return;if((s.grow.seeds[id]||0)<1)return toast('Keine Samen','warn',`${d.name} ist leer. Quelle: ${d.source}`);const cap=typeof growCapacity==='function'?growCapacity():Math.min(6,1+(s.grow.roomLevel-1)*2),plants=s.grow.plants;let idx=slot==null?plants.findIndex(x=>!x):Number(slot);if(idx<0)idx=plants.length;if(idx>=cap||plants[idx])return toast('Pflanzenplatz nicht verfügbar','warn','Wähle einen freien, freigeschalteten Topf.');while(plants.length<=idx)plants.push(null);plants[idx]={uid:`v492_${Date.now()}_${Math.random().toString(36).slice(2,7)}`,seed:id,start:Date.now(),duration:Math.round(d.growMs*(typeof lampSpeed==='function'?lampSpeed():1)),care:[false,false,false,false],mutation:null,mutationChecked:false};s.grow.seeds[id]--;z.discovered[id]=true;z.selectedPlantUid=plants[idx].uid;try{if(s.v106Achievements?.stats)s.v106Achievements.stats.plantsGrown=(Number(s.v106Achievements.stats.plantsGrown)||0)+1}catch(e){}save(false);renderGrow();try{if(typeof v106CheckAchievements==='function')v106CheckAchievements()}catch(e){}toast(`🌱 ${d.name} gepflanzt`,'success','Pflegefenster erscheinen während des Wachstums. Nichts verdorrt, wenn du eines verpasst.')}
+ function plant(slot=null){const z=ensure(),id=z.selectedSeed,d=SEEDS[id];if(!d)return;if((s.grow.seeds[id]||0)<1)return toast('Keine Samen','warn',`${d.name} ist leer. Quelle: ${d.source}`);const cap=typeof growCapacity==='function'?growCapacity():Math.min(6,1+(s.grow.roomLevel-1)*2),plants=s.grow.plants;let idx=slot==null?plants.findIndex(x=>!x):Number(slot);if(idx<0)idx=plants.length;if(idx>=cap||plants[idx])return toast('Pflanzenplatz nicht verfügbar','warn','Wähle einen freien, freigeschalteten Topf.');while(plants.length<=idx)plants.push(null);plants[idx]={uid:`v492_${Date.now()}_${Math.random().toString(36).slice(2,7)}`,seed:id,start:Date.now(),duration:Math.round(d.growMs*(typeof lampSpeed==='function'?lampSpeed():1)),care:[false,false,false,false],mutation:null,mutationChecked:false};s.grow.seeds[id]--;z.discovered[id]=true;z.selectedPlantUid=plants[idx].uid;try{if(s.v106Achievements?.stats)s.v106Achievements.stats.plantsGrown=(Number(s.v106Achievements.stats.plantsGrown)||0)+1}catch(e){}save(false);renderGrow();try{const glPlant=plants[idx];const glReadyAt=(Number(glPlant?.start)||Date.now())+(Number(glPlant?.duration)||0);if(typeof window.glPushDebug==='function')window.glPushDebug('V4.92 Pflanze direkt erkannt ✅\nPush wird geplant…\nsend_at: '+new Date(glReadyAt).toISOString(),true);if(typeof window.glSyncGrowPushJob==='function'){void window.glSyncGrowPushJob(glReadyAt)}else{setTimeout(()=>{try{if(typeof window.glSyncGrowPushJob==='function')void window.glSyncGrowPushJob(glReadyAt)}catch(e){}},300)}}catch(e){console.warn('[GL Push] v492 direct plant sync',e)}try{if(typeof v106CheckAchievements==='function')v106CheckAchievements()}catch(e){}toast(`🌱 ${d.name} gepflanzt`,'success','Pflegefenster erscheinen während des Wachstums. Nichts verdorrt, wenn du eines verpasst.')}
  function carePlant(uid,intendedIndex=null){const z=ensure(),p=s.grow.plants.find(x=>x&&x.uid===uid);if(!p)return;const cs=careState(p),raw=Number(intendedIndex),bound=Number.isInteger(raw)&&raw>=0&&raw<CARE.length;let idx=bound?raw:cs.available;if(idx<0||idx>=CARE.length)return toast('Keine Pflegeaktion verfügbar','info',progress(p)>=1?'Die Pflanze ist bereits erntereif.':'Später wieder nachsehen.');p.care=Array.isArray(p.care)?[0,1,2,3].map(n=>!!p.care[n]):[false,false,false,false];if(p.care[idx])return toast('Pflege bereits erledigt','info',`${CARE[idx].name} wurde schon gespeichert.`);const x=progress(p),end=idx===CARE.length-1?1:CARE[idx+1].at,endAt=Number(p.start||0)+Number(p.duration||0)*end,graceMs=12000;if(bound&&x>=end&&Date.now()-endAt>graceMs){const live=careState(p);if(live.available>=0)idx=live.available;else return toast('Pflegefenster gerade gewechselt','info','Die angezeigte Aktion war nicht mehr aktuell. Der Growroom wurde neu geladen.');}p.care[idx]=true;p.careDoneAt=Array.isArray(p.careDoneAt)?p.careDoneAt.slice(0,4):[0,0,0,0];while(p.careDoneAt.length<4)p.careDoneAt.push(0);p.careDoneAt[idx]=Date.now();z.selectedPlantUid=p.uid;rollMutation(p);save(false);renderGrow();toast(`${CARE[idx].icon} ${CARE[idx].name}`,'success',`Pflege gespeichert · Qualität steigt auf ${qualityFrom(p)}.`)}
  function addBloom(p){const z=ensure(),q=qualityFrom(p),d=SEEDS[p.seed]||SEEDS.moss,b={id:`bloom_${Date.now()}_${Math.random().toString(36).slice(2,6)}`,seed:p.seed,quality:q,mutation:p.mutation||null,createdAt:Date.now()};if(z.bag.length<3){z.bag.push(b);return'bag'}const score=x=>GRADES.indexOf(x.quality)+(RANK[SEEDS[x.seed]?.rarity]||0)+(x.mutation?1:0),min=Math.min(...z.bag.map(score)),ns=score(b);if(ns>min){const i=z.bag.findIndex(x=>score(x)===min);z.bag.splice(i,1,b);return'replaced'}return'full'}
  function tryMaterial(){try{const chance=.012;if(Math.random()>=chance)return'';if(Math.random()<.5&&typeof v030Gems!=='undefined'&&v030Gems.length){const g=v030Gems[Math.floor(Math.random()*v030Gems.length)],v=Math.max(1,Math.floor((g.min+g.max)/2));s.materials=Array.isArray(s.materials)?s.materials:[];s.materials.push({uid:`grow_gem_${Date.now()}`,baseId:g.id,type:'gem',name:g.name,icon:g.icon,quality:'green',rarity:'uncommon',stat:g.stat,value:v,price:0});return` · 💎 ${g.name}`}if(typeof v030Scrolls!=='undefined'&&v030Scrolls.length){const r=v030Scrolls[Math.floor(Math.random()*v030Scrolls.length)],v=Math.max(1,Math.floor((r.min+r.max)/2));s.materials=Array.isArray(s.materials)?s.materials:[];s.materials.push({uid:`grow_scroll_${Date.now()}`,baseId:r.id,type:'scroll',name:r.name,icon:r.icon,quality:'green',rarity:'uncommon',effect:r.effect,value:v,price:0});return` · 📜 ${r.name}`}}catch(e){}return''}
@@ -74499,41 +74499,50 @@ html:not(.v4142-systemtech-admin) #v4102QaButton{display:none!important}
   if(window.__glPushSchedulingV2)return;
   window.__glPushSchedulingV2=true;
 
-  /* V3: keep the Supabase auth session usable for RLS-protected push_jobs.
-     No visible debug UI remains in the production build. */
-  async function glEnsurePushSession(){
+  function glPushDebug(message, ok=false){
     try{
-      if(typeof v073Db==='undefined'||!v073Db?.auth)return null;
-
-      let session=null;
-      try{
-        const {data,error}=await v073Db.auth.getSession();
-        if(error)console.warn('[GL Push] getSession',error);
-        session=data?.session||null;
-      }catch(e){console.warn('[GL Push] getSession exception',e);}
-
-      /* Refresh shortly before/after expiry. A failed refresh is not treated as a
-         logout here; the normal login flow remains responsible for authentication. */
-      if(session){
-        const expiresAt=Number(session.expires_at||0)*1000;
-        const shouldRefresh=!expiresAt||expiresAt<=Date.now()+120000;
-        if(shouldRefresh&&typeof v073Db.auth.refreshSession==='function'){
-          try{
-            const {data,error}=await v073Db.auth.refreshSession();
-            if(error)console.warn('[GL Push] refreshSession',error);
-            if(data?.session)session=data.session;
-          }catch(e){console.warn('[GL Push] refreshSession exception',e);}
-        }
+      let el=document.getElementById('gl-push-debug-box');
+      if(!el){
+        el=document.createElement('div');
+        el.id='gl-push-debug-box';
+        el.style.cssText='position:fixed;left:12px;right:12px;bottom:18px;z-index:2147483647;padding:12px 14px;border-radius:12px;background:#171b18;color:#fff;border:2px solid #7cff8a;font:700 14px/1.35 system-ui;box-shadow:0 6px 24px #0008;white-space:pre-wrap;word-break:break-word';
+        document.body.appendChild(el);
       }
-
-      return session||null;
-    }catch(e){console.warn('[GL Push] ensure session',e);return null;}
+      el.style.borderColor=ok?'#7cff8a':'#ffb347';
+      el.textContent='🔔 PUSH DEBUG\n'+message;
+      el.style.display='block';
+      clearTimeout(window.__glPushDebugTimer);
+      window.__glPushDebugTimer=setTimeout(()=>{try{el.style.display='none'}catch(e){}},15000);
+    }catch(e){}
   }
-  window.glEnsurePushSession=glEnsurePushSession;
+  window.glPushDebug=glPushDebug;
 
   async function glPushUser(){
-    const session=await glEnsurePushSession();
-    return session?.user||null;
+    try{
+      if(typeof v073Db==='undefined'||!v073Db?.auth)return null;
+      /* Prefer the already-persisted session. This works immediately in the APK
+         even when a network getUser() validation is temporarily delayed. */
+      try{
+        let {data}=await v073Db.auth.getSession();
+        let session=data?.session||null;
+        if(session){
+          /* APK/WebView: always renew the persisted Supabase session before a
+             scheduled push write. A locally unexpired access token can still be
+             stale after the app has been killed/resumed. */
+          try{
+            const refreshed=await v073Db.auth.refreshSession();
+            if(refreshed?.data?.session)session=refreshed.data.session;
+            if(refreshed?.error)console.warn('[GL Push] forced refresh',refreshed.error);
+          }catch(refreshErr){
+            console.warn('[GL Push] forced refresh exception',refreshErr);
+          }
+          if(session?.user)return session.user;
+        }
+      }catch(e){console.warn('[GL Push] session refresh',e);}
+      const {data,error}=await v073Db.auth.getUser();
+      if(error)return null;
+      return data?.user||null;
+    }catch(e){console.warn('[GL Push] user',e);return null;}
   }
 
   function glNextGrowReadyAt(){
@@ -74550,7 +74559,7 @@ html:not(.v4142-systemtech-admin) #v4102QaButton{display:none!important}
   async function glSyncGrowPushJob(forcedReadyAt=null){
     try{
       const user=await glPushUser();
-      if(!user){console.warn('[GL Push] keine gültige Supabase-Session');return false;}
+      if(!user){console.warn('[GL Push] keine eingeloggte Session');glPushDebug('FEHLER: Keine gültige Supabase-Session.\nDer Push-Job kann nicht angelegt werden.');return false;}
       const db=v073Db;
       const forced=Number(forcedReadyAt);
       const readyAt=(Number.isFinite(forced)&&forced>Date.now())?forced:glNextGrowReadyAt();
@@ -74578,6 +74587,7 @@ html:not(.v4142-systemtech-admin) #v4102QaButton{display:none!important}
       if(updateError)throw updateError;
       if(Array.isArray(updated)&&updated.length){
         console.info('[GL Push] grow_ready aktualisiert',updated[0].id,sendAt);
+        glPushDebug('Push-Job aktualisiert ✅\nID: '+updated[0].id+'\nsend_at: '+sendAt,true);
         return true;
       }
 
@@ -74597,9 +74607,12 @@ html:not(.v4142-systemtech-admin) #v4102QaButton{display:none!important}
         if(retryError)throw retryError;
       }
       console.info('[GL Push] grow_ready geplant',sendAt);
+      glPushDebug('Push-Job angelegt ✅\nsend_at: '+sendAt,true);
       return true;
     }catch(e){
       console.warn('[Grow Legends] Grow-Push konnte nicht geplant werden:',e);
+      const msg=[e?.message,e?.code,e?.details,e?.hint].filter(Boolean).join(' | ')||String(e);
+      glPushDebug('FEHLER beim Push-Job ❌\n'+msg);
       return false;
     }
   }
@@ -74607,8 +74620,39 @@ html:not(.v4142-systemtech-admin) #v4102QaButton{display:none!important}
 
   function installHooks(){
     try{
-      /* Plant scheduling is owned exclusively by plantSelectedSeed(), which passes
-         the exact ready timestamp into glSyncGrowPushJob(). No extra plant wrapper. */
+      /* Wrap the FINAL planting function at EOF. Several older game patches wrap
+         plantSelectedSeed earlier, so relying only on the original base function
+         is fragile. This hook runs after all of them and reacts only when the
+         number of planted plants actually increased. */
+      if(typeof plantSelectedSeed==='function'&&!plantSelectedSeed.__glPushV2){
+        const basePlant=plantSelectedSeed;
+        const wrappedPlant=function(...args){
+          const before=((typeof s!=='undefined'&&s?.grow?.plants)||[]).filter(Boolean).length;
+          const result=basePlant.apply(this,args);
+          setTimeout(()=>{
+            try{
+              const plants=((typeof s!=='undefined'&&s?.grow?.plants)||[]).filter(Boolean);
+              const after=plants.length;
+              if(after<=before)return;
+              const now=Date.now();
+              const readyTimes=plants.map(p=>(Number(p?.start)||0)+(Number(p?.duration)||0))
+                .filter(t=>Number.isFinite(t)&&t>now);
+              const readyAt=readyTimes.length?Math.min(...readyTimes):null;
+              glPushDebug('Pflanze erkannt – Push wird geplant…'+(readyAt?'\nsend_at: '+new Date(readyAt).toISOString():''));
+              void glSyncGrowPushJob(readyAt);
+            }catch(e){
+              console.warn('[GL Push] final plant hook',e);
+              glPushDebug('FEHLER im Pflanzen-Hook ❌\n'+String(e?.message||e));
+            }
+          },150);
+          return result;
+        };
+        wrappedPlant.__glPushV2=true;
+        wrappedPlant.__glPushBase=basePlant;
+        plantSelectedSeed=wrappedPlant;
+        try{window.plantSelectedSeed=wrappedPlant}catch(e){}
+      }
+
       if(typeof harvestReadyPlants==='function'&&!harvestReadyPlants.__glPushV2){
         const base=harvestReadyPlants;
         const wrapped=function(...args){
@@ -74626,38 +74670,82 @@ html:not(.v4142-systemtech-admin) #v4102QaButton{display:none!important}
   installHooks();
   setTimeout(installHooks,500);
   setTimeout(installHooks,2000);
-
-  /* Revalidate/refresh auth when the app/account becomes active. This prevents
-     an apparently logged-in game session from silently losing RLS access to
-     push_jobs after a stale Supabase access token. */
-  async function glRefreshPushAuthAndSync(delay=0){
-    try{
-      if(delay)await new Promise(r=>setTimeout(r,delay));
-      const session=await glEnsurePushSession();
-      if(session?.user)void glSyncGrowPushJob();
-    }catch(e){console.warn('[GL Push] refresh+sync',e);}
-  }
-
   window.addEventListener('growlegends:account-ready',()=>{
     installHooks();
-    void glRefreshPushAuthAndSync(500);
+    setTimeout(()=>void glSyncGrowPushJob(),1000);
   });
-  window.addEventListener('pageshow',()=>void glRefreshPushAuthAndSync(250),{passive:true});
+
+  /* Reopen/resume the APK: force a fresh Supabase token before the next plant. */
+  async function glRefreshPushSessionOnResume(){
+    try{
+      if(typeof v073Db==='undefined'||!v073Db?.auth)return;
+      const {data}=await v073Db.auth.getSession();
+      if(!data?.session)return;
+      const refreshed=await v073Db.auth.refreshSession();
+      if(refreshed?.error)console.warn('[GL Push] resume refresh',refreshed.error);
+      else if(refreshed?.data?.session){
+        glPushDebug('Supabase-Session erneuert ✅',true);
+      }
+    }catch(e){console.warn('[GL Push] resume refresh exception',e);}
+  }
+  window.addEventListener('pageshow',()=>setTimeout(()=>void glRefreshPushSessionOnResume(),250),{passive:true});
   document.addEventListener('visibilitychange',()=>{
-    if(document.visibilityState==='visible')void glRefreshPushAuthAndSync(250);
+    if(document.visibilityState==='visible')setTimeout(()=>void glRefreshPushSessionOnResume(),250);
   },{passive:true});
 
-  try{
-    if(typeof v073Db!=='undefined'&&v073Db?.auth?.onAuthStateChange){
-      v073Db.auth.onAuthStateChange((event,session)=>{
-        if(event==='SIGNED_IN'||event==='TOKEN_REFRESHED'||event==='INITIAL_SESSION'){
-          if(session?.user)setTimeout(()=>void glSyncGrowPushJob(),300);
-        }
-      });
-    }
-  }catch(e){console.warn('[GL Push] auth listener',e);}
+  /* V3: observe planting from WINDOW capture, before Growroom's document-capture
+     handler can stopImmediatePropagation(). This avoids every historical
+     plantSelectedSeed wrapper and reacts to the actual plant state change. */
+  if(!window.__glPushPlantCaptureV3){
+    window.__glPushPlantCaptureV3=true;
 
-  setTimeout(()=>void glRefreshPushAuthAndSync(),1200);
+    const plantSig=()=>{
+      try{
+        return (((typeof s!=='undefined'&&s?.grow?.plants)||[]).map((p,i)=>
+          p?`${i}:${Number(p.start)||0}:${Number(p.duration)||0}:${String(p.seed||'')}`:`${i}:empty`
+        )).join('|');
+      }catch(e){return '';}
+    };
+
+    const newestReadyAt=()=>{
+      try{
+        const plants=((typeof s!=='undefined'&&s?.grow?.plants)||[]).filter(Boolean);
+        if(!plants.length)return null;
+        const newest=plants.slice().sort((a,b)=>(Number(b?.start)||0)-(Number(a?.start)||0))[0];
+        const t=(Number(newest?.start)||0)+(Number(newest?.duration)||0);
+        return Number.isFinite(t)&&t>Date.now()?t:null;
+      }catch(e){return null;}
+    };
+
+    window.addEventListener('click',e=>{
+      try{
+        const target=e?.target?.closest?.('#plantBtn,.slot-plant-btn[data-grow-slot],[data-v492-plant]');
+        if(!target)return;
+
+        const before=plantSig();
+        glPushDebug('Pflanzaktion erkannt ✅\nWarte auf neuen Pflanzen-Status…',true);
+
+        [150,500,1200].forEach(delay=>setTimeout(()=>{
+          try{
+            const after=plantSig();
+            if(!after||after===before)return;
+            const readyAt=newestReadyAt();
+            if(!readyAt){
+              glPushDebug('Pflanze erkannt, aber keine gültige Erntezeit gefunden ❌');
+              return;
+            }
+            glPushDebug('Neue Pflanze erkannt ✅\nPush wird geplant…\nsend_at: '+new Date(readyAt).toISOString(),true);
+            void glSyncGrowPushJob(readyAt);
+          }catch(err){
+            console.warn('[GL Push] plant capture delayed',err);
+            glPushDebug('FEHLER im Pflanzen-Capture ❌\n'+String(err?.message||err));
+          }
+        },delay));
+      }catch(err){
+        console.warn('[GL Push] plant capture',err);
+      }
+    },true);
+  }
 })();
 </script>
 
