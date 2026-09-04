@@ -74692,6 +74692,60 @@ html:not(.v4142-systemtech-admin) #v4102QaButton{display:none!important}
   document.addEventListener('visibilitychange',()=>{
     if(document.visibilityState==='visible')setTimeout(()=>void glRefreshPushSessionOnResume(),250);
   },{passive:true});
+
+  /* V3: observe planting from WINDOW capture, before Growroom's document-capture
+     handler can stopImmediatePropagation(). This avoids every historical
+     plantSelectedSeed wrapper and reacts to the actual plant state change. */
+  if(!window.__glPushPlantCaptureV3){
+    window.__glPushPlantCaptureV3=true;
+
+    const plantSig=()=>{
+      try{
+        return (((typeof s!=='undefined'&&s?.grow?.plants)||[]).map((p,i)=>
+          p?`${i}:${Number(p.start)||0}:${Number(p.duration)||0}:${String(p.seed||'')}`:`${i}:empty`
+        )).join('|');
+      }catch(e){return '';}
+    };
+
+    const newestReadyAt=()=>{
+      try{
+        const plants=((typeof s!=='undefined'&&s?.grow?.plants)||[]).filter(Boolean);
+        if(!plants.length)return null;
+        const newest=plants.slice().sort((a,b)=>(Number(b?.start)||0)-(Number(a?.start)||0))[0];
+        const t=(Number(newest?.start)||0)+(Number(newest?.duration)||0);
+        return Number.isFinite(t)&&t>Date.now()?t:null;
+      }catch(e){return null;}
+    };
+
+    window.addEventListener('click',e=>{
+      try{
+        const target=e?.target?.closest?.('#plantBtn,.slot-plant-btn[data-grow-slot]');
+        if(!target)return;
+
+        const before=plantSig();
+        glPushDebug('Pflanz-Button erkannt ✅\nWarte auf neuen Pflanzen-Status…',true);
+
+        [150,500,1200].forEach(delay=>setTimeout(()=>{
+          try{
+            const after=plantSig();
+            if(!after||after===before)return;
+            const readyAt=newestReadyAt();
+            if(!readyAt){
+              glPushDebug('Pflanze erkannt, aber keine gültige Erntezeit gefunden ❌');
+              return;
+            }
+            glPushDebug('Neue Pflanze erkannt ✅\nPush wird geplant…\nsend_at: '+new Date(readyAt).toISOString(),true);
+            void glSyncGrowPushJob(readyAt);
+          }catch(err){
+            console.warn('[GL Push] plant capture delayed',err);
+            glPushDebug('FEHLER im Pflanzen-Capture ❌\n'+String(err?.message||err));
+          }
+        },delay));
+      }catch(err){
+        console.warn('[GL Push] plant capture',err);
+      }
+    },true);
+  }
 })();
 </script>
 
