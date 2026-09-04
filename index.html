@@ -1836,6 +1836,7 @@ function plantSelectedSeed(targetSlot=null){
  /* Authoritative push hook: schedule from the exact plant timestamp just created.
     Do not depend on later Growroom wrappers/state normalization to rediscover it. */
  const glReadyAt=(Number(plant.start)||Date.now())+(Number(plant.duration)||0);
+ try{if(typeof window.glPushDebug==='function')window.glPushDebug('Pflanze gesetzt – Push wird geplant…\nsend_at: '+new Date(glReadyAt).toISOString())}catch(e){}
  [0,1200,3500].forEach(delay=>setTimeout(()=>{
    try{
      if(typeof window.glSyncGrowPushJob==='function')void window.glSyncGrowPushJob(glReadyAt);
@@ -74498,6 +74499,24 @@ html:not(.v4142-systemtech-admin) #v4102QaButton{display:none!important}
   if(window.__glPushSchedulingV2)return;
   window.__glPushSchedulingV2=true;
 
+  function glPushDebug(message, ok=false){
+    try{
+      let el=document.getElementById('gl-push-debug-box');
+      if(!el){
+        el=document.createElement('div');
+        el.id='gl-push-debug-box';
+        el.style.cssText='position:fixed;left:12px;right:12px;bottom:18px;z-index:2147483647;padding:12px 14px;border-radius:12px;background:#171b18;color:#fff;border:2px solid #7cff8a;font:700 14px/1.35 system-ui;box-shadow:0 6px 24px #0008;white-space:pre-wrap;word-break:break-word';
+        document.body.appendChild(el);
+      }
+      el.style.borderColor=ok?'#7cff8a':'#ffb347';
+      el.textContent='🔔 PUSH DEBUG\n'+message;
+      el.style.display='block';
+      clearTimeout(window.__glPushDebugTimer);
+      window.__glPushDebugTimer=setTimeout(()=>{try{el.style.display='none'}catch(e){}},15000);
+    }catch(e){}
+  }
+  window.glPushDebug=glPushDebug;
+
   async function glPushUser(){
     try{
       if(typeof v073Db==='undefined'||!v073Db?.auth)return null;
@@ -74527,7 +74546,7 @@ html:not(.v4142-systemtech-admin) #v4102QaButton{display:none!important}
   async function glSyncGrowPushJob(forcedReadyAt=null){
     try{
       const user=await glPushUser();
-      if(!user){console.warn('[GL Push] keine eingeloggte Session');return false;}
+      if(!user){console.warn('[GL Push] keine eingeloggte Session');glPushDebug('FEHLER: Keine gültige Supabase-Session.\nDer Push-Job kann nicht angelegt werden.');return false;}
       const db=v073Db;
       const forced=Number(forcedReadyAt);
       const readyAt=(Number.isFinite(forced)&&forced>Date.now())?forced:glNextGrowReadyAt();
@@ -74555,6 +74574,7 @@ html:not(.v4142-systemtech-admin) #v4102QaButton{display:none!important}
       if(updateError)throw updateError;
       if(Array.isArray(updated)&&updated.length){
         console.info('[GL Push] grow_ready aktualisiert',updated[0].id,sendAt);
+        glPushDebug('Push-Job aktualisiert ✅\nID: '+updated[0].id+'\nsend_at: '+sendAt,true);
         return true;
       }
 
@@ -74574,9 +74594,12 @@ html:not(.v4142-systemtech-admin) #v4102QaButton{display:none!important}
         if(retryError)throw retryError;
       }
       console.info('[GL Push] grow_ready geplant',sendAt);
+      glPushDebug('Push-Job angelegt ✅\nsend_at: '+sendAt,true);
       return true;
     }catch(e){
       console.warn('[Grow Legends] Grow-Push konnte nicht geplant werden:',e);
+      const msg=[e?.message,e?.code,e?.details,e?.hint].filter(Boolean).join(' | ')||String(e);
+      glPushDebug('FEHLER beim Push-Job ❌\n'+msg);
       return false;
     }
   }
