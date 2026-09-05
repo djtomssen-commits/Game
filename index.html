@@ -47077,7 +47077,7 @@ body:has(#world.active) #v337LegalFooter{display:none!important}
       <div class="v261-stage">
         <div class="v261-bg" style="background-image:url('${stageArt(di)}')"></div>
         <div class="v261-fx"></div>
-        <svg class="v261-road" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><polyline class="bg" points="11,22 20,27 28,30 34,24 44,28 52,30 59,28 66,33 73,39 80,44 86,33 89,39 90,44 89,50 89,63 88,80"></polyline><polyline class="dots" points="11,22 20,27 28,30 34,24 44,28 52,30 59,28 66,33 73,39 80,44 86,33 89,39 90,44 89,50 89,63 88,80"></polyline></svg>
+        <svg class="v261-road" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><polyline class="bg" points="16,16 26,18 41,22 55,24 69,27 79,31 85,42 76,45 60,47 40,48 16,49 27,55 40,60 50,66 62,72 73,68 84,64 69,72 49,76 22,79 38,81 57,82 79,84"></polyline><polyline class="dots" points="16,16 26,18 41,22 55,24 69,27 79,31 85,42 76,45 60,47 40,48 16,49 27,55 40,60 50,66 62,72 73,68 84,64 69,72 49,76 22,79 38,81 57,82 79,84"></polyline></svg>
         ${d.enemies.map((_,idx)=>nodeHtml(di,idx)).join('')}
         <div class="v261-signboard">ACHTUNG<br>${esc(title.slice(4, title.length>23?23:title.length) || 'DUNGEON')}<br>BETRETEN AUF<br>EIGENE GEFAHR!<small>☠</small></div>
       </div>
@@ -81276,3 +81276,57 @@ body:has(#world.active){background:#010302!important}
 }
 </style>
 <!-- ===== /V4.251 DUNGEON 9 ROAD FIX ===== -->
+
+<!-- ===== V4.252 GLOBAL 10ER TEMPLATE ===== -->
+<style id="v452-global-10er-template">
+/* Ab jetzt nutzt die komplette 10er-Karte das bereinigte Dungeon-9-Template.
+   Pro Dungeon bleiben Hintergrund, Monster, Boss, Name und Belohnungen individuell. */
+#dungeonMapCard.v261-detail-card .v261-signboard{
+  left:1%!important;
+  bottom:1.2%!important;
+  max-width:58px!important;
+  padding:4px 4px 5px!important;
+  font-size:4.4px!important;
+  line-height:1.06!important;
+  transform:rotate(-1deg)!important;
+}
+#dungeonMapCard.v261-detail-card .v261-signboard small{
+  margin-top:4px!important;
+  font-size:8px!important;
+}
+#dungeonMapCard.v261-detail-card .v261-node[data-v261-room="6"]{
+  --x:61!important;
+  --y:71!important;
+}
+#dungeonMapCard.v261-detail-card .v261-node[data-v261-room="7"]{
+  --x:86!important;
+  --y:64!important;
+}
+#dungeonMapCard.v261-detail-card .v261-node[data-v261-room="8"]{
+  --x:24!important;
+  --y:68!important;
+}
+#dungeonMapCard.v261-detail-card .v261-node[data-v261-room="9"]{
+  --x:82!important;
+  --y:88!important;
+}
+#dungeonMapCard.v261-detail-card .v261-node.boss{
+  width:100px!important;
+}
+#dungeonMapCard.v261-detail-card .v261-node.boss .v261-ring{
+  width:80px!important;
+  height:80px!important;
+}
+#dungeonMapCard.v261-detail-card .v261-node.boss .v261-panel{
+  width:92px!important;
+  min-height:42px!important;
+  margin-top:4px!important;
+  padding:5px 3px!important;
+}
+#dungeonMapCard.v261-detail-card .v261-node.boss .v261-name{
+  font-size:5.4px!important;
+  line-height:1.04!important;
+}
+</style>
+<!-- ===== /V4.252 GLOBAL 10ER TEMPLATE ===== -->
+
