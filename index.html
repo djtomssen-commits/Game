@@ -80273,7 +80273,7 @@ body:has(#world.active){background:#010302!important}
 </style>
 <script id="v441-d8-live-d9-preview-script">
 (function(){
-  const PREVIEW_INDEX=8, D8_INDEX=7, LAUNCH_FROM=7;
+  const PREVIEW_INDEX=8, D8_INDEX=7, LAUNCH_FROM=6;
   const POS=[[16,16],[41,22],[69,27],[85,42],[16,49],[40,60],[62,72],[84,62],[22,79],[79,84]];
   const state = window.__v441Dungeon9Preview || (window.__v441Dungeon9Preview={active:false,returnSelected:D8_INDEX});
   function latestDetail(){return window.v432RenderDetail||window.v427RenderDetail||window.v426RenderDetail||window.v261RenderDetail||window.v251RenderDetail;}
@@ -80329,7 +80329,7 @@ body:has(#world.active){background:#010302!important}
     const sign=card.querySelector('.v261-signboard'); if(sign) sign.innerHTML='WARNUNG<br>DORNENFRIEDHOF<br>DORNEN UND FLUCH<br>WARTEN IM NEBEL!<small>☠</small>';
     stripGameplay(card);
     const back=card.querySelector('.v261-back');
-    if(back){const clone=back.cloneNode(true);const span=clone.querySelector('span');if(span) span.innerHTML='Vorschau beenden<br>zurück zu Dungeon 8';clone.addEventListener('click',ev=>{ev.preventDefault();ev.stopPropagation();closePreview();});back.replaceWith(clone);}
+    if(back){const clone=back.cloneNode(true);const span=clone.querySelector('span');if(span) span.innerHTML='Vorschau beenden<br>zurück zu Dungeon 7';clone.addEventListener('click',ev=>{ev.preventDefault();ev.stopPropagation();closePreview();});back.replaceWith(clone);}
     return true;
   }
   function renderPreview(){
@@ -80403,3 +80403,52 @@ body:has(#world.active){background:#010302!important}
 }
 </style>
 <!-- ===== /V4.242 DUNGEON 9 ===== -->
+
+
+<!-- ===== V4.243 D9 PREVIEW LAUNCH FIX ===== -->
+<script id="v443-d9-preview-launch-fix">
+(function(){
+  function ensureD9PreviewButton(){
+    try{
+      const card=document.getElementById('dungeonMapCard');
+      if(!card) return;
+      const selected=Number(s?.dungeon?.selected||0);
+      if(selected!==6) return; // aktuell erreichbarer Dungeon 7
+      if(window.__v441Dungeon9Preview?.active) return;
+      if(card.querySelector('.v441-preview-launch')) return;
+
+      const stage=card.querySelector('.v261-stage');
+      if(!stage || !stage.parentNode) return;
+
+      const btn=document.createElement('button');
+      btn.type='button';
+      btn.className='v441-preview-launch';
+      btn.textContent='👁 DUNGEON 9 VORSCHAU – NUR OPTIK, KEIN FORTSCHRITT';
+      btn.addEventListener('click',function(ev){
+        ev.preventDefault();
+        ev.stopPropagation();
+        if(typeof window.v441OpenDungeon9Preview==='function'){
+          window.v441OpenDungeon9Preview();
+        }
+      });
+      stage.parentNode.insertBefore(btn,stage);
+    }catch(e){
+      console.error('V4.243 D9 preview launch',e);
+    }
+  }
+
+  const sec=document.getElementById('dungeon');
+  if(sec && !sec.__v443D9LaunchObserver){
+    const obs=new MutationObserver(()=>setTimeout(ensureD9PreviewButton,0));
+    obs.observe(sec,{subtree:true,childList:true});
+    sec.__v443D9LaunchObserver=obs;
+  }
+
+  setTimeout(ensureD9PreviewButton,80);
+  window.addEventListener('pageshow',()=>setTimeout(ensureD9PreviewButton,80),{passive:true});
+  document.addEventListener('visibilitychange',()=>{
+    if(!document.hidden)setTimeout(ensureD9PreviewButton,80);
+  },{passive:true});
+})();
+</script>
+<!-- ===== /V4.243 D9 PREVIEW LAUNCH FIX ===== -->
