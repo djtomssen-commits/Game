@@ -81330,3 +81330,323 @@ body:has(#world.active){background:#010302!important}
 </style>
 <!-- ===== /V4.252 GLOBAL 10ER TEMPLATE ===== -->
 
+
+
+<!-- ===== V4.253 ALL 20 DUNGEON SAFE PREVIEW HUB ===== -->
+<style id="v453-all-dungeon-preview-style">
+/* Ein zentraler Vorschau-Modus ersetzt die einzelnen D8/D9-Testbuttons. */
+#dungeon .v441-preview-launch,
+#dungeon .v435-preview-launch{display:none!important}
+
+#v453PreviewHub{
+  margin:0 0 9px;
+  padding:8px;
+  border:1px solid #486c40;
+  border-radius:12px;
+  background:linear-gradient(180deg,#101b10,#091009);
+  box-shadow:0 6px 16px #0007,inset 0 0 14px rgba(104,224,83,.05);
+}
+#v453PreviewHub button{
+  width:100%;min-height:38px;border:1px solid #79a65b;border-radius:10px;
+  background:linear-gradient(180deg,#22391b,#132610);color:#c8ffad;
+  font-weight:1000;font-size:9px;letter-spacing:.03em;cursor:pointer;
+}
+
+#v453PreviewPicker{
+  position:fixed;inset:0;z-index:2147482000;display:none;
+  align-items:flex-start;justify-content:center;overflow:auto;
+  padding:18px 10px 36px;background:rgba(1,5,2,.94);backdrop-filter:blur(6px);
+}
+#v453PreviewPicker.open{display:flex}
+#v453PreviewPicker .v453-box{
+  width:min(680px,100%);border:1px solid #496b40;border-radius:16px;
+  background:linear-gradient(180deg,#0d160d,#070c07);padding:11px;
+  box-shadow:0 18px 46px #000c;
+}
+#v453PreviewPicker .v453-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px}
+#v453PreviewPicker .v453-head b{font-size:13px;color:#d8f0cf}
+#v453PreviewPicker .v453-close{border:1px solid #644;border-radius:9px;background:#261314;color:#ffd5d5;padding:7px 10px;font-weight:900}
+#v453PreviewPicker .v453-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+#v453PreviewPicker .v453-pick{
+  min-height:54px;padding:7px;border:1px solid #365034;border-radius:10px;
+  background:linear-gradient(180deg,#101a10,#0a100a);color:#ecf5e8;text-align:left;cursor:pointer;
+}
+#v453PreviewPicker .v453-pick b{display:block;font-size:8px;color:#8ff56e;margin-bottom:3px}
+#v453PreviewPicker .v453-pick span{display:block;font-size:7px;line-height:1.15;color:#d1d8ce}
+
+#dungeonMapCard.v453-all-preview .v453-preview-banner{
+  margin:7px 0 0;padding:7px 9px;border:1px solid #d0b158;border-radius:10px;
+  background:linear-gradient(180deg,#2b2713,#171208);color:#ffe7a7;
+  font-size:6.5px;line-height:1.25;font-weight:1000;text-align:center;
+}
+#dungeonMapCard.v453-all-preview .v453-preview-nav{
+  display:grid;grid-template-columns:44px 1fr 44px 66px;gap:5px;margin-top:7px;
+}
+#dungeonMapCard.v453-all-preview .v453-preview-nav button,
+#dungeonMapCard.v453-all-preview .v453-preview-nav div{
+  min-height:31px;border:1px solid #486246;border-radius:9px;background:#0d150d;
+  color:#dbe7d6;display:flex;align-items:center;justify-content:center;text-align:center;
+  font-size:6.2px;font-weight:1000;padding:4px;
+}
+#dungeonMapCard.v453-all-preview .v453-preview-nav button{cursor:pointer;color:#aef190}
+#dungeonMapCard.v453-all-preview [data-v261-room],
+#dungeonMapCard.v453-all-preview .v261-enter{pointer-events:none!important;cursor:default!important}
+#dungeonMapCard.v453-all-preview .v261-enter{filter:grayscale(1)!important;opacity:.55!important}
+#dungeonMapCard.v453-all-preview #dungeonTicketText{font-size:0!important;color:transparent!important;position:relative}
+#dungeonMapCard.v453-all-preview #dungeonTicketText::after{
+  content:'VORSCHAU';font-size:7px!important;color:#ffe39a!important;font-weight:1000;
+}
+
+@media(max-width:430px){
+  #v453PreviewPicker .v453-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  #v453PreviewPicker .v453-pick{min-height:48px;padding:6px}
+  #dungeonMapCard.v453-all-preview .v453-preview-nav{grid-template-columns:40px 1fr 40px 58px;gap:4px}
+}
+</style>
+
+<script id="v453-all-dungeon-preview-script">
+(function(){
+  'use strict';
+  if(window.__V453_ALL_DUNGEON_PREVIEW__) return;
+  window.__V453_ALL_DUNGEON_PREVIEW__=true;
+
+  const state=window.__v453AllDungeonPreview || (window.__v453AllDungeonPreview={
+    active:false,target:0,returnState:null
+  });
+
+  function latestDetail(){
+    return window.v432RenderDetail || window.v427RenderDetail || window.v426RenderDetail || window.v261RenderDetail || window.v251RenderDetail;
+  }
+
+  function cleanName(v){
+    return String(v||'')
+      .replace(/\s+\d+\.\d+\s*$/,'')
+      .replace(/\s*[–—-]\s*BOSS\s*$/i,'')
+      .trim();
+  }
+
+  function dungeonTitle(i){
+    try{return String(dungeonNames?.[i]||dungeons?.[i]?.name||`Dungeon ${i+1}`)}catch(e){return `Dungeon ${i+1}`}
+  }
+
+  function ensurePicker(){
+    let modal=document.getElementById('v453PreviewPicker');
+    if(modal) return modal;
+
+    modal=document.createElement('div');
+    modal.id='v453PreviewPicker';
+    modal.innerHTML=`<div class="v453-box">
+      <div class="v453-head"><b>🎨 Dungeon-Vorschau · 1–20</b><button type="button" class="v453-close">Schließen</button></div>
+      <div class="v453-grid"></div>
+    </div>`;
+    document.body.appendChild(modal);
+
+    const grid=modal.querySelector('.v453-grid');
+    for(let i=0;i<20;i++){
+      const b=document.createElement('button');
+      b.type='button';b.className='v453-pick';b.dataset.previewDungeon=String(i);
+      b.innerHTML=`<b>DUNGEON ${i+1}</b><span>${dungeonTitle(i)}</span>`;
+      b.addEventListener('click',()=>{
+        modal.classList.remove('open');
+        openPreview(i);
+      });
+      grid.appendChild(b);
+    }
+
+    modal.querySelector('.v453-close')?.addEventListener('click',()=>modal.classList.remove('open'));
+    modal.addEventListener('click',ev=>{if(ev.target===modal)modal.classList.remove('open')});
+    return modal;
+  }
+
+  function openPicker(){ensurePicker().classList.add('open')}
+
+  function ensureHub(){
+    const sec=document.getElementById('dungeon');
+    if(!sec) return;
+    if(document.getElementById('v453PreviewHub')) return;
+
+    const hub=document.createElement('div');
+    hub.id='v453PreviewHub';
+    hub.innerHTML='<button type="button" id="v453OpenPreviewHub">🎨 DUNGEON-VORSCHAU 1–20 · NUR OPTIK</button>';
+    const card=document.getElementById('dungeonMapCard');
+    if(card) sec.insertBefore(hub,card); else sec.prepend(hub);
+    hub.querySelector('#v453OpenPreviewHub')?.addEventListener('click',openPicker);
+  }
+
+  function snapshotReturn(){
+    if(state.returnState) return;
+    state.returnState={
+      selected:Number(s?.dungeon?.selected||0),
+      layer:s?.dungeon?.layer||'world',
+      view:s?.dungeon?.view||'map'
+    };
+  }
+
+  function forceTargetClasses(card,i){
+    card.classList.toggle('v427-d6',i===5);
+    card.classList.toggle('v432-d7',i===6);
+    card.classList.toggle('v437-d8',i===7);
+    card.classList.toggle('v436-d8',i===7);
+    card.classList.toggle('v441-d9',i===8);
+  }
+
+  function decorate(i){
+    if(!state.active || state.target!==i) return;
+    const card=document.getElementById('dungeonMapCard');
+    if(!card) return;
+
+    card.classList.add('v453-all-preview');
+    forceTargetClasses(card,i);
+    card.querySelectorAll('.v435-preview-launch,.v435-preview-banner,.v441-preview-launch,.v441-preview-banner').forEach(el=>el.remove());
+
+    card.querySelectorAll('[data-v261-room]').forEach((node,ri)=>{
+      node.disabled=true;
+      node.style.pointerEvents='none';
+      node.setAttribute('aria-disabled','true');
+      const nm=node.querySelector('.v261-name');
+      if(nm) nm.textContent=cleanName(nm.textContent);
+    });
+
+    const line1=card.querySelector('.v261-line1');
+    if(line1){
+      line1.textContent=String(line1.textContent||'').replace(
+        /(\d+\s*·\s*)(.*?)(\s*[–—-]\s*BOSS)?$/i,
+        (m,a,b,c)=>a+cleanName(b)+(c?' – BOSS':'')
+      );
+    }
+
+    const enter=card.querySelector('.v261-enter');
+    if(enter){
+      enter.disabled=true;
+      enter.textContent='👁 VORSCHAU – KAMPF DEAKTIVIERT';
+      enter.style.pointerEvents='none';
+    }
+
+    const top=card.querySelector('.v261-top');
+    if(top && !card.querySelector('.v453-preview-banner')){
+      const banner=document.createElement('div');
+      banner.className='v453-preview-banner';
+      banner.textContent=`VORSCHAU DUNGEON ${i+1} • KEINE FREISCHALTUNG • KEIN VERSUCH • KEIN SPIELSTAND WIRD VERÄNDERT`;
+      top.insertAdjacentElement('afterend',banner);
+    }
+
+    const banner=card.querySelector('.v453-preview-banner');
+    if(banner) banner.textContent=`VORSCHAU DUNGEON ${i+1} • KEINE FREISCHALTUNG • KEIN VERSUCH • KEIN SPIELSTAND WIRD VERÄNDERT`;
+
+    if(top && !card.querySelector('.v453-preview-nav')){
+      const nav=document.createElement('div');
+      nav.className='v453-preview-nav';
+      nav.innerHTML=`<button type="button" data-v453-prev>‹</button><div data-v453-label></div><button type="button" data-v453-next>›</button><button type="button" data-v453-pick>1–20</button>`;
+      const anchor=card.querySelector('.v453-preview-banner')||top;
+      anchor.insertAdjacentElement('afterend',nav);
+      nav.querySelector('[data-v453-prev]')?.addEventListener('click',()=>switchPreview((state.target+19)%20));
+      nav.querySelector('[data-v453-next]')?.addEventListener('click',()=>switchPreview((state.target+1)%20));
+      nav.querySelector('[data-v453-pick]')?.addEventListener('click',openPicker);
+    }
+    const label=card.querySelector('[data-v453-label]');
+    if(label) label.textContent=`Dungeon ${i+1}/20 · ${dungeonTitle(i)}`;
+
+    const back=card.querySelector('.v261-back');
+    if(back && !back.dataset.v453Close){
+      const clone=back.cloneNode(true);
+      clone.dataset.v453Close='1';
+      const span=clone.querySelector('span');
+      if(span) span.innerHTML='Vorschau beenden<br>zurück zum Spielstand';
+      clone.addEventListener('click',ev=>{ev.preventDefault();ev.stopPropagation();closePreview()});
+      back.replaceWith(clone);
+    }
+  }
+
+  function renderPreview(){
+    if(!state.active) return false;
+    const i=Math.max(0,Math.min(19,Number(state.target)||0));
+    const detail=latestDetail();
+    if(typeof detail!=='function') return false;
+
+    const oldSelected=Number(s?.dungeon?.selected||0);
+    const oldLayer=s?.dungeon?.layer||'world';
+    const oldView=s?.dungeon?.view||'map';
+    const oldPersist=(typeof persist==='function')?persist:null;
+    const oldWindowPersist=window.persist;
+    const noop=function(){};
+
+    try{
+      if(oldPersist) persist=noop;
+      window.persist=noop;
+      s.dungeon.selected=i;
+      s.dungeon.layer='dungeon';
+      s.dungeon.view='map';
+      detail();
+    }catch(e){
+      console.error('V4.253 preview render',e);
+    }finally{
+      try{
+        s.dungeon.selected=oldSelected;
+        s.dungeon.layer=oldLayer;
+        s.dungeon.view=oldView;
+      }catch(e){}
+      try{if(oldPersist)persist=oldPersist}catch(e){}
+      try{window.persist=oldWindowPersist||oldPersist}catch(e){}
+    }
+
+    /* Einige alte D6–D8-Observer laufen verzögert. Deshalb nur zweimal
+       gezielt nachziehen – kein MutationObserver und keine Render-Schleife. */
+    decorate(i);
+    setTimeout(()=>decorate(i),40);
+    setTimeout(()=>decorate(i),140);
+    try{window.scrollTo({top:0,behavior:'smooth'})}catch(e){}
+    return true;
+  }
+
+  function openPreview(i){
+    snapshotReturn();
+    state.active=true;
+    state.target=Math.max(0,Math.min(19,Number(i)||0));
+    try{if(window.__v441Dungeon9Preview)window.__v441Dungeon9Preview.active=false}catch(e){}
+    renderPreview();
+  }
+
+  function switchPreview(i){
+    if(!state.active) return openPreview(i);
+    state.target=Math.max(0,Math.min(19,Number(i)||0));
+    renderPreview();
+  }
+
+  function closePreview(){
+    if(!state.active) return;
+    state.active=false;
+    const ret=state.returnState||{selected:0,layer:'world',view:'map'};
+    state.returnState=null;
+    try{
+      s.dungeon.selected=ret.selected;
+      s.dungeon.layer=ret.layer;
+      s.dungeon.view=ret.view;
+    }catch(e){}
+    try{
+      const r=window.renderDungeon||renderDungeon;
+      if(typeof r==='function')r();
+    }catch(e){console.error('V4.253 close preview',e)}
+    setTimeout(ensureHub,50);
+  }
+
+  /* Zusätzliche harte Sicherheit: im Vorschau-Modus können weder Gegner
+     noch Angriffsbuttons einen echten Handler erreichen. */
+  window.addEventListener('click',function(ev){
+    if(!state.active) return;
+    const blocked=ev.target?.closest?.('[data-v261-room],#v261EnterCurrent,#fightBtn');
+    if(!blocked) return;
+    ev.preventDefault();ev.stopPropagation();ev.stopImmediatePropagation();
+  },true);
+
+  window.v453OpenDungeonPreview=openPreview;
+  window.v453CloseDungeonPreview=closePreview;
+  window.v453OpenDungeonPreviewPicker=openPicker;
+
+  ensurePicker();
+  ensureHub();
+  setTimeout(ensureHub,100);
+  window.addEventListener('pageshow',()=>setTimeout(ensureHub,100),{passive:true});
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden)setTimeout(ensureHub,100)},{passive:true});
+})();
+</script>
+<!-- ===== /V4.253 ALL 20 DUNGEON SAFE PREVIEW HUB ===== -->
