@@ -76898,3 +76898,55 @@ body:has(#world.active){background:#010302!important}
   setTimeout(apply,1200);
 })();
 </script>
+
+<!-- ===== V4.196 DUNGEON 20ER NO-SIZE-JUMP ===== -->
+<style id="v4196-dungeon-no-size-jump">
+/* Prevent the original small 20er dungeon grid from flashing before the final map size is applied. */
+#dungeonMapCard.v251-world-card .v251-world-grid{
+  visibility:hidden!important;
+}
+#dungeonMapCard.v251-world-card.v4196-ready .v251-world-grid{
+  visibility:visible!important;
+}
+
+/* Reserve the FINAL map geometry immediately, so the card never starts small. */
+#dungeonMapCard.v251-world-card{
+  min-height:0!important;
+}
+#dungeonMapCard.v251-world-card .v4184-map-art,
+#dungeonMapCard.v251-world-card .v4189-map-art{
+  width:100%!important;
+  max-width:100%!important;
+  height:auto!important;
+  margin-left:0!important;
+  object-fit:contain!important;
+  object-position:center top!important;
+}
+</style>
+
+<script id="v4196-dungeon-no-size-jump-js">
+(function(){
+  function ready(){
+    const card=document.querySelector('#dungeonMapCard.v251-world-card');
+    if(!card)return;
+
+    /* Wait until the final 20er map layer from the current working version is actually present. */
+    const finalMap=card.querySelector('.v4189-map-art,.v4184-map-art,.v4189-map-wrap');
+    if(finalMap){
+      requestAnimationFrame(function(){
+        requestAnimationFrame(function(){
+          card.classList.add('v4196-ready');
+        });
+      });
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded',ready);
+  window.addEventListener('pageshow',ready);
+  document.addEventListener('visibilitychange',function(){if(!document.hidden)ready()});
+  setTimeout(ready,0);
+  setTimeout(ready,50);
+  setTimeout(ready,150);
+  setTimeout(ready,400);
+})();
+</script>
