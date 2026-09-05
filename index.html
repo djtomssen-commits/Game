@@ -76472,7 +76472,7 @@ body:has(#world.active){background:#010302!important}
      hideLegacyMapChrome(card);
      try{if(typeof renderDungeonTicket==='function')renderDungeonTicket()}catch(e){}
      try{if(typeof updateDungeonTicket==='function')updateDungeonTicket()}catch(e){}
-     queueMicrotask(paintVisibleTicket);
+     paintVisibleTicket();
      return true;
    }finally{painting=false}
  }
@@ -76482,26 +76482,37 @@ body:has(#world.active){background:#010302!important}
    if(!el)return;
    let raw='';
    try{raw=typeof dungeonWaitText==='function'?String(dungeonWaitText()):''}catch(e){}
-   if(/bereit/i.test(raw))el.textContent='Kostenloser Versuch bereit';
+   let next='Kostenlosen Versuch prüfen …';
+   if(/bereit/i.test(raw))next='Kostenloser Versuch bereit';
    else{
      const m=raw.match(/(\d+):(\d{2})/);
-     el.textContent=m?`Timer ${m[1]}:${m[2]}`:'Kostenlosen Versuch prüfen …';
+     if(m)next=`Timer ${m[1]}:${m[2]}`;
    }
+   /* Wichtig: nur schreiben, wenn sich der Text wirklich ändert.
+      Sonst löst textContent den Karten-MutationObserver immer wieder aus. */
+   if(el.textContent!==next)el.textContent=next;
  }
  window.gl20RenderWorld=render;window.v251RenderWorld=render;window.v065RenderWorld=render;
  function visible(){const sec=document.getElementById('dungeon');if(!sec||!sec.classList.contains('active'))return false;const layer=window.s?.dungeon?.layer;return !layer||layer==='world'}
  function ensure(){if(!visible())return;const card=document.getElementById('dungeonMapCard');if(!card||!card.classList.contains('gl20-v4210')||!card.querySelector('.gl20n-board'))render();paintVisibleTicket()}
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>setTimeout(ensure,0),{once:true});else setTimeout(ensure,0);
  window.addEventListener('pageshow',()=>setTimeout(ensure,0));document.addEventListener('visibilitychange',()=>{if(!document.hidden)setTimeout(ensure,0)});
- const obs=new MutationObserver(()=>{if(!painting)queueMicrotask(ensure)});const startObs=()=>{const sec=document.getElementById('dungeon');if(sec)obs.observe(sec,{subtree:true,childList:true,attributes:true,attributeFilter:['class','style']})};if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',startObs,{once:true});else startObs();
+ const obs=new MutationObserver(mutations=>{
+   if(painting)return;
+   const ticket=document.getElementById('gl20DungeonTicketText');
+   const onlyTicket=!!ticket&&mutations.length>0&&mutations.every(m=>m.target===ticket||ticket.contains(m.target));
+   if(onlyTicket)return;
+   queueMicrotask(ensure);
+ });
+ const startObs=()=>{const sec=document.getElementById('dungeon');if(sec)obs.observe(sec,{subtree:true,childList:true,attributes:true,attributeFilter:['class','style']})};if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',startObs,{once:true});else startObs();
  setInterval(ensure,1200);
 })();
 </script>
 
 
-<!-- ===== GL20 V4.212 STABLE UI/TICKET FIX ===== -->
+<!-- ===== GL20 V4.213 STABLE NO-LOOP FIX ===== -->
 <style id="gl20-v4211-polish">
-/* V4.212 STABIL: reiner Feinschliff, keine zusätzlichen Timer/Observer. */
+/* V4.213 STABIL: Feinschliff + Ticketanzeige ohne Observer-Schleife. */
 @media (max-width:700px){
   #dungeonMapCard.gl20-v4210{margin-left:-8px!important;margin-right:-8px!important}
   .gl20n-head{padding:11px 10px 10px!important}
