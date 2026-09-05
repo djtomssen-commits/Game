@@ -46227,6 +46227,48 @@ body:has(#world.active) #v337LegalFooter{display:none!important}
 
 <!-- ===== V4.177 CONNECTED DUNGEON WORLD MAP ===== -->
 
+
+<style id="gl20-v4212-bigger-image-fields">
+/* V4.216 STABIL: größere Bilderfelder auf der 20er-Karte, ohne Verzerrung.
+   Es wird nur die sichtbare Kartenfläche pro Dungeon vergrößert; Klicklogik aus V11 bleibt. */
+@media (max-width:700px){
+  #dungeonMapCard.gl20-v4210{margin-left:-8px!important;margin-right:-8px!important}
+  .gl20n-mapframe{padding:7px!important}
+  .gl20n-board{aspect-ratio:.84 / 1!important}
+  .gl20n-node{width:18.9%!important}
+  .gl20n-node .gl20n-panel{
+    width:103%!important;
+    min-height:60px!important;
+    padding:8px 4px 6px!important;
+    transform:translate(-50%,-18%)!important;
+  }
+  .gl20n-node.completed .gl20n-panel{transform:translate(-50%,-20%)!important}
+  .gl20n-node.current .gl20n-panel{transform:translate(-50%,-16%)!important}
+  .gl20n-name{
+    font-size:8px!important;
+    line-height:1.08!important;
+    overflow-wrap:normal!important;
+    word-break:normal!important;
+    hyphens:none!important;
+    -webkit-hyphens:none!important;
+  }
+  .gl20n-state{font-size:7px!important;margin-top:5px!important}
+}
+@media (max-width:390px){
+  .gl20n-board{aspect-ratio:.81 / 1!important}
+  .gl20n-node{width:18.78%!important}
+  .gl20n-node .gl20n-panel{
+    width:103%!important;
+    min-height:56px!important;
+    padding:7px 3px 5px!important;
+    transform:translate(-50%,-19%)!important;
+  }
+  .gl20n-node.completed .gl20n-panel{transform:translate(-50%,-21%)!important}
+  .gl20n-node.current .gl20n-panel{transform:translate(-50%,-17%)!important}
+  .gl20n-name{font-size:7.15px!important;line-height:1.07!important}
+  .gl20n-state{font-size:6.45px!important;margin-top:4px!important}
+}
+</style>
 </body>
 </html>
 <style id="v268-inventory-multisell-css">
@@ -76468,9 +76510,8 @@ body:has(#world.active){background:#010302!important}
      let keyLabel='STARTGEBIET',keyMain='KEIN STEIN NÖTIG',keySub='Dungeon 1 ist direkt geöffnet';
      if(next>0){let has=false;try{has=typeof dungeonUnlocked==='function'&&dungeonUnlocked(next)}catch(e){};keyLabel=`SCHLÜSSELSTEIN ${next+1}`;keyMain=has?'GEFUNDEN':'NOCH NICHT GEFUNDEN';if(has)keySub=`Schlüsselstein ${next+1} gefunden`;else try{keySub=typeof v250KeyStatusText==='function'?v250KeyStatusText(next):`Schlüsselstein ${next+1} fehlt`}catch(e){keySub=`Schlüsselstein ${next+1} fehlt`}}
      card.innerHTML=`<div class="gl20n-head"><div class="gl20n-skull">💀</div><div><div class="gl20n-kicker">VERSEUCHTE GEBIETE</div><div class="gl20n-title">DUNGEONS</div><div class="gl20n-sub">Wähle deinen Dungeon · 20 Gebiete · je 10 Gegner</div></div><div class="gl20n-ticket"><b>🎟️ DUNGEON-VERSUCH</b><span id="gl20DungeonTicketText">Kostenlosen Versuch prüfen …</span></div></div><div class="gl20n-mapframe"><div class="gl20n-board">${Array.from({length:20},(_,i)=>node(i)).join('')}</div></div><div class="gl20n-footer"><div class="gl20n-foot"><small>Nächster Dungeon</small><b>${esc(nm)}</b><span>Dungeon ${next+1} · ${esc(stateText(next,st)||'ABGESCHLOSSEN')}</span></div><div class="gl20n-foot"><small>${keyLabel}</small><b class="${st!=='locked'?'green':''}">${keyMain}</b><span>${esc(keySub)}</span></div></div>`;
-     /* V4.214: Klicks werden zentral im Capture-Handler unten verarbeitet.
-        Keine per-Node Listener mehr, damit spätere Renderer/alte Handler den Tap
-        auf Android nicht verschlucken können. */
+     /* V4.215: Klicks direkt an die frisch erzeugte Kartenfläche binden. */
+     bindWorldTaps(card);
      hideLegacyMapChrome(card);
      try{if(typeof renderDungeonTicket==='function')renderDungeonTicket()}catch(e){}
      try{if(typeof updateDungeonTicket==='function')updateDungeonTicket()}catch(e){}
@@ -76495,6 +76536,7 @@ body:has(#world.active){background:#010302!important}
    if(el.textContent!==next)el.textContent=next;
  }
 
+ let gl20LastTapAt=0,gl20LastTapIndex=-1;
  function openWorldDungeon(i){
    i=Math.max(0,Math.min(19,Number(i)||0));
    try{if(typeof v243RepairAndSaveDungeonKeys==='function')v243RepairAndSaveDungeonKeys()}catch(e){}
@@ -76503,23 +76545,17 @@ body:has(#world.active){background:#010302!important}
    const d=window.dungeons?.[i] || (typeof dungeons!=='undefined'?dungeons?.[i]:null);
    if(!d)return false;
 
-   try{
-     if(typeof dungeonCompleted==='function'&&dungeonCompleted(i)){
-       if(typeof v063Toast==='function')v063Toast(`${d.name} wurde bereits abgeschlossen.`,'warn');
-       return false;
-     }
-   }catch(e){}
-
-   const lvl=Number(window.s?.level ?? (typeof s!=='undefined'?s.level:0) ?? 0);
-   if(lvl<Number(d.minLevel||1)){
-     if(typeof v063Toast==='function')v063Toast(`Benötigt Level ${d.minLevel}.`,'warn',d.name);
+   /* V4.215: Der sichtbare Kartenstatus ist die Klick-Autorität.
+      Wenn ein Feld als AKTUELL/BETRETBAR gerendert wurde, darf kein alter
+      Unlock-Wrapper denselben Tap danach wieder blockieren. */
+   const liveState=worldState(i);
+   if(liveState==='completed'){
+     if(typeof v063Toast==='function')v063Toast(`${d.name} wurde bereits abgeschlossen.`,'warn');
      return false;
    }
-
-   let unlocked=i===0;
-   try{unlocked=i===0||(typeof dungeonUnlocked==='function'&&dungeonUnlocked(i))}catch(e){}
-   if(!unlocked){
-     if(typeof v063Toast==='function')v063Toast(`${d.keyName||`Schlüsselstein ${i+1}`} fehlt.`,'warn');
+   if(liveState==='locked'){
+     const msg=stateText(i,liveState)||'Dieser Dungeon ist noch gesperrt.';
+     if(typeof v063Toast==='function')v063Toast(msg,'warn',d.name);
      return false;
    }
 
@@ -76532,14 +76568,36 @@ body:has(#world.active){background:#010302!important}
      s.dungeon.view='map';
      try{persist(false)}catch(e){try{localStorage.setItem(KEY,JSON.stringify(s))}catch(_){}}
 
-     /* Direkt den bewährten 10-Gegner-Renderer öffnen. Dadurch hängt der neue
-        20er-Karten-Tap nicht mehr an der langen Kette alter v067-Wrapper. */
+     /* Genau EIN Detail-Renderer. Kein mehrfaches Durchrendern mehr. */
      let ok=false;
-     try{if(typeof v251RenderDetail==='function')ok=!!v251RenderDetail()}catch(e){console.error('GL20 detail v251',e)}
-     if(!ok)try{if(typeof v244RenderSelectedDungeonMap==='function')ok=!!v244RenderSelectedDungeonMap()}catch(e){console.error('GL20 detail v244',e)}
-     if(!ok)try{if(typeof v064RenderMap==='function')ok=!!v064RenderMap()}catch(e){console.error('GL20 detail v064',e)}
-     if(!ok)try{if(typeof renderDungeon==='function'){renderDungeon();ok=true}}catch(e){console.error('GL20 detail renderDungeon',e)}
-     if(ok){try{window.scrollTo({top:0,behavior:'smooth'})}catch(e){} }
+     try{
+       if(typeof v251RenderDetail==='function'){
+         ok=v251RenderDetail()!==false;
+       }else if(typeof v244RenderSelectedDungeonMap==='function'){
+         ok=v244RenderSelectedDungeonMap()!==false;
+       }else if(typeof v064RenderMap==='function'){
+         ok=v064RenderMap()!==false;
+       }
+     }catch(e){console.error('GL20 detail render',e)}
+
+     if(!ok){
+       try{if(typeof v067OpenDungeon==='function')ok=v067OpenDungeon(i)!==false}catch(e){console.error('GL20 opener fallback',e)}
+     }
+
+     /* Falls ein alter Welt-Renderer im selben Frame dazwischenfunkt, Detail einmal
+        gezielt zurückholen. Nur solange der Nutzer noch auf der Dungeon-Seite ist. */
+     setTimeout(()=>{
+       try{
+         const sec=document.getElementById('dungeon');
+         if(!sec?.classList.contains('active'))return;
+         if(Number(s.dungeon?.selected)!==i)return;
+         if(s.dungeon?.layer!=='dungeon'||s.dungeon?.view!=='map')return;
+         const card=document.getElementById('dungeonMapCard');
+         if(card?.classList.contains('gl20-v4210')&&typeof v251RenderDetail==='function')v251RenderDetail();
+       }catch(e){}
+     },60);
+
+     if(ok){try{window.scrollTo({top:0,behavior:'smooth'})}catch(e){}}
      return ok;
    }catch(e){
      console.error('GL20 openWorldDungeon',e);
@@ -76547,19 +76605,29 @@ body:has(#world.active){background:#010302!important}
    }
  }
 
- function installWorldTapCapture(){
-   if(window.__GL20_WORLD_TAP_V4214__)return;
-   window.__GL20_WORLD_TAP_V4214__=true;
-   document.addEventListener('click',ev=>{
-     const target=ev.target instanceof Element?ev.target.closest('[data-gl20n-dungeon]'):null;
-     if(!target)return;
-     ev.preventDefault();
-     ev.stopPropagation();
-     ev.stopImmediatePropagation();
-     openWorldDungeon(Number(target.dataset.gl20nDungeon));
-   },true);
+ function gl20HandleWorldTap(ev){
+   const target=ev.target?.closest?.('[data-gl20n-dungeon]');
+   if(!target)return;
+   const i=Number(target.dataset.gl20nDungeon);
+   const now=Date.now();
+   if(gl20LastTapIndex===i&&now-gl20LastTapAt<450){
+     ev.preventDefault?.();
+     return;
+   }
+   gl20LastTapIndex=i;gl20LastTapAt=now;
+   ev.preventDefault?.();
+   ev.stopPropagation?.();
+   openWorldDungeon(i);
  }
- installWorldTapCapture();
+
+ function bindWorldTaps(card){
+   const board=card?.querySelector('.gl20n-board');
+   if(!board||board.dataset.gl20TapBound==='1')return;
+   board.dataset.gl20TapBound='1';
+   /* pointerup ist auf Android zuverlässiger als ein nur nachgelagerter click. */
+   board.addEventListener('pointerup',gl20HandleWorldTap,{passive:false});
+   board.addEventListener('click',gl20HandleWorldTap,false);
+ }
  window.gl20RenderWorld=render;window.v251RenderWorld=render;window.v065RenderWorld=render;
  function visible(){const sec=document.getElementById('dungeon');if(!sec||!sec.classList.contains('active'))return false;const layer=window.s?.dungeon?.layer;return !layer||layer==='world'}
  function ensure(){if(!visible())return;const card=document.getElementById('dungeonMapCard');if(!card||!card.classList.contains('gl20-v4210')||!card.querySelector('.gl20n-board'))render();paintVisibleTicket()}
@@ -76578,16 +76646,18 @@ body:has(#world.active){background:#010302!important}
 </script>
 
 
-<!-- ===== GL20 V4.214 STABLE DIRECT DUNGEON TAP FIX ===== -->
+<!-- ===== GL20 V4.215 CURRENT DUNGEON TAP FIX ===== -->
 <style id="gl20-v4211-polish">
-/* V4.214 STABIL: Feinschliff + Ticketanzeige + direkter Dungeon-Tap. */
+/* V4.215 STABIL: aktueller Dungeon sicher antippbar; Logik sonst unverändert. */
 @media (max-width:700px){
   #dungeonMapCard.gl20-v4210{margin-left:-8px!important;margin-right:-8px!important}
   .gl20n-head{padding:11px 10px 10px!important}
   .gl20n-mapframe{padding:6px!important}
   .gl20n-board{aspect-ratio:.92 / 1!important;border-radius:10px!important}
   .gl20n-board::before{filter:saturate(.72) brightness(.78) contrast(1.05)!important}
-  .gl20n-node{width:18.75%!important}
+  .gl20n-node{width:18.75%!important;pointer-events:auto!important}
+  .gl20n-node.current{z-index:20!important;pointer-events:auto!important}
+  .gl20n-node > span{pointer-events:none!important}
   .gl20n-node .gl20n-badge{
     width:48%!important;border-width:2px!important;font-size:15px!important;
     box-shadow:0 0 0 3px rgba(5,10,6,.97),0 4px 8px #000e!important
