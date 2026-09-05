@@ -46269,6 +46269,51 @@ body:has(#world.active) #v337LegalFooter{display:none!important}
   .gl20n-state{font-size:6.45px!important;margin-top:4px!important}
 }
 </style>
+
+<style id="gl20-v4213-bigger-cleaner-fields">
+/* V4.217 STABIL: größere Bilderfelder, sauberere Panels, aktueller Dungeon klar klickbar. */
+@media (max-width:700px){
+  #dungeonMapCard.gl20-v4210{margin-left:-8px!important;margin-right:-8px!important}
+  .gl20n-mapframe{padding:7px!important}
+  .gl20n-board{aspect-ratio:.76 / 1!important}
+  .gl20n-board::before{background-size:cover!important;background-position:center!important}
+  .gl20n-node{width:19.05%!important;pointer-events:auto!important}
+  .gl20n-node.current{z-index:60!important;pointer-events:auto!important}
+  .gl20n-node .gl20n-badge{width:48%!important;font-size:15px!important}
+  .gl20n-node .gl20n-mark{left:74%!important;width:27%!important;font-size:11px!important}
+  .gl20n-node .gl20n-panel{
+    width:102%!important;
+    min-height:52px!important;
+    padding:7px 4px 5px!important;
+    transform:translate(-50%,-8%)!important;
+    border-radius:7px!important;
+  }
+  .gl20n-node.current .gl20n-panel{transform:translate(-50%,-5%)!important}
+  .gl20n-name{
+    font-size:7.8px!important;
+    line-height:1.08!important;
+    overflow-wrap:normal!important;
+    word-break:normal!important;
+    hyphens:none!important;
+    -webkit-hyphens:none!important;
+  }
+  .gl20n-state{font-size:6.8px!important;margin-top:4px!important}
+}
+@media (max-width:390px){
+  .gl20n-board{aspect-ratio:.74 / 1!important}
+  .gl20n-node{width:18.95%!important}
+  .gl20n-node.current{z-index:60!important}
+  .gl20n-node .gl20n-panel{
+    width:102%!important;
+    min-height:49px!important;
+    padding:6px 3px 5px!important;
+    transform:translate(-50%,-9%)!important;
+  }
+  .gl20n-node.current .gl20n-panel{transform:translate(-50%,-6%)!important}
+  .gl20n-name{font-size:7.15px!important;line-height:1.07!important}
+  .gl20n-state{font-size:6.2px!important;margin-top:4px!important}
+}
+</style>
 </body>
 </html>
 <style id="v268-inventory-multisell-css">
@@ -76622,11 +76667,25 @@ body:has(#world.active){background:#010302!important}
 
  function bindWorldTaps(card){
    const board=card?.querySelector('.gl20n-board');
-   if(!board||board.dataset.gl20TapBound==='1')return;
-   board.dataset.gl20TapBound='1';
-   /* pointerup ist auf Android zuverlässiger als ein nur nachgelagerter click. */
-   board.addEventListener('pointerup',gl20HandleWorldTap,{passive:false});
-   board.addEventListener('click',gl20HandleWorldTap,false);
+   if(!board)return;
+   if(board.dataset.gl20TapBound!=='1'){
+     board.dataset.gl20TapBound='1';
+     /* pointerup ist auf Android zuverlässiger als ein nur nachgelagerter click. */
+     board.addEventListener('pointerup',gl20HandleWorldTap,{passive:false});
+     board.addEventListener('click',gl20HandleWorldTap,false);
+   }
+   board.querySelectorAll('[data-gl20n-dungeon]').forEach(btn=>{
+     if(btn.dataset.gl20NodeTapBound==='1')return;
+     btn.dataset.gl20NodeTapBound='1';
+     const directTap=ev=>{
+       ev.preventDefault?.();
+       ev.stopPropagation?.();
+       ev.stopImmediatePropagation?.();
+       openWorldDungeon(Number(btn.dataset.gl20nDungeon));
+     };
+     btn.addEventListener('pointerup',directTap,{passive:false});
+     btn.addEventListener('click',directTap,false);
+   });
  }
  window.gl20RenderWorld=render;window.v251RenderWorld=render;window.v065RenderWorld=render;
  function visible(){const sec=document.getElementById('dungeon');if(!sec||!sec.classList.contains('active'))return false;const layer=window.s?.dungeon?.layer;return !layer||layer==='world'}
