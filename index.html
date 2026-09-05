@@ -76904,3 +76904,31 @@ body:has(#world.active){background:#010302!important}
   setTimeout(clean,400);
 })();
 </script>
+
+<!-- ===== V4.206 REMOVE BLACK SHADOWS BEHIND MAP LABELS ===== -->
+<style id="v4206-world-label-shadow-clean">
+/* Remove the dark/black backing behind the map artwork's dungeon numbers/names.
+   Keep only the current dynamic AKTUELL badge. */
+#dungeonMapCard.v251-world-card .v251-portal::before,
+#dungeonMapCard.v251-world-card .v251-portal::after{
+  box-shadow:none!important;
+  text-shadow:none!important;
+}
+
+/* Any hidden legacy label boxes must not leave dark translucent blocks. */
+#dungeonMapCard.v251-world-card .v251-portal-name,
+#dungeonMapCard.v251-world-card .v251-portal-level,
+#dungeonMapCard.v251-world-card .v251-portal-ring,
+#dungeonMapCard.v251-world-card .v251-portal-num{
+  background:transparent!important;
+  box-shadow:none!important;
+  text-shadow:none!important;
+}
+
+/* Preserve only the actual current-state badge. */
+#dungeonMapCard.v251-world-card .v251-portal.current .v251-portal-state{
+  background:rgba(5,42,9,.94)!important;
+  box-shadow:none!important;
+  text-shadow:none!important;
+}
+</style>
