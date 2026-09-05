@@ -76784,3 +76784,75 @@ body:has(#world.active){background:#010302!important}
   setTimeout(clean,1200);
 })();
 </script>
+
+<!-- ===== V4.188 DUNGEON TALL MAP + REAL FREE TIMER ===== -->
+<style id="v4188-dungeon-tall-timer">
+/* Taller/larger map without changing its clickable 20-dungeon logic. */
+#dungeonMapCard.v251-world-card .v4184-map-art{
+  width:110%!important;
+  max-width:none!important;
+  margin-left:-5%!important;
+  height:650px!important;
+  object-fit:fill!important;
+}
+#dungeonMapCard.v251-world-card .v251-world-grid{
+  left:0.5%!important;
+  right:0.5%!important;
+  top:20.3%!important;
+  height:61.8%!important;
+}
+
+/* One clean attempt status only. */
+#dungeonMapCard.v251-world-card .v251-ticket > span#dungeonTicketText{
+  margin-left:auto!important;
+  color:#75f06a!important;
+  font-weight:1000!important;
+}
+#dungeonMapCard.v251-world-card .v4186-attempt-state{display:none!important}
+
+@media(max-width:420px){
+  #dungeonMapCard.v251-world-card .v4184-map-art{height:625px!important}
+}
+</style>
+
+<script id="v4188-real-dungeon-free-timer">
+(function(){
+  function fmt(ms){
+    const total=Math.max(0,Math.ceil(ms/1000));
+    const m=Math.floor(total/60);
+    const s=total%60;
+    return String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+  }
+  function paint(){
+    const el=document.querySelector('#dungeonMapCard #dungeonTicketText');
+    if(!el || !window.s || !s.dungeonPass)return;
+    const last=Number(s.dungeonPass.lastFree)||0;
+    const left=Math.max(0,3600000-(Date.now()-last));
+    el.textContent=left<=0 ? 'MÖGLICH' : fmt(left);
+    el.style.setProperty('color',left<=0?'#75f06a':'#f0b85c','important');
+  }
+  document.addEventListener('DOMContentLoaded',paint);
+  window.addEventListener('pageshow',paint);
+  document.addEventListener('visibilitychange',function(){if(!document.hidden)paint()});
+  setInterval(paint,1000);
+
+  /* Repaint immediately after the existing authoritative attempt function runs.
+     It does NOT alter pricing, confirmation or lastFree logic. */
+  function wrap(){
+    if(typeof window.consumeDungeonAttempt!=='function'||window.__v4188AttemptPaintWrapped)return;
+    const base=window.consumeDungeonAttempt;
+    window.consumeDungeonAttempt=async function(){
+      const result=await base.apply(this,arguments);
+      paint();
+      setTimeout(paint,20);
+      setTimeout(paint,250);
+      return result;
+    };
+    try{consumeDungeonAttempt=window.consumeDungeonAttempt}catch(e){}
+    window.__v4188AttemptPaintWrapped=true;
+  }
+  setTimeout(wrap,0);
+  setTimeout(wrap,700);
+  setTimeout(wrap,1800);
+})();
+</script>
