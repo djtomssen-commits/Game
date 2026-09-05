@@ -78136,3 +78136,95 @@ body:has(#world.active){background:#010302!important}
   },{passive:true});
 })();
 </script>
+
+
+<!-- ===== V4.228 ABSOLUT LETZTER D6-OWNER ===== -->
+<style id="v428-d6-final-polish">
+/* Nur Darstellung für Dungeon 6. Keine Kampf-/Fortschrittslogik. */
+#dungeonMapCard.v427-d6 .v261-sign{
+  min-width:0!important;
+}
+#dungeonMapCard.v427-d6 .v261-title{
+  font-size:16px!important;
+  line-height:.92!important;
+  white-space:normal!important;
+  overflow:visible!important;
+}
+#dungeonMapCard.v427-d6 .v261-stage{
+  overflow:hidden!important;
+}
+@media(max-width:760px){
+  #dungeonMapCard.v427-d6 .v261-top{
+    grid-template-columns:104px minmax(0,1fr) 104px!important;
+    gap:6px!important;
+  }
+  #dungeonMapCard.v427-d6 .v261-title{
+    font-size:13px!important;
+    line-height:.92!important;
+  }
+  #dungeonMapCard.v427-d6 .v261-kicker{font-size:6px!important}
+  #dungeonMapCard.v427-d6 .v261-sub{font-size:5.6px!important}
+}
+</style>
+
+<script id="v428-d6-final-owner">
+(function(){
+  function install(){
+    const detail = window.v427RenderDetail;
+    if(typeof detail!=='function'){
+      console.error('V4.228: v427RenderDetail fehlt');
+      return false;
+    }
+
+    /* Direkte Detail-Einstiegspunkte immer auf D6-Clean-Renderer. */
+    try{window.v251RenderDetail=detail}catch(e){}
+    try{v251RenderDetail=detail}catch(e){}
+    try{window.v244RenderSelectedDungeonMap=detail}catch(e){}
+    try{v244RenderSelectedDungeonMap=detail}catch(e){}
+    try{window.v064RenderMap=detail}catch(e){}
+    try{v064RenderMap=detail}catch(e){}
+
+    /* Neueste Render-Schicht bekommt absolute Priorität im Detail-Kartenmodus. */
+    try{
+      const current = window.renderDungeon || renderDungeon;
+      if(typeof current==='function' && !current.__v428D6FinalOwner){
+        const base=current;
+        const wrapped=function(){
+          try{
+            if(s?.dungeon?.layer==='dungeon' && s?.dungeon?.view==='map'){
+              return detail();
+            }
+          }catch(e){}
+          return base.apply(this,arguments);
+        };
+        wrapped.__v428D6FinalOwner=true;
+        /* Verhindert, dass der ältere V4.225-Installer uns später nochmal umwickelt. */
+        wrapped.__v4225DetailOwner=true;
+        wrapped.__v428Base=base;
+        try{window.renderDungeon=wrapped}catch(e){}
+        try{renderDungeon=wrapped}catch(e){}
+      }
+    }catch(e){console.error('V4.228 render owner',e)}
+
+    /* Falls Dungeon 6 gerade offen ist, sofort neu zeichnen. */
+    try{
+      const sec=document.getElementById('dungeon');
+      if(sec?.classList.contains('active') &&
+         s?.dungeon?.layer==='dungeon' &&
+         s?.dungeon?.view==='map'){
+        requestAnimationFrame(()=>{try{detail()}catch(e){console.error('V4.228 repaint',e)}});
+      }
+    }catch(e){}
+
+    return true;
+  }
+
+  install();
+
+  /* Ältere Listener laufen zuerst; danach setzen wir den finalen Owner erneut. */
+  window.addEventListener('pageshow',()=>setTimeout(install,20),{passive:true});
+  document.addEventListener('visibilitychange',()=>{
+    if(!document.hidden)setTimeout(install,20);
+  },{passive:true});
+})();
+</script>
