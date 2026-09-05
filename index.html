@@ -81173,3 +81173,64 @@ body:has(#world.active){background:#010302!important}
 #dungeonMapCard.v441-d9 .v261-node.boss .v261-name{font-size:5.8px!important;line-height:1.06!important}
 </style>
 <!-- ===== /V4.248 DUNGEON 9 LAYOUT FIX ===== -->
+
+
+<!-- ===== V4.249 DUNGEON 9 LAYOUT FIX 2 ===== -->
+<style id="v449-d9-layout-fix-2">
+/* Nur Dungeon 9 Optik – Timer/Kampf/Preview-Logik bleibt unangetastet. */
+
+/* Gegner 9 klar vom Warnschild weg */
+#dungeonMapCard.v441-d9 .v261-node[data-v261-room="8"]{
+  --x:24!important;
+  --y:68!important;
+}
+
+/* 7 und 8 etwas entzerren */
+#dungeonMapCard.v441-d9 .v261-node[data-v261-room="6"]{
+  --x:61!important;
+  --y:71!important;
+}
+#dungeonMapCard.v441-d9 .v261-node[data-v261-room="7"]{
+  --x:86!important;
+  --y:58!important;
+}
+
+/* Boss weiter nach unten rechts, aber nicht mehr in 7/8 hinein */
+#dungeonMapCard.v441-d9 .v261-node[data-v261-room="9"]{
+  --x:82!important;
+  --y:81!important;
+}
+#dungeonMapCard.v441-d9 .v261-node.boss{
+  width:100px!important;
+}
+#dungeonMapCard.v441-d9 .v261-node.boss .v261-ring{
+  width:80px!important;
+  height:80px!important;
+}
+#dungeonMapCard.v441-d9 .v261-node.boss .v261-panel{
+  width:92px!important;
+  min-height:44px!important;
+  margin-top:5px!important;
+  padding:5px 3px!important;
+}
+#dungeonMapCard.v441-d9 .v261-node.boss .v261-name{
+  font-size:5.4px!important;
+  line-height:1.04!important;
+}
+
+/* Warnschild kleiner und ganz in die Ecke */
+#dungeonMapCard.v441-d9 .v261-signboard{
+  left:1%!important;
+  bottom:1.2%!important;
+  max-width:58px!important;
+  padding:4px 4px 5px!important;
+  font-size:4.4px!important;
+  line-height:1.06!important;
+  transform:rotate(-1deg)!important;
+}
+#dungeonMapCard.v441-d9 .v261-signboard small{
+  margin-top:4px!important;
+  font-size:8px!important;
+}
+</style>
+<!-- ===== /V4.249 DUNGEON 9 LAYOUT FIX 2 ===== -->
