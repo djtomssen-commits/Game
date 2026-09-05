@@ -76833,3 +76833,54 @@ body:has(#world.active){background:#010302!important}
   setTimeout(function(){ensureSharpMap();update()},900);
 })();
 </script>
+
+<!-- ===== V4.191 DUNGEON SINGLE STATUS ===== -->
+<style id="v4191-dungeon-single-status">
+/* v4189 status must never render next to the corrected v4190 status. */
+#dungeonMapCard .v4189-attempt-state{display:none!important}
+#dungeonMapCard .v4190-attempt-state{
+  margin-left:auto!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:flex-end!important;
+}
+</style>
+<script id="v4191-dungeon-single-status-js">
+(function(){
+  function cleanup(){
+    document.querySelectorAll('#dungeonMapCard .v4189-attempt-state').forEach(function(el){
+      el.remove();
+    });
+  }
+  document.addEventListener('DOMContentLoaded',cleanup);
+  window.addEventListener('pageshow',cleanup);
+  setInterval(cleanup,250);
+  setTimeout(cleanup,50);
+  setTimeout(cleanup,500);
+})();
+</script>
+
+<!-- ===== V4.192 DUNGEON MAP PROPORTIONAL ZOOM ===== -->
+<style id="v4192-dungeon-map-proportional-zoom">
+/* Bigger map, but NEVER stretch it: width grows and height remains automatic. */
+#dungeonMapCard.v251-world-card .v4189-map-wrap{
+  width:100%!important;
+  overflow:hidden!important;
+}
+#dungeonMapCard.v251-world-card .v4189-map-art{
+  width:118%!important;
+  height:auto!important;
+  max-width:none!important;
+  margin-left:-9%!important;
+  object-fit:contain!important;
+  image-rendering:auto!important;
+}
+/* Hotspot layer follows exactly the enlarged visible map. */
+#dungeonMapCard.v251-world-card .v4189-map-wrap .v251-world-grid{
+  left:-9%!important;
+  right:auto!important;
+  width:118%!important;
+  top:0!important;
+  bottom:0!important;
+}
+</style>
