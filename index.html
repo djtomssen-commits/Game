@@ -76857,3 +76857,50 @@ body:has(#world.active){background:#010302!important}
   setTimeout(fix,400);
 })();
 </script>
+
+<!-- ===== V4.205 WORLD MAP STATUS CLEAN ===== -->
+<style id="v4205-world-status-clean">
+/* Hide every extra portal status by default. The artwork already contains
+   completed/locked/level information. */
+#dungeonMapCard.v251-world-card .v251-portal-state{
+  display:none!important;
+}
+
+/* Only the account's actual current dungeon keeps a dynamic AKTUELL badge. */
+#dungeonMapCard.v251-world-card .v251-portal.current .v251-portal-state{
+  display:flex!important;
+  left:4%!important;
+  right:4%!important;
+  bottom:2%!important;
+  width:auto!important;
+  height:24px!important;
+  min-height:0!important;
+  padding:0 3px!important;
+  align-items:center!important;
+  justify-content:center!important;
+  font-size:10px!important;
+  line-height:1!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+}
+</style>
+
+<script id="v4205-world-status-clean-js">
+(function(){
+  function clean(){
+    const card=document.getElementById('dungeonMapCard');
+    if(!card)return;
+    card.querySelectorAll('.v251-portal').forEach(p=>{
+      const state=p.querySelector('.v251-portal-state');
+      if(!state)return;
+      if(p.classList.contains('current')){
+        state.textContent='AKTUELL';
+      }
+    });
+  }
+  document.addEventListener('DOMContentLoaded',clean);
+  window.addEventListener('pageshow',clean);
+  setTimeout(clean,50);
+  setTimeout(clean,400);
+})();
+</script>
