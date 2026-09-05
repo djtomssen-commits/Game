@@ -77205,3 +77205,64 @@ body:has(#world.active){background:#010302!important}
 })();
 </script>
 
+
+
+<!-- ===== V4.222 FINAL 10ER RENDER OWNERSHIP FIX ===== -->
+<script id="v4222-final-10er-owner">
+(function(){
+  function installV260Owner(){
+    const detail=window.v260RenderDetail;
+    if(typeof detail!=='function'){
+      console.error('V4.222: v260RenderDetail fehlt');
+      return false;
+    }
+
+    /* WICHTIG: Die spaeter geladene GL20-V4.218-Weltkarte ruft beim Oeffnen
+       absichtlich zuerst v251RenderDetail() auf. Genau deshalb wurde trotz
+       neuer V260-Karte immer wieder der alte 10er-Renderer angezeigt.
+       Ab hier zeigt JEDE alte Detail-Referenz auf den neuen Renderer. */
+    try{window.v251RenderDetail=detail}catch(e){}
+    try{v251RenderDetail=detail}catch(e){}
+    try{window.v244RenderSelectedDungeonMap=detail}catch(e){}
+    try{v244RenderSelectedDungeonMap=detail}catch(e){}
+    try{window.v064RenderMap=detail}catch(e){}
+    try{v064RenderMap=detail}catch(e){}
+
+    /* Auch spaetere renderDungeon-Wrapper sollen im Kartenmodus niemals
+       wieder den alten Detail-Renderer aufbauen. Kampf/Reward bleiben beim
+       bestehenden Kampfsystem. */
+    try{
+      const current=window.renderDungeon || renderDungeon;
+      if(typeof current==='function' && !current.__v4222DetailOwner){
+        const base=current;
+        const wrapped=function(){
+          try{
+            if(s?.dungeon?.layer==='dungeon' && s?.dungeon?.view==='map'){
+              return detail();
+            }
+          }catch(e){}
+          return base.apply(this,arguments);
+        };
+        wrapped.__v4222DetailOwner=true;
+        wrapped.__v4222Base=base;
+        try{window.renderDungeon=wrapped}catch(e){}
+        try{renderDungeon=wrapped}catch(e){}
+      }
+    }catch(e){console.error('V4.222 renderDungeon owner',e)}
+
+    /* Falls beim Laden bereits eine 10er-Karte offen ist, sofort auf V260
+       umschalten. Nur UI-Repaint, keine Progress-/Kampfwerte werden geaendert. */
+    try{
+      const sec=document.getElementById('dungeon');
+      if(sec?.classList.contains('active') && s?.dungeon?.layer==='dungeon' && s?.dungeon?.view==='map'){
+        requestAnimationFrame(()=>{try{detail()}catch(e){console.error('V4.222 repaint',e)}});
+      }
+    }catch(e){}
+    return true;
+  }
+
+  installV260Owner();
+  window.addEventListener('pageshow',()=>setTimeout(installV260Owner,0),{passive:true});
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden)setTimeout(installV260Owner,0)},{passive:true});
+})();
+</script>
