@@ -46254,6 +46254,109 @@ body:has(#world.active) #v337LegalFooter{display:none!important}
   .gl20g-grid > .gl20g-card:nth-child(11) .gl20g-art{background-position:center 72%!important}
 }
 </style>
+
+<style id="gl20-v4220-d20-fix">
+/* V4.220 Nur Optik: Dungeon 20 alten AB-LVL-150-Rest im Bild wegcroppen. */
+.gl20g-grid > .gl20g-card:nth-child(20) .gl20g-art{background-position:center 76%!important}
+.gl20g-grid > .gl20g-card:nth-child(20) .gl20g-art::before{content:"";position:absolute;left:0;right:0;top:0;height:22px;background:linear-gradient(180deg,rgba(3,6,3,.88),rgba(3,6,3,.42),transparent);z-index:1;pointer-events:none}
+@media(max-width:700px){
+  .gl20g-grid > .gl20g-card:nth-child(20) .gl20g-art{background-position:center 79%!important}
+  .gl20g-grid > .gl20g-card:nth-child(20) .gl20g-art::before{height:24px!important}
+}
+@media(max-width:390px){
+  .gl20g-grid > .gl20g-card:nth-child(20) .gl20g-art{background-position:center 81%!important}
+  .gl20g-grid > .gl20g-card:nth-child(20) .gl20g-art::before{height:25px!important}
+}
+</style>
+
+<style id="gl20-v4221-d6-d11-precision">
+/* V4.221 NUR OPTIK.
+   Dungeon 6: Nummer/Status exakt auf den im Bild vorhandenen Kreis setzen.
+   Dungeon 11: den eingebrannten grünen AKTUELL-Rest vollständig abdecken.
+   Keine Dungeon-Logik / Klick-Handler geändert. */
+
+/* D6: Quellbild-Kreis liegt etwas rechts/oben gegenüber dem Standardraster. */
+.gl20g-grid > .gl20g-card:nth-child(6) .gl20g-badge{
+  left:52.2%!important;
+  top:42px!important;
+  width:44px!important;
+  height:44px!important;
+  font-size:17px!important;
+  border-width:2px!important;
+}
+.gl20g-grid > .gl20g-card:nth-child(6) .gl20g-mark{
+  left:84.5%!important;
+  top:42px!important;
+  width:24px!important;
+  height:24px!important;
+  font-size:12px!important;
+}
+
+/* D11: alter grüner "AKTUELL"-Schriftzug + Glow sitzt direkt am oberen Bildrand.
+   Hier decken wir den kompletten Rest ab statt das Bild weiter zu verschieben. */
+.gl20g-grid > .gl20g-card:nth-child(11) .gl20g-art::before{
+  content:""!important;
+  position:absolute!important;
+  left:0!important;
+  right:0!important;
+  top:0!important;
+  height:34px!important;
+  background:linear-gradient(
+    180deg,
+    rgba(5,12,7,.995) 0%,
+    rgba(5,12,7,.96) 48%,
+    rgba(5,12,7,.70) 72%,
+    rgba(5,12,7,0) 100%
+  )!important;
+  z-index:2!important;
+  pointer-events:none!important;
+}
+
+/* Der bestehende dunkle Verlaufsfilter bleibt darüber/ darunter neutral. */
+.gl20g-grid > .gl20g-card:nth-child(11) .gl20g-art::after{
+  z-index:3!important;
+}
+
+@media(max-width:700px){
+  .gl20g-grid > .gl20g-card:nth-child(6) .gl20g-badge{
+    left:52.2%!important;
+    top:41px!important;
+    width:42px!important;
+    height:42px!important;
+    font-size:16px!important;
+  }
+  .gl20g-grid > .gl20g-card:nth-child(6) .gl20g-mark{
+    left:84.5%!important;
+    top:41px!important;
+    width:23px!important;
+    height:23px!important;
+    font-size:11px!important;
+  }
+  .gl20g-grid > .gl20g-card:nth-child(11) .gl20g-art::before{
+    height:36px!important;
+  }
+}
+
+@media(max-width:390px){
+  .gl20g-grid > .gl20g-card:nth-child(6) .gl20g-badge{
+    left:52.2%!important;
+    top:40px!important;
+    width:40px!important;
+    height:40px!important;
+    font-size:15px!important;
+  }
+  .gl20g-grid > .gl20g-card:nth-child(6) .gl20g-mark{
+    left:84.5%!important;
+    top:40px!important;
+    width:22px!important;
+    height:22px!important;
+    font-size:10px!important;
+  }
+  .gl20g-grid > .gl20g-card:nth-child(11) .gl20g-art::before{
+    height:38px!important;
+  }
+}
+</style>
 </body>
 </html>
 <style id="v268-inventory-multisell-css">
