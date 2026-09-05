@@ -76950,3 +76950,169 @@ body:has(#world.active){background:#010302!important}
   setTimeout(ready,400);
 })();
 </script>
+
+<!-- ===== V4.197 20ER NO JUMP + DYNAMIC CURRENT DUNGEON ===== -->
+<style id="v4197-dungeon-world-stable-dynamic">
+/* Hide the complete 20er card until the FINAL map image is mounted.
+   This prevents the small raw card from ever being visible. */
+#dungeonMapCard.v251-world-card{
+  opacity:0!important;
+  visibility:hidden!important;
+  min-height:175vw!important;
+}
+#dungeonMapCard.v251-world-card.v4197-final-ready{
+  opacity:1!important;
+  visibility:visible!important;
+  min-height:0!important;
+}
+
+/* The final map/hotspot grid remains interactive. */
+#dungeonMapCard.v251-world-card.v4197-final-ready .v251-world-grid{
+  visibility:visible!important;
+  pointer-events:auto!important;
+}
+
+/* The artwork contains a baked green Dungeon-6 state.
+   Neutralise that cell whenever Dungeon 6 is NOT the account's real current dungeon. */
+#dungeonMapCard.v251-world-card .v251-portal:nth-child(6):not(.current){
+  background:rgba(3,8,5,.34)!important;
+  -webkit-backdrop-filter:saturate(.35) brightness(.62)!important;
+  backdrop-filter:saturate(.35) brightness(.62)!important;
+  box-shadow:inset 0 0 28px rgba(0,0,0,.58)!important;
+}
+
+/* Real account state always wins visually. */
+#dungeonMapCard.v251-world-card .v251-portal.current{
+  background:rgba(44,255,44,.08)!important;
+  box-shadow:
+    inset 0 0 0 3px #63ff50,
+    inset 0 0 28px rgba(61,255,48,.16),
+    0 0 17px rgba(70,255,55,.72)!important;
+  border-radius:12px!important;
+}
+
+/* Add a small dynamic state badge over the image.
+   This is generated from the REAL portal classes, not from the static artwork. */
+#dungeonMapCard.v251-world-card .v251-portal::after{
+  display:flex!important;
+  position:absolute!important;
+  content:""!important;
+  left:12%!important;
+  right:12%!important;
+  bottom:4%!important;
+  min-height:15px!important;
+  align-items:center!important;
+  justify-content:center!important;
+  border-radius:6px!important;
+  font-size:6px!important;
+  line-height:1!important;
+  font-weight:1000!important;
+  z-index:20!important;
+  pointer-events:none!important;
+  background:rgba(3,7,5,.78)!important;
+  color:#ccc!important;
+  border:1px solid rgba(120,110,82,.45)!important;
+}
+#dungeonMapCard.v251-world-card .v251-portal.current::after{
+  content:"AKTUELL"!important;
+  color:#7cff6d!important;
+  border-color:#62ff50!important;
+  background:rgba(5,40,9,.92)!important;
+}
+#dungeonMapCard.v251-world-card .v251-portal.completed:not(.current)::after{
+  content:"✓ ABGESCHLOSSEN"!important;
+  color:#74ef69!important;
+  border-color:#45c93e!important;
+  background:rgba(5,34,8,.90)!important;
+}
+#dungeonMapCard.v251-world-card .v251-portal.locked:not(.current)::after{
+  content:"🔒 GESPERRT"!important;
+  color:#bdbdb7!important;
+  background:rgba(3,5,4,.90)!important;
+}
+
+/* Avoid an oversized invisible placeholder on desktop. */
+@media(min-width:700px){
+  #dungeonMapCard.v251-world-card{min-height:1100px!important}
+  #dungeonMapCard.v251-world-card.v4197-final-ready{min-height:0!important}
+}
+</style>
+
+<script id="v4197-dungeon-world-stable-dynamic-js">
+(function(){
+  function currentDungeonIndex(){
+    try{
+      if(typeof v048DungeonIndex==='function'){
+        const n=Number(v048DungeonIndex());
+        if(Number.isFinite(n)) return n;
+      }
+    }catch(e){}
+    try{
+      const vals=[
+        s?.dungeon?.selected,
+        s?.dungeon?.current,
+        s?.dungeonIndex,
+        s?.currentDungeon,
+        s?.dungeonCurrent
+      ];
+      for(const v of vals){
+        const n=Number(v);
+        if(Number.isFinite(n)) return n;
+      }
+    }catch(e){}
+    return null;
+  }
+
+  function syncCurrentClass(card){
+    const cells=[...card.querySelectorAll('.v251-world-grid .v251-portal')];
+    if(!cells.length)return;
+
+    const real=currentDungeonIndex();
+    if(real===null)return;
+
+    /* Current index is normally zero-based. If a state source gives 1..20,
+       normalise only when it is outside the zero-based range. */
+    let idx=real;
+    if(idx>19 && idx<=20) idx=idx-1;
+    idx=Math.max(0,Math.min(19,idx));
+
+    cells.forEach((el,i)=>{
+      el.classList.toggle('current',i===idx);
+    });
+  }
+
+  function revealWhenFinal(){
+    const card=document.querySelector('#dungeonMapCard.v251-world-card');
+    if(!card)return;
+
+    syncCurrentClass(card);
+
+    const img=card.querySelector('.v4189-map-art,.v4184-map-art');
+    const wrap=card.querySelector('.v4189-map-wrap');
+
+    /* Reveal only when the final large-map layer exists AND image pixels are ready. */
+    if(wrap && img && img.complete && img.naturalWidth>0){
+      card.classList.add('v4197-final-ready');
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded',revealWhenFinal);
+  window.addEventListener('pageshow',revealWhenFinal);
+  document.addEventListener('visibilitychange',function(){
+    if(!document.hidden) revealWhenFinal();
+  });
+
+  /* Short-lived rapid checks catch renderer rebuilds without an observer loop. */
+  let tries=0;
+  const boot=setInterval(function(){
+    revealWhenFinal();
+    if(++tries>40) clearInterval(boot);
+  },50);
+
+  /* Keep account-specific current state correct after account/page changes. */
+  setInterval(function(){
+    const card=document.querySelector('#dungeonMapCard.v251-world-card');
+    if(card) syncCurrentClass(card);
+  },750);
+})();
+</script>
