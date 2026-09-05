@@ -76467,21 +76467,37 @@ body:has(#world.active){background:#010302!important}
      const next=nextIndex(),st=worldState(next),nm=NAMES[next]||`Dungeon ${next+1}`;
      let keyLabel='STARTGEBIET',keyMain='KEIN STEIN NÖTIG',keySub='Dungeon 1 ist direkt geöffnet';
      if(next>0){let has=false;try{has=typeof dungeonUnlocked==='function'&&dungeonUnlocked(next)}catch(e){};keyLabel=`SCHLÜSSELSTEIN ${next+1}`;keyMain=has?'GEFUNDEN':'NOCH NICHT GEFUNDEN';if(has)keySub=`Schlüsselstein ${next+1} gefunden`;else try{keySub=typeof v250KeyStatusText==='function'?v250KeyStatusText(next):`Schlüsselstein ${next+1} fehlt`}catch(e){keySub=`Schlüsselstein ${next+1} fehlt`}}
-     card.innerHTML=`<div class="gl20n-head"><div class="gl20n-skull">💀</div><div><div class="gl20n-kicker">VERSEUCHTE GEBIETE</div><div class="gl20n-title">DUNGEONS</div><div class="gl20n-sub">Wähle deinen Dungeon · 20 Gebiete · je 10 Gegner</div></div><div class="gl20n-ticket"><b>🎟️ DUNGEON-VERSUCH</b><span id="dungeonTicketText">prüfen …</span></div></div><div class="gl20n-mapframe"><div class="gl20n-board">${Array.from({length:20},(_,i)=>node(i)).join('')}</div></div><div class="gl20n-footer"><div class="gl20n-foot"><small>Nächster Dungeon</small><b>${esc(nm)}</b><span>Dungeon ${next+1} · ${esc(stateText(next,st)||'ABGESCHLOSSEN')}</span></div><div class="gl20n-foot"><small>${keyLabel}</small><b class="${st!=='locked'?'green':''}">${keyMain}</b><span>${esc(keySub)}</span></div></div>`;
+     card.innerHTML=`<div class="gl20n-head"><div class="gl20n-skull">💀</div><div><div class="gl20n-kicker">VERSEUCHTE GEBIETE</div><div class="gl20n-title">DUNGEONS</div><div class="gl20n-sub">Wähle deinen Dungeon · 20 Gebiete · je 10 Gegner</div></div><div class="gl20n-ticket"><b>🎟️ DUNGEON-VERSUCH</b><span id="dungeonTicketText">Kostenlosen Versuch prüfen …</span></div></div><div class="gl20n-mapframe"><div class="gl20n-board">${Array.from({length:20},(_,i)=>node(i)).join('')}</div></div><div class="gl20n-footer"><div class="gl20n-foot"><small>Nächster Dungeon</small><b>${esc(nm)}</b><span>Dungeon ${next+1} · ${esc(stateText(next,st)||'ABGESCHLOSSEN')}</span></div><div class="gl20n-foot"><small>${keyLabel}</small><b class="${st!=='locked'?'green':''}">${keyMain}</b><span>${esc(keySub)}</span></div></div>`;
      card.querySelectorAll('[data-gl20n-dungeon]').forEach(btn=>btn.addEventListener('click',ev=>{ev.preventDefault();ev.stopPropagation();const i=Number(btn.dataset.gl20nDungeon),state=worldState(i);if(state==='locked'||state==='completed')return;try{if(typeof v067OpenDungeon==='function')v067OpenDungeon(i);else if(typeof v066OpenDungeon==='function')v066OpenDungeon(i)}catch(e){console.error(e)}}));
      hideLegacyMapChrome(card);
      try{if(typeof renderDungeonTicket==='function')renderDungeonTicket()}catch(e){}
      try{if(typeof updateDungeonTicket==='function')updateDungeonTicket()}catch(e){}
+     paintTicket();
      return true;
    }finally{painting=false}
  }
+ function ticketText(){
+   try{
+     const last=Number(window.s?.dungeonPass?.lastFree||0);
+     const left=Math.max(0,3600000-(Date.now()-last));
+     if(left<=0)return 'Kostenloser Versuch bereit';
+     const m=Math.floor(left/60000),sec=Math.floor((left%60000)/1000);
+     return `Timer ${m}:${String(sec).padStart(2,'0')}`;
+   }catch(e){return 'Kostenlosen Versuch prüfen …'}
+ }
+ function paintTicket(){
+   const el=document.getElementById('dungeonTicketText');
+   if(!el)return;
+   el.textContent=ticketText();
+ }
  window.gl20RenderWorld=render;window.v251RenderWorld=render;window.v065RenderWorld=render;
  function visible(){const sec=document.getElementById('dungeon');if(!sec||!sec.classList.contains('active'))return false;const layer=window.s?.dungeon?.layer;return !layer||layer==='world'}
- function ensure(){if(!visible())return;const card=document.getElementById('dungeonMapCard');if(!card||!card.classList.contains('gl20-v4210')||!card.querySelector('.gl20n-board'))render()}
+ function ensure(){if(!visible())return;const card=document.getElementById('dungeonMapCard');if(!card||!card.classList.contains('gl20-v4210')||!card.querySelector('.gl20n-board'))render();paintTicket()}
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>setTimeout(ensure,0),{once:true});else setTimeout(ensure,0);
  window.addEventListener('pageshow',()=>setTimeout(ensure,0));document.addEventListener('visibilitychange',()=>{if(!document.hidden)setTimeout(ensure,0)});
  const obs=new MutationObserver(()=>{if(!painting)queueMicrotask(ensure)});const startObs=()=>{const sec=document.getElementById('dungeon');if(sec)obs.observe(sec,{subtree:true,childList:true,attributes:true,attributeFilter:['class','style']})};if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',startObs,{once:true});else startObs();
  setInterval(ensure,1200);
+ setInterval(paintTicket,1000);
 })();
 </script>
 
@@ -76501,45 +76517,50 @@ body:has(#world.active){background:#010302!important}
     padding:6px!important;
   }
   .gl20n-board{
-    aspect-ratio:.86 / 1!important;
+    aspect-ratio:.92 / 1!important;
     border-radius:10px!important;
   }
   .gl20n-board::before{
     filter:saturate(.72) brightness(.78) contrast(1.05)!important;
   }
   .gl20n-node{
-    width:18.9%!important;
+    width:18.75%!important;
   }
   .gl20n-node .gl20n-badge{
-    width:52%!important;
+    width:48%!important;
     border-width:2px!important;
     box-shadow:0 0 0 3px rgba(5,10,6,.97),0 4px 8px #000e!important;
     font-size:15px!important;
   }
   .gl20n-node .gl20n-mark{
     left:74%!important;
-    width:30%!important;
-    font-size:12px!important;
+    width:28%!important;
+    font-size:11px!important;
     border-width:1px!important;
     box-shadow:0 0 0 2px rgba(5,10,6,.96),0 3px 6px #000d!important;
   }
   .gl20n-node .gl20n-panel{
-    width:102%!important;
-    min-height:48px!important;
-    padding:6px 3px 5px!important;
+    width:103%!important;
+    min-height:58px!important;
+    padding:8px 4px 6px!important;
     border-width:1.5px!important;
     border-radius:7px!important;
     box-shadow:0 0 0 2px rgba(5,9,5,.92),0 4px 8px #000c!important;
   }
   .gl20n-name{
-    font-size:8.25px!important;
+    display:block!important;
+    font-size:8.0px!important;
     line-height:1.08!important;
     letter-spacing:-.01em!important;
+    overflow-wrap:anywhere!important;
+    word-break:break-word!important;
+    max-width:100%!important;
   }
   .gl20n-state{
-    margin-top:4px!important;
-    font-size:6.9px!important;
+    margin-top:5px!important;
+    font-size:7.0px!important;
     line-height:1!important;
+    white-space:nowrap!important;
   }
   .gl20n-node.current::before{
     width:126%!important;
@@ -76554,8 +76575,11 @@ body:has(#world.active){background:#010302!important}
   }
   .gl20n-node.current .gl20n-state{
     padding:3px 8px!important;
-    margin-top:4px!important;
-    font-size:7.1px!important;
+    margin-top:5px!important;
+    font-size:7.15px!important;
+  }
+  .gl20n-ticket #dungeonTicketText{
+    font-size:10px!important;
   }
   .gl20n-footer{
     margin:0 7px 9px!important;
@@ -76576,11 +76600,13 @@ body:has(#world.active){background:#010302!important}
 
 /* Sehr schmale Displays: weiter groß, aber ohne Überlappungen. */
 @media (max-width:390px){
-  .gl20n-board{aspect-ratio:.82 / 1!important}
-  .gl20n-node{width:18.7%!important}
-  .gl20n-node .gl20n-panel{width:101%!important;min-height:45px!important;padding:5px 2px 4px!important}
-  .gl20n-name{font-size:7.55px!important}
-  .gl20n-state{font-size:6.35px!important}
-  .gl20n-node .gl20n-badge{font-size:14px!important}
+  .gl20n-board{aspect-ratio:.88 / 1!important}
+  .gl20n-node{width:18.65%!important}
+  .gl20n-node .gl20n-panel{width:102%!important;min-height:54px!important;padding:7px 3px 5px!important}
+  .gl20n-name{font-size:7.35px!important;line-height:1.07!important}
+  .gl20n-state{font-size:6.45px!important;margin-top:4px!important}
+  .gl20n-node .gl20n-badge{font-size:13px!important;width:47%!important}
+  .gl20n-node .gl20n-mark{font-size:10px!important;width:27%!important}
+  .gl20n-ticket #dungeonTicketText{font-size:9px!important}
 }
 </style>
