@@ -76735,3 +76735,101 @@ body:has(#world.active){background:#010302!important}
   setTimeout(mount,1200);
 })();
 </script>
+
+<!-- ===== V4.190 DUNGEON NO-FLASH + REAL TIMER FIX ===== -->
+<style id="v4190-dungeon-no-flash">
+/* The old renderer creates the raw grid first. Hide it immediately so it never flashes. */
+#dungeonMapCard.v251-world-card > .v251-world-grid{
+  opacity:0!important;
+  visibility:hidden!important;
+  pointer-events:none!important;
+}
+/* As soon as v4189 moves the same real grid into the sharp map wrapper, enable hotspots. */
+#dungeonMapCard.v251-world-card .v4189-map-wrap > .v251-world-grid{
+  opacity:1!important;
+  visibility:visible!important;
+  pointer-events:auto!important;
+}
+</style>
+
+<script id="v4190-dungeon-real-timer-fix">
+(function(){
+  function fmt(ms){
+    const total=Math.max(0,Math.ceil(ms/1000));
+    const h=Math.floor(total/3600);
+    const m=Math.floor((total%3600)/60);
+    const sec=total%60;
+    if(h>0) return String(h).padStart(2,'0')+':'+String(m).padStart(2,'0')+':'+String(sec).padStart(2,'0');
+    return String(m).padStart(2,'0')+':'+String(sec).padStart(2,'0');
+  }
+
+  function getState(){
+    try{
+      if(typeof s!=='undefined' && s && s.dungeonPass){
+        return s;
+      }
+    }catch(e){}
+    return null;
+  }
+
+  function update(){
+    const ticket=document.querySelector('#dungeonMapCard.v251-world-card .v251-ticket');
+    if(!ticket)return;
+
+    /* Remove stale renderer text like "Gratisversuch prüfen …". */
+    const base=ticket.querySelector('#dungeonTicketText');
+    if(base) base.textContent='';
+
+    let state=ticket.querySelector('.v4190-attempt-state');
+    if(!state){
+      state=document.createElement('span');
+      state.className='v4190-attempt-state';
+      state.style.marginLeft='auto';
+      state.style.fontWeight='1000';
+      state.style.whiteSpace='nowrap';
+      ticket.appendChild(state);
+    }
+
+    const st=getState();
+    if(!st){
+      state.textContent='MÖGLICH';
+      state.style.color='#76f56e';
+      return;
+    }
+
+    const last=Math.max(0,Number(st.dungeonPass?.lastFree)||0);
+    const left=Math.max(0,3600000-(Date.now()-last));
+
+    if(left<=0){
+      state.textContent='MÖGLICH';
+      state.style.color='#76f56e';
+    }else{
+      state.textContent=fmt(left);
+      state.style.color='#f0b85c';
+    }
+  }
+
+  function ensureSharpMap(){
+    /* Reuse the existing v4189 mounting code if the renderer rebuilt the page. */
+    try{
+      const card=document.querySelector('#dungeonMapCard.v251-world-card');
+      const raw=card?.querySelector(':scope > .v251-world-grid');
+      const wrap=card?.querySelector('.v4189-map-wrap');
+      if(raw && wrap) wrap.appendChild(raw);
+    }catch(e){}
+  }
+
+  document.addEventListener('DOMContentLoaded',function(){ensureSharpMap();update()});
+  window.addEventListener('pageshow',function(){ensureSharpMap();update()});
+  document.addEventListener('visibilitychange',function(){
+    if(!document.hidden){ensureSharpMap();update()}
+  });
+
+  /* Fast enough to avoid a visible old-grid flash after renderer rebuilds. */
+  setInterval(ensureSharpMap,120);
+  setInterval(update,500);
+  setTimeout(function(){ensureSharpMap();update()},50);
+  setTimeout(function(){ensureSharpMap();update()},250);
+  setTimeout(function(){ensureSharpMap();update()},900);
+})();
+</script>
