@@ -46227,6 +46227,33 @@ body:has(#world.active) #v337LegalFooter{display:none!important}
 
 <!-- ===== V4.177 CONNECTED DUNGEON WORLD MAP ===== -->
 
+
+<style id="gl20-v4219-optic-fix">
+/* V4.219 Nur Optik: Badge-Kreis sauberer zentrieren, Textreste in Bildfeldern wegcroppen. */
+.gl20g-card{isolation:isolate}
+.gl20g-art{background-position:center 54%!important}
+.gl20g-badge{top:50px!important;left:50%!important;transform:translate(-50%,-50%)!important}
+.gl20g-mark{top:50px!important;left:calc(50% + 24px)!important;transform:translate(-50%,-50%)!important}
+/* Zweite Reihe (6-10): Bild etwas tiefer croppen, damit oben keine alten Textreste mehr sichtbar sind */
+.gl20g-grid > .gl20g-card:nth-child(n+6):nth-child(-n+10) .gl20g-art{background-position:center 66%!important}
+/* Dungeon 11: leicht grünen "Aktuell"-Rest oben wegcroppen */
+.gl20g-grid > .gl20g-card:nth-child(11) .gl20g-art{background-position:center 68%!important}
+/* Etwas stärkere obere Abdunklung gegen Restartefakte im Bild */
+.gl20g-grid > .gl20g-card:nth-child(n+6):nth-child(-n+11) .gl20g-art::before{content:"";position:absolute;left:0;right:0;top:0;height:18px;background:linear-gradient(180deg,rgba(3,6,3,.78),rgba(3,6,3,.18),transparent);z-index:1;pointer-events:none}
+.gl20g-grid > .gl20g-card:nth-child(n+6):nth-child(-n+11) .gl20g-art::after{background:linear-gradient(180deg,rgba(0,0,0,.02) 0%,rgba(2,6,3,.08) 34%,rgba(3,7,4,.82) 82%,#060a07 100%)!important}
+@media(max-width:700px){
+  .gl20g-badge{top:46px!important;width:38px!important;height:38px!important;font-size:15px!important}
+  .gl20g-mark{top:46px!important;left:calc(50% + 21px)!important;width:22px!important;height:22px!important;font-size:11px!important}
+  .gl20g-grid > .gl20g-card:nth-child(n+6):nth-child(-n+10) .gl20g-art{background-position:center 68%!important}
+  .gl20g-grid > .gl20g-card:nth-child(11) .gl20g-art{background-position:center 70%!important}
+}
+@media(max-width:390px){
+  .gl20g-badge{top:44px!important;width:36px!important;height:36px!important;font-size:14px!important}
+  .gl20g-mark{top:44px!important;left:calc(50% + 20px)!important;width:20px!important;height:20px!important;font-size:10px!important}
+  .gl20g-grid > .gl20g-card:nth-child(n+6):nth-child(-n+10) .gl20g-art{background-position:center 70%!important}
+  .gl20g-grid > .gl20g-card:nth-child(11) .gl20g-art{background-position:center 72%!important}
+}
+</style>
 </body>
 </html>
 <style id="v268-inventory-multisell-css">
