@@ -47708,6 +47708,518 @@ body:has(#world.active) #v337LegalFooter{display:none!important}
   try{if(document.getElementById('dungeon')?.classList.contains('active')&&s?.dungeon?.layer==='dungeon'&&s?.dungeon?.view==='map')window.v427RenderDetail()}catch(e){}
 })();
 </script>
+
+<!-- ===== V4.245 HARD DUNGEON TIMER + COMBAT OWNER ===== -->
+<script id="v445-hard-dungeon-runtime">
+(function(){
+  'use strict';
+  if(window.__V445_DUNGEON_RUNTIME__) return;
+  window.__V445_DUNGEON_RUNTIME__=true;
+
+  const HOUR=3600000;
+
+  function previewActive(){
+    return !!(
+      window.__v441Dungeon9Preview?.active ||
+      document.querySelector('#dungeonMapCard.v441-preview-mode')
+    );
+  }
+
+  function leftMs(){
+    try{
+      const last=Math.max(0,Number(s?.dungeonPass?.lastFree)||0);
+      return Math.max(0,HOUR-(Date.now()-last));
+    }catch(e){ return 0; }
+  }
+
+  function clock(ms){
+    const total=Math.max(0,Math.ceil((Number(ms)||0)/1000));
+    const h=Math.floor(total/3600);
+    const m=Math.floor((total%3600)/60);
+    const sec=total%60;
+    return h>0
+      ? `${h}:${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`
+      : `${m}:${String(sec).padStart(2,'0')}`;
+  }
+
+  function paintTimer(){
+    try{
+      if(!document.querySelector('#dungeon')?.classList.contains('active')) return;
+
+      if(!previewActive()){
+        const left=leftMs();
+        const txt=left<=0 ? 'Kostenloser Versuch bereit' : `Timer ${clock(left)}`;
+
+        /* Es existieren historische doppelte IDs. Deshalb wirklich ALLE aktualisieren. */
+        document.querySelectorAll('[id="dungeonTicketText"]').forEach(el=>{
+          if(el && el.textContent!==txt) el.textContent=txt;
+        });
+      }
+
+      const box=document.querySelector('#v324DungeonCountdown');
+      const fightBtn=document.querySelector('#fightBtn');
+      if(box && fightBtn){
+        const di=Math.max(0,Math.min((dungeons?.length||1)-1,Number(s?.dungeon?.selected)||0));
+        const done=typeof dungeonCompleted==='function' && dungeonCompleted(di);
+        if(done){
+          box.style.display='none';
+        }else{
+          box.style.display='block';
+          const left=leftMs();
+          if(left<=0){
+            box.className='ready';
+            box.textContent='✅ Nächster Dungeon-Kampf kostenlos bereit';
+            if(!window.__V445_FIGHTING__) fightBtn.textContent='⚔️ Kampf starten';
+          }else{
+            box.className='wait';
+            box.textContent=`⏳ Nächster kostenloser Kampf in ${clock(left)} · oder sofort für 1 Harz-Taler`;
+            if(!window.__V445_FIGHTING__) fightBtn.textContent='🟢 Sofort kämpfen · 1 Harz-Taler';
+          }
+        }
+      }
+    }catch(e){}
+  }
+
+  /* Rekursiver Timer statt abhängig von den vielen alten setInterval-Patches. */
+  function timerLoop(){
+    paintTimer();
+    setTimeout(timerLoop,250);
+  }
+  setTimeout(timerLoop,250);
+
+  function safeCall(fn, fallback, ...args){
+    try{
+      if(typeof fn==='function') return fn(...args);
+    }catch(e){
+      console.warn('V4.245 fallback',e);
+    }
+    return fallback;
+  }
+
+  function currentFightData(){
+    const di=typeof v048DungeonIndex==='function'
+      ? Number(v048DungeonIndex())
+      : Math.max(0,Math.min((dungeons?.length||1)-1,Number(s?.dungeon?.selected)||0));
+
+    const d=dungeons?.[di];
+
+    const idx=typeof v048RoomIndex==='function'
+      ? Number(v048RoomIndex(di))
+      : Math.max(0,Math.min(9,Number(s?.dungeon?.progress?.[di] ?? s?.dungeon?.room ?? 0)));
+
+    return {di,d,idx,e:d?.enemies?.[idx]};
+  }
+
+  async function startFight(btn){
+    if(window.__V445_FIGHTING__) return;
+    if(previewActive()) return;
+
+    const first=currentFightData();
+    if(!first.d || !first.e) return;
+
+    if(typeof dungeonCompleted==='function' && dungeonCompleted(first.di)){
+      if(typeof v063Toast==='function') v063Toast('Dieser Dungeon ist bereits abgeschlossen.','warn');
+      return;
+    }
+
+    if(typeof dungeonAvailable==='function' && !dungeonAvailable(first.di)){
+      if(typeof v063Toast==='function') v063Toast('Dieser Dungeon ist noch nicht betretbar.','warn');
+      return;
+    }
+
+    if(!s?.playerClass){
+      if(typeof v063Toast==='function') v063Toast('Wähle zuerst deine Klasse.','warn');
+      return;
+    }
+
+    let ok=false;
+    try{
+      ok=await consumeDungeonAttempt();
+    }catch(e){
+      console.error('V4.245 Versuch',e);
+    }
+    if(!ok){
+      paintTimer();
+      return;
+    }
+
+    /* Nach dem Versuchsdialog neu lesen, damit nie ein alter Gegner verwendet wird. */
+    const {di,d,idx,e}=currentFightData();
+    if(!d || !e) return;
+
+    window.__V445_FIGHTING__=true;
+    try{battleBusy=true}catch(e){}
+    btn.disabled=true;
+    btn.textContent='⚔️ KAMPF LÄUFT';
+
+    s.dungeon.lastActive=di;
+    s.dungeon.lastActiveAt=Date.now();
+    s.dungeon.view='battle';
+
+    try{persist(false)}catch(e){}
+
+    try{
+      if(typeof v246RefreshDungeonOpponent==='function') v246RefreshDungeonOpponent();
+    }catch(e){}
+
+    const bal=safeCall(
+      typeof v025EnemyStats!=='undefined' ? v025EnemyStats : null,
+      {
+        rec:Number(e.requiredLevel)||Number(d.minLevel)||1,
+        hp:Math.max(1,Number(e.hp)||100),
+        attack:Math.max(3,Math.round((Number(e.hp)||100)/12))
+      },
+      di,idx,e
+    );
+
+    const pFactor=safeCall(
+      typeof v060PlayerDamageFactor!=='undefined' ? v060PlayerDamageFactor : null,
+      1,
+      bal.rec
+    );
+
+    const eFactor=safeCall(
+      typeof v060EnemyDamageFactor!=='undefined' ? v060EnemyDamageFactor : null,
+      1,
+      bal.rec
+    );
+
+    const maxP=Math.max(1,Number(maxHp())||1);
+    const maxE=Math.max(1,Number(bal.hp)||1);
+
+    let pHp=maxP;
+    let eHp=maxE;
+    let round=0;
+    let playerTurn=true;
+    let finished=false;
+
+    const pBar=document.querySelector('#playerHpBar');
+    const eBar=document.querySelector('#enemyHpBar');
+    const pTxt=document.querySelector('#playerHpText');
+    const eTxt=document.querySelector('#enemyHpText');
+    const log=document.querySelector('#battleLog');
+    const loot=document.querySelector('#loot');
+
+    if(loot) loot.innerHTML='';
+    if(pTxt) pTxt.textContent=pHp;
+    if(eTxt) eTxt.textContent=eHp;
+    if(pBar) pBar.style.width='100%';
+    if(eBar) eBar.style.width='100%';
+    if(log) log.textContent=`${e.name} · Empfohlen Lv. ${bal.rec}`;
+
+    let talent=null;
+    try{
+      if(typeof v318NewCombatState==='function') talent=v318NewCombatState('dungeon',maxP);
+    }catch(err){
+      console.warn('V4.245 Talentstatus ignoriert',err);
+    }
+
+    function updateBars(){
+      if(pTxt) pTxt.textContent=Math.max(0,Math.round(pHp));
+      if(eTxt) eTxt.textContent=Math.max(0,Math.round(eHp));
+      if(pBar) pBar.style.width=`${Math.max(0,Math.min(100,pHp/maxP*100))}%`;
+      if(eBar) eBar.style.width=`${Math.max(0,Math.min(100,eHp/maxE*100))}%`;
+    }
+
+    function finish(win){
+      if(finished) return;
+      finished=true;
+      window.__V445_FIGHTING__=false;
+      try{battleBusy=false}catch(e){}
+      btn.disabled=false;
+      s.dungeon.view='reward';
+
+      let rewardItem=null;
+      let harzGain=0;
+
+      if(win){
+        const baseXp=Math.max(0,Number(e.xp)||0);
+        const baseGold=Math.max(0,Number(e.gold)||0);
+
+        const xpEvent=(typeof v094XpEventActive==='function' && v094XpEventActive()) ? baseXp*2 : baseXp;
+        const goldEvent=(typeof v274GoldEventActive==='function' && v274GoldEventActive()) ? baseGold*2 : baseGold;
+
+        const actualGold=typeof v408GuildGold==='function' ? v408GuildGold(goldEvent) : goldEvent;
+        const actualXp=typeof v408GuildPct==='function'
+          ? Math.round(xpEvent*(1+v408GuildPct('xp')/100))
+          : xpEvent;
+
+        s.gold=(Number(s.gold)||0)+actualGold;
+        /* Bestehende XP-Funktion beibehalten. */
+        addXp(xpEvent);
+
+        try{
+          if(e.boss){
+            rewardItem=typeof v246MakeBossEpic==='function'
+              ? v246MakeBossEpic()
+              : makeClassLoot(s.playerClass||'grower','dungeon');
+            if(rewardItem){
+              if(!rewardItem.quality) rewardItem.quality='purple';
+              s.inventory.push(rewardItem);
+            }
+          }else if(Math.random()<.22){
+            if(Math.random()<.8){
+              rewardItem=makeClassLoot(s.playerClass||'grower','dungeon');
+            }else{
+              const other=['grower','bruiser','scout','frost'].filter(x=>x!==s.playerClass);
+              rewardItem=makeClassLoot(other[Math.floor(Math.random()*other.length)],'dungeon');
+            }
+            if(rewardItem) s.inventory.push(rewardItem);
+          }
+        }catch(err){
+          console.error('V4.245 Loot',err);
+        }
+
+        if(e.boss){
+          s.story.bossesDefeated=(Number(s.story.bossesDefeated)||0)+1;
+          s.story.chapter=Math.min(4,1+Math.floor(s.story.bossesDefeated/2));
+
+          if(Math.random()<.22){
+            s.harzTaler=(Number(s.harzTaler)||0)+1;
+            harzGain=1;
+          }
+
+          if(!Array.isArray(s.dungeon.completed)) s.dungeon.completed=[];
+          if(!s.dungeon.completed.includes(di)) s.dungeon.completed.push(di);
+          s.dungeon.room=9;
+          s.dungeon.progress[di]=9;
+        }else{
+          s.dungeon.room=idx+1;
+          s.dungeon.progress[di]=idx+1;
+        }
+
+        try{persist(false)}catch(err){
+          try{localStorage.setItem(KEY,JSON.stringify(s))}catch(_){}
+        }
+
+        try{
+          if(typeof v247ShowDungeonReward==='function'){
+            v247ShowDungeonReward({
+              dungeonIndex:di,
+              roomIndex:idx,
+              enemy:e,
+              xp:actualXp,
+              gold:actualGold,
+              baseXp,
+              baseGold,
+              item:rewardItem,
+              harz:harzGain,
+              boss:!!e.boss
+            });
+          }else if(loot){
+            loot.innerHTML=`<div class="loot good">🏆 Sieg! +${actualXp} XP · +${actualGold} Gold</div>`;
+          }
+        }catch(err){
+          console.error('V4.245 Belohnung',err);
+          if(loot) loot.innerHTML=`<div class="loot good">🏆 Sieg! +${actualXp} XP · +${actualGold} Gold</div>`;
+        }
+
+        if(log){
+          log.textContent=e.boss
+            ? 'Boss besiegt. Bestätige deine Belohnung.'
+            : `Gegner ${idx+1} besiegt. Gegner ${idx+2} ist jetzt aktiv.`;
+        }
+      }else{
+        try{persist(false)}catch(e){}
+        if(loot){
+          loot.innerHTML=`
+            <div class="loot" style="color:#ff9895">💀 Niederlage. Verbessere Attribute oder Ausrüstung.</div>
+            <button class="btn secondary" id="v445ReturnMap" style="width:100%;margin-top:10px">🗺️ Zurück zur Dungeon-Karte</button>
+          `;
+        }
+        if(log) log.textContent=`Niederlage · Gegner empfohlen Lv. ${bal.rec}.`;
+
+        const back=document.querySelector('#v445ReturnMap');
+        if(back){
+          back.onclick=()=>{
+            s.dungeon.layer='dungeon';
+            s.dungeon.view='map';
+            try{persist(false)}catch(e){}
+            try{
+              if(typeof v244RenderSelectedDungeonMap==='function') v244RenderSelectedDungeonMap();
+              else renderDungeon();
+            }catch(e){}
+          };
+        }
+      }
+
+      try{if(typeof v069SyncCurrencies==='function')v069SyncCurrencies()}catch(e){}
+      try{if(typeof renderInventory==='function')renderInventory()}catch(e){}
+      paintTimer();
+    }
+
+    function playerAttack(){
+      round++;
+
+      const primary=typeof v029PrimaryStat==='function'
+        ? Number(v029PrimaryStat())||0
+        : Number(totalAttr('staerke'))||0;
+
+      const baseDamage=Math.max(
+        3,
+        Math.floor((primary*1.9+(Number(s.level)||1)*1.55+Math.random()*7)*Number(pFactor||1))
+      );
+
+      let damage=baseDamage;
+      let heal=0;
+      let crit=false;
+      let label='TREFFER';
+
+      try{
+        if(talent && typeof v318ResolvePlayerAttack==='function'){
+          const a=v318ResolvePlayerAttack(talent,{
+            baseDamage,
+            enemyHp:eHp,
+            enemyMax:maxE,
+            playerHp:pHp,
+            playerMax:maxP,
+            baseCrit:Math.min(.30,.04+(Number(totalAttr('glueck'))||0)*.012),
+            setCrit:s.playerClass==='bruiser' ? (.07+Number(setBonusValue('critChance')||0)) : 0,
+            baseWucht:(s.playerClass==='grower'||s.playerClass==='frost') ? (.13+Number(setBonusValue('wuchtChance')||0)) : 0,
+            baseDouble:s.playerClass==='scout' ? (.15+Number(setBonusValue('doubleChance')||0)) : 0,
+            setDoubleDamage:Number(setBonusValue('doubleDamage')||0)
+          })||{};
+          damage=Math.max(1,Math.round(Number(a.damage)||baseDamage));
+          heal=Math.max(0,Math.round(Number(a.heal)||0));
+          crit=!!a.crit;
+          label=a.text||label;
+        }
+      }catch(err){
+        console.warn('V4.245 Spieler-Talent übersprungen',err);
+      }
+
+      pHp=Math.min(maxP,pHp+heal);
+      eHp=Math.max(0,eHp-damage);
+
+      try{if(typeof animClass==='function')animClass(document.querySelector('#playerFighter'),'attack-right')}catch(e){}
+      try{if(typeof popDamage==='function')popDamage(document.querySelector('#damageEnemy'),`-${damage}${crit?'!':''}`)}catch(e){}
+
+      updateBars();
+      if(log) log.textContent=`Runde ${round}: ${label} · ${damage} Schaden${heal?` · +${heal} LP`:''}`;
+
+      if(eHp<=0){
+        finish(true);
+        return false;
+      }
+      return true;
+    }
+
+    function enemyAttack(){
+      const armor=Number(totalAttr('ruestung'))||0;
+      const baseDamage=Math.max(
+        3,
+        Math.floor((Number(bal.attack||5)+Math.random()*7-armor*.34)*Number(eFactor||1))
+      );
+
+      let damage=baseDamage;
+      let heal=0;
+      let counter=0;
+      let prevent=false;
+      let label='Gegner trifft';
+
+      try{
+        if(talent && typeof v318ResolveEnemyAttack==='function'){
+          const d=v318ResolveEnemyAttack(talent,{
+            damage:baseDamage,
+            playerHp:pHp,
+            playerMax:maxP
+          })||{};
+          damage=Math.max(0,Math.round(Number(d.damage)||0));
+          heal=Math.max(0,Math.round(Number(d.heal)||0));
+          counter=Math.max(0,Math.round(Number(d.counterDamage)||0));
+          prevent=!!d.preventLethal;
+          label=d.text||label;
+        }
+      }catch(err){
+        console.warn('V4.245 Gegner-Talent übersprungen',err);
+      }
+
+      pHp=Math.min(maxP,pHp+heal);
+      pHp=Math.max(0,pHp-damage);
+      if(prevent && pHp<=0) pHp=1;
+      if(counter) eHp=Math.max(0,eHp-counter);
+
+      try{if(typeof animClass==='function')animClass(document.querySelector('#enemyFighter'),'attack-left')}catch(e){}
+      try{if(damage && typeof popDamage==='function')popDamage(document.querySelector('#damagePlayer'),`-${damage}`)}catch(e){}
+
+      updateBars();
+      if(log) log.textContent+=` · ${label}${counter?` · Konter ${counter}`:''}${heal?` · +${heal} LP`:''}`;
+
+      if(eHp<=0){
+        finish(true);
+        return false;
+      }
+      if(pHp<=0){
+        finish(false);
+        return false;
+      }
+      if(round>=45){
+        finish((pHp/maxP)>(eHp/maxE));
+        return false;
+      }
+      return true;
+    }
+
+    /* Sofort erster Schlag, danach garantiert alle 360 ms weiter. */
+    playerAttack();
+    if(finished) return;
+
+    function combatLoop(){
+      if(finished) return;
+      try{
+        if(playerTurn){
+          if(!enemyAttack()) return;
+          playerTurn=false;
+        }else{
+          if(!playerAttack()) return;
+          playerTurn=true;
+        }
+      }catch(err){
+        console.error('V4.245 Kampftick',err);
+        /* Fehler dürfen den Loop nicht beenden. */
+        playerTurn=!playerTurn;
+      }
+      if(!finished) setTimeout(combatLoop,360);
+    }
+
+    /* Nach dem initialen Spieler-Schlag kommt zuerst der Gegner. */
+    playerTurn=true;
+    setTimeout(combatLoop,360);
+  }
+
+  /*
+    Harter Click-Owner in CAPTURE-PHASE.
+    Dadurch kann kein alter onclick-Handler den Kampf parallel starten oder
+    nach einem Treffer den Ablauf übernehmen.
+  */
+  document.addEventListener('click',function(ev){
+    const btn=ev.target?.closest?.('#fightBtn');
+    if(!btn) return;
+    if(!document.querySelector('#dungeon')?.classList.contains('active')) return;
+    if(previewActive()) return;
+
+    ev.preventDefault();
+    ev.stopImmediatePropagation();
+
+    startFight(btn).catch(err=>{
+      console.error('V4.245 Kampfstart',err);
+      window.__V445_FIGHTING__=false;
+      try{battleBusy=false}catch(e){}
+      btn.disabled=false;
+      paintTimer();
+    });
+  },true);
+
+  window.addEventListener('pageshow',paintTimer,{passive:true});
+  document.addEventListener('visibilitychange',()=>{
+    if(!document.hidden)paintTimer();
+  },{passive:true});
+
+  window.v445PaintDungeonTimer=paintTimer;
+})();
+</script>
+<!-- ===== /V4.245 HARD DUNGEON TIMER + COMBAT OWNER ===== -->
+
 </body>
 </html>
 <style id="v268-inventory-multisell-css">
@@ -80452,537 +80964,3 @@ body:has(#world.active){background:#010302!important}
 })();
 </script>
 <!-- ===== /V4.243 D9 PREVIEW LAUNCH FIX ===== -->
-
-
-<!-- ===== V4.244 DUNGEON TIMER + COMBAT LOOP FIX ===== -->
-<script id="v444-dungeon-timer-combat-fix">
-(function(){
-  /* -----------------------------------------------------------
-     1) Dungeon-Timer: eigener Live-Owner, exakt jede Sekunde.
-     Vorschauen bleiben absichtlich auf "kein Versuch verbraucht".
-     ----------------------------------------------------------- */
-  function v444LeftMs(){
-    try{
-      const last=Number(s?.dungeonPass?.lastFree)||0;
-      return Math.max(0,3600000-(Date.now()-last));
-    }catch(e){ return 0; }
-  }
-
-  function v444Clock(ms){
-    const total=Math.max(0,Math.ceil(Number(ms)||0)/1000);
-    const whole=Math.ceil(total);
-    const h=Math.floor(whole/3600);
-    const m=Math.floor((whole%3600)/60);
-    const sec=whole%60;
-    return h>0
-      ? `${h}:${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`
-      : `${m}:${String(sec).padStart(2,'0')}`;
-  }
-
-  function v444PreviewActive(){
-    return !!(
-      window.__v441Dungeon9Preview?.active ||
-      document.querySelector('#dungeonMapCard.v441-preview-mode')
-    );
-  }
-
-  function v444PaintDungeonClocks(){
-    try{
-      const dungeon=document.querySelector('#dungeon');
-      if(!dungeon?.classList.contains('active')) return;
-
-      if(!v444PreviewActive()){
-        const left=v444LeftMs();
-        const txt=left<=0
-          ? 'Kostenloser Versuch bereit'
-          : `Timer ${v444Clock(left)}`;
-
-        document.querySelectorAll('#dungeonTicketText').forEach(el=>{
-          if(el && el.textContent!==txt) el.textContent=txt;
-        });
-      }
-
-      const box=document.querySelector('#v324DungeonCountdown');
-      if(box){
-        const di=Math.max(
-          0,
-          Math.min(
-            (typeof dungeons!=='undefined' && dungeons?.length ? dungeons.length : 1)-1,
-            Number(s?.dungeon?.selected)||0
-          )
-        );
-        const done=typeof dungeonCompleted==='function' && dungeonCompleted(di);
-        if(done){
-          box.style.display='none';
-        }else{
-          box.style.display='block';
-          const left=v444LeftMs();
-          if(left<=0){
-            box.className='ready';
-            box.textContent='✅ Nächster Dungeon-Kampf kostenlos bereit';
-          }else{
-            box.className='wait';
-            box.textContent=`⏳ Nächster kostenloser Kampf in ${v444Clock(left)} · oder sofort für 1 Harz-Taler`;
-          }
-        }
-      }
-    }catch(e){
-      console.error('V4.244 Dungeon timer',e);
-    }
-  }
-
-  if(window.__v444DungeonClock){
-    try{clearInterval(window.__v444DungeonClock)}catch(e){}
-  }
-  const v444NativeInterval=window.__V477_NATIVE_SET_INTERVAL__ || window.setInterval;
-  window.__v444DungeonClock=v444NativeInterval(v444PaintDungeonClocks,1000);
-  setTimeout(v444PaintDungeonClocks,80);
-  window.addEventListener('pageshow',()=>setTimeout(v444PaintDungeonClocks,50),{passive:true});
-  document.addEventListener('visibilitychange',()=>{
-    if(!document.hidden)setTimeout(v444PaintDungeonClocks,50);
-  },{passive:true});
-
-  /* -----------------------------------------------------------
-     2) Dungeon-Kampf: finaler robuster Besitzer.
-     Kein verschachtelter Timeout-Loop mehr. Spieler/Gegner wechseln
-     über einen nativen Intervall-Takt. Talentfehler können den Kampf
-     nicht mehr nach einem Treffer stoppen.
-     ----------------------------------------------------------- */
-  function v444InstallFight(){
-    const btn=document.querySelector('#fightBtn');
-    if(!btn) return;
-
-    btn.onclick=async()=>{
-      if(battleBusy) return;
-
-      try{ if(typeof v246RefreshDungeonOpponent==='function')v246RefreshDungeonOpponent(); }catch(e){}
-
-      const di=typeof v048DungeonIndex==='function'
-        ? v048DungeonIndex()
-        : Math.max(0,Math.min((dungeons?.length||1)-1,Number(s?.dungeon?.selected)||0));
-
-      const d=dungeons?.[di];
-      const idx=typeof v048RoomIndex==='function'
-        ? v048RoomIndex(di)
-        : Math.max(0,Math.min(9,Number(s?.dungeon?.progress?.[di] ?? s?.dungeon?.room ?? 0)));
-
-      const e=d?.enemies?.[idx];
-      if(!d||!e) return;
-
-      if(typeof dungeonCompleted==='function' && dungeonCompleted(di)){
-        if(typeof v063Toast==='function')v063Toast('Dieser Dungeon ist bereits abgeschlossen.','warn');
-        return;
-      }
-      if(typeof dungeonAvailable==='function' && !dungeonAvailable(di)){
-        if(typeof v063Toast==='function')v063Toast('Dieser Dungeon ist noch nicht betretbar.','warn');
-        return;
-      }
-      if(!s.playerClass){
-        if(typeof v063Toast==='function')v063Toast('Wähle zuerst deine Klasse.','warn');
-        return;
-      }
-
-      let attemptAllowed=false;
-      try{ attemptAllowed=await consumeDungeonAttempt(); }
-      catch(err){
-        console.error('V4.244 attempt',err);
-        return;
-      }
-      if(!attemptAllowed) return;
-
-      /* Nach dem Dialog aktuelle Daten nochmals lesen. */
-      const fightDi=typeof v048DungeonIndex==='function' ? v048DungeonIndex() : di;
-      const fightIdx=typeof v048RoomIndex==='function' ? v048RoomIndex(fightDi) : idx;
-      const fightDungeon=dungeons?.[fightDi];
-      const fightEnemy=fightDungeon?.enemies?.[fightIdx];
-      if(!fightDungeon||!fightEnemy) return;
-
-      s.dungeon.lastActive=fightDi;
-      s.dungeon.lastActiveAt=Date.now();
-      s.dungeon.view='battle';
-
-      try{persist(false)}catch(err){
-        try{localStorage.setItem(KEY,JSON.stringify(s))}catch(_){}
-      }
-
-      try{ if(typeof v246RefreshDungeonOpponent==='function')v246RefreshDungeonOpponent(); }catch(e){}
-
-      battleBusy=true;
-      btn.disabled=true;
-
-      const loot=document.querySelector('#loot');
-      if(loot)loot.innerHTML='';
-
-      const bal=typeof v025EnemyStats==='function'
-        ? v025EnemyStats(fightDi,fightIdx,fightEnemy)
-        : {
-            rec:Number(fightEnemy.requiredLevel)||Number(fightDungeon.minLevel)||1,
-            hp:Number(fightEnemy.hp)||100,
-            attack:Math.max(5,Math.round((Number(fightEnemy.hp)||100)/10))
-          };
-
-      const pFactor=typeof v060PlayerDamageFactor==='function'
-        ? v060PlayerDamageFactor(bal.rec)
-        : 1;
-      const eFactor=typeof v060EnemyDamageFactor==='function'
-        ? v060EnemyDamageFactor(bal.rec)
-        : 1;
-
-      const maxP=Math.max(1,Number(maxHp())||1);
-      let pHp=maxP;
-      let eHp=Math.max(1,Number(bal.hp)||1);
-      let round=0;
-      let phase='player';
-      let ended=false;
-
-      const pBar=document.querySelector('#playerHpBar');
-      const eBar=document.querySelector('#enemyHpBar');
-      const pTxt=document.querySelector('#playerHpText');
-      const eTxt=document.querySelector('#enemyHpText');
-      const log=document.querySelector('#battleLog');
-
-      if(pTxt)pTxt.textContent=pHp;
-      if(eTxt)eTxt.textContent=eHp;
-      if(pBar)pBar.style.width='100%';
-      if(eBar)eBar.style.width='100%';
-      if(log)log.textContent=`${fightEnemy.name} · Empfohlen Lv. ${bal.rec}`;
-
-      let talentFight=null;
-      try{
-        if(typeof v318NewCombatState==='function'){
-          talentFight=v318NewCombatState('dungeon',maxP);
-        }
-      }catch(err){
-        console.warn('V4.244 Talent-Start fallback',err);
-      }
-
-      let timer=null;
-      const stopTimer=()=>{
-        try{ if(timer!=null)clearInterval(timer); }catch(e){}
-        timer=null;
-      };
-
-      const showResult=win=>{
-        if(ended)return;
-        ended=true;
-        stopTimer();
-        battleBusy=false;
-        btn.disabled=false;
-        s.dungeon.view='reward';
-
-        if(win){
-          const baseXp=Math.max(0,Number(fightEnemy.xp)||0);
-          const baseGold=Math.max(0,Number(fightEnemy.gold)||0);
-
-          const xp=(typeof v094XpEventActive==='function' && v094XpEventActive())
-            ? baseXp*2 : baseXp;
-          const gold=(typeof v274GoldEventActive==='function' && v274GoldEventActive())
-            ? baseGold*2 : baseGold;
-
-          const actualGold=typeof v408GuildGold==='function'
-            ? v408GuildGold(gold) : gold;
-          const actualXp=typeof v408GuildPct==='function'
-            ? Math.round(xp*(1+v408GuildPct('xp')/100)) : xp;
-
-          s.gold+=actualGold;
-          /* Bestehende Progressionslogik unverändert lassen. */
-          addXp(xp);
-
-          let rewardHtml=`<div class="loot good">Sieg! +${actualXp} XP · +${actualGold} Gold</div>`;
-          let rewardItem=null;
-          let harzGain=0;
-
-          if(fightEnemy.boss){
-            try{
-              rewardItem=typeof v246MakeBossEpic==='function'
-                ? v246MakeBossEpic()
-                : makeClassLoot(s.playerClass||'grower','dungeon');
-              if(rewardItem){
-                if(!rewardItem.quality)rewardItem.quality='purple';
-                s.inventory.push(rewardItem);
-                if(typeof v246DungeonRewardItemHtml==='function'){
-                  rewardHtml+=v246DungeonRewardItemHtml(rewardItem,true);
-                }
-              }
-            }catch(err){
-              console.error('V4.244 boss loot',err);
-            }
-          }else if(Math.random()<.22){
-            try{
-              if(Math.random()<.8){
-                rewardItem=makeClassLoot(s.playerClass||'grower','dungeon');
-              }else{
-                const other=['grower','bruiser','scout','frost'].filter(x=>x!==s.playerClass);
-                rewardItem=makeClassLoot(other[Math.floor(Math.random()*other.length)],'dungeon');
-              }
-              if(rewardItem){
-                s.inventory.push(rewardItem);
-                if(typeof v246DungeonRewardItemHtml==='function'){
-                  rewardHtml+=v246DungeonRewardItemHtml(rewardItem,false);
-                }
-              }
-            }catch(err){
-              console.error('V4.244 normal loot',err);
-            }
-          }
-
-          if(fightEnemy.boss){
-            s.story.bossesDefeated=(Number(s.story.bossesDefeated)||0)+1;
-            s.story.chapter=Math.min(4,1+Math.floor(s.story.bossesDefeated/2));
-
-            if(Math.random()<.22){
-              s.harzTaler=(Number(s.harzTaler)||0)+1;
-              harzGain=1;
-              rewardHtml+='<div class="loot">🟢 Harz-Taler gefunden!</div>';
-            }
-
-            if(!s.dungeon.completed.includes(fightDi))s.dungeon.completed.push(fightDi);
-            s.dungeon.room=9;
-            s.dungeon.progress[fightDi]=9;
-            rewardHtml+='<div class="loot good">Dungeon abgeschlossen! Der Eingang wurde versiegelt.</div>';
-          }else{
-            s.dungeon.room=fightIdx+1;
-            s.dungeon.progress[fightDi]=fightIdx+1;
-          }
-
-          if(loot)loot.innerHTML='';
-
-          try{
-            if(typeof v247ShowDungeonReward==='function'){
-              v247ShowDungeonReward({
-                dungeonIndex:fightDi,
-                roomIndex:fightIdx,
-                enemy:fightEnemy,
-                xp:actualXp,
-                gold:actualGold,
-                baseXp,
-                baseGold,
-                item:rewardItem,
-                harz:harzGain,
-                boss:!!fightEnemy.boss
-              });
-            }else if(loot){
-              loot.innerHTML=rewardHtml;
-            }
-          }catch(err){
-            console.error('V4.244 reward modal',err);
-            if(loot)loot.innerHTML=rewardHtml;
-          }
-
-          if(log){
-            log.textContent=fightEnemy.boss
-              ? 'Boss besiegt. Bestätige deine Belohnung.'
-              : `Gegner ${fightIdx+1} besiegt. Gegner ${fightIdx+2} ist jetzt aktiv.`;
-          }
-        }else{
-          if(loot){
-            loot.innerHTML=`
-              <div class="loot" style="color:#ff9895">Niederlage. Der Gegner war zu stark.</div>
-              <button class="btn secondary" id="v444ReturnMap" style="width:100%;margin-top:10px">
-                Zurück zur 10er-Karte
-              </button>
-            `;
-          }
-          if(log)log.textContent=`Niederlage · Gegner empfohlen Lv. ${bal.rec}.`;
-        }
-
-        try{persist(false)}catch(err){
-          try{localStorage.setItem(KEY,JSON.stringify(s))}catch(_){}
-        }
-        try{ if(typeof v069SyncCurrencies==='function')v069SyncCurrencies(); }catch(e){}
-        try{ if(typeof renderInventory==='function')renderInventory(); }catch(e){}
-
-        const back=document.querySelector('#v444ReturnMap');
-        if(back){
-          back.onclick=()=>{
-            s.dungeon.layer='dungeon';
-            s.dungeon.view='map';
-            if(loot)loot.innerHTML='';
-            try{persist(false)}catch(e){}
-            try{
-              if(typeof v244RenderSelectedDungeonMap==='function')v244RenderSelectedDungeonMap();
-              else renderDungeon();
-            }catch(e){}
-            try{window.scrollTo({top:0,behavior:'smooth'})}catch(e){}
-          };
-        }
-
-        setTimeout(v444PaintDungeonClocks,20);
-      };
-
-      function safePlayerAttack(){
-        round++;
-
-        const primary=typeof v029PrimaryStat==='function'
-          ? Number(v029PrimaryStat())||0
-          : Number(totalAttr('staerke'))||0;
-
-        const baseDamage=Math.max(
-          3,
-          Math.floor((primary*1.9+s.level*1.55+Math.random()*7)*pFactor)
-        );
-
-        let pDmg=baseDamage;
-        let heal=0;
-        let attackText='TREFFER';
-        let crit=false;
-
-        try{
-          if(talentFight && typeof v318ResolvePlayerAttack==='function'){
-            const a=v318ResolvePlayerAttack(talentFight,{
-              baseDamage,
-              enemyHp:eHp,
-              enemyMax:bal.hp,
-              playerHp:pHp,
-              playerMax:maxP,
-              baseCrit:Math.min(.30,.04+(Number(totalAttr('glueck'))||0)*.012),
-              setCrit:s.playerClass==='bruiser' ? (.07+Number(setBonusValue('critChance')||0)) : 0,
-              baseWucht:(s.playerClass==='grower'||s.playerClass==='frost') ? (.13+Number(setBonusValue('wuchtChance')||0)) : 0,
-              baseDouble:s.playerClass==='scout' ? (.15+Number(setBonusValue('doubleChance')||0)) : 0,
-              setDoubleDamage:Number(setBonusValue('doubleDamage')||0)
-            })||{};
-            pDmg=Math.max(1,Math.round(Number(a.damage)||baseDamage));
-            heal=Math.max(0,Math.round(Number(a.heal)||0));
-            attackText=a.text||attackText;
-            crit=!!a.crit;
-          }
-        }catch(err){
-          console.warn('V4.244 Spieler-Talent fallback',err);
-        }
-
-        pHp=Math.min(maxP,pHp+heal);
-        eHp=Math.max(0,eHp-pDmg);
-
-        try{animClass(document.querySelector('#playerFighter'),'attack-right')}catch(e){}
-        if(eTxt)eTxt.textContent=eHp;
-        if(eBar)eBar.style.width=`${Math.max(0,eHp/bal.hp*100)}%`;
-        if(pTxt)pTxt.textContent=pHp;
-        if(pBar)pBar.style.width=`${Math.max(0,pHp/maxP*100)}%`;
-        try{popDamage(document.querySelector('#damageEnemy'),`-${pDmg}${crit?'!':''}`)}catch(e){}
-
-        if(log){
-          log.textContent=`Runde ${round}: ${attackText} · ${pDmg} Schaden${heal?` · +${heal} LP`:''}`;
-        }
-
-        if(eHp<=0){
-          showResult(true);
-          return false;
-        }
-        return true;
-      }
-
-      function safeEnemyAttack(){
-        const armor=Number(totalAttr('ruestung'))||0;
-        const baseEnemyDamage=Math.max(
-          3,
-          Math.floor((Number(bal.attack||5)+Math.random()*7-armor*.34)*eFactor)
-        );
-
-        let damage=baseEnemyDamage;
-        let heal=0;
-        let counter=0;
-        let prevent=false;
-        let defenseText='Gegner trifft';
-
-        try{
-          if(talentFight && typeof v318ResolveEnemyAttack==='function'){
-            const d=v318ResolveEnemyAttack(talentFight,{
-              damage:baseEnemyDamage,
-              playerHp:pHp,
-              playerMax:maxP
-            })||{};
-            damage=Math.max(0,Math.round(Number(d.damage)||0));
-            heal=Math.max(0,Math.round(Number(d.heal)||0));
-            counter=Math.max(0,Math.round(Number(d.counterDamage)||0));
-            prevent=!!d.preventLethal;
-            defenseText=d.text||defenseText;
-          }
-        }catch(err){
-          console.warn('V4.244 Gegner-Talent fallback',err);
-        }
-
-        pHp=Math.min(maxP,pHp+heal);
-        pHp=Math.max(0,pHp-damage);
-        if(prevent&&pHp<=0)pHp=1;
-
-        if(counter)eHp=Math.max(0,eHp-counter);
-
-        try{animClass(document.querySelector('#enemyFighter'),'attack-left')}catch(e){}
-        if(pTxt)pTxt.textContent=pHp;
-        if(pBar)pBar.style.width=`${Math.max(0,pHp/maxP*100)}%`;
-        if(eTxt)eTxt.textContent=eHp;
-        if(eBar)eBar.style.width=`${Math.max(0,eHp/bal.hp*100)}%`;
-        try{ if(damage)popDamage(document.querySelector('#damagePlayer'),`-${damage}`); }catch(e){}
-
-        if(log){
-          log.textContent+=` · ${defenseText}${counter?` · Konter ${counter}`:''}${heal?` · +${heal} LP`:''}`;
-        }
-
-        if(eHp<=0){
-          showResult(true);
-          return false;
-        }
-        if(pHp<=0){
-          showResult(false);
-          return false;
-        }
-        if(round>=45){
-          showResult(pHp/maxP > eHp/bal.hp);
-          return false;
-        }
-        return true;
-      }
-
-      /* Sofort erster Schlag, danach sauberer Wechsel Spieler/Gegner. */
-      safePlayerAttack();
-      if(ended)return;
-
-      const nativeInterval=window.__V477_NATIVE_SET_INTERVAL__ || window.setInterval;
-      timer=nativeInterval(()=>{
-        if(ended)return stopTimer();
-        if(!battleBusy){
-          /* Kein stilles Hängen: falls ein alter Painter battleBusy verändert,
-             beendet nur ein echtes Ergebnis den neuen Kampf. */
-          battleBusy=true;
-        }
-
-        try{
-          if(phase==='player'){
-            if(!safePlayerAttack())return;
-            phase='enemy';
-          }else{
-            if(!safeEnemyAttack())return;
-            phase='player';
-          }
-        }catch(err){
-          console.error('V4.244 Combat tick fallback',err);
-          /* Fehler im Effekt/Talent darf den nächsten Tick nicht stoppen. */
-          phase=phase==='player'?'enemy':'player';
-        }
-      },380);
-    };
-  }
-
-  /* Finaler Besitzer – auch spätere Render-Wrapper verwenden diese Variable. */
-  try{
-    v246InstallFight=v444InstallFight;
-    window.v246InstallFight=v444InstallFight;
-  }catch(e){}
-
-  /* Sofort binden, falls der Nutzer bereits auf dem Kampf-Screen ist. */
-  setTimeout(()=>{
-    try{
-      if(
-        document.querySelector('#dungeon')?.classList.contains('active') &&
-        s?.dungeon?.layer==='dungeon' &&
-        s?.dungeon?.view==='battle'
-      ){
-        v444InstallFight();
-      }
-    }catch(e){}
-  },100);
-
-  window.v444InstallFight=v444InstallFight;
-})();
-</script>
-<!-- ===== /V4.244 DUNGEON TIMER + COMBAT LOOP FIX ===== -->
