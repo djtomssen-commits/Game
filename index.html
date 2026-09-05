@@ -2104,7 +2104,7 @@ function renderDungeon(){
  if(!battleBusy)document.querySelector('#battleLog').textContent=selectedDone?'Dieser Dungeon wurde vollständig abgeschlossen. Der Eingang ist dauerhaft versiegelt.':`${d.name}: ${e.name} wartet auf dich.`;
 }
 function animClass(el,cl,ms=400){el.classList.remove(cl);void el.offsetWidth;el.classList.add(cl);setTimeout(()=>el.classList.remove(cl),ms)}function popDamage(el,text){el.textContent=text;animClass(el,'pop',650)}
-document.querySelector('#fightBtn').onclick=()=>{if(battleBusy)return;if(dungeonCompleted(s.dungeon.selected||0))return v115Alert('Dieser Dungeon ist bereits abgeschlossen und dauerhaft versiegelt.');if(!dungeonAvailable(s.dungeon.selected||0))return v115Alert('Dieser Dungeon ist noch nicht betretbar.');const gateEnemy=currentDungeonEnemy();if(s.level<(gateEnemy?.requiredLevel||1))return v115Alert(`Dieser Gegner ist für Level ${gateEnemy?.requiredLevel||1} ausgelegt. Erledige zuerst Quests und verbessere deinen Helden.`);if(!s.playerClass)return v115Alert('Wähle zuerst im Heldenquartier deine Klasse.');if(!consumeDungeonAttempt())return;persist(false);battleBusy=true;const btn=document.querySelector('#fightBtn');btn.disabled=true;document.querySelector('#loot').innerHTML='';const d=currentDungeon(),idx=Math.max(0,Math.min(9,(s.dungeon.progress?.[s.dungeon.selected] ?? s.dungeon.room ?? 0))),e=d.enemies[idx],maxP=maxHp();let pHp=maxP,eHp=e.hp;const pBar=document.querySelector('#playerHpBar'),eBar=document.querySelector('#enemyHpBar'),pTxt=document.querySelector('#playerHpText'),eTxt=document.querySelector('#enemyHpText'),log=document.querySelector('#battleLog');let round=0;
+document.querySelector('#fightBtn').onclick=()=>{if(battleBusy)return;if(dungeonCompleted(s.dungeon.selected||0))return v115Alert('Dieser Dungeon ist bereits abgeschlossen und dauerhaft versiegelt.');if(!dungeonAvailable(s.dungeon.selected||0))return v115Alert('Dieser Dungeon ist noch nicht betretbar.');const gateEnemy=currentDungeonEnemy();if(!s.playerClass)return v115Alert('Wähle zuerst im Heldenquartier deine Klasse.');if(!consumeDungeonAttempt())return;persist(false);battleBusy=true;const btn=document.querySelector('#fightBtn');btn.disabled=true;document.querySelector('#loot').innerHTML='';const d=currentDungeon(),idx=Math.max(0,Math.min(9,(s.dungeon.progress?.[s.dungeon.selected] ?? s.dungeon.room ?? 0))),e=d.enemies[idx],maxP=maxHp();let pHp=maxP,eHp=e.hp;const pBar=document.querySelector('#playerHpBar'),eBar=document.querySelector('#enemyHpBar'),pTxt=document.querySelector('#playerHpText'),eTxt=document.querySelector('#enemyHpText'),log=document.querySelector('#battleLog');let round=0;
  const step=()=>{round++;let critChance=Math.min(.35,.05+totalAttr('glueck')*.015);if(s.playerClass==='bruiser')critChance+=.10+setBonusValue('critChance')+skillValue('nebel')*.03;if(s.playerClass==='scout')critChance+=skillValue('praez')*.02;
  const crit=Math.random()<critChance;let pDmg=Math.max(5,Math.floor(totalAttr('staerke')*1.9+totalAttr('geschick')*.8+s.level*2+Math.random()*10))*(crit?2:1);
  let special='';if((s.playerClass==='grower'||s.playerClass==='frost')&&Math.random()<(.18+setBonusValue('wuchtChance')+skillValue('wucht')*.03)){pDmg=Math.floor(pDmg*1.75);special=' WUCHTSCHLAG!';}
@@ -80646,10 +80646,6 @@ body:has(#world.active){background:#010302!important}
       window.v063Toast?.('Wähle zuerst deine Klasse.','warn');
       return;
     }
-    if(Number(s.level||0)<Number(data.enemy.requiredLevel||1)){
-      window.v063Toast?.(`Dieser Gegner ist für Level ${data.enemy.requiredLevel||1} ausgelegt.`,'warn');
-      return;
-    }
 
     let attempt=false;
     try{
@@ -81234,3 +81230,28 @@ body:has(#world.active){background:#010302!important}
 }
 </style>
 <!-- ===== /V4.249 DUNGEON 9 LAYOUT FIX 2 ===== -->
+
+
+<!-- ===== V4.250 DUNGEON 9 POSITION + LEVEL-GATE FIX ===== -->
+<style id="v450-d9-position-fix">
+/* Nur Dungeon 9 Optik. Timer/Kampf-Loop aus V46 bleibt unangetastet. */
+
+/* Gegner 8 weiter nach unten */
+#dungeonMapCard.v441-d9 .v261-node[data-v261-room="7"]{
+  --x:86!important;
+  --y:64!important;
+}
+
+/* Boss deutlich weiter nach unten */
+#dungeonMapCard.v441-d9 .v261-node[data-v261-room="9"]{
+  --x:82!important;
+  --y:88!important;
+}
+
+/* Bossfeld etwas kompakter, damit es trotz tieferer Position sauber im Rahmen bleibt */
+#dungeonMapCard.v441-d9 .v261-node.boss .v261-panel{
+  margin-top:4px!important;
+  min-height:42px!important;
+}
+</style>
+<!-- ===== /V4.250 DUNGEON 9 POSITION + LEVEL-GATE FIX ===== -->
