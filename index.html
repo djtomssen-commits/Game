@@ -76773,3 +76773,79 @@ body:has(#world.active){background:#010302!important}
   setInterval(paintAttempt,1000);
 })();
 </script>
+
+<!-- ===== V4.203 20ER MAP: TALLER + CLEAN LABELS ===== -->
+<style id="v4203-world-map-taller-clean">
+/* More vertical room for the 5x4 dungeon map without changing its width. */
+#dungeonMapCard.v251-world-card .v251-world-grid{
+  height:auto!important;
+  aspect-ratio:auto!important;
+  min-height:760px!important;
+  background-size:100% auto!important;
+  background-position:center top!important;
+  background-repeat:no-repeat!important;
+}
+
+/* The artwork already contains number/name/level labels.
+   Suppress the duplicate HTML layers. */
+#dungeonMapCard.v251-world-card .v251-portal-num,
+#dungeonMapCard.v251-world-card .v251-portal-ring,
+#dungeonMapCard.v251-world-card .v251-portal-name,
+#dungeonMapCard.v251-world-card .v251-portal-level{
+  display:none!important;
+}
+
+/* Keep only real dynamic state overlays. */
+#dungeonMapCard.v251-world-card .v251-portal-state{
+  display:flex!important;
+  left:5%!important;
+  right:5%!important;
+  bottom:3%!important;
+  min-height:25px!important;
+  align-items:center!important;
+  justify-content:center!important;
+  font-size:12px!important;
+  line-height:1!important;
+  white-space:nowrap!important;
+}
+
+/* Make each invisible clickable portal fill its full 5x4 cell. */
+#dungeonMapCard.v251-world-card .v251-portal{
+  min-height:0!important;
+}
+
+/* Dynamic current marker only on the account's actual current dungeon. */
+#dungeonMapCard.v251-world-card .v251-portal.current{
+  box-shadow:
+    inset 0 0 0 3px #65ff50,
+    inset 0 0 24px rgba(70,255,55,.12),
+    0 0 14px rgba(70,255,55,.62)!important;
+}
+
+/* Mobile: enough height to make every dungeon noticeably larger. */
+@media(max-width:700px){
+  #dungeonMapCard.v251-world-card .v251-world-grid{
+    min-height:820px!important;
+  }
+}
+</style>
+
+<script id="v4203-world-map-clean-state">
+(function(){
+  function cleanWorld(){
+    const card=document.getElementById('dungeonMapCard');
+    if(!card)return;
+
+    /* Remove accidental duplicate text nodes/elements inside portal cells,
+       while preserving the click target and dynamic state. */
+    card.querySelectorAll('.v251-portal').forEach(p=>{
+      p.querySelectorAll('.v251-portal-name,.v251-portal-level,.v251-portal-num,.v251-portal-ring')
+       .forEach(el=>el.setAttribute('aria-hidden','true'));
+    });
+  }
+  document.addEventListener('DOMContentLoaded',cleanWorld);
+  window.addEventListener('pageshow',cleanWorld);
+  setTimeout(cleanWorld,80);
+  setTimeout(cleanWorld,500);
+})();
+</script>
