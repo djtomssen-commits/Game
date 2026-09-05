@@ -77473,20 +77473,18 @@ body:has(#world.active){background:#010302!important}
 
 
 
-<!-- ===== V4.222 FINAL 10ER RENDER OWNERSHIP FIX ===== -->
-<script id="v4222-final-10er-owner">
+
+<!-- ===== V4.225 FINAL 10ER OWNER – V261 ===== -->
+<script id="v4225-final-10er-owner">
 (function(){
-  function installV260Owner(){
-    const detail=window.v260RenderDetail;
+  function installV261Owner(){
+    const detail=window.v261RenderDetail;
     if(typeof detail!=='function'){
-      console.error('V4.222: v260RenderDetail fehlt');
+      console.error('V4.225: v261RenderDetail fehlt');
       return false;
     }
 
-    /* WICHTIG: Die spaeter geladene GL20-V4.218-Weltkarte ruft beim Oeffnen
-       absichtlich zuerst v251RenderDetail() auf. Genau deshalb wurde trotz
-       neuer V260-Karte immer wieder der alte 10er-Renderer angezeigt.
-       Ab hier zeigt JEDE alte Detail-Referenz auf den neuen Renderer. */
+    /* Alle alten Detail-Einstiegspunkte hart auf den neuesten Renderer legen. */
     try{window.v251RenderDetail=detail}catch(e){}
     try{v251RenderDetail=detail}catch(e){}
     try{window.v244RenderSelectedDungeonMap=detail}catch(e){}
@@ -77494,12 +77492,10 @@ body:has(#world.active){background:#010302!important}
     try{window.v064RenderMap=detail}catch(e){}
     try{v064RenderMap=detail}catch(e){}
 
-    /* Auch spaetere renderDungeon-Wrapper sollen im Kartenmodus niemals
-       wieder den alten Detail-Renderer aufbauen. Kampf/Reward bleiben beim
-       bestehenden Kampfsystem. */
+    /* Nur Kartenmodus übernehmen. Kampf/Reward laufen weiter über das bestehende System. */
     try{
       const current=window.renderDungeon || renderDungeon;
-      if(typeof current==='function' && !current.__v4222DetailOwner){
+      if(typeof current==='function' && !current.__v4225DetailOwner){
         const base=current;
         const wrapped=function(){
           try{
@@ -77509,26 +77505,30 @@ body:has(#world.active){background:#010302!important}
           }catch(e){}
           return base.apply(this,arguments);
         };
-        wrapped.__v4222DetailOwner=true;
-        wrapped.__v4222Base=base;
+        wrapped.__v4225DetailOwner=true;
+        wrapped.__v4225Base=base;
         try{window.renderDungeon=wrapped}catch(e){}
         try{renderDungeon=wrapped}catch(e){}
       }
-    }catch(e){console.error('V4.222 renderDungeon owner',e)}
+    }catch(e){console.error('V4.225 renderDungeon owner',e)}
 
-    /* Falls beim Laden bereits eine 10er-Karte offen ist, sofort auf V260
-       umschalten. Nur UI-Repaint, keine Progress-/Kampfwerte werden geaendert. */
+    /* Bereits offene Detailkarte sofort neu zeichnen. */
     try{
       const sec=document.getElementById('dungeon');
-      if(sec?.classList.contains('active') && s?.dungeon?.layer==='dungeon' && s?.dungeon?.view==='map'){
-        requestAnimationFrame(()=>{try{detail()}catch(e){console.error('V4.222 repaint',e)}});
+      if(sec?.classList.contains('active') &&
+         s?.dungeon?.layer==='dungeon' &&
+         s?.dungeon?.view==='map'){
+        requestAnimationFrame(()=>{try{detail()}catch(e){console.error('V4.225 repaint',e)}});
       }
     }catch(e){}
+
     return true;
   }
 
-  installV260Owner();
-  window.addEventListener('pageshow',()=>setTimeout(installV260Owner,0),{passive:true});
-  document.addEventListener('visibilitychange',()=>{if(!document.hidden)setTimeout(installV260Owner,0)},{passive:true});
+  installV261Owner();
+  window.addEventListener('pageshow',()=>setTimeout(installV261Owner,0),{passive:true});
+  document.addEventListener('visibilitychange',()=>{
+    if(!document.hidden)setTimeout(installV261Owner,0);
+  },{passive:true});
 })();
 </script>
