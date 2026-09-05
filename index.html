@@ -76569,3 +76569,94 @@ body:has(#world.active){background:#010302!important}
   }
 }
 </style>
+
+<!-- ===== V4.201 20ER MAP POLISH + CLEAR ATTEMPT STATUS ===== -->
+<style id="v4201-world-polish">
+/* More vertical room without cropping the sides or stretching the artwork. */
+#dungeonMapCard.v251-world-card .v251-world-grid{
+  aspect-ratio:auto!important;
+  height:clamp(610px,88vw,790px)!important;
+  background-size:100% 100%!important;
+}
+
+/* Remove duplicate decorative lock/status artifacts; locked state remains in text/state. */
+#dungeonMapCard.v251-world-card .v251-portal-lock{
+  display:none!important;
+}
+
+/* Cleaner, larger readable tiles while preserving all 5 columns. */
+#dungeonMapCard.v251-world-card .v251-portal-name{
+  left:3%!important;right:3%!important;
+  bottom:13%!important;
+  min-height:20%!important;
+  font-size:clamp(6px,1.35vw,10px)!important;
+}
+#dungeonMapCard.v251-world-card .v251-portal-state{
+  left:6%!important;right:6%!important;
+  bottom:2%!important;
+  font-size:clamp(5px,1.18vw,9px)!important;
+}
+#dungeonMapCard.v251-world-card .v251-portal-ring{
+  width:35%!important;
+}
+
+/* Attempt strip: one status only. */
+#dungeonMapCard .v251-attempt,
+#dungeonMapCard .v251-attempt-row{
+  align-items:center!important;
+}
+</style>
+<script id="v4201-attempt-label">
+(function(){
+  function fmt(sec){
+    sec=Math.max(0,Math.ceil(Number(sec)||0));
+    const m=Math.floor(sec/60), s=sec%60;
+    return m+':'+String(s).padStart(2,'0');
+  }
+  function refresh(){
+    const card=document.getElementById('dungeonMapCard');
+    if(!card)return;
+    const rows=[...card.querySelectorAll('*')].filter(el =>
+      el.children.length && /DUNGEON-VERSUCH/i.test(el.textContent||'') &&
+      (el.textContent||'').length<140
+    );
+    const row=rows.sort((a,b)=>(a.textContent||'').length-(b.textContent||'').length)[0];
+    if(!row)return;
+
+    let remaining=0, ready=false;
+    try{
+      if(typeof window.v251DungeonWorldState==='function'){
+        const st=window.v251DungeonWorldState();
+        const vals=[
+          st?.remaining,st?.remainingSec,st?.remainingSeconds,
+          st?.attemptRemaining,st?.cooldownRemaining
+        ];
+        remaining=Number(vals.find(v=>Number.isFinite(Number(v)) && Number(v)>0)||0);
+        ready=!!(st?.attemptReady ?? st?.ready ?? st?.freeReady);
+      }
+    }catch(e){}
+
+    /* Fall back to the already-rendered real timer text; never invent a cooldown. */
+    const txt=row.textContent||'';
+    const mt=txt.match(/\b(\d{1,2}):(\d{2})\b/);
+    if(!remaining && mt) remaining=(+mt[1])*60+(+mt[2]);
+
+    const leaves=[...row.querySelectorAll('*')].filter(e=>e.children.length===0);
+    const status=leaves.find(e=>!/DUNGEON-VERSUCH/i.test(e.textContent||'') &&
+      (/MÖGLICH|BEREIT|prüfen|^\s*\d{1,2}:\d{2}\s*$/i.test(e.textContent||'')));
+    if(status){
+      if(remaining>0) status.textContent=fmt(remaining);
+      else if(ready || /MÖGLICH|BEREIT|prüfen/i.test(txt)) status.textContent='BEREIT';
+    }
+  }
+  const obs=new MutationObserver(()=>requestAnimationFrame(refresh));
+  function boot(){
+    const card=document.getElementById('dungeonMapCard');
+    if(card)obs.observe(card,{subtree:true,childList:true,characterData:true});
+    refresh();
+    setInterval(refresh,1000);
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});
+  else boot();
+})();
+</script>
