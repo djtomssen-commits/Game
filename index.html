@@ -81934,3 +81934,86 @@ body:has(#world.active){background:#010302!important}
 })();
 </script>
 <!-- ===== /V4.256 DUNGEON 1 REFERENCE ALIGNMENT FINAL ===== -->
+
+
+<!-- ===== V4.257 DUNGEON 1 CLEAN OVERLAY FINAL ===== -->
+<style id="v457-d1-clean-overlay-final">
+/*
+  D1-Referenzbild enthält alte Knoten im Bild. Statt die Live-Knoten pixelgenau
+  darüber zu quetschen, bekommen die echten HTML-Knoten jetzt eine weiche,
+  dunkle Rückplatte. Damit verschwinden die eingebrannten Kreise/Tafeln optisch,
+  während Fortschritt, Schlösser und Klicklogik vollständig dynamisch bleiben.
+*/
+#dungeonMapCard.v426-ref-d1 .v261-node{
+  isolation:isolate!important;
+  overflow:visible!important;
+}
+#dungeonMapCard.v426-ref-d1 .v261-node::before{
+  content:"";
+  position:absolute;
+  left:50%;
+  top:-16px;
+  transform:translateX(-50%);
+  width:118px;
+  height:126px;
+  border-radius:42px;
+  background:
+    radial-gradient(ellipse at 50% 37%,rgba(2,8,4,.995) 0 54%,rgba(2,8,4,.96) 68%,rgba(2,8,4,.72) 82%,rgba(2,8,4,0) 100%);
+  filter:blur(.25px);
+  pointer-events:none;
+  z-index:0;
+}
+#dungeonMapCard.v426-ref-d1 .v261-node .v261-ring,
+#dungeonMapCard.v426-ref-d1 .v261-node .v261-panel{
+  position:relative!important;
+  z-index:1!important;
+}
+
+/* Neu sauber verteilt: oben nichts mehr angeschnitten, rechte Seite bekommt Luft. */
+#dungeonMapCard.v426-ref-d1 .v261-node[data-v261-room="0"]{--x:16!important;--y:15!important}
+#dungeonMapCard.v426-ref-d1 .v261-node[data-v261-room="1"]{--x:39!important;--y:19!important}
+#dungeonMapCard.v426-ref-d1 .v261-node[data-v261-room="2"]{--x:64!important;--y:22!important}
+#dungeonMapCard.v426-ref-d1 .v261-node[data-v261-room="3"]{--x:82!important;--y:25!important}
+#dungeonMapCard.v426-ref-d1 .v261-node[data-v261-room="4"]{--x:16!important;--y:41!important}
+#dungeonMapCard.v426-ref-d1 .v261-node[data-v261-room="5"]{--x:34!important;--y:47!important}
+#dungeonMapCard.v426-ref-d1 .v261-node[data-v261-room="6"]{--x:52!important;--y:54!important}
+#dungeonMapCard.v426-ref-d1 .v261-node[data-v261-room="7"]{--x:70!important;--y:49!important}
+#dungeonMapCard.v426-ref-d1 .v261-node[data-v261-room="8"]{--x:83!important;--y:43!important}
+#dungeonMapCard.v426-ref-d1 .v261-node[data-v261-room="9"]{--x:81!important;--y:75!important}
+
+/* Rechte lange Namen bleiben vollständig im Kartenrahmen. */
+#dungeonMapCard.v426-ref-d1 .v261-node[data-v261-room="3"] .v261-panel,
+#dungeonMapCard.v426-ref-d1 .v261-node[data-v261-room="8"] .v261-panel{
+  width:78px!important;
+}
+#dungeonMapCard.v426-ref-d1 .v261-node[data-v261-room="3"] .v261-name{
+  font-size:4.25px!important;
+  line-height:1.02!important;
+}
+
+/* Boss mit eigener größerer Rückplatte und komplett im Rahmen. */
+#dungeonMapCard.v426-ref-d1 .v261-node.boss::before{
+  top:-22px;
+  width:146px;
+  height:160px;
+  border-radius:54px;
+  background:radial-gradient(ellipse at 50% 39%,rgba(12,3,4,.995) 0 56%,rgba(9,3,4,.96) 70%,rgba(6,2,3,.72) 84%,rgba(5,2,2,0) 100%);
+}
+#dungeonMapCard.v426-ref-d1 .v261-node.boss{
+  width:98px!important;
+}
+#dungeonMapCard.v426-ref-d1 .v261-node.boss .v261-ring{
+  width:78px!important;
+  height:78px!important;
+}
+#dungeonMapCard.v426-ref-d1 .v261-node.boss .v261-panel{
+  width:91px!important;
+  min-height:42px!important;
+  padding:5px 3px!important;
+}
+
+/* D1 benutzt weiterhin ausschließlich den im Referenzbild vorhandenen Steinpfad und das Warnschild. */
+#dungeonMapCard.v426-ref-d1 .v261-road,
+#dungeonMapCard.v426-ref-d1 .v261-signboard{display:none!important}
+</style>
+<!-- ===== /V4.257 DUNGEON 1 CLEAN OVERLAY FINAL ===== -->
