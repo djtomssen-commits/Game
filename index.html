@@ -79214,3 +79214,58 @@ body:has(#world.active){background:#010302!important}
 })();
 </script>
 <!-- ===== /V4.232 DUNGEON 7 ===== -->
+
+
+<!-- ===== V4.233 DUNGEON 7 – BOSS/ABSTAND FEINSCHLIFF ===== -->
+<style id="v433-d7-boss-spacing-fix">
+/* Nur Dungeon-7-Optik. Keine Klick-, Kampf-, Fortschritts- oder Belohnungslogik. */
+
+/* Bossbild so croppen, dass die im Quellbild eingebrannte "10" nicht mehr sichtbar ist.
+   Unsere dynamische Nummer 10 bleibt oben im echten UI-Kreis. */
+#dungeonMapCard.v432-d7 .v261-node.boss .v261-bossart{
+  inset:3px!important;
+  background-size:158% auto!important;
+  background-position:center 78%!important;
+  background-repeat:no-repeat!important;
+  filter:saturate(1.15) contrast(1.06)!important;
+}
+
+/* Rechte Seite leicht entzerren. */
+#dungeonMapCard.v432-d7 .v261-node[data-v261-room="7"]{
+  --x:69!important;
+  --y:63!important;
+}
+#dungeonMapCard.v432-d7 .v261-node[data-v261-room="8"]{
+  --x:88!important;
+  --y:46!important;
+}
+#dungeonMapCard.v432-d7 .v261-node[data-v261-room="9"]{
+  --x:82!important;
+  --y:83!important;
+}
+
+/* Boss etwas nach innen, damit Kreis + Namensfeld nicht am Rand kleben. */
+#dungeonMapCard.v432-d7 .v261-node.boss .v261-panel{
+  transform:translateX(-2px)!important;
+}
+
+@media(max-width:420px){
+  #dungeonMapCard.v432-d7 .v261-node[data-v261-room="7"]{
+    --x:68!important;
+    --y:63!important;
+  }
+  #dungeonMapCard.v432-d7 .v261-node[data-v261-room="8"]{
+    --x:86!important;
+    --y:46!important;
+  }
+  #dungeonMapCard.v432-d7 .v261-node[data-v261-room="9"]{
+    --x:80!important;
+    --y:83!important;
+  }
+  #dungeonMapCard.v432-d7 .v261-node.boss .v261-bossart{
+    background-size:162% auto!important;
+    background-position:center 79%!important;
+  }
+}
+</style>
+<!-- ===== /V4.233 DUNGEON 7 ===== -->
