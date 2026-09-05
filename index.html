@@ -81060,3 +81060,94 @@ body:has(#world.active){background:#010302!important}
 })();
 </script>
 <!-- ===== /V4.246 DUNGEON RUNTIME ROOT FIX ===== -->
+
+
+<!-- ===== V4.247 DUNGEON 9 PREVIEW BUTTON RESTORE ===== -->
+<script id="v447-d9-preview-button-restore">
+(function(){
+  'use strict';
+  if(window.__V447_D9_PREVIEW_BUTTON__) return;
+  window.__V447_D9_PREVIEW_BUTTON__=true;
+
+  function previewActive(){
+    return !!(
+      window.__v441Dungeon9Preview?.active ||
+      document.querySelector('#dungeonMapCard.v441-preview-mode')
+    );
+  }
+
+  function ensureButton(){
+    try{
+      if(previewActive()) return;
+
+      const dungeon=document.getElementById('dungeon');
+      if(!dungeon?.classList.contains('active')) return;
+
+      const card=document.getElementById('dungeonMapCard');
+      if(!card) return;
+
+      /* Auf Dungeon 7 ODER 8 darf die D9-Vorschau zum Testen geöffnet werden. */
+      const selected=Number(s?.dungeon?.selected||0);
+      if(selected!==6 && selected!==7) return;
+
+      if(card.querySelector('.v447-d9-preview-launch')) return;
+
+      const stage=card.querySelector('.v261-stage');
+      if(!stage?.parentNode) return;
+
+      /* Alte/unsichtbare Preview-Buttons sicher entfernen. */
+      card.querySelectorAll('.v441-preview-launch').forEach(el=>el.remove());
+
+      const btn=document.createElement('button');
+      btn.type='button';
+      btn.className='v441-preview-launch v447-d9-preview-launch';
+      btn.textContent='👁 DUNGEON 9 VORSCHAU – NUR OPTIK, KEIN FORTSCHRITT';
+      btn.style.display='block';
+      btn.style.width='100%';
+
+      btn.addEventListener('click',function(ev){
+        ev.preventDefault();
+        ev.stopPropagation();
+
+        if(typeof window.v441OpenDungeon9Preview==='function'){
+          window.v441OpenDungeon9Preview();
+        }
+      });
+
+      stage.parentNode.insertBefore(btn,stage);
+    }catch(e){
+      console.error('V4.247 D9 Preview Button',e);
+    }
+  }
+
+  /*
+    Bewusst KEIN MutationObserver.
+    Nur ein sehr leichter Existenz-Check. Solange der Button da ist,
+    wird überhaupt nichts am DOM geändert und V46 Timer/Kampf bleiben unberührt.
+  */
+  setInterval(ensureButton,1200);
+
+  setTimeout(ensureButton,120);
+  window.addEventListener('pageshow',()=>setTimeout(ensureButton,100),{passive:true});
+  document.addEventListener('visibilitychange',()=>{
+    if(!document.hidden)setTimeout(ensureButton,100);
+  },{passive:true});
+
+  /* Auch nach normalen Dungeon-Rendern sofort wieder einsetzen. */
+  try{
+    const current=window.renderDungeon || renderDungeon;
+    if(typeof current==='function' && !current.__v447PreviewButtonOwner){
+      const base=current;
+      const wrapped=function(){
+        const out=base.apply(this,arguments);
+        setTimeout(ensureButton,80);
+        return out;
+      };
+      wrapped.__v447PreviewButtonOwner=true;
+      try{window.renderDungeon=wrapped}catch(e){}
+      try{renderDungeon=wrapped}catch(e){}
+    }
+  }catch(e){}
+})();
+</script>
+<!-- ===== /V4.247 DUNGEON 9 PREVIEW BUTTON RESTORE ===== -->
