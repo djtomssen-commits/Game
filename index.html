@@ -47098,6 +47098,103 @@ body:has(#world.active) #v337LegalFooter{display:none!important}
   try{ v251RenderDetail=window.v261RenderDetail; v244RenderSelectedDungeonMap=window.v261RenderDetail; v064RenderMap=window.v261RenderDetail; }catch(_ ){}
 })();
 </script>
+
+<style id="v262-mobile-template-fix">
+/* V4.225 – Feinschliff 10er-Karte nach Handy-Screenshot. Nur Optik. */
+#dungeonMapCard.v261-detail-card{overflow:hidden!important}
+.v261-top>*{min-width:0!important}
+.v261-stage{isolation:isolate!important}
+/* Alte Schrift/Nummern aus der Referenzgrafik dürfen nicht mehr durchscheinen. */
+.v261-bg{
+  inset:-10%!important;
+  background-size:auto 150%!important;
+  background-position:center 68%!important;
+  filter:blur(7px) saturate(1.18) brightness(.26) contrast(.95)!important;
+  transform:scale(1.08)!important;
+  opacity:.92!important;
+}
+.v261-fx{
+  background:
+    linear-gradient(180deg,rgba(1,4,2,.38),rgba(2,6,3,.14) 18%,rgba(2,7,4,.06) 55%,rgba(0,2,1,.46) 100%),
+    radial-gradient(circle at 22% 18%,rgba(78,255,111,.15),transparent 22%),
+    radial-gradient(circle at 72% 25%,rgba(58,192,255,.10),transparent 18%),
+    radial-gradient(circle at 87% 78%,rgba(255,67,44,.15),transparent 20%)!important;
+}
+/* Knoten klar über dem Hintergrund; keine Überlagerung von Namen. */
+.v261-node{z-index:5!important}
+.v261-panel{background:linear-gradient(180deg,rgba(6,10,6,.995),rgba(2,5,3,1))!important}
+.v261-signboard{z-index:4!important}
+
+@media(max-width:760px){
+  .v261-shell{padding:9px!important}
+  .v261-top{grid-template-columns:92px minmax(0,1fr) 92px!important;gap:6px!important;align-items:stretch!important}
+  .v261-back,.v261-ticket{min-height:60px!important;padding:7px 7px!important;border-radius:11px!important;overflow:hidden!important}
+  .v261-back{gap:5px!important;font-size:7.1px!important;line-height:1.08!important}
+  .v261-back i{font-size:17px!important}
+  .v261-ticket b{font-size:5.8px!important;line-height:1.08!important;white-space:normal!important}
+  .v261-ticket #dungeonTicketText{font-size:7.4px!important;line-height:1.08!important;white-space:normal!important;overflow-wrap:normal!important;text-align:right!important}
+  .v261-sign{padding:8px 7px 7px!important;border-radius:12px!important}
+  .v261-sign:before,.v261-sign:after{font-size:12px!important;top:4px!important}
+  .v261-sign:before{left:5px!important}.v261-sign:after{right:5px!important}
+  .v261-kicker{font-size:6.4px!important;letter-spacing:.11em!important}
+  .v261-title{font-size:16.5px!important;line-height:1.02!important;margin-top:3px!important}
+  .v261-sub{font-size:5.9px!important;line-height:1.24!important;margin-top:5px!important}
+
+  /* Mehr Höhe wie in der Vorlage: dadurch liegen die 10 Gegner sauber auf dem Weg. */
+  .v261-stage{aspect-ratio:1000/1030!important;margin-top:9px!important}
+  .v261-bg{background-size:auto 158%!important;background-position:center 70%!important;filter:blur(7.5px) saturate(1.22) brightness(.25) contrast(.95)!important}
+
+  .v261-node{width:76px!important}
+  .v261-ring{width:48px!important;height:48px!important;font-size:17px!important;border-width:3px!important}
+  .v261-num{top:-9px!important;width:25px!important;height:25px!important;font-size:13px!important;border-width:2px!important}
+  .v261-check,.v261-lock{right:-4px!important;bottom:-1px!important;width:20px!important;height:20px!important;font-size:11px!important}
+  .v261-panel{width:73px!important;min-height:39px!important;margin-top:6px!important;padding:5px 3px 4px!important;border-width:1.5px!important;border-radius:9px!important}
+  .v261-name{font-size:5.15px!important;line-height:1.04!important}
+  .v261-lv{font-size:4.9px!important;margin-top:3px!important}
+
+  /* Exakte mobile Wegpositionen, näher an der gelieferten Vorlage. */
+  .v261-node:nth-of-type(1){--x:11!important;--y:18!important}
+  .v261-node:nth-of-type(2){--x:37!important;--y:21!important}
+  .v261-node:nth-of-type(3){--x:63!important;--y:25!important}
+  .v261-node:nth-of-type(4){--x:87!important;--y:30!important}
+  .v261-node:nth-of-type(5){--x:12!important;--y:46!important}
+  .v261-node:nth-of-type(6){--x:35!important;--y:56!important}
+  .v261-node:nth-of-type(7){--x:56!important;--y:62!important}
+  .v261-node:nth-of-type(8){--x:75!important;--y:56!important}
+  .v261-node:nth-of-type(9){--x:89!important;--y:45!important}
+  .v261-node:nth-of-type(10){--x:87!important;--y:78!important}
+
+  .v261-node.boss{width:116px!important}
+  .v261-node.boss .v261-ring{width:61px!important;height:61px!important;font-size:22px!important}
+  .v261-node.boss .v261-num{width:31px!important;height:31px!important;font-size:17px!important}
+  .v261-node.boss .v261-panel{width:105px!important;min-height:44px!important;padding:6px 4px!important}
+  .v261-node.boss .v261-name{font-size:6.2px!important}
+  .v261-signboard{left:1.5%!important;bottom:9%!important;max-width:74px!important;padding:5px 5px!important;font-size:5.2px!important;line-height:1.08!important}
+
+  /* Unterer Bereich kompakter – Vorlage zeigt alles in einem zusammenhängenden Panel. */
+  .v261-bottom{grid-template-columns:1fr!important;gap:8px!important;margin-top:9px!important;padding:10px!important;border-radius:14px!important}
+  .v261-head{gap:9px!important}
+  .v261-thumb{width:50px!important;height:50px!important;font-size:29px!important;border-radius:10px!important}
+  .v261-line1{font-size:8.2px!important}.v261-line2{font-size:6.1px!important;margin-top:4px!important}.v261-label{font-size:5.9px!important;margin-top:8px!important}
+  .v261-rewards{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:5px!important}
+  .v261-r{padding:8px 3px!important;border-radius:9px!important;font-size:6.2px!important}.v261-r .big{font-size:10px!important;margin-top:3px!important}
+  .v261-stats{gap:6px!important}.v261-stat{padding:8px!important;border-radius:9px!important}.v261-stat span{font-size:5.7px!important}.v261-stat b{font-size:12px!important;margin-top:4px!important}
+  .v261-enter{min-height:50px!important;font-size:9.8px!important;border-radius:10px!important;margin-top:7px!important}
+}
+
+@media(max-width:390px){
+  .v261-top{grid-template-columns:84px minmax(0,1fr) 84px!important;gap:5px!important}
+  .v261-back,.v261-ticket{padding:6px!important;min-height:56px!important}
+  .v261-title{font-size:15px!important}
+  .v261-stage{aspect-ratio:1000/1080!important}
+  .v261-node{width:70px!important}
+  .v261-ring{width:45px!important;height:45px!important;font-size:16px!important}
+  .v261-panel{width:68px!important;min-height:37px!important}
+  .v261-name{font-size:4.8px!important}.v261-lv{font-size:4.55px!important}
+  .v261-node.boss{width:108px!important}.v261-node.boss .v261-panel{width:98px!important}
+  .v261-rewards{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+}
+</style>
 </body>
 </html>
 <style id="v268-inventory-multisell-css">
