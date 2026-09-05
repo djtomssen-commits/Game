@@ -76660,3 +76660,116 @@ body:has(#world.active){background:#010302!important}
   else boot();
 })();
 </script>
+
+<!-- ===== V4.202 20ER CLEANUP: NO STRETCH / NO DOUBLE NUMBERS / REAL TIMER ===== -->
+<style id="v4202-world-cleanup">
+/* 1) Keep the map artwork proportional — no vertical stretching. */
+#dungeonMapCard.v251-world-card .v251-world-grid{
+  height:auto!important;
+  aspect-ratio:988/891!important;
+  background-size:100% 100%!important;
+  background-position:center top!important;
+}
+
+/* 2) The artwork already contains the dungeon numbers.
+      Hide the second HTML number layer so numbers appear only once. */
+#dungeonMapCard.v251-world-card .v251-portal-ring,
+#dungeonMapCard.v251-world-card .v251-portal-num{
+  display:none!important;
+}
+
+/* Keep dynamic account state readable. */
+#dungeonMapCard.v251-world-card .v251-portal-name{
+  bottom:13%!important;
+}
+#dungeonMapCard.v251-world-card .v251-portal-state{
+  bottom:2.5%!important;
+}
+
+/* Current dungeon still gets a real dynamic outline. */
+#dungeonMapCard.v251-world-card .v251-portal.current{
+  box-shadow:
+    inset 0 0 0 3px #63ff50,
+    inset 0 0 24px rgba(62,255,48,.14),
+    0 0 14px rgba(72,255,57,.65)!important;
+}
+</style>
+
+<script id="v4202-world-cleanup-js">
+(function(){
+  const HOUR=3600000;
+
+  function hideDuplicateHeadings(){
+    const card=document.getElementById('dungeonMapCard');
+    if(!card)return;
+
+    let el=card.previousElementSibling;
+    let checked=0;
+    while(el && checked<6){
+      const prev=el.previousElementSibling;
+      const t=(el.textContent||'').replace(/\s+/g,' ').trim().toLowerCase();
+
+      /* Hide legacy "Verseuchte Gebiete" blocks above the real DUNGEONS card,
+         but never hide the real dungeon card itself. */
+      if(t.includes('verseuchte gebiete') && !t.includes('dungeons')){
+        el.style.setProperty('display','none','important');
+      }
+      el=prev;
+      checked++;
+    }
+  }
+
+  function paintAttempt(){
+    const ticket=document.querySelector('#dungeonMapCard .v251-ticket');
+    if(!ticket)return;
+
+    let status=ticket.querySelector('#dungeonTicketText');
+    if(!status){
+      status=document.createElement('span');
+      status.id='dungeonTicketText';
+      ticket.appendChild(status);
+    }
+
+    try{
+      const last=Math.max(0,Number(s?.dungeonPass?.lastFree)||0);
+      const left=Math.max(0,HOUR-(Date.now()-last));
+
+      if(left<=0){
+        status.textContent='BEREIT';
+        status.style.setProperty('color','#76f56e','important');
+      }else{
+        const sec=Math.ceil(left/1000);
+        const m=Math.floor(sec/60);
+        const ss=sec%60;
+        status.textContent=String(m).padStart(2,'0')+':'+String(ss).padStart(2,'0');
+        status.style.setProperty('color','#f0b85c','important');
+      }
+
+      /* Remove any old extra status text like "Gratisversuch prüfen …". */
+      [...ticket.childNodes].forEach(n=>{
+        if(n.nodeType===Node.TEXT_NODE && /gratisversuch|prüfen/i.test(n.nodeValue||'')){
+          n.nodeValue='';
+        }
+      });
+      ticket.querySelectorAll('*').forEach(el=>{
+        if(el!==status && /gratisversuch|prüfen/i.test((el.textContent||'').trim()) &&
+           !/DUNGEON-VERSUCH/i.test(el.textContent||'')){
+          el.textContent='';
+        }
+      });
+    }catch(e){}
+  }
+
+  function refresh(){
+    hideDuplicateHeadings();
+    paintAttempt();
+  }
+
+  document.addEventListener('DOMContentLoaded',refresh);
+  window.addEventListener('pageshow',refresh);
+  document.addEventListener('visibilitychange',function(){if(!document.hidden)refresh()});
+  setTimeout(refresh,100);
+  setTimeout(refresh,600);
+  setInterval(paintAttempt,1000);
+})();
+</script>
