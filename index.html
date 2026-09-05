@@ -81806,3 +81806,131 @@ body:has(#world.active){background:#010302!important}
 })();
 </script>
 <!-- ===== /V4.254 DUNGEON 1 FEINSCHLIFF ===== -->
+
+
+<!-- ===== V4.255 DUNGEON 1 FEINSCHLIFF 2 ===== -->
+<style id="v455-d1-feinschliff-2">
+/* Nur Dungeon 1: Titel und Knoten sauber in den sichtbaren Kartenbereich setzen. */
+#dungeonMapCard.v426-ref-d1 .v261-title{
+  font-size:11.7px!important;
+  line-height:.96!important;
+  white-space:normal!important;
+  overflow:visible!important;
+  word-break:normal!important;
+}
+
+/* obere Reihe etwas tiefer, damit Nummern und Kreise nicht am Kartenrand abgeschnitten werden */
+#dungeonMapCard.v426-ref-d1 .v261-node[data-v261-room="0"]{--x:15!important;--y:15!important}
+#dungeonMapCard.v426-ref-d1 .v261-node[data-v261-room="1"]{--x:39!important;--y:18.5!important}
+#dungeonMapCard.v426-ref-d1 .v261-node[data-v261-room="2"]{--x:64!important;--y:22!important}
+#dungeonMapCard.v426-ref-d1 .v261-node[data-v261-room="3"]{--x:84!important;--y:25!important}
+
+/* mittlere/untere Gegner entzerren und vom Rand weg */
+#dungeonMapCard.v426-ref-d1 .v261-node[data-v261-room="4"]{--x:15!important;--y:40!important}
+#dungeonMapCard.v426-ref-d1 .v261-node[data-v261-room="5"]{--x:33!important;--y:46!important}
+#dungeonMapCard.v426-ref-d1 .v261-node[data-v261-room="6"]{--x:51!important;--y:53!important}
+#dungeonMapCard.v426-ref-d1 .v261-node[data-v261-room="7"]{--x:70!important;--y:49!important}
+#dungeonMapCard.v426-ref-d1 .v261-node[data-v261-room="8"]{--x:84!important;--y:43!important}
+
+/* Boss vollständig im Rahmen und mit Abstand zu Gegner 8/9 */
+#dungeonMapCard.v426-ref-d1 .v261-node[data-v261-room="9"]{--x:82!important;--y:73!important}
+#dungeonMapCard.v426-ref-d1 .v261-node.boss{width:98px!important}
+#dungeonMapCard.v426-ref-d1 .v261-node.boss .v261-ring{width:78px!important;height:78px!important}
+#dungeonMapCard.v426-ref-d1 .v261-node.boss .v261-panel{width:90px!important;min-height:42px!important;padding:5px 3px!important}
+#dungeonMapCard.v426-ref-d1 .v261-node.boss .v261-name{font-size:5.3px!important;line-height:1.05!important}
+
+/* lange D1-Namen auf Mobile lesbar halten */
+#dungeonMapCard.v426-ref-d1 .v261-node[data-v261-room="3"] .v261-name,
+#dungeonMapCard.v426-ref-d1 .v261-node[data-v261-room="2"] .v261-name{
+  font-size:4.7px!important;
+}
+</style>
+<script id="v455-d1-title-fix">
+(function(){
+  function paint(){
+    try{
+      const card=document.getElementById('dungeonMapCard');
+      if(!card?.classList.contains('v426-ref-d1'))return;
+      const title=card.querySelector('.v261-title');
+      if(title)title.innerHTML='DER<br>VERSEUCHTE<br>KELLER';
+    }catch(e){}
+  }
+  requestAnimationFrame(paint);
+  document.addEventListener('click',()=>setTimeout(paint,35),true);
+})();
+</script>
+<!-- ===== /V4.255 DUNGEON 1 FEINSCHLIFF 2 ===== -->
+
+
+<!-- ===== V4.256 DUNGEON 1 REFERENCE ALIGNMENT FINAL ===== -->
+<style id="v456-d1-reference-alignment-final">
+/* D1-Hintergrund enthält die Referenz-Knoten bereits im Bild.
+   Deshalb muss die Stage exakt dasselbe Seitenverhältnis haben und
+   die dynamischen Knoten pixelgenau darüber liegen. So verschwinden
+   die sichtbaren Doppel-Kreise/Schlösser vollständig. */
+#dungeonMapCard.v426-ref-d1 .v261-stage{
+  aspect-ratio:941 / 875!important;
+  overflow:hidden!important;
+}
+#dungeonMapCard.v426-ref-d1 .v261-bg{
+  inset:0!important;
+  width:100%!important;
+  height:100%!important;
+  transform:none!important;
+  filter:none!important;
+  background-size:100% 100%!important;
+  background-position:0 0!important;
+  background-repeat:no-repeat!important;
+}
+
+/* Wieder exakt auf die eingebrannten Referenzpositionen setzen. */
+#dungeonMapCard.v426-ref-d1 .v261-node[data-v261-room="0"]{--x:13.6!important;--y:10.1!important}
+#dungeonMapCard.v426-ref-d1 .v261-node[data-v261-room="1"]{--x:38.8!important;--y:16.2!important}
+#dungeonMapCard.v426-ref-d1 .v261-node[data-v261-room="2"]{--x:62.7!important;--y:19.4!important}
+#dungeonMapCard.v426-ref-d1 .v261-node[data-v261-room="3"]{--x:87.1!important;--y:21.5!important}
+#dungeonMapCard.v426-ref-d1 .v261-node[data-v261-room="4"]{--x:13.1!important;--y:38.1!important}
+#dungeonMapCard.v426-ref-d1 .v261-node[data-v261-room="5"]{--x:31.7!important;--y:44.2!important}
+#dungeonMapCard.v426-ref-d1 .v261-node[data-v261-room="6"]{--x:49.4!important;--y:51.3!important}
+#dungeonMapCard.v426-ref-d1 .v261-node[data-v261-room="7"]{--x:69.9!important;--y:47.2!important}
+#dungeonMapCard.v426-ref-d1 .v261-node[data-v261-room="8"]{--x:88.4!important;--y:42.6!important}
+#dungeonMapCard.v426-ref-d1 .v261-node[data-v261-room="9"]{--x:88.7!important;--y:69.9!important}
+
+/* Titel unabhängig von älteren Renderern stabil in 3 Zeilen. */
+#dungeonMapCard.v426-ref-d1 .v261-title{
+  font-size:0!important;
+  line-height:1!important;
+  white-space:normal!important;
+  overflow:visible!important;
+}
+#dungeonMapCard.v426-ref-d1 .v261-title::after{
+  content:"DER\A VERSEUCHTE\A KELLER";
+  white-space:pre-line;
+  display:block;
+  font-family:Georgia,serif;
+  font-size:10.8px;
+  line-height:.94;
+  font-weight:1000;
+  letter-spacing:0;
+  color:#f0d39a;
+  text-shadow:0 2px 0 #43250d,0 0 10px rgba(0,0,0,.42);
+}
+
+/* Die Referenz hat bereits Warnschild und Weg im Hintergrund. */
+#dungeonMapCard.v426-ref-d1 .v261-road,
+#dungeonMapCard.v426-ref-d1 .v261-signboard{display:none!important}
+
+/* Lange Namen innerhalb der vorhandenen Referenztafeln halten. */
+#dungeonMapCard.v426-ref-d1 .v261-node[data-v261-room="2"] .v261-name,
+#dungeonMapCard.v426-ref-d1 .v261-node[data-v261-room="3"] .v261-name{
+  font-size:4.55px!important;
+  line-height:1.02!important;
+}
+</style>
+<script id="v456-d1-data-cleanup">
+(function(){
+  try{
+    if(dungeons?.[0]?.enemies?.[3]) dungeons[0].enemies[3].name='Kleeblatt-Kriecher';
+  }catch(e){}
+})();
+</script>
+<!-- ===== /V4.256 DUNGEON 1 REFERENCE ALIGNMENT FINAL ===== -->
