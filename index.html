@@ -47196,6 +47196,249 @@ body:has(#world.active) #v337LegalFooter{display:none!important}
   .v261-rewards{grid-template-columns:repeat(2,minmax(0,1fr))!important}
 }
 </style>
+
+<style id="v427-10er-mobile-layout-final">
+/* V4.227 – NUR OPTIK. Renderer/Kampf/Progress bleiben unangetastet.
+   Ziel: 10er-Karte auf Handy näher an die Vorlage, ohne abgeschnittene Knoten. */
+
+@media(max-width:760px){
+  #dungeonMapCard.v261-detail-card{
+    margin-left:-6px!important;
+    margin-right:-6px!important;
+  }
+
+  .v261-shell{padding:9px!important}
+
+  /* Header: Mitte bekommt deutlich mehr Platz. */
+  .v261-top{
+    grid-template-columns:minmax(0,.82fr) minmax(0,1.55fr) minmax(0,.82fr)!important;
+    gap:6px!important;
+    align-items:stretch!important;
+  }
+  .v261-back,.v261-ticket{
+    min-height:60px!important;
+    padding:7px 7px!important;
+    border-radius:12px!important;
+  }
+  .v261-back{
+    font-size:6.8px!important;
+    line-height:1.08!important;
+    gap:5px!important;
+    justify-content:center!important;
+    text-align:center!important;
+  }
+  .v261-back i{font-size:17px!important}
+  .v261-ticket b{
+    font-size:5.9px!important;
+    line-height:1.08!important;
+    white-space:normal!important;
+  }
+  .v261-ticket #dungeonTicketText{
+    margin-top:6px!important;
+    font-size:6.8px!important;
+    line-height:1.08!important;
+    text-align:center!important;
+  }
+  .v261-sign{
+    min-width:0!important;
+    padding:7px 7px 8px!important;
+    border-radius:13px!important;
+  }
+  .v261-sign:before,.v261-sign:after{
+    font-size:13px!important;
+    top:5px!important;
+  }
+  .v261-sign:before{left:5px!important}
+  .v261-sign:after{right:5px!important}
+  .v261-kicker{
+    font-size:6.3px!important;
+    letter-spacing:.11em!important;
+  }
+  .v261-title{
+    margin-top:3px!important;
+    font-size:15px!important;
+    line-height:.94!important;
+    letter-spacing:0!important;
+    text-wrap:balance!important;
+  }
+  .v261-sub{
+    margin-top:6px!important;
+    font-size:5.5px!important;
+    line-height:1.18!important;
+  }
+
+  /* Mehr echte Kartenhöhe = keine zusammengequetschten Gegner. */
+  .v261-stage{
+    margin-top:9px!important;
+    aspect-ratio:.82 / 1!important;
+    border-radius:16px!important;
+  }
+  .v261-bg{
+    inset:-2%!important;
+    filter:blur(1.5px) saturate(1.28) brightness(.63)!important;
+    transform:scale(1.04)!important;
+  }
+  .v261-fx{
+    background:
+      linear-gradient(180deg,rgba(0,0,0,.24),rgba(0,0,0,.05) 18%,rgba(0,0,0,.03) 63%,rgba(0,0,0,.32) 100%),
+      radial-gradient(circle at 18% 17%,rgba(83,255,111,.10),transparent 22%),
+      radial-gradient(circle at 84% 79%,rgba(255,67,42,.11),transparent 22%)!important;
+  }
+  .v261-road .bg{
+    stroke-width:8.5!important;
+    opacity:.9!important;
+  }
+  .v261-road .dots{
+    stroke-width:6!important;
+    stroke-dasharray:1 9!important;
+    opacity:1!important;
+  }
+
+  /* Positionen nach der Referenz – bewusst weiter auseinander. */
+  .v261-node[data-v261-room="0"]{--x:12!important;--y:17!important}
+  .v261-node[data-v261-room="1"]{--x:38!important;--y:20!important}
+  .v261-node[data-v261-room="2"]{--x:65!important;--y:24!important}
+  .v261-node[data-v261-room="3"]{--x:84!important;--y:29!important}
+  .v261-node[data-v261-room="4"]{--x:13!important;--y:43!important}
+  .v261-node[data-v261-room="5"]{--x:34!important;--y:55!important}
+  .v261-node[data-v261-room="6"]{--x:53!important;--y:65!important}
+  .v261-node[data-v261-room="7"]{--x:71!important;--y:56!important}
+  .v261-node[data-v261-room="8"]{--x:84!important;--y:45!important}
+  .v261-node[data-v261-room="9"]{--x:81!important;--y:76!important}
+
+  .v261-node{
+    width:72px!important;
+  }
+  .v261-ring{
+    width:47px!important;
+    height:47px!important;
+    font-size:16px!important;
+    border-width:3px!important;
+  }
+  .v261-num{
+    width:24px!important;
+    height:24px!important;
+    top:-8px!important;
+    font-size:13px!important;
+  }
+  .v261-check,.v261-lock{
+    width:21px!important;
+    height:21px!important;
+    font-size:11px!important;
+  }
+  .v261-panel{
+    width:70px!important;
+    min-height:40px!important;
+    margin-top:6px!important;
+    padding:5px 3px 4px!important;
+    border-radius:9px!important;
+  }
+  .v261-name{
+    font-size:4.95px!important;
+    line-height:1.06!important;
+  }
+  .v261-lv{
+    font-size:4.65px!important;
+    margin-top:3px!important;
+  }
+
+  .v261-node.boss{
+    width:108px!important;
+  }
+  .v261-node.boss .v261-ring{
+    width:64px!important;
+    height:64px!important;
+  }
+  .v261-node.boss .v261-num{
+    width:31px!important;
+    height:31px!important;
+    font-size:17px!important;
+  }
+  .v261-node.boss .v261-panel{
+    width:96px!important;
+    min-height:46px!important;
+  }
+  .v261-node.boss .v261-name{
+    font-size:6.1px!important;
+  }
+
+  .v261-signboard{
+    left:1.5%!important;
+    bottom:4.5%!important;
+    max-width:78px!important;
+    padding:5px 6px!important;
+    font-size:5.45px!important;
+    line-height:1.12!important;
+  }
+
+  /* Unterer Infobereich näher an der Vorlage und weniger hoch. */
+  .v261-bottom{
+    grid-template-columns:1fr!important;
+    margin-top:9px!important;
+    padding:10px!important;
+    gap:8px!important;
+  }
+  .v261-head{gap:8px!important}
+  .v261-thumb{
+    width:48px!important;
+    height:48px!important;
+    font-size:29px!important;
+  }
+  .v261-line1{font-size:8.2px!important}
+  .v261-line2{font-size:6px!important}
+  .v261-label{
+    margin-top:7px!important;
+    font-size:5.8px!important;
+  }
+  .v261-rewards{
+    grid-template-columns:repeat(4,minmax(0,1fr))!important;
+    gap:6px!important;
+  }
+  .v261-r{
+    padding:8px 4px!important;
+    font-size:6.5px!important;
+    border-radius:9px!important;
+  }
+  .v261-r .big{
+    margin-top:3px!important;
+    font-size:10px!important;
+  }
+  .v261-stats{
+    gap:6px!important;
+  }
+  .v261-stat{
+    padding:8px!important;
+    border-radius:9px!important;
+  }
+  .v261-stat span{font-size:5.6px!important}
+  .v261-stat b{
+    margin-top:4px!important;
+    font-size:13px!important;
+  }
+  .v261-enter{
+    min-height:50px!important;
+    margin-top:6px!important;
+    font-size:10px!important;
+  }
+}
+
+@media(max-width:420px){
+  .v261-title{font-size:13px!important}
+  .v261-kicker{font-size:5.8px!important}
+  .v261-sub{font-size:5.1px!important}
+  .v261-stage{aspect-ratio:.79 / 1!important}
+
+  .v261-node[data-v261-room="3"]{--x:82!important}
+  .v261-node[data-v261-room="8"]{--x:82!important}
+  .v261-node[data-v261-room="9"]{--x:79!important}
+
+  .v261-node{width:68px!important}
+  .v261-panel{width:66px!important}
+  .v261-name{font-size:4.7px!important}
+  .v261-node.boss{width:102px!important}
+  .v261-node.boss .v261-panel{width:90px!important}
+}
+</style>
 </body>
 </html>
 <style id="v268-inventory-multisell-css">
