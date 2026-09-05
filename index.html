@@ -79312,3 +79312,251 @@ body:has(#world.active){background:#010302!important}
 })();
 </script>
 <!-- ===== /V4.234 DUNGEON 7 ===== -->
+
+
+<!-- ===== V4.235 DUNGEON 8 SAFE PREVIEW ===== -->
+<style id="v435-d8-preview-style">
+/* Reine Vorschau: verändert keine Freischaltung und keinen Fortschritt. */
+#dungeonMapCard .v435-preview-launch{
+  display:block;
+  width:100%;
+  margin:7px 0 0;
+  min-height:36px;
+  border:1px solid #6f8d52;
+  border-radius:10px;
+  background:linear-gradient(180deg,#182718,#0c160d);
+  color:#a8ff87;
+  font-weight:1000;
+  font-size:8px;
+  letter-spacing:.04em;
+  cursor:pointer;
+  box-shadow:inset 0 0 12px rgba(99,220,75,.08),0 4px 10px #0007;
+}
+#dungeonMapCard.v435-preview-mode .v435-preview-banner{
+  margin:7px 0 0;
+  padding:7px 9px;
+  border:1px solid #d5a642;
+  border-radius:10px;
+  background:linear-gradient(180deg,#2b2311,#151108);
+  color:#ffe39a;
+  font-size:7px;
+  line-height:1.25;
+  font-weight:1000;
+  text-align:center;
+}
+#dungeonMapCard.v435-preview-mode .v261-enter{
+  filter:grayscale(1)!important;
+  opacity:.55!important;
+  cursor:not-allowed!important;
+}
+#dungeonMapCard.v435-preview-mode [data-v261-room]{
+  cursor:default!important;
+}
+@media(max-width:420px){
+  #dungeonMapCard .v435-preview-launch{font-size:7px;min-height:34px}
+  #dungeonMapCard.v435-preview-mode .v435-preview-banner{font-size:6.2px}
+}
+</style>
+
+<script id="v435-d8-preview-script">
+(function(){
+  const PREVIEW_INDEX = 7; // Dungeon 8
+  const state = window.__v435DungeonPreview || (window.__v435DungeonPreview = {
+    active:false,
+    returnSelected:6
+  });
+
+  function latestDetail(){
+    return window.v432RenderDetail ||
+           window.v427RenderDetail ||
+           window.v426RenderDetail ||
+           window.v261RenderDetail ||
+           window.v251RenderDetail;
+  }
+
+  function realSelected(){
+    try{return Number(s?.dungeon?.selected||0)}catch(e){return 0}
+  }
+
+  function addLaunchButton(){
+    if(state.active) return;
+    const card=document.getElementById('dungeonMapCard');
+    if(!card) return;
+    if(realSelected()!==6) return; // nur auf Dungeon 7 anbieten
+    if(card.querySelector('.v435-preview-launch')) return;
+
+    const stage=card.querySelector('.v261-stage');
+    if(!stage) return;
+
+    const btn=document.createElement('button');
+    btn.type='button';
+    btn.className='v435-preview-launch';
+    btn.textContent='👁 DUNGEON 8 VORSCHAU – NUR OPTIK, KEIN FORTSCHRITT';
+    btn.addEventListener('click',function(ev){
+      ev.preventDefault();
+      ev.stopPropagation();
+      openPreview();
+    });
+    stage.parentNode.insertBefore(btn,stage);
+  }
+
+  function stripGameplay(card){
+    card.querySelectorAll('[data-v261-room]').forEach(btn=>{
+      btn.disabled=true;
+      btn.style.pointerEvents='none';
+      btn.setAttribute('aria-disabled','true');
+    });
+
+    const attack=card.querySelector('.v261-enter');
+    if(attack){
+      const clone=attack.cloneNode(true);
+      clone.disabled=true;
+      clone.textContent='👁 VORSCHAU – KAMPF DEAKTIVIERT';
+      clone.style.pointerEvents='none';
+      attack.replaceWith(clone);
+    }
+  }
+
+  function decoratePreview(){
+    const card=document.getElementById('dungeonMapCard');
+    if(!card) return false;
+
+    card.classList.add('v435-preview-mode');
+    card.classList.remove('v432-d7','v427-d6');
+
+    const oldLaunch=card.querySelector('.v435-preview-launch');
+    if(oldLaunch) oldLaunch.remove();
+
+    const shell=card.querySelector('.v261-shell');
+    const stage=card.querySelector('.v261-stage');
+    if(shell && stage && !card.querySelector('.v435-preview-banner')){
+      const banner=document.createElement('div');
+      banner.className='v435-preview-banner';
+      banner.textContent='VORSCHAU DUNGEON 8 • KEINE FREISCHALTUNG • KEIN VERSUCH • KEIN SPIELSTAND WIRD VERÄNDERT';
+      stage.parentNode.insertBefore(banner,stage);
+    }
+
+    const ticket=card.querySelector('#dungeonTicketText');
+    if(ticket) ticket.textContent='VORSCHAU – kein Versuch verbraucht';
+
+    stripGameplay(card);
+
+    const back=card.querySelector('.v261-back');
+    if(back){
+      const clone=back.cloneNode(true);
+      const span=clone.querySelector('span');
+      if(span) span.innerHTML='Vorschau beenden<br>zurück zu Dungeon 7';
+      clone.addEventListener('click',function(ev){
+        ev.preventDefault();
+        ev.stopPropagation();
+        closePreview();
+      });
+      back.replaceWith(clone);
+    }
+    return true;
+  }
+
+  function renderPreview(){
+    if(!state.active) return false;
+    const detail=latestDetail();
+    if(typeof detail!=='function') return false;
+
+    let oldSelected=6, oldLayer='dungeon', oldView='map';
+    try{
+      oldSelected=Number(s?.dungeon?.selected||state.returnSelected||6);
+      oldLayer=s?.dungeon?.layer||'dungeon';
+      oldView=s?.dungeon?.view||'map';
+
+      s.dungeon.selected=PREVIEW_INDEX;
+      s.dungeon.layer='dungeon';
+      s.dungeon.view='map';
+
+      detail();
+    }catch(e){
+      console.error('V4.235 D8 preview render',e);
+    }finally{
+      try{
+        s.dungeon.selected=state.returnSelected;
+        s.dungeon.layer=oldLayer;
+        s.dungeon.view=oldView;
+      }catch(e){}
+    }
+
+    try{decoratePreview()}catch(e){}
+    return true;
+  }
+
+  function openPreview(){
+    if(state.active) return;
+    state.returnSelected=realSelected();
+    state.active=true;
+    renderPreview();
+    try{window.scrollTo({top:0,behavior:'smooth'})}catch(e){}
+  }
+
+  function closePreview(){
+    state.active=false;
+    try{
+      s.dungeon.selected=state.returnSelected;
+      s.dungeon.layer='dungeon';
+      s.dungeon.view='map';
+    }catch(e){}
+    try{
+      const r=window.renderDungeon || renderDungeon;
+      if(typeof r==='function') r();
+    }catch(e){
+      const d=latestDetail();
+      if(typeof d==='function') d();
+    }
+    setTimeout(addLaunchButton,30);
+  }
+
+  window.v435OpenDungeon8Preview=openPreview;
+  window.v435CloseDungeon8Preview=closePreview;
+
+  /* Launcher nach normalen Rendern automatisch einsetzen. */
+  const sec=document.getElementById('dungeon');
+  if(sec && !sec.__v435PreviewObserver){
+    const obs=new MutationObserver(()=>{
+      if(state.active){
+        setTimeout(decoratePreview,0);
+      }else{
+        setTimeout(addLaunchButton,0);
+      }
+    });
+    obs.observe(sec,{subtree:true,childList:true});
+    sec.__v435PreviewObserver=obs;
+  }
+
+  /* Wenn während der Vorschau irgendein alter Renderer erneut zeichnet,
+     erzwingen wir nur die Vorschauansicht – niemals einen Kampf. */
+  try{
+    const current=window.renderDungeon || renderDungeon;
+    if(typeof current==='function' && !current.__v435PreviewOwner){
+      const base=current;
+      const wrapped=function(){
+        if(state.active) return renderPreview();
+        const out=base.apply(this,arguments);
+        setTimeout(addLaunchButton,0);
+        return out;
+      };
+      wrapped.__v435PreviewOwner=true;
+      try{window.renderDungeon=wrapped}catch(e){}
+      try{renderDungeon=wrapped}catch(e){}
+    }
+  }catch(e){}
+
+  window.addEventListener('pageshow',()=>{
+    setTimeout(()=>state.active ? renderPreview() : addLaunchButton(),50);
+  },{passive:true});
+
+  document.addEventListener('visibilitychange',()=>{
+    if(!document.hidden){
+      setTimeout(()=>state.active ? renderPreview() : addLaunchButton(),50);
+    }
+  },{passive:true});
+
+  setTimeout(addLaunchButton,50);
+})();
+</script>
+<!-- ===== /V4.235 DUNGEON 8 SAFE PREVIEW ===== -->
