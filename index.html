@@ -47708,6 +47708,71 @@ body:has(#world.active) #v337LegalFooter{display:none!important}
   try{if(document.getElementById('dungeon')?.classList.contains('active')&&s?.dungeon?.layer==='dungeon'&&s?.dungeon?.view==='map')window.v427RenderDetail()}catch(e){}
 })();
 </script>
+
+<!-- ===== V4.474 DUNGEON BACKGROUND + MONSTER ASSET FIX ===== -->
+<style id="v474-dungeon-assets-style">
+#dungeonMapCard.v468-master .v261-bg{background-size:cover!important;background-position:center center!important;filter:saturate(1.08) contrast(1.02) brightness(.90)!important}
+#dungeonMapCard.v468-master .v261-node:not(.boss) .v261-ring{background-size:cover!important;background-position:center center!important;background-repeat:no-repeat!important}
+#dungeonMapCard.v468-master .v261-thumb{background-size:cover!important;background-position:center center!important;background-repeat:no-repeat!important}
+</style>
+<script id="v474-dungeon-assets-script">
+(()=>{
+'use strict';
+if(window.__V474_DUNGEON_ASSET_FIX__)return;
+window.__V474_DUNGEON_ASSET_FIX__=true;
+const CFG={"2": {"bg": "v474_dungeon_assets/d2_bg.jpg", "art": ["v474_dungeon_assets/d2_1.png", "v474_dungeon_assets/d2_2.png", "v474_dungeon_assets/d2_3.png", "v474_dungeon_assets/d2_4.png", "v474_dungeon_assets/d2_5.png", "v474_dungeon_assets/d2_6.png", "v474_dungeon_assets/d2_7.png", "v474_dungeon_assets/d2_8.png", "v474_dungeon_assets/d2_9.png"]}, "3": {"bg": "v474_dungeon_assets/d3_bg.jpg", "art": ["v474_dungeon_assets/d3_1.png", "v474_dungeon_assets/d3_2.png", "v474_dungeon_assets/d3_3.png", "v474_dungeon_assets/d3_4.png", "v474_dungeon_assets/d3_5.png", "v474_dungeon_assets/d3_6.png", "v474_dungeon_assets/d3_7.png", "v474_dungeon_assets/d3_8.png", "v474_dungeon_assets/d3_9.png"]}, "4": {"bg": "v474_dungeon_assets/d4_bg.jpg", "art": ["v474_dungeon_assets/d4_1.png", "v474_dungeon_assets/d4_2.png", "v474_dungeon_assets/d4_3.png", "v474_dungeon_assets/d4_4.png", "v474_dungeon_assets/d4_5.png", "v474_dungeon_assets/d4_6.png", "v474_dungeon_assets/d4_7.png", "v474_dungeon_assets/d4_8.png", "v474_dungeon_assets/d4_9.png"]}, "5": {"bg": "v474_dungeon_assets/d5_bg.jpg", "art": ["v474_dungeon_assets/d5_1.png", "v474_dungeon_assets/d5_2.png", "v474_dungeon_assets/d5_3.png", "v474_dungeon_assets/d5_4.png", "v474_dungeon_assets/d5_5.png", "v474_dungeon_assets/d5_6.png", "v474_dungeon_assets/d5_7.png", "v474_dungeon_assets/d5_8.png", "v474_dungeon_assets/d5_9.png"]}, "6": {"bg": "v474_dungeon_assets/d6_bg.jpg", "art": ["v474_dungeon_assets/d6_1.png", "v474_dungeon_assets/d6_2.png", "v474_dungeon_assets/d6_3.png", "v474_dungeon_assets/d6_4.png", "v474_dungeon_assets/d6_5.png", "v474_dungeon_assets/d6_6.png", "v474_dungeon_assets/d6_7.png", "v474_dungeon_assets/d6_8.png", "v474_dungeon_assets/d6_9.png"]}, "7": {"bg": "v474_dungeon_assets/d7_bg.jpg", "art": ["v474_dungeon_assets/d7_1.png", "v474_dungeon_assets/d7_2.png", "v474_dungeon_assets/d7_3.png", "v474_dungeon_assets/d7_4.png", "v474_dungeon_assets/d7_5.png", "v474_dungeon_assets/d7_6.png", "v474_dungeon_assets/d7_7.png", "v474_dungeon_assets/d7_8.png", "v474_dungeon_assets/d7_9.png"]}, "8": {"bg": "v474_dungeon_assets/d8_bg.jpg", "art": ["v474_dungeon_assets/d8_1.png", "v474_dungeon_assets/d8_2.png", "v474_dungeon_assets/d8_3.png", "v474_dungeon_assets/d8_4.png", "v474_dungeon_assets/d8_5.png", "v474_dungeon_assets/d8_6.png", "v474_dungeon_assets/d8_7.png", "v474_dungeon_assets/d8_8.png", "v474_dungeon_assets/d8_9.png"]}, "9": {"bg": "v474_dungeon_assets/d9_bg.jpg", "art": ["v474_dungeon_assets/d9_1.png", "v474_dungeon_assets/d9_2.png", "v474_dungeon_assets/d9_3.png", "v474_dungeon_assets/d9_4.png", "v474_dungeon_assets/d9_5.png", "v474_dungeon_assets/d9_6.png", "v474_dungeon_assets/d9_7.png", "v474_dungeon_assets/d9_8.png", "v474_dungeon_assets/d9_9.png"]}};
+function currentIndex(){
+  try{const pv=window.__v453AllDungeonPreview;if(pv&&pv.active)return Math.max(0,Math.min(19,Number(pv.target)||0));}catch(e){}
+  try{return Math.max(0,Math.min(19,Number(window.s?.dungeon?.selected||0)||0));}catch(e){return -1;}
+}
+function currentRoom(card){
+  try{if(typeof window.v048RoomIndex==='function')return Math.max(0,Math.min(9,Number(window.v048RoomIndex(currentIndex()))||0));}catch(e){}
+  try{const t=card.querySelector('.v261-line1')?.textContent||'';const m=t.match(/^(\d+)\s*[·.-]/);if(m)return Math.max(0,Math.min(9,Number(m[1])-1));}catch(e){}
+  return 0;
+}
+function applyFix(){
+  try{
+    const card=document.getElementById('dungeonMapCard');
+    if(!card) return;
+    const dungeonNo=currentIndex()+1;
+    const cfg=CFG[dungeonNo];
+    if(!cfg) return;
+    const bg=card.querySelector('.v261-bg');
+    if(bg) bg.style.backgroundImage='url("'+cfg.bg+'")';
+    card.querySelectorAll('[data-v261-room]').forEach((node,idx)=>{
+      if(idx<9){
+        const ring=node.querySelector('.v261-ring');
+        if(ring && cfg.art[idx]) ring.style.backgroundImage='url("'+cfg.art[idx]+'")';
+      }
+    });
+    const ri=currentRoom(card);
+    const thumb=card.querySelector('.v261-thumb');
+    if(thumb && ri>=0 && ri<9 && cfg.art[ri]){
+      thumb.textContent='';
+      thumb.style.backgroundImage='url("'+cfg.art[ri]+'")';
+    }
+  }catch(e){console.error('V4.474 asset fix',e);}
+}
+function pulse(){applyFix();requestAnimationFrame(applyFix);setTimeout(applyFix,90);setTimeout(applyFix,220);setTimeout(applyFix,420);}
+function wrap(name){
+  try{
+    const fn=window[name];
+    if(typeof fn!=='function'||fn.__v474Fix) return;
+    const w=function(){const out=fn.apply(this,arguments);pulse();return out;};
+    w.__v474Fix=true;window[name]=w;
+    try{if(name==='renderDungeon')renderDungeon=w;if(name==='v432RenderDetail')v432RenderDetail=w;if(name==='v251RenderDetail')v251RenderDetail=w;if(name==='v244RenderSelectedDungeonMap')v244RenderSelectedDungeonMap=w;if(name==='v261RenderDetail')v261RenderDetail=w;}catch(e){}
+  }catch(e){}
+}
+['v432RenderDetail','v430RenderDetail','v426RenderDetail','v251RenderDetail','v244RenderSelectedDungeonMap','v261RenderDetail','renderDungeon'].forEach(wrap);
+requestAnimationFrame(pulse);
+setTimeout(pulse,140);
+window.addEventListener('pageshow',()=>setTimeout(pulse,80),{passive:true});
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)setTimeout(pulse,80);},{passive:true});
+document.addEventListener('click',()=>{setTimeout(pulse,40);setTimeout(pulse,140);},true);
+})();
+</script>
+<!-- ===== /V4.474 DUNGEON BACKGROUND + MONSTER ASSET FIX ===== -->
+
 </body>
 </html>
 <style id="v268-inventory-multisell-css">
