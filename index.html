@@ -82151,3 +82151,95 @@ body:has(#world.active){background:#010302!important}
 })();
 </script>
 <!-- ===== /V4.258 DUNGEON 1 CLEAN BACKGROUND + FINAL LAYOUT ===== -->
+
+
+<!-- ===== V4.259 DUNGEON 1 RIGHT-SIDE + THUMB FINAL ===== -->
+<style id="v459-d1-right-side-thumb-final">
+/* D1: rechte Knoten entzerren, damit 4 / 8 / 9 nicht mehr ineinander laufen. */
+#dungeonMapCard.v426-ref-d1 .v261-node[data-v261-room="3"]{--x:82!important;--y:28!important}
+#dungeonMapCard.v426-ref-d1 .v261-node[data-v261-room="6"]{--x:56!important;--y:62!important}
+#dungeonMapCard.v426-ref-d1 .v261-node[data-v261-room="7"]{--x:73!important;--y:55!important}
+#dungeonMapCard.v426-ref-d1 .v261-node[data-v261-room="8"]{--x:84!important;--y:46!important}
+#dungeonMapCard.v426-ref-d1 .v261-node[data-v261-room="9"]{--x:80!important;--y:83!important}
+
+/* Rechte Tafeln etwas kompakter und vollständig innerhalb der Stage. */
+#dungeonMapCard.v426-ref-d1 .v261-node[data-v261-room="3"] .v261-panel,
+#dungeonMapCard.v426-ref-d1 .v261-node[data-v261-room="8"] .v261-panel{
+  width:67px!important;
+  padding-left:3px!important;
+  padding-right:3px!important;
+}
+#dungeonMapCard.v426-ref-d1 .v261-node[data-v261-room="3"] .v261-name{
+  font-size:4.35px!important;
+  line-height:1.02!important;
+}
+#dungeonMapCard.v426-ref-d1 .v261-node[data-v261-room="8"] .v261-name{
+  font-size:4.65px!important;
+}
+
+/* Das alte Portrait-CSS machte die aktuelle Gegner-Kachel unsichtbar.
+   Für D1 wieder den echten dynamischen Gegner-Icon sichtbar machen. */
+#dungeonMapCard.v426-ref-d1 .v261-thumb{
+  color:#fff!important;
+  background-image:none!important;
+  background:linear-gradient(180deg,#111711,#050805)!important;
+  border-color:#4d6b43!important;
+  font-size:30px!important;
+}
+</style>
+<script id="v459-d1-right-side-thumb-final-script">
+(function(){
+  'use strict';
+  if(window.__V459_D1_FINAL__)return;
+  window.__V459_D1_FINAL__=true;
+
+  function paint(){
+    try{
+      const card=document.getElementById('dungeonMapCard');
+      if(!card?.classList.contains('v426-ref-d1'))return;
+
+      /* Pfad exakt durch die jetzt entzerrten Knoten führen. */
+      const pts='15,12 27,14 40,17 54,19 67,22 76,24 82,28 71,35 55,39 34,40 15,42 25,47 36,52 46,57 56,62 65,59 73,55 80,50 84,46 82,58 81,70 80,83';
+      card.querySelectorAll('.v261-road polyline').forEach(el=>el.setAttribute('points',pts));
+
+      /* Untere aktuelle Gegner-Kachel wieder sichtbar. */
+      let ri=0;
+      try{ri=Math.max(0,Math.min(9,Number(v048RoomIndex?.(0))||0))}catch(e){}
+      const thumb=card.querySelector('.v261-thumb');
+      if(thumb){
+        const icon=dungeons?.[0]?.enemies?.[ri]?.icon||'👹';
+        if(thumb.textContent!==icon)thumb.textContent=icon;
+        thumb.style.setProperty('background-image','none','important');
+        thumb.style.setProperty('color','#fff','important');
+      }
+
+      /* langer Name ohne unnötigen Bindestrich */
+      try{
+        if(dungeons?.[0]?.enemies?.[3])dungeons[0].enemies[3].name='Kleeblattkriecher';
+      }catch(e){}
+      const n4=card.querySelector('[data-v261-room="3"] .v261-name');
+      if(n4)n4.textContent='Kleeblattkriecher';
+    }catch(e){}
+  }
+
+  requestAnimationFrame(paint);
+  document.addEventListener('click',()=>setTimeout(paint,35),true);
+  window.addEventListener('pageshow',()=>setTimeout(paint,60),{passive:true});
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden)setTimeout(paint,50)},{passive:true});
+
+  /* Nur nach echten D1-Rendern nachmalen; kein MutationObserver. */
+  ['v426RenderDetail','v251RenderDetail','v244RenderSelectedDungeonMap'].forEach(name=>{
+    try{
+      const fn=window[name];
+      if(typeof fn==='function'&&!fn.__v459D1Paint){
+        const base=fn;
+        const wrap=function(){const out=base.apply(this,arguments);requestAnimationFrame(paint);return out};
+        wrap.__v459D1Paint=true;
+        window[name]=wrap;
+        try{if(name==='v251RenderDetail')v251RenderDetail=wrap;if(name==='v244RenderSelectedDungeonMap')v244RenderSelectedDungeonMap=wrap}catch(e){}
+      }
+    }catch(e){}
+  });
+})();
+</script>
+<!-- ===== /V4.259 DUNGEON 1 RIGHT-SIDE + THUMB FINAL ===== -->
