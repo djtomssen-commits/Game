@@ -23917,12 +23917,16 @@ const V141_SETTINGS_KEY='growLegendsSettingsV141';
 let v141Deleting=false;
 
 function v141LoadSettings(){
-  const base={sound:true,notifications:true,effects:true};
+  const base={sound:true,notifications:true,effects:true,pushNotifications:true};
   try{
-    return {...base,...JSON.parse(localStorage.getItem(V141_SETTINGS_KEY)||'{}')};
+    const loaded={...base,...JSON.parse(localStorage.getItem(V141_SETTINGS_KEY)||'{}')};
+    // Ingame-Hinweise sind keine Benutzereinstellung mehr. Sie bleiben immer aktiv.
+    loaded.notifications=true;
+    return loaded;
   }catch(e){return base}
 }
 let v141Settings=v141LoadSettings();
+v141Settings.notifications=true;
 
 function v141SaveSettings(){
   localStorage.setItem(V141_SETTINGS_KEY,JSON.stringify(v141Settings));
@@ -23973,10 +23977,10 @@ function v141BuildSettings(){
           <input class="v141-switch" id="v141Sound" type="checkbox">
         </label>
 
-        <label class="v141-setting-row">
-          <span class="v141-setting-icon">🔔</span>
-          <span class="v141-setting-copy"><b>Benachrichtigungen</b><span>Erfolge, Drops und normale Spielhinweise.</span></span>
-          <input class="v141-switch" id="v141Notifications" type="checkbox">
+        <label class="v141-setting-row" id="v141PushRow">
+          <span class="v141-setting-icon">📲</span>
+          <span class="v141-setting-copy"><b>Handy-Push</b><span>Android-Benachrichtigungen für Quest, Growroom, Dungeon, PvP und Weltboss – auch außerhalb des Spiels.</span></span>
+          <input class="v141-switch" id="v141PushNotifications" type="checkbox">
         </label>
 
         <label class="v141-setting-row">
@@ -24025,16 +24029,20 @@ function v141BuildSettings(){
   }
 
   const sound=document.querySelector('#v141Sound');
-  const notifications=document.querySelector('#v141Notifications');
+  const pushNotifications=document.querySelector('#v141PushNotifications');
   const effects=document.querySelector('#v141Effects');
 
   if(sound && !sound.dataset.bound){
     sound.dataset.bound='1';
     sound.onchange=()=>{v141Settings.sound=sound.checked;v141SaveSettings()};
   }
-  if(notifications && !notifications.dataset.bound){
-    notifications.dataset.bound='1';
-    notifications.onchange=()=>{v141Settings.notifications=notifications.checked;v141SaveSettings()};
+  if(pushNotifications && !pushNotifications.dataset.bound){
+    pushNotifications.dataset.bound='1';
+    pushNotifications.onchange=()=>{
+      v141Settings.pushNotifications=pushNotifications.checked;
+      v141SaveSettings();
+      if(typeof window.glSetPushEnabled==='function')void window.glSetPushEnabled(pushNotifications.checked);
+    };
   }
   if(effects && !effects.dataset.bound){
     effects.dataset.bound='1';
@@ -24063,10 +24071,10 @@ function v141BuildSettings(){
 }
 function v141RefreshSettingsUi(){
   const sound=document.querySelector('#v141Sound');
-  const notifications=document.querySelector('#v141Notifications');
+  const pushNotifications=document.querySelector('#v141PushNotifications');
   const effects=document.querySelector('#v141Effects');
   if(sound)sound.checked=!!v141Settings.sound;
-  if(notifications)notifications.checked=!!v141Settings.notifications;
+  if(pushNotifications)pushNotifications.checked=v141Settings.pushNotifications!==false;
   if(effects)effects.checked=!!v141Settings.effects;
 
   const mail=document.querySelector('#v141AccountMail');
@@ -27744,6 +27752,7 @@ function v210NotifyOnce(key,title,detail,icon='🔔'){
   }
 
   if(
+    (typeof window.glPushEnabled!=='function'||window.glPushEnabled()) &&
     typeof Notification!=='undefined' &&
     Notification.permission==='granted' &&
     document.hidden
@@ -27767,7 +27776,7 @@ async function v210AskNotificationPermission(){
 }
 
 function v210BindNotificationPermission(){
-  const toggle=document.querySelector('#v141Notifications');
+  const toggle=document.querySelector('#v141PushNotifications');
   if(!toggle || toggle.dataset.v210PermissionBound==='1')return;
 
   toggle.dataset.v210PermissionBound='1';
@@ -29749,8 +29758,19 @@ setTimeout(()=>{
 <script id="v231-notify-inventory-quest-script">
 /* ===== V4.02 robust notifications ===== */
 
-function v231NotificationsEnabled(){
+function v231InGameNotificationsEnabled(){
   return !window.v141Settings || v141Settings.notifications !== false;
+}
+function v231PhonePushEnabled(){
+  try{
+    if(typeof window.glPushEnabled==='function')return !!window.glPushEnabled();
+    return !window.v141Settings || v141Settings.pushNotifications !== false;
+  }catch(e){return true}
+}
+function v231NotificationsEnabled(){
+  /* Local completion checks must keep running when EITHER channel is active.
+     Delivery itself is split below: toast = in-game, Notification = phone/system. */
+  return v231InGameNotificationsEnabled() || v231PhonePushEnabled();
 }
 
 
@@ -29761,31 +29781,35 @@ function v231NotificationsEnabled(){
   including after returning from a sleeping/background tab.
 */
 v210NotifyOnce=function(key,title,detail,icon='🔔'){
-  if(!v231NotificationsEnabled())return false;
+  const inGame=v231InGameNotificationsEnabled();
+  const phonePush=v231PhonePushEnabled();
+  if(!inGame && !phonePush)return false;
   if(v210Seen[key])return false;
 
   v210Seen[key]=Date.now();
   v210SaveSeen();
 
-  try{
-    if(typeof v063Toast==='function'){
-      v063Toast(`${icon} ${title}`,'success',detail);
-    }
-  }catch(e){}
+  /* In-game channel: never controls Android/system push. */
+  if(inGame){
+    try{
+      if(typeof v063Toast==='function'){
+        v063Toast(`${icon} ${title}`,'success',detail);
+      }
+    }catch(e){}
+  }
 
+  /* Phone/system channel: independent from in-game hints. Native FCM jobs are
+     handled separately by glSync*PushJob; this covers browser/WebView system
+     notifications while the page itself is still alive. */
   if(
+    phonePush &&
     typeof Notification!=='undefined' &&
     Notification.permission==='granted'
   ){
     try{
-      const n=new Notification(`Grow Legends – ${title}`,{
-        body:detail
-      });
+      const n=new Notification(`Grow Legends – ${title}`,{body:detail});
       setTimeout(()=>{try{n.close()}catch(e){}},7000);
-    }catch(e){
-      /* Android browsers can reject Notification() without a worker.
-         The in-game toast remains the reliable fallback. */
-    }
+    }catch(e){}
   }
 
   return true;
@@ -29873,7 +29897,7 @@ const v231BaseBindNotificationPermission=v210BindNotificationPermission;
 v210BindNotificationPermission=function(){
   const r=v231BaseBindNotificationPermission();
 
-  const toggle=document.querySelector('#v141Notifications');
+  const toggle=document.querySelector('#v141PushNotifications');
   if(toggle && toggle.dataset.v231Bound!=='1'){
     toggle.dataset.v231Bound='1';
 
@@ -38558,8 +38582,20 @@ function v257RenderRequests(){
 }
 
 async function v257HandleRequest(requestId,accept){
+  const requestRow=Array.isArray(v257Requests)?v257Requests.find(r=>String(r?.id||'')===String(requestId||'')):null;
+  const joinedName=String(requestRow?.character_name||'Spieler').trim().slice(0,40)||'Spieler';
+  const guildIdBefore=String(v254Guild?.id||v254Membership?.guild_id||'');
   const {error}=await v073Db.rpc('v257_handle_guild_request',{p_request:requestId,p_accept:accept});
   if(error)return v063Toast('Aktion fehlgeschlagen','warn',error.message||'');
+  if(accept&&guildIdBefore){
+    try{
+      const uid=String(v073User?.id||'');
+      if(uid&&v073Db){
+        const {error:chatError}=await v073Db.from('guild_chat_messages').insert({guild_id:guildIdBefore,user_id:uid,character_name:joinedName,body:'ist der Gilde beigetreten.'});
+        if(chatError)console.warn('V5.27 legacy guild join chat message',chatError);
+      }
+    }catch(chatError){console.warn('V5.27 legacy guild join chat message',chatError)}
+  }
   v063Toast(accept?'Mitglied aufgenommen':'Anfrage abgelehnt','success');
   await v254LoadGuild();
   await v257LoadRequests();
@@ -45156,7 +45192,7 @@ function historicalScriptCount(){if(historicCountCache!=null)return historicCoun
   T('UI & Pixel','Keine sichtbaren kaputten Bilder',()=>{const b=brokenImages();return{pass:b.length===0,detail:b.slice(0,5).map(x=>x.alt||x.src.slice(0,40)).join(', ')}});
   T('UI & Pixel','Keine NaN/undefined-Texte sichtbar',()=>visibleTextProblems()===0);
   T('UI & Pixel','Keine auffälligen abgeschnittenen Karten/Buttons',()=>({pass:overflowCount()<=2,detail:`Auffällige Elemente: ${overflowCount()}`}), 'warn');
-  T('UI & Pixel','Systemtest im Einstellungsmenü vorhanden',()=>!!document.getElementById('v4104QaRow'));
+  T('UI & Pixel','Systemtechnik nicht im Einstellungsmenü',()=>!document.getElementById('v4104QaRow'));
   T('UI & Pixel','Aktuelle Comic-Item-Assets geladen',()=>typeof window.v4106ComicItemArtUri==='function'&&Object.keys(window.v4106ComicAssets||{}).length>=10);
   T('UI & Pixel','Sichtbare Itemgrafiken ohne Emoji-Fallback',()=>{const bad=[...document.querySelectorAll('.v4103-item-fallback')].filter(visible);return{pass:bad.length===0,detail:`Fallbacks sichtbar: ${bad.length}`}});
   T('UI & Pixel','Spielerprofil nutzt Comic-Art-Pipeline',()=>{const sample={name:'QA Klinge',slot:'weapon',quality:'blue',rarity:'rare',dropLevel:80,bonus:{staerke:10}};const h=typeof v074EquipmentHtml==='function'?v074EquipmentHtml({weapon:sample}):'';return h.includes('v466-item-art')&&window.v4106ComicItemArtUri(sample).startsWith('data:image/webp;base64,')});
@@ -47783,6 +47819,247 @@ document.addEventListener('click',()=>{setTimeout(pulse,40);setTimeout(pulse,140
 
 
 
+
+<!-- ===== Grow Legends: Handy-Push getrennt von Ingame-Hinweisen ===== -->
+<!-- ===== Grow Legends: Einstellungen Push AN/AUS ===== -->
+<script id="gl-push-master-switch-controller-v1">
+(()=>{
+ 'use strict';
+ if(window.__GL_PUSH_MASTER_SWITCH_V1__)return;
+ window.__GL_PUSH_MASTER_SWITCH_V1__=true;
+
+ function enabled(){
+  try{return !(typeof v141Settings==='object'&&v141Settings&&v141Settings.pushNotifications===false)}catch(e){return true}
+ }
+ window.glPushEnabled=enabled;
+
+ async function user(){
+  try{
+   if(typeof v073Db==='undefined'||!v073Db?.auth)return null;
+   const r=await v073Db.auth.getSession();
+   if(r?.data?.session?.user)return r.data.session.user;
+   const u=await v073Db.auth.getUser();
+   return u?.data?.user||null;
+  }catch(e){return null}
+ }
+
+ async function cancelAllPending(){
+  try{
+   const u=await user();
+   if(!u?.id||typeof v073Db==='undefined')return false;
+   const nowIso=new Date().toISOString();
+   const {error}=await v073Db.from('push_jobs')
+    .update({cancelled_at:nowIso,updated_at:nowIso})
+    .eq('user_id',u.id)
+    .is('sent_at',null)
+    .is('cancelled_at',null);
+   if(error)throw error;
+   console.info('[GL Push] alle offenen Push-Jobs deaktiviert');
+   return true;
+  }catch(e){
+   console.warn('[GL Push] offene Jobs konnten nicht deaktiviert werden',e);
+   return false;
+  }
+ }
+
+ async function resyncAll(){
+  try{if(typeof window.glRegisterNativePushDevice==='function')await window.glRegisterNativePushDevice()}catch(e){}
+  try{if(typeof window.glSyncGrowPushJob==='function')await window.glSyncGrowPushJob()}catch(e){}
+  try{if(typeof window.glSyncGrowCarePushJob==='function')await window.glSyncGrowCarePushJob()}catch(e){}
+  try{if(typeof window.glSyncQuestPushJob==='function')await window.glSyncQuestPushJob()}catch(e){}
+  try{if(typeof window.glSyncDungeonPushJob==='function')await window.glSyncDungeonPushJob()}catch(e){}
+  try{if(typeof window.glSyncWorldBossPushJob==='function')await window.glSyncWorldBossPushJob()}catch(e){}
+ }
+
+ window.glSetPushEnabled=async function(on){
+  const value=!!on;
+  try{
+   if(typeof v141Settings==='object'&&v141Settings){
+    v141Settings.pushNotifications=value;
+    localStorage.setItem('growLegendsSettingsV141',JSON.stringify(v141Settings));
+   }
+  }catch(e){}
+
+  if(!value){
+   await cancelAllPending();
+   return true;
+  }
+
+  try{
+   if(typeof Notification!=='undefined'&&Notification.permission==='default')
+    await Notification.requestPermission();
+  }catch(e){}
+  await resyncAll();
+  return true;
+ };
+
+ window.addEventListener('growlegends:account-ready',()=>{
+  setTimeout(()=>{if(!enabled())void cancelAllPending()},1200);
+ });
+})();
+</script>
+
+
+<!-- ===== V4.496 QUEST CLAIM SINGLE-PAYOUT GUARD ===== -->
+<script id="v496-quest-claim-single-payout">
+(function(){
+  const STORE='growlegends_quest_claim_locks_v496';
+  const inflight=new Set();
+
+  function accountId(){
+    try{
+      if(typeof v073User!=='undefined'&&v073User?.id&&!v073User.is_anonymous)return String(v073User.id);
+    }catch(e){}
+    try{
+      const id=String(s?.social?.playerId||localStorage.getItem('growLegendsPlayerId')||'').trim();
+      if(id)return id;
+    }catch(e){}
+    return 'local';
+  }
+
+  function questToken(q){
+    if(!q)return '';
+    const id=String(q.id??'').trim();
+    if(id)return id;
+    return [q.ends,q.name,q.xp,q.gold,q.energy].map(x=>String(x??'')).join('|');
+  }
+
+  function lockKey(q){
+    const token=questToken(q);
+    return token?`${accountId()}|${token}`:'';
+  }
+
+  function readLocks(){
+    try{
+      const x=JSON.parse(localStorage.getItem(STORE)||'{}');
+      return x&&typeof x==='object'&&!Array.isArray(x)?x:{};
+    }catch(e){return {}}
+  }
+
+  function alreadyPaid(q){
+    const k=lockKey(q);if(!k)return false;
+    return !!readLocks()[k];
+  }
+
+  function markPaid(q){
+    const k=lockKey(q);if(!k)return;
+    try{
+      const x=readLocks();
+      x[k]=Date.now();
+      const entries=Object.entries(x).sort((a,b)=>(Number(b[1])||0)-(Number(a[1])||0)).slice(0,80);
+      localStorage.setItem(STORE,JSON.stringify(Object.fromEntries(entries)));
+    }catch(e){}
+  }
+
+  function setClaimUiBusy(busy,text){
+    try{
+      document.querySelectorAll('#claimQuest,#v392ClaimQuest').forEach(btn=>{
+        btn.disabled=!!busy;
+        if(busy){
+          if(!btn.dataset.v496OldText)btn.dataset.v496OldText=btn.textContent||'';
+          btn.textContent=text||'Belohnung wird abgeholt …';
+          btn.style.pointerEvents='none';
+        }else{
+          btn.style.pointerEvents='';
+          if(btn.dataset.v496OldText){btn.textContent=btn.dataset.v496OldText;delete btn.dataset.v496OldText;}
+        }
+      });
+    }catch(e){}
+  }
+
+  function ensureOffers(){
+    try{
+      s.quests??={};
+      if(!Array.isArray(s.quests.offers)||!s.quests.offers.length){
+        if(typeof makeQuest==='function')s.quests.offers=[makeQuest(),makeQuest(),makeQuest()];
+        else s.quests.offers=[];
+      }
+    }catch(e){}
+  }
+
+  function repairStalePaidQuest(){
+    try{
+      const q=s?.quests?.active;
+      if(!q||!alreadyPaid(q))return false;
+      s.quests.active=null;
+      ensureOffers();
+      try{persist(false)}catch(e){
+        try{localStorage.setItem(KEY,JSON.stringify(s))}catch(_){}
+      }
+      return true;
+    }catch(e){return false}
+  }
+
+  try{
+    if(typeof claimQuest==='function'&&!window.__v496QuestClaimGuard){
+      const base=claimQuest;
+      const wrapped=function(){
+        const q=s?.quests?.active;
+        const ready=!!q&&Date.now()>=Number(q.ends||0);
+        if(!ready)return base.apply(this,arguments);
+
+        const k=lockKey(q);
+        if((k&&inflight.has(k))||alreadyPaid(q)){
+          repairStalePaidQuest();
+          setClaimUiBusy(true,'Bereits abgeholt');
+          requestAnimationFrame(()=>{
+            try{if(typeof renderQuests==='function')renderQuests()}catch(e){}
+          });
+          return false;
+        }
+
+        if(k)inflight.add(k);
+        setClaimUiBusy(true,'Belohnung wird abgeholt …');
+
+        let result,thrown=null;
+        try{
+          result=base.apply(this,arguments);
+        }catch(e){
+          thrown=e;
+        }
+
+        const paid=!!q&&(!s?.quests?.active||s.quests.active!==q);
+        if(paid){
+          markPaid(q);
+          setClaimUiBusy(true,'Abgeholt');
+          requestAnimationFrame(()=>{
+            try{if(typeof renderQuests==='function')renderQuests()}catch(e){}
+          });
+          setTimeout(()=>{
+            try{if(typeof renderQuests==='function')renderQuests()}catch(e){}
+          },80);
+        }else{
+          setClaimUiBusy(false);
+        }
+        if(k)inflight.delete(k);
+        if(thrown)throw thrown;
+        return result;
+      };
+      claimQuest=wrapped;
+      try{window.claimQuest=wrapped}catch(e){}
+      window.__v496QuestClaimGuard=true;
+    }
+  }catch(e){console.warn('V4.496 quest claim guard install',e)}
+
+  /* If an older cloud/UI snapshot restores an already-paid quest, clear that
+     stale active quest before it can re-render another payout button. */
+  try{
+    if(typeof renderQuests==='function'&&!window.__v496QuestRenderGuard){
+      const baseRender=renderQuests;
+      const wrappedRender=function(){
+        repairStalePaidQuest();
+        return baseRender.apply(this,arguments);
+      };
+      renderQuests=wrappedRender;
+      try{window.renderQuests=wrappedRender}catch(e){}
+      window.__v496QuestRenderGuard=true;
+    }
+  }catch(e){console.warn('V4.496 quest render guard install',e)}
+
+  try{repairStalePaidQuest()}catch(e){}
+})();
+</script>
+<!-- ===== /V4.496 QUEST CLAIM SINGLE-PAYOUT GUARD ===== -->
 </body>
 </html>
 <style id="v268-inventory-multisell-css">
@@ -58221,6 +58498,11 @@ body > #v141SettingsMenu.v377-open{
   }
 
   async function v380HandleRequest(id,accept){
+    /* V5.27: remember the applicant before the server RPC consumes the request. */
+    const requestRow=Array.isArray(v257Requests)?v257Requests.find(r=>String(r?.id||'')===String(id||'')):null;
+    const joinedName=String(requestRow?.character_name||'Spieler').trim().slice(0,40)||'Spieler';
+    const guildIdBefore=String(v254Guild?.id||v254Membership?.guild_id||'');
+
     const {error}=await v073Db.rpc('v257_handle_guild_request',{
       p_request:id,
       p_accept:accept
@@ -58229,10 +58511,30 @@ body > #v141SettingsMenu.v377-open{
       if(typeof v063Toast==='function')v063Toast('Aktion fehlgeschlagen','warn',error.message||'');
       return;
     }
+
+    /* Only a successful acceptance creates the one-time guild-chat system line.
+       Chat failures must never roll back/block the actual membership change. */
+    if(accept&&guildIdBefore){
+      try{
+        const uid=String(v073User?.id||'');
+        if(uid&&v073Db){
+          const payload={
+            guild_id:guildIdBefore,
+            user_id:uid,
+            character_name:joinedName,
+            body:'ist der Gilde beigetreten.'
+          };
+          const {error:chatError}=await v073Db.from('guild_chat_messages').insert(payload);
+          if(chatError)console.warn('V5.27 guild join chat message',chatError);
+        }
+      }catch(chatError){console.warn('V5.27 guild join chat message',chatError)}
+    }
+
     if(typeof v063Toast==='function'){
       v063Toast(accept?'Mitglied aufgenommen':'Anfrage abgelehnt','success');
     }
     await v254LoadGuild();
+    if(accept){try{window.v4144SyncGuildChat?.()}catch(e){}}
   }
 
   /* Replace only request rendering/loading; backend RPCs remain authoritative. */
@@ -69863,8 +70165,25 @@ html.v481-hidden *,html.v481-hidden *::before,html.v481-hidden *::after{animatio
     if(z.streak>=7&&z.lastClaimOrd>0&&z.lastClaimOrd<today.ord){z.streak=0;z.cycleRewards={}}
     return {z,today};
   }
+  function claimLockKey(todayKey){
+    const id=uid();
+    return id&&todayKey?`growlegends_daily_claim_${id}_${todayKey}`:'';
+  }
+  function hasLocalClaimLock(todayKey){
+    const k=claimLockKey(todayKey);if(!k)return false;
+    try{return localStorage.getItem(k)==='1'}catch(e){return false}
+  }
+  function setLocalClaimLock(todayKey){
+    const k=claimLockKey(todayKey);if(!k)return false;
+    try{localStorage.setItem(k,'1');return true}catch(e){return false}
+  }
+  function clearLocalClaimLock(todayKey){
+    const k=claimLockKey(todayKey);if(!k)return;
+    try{localStorage.removeItem(k)}catch(e){}
+  }
   function due(){
     const {z,today}=normalizeCycle();
+    if(hasLocalClaimLock(today.key))return false;
     return z.lastClaimKey!==today.key;
   }
   function nextDay(){const {z}=normalizeCycle();return Math.max(1,Math.min(7,z.streak+1))}
@@ -69979,12 +70298,29 @@ html.v481-hidden *,html.v481-hidden *::before,html.v481-hidden *::after{animatio
   async function claim(day){
     if(claimBusy||!accountReady()||!due()||day!==nextDay())return;
     claimBusy=true;
+    let lockedToday='',rewardApplied=false;
     try{
-      const r=makeReward(day);if(!applyReward(r))return;
-      const {z,today}=normalizeCycle();
+      const before=normalizeCycle(),today=before.today;
+      if(before.z.lastClaimKey===today.key||hasLocalClaimLock(today.key))return;
+      lockedToday=today.key;
+      if(!setLocalClaimLock(today.key)){
+        console.warn('V4.86 daily reward: local claim lock unavailable');
+        lockedToday='';
+      }
+      /* The lock is written BEFORE any reward is granted. A reload or stale cloud save
+         therefore cannot expose today's gift a second time on this device/account. */
+      const r=makeReward(day);
+      if(!applyReward(r)){if(lockedToday)clearLocalClaimLock(lockedToday);return}
+      rewardApplied=true;
+      const {z}=normalizeCycle();
       z.streak=day;z.lastClaimKey=today.key;z.lastClaimOrd=today.ord;z.cycleRewards[day]={icon:r.icon,title:r.type==='item'?cleanItemName(r.title):r.title,type:r.type};
       saveClaim();renderPopup(r);
       try{if(typeof v063Toast==='function')v063Toast('🎁 Login-Bonus erhalten','success',r.title)}catch(e){}
+    }catch(e){
+      /* Release the pre-lock only if nothing was granted. Once the reward changed the
+         account, keeping the lock is safer than risking a duplicate after a reload. */
+      if(!rewardApplied&&lockedToday)clearLocalClaimLock(lockedToday);
+      console.warn('V4.86 daily reward claim failed',e);
     }finally{claimBusy=false}
   }
   function open(){
@@ -71323,23 +71659,9 @@ body.v495-seed-open{overflow:hidden!important}
   return false;
  }
  function install(){
-  if(installing)return false;installing=true;
-  try{
-   const menu=document.querySelector('#v141SettingsMenu');if(!menu)return false;
-   const admin=typeof v093IsAdmin!=='undefined'&&v093IsAdmin===true;
-   if(!admin){menu.querySelector('#v4104QaRow')?.remove();return false}
-   let row=menu.querySelector('#v4104QaRow');
-   if(!row){
-    row=document.createElement('button');row.type='button';row.id='v4104QaRow';row.className='v141-setting-row';
-    row.innerHTML='<span class="v141-setting-icon">🧪</span><span class="v141-setting-copy"><b>Systemtest</b><span>Automatische Fehlerprüfung aktiv · antippen für den vollständigen Bericht.</span></span><span id="v4104QaStatus">PRÜFEN</span>';
-    const head=menu.querySelector('.v141-settings-head');
-    if(head&&head.nextSibling)menu.insertBefore(row,head.nextSibling);else if(head)head.insertAdjacentElement('afterend',row);else menu.prepend(row);
-   }
-   if(row.dataset.bound!=='1'){
-    row.dataset.bound='1';row.onclick=e=>{e.preventDefault();e.stopPropagation();openQA();setTimeout(paintStatus,80)};
-   }
-   paintStatus();return true;
-  }finally{installing=false}
+  /* V4.160: Systemtechnik/Systemtest was intentionally removed from the settings dropdown. */
+  try{document.querySelector('#v141SettingsMenu #v4104QaRow')?.remove()}catch(e){}
+  return false;
  }
  function stamp(){
   try{document.title='Grow Legends '+SHORT}catch(e){}
@@ -71356,8 +71678,7 @@ body.v495-seed-open{overflow:hidden!important}
   }
  }catch(e){console.warn('V4.104 settings wrapper',e)}
  document.addEventListener('click',e=>{if(e.target instanceof Element&&e.target.closest('#v141SettingsBtn')){requestAnimationFrame(()=>{install();paintStatus()});setTimeout(()=>{install();paintStatus()},80)}},true);
- const mo=new MutationObserver(()=>{if(document.querySelector('#v141SettingsMenu')&&!document.querySelector('#v4104QaRow'))install()});
- try{mo.observe(document.body,{childList:true,subtree:true})}catch(e){}
+ /* V4.160: old settings-row MutationObserver retired; the row must not be recreated. */
  stamp();
  document.addEventListener('DOMContentLoaded',stamp,{once:true});
  window.addEventListener('pageshow',stamp,{passive:true});
@@ -71877,7 +72198,8 @@ function installMenu(){
  const panel=document.getElementById('v032MenuPanel');
  if(!admin){panel?.querySelectorAll('[data-screen="systemtech"]').forEach(x=>x.remove());document.getElementById('v4104QaRow')?.remove();return}
  if(panel&&!panel.querySelector('[data-screen="systemtech"]')){const b=document.createElement('button');b.className='top-menu-item';b.dataset.screen='systemtech';b.innerHTML='<span>⚙️</span>Systemtechnik';b.onclick=()=>openPage();panel.appendChild(b)}
- const row=document.getElementById('v4104QaRow');if(row){const title=row.querySelector('.v141-setting-copy b'),copy=row.querySelector('.v141-setting-copy span');if(title)title.textContent='Systemtechnik';if(copy)copy.textContent='Vollständige QA-, Pixel-, Flow-, Save-, Item- und Performance-Prüfung.';row.onclick=e=>{e.preventDefault();e.stopPropagation();document.getElementById('v141SettingsMenu')?.classList.remove('open');openPage()}}
+ /* V4.160: keep Systemtechnik out of the settings dropdown even for admins. */
+ document.getElementById('v4104QaRow')?.remove();
 }
 function paintSettingsBadge(r=last){
  const b=document.getElementById('v4104QaStatus');if(!b||!r)return;b.className='';if(r.failed){b.classList.add('bad');b.textContent=`${r.failed} FEHLER`}else if(r.warnings){b.classList.add('warn');b.textContent=`${r.warnings} WARN.`}else{b.classList.add('ok');b.textContent='OK'}
@@ -74433,21 +74755,57 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();i
   const id=uid();
   if(!id||!complete(s)||!exactOwned(s,id)||String(v075CloudLoadedFor||'')!==id||!(await db()))return false;
   if(typeof window.v452AccountVerified==='function'&&!window.v452AccountVerified(id))return false;
-  const snapBase=ownedCopy(s,id);if(!snapBase)return false;
-  const next=Math.max(rev(snapBase),Number(typeof v213SaveRevision==='undefined'?0:v213SaveRevision)||0)+1;
-  snapBase.__saveRevision=next;snapBase.__savedAt=Date.now();
+
+  /* V4.160 SAVE RACE FIX
+     IMPORTANT: take the snapshot only when this serialized task actually starts.
+     The old implementation captured it before entering the queue and then called
+     replaceState(snapBase) after the network request. A slower/older save could
+     therefore roll back newer local actions (most visible when planting several
+     Growroom pots quickly: plants disappeared or moved between slots).
+
+     A successful cloud write must NEVER replace newer in-memory gameplay state.
+  */
   const task=async()=>{
-   if(uid()!==id||!exactOwned(s,id))return false;
+   if(uid()!==id||!exactOwned(s,id)||!complete(s))return false;
    try{
+    const snapBase=ownedCopy(s,id);if(!snapBase)return false;
+    const snapComparable=typeof v213Comparable==='function'?v213Comparable(snapBase):JSON.stringify(snapBase);
+    const next=Math.max(rev(snapBase),Number(typeof v213SaveRevision==='undefined'?0:v213SaveRevision)||0)+1;
+    snapBase.__saveRevision=next;snapBase.__savedAt=Date.now();
+
     const now=new Date().toISOString();
     const {error}=await v073Db.from('player_saves').upsert({user_id:id,save_data:snapBase,updated_at:now},{onConflict:'user_id'});if(error)throw error;
-    if(uid()!==id)return false;
-    replaceState(snapBase);v075CloudLoadedFor=id;v200LastCloudStamp=now;try{v213SaveRevision=next;v213Dirty=false;v213LastComparable=typeof v213Comparable==='function'?v213Comparable(s):''}catch(e){}
-    writeMirrors(id,s,{stamp:false,allowIncomplete:false});writeLock(id,s);
+    if(uid()!==id||!exactOwned(s,id))return false;
+
+    v075CloudLoadedFor=id;v200LastCloudStamp=now;
+    const currentComparable=typeof v213Comparable==='function'?v213Comparable(s):JSON.stringify(s);
+    const unchanged=currentComparable===snapComparable;
+
+    try{
+      v213SaveRevision=Math.max(Number(v213SaveRevision)||0,next);
+      if(unchanged){
+        /* Only metadata may be copied back when the gameplay state is still exactly
+           the snapshot that was just saved. */
+        s.__saveRevision=next;
+        s.__savedAt=snapBase.__savedAt;
+        v213Dirty=false;
+        v213LastComparable=typeof v213Comparable==='function'?v213Comparable(s):'';
+        writeMirrors(id,s,{stamp:false,allowIncomplete:false});
+        writeLock(id,s);
+      }else{
+        /* Newer actions happened while the request was in flight. Keep them intact.
+           Mark dirty so the next queued/scheduled save persists the newer state. */
+        s.__saveRevision=Math.max(rev(s),next);
+        v213Dirty=true;
+        writeMirrors(id,s,{stamp:false,allowIncomplete:false});
+        setTimeout(()=>{try{if(uid()===id&&exactOwned(s,id))void cloudWrite(false)}catch(e){}},0);
+      }
+    }catch(e){}
+
     /* profiles is only a mirror. Its failure never controls player_saves. */
     setTimeout(async()=>{try{if(uid()===id&&window.__V200_AUTH_READY__===true&&typeof v073SyncProfile==='function')await v073SyncProfile(true)}catch(e){}},0);
     return true;
-   }catch(e){try{v213Dirty=true}catch(_){};console.error('V4.159 cloud save',e);warn('Cloud-Speicherung fehlgeschlagen',e?.message||String(e));return false}
+   }catch(e){try{v213Dirty=true}catch(_){};console.error('V4.160 cloud save',e);warn('Cloud-Speicherung fehlgeschlagen',e?.message||String(e));return false}
   };
   writeChain=writeChain.then(task,task);return writeChain;
  }
@@ -74561,13 +74919,8 @@ html:not(.v4142-systemtech-admin) #v4102QaButton{display:none!important}
    const b=document.createElement('button');b.className='top-menu-item';b.dataset.screen='systemtech';b.innerHTML='<span>⚙️</span>Systemtechnik';
    b.onclick=()=>{if(admin())window.v4107OpenSystemtechnik?.()};panel.appendChild(b);
   }
-  try{window.v4104InstallQaSettings?.()}catch(e){}
-  const row=document.getElementById('v4104QaRow');
-  if(row){
-   const title=row.querySelector('.v141-setting-copy b'),copy=row.querySelector('.v141-setting-copy span');
-   if(title)title.textContent='Systemtechnik';if(copy)copy.textContent='Vollständige QA-, Pixel-, Flow-, Save-, Item- und Performance-Prüfung.';
-   row.onclick=e=>{e.preventDefault();e.stopPropagation();document.getElementById('v141SettingsMenu')?.classList.remove('open');if(admin())window.v4107OpenSystemtechnik?.()};
-  }
+  /* V4.160: Systemtechnik remains available through the admin navigation only, not settings. */
+  document.getElementById('v4104QaRow')?.remove();
  }
  function sync(){
   const ok=admin();document.documentElement.classList.toggle('v4142-systemtech-admin',ok);
@@ -74632,7 +74985,9 @@ html:not(.v4142-systemtech-admin) #v4102QaButton{display:none!important}
 #v4144GuildChatPanel.open{transform:translateX(0)}
 .v4144-chat-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding-bottom:10px;border-bottom:1px solid #293d2e}
 .v4144-chat-head h3{margin:0;font-size:17px}.v4144-chat-head .tiny{margin-top:2px;color:#839487}
-#v4144GuildChatClose{border:0;background:#263627;color:#fff;border-radius:9px;padding:7px 10px;cursor:pointer}
+#v4144GuildChatClose{border:1px solid #405840;background:linear-gradient(180deg,#263627,#162219);color:#eaf4e5;border-radius:11px;min-width:38px;height:38px;padding:0;display:grid;place-items:center;cursor:pointer;font-size:20px;font-weight:1000;line-height:1;box-shadow:0 3px 10px #0005;transition:transform .15s ease,filter .15s ease}
+#v4144GuildChatClose:hover{filter:brightness(1.14);transform:translateX(2px)}
+#v4144GuildChatClose:active{transform:translateX(4px) scale(.96)}
 #v4144GuildChatList{flex:1;min-height:160px;overflow:auto;padding:10px 2px 12px;scrollbar-width:thin}
 .v4144-chat-empty{padding:18px 10px;text-align:center;color:#829087;font-size:9px;line-height:1.5}
 .v4144-chat-row{display:flex;margin:8px 0}.v4144-chat-row.own{justify-content:flex-end}
@@ -74653,7 +75008,7 @@ html:not(.v4142-systemtech-admin) #v4102QaButton{display:none!important}
 <aside id="v4144GuildChatPanel" aria-hidden="true">
  <div class="v4144-chat-head">
   <div><h3>💬 Gildenchat</h3><div class="tiny" id="v4144GuildChatGuild">Nur für Mitglieder deiner Gilde</div></div>
-  <button type="button" id="v4144GuildChatClose" aria-label="Gildenchat schließen">✕</button>
+  <button type="button" id="v4144GuildChatClose" aria-label="Gildenchat zuklappen" title="Gildenchat zuklappen">❯</button>
  </div>
  <div id="v4144GuildChatList"><div class="v4144-chat-empty">Chat wird geladen …</div></div>
  <div class="v4144-chat-compose">
@@ -76359,6 +76714,20 @@ html:not(.v4142-systemtech-admin) #v4102QaButton{display:none!important}
 <!-- V4.159: Dungeon 1 is always open from Level 1 unless genuinely completed at its boss; stale early completion flags are repaired after cloud/account load. Frost auto-equip continues to choose two weapons. Public profile integer fields are rounded to prevent Supabase integer errors such as 39.2. -->
 
 <!-- GROW LEGENDS PUSH SCHEDULING V2 - final EOF hook -->
+<script id="gl-push-master-switch-prelude-v1">
+(()=>{
+ 'use strict';
+ function enabled(){
+  try{
+   if(typeof v141Settings==='object'&&v141Settings)return v141Settings.pushNotifications!==false;
+   const x=JSON.parse(localStorage.getItem('growLegendsSettingsV141')||'{}');
+   return x.pushNotifications!==false;
+  }catch(e){return true}
+ }
+ window.glPushEnabled=enabled;
+})();
+</script>
+
 <script id="gl-push-scheduling-v2">
 (()=>{
   'use strict';
@@ -76408,6 +76777,7 @@ html:not(.v4142-systemtech-admin) #v4102QaButton{display:none!important}
   }
 
   async function glSyncGrowPushJob(forcedReadyAt=null){
+    if(typeof window.glPushEnabled==='function'&&!window.glPushEnabled())return false;
     try{
       const user=await glPushUser();
       if(!user){console.warn('[GL Push] keine eingeloggte Session');glPushDebug('FEHLER: Keine gültige Supabase-Session.\nDer Push-Job kann nicht angelegt werden.');return false;}
@@ -76502,6 +76872,7 @@ html:not(.v4142-systemtech-admin) #v4102QaButton{display:none!important}
   }
 
   async function glSyncGrowCarePushJob(){
+    if(typeof window.glPushEnabled==='function'&&!window.glPushEnabled())return false;
     glCareSyncQueued=true;
     if(glCareSyncPromise)return glCareSyncPromise;
     glCareSyncPromise=(async()=>{
@@ -76748,6 +77119,7 @@ html:not(.v4142-systemtech-admin) #v4102QaButton{display:none!important}
   }
 
   async function syncQuestPush(forcedEnds=null){
+    if(typeof window.glPushEnabled==='function'&&!window.glPushEnabled())return false;
     try{
       const user=await questPushUser();
       if(!user)return false;
@@ -76944,6 +77316,7 @@ html:not(.v4142-systemtech-admin) #v4102QaButton{display:none!important}
   let dungeonSyncQueuedReadyAt=0;
 
   async function syncDungeonPush(forcedReadyAt=null){
+    if(typeof window.glPushEnabled==='function'&&!window.glPushEnabled())return false;
     const requested=Number(forcedReadyAt);
     if(Number.isFinite(requested)&&requested>0){
       dungeonSyncQueuedReadyAt=Math.max(dungeonSyncQueuedReadyAt,requested);
@@ -77096,11 +77469,16 @@ html:not(.v4142-systemtech-admin) #v4102QaButton{display:none!important}
 
 
 <!-- GROW LEGENDS WORLD BOSS DAILY FREE ATTEMPT PUSH -->
-<script id="gl-worldboss-ready-push-v1">
+<script id="gl-worldboss-ready-push-v2">
 (()=>{
  'use strict';
- if(window.__glWorldBossReadyPushV1)return;
+ if(window.__glWorldBossReadyPushV2)return;
+ window.__glWorldBossReadyPushV2=true;
+ /* Retire V1 flag as well so only this implementation owns future scheduling. */
  window.__glWorldBossReadyPushV1=true;
+
+ let wbSyncPromise=null;
+ let wbCleanupTimer=0;
 
  async function wbUser(){
   try{
@@ -77124,55 +77502,122 @@ html:not(.v4142-systemtech-admin) #v4102QaButton{display:none!important}
   return d.getTime();
  }
 
+ async function pending(user){
+  const {data,error}=await v073Db.from('push_jobs')
+   .select('id')
+   .eq('user_id',user.id).eq('type','worldboss_ready')
+   .is('sent_at',null).is('cancelled_at',null);
+  if(error)throw error;
+  const rows=Array.isArray(data)?data:[];
+  rows.sort((a,b)=>String(a?.id||'').localeCompare(String(b?.id||'')));
+  return rows;
+ }
+
+ async function cancelForUser(user){
+  const nowIso=new Date().toISOString();
+  const {error}=await v073Db.from('push_jobs')
+   .update({cancelled_at:nowIso,updated_at:nowIso})
+   .eq('user_id',user.id).eq('type','worldboss_ready')
+   .is('sent_at',null).is('cancelled_at',null);
+  if(error)throw error;
+  return true;
+ }
+
  async function cancel(){
   try{
    const user=await wbUser();if(!user)return false;
-   const nowIso=new Date().toISOString();
-   const {error}=await v073Db.from('push_jobs')
-    .update({cancelled_at:nowIso,updated_at:nowIso})
-    .eq('user_id',user.id).eq('type','worldboss_ready')
-    .is('sent_at',null).is('cancelled_at',null);
-   if(error)throw error;
-   return true;
+   return await cancelForUser(user);
   }catch(e){console.warn('[GL Worldboss Push] cancel',e);return false}
  }
 
- async function sync(){
+ async function normalizePending(user,payload){
+  let jobs=await pending(user);
+  if(!jobs.length)return null;
+
+  /* All clients choose the oldest pending row as the canonical job. */
+  const keep=jobs[0];
+  const extras=jobs.slice(1).map(x=>x.id).filter(Boolean);
+  const nowIso=new Date().toISOString();
+
+  const {error:updateError}=await v073Db.from('push_jobs')
+   .update({...payload,updated_at:nowIso})
+   .eq('id',keep.id)
+   .eq('user_id',user.id)
+   .is('sent_at',null).is('cancelled_at',null);
+  if(updateError)throw updateError;
+
+  if(extras.length){
+   const {error:cancelError}=await v073Db.from('push_jobs')
+    .update({cancelled_at:nowIso,updated_at:nowIso})
+    .eq('user_id',user.id)
+    .in('id',extras)
+    .is('sent_at',null).is('cancelled_at',null);
+   if(cancelError)throw cancelError;
+   console.info('[GL Worldboss Push] doppelte worldboss_ready Jobs entfernt:',extras.length);
+  }
+  return keep.id;
+ }
+
+ async function doSync(){
+  if(typeof window.glPushEnabled==='function'&&!window.glPushEnabled()){
+   return cancel();
+  }
   try{
    const user=await wbUser();if(!user)return false;
    const wb=(typeof s!=='undefined'&&s?.v110WorldBoss)||null;
-   if(!wb?.freeUsed)return cancel();
+   if(!wb?.freeUsed)return cancelForUser(user);
 
-   const readyAt=nextLocalMidnight(),sendAt=new Date(readyAt).toISOString(),nowIso=new Date().toISOString();
-   const title='Grow Legends';
-   const body='💎 Dein kostenloser Versuch gegen den Smaragd-Koloss ist wieder verfügbar!';
+   const sendAt=new Date(nextLocalMidnight()).toISOString();
+   const payload={
+    title:'Grow Legends',
+    body:'💎 Dein kostenloser Versuch gegen den Smaragd-Koloss ist wieder verfügbar!',
+    send_at:sendAt
+   };
 
-   const {data:updated,error:updateError}=await v073Db.from('push_jobs')
-    .update({title,body,send_at:sendAt,updated_at:nowIso})
-    .eq('user_id',user.id).eq('type','worldboss_ready')
-    .is('sent_at',null).is('cancelled_at',null).select('id');
-   if(updateError)throw updateError;
-   if(Array.isArray(updated)&&updated.length)return true;
+   /* First collapse any duplicates that may already exist from older versions. */
+   let keepId=await normalizePending(user,payload);
 
-   const {error:insertError}=await v073Db.from('push_jobs').insert({
-    user_id:user.id,type:'worldboss_ready',title,body,send_at:sendAt
-   });
-   if(insertError){
-    if(String(insertError.code||'')!=='23505')throw insertError;
-    const {error}=await v073Db.from('push_jobs')
-     .update({title,body,send_at:sendAt,updated_at:nowIso})
-     .eq('user_id',user.id).eq('type','worldboss_ready')
-     .is('sent_at',null).is('cancelled_at',null);
-    if(error)throw error;
+   if(!keepId){
+    const {data:inserted,error:insertError}=await v073Db.from('push_jobs')
+     .insert({user_id:user.id,type:'worldboss_ready',...payload})
+     .select('id');
+    if(insertError){
+     /* A unique index may exist on some installs. In that case another sync won. */
+     if(String(insertError.code||'')!=='23505')throw insertError;
+    }else if(Array.isArray(inserted)&&inserted[0]?.id){
+     keepId=inserted[0].id;
+    }
    }
-   console.info('[GL Worldboss Push] worldboss_ready geplant',sendAt);
+
+   /* A second pass closes the race where two tabs/devices inserted together. */
+   await normalizePending(user,payload);
+   clearTimeout(wbCleanupTimer);
+   wbCleanupTimer=setTimeout(()=>{
+    void (async()=>{
+     try{
+      const u=await wbUser();if(!u)return;
+      const state=(typeof s!=='undefined'&&s?.v110WorldBoss)||null;
+      if(state?.freeUsed)await normalizePending(u,payload);
+      else await cancelForUser(u);
+     }catch(e){console.warn('[GL Worldboss Push] delayed dedupe',e)}
+    })();
+   },900);
+
+   console.info('[GL Worldboss Push] genau ein worldboss_ready geplant',sendAt);
    return true;
   }catch(e){console.warn('[Grow Legends] Weltboss-Push konnte nicht geplant werden:',e);return false}
  }
+
+ async function sync(){
+  /* Serialize all account-ready/pageshow/visibility/fight sync triggers in this client. */
+  if(wbSyncPromise)return wbSyncPromise;
+  wbSyncPromise=doSync();
+  try{return await wbSyncPromise}finally{wbSyncPromise=null}
+ }
+
  window.glSyncWorldBossPushJob=sync;
  window.glCancelWorldBossPushJob=cancel;
 
- /* Existing used free attempt: schedule immediately after account state is restored. */
  function resync(){
   try{
    const wb=(typeof s!=='undefined'&&s?.v110WorldBoss)||null;
@@ -77184,11 +77629,11 @@ html:not(.v4142-systemtech-admin) #v4102QaButton{display:none!important}
  document.addEventListener('visibilitychange',()=>{
   if(document.visibilityState==='visible')setTimeout(resync,1200);
  },{passive:true});
+ window.addEventListener('growlegends:push-device-ready',()=>setTimeout(resync,500));
 
- /* Final worldboss fight hook: only schedule when the daily free attempt changes unused -> used.
-    Paid Harz retries therefore never move tomorrow's notification. */
+ /* Only a real daily free attempt schedules tomorrow's notification. Paid retries do not. */
  try{
-  if(typeof v110Fight==='function'&&!v110Fight.__glWorldBossPushV1){
+  if(typeof v110Fight==='function'&&!v110Fight.__glWorldBossPushV2){
    const base=v110Fight;
    const wrapped=function(...args){
     const before=!!((typeof s!=='undefined'&&s?.v110WorldBoss)?.freeUsed);
@@ -77201,7 +77646,7 @@ html:not(.v4142-systemtech-admin) #v4102QaButton{display:none!important}
     },100);
     return r;
    };
-   wrapped.__glWorldBossPushV1=true;wrapped.__glWorldBossPushBase=base;
+   wrapped.__glWorldBossPushV2=true;wrapped.__glWorldBossPushBase=base;
    v110Fight=wrapped;try{window.v110Fight=wrapped}catch(e){}
   }
  }catch(e){console.warn('[GL Worldboss Push] fight hook',e)}
@@ -77239,6 +77684,7 @@ html:not(.v4142-systemtech-admin) #v4102QaButton{display:none!important}
  }
 
  async function syncNativeToken(force=false){
+  if(typeof window.glPushEnabled==='function'&&!window.glPushEnabled())return false;
   if(registering)return false;
   const t=token();
   if(!t)return false;
@@ -82754,3 +83200,346 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden)setTimeout
 })();
 </script>
 <!-- ===== /V4.494 PRODUCTION DUNGEON PREVIEW + ATTACK FIX ===== -->
+
+<!-- ===== V4.495: suppress fake Level-Up during account hydration only ===== -->
+<style id="v495-startup-levelup-guard-style">
+html.v495-level-syncing .v101-levelup,
+html.v495-level-syncing .v102-levelup-overlay,
+html.v495-level-syncing #v420LevelUpOverlay{
+  display:none!important;
+  visibility:hidden!important;
+  opacity:0!important;
+  pointer-events:none!important;
+}
+</style>
+<script id="v495-startup-levelup-guard">
+(function(){
+  'use strict';
+  if(window.__v495StartupLevelGuardInstalled)return;
+  window.__v495StartupLevelGuardInstalled=true;
+
+  let syncing=true;
+  let settleTimer=0;
+  const root=document.documentElement;
+
+  function isLevelUpText(value){
+    return /level[\s-]*up|stufe\s+\d+.*erreicht|neue\s+stufe/i.test(String(value||''));
+  }
+
+  function removeLegacyLevelUi(){
+    try{
+      document.querySelectorAll('.v101-levelup,.v102-levelup-overlay,#v420LevelUpOverlay').forEach(el=>el.remove());
+    }catch(e){}
+  }
+
+  function syncLevelObservers(){
+    const level=Math.max(1,Number(window.s?.level ?? (typeof s!=='undefined'?s?.level:1))||1);
+    try{
+      if(typeof v102PendingLevelups!=='undefined')v102PendingLevelups.length=0;
+      if(typeof v102LevelPopupBusy!=='undefined')v102LevelPopupBusy=false;
+      if(typeof v102ObservedLevel!=='undefined')v102ObservedLevel=level;
+    }catch(e){}
+  }
+
+  function beginSync(){
+    syncing=true;
+    clearTimeout(settleTimer);
+    root.classList.add('v495-level-syncing');
+    removeLegacyLevelUi();
+    syncLevelObservers();
+  }
+
+  function finishSync(){
+    clearTimeout(settleTimer);
+    settleTimer=setTimeout(()=>{
+      removeLegacyLevelUi();
+      syncLevelObservers();
+      syncing=false;
+      root.classList.remove('v495-level-syncing');
+    },650);
+  }
+
+  beginSync();
+
+  /* Suppress only presentation while a saved account is being restored. */
+  try{
+    const baseToast=typeof v063Toast==='function'?v063Toast:null;
+    if(baseToast && !baseToast.__v495StartupGuard){
+      const wrapped=function(){
+        if(syncing && Array.from(arguments).some(isLevelUpText))return;
+        return baseToast.apply(this,arguments);
+      };
+      wrapped.__v495StartupGuard=true;
+      v063Toast=wrapped;
+      try{window.v063Toast=wrapped}catch(e){}
+    }
+  }catch(e){}
+
+  try{
+    const baseToast=typeof window.toast==='function'?window.toast:null;
+    if(baseToast && !baseToast.__v495StartupGuard){
+      const wrapped=function(){
+        if(syncing && Array.from(arguments).some(isLevelUpText))return;
+        return baseToast.apply(this,arguments);
+      };
+      wrapped.__v495StartupGuard=true;
+      window.toast=wrapped;
+      try{if(typeof toast!=='undefined')toast=wrapped}catch(e){}
+    }
+  }catch(e){}
+
+  /* If a legacy handler still inserts an overlay during hydration, remove it
+     before it can become visible. Genuine later gameplay Level-Ups are untouched. */
+  try{
+    const observer=new MutationObserver(()=>{
+      if(syncing){
+        removeLegacyLevelUi();
+        syncLevelObservers();
+      }
+    });
+    observer.observe(document.documentElement,{childList:true,subtree:true});
+  }catch(e){}
+
+  window.addEventListener('growlegends:account-ready',finishSync);
+  window.addEventListener('growlegends:extras-ready',()=>{if(syncing)finishSync()});
+
+  /* Cover refreshes where the deterministic boot controller had already emitted
+     account-ready before this final guard was installed. */
+  try{
+    if(Number(window.__V4147_BOOT__?.accountReadyAt||0)>0)finishSync();
+  }catch(e){}
+
+  /* Account switching/login can start another hydration cycle. */
+  try{
+    if(typeof v200FinalizeUser==='function' && !window.__v495FinalizeLevelGuard){
+      const baseFinalize=v200FinalizeUser;
+      const wrappedFinalize=async function(){
+        beginSync();
+        try{return await baseFinalize.apply(this,arguments)}
+        finally{
+          try{
+            if(Number(window.__V4147_BOOT__?.accountReadyAt||0)>0)finishSync();
+          }catch(e){}
+        }
+      };
+      v200FinalizeUser=wrappedFinalize;
+      try{window.v200FinalizeUser=wrappedFinalize}catch(e){}
+      window.__v495FinalizeLevelGuard=true;
+    }
+  }catch(e){}
+
+  /* Safety fallback for offline/local starts where no account-ready event exists. */
+  setTimeout(()=>{if(syncing)finishSync()},12000);
+})();
+</script>
+<!-- ===== /V4.495 startup Level-Up guard ===== -->
+
+<!-- ===== V4.160: remove Systemtechnik from settings dropdown ===== -->
+<style id="v4160-hide-systemtechnik-settings">#v141SettingsMenu #v4104QaRow{display:none!important}</style>
+<script id="v4160-systemtechnik-settings-remove">(()=>{function clean(){try{document.querySelector('#v141SettingsMenu #v4104QaRow')?.remove()}catch(e){}}window.v4104InstallQaSettings=()=>{clean();return false};document.addEventListener('click',e=>{if(e.target instanceof Element&&e.target.closest('#v141SettingsBtn'))requestAnimationFrame(clean)},true);document.addEventListener('DOMContentLoaded',clean,{once:true});window.addEventListener('pageshow',clean,{passive:true});clean();})();</script>
+
+
+<!-- ===== V4.161: close settings dropdown on logout ===== -->
+<script id="v4161-close-settings-on-logout">
+(function(){
+  function closeSettingsDropdown(){
+    try{
+      const menu=document.querySelector('#v141SettingsMenu');
+      if(!menu)return;
+      menu.classList.remove('open','v377-open','v228-ultra-compact');
+      menu.setAttribute('aria-hidden','true');
+    }catch(e){}
+  }
+
+  /* Close immediately on the logout tap, before cloud-save/sign-out starts. */
+  document.addEventListener('click',function(e){
+    try{
+      if(e.target instanceof Element && e.target.closest('#v141Logout')){
+        closeSettingsDropdown();
+      }
+    }catch(err){}
+  },true);
+
+  /* Wrap the final logout chain: close before it starts and again after all
+     legacy rebuilds/portal code have completed. */
+  try{
+    if(typeof v136Logout==='function' && !window.__v4161LogoutSettingsWrap){
+      const base=v136Logout;
+      v136Logout=async function(){
+        closeSettingsDropdown();
+        try{
+          return await base.apply(this,arguments);
+        }finally{
+          closeSettingsDropdown();
+          requestAnimationFrame(closeSettingsDropdown);
+          setTimeout(closeSettingsDropdown,0);
+        }
+      };
+      try{window.v136Logout=v136Logout}catch(e){}
+      window.__v4161LogoutSettingsWrap=true;
+    }
+  }catch(e){}
+})();
+</script>
+<!-- ===== /V4.161 close settings dropdown on logout ===== -->
+
+<!-- ===== V4.497 DUNGEON KEY IMMEDIATE LIVE-UNLOCK FIX ===== -->
+<script id="v497-dungeon-key-immediate-live-unlock">
+(function(){
+  'use strict';
+  if(window.__v497DungeonKeyLiveFix)return;
+  window.__v497DungeonKeyLiveFix=true;
+
+  let repaintQueued=false;
+
+  function ensureDungeonKeyState(){
+    try{
+      s.dungeon=(s.dungeon&&typeof s.dungeon==='object')?s.dungeon:{};
+      s.dungeon.keys=(s.dungeon.keys&&typeof s.dungeon.keys==='object')?s.dungeon.keys:{};
+      s.dungeon.unlocked=Array.isArray(s.dungeon.unlocked)
+        ? s.dungeon.unlocked.map(Number).filter(Number.isInteger)
+        : [];
+      s.dungeon.progress=(s.dungeon.progress&&typeof s.dungeon.progress==='object')?s.dungeon.progress:{};
+      if(!s.dungeon.unlocked.includes(0))s.dungeon.unlocked.push(0);
+
+      const max=Array.isArray(window.dungeons||((typeof dungeons!=='undefined')?dungeons:null))
+        ? (window.dungeons||dungeons).length
+        : 20;
+
+      for(let i=1;i<max;i++){
+        const key=!!s.dungeon.keys[i]||!!s.dungeon.keys[String(i)];
+        const unlocked=s.dungeon.unlocked.includes(i);
+        if(key&&!unlocked)s.dungeon.unlocked.push(i);
+        if(unlocked&&!key)s.dungeon.keys[i]=true;
+        if((key||unlocked)&&s.dungeon.progress[i]==null)s.dungeon.progress[i]=0;
+      }
+      s.dungeon.unlocked=[...new Set(s.dungeon.unlocked.map(Number).filter(Number.isInteger))].sort((a,b)=>a-b);
+    }catch(e){console.warn('V4.497 key normalize',e)}
+  }
+
+  function signature(){
+    ensureDungeonKeyState();
+    try{
+      const keys=Object.keys(s.dungeon.keys||{})
+        .filter(k=>s.dungeon.keys[k])
+        .map(Number).filter(Number.isInteger).sort((a,b)=>a-b);
+      return JSON.stringify({keys,unlocked:[...(s.dungeon.unlocked||[])].map(Number).sort((a,b)=>a-b)});
+    }catch(e){return ''}
+  }
+
+  function saveKeyState(){
+    try{if(typeof KEY!=='undefined')localStorage.setItem(KEY,JSON.stringify(s))}catch(e){}
+    try{if(typeof v200SaveScopedLocal==='function')v200SaveScopedLocal()}catch(e){}
+    try{if(typeof v075ScheduleSave==='function')v075ScheduleSave()}catch(e){}
+  }
+
+  function paintWorld(reason){
+    try{
+      ensureDungeonKeyState();
+      s.dungeon.layer='world';
+      s.dungeon.view='map';
+
+      const screen=document.getElementById('dungeon');
+      if(!screen?.classList.contains('active'))return false;
+
+      let ok=false;
+      try{if(typeof window.gl20RenderWorld==='function')ok=window.gl20RenderWorld()!==false}catch(e){}
+      if(!ok)try{if(typeof window.v251RenderWorld==='function')ok=window.v251RenderWorld()!==false}catch(e){}
+      if(!ok)try{if(typeof window.v065RenderWorld==='function')ok=window.v065RenderWorld()!==false}catch(e){}
+      if(!ok)try{if(typeof v230ShowDungeonWorld==='function')ok=v230ShowDungeonWorld()!==false}catch(e){}
+
+      try{if(typeof v242PaintDungeonWorldStatus==='function')v242PaintDungeonWorldStatus()}catch(e){}
+      try{if(typeof v250PaintKeyProgress==='function')v250PaintKeyProgress()}catch(e){}
+      try{if(typeof v067BindWorldMap==='function')v067BindWorldMap()}catch(e){}
+      return ok;
+    }catch(e){console.warn('V4.497 dungeon repaint',reason,e);return false}
+  }
+
+  function applyUnlock(before,reason){
+    ensureDungeonKeyState();
+    const after=signature();
+    if(before===after)return false;
+
+    /* A quest-found key is an overworld progression event. Do not leave the
+       renderer trapped in an old dungeon-detail layer after the reward. */
+    s.dungeon.layer='world';
+    s.dungeon.view='map';
+    saveKeyState();
+
+    if(!repaintQueued){
+      repaintQueued=true;
+      queueMicrotask(()=>{repaintQueued=false;paintWorld(reason+'-micro')});
+    }
+    paintWorld(reason+'-now');
+    requestAnimationFrame(()=>paintWorld(reason+'-raf'));
+    setTimeout(()=>paintWorld(reason+'-80'),80);
+    setTimeout(()=>paintWorld(reason+'-240'),240);
+
+    try{document.dispatchEvent(new CustomEvent('growlegends:dungeon-key-live-unlocked',{detail:{reason}}))}catch(e){}
+    return true;
+  }
+
+  function wrap(name){
+    try{
+      const fn=window[name] || ((typeof globalThis[name]==='function')?globalThis[name]:null);
+      if(typeof fn!=='function'||fn.__v497DungeonKeyLive)return;
+      const wrapped=function(){
+        const before=signature();
+        let out;
+        try{out=fn.apply(this,arguments)}catch(err){applyUnlock(before,name+'-throw');throw err}
+        const done=x=>{applyUnlock(before,name);return x};
+        if(out&&typeof out.then==='function')return out.then(done,err=>{applyUnlock(before,name+'-reject');throw err});
+        return done(out);
+      };
+      wrapped.__v497DungeonKeyLive=true;
+      window[name]=wrapped;
+      try{
+        if(name==='claimQuest')claimQuest=wrapped;
+        if(name==='v233ClaimQuest')v233ClaimQuest=wrapped;
+        if(name==='v250GrantKey')v250GrantKey=wrapped;
+      }catch(e){}
+    }catch(e){console.warn('V4.497 wrap',name,e)}
+  }
+
+  wrap('v250GrantKey');
+  wrap('claimQuest');
+  wrap('v233ClaimQuest');
+
+  /* Also catches any historical direct mutation that still dispatches one of
+     the existing key events. */
+  ['growlegends:dungeon-key-changed','growlegends:dungeon-key-live'].forEach(ev=>{
+    document.addEventListener(ev,()=>{
+      const before='__force__';
+      ensureDungeonKeyState();
+      s.dungeon.layer='world';s.dungeon.view='map';saveKeyState();
+      paintWorld(ev+'-now');requestAnimationFrame(()=>paintWorld(ev+'-raf'));
+    });
+  });
+
+  /* Opening the Dungeon page must always use the current key truth immediately. */
+  try{
+    const fn=window.v032Go || ((typeof v032Go==='function')?v032Go:null);
+    if(typeof fn==='function'&&!fn.__v497DungeonKeyLive){
+      const wrappedGo=function(id){
+        if(id==='dungeon'){
+          ensureDungeonKeyState();
+          s.dungeon.layer='world';s.dungeon.view='map';
+        }
+        const r=fn.apply(this,arguments);
+        if(id==='dungeon'){
+          paintWorld('nav-now');
+          requestAnimationFrame(()=>paintWorld('nav-raf'));
+          setTimeout(()=>paintWorld('nav-80'),80);
+        }
+        return r;
+      };
+      wrappedGo.__v497DungeonKeyLive=true;
+      window.v032Go=wrappedGo;
+      try{v032Go=wrappedGo}catch(e){}
+    }
+  }catch(e){}
+
+  ensureDungeonKeyState();
+})();
+</script>
+<!-- ===== /V4.497 DUNGEON KEY IMMEDIATE LIVE-UNLOCK FIX ===== -->
