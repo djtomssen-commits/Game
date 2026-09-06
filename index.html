@@ -47965,6 +47965,154 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden)setTimeout
 </script>
 <!-- ===== /V4.478 DUNGEON 10-20 D1 MASTER EXTENSION ===== -->
 
+
+
+<!-- ===== V4.479 D10-D20 ASSET PATH AUTO-DETECT FIX ===== -->
+<script id="v479-d10-d20-asset-pathfix">
+(function(){
+  'use strict';
+  if(window.__V479_DUNGEON_ASSET_PATHFIX__) return;
+  window.__V479_DUNGEON_ASSET_PATHFIX__ = true;
+
+  const CANDIDATES = [
+    'v474_dungeon_assets/',
+    'assets/',
+    'Assets/',
+    'asset/',
+    'Asset/',
+    ''
+  ];
+  let resolvedBase = null;
+  let resolving = null;
+
+  function imageExists(url){
+    return new Promise(resolve=>{
+      const img = new Image();
+      let done=false;
+      const finish=(ok)=>{ if(done) return; done=true; resolve(ok); };
+      img.onload=()=>finish(true);
+      img.onerror=()=>finish(false);
+      img.src=url + (url.includes('?')?'&':'?') + 'v479=' + Date.now();
+      setTimeout(()=>finish(false),2500);
+    });
+  }
+
+  async function findBase(){
+    if(resolvedBase!==null) return resolvedBase;
+    if(resolving) return resolving;
+    resolving=(async()=>{
+      /* d2_bg.jpg ist unser Probe-Asset: D2 funktioniert bereits beim Nutzer.
+         Damit finden wir automatisch genau denselben echten Asset-Ordner. */
+      for(const base of CANDIDATES){
+        if(await imageExists(base+'d2_bg.jpg')){
+          resolvedBase=base;
+          return base;
+        }
+      }
+      /* Fallback: D10 direkt prüfen, falls D2 extern/embedded läuft. */
+      for(const base of CANDIDATES){
+        if(await imageExists(base+'d10_bg.jpg')){
+          resolvedBase=base;
+          return base;
+        }
+      }
+      resolvedBase='v474_dungeon_assets/';
+      return resolvedBase;
+    })();
+    return resolving;
+  }
+
+  function currentDungeonIndex(){
+    try{
+      const pv=window.__v453AllDungeonPreview;
+      if(pv && pv.active) return Math.max(0,Math.min(19,Number(pv.target)||0));
+    }catch(e){}
+    try{return Math.max(0,Math.min(19,Number(window.s?.dungeon?.selected||0)||0));}
+    catch(e){return -1;}
+  }
+
+  function currentRoom(card,di){
+    try{
+      if(typeof window.v048RoomIndex==='function') return Math.max(0,Math.min(9,Number(window.v048RoomIndex(di))||0));
+    }catch(e){}
+    try{
+      const t=card.querySelector('.v261-line1')?.textContent||'';
+      const m=t.match(/^(\d+)\s*[·.-]/);
+      if(m) return Math.max(0,Math.min(9,Number(m[1])-1));
+    }catch(e){}
+    return 0;
+  }
+
+  async function applyAssets(){
+    try{
+      const card=document.getElementById('dungeonMapCard');
+      if(!card) return;
+      const di=currentDungeonIndex();
+      const dno=di+1;
+      if(dno<10 || dno>20) return;
+      const base=await findBase();
+
+      const bg=card.querySelector('.v261-bg');
+      if(bg) bg.style.setProperty('background-image','url("'+base+'d'+dno+'_bg.jpg")','important');
+
+      card.querySelectorAll('[data-v261-room]').forEach((node,idx)=>{
+        if(idx<9){
+          const ring=node.querySelector('.v261-ring');
+          if(ring) ring.style.setProperty('background-image','url("'+base+'d'+dno+'_'+(idx+1)+'.png")','important');
+        }else{
+          const boss=node.querySelector('.v261-bossart');
+          if(boss) boss.style.setProperty('background-image','url("'+base+'d'+dno+'_boss.png")','important');
+        }
+      });
+
+      const ri=currentRoom(card,di);
+      const thumb=card.querySelector('.v261-thumb');
+      if(thumb){
+        thumb.textContent='';
+        const file=ri===9 ? ('d'+dno+'_boss.png') : ('d'+dno+'_'+(ri+1)+'.png');
+        thumb.style.setProperty('background-image','url("'+base+file+'")','important');
+        thumb.style.setProperty('background-size','cover','important');
+        thumb.style.setProperty('background-position','center','important');
+      }
+    }catch(e){ console.error('V4.479 asset path fix',e); }
+  }
+
+  function pulse(){
+    applyAssets();
+    requestAnimationFrame(applyAssets);
+    setTimeout(applyAssets,70);
+    setTimeout(applyAssets,180);
+    setTimeout(applyAssets,420);
+  }
+
+  ['v432RenderDetail','v430RenderDetail','v426RenderDetail','v251RenderDetail','v244RenderSelectedDungeonMap','v261RenderDetail','renderDungeon'].forEach(name=>{
+    try{
+      const fn=window[name];
+      if(typeof fn!=='function' || fn.__v479AssetPathWrap) return;
+      const wrap=function(){ const out=fn.apply(this,arguments); pulse(); return out; };
+      wrap.__v479AssetPathWrap=true;
+      window[name]=wrap;
+      try{
+        if(name==='v432RenderDetail') v432RenderDetail=wrap;
+        if(name==='v430RenderDetail') v430RenderDetail=wrap;
+        if(name==='v426RenderDetail') v426RenderDetail=wrap;
+        if(name==='v251RenderDetail') v251RenderDetail=wrap;
+        if(name==='v244RenderSelectedDungeonMap') v244RenderSelectedDungeonMap=wrap;
+        if(name==='v261RenderDetail') v261RenderDetail=wrap;
+        if(name==='renderDungeon') renderDungeon=wrap;
+      }catch(e){}
+    }catch(e){}
+  });
+
+  requestAnimationFrame(pulse);
+  setTimeout(pulse,150);
+  document.addEventListener('click',()=>setTimeout(pulse,45),true);
+  window.addEventListener('pageshow',()=>setTimeout(pulse,90),{passive:true});
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden)setTimeout(pulse,90)},{passive:true});
+})();
+</script>
+<!-- ===== /V4.479 D10-D20 ASSET PATH AUTO-DETECT FIX ===== -->
+
 </body>
 </html>
 <style id="v268-inventory-multisell-css">
