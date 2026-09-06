@@ -81483,11 +81483,10 @@ body:has(#world.active){background:#010302!important}
   }
 
   function forceTargetClasses(card,i){
-    card.classList.toggle('v427-d6',i===5);
-    card.classList.toggle('v432-d7',i===6);
-    card.classList.toggle('v437-d8',i===7);
-    card.classList.toggle('v436-d8',i===7);
-    card.classList.toggle('v441-d9',i===8);
+    /* V4.469: D2-D9 benutzen jetzt den gemeinsamen D1-Master.
+       Alte D6-D9-Sonderklassen dürfen in der Vorschau nicht mehr nachträglich
+       wieder auf die Karte gesetzt werden. */
+    card.classList.remove('v427-d6','v428-d6-final-owner','v429-d6','v432-d7','v436-d8','v437-d8','v441-d9','v467-d2');
   }
 
   function decorate(i){
@@ -82685,7 +82684,15 @@ function enemyArt(cfg,i){
   return 'data:image/svg+xml;charset=UTF-8,'+escSvg(svg);
 }
 function currentIndex(){
-  try{return Math.max(0,Math.min(19,Number(s?.dungeon?.selected||0)||0))}catch(e){return -1}
+  try{
+    /* In der 1-20-Vorschau wird s.dungeon.selected nur während des eigentlichen
+       Render-Aufrufs umgeschaltet und direkt danach wiederhergestellt.
+       Deshalb muss der Master den Preview-Target lesen, sonst glaubt er nach
+       requestAnimationFrame wieder, Dungeon 1 sei aktiv und entfernt sich selbst. */
+    const pv=window.__v453AllDungeonPreview;
+    if(pv?.active) return Math.max(0,Math.min(19,Number(pv.target)||0));
+    return Math.max(0,Math.min(19,Number(s?.dungeon?.selected||0)||0));
+  }catch(e){return -1}
 }
 function currentRoom(di,card){
   try{if(typeof v048RoomIndex==='function')return Math.max(0,Math.min(9,Number(v048RoomIndex(di))||0))}catch(e){}
@@ -82724,7 +82731,16 @@ function applyMaster(){
 function wrap(name){
   try{
     const fn=window[name];if(typeof fn!=='function'||fn.__v468Master)return;
-    const w=function(){const out=fn.apply(this,arguments);requestAnimationFrame(applyMaster);return out};
+    const w=function(){
+      const out=fn.apply(this,arguments);
+      /* Sofort anwenden, solange der Preview-Renderer selected noch auf dem
+         Ziel-Dungeon stehen hat; danach nochmals verzögert gegen alte Decorator. */
+      applyMaster();
+      requestAnimationFrame(applyMaster);
+      setTimeout(applyMaster,55);
+      setTimeout(applyMaster,175);
+      return out;
+    };
     w.__v468Master=true;window[name]=w;
     try{if(name==='renderDungeon')renderDungeon=w;if(name==='v432RenderDetail')v432RenderDetail=w;if(name==='v251RenderDetail')v251RenderDetail=w;if(name==='v244RenderSelectedDungeonMap')v244RenderSelectedDungeonMap=w;if(name==='v261RenderDetail')v261RenderDetail=w}catch(e){}
   }catch(e){}
@@ -82738,3 +82754,5 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden)setTimeout
 })();
 </script>
 <!-- ===== /V4.468 DUNGEON 1 MASTER TEMPLATE FOR D2-D9 ===== -->
+
+<!-- V4.469 PREVIEW MASTER OWNER FIX: preview target + old class suppression -->
