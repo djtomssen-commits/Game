@@ -47964,155 +47964,6 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden)setTimeout
 })();
 </script>
 <!-- ===== /V4.478 DUNGEON 10-20 D1 MASTER EXTENSION ===== -->
-
-
-
-<!-- ===== V4.479 D10-D20 ASSET PATH AUTO-DETECT FIX ===== -->
-<script id="v479-d10-d20-asset-pathfix">
-(function(){
-  'use strict';
-  if(window.__V479_DUNGEON_ASSET_PATHFIX__) return;
-  window.__V479_DUNGEON_ASSET_PATHFIX__ = true;
-
-  const CANDIDATES = [
-    'v474_dungeon_assets/',
-    'assets/',
-    'Assets/',
-    'asset/',
-    'Asset/',
-    ''
-  ];
-  let resolvedBase = null;
-  let resolving = null;
-
-  function imageExists(url){
-    return new Promise(resolve=>{
-      const img = new Image();
-      let done=false;
-      const finish=(ok)=>{ if(done) return; done=true; resolve(ok); };
-      img.onload=()=>finish(true);
-      img.onerror=()=>finish(false);
-      img.src=url + (url.includes('?')?'&':'?') + 'v479=' + Date.now();
-      setTimeout(()=>finish(false),2500);
-    });
-  }
-
-  async function findBase(){
-    if(resolvedBase!==null) return resolvedBase;
-    if(resolving) return resolving;
-    resolving=(async()=>{
-      /* d2_bg.jpg ist unser Probe-Asset: D2 funktioniert bereits beim Nutzer.
-         Damit finden wir automatisch genau denselben echten Asset-Ordner. */
-      for(const base of CANDIDATES){
-        if(await imageExists(base+'d2_bg.jpg')){
-          resolvedBase=base;
-          return base;
-        }
-      }
-      /* Fallback: D10 direkt prüfen, falls D2 extern/embedded läuft. */
-      for(const base of CANDIDATES){
-        if(await imageExists(base+'d10_bg.jpg')){
-          resolvedBase=base;
-          return base;
-        }
-      }
-      resolvedBase='v474_dungeon_assets/';
-      return resolvedBase;
-    })();
-    return resolving;
-  }
-
-  function currentDungeonIndex(){
-    try{
-      const pv=window.__v453AllDungeonPreview;
-      if(pv && pv.active) return Math.max(0,Math.min(19,Number(pv.target)||0));
-    }catch(e){}
-    try{return Math.max(0,Math.min(19,Number(window.s?.dungeon?.selected||0)||0));}
-    catch(e){return -1;}
-  }
-
-  function currentRoom(card,di){
-    try{
-      if(typeof window.v048RoomIndex==='function') return Math.max(0,Math.min(9,Number(window.v048RoomIndex(di))||0));
-    }catch(e){}
-    try{
-      const t=card.querySelector('.v261-line1')?.textContent||'';
-      const m=t.match(/^(\d+)\s*[·.-]/);
-      if(m) return Math.max(0,Math.min(9,Number(m[1])-1));
-    }catch(e){}
-    return 0;
-  }
-
-  async function applyAssets(){
-    try{
-      const card=document.getElementById('dungeonMapCard');
-      if(!card) return;
-      const di=currentDungeonIndex();
-      const dno=di+1;
-      if(dno<10 || dno>20) return;
-      const base=await findBase();
-
-      const bg=card.querySelector('.v261-bg');
-      if(bg) bg.style.setProperty('background-image','url("'+base+'d'+dno+'_bg.jpg")','important');
-
-      card.querySelectorAll('[data-v261-room]').forEach((node,idx)=>{
-        if(idx<9){
-          const ring=node.querySelector('.v261-ring');
-          if(ring) ring.style.setProperty('background-image','url("'+base+'d'+dno+'_'+(idx+1)+'.png")','important');
-        }else{
-          const boss=node.querySelector('.v261-bossart');
-          if(boss) boss.style.setProperty('background-image','url("'+base+'d'+dno+'_boss.png")','important');
-        }
-      });
-
-      const ri=currentRoom(card,di);
-      const thumb=card.querySelector('.v261-thumb');
-      if(thumb){
-        thumb.textContent='';
-        const file=ri===9 ? ('d'+dno+'_boss.png') : ('d'+dno+'_'+(ri+1)+'.png');
-        thumb.style.setProperty('background-image','url("'+base+file+'")','important');
-        thumb.style.setProperty('background-size','cover','important');
-        thumb.style.setProperty('background-position','center','important');
-      }
-    }catch(e){ console.error('V4.479 asset path fix',e); }
-  }
-
-  function pulse(){
-    applyAssets();
-    requestAnimationFrame(applyAssets);
-    setTimeout(applyAssets,70);
-    setTimeout(applyAssets,180);
-    setTimeout(applyAssets,420);
-  }
-
-  ['v432RenderDetail','v430RenderDetail','v426RenderDetail','v251RenderDetail','v244RenderSelectedDungeonMap','v261RenderDetail','renderDungeon'].forEach(name=>{
-    try{
-      const fn=window[name];
-      if(typeof fn!=='function' || fn.__v479AssetPathWrap) return;
-      const wrap=function(){ const out=fn.apply(this,arguments); pulse(); return out; };
-      wrap.__v479AssetPathWrap=true;
-      window[name]=wrap;
-      try{
-        if(name==='v432RenderDetail') v432RenderDetail=wrap;
-        if(name==='v430RenderDetail') v430RenderDetail=wrap;
-        if(name==='v426RenderDetail') v426RenderDetail=wrap;
-        if(name==='v251RenderDetail') v251RenderDetail=wrap;
-        if(name==='v244RenderSelectedDungeonMap') v244RenderSelectedDungeonMap=wrap;
-        if(name==='v261RenderDetail') v261RenderDetail=wrap;
-        if(name==='renderDungeon') renderDungeon=wrap;
-      }catch(e){}
-    }catch(e){}
-  });
-
-  requestAnimationFrame(pulse);
-  setTimeout(pulse,150);
-  document.addEventListener('click',()=>setTimeout(pulse,45),true);
-  window.addEventListener('pageshow',()=>setTimeout(pulse,90),{passive:true});
-  document.addEventListener('visibilitychange',()=>{if(!document.hidden)setTimeout(pulse,90)},{passive:true});
-})();
-</script>
-<!-- ===== /V4.479 D10-D20 ASSET PATH AUTO-DETECT FIX ===== -->
-
 </body>
 </html>
 <style id="v268-inventory-multisell-css">
@@ -83201,3 +83052,147 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden)setTimeout
 }
 </style>
 <!-- ===== /V4.477 SHARP DUNGEON BACKGROUND OWNER ===== -->
+
+
+
+<!-- ===== V4.480 FINAL D10-D20 ASSET OWNER (MUST STAY AT EOF) ===== -->
+<style id="v480-final-d10-d20-assets-style">
+#dungeonMapCard.v480-d10-20 .v261-bg{
+  inset:0!important;transform:none!important;filter:none!important;opacity:1!important;
+  background-size:cover!important;background-position:center center!important;background-repeat:no-repeat!important;
+}
+#dungeonMapCard.v480-d10-20 .v261-node:not(.boss) .v261-ring{
+  font-size:0!important;background-size:cover!important;background-position:center center!important;background-repeat:no-repeat!important;
+}
+#dungeonMapCard.v480-d10-20 .v261-node.boss .v261-bossart{
+  display:block!important;width:100%!important;height:100%!important;border-radius:50%!important;
+  background-size:cover!important;background-position:center center!important;background-repeat:no-repeat!important;filter:none!important;opacity:1!important;
+}
+#dungeonMapCard.v480-d10-20 .v261-thumb{
+  font-size:0!important;background-size:cover!important;background-position:center center!important;background-repeat:no-repeat!important;
+}
+</style>
+<script id="v480-final-d10-d20-assets-script">
+(function(){
+  'use strict';
+  if(window.__V480_FINAL_D10_D20_ASSETS__) return;
+  window.__V480_FINAL_D10_D20_ASSETS__=true;
+
+  const BASE='v474_dungeon_assets/';
+  const REV='?v480=1';
+
+  function detectDungeonNo(card){
+    try{
+      const pv=window.__v453AllDungeonPreview;
+      if(pv&&pv.active){const n=(Number(pv.target)||0)+1;if(n>=10&&n<=20)return n;}
+    }catch(e){}
+    try{
+      for(const c of card.classList){const m=c.match(/^v468-d(\d+)$/);if(m){const n=Number(m[1]);if(n>=10&&n<=20)return n;}}
+    }catch(e){}
+    try{
+      const kicker=card.querySelector('.v261-kicker')?.textContent||'';
+      const m=kicker.match(/DUNGEON\s*(\d+)/i);if(m){const n=Number(m[1]);if(n>=10&&n<=20)return n;}
+    }catch(e){}
+    try{
+      const label=document.querySelector('#v453CurrentPreviewLabel')?.textContent||document.querySelector('#v453PreviewPicker .v453-current')?.textContent||'';
+      const m=label.match(/Dungeon\s*(\d+)/i);if(m){const n=Number(m[1]);if(n>=10&&n<=20)return n;}
+    }catch(e){}
+    try{
+      const n=(Number(window.s?.dungeon?.selected)||0)+1;if(n>=10&&n<=20)return n;
+    }catch(e){}
+    return 0;
+  }
+
+  function detectRoom(card){
+    try{
+      const line=card.querySelector('.v261-line1')?.textContent||'';
+      const m=line.match(/^\s*(\d+)\s*[·.-]/);if(m)return Math.max(0,Math.min(9,Number(m[1])-1));
+    }catch(e){}
+    return 0;
+  }
+
+  function asset(dno,file){return BASE+'d'+dno+'_'+file+REV;}
+  function applyFinal(){
+    try{
+      const card=document.getElementById('dungeonMapCard');
+      if(!card)return;
+      const dno=detectDungeonNo(card);
+      if(dno<10||dno>20){card.classList.remove('v480-d10-20');return;}
+      card.classList.add('v480-d10-20');
+
+      const bg=card.querySelector('.v261-bg');
+      if(bg){
+        bg.style.setProperty('background-image','url("'+BASE+'d'+dno+'_bg.jpg'+REV+'")','important');
+        bg.style.setProperty('filter','none','important');
+        bg.style.setProperty('transform','none','important');
+        bg.style.setProperty('inset','0','important');
+        bg.style.setProperty('opacity','1','important');
+        bg.style.setProperty('background-size','cover','important');
+        bg.style.setProperty('background-position','center center','important');
+      }
+
+      card.querySelectorAll('[data-v261-room]').forEach((node,idx)=>{
+        const ring=node.querySelector('.v261-ring');
+        if(idx<9 && ring){
+          ring.style.setProperty('background-image','url("'+asset(dno,String(idx+1)+'.png')+'")','important');
+          ring.style.setProperty('background-size','cover','important');
+          ring.style.setProperty('background-position','center center','important');
+          ring.style.setProperty('background-repeat','no-repeat','important');
+          ring.style.setProperty('font-size','0','important');
+        }
+        if(idx===9){
+          const boss=node.querySelector('.v261-bossart');
+          if(boss){
+            boss.style.setProperty('background-image','url("'+asset(dno,'boss.png')+'")','important');
+            boss.style.setProperty('background-size','cover','important');
+            boss.style.setProperty('background-position','center center','important');
+            boss.style.setProperty('background-repeat','no-repeat','important');
+            boss.style.setProperty('opacity','1','important');
+          }
+        }
+      });
+
+      const ri=detectRoom(card);
+      const thumb=card.querySelector('.v261-thumb');
+      if(thumb){
+        thumb.textContent='';
+        const f=ri===9?'boss.png':String(ri+1)+'.png';
+        thumb.style.setProperty('background-image','url("'+asset(dno,f)+'")','important');
+        thumb.style.setProperty('background-size','cover','important');
+        thumb.style.setProperty('background-position','center center','important');
+        thumb.style.setProperty('background-repeat','no-repeat','important');
+      }
+    }catch(e){console.error('V4.480 final assets',e);}
+  }
+
+  function pulse(){applyFinal();requestAnimationFrame(applyFinal);setTimeout(applyFinal,35);setTimeout(applyFinal,110);setTimeout(applyFinal,260);}
+
+  // Wrap FINAL render functions only now, at the physical end of the document.
+  ['v432RenderDetail','v430RenderDetail','v426RenderDetail','v251RenderDetail','v244RenderSelectedDungeonMap','v261RenderDetail','v064RenderMap','renderDungeon'].forEach(name=>{
+    try{
+      const fn=window[name];
+      if(typeof fn!=='function'||fn.__v480FinalAssets)return;
+      const w=function(){const out=fn.apply(this,arguments);pulse();return out;};
+      w.__v480FinalAssets=true;
+      window[name]=w;
+      try{
+        if(name==='v432RenderDetail')v432RenderDetail=w;
+        if(name==='v430RenderDetail')v430RenderDetail=w;
+        if(name==='v426RenderDetail')v426RenderDetail=w;
+        if(name==='v251RenderDetail')v251RenderDetail=w;
+        if(name==='v244RenderSelectedDungeonMap')v244RenderSelectedDungeonMap=w;
+        if(name==='v261RenderDetail')v261RenderDetail=w;
+        if(name==='v064RenderMap')v064RenderMap=w;
+        if(name==='renderDungeon')renderDungeon=w;
+      }catch(e){}
+    }catch(e){}
+  });
+
+  requestAnimationFrame(pulse);
+  setTimeout(pulse,120);
+  window.addEventListener('pageshow',()=>setTimeout(pulse,80),{passive:true});
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden)setTimeout(pulse,80)},{passive:true});
+  document.addEventListener('click',()=>{setTimeout(pulse,20);setTimeout(pulse,90);},true);
+})();
+</script>
+<!-- ===== /V4.480 FINAL D10-D20 ASSET OWNER ===== -->
