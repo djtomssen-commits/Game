@@ -82329,8 +82329,8 @@ body:has(#world.active){background:#010302!important}
   --y:27!important;
 }
 #dungeonMapCard.v426-ref-d1 .v261-node[data-v261-room="8"]{
-  --x:85!important;
-  --y:55!important;
+  --x:90!important;
+  --y:49!important;
 }
 /* Gegner 8 etwas nach links, damit rechts genug Luft für Gegner 9 bleibt. */
 #dungeonMapCard.v426-ref-d1 .v261-node[data-v261-room="7"]{
@@ -82359,7 +82359,7 @@ body:has(#world.active){background:#010302!important}
       const card=document.getElementById('dungeonMapCard');
       if(!card?.classList.contains('v426-ref-d1'))return;
       /* Pfad durch die finalen D1-Positionen: 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> Boss. */
-      const pts='15,12 27,14 40,17 54,19 67,22 76,24 82,27 70,34 53,38 33,40 15,42 25,47 36,52 46,57 56,62 64,59 72,55 78,55 85,55 83,65 81,73 80,83';
+      const pts='15,12 27,14 40,17 54,19 67,22 76,24 82,27 70,34 53,38 33,40 15,42 25,47 36,52 46,57 56,62 64,59 72,55 80,53 90,49 87,60 83,71 80,83';
       card.querySelectorAll('.v261-road polyline').forEach(el=>el.setAttribute('points',pts));
     }catch(e){}
   }
@@ -82384,3 +82384,5 @@ body:has(#world.active){background:#010302!important}
 })();
 </script>
 <!-- ===== /V4.261 DUNGEON 1 NODE 9 COLLISION FIX ===== -->
+
+<!-- V4.263 D1: Gegner 9 final tatsächlich nach oben/rechts gesetzt; V461-Override direkt korrigiert. -->
