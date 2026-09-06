@@ -82503,3 +82503,157 @@ body:has(#world.active){background:#010302!important}
 }
 </style>
 <!-- ===== /V4.264 DUNGEON 1 BOSS MICRO POSITION ===== -->
+
+<!-- ===== V4.464 DUNGEON 2 SCREENSHOT FEINSCHLIFF ===== -->
+<style id="v464-d2-screenshot-polish">
+/* Reiner D2-Feinschliff nach Screenshot/Vorlage. Keine Kampf-/Preview-Logik anfassen. */
+#dungeonMapCard.v464-d2 .v261-bg{
+  inset:0!important;
+  transform:none!important;
+  filter:none!important;
+  background-size:cover!important;
+  background-position:center center!important;
+}
+#dungeonMapCard.v464-d2 .v261-fx{
+  background:linear-gradient(180deg,rgba(0,0,0,.05),rgba(0,0,0,.00) 58%,rgba(0,0,0,.10) 100%)!important;
+}
+#dungeonMapCard.v464-d2 .v261-title{
+  font-size:0!important;
+  line-height:1!important;
+  white-space:normal!important;
+  overflow:visible!important;
+}
+#dungeonMapCard.v464-d2 .v261-title::after{
+  content:"DAS\A ÜBERWUCHERTE\A LABOR";
+  white-space:pre-line;
+  display:block;
+  font-family:Georgia,serif;
+  font-size:10.1px;
+  line-height:.92;
+  font-weight:1000;
+  letter-spacing:0;
+}
+#dungeonMapCard.v464-d2 .v261-kicker{font-size:6.2px!important}
+#dungeonMapCard.v464-d2 .v261-sub{font-size:5.7px!important;line-height:1.18!important}
+
+/* Knoten sauber entlang eines lesbaren Snake-Wegs verteilen. */
+#dungeonMapCard.v464-d2 .v261-node[data-v261-room="0"]{--x:13!important;--y:16!important}
+#dungeonMapCard.v464-d2 .v261-node[data-v261-room="1"]{--x:38!important;--y:22!important}
+#dungeonMapCard.v464-d2 .v261-node[data-v261-room="2"]{--x:64!important;--y:24!important}
+#dungeonMapCard.v464-d2 .v261-node[data-v261-room="3"]{--x:84!important;--y:30!important}
+#dungeonMapCard.v464-d2 .v261-node[data-v261-room="4"]{--x:14!important;--y:47!important}
+#dungeonMapCard.v464-d2 .v261-node[data-v261-room="5"]{--x:35!important;--y:60!important}
+#dungeonMapCard.v464-d2 .v261-node[data-v261-room="6"]{--x:63!important;--y:72!important}
+#dungeonMapCard.v464-d2 .v261-node[data-v261-room="7"]{--x:87!important;--y:60!important}
+#dungeonMapCard.v464-d2 .v261-node[data-v261-room="8"]{--x:24!important;--y:67!important}
+#dungeonMapCard.v464-d2 .v261-node[data-v261-room="9"]{--x:81!important;--y:84.5!important}
+
+/* Top-Reihe kompakt, damit 2/3/4 nicht kollidieren. */
+#dungeonMapCard.v464-d2 .v261-node[data-v261-room="1"] .v261-panel,
+#dungeonMapCard.v464-d2 .v261-node[data-v261-room="2"] .v261-panel,
+#dungeonMapCard.v464-d2 .v261-node[data-v261-room="3"] .v261-panel{
+  width:70px!important;
+  min-height:40px!important;
+  padding:5px 3px!important;
+}
+#dungeonMapCard.v464-d2 .v261-node[data-v261-room="1"] .v261-name,
+#dungeonMapCard.v464-d2 .v261-node[data-v261-room="2"] .v261-name,
+#dungeonMapCard.v464-d2 .v261-node[data-v261-room="3"] .v261-name{
+  font-size:4.7px!important;
+  line-height:1.03!important;
+}
+
+/* Untere Reihe entzerren, vor allem 7/8/9. */
+#dungeonMapCard.v464-d2 .v261-node[data-v261-room="6"] .v261-panel,
+#dungeonMapCard.v464-d2 .v261-node[data-v261-room="7"] .v261-panel,
+#dungeonMapCard.v464-d2 .v261-node[data-v261-room="8"] .v261-panel{
+  width:68px!important;
+  min-height:39px!important;
+  padding:5px 3px!important;
+}
+#dungeonMapCard.v464-d2 .v261-node[data-v261-room="6"] .v261-name,
+#dungeonMapCard.v464-d2 .v261-node[data-v261-room="7"] .v261-name,
+#dungeonMapCard.v464-d2 .v261-node[data-v261-room="8"] .v261-name{
+  font-size:4.6px!important;
+  line-height:1.02!important;
+}
+
+/* Boss etwas tiefer/rechter und sauber als Endpunkt. */
+#dungeonMapCard.v464-d2 .v261-node.boss{width:100px!important}
+#dungeonMapCard.v464-d2 .v261-node.boss .v261-ring{width:80px!important;height:80px!important}
+#dungeonMapCard.v464-d2 .v261-node.boss .v261-panel{
+  width:92px!important;
+  min-height:41px!important;
+  margin-top:4px!important;
+  padding:5px 3px!important;
+}
+#dungeonMapCard.v464-d2 .v261-node.boss .v261-name{font-size:5.2px!important;line-height:1.04!important}
+
+/* Warnschild kleiner in die Ecke. */
+#dungeonMapCard.v464-d2 .v261-signboard{
+  left:1.2%!important;
+  bottom:2.1%!important;
+  max-width:62px!important;
+  padding:5px 5px 6px!important;
+  font-size:4.7px!important;
+  line-height:1.06!important;
+}
+#dungeonMapCard.v464-d2 .v261-signboard small{font-size:8px!important}
+</style>
+<script id="v464-d2-screenshot-polish-script">
+(function(){
+  'use strict';
+  if(window.__V464_D2_POLISH__)return;
+  window.__V464_D2_POLISH__=true;
+
+  function currentDungeonIndex(){
+    try{return typeof v048DungeonIndex==='function' ? v048DungeonIndex() : Math.max(0,Math.min(19,Number(s?.dungeon?.selected||0)||0));}
+    catch(e){return Math.max(0,Math.min(19,Number(window?.s?.dungeon?.selected||0)||0));}
+  }
+
+  function decorate(){
+    try{
+      const card=document.getElementById('dungeonMapCard');
+      if(!card)return;
+      const di=currentDungeonIndex();
+      card.classList.toggle('v464-d2',di===1);
+      if(di!==1)return;
+      const title=card.querySelector('.v261-title');
+      if(title)title.innerHTML='';
+    }catch(e){}
+  }
+
+  function paintRoad(){
+    try{
+      const card=document.getElementById('dungeonMapCard');
+      if(!card?.classList.contains('v464-d2'))return;
+      const pts='13,16 27,19 38,22 51,23 64,24 75,27 84,30 71,36 53,40 32,43 14,47 24,53 35,60 48,66 63,72 75,67 87,60 74,64 55,66 39,66 24,67 42,73 61,79 81,84';
+      card.querySelectorAll('.v261-road polyline').forEach(el=>el.setAttribute('points',pts));
+    }catch(e){}
+  }
+
+  function run(){decorate(); paintRoad();}
+  requestAnimationFrame(run);
+  document.addEventListener('click',()=>setTimeout(run,45),true);
+  window.addEventListener('pageshow',()=>setTimeout(run,70),{passive:true});
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden)setTimeout(run,60)},{passive:true});
+
+  ['v426RenderDetail','v251RenderDetail','v244RenderSelectedDungeonMap','v261RenderDetail'].forEach(name=>{
+    try{
+      const fn=window[name];
+      if(typeof fn==='function'&&!fn.__v464D2Wrap){
+        const base=fn;
+        const wrap=function(){const out=base.apply(this,arguments);requestAnimationFrame(run);return out};
+        wrap.__v464D2Wrap=true;
+        window[name]=wrap;
+        try{
+          if(name==='v251RenderDetail')v251RenderDetail=wrap;
+          if(name==='v244RenderSelectedDungeonMap')v244RenderSelectedDungeonMap=wrap;
+          if(name==='v261RenderDetail')v261RenderDetail=wrap;
+        }catch(e){}
+      }
+    }catch(e){}
+  });
+})();
+</script>
+<!-- ===== /V4.464 DUNGEON 2 SCREENSHOT FEINSCHLIFF ===== -->
