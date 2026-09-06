@@ -82933,3 +82933,27 @@ document.addEventListener('click',()=>setTimeout(pulse,25),true);window.addEvent
 })();
 </script>
 <!-- ===== /V4.491 DUNGEON ASSET DIAGNOSTIC ===== -->
+
+<!-- ===== V4.492 DEPLOYMENT/ASSET DIAGNOSTIC - TEMP ===== -->
+<style id="v492-global-diag-css">
+#v492GlobalDiag{position:fixed!important;z-index:2147483647!important;left:6px!important;right:6px!important;top:88px!important;padding:8px 10px!important;background:#2a1800f2!important;border:2px solid #ffd84d!important;border-radius:10px!important;color:#fff3a0!important;font:900 12px/1.3 Arial,sans-serif!important;text-align:center!important;box-shadow:0 3px 16px #000!important;pointer-events:none!important;display:block!important;visibility:visible!important;opacity:1!important}
+#v492GlobalDiag .ok{color:#7dff7d!important}#v492GlobalDiag .bad{color:#ff7373!important}#v492GlobalDiag .wait{color:#fff3a0!important}
+</style>
+<script id="v492-global-diag-script">
+(function(){
+'use strict';
+function test(url){return new Promise(function(resolve){var im=new Image(),done=false;function fin(ok){if(done)return;done=true;resolve({ok:!!ok,url:url,w:im.naturalWidth||0,h:im.naturalHeight||0});}im.onload=function(){fin(true)};im.onerror=function(){fin(false)};im.src=url+(url.indexOf('?')>=0?'&':'?')+'v492='+Date.now();setTimeout(function(){fin(im.complete&&im.naturalWidth>0)},3500);});}
+function ensure(){var el=document.getElementById('v492GlobalDiag');if(!el){el=document.createElement('div');el.id='v492GlobalDiag';(document.body||document.documentElement).appendChild(el);}return el;}
+function paint(msg){var el=ensure();el.innerHTML=msg;}
+function span(r,label){return '<span class="'+(r.ok?'ok':'bad')+'">'+label+': '+(r.ok?'OK '+r.w+'×'+r.h:'FEHLT')+'</span>';}
+async function run(){
+ paint('V492 AKTIV · prüfe D9/D10 Assets …');
+ var base='v474_dungeon_assets/';
+ var r=await Promise.all([test(base+'d9_bg.jpg'),test(base+'d10_bg.jpg'),test(base+'d10_1.png'),test(base+'d10_boss.png')]);
+ paint('V492 AKTIV · '+span(r[0],'D9 BG')+' · '+span(r[1],'D10 BG')+' · '+span(r[2],'D10 M1')+' · '+span(r[3],'D10 BOSS')+'<br><span style="font-size:9px">Pfad: '+String(location.pathname).replace(/</g,'&lt;')+'</span>');
+}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',run,{once:true});else run();
+window.addEventListener('pageshow',function(){setTimeout(run,50)},{passive:true});
+})();
+</script>
+<!-- ===== /V4.492 DEPLOYMENT/ASSET DIAGNOSTIC ===== -->
