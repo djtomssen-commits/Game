@@ -88882,3 +88882,274 @@ html.v495-level-syncing #v420LevelUpOverlay{
 }
 </style>
 <!-- ===== /V5.36 INVENTAR SUBTITLE SINGLE-LINE FIX ===== -->
+
+<!-- ===== V5.37 ATTRIBUTE REFERENCE REBUILD ===== -->
+<style id="v537-attribute-reference-css">
+/* Approved Attribute preview – visual ownership only. Existing stat/spend logic stays untouched. */
+#character #v459PanelAttributes{
+  min-width:0!important;
+}
+#character #v459AttrCard{
+  position:relative!important;
+  overflow:hidden!important;
+  margin:0 0 9px!important;
+  padding:0 10px 10px!important;
+  border:2px solid #744a25!important;
+  border-radius:13px!important;
+  background:
+    radial-gradient(circle at 50% 0,rgba(74,137,62,.11),transparent 34%),
+    linear-gradient(180deg,#0a160f 0%,#071009 100%)!important;
+  box-shadow:inset 0 0 0 1px rgba(214,160,78,.10),inset 0 0 28px rgba(0,0,0,.34),0 8px 20px rgba(0,0,0,.34)!important;
+}
+
+/* Ornamental header, matching the new inventory/hero language. */
+#character #v459AttrCard > .v459-panel-head.v537-attr-head{
+  position:relative!important;
+  min-height:78px!important;
+  margin:0 -10px 10px!important;
+  padding:10px 12px 10px 68px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:9px!important;
+  border-bottom:2px solid #744a25!important;
+  background:
+    radial-gradient(circle at 12% 50%,rgba(151,102,44,.22),transparent 24%),
+    radial-gradient(circle at 88% 30%,rgba(94,159,66,.14),transparent 26%),
+    linear-gradient(180deg,#211c10 0%,#0c150d 100%)!important;
+  box-shadow:inset 0 -1px 0 rgba(224,174,92,.12)!important;
+}
+#character .v537-attr-head::before{
+  content:'📖'!important;
+  position:absolute!important;
+  left:12px!important;top:50%!important;transform:translateY(-50%)!important;
+  width:39px!important;height:43px!important;
+  display:grid!important;place-items:center!important;
+  border:1px solid #77502a!important;border-radius:10px!important;
+  background:linear-gradient(180deg,#4a2d16,#20130a)!important;
+  font-size:22px!important;
+  box-shadow:inset 0 0 12px rgba(0,0,0,.52),0 3px 9px rgba(0,0,0,.42)!important;
+}
+#character .v537-attr-title-wrap{min-width:0!important;flex:1!important}
+#character .v537-attr-title{
+  margin:0!important;
+  color:#f0cf83!important;
+  font:900 25px/1 Georgia,serif!important;
+  letter-spacing:.035em!important;
+  text-shadow:0 2px 0 #2b1609,0 0 12px rgba(211,156,70,.18)!important;
+}
+#character .v537-attr-sub{
+  margin-top:5px!important;
+  color:#b7c7b0!important;
+  font-size:6.3px!important;
+  line-height:1.2!important;
+  font-weight:900!important;
+  letter-spacing:.055em!important;
+  white-space:nowrap!important;
+}
+#character #v459AttrPoints{
+  flex:0 0 auto!important;
+  min-width:58px!important;
+  padding:8px 9px!important;
+  border:1px solid #8a652c!important;
+  border-radius:11px!important;
+  background:linear-gradient(180deg,#2b2614,#17140b)!important;
+  color:#f0cf69!important;
+  font-size:9.5px!important;
+  line-height:1!important;
+  font-weight:1000!important;
+  text-align:center!important;
+  box-shadow:inset 0 0 12px rgba(208,171,69,.07),0 3px 8px rgba(0,0,0,.30)!important;
+}
+
+/* Five canonical stat rows. */
+#character #v459AttrCard #attrs{
+  display:grid!important;
+  grid-template-columns:1fr!important;
+  gap:7px!important;
+}
+#character #v459AttrCard #attrs > .v4140-attr{
+  position:relative!important;
+  display:grid!important;
+  grid-template-columns:58px minmax(0,1fr) 58px!important;
+  align-items:center!important;
+  gap:11px!important;
+  min-height:104px!important;
+  padding:11px 12px!important;
+  overflow:hidden!important;
+  border:1px solid #34533d!important;
+  border-radius:17px!important;
+  background:
+    radial-gradient(circle at 8% 50%,rgba(77,165,81,.09),transparent 26%),
+    linear-gradient(150deg,#102119 0%,#07150d 100%)!important;
+  box-shadow:inset 0 1px 0 rgba(178,219,176,.04),inset 0 0 20px rgba(0,0,0,.28),0 3px 9px rgba(0,0,0,.19)!important;
+}
+#character #v459AttrCard #attrs > .v4140-attr.v4140-primary{
+  min-height:110px!important;
+  border-color:#b87231!important;
+  background:
+    radial-gradient(circle at 10% 50%,rgba(240,148,54,.16),transparent 26%),
+    linear-gradient(150deg,#34200e 0%,#1a1008 68%,#120c07 100%)!important;
+  box-shadow:inset 0 1px 0 rgba(255,203,116,.10),inset 0 0 24px rgba(217,117,39,.08),0 4px 12px rgba(0,0,0,.24)!important;
+}
+#character #v459AttrCard .v4140-attr-icon{
+  width:58px!important;height:58px!important;
+  display:grid!important;place-items:center!important;
+  border:2px solid #50685a!important;border-radius:50%!important;
+  background:radial-gradient(circle at 50% 36%,#112219,#07100b 72%)!important;
+  font-size:31px!important;line-height:1!important;
+  box-shadow:inset 0 0 14px rgba(0,0,0,.58),0 3px 8px rgba(0,0,0,.25)!important;
+}
+#character #v459AttrCard .v4140-primary .v4140-attr-icon{
+  border-color:#c17c36!important;
+  box-shadow:inset 0 0 14px rgba(0,0,0,.58),0 0 12px rgba(235,139,46,.13),0 3px 8px rgba(0,0,0,.28)!important;
+}
+#character #v459AttrCard .v4140-attr-copy{min-width:0!important;align-self:center!important}
+#character #v459AttrCard .v4140-attr-name{
+  color:#efe8cd!important;
+  font-size:13px!important;line-height:1.05!important;font-weight:1000!important;
+}
+#character #v459AttrCard .v4140-attr-value{
+  margin-top:2px!important;
+  color:#f7f7ee!important;
+  font-size:27px!important;line-height:1!important;font-weight:1000!important;
+}
+#character #v459AttrCard .v4140-attr-desc{
+  margin-top:5px!important;
+  color:#8fa092!important;
+  font-size:7.8px!important;line-height:1.22!important;
+}
+#character #v459AttrCard .v4140-attr-role{
+  margin-top:6px!important;
+  color:#b8a96e!important;
+  font-size:7.6px!important;line-height:1.15!important;font-weight:900!important;
+}
+#character #v459AttrCard .v4140-primary .v4140-attr-role{color:#d6a55f!important}
+#character #v459AttrCard .v4140-primary::before{
+  content:'HAUPTATTRIBUT'!important;
+  position:absolute!important;
+  right:78px!important;top:11px!important;
+  padding:3px 8px!important;
+  border:1px solid #a85f2b!important;border-radius:999px!important;
+  background:#201107!important;
+  color:#efb467!important;
+  font-size:6px!important;font-weight:1000!important;letter-spacing:.075em!important;
+}
+#character #v459AttrCard #attrs > .v4140-attr > button{
+  justify-self:end!important;
+  width:56px!important;height:56px!important;
+  border:1px solid #527746!important;border-radius:14px!important;
+  background:linear-gradient(180deg,#37513a 0%,#29392c 100%)!important;
+  color:#111b12!important;
+  font-size:29px!important;line-height:1!important;font-weight:1000!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.08),inset 0 0 0 1px rgba(0,0,0,.18),0 4px 10px rgba(0,0,0,.28)!important;
+}
+#character #v459AttrCard #attrs > .v4140-attr > button:not(:disabled){
+  border-color:#86c25e!important;
+  background:linear-gradient(180deg,#3e8f3d 0%,#226b29 58%,#174b20 100%)!important;
+  color:#baf477!important;
+  text-shadow:0 0 8px rgba(159,244,100,.30)!important;
+  box-shadow:inset 0 1px 0 rgba(219,255,194,.19),0 0 10px rgba(89,197,68,.15),0 4px 10px rgba(0,0,0,.30)!important;
+}
+#character #v459AttrCard #attrs > .v4140-attr > button:disabled{
+  opacity:.70!important;
+  filter:none!important;
+}
+
+/* Set bonus accordion, matching the approved footer treatment. */
+#character #v459PanelAttributes > #v459SetDetails{
+  margin:8px 0 0!important;
+  border:2px solid #654923!important;
+  border-radius:12px!important;
+  background:linear-gradient(180deg,#101a12,#08100a)!important;
+  box-shadow:inset 0 1px 0 rgba(222,181,103,.08),0 4px 12px rgba(0,0,0,.25)!important;
+  overflow:hidden!important;
+}
+#character #v459PanelAttributes > #v459SetDetails > summary{
+  position:relative!important;
+  min-height:60px!important;
+  padding:10px 42px 10px 52px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:center!important;
+  gap:3px!important;
+  list-style:none!important;
+  cursor:pointer!important;
+  color:#f0dfad!important;
+  font-size:10px!important;
+  line-height:1.15!important;
+  font-weight:1000!important;
+  background:linear-gradient(180deg,#132018,#0a130d)!important;
+}
+#character #v459PanelAttributes > #v459SetDetails > summary::-webkit-details-marker{display:none!important}
+#character #v459PanelAttributes > #v459SetDetails > summary::before{
+  content:'🧩'!important;
+  position:absolute!important;left:12px!important;top:50%!important;transform:translateY(-50%)!important;
+  width:30px!important;height:30px!important;display:grid!important;place-items:center!important;
+  border-radius:9px!important;background:#0a130d!important;font-size:20px!important;
+}
+#character #v459PanelAttributes > #v459SetDetails > summary::after{
+  content:'›'!important;
+  position:absolute!important;right:14px!important;top:50%!important;transform:translateY(-50%) rotate(0deg)!important;
+  color:#e8bd65!important;font-size:25px!important;line-height:1!important;
+  transition:transform .18s ease!important;
+}
+#character #v459PanelAttributes > #v459SetDetails[open] > summary::after{transform:translateY(-50%) rotate(90deg)!important}
+#character #v459PanelAttributes > #v459SetDetails > summary .v537-set-title{display:block!important}
+#character #v459PanelAttributes > #v459SetDetails > summary .v537-set-sub{
+  display:block!important;color:#8ea08f!important;font-size:6.5px!important;font-weight:700!important;line-height:1.15!important;
+}
+#character #v459PanelAttributes > #v459SetDetails > .card{margin:0!important;border-radius:0!important;border-left:0!important;border-right:0!important;border-bottom:0!important}
+
+@media(max-width:390px){
+  #character #v459AttrCard > .v459-panel-head.v537-attr-head{min-height:72px!important;padding-left:62px!important}
+  #character .v537-attr-head::before{left:10px!important;width:35px!important;height:39px!important;font-size:20px!important}
+  #character .v537-attr-title{font-size:22px!important}
+  #character .v537-attr-sub{font-size:5.6px!important;letter-spacing:.035em!important}
+  #character #v459AttrPoints{min-width:54px!important;padding:7px 8px!important;font-size:8.8px!important}
+  #character #v459AttrCard #attrs > .v4140-attr{grid-template-columns:52px minmax(0,1fr) 52px!important;gap:9px!important;min-height:98px!important;padding:10px!important}
+  #character #v459AttrCard #attrs > .v4140-attr.v4140-primary{min-height:103px!important}
+  #character #v459AttrCard .v4140-attr-icon{width:52px!important;height:52px!important;font-size:28px!important}
+  #character #v459AttrCard #attrs > .v4140-attr > button{width:50px!important;height:50px!important;font-size:26px!important}
+  #character #v459AttrCard .v4140-primary::before{right:68px!important;top:9px!important;font-size:5.5px!important}
+  #character #v459AttrCard .v4140-attr-name{font-size:12px!important}
+  #character #v459AttrCard .v4140-attr-value{font-size:25px!important}
+}
+</style>
+<script id="v537-attribute-reference-js">
+(function(){
+  'use strict';
+  function apply(){
+    const card=document.getElementById('v459AttrCard');
+    const panel=document.getElementById('v459PanelAttributes');
+    if(!card||!panel)return false;
+    const head=card.querySelector(':scope > .v459-panel-head');
+    if(head&&!head.classList.contains('v537-attr-head')){
+      const points=head.querySelector('#v459AttrPoints')||document.createElement('span');
+      points.id='v459AttrPoints';
+      head.textContent='';
+      head.classList.add('v537-attr-head');
+      const wrap=document.createElement('div');wrap.className='v537-attr-title-wrap';
+      wrap.innerHTML='<h2 class="v537-attr-title">ATTRIBUTE</h2><div class="v537-attr-sub">DEINE WERTE · STÄRKER WERDEN · MEHR MÖGLICHKEITEN</div>';
+      head.append(wrap,points);
+    }
+    const details=document.getElementById('v459SetDetails');
+    const sm=details?.querySelector(':scope > summary');
+    if(sm&&!sm.querySelector('.v537-set-title')){
+      sm.textContent='';
+      const title=document.createElement('span');title.className='v537-set-title';title.textContent='Set-Boni ansehen';
+      const sub=document.createElement('span');sub.className='v537-set-sub';sub.textContent='Aktive Boni durch deine Ausrüstung';
+      sm.append(title,sub);
+    }
+    card.dataset.attributeLayout='reference-v537';
+    return true;
+  }
+  window.v537ApplyAttributes=apply;
+  apply();
+  document.addEventListener('DOMContentLoaded',()=>requestAnimationFrame(apply),{once:true});
+  window.addEventListener('pageshow',()=>requestAnimationFrame(apply),{passive:true});
+  document.addEventListener('click',e=>{if(e.target?.closest?.('#v459CharacterTabs [data-tab="attributes"],#v514HeroTabs [data-tab="attributes"]'))requestAnimationFrame(apply)},true);
+  [120,500,1400].forEach(ms=>setTimeout(apply,ms));
+})();
+</script>
+<!-- ===== /V5.37 ATTRIBUTE REFERENCE REBUILD ===== -->
