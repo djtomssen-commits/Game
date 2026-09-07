@@ -87596,3 +87596,189 @@ html.v495-level-syncing #v420LevelUpOverlay{
 })();
 </script>
 <!-- ===== /V5.28 HELDENQUARTIER TITLE STABILITY FIX ===== -->
+
+<!-- ===== V5.29 HELDENQUARTIER HARD STABLE HEADER ===== -->
+<style id="v529-heldenquartier-hard-stable-header-css">
+/* The previous ornamental title used clip-path/composited layers. On Samsung/Chrome
+   those layers can intermittently fail to repaint while scrolling long pages.
+   Replace ONLY the title + kicker with a plain, non-composited DOM header. */
+#character.v514-reference-hero #v510HeroRoot > .v510-titlebar,
+#character.v514-reference-hero #v510HeroRoot > .v514-kicker{
+  display:none!important;
+  visibility:hidden!important;
+  opacity:0!important;
+  height:0!important;
+  min-height:0!important;
+  max-height:0!important;
+  margin:0!important;
+  padding:0!important;
+  border:0!important;
+  overflow:hidden!important;
+  pointer-events:none!important;
+}
+
+#character.v514-reference-hero #v510HeroRoot > .v529-hero-header{
+  display:block!important;
+  visibility:visible!important;
+  opacity:1!important;
+  position:relative!important;
+  z-index:100!important;
+  width:100%!important;
+  min-height:50px!important;
+  margin:0!important;
+  padding:5px 0 0!important;
+  box-sizing:border-box!important;
+  overflow:visible!important;
+  background:#061009!important;
+  transform:none!important;
+  -webkit-transform:none!important;
+  filter:none!important;
+  will-change:auto!important;
+  contain:none!important;
+  content-visibility:visible!important;
+  backface-visibility:visible!important;
+  -webkit-backface-visibility:visible!important;
+  isolation:auto!important;
+}
+
+#character.v514-reference-hero .v529-plaque{
+  display:grid!important;
+  grid-template-columns:34px minmax(0,1fr) 34px!important;
+  align-items:center!important;
+  width:min(60%,280px)!important;
+  min-width:205px!important;
+  height:31px!important;
+  margin:0 auto 3px!important;
+  border:1px solid #9d672f!important;
+  border-radius:4px!important;
+  background:linear-gradient(180deg,#503019 0%,#321b0e 58%,#1b0e07 100%)!important;
+  box-shadow:inset 0 0 0 1px rgba(255,220,147,.12),0 2px 5px rgba(0,0,0,.78)!important;
+  color:#f1d291!important;
+  font:900 13.4px/1 Georgia,serif!important;
+  letter-spacing:.018em!important;
+  text-align:center!important;
+  text-shadow:0 2px 0 #241207,0 0 8px rgba(211,155,69,.22)!important;
+  box-sizing:border-box!important;
+  transform:none!important;
+  -webkit-transform:none!important;
+  filter:none!important;
+  clip-path:none!important;
+}
+#character.v514-reference-hero .v529-plaque-arm{
+  display:block!important;
+  width:23px!important;
+  height:15px!important;
+  margin:auto!important;
+  border-top:1px solid #a46b31!important;
+  border-bottom:1px solid #6f421d!important;
+  background:linear-gradient(180deg,#6a421f,#2a160b)!important;
+  box-shadow:inset 0 0 0 1px rgba(232,175,91,.10)!important;
+}
+#character.v514-reference-hero .v529-plaque-arm.left{border-radius:8px 2px 2px 8px!important}
+#character.v514-reference-hero .v529-plaque-arm.right{border-radius:2px 8px 8px 2px!important}
+#character.v514-reference-hero .v529-plaque-text{
+  display:block!important;
+  white-space:nowrap!important;
+  overflow:visible!important;
+}
+
+#character.v514-reference-hero .v529-kicker{
+  display:grid!important;
+  grid-template-columns:24px minmax(0,1fr) 24px!important;
+  align-items:center!important;
+  height:18px!important;
+  margin:0!important;
+  padding:0 7px!important;
+  border-top:1px solid #513317!important;
+  border-bottom:1px solid #68431e!important;
+  background:linear-gradient(180deg,#10351d,#07170d)!important;
+  color:#f0efe0!important;
+  font-size:5.5px!important;
+  line-height:1!important;
+  font-weight:1000!important;
+  letter-spacing:.025em!important;
+  text-align:center!important;
+  box-sizing:border-box!important;
+  transform:none!important;
+  -webkit-transform:none!important;
+  filter:none!important;
+  clip-path:none!important;
+  will-change:auto!important;
+  contain:none!important;
+}
+#character.v514-reference-hero .v529-kicker .v529-torch{
+  display:block!important;
+  font-size:10px!important;
+  line-height:1!important;
+  color:#ffad32!important;
+  text-shadow:0 0 4px rgba(255,126,20,.72)!important;
+}
+#character.v514-reference-hero .v529-kicker-text{
+  display:block!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:clip!important;
+}
+
+@media(max-width:350px){
+  #character.v514-reference-hero .v529-plaque{
+    width:64%!important;
+    min-width:190px!important;
+    grid-template-columns:28px minmax(0,1fr) 28px!important;
+    font-size:12.5px!important;
+  }
+  #character.v514-reference-hero .v529-kicker{font-size:5px!important}
+}
+</style>
+<script id="v529-heldenquartier-hard-stable-header-js">
+(function(){
+  'use strict';
+  let observer=null;
+  function install(){
+    const character=document.getElementById('character');
+    const root=character?.querySelector('#v510HeroRoot');
+    if(!character||!root)return;
+    character.classList.add('v514-reference-hero');
+
+    let header=root.querySelector(':scope > .v529-hero-header');
+    if(!header){
+      header=document.createElement('div');
+      header.className='v529-hero-header';
+      header.innerHTML='\
+        <div class="v529-plaque">\
+          <span class="v529-plaque-arm left" aria-hidden="true"></span>\
+          <span class="v529-plaque-text">HELDENQUARTIER</span>\
+          <span class="v529-plaque-arm right" aria-hidden="true"></span>\
+        </div>\
+        <div class="v529-kicker">\
+          <span class="v529-torch" aria-hidden="true">●</span>\
+          <span class="v529-kicker-text">AUSRÜSTUNG · ATTRIBUTE · SKILLS · DEINE KAMPFKRAFT</span>\
+          <span class="v529-torch" aria-hidden="true">●</span>\
+        </div>';
+      root.insertBefore(header,root.firstChild);
+    }else if(root.firstElementChild!==header){
+      root.insertBefore(header,root.firstElementChild);
+    }
+
+    header.style.setProperty('display','block','important');
+    header.style.setProperty('visibility','visible','important');
+    header.style.setProperty('opacity','1','important');
+    root.setAttribute('data-hero-layout','reference-v529');
+
+    if(!observer){
+      observer=new MutationObserver(()=>{
+        const live=document.querySelector('#character #v510HeroRoot > .v529-hero-header');
+        if(!live) install();
+      });
+      observer.observe(root,{childList:true});
+    }
+  }
+  window.v529InstallStableHeroHeader=install;
+  install();
+  document.addEventListener('DOMContentLoaded',()=>requestAnimationFrame(install),{once:true});
+  window.addEventListener('pageshow',()=>requestAnimationFrame(install),{passive:true});
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden)requestAnimationFrame(install)});
+  [80,250,700,1600,3500,7000].forEach(ms=>setTimeout(install,ms));
+})();
+</script>
+<!-- ===== /V5.29 HELDENQUARTIER HARD STABLE HEADER ===== -->
