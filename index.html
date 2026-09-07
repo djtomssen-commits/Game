@@ -87100,3 +87100,157 @@ html.v495-level-syncing #v420LevelUpOverlay{
 })();
 </script>
 <!-- ===== /V5.23 HELDENQUARTIER CLEAN FRAME + BOOK ALIGNMENT ===== -->
+
+<!-- ===== V5.24 HELDENQUARTIER LEGACY-BANNER KILL + ORNAMENT FINISH ===== -->
+<style id="v524-heldenquartier-banner-kill-css">
+/* The old V4 location pill can be re-injected after the hero has already been rebuilt.
+   Do not limit this to direct children: hide every legacy character location/banner
+   anywhere inside the character screen. */
+#character .v038-location,
+#character .v052-scene-banner,
+#character .v052-character,
+#character .v459-page-kicker{
+  display:none!important;
+  visibility:hidden!important;
+  opacity:0!important;
+  width:0!important;
+  height:0!important;
+  min-width:0!important;
+  min-height:0!important;
+  max-width:0!important;
+  max-height:0!important;
+  margin:0!important;
+  padding:0!important;
+  border:0!important;
+  overflow:hidden!important;
+  pointer-events:none!important;
+}
+
+/* Keep the approved plaque clean and centered once the legacy pill is gone. */
+#character.v514-reference-hero .v510-titlebar{
+  z-index:40!important;
+  width:min(56%,268px)!important;
+  height:31px!important;
+  margin:6px auto 3px!important;
+  padding:0 25px!important;
+  font-size:13.1px!important;
+  box-shadow:
+    inset 0 0 0 1px rgba(255,225,157,.12),
+    inset 0 -8px 13px rgba(0,0,0,.20),
+    0 3px 7px rgba(0,0,0,.82)!important;
+}
+#character.v514-reference-hero .v510-titlebar::before,
+#character.v514-reference-hero .v510-titlebar::after{
+  width:36px!important;
+  height:25px!important;
+  top:3px!important;
+}
+#character.v514-reference-hero .v510-titlebar::before{left:-29px!important}
+#character.v514-reference-hero .v510-titlebar::after{right:-29px!important}
+
+/* Add the small metal/wood side ornaments around the level plaque from the reference.
+   These are purely decorative and do not touch level data or click handling. */
+#character.v514-reference-hero #v510HeroRoot .level-shield{
+  position:relative!important;
+  isolation:isolate!important;
+  overflow:visible!important;
+  min-width:98px!important;
+  padding-left:13px!important;
+  padding-right:13px!important;
+}
+#character.v514-reference-hero #v510HeroRoot .level-shield::before,
+#character.v514-reference-hero #v510HeroRoot .level-shield::after{
+  content:''!important;
+  position:absolute!important;
+  z-index:-1!important;
+  top:50%!important;
+  width:27px!important;
+  height:12px!important;
+  transform:translateY(-50%)!important;
+  background:
+    linear-gradient(180deg,#a96c2f 0 13%,#3b210f 14% 38%,#7b4b21 39% 62%,#29160b 63% 86%,#a96c2f 87% 100%)!important;
+  clip-path:polygon(0 50%,22% 0,100% 17%,78% 50%,100% 83%,22% 100%)!important;
+  filter:drop-shadow(0 2px 2px rgba(0,0,0,.75))!important;
+  opacity:.92!important;
+}
+#character.v514-reference-hero #v510HeroRoot .level-shield::before{left:-22px!important}
+#character.v514-reference-hero #v510HeroRoot .level-shield::after{right:-22px!important;transform:translateY(-50%) scaleX(-1)!important}
+
+/* Small warm torch-glow at the outer ends of the subtitle strip; unlike the old
+   big rails this stays subtle and matches the supplied reference more closely. */
+#character.v514-reference-hero .v514-kicker{
+  position:relative!important;
+  overflow:visible!important;
+}
+#character.v514-reference-hero .v514-kicker::before,
+#character.v514-reference-hero .v514-kicker::after{
+  content:''!important;
+  position:absolute!important;
+  z-index:7!important;
+  top:50%!important;
+  width:8px!important;
+  height:13px!important;
+  transform:translateY(-55%)!important;
+  border-radius:65% 35% 58% 42% / 72% 52% 48% 28%!important;
+  background:radial-gradient(circle at 50% 68%,#fff2a0 0 16%,#ffab27 17% 38%,#ee5c0b 39% 66%,rgba(162,39,3,.15) 67% 100%)!important;
+  box-shadow:0 0 5px rgba(255,121,20,.75),0 0 11px rgba(255,91,8,.34)!important;
+  pointer-events:none!important;
+}
+#character.v514-reference-hero .v514-kicker::before{left:10px!important}
+#character.v514-reference-hero .v514-kicker::after{right:10px!important;transform:translateY(-55%) scaleX(-1)!important}
+
+/* Slightly quieter book frame now that its text alignment is correct. */
+#character.v514-reference-hero #v106BookBtn{
+  border-color:#8f5b2b!important;
+  background:linear-gradient(180deg,#5a3218 0%,#351d0e 60%,#211107 100%)!important;
+}
+</style>
+<script id="v524-heldenquartier-banner-kill-js">
+(function(){
+  'use strict';
+  let observer=null;
+  function hideLegacy(){
+    const c=document.getElementById('character');
+    if(!c)return;
+    c.querySelectorAll('.v038-location,.v052-scene-banner,.v052-character,.v459-page-kicker').forEach(el=>{
+      el.style.setProperty('display','none','important');
+      el.style.setProperty('visibility','hidden','important');
+      el.style.setProperty('opacity','0','important');
+      el.style.setProperty('width','0','important');
+      el.style.setProperty('height','0','important');
+      el.style.setProperty('min-width','0','important');
+      el.style.setProperty('min-height','0','important');
+      el.style.setProperty('max-width','0','important');
+      el.style.setProperty('max-height','0','important');
+      el.style.setProperty('margin','0','important');
+      el.style.setProperty('padding','0','important');
+      el.style.setProperty('border','0','important');
+      el.style.setProperty('overflow','hidden','important');
+      el.setAttribute('aria-hidden','true');
+    });
+    const root=c.querySelector('#v510HeroRoot');
+    if(root)root.setAttribute('data-hero-layout','reference-v524');
+  }
+  function installObserver(){
+    const c=document.getElementById('character');
+    if(!c||observer)return;
+    observer=new MutationObserver(()=>hideLegacy());
+    observer.observe(c,{childList:true,subtree:true});
+  }
+  function apply(){
+    const c=document.getElementById('character');if(!c)return;
+    c.classList.add('v514-reference-hero','v522-true-reference','v523-clean-reference','v524-reference-finish');
+    hideLegacy();
+    try{window.v523ApplyHero?.()}catch(e){}
+    hideLegacy();
+    installObserver();
+  }
+  window.v524ApplyHero=apply;
+  apply();
+  document.addEventListener('DOMContentLoaded',()=>requestAnimationFrame(apply),{once:true});
+  window.addEventListener('pageshow',()=>requestAnimationFrame(apply),{passive:true});
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden)requestAnimationFrame(apply)});
+  [50,130,280,600,1200,2500,5000,9000].forEach(ms=>setTimeout(apply,ms));
+})();
+</script>
+<!-- ===== /V5.24 HELDENQUARTIER LEGACY-BANNER KILL + ORNAMENT FINISH ===== -->
