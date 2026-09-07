@@ -84184,3 +84184,289 @@ html.v495-level-syncing #v420LevelUpOverlay{
   document.addEventListener('visibilitychange',()=>{if(!document.hidden)apply()});
 })();
 </script>
+
+<!-- ===== V5.08 HELDENQUARTIER TITLE POSITION FIX ===== -->
+<style id="v508-hero-title-position-fix">
+/* Keep the title fully inside the top header strip, never overlapping equipment slots. */
+#character .v459-hero-title,
+#character .v459-hero-titlebar,
+#character .v459-hero-head,
+#character .v503-hero-title,
+#character .v504-hero-title{
+  position:relative!important;
+  z-index:20!important;
+}
+
+/* Target the visible HELDENQUARTIER heading created by the redesign. */
+#character .v459-hero-title,
+#character .v503-hero-title,
+#character .v504-hero-title,
+#character .v506-hero-title,
+#character .v507-hero-title{
+  top:0!important;
+  margin:0 auto!important;
+  padding:12px 16px 10px!important;
+  min-height:52px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  line-height:1!important;
+  pointer-events:none!important;
+}
+
+/* Add enough top breathing room so top-row equipment starts below the title strip. */
+#character .v459-hero,
+#character .v503-hero,
+#character .v504-hero,
+#character .v506-hero,
+#character .v507-hero{
+  padding-top:66px!important;
+}
+
+/* Prevent top equipment slots from intruding into the title area. */
+#character [data-slot="head"],
+#character [data-slot="body"],
+#character #equipHead,
+#character #equipBody,
+#character .slot-head,
+#character .slot-body{
+  margin-top:0!important;
+}
+</style>
+
+<!-- ===== V5.09 CHARACTER REFERENCE REBUILD ===== -->
+<style id="v509-character-reference-rebuild">
+/* Final visual owner for character hub. Existing game data, buttons and handlers stay intact. */
+#character.v504-character-final{
+  --v509-gold:#c68b3e;--v509-gold2:#f0d28b;--v509-green:#8ce865;
+  padding:7px 6px 18px!important;
+  background:
+    radial-gradient(circle at 50% 10%,rgba(39,93,42,.20),transparent 35%),
+    #040806!important;
+}
+#character.v504-character-final .hero-card{
+  border:3px solid #704b26!important;border-radius:5px!important;
+  background:#08110b!important;
+  box-shadow:inset 0 0 0 1px #c28b4266,0 10px 28px #000d!important;
+}
+#character.v504-character-final .hero-card:before{
+  position:relative!important;z-index:30!important;
+  padding:10px 42px 9px!important;
+  border:0!important;border-bottom:2px solid #9c6b32!important;
+  border-radius:0!important;
+  background:
+    linear-gradient(90deg,transparent 0 3%,#7b4b22 3% 4%,transparent 4% 96%,#7b4b22 96% 97%,transparent 97%),
+    linear-gradient(180deg,#2b1b0e,#160d08)!important;
+  color:#f1d08d!important;font:900 18px/1 Georgia,serif!important;letter-spacing:.055em!important;
+  text-shadow:0 2px 0 #291507,0 0 9px #d59a3e55!important;
+}
+#character.v504-character-final .hero-card:after{
+  content:'❧  🌿  ❧';position:absolute!important;z-index:31!important;
+  left:50%!important;top:38px!important;transform:translateX(-50%)!important;
+  color:#6fb85c!important;font-size:8px!important;letter-spacing:5px!important;pointer-events:none!important;
+}
+#character.v504-character-final .character-stage{
+  position:relative!important;padding:8px 7px 7px!important;
+  background:
+    linear-gradient(90deg,rgba(160,106,45,.18) 1px,transparent 1px),
+    radial-gradient(circle at 50% 25%,rgba(89,185,63,.34),transparent 33%),
+    linear-gradient(180deg,#16351f 0%,#0a1a10 58%,#071009 100%)!important;
+  background-size:54px 100%,auto,auto!important;
+}
+#character.v504-character-final .character-stage:before,
+#character.v504-character-final .character-stage:after{
+  content:'🌿';position:absolute;z-index:1;top:9px;font-size:55px;opacity:.13;filter:saturate(.7);
+}
+#character.v504-character-final .character-stage:before{left:68px;transform:rotate(-18deg)}
+#character.v504-character-final .character-stage:after{right:68px;transform:scaleX(-1) rotate(-18deg)}
+#character.v504-character-final .equipment-grid{
+  position:relative!important;z-index:2!important;
+  grid-template-columns:74px minmax(0,1fr) 74px!important;gap:5px!important;
+}
+#character.v504-character-final .equip-col{padding-top:6px!important;gap:8px!important}
+#character.v504-character-final .slot{
+  height:88px!important;min-height:88px!important;padding:4px 2px!important;border:2px solid #526b45!important;
+  border-radius:7px!important;background:linear-gradient(180deg,#101a12,#050a07)!important;
+  box-shadow:inset 0 0 18px #000b,0 3px 7px #000a!important;
+}
+#character.v504-character-final .slot:before{
+  content:'';position:absolute;inset:3px;border:1px solid rgba(222,181,99,.14);border-radius:4px;pointer-events:none;
+}
+#character.v504-character-final .slot-icon img,
+#character.v504-character-final .slot-icon svg,
+#character.v504-character-final .slot-icon .v41-badge-art{width:52px!important;height:52px!important}
+#character.v504-character-final .slot-label{font-size:7px!important;color:#c6c0a8!important}
+#character.v504-character-final .slot-name{display:none!important}
+
+/* Large central hero like the approved reference. */
+#character.v504-character-final .center-hero{position:relative!important;min-width:0!important}
+#character.v504-character-final .avatar-scene{
+  height:242px!important;min-height:242px!important;width:calc(100% + 26px)!important;margin-left:-13px!important;
+  overflow:hidden!important;border-radius:3px!important;
+}
+#character.v504-character-final .avatar-scene:before{
+  width:260px!important;height:250px!important;bottom:-30px!important;
+  background:radial-gradient(circle,rgba(135,229,88,.30),rgba(50,102,49,.15) 48%,transparent 72%)!important;
+}
+#character.v504-character-final .class-avatar-big img,
+#character.v504-character-final .v080-class-avatar-img{
+  width:225px!important;height:248px!important;max-width:none!important;
+  object-fit:cover!important;object-position:center 20%!important;
+  border:0!important;border-radius:2px!important;
+  box-shadow:none!important;filter:drop-shadow(0 10px 9px #000b)!important;
+}
+#character.v504-character-final .avatar-prop,
+#character.v504-character-final .avatar-leaf{display:none!important}
+#character.v504-character-final .center-name{
+  margin-top:5px!important;font-size:23px!important;font-weight:1000!important;color:#fff7e7!important;
+  text-shadow:0 2px 2px #000!important;
+}
+#character.v504-character-final .center-class{
+  margin-top:3px!important;font-size:8px!important;line-height:1.25!important;letter-spacing:.08em!important;
+  color:#83df61!important;text-transform:none!important;
+}
+#character.v504-character-final .level-shield{
+  position:relative!important;margin:7px auto 0!important;padding:6px 17px 5px!important;border:2px solid #b57a36!important;
+  border-radius:5px!important;background:linear-gradient(180deg,#4c2c13,#21130a)!important;
+  box-shadow:inset 0 0 0 1px #e3b96644,0 4px 8px #0009!important;
+}
+#character.v504-character-final .level-shield:before,
+#character.v504-character-final .level-shield:after{content:'◆';position:absolute;top:50%;transform:translateY(-50%);color:#c7974c;font-size:7px}
+#character.v504-character-final .level-shield:before{left:-11px}
+#character.v504-character-final .level-shield:after{right:-11px}
+#character.v504-character-final .level-shield b{font-size:22px!important;color:#ffe4a2!important}
+
+/* XP directly below level as in reference. */
+#character.v504-character-final .center-xp{
+  order:10!important;width:min(225px,100%)!important;margin:7px auto 0!important;padding:4px 7px 5px!important;
+  border:1px solid #71532d!important;border-radius:5px!important;background:#07100a!important;
+}
+#character.v504-character-final .center-xp-row{font-size:7px!important;color:#d4d4bd!important;margin-bottom:3px!important}
+#character.v504-character-final .center-xp-track{height:9px!important;border:1px solid #7b633a!important;background:#020503!important}
+#character.v504-character-final #v106BookBtn{
+  order:11!important;margin:7px auto 1px!important;transform:none!important;
+  width:min(220px,100%)!important;min-height:48px!important;border:2px solid #8f602d!important;border-radius:4px!important;
+  background:linear-gradient(180deg,#4b2d14,#23150b)!important;box-shadow:inset 0 0 0 1px #c9944855,0 4px 8px #0009!important;
+}
+#character.v504-character-final .center-hero>.char-sub{display:none!important}
+
+/* Reference keeps the center clean: secondary status moves out of the portrait composition. */
+#character.v504-character-final .center-hero .v459-grow-buff,
+#character.v504-character-final .center-hero .v459-grow-card,
+#character.v504-character-final .center-hero [class*="grow-buff"],
+#character.v504-character-final .center-hero [class*="pvp-bud"],
+#character.v504-character-final .center-hero [class*="class-passive"]{display:none!important}
+
+/* Bottom stat plaques. */
+#character.v504-character-final .v459-hero-bottom{
+  padding:8px 7px 7px!important;border-top:3px double #9b6b34!important;
+  background:linear-gradient(180deg,#0c160e,#050a07)!important;
+}
+#character.v504-character-final .v459-hero-bottom .combat-row{gap:7px!important}
+#character.v504-character-final .v459-hero-bottom .combat-box{
+  min-height:62px!important;border:1px solid #6d5937!important;border-radius:5px!important;
+  background:linear-gradient(180deg,#152018,#080d09)!important;box-shadow:inset 0 0 12px #0008!important;
+}
+#character.v504-character-final .v459-hero-bottom .combat-box span{font-size:8px!important;color:#d8d1b8!important}
+#character.v504-character-final .v459-hero-bottom .combat-box b{font-size:25px!important}
+#character.v504-character-final #v459SetSummary{
+  min-height:34px!important;border:1px solid #5c5637!important;border-radius:4px!important;
+  background:#08110b!important;color:#d8d2b8!important;
+}
+
+/* Four reference-style bottom tabs. */
+#character.v504-character-final #v459CharacterTabs{
+  margin:8px 0 9px!important;padding:4px!important;gap:4px!important;border:2px solid #654725!important;border-radius:5px!important;
+  background:linear-gradient(180deg,#131a12,#060a07)!important;
+}
+#character.v504-character-final #v459CharacterTabs button{
+  min-height:59px!important;border:1px solid #334532!important;border-radius:4px!important;
+  background:linear-gradient(180deg,#142019,#090e0b)!important;
+}
+#character.v504-character-final #v459CharacterTabs button.active{
+  border-color:#c5a451!important;background:linear-gradient(180deg,#365127,#172218)!important;
+  box-shadow:inset 0 0 18px #8fd95b22,0 0 8px #d5bd5144!important;
+}
+#character.v504-character-final #v459CharacterTabs button span{font-size:23px!important}
+#character.v504-character-final #v459CharacterTabs button em{font-size:7.5px!important;color:#eee8ce!important}
+
+/* Panels receive the same ornate, compact reference treatment. */
+#character.v504-character-final #v459PanelInventory .card,
+#character.v504-character-final #v459AttrCard,
+#character.v504-character-final #v459PanelSkills>.card,
+#character.v504-character-final #v459PanelMaterials>.card,
+#character.v504-character-final #inventory{
+  border:2px solid #624724!important;border-radius:5px!important;
+  background:linear-gradient(180deg,#101a12,#060b08)!important;
+  box-shadow:inset 0 0 0 1px #c18c3d22,0 8px 18px #0009!important;
+}
+#character.v504-character-final #inventory .inventory-grid{gap:6px!important}
+#character.v504-character-final #inventory .inv-item{
+  min-height:174px!important;border-radius:5px!important;background:linear-gradient(180deg,#101813,#050907)!important;
+}
+#character.v504-character-final #attrs>.v4140-attr{
+  min-height:77px!important;border-radius:5px!important;border-width:1px!important;
+  background:linear-gradient(180deg,#122019,#07110b)!important;
+}
+#character.v504-character-final #attrs>.v4140-attr.v4140-primary{
+  background:linear-gradient(180deg,#2d1b0e,#130c07)!important;border-color:#a56b30!important;
+}
+#character.v504-character-final #attrs>.v4140-attr>button{
+  border-radius:5px!important;background:linear-gradient(180deg,#7bdd59,#45a936)!important;
+  box-shadow:inset 0 0 8px #d9ffb855!important;
+}
+
+/* Talent cards become tighter and connected visually. */
+#character.v504-character-final #skillTree,
+#character.v504-character-final .skill-tree{position:relative!important}
+#character.v504-character-final #skillTree:before,
+#character.v504-character-final .skill-tree:before{
+  content:'';position:absolute;left:50%;top:40px;bottom:35px;width:3px;transform:translateX(-50%);
+  background:linear-gradient(#82df5d,#3c7136,#82df5d);box-shadow:0 0 8px #78e65888;opacity:.8;pointer-events:none;
+}
+#character.v504-character-final .skill-node,
+#character.v504-character-final [class*="talent-card"]{
+  position:relative!important;z-index:2!important;border-radius:5px!important;
+  background:linear-gradient(180deg,#101a12,#060b08)!important;
+}
+
+/* Materials: compact horizontal RPG cards instead of oversized empty tiles. */
+#character.v504-character-final #v459PanelMaterials .v459-material-grid,
+#character.v504-character-final #v459PanelMaterials [class*="material-grid"]{
+  grid-template-columns:1fr!important;gap:7px!important;
+}
+#character.v504-character-final #v459PanelMaterials [class*="material-card"]{
+  min-height:92px!important;border-radius:5px!important;
+}
+
+@media(max-width:390px){
+ #character.v504-character-final .equipment-grid{grid-template-columns:69px minmax(0,1fr) 69px!important}
+ #character.v504-character-final .slot{height:83px!important;min-height:83px!important}
+ #character.v504-character-final .slot-icon img,#character.v504-character-final .slot-icon svg,#character.v504-character-final .slot-icon .v41-badge-art{width:48px!important;height:48px!important}
+ #character.v504-character-final .avatar-scene{height:225px!important;min-height:225px!important}
+ #character.v504-character-final .class-avatar-big img,#character.v504-character-final .v080-class-avatar-img{width:208px!important;height:232px!important}
+}
+</style>
+<script id="v509-character-reference-rebuild-js">
+(function(){
+  'use strict';
+  function apply(){
+    const c=document.getElementById('character'); if(!c)return;
+    c.classList.add('v504-character-final','v509-character-reference');
+    /* Match reference ordering: Level -> XP -> Illegales Buch. */
+    const center=c.querySelector('.center-hero');
+    const xp=center?.querySelector('.center-xp');
+    const book=center?.querySelector('#v106BookBtn');
+    if(center&&xp&&book){
+      try{ center.insertBefore(xp,book); }catch(e){}
+    }
+  }
+  window.v509ApplyCharacter=apply;
+  apply();
+  document.addEventListener('DOMContentLoaded',apply,{once:true});
+  window.addEventListener('pageshow',apply,{passive:true});
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden)apply()});
+  setTimeout(apply,250);setTimeout(apply,900);
+})();
+</script>
+<!-- ===== /V5.09 CHARACTER REFERENCE REBUILD ===== -->
