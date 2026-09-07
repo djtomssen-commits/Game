@@ -48067,6 +48067,192 @@ document.addEventListener('click',()=>{setTimeout(pulse,40);setTimeout(pulse,140
 <!-- ===== V5.07 CHARACTER FINAL POLISH ===== -->
 
 <!-- ===== /V5.07 CHARACTER FINAL POLISH ===== -->
+
+
+<!-- ===== V5.15 HELDENQUARTIER MOBILE REFERENCE POLISH ===== -->
+<style id="v515-heldenquartier-mobile-polish-css">
+/* Remove the old location pill/banner above the actual Heldenquartier. */
+#character.v514-reference-hero > .v038-location,
+#character.v514-reference-hero > .v052-scene-banner,
+#character.v514-reference-hero > .v052-character,
+#character.v514-reference-hero > .v459-page-kicker{
+  display:none!important;
+}
+
+/* Old V4.02 stat pseudo-icons leak into the moved cards on real devices. */
+#character.v514-reference-hero .v510-stats .combat-box{
+  position:relative!important;
+  display:grid!important;
+  grid-template-columns:38px minmax(0,1fr)!important;
+  grid-template-rows:auto auto!important;
+  column-gap:8px!important;
+  align-items:center!important;
+  min-height:56px!important;
+  padding:7px 8px!important;
+  overflow:hidden!important;
+}
+#character.v514-reference-hero .v510-stats .combat-box::before{
+  position:relative!important;
+  left:auto!important;top:auto!important;bottom:auto!important;
+  transform:none!important;
+  grid-column:1!important;grid-row:1/3!important;
+  width:34px!important;height:34px!important;
+  display:grid!important;place-items:center!important;
+  border:1px solid #4a5c43!important;
+  border-radius:8px!important;
+  background:#0a110c!important;
+  font-size:19px!important;
+  line-height:1!important;
+  opacity:1!important;
+}
+#character.v514-reference-hero .v510-stats .combat-box.hp::before,
+#character.v514-reference-hero .v510-stats .combat-box:first-child::before{content:'❤️'!important}
+#character.v514-reference-hero .v510-stats .combat-box.power::before,
+#character.v514-reference-hero .v510-stats .combat-box:nth-child(2)::before{content:'⚔️'!important}
+#character.v514-reference-hero .v510-stats .combat-box span{
+  grid-column:2!important;grid-row:1!important;
+  margin:0!important;padding:0!important;
+  display:block!important;
+  color:#e8e2d4!important;
+  font-size:7.2px!important;line-height:1.05!important;
+  letter-spacing:.03em!important;text-transform:none!important;
+  white-space:nowrap!important;
+}
+#character.v514-reference-hero .v510-stats .combat-box b{
+  grid-column:2!important;grid-row:2!important;
+  margin:1px 0 0!important;padding:0!important;
+  display:block!important;
+  font-size:20px!important;line-height:1!important;
+  color:#f6f2e7!important;
+}
+
+/* The reference is much more compact on phone: hero first, less empty vertical space. */
+@media(max-width:430px){
+  #character.v514-reference-hero{padding:3px 4px 10px!important}
+  #character.v514-reference-hero > .hero-card{margin-bottom:6px!important}
+  #character.v514-reference-hero .v510-titlebar{height:37px!important;font-size:16px!important;padding:0 34px!important}
+  #character.v514-reference-hero .v510-titlebar::before,
+  #character.v514-reference-hero .v510-titlebar::after{top:10px!important;font-size:13px!important}
+  #character.v514-reference-hero .v514-kicker{height:19px!important;font-size:5.8px!important;letter-spacing:.04em!important}
+  #character.v514-reference-hero .v510-stage{padding:6px 9px 6px!important}
+  #character.v514-reference-hero .v510-layout{grid-template-columns:61px minmax(0,1fr) 61px!important;gap:4px!important}
+  #character.v514-reference-hero .v510-col{gap:5px!important;padding-top:3px!important}
+  #character.v514-reference-hero #v510HeroRoot .slot{
+    height:67px!important;min-height:67px!important;
+    padding:4px 2px 13px!important;border-radius:7px!important;
+  }
+  #character.v514-reference-hero #v510HeroRoot .slot-icon,
+  #character.v514-reference-hero #v510HeroRoot .slot-icon img,
+  #character.v514-reference-hero #v510HeroRoot .slot-icon svg,
+  #character.v514-reference-hero #v510HeroRoot .slot-icon .v41-badge-art{
+    width:44px!important;height:44px!important;max-width:44px!important;max-height:44px!important;min-height:44px!important;
+  }
+  #character.v514-reference-hero .v514-slot-level{bottom:3px!important;font-size:6.8px!important}
+
+  #character.v514-reference-hero .v510-portrait{height:164px!important;margin:0 -17px!important}
+  #character.v514-reference-hero .v510-portrait::before{width:205px!important;height:164px!important;bottom:-2px!important}
+  #character.v514-reference-hero #v510HeroRoot .avatar-scene,
+  #character.v514-reference-hero #v510HeroRoot .class-avatar-big,
+  #character.v514-reference-hero #v510HeroRoot .class-avatar-big img,
+  #character.v514-reference-hero #v510HeroRoot .v080-class-avatar-img,
+  #character.v514-reference-hero #v510HeroRoot .v41-portrait{
+    width:202px!important;height:166px!important;min-height:166px!important;max-width:none!important;
+  }
+  #character.v514-reference-hero #v510HeroRoot .class-avatar-big img,
+  #character.v514-reference-hero #v510HeroRoot .v080-class-avatar-img{
+    object-fit:cover!important;object-position:center 25%!important;
+    -webkit-mask-image:linear-gradient(to right,transparent 0,#000 7%,#000 93%,transparent 100%)!important;
+    mask-image:linear-gradient(to right,transparent 0,#000 7%,#000 93%,transparent 100%)!important;
+  }
+  #character.v514-reference-hero #v510HeroRoot .center-name{
+    width:140%!important;margin:-13px -20% 0!important;font-size:18px!important;line-height:1!important;
+  }
+  #character.v514-reference-hero #v510HeroRoot .center-name::before{font-size:10px!important;margin-right:3px!important}
+  #character.v514-reference-hero #v510HeroRoot .center-class{width:145%!important;margin:3px -22.5% 0!important;font-size:6.8px!important;line-height:1.1!important}
+  #character.v514-reference-hero #v510HeroRoot .level-shield{
+    min-width:103px!important;margin:6px auto 0!important;padding:4px 10px!important;font-size:6.6px!important;
+  }
+  #character.v514-reference-hero #v510HeroRoot .level-shield b{font-size:18px!important}
+  #character.v514-reference-hero #v510HeroRoot .center-xp{width:min(157px,100%)!important;margin:4px auto 0!important;padding:2px 5px 4px!important}
+  #character.v514-reference-hero #v510HeroRoot .center-xp-row{margin-bottom:2px!important;font-size:6.2px!important}
+  #character.v514-reference-hero #v510HeroRoot .center-xp-track{height:7px!important}
+
+  #character.v514-reference-hero .v514-book-host{padding:5px 9px 6px!important}
+  #character.v514-reference-hero #v106BookBtn{min-height:45px!important;padding:6px 30px 6px 45px!important;font-size:9px!important}
+  #character.v514-reference-hero #v106BookBtn .book{left:12px!important;font-size:21px!important}
+  #character.v514-reference-hero #v106BookBtn .v106-book-info{margin-top:2px!important;font-size:6.2px!important}
+  #character.v514-reference-hero #v106BookBtn::after{right:10px!important;font-size:24px!important}
+
+  #character.v514-reference-hero .v510-footer{padding:5px 8px 6px!important}
+  #character.v514-reference-hero .v510-stats{gap:5px!important}
+  #character.v514-reference-hero .v510-stats .combat-box{min-height:50px!important;grid-template-columns:32px minmax(0,1fr)!important;column-gap:6px!important;padding:6px 7px!important;border-radius:7px!important}
+  #character.v514-reference-hero .v510-stats .combat-box::before{width:29px!important;height:29px!important;font-size:16px!important;border-radius:7px!important}
+  #character.v514-reference-hero .v510-stats .combat-box span{font-size:6.2px!important}
+  #character.v514-reference-hero .v510-stats .combat-box b{font-size:18px!important}
+
+  #character.v514-reference-hero #v459SetSummary{min-height:30px!important;margin-top:5px!important;gap:5px!important;font-size:6.8px!important}
+  #character.v514-reference-hero #v459SetSummary .v514-set-cell,
+  #character.v514-reference-hero #v459SetSummary .v514-talent-cell{min-height:30px!important;padding:5px 4px!important;border-radius:7px!important}
+  #character.v514-reference-hero #v459SetSummary b{font-size:9px!important}
+
+  #character.v514-reference-hero .v514-passive-row{margin-top:5px!important;padding:5px 6px!important;gap:5px!important;border-radius:7px!important}
+  #character.v514-reference-hero #v4156ClassPassive{font-size:6.3px!important;line-height:1.2!important}
+  #character.v514-reference-hero #v4156ClassPassive b{font-size:6.9px!important;margin-bottom:1px!important}
+  #character.v514-reference-hero .v514-set-btn{min-height:29px!important;padding:4px 8px!important;font-size:6px!important}
+
+  #character.v514-reference-hero .v514-nav-host{margin-top:5px!important;padding-top:5px!important}
+  #character.v514-reference-hero #v514HeroTabs{gap:4px!important}
+  #character.v514-reference-hero #v514HeroTabs button{min-height:43px!important;padding:4px 1px!important;border-radius:7px!important}
+  #character.v514-reference-hero #v514HeroTabs button span{font-size:17px!important;margin-bottom:1px!important}
+  #character.v514-reference-hero #v514HeroTabs button em{font-size:6.2px!important}
+}
+
+@media(max-width:350px){
+  #character.v514-reference-hero .v510-layout{grid-template-columns:57px minmax(0,1fr) 57px!important;gap:3px!important}
+  #character.v514-reference-hero #v510HeroRoot .slot{height:63px!important;min-height:63px!important}
+  #character.v514-reference-hero #v510HeroRoot .slot-icon,
+  #character.v514-reference-hero #v510HeroRoot .slot-icon img,
+  #character.v514-reference-hero #v510HeroRoot .slot-icon svg,
+  #character.v514-reference-hero #v510HeroRoot .slot-icon .v41-badge-art{width:41px!important;height:41px!important;max-width:41px!important;max-height:41px!important;min-height:41px!important}
+  #character.v514-reference-hero .v510-portrait{height:153px!important}
+  #character.v514-reference-hero #v510HeroRoot .avatar-scene,
+  #character.v514-reference-hero #v510HeroRoot .class-avatar-big,
+  #character.v514-reference-hero #v510HeroRoot .class-avatar-big img,
+  #character.v514-reference-hero #v510HeroRoot .v080-class-avatar-img,
+  #character.v514-reference-hero #v510HeroRoot .v41-portrait{width:190px!important;height:155px!important;min-height:155px!important}
+  #character.v514-reference-hero #v510HeroRoot .center-name{font-size:17px!important}
+}
+</style>
+<script id="v515-heldenquartier-mobile-polish-js">
+(function(){
+  'use strict';
+  function polish(){
+    const c=document.getElementById('character');
+    if(!c)return;
+    /* Old location label is created by an early renderer; hide it every time without removing game logic. */
+    c.querySelectorAll(':scope > .v038-location,:scope > .v052-scene-banner,:scope > .v052-character,:scope > .v459-page-kicker').forEach(el=>el.style.setProperty('display','none','important'));
+    const stats=c.querySelectorAll('#v510HeroRoot .v510-stats .combat-box');
+    stats.forEach((box,i)=>{
+      box.classList.toggle('hp',i===0);box.classList.toggle('power',i===1);
+      const label=box.querySelector('span');
+      if(label)label.textContent=i===0?'Lebenspunkte':'Kampfkraft';
+    });
+  }
+  window.v515PolishHero=polish;
+  polish();
+  document.addEventListener('DOMContentLoaded',()=>requestAnimationFrame(polish),{once:true});
+  window.addEventListener('pageshow',()=>requestAnimationFrame(polish),{passive:true});
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden)requestAnimationFrame(polish)});
+  [80,220,600,1200,2400].forEach(ms=>setTimeout(polish,ms));
+  try{
+    if(typeof render==='function'&&!window.__v515RenderWrapped){
+      const base=render;render=function(){const r=base.apply(this,arguments);requestAnimationFrame(polish);return r};
+      try{window.render=render}catch(e){}window.__v515RenderWrapped=true;
+    }
+  }catch(e){}
+})();
+</script>
+<!-- ===== /V5.15 HELDENQUARTIER MOBILE REFERENCE POLISH ===== -->
 </body>
 </html>
 <style id="v268-inventory-multisell-css">
