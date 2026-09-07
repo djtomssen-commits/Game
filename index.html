@@ -90110,3 +90110,134 @@ html.v495-level-syncing #v420LevelUpOverlay{
 }
 </style>
 <!-- ===== /V5.44 TALENTBAUM CLEANUP ===== -->
+
+<!-- ===== V5.45 TALENTBAUM FINAL READABILITY POLISH ===== -->
+<style id="v545-talents-final-polish-css">
+/* Final visual-only pass. Structure, tabs and talent mechanics stay untouched. */
+
+/* Less dominant central tree spine. */
+#character .v543-tree-track::before,
+#character .v543-spine::before{
+  width:2px!important;
+  background:linear-gradient(180deg,#79df59 0%,#4a9739 52%,#29452a 100%)!important;
+  box-shadow:0 0 5px rgba(104,215,75,.16)!important;
+}
+#character .v543-spine::after{
+  width:8px!important;
+  height:8px!important;
+  background:#91e86b!important;
+  box-shadow:0 0 0 2px rgba(30,64,27,.95),0 0 5px rgba(139,225,96,.24)!important;
+}
+#character .v543-node::before{
+  height:2px!important;
+  box-shadow:0 0 4px color-mix(in srgb,var(--node-accent) 40%,transparent)!important;
+}
+
+/* Remove the technical TALENTKNOTEN/SCHLÜSSELTALENT labels – name/rank are enough. */
+#character .v543-node-type{
+  display:none!important;
+}
+
+/* Denser cards with better text fit on a narrow phone screen. */
+#character .v543-node{
+  min-height:118px!important;
+  padding:7px 7px 7px 39px!important;
+}
+#character .v543-node-icon{
+  left:7px!important;
+  top:7px!important;
+  width:26px!important;
+  height:26px!important;
+  font-size:17px!important;
+}
+#character .v543-node-head{
+  margin-bottom:4px!important;
+  gap:4px!important;
+}
+#character .v543-node-name{
+  font-size:7.7px!important;
+  line-height:1.08!important;
+}
+#character .v543-node-rank{
+  padding:2px 4px!important;
+  font-size:5.6px!important;
+}
+#character .v543-node .v320-point-info,
+#character .v543-node-desc{
+  margin:0 0 5px!important;
+  padding:5px 5px!important;
+  border-radius:8px!important;
+  font-size:5.45px!important;
+  line-height:1.16!important;
+}
+#character .v543-node .v320-point-info .v320-next,
+#character .v543-node .v320-point-info .v320-max{
+  margin-top:2px!important;
+}
+#character .v543-state{
+  min-height:16px!important;
+  padding:2px 5px!important;
+  margin:0 0 5px!important;
+  font-size:5.4px!important;
+}
+#character .v543-lock{
+  margin:0 0 5px!important;
+  font-size:5.2px!important;
+}
+#character .v543-node .btn{
+  min-height:25px!important;
+  padding:4px 5px!important;
+  font-size:5.7px!important;
+}
+
+/* Finished nodes can be especially compact. */
+#character .v543-node.maxed,
+#character .v543-node.milestone.active{
+  min-height:102px!important;
+}
+
+/* Locked talents stay visibly locked but remain readable. */
+#character .v543-node.locked{
+  opacity:.74!important;
+  filter:saturate(.78)!important;
+  border-color:#46554b!important;
+  background:linear-gradient(150deg,#0d1710 0%,#08100a 100%)!important;
+}
+#character .v543-node.locked .v543-node-name,
+#character .v543-node.locked .v543-node-desc,
+#character .v543-node.locked .v543-node-rank,
+#character .v543-node.locked .v543-lock{
+  opacity:.92!important;
+}
+#character .v543-node.locked .btn:disabled{
+  opacity:.82!important;
+  color:#929b94!important;
+  border-color:#475149!important;
+  background:linear-gradient(180deg,#222b24,#171e19)!important;
+}
+
+@media(max-width:390px){
+  #character .v543-row{
+    grid-template-columns:minmax(0,1fr) 12px minmax(0,1fr)!important;
+    gap:4px!important;
+    margin-bottom:8px!important;
+  }
+  #character .v543-node{
+    min-height:114px!important;
+    padding-left:37px!important;
+  }
+  #character .v543-node.maxed,
+  #character .v543-node.milestone.active{
+    min-height:98px!important;
+  }
+  #character .v543-node-icon{
+    width:25px!important;
+    height:25px!important;
+    font-size:16px!important;
+  }
+  #character .v543-node-name{font-size:7.25px!important}
+  #character .v543-node .v320-point-info,
+  #character .v543-node-desc{font-size:5.2px!important;line-height:1.14!important}
+}
+</style>
+<!-- ===== /V5.45 TALENTBAUM FINAL READABILITY POLISH ===== -->
