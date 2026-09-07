@@ -87957,3 +87957,195 @@ html.v495-level-syncing #v420LevelUpOverlay{
 })();
 </script>
 <!-- ===== /V5.31 HELDENQUARTIER SCROLL DOM-STABILITY FIX ===== -->
+
+<!-- ===== V5.32 HELDENQUARTIER FINAL VISUAL POLISH (CSS ONLY) ===== -->
+<style id="v532-heldenquartier-final-polish-css">
+/* Final visual-only pass on the now-stable hero area.
+   No new scroll logic, no DOM rebuilds, no gameplay changes. */
+
+#character.v514-reference-hero #v510HeroRoot{
+  border:2px solid #7c552a!important;
+  border-radius:10px!important;
+  box-shadow:
+    0 10px 26px rgba(0,0,0,.38),
+    inset 0 0 0 1px rgba(217,164,88,.17),
+    inset 0 20px 32px rgba(26,52,24,.10)!important;
+}
+
+/* frame / header zone */
+#character.v514-reference-hero #v510HeroRoot > .v510-stage{
+  border-top:1px solid rgba(184,132,69,.72)!important;
+  border-bottom:1px solid rgba(112,77,37,.78)!important;
+  background:
+    radial-gradient(circle at 50% 16%, rgba(88,146,74,.16), transparent 34%),
+    linear-gradient(180deg, rgba(16,44,23,.52) 0%, rgba(7,17,11,0) 16%, rgba(7,17,11,0) 72%, rgba(7,17,11,.18) 100%)!important;
+  box-shadow:inset 0 1px 0 rgba(214,169,103,.12), inset 0 -1px 0 rgba(0,0,0,.32)!important;
+}
+#character.v514-reference-hero #v510HeroRoot > .v510-stage::before,
+#character.v514-reference-hero #v510HeroRoot > .v510-stage::after{
+  opacity:.88!important;
+  filter:drop-shadow(0 0 9px rgba(255,170,56,.25))!important;
+}
+
+/* character integration */
+#character.v514-reference-hero #v510HeroRoot .v510-portrait{
+  overflow:hidden!important;
+}
+#character.v514-reference-hero #v510HeroRoot .v510-portrait::before{
+  width:252px!important;
+  height:252px!important;
+  bottom:8px!important;
+  background:radial-gradient(circle, rgba(121,205,84,.24) 0%, rgba(80,152,59,.15) 36%, rgba(27,61,29,.06) 58%, transparent 76%)!important;
+  filter:blur(2px)!important;
+}
+#character.v514-reference-hero #v510HeroRoot .v510-portrait::after{
+  content:''!important;
+  position:absolute!important;
+  inset:0!important;
+  pointer-events:none!important;
+  background:
+    linear-gradient(180deg, rgba(5,11,8,.28) 0%, rgba(5,11,8,0) 20%, rgba(5,11,8,0) 72%, rgba(5,11,8,.44) 100%),
+    linear-gradient(90deg, rgba(6,16,9,.54) 0%, rgba(6,16,9,.14) 12%, rgba(6,16,9,0) 22%, rgba(6,16,9,0) 78%, rgba(6,16,9,.14) 88%, rgba(6,16,9,.54) 100%)!important;
+}
+#character.v514-reference-hero #v510HeroRoot .avatar-scene,
+#character.v514-reference-hero #v510HeroRoot .class-avatar-big{
+  filter:drop-shadow(0 16px 18px rgba(0,0,0,.58))!important;
+}
+#character.v514-reference-hero #v510HeroRoot .v080-class-avatar-img,
+#character.v514-reference-hero #v510HeroRoot .class-avatar-big img,
+#character.v514-reference-hero #v510HeroRoot .v41-portrait{
+  transform:scale(.955)!important;
+  object-position:center 30%!important;
+  filter:drop-shadow(0 12px 18px rgba(0,0,0,.60)) saturate(1.02)!important;
+}
+#character.v514-reference-hero #v510HeroRoot .center-name{
+  color:#fff4dd!important;
+  text-shadow:0 2px 2px rgba(0,0,0,.85), 0 0 12px rgba(40,123,52,.18)!important;
+}
+#character.v514-reference-hero #v510HeroRoot .center-class{
+  color:#8edd63!important;
+  text-shadow:0 1px 0 rgba(0,0,0,.7)!important;
+}
+#character.v514-reference-hero #v510HeroRoot .level-shield{
+  border-color:#b57a36!important;
+  border-radius:9px!important;
+  background:linear-gradient(180deg,#5a3215 0%, #2f190d 54%, #24120a 100%)!important;
+  box-shadow:inset 0 1px 0 rgba(241,196,113,.28), inset 0 0 0 1px rgba(0,0,0,.32), 0 4px 10px rgba(0,0,0,.48)!important;
+}
+#character.v514-reference-hero #v510HeroRoot .center-xp{
+  border-color:#866235!important;
+  border-radius:9px!important;
+  background:linear-gradient(180deg,#07110a,#040905)!important;
+  box-shadow:inset 0 1px 0 rgba(206,176,99,.12), 0 2px 6px rgba(0,0,0,.36)!important;
+}
+#character.v514-reference-hero #v510HeroRoot .center-xp-track{
+  border-color:#7d653d!important;
+  border-radius:999px!important;
+}
+
+/* book block */
+#character.v514-reference-hero #v106BookBtn{
+  min-height:46px!important;
+  border-color:#9b6731!important;
+  border-radius:10px!important;
+  background:linear-gradient(180deg,#5d3518 0%, #432412 44%, #2a160d 100%)!important;
+  box-shadow:inset 0 1px 0 rgba(241,204,127,.24), inset 0 0 0 1px rgba(0,0,0,.26), 0 4px 12px rgba(0,0,0,.34)!important;
+}
+#character.v514-reference-hero #v106BookBtn .book{
+  filter:drop-shadow(0 3px 5px rgba(0,0,0,.35))!important;
+}
+#character.v514-reference-hero #v106BookBtn .v523-book-title{
+  color:#f7e0a6!important;
+  letter-spacing:.01em!important;
+}
+#character.v514-reference-hero #v106BookBtn .v106-book-info{
+  color:#f2ead8!important;
+}
+
+/* stats and lower micro cards */
+#character.v514-reference-hero .v510-footer{
+  padding:5px 8px 6px!important;
+  background:linear-gradient(180deg,#0c150e,#060907)!important;
+}
+#character.v514-reference-hero .v510-stats{gap:6px!important}
+#character.v514-reference-hero .v510-stats > .combat-box{
+  min-height:43px!important;
+  border:1px solid #6b522d!important;
+  border-radius:10px!important;
+  background:linear-gradient(180deg,#152118 0%, #0b120d 100%)!important;
+  box-shadow:inset 0 1px 0 rgba(222,186,113,.10), inset 0 0 0 1px rgba(0,0,0,.20), 0 2px 8px rgba(0,0,0,.28)!important;
+}
+#character.v514-reference-hero .v510-stats .combat-box span{
+  color:#dccb9f!important;
+  letter-spacing:.01em!important;
+}
+#character.v514-reference-hero .v510-stats .combat-box b{
+  color:#fff6e1!important;
+  text-shadow:0 1px 0 rgba(0,0,0,.5)!important;
+}
+#character.v514-reference-hero #v459SetSummary,
+#character.v514-reference-hero .v519-set-grid,
+#character.v514-reference-hero .v519-passive-line{
+  border-radius:9px!important;
+}
+#character.v514-reference-hero #v459SetSummary{
+  border-color:#5e583a!important;
+  background:linear-gradient(180deg,#0f1810,#09100b)!important;
+  box-shadow:inset 0 1px 0 rgba(213,177,102,.07)!important;
+}
+#character.v514-reference-hero #v459SetSummary .v519-set-cell,
+#character.v514-reference-hero #v459SetSummary .v519-passive-line{
+  border-color:#4b5b3d!important;
+  background:linear-gradient(180deg,#0c160e,#070d08)!important;
+}
+#character.v514-reference-hero #v459SetSummary .v519-set-cell .v,
+#character.v514-reference-hero #v459SetSummary .v519-set-cell .k,
+#character.v514-reference-hero #v459SetSummary .v519-passive-line b,
+#character.v514-reference-hero #v459SetSummary .v519-passive-line span{
+  color:#efe7d0!important;
+}
+#character.v514-reference-hero #v459SetSummary .v519-set-btn,
+#character.v514-reference-hero #v459SetSummary button{
+  border-color:#738a51!important;
+  border-radius:999px!important;
+  background:linear-gradient(180deg,#32452a,#1a2218)!important;
+  color:#efe5c9!important;
+  box-shadow:inset 0 1px 0 rgba(173,214,120,.14), 0 2px 6px rgba(0,0,0,.20)!important;
+}
+
+/* tabs */
+#character.v514-reference-hero #v459CharacterTabs{
+  margin:9px 0 10px!important;
+  padding:5px!important;
+  gap:5px!important;
+  border:2px solid #6d4c28!important;
+  border-radius:12px!important;
+  background:linear-gradient(180deg,#101912 0%, #070b08 100%)!important;
+  box-shadow:inset 0 1px 0 rgba(221,177,96,.10), 0 4px 12px rgba(0,0,0,.25)!important;
+}
+#character.v514-reference-hero #v459CharacterTabs button{
+  min-height:61px!important;
+  border:1px solid #345137!important;
+  border-radius:12px!important;
+  background:linear-gradient(180deg,#112016 0%, #09100b 100%)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.04), 0 2px 7px rgba(0,0,0,.24)!important;
+}
+#character.v514-reference-hero #v459CharacterTabs button span{
+  filter:drop-shadow(0 2px 2px rgba(0,0,0,.38))!important;
+}
+#character.v514-reference-hero #v459CharacterTabs button em{
+  color:#eee2c7!important;
+  letter-spacing:.01em!important;
+}
+#character.v514-reference-hero #v459CharacterTabs button.active{
+  border-color:#d2af62!important;
+  background:linear-gradient(180deg,#445e31 0%, #233020 65%, #1a2318 100%)!important;
+  box-shadow:inset 0 1px 0 rgba(237,216,149,.22), inset 0 0 0 1px rgba(0,0,0,.18), 0 0 0 1px rgba(214,164,79,.14), 0 0 14px rgba(146,220,85,.18)!important;
+}
+
+/* keep item slots readable but slightly less dominant than before */
+#character.v514-reference-hero #v510HeroRoot .slot{
+  box-shadow:0 0 0 1px rgba(0,0,0,.18), 0 0 10px rgba(0,0,0,.22)!important;
+}
+</style>
+<!-- ===== /V5.32 HELDENQUARTIER FINAL VISUAL POLISH (CSS ONLY) ===== -->
