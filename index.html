@@ -89535,9 +89535,11 @@ html.v495-level-syncing #v420LevelUpOverlay{
 <!-- ===== /V5.41 ATTRIBUTE HEADER OVERLAP FIX ===== -->
 
 <!-- ===== V5.42 TALENTBAUM MOBILE TABS + GROW LEGENDS TREE ===== -->
-<style id="v542-talents-mobile-tree-css">
-/* Mobile-first talent tree: one active branch, no horizontal scrolling.
-   Cosmetic/UI ownership only; existing V314/V318/V319/V320 mechanics remain authoritative. */
+
+<style id="v543-talents-mobile-tree-css">
+/* V5.43 – Grow Legends Talentbaum refresh.
+   Goal: no horizontal scrolling, stronger reference-like tree feeling,
+   two-column node layout, cleaner status handling, compact mobile cards. */
 #character #v459PanelTalents,
 #character #v459PanelTalents > .card,
 #character #v459PanelTalents #skillTree{
@@ -89550,14 +89552,14 @@ html.v495-level-syncing #v420LevelUpOverlay{
   overflow:hidden!important;
   margin:0!important;
   padding:0!important;
-  border:2px solid #76502a!important;
-  border-radius:14px!important;
+  border:2px solid #7a542c!important;
+  border-radius:16px!important;
   background:
-    radial-gradient(circle at 50% 8%,rgba(68,140,54,.12),transparent 24%),
-    linear-gradient(180deg,#07120b 0%,#040906 100%)!important;
-  box-shadow:inset 0 0 0 1px rgba(210,158,75,.11),inset 0 0 36px rgba(0,0,0,.45),0 8px 20px rgba(0,0,0,.34)!important;
+    radial-gradient(circle at 50% 8%,rgba(70,150,55,.12),transparent 26%),
+    radial-gradient(circle at 50% 100%,rgba(26,56,27,.32),transparent 45%),
+    linear-gradient(180deg,#08130b 0%,#030804 100%)!important;
+  box-shadow:inset 0 0 0 1px rgba(214,168,86,.10),inset 0 0 40px rgba(0,0,0,.42),0 10px 24px rgba(0,0,0,.34)!important;
 }
-/* V5.42 owns the visible header inside #skillTree. Keep the legacy header as data-only. */
 #character #v459PanelTalents > .card:has(#skillTree) > .section-title{
   position:absolute!important;
   width:1px!important;height:1px!important;
@@ -89577,260 +89579,328 @@ html.v495-level-syncing #v420LevelUpOverlay{
 #character #skillTree .v314-tree,
 #character #skillTree .v314-branch{overflow:visible!important;min-width:0!important;max-width:100%!important}
 
-/* ---------- TOP RPG HEADER ---------- */
-#character .v542-talent-head{
+/* ---------- HEADER ---------- */
+#character .v543-head{
   position:relative;
-  padding:10px 10px 9px;
-  border-bottom:1px solid #795127;
+  padding:12px 10px 10px;
+  border-bottom:1px solid #7c5428;
   background:
-    radial-gradient(circle at 12% 54%,rgba(86,160,65,.12),transparent 23%),
-    radial-gradient(circle at 88% 48%,rgba(86,160,65,.10),transparent 21%),
-    linear-gradient(180deg,#101a10 0%,#071109 100%);
-  box-shadow:inset 0 -1px 0 rgba(220,168,88,.12);
+    radial-gradient(circle at 15% 50%,rgba(95,170,67,.10),transparent 24%),
+    radial-gradient(circle at 85% 45%,rgba(95,170,67,.08),transparent 23%),
+    linear-gradient(180deg,#111a10 0%,#071009 100%);
+  box-shadow:inset 0 -1px 0 rgba(231,179,92,.08);
 }
-#character .v542-talent-plaque{
+#character .v543-plaque{
   position:relative;
   width:min(78%,390px);
-  min-height:37px;
-  margin:0 auto 9px;
+  min-height:39px;
+  margin:0 auto 10px;
   display:flex;align-items:center;justify-content:center;
-  padding:6px 28px;
-  border:1px solid #95612d;
-  border-radius:8px;
-  background:linear-gradient(180deg,#5e3518 0%,#3a1e0f 58%,#271309 100%);
-  color:#f1d18b;
+  padding:6px 30px;
+  border:1px solid #9f6a31;
+  border-radius:10px;
+  background:linear-gradient(180deg,#6b3c1b 0%,#472411 55%,#2b1409 100%);
+  color:#f3d99c;
   font:900 20px/1 Georgia,serif;
   letter-spacing:.04em;
   text-align:center;
-  text-shadow:0 2px 0 #231006,0 0 10px rgba(221,169,83,.15);
-  box-shadow:inset 0 1px 0 rgba(255,216,137,.16),inset 0 -7px 15px rgba(0,0,0,.23),0 4px 10px rgba(0,0,0,.31);
+  text-shadow:0 2px 0 #261208,0 0 8px rgba(230,180,90,.12);
+  box-shadow:inset 0 1px 0 rgba(255,224,157,.16),inset 0 -8px 16px rgba(0,0,0,.22),0 4px 10px rgba(0,0,0,.30);
 }
-#character .v542-talent-plaque::before,
-#character .v542-talent-plaque::after{
+#character .v543-plaque::before,
+#character .v543-plaque::after{
   content:'';
   position:absolute;top:50%;transform:translateY(-50%);
-  width:26px;height:13px;
-  border:1px solid #855628;
-  border-radius:7px;
-  background:linear-gradient(180deg,#5a3217,#2b160b);
-  z-index:-1;
+  width:22px;height:13px;
+  border:1px solid #8a5b2a;
+  border-radius:999px;
+  background:linear-gradient(180deg,#613519,#2d170b);
+  z-index:0;
 }
-#character .v542-talent-plaque::before{left:-18px}
-#character .v542-talent-plaque::after{right:-18px}
-#character .v542-talent-meta{
+#character .v543-plaque::before{left:12px}
+#character .v543-plaque::after{right:12px}
+#character .v543-head-meta{
   display:grid;
   grid-template-columns:minmax(0,1fr) auto;
-  align-items:center;
   gap:8px;
+  align-items:center;
 }
-#character .v542-class-line{min-width:0;padding:2px 2px}
-#character .v542-class-title{
-  color:#f1ead6;
-  font-size:13px;font-weight:1000;line-height:1.15;
-}
-#character .v542-class-title .leaf{color:#77d955;text-shadow:0 0 8px rgba(118,219,83,.22)}
-#character .v542-class-sub{
-  margin-top:3px;
-  color:#9fb2a0;
-  font-size:6.8px;line-height:1.25;font-weight:700;
-}
-#character .v542-earned{
-  margin-top:4px;
-  color:#d4d9ca;
-  font-size:6.6px;line-height:1.2;
-}
-#character .v542-earned b{color:#d9bc69}
-#character .v542-points{
-  min-width:82px;
+#character .v543-head-copy{min-width:0}
+#character .v543-class-title{color:#f0ead8;font-size:13px;font-weight:1000;line-height:1.15}
+#character .v543-class-title .leaf{color:#7de35a;text-shadow:0 0 8px rgba(126,224,88,.22)}
+#character .v543-class-sub{margin-top:3px;color:#9fb2a0;font-size:6.8px;line-height:1.25;font-weight:700}
+#character .v543-earned{margin-top:4px;color:#d5dbcf;font-size:6.6px;line-height:1.2}
+#character .v543-earned b{color:#e0c775}
+#character .v543-points{
+  min-width:84px;
   padding:7px 10px 7px 34px;
   position:relative;
-  border:1px solid #6d943e;
-  border-radius:13px;
-  background:radial-gradient(circle at 22% 50%,rgba(194,87,255,.20),transparent 26%),linear-gradient(180deg,#101a12,#080e0a);
-  color:#d7e3d2;
-  box-shadow:inset 0 0 12px rgba(0,0,0,.35),0 3px 9px rgba(0,0,0,.27);
+  border:1px solid #6d943f;
+  border-radius:14px;
+  background:radial-gradient(circle at 20% 50%,rgba(199,95,255,.22),transparent 28%),linear-gradient(180deg,#111b13,#070d08);
+  color:#d8e2d6;
+  box-shadow:inset 0 0 12px rgba(0,0,0,.36),0 3px 8px rgba(0,0,0,.26);
 }
-#character .v542-points::before{
-  content:'✦';position:absolute;left:10px;top:50%;transform:translateY(-50%);
-  color:#d07cff;font-size:22px;text-shadow:0 0 10px #a842f1;
+#character .v543-points::before{
+  content:'✦';
+  position:absolute;left:10px;top:50%;transform:translateY(-50%);
+  color:#d27bff;font-size:22px;text-shadow:0 0 10px #aa45f2;
 }
-#character .v542-points span{display:block;font-size:6px;font-weight:900;line-height:1.1}
-#character .v542-points b{display:block;margin-top:1px;color:#fff;font-size:18px;line-height:1}
+#character .v543-points span{display:block;font-size:6px;font-weight:900;line-height:1.1}
+#character .v543-points b{display:block;margin-top:1px;color:#fff;font-size:18px;line-height:1}
 
 /* ---------- BRANCH TABS ---------- */
-#character .v542-branch-tabs{
+#character .v543-tabs{
   display:grid!important;
   grid-template-columns:repeat(3,minmax(0,1fr))!important;
-  gap:5px!important;
+  gap:6px!important;
   margin:8px 8px 0!important;
-  padding:5px!important;
+  padding:6px!important;
   border:1px solid #6b4925!important;
-  border-radius:11px!important;
-  background:linear-gradient(180deg,#0c160f,#060b08)!important;
-  box-shadow:inset 0 1px 0 rgba(222,178,94,.09)!important;
+  border-radius:12px!important;
+  background:linear-gradient(180deg,#0d170f,#060b08)!important;
+  box-shadow:inset 0 1px 0 rgba(223,178,94,.08)!important;
 }
-#character .v542-branch-tab{
+#character .v543-tab{
   min-width:0!important;
-  min-height:49px!important;
+  min-height:50px!important;
   padding:6px 4px!important;
   display:flex!important;
   flex-direction:column!important;
   align-items:center!important;
   justify-content:center!important;
-  gap:3px!important;
+  gap:4px!important;
   border:1px solid #35503a!important;
-  border-radius:9px!important;
+  border-radius:10px!important;
   background:linear-gradient(180deg,#102017,#08110c)!important;
   color:#d8e0d5!important;
   box-shadow:inset 0 1px 0 rgba(255,255,255,.035),0 2px 6px rgba(0,0,0,.22)!important;
   overflow:hidden!important;
 }
-#character .v542-branch-tab .v542-tab-icon{font-size:17px!important;line-height:1!important}
-#character .v542-branch-tab .v542-tab-name{
-  max-width:100%!important;
-  overflow:hidden!important;
-  text-overflow:ellipsis!important;
-  white-space:nowrap!important;
-  font-size:7.2px!important;
-  line-height:1!important;
-  font-weight:1000!important;
-}
-#character .v542-branch-tab.active{
+#character .v543-tab-icon{font-size:17px!important;line-height:1!important}
+#character .v543-tab-name{max-width:100%!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important;font-size:7.1px!important;line-height:1!important;font-weight:1000!important}
+#character .v543-tab.active{
   border-color:#d0bd58!important;
-  background:radial-gradient(circle at 50% 0,rgba(118,222,74,.18),transparent 54%),linear-gradient(180deg,#3d5d2a,#1e311a 72%,#142015)!important;
+  background:radial-gradient(circle at 50% 0,rgba(118,222,74,.18),transparent 54%),linear-gradient(180deg,#40602b,#21341b 72%,#142015)!important;
   color:#fff2ac!important;
   box-shadow:inset 0 1px 0 rgba(255,245,170,.18),0 0 0 1px rgba(215,190,80,.10),0 0 14px rgba(135,226,74,.18)!important;
 }
 
-/* ---------- ACTIVE BRANCH BANNER ---------- */
-#character .v542-branch-banner{
+/* ---------- ACTIVE BANNER ---------- */
+#character .v543-banner{
   position:relative;
-  margin:7px 8px 0;
-  min-height:52px;
-  padding:8px 10px 8px 48px;
+  margin:8px 8px 0;
+  min-height:56px;
+  padding:8px 10px 8px 50px;
   display:flex;align-items:center;justify-content:space-between;gap:8px;
-  border:1px solid #557a3d;
-  border-radius:10px;
-  background:radial-gradient(circle at 90% 50%,rgba(93,191,58,.12),transparent 26%),linear-gradient(90deg,#102516,#0a140d);
+  border:1px solid #54793d;
+  border-radius:12px;
+  background:radial-gradient(circle at 88% 50%,rgba(93,191,58,.10),transparent 28%),linear-gradient(90deg,#102416,#0a140d);
   box-shadow:inset 0 1px 0 rgba(184,234,155,.07),0 3px 8px rgba(0,0,0,.23);
 }
-#character .v542-branch-banner::before{
+#character .v543-banner::before{
   content:attr(data-icon);
-  position:absolute;left:10px;top:50%;transform:translateY(-50%);
+  position:absolute;left:11px;top:50%;transform:translateY(-50%);
   width:30px;height:30px;display:grid;place-items:center;
   border:1px solid #5f7b47;border-radius:8px;background:#08110b;font-size:20px;
 }
-#character .v542-branch-banner b{display:block;color:#f1ead5;font-size:13px;line-height:1.05}
-#character .v542-branch-banner span{display:block;margin-top:3px;color:#9eb09d;font-size:6.6px;line-height:1.25}
-#character .v542-branch-count{flex:0 0 auto;color:#d9c276!important;font-size:7.2px!important;font-weight:1000!important;text-align:right}
+#character .v543-banner b{display:block;color:#f2ead6;font-size:13px;line-height:1.05}
+#character .v543-banner span{display:block;margin-top:3px;color:#9eb09d;font-size:6.6px;line-height:1.25}
+#character .v543-banner .v543-branch-count{flex:0 0 auto;color:#ddc87e;font-size:7px;font-weight:1000;text-align:right}
 
-/* ---------- VERTICAL TREE ---------- */
-#character .v542-tree{
+/* ---------- TREE LAYOUT ---------- */
+#character .v543-tree{
   position:relative;
-  margin:7px 8px 0;
-  padding:4px 4px 3px 34px;
-  overflow:hidden;
+  margin:8px 8px 0;
+  padding:10px 6px 4px;
   background:
     radial-gradient(circle at 50% 16%,rgba(65,139,53,.08),transparent 24%),
     linear-gradient(180deg,rgba(7,18,10,.30),rgba(3,8,5,.18));
 }
-#character .v542-tree::before{
-  content:'';position:absolute;left:20px;top:11px;bottom:13px;width:3px;
-  border-radius:999px;
-  background:linear-gradient(180deg,#89ef60 0%,#4ba83d 54%,#284d2b 100%);
-  box-shadow:0 0 8px rgba(109,235,75,.26);
-}
-#character .v542-node{
-  --node-accent:#72c957;
+#character .v543-tree-track{
   position:relative;
-  width:100%;
+  padding:2px 0 2px;
+}
+#character .v543-tree-track::before{
+  content:'';
+  position:absolute;
+  left:50%;top:0;bottom:0;
+  width:3px;
+  transform:translateX(-50%);
+  border-radius:999px;
+  background:linear-gradient(180deg,#8ef164 0%,#58b143 46%,#294d2b 100%);
+  box-shadow:0 0 10px rgba(114,236,82,.28);
+}
+#character .v543-row{
+  position:relative;
+  display:grid;
+  grid-template-columns:minmax(0,1fr) 18px minmax(0,1fr);
+  gap:6px;
+  align-items:stretch;
+  margin:0 0 10px;
+}
+#character .v543-spine{
+  position:relative;
+  min-height:1px;
+}
+#character .v543-spine::before{
+  content:'';
+  position:absolute;
+  left:50%;top:-10px;bottom:-10px;
+  width:3px;
+  transform:translateX(-50%);
+  border-radius:999px;
+  background:linear-gradient(180deg,#7be85b,#4ea13c 55%,#274629);
+  box-shadow:0 0 8px rgba(110,231,79,.24);
+}
+#character .v543-spine::after{
+  content:'';
+  position:absolute;
+  left:50%;top:23px;
+  width:10px;height:10px;
+  transform:translate(-50%,-50%);
+  border-radius:50%;
+  background:#a6f879;
+  box-shadow:0 0 0 2px rgba(34,74,28,.95),0 0 8px rgba(153,242,102,.38);
+}
+#character .v543-node{
+  --node-accent:#78d55c;
+  position:relative;
   min-width:0;
-  margin:0 0 9px;
-  padding:8px 8px 8px 45px;
-  border:1.5px solid #4d6f43;
-  border-radius:11px;
+  min-height:154px;
+  padding:8px 8px 7px 42px;
+  border:1.5px solid #4e7043;
+  border-radius:12px;
   background:linear-gradient(150deg,#0e1a11 0%,#07100a 100%);
   box-shadow:inset 0 0 14px rgba(0,0,0,.38),0 3px 8px rgba(0,0,0,.23);
+  overflow:hidden;
 }
-#character .v542-node::before{
-  content:'';position:absolute;left:-15px;top:29px;width:15px;height:3px;
-  background:var(--node-accent);box-shadow:0 0 7px color-mix(in srgb,var(--node-accent) 55%,transparent);
+#character .v543-node::before{
+  content:'';
+  position:absolute;
+  top:23px;
+  width:12px;height:3px;
+  background:var(--node-accent);
+  box-shadow:0 0 7px color-mix(in srgb,var(--node-accent) 55%,transparent);
 }
-#character .v542-node-icon{
-  position:absolute;left:7px;top:8px;
-  width:32px;height:32px;display:grid;place-items:center;
-  border:1px solid #6d4d2c;border-radius:8px;
+#character .v543-node.left::before{right:-13px}
+#character .v543-node.right::before{left:-13px}
+#character .v543-node::after{
+  content:'';
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  background:radial-gradient(circle at 18% 0,rgba(255,255,255,.05),transparent 28%);
+}
+#character .v543-node-icon{
+  position:absolute;left:8px;top:8px;
+  width:28px;height:28px;display:grid;place-items:center;
+  border:1px solid #71512f;border-radius:8px;
   background:radial-gradient(circle at 50% 35%,rgba(255,255,255,.06),transparent 40%),#08100b;
-  font-size:20px;line-height:1;
+  font-size:18px;line-height:1;
   box-shadow:inset 0 0 10px rgba(0,0,0,.55),0 2px 6px rgba(0,0,0,.29);
 }
-#character .v542-node-head{display:flex;align-items:center;gap:7px;min-width:0}
-#character .v542-node-name{min-width:0;flex:1;color:#f0eadb;font-size:9px;line-height:1.15;font-weight:1000;overflow-wrap:anywhere}
-#character .v542-node-rank{flex:0 0 auto;color:#d9d6b7;font-size:7px;font-weight:900;white-space:nowrap}
-#character .v542-node.maxed,
-#character .v542-node.on{--node-accent:#83e75f;border-color:#75c95a;box-shadow:inset 0 0 16px rgba(79,177,61,.06),0 0 9px rgba(103,211,72,.10),0 3px 8px rgba(0,0,0,.25)}
-#character .v542-node.milestone{--node-accent:#d1ab4e;border-color:#806c3d;background:linear-gradient(150deg,#17180f,#0b1009)}
-#character .v542-node.milestone.on{--node-accent:#e2c257;border-color:#bc9e48;box-shadow:inset 0 0 15px rgba(188,147,48,.06),0 0 9px rgba(216,174,63,.10)}
-#character .v542-node.master{--node-accent:#d1a84b;border-color:#a07d32;background:radial-gradient(circle at 90% 0,rgba(217,166,55,.10),transparent 32%),linear-gradient(150deg,#201c0d,#0d1008)}
-#character .v542-node.locked{--node-accent:#405246;opacity:.52;filter:saturate(.58);border-color:#38463d!important;box-shadow:inset 0 0 14px rgba(0,0,0,.42)!important}
-#character .v542-node.locked::before{box-shadow:none!important}
-#character .v542-node .v320-point-info{
-  margin:6px 0!important;
-  padding:6px 7px!important;
-  border:1px solid #294c32!important;
-  border-radius:7px!important;
-  background:#09140d!important;
-  color:#c9d7cb!important;
-  font-size:6.8px!important;
-  line-height:1.36!important;
-  overflow-wrap:anywhere!important;
+#character .v543-node-head{display:flex;align-items:flex-start;justify-content:space-between;gap:6px;min-width:0;margin-bottom:5px}
+#character .v543-node-title{min-width:0;flex:1}
+#character .v543-node-name{color:#f0eadb;font-size:8px;line-height:1.15;font-weight:1000;overflow-wrap:anywhere}
+#character .v543-node-type{margin-top:2px;color:#99af98;font-size:5.6px;line-height:1.15;font-weight:800;text-transform:uppercase;letter-spacing:.04em}
+#character .v543-node-rank{
+  flex:0 0 auto;
+  padding:2px 5px;
+  border:1px solid rgba(198,224,143,.22);
+  border-radius:999px;
+  background:rgba(5,11,7,.48);
+  color:#ece5cb;
+  font-size:5.9px;
+  font-weight:1000;
+  white-space:nowrap;
 }
-#character .v542-node .v320-point-info b{color:#7fe99d!important}
-#character .v542-node .v320-next{color:#e8c85f!important;margin-top:2px!important}
-#character .v542-node .v320-max{color:#7ee493!important;margin-top:2px!important}
-#character .v542-node-desc{
-  margin:6px 0;
-  color:#9ba89c;
-  font-size:6.5px;line-height:1.35;
-  overflow-wrap:anywhere;
+#character .v543-node.active,
+#character .v543-node.maxed{
+  --node-accent:#86ec61;
+  border-color:#77cc5e;
+  box-shadow:inset 0 0 16px rgba(79,177,61,.06),0 0 10px rgba(103,211,72,.10),0 3px 8px rgba(0,0,0,.25);
 }
-#character .v542-node .btn{
+#character .v543-node.milestone{--node-accent:#d3ae50;border-color:#8a743e;background:linear-gradient(150deg,#17180f,#0b1009)}
+#character .v543-node.milestone.active{--node-accent:#e2c257;border-color:#c7a74a;box-shadow:inset 0 0 15px rgba(188,147,48,.06),0 0 9px rgba(216,174,63,.10)}
+#character .v543-node.master{--node-accent:#d8b257;border-color:#ad8937;background:radial-gradient(circle at 90% 0,rgba(217,166,55,.10),transparent 32%),linear-gradient(150deg,#201c0d,#0d1008)}
+#character .v543-node.locked{--node-accent:#465648;opacity:.56;filter:saturate(.64);border-color:#3b4840!important;box-shadow:inset 0 0 14px rgba(0,0,0,.42)!important}
+#character .v543-node.locked::before{box-shadow:none!important}
+#character .v543-node .v320-point-info,
+#character .v543-node-desc{
+  margin:0 0 6px!important;
+  padding:6px 6px!important;
+  border:1px solid rgba(89,124,86,.45)!important;
+  border-radius:9px!important;
+  background:linear-gradient(180deg,rgba(10,22,12,.90),rgba(6,13,8,.88))!important;
+  color:#dce6d6!important;
+  font-size:6px!important;
+  line-height:1.22!important;
+  box-shadow:inset 0 0 10px rgba(0,0,0,.35)!important;
+}
+#character .v543-node.milestone .v543-node-desc,
+#character .v543-node.master .v543-node-desc{border-color:rgba(151,122,63,.45)!important}
+#character .v543-node .v320-point-info b,
+#character .v543-node .v320-point-info strong,
+#character .v543-node-desc b,
+#character .v543-node-desc strong{color:#f1f6e3!important}
+#character .v543-node .v320-point-info .green,
+#character .v543-node .v320-point-info .ok,
+#character .v543-node .v320-point-info .good,
+#character .v543-node .v320-point-info [style*="color:#57"],
+#character .v543-node .v320-point-info [style*="color: #57"]{color:#86ea77!important}
+#character .v543-node .v320-point-info .gold,
+#character .v543-node .v320-point-info [style*="color:#d"],
+#character .v543-node .v320-point-info [style*="color: #d"]{color:#e1c978!important}
+#character .v543-state{
+  display:inline-flex;align-items:center;justify-content:center;
+  min-height:18px;
+  margin:0 0 6px;
+  padding:2px 6px;
+  border-radius:999px;
+  border:1px solid rgba(113,170,89,.25);
+  background:rgba(7,17,9,.66);
+  color:#83e17b;
+  font-size:5.8px;
+  font-weight:1000;
+}
+#character .v543-node.locked .v543-state{border-color:rgba(104,110,105,.18);color:#9ba19a}
+#character .v543-lock{margin:0 0 6px;color:#c4ad76;font-size:5.5px;line-height:1.15;text-align:center}
+#character .v543-node .btn{
   width:100%!important;
-  min-width:0!important;
   min-height:27px!important;
-  padding:5px 7px!important;
-  border-radius:8px!important;
-  font-size:6.4px!important;
+  padding:5px 6px!important;
+  border-radius:9px!important;
+  font-size:6px!important;
   line-height:1.15!important;
   white-space:normal!important;
 }
-#character .v542-node .btn:not(:disabled){
+#character .v543-node .btn:not(:disabled){
   border-color:#76a94f!important;
-  background:linear-gradient(180deg,#3c7436,#255527)!important;
+  background:linear-gradient(180deg,#3d7436,#255527)!important;
   color:#eaf8dc!important;
   box-shadow:inset 0 1px 0 rgba(224,255,207,.10),0 2px 6px rgba(0,0,0,.22)!important;
 }
-#character .v542-node .btn:disabled{
-  opacity:.64!important;filter:none!important;
-  background:linear-gradient(180deg,#202821,#151b16)!important;
-  border-color:#39433b!important;color:#7e877f!important;
+#character .v543-node .btn.gold:not(:disabled){
+  border-color:#b5913e!important;
+  background:linear-gradient(180deg,#6a5322,#443412)!important;
+  color:#fff3c4!important;
 }
-#character .v542-lock{margin-top:5px;color:#b9a26c;font-size:5.8px;text-align:center}
-#character .v542-status{
-  display:inline-flex;align-items:center;gap:3px;
-  margin-top:5px;color:#79df8c;font-size:6.1px;font-weight:900;
+#character .v543-node .btn:disabled{
+  opacity:.70!important;filter:none!important;
+  background:linear-gradient(180deg,#202821,#151b16)!important;
+  border-color:#39433b!important;color:#818882!important;
 }
 
-/* Reset becomes a strong footer action like the approved Grow Legends reference. */
-#character .v542-reset-wrap{
-  margin:5px 8px 10px;
-  padding:9px 8px 10px;
+#character .v543-reset-wrap{
+  margin:6px 8px 10px;
+  padding:10px 8px 11px;
   border-top:1px solid #5b4725;
   text-align:center;
 }
-#character .v542-reset{
+#character .v543-reset{
   width:min(78%,360px)!important;
-  min-height:37px!important;
+  min-height:38px!important;
   padding:7px 12px!important;
   border:1px solid #648a58!important;
   border-radius:11px!important;
@@ -89841,62 +89911,69 @@ html.v495-level-syncing #v420LevelUpOverlay{
   box-shadow:inset 0 1px 0 rgba(218,245,204,.08),0 4px 10px rgba(0,0,0,.28)!important;
 }
 
-/* Explicitly kill legacy horizontal behaviour. */
 #character #skillTree .v314-tree{display:block!important;grid-template-columns:1fr!important;overflow-x:hidden!important}
 #character #skillTree .v314-branch{display:none!important}
 
 @media(max-width:390px){
-  #character .v542-talent-plaque{font-size:18px!important;min-height:34px!important;width:76%!important}
-  #character .v542-class-title{font-size:11.5px!important}
-  #character .v542-class-sub,#character .v542-earned{font-size:6.1px!important}
-  #character .v542-points{min-width:74px!important;padding-left:31px!important}
-  #character .v542-points b{font-size:16px!important}
-  #character .v542-branch-tab{min-height:45px!important}
-  #character .v542-branch-tab .v542-tab-name{font-size:6.5px!important}
-  #character .v542-branch-banner{padding-left:44px!important}
-  #character .v542-tree{padding-left:31px!important;margin-left:7px!important;margin-right:7px!important}
-  #character .v542-tree::before{left:18px!important}
-  #character .v542-node{padding-left:41px!important}
-  #character .v542-node-icon{width:29px!important;height:29px!important;font-size:18px!important}
+  #character .v543-plaque{font-size:18px!important;min-height:35px!important;width:80%!important}
+  #character .v543-class-title{font-size:11.5px!important}
+  #character .v543-class-sub,#character .v543-earned{font-size:6px!important}
+  #character .v543-points{min-width:74px!important;padding-left:31px!important}
+  #character .v543-points b{font-size:16px!important}
+  #character .v543-tab{min-height:46px!important}
+  #character .v543-tab-name{font-size:6.4px!important}
+  #character .v543-banner{padding-left:46px!important}
+  #character .v543-row{grid-template-columns:minmax(0,1fr) 14px minmax(0,1fr)!important;gap:4px!important}
+  #character .v543-node{min-height:146px!important;padding-left:39px!important}
+  #character .v543-node-icon{width:26px!important;height:26px!important;font-size:17px!important}
+  #character .v543-node-name{font-size:7.4px!important}
+  #character .v543-node .v320-point-info,
+  #character .v543-node-desc{font-size:5.7px!important}
 }
 </style>
 
-<script id="v542-talents-mobile-tree-js">
+<script id="v543-talents-mobile-tree-js">
 (function(){
   'use strict';
-  const selectedByClass=window.__v542TalentBranchByClass||(window.__v542TalentBranchByClass={});
+  const selectedByClass=window.__v543TalentBranchByClass||(window.__v543TalentBranchByClass=window.__v542TalentBranchByClass||{});
   const classLabel=()=>{try{return classes?.[s?.playerClass]?.name||({frost:'Frost-Todesritter'}[s?.playerClass])||String(s?.playerClass||'Klasse')}catch(e){return 'Klasse'}};
-  const esc542=x=>String(x??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+  const esc=x=>String(x??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
   const titleParts=b=>{
     const raw=String(b?.title||'').trim();
     const m=raw.match(/^(\S+)\s+(.+)$/u);
     return m?{icon:m[1],name:m[2]}:{icon:b?.icon||'🌿',name:raw||'Talent'};
   };
   const segIcons={
-    wucht:['💥','🔨','💢','⚔️','☠️','💪','🪓'],
-    tank:['🛡️','🧱','❤️','💚','🌵','⛰️','🌳'],
-    rage:['🔥','🩸','⚔️','☠️','❤️‍🔥','😈','🔥'],
-    precision:['🎯','👁️','🏹','🎯','💀','🏹','⚡'],
-    dodge:['🍃','💨','🪽','↩️','🌑','👻','💨'],
-    salvo:['🏹','🏹','⚡','🎯','🌧️','🍃','♾️'],
-    magic:['🔮','💨','⚡','💥','🌿','🧪','✨'],
-    critmagic:['⚡','💥','✨','⛓️','⚡','💣','🌀'],
-    smoke:['🌫️','☠️','🛡️','🧪','🌫️','🛡️','💨'],
-    frostblade:['❄️','🗡️','❄️','💥','🧊','⚔️','🖤'],
-    iceguard:['🧊','🛡️','❄️','💥','🥶','💙','🧱'],
-    deathpact:['☠️','🩸','⚔️','👻','💀','🪦','🖤']
+    wucht:['💥','💪','🪓','☠️','🌿','⚡','👑'],
+    tank:['🛡️','🧱','❤️','🌿','💚','⛰️','👑'],
+    rage:['🔥','🩸','⚔️','🌋','💢','😈','👑'],
+    precision:['🎯','👁️','🏹','☠️','⚡','🍃','👑'],
+    dodge:['🍃','💨','🪽','🌑','👻','🌀','👑'],
+    salvo:['🏹','⚡','🎯','🌧️','🍃','🗡️','👑'],
+    magic:['🔮','💨','⚡','💥','🌿','🧪','👑'],
+    critmagic:['⚡','💥','✨','⛓️','💣','🌀','👑'],
+    smoke:['🌫️','☠️','🛡️','🧪','💨','🌑','👑'],
+    frostblade:['❄️','🗡️','💥','🧊','⚔️','🖤','👑'],
+    iceguard:['🧊','🛡️','💙','🥶','🧱','💎','👑'],
+    deathpact:['☠️','🩸','⚔️','👻','💀','🪦','👑']
   };
   const mileIcons={
     wucht:['⭐','💀','🌿','🩸','😡','🦬','👑'],
     tank:['⭐','🐕','💚','🛡️','⛰️','🌳','👑'],
     rage:['⭐','🩸','☠️','❤️‍🔥','😈','🔥','👑'],
+    precision:['⭐','🎯','🏹','☠️','⚡','🌪️','👑'],
+    dodge:['⭐','👻','🍃','🌑','🪽','💨','👑'],
+    salvo:['⭐','⚡','🎯','🌧️','🏹','♾️','👑'],
+    magic:['⭐','✨','💥','🧪','⚡','🔮','👑'],
+    critmagic:['⭐','⚡','✨','💣','⛓️','🌀','👑'],
+    smoke:['⭐','🌫️','☠️','🛡️','💨','🧪','👑'],
     frostblade:['⭐','❄️','💥','💙','🌪️','🖤','👑'],
     iceguard:['⭐','🦴','🧊','🥶','💎','🪦','👑'],
     deathpact:['⭐','🩸','⚔️','🖤','💀','🪦','👑']
   };
-  function iconFor(b,kind,i){
-    if(kind==='m')return mileIcons[b.id]?.[i]||(i===6?'👑':'⭐');
-    return segIcons[b.id]?.[i]||b.icon||'🌿';
+  function iconFor(branch,kind,i){
+    if(kind==='m')return mileIcons[branch.id]?.[i]||(i===6?'👑':'⭐');
+    return segIcons[branch.id]?.[i]||branch.icon||'🌿';
   }
   function branchId(){
     const cls=String(s?.playerClass||'');
@@ -89911,48 +89988,69 @@ html.v495-level-syncing #v420LevelUpOverlay{
     selectedByClass[cls]=id;
     renderTree();
   }
+  window.v543SelectTalentBranch=select;
   window.v542SelectTalentBranch=select;
 
+  function buttonLabelNormal(unlocked,maxed){
+    if(maxed)return 'Max';
+    if(!unlocked)return 'Gesperrt';
+    return '+ Talentpunkt';
+  }
+  function buttonLabelMilestone(unlocked,rank,master){
+    if(rank)return master?'Meistertalent aktiv':'Freigeschaltet';
+    if(!unlocked)return 'Gesperrt';
+    return master?'Meistertalent lernen':'Freischalten';
+  }
   function headerMarkup(branches,active){
     const points=v314Available();
     const spent=v314Spent();
     const earned=v314Earned();
     const cls=classLabel();
-    return `<div class="v542-talent-head">
-      <div class="v542-talent-plaque">KLASSEN-SKILLS</div>
-      <div class="v542-talent-meta">
-        <div class="v542-class-line">
-          <div class="v542-class-title"><span class="leaf">🌿</span> Talentbaum · ${esc542(cls)}</div>
-          <div class="v542-class-sub">1 Talentpunkt alle 2 Level · Meisterschaft bis Level 300</div>
-          <div class="v542-earned">Verfügbar: <b>${points}</b> · Verteilt: <b>${spent}</b> / ${earned} verdient</div>
+    return `<div class="v543-head">
+      <div class="v543-plaque">KLASSEN-SKILLS</div>
+      <div class="v543-head-meta">
+        <div class="v543-head-copy">
+          <div class="v543-class-title"><span class="leaf">🌿</span> Talentbaum · ${esc(cls)}</div>
+          <div class="v543-class-sub">1 Talentpunkt alle 2 Level · Meisterschaft bis Level 300</div>
+          <div class="v543-earned">Verfügbar: <b>${points}</b> · Verteilt: <b>${spent}</b> / ${earned} verdient</div>
         </div>
-        <div class="v542-points"><span>Talentpunkte</span><b>${points}</b></div>
+        <div class="v543-points"><span>Talentpunkte</span><b>${points}</b></div>
       </div>
     </div>
-    <nav class="v542-branch-tabs" aria-label="Talentbäume">
-      ${branches.map(b=>{const p=titleParts(b);return `<button type="button" class="v542-branch-tab ${b.id===active?'active':''}" onclick="v542SelectTalentBranch('${b.id}')"><span class="v542-tab-icon">${esc542(p.icon)}</span><span class="v542-tab-name">${esc542(p.name)}</span></button>`}).join('')}
+    <nav class="v543-tabs" aria-label="Talentbäume">
+      ${branches.map(b=>{const p=titleParts(b);return `<button type="button" class="v543-tab ${b.id===active?'active':''}" onclick="v543SelectTalentBranch('${b.id}')"><span class="v543-tab-icon">${esc(p.icon)}</span><span class="v543-tab-name">${esc(p.name)}</span></button>`}).join('')}
     </nav>`;
   }
   function normalNode(b,i){
     const rank=v314Rank(b.id,'s',i),max=V314_SEG_RANKS[i],unlocked=v314NodeUnlocked(b.id,'s',i),maxed=rank>=max;
-    return `<article class="v542-node normal ${unlocked?'':'locked'} ${rank?'on':''} ${maxed?'maxed':''}">
-      <div class="v542-node-icon">${iconFor(b,'s',i)}</div>
-      <div class="v542-node-head"><div class="v542-node-name">${esc542(b.seg[i])}</div><div class="v542-node-rank">${rank}/${max}</div></div>
+    const status=maxed?'<div class="v543-state">Maximale Stufe erreicht</div>':'';
+    return `<article class="v543-node left normal ${unlocked?'':'locked'} ${rank?'active':''} ${maxed?'maxed':''}">
+      <div class="v543-node-icon">${iconFor(b,'s',i)}</div>
+      <div class="v543-node-head">
+        <div class="v543-node-title"><div class="v543-node-name">${esc(b.seg[i])}</div><div class="v543-node-type">Talentknoten</div></div>
+        <div class="v543-node-rank">${rank}/${max}</div>
+      </div>
       ${v320PointInfo(b.id,i,rank,max)}
-      ${maxed?'<div class="v542-status">✅ Maximale Stufe erreicht</div>':''}
-      <button class="btn secondary" onclick="v314Upgrade('${b.id}','s',${i})" ${!unlocked||maxed||v314Available()<1?'disabled':''}>+ Talentpunkt</button>
+      ${status}
+      <button class="btn secondary" onclick="v314Upgrade('${b.id}','s',${i})" ${!unlocked||maxed||v314Available()<1?'disabled':''}>${buttonLabelNormal(unlocked,maxed)}</button>
     </article>`;
   }
   function milestoneNode(b,i){
     const rank=v314Rank(b.id,'m',i),unlocked=v314NodeUnlocked(b.id,'m',i),master=i===6;
-    return `<article class="v542-node milestone ${master?'master':''} ${unlocked?'':'locked'} ${rank?'on':''}">
-      <div class="v542-node-icon">${iconFor(b,'m',i)}</div>
-      <div class="v542-node-head"><div class="v542-node-name">${esc542(b.mile[i])}</div><div class="v542-node-rank">${rank}/1</div></div>
-      <div class="v542-node-desc">${v314Desc(b.id,'m',i)}</div>
-      ${rank?'<div class="v542-status">✅ Freigeschaltet</div>':''}
-      <button class="btn ${master?'gold':'secondary'}" onclick="v314Upgrade('${b.id}','m',${i})" ${!unlocked||rank||v314Available()<1?'disabled':''}>${master?'Meistertalent lernen':'Freischalten'}</button>
-      ${!unlocked?`<div class="v542-lock">🔒 Level ${V314_LEVELS[i]} · ${V314_REQ[i]} Astpunkte</div>`:''}
+    const status=rank?`<div class="v543-state">${master?'Meistertalent aktiv':'Freigeschaltet'}</div>`:(!unlocked?`<div class="v543-lock">🔒 Level ${V314_LEVELS[i]} · ${V314_REQ[i]} Astpunkte</div>`:'');
+    return `<article class="v543-node right milestone ${master?'master':''} ${unlocked?'':'locked'} ${rank?'active':''}">
+      <div class="v543-node-icon">${iconFor(b,'m',i)}</div>
+      <div class="v543-node-head">
+        <div class="v543-node-title"><div class="v543-node-name">${esc(b.mile[i])}</div><div class="v543-node-type">${master?'Meistertalent':'Schlüsseltalent'}</div></div>
+        <div class="v543-node-rank">${rank}/1</div>
+      </div>
+      <div class="v543-node-desc">${v314Desc(b.id,'m',i)}</div>
+      ${status}
+      <button class="btn ${master?'gold':'secondary'}" onclick="v314Upgrade('${b.id}','m',${i})" ${!unlocked||rank||v314Available()<1?'disabled':''}>${buttonLabelMilestone(unlocked,rank,master)}</button>
     </article>`;
+  }
+  function rowMarkup(b,i){
+    return `<div class="v543-row">${normalNode(b,i)}<div class="v543-spine" aria-hidden="true"></div>${milestoneNode(b,i)}</div>`;
   }
   function renderTree(){
     const box=document.getElementById('skillTree');if(!box)return;
@@ -89960,24 +90058,25 @@ html.v495-level-syncing #v420LevelUpOverlay{
     if(!s?.playerClass){box.innerHTML='<div class="empty" style="margin:10px">Wähle zuerst deine Klasse.</div>';return;}
     const branches=V314_BRANCHES?.[s.playerClass]||[];
     if(!branches.length){box.innerHTML='<div class="empty" style="margin:10px">Für diese Klasse ist noch kein Talentbaum verfügbar.</div>';return;}
-    const activeId=branchId();selectedByClass[String(s.playerClass)]=activeId;
+    const activeId=branchId();
+    selectedByClass[String(s.playerClass)]=activeId;
     const b=branches.find(x=>x.id===activeId)||branches[0];
     const bp=titleParts(b);
     const cost=Math.max(500,(Number(s.level)||1)*500);
-    const nodes=Array.from({length:7},(_,i)=>normalNode(b,i)+milestoneNode(b,i)).join('');
-    const frostNote=String(s.playerClass)==='frost'?'<div class="v542-node-desc" style="margin:8px 12px 0;padding:7px 8px;border:1px solid #376d7c;border-radius:8px;background:#09151a;color:#9ed6e3"><b style="color:#d5f7ff">❄️ Frost-Todesritter</b> · Eigener Talentbaum mit Kältemarken, Barrieren und Seelenschnitten.</div>':'';
+    const rows=Array.from({length:7},(_,i)=>rowMarkup(b,i)).join('');
+    const frostNote=String(s.playerClass)==='frost'?'<div class="v543-node-desc" style="margin:8px 8px 0;padding:7px 8px;border:1px solid #376d7c;border-radius:8px;background:#09151a;color:#9ed6e3"><b style="color:#d5f7ff">❄️ Frost-Todesritter</b> · Eigener Talentbaum mit Kältemarken, Barrieren und Seelenschnitten.</div>':'';
     box.innerHTML=headerMarkup(branches,b.id)+frostNote+`
-      <section class="v542-branch-banner" data-icon="${esc542(bp.icon)}">
-        <div><b>${esc542(bp.name)}</b><span>${esc542(b.theme)}</span></div>
-        <div class="v542-branch-count">${v314BranchSpent(b.id)}/100 Punkte</div>
+      <section class="v543-banner" data-icon="${esc(bp.icon)}">
+        <div><b>${esc(bp.name)}</b><span>${esc(b.theme)}</span></div>
+        <div class="v543-branch-count">${v314BranchSpent(b.id)}/100 Punkte</div>
       </section>
-      <div class="v542-tree">${nodes}</div>
-      <div class="v542-reset-wrap"><button type="button" class="btn secondary v542-reset" onclick="v314Reset()">↻ Reset · ${cost.toLocaleString('de-DE')} Gold</button></div>`;
+      <div class="v543-tree"><div class="v543-tree-track">${rows}</div></div>
+      <div class="v543-reset-wrap"><button type="button" class="btn secondary v543-reset" onclick="v314Reset()">↻ Reset · ${cost.toLocaleString('de-DE')} Gold</button></div>`;
   }
-  window.v542RenderTalentTree=renderTree;
-  try{renderSkillTree=renderTree;window.renderSkillTree=renderTree}catch(e){console.warn('V5.42 talent owner',e)}
+  window.v543RenderTalentTree=renderTree;
+  try{renderSkillTree=renderTree;window.renderSkillTree=renderTree}catch(e){console.warn('V5.43 talent owner',e)}
   function apply(){
-    try{renderTree()}catch(e){console.warn('V5.42 talent render',e)}
+    try{renderTree()}catch(e){console.warn('V5.43 talent render',e)}
   }
   apply();
   document.addEventListener('DOMContentLoaded',()=>requestAnimationFrame(apply),{once:true});
@@ -89988,4 +90087,5 @@ html.v495-level-syncing #v420LevelUpOverlay{
   [150,600,1600].forEach(ms=>setTimeout(apply,ms));
 })();
 </script>
-<!-- ===== /V5.42 TALENTBAUM MOBILE TABS + GROW LEGENDS TREE ===== -->
+<!-- ===== /V5.43 TALENTBAUM MOBILE TABS + GROW LEGENDS TREE ===== -->
+
