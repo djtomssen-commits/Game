@@ -87782,3 +87782,57 @@ html.v495-level-syncing #v420LevelUpOverlay{
 })();
 </script>
 <!-- ===== /V5.29 HELDENQUARTIER HARD STABLE HEADER ===== -->
+
+
+<!-- ===== V5.30 HELDENQUARTIER STATIC ROOT-PAINT HEADER ===== -->
+<style id="v530-heldenquartier-static-root-header-css">
+/*
+  Samsung/Chrome still dropped the separately painted DOM header during scroll.
+  V5.30 removes that composited child completely: title + kicker are painted as
+  the ROOT background in reserved top padding. No JS scroll repair, no child
+  transform, no clip-path, no separate header paint layer.
+*/
+#character.v514-reference-hero #v510HeroRoot{
+  padding-top:58px!important;
+  background-color:#061009!important;
+  background-image:url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI3MDAiIGhlaWdodD0iNTgiIHZpZXdCb3g9IjAgMCA3MDAgNTgiPgo8ZGVmcz4KICA8bGluZWFyR3JhZGllbnQgaWQ9InAiIHgxPSIwIiB5MT0iMCIgeDI9IjAiIHkyPSIxIj4KICAgIDxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0iIzUwMzAxOSIvPgogICAgPHN0b3Agb2Zmc2V0PSIuNTgiIHN0b3AtY29sb3I9IiMzMjFiMGUiLz4KICAgIDxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iIzFiMGUwNyIvPgogIDwvbGluZWFyR3JhZGllbnQ+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJhIiB4MT0iMCIgeTE9IjAiIHgyPSIwIiB5Mj0iMSI+CiAgICA8c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiM2YTQyMWYiLz4KICAgIDxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iIzJhMTYwYiIvPgogIDwvbGluZWFyR3JhZGllbnQ+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJrIiB4MT0iMCIgeTE9IjAiIHgyPSIwIiB5Mj0iMSI+CiAgICA8c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiMxMDM1MWQiLz4KICAgIDxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iIzA3MTcwZCIvPgogIDwvbGluZWFyR3JhZGllbnQ+CjwvZGVmcz4KPHJlY3Qgd2lkdGg9IjcwMCIgaGVpZ2h0PSI1OCIgZmlsbD0iIzA2MTAwOSIvPgo8cmVjdCB4PSIxNzMiIHk9IjUiIHdpZHRoPSIzNTQiIGhlaWdodD0iMzEiIHJ4PSI0IiBmaWxsPSJ1cmwoI3ApIiBzdHJva2U9IiM5ZDY3MmYiIHN0cm9rZS13aWR0aD0iMiIvPgo8cmVjdCB4PSIxNDMiIHk9IjEzIiB3aWR0aD0iNDIiIGhlaWdodD0iMTUiIHJ4PSI1IiBmaWxsPSJ1cmwoI2EpIiBzdHJva2U9IiM4ZTVjMmEiLz4KPHJlY3QgeD0iNTE1IiB5PSIxMyIgd2lkdGg9IjQyIiBoZWlnaHQ9IjE1IiByeD0iNSIgZmlsbD0idXJsKCNhKSIgc3Ryb2tlPSIjOGU1YzJhIi8+Cjx0ZXh0IHg9IjM1MCIgeT0iMjYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiNmMWQyOTEiIGZvbnQtZmFtaWx5PSJHZW9yZ2lhLHNlcmlmIiBmb250LXNpemU9IjI3IiBmb250LXdlaWdodD0iOTAwIj5IRUxERU5RVUFSVElFUjwvdGV4dD4KPHJlY3QgeD0iMCIgeT0iMzkiIHdpZHRoPSI3MDAiIGhlaWdodD0iMTkiIGZpbGw9InVybCgjaykiIHN0cm9rZT0iIzY4NDMxZSIgc3Ryb2tlLXdpZHRoPSIxIi8+CjxjaXJjbGUgY3g9IjI5IiBjeT0iNDgiIHI9IjUiIGZpbGw9IiNmZmFkMzIiLz4KPGNpcmNsZSBjeD0iNjcxIiBjeT0iNDgiIHI9IjUiIGZpbGw9IiNmZmFkMzIiLz4KPHRleHQgeD0iMzUwIiB5PSI1MiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iI2YwZWZlMCIgZm9udC1mYW1pbHk9IkFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTEiIGZvbnQtd2VpZ2h0PSI4MDAiPkFVU1LDnFNUVU5HIMK3IEFUVFJJQlVURSDCtyBTS0lMTFMgwrcgREVJTkUgS0FNUEZLUkFGVDwvdGV4dD4KPC9zdmc+")!important;
+  background-repeat:no-repeat!important;
+  background-position:top center!important;
+  background-size:100% 58px!important;
+  transform:none!important;
+  -webkit-transform:none!important;
+  will-change:auto!important;
+  contain:none!important;
+  content-visibility:visible!important;
+}
+/* Remove every DOM-based title owner. The root background is now the single owner. */
+#character.v514-reference-hero #v510HeroRoot > .v529-hero-header,
+#character.v514-reference-hero #v510HeroRoot > .v510-titlebar,
+#character.v514-reference-hero #v510HeroRoot > .v514-kicker{
+  display:none!important;
+  visibility:hidden!important;
+  opacity:0!important;
+  width:0!important;
+  height:0!important;
+  min-width:0!important;
+  min-height:0!important;
+  max-width:0!important;
+  max-height:0!important;
+  margin:0!important;
+  padding:0!important;
+  border:0!important;
+  position:absolute!important;
+  overflow:hidden!important;
+  pointer-events:none!important;
+}
+/* Side rails begin below the static header instead of crossing its paint area. */
+#character.v514-reference-hero #v510HeroRoot::before,
+#character.v514-reference-hero #v510HeroRoot::after{
+  top:58px!important;
+}
+/* The stage follows immediately after the 58px reserved header area. */
+#character.v514-reference-hero #v510HeroRoot > .v510-stage{
+  margin-top:0!important;
+}
+</style>
+<!-- ===== /V5.30 HELDENQUARTIER STATIC ROOT-PAINT HEADER ===== -->
