@@ -86160,3 +86160,164 @@ html.v495-level-syncing #v420LevelUpOverlay{
 })();
 </script>
 <!-- ===== /V5.18 HELDENQUARTIER STAGE REBUILD ===== -->
+
+
+<!-- ===== V5.19 HELDENQUARTIER REFERENCE ALIGNMENT + SUMMARY FIX ===== -->
+<style id="v519-heldenquartier-reference-alignment-css">
+@media(max-width:430px){
+  /* Match the reference composition: the hero is almost as tall as the three item slots,
+     so more torso is visible instead of a face-only crop. */
+  #character.v514-reference-hero .v510-portrait{
+    height:196px!important;
+    margin:0 -33px!important;
+    overflow:visible!important;
+  }
+  #character.v514-reference-hero .v510-portrait::before{
+    width:226px!important;
+    height:201px!important;
+    bottom:-6px!important;
+    background:radial-gradient(ellipse 75% 82% at 50% 47%,rgba(104,221,76,.30),rgba(38,101,43,.10) 62%,transparent 83%)!important;
+  }
+  #character.v514-reference-hero #v510HeroRoot .avatar-scene,
+  #character.v514-reference-hero #v510HeroRoot .class-avatar-big,
+  #character.v514-reference-hero #v510HeroRoot .class-avatar-big img,
+  #character.v514-reference-hero #v510HeroRoot .v080-class-avatar-img,
+  #character.v514-reference-hero #v510HeroRoot .v41-portrait{
+    width:226px!important;
+    height:201px!important;
+    min-height:201px!important;
+    max-width:none!important;
+  }
+  #character.v514-reference-hero #v510HeroRoot .v080-class-avatar-img,
+  #character.v514-reference-hero #v510HeroRoot .class-avatar-big img{
+    object-fit:cover!important;
+    object-position:center 28%!important;
+    transform:scale(1)!important;
+    transform-origin:center center!important;
+    -webkit-mask-image:radial-gradient(ellipse 82% 88% at 50% 48%,#000 0 58%,rgba(0,0,0,.97) 66%,rgba(0,0,0,.68) 76%,rgba(0,0,0,.24) 89%,transparent 100%)!important;
+    mask-image:radial-gradient(ellipse 82% 88% at 50% 48%,#000 0 58%,rgba(0,0,0,.97) 66%,rgba(0,0,0,.68) 76%,rgba(0,0,0,.24) 89%,transparent 100%)!important;
+    filter:drop-shadow(0 8px 7px #000d) saturate(1.10) contrast(1.035)!important;
+  }
+  #character.v514-reference-hero #v510HeroRoot .center-name{
+    margin:-25px -30% 0!important;
+    font-size:16.5px!important;
+  }
+  #character.v514-reference-hero #v510HeroRoot .center-class{margin-top:3px!important}
+
+  /* This row was still being overwritten by the old character renderer.
+     V5.19 gives both values their own reference-style cards. */
+  #character.v514-reference-hero #v459SetSummary{
+    min-height:28px!important;
+    margin:4px 0 0!important;
+    padding:0!important;
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;
+    gap:5px!important;
+    border:0!important;
+    border-radius:0!important;
+    background:none!important;
+  }
+  #character.v514-reference-hero #v459SetSummary .v519-set-cell,
+  #character.v514-reference-hero #v459SetSummary .v519-talent-cell{
+    min-width:0!important;
+    min-height:28px!important;
+    padding:4px 7px!important;
+    display:flex!important;
+    align-items:center!important;
+    justify-content:space-between!important;
+    gap:5px!important;
+    border:1px solid #3f553d!important;
+    border-radius:7px!important;
+    background:linear-gradient(180deg,#0d1910,#08110b)!important;
+    box-shadow:inset 0 0 10px rgba(0,0,0,.5)!important;
+    color:#dce4d8!important;
+    font-size:6.5px!important;
+    line-height:1!important;
+    white-space:nowrap!important;
+  }
+  #character.v514-reference-hero #v459SetSummary .v519-summary-label{
+    min-width:0!important;
+    display:flex!important;
+    align-items:center!important;
+    gap:3px!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+  }
+  #character.v514-reference-hero #v459SetSummary .v519-summary-icon{font-size:9px!important;flex:0 0 auto!important}
+  #character.v514-reference-hero #v459SetSummary .v519-summary-text{
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+    color:#e0e7dc!important;
+    font-weight:800!important;
+  }
+  #character.v514-reference-hero #v459SetSummary b{
+    flex:0 0 auto!important;
+    color:#efc45d!important;
+    font-size:8px!important;
+    line-height:1!important;
+  }
+}
+
+@media(max-width:350px){
+  #character.v514-reference-hero .v510-portrait{height:186px!important;margin-left:-30px!important;margin-right:-30px!important}
+  #character.v514-reference-hero #v510HeroRoot .avatar-scene,
+  #character.v514-reference-hero #v510HeroRoot .class-avatar-big,
+  #character.v514-reference-hero #v510HeroRoot .class-avatar-big img,
+  #character.v514-reference-hero #v510HeroRoot .v080-class-avatar-img,
+  #character.v514-reference-hero #v510HeroRoot .v41-portrait{width:214px!important;height:191px!important;min-height:191px!important}
+  #character.v514-reference-hero #v459SetSummary .v519-set-cell,
+  #character.v514-reference-hero #v459SetSummary .v519-talent-cell{padding-left:5px!important;padding-right:5px!important;font-size:6px!important}
+}
+</style>
+<script id="v519-heldenquartier-reference-alignment-js">
+(function(){
+  'use strict';
+  let queued=false;
+  function esc(v){return String(v??'').replace(/[&<>\"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":'&#39;'}[m]));}
+  function values(){
+    const cls=String(window.s?.playerClass||'');
+    let count=0;
+    try{count=typeof window.equippedSetCount==='function'?Number(window.equippedSetCount(cls))||0:Object.values(window.s?.equipment||{}).filter(x=>x?.setId===cls).length}catch(e){}
+    let setName='Klassen-Set';
+    try{setName=window.classSets?.[cls]?.name||setName}catch(e){}
+    let talents=Math.max(0,Number(window.s?.skillPoints)||0);
+    try{if(typeof window.v314Available==='function')talents=Math.max(0,Number(window.v314Available())||0)}catch(e){}
+    return {cls,count,setName,talents};
+  }
+  function repair(){
+    queued=false;
+    const c=document.getElementById('character');
+    const box=document.getElementById('v459SetSummary');
+    if(!c||!box)return;
+    c.classList.add('v519-reference-align');
+    const root=c.querySelector('#v510HeroRoot');
+    if(root)root.setAttribute('data-hero-layout','reference-v519');
+    const v=values();
+    const sig=[v.cls,v.count,v.setName,v.talents].join('|');
+    if(box.dataset.v519Sig===sig && box.querySelector('.v519-set-cell') && box.querySelector('.v519-talent-cell'))return;
+    box.dataset.v519Sig=sig;
+    if(!v.cls){
+      box.innerHTML='<span class="v519-set-cell"><span class="v519-summary-label"><span class="v519-summary-icon">🧬</span><span class="v519-summary-text">Klasse wählen</span></span><b>—</b></span><span class="v519-talent-cell"><span class="v519-summary-label"><span class="v519-summary-icon">🌳</span><span class="v519-summary-text">Talentpunkte</span></span><b>'+v.talents+'</b></span>';
+    }else{
+      box.innerHTML='<span class="v519-set-cell"><span class="v519-summary-label"><span class="v519-summary-icon">🧩</span><span class="v519-summary-text">'+esc(v.setName)+'</span></span><b>'+v.count+'/6</b></span><span class="v519-talent-cell"><span class="v519-summary-label"><span class="v519-summary-icon">🌳</span><span class="v519-summary-text">Talentpunkte</span></span><b>'+v.talents+'</b></span>';
+    }
+  }
+  function queue(){if(queued)return;queued=true;requestAnimationFrame(repair)}
+  function watch(){
+    const box=document.getElementById('v459SetSummary');
+    if(box && !box.__v519Observer){
+      const mo=new MutationObserver(queue);
+      mo.observe(box,{childList:true,subtree:true,characterData:true});
+      box.__v519Observer=mo;
+    }
+    queue();
+  }
+  window.v519ApplyHero=watch;
+  watch();
+  document.addEventListener('DOMContentLoaded',watch,{once:true});
+  window.addEventListener('pageshow',watch,{passive:true});
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden)watch()});
+  [80,180,400,800,1400,2400,4000].forEach(ms=>setTimeout(watch,ms));
+})();
+</script>
+<!-- ===== /V5.19 HELDENQUARTIER REFERENCE ALIGNMENT + SUMMARY FIX ===== -->
