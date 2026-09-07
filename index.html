@@ -88681,3 +88681,94 @@ html.v495-level-syncing #v420LevelUpOverlay{
 })();
 </script>
 <!-- ===== /V5.33 INVENTAR REFERENCE REBUILD ===== -->
+
+<!-- ===== V5.34 INVENTAR HEADER + AUTO-EQUIP POLISH ===== -->
+<style id="v534-inventory-polish-css">
+/* Tighten the top inventory section without touching logic. */
+#character .v533-inv-head{
+  min-height:72px!important;
+  padding:10px 13px 9px 68px!important;
+  margin:0 -10px 8px!important;
+  gap:8px!important;
+}
+#character .v533-inv-head::before{
+  left:11px!important;
+  width:34px!important;
+  height:38px!important;
+  font-size:20px!important;
+  border-radius:10px!important;
+}
+#character .v533-inv-title-wrap{
+  padding-right:4px!important;
+}
+#character .v533-inv-title{
+  font-size:24px!important;
+  line-height:1!important;
+  letter-spacing:.028em!important;
+}
+#character .v533-inv-sub{
+  margin-top:4px!important;
+  font-size:6.2px!important;
+  line-height:1.15!important;
+  letter-spacing:.06em!important;
+}
+#character .v533-inv-count{
+  min-width:54px!important;
+  padding:7px 9px!important;
+  border-radius:11px!important;
+  font-size:10.5px!important;
+}
+
+/* Make the auto-equip block more compact and give the action button more presence. */
+#character .v533-auto-equip{
+  gap:7px!important;
+  margin:0 0 7px!important;
+  padding:7px 9px!important;
+  border-radius:10px!important;
+}
+#character .v533-auto-copy b{
+  font-size:8.4px!important;
+  line-height:1.15!important;
+}
+#character .v533-auto-copy span{
+  margin-top:1px!important;
+  font-size:6px!important;
+  line-height:1.2!important;
+}
+#character .v533-auto-btn{
+  min-height:32px!important;
+  padding:6px 12px!important;
+  border-radius:10px!important;
+  font-size:6.8px!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.18), 0 4px 10px rgba(0,0,0,.26)!important;
+}
+
+/* Slightly tighten the selection panel so the whole inventory feels denser. */
+#character #inventory .v268-sellbar{
+  gap:6px!important;
+  padding:8px!important;
+}
+#character #inventory .v268-info{
+  min-height:24px!important;
+  font-size:7.6px!important;
+}
+#character #inventory .v268-sellbar .btn{
+  min-height:33px!important;
+}
+
+@media(max-width:390px){
+  #character .v533-inv-head{
+    min-height:68px!important;
+    padding-left:62px!important;
+  }
+  #character .v533-inv-head::before{
+    left:11px!important;
+    width:31px!important;
+    height:35px!important;
+    font-size:18px!important;
+  }
+  #character .v533-inv-title{font-size:22px!important}
+  #character .v533-inv-count{min-width:52px!important;padding:6px 8px!important;font-size:10px!important}
+}
+</style>
+<!-- ===== /V5.34 INVENTAR HEADER + AUTO-EQUIP POLISH ===== -->
