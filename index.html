@@ -48256,6 +48256,132 @@ document.addEventListener('click',()=>{setTimeout(pulse,40);setTimeout(pulse,140
 
 
 
+
+
+<!-- ===== V5.26 HELDENQUARTIER FINAL REFERENCE ORNAMENT POLISH ===== -->
+<style id="v526-heldenquartier-final-ornament-css">
+/* Purely visual finishing pass. No values, handlers or game logic are changed. */
+#character.v514-reference-hero #v510HeroRoot{
+  border-color:#9d6732!important;
+  box-shadow:
+    inset 0 0 0 1px #24150a,
+    inset 0 0 0 3px rgba(209,154,73,.075),
+    inset 0 0 24px rgba(0,0,0,.48),
+    0 7px 18px #000d!important;
+}
+
+/* More like the approved reference: an ornamental wood/metal plaque, not a flat label. */
+#character.v514-reference-hero .v510-titlebar{
+  width:min(55%,270px)!important;
+  height:33px!important;
+  border:1.5px solid #b77937!important;
+  background:
+    linear-gradient(180deg,rgba(255,223,148,.09),transparent 24%),
+    linear-gradient(180deg,#563018 0%,#321b0d 58%,#1b0e07 100%)!important;
+  box-shadow:
+    inset 0 0 0 1px rgba(255,224,151,.12),
+    inset 0 -9px 14px rgba(0,0,0,.22),
+    0 3px 7px rgba(0,0,0,.85),
+    0 0 0 1px rgba(41,20,8,.9)!important;
+}
+
+/* The reference has larger side torches framing the equipment stage. */
+#character.v514-reference-hero .v510-stage::before,
+#character.v514-reference-hero .v510-stage::after{
+  width:22px!important;
+  height:74px!important;
+  top:3px!important;
+  opacity:.94!important;
+  z-index:8!important;
+  filter:drop-shadow(0 0 5px rgba(255,115,20,.82)) drop-shadow(0 0 9px rgba(255,76,6,.26))!important;
+}
+#character.v514-reference-hero .v510-stage::before{left:-1px!important}
+#character.v514-reference-hero .v510-stage::after{right:-1px!important}
+
+/* Slim cannabis/fantasy vines behind the item columns. */
+#character.v514-reference-hero #v510HeroRoot .v526-vine{
+  position:absolute!important;
+  z-index:5!important;
+  top:59px!important;
+  width:22px!important;
+  height:238px!important;
+  pointer-events:none!important;
+  opacity:.72!important;
+  background-repeat:no-repeat!important;
+  background-position:center top!important;
+  background-size:22px 238px!important;
+  filter:drop-shadow(0 1px 2px #000b)!important;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 238'%3E%3Cpath d='M12 0C5 24 20 42 10 66S18 104 10 130 17 173 9 202s4 36 3 36' fill='none' stroke='%23527f38' stroke-width='2.2' opacity='.85'/%3E%3Cg fill='%236ca947' stroke='%2328421d' stroke-width='.7'%3E%3Cpath d='M10 27C2 20 2 13 3 9c7 3 11 8 11 15z'/%3E%3Cpath d='M13 45c7-8 10-6 11-3-3 7-7 10-12 9z'/%3E%3Cpath d='M9 78C1 72 1 64 2 60c8 3 12 8 12 15z'/%3E%3Cpath d='M13 101c7-8 10-6 11-3-3 7-7 10-12 9z'/%3E%3Cpath d='M9 136c-8-6-8-14-7-18 8 3 12 9 12 16z'/%3E%3Cpath d='M13 157c7-8 10-6 11-3-3 7-7 10-12 9z'/%3E%3Cpath d='M9 194c-8-6-8-14-7-18 8 3 12 9 12 16z'/%3E%3Cpath d='M13 216c7-8 10-6 11-3-3 7-7 10-12 9z'/%3E%3C/g%3E%3Cg fill='%23bd7a34'%3E%3Ccircle cx='12' cy='57' r='1.4'/%3E%3Ccircle cx='11' cy='121' r='1.4'/%3E%3Ccircle cx='11' cy='185' r='1.4'/%3E%3C/g%3E%3C/svg%3E")!important;
+}
+#character.v514-reference-hero #v510HeroRoot .v526-vine.left{left:7px!important}
+#character.v514-reference-hero #v510HeroRoot .v526-vine.right{right:7px!important;transform:scaleX(-1)!important}
+
+/* Small metal corner caps make the whole panel read as one crafted frame. */
+#character.v514-reference-hero #v510HeroRoot .v526-corner{
+  position:absolute!important;
+  z-index:45!important;
+  width:18px!important;
+  height:18px!important;
+  pointer-events:none!important;
+  opacity:.92!important;
+  background:linear-gradient(135deg,#b67a38 0 12%,#3b210f 13% 38%,#7b4c22 39% 58%,#251309 59% 83%,#a66c31 84% 100%)!important;
+  clip-path:polygon(0 0,100% 0,72% 25%,55% 18%,18% 55%,25% 72%,0 100%)!important;
+  filter:drop-shadow(0 1px 1px #000)!important;
+}
+#character.v514-reference-hero #v510HeroRoot .v526-corner.tl{left:1px!important;top:1px!important}
+#character.v514-reference-hero #v510HeroRoot .v526-corner.tr{right:1px!important;top:1px!important;transform:scaleX(-1)!important}
+#character.v514-reference-hero #v510HeroRoot .v526-corner.bl{left:1px!important;bottom:1px!important;transform:scaleY(-1)!important}
+#character.v514-reference-hero #v510HeroRoot .v526-corner.br{right:1px!important;bottom:1px!important;transform:scale(-1)!important}
+
+/* Slightly richer lower cards, keeping the now-correct data layout untouched. */
+#character.v514-reference-hero #v106BookBtn{
+  border-color:#9f6932!important;
+  box-shadow:inset 0 0 0 1px rgba(255,220,142,.10),0 2px 6px #000b!important;
+}
+#character.v514-reference-hero .v510-stats>.combat-box,
+#character.v514-reference-hero #v459SetSummary,
+#character.v514-reference-hero .v514-passive-row{
+  box-shadow:inset 0 0 0 1px rgba(196,146,75,.055)!important;
+}
+#character.v514-reference-hero .v514-nav-host{
+  border-top:2px solid #6d431f!important;
+  box-shadow:0 -1px 0 rgba(190,128,54,.18)!important;
+}
+#character.v514-reference-hero #v514HeroTabs button.active{
+  border-color:#b49c48!important;
+  box-shadow:inset 0 0 18px rgba(114,190,53,.20),0 0 8px rgba(183,216,74,.14)!important;
+}
+</style>
+<script id="v526-heldenquartier-final-ornament-js">
+(function(){
+  'use strict';
+  function ensureDecor(){
+    const c=document.getElementById('character');
+    if(!c)return;
+    const root=c.querySelector('#v510HeroRoot');
+    if(!root)return;
+    if(!root.querySelector('.v526-vine.left')){
+      const l=document.createElement('i');l.className='v526-vine left';l.setAttribute('aria-hidden','true');root.appendChild(l);
+      const r=document.createElement('i');r.className='v526-vine right';r.setAttribute('aria-hidden','true');root.appendChild(r);
+    }
+    if(!root.querySelector('.v526-corner.tl')){
+      ['tl','tr','bl','br'].forEach(pos=>{const el=document.createElement('i');el.className='v526-corner '+pos;el.setAttribute('aria-hidden','true');root.appendChild(el)});
+    }
+    root.setAttribute('data-hero-layout','reference-v526');
+  }
+  function apply(){
+    try{window.v525ApplyHero?.()}catch(e){}
+    ensureDecor();
+  }
+  window.v526ApplyHero=apply;
+  apply();
+  document.addEventListener('DOMContentLoaded',()=>requestAnimationFrame(apply),{once:true});
+  window.addEventListener('pageshow',()=>requestAnimationFrame(apply),{passive:true});
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden)requestAnimationFrame(apply)});
+  [80,220,600,1400,3000,6000].forEach(ms=>setTimeout(apply,ms));
+})();
+</script>
+<!-- ===== /V5.26 HELDENQUARTIER FINAL REFERENCE ORNAMENT POLISH ===== -->
 </body>
 </html>
 <style id="v268-inventory-multisell-css">
