@@ -87507,3 +87507,92 @@ html.v495-level-syncing #v420LevelUpOverlay{
 })();
 </script>
 <!-- ===== /V5.27 HELDENQUARTIER CLEAN REFERENCE POLISH ===== -->
+
+<!-- ===== V5.28 HELDENQUARTIER TITLE STABILITY FIX ===== -->
+<style id="v528-heldenquartier-title-stability-css">
+/* Samsung Internet / mobile Chrome can occasionally drop the title plaque paint layer
+   during scroll on long pages. Keep the plaque on its own stable layer and force its
+   visible state without touching gameplay data or handlers. */
+#character.v514-reference-hero #v510HeroRoot .v510-titlebar{
+  display:flex!important;
+  visibility:visible!important;
+  opacity:1!important;
+  position:relative!important;
+  z-index:90!important;
+  transform:translateZ(0)!important;
+  -webkit-transform:translateZ(0)!important;
+  backface-visibility:hidden!important;
+  -webkit-backface-visibility:hidden!important;
+  will-change:transform!important;
+  contain:paint!important;
+}
+#character.v514-reference-hero #v510HeroRoot .v514-kicker{
+  position:relative!important;
+  z-index:80!important;
+  transform:translateZ(0)!important;
+  -webkit-transform:translateZ(0)!important;
+  backface-visibility:hidden!important;
+  -webkit-backface-visibility:hidden!important;
+}
+</style>
+<script id="v528-heldenquartier-title-stability-js">
+(function(){
+  'use strict';
+  let raf=0;
+  function ensureTitle(){
+    const character=document.getElementById('character');
+    const root=character?.querySelector('#v510HeroRoot');
+    if(!character||!root)return;
+    character.classList.add('v514-reference-hero');
+
+    let title=root.querySelector('.v510-titlebar');
+    if(!title){
+      title=document.createElement('div');
+      title.className='v510-titlebar';
+      title.textContent='HELDENQUARTIER';
+      root.prepend(title);
+    }
+    if(root.firstElementChild!==title){
+      root.insertBefore(title,root.firstElementChild);
+    }
+    if((title.textContent||'').trim()!=='HELDENQUARTIER')title.textContent='HELDENQUARTIER';
+    title.style.setProperty('display','flex','important');
+    title.style.setProperty('visibility','visible','important');
+    title.style.setProperty('opacity','1','important');
+
+    let kicker=root.querySelector('.v514-kicker');
+    if(!kicker){
+      kicker=document.createElement('div');
+      kicker.className='v514-kicker';
+      kicker.textContent='AUSRÜSTUNG · ATTRIBUTE · SKILLS · DEINE KAMPFKRAFT';
+      title.insertAdjacentElement('afterend',kicker);
+    }else if(title.nextElementSibling!==kicker){
+      title.insertAdjacentElement('afterend',kicker);
+    }
+    kicker.style.setProperty('display','flex','important');
+    kicker.style.setProperty('visibility','visible','important');
+    kicker.style.setProperty('opacity','1','important');
+
+    root.setAttribute('data-hero-layout','reference-v528');
+  }
+  function queue(){
+    if(raf)return;
+    raf=requestAnimationFrame(()=>{raf=0;ensureTitle();});
+  }
+  window.v528EnsureHeroTitle=ensureTitle;
+  queue();
+  document.addEventListener('DOMContentLoaded',queue,{once:true});
+  window.addEventListener('pageshow',queue,{passive:true});
+  window.addEventListener('resize',queue,{passive:true});
+  window.addEventListener('scroll',queue,{passive:true});
+  document.addEventListener('visibilitychange',()=>{ if(!document.hidden)queue(); });
+  [80,220,500,1100,2200,4500,8000].forEach(ms=>setTimeout(queue,ms));
+
+  const c=document.getElementById('character');
+  if(c){
+    const obs=new MutationObserver(queue);
+    obs.observe(c,{childList:true,subtree:true,attributes:true,attributeFilter:['class','style']});
+  }
+})();
+</script>
+<!-- ===== /V5.28 HELDENQUARTIER TITLE STABILITY FIX ===== -->
