@@ -48060,6 +48060,29 @@ document.addEventListener('click',()=>{setTimeout(pulse,40);setTimeout(pulse,140
 })();
 </script>
 <!-- ===== /V4.496 QUEST CLAIM SINGLE-PAYOUT GUARD ===== -->
+
+<!-- ===== V5.06 Charakter Feinschliff: feste Slots + kompakter Held ===== -->
+<style id="v506-character-slot-layout-fix">
+#character.v504-character-final .equipment-grid{grid-template-columns:82px minmax(0,1fr) 82px!important;gap:8px!important;align-items:start!important}
+#character.v504-character-final .equip-col{gap:8px!important;padding-top:6px!important}
+#character.v504-character-final #slot-head,#character.v504-character-final #slot-weapon,#character.v504-character-final #slot-ring,#character.v504-character-final #slot-body,#character.v504-character-final #slot-boots,#character.v504-character-final #slot-amulet{display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;width:100%!important;height:82px!important;min-height:82px!important;box-sizing:border-box!important;border:1.5px solid #52664c!important;border-radius:13px!important;background:linear-gradient(180deg,#111b14,#080e0a)!important;box-shadow:0 5px 12px #0009,inset 0 0 14px rgba(255,255,255,.025)!important;padding:4px 3px!important}
+#character.v504-character-final #slot-head{border-color:#b57a31!important}
+#character.v504-character-final #slot-weapon,#character.v504-character-final #slot-ring{border-color:#378dd0!important}
+#character.v504-character-final #slot-body,#character.v504-character-final #slot-amulet{border-color:#914cc5!important}
+#character.v504-character-final #slot-boots{border-color:#66766a!important}
+#character.v504-character-final .slot-icon{min-height:50px!important;display:flex!important;align-items:center!important;justify-content:center!important}
+#character.v504-character-final .slot-icon img,#character.v504-character-final .slot-icon svg,#character.v504-character-final .slot-icon .v41-badge-art{width:50px!important;height:50px!important;object-fit:contain!important}
+#character.v504-character-final .slot-label{display:block!important;margin-top:1px!important;font-size:7px!important;line-height:1!important;color:#a9b0a8!important}
+#character.v504-character-final .center-hero{padding-bottom:0!important}
+#character.v504-character-final .avatar-scene{height:184px!important;min-height:184px!important}
+#character.v504-character-final .class-avatar-big img,#character.v504-character-final .v080-class-avatar-img{width:166px!important;height:182px!important}
+#character.v504-character-final .center-name{margin-top:2px!important}
+#character.v504-character-final .level-shield{margin-top:5px!important}
+#character.v504-character-final #v106BookBtn{margin:3px auto 0!important}
+#character.v504-character-final .center-xp{margin-top:1px!important}
+#character.v504-character-final .v459-hero-bottom{margin-top:0!important;padding-top:7px!important}
+@media(max-width:430px){#character.v504-character-final .equipment-grid{grid-template-columns:78px minmax(0,1fr) 78px!important;gap:7px!important}#character.v504-character-final #slot-head,#character.v504-character-final #slot-weapon,#character.v504-character-final #slot-ring,#character.v504-character-final #slot-body,#character.v504-character-final #slot-boots,#character.v504-character-final #slot-amulet{height:78px!important;min-height:78px!important}#character.v504-character-final .slot-icon img,#character.v504-character-final .slot-icon svg,#character.v504-character-final .slot-icon .v41-badge-art{width:47px!important;height:47px!important}}
+</style>
 </body>
 </html>
 <style id="v268-inventory-multisell-css">
@@ -84072,4 +84095,72 @@ html.v495-level-syncing #v420LevelUpOverlay{
  #character .center-name{font-size:19px!important}
 }
 </style>
-\n<!-- ===== V5.04 FINAL CHARACTER OWNER: disable legacy late renderer ===== -->\n<style id="v504-character-final-owner-css">\n#character{padding:8px 7px 16px!important;background:linear-gradient(180deg,#071009,#040806)!important}\n#character.v504-character-final .hero-card{position:relative!important;overflow:hidden!important;border:2px solid #8d6332!important;border-radius:18px!important;background:linear-gradient(180deg,#15140f,#0a120d 34%,#07100a)!important;box-shadow:0 14px 34px #000a, inset 0 0 0 1px rgba(220,178,91,.08)!important}\n#character.v504-character-final .hero-card:before{content:'HELDENQUARTIER'!important;display:block!important;height:auto!important;padding:9px 14px!important;background:linear-gradient(180deg,#3a2615,#1b120a)!important;border-bottom:2px solid #8d6332!important;color:#f2d597!important;font-family:Georgia,serif!important;font-size:15px!important;font-weight:900!important;letter-spacing:.04em!important;text-align:center!important}\n#character.v504-character-final .character-stage{padding:10px 8px 8px!important;background:radial-gradient(circle at 50% 27%,rgba(90,198,68,.25),transparent 34%),linear-gradient(180deg,#122018,#09120d)!important}\n#character.v504-character-final .equipment-grid{display:grid!important;grid-template-columns:72px minmax(0,1fr) 72px!important;gap:6px!important;align-items:start!important;min-height:0!important}\n#character.v504-character-final .equip-col{display:grid!important;gap:7px!important;padding-top:8px!important}\n#character.v504-character-final .slot{height:76px!important;min-height:76px!important;padding:4px 2px!important;border-radius:12px!important;background:linear-gradient(180deg,#101a13,#080d0a)!important;box-shadow:0 5px 12px #0009,inset 0 0 14px rgba(255,255,255,.025)!important}\n#character.v504-character-final .slot-icon{min-height:45px!important}\n#character.v504-character-final .slot-icon img,#character.v504-character-final .slot-icon svg,#character.v504-character-final .slot-icon .v41-badge-art{width:46px!important;height:46px!important;object-fit:contain!important}\n#character.v504-character-final .slot-label{font-size:6.5px!important;letter-spacing:.08em!important;color:#a2aa9f!important}\n#character.v504-character-final .center-hero{padding:0 2px 2px!important;min-height:0!important;background:none!important}\n#character.v504-character-final .avatar-scene{height:176px!important;min-height:176px!important;margin:0!important;align-items:flex-end!important}\n#character.v504-character-final .avatar-scene:before{width:190px!important;height:190px!important;bottom:-14px!important;background:radial-gradient(circle,rgba(115,224,83,.26),rgba(35,74,43,.14) 54%,transparent 72%)!important}\n#character.v504-character-final .class-avatar-big img,#character.v504-character-final .v080-class-avatar-img{width:156px!important;height:174px!important;object-fit:cover!important;object-position:center 20%!important;border-radius:17px!important;border:1px solid #aa7a39!important;box-shadow:0 8px 18px #000c,0 0 18px rgba(104,220,73,.12)!important}\n#character.v504-character-final .center-name{margin-top:4px!important;font-size:20px!important;line-height:1!important;font-weight:1000!important}\n#character.v504-character-final .center-class{margin-top:3px!important;font-size:7.5px!important;letter-spacing:.09em!important;color:#8fe26f!important}\n#character.v504-character-final .level-shield{margin-top:6px!important;padding:3px 11px!important;border:2px solid #9b6631!important;background:linear-gradient(180deg,#5a3417,#28170d)!important}\n#character.v504-character-final .level-shield b{font-size:18px!important}\n#character.v504-character-final #v106BookBtn{margin:5px auto 1px!important;transform:scale(.72)!important;transform-origin:center top!important}\n#character.v504-character-final .center-xp{width:min(190px,96%)!important;margin:4px auto 0!important}\n#character.v504-character-final .center-xp-row{font-size:7px!important}\n#character.v504-character-final .center-xp-track{height:8px!important}\n#character.v504-character-final .center-hero .v459-grow-buff,#character.v504-character-final .center-hero .v459-grow-card,#character.v504-character-final .center-hero [class*="grow-buff"]{margin-top:5px!important;padding:7px 9px!important;font-size:7.5px!important}\n#character.v504-character-final .center-hero [class*="pvp-bud"]{margin-top:5px!important}\n#character.v504-character-final .center-hero [class*="class-passive"]{margin-top:5px!important;padding:7px 9px!important;font-size:7.5px!important}\n#character.v504-character-final .v459-hero-bottom{padding:8px!important;border-top:2px solid #7d592f!important;background:#09110c!important}\n#character.v504-character-final .v459-hero-bottom .combat-row{display:grid!important;grid-template-columns:1fr 1fr!important;gap:8px!important}\n#character.v504-character-final .v459-hero-bottom .combat-box{min-height:56px!important;padding:7px 9px!important;border:1px solid #465e42!important;border-radius:12px!important;background:linear-gradient(180deg,#101a13,#08100b)!important}\n#character.v504-character-final .v459-hero-bottom .combat-box b{font-size:21px!important}\n#character.v504-character-final #v459SetSummary{min-height:28px!important;margin-top:7px!important;padding:6px 8px!important;border:1px solid #40573d!important;border-radius:10px!important;background:#0b150e!important;font-size:7.5px!important}\n#character.v504-character-final #v459CharacterTabs{position:relative!important;top:auto!important;margin:9px 0 10px!important;padding:5px!important;gap:5px!important;border:1px solid #6f542f!important;border-radius:14px!important;background:linear-gradient(180deg,#121a13,#080e0a)!important}\n#character.v504-character-final #v459CharacterTabs button{min-height:46px!important;border-radius:10px!important}\n#character.v504-character-final #v459CharacterTabs button span{font-size:20px!important}\n#character.v504-character-final #v459CharacterTabs button em{font-size:7px!important}\n#character.v504-character-final #v459CharacterTabs button.active{border-color:#b19350!important;background:linear-gradient(180deg,#263a1d,#111a11)!important;box-shadow:inset 0 0 18px rgba(129,221,74,.16),0 0 8px rgba(129,221,74,.12)!important}\n/* remove any old page banner/pill above the actual hero */\n#character.v504-character-final > .v052-scene-banner,#character.v504-character-final > .v052-character,#character.v504-character-final > .v459-page-kicker{display:none!important}\n@media(max-width:430px){\n #character.v504-character-final .equipment-grid{grid-template-columns:68px minmax(0,1fr) 68px!important;gap:5px!important}\n #character.v504-character-final .slot{height:72px!important;min-height:72px!important}\n #character.v504-character-final .slot-icon img,#character.v504-character-final .slot-icon svg,#character.v504-character-final .slot-icon .v41-badge-art{width:42px!important;height:42px!important}\n #character.v504-character-final .avatar-scene{height:166px!important;min-height:166px!important}\n #character.v504-character-final .class-avatar-big img,#character.v504-character-final .v080-class-avatar-img{width:148px!important;height:164px!important}\n}\n</style>\n<script id="v504-character-final-owner-js">\n(function(){\n  'use strict';\n  function apply(){\n    const c=document.getElementById('character'); if(!c)return;\n    /* v459 is allowed to build the panels once, then loses layout ownership. */\n    c.classList.add('v504-character-final');\n    c.classList.remove('v501-character-redesign','v502-character-redesign','v503-character-reference');\n    try{\n      const banners=[...c.children].filter(el=>el!==c.querySelector(':scope > .hero-card') && /Heldenquartier/i.test(el.textContent||'') && !el.id?.startsWith('v459'));\n      banners.forEach(el=>{ if(el.classList.contains('v052-scene-banner')||el.classList.contains('v052-character')) el.style.display='none'; });\n    }catch(e){}\n  }\n  window.__V504_CHARACTER_OWNER__=true;\n  window.v504ApplyCharacter=apply;\n  apply();\n  document.addEventListener('DOMContentLoaded',apply,{once:true});\n  window.addEventListener('pageshow',apply,{passive:true});\n  document.addEventListener('visibilitychange',()=>{if(!document.hidden)apply()});\n})();\n</script>\n
+
+<!-- ===== V5.04 FINAL CHARACTER OWNER: disable legacy late renderer ===== -->
+<style id="v504-character-final-owner-css">
+#character{padding:8px 7px 16px!important;background:linear-gradient(180deg,#071009,#040806)!important}
+#character.v504-character-final .hero-card{position:relative!important;overflow:hidden!important;border:2px solid #8d6332!important;border-radius:18px!important;background:linear-gradient(180deg,#15140f,#0a120d 34%,#07100a)!important;box-shadow:0 14px 34px #000a, inset 0 0 0 1px rgba(220,178,91,.08)!important}
+#character.v504-character-final .hero-card:before{content:'HELDENQUARTIER'!important;display:block!important;height:auto!important;padding:9px 14px!important;background:linear-gradient(180deg,#3a2615,#1b120a)!important;border-bottom:2px solid #8d6332!important;color:#f2d597!important;font-family:Georgia,serif!important;font-size:15px!important;font-weight:900!important;letter-spacing:.04em!important;text-align:center!important}
+#character.v504-character-final .character-stage{padding:10px 8px 8px!important;background:radial-gradient(circle at 50% 27%,rgba(90,198,68,.25),transparent 34%),linear-gradient(180deg,#122018,#09120d)!important}
+#character.v504-character-final .equipment-grid{display:grid!important;grid-template-columns:72px minmax(0,1fr) 72px!important;gap:6px!important;align-items:start!important;min-height:0!important}
+#character.v504-character-final .equip-col{display:grid!important;gap:7px!important;padding-top:8px!important}
+#character.v504-character-final .slot{height:76px!important;min-height:76px!important;padding:4px 2px!important;border-radius:12px!important;background:linear-gradient(180deg,#101a13,#080d0a)!important;box-shadow:0 5px 12px #0009,inset 0 0 14px rgba(255,255,255,.025)!important}
+#character.v504-character-final .slot-icon{min-height:45px!important}
+#character.v504-character-final .slot-icon img,#character.v504-character-final .slot-icon svg,#character.v504-character-final .slot-icon .v41-badge-art{width:46px!important;height:46px!important;object-fit:contain!important}
+#character.v504-character-final .slot-label{font-size:6.5px!important;letter-spacing:.08em!important;color:#a2aa9f!important}
+#character.v504-character-final .center-hero{padding:0 2px 2px!important;min-height:0!important;background:none!important}
+#character.v504-character-final .avatar-scene{height:176px!important;min-height:176px!important;margin:0!important;align-items:flex-end!important}
+#character.v504-character-final .avatar-scene:before{width:190px!important;height:190px!important;bottom:-14px!important;background:radial-gradient(circle,rgba(115,224,83,.26),rgba(35,74,43,.14) 54%,transparent 72%)!important}
+#character.v504-character-final .class-avatar-big img,#character.v504-character-final .v080-class-avatar-img{width:156px!important;height:174px!important;object-fit:cover!important;object-position:center 20%!important;border-radius:17px!important;border:1px solid #aa7a39!important;box-shadow:0 8px 18px #000c,0 0 18px rgba(104,220,73,.12)!important}
+#character.v504-character-final .center-name{margin-top:4px!important;font-size:20px!important;line-height:1!important;font-weight:1000!important}
+#character.v504-character-final .center-class{margin-top:3px!important;font-size:7.5px!important;letter-spacing:.09em!important;color:#8fe26f!important}
+#character.v504-character-final .level-shield{margin-top:6px!important;padding:3px 11px!important;border:2px solid #9b6631!important;background:linear-gradient(180deg,#5a3417,#28170d)!important}
+#character.v504-character-final .level-shield b{font-size:18px!important}
+#character.v504-character-final #v106BookBtn{margin:5px auto 1px!important;transform:scale(.72)!important;transform-origin:center top!important}
+#character.v504-character-final .center-xp{width:min(190px,96%)!important;margin:4px auto 0!important}
+#character.v504-character-final .center-xp-row{font-size:7px!important}
+#character.v504-character-final .center-xp-track{height:8px!important}
+#character.v504-character-final .center-hero .v459-grow-buff,#character.v504-character-final .center-hero .v459-grow-card,#character.v504-character-final .center-hero [class*="grow-buff"]{margin-top:5px!important;padding:7px 9px!important;font-size:7.5px!important}
+#character.v504-character-final .center-hero [class*="pvp-bud"]{margin-top:5px!important}
+#character.v504-character-final .center-hero [class*="class-passive"]{margin-top:5px!important;padding:7px 9px!important;font-size:7.5px!important}
+#character.v504-character-final .v459-hero-bottom{padding:8px!important;border-top:2px solid #7d592f!important;background:#09110c!important}
+#character.v504-character-final .v459-hero-bottom .combat-row{display:grid!important;grid-template-columns:1fr 1fr!important;gap:8px!important}
+#character.v504-character-final .v459-hero-bottom .combat-box{min-height:56px!important;padding:7px 9px!important;border:1px solid #465e42!important;border-radius:12px!important;background:linear-gradient(180deg,#101a13,#08100b)!important}
+#character.v504-character-final .v459-hero-bottom .combat-box b{font-size:21px!important}
+#character.v504-character-final #v459SetSummary{min-height:28px!important;margin-top:7px!important;padding:6px 8px!important;border:1px solid #40573d!important;border-radius:10px!important;background:#0b150e!important;font-size:7.5px!important}
+#character.v504-character-final #v459CharacterTabs{position:relative!important;top:auto!important;margin:9px 0 10px!important;padding:5px!important;gap:5px!important;border:1px solid #6f542f!important;border-radius:14px!important;background:linear-gradient(180deg,#121a13,#080e0a)!important}
+#character.v504-character-final #v459CharacterTabs button{min-height:46px!important;border-radius:10px!important}
+#character.v504-character-final #v459CharacterTabs button span{font-size:20px!important}
+#character.v504-character-final #v459CharacterTabs button em{font-size:7px!important}
+#character.v504-character-final #v459CharacterTabs button.active{border-color:#b19350!important;background:linear-gradient(180deg,#263a1d,#111a11)!important;box-shadow:inset 0 0 18px rgba(129,221,74,.16),0 0 8px rgba(129,221,74,.12)!important}
+/* remove any old page banner/pill above the actual hero */
+#character.v504-character-final > .v052-scene-banner,#character.v504-character-final > .v052-character,#character.v504-character-final > .v459-page-kicker{display:none!important}
+@media(max-width:430px){
+ #character.v504-character-final .equipment-grid{grid-template-columns:68px minmax(0,1fr) 68px!important;gap:5px!important}
+ #character.v504-character-final .slot{height:72px!important;min-height:72px!important}
+ #character.v504-character-final .slot-icon img,#character.v504-character-final .slot-icon svg,#character.v504-character-final .slot-icon .v41-badge-art{width:42px!important;height:42px!important}
+ #character.v504-character-final .avatar-scene{height:166px!important;min-height:166px!important}
+ #character.v504-character-final .class-avatar-big img,#character.v504-character-final .v080-class-avatar-img{width:148px!important;height:164px!important}
+}
+</style>
+<script id="v504-character-final-owner-js">
+(function(){
+  'use strict';
+  function apply(){
+    const c=document.getElementById('character'); if(!c)return;
+    /* v459 is allowed to build the panels once, then loses layout ownership. */
+    c.classList.add('v504-character-final');
+    c.classList.remove('v501-character-redesign','v502-character-redesign','v503-character-reference');
+    try{
+      const banners=[...c.children].filter(el=>el!==c.querySelector(':scope > .hero-card') && /Heldenquartier/i.test(el.textContent||'') && !el.id?.startsWith('v459'));
+      banners.forEach(el=>{ if(el.classList.contains('v052-scene-banner')||el.classList.contains('v052-character')) el.style.display='none'; });
+    }catch(e){}
+  }
+  window.__V504_CHARACTER_OWNER__=true;
+  window.v504ApplyCharacter=apply;
+  apply();
+  document.addEventListener('DOMContentLoaded',apply,{once:true});
+  window.addEventListener('pageshow',apply,{passive:true});
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden)apply()});
+})();
+</script>
