@@ -87836,3 +87836,124 @@ html.v495-level-syncing #v420LevelUpOverlay{
 }
 </style>
 <!-- ===== /V5.30 HELDENQUARTIER STATIC ROOT-PAINT HEADER ===== -->
+
+<!-- ===== V5.31 HELDENQUARTIER SCROLL DOM-STABILITY FIX ===== -->
+<style id="v531-heldenquartier-scroll-stability-css">
+/*
+  V5.30 proved the header can stay painted. The remaining disappearing centre is
+  caused by old V4.02 scroll-repair code repainting/mutating the character DOM
+  while Samsung Internet is scrolling. Keep the hero centre as plain DOM/image
+  layers: no masks, filters, transforms or containment on the centre stack.
+*/
+#character.v514-reference-hero #v510HeroRoot .v510-center,
+#character.v514-reference-hero #v510HeroRoot .v510-portrait,
+#character.v514-reference-hero #v510HeroRoot .avatar-scene,
+#character.v514-reference-hero #v510HeroRoot .class-avatar-big,
+#character.v514-reference-hero #v510HeroRoot .v41-portrait{
+  visibility:visible!important;
+  opacity:1!important;
+  transform:none!important;
+  -webkit-transform:none!important;
+  filter:none!important;
+  -webkit-filter:none!important;
+  contain:none!important;
+  content-visibility:visible!important;
+  will-change:auto!important;
+  backface-visibility:visible!important;
+  -webkit-backface-visibility:visible!important;
+}
+#character.v514-reference-hero #v510HeroRoot .v510-portrait{
+  overflow:hidden!important;
+}
+#character.v514-reference-hero #v510HeroRoot .v080-class-avatar-img,
+#character.v514-reference-hero #v510HeroRoot .class-avatar-big img,
+#character.v514-reference-hero #v510HeroRoot .v41-portrait img{
+  display:block!important;
+  visibility:visible!important;
+  opacity:1!important;
+  transform:none!important;
+  -webkit-transform:none!important;
+  filter:none!important;
+  -webkit-filter:none!important;
+  -webkit-mask-image:none!important;
+  mask-image:none!important;
+  clip-path:none!important;
+  contain:none!important;
+  content-visibility:visible!important;
+  will-change:auto!important;
+  backface-visibility:visible!important;
+  -webkit-backface-visibility:visible!important;
+}
+/* Keep the dynamic text/value stack in normal document paint flow as well. */
+#character.v514-reference-hero #v510HeroRoot .center-name,
+#character.v514-reference-hero #v510HeroRoot .center-class,
+#character.v514-reference-hero #v510HeroRoot .level-shield,
+#character.v514-reference-hero #v510HeroRoot .center-xp{
+  visibility:visible!important;
+  opacity:1!important;
+  transform:none!important;
+  -webkit-transform:none!important;
+  filter:none!important;
+  contain:none!important;
+  content-visibility:visible!important;
+  will-change:auto!important;
+}
+</style>
+<script id="v531-heldenquartier-scroll-stability-js">
+(function(){
+  'use strict';
+  /*
+    IMPORTANT: V4.02 registered an anonymous scroll handler that calls the global
+    v126RepairCharacter(false). We cannot remove that anonymous handler now, but
+    we can retire its scroll/mutation work safely by replacing the global repair
+    function. Forced repairs (page open / visibility return) are still allowed.
+  */
+  let forcedRaf=0;
+  window.v126RepairCharacter=function(force=false){
+    if(!force)return; // no DOM rebuilding while the page is actively scrolling
+    if(forcedRaf)return;
+    forcedRaf=requestAnimationFrame(()=>{
+      forcedRaf=0;
+      const page=document.getElementById('character');
+      if(!page || !page.classList.contains('active'))return;
+      try{
+        const scene=page.querySelector('#v510HeroRoot .avatar-scene');
+        let img=scene?.querySelector('.v080-class-avatar-img');
+        const src=(typeof v080AvatarFor==='function')?v080AvatarFor(s.playerClass):'';
+        if(scene && src && (!img || (img.complete && img.naturalWidth===0))){
+          scene.innerHTML='<div class="v41-portrait"><img class="v080-class-avatar-img" alt="Grow Legends Charakter"></div>';
+          img=scene.querySelector('.v080-class-avatar-img');
+          img.src=src;
+        }
+        if(img){
+          img.loading='eager';
+          img.decoding='sync';
+          try{img.fetchPriority='high'}catch(e){}
+          img.style.setProperty('display','block','important');
+          img.style.setProperty('visibility','visible','important');
+          img.style.setProperty('opacity','1','important');
+        }
+      }catch(e){console.warn('V5.31 forced avatar repair',e)}
+    });
+  };
+
+  function harden(){
+    const root=document.querySelector('#character.v514-reference-hero #v510HeroRoot');
+    if(!root)return;
+    root.setAttribute('data-hero-layout','reference-v531');
+    const img=root.querySelector('.v080-class-avatar-img');
+    if(img){
+      img.loading='eager';
+      img.decoding='sync';
+      try{img.fetchPriority='high'}catch(e){}
+    }
+  }
+  window.v531HardenHero=harden;
+  harden();
+  document.addEventListener('DOMContentLoaded',()=>requestAnimationFrame(harden),{once:true});
+  window.addEventListener('pageshow',()=>requestAnimationFrame(()=>{harden();window.v126RepairCharacter(true)}),{passive:true});
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden)requestAnimationFrame(()=>{harden();window.v126RepairCharacter(true)})});
+  [120,500,1300,3000].forEach(ms=>setTimeout(harden,ms));
+})();
+</script>
+<!-- ===== /V5.31 HELDENQUARTIER SCROLL DOM-STABILITY FIX ===== -->
