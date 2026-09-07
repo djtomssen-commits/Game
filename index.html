@@ -89533,3 +89533,459 @@ html.v495-level-syncing #v420LevelUpOverlay{
 }
 </style>
 <!-- ===== /V5.41 ATTRIBUTE HEADER OVERLAP FIX ===== -->
+
+<!-- ===== V5.42 TALENTBAUM MOBILE TABS + GROW LEGENDS TREE ===== -->
+<style id="v542-talents-mobile-tree-css">
+/* Mobile-first talent tree: one active branch, no horizontal scrolling.
+   Cosmetic/UI ownership only; existing V314/V318/V319/V320 mechanics remain authoritative. */
+#character #v459PanelTalents,
+#character #v459PanelTalents > .card,
+#character #v459PanelTalents #skillTree{
+  min-width:0!important;
+  max-width:100%!important;
+  overflow-x:hidden!important;
+}
+#character #v459PanelTalents > .card:has(#skillTree){
+  position:relative!important;
+  overflow:hidden!important;
+  margin:0!important;
+  padding:0!important;
+  border:2px solid #76502a!important;
+  border-radius:14px!important;
+  background:
+    radial-gradient(circle at 50% 8%,rgba(68,140,54,.12),transparent 24%),
+    linear-gradient(180deg,#07120b 0%,#040906 100%)!important;
+  box-shadow:inset 0 0 0 1px rgba(210,158,75,.11),inset 0 0 36px rgba(0,0,0,.45),0 8px 20px rgba(0,0,0,.34)!important;
+}
+/* V5.42 owns the visible header inside #skillTree. Keep the legacy header as data-only. */
+#character #v459PanelTalents > .card:has(#skillTree) > .section-title{
+  position:absolute!important;
+  width:1px!important;height:1px!important;
+  overflow:hidden!important;
+  clip:rect(0 0 0 0)!important;
+  clip-path:inset(50%)!important;
+  white-space:nowrap!important;
+  margin:0!important;padding:0!important;border:0!important;
+}
+#character #skillTree{
+  display:block!important;
+  width:100%!important;
+  padding:0!important;
+  margin:0!important;
+  background:transparent!important;
+}
+#character #skillTree .v314-tree,
+#character #skillTree .v314-branch{overflow:visible!important;min-width:0!important;max-width:100%!important}
+
+/* ---------- TOP RPG HEADER ---------- */
+#character .v542-talent-head{
+  position:relative;
+  padding:10px 10px 9px;
+  border-bottom:1px solid #795127;
+  background:
+    radial-gradient(circle at 12% 54%,rgba(86,160,65,.12),transparent 23%),
+    radial-gradient(circle at 88% 48%,rgba(86,160,65,.10),transparent 21%),
+    linear-gradient(180deg,#101a10 0%,#071109 100%);
+  box-shadow:inset 0 -1px 0 rgba(220,168,88,.12);
+}
+#character .v542-talent-plaque{
+  position:relative;
+  width:min(78%,390px);
+  min-height:37px;
+  margin:0 auto 9px;
+  display:flex;align-items:center;justify-content:center;
+  padding:6px 28px;
+  border:1px solid #95612d;
+  border-radius:8px;
+  background:linear-gradient(180deg,#5e3518 0%,#3a1e0f 58%,#271309 100%);
+  color:#f1d18b;
+  font:900 20px/1 Georgia,serif;
+  letter-spacing:.04em;
+  text-align:center;
+  text-shadow:0 2px 0 #231006,0 0 10px rgba(221,169,83,.15);
+  box-shadow:inset 0 1px 0 rgba(255,216,137,.16),inset 0 -7px 15px rgba(0,0,0,.23),0 4px 10px rgba(0,0,0,.31);
+}
+#character .v542-talent-plaque::before,
+#character .v542-talent-plaque::after{
+  content:'';
+  position:absolute;top:50%;transform:translateY(-50%);
+  width:26px;height:13px;
+  border:1px solid #855628;
+  border-radius:7px;
+  background:linear-gradient(180deg,#5a3217,#2b160b);
+  z-index:-1;
+}
+#character .v542-talent-plaque::before{left:-18px}
+#character .v542-talent-plaque::after{right:-18px}
+#character .v542-talent-meta{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto;
+  align-items:center;
+  gap:8px;
+}
+#character .v542-class-line{min-width:0;padding:2px 2px}
+#character .v542-class-title{
+  color:#f1ead6;
+  font-size:13px;font-weight:1000;line-height:1.15;
+}
+#character .v542-class-title .leaf{color:#77d955;text-shadow:0 0 8px rgba(118,219,83,.22)}
+#character .v542-class-sub{
+  margin-top:3px;
+  color:#9fb2a0;
+  font-size:6.8px;line-height:1.25;font-weight:700;
+}
+#character .v542-earned{
+  margin-top:4px;
+  color:#d4d9ca;
+  font-size:6.6px;line-height:1.2;
+}
+#character .v542-earned b{color:#d9bc69}
+#character .v542-points{
+  min-width:82px;
+  padding:7px 10px 7px 34px;
+  position:relative;
+  border:1px solid #6d943e;
+  border-radius:13px;
+  background:radial-gradient(circle at 22% 50%,rgba(194,87,255,.20),transparent 26%),linear-gradient(180deg,#101a12,#080e0a);
+  color:#d7e3d2;
+  box-shadow:inset 0 0 12px rgba(0,0,0,.35),0 3px 9px rgba(0,0,0,.27);
+}
+#character .v542-points::before{
+  content:'✦';position:absolute;left:10px;top:50%;transform:translateY(-50%);
+  color:#d07cff;font-size:22px;text-shadow:0 0 10px #a842f1;
+}
+#character .v542-points span{display:block;font-size:6px;font-weight:900;line-height:1.1}
+#character .v542-points b{display:block;margin-top:1px;color:#fff;font-size:18px;line-height:1}
+
+/* ---------- BRANCH TABS ---------- */
+#character .v542-branch-tabs{
+  display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:5px!important;
+  margin:8px 8px 0!important;
+  padding:5px!important;
+  border:1px solid #6b4925!important;
+  border-radius:11px!important;
+  background:linear-gradient(180deg,#0c160f,#060b08)!important;
+  box-shadow:inset 0 1px 0 rgba(222,178,94,.09)!important;
+}
+#character .v542-branch-tab{
+  min-width:0!important;
+  min-height:49px!important;
+  padding:6px 4px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:3px!important;
+  border:1px solid #35503a!important;
+  border-radius:9px!important;
+  background:linear-gradient(180deg,#102017,#08110c)!important;
+  color:#d8e0d5!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.035),0 2px 6px rgba(0,0,0,.22)!important;
+  overflow:hidden!important;
+}
+#character .v542-branch-tab .v542-tab-icon{font-size:17px!important;line-height:1!important}
+#character .v542-branch-tab .v542-tab-name{
+  max-width:100%!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  white-space:nowrap!important;
+  font-size:7.2px!important;
+  line-height:1!important;
+  font-weight:1000!important;
+}
+#character .v542-branch-tab.active{
+  border-color:#d0bd58!important;
+  background:radial-gradient(circle at 50% 0,rgba(118,222,74,.18),transparent 54%),linear-gradient(180deg,#3d5d2a,#1e311a 72%,#142015)!important;
+  color:#fff2ac!important;
+  box-shadow:inset 0 1px 0 rgba(255,245,170,.18),0 0 0 1px rgba(215,190,80,.10),0 0 14px rgba(135,226,74,.18)!important;
+}
+
+/* ---------- ACTIVE BRANCH BANNER ---------- */
+#character .v542-branch-banner{
+  position:relative;
+  margin:7px 8px 0;
+  min-height:52px;
+  padding:8px 10px 8px 48px;
+  display:flex;align-items:center;justify-content:space-between;gap:8px;
+  border:1px solid #557a3d;
+  border-radius:10px;
+  background:radial-gradient(circle at 90% 50%,rgba(93,191,58,.12),transparent 26%),linear-gradient(90deg,#102516,#0a140d);
+  box-shadow:inset 0 1px 0 rgba(184,234,155,.07),0 3px 8px rgba(0,0,0,.23);
+}
+#character .v542-branch-banner::before{
+  content:attr(data-icon);
+  position:absolute;left:10px;top:50%;transform:translateY(-50%);
+  width:30px;height:30px;display:grid;place-items:center;
+  border:1px solid #5f7b47;border-radius:8px;background:#08110b;font-size:20px;
+}
+#character .v542-branch-banner b{display:block;color:#f1ead5;font-size:13px;line-height:1.05}
+#character .v542-branch-banner span{display:block;margin-top:3px;color:#9eb09d;font-size:6.6px;line-height:1.25}
+#character .v542-branch-count{flex:0 0 auto;color:#d9c276!important;font-size:7.2px!important;font-weight:1000!important;text-align:right}
+
+/* ---------- VERTICAL TREE ---------- */
+#character .v542-tree{
+  position:relative;
+  margin:7px 8px 0;
+  padding:4px 4px 3px 34px;
+  overflow:hidden;
+  background:
+    radial-gradient(circle at 50% 16%,rgba(65,139,53,.08),transparent 24%),
+    linear-gradient(180deg,rgba(7,18,10,.30),rgba(3,8,5,.18));
+}
+#character .v542-tree::before{
+  content:'';position:absolute;left:20px;top:11px;bottom:13px;width:3px;
+  border-radius:999px;
+  background:linear-gradient(180deg,#89ef60 0%,#4ba83d 54%,#284d2b 100%);
+  box-shadow:0 0 8px rgba(109,235,75,.26);
+}
+#character .v542-node{
+  --node-accent:#72c957;
+  position:relative;
+  width:100%;
+  min-width:0;
+  margin:0 0 9px;
+  padding:8px 8px 8px 45px;
+  border:1.5px solid #4d6f43;
+  border-radius:11px;
+  background:linear-gradient(150deg,#0e1a11 0%,#07100a 100%);
+  box-shadow:inset 0 0 14px rgba(0,0,0,.38),0 3px 8px rgba(0,0,0,.23);
+}
+#character .v542-node::before{
+  content:'';position:absolute;left:-15px;top:29px;width:15px;height:3px;
+  background:var(--node-accent);box-shadow:0 0 7px color-mix(in srgb,var(--node-accent) 55%,transparent);
+}
+#character .v542-node-icon{
+  position:absolute;left:7px;top:8px;
+  width:32px;height:32px;display:grid;place-items:center;
+  border:1px solid #6d4d2c;border-radius:8px;
+  background:radial-gradient(circle at 50% 35%,rgba(255,255,255,.06),transparent 40%),#08100b;
+  font-size:20px;line-height:1;
+  box-shadow:inset 0 0 10px rgba(0,0,0,.55),0 2px 6px rgba(0,0,0,.29);
+}
+#character .v542-node-head{display:flex;align-items:center;gap:7px;min-width:0}
+#character .v542-node-name{min-width:0;flex:1;color:#f0eadb;font-size:9px;line-height:1.15;font-weight:1000;overflow-wrap:anywhere}
+#character .v542-node-rank{flex:0 0 auto;color:#d9d6b7;font-size:7px;font-weight:900;white-space:nowrap}
+#character .v542-node.maxed,
+#character .v542-node.on{--node-accent:#83e75f;border-color:#75c95a;box-shadow:inset 0 0 16px rgba(79,177,61,.06),0 0 9px rgba(103,211,72,.10),0 3px 8px rgba(0,0,0,.25)}
+#character .v542-node.milestone{--node-accent:#d1ab4e;border-color:#806c3d;background:linear-gradient(150deg,#17180f,#0b1009)}
+#character .v542-node.milestone.on{--node-accent:#e2c257;border-color:#bc9e48;box-shadow:inset 0 0 15px rgba(188,147,48,.06),0 0 9px rgba(216,174,63,.10)}
+#character .v542-node.master{--node-accent:#d1a84b;border-color:#a07d32;background:radial-gradient(circle at 90% 0,rgba(217,166,55,.10),transparent 32%),linear-gradient(150deg,#201c0d,#0d1008)}
+#character .v542-node.locked{--node-accent:#405246;opacity:.52;filter:saturate(.58);border-color:#38463d!important;box-shadow:inset 0 0 14px rgba(0,0,0,.42)!important}
+#character .v542-node.locked::before{box-shadow:none!important}
+#character .v542-node .v320-point-info{
+  margin:6px 0!important;
+  padding:6px 7px!important;
+  border:1px solid #294c32!important;
+  border-radius:7px!important;
+  background:#09140d!important;
+  color:#c9d7cb!important;
+  font-size:6.8px!important;
+  line-height:1.36!important;
+  overflow-wrap:anywhere!important;
+}
+#character .v542-node .v320-point-info b{color:#7fe99d!important}
+#character .v542-node .v320-next{color:#e8c85f!important;margin-top:2px!important}
+#character .v542-node .v320-max{color:#7ee493!important;margin-top:2px!important}
+#character .v542-node-desc{
+  margin:6px 0;
+  color:#9ba89c;
+  font-size:6.5px;line-height:1.35;
+  overflow-wrap:anywhere;
+}
+#character .v542-node .btn{
+  width:100%!important;
+  min-width:0!important;
+  min-height:27px!important;
+  padding:5px 7px!important;
+  border-radius:8px!important;
+  font-size:6.4px!important;
+  line-height:1.15!important;
+  white-space:normal!important;
+}
+#character .v542-node .btn:not(:disabled){
+  border-color:#76a94f!important;
+  background:linear-gradient(180deg,#3c7436,#255527)!important;
+  color:#eaf8dc!important;
+  box-shadow:inset 0 1px 0 rgba(224,255,207,.10),0 2px 6px rgba(0,0,0,.22)!important;
+}
+#character .v542-node .btn:disabled{
+  opacity:.64!important;filter:none!important;
+  background:linear-gradient(180deg,#202821,#151b16)!important;
+  border-color:#39433b!important;color:#7e877f!important;
+}
+#character .v542-lock{margin-top:5px;color:#b9a26c;font-size:5.8px;text-align:center}
+#character .v542-status{
+  display:inline-flex;align-items:center;gap:3px;
+  margin-top:5px;color:#79df8c;font-size:6.1px;font-weight:900;
+}
+
+/* Reset becomes a strong footer action like the approved Grow Legends reference. */
+#character .v542-reset-wrap{
+  margin:5px 8px 10px;
+  padding:9px 8px 10px;
+  border-top:1px solid #5b4725;
+  text-align:center;
+}
+#character .v542-reset{
+  width:min(78%,360px)!important;
+  min-height:37px!important;
+  padding:7px 12px!important;
+  border:1px solid #648a58!important;
+  border-radius:11px!important;
+  background:linear-gradient(180deg,#183026,#0b1710)!important;
+  color:#eee9dc!important;
+  font-size:9px!important;
+  font-weight:1000!important;
+  box-shadow:inset 0 1px 0 rgba(218,245,204,.08),0 4px 10px rgba(0,0,0,.28)!important;
+}
+
+/* Explicitly kill legacy horizontal behaviour. */
+#character #skillTree .v314-tree{display:block!important;grid-template-columns:1fr!important;overflow-x:hidden!important}
+#character #skillTree .v314-branch{display:none!important}
+
+@media(max-width:390px){
+  #character .v542-talent-plaque{font-size:18px!important;min-height:34px!important;width:76%!important}
+  #character .v542-class-title{font-size:11.5px!important}
+  #character .v542-class-sub,#character .v542-earned{font-size:6.1px!important}
+  #character .v542-points{min-width:74px!important;padding-left:31px!important}
+  #character .v542-points b{font-size:16px!important}
+  #character .v542-branch-tab{min-height:45px!important}
+  #character .v542-branch-tab .v542-tab-name{font-size:6.5px!important}
+  #character .v542-branch-banner{padding-left:44px!important}
+  #character .v542-tree{padding-left:31px!important;margin-left:7px!important;margin-right:7px!important}
+  #character .v542-tree::before{left:18px!important}
+  #character .v542-node{padding-left:41px!important}
+  #character .v542-node-icon{width:29px!important;height:29px!important;font-size:18px!important}
+}
+</style>
+
+<script id="v542-talents-mobile-tree-js">
+(function(){
+  'use strict';
+  const selectedByClass=window.__v542TalentBranchByClass||(window.__v542TalentBranchByClass={});
+  const classLabel=()=>{try{return classes?.[s?.playerClass]?.name||({frost:'Frost-Todesritter'}[s?.playerClass])||String(s?.playerClass||'Klasse')}catch(e){return 'Klasse'}};
+  const esc542=x=>String(x??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+  const titleParts=b=>{
+    const raw=String(b?.title||'').trim();
+    const m=raw.match(/^(\S+)\s+(.+)$/u);
+    return m?{icon:m[1],name:m[2]}:{icon:b?.icon||'🌿',name:raw||'Talent'};
+  };
+  const segIcons={
+    wucht:['💥','🔨','💢','⚔️','☠️','💪','🪓'],
+    tank:['🛡️','🧱','❤️','💚','🌵','⛰️','🌳'],
+    rage:['🔥','🩸','⚔️','☠️','❤️‍🔥','😈','🔥'],
+    precision:['🎯','👁️','🏹','🎯','💀','🏹','⚡'],
+    dodge:['🍃','💨','🪽','↩️','🌑','👻','💨'],
+    salvo:['🏹','🏹','⚡','🎯','🌧️','🍃','♾️'],
+    magic:['🔮','💨','⚡','💥','🌿','🧪','✨'],
+    critmagic:['⚡','💥','✨','⛓️','⚡','💣','🌀'],
+    smoke:['🌫️','☠️','🛡️','🧪','🌫️','🛡️','💨'],
+    frostblade:['❄️','🗡️','❄️','💥','🧊','⚔️','🖤'],
+    iceguard:['🧊','🛡️','❄️','💥','🥶','💙','🧱'],
+    deathpact:['☠️','🩸','⚔️','👻','💀','🪦','🖤']
+  };
+  const mileIcons={
+    wucht:['⭐','💀','🌿','🩸','😡','🦬','👑'],
+    tank:['⭐','🐕','💚','🛡️','⛰️','🌳','👑'],
+    rage:['⭐','🩸','☠️','❤️‍🔥','😈','🔥','👑'],
+    frostblade:['⭐','❄️','💥','💙','🌪️','🖤','👑'],
+    iceguard:['⭐','🦴','🧊','🥶','💎','🪦','👑'],
+    deathpact:['⭐','🩸','⚔️','🖤','💀','🪦','👑']
+  };
+  function iconFor(b,kind,i){
+    if(kind==='m')return mileIcons[b.id]?.[i]||(i===6?'👑':'⭐');
+    return segIcons[b.id]?.[i]||b.icon||'🌿';
+  }
+  function branchId(){
+    const cls=String(s?.playerClass||'');
+    const branches=V314_BRANCHES?.[cls]||[];
+    const current=selectedByClass[cls];
+    return branches.some(b=>b.id===current)?current:(branches[0]?.id||'');
+  }
+  function select(id){
+    const cls=String(s?.playerClass||'');
+    const branches=V314_BRANCHES?.[cls]||[];
+    if(!branches.some(b=>b.id===id))return;
+    selectedByClass[cls]=id;
+    renderTree();
+  }
+  window.v542SelectTalentBranch=select;
+
+  function headerMarkup(branches,active){
+    const points=v314Available();
+    const spent=v314Spent();
+    const earned=v314Earned();
+    const cls=classLabel();
+    return `<div class="v542-talent-head">
+      <div class="v542-talent-plaque">KLASSEN-SKILLS</div>
+      <div class="v542-talent-meta">
+        <div class="v542-class-line">
+          <div class="v542-class-title"><span class="leaf">🌿</span> Talentbaum · ${esc542(cls)}</div>
+          <div class="v542-class-sub">1 Talentpunkt alle 2 Level · Meisterschaft bis Level 300</div>
+          <div class="v542-earned">Verfügbar: <b>${points}</b> · Verteilt: <b>${spent}</b> / ${earned} verdient</div>
+        </div>
+        <div class="v542-points"><span>Talentpunkte</span><b>${points}</b></div>
+      </div>
+    </div>
+    <nav class="v542-branch-tabs" aria-label="Talentbäume">
+      ${branches.map(b=>{const p=titleParts(b);return `<button type="button" class="v542-branch-tab ${b.id===active?'active':''}" onclick="v542SelectTalentBranch('${b.id}')"><span class="v542-tab-icon">${esc542(p.icon)}</span><span class="v542-tab-name">${esc542(p.name)}</span></button>`}).join('')}
+    </nav>`;
+  }
+  function normalNode(b,i){
+    const rank=v314Rank(b.id,'s',i),max=V314_SEG_RANKS[i],unlocked=v314NodeUnlocked(b.id,'s',i),maxed=rank>=max;
+    return `<article class="v542-node normal ${unlocked?'':'locked'} ${rank?'on':''} ${maxed?'maxed':''}">
+      <div class="v542-node-icon">${iconFor(b,'s',i)}</div>
+      <div class="v542-node-head"><div class="v542-node-name">${esc542(b.seg[i])}</div><div class="v542-node-rank">${rank}/${max}</div></div>
+      ${v320PointInfo(b.id,i,rank,max)}
+      ${maxed?'<div class="v542-status">✅ Maximale Stufe erreicht</div>':''}
+      <button class="btn secondary" onclick="v314Upgrade('${b.id}','s',${i})" ${!unlocked||maxed||v314Available()<1?'disabled':''}>+ Talentpunkt</button>
+    </article>`;
+  }
+  function milestoneNode(b,i){
+    const rank=v314Rank(b.id,'m',i),unlocked=v314NodeUnlocked(b.id,'m',i),master=i===6;
+    return `<article class="v542-node milestone ${master?'master':''} ${unlocked?'':'locked'} ${rank?'on':''}">
+      <div class="v542-node-icon">${iconFor(b,'m',i)}</div>
+      <div class="v542-node-head"><div class="v542-node-name">${esc542(b.mile[i])}</div><div class="v542-node-rank">${rank}/1</div></div>
+      <div class="v542-node-desc">${v314Desc(b.id,'m',i)}</div>
+      ${rank?'<div class="v542-status">✅ Freigeschaltet</div>':''}
+      <button class="btn ${master?'gold':'secondary'}" onclick="v314Upgrade('${b.id}','m',${i})" ${!unlocked||rank||v314Available()<1?'disabled':''}>${master?'Meistertalent lernen':'Freischalten'}</button>
+      ${!unlocked?`<div class="v542-lock">🔒 Level ${V314_LEVELS[i]} · ${V314_REQ[i]} Astpunkte</div>`:''}
+    </article>`;
+  }
+  function renderTree(){
+    const box=document.getElementById('skillTree');if(!box)return;
+    const oldPoint=document.getElementById('skillPoints');if(oldPoint)oldPoint.textContent=v314Available();
+    if(!s?.playerClass){box.innerHTML='<div class="empty" style="margin:10px">Wähle zuerst deine Klasse.</div>';return;}
+    const branches=V314_BRANCHES?.[s.playerClass]||[];
+    if(!branches.length){box.innerHTML='<div class="empty" style="margin:10px">Für diese Klasse ist noch kein Talentbaum verfügbar.</div>';return;}
+    const activeId=branchId();selectedByClass[String(s.playerClass)]=activeId;
+    const b=branches.find(x=>x.id===activeId)||branches[0];
+    const bp=titleParts(b);
+    const cost=Math.max(500,(Number(s.level)||1)*500);
+    const nodes=Array.from({length:7},(_,i)=>normalNode(b,i)+milestoneNode(b,i)).join('');
+    const frostNote=String(s.playerClass)==='frost'?'<div class="v542-node-desc" style="margin:8px 12px 0;padding:7px 8px;border:1px solid #376d7c;border-radius:8px;background:#09151a;color:#9ed6e3"><b style="color:#d5f7ff">❄️ Frost-Todesritter</b> · Eigener Talentbaum mit Kältemarken, Barrieren und Seelenschnitten.</div>':'';
+    box.innerHTML=headerMarkup(branches,b.id)+frostNote+`
+      <section class="v542-branch-banner" data-icon="${esc542(bp.icon)}">
+        <div><b>${esc542(bp.name)}</b><span>${esc542(b.theme)}</span></div>
+        <div class="v542-branch-count">${v314BranchSpent(b.id)}/100 Punkte</div>
+      </section>
+      <div class="v542-tree">${nodes}</div>
+      <div class="v542-reset-wrap"><button type="button" class="btn secondary v542-reset" onclick="v314Reset()">↻ Reset · ${cost.toLocaleString('de-DE')} Gold</button></div>`;
+  }
+  window.v542RenderTalentTree=renderTree;
+  try{renderSkillTree=renderTree;window.renderSkillTree=renderTree}catch(e){console.warn('V5.42 talent owner',e)}
+  function apply(){
+    try{renderTree()}catch(e){console.warn('V5.42 talent render',e)}
+  }
+  apply();
+  document.addEventListener('DOMContentLoaded',()=>requestAnimationFrame(apply),{once:true});
+  window.addEventListener('pageshow',()=>requestAnimationFrame(apply),{passive:true});
+  document.addEventListener('click',e=>{
+    if(e.target?.closest?.('#v459CharacterTabs [data-tab="talents"],#v514HeroTabs [data-tab="talents"]'))requestAnimationFrame(apply);
+  },true);
+  [150,600,1600].forEach(ms=>setTimeout(apply,ms));
+})();
+</script>
+<!-- ===== /V5.42 TALENTBAUM MOBILE TABS + GROW LEGENDS TREE ===== -->
