@@ -45665,45 +45665,45 @@ function historicalScriptCount(){if(historicCountCache!=null)return historicCoun
 
 <!-- ===== V4.159 Stable: single canonical attribute renderer ===== -->
 <style id="v4140-attribute-display-fix">
-#character.v459-character-hub #attrs{display:grid!important;grid-template-columns:1fr!important;gap:10px!important}
-#character.v459-character-hub #attrs > .v4140-attr{
+#character #attrs{display:grid!important;grid-template-columns:1fr!important;gap:10px!important}
+#character #attrs > .v4140-attr{
   position:relative!important;display:grid!important;grid-template-columns:58px minmax(0,1fr) 64px!important;
   align-items:center!important;gap:12px!important;min-height:118px!important;padding:14px!important;
   border:1px solid #34523b!important;border-radius:22px!important;background:linear-gradient(155deg,#102018,#07130d)!important;
   overflow:hidden!important;box-shadow:inset 0 0 18px rgba(74,150,82,.045)!important
 }
-#character.v459-character-hub #attrs > .v4140-attr.v4140-primary{
+#character #attrs > .v4140-attr.v4140-primary{
   border-color:#b86d2e!important;background:linear-gradient(155deg,#29180d,#151006)!important;
   box-shadow:inset 0 0 22px rgba(218,123,42,.10),0 0 12px rgba(218,123,42,.05)!important
 }
-#character.v459-character-hub .v4140-attr-icon{
+#character .v4140-attr-icon{
   width:58px;height:58px;display:grid;place-items:center;border-radius:50%;border:2px solid #31523b;
   background:#08110c;font-size:31px;line-height:1;box-shadow:inset 0 0 14px #0008
 }
-#character.v459-character-hub .v4140-primary .v4140-attr-icon{border-color:#a85b26}
-#character.v459-character-hub .v4140-attr-copy{min-width:0;align-self:center}
-#character.v459-character-hub .v4140-attr-name{font-size:14px!important;line-height:1.1;font-weight:950;color:#d8e5d5}
-#character.v459-character-hub .v4140-attr-value{margin-top:3px;font-size:28px!important;line-height:1;font-weight:1000;color:#f3f6ef}
-#character.v459-character-hub .v4140-attr-desc{margin-top:7px;font-size:9px!important;line-height:1.3;color:#849987}
-#character.v459-character-hub .v4140-attr-role{margin-top:9px;font-size:10px;font-weight:900;color:#829887}
-#character.v459-character-hub .v4140-primary .v4140-attr-role{color:#c79a70}
-#character.v459-character-hub .v4140-primary:before{
+#character .v4140-primary .v4140-attr-icon{border-color:#a85b26}
+#character .v4140-attr-copy{min-width:0;align-self:center}
+#character .v4140-attr-name{font-size:14px!important;line-height:1.1;font-weight:950;color:#d8e5d5}
+#character .v4140-attr-value{margin-top:3px;font-size:28px!important;line-height:1;font-weight:1000;color:#f3f6ef}
+#character .v4140-attr-desc{margin-top:7px;font-size:9px!important;line-height:1.3;color:#849987}
+#character .v4140-attr-role{margin-top:9px;font-size:10px;font-weight:900;color:#829887}
+#character .v4140-primary .v4140-attr-role{color:#c79a70}
+#character .v4140-primary:before{
   content:'HAUPTATTRIBUT';position:absolute;right:82px;top:13px;padding:3px 8px;border:1px solid #a65f2c;border-radius:999px;
   color:#e1ae76;background:#1d1008;font-size:7px;font-weight:1000;letter-spacing:.08em
 }
-#character.v459-character-hub #attrs > .v4140-attr > button{
+#character #attrs > .v4140-attr > button{
   justify-self:end!important;width:62px!important;height:62px!important;border:0!important;border-radius:18px!important;
   background:linear-gradient(180deg,#62705d,#485344)!important;color:#09100b!important;font-size:30px!important;font-weight:1000!important
 }
-#character.v459-character-hub #attrs > .v4140-attr > button:not(:disabled){background:linear-gradient(180deg,#79ca5c,#57a940)!important;cursor:pointer}
-#character.v459-character-hub #attrs > .v4140-attr > button:disabled{opacity:.56!important}
+#character #attrs > .v4140-attr > button:not(:disabled){background:linear-gradient(180deg,#79ca5c,#57a940)!important;cursor:pointer}
+#character #attrs > .v4140-attr > button:disabled{opacity:.56!important}
 /* Retire every historical attribute-row skin/clone inside the current hub. */
-#character.v459-character-hub #attrs > [data-v267-int]{display:none!important}
+#character #attrs > [data-v267-int]{display:none!important}
 @media(max-width:430px){
- #character.v459-character-hub #attrs > .v4140-attr{grid-template-columns:52px minmax(0,1fr) 58px!important;gap:9px!important;min-height:108px!important;padding:12px!important}
- #character.v459-character-hub .v4140-attr-icon{width:52px;height:52px;font-size:28px}
- #character.v459-character-hub #attrs > .v4140-attr > button{width:58px!important;height:58px!important}
- #character.v459-character-hub .v4140-primary:before{right:75px;top:11px;font-size:6px}
+ #character #attrs > .v4140-attr{grid-template-columns:52px minmax(0,1fr) 58px!important;gap:9px!important;min-height:108px!important;padding:12px!important}
+ #character .v4140-attr-icon{width:52px;height:52px;font-size:28px}
+ #character #attrs > .v4140-attr > button{width:58px!important;height:58px!important}
+ #character .v4140-primary:before{right:75px;top:11px;font-size:6px}
 }
 </style>
 <script id="v4140-attribute-display-owner">
@@ -66311,18 +66311,18 @@ create index if not exists player_messages_sender_idx on public.player_messages(
 .app > header .v358-logo::after{content:"V4.67"!important}
 
 /* Character page becomes one compact RPG hub instead of a long stack of cards. */
-#character.v459-character-hub{
+#character{
   padding:8px!important;
   overflow-x:hidden!important;
 }
-#character.v459-character-hub > .hero-card{
+#character > .hero-card{
   margin:0 0 9px!important;
   border:1px solid #3e5840!important;
   border-radius:18px!important;
   background:linear-gradient(180deg,#111c14,#09110c)!important;
   box-shadow:0 18px 40px #0008!important;
 }
-#character.v459-character-hub .character-stage{
+#character .character-stage{
   min-height:0!important;
   padding:9px 7px 7px!important;
   overflow:hidden!important;
@@ -66331,9 +66331,9 @@ create index if not exists player_messages_sender_idx on public.player_messages(
     radial-gradient(circle at 12% 12%,rgba(218,175,70,.08),transparent 26%),
     linear-gradient(180deg,#17251a,#0a120d 88%)!important;
 }
-#character.v459-character-hub .char-head{display:none!important}
-#character.v459-character-hub .char-head .tiny{font-size:8px!important;color:#89a18b!important}
-#character.v459-character-hub .equipment-grid{
+#character .char-head{display:none!important}
+#character .char-head .tiny{font-size:8px!important;color:#89a18b!important}
+#character .equipment-grid{
   display:grid!important;
   grid-template-columns:66px minmax(0,1fr) 66px!important;
   gap:7px!important;
@@ -66342,13 +66342,13 @@ create index if not exists player_messages_sender_idx on public.player_messages(
   width:100%!important;
   overflow:visible!important;
 }
-#character.v459-character-hub .equip-col{
+#character .equip-col{
   display:grid!important;
   grid-template-columns:1fr!important;
   gap:7px!important;
   min-width:0!important;
 }
-#character.v459-character-hub .slot{
+#character .slot{
   width:100%!important;
   min-width:0!important;
   min-height:64px!important;
@@ -66365,25 +66365,25 @@ create index if not exists player_messages_sender_idx on public.player_messages(
   background:radial-gradient(circle at 50% 22%,rgba(255,255,255,.05),transparent 35%),#0c1510!important;
   box-shadow:inset 0 0 18px #0007,0 4px 11px #0005!important;
 }
-#character.v459-character-hub .slot-icon{
+#character .slot-icon{
   width:auto!important;height:auto!important;min-height:27px!important;
   display:grid!important;place-items:center!important;
   font-size:25px!important;line-height:1!important;
   background:none!important;border:0!important;
 }
-#character.v459-character-hub .slot-label{
+#character .slot-label{
   font-size:6.2px!important;line-height:1!important;letter-spacing:.08em!important;
   color:#829484!important;text-align:center!important;
 }
 /* Slot detail belongs to the tap overlay, not the hero itself. */
-#character.v459-character-hub .slot-name,
-#character.v459-character-hub .slot > .tiny,
-#character.v459-character-hub .slot .slot-actions,
-#character.v459-character-hub .slot .v123-item-effects,
-#character.v459-character-hub .slot .set-tag,
-#character.v459-character-hub .slot .v296-mystic-special{display:none!important}
+#character .slot-name,
+#character .slot > .tiny,
+#character .slot .slot-actions,
+#character .slot .v123-item-effects,
+#character .slot .set-tag,
+#character .slot .v296-mystic-special{display:none!important}
 
-#character.v459-character-hub .center-hero{
+#character .center-hero{
   min-width:0!important;
   min-height:0!important;
   height:auto!important;
@@ -66392,53 +66392,53 @@ create index if not exists player_messages_sender_idx on public.player_messages(
   border-radius:16px!important;
   background:radial-gradient(circle at 50% 40%,rgba(99,206,83,.13),transparent 40%)!important;
 }
-#character.v459-character-hub .v123-gear-summary{display:none!important}
-#character.v459-character-hub .avatar-scene{
+#character .v123-gear-summary{display:none!important}
+#character .avatar-scene{
   width:100%!important;height:128px!important;min-height:0!important;
   overflow:hidden!important;display:flex!important;align-items:flex-end!important;justify-content:center!important;
 }
-#character.v459-character-hub .avatar-scene:before{
+#character .avatar-scene:before{
   width:126px!important;height:126px!important;bottom:0!important;
   background:radial-gradient(circle,rgba(103,215,83,.22),rgba(38,77,39,.08) 58%,transparent 72%)!important;
 }
-#character.v459-character-hub .class-avatar-big{font-size:82px!important;line-height:1!important}
-#character.v459-character-hub .v41-portrait{
+#character .class-avatar-big{font-size:82px!important;line-height:1!important}
+#character .v41-portrait{
   width:100%!important;max-width:145px!important;max-height:132px!important;
   transform:scale(.80)!important;transform-origin:center bottom!important;
 }
-#character.v459-character-hub .avatar-prop{font-size:38px!important;transform:scale(.76)!important}
-#character.v459-character-hub .avatar-leaf{font-size:24px!important;transform:scale(.78)!important}
-#character.v459-character-hub .center-name{
+#character .avatar-prop{font-size:38px!important;transform:scale(.76)!important}
+#character .avatar-leaf{font-size:24px!important;transform:scale(.78)!important}
+#character .center-name{
   margin-top:1px!important;font-size:17px!important;line-height:1.05!important;
   white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;
 }
-#character.v459-character-hub .center-class{font-size:7.3px!important;line-height:1.2!important;margin-top:2px!important}
-#character.v459-character-hub .level-shield{
+#character .center-class{font-size:7.3px!important;line-height:1.2!important;margin-top:2px!important}
+#character .level-shield{
   margin-top:5px!important;padding:4px 9px!important;border-radius:9px!important;font-size:8px!important;
 }
-#character.v459-character-hub .level-shield b{font-size:15px!important}
-#character.v459-character-hub .center-xp{max-width:170px!important;margin:5px auto 0!important}
-#character.v459-character-hub .center-xp-row{font-size:7px!important;margin-bottom:2px!important}
-#character.v459-character-hub .center-xp-track{height:8px!important}
-#character.v459-character-hub .center-hero > .char-sub{display:none!important}
-#character.v459-character-hub #v106BookBtn{
+#character .level-shield b{font-size:15px!important}
+#character .center-xp{max-width:170px!important;margin:5px auto 0!important}
+#character .center-xp-row{font-size:7px!important;margin-bottom:2px!important}
+#character .center-xp-track{height:8px!important}
+#character .center-hero > .char-sub{display:none!important}
+#character #v106BookBtn{
   transform:scale(.78)!important;transform-origin:center top!important;margin:3px auto -4px!important;
 }
 
 /* Former .char-bottom is intentionally renamed by V4.67 so V4.42/V4.44 cannot
    drag inventory/materials back into the hero during their old boot timers. */
-#character.v459-character-hub .v459-hero-bottom{
+#character .v459-hero-bottom{
   padding:8px!important;border-top:1px solid #304633!important;background:#0a120d!important;
 }
-#character.v459-character-hub .v459-hero-bottom .combat-row{
+#character .v459-hero-bottom .combat-row{
   display:grid!important;grid-template-columns:1fr 1fr!important;gap:7px!important;margin:0!important;
 }
-#character.v459-character-hub .v459-hero-bottom .combat-box{
+#character .v459-hero-bottom .combat-box{
   min-height:50px!important;padding:7px 8px!important;border-radius:11px!important;
   background:linear-gradient(180deg,#142019,#0c1410)!important;border:1px solid #334b37!important;
 }
-#character.v459-character-hub .v459-hero-bottom .combat-box span{font-size:7px!important}
-#character.v459-character-hub .v459-hero-bottom .combat-box b{font-size:16px!important}
+#character .v459-hero-bottom .combat-box span{font-size:7px!important}
+#character .v459-hero-bottom .combat-box b{font-size:16px!important}
 #v459SetSummary{
   display:flex;align-items:center;justify-content:center;gap:5px;flex-wrap:wrap;
   min-height:25px;margin-top:6px;padding:5px 7px;border:1px solid #304b35;border-radius:9px;
@@ -66480,15 +66480,15 @@ create index if not exists player_messages_sender_idx on public.player_messages(
   padding:5px 8px;border:1px solid #806b35;border-radius:999px;background:#1d180c;color:#e9cc6a;
   font-size:8px;font-weight:1000;white-space:nowrap;
 }
-#character.v459-character-hub #attrs{
+#character #attrs{
   display:grid!important;grid-template-columns:1fr!important;gap:6px!important;margin:0!important;
 }
-#character.v459-character-hub #attrs .attr{
+#character #attrs .attr{
   min-height:43px!important;padding:7px 9px!important;border-radius:10px!important;
   background:#0e1912!important;border:1px solid #314a35!important;
 }
-#character.v459-character-hub #attrs .attr span{font-size:10px!important}
-#character.v459-character-hub #attrs .attr button{width:31px!important;height:31px!important;border-radius:9px!important}
+#character #attrs .attr span{font-size:10px!important}
+#character #attrs .attr button{width:31px!important;height:31px!important;border-radius:9px!important}
 
 /* Set and class configuration stay available, but no longer occupy the page all the time. */
 .v459-extra{
@@ -66504,50 +66504,50 @@ create index if not exists player_messages_sender_idx on public.player_messages(
 .v459-extra > .card{margin:0!important;border:0!important;border-top:1px solid #2e4431!important;border-radius:0!important;box-shadow:none!important}
 
 /* Compact 3-column inventory. Card tap opens V4.67 detail sheet. */
-#character.v459-character-hub #inventory .inventory-grid{
+#character #inventory .inventory-grid{
   display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:6px!important;
 }
-#character.v459-character-hub #inventory .v268-sellbar{grid-column:1/-1!important;margin:0 0 2px!important}
-#character.v459-character-hub #inventory .inv-item{
+#character #inventory .v268-sellbar{grid-column:1/-1!important;margin:0 0 2px!important}
+#character #inventory .inv-item{
   min-width:0!important;min-height:102px!important;padding:8px 5px 7px!important;border-radius:12px!important;
   display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;
   cursor:pointer!important;overflow:hidden!important;text-align:center!important;
 }
-#character.v459-character-hub #inventory .inv-item .item-name{
+#character #inventory .inv-item .item-name{
   width:100%!important;margin:0!important;display:flex!important;flex-direction:column!important;align-items:center!important;
   gap:4px!important;font-size:7px!important;line-height:1.1!important;min-width:0!important;
 }
-#character.v459-character-hub #inventory .v459-inv-icon{font-size:27px!important;line-height:1!important;filter:drop-shadow(0 5px 5px #0008)}
-#character.v459-character-hub #inventory .v459-inv-name{
+#character #inventory .v459-inv-icon{font-size:27px!important;line-height:1!important;filter:drop-shadow(0 5px 5px #0008)}
+#character #inventory .v459-inv-name{
   width:100%;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;
   min-height:15px;font-size:7px;font-weight:900;overflow-wrap:anywhere;
 }
-#character.v459-character-hub #inventory .rarity-badge{
+#character #inventory .rarity-badge{
   margin-top:3px!important;padding:2px 5px!important;font-size:5.8px!important;border-radius:999px!important;
 }
-#character.v459-character-hub #inventory .v459-inv-level{
+#character #inventory .v459-inv-level{
   margin-top:4px;padding:2px 5px;border:1px solid #3d5940;border-radius:999px;background:#0a120d;
   color:#a9bcaa;font-size:6px;font-weight:900;
 }
-#character.v459-character-hub #inventory .item-bonus,
-#character.v459-character-hub #inventory .compare,
-#character.v459-character-hub #inventory .sell-price,
-#character.v459-character-hub #inventory .inv-actions,
-#character.v459-character-hub #inventory .set-tag,
-#character.v459-character-hub #inventory .v296-mystic-special{display:none!important}
-#character.v459-character-hub #inventory .v268-pick{
+#character #inventory .item-bonus,
+#character #inventory .compare,
+#character #inventory .sell-price,
+#character #inventory .inv-actions,
+#character #inventory .set-tag,
+#character #inventory .v296-mystic-special{display:none!important}
+#character #inventory .v268-pick{
   top:4px!important;right:4px!important;width:23px!important;height:23px!important;border-radius:7px!important;
 }
-#character.v459-character-hub #inventory .v268-pick input{width:14px!important;height:14px!important}
+#character #inventory .v268-pick input{width:14px!important;height:14px!important}
 
 /* Materials get their own tab and a denser grid, without changing apply handlers. */
-#character.v459-character-hub #v030Materials .inventory-grid{
+#character #v030Materials .inventory-grid{
   display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:7px!important;
 }
-#character.v459-character-hub #v030Materials .inv-item{min-width:0!important;padding:9px!important;border-radius:12px!important}
-#character.v459-character-hub #v030Materials .item-name{font-size:9px!important}
-#character.v459-character-hub #v030Materials .item-bonus{font-size:8px!important;line-height:1.25!important}
-#character.v459-character-hub #v030Materials .btn{font-size:8px!important;min-height:34px!important}
+#character #v030Materials .inv-item{min-width:0!important;padding:9px!important;border-radius:12px!important}
+#character #v030Materials .item-name{font-size:9px!important}
+#character #v030Materials .item-bonus{font-size:8px!important;line-height:1.25!important}
+#character #v030Materials .btn{font-size:8px!important;min-height:34px!important}
 
 /* Talent tree keeps every existing node/mechanic, but now owns the full content width. */
 #v459PanelTalents .card{padding:10px!important}
@@ -66579,23 +66579,23 @@ create index if not exists player_messages_sender_idx on public.player_messages(
 #v459InventorySheet .v445-compare{font-size:8px!important}
 
 @media(min-width:700px){
-  #character.v459-character-hub{max-width:760px!important;margin:0 auto!important}
-  #character.v459-character-hub .equipment-grid{grid-template-columns:82px minmax(0,1fr) 82px!important}
-  #character.v459-character-hub .slot{height:72px!important;min-height:72px!important}
-  #character.v459-character-hub .avatar-scene{height:150px!important}
-  #character.v459-character-hub #inventory .inventory-grid{grid-template-columns:repeat(4,minmax(0,1fr))!important}
+  #character{max-width:760px!important;margin:0 auto!important}
+  #character .equipment-grid{grid-template-columns:82px minmax(0,1fr) 82px!important}
+  #character .slot{height:72px!important;min-height:72px!important}
+  #character .avatar-scene{height:150px!important}
+  #character #inventory .inventory-grid{grid-template-columns:repeat(4,minmax(0,1fr))!important}
   #v459InventoryOverlay{align-items:center!important}
   #v459InventorySheet{border-radius:20px!important}
 }
 @media(max-width:380px){
-  #character.v459-character-hub .equipment-grid{grid-template-columns:59px minmax(0,1fr) 59px!important;gap:5px!important}
-  #character.v459-character-hub .slot{height:59px!important;min-height:59px!important}
-  #character.v459-character-hub .slot-icon{font-size:22px!important}
-  #character.v459-character-hub .avatar-scene{height:116px!important}
-  #character.v459-character-hub .class-avatar-big{font-size:74px!important}
+  #character .equipment-grid{grid-template-columns:59px minmax(0,1fr) 59px!important;gap:5px!important}
+  #character .slot{height:59px!important;min-height:59px!important}
+  #character .slot-icon{font-size:22px!important}
+  #character .avatar-scene{height:116px!important}
+  #character .class-avatar-big{font-size:74px!important}
   #v459CharacterTabs{gap:3px;padding:5px!important}
   #v459CharacterTabs button{font-size:6.4px!important}
-  #character.v459-character-hub #inventory .inv-item{min-height:96px!important}
+  #character #inventory .inv-item{min-height:96px!important}
 }
 </style>
 <script id="v459-character-hub">
@@ -66813,7 +66813,7 @@ create index if not exists player_messages_sender_idx on public.player_messages(
 <!-- ===== V4.67 Stable: hero stat cleanup + direct inventory better/worse indicators ===== -->
 <style id="v460-char-ui-css">
 .app > header .v358-logo::after{content:"V4.67"!important}
-#character.v459-character-hub .v459-hero-bottom .combat-box{
+#character .v459-hero-bottom .combat-box{
   position:relative!important;
   min-height:62px!important;
   padding:9px 10px!important;
@@ -66823,11 +66823,11 @@ create index if not exists player_messages_sender_idx on public.player_messages(
   align-items:flex-start!important;
   gap:3px!important;
 }
-#character.v459-character-hub .v459-hero-bottom .combat-box:before{
+#character .v459-hero-bottom .combat-box:before{
   content:none!important;
   display:none!important;
 }
-#character.v459-character-hub .v459-hero-bottom .combat-box span{
+#character .v459-hero-bottom .combat-box span{
   display:flex!important;
   align-items:center!important;
   gap:6px!important;
@@ -66836,7 +66836,7 @@ create index if not exists player_messages_sender_idx on public.player_messages(
   text-transform:uppercase!important;
   color:#91a592!important;
 }
-#character.v459-character-hub .v459-hero-bottom .combat-box span em{
+#character .v459-hero-bottom .combat-box span em{
   display:inline-grid!important;
   place-items:center!important;
   width:18px!important;
@@ -66848,20 +66848,20 @@ create index if not exists player_messages_sender_idx on public.player_messages(
   font-size:11px!important;
   line-height:1!important;
 }
-#character.v459-character-hub .v459-hero-bottom .combat-box b{
+#character .v459-hero-bottom .combat-box b{
   display:block!important;
   margin:0!important;
   line-height:1.05!important;
   font-size:20px!important;
 }
-#character.v459-character-hub .v459-hero-bottom .combat-box.hp b{color:#ef8f8f!important}
-#character.v459-character-hub .v459-hero-bottom .combat-box.power b{color:#e8bd58!important}
+#character .v459-hero-bottom .combat-box.hp b{color:#ef8f8f!important}
+#character .v459-hero-bottom .combat-box.power b{color:#e8bd58!important}
 
-#character.v459-character-hub #inventory .inv-item{
+#character #inventory .inv-item{
   position:relative!important;
   overflow:hidden!important;
 }
-#character.v459-character-hub #inventory .inv-item .v460-compare-flag{
+#character #inventory .inv-item .v460-compare-flag{
   position:absolute!important;
   left:7px!important;
   top:7px!important;
@@ -66881,56 +66881,56 @@ create index if not exists player_messages_sender_idx on public.player_messages(
   z-index:2!important;
   box-shadow:0 4px 10px rgba(0,0,0,.22)!important;
 }
-#character.v459-character-hub #inventory .inv-item .v460-compare-flag .v460-diff{
+#character #inventory .inv-item .v460-compare-flag .v460-diff{
   font-size:8px!important;
   font-weight:1000!important;
 }
-#character.v459-character-hub #inventory .inv-item .v460-compare-flag .v460-reason{
+#character #inventory .inv-item .v460-compare-flag .v460-reason{
   font-size:7px!important;
   color:#c6d2c6!important;
   white-space:nowrap!important;
   overflow:hidden!important;
   text-overflow:ellipsis!important;
 }
-#character.v459-character-hub #inventory .inv-item.v460-better{
+#character #inventory .inv-item.v460-better{
   border-color:#4b8b56!important;
   box-shadow:inset 0 0 0 1px rgba(97,198,113,.15),0 0 0 1px rgba(97,198,113,.08)!important;
 }
-#character.v459-character-hub #inventory .inv-item.v460-better::after,
-#character.v459-character-hub #inventory .inv-item.v460-worse::after,
-#character.v459-character-hub #inventory .inv-item.v460-same::after,
-#character.v459-character-hub #inventory .inv-item.v460-free::after{
+#character #inventory .inv-item.v460-better::after,
+#character #inventory .inv-item.v460-worse::after,
+#character #inventory .inv-item.v460-same::after,
+#character #inventory .inv-item.v460-free::after{
   content:'';
   position:absolute;
   left:0;top:0;bottom:0;
   width:4px;
   border-radius:12px 0 0 12px;
 }
-#character.v459-character-hub #inventory .inv-item.v460-better::after{background:#68d87a}
-#character.v459-character-hub #inventory .inv-item.v460-worse::after{background:#e27572}
-#character.v459-character-hub #inventory .inv-item.v460-same::after{background:#b8c0b5}
-#character.v459-character-hub #inventory .inv-item.v460-free::after{background:#e4ca77}
-#character.v459-character-hub #inventory .inv-item.v460-better .v460-compare-flag{
+#character #inventory .inv-item.v460-better::after{background:#68d87a}
+#character #inventory .inv-item.v460-worse::after{background:#e27572}
+#character #inventory .inv-item.v460-same::after{background:#b8c0b5}
+#character #inventory .inv-item.v460-free::after{background:#e4ca77}
+#character #inventory .inv-item.v460-better .v460-compare-flag{
   border-color:#456f4c!important;background:rgba(15,30,16,.92)!important;color:#97eca5!important;
 }
-#character.v459-character-hub #inventory .inv-item.v460-worse .v460-compare-flag{
+#character #inventory .inv-item.v460-worse .v460-compare-flag{
   border-color:#6a3d3a!important;background:rgba(32,13,13,.92)!important;color:#f0a29a!important;
 }
-#character.v459-character-hub #inventory .inv-item.v460-same .v460-compare-flag{
+#character #inventory .inv-item.v460-same .v460-compare-flag{
   border-color:#4a504a!important;background:rgba(19,22,19,.92)!important;color:#d1d8d1!important;
 }
-#character.v459-character-hub #inventory .inv-item.v460-free .v460-compare-flag{
+#character #inventory .inv-item.v460-free .v460-compare-flag{
   border-color:#706741!important;background:rgba(28,25,13,.92)!important;color:#ead98b!important;
 }
-#character.v459-character-hub #inventory .inv-item .item-name{
+#character #inventory .inv-item .item-name{
   padding-top:22px!important;
 }
-#character.v459-character-hub #inventory .v460-status-spacer{display:none}
+#character #inventory .v460-status-spacer{display:none}
 @media (max-width:420px){
-  #character.v459-character-hub .v459-hero-bottom .combat-box{min-height:58px!important;padding:8px 9px!important}
-  #character.v459-character-hub .v459-hero-bottom .combat-box b{font-size:18px!important}
-  #character.v459-character-hub #inventory .inv-item .v460-compare-flag{left:6px!important;top:6px!important;padding:2px 6px!important}
-  #character.v459-character-hub #inventory .inv-item .v460-compare-flag .v460-reason{max-width:72px!important}
+  #character .v459-hero-bottom .combat-box{min-height:58px!important;padding:8px 9px!important}
+  #character .v459-hero-bottom .combat-box b{font-size:18px!important}
+  #character #inventory .inv-item .v460-compare-flag{left:6px!important;top:6px!important;padding:2px 6px!important}
+  #character #inventory .inv-item .v460-compare-flag .v460-reason{max-width:72px!important}
 }
 </style>
 <script id="v460-char-ui-script">
@@ -66988,7 +66988,7 @@ create index if not exists player_messages_sender_idx on public.player_messages(
   }
 
   function fixHeroStats(){
-    const boxes=[...document.querySelectorAll('#character.v459-character-hub .v459-hero-bottom .combat-box')];
+    const boxes=[...document.querySelectorAll('#character .v459-hero-bottom .combat-box')];
     boxes.forEach((box,i)=>{
       box.classList.remove('hp','power');
       const label=box.querySelector('span');
@@ -67619,7 +67619,7 @@ create index if not exists player_messages_sender_idx on public.player_messages(
 #shop .shop-item .v41-shop-icon .v465-item-art{
   width:100%!important;height:100%!important;
 }
-#character.v459-character-hub #inventory .v459-inv-icon{
+#character #inventory .v459-inv-icon{
   width:52px!important;height:52px!important;
   display:grid!important;place-items:center!important;
   margin:0 auto 4px!important;
@@ -67627,14 +67627,14 @@ create index if not exists player_messages_sender_idx on public.player_messages(
   overflow:hidden!important;
   background:radial-gradient(circle,rgba(113,176,91,.12),transparent 70%)!important;
 }
-#character.v459-character-hub #inventory .v459-inv-icon .v465-item-art{
+#character #inventory .v459-inv-icon .v465-item-art{
   width:48px!important;height:48px!important;
 }
-#character.v459-character-hub .slot .slot-icon{
+#character .slot .slot-icon{
   display:grid!important;place-items:center!important;
   overflow:hidden!important;
 }
-#character.v459-character-hub .slot .slot-icon .v465-item-art{
+#character .slot .slot-icon .v465-item-art{
   width:42px!important;height:42px!important;
 }
 #v459InventorySheet .v459-sheet-icon{
@@ -67788,14 +67788,14 @@ create index if not exists player_messages_sender_idx on public.player_messages(
 .app > header .v358-logo::after{content:"V4.68"!important}
 .v466-item-art{display:block;width:100%;height:100%;object-fit:contain;pointer-events:none;user-select:none}
 #shop .shop-icon .v466-item-art,#shop .v41-shop-icon .v466-item-art{width:100%!important;height:100%!important}
-#character.v459-character-hub #inventory .v459-inv-icon .v466-item-art{width:43px!important;height:43px!important;margin:0 auto!important;filter:drop-shadow(0 5px 8px #0009)}
-#character.v459-character-hub .slot .slot-icon .v466-item-art{width:36px!important;height:36px!important;margin:0 auto!important;filter:drop-shadow(0 4px 6px #0009)}
+#character #inventory .v459-inv-icon .v466-item-art{width:43px!important;height:43px!important;margin:0 auto!important;filter:drop-shadow(0 5px 8px #0009)}
+#character .slot .slot-icon .v466-item-art{width:36px!important;height:36px!important;margin:0 auto!important;filter:drop-shadow(0 4px 6px #0009)}
 #v459InventorySheet .v459-sheet-icon .v466-item-art{width:76px!important;height:76px!important;margin:0 auto!important;filter:drop-shadow(0 7px 12px #000a)}
 #character #v030Materials .v466-material-artbox{width:54px;height:54px;margin:0 auto 6px;border-radius:12px;overflow:hidden;box-shadow:0 5px 13px #0007}
 #character #v030Materials .v466-material-artbox .v466-item-art{width:100%;height:100%}
 .v240-loot-icon .v466-item-art{width:58px!important;height:58px!important;display:block!important}
 .v466-set-mark{position:absolute;right:5px;bottom:5px;font-size:8px;font-weight:1000;letter-spacing:.04em;padding:2px 5px;border-radius:999px;background:#08100bcc;border:1px solid #70559a;color:#deb8ff;z-index:3}
-#character.v459-character-hub #inventory .inv-item{isolation:isolate}
+#character #inventory .inv-item{isolation:isolate}
 </style>
 <script id="v466-all-item-art-purchase-fix">
 (function(){
@@ -68319,8 +68319,8 @@ create index if not exists player_messages_sender_idx on public.player_messages(
 <!-- ===== V4.68 Stable: single authoritative item-art owner ===== -->
 <style id="v468-item-art-stability-css">
 .app > header .v358-logo::after{content:"V4.68"!important}
-#character.v459-character-hub #inventory .v459-inv-icon{contain:content!important}
-#character.v459-character-hub #inventory .v459-inv-icon > .v466-item-art{display:block!important;width:43px!important;height:43px!important;margin:auto!important}
+#character #inventory .v459-inv-icon{contain:content!important}
+#character #inventory .v459-inv-icon > .v466-item-art{display:block!important;width:43px!important;height:43px!important;margin:auto!important}
 </style>
 <script id="v468-single-item-art-owner">
 (function(){
@@ -68426,20 +68426,20 @@ create index if not exists player_messages_sender_idx on public.player_messages(
 <!-- ===== V4.70 Stable: character slot artwork + one canonical item comparison ===== -->
 <style id="v470-slot-art-comparison-css">
 .app > header .v358-logo::after{content:"V4.70"!important}
-#character.v459-character-hub .slot .slot-icon{
+#character .slot .slot-icon{
   width:42px!important;height:42px!important;min-width:42px!important;min-height:42px!important;
   display:grid!important;place-items:center!important;overflow:visible!important;
 }
-#character.v459-character-hub .slot .slot-icon > img.v466-item-art,
-#character.v459-character-hub .slot .slot-icon > img.v470-slot-art{
+#character .slot .slot-icon > img.v466-item-art,
+#character .slot .slot-icon > img.v470-slot-art{
   display:block!important;width:40px!important;height:40px!important;max-width:40px!important;max-height:40px!important;
   object-fit:contain!important;margin:0 auto!important;opacity:1!important;visibility:visible!important;
   filter:drop-shadow(0 5px 7px rgba(0,0,0,.72))!important;
 }
-#character.v459-character-hub .slot.v470-equipped{
+#character .slot.v470-equipped{
   background:radial-gradient(circle at 50% 28%,rgba(109,211,91,.10),transparent 52%),#0c1510!important;
 }
-#character.v459-character-hub #inventory .inv-item .v460-compare-flag.v470-final-compare{
+#character #inventory .inv-item .v460-compare-flag.v470-final-compare{
   z-index:5!important;
 }
 </style>
@@ -69562,23 +69562,23 @@ create index if not exists player_messages_sender_idx on public.player_messages(
 <style id="v480-auto-gear-material-css">
 .app > header .v358-logo::after{content:"V4.80"!important}
 .app > header .v366-ver::after,.app > header .v371-logo em::after,.app > header .v372-logo em::after{content:"V4.80"!important;font-size:5px!important;color:#63cdd1!important;font-style:normal!important;font-weight:900!important}
-#character.v459-character-hub .v480-auto-bar{
+#character .v480-auto-bar{
   display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;gap:8px!important;align-items:center!important;
   margin:0 0 9px!important;padding:8px!important;border:1px solid #405b35!important;border-radius:12px!important;
   background:linear-gradient(180deg,#172315,#0c150d)!important;box-shadow:inset 0 1px rgba(255,255,255,.025)!important;
 }
-#character.v459-character-hub .v480-auto-copy{min-width:0!important}
-#character.v459-character-hub .v480-auto-copy b{display:block!important;font-size:9px!important;color:#e7edd9!important;line-height:1.25!important}
-#character.v459-character-hub .v480-auto-copy span{display:block!important;margin-top:2px!important;font-size:7px!important;color:#8fa18e!important;line-height:1.3!important}
-#character.v459-character-hub .v480-auto-btn{
+#character .v480-auto-copy{min-width:0!important}
+#character .v480-auto-copy b{display:block!important;font-size:9px!important;color:#e7edd9!important;line-height:1.25!important}
+#character .v480-auto-copy span{display:block!important;margin-top:2px!important;font-size:7px!important;color:#8fa18e!important;line-height:1.3!important}
+#character .v480-auto-btn{
   min-width:128px!important;padding:8px 9px!important;border-radius:9px!important;font-size:7.6px!important;line-height:1.15!important;white-space:normal!important
 }
-#character.v459-character-hub #v480MaterialAutoBar{border-color:#5e5231!important;background:linear-gradient(180deg,#211c10,#121008)!important}
-#character.v459-character-hub #v480MaterialAutoBar .v480-auto-copy b{color:#f0dda1!important}
-#character.v459-character-hub #v480MaterialAutoBtn{background:linear-gradient(180deg,#d8bd67,#ab8337)!important;color:#211708!important}
+#character #v480MaterialAutoBar{border-color:#5e5231!important;background:linear-gradient(180deg,#211c10,#121008)!important}
+#character #v480MaterialAutoBar .v480-auto-copy b{color:#f0dda1!important}
+#character #v480MaterialAutoBtn{background:linear-gradient(180deg,#d8bd67,#ab8337)!important;color:#211708!important}
 @media(max-width:560px){
-  #character.v459-character-hub .v480-auto-bar{grid-template-columns:1fr!important}
-  #character.v459-character-hub .v480-auto-btn{width:100%!important;min-width:0!important;font-size:8px!important;padding:9px!important}
+  #character .v480-auto-bar{grid-template-columns:1fr!important}
+  #character .v480-auto-btn{width:100%!important;min-width:0!important;font-size:8px!important;padding:9px!important}
 }
 </style>
 <script id="v480-auto-gear-material-script">
@@ -83843,4 +83843,4 @@ html.v495-level-syncing #v420LevelUpOverlay{
 })();
 </script>
 <!-- ===== /V4.162 zentrale Aufmerksamkeits-Badges ===== -->
-\n<!-- ===== CHARACTER REDESIGN: Grow Legends ornate RPG hub ===== -->\n<style id="v500-character-redesign">\n/* Character page only. Logic/handlers remain untouched. */\n#character.v459-character-hub{\n  --char-gold:#b9893f;--char-gold2:#e2bd70;--char-green:#70df58;--char-deep:#071009;--char-panel:#0b1710;\n}\n/* Retire the duplicated old page banner/location chip; the hero owns the title now. */\n#character.v459-character-hub > .v052-scene-banner,\n#character.v459-character-hub > .v038-location{display:none!important}\n\n/* ===== HERO QUARTER ===== */\n#character.v459-character-hub .hero-card{\n  position:relative!important;overflow:hidden!important;padding:0!important;margin:0 0 10px!important;\n  border:2px solid #6d512c!important;border-radius:20px!important;\n  background:linear-gradient(180deg,#132219,#08100b 72%)!important;\n  box-shadow:0 14px 32px #000b,inset 0 0 42px rgba(71,142,60,.08)!important;\n}\n#character.v459-character-hub .hero-card:before{\n  content:'HELDENQUARTIER';display:block;position:relative;z-index:5;text-align:center;\n  padding:11px 12px 10px;border-bottom:2px solid #705329;\n  background:linear-gradient(180deg,#3a2112,#1b110b);\n  color:#f0cd86;font:1000 16px/1 Georgia,serif;letter-spacing:.06em;\n  text-shadow:0 2px #3d210b,0 0 12px rgba(231,182,92,.22);\n}\n#character.v459-character-hub .character-stage{\n  position:relative!important;min-height:520px!important;padding:15px 10px 10px!important;\n  background:\n    radial-gradient(circle at 50% 28%,rgba(87,177,65,.18),transparent 30%),\n    linear-gradient(90deg,rgba(45,86,39,.08) 1px,transparent 1px),\n    linear-gradient(0deg,rgba(45,86,39,.06) 1px,transparent 1px),\n    linear-gradient(180deg,#12271a,#08110c)!important;\n  background-size:auto,38px 38px,38px 38px,auto!important;\n}\n#character.v459-character-hub .char-head{display:none!important}\n#character.v459-character-hub .equipment-grid{\n  display:grid!important;grid-template-columns:82px minmax(0,1fr) 82px!important;gap:7px!important;align-items:start!important;\n}\n#character.v459-character-hub .equip-col{gap:8px!important}\n#character.v459-character-hub .slot{\n  min-height:100px!important;padding:6px!important;border-width:1.5px!important;border-radius:13px!important;\n  background:linear-gradient(180deg,rgba(14,25,17,.96),rgba(5,10,7,.98))!important;\n  box-shadow:0 7px 15px #0009,inset 0 0 16px rgba(255,255,255,.02)!important;\n}\n#character.v459-character-hub .slot-icon{font-size:0!important}\n#character.v459-character-hub .slot-icon img,\n#character.v459-character-hub .slot-icon .v41-badge-art,\n#character.v459-character-hub .slot-icon svg{width:54px!important;height:54px!important;object-fit:contain!important}\n#character.v459-character-hub .slot-label{font-size:7px!important;letter-spacing:.08em!important;color:#8a988b!important}\n#character.v459-character-hub .slot-name{font-size:7px!important;line-height:1.1!important;max-height:17px!important;overflow:hidden!important}\n\n#character.v459-character-hub .center-hero{min-height:410px!important;padding:0!important;display:flex!important;flex-direction:column!important;align-items:center!important}\n#character.v459-character-hub .avatar-scene{\n  height:220px!important;width:100%!important;align-items:flex-end!important;overflow:visible!important;\n  border-radius:18px!important;\n}\n#character.v459-character-hub .avatar-scene:before{\n  width:220px!important;height:220px!important;bottom:-4px!important;\n  background:radial-gradient(circle,#78d9583d 0,#20432933 50%,transparent 72%)!important;\n}\n#character.v459-character-hub .class-avatar-big img,\n#character.v459-character-hub .v080-class-avatar-img{\n  width:185px!important;height:220px!important;object-fit:cover!important;object-position:center 24%!important;border-radius:18px!important;\n  filter:drop-shadow(0 12px 10px #000b)!important;\n}\n#character.v459-character-hub .center-name{margin-top:7px!important;font-size:20px!important;line-height:1!important;color:#f4f1e7!important}\n#character.v459-character-hub .center-class{font-size:8.2px!important;letter-spacing:.11em!important;color:#83df65!important;margin-top:4px!important}\n#character.v459-character-hub .level-shield{\n  margin-top:8px!important;padding:5px 13px!important;border:2px solid #9c6b31!important;border-radius:9px!important;\n  background:linear-gradient(180deg,#442b16,#24170d)!important;box-shadow:0 4px 9px #0008!important;\n}\n#character.v459-character-hub .level-shield b{font-size:18px!important;color:#f1cc70!important}\n#character.v459-character-hub .center-xp{width:min(210px,92%)!important;max-width:none!important;margin:7px auto 0!important}\n#character.v459-character-hub .center-xp-track{height:9px!important;border-color:#516d47!important}\n#character.v459-character-hub #v106BookBtn{margin:7px auto 1px!important;transform:scale(.88)!important}\n\n#character.v459-character-hub .v459-hero-bottom{\n  padding:10px!important;border-top:2px solid #654b29!important;background:linear-gradient(180deg,#0a140d,#071009)!important;\n}\n#character.v459-character-hub .v459-hero-bottom .combat-row{gap:8px!important}\n#character.v459-character-hub .v459-hero-bottom .combat-box{\n  min-height:72px!important;padding:10px!important;border:1px solid #4b5b3b!important;border-radius:12px!important;\n  background:linear-gradient(180deg,#172219,#0b120d)!important;\n}\n#character.v459-character-hub .v459-hero-bottom .combat-box span{font-size:8px!important;letter-spacing:.07em!important}\n#character.v459-character-hub .v459-hero-bottom .combat-box b{font-size:24px!important}\n#v459SetSummary{margin-top:7px!important;min-height:34px!important;border-color:#4d603d!important;background:#0a160e!important;font-size:8px!important}\n\n/* ===== MAIN TABS ===== */\n#v459CharacterTabs{\n  position:sticky!important;top:64px!important;z-index:28!important;gap:6px!important;padding:7px!important;margin:0 0 10px!important;\n  border:1px solid #5e4b2f!important;border-radius:14px!important;background:rgba(7,14,9,.97)!important;\n  box-shadow:0 8px 24px #000a!important;backdrop-filter:blur(8px)!important;\n}\n#v459CharacterTabs button{\n  min-height:54px!important;border-radius:11px!important;background:linear-gradient(180deg,#142019,#0c1410)!important;color:#9ba99a!important;\n}\n#v459CharacterTabs button span{font-size:21px!important}\n#v459CharacterTabs button em{font-size:7.4px!important}\n#v459CharacterTabs button.active{\n  color:#f4edcf!important;border-color:#8daf55!important;background:linear-gradient(180deg,#29452b,#15251a)!important;\n  box-shadow:inset 0 0 18px rgba(104,215,77,.14),0 0 12px rgba(104,215,77,.12)!important;\n}\n\n/* ===== INVENTORY ===== */\n#v459PanelInventory .card,#character.v459-character-hub #inventory{\n  border:1px solid #5a4930!important;border-radius:16px!important;background:linear-gradient(180deg,#101b13,#08110c)!important;\n}\n#character.v459-character-hub #inventory .inventory-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:7px!important}\n#character.v459-character-hub #inventory .inv-item{\n  min-height:180px!important;padding:8px 5px 7px!important;border-radius:12px!important;\n  background:linear-gradient(180deg,#101a13,#070c09)!important;box-shadow:0 7px 14px #0008,inset 0 0 15px rgba(255,255,255,.02)!important;\n}\n#character.v459-character-hub #inventory .v459-inv-icon{font-size:32px!important}\n#character.v459-character-hub #inventory .v459-inv-name{font-size:7px!important;min-height:18px!important}\n#character.v459-character-hub #inventory .rarity-badge{font-size:6px!important;padding:2px 6px!important}\n#character.v459-character-hub #inventory .v459-inv-level{font-size:6px!important}\n#character.v459-character-hub .v480-auto-bar{\n  border-color:#6b5834!important;background:linear-gradient(180deg,#211a0f,#100d08)!important;padding:9px!important;border-radius:13px!important;\n}\n#character.v459-character-hub .v480-auto-btn{background:linear-gradient(180deg,#86dc62,#55a33e)!important;color:#081008!important}\n\n/* ===== ATTRIBUTES: compact RPG rows ===== */\n#v459AttrCard{border:1px solid #5d4a2d!important;border-radius:16px!important;background:linear-gradient(180deg,#101a13,#08110c)!important;padding:10px!important}\n#character.v459-character-hub #attrs{gap:7px!important}\n#character.v459-character-hub #attrs > .v4140-attr{\n  grid-template-columns:48px minmax(0,1fr) 52px!important;gap:9px!important;min-height:84px!important;padding:9px 10px!important;border-radius:16px!important;\n  background:linear-gradient(160deg,#122019,#08130d)!important;\n}\n#character.v459-character-hub #attrs > .v4140-attr.v4140-primary{background:linear-gradient(155deg,#2a170c,#130d07)!important;border-color:#a5622e!important}\n#character.v459-character-hub .v4140-attr-icon{width:46px!important;height:46px!important;font-size:25px!important}\n#character.v459-character-hub .v4140-attr-name{font-size:12px!important}\n#character.v459-character-hub .v4140-attr-value{font-size:23px!important;margin-top:1px!important}\n#character.v459-character-hub .v4140-attr-desc{font-size:7.5px!important;margin-top:4px!important}\n#character.v459-character-hub .v4140-attr-role{font-size:7.5px!important;margin-top:4px!important}\n#character.v459-character-hub #attrs > .v4140-attr > button{width:50px!important;height:50px!important;border-radius:14px!important;font-size:26px!important}\n#character.v459-character-hub .v4140-primary:before{right:66px!important;top:8px!important;font-size:5.5px!important;padding:2px 6px!important}\n\n/* ===== TALENT TREE: framed, connected, less form-like ===== */\n#v459PanelTalents .card{border:1px solid #5f4b2d!important;border-radius:16px!important;background:linear-gradient(180deg,#101b13,#08110c)!important;padding:11px!important}\n#v459PanelTalents .v314-tree{display:grid!important;grid-template-columns:1fr!important;gap:12px!important;overflow:visible!important}\n#v459PanelTalents .v314-branch{min-width:0!important;width:100%!important;padding:10px!important;border:1px solid #4d623c!important;border-radius:16px!important;background:linear-gradient(180deg,#132118,#09120d)!important}\n#v459PanelTalents .v314-branch-head{position:relative!important;top:auto!important;background:transparent!important}\n#v459PanelTalents .v314-node{\n  margin-bottom:15px!important;padding:10px!important;border-radius:13px!important;background:linear-gradient(180deg,#111b13,#09110c)!important;\n  box-shadow:0 5px 12px #0007!important;\n}\n#v459PanelTalents .v314-node:not(:last-child):after{height:16px!important;bottom:-16px!important;background:#608b49!important;box-shadow:0 0 7px rgba(100,209,77,.25)!important}\n#v459PanelTalents .v314-node.on{border-color:#77bd5d!important;box-shadow:inset 0 0 0 1px #77bd5d,0 0 14px rgba(111,210,82,.12)!important}\n#v459PanelTalents .v314-node-name{font-size:10px!important}\n#v459PanelTalents .v314-node-desc{font-size:8px!important}\n\n/* ===== MATERIALS: compact one-column equipment-like rows ===== */\n#v459PanelMaterials #v030Materials{border:1px solid #5b4931!important;border-radius:16px!important;background:linear-gradient(180deg,#101a13,#08110c)!important}\n#character.v459-character-hub #v030Materials .inventory-grid{grid-template-columns:1fr!important;gap:8px!important}\n#character.v459-character-hub #v030Materials .inv-item{\n  display:grid!important;grid-template-columns:72px minmax(0,1fr)!important;grid-template-rows:auto auto auto!important;column-gap:10px!important;\n  min-height:105px!important;padding:9px!important;border-radius:13px!important;background:linear-gradient(180deg,#111b13,#08100b)!important;\n}\n#character.v459-character-hub #v030Materials .inv-item .v41-badge-art,\n#character.v459-character-hub #v030Materials .inv-item img{grid-row:1/4!important;width:68px!important;height:68px!important;object-fit:contain!important;align-self:center!important}\n#character.v459-character-hub #v030Materials .item-name{font-size:10px!important;align-self:end!important}\n#character.v459-character-hub #v030Materials .item-bonus{font-size:8px!important;margin:2px 0 5px!important}\n#character.v459-character-hub #v030Materials .btn{grid-column:2!important;min-height:32px!important;font-size:7.5px!important}\n\n/* General section headers */\n#character.v459-character-hub .section-title h2,#character.v459-character-hub .v459-panel-head h2{font-family:Georgia,serif!important;color:#f0d39a!important;letter-spacing:-.01em!important}\n\n@media(max-width:430px){\n  #character.v459-character-hub .equipment-grid{grid-template-columns:74px minmax(0,1fr) 74px!important;gap:5px!important}\n  #character.v459-character-hub .slot{min-height:92px!important}\n  #character.v459-character-hub .class-avatar-big img,#character.v459-character-hub .v080-class-avatar-img{width:170px!important;height:205px!important}\n  #character.v459-character-hub .avatar-scene{height:205px!important}\n  #v459CharacterTabs{top:58px!important}\n  #character.v459-character-hub #inventory .inventory-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important}\n  #character.v459-character-hub #inventory .inv-item{min-height:168px!important}\n}\n</style>\n
+\n<!-- ===== CHARACTER REDESIGN: Grow Legends ornate RPG hub ===== -->\n<style id="v501-character-redesign-active">\n/* Character page only. Logic/handlers remain untouched. */\n#character{\n  --char-gold:#b9893f;--char-gold2:#e2bd70;--char-green:#70df58;--char-deep:#071009;--char-panel:#0b1710;\n}\n/* Retire the duplicated old page banner/location chip; the hero owns the title now. */\n#character > .v052-scene-banner,\n#character > .v038-location{display:none!important}\n\n/* ===== HERO QUARTER ===== */\n#character .hero-card{\n  position:relative!important;overflow:hidden!important;padding:0!important;margin:0 0 10px!important;\n  border:2px solid #6d512c!important;border-radius:20px!important;\n  background:linear-gradient(180deg,#132219,#08100b 72%)!important;\n  box-shadow:0 14px 32px #000b,inset 0 0 42px rgba(71,142,60,.08)!important;\n}\n#character .hero-card:before{\n  content:'HELDENQUARTIER';display:block;position:relative;z-index:5;text-align:center;\n  padding:11px 12px 10px;border-bottom:2px solid #705329;\n  background:linear-gradient(180deg,#3a2112,#1b110b);\n  color:#f0cd86;font:1000 16px/1 Georgia,serif;letter-spacing:.06em;\n  text-shadow:0 2px #3d210b,0 0 12px rgba(231,182,92,.22);\n}\n#character .character-stage{\n  position:relative!important;min-height:520px!important;padding:15px 10px 10px!important;\n  background:\n    radial-gradient(circle at 50% 28%,rgba(87,177,65,.18),transparent 30%),\n    linear-gradient(90deg,rgba(45,86,39,.08) 1px,transparent 1px),\n    linear-gradient(0deg,rgba(45,86,39,.06) 1px,transparent 1px),\n    linear-gradient(180deg,#12271a,#08110c)!important;\n  background-size:auto,38px 38px,38px 38px,auto!important;\n}\n#character .char-head{display:none!important}\n#character .equipment-grid{\n  display:grid!important;grid-template-columns:82px minmax(0,1fr) 82px!important;gap:7px!important;align-items:start!important;\n}\n#character .equip-col{gap:8px!important}\n#character .slot{\n  min-height:100px!important;padding:6px!important;border-width:1.5px!important;border-radius:13px!important;\n  background:linear-gradient(180deg,rgba(14,25,17,.96),rgba(5,10,7,.98))!important;\n  box-shadow:0 7px 15px #0009,inset 0 0 16px rgba(255,255,255,.02)!important;\n}\n#character .slot-icon{font-size:0!important}\n#character .slot-icon img,\n#character .slot-icon .v41-badge-art,\n#character .slot-icon svg{width:54px!important;height:54px!important;object-fit:contain!important}\n#character .slot-label{font-size:7px!important;letter-spacing:.08em!important;color:#8a988b!important}\n#character .slot-name{font-size:7px!important;line-height:1.1!important;max-height:17px!important;overflow:hidden!important}\n\n#character .center-hero{min-height:410px!important;padding:0!important;display:flex!important;flex-direction:column!important;align-items:center!important}\n#character .avatar-scene{\n  height:220px!important;width:100%!important;align-items:flex-end!important;overflow:visible!important;\n  border-radius:18px!important;\n}\n#character .avatar-scene:before{\n  width:220px!important;height:220px!important;bottom:-4px!important;\n  background:radial-gradient(circle,#78d9583d 0,#20432933 50%,transparent 72%)!important;\n}\n#character .class-avatar-big img,\n#character .v080-class-avatar-img{\n  width:185px!important;height:220px!important;object-fit:cover!important;object-position:center 24%!important;border-radius:18px!important;\n  filter:drop-shadow(0 12px 10px #000b)!important;\n}\n#character .center-name{margin-top:7px!important;font-size:20px!important;line-height:1!important;color:#f4f1e7!important}\n#character .center-class{font-size:8.2px!important;letter-spacing:.11em!important;color:#83df65!important;margin-top:4px!important}\n#character .level-shield{\n  margin-top:8px!important;padding:5px 13px!important;border:2px solid #9c6b31!important;border-radius:9px!important;\n  background:linear-gradient(180deg,#442b16,#24170d)!important;box-shadow:0 4px 9px #0008!important;\n}\n#character .level-shield b{font-size:18px!important;color:#f1cc70!important}\n#character .center-xp{width:min(210px,92%)!important;max-width:none!important;margin:7px auto 0!important}\n#character .center-xp-track{height:9px!important;border-color:#516d47!important}\n#character #v106BookBtn{margin:7px auto 1px!important;transform:scale(.88)!important}\n\n#character .v459-hero-bottom{\n  padding:10px!important;border-top:2px solid #654b29!important;background:linear-gradient(180deg,#0a140d,#071009)!important;\n}\n#character .v459-hero-bottom .combat-row{gap:8px!important}\n#character .v459-hero-bottom .combat-box{\n  min-height:72px!important;padding:10px!important;border:1px solid #4b5b3b!important;border-radius:12px!important;\n  background:linear-gradient(180deg,#172219,#0b120d)!important;\n}\n#character .v459-hero-bottom .combat-box span{font-size:8px!important;letter-spacing:.07em!important}\n#character .v459-hero-bottom .combat-box b{font-size:24px!important}\n#v459SetSummary{margin-top:7px!important;min-height:34px!important;border-color:#4d603d!important;background:#0a160e!important;font-size:8px!important}\n\n/* ===== MAIN TABS ===== */\n#v459CharacterTabs{\n  position:sticky!important;top:64px!important;z-index:28!important;gap:6px!important;padding:7px!important;margin:0 0 10px!important;\n  border:1px solid #5e4b2f!important;border-radius:14px!important;background:rgba(7,14,9,.97)!important;\n  box-shadow:0 8px 24px #000a!important;backdrop-filter:blur(8px)!important;\n}\n#v459CharacterTabs button{\n  min-height:54px!important;border-radius:11px!important;background:linear-gradient(180deg,#142019,#0c1410)!important;color:#9ba99a!important;\n}\n#v459CharacterTabs button span{font-size:21px!important}\n#v459CharacterTabs button em{font-size:7.4px!important}\n#v459CharacterTabs button.active{\n  color:#f4edcf!important;border-color:#8daf55!important;background:linear-gradient(180deg,#29452b,#15251a)!important;\n  box-shadow:inset 0 0 18px rgba(104,215,77,.14),0 0 12px rgba(104,215,77,.12)!important;\n}\n\n/* ===== INVENTORY ===== */\n#v459PanelInventory .card,#character #inventory{\n  border:1px solid #5a4930!important;border-radius:16px!important;background:linear-gradient(180deg,#101b13,#08110c)!important;\n}\n#character #inventory .inventory-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:7px!important}\n#character #inventory .inv-item{\n  min-height:180px!important;padding:8px 5px 7px!important;border-radius:12px!important;\n  background:linear-gradient(180deg,#101a13,#070c09)!important;box-shadow:0 7px 14px #0008,inset 0 0 15px rgba(255,255,255,.02)!important;\n}\n#character #inventory .v459-inv-icon{font-size:32px!important}\n#character #inventory .v459-inv-name{font-size:7px!important;min-height:18px!important}\n#character #inventory .rarity-badge{font-size:6px!important;padding:2px 6px!important}\n#character #inventory .v459-inv-level{font-size:6px!important}\n#character .v480-auto-bar{\n  border-color:#6b5834!important;background:linear-gradient(180deg,#211a0f,#100d08)!important;padding:9px!important;border-radius:13px!important;\n}\n#character .v480-auto-btn{background:linear-gradient(180deg,#86dc62,#55a33e)!important;color:#081008!important}\n\n/* ===== ATTRIBUTES: compact RPG rows ===== */\n#v459AttrCard{border:1px solid #5d4a2d!important;border-radius:16px!important;background:linear-gradient(180deg,#101a13,#08110c)!important;padding:10px!important}\n#character #attrs{gap:7px!important}\n#character #attrs > .v4140-attr{\n  grid-template-columns:48px minmax(0,1fr) 52px!important;gap:9px!important;min-height:84px!important;padding:9px 10px!important;border-radius:16px!important;\n  background:linear-gradient(160deg,#122019,#08130d)!important;\n}\n#character #attrs > .v4140-attr.v4140-primary{background:linear-gradient(155deg,#2a170c,#130d07)!important;border-color:#a5622e!important}\n#character .v4140-attr-icon{width:46px!important;height:46px!important;font-size:25px!important}\n#character .v4140-attr-name{font-size:12px!important}\n#character .v4140-attr-value{font-size:23px!important;margin-top:1px!important}\n#character .v4140-attr-desc{font-size:7.5px!important;margin-top:4px!important}\n#character .v4140-attr-role{font-size:7.5px!important;margin-top:4px!important}\n#character #attrs > .v4140-attr > button{width:50px!important;height:50px!important;border-radius:14px!important;font-size:26px!important}\n#character .v4140-primary:before{right:66px!important;top:8px!important;font-size:5.5px!important;padding:2px 6px!important}\n\n/* ===== TALENT TREE: framed, connected, less form-like ===== */\n#v459PanelTalents .card{border:1px solid #5f4b2d!important;border-radius:16px!important;background:linear-gradient(180deg,#101b13,#08110c)!important;padding:11px!important}\n#v459PanelTalents .v314-tree{display:grid!important;grid-template-columns:1fr!important;gap:12px!important;overflow:visible!important}\n#v459PanelTalents .v314-branch{min-width:0!important;width:100%!important;padding:10px!important;border:1px solid #4d623c!important;border-radius:16px!important;background:linear-gradient(180deg,#132118,#09120d)!important}\n#v459PanelTalents .v314-branch-head{position:relative!important;top:auto!important;background:transparent!important}\n#v459PanelTalents .v314-node{\n  margin-bottom:15px!important;padding:10px!important;border-radius:13px!important;background:linear-gradient(180deg,#111b13,#09110c)!important;\n  box-shadow:0 5px 12px #0007!important;\n}\n#v459PanelTalents .v314-node:not(:last-child):after{height:16px!important;bottom:-16px!important;background:#608b49!important;box-shadow:0 0 7px rgba(100,209,77,.25)!important}\n#v459PanelTalents .v314-node.on{border-color:#77bd5d!important;box-shadow:inset 0 0 0 1px #77bd5d,0 0 14px rgba(111,210,82,.12)!important}\n#v459PanelTalents .v314-node-name{font-size:10px!important}\n#v459PanelTalents .v314-node-desc{font-size:8px!important}\n\n/* ===== MATERIALS: compact one-column equipment-like rows ===== */\n#v459PanelMaterials #v030Materials{border:1px solid #5b4931!important;border-radius:16px!important;background:linear-gradient(180deg,#101a13,#08110c)!important}\n#character #v030Materials .inventory-grid{grid-template-columns:1fr!important;gap:8px!important}\n#character #v030Materials .inv-item{\n  display:grid!important;grid-template-columns:72px minmax(0,1fr)!important;grid-template-rows:auto auto auto!important;column-gap:10px!important;\n  min-height:105px!important;padding:9px!important;border-radius:13px!important;background:linear-gradient(180deg,#111b13,#08100b)!important;\n}\n#character #v030Materials .inv-item .v41-badge-art,\n#character #v030Materials .inv-item img{grid-row:1/4!important;width:68px!important;height:68px!important;object-fit:contain!important;align-self:center!important}\n#character #v030Materials .item-name{font-size:10px!important;align-self:end!important}\n#character #v030Materials .item-bonus{font-size:8px!important;margin:2px 0 5px!important}\n#character #v030Materials .btn{grid-column:2!important;min-height:32px!important;font-size:7.5px!important}\n\n/* General section headers */\n#character .section-title h2,#character .v459-panel-head h2{font-family:Georgia,serif!important;color:#f0d39a!important;letter-spacing:-.01em!important}\n\n@media(max-width:430px){\n  #character .equipment-grid{grid-template-columns:74px minmax(0,1fr) 74px!important;gap:5px!important}\n  #character .slot{min-height:92px!important}\n  #character .class-avatar-big img,#character .v080-class-avatar-img{width:170px!important;height:205px!important}\n  #character .avatar-scene{height:205px!important}\n  #v459CharacterTabs{top:58px!important}\n  #character #inventory .inventory-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important}\n  #character #inventory .inv-item{min-height:168px!important}\n}\n</style>\n
