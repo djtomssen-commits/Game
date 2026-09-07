@@ -86371,3 +86371,508 @@ html.v495-level-syncing #v420LevelUpOverlay{
 </script>
 <!-- ===== /V5.20 HELDENQUARTIER STATE + STAT CARD HARDENING ===== -->
 
+
+<!-- ===== V5.21 HELDENQUARTIER REFERENCE FRAME + PROPORTIONS ===== -->
+<style id="v521-heldenquartier-reference-frame-css">
+@media(max-width:430px){
+  /* The reference is a framed RPG panel, not a stack of plain rounded cards. */
+  #character.v514-reference-hero #v510HeroRoot{
+    position:relative!important;
+    border:1.5px solid #8d5a2b!important;
+    border-radius:4px!important;
+    outline:1px solid rgba(235,181,82,.16)!important;
+    outline-offset:-5px!important;
+    background:
+      linear-gradient(90deg,rgba(177,108,43,.12),transparent 7% 93%,rgba(177,108,43,.12)),
+      #061009!important;
+    box-shadow:
+      inset 0 0 0 3px #0a0c08,
+      inset 0 0 0 4px rgba(186,116,48,.34),
+      inset 0 0 30px #000c,
+      0 8px 18px #000a!important;
+    overflow:hidden!important;
+  }
+  #character.v514-reference-hero #v510HeroRoot:before,
+  #character.v514-reference-hero #v510HeroRoot:after{
+    content:'◆'!important;
+    position:absolute!important;
+    z-index:40!important;
+    top:6px!important;
+    color:#d59a4c!important;
+    font-size:7px!important;
+    text-shadow:0 1px 1px #000,0 0 5px rgba(255,181,73,.35)!important;
+    pointer-events:none!important;
+  }
+  #character.v514-reference-hero #v510HeroRoot:before{left:8px!important}
+  #character.v514-reference-hero #v510HeroRoot:after{right:8px!important}
+
+  /* Reference title: a carved central plaque with ornamental arms. */
+  #character.v514-reference-hero .v510-titlebar{
+    position:relative!important;
+    width:74%!important;
+    height:29px!important;
+    margin:2px auto 0!important;
+    padding:0 23px!important;
+    border:1px solid #9e6731!important;
+    border-radius:0!important;
+    clip-path:polygon(8% 0,92% 0,100% 50%,92% 100%,8% 100%,0 50%)!important;
+    background:
+      linear-gradient(90deg,rgba(255,210,110,.10),transparent 15% 85%,rgba(255,210,110,.10)),
+      linear-gradient(180deg,#543017 0%,#34200f 50%,#1d1108 100%)!important;
+    box-shadow:inset 0 0 0 1px rgba(243,205,132,.12),0 2px 5px #000b!important;
+    font-size:13.2px!important;
+    letter-spacing:.02em!important;
+  }
+  #character.v514-reference-hero .v510-titlebar::before,
+  #character.v514-reference-hero .v510-titlebar::after{
+    content:'✦'!important;
+    top:7px!important;
+    color:#d9a760!important;
+    font-size:8px!important;
+  }
+  #character.v514-reference-hero .v510-titlebar::before{left:13px!important}
+  #character.v514-reference-hero .v510-titlebar::after{right:13px!important}
+
+  #character.v514-reference-hero .v514-kicker{
+    height:16px!important;
+    margin-top:1px!important;
+    border-top:1px solid rgba(165,108,48,.32)!important;
+    border-bottom:1px solid rgba(165,108,48,.40)!important;
+    font-size:5px!important;
+    background:linear-gradient(180deg,#10311d,#07160d)!important;
+  }
+
+  /* Slightly shorter stage and smaller hero: the reference shows more frame around him. */
+  #character.v514-reference-hero .v510-stage{
+    padding:4px 7px 4px!important;
+    border-bottom:1px solid #704522!important;
+    background:
+      radial-gradient(circle at 4% 17%,rgba(255,132,28,.26),transparent 13%),
+      radial-gradient(circle at 96% 17%,rgba(255,132,28,.26),transparent 13%),
+      radial-gradient(ellipse at 50% 25%,rgba(86,196,66,.28),transparent 39%),
+      linear-gradient(90deg,#07130b 0 8%,rgba(7,19,11,.2) 18% 82%,#07130b 92% 100%),
+      linear-gradient(180deg,#184526 0%,#0b2917 50%,#06120b 100%)!important;
+  }
+  #character.v514-reference-hero .v510-layout{
+    grid-template-columns:58px minmax(0,1fr) 58px!important;
+    gap:1px!important;
+  }
+  #character.v514-reference-hero .v510-col{
+    gap:4px!important;
+    padding-top:4px!important;
+  }
+  #character.v514-reference-hero #v510HeroRoot .slot{
+    height:59px!important;
+    min-height:59px!important;
+    padding:3px 2px 12px!important;
+    border-radius:6px!important;
+    box-shadow:inset 0 0 12px #000e,0 0 6px color-mix(in srgb,var(--v514-rarity) 52%,transparent),0 3px 6px #000c!important;
+  }
+  #character.v514-reference-hero #v510HeroRoot .slot-icon,
+  #character.v514-reference-hero #v510HeroRoot .slot-icon img,
+  #character.v514-reference-hero #v510HeroRoot .slot-icon svg,
+  #character.v514-reference-hero #v510HeroRoot .slot-icon .v41-badge-art{
+    width:40px!important;height:40px!important;max-width:40px!important;max-height:40px!important;min-height:40px!important;
+  }
+  #character.v514-reference-hero .v514-slot-level{font-size:6px!important;bottom:2px!important}
+
+  #character.v514-reference-hero .v510-portrait{
+    height:180px!important;
+    margin:0 -28px!important;
+  }
+  #character.v514-reference-hero .v510-portrait::before{
+    width:212px!important;height:184px!important;bottom:-5px!important;
+    background:radial-gradient(ellipse 78% 84% at 50% 47%,rgba(97,215,74,.24),rgba(31,91,39,.08) 63%,transparent 84%)!important;
+  }
+  #character.v514-reference-hero #v510HeroRoot .avatar-scene,
+  #character.v514-reference-hero #v510HeroRoot .class-avatar-big,
+  #character.v514-reference-hero #v510HeroRoot .class-avatar-big img,
+  #character.v514-reference-hero #v510HeroRoot .v080-class-avatar-img,
+  #character.v514-reference-hero #v510HeroRoot .v41-portrait{
+    width:212px!important;height:184px!important;min-height:184px!important;max-width:none!important;
+  }
+  #character.v514-reference-hero #v510HeroRoot .v080-class-avatar-img,
+  #character.v514-reference-hero #v510HeroRoot .class-avatar-big img{
+    object-position:center 31%!important;
+    transform:scale(.98)!important;
+    -webkit-mask-image:radial-gradient(ellipse 83% 90% at 50% 48%,#000 0 58%,rgba(0,0,0,.98) 67%,rgba(0,0,0,.64) 78%,rgba(0,0,0,.18) 90%,transparent 100%)!important;
+    mask-image:radial-gradient(ellipse 83% 90% at 50% 48%,#000 0 58%,rgba(0,0,0,.98) 67%,rgba(0,0,0,.64) 78%,rgba(0,0,0,.18) 90%,transparent 100%)!important;
+  }
+  #character.v514-reference-hero #v510HeroRoot .center-name{
+    margin:-23px -29% 0!important;
+    font-size:15.5px!important;
+  }
+  #character.v514-reference-hero #v510HeroRoot .center-class{
+    margin-top:2px!important;
+    font-size:6px!important;
+  }
+
+  /* Notched level badge like the reference instead of a plain rectangle. */
+  #character.v514-reference-hero #v510HeroRoot .level-shield{
+    position:relative!important;
+    min-width:105px!important;
+    margin-top:4px!important;
+    padding:3px 12px!important;
+    border:1px solid #b07834!important;
+    border-radius:0!important;
+    clip-path:polygon(8% 0,92% 0,100% 50%,92% 100%,8% 100%,0 50%)!important;
+    background:linear-gradient(180deg,#603619,#3a200f 55%,#251409)!important;
+    box-shadow:inset 0 0 0 1px rgba(255,221,147,.14),0 2px 5px #000c!important;
+  }
+  #character.v514-reference-hero #v510HeroRoot .level-shield b{font-size:16.5px!important}
+  #character.v514-reference-hero #v510HeroRoot .center-xp{margin-top:3px!important}
+
+  /* Book / lower cards: stronger wood + metal separation from the stage. */
+  #character.v514-reference-hero .v514-book-host{
+    padding:5px 7px 4px!important;
+    border-top:1px solid rgba(162,100,43,.35)!important;
+    background:linear-gradient(180deg,#09120b,#071009)!important;
+  }
+  #character.v514-reference-hero #v106BookBtn{
+    min-height:40px!important;
+    border:1px solid #a16b34!important;
+    border-radius:5px!important;
+    background:linear-gradient(180deg,#653919,#40230f 55%,#2a170b)!important;
+    box-shadow:inset 0 0 0 1px rgba(255,214,134,.13),0 2px 5px #000b!important;
+  }
+  #character.v514-reference-hero .v510-footer{
+    padding:4px 7px 5px!important;
+    background:linear-gradient(180deg,#07110a,#050b07)!important;
+  }
+  #character.v514-reference-hero .v510-stats>.combat-box{
+    min-height:41px!important;
+    border-radius:6px!important;
+    border-color:#514b36!important;
+  }
+  #character.v514-reference-hero .v510-stats .combat-box::before{
+    width:26px!important;height:26px!important;font-size:14px!important;border-radius:6px!important;
+  }
+  #character.v514-reference-hero .v510-stats .combat-box span{font-size:5.9px!important}
+  #character.v514-reference-hero .v510-stats .combat-box b{font-size:16.5px!important}
+
+  #character.v514-reference-hero #v459SetSummary{min-height:26px!important;gap:4px!important;margin-top:4px!important}
+  #character.v514-reference-hero #v459SetSummary .v519-set-cell,
+  #character.v514-reference-hero #v459SetSummary .v519-talent-cell{min-height:26px!important;padding:3px 6px!important;border-radius:6px!important}
+  #character.v514-reference-hero .v514-passive-row{margin-top:4px!important;padding:4px 5px!important;border-radius:6px!important}
+  #character.v514-reference-hero .v514-nav-host{margin-top:4px!important;padding-top:4px!important;border-top:1px solid #8d5a2c!important}
+  #character.v514-reference-hero #v514HeroTabs{gap:4px!important}
+  #character.v514-reference-hero #v514HeroTabs button{min-height:38px!important;border-radius:6px!important}
+  #character.v514-reference-hero #v514HeroTabs button span{font-size:15px!important}
+  #character.v514-reference-hero #v514HeroTabs button em{font-size:5.8px!important}
+}
+
+@media(max-width:350px){
+  #character.v514-reference-hero .v510-titlebar{width:78%!important;font-size:12.4px!important}
+  #character.v514-reference-hero .v510-layout{grid-template-columns:54px minmax(0,1fr) 54px!important}
+  #character.v514-reference-hero #v510HeroRoot .slot{height:56px!important;min-height:56px!important}
+  #character.v514-reference-hero #v510HeroRoot .slot-icon,
+  #character.v514-reference-hero #v510HeroRoot .slot-icon img,
+  #character.v514-reference-hero #v510HeroRoot .slot-icon svg,
+  #character.v514-reference-hero #v510HeroRoot .slot-icon .v41-badge-art{width:38px!important;height:38px!important;max-width:38px!important;max-height:38px!important;min-height:38px!important}
+  #character.v514-reference-hero .v510-portrait{height:171px!important;margin-left:-25px!important;margin-right:-25px!important}
+  #character.v514-reference-hero #v510HeroRoot .avatar-scene,
+  #character.v514-reference-hero #v510HeroRoot .class-avatar-big,
+  #character.v514-reference-hero #v510HeroRoot .class-avatar-big img,
+  #character.v514-reference-hero #v510HeroRoot .v080-class-avatar-img,
+  #character.v514-reference-hero #v510HeroRoot .v41-portrait{width:202px!important;height:175px!important;min-height:175px!important}
+}
+</style>
+<script id="v521-heldenquartier-reference-frame-js">
+(function(){
+  'use strict';
+  function apply(){
+    const c=document.getElementById('character');if(!c)return;
+    c.classList.add('v521-reference-frame');
+    const root=c.querySelector('#v510HeroRoot');
+    if(root)root.setAttribute('data-hero-layout','reference-v521');
+    try{window.v519ApplyHero?.()}catch(e){}
+    try{window.v515PolishHero?.()}catch(e){}
+  }
+  window.v521ApplyHero=apply;
+  apply();
+  document.addEventListener('DOMContentLoaded',()=>requestAnimationFrame(apply),{once:true});
+  window.addEventListener('pageshow',()=>requestAnimationFrame(apply),{passive:true});
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden)requestAnimationFrame(apply)});
+  [80,220,550,1100,2200,4200].forEach(ms=>setTimeout(apply,ms));
+})();
+</script>
+<!-- ===== /V5.21 HELDENQUARTIER REFERENCE FRAME + PROPORTIONS ===== -->
+
+<!-- ===== V5.22 HELDENQUARTIER TRUE REFERENCE OWNERSHIP ===== -->
+<style id="v522-heldenquartier-true-reference-css">
+/* V5.22 deliberately has NO phone media-query gate. Previous visual passes were
+   sometimes hidden by the WebView's effective CSS viewport. This block owns
+   only the already-approved Heldenquartier shell and therefore must always win. */
+#character.v514-reference-hero{
+  padding:3px 5px 9px!important;
+  background:radial-gradient(circle at 50% 0,rgba(45,118,49,.10),transparent 31%),#020604!important;
+}
+#character.v514-reference-hero #v510HeroRoot{
+  position:relative!important;
+  overflow:hidden!important;
+  width:100%!important;
+  border:2px solid #8a592b!important;
+  border-radius:5px!important;
+  background:#07110a!important;
+  box-shadow:inset 0 0 0 1px #231409,inset 0 0 0 3px rgba(209,154,73,.08),0 7px 18px #000d!important;
+}
+#character.v514-reference-hero #v510HeroRoot::before,
+#character.v514-reference-hero #v510HeroRoot::after{
+  content:''!important;
+  position:absolute!important;
+  z-index:16!important;
+  pointer-events:none!important;
+  top:47px!important;
+  bottom:47px!important;
+  width:8px!important;
+  opacity:1!important;
+  border:0!important;
+  background:
+    radial-gradient(circle at 50% 4%,#e7ad56 0 5%,#6a421e 6% 12%,transparent 13%),
+    radial-gradient(circle at 50% 96%,#e7ad56 0 5%,#6a421e 6% 12%,transparent 13%),
+    repeating-linear-gradient(180deg,#211208 0 7px,#8c5628 8px 10px,#3b2110 11px 17px)!important;
+  box-shadow:0 0 0 1px #1b0e06,0 0 7px #000!important;
+}
+#character.v514-reference-hero #v510HeroRoot::before{left:4px!important}
+#character.v514-reference-hero #v510HeroRoot::after{right:4px!important}
+
+/* The reference uses a small ornamental plaque, not a full-width brown bar. */
+#character.v514-reference-hero .v510-titlebar{
+  position:relative!important;
+  z-index:20!important;
+  width:min(64%,300px)!important;
+  height:34px!important;
+  margin:5px auto 2px!important;
+  padding:0 30px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  border:1.5px solid #ac7336!important;
+  border-radius:0!important;
+  clip-path:polygon(8% 0,92% 0,100% 28%,96% 50%,100% 72%,92% 100%,8% 100%,0 72%,4% 50%,0 28%)!important;
+  background:linear-gradient(180deg,#5c3418 0%,#351d0d 58%,#1d0f07 100%)!important;
+  box-shadow:inset 0 0 0 1px rgba(255,227,158,.14),0 3px 7px #000c!important;
+  color:#f4d79a!important;
+  font:1000 14.6px/1 Georgia,serif!important;
+  letter-spacing:.025em!important;
+  text-shadow:0 2px 1px #130a04,0 0 8px rgba(217,157,68,.25)!important;
+  white-space:nowrap!important;
+  overflow:visible!important;
+}
+#character.v514-reference-hero .v510-titlebar::before,
+#character.v514-reference-hero .v510-titlebar::after{
+  content:''!important;
+  position:absolute!important;
+  top:3px!important;
+  width:42px!important;
+  height:28px!important;
+  opacity:1!important;
+  background-repeat:no-repeat!important;
+  background-position:center!important;
+  background-size:contain!important;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 40'%3E%3Cpath d='M63 20H43L34 6l-8 8-10-4-7 10 7 10 10-4 8 8 9-14h20' fill='%23311b0c' stroke='%23b97935' stroke-width='2'/%3E%3Cpath d='M44 20h15M29 14l7 6-7 6M16 14l7 6-7 6' fill='none' stroke='%23dfaa58' stroke-width='2'/%3E%3Ccircle cx='10' cy='20' r='3' fill='%2356c6aa' stroke='%23d6a45b' stroke-width='1.5'/%3E%3C/svg%3E")!important;
+}
+#character.v514-reference-hero .v510-titlebar::before{left:-35px!important;transform:none!important}
+#character.v514-reference-hero .v510-titlebar::after{right:-35px!important;transform:scaleX(-1)!important}
+#character.v514-reference-hero .v514-kicker{
+  height:18px!important;
+  margin-top:0!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  border-top:1px solid #654019!important;
+  border-bottom:1px solid #6d4721!important;
+  background:linear-gradient(180deg,#123820,#081a0f)!important;
+  color:#e7e9dd!important;
+  font-size:5.7px!important;
+  letter-spacing:.03em!important;
+}
+
+#character.v514-reference-hero .v510-stage{
+  position:relative!important;
+  z-index:2!important;
+  padding:6px 16px 5px!important;
+  border-bottom:1px solid #704722!important;
+  background:
+    radial-gradient(circle at 5% 18%,rgba(255,132,30,.32),transparent 12%),
+    radial-gradient(circle at 95% 18%,rgba(255,132,30,.32),transparent 12%),
+    radial-gradient(ellipse at 50% 28%,rgba(83,190,64,.34),transparent 47%),
+    linear-gradient(90deg,#07130b 0 8%,rgba(7,19,11,.12) 20% 80%,#07130b 92% 100%),
+    linear-gradient(180deg,#1a4b29 0%,#0b2a17 55%,#06120b 100%)!important;
+}
+#character.v514-reference-hero .v510-stage::before,
+#character.v514-reference-hero .v510-stage::after{
+  content:''!important;
+  position:absolute!important;
+  z-index:4!important;
+  top:2px!important;
+  width:22px!important;
+  height:76px!important;
+  opacity:.94!important;
+  pointer-events:none!important;
+  background-repeat:no-repeat!important;
+  background-size:contain!important;
+  filter:drop-shadow(0 0 5px #ff7718)!important;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 100'%3E%3Cdefs%3E%3CradialGradient id='g'%3E%3Cstop stop-color='%23fff3a0'/%3E%3Cstop offset='.35' stop-color='%23ffad1e'/%3E%3Cstop offset='1' stop-color='%23d63a00' stop-opacity='0'/%3E%3C/radialGradient%3E%3C/defs%3E%3Cellipse cx='16' cy='20' rx='14' ry='20' fill='url(%23g)'/%3E%3Cpath d='M12 33h8l3 42H9z' fill='%235b3418' stroke='%23bd7a32' stroke-width='2'/%3E%3Cpath d='M7 72h18v8H7z' fill='%2325140a' stroke='%23bd7a32' stroke-width='2'/%3E%3C/svg%3E")!important;
+}
+#character.v514-reference-hero .v510-stage::before{left:1px!important;transform:none!important}
+#character.v514-reference-hero .v510-stage::after{right:1px!important;transform:scaleX(-1)!important}
+#character.v514-reference-hero .v510-layout{
+  position:relative!important;
+  z-index:6!important;
+  grid-template-columns:58px minmax(0,1fr) 58px!important;
+  gap:2px!important;
+}
+#character.v514-reference-hero .v510-col{gap:4px!important;padding-top:5px!important}
+#character.v514-reference-hero #v510HeroRoot .slot{
+  height:60px!important;
+  min-height:60px!important;
+  padding:3px 2px 12px!important;
+  border-width:1.5px!important;
+  border-radius:6px!important;
+  background:linear-gradient(180deg,#101712,#050807)!important;
+  box-shadow:inset 0 0 12px #000f,0 0 7px color-mix(in srgb,var(--v514-rarity) 72%,transparent),0 2px 6px #000d!important;
+}
+#character.v514-reference-hero #v510HeroRoot .slot-icon,
+#character.v514-reference-hero #v510HeroRoot .slot-icon img,
+#character.v514-reference-hero #v510HeroRoot .slot-icon svg,
+#character.v514-reference-hero #v510HeroRoot .slot-icon .v41-badge-art{
+  width:41px!important;height:41px!important;max-width:41px!important;max-height:41px!important;min-height:41px!important;
+}
+#character.v514-reference-hero .v514-slot-level{font-size:6.2px!important;bottom:2px!important}
+
+/* Move the name upward and show more torso, like the approved reference. */
+#character.v514-reference-hero .v510-portrait{height:184px!important;margin:0 -28px!important;overflow:visible!important}
+#character.v514-reference-hero .v510-portrait::before{
+  width:214px!important;height:188px!important;bottom:-5px!important;
+  background:radial-gradient(ellipse 78% 84% at 50% 47%,rgba(100,217,74,.26),rgba(31,91,39,.08) 63%,transparent 84%)!important;
+}
+#character.v514-reference-hero #v510HeroRoot .avatar-scene,
+#character.v514-reference-hero #v510HeroRoot .class-avatar-big,
+#character.v514-reference-hero #v510HeroRoot .class-avatar-big img,
+#character.v514-reference-hero #v510HeroRoot .v080-class-avatar-img,
+#character.v514-reference-hero #v510HeroRoot .v41-portrait{
+  width:214px!important;height:188px!important;min-height:188px!important;max-width:none!important;
+}
+#character.v514-reference-hero #v510HeroRoot .v080-class-avatar-img,
+#character.v514-reference-hero #v510HeroRoot .class-avatar-big img{
+  object-fit:cover!important;
+  object-position:center 29%!important;
+  transform:scale(.97)!important;
+  transform-origin:center center!important;
+  -webkit-mask-image:radial-gradient(ellipse 86% 92% at 50% 48%,#000 0 61%,rgba(0,0,0,.94) 72%,rgba(0,0,0,.32) 90%,transparent 100%)!important;
+  mask-image:radial-gradient(ellipse 86% 92% at 50% 48%,#000 0 61%,rgba(0,0,0,.94) 72%,rgba(0,0,0,.32) 90%,transparent 100%)!important;
+  filter:drop-shadow(0 7px 7px #000d) saturate(1.08) contrast(1.03)!important;
+}
+#character.v514-reference-hero #v510HeroRoot .center-name{
+  margin:-37px -28% 0!important;
+  font-size:16.8px!important;
+  text-shadow:0 2px 3px #000,0 0 7px #000!important;
+}
+#character.v514-reference-hero #v510HeroRoot .center-class{margin-top:1px!important;font-size:6.3px!important}
+#character.v514-reference-hero #v510HeroRoot .level-shield{
+  min-width:100px!important;
+  margin-top:3px!important;
+  padding:3px 11px!important;
+  border:1px solid #b37b39!important;
+  border-radius:0!important;
+  clip-path:polygon(9% 0,91% 0,100% 50%,91% 100%,9% 100%,0 50%)!important;
+  background:linear-gradient(180deg,#5b3216,#351d0d 56%,#1d1008)!important;
+  box-shadow:inset 0 0 0 1px rgba(255,221,147,.13),0 2px 5px #000c!important;
+}
+#character.v514-reference-hero #v510HeroRoot .level-shield b{font-size:16px!important}
+#character.v514-reference-hero #v510HeroRoot .center-xp{width:min(170px,100%)!important;margin-top:3px!important}
+
+/* Lower reference stack */
+#character.v514-reference-hero .v514-book-host{padding:5px 8px 4px!important;border-top:1px solid #503316!important;background:linear-gradient(180deg,#09140c,#050c07)!important}
+#character.v514-reference-hero #v106BookBtn{
+  min-height:40px!important;
+  border:1px solid #a36d35!important;
+  border-radius:5px!important;
+  background:linear-gradient(180deg,#643718,#3d210e 58%,#251307)!important;
+  box-shadow:inset 0 0 0 1px rgba(255,216,141,.11),0 2px 5px #000b!important;
+}
+#character.v514-reference-hero #v106BookBtn .book{
+  position:relative!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  width:24px!important;height:30px!important;
+  margin-right:8px!important;
+  border:1px solid #b8894a!important;
+  border-radius:2px 4px 4px 2px!important;
+  background:linear-gradient(90deg,#4f2a12 0 14%,#c79a55 15% 88%,#8d6735 89%)!important;
+  box-shadow:inset 2px 0 0 rgba(255,238,181,.18),0 2px 3px #0008!important;
+  color:#69cf61!important;
+  font-size:11px!important;
+  transform:rotate(-3deg)!important;
+}
+#character.v514-reference-hero .v510-footer{padding:4px 8px 6px!important;background:linear-gradient(180deg,#07110a,#040a06)!important}
+#character.v514-reference-hero .v510-stats{gap:5px!important}
+#character.v514-reference-hero .v510-stats>.combat-box{
+  min-height:42px!important;
+  border:1px solid #5b4d34!important;
+  border-radius:5px!important;
+  background:linear-gradient(180deg,#0c1710,#07100b)!important;
+}
+#character.v514-reference-hero .v510-stats .combat-box::before{width:27px!important;height:27px!important;border-radius:5px!important}
+
+/* Reference has one continuous set/talent bar with a center divider. */
+#character.v514-reference-hero #v459SetSummary{
+  min-height:27px!important;
+  margin:4px 0 0!important;
+  padding:0!important;
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;
+  gap:0!important;
+  border:1px solid #3f553d!important;
+  border-radius:5px!important;
+  background:linear-gradient(180deg,#0d1910,#08110b)!important;
+  overflow:hidden!important;
+  box-shadow:inset 0 0 10px rgba(0,0,0,.5)!important;
+}
+#character.v514-reference-hero #v459SetSummary .v519-set-cell,
+#character.v514-reference-hero #v459SetSummary .v519-talent-cell{
+  min-width:0!important;
+  min-height:27px!important;
+  padding:4px 7px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:5px!important;
+  border:0!important;
+  border-radius:0!important;
+  background:none!important;
+  box-shadow:none!important;
+  color:#dce4d8!important;
+  font-size:6.4px!important;
+  line-height:1!important;
+  white-space:nowrap!important;
+}
+#character.v514-reference-hero #v459SetSummary .v519-set-cell{border-right:1px solid rgba(91,112,83,.52)!important}
+#character.v514-reference-hero .v514-passive-row{margin-top:4px!important;padding:4px 6px!important;border-radius:5px!important}
+#character.v514-reference-hero .v514-nav-host{margin-top:4px!important;padding-top:5px!important;border-top:1px solid #9d6b32!important}
+#character.v514-reference-hero #v514HeroTabs{gap:5px!important}
+#character.v514-reference-hero #v514HeroTabs button{min-height:39px!important;border-radius:5px!important}
+#character.v514-reference-hero #v514HeroTabs button.active{box-shadow:inset 0 0 18px rgba(114,190,53,.20),0 0 8px rgba(183,216,74,.14)!important}
+</style>
+<script id="v522-heldenquartier-true-reference-js">
+(function(){
+  'use strict';
+  function apply(){
+    const c=document.getElementById('character');if(!c)return;
+    c.classList.add('v514-reference-hero','v522-true-reference');
+    const root=c.querySelector('#v510HeroRoot');
+    if(root)root.setAttribute('data-hero-layout','reference-v522');
+    try{window.v519ApplyHero?.()}catch(e){}
+    try{window.v515PolishHero?.()}catch(e){}
+  }
+  window.v522ApplyHero=apply;
+  apply();
+  document.addEventListener('DOMContentLoaded',()=>requestAnimationFrame(apply),{once:true});
+  window.addEventListener('pageshow',()=>requestAnimationFrame(apply),{passive:true});
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden)requestAnimationFrame(apply)});
+  [80,220,550,1100,2200,4200].forEach(ms=>setTimeout(apply,ms));
+})();
+</script>
+<!-- ===== /V5.22 HELDENQUARTIER TRUE REFERENCE OWNERSHIP ===== -->
