@@ -38369,7 +38369,7 @@ setTimeout(()=>{
 
 
 <style id="v255-daily-guild-boss-style">
-.v255-boss-live{margin:0 0 10px;padding:13px;border:1px solid #3a4d3e;border-radius:15px;background:linear-gradient(180deg,#09110b,#070b08)}
+.v255-boss-live{margin:0 0 8px;padding:13px;border:1px solid #3a4d3e;border-radius:15px;background:linear-gradient(180deg,#09110b,#070b08)}
 .v255-boss-hp-head{display:flex;justify-content:space-between;gap:8px;align-items:center;font-size:8px;margin-bottom:6px}.v255-boss-hp-head span{font-weight:1000;color:#b985d5}
 .v255-hpbar{height:14px;border:1px solid #51365d;border-radius:99px;background:#160b19;overflow:hidden;box-shadow:inset 0 0 10px #000}.v255-hpbar i{display:block;width:100%;height:100%;background:linear-gradient(90deg,#74368f,#bd62e4);transition:width .5s ease}
 .v255-timeline{margin-top:10px;display:grid;gap:6px}.v255-fighter{display:grid;grid-template-columns:34px 1fr auto;gap:8px;align-items:center;padding:7px;border:1px solid #28392c;border-radius:10px;background:#0a120c}.v255-fighter img{width:32px;height:32px;border-radius:8px;object-fit:cover}.v255-fighter b,.v255-fighter small{display:block}.v255-fighter small{font-size:6px;color:#78867b;margin-top:2px}.v255-damage{font-size:8px;font-weight:1000;color:#ef9f72;text-align:right}.v255-rank{color:#87e96d!important}.v255-empty{padding:12px;text-align:center;color:#758179;font-size:8px}.v255-wide{width:100%;margin-top:9px}
@@ -40777,7 +40777,7 @@ header .resource-stats .v277-dampf-event-chip{
     gap:9px!important;
   }
   header .resource-stats .stat{
-    min-height:154px;
+    min-height:126px;
     padding:15px 11px 13px 70px!important;
   }
   header .resource-stats .stat:before,
@@ -88356,7 +88356,7 @@ html.v495-level-syncing #v420LevelUpOverlay{
   --v533-rar:#aeb7b2;
   position:relative!important;
   min-width:0!important;
-  min-height:146px!important;
+  min-height:120px!important;
   padding:31px 6px 9px!important;
   display:flex!important;
   flex-direction:column!important;
@@ -88481,7 +88481,7 @@ html.v495-level-syncing #v420LevelUpOverlay{
 
 /* Decorative empty slots from preview: non-clickable, never enter game data. */
 #character .v533-empty-slot{
-  min-height:146px!important;
+  min-height:120px!important;
   display:flex!important;
   flex-direction:column!important;
   align-items:center!important;
@@ -89767,7 +89767,7 @@ html.v495-level-syncing #v420LevelUpOverlay{
   --node-accent:#78d55c;
   position:relative;
   min-width:0;
-  min-height:154px;
+  min-height:126px;
   padding:8px 8px 7px 42px;
   border:1.5px solid #4e7043;
   border-radius:12px;
@@ -89828,8 +89828,8 @@ html.v495-level-syncing #v420LevelUpOverlay{
 #character .v543-node.locked::before{box-shadow:none!important}
 #character .v543-node .v320-point-info,
 #character .v543-node-desc{
-  margin:0 0 6px!important;
-  padding:6px 6px!important;
+  margin:0 0 5px!important;
+  padding:5px 6px!important;
   border:1px solid rgba(89,124,86,.45)!important;
   border-radius:9px!important;
   background:linear-gradient(180deg,rgba(10,22,12,.90),rgba(6,13,8,.88))!important;
@@ -89924,7 +89924,7 @@ html.v495-level-syncing #v420LevelUpOverlay{
   #character .v543-tab-name{font-size:6.4px!important}
   #character .v543-banner{padding-left:46px!important}
   #character .v543-row{grid-template-columns:minmax(0,1fr) 14px minmax(0,1fr)!important;gap:4px!important}
-  #character .v543-node{min-height:146px!important;padding-left:39px!important}
+  #character .v543-node{min-height:120px!important;padding-left:39px!important}
   #character .v543-node-icon{width:26px!important;height:26px!important;font-size:17px!important}
   #character .v543-node-name{font-size:7.4px!important}
   #character .v543-node .v320-point-info,
@@ -90023,7 +90023,7 @@ html.v495-level-syncing #v420LevelUpOverlay{
   }
   function normalNode(b,i){
     const rank=v314Rank(b.id,'s',i),max=V314_SEG_RANKS[i],unlocked=v314NodeUnlocked(b.id,'s',i),maxed=rank>=max;
-    const status=maxed?'<div class="v543-state">Maximale Stufe erreicht</div>':'';
+    const action=maxed?'':`<button class="btn secondary" onclick="v314Upgrade('${b.id}','s',${i})" ${!unlocked||v314Available()<1?'disabled':''}>${unlocked?'+ Talentpunkt':'Gesperrt'}</button>`;
     return `<article class="v543-node left normal ${unlocked?'':'locked'} ${rank?'active':''} ${maxed?'maxed':''}">
       <div class="v543-node-icon">${iconFor(b,'s',i)}</div>
       <div class="v543-node-head">
@@ -90031,13 +90031,13 @@ html.v495-level-syncing #v420LevelUpOverlay{
         <div class="v543-node-rank">${rank}/${max}</div>
       </div>
       ${v320PointInfo(b.id,i,rank,max)}
-      ${status}
-      <button class="btn secondary" onclick="v314Upgrade('${b.id}','s',${i})" ${!unlocked||maxed||v314Available()<1?'disabled':''}>${buttonLabelNormal(unlocked,maxed)}</button>
+      ${action}
     </article>`;
   }
   function milestoneNode(b,i){
     const rank=v314Rank(b.id,'m',i),unlocked=v314NodeUnlocked(b.id,'m',i),master=i===6;
     const status=rank?`<div class="v543-state">${master?'Meistertalent aktiv':'Freigeschaltet'}</div>`:(!unlocked?`<div class="v543-lock">🔒 Level ${V314_LEVELS[i]} · ${V314_REQ[i]} Astpunkte</div>`:'');
+    const action=rank?'':`<button class="btn ${master?'gold':'secondary'}" onclick="v314Upgrade('${b.id}','m',${i})" ${!unlocked||v314Available()<1?'disabled':''}>${unlocked?(master?'Meistertalent lernen':'Freischalten'):'Gesperrt'}</button>`;
     return `<article class="v543-node right milestone ${master?'master':''} ${unlocked?'':'locked'} ${rank?'active':''}">
       <div class="v543-node-icon">${iconFor(b,'m',i)}</div>
       <div class="v543-node-head">
@@ -90046,7 +90046,7 @@ html.v495-level-syncing #v420LevelUpOverlay{
       </div>
       <div class="v543-node-desc">${v314Desc(b.id,'m',i)}</div>
       ${status}
-      <button class="btn ${master?'gold':'secondary'}" onclick="v314Upgrade('${b.id}','m',${i})" ${!unlocked||rank||v314Available()<1?'disabled':''}>${buttonLabelMilestone(unlocked,rank,master)}</button>
+      ${action}
     </article>`;
   }
   function rowMarkup(b,i){
@@ -90089,3 +90089,24 @@ html.v495-level-syncing #v420LevelUpOverlay{
 </script>
 <!-- ===== /V5.43 TALENTBAUM MOBILE TABS + GROW LEGENDS TREE ===== -->
 
+
+
+<!-- ===== V5.44 TALENTBAUM CLEANUP ===== -->
+<style id="v544-talents-cleanup-css">
+#character .v543-node.maxed,
+#character .v543-node.milestone.active{
+  min-height:112px!important;
+}
+#character .v543-node.maxed .v320-point-info,
+#character .v543-node.milestone.active .v543-node-desc{
+  margin-bottom:5px!important;
+}
+#character .v543-node.maxed .v543-node-head,
+#character .v543-node.milestone.active .v543-node-head{
+  margin-bottom:4px!important;
+}
+#character .v543-state{
+  margin-bottom:0!important;
+}
+</style>
+<!-- ===== /V5.44 TALENTBAUM CLEANUP ===== -->
