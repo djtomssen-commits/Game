@@ -88149,3 +88149,535 @@ html.v495-level-syncing #v420LevelUpOverlay{
 }
 </style>
 <!-- ===== /V5.32 HELDENQUARTIER FINAL VISUAL POLISH (CSS ONLY) ===== -->
+
+<!-- ===== V5.33 INVENTAR REFERENCE REBUILD ===== -->
+<style id="v533-inventory-reference-css">
+/* Visual rebuild only. Existing inventory/equip/sell functions remain owners of data. */
+#character #v459PanelInventory{
+  min-width:0!important;
+}
+#character #v459PanelInventory > #v480EquipAutoBar{
+  display:none!important;
+}
+#character #v459PanelInventory > .card.v533-inv-card{
+  position:relative!important;
+  overflow:hidden!important;
+  margin:0 0 10px!important;
+  padding:0 10px 11px!important;
+  border:2px solid #754a24!important;
+  border-radius:13px!important;
+  background:
+    radial-gradient(circle at 50% 0,rgba(77,142,67,.12),transparent 32%),
+    linear-gradient(180deg,#0b1710 0%,#071009 100%)!important;
+  box-shadow:inset 0 0 0 1px rgba(210,158,75,.11),inset 0 0 28px rgba(0,0,0,.35),0 8px 20px rgba(0,0,0,.35)!important;
+}
+#character .v533-inv-card > .section-title{
+  display:none!important;
+}
+
+/* Header from the approved inventory preview. */
+#character .v533-inv-head{
+  position:relative;
+  margin:0 -10px 9px;
+  min-height:92px;
+  padding:12px 13px 11px 72px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  border-bottom:2px solid #754a24;
+  background:
+    radial-gradient(circle at 12% 50%,rgba(139,94,40,.22),transparent 24%),
+    radial-gradient(circle at 90% 35%,rgba(93,160,65,.13),transparent 25%),
+    linear-gradient(180deg,#1c2215 0%,#0b140d 100%);
+  box-shadow:inset 0 -1px 0 rgba(224,174,92,.12);
+}
+#character .v533-inv-head::before{
+  content:'🎒';
+  position:absolute;
+  left:16px;top:50%;transform:translateY(-50%);
+  width:45px;height:52px;
+  display:grid;place-items:center;
+  border:1px solid #74502b;
+  border-radius:11px;
+  background:linear-gradient(180deg,#412915,#1c120a);
+  font-size:27px;
+  box-shadow:inset 0 0 12px #0008,0 3px 9px #0008;
+}
+#character .v533-inv-title-wrap{min-width:0;flex:1}
+#character .v533-inv-title{
+  margin:0;
+  color:#f0cf83;
+  font:900 27px/1 Georgia,serif;
+  letter-spacing:.035em;
+  text-shadow:0 2px 0 #2b1609,0 0 12px rgba(211,156,70,.18);
+}
+#character .v533-inv-sub{
+  margin-top:6px;
+  color:#a9b9a4;
+  font-size:7px;
+  line-height:1.2;
+  font-weight:900;
+  letter-spacing:.075em;
+  text-transform:uppercase;
+}
+#character .v533-inv-count{
+  flex:0 0 auto;
+  min-width:62px;
+  padding:9px 10px;
+  border:1px solid #4f753e;
+  border-radius:12px;
+  background:linear-gradient(180deg,#102116,#08110b);
+  color:#a9ef73;
+  font-size:12px;
+  font-weight:1000;
+  text-align:center;
+  box-shadow:inset 0 0 12px rgba(85,170,66,.08),0 3px 8px #0007;
+}
+
+/* Auto-equip stays. It is promoted into the inventory itself instead of being removed. */
+#character .v533-auto-equip{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto;
+  align-items:center;
+  gap:8px;
+  margin:0 0 8px;
+  padding:9px 10px;
+  border:1px solid #5d6f3f;
+  border-radius:10px;
+  background:
+    radial-gradient(circle at 0 50%,rgba(216,164,67,.10),transparent 27%),
+    linear-gradient(180deg,#172218,#0c140e);
+  box-shadow:inset 0 1px 0 rgba(224,189,112,.09),0 3px 9px rgba(0,0,0,.26);
+}
+#character .v533-auto-copy b{display:block;color:#ecd494;font-size:9px;line-height:1.2}
+#character .v533-auto-copy span{display:block;margin-top:2px;color:#93a28f;font-size:6.6px;line-height:1.25}
+#character .v533-auto-btn{
+  min-height:36px!important;
+  padding:7px 10px!important;
+  border:1px solid #789b54!important;
+  border-radius:9px!important;
+  background:linear-gradient(180deg,#79c958,#4d9639)!important;
+  color:#0a1609!important;
+  font-size:7px!important;
+  font-weight:1000!important;
+  white-space:nowrap!important;
+}
+#character .v533-auto-btn:disabled{opacity:.46!important;filter:grayscale(.55)!important}
+
+/* Selection area: compact, deliberate, no giant dead zone. */
+#character #inventory .v268-sellbar{
+  grid-column:1/-1!important;
+  display:grid!important;
+  grid-template-columns:1fr!important;
+  gap:7px!important;
+  margin:0 0 7px!important;
+  padding:9px!important;
+  border:1px solid #4b5936!important;
+  border-radius:10px!important;
+  background:linear-gradient(180deg,#121d14,#0a120c)!important;
+  box-shadow:inset 0 1px 0 rgba(226,188,112,.06)!important;
+}
+#character #inventory .v268-info{
+  display:flex!important;
+  align-items:center!important;
+  min-height:28px!important;
+  padding:0 4px!important;
+  color:#e7ddc7!important;
+  font-size:8px!important;
+  font-weight:900!important;
+}
+#character #inventory .v268-sellbar-actions{
+  display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:5px!important;
+  width:100%!important;
+}
+#character #inventory .v268-sellbar .btn{
+  width:100%!important;
+  min-width:0!important;
+  min-height:35px!important;
+  padding:6px 4px!important;
+  border-radius:8px!important;
+  font-size:6.6px!important;
+  line-height:1.12!important;
+  white-space:normal!important;
+}
+#character #inventory .v268-clear{
+  border-color:#70403a!important;
+  background:linear-gradient(180deg,#4c201d,#28100f)!important;
+  color:#f1c6bf!important;
+}
+#character #inventory .v268-sell-selected{
+  border-color:#8b6a2b!important;
+  background:linear-gradient(180deg,#ae7b2e,#68451d)!important;
+  color:#fff0be!important;
+}
+
+/* Functional category filters. They only hide cards; item order/index stays untouched. */
+#character .v533-inv-filters{
+  grid-column:1/-1!important;
+  display:flex!important;
+  gap:5px!important;
+  overflow-x:auto!important;
+  padding:0 0 7px!important;
+  margin:0!important;
+  scrollbar-width:none!important;
+  -webkit-overflow-scrolling:touch!important;
+}
+#character .v533-inv-filters::-webkit-scrollbar{display:none!important}
+#character .v533-filter{
+  flex:0 0 auto!important;
+  min-height:29px!important;
+  padding:5px 9px!important;
+  border:1px solid #3d533e!important;
+  border-radius:999px!important;
+  background:#0c1510!important;
+  color:#aebcab!important;
+  font-size:6.5px!important;
+  font-weight:900!important;
+  white-space:nowrap!important;
+}
+#character .v533-filter.active{
+  border-color:#c4a74f!important;
+  background:linear-gradient(180deg,#4d5427,#252914)!important;
+  color:#fff0af!important;
+  box-shadow:0 0 10px rgba(209,190,74,.12)!important;
+}
+
+/* 3-column premium item grid. */
+#character #inventory .inventory-grid{
+  display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:7px!important;
+  padding:0!important;
+}
+#character #inventory .inv-item{
+  --v533-rar:#aeb7b2;
+  position:relative!important;
+  min-width:0!important;
+  min-height:146px!important;
+  padding:31px 6px 9px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+  border:1.5px solid var(--v533-rar)!important;
+  border-radius:10px!important;
+  background:
+    radial-gradient(circle at 50% 32%,rgba(90,135,91,.10),transparent 42%),
+    linear-gradient(180deg,#0b1210,#050806)!important;
+  box-shadow:inset 0 0 18px rgba(0,0,0,.70),0 0 8px color-mix(in srgb,var(--v533-rar) 30%,transparent),0 4px 9px rgba(0,0,0,.42)!important;
+  overflow:hidden!important;
+}
+#character #inventory .inv-item.common-gray{--v533-rar:#adb5b1}
+#character #inventory .inv-item.common-green{--v533-rar:#72dc50}
+#character #inventory .inv-item.rare-blue{--v533-rar:#2da8ff}
+#character #inventory .inv-item.epic-purple{--v533-rar:#ba56f5}
+#character #inventory .inv-item.legendary-orange{--v533-rar:#f5a237}
+#character #inventory .inv-item.mystic-cyan{--v533-rar:#39e7e2}
+#character #inventory .inv-item.prismatic-cyan,
+#character #inventory .inv-item.prismatic-orange{--v533-rar:#f0ce66}
+#character #inventory .inv-item[hidden]{display:none!important}
+#character #inventory .inv-item::before{
+  content:''!important;
+  position:absolute!important;
+  inset:3px!important;
+  border:1px solid color-mix(in srgb,var(--v533-rar) 24%,transparent)!important;
+  border-radius:7px!important;
+  pointer-events:none!important;
+}
+#character #inventory .inv-item.v460-better::after,
+#character #inventory .inv-item.v460-worse::after,
+#character #inventory .inv-item.v460-same::after,
+#character #inventory .inv-item.v460-free::after{
+  left:0!important;top:0!important;bottom:auto!important;width:100%!important;height:3px!important;border-radius:10px 10px 0 0!important;
+}
+#character #inventory .inv-item .v460-compare-flag{
+  left:6px!important;top:6px!important;
+  max-width:calc(100% - 36px)!important;
+  min-height:18px!important;
+  padding:3px 6px!important;
+  border-radius:7px!important;
+  font-size:7px!important;
+}
+#character #inventory .inv-item .v460-compare-flag .v460-reason{display:none!important}
+#character #inventory .v268-pick{
+  top:5px!important;right:5px!important;
+  width:23px!important;height:23px!important;
+  border:1px solid #80907d!important;
+  border-radius:7px!important;
+  background:#101710!important;
+  box-shadow:0 3px 7px #0009!important;
+}
+#character #inventory .v268-pick input{width:14px!important;height:14px!important}
+#character #inventory .inv-item .item-name{
+  width:100%!important;
+  min-height:0!important;
+  margin:0!important;
+  padding:0!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+  gap:7px!important;
+}
+#character #inventory .v459-inv-icon{
+  width:55px!important;height:55px!important;
+  display:grid!important;place-items:center!important;
+  font-size:36px!important;
+  line-height:1!important;
+  border:1px solid color-mix(in srgb,var(--v533-rar) 56%,#2d3b31)!important;
+  border-radius:9px!important;
+  background:radial-gradient(circle,rgba(255,255,255,.06),rgba(8,14,10,.92) 70%)!important;
+  box-shadow:inset 0 0 12px #0008,0 0 8px color-mix(in srgb,var(--v533-rar) 22%,transparent)!important;
+}
+#character #inventory .v459-inv-icon img,
+#character #inventory .v459-inv-icon .v466-item-art{
+  width:49px!important;height:49px!important;max-width:49px!important;max-height:49px!important;
+  object-fit:contain!important;
+  filter:drop-shadow(0 5px 5px rgba(0,0,0,.62))!important;
+}
+#character #inventory .v459-inv-name{
+  width:100%!important;
+  min-height:18px!important;
+  display:-webkit-box!important;
+  -webkit-box-orient:vertical!important;
+  -webkit-line-clamp:2!important;
+  overflow:hidden!important;
+  color:#f0eadc!important;
+  font-size:7.3px!important;
+  line-height:1.16!important;
+  font-weight:1000!important;
+  text-align:center!important;
+}
+#character #inventory .rare-blue .v459-inv-name{color:#50b8ff!important}
+#character #inventory .epic-purple .v459-inv-name{color:#d188ff!important}
+#character #inventory .legendary-orange .v459-inv-name{color:#ffc16c!important}
+#character #inventory .mystic-cyan .v459-inv-name{color:#68f2ef!important}
+#character #inventory .rarity-badge{
+  margin:0!important;
+  min-width:55px!important;
+  padding:3px 7px!important;
+  border:1px solid var(--v533-rar)!important;
+  border-radius:999px!important;
+  background:#08100c!important;
+  color:var(--v533-rar)!important;
+  font-size:6px!important;
+  line-height:1!important;
+  font-weight:900!important;
+  text-align:center!important;
+}
+#character #inventory .v459-inv-level{
+  margin-top:auto!important;
+  padding:3px 7px!important;
+  border:1px solid #40553d!important;
+  border-radius:999px!important;
+  background:#09110c!important;
+  color:#d5ddcf!important;
+  font-size:6px!important;
+  font-weight:900!important;
+}
+
+/* Decorative empty slots from preview: non-clickable, never enter game data. */
+#character .v533-empty-slot{
+  min-height:146px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:7px!important;
+  padding:10px!important;
+  border:1px solid #5c4829!important;
+  border-radius:10px!important;
+  background:
+    radial-gradient(circle at 50% 44%,rgba(61,99,59,.12),transparent 32%),
+    linear-gradient(180deg,#08120c,#050906)!important;
+  color:#657365!important;
+  text-align:center!important;
+  box-shadow:inset 0 0 18px #0008!important;
+  pointer-events:none!important;
+}
+#character .v533-empty-plus{
+  width:34px;height:34px;display:grid;place-items:center;
+  border:1px solid #40513a;border-radius:50%;
+  background:#08110b;color:#6f806e;font-size:21px;font-weight:400;
+}
+#character .v533-empty-slot span:last-child{font-size:6px;line-height:1.3;font-weight:800;max-width:76px}
+
+/* Tiny bottom hint as in the preview. */
+#character .v533-inv-tip{
+  margin:9px 0 0;
+  padding:8px 9px;
+  display:flex;align-items:center;gap:8px;
+  border:1px solid #5c4426;
+  border-radius:9px;
+  background:linear-gradient(180deg,#24190e,#130d08);
+  color:#cdbf9f;
+  font-size:6.4px;
+  line-height:1.35;
+}
+#character .v533-inv-tip::before{content:'💡';font-size:16px}
+
+@media(max-width:390px){
+  #character .v533-inv-head{min-height:82px;padding-left:63px}
+  #character .v533-inv-head::before{left:13px;width:39px;height:46px;font-size:23px}
+  #character .v533-inv-title{font-size:23px}
+  #character .v533-inv-count{min-width:56px;padding:8px;font-size:10px}
+  #character .v533-auto-equip{grid-template-columns:1fr!important}
+  #character .v533-auto-btn{width:100%!important}
+  #character #inventory .inventory-grid{gap:6px!important}
+  #character #inventory .inv-item,#character .v533-empty-slot{min-height:139px!important}
+  #character #inventory .v459-inv-icon{width:50px!important;height:50px!important}
+  #character #inventory .v459-inv-icon img,#character #inventory .v459-inv-icon .v466-item-art{width:45px!important;height:45px!important}
+}
+</style>
+<script id="v533-inventory-reference-js">
+(function(){
+  'use strict';
+  let applying=false;
+  let filter='all';
+
+  function category(it){
+    const slot=String(it?.slot||'').toLowerCase();
+    if(slot==='weapon')return'weapon';
+    if(['head','body','boots','offhand'].includes(slot))return'armor';
+    if(['ring','amulet'].includes(slot))return'jewelry';
+    return'other';
+  }
+
+  function ensureHeader(card){
+    let head=card.querySelector(':scope > .v533-inv-head');
+    if(!head){
+      head=document.createElement('header');
+      head.className='v533-inv-head';
+      head.innerHTML='<div class="v533-inv-title-wrap"><h2 class="v533-inv-title">INVENTAR</h2><div class="v533-inv-sub">DEINE AUSRÜSTUNG · ITEMS · SAMMELSTÜCKE</div></div><div class="v533-inv-count">0 Items</div>';
+      card.prepend(head);
+    }
+    const count=head.querySelector('.v533-inv-count');
+    const n=Array.isArray(s?.inventory)?s.inventory.length:0;
+    if(count)count.textContent=`${n} Item${n===1?'':'s'}`;
+    return head;
+  }
+
+  function ensureAuto(card,head){
+    let bar=card.querySelector(':scope > .v533-auto-equip');
+    if(!bar){
+      bar=document.createElement('div');
+      bar.className='v533-auto-equip';
+      bar.innerHTML='<div class="v533-auto-copy"><b>⚡ Automatische Ausrüstung</b><span>Prüft dein Inventar auf echte Verbesserungen.</span></div><button type="button" class="v533-auto-btn">⚡ Beste Ausrüstung anlegen</button>';
+      head.insertAdjacentElement('afterend',bar);
+      bar.querySelector('button').addEventListener('click',()=>{try{window.v480AutoEquip?.()}catch(e){console.warn('V5.33 auto equip',e)}});
+    }
+    return bar;
+  }
+
+  function syncAuto(bar){
+    const original=document.getElementById('v480EquipAutoBar');
+    const src=original?.querySelector('.v480-auto-copy span');
+    const srcBtn=original?.querySelector('button');
+    const sub=bar?.querySelector('.v533-auto-copy span');
+    const btn=bar?.querySelector('.v533-auto-btn');
+    if(sub&&src?.textContent)sub.textContent=src.textContent.trim();
+    if(btn){
+      btn.disabled=!!srcBtn?.disabled;
+      if(srcBtn?.textContent)btn.textContent=srcBtn.textContent.trim();
+    }
+  }
+
+  function ensureFilters(grid,sellbar){
+    let filters=grid.querySelector(':scope > .v533-inv-filters');
+    if(!filters){
+      filters=document.createElement('div');filters.className='v533-inv-filters';
+      filters.innerHTML='<button type="button" class="v533-filter" data-v533-filter="all">Alle</button><button type="button" class="v533-filter" data-v533-filter="weapon">Waffen</button><button type="button" class="v533-filter" data-v533-filter="armor">Rüstung</button><button type="button" class="v533-filter" data-v533-filter="jewelry">Schmuck</button><button type="button" class="v533-filter" data-v533-filter="other">Sonstiges</button>';
+      (sellbar||grid.firstChild)?.insertAdjacentElement('afterend',filters);
+      filters.addEventListener('click',e=>{
+        const b=e.target.closest('[data-v533-filter]');if(!b)return;
+        filter=b.dataset.v533Filter||'all';
+        applyFilter(grid);
+      });
+    }
+    filters.querySelectorAll('.v533-filter').forEach(b=>b.classList.toggle('active',b.dataset.v533Filter===filter));
+    return filters;
+  }
+
+  function applyFilter(grid){
+    const cards=[...grid.querySelectorAll(':scope > .inv-item')];
+    cards.forEach((card,i)=>{
+      const it=s?.inventory?.[i];
+      card.dataset.v533Category=category(it);
+      card.hidden=filter!=='all'&&card.dataset.v533Category!==filter;
+    });
+    grid.querySelectorAll(':scope > .v533-empty-slot').forEach(x=>x.remove());
+    const visible=cards.filter(c=>!c.hidden).length;
+    const target=visible<6?6-visible:0;
+    for(let i=0;i<target;i++){
+      const empty=document.createElement('div');
+      empty.className='v533-empty-slot';
+      empty.innerHTML='<span class="v533-empty-plus">＋</span><span>Noch mehr Loot wartet auf dich!</span>';
+      grid.appendChild(empty);
+    }
+    grid.querySelectorAll('.v533-filter').forEach(b=>b.classList.toggle('active',b.dataset.v533Filter===filter));
+  }
+
+  function ensureTip(card){
+    let tip=card.querySelector(':scope > .v533-inv-tip');
+    if(!tip){
+      tip=document.createElement('div');
+      tip.className='v533-inv-tip';
+      tip.textContent='Tipp: Markiere mehrere Items, um sie schnell zu verkaufen. Seltene Beute ist wertvoller.';
+      card.appendChild(tip);
+    }
+  }
+
+  function apply(){
+    if(applying)return;
+    applying=true;
+    try{
+      const box=document.getElementById('inventory');
+      const card=box?.closest('.card');
+      if(!box||!card)return;
+      card.classList.add('v533-inv-card');
+      const head=ensureHeader(card);
+      const auto=ensureAuto(card,head);
+      const grid=box.querySelector('.inventory-grid');
+      if(grid){
+        const sellbar=grid.querySelector(':scope > .v268-sellbar');
+        ensureFilters(grid,sellbar);
+        applyFilter(grid);
+      }
+      ensureTip(card);
+      syncAuto(auto);
+      requestAnimationFrame(()=>syncAuto(auto));
+      setTimeout(()=>syncAuto(auto),90);
+      card.dataset.inventoryLayout='reference-v533';
+    }catch(e){console.warn('V5.33 inventory reference',e)}
+    finally{applying=false}
+  }
+
+  window.v533ApplyInventory=apply;
+
+  try{
+    if(typeof renderInventory==='function'&&!window.__v533InventoryWrapped){
+      const base=renderInventory;
+      renderInventory=function(){const r=base.apply(this,arguments);requestAnimationFrame(apply);return r};
+      try{window.renderInventory=renderInventory}catch(e){}
+      window.__v533InventoryWrapped=true;
+    }
+  }catch(e){}
+  try{
+    if(typeof window.v459ArrangeCharacter==='function'&&!window.__v533ArrangeWrapped){
+      const base=window.v459ArrangeCharacter;
+      window.v459ArrangeCharacter=function(){const r=base.apply(this,arguments);requestAnimationFrame(apply);return r};
+      window.__v533ArrangeWrapped=true;
+    }
+  }catch(e){}
+
+  apply();
+  document.addEventListener('DOMContentLoaded',()=>requestAnimationFrame(apply),{once:true});
+  window.addEventListener('pageshow',()=>requestAnimationFrame(apply),{passive:true});
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden)requestAnimationFrame(apply)});
+  [120,400,900,1800,3600].forEach(ms=>setTimeout(apply,ms));
+})();
+</script>
+<!-- ===== /V5.33 INVENTAR REFERENCE REBUILD ===== -->
