@@ -87254,3 +87254,67 @@ html.v495-level-syncing #v420LevelUpOverlay{
 })();
 </script>
 <!-- ===== /V5.24 HELDENQUARTIER LEGACY-BANNER KILL + ORNAMENT FINISH ===== -->
+
+<!-- ===== V5.25 HELDENQUARTIER V043 LEGACY PILL KILL ===== -->
+<style id="v525-heldenquartier-v043-pill-kill-css">
+/* V4.03 appends a small absolute .v043-scene-title pill to the character hero.
+   It is the leftover HELDENQUARTIER badge visible behind the new plaque. */
+#character .v043-scene-title{
+  display:none!important;
+  visibility:hidden!important;
+  opacity:0!important;
+  width:0!important;
+  height:0!important;
+  min-width:0!important;
+  min-height:0!important;
+  max-width:0!important;
+  max-height:0!important;
+  margin:0!important;
+  padding:0!important;
+  border:0!important;
+  overflow:hidden!important;
+  pointer-events:none!important;
+}
+/* Keep the approved title plaque as the sole title owner. */
+#character.v514-reference-hero .v510-titlebar{
+  z-index:60!important;
+}
+</style>
+<script id="v525-heldenquartier-v043-pill-kill-js">
+(function(){
+  'use strict';
+  let obs=null;
+  function kill(){
+    const c=document.getElementById('character');
+    if(!c)return;
+    c.querySelectorAll('.v043-scene-title').forEach(el=>el.remove());
+    const root=c.querySelector('#v510HeroRoot');
+    if(root)root.setAttribute('data-hero-layout','reference-v525');
+  }
+  function watch(){
+    const c=document.getElementById('character');
+    if(!c||obs)return;
+    obs=new MutationObserver(muts=>{
+      for(const m of muts){
+        for(const n of m.addedNodes){
+          if(!(n instanceof Element))continue;
+          if(n.matches?.('.v043-scene-title') || n.querySelector?.('.v043-scene-title')){kill();return;}
+        }
+      }
+    });
+    obs.observe(c,{childList:true,subtree:true});
+  }
+  function apply(){
+    kill();watch();
+    try{window.v524ApplyHero?.()}catch(e){}
+    kill();
+  }
+  window.v525ApplyHero=apply;
+  apply();
+  document.addEventListener('DOMContentLoaded',()=>requestAnimationFrame(apply),{once:true});
+  window.addEventListener('pageshow',()=>requestAnimationFrame(apply),{passive:true});
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden)requestAnimationFrame(apply)});
+  [40,120,260,550,1100,2200,4500,9000].forEach(ms=>setTimeout(kill,ms));
+})();
+</script>
+<!-- ===== /V5.25 HELDENQUARTIER V043 LEGACY PILL KILL ===== -->
