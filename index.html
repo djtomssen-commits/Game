@@ -95476,3 +95476,81 @@ html.v495-level-syncing #v420LevelUpOverlay{
 })();
 </script>
 <!-- ===== /V5.80 ===== -->
+
+<!-- ===== V5.81 DUNGEON FREEZE HARD-RESCUE ===== -->
+<script id="v581-dungeon-freeze-hard-rescue">
+(function(){
+  'use strict';
+  if(window.__V581_DUNGEON_FREEZE_RESCUE__) return;
+  window.__V581_DUNGEON_FREEZE_RESCUE__ = true;
+
+  const txt = el => String(el?.textContent || '').replace(/\s+/g,' ').trim();
+  let lastSig = '';
+  let stableSince = 0;
+
+  function activeFight(){
+    const f = window.__V579_ACTIVE_FIGHT__;
+    if(f && typeof f.step === 'function' && !(typeof f.isFinished === 'function' && f.isFinished())) return f;
+    return null;
+  }
+
+  function signature(){
+    const btn = document.getElementById('fightBtn');
+    const p = txt(document.getElementById('playerHpText'));
+    const e = txt(document.getElementById('enemyHpText'));
+    const log = txt(document.getElementById('battleLog'));
+    const chip = txt(document.querySelector('#dungeonBattleCard .v575-round'));
+    return [btn?.disabled?'1':'0', p, e, log, chip].join('|');
+  }
+
+  function rescue(reason){
+    const f = activeFight();
+    if(!f) return false;
+    try{
+      let loops = 0;
+      while(loops < 80 && !(typeof f.isFinished === 'function' && f.isFinished())){
+        f.step();
+        loops++;
+      }
+      console.warn('V5.81 Dungeon freeze rescue', reason, 'loops=', loops);
+      return true;
+    }catch(err){
+      console.error('V5.81 Dungeon rescue failed', err);
+      return false;
+    }
+  }
+
+  function tick(){
+    const f = activeFight();
+    if(!f){
+      stableSince = 0;
+      lastSig = '';
+      return;
+    }
+
+    const sig = signature();
+    const now = Date.now();
+    if(sig !== lastSig){
+      lastSig = sig;
+      stableSince = now;
+      return;
+    }
+
+    if(!stableSince) stableSince = now;
+    const staleMs = now - stableSince;
+
+    /* If the duel visually stays on the same round/HP/log state for too long,
+       do not wait for lost mobile timers. Force-complete the remaining duel. */
+    if(staleMs >= 1400){
+      stableSince = now;
+      rescue('stale-ui');
+    }
+  }
+
+  setInterval(tick, 350);
+  window.addEventListener('focus', tick, {passive:true});
+  window.addEventListener('pageshow', tick, {passive:true});
+  document.addEventListener('visibilitychange', ()=>{ if(!document.hidden) tick(); }, {passive:true});
+})();
+</script>
+<!-- ===== /V5.81 ===== -->
