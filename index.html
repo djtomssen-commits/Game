@@ -91955,3 +91955,337 @@ html.v495-level-syncing #v420LevelUpOverlay{
 })();
 </script>
 <!-- ===== /V5.53 GILDE STRONG LAYOUT FIX ===== -->
+
+<!-- ===== V5.54 GILDE REFERENCE LAYOUT OWNER ===== -->
+<style id="v554-guild-reference-owner-css">
+/* Final guild visual owner. Legacy guild hero/head/title are suppressed so the
+   page is rendered from one coherent Grow Legends composition. Guild mechanics,
+   ids and event handlers remain untouched. */
+#guild{padding-left:9px!important;padding-right:9px!important}
+#guild .v552-guild-title,
+#guild > .v254-guild-shell > .v254-guild-hero,
+#guild #v254GuildDashboard > .v254-guild-head{display:none!important}
+#guild .v254-guild-shell{position:relative!important;max-width:760px!important;margin:0 auto!important;padding:4px 0 12px!important;background:transparent!important}
+#guild .v254-guild-shell::before{display:none!important}
+
+/* ---------- top wood title ---------- */
+#guild .v554-guild-title{
+  position:relative!important;
+  width:min(86%,620px)!important;
+  min-height:48px!important;
+  margin:2px auto 8px!important;
+  display:flex!important;align-items:center!important;justify-content:center!important;
+  padding:8px 64px!important;
+  border:2px solid #8b5a2b!important;
+  border-radius:11px!important;
+  background:
+    linear-gradient(90deg,rgba(23,11,5,.30),transparent 22%,transparent 78%,rgba(23,11,5,.30)),
+    linear-gradient(180deg,#74401e 0%,#4a2512 54%,#2b150b 100%)!important;
+  box-shadow:inset 0 1px 0 rgba(255,225,157,.20),inset 0 -9px 18px rgba(0,0,0,.26),0 5px 12px rgba(0,0,0,.34)!important;
+  color:#f6d997!important;
+  font:900 25px/1 Georgia,serif!important;
+  letter-spacing:.055em!important;
+  text-shadow:0 2px 0 #291207,0 0 10px rgba(244,193,99,.14)!important;
+  z-index:2!important;
+}
+#guild .v554-guild-title::before,
+#guild .v554-guild-title::after{
+  content:'🌿'!important;
+  position:absolute!important;top:50%!important;transform:translateY(-50%)!important;
+  width:42px!important;height:42px!important;display:grid!important;place-items:center!important;
+  border:1px solid #6c8441!important;border-radius:10px!important;
+  background:radial-gradient(circle at 50% 42%,rgba(89,224,69,.16),transparent 58%),linear-gradient(180deg,#18321d,#09140d)!important;
+  color:#81e65f!important;font-size:22px!important;
+  box-shadow:inset 0 0 13px rgba(0,0,0,.48),0 0 10px rgba(89,214,70,.10)!important;
+}
+#guild .v554-guild-title::before{left:9px!important}
+#guild .v554-guild-title::after{right:9px!important}
+
+/* ---------- hero = crest + copy + buds + level progress ---------- */
+#guild .v554-guild-hero{
+  position:relative!important;
+  display:grid!important;
+  grid-template-columns:92px minmax(0,1fr) 104px!important;
+  grid-template-areas:"crest copy buds" "progress progress progress"!important;
+  gap:10px 12px!important;
+  min-height:268px!important;
+  margin:0 0 8px!important;
+  padding:17px 15px 13px!important;
+  overflow:hidden!important;
+  border:2px solid #8a6032!important;
+  border-radius:15px!important;
+  background:
+    linear-gradient(90deg,rgba(2,11,6,.72) 0%,rgba(2,11,6,.42) 42%,rgba(2,11,6,.19) 70%,rgba(2,11,6,.48) 100%),
+    linear-gradient(180deg,rgba(3,11,7,.08),rgba(3,12,7,.58)),
+    var(--v552-guild-bg)!important;
+  background-size:cover!important;
+  background-position:center 44%!important;
+  box-shadow:inset 0 0 0 1px rgba(228,179,91,.10),inset 0 0 50px rgba(0,0,0,.38),0 8px 20px rgba(0,0,0,.30)!important;
+}
+#guild .v554-guild-hero::before{
+  content:''!important;position:absolute!important;inset:0!important;pointer-events:none!important;
+  background:radial-gradient(circle at 52% 18%,rgba(95,210,77,.10),transparent 28%),linear-gradient(180deg,transparent 66%,rgba(2,9,5,.62))!important;
+}
+#guild .v554-crest{
+  grid-area:crest!important;align-self:start!important;position:relative!important;z-index:1!important;
+  min-height:122px!important;padding:9px 6px 8px!important;
+  display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:7px!important;
+  border:2px solid #a87638!important;border-radius:14px 14px 23px 23px!important;
+  background:radial-gradient(circle at 50% 28%,rgba(87,232,65,.20),transparent 42%),linear-gradient(180deg,#173b20,#07160e)!important;
+  box-shadow:inset 0 0 0 2px rgba(14,35,19,.90),inset 0 0 20px rgba(0,0,0,.44),0 4px 10px rgba(0,0,0,.29)!important;
+}
+#guild .v554-crest .v554-leaf{font-size:42px!important;line-height:1!important;filter:drop-shadow(0 0 7px rgba(94,240,69,.22))!important}
+#guild .v554-crest b{color:#91ef6e!important;font-size:14px!important;line-height:1!important}
+#guild .v554-hero-copy{grid-area:copy!important;align-self:start!important;position:relative!important;z-index:1!important;padding-top:5px!important;min-width:0!important}
+#guild .v554-kicker{color:#7fe35d!important;font-size:7.2px!important;font-weight:1000!important;letter-spacing:.13em!important;margin-bottom:5px!important}
+#guild .v554-hero-copy h2{margin:0!important;color:#fff7df!important;font-size:28px!important;line-height:1!important;font-weight:1000!important;text-shadow:0 2px 0 #09100b,0 0 12px rgba(88,215,69,.10)!important}
+#guild .v554-member-count{margin-top:4px!important;color:#dbe5d5!important;font-size:8px!important;font-weight:900!important}
+#guild .v554-hero-copy p{margin:9px 0 0!important;max-width:390px!important;color:#d0d8cc!important;font-size:7.2px!important;line-height:1.4!important;font-weight:650!important;text-shadow:0 1px 2px #000!important}
+#guild .v554-buds{
+  grid-area:buds!important;align-self:start!important;position:relative!important;z-index:1!important;
+  min-height:122px!important;padding:10px 6px!important;
+  display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;
+  border:2px solid #5f9a3f!important;border-radius:14px!important;
+  background:radial-gradient(circle at 50% 25%,rgba(93,230,72,.16),transparent 42%),linear-gradient(180deg,#11331b,#07150d)!important;
+  box-shadow:inset 0 0 18px rgba(0,0,0,.36),0 4px 10px rgba(0,0,0,.28)!important;
+}
+#guild .v554-buds::before{content:'🌿'!important;font-size:25px!important;line-height:1!important;margin-bottom:3px!important}
+#guild .v554-buds b{color:#8ef36a!important;font-size:27px!important;line-height:1!important;text-shadow:0 0 10px rgba(93,230,70,.18)!important}
+#guild .v554-buds span{margin-top:6px!important;color:#a8b5a8!important;font-size:6.4px!important;font-weight:800!important;text-transform:none!important}
+#guild .v554-progress-slot{grid-area:progress!important;position:relative!important;z-index:1!important;min-width:0!important}
+#guild .v554-progress-slot .v409-guild-progress{
+  width:100%!important;margin:0!important;padding:9px 11px 10px!important;
+  border:1px solid #8a6334!important;border-radius:11px!important;
+  background:linear-gradient(180deg,rgba(7,20,10,.94),rgba(3,11,6,.96))!important;
+  box-shadow:inset 0 1px 0 rgba(243,196,102,.08),0 3px 8px rgba(0,0,0,.25)!important;
+}
+#guild .v554-progress-slot .v409-guild-progress-top{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:8px!important}
+#guild .v554-progress-slot .v409-guild-progress-top span{color:#e7dcc4!important;font-size:6.8px!important;font-weight:1000!important;letter-spacing:.06em!important}
+#guild .v554-progress-slot .v409-guild-progress-top b{color:#f0d186!important;font:900 15px/1 Georgia,serif!important}
+#guild .v554-progress-slot .v409-guild-progress-bar{height:10px!important;margin:6px 0 5px!important;border:1px solid #445437!important;border-radius:999px!important;background:#050a06!important;overflow:hidden!important}
+#guild .v554-progress-slot .v409-guild-progress-bar i{display:block!important;height:100%!important;background:linear-gradient(90deg,#46c84d,#88ef6a)!important;box-shadow:0 0 8px rgba(104,234,79,.18)!important}
+#guild .v554-progress-slot small{color:#9daa9c!important;font-size:5.8px!important}
+
+/* ---------- tabs ---------- */
+#guild #v254GuildDashboard{margin:0!important}
+#guild .v254-tabs{
+  display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:5px!important;
+  margin:0 0 8px!important;padding:5px!important;
+  border:1px solid #845b2d!important;border-radius:12px!important;
+  background:linear-gradient(180deg,#111a10,#060b08)!important;
+  box-shadow:inset 0 1px 0 rgba(239,187,94,.08)!important;
+}
+#guild .v254-tab{
+  min-height:48px!important;padding:6px!important;border:1px solid #3c5c42!important;border-radius:9px!important;
+  background:linear-gradient(180deg,#102017,#07110b)!important;color:#dce4d8!important;font-size:7px!important;font-weight:1000!important;
+}
+#guild .v254-tab.active{
+  border-color:#93df62!important;color:#fff4b8!important;
+  background:radial-gradient(circle at 50% 0,rgba(109,238,73,.25),transparent 58%),linear-gradient(180deg,#2c572b,#153019)!important;
+  box-shadow:inset 0 1px 0 rgba(239,255,219,.10),0 0 16px rgba(91,227,64,.15)!important;
+}
+
+/* ---------- upgrades ---------- */
+#guild .v254-panel{min-width:0!important}
+#guild .v254-upgrade-grid{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:7px!important;margin:0 0 8px!important}
+#guild .v254-upgrade{
+  display:grid!important;grid-template-columns:42px minmax(0,1fr)!important;grid-template-areas:"icon copy" "button button"!important;
+  gap:6px 8px!important;min-height:116px!important;padding:9px!important;
+  border:1px solid #80592f!important;border-radius:12px!important;
+  background:radial-gradient(circle at 92% 88%,rgba(74,161,55,.11),transparent 34%),linear-gradient(180deg,#0c1a0f,#061008)!important;
+  box-shadow:inset 0 1px 0 rgba(242,190,95,.07),0 3px 8px rgba(0,0,0,.22)!important;
+}
+#guild .v254-upgrade-icon{grid-area:icon!important;width:40px!important;height:40px!important;display:grid!important;place-items:center!important;border:1px solid #526d4a!important;border-radius:9px!important;background:#07110a!important;font-size:22px!important}
+#guild .v254-upgrade>div:nth-child(2){grid-area:copy!important;min-width:0!important}
+#guild .v254-upgrade b{display:block!important;color:#f5ecd8!important;font-size:8px!important;line-height:1.1!important}
+#guild .v254-upgrade span{display:block!important;margin-top:2px!important;color:#a4b0a4!important;font-size:5.8px!important;line-height:1.28!important}
+#guild .v254-upgrade strong{display:block!important;margin-top:4px!important;color:#82e765!important;font-size:6.5px!important}
+#guild .v254-upgrade button{grid-area:button!important;width:100%!important;min-height:39px!important;border:1px solid #84c96b!important;border-radius:9px!important;background:linear-gradient(180deg,#4e954a,#28632f)!important;color:#fff6df!important;font-size:10px!important;font-weight:1000!important;box-shadow:inset 0 1px 0 rgba(235,255,218,.12)!important}
+
+/* ---------- members ---------- */
+#guild .v254-card.v254-inner{
+  margin:0 0 8px!important;padding:10px!important;border:1px solid #78552e!important;border-radius:13px!important;
+  background:radial-gradient(circle at 92% 8%,rgba(69,148,53,.07),transparent 30%),linear-gradient(180deg,#0a170d,#051009)!important;
+  box-shadow:inset 0 1px 0 rgba(236,186,93,.05),0 3px 8px rgba(0,0,0,.20)!important;
+}
+#guild .v254-card.v254-inner>.section-title{padding:0 0 7px!important;margin:0 0 7px!important;border-bottom:1px solid #304a36!important}
+#guild .v254-card.v254-inner>.section-title h3{margin:0!important;color:#f3ead4!important;font:900 17px/1 Georgia,serif!important}
+#guild .v254-card.v254-inner>.section-title .muted{margin-top:3px!important;color:#97a698!important;font-size:5.8px!important}
+#guild #v254GuildMembers{display:grid!important;gap:5px!important}
+#guild .v254-member{
+  display:grid!important;
+  grid-template-columns:42px minmax(0,1fr) auto!important;
+  grid-template-areas:"avatar main flags"!important;
+  gap:7px!important;align-items:center!important;
+  min-height:55px!important;padding:6px 7px!important;
+  border:1px solid #2e4d38!important;border-radius:9px!important;
+  background:linear-gradient(180deg,#09170d,#061009)!important;
+}
+#guild .v254-member>img{grid-area:avatar!important;width:40px!important;height:40px!important;border-radius:8px!important;border:1px solid #765a32!important;object-fit:cover!important}
+#guild .v254-member-main{grid-area:main!important;min-width:0!important}
+#guild .v254-member-name-line{display:flex!important;align-items:center!important;gap:4px!important;flex-wrap:wrap!important}
+#guild .v254-member-name-line>b{color:#fff4df!important;font-size:8.5px!important;line-height:1.05!important}
+#guild .v254-member small{display:block!important;margin-top:2px!important;color:#879587!important;font-size:5.4px!important}
+#guild .v552-role{display:inline-flex!important;align-items:center!important;padding:2px 5px!important;border:1px solid #49604c!important;border-radius:999px!important;color:#abb5ab!important;font-size:5px!important;font-weight:900!important;background:#08130c!important}
+#guild .v552-role.leader{border-color:#a48138!important;color:#eed47a!important;background:#241d0d!important}
+#guild .v552-role.officer{border-color:#557a50!important;color:#9cdd8a!important;background:#0c1a0e!important}
+#guild .v329-presence{display:inline-flex!important;align-items:center!important;gap:3px!important;padding:2px 5px!important;border:1px solid #465149!important;border-radius:999px!important;font-size:5px!important;font-weight:900!important}
+#guild .v329-presence.online{color:#8ef17a!important;border-color:#4fa749!important;background:#0d2612!important}
+#guild .v329-presence.offline{color:#8b948d!important;background:#0a110c!important}
+#guild .v254-member-flags{grid-area:flags!important;display:flex!important;gap:4px!important;flex-wrap:nowrap!important;justify-content:flex-end!important;align-items:center!important}
+#guild .v254-flag{min-width:55px!important;padding:4px 6px!important;border:1px solid #3b5841!important;border-radius:999px!important;background:#08130c!important;color:#78867d!important;font-size:5.3px!important;text-align:center!important;white-space:nowrap!important}
+#guild .v254-flag.on{border-color:#5dae4e!important;background:#102616!important;color:#96eb80!important;box-shadow:0 0 7px rgba(88,211,66,.08)!important}
+#guild .v257-member-actions{display:none!important}
+
+/* requests + management side by side like reference */
+#guild .v552-admin-grid{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:7px!important;margin-top:7px!important}
+#guild .v552-admin-grid>.v254-card.v254-inner{margin:0!important;min-width:0!important}
+#guild .v257-search-empty{min-height:68px!important;display:flex!important;align-items:center!important;justify-content:center!important;border:1px dashed #35523c!important;border-radius:9px!important;color:#76857b!important;font-size:5.8px!important;text-align:center!important;padding:8px!important}
+#guild .v554-member-admin{margin-top:8px!important;padding:8px!important;border:1px solid #304b37!important;border-radius:9px!important;background:#07120a!important}
+#guild .v554-member-admin-title{margin-bottom:6px!important;color:#d9e1d6!important;font-size:6.2px!important;font-weight:1000!important}
+#guild .v554-member-admin-row{display:grid!important;grid-template-columns:minmax(0,1fr) auto auto!important;gap:5px!important}
+#guild .v554-member-admin select{min-width:0!important;height:34px!important;border:1px solid #416047!important;border-radius:8px!important;background:#061009!important;color:#e4e7df!important;padding:0 7px!important;font-size:6.3px!important}
+#guild .v554-member-admin button{min-height:34px!important;padding:5px 8px!important;border:1px solid #46694b!important;border-radius:8px!important;background:linear-gradient(180deg,#18321e,#0c1c11)!important;color:#dce7d9!important;font-size:5.8px!important;font-weight:900!important}
+#guild .v554-member-admin button.bad{border-color:#814247!important;background:linear-gradient(180deg,#361618,#1b0b0c)!important;color:#ef9b9f!important}
+
+/* management buttons keep their mechanics but look like the reference */
+#guild #v257GuildManagement .v257-management-note{color:#89998d!important;font-size:5.6px!important;line-height:1.35!important;margin-bottom:7px!important}
+#guild #v257GuildManagement select{height:36px!important;border:1px solid #416047!important;border-radius:8px!important;background:#061009!important;color:#e7e8e3!important;padding:0 8px!important}
+#guild #v257GuildManagement .btn{min-height:38px!important;border-radius:8px!important}
+#guild #v257GuildManagement .v257-danger{border-color:#9b4b4f!important;background:linear-gradient(180deg,#42191b,#220d0f)!important;color:#f3a4a5!important}
+
+@media(max-width:620px){
+  #guild{padding-left:7px!important;padding-right:7px!important}
+  #guild .v554-guild-title{width:84%!important;min-height:43px!important;padding:7px 48px!important;font-size:21px!important}
+  #guild .v554-guild-title::before,#guild .v554-guild-title::after{width:34px!important;height:34px!important;font-size:18px!important}
+  #guild .v554-guild-hero{grid-template-columns:66px minmax(0,1fr) 78px!important;gap:7px!important;min-height:225px!important;padding:11px 10px 10px!important;background-position:center 42%!important}
+  #guild .v554-crest{min-height:92px!important;padding:7px 4px!important;border-radius:12px 12px 18px 18px!important}
+  #guild .v554-crest .v554-leaf{font-size:30px!important}#guild .v554-crest b{font-size:9px!important}
+  #guild .v554-kicker{font-size:5.7px!important;letter-spacing:.08em!important}
+  #guild .v554-hero-copy h2{font-size:20px!important}
+  #guild .v554-member-count{font-size:6.3px!important}
+  #guild .v554-hero-copy p{font-size:5.6px!important;line-height:1.34!important;margin-top:6px!important}
+  #guild .v554-buds{min-height:92px!important;padding:7px 4px!important}#guild .v554-buds::before{font-size:18px!important}#guild .v554-buds b{font-size:21px!important}#guild .v554-buds span{font-size:5.3px!important}
+  #guild .v554-progress-slot .v409-guild-progress{padding:7px 8px 8px!important}
+  #guild .v554-progress-slot .v409-guild-progress-top span{font-size:5.5px!important}#guild .v554-progress-slot .v409-guild-progress-top b{font-size:12px!important}
+  #guild .v254-upgrade{grid-template-columns:34px minmax(0,1fr)!important;padding:7px!important;min-height:108px!important}
+  #guild .v254-upgrade-icon{width:33px!important;height:33px!important;font-size:18px!important}
+  #guild .v254-member{grid-template-columns:36px minmax(0,1fr)!important;grid-template-areas:"avatar main" "flags flags"!important;min-height:69px!important}
+  #guild .v254-member>img{width:34px!important;height:34px!important}
+  #guild .v254-member-flags{justify-content:flex-start!important;padding-left:43px!important;gap:3px!important}
+  #guild .v254-flag{min-width:47px!important;padding:3px 5px!important;font-size:4.8px!important}
+  #guild .v552-admin-grid{grid-template-columns:1fr!important}
+  #guild .v554-member-admin-row{grid-template-columns:1fr 1fr!important}
+  #guild .v554-member-admin select{grid-column:1/-1!important}
+}
+</style>
+
+<script id="v554-guild-reference-owner-js">
+(function(){
+  'use strict';
+  const esc=v=>typeof v254GuildEsc==='function'?v254GuildEsc(v):String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+  const readState=()=>{try{return {guild:(typeof v254Guild!=='undefined'?v254Guild:null),membership:(typeof v254Membership!=='undefined'?v254Membership:null),members:(typeof v254Members!=='undefined'&&Array.isArray(v254Members)?v254Members:[])}}catch(e){return {guild:null,membership:null,members:[]}}};
+
+  function installMemberRenderer(){
+    const renderer=function(m){
+      const p=m?.profile||(Array.isArray(m?.profiles)?m.profiles[0]:m?.profiles)||{};
+      const cls=p?.class_id||'grower';
+      const avatar=typeof v080AvatarFor==='function'?v080AvatarFor(cls):'';
+      const role=m?.role==='leader'?'Anführer':m?.role==='officer'?'Offizier':'Mitglied';
+      const online=typeof v329IsOnline==='function'?!!v329IsOnline(m):false;
+      return `<div class="v254-member" data-v554-user="${esc(m?.user_id||'')}"><img src="${esc(avatar)}" alt=""><div class="v254-member-main"><div class="v254-member-name-line"><b>${esc(p?.character_name||'Spieler')}</b><span class="v552-role ${esc(m?.role||'member')}">${m?.role==='leader'?'👑 ':m?.role==='officer'?'⭐ ':''}${role}</span><span class="v329-presence ${online?'online':'offline'}">${online?'● Online':'● Offline'}</span></div><small>${esc(p?.class_name||'')} · Lv. ${Number(p?.level)||1}</small></div><div class="v254-member-flags"><span class="v254-flag ${m?.attack_signed?'on':''}">⚔ ${m?.attack_signed?'Angriff':'—'}</span><span class="v254-flag ${m?.defense_signed?'on':''}">🛡 ${m?.defense_signed?'Verteidigung':'—'}</span><span class="v254-flag ${m?.boss_signed?'on':''}">👹 ${m?.boss_signed?'Boss':'—'}</span></div></div>`;
+    };
+    try{window.v254MemberHtml=renderer;v254MemberHtml=renderer}catch(e){window.v254MemberHtml=renderer}
+  }
+
+  function ensureTop(){
+    const shell=document.querySelector('#guild .v254-guild-shell');if(!shell)return null;
+    let title=shell.querySelector(':scope > .v554-guild-title');
+    if(!title){title=document.createElement('div');title.className='v554-guild-title';title.textContent='GILDE';shell.prepend(title)}
+    let hero=shell.querySelector(':scope > .v554-guild-hero');
+    if(!hero){
+      hero=document.createElement('section');hero.className='v554-guild-hero';title.insertAdjacentElement('afterend',hero);
+    }
+    return hero;
+  }
+
+  function renderTop(){
+    const hero=ensureTop();if(!hero)return;
+    const st=readState();
+    const has=!!st.guild&&!!st.membership;
+    hero.style.display=has?'grid':'none';
+    if(!has)return;
+    const g=st.guild||{},tag=String(g.tag||'GL').replace(/[\[\]]/g,'').slice(0,5),buds=Math.max(0,Number(g.guild_buds)||0),count=st.members.length;
+    const sig=[g.id,g.name,tag,buds,count].join('|');
+    let progress=document.querySelector('#guild .v409-guild-progress');
+    if(hero.dataset.sig!==sig||!hero.querySelector('.v554-progress-slot')){
+      hero.innerHTML=`<div class="v554-crest"><span class="v554-leaf">🌿</span><b>[${esc(tag)}]</b></div><div class="v554-hero-copy"><div class="v554-kicker">🌿 GEMEINSAM STÄRKER</div><h2>${esc(g.name||'Gilde')}</h2><div class="v554-member-count">${count} Mitglied${count===1?'':'er'}</div><p>Kämpft gemeinsam gegen den täglichen Gildenboss, verbessert eure Boni und tretet im Gildenkrieg gegen andere Gilden an.</p></div><div class="v554-buds"><b>${buds}</b><span>Gilden-Buds</span></div><div class="v554-progress-slot"></div>`;
+      hero.dataset.sig=sig;
+    }
+    progress=document.querySelector('#guild .v409-guild-progress');
+    const slot=hero.querySelector('.v554-progress-slot');
+    if(progress&&slot&&progress.parentElement!==slot)slot.appendChild(progress);
+  }
+
+  function pairAdmin(){
+    const overview=document.getElementById('v254GuildOverview');if(!overview)return;
+    const requests=document.getElementById('v257RequestsCard');
+    const management=document.getElementById('v257GuildManagement')?.closest('.v254-card.v254-inner');
+    if(!management)return;
+    let grid=overview.querySelector(':scope > .v552-admin-grid');
+    if(!grid){grid=document.createElement('div');grid.className='v552-admin-grid';management.before(grid)}
+    if(requests&&requests.parentElement!==grid)grid.appendChild(requests);
+    if(management.parentElement!==grid)grid.appendChild(management);
+  }
+
+  function installManagementPicker(){
+    const st=readState();
+    const box=document.getElementById('v257GuildManagement');if(!box||!st.guild||!st.membership)return;
+    box.querySelector('.v554-member-admin')?.remove();
+    let can=false,isLeader=false;
+    try{can=typeof v257CanManage==='function'&&v257CanManage();isLeader=typeof v257IsLeader==='function'&&v257IsLeader()}catch(e){}
+    if(!can)return;
+    const me=String(typeof v073User!=='undefined'&&v073User?.id||'');
+    const others=st.members.filter(m=>String(m?.user_id||'')!==me);
+    if(!others.length)return;
+    const wrap=document.createElement('div');wrap.className='v554-member-admin';
+    wrap.innerHTML=`<div class="v554-member-admin-title">👥 Mitglied verwalten</div><div class="v554-member-admin-row"><select class="v554-admin-target">${others.map(m=>{const p=m?.profile||(Array.isArray(m?.profiles)?m.profiles[0]:m?.profiles)||{};return `<option value="${esc(m.user_id||'')}">${esc(p.character_name||'Spieler')} · ${m.role==='officer'?'Offizier':'Mitglied'}</option>`}).join('')}</select>${isLeader?'<button type="button" class="v554-admin-role">Rolle wechseln</button>':''}<button type="button" class="v554-admin-kick bad">Entfernen</button></div>`;
+    box.prepend(wrap);
+    const sel=wrap.querySelector('.v554-admin-target');
+    wrap.querySelector('.v554-admin-role')?.addEventListener('click',()=>{
+      const uid=sel?.value;if(!uid)return;const m=others.find(x=>String(x.user_id)===String(uid));
+      if(typeof v257SetRole==='function')v257SetRole(uid,m?.role==='officer'?'member':'officer');
+    });
+    wrap.querySelector('.v554-admin-kick')?.addEventListener('click',()=>{const uid=sel?.value;if(uid&&typeof v257KickMember==='function')v257KickMember(uid)});
+  }
+
+  function cleanLegacy(){
+    document.querySelectorAll('#guild #v254GuildDashboard > .v254-guild-head').forEach(x=>x.style.display='none');
+    document.querySelectorAll('#guild .v257-member-actions').forEach(x=>x.style.display='none');
+  }
+
+  function paint(){renderTop();pairAdmin();installManagementPicker();cleanLegacy()}
+  installMemberRenderer();
+
+  if(typeof v254RenderGuild==='function'&&!window.__v554GuildWrapped){
+    const base=v254RenderGuild;
+    v254RenderGuild=function(){const r=base.apply(this,arguments);requestAnimationFrame(()=>{paint();setTimeout(paint,40)});return r};
+    try{window.v254RenderGuild=v254RenderGuild}catch(e){}
+    window.__v554GuildWrapped=true;
+  }
+  if(typeof v257RenderManagement==='function'&&!window.__v554GuildMgmtWrapped){
+    const base=v257RenderManagement;
+    v257RenderManagement=function(){const r=base.apply(this,arguments);requestAnimationFrame(()=>{installManagementPicker();cleanLegacy()});return r};
+    try{window.v257RenderManagement=v257RenderManagement}catch(e){}
+    window.__v554GuildMgmtWrapped=true;
+  }
+
+  /* Re-render once so member rows use the V5.54 renderer instead of legacy markup. */
+  setTimeout(()=>{try{if(typeof v254RenderGuild==='function')v254RenderGuild()}catch(e){} paint()},80);
+  document.addEventListener('DOMContentLoaded',()=>requestAnimationFrame(paint),{once:true});
+  window.addEventListener('pageshow',()=>requestAnimationFrame(paint),{passive:true});
+  document.addEventListener('click',e=>{if(e.target?.closest?.('[data-screen="guild"],.v254-tab'))setTimeout(paint,50)},true);
+  [250,800,1800].forEach(ms=>setTimeout(paint,ms));
+})();
+</script>
+<!-- ===== /V5.54 GILDE REFERENCE LAYOUT OWNER ===== -->
