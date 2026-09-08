@@ -82075,11 +82075,20 @@ body:has(#world.active){background:#010302!important}
     }catch(e){}
   }
 
-  function timerFrame(){
+  /* V5.86: Countdown only repaints when the displayed second can change.
+     This replaces the permanent 60-FPS rAF poll that competed with combat animation. */
+  let v586TimerClock=0;
+  function v586ScheduleTimer(){
     paintTimer(false);
-    requestAnimationFrame(timerFrame);
+    const left=leftMs();
+    let wait=1000;
+    if(left>0){
+      const rem=Math.round(left%1000);
+      wait=rem>70?rem+20:1000;
+    }
+    v586TimerClock=setTimeout(v586ScheduleTimer,Math.max(90,wait));
   }
-  requestAnimationFrame(timerFrame);
+  v586ScheduleTimer();
   window.addEventListener('pageshow',()=>paintTimer(true),{passive:true});
   document.addEventListener('visibilitychange',()=>{
     if(!document.hidden) paintTimer(true);
@@ -94857,7 +94866,7 @@ html.v495-level-syncing #v420LevelUpOverlay{
 
     let title=stage.querySelector('.v575-stage-title');
     if(!title){title=document.createElement('div');title.className='v575-stage-title';stage.appendChild(title)}
-    title.textContent='DUNGEON DUELL · E585';
+    title.textContent='DUNGEON DUELL · E586';
     if(!stage.querySelector('.v575-round')){const r=document.createElement('div');r.className='v575-round';r.textContent='BEREIT';stage.appendChild(r)}
     if(!stage.querySelector('.v575-proc-strip')){const p=document.createElement('div');p.className='v575-proc-strip';stage.appendChild(p)}
 
@@ -94913,7 +94922,21 @@ html.v495-level-syncing #v420LevelUpOverlay{
 
   /* One slow maintenance tick only. No resolver wrappers, no subtree observer,
      no render wrapper, no combat timer, and no requestAnimationFrame owner. */
-  setInterval(sync,1000);
+  /* V5.86: no periodic full-card repaint. Sync only after actual dungeon renders
+     or user/navigation events. */
+  try{
+    const base=window.renderDungeon||renderDungeon;
+    if(typeof base==='function'&&!base.__v586VisualSync){
+      const wrapped=function(){
+        const out=base.apply(this,arguments);
+        setTimeout(sync,0);
+        return out;
+      };
+      wrapped.__v586VisualSync=true;
+      try{window.renderDungeon=wrapped}catch(_){ }
+      try{renderDungeon=wrapped}catch(_){ }
+    }
+  }catch(_){ }
   document.addEventListener('click',ev=>{if(ev.target?.closest?.('#dungeon'))setTimeout(sync,0)},{passive:true});
   window.addEventListener('pageshow',sync,{passive:true});
   document.addEventListener('visibilitychange',()=>{if(!document.hidden)sync()},{passive:true});
@@ -94921,3 +94944,56 @@ html.v495-level-syncing #v420LevelUpOverlay{
 })();
 </script>
 <!-- ===== /V5.85 ===== -->
+
+
+<!-- ===== V5.86 DUNGEON SMOOTHNESS ===== -->
+<style id="v586-dungeon-smooth-css">
+#dungeonBattleCard.v575-combat .fighter,
+#dungeonBattleCard.v575-combat .damage,
+#dungeonBattleCard.v575-combat .hpfill{
+  backface-visibility:hidden;
+  -webkit-backface-visibility:hidden;
+}
+#dungeonBattleCard.v575-combat .fighter{will-change:transform}
+#dungeonBattleCard.v575-combat .damage{will-change:transform,opacity}
+#dungeonBattleCard.v575-combat .hpfill{will-change:width;transition:width .30s linear!important}
+</style>
+<script id="v586-dungeon-smooth-core">
+(function(){
+  'use strict';
+  if(window.__V586_DUNGEON_SMOOTH__)return;
+  window.__V586_DUNGEON_SMOOTH__=true;
+
+  const legacyAnim=window.animClass;
+  const legacyPop=window.popDamage;
+  const inDungeon=el=>!!el?.closest?.('#dungeonBattleCard');
+
+  function lightAnim(el,cl,ms=400){
+    if(!el)return;
+    el.classList.remove(cl);
+    requestAnimationFrame(()=>{
+      if(!el.isConnected)return;
+      el.classList.add(cl);
+      setTimeout(()=>{try{el.classList.remove(cl)}catch(_){ }},ms);
+    });
+  }
+
+  window.animClass=function(el,cl,ms=400){
+    if(inDungeon(el))return lightAnim(el,cl,ms);
+    return typeof legacyAnim==='function'?legacyAnim.apply(this,arguments):undefined;
+  };
+  try{animClass=window.animClass}catch(_){ }
+
+  window.popDamage=function(el,text){
+    if(!inDungeon(el))return typeof legacyPop==='function'?legacyPop.apply(this,arguments):undefined;
+    if(!el)return;
+    el.textContent=text;
+    const crit=/!$/.test(String(text||''));
+    if(crit)el.classList.add('v252-crit');
+    lightAnim(el,'pop',650);
+    if(crit)setTimeout(()=>{try{el.classList.remove('v252-crit')}catch(_){ }},700);
+  };
+  try{popDamage=window.popDamage}catch(_){ }
+})();
+</script>
+<!-- ===== /V5.86 ===== -->
