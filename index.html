@@ -48897,6 +48897,7 @@ Der Zahlungsanbieter ist noch nicht verbunden. Deshalb wird aktuell noch kein Ec
 })();
 </script>
 
+<script>window.__V575_DISABLE_OLD_DUNGEON_FX__=true;</script>
 <!-- ===== V5.74 DUNGEON COMBAT CLEAN RENDER ROOT ===== -->
 <style id="v574-dungeon-combat-clean-render">
 /* One visible combat presentation only. Old decorators may continue to support the
@@ -49111,11 +49112,11 @@ Der Zahlungsanbieter ist noch nicht verbunden. Deshalb wird aktuell noch kein Ec
   if(r?.preventLethal)setTimeout(()=>showChip('TÖDLICHEN TREFFER ÜBERLEBT','guard'),170);
  }
  try{
-  if(typeof window.v318ResolvePlayerAttack==='function'&&!window.v318ResolvePlayerAttack.__v574){const base=window.v318ResolvePlayerAttack;const w=function(){const ctx=arguments[1]||{},r=base.apply(this,arguments);try{if($('#dungeon')?.classList.contains('active'))playerFx(r,ctx)}catch(_){ }return r};w.__v574=true;window.v318ResolvePlayerAttack=w;try{v318ResolvePlayerAttack=w}catch(_){ }}
-  if(typeof window.v318ResolveEnemyAttack==='function'&&!window.v318ResolveEnemyAttack.__v574){const base=window.v318ResolveEnemyAttack;const w=function(){const ctx=arguments[1]||{},r=base.apply(this,arguments);try{if($('#dungeon')?.classList.contains('active'))enemyFx(r,ctx)}catch(_){ }return r};w.__v574=true;window.v318ResolveEnemyAttack=w;try{v318ResolveEnemyAttack=w}catch(_){ }}
+  if(!window.__V575_DISABLE_OLD_DUNGEON_FX__&&typeof window.v318ResolvePlayerAttack==='function'&&!window.v318ResolvePlayerAttack.__v574){const base=window.v318ResolvePlayerAttack;const w=function(){const ctx=arguments[1]||{},r=base.apply(this,arguments);try{if($('#dungeon')?.classList.contains('active')&&!window.__V575_COMBAT_FINAL_OWNER__)playerFx(r,ctx)}catch(_){ }return r};w.__v574=true;window.v318ResolvePlayerAttack=w;try{v318ResolvePlayerAttack=w}catch(_){ }}
+  if(!window.__V575_DISABLE_OLD_DUNGEON_FX__&&typeof window.v318ResolveEnemyAttack==='function'&&!window.v318ResolveEnemyAttack.__v574){const base=window.v318ResolveEnemyAttack;const w=function(){const ctx=arguments[1]||{},r=base.apply(this,arguments);try{if($('#dungeon')?.classList.contains('active')&&!window.__V575_COMBAT_FINAL_OWNER__)enemyFx(r,ctx)}catch(_){ }return r};w.__v574=true;window.v318ResolveEnemyAttack=w;try{v318ResolveEnemyAttack=w}catch(_){ }}
  }catch(e){console.error('V5.74 combat resolver visual hook',e)}
- function tick(){try{if($('#dungeon')?.classList.contains('active')&&$('#dungeonBattleCard')?.offsetParent){ensureUi();observe()}}catch(_){ }requestAnimationFrame(tick)}
- requestAnimationFrame(tick);
+ function tick(){if(window.__V575_COMBAT_FINAL_OWNER__)return;try{if($('#dungeon')?.classList.contains('active')&&$('#dungeonBattleCard')?.offsetParent){ensureUi();observe()}}catch(_){ }requestAnimationFrame(tick)}
+ /* V5.76: old dungeon RAF owner disabled */
 })();
 </script>
 <!-- ===== /V5.74 ===== -->
@@ -82601,36 +82602,29 @@ body:has(#world.active){background:#010302!important}
       return true;
     }
 
-    /* Erster Schlag sofort. Danach rAF-Takt, unabhängig von den alten
-       setTimeout/setInterval-Ketten und deren Runtime-Governor. */
+    /* Erster Schlag sofort. Danach nur ein Turn-Timer alle 430 ms.
+       Kein 60-FPS-JavaScript-Polling mehr: CSS darf animieren, die Kampfmathe
+       wird exakt nur dann ausgeführt, wenn wirklich die nächste Runde dran ist. */
     playerAttack();
     if(finished) return;
 
     playerTurn=false;                 // als Nächstes Gegner
-    nextTurnAt=performance.now()+430;
-
-    function frame(now){
+    function nextTurn(){
       if(finished) return;
-
-      if(now>=nextTurnAt){
-        try{
-          if(playerTurn){
-            if(!playerAttack()) return;
-          }else{
-            if(!enemyAttack()) return;
-          }
-        }catch(err){
-          console.error('V4.246 Kampfrunde',err);
+      try{
+        if(playerTurn){
+          if(!playerAttack()) return;
+        }else{
+          if(!enemyAttack()) return;
         }
-
-        playerTurn=!playerTurn;
-        nextTurnAt=now+430;
+      }catch(err){
+        console.error('V4.246 Kampfrunde',err);
+        return;
       }
-
-      requestAnimationFrame(frame);
+      playerTurn=!playerTurn;
+      if(!finished)setTimeout(nextTurn,430);
     }
-
-    requestAnimationFrame(frame);
+    setTimeout(nextTurn,430);
   }
 
   /*
@@ -84018,17 +84012,27 @@ function applyMaster(){
     if(line1&&!/ABGESCHLOSSEN/i.test(line1.textContent||''))line1.textContent=(ri+1)+' · '+(ri===9?cfg.boss:cfg.enemy[ri])+(ri===9?' – BOSS':'');
   }catch(e){console.error('V4.468 master',e)}
 }
+let __v468MasterRaf=0,__v468MasterTimer=0;
+function scheduleMaster(delay=0){
+  const run=()=>{
+    if(__v468MasterRaf)return;
+    __v468MasterRaf=requestAnimationFrame(()=>{
+      __v468MasterRaf=0;
+      applyMaster();
+      clearTimeout(__v468MasterTimer);
+      __v468MasterTimer=setTimeout(applyMaster,80);
+    });
+  };
+  if(delay>0)setTimeout(run,delay);else run();
+}
 function wrap(name){
   try{
     const fn=window[name];if(typeof fn!=='function'||fn.__v468Master)return;
     const w=function(){
       const out=fn.apply(this,arguments);
-      /* Sofort anwenden, solange der Preview-Renderer selected noch auf dem
-         Ziel-Dungeon stehen hat; danach nochmals verzögert gegen alte Decorator. */
-      applyMaster();
-      requestAnimationFrame(applyMaster);
-      setTimeout(applyMaster,55);
-      setTimeout(applyMaster,175);
+      /* Production performance: all nested dungeon render owners collapse into
+         one paint instead of 3-4 full DOM rewrites per wrapper. */
+      scheduleMaster();
       return out;
     };
     w.__v468Master=true;window[name]=w;
@@ -84036,11 +84040,10 @@ function wrap(name){
   }catch(e){}
 }
 ['v432RenderDetail','v430RenderDetail','v426RenderDetail','v251RenderDetail','v244RenderSelectedDungeonMap','v261RenderDetail','renderDungeon'].forEach(wrap);
-requestAnimationFrame(applyMaster);
-setTimeout(applyMaster,100);
-document.addEventListener('click',()=>{setTimeout(applyMaster,35);setTimeout(applyMaster,120)},true);
-window.addEventListener('pageshow',()=>setTimeout(applyMaster,70),{passive:true});
-document.addEventListener('visibilitychange',()=>{if(!document.hidden)setTimeout(applyMaster,70)},{passive:true});
+scheduleMaster();
+document.addEventListener('click',(ev)=>{if(ev.target?.closest?.('#dungeon'))scheduleMaster(20)},true);
+window.addEventListener('pageshow',()=>scheduleMaster(30),{passive:true});
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)scheduleMaster(30)},{passive:true});
 })();
 </script>
 <!-- ===== /V4.468 DUNGEON 1 MASTER TEMPLATE FOR D2-D20 ===== -->
@@ -94672,8 +94675,8 @@ html.v495-level-syncing #v420LevelUpOverlay{
    if(r.preventLethal)setTimeout(()=>showFx('TÖDLICHEN TREFFER ÜBERLEBT',{kind:'guard'}),230);
  }
  /* Wrap the FINAL resolver. This means every current class, Frost and later talent output remains canonical. */
- if(typeof window.v318ResolvePlayerAttack==='function'&&!window.v318ResolvePlayerAttack.__v572){const base=window.v318ResolvePlayerAttack;const wrap=function(){const r=base.apply(this,arguments);try{if($('#dungeon')?.classList.contains('active'))onPlayerResult(r)}catch(e){}return r};wrap.__v572=true;window.v318ResolvePlayerAttack=wrap;try{v318ResolvePlayerAttack=wrap}catch(e){}}
- if(typeof window.v318ResolveEnemyAttack==='function'&&!window.v318ResolveEnemyAttack.__v572){const base=window.v318ResolveEnemyAttack;const wrap=function(){const ctx=arguments[1]||{};const r=base.apply(this,arguments);try{if($('#dungeon')?.classList.contains('active'))onEnemyResult(r,ctx)}catch(e){}return r};wrap.__v572=true;window.v318ResolveEnemyAttack=wrap;try{v318ResolveEnemyAttack=wrap}catch(e){}}
+ if(!window.__V575_DISABLE_OLD_DUNGEON_FX__&&typeof window.v318ResolvePlayerAttack==='function'&&!window.v318ResolvePlayerAttack.__v572){const base=window.v318ResolvePlayerAttack;const wrap=function(){const r=base.apply(this,arguments);try{if($('#dungeon')?.classList.contains('active')&&!window.__V575_COMBAT_FINAL_OWNER__)onPlayerResult(r)}catch(e){}return r};wrap.__v572=true;window.v318ResolvePlayerAttack=wrap;try{v318ResolvePlayerAttack=wrap}catch(e){}}
+ if(!window.__V575_DISABLE_OLD_DUNGEON_FX__&&typeof window.v318ResolveEnemyAttack==='function'&&!window.v318ResolveEnemyAttack.__v572){const base=window.v318ResolveEnemyAttack;const wrap=function(){const ctx=arguments[1]||{};const r=base.apply(this,arguments);try{if($('#dungeon')?.classList.contains('active')&&!window.__V575_COMBAT_FINAL_OWNER__)onEnemyResult(r,ctx)}catch(e){}return r};wrap.__v572=true;window.v318ResolveEnemyAttack=wrap;try{v318ResolveEnemyAttack=wrap}catch(e){}}
 
  /* Quest finale uses the real talent resolver for its presentation only; earned payout remains untouched. */
  if(typeof window.v311PlayFight==='function'&&!window.v311PlayFight.__v572){
@@ -94697,7 +94700,7 @@ html.v495-level-syncing #v420LevelUpOverlay{
  /* PvP: presentation only. Existing result math/server flow stays untouched. */
  if(typeof window.v204Fight==='function'&&!window.v204Fight.__v572){const base=window.v204Fight;const wrap=async function(){const box=$('#v204MatchCard');if(box&&typeof v204Opponent!=='undefined'&&v204Opponent){box.classList.add('v572-pvp-battle');const me=window.v080AvatarFor?.(cls())||'',oc=window.v204ClassIdFromProfile?.(v204Opponent)||'grower',op=window.v080AvatarFor?.(oc)||'';let stage=box.querySelector('.v572-pvp-stage');if(!stage){stage=document.createElement('div');stage.className='v572-pvp-stage';stage.innerHTML=`<div class="side"><img src="${me}"><div class="name">${s?.characterName||'Du'}</div><div class="hp"><i style="width:100%"></i></div></div><div class="vs">VS</div><div class="side"><img src="${op}"><div class="name">${v204Opponent.character_name||'Gegner'}</div><div class="hp"><i style="width:100%"></i></div></div>`;box.prepend(stage)}}return base.apply(this,arguments)};wrap.__v572=true;window.v204Fight=wrap;try{v204Fight=wrap}catch(e){}}
 
- function tick(){try{if($('#dungeon')?.classList.contains('active')&&$('#dungeonBattleCard')?.offsetParent){decorateDungeon();observeDungeonLog()}}catch(e){}requestAnimationFrame(tick)}requestAnimationFrame(tick);
+ function tick(){if(window.__V575_COMBAT_FINAL_OWNER__)return;try{if($('#dungeon')?.classList.contains('active')&&$('#dungeonBattleCard')?.offsetParent){decorateDungeon();observeDungeonLog()}}catch(e){}requestAnimationFrame(tick)}/* V5.76: old dungeon RAF owner disabled */
 })();
 </script>
 <!-- ===== /V5.72 ===== -->
@@ -94908,14 +94911,14 @@ html.v495-level-syncing #v420LevelUpOverlay{
  }
  /* Wrap the final canonical resolvers. V5.72 remains below but its overlapping banners are CSS-hidden. */
  try{
-  if(typeof window.v318ResolvePlayerAttack==='function'&&!window.v318ResolvePlayerAttack.__v573){const base=window.v318ResolvePlayerAttack;const w=function(){const r=base.apply(this,arguments);try{if($('#dungeon')?.classList.contains('active'))playerFx(r)}catch(_){ }return r};w.__v573=true;window.v318ResolvePlayerAttack=w;try{v318ResolvePlayerAttack=w}catch(_){ }}
-  if(typeof window.v318ResolveEnemyAttack==='function'&&!window.v318ResolveEnemyAttack.__v573){const base=window.v318ResolveEnemyAttack;const w=function(){const ctx=arguments[1]||{},r=base.apply(this,arguments);try{if($('#dungeon')?.classList.contains('active'))enemyFx(r,ctx)}catch(_){ }return r};w.__v573=true;window.v318ResolveEnemyAttack=w;try{v318ResolveEnemyAttack=w}catch(_){ }}
+  if(!window.__V575_DISABLE_OLD_DUNGEON_FX__&&typeof window.v318ResolvePlayerAttack==='function'&&!window.v318ResolvePlayerAttack.__v573){const base=window.v318ResolvePlayerAttack;const w=function(){const r=base.apply(this,arguments);try{if($('#dungeon')?.classList.contains('active')&&!window.__V575_COMBAT_FINAL_OWNER__)playerFx(r)}catch(_){ }return r};w.__v573=true;window.v318ResolvePlayerAttack=w;try{v318ResolvePlayerAttack=w}catch(_){ }}
+  if(!window.__V575_DISABLE_OLD_DUNGEON_FX__&&typeof window.v318ResolveEnemyAttack==='function'&&!window.v318ResolveEnemyAttack.__v573){const base=window.v318ResolveEnemyAttack;const w=function(){const ctx=arguments[1]||{},r=base.apply(this,arguments);try{if($('#dungeon')?.classList.contains('active')&&!window.__V575_COMBAT_FINAL_OWNER__)enemyFx(r,ctx)}catch(_){ }return r};w.__v573=true;window.v318ResolveEnemyAttack=w;try{v318ResolveEnemyAttack=w}catch(_){ }}
  }catch(e){console.error('V5.73 resolver visual hook',e)}
  try{
   if(typeof window.popDamage==='function'&&!window.popDamage.__v573){const base=window.popDamage;const w=function(el,text){if(el){el.classList.toggle('v573-critical-damage',el.id==='damageEnemy'&&/!/.test(String(text||'')));setTimeout(()=>el.classList.remove('v573-critical-damage'),580)}return base.apply(this,arguments)};w.__v573=true;window.popDamage=w;try{popDamage=w}catch(_){ }}
  }catch(e){}
- function tick(){try{if($('#dungeon')?.classList.contains('active')&&$('#dungeonBattleCard')?.offsetParent){ensureUi();observe()}}catch(_){ }requestAnimationFrame(tick)}
- requestAnimationFrame(tick);
+ function tick(){if(window.__V575_COMBAT_FINAL_OWNER__)return;try{if($('#dungeon')?.classList.contains('active')&&$('#dungeonBattleCard')?.offsetParent){ensureUi();observe()}}catch(_){ }requestAnimationFrame(tick)}
+ /* V5.76: old dungeon RAF owner disabled */
 })();
 </script>
 <!-- ===== /V5.73 ===== -->
@@ -95029,7 +95032,7 @@ html.v495-level-syncing #v420LevelUpOverlay{
 <script id="v575-dungeon-battle-clean-final-core">
 (()=>{
  'use strict';
- if(window.__V575_DUNGEON_BATTLE__)return;window.__V575_DUNGEON_BATTLE__=true;
+ if(window.__V575_DUNGEON_BATTLE__)return;window.__V575_DUNGEON_BATTLE__=true;window.__V575_COMBAT_FINAL_OWNER__=true;
  const $=q=>document.querySelector(q);
  const clean=s=>String(s??'').replace(/<[^>]*>/g,'').trim();
  const state={player:null,enemy:null,lastText:'',lastRound:0};
@@ -95116,8 +95119,40 @@ html.v495-level-syncing #v420LevelUpOverlay{
   if(typeof window.v318ResolvePlayerAttack==='function'&&!window.v318ResolvePlayerAttack.__v575){const base=window.v318ResolvePlayerAttack;const w=function(){const ctx=arguments[1]||{},r=base.apply(this,arguments);try{if($('#dungeon')?.classList.contains('active'))playerFx(r,ctx)}catch(_){ }return r};w.__v575=true;window.v318ResolvePlayerAttack=w;try{v318ResolvePlayerAttack=w}catch(_){ }}
   if(typeof window.v318ResolveEnemyAttack==='function'&&!window.v318ResolveEnemyAttack.__v575){const base=window.v318ResolveEnemyAttack;const w=function(){const ctx=arguments[1]||{},r=base.apply(this,arguments);try{if($('#dungeon')?.classList.contains('active'))enemyFx(r,ctx)}catch(_){ }return r};w.__v575=true;window.v318ResolveEnemyAttack=w;try{v318ResolveEnemyAttack=w}catch(_){ }}
  }catch(e){console.error('V5.75 resolver visual hook',e)}
- function tick(){try{if($('#dungeon')?.classList.contains('active')&&$('#dungeonBattleCard')?.offsetParent){ensureUi();observe()}}catch(_){ }requestAnimationFrame(tick)}
- requestAnimationFrame(tick);
+ let __v575Scheduled=false;
+ function refresh(){
+  __v575Scheduled=false;
+  try{if($('#dungeon')?.classList.contains('active')&&$('#dungeonBattleCard')?.offsetParent){ensureUi();observe()}}catch(_){ }
+ }
+ function scheduleRefresh(){if(__v575Scheduled)return;__v575Scheduled=true;requestAnimationFrame(refresh)}
+ /* Render-driven instead of 60fps polling. */
+ try{
+  const base=window.renderDungeon || (typeof renderDungeon==='function'?renderDungeon:null);
+  if(typeof base==='function'&&!base.__v575Perf){
+   const w=function(){const out=base.apply(this,arguments);scheduleRefresh();return out};
+   w.__v575Perf=true;window.renderDungeon=w;try{renderDungeon=w}catch(_){ }
+  }
+ }catch(_){ }
+ const dungeonRoot=$('#dungeon');
+ if(dungeonRoot&&!dungeonRoot.__v575PerfObs){
+  dungeonRoot.__v575PerfObs=new MutationObserver(()=>scheduleRefresh());
+  dungeonRoot.__v575PerfObs.observe(dungeonRoot,{childList:true});
+ }
+ document.addEventListener('click',(ev)=>{if(ev.target?.closest?.('#dungeon'))scheduleRefresh()},{passive:true});
+ window.addEventListener('pageshow',scheduleRefresh,{passive:true});
+ document.addEventListener('visibilitychange',()=>{if(!document.hidden)scheduleRefresh()},{passive:true});
+ scheduleRefresh();
 })();
 </script>
 <!-- ===== /V5.75 ===== -->
+
+<style id="v576-dungeon-performance-css">
+/* Performance-only: keep dungeon repaint work inside its own surfaces. */
+#dungeonMapCard,#dungeonBattleCard{contain:layout paint style;}
+@media(max-width:700px){
+ #dungeonBattleCard.v575-combat .fighter-avatar,
+ #dungeonBattleCard.v575-combat .v253-player-avatar-img,
+ #dungeonBattleCard.v575-combat .v253-monster{filter:none!important;}
+ #dungeonMapCard.v468-master .v261-bg{filter:none!important;}
+}
+</style>
