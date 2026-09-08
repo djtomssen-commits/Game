@@ -1142,80 +1142,6 @@ document.documentElement.classList.remove('v224-app-ready');
           <div id="v260DailySummary" class="v260-daily-summary"></div>
         </div>
 
-        <div id="v258BossTestCard" class="v254-card v254-inner" style="display:none">
-          <b>🧪 Gildenboss-Test</b>
-          <p class="muted">Nur für den Anführer. Simuliert sofort denselben Boss mit den aktuell angemeldeten Mitgliedern – ohne Tagesrunde, Belohnungen oder Gilden-Buds zu verändern.</p>
-          
-          <div id="v259BossArena" class="v259-arena" style="display:none">
-            <div class="v259-boss-title"><b>☣ Der Verseuchte Titan</b><span id="v259BossHpText">0 / 0 HP</span></div>
-            <div class="v259-boss-hp"><i id="v259BossHpFill"></i></div>
-            <div class="v259-stage">
-              <div class="v259-fighter-side">
-                <img id="v259FighterAvatar" alt="">
-                <b id="v259FighterName">Kämpfer</b>
-                <small id="v259FighterMeta"></small>
-              </div>
-              <div class="v259-vs">⚔️</div>
-              <div class="v259-boss-side">
-                <div class="v259-titan v261-titan-art" id="v259Titan"><svg class="v261-titan-svg" viewBox="0 0 220 260" aria-label="Verseuchter Titan" role="img">
-  <defs>
-    <radialGradient id="v261Aura" cx="50%" cy="42%" r="58%">
-      <stop offset="0%" stop-color="#d46aff" stop-opacity=".55"/>
-      <stop offset="55%" stop-color="#8b36a6" stop-opacity=".18"/>
-      <stop offset="100%" stop-color="#2a102f" stop-opacity="0"/>
-    </radialGradient>
-    <linearGradient id="v261Body" x1="0" x2="1">
-      <stop offset="0%" stop-color="#26142b"/>
-      <stop offset="46%" stop-color="#6f2f7d"/>
-      <stop offset="100%" stop-color="#1b101f"/>
-    </linearGradient>
-    <linearGradient id="v261Skin" x1="0" x2="1">
-      <stop offset="0%" stop-color="#55624a"/>
-      <stop offset="50%" stop-color="#8a9a69"/>
-      <stop offset="100%" stop-color="#384032"/>
-    </linearGradient>
-    <filter id="v261Glow">
-      <feGaussianBlur stdDeviation="4" result="b"/>
-      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
-    </filter>
-  </defs>
-  <ellipse cx="110" cy="128" rx="101" ry="113" fill="url(#v261Aura)"/>
-  <g class="v261-titan-shadow">
-    <ellipse cx="110" cy="236" rx="73" ry="13" fill="#000" opacity=".48"/>
-  </g>
-  <g class="v261-titan-creature">
-    <path d="M61 87 C36 102 28 134 35 175 C39 200 53 218 72 226 L83 179 L77 117 Z" fill="#412048" stroke="#8e3fa0" stroke-width="5"/>
-    <path d="M159 87 C184 102 192 134 185 175 C181 200 167 218 148 226 L137 179 L143 117 Z" fill="#412048" stroke="#8e3fa0" stroke-width="5"/>
-    <path d="M68 92 C71 68 87 54 110 52 C133 54 149 68 152 92 L153 179 C149 213 133 229 110 233 C87 229 71 213 67 179 Z" fill="url(#v261Body)" stroke="#a44ab6" stroke-width="6"/>
-    <path d="M78 63 C73 42 83 23 102 19 L99 43 Z" fill="#5a673f" stroke="#a7bd75" stroke-width="4"/>
-    <path d="M142 63 C147 42 137 23 118 19 L121 43 Z" fill="#5a673f" stroke="#a7bd75" stroke-width="4"/>
-    <path d="M82 69 C83 39 137 39 138 69 C137 95 127 108 110 111 C93 108 83 95 82 69 Z" fill="url(#v261Skin)" stroke="#b3c58b" stroke-width="5"/>
-    <path d="M89 79 Q99 71 105 79" fill="none" stroke="#f4f36c" stroke-width="5" stroke-linecap="round"/>
-    <path d="M115 79 Q121 71 131 79" fill="none" stroke="#f4f36c" stroke-width="5" stroke-linecap="round"/>
-    <path d="M96 94 Q110 103 124 94" fill="none" stroke="#291727" stroke-width="5" stroke-linecap="round"/>
-    <circle cx="110" cy="139" r="25" fill="#4b1b57" stroke="#db65ef" stroke-width="5"/>
-    <path d="M110 119 L121 138 L112 139 L120 158 L100 142 L108 140 Z" fill="#e575ff" filter="url(#v261Glow)"/>
-    <g fill="#8ff06f" filter="url(#v261Glow)">
-      <circle cx="70" cy="127" r="6"/><circle cx="150" cy="120" r="5"/><circle cx="80" cy="183" r="5"/><circle cx="144" cy="185" r="7"/>
-    </g>
-    <g stroke="#8ff06f" stroke-width="4" fill="none" stroke-linecap="round">
-      <path d="M70 127 l-13 -11"/><path d="M150 120 l13 -13"/><path d="M80 183 l-15 12"/><path d="M144 185 l15 13"/>
-    </g>
-    <path d="M52 92 l-18 -17 M168 92 l18 -17" stroke="#b868ce" stroke-width="6" stroke-linecap="round"/>
-  </g>
-  <g class="v261-spores" fill="#a7ff7b">
-    <circle cx="35" cy="58" r="3"/><circle cx="182" cy="51" r="4"/><circle cx="28" cy="146" r="2.5"/><circle cx="190" cy="161" r="3"/>
-  </g>
-</svg></div>
-                <b>Verseuchter Titan</b>
-              </div>
-              <div id="v259DamagePop" class="v259-damage-pop"></div>
-            </div>
-            <div id="v259FightText" class="v259-fight-text">Der Gildenboss wartet …</div>
-          </div>
-          <div id="v258BossTestResult" class="v258-test-result"></div>
-        </div>
-
         <div class="v254-card v254-inner">
           <b>Boss-Ablauf</b>
           <p class="muted">Die gemeldeten Spieler greifen nacheinander an. Die verbleibenden Boss-HP bleiben zwischen den Spielern bestehen. Bei Sieg erhalten Teilnehmer Harz-Taler sowie levelabhängige EXP und Gold.</p>
@@ -38722,64 +38648,6 @@ setTimeout(()=>{
    The active fix is integrated directly into v254LoadGuild above.
    No extra listener, render wrapper or timer is added here. */
 </script>
-
-<style id="v258-guild-boss-test-style">
-.v258-test-result{display:none;margin-top:10px;padding:10px;border:1px solid #334638;border-radius:11px;background:#07100a}
-.v258-test-result.on{display:block}
-.v258-test-head{display:flex;justify-content:space-between;gap:8px;align-items:center;margin-bottom:8px}
-.v258-test-head b{font-size:9px}.v258-test-head span{font-size:8px;font-weight:1000}
-.v258-test-hp{height:11px;border:1px solid #51365d;border-radius:99px;background:#160b19;overflow:hidden;margin-bottom:9px}
-.v258-test-hp i{display:block;height:100%;background:linear-gradient(90deg,#74368f,#bd62e4)}
-.v258-test-note{font-size:7px;color:#7f8e83;line-height:1.5;margin-top:8px}
-</style>
-
-<script id="v258-guild-boss-test-core">
-/* V4.02: non-destructive leader-only guild boss simulation. */
-function v258RenderTestAccess(){
-  const card=document.querySelector('#v258BossTestCard');
-  if(card)card.style.display=v254Membership?.role==='leader'?'':'none';
-}
-function v258TestFighterHtml(x,i){
-  const avatar=typeof v080AvatarFor==='function'?v080AvatarFor(x.class_id||'grower'):'';
-  return `<div class="v255-fighter"><img src="${v254GuildEsc(avatar)}" alt=""><div><b>${i+1}. ${v254GuildEsc(x.character_name||'Spieler')}</b><small>${v254GuildEsc(x.class_name||'')} · Lv. ${Number(x.level)||1} · Kampfkraft ${v255Fmt(x.combat_power)}</small></div><div class="v255-damage">-${v255Fmt(x.damage_done)}<small class="v255-rank">Schaden</small></div></div>`;
-}
-async function v258RunBossTest(){
-  if(v254Membership?.role!=='leader')return v063Toast('Nur für Anführer','warn');
-  if(!(await v254EnsureOnline()))return;
-  const btn=document.querySelector('#v258BossTestBtn'),box=document.querySelector('#v258BossTestResult');
-  if(btn){btn.disabled=true;btn.textContent='Boss wird simuliert …'}
-  try{
-    const {data,error}=await v073Db.rpc('v258_test_guild_boss');
-    if(error)throw error;
-    const r=Array.isArray(data)?data[0]:data;
-    const parts=Array.isArray(r?.participants)?r.participants:[];
-    if(!box)return;
-    const max=Math.max(1,Number(r?.boss_max_hp)||1),hp=Math.max(0,Number(r?.boss_hp)||0);
-    await v259AnimateBossResult(r);
-    box.classList.add('on');
-    const totalDamage=parts.reduce((sum,x)=>sum+(Number(x.damage_done)||0),0);
-    box.innerHTML=`
-      <div class="v258-test-head"><b>Test abgeschlossen</b><span>${r?.status==='won'?'🏆 TEST-SIEG':'💀 TEST-NIEDERLAGE'}</span></div>
-      <div class="v258-test-note">${parts.length} Teilnehmer · ${v255Fmt(totalDamage)} Gesamtschaden · ${v255Fmt(hp)} Boss-HP übrig.<br>Keine Tagesrunde, Belohnungen oder Gilden-Buds verändert.</div>`;
-    /* V4.02: result is already visible in the arena; no duplicate toast. */
-  }catch(e){
-    console.error('V4.02 boss test',e);
-    v063Toast('Boss-Test fehlgeschlagen','warn',e?.message||'Bitte V258_GUILD_BOSS_TEST_SQL.sql in Supabase ausführen.');
-  }finally{
-    if(btn){btn.disabled=false;btn.textContent='▶ Boss jetzt testen'}
-  }
-}
-document.querySelector('#v258BossTestBtn')?.addEventListener('click',v258RunBossTest);
-
-const v258BaseRenderGuild=v254RenderGuild;
-v254RenderGuild=function(){v258BaseRenderGuild();v258RenderTestAccess();};
-setTimeout(()=>{
-  v258RenderTestAccess();
-  document.querySelectorAll('.version').forEach(el=>el.textContent='V4.29 Stable');
-  const line=document.querySelector('#v141VersionLine');if(line)line.textContent='V4.29 Stable';
-},820);
-</script>
-
 
 <style id="v259-guild-boss-animation-style">
 .v259-arena{position:relative;margin-top:11px;padding:12px;border:1px solid #36523c;border-radius:14px;background:radial-gradient(circle at 70% 42%,rgba(120,35,151,.22),transparent 36%),linear-gradient(180deg,#07110a,#050906);overflow:hidden}
@@ -93200,3 +93068,364 @@ html.v495-level-syncing #v420LevelUpOverlay{
 })();
 </script>
 <!-- ===== /V5.61 GILDE FIRST-OPEN RENDER GATE ===== -->
+
+<!-- ===== V5.62 GILDENBOSS REFERENCE LAYOUT ===== -->
+<style id="v562-guild-boss-reference-css">
+#guild{--v562-boss-art:url("data:image/webp;base64,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")}
+
+/* The approved guild overview remains untouched. Only the active boss panel is owned here. */
+#guild #v254GuildBoss.v562-boss-owner{
+  padding:0!important;
+  background:transparent!important;
+}
+
+/* ---------- TITAN HERO ---------- */
+#guild #v254GuildBoss .v254-boss-stage.v562-boss-hero{
+  position:relative!important;
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) 150px!important;
+  grid-template-areas:
+    "copy monster"
+    "status status"
+    "signup signup"
+    "note note"!important;
+  column-gap:8px!important;
+  row-gap:7px!important;
+  align-items:start!important;
+  min-height:0!important;
+  margin:8px 0 8px!important;
+  padding:13px 12px 10px!important;
+  overflow:hidden!important;
+  border:1.5px solid #986633!important;
+  border-radius:14px!important;
+  background:
+    linear-gradient(90deg,rgba(3,15,8,.96) 0%,rgba(3,17,9,.87) 52%,rgba(3,15,8,.40) 74%,rgba(3,12,7,.16) 100%),
+    radial-gradient(circle at 78% 42%,rgba(86,238,70,.16),transparent 31%),
+    var(--v552-guild-bg)!important;
+  background-size:cover!important;
+  background-position:center 48%!important;
+  box-shadow:inset 0 0 0 1px rgba(231,181,91,.07),inset 0 0 38px rgba(0,0,0,.42),0 6px 16px rgba(0,0,0,.30)!important;
+}
+#guild #v254GuildBoss .v254-boss-stage.v562-boss-hero::before{
+  content:''!important;
+  position:absolute!important;inset:0!important;pointer-events:none!important;
+  background:linear-gradient(180deg,transparent 58%,rgba(1,8,4,.48) 100%)!important;
+}
+#guild #v254GuildBoss .v254-boss-copy{
+  grid-area:copy!important;
+  position:relative!important;z-index:2!important;
+  min-width:0!important;max-width:none!important;
+  padding:2px 0 0 2px!important;
+}
+#guild #v254GuildBoss .v254-boss-copy .v254-kicker{
+  margin:0 0 5px!important;
+  color:#75eb63!important;
+  font-size:6.2px!important;
+  line-height:1!important;
+  font-weight:1000!important;
+  letter-spacing:.14em!important;
+}
+#guild #v254GuildBoss .v254-boss-copy h3{
+  margin:0 0 7px!important;
+  color:#fff8e8!important;
+  font-size:20px!important;
+  line-height:1.02!important;
+  font-weight:1000!important;
+  text-shadow:0 2px 0 #071008,0 0 12px rgba(91,220,76,.10)!important;
+}
+#guild #v254GuildBoss .v254-boss-copy p{
+  max-width:290px!important;
+  margin:0!important;
+  color:#ced8ce!important;
+  font-size:6.8px!important;
+  line-height:1.42!important;
+  font-weight:650!important;
+  text-shadow:0 1px 2px #000!important;
+}
+#guild #v254GuildBoss .v254-boss-rule{
+  display:inline-block!important;
+  max-width:330px!important;
+  margin-top:8px!important;
+  padding:5px 8px!important;
+  border:1px solid #87509a!important;
+  border-radius:8px!important;
+  background:linear-gradient(180deg,rgba(41,13,47,.94),rgba(22,8,27,.96))!important;
+  color:#de9afa!important;
+  font-size:5.8px!important;
+  line-height:1.28!important;
+  font-weight:1000!important;
+  box-shadow:inset 0 0 10px rgba(0,0,0,.30),0 0 10px rgba(170,73,205,.08)!important;
+}
+#guild #v254GuildBoss .v254-boss-monster.v562-titan-art{
+  grid-area:monster!important;
+  position:relative!important;z-index:1!important;
+  align-self:stretch!important;
+  justify-self:stretch!important;
+  width:auto!important;
+  height:132px!important;
+  min-width:0!important;
+  border-radius:12px!important;
+  background:
+    linear-gradient(90deg,rgba(4,17,9,.92) 0%,rgba(4,17,9,.36) 22%,transparent 48%),
+    var(--v562-boss-art) center 42% / cover no-repeat!important;
+  box-shadow:inset 25px 0 26px rgba(4,16,8,.55),inset 0 0 18px rgba(0,0,0,.20)!important;
+  filter:drop-shadow(0 0 11px rgba(78,221,62,.16))!important;
+  animation:v562TitanGlow 2.8s ease-in-out infinite!important;
+}
+@keyframes v562TitanGlow{50%{filter:drop-shadow(0 0 17px rgba(87,239,66,.24)) brightness(1.04)}}
+
+/* ---------- DAILY SIGNUP INSIDE HERO ---------- */
+#guild #v254GuildBoss .v254-status-grid{
+  grid-area:status!important;
+  position:relative!important;z-index:2!important;
+  display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:6px!important;
+  margin:0!important;
+}
+#guild #v254GuildBoss .v254-status-grid>div{
+  min-width:0!important;
+  padding:7px 5px!important;
+  border:1px solid #39553d!important;
+  border-radius:10px!important;
+  background:linear-gradient(180deg,rgba(7,20,10,.94),rgba(4,12,7,.96))!important;
+  box-shadow:inset 0 1px 0 rgba(193,232,181,.04)!important;
+}
+#guild #v254GuildBoss .v254-status-grid span{font-size:5.2px!important;color:#8c998e!important;letter-spacing:.05em!important}
+#guild #v254GuildBoss .v254-status-grid b{margin-top:3px!important;font-size:9px!important;color:#8ff175!important;white-space:nowrap!important}
+#guild #v254GuildBoss #v254BossSignup{
+  grid-area:signup!important;
+  position:relative!important;z-index:2!important;
+  width:100%!important;
+  min-height:39px!important;
+  margin:0!important;
+  border:1px solid #78c854!important;
+  border-radius:10px!important;
+  background:linear-gradient(180deg,#79dc5a 0%,#4ca93d 55%,#2c7d32 100%)!important;
+  color:#071108!important;
+  font-size:11px!important;
+  font-weight:1000!important;
+  text-shadow:0 1px 0 rgba(255,255,255,.20)!important;
+  box-shadow:inset 0 1px 0 rgba(239,255,228,.30),0 0 14px rgba(94,226,73,.12)!important;
+}
+#guild #v254GuildBoss #v254BossSignup:disabled{
+  opacity:.88!important;
+  color:#09120a!important;
+  filter:saturate(.86)!important;
+}
+#guild #v254GuildBoss #v254BossSignup.v562-signed{
+  background:linear-gradient(180deg,#87eb65,#56b947 58%,#337e36)!important;
+  box-shadow:inset 0 1px 0 rgba(245,255,236,.34),0 0 16px rgba(104,237,80,.18)!important;
+}
+#guild #v254GuildBoss .v562-signup-note{
+  grid-area:note!important;
+  position:relative!important;z-index:2!important;
+  margin:0!important;
+  padding:1px 4px 0!important;
+  color:#aab5aa!important;
+  font-size:5.9px!important;
+  line-height:1.35!important;
+  text-align:center!important;
+}
+
+/* ---------- LONG-TERM BOSS CARD ---------- */
+#guild #v254GuildBoss #v255BossLive.v562-long-boss{
+  margin:8px 0!important;
+  padding:10px 11px 11px!important;
+  border:1.5px solid #8b6032!important;
+  border-radius:13px!important;
+  background:
+    radial-gradient(circle at 82% 0,rgba(104,54,138,.10),transparent 28%),
+    linear-gradient(180deg,#0b1b10,#061009)!important;
+  box-shadow:inset 0 0 0 1px rgba(228,177,87,.05),inset 0 0 20px rgba(0,0,0,.28),0 5px 13px rgba(0,0,0,.24)!important;
+}
+#guild #v254GuildBoss #v4119BossProgress{
+  margin:0 0 8px!important;
+  padding:0 0 7px!important;
+  border:0!important;
+  border-bottom:1px solid #405142!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+#guild #v254GuildBoss #v4119BossProgress .v4119-boss-progress-top span{color:#b9c4b3!important;font-size:5.8px!important}
+#guild #v254GuildBoss #v4119BossProgress .v4119-boss-progress-top b{color:#f1df96!important;font-size:8.7px!important}
+#guild #v254GuildBoss #v4119BossProgress small{margin-top:4px!important;font-size:5.7px!important;line-height:1.35!important;color:#a5b0a4!important}
+#guild #v254GuildBoss #v4119BossProgress strong{color:#dba2ef!important}
+#guild #v254GuildBoss .v255-boss-hp-head{
+  margin:0 0 5px!important;
+  color:#e8eee6!important;
+  font-size:6.3px!important;
+  line-height:1.25!important;
+}
+#guild #v254GuildBoss .v255-boss-hp-head span{color:#e0a1f0!important;font-size:6.2px!important}
+#guild #v254GuildBoss .v255-hpbar{
+  height:12px!important;
+  margin:0!important;
+  border:1px solid #6e3b79!important;
+  border-radius:999px!important;
+  background:#160b18!important;
+  box-shadow:inset 0 0 8px #000!important;
+}
+#guild #v254GuildBoss .v255-hpbar i{
+  background:linear-gradient(90deg,#78358e,#a947c2 58%,#d166ee)!important;
+  box-shadow:0 0 9px rgba(197,83,224,.18)!important;
+}
+#guild #v254GuildBoss #v260WatchDailyBoss,
+#guild #v254GuildBoss #v255ClaimBossReward{
+  min-height:32px!important;
+  margin:8px 0 0!important;
+  border-radius:9px!important;
+  font-size:7px!important;
+}
+
+/* ---------- REGISTERED MEMBERS AS THEIR OWN RPG CARD ---------- */
+#guild #v254GuildBoss .v562-boss-participants{
+  margin:8px 0!important;
+  padding:10px!important;
+  border:1.5px solid #8a6032!important;
+  border-radius:13px!important;
+  background:linear-gradient(180deg,#0b1a0f,#061009)!important;
+  box-shadow:inset 0 0 18px rgba(0,0,0,.26),0 4px 11px rgba(0,0,0,.22)!important;
+}
+#guild #v254GuildBoss .v562-boss-participants-head{
+  margin:0 0 7px!important;
+  color:#86ea70!important;
+  font-size:6.4px!important;
+  font-weight:1000!important;
+  letter-spacing:.06em!important;
+}
+#guild #v254GuildBoss #v255BossTimeline{
+  display:grid!important;
+  gap:5px!important;
+  margin:0!important;
+}
+#guild #v254GuildBoss .v255-fighter{
+  grid-template-columns:37px minmax(0,1fr) auto!important;
+  gap:7px!important;
+  min-height:48px!important;
+  padding:6px 7px!important;
+  border:1px solid #304737!important;
+  border-radius:9px!important;
+  background:linear-gradient(180deg,#09150c,#061009)!important;
+}
+#guild #v254GuildBoss .v255-fighter img{width:35px!important;height:35px!important;border-radius:8px!important;border:1px solid #5e724d!important}
+#guild #v254GuildBoss .v255-fighter b{font-size:8px!important;color:#f0eee5!important}
+#guild #v254GuildBoss .v255-fighter small{font-size:5.5px!important;color:#8e9c90!important}
+#guild #v254GuildBoss .v255-damage{font-size:6.2px!important;color:#efaa78!important;white-space:nowrap!important}
+#guild #v254GuildBoss .v255-empty{padding:9px!important;font-size:6px!important;color:#839084!important}
+
+/* ---------- FIGHT ARENA ---------- */
+#guild #v254GuildBoss #v260DailyBossArena{
+  margin:8px 0!important;
+  border:1.5px solid #8a6032!important;
+  border-radius:13px!important;
+  background:radial-gradient(circle at 72% 38%,rgba(95,221,73,.08),transparent 32%),linear-gradient(180deg,#09160d,#050b07)!important;
+}
+
+/* ---------- FLOW / INFO ---------- */
+#guild #v254GuildBoss .v562-boss-flow{
+  margin:8px 0 0!important;
+  padding:10px 11px!important;
+  border:1.5px solid #8a6032!important;
+  border-radius:13px!important;
+  background:linear-gradient(180deg,#0b1a0f,#061009)!important;
+  box-shadow:inset 0 0 16px rgba(0,0,0,.24)!important;
+}
+#guild #v254GuildBoss .v562-boss-flow>b{display:block!important;margin-bottom:5px!important;color:#f1ede2!important;font-size:10px!important}
+#guild #v254GuildBoss .v562-boss-flow>p{margin:0!important;text-align:left!important;color:#a9b5aa!important;font-size:6.2px!important;line-height:1.45!important}
+
+/* The requested test section is gone, including any stale element injected by older code. */
+#guild #v258BossTestCard,#guild #v258BossTestResult,#guild #v259BossArena{display:none!important}
+
+@media(max-width:390px){
+  #guild #v254GuildBoss .v254-boss-stage.v562-boss-hero{
+    grid-template-columns:minmax(0,1fr) 116px!important;
+    padding:10px 9px 9px!important;
+    gap:6px!important;
+  }
+  #guild #v254GuildBoss .v254-boss-copy h3{font-size:17px!important}
+  #guild #v254GuildBoss .v254-boss-copy p{font-size:5.9px!important}
+  #guild #v254GuildBoss .v254-boss-rule{font-size:5.2px!important;padding:4px 6px!important}
+  #guild #v254GuildBoss .v254-boss-monster.v562-titan-art{height:112px!important}
+  #guild #v254GuildBoss .v254-status-grid b{font-size:8.1px!important}
+  #guild #v254GuildBoss #v254BossSignup{min-height:36px!important;font-size:9.3px!important}
+}
+</style>
+
+<script id="v562-guild-boss-reference-js">
+(function(){
+  'use strict';
+  function buildBossLayout(){
+    const panel=document.getElementById('v254GuildBoss');
+    if(!panel)return;
+    panel.classList.add('v562-boss-owner');
+
+    /* Remove any legacy test DOM if another old render path ever recreates it. */
+    panel.querySelector('#v258BossTestCard')?.remove();
+
+    const hero=panel.querySelector(':scope > .v254-boss-stage');
+    if(hero){
+      hero.classList.add('v562-boss-hero');
+      const monster=hero.querySelector('.v254-boss-monster');
+      if(monster){monster.textContent='';monster.classList.add('v562-titan-art');monster.setAttribute('aria-label','Verseuchter Titan')}
+
+      const status=panel.querySelector('.v254-status-grid');
+      const signup=panel.querySelector('#v254BossSignup');
+      let note=signup?.nextElementSibling;
+      if(status&&status.parentElement!==hero)hero.appendChild(status);
+      if(signup&&signup.parentElement!==hero)hero.appendChild(signup);
+      if(note&&note!==status&&note.classList?.contains('muted')){
+        note.classList.add('v562-signup-note');
+        if(note.parentElement!==hero)hero.appendChild(note);
+      }
+      if(signup)signup.classList.toggle('v562-signed',!!(typeof v254Membership!=='undefined'&&v254Membership?.boss_signed));
+    }
+
+    const live=document.getElementById('v255BossLive');
+    if(live){
+      live.classList.add('v562-long-boss');
+      let participants=panel.querySelector(':scope > .v562-boss-participants');
+      if(!participants){
+        participants=document.createElement('section');
+        participants.className='v562-boss-participants';
+        participants.innerHTML='<div class="v562-boss-participants-head">👥 ANGEMELDETE MITGLIEDER</div>';
+        live.insertAdjacentElement('afterend',participants);
+      }
+      const timeline=document.getElementById('v255BossTimeline');
+      if(timeline&&timeline.parentElement!==participants)participants.appendChild(timeline);
+    }
+
+    const flow=[...panel.querySelectorAll(':scope > .v254-card.v254-inner')].find(x=>/Boss-Ablauf/i.test(x.textContent||''));
+    if(flow){
+      flow.classList.add('v562-boss-flow');
+      const title=flow.querySelector(':scope > b');
+      if(title&&!/^⚔️/.test(title.textContent||''))title.textContent='⚔️ Boss-Ablauf';
+    }
+  }
+
+  /* Keep the layout as the final owner after server renders change signup/count/participants. */
+  try{
+    if(typeof v255RenderBoss==='function'&&!window.__v562BossRenderWrapped){
+      const base=v255RenderBoss;
+      v255RenderBoss=function(){const r=base.apply(this,arguments);requestAnimationFrame(buildBossLayout);return r};
+      try{window.v255RenderBoss=v255RenderBoss}catch(e){}
+      window.__v562BossRenderWrapped=true;
+    }
+  }catch(e){}
+  try{
+    if(typeof v254RenderGuild==='function'&&!window.__v562BossGuildWrapped){
+      const base=v254RenderGuild;
+      v254RenderGuild=function(){const r=base.apply(this,arguments);requestAnimationFrame(buildBossLayout);return r};
+      try{window.v254RenderGuild=v254RenderGuild}catch(e){}
+      window.__v562BossGuildWrapped=true;
+    }
+  }catch(e){}
+
+  document.addEventListener('click',e=>{if(e.target?.closest?.('[data-v254-tab="boss"]'))setTimeout(buildBossLayout,20)},true);
+  document.addEventListener('DOMContentLoaded',()=>requestAnimationFrame(buildBossLayout),{once:true});
+  window.addEventListener('pageshow',()=>requestAnimationFrame(buildBossLayout),{passive:true});
+  [60,250,800,1800].forEach(ms=>setTimeout(buildBossLayout,ms));
+})();
+</script>
+<!-- ===== /V5.62 GILDENBOSS REFERENCE LAYOUT ===== -->
