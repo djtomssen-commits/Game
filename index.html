@@ -48994,7 +48994,7 @@ Der Zahlungsanbieter ist noch nicht verbunden. Deshalb wird aktuell noch kein Ec
  'use strict';
  if(window.__V574_DUNGEON_COMBAT__)return;window.__V574_DUNGEON_COMBAT__=true;
  const $=q=>document.querySelector(q);
- const clean=s=>String(s??'').replace(/<[^>]*>/g,' ').replace(/\s+/g,' ').trim();
+ const clean=s=>String(s??'').replace(/<[^>]*>/g,'').trim();
  const pulse=(el,cl,ms=650)=>{if(!el)return;el.classList.remove(cl);void el.offsetWidth;el.classList.add(cl);setTimeout(()=>el.classList.remove(cl),ms)};
  const classId=()=>String(window.s?.playerClass||s?.playerClass||'grower');
  const state={player:null,enemy:null,lastText:''};
@@ -49120,8 +49120,6 @@ Der Zahlungsanbieter ist noch nicht verbunden. Deshalb wird aktuell noch kein Ec
 })();
 </script>
 <!-- ===== /V5.74 ===== -->
-
-
 
 </body>
 </html>
@@ -82255,11 +82253,6 @@ body:has(#world.active){background:#010302!important}
       return;
     }
 
-    const v578AttemptSnapshot={
-      harz:Math.max(0,Number(s?.harzTaler)||0),
-      lastFree:Math.max(0,Number(s?.dungeonPass?.lastFree)||0)
-    };
-
     let attempt=false;
     try{
       attempt=await consumeDungeonAttempt();
@@ -82350,98 +82343,16 @@ body:has(#world.active){background:#010302!important}
       if(enemyBar) enemyBar.style.width=`${Math.max(0,Math.min(100,enemyHp/maxEnemy*100))}%`;
     }
 
-    /* V5.79: one authoritative fight clock. The previous chained setTimeout
-       loop could be stranded by the large legacy UI stack on mobile. Keep one
-       native interval alive for the whole duel and query live DOM nodes on every
-       paint, so a renderer can never leave us updating detached HP/log nodes. */
-    let v578Faults=0;
-    let v579FightClock=0;
-    let v579LastProgress=Date.now();
-    let v579LastRoundSeen=0;
-
-    const v579SetInterval=(typeof window.__V477_NATIVE_SET_INTERVAL__==='function')
-      ? window.__V477_NATIVE_SET_INTERVAL__
-      : window.setInterval.bind(window);
-
-    function v579El(id){ return document.getElementById(id); }
-    function v579LiveLog(){ return v579El('battleLog') || log; }
-    function v579LiveLoot(){ return v579El('loot') || loot; }
-
-    function v579StopClock(){
-      if(v579FightClock){
-        try{clearInterval(v579FightClock)}catch(e){}
-        v579FightClock=0;
-      }
-      try{
-        if(window.__V579_ACTIVE_FIGHT__?.clock) window.__V579_ACTIVE_FIGHT__.clock=0;
-      }catch(e){}
-    }
-
-    function v579MarkProgress(){
-      v579LastProgress=Date.now();
-      v579LastRoundSeen=round;
-      try{
-        if(window.__V579_ACTIVE_FIGHT__){
-          window.__V579_ACTIVE_FIGHT__.round=round;
-          window.__V579_ACTIVE_FIGHT__.playerHp=playerHp;
-          window.__V579_ACTIVE_FIGHT__.enemyHp=enemyHp;
-          window.__V579_ACTIVE_FIGHT__.lastProgress=v579LastProgress;
-        }
-      }catch(e){}
-    }
-
-    function v578ResetFightUi(label){
-      const card=document.getElementById('dungeonBattleCard');
-      card?.classList.remove('v252-fighting');
-      const btn=document.getElementById('fightBtn') || liveButton;
-      if(btn){
-        btn.disabled=false;
-        if(label)btn.textContent=label;
-      }
-    }
-
-    function v578AbortTechnical(err){
-      if(finished)return;
-      finished=true;
-      v579StopClock();
-      window.__V446_FIGHTING__=false;
-      try{battleBusy=false}catch(e){}
-
-      /* A runtime fault must never cost the player a dungeon attempt. */
-      try{
-        s.harzTaler=v578AttemptSnapshot.harz;
-        if(!s.dungeonPass||typeof s.dungeonPass!=='object')s.dungeonPass={lastFree:0};
-        s.dungeonPass.lastFree=v578AttemptSnapshot.lastFree;
-      }catch(e){}
-
-      v578ResetFightUi('⚔️ KAMPF ERNEUT STARTEN');
-      const chip=document.querySelector('#dungeonBattleCard .v575-round');
-      if(chip)chip.textContent='ABGEBROCHEN';
-      const lootNow=v579LiveLoot();
-      const logNow=v579LiveLog();
-      if(lootNow)lootNow.innerHTML='<div class="loot" style="color:#ffd27f">⚠️ Kampf technisch abgebrochen. Dein Versuch wurde zurückerstattet.</div>';
-      if(logNow)logNow.textContent='Kampf technisch abgebrochen · Versuch zurückerstattet.';
-
-      try{persist(false)}catch(e){}
-      try{window.v069SyncCurrencies?.()}catch(e){}
-      try{window.v441PaintResources?.()}catch(e){}
-      paintTimer(true);
-      try{window.__V579_ACTIVE_FIGHT__=null}catch(e){}
-      console.error('V5.79 Dungeon-Kampf technisch abgebrochen',err);
-    }
-
     function finish(win){
       if(finished) return;
       finished=true;
-      v579StopClock();
       window.__V446_FIGHTING__=false;
       try{battleBusy=false}catch(e){}
 
-      v578ResetFightUi(win?'🏆 SIEG':'⚔️ ERNEUT KÄMPFEN');
+      const btn=document.getElementById('fightBtn') || liveButton;
+      if(btn) btn.disabled=false;
 
       s.dungeon.view='reward';
-      const lootNow=v579LiveLoot();
-      const logNow=v579LiveLog();
 
       if(win){
         const baseXp=Math.max(0,Number(enemy.xp)||0);
@@ -82484,7 +82395,7 @@ body:has(#world.active){background:#010302!important}
             if(rewardItem) s.inventory.push(rewardItem);
           }
         }catch(err){
-          console.error('V5.79 Loot',err);
+          console.error('V4.246 Loot',err);
         }
 
         if(enemy.boss){
@@ -82506,6 +82417,7 @@ body:has(#world.active){background:#010302!important}
         }
 
         try{window.v411AwardGuildActivity?.('dungeon')}catch(e){}
+
         try{persist(false)}catch(e){}
 
         try{
@@ -82522,28 +82434,28 @@ body:has(#world.active){background:#010302!important}
               harz:harzGain,
               boss:!!enemy.boss
             });
-          }else if(lootNow){
-            lootNow.innerHTML=`<div class="loot good">🏆 Sieg! +${actualXp} XP · +${actualGold} Gold</div>`;
+          }else if(loot){
+            loot.innerHTML=`<div class="loot good">🏆 Sieg! +${actualXp} XP · +${actualGold} Gold</div>`;
           }
         }catch(err){
-          console.error('V5.79 Belohnung',err);
-          if(lootNow) lootNow.innerHTML=`<div class="loot good">🏆 Sieg! +${actualXp} XP · +${actualGold} Gold</div>`;
+          console.error('V4.246 Belohnung',err);
+          if(loot) loot.innerHTML=`<div class="loot good">🏆 Sieg! +${actualXp} XP · +${actualGold} Gold</div>`;
         }
 
-        if(logNow){
-          logNow.textContent=enemy.boss
+        if(log){
+          log.textContent=enemy.boss
             ? 'Boss besiegt. Bestätige deine Belohnung.'
             : `Gegner ${idx+1} besiegt. Gegner ${idx+2} ist jetzt aktiv.`;
         }
       }else{
         try{persist(false)}catch(e){}
-        if(lootNow){
-          lootNow.innerHTML=`
+        if(loot){
+          loot.innerHTML=`
             <div class="loot" style="color:#ff9895">💀 Niederlage. Verbessere Attribute oder Ausrüstung.</div>
             <button class="btn secondary" id="v446ReturnMap" style="width:100%;margin-top:10px">🗺️ Zurück zur Dungeon-Karte</button>
           `;
         }
-        if(logNow) logNow.textContent=`Niederlage · Gegner empfohlen Lv. ${bal.rec}.`;
+        if(log) log.textContent=`Niederlage · Gegner empfohlen Lv. ${bal.rec}.`;
 
         const back=document.getElementById('v446ReturnMap');
         if(back){
@@ -82562,20 +82474,6 @@ body:has(#world.active){background:#010302!important}
       try{window.v069SyncCurrencies?.()}catch(e){}
       try{window.renderInventory?.()}catch(e){}
       paintTimer(true);
-      const chip=document.querySelector('#dungeonBattleCard .v575-round');
-      if(chip)chip.textContent=win?'SIEG':'NIEDERLAGE';
-      try{window.__V579_ACTIVE_FIGHT__=null}catch(e){}
-    }
-
-    function v579SyncBars(){
-      const playerTextNow=v579El('playerHpText');
-      const enemyTextNow=v579El('enemyHpText');
-      const playerBarNow=v579El('playerHpBar');
-      const enemyBarNow=v579El('enemyHpBar');
-      if(playerTextNow) playerTextNow.textContent=Math.max(0,Math.round(playerHp));
-      if(enemyTextNow) enemyTextNow.textContent=Math.max(0,Math.round(enemyHp));
-      if(playerBarNow) playerBarNow.style.width=`${Math.max(0,Math.min(100,playerHp/maxPlayer*100))}%`;
-      if(enemyBarNow) enemyBarNow.style.width=`${Math.max(0,Math.min(100,enemyHp/maxEnemy*100))}%`;
     }
 
     function playerAttack(){
@@ -82619,21 +82517,20 @@ body:has(#world.active){background:#010302!important}
           label=a.text||label;
         }
       }catch(err){
-        console.warn('V5.79 Spieler-Talent fallback',err);
+        console.warn('V4.246 Spieler-Talent fallback',err);
       }
 
       playerHp=Math.min(maxPlayer,playerHp+heal);
       enemyHp=Math.max(0,enemyHp-damage);
 
-      try{animClass(v579El('playerFighter'),'attack-right')}catch(e){}
-      try{popDamage(v579El('damageEnemy'),`-${damage}${crit?'!':''}`)}catch(e){}
+      try{animClass(document.getElementById('playerFighter'),'attack-right')}catch(e){}
+      try{popDamage(document.getElementById('damageEnemy'),`-${damage}${crit?'!':''}`)}catch(e){}
 
-      v579SyncBars();
-      const logNow=v579LiveLog();
-      if(logNow){
-        logNow.textContent=`Runde ${round}: ${label} · ${damage} Schaden${heal?` · +${heal} LP`:''}`;
+      syncBars();
+
+      if(log){
+        log.textContent=`Runde ${round}: ${label} · ${damage} Schaden${heal?` · +${heal} LP`:''}`;
       }
-      v579MarkProgress();
 
       if(enemyHp<=0){
         finish(true);
@@ -82672,7 +82569,7 @@ body:has(#world.active){background:#010302!important}
           label=d.text||label;
         }
       }catch(err){
-        console.warn('V5.79 Gegner-Talent fallback',err);
+        console.warn('V4.246 Gegner-Talent fallback',err);
       }
 
       playerHp=Math.min(maxPlayer,playerHp+heal);
@@ -82681,15 +82578,14 @@ body:has(#world.active){background:#010302!important}
 
       if(counter) enemyHp=Math.max(0,enemyHp-counter);
 
-      try{animClass(v579El('enemyFighter'),'attack-left')}catch(e){}
-      try{if(damage)popDamage(v579El('damagePlayer'),`-${damage}`)}catch(e){}
+      try{animClass(document.getElementById('enemyFighter'),'attack-left')}catch(e){}
+      try{if(damage)popDamage(document.getElementById('damagePlayer'),`-${damage}`)}catch(e){}
 
-      v579SyncBars();
-      const logNow=v579LiveLog();
-      if(logNow){
-        logNow.textContent+=` · ${label}${counter?` · Konter ${counter}`:''}${heal?` · +${heal} LP`:''}`;
+      syncBars();
+
+      if(log){
+        log.textContent+=` · ${label}${counter?` · Konter ${counter}`:''}${heal?` · +${heal} LP`:''}`;
       }
-      v579MarkProgress();
 
       if(enemyHp<=0){
         finish(true);
@@ -82706,41 +82602,36 @@ body:has(#world.active){background:#010302!important}
       return true;
     }
 
-    /* V5.80: one callback owns a COMPLETE combat round. The mobile stall was
-       consistently visible after the player's R7 hit, i.e. exactly between the
-       player half-turn and the enemy half-turn. Never leave a round half-done:
-       player attack + enemy response are resolved in one synchronous task. */
-    function v580RoundStep(){
-      if(finished)return;
-      try{
-        if(!playerAttack())return;
-        if(!enemyAttack())return;
-        v578Faults=0;
-      }catch(err){
-        v578Faults++;
-        console.error('V5.80 Kampfrunde',err);
-        if(v578Faults>=2)v578AbortTechnical(err);
+    /* Erster Schlag sofort. Danach rAF-Takt, unabhängig von den alten
+       setTimeout/setInterval-Ketten und deren Runtime-Governor. */
+    playerAttack();
+    if(finished) return;
+
+    playerTurn=false;                 // als Nächstes Gegner
+    nextTurnAt=performance.now()+430;
+
+    function frame(now){
+      if(finished) return;
+
+      if(now>=nextTurnAt){
+        try{
+          if(playerTurn){
+            if(!playerAttack()) return;
+          }else{
+            if(!enemyAttack()) return;
+          }
+        }catch(err){
+          console.error('V4.246 Kampfrunde',err);
+        }
+
+        playerTurn=!playerTurn;
+        nextTurnAt=now+430;
       }
+
+      requestAnimationFrame(frame);
     }
 
-    window.__V579_ACTIVE_FIGHT__={
-      di,idx,round:0,playerHp,enemyHp,lastProgress:Date.now(),clock:0,
-      step:v580RoundStep,isFinished:()=>finished
-    };
-
-    /* First COMPLETE round immediately, then one complete round per tick. */
-    v580RoundStep();
-    if(finished)return;
-
-    v579FightClock=v579SetInterval(()=>{
-      if(finished){v579StopClock();return}
-      const now=Date.now();
-      /* A requestAnimationFrame heartbeat can rescue a missing interval. If it
-         just advanced a round, skip this callback to prevent a double round. */
-      if(now-v579LastProgress<420)return;
-      try{v580RoundStep()}catch(e){v578AbortTechnical(e)}
-    },680);
-    try{if(window.__V579_ACTIVE_FIGHT__)window.__V579_ACTIVE_FIGHT__.clock=v579FightClock}catch(e){}
+    requestAnimationFrame(frame);
   }
 
   /*
@@ -95150,7 +95041,7 @@ html.v495-level-syncing #v420LevelUpOverlay{
  'use strict';
  if(window.__V575_DUNGEON_BATTLE__)return;window.__V575_DUNGEON_BATTLE__=true;window.__V575_COMBAT_FINAL_OWNER__=true;
  const $=q=>document.querySelector(q);
- const clean=s=>String(s??'').replace(/<[^>]*>/g,' ').replace(/\s+/g,' ').trim();
+ const clean=s=>String(s??'').replace(/<[^>]*>/g,'').trim();
  const state={player:null,enemy:null,lastText:'',lastRound:0};
  const classId=()=>String(window.s?.playerClass||s?.playerClass||'grower');
  const pulseClass=(el,cl,ms=620)=>{if(!el)return;el.classList.remove(cl);void el.offsetWidth;el.classList.add(cl);setTimeout(()=>el.classList.remove(cl),ms)};
@@ -95424,133 +95315,4 @@ html.v495-level-syncing #v420LevelUpOverlay{
 </script>
 <!-- ===== /V5.77 ===== -->
 
-<!-- ===== V5.79 DUNGEON FIGHT CLOCK + ENDSTATE SAFETY ===== -->
-<style id="v578-dungeon-fight-endstate-css">
-/* V2.52 appends a second "KAMPF LÄUFT" with ::after. V5.75 owns the visible
-   fight button now, so the legacy pseudo label must never render here. */
-#dungeonBattleCard.v575-combat #fightBtn::after{
-  content:none!important;
-  display:none!important;
-}
-#dungeonBattleCard.v575-combat .v575-round{transition:background .18s ease,border-color .18s ease,color .18s ease}
-</style>
-<!-- ===== /V5.79 ===== -->
-
-
-<!-- ===== V5.80 DUNGEON COMPLETE-ROUND HEARTBEAT ===== -->
-<script id="v580-dungeon-complete-round-heartbeat">
-(function(){
-  'use strict';
-  if(window.__V580_DUNGEON_HEARTBEAT__)return;
-  window.__V580_DUNGEON_HEARTBEAT__=true;
-
-  function recover(minAge,reason){
-    try{
-      const f=window.__V579_ACTIVE_FIGHT__;
-      if(!f||typeof f.step!=='function'||f.isFinished?.())return false;
-      const age=Date.now()-Math.max(0,Number(f.lastProgress)||0);
-      if(age<minAge)return false;
-      f.step();
-      f.recovered=(Number(f.recovered)||0)+1;
-      f.lastRecovery=Date.now();
-      f.lastRecoveryReason=reason;
-      return true;
-    }catch(err){
-      console.error('V5.80 Dungeon heartbeat',err);
-      return false;
-    }
-  }
-
-  /* Independent of setTimeout/setInterval: if Android/WebView drops the combat
-     timer, the next animation frame completes the pending round. */
-  function frame(){
-    recover(1100,'raf');
-    requestAnimationFrame(frame);
-  }
-  requestAnimationFrame(frame);
-
-  const wake=()=>recover(500,'wake');
-  window.addEventListener('focus',wake,{passive:true});
-  window.addEventListener('pageshow',wake,{passive:true});
-  document.addEventListener('visibilitychange',()=>{if(!document.hidden)wake()},{passive:true});
-})();
-</script>
-<!-- ===== /V5.80 ===== -->
-
-<!-- ===== V5.81 DUNGEON FREEZE HARD-RESCUE ===== -->
-<script id="v581-dungeon-freeze-hard-rescue">
-(function(){
-  'use strict';
-  if(window.__V581_DUNGEON_FREEZE_RESCUE__) return;
-  window.__V581_DUNGEON_FREEZE_RESCUE__ = true;
-
-  const txt = el => String(el?.textContent || '').replace(/\s+/g,' ').trim();
-  let lastSig = '';
-  let stableSince = 0;
-
-  function activeFight(){
-    const f = window.__V579_ACTIVE_FIGHT__;
-    if(f && typeof f.step === 'function' && !(typeof f.isFinished === 'function' && f.isFinished())) return f;
-    return null;
-  }
-
-  function signature(){
-    const btn = document.getElementById('fightBtn');
-    const p = txt(document.getElementById('playerHpText'));
-    const e = txt(document.getElementById('enemyHpText'));
-    const log = txt(document.getElementById('battleLog'));
-    const chip = txt(document.querySelector('#dungeonBattleCard .v575-round'));
-    return [btn?.disabled?'1':'0', p, e, log, chip].join('|');
-  }
-
-  function rescue(reason){
-    const f = activeFight();
-    if(!f) return false;
-    try{
-      let loops = 0;
-      while(loops < 80 && !(typeof f.isFinished === 'function' && f.isFinished())){
-        f.step();
-        loops++;
-      }
-      console.warn('V5.81 Dungeon freeze rescue', reason, 'loops=', loops);
-      return true;
-    }catch(err){
-      console.error('V5.81 Dungeon rescue failed', err);
-      return false;
-    }
-  }
-
-  function tick(){
-    const f = activeFight();
-    if(!f){
-      stableSince = 0;
-      lastSig = '';
-      return;
-    }
-
-    const sig = signature();
-    const now = Date.now();
-    if(sig !== lastSig){
-      lastSig = sig;
-      stableSince = now;
-      return;
-    }
-
-    if(!stableSince) stableSince = now;
-    const staleMs = now - stableSince;
-
-    /* If the duel visually stays on the same round/HP/log state for too long,
-       do not wait for lost mobile timers. Force-complete the remaining duel. */
-    if(staleMs >= 1400){
-      stableSince = now;
-      rescue('stale-ui');
-    }
-  }
-
-  setInterval(tick, 350);
-  window.addEventListener('focus', tick, {passive:true});
-  window.addEventListener('pageshow', tick, {passive:true});
-  document.addEventListener('visibilitychange', ()=>{ if(!document.hidden) tick(); }, {passive:true});
-})();
-</script>
-<!-- ===== /V5.81 ===== -->
+<!-- ===== V5.82 DUNGEON SCHEDULER RESTORE: V4.246 rAF loop restored from V5.75 working state ===== -->
