@@ -5277,7 +5277,7 @@ try{
 
 /* --- Inventory feels like RPG loot --- */
 #inventory .inventory-grid{
-  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
   gap:10px!important;
 }
 #inventory .inv-item{
@@ -48382,6 +48382,197 @@ document.addEventListener('click',()=>{setTimeout(pulse,40);setTimeout(pulse,140
 })();
 </script>
 <!-- ===== /V5.26 HELDENQUARTIER FINAL REFERENCE ORNAMENT POLISH ===== -->
+
+
+<!-- ===== V5.47 MATERIALIEN SLOTS + ATMOSPHERE ===== -->
+<style id="v547-material-slots-atmosphere-css">
+/* Material chamber atmosphere. UI only; material/socket logic stays untouched. */
+#character #v459PanelMaterials{
+  isolation:isolate!important;
+}
+#character #v459PanelMaterials::before{
+  content:''!important;
+  position:absolute!important;
+  inset:-10px -4px -16px!important;
+  pointer-events:none!important;
+  z-index:-1!important;
+  border-radius:18px!important;
+  background:
+    radial-gradient(circle at 8% 28%,rgba(94,207,64,.08),transparent 18%),
+    radial-gradient(circle at 92% 38%,rgba(70,177,52,.07),transparent 20%),
+    linear-gradient(180deg,rgba(12,26,15,.72),rgba(3,9,5,.92))!important;
+  box-shadow:inset 0 0 46px rgba(0,0,0,.52)!important;
+}
+
+#character #v030Materials.v546-material-card{
+  background:
+    radial-gradient(circle at 14% 8%,rgba(92,184,64,.11),transparent 23%),
+    radial-gradient(circle at 87% 11%,rgba(92,184,64,.08),transparent 22%),
+    radial-gradient(circle at 50% 54%,rgba(45,113,42,.09),transparent 35%),
+    linear-gradient(180deg,#0d190f 0%,#071109 64%,#050b06 100%)!important;
+}
+#character #v030Materials.v546-material-card::before{
+  content:''!important;
+  position:absolute!important;
+  inset:0!important;
+  pointer-events:none!important;
+  opacity:.13!important;
+  background-image:
+    radial-gradient(ellipse at 10% 20%,rgba(91,167,68,.55) 0 1px,transparent 2px),
+    radial-gradient(ellipse at 72% 38%,rgba(91,167,68,.45) 0 1px,transparent 2px),
+    radial-gradient(ellipse at 38% 78%,rgba(91,167,68,.40) 0 1px,transparent 2px)!important;
+  background-size:22px 30px,28px 38px,34px 46px!important;
+  mix-blend-mode:screen!important;
+  z-index:0!important;
+}
+#character #v030Materials.v546-material-card::after{
+  content:''!important;
+  position:absolute!important;
+  left:0!important;right:0!important;bottom:0!important;
+  height:54px!important;
+  pointer-events:none!important;
+  opacity:.34!important;
+  background:
+    linear-gradient(180deg,transparent 0%,rgba(50,30,15,.20) 25%,rgba(72,42,20,.42) 26%,rgba(39,23,12,.58) 100%),
+    repeating-linear-gradient(90deg,rgba(115,73,34,.13) 0 1px,transparent 1px 38px)!important;
+  border-top:1px solid rgba(140,94,43,.25)!important;
+  z-index:0!important;
+}
+#character #v030Materials.v546-material-card > *{position:relative!important;z-index:1!important}
+
+/* Real inventory-like material slots */
+#character .v546-material-grid{
+  gap:6px!important;
+  align-items:stretch!important;
+}
+#character .v546-material-item,
+#character .v547-empty-slot{
+  min-height:150px!important;
+}
+#character .v546-material-item{
+  border-width:1.5px!important;
+  border-radius:11px!important;
+  background:
+    linear-gradient(135deg,rgba(255,255,255,.025),transparent 24%),
+    radial-gradient(circle at 50% 12%,color-mix(in srgb,var(--q) 15%,transparent),transparent 34%),
+    linear-gradient(160deg,#0f1a12 0%,#061008 100%)!important;
+  box-shadow:
+    inset 0 0 0 1px rgba(0,0,0,.34),
+    inset 0 0 16px rgba(0,0,0,.42),
+    0 0 10px color-mix(in srgb,var(--q) 12%,transparent),
+    0 3px 8px rgba(0,0,0,.25)!important;
+}
+#character .v546-material-item::before,
+#character .v547-empty-slot::before,
+#character .v547-empty-slot::after{
+  content:''!important;
+  position:absolute!important;
+  width:14px!important;height:14px!important;
+  pointer-events:none!important;
+  opacity:.58!important;
+}
+#character .v546-material-item::before{
+  left:4px!important;top:4px!important;
+  border-left:1px solid var(--q)!important;
+  border-top:1px solid var(--q)!important;
+}
+#character .v546-material-art{
+  margin-top:3px!important;
+  border-radius:10px!important;
+}
+#character .v546-material-name{font-size:6.5px!important;line-height:1.1!important}
+#character .v546-rarity-badge{margin-top:3px!important;font-size:5px!important;padding:3px 5px!important}
+#character .v546-material-bonus{font-size:5.4px!important;line-height:1.17!important;padding:4px 4px!important}
+#character .v546-material-item .v546-use{min-height:27px!important;font-size:5.4px!important;padding:4px!important}
+
+#character .v547-empty-slot{
+  position:relative!important;
+  min-width:0!important;
+  padding:8px 5px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:6px!important;
+  border:1px solid #425246!important;
+  border-radius:11px!important;
+  background:
+    radial-gradient(circle at 50% 44%,rgba(65,112,64,.12),transparent 34%),
+    linear-gradient(155deg,#0b150e,#050b07)!important;
+  box-shadow:inset 0 0 18px rgba(0,0,0,.48),0 3px 8px rgba(0,0,0,.20)!important;
+  overflow:hidden!important;
+}
+#character .v547-empty-slot::before{
+  left:5px!important;top:5px!important;
+  border-left:1px solid #6b765f!important;
+  border-top:1px solid #6b765f!important;
+}
+#character .v547-empty-slot::after{
+  right:5px!important;bottom:5px!important;
+  border-right:1px solid #6b765f!important;
+  border-bottom:1px solid #6b765f!important;
+}
+#character .v547-slot-watermark{
+  position:absolute!important;
+  inset:auto auto 9px 50%!important;
+  transform:translateX(-50%) scale(1.55)!important;
+  opacity:.055!important;
+  font-size:36px!important;
+  filter:grayscale(1)!important;
+}
+#character .v547-slot-plus{
+  width:34px!important;height:34px!important;
+  display:grid!important;place-items:center!important;
+  border:1px solid #5d705b!important;
+  border-radius:50%!important;
+  background:rgba(7,15,9,.74)!important;
+  color:#839780!important;
+  font-size:20px!important;
+  line-height:1!important;
+  box-shadow:inset 0 0 10px rgba(0,0,0,.46)!important;
+}
+#character .v547-slot-label{
+  max-width:80%!important;
+  color:#788a78!important;
+  font-size:5.4px!important;
+  line-height:1.18!important;
+  font-weight:800!important;
+  text-align:center!important;
+}
+#character .v547-empty-hint{
+  margin:0 0 7px!important;
+  padding:6px 8px!important;
+  display:grid!important;
+  grid-template-columns:auto minmax(0,1fr)!important;
+  column-gap:7px!important;
+  align-items:center!important;
+  border:1px solid #324b36!important;
+  border-radius:9px!important;
+  background:linear-gradient(180deg,rgba(12,27,16,.76),rgba(7,15,9,.82))!important;
+}
+#character .v547-empty-hint > span{grid-row:1/3;font-size:19px!important;opacity:.78!important}
+#character .v547-empty-hint > b{color:#e7e1cd!important;font-size:6.6px!important;line-height:1.1!important}
+#character .v547-empty-hint > em{color:#879789!important;font-size:5.4px!important;line-height:1.2!important;font-style:normal!important}
+
+/* Make auto socket a little tighter so the slots stay visible sooner. */
+#character #v480MaterialAutoBar{padding:7px 9px!important;gap:6px!important}
+#character #v480MaterialAutoBar .v480-auto-btn{min-height:32px!important;padding:6px 9px!important}
+
+@media(max-width:390px){
+  #character .v546-material-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:5px!important}
+  #character .v546-material-item,
+  #character .v547-empty-slot{min-height:141px!important}
+  #character .v546-material-art{width:43px!important;height:43px!important;font-size:25px!important}
+  #character .v546-material-art img{width:37px!important;height:37px!important;max-width:37px!important;max-height:37px!important}
+  #character .v546-material-name{font-size:5.8px!important}
+  #character .v546-material-bonus{font-size:4.9px!important;min-height:25px!important}
+  #character .v546-material-item .v546-use{font-size:4.9px!important;min-height:25px!important}
+  #character .v547-slot-plus{width:30px!important;height:30px!important;font-size:18px!important}
+  #character .v547-slot-label{font-size:4.9px!important}
+}
+</style>
+<!-- ===== /V5.47 MATERIALIEN SLOTS + ATMOSPHERE ===== -->
+
 </body>
 </html>
 <style id="v268-inventory-multisell-css">
@@ -55026,7 +55217,7 @@ body:has(#world.active) #v032MenuBtn{
     line-height:1.1!important;
   }
   #world.active .v349-card p{
-    min-height:22px!important;
+    min-height:19px!important;
     margin:2px 0 4px!important;
     font-size:6.2px!important;
     line-height:1.3!important;
@@ -78204,7 +78395,7 @@ body:has(#world.active){background:#010302!important}
 #world.active .v366-dock button{min-height:55px!important;border-right:1px solid #56421d!important;color:#d4b56e!important;font-weight:900!important}#world.active .v366-dock button:last-child{border-right:0!important}#world.active .v366-dock .ico{font-size:22px!important;filter:drop-shadow(0 2px 2px #000)!important}#world.active .v366-dock button.active{border:1px solid #72a92c!important;border-radius:7px!important;background:linear-gradient(#1d4912,#0b2108)!important;color:#efffa1!important;box-shadow:inset 0 0 10px #66ff331f!important}
 #world.active #v492HomeGrowStatus{border:1px solid #416d2b!important;background:linear-gradient(90deg,#0c2414,#0b1a10)!important;box-shadow:inset 0 0 12px #0006,0 3px 9px #000!important}
 
-@media(max-width:390px){#world.active .v366-hero{height:390px!important}#world.active .v366-profile{width:56%!important;padding:7px!important}#world.active .v366-avatar{width:55px!important;height:55px!important;flex-basis:55px!important}#world.active .v366-events{width:39%!important}#world.active .v366-event{min-height:50px!important;padding:5px!important}#world.active .v366-welcome h1{font-size:25px!important}}
+@media(max-width:390px){#world.active .v366-hero{height:390px!important}#world.active .v366-profile{width:56%!important;padding:7px!important}#world.active .v366-avatar{width:47px!important;height:47px!important;flex-basis:55px!important}#world.active .v366-events{width:39%!important}#world.active .v366-event{min-height:50px!important;padding:5px!important}#world.active .v366-welcome h1{font-size:25px!important}}
 </style>
 
 
@@ -78553,7 +78744,7 @@ body:has(#world.active){background:#010302!important}
 #quests .v386-card{
  display:grid!important;grid-template-columns:34% 66%!important;border:2px solid #755a2c!important;border-radius:12px!important;
  background:linear-gradient(90deg,#d7c38f,#efe1b6 43%,#dcc695)!important;box-shadow:inset 0 0 0 1px #3c2a13,0 7px 18px #0007!important;
- min-height:176px!important;
+ min-height:152px!important;
 }
 #quests .v386-card.fast{border-color:#5b6332!important}#quests .v386-card.normal{border-color:#715c2c!important}#quests .v386-card.hard{border-color:#74412d!important}
 #quests .v386-scene{min-height:176px!important;height:100%!important;padding:10px!important;border-right:2px solid #563d1d!important}
@@ -90519,8 +90710,8 @@ html.v495-level-syncing #v420LevelUpOverlay{
 }
 #character .v546-material-art img{
   display:block!important;
-  width:48px!important;height:48px!important;
-  max-width:48px!important;max-height:48px!important;
+  width:41px!important;height:41px!important;
+  max-width:41px!important;max-height:41px!important;
   object-fit:contain!important;
 }
 #character .v546-material-name{
@@ -90546,8 +90737,8 @@ html.v495-level-syncing #v420LevelUpOverlay{
 }
 #character .v546-material-bonus{
   width:100%!important;
-  min-height:30px!important;
-  margin:5px 0 6px!important;
+  min-height:27px!important;
+  margin:4px 0 5px!important;
   padding:5px 6px!important;
   border:1px solid #304636!important;
   border-radius:8px!important;
@@ -90694,14 +90885,16 @@ html.v495-level-syncing #v420LevelUpOverlay{
       <button type="button" class="btn v546-use" data-index="${g.index}">Auf Item anwenden</button>
     </article>`;
   }
-  function empty(){
+  function emptySlot(i){
+    const icon=activeType==='gem'?'💎':'📜';
+    return `<div class="v547-empty-slot" aria-label="Freier Materialplatz"><div class="v547-slot-watermark">${icon}</div><div class="v547-slot-plus">+</div><div class="v547-slot-label">Platz für Material</div></div>`;
+  }
+  function emptyHint(){
     const hasType=groups().some(g=>g.material.type===activeType);
     const label=activeType==='gem'?'Edelsteine':'Schriftrollen';
     const icon=activeType==='gem'?'💎':'📜';
-    const line=!hasType
-      ?`Noch keine ${label}.`
-      :`Keine ${label} dieser Qualität.`;
-    return `<div class="v546-material-empty"><div class="v546-empty-icon">${icon}</div><b>${line}</b><span>Erbeute Materialien in Quests, Dungeons und bei Bossen.</span></div>`;
+    const line=!hasType?`Noch keine ${label}.`:`Keine ${label} dieser Qualität.`;
+    return `<div class="v547-empty-hint"><span>${icon}</span><b>${line}</b><em>Erbeute sie in Quests, Dungeons und bei Bossen.</em></div>`;
   }
   function arrange(){
     const panel=document.getElementById('v459PanelMaterials');if(!panel)return;
@@ -90728,7 +90921,8 @@ html.v495-level-syncing #v420LevelUpOverlay{
         <div><b>${activeType==='gem'?'Edelsteine':'Schriftrollen'}</b><span>${activeType==='gem'?'Attribute dauerhaft auf einem ausgerüsteten Item verstärken.':'Einen zusätzlichen Effekt auf ein ausgerüstetes Item legen.'}</span></div>
       </div>
       ${filters()}
-      ${list.length?`<div class="v546-material-grid">${list.map(card).join('')}</div>`:empty()}`;
+      ${!list.length?emptyHint():''}
+      <div class="v546-material-grid">${(()=>{const cards=list.map(card);const target=Math.max(6,Math.ceil(Math.max(cards.length,1)/3)*3);while(cards.length<target)cards.push(emptySlot(cards.length));return cards.join('')})()}</div>`;
     p.querySelectorAll('.v546-quality').forEach(btn=>btn.onclick=()=>{
       const q=btn.dataset.q||'all';activeQuality=activeQuality===q?'all':q;window.__v546MaterialQuality=activeQuality;renderMaterials();
     });
