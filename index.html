@@ -945,7 +945,7 @@ document.documentElement.classList.remove('v224-app-ready');
       <div class="v254-buds">🌿 <b id="v254GuildBuds">0</b><span>Gilden-Buds</span></div>
     </div>
 
-    <div id="v254GuildNoGuild" class="v254-card">
+    <div id="v254GuildNoGuild" class="v254-card" style="display:none">
       <div class="v254-empty-icon">🏰</div>
       <h3>Du bist noch in keiner Gilde</h3>
       <p>In einer Gilde schaltest du dauerhafte EXP-/Gold-Boni, den täglichen Gildenboss und Gilde-gegen-Gilde frei.</p>
@@ -93047,3 +93047,156 @@ html.v495-level-syncing #v420LevelUpOverlay{
 }
 </style>
 <!-- ===== /V5.60 GILDE TRUE EMPTY REQUEST + ADMIN NOTE FINAL ===== -->
+
+
+<!-- ===== V5.61 GILDE FIRST-OPEN RENDER GATE ===== -->
+<style id="v561-guild-first-open-gate-css">
+/* Do not ever paint the static "no guild" state before the authoritative
+   membership query has finished. This removes the false no-guild flash. */
+#guild.v561-guild-pending #v254GuildNoGuild,
+#guild.v561-guild-pending #v254GuildDashboard,
+#guild.v561-guild-pending .v554-guild-hero{
+  display:none!important;
+}
+#guild #v561GuildLoading{display:none!important}
+#guild.v561-guild-pending #v561GuildLoading{
+  display:flex!important;
+  min-height:112px!important;
+  margin:0 0 8px!important;
+  padding:16px 14px!important;
+  box-sizing:border-box!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:8px!important;
+  border:1.5px solid #79552d!important;
+  border-radius:14px!important;
+  background:
+    linear-gradient(180deg,rgba(8,22,12,.82),rgba(3,10,6,.92)),
+    var(--v552-guild-bg)!important;
+  background-size:cover!important;
+  background-position:center 43%!important;
+  box-shadow:inset 0 0 26px rgba(0,0,0,.40),0 6px 16px rgba(0,0,0,.24)!important;
+  color:#e9dfc8!important;
+  text-align:center!important;
+}
+#guild #v561GuildLoading .v561-guild-load-title{
+  color:#f0d38d!important;
+  font:900 13px/1.1 Georgia,serif!important;
+  letter-spacing:.035em!important;
+}
+#guild #v561GuildLoading .v561-guild-load-sub{
+  color:#9eae9f!important;
+  font-size:6.2px!important;
+  line-height:1.3!important;
+}
+#guild #v561GuildLoading .v561-guild-load-bar{
+  width:min(72%,330px)!important;
+  height:7px!important;
+  overflow:hidden!important;
+  border:1px solid #425238!important;
+  border-radius:999px!important;
+  background:#050a06!important;
+}
+#guild #v561GuildLoading .v561-guild-load-bar::after{
+  content:''!important;
+  display:block!important;
+  width:38%!important;
+  height:100%!important;
+  border-radius:999px!important;
+  background:linear-gradient(90deg,#3fba45,#91ef6b)!important;
+  box-shadow:0 0 9px rgba(108,232,79,.24)!important;
+  animation:v561GuildLoad 900ms ease-in-out infinite alternate!important;
+}
+@keyframes v561GuildLoad{from{transform:translateX(-8%)}to{transform:translateX(175%)}}
+</style>
+<script id="v561-guild-first-open-gate-js">
+(function(){
+  'use strict';
+  const root=document.getElementById('guild');
+  if(!root)return;
+  let resolvedKey='';
+  let activeLoads=0;
+
+  function userKey(){
+    try{
+      const u=(typeof v073User!=='undefined'&&v073User)?v073User:null;
+      if(!u)return 'unknown';
+      return u.is_anonymous?'anonymous':String(u.id||'anonymous');
+    }catch(e){return 'unknown'}
+  }
+  function ensureLoader(){
+    const shell=root.querySelector('.v254-guild-shell');
+    if(!shell)return null;
+    let box=document.getElementById('v561GuildLoading');
+    if(!box){
+      box=document.createElement('div');
+      box.id='v561GuildLoading';
+      box.setAttribute('role','status');
+      box.setAttribute('aria-live','polite');
+      box.innerHTML='<div class="v561-guild-load-title">🌿 Gildendaten werden geladen</div><div class="v561-guild-load-sub">Mitgliedschaft und Gildenstatus werden vom Server geprüft.</div><div class="v561-guild-load-bar" aria-hidden="true"></div>';
+      const title=shell.querySelector(':scope > .v554-guild-title');
+      if(title)title.insertAdjacentElement('afterend',box); else shell.prepend(box);
+    }
+    return box;
+  }
+  function pending(on){
+    ensureLoader();
+    root.classList.toggle('v561-guild-pending',!!on);
+    root.setAttribute('aria-busy',on?'true':'false');
+  }
+  function needsGate(){
+    const k=userKey();
+    return !resolvedKey || k==='unknown' || resolvedKey!==k;
+  }
+
+  /* The static HTML contains the create/search card. Keep it hidden until a
+     real membership result explicitly tells v254RenderGuild to show it. */
+  const no=document.getElementById('v254GuildNoGuild');
+  if(no && !no.dataset.v561Init){no.dataset.v561Init='1';no.style.display='none'}
+  pending(true);
+
+  if(typeof v254LoadGuild==='function'&&!window.__v561GuildLoadGate){
+    const base=v254LoadGuild;
+    const wrapped=async function(){
+      const gate=needsGate();
+      if(gate)pending(true);
+      activeLoads++;
+      try{
+        return await base.apply(this,arguments);
+      }finally{
+        activeLoads=Math.max(0,activeLoads-1);
+        if(activeLoads===0){
+          resolvedKey=userKey();
+          pending(false);
+        }
+      }
+    };
+    try{v254LoadGuild=wrapped}catch(e){}
+    window.v254LoadGuild=wrapped;
+    window.__v561GuildLoadGate=true;
+  }
+
+  if(typeof v032Go==='function'&&!window.__v561GuildGoGate){
+    const baseGo=v032Go;
+    const go=function(id){
+      if(id==='guild'&&needsGate())pending(true);
+      return baseGo.apply(this,arguments);
+    };
+    try{v032Go=go}catch(e){}
+    window.v032Go=go;
+    window.__v561GuildGoGate=true;
+  }
+
+  /* If another startup hook already finished the guild query before this patch
+     got control, resolve the gate from the authoritative in-memory state. */
+  setTimeout(()=>{
+    try{
+      const known=(typeof v254Membership!=='undefined'&&v254Membership!==null) ||
+                  (typeof v254Guild!=='undefined'&&v254Guild!==null);
+      if(known && activeLoads===0){resolvedKey=userKey();pending(false)}
+    }catch(e){}
+  },700);
+})();
+</script>
+<!-- ===== /V5.61 GILDE FIRST-OPEN RENDER GATE ===== -->
