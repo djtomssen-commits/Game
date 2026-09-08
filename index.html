@@ -90241,3 +90241,535 @@ html.v495-level-syncing #v420LevelUpOverlay{
 }
 </style>
 <!-- ===== /V5.45 TALENTBAUM FINAL READABILITY POLISH ===== -->
+
+<!-- ===== V5.46 MATERIALIEN GROW LEGENDS REDESIGN ===== -->
+<style id="v546-materials-grow-legends-css">
+/* Visual/UI-only rebuild of the Materialien tab. Existing socket/enchant mechanics stay authoritative. */
+#character #v459PanelMaterials{
+  position:relative!important;
+  min-width:0!important;
+  overflow:visible!important;
+}
+
+/* Main materials plaque */
+#character #v546MaterialsHeader{
+  position:relative!important;
+  overflow:hidden!important;
+  margin:0 0 8px!important;
+  padding:8px 10px 10px!important;
+  border:2px solid #78502a!important;
+  border-radius:14px!important;
+  background:
+    radial-gradient(circle at 10% 18%,rgba(94,185,65,.13),transparent 24%),
+    radial-gradient(circle at 90% 16%,rgba(94,185,65,.11),transparent 24%),
+    linear-gradient(180deg,#0d180f 0%,#071009 100%)!important;
+  box-shadow:inset 0 0 0 1px rgba(221,169,85,.10),inset 0 0 28px rgba(0,0,0,.30),0 6px 16px rgba(0,0,0,.28)!important;
+}
+#character #v546MaterialsHeader::before,
+#character #v546MaterialsHeader::after{
+  content:'🌿'!important;
+  position:absolute!important;
+  top:7px!important;
+  color:#61c34c!important;
+  font-size:19px!important;
+  opacity:.70!important;
+  filter:drop-shadow(0 2px 3px rgba(0,0,0,.45))!important;
+}
+#character #v546MaterialsHeader::before{left:9px!important;transform:rotate(-26deg)!important}
+#character #v546MaterialsHeader::after{right:9px!important;transform:scaleX(-1) rotate(-26deg)!important}
+#character .v546-material-plaque{
+  position:relative!important;
+  width:min(76%,390px)!important;
+  min-height:42px!important;
+  margin:0 auto 8px!important;
+  padding:7px 34px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:8px!important;
+  border:1px solid #9b652e!important;
+  border-radius:10px!important;
+  background:linear-gradient(180deg,#663819 0%,#45230f 56%,#291409 100%)!important;
+  color:#f2d28c!important;
+  font:900 22px/1 Georgia,serif!important;
+  letter-spacing:.035em!important;
+  text-align:center!important;
+  text-shadow:0 2px 0 #261208,0 0 9px rgba(224,173,86,.14)!important;
+  box-shadow:inset 0 1px 0 rgba(255,222,149,.16),inset 0 -8px 16px rgba(0,0,0,.22),0 4px 10px rgba(0,0,0,.30)!important;
+}
+#character .v546-material-plaque .gem{font-family:system-ui,sans-serif!important;font-size:21px!important}
+#character .v546-material-count{
+  position:absolute!important;
+  right:12px!important;
+  top:11px!important;
+  min-width:47px!important;
+  padding:6px 8px!important;
+  border:1px solid #778653!important;
+  border-radius:999px!important;
+  background:linear-gradient(180deg,#142318,#0a120d)!important;
+  color:#f3df9f!important;
+  font-size:9px!important;
+  line-height:1!important;
+  font-weight:1000!important;
+  text-align:center!important;
+  box-shadow:inset 0 1px 0 rgba(222,255,204,.08),0 2px 7px rgba(0,0,0,.26)!important;
+  z-index:2!important;
+}
+#character .v546-type-tabs{
+  display:grid!important;
+  grid-template-columns:1fr 1fr!important;
+  gap:6px!important;
+  margin:0!important;
+  padding:5px!important;
+  border:1px solid #5f4828!important;
+  border-radius:11px!important;
+  background:linear-gradient(180deg,#0b130d,#060a07)!important;
+}
+#character .v546-type-tab{
+  min-height:42px!important;
+  padding:6px 8px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:7px!important;
+  border:1px solid #36503b!important;
+  border-radius:9px!important;
+  background:linear-gradient(180deg,#112017,#09110c)!important;
+  color:#dedfce!important;
+  font-size:8px!important;
+  font-weight:1000!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.035),0 2px 6px rgba(0,0,0,.22)!important;
+}
+#character .v546-type-tab .ico{font-size:17px!important;line-height:1!important}
+#character .v546-type-tab.active{
+  border-color:#42bdf2!important;
+  background:radial-gradient(circle at 50% 0,rgba(42,184,243,.20),transparent 58%),linear-gradient(180deg,#12384d,#0a2230)!important;
+  color:#ecfaff!important;
+  box-shadow:inset 0 1px 0 rgba(205,246,255,.16),0 0 13px rgba(45,192,255,.17)!important;
+}
+#character .v546-type-tab[data-type="scroll"].active{
+  border-color:#d49b54!important;
+  background:radial-gradient(circle at 50% 0,rgba(224,157,76,.18),transparent 58%),linear-gradient(180deg,#4b321b,#24170e)!important;
+  color:#fff0d3!important;
+  box-shadow:inset 0 1px 0 rgba(255,226,183,.14),0 0 13px rgba(224,157,76,.14)!important;
+}
+
+/* Auto-socket block inherits logic but gets Grow Legends styling. */
+#character #v459PanelMaterials > #v480MaterialAutoBar,
+#character #v459PanelMaterials #v480MaterialAutoBar{
+  margin:0 0 8px!important;
+  padding:9px 10px!important;
+  gap:8px!important;
+  border:2px solid #6a4b28!important;
+  border-radius:13px!important;
+  background:
+    radial-gradient(circle at 10% 50%,rgba(77,176,57,.10),transparent 26%),
+    linear-gradient(180deg,#111b11,#080e09)!important;
+  box-shadow:inset 0 1px 0 rgba(221,180,106,.08),inset 0 0 18px rgba(0,0,0,.25),0 4px 12px rgba(0,0,0,.24)!important;
+}
+#character #v480MaterialAutoBar .v480-auto-copy b{
+  color:#f0dba5!important;
+  font-size:9.5px!important;
+  line-height:1.1!important;
+}
+#character #v480MaterialAutoBar .v480-auto-copy span{
+  margin-top:3px!important;
+  color:#9eaa9d!important;
+  font-size:6.5px!important;
+  line-height:1.25!important;
+}
+#character #v480MaterialAutoBar .v480-auto-btn{
+  min-height:36px!important;
+  padding:7px 10px!important;
+  border:1px solid #77a958!important;
+  border-radius:10px!important;
+  background:linear-gradient(180deg,#3d8039,#246528 60%,#19481f)!important;
+  color:#eefbe1!important;
+  font-size:7.2px!important;
+  font-weight:1000!important;
+  box-shadow:inset 0 1px 0 rgba(225,255,204,.16),0 3px 9px rgba(0,0,0,.24)!important;
+}
+#character #v480MaterialAutoBar .v480-auto-btn:disabled{
+  opacity:.76!important;
+  filter:none!important;
+  border-color:#607554!important;
+  background:linear-gradient(180deg,#53644a,#3a4735)!important;
+  color:#c8d0c1!important;
+}
+
+/* Main material collection */
+#character #v030Materials.v546-material-card{
+  position:relative!important;
+  overflow:hidden!important;
+  margin:0!important;
+  padding:9px!important;
+  border:2px solid #6d4b28!important;
+  border-radius:15px!important;
+  background:
+    radial-gradient(circle at 50% 3%,rgba(72,147,57,.10),transparent 27%),
+    linear-gradient(180deg,#0c180f 0%,#061009 100%)!important;
+  box-shadow:inset 0 0 0 1px rgba(214,164,78,.08),inset 0 0 30px rgba(0,0,0,.30),0 6px 16px rgba(0,0,0,.26)!important;
+}
+#character #v030Materials .section-title,
+#character #v030Materials #v130MatInvHead{display:none!important}
+#character .v546-material-section-head{
+  display:flex!important;
+  align-items:center!important;
+  gap:9px!important;
+  margin:0 0 7px!important;
+  padding:4px 4px 7px!important;
+  border-bottom:1px solid #3f543b!important;
+}
+#character .v546-material-section-head .ico{
+  width:33px!important;height:33px!important;
+  display:grid!important;place-items:center!important;
+  border:1px solid #456b55!important;
+  border-radius:9px!important;
+  background:#08110b!important;
+  font-size:20px!important;
+  box-shadow:inset 0 0 10px rgba(0,0,0,.48)!important;
+}
+#character .v546-material-section-head b{display:block!important;color:#f0ead7!important;font-size:11px!important;line-height:1.1!important}
+#character .v546-material-section-head span{display:block!important;margin-top:3px!important;color:#96a798!important;font-size:6.2px!important;line-height:1.2!important}
+
+#character .v546-quality-row{
+  display:grid!important;
+  grid-template-columns:repeat(6,minmax(0,1fr))!important;
+  gap:4px!important;
+  margin:0 0 8px!important;
+}
+#character .v546-quality{
+  min-width:0!important;
+  min-height:23px!important;
+  padding:3px 2px!important;
+  border:1px solid #53615a!important;
+  border-radius:999px!important;
+  background:#09100c!important;
+  color:#cbd0ca!important;
+  font-size:5.4px!important;
+  line-height:1!important;
+  font-weight:1000!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+}
+#character .v546-quality[data-q="gray"]{border-color:#929b96!important;color:#d9dedb!important}
+#character .v546-quality[data-q="green"]{border-color:#67d84b!important;color:#84eb69!important}
+#character .v546-quality[data-q="blue"]{border-color:#42a8ff!important;color:#61b7ff!important}
+#character .v546-quality[data-q="purple"]{border-color:#be55e8!important;color:#d06bf0!important}
+#character .v546-quality[data-q="orange"]{border-color:#e59a42!important;color:#f0ad55!important}
+#character .v546-quality[data-q="cyan"]{border-color:#36d6d4!important;color:#58e4e1!important}
+#character .v546-quality.active{
+  background:linear-gradient(180deg,#24351f,#121b10)!important;
+  box-shadow:0 0 9px currentColor!important;
+  color:#fff4c0!important;
+}
+
+#character .v546-material-grid{
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:7px!important;
+}
+#character .v546-material-item{
+  --q:#5f7467;
+  position:relative!important;
+  min-width:0!important;
+  min-height:176px!important;
+  padding:9px 8px 8px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  border:1.5px solid var(--q)!important;
+  border-radius:13px!important;
+  background:
+    radial-gradient(circle at 50% 10%,color-mix(in srgb,var(--q) 12%,transparent),transparent 38%),
+    linear-gradient(155deg,#0f1b13,#07100a)!important;
+  box-shadow:inset 0 0 15px rgba(0,0,0,.38),0 3px 8px rgba(0,0,0,.22)!important;
+  overflow:hidden!important;
+}
+#character .v546-material-item.q-gray{--q:#a5aca8}
+#character .v546-material-item.q-green{--q:#68d052}
+#character .v546-material-item.q-blue{--q:#45a9f5}
+#character .v546-material-item.q-purple{--q:#b653df}
+#character .v546-material-item.q-orange{--q:#e49a40}
+#character .v546-material-item.q-cyan{--q:#36d3d2}
+#character .v546-material-qty{
+  position:absolute!important;
+  top:6px!important;right:6px!important;
+  min-width:20px!important;
+  padding:3px 5px!important;
+  border:1px solid color-mix(in srgb,var(--q) 65%,#222)!important;
+  border-radius:999px!important;
+  background:rgba(5,11,7,.86)!important;
+  color:#f6f2df!important;
+  font-size:5.7px!important;
+  font-weight:1000!important;
+  text-align:center!important;
+}
+#character .v546-material-art{
+  width:55px!important;height:55px!important;
+  margin:5px auto 6px!important;
+  display:grid!important;place-items:center!important;
+  border:1px solid color-mix(in srgb,var(--q) 78%,#1b281f)!important;
+  border-radius:12px!important;
+  background:radial-gradient(circle at 50% 35%,color-mix(in srgb,var(--q) 12%,transparent),transparent 44%),#07100a!important;
+  font-size:31px!important;
+  line-height:1!important;
+  box-shadow:inset 0 0 12px rgba(0,0,0,.54),0 0 10px color-mix(in srgb,var(--q) 18%,transparent)!important;
+}
+#character .v546-material-art img{
+  display:block!important;
+  width:48px!important;height:48px!important;
+  max-width:48px!important;max-height:48px!important;
+  object-fit:contain!important;
+}
+#character .v546-material-name{
+  width:100%!important;
+  min-height:22px!important;
+  color:#f1ead8!important;
+  font-size:7.3px!important;
+  line-height:1.15!important;
+  font-weight:1000!important;
+  text-align:center!important;
+  overflow-wrap:anywhere!important;
+}
+#character .v546-rarity-badge{
+  margin-top:4px!important;
+  padding:3px 7px!important;
+  border:1px solid var(--q)!important;
+  border-radius:999px!important;
+  background:rgba(5,11,7,.66)!important;
+  color:var(--q)!important;
+  font-size:5.6px!important;
+  line-height:1!important;
+  font-weight:1000!important;
+}
+#character .v546-material-bonus{
+  width:100%!important;
+  min-height:30px!important;
+  margin:5px 0 6px!important;
+  padding:5px 6px!important;
+  border:1px solid #304636!important;
+  border-radius:8px!important;
+  background:rgba(5,12,7,.68)!important;
+  color:#d8e5d4!important;
+  font-size:6px!important;
+  line-height:1.22!important;
+  text-align:center!important;
+}
+#character .v546-material-item .v546-use{
+  width:100%!important;
+  min-height:30px!important;
+  margin-top:auto!important;
+  padding:5px 6px!important;
+  border:1px solid #6ca650!important;
+  border-radius:9px!important;
+  background:linear-gradient(180deg,#3a7536,#245728)!important;
+  color:#edf9df!important;
+  font-size:6.2px!important;
+  line-height:1.15!important;
+  font-weight:1000!important;
+  box-shadow:inset 0 1px 0 rgba(225,255,206,.10),0 2px 6px rgba(0,0,0,.22)!important;
+}
+
+#character .v546-material-empty{
+  position:relative!important;
+  min-height:230px!important;
+  padding:35px 18px 26px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  justify-content:center!important;
+  border:1px dashed #42633f!important;
+  border-radius:13px!important;
+  background:
+    radial-gradient(circle at 50% 46%,rgba(64,162,65,.12),transparent 28%),
+    linear-gradient(180deg,#09170e,#06100a)!important;
+  text-align:center!important;
+  overflow:hidden!important;
+}
+#character .v546-material-empty::before,
+#character .v546-material-empty::after{
+  content:'🌿'!important;
+  position:absolute!important;
+  bottom:12px!important;
+  color:#305f30!important;
+  font-size:28px!important;
+  opacity:.45!important;
+}
+#character .v546-material-empty::before{left:18px!important;transform:rotate(-25deg)!important}
+#character .v546-material-empty::after{right:18px!important;transform:scaleX(-1) rotate(-25deg)!important}
+#character .v546-empty-icon{font-size:45px!important;line-height:1!important;filter:drop-shadow(0 0 12px rgba(51,200,235,.22))!important}
+#character .v546-material-empty b{margin-top:10px!important;color:#ece7d4!important;font-size:10px!important;line-height:1.15!important}
+#character .v546-material-empty span{margin-top:4px!important;color:#98a799!important;font-size:6.6px!important;line-height:1.3!important}
+
+@media(max-width:390px){
+  #character .v546-material-plaque{font-size:19px!important;min-height:38px!important;width:78%!important;padding-left:25px!important;padding-right:25px!important}
+  #character .v546-material-count{right:9px!important;top:11px!important;min-width:43px!important;font-size:8px!important}
+  #character .v546-type-tab{min-height:39px!important;font-size:7.2px!important}
+  #character .v546-type-tab .ico{font-size:15px!important}
+  #character .v546-quality{font-size:4.9px!important;min-height:21px!important}
+  #character .v546-material-grid{gap:6px!important}
+  #character .v546-material-item{min-height:168px!important;padding-left:7px!important;padding-right:7px!important}
+  #character .v546-material-art{width:51px!important;height:51px!important;font-size:28px!important}
+  #character .v546-material-art img{width:44px!important;height:44px!important;max-width:44px!important;max-height:44px!important}
+  #character .v546-material-name{font-size:6.8px!important}
+}
+</style>
+
+<script id="v546-materials-grow-legends-js">
+(function(){
+  'use strict';
+  let activeType=window.__v546MaterialType||'gem';
+  let activeQuality=window.__v546MaterialQuality||'all';
+  const esc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const qNorm=m=>{
+    const raw=String(m?.quality||m?.rarity||'gray').toLowerCase();
+    if(/myst|cyan|türkis|turkis/.test(raw))return 'cyan';
+    if(/legend|orange/.test(raw))return 'orange';
+    if(/epic|episch|purple|lila/.test(raw))return 'purple';
+    if(/rare|selten|blue|blau/.test(raw))return 'blue';
+    if(/uncommon|gewöhn|gewohn|green|grün|grun/.test(raw))return 'green';
+    return 'gray';
+  };
+  const qLabel=q=>({gray:'Normal',green:'Gewöhnlich',blue:'Selten',purple:'Episch',orange:'Legendär',cyan:'Mystisch'}[q]||'Normal');
+  const materialKey=m=>[m?.type||'',m?.name||'',qNorm(m),m?.stat||'',m?.effect||'',Number(m?.value)||0].join('|');
+  const effectText=m=>{
+    try{
+      if(m?.type==='gem')return `+${Number(m.value)||0} ${typeof v030StatLabel==='function'?v030StatLabel(m.stat):String(m.stat||'Attribut')}`;
+      return typeof v030EffectLabel==='function'?v030EffectLabel(m.effect,m.value):`${m.effect||'Effekt'} +${Number(m.value)||0}`;
+    }catch(e){return m?.type==='gem'?`+${Number(m?.value)||0}`:`+${Number(m?.value)||0} Effekt`}
+  };
+  const artMarkup=m=>{
+    try{
+      const u=typeof window.v466ItemArtUri==='function'?window.v466ItemArtUri(m):'';
+      if(u)return `<img src="${esc(u)}" alt="${esc(m?.name||'Material')}" decoding="async">`;
+    }catch(e){}
+    return esc(m?.icon||(m?.type==='scroll'?'📜':'💎'));
+  };
+  function groups(){
+    const out=[];
+    const by=new Map();
+    (Array.isArray(s?.materials)?s.materials:[]).forEach((m,index)=>{
+      if(!m||!['gem','scroll'].includes(m.type))return;
+      const key=materialKey(m);
+      let g=by.get(key);
+      if(!g){g={material:m,index,count:0,q:qNorm(m)};by.set(key,g);out.push(g)}
+      g.count++;
+    });
+    return out;
+  }
+  function filtered(){
+    return groups().filter(g=>g.material.type===activeType&&(activeQuality==='all'||g.q===activeQuality));
+  }
+  function header(){
+    let h=document.getElementById('v546MaterialsHeader');
+    if(!h){h=document.createElement('section');h.id='v546MaterialsHeader'}
+    const total=(Array.isArray(s?.materials)?s.materials:[]).filter(m=>m&&['gem','scroll'].includes(m.type)).length;
+    h.innerHTML=`
+      <div class="v546-material-plaque"><span class="gem">💎</span><span>MATERIALIEN</span></div>
+      <div class="v546-material-count">${total}</div>
+      <div class="v546-type-tabs">
+        <button type="button" class="v546-type-tab ${activeType==='gem'?'active':''}" data-type="gem"><span class="ico">💎</span><span>Edelsteine</span></button>
+        <button type="button" class="v546-type-tab ${activeType==='scroll'?'active':''}" data-type="scroll"><span class="ico">📜</span><span>Schriftrollen</span></button>
+      </div>`;
+    h.querySelectorAll('.v546-type-tab').forEach(btn=>btn.onclick=()=>{
+      activeType=btn.dataset.type||'gem';window.__v546MaterialType=activeType;
+      renderMaterials();
+    });
+    return h;
+  }
+  function filters(){
+    const qs=[['gray','Normal'],['green','Gewöhnlich'],['blue','Selten'],['purple','Episch'],['orange','Legendär'],['cyan','Mystisch']];
+    return `<div class="v546-quality-row">${qs.map(([q,l])=>`<button type="button" class="v546-quality ${activeQuality===q?'active':''}" data-q="${q}">${l}</button>`).join('')}</div>`;
+  }
+  function card(g){
+    const m=g.material,q=g.q;
+    return `<article class="v546-material-item q-${q}">
+      <div class="v546-material-qty">${g.count}×</div>
+      <div class="v546-material-art">${artMarkup(m)}</div>
+      <div class="v546-material-name">${esc(m.name||'Material')}</div>
+      <div class="v546-rarity-badge">${qLabel(q)}</div>
+      <div class="v546-material-bonus">${esc(effectText(m))}</div>
+      <button type="button" class="btn v546-use" data-index="${g.index}">Auf Item anwenden</button>
+    </article>`;
+  }
+  function empty(){
+    const hasType=groups().some(g=>g.material.type===activeType);
+    const label=activeType==='gem'?'Edelsteine':'Schriftrollen';
+    const icon=activeType==='gem'?'💎':'📜';
+    const line=!hasType
+      ?`Noch keine ${label}.`
+      :`Keine ${label} dieser Qualität.`;
+    return `<div class="v546-material-empty"><div class="v546-empty-icon">${icon}</div><b>${line}</b><span>Erbeute Materialien in Quests, Dungeons und bei Bossen.</span></div>`;
+  }
+  function arrange(){
+    const panel=document.getElementById('v459PanelMaterials');if(!panel)return;
+    const h=header();
+    if(h.parentElement!==panel||panel.firstElementChild!==h)panel.insertBefore(h,panel.firstChild);
+    const bar=document.getElementById('v480MaterialAutoBar');
+    const card=document.getElementById('v030Materials');
+    if(bar&&bar.parentElement===panel&&bar.previousElementSibling!==h)panel.insertBefore(bar,h.nextSibling);
+    if(card&&card.parentElement===panel){
+      const anchor=bar&&bar.parentElement===panel?bar:h;
+      if(card.previousElementSibling!==anchor)panel.insertBefore(card,anchor.nextSibling);
+    }
+  }
+  function renderMaterials(){
+    let p=document.getElementById('v030Materials');
+    const character=document.getElementById('character');
+    if(!character)return;
+    if(!p){p=document.createElement('div');p.id='v030Materials';p.className='card';character.appendChild(p)}
+    p.classList.add('v546-material-card');
+    const list=filtered();
+    p.innerHTML=`
+      <div class="v546-material-section-head">
+        <div class="ico">${activeType==='gem'?'💎':'📜'}</div>
+        <div><b>${activeType==='gem'?'Edelsteine':'Schriftrollen'}</b><span>${activeType==='gem'?'Attribute dauerhaft auf einem ausgerüsteten Item verstärken.':'Einen zusätzlichen Effekt auf ein ausgerüstetes Item legen.'}</span></div>
+      </div>
+      ${filters()}
+      ${list.length?`<div class="v546-material-grid">${list.map(card).join('')}</div>`:empty()}`;
+    p.querySelectorAll('.v546-quality').forEach(btn=>btn.onclick=()=>{
+      const q=btn.dataset.q||'all';activeQuality=activeQuality===q?'all':q;window.__v546MaterialQuality=activeQuality;renderMaterials();
+    });
+    p.querySelectorAll('.v546-use').forEach(btn=>btn.onclick=()=>{
+      const i=Number(btn.dataset.index);if(Number.isInteger(i)&&i>=0)window.v030UseMaterial?.(i);
+    });
+    try{window.v480UpdateAutoBars?.()}catch(e){}
+    arrange();
+    return p;
+  }
+  window.v546RenderMaterials=renderMaterials;
+  window.v546ArrangeMaterials=arrange;
+  try{v030Materials=renderMaterials;window.v030Materials=renderMaterials}catch(e){window.v030Materials=renderMaterials}
+  try{v030RenderMaterials=renderMaterials;window.v030RenderMaterials=renderMaterials}catch(e){window.v030RenderMaterials=renderMaterials}
+
+  /* Keep the final layout owner in sync after character layout changes. */
+  try{
+    if(typeof window.v459ArrangeCharacter==='function'&&!window.__v546ArrangeWrapped){
+      const base=window.v459ArrangeCharacter;
+      window.v459ArrangeCharacter=function(){const r=base.apply(this,arguments);renderMaterials();arrange();return r};
+      window.__v546ArrangeWrapped=true;
+    }
+  }catch(e){}
+  try{
+    if(typeof window.v480UpdateAutoBars==='function'&&!window.__v546AutoBarsWrapped){
+      const base=window.v480UpdateAutoBars;
+      window.v480UpdateAutoBars=function(){const r=base.apply(this,arguments);arrange();return r};
+      window.__v546AutoBarsWrapped=true;
+    }
+  }catch(e){}
+
+  function apply(){
+    try{renderMaterials();arrange()}catch(e){console.warn('V5.46 Materialien',e)}
+  }
+  apply();
+  document.addEventListener('DOMContentLoaded',()=>requestAnimationFrame(apply),{once:true});
+  window.addEventListener('pageshow',()=>requestAnimationFrame(apply),{passive:true});
+  document.addEventListener('click',e=>{
+    if(e.target?.closest?.('#v459CharacterTabs [data-tab="materials"],#v514HeroTabs [data-tab="materials"]'))requestAnimationFrame(apply);
+  },true);
+  [180,700,1700].forEach(ms=>setTimeout(apply,ms));
+})();
+</script>
+<!-- ===== /V5.46 MATERIALIEN GROW LEGENDS REDESIGN ===== -->
