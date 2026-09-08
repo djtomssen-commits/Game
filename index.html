@@ -91773,3 +91773,185 @@ html.v495-level-syncing #v420LevelUpOverlay{
 })();
 </script>
 <!-- ===== /V5.52 GILDE GROW LEGENDS REDESIGN ===== -->
+
+
+<!-- ===== V5.53 GILDE STRONG LAYOUT FIX ===== -->
+<style id="v553-guild-strong-layout-css">
+/* V5.53 fixes the V5.52 ownership issue and pushes the guild screen much closer
+   to the approved reference without touching guild mechanics. */
+#guild #v254GuildDashboard>.v254-guild-head{display:none!important}
+
+/* One real identity card: crest + guild + buds + progress together. */
+#guild.v553-has-membership .v254-guild-hero{
+  grid-template-columns:76px minmax(0,1fr) 92px!important;
+  grid-template-rows:auto auto!important;
+  min-height:238px!important;
+  padding:15px 14px 12px!important;
+  gap:10px!important;
+  background:
+    linear-gradient(90deg,rgba(3,11,6,.94) 0%,rgba(3,12,7,.80) 41%,rgba(3,10,6,.24) 75%,rgba(2,8,5,.58) 100%),
+    var(--v552-guild-bg) 58% 45% / cover no-repeat!important;
+  border-color:#966530!important;
+  box-shadow:inset 0 0 0 1px rgba(238,186,97,.13),inset 0 0 38px rgba(0,0,0,.48),0 9px 22px rgba(0,0,0,.34)!important;
+}
+#guild.v553-has-membership .v552-guild-crest{
+  width:70px!important;min-height:100px!important;
+  border-color:#9a6b32!important;
+  background:radial-gradient(circle at 50% 32%,rgba(83,217,60,.25),transparent 39%),linear-gradient(180deg,#132a16,#07110a)!important;
+}
+#guild.v553-has-membership .v552-guild-copy h2{font-size:25px!important}
+#guild.v553-has-membership .v552-guild-copy p{max-width:360px!important}
+#guild.v553-has-membership .v254-buds{min-width:86px!important}
+#guild.v553-has-membership .v409-guild-progress{
+  grid-column:1/-1!important;
+  width:100%!important;
+  margin:1px 0 0!important;
+  padding:8px 10px 9px!important;
+  border:1px solid #7a572c!important;
+  border-radius:10px!important;
+  background:linear-gradient(180deg,rgba(8,22,11,.94),rgba(4,12,7,.95))!important;
+  box-shadow:inset 0 1px 0 rgba(239,188,95,.07),0 3px 8px rgba(0,0,0,.22)!important;
+}
+
+/* Tabs feel like the reference, not generic web controls. */
+#guild .v254-tabs{margin:7px 0 9px!important;padding:4px!important;border-color:#80582c!important;background:linear-gradient(180deg,#111a10,#060b08)!important}
+#guild .v254-tab{min-height:48px!important;border-color:#3d5a40!important;background:linear-gradient(180deg,#112119,#08110c)!important}
+#guild .v254-tab.active{border-color:#9be36a!important;background:radial-gradient(circle at 50% 5%,rgba(104,239,69,.26),transparent 58%),linear-gradient(180deg,#28522a,#142b17)!important;box-shadow:inset 0 1px 0 rgba(238,255,219,.10),0 0 18px rgba(91,227,64,.16)!important}
+
+/* Upgrade cards: same compact RPG blocks as approved reference. */
+#guild .v254-upgrade-grid{gap:8px!important}
+#guild .v254-upgrade{min-height:118px!important;border-color:#7a572d!important;background:radial-gradient(circle at 92% 90%,rgba(77,166,57,.10),transparent 35%),linear-gradient(180deg,#0d1a10,#061009)!important}
+#guild .v254-upgrade button{min-height:38px!important;background:linear-gradient(180deg,#4b8b47,#285d2e)!important;border-color:#82ca67!important;color:#f6f3de!important}
+
+/* Member list: dense, readable guild roster. */
+#guild #v254GuildMembers{gap:6px!important}
+#guild .v254-member{
+  grid-template-columns:42px minmax(0,1fr) auto!important;
+  grid-template-areas:"avatar main flags" "avatar admin admin"!important;
+  min-height:66px!important;
+  padding:7px 8px!important;
+  border-color:#31513b!important;
+  background:linear-gradient(180deg,#0b180e,#061009)!important;
+}
+#guild .v254-member>img{grid-area:avatar!important;width:40px!important;height:40px!important}
+#guild .v254-member-main{grid-area:main!important}
+#guild .v254-member-flags{grid-area:flags!important;max-width:210px!important;justify-content:flex-end!important;align-self:center!important}
+#guild .v257-member-actions{grid-area:admin!important;padding:0!important;justify-content:flex-end!important;margin-top:2px!important}
+#guild .v254-flag{min-width:48px!important;text-align:center!important;border-color:#3c5a43!important;background:#08130c!important}
+#guild .v254-flag.on{border-color:#65b44f!important;background:#102416!important;color:#9bec82!important;box-shadow:0 0 9px rgba(88,211,66,.10)!important}
+#guild .v552-role{margin-left:1px!important}
+
+/* Strong section frames for overview/admin. */
+#guild .v254-card.v254-inner{border-color:#6f502b!important;background:radial-gradient(circle at 90% 8%,rgba(66,145,51,.07),transparent 30%),linear-gradient(180deg,#0a170d,#051009)!important}
+#guild .v254-card.v254-inner>.section-title h3{font:900 14px/1.05 Georgia,serif!important;color:#f3ecd9!important}
+#guild .v254-card.v254-inner>.section-title{border-bottom-color:#33503a!important}
+#guild .v257-search-empty{min-height:58px!important;display:flex!important;align-items:center!important;justify-content:center!important;border-style:dashed!important}
+
+/* Page frame and background more visible across the whole guild page. */
+#guild .v254-guild-shell::before{
+  content:'';position:absolute;inset:52px -4px -10px;z-index:-1;pointer-events:none;
+  border:1px solid rgba(128,89,44,.20);border-radius:18px;
+  background:linear-gradient(180deg,rgba(4,14,8,.28),rgba(3,10,6,.55));
+  box-shadow:inset 0 0 50px rgba(0,0,0,.30);
+}
+
+@media(max-width:560px){
+  #guild.v553-has-membership .v254-guild-hero{
+    grid-template-columns:58px minmax(0,1fr) 76px!important;
+    min-height:218px!important;
+    gap:7px!important;
+    padding:11px!important;
+  }
+  #guild.v553-has-membership .v552-guild-crest{width:54px!important;min-height:82px!important}
+  #guild.v553-has-membership .v552-guild-crest .leaf{font-size:27px!important}
+  #guild.v553-has-membership .v552-guild-copy h2{font-size:20px!important}
+  #guild.v553-has-membership .v552-guild-copy p{font-size:5.7px!important;line-height:1.32!important}
+  #guild.v553-has-membership .v254-buds{min-width:70px!important;padding:8px 4px!important}
+  #guild.v553-has-membership .v409-guild-progress{padding:7px 8px!important}
+  #guild .v254-member{
+    grid-template-columns:38px minmax(0,1fr)!important;
+    grid-template-areas:"avatar main" "flags flags" "admin admin"!important;
+    min-height:74px!important;
+  }
+  #guild .v254-member>img{width:36px!important;height:36px!important}
+  #guild .v254-member-flags{justify-content:flex-start!important;max-width:none!important;padding-left:45px!important}
+  #guild .v257-member-actions{justify-content:flex-start!important;padding-left:45px!important}
+}
+</style>
+<script id="v553-guild-strong-layout-js">
+(function(){
+  'use strict';
+  const esc=v=>typeof v254GuildEsc==='function'?v254GuildEsc(v):String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+  function state(){
+    try{return {guild:(typeof v254Guild!=='undefined'?v254Guild:null),membership:(typeof v254Membership!=='undefined'?v254Membership:null),members:(typeof v254Members!=='undefined'&&Array.isArray(v254Members)?v254Members:[])}}catch(e){return {guild:null,membership:null,members:[]}}
+  }
+  function ensureTitle(){
+    const shell=document.querySelector('#guild .v254-guild-shell');if(!shell)return;
+    let t=shell.querySelector(':scope > .v552-guild-title');
+    if(!t){t=document.createElement('div');t.className='v552-guild-title';t.textContent='GILDE';shell.prepend(t)}
+  }
+  function buildHero(){
+    const root=document.getElementById('guild'),hero=root?.querySelector('.v254-guild-hero');if(!root||!hero)return;
+    const st=state(),has=!!st.guild&&!!st.membership;
+    root.classList.toggle('v553-has-membership',has);
+    root.classList.toggle('v553-no-membership',!has);
+    root.classList.toggle('v552-has-membership',has);
+    root.classList.toggle('v552-no-membership',!has);
+    if(has){
+      const g=st.guild,tag=String(g.tag||'GL').replace(/[\[\]]/g,'').slice(0,5),buds=Math.max(0,Number(g.guild_buds)||0),count=st.members.length;
+      const needs=!hero.querySelector('.v552-guild-crest')||hero.dataset.v553Sig!==[g.id,g.name,g.tag,buds,count].join('|');
+      if(needs){
+        const progress=hero.querySelector('.v409-guild-progress');
+        hero.innerHTML=`<div class="v552-guild-crest"><span class="leaf">🌿</span><b>[${esc(tag)}]</b></div>
+          <div class="v552-guild-copy"><div class="v254-kicker">🌿 GEMEINSAM STÄRKER</div><h2>${esc(g.name||'Gilde')}</h2><div class="v552-guild-members-count">${count} Mitglied${count===1?'':'er'}</div><p>Kämpft gemeinsam gegen den täglichen Gildenboss, verbessert eure Boni und tretet im Gildenkrieg gegen andere Gilden an.</p></div>
+          <div class="v254-buds"><b id="v254GuildBuds">${buds}</b><span>Gilden-Buds</span></div>`;
+        if(progress)hero.appendChild(progress);
+        hero.dataset.v553Sig=[g.id,g.name,g.tag,buds,count].join('|');
+      }
+    }
+  }
+  function moveProgress(){
+    const root=document.getElementById('guild'),hero=root?.querySelector('.v254-guild-hero');if(!hero)return;
+    const st=state();if(!st.guild||!st.membership)return;
+    const p=root.querySelector('.v409-guild-progress');
+    if(p&&p.parentElement!==hero)hero.appendChild(p);
+  }
+  function markMemberLayout(){
+    document.querySelectorAll('#guild #v254GuildMembers .v254-member').forEach(row=>{
+      const main=row.querySelector('.v254-member-main')||row.children[1];
+      const flags=row.querySelector('.v254-member-flags');
+      const actions=row.querySelector('.v257-member-actions');
+      if(main)main.style.gridArea='main';if(flags)flags.style.gridArea='flags';if(actions)actions.style.gridArea='admin';
+    });
+  }
+  function adminGrid(){
+    const overview=document.getElementById('v254GuildOverview');if(!overview)return;
+    const req=document.getElementById('v257RequestsCard');
+    const mgmt=document.getElementById('v257GuildManagement')?.closest('.v254-card.v254-inner');
+    if(!mgmt)return;
+    let grid=overview.querySelector(':scope > .v552-admin-grid');
+    if(!grid){grid=document.createElement('div');grid.className='v552-admin-grid';mgmt.before(grid)}
+    if(req&&req.parentElement!==grid)grid.appendChild(req);
+    if(mgmt.parentElement!==grid)grid.appendChild(mgmt);
+  }
+  function paint(){ensureTitle();buildHero();moveProgress();markMemberLayout();adminGrid()}
+  if(typeof v254RenderGuild==='function'&&!window.__v553GuildWrapped){
+    const base=v254RenderGuild;
+    v254RenderGuild=function(){const r=base.apply(this,arguments);requestAnimationFrame(()=>{paint();setTimeout(paint,50)});return r};
+    try{window.v254RenderGuild=v254RenderGuild}catch(e){}
+    window.__v553GuildWrapped=true;
+  }
+  if(typeof v257RenderManagement==='function'&&!window.__v553MgmtWrapped){
+    const bm=v257RenderManagement;
+    v257RenderManagement=function(){const r=bm.apply(this,arguments);requestAnimationFrame(()=>{markMemberLayout();adminGrid()});return r};
+    try{window.v257RenderManagement=v257RenderManagement}catch(e){}
+    window.__v553MgmtWrapped=true;
+  }
+  paint();
+  document.addEventListener('DOMContentLoaded',()=>requestAnimationFrame(paint),{once:true});
+  window.addEventListener('pageshow',()=>requestAnimationFrame(paint),{passive:true});
+  document.addEventListener('click',e=>{if(e.target?.closest?.('[data-screen="guild"],.v254-tab'))setTimeout(paint,60)},true);
+  [120,500,1100,2200].forEach(ms=>setTimeout(paint,ms));
+})();
+</script>
+<!-- ===== /V5.53 GILDE STRONG LAYOUT FIX ===== -->
