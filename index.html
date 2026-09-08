@@ -92830,3 +92830,86 @@ html.v495-level-syncing #v420LevelUpOverlay{
 })();
 </script>
 <!-- ===== /V5.56 GILDE PROGRESS + ADMIN COMPACT FIX ===== -->
+
+<!-- ===== V5.58 GILDE FINAL MICRO FIXES ===== -->
+<style id="v558-guild-final-micro-fixes-css">
+/* Final two guild fixes only. Placed at the absolute end so legacy V5.55/V5.56
+   rules cannot override them again. */
+
+/* 1) Member signup chips: let active labels use more width, especially "Angriff". */
+@media(max-width:620px){
+  #guild .v254-member{
+    grid-template-columns:30px minmax(0,1fr) 138px!important;
+    gap:4px!important;
+  }
+  #guild .v254-member-flags{
+    width:138px!important;
+    max-width:138px!important;
+    min-width:138px!important;
+    display:flex!important;
+    flex-wrap:nowrap!important;
+    gap:3px!important;
+    padding:0!important;
+    justify-content:flex-end!important;
+    overflow:visible!important;
+  }
+  #guild .v254-member-flags .v254-flag{
+    flex:.72 1 0!important;
+    min-width:27px!important;
+    max-width:none!important;
+    padding:3px 2px!important;
+    font-size:3.9px!important;
+    line-height:1.05!important;
+    white-space:nowrap!important;
+    overflow:visible!important;
+    text-overflow:clip!important;
+  }
+  #guild .v254-member-flags .v254-flag.on{
+    flex:1.9 1 0!important;
+    min-width:55px!important;
+  }
+}
+@media(max-width:390px){
+  #guild .v254-member{
+    grid-template-columns:28px minmax(0,1fr) 136px!important;
+  }
+  #guild .v254-member-flags{
+    width:136px!important;
+    max-width:136px!important;
+    min-width:136px!important;
+  }
+  #guild .v254-member-flags .v254-flag{
+    font-size:3.7px!important;
+    padding:3px 1px!important;
+  }
+  #guild .v254-member-flags .v254-flag.on{min-width:54px!important}
+}
+
+/* 2) Empty join requests: collapse the empty state instead of reserving a large card. */
+#guild #v257RequestsCard{
+  min-height:0!important;
+  padding:7px 8px!important;
+}
+#guild #v257RequestsCard>.section-title{
+  margin-bottom:4px!important;
+  padding-bottom:4px!important;
+}
+#guild #v257GuildRequests{
+  min-height:0!important;
+  margin:0!important;
+  padding:0!important;
+}
+#guild #v257GuildRequests .v257-search-empty{
+  min-height:30px!important;
+  height:30px!important;
+  max-height:30px!important;
+  margin:3px 0 0!important;
+  padding:3px 8px!important;
+  display:grid!important;
+  place-items:center!important;
+  border-radius:8px!important;
+  font-size:5.2px!important;
+  line-height:1!important;
+}
+</style>
+<!-- ===== /V5.58 GILDE FINAL MICRO FIXES ===== -->
