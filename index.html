@@ -94257,3 +94257,79 @@ html.v495-level-syncing #v420LevelUpOverlay{
   }
 }
 </style>
+
+<!-- ===== V5.71 Harz Dealer: full NPC image + balance overlay ===== -->
+<style id="v571-harz-dealer-hero-layout">
+#harzDealer .v567-hero{
+  position:relative!important;
+  grid-template-columns:46% 54%!important;
+  align-items:stretch!important;
+  min-height:0!important;
+}
+#harzDealer .v567-hero-art{
+  position:relative!important;
+  min-height:0!important;
+  aspect-ratio:320/275!important;
+  width:100%!important;
+  height:auto!important;
+  align-self:start!important;
+  background-size:100% 100%!important;
+  background-position:center center!important;
+  background-repeat:no-repeat!important;
+  border-right:1px solid rgba(116,83,40,.34)!important;
+}
+#harzDealer .v567-hero-art:after{
+  background:linear-gradient(180deg,rgba(4,15,8,.16) 0%,transparent 34%,transparent 100%)!important;
+}
+#harzDealer .v567-hero-copy{
+  min-height:100%!important;
+  padding:18px 16px!important;
+  justify-content:center!important;
+}
+#harzDealer .v567-balance{
+  position:absolute!important;
+  z-index:7!important;
+  top:10px!important;
+  left:10px!important;
+  width:calc(46% - 20px)!important;
+  max-width:none!important;
+  box-sizing:border-box!important;
+  margin:0!important;
+  display:grid!important;
+  grid-template-columns:auto 1fr auto!important;
+  align-items:center!important;
+  gap:6px!important;
+  padding:7px 9px!important;
+  border:1px solid #4f823f!important;
+  border-radius:10px!important;
+  background:linear-gradient(180deg,rgba(4,24,12,.94),rgba(3,15,9,.93))!important;
+  box-shadow:0 4px 14px rgba(0,0,0,.38),inset 0 0 12px rgba(74,203,67,.06)!important;
+  color:#c3cec4!important;
+  font-size:7.4px!important;
+  line-height:1.15!important;
+  backdrop-filter:blur(2px);
+}
+#harzDealer .v567-balance strong{
+  font-size:15px!important;
+  color:#fff0ac!important;
+  white-space:nowrap!important;
+}
+@media(max-width:560px){
+  #harzDealer .v567-hero{grid-template-columns:46% 54%!important}
+  #harzDealer .v567-hero-art{
+    aspect-ratio:320/275!important;
+    background-size:100% 100%!important;
+    background-position:center center!important;
+  }
+  #harzDealer .v567-hero-copy{padding:12px 10px!important}
+  #harzDealer .v567-balance{
+    top:8px!important;
+    left:8px!important;
+    width:calc(46% - 16px)!important;
+    padding:6px 7px!important;
+    font-size:6.4px!important;
+    gap:4px!important;
+  }
+  #harzDealer .v567-balance strong{font-size:13px!important}
+}
+</style>
