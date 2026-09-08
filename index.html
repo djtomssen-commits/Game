@@ -43648,7 +43648,7 @@ const v306Line=document.querySelector('#v141VersionLine');if(v306Line)v306Line.t
    const x=invested(g),lv=level(g);
    if(lv>=20)return {lv:20,pct:100,text:`${x.toLocaleString('de-DE')} / ${MAX_INVEST.toLocaleString('de-DE')} investierte Gilden-Buds · MAX`};
    const lo=THRESH[lv-1],hi=THRESH[lv];
-   const pct=Math.max(0,Math.min(100,Math.round((x-lo)/Math.max(1,hi-lo)*100)));
+   const pct=Math.max(0,Math.min(100,Math.round((x/Math.max(1,hi))*100)));
    return {lv,pct,text:`${x.toLocaleString('de-DE')} investierte Gilden-Buds · noch ${(hi-x).toLocaleString('de-DE')} bis Gildenlevel ${lv+1}`};
  }
  window.v409GuildLevel=level;
@@ -43718,7 +43718,7 @@ const v306Line=document.querySelector('#v141VersionLine');if(v306Line)v306Line.t
     lv=Math.max(1,Math.min(20,lv));
     if(lv>=20)return {lv,pct:100,text:`${x.toLocaleString('de-DE')} Gilden-EP · MAX`};
     const lo=THRESH[lv-1],hi=THRESH[lv];
-    const pct=Math.max(0,Math.min(100,Math.round((x-lo)/Math.max(1,hi-lo)*100)));
+    const pct=Math.max(0,Math.min(100,Math.round((x/Math.max(1,hi))*100)));
     return {lv,pct,text:`${x.toLocaleString('de-DE')} / ${hi.toLocaleString('de-DE')} Gilden-EP · noch ${(hi-x).toLocaleString('de-DE')} bis Level ${lv+1}`};
   }
 
@@ -48573,6 +48573,53 @@ document.addEventListener('click',()=>{setTimeout(pulse,40);setTimeout(pulse,140
 </style>
 <!-- ===== /V5.47 MATERIALIEN SLOTS + ATMOSPHERE ===== -->
 
+
+<!-- ===== V5.57 GILDE MICRO FIXES ===== -->
+<style id="v557-guild-micro-fixes-css">
+/* Targeted only: correct visible progress density, full signup labels, compact empty requests. */
+
+/* Give the three signup chips enough room so active labels do not truncate. */
+@media(max-width:620px){
+  #guild .v254-member{
+    grid-template-columns:30px minmax(0,1fr) 138px!important;
+    gap:4px!important;
+  }
+  #guild .v254-member-flags{
+    width:138px!important;
+    max-width:138px!important;
+    gap:3px!important;
+  }
+  #guild .v254-flag{
+    padding:3px 2px!important;
+    font-size:3.9px!important;
+    overflow:visible!important;
+    text-overflow:clip!important;
+    white-space:nowrap!important;
+  }
+  #guild .v254-member-name-line>b{max-width:62px!important}
+}
+@media(max-width:390px){
+  #guild .v254-member{grid-template-columns:28px minmax(0,1fr) 126px!important}
+  #guild .v254-member-flags{width:126px!important;max-width:126px!important}
+  #guild .v254-flag{font-size:3.55px!important;padding:3px 1px!important}
+  #guild .v254-member-name-line>b{max-width:50px!important}
+}
+
+/* No-request state should be a compact status line, not a large empty panel. */
+#guild #v257GuildRequests .v257-search-empty{
+  display:grid!important;
+  place-items:center!important;
+  min-height:34px!important;
+  height:34px!important;
+  max-height:34px!important;
+  margin:4px 0 0!important;
+  padding:4px 8px!important;
+  border-radius:8px!important;
+  line-height:1.1!important;
+}
+#guild #v257RequestsCard{padding-bottom:7px!important}
+</style>
+<!-- ===== /V5.57 GILDE MICRO FIXES ===== -->
 </body>
 </html>
 <style id="v268-inventory-multisell-css">
@@ -92482,7 +92529,7 @@ html.v495-level-syncing #v420LevelUpOverlay{
     lv=Math.max(1,Math.min(20,lv));
     if(lv>=20)return {lv:20,pct:100,text:`${x.toLocaleString('de-DE')} Gilden-EP · MAX`};
     const lo=THRESH[lv-1],hi=THRESH[lv];
-    const pct=Math.max(0,Math.min(100,Math.round((x-lo)/Math.max(1,hi-lo)*100)));
+    const pct=Math.max(0,Math.min(100,Math.round((x/Math.max(1,hi))*100)));
     return {lv,pct,text:`${x.toLocaleString('de-DE')} / ${hi.toLocaleString('de-DE')} Gilden-EP · noch ${(hi-x).toLocaleString('de-DE')} bis Level ${lv+1}`};
   }
   function paintProgress(){
@@ -92738,7 +92785,7 @@ html.v495-level-syncing #v420LevelUpOverlay{
     lv=Math.max(1,Math.min(20,lv));
     if(lv>=20)return {lv:20,pct:100,text:`${xp.toLocaleString('de-DE')} Gilden-EP · MAX`};
     const lo=THRESH[lv-1],hi=THRESH[lv];
-    const pct=Math.max(0,Math.min(100,((xp-lo)/Math.max(1,hi-lo))*100));
+    const pct=Math.max(0,Math.min(100,((xp/Math.max(1,hi))*100)));
     return {lv,pct,text:`${xp.toLocaleString('de-DE')} / ${hi.toLocaleString('de-DE')} Gilden-EP · noch ${(hi-xp).toLocaleString('de-DE')} bis Level ${lv+1}`};
   }
   function ensureProgress(){
