@@ -91391,3 +91391,90 @@ html.v495-level-syncing #v420LevelUpOverlay{
 }
 </style>
 <!-- ===== /V5.50 PVP HERO CLEANUP ===== -->
+
+<!-- ===== V5.51 PVP HEADER FINAL POLISH ===== -->
+<style id="v551-pvp-header-final-css">
+/* Final PvP header polish: stronger Grow Legends plaque, integrated foliage, cleaner fight icon. */
+#pvp .v204-pvp-shell:before,
+#pvp .v204-pvp-shell:after{
+  content:''!important;
+  display:none!important;
+}
+#pvp .v549-pvp-title{
+  position:relative!important;
+  width:min(86%,470px)!important;
+  min-height:46px!important;
+  margin:2px auto 10px!important;
+  padding:8px 44px!important;
+  border:2px solid #9f6a31!important;
+  border-radius:12px!important;
+  background:
+    linear-gradient(90deg,rgba(255,211,122,.05),transparent 20%,transparent 80%,rgba(255,211,122,.05)),
+    linear-gradient(180deg,#75451f 0%,#4a2812 52%,#2a150a 100%)!important;
+  color:#f6dda1!important;
+  font:900 20px/1 Georgia,serif!important;
+  letter-spacing:.055em!important;
+  text-align:center!important;
+  text-shadow:0 2px 0 #241006,0 0 12px rgba(224,171,77,.22)!important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,229,166,.22),
+    inset 0 -10px 18px rgba(0,0,0,.25),
+    inset 0 0 0 1px rgba(56,27,9,.72),
+    0 0 0 2px rgba(66,37,17,.85),
+    0 6px 14px rgba(0,0,0,.34)!important;
+  clip-path:polygon(3% 0,97% 0,100% 18%,98% 50%,100% 82%,97% 100%,3% 100%,0 82%,2% 50%,0 18%)!important;
+}
+#pvp .v549-pvp-title:before,
+#pvp .v549-pvp-title:after{
+  position:absolute!important;
+  top:50%!important;
+  transform:translateY(-50%)!important;
+  width:38px!important;
+  height:38px!important;
+  display:grid!important;
+  place-items:center!important;
+  border:1px solid #8b642e!important;
+  border-radius:50%!important;
+  background:radial-gradient(circle at 40% 35%,#1a3b1c 0%,#0b190d 68%,#050a06 100%)!important;
+  color:#78df58!important;
+  font-size:20px!important;
+  line-height:1!important;
+  filter:none!important;
+  box-shadow:inset 0 0 0 1px rgba(170,219,113,.08),inset 0 0 12px rgba(0,0,0,.48),0 0 9px rgba(88,191,62,.14)!important;
+  z-index:1!important;
+}
+#pvp .v549-pvp-title:before{content:'🌿'!important;left:7px!important}
+#pvp .v549-pvp-title:after{content:'🌿'!important;right:7px!important;transform:translateY(-50%) scaleX(-1)!important}
+
+/* Small bronze divider immediately below the plaque to tie it to the page frame. */
+#pvp .v549-pvp-title + .v204-pvp-hero{
+  margin-top:2px!important;
+}
+
+/* Clear, stable fight counter icon. */
+#pvp .v204-pvp-status>div:nth-child(3):before{
+  content:'🥊'!important;
+  font-size:18px!important;
+  line-height:1!important;
+  filter:drop-shadow(0 2px 2px rgba(0,0,0,.45))!important;
+}
+
+@media(max-width:600px){
+  #pvp .v549-pvp-title{
+    width:88%!important;
+    min-height:42px!important;
+    padding:7px 38px!important;
+    font-size:17px!important;
+    letter-spacing:.045em!important;
+  }
+  #pvp .v549-pvp-title:before,
+  #pvp .v549-pvp-title:after{
+    width:32px!important;
+    height:32px!important;
+    font-size:17px!important;
+  }
+  #pvp .v549-pvp-title:before{left:6px!important}
+  #pvp .v549-pvp-title:after{right:6px!important}
+}
+</style>
+<!-- ===== /V5.51 PVP HEADER FINAL POLISH ===== -->
