@@ -93766,3 +93766,265 @@ html.v495-level-syncing #v420LevelUpOverlay{
 #guild #v254GuildBoss .v255-damage{font-size:5.8px!important}
 </style>
 <!-- ===== /V5.63 GILDENBOSS PARTICIPANTS CLEANUP ===== -->
+
+<!-- ===== V5.65 GILDENKRIEG LOWER BLOCK FINAL POLISH ===== -->
+<style id="v565-guild-war-lower-final-css">
+/* "Krieg erklärt" now reads like a proper information card instead of one long line. */
+#guild #v254GuildWar .v4159-war-alert{
+  margin:0 0 9px!important;
+  padding:9px 11px 10px!important;
+  border:1px solid #8f6736!important;
+  border-radius:10px!important;
+  background:
+    linear-gradient(90deg,rgba(94,145,63,.08),transparent 42%),
+    linear-gradient(180deg,#0c2112,#07130a)!important;
+  box-shadow:inset 0 1px rgba(255,236,185,.06),0 4px 12px rgba(0,0,0,.18)!important;
+  color:#b9c7ba!important;
+  font-size:6.8px!important;
+  line-height:1.45!important;
+}
+#guild #v254GuildWar .v4159-war-alert b{
+  display:block!important;
+  margin:0 0 4px!important;
+  color:#f3e3bd!important;
+  font:900 11px/1.05 Georgia,serif!important;
+  letter-spacing:.01em!important;
+}
+#guild #v254GuildWar .v4159-war-alert.incoming{
+  border-color:#a95243!important;
+  background:linear-gradient(180deg,#341814,#160b09)!important;
+}
+
+/* Make the daily war card one coherent WAR-SCORE module. */
+#guild #v254GuildWar .v564-war-daily{
+  position:relative!important;
+  overflow:hidden!important;
+  padding:10px!important;
+  border-color:#956b38!important;
+  background:
+    radial-gradient(circle at 50% 5%,rgba(90,176,66,.08),transparent 38%),
+    linear-gradient(180deg,#0b2112,#061109)!important;
+}
+#guild #v254GuildWar .v564-war-daily:before{
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  background:linear-gradient(115deg,transparent 0 42%,rgba(255,255,255,.018) 50%,transparent 58%);
+}
+#guild #v254GuildWar .v564-war-title{
+  position:relative!important;
+  z-index:1!important;
+  margin-bottom:7px!important;
+  border-bottom-color:#3c553b!important;
+}
+#guild #v254GuildWar .v564-war-title b{
+  color:#f5e6c5!important;
+  text-shadow:0 1px 2px #000!important;
+}
+#guild #v254GuildWar #v262WarPhase{
+  border-color:#7b8d59!important;
+  background:linear-gradient(180deg,#233823,#101d13)!important;
+  color:#ecf4df!important;
+  box-shadow:inset 0 1px rgba(255,255,255,.05)!important;
+}
+#guild #v254GuildWar .v564-war-score{
+  position:relative!important;
+  z-index:1!important;
+  margin-bottom:6px!important;
+  padding:10px 8px!important;
+  border:1px solid #6e5b36!important;
+  border-radius:10px!important;
+  background:
+    radial-gradient(circle at 50% 50%,rgba(94,225,74,.10),transparent 42%),
+    linear-gradient(180deg,#08170d,#050d07)!important;
+  box-shadow:inset 0 1px rgba(255,236,184,.04)!important;
+}
+#guild #v254GuildWar .v564-war-score small{
+  color:#87968a!important;
+  font-size:5.8px!important;
+  letter-spacing:.07em!important;
+}
+#guild #v254GuildWar .v564-war-score b{
+  color:#f1eee6!important;
+  font-size:8.3px!important;
+}
+#guild #v254GuildWar .v564-war-score strong{
+  color:#7ff068!important;
+  font-size:25px!important;
+  line-height:1!important;
+}
+#guild #v254GuildWar .v564-war-score>span{
+  color:#798177!important;
+  font-size:17px!important;
+  font-weight:900!important;
+}
+#guild #v254GuildWar .v564-war-status{
+  position:relative!important;
+  z-index:1!important;
+  margin:0 0 6px!important;
+  padding:7px 9px!important;
+  border-color:#344a37!important;
+  background:#07110a!important;
+  font-size:5.8px!important;
+  color:#8f9d91!important;
+}
+#guild #v254GuildWar .v564-war-stats{
+  position:relative!important;
+  z-index:1!important;
+  gap:6px!important;
+  margin:0 0 7px!important;
+}
+#guild #v254GuildWar .v262-war-stat{
+  min-height:43px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:center!important;
+  padding:6px 5px!important;
+  border-color:#38513b!important;
+  background:linear-gradient(180deg,#09170d,#061009)!important;
+}
+#guild #v254GuildWar .v262-war-stat small{
+  font-size:5.3px!important;
+  letter-spacing:.03em!important;
+}
+#guild #v254GuildWar .v262-war-stat b{
+  margin-top:2px!important;
+  color:#f1f5ed!important;
+  font-size:11px!important;
+}
+
+/* Two opposing guild cards side-by-side, including on narrow phones. */
+#guild #v254GuildWar #v4159Participants{
+  position:relative!important;
+  z-index:1!important;
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;
+  gap:6px!important;
+  margin:7px 0 0!important;
+  align-items:stretch!important;
+}
+#guild #v254GuildWar .v4159-side{
+  min-width:0!important;
+  overflow:hidden!important;
+  padding:7px!important;
+  border:1px solid #765d36!important;
+  border-radius:10px!important;
+  background:linear-gradient(180deg,#09180d,#050e07)!important;
+  box-shadow:inset 0 1px rgba(255,231,173,.035)!important;
+}
+#guild #v254GuildWar .v4159-side:first-child{
+  background:radial-gradient(circle at 15% 0,rgba(88,205,67,.08),transparent 43%),linear-gradient(180deg,#0a1b0f,#050e07)!important;
+}
+#guild #v254GuildWar .v4159-side:last-child{
+  background:radial-gradient(circle at 85% 0,rgba(151,67,54,.07),transparent 43%),linear-gradient(180deg,#12140c,#060d07)!important;
+}
+#guild #v254GuildWar .v4159-side>h4{
+  margin:0 0 5px!important;
+  padding:0 0 5px!important;
+  border-bottom:1px solid #304533!important;
+  color:#f1eadb!important;
+  font-size:6.8px!important;
+  line-height:1.15!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+}
+#guild #v254GuildWar .v4159-role{
+  margin:5px 0 4px!important;
+}
+#guild #v254GuildWar .v4159-role-head{
+  margin:0 0 3px!important;
+  font-size:4.9px!important;
+  color:#7c8a80!important;
+}
+#guild #v254GuildWar .v4159-role-head b{
+  font-size:5.8px!important;
+  color:#e6ece2!important;
+}
+#guild #v254GuildWar .v4159-person{
+  grid-template-columns:22px minmax(0,1fr)!important;
+  gap:4px!important;
+  padding:3px 0!important;
+  border-top:0!important;
+}
+#guild #v254GuildWar .v4159-person img{
+  width:22px!important;
+  height:22px!important;
+  border-radius:6px!important;
+}
+#guild #v254GuildWar .v4159-person b{
+  display:block!important;
+  max-width:100%!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  white-space:nowrap!important;
+  font-size:5.2px!important;
+  line-height:1.1!important;
+}
+#guild #v254GuildWar .v4159-person small{
+  display:block!important;
+  max-width:100%!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  white-space:nowrap!important;
+  margin-top:1px!important;
+  font-size:4.15px!important;
+  line-height:1.1!important;
+}
+#guild #v254GuildWar .v4159-empty{
+  min-height:18px!important;
+  display:flex!important;
+  align-items:center!important;
+  padding:2px 0!important;
+  color:#69766d!important;
+  font-size:4.7px!important;
+  line-height:1.2!important;
+}
+
+/* Defeat older rule that stacked the guild cards on very narrow logical viewports. */
+@media(max-width:390px){
+  #guild #v254GuildWar #v4159Participants{
+    grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;
+    gap:5px!important;
+  }
+  #guild #v254GuildWar .v4159-side{padding:6px!important}
+  #guild #v254GuildWar .v4159-side>h4{font-size:6.1px!important}
+  #guild #v254GuildWar .v4159-role-head b{font-size:5.2px!important}
+  #guild #v254GuildWar .v4159-person{grid-template-columns:19px minmax(0,1fr)!important;gap:3px!important}
+  #guild #v254GuildWar .v4159-person img{width:19px!important;height:19px!important}
+  #guild #v254GuildWar .v4159-person b{font-size:4.65px!important}
+  #guild #v254GuildWar .v4159-person small{font-size:3.75px!important}
+  #guild #v254GuildWar .v4159-empty{font-size:4.1px!important}
+}
+</style>
+<script id="v565-guild-war-lower-final-js">
+(function(){
+  'use strict';
+  function polishWarLower(){
+    const panel=document.getElementById('v254GuildWar');
+    if(!panel)return;
+    const daily=panel.querySelector('.v254-card.v254-inner:not(.v4159-war-manage)');
+    if(daily)daily.classList.add('v565-war-daily-final');
+    const participants=document.getElementById('v4159Participants');
+    if(participants){
+      participants.classList.add('v565-war-sides');
+      const sides=participants.querySelectorAll(':scope > .v4159-side');
+      if(sides[0])sides[0].classList.add('v565-war-side-own');
+      if(sides[1])sides[1].classList.add('v565-war-side-enemy');
+    }
+  }
+  polishWarLower();
+  document.addEventListener('DOMContentLoaded',()=>requestAnimationFrame(polishWarLower),{once:true});
+  document.addEventListener('click',e=>{
+    if(e.target?.closest?.('[data-v254-tab="war"],[data-screen="guild"]'))setTimeout(polishWarLower,35);
+  },true);
+  const target=document.getElementById('v254GuildWar');
+  if(target&&typeof MutationObserver!=='undefined'){
+    const mo=new MutationObserver(()=>requestAnimationFrame(polishWarLower));
+    mo.observe(target,{childList:true,subtree:true});
+  }
+  [120,500,1200,2400].forEach(ms=>setTimeout(polishWarLower,ms));
+})();
+</script>
+<!-- ===== /V5.65 GILDENKRIEG LOWER BLOCK FINAL POLISH ===== -->
