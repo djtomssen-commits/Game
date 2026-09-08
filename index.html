@@ -82706,41 +82706,40 @@ body:has(#world.active){background:#010302!important}
       return true;
     }
 
-    playerTurn=true;
-    function v579Step(){
-      if(finished) return;
+    /* V5.80: one callback owns a COMPLETE combat round. The mobile stall was
+       consistently visible after the player's R7 hit, i.e. exactly between the
+       player half-turn and the enemy half-turn. Never leave a round half-done:
+       player attack + enemy response are resolved in one synchronous task. */
+    function v580RoundStep(){
+      if(finished)return;
       try{
-        if(playerTurn){
-          if(!playerAttack()) return;
-        }else{
-          if(!enemyAttack()) return;
-        }
+        if(!playerAttack())return;
+        if(!enemyAttack())return;
         v578Faults=0;
-        playerTurn=!playerTurn;
       }catch(err){
         v578Faults++;
-        console.error('V5.79 Kampfrunde',err);
-        if(v578Faults>=2) v578AbortTechnical(err);
+        console.error('V5.80 Kampfrunde',err);
+        if(v578Faults>=2)v578AbortTechnical(err);
       }
     }
 
-    /* First player hit is immediate. The interval then owns every following
-       enemy/player turn. No chained timeouts can get lost after round 7. */
-    window.__V579_ACTIVE_FIGHT__={di,idx,round:0,playerHp,enemyHp,lastProgress:Date.now(),clock:0};
-    v579Step();
-    if(finished) return;
-    playerTurn=false;
+    window.__V579_ACTIVE_FIGHT__={
+      di,idx,round:0,playerHp,enemyHp,lastProgress:Date.now(),clock:0,
+      step:v580RoundStep,isFinished:()=>finished
+    };
+
+    /* First COMPLETE round immediately, then one complete round per tick. */
+    v580RoundStep();
+    if(finished)return;
+
     v579FightClock=v579SetInterval(()=>{
       if(finished){v579StopClock();return}
       const now=Date.now();
-      /* If a visual observer delayed one tick, continue from the same state.
-         If absolutely no round progressed for 6 s, one guarded step repairs it. */
-      if(now-v579LastProgress>6000){
-        try{v579Step()}catch(e){v578AbortTechnical(e)}
-      }else{
-        v579Step();
-      }
-    },430);
+      /* A requestAnimationFrame heartbeat can rescue a missing interval. If it
+         just advanced a round, skip this callback to prevent a double round. */
+      if(now-v579LastProgress<420)return;
+      try{v580RoundStep()}catch(e){v578AbortTechnical(e)}
+    },680);
     try{if(window.__V579_ACTIVE_FIGHT__)window.__V579_ACTIVE_FIGHT__.clock=v579FightClock}catch(e){}
   }
 
@@ -95436,3 +95435,44 @@ html.v495-level-syncing #v420LevelUpOverlay{
 #dungeonBattleCard.v575-combat .v575-round{transition:background .18s ease,border-color .18s ease,color .18s ease}
 </style>
 <!-- ===== /V5.79 ===== -->
+
+
+<!-- ===== V5.80 DUNGEON COMPLETE-ROUND HEARTBEAT ===== -->
+<script id="v580-dungeon-complete-round-heartbeat">
+(function(){
+  'use strict';
+  if(window.__V580_DUNGEON_HEARTBEAT__)return;
+  window.__V580_DUNGEON_HEARTBEAT__=true;
+
+  function recover(minAge,reason){
+    try{
+      const f=window.__V579_ACTIVE_FIGHT__;
+      if(!f||typeof f.step!=='function'||f.isFinished?.())return false;
+      const age=Date.now()-Math.max(0,Number(f.lastProgress)||0);
+      if(age<minAge)return false;
+      f.step();
+      f.recovered=(Number(f.recovered)||0)+1;
+      f.lastRecovery=Date.now();
+      f.lastRecoveryReason=reason;
+      return true;
+    }catch(err){
+      console.error('V5.80 Dungeon heartbeat',err);
+      return false;
+    }
+  }
+
+  /* Independent of setTimeout/setInterval: if Android/WebView drops the combat
+     timer, the next animation frame completes the pending round. */
+  function frame(){
+    recover(1100,'raf');
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+
+  const wake=()=>recover(500,'wake');
+  window.addEventListener('focus',wake,{passive:true});
+  window.addEventListener('pageshow',wake,{passive:true});
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden)wake()},{passive:true});
+})();
+</script>
+<!-- ===== /V5.80 ===== -->
