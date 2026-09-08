@@ -95278,3 +95278,172 @@ body.v588-dungeon-result-open #dungeonBattleCard #loot{visibility:hidden!importa
 })();
 </script>
 <!-- ===== /V5.88 ===== -->
+
+<!-- ===== V5.89 DUNGEON TEMPLATE POLISH ONLY ===== -->
+<style id="v589-dungeon-template-polish-css">
+/* Pure visual polish. The working combat engine stays untouched. */
+#dungeonBattleCard.v575-combat .v252-battle-fog{display:block!important;opacity:.72!important}
+#dungeonBattleCard.v575-combat .battle-stage{
+  background-position:center 46%!important;
+}
+#dungeonBattleCard.v575-combat .battle-stage:before{
+  background:
+    radial-gradient(circle at 50% 46%,rgba(118,219,87,.18),transparent 18%),
+    radial-gradient(circle at 19% 42%,rgba(250,171,61,.10),transparent 11%),
+    radial-gradient(circle at 81% 42%,rgba(250,171,61,.10),transparent 11%),
+    linear-gradient(180deg,rgba(2,6,4,.03) 0%,rgba(2,6,4,.02) 30%,rgba(1,4,2,.18) 62%,rgba(1,4,2,.92) 100%),
+    linear-gradient(90deg,rgba(0,0,0,.34),transparent 24%,transparent 76%,rgba(0,0,0,.34))!important;
+}
+#dungeonBattleCard.v575-combat .battle-stage:after{
+  width:56px!important;height:56px!important;top:58%!important;
+  box-shadow:0 0 24px rgba(239,157,47,.32), inset 0 0 16px #000c!important;
+}
+#dungeonBattleCard.v575-combat .v575-stage-title{
+  top:14px!important;
+  padding:8px 20px!important;
+  font-size:8px!important;
+  letter-spacing:.15em!important;
+}
+#dungeonBattleCard.v575-combat .v575-round{
+  top:52px!important;
+  min-width:94px!important;
+  padding:7px 14px!important;
+  font-size:7.4px!important;
+  color:#f4d59b!important;
+  border-color:#8f4b42!important;
+  background:linear-gradient(180deg,#5d1517f0,#28090af0)!important;
+  box-shadow:0 0 16px rgba(130,0,0,.18), inset 0 0 10px rgba(255,190,120,.06)!important;
+}
+#dungeonBattleCard.v575-combat .fighter{bottom:28px!important}
+#dungeonBattleCard.v575-combat .fighter.player{left:1.5%!important;width:46%!important}
+#dungeonBattleCard.v575-combat .fighter.enemy-side{right:1.5%!important;width:46%!important}
+#dungeonBattleCard.v575-combat .fighter-avatar{
+  width:186px!important;height:244px!important;
+}
+#dungeonBattleCard.v575-combat .fighter.player .fighter-avatar{transform:translateX(-4px) scale(1.04)!important}
+#dungeonBattleCard.v575-combat .fighter.enemy-side .fighter-avatar{transform:translateX(-8px) scale(1.14)!important}
+#dungeonBattleCard.v575-combat .v253-player-avatar-img{width:181px!important;height:238px!important}
+#dungeonBattleCard.v575-combat .v253-monster{width:190px!important;height:236px!important}
+#dungeonBattleCard.v575-combat .fighter-avatar:before{
+  content:"";position:absolute;left:50%;bottom:12px;transform:translateX(-50%);
+  width:126px;height:40px;border-radius:50%;background:radial-gradient(ellipse,rgba(0,0,0,.52),rgba(0,0,0,.04) 72%,transparent 74%);
+  pointer-events:none;z-index:1;
+}
+#dungeonBattleCard.v575-combat .fighter.enemy-side .fighter-avatar:after{
+  content:"";position:absolute;inset:18% 8% 14% 8%;border-radius:50%;
+  background:radial-gradient(ellipse at center,rgba(117,222,81,.16),rgba(76,152,53,.05) 48%,transparent 70%);
+  filter:blur(2px);pointer-events:none;z-index:0;
+}
+#dungeonBattleCard.v575-combat .fighter-name{
+  padding-top:8px!important;padding-bottom:6px!important;
+  font-size:7.8px!important;
+}
+#dungeonBattleCard.v575-combat .hpbar{height:19px!important}
+#dungeonBattleCard.v575-combat .fighter .tiny{font-size:8px!important;margin-top:5px!important}
+#dungeonBattleCard.v575-combat .damage{
+  top:146px!important;padding:0!important;background:transparent!important;border-radius:0!important;
+  font-size:34px!important;line-height:1!important;
+}
+#dungeonBattleCard.v575-combat .damage.left{left:7%!important}
+#dungeonBattleCard.v575-combat .damage.right{right:7%!important}
+#dungeonBattleCard.v575-combat .damage.v252-crit{font-size:40px!important}
+#dungeonBattleCard.v575-combat .v252-impact{display:block!important;z-index:18!important}
+#dungeonBattleCard.v575-combat .v252-slash{display:block!important;z-index:18!important}
+#dungeonBattleCard.v575-combat .v252-projectile{display:block!important;z-index:18!important}
+#dungeonBattleCard.v575-combat .v252-screen-flash{display:block!important;z-index:17!important}
+
+/* Keep only a tight, template-like effect lane instead of many floating labels. */
+#dungeonBattleCard.v575-combat .v575-proc-strip{
+  left:12%!important;right:12%!important;top:88px!important;min-height:18px!important;
+  display:flex!important;justify-content:center!important;align-items:center!important;gap:6px!important;
+  flex-wrap:nowrap!important;overflow:visible!important;
+}
+#dungeonBattleCard.v575-combat .v575-chip{
+  padding:5px 10px!important;font-size:6.2px!important;line-height:1!important;
+  background:linear-gradient(180deg,#060907f4,#020403f4)!important;
+  box-shadow:0 0 14px #000b,inset 0 0 12px rgba(255,202,98,.05)!important;
+}
+#dungeonBattleCard.v575-combat .v575-proc-strip .v575-chip{display:none!important}
+#dungeonBattleCard.v575-combat .v575-proc-strip .v575-chip.v589-chip-a,
+#dungeonBattleCard.v575-combat .v575-proc-strip .v575-chip.v589-chip-b{display:inline-flex!important}
+#dungeonBattleCard.v575-combat .v575-proc-strip .v575-chip.v589-chip-a{transform:scale(1.04)!important}
+#dungeonBattleCard.v575-combat .v575-proc-strip .v575-chip.v589-chip-b{opacity:.92!important}
+
+#dungeonBattleCard.v575-combat .v575-log-title{font-size:7.4px!important}
+#dungeonBattleCard.v575-combat .v575-log-line{font-size:7.5px!important;padding:7px 0!important}
+#dungeonBattleCard.v575-combat #fightBtn{
+  min-height:54px!important;
+  font-size:11px!important;letter-spacing:.04em!important;
+}
+#dungeonBattleCard.v575-combat.v252-fighting #fightBtn{position:relative!important}
+#dungeonBattleCard.v575-combat.v252-fighting #fightBtn:before{
+  content:"Die Helden kämpfen automatisch …";
+  display:block;font-size:6.7px;line-height:1.2;color:rgba(16,39,12,.78);font-weight:800;letter-spacing:.02em;
+  margin-top:4px;
+}
+@media(max-width:560px){
+  #dungeonBattleCard.v575-combat .battle-stage{height:395px!important}
+  #dungeonBattleCard.v575-combat .battle-stage:after{width:50px!important;height:50px!important;top:57%!important}
+  #dungeonBattleCard.v575-combat .v575-stage-title{font-size:7.2px!important;padding:7px 16px!important}
+  #dungeonBattleCard.v575-combat .v575-round{top:49px!important;font-size:7px!important;min-width:84px!important}
+  #dungeonBattleCard.v575-combat .fighter-avatar{width:164px!important;height:216px!important}
+  #dungeonBattleCard.v575-combat .v253-player-avatar-img{width:160px!important;height:211px!important}
+  #dungeonBattleCard.v575-combat .v253-monster{width:168px!important;height:210px!important}
+  #dungeonBattleCard.v575-combat .damage{font-size:31px!important;top:144px!important}
+  #dungeonBattleCard.v575-combat .damage.v252-crit{font-size:36px!important}
+  #dungeonBattleCard.v575-combat .v575-proc-strip{top:84px!important;left:8%!important;right:8%!important}
+  #dungeonBattleCard.v575-combat .v575-chip{font-size:5.8px!important;padding:5px 8px!important}
+}
+</style>
+<script id="v589-dungeon-template-polish-core">
+(function(){
+  'use strict';
+  if(window.__V589_DUNGEON_TEMPLATE_POLISH__) return;
+  window.__V589_DUNGEON_TEMPLATE_POLISH__ = true;
+
+  function normalizeProcStrip(){
+    const strip=document.querySelector('#battleStage .v575-proc-strip');
+    if(!strip) return;
+    const chips=[...strip.querySelectorAll('.v575-chip')];
+    chips.forEach(c=>c.classList.remove('v589-chip-a','v589-chip-b'));
+    if(chips.length<1) return;
+
+    const seen=new Set();
+    const keep=[];
+    for(let i=chips.length-1;i>=0;i--){
+      const chip=chips[i];
+      const txt=(chip.textContent||'').replace(/\s+/g,' ').trim();
+      if(!txt || seen.has(txt)) { chip.remove(); continue; }
+      seen.add(txt);
+      keep.unshift(chip);
+      if(keep.length>=2) break;
+    }
+    chips.forEach(ch=>{ if(!keep.includes(ch)) ch.remove(); });
+    const final=[...strip.querySelectorAll('.v575-chip')];
+    final[0]?.classList.add('v589-chip-b');
+    final[final.length-1]?.classList.add('v589-chip-a');
+  }
+
+  function syncMidfightLook(){
+    const title=document.querySelector('#dungeonBattleCard .v575-stage-title');
+    if(title) title.textContent='DUNGEON DUELL';
+    normalizeProcStrip();
+  }
+
+  const mo=new MutationObserver(()=>syncMidfightLook());
+  function bind(){
+    const strip=document.querySelector('#battleStage .v575-proc-strip');
+    if(strip && !strip.__v589Bound){
+      strip.__v589Bound=true;
+      mo.observe(strip,{childList:true,subtree:false});
+    }
+    syncMidfightLook();
+  }
+
+  document.addEventListener('click',()=>setTimeout(bind,0),true);
+  window.addEventListener('pageshow',bind,{passive:true});
+  document.addEventListener('visibilitychange',()=>{ if(!document.hidden) bind(); },{passive:true});
+  setTimeout(bind,0);
+})();
+</script>
+<!-- ===== /V5.89 ===== -->
