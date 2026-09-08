@@ -93429,3 +93429,38 @@ html.v495-level-syncing #v420LevelUpOverlay{
 })();
 </script>
 <!-- ===== /V5.62 GILDENBOSS REFERENCE LAYOUT ===== -->
+
+<!-- ===== V5.63 GILDENBOSS PARTICIPANTS CLEANUP ===== -->
+<style id="v563-guild-boss-participants-cleanup">
+/* Remove the legacy pseudo-heading; V5.62 already renders the real section heading. */
+#guild #v254GuildBoss #v255BossTimeline:not(:empty)::before{
+  content:none!important;
+  display:none!important;
+}
+/* Tighten the registered-members block without changing any boss logic. */
+#guild #v254GuildBoss .v562-boss-participants{
+  margin:5px 0 6px!important;
+  padding:8px!important;
+}
+#guild #v254GuildBoss .v562-boss-participants-head{
+  margin:0 0 5px!important;
+}
+#guild #v254GuildBoss #v255BossTimeline{
+  gap:4px!important;
+}
+#guild #v254GuildBoss .v255-fighter{
+  grid-template-columns:34px minmax(0,1fr) auto!important;
+  gap:6px!important;
+  min-height:43px!important;
+  padding:5px 6px!important;
+}
+#guild #v254GuildBoss .v255-fighter img{
+  width:32px!important;
+  height:32px!important;
+  border-radius:7px!important;
+}
+#guild #v254GuildBoss .v255-fighter b{font-size:7.5px!important}
+#guild #v254GuildBoss .v255-fighter small{font-size:5.2px!important}
+#guild #v254GuildBoss .v255-damage{font-size:5.8px!important}
+</style>
+<!-- ===== /V5.63 GILDENBOSS PARTICIPANTS CLEANUP ===== -->
