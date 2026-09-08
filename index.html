@@ -94333,3 +94333,148 @@ html.v495-level-syncing #v420LevelUpOverlay{
   #harzDealer .v567-balance strong{font-size:13px!important}
 }
 </style>
+<!-- ===== V5.72 COMBAT PRESENTATION + SKILL FX (visual layer, no active-skill buttons) ===== -->
+<style id="v572-combat-style">
+#dungeonBattleCard.v572-combat{
+  padding:10px!important;border:1px solid #80572c!important;border-radius:18px!important;
+  background:linear-gradient(180deg,#07110a,#030705)!important;
+  box-shadow:0 16px 42px #000b,inset 0 0 34px #0008!important;
+}
+#dungeonBattleCard.v572-combat>.section-title{display:none!important}
+.v572-battle-head{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;margin:0 0 8px;padding:9px 10px;border:1px solid #6b4828;border-radius:12px;background:linear-gradient(180deg,#25160d,#0e0b07);box-shadow:inset 0 0 18px #0008}
+.v572-battle-head .v572-kicker{font:1000 7px/1.1 Arial,sans-serif;letter-spacing:.13em;color:#82e568;text-transform:uppercase}
+.v572-battle-head b{display:block;margin-top:2px;font:1000 13px/1.1 Georgia,serif;color:#f3d994;letter-spacing:.03em}
+.v572-recommend{padding:6px 8px;border:1px solid #4f713c;border-radius:999px;background:#07120a;color:#8ee96d;font-size:7px;font-weight:1000;white-space:nowrap}
+#dungeonBattleCard.v572-combat .battle-stage{height:390px!important;margin:0!important;border:1px solid #6c4a29!important;border-radius:15px!important;background-size:cover!important;background-position:center!important;box-shadow:inset 0 0 70px #000c,0 8px 22px #0009!important}
+#dungeonBattleCard.v572-combat .battle-stage:before{background:linear-gradient(180deg,rgba(3,8,5,.18),rgba(2,5,3,.32) 42%,rgba(1,4,2,.88) 100%)!important;z-index:1!important}
+#dungeonBattleCard.v572-combat .battle-stage:after{display:none!important}
+#dungeonBattleCard.v572-combat .v252-battle-vs{top:13px!important;font-size:9px!important;color:#efd28b!important;letter-spacing:.12em!important;text-shadow:0 2px 8px #000,0 0 12px #be7b2d!important}
+#dungeonBattleCard.v572-combat .v252-round-chip{top:34px!important;padding:5px 10px!important;border-color:#6a5030!important;background:rgba(7,10,6,.90)!important;color:#f2d58c!important;font-size:7px!important}
+#dungeonBattleCard.v572-combat .fighter{bottom:42px!important;width:47%!important}
+#dungeonBattleCard.v572-combat .fighter.player{left:0!important}#dungeonBattleCard.v572-combat .fighter.enemy-side{right:0!important}
+#dungeonBattleCard.v572-combat .v252-fighter-shell{min-height:275px!important}
+#dungeonBattleCard.v572-combat .fighter-avatar{width:145px!important;height:185px!important;filter:drop-shadow(0 14px 10px #000d)!important}
+#dungeonBattleCard.v572-combat .v253-player-avatar-img{width:145px!important;height:185px!important;object-fit:contain!important;object-position:center bottom!important}
+#dungeonBattleCard.v572-combat .v253-monster{width:165px!important;height:185px!important}
+#dungeonBattleCard.v572-combat .fighter-name{width:97%!important;padding:7px 7px 5px!important;border-color:#75512e!important;background:rgba(4,9,5,.93)!important;color:#f1eee4!important;font-size:8px!important}
+#dungeonBattleCard.v572-combat .hpbar{width:97%!important;height:17px!important;border-color:#6d4d39!important;background:#210606!important}
+#dungeonBattleCard.v572-combat .fighter .tiny{font-size:8px!important;color:#d9d5c8!important}
+.v572-vs{position:absolute;z-index:14;left:50%;top:58%;transform:translate(-50%,-50%);width:46px;height:46px;border-radius:50%;display:grid;place-items:center;border:2px solid #b97c2d;background:radial-gradient(circle,#3b250e,#100b05 70%);box-shadow:0 0 22px #ffb62d66;color:#ffd86d;font:1000 18px Georgia,serif;text-shadow:0 2px 3px #000;pointer-events:none}
+.v572-fx-layer{position:absolute;z-index:30;inset:0;pointer-events:none;overflow:hidden;border-radius:15px}
+.v572-event-banner{position:absolute;left:50%;top:29%;transform:translate(-50%,-50%) scale(.78);max-width:80%;padding:6px 10px;border-radius:10px;background:#050805dd;border:1px solid #8d6a37;color:#fff;font:1000 14px/1.05 Arial,sans-serif;text-align:center;opacity:0;text-shadow:0 2px 3px #000;box-shadow:0 0 24px #000a;white-space:normal}
+.v572-event-banner.show{animation:v572Banner .72s ease-out}
+.v572-event-banner.crit{color:#ffe276;border-color:#dca12b;box-shadow:0 0 26px #d995295f}.v572-event-banner.wucht{color:#ffb14d;border-color:#d57427}.v572-event-banner.dodge{color:#a9dcff;border-color:#5aa7dc}.v572-event-banner.heal{color:#7cff86;border-color:#4dc45a}.v572-event-banner.magic{color:#e9a8ff;border-color:#a956d4}.v572-event-banner.frost{color:#9deeff;border-color:#50cce8}.v572-event-banner.guard{color:#b7e8ff;border-color:#65a7d0}
+@keyframes v572Banner{0%{opacity:0;transform:translate(-50%,-35%) scale(.65)}24%{opacity:1;transform:translate(-50%,-50%) scale(1.13)}72%{opacity:1;transform:translate(-50%,-58%) scale(1)}100%{opacity:0;transform:translate(-50%,-80%) scale(.9)}}
+.v572-ring{position:absolute;left:50%;top:52%;width:120px;height:120px;border-radius:50%;border:4px solid #7dff61;transform:translate(-50%,-50%) scale(.25);opacity:0}.v572-ring.show{animation:v572Ring .55s ease-out}@keyframes v572Ring{0%{opacity:.9;transform:translate(-50%,-50%) scale(.2)}100%{opacity:0;transform:translate(-50%,-50%) scale(1.8)}}
+.v572-slashfx{position:absolute;left:50%;top:48%;width:180px;height:10px;border-radius:50%;background:linear-gradient(90deg,transparent,#bfff73,#fff,#79e846,transparent);filter:blur(.2px) drop-shadow(0 0 8px #84ff46);transform:translate(-50%,-50%) rotate(-18deg) scaleX(.1);opacity:0}.v572-slashfx.show{animation:v572Slash .45s ease-out}@keyframes v572Slash{0%{opacity:0;transform:translate(-50%,-50%) rotate(-18deg) scaleX(.1)}25%{opacity:1}100%{opacity:0;transform:translate(-50%,-50%) rotate(-18deg) scaleX(1.35)}}
+#playerFighter.v572-dodge{animation:v572Dodge .42s ease!important}@keyframes v572Dodge{0%,100%{transform:translateX(0)}45%{transform:translateX(-42px) translateY(-8px) rotate(-4deg)}}
+#playerFighter.v572-heal .v252-aura{background:radial-gradient(ellipse,rgba(72,255,86,.45),rgba(50,150,60,.12) 48%,transparent 72%)!important;filter:blur(1px)!important}
+#playerFighter.v572-guard{filter:drop-shadow(0 0 14px #74c9ff)!important}
+#enemyFighter.v572-magic-hit{filter:drop-shadow(0 0 16px #c85bff)!important}
+#enemyFighter.v572-frost-hit{filter:drop-shadow(0 0 18px #6ae9ff)!important}
+.v572-passives{position:absolute;z-index:16;left:8px;right:8px;bottom:8px;display:flex;justify-content:center;gap:4px;pointer-events:none}.v572-passives span{padding:3px 6px;border:1px solid #466345;border-radius:999px;background:#061008dc;color:#9fce97;font-size:5.7px;font-weight:900;white-space:nowrap}
+.v572-event-log{margin:9px 0 8px;padding:8px 9px;border:1px solid #604329;border-radius:11px;background:linear-gradient(180deg,#08110a,#040806);min-height:66px;box-shadow:inset 0 0 16px #0008}
+.v572-event-log .head{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;color:#e7c579;font-size:7px;font-weight:1000}.v572-event-log .line{padding:3px 0;border-top:1px solid #19291d;color:#aeb9ae;font-size:7px;line-height:1.3}.v572-event-log .line:first-of-type{border-top:0}.v572-event-log .line strong{color:#e8f1e5}
+#dungeonBattleCard.v572-combat>.battle-log{display:none!important}
+#dungeonBattleCard.v572-combat #v324DungeonCountdown{margin-top:8px!important;border-color:#76552d!important;background:linear-gradient(180deg,#17140b,#090b07)!important;color:#efd28b!important}
+#dungeonBattleCard.v572-combat #fightBtn{min-height:54px!important;border:1px solid #6fc64a!important;border-radius:13px!important;background:linear-gradient(180deg,#65cf4f,#267e2c)!important;color:#071208!important;font-size:11px!important;font-weight:1000!important;box-shadow:inset 0 1px #b7ff9b,0 0 18px #53d84833!important}
+#dungeonBattleCard.v572-combat #fightBtn:disabled{opacity:.92!important;filter:saturate(.86)!important}
+@media(max-width:560px){#dungeonBattleCard.v572-combat .battle-stage{height:360px!important}#dungeonBattleCard.v572-combat .fighter-avatar,#dungeonBattleCard.v572-combat .v253-player-avatar-img{width:125px!important;height:160px!important}#dungeonBattleCard.v572-combat .v253-monster{width:145px!important;height:165px!important}.v572-passives{bottom:6px}.v572-passives span{font-size:5.2px}}
+
+/* Quest finale: same visual language, actual class/talent resolver drives FX. */
+#v311QuestFight.v572-quest .v311-panel{border:1px solid #7a512b!important;background:linear-gradient(180deg,#0a160d,#050806)!important;box-shadow:0 24px 80px #000e,inset 0 0 28px #0008!important}
+#v311QuestFight.v572-quest .v311-head{background:linear-gradient(180deg,#2a180d,#100b07);border-bottom:1px solid #6a4727}.v572-qfx{position:absolute;inset:0;z-index:20;pointer-events:none}.v572-qfx .v572-event-banner{top:34%}
+#v311QuestFight.v572-quest .v311-arena{overflow:hidden;border-bottom:1px solid #553b25;background:radial-gradient(circle at 50% 78%,rgba(81,160,65,.20),transparent 45%),linear-gradient(180deg,#08140c,#050806)!important}
+
+/* PvP gets a combat presentation layer, without adding manual skills/buttons. */
+.v204-match-card.v572-pvp-battle{border-color:#72502e!important;background:linear-gradient(180deg,#0a150d,#050806)!important;box-shadow:inset 0 0 24px #0008}
+.v572-pvp-stage{position:relative;display:grid;grid-template-columns:1fr 42px 1fr;align-items:end;min-height:250px;margin-bottom:8px;border:1px solid #68482b;border-radius:14px;overflow:hidden;background:radial-gradient(circle at 50% 35%,rgba(76,150,67,.16),transparent 40%),linear-gradient(180deg,#0b160e,#050806)}
+.v572-pvp-stage .side{text-align:center;min-width:0;padding:10px 5px}.v572-pvp-stage img{height:155px;max-width:100%;object-fit:contain;filter:drop-shadow(0 12px 8px #000c)}.v572-pvp-stage .name{font-size:8px;font-weight:1000;color:#eef2ea}.v572-pvp-stage .hp{height:13px;border:1px solid #5d3b35;border-radius:99px;background:#240808;overflow:hidden;margin-top:5px}.v572-pvp-stage .hp i{display:block;height:100%;background:linear-gradient(90deg,#d23d3d,#ef7253);transition:width .25s}.v572-pvp-stage .vs{align-self:center;color:#ffd064;font:1000 18px Georgia,serif;text-shadow:0 0 10px #e29b36}
+</style>
+<script id="v572-combat-core">
+(()=>{
+ 'use strict';
+ if(window.__V572_COMBAT__)return;window.__V572_COMBAT__=true;
+ const $=s=>document.querySelector(s);
+ const pulse=(el,cl,ms=650)=>{if(!el)return;el.classList.remove(cl);void el.offsetWidth;el.classList.add(cl);setTimeout(()=>el.classList.remove(cl),ms)};
+ const cls=()=>{try{return String(s?.playerClass||'grower')}catch(e){return'grower'}};
+ const fxClass=(txt='')=>{txt=String(txt).toUpperCase();if(/AUSGEWICHEN/.test(txt))return'dodge';if(/KRIT|PERFEKTER SCHUSS|HINRICHTUNG/.test(txt))return'crit';if(/WUCHT|BRUTALE ERNTE|RASEREI/.test(txt))return'wucht';if(/FROST|EIS|KÄLTE|REIF|NULLPUNKT|SEELEN|NEBENHAND/.test(txt))return'frost';if(/RAUCH|NEBEL|DETONATION|SUPERNOVA|KETTENREAKTION|DOT/.test(txt))return'magic';if(/BARRIERE|GEBLOCKT|ZWEITE LUFT|UNKRAUT/.test(txt))return'guard';return''};
+ function activeStage(){return $('#dungeonBattleCard.v572-combat .battle-stage')}
+ function ensureFx(root){if(!root)return null;let layer=root.querySelector('.v572-fx-layer');if(!layer){layer=document.createElement('div');layer.className='v572-fx-layer';layer.innerHTML='<div class="v572-event-banner"></div><div class="v572-ring"></div><div class="v572-slashfx"></div>';root.appendChild(layer)}return layer}
+ function showFx(text,opt={}){
+   const stage=activeStage();if(!stage)return;
+   const layer=ensureFx(stage),b=layer?.querySelector('.v572-event-banner');if(!b)return;
+   const clean=String(text||'').replace(/\s*\+\s*/g,' + ').trim();
+   b.className='v572-event-banner '+(opt.kind||fxClass(clean));b.textContent=clean;pulse(b,'show',760);
+   if(/WUCHT|RASEREI|SALVE|FROST|EIS|DETONATION|SUPERNOVA|KETTEN|SCHUSS|ERNTE|NEBENHAND|SCHNITT/i.test(clean))pulse(layer.querySelector('.v572-slashfx'),'show',480);
+   if(/HEIL|LEBENS|SEELEN|ZWEITE LUFT/i.test(clean))pulse(layer.querySelector('.v572-ring'),'show',600);
+ }
+ function classBranchChips(){
+  try{
+   const branches=(typeof V314_BRANCHES==='object'?V314_BRANCHES?.[cls()]:[])||[];return branches.filter(b=>{try{return typeof window.v314BranchSpent==='function'&&v314BranchSpent(b.id)>0}catch(e){return false}}).map(b=>b.title.replace(/^\S+\s*/,'')).slice(0,3)
+  }catch(e){return[]}
+ }
+ function dungeonInfo(){
+   const di=Math.max(0,Number(s?.dungeon?.selected)||0),ri=Math.max(0,Number(s?.dungeon?.progress?.[di]??s?.dungeon?.room??0)||0),d=dungeons?.[di],e=d?.enemies?.[ri];let rec=e?.requiredLevel||d?.minLevel||1;try{if(typeof window.v025EnemyStats==='function')rec=v025EnemyStats(di,ri,e).rec||rec}catch(_){ }return{di,ri,d,e,rec}
+ }
+ function decorateDungeon(){
+   const card=$('#dungeonBattleCard'),stage=$('#battleStage');if(!card||!stage)return;
+   card.classList.add('v572-combat');
+   const {di,ri,d,e,rec}=dungeonInfo();
+   let head=card.querySelector('.v572-battle-head');if(!head){head=document.createElement('div');head.className='v572-battle-head';card.prepend(head)}
+   head.innerHTML=`<div><div class="v572-kicker">DUNGEON ${di+1} · GEGNER ${ri+1}/10</div><b>${String(d?.name||d?.title||'DUNGEON DUELL').replace(/<[^>]+>/g,'')}</b></div><div class="v572-recommend">Empfohlen Lv. ${Math.round(Number(rec)||1)}</div>`;
+   if(!stage.querySelector('.v572-vs'))stage.insertAdjacentHTML('beforeend','<div class="v572-vs">VS</div>');ensureFx(stage);
+   let pass=stage.querySelector('.v572-passives');if(!pass){pass=document.createElement('div');pass.className='v572-passives';stage.appendChild(pass)}
+   const p=typeof v4156ClassPassive==='function'?v4156ClassPassive(cls()):null;const chips=[p?.name,...classBranchChips()].filter(Boolean);pass.innerHTML=chips.map(x=>`<span>${x}</span>`).join('');
+   /* Use the actual dungeon background where available; never invent a battle location. */
+   if(di>=1)stage.style.setProperty('background-image',`linear-gradient(180deg,rgba(2,7,4,.12),rgba(1,4,2,.55)),url("v474_dungeon_assets/d${di+1}_bg.jpg")`,'important');
+   let elog=card.querySelector('.v572-event-log');if(!elog){elog=document.createElement('div');elog.className='v572-event-log';elog.innerHTML='<div class="head"><span>📜 KAMPF-LOG</span><span class="v572-roundtxt">BEREIT</span></div><div class="v572-lines"></div>';stage.insertAdjacentElement('afterend',elog)}
+ }
+ function addLog(text){const box=$('#dungeonBattleCard .v572-event-log .v572-lines');if(!box||!text)return;const line=document.createElement('div');line.className='line';line.innerHTML=`<strong>${String(text).replace(/</g,'&lt;')}</strong>`;box.prepend(line);while(box.children.length>4)box.lastElementChild.remove()}
+ function paintRoundFromText(text){const m=String(text||'').match(/Runde\s+(\d+)/i);if(m){const chip=$('#v252RoundChip');if(chip)chip.textContent=`RUNDE ${m[1]}`;const t=$('.v572-roundtxt');if(t)t.textContent=`Runde ${m[1]}`}}
+ function observeDungeonLog(){const log=$('#battleLog');if(!log||log.dataset.v572Obs)return;log.dataset.v572Obs='1';let last='';new MutationObserver(()=>{const t=String(log.textContent||'').trim();if(t&&t!==last){last=t;addLog(t);paintRoundFromText(t)}}).observe(log,{childList:true,characterData:true,subtree:true})}
+ function onPlayerResult(r){
+   if(!r)return;const text=String(r.text||'TREFFER');
+   if(text!=='TREFFER'&&text!=='FROSTTREFFER')showFx(text);
+   if(Number(r.heal)>0){const label=cls()==='frost'?'SEELENHEILUNG':cls()==='bruiser'?'RAUCHHEILUNG':'LEBENSRAUB';setTimeout(()=>showFx(`${label} +${Math.round(r.heal)} LP`,{kind:'heal'}),180);pulse($('#playerFighter'),'v572-heal',700)}
+   if(/FROST|EIS|KÄLTE|REIF|NULLPUNKT|SEELEN|NEBENHAND/i.test(text))pulse($('#enemyFighter'),'v572-frost-hit',600);else if(/RAUCH|NEBEL|DETONATION|SUPERNOVA|KETTEN|DOT/i.test(text))pulse($('#enemyFighter'),'v572-magic-hit',600);
+ }
+ function onEnemyResult(r,ctx){
+   if(!r)return;const text=String(r.text||'');
+   if(/AUSGEWICHEN/i.test(text)){showFx('AUSGEWICHEN',{kind:'dodge'});pulse($('#playerFighter'),'v572-dodge',500)}
+   else if(text&&text!=='Gegner trifft'){const tag=text.replace(/^Gegner trifft\s*·?\s*/i,'').trim();if(tag)showFx(tag,{kind:fxClass(tag)||'guard'});pulse($('#playerFighter'),'v572-guard',650)}
+   if(Number(r.counterDamage)>0)setTimeout(()=>showFx(`KONTER -${Math.round(r.counterDamage)}`,{kind:'crit'}),160);
+   const raw=Math.max(0,Number(ctx?.damage)||0),taken=Math.max(0,Number(r.damage)||0);if(raw>0&&taken>0&&taken<raw&&text==='Gegner trifft')setTimeout(()=>showFx(`SCHADEN REDUZIERT -${Math.round(raw-taken)}`,{kind:'guard'}),120);
+   if(Number(r.heal)>0)setTimeout(()=>showFx(`HEILUNG +${Math.round(r.heal)} LP`,{kind:'heal'}),210);
+   if(r.preventLethal)setTimeout(()=>showFx('TÖDLICHEN TREFFER ÜBERLEBT',{kind:'guard'}),230);
+ }
+ /* Wrap the FINAL resolver. This means every current class, Frost and later talent output remains canonical. */
+ if(typeof window.v318ResolvePlayerAttack==='function'&&!window.v318ResolvePlayerAttack.__v572){const base=window.v318ResolvePlayerAttack;const wrap=function(){const r=base.apply(this,arguments);try{if($('#dungeon')?.classList.contains('active'))onPlayerResult(r)}catch(e){}return r};wrap.__v572=true;window.v318ResolvePlayerAttack=wrap;try{v318ResolvePlayerAttack=wrap}catch(e){}}
+ if(typeof window.v318ResolveEnemyAttack==='function'&&!window.v318ResolveEnemyAttack.__v572){const base=window.v318ResolveEnemyAttack;const wrap=function(){const ctx=arguments[1]||{};const r=base.apply(this,arguments);try{if($('#dungeon')?.classList.contains('active'))onEnemyResult(r,ctx)}catch(e){}return r};wrap.__v572=true;window.v318ResolveEnemyAttack=wrap;try{v318ResolveEnemyAttack=wrap}catch(e){}}
+
+ /* Quest finale uses the real talent resolver for its presentation only; earned payout remains untouched. */
+ if(typeof window.v311PlayFight==='function'&&!window.v311PlayFight.__v572){
+  const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+  const qfight=async function(q){
+   const o=window.v311EnsureFight?.()||$('#v311QuestFight');if(!o)return;const info=window.v311BossForQuest?.(q)||['👹','Quest-Gegner'],icon=info[0],boss=info[1];o.classList.add('v572-quest');o.classList.toggle('elite',!!q.v310Elite);
+   const pa=$('#v311PlayerAvatar'),enemy=$('#v311BossAvatar'),php=$('#v311PlayerHp'),ehp=$('#v311BossHp'),log=$('#v311FightLog');
+   $('#v311BossName').textContent=q.v310Elite?`ELITE · ${boss}`:boss;$('#v311PlayerName').textContent=s?.characterName||classes?.[cls()]?.name||'Deine Legende';enemy.textContent=q.v310Elite?'👹':icon;try{pa.innerHTML=`<img src="${v080AvatarFor(cls())}" alt="Spielcharakter">`}catch(e){}
+   const arena=o.querySelector('.v311-arena');if(arena&&!arena.querySelector('.v572-qfx')){const fx=document.createElement('div');fx.className='v572-qfx';fx.innerHTML='<div class="v572-event-banner"></div><div class="v572-ring"></div><div class="v572-slashfx"></div>';arena.appendChild(fx)}
+   php.style.width='100%';ehp.style.width='100%';enemy.classList.remove('v311-defeated');o.classList.add('show');
+   const maxP=Math.max(1,Number(typeof maxHp==='function'?maxHp():100)||100),state=typeof window.v318NewCombatState==='function'?v318NewCombatState('quest',maxP):null;let p=maxP,e=Math.max(150,Math.round(maxP*.9)),maxE=e,round=0;
+   const qfx=(txt,kind)=>{const b=o.querySelector('.v572-qfx .v572-event-banner');if(!b)return;b.className='v572-event-banner '+(kind||fxClass(txt));b.textContent=txt;pulse(b,'show',650)};
+   while(e>0&&round<8){round++;let base=Math.max(8,Math.round((Number(typeof combatPower==='function'?combatPower():100)||100)*.07+12)),r={damage:base,heal:0,text:'TREFFER'};try{if(state)r=v318ResolvePlayerAttack(state,{baseDamage:base,enemyHp:e,enemyMax:maxE,playerHp:p,playerMax:maxP,baseCrit:Math.min(.30,.04+(Number(typeof totalAttr==='function'?totalAttr('glueck'):0)||0)*.012),setCrit:0,baseWucht:cls()==='grower'?.13:0,baseDouble:cls()==='scout'?.15:0,setDoubleDamage:0})||r}catch(_){ }
+     p=Math.min(maxP,p+Math.max(0,Number(r.heal)||0));e=Math.max(0,e-Math.max(1,Number(r.damage)||base));log.textContent=`Runde ${round}: ${r.text||'TREFFER'} · ${Math.round(r.damage||base)} Schaden${r.heal?` · +${Math.round(r.heal)} LP`:''}`;if(r.text&&r.text!=='TREFFER'&&r.text!=='FROSTTREFFER')qfx(r.text);pa.classList.add('v311-hit-player');await sleep(180);ehp.style.width=`${Math.max(0,e/maxE*100)}%`;pa.classList.remove('v311-hit-player');await sleep(200);if(e<=0)break;
+     let raw=Math.max(4,Math.round(maxP*.065)),d={damage:raw,heal:0,counterDamage:0,text:'Gegner trifft'};try{if(state)d=v318ResolveEnemyAttack(state,{damage:raw,playerHp:p,playerMax:maxP})||d}catch(_){ }p=Math.max(1,Math.min(maxP,p+Math.max(0,Number(d.heal)||0)-Math.max(0,Number(d.damage)||0)));if(d.counterDamage)e=Math.max(0,e-Number(d.counterDamage)||0);php.style.width=`${Math.max(0,p/maxP*100)}%`;if(/AUSGEWICHEN/i.test(d.text||''))qfx('AUSGEWICHEN','dodge');else if(d.text&&d.text!=='Gegner trifft')qfx(String(d.text).replace(/^Gegner trifft\s*·?\s*/i,''),'guard');enemy.classList.add('v311-hit-enemy');await sleep(180);enemy.classList.remove('v311-hit-enemy');await sleep(190);
+   }
+   enemy.classList.add('v311-defeated');log.textContent=q.v310Elite?'🏆 ELITE-GEGNER BESIEGT!':'🏆 Gegner besiegt! Belohnung wird geöffnet …';await sleep(520);o.classList.remove('show');
+  };qfight.__v572=true;window.v311PlayFight=qfight;try{v311PlayFight=qfight}catch(e){}
+ }
+
+ /* PvP: presentation only. Existing result math/server flow stays untouched. */
+ if(typeof window.v204Fight==='function'&&!window.v204Fight.__v572){const base=window.v204Fight;const wrap=async function(){const box=$('#v204MatchCard');if(box&&typeof v204Opponent!=='undefined'&&v204Opponent){box.classList.add('v572-pvp-battle');const me=window.v080AvatarFor?.(cls())||'',oc=window.v204ClassIdFromProfile?.(v204Opponent)||'grower',op=window.v080AvatarFor?.(oc)||'';let stage=box.querySelector('.v572-pvp-stage');if(!stage){stage=document.createElement('div');stage.className='v572-pvp-stage';stage.innerHTML=`<div class="side"><img src="${me}"><div class="name">${s?.characterName||'Du'}</div><div class="hp"><i style="width:100%"></i></div></div><div class="vs">VS</div><div class="side"><img src="${op}"><div class="name">${v204Opponent.character_name||'Gegner'}</div><div class="hp"><i style="width:100%"></i></div></div>`;box.prepend(stage)}}return base.apply(this,arguments)};wrap.__v572=true;window.v204Fight=wrap;try{v204Fight=wrap}catch(e){}}
+
+ function tick(){try{if($('#dungeon')?.classList.contains('active')&&$('#dungeonBattleCard')?.offsetParent){decorateDungeon();observeDungeonLog()}}catch(e){}requestAnimationFrame(tick)}requestAnimationFrame(tick);
+})();
+</script>
+<!-- ===== /V5.72 ===== -->
