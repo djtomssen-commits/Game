@@ -48989,136 +48989,6 @@ Der Zahlungsanbieter ist noch nicht verbunden. Deshalb wird aktuell noch kein Ec
   .v574-proc-strip{left:4%;right:4%;top:74px}.v574-chip{font-size:5.5px;padding:4px 6px}
 }
 </style>
-<script id="v574-dungeon-combat-clean-render-core">
-(()=>{
- 'use strict';
- if(window.__V574_DUNGEON_COMBAT__)return;window.__V574_DUNGEON_COMBAT__=true;
- const $=q=>document.querySelector(q);
- const clean=s=>String(s??'').replace(/<[^>]*>/g,'').trim();
- const pulse=(el,cl,ms=650)=>{if(!el)return;el.classList.remove(cl);void el.offsetWidth;el.classList.add(cl);setTimeout(()=>el.classList.remove(cl),ms)};
- const classId=()=>String(window.s?.playerClass||s?.playerClass||'grower');
- const state={player:null,enemy:null,lastText:''};
- function info(){
-  const di=typeof window.v048DungeonIndex==='function'?Number(v048DungeonIndex()):Math.max(0,Number(s?.dungeon?.selected)||0);
-  const ri=typeof window.v048RoomIndex==='function'?Number(v048RoomIndex(di)):Math.max(0,Math.min(9,Number(s?.dungeon?.progress?.[di]??s?.dungeon?.room??0)));
-  const d=window.dungeons?.[di]||dungeons?.[di],e=d?.enemies?.[ri]||{};let rec=e?.requiredLevel||d?.minLevel||1;
-  try{if(typeof window.v025EnemyStats==='function')rec=Number(v025EnemyStats(di,ri,e)?.rec)||rec}catch(_){ }
-  return{di,ri,d,e,rec};
- }
- function fxKind(txt){
-  const t=String(txt||'').toUpperCase();
-  if(/AUSGEWICHEN/.test(t))return'dodge';
-  if(/KRIT|PERFEKTER SCHUSS|HINRICHTUNG/.test(t))return'crit';
-  if(/WUCHT|BRUTALE ERNTE/.test(t))return'wucht';
-  if(/RASEREI|SALVE|GRÜNER HAGEL|ZWILLINGSSCHNITT/.test(t))return'rage';
-  if(/FROST|KÄLTE|REIF|EIS|NULLPUNKT|SEELEN|NEBENHAND|TOTENSTARRE|EWIGES EIS/.test(t))return'frost';
-  if(/RAUCH|NEBEL|DETONATION|SUPERNOVA|KETTENREAKTION|DOT/.test(t))return'magic';
-  if(/BARRIERE|GEBLOCKT|ZWEITE LUFT|UNKRAUT|REDUZIERT|SCHILD|ÜBERLEBT/.test(t))return'guard';
-  if(/HEIL|LEBENSRAUB|LP/.test(t))return'heal';
-  return'';
- }
- function cssUrl(el){
-  if(!el)return'';
-  let bg='';try{bg=getComputedStyle(el).backgroundImage||el.style.backgroundImage||''}catch(_){bg=el.style?.backgroundImage||''}
-  const m=String(bg).match(/url\(["']?(.*?)["']?\)/i);return m?.[1]||'';
- }
- function mapArt(ri){
-  const card=$('#dungeonMapCard');if(!card)return'';
-  const thumb=cssUrl(card.querySelector('.v261-thumb'));if(thumb)return thumb;
-  const node=card.querySelector(`.v261-node[data-v261-room="${ri}"]`);
-  if(!node)return'';
-  return cssUrl(node.querySelector(ri===9?'.v261-bossart':'.v261-ring'))||cssUrl(node.querySelector('.v261-ring'));
- }
- function cfgArt(di,ri){
-  try{const cfg=window.__V468_CFG__?.[String(di+1)]||window.__V468_CFG__?.[di+1];if(!cfg)return'';return ri===9?(cfg.bossArt||cfg.boss||''):(cfg.art?.[ri]||'')}catch(_){return''}
- }
- function mapBackground(di){
-  const bg=cssUrl($('#dungeonMapCard .v261-bg'));if(bg)return bg;
-  try{const cfg=window.__V468_CFG__?.[String(di+1)]||window.__V468_CFG__?.[di+1];return cfg?.bg||''}catch(_){return''}
- }
- function actualHeal(r,ctx){
-  const want=Math.max(0,Math.round(Number(r?.heal)||0));
-  const hp=Math.max(0,Number(ctx?.playerHp)||0),max=Math.max(hp,Number(ctx?.playerMax)||hp);
-  return Math.max(0,Math.min(want,Math.max(0,Math.round(max-hp))));
- }
- function splitTags(txt){return String(txt||'').split(/\s*\+\s*/).map(clean).filter(x=>x&&!/^TREFFER$|^FROSTTREFFER$|^Gegner trifft$/i.test(x));}
- function showChip(txt,kindOverride){
-  const strip=$('#battleStage .v574-proc-strip');if(!strip||!txt)return;
-  const list=splitTags(txt);if(!list.length)list.push(clean(txt));
-  list.slice(0,3).forEach((tag,i)=>setTimeout(()=>{const n=document.createElement('span');n.className='v574-chip '+(kindOverride||fxKind(tag));n.textContent=tag;strip.appendChild(n);setTimeout(()=>n.remove(),1280)},i*70));
- }
- function ensureUi(){
-  const card=$('#dungeonBattleCard'),stage=$('#battleStage');if(!card||!stage)return;
-  card.classList.add('v574-combat');
-  const {di,ri,d,e,rec}=info();
-  card.querySelectorAll('.v574-head').forEach((n,i)=>{if(i)n.remove()});
-  let head=card.querySelector('.v574-head');if(!head){head=document.createElement('div');head.className='v574-head';card.prepend(head)}
-  const dname=clean(d?.name||d?.title||`Dungeon ${di+1}`)||`Dungeon ${di+1}`;
-  head.innerHTML=`<div class="v574-head-main"><div class="v574-kicker">DUNGEON KAMPF · GEGNER ${ri+1}/10</div><b class="v574-title">${dname}</b></div><div class="v574-recommend">Empfohlen Lv. ${Math.round(Number(rec)||1)}</div>`;
-  if(!stage.querySelector('.v574-stage-title'))stage.insertAdjacentHTML('beforeend','<div class="v574-stage-title">DUNGEON DUELL</div><div class="v574-round">BEREIT</div><div class="v574-proc-strip"></div>');
-  const bg=mapBackground(di);if(bg)stage.style.setProperty('background-image',`linear-gradient(180deg,rgba(2,7,4,.12),rgba(1,4,2,.32)),url("${bg}")`,'important');
-  const enemyAvatar=$('#enemyFighter .fighter-avatar');if(enemyAvatar){
-   const art=mapArt(ri)||cfgArt(di,ri);
-   let img=enemyAvatar.querySelector('.v574-enemy-art');
-   if(art){
-    if(!img){img=document.createElement('img');img.className='v574-enemy-art';img.alt=clean(e?.short||e?.name||'Dungeon-Gegner');enemyAvatar.appendChild(img)}
-    img.onerror=()=>{enemyAvatar.classList.remove('v574-has-art');img.remove()};
-    if(img.getAttribute('src')!==art)img.src=art;
-    enemyAvatar.classList.add('v574-has-art');
-   }else{enemyAvatar.classList.remove('v574-has-art');img?.remove()}
-  }
-  const playerName=$('#playerFighter .fighter-name');if(playerName){const cn=window.classes?.[classId()]?.name||classes?.[classId()]?.name||'Legende';playerName.innerHTML=`${clean(s?.characterName||'Du')} · ${clean(cn)} · Lv. <span id="battleLevel">${Number(s?.level)||1}</span>`}
-  if(!card.querySelector('.v574-log')){const log=document.createElement('div');log.className='v574-log';log.innerHTML='<div class="v574-log-title"><span>📜 Kampfverlauf</span><small>letzte Runden</small></div><div class="v574-log-lines"></div>';stage.insertAdjacentElement('afterend',log)}
- }
- function lineClass(text){return fxKind(text)||''}
- function renderLog(text){
-  const box=$('#dungeonBattleCard .v574-log-lines');if(!box||!text)return;
-  const m=String(text).match(/Runde\s+(\d+)/i),round=m?Number(m[1]):0;
-  const p=state.player,e=state.enemy;let parts=[];
-  if(p){parts.push(`${clean(p.text||'Treffer')} · ${Math.max(0,Math.round(Number(p.damage)||0))} Schaden`);if(p.actualHeal)parts.push(`+${p.actualHeal} LP`)}
-  else{const raw=clean(text).replace(/^Runde\s+\d+\s*:\s*/i,'');if(raw)parts.push(raw)}
-  if(e){
-   const et=clean(e.text||'Gegner trifft');
-   if(/AUSGEWICHEN/i.test(et))parts.push('Gegner: AUSGEWICHEN');
-   else parts.push(`Gegner: ${Math.max(0,Math.round(Number(e.damage)||0))} Schaden${et&&et!=='Gegner trifft'?` · ${et.replace(/^Gegner trifft\s*·?\s*/i,'')}`:''}`);
-   if(e.counterDamage)parts.push(`Konter ${Math.round(e.counterDamage)}`);
-   if(e.actualHeal)parts.push(`+${e.actualHeal} LP`);
-   if(e.preventLethal)parts.push('Tödlichen Treffer überlebt');
-  }
-  const line=document.createElement('div');line.className='v574-log-line '+lineClass(parts.join(' '));line.dataset.round=String(round||0);line.innerHTML=`<b>${round?`R${round}`:'•'}</b><span>${parts.join(' · ')}</span>`;
-  const old=round?box.querySelector(`[data-round="${round}"]`):null;if(old)old.replaceWith(line);else box.prepend(line);
-  while(box.children.length>4)box.lastElementChild.remove();
-  const rb=$('#battleStage .v574-round');if(rb&&round)rb.textContent=`RUNDE ${round}`;
- }
- function observe(){
-  const src=$('#battleLog');if(!src||src.dataset.v574Obs)return;src.dataset.v574Obs='1';
-  new MutationObserver(()=>{const t=clean(src.textContent);if(!t||t===state.lastText)return;state.lastText=t;setTimeout(()=>renderLog(t),0)}).observe(src,{childList:true,characterData:true,subtree:true});
- }
- function playerFx(r,ctx){
-  state.enemy=null;const ah=actualHeal(r,ctx);state.player={...r,actualHeal:ah};const t=String(r?.text||'TREFFER'),enemy=$('#enemyFighter'),player=$('#playerFighter'),stage=$('#battleStage');
-  if(t&&t!=='TREFFER'&&t!=='FROSTTREFFER')showChip(t);
-  if(ah>0){const lbl=classId()==='bruiser'?`RAUCHHEILUNG +${ah} LP`:classId()==='frost'?`SEELENRAUB +${ah} LP`:`LEBENSRAUB +${ah} LP`;setTimeout(()=>showChip(lbl,'heal'),130);pulse(player,'v574-heal',700)}
-  if(/KRIT|PERFEKTER SCHUSS|HINRICHTUNG/i.test(t))pulse(enemy,'v573-crit-hit',460);
-  if(/WUCHT|BRUTALE ERNTE/i.test(t)){pulse(enemy,'v573-wucht-hit',520);pulse(stage,'v573-screen-bump',350)}
-  if(/RASEREI|SALVE|GRÜNER HAGEL|ZWILLINGSSCHNITT|NEBENHAND/i.test(t))pulse(enemy,'v573-multi-hit',560);
- }
- function enemyFx(r,ctx){
-  const ah=actualHeal(r,ctx);state.enemy={...r,actualHeal:ah};const t=String(r?.text||'Gegner trifft'),player=$('#playerFighter'),stage=$('#battleStage');
-  if(/AUSGEWICHEN/i.test(t)){showChip('AUSGEWICHEN','dodge');pulse(player,'v573-dodge',500)}
-  else if(t&&t!=='Gegner trifft'){const special=t.replace(/^Gegner trifft\s*·?\s*/i,'');if(special)showChip(special,fxKind(special)||'guard')}
-  const raw=Math.max(0,Number(ctx?.damage)||0),taken=Math.max(0,Number(r?.damage)||0);if(raw>0&&taken<raw)setTimeout(()=>showChip(`SCHADEN REDUZIERT ${Math.max(0,Math.round(raw-taken))}`,'guard'),90);
-  if(Number(r?.counterDamage)>0){setTimeout(()=>showChip(`KONTER ${Math.round(r.counterDamage)} SCHADEN`,'crit'),120);pulse(stage,'v573-screen-bump',350)}
-  if(ah>0)setTimeout(()=>showChip(`HEILUNG +${ah} LP`,'heal'),140);
-  if(r?.preventLethal)setTimeout(()=>showChip('TÖDLICHEN TREFFER ÜBERLEBT','guard'),170);
- }
- try{
-  if(!window.__V575_DISABLE_OLD_DUNGEON_FX__&&typeof window.v318ResolvePlayerAttack==='function'&&!window.v318ResolvePlayerAttack.__v574){const base=window.v318ResolvePlayerAttack;const w=function(){const ctx=arguments[1]||{},r=base.apply(this,arguments);try{if($('#dungeon')?.classList.contains('active')&&!window.__V575_COMBAT_FINAL_OWNER__)playerFx(r,ctx)}catch(_){ }return r};w.__v574=true;window.v318ResolvePlayerAttack=w;try{v318ResolvePlayerAttack=w}catch(_){ }}
-  if(!window.__V575_DISABLE_OLD_DUNGEON_FX__&&typeof window.v318ResolveEnemyAttack==='function'&&!window.v318ResolveEnemyAttack.__v574){const base=window.v318ResolveEnemyAttack;const w=function(){const ctx=arguments[1]||{},r=base.apply(this,arguments);try{if($('#dungeon')?.classList.contains('active')&&!window.__V575_COMBAT_FINAL_OWNER__)enemyFx(r,ctx)}catch(_){ }return r};w.__v574=true;window.v318ResolveEnemyAttack=w;try{v318ResolveEnemyAttack=w}catch(_){ }}
- }catch(e){console.error('V5.74 combat resolver visual hook',e)}
- function tick(){if(window.__V575_COMBAT_FINAL_OWNER__)return;try{if($('#dungeon')?.classList.contains('active')&&$('#dungeonBattleCard')?.offsetParent){ensureUi();observe()}}catch(_){ }requestAnimationFrame(tick)}
- /* V5.76: old dungeon RAF owner disabled */
-})();
-</script>
 <!-- ===== /V5.74 ===== -->
 
 </body>
@@ -82350,7 +82220,10 @@ body:has(#world.active){background:#010302!important}
       try{battleBusy=false}catch(e){}
 
       const btn=document.getElementById('fightBtn') || liveButton;
-      if(btn) btn.disabled=false;
+      if(btn){
+        btn.disabled=false;
+        btn.textContent=win?'🏆 SIEG':'⚔️ ERNEUT KÄMPFEN';
+      }
 
       s.dungeon.view='reward';
 
@@ -82584,7 +82457,11 @@ body:has(#world.active){background:#010302!important}
       syncBars();
 
       if(log){
-        log.textContent+=` · ${label}${counter?` · Konter ${counter}`:''}${heal?` · +${heal} LP`:''}`;
+        const special=String(label||'').replace(/^Gegner trifft\s*·?\s*/i,'').trim();
+        const enemyPart=/AUSGEWICHEN/i.test(String(label||''))
+          ? 'Gegner: AUSGEWICHEN'
+          : `Gegner: ${damage} Schaden${special&&special!=='Gegner trifft'?` · ${special}`:''}`;
+        log.textContent+=` · ${enemyPart}${counter?` · Konter ${counter}`:''}${heal?` · +${heal} LP`:''}`;
       }
 
       if(enemyHp<=0){
@@ -94624,92 +94501,6 @@ html.v495-level-syncing #v420LevelUpOverlay{
 .v572-pvp-stage{position:relative;display:grid;grid-template-columns:1fr 42px 1fr;align-items:end;min-height:250px;margin-bottom:8px;border:1px solid #68482b;border-radius:14px;overflow:hidden;background:radial-gradient(circle at 50% 35%,rgba(76,150,67,.16),transparent 40%),linear-gradient(180deg,#0b160e,#050806)}
 .v572-pvp-stage .side{text-align:center;min-width:0;padding:10px 5px}.v572-pvp-stage img{height:155px;max-width:100%;object-fit:contain;filter:drop-shadow(0 12px 8px #000c)}.v572-pvp-stage .name{font-size:8px;font-weight:1000;color:#eef2ea}.v572-pvp-stage .hp{height:13px;border:1px solid #5d3b35;border-radius:99px;background:#240808;overflow:hidden;margin-top:5px}.v572-pvp-stage .hp i{display:block;height:100%;background:linear-gradient(90deg,#d23d3d,#ef7253);transition:width .25s}.v572-pvp-stage .vs{align-self:center;color:#ffd064;font:1000 18px Georgia,serif;text-shadow:0 0 10px #e29b36}
 </style>
-<script id="v572-combat-core">
-(()=>{
- 'use strict';
- if(window.__V572_COMBAT__)return;window.__V572_COMBAT__=true;
- const $=s=>document.querySelector(s);
- const pulse=(el,cl,ms=650)=>{if(!el)return;el.classList.remove(cl);void el.offsetWidth;el.classList.add(cl);setTimeout(()=>el.classList.remove(cl),ms)};
- const cls=()=>{try{return String(s?.playerClass||'grower')}catch(e){return'grower'}};
- const fxClass=(txt='')=>{txt=String(txt).toUpperCase();if(/AUSGEWICHEN/.test(txt))return'dodge';if(/KRIT|PERFEKTER SCHUSS|HINRICHTUNG/.test(txt))return'crit';if(/WUCHT|BRUTALE ERNTE|RASEREI/.test(txt))return'wucht';if(/FROST|EIS|KÄLTE|REIF|NULLPUNKT|SEELEN|NEBENHAND/.test(txt))return'frost';if(/RAUCH|NEBEL|DETONATION|SUPERNOVA|KETTENREAKTION|DOT/.test(txt))return'magic';if(/BARRIERE|GEBLOCKT|ZWEITE LUFT|UNKRAUT/.test(txt))return'guard';return''};
- function activeStage(){return $('#dungeonBattleCard.v572-combat .battle-stage')}
- function ensureFx(root){if(!root)return null;let layer=root.querySelector('.v572-fx-layer');if(!layer){layer=document.createElement('div');layer.className='v572-fx-layer';layer.innerHTML='<div class="v572-event-banner"></div><div class="v572-ring"></div><div class="v572-slashfx"></div>';root.appendChild(layer)}return layer}
- function showFx(text,opt={}){
-   const stage=activeStage();if(!stage)return;
-   const layer=ensureFx(stage),b=layer?.querySelector('.v572-event-banner');if(!b)return;
-   const clean=String(text||'').replace(/\s*\+\s*/g,' + ').trim();
-   b.className='v572-event-banner '+(opt.kind||fxClass(clean));b.textContent=clean;pulse(b,'show',760);
-   if(/WUCHT|RASEREI|SALVE|FROST|EIS|DETONATION|SUPERNOVA|KETTEN|SCHUSS|ERNTE|NEBENHAND|SCHNITT/i.test(clean))pulse(layer.querySelector('.v572-slashfx'),'show',480);
-   if(/HEIL|LEBENS|SEELEN|ZWEITE LUFT/i.test(clean))pulse(layer.querySelector('.v572-ring'),'show',600);
- }
- function classBranchChips(){
-  try{
-   const branches=(typeof V314_BRANCHES==='object'?V314_BRANCHES?.[cls()]:[])||[];return branches.filter(b=>{try{return typeof window.v314BranchSpent==='function'&&v314BranchSpent(b.id)>0}catch(e){return false}}).map(b=>b.title.replace(/^\S+\s*/,'')).slice(0,3)
-  }catch(e){return[]}
- }
- function dungeonInfo(){
-   const di=Math.max(0,Number(s?.dungeon?.selected)||0),ri=Math.max(0,Number(s?.dungeon?.progress?.[di]??s?.dungeon?.room??0)||0),d=dungeons?.[di],e=d?.enemies?.[ri];let rec=e?.requiredLevel||d?.minLevel||1;try{if(typeof window.v025EnemyStats==='function')rec=v025EnemyStats(di,ri,e).rec||rec}catch(_){ }return{di,ri,d,e,rec}
- }
- function decorateDungeon(){
-   const card=$('#dungeonBattleCard'),stage=$('#battleStage');if(!card||!stage)return;
-   card.classList.add('v572-combat');
-   const {di,ri,d,e,rec}=dungeonInfo();
-   let head=card.querySelector('.v572-battle-head');if(!head){head=document.createElement('div');head.className='v572-battle-head';card.prepend(head)}
-   head.innerHTML=`<div><div class="v572-kicker">DUNGEON ${di+1} · GEGNER ${ri+1}/10</div><b>${String(d?.name||d?.title||'DUNGEON DUELL').replace(/<[^>]+>/g,'')}</b></div><div class="v572-recommend">Empfohlen Lv. ${Math.round(Number(rec)||1)}</div>`;
-   if(!stage.querySelector('.v572-vs'))stage.insertAdjacentHTML('beforeend','<div class="v572-vs">VS</div>');ensureFx(stage);
-   let pass=stage.querySelector('.v572-passives');if(!pass){pass=document.createElement('div');pass.className='v572-passives';stage.appendChild(pass)}
-   const p=typeof v4156ClassPassive==='function'?v4156ClassPassive(cls()):null;const chips=[p?.name,...classBranchChips()].filter(Boolean);pass.innerHTML=chips.map(x=>`<span>${x}</span>`).join('');
-   /* Use the actual dungeon background where available; never invent a battle location. */
-   if(di>=1)stage.style.setProperty('background-image',`linear-gradient(180deg,rgba(2,7,4,.12),rgba(1,4,2,.55)),url("v474_dungeon_assets/d${di+1}_bg.jpg")`,'important');
-   let elog=card.querySelector('.v572-event-log');if(!elog){elog=document.createElement('div');elog.className='v572-event-log';elog.innerHTML='<div class="head"><span>📜 KAMPF-LOG</span><span class="v572-roundtxt">BEREIT</span></div><div class="v572-lines"></div>';stage.insertAdjacentElement('afterend',elog)}
- }
- function addLog(text){const box=$('#dungeonBattleCard .v572-event-log .v572-lines');if(!box||!text)return;const line=document.createElement('div');line.className='line';line.innerHTML=`<strong>${String(text).replace(/</g,'&lt;')}</strong>`;box.prepend(line);while(box.children.length>4)box.lastElementChild.remove()}
- function paintRoundFromText(text){const m=String(text||'').match(/Runde\s+(\d+)/i);if(m){const chip=$('#v252RoundChip');if(chip)chip.textContent=`RUNDE ${m[1]}`;const t=$('.v572-roundtxt');if(t)t.textContent=`Runde ${m[1]}`}}
- function observeDungeonLog(){const log=$('#battleLog');if(!log||log.dataset.v572Obs)return;log.dataset.v572Obs='1';let last='';new MutationObserver(()=>{const t=String(log.textContent||'').trim();if(t&&t!==last){last=t;addLog(t);paintRoundFromText(t)}}).observe(log,{childList:true,characterData:true,subtree:true})}
- function onPlayerResult(r){
-   if(!r)return;const text=String(r.text||'TREFFER');
-   if(text!=='TREFFER'&&text!=='FROSTTREFFER')showFx(text);
-   if(Number(r.heal)>0){const label=cls()==='frost'?'SEELENHEILUNG':cls()==='bruiser'?'RAUCHHEILUNG':'LEBENSRAUB';setTimeout(()=>showFx(`${label} +${Math.round(r.heal)} LP`,{kind:'heal'}),180);pulse($('#playerFighter'),'v572-heal',700)}
-   if(/FROST|EIS|KÄLTE|REIF|NULLPUNKT|SEELEN|NEBENHAND/i.test(text))pulse($('#enemyFighter'),'v572-frost-hit',600);else if(/RAUCH|NEBEL|DETONATION|SUPERNOVA|KETTEN|DOT/i.test(text))pulse($('#enemyFighter'),'v572-magic-hit',600);
- }
- function onEnemyResult(r,ctx){
-   if(!r)return;const text=String(r.text||'');
-   if(/AUSGEWICHEN/i.test(text)){showFx('AUSGEWICHEN',{kind:'dodge'});pulse($('#playerFighter'),'v572-dodge',500)}
-   else if(text&&text!=='Gegner trifft'){const tag=text.replace(/^Gegner trifft\s*·?\s*/i,'').trim();if(tag)showFx(tag,{kind:fxClass(tag)||'guard'});pulse($('#playerFighter'),'v572-guard',650)}
-   if(Number(r.counterDamage)>0)setTimeout(()=>showFx(`KONTER -${Math.round(r.counterDamage)}`,{kind:'crit'}),160);
-   const raw=Math.max(0,Number(ctx?.damage)||0),taken=Math.max(0,Number(r.damage)||0);if(raw>0&&taken>0&&taken<raw&&text==='Gegner trifft')setTimeout(()=>showFx(`SCHADEN REDUZIERT -${Math.round(raw-taken)}`,{kind:'guard'}),120);
-   if(Number(r.heal)>0)setTimeout(()=>showFx(`HEILUNG +${Math.round(r.heal)} LP`,{kind:'heal'}),210);
-   if(r.preventLethal)setTimeout(()=>showFx('TÖDLICHEN TREFFER ÜBERLEBT',{kind:'guard'}),230);
- }
- /* Wrap the FINAL resolver. This means every current class, Frost and later talent output remains canonical. */
- if(!window.__V575_DISABLE_OLD_DUNGEON_FX__&&typeof window.v318ResolvePlayerAttack==='function'&&!window.v318ResolvePlayerAttack.__v572){const base=window.v318ResolvePlayerAttack;const wrap=function(){const r=base.apply(this,arguments);try{if($('#dungeon')?.classList.contains('active')&&!window.__V575_COMBAT_FINAL_OWNER__)onPlayerResult(r)}catch(e){}return r};wrap.__v572=true;window.v318ResolvePlayerAttack=wrap;try{v318ResolvePlayerAttack=wrap}catch(e){}}
- if(!window.__V575_DISABLE_OLD_DUNGEON_FX__&&typeof window.v318ResolveEnemyAttack==='function'&&!window.v318ResolveEnemyAttack.__v572){const base=window.v318ResolveEnemyAttack;const wrap=function(){const ctx=arguments[1]||{};const r=base.apply(this,arguments);try{if($('#dungeon')?.classList.contains('active')&&!window.__V575_COMBAT_FINAL_OWNER__)onEnemyResult(r,ctx)}catch(e){}return r};wrap.__v572=true;window.v318ResolveEnemyAttack=wrap;try{v318ResolveEnemyAttack=wrap}catch(e){}}
-
- /* Quest finale uses the real talent resolver for its presentation only; earned payout remains untouched. */
- if(typeof window.v311PlayFight==='function'&&!window.v311PlayFight.__v572){
-  const sleep=ms=>new Promise(r=>setTimeout(r,ms));
-  const qfight=async function(q){
-   const o=window.v311EnsureFight?.()||$('#v311QuestFight');if(!o)return;const info=window.v311BossForQuest?.(q)||['👹','Quest-Gegner'],icon=info[0],boss=info[1];o.classList.add('v572-quest');o.classList.toggle('elite',!!q.v310Elite);
-   const pa=$('#v311PlayerAvatar'),enemy=$('#v311BossAvatar'),php=$('#v311PlayerHp'),ehp=$('#v311BossHp'),log=$('#v311FightLog');
-   $('#v311BossName').textContent=q.v310Elite?`ELITE · ${boss}`:boss;$('#v311PlayerName').textContent=s?.characterName||classes?.[cls()]?.name||'Deine Legende';enemy.textContent=q.v310Elite?'👹':icon;try{pa.innerHTML=`<img src="${v080AvatarFor(cls())}" alt="Spielcharakter">`}catch(e){}
-   const arena=o.querySelector('.v311-arena');if(arena&&!arena.querySelector('.v572-qfx')){const fx=document.createElement('div');fx.className='v572-qfx';fx.innerHTML='<div class="v572-event-banner"></div><div class="v572-ring"></div><div class="v572-slashfx"></div>';arena.appendChild(fx)}
-   php.style.width='100%';ehp.style.width='100%';enemy.classList.remove('v311-defeated');o.classList.add('show');
-   const maxP=Math.max(1,Number(typeof maxHp==='function'?maxHp():100)||100),state=typeof window.v318NewCombatState==='function'?v318NewCombatState('quest',maxP):null;let p=maxP,e=Math.max(150,Math.round(maxP*.9)),maxE=e,round=0;
-   const qfx=(txt,kind)=>{const b=o.querySelector('.v572-qfx .v572-event-banner');if(!b)return;b.className='v572-event-banner '+(kind||fxClass(txt));b.textContent=txt;pulse(b,'show',650)};
-   while(e>0&&round<8){round++;let base=Math.max(8,Math.round((Number(typeof combatPower==='function'?combatPower():100)||100)*.07+12)),r={damage:base,heal:0,text:'TREFFER'};try{if(state)r=v318ResolvePlayerAttack(state,{baseDamage:base,enemyHp:e,enemyMax:maxE,playerHp:p,playerMax:maxP,baseCrit:Math.min(.30,.04+(Number(typeof totalAttr==='function'?totalAttr('glueck'):0)||0)*.012),setCrit:0,baseWucht:cls()==='grower'?.13:0,baseDouble:cls()==='scout'?.15:0,setDoubleDamage:0})||r}catch(_){ }
-     p=Math.min(maxP,p+Math.max(0,Number(r.heal)||0));e=Math.max(0,e-Math.max(1,Number(r.damage)||base));log.textContent=`Runde ${round}: ${r.text||'TREFFER'} · ${Math.round(r.damage||base)} Schaden${r.heal?` · +${Math.round(r.heal)} LP`:''}`;if(r.text&&r.text!=='TREFFER'&&r.text!=='FROSTTREFFER')qfx(r.text);pa.classList.add('v311-hit-player');await sleep(180);ehp.style.width=`${Math.max(0,e/maxE*100)}%`;pa.classList.remove('v311-hit-player');await sleep(200);if(e<=0)break;
-     let raw=Math.max(4,Math.round(maxP*.065)),d={damage:raw,heal:0,counterDamage:0,text:'Gegner trifft'};try{if(state)d=v318ResolveEnemyAttack(state,{damage:raw,playerHp:p,playerMax:maxP})||d}catch(_){ }p=Math.max(1,Math.min(maxP,p+Math.max(0,Number(d.heal)||0)-Math.max(0,Number(d.damage)||0)));if(d.counterDamage)e=Math.max(0,e-Number(d.counterDamage)||0);php.style.width=`${Math.max(0,p/maxP*100)}%`;if(/AUSGEWICHEN/i.test(d.text||''))qfx('AUSGEWICHEN','dodge');else if(d.text&&d.text!=='Gegner trifft')qfx(String(d.text).replace(/^Gegner trifft\s*·?\s*/i,''),'guard');enemy.classList.add('v311-hit-enemy');await sleep(180);enemy.classList.remove('v311-hit-enemy');await sleep(190);
-   }
-   enemy.classList.add('v311-defeated');log.textContent=q.v310Elite?'🏆 ELITE-GEGNER BESIEGT!':'🏆 Gegner besiegt! Belohnung wird geöffnet …';await sleep(520);o.classList.remove('show');
-  };qfight.__v572=true;window.v311PlayFight=qfight;try{v311PlayFight=qfight}catch(e){}
- }
-
- /* PvP: presentation only. Existing result math/server flow stays untouched. */
- if(typeof window.v204Fight==='function'&&!window.v204Fight.__v572){const base=window.v204Fight;const wrap=async function(){const box=$('#v204MatchCard');if(box&&typeof v204Opponent!=='undefined'&&v204Opponent){box.classList.add('v572-pvp-battle');const me=window.v080AvatarFor?.(cls())||'',oc=window.v204ClassIdFromProfile?.(v204Opponent)||'grower',op=window.v080AvatarFor?.(oc)||'';let stage=box.querySelector('.v572-pvp-stage');if(!stage){stage=document.createElement('div');stage.className='v572-pvp-stage';stage.innerHTML=`<div class="side"><img src="${me}"><div class="name">${s?.characterName||'Du'}</div><div class="hp"><i style="width:100%"></i></div></div><div class="vs">VS</div><div class="side"><img src="${op}"><div class="name">${v204Opponent.character_name||'Gegner'}</div><div class="hp"><i style="width:100%"></i></div></div>`;box.prepend(stage)}}return base.apply(this,arguments)};wrap.__v572=true;window.v204Fight=wrap;try{v204Fight=wrap}catch(e){}}
-
- function tick(){if(window.__V575_COMBAT_FINAL_OWNER__)return;try{if($('#dungeon')?.classList.contains('active')&&$('#dungeonBattleCard')?.offsetParent){decorateDungeon();observeDungeonLog()}}catch(e){}requestAnimationFrame(tick)}/* V5.76: old dungeon RAF owner disabled */
-})();
-</script>
 <!-- ===== /V5.72 ===== -->
 
 <!-- ===== V5.73 DUNGEON COMBAT CLEAN OWNER (visual only; canonical V4.246 fight math stays untouched) ===== -->
@@ -94821,113 +94612,6 @@ html.v495-level-syncing #v420LevelUpOverlay{
   .v573-proc-strip{left:4%;right:4%;top:64px}.v573-proc-chip{font-size:5.4px;padding:4px 6px}
 }
 </style>
-<script id="v573-dungeon-combat-clean-core">
-(()=>{
- 'use strict';
- if(window.__V573_DUNGEON_COMBAT_CLEAN__)return;window.__V573_DUNGEON_COMBAT_CLEAN__=true;
- const $=q=>document.querySelector(q);
- const clean=s=>String(s??'').replace(/<[^>]*>/g,'').trim();
- const pulse=(el,cl,ms=650)=>{if(!el)return;el.classList.remove(cl);void el.offsetWidth;el.classList.add(cl);setTimeout(()=>el.classList.remove(cl),ms)};
- const classId=()=>String(window.s?.playerClass||s?.playerClass||'grower');
- function info(){
-  const di=typeof window.v048DungeonIndex==='function'?Number(v048DungeonIndex()):Math.max(0,Number(s?.dungeon?.selected)||0);
-  const ri=typeof window.v048RoomIndex==='function'?Number(v048RoomIndex(di)):Math.max(0,Math.min(9,Number(s?.dungeon?.progress?.[di]??s?.dungeon?.room??0)));
-  const d=window.dungeons?.[di]||dungeons?.[di],e=d?.enemies?.[ri]||{};let rec=e?.requiredLevel||d?.minLevel||1;
-  try{if(typeof window.v025EnemyStats==='function')rec=Number(v025EnemyStats(di,ri,e)?.rec)||rec}catch(_){ }
-  return{di,ri,d,e,rec};
- }
- function fxKind(txt){
-  const t=String(txt||'').toUpperCase();
-  if(/AUSGEWICHEN/.test(t))return'dodge';
-  if(/KRIT|PERFEKTER SCHUSS|HINRICHTUNG/.test(t))return'crit';
-  if(/WUCHT|BRUTALE ERNTE/.test(t))return'wucht';
-  if(/RASEREI|SALVE|GRÜNER HAGEL|ZWILLINGSSCHNITT/.test(t))return'rage';
-  if(/FROST|KÄLTE|REIF|EIS|NULLPUNKT|SEELEN|NEBENHAND|TOTENSTARRE|EWIGES EIS/.test(t))return'frost';
-  if(/RAUCH|NEBEL|DETONATION|SUPERNOVA|KETTENREAKTION|DOT/.test(t))return'magic';
-  if(/BARRIERE|GEBLOCKT|ZWEITE LUFT|UNKRAUT|REDUZIERT|SCHILD/.test(t))return'guard';
-  if(/HEIL|LEBENSRAUB|LP/.test(t))return'heal';
-  return'';
- }
- function splitTags(txt){return String(txt||'').split(/\s*\+\s*/).map(clean).filter(x=>x&&!/^TREFFER$|^FROSTTREFFER$|^Gegner trifft$/i.test(x));}
- function showTags(txt,kindOverride){
-  const strip=$('#battleStage .v573-proc-strip');if(!strip)return;
-  const tags=splitTags(txt);if(!tags.length&&txt)tags.push(clean(txt));
-  tags.slice(0,3).forEach((tag,i)=>setTimeout(()=>{const n=document.createElement('span');n.className='v573-proc-chip '+(kindOverride||fxKind(tag));n.textContent=tag;strip.appendChild(n);setTimeout(()=>n.remove(),1320)},i*70));
- }
- function artFor(di,ri){
-  try{const cfg=window.__V468_CFG__?.[String(di+1)]||window.__V468_CFG__?.[di+1];if(!cfg)return'';return ri===9?(cfg.bossArt||cfg.boss||''):(cfg.art?.[ri]||'')}catch(_){return''}
- }
- function backgroundFor(di){
-  try{const cfg=window.__V468_CFG__?.[String(di+1)]||window.__V468_CFG__?.[di+1];if(cfg?.bg)return cfg.bg}catch(_){ }
-  try{const bg=$('#dungeonMapCard .v261-bg');const css=bg&&getComputedStyle(bg).backgroundImage;const m=String(css||'').match(/url\(["']?(.*?)["']?\)/);if(m?.[1])return m[1]}catch(_){ }
-  return'';
- }
- function ensureUi(){
-  const card=$('#dungeonBattleCard'),stage=$('#battleStage');if(!card||!stage)return;
-  card.classList.add('v573-combat');
-  const {di,ri,d,e,rec}=info();
-  let head=card.querySelector('.v573-head');if(!head){head=document.createElement('div');head.className='v573-head';card.prepend(head)}
-  const dname=clean(d?.name||d?.title||`Dungeon ${di+1}`)||`Dungeon ${di+1}`;
-  head.innerHTML=`<div class="v573-head-main"><div class="v573-kicker">DUNGEON KAMPF · GEGNER ${ri+1}/10</div><b class="v573-title">${dname}</b></div><div class="v573-recommend">Empfohlen Lv. ${Math.round(Number(rec)||1)}</div>`;
-  if(!stage.querySelector('.v573-arena-title'))stage.insertAdjacentHTML('beforeend','<div class="v573-arena-title">DUNGEON DUELL</div><div class="v573-round">BEREIT</div><div class="v573-proc-strip"></div>');
-  const bg=backgroundFor(di);if(bg)stage.style.setProperty('background-image',`linear-gradient(180deg,rgba(2,7,4,.16),rgba(1,4,2,.38)),url("${bg}")`,'important');
-  const enemyAvatar=$('#enemyFighter .fighter-avatar'),art=artFor(di,ri);
-  if(enemyAvatar&&art){
-   let img=enemyAvatar.querySelector('.v573-enemy-art');if(!img){img=document.createElement('img');img.className='v573-enemy-art';img.alt=clean(e?.name||'Dungeon-Gegner');img.onerror=()=>img.remove();enemyAvatar.appendChild(img)}
-   if(img.getAttribute('src')!==art)img.src=art;
-  }
-  const playerName=$('#playerFighter .fighter-name');if(playerName){const cn=window.classes?.[classId()]?.name||classes?.[classId()]?.name||'Legende';playerName.innerHTML=`${clean(s?.characterName||'Du')} · ${clean(cn)} · Lv. <span id="battleLevel">${Number(s?.level)||1}</span>`}
-  let log=card.querySelector('.v573-event-log');if(!log){log=document.createElement('div');log.className='v573-event-log';log.innerHTML='<div class="head"><span>📜 KAMPFVERLAUF</span><small>echte Talent-Effekte</small></div><div class="v573-log-lines"></div>';stage.insertAdjacentElement('afterend',log)}
- }
- function logKind(text){return fxKind(text)||''}
- function updateLog(text){
-  const box=$('#dungeonBattleCard .v573-log-lines');if(!box||!text)return;
-  const t=clean(text);if(!t)return;
-  const m=t.match(/Runde\s+(\d+)/i),round=m?Number(m[1]):0;
-  let row=round?box.querySelector(`[data-round="${round}"]`):null;
-  if(!row){row=document.createElement('div');row.className='v573-log-line';if(round)row.dataset.round=String(round);row.innerHTML=`<b>${round?`R${round}`:'•'}</b><span></span>`;box.prepend(row)}
-  row.className='v573-log-line '+logKind(t);row.querySelector('span').textContent=t.replace(/^Runde\s+\d+\s*:\s*/i,'');
-  while(box.children.length>4)box.lastElementChild.remove();
-  const rb=$('#battleStage .v573-round');if(rb&&round)rb.textContent=`RUNDE ${round}`;
- }
- function observe(){
-  const l=$('#battleLog');if(!l||l.dataset.v573Obs)return;l.dataset.v573Obs='1';let last='';
-  new MutationObserver(()=>{const t=clean(l.textContent);if(t&&t!==last){last=t;updateLog(t)}}).observe(l,{childList:true,characterData:true,subtree:true});
- }
- function playerFx(r){
-  if(!r)return;const t=String(r.text||'TREFFER'),enemy=$('#enemyFighter'),player=$('#playerFighter'),stage=$('#battleStage');
-  if(t&&t!=='TREFFER'&&t!=='FROSTTREFFER')showTags(t);
-  if(/KRIT|PERFEKTER SCHUSS|HINRICHTUNG/i.test(t))pulse(enemy,'v573-crit-hit',460);
-  if(/WUCHT|BRUTALE ERNTE/i.test(t)){pulse(enemy,'v573-wucht-hit',520);pulse(stage,'v573-screen-bump',360)}
-  if(/RASEREI|SALVE|GRÜNER HAGEL|ZWILLINGSSCHNITT|NEBENHAND/i.test(t))pulse(enemy,'v573-multi-hit',560);
-  if(/FROST|KÄLTE|REIF|EIS|NULLPUNKT|SEELEN|NEBENHAND/i.test(t))pulse(enemy,'v573-frost',650);
-  if(/RAUCH|NEBEL|DETONATION|SUPERNOVA|KETTENREAKTION|DOT/i.test(t))pulse(enemy,'v573-magic',650);
-  if(Number(r.heal)>0){const lbl=classId()==='bruiser'?`RAUCHHEILUNG +${Math.round(r.heal)} LP`:classId()==='frost'?`SEELENRAUB +${Math.round(r.heal)} LP`:`LEBENSRAUB +${Math.round(r.heal)} LP`;setTimeout(()=>showTags(lbl,'heal'),140);pulse(player,'v573-heal',720)}
- }
- function enemyFx(r,ctx){
-  if(!r)return;const t=String(r.text||'Gegner trifft'),p=$('#playerFighter'),stage=$('#battleStage');
-  if(/AUSGEWICHEN/i.test(t)){showTags('AUSGEWICHEN','dodge');pulse(p,'v573-dodge',500)}
-  else{
-   const tags=t.replace(/^Gegner trifft\s*·?\s*/i,'');if(tags)showTags(tags,fxKind(tags)||'guard');
-   if(/BARRIERE|ZWEITE LUFT|UNKRAUT|TOTENSTARRE|EWIGES EIS|REIF/i.test(t))pulse(p,/REIF|EIS|TOTEN/i.test(t)?'v573-frost':'v573-guard',700);
-  }
-  if(Number(r.counterDamage)>0){setTimeout(()=>showTags(`KONTER ${Math.round(r.counterDamage)} SCHADEN`,'crit'),120);pulse(stage,'v573-screen-bump',360)}
-  const raw=Math.max(0,Number(ctx?.damage)||0),taken=Math.max(0,Number(r.damage)||0);if(raw>0&&taken<raw&&taken>0&&t==='Gegner trifft')setTimeout(()=>showTags(`SCHADEN REDUZIERT ${Math.round(raw-taken)}`,'guard'),100);
-  if(Number(r.heal)>0){setTimeout(()=>showTags(`HEILUNG +${Math.round(r.heal)} LP`,'heal'),150);pulse(p,'v573-heal',700)}
-  if(r.preventLethal)setTimeout(()=>showTags('TÖDLICHEN TREFFER ÜBERLEBT','guard'),180);
- }
- /* Wrap the final canonical resolvers. V5.72 remains below but its overlapping banners are CSS-hidden. */
- try{
-  if(!window.__V575_DISABLE_OLD_DUNGEON_FX__&&typeof window.v318ResolvePlayerAttack==='function'&&!window.v318ResolvePlayerAttack.__v573){const base=window.v318ResolvePlayerAttack;const w=function(){const r=base.apply(this,arguments);try{if($('#dungeon')?.classList.contains('active')&&!window.__V575_COMBAT_FINAL_OWNER__)playerFx(r)}catch(_){ }return r};w.__v573=true;window.v318ResolvePlayerAttack=w;try{v318ResolvePlayerAttack=w}catch(_){ }}
-  if(!window.__V575_DISABLE_OLD_DUNGEON_FX__&&typeof window.v318ResolveEnemyAttack==='function'&&!window.v318ResolveEnemyAttack.__v573){const base=window.v318ResolveEnemyAttack;const w=function(){const ctx=arguments[1]||{},r=base.apply(this,arguments);try{if($('#dungeon')?.classList.contains('active')&&!window.__V575_COMBAT_FINAL_OWNER__)enemyFx(r,ctx)}catch(_){ }return r};w.__v573=true;window.v318ResolveEnemyAttack=w;try{v318ResolveEnemyAttack=w}catch(_){ }}
- }catch(e){console.error('V5.73 resolver visual hook',e)}
- try{
-  if(typeof window.popDamage==='function'&&!window.popDamage.__v573){const base=window.popDamage;const w=function(el,text){if(el){el.classList.toggle('v573-critical-damage',el.id==='damageEnemy'&&/!/.test(String(text||'')));setTimeout(()=>el.classList.remove('v573-critical-damage'),580)}return base.apply(this,arguments)};w.__v573=true;window.popDamage=w;try{popDamage=w}catch(_){ }}
- }catch(e){}
- function tick(){if(window.__V575_COMBAT_FINAL_OWNER__)return;try{if($('#dungeon')?.classList.contains('active')&&$('#dungeonBattleCard')?.offsetParent){ensureUi();observe()}}catch(_){ }requestAnimationFrame(tick)}
- /* V5.76: old dungeon RAF owner disabled */
-})();
-</script>
 <!-- ===== /V5.73 ===== -->
 
 <!-- ===== V5.75 DUNGEON BATTLE CLEAN FINAL LAYER ===== -->
@@ -95036,121 +94720,6 @@ html.v495-level-syncing #v420LevelUpOverlay{
  .v575-proc-strip{top:73px}.v575-chip{font-size:5.5px;padding:4px 6px}
 }
 </style>
-<script id="v575-dungeon-battle-clean-final-core">
-(()=>{
- 'use strict';
- if(window.__V575_DUNGEON_BATTLE__)return;window.__V575_DUNGEON_BATTLE__=true;window.__V575_COMBAT_FINAL_OWNER__=true;
- const $=q=>document.querySelector(q);
- const clean=s=>String(s??'').replace(/<[^>]*>/g,'').trim();
- const state={player:null,enemy:null,lastText:'',lastRound:0};
- const classId=()=>String(window.s?.playerClass||s?.playerClass||'grower');
- const pulseClass=(el,cl,ms=620)=>{if(!el)return;el.classList.remove(cl);void el.offsetWidth;el.classList.add(cl);setTimeout(()=>el.classList.remove(cl),ms)};
- function info(){
-  const di=typeof window.v048DungeonIndex==='function'?Number(v048DungeonIndex()):Math.max(0,Number(s?.dungeon?.selected)||0);
-  const ri=typeof window.v048RoomIndex==='function'?Number(v048RoomIndex(di)):Math.max(0,Math.min(9,Number(s?.dungeon?.progress?.[di]??s?.dungeon?.room??0)));
-  const d=window.dungeons?.[di]||dungeons?.[di],e=d?.enemies?.[ri]||{};let rec=e?.requiredLevel||d?.minLevel||1;
-  try{if(typeof window.v025EnemyStats==='function')rec=Number(v025EnemyStats(di,ri,e)?.rec)||rec}catch(_){ }
-  return{di,ri,d,e,rec};
- }
- function cfg(di){try{return window.__V468_CFG__?.[String(di+1)]||window.__V468_CFG__?.[di+1]||null}catch(_){return null}}
- function alpha(hex,a='33'){const h=String(hex||'').trim();return /^#[0-9a-f]{6}$/i.test(h)?h+a:'#3b8c4933'}
- function battleBackground(di){
-  const c=cfg(di),bg=String(c?.bg||'');
-  /* Relative full-size art (mainly later dungeons) is battle-safe. The early
-     embedded map images contain route/radar graphics, so they are deliberately
-     not enlarged into the fight scene. */
-  if(bg && !/^data:/i.test(bg))return `linear-gradient(180deg,rgba(1,5,3,.10),rgba(1,4,2,.42)),url("${bg}")`;
-  const a=c?.accent||'#58c965',b=c?.accent2||'#23472c';
-  return `radial-gradient(ellipse at 50% 18%,${alpha(a,'38')} 0%,transparent 35%),radial-gradient(ellipse at 18% 64%,${alpha(a,'20')} 0%,transparent 30%),radial-gradient(ellipse at 82% 58%,${alpha(b,'38')} 0%,transparent 31%),linear-gradient(180deg,#0b1710 0%,${b} 48%,#050906 100%)`;
- }
- function fxKind(txt){
-  const t=String(txt||'').toUpperCase();
-  if(/AUSGEWICHEN/.test(t))return'dodge';if(/KRIT|PERFEKTER SCHUSS|HINRICHTUNG/.test(t))return'crit';if(/WUCHT|BRUTALE ERNTE/.test(t))return'wucht';
-  if(/RASEREI|SALVE|GRÜNER HAGEL|ZWILLINGSSCHNITT/.test(t))return'rage';if(/FROST|KÄLTE|REIF|EIS|NULLPUNKT|SEELEN|NEBENHAND|TOTENSTARRE|EWIGES EIS/.test(t))return'frost';
-  if(/RAUCH|NEBEL|DETONATION|SUPERNOVA|KETTENREAKTION|DOT/.test(t))return'magic';if(/BARRIERE|GEBLOCKT|ZWEITE LUFT|UNKRAUT|REDUZIERT|SCHILD|ÜBERLEBT/.test(t))return'guard';
-  if(/HEIL|LEBENSRAUB|LP/.test(t))return'heal';return'';
- }
- function actualHeal(r,ctx){const want=Math.max(0,Math.round(Number(r?.heal)||0)),hp=Math.max(0,Number(ctx?.playerHp)||0),max=Math.max(hp,Number(ctx?.playerMax)||hp);return Math.max(0,Math.min(want,Math.max(0,Math.round(max-hp))))}
- function splitTags(txt){return String(txt||'').split(/\s*\+\s*/).map(clean).filter(x=>x&&!/^TREFFER$|^FROSTTREFFER$|^Gegner trifft$/i.test(x))}
- function showChip(txt,kindOverride){
-  const strip=$('#battleStage .v575-proc-strip');if(!strip||!txt)return;const list=splitTags(txt);if(!list.length)list.push(clean(txt));
-  list.slice(0,3).forEach((tag,i)=>setTimeout(()=>{const n=document.createElement('span');n.className='v575-chip '+(kindOverride||fxKind(tag));n.textContent=tag;strip.appendChild(n);setTimeout(()=>n.remove(),1220)},i*70));
- }
- function restoreProceduralEnemy(){
-  const av=$('#enemyFighter .fighter-avatar');if(!av)return;
-  av.querySelectorAll('.v573-enemy-art,.v574-enemy-art').forEach(n=>n.remove());av.classList.remove('v574-has-art');
-  try{if(typeof window.v253DecorateEnemy==='function')window.v253DecorateEnemy();else if(typeof v253DecorateEnemy==='function')v253DecorateEnemy()}catch(_){ }
- }
- function ensureUi(){
-  const card=$('#dungeonBattleCard'),stage=$('#battleStage');if(!card||!stage)return;card.classList.add('v575-combat');
-  const {di,ri,d,e,rec}=info();
-  /* Old late-running decorators are removed every frame because V5.73 itself
-     also runs on requestAnimationFrame. */
-  card.querySelectorAll(':scope > .v572-battle-head,:scope > .v573-head,:scope > .v574-head,:scope > .v572-event-log,:scope > .v573-event-log,:scope > .v574-log').forEach(n=>n.remove());
-  stage.querySelectorAll('.v573-enemy-art,.v574-enemy-art,.v573-arena-title,.v573-round,.v573-proc-strip,.v574-stage-title,.v574-round,.v574-proc-strip').forEach(n=>n.remove());
-  let head=card.querySelector(':scope > .v575-head');if(!head){head=document.createElement('div');head.className='v575-head';card.prepend(head)}
-  const c=cfg(di),dname=clean(c?.title||d?.name||d?.title||`Dungeon ${di+1}`).replace(/\s+/g,' ')||`Dungeon ${di+1}`;
-  head.innerHTML=`<div class="v575-head-main"><div class="v575-kicker">DUNGEON KAMPF · GEGNER ${ri+1}/10</div><b class="v575-title">${dname}</b></div><div class="v575-recommend">Empfohlen Lv. ${Math.round(Number(rec)||1)}</div>`;
-  if(!stage.querySelector('.v575-stage-title'))stage.insertAdjacentHTML('beforeend','<div class="v575-stage-title">DUNGEON DUELL · E584</div><div class="v575-round">BEREIT</div><div class="v575-proc-strip"></div>');
-  stage.style.setProperty('background-image',battleBackground(di),'important');
-  if(c?.accent)stage.style.setProperty('--v575-accent',c.accent);if(c?.accent2)stage.style.setProperty('--v575-accent2',c.accent2);
-  restoreProceduralEnemy();
-  const enemyName=$('#enemyBattleName');if(enemyName)enemyName.textContent=clean(c?.enemy?.[ri]||(ri===9?c?.boss:'')||e?.short||e?.name||'Dungeon-Gegner');
-  const playerName=$('#playerFighter .fighter-name');if(playerName){const cn=window.classes?.[classId()]?.name||classes?.[classId()]?.name||'Legende';playerName.innerHTML=`${clean(s?.characterName||'Du')} · ${clean(cn)} · Lv. <span id="battleLevel">${Number(s?.level)||1}</span>`}
-  if(!card.querySelector(':scope > .v575-log')){const log=document.createElement('div');log.className='v575-log';log.innerHTML='<div class="v575-log-title"><span>📜 Kampfverlauf</span><small>letzte Runden</small></div><div class="v575-log-lines"></div>';stage.insertAdjacentElement('afterend',log)}
- }
- function renderLog(text){
-  const box=$('#dungeonBattleCard .v575-log-lines');if(!box||!text)return;const m=String(text).match(/Runde\s+(\d+)/i),round=m?Number(m[1]):0;let parts=[];
-  const p=state.player,e=state.enemy;
-  if(p){parts.push(`${clean(p.text||'Treffer')} · ${Math.max(0,Math.round(Number(p.damage)||0))} Schaden`);if(p.actualHeal)parts.push(`+${p.actualHeal} LP`)}
-  else{const raw=clean(text).replace(/^Runde\s+\d+\s*:\s*/i,'');if(raw)parts.push(raw)}
-  if(e){const et=clean(e.text||'Gegner trifft');if(/AUSGEWICHEN/i.test(et))parts.push('Gegner: AUSGEWICHEN');else parts.push(`Gegner: ${Math.max(0,Math.round(Number(e.damage)||0))} Schaden${et&&et!=='Gegner trifft'?` · ${et.replace(/^Gegner trifft\s*·?\s*/i,'')}`:''}`);if(e.counterDamage)parts.push(`Konter ${Math.round(e.counterDamage)}`);if(e.actualHeal)parts.push(`+${e.actualHeal} LP`);if(e.preventLethal)parts.push('Tödlichen Treffer überlebt')}
-  const line=document.createElement('div');line.className='v575-log-line '+fxKind(parts.join(' '));line.dataset.round=String(round||0);line.innerHTML=`<b>${round?`R${round}`:'•'}</b><span>${parts.join(' · ')}</span>`;
-  const old=round?box.querySelector(`[data-round="${round}"]`):null;if(old)old.replaceWith(line);else box.prepend(line);while(box.children.length>4)box.lastElementChild.remove();
-  const rb=$('#battleStage .v575-round');if(rb&&round)rb.textContent=`RUNDE ${round}`;state.lastRound=round||state.lastRound;
- }
- function observe(){const src=$('#battleLog');if(!src||src.dataset.v575Obs)return;src.dataset.v575Obs='1';new MutationObserver(()=>{const t=clean(src.textContent);if(!t||t===state.lastText)return;state.lastText=t;setTimeout(()=>renderLog(t),0)}).observe(src,{childList:true,characterData:true,subtree:true})}
- function playerFx(r,ctx){
-  const ah=actualHeal(r,ctx);state.enemy=null;state.player={...r,actualHeal:ah};const t=String(r?.text||'TREFFER'),card=$('#dungeonBattleCard'),enemy=$('#enemyFighter'),stage=$('#battleStage');
-  if(t&&t!=='TREFFER'&&t!=='FROSTTREFFER')showChip(t);if(ah>0){const lbl=classId()==='bruiser'?`RAUCHHEILUNG +${ah} LP`:classId()==='frost'?`SEELENRAUB +${ah} LP`:`LEBENSRAUB +${ah} LP`;setTimeout(()=>showChip(lbl,'heal'),120);pulseClass(card,'v575-heal-player',700)}
-  if(/KRIT|PERFEKTER SCHUSS|HINRICHTUNG/i.test(t))pulseClass(enemy,'v573-crit-hit',460);if(/WUCHT|BRUTALE ERNTE/i.test(t)){pulseClass(enemy,'v573-wucht-hit',520);pulseClass(stage,'v573-screen-bump',350)}
-  if(/RASEREI|SALVE|GRÜNER HAGEL|ZWILLINGSSCHNITT|NEBENHAND/i.test(t))pulseClass(enemy,'v573-multi-hit',560);if(/FROST|KÄLTE|REIF|EIS|NULLPUNKT|SEELEN|NEBENHAND/i.test(t))pulseClass(card,'v575-frost-enemy',650);if(/RAUCH|NEBEL|DETONATION|SUPERNOVA|KETTENREAKTION|DOT/i.test(t))pulseClass(card,'v575-magic-enemy',650);
- }
- function enemyFx(r,ctx){
-  const ah=actualHeal(r,ctx);state.enemy={...r,actualHeal:ah};const t=String(r?.text||'Gegner trifft'),card=$('#dungeonBattleCard'),player=$('#playerFighter'),stage=$('#battleStage');
-  if(/AUSGEWICHEN/i.test(t)){showChip('AUSGEWICHEN','dodge');pulseClass(player,'v573-dodge',500)}else if(t&&t!=='Gegner trifft'){const special=t.replace(/^Gegner trifft\s*·?\s*/i,'');if(special)showChip(special,fxKind(special)||'guard')}
-  const raw=Math.max(0,Number(ctx?.damage)||0),taken=Math.max(0,Number(r?.damage)||0);if(raw>0&&taken<raw)setTimeout(()=>{showChip(`SCHADEN REDUZIERT ${Math.max(0,Math.round(raw-taken))}`,'guard');pulseClass(card,'v575-guard-player',650)},90);
-  if(Number(r?.counterDamage)>0){setTimeout(()=>showChip(`KONTER ${Math.round(r.counterDamage)} SCHADEN`,'crit'),120);pulseClass(stage,'v573-screen-bump',350)}if(ah>0)setTimeout(()=>showChip(`HEILUNG +${ah} LP`,'heal'),140);if(r?.preventLethal)setTimeout(()=>showChip('TÖDLICHEN TREFFER ÜBERLEBT','guard'),170);
- }
- try{
-  if(typeof window.v318ResolvePlayerAttack==='function'&&!window.v318ResolvePlayerAttack.__v575){const base=window.v318ResolvePlayerAttack;const w=function(){const ctx=arguments[1]||{},r=base.apply(this,arguments);try{if($('#dungeon')?.classList.contains('active'))playerFx(r,ctx)}catch(_){ }return r};w.__v575=true;window.v318ResolvePlayerAttack=w;try{v318ResolvePlayerAttack=w}catch(_){ }}
-  if(typeof window.v318ResolveEnemyAttack==='function'&&!window.v318ResolveEnemyAttack.__v575){const base=window.v318ResolveEnemyAttack;const w=function(){const ctx=arguments[1]||{},r=base.apply(this,arguments);try{if($('#dungeon')?.classList.contains('active'))enemyFx(r,ctx)}catch(_){ }return r};w.__v575=true;window.v318ResolveEnemyAttack=w;try{v318ResolveEnemyAttack=w}catch(_){ }}
- }catch(e){console.error('V5.75 resolver visual hook',e)}
- let __v575Scheduled=false;
- function refresh(){
-  __v575Scheduled=false;
-  try{if($('#dungeon')?.classList.contains('active')&&$('#dungeonBattleCard')?.offsetParent){ensureUi();observe()}}catch(_){ }
- }
- function scheduleRefresh(){if(__v575Scheduled)return;__v575Scheduled=true;requestAnimationFrame(refresh)}
- /* Render-driven instead of 60fps polling. */
- try{
-  const base=window.renderDungeon || (typeof renderDungeon==='function'?renderDungeon:null);
-  if(typeof base==='function'&&!base.__v575Perf){
-   const w=function(){const out=base.apply(this,arguments);scheduleRefresh();return out};
-   w.__v575Perf=true;window.renderDungeon=w;try{renderDungeon=w}catch(_){ }
-  }
- }catch(_){ }
- const dungeonRoot=$('#dungeon');
- if(dungeonRoot&&!dungeonRoot.__v575PerfObs){
-  dungeonRoot.__v575PerfObs=new MutationObserver(()=>scheduleRefresh());
-  dungeonRoot.__v575PerfObs.observe(dungeonRoot,{childList:true});
- }
- document.addEventListener('click',(ev)=>{if(ev.target?.closest?.('#dungeon'))scheduleRefresh()},{passive:true});
- window.addEventListener('pageshow',scheduleRefresh,{passive:true});
- document.addEventListener('visibilitychange',()=>{if(!document.hidden)scheduleRefresh()},{passive:true});
- scheduleRefresh();
-})();
-</script>
 <!-- ===== /V5.75 ===== -->
 
 <style id="v576-dungeon-performance-css">
@@ -95217,100 +94786,138 @@ html.v495-level-syncing #v420LevelUpOverlay{
   #dungeonBattleCard.v575-combat .v575-head{align-items:start!important}
 }
 </style>
-<script id="v577-dungeon-battle-render-cleanup-core">
+<!-- ===== /V5.77 ===== -->
+
+
+<!-- ===== V5.85 DUNGEON VISUAL-ONLY OWNER ===== -->
+<style id="v585-dungeon-safe-owner-css">
+/* The old V2.52 pseudo-label caused the duplicated "KAMPF LÄUFT" text. */
+#dungeonBattleCard.v575-combat #fightBtn::after{content:none!important;display:none!important}
+</style>
+<script id="v585-dungeon-safe-owner-core">
 (function(){
   'use strict';
-  if(window.__V577_DUNGEON_BATTLE_CLEANUP__) return;
-  window.__V577_DUNGEON_BATTLE_CLEANUP__=true;
+  if(window.__V585_DUNGEON_SAFE_OWNER__)return;
+  window.__V585_DUNGEON_SAFE_OWNER__=true;
 
-  const $=s=>document.querySelector(s);
-  const num=el=>{
-    const m=String(el?.textContent||'').replace(/\./g,'').match(/-?\d+(?:[.,]\d+)?/);
-    return m?Number(m[0].replace(',','.')):NaN;
-  };
+  const $=q=>document.querySelector(q);
+  const clean=s=>String(s??'').replace(/<[^>]*>/g,' ').replace(/\s+/g,' ').trim();
+  let lastLog='';
 
-  function pruneLog(){
-    const box=$('#dungeonBattleCard .v575-log-lines');
-    if(!box) return;
-
-    /* V5.75 sometimes receives the current attack text once before the
-       canonical log receives its round number. That creates a bullet line and
-       the same event again as R7/R8. Keep only numbered rounds. */
-    box.querySelectorAll('.v575-log-line[data-round="0"],.v575-log-line:not([data-round])').forEach(n=>n.remove());
-
-    /* Defensive de-dupe for identical numbered lines. */
-    const seen=new Set();
-    [...box.querySelectorAll('.v575-log-line')].forEach(n=>{
-      const key=`${n.dataset.round||''}|${String(n.textContent||'').trim().replace(/\s+/g,' ')}`;
-      if(seen.has(key)) n.remove(); else seen.add(key);
-    });
-    while(box.children.length>4) box.lastElementChild?.remove();
+  function fxKind(txt){
+    const t=String(txt||'').toUpperCase();
+    if(/AUSGEWICHEN/.test(t))return'dodge';
+    if(/KRIT|PERFEKTER SCHUSS|HINRICHTUNG/.test(t))return'crit';
+    if(/WUCHT|BRUTALE ERNTE/.test(t))return'wucht';
+    if(/RASEREI|SALVE|GRÜNER HAGEL|ZWILLINGSSCHNITT/.test(t))return'rage';
+    if(/FROST|KÄLTE|REIF|EIS|NULLPUNKT|SEELEN|NEBENHAND/.test(t))return'frost';
+    if(/RAUCH|NEBEL|DETONATION|SUPERNOVA|DOT/.test(t))return'magic';
+    if(/BARRIERE|GEBLOCKT|ZWEITE LUFT|REDUZIERT|SCHILD|ÜBERLEBT/.test(t))return'guard';
+    if(/HEIL|LEBENSRAUB| LP/.test(t))return'heal';
+    return'';
   }
 
-  let lastRunning=false;
-  function syncResult(){
-    const card=$('#dungeonBattleCard');
-    if(!card || !card.classList.contains('v575-combat')) return;
+  function info(){
+    let di=0,ri=0,d=null,e=null,rec=1;
+    try{di=typeof v048DungeonIndex==='function'?Number(v048DungeonIndex()):Math.max(0,Number(s?.dungeon?.selected)||0)}catch(_){ }
+    try{ri=typeof v048RoomIndex==='function'?Number(v048RoomIndex(di)):Math.max(0,Math.min(9,Number(s?.dungeon?.progress?.[di]??s?.dungeon?.room??0)))}catch(_){ }
+    try{d=window.dungeons?.[di]||dungeons?.[di]||null;e=d?.enemies?.[ri]||null;rec=Number(e?.requiredLevel||d?.minLevel||1)||1;if(typeof v025EnemyStats==='function')rec=Number(v025EnemyStats(di,ri,e)?.rec)||rec}catch(_){ }
+    return{di,ri,d,e,rec};
+  }
 
-    /* Any old weapon node may be recreated by the legacy decorator. CSS hides
-       it, but removing it here prevents it from intercepting future animation
-       work altogether. */
-    card.querySelectorAll('.v253-equipped-weapon,.v253-weapon-trail').forEach(n=>n.remove());
+  function config(di){
+    try{return window.__V468_CFG__?.[String(di+1)]||window.__V468_CFG__?.[di+1]||null}catch(_){return null}
+  }
 
-    pruneLog();
+  function background(di){
+    const c=config(di),bg=String(c?.bg||'');
+    if(bg&&!/^data:/i.test(bg))return `linear-gradient(180deg,rgba(1,5,3,.10),rgba(1,4,2,.42)),url("${bg}")`;
+    const a=c?.accent||'#58c965',b=c?.accent2||'#23472c';
+    const aa=/^#[0-9a-f]{6}$/i.test(a)?a+'38':'#58c96538';
+    const bb=/^#[0-9a-f]{6}$/i.test(b)?b+'38':'#23472c38';
+    return `radial-gradient(ellipse at 50% 18%,${aa} 0%,transparent 35%),radial-gradient(ellipse at 82% 58%,${bb} 0%,transparent 31%),linear-gradient(180deg,#0b1710 0%,${b} 48%,#050906 100%)`;
+  }
 
-    const p=num($('#playerHpText'));
-    const e=num($('#enemyHpText'));
-    const loot=String($('#loot')?.textContent||'');
-    const btn=$('#fightBtn');
-    const running=!!(window.__V446_FIGHTING__ || btn?.disabled);
-    const defeat=(!running && ((Number.isFinite(p)&&p<=0) || /Niederlage/i.test(loot)));
-    const victory=(!running && ((Number.isFinite(e)&&e<=0) || /Sieg|Boss besiegt|Belohnung/i.test(loot)));
+  function ensureShell(){
+    const card=$('#dungeonBattleCard'),stage=$('#battleStage');
+    if(!card||!stage)return;
+    card.classList.add('v575-combat');
 
-    if(running && !lastRunning){
-      const box=card.querySelector('.v575-log-lines');
-      if(box) box.innerHTML='';
+    /* No runtime observer/painter stack. Remove leftovers once and leave the
+       canonical fight DOM alone while a duel is running. */
+    card.querySelectorAll(':scope > .v572-battle-head,:scope > .v573-head,:scope > .v574-head,:scope > .v572-event-log,:scope > .v573-event-log,:scope > .v574-log').forEach(n=>n.remove());
+    stage.querySelectorAll('.v573-enemy-art,.v574-enemy-art,.v573-arena-title,.v573-round,.v573-proc-strip,.v574-stage-title,.v574-round,.v574-proc-strip').forEach(n=>n.remove());
+
+    const {di,ri,d,e,rec}=info(),c=config(di);
+    let head=card.querySelector(':scope > .v575-head');
+    if(!head){head=document.createElement('div');head.className='v575-head';card.prepend(head)}
+    const dname=clean(c?.title||d?.name||d?.title||`Dungeon ${di+1}`)||`Dungeon ${di+1}`;
+    const headHtml=`<div class="v575-head-main"><div class="v575-kicker">DUNGEON KAMPF · GEGNER ${ri+1}/10</div><b class="v575-title">${dname}</b></div><div class="v575-recommend">Empfohlen Lv. ${Math.round(rec)}</div>`;
+    if(head.innerHTML!==headHtml)head.innerHTML=headHtml;
+
+    let title=stage.querySelector('.v575-stage-title');
+    if(!title){title=document.createElement('div');title.className='v575-stage-title';stage.appendChild(title)}
+    title.textContent='DUNGEON DUELL · E585';
+    if(!stage.querySelector('.v575-round')){const r=document.createElement('div');r.className='v575-round';r.textContent='BEREIT';stage.appendChild(r)}
+    if(!stage.querySelector('.v575-proc-strip')){const p=document.createElement('div');p.className='v575-proc-strip';stage.appendChild(p)}
+
+    if(!card.querySelector(':scope > .v575-log')){
+      const l=document.createElement('div');l.className='v575-log';
+      l.innerHTML='<div class="v575-log-title"><span>📜 Kampfverlauf</span><small>letzte Runden</small></div><div class="v575-log-lines"></div>';
+      stage.insertAdjacentElement('afterend',l);
     }
-    lastRunning=running;
 
-    card.classList.toggle('v577-defeat',defeat);
-    card.classList.toggle('v577-victory',victory);
-
-    const chip=card.querySelector('.v575-round');
-    if(chip){
-      if(defeat) chip.textContent='NIEDERLAGE';
-      else if(victory) chip.textContent='SIEG';
-      else if(!running && /^(NIEDERLAGE|SIEG)$/i.test(String(chip.textContent||''))) chip.textContent='BEREIT';
+    stage.style.setProperty('background-image',background(di),'important');
+    const enemyName=$('#enemyBattleName');if(enemyName){const n=clean(c?.enemy?.[ri]||(ri===9?c?.boss:'')||e?.short||e?.name||'Dungeon-Gegner');if(enemyName.textContent!==n)enemyName.textContent=n}
+    const playerName=$('#playerFighter .fighter-name');
+    if(playerName){
+      let cls='Legende';try{cls=window.classes?.[s?.playerClass]?.name||classes?.[s?.playerClass]?.name||cls}catch(_){ }
+      const wanted=`${clean(s?.characterName||'Du')} · ${clean(cls)} · Lv. ${Number(s?.level)||1}`;
+      if(clean(playerName.textContent)!==wanted)playerName.innerHTML=`${clean(s?.characterName||'Du')} · ${clean(cls)} · Lv. <span id="battleLevel">${Number(s?.level)||1}</span>`;
     }
   }
 
-  function install(){
-    const card=$('#dungeonBattleCard');
-    if(!card) return;
-
-    const targets=[
-      $('#playerHpText'),$('#enemyHpText'),$('#loot'),$('#fightBtn'),
-      card.querySelector('.v575-log-lines')
-    ].filter(Boolean);
-
-    targets.forEach(el=>{
-      if(el.__v577Observed) return;
-      el.__v577Observed=true;
-      new MutationObserver(()=>queueMicrotask(syncResult)).observe(el,{
-        childList:true,characterData:true,subtree:true,attributes:el.id==='fightBtn',attributeFilter:el.id==='fightBtn'?['disabled']:undefined
-      });
-    });
-    syncResult();
+  function renderLog(text){
+    const box=$('#dungeonBattleCard .v575-log-lines');if(!box||!text)return;
+    const m=String(text).match(/Runde\s+(\d+)/i);
+    const chip=$('#dungeonBattleCard .v575-round');
+    if(!m){
+      if(/Niederlage/i.test(text)){if(chip)chip.textContent='NIEDERLAGE';$('#dungeonBattleCard')?.classList.add('v577-defeat')}
+      else if(/besiegt|Sieg|Belohnung/i.test(text)){if(chip)chip.textContent='SIEG';$('#dungeonBattleCard')?.classList.add('v577-victory')}
+      return;
+    }
+    const round=Number(m[1])||0,body=clean(text).replace(/^Runde\s+\d+\s*:\s*/i,'');
+    let row=box.querySelector(`[data-round="${round}"]`);
+    if(!row){row=document.createElement('div');row.dataset.round=String(round);box.prepend(row)}
+    row.className='v575-log-line '+fxKind(body);
+    row.innerHTML=`<b>R${round}</b><span>${body.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</span>`;
+    while(box.children.length>4)box.lastElementChild.remove();
+    if(chip)chip.textContent=`RUNDE ${round}`;
   }
 
-  const root=$('#dungeon');
-  if(root && !root.__v577InstallObs){
-    root.__v577InstallObs=new MutationObserver(()=>install());
-    root.__v577InstallObs.observe(root,{childList:true,subtree:true});
+  function bindLog(){
+    const src=$('#battleLog');if(!src||src.__v585Bound)return;
+    src.__v585Bound=true;
+    const paint=()=>{const t=clean(src.textContent);if(!t||t===lastLog)return;lastLog=t;renderLog(t)};
+    new MutationObserver(paint).observe(src,{childList:true,characterData:true,subtree:true});
+    paint();
   }
-  install();
-  window.addEventListener('pageshow',install,{passive:true});
-  document.addEventListener('visibilitychange',()=>{if(!document.hidden)install()},{passive:true});
+
+  function sync(){
+    try{
+      const dungeon=$('#dungeon'),card=$('#dungeonBattleCard');
+      if(!dungeon?.classList.contains('active')||!card)return;
+      ensureShell();bindLog();
+    }catch(e){console.error('V5.85 visual owner',e)}
+  }
+
+  /* One slow maintenance tick only. No resolver wrappers, no subtree observer,
+     no render wrapper, no combat timer, and no requestAnimationFrame owner. */
+  setInterval(sync,1000);
+  document.addEventListener('click',ev=>{if(ev.target?.closest?.('#dungeon'))setTimeout(sync,0)},{passive:true});
+  window.addEventListener('pageshow',sync,{passive:true});
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden)sync()},{passive:true});
+  setTimeout(sync,0);
 })();
 </script>
-<!-- ===== /V5.77 ===== -->
+<!-- ===== /V5.85 ===== -->
