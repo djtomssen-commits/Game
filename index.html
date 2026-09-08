@@ -82339,6 +82339,8 @@ body:has(#world.active){background:#010302!important}
         }
         if(log) log.textContent=`Niederlage · Gegner empfohlen Lv. ${bal.rec}.`;
 
+        try{window.v587ShowDungeonDefeat?.({dungeonIndex:di,roomIndex:idx,enemy,rec:bal.rec})}catch(e){console.error('V5.87 Niederlage-Overlay',e)}
+
         const back=document.getElementById('v446ReturnMap');
         if(back){
           back.onclick=()=>{
@@ -94997,3 +94999,93 @@ html.v495-level-syncing #v420LevelUpOverlay{
 })();
 </script>
 <!-- ===== /V5.86 ===== -->
+
+
+<!-- ===== V5.87 DUNGEON RESULT OVERLAY ===== -->
+<style id="v587-dungeon-result-overlay-css">
+#v247DungeonReward.v587-defeat .v231-quest-head{
+  border-bottom-color:#7f3232!important;
+  background:linear-gradient(180deg,#2b1010,#110707)!important;
+}
+#v247DungeonReward.v587-defeat .v231-quest-title{color:#ff9d98!important}
+#v247DungeonReward.v587-defeat .v231-quest-icon{filter:drop-shadow(0 0 9px rgba(255,90,80,.45))}
+#v247DungeonReward.v587-defeat .v231-quest-loot{opacity:.72}
+#v247DungeonReward.v587-defeat .v247-dungeon-line{
+  border-color:#6f3333!important;
+  background:#160909!important;
+  color:#ffb0ac!important;
+}
+</style>
+<script id="v587-dungeon-result-overlay-core">
+(function(){
+  'use strict';
+  if(window.__V587_DUNGEON_RESULT_OVERLAY__)return;
+  window.__V587_DUNGEON_RESULT_OVERLAY__=true;
+
+  function esc(v){return String(v??'').replace(/[&<>\"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
+
+  window.v587ShowDungeonDefeat=function(data){
+    const overlay=(typeof window.v247EnsureDungeonReward==='function')
+      ? window.v247EnsureDungeonReward()
+      : (typeof v247EnsureDungeonReward==='function'?v247EnsureDungeonReward():null);
+    if(!overlay)return;
+
+    overlay.classList.add('v587-defeat');
+    const icon=overlay.querySelector('.v231-quest-icon');
+    const title=overlay.querySelector('.v231-quest-title');
+    const name=overlay.querySelector('#v247DungeonRewardName');
+    const xp=overlay.querySelector('#v247DungeonRewardXp');
+    const gold=overlay.querySelector('#v247DungeonRewardGold');
+    const extra=overlay.querySelector('#v247DungeonRewardExtra');
+    const ok=overlay.querySelector('#v247DungeonRewardOk');
+
+    if(icon)icon.textContent='💀';
+    if(title)title.textContent='NIEDERLAGE';
+    const enemyName=data?.enemy?.name||'Dungeon-Gegner';
+    if(name)name.textContent=`${enemyName} · Dungeon ${Number(data?.dungeonIndex||0)+1}`;
+    if(xp)xp.textContent='+0';
+    if(gold)gold.textContent='+0';
+    if(extra)extra.innerHTML=`<div class="v247-dungeon-line">Der Gegner war zu stark. Verbessere Attribute oder Ausrüstung und versuche es erneut.</div>`;
+
+    if(ok){
+      ok.textContent='Zurück zur Dungeon-Karte';
+      ok.onclick=()=>{
+        overlay.classList.remove('show','v587-defeat');
+        try{
+          s.dungeon.layer='dungeon';
+          s.dungeon.view='map';
+          const loot=document.querySelector('#loot');
+          if(loot)loot.innerHTML='';
+          persist(false);
+          if(typeof v244RenderSelectedDungeonMap==='function')v244RenderSelectedDungeonMap();
+          else if(typeof renderDungeon==='function')renderDungeon();
+          window.scrollTo({top:0,behavior:'smooth'});
+        }catch(e){console.error('V5.87 Zurück zur Dungeon-Karte',e)}
+      };
+    }
+
+    overlay.classList.add('show');
+    requestAnimationFrame(()=>overlay.classList.add('show'));
+  };
+
+  try{
+    const base=window.v247ShowDungeonReward || (typeof v247ShowDungeonReward==='function'?v247ShowDungeonReward:null);
+    if(typeof base==='function'&&!base.__v587ResultClean){
+      const wrapped=function(data){
+        const overlay=document.querySelector('#v247DungeonReward');
+        if(overlay)overlay.classList.remove('v587-defeat');
+        return base.apply(this,arguments);
+      };
+      wrapped.__v587ResultClean=true;
+      window.v247ShowDungeonReward=wrapped;
+      try{v247ShowDungeonReward=wrapped}catch(e){}
+    }
+  }catch(e){}
+
+  const stageTitle=()=>document.querySelector('#dungeonBattleCard .v575-stage-title');
+  const mark=()=>{const n=stageTitle();if(n)n.textContent='DUNGEON DUELL · E587'};
+  mark();
+  document.addEventListener('click',()=>setTimeout(mark,0),true);
+})();
+</script>
+<!-- ===== /V5.87 ===== -->
