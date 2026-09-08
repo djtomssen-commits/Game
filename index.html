@@ -94136,3 +94136,39 @@ html.v495-level-syncing #v420LevelUpOverlay{
 })();
 </script>
 <!-- ===== /V5.65 GILDENKRIEG LOWER BLOCK FINAL POLISH ===== -->
+
+<!-- ===== V5.68 Harz Dealer: final mobile card polish ===== -->
+<style id="v568-harz-dealer-polish">
+/* Give the BESTER-WERT badge its own top row so it never covers the 2000-Harz title. */
+#harzDealer .v567-pack.best{
+  padding-top:25px!important;
+}
+#harzDealer .v567-pack.best .v567-best{
+  top:5px!important;
+  right:7px!important;
+  left:auto!important;
+  max-width:calc(100% - 14px);
+  white-space:nowrap;
+}
+#harzDealer .v567-pack.best .v567-pack-main{
+  overflow:visible!important;
+  text-overflow:clip!important;
+}
+
+/* Make the two largest package artworks visually stronger on phones. */
+@media(max-width:760px){
+  #harzDealer .v567-pack-grid .v567-pack:nth-child(5),
+  #harzDealer .v567-pack-grid .v567-pack:nth-child(6){
+    grid-template-columns:50px 1fr!important;
+  }
+  #harzDealer .v567-pack-grid .v567-pack:nth-child(5) .v567-pack-art,
+  #harzDealer .v567-pack-grid .v567-pack:nth-child(6) .v567-pack-art{
+    width:50px!important;
+    height:50px!important;
+  }
+  #harzDealer .v567-pack-grid .v567-pack:nth-child(5) .v567-pack-art img,
+  #harzDealer .v567-pack-grid .v567-pack:nth-child(6) .v567-pack-art img{
+    transform:scale(1.08);
+  }
+}
+</style>
