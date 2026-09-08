@@ -94868,7 +94868,7 @@ html.v495-level-syncing #v420LevelUpOverlay{
 
     let title=stage.querySelector('.v575-stage-title');
     if(!title){title=document.createElement('div');title.className='v575-stage-title';stage.appendChild(title)}
-    title.textContent='DUNGEON DUELL · E586';
+    title.textContent='DUNGEON DUELL';
     if(!stage.querySelector('.v575-round')){const r=document.createElement('div');r.className='v575-round';r.textContent='BEREIT';stage.appendChild(r)}
     if(!stage.querySelector('.v575-proc-strip')){const p=document.createElement('div');p.className='v575-proc-strip';stage.appendChild(p)}
 
@@ -95083,9 +95083,198 @@ html.v495-level-syncing #v420LevelUpOverlay{
   }catch(e){}
 
   const stageTitle=()=>document.querySelector('#dungeonBattleCard .v575-stage-title');
-  const mark=()=>{const n=stageTitle();if(n)n.textContent='DUNGEON DUELL · E587'};
+  const mark=()=>{const n=stageTitle();if(n)n.textContent='DUNGEON DUELL'};
   mark();
   document.addEventListener('click',()=>setTimeout(mark,0),true);
 })();
 </script>
 <!-- ===== /V5.87 ===== -->
+
+
+<!-- ===== V5.88 DUNGEON TEMPLATE LOOK + RESULT CLEANUP ===== -->
+<style id="v588-dungeon-template-look-css">
+/* Pure visual layer. The working V4.246 combat engine is untouched. */
+#dungeonBattleCard.v575-combat{
+  border:2px solid #8a6232!important;
+  background:
+    linear-gradient(180deg,rgba(9,18,11,.98),rgba(2,7,4,.99))!important;
+  box-shadow:0 18px 46px #000d,inset 0 0 0 1px #26351f,inset 0 0 34px #000a!important;
+}
+#dungeonBattleCard.v575-combat .v575-head{
+  border:1px solid #8c6739!important;
+  background:
+    linear-gradient(180deg,#301b0f 0%,#120c07 100%)!important;
+  box-shadow:inset 0 1px 0 rgba(255,220,145,.14),inset 0 0 18px #0009,0 6px 16px #0008!important;
+}
+#dungeonBattleCard.v575-combat .v575-kicker{color:#82f06b!important;text-shadow:0 0 9px rgba(93,255,91,.25)!important}
+#dungeonBattleCard.v575-combat .v575-title{color:#f4d99a!important;text-shadow:0 2px 2px #000!important}
+#dungeonBattleCard.v575-combat .v575-recommend{
+  border-color:#4c813f!important;background:linear-gradient(180deg,#102015,#07100a)!important;
+  box-shadow:inset 0 0 12px rgba(75,209,66,.10)!important;
+}
+#dungeonBattleCard.v575-combat .battle-stage{
+  border:2px solid #7d5b35!important;
+  box-shadow:inset 0 0 85px #000e,0 10px 26px #000b,inset 0 0 0 1px rgba(150,108,56,.20)!important;
+}
+#dungeonBattleCard.v575-combat .battle-stage:before{
+  background:
+    radial-gradient(circle at 50% 47%,rgba(81,196,69,.10),transparent 25%),
+    linear-gradient(180deg,rgba(2,6,4,.05) 0%,rgba(1,3,2,.04) 35%,rgba(1,4,2,.20) 64%,rgba(1,4,2,.94) 100%),
+    linear-gradient(90deg,rgba(0,0,0,.34),transparent 24%,transparent 76%,rgba(0,0,0,.34))!important;
+}
+/* Decorative VS medal like the approved mock-up; pointer-events keeps combat untouched. */
+#dungeonBattleCard.v575-combat .battle-stage:after{
+  content:"VS"!important;display:grid!important;place-items:center!important;
+  position:absolute!important;left:50%!important;top:54%!important;bottom:auto!important;right:auto!important;
+  width:48px!important;height:48px!important;transform:translate(-50%,-50%) rotate(-5deg)!important;
+  z-index:14!important;pointer-events:none!important;border-radius:50%!important;
+  border:2px solid #b47c33!important;background:radial-gradient(circle,#31200c 0%,#100b05 68%,#050704 100%)!important;
+  color:#ffd65f!important;font:1000 20px/1 Georgia,serif!important;text-shadow:0 2px 2px #000,0 0 12px #ef9d2f!important;
+  box-shadow:0 0 20px rgba(239,157,47,.25),inset 0 0 12px #000b!important;
+}
+#dungeonBattleCard.v575-combat .v575-stage-title{
+  border:1px solid #936a38!important;background:linear-gradient(180deg,#15110aee,#050704ee)!important;
+  color:#f0d28c!important;box-shadow:0 5px 15px #000b,inset 0 0 9px rgba(255,199,93,.08)!important;
+}
+#dungeonBattleCard.v575-combat .v575-round{
+  border-color:#447144!important;background:linear-gradient(180deg,#0c1d0fef,#061008ef)!important;color:#c7e7bf!important;
+  box-shadow:0 0 13px rgba(73,208,66,.10)!important;
+}
+#dungeonBattleCard.v575-combat .fighter-avatar{position:relative!important}
+#dungeonBattleCard.v575-combat .fighter-name{
+  border-color:#89623a!important;background:linear-gradient(180deg,#09110bfa,#020604fa)!important;
+  box-shadow:inset 0 1px 0 rgba(255,225,158,.08)!important;
+}
+#dungeonBattleCard.v575-combat .hpbar{
+  height:18px!important;border-color:#8a4e41!important;background:#200606!important;
+  box-shadow:inset 0 2px 5px #000c!important;
+}
+#dungeonBattleCard.v575-combat .hpfill{
+  background:linear-gradient(90deg,#d9433f 0%,#ff755e 72%,#ff9d6a 100%)!important;
+  box-shadow:inset 0 1px rgba(255,255,255,.16),0 0 8px rgba(239,88,69,.16)!important;
+}
+#dungeonBattleCard.v575-combat .fighter .tiny{color:#ece3cf!important;text-shadow:0 2px 2px #000!important}
+#dungeonBattleCard.v575-combat .damage{
+  background:transparent!important;font-size:31px!important;font-weight:1000!important;
+  text-shadow:0 3px 3px #000,0 0 12px rgba(255,89,62,.45)!important;
+}
+#dungeonBattleCard.v575-combat .damage.right{color:#ffb23e!important}
+#dungeonBattleCard.v575-combat .damage.left{color:#ff6e61!important}
+#dungeonBattleCard.v575-combat .damage.v252-crit{color:#ffe36c!important;font-size:36px!important;text-shadow:0 3px 3px #000,0 0 15px #f39b30!important}
+
+/* Real dungeon enemy artwork where the existing asset pack has it. */
+#dungeonBattleCard.v575-combat .v588-enemy-art{
+  position:absolute;z-index:20;inset:0;width:100%;height:100%;object-fit:contain;object-position:center bottom;
+  filter:drop-shadow(0 15px 10px #000e);pointer-events:none;
+}
+#dungeonBattleCard.v575-combat .fighter-avatar.v588-has-art .v253-monster{opacity:0!important}
+
+#dungeonBattleCard.v575-combat .v575-log{
+  border:1px solid #7b5936!important;background:linear-gradient(180deg,#08130b,#030705)!important;
+  box-shadow:inset 0 0 22px #000a,0 6px 16px #0007!important;
+}
+#dungeonBattleCard.v575-combat .v575-log-title{color:#f0cd7f!important;border-bottom-color:#29402c!important}
+#dungeonBattleCard.v575-combat .v575-log-line{font-size:7.2px!important;padding:6px 0!important}
+#dungeonBattleCard.v575-combat .v575-log-line.crit span:before{content:"✦ ";color:#ffe26b}
+#dungeonBattleCard.v575-combat .v575-log-line.wucht span:before{content:"⚡ ";color:#ffb35c}
+#dungeonBattleCard.v575-combat .v575-log-line.rage span:before{content:"⚔ ";color:#8ff06d}
+#dungeonBattleCard.v575-combat .v575-log-line.dodge span:before{content:"↝ ";color:#a9dcff}
+#dungeonBattleCard.v575-combat .v575-log-line.guard span:before{content:"🛡 ";}
+#dungeonBattleCard.v575-combat .v575-log-line.heal span:before{content:"✚ ";color:#79f184}
+
+#dungeonBattleCard.v575-combat #v324DungeonCountdown{
+  border:1px solid #8a6633!important;border-radius:13px!important;
+  background:linear-gradient(180deg,#17150d,#080b07)!important;color:#f1d18a!important;
+  box-shadow:inset 0 0 13px #0009,0 5px 13px #0007!important;
+}
+#dungeonBattleCard.v575-combat #fightBtn{
+  border:2px solid #6fd252!important;border-radius:14px!important;
+  background:linear-gradient(180deg,#72d95b 0%,#39a93b 48%,#267f2d 100%)!important;
+  box-shadow:inset 0 1px rgba(218,255,197,.75),0 0 20px rgba(68,220,60,.22),0 7px 16px #0008!important;
+  text-shadow:0 1px rgba(255,255,255,.18)!important;
+}
+#dungeonBattleCard.v575-combat #fightBtn:disabled{filter:saturate(.86)!important;opacity:.96!important}
+
+/* Once the proper result panel is open, suppress duplicated end controls behind it. */
+body.v588-dungeon-result-open #dungeonBattleCard #v324DungeonCountdown,
+body.v588-dungeon-result-open #dungeonBattleCard #fightBtn,
+body.v588-dungeon-result-open #dungeonBattleCard #loot{visibility:hidden!important}
+
+@media(max-width:560px){
+ #dungeonBattleCard.v575-combat .battle-stage:after{width:42px!important;height:42px!important;font-size:17px!important;top:53%!important}
+ #dungeonBattleCard.v575-combat .v575-log-line{font-size:7px!important}
+}
+</style>
+<script id="v588-dungeon-template-look-core">
+(function(){
+ 'use strict';
+ if(window.__V588_DUNGEON_TEMPLATE_LOOK__)return;
+ window.__V588_DUNGEON_TEMPLATE_LOOK__=true;
+ const $=q=>document.querySelector(q);
+ let lastChip='';
+
+ function indexes(){
+   let di=0,ri=0;
+   try{di=typeof v048DungeonIndex==='function'?Number(v048DungeonIndex()):Math.max(0,Number(s?.dungeon?.selected)||0)}catch(_){ }
+   try{ri=typeof v048RoomIndex==='function'?Number(v048RoomIndex(di)):Math.max(0,Math.min(9,Number(s?.dungeon?.progress?.[di]??s?.dungeon?.room??0)))}catch(_){ }
+   return{di,ri};
+ }
+ function enemyArt(){
+   const av=$('#enemyFighter .fighter-avatar');if(!av)return;
+   const {di,ri}=indexes();
+   /* D2-D20 use the existing real enemy art pack. D1 keeps its current embedded/procedural art. */
+   if(di<1){av.querySelector('.v588-enemy-art')?.remove();av.classList.remove('v588-has-art');return}
+   const dungeon=di+1,src=ri===9?`v474_dungeon_assets/d${dungeon}_boss.png`:`v474_dungeon_assets/d${dungeon}_${ri+1}.png`;
+   let img=av.querySelector('.v588-enemy-art');
+   if(img?.dataset.src===src)return;
+   if(img)img.remove();
+   img=document.createElement('img');img.className='v588-enemy-art';img.alt='';img.dataset.src=src;
+   img.onload=()=>{if(img.isConnected)av.classList.add('v588-has-art')};
+   img.onerror=()=>{try{img.remove();av.classList.remove('v588-has-art')}catch(_){ }};
+   img.src=src;av.appendChild(img);
+ }
+ function effectChip(text){
+   const t=String(text||'');if(!t||t===lastChip)return;lastChip=t;
+   const strip=$('#battleStage .v575-proc-strip');if(!strip)return;
+   const tags=[];
+   if(/KRIT/i.test(t))tags.push(['KRITISCHER TREFFER','crit']);
+   else if(/WUCHT/i.test(t))tags.push(['WUCHT','wucht']);
+   else if(/RASEREI/i.test(t))tags.push(['RASEREI','rage']);
+   else if(/AUSGEWICHEN/i.test(t))tags.push(['AUSGEWICHEN','dodge']);
+   else if(/GEBLOCKT|BARRIERE|SCHILD/i.test(t))tags.push(['GEBLOCKT','guard']);
+   const hm=t.match(/\+(\d+)\s*(?:LP|HP)/i);if(hm)tags.push([`LEBENSRAUB +${hm[1]} LP`,'heal']);
+   tags.slice(0,2).forEach((x,i)=>setTimeout(()=>{
+     const n=document.createElement('span');n.className='v575-chip '+x[1];n.textContent=x[0];strip.appendChild(n);setTimeout(()=>n.remove(),1250);
+   },i*90));
+ }
+ function bindFx(){
+   const src=$('#battleLog');if(!src||src.__v588FxBound)return;src.__v588FxBound=true;
+   const paint=()=>effectChip(src.textContent);
+   new MutationObserver(paint).observe(src,{childList:true,characterData:true,subtree:true});
+ }
+ function cleanTitle(){const n=$('#dungeonBattleCard .v575-stage-title');if(n&&n.textContent!=='DUNGEON DUELL')n.textContent='DUNGEON DUELL'}
+ function syncVisual(){try{cleanTitle();enemyArt();bindFx()}catch(e){console.error('V5.88 visual sync',e)}}
+
+ function resultOpen(open){document.body.classList.toggle('v588-dungeon-result-open',!!open)}
+ try{
+   const defeat=window.v587ShowDungeonDefeat;
+   if(typeof defeat==='function'&&!defeat.__v588Result){
+     const w=function(){resultOpen(true);return defeat.apply(this,arguments)};w.__v588Result=true;window.v587ShowDungeonDefeat=w;
+   }
+ }catch(_){ }
+ try{
+   const reward=window.v247ShowDungeonReward;
+   if(typeof reward==='function'&&!reward.__v588Result){
+     const w=function(){resultOpen(true);return reward.apply(this,arguments)};w.__v588Result=true;window.v247ShowDungeonReward=w;try{v247ShowDungeonReward=w}catch(_){ }
+   }
+ }catch(_){ }
+ document.addEventListener('click',ev=>{
+   if(ev.target?.closest?.('#v247DungeonRewardOk'))setTimeout(()=>resultOpen(false),0);
+   if(ev.target?.closest?.('#dungeon'))setTimeout(syncVisual,0);
+ },true);
+ window.addEventListener('pageshow',syncVisual,{passive:true});
+ document.addEventListener('visibilitychange',()=>{if(!document.hidden)syncVisual()},{passive:true});
+ setTimeout(syncVisual,0);
+})();
+</script>
+<!-- ===== /V5.88 ===== -->
