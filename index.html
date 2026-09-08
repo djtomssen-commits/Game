@@ -48994,7 +48994,7 @@ Der Zahlungsanbieter ist noch nicht verbunden. Deshalb wird aktuell noch kein Ec
  'use strict';
  if(window.__V574_DUNGEON_COMBAT__)return;window.__V574_DUNGEON_COMBAT__=true;
  const $=q=>document.querySelector(q);
- const clean=s=>String(s??'').replace(/<[^>]*>/g,'').trim();
+ const clean=s=>String(s??'').replace(/<[^>]*>/g,' ').replace(/\s+/g,' ').trim();
  const pulse=(el,cl,ms=650)=>{if(!el)return;el.classList.remove(cl);void el.offsetWidth;el.classList.add(cl);setTimeout(()=>el.classList.remove(cl),ms)};
  const classId=()=>String(window.s?.playerClass||s?.playerClass||'grower');
  const state={player:null,enemy:null,lastText:''};
@@ -49120,6 +49120,8 @@ Der Zahlungsanbieter ist noch nicht verbunden. Deshalb wird aktuell noch kein Ec
 })();
 </script>
 <!-- ===== /V5.74 ===== -->
+
+
 
 </body>
 </html>
@@ -82253,6 +82255,11 @@ body:has(#world.active){background:#010302!important}
       return;
     }
 
+    const v578AttemptSnapshot={
+      harz:Math.max(0,Number(s?.harzTaler)||0),
+      lastFree:Math.max(0,Number(s?.dungeonPass?.lastFree)||0)
+    };
+
     let attempt=false;
     try{
       attempt=await consumeDungeonAttempt();
@@ -82343,14 +82350,66 @@ body:has(#world.active){background:#010302!important}
       if(enemyBar) enemyBar.style.width=`${Math.max(0,Math.min(100,enemyHp/maxEnemy*100))}%`;
     }
 
-    function finish(win){
-      if(finished) return;
+    let v578Faults=0;
+    let v578Watchdog=0;
+
+    function v578StopWatchdog(){
+      if(v578Watchdog){clearTimeout(v578Watchdog);v578Watchdog=0;}
+    }
+
+    function v578Touch(){
+      v578StopWatchdog();
+      if(finished)return;
+      v578Watchdog=setTimeout(()=>{
+        if(!finished) v578AbortTechnical(new Error('Dungeon-Kampf ohne Fortschritt'));
+      },8000);
+    }
+
+    function v578ResetFightUi(label){
+      const card=document.getElementById('dungeonBattleCard');
+      card?.classList.remove('v252-fighting');
+      const btn=document.getElementById('fightBtn') || liveButton;
+      if(btn){
+        btn.disabled=false;
+        if(label)btn.textContent=label;
+      }
+    }
+
+    function v578AbortTechnical(err){
+      if(finished)return;
       finished=true;
+      v578StopWatchdog();
       window.__V446_FIGHTING__=false;
       try{battleBusy=false}catch(e){}
 
-      const btn=document.getElementById('fightBtn') || liveButton;
-      if(btn) btn.disabled=false;
+      /* A runtime fault must never cost the player a dungeon attempt. */
+      try{
+        s.harzTaler=v578AttemptSnapshot.harz;
+        if(!s.dungeonPass||typeof s.dungeonPass!=='object')s.dungeonPass={lastFree:0};
+        s.dungeonPass.lastFree=v578AttemptSnapshot.lastFree;
+      }catch(e){}
+
+      v578ResetFightUi('⚔️ KAMPF ERNEUT STARTEN');
+      const chip=document.querySelector('#dungeonBattleCard .v575-round');
+      if(chip)chip.textContent='ABGEBROCHEN';
+      if(loot)loot.innerHTML='<div class="loot" style="color:#ffd27f">⚠️ Kampf technisch abgebrochen. Dein Versuch wurde zurückerstattet.</div>';
+      if(log)log.textContent='Kampf technisch abgebrochen · Versuch zurückerstattet.';
+
+      try{persist(false)}catch(e){}
+      try{window.v069SyncCurrencies?.()}catch(e){}
+      try{window.v441PaintResources?.()}catch(e){}
+      paintTimer(true);
+      console.error('V5.78 Dungeon-Kampf technisch abgebrochen',err);
+    }
+
+    function finish(win){
+      if(finished) return;
+      finished=true;
+      v578StopWatchdog();
+      window.__V446_FIGHTING__=false;
+      try{battleBusy=false}catch(e){}
+
+      v578ResetFightUi(win?'🏆 SIEG':'⚔️ ERNEUT KÄMPFEN');
 
       s.dungeon.view='reward';
 
@@ -82477,6 +82536,7 @@ body:has(#world.active){background:#010302!important}
     }
 
     function playerAttack(){
+      v578Touch();
       round++;
 
       let primary=0;
@@ -82540,6 +82600,7 @@ body:has(#world.active){background:#010302!important}
     }
 
     function enemyAttack(){
+      v578Touch();
       let armor=0;
       try{armor=Number(totalAttr('ruestung'))||0}catch(e){}
 
@@ -82605,6 +82666,7 @@ body:has(#world.active){background:#010302!important}
     /* Erster Schlag sofort. Danach nur ein Turn-Timer alle 430 ms.
        Kein 60-FPS-JavaScript-Polling mehr: CSS darf animieren, die Kampfmathe
        wird exakt nur dann ausgeführt, wenn wirklich die nächste Runde dran ist. */
+    v578Touch();
     playerAttack();
     if(finished) return;
 
@@ -82618,9 +82680,17 @@ body:has(#world.active){background:#010302!important}
           if(!enemyAttack()) return;
         }
       }catch(err){
-        console.error('V4.246 Kampfrunde',err);
+        v578Faults++;
+        console.error('V5.78 Kampfrunde',err);
+        if(v578Faults>=2){
+          v578AbortTechnical(err);
+          return;
+        }
+        /* Same turn is retried once. A deterministic fault is then refunded. */
+        if(!finished)setTimeout(nextTurn,430);
         return;
       }
+      v578Faults=0;
       playerTurn=!playerTurn;
       if(!finished)setTimeout(nextTurn,430);
     }
@@ -95034,7 +95104,7 @@ html.v495-level-syncing #v420LevelUpOverlay{
  'use strict';
  if(window.__V575_DUNGEON_BATTLE__)return;window.__V575_DUNGEON_BATTLE__=true;window.__V575_COMBAT_FINAL_OWNER__=true;
  const $=q=>document.querySelector(q);
- const clean=s=>String(s??'').replace(/<[^>]*>/g,'').trim();
+ const clean=s=>String(s??'').replace(/<[^>]*>/g,' ').replace(/\s+/g,' ').trim();
  const state={player:null,enemy:null,lastText:'',lastRound:0};
  const classId=()=>String(window.s?.playerClass||s?.playerClass||'grower');
  const pulseClass=(el,cl,ms=620)=>{if(!el)return;el.classList.remove(cl);void el.offsetWidth;el.classList.add(cl);setTimeout(()=>el.classList.remove(cl),ms)};
@@ -95307,3 +95377,15 @@ html.v495-level-syncing #v420LevelUpOverlay{
 })();
 </script>
 <!-- ===== /V5.77 ===== -->
+
+<!-- ===== V5.78 DUNGEON FIGHT ENDSTATE + STALL SAFETY ===== -->
+<style id="v578-dungeon-fight-endstate-css">
+/* V2.52 appends a second "KAMPF LÄUFT" with ::after. V5.75 owns the visible
+   fight button now, so the legacy pseudo label must never render here. */
+#dungeonBattleCard.v575-combat #fightBtn::after{
+  content:none!important;
+  display:none!important;
+}
+#dungeonBattleCard.v575-combat .v575-round{transition:background .18s ease,border-color .18s ease,color .18s ease}
+</style>
+<!-- ===== /V5.78 ===== -->
