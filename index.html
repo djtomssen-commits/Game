@@ -49121,24 +49121,6 @@ Der Zahlungsanbieter ist noch nicht verbunden. Deshalb wird aktuell noch kein Ec
 </script>
 <!-- ===== /V5.74 ===== -->
 
-
-<!-- ===== V5.83 ENGINE MARKER ===== -->
-<script id="v583-engine-marker">
-(()=>{
-  const mark=()=>{
-    const t=document.querySelector('#dungeonBattleCard .v575-stage-title');
-    if(t&&!/E583/.test(t.textContent||''))t.textContent='DUNGEON DUELL · E583';
-    const r=document.querySelector('#dungeonBattleCard .v575-round');
-    if(r&&/^BEREIT$/i.test((r.textContent||'').trim()))r.textContent='BEREIT · E583';
-  };
-  document.addEventListener('click',()=>requestAnimationFrame(mark),true);
-  window.addEventListener('pageshow',()=>requestAnimationFrame(mark),{passive:true});
-  document.addEventListener('visibilitychange',()=>{if(!document.hidden)requestAnimationFrame(mark)},{passive:true});
-  requestAnimationFrame(mark);
-})();
-</script>
-<!-- ===== /V5.83 ===== -->
-
 </body>
 </html>
 <style id="v268-inventory-multisell-css">
@@ -82271,17 +82253,16 @@ body:has(#world.active){background:#010302!important}
       return;
     }
 
-    /* V5.83: keep an exact attempt snapshot. A technical engine fault must not
-       consume the free attempt or a Harz-Taler. */
-    const attemptSnapshot={
-      harz:Math.max(0,Number(s?.harzTaler)||0),
-      lastFree:Math.max(0,Number(s?.dungeonPass?.lastFree)||0)
-    };
-
     let attempt=false;
-    try{ attempt=await consumeDungeonAttempt(); }
-    catch(err){ console.error('V5.83 Versuch',err); }
-    if(!attempt){ paintTimer(true); return; }
+    try{
+      attempt=await consumeDungeonAttempt();
+    }catch(err){
+      console.error('V4.246 Versuch',err);
+    }
+    if(!attempt){
+      paintTimer(true);
+      return;
+    }
 
     data=currentFight();
     const {di,dungeon,idx,enemy}=data;
@@ -82293,20 +82274,19 @@ body:has(#world.active){background:#010302!important}
     const liveButton=document.getElementById('fightBtn') || button;
     if(liveButton){
       liveButton.disabled=true;
-      liveButton.textContent='⚔️ KAMPF LÄUFT · E583';
+      liveButton.textContent='⚔️ KAMPF LÄUFT';
     }
-
-    const stageTitle=document.querySelector('#dungeonBattleCard .v575-stage-title');
-    if(stageTitle) stageTitle.textContent='DUNGEON DUELL · E583';
 
     s.dungeon.lastActive=di;
     s.dungeon.lastActiveAt=Date.now();
     s.dungeon.view='battle';
+
     try{persist(false)}catch(e){}
 
     const bal=(()=>{
-      try{ if(typeof v025EnemyStats==='function') return v025EnemyStats(di,idx,enemy); }
-      catch(e){}
+      try{
+        if(typeof v025EnemyStats==='function') return v025EnemyStats(di,idx,enemy);
+      }catch(e){}
       return {
         rec:Number(enemy.requiredLevel)||Number(dungeon.minLevel)||1,
         hp:Math.max(1,Number(enemy.hp)||100),
@@ -82318,6 +82298,7 @@ body:has(#world.active){background:#010302!important}
       try{return typeof v060PlayerDamageFactor==='function' ? v060PlayerDamageFactor(bal.rec) : 1}
       catch(e){return 1}
     })();
+
     const eFactor=(()=>{
       try{return typeof v060EnemyDamageFactor==='function' ? v060EnemyDamageFactor(bal.rec) : 1}
       catch(e){return 1}
@@ -82325,273 +82306,332 @@ body:has(#world.active){background:#010302!important}
 
     const maxPlayer=Math.max(1,Number(maxHp())||1);
     const maxEnemy=Math.max(1,Number(bal.hp)||1);
+    let playerHp=maxPlayer;
+    let enemyHp=maxEnemy;
+    let round=0;
+    let playerTurn=true;
     let finished=false;
-    let engineTimer=0;
+    let nextTurnAt=performance.now();
 
-    const el=id=>document.getElementById(id);
-    const liveLog=()=>el('battleLog');
-    const liveLoot=()=>el('loot');
+    const playerBar=document.getElementById('playerHpBar');
+    const enemyBar=document.getElementById('enemyHpBar');
+    const playerText=document.getElementById('playerHpText');
+    const enemyText=document.getElementById('enemyHpText');
+    const log=document.getElementById('battleLog');
+    const loot=document.getElementById('loot');
 
-    function paintHp(p,e){
-      const pt=el('playerHpText'), et=el('enemyHpText');
-      const pb=el('playerHpBar'), eb=el('enemyHpBar');
-      if(pt)pt.textContent=Math.max(0,Math.round(p));
-      if(et)et.textContent=Math.max(0,Math.round(e));
-      if(pb)pb.style.width=`${Math.max(0,Math.min(100,p/maxPlayer*100))}%`;
-      if(eb)eb.style.width=`${Math.max(0,Math.min(100,e/maxEnemy*100))}%`;
+    if(loot) loot.innerHTML='';
+    if(playerText) playerText.textContent=playerHp;
+    if(enemyText) enemyText.textContent=enemyHp;
+    if(playerBar) playerBar.style.width='100%';
+    if(enemyBar) enemyBar.style.width='100%';
+    if(log) log.textContent=`${enemy.name} · Empfohlen Lv. ${bal.rec}`;
+
+    let talentState=null;
+    try{
+      if(typeof v318NewCombatState==='function'){
+        talentState=v318NewCombatState('dungeon',maxPlayer);
+      }
+    }catch(err){
+      console.warn('V4.246 Talentstatus übersprungen',err);
     }
 
-    function stopEngine(){
-      if(engineTimer){try{clearInterval(engineTimer)}catch(e){} engineTimer=0;}
-      try{if(window.__V583_ACTIVE_FIGHT__)window.__V583_ACTIVE_FIGHT__.timer=0}catch(e){}
-    }
-
-    function resetFightFlags(){
-      window.__V446_FIGHTING__=false;
-      try{battleBusy=false}catch(e){}
-      const card=el('dungeonBattleCard');
-      card?.classList.remove('v252-fighting');
-    }
-
-    function abortTechnical(err){
-      if(finished)return;
-      finished=true;
-      stopEngine();
-      resetFightFlags();
-      try{
-        s.harzTaler=attemptSnapshot.harz;
-        if(!s.dungeonPass||typeof s.dungeonPass!=='object')s.dungeonPass={lastFree:0};
-        s.dungeonPass.lastFree=attemptSnapshot.lastFree;
-      }catch(e){}
-      const btn=el('fightBtn')||liveButton;
-      if(btn){btn.disabled=false;btn.textContent='⚠️ KAMPF ERNEUT STARTEN · E583';}
-      const chip=document.querySelector('#dungeonBattleCard .v575-round');
-      if(chip)chip.textContent='ABGEBROCHEN · E583';
-      const loot=liveLoot(),log=liveLog();
-      if(loot)loot.innerHTML='<div class="loot" style="color:#ffd27f">⚠️ Kampf technisch abgebrochen. Versuch wurde zurückerstattet.</div>';
-      if(log)log.textContent='Kampf technisch abgebrochen · Versuch zurückerstattet.';
-      try{persist(false)}catch(e){}
-      try{window.v069SyncCurrencies?.()}catch(e){}
-      paintTimer(true);
-      window.__V583_ACTIVE_FIGHT__=null;
-      console.error('V5.83 Dungeon Engine',err);
+    function syncBars(){
+      if(playerText) playerText.textContent=Math.max(0,Math.round(playerHp));
+      if(enemyText) enemyText.textContent=Math.max(0,Math.round(enemyHp));
+      if(playerBar) playerBar.style.width=`${Math.max(0,Math.min(100,playerHp/maxPlayer*100))}%`;
+      if(enemyBar) enemyBar.style.width=`${Math.max(0,Math.min(100,enemyHp/maxEnemy*100))}%`;
     }
 
     function finish(win){
-      if(finished)return;
+      if(finished) return;
       finished=true;
-      stopEngine();
-      resetFightFlags();
+      window.__V446_FIGHTING__=false;
+      try{battleBusy=false}catch(e){}
 
-      /* Paint the result BEFORE persistence/reward hooks. Even if one of the old
-         systems is slow, the screen can never remain on KAMPF LÄUFT. */
-      const btn=el('fightBtn')||liveButton;
-      if(btn){
-        btn.disabled=false;
-        btn.textContent=win?'🏆 SIEG · E583':'💀 NIEDERLAGE · E583';
-      }
-      const chip=document.querySelector('#dungeonBattleCard .v575-round');
-      if(chip)chip.textContent=win?'SIEG · E583':'NIEDERLAGE · E583';
-      const card=el('dungeonBattleCard');
-      card?.classList.toggle('v577-victory',!!win);
-      card?.classList.toggle('v577-defeat',!win);
+      const btn=document.getElementById('fightBtn') || liveButton;
+      if(btn) btn.disabled=false;
 
       s.dungeon.view='reward';
-      const loot=liveLoot(), log=liveLog();
 
       if(win){
         const baseXp=Math.max(0,Number(enemy.xp)||0);
         const baseGold=Math.max(0,Number(enemy.gold)||0);
+
         const xpEvent=(typeof v094XpEventActive==='function' && v094XpEventActive()) ? baseXp*2 : baseXp;
         const goldEvent=(typeof v274GoldEventActive==='function' && v274GoldEventActive()) ? baseGold*2 : baseGold;
-        const actualGold=typeof v408GuildGold==='function' ? v408GuildGold(goldEvent) : goldEvent;
-        const actualXp=typeof v408GuildPct==='function' ? Math.round(xpEvent*(1+v408GuildPct('xp')/100)) : xpEvent;
+
+        const actualGold=typeof v408GuildGold==='function'
+          ? v408GuildGold(goldEvent)
+          : goldEvent;
+
+        const actualXp=typeof v408GuildPct==='function'
+          ? Math.round(xpEvent*(1+v408GuildPct('xp')/100))
+          : xpEvent;
 
         s.gold=(Number(s.gold)||0)+actualGold;
         addXp(xpEvent);
-        let rewardItem=null,harzGain=0;
+
+        let rewardItem=null;
+        let harzGain=0;
+
         try{
           if(enemy.boss){
-            rewardItem=typeof v246MakeBossEpic==='function' ? v246MakeBossEpic() : makeClassLoot(s.playerClass||'grower','dungeon');
-            if(rewardItem){if(!rewardItem.quality)rewardItem.quality='purple';s.inventory.push(rewardItem);}
+            rewardItem=typeof v246MakeBossEpic==='function'
+              ? v246MakeBossEpic()
+              : makeClassLoot(s.playerClass||'grower','dungeon');
+
+            if(rewardItem){
+              if(!rewardItem.quality) rewardItem.quality='purple';
+              s.inventory.push(rewardItem);
+            }
           }else if(Math.random()<.22){
-            if(Math.random()<.8)rewardItem=makeClassLoot(s.playerClass||'grower','dungeon');
-            else{
+            if(Math.random()<.8){
+              rewardItem=makeClassLoot(s.playerClass||'grower','dungeon');
+            }else{
               const other=['grower','bruiser','scout','frost'].filter(x=>x!==s.playerClass);
               rewardItem=makeClassLoot(other[Math.floor(Math.random()*other.length)],'dungeon');
             }
-            if(rewardItem)s.inventory.push(rewardItem);
+            if(rewardItem) s.inventory.push(rewardItem);
           }
-        }catch(err){console.error('V5.83 Loot',err)}
+        }catch(err){
+          console.error('V4.246 Loot',err);
+        }
 
         if(enemy.boss){
           s.story.bossesDefeated=(Number(s.story.bossesDefeated)||0)+1;
           s.story.chapter=Math.min(4,1+Math.floor(s.story.bossesDefeated/2));
-          if(Math.random()<.22){s.harzTaler=(Number(s.harzTaler)||0)+1;harzGain=1;}
-          if(!Array.isArray(s.dungeon.completed))s.dungeon.completed=[];
-          if(!s.dungeon.completed.includes(di))s.dungeon.completed.push(di);
-          s.dungeon.room=9;s.dungeon.progress[di]=9;
+
+          if(Math.random()<.22){
+            s.harzTaler=(Number(s.harzTaler)||0)+1;
+            harzGain=1;
+          }
+
+          if(!Array.isArray(s.dungeon.completed)) s.dungeon.completed=[];
+          if(!s.dungeon.completed.includes(di)) s.dungeon.completed.push(di);
+          s.dungeon.room=9;
+          s.dungeon.progress[di]=9;
         }else{
-          s.dungeon.room=idx+1;s.dungeon.progress[di]=idx+1;
+          s.dungeon.room=idx+1;
+          s.dungeon.progress[di]=idx+1;
         }
 
         try{window.v411AwardGuildActivity?.('dungeon')}catch(e){}
 
-        /* Visible fallback is written first. A richer reward renderer may replace it. */
-        if(loot)loot.innerHTML=`<div class="loot good">🏆 Sieg! +${actualXp} XP · +${actualGold} Gold</div>`;
-        if(log)log.textContent=enemy.boss?'Boss besiegt. Bestätige deine Belohnung.':`Gegner ${idx+1} besiegt. Gegner ${idx+2} ist jetzt aktiv.`;
         try{persist(false)}catch(e){}
 
         try{
-          if(typeof v247ShowDungeonReward==='function')v247ShowDungeonReward({
-            dungeonIndex:di,roomIndex:idx,enemy,xp:actualXp,gold:actualGold,baseXp,baseGold,item:rewardItem,harz:harzGain,boss:!!enemy.boss
-          });
-        }catch(err){console.error('V5.83 Belohnung',err)}
+          if(typeof v247ShowDungeonReward==='function'){
+            v247ShowDungeonReward({
+              dungeonIndex:di,
+              roomIndex:idx,
+              enemy,
+              xp:actualXp,
+              gold:actualGold,
+              baseXp,
+              baseGold,
+              item:rewardItem,
+              harz:harzGain,
+              boss:!!enemy.boss
+            });
+          }else if(loot){
+            loot.innerHTML=`<div class="loot good">🏆 Sieg! +${actualXp} XP · +${actualGold} Gold</div>`;
+          }
+        }catch(err){
+          console.error('V4.246 Belohnung',err);
+          if(loot) loot.innerHTML=`<div class="loot good">🏆 Sieg! +${actualXp} XP · +${actualGold} Gold</div>`;
+        }
+
+        if(log){
+          log.textContent=enemy.boss
+            ? 'Boss besiegt. Bestätige deine Belohnung.'
+            : `Gegner ${idx+1} besiegt. Gegner ${idx+2} ist jetzt aktiv.`;
+        }
       }else{
-        if(loot)loot.innerHTML=`<div class="loot" style="color:#ff9895">💀 Niederlage. Verbessere Attribute oder Ausrüstung.</div><button class="btn secondary" id="v446ReturnMap" style="width:100%;margin-top:10px">🗺️ Zurück zur Dungeon-Karte</button>`;
-        if(log)log.textContent=`Niederlage · Gegner empfohlen Lv. ${bal.rec}.`;
         try{persist(false)}catch(e){}
-        const back=el('v446ReturnMap');
-        if(back)back.onclick=()=>{
-          s.dungeon.layer='dungeon';s.dungeon.view='map';
-          try{persist(false)}catch(e){}
-          try{if(typeof v244RenderSelectedDungeonMap==='function')v244RenderSelectedDungeonMap();else renderDungeon()}catch(e){}
-        };
+        if(loot){
+          loot.innerHTML=`
+            <div class="loot" style="color:#ff9895">💀 Niederlage. Verbessere Attribute oder Ausrüstung.</div>
+            <button class="btn secondary" id="v446ReturnMap" style="width:100%;margin-top:10px">🗺️ Zurück zur Dungeon-Karte</button>
+          `;
+        }
+        if(log) log.textContent=`Niederlage · Gegner empfohlen Lv. ${bal.rec}.`;
+
+        const back=document.getElementById('v446ReturnMap');
+        if(back){
+          back.onclick=()=>{
+            s.dungeon.layer='dungeon';
+            s.dungeon.view='map';
+            try{persist(false)}catch(e){}
+            try{
+              if(typeof v244RenderSelectedDungeonMap==='function') v244RenderSelectedDungeonMap();
+              else renderDungeon();
+            }catch(e){}
+          };
+        }
       }
 
       try{window.v069SyncCurrencies?.()}catch(e){}
       try{window.renderInventory?.()}catch(e){}
       paintTimer(true);
-      window.__V583_ACTIVE_FIGHT__=null;
     }
 
-    /* ---------------------------------------------------------
-       V5.83 engine: calculate the complete duel ONCE, synchronously.
-       The playback never calls the combat resolver and therefore a lost visual
-       frame cannot strand the game one enemy hit before defeat.
-       --------------------------------------------------------- */
-    let talentState=null;
-    try{if(typeof v318NewCombatState==='function')talentState=v318NewCombatState('dungeon',maxPlayer)}
-    catch(err){console.warn('V5.83 Talentstatus übersprungen',err)}
+    function playerAttack(){
+      round++;
 
-    const plan=[];
-    let simP=maxPlayer,simE=maxEnemy,simRound=0,outcome=null;
+      let primary=0;
+      try{
+        primary=typeof v029PrimaryStat==='function'
+          ? Number(v029PrimaryStat())||0
+          : Number(totalAttr('staerke'))||0;
+      }catch(e){}
 
-    try{
-      window.__V583_SIMULATING__=true;
-      while(!outcome && simRound<45){
-        simRound++;
+      const baseDamage=Math.max(
+        3,
+        Math.floor((primary*1.9+(Number(s.level)||1)*1.55+Math.random()*7)*Number(pFactor||1))
+      );
 
-        let primary=0;
-        try{primary=typeof v029PrimaryStat==='function'?Number(v029PrimaryStat())||0:Number(totalAttr('staerke'))||0}catch(e){}
-        const pBase=Math.max(3,Math.floor((primary*1.9+(Number(s.level)||1)*1.55+Math.random()*7)*Number(pFactor||1)));
-        let pDamage=pBase,pHeal=0,pCrit=false,pLabel='TREFFER';
+      let damage=baseDamage;
+      let heal=0;
+      let crit=false;
+      let label='TREFFER';
+
+      try{
+        if(talentState && typeof v318ResolvePlayerAttack==='function'){
+          const a=v318ResolvePlayerAttack(talentState,{
+            baseDamage,
+            enemyHp,
+            enemyMax:maxEnemy,
+            playerHp,
+            playerMax:maxPlayer,
+            baseCrit:Math.min(.30,.04+(Number(totalAttr('glueck'))||0)*.012),
+            setCrit:s.playerClass==='bruiser' ? (.07+Number(setBonusValue('critChance')||0)) : 0,
+            baseWucht:(s.playerClass==='grower'||s.playerClass==='frost') ? (.13+Number(setBonusValue('wuchtChance')||0)) : 0,
+            baseDouble:s.playerClass==='scout' ? (.15+Number(setBonusValue('doubleChance')||0)) : 0,
+            setDoubleDamage:Number(setBonusValue('doubleDamage')||0)
+          })||{};
+
+          damage=Math.max(1,Math.round(Number(a.damage)||baseDamage));
+          heal=Math.max(0,Math.round(Number(a.heal)||0));
+          crit=!!a.crit;
+          label=a.text||label;
+        }
+      }catch(err){
+        console.warn('V4.246 Spieler-Talent fallback',err);
+      }
+
+      playerHp=Math.min(maxPlayer,playerHp+heal);
+      enemyHp=Math.max(0,enemyHp-damage);
+
+      try{animClass(document.getElementById('playerFighter'),'attack-right')}catch(e){}
+      try{popDamage(document.getElementById('damageEnemy'),`-${damage}${crit?'!':''}`)}catch(e){}
+
+      syncBars();
+
+      if(log){
+        log.textContent=`Runde ${round}: ${label} · ${damage} Schaden${heal?` · +${heal} LP`:''}`;
+      }
+
+      if(enemyHp<=0){
+        finish(true);
+        return false;
+      }
+      return true;
+    }
+
+    function enemyAttack(){
+      let armor=0;
+      try{armor=Number(totalAttr('ruestung'))||0}catch(e){}
+
+      const baseDamage=Math.max(
+        3,
+        Math.floor((Number(bal.attack||5)+Math.random()*7-armor*.34)*Number(eFactor||1))
+      );
+
+      let damage=baseDamage;
+      let heal=0;
+      let counter=0;
+      let prevent=false;
+      let label='Gegner trifft';
+
+      try{
+        if(talentState && typeof v318ResolveEnemyAttack==='function'){
+          const d=v318ResolveEnemyAttack(talentState,{
+            damage:baseDamage,
+            playerHp,
+            playerMax:maxPlayer
+          })||{};
+
+          damage=Math.max(0,Math.round(Number(d.damage)||0));
+          heal=Math.max(0,Math.round(Number(d.heal)||0));
+          counter=Math.max(0,Math.round(Number(d.counterDamage)||0));
+          prevent=!!d.preventLethal;
+          label=d.text||label;
+        }
+      }catch(err){
+        console.warn('V4.246 Gegner-Talent fallback',err);
+      }
+
+      playerHp=Math.min(maxPlayer,playerHp+heal);
+      playerHp=Math.max(0,playerHp-damage);
+      if(prevent && playerHp<=0) playerHp=1;
+
+      if(counter) enemyHp=Math.max(0,enemyHp-counter);
+
+      try{animClass(document.getElementById('enemyFighter'),'attack-left')}catch(e){}
+      try{if(damage)popDamage(document.getElementById('damagePlayer'),`-${damage}`)}catch(e){}
+
+      syncBars();
+
+      if(log){
+        log.textContent+=` · ${label}${counter?` · Konter ${counter}`:''}${heal?` · +${heal} LP`:''}`;
+      }
+
+      if(enemyHp<=0){
+        finish(true);
+        return false;
+      }
+      if(playerHp<=0){
+        finish(false);
+        return false;
+      }
+      if(round>=45){
+        finish((playerHp/maxPlayer)>(enemyHp/maxEnemy));
+        return false;
+      }
+      return true;
+    }
+
+    /* Erster Schlag sofort. Danach rAF-Takt, unabhängig von den alten
+       setTimeout/setInterval-Ketten und deren Runtime-Governor. */
+    playerAttack();
+    if(finished) return;
+
+    playerTurn=false;                 // als Nächstes Gegner
+    nextTurnAt=performance.now()+430;
+
+    function frame(now){
+      if(finished) return;
+
+      if(now>=nextTurnAt){
         try{
-          if(talentState&&typeof v318ResolvePlayerAttack==='function'){
-            const a=v318ResolvePlayerAttack(talentState,{
-              baseDamage:pBase,enemyHp:simE,enemyMax:maxEnemy,playerHp:simP,playerMax:maxPlayer,
-              baseCrit:Math.min(.30,.04+(Number(totalAttr('glueck'))||0)*.012),
-              setCrit:s.playerClass==='bruiser'?(.07+Number(setBonusValue('critChance')||0)):0,
-              baseWucht:(s.playerClass==='grower'||s.playerClass==='frost')?(.13+Number(setBonusValue('wuchtChance')||0)):0,
-              baseDouble:s.playerClass==='scout'?(.15+Number(setBonusValue('doubleChance')||0)):0,
-              setDoubleDamage:Number(setBonusValue('doubleDamage')||0)
-            })||{};
-            pDamage=Math.max(1,Math.round(Number(a.damage)||pBase));
-            pHeal=Math.max(0,Math.round(Number(a.heal)||0));
-            pCrit=!!a.crit;pLabel=a.text||pLabel;
+          if(playerTurn){
+            if(!playerAttack()) return;
+          }else{
+            if(!enemyAttack()) return;
           }
-        }catch(err){console.warn('V5.83 Spieler-Talent fallback',err)}
+        }catch(err){
+          console.error('V4.246 Kampfrunde',err);
+        }
 
-        simP=Math.min(maxPlayer,simP+pHeal);
-        simE=Math.max(0,simE-pDamage);
-        const rec={round:simRound,pDamage,pHeal,pCrit,pLabel,pAfter:simP,eAfter:simE,eDamage:0,eHeal:0,eCounter:0,eLabel:'',prevent:false,outcome:null};
-        if(simE<=0){rec.outcome='win';outcome='win';plan.push(rec);break;}
-
-        let armor=0;
-        try{armor=Number(totalAttr('ruestung'))||0}catch(e){}
-        const eBase=Math.max(3,Math.floor((Number(bal.attack||5)+Math.random()*7-armor*.34)*Number(eFactor||1)));
-        let eDamage=eBase,eHeal=0,eCounter=0,prevent=false,eLabel='Gegner trifft';
-        try{
-          if(talentState&&typeof v318ResolveEnemyAttack==='function'){
-            const d=v318ResolveEnemyAttack(talentState,{damage:eBase,playerHp:simP,playerMax:maxPlayer})||{};
-            eDamage=Math.max(0,Math.round(Number(d.damage)||0));
-            eHeal=Math.max(0,Math.round(Number(d.heal)||0));
-            eCounter=Math.max(0,Math.round(Number(d.counterDamage)||0));
-            prevent=!!d.preventLethal;eLabel=d.text||eLabel;
-          }
-        }catch(err){console.warn('V5.83 Gegner-Talent fallback',err)}
-
-        simP=Math.min(maxPlayer,simP+eHeal);
-        simP=Math.max(0,simP-eDamage);
-        if(prevent&&simP<=0)simP=1;
-        if(eCounter)simE=Math.max(0,simE-eCounter);
-
-        rec.eDamage=eDamage;rec.eHeal=eHeal;rec.eCounter=eCounter;rec.eLabel=eLabel;rec.prevent=prevent;rec.pAfter=simP;rec.eAfter=simE;
-        if(simE<=0){rec.outcome='win';outcome='win';}
-        else if(simP<=0){rec.outcome='lose';outcome='lose';}
-        else if(simRound>=45){rec.outcome=(simP/maxPlayer)>(simE/maxEnemy)?'win':'lose';outcome=rec.outcome;}
-        plan.push(rec);
-      }
-    }catch(err){
-      window.__V583_SIMULATING__=false;
-      abortTechnical(err);return;
-    }finally{
-      window.__V583_SIMULATING__=false;
-    }
-
-    if(!plan.length){abortTechnical(new Error('Leerer Kampfplan'));return;}
-
-    /* The engine result already exists before animation starts. This global is
-       intentionally diagnostic: the next screenshot can prove E583 is active. */
-    window.__V583_ACTIVE_FIGHT__={di,idx,plan,outcome,timer:0,startedAt:Date.now(),playIndex:0};
-
-    const loot=liveLoot(),log=liveLog();
-    if(loot)loot.innerHTML='';
-    paintHp(maxPlayer,maxEnemy);
-    if(log)log.textContent=`${enemy.name} · Empfohlen Lv. ${bal.rec} · E583`;
-
-    function pulse(elm,cl,ms=430){
-      if(!elm)return;elm.classList.remove(cl);void elm.offsetWidth;elm.classList.add(cl);setTimeout(()=>elm.classList.remove(cl),ms);
-    }
-
-    let playIndex=0;
-    function playRound(){
-      if(finished){stopEngine();return;}
-      const r=plan[playIndex++];
-      if(!r){finish(outcome==='win');return;}
-      if(window.__V583_ACTIVE_FIGHT__)window.__V583_ACTIVE_FIGHT__.playIndex=playIndex;
-
-      try{animClass(el('playerFighter'),'attack-right')}catch(e){}
-      try{popDamage(el('damageEnemy'),`-${r.pDamage}${r.pCrit?'!':''}`)}catch(e){}
-      if(/KRIT|PERFEKTER SCHUSS|HINRICHTUNG/i.test(r.pLabel))pulse(el('enemyFighter'),'v573-crit-hit',460);
-      else if(/WUCHT|BRUTALE ERNTE/i.test(r.pLabel))pulse(el('enemyFighter'),'v573-wucht-hit',500);
-      else if(/RASEREI|SALVE|GRÜNER HAGEL|ZWILLINGSSCHNITT|NEBENHAND/i.test(r.pLabel))pulse(el('enemyFighter'),'v573-multi-hit',520);
-
-      if(r.eLabel){
-        try{animClass(el('enemyFighter'),'attack-left')}catch(e){}
-        try{if(r.eDamage)popDamage(el('damagePlayer'),`-${r.eDamage}`)}catch(e){}
-        if(/AUSGEWICHEN/i.test(r.eLabel))pulse(el('playerFighter'),'v573-dodge',480);
+        playerTurn=!playerTurn;
+        nextTurnAt=now+430;
       }
 
-      paintHp(r.pAfter,r.eAfter);
-      const live=liveLog();
-      if(live){
-        let line=`Runde ${r.round}: ${r.pLabel} · ${r.pDamage} Schaden${r.pHeal?` · +${r.pHeal} LP`:''}`;
-        if(r.eLabel)line+=` · Gegner: ${r.eDamage} Schaden${r.eCounter?` · Konter ${r.eCounter}`:''}${r.eHeal?` · +${r.eHeal} LP`:''}`;
-        live.textContent=line;
-      }
-      const chip=document.querySelector('#dungeonBattleCard .v575-round');
-      if(chip)chip.textContent=`RUNDE ${r.round} · E583`;
-
-      if(r.outcome){finish(r.outcome==='win');return;}
+      requestAnimationFrame(frame);
     }
 
-    /* 1000 ms is deliberate. V4.77 only throttles sub-800-ms intervals. */
-    playRound();
-    if(!finished){
-      engineTimer=setInterval(playRound,1000);
-      if(window.__V583_ACTIVE_FIGHT__)window.__V583_ACTIVE_FIGHT__.timer=engineTimer;
-    }
+    requestAnimationFrame(frame);
   }
 
   /*
@@ -95051,7 +95091,7 @@ html.v495-level-syncing #v420LevelUpOverlay{
   let head=card.querySelector(':scope > .v575-head');if(!head){head=document.createElement('div');head.className='v575-head';card.prepend(head)}
   const c=cfg(di),dname=clean(c?.title||d?.name||d?.title||`Dungeon ${di+1}`).replace(/\s+/g,' ')||`Dungeon ${di+1}`;
   head.innerHTML=`<div class="v575-head-main"><div class="v575-kicker">DUNGEON KAMPF · GEGNER ${ri+1}/10</div><b class="v575-title">${dname}</b></div><div class="v575-recommend">Empfohlen Lv. ${Math.round(Number(rec)||1)}</div>`;
-  if(!stage.querySelector('.v575-stage-title'))stage.insertAdjacentHTML('beforeend','<div class="v575-stage-title">DUNGEON DUELL · E583</div><div class="v575-round">BEREIT · E583</div><div class="v575-proc-strip"></div>');
+  if(!stage.querySelector('.v575-stage-title'))stage.insertAdjacentHTML('beforeend','<div class="v575-stage-title">DUNGEON DUELL · E584</div><div class="v575-round">BEREIT</div><div class="v575-proc-strip"></div>');
   stage.style.setProperty('background-image',battleBackground(di),'important');
   if(c?.accent)stage.style.setProperty('--v575-accent',c.accent);if(c?.accent2)stage.style.setProperty('--v575-accent2',c.accent2);
   restoreProceduralEnemy();
@@ -95083,8 +95123,8 @@ html.v495-level-syncing #v420LevelUpOverlay{
   if(Number(r?.counterDamage)>0){setTimeout(()=>showChip(`KONTER ${Math.round(r.counterDamage)} SCHADEN`,'crit'),120);pulseClass(stage,'v573-screen-bump',350)}if(ah>0)setTimeout(()=>showChip(`HEILUNG +${ah} LP`,'heal'),140);if(r?.preventLethal)setTimeout(()=>showChip('TÖDLICHEN TREFFER ÜBERLEBT','guard'),170);
  }
  try{
-  if(typeof window.v318ResolvePlayerAttack==='function'&&!window.v318ResolvePlayerAttack.__v575){const base=window.v318ResolvePlayerAttack;const w=function(){const ctx=arguments[1]||{},r=base.apply(this,arguments);try{if($('#dungeon')?.classList.contains('active')&&!window.__V583_SIMULATING__)playerFx(r,ctx)}catch(_){ }return r};w.__v575=true;window.v318ResolvePlayerAttack=w;try{v318ResolvePlayerAttack=w}catch(_){ }}
-  if(typeof window.v318ResolveEnemyAttack==='function'&&!window.v318ResolveEnemyAttack.__v575){const base=window.v318ResolveEnemyAttack;const w=function(){const ctx=arguments[1]||{},r=base.apply(this,arguments);try{if($('#dungeon')?.classList.contains('active')&&!window.__V583_SIMULATING__)enemyFx(r,ctx)}catch(_){ }return r};w.__v575=true;window.v318ResolveEnemyAttack=w;try{v318ResolveEnemyAttack=w}catch(_){ }}
+  if(typeof window.v318ResolvePlayerAttack==='function'&&!window.v318ResolvePlayerAttack.__v575){const base=window.v318ResolvePlayerAttack;const w=function(){const ctx=arguments[1]||{},r=base.apply(this,arguments);try{if($('#dungeon')?.classList.contains('active'))playerFx(r,ctx)}catch(_){ }return r};w.__v575=true;window.v318ResolvePlayerAttack=w;try{v318ResolvePlayerAttack=w}catch(_){ }}
+  if(typeof window.v318ResolveEnemyAttack==='function'&&!window.v318ResolveEnemyAttack.__v575){const base=window.v318ResolveEnemyAttack;const w=function(){const ctx=arguments[1]||{},r=base.apply(this,arguments);try{if($('#dungeon')?.classList.contains('active'))enemyFx(r,ctx)}catch(_){ }return r};w.__v575=true;window.v318ResolveEnemyAttack=w;try{v318ResolveEnemyAttack=w}catch(_){ }}
  }catch(e){console.error('V5.75 resolver visual hook',e)}
  let __v575Scheduled=false;
  function refresh(){
@@ -95274,5 +95314,3 @@ html.v495-level-syncing #v420LevelUpOverlay{
 })();
 </script>
 <!-- ===== /V5.77 ===== -->
-
-<!-- ===== V5.82 DUNGEON SCHEDULER RESTORE: V4.246 rAF loop restored from V5.75 working state ===== -->
