@@ -92512,3 +92512,274 @@ html.v495-level-syncing #v420LevelUpOverlay{
 })();
 </script>
 <!-- ===== /V5.55 GILDE HERO + ROSTER COMPACT FINAL ===== -->
+
+<!-- ===== V5.56 GILDE PROGRESS + ADMIN COMPACT FIX ===== -->
+<style id="v556-guild-progress-admin-css">
+/* Keep the V5.55 guild layout. This pass only guarantees progress in the hero
+   and compresses requests / management so they match the reference density. */
+
+/* ----- guaranteed hero progress ----- */
+#guild .v554-guild-hero{
+  grid-template-areas:"crest copy buds" "progress progress progress"!important;
+  grid-template-rows:auto auto!important;
+}
+#guild .v556-progress{
+  grid-area:progress!important;
+  position:relative!important;
+  z-index:4!important;
+  display:block!important;
+  visibility:visible!important;
+  width:100%!important;
+  min-width:0!important;
+  margin:1px 0 0!important;
+  padding:7px 9px 8px!important;
+  border:1px solid #936735!important;
+  border-radius:9px!important;
+  background:linear-gradient(180deg,rgba(6,19,9,.96),rgba(3,10,5,.98))!important;
+  box-shadow:inset 0 1px 0 rgba(246,199,103,.09),0 3px 8px rgba(0,0,0,.26)!important;
+}
+#guild .v556-progress-head{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:8px!important;
+  min-width:0!important;
+}
+#guild .v556-progress-head span{
+  color:#e9dfc8!important;
+  font-size:5.7px!important;
+  line-height:1!important;
+  font-weight:1000!important;
+  letter-spacing:.055em!important;
+  white-space:nowrap!important;
+}
+#guild .v556-progress-head b{
+  color:#f1d286!important;
+  font:900 12px/1 Georgia,serif!important;
+  white-space:nowrap!important;
+}
+#guild .v556-progress-bar{
+  height:8px!important;
+  margin:5px 0 4px!important;
+  padding:1px!important;
+  border:1px solid #4f593b!important;
+  border-radius:999px!important;
+  background:#040805!important;
+  overflow:hidden!important;
+}
+#guild .v556-progress-bar i{
+  display:block!important;
+  height:100%!important;
+  border-radius:999px!important;
+  background:linear-gradient(90deg,#42c94b,#8aed67)!important;
+  box-shadow:0 0 8px rgba(105,232,80,.22)!important;
+}
+#guild .v556-progress small{
+  display:block!important;
+  margin:0!important;
+  color:#9da99e!important;
+  font-size:5.1px!important;
+  line-height:1.18!important;
+}
+/* never show a second legacy progress card outside the hero */
+#guild .v409-guild-progress:not(.v555-progress):not(.v556-progress){display:none!important}
+#guild .v554-progress-slot{display:none!important}
+
+/* ----- requests: remove duplicated explanation and huge empty box ----- */
+#guild #v257RequestsCard{
+  padding:8px!important;
+}
+#guild #v257RequestsCard>.section-title{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) auto auto!important;
+  gap:6px!important;
+  align-items:center!important;
+  margin:0 0 6px!important;
+  padding:0 0 6px!important;
+}
+#guild #v257RequestsCard>.section-title>div{min-width:0!important}
+#guild #v257RequestsCard>.section-title h3{font-size:12.5px!important;line-height:1!important}
+#guild #v257RequestsCard>.section-title .muted{
+  margin-top:3px!important;
+  font-size:5.2px!important;
+  line-height:1.2!important;
+}
+#guild #v257RequestCount{
+  min-width:28px!important;
+  height:28px!important;
+  padding:0 7px!important;
+  display:grid!important;
+  place-items:center!important;
+  border:1px solid #506842!important;
+  border-radius:999px!important;
+  background:#0c1710!important;
+  color:#dfe7da!important;
+  font-size:7px!important;
+}
+#guild #v380RefreshGuildRequests,
+#guild .v380-request-refresh{
+  min-height:28px!important;
+  padding:4px 7px!important;
+  border-radius:8px!important;
+  font-size:5.2px!important;
+  line-height:1.05!important;
+}
+#guild #v257RequestsCard .v380-request-note{display:none!important}
+#guild #v257GuildRequests .v257-search-empty{
+  min-height:50px!important;
+  padding:7px!important;
+  border-radius:8px!important;
+  font-size:5.6px!important;
+}
+#guild #v257GuildRequests .v257-request{
+  min-height:42px!important;
+  padding:6px!important;
+  border-radius:8px!important;
+}
+#guild #v257GuildRequests .v257-request b{font-size:6.8px!important}
+#guild #v257GuildRequests .v257-request small{font-size:4.9px!important}
+#guild #v257GuildRequests .v257-request-actions{gap:4px!important}
+#guild #v257GuildRequests .v257-mini{min-height:26px!important;padding:4px 6px!important;font-size:5px!important}
+
+/* ----- management: reference-style compact control block ----- */
+#guild #v257GuildManagement{min-width:0!important}
+#guild #v257GuildManagement .v554-member-admin{
+  margin:0 0 6px!important;
+  padding:6px!important;
+  border-radius:8px!important;
+}
+#guild #v257GuildManagement .v554-member-admin-title{
+  margin:0 0 5px!important;
+  font-size:5.7px!important;
+}
+#guild #v257GuildManagement .v554-member-admin-row{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) auto auto!important;
+  gap:4px!important;
+}
+#guild #v257GuildManagement .v554-member-admin select,
+#guild #v257GuildManagement .v257-transfer-row select{
+  min-width:0!important;
+  height:31px!important;
+  min-height:31px!important;
+  padding:0 7px!important;
+  border-radius:7px!important;
+  font-size:5.8px!important;
+}
+#guild #v257GuildManagement .v554-member-admin button{
+  min-height:31px!important;
+  padding:4px 7px!important;
+  border-radius:7px!important;
+  font-size:5.2px!important;
+}
+#guild #v257GuildManagement .v257-management-note{
+  margin:0 0 5px!important;
+  font-size:5.1px!important;
+  line-height:1.2!important;
+}
+#guild #v257GuildManagement .v257-leader-actions{
+  display:grid!important;
+  gap:5px!important;
+}
+#guild #v257GuildManagement .v257-transfer-row{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) auto!important;
+  gap:4px!important;
+  align-items:center!important;
+}
+#guild #v257GuildManagement #v257TransferBtn{
+  width:auto!important;
+  min-width:126px!important;
+  min-height:31px!important;
+  padding:4px 8px!important;
+  font-size:5.5px!important;
+}
+#guild #v257GuildManagement #v257DisbandBtn,
+#guild #v257GuildManagement #v257LeaveBtn{
+  min-height:32px!important;
+  padding:5px 8px!important;
+  font-size:5.7px!important;
+}
+
+/* admin cards stay paired on tablets/desktop, but compact when stacked on phones */
+#guild .v552-admin-grid{gap:7px!important;align-items:start!important}
+#guild .v552-admin-grid>.v254-card.v254-inner{height:auto!important}
+
+@media(max-width:620px){
+  #guild .v554-guild-hero{
+    grid-template-columns:60px minmax(0,1fr) 70px!important;
+    padding-bottom:8px!important;
+  }
+  #guild .v556-progress{padding:6px 7px 7px!important}
+  #guild .v556-progress-head span{font-size:4.9px!important}
+  #guild .v556-progress-head b{font-size:10.5px!important}
+  #guild .v556-progress small{font-size:4.5px!important}
+
+  #guild .v552-admin-grid{grid-template-columns:1fr!important;gap:6px!important}
+  #guild #v257RequestsCard>.section-title{grid-template-columns:minmax(0,1fr) auto!important}
+  #guild #v380RefreshGuildRequests,
+  #guild .v380-request-refresh{grid-column:1/-1!important;width:100%!important;min-height:27px!important}
+  #guild #v257GuildManagement .v554-member-admin-row{grid-template-columns:minmax(0,1fr) auto!important}
+  #guild #v257GuildManagement .v554-member-admin select{grid-column:1/-1!important}
+  #guild #v257GuildManagement .v257-transfer-row{grid-template-columns:1fr!important}
+  #guild #v257GuildManagement #v257TransferBtn{width:100%!important;min-width:0!important}
+}
+</style>
+
+<script id="v556-guild-progress-admin-js">
+(function(){
+  'use strict';
+  const THRESH=[0,500,1500,3500,7000,12500,20500,31500,46000,65000,90000,122000,162000,212000,275000,355000,460000,600000,900000,1800000];
+  function guild(){try{return typeof v254Guild!=='undefined'?v254Guild:null}catch(e){return null}}
+  function info(g){
+    const xp=Math.max(0,Math.floor(Number(g?.guild_xp)||0));
+    let lv=1;
+    for(let i=1;i<THRESH.length;i++){if(xp>=THRESH[i])lv=i+1;else break}
+    lv=Math.max(1,Math.min(20,lv));
+    if(lv>=20)return {lv:20,pct:100,text:`${xp.toLocaleString('de-DE')} Gilden-EP · MAX`};
+    const lo=THRESH[lv-1],hi=THRESH[lv];
+    const pct=Math.max(0,Math.min(100,((xp-lo)/Math.max(1,hi-lo))*100));
+    return {lv,pct,text:`${xp.toLocaleString('de-DE')} / ${hi.toLocaleString('de-DE')} Gilden-EP · noch ${(hi-xp).toLocaleString('de-DE')} bis Level ${lv+1}`};
+  }
+  function ensureProgress(){
+    const g=guild();
+    const hero=document.querySelector('#guild .v554-guild-hero');
+    if(!g||!hero)return;
+    let box=hero.querySelector(':scope > .v556-progress');
+    if(!box){
+      box=document.createElement('div');
+      box.className='v556-progress';
+      hero.appendChild(box);
+    }
+    const z=info(g);
+    const sig=[z.lv,z.pct.toFixed(2),z.text].join('|');
+    if(box.dataset.sig!==sig){
+      box.innerHTML=`<div class="v556-progress-head"><span>🏰 GILDENFORTSCHRITT</span><b>Gildenlevel ${z.lv}</b></div><div class="v556-progress-bar"><i style="width:${z.pct.toFixed(2)}%"></i></div><small>${z.text}</small>`;
+      box.dataset.sig=sig;
+    }
+    hero.querySelectorAll('.v554-progress-slot').forEach(x=>x.style.display='none');
+    document.querySelectorAll('#guild .v409-guild-progress:not(.v556-progress)').forEach(x=>x.style.display='none');
+  }
+  function compactAdmin(){
+    document.querySelectorAll('#guild #v257RequestsCard .v380-request-note').forEach(x=>x.style.display='none');
+  }
+  function paint(){ensureProgress();compactAdmin()}
+
+  paint();
+  document.addEventListener('DOMContentLoaded',()=>requestAnimationFrame(paint),{once:true});
+  window.addEventListener('pageshow',()=>requestAnimationFrame(paint),{passive:true});
+  document.addEventListener('click',e=>{if(e.target?.closest?.('[data-screen="guild"],.v254-tab,#v380RefreshGuildRequests'))setTimeout(paint,40)},true);
+  [80,220,500,1000,1800].forEach(ms=>setTimeout(paint,ms));
+
+  const root=document.getElementById('guild');
+  if(root&&typeof MutationObserver!=='undefined'){
+    let queued=false;
+    const obs=new MutationObserver(()=>{
+      if(queued)return;queued=true;
+      requestAnimationFrame(()=>{queued=false;paint()});
+    });
+    obs.observe(root,{childList:true,subtree:true});
+  }
+})();
+</script>
+<!-- ===== /V5.56 GILDE PROGRESS + ADMIN COMPACT FIX ===== -->
