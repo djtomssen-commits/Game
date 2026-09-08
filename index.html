@@ -38575,7 +38575,7 @@ function v257RenderRequests(){
         <button class="v257-mini good" data-v257-accept="${r.id}">✓ Annehmen</button>
         <button class="v257-mini bad" data-v257-reject="${r.id}">✕ Ablehnen</button>
       </div>
-    </div>`).join(''):'<div class="v257-search-empty">Keine offenen Beitrittsanfragen.</div>';
+    </div>`).join(''):'';
 
   list.querySelectorAll('[data-v257-accept]').forEach(b=>b.onclick=()=>v257HandleRequest(b.dataset.v257Accept,true));
   list.querySelectorAll('[data-v257-reject]').forEach(b=>b.onclick=()=>v257HandleRequest(b.dataset.v257Reject,false));
@@ -38609,7 +38609,7 @@ function v257RenderManagement(){
   if(v257IsLeader()){
     const others=v254Members.filter(m=>m.user_id!==v073User?.id);
     box.innerHTML=`
-      <div class="v257-management-note">Als Anführer kannst du Mitglieder zu Offizieren ernennen, entfernen, die Führung übertragen oder die Gilde auflösen.</div>
+      <div class="v257-management-note">Als Anführer kannst du Mitglieder verwalten, Rollen ändern und die Führung übertragen.<br>Die Gilde kann hier auch aufgelöst werden.</div>
       <div class="v257-leader-actions">
         ${others.length?`<div class="v257-transfer-row"><select id="v257TransferTarget">${others.map(m=>{const p=m.profile||{};return `<option value="${m.user_id}">${v254GuildEsc(p.character_name||'Spieler')}</option>`}).join('')}</select><button class="btn secondary" id="v257TransferBtn">Führung übertragen</button></div>`:''}
         <button class="btn v257-danger" id="v257DisbandBtn">🗑️ Gilde auflösen</button>
@@ -59046,8 +59046,7 @@ body > #v141SettingsMenu.v377-open{
           <button class="v257-mini good" data-v380-accept="${r.id}">✓ Annehmen</button>
           <button class="v257-mini bad" data-v380-reject="${r.id}">✕ Ablehnen</button>
         </div>
-      </div>`).join(''):
-      '<div class="v257-search-empty">Keine offenen Beitrittsanfragen.</div>';
+      </div>`).join(''):'';
 
     list.querySelectorAll('[data-v380-accept]').forEach(btn=>{
       btn.onclick=()=>v380HandleRequest(btn.dataset.v380Accept,true);
@@ -92913,3 +92912,138 @@ html.v495-level-syncing #v420LevelUpOverlay{
 }
 </style>
 <!-- ===== /V5.58 GILDE FINAL MICRO FIXES ===== -->
+
+<!-- ===== V5.59 GILDE FINAL EMPTY-REQUEST + ADMIN-TEXT FIX ===== -->
+<style id="v559-guild-final-fixes-css">
+/* 1) When there are truly no requests, remove the empty placeholder body entirely. */
+#guild #v257RequestsCard.v559-no-requests{
+  padding:7px 8px 6px!important;
+}
+#guild #v257RequestsCard.v559-no-requests>.section-title{
+  margin-bottom:0!important;
+  padding-bottom:0!important;
+  border-bottom:0!important;
+}
+#guild #v257RequestsCard.v559-no-requests #v257GuildRequests{
+  display:none!important;
+}
+#guild #v257RequestsCard.v559-no-requests .v380-request-note{
+  display:none!important;
+}
+
+/* 2) Keep the leader explanation readable and clear of the right-side fixed rail. */
+#guild #v257GuildManagement .v257-management-note{
+  width:auto!important;
+  max-width:calc(100% - 18px)!important;
+  padding-right:12px!important;
+  margin:0 0 5px!important;
+  color:#89998d!important;
+  font-size:4.8px!important;
+  line-height:1.22!important;
+  white-space:normal!important;
+  overflow-wrap:anywhere!important;
+  text-wrap:pretty!important;
+}
+@media(max-width:390px){
+  #guild #v257GuildManagement .v257-management-note{
+    max-width:calc(100% - 24px)!important;
+    padding-right:8px!important;
+    font-size:4.55px!important;
+    line-height:1.2!important;
+  }
+}
+</style>
+
+<script id="v559-guild-final-fixes-js">
+(function(){
+  'use strict';
+  function syncEmptyRequests(){
+    const card=document.querySelector('#guild #v257RequestsCard');
+    const list=document.querySelector('#guild #v257GuildRequests');
+    const count=document.querySelector('#guild #v257RequestCount');
+    if(!card||!list)return;
+
+    const hasRequest=!!list.querySelector('.v257-request');
+    const empty=list.querySelector('.v257-search-empty');
+    const emptyText=String(empty?.textContent||'').trim().toLowerCase();
+    const n=Number.parseInt(String(count?.textContent||'0').trim(),10)||0;
+    const trulyEmpty=!hasRequest && n===0 && emptyText.includes('keine offenen beitrittsanfragen');
+    card.classList.toggle('v559-no-requests',trulyEmpty);
+  }
+
+  function paint(){syncEmptyRequests()}
+  paint();
+  document.addEventListener('DOMContentLoaded',()=>requestAnimationFrame(paint),{once:true});
+  window.addEventListener('pageshow',()=>requestAnimationFrame(paint),{passive:true});
+  document.addEventListener('click',e=>{
+    if(e.target?.closest?.('#v380RefreshGuildRequests,[data-screen="guild"],.v254-tab')){
+      setTimeout(paint,50);
+      setTimeout(paint,350);
+    }
+  },true);
+
+  const root=document.getElementById('guild');
+  if(root&&typeof MutationObserver!=='undefined'){
+    let queued=false;
+    const obs=new MutationObserver(()=>{
+      if(queued)return;
+      queued=true;
+      requestAnimationFrame(()=>{queued=false;paint()});
+    });
+    obs.observe(root,{childList:true,subtree:true,characterData:true});
+  }
+  [80,250,650,1400].forEach(ms=>setTimeout(paint,ms));
+})();
+</script>
+<!-- ===== /V5.59 GILDE FINAL EMPTY-REQUEST + ADMIN-TEXT FIX ===== -->
+
+
+<!-- ===== V5.60 GILDE TRUE EMPTY REQUEST + ADMIN NOTE FINAL ===== -->
+<style id="v560-guild-true-empty-admin-note-css">
+/* The active request render now outputs no placeholder at count 0. Compact the card itself. */
+#guild #v257RequestsCard #v257GuildRequests:empty{
+  display:none!important;
+  min-height:0!important;
+  height:0!important;
+  margin:0!important;
+  padding:0!important;
+  border:0!important;
+}
+#guild #v257RequestsCard:has(#v257GuildRequests:empty){
+  padding:7px 8px 7px!important;
+  min-height:0!important;
+}
+#guild #v257RequestsCard:has(#v257GuildRequests:empty)>.section-title{
+  margin:0!important;
+  padding:0!important;
+  border-bottom:0!important;
+}
+#guild #v257RequestsCard:has(#v257GuildRequests:empty) .v380-request-note{
+  display:none!important;
+}
+/* Keep the management explanation inside the safe content width, away from the fixed ticket rail. */
+#guild #v257GuildManagement .v257-management-note{
+  box-sizing:border-box!important;
+  display:block!important;
+  width:calc(100% - 48px)!important;
+  max-width:calc(100% - 48px)!important;
+  margin:0 0 6px!important;
+  padding:0!important;
+  color:#89998d!important;
+  font-size:4.7px!important;
+  line-height:1.32!important;
+  white-space:normal!important;
+  overflow:visible!important;
+  overflow-wrap:normal!important;
+  word-break:normal!important;
+}
+@media(max-width:390px){
+  #guild #v257GuildManagement .v257-management-note{
+    width:calc(100% - 54px)!important;
+    max-width:calc(100% - 54px)!important;
+    font-size:4.45px!important;
+    line-height:1.3!important;
+  }
+}
+</style>
+<!-- ===== /V5.60 GILDE TRUE EMPTY REQUEST + ADMIN NOTE FINAL ===== -->
