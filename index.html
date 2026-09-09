@@ -98665,3 +98665,228 @@ function sync(){bindPvp();ensureQuest();ensureQa()}document.addEventListener('cl
 })();
 </script>
 <!-- ===== /V6.28 ===== -->
+
+<!-- ===== V6.29 QUEST FINALE · MOCKUP LOOK (VISUAL ONLY) ===== -->
+<style id="v629-quest-mockup-look-css">
+/* Visual-only authority. No quest timing, rewards, damage, Dampf, drops or save logic is changed here. */
+#v311QuestFight.v625-quest-live{
+  inset:0!important;z-index:12080!important;padding:8px 8px max(8px,env(safe-area-inset-bottom))!important;
+  align-items:center!important;justify-content:center!important;
+  background:radial-gradient(circle at 50% 16%,rgba(44,91,48,.22),transparent 28%),rgba(0,0,0,.965)!important;
+  backdrop-filter:blur(8px)!important;
+}
+#v311QuestFight.v625-quest-live .v311-panel{
+  width:min(650px,100%)!important;max-height:calc(100dvh - 16px)!important;overflow:auto!important;
+  border:2px solid #9b6f34!important;border-radius:22px!important;
+  background:linear-gradient(180deg,#0b160d 0%,#030705 100%)!important;
+  box-shadow:0 30px 90px #000f,0 0 0 3px rgba(57,35,17,.88),inset 0 0 0 1px rgba(255,221,147,.10)!important;
+  scrollbar-width:none!important;
+}
+#v311QuestFight.v625-quest-live .v311-panel::-webkit-scrollbar{display:none!important}
+#v311QuestFight.v625-quest-live .v311-head{
+  position:relative!important;min-height:94px!important;padding:17px 20px 15px!important;
+  border-bottom:2px solid #9a6a31!important;
+  background:
+    radial-gradient(circle at 12% 50%,rgba(205,157,70,.10),transparent 18%),
+    radial-gradient(circle at 88% 50%,rgba(205,157,70,.10),transparent 18%),
+    linear-gradient(180deg,#3a2213 0%,#170e08 68%,#090604 100%)!important;
+  box-shadow:inset 0 1px rgba(255,226,163,.12),inset 0 -10px 28px rgba(0,0,0,.28)!important;
+}
+#v311QuestFight.v625-quest-live .v311-head:before,
+#v311QuestFight.v625-quest-live .v311-head:after{
+  content:"🍁";position:absolute;top:50%;transform:translateY(-50%);font-size:20px;opacity:.72;filter:sepia(1) saturate(.7) hue-rotate(350deg) brightness(1.35);text-shadow:0 2px 2px #000
+}
+#v311QuestFight.v625-quest-live .v311-head:before{left:22px}
+#v311QuestFight.v625-quest-live .v311-head:after{right:22px;transform:translateY(-50%) scaleX(-1)}
+#v311QuestFight.v625-quest-live .v311-kicker{
+  color:#87ef72!important;font-size:10px!important;letter-spacing:.18em!important;font-weight:1000!important;text-shadow:0 0 12px rgba(112,229,91,.20)!important
+}
+#v311QuestFight.v625-quest-live .v311-title{
+  margin-top:7px!important;font:1000 18px/1.08 Georgia,serif!important;color:#ffe1a6!important;
+  text-shadow:0 2px 2px #000,0 0 12px rgba(255,212,132,.08)!important
+}
+
+#v311QuestFight.v625-quest-live .v311-arena.v628-final-scene{
+  position:relative!important;min-height:590px!important;padding:142px 12px 26px!important;
+  grid-template-columns:minmax(0,46%) 8% minmax(0,46%)!important;align-items:end!important;
+  background-position:center 42%!important;background-size:cover!important;
+  box-shadow:inset 0 38px 55px rgba(0,0,0,.16),inset 0 -92px 90px rgba(0,0,0,.66)!important;
+}
+#v311QuestFight.v625-quest-live .v311-arena.v628-final-scene:after{
+  content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:
+   radial-gradient(circle at 50% 45%,rgba(102,238,91,.10),transparent 26%),
+   radial-gradient(ellipse at 20% 79%,rgba(89,190,76,.12),transparent 24%),
+   radial-gradient(ellipse at 80% 74%,rgba(130,76,175,.12),transparent 27%),
+   linear-gradient(180deg,rgba(2,8,5,.02) 0%,rgba(2,7,4,.02) 46%,rgba(2,6,3,.70) 100%)
+}
+#v311QuestFight.v625-quest-live .v311-arena:before{
+  content:"QUEST DUELL"!important;top:20px!important;min-width:64%!important;padding:13px 24px 12px!important;
+  border:2px solid #a87535!important;border-radius:11px 11px 18px 18px!important;
+  background:linear-gradient(180deg,#372112,#140d08 70%,#080604)!important;
+  color:#ffe2a5!important;font:1000 18px/1 Georgia,serif!important;letter-spacing:.075em!important;
+  box-shadow:0 0 0 4px rgba(72,44,20,.72),0 8px 18px #000c,inset 0 1px rgba(255,231,179,.14)!important
+}
+#v311QuestFight.v625-quest-live .v615-quest-round{
+  top:83px!important;min-width:116px!important;padding:9px 18px!important;border:2px solid #a84642!important;border-radius:999px!important;
+  background:linear-gradient(180deg,#7e201e,#38100f)!important;color:#ffe5cd!important;font-size:9px!important;letter-spacing:.10em!important;
+  box-shadow:0 5px 14px #000a,inset 0 1px rgba(255,255,255,.12)!important
+}
+#v311QuestFight.v625-quest-live .v615-quest-procs{top:125px!important;left:22%!important;right:22%!important;z-index:85!important}
+#v311QuestFight.v625-quest-live .v615-quest-chip{
+  padding:8px 13px!important;border-width:2px!important;border-radius:999px!important;font-size:9px!important;
+  background:linear-gradient(180deg,rgba(16,28,14,.98),rgba(4,8,5,.98))!important;box-shadow:0 6px 15px #000b!important
+}
+
+#v311QuestFight.v625-quest-live .v311-fighter{position:relative!important;z-index:12!important;display:flex!important;flex-direction:column!important;align-items:center!important;overflow:visible!important}
+#v311QuestFight.v625-quest-live .v311-avatar{position:relative!important;width:100%!important;height:360px!important;overflow:visible!important;display:flex!important;align-items:flex-end!important;justify-content:center!important}
+#v311QuestFight.v625-quest-live #v311PlayerAvatar{transform:translateX(8px)!important}
+#v311QuestFight.v625-quest-live #v311PlayerAvatar>img{
+  width:205%!important;max-width:none!important;height:358px!important;max-height:none!important;object-fit:cover!important;object-position:center 43%!important;
+  border:0!important;border-radius:0!important;background:transparent!important;
+  -webkit-mask-image:radial-gradient(ellipse 51% 78% at 50% 53%,#000 0 49%,rgba(0,0,0,.99) 62%,rgba(0,0,0,.82) 75%,rgba(0,0,0,.28) 89%,transparent 100%)!important;
+  mask-image:radial-gradient(ellipse 51% 78% at 50% 53%,#000 0 49%,rgba(0,0,0,.99) 62%,rgba(0,0,0,.82) 75%,rgba(0,0,0,.28) 89%,transparent 100%)!important;
+  filter:drop-shadow(0 21px 16px rgba(0,0,0,.94)) drop-shadow(0 0 14px rgba(87,225,79,.11))!important
+}
+#v311QuestFight.v625-quest-live #v311BossAvatar.v629-nebel-art{transform:translateX(-5px)!important;overflow:visible!important;background:transparent!important;border:0!important;box-shadow:none!important}
+#v311QuestFight.v625-quest-live #v311BossAvatar.v629-nebel-art>svg.v629-nebel-unhold{
+  display:block!important;width:280px!important;height:356px!important;max-width:none!important;max-height:none!important;overflow:visible!important;
+  transform:translateY(14px) scale(1.03)!important;transform-origin:50% 84%!important;
+  filter:drop-shadow(0 23px 18px rgba(0,0,0,.96)) drop-shadow(0 0 21px rgba(123,67,171,.30)) drop-shadow(0 0 12px rgba(106,234,80,.17))!important
+}
+#v311QuestFight.v625-quest-live #v311BossAvatar.v629-nebel-art .v629-smoke{animation:v629Smoke 2.8s ease-in-out infinite alternate;transform-origin:center}
+#v311QuestFight.v625-quest-live #v311BossAvatar.v629-nebel-art .v629-claw{animation:v629Claw 2.2s ease-in-out infinite alternate;transform-origin:center}
+#v311QuestFight.v625-quest-live #v311BossAvatar.v629-nebel-art .v629-eye{animation:v629Eye 1.4s ease-in-out infinite alternate}
+@keyframes v629Smoke{from{transform:translateY(0) scale(1);opacity:.72}to{transform:translateY(-5px) scale(1.035);opacity:.96}}
+@keyframes v629Claw{from{transform:rotate(-1deg)}to{transform:rotate(3deg)}}
+@keyframes v629Eye{from{filter:drop-shadow(0 0 4px #8cff72);opacity:.80}to{filter:drop-shadow(0 0 12px #8cff72);opacity:1}}
+
+#v311QuestFight.v625-quest-live .v311-vs{
+  position:relative!important;z-index:75!important;align-self:center!important;margin-bottom:146px!important;width:58px!important;height:58px!important;
+  display:grid!important;place-items:center!important;border:3px solid #9f6c32!important;border-radius:50%!important;
+  background:radial-gradient(circle,#2f1a0d 0 45%,#0c0805 75%)!important;color:#ffe29f!important;font:1000 20px/1 Georgia,serif!important;
+  box-shadow:0 0 0 4px rgba(45,29,15,.85),0 8px 18px #000c,0 0 18px rgba(210,153,60,.16)!important
+}
+#v311QuestFight.v625-quest-live .v311-name{
+  position:relative!important;z-index:30!important;width:96%!important;margin:-6px auto 0!important;padding:10px 8px 8px!important;
+  border:2px solid #9b6c35!important;border-radius:13px 13px 7px 7px!important;background:linear-gradient(180deg,#111b11,#070b08)!important;
+  color:#f5e5bd!important;font:1000 12px/1 Georgia,serif!important;box-shadow:0 4px 12px #000b,inset 0 1px rgba(255,224,163,.07)!important
+}
+#v311QuestFight.v625-quest-live .v311-hp{
+  position:relative!important;z-index:31!important;width:94%!important;height:18px!important;margin:3px auto 0!important;
+  border:2px solid #9b6232!important;border-radius:999px!important;background:#210b0b!important;box-shadow:inset 0 2px 5px #000c,0 3px 9px #0008!important
+}
+#v311QuestFight.v625-quest-live .v311-hp>i{
+  background:linear-gradient(90deg,#ff3e36,#ff7364 62%,#ff9a79)!important;box-shadow:inset 0 1px rgba(255,255,255,.30),0 0 9px rgba(255,84,63,.22)!important
+}
+#v311QuestFight.v625-quest-live .v615-quest-hptext{
+  position:relative!important;z-index:31!important;margin-top:7px!important;color:#ffe6b7!important;font:1000 11px/1 Georgia,serif!important;text-shadow:0 2px 2px #000!important
+}
+
+#v311QuestFight.v625-quest-live .v615-quest-log{
+  position:relative!important;z-index:40!important;margin:0 12px 14px!important;border:2px solid #8b6332!important;border-radius:14px!important;
+  background:linear-gradient(180deg,#09140b,#040805)!important;box-shadow:0 10px 25px #000b,inset 0 0 0 1px rgba(111,152,86,.18)!important;overflow:hidden!important
+}
+#v311QuestFight.v625-quest-live .v615-quest-log-head{
+  padding:11px 14px!important;border-bottom:1px solid #365239!important;color:#efce86!important;font-size:10px!important;background:linear-gradient(180deg,rgba(26,48,27,.70),rgba(8,18,10,.35))!important
+}
+#v311QuestFight.v625-quest-live .v615-quest-log-lines{padding:0 10px 8px!important}
+#v311QuestFight.v625-quest-live .v615-quest-line{min-height:44px!important;padding:8px 3px!important;border-bottom:1px solid rgba(56,83,58,.45)!important;font-size:10px!important;line-height:1.32!important}
+#v311QuestFight.v625-quest-live .v615-quest-line b{
+  min-width:48px!important;padding:6px 9px!important;border:2px solid #68cf56!important;border-radius:999px!important;background:#08140a!important;color:#aaff9f!important;font-size:10px!important
+}
+#v311QuestFight.v625-quest-live .v625-q-damage{font-family:Georgia,serif!important;font-style:italic!important;color:#ff765f!important;background:rgba(17,5,4,.58)!important;text-shadow:0 0 10px rgba(255,64,39,.72),0 2px 4px #000!important}
+#v311QuestFight.v625-quest-live .v625-q-damage.crit{color:#ffd46f!important}
+
+@media(max-width:560px){
+ #v311QuestFight.v625-quest-live{padding:5px!important}
+ #v311QuestFight.v625-quest-live .v311-panel{max-height:calc(100dvh - 10px)!important;border-radius:18px!important}
+ #v311QuestFight.v625-quest-live .v311-head{min-height:82px!important;padding:13px 12px!important}
+ #v311QuestFight.v625-quest-live .v311-head:before{left:12px}.v311-head:after{right:12px}
+ #v311QuestFight.v625-quest-live .v311-title{font-size:15px!important}
+ #v311QuestFight.v625-quest-live .v311-arena.v628-final-scene{min-height:520px!important;padding:132px 6px 22px!important;grid-template-columns:minmax(0,46%) 8% minmax(0,46%)!important}
+ #v311QuestFight.v625-quest-live .v311-arena:before{min-width:62%!important;font-size:15px!important;padding:11px 18px 10px!important}
+ #v311QuestFight.v625-quest-live .v615-quest-round{top:77px!important}
+ #v311QuestFight.v625-quest-live .v615-quest-procs{top:117px!important;left:17%!important;right:17%!important}
+ #v311QuestFight.v625-quest-live .v311-avatar{height:310px!important}
+ #v311QuestFight.v625-quest-live #v311PlayerAvatar>img{width:210%!important;height:310px!important;object-position:center 44%!important}
+ #v311QuestFight.v625-quest-live #v311BossAvatar.v629-nebel-art>svg.v629-nebel-unhold{width:238px!important;height:310px!important;transform:translateY(11px) scale(1.02)!important}
+ #v311QuestFight.v625-quest-live .v311-vs{width:50px!important;height:50px!important;font-size:17px!important;margin-bottom:126px!important}
+ #v311QuestFight.v625-quest-live .v311-name{font-size:10px!important;padding:8px 5px 7px!important}
+ #v311QuestFight.v625-quest-live .v311-hp{height:16px!important}
+ #v311QuestFight.v625-quest-live .v615-quest-hptext{font-size:10px!important}
+ #v311QuestFight.v625-quest-live .v615-quest-log{margin:0 8px 10px!important}
+}
+</style>
+<script id="v629-quest-mockup-look-core">
+(()=>{
+ 'use strict';
+ if(window.__V629_QUEST_MOCKUP_LOOK__)return;window.__V629_QUEST_MOCKUP_LOOK__=true;
+ const $=s=>document.querySelector(s);
+ let busy=false,last='';
+ function nebelfSvg(){
+  return `<svg class="v253-monster v629-nebel-unhold" viewBox="0 0 240 320" aria-hidden="true">
+   <defs>
+    <radialGradient id="v629Body" cx="48%" cy="36%" r="68%"><stop offset="0" stop-color="#645071"/><stop offset=".34" stop-color="#32203d"/><stop offset=".72" stop-color="#17141e"/><stop offset="1" stop-color="#080b0a"/></radialGradient>
+    <radialGradient id="v629Maw" cx="50%" cy="45%" r="60%"><stop offset="0" stop-color="#9cff76"/><stop offset=".28" stop-color="#3d8e39"/><stop offset=".70" stop-color="#102015"/><stop offset="1" stop-color="#050807"/></radialGradient>
+    <linearGradient id="v629Smoke" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#8e62b5" stop-opacity=".75"/><stop offset=".48" stop-color="#5d3f79" stop-opacity=".42"/><stop offset="1" stop-color="#151720" stop-opacity="0"/></linearGradient>
+    <filter id="v629Glow"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    <filter id="v629Soft"><feGaussianBlur stdDeviation="7"/></filter>
+   </defs>
+   <g class="v629-smoke" fill="url(#v629Smoke)">
+    <path d="M40 292 C8 270 25 233 50 224 C19 203 24 168 52 153 C24 124 42 94 66 89 C53 62 73 38 98 45 C112 13 145 23 149 54 C178 36 197 58 185 84 C220 88 224 122 196 142 C224 162 212 195 190 204 C213 229 196 260 174 264 C173 292 144 306 121 286 C99 311 67 309 40 292Z"/>
+    <path d="M54 250 C19 247 9 220 31 201 C4 181 14 151 41 143" opacity=".52"/>
+    <path d="M184 248 C222 240 228 211 205 193 C232 170 222 143 198 137" opacity=".50"/>
+   </g>
+   <g opacity=".30" filter="url(#v629Soft)" fill="#6b3d87"><circle cx="59" cy="107" r="33"/><circle cx="184" cy="116" r="36"/><circle cx="115" cy="265" r="45"/></g>
+   <g class="v629-claw" fill="url(#v629Body)" stroke="#7b5b8f" stroke-width="3">
+    <path d="M77 114 C45 96 26 75 28 53 C43 67 52 78 65 83 C56 62 58 42 68 27 C75 49 83 62 95 72 C99 91 94 106 77 114Z"/>
+    <path d="M163 111 C196 91 212 67 208 47 C195 61 184 74 174 80 C181 58 177 38 167 24 C162 45 153 61 142 71 C139 91 146 106 163 111Z"/>
+    <path d="M64 151 C37 145 17 126 11 105 C29 116 41 122 55 123 C43 105 43 89 49 76 C61 96 72 107 83 116Z"/>
+    <path d="M176 149 C203 144 222 125 229 104 C212 114 199 121 185 122 C196 105 197 90 191 76 C179 96 168 107 157 116Z"/>
+   </g>
+   <path d="M64 94 C76 58 99 43 122 44 C148 44 169 64 176 99 L168 193 C153 224 89 225 70 191Z" fill="url(#v629Body)" stroke="#79558f" stroke-width="5"/>
+   <path d="M82 88 C98 66 145 65 160 90 L151 160 C138 184 100 183 87 158Z" fill="#111319" stroke="#6c4b81" stroke-width="4"/>
+   <g class="v629-eye" fill="#8cff70" filter="url(#v629Glow)"><ellipse cx="107" cy="112" rx="10" ry="8"/><ellipse cx="139" cy="112" rx="10" ry="8"/></g>
+   <path d="M95 133 Q123 121 153 135 Q150 166 124 174 Q98 165 95 133Z" fill="url(#v629Maw)" stroke="#58a64a" stroke-width="3"/>
+   <path d="M101 138 l8 19 8-21 8 23 9-23 7 21 8-18" fill="#e7e0c6" stroke="#b9b194" stroke-width="1.4"/>
+   <path d="M108 166 Q123 178 141 165" fill="none" stroke="#132217" stroke-width="4"/>
+   <g fill="#d7ccb6" stroke="#1a1516" stroke-width="2">
+    <path d="M82 176 l-13 18 17-5Z"/><path d="M163 174 l14 17-18-4Z"/>
+   </g>
+   <path d="M77 191 C62 212 59 236 68 258 C79 281 92 290 105 299 C95 280 101 263 115 249 C130 268 140 281 139 305 C161 289 176 271 179 244 C181 223 172 207 163 190Z" fill="url(#v629Body)" stroke="#634574" stroke-width="4"/>
+   <g stroke="#74528b" stroke-width="7" stroke-linecap="round" fill="none"><path d="M79 199 Q52 211 45 239"/><path d="M164 198 Q194 209 200 236"/></g>
+   <g fill="#b7ab94" stroke="#1a1616" stroke-width="2"><circle cx="168" cy="232" r="10"/><path d="M162 229 l4-5 4 5 4-5 2 8-3 7-9 0-4-6Z"/></g>
+   <path d="M169 217 Q187 223 196 249" fill="none" stroke="#8a6a43" stroke-width="4" stroke-dasharray="4 5"/>
+   <g class="v629-smoke" fill="none" stroke="#8760a4" stroke-width="5" stroke-linecap="round" opacity=".62"><path d="M71 77 Q48 55 57 34 Q65 19 55 9"/><path d="M170 75 Q196 55 187 34 Q179 20 191 8"/><path d="M66 259 Q42 278 54 305"/><path d="M178 257 Q202 278 188 308"/></g>
+   <g fill="#7dff66" opacity=".74"><circle cx="83" cy="69" r="3"/><circle cx="180" cy="91" r="2.5"/><circle cx="55" cy="184" r="2"/><circle cx="191" cy="176" r="2.5"/></g>
+  </svg>`;
+ }
+ function apply(){
+  if(busy)return;busy=true;
+  try{
+   const fight=$('#v311QuestFight'),boss=$('#v311BossAvatar'),name=$('#v311BossName');
+   if(!fight?.classList.contains('v625-quest-live')||!boss||!name)return;
+   const n=(name.textContent||'').trim();
+   if(/Nebel-Unhold/i.test(n)){
+    if(!boss.classList.contains('v629-nebel-art')||!boss.querySelector('.v629-nebel-unhold')){
+      boss.classList.remove('v615-has-art','v627-vector-art');boss.classList.add('v628-final-enemy','v629-nebel-art');boss.innerHTML=nebelfSvg();
+    }
+   }else boss.classList.remove('v629-nebel-art');
+   fight.classList.add('v629-mockup-look');
+   last=n;
+  }catch(e){console.error('V6.29 quest visual',e)}finally{busy=false}
+ }
+ function kick(){requestAnimationFrame(apply);setTimeout(apply,30);setTimeout(apply,100);setTimeout(apply,230)}
+ function install(){
+  const fight=$('#v311QuestFight');
+  if(fight&&!fight.__v629Observer){new MutationObserver(()=>{if(!busy&&fight.classList.contains('v625-quest-live'))kick()}).observe(fight,{attributes:true,subtree:true,childList:true});fight.__v629Observer=true}
+  kick();
+ }
+ document.addEventListener('click',()=>setTimeout(kick,0),true);
+ window.addEventListener('pageshow',kick,{passive:true});
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});else install();
+ window.v629ApplyQuestMockupLook=apply;
+})();
+</script>
+<!-- ===== /V6.29 ===== -->
