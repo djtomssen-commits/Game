@@ -99160,3 +99160,239 @@ function sync(){bindPvp();ensureQuest();ensureQa()}document.addEventListener('cl
 })();
 </script>
 <!-- ===== /V6.34 ===== -->
+<!-- ===== V6.35 QUEST DUNGEON ENEMY VISIBILITY FIX ===== -->
+<style id="v635-quest-dungeon-enemy-visibility-css">
+/* V6.35: keep the Quest finale on the Dungeon renderer, but isolate the generated
+   Dungeon monster artwork from legacy .v253-monster hide-rules. */
+#v634QuestDungeonCard #v634QuestEnemyIcon{
+  position:relative!important;display:flex!important;align-items:flex-end!important;justify-content:center!important;
+  overflow:visible!important;opacity:1!important;visibility:visible!important;
+}
+#v634QuestDungeonCard #v634QuestEnemyIcon>.v253-monster{display:none!important}
+#v634QuestDungeonCard #v634QuestEnemyIcon>.v635-dungeon-monster{
+  position:relative!important;z-index:14!important;display:block!important;visibility:visible!important;opacity:1!important;
+  width:194px!important;height:238px!important;max-width:none!important;max-height:none!important;overflow:visible!important;
+  filter:drop-shadow(0 18px 13px rgba(0,0,0,.92)) drop-shadow(0 0 16px rgba(98,220,76,.20))!important;
+  transform:translateY(0)!important;pointer-events:none!important;
+}
+#v634QuestDungeonCard #v634QuestEnemyFighter{
+  display:block!important;visibility:visible!important;opacity:1!important;z-index:15!important;
+}
+#v634QuestDungeonCard #v634QuestEnemyFighter .v252-fighter-shell{
+  display:flex!important;visibility:visible!important;opacity:1!important;
+}
+#v634QuestDungeonCard #v634QuestEnemyIcon .v253-monster-core,
+#v634QuestDungeonCard #v634QuestEnemyIcon .v635-dungeon-monster>*{
+  visibility:visible!important;
+}
+@media(max-width:560px){
+ #v634QuestDungeonCard #v634QuestEnemyIcon>.v635-dungeon-monster{width:160px!important;height:202px!important}
+}
+</style>
+<script id="v635-quest-dungeon-enemy-visibility-core">
+(function(){
+ 'use strict';
+ if(window.__V635_QUEST_DUNGEON_ENEMY__)return;
+ window.__V635_QUEST_DUNGEON_ENEMY__=true;
+ const rafAfter=(ms,fn)=>{const t0=performance.now();const f=t=>{if(t-t0>=ms){try{fn()}catch(_){};return}requestAnimationFrame(f)};requestAnimationFrame(f)};
+ function cleanDungeonMonster(svg){
+   if(!svg)return '';
+   return String(svg)
+     .replace(/class="v253-monster v634-nebel-svg"/,'class="v635-dungeon-monster"')
+     .replace(/class="v253-monster"/,'class="v635-dungeon-monster"');
+ }
+ function buildDungeonMonster(q){
+   let name='Nebel-Unhold',elite=!!q?.v310Elite;
+   try{const b=v311BossForQuest(q);name=(b?.[1]||name)}catch(_){}
+   try{
+     if(typeof v253MonsterSvg==='function'){
+       const ri=Math.abs(Math.floor(Number(q?.id)||7))%9;
+       return cleanDungeonMonster(v253MonsterSvg({name},elite,1,ri));
+     }
+   }catch(_){}
+   return `<svg class="v635-dungeon-monster" viewBox="0 0 160 170" aria-hidden="true"><defs><radialGradient id="v635g" cx="45%" cy="35%"><stop offset="0" stop-color="#b8ff9e"/><stop offset=".36" stop-color="#6a4b83"/><stop offset="1" stop-color="#21152a"/></radialGradient></defs><g class="v253-monster-core"><path d="M41 148Q23 116 45 97Q25 61 56 44Q66 17 81 20Q104 20 111 49Q139 71 116 100Q139 127 118 151Q98 135 80 153Q61 134 41 148Z" fill="url(#v635g)"/><path d="M52 68Q80 41 109 69L102 117Q80 134 58 117Z" fill="#21162a" stroke="#785090" stroke-width="4"/><circle cx="68" cy="82" r="6" fill="#96ff7d"/><circle cx="94" cy="82" r="6" fill="#96ff7d"/><path d="M69 103Q81 113 94 101" fill="none" stroke="#78d769" stroke-width="5"/></g></svg>`;
+ }
+ function force(q){
+   const host=document.getElementById('v634QuestEnemyIcon');
+   if(!host)return;
+   let art=host.querySelector(':scope > .v635-dungeon-monster');
+   if(!art){
+     const tmp=document.createElement('div');tmp.innerHTML=buildDungeonMonster(q);art=tmp.firstElementChild;
+     if(art)host.appendChild(art);
+   }
+   if(art){art.style.display='block';art.style.visibility='visible';art.style.opacity='1'}
+ }
+ const old=window.v634QuestDungeonPreview;
+ if(typeof old==='function'){
+   window.v634QuestDungeonPreview=function(){
+     const q={id:634,name:'Nebel über dem Gewächshaus',text:'Ein Quest-Gegner versperrt den Weg.',v310Elite:false};
+     const r=old.apply(this,arguments);
+     force(q);rafAfter(60,()=>force(q));rafAfter(260,()=>force(q));
+     return r;
+   };
+   window.v625QuestVisualPreview=window.v634QuestDungeonPreview;
+   window.v615QuestVisualPreview=window.v634QuestDungeonPreview;
+ }
+ /* Real quest finale: wrap only the V6.34 visual Promise. No reward/Dampf/loot code touched. */
+ const oldPlay=window.v311PlayFight;
+ if(typeof oldPlay==='function'){
+   window.v311PlayFight=function(q){
+     const r=oldPlay.call(this,q);
+     force(q||{});rafAfter(60,()=>force(q||{}));rafAfter(260,()=>force(q||{}));
+     return r;
+   };
+   try{v311PlayFight=window.v311PlayFight}catch(_){}
+ }
+ /* capture preview clicks after V6.34's older capture handler and use the fixed preview */
+ window.addEventListener('click',function(e){
+   const b=e.target?.closest?.('[data-v615-quest-preview]');if(!b)return;
+   e.preventDefault();e.stopImmediatePropagation();window.v634QuestDungeonPreview?.();
+ },true);
+})();
+</script>
+<!-- ===== /V6.35 ===== -->
+
+
+<!-- ===== V6.36 QUEST FINALE · DUNGEON COMBAT AUTHORITY ===== -->
+<style id="v636-quest-dungeon-authority-css">
+/* V6.36: Quest finale uses the same visual language and motion classes as the live Dungeon fight. */
+#v311QuestFight.v636-dungeon-quest{
+  position:fixed!important;inset:0!important;z-index:12180!important;display:none!important;
+  align-items:flex-start!important;justify-content:center!important;padding:8px 6px max(10px,env(safe-area-inset-bottom))!important;
+  overflow:auto!important;background:rgba(0,0,0,.96)!important;backdrop-filter:blur(7px)!important
+}
+#v311QuestFight.v636-dungeon-quest.show{display:flex!important}
+#v636QuestDungeonCard{width:min(650px,100%)!important;margin:auto!important;box-sizing:border-box!important}
+#v636QuestDungeonCard .battle-stage{position:relative!important;overflow:hidden!important}
+#v636QuestDungeonCard .v600-bg{display:block!important;position:absolute!important;inset:0!important;z-index:0!important;opacity:1!important;visibility:visible!important;pointer-events:none!important}
+#v636QuestDungeonCard .fighter{z-index:18!important;overflow:visible!important}
+#v636QuestDungeonCard .fighter.attack-right{animation:v252AttackRight .43s cubic-bezier(.2,.75,.25,1)!important}
+#v636QuestDungeonCard .fighter.attack-left{animation:v252AttackLeft .43s cubic-bezier(.2,.75,.25,1)!important}
+#v636QuestDungeonCard .fighter.hit{animation:v252Hit .40s ease!important}
+#v636QuestDungeonCard .v636-monster{display:block!important;visibility:visible!important;opacity:1!important;width:194px!important;height:238px!important;max-width:none!important;max-height:none!important;overflow:visible!important;filter:drop-shadow(0 18px 13px rgba(0,0,0,.92)) drop-shadow(0 0 16px rgba(98,220,76,.20))!important;pointer-events:none!important}
+#v636QuestDungeonCard .v575-proc-strip{top:108px!important;left:7%!important;right:7%!important;z-index:90!important;display:flex!important;justify-content:center!important;align-items:center!important;gap:5px!important;min-height:30px!important;overflow:visible!important;pointer-events:none!important}
+#v636QuestDungeonCard .v575-chip.v604-skill-chip{position:relative!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;gap:4px!important;max-width:94%!important;padding:6px 11px!important;border:2px solid #7f6339!important;border-radius:999px!important;background:linear-gradient(180deg,rgba(10,15,10,.97),rgba(2,5,3,.97))!important;color:#f3e2ad!important;font-size:6.1px!important;font-weight:1000!important;line-height:1!important;letter-spacing:.035em!important;white-space:nowrap!important;text-shadow:0 2px 2px #000!important;box-shadow:0 5px 14px rgba(0,0,0,.68),inset 0 0 12px rgba(255,215,127,.04)!important;animation:v604SkillChip 1.55s cubic-bezier(.18,.8,.22,1) forwards!important}
+#v636QuestDungeonCard .v575-chip.v604-skill-chip.crit{border-color:#d9a337!important;color:#ffe478!important;box-shadow:0 0 18px rgba(255,190,55,.26),0 5px 14px #000b!important}
+#v636QuestDungeonCard .v575-chip.v604-skill-chip.wucht{border-color:#d77d2e!important;color:#ffc36d!important;box-shadow:0 0 18px rgba(255,126,38,.22),0 5px 14px #000b!important}
+#v636QuestDungeonCard .v575-chip.v604-skill-chip.rage{border-color:#61c84e!important;color:#a7ff83!important;box-shadow:0 0 18px rgba(88,235,72,.22),0 5px 14px #000b!important}
+#v636QuestDungeonCard .v575-chip.v604-skill-chip.heal{border-color:#40d55a!important;color:#8dff9a!important;box-shadow:0 0 20px rgba(57,255,95,.24),0 5px 14px #000b!important}
+#v636QuestDungeonCard .v575-chip.v604-skill-chip.dodge{border-color:#63bde8!important;color:#b7e9ff!important;box-shadow:0 0 20px rgba(71,190,255,.25),0 5px 14px #000b!important}
+#v636QuestDungeonCard .v575-chip.v604-skill-chip.guard{border-color:#7bc9ef!important;color:#c9efff!important;box-shadow:0 0 20px rgba(96,203,255,.22),0 5px 14px #000b!important}
+#v636QuestDungeonCard .v575-chip.v604-skill-chip.magic{border-color:#b45adb!important;color:#eab7ff!important;box-shadow:0 0 20px rgba(197,81,255,.24),0 5px 14px #000b!important}
+#v636QuestDungeonCard .v575-chip.v604-skill-chip.frost{border-color:#5dd7ef!important;color:#baf5ff!important;box-shadow:0 0 20px rgba(68,224,255,.25),0 5px 14px #000b!important}
+#v636QuestDungeonCard .v575-chip.v604-skill-chip.scout{border-color:#8bdb57!important;color:#d1ff9d!important;box-shadow:0 0 20px rgba(139,229,72,.20),0 5px 14px #000b!important}
+#v636QuestPlayerFighter.v604-heal-flash{animation:v604HealFlash .60s ease!important}
+#v636QuestPlayerFighter.v604-dodge-flash{animation:v604DodgeFlash .48s ease!important}
+#v636QuestPlayerFighter.v604-guard-flash{animation:v604GuardFlash .62s ease!important}
+#v636QuestPlayerFighter.v604-power-flash{animation:v604PowerFlash .48s ease!important}
+#v636QuestEnemyFighter.v604-hit-flash{animation:v604EnemyHit .42s ease!important}
+#v636QuestDungeonCard.v577-victory .v636-monster{filter:grayscale(.55) brightness(.55) drop-shadow(0 15px 10px #000e)!important;opacity:.40!important;transform:translateY(16px) rotate(4deg)!important;transition:opacity .45s ease,filter .45s ease,transform .45s ease!important}
+@media(max-width:560px){
+ #v636QuestDungeonCard .v636-monster{width:160px!important;height:202px!important}
+ #v636QuestDungeonCard .v575-proc-strip{top:104px!important;left:4%!important;right:4%!important}
+ #v636QuestDungeonCard .v575-chip.v604-skill-chip{font-size:5.65px!important;padding:5px 8px!important}
+}
+</style>
+<script id="v636-quest-dungeon-authority-core">
+(function(){
+ 'use strict';
+ if(window.__V636_QUEST_DUNGEON_AUTHORITY__)return;
+ window.__V636_QUEST_DUNGEON_AUTHORITY__=true;
+ const $=q=>document.querySelector(q);
+ const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+ const wait=ms=>new Promise(resolve=>{const t0=performance.now();function f(t){if(t-t0>=ms)return resolve();requestAnimationFrame(f)}requestAnimationFrame(f)});
+ const after=(ms,fn)=>{const t0=performance.now();function f(t){if(t-t0>=ms){try{fn()}catch(_){}return}requestAnimationFrame(f)}requestAnimationFrame(f)};
+ let fightToken=0;
+
+ const EFFECTS=[
+  [/ABSOLUTER NULLPUNKT/i,'❄️ ABSOLUTER NULLPUNKT','frost','power'],[/PERFEKTER SCHUSS/i,'🎯 PERFEKTER SCHUSS','scout','power'],[/GRÜNER HAGEL/i,'🌿 GRÜNER HAGEL','scout','power'],[/BRUTALE ERNTE/i,'⚔️ BRUTALE ERNTE','wucht','power'],[/KETTENREAKTION/i,'⚡ KETTENREAKTION','magic','power'],[/SUPERNOVA/i,'✨ SUPERNOVA','magic','power'],[/TODESNEBEL/i,'☁️ TODESNEBEL','magic','power'],[/SEELENERNTE/i,'💀 SEELENERNTE','frost','power'],[/ZWILLINGSSCHNITT/i,'⚔️ ZWILLINGSSCHNITT','frost','power'],[/SEELENSCHNITT/i,'❄️ SEELENSCHNITT','frost','power'],[/FROSTSCHNITT/i,'❄️ FROSTSCHNITT','frost','power'],[/DOPPELREIF/i,'❄️ DOPPELREIF','frost','power'],[/KÄLTEMARKE/i,'❄️ KÄLTEMARKE','frost','power'],[/EISBRUCH/i,'🧊 EISBRUCH','frost','power'],[/NEBENHAND/i,'⚔️ NEBENHAND','frost','power'],[/HINRICHTUNG/i,'🎯 HINRICHTUNG','scout','power'],[/SALVE/i,'🏹 SALVE','scout','power'],[/DETONATION/i,'💣 DETONATION','magic','power'],[/RASEREI/i,'🔥 RASEREI','rage','power'],[/WUCHT/i,'⚔️ WUCHT','wucht','power'],[/\bKRIT\b|KRITISCH/i,'💥 KRITISCHER TREFFER','crit','power'],[/AUSGEWICHEN/i,'💨 AUSGEWICHEN','dodge','dodge'],[/RAUCHBARRIERE/i,'🛡️ RAUCHBARRIERE','guard','guard'],[/REIFBARRIERE/i,'🧊 REIFBARRIERE','guard','guard'],[/EWIGES EIS/i,'🧊 EWIGES EIS','frost','guard'],[/TOTENSTARRE/i,'❄️ TOTENSTARRE','frost','guard'],[/ZWEITE LUFT/i,'❤️ ZWEITE LUFT','heal','heal'],[/UNKRAUT VERGEHT NICHT/i,'🌿 UNKRAUT VERGEHT NICHT','guard','guard'],[/GEBLOCKT|\bBLOCK\b|\bSCHILD\b|REDUZIERT/i,'🛡️ GEBLOCKT','guard','guard'],[/\bDOT\b/i,'☠️ RAUCHSCHADEN','magic','power']
+ ];
+
+ function pulse(el,cls,ms=500){if(!el)return;el.classList.remove(cls);void el.offsetWidth;el.classList.add(cls);after(ms,()=>el.classList.remove(cls))}
+ function classKind(){return s?.playerClass==='scout'?'arrow':s?.playerClass==='bruiser'?'magic':'melee'}
+ function className(){try{return classes?.[s?.playerClass]?.name||'Legende'}catch(_){return 'Legende'}}
+ function playerName(){return `${String(s?.characterName||'Du')} · ${className()} · Lv. ${Number(s?.level)||1}`}
+ function bossInfo(q){try{const b=v311BossForQuest(q);return q?.v310Elite?`ELITE · ${b?.[1]||'Quest-Gegner'}`:(b?.[1]||'Quest-Gegner')}catch(_){return q?.v310Elite?'ELITE · Quest-Gegner':'Quest-Gegner'}}
+ function cleanMonster(svg){return String(svg||'').replace(/class="v253-monster[^\"]*"/,'class="v636-monster"')}
+ function monster(q,name){
+   try{if(typeof v253MonsterSvg==='function'){const ri=Math.abs(Math.floor(Number(q?.id)||7))%9;return cleanMonster(v253MonsterSvg({name},!!q?.v310Elite,1,ri))}}catch(_){}
+   return `<svg class="v636-monster" viewBox="0 0 160 170" aria-hidden="true"><g class="v253-monster-core"><path d="M41 148Q23 116 45 97Q25 61 56 44Q66 17 81 20Q104 20 111 49Q139 71 116 100Q139 127 118 151Q98 135 80 153Q61 134 41 148Z" fill="#3b2449" stroke="#7a4b98" stroke-width="4"/><circle cx="68" cy="82" r="7" fill="#96ff7d"/><circle cx="94" cy="82" r="7" fill="#96ff7d"/></g></svg>`;
+ }
+ function copyExactDungeonBackground(){
+   const dst=$('#v636QuestDungeonCard .v600-bg');if(!dst)return;
+   let source=$('#dungeonBattleCard .v600-bg'),tmp=null;
+   if(!source){
+     tmp=document.createElement('div');tmp.id='dungeonBattleCard';tmp.className='v599-clean';tmp.style.cssText='position:fixed;left:-9999px;top:-9999px;width:320px;height:480px;pointer-events:none;opacity:0';tmp.innerHTML='<div class="battle-stage"><div class="v600-bg"></div></div>';document.body.appendChild(tmp);source=tmp.querySelector('.v600-bg');
+   }
+   try{const cs=getComputedStyle(source);dst.style.backgroundImage=cs.backgroundImage;dst.style.backgroundSize=cs.backgroundSize;dst.style.backgroundPosition=cs.backgroundPosition;dst.style.backgroundRepeat=cs.backgroundRepeat;dst.style.backgroundColor=cs.backgroundColor;dst.style.filter=cs.filter}catch(_){}
+   tmp?.remove();
+ }
+ function ensureRoot(q={}){
+   let root=$('#v311QuestFight');if(!root){root=document.createElement('div');root.id='v311QuestFight';document.body.appendChild(root)}
+   root.className='v636-dungeon-quest';root.classList.toggle('elite',!!q?.v310Elite);
+   const boss=bossInfo(q),pName=playerName();let pArt='';try{pArt=v080AvatarFor(s?.playerClass)}catch(_){}
+   root.innerHTML=`<div id="v636QuestDungeonCard" class="v575-combat v599-clean v602-template">
+    <div class="v575-head"><div class="v575-head-main"><div class="v575-kicker">QUEST-FINALE · DUNGEON-KAMPF</div><b class="v575-title">Der Weg zur Belohnung ist noch nicht frei!</b></div><div class="v575-recommend">${q?.v310Elite?'ELITE QUEST':'QUEST DUELL'}</div></div>
+    <div class="battle-stage" id="v636QuestBattleStage"><div class="v600-bg"></div><div class="v575-stage-title">QUEST DUELL</div><div class="v575-round">BEREIT</div><div class="v575-proc-strip"></div><div class="v252-screen-flash"></div><div class="v252-impact"></div><div class="v252-slash"></div><div class="v252-projectile"></div><div class="damage left" id="v636QuestDamagePlayer"></div><div class="damage right" id="v636QuestDamageEnemy"></div>
+      <div class="fighter player" id="v636QuestPlayerFighter"><div class="v252-fighter-shell"><div class="v252-aura"></div><div class="v252-shadow"></div><div class="fighter-avatar">${pArt?`<img class="v253-player-avatar-img" src="${pArt}" alt="Spielcharakter">`:'🧙'}</div><div class="fighter-name">${esc(pName)}</div><div class="hpbar"><div class="hpfill" id="v636QuestPlayerHpBar"></div></div><div class="tiny"><span id="v636QuestPlayerHpText">100</span> HP</div></div></div>
+      <div class="fighter enemy-side" id="v636QuestEnemyFighter"><div class="v252-fighter-shell"><div class="v252-aura"></div><div class="v252-shadow"></div><div class="fighter-avatar" id="v636QuestEnemyIcon">${monster(q,boss)}</div><div class="fighter-name">${esc(boss)}</div><div class="hpbar"><div class="hpfill" id="v636QuestEnemyHpBar"></div></div><div class="tiny"><span id="v636QuestEnemyHpText">100</span> HP</div></div></div>
+    </div><div class="v575-log"><div class="v575-log-title"><span>📜 Kampfverlauf</span><small>letzte Runden</small></div><div class="v575-log-lines"></div></div></div>`;
+   requestAnimationFrame(copyExactDungeonBackground);return root;
+ }
+ function round(t){const el=$('#v636QuestDungeonCard .v575-round');if(el)el.textContent=t}
+ function setHp(side,cur,max){const bar=$(side==='player'?'#v636QuestPlayerHpBar':'#v636QuestEnemyHpBar'),txt=$(side==='player'?'#v636QuestPlayerHpText':'#v636QuestEnemyHpText');const pct=Math.max(0,Math.min(100,(Number(cur)||0)/Math.max(1,Number(max)||1)*100));if(bar)bar.style.width=pct+'%';if(txt)txt.textContent=String(Math.max(0,Math.round(cur)))}
+ function pop(side,text,crit=false){const el=$(side==='player'?'#v636QuestDamagePlayer':'#v636QuestDamageEnemy');if(!el)return;el.textContent=text;el.classList.remove('pop','v252-crit');if(crit)el.classList.add('v252-crit');void el.offsetWidth;el.classList.add('pop');after(780,()=>el.classList.remove('pop','v252-crit'))}
+ function fxNode(cls){return $(`#v636QuestBattleStage .${cls}`)}
+ function attackFx(side){const kind=side==='player'?classKind():'enemy';if(side==='player'&&kind==='melee'){const slash=fxNode('v252-slash');if(slash){slash.style.left='62%';slash.style.top='46%';pulse(slash,'show',430)}}else{const p=fxNode('v252-projectile');if(p){p.className=`v252-projectile ${side==='player'?(kind+' player-shot'):'enemy-shot'}`;after(430,()=>{if(p)p.className='v252-projectile'})}}}
+ function hitFx(side){const impact=fxNode('v252-impact');if(impact){impact.className='v252-impact';if(side==='enemy'){const k=classKind();if(k==='magic')impact.classList.add('magic');if(k==='arrow')impact.classList.add('arrow');impact.style.left='72%'}else impact.style.left='28%';impact.style.top='47%';pulse(impact,'show',470)}pulse(fxNode('v252-screen-flash'),'show',280)}
+ function animate(el,cls,ms){pulse(el,cls,ms)}
+ function addRow(n,text,cls=''){const host=$('#v636QuestDungeonCard .v575-log-lines');if(!host)return;let row=host.querySelector(`[data-round="${n}"]`);if(!row){row=document.createElement('div');row.dataset.round=String(n);host.prepend(row)}row.className='v575-log-line '+cls;row.innerHTML=`<b>R${n}</b><span>${esc(text)}</span>`;while(host.children.length>4)host.lastElementChild?.remove()}
+ function flash(kind){const p=$('#v636QuestPlayerFighter'),e=$('#v636QuestEnemyFighter');const cls=kind==='heal'?'v604-heal-flash':kind==='dodge'?'v604-dodge-flash':kind==='guard'?'v604-guard-flash':kind==='power'?'v604-power-flash':'';pulse(p,cls,680);if(kind==='power')pulse(e,'v604-hit-flash',520)}
+ function chip(label,cls='',kind=''){const strip=$('#v636QuestDungeonCard .v575-proc-strip');if(!strip)return;const key=label.toUpperCase();if([...strip.children].some(x=>(x.textContent||'').toUpperCase()===key))return;const el=document.createElement('span');el.className='v575-chip v604-skill-chip '+cls;el.textContent=label;strip.appendChild(el);flash(kind);after(1650,()=>el.remove());while(strip.children.length>3)strip.firstElementChild?.remove()}
+ function showEffects(text,heal=0,defensive=false,counter=0){const raw=String(text||'');for(const [re,label,cls,kind] of EFFECTS){if(re.test(raw))chip(label,cls,kind)}if(heal>0)chip(defensive?`💚 HEILUNG +${heal} LP`:`💚 LEBENSRAUB +${heal} LP`,'heal','heal');if(counter>0)chip(`↩️ KONTER ${counter}`,'scout','power')}
+ function attr(name){try{return Number(totalAttr(name))||0}catch(_){return 0}}
+ function setVal(name){try{return Number(setBonusValue(name))||0}catch(_){return 0}}
+ function primary(){try{return typeof v029PrimaryStat==='function'?Number(v029PrimaryStat())||0:attr(s?.playerClass==='scout'?'geschick':s?.playerClass==='bruiser'?'intelligenz':'staerke')}catch(_){return 1}}
+
+ async function play(q={}){
+   if(typeof v141Settings==='object'&&v141Settings.questBattleAnimation===false)return;
+   const mine=++fightToken,root=ensureRoot(q),card=$('#v636QuestDungeonCard'),pf=$('#v636QuestPlayerFighter'),ef=$('#v636QuestEnemyFighter');
+   const boss=bossInfo(q),pName=String(s?.characterName||className());
+   let maxPlayer=900;try{maxPlayer=Math.max(120,Math.round(maxHp()))}catch(_){}
+   const lvl=Math.max(1,Number(s?.level)||1),sampleBase=Math.max(4,Math.floor(primary()*1.9+lvl*1.55+4));
+   const maxEnemy=Math.max(180,Math.round(sampleBase*(q?.v310Elite?13:10)));
+   const enemyBaseAtk=Math.max(4,Math.round(maxPlayer*(q?.v310Elite?.115:.085)));
+   let playerHp=maxPlayer,enemyHp=maxEnemy,roundNo=0,finished=false;
+   let combatState=null;try{combatState=typeof v318NewCombatState==='function'?v318NewCombatState('dungeon',maxPlayer):null}catch(_){}
+   card?.classList.remove('v577-victory','v577-defeat','v252-victory','v252-defeat');
+   setHp('player',playerHp,maxPlayer);setHp('enemy',enemyHp,maxEnemy);round('BEREIT');
+   const log=$('#v636QuestDungeonCard .v575-log-lines');if(log)log.innerHTML='';const procs=$('#v636QuestDungeonCard .v575-proc-strip');if(procs)procs.innerHTML='';root.classList.add('show');copyExactDungeonBackground();
+   await wait(420);if(mine!==fightToken)return;
+   let playerTurn=true,nextTurnAt=performance.now();
+   return await new Promise(resolve=>{
+    function finish(){if(finished)return;finished=true;setHp('enemy',0,maxEnemy);round('SIEG');card?.classList.add('v577-victory','v252-victory');chip(q?.v310Elite?'🏆 ELITE BESIEGT':'🏆 SIEG','heal','heal');const row=$(`#v636QuestDungeonCard .v575-log-lines [data-round="${roundNo}"] span`);if(row)row.textContent+=` ${boss} wurde besiegt. Belohnung wird geöffnet …`;after(780,()=>{if(mine===fightToken)root.classList.remove('show');resolve()})}
+    function playerAttack(){
+      roundNo++;round('RUNDE '+roundNo);const base=Math.max(4,Math.floor(primary()*1.9+lvl*1.55+Math.random()*7));let dmg=base,heal=0,crit=false,label='TREFFER';
+      try{if(combatState&&typeof v318ResolvePlayerAttack==='function'){const a=v318ResolvePlayerAttack(combatState,{baseDamage:base,enemyHp,enemyMax:maxEnemy,playerHp,playerMax:maxPlayer,baseCrit:Math.min(.30,.04+attr('glueck')*.012),setCrit:s.playerClass==='bruiser'?(.07+setVal('critChance')):0,baseWucht:(s.playerClass==='grower'||s.playerClass==='frost')?(.13+setVal('wuchtChance')):0,baseDouble:s.playerClass==='scout'?(.15+setVal('doubleChance')):0,setDoubleDamage:setVal('doubleDamage')})||{};dmg=Math.max(1,Math.round(Number(a.damage)||base));heal=Math.max(0,Math.round(Number(a.heal)||0));crit=!!a.crit;label=a.text||label}}catch(_){}
+      playerHp=Math.min(maxPlayer,playerHp+heal);enemyHp=Math.max(0,enemyHp-dmg);animate(pf,'attack-right',430);attackFx('player');after(175,()=>{if(mine!==fightToken)return;animate(ef,'hit',400);hitFx('enemy');pop('enemy','-'+dmg,crit)});setHp('player',playerHp,maxPlayer);setHp('enemy',enemyHp,maxEnemy);showEffects(label,heal,false,0);addRow(roundNo,`${pName}: ${label} · ${dmg} Schaden${heal?` · +${heal} LP`:''}`,crit?'crit':'');if(enemyHp<=0){finish();return false}return true
+    }
+    function enemyAttack(){
+      const raw=Math.max(3,Math.round(enemyBaseAtk*(.88+Math.random()*.24)));let dmg=raw,heal=0,counter=0,prevent=false,label='Gegner trifft';
+      try{if(combatState&&typeof v318ResolveEnemyAttack==='function'){const d=v318ResolveEnemyAttack(combatState,{damage:raw,playerHp,playerMax:maxPlayer})||{};dmg=Math.max(0,Math.round(Number(d.damage)||0));heal=Math.max(0,Math.round(Number(d.heal)||0));counter=Math.max(0,Math.round(Number(d.counterDamage)||0));prevent=!!d.preventLethal;label=d.text||label}}catch(_){}
+      playerHp=Math.min(maxPlayer,playerHp+heal);playerHp=Math.max(0,playerHp-dmg);if(prevent&&playerHp<=0)playerHp=1;if(counter)enemyHp=Math.max(0,enemyHp-counter);animate(ef,'attack-left',430);attackFx('enemy');after(175,()=>{if(mine!==fightToken)return;if(!/AUSGEWICHEN/i.test(label)){animate(pf,'hit',400);hitFx('player');if(dmg)pop('player','-'+dmg,false)}});setHp('player',playerHp,maxPlayer);setHp('enemy',enemyHp,maxEnemy);showEffects(label,heal,true,counter);const row=$(`#v636QuestDungeonCard .v575-log-lines [data-round="${roundNo}"] span`);if(row){const special=String(label).replace(/^Gegner trifft\s*·?\s*/i,'').trim();row.textContent+=/AUSGEWICHEN/i.test(label)?' · Gegner: AUSGEWICHEN':` · Gegner: ${dmg} Schaden${special&&special!=='Gegner trifft'?` · ${special}`:''}${counter?` · Konter ${counter}`:''}${heal?` · +${heal} LP`:''}`}
+      if(enemyHp<=0){finish();return false}if(playerHp<=0){playerHp=Math.max(1,Math.round(maxPlayer*.18));setHp('player',playerHp,maxPlayer);chip('❤️ ZWEITE LUFT','heal','heal')}return true
+    }
+    function frame(now){if(finished||mine!==fightToken)return;if(now>=nextTurnAt){if(playerTurn){if(!playerAttack())return}else{if(!enemyAttack())return}playerTurn=!playerTurn;nextTurnAt=now+430}requestAnimationFrame(frame)}
+    requestAnimationFrame(frame);
+   });
+ }
+
+ window.v311PlayFight=play;try{v311PlayFight=play}catch(_){}
+ window.v636QuestDungeonPreview=()=>play({id:636,name:'Nebel über dem Gewächshaus',text:'Ein Quest-Gegner versperrt den Weg.',v310Elite:false});
+ window.v634QuestDungeonPreview=window.v636QuestDungeonPreview;window.v625QuestVisualPreview=window.v636QuestDungeonPreview;window.v615QuestVisualPreview=window.v636QuestDungeonPreview;
+ function ownPreviewButtons(){document.querySelectorAll('[data-v615-quest-preview]').forEach(b=>{b.removeAttribute('data-v615-quest-preview');b.setAttribute('data-v636-quest-preview','1')})}
+ ownPreviewButtons();new MutationObserver(ownPreviewButtons).observe(document.body,{childList:true,subtree:true});
+ window.addEventListener('click',e=>{const b=e.target?.closest?.('[data-v636-quest-preview]');if(!b)return;e.preventDefault();e.stopImmediatePropagation();window.v636QuestDungeonPreview()},true);
+})();
+</script>
+<!-- ===== /V6.36 ===== -->
