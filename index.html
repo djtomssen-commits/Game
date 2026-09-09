@@ -98862,31 +98862,63 @@ function sync(){bindPvp();ensureQuest();ensureQa()}document.addEventListener('cl
    <g fill="#7dff66" opacity=".74"><circle cx="83" cy="69" r="3"/><circle cx="180" cy="91" r="2.5"/><circle cx="55" cy="184" r="2"/><circle cx="191" cy="176" r="2.5"/></g>
   </svg>`;
  }
+ function stopOlderQuestVisualPainters(){
+  try{
+   const fight=$('#v311QuestFight'),boss=$('#v311BossAvatar');
+   if(fight?.__v628Observer?.disconnect){fight.__v628Observer.disconnect();fight.__v628Observer=null}
+   if(boss?.__v628Observer?.disconnect){boss.__v628Observer.disconnect();boss.__v628Observer=null}
+  }catch(_){}
+ }
  function apply(){
   if(busy)return;busy=true;
   try{
    const fight=$('#v311QuestFight'),boss=$('#v311BossAvatar'),name=$('#v311BossName');
    if(!fight?.classList.contains('v625-quest-live')||!boss||!name)return;
+   stopOlderQuestVisualPainters();
    const n=(name.textContent||'').trim();
    if(/Nebel-Unhold/i.test(n)){
     if(!boss.classList.contains('v629-nebel-art')||!boss.querySelector('.v629-nebel-unhold')){
-      boss.classList.remove('v615-has-art','v627-vector-art');boss.classList.add('v628-final-enemy','v629-nebel-art');boss.innerHTML=nebelfSvg();
+      boss.classList.remove('v615-has-art','v627-vector-art');
+      boss.classList.add('v628-final-enemy','v629-nebel-art');
+      boss.innerHTML=nebelfSvg();
     }
-   }else boss.classList.remove('v629-nebel-art');
-   fight.classList.add('v629-mockup-look');
+   }else{
+    boss.classList.remove('v629-nebel-art');
+   }
+   if(!fight.classList.contains('v629-mockup-look'))fight.classList.add('v629-mockup-look');
    last=n;
-  }catch(e){console.error('V6.29 quest visual',e)}finally{busy=false}
+  }catch(e){console.error('V6.30 quest visual',e)}finally{busy=false}
  }
- function kick(){requestAnimationFrame(apply);setTimeout(apply,30);setTimeout(apply,100);setTimeout(apply,230)}
+ function kick(){requestAnimationFrame(apply)}
  function install(){
   const fight=$('#v311QuestFight');
-  if(fight&&!fight.__v629Observer){new MutationObserver(()=>{if(!busy&&fight.classList.contains('v625-quest-live'))kick()}).observe(fight,{attributes:true,subtree:true,childList:true});fight.__v629Observer=true}
+  stopOlderQuestVisualPainters();
+  if(fight&&!fight.__v630Observer){
+    const mo=new MutationObserver(muts=>{
+      for(const m of muts){
+        if(m.target===fight&&m.attributeName==='class'&&fight.classList.contains('v625-quest-live')){kick();break}
+      }
+    });
+    mo.observe(fight,{attributes:true,attributeFilter:['class']});
+    fight.__v630Observer=mo;
+  }
   kick();
  }
- document.addEventListener('click',()=>setTimeout(kick,0),true);
+ /* Important: do not observe the whole fight subtree. Animation classes, HP updates
+    and combat-log rows change continuously during the cinematic. Older versions did
+    that and caused the V6.28/V6.29 visual painters to fight each other, starving the
+    round timers after the first exchange. V6.30 owns visuals only and leaves the
+    V6.25 dungeon-parity combat loop completely untouched. */
+ document.addEventListener('click',e=>{
+   if(e.target?.closest?.('[data-v615-quest-preview]'))setTimeout(kick,0);
+ },true);
  window.addEventListener('pageshow',kick,{passive:true});
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});else install();
  window.v629ApplyQuestMockupLook=apply;
+ window.v630ApplyQuestMockupLook=apply;
 })();
 </script>
 <!-- ===== /V6.29 ===== -->
+<!-- ===== V6.30 QUEST VISUAL OBSERVER FIX · COMBAT LOOP UNTOUCHED ===== -->
+<script>window.__V630_QUEST_VISUAL_FIX__=true;</script>
+<!-- ===== /V6.30 ===== -->
