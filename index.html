@@ -98567,6 +98567,12 @@ function sync(){bindPvp();ensureQuest();ensureQa()}document.addEventListener('cl
    const pName=s?.characterName||classes?.[s?.playerClass]?.name||'Deine Legende';
    const pNameEl=$('#v311PlayerName'),bNameEl=$('#v311BossName');if(pNameEl)pNameEl.textContent=pName;if(bNameEl)bNameEl.textContent=boss;
    setQuestArt(q,bossIcon);
+   /* V6.32: the final quest visual renderer is defined later in the file and the
+      fight overlay is created lazily. Older DOM-ready observers therefore may not
+      exist yet. Schedule only the visual painter from the already frame-based quest
+      clock; combat timing/damage/rewards remain untouched. */
+   after(16,()=>{try{window.v629ApplyQuestMockupLook?.()}catch(_){}});
+   after(90,()=>{try{window.v629ApplyQuestMockupLook?.()}catch(_){}});
    const enemyAvatar=$('#v311BossAvatar');if(enemyAvatar)enemyAvatar.classList.remove('v311-defeated');
    const pf=fighter('player'),ef=fighter('enemy');pf?.classList.remove('v625-defeated');ef?.classList.remove('v625-defeated');
    const proc=$('#v311QuestFight .v615-quest-procs');if(proc)proc.innerHTML='';rowsReset();roundChip('BEREIT');
@@ -98935,3 +98941,7 @@ function sync(){bindPvp();ensureQuest();ensureQa()}document.addEventListener('cl
 <!-- ===== V6.31 QUEST COMBAT TIMER FIX ===== -->
 <script>window.__V631_QUEST_RAF_TIMERS__=true;</script>
 <!-- ===== /V6.31 ===== -->
+
+<!-- ===== V6.32 QUEST ENEMY VISUAL HOOK · COMBAT UNTOUCHED ===== -->
+<script>window.__V632_QUEST_ENEMY_VISUAL_HOOK__=true;</script>
+<!-- ===== /V6.32 ===== -->
