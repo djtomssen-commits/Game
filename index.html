@@ -99462,13 +99462,14 @@ function sync(){bindPvp();ensureQuest();ensureQa()}document.addEventListener('cl
  function hitFx(side){const impact=fxNode('v252-impact');if(impact){impact.className='v252-impact';if(side==='enemy'){const k=classKind();if(k==='magic')impact.classList.add('magic');if(k==='arrow')impact.classList.add('arrow');impact.style.left='72%'}else impact.style.left='28%';impact.style.top='47%';pulse(impact,'show',470)}pulse(fxNode('v252-screen-flash'),'show',280)}
  function animate(el,cls,ms){
    if(!el)return;
-   /* V6.41: keep the existing Dungeon class hooks, but move the fighter with
-      the Web Animations API so no legacy CSS animation shorthand can cancel
-      the visible strike in Android WebView. Visual only. */
-   pulse(el,cls,ms);
+   /* V6.43 smooth mobile motion: animate only the artwork layer. Name/HP stay
+      stable, no legacy fighter animation is triggered, and hit recoil finishes
+      before the next 430 ms combat beat. Visual only. */
    try{
-     if(el.__v641QuestMotion){try{el.__v641QuestMotion.cancel()}catch(_){}}
-     let frames=null,easing='cubic-bezier(.2,.75,.25,1)',duration=Math.max(320,Number(ms)||430);
+     const target=el.querySelector('.fighter-avatar')||el;
+     if(target.__v643QuestMotion){try{target.__v643QuestMotion.cancel()}catch(_){} }
+     let frames=null,easing='cubic-bezier(.2,.75,.25,1)';
+     let duration=cls==='hit'?240:Math.max(320,Number(ms)||430);
      if(cls==='attack-right')frames=[
        {transform:'translate3d(0,0,0) scale(1) rotate(0deg)',offset:0},
        {transform:'translate3d(74px,0,0) scale(1.08) rotate(3deg)',offset:.42},
@@ -99482,19 +99483,20 @@ function sync(){bindPvp();ensureQuest();ensureQa()}document.addEventListener('cl
        {transform:'translate3d(0,0,0) scale(1) rotate(0deg)',offset:1}
      ];
      else if(cls==='hit'){
-       easing='ease-out';
+       easing='cubic-bezier(.18,.76,.28,1)';
+       const dir=el.classList.contains('enemy-side')?-1:1;
        frames=[
-        {transform:'translate3d(0,0,0)',filter:'brightness(1)',offset:0},
-        {transform:'translate3d(-13px,0,0)',filter:'brightness(2.05) saturate(.5)',offset:.16},
-        {transform:'translate3d(10px,0,0)',filter:'brightness(1.55)',offset:.38},
-        {transform:'translate3d(-6px,0,0)',filter:'brightness(1.25)',offset:.62},
-        {transform:'translate3d(0,0,0)',filter:'brightness(1)',offset:1}
+        {transform:'translate3d(0,0,0)',offset:0},
+        {transform:`translate3d(${dir*12}px,-1px,0)`,offset:.24},
+        {transform:`translate3d(${dir*-7}px,1px,0)`,offset:.52},
+        {transform:`translate3d(${dir*3}px,0,0)`,offset:.76},
+        {transform:'translate3d(0,0,0)',offset:1}
        ];
      }
-     if(frames&&typeof el.animate==='function'){
-       const a=el.animate(frames,{duration,easing,iterations:1,fill:'none'});
-       el.__v641QuestMotion=a;
-       a.onfinish=a.oncancel=()=>{if(el.__v641QuestMotion===a)el.__v641QuestMotion=null};
+     if(frames&&typeof target.animate==='function'){
+       const a=target.animate(frames,{duration,easing,iterations:1,fill:'none'});
+       target.__v643QuestMotion=a;
+       a.onfinish=a.oncancel=()=>{if(target.__v643QuestMotion===a)target.__v643QuestMotion=null};
      }
    }catch(_){}
  }
@@ -99526,12 +99528,12 @@ function sync(){bindPvp();ensureQuest();ensureQa()}document.addEventListener('cl
     function playerAttack(){
       roundNo++;round('RUNDE '+roundNo);const base=Math.max(4,Math.floor(primary()*1.9+lvl*1.55+Math.random()*7));let dmg=base,heal=0,crit=false,label='TREFFER';
       try{if(combatState&&typeof v318ResolvePlayerAttack==='function'){const a=v318ResolvePlayerAttack(combatState,{baseDamage:base,enemyHp,enemyMax:maxEnemy,playerHp,playerMax:maxPlayer,baseCrit:Math.min(.30,.04+attr('glueck')*.012),setCrit:s.playerClass==='bruiser'?(.07+setVal('critChance')):0,baseWucht:(s.playerClass==='grower'||s.playerClass==='frost')?(.13+setVal('wuchtChance')):0,baseDouble:s.playerClass==='scout'?(.15+setVal('doubleChance')):0,setDoubleDamage:setVal('doubleDamage')})||{};dmg=Math.max(1,Math.round(Number(a.damage)||base));heal=Math.max(0,Math.round(Number(a.heal)||0));crit=!!a.crit;label=a.text||label}}catch(_){}
-      playerHp=Math.min(maxPlayer,playerHp+heal);enemyHp=Math.max(0,enemyHp-dmg);animate(pf,'attack-right',430);attackFx('player');after(175,()=>{if(mine!==fightToken)return;animate(ef,'hit',400);hitFx('enemy');pop('enemy','-'+dmg,crit)});setHp('player',playerHp,maxPlayer);setHp('enemy',enemyHp,maxEnemy);showEffects(label,heal,false,0);addRow(roundNo,`${pName}: ${label} · ${dmg} Schaden${heal?` · +${heal} LP`:''}`,crit?'crit':'');if(enemyHp<=0){finish();return false}return true
+      playerHp=Math.min(maxPlayer,playerHp+heal);enemyHp=Math.max(0,enemyHp-dmg);animate(pf,'attack-right',430);attackFx('player');after(145,()=>{if(mine!==fightToken)return;animate(ef,'hit',240);hitFx('enemy');pop('enemy','-'+dmg,crit)});setHp('player',playerHp,maxPlayer);setHp('enemy',enemyHp,maxEnemy);showEffects(label,heal,false,0);addRow(roundNo,`${pName}: ${label} · ${dmg} Schaden${heal?` · +${heal} LP`:''}`,crit?'crit':'');if(enemyHp<=0){finish();return false}return true
     }
     function enemyAttack(){
       const raw=Math.max(3,Math.round(enemyBaseAtk*(.88+Math.random()*.24)));let dmg=raw,heal=0,counter=0,prevent=false,label='Gegner trifft';
       try{if(combatState&&typeof v318ResolveEnemyAttack==='function'){const d=v318ResolveEnemyAttack(combatState,{damage:raw,playerHp,playerMax:maxPlayer})||{};dmg=Math.max(0,Math.round(Number(d.damage)||0));heal=Math.max(0,Math.round(Number(d.heal)||0));counter=Math.max(0,Math.round(Number(d.counterDamage)||0));prevent=!!d.preventLethal;label=d.text||label}}catch(_){}
-      playerHp=Math.min(maxPlayer,playerHp+heal);playerHp=Math.max(0,playerHp-dmg);if(prevent&&playerHp<=0)playerHp=1;if(counter)enemyHp=Math.max(0,enemyHp-counter);animate(ef,'attack-left',430);attackFx('enemy');after(175,()=>{if(mine!==fightToken)return;if(!/AUSGEWICHEN/i.test(label)){animate(pf,'hit',400);hitFx('player');if(dmg)pop('player','-'+dmg,false)}});setHp('player',playerHp,maxPlayer);setHp('enemy',enemyHp,maxEnemy);showEffects(label,heal,true,counter);const row=$(`#v636QuestDungeonCard .v575-log-lines [data-round="${roundNo}"] span`);if(row){const special=String(label).replace(/^Gegner trifft\s*·?\s*/i,'').trim();row.textContent+=/AUSGEWICHEN/i.test(label)?' · Gegner: AUSGEWICHEN':` · Gegner: ${dmg} Schaden${special&&special!=='Gegner trifft'?` · ${special}`:''}${counter?` · Konter ${counter}`:''}${heal?` · +${heal} LP`:''}`}
+      playerHp=Math.min(maxPlayer,playerHp+heal);playerHp=Math.max(0,playerHp-dmg);if(prevent&&playerHp<=0)playerHp=1;if(counter)enemyHp=Math.max(0,enemyHp-counter);animate(ef,'attack-left',430);attackFx('enemy');after(145,()=>{if(mine!==fightToken)return;if(!/AUSGEWICHEN/i.test(label)){animate(pf,'hit',240);hitFx('player');if(dmg)pop('player','-'+dmg,false)}});setHp('player',playerHp,maxPlayer);setHp('enemy',enemyHp,maxEnemy);showEffects(label,heal,true,counter);const row=$(`#v636QuestDungeonCard .v575-log-lines [data-round="${roundNo}"] span`);if(row){const special=String(label).replace(/^Gegner trifft\s*·?\s*/i,'').trim();row.textContent+=/AUSGEWICHEN/i.test(label)?' · Gegner: AUSGEWICHEN':` · Gegner: ${dmg} Schaden${special&&special!=='Gegner trifft'?` · ${special}`:''}${counter?` · Konter ${counter}`:''}${heal?` · +${heal} LP`:''}`}
       if(enemyHp<=0){finish();return false}if(playerHp<=0){playerHp=Math.max(1,Math.round(maxPlayer*.18));setHp('player',playerHp,maxPlayer);chip('❤️ ZWEITE LUFT','heal','heal')}return true
     }
     function frame(now){if(finished||mine!==fightToken)return;if(now>=nextTurnAt){if(playerTurn){if(!playerAttack())return}else{if(!enemyAttack())return}playerTurn=!playerTurn;nextTurnAt=now+430}requestAnimationFrame(frame)}
@@ -100614,3 +100616,15 @@ function sync(){bindPvp();ensureQuest();ensureQa()}document.addEventListener('cl
 <!-- ===== V6.42 EXACT DUNGEON STRIKE DISTANCE ===== -->
 <script id="v642-exact-dungeon-strike-marker">window.__V642_EXACT_DUNGEON_STRIKE__=true;</script>
 <!-- ===== /V6.42 ===== -->
+<!-- ===== V6.43 QUEST SMOOTH MOBILE COMBAT ===== -->
+<style id="v643-quest-smooth-mobile-css">
+#v311QuestFight.v636-dungeon-quest{backdrop-filter:none!important;-webkit-backdrop-filter:none!important;background:#000!important}
+#v636QuestDungeonCard .fighter{will-change:auto!important;animation:none!important}
+#v636QuestDungeonCard .fighter.attack-right,#v636QuestDungeonCard .fighter.attack-left,#v636QuestDungeonCard .fighter.hit{animation:none!important}
+#v636QuestDungeonCard .fighter-avatar{will-change:transform!important;backface-visibility:hidden!important;-webkit-backface-visibility:hidden!important;transform:translate3d(0,0,0)}
+#v636QuestDungeonCard .hpfill{transition:width .20s linear!important}
+#v636QuestDungeonCard .v252-screen-flash{will-change:opacity!important}
+#v636QuestDungeonCard .v252-impact,#v636QuestDungeonCard .v252-slash,#v636QuestDungeonCard .v252-projectile{will-change:transform,opacity!important}
+</style>
+<script id="v643-quest-smooth-marker">window.__V643_QUEST_SMOOTH_MOBILE__=true;</script>
+<!-- ===== /V6.43 ===== -->
