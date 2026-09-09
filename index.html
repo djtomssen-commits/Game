@@ -99330,7 +99330,7 @@ function sync(){bindPvp();ensureQuest();ensureQa()}document.addEventListener('cl
    root.innerHTML=`<div id="v636QuestDungeonCard" class="v575-combat v599-clean v602-template">
     <div class="v575-head"><div class="v575-head-main"><div class="v575-kicker">QUEST-FINALE · DUNGEON-KAMPF</div><b class="v575-title">Der Weg zur Belohnung ist noch nicht frei!</b></div><div class="v575-recommend">${q?.v310Elite?'ELITE QUEST':'QUEST DUELL'}</div></div>
     <div class="battle-stage" id="v636QuestBattleStage"><div class="v600-bg"></div><div class="v575-stage-title">QUEST DUELL</div><div class="v575-round">BEREIT</div><div class="v575-proc-strip"></div><div class="v252-screen-flash"></div><div class="v252-impact"></div><div class="v252-slash"></div><div class="v252-projectile"></div><div class="damage left" id="v636QuestDamagePlayer"></div><div class="damage right" id="v636QuestDamageEnemy"></div>
-      <div class="fighter player" id="v636QuestPlayerFighter"><div class="v252-fighter-shell"><div class="v252-aura"></div><div class="v252-shadow"></div><div class="fighter-avatar">${pArt?`<img class="v253-player-avatar-img" src="${pArt}" alt="Spielcharakter">`:'🧙'}</div><div class="fighter-name">${esc(pName)}</div><div class="hpbar"><div class="hpfill" id="v636QuestPlayerHpBar"></div></div><div class="tiny"><span id="v636QuestPlayerHpText">100</span> HP</div></div></div>
+      <div class="fighter player" id="v636QuestPlayerFighter"><div class="v252-fighter-shell"><div class="v252-aura"></div><div class="v252-shadow"></div><div class="fighter-avatar">${pArt?`<img class="${s?.playerClass==='grower'?'v600-barbar-art':'v253-player-avatar-img'}" src="${pArt}" alt="Spielcharakter">`:'🧙'}</div><div class="fighter-name">${esc(pName)}</div><div class="hpbar"><div class="hpfill" id="v636QuestPlayerHpBar"></div></div><div class="tiny"><span id="v636QuestPlayerHpText">100</span> HP</div></div></div>
       <div class="fighter enemy-side" id="v636QuestEnemyFighter"><div class="v252-fighter-shell"><div class="v252-aura"></div><div class="v252-shadow"></div><div class="fighter-avatar" id="v636QuestEnemyIcon">${monster(q,boss)}</div><div class="fighter-name">${esc(boss)}</div><div class="hpbar"><div class="hpfill" id="v636QuestEnemyHpBar"></div></div><div class="tiny"><span id="v636QuestEnemyHpText">100</span> HP</div></div></div>
     </div><div class="v575-log"><div class="v575-log-title"><span>📜 Kampfverlauf</span><small>letzte Runden</small></div><div class="v575-log-lines"></div></div></div>`;
    requestAnimationFrame(copyExactDungeonBackground);return root;
@@ -100347,6 +100347,12 @@ function sync(){bindPvp();ensureQuest();ensureQa()}document.addEventListener('cl
  #v636QuestDungeonCard.v599-clean .v575-round{top:52px!important}
  #v636QuestDungeonCard.v599-clean .v575-proc-strip{top:89px!important;left:9%!important;right:9%!important}
 }
+
+/* V6.38: Bud-Barbar image must use the same final Dungeon art class. */
+#v636QuestDungeonCard.v599-clean #v636QuestPlayerFighter.v600-barbar .fighter-avatar>.v600-barbar-art{
+ display:block!important;visibility:visible!important;opacity:1!important;position:relative!important;z-index:4!important;
+}
+#v636QuestDungeonCard.v599-clean #v636QuestPlayerFighter.v600-barbar .fighter-avatar>.v253-player-avatar-img{display:none!important}
 </style>
 <script id="v637-quest-exact-dungeon-core">
 (function(){
@@ -100356,7 +100362,7 @@ function sync(){bindPvp();ensureQuest();ensureQa()}document.addEventListener('cl
   const card=document.getElementById('v636QuestDungeonCard');if(!card)return;
   card.classList.add('v575-combat','v599-clean');
   const bg=card.querySelector('.v600-bg');if(bg)bg.removeAttribute('style');
-  const p=document.getElementById('v636QuestPlayerFighter');if(p)p.classList.toggle('v600-barbar',/Bud-Barbar/i.test(p.textContent||''));
+  const p=document.getElementById('v636QuestPlayerFighter');if(p){const isBar=/Bud-Barbar/i.test(p.textContent||'');p.classList.toggle('v600-barbar',isBar);const img=p.querySelector('.fighter-avatar img');if(img&&isBar){img.classList.remove('v253-player-avatar-img');img.classList.add('v600-barbar-art');img.style.removeProperty('display');img.style.removeProperty('visibility');img.style.removeProperty('opacity')}else if(img&&!isBar){img.classList.remove('v600-barbar-art');img.classList.add('v253-player-avatar-img')}}
   card.querySelectorAll('.v604-skill-chip').forEach(el=>{
    if(el.dataset.v637armed)return;el.dataset.v637armed='1';
    el.style.setProperty('animation','none','important');void el.offsetWidth;
