@@ -98615,3 +98615,53 @@ function sync(){bindPvp();ensureQuest();ensureQa()}document.addEventListener('cl
 })();
 </script>
 <!-- ===== /V6.25 ===== -->
+
+<!-- ===== V6.28 QUEST FINAL VISUAL AUTHORITY ===== -->
+<style id="v628-quest-final-visual-authority-css">
+#v311QuestFight.v625-quest-live .v311-arena.v628-final-scene{background-size:cover!important;background-position:center!important;background-repeat:no-repeat!important;background-color:#071008!important}
+#v311QuestFight.v625-quest-live #v311BossAvatar.v628-final-enemy{overflow:visible!important;background:transparent!important;border:0!important;box-shadow:none!important;font-size:0!important;filter:none!important}
+#v311QuestFight.v625-quest-live #v311BossAvatar.v628-final-enemy>img{display:none!important}
+#v311QuestFight.v625-quest-live #v311BossAvatar.v628-final-enemy>svg.v253-monster{display:block!important;width:205px!important;height:242px!important;max-width:none!important;max-height:none!important;overflow:visible!important;transform:translateY(4px) scale(1.05)!important;transform-origin:50% 82%!important;filter:drop-shadow(0 17px 13px rgba(0,0,0,.92)) drop-shadow(0 0 18px rgba(109,226,83,.24))!important}
+#v311QuestFight.v625-quest-live #v311BossAvatar.v628-final-enemy>svg.v253-monster .eye{filter:drop-shadow(0 0 6px currentColor)!important}
+#v311QuestFight.v625-quest-live #v311PlayerAvatar{overflow:visible!important;background:transparent!important;border:0!important;box-shadow:none!important}
+#v311QuestFight.v625-quest-live #v311PlayerAvatar>img{width:156%!important;max-width:none!important;height:235px!important;max-height:none!important;object-fit:cover!important;object-position:center 43%!important;border:0!important;border-radius:0!important;background:transparent!important;-webkit-mask-image:radial-gradient(ellipse 62% 83% at 50% 51%,#000 0 61%,rgba(0,0,0,.98) 72%,rgba(0,0,0,.60) 84%,transparent 100%)!important;mask-image:radial-gradient(ellipse 62% 83% at 50% 51%,#000 0 61%,rgba(0,0,0,.98) 72%,rgba(0,0,0,.60) 84%,transparent 100%)!important;filter:drop-shadow(0 17px 13px rgba(0,0,0,.92)) drop-shadow(0 0 13px rgba(109,226,83,.14))!important}
+@media(max-width:560px){#v311QuestFight.v625-quest-live #v311BossAvatar.v628-final-enemy>svg.v253-monster{width:184px!important;height:220px!important;transform:translateY(7px) scale(1.03)!important}#v311QuestFight.v625-quest-live #v311PlayerAvatar>img{width:158%!important;height:222px!important}}
+</style>
+<script id="v628-quest-final-visual-authority-core">
+(function(){
+ 'use strict';
+ if(window.__V628_QUEST_FINAL_VISUAL__)return;
+ window.__V628_QUEST_FINAL_VISUAL__=true;
+ const $=q=>document.querySelector(q);
+ let busy=false,lastSignature='';
+ function hash(s){let h=0;for(let i=0;i<s.length;i++)h=((h<<5)-h+s.charCodeAt(i))|0;return Math.abs(h)}
+ function currentName(){const raw=String($('#v311BossName')?.textContent||'Quest-Gegner').trim();return raw.replace(/^ELITE\s*·\s*/i,'').trim()||'Quest-Gegner'}
+ function apply(){
+   if(busy)return false;
+   const fight=$('#v311QuestFight'),boss=$('#v311BossAvatar'),arena=$('#v311QuestFight .v311-arena');
+   if(!fight||!boss||!arena||!fight.classList.contains('v625-quest-live'))return false;
+   if(typeof v253MonsterSvg!=='function')return false;
+   busy=true;
+   try{
+     const name=currentName(),elite=fight.classList.contains('elite'),ri=hash(name)%9;
+     const sig=name+'|'+(elite?'1':'0')+'|'+ri;
+     const already=boss.classList.contains('v628-final-enemy')&&boss.querySelector('svg.v253-monster')&&lastSignature===sig;
+     if(!already){boss.classList.remove('v615-has-art','v627-vector-art');boss.classList.add('v628-final-enemy');boss.innerHTML=v253MonsterSvg({name},elite,1,ri);lastSignature=sig}
+     const c=window.__V468_CFG__?.['2']||window.__V468_CFG__?.[2];
+     if(c?.bg){arena.classList.add('v628-final-scene');arena.style.setProperty('background-image','radial-gradient(circle at 50% 43%,rgba(104,229,89,.13),transparent 22%),linear-gradient(180deg,rgba(1,8,5,.04) 0%,rgba(1,6,4,.20) 57%,rgba(1,4,2,.90) 100%),url("'+c.bg+'")','important')}
+     return true;
+   }catch(e){console.error('V6.28 quest final art',e);return false}
+   finally{busy=false}
+ }
+ window.v628ApplyQuestFinalVisual=apply;
+ function kick(){requestAnimationFrame(apply);setTimeout(apply,25);setTimeout(apply,90);setTimeout(apply,180)}
+ function install(){
+   const boss=$('#v311BossAvatar'),fight=$('#v311QuestFight');
+   if(boss&&!boss.__v628Observer){const mo=new MutationObserver(()=>{if(!busy)requestAnimationFrame(apply)});mo.observe(boss,{childList:true,subtree:true,attributes:true,attributeFilter:['class','src']});boss.__v628Observer=mo}
+   if(fight&&!fight.__v628Observer){const mo=new MutationObserver(()=>{if(fight.classList.contains('v625-quest-live'))kick()});mo.observe(fight,{attributes:true,attributeFilter:['class']});fight.__v628Observer=mo}
+   kick();
+ }
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});else install();
+})();
+</script>
+<!-- ===== /V6.28 ===== -->
