@@ -99460,7 +99460,44 @@ function sync(){bindPvp();ensureQuest();ensureQa()}document.addEventListener('cl
  function fxNode(cls){return $(`#v636QuestBattleStage .${cls}`)}
  function attackFx(side){const kind=side==='player'?classKind():'enemy';if(side==='player'&&kind==='melee'){const slash=fxNode('v252-slash');if(slash){slash.style.left='62%';slash.style.top='46%';pulse(slash,'show',430)}}else{const p=fxNode('v252-projectile');if(p){p.className=`v252-projectile ${side==='player'?(kind+' player-shot'):'enemy-shot'}`;after(430,()=>{if(p)p.className='v252-projectile'})}}}
  function hitFx(side){const impact=fxNode('v252-impact');if(impact){impact.className='v252-impact';if(side==='enemy'){const k=classKind();if(k==='magic')impact.classList.add('magic');if(k==='arrow')impact.classList.add('arrow');impact.style.left='72%'}else impact.style.left='28%';impact.style.top='47%';pulse(impact,'show',470)}pulse(fxNode('v252-screen-flash'),'show',280)}
- function animate(el,cls,ms){pulse(el,cls,ms)}
+ function animate(el,cls,ms){
+   if(!el)return;
+   /* V6.41: keep the existing Dungeon class hooks, but move the fighter with
+      the Web Animations API so no legacy CSS animation shorthand can cancel
+      the visible strike in Android WebView. Visual only. */
+   pulse(el,cls,ms);
+   try{
+     if(el.__v641QuestMotion){try{el.__v641QuestMotion.cancel()}catch(_){}}
+     let frames=null,easing='cubic-bezier(.2,.75,.25,1)',duration=Math.max(320,Number(ms)||430);
+     if(cls==='attack-right')frames=[
+       {transform:'translate3d(0,0,0) scale(1) rotate(0deg)',offset:0},
+       {transform:'translate3d(54px,-2px,0) scale(1.075) rotate(2.5deg)',offset:.42},
+       {transform:'translate3d(42px,0,0) scale(1.045) rotate(1deg)',offset:.68},
+       {transform:'translate3d(0,0,0) scale(1) rotate(0deg)',offset:1}
+     ];
+     else if(cls==='attack-left')frames=[
+       {transform:'translate3d(0,0,0) scale(1) rotate(0deg)',offset:0},
+       {transform:'translate3d(-54px,-2px,0) scale(1.075) rotate(-2.5deg)',offset:.42},
+       {transform:'translate3d(-42px,0,0) scale(1.045) rotate(-1deg)',offset:.68},
+       {transform:'translate3d(0,0,0) scale(1) rotate(0deg)',offset:1}
+     ];
+     else if(cls==='hit'){
+       easing='ease-out';
+       frames=[
+        {transform:'translate3d(0,0,0)',filter:'brightness(1)',offset:0},
+        {transform:'translate3d(-13px,0,0)',filter:'brightness(2.05) saturate(.5)',offset:.16},
+        {transform:'translate3d(10px,0,0)',filter:'brightness(1.55)',offset:.38},
+        {transform:'translate3d(-6px,0,0)',filter:'brightness(1.25)',offset:.62},
+        {transform:'translate3d(0,0,0)',filter:'brightness(1)',offset:1}
+       ];
+     }
+     if(frames&&typeof el.animate==='function'){
+       const a=el.animate(frames,{duration,easing,iterations:1,fill:'none'});
+       el.__v641QuestMotion=a;
+       a.onfinish=a.oncancel=()=>{if(el.__v641QuestMotion===a)el.__v641QuestMotion=null};
+     }
+   }catch(_){}
+ }
  function addRow(n,text,cls=''){const host=$('#v636QuestDungeonCard .v575-log-lines');if(!host)return;let row=host.querySelector(`[data-round="${n}"]`);if(!row){row=document.createElement('div');row.dataset.round=String(n);host.prepend(row)}row.className='v575-log-line '+cls;row.innerHTML=`<b>R${n}</b><span>${esc(text)}</span>`;while(host.children.length>4)host.lastElementChild?.remove()}
  function flash(kind){const p=$('#v636QuestPlayerFighter'),e=$('#v636QuestEnemyFighter');const cls=kind==='heal'?'v604-heal-flash':kind==='dodge'?'v604-dodge-flash':kind==='guard'?'v604-guard-flash':kind==='power'?'v604-power-flash':'';pulse(p,cls,680);if(kind==='power')pulse(e,'v604-hit-flash',520)}
  function chip(label,cls='',kind=''){const strip=$('#v636QuestDungeonCard .v575-proc-strip');if(!strip)return;const key=label.toUpperCase();if([...strip.children].some(x=>(x.textContent||'').toUpperCase()===key))return;const el=document.createElement('span');el.className='v575-chip v604-skill-chip '+cls;el.textContent=label;strip.appendChild(el);flash(kind);after(1650,()=>el.remove());while(strip.children.length>3)strip.firstElementChild?.remove()}
@@ -100570,3 +100607,7 @@ function sync(){bindPvp();ensureQuest();ensureQa()}document.addEventListener('cl
 })();
 </script>
 <!-- ===== /V6.40 ===== -->
+
+<!-- ===== V6.41 QUEST DIRECT DUNGEON MOTION ===== -->
+<script id="v641-quest-direct-motion-marker">window.__V641_QUEST_DIRECT_MOTION__=true;</script>
+<!-- ===== /V6.41 ===== -->
