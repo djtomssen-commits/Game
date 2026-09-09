@@ -49241,6 +49241,125 @@ Der Zahlungsanbieter ist noch nicht verbunden. Deshalb wird aktuell noch kein Ec
 <!-- ===== V6.33 QUEST FINAL HP / LOG FIX ===== -->
 <script>window.__V633_QUEST_FINAL_HP_FIX__=true;</script>
 <!-- ===== /V6.33 ===== -->
+
+<!-- ===== V6.39 QUEST ATTACK MOTION · DUNGEON ANIMATION CONFLICT FIX ===== -->
+<style id="v639-quest-attack-motion-fix-css">
+/*
+ V6.39 visual-only fix.
+ The Dungeon attack classes were already being applied, but the cloned V6.04
+ talent flashes used their own !important `animation` on the SAME fighter node.
+ A crit/heal/wucht proc therefore replaced attack-right/attack-left, so the
+ numbers and badges moved while the character appeared static.
+
+ Keep movement on the fighter (exact Dungeon motion), and move talent feedback
+ onto the inner fighter shell. No combat math/timing/rewards are changed.
+*/
+#v636QuestDungeonCard.v599-clean #v636QuestPlayerFighter.v604-heal-flash,
+#v636QuestDungeonCard.v599-clean #v636QuestPlayerFighter.v604-dodge-flash,
+#v636QuestDungeonCard.v599-clean #v636QuestPlayerFighter.v604-guard-flash,
+#v636QuestDungeonCard.v599-clean #v636QuestPlayerFighter.v604-power-flash,
+#v636QuestDungeonCard.v599-clean #v636QuestEnemyFighter.v604-hit-flash{
+  animation:none!important;
+}
+
+#v636QuestDungeonCard.v599-clean #v636QuestPlayerFighter.v604-heal-flash > .v252-fighter-shell{
+  animation:v604HealFlash .60s ease!important;
+}
+#v636QuestDungeonCard.v599-clean #v636QuestPlayerFighter.v604-dodge-flash > .v252-fighter-shell{
+  animation:v604DodgeFlash .48s ease!important;
+}
+#v636QuestDungeonCard.v599-clean #v636QuestPlayerFighter.v604-guard-flash > .v252-fighter-shell{
+  animation:v604GuardFlash .62s ease!important;
+}
+#v636QuestDungeonCard.v599-clean #v636QuestPlayerFighter.v604-power-flash > .v252-fighter-shell{
+  animation:v604PowerFlash .48s ease!important;
+}
+#v636QuestDungeonCard.v599-clean #v636QuestEnemyFighter.v604-hit-flash > .v252-fighter-shell{
+  animation:v604EnemyHit .42s ease!important;
+}
+
+/* Exact live-Dungeon attack/hit movement, now with final authority. */
+#v636QuestDungeonCard.v599-clean #v636QuestPlayerFighter.attack-right{
+  animation:v252AttackRight .43s cubic-bezier(.2,.75,.25,1)!important;
+  z-index:35!important;
+}
+#v636QuestDungeonCard.v599-clean #v636QuestEnemyFighter.attack-left{
+  animation:v252AttackLeft .43s cubic-bezier(.2,.75,.25,1)!important;
+  z-index:35!important;
+}
+#v636QuestDungeonCard.v599-clean #v636QuestPlayerFighter.hit,
+#v636QuestDungeonCard.v599-clean #v636QuestEnemyFighter.hit{
+  animation:v252Hit .40s ease!important;
+}
+
+/* Make the moving figure render smoothly on Android WebView. */
+#v636QuestDungeonCard.v599-clean .fighter{
+  transform:translateZ(0);
+  backface-visibility:hidden;
+  will-change:transform,filter;
+}
+#v636QuestDungeonCard.v599-clean .v252-fighter-shell{
+  backface-visibility:hidden;
+  will-change:transform,filter;
+}
+
+/* The old V4.02 quest overlay disabled every animation when Android reports
+   reduced motion. Dungeon combat does not use that blanket rule; Quest now
+   keeps only the actual combat feedback active so both modes behave alike. */
+@media (prefers-reduced-motion: reduce){
+  #v636QuestDungeonCard.v599-clean #v636QuestPlayerFighter.attack-right{
+    animation:v252AttackRight .43s cubic-bezier(.2,.75,.25,1)!important;
+  }
+  #v636QuestDungeonCard.v599-clean #v636QuestEnemyFighter.attack-left{
+    animation:v252AttackLeft .43s cubic-bezier(.2,.75,.25,1)!important;
+  }
+  #v636QuestDungeonCard.v599-clean #v636QuestPlayerFighter.hit,
+  #v636QuestDungeonCard.v599-clean #v636QuestEnemyFighter.hit{
+    animation:v252Hit .40s ease!important;
+  }
+  #v636QuestDungeonCard.v599-clean .damage.pop{
+    animation:v252DamagePop .72s cubic-bezier(.16,.8,.25,1)!important;
+  }
+  #v636QuestDungeonCard.v599-clean .v252-slash.show{
+    animation:v252Slash .36s ease-out!important;
+  }
+  #v636QuestDungeonCard.v599-clean .v252-impact.show{
+    animation:v252Impact .43s ease-out!important;
+  }
+  #v636QuestDungeonCard.v599-clean .v252-projectile.player-shot{
+    animation:v252ShotRight .38s linear!important;
+  }
+  #v636QuestDungeonCard.v599-clean .v252-projectile.enemy-shot{
+    animation:v252ShotLeft .38s linear!important;
+  }
+  #v636QuestDungeonCard.v599-clean .v575-chip.v604-skill-chip{
+    animation:v604SkillChip 1.55s cubic-bezier(.18,.8,.22,1) forwards!important;
+  }
+}
+</style>
+<script id="v639-quest-attack-motion-diagnostic">
+/* Visual diagnostic only: marks the stage while the already-existing Dungeon
+   attack classes are active. No handlers, combat values, timers or rewards. */
+(function(){
+ 'use strict';
+ if(window.__V639_QUEST_ATTACK_MOTION__)return;
+ window.__V639_QUEST_ATTACK_MOTION__=true;
+ const sync=()=>{
+  const card=document.getElementById('v636QuestDungeonCard');
+  if(!card)return;
+  const p=document.getElementById('v636QuestPlayerFighter');
+  const e=document.getElementById('v636QuestEnemyFighter');
+  card.classList.toggle('v639-player-attacking',!!p?.classList.contains('attack-right'));
+  card.classList.toggle('v639-enemy-attacking',!!e?.classList.contains('attack-left'));
+ };
+ const mo=new MutationObserver(ms=>{
+  if(ms.some(m=>m.type==='attributes'&&m.attributeName==='class'))sync();
+ });
+ mo.observe(document.body,{subtree:true,attributes:true,attributeFilter:['class'],childList:true});
+ requestAnimationFrame(sync);
+})();
+</script>
+<!-- ===== /V6.39 ===== -->
 </body>
 </html>
 <style id="v268-inventory-multisell-css">
