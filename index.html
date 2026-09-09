@@ -100495,3 +100495,78 @@ function sync(){bindPvp();ensureQuest();ensureQa()}document.addEventListener('cl
 </script>
 <!-- ===== /V6.37 ===== -->
 
+
+<!-- ===== V6.40 QUEST ATTACK FINAL AUTHORITY ===== -->
+<style id="v640-quest-attack-final-authority-css">
+/*
+ Final source-order authority.
+ V6.37 is physically later than the old V6.39 block in this legacy single-file
+ build and re-applies V6.04 proc animations to the whole fighter. Those proc
+ animations replace the Dungeon attack animation because CSS only allows one
+ `animation` value on the same element.
+
+ Keep Dungeon movement on the OUTER fighter; run proc feedback on the INNER
+ shell. This changes visuals only: combat timing/math/rewards remain untouched.
+*/
+#v636QuestDungeonCard.v599-clean #v636QuestPlayerFighter.v604-heal-flash,
+#v636QuestDungeonCard.v599-clean #v636QuestPlayerFighter.v604-dodge-flash,
+#v636QuestDungeonCard.v599-clean #v636QuestPlayerFighter.v604-guard-flash,
+#v636QuestDungeonCard.v599-clean #v636QuestPlayerFighter.v604-power-flash,
+#v636QuestDungeonCard.v599-clean #v636QuestEnemyFighter.v604-hit-flash{
+  animation:none!important;
+}
+
+#v636QuestDungeonCard.v599-clean #v636QuestPlayerFighter.v604-heal-flash > .v252-fighter-shell{
+  animation:v604HealFlash .60s ease!important;
+}
+#v636QuestDungeonCard.v599-clean #v636QuestPlayerFighter.v604-dodge-flash > .v252-fighter-shell{
+  animation:v604DodgeFlash .48s ease!important;
+}
+#v636QuestDungeonCard.v599-clean #v636QuestPlayerFighter.v604-guard-flash > .v252-fighter-shell{
+  animation:v604GuardFlash .62s ease!important;
+}
+#v636QuestDungeonCard.v599-clean #v636QuestPlayerFighter.v604-power-flash > .v252-fighter-shell{
+  animation:v604PowerFlash .48s ease!important;
+}
+#v636QuestDungeonCard.v599-clean #v636QuestEnemyFighter.v604-hit-flash > .v252-fighter-shell{
+  animation:v604EnemyHit .42s ease!important;
+}
+
+/* Exact Dungeon attack / hit motion, deliberately declared LAST. */
+#v636QuestDungeonCard.v599-clean #v636QuestPlayerFighter.attack-right{
+  animation:v252AttackRight .43s cubic-bezier(.2,.75,.25,1)!important;
+  z-index:35!important;
+}
+#v636QuestDungeonCard.v599-clean #v636QuestEnemyFighter.attack-left{
+  animation:v252AttackLeft .43s cubic-bezier(.2,.75,.25,1)!important;
+  z-index:35!important;
+}
+#v636QuestDungeonCard.v599-clean #v636QuestPlayerFighter.hit,
+#v636QuestDungeonCard.v599-clean #v636QuestEnemyFighter.hit{
+  animation:v252Hit .40s ease!important;
+}
+
+/* Keep WebView compositing on the moving outer node. */
+#v636QuestDungeonCard.v599-clean #v636QuestPlayerFighter,
+#v636QuestDungeonCard.v599-clean #v636QuestEnemyFighter{
+  backface-visibility:hidden!important;
+  will-change:transform,filter!important;
+}
+
+@media (prefers-reduced-motion: reduce){
+ #v636QuestDungeonCard.v599-clean #v636QuestPlayerFighter.attack-right{animation:v252AttackRight .43s cubic-bezier(.2,.75,.25,1)!important}
+ #v636QuestDungeonCard.v599-clean #v636QuestEnemyFighter.attack-left{animation:v252AttackLeft .43s cubic-bezier(.2,.75,.25,1)!important}
+ #v636QuestDungeonCard.v599-clean #v636QuestPlayerFighter.hit,
+ #v636QuestDungeonCard.v599-clean #v636QuestEnemyFighter.hit{animation:v252Hit .40s ease!important}
+}
+</style>
+<script id="v640-quest-attack-final-authority-js">
+(function(){
+ 'use strict';
+ if(window.__V640_QUEST_ATTACK_FINAL__)return;
+ window.__V640_QUEST_ATTACK_FINAL__=true;
+ /* No fight handlers are replaced here. The existing V6.36/Dungeon classes
+    continue to drive combat; this block only owns final CSS source order. */
+})();
+</script>
+<!-- ===== /V6.40 ===== -->
