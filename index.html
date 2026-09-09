@@ -98456,12 +98456,21 @@ function sync(){bindPvp();ensureQuest();ensureQa()}document.addEventListener('cl
  if(window.__V625_QUEST_PARITY__)return;
  window.__V625_QUEST_PARITY__=true;
  const $=q=>document.querySelector(q);
- const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+ const sleep=ms=>new Promise(resolve=>{
+   const t0=performance.now();
+   const step=t=>{if(t-t0>=ms)resolve();else requestAnimationFrame(step)};
+   requestAnimationFrame(step);
+ });
+ const after=(ms,fn)=>{
+   const t0=performance.now();
+   const step=t=>{if(t-t0>=ms){try{fn()}catch(_){};return}requestAnimationFrame(step)};
+   requestAnimationFrame(step);
+ };
  let token=0;
 
  function pulse(el,cls,ms=500){
    if(!el)return;el.classList.remove(cls);void el.offsetWidth;el.classList.add(cls);
-   setTimeout(()=>{try{el.classList.remove(cls)}catch(_){}},ms);
+   after(ms,()=>{try{el.classList.remove(cls)}catch(_){}});
  }
  function classKind(){return s?.playerClass==='scout'?'arrow':s?.playerClass==='bruiser'?'magic':'melee'}
  function fighter(side){
@@ -98490,7 +98499,7 @@ function sync(){bindPvp();ensureQuest();ensureQa()}document.addEventListener('cl
  function chip(text,cls=''){
    const host=$('#v311QuestFight .v615-quest-procs');if(!host)return;
    const el=document.createElement('span');el.className='v615-quest-chip '+cls;el.textContent=text;host.appendChild(el);
-   setTimeout(()=>el.remove(),1500);while(host.children.length>2)host.firstElementChild?.remove();
+   after(1500,()=>el.remove());while(host.children.length>2)host.firstElementChild?.remove();
  }
  function hitFx(side,kind='melee'){
    const impact=$('#v311QuestFight .v625-q-impact');
@@ -98502,14 +98511,14 @@ function sync(){bindPvp();ensureQuest();ensureQa()}document.addEventListener('cl
    if(side==='player'&&kind==='melee'){
      const slash=$('#v311QuestFight .v625-q-slash');if(slash){slash.style.left='60%';slash.style.top='50%';pulse(slash,'show',430)}
    }else{
-     const p=$('#v311QuestFight .v625-q-projectile');if(p){p.className='v625-q-projectile '+(side==='player'?(kind+' player-shot'):'enemy-shot');setTimeout(()=>{try{p.className='v625-q-projectile'}catch(_){}},430)}
+     const p=$('#v311QuestFight .v625-q-projectile');if(p){p.className='v625-q-projectile '+(side==='player'?(kind+' player-shot'):'enemy-shot');after(430,()=>{try{p.className='v625-q-projectile'}catch(_){}})}
    }
  }
- function animateFighter(el,cls,ms){if(!el)return;el.classList.remove(cls);void el.offsetWidth;el.classList.add(cls);setTimeout(()=>el.classList.remove(cls),ms)}
+ function animateFighter(el,cls,ms){if(!el)return;el.classList.remove(cls);void el.offsetWidth;el.classList.add(cls);after(ms,()=>el.classList.remove(cls))}
  function pop(side,text,crit=false){
    const el=$(`#v311QuestFight .v625-q-damage.${side}`);if(!el)return;
    el.textContent=text;el.classList.remove('pop','crit');if(crit)el.classList.add('crit');void el.offsetWidth;el.classList.add('pop');
-   setTimeout(()=>el.classList.remove('pop','crit'),780);
+   after(780,()=>el.classList.remove('pop','crit'));
  }
  function setBar(side,current,max){
    const id=side==='player'?'#v311PlayerHp':'#v311BossHp',bar=$(id);if(bar)bar.style.width=(Math.max(0,Math.min(1,current/Math.max(1,max)))*100)+'%';
@@ -98922,3 +98931,7 @@ function sync(){bindPvp();ensureQuest();ensureQa()}document.addEventListener('cl
 <!-- ===== V6.30 QUEST VISUAL OBSERVER FIX · COMBAT LOOP UNTOUCHED ===== -->
 <script>window.__V630_QUEST_VISUAL_FIX__=true;</script>
 <!-- ===== /V6.30 ===== -->
+
+<!-- ===== V6.31 QUEST COMBAT TIMER FIX ===== -->
+<script>window.__V631_QUEST_RAF_TIMERS__=true;</script>
+<!-- ===== /V6.31 ===== -->
