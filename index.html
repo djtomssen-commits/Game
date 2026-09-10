@@ -49634,9 +49634,13 @@ html body .app section#hall.v646-hall .v646-footer-plaque{
  }
  function decorate(){
    const h=root(); if(!h) return;
-   h.classList.add('v646-hall'); h.setAttribute('data-hall-build','V6.46');
-   const title=h.querySelector('.v052-title'); if(title) title.textContent='HALL OF HAZE';
-   const sub=h.querySelector('.v052-sub'); if(sub) sub.textContent='Rangliste, Spielerprofile und die größten Grow-Legenden.';
+   h.classList.add('v646-hall');
+   if(h.getAttribute('data-hall-build')!=='V6.46' && h.getAttribute('data-hall-build')!=='V6.48') h.setAttribute('data-hall-build','V6.46');
+   const title=h.querySelector('.v052-title');
+   if(title && title.textContent!=='HALL OF HAZE') title.textContent='HALL OF HAZE';
+   const sub=h.querySelector('.v052-sub');
+   const wantedSub='Rangliste, Spielerprofile und die größten Grow-Legenden.';
+   if(sub && sub.textContent!==wantedSub) sub.textContent=wantedSub;
    decorateOwn();
    h.querySelectorAll('.v072-player-row').forEach(decorateRow);
  }
@@ -101284,11 +101288,12 @@ html body .app section#hall.v648-hall .v072-player-name .v648-self-pill{
     const hall=document.getElementById('hall');
     if(!hall) return;
     hall.classList.add('v648-hall');
-    hall.setAttribute('data-hall-build','V6.48');
+    if(hall.getAttribute('data-hall-build')!=='V6.48') hall.setAttribute('data-hall-build','V6.48');
     const title=hall.querySelector('.v052-title');
     const sub=hall.querySelector('.v052-sub');
-    if(title) title.textContent='HALL OF HAZE';
-    if(sub) sub.textContent='Rangliste, Spielerprofile und die größten Grow-Legenden.';
+    if(title && title.textContent!=='HALL OF HAZE') title.textContent='HALL OF HAZE';
+    const wantedSub='Rangliste, Spielerprofile und die größten Grow-Legenden.';
+    if(sub && sub.textContent!==wantedSub) sub.textContent=wantedSub;
     hall.querySelectorAll('#v072HallRanking .v072-player-row').forEach(row=>{
       const actions=row.querySelector('.v073-row-actions');
       if(!actions) return;
@@ -101949,7 +101954,10 @@ body.v653-profile-open #v4144GuildChatTab{
       const topGrid=content?.querySelector(':scope > .v326-profile-grid');
       if(topGrid){
         [...topGrid.querySelectorAll(':scope > .v326-profile-stat span')].forEach(span=>{
-          if(/Abgeschlossen/i.test(span.textContent||'')) span.textContent='🏁 Abgeschlossen';
+          const current=(span.textContent||'').trim();
+          if(/Abgeschlossen/i.test(current) && current!=='🏁 Abgeschlossen'){
+            span.textContent='🏁 Abgeschlossen';
+          }
         });
       }
     }
@@ -102318,6 +102326,18 @@ body.v654-hud-measured > #v141SettingsMenu.v377-open{
 })();
 </script>
 <!-- ===== /V6.55 ===== -->
+
+<!-- ===== V6.57: Hall of Haze event-loop freeze fix =====
+     Two Hall decorators (V6.46 + V6.48) observed childList changes on #hall while
+     unconditionally assigning title/subtitle text on every pass. Assigning textContent
+     replaces text nodes, which triggered the observers again and created a permanent
+     requestAnimationFrame -> DOM mutation -> observer loop. Both decorators are now
+     idempotent: they write only when a value actually changed. Ranking/avatar updates
+     stay observed, but entering Hall no longer monopolizes the main UI thread. ===== -->
+<script id="v657-hall-freeze-marker">
+window.__V657_HALL_FREEZE_FIX__=true;
+</script>
+
 
 </body>
 </html>
