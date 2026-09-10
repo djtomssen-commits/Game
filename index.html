@@ -102339,5 +102339,100 @@ window.__V657_HALL_FREEZE_FIX__=true;
 </script>
 
 
+
+
+<!-- ===== V6.58: compact native HUD + fresh menu top fix ===== -->
+<style id="v658-header-menu-offset-css">
+/* Keep the Android status-bar safe area untouched. Only make the game HUD itself
+   a little shorter so it does not consume unnecessary vertical space. */
+body.v650-native-safe .v372-topbar{
+  min-height:50px!important;
+  padding:3px 3px!important;
+}
+body.v650-native-safe .v372-menu{
+  height:40px!important;
+}
+body.v650-native-safe .v372-res{
+  height:36px!important;
+}
+body.v650-native-safe .v372-iconbtn{
+  height:28px!important;
+}
+
+/* The drawer always begins at the measured lower edge of the HUD. The first item
+   gets its own clean top spacing and may never be hidden by a restored scroll position. */
+#v032MenuPanel{
+  scroll-padding-top:0!important;
+  overflow-anchor:none!important;
+}
+#v032MenuPanel > .top-menu-item:first-of-type{
+  margin-top:0!important;
+}
+body.v654-hud-measured #v032MenuPanel,
+body.v650-native-safe #v032MenuPanel{
+  top:calc(var(--v654-hud-bottom,76px) + 2px)!important;
+  max-height:calc(100dvh - var(--v654-hud-bottom,76px) - 6px)!important;
+}
+</style>
+<script id="v658-header-menu-offset-js">
+(()=>{
+  'use strict';
+  let resetRaf=0;
+
+  function measureHud(){
+    const hud=document.getElementById('v372TopbarShell');
+    if(!hud)return;
+    const bottom=Math.max(0,Math.round(hud.getBoundingClientRect().bottom));
+    if(bottom>0){
+      document.documentElement.style.setProperty('--v654-hud-bottom',bottom+'px');
+      document.body?.classList.add('v654-hud-measured');
+    }
+  }
+
+  function resetMenuTop(){
+    const panel=document.getElementById('v032MenuPanel');
+    if(!panel)return;
+    if(!(panel.classList.contains('open')||panel.classList.contains('show')))return;
+    panel.scrollTop=0;
+    try{panel.scrollTo({top:0,left:0,behavior:'instant'})}catch(e){try{panel.scrollTo(0,0)}catch(_){} }
+    measureHud();
+  }
+
+  function queueReset(){
+    if(resetRaf)cancelAnimationFrame(resetRaf);
+    resetRaf=requestAnimationFrame(()=>{
+      resetRaf=0;
+      resetMenuTop();
+      setTimeout(resetMenuTop,30);
+      setTimeout(resetMenuTop,120);
+    });
+  }
+
+  function bind(){
+    const panel=document.getElementById('v032MenuPanel');
+    if(panel&&!panel.dataset.v658Bound){
+      panel.dataset.v658Bound='1';
+      new MutationObserver(queueReset).observe(panel,{attributes:true,attributeFilter:['class'],childList:true});
+    }
+    measureHud();
+  }
+
+  /* Reset directly from the actual authoritative hamburger as well as historical
+     fallback menu buttons. Capture phase makes this run before the drawer paints. */
+  document.addEventListener('click',e=>{
+    if(e.target.closest?.('#v372TopbarShell .v372-menu,#v032MenuBtn,.v366-menu')){
+      const panel=document.getElementById('v032MenuPanel');
+      if(panel)panel.scrollTop=0;
+      setTimeout(queueReset,0);
+    }
+  },true);
+
+  window.addEventListener('resize',()=>setTimeout(measureHud,0),{passive:true});
+  window.addEventListener('orientationchange',()=>setTimeout(measureHud,80),{passive:true});
+  document.addEventListener('DOMContentLoaded',()=>{bind();queueReset()},{once:true});
+  [0,80,300,900].forEach(ms=>setTimeout(()=>{bind();queueReset()},ms));
+})();
+</script>
+<!-- ===== /V6.58 ===== -->
 </body>
 </html>
