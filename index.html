@@ -103902,5 +103902,46 @@ html body .app section#friends.v673-friends .v073-row-actions{
 </style>
 <!-- ===== /V6.75 NEBEL-CREW BOTTOM FIX ===== -->
 
+
+<!-- ===== V6.76 NEBEL-CREW ANDROID SAFE AREA FIX ===== -->
+<style id="v676-nebel-crew-android-safe-area">
+/* Android-Systemnavigation darf die untere Nebel-Crew-Leiste nicht mehr überdecken.
+   Der Footer wird physisch nach oben versetzt; zusätzlicher Leerraum bleibt darunter. */
+html body .app section#friends.v673-friends{
+  box-sizing:border-box!important;
+  padding-bottom:calc(150px + env(safe-area-inset-bottom, 0px))!important;
+}
+
+html body .app section#friends.v673-friends .v673-crew-footer{
+  position:relative!important;
+  bottom:56px!important;
+  margin-bottom:0!important;
+}
+
+/* In der nativen Fullscreen-App zusätzlich die echte Safe-Area berücksichtigen. */
+body.v650-native-safe .app section#friends.v673-friends{
+  padding-bottom:calc(175px + env(safe-area-inset-bottom, 0px))!important;
+}
+body.v650-native-safe .app section#friends.v673-friends .v673-crew-footer{
+  bottom:calc(68px + env(safe-area-inset-bottom, 0px))!important;
+}
+
+@media(max-width:560px){
+  html body .app section#friends.v673-friends{
+    padding-bottom:calc(165px + env(safe-area-inset-bottom, 0px))!important;
+  }
+  html body .app section#friends.v673-friends .v673-crew-footer{
+    bottom:64px!important;
+  }
+  body.v650-native-safe .app section#friends.v673-friends{
+    padding-bottom:calc(190px + env(safe-area-inset-bottom, 0px))!important;
+  }
+  body.v650-native-safe .app section#friends.v673-friends .v673-crew-footer{
+    bottom:calc(76px + env(safe-area-inset-bottom, 0px))!important;
+  }
+}
+</style>
+<!-- ===== /V6.76 NEBEL-CREW ANDROID SAFE AREA FIX ===== -->
+
 </body>
 </html>
