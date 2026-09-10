@@ -14833,22 +14833,67 @@ function v086BuildCompleteMenu(){
   });
 }
 
-/* Ensure navigation can reach every screen, including social pages. */
+/* V6.101: fast navigation. Do not run the giant global render() chain. */
 const v086OldGo=v032Go;
+
+function v6101CommonHud(){
+  const put=(sel,val)=>{try{const el=document.querySelector(sel);if(el)el.textContent=String(val??'')}catch(e){}};
+  try{regenEnergy?.()}catch(e){}
+  try{
+    put('#level',s?.level);put('#charLevel',s?.level);put('#battleLevel',s?.level);
+    put('#xp',`${Number(s?.xp)||0}/${typeof xpNeed==='function'?xpNeed():0}`);
+    put('#gold',Number(s?.gold)||0);put('#shopGold',Number(s?.gold)||0);
+    put('#shopHarz',Number(s?.harzTaler)||0);put('#points',Number(s?.points)||0);
+    const cap=typeof v271DampfCap==='function'?v271DampfCap():100;
+    put('#energy',`${Number(s?.energy)||0}/${cap}`);
+    const cp=typeof combatPower==='function'?combatPower():0;
+    put('#power',cp);put('#charPower',cp);
+    put('#charHp',typeof maxHp==='function'?maxHp():0);
+    if(typeof dungeonWaitText==='function')put('#dungeonTicketText',dungeonWaitText());
+  }catch(e){}
+}
+
+function v6101RenderOpenedScreen(id){
+  v6101CommonHud();
+  try{
+    switch(String(id||'')){
+      case 'world':
+        if(typeof v085InstallWorld==='function')v085InstallWorld(false);
+        break;
+      case 'character':
+        try{renderClasses?.()}catch(e){}
+        try{renderSetPanel?.()}catch(e){}
+        try{renderClassAvatar?.()}catch(e){}
+        try{renderSkillTree?.()}catch(e){}
+        try{renderInventory?.()}catch(e){}
+        break;
+      case 'grow':
+        try{renderGrow?.()}catch(e){}
+        break;
+      case 'quests':
+        try{ensureQuests?.()}catch(e){}
+        try{renderQuests?.()}catch(e){}
+        break;
+      case 'dungeon':
+        try{renderDungeon?.()}catch(e){}
+        break;
+      case 'shop':
+        try{renderShop?.()}catch(e){}
+        break;
+    }
+  }catch(e){console.warn('V6.101 screen render',id,e)}
+}
+window.v6101RenderOpenedScreen=v6101RenderOpenedScreen;
+
 v032Go=function(id){
   const target=document.querySelector('#'+id);
   if(!target)return;
-
-  document.querySelectorAll('.screen').forEach(x=>x.classList.remove('active'));
+  document.querySelectorAll('.screen.active').forEach(x=>x.classList.remove('active'));
   target.classList.add('active');
-
-  document.querySelectorAll('.top-menu-item').forEach(x=>
-    x.classList.toggle('active',x.dataset.screen===id)
-  );
+  document.querySelectorAll('.top-menu-item').forEach(x=>x.classList.toggle('active',x.dataset.screen===id));
   document.querySelector('#v032MenuPanel')?.classList.remove('open');
-
-  try{render()}catch(e){}
-  window.scrollTo({top:0,behavior:'smooth'});
+  try{window.scrollTo(0,0)}catch(e){}
+  requestAnimationFrame(()=>v6101RenderOpenedScreen(id));
 };
 
 const v086BaseRender=render;
@@ -64154,10 +64199,7 @@ create index if not exists player_messages_sender_idx on public.player_messages(
   }
 
   /* Any spend handler that does not repaint itself is corrected on the same click. */
-  document.addEventListener('click',()=>{
-    requestAnimationFrame(()=>{paintResources();stamp()});
-    setTimeout(()=>{paintResources();stamp()},70);
-  },true);
+  document.addEventListener('click',e=>{if(!e.target?.closest?.('#dungeon,#shop,#quests,#grow,#harzDealer,#world'))return;requestAnimationFrame(paintResources)},true);
 
   if(typeof v032Go==='function'&&!window.__v433GoWrapped){
     const baseGo=v032Go;
@@ -65675,35 +65717,15 @@ create index if not exists player_messages_sender_idx on public.player_messages(
      inside its own wrapper. Reassert the requested order after that chain returns. */
   if(typeof render==='function'&&!window.__v444RenderWrapped){
     const baseRender=render;
-    render=function(){
-      const r=baseRender.apply(this,arguments);
-      arrangeCharacter();
-      requestAnimationFrame(arrangeCharacter);
-      stamp();
-      return r;
-    };
+    render=function(){const r=baseRender.apply(this,arguments);if(document.getElementById('character')?.classList.contains('active'))requestAnimationFrame(arrangeCharacter);return r;};
     try{window.render=render}catch(e){}
     window.__v444RenderWrapped=true;
   }
 
-  /* V4.42 has a few delayed boot-only layout passes. Observe reordering and put the
-     requested order back without touching inventory/material contents. */
-  const character=document.querySelector('#character');
-  if(character){
-    const mo=new MutationObserver(()=>{
-      if(arranging)return;
-      queueMicrotask(()=>{arrangeCharacter();stamp()});
-    });
-    mo.observe(character,{childList:true,subtree:true});
-    setTimeout(()=>mo.disconnect(),12000);
-  }
-
+  /* V6.101: old 12-second character observer/poller retired. */
   arrangeCharacter();stamp();
-  document.addEventListener('DOMContentLoaded',()=>{arrangeCharacter();stamp()},{once:true});
-  window.addEventListener('pageshow',()=>{arrangeCharacter();stamp()},{passive:true});
-  [300,900,1800,3600,5400,8000].forEach(ms=>setTimeout(()=>{arrangeCharacter();stamp()},ms));
-  const guard=setInterval(()=>{arrangeCharacter();stamp()},400);
-  setTimeout(()=>clearInterval(guard),12000);
+  document.addEventListener('DOMContentLoaded',()=>requestAnimationFrame(arrangeCharacter),{once:true});
+  window.addEventListener('pageshow',()=>{if(document.getElementById('character')?.classList.contains('active'))requestAnimationFrame(arrangeCharacter)},{passive:true});
 })();
 </script>
 
@@ -74148,8 +74170,9 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();i
   }
   function paintAudit(){
     try{
+      const status=document.getElementById('v4107Status');
+      if(!status||!document.getElementById('systemtech')?.classList.contains('active'))return;
       const a=itemArtAudit();
-      const status=document.getElementById('v4107Status');if(!status)return;
       let el=document.getElementById('v4113ItemAudit');if(!el){el=document.createElement('div');el.id='v4113ItemAudit';el.className='v4113-item-audit';status.appendChild(el)}
       el.classList.toggle('bad',a.failures.length>0);
       el.innerHTML=`<b>${a.failures.length?'❌':'✅'} ITEM-ART RESTSUCHE</b><span>${a.checked} sichtbare Item-Flächen geprüft · ${a.failures.length} alte Darstellung${a.failures.length===1?'':'en'} sichtbar · ${a.legacyRaw} historische Roh-Renderer im Quelltext (werden überschrieben)</span>${a.failures.length?`<small>${a.failures.slice(0,12).join(' · ')}</small>`:''}`;
@@ -74184,15 +74207,37 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();i
     }
   }catch(e){}
 
-  let raf=0;
-  function queue(){ if(raf) return; raf=requestAnimationFrame(()=>{ raf=0; decorateGeneric(document); paintAudit(); }); }
-  const wraps=['render','renderInventory','renderShop','renderCharacter','renderDungeon','renderGrow','renderHall','v074OpenProfile','v074ShowProfile','v4102OpenQA','showScreen','v032Go'];
-  wraps.forEach(name=>{ try{ const fn=window[name]; if(typeof fn!=='function'||window['__v4112wrap_'+name]) return; window[name]=function(){ const r=fn.apply(this,arguments); queue(); return r; }; window['__v4112wrap_'+name]=true; }catch(e){} });
-  document.addEventListener('DOMContentLoaded',()=>setTimeout(queue,60),{once:true});
-  window.addEventListener('pageshow',queue,{passive:true});
-  setTimeout(queue,200); setTimeout(queue,1200); setTimeout(queue,3200);
-  const mo=new MutationObserver(muts=>{ for(const m of muts){ if(m.addedNodes?.length||m.type==='childList'){ queue(); break; } } });
-  try{ mo.observe(document.documentElement||document.body,{childList:true,subtree:true}); }catch(e){}
+  let raf=0,pendingRoot=null;
+  function queue(root){
+    pendingRoot=root||pendingRoot||document.querySelector('.screen.active')||document;
+    if(raf)return;
+    raf=requestAnimationFrame(()=>{
+      raf=0;
+      const scope=pendingRoot||document;pendingRoot=null;
+      decorateGeneric(scope);
+      paintAudit();
+    });
+  }
+
+  /* V6.101: no full-document MutationObserver and no global render wrapper.
+     Item art is refreshed only for the screen that actually opens. */
+  try{
+    const go=window.v032Go;
+    if(typeof go==='function'&&!window.__v4112ScopedGo){
+      window.v032Go=function(id){
+        const r=go.apply(this,arguments);
+        if(['character','shop','dungeon','hall','endgame'].includes(String(id||''))){
+          queue(document.getElementById(id));
+        }
+        return r;
+      };
+      try{v032Go=window.v032Go}catch(e){}
+      window.__v4112ScopedGo=true;
+    }
+  }catch(e){}
+
+  document.addEventListener('DOMContentLoaded',()=>setTimeout(()=>queue(document.querySelector('.screen.active')||document),80),{once:true});
+  window.addEventListener('pageshow',()=>queue(document.querySelector('.screen.active')||document),{passive:true});
 })();
 </script>
 
@@ -74902,7 +74947,7 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();i
  try{if(typeof persist==='function'&&!window.__v4120Persist){const base=persist;persist=function(){if(internal)return base.apply(this,arguments);capture('persist-before');const r=base.apply(this,arguments);const changed=restore('persist-after');if(changed){try{internal=true;base.apply(this,arguments)}catch(e){}finally{internal=false}}capture('persist-final');return r};window.persist=persist;window.__v4120Persist=true}}catch(e){}
  try{if(typeof v075ApplyCloudSave==='function'&&!window.__v4120CloudApply){const base=v075ApplyCloudSave;v075ApplyCloudSave=async function(){capture('cloud-before');const r=await base.apply(this,arguments);repairAndPersist('cloud-after');return r};window.v075ApplyCloudSave=v075ApplyCloudSave;window.__v4120CloudApply=true}}catch(e){}
  try{if(typeof v075WriteCloudSave==='function'&&!window.__v4120CloudWrite){const base=v075WriteCloudSave;v075WriteCloudSave=async function(){restore('cloud-write-before');capture('cloud-write-before');return await base.apply(this,arguments)};window.v075WriteCloudSave=v075WriteCloudSave;window.__v4120CloudWrite=true}}catch(e){}
- try{if(typeof v032Go==='function'&&!window.__v4120Go){const base=v032Go;v032Go=function(id){capture('nav-before');const r=base.apply(this,arguments);[0,60,250,900].forEach(ms=>setTimeout(()=>repairAndPersist('nav-after-'+ms),ms));return r};window.v032Go=v032Go;window.__v4120Go=true}}catch(e){}
+ try{if(typeof v032Go==='function'&&!window.__v4120Go){const base=v032Go;v032Go=function(id){const r=base.apply(this,arguments);if(id==='grow'){capture('grow-nav');setTimeout(()=>repairAndPersist('grow-nav-after'),80)}return r};window.v032Go=v032Go;window.__v4120Go=true}}catch(e){}
  try{if(typeof renderGrow==='function'&&!window.__v4120GrowRender){const base=renderGrow;renderGrow=function(){restore('render-grow-before');const r=base.apply(this,arguments);requestAnimationFrame(()=>{restore('render-grow-after');try{window.v4114DecorateCareSlots?.()}catch(e){}});return r};window.renderGrow=renderGrow;window.__v4120GrowRender=true}}catch(e){}
 
  /* The original V4.110 deep test references this helper outside its old IIFE.
@@ -77619,10 +77664,10 @@ html:not(.v4142-systemtech-admin) #v4102QaButton{display:none!important}
 
  /* Repaint after every established render/navigation without introducing polling. */
  try{
-  if(typeof render==='function'&&!window.__v4153Render){const base=render;render=function(){const r=base.apply(this,arguments);requestAnimationFrame(()=>refreshAll('render'));stamp();return r};try{window.render=render}catch(e){}window.__v4153Render=true}
+  if(typeof render==='function'&&!window.__v4153Render){const base=render;render=function(){const r=base.apply(this,arguments);if(document.getElementById('character')?.classList.contains('active'))requestAnimationFrame(()=>refreshAll('render-character'));return r};try{window.render=render}catch(e){}window.__v4153Render=true}
  }catch(e){}
  try{
-  if(typeof v032Go==='function'&&!window.__v4153Go){const base=v032Go;v032Go=function(id){const r=base.apply(this,arguments);requestAnimationFrame(()=>refreshAll('nav-'+id));return r};try{window.v032Go=v032Go}catch(e){}window.__v4153Go=true}
+  if(typeof v032Go==='function'&&!window.__v4153Go){const base=v032Go;v032Go=function(id){const r=base.apply(this,arguments);if(id==='character')requestAnimationFrame(()=>refreshAll('nav-character'));return r};try{window.v032Go=v032Go}catch(e){}window.__v4153Go=true}
  }catch(e){}
 
  function stamp(){try{document.title='Grow Legends '+V.short;document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version').forEach(x=>x&&(x.textContent=V.label));document.querySelectorAll('.v366-ver,.v371-logo em,.v372-logo em,.v4107-version').forEach(x=>x&&(x.textContent=V.short))}catch(e){}}
@@ -85138,15 +85183,16 @@ html.v495-level-syncing #v420LevelUpOverlay{
 
   /* If a legacy handler still inserts an overlay during hydration, remove it
      before it can become visible. Genuine later gameplay Level-Ups are untouched. */
+  let v6101LevelObserver=null;
+ function v6101StartLevelObserver(){
   try{
-    const observer=new MutationObserver(()=>{
-      if(syncing){
-        removeLegacyLevelUi();
-        syncLevelObservers();
-      }
-    });
-    observer.observe(document.documentElement,{childList:true,subtree:true});
+   if(v6101LevelObserver)return;
+   v6101LevelObserver=new MutationObserver(()=>{if(syncing){removeLegacyLevelUi();syncLevelObservers()}});
+   v6101LevelObserver.observe(document.documentElement,{childList:true,subtree:true});
   }catch(e){}
+ }
+ function v6101StopLevelObserver(){try{v6101LevelObserver?.disconnect()}catch(e){}v6101LevelObserver=null}
+ v6101StartLevelObserver();
 
   window.addEventListener('growlegends:account-ready',finishSync);
   window.addEventListener('growlegends:extras-ready',()=>{if(syncing)finishSync()});
@@ -107159,6 +107205,23 @@ window.v6100PerformanceInfo=()=>({
   worldRepairObserversRetired:true,
   forcedWorldRebuildsRetired:true,
   globalBodyObserversRetired:true
+});
+})();
+</script>
+
+
+<script id="v6101-navigation-altcode-performance">
+(function(){
+'use strict';
+if(window.__V6101_NAV_ALT_PERFORMANCE__)return;
+window.__V6101_NAV_ALT_PERFORMANCE__=true;
+window.v6101PerformanceInfo=()=>({
+  screenOnlyNavigation:true,
+  globalRenderOnNavigation:false,
+  globalItemArtObserver:false,
+  growCareNavRepair:'grow-only',
+  frostRefresh:'character-only',
+  oldCharacterBootPolling:false
 });
 })();
 </script>
