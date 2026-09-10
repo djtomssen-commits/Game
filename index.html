@@ -58477,6 +58477,11 @@ html,body{
         </article>
       </section>
 
+      <button type="button" class="v488-home-link" data-go="forge">
+        <span class="left"><span class="ico">🔨🌿</span><span><b>Harzschmiede</b><small>Alte Ausrüstung zerlegen · prismatische Items schmieden</small></span></span>
+        <span class="go">›</span>
+      </button>
+
       <nav class="v366-dock">
         <button class="active" data-go="world"><span class="ico">🌍</span>Welt</button>
         <button data-go="character"><span class="ico">🎒</span>Inventar</button>
@@ -58487,6 +58492,11 @@ html,body{
         <button data-go="friends"><span class="ico">👥</span>Freunde</button>
         <button data-book="1"><span class="ico">📖</span>Illegales<br>Buch</button>
       </nav>
+
+      <div id="v492HomeGrowStatus" class="v492-home-grow" data-go="grow">
+        <b>🌱 Growroom · ${gr} Pflanze${gr===1?'':'n'} wachsen</b>
+        <small>Deine Pflanzen wachsen weiter, auch wenn du offline bist.</small>
+      </div>
 
       <div class="v690-footer">
         <span>GOOD PLANTS<br>BETTER PLAYERS</span>
@@ -107576,6 +107586,261 @@ if(world){
 })();
 </script>
 <!-- ===== /V6.91 WORLD RENDER CLEANUP ===== -->
+
+
+<!-- ===== V6.92 WELTSEITE ALT-RENDER HART BEREINIGT ===== -->
+<style id="v692-world-hard-cleanup-css">
+/* Old V4.165 still forced profile to 225px and absolutely positioned the attributes.
+   That is the big empty black block visible in the screenshot. */
+#world.active .v366-profile{
+  height:auto!important;
+  min-height:0!important;
+  max-height:none!important;
+  bottom:auto!important;
+}
+#world.active .v366-attrs{
+  position:static!important;
+  left:auto!important;
+  right:auto!important;
+  top:auto!important;
+  bottom:auto!important;
+  width:100%!important;
+  margin-top:7px!important;
+}
+
+/* Keep these blocks permanently in the V6.90 flow, even after world refreshes. */
+#world.active .v488-home-link{
+  display:flex!important;
+  order:6!important;
+}
+#world.active .v366-dock{
+  order:7!important;
+}
+#world.active #v492HomeGrowStatus{
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:center!important;
+  order:8!important;
+}
+#world.active .v690-footer{
+  order:9!important;
+}
+
+/* Exactly eight dock cells. No legacy Dealer insertions may occupy a ninth cell. */
+#world.active .v366-dock{
+  grid-template-columns:repeat(8,minmax(0,1fr))!important;
+  overflow:hidden!important;
+}
+#world.active .v366-dock [data-v341-harz-menu],
+#world.active .v366-dock [data-v337-harz-dealer],
+#world.active .v366-dock [data-v353-harz-dealer]{
+  display:none!important;
+}
+#world.active .v366-dock button{
+  min-width:0!important;
+  overflow:hidden!important;
+  padding:4px 2px!important;
+}
+#world.active .v366-dock .v692-label{
+  display:block!important;
+  width:100%!important;
+  overflow:hidden!important;
+  color:inherit!important;
+  font-size:4.2px!important;
+  line-height:1.08!important;
+  font-weight:900!important;
+  text-align:center!important;
+  white-space:normal!important;
+  word-break:normal!important;
+}
+#world.active .v366-dock .ico{
+  flex:0 0 auto!important;
+}
+
+/* The profile is now compact enough that the castle remains visible. */
+#world.active .v366-welcome{
+  bottom:18px!important;
+}
+
+@media(max-width:390px){
+  #world.active .v366-profile{
+    height:auto!important;
+    max-height:none!important;
+  }
+  #world.active .v366-attrs{
+    position:static!important;
+    top:auto!important;
+    left:auto!important;
+    right:auto!important;
+    margin-top:5px!important;
+  }
+  #world.active .v366-dock .v692-label{
+    font-size:3.7px!important;
+  }
+}
+</style>
+
+<script id="v692-world-hard-cleanup-runtime">
+(function(){
+'use strict';
+if(window.__V692_WORLD_HARD_CLEANUP__)return;
+window.__V692_WORLD_HARD_CLEANUP__=true;
+
+const DOCK_DEF=[
+  {go:'world',icon:'🌍',label:'Welt',active:true},
+  {go:'character',icon:'🎒',label:'Inventar'},
+  {go:'character',icon:'🛡️',label:'Charakter'},
+  {go:'shop',icon:'🏪',label:'Händler'},
+  {go:'guild',icon:'⚜️',label:'Gilde'},
+  {go:'harzDealer',icon:'💎',label:'Harz<br>Dealer'},
+  {go:'friends',icon:'👥',label:'Freunde'},
+  {book:true,icon:'📖',label:'Illegales<br>Buch'}
+];
+
+let cleaning=false;
+
+function bindDockButton(btn,def){
+  btn.type='button';
+  btn.removeAttribute('data-v341-harz-menu');
+  btn.removeAttribute('data-v337-harz-dealer');
+  btn.removeAttribute('data-v353-harz-dealer');
+  btn.removeAttribute('data-screen');
+  btn.removeAttribute('data-book');
+  btn.removeAttribute('data-go');
+
+  if(def.go)btn.dataset.go=def.go;
+  if(def.book)btn.dataset.book='1';
+  btn.classList.toggle('active',!!def.active);
+
+  btn.innerHTML=`<span class="ico">${def.icon}</span><span class="v692-label">${def.label}</span>`;
+
+  if(def.book){
+    btn.onclick=()=>{
+      try{if(typeof v106OpenBook==='function')v106OpenBook()}catch(e){}
+    };
+  }else{
+    btn.onclick=()=>{
+      try{
+        if(def.go==='harzDealer'&&typeof window.v322OpenDealer==='function')window.v322OpenDealer();
+        else if(def.go!=='world'&&typeof v032Go==='function')v032Go(def.go);
+      }catch(e){}
+    };
+  }
+}
+
+function normalizeDock(root){
+  let dock=root.querySelector('.v366-dock');
+  if(!dock)return;
+
+  /* Remove every legacy Dealer injection first. */
+  dock.querySelectorAll('[data-v341-harz-menu],[data-v337-harz-dealer],[data-v353-harz-dealer]').forEach(el=>el.remove());
+
+  let buttons=[...dock.querySelectorAll(':scope > button')];
+
+  /* Old heuristics sometimes inserted a plain ninth "Harz Dealer" button without a marker. */
+  if(buttons.length>8){
+    const native=buttons.find(b=>b.dataset.go==='harzDealer');
+    buttons.forEach(b=>{
+      if(buttons.length<=8)return;
+      const t=(b.textContent||'').replace(/\s+/g,' ').trim().toLowerCase();
+      if(b!==native && t.includes('harz') && t.includes('dealer')){
+        b.remove();
+        buttons=[...dock.querySelectorAll(':scope > button')];
+      }
+    });
+  }
+
+  /* If any old renderer still left the wrong count, rebuild ONLY the dock. */
+  buttons=[...dock.querySelectorAll(':scope > button')];
+  if(buttons.length!==8){
+    dock.innerHTML='';
+    DOCK_DEF.forEach(def=>{
+      const b=document.createElement('button');
+      bindDockButton(b,def);
+      dock.appendChild(b);
+    });
+    return;
+  }
+
+  buttons.forEach((b,i)=>bindDockButton(b,DOCK_DEF[i]));
+}
+
+function ensureForge(root){
+  let forge=root.querySelector('.v488-home-link');
+  if(!forge){
+    forge=document.createElement('button');
+    forge.type='button';
+    forge.className='v488-home-link';
+    forge.dataset.go='forge';
+    forge.innerHTML='<span class="left"><span class="ico">🔨🌿</span><span><b>Harzschmiede</b><small>Alte Ausrüstung zerlegen · prismatische Items schmieden</small></span></span><span class="go">›</span>';
+    const dock=root.querySelector('.v366-dock');
+    dock?.insertAdjacentElement('beforebegin',forge);
+  }
+  forge.onclick=()=>{
+    try{
+      if(typeof window.v488OpenForge==='function')window.v488OpenForge();
+      else if(typeof v032Go==='function')v032Go('forge');
+    }catch(e){}
+  };
+}
+
+function ensureGrowStatus(root){
+  let box=root.querySelector('#v492HomeGrowStatus');
+  if(!box){
+    box=document.createElement('div');
+    box.id='v492HomeGrowStatus';
+    box.className='v492-home-grow';
+    const footer=root.querySelector('.v690-footer');
+    footer?.insertAdjacentElement('beforebegin',box);
+  }
+  box.onclick=()=>{try{if(typeof v032Go==='function')v032Go('grow')}catch(e){}};
+
+  /* If V4.92 is available, let its own real grow-state painter update the box later.
+     Until then keep a safe current-value fallback. */
+  if(!box.innerHTML.trim()){
+    const plants=Array.isArray(s?.grow?.plants)?s.grow.plants.filter(Boolean).length:0;
+    box.innerHTML=`<b>🌱 Growroom · ${plants} Pflanze${plants===1?'':'n'} wachsen</b><small>Deine Pflanzen wachsen weiter, auch wenn du offline bist.</small>`;
+  }
+}
+
+function clean(){
+  if(cleaning)return;
+  const root=document.querySelector('#world.active .v366-world');
+  if(!root)return;
+  cleaning=true;
+  try{
+    normalizeDock(root);
+    ensureForge(root);
+    ensureGrowStatus(root);
+  }finally{
+    cleaning=false;
+  }
+}
+
+function refreshAndClean(){
+  try{
+    if(document.querySelector('#world.active')&&typeof v085InstallWorld==='function'){
+      v085InstallWorld(true);
+    }
+  }catch(e){}
+  requestAnimationFrame(clean);
+  setTimeout(clean,40);
+  setTimeout(clean,160);
+}
+
+document.addEventListener('DOMContentLoaded',()=>setTimeout(refreshAndClean,60),{once:true});
+window.addEventListener('pageshow',()=>setTimeout(refreshAndClean,40),{passive:true});
+window.addEventListener('growlegends:account-ready',()=>setTimeout(refreshAndClean,150));
+
+const world=document.getElementById('world');
+if(world){
+  new MutationObserver(()=>requestAnimationFrame(clean)).observe(world,{childList:true,subtree:true});
+}
+
+[300,900,1800,3200,5000].forEach(ms=>setTimeout(clean,ms));
+})();
+</script>
+<!-- ===== /V6.92 WELTSEITE ALT-RENDER HART BEREINIGT ===== -->
 
 </body>
 </html>
