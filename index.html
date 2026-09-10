@@ -104469,5 +104469,111 @@ body.v650-native-safe .app section#mail.v677-mail{
 </style>
 <!-- ===== /V6.77 NEBEL-POST REDESIGN ===== -->
 
+
+<!-- ===== V6.78 NEBEL-POST HEADER + ANDROID FIX ===== -->
+<style id="v678-nebel-post-header-android-fix">
+/* Nur die zwei bestätigten Korrekturen:
+   1) kaputte Header-Deko ersetzen
+   2) mehr Abstand zur Android-Systemnavigation */
+
+/* Kaputtes Spruchschild komplett entfernen */
+html body .app section#mail.v677-mail > .v052-scene-banner::after{
+  content:none!important;
+  display:none!important;
+}
+
+/* Saubere Post-Deko links */
+html body .app section#mail.v677-mail > .v052-scene-banner::before{
+  content:"📫"!important;
+  left:14px!important;
+  top:50%!important;
+  transform:translateY(-50%) rotate(-2deg)!important;
+  width:58px!important;
+  height:58px!important;
+  display:grid!important;
+  place-items:center!important;
+  border:2px solid #9a7132!important;
+  border-radius:14px!important;
+  background:
+    radial-gradient(circle at 50% 40%,rgba(77,210,82,.13),transparent 48%),
+    linear-gradient(180deg,#593617,#2d190c)!important;
+  box-shadow:
+    0 0 0 4px #21150b,
+    0 0 16px rgba(70,214,80,.18),
+    inset 0 1px rgba(255,231,184,.10)!important;
+  font-size:34px!important;
+  line-height:1!important;
+  overflow:hidden!important;
+}
+
+/* Titel wieder sauber mittig, weil rechts kein Schild mehr Platz braucht */
+html body .app section#mail.v677-mail > .v052-scene-banner{
+  padding-left:82px!important;
+  padding-right:28px!important;
+}
+
+/* Mehr realer Puffer unter der Nachrichtenliste */
+html body .app section#mail.v677-mail{
+  padding-bottom:calc(230px + env(safe-area-inset-bottom,0px))!important;
+  scroll-padding-bottom:calc(130px + env(safe-area-inset-bottom,0px))!important;
+}
+html body .app section#mail.v677-mail .v381-panel{
+  padding-bottom:92px!important;
+}
+html body .app section#mail.v677-mail .v677-mail-footer{
+  margin-top:16px!important;
+  margin-bottom:56px!important;
+}
+
+/* Native Android / Fullscreen */
+body.v650-native-safe .app section#mail.v677-mail{
+  padding-bottom:calc(260px + env(safe-area-inset-bottom,0px))!important;
+  scroll-padding-bottom:calc(150px + env(safe-area-inset-bottom,0px))!important;
+}
+body.v650-native-safe .app section#mail.v677-mail .v381-panel{
+  padding-bottom:110px!important;
+}
+body.v650-native-safe .app section#mail.v677-mail .v677-mail-footer{
+  margin-bottom:calc(78px + env(safe-area-inset-bottom,0px))!important;
+}
+
+@media(max-width:560px){
+  html body .app section#mail.v677-mail > .v052-scene-banner{
+    min-height:96px!important;
+    padding-left:64px!important;
+    padding-right:18px!important;
+  }
+  html body .app section#mail.v677-mail > .v052-scene-banner::before{
+    left:9px!important;
+    width:47px!important;
+    height:47px!important;
+    font-size:28px!important;
+  }
+
+  html body .app section#mail.v677-mail{
+    padding-bottom:calc(250px + env(safe-area-inset-bottom,0px))!important;
+    scroll-padding-bottom:calc(145px + env(safe-area-inset-bottom,0px))!important;
+  }
+  html body .app section#mail.v677-mail .v381-panel{
+    padding-bottom:105px!important;
+  }
+  html body .app section#mail.v677-mail .v677-mail-footer{
+    margin-bottom:72px!important;
+  }
+
+  body.v650-native-safe .app section#mail.v677-mail{
+    padding-bottom:calc(285px + env(safe-area-inset-bottom,0px))!important;
+    scroll-padding-bottom:calc(170px + env(safe-area-inset-bottom,0px))!important;
+  }
+  body.v650-native-safe .app section#mail.v677-mail .v381-panel{
+    padding-bottom:125px!important;
+  }
+  body.v650-native-safe .app section#mail.v677-mail .v677-mail-footer{
+    margin-bottom:calc(92px + env(safe-area-inset-bottom,0px))!important;
+  }
+}
+</style>
+<!-- ===== /V6.78 NEBEL-POST HEADER + ANDROID FIX ===== -->
+
 </body>
 </html>
