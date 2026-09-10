@@ -101817,5 +101817,253 @@ body.v650-native-safe #v074ProfileOverlay.v074-profile-overlay{
 })();
 </script>
 <!-- ===== /V6.52 ===== -->
+
+
+<!-- ===== V6.53: Spielerprofil finaler Feinschliff ===== -->
+<style id="v653-player-profile-polish-css">
+/* Opaque modal backdrop: no Hall/other page artwork may shine through between HUD and profile. */
+#v074ProfileOverlay.v074-profile-overlay{
+  background:#020805!important;
+}
+
+/* Keep side flaps out of the way while a player profile is open. */
+body.v653-profile-open #v269TicketTab,
+body.v653-profile-open #v4144GuildChatTab{
+  opacity:0!important;
+  pointer-events:none!important;
+  transform:translateX(115%) translateY(-50%)!important;
+  transition:opacity .14s ease,transform .14s ease!important;
+}
+
+/* Slightly stronger/denser hero card: larger avatar, less dead space. */
+#v074ProfileContent.v652-profile .v074-profile-head{
+  grid-template-columns:84px minmax(0,1fr) 94px!important;
+  gap:8px!important;
+  min-height:98px!important;
+  padding:8px 9px!important;
+}
+#v074ProfileContent.v652-profile .v652-profile-avatar{
+  width:78px!important;height:78px!important;
+  border-width:2px!important;
+}
+#v074ProfileContent.v652-profile .v074-profile-title{
+  font-size:20px!important;line-height:1.02!important;
+}
+#v074ProfileContent.v652-profile .v074-profile-class{
+  margin-top:5px!important;font-size:8.5px!important;line-height:1.2!important;
+}
+#v074ProfileContent.v652-profile .v074-profile-head .v652-head-power{
+  padding:9px 5px!important;
+}
+#v074ProfileContent.v652-profile .v074-profile-head .v652-head-power span{
+  font-size:6.1px!important;
+}
+#v074ProfileContent.v652-profile .v074-profile-head .v652-head-power b{
+  font-size:19px!important;
+}
+
+/* On phones the five progression values become a readable 3 + 2 layout. */
+#v074ProfileContent.v652-profile > .v326-profile-grid{
+  grid-template-columns:repeat(6,minmax(0,1fr))!important;
+  gap:5px!important;
+}
+#v074ProfileContent.v652-profile > .v326-profile-grid > .v326-profile-stat{
+  grid-column:span 2!important;
+  padding:7px 4px!important;
+  font-size:6px!important;
+}
+#v074ProfileContent.v652-profile > .v326-profile-grid > .v326-profile-stat:nth-child(4),
+#v074ProfileContent.v652-profile > .v326-profile-grid > .v326-profile-stat:nth-child(5){
+  grid-column:span 3!important;
+}
+#v074ProfileContent.v652-profile > .v326-profile-grid > .v326-profile-stat span{
+  white-space:nowrap!important;overflow:visible!important;text-overflow:clip!important;
+}
+#v074ProfileContent.v652-profile > .v326-profile-grid > .v326-profile-stat b{
+  font-size:13px!important;
+}
+
+/* The explanatory world-boss paragraph was visually noisy and adds no live value. */
+#v074ProfileContent.v652-profile .v326-mystic .v326-profile-note{
+  display:none!important;
+}
+#v074ProfileContent.v652-profile .v652-profile-dual .v326-section{
+  min-height:126px!important;
+}
+
+/* Cleaner item cards: two-line names line up and cards stretch evenly in the two-column grid. */
+#v074ProfileContent.v652-profile .v4103-profile-equipment{
+  align-items:stretch!important;
+}
+#v074ProfileContent.v652-profile .v4103-profile-equipment .v4103-item-card{
+  height:100%!important;box-sizing:border-box!important;
+}
+#v074ProfileContent.v652-profile .v4103-profile-equipment .v4103-item-name{
+  display:-webkit-box!important;
+  -webkit-box-orient:vertical!important;
+  -webkit-line-clamp:2!important;
+  overflow:hidden!important;
+  min-height:2.30em!important;
+  max-height:2.30em!important;
+  font-size:7.1px!important;
+  line-height:1.15!important;
+}
+#v074ProfileContent.v652-profile .v4103-profile-equipment .v4103-item-chip{
+  overflow-wrap:anywhere!important;
+}
+
+@media(max-width:390px){
+  #v074ProfileContent.v652-profile .v074-profile-head{
+    grid-template-columns:73px minmax(0,1fr) 83px!important;
+    gap:6px!important;min-height:89px!important;padding:7px!important;
+  }
+  #v074ProfileContent.v652-profile .v652-profile-avatar{
+    width:68px!important;height:68px!important;
+  }
+  #v074ProfileContent.v652-profile .v074-profile-title{font-size:18px!important}
+  #v074ProfileContent.v652-profile .v074-profile-class{font-size:7.7px!important}
+  #v074ProfileContent.v652-profile .v074-profile-head .v652-head-power span{font-size:5.7px!important}
+  #v074ProfileContent.v652-profile .v074-profile-head .v652-head-power b{font-size:17px!important}
+  #v074ProfileContent.v652-profile > .v326-profile-grid{gap:4px!important}
+  #v074ProfileContent.v652-profile > .v326-profile-grid > .v326-profile-stat{
+    padding:6px 3px!important;font-size:5.55px!important;
+  }
+  #v074ProfileContent.v652-profile > .v326-profile-grid > .v326-profile-stat b{font-size:12px!important}
+  #v074ProfileContent.v652-profile .v652-profile-dual .v326-section{min-height:118px!important}
+  #v074ProfileContent.v652-profile .v4103-profile-equipment .v4103-item-name{font-size:6.85px!important}
+}
+</style>
+<script id="v653-player-profile-polish-js">
+(()=>{
+  'use strict';
+  const overlay=document.querySelector('#v074ProfileOverlay');
+  if(!overlay)return;
+
+  function syncOpenState(){
+    const open=overlay.classList.contains('show');
+    document.body?.classList.toggle('v653-profile-open',open);
+
+    /* Shorten only the visible label, never the underlying dungeon value. */
+    if(open){
+      const content=document.querySelector('#v074ProfileContent');
+      const topGrid=content?.querySelector(':scope > .v326-profile-grid');
+      if(topGrid){
+        [...topGrid.querySelectorAll(':scope > .v326-profile-stat span')].forEach(span=>{
+          if(/Abgeschlossen/i.test(span.textContent||'')) span.textContent='🏁 Abgeschlossen';
+        });
+      }
+    }
+  }
+
+  new MutationObserver(syncOpenState).observe(overlay,{attributes:true,attributeFilter:['class']});
+  const content=document.querySelector('#v074ProfileContent');
+  if(content)new MutationObserver(syncOpenState).observe(content,{childList:true,subtree:true});
+  syncOpenState();
+})();
+</script>
+<!-- ===== /V6.53 ===== -->
+
+
+
+<!-- ===== V6.54: global native HUD layout fix — no page/menu content under header ===== -->
+<style id="v654-global-header-layout-fix-css">
+/* V6.51 moved the complete app upward by 22px. That removed the visual gap on
+   the home page, but it also put the first 22px of every screen underneath the
+   sticky HUD. Restore normal document flow and remove only harmless inner top
+   spacing instead. */
+body.v650-native-safe > .app{
+  margin-top:0!important;
+}
+body.v650-native-safe > .app > main{
+  padding-top:0!important;
+}
+
+/* Fixed/portaled UI must start below the *measured* HUD edge, not below a
+   guessed 56/60px value. JS keeps --v654-hud-bottom in sync with the actual
+   Android safe area and header height. */
+body.v650-native-safe #v032MenuPanel{
+  top:calc(var(--v654-hud-bottom, 82px) + 3px)!important;
+  max-height:calc(100dvh - var(--v654-hud-bottom, 82px) - 8px)!important;
+}
+body.v650-native-safe > #v141SettingsMenu.v377-open{
+  top:calc(var(--v654-hud-bottom, 82px) + 3px)!important;
+  max-height:calc(100dvh - var(--v654-hud-bottom, 82px) - 8px)!important;
+}
+body.v650-native-safe #v074ProfileOverlay.v074-profile-overlay{
+  top:calc(var(--v654-hud-bottom, 82px) + 3px)!important;
+}
+
+/* Also keep the menu below the real HUD in the browser if the shell geometry
+   changes because of font/viewport scaling. */
+body.v654-hud-measured #v032MenuPanel{
+  top:calc(var(--v654-hud-bottom, 60px) + 3px)!important;
+  max-height:calc(100dvh - var(--v654-hud-bottom, 60px) - 8px)!important;
+}
+body.v654-hud-measured > #v141SettingsMenu.v377-open{
+  top:calc(var(--v654-hud-bottom, 60px) + 3px)!important;
+}
+</style>
+<script id="v654-global-header-layout-fix-js">
+(()=>{
+  'use strict';
+  const root=document.documentElement;
+  const body=document.body;
+  let raf=0;
+
+  function measure(){
+    raf=0;
+    const hud=document.getElementById('v372TopbarShell');
+    if(!hud||!body)return;
+    const r=hud.getBoundingClientRect();
+    /* Sticky HUD is at viewport top while visible. Its bottom is the only safe
+       anchor for fixed dropdowns/modals on every Android status-bar size. */
+    const bottom=Math.max(0,Math.round(r.bottom));
+    if(bottom>0){
+      root.style.setProperty('--v654-hud-bottom',bottom+'px');
+      body.classList.add('v654-hud-measured');
+    }
+  }
+  function queue(){
+    if(raf)return;
+    raf=requestAnimationFrame(measure);
+  }
+
+  function normalizeMenu(){
+    const panel=document.getElementById('v032MenuPanel');
+    if(!panel)return;
+    /* Re-opening an already scrolled drawer could make its first entry look as
+       if it were hidden by the HUD. Always open at the top. */
+    if(panel.classList.contains('open')||panel.classList.contains('show')){
+      panel.scrollTop=0;
+    }
+    queue();
+  }
+
+  queue();
+  document.addEventListener('DOMContentLoaded',queue,{once:true});
+  window.addEventListener('resize',queue,{passive:true});
+  window.addEventListener('orientationchange',()=>setTimeout(queue,80),{passive:true});
+  window.addEventListener('pageshow',queue,{passive:true});
+
+  const boot=()=>{
+    const hud=document.getElementById('v372TopbarShell');
+    if(hud&&typeof ResizeObserver==='function'){
+      new ResizeObserver(queue).observe(hud);
+    }
+    const panel=document.getElementById('v032MenuPanel');
+    if(panel){
+      new MutationObserver(normalizeMenu).observe(panel,{attributes:true,attributeFilter:['class']});
+    }
+    queue();
+  };
+  [0,80,300,900,1800].forEach(ms=>setTimeout(boot,ms));
+
+  document.addEventListener('click',e=>{
+    if(e.target.closest?.('.v372-menu,#v032MenuBtn')) setTimeout(normalizeMenu,0);
+  },true);
+})();
+</script>
+<!-- ===== /V6.54 ===== -->
+
 </body>
 </html>
