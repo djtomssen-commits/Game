@@ -102860,5 +102860,389 @@ This keeps the app origin/URL clean for Supabase email/Google auth while still p
 </script>
 <!-- ===== /V6.71 ATTRIBUTE POINTS DUPLICATE REMOVED ===== -->
 
+
+<!-- ===== V6.72 PVP = REAL COMBAT EFFECT PARITY ===== -->
+<style id="v672-pvp-effect-parity-css">
+/* PvP now shows the same combat mechanics as Dungeon/Quest.
+   Stack simultaneous procs instead of drawing them on top of each other. */
+#v209PvpBattleOverlay .v610-pvp-procs{
+  overflow:visible!important;
+  min-height:82px!important;
+}
+#v209PvpBattleOverlay .v610-pvp-chip.v672-proc{
+  z-index:72!important;
+  animation:v672PvpProc 1.85s cubic-bezier(.18,.8,.22,1) forwards!important;
+}
+#v209PvpBattleOverlay .v610-pvp-chip.v672-proc.heal{
+  border-color:#4ce264!important;
+  color:#b8ffbd!important;
+  text-shadow:0 0 9px rgba(62,220,90,.5),0 2px 2px #000!important;
+}
+#v209PvpBattleOverlay .v610-pvp-chip.v672-proc.rage{
+  border-color:#ef6b57!important;color:#ffd0bf!important;
+}
+#v209PvpBattleOverlay .v610-pvp-chip.v672-proc.magic{
+  border-color:#d477ff!important;color:#f2caff!important;
+}
+@keyframes v672PvpProc{
+  0%{opacity:0;transform:translateY(6px) scale(.84)}
+  10%,80%{opacity:1;transform:translateY(0) scale(1)}
+  100%{opacity:0;transform:translateY(-9px) scale(.96)}
+}
+@media(max-width:560px){
+  #v209PvpBattleOverlay .v610-pvp-procs{min-height:76px!important}
+  #v209PvpBattleOverlay .v610-pvp-chip.v672-proc{font-size:5.55px!important;padding:6px 8px!important}
+}
+</style>
+
+<script id="v672-pvp-effect-parity-core">
+(function(){
+'use strict';
+if(window.__V672_PVP_EFFECT_PARITY__)return;
+window.__V672_PVP_EFFECT_PARITY__=true;
+
+const $=q=>document.querySelector(q);
+const safeNum=v=>Number.isFinite(Number(v))?Number(v):0;
+const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+function setVal(name){
+  try{return typeof setBonusValue==='function'?safeNum(setBonusValue(name)):0}catch(_){return 0}
+}
+function attr(name){
+  try{return typeof totalAttr==='function'?safeNum(totalAttr(name)):0}catch(_){return 0}
+}
+function pvpChip(label,kind='power',side='player'){
+  const strip=$('#v209PvpBattleOverlay .v610-pvp-procs');
+  if(!strip||!label)return;
+
+  const same=[...strip.querySelectorAll('.v672-proc')]
+    .filter(x=>x.dataset.v672Side===side && !x.classList.contains('v672-removing')).length;
+
+  const el=document.createElement('span');
+  el.className=`v610-pvp-chip v672-proc ${kind} v618-side-${side}`;
+  el.dataset.v672Side=side;
+  el.textContent=label;
+  el.style.setProperty('top',`${same*28}px`,'important');
+  strip.appendChild(el);
+
+  setTimeout(()=>{el.classList.add('v672-removing');el.remove()},1900);
+}
+function playerEffects(raw,heal){
+  const s=String(raw||'').toUpperCase();
+  const effects=[
+    [/PERFEKTER SCHUSS/,'🎯 PERFEKTER SCHUSS','crit'],
+    [/GRÜNER HAGEL/,'🌿 GRÜNER HAGEL','power'],
+    [/BRUTALE ERNTE/,'⚔️ BRUTALE ERNTE','rage'],
+    [/KETTENREAKTION/,'⚡ KETTENREAKTION','magic'],
+    [/SUPERNOVA/,'✨ SUPERNOVA','magic'],
+    [/TODESNEBEL/,'☁️ TODESNEBEL','magic'],
+    [/HINRICHTUNG/,'☠️ HINRICHTUNG','crit'],
+    [/DETONATION/,'💣 DETONATION','magic'],
+    [/SALVE/,'🏹 SALVE','power'],
+    [/RASEREI/,'🔥 RASEREI','rage'],
+    [/WUCHT/,'💥 WUCHT','power'],
+    [/KRIT/,'💥 KRITISCHER TREFFER','crit'],
+    [/\bDOT\b/,'☠️ RAUCHSCHADEN','magic']
+  ];
+  for(const [rx,label,kind] of effects)if(rx.test(s))pvpChip(label,kind,'player');
+  if(heal>0)pvpChip(`💚 LEBENSRAUB +${heal} LP`,'heal','player');
+}
+function defenseEffects(raw,heal,counter){
+  const s=String(raw||'').toUpperCase();
+  if(/AUSGEWICHEN/.test(s))pvpChip('💨 AUSGEWICHEN','dodge','player');
+  if(/RAUCHBARRIERE/.test(s))pvpChip('🛡️ RAUCHBARRIERE','guard','player');
+  if(/ZWEITE LUFT/.test(s))pvpChip('❤️ ZWEITE LUFT','heal','player');
+  if(/UNKRAUT VERGEHT NICHT/.test(s))pvpChip('🌿 UNKRAUT VERGEHT NICHT','guard','player');
+  if(/GEBLOCKT|BLOCK|SCHILD|REDUZIERT/.test(s))pvpChip('🛡️ GEBLOCKT','guard','player');
+  if(heal>0)pvpChip(`💚 HEILUNG +${heal} LP`,'heal','player');
+  if(counter>0)pvpChip(`↩️ KONTER ${counter}`,'dodge','player');
+}
+function enemyEffects({crit=false,dodge=false,offhand=0}={}){
+  if(dodge)pvpChip('💨 AUSGEWICHEN','dodge','enemy');
+  if(crit)pvpChip('💥 KRITISCHER TREFFER','crit','enemy');
+  if(offhand>0)pvpChip('❄️ NEBENHAND','frost','enemy');
+}
+function clearFightUi(){
+  try{window.v610PvpVisualReset?.()}catch(_){}
+  const strip=$('#v209PvpBattleOverlay .v610-pvp-procs');
+  if(strip)strip.innerHTML='';
+  const host=$('#v209PvpBattleOverlay .v610-pvp-log-lines');
+  if(host)host.innerHTML='';
+}
+function renderRound(round,text,cls=''){
+  const host=$('#v209PvpBattleOverlay .v610-pvp-log-lines');
+  if(host){
+    const row=document.createElement('div');
+    row.className=`v610-pvp-line ${cls||''}`;
+    row.innerHTML=`<b>R${round}</b><span>${esc(text)}</span>`;
+    host.prepend(row);
+    while(host.children.length>4)host.lastElementChild?.remove();
+  }
+  const rc=$('#v209PvpBattleOverlay .v610-pvp-round');
+  if(rc)rc.textContent=`RUNDE ${round}`;
+}
+function anim(el,cls){
+  try{window.v209Anim?.(el,cls)}catch(_){
+    try{v209Anim?.(el,cls)}catch(__){}
+  }
+}
+function pop(el,text,crit=false){
+  if(!el)return;
+  el.classList.toggle('v620-crit',!!crit);
+  try{window.v209Pop?.(el,text)}catch(_){
+    el.textContent=text;el.classList.remove('pop');void el.offsetWidth;el.classList.add('pop');
+  }
+  setTimeout(()=>el.classList.remove('v620-crit'),780);
+}
+function hp(bar,txt,value,max){
+  value=Math.max(0,Math.round(value));
+  if(bar)bar.style.width=`${Math.max(0,Math.min(100,value/Math.max(1,max)*100))}%`;
+  if(txt)txt.textContent=value;
+}
+
+const fight=async function(){
+  if(window.v204BattleBusy || !window.v204Opponent)return;
+
+  const enemy={...window.v204Opponent};
+  const fightBtn=$('#v204FightBtn');
+
+  if(fightBtn){
+    fightBtn.disabled=true;
+    fightBtn.textContent='Kampf wird gestartet…';
+  }
+
+  try{
+    const {data,error}=await v073Db.rpc('v206_start_pvp',{p_target_user:enemy.id});
+    if(error)throw error;
+    const row=Array.isArray(data)?data[0]:data;
+
+    if(!row?.allowed){
+      if(row?.remaining_seconds){
+        window.v204CooldownLeft=Number(row.remaining_seconds)*1000;
+        try{v204RenderPage()}catch(_){}
+      }
+      v063Toast('Kampf konnte nicht gestartet werden','warn',row?.message||'Der Gegner ist nicht mehr verfügbar.');
+      if(fightBtn){fightBtn.disabled=false;fightBtn.textContent='⚔️ Kampf starten'}
+      return;
+    }
+  }catch(e){
+    console.error('V6.72 PvP fight start',e);
+    v063Toast('PvP nicht bereit','error',e?.message||'Kampf konnte nicht gestartet werden.');
+    if(fightBtn){fightBtn.disabled=false;fightBtn.textContent='⚔️ Kampf starten'}
+    return;
+  }
+
+  window.v204BattleBusy=true;
+  try{v204BattleBusy=true}catch(_){}
+  window.v204CooldownLeft=typeof V204_COOLDOWN!=='undefined'?V204_COOLDOWN:1800000;
+  try{v204CooldownLeft=window.v204CooldownLeft}catch(_){}
+
+  try{
+    v209OpenBattle(enemy);
+    clearFightUi();
+
+    const myPower=Math.max(1,combatPower());
+    const enPower=Math.max(1,safeNum(enemy.combat_power));
+    const myClass=s.playerClass||'grower';
+    const enClass=typeof v204ClassIdFromProfile==='function'?v204ClassIdFromProfile(enemy):(enemy.class_id||'grower');
+    const myFrostOffhand=myClass==='frost'&&!!s.equipment?.weapon&&!!s.equipment?.weapon2;
+    const enFrostOffhand=enClass==='frost'&&!!enemy?.equipment?.weapon&&!!enemy?.equipment?.weapon2;
+
+    let myHp=Math.max(120,maxHp());
+    let enHp=Math.max(120,Math.round(100+safeNum(enemy.level)*11+enPower*.35));
+    const maxMy=myHp,maxEn=enHp;
+
+    const pBar=$('#v209PlayerHpBar'),eBar=$('#v209EnemyHpBar');
+    const pTxt=$('#v209PlayerHpText'),eTxt=$('#v209EnemyHpText');
+    const pDmg=$('#v209DamagePlayer'),eDmg=$('#v209DamageEnemy');
+    const hidden=$('#v209BattleLog');
+    const pf=$('#v209PlayerFighter'),ef=$('#v209EnemyFighter');
+
+    hp(pBar,pTxt,myHp,maxMy);hp(eBar,eTxt,enHp,maxEn);
+    if(hidden)hidden.textContent='PvP-Kampf läuft …';
+
+    let combatState=null;
+    try{
+      if(typeof v318NewCombatState==='function')combatState=v318NewCombatState('pvp',maxMy);
+    }catch(e){console.warn('V6.72 combat state',e)}
+
+    let round=0;
+
+    const win=await new Promise(resolve=>{
+      const step=()=>{
+        round++;
+        const roundChip=$('#v209PvpBattleOverlay .v610-pvp-round');
+        if(roundChip)roundChip.textContent=`RUNDE ${round}`;
+
+        /* PLAYER ATTACK — same talent resolver used by Dungeon/Quest. */
+        const enemyDodged=enClass==='scout'&&Math.random()<.05;
+        const myBase=Math.max(6,Math.round((myPower*.10+8)*(.84+Math.random()*.32)));
+        let myDmg=myBase,myHeal=0,myCrit=false,myLabel='TREFFER',myOffhand=0;
+
+        if(!enemyDodged){
+          try{
+            if(combatState&&typeof v318ResolvePlayerAttack==='function'){
+              const a=v318ResolvePlayerAttack(combatState,{
+                baseDamage:myBase,
+                enemyHp:enHp,enemyMax:maxEn,
+                playerHp:myHp,playerMax:maxMy,
+                baseCrit:Math.min(.30,.04+attr('glueck')*.012),
+                setCrit:myClass==='bruiser'?(.07+setVal('critChance')):0,
+                baseWucht:(myClass==='grower'||myClass==='frost')?(.13+setVal('wuchtChance')):0,
+                baseDouble:myClass==='scout'?(.15+setVal('doubleChance')):0,
+                setDoubleDamage:setVal('doubleDamage')
+              })||{};
+              myDmg=Math.max(1,Math.round(safeNum(a.damage)||myBase));
+              myHeal=Math.max(0,Math.round(safeNum(a.heal)));
+              myCrit=!!a.crit;
+              myLabel=String(a.text||'TREFFER');
+            }else{
+              myCrit=Math.random()<(.12+(myClass==='bruiser'?.05:0));
+              if(myCrit){myDmg=Math.round(myDmg*1.55);myLabel='KRIT'}
+            }
+          }catch(e){console.warn('V6.72 player resolver',e)}
+
+          if(myClass==='grower')myDmg=Math.round(myDmg*1.05);
+          if(myFrostOffhand&&Math.random()<.08){
+            myOffhand=Math.max(1,Math.round(myBase*.40));
+            myDmg+=myOffhand;
+            myLabel+=(myLabel?' + ':'')+'NEBENHAND';
+          }
+        }else{
+          myDmg=0;myLabel='AUSGEWICHEN';
+        }
+
+        anim(pf,'attack-right');
+
+        setTimeout(()=>{
+          if(enemyDodged){
+            window.v617PvpDodge?.(ef);
+            enemyEffects({dodge:true});
+          }else{
+            enHp=Math.max(0,enHp-myDmg);
+            myHp=Math.min(maxMy,myHp+myHeal);
+            hp(eBar,eTxt,enHp,maxEn);hp(pBar,pTxt,myHp,maxMy);
+            anim(ef,'hit');
+            pop(eDmg,`${myCrit?'KRIT! ':''}-${myDmg}${myOffhand?' +NH':''}`,myCrit||/WUCHT|RASEREI|SALVE|MAGIE|SUPERNOVA|ERNTE/i.test(myLabel));
+            playerEffects(myLabel,myHeal);
+          }
+
+          const leftText=enemyDodged
+            ?`${enemy.character_name} weicht deinem Angriff aus.`
+            :`${s.characterName||'Du'}: ${myLabel} · ${myDmg} Schaden${myHeal?` · Lebensraub +${myHeal} LP`:''}.`;
+
+          if(enHp<=0){
+            renderRound(round,leftText,myCrit?'crit':enemyDodged?'dodge':'');
+            resolve(true);return;
+          }
+
+          /* ENEMY ATTACK — opponent keeps current class basics; your defensive
+             talents are resolved by the same Dungeon/Quest defense resolver. */
+          setTimeout(()=>{
+            const myBasicDodge=myClass==='scout'&&Math.random()<.05;
+            const enCrit=!myBasicDodge&&Math.random()<(.08+(enClass==='bruiser'?.05:0));
+            const enBase=Math.max(6,Math.round((enPower*.10+8)*(.84+Math.random()*.32)));
+            let enRaw=enBase;
+            if(enCrit)enRaw=Math.round(enRaw*1.45);
+            if(enClass==='grower')enRaw=Math.round(enRaw*1.05);
+
+            let enOffhand=0;
+            if(!myBasicDodge&&enFrostOffhand&&Math.random()<.08){
+              enOffhand=Math.max(1,Math.round(enBase*.40));
+              enRaw+=enOffhand;
+            }
+
+            anim(ef,'attack-left');
+
+            setTimeout(()=>{
+              let taken=enRaw,defHeal=0,counter=0,prevent=false,defLabel='Gegner trifft';
+
+              if(myBasicDodge){
+                taken=0;defLabel='AUSGEWICHEN';
+              }else{
+                try{
+                  if(combatState&&typeof v318ResolveEnemyAttack==='function'){
+                    const d=v318ResolveEnemyAttack(combatState,{
+                      damage:enRaw,playerHp:myHp,playerMax:maxMy
+                    })||{};
+                    taken=Math.max(0,Math.round(safeNum(d.damage)));
+                    defHeal=Math.max(0,Math.round(safeNum(d.heal)));
+                    counter=Math.max(0,Math.round(safeNum(d.counterDamage)));
+                    prevent=!!d.preventLethal;
+                    defLabel=String(d.text||'Gegner trifft');
+                  }
+                }catch(e){console.warn('V6.72 defense resolver',e)}
+              }
+
+              myHp=Math.min(maxMy,myHp+defHeal);
+              myHp=Math.max(0,myHp-taken);
+              if(prevent&&myHp<=0)myHp=1;
+              if(counter>0)enHp=Math.max(0,enHp-counter);
+
+              hp(pBar,pTxt,myHp,maxMy);hp(eBar,eTxt,enHp,maxEn);
+
+              if(/AUSGEWICHEN/i.test(defLabel)){
+                window.v617PvpDodge?.(pf);
+              }else if(/BARRIERE|BLOCK|SCHILD|REDUZIERT|UNKRAUT/i.test(defLabel)){
+                window.v617PvpGuard?.(pf);
+                if(taken>0)pop(pDmg,`-${taken}`,enCrit);
+              }else{
+                anim(pf,'hit');
+                if(taken>0)pop(pDmg,`${enCrit?'KRIT! ':''}-${taken}${enOffhand?' +NH':''}`,enCrit);
+              }
+
+              enemyEffects({crit:enCrit,dodge:false,offhand:enOffhand});
+              defenseEffects(defLabel,defHeal,counter);
+
+              let rightText=/AUSGEWICHEN/i.test(defLabel)
+                ?`${s.characterName||'Du'} weicht aus.`
+                :`${enemy.character_name}: ${taken} Schaden${enCrit?' · KRIT':''}${enOffhand?' · Nebenhand':''}${defLabel!=='Gegner trifft'?` · ${defLabel.replace(/^Gegner trifft\s*·?\s*/i,'')}`:''}${defHeal?` · Heilung +${defHeal} LP`:''}${counter?` · Konter ${counter}`:''}.`;
+
+              renderRound(round,`${leftText} ${rightText}`,myCrit||enCrit?'crit':/AUSGEWICHEN/i.test(myLabel+defLabel)?'dodge':'');
+
+              if(enHp<=0){resolve(true);return}
+              if(myHp<=0){resolve(false);return}
+              if(round>=30){resolve((myHp/maxMy)>=(enHp/maxEn));return}
+
+              setTimeout(step,430);
+            },280);
+          },430);
+        },280);
+      };
+      setTimeout(step,500);
+    });
+
+    const gold=Math.max(25,Math.round(35+s.level*7+(win?combatPower()*.035:combatPower()*.01)));
+    const xp=Math.max(10,Math.round(18+s.level*4+(win?s.level*2:s.level)));
+
+    await v209FinishBattle(win,enemy,gold,xp);
+  }catch(e){
+    console.error('V6.72 PvP combat',e);
+    window.v204BattleBusy=false;
+    try{v204BattleBusy=false}catch(_){}
+    if(fightBtn){fightBtn.disabled=false;fightBtn.textContent='⚔️ Kampf starten'}
+    v063Toast('PvP-Kampf abgebrochen','error',e?.message||'Unbekannter Kampffehler');
+  }
+};
+
+fight.__v672=true;
+window.v204Fight=fight;
+try{v204Fight=fight}catch(_){}
+
+/* Old render wrappers can overwrite onclick. Keep the final handler authoritative. */
+function bind(){
+  const b=$('#v204FightBtn');
+  if(b&&b.onclick!==fight)b.onclick=fight;
+}
+document.addEventListener('click',e=>{
+  if(e.target?.closest?.('#pvp,#v204FightBtn'))setTimeout(bind,0);
+},true);
+new MutationObserver(bind).observe(document.body,{childList:true,subtree:true});
+window.addEventListener('pageshow',bind,{passive:true});
+setTimeout(bind,0);
+})();
+</script>
+<!-- ===== /V6.72 PVP = REAL COMBAT EFFECT PARITY ===== -->
+
 </body>
 </html>
