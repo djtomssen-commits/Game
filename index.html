@@ -87412,6 +87412,8 @@ html.v495-level-syncing #v420LevelUpOverlay{
       let bookHost=root.querySelector('.v514-book-host');
       if(!bookHost){bookHost=document.createElement('div');bookHost.className='v514-book-host';stage?.insertAdjacentElement('afterend',bookHost)}
       move(bookHost,document.getElementById('v106BookBtn'));
+      /* V6.109: Illegales Buch stays first, Pet Sammelalbum directly below. */
+      move(bookHost,document.getElementById('v686PetAlbumBtn'));
 
       const footer=root.querySelector('.v510-footer');
       const stats=root.querySelector('.v510-stats');
@@ -106048,7 +106050,13 @@ function ensureButton(){
     btn.innerHTML='<span class="paw">🐾</span><span class="copy"><span class="title">Pet Sammelalbum</span><span class="info">20 Begleiter · 6 Qualitäten · Boni + Titel</span></span>';
     btn.onclick=()=>window.v686OpenPetAlbum?.();
   }
-  if(book.nextElementSibling!==btn)book.insertAdjacentElement('afterend',btn);
+  const host=book.closest('.v514-book-host');
+  if(host){
+    host.appendChild(book);
+    host.appendChild(btn);
+  }else if(book.nextElementSibling!==btn){
+    book.insertAdjacentElement('afterend',btn);
+  }
 }
 
 window.v686GrantPet=function(petId,quality,source='',opts=null){
@@ -108394,6 +108402,315 @@ window.v6102EquipmentDiagnostics=function(){
 
 <script id="v6108-quality-color-marker">
 window.__V6108_ITEM_QUALITY_COLOR_FIX__=true;
+</script>
+
+
+<style id="v6109-background-music-css">
+#v6109MusicRow .v6109-music-note{
+  color:#83e56a;
+  font-weight:900;
+}
+</style>
+
+<script id="v6109-background-music">
+(()=>{
+'use strict';
+if(window.__V6109_BACKGROUND_MUSIC__)return;
+window.__V6109_BACKGROUND_MUSIC__=true;
+
+const SETTINGS_KEY=(typeof V141_SETTINGS_KEY==='string'?V141_SETTINGS_KEY:'growLegendsSettingsV141');
+let ctx=null;
+let master=null;
+let source=null;
+let loopBuffer=null;
+let unlocked=false;
+let building=false;
+
+/* Background music defaults ON, but Android/WebView still requires the first
+   user interaction before audio is allowed to start. */
+try{
+  if(typeof v141Settings==='object' && typeof v141Settings.music!=='boolean'){
+    v141Settings.music=true;
+    localStorage.setItem(SETTINGS_KEY,JSON.stringify(v141Settings));
+  }
+}catch(e){}
+
+function enabled(){
+  try{
+    return typeof v141Settings==='object'
+      ? (v141Settings.sound!==false && v141Settings.music!==false)
+      : true;
+  }catch(e){return true}
+}
+
+function mtof(m){return 440*Math.pow(2,(m-69)/12)}
+
+function makeLoop(audioCtx){
+  const sr=22050;
+  const seconds=16;
+  const len=Math.floor(sr*seconds);
+  const b=audioCtx.createBuffer(2,len,sr);
+  const L=b.getChannelData(0),R=b.getChannelData(1);
+  const bpm=84;
+  const beat=60/bpm;
+  const half=beat/2;
+  const roots=[45,48,43,50]; // original minor-ish progression
+  const thirds=[3,3,4,3];
+
+  let seed=13371337;
+  const rnd=()=>{
+    seed=(seed*1664525+1013904223)>>>0;
+    return (seed/4294967296)*2-1;
+  };
+  const tri=(x)=>2/Math.PI*Math.asin(Math.sin(x));
+
+  for(let i=0;i<len;i++){
+    const t=i/sr;
+    const bar=Math.min(3,Math.floor(t/4));
+    const root=roots[bar];
+    const chord=[root,root+thirds[bar],root+7];
+
+    // warm pad
+    const breathe=.72+.28*Math.sin(2*Math.PI*t/8);
+    let pad=0;
+    for(let n=0;n<3;n++){
+      const f=mtof(chord[n]);
+      pad += Math.sin(2*Math.PI*f*t + n*.6)*(.018/(n+1));
+      pad += tri(2*Math.PI*(f*.5)*t + n*.3)*(.007/(n+1));
+    }
+    pad*=breathe;
+
+    // soft bass pulse each beat
+    const bp=t%beat;
+    const beatIndex=Math.floor(t/beat);
+    const bassRoot=roots[Math.min(3,Math.floor(t/4))]-12;
+    const bassEnv=Math.exp(-bp*3.8);
+    const bass=Math.sin(2*Math.PI*mtof(bassRoot)*t)*.045*bassEnv;
+
+    // calm kick
+    let kick=0;
+    if(bp<.20){
+      const e=Math.exp(-bp*18);
+      const f=52+72*Math.exp(-bp*22);
+      kick=Math.sin(2*Math.PI*f*bp)*.075*e;
+    }
+
+    // subdued snare on beats 2 and 4
+    let snare=0;
+    if((beatIndex%4===1||beatIndex%4===3) && bp<.14){
+      const e=Math.exp(-bp*26);
+      snare=(rnd()*.026 + Math.sin(2*Math.PI*175*bp)*.012)*e;
+    }
+
+    // tiny hat every half beat
+    const hp=t%half;
+    let hat=0;
+    if(hp<.045){
+      const e=Math.exp(-hp*65);
+      hat=rnd()*.011*e;
+    }
+
+    // slow pluck pattern, gives the "battle" character without becoming hectic
+    const step=Math.floor(t/half);
+    const local=t-step*half;
+    const degree=[0,7,3,7,12,7,10,7][step%8];
+    const leadMidi=root+12+degree;
+    const leadEnv=Math.exp(-local*7.5);
+    const lead=(Math.sin(2*Math.PI*mtof(leadMidi)*local)
+              +.28*Math.sin(2*Math.PI*mtof(leadMidi)*2*local))
+              *.018*leadEnv;
+
+    // occasional low tom every 8 beats
+    let tom=0;
+    if(beatIndex%8===7 && bp<.22){
+      const e=Math.exp(-bp*14);
+      tom=Math.sin(2*Math.PI*(92-25*bp)*bp)*.026*e;
+    }
+
+    const common=pad+bass+kick+snare+hat+lead+tom;
+    const side=.006*Math.sin(2*Math.PI*mtof(chord[1]+12)*t + .35)*breathe;
+    L[i]=Math.tanh((common+side)*1.15);
+    R[i]=Math.tanh((common-side)*1.15);
+  }
+
+  // short seam crossfade for a smooth loop
+  const fade=Math.floor(sr*.18);
+  for(let i=0;i<fade;i++){
+    const a=i/fade;
+    const j=len-fade+i;
+    const l0=L[i],r0=R[i],l1=L[j],r1=R[j];
+    L[i]=l0*a+l1*(1-a);
+    R[i]=r0*a+r1*(1-a);
+    L[j]=l1*a+l0*(1-a);
+    R[j]=r1*a+r0*(1-a);
+  }
+  return b;
+}
+
+function ensureAudio(){
+  if(ctx)return true;
+  const AC=window.AudioContext||window.webkitAudioContext;
+  if(!AC)return false;
+  try{
+    ctx=new AC({latencyHint:'playback'});
+    master=ctx.createGain();
+    master.gain.value=.12;
+    master.connect(ctx.destination);
+    building=true;
+    loopBuffer=makeLoop(ctx);
+    building=false;
+    return true;
+  }catch(e){
+    building=false;
+    console.warn('V6.109 music init',e);
+    return false;
+  }
+}
+
+async function startMusic(){
+  if(!unlocked||!enabled()||document.hidden)return;
+  if(!ensureAudio()||building)return;
+  try{
+    if(ctx.state==='suspended')await ctx.resume();
+    if(source)return;
+    const s=ctx.createBufferSource();
+    s.buffer=loopBuffer;
+    s.loop=true;
+    s.connect(master);
+    s.onended=()=>{if(source===s)source=null};
+    s.start();
+    source=s;
+  }catch(e){console.warn('V6.109 music start',e)}
+}
+
+function stopMusic(){
+  if(source){
+    try{source.stop()}catch(e){}
+    try{source.disconnect()}catch(e){}
+    source=null;
+  }
+}
+
+async function syncMusic(){
+  if(!enabled()){
+    stopMusic();
+    return;
+  }
+  if(document.hidden){
+    try{if(ctx&&ctx.state==='running')await ctx.suspend()}catch(e){}
+    return;
+  }
+  await startMusic();
+}
+
+function setMusic(on){
+  try{
+    if(typeof v141Settings==='object'){
+      v141Settings.music=!!on;
+      localStorage.setItem(SETTINGS_KEY,JSON.stringify(v141Settings));
+    }
+  }catch(e){}
+  syncMusic();
+  refreshToggle();
+}
+window.v6109SetMusic=setMusic;
+window.v6109SyncMusic=syncMusic;
+
+function ensureMusicRow(){
+  const menu=document.getElementById('v141SettingsMenu');
+  if(!menu)return false;
+  let row=document.getElementById('v6109MusicRow');
+  if(!row){
+    row=document.createElement('label');
+    row.id='v6109MusicRow';
+    row.className='v141-setting-row';
+    row.innerHTML=`
+      <span class="v141-setting-icon">🎵</span>
+      <span class="v141-setting-copy">
+        <b>Hintergrundmusik</b>
+        <span>Chillige Grow-Legends-Kampfmusik, solange die App geöffnet ist.</span>
+      </span>
+      <input class="v141-switch" id="v6109MusicToggle" type="checkbox">
+    `;
+    const soundRow=document.getElementById('v141Sound')?.closest('.v141-setting-row');
+    if(soundRow)soundRow.insertAdjacentElement('afterend',row);
+    else menu.querySelector('.v141-settings-head')?.insertAdjacentElement('afterend',row);
+  }
+  const toggle=document.getElementById('v6109MusicToggle');
+  if(toggle&&!toggle.dataset.bound){
+    toggle.dataset.bound='1';
+    toggle.addEventListener('change',()=>setMusic(toggle.checked));
+  }
+  refreshToggle();
+  return true;
+}
+
+function refreshToggle(){
+  const toggle=document.getElementById('v6109MusicToggle');
+  if(toggle){
+    try{toggle.checked=v141Settings?.music!==false}catch(e){toggle.checked=true}
+  }
+}
+
+/* Respect the existing master Sound switch. */
+try{
+  if(typeof v141ApplySettings==='function'&&!window.__v6109ApplyWrapped){
+    const base=v141ApplySettings;
+    v141ApplySettings=function(){
+      const r=base.apply(this,arguments);
+      ensureMusicRow();
+      syncMusic();
+      return r;
+    };
+    try{window.v141ApplySettings=v141ApplySettings}catch(e){}
+    window.__v6109ApplyWrapped=true;
+  }
+}catch(e){}
+
+/* Keep the row present whenever settings are rebuilt. */
+try{
+  if(typeof v141BuildSettings==='function'&&!window.__v6109SettingsWrapped){
+    const base=v141BuildSettings;
+    v141BuildSettings=function(){
+      const r=base.apply(this,arguments);
+      ensureMusicRow();
+      return r;
+    };
+    try{window.v141BuildSettings=v141BuildSettings}catch(e){}
+    window.__v6109SettingsWrapped=true;
+  }
+}catch(e){}
+
+function unlock(){
+  if(unlocked)return;
+  unlocked=true;
+  ensureAudio();
+  syncMusic();
+}
+document.addEventListener('pointerdown',unlock,{once:true,passive:true,capture:true});
+document.addEventListener('keydown',unlock,{once:true,capture:true});
+
+document.addEventListener('visibilitychange',syncMusic,{passive:true});
+window.addEventListener('pageshow',()=>{ensureMusicRow();syncMusic()},{passive:true});
+window.addEventListener('growlegends:account-ready',()=>setTimeout(()=>{ensureMusicRow();syncMusic()},120));
+
+document.addEventListener('DOMContentLoaded',()=>{
+  ensureMusicRow();
+  refreshToggle();
+},{once:true});
+
+setTimeout(ensureMusicRow,220);
+
+window.v6109MusicInfo=()=>({
+  enabled:enabled(),
+  unlocked,
+  context:ctx?.state||'not-created',
+  playing:!!source,
+  hidden:document.hidden,
+  loopSeconds:16,
+  persistentIntervals:0
+});
+})();
 </script>
 
 </body>
