@@ -104580,5 +104580,55 @@ Those values are declared with `let`, so they are not properties of window.
 The fight button therefore returned before the server start RPC.
 ===== /V6.79 PVP START FIX ===== -->
 
+
+<!-- ===== V6.80 NEBEL-CREW FOOTER FLOW FIX ===== -->
+<style id="v680-nebel-crew-footer-flow-fix">
+/* Footer bleibt jetzt im normalen Dokumentfluss.
+   Android-Abstand entsteht unter dem Footer statt durch Hochziehen über Karten. */
+
+html body .app section#friends.v673-friends{
+  padding-bottom:calc(105px + env(safe-area-inset-bottom,0px))!important;
+}
+
+html body .app section#friends.v673-friends .v673-crew-footer{
+  position:relative!important;
+  bottom:auto!important;
+  top:auto!important;
+  transform:none!important;
+  margin-top:14px!important;
+  margin-bottom:0!important;
+  z-index:1!important;
+}
+
+body.v650-native-safe .app section#friends.v673-friends{
+  padding-bottom:calc(135px + env(safe-area-inset-bottom,0px))!important;
+}
+
+body.v650-native-safe .app section#friends.v673-friends .v673-crew-footer{
+  bottom:auto!important;
+  margin-bottom:0!important;
+}
+
+@media(max-width:560px){
+  html body .app section#friends.v673-friends{
+    padding-bottom:calc(120px + env(safe-area-inset-bottom,0px))!important;
+  }
+
+  html body .app section#friends.v673-friends .v673-crew-footer{
+    bottom:auto!important;
+    margin-top:14px!important;
+  }
+
+  body.v650-native-safe .app section#friends.v673-friends{
+    padding-bottom:calc(150px + env(safe-area-inset-bottom,0px))!important;
+  }
+
+  body.v650-native-safe .app section#friends.v673-friends .v673-crew-footer{
+    bottom:auto!important;
+  }
+}
+</style>
+<!-- ===== /V6.80 NEBEL-CREW FOOTER FLOW FIX ===== -->
+
 </body>
 </html>
