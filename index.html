@@ -101490,5 +101490,55 @@ html body .app section#hall.v648-hall .v072-player-name .v648-self-pill{
 </script>
 <!-- ===== /V6.49 ===== -->
 
+
+
+<!-- ===== V6.50: Android native safe-area fix for global HUD ===== -->
+<style id="v650-native-header-safe-area-css">
+/* Capacitor renders edge-to-edge on newer Android versions. Keep the complete
+   Grow Legends HUD below the Android status bar instead of letting the clock,
+   signal and battery icons overlap the logo and buttons. */
+body.v650-native-safe{
+  --v650-safe-top:max(env(safe-area-inset-top, 0px), 24px);
+}
+body.v650-native-safe #v372TopbarShell{
+  padding-top:var(--v650-safe-top)!important;
+  box-sizing:border-box!important;
+}
+/* Dropdowns are fixed to the viewport, so move them below the taller native HUD too. */
+body.v650-native-safe #v032MenuPanel{
+  top:calc(56px + var(--v650-safe-top))!important;
+}
+body.v650-native-safe > #v141SettingsMenu.v377-open{
+  top:calc(56px + var(--v650-safe-top))!important;
+}
+@media(min-width:431px){
+  body.v650-native-safe #v032MenuPanel{
+    top:calc(60px + var(--v650-safe-top))!important;
+  }
+  body.v650-native-safe > #v141SettingsMenu.v377-open{
+    top:calc(60px + var(--v650-safe-top))!important;
+  }
+}
+</style>
+<script id="v650-native-header-safe-area-js">
+(function(){
+  function isNativeApp(){
+    try{
+      const C=window.Capacitor;
+      if(!C)return false;
+      if(typeof C.isNativePlatform==='function')return !!C.isNativePlatform();
+      if(typeof C.getPlatform==='function')return C.getPlatform()!=='web';
+      return !!C.platform && C.platform!=='web';
+    }catch(e){return false}
+  }
+  function apply(){
+    document.body?.classList.toggle('v650-native-safe',isNativeApp());
+  }
+  apply();
+  document.addEventListener('DOMContentLoaded',apply,{once:true});
+  setTimeout(apply,100);
+  setTimeout(apply,700);
+})();
+</script>
 </body>
 </html>
