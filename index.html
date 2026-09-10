@@ -101318,5 +101318,177 @@ html body .app section#hall.v648-hall .v072-player-name .v648-self-pill{
 })();
 </script>
 <!-- ===== /V6.48 ===== -->
+
+
+<!-- ===== V6.49 HALL — DUNGEON PROGRESS MIRROR FIX ===== -->
+<script id="v649-hall-dungeon-progress-fix">
+(()=>{
+  'use strict';
+  if(window.__V649_HALL_DUNGEON_PROGRESS_FIX__) return;
+  window.__V649_HALL_DUNGEON_PROGRESS_FIX__=true;
+
+  let busy=false, timer=0, lastJson='';
+  const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const ints=a=>[...new Set((Array.isArray(a)?a:[]).map(Number).filter(n=>Number.isInteger(n)&&n>=0&&n<20))].sort((a,b)=>a-b);
+  const clampD=v=>Math.max(0,Math.min(19,Math.floor(Number(v)||0)));
+  const clampR=v=>Math.max(0,Math.min(9,Math.floor(Number(v)||0)));
+
+  function uid(){
+    try{return v073User&&!v073User.is_anonymous&&v073User.id?String(v073User.id):''}catch(e){return ''}
+  }
+  function accountReady(id=uid()){
+    if(!id || window.__V200_AUTH_READY__!==true) return false;
+    try{if(typeof window.v452AccountVerified==='function' && !window.v452AccountVerified(id)) return false}catch(e){return false}
+    try{if(String(s?.__accountOwnerId||'') && String(s.__accountOwnerId)!==id) return false}catch(e){}
+    return true;
+  }
+  function fallbackDp(){
+    const d=(s?.dungeon&&typeof s.dungeon==='object')?s.dungeon:{};
+    const completed=ints(d.completed), progress={...(d.progress||{})};
+    const selected=clampD(d.selected||0);
+    const unlocked=ints(d.unlocked);
+    if(!unlocked.includes(0))unlocked.unshift(0);
+    completed.forEach(i=>{if(!unlocked.includes(i))unlocked.push(i)});
+    unlocked.sort((a,b)=>a-b);
+    const room=clampR(progress[selected]??d.room);
+    let last=Number(d.lastActive);
+    if(!Number.isInteger(last)||last<0||last>=20){
+      const started=Object.entries(progress).map(([k,v])=>[Number(k),clampR(v)])
+        .filter(([i,r])=>Number.isInteger(i)&&i>=0&&i<20&&!completed.includes(i)&&r>0)
+        .sort((a,b)=>b[0]-a[0]||b[1]-a[1]);
+      last=started.length?started[0][0]:(completed.length?Math.max(...completed):selected);
+    }
+    return {completed,progress,selected,room,lastActive:clampD(last),unlocked};
+  }
+  function liveDp(){
+    try{
+      const fn=window.v4130LiveDungeonProgress||window.v4124LiveDungeonProgress;
+      const x=typeof fn==='function'?fn():fallbackDp();
+      if(!x||typeof x!=='object')return fallbackDp();
+      return {
+        completed:ints(x.completed),
+        progress:{...(x.progress||{})},
+        selected:clampD(x.selected||0),
+        room:clampR(x.room),
+        lastActive:clampD(x.lastActive),
+        unlocked:ints(x.unlocked)
+      };
+    }catch(e){return fallbackDp()}
+  }
+  function fields(){
+    const dp=liveDp();
+    return {
+      dungeons:dp.completed.length,
+      dungeon_progress:{
+        completed:dp.completed,
+        progress:dp.progress,
+        selected:dp.selected,
+        room:dp.room,
+        lastActive:dp.lastActive,
+        unlocked:dp.unlocked
+      },
+      updated_at:new Date().toISOString()
+    };
+  }
+  function position(dp){
+    try{
+      const fn=window.v4130CanonicalDungeonPosition||window.v4124CanonicalDungeonPosition;
+      if(typeof fn==='function')return fn(dp,dp.completed.length);
+    }catch(e){}
+    const i=clampD(dp.lastActive??dp.selected), r=clampR(dp.progress?.[i]??(dp.selected===i?dp.room:0));
+    return {dungeonIndex:i,dungeonNumber:i+1,enemyNumber:r+1,completed:dp.completed.includes(i)};
+  }
+  function paintOwnRow(){
+    const id=uid(); if(!id)return;
+    const row=[...document.querySelectorAll('#v072HallRanking .v072-player-row[data-profile-id]')]
+      .find(x=>String(x.getAttribute('data-profile-id')||'')===id);
+    if(!row)return;
+    const dp=liveDp(), pos=position(dp);
+    const lines=row.querySelectorAll('.v4124-social-line');
+    if(lines.length<2)return;
+    let name=`Dungeon ${pos.dungeonNumber}`;
+    try{name=dungeons?.[pos.dungeonIndex]?.name||name}catch(e){}
+    const boss=pos.enemyNumber>=10;
+    lines[1].innerHTML=`🗺️ Dungeon <strong>${pos.dungeonNumber}</strong> · ${esc(name)} · ${boss?'👑 Boss':'👹 Gegner'} <strong>${pos.enemyNumber}/10</strong>${pos.completed?' · <span class="good">abgeschlossen</span>':''} · 🏁 Gesamt <strong>${dp.completed.length}</strong>`;
+  }
+
+  async function write(force=false){
+    const id=uid();
+    if(!accountReady(id))return false;
+    if(busy)return true;
+    try{
+      if(typeof v073Init==='function')await v073Init();
+      if(typeof v073Db==='undefined'||!v073Db||typeof v073User==='undefined'||!v073User||v073User.is_anonymous)return false;
+      const f=fields();
+      const json=JSON.stringify({dungeons:f.dungeons,dungeon_progress:f.dungeon_progress});
+      if(!force && json===lastJson){paintOwnRow();return true}
+      busy=true;
+      const {error}=await v073Db.from('profiles').update(f).eq('id',id);
+      if(error)throw error;
+      lastJson=json;
+      paintOwnRow();
+      return true;
+    }catch(e){
+      console.warn('V6.49 dungeon progress mirror',e);
+      return false;
+    }finally{busy=false}
+  }
+  function schedule(force=false){
+    clearTimeout(timer);
+    timer=setTimeout(()=>{void write(force)},force?0:450);
+  }
+  window.v649SyncDungeonProgress=write;
+
+  /* Existing-profile profile sync historically omitted dungeon_progress from its UPDATE.
+     Keep the public profile mirror in step with the authoritative account save. */
+  try{
+    if(typeof v073SyncProfile==='function'&&!window.__v649ProfileSyncWrapped){
+      const base=v073SyncProfile;
+      v073SyncProfile=async function(force=false){
+        let ok=false;
+        try{ok=!!(await base.apply(this,arguments))}catch(e){console.warn('V6.49 base profile sync',e)}
+        const dpOk=await write(!!force);
+        return ok||dpOk;
+      };
+      try{window.v073SyncProfile=v073SyncProfile}catch(e){}
+      window.__v649ProfileSyncWrapped=true;
+    }
+  }catch(e){}
+
+  try{
+    if(typeof v073LoadRanking==='function'&&!window.__v649RankingWrapped){
+      const base=v073LoadRanking;
+      v073LoadRanking=async function(){
+        await write(true);
+        const r=await base.apply(this,arguments);
+        paintOwnRow();
+        requestAnimationFrame(paintOwnRow);
+        setTimeout(paintOwnRow,80);
+        return r;
+      };
+      try{window.v073LoadRanking=v073LoadRanking}catch(e){}
+      window.__v649RankingWrapped=true;
+    }
+  }catch(e){}
+
+  try{
+    if(typeof persist==='function'&&!window.__v649PersistWrapped){
+      const base=persist;
+      persist=function(){const r=base.apply(this,arguments);schedule(false);return r};
+      try{window.persist=persist}catch(e){}
+      window.__v649PersistWrapped=true;
+    }
+  }catch(e){}
+
+  document.addEventListener('click',e=>{
+    if(e.target.closest?.('[data-screen="hall"],[data-go="hall"]'))setTimeout(()=>{schedule(true);paintOwnRow()},0);
+  },true);
+  window.addEventListener('growlegends:account-ready',()=>setTimeout(()=>schedule(true),0));
+  setTimeout(()=>schedule(true),1200);
+  setTimeout(()=>{paintOwnRow();schedule(true)},3500);
+})();
+</script>
+<!-- ===== /V6.49 ===== -->
+
 </body>
 </html>
