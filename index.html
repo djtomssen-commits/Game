@@ -72289,11 +72289,52 @@ html.v481-hidden *,html.v481-hidden *::before,html.v481-hidden *::after{animatio
 }
 </style>
 
+
+<style id="v667-harzschmiede-tab-redesign">
+/* V6.67 — Harzschmiede: mobile-first Tab-Aufbau nach freigegebener Vorschau. Keine neuen Bildassets. */
+#forge.screen{padding:8px 6px 92px!important;max-width:860px!important;margin:0 auto!important}
+.v488-shell.v490-shell{border:2px solid #5e431b!important;border-radius:18px!important;background:linear-gradient(180deg,#12180f,#070b07 82%)!important;box-shadow:0 18px 44px #000c,inset 0 0 42px #0008!important}
+.v490-titlebar{min-height:106px!important;margin:7px 8px 4px!important;padding:12px 132px 15px!important;border:4px solid #4d2d0c!important;border-radius:18px!important;box-shadow:inset 0 0 0 2px #ce8c2c,inset 0 -9px 0 #4b2a0d,0 7px 0 #1d1207,0 12px 25px #000b!important}
+.v490-titlebar h2{font-size:clamp(38px,7vw,64px)!important;letter-spacing:-.04em!important}.v490-titlebar p{font-size:8px!important;color:#ead59b!important}
+.v490-frag-pill{right:14px!important;bottom:-25px!important;min-width:144px!important;padding:8px 12px!important;border-radius:15px!important}
+.v490-frag-pill b{font-size:18px!important}.v490-frag-pill small{font-size:7px!important}
+.v667-forge-body{position:relative;z-index:3;padding:30px 8px 8px;background:linear-gradient(90deg,#0007,transparent 10% 90%,#0007),repeating-linear-gradient(90deg,#15130f 0 54px,#0d0d0a 55px 57px)}
+.v667-tabs{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:8px;padding:4px;border:2px solid #3f321a;border-radius:14px;background:#090d09;box-shadow:inset 0 0 16px #000,0 5px 13px #0008}
+.v667-tab{min-height:68px;border:2px solid #3c4c32;border-radius:11px;background:linear-gradient(#202820,#101511);color:#949b92;display:flex;align-items:center;justify-content:center;gap:10px;padding:8px 10px;font-weight:1000;font-size:17px;text-transform:uppercase;letter-spacing:.02em;cursor:pointer;box-shadow:inset 0 1px #ffffff10}
+.v667-tab .ic{font-size:30px;line-height:1}.v667-tab small{display:block;margin-top:2px;font-size:7px;font-weight:800;text-transform:none;letter-spacing:0;color:#879182}
+.v667-tab.active{color:#fff0b5;border-color:#9ee452;background:linear-gradient(#69ad2e,#315f18);box-shadow:inset 0 1px #d8ff9a99,0 0 16px #6bdf3f66,0 4px 0 #18320e}.v667-tab.active small{color:#dcf4c6}
+.v667-view{border:2px solid #4e3a18;border-radius:14px;background:linear-gradient(165deg,#162016,#090e0a);overflow:hidden;box-shadow:inset 0 0 28px #0007,0 7px 18px #0009}
+.v667-hero-wrap{position:relative;padding:0;background:#0a0d09}
+.v667-hero-title{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);z-index:9;min-width:62%;padding:7px 14px;border:2px solid #5b4925;border-radius:10px;background:#090d09dd;color:#f1d995;text-align:center;font-size:12px;font-weight:1000;letter-spacing:.02em;box-shadow:0 4px 14px #000b}
+.v667-hero.v490-center{min-height:430px!important;border:0!important;border-radius:0!important;background-position:center!important;background-size:cover!important;box-shadow:inset 0 -70px 65px #050806, inset 0 35px 50px #0005!important}
+.v667-hero.v490-center:before{opacity:.9}.v667-hero .v490-live-hammer{font-size:66px!important;left:29%!important;bottom:120px!important}
+.v667-content{padding:12px}
+.v667-section-title{display:flex;align-items:center;justify-content:center;gap:8px;margin:0 0 10px;color:#f0d99b;font-size:18px;font-weight:1000;text-align:center;text-shadow:0 2px #1b1206}.v667-section-title:before,.v667-section-title:after{content:'🌿';font-size:16px}
+.v667-inventory.v490-inventory{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important;max-height:none!important;overflow:visible!important;padding:0!important}
+.v667-inventory .v488-item{min-height:112px!important;padding:8px!important;border-width:2px!important;border-radius:13px!important;display:grid!important;grid-template-columns:62px 1fr!important;grid-template-rows:auto auto!important;align-items:center!important;text-align:left!important;column-gap:10px!important;background:linear-gradient(145deg,#172019,#0b100c)!important;box-shadow:inset 0 0 14px #0006,0 5px 10px #0007!important}
+.v667-inventory .v488-item .ico{grid-row:1/3!important;width:58px!important;height:58px!important;font-size:42px!important;display:grid!important;place-items:center!important;margin:0!important}
+.v667-inventory .v488-item .nm{margin:0!important;min-height:0!important;font-size:10px!important;line-height:1.15!important;font-weight:1000!important;color:#f1ead0!important;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.v667-inventory .v488-item .yield{margin:3px 0 0!important;font-size:10px!important;font-weight:1000!important;color:#9bea69!important}
+.v667-inventory .v488-item.selected{outline:3px solid #8af25a!important;outline-offset:-5px!important;box-shadow:0 0 0 2px #1d4218,0 0 22px #65df4766!important}
+#v488ForgeInventory .v488-item .ico.v4103-forge-art{width:58px!important;height:58px!important;margin:0!important}#v488ForgeInventory .v488-item .ico.v4103-forge-art .v466-item-art{width:58px!important;height:58px!important;object-fit:contain!important}
+.v667-summary{display:grid;grid-template-columns:1fr 1.2fr;gap:8px;margin-top:11px}.v667-count,.v667-frags{display:flex;align-items:center;justify-content:center;min-height:56px;padding:8px;border:1px solid #4c593a;border-radius:10px;background:#0b110c;text-align:center;font-size:10px}.v667-frags{color:#9bea69;font-weight:1000}
+.v667-action.v488-btn{margin-top:9px!important;min-height:54px!important;font-size:14px!important;border-radius:12px!important}.v667-dismantle{background:linear-gradient(#77bc35,#396a1b)!important;border-color:#a0de55!important}.v667-craft{background:linear-gradient(90deg,#6424a1,#9d2ec3 35%,#5a58d5 68%,#2d8fcf)!important;border-color:#e3a4ff!important;box-shadow:inset 0 1px #fff7,0 5px 0 #3d1456,0 0 18px #ab54ff55!important}
+.v667-note{margin-top:10px;padding:9px 10px;border-top:1px solid #3c4c30;color:#aebaa6;text-align:center;font-size:8px;line-height:1.35}
+.v667-craft-hero.v490-center{display:flex!important;align-items:center!important;justify-content:center!important;padding:28px 20px 58px!important}.v667-craft-hero .v490-prism-art{width:min(72%,360px)!important;height:auto!important;aspect-ratio:1/1!important;margin:0!important;border-width:3px!important;border-radius:18px!important;box-shadow:0 0 0 2px #9a6e22,0 0 26px #ffd25b66,0 0 36px #bc62ff55!important;transform:rotate(-1deg)}
+.v667-recipe{padding:12px}.v667-recipe-head{text-align:center;color:#f0d277;font-size:18px;font-weight:1000;margin-bottom:9px;text-transform:uppercase}.v667-cost-grid{display:grid;grid-template-columns:1fr 1fr 1.15fr;gap:8px}.v667-cost,.v667-result{min-width:0;padding:12px 8px;border:1px solid #4b5d3d;border-radius:11px;background:#0c130d;text-align:center}.v667-cost .ico,.v667-result .ico{font-size:30px;line-height:1}.v667-cost b,.v667-result b{display:block;margin-top:5px;color:#f1ead1;font-size:11px}.v667-cost span{display:block;margin-top:3px;font-size:10px;color:#9aad94}.v667-cost.ok span{color:#9eea72}.v667-cost.bad span{color:#ff8585}.v667-result{border-color:#68512d}.v667-result small{display:block;margin-top:4px;color:#b4b9a7;font-size:7px;line-height:1.25}.v667-result b{color:#f0d78f}
+.v667-rules{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:10px}.v667-rule{padding:9px 8px;border:1px solid #3d5135;border-radius:10px;background:#0b110c;font-size:8px;color:#b7c2ad;line-height:1.25}.v667-rule strong{display:block;margin-bottom:2px;color:#f0e3bd;font-size:9px}.v667-last{margin-top:10px;padding:9px;border:1px solid #7b4d8b;border-radius:10px;background:#1a1020;color:#eadff0;font-size:8px;line-height:1.3}
+.v667-legend{margin:8px 0 0!important;padding:9px!important;border-width:2px!important;grid-template-columns:repeat(5,1fr)!important}.v667-legend .v490-legend-title{font-size:10px!important}.v667-legend .v488-leg{font-size:7px!important}.v667-legend .v488-leg span{display:block}.v667-legend .v488-leg b{display:block;margin-top:2px;color:#fff;font-size:8px}.v667-legend .v488-leg i{width:17px!important;height:22px!important}
+@media(max-width:700px){
+ #forge.screen{padding:4px 3px 84px!important}.v490-titlebar{min-height:80px!important;margin:5px 4px 3px!important;padding:8px 78px 10px!important}.v490-titlebar h2{font-size:clamp(29px,9.4vw,43px)!important}.v490-titlebar:before,.v490-titlebar:after{font-size:36px!important}.v490-titlebar:before{left:10px!important}.v490-titlebar:after{right:10px!important}.v490-frag-pill{right:5px!important;bottom:-22px!important;min-width:98px!important;padding:5px 7px!important}.v490-frag-pill b{font-size:14px!important}.v490-frag-pill small{font-size:5.5px!important}.v667-forge-body{padding:25px 3px 5px!important}.v667-tabs{gap:4px!important;padding:3px!important}.v667-tab{min-height:55px!important;gap:6px!important;padding:6px 5px!important;font-size:12px!important}.v667-tab .ic{font-size:24px!important}.v667-tab small{font-size:5.5px!important}.v667-hero.v490-center{min-height:320px!important}.v667-hero .v490-live-hammer{font-size:54px!important;left:25%!important;bottom:92px!important}.v667-hero-title{bottom:10px!important;min-width:72%!important;padding:6px 9px!important;font-size:9px!important}.v667-content{padding:8px!important}.v667-section-title{font-size:14px!important;margin-bottom:7px!important}.v667-inventory.v490-inventory{gap:5px!important}.v667-inventory .v488-item{min-height:87px!important;padding:5px!important;grid-template-columns:45px 1fr!important;column-gap:6px!important}.v667-inventory .v488-item .ico,#v488ForgeInventory .v488-item .ico.v4103-forge-art,#v488ForgeInventory .v488-item .ico.v4103-forge-art .v466-item-art{width:43px!important;height:43px!important}.v667-inventory .v488-item .ico{font-size:31px!important}.v667-inventory .v488-item .nm{font-size:7.2px!important}.v667-inventory .v488-item .yield{font-size:7.2px!important}.v667-summary{gap:5px!important;margin-top:7px!important}.v667-count,.v667-frags{min-height:43px!important;padding:5px!important;font-size:7.3px!important}.v667-action.v488-btn{min-height:46px!important;font-size:10px!important;padding:8px 5px!important}.v667-note{font-size:6.3px!important;padding:7px 5px!important}.v667-craft-hero.v490-center{min-height:340px!important;padding:20px 14px 52px!important}.v667-craft-hero .v490-prism-art{width:min(76%,270px)!important}.v667-recipe{padding:8px!important}.v667-recipe-head{font-size:14px!important;margin-bottom:6px!important}.v667-cost-grid{gap:4px!important}.v667-cost,.v667-result{padding:8px 4px!important}.v667-cost .ico,.v667-result .ico{font-size:23px!important}.v667-cost b,.v667-result b{font-size:7.5px!important}.v667-cost span{font-size:7px!important}.v667-result small{font-size:5.4px!important}.v667-rules{gap:4px!important;margin-top:7px!important}.v667-rule{padding:6px 5px!important;font-size:6.1px!important}.v667-rule strong{font-size:6.7px!important}.v667-last{font-size:6.2px!important}.v667-legend{margin-top:5px!important;padding:6px 2px!important;gap:1px!important}.v667-legend .v490-legend-title{font-size:7px!important}.v667-legend .v488-leg{font-size:5px!important}.v667-legend .v488-leg b{font-size:5.8px!important}.v667-legend .v488-leg i{width:12px!important;height:16px!important}
+}
+@media(max-width:390px){.v490-titlebar{padding-left:62px!important;padding-right:68px!important}.v490-titlebar h2{font-size:28px!important}.v667-tab{font-size:10.5px!important}.v667-hero.v490-center{min-height:300px!important}.v667-cost-grid{grid-template-columns:1fr 1fr!important}.v667-result{grid-column:1/-1!important}.v667-inventory .v488-item{grid-template-columns:39px 1fr!important}.v667-inventory .v488-item .ico,#v488ForgeInventory .v488-item .ico.v4103-forge-art,#v488ForgeInventory .v488-item .ico.v4103-forge-art .v466-item-art{width:37px!important;height:37px!important}}
+</style>
+
 <script id="v488-harzschmiede-core">
 (function(){
   const VERSION='V4.99 Stable', SHORT='V4.99';
   const selected=new Set();
-  let listScroll=0,lastCraft=null,busy=false;
+  let listScroll=0,lastCraft=null,busy=false,forgeTab='dismantle';
   const YIELD={gray:1,green:3,blue:7,purple:15,orange:30};
   const COLORS={gray:'#9aa29e',green:'#66d24c',blue:'#3f9df4',purple:'#ba65ef',orange:'#f19a34',cyan:'#45ddd7',prism:'#e77bff'};
   const SLOT_META={
@@ -72391,60 +72432,68 @@ html.v481-hidden *,html.v481-hidden *::before,html.v481-hidden *::after{animatio
   }
   function renderForge(){
     const sec=ensureScreen(),z=state(),c=cost(),rows=selectedRows(),sum=selectedFragments(),can=z.fragments>=c.fragments&&(Number(s.gold)||0)>=c.gold&&!busy;
-    sec.innerHTML=`<div class="v488-shell v490-shell">
-      <div class="v490-titlebar">
-        <div><h2>Harzschmiede</h2><p>ZERLEGEN · FRAGMENTE SAMMELN · PRISMATISCHE AUSRÜSTUNG SCHMIEDEN</p></div>
-        <div class="v490-frag-pill"><span class="v488-frag-gem">💠</span><span><small>Samenfragmente</small><b>${fmt(z.fragments)}</b></span></div>
+    const dismantleView=()=>`<div class="v667-view v667-view-dismantle">
+      <div class="v667-hero-wrap">
+        <section class="v667-hero v490-center" id="v488Stage" aria-label="Amboss der Harzschmiede"><div class="v490-live-hammer">🔨</div></section>
+        <div class="v667-hero-title">Wähle Ausrüstung zum Zerlegen</div>
       </div>
-
-      <div class="v490-workshop">
-        <section class="v490-panel v490-left">
-          <div class="v490-panel-head"><h3>🌿 Zerlegen</h3><small>Wähle alte Ausrüstung aus</small></div>
-          <div class="v490-inventory" id="v488ForgeInventory">${renderItems()}</div>
-          <div class="v490-selection"><span>${rows.length} ausgewählt</span><b>+${fmt(sum)} Samenfragmente</b></div>
-          <button type="button" class="v488-btn v490-dismantle" id="v488Dismantle" ${rows.length&&!busy?'':'disabled'}>🔨 ${rows.length?rows.length+' Item'+(rows.length===1?'':'s')+' ZERLEGEN':'ITEMS AUSWÄHLEN'}</button>
-          <div class="v490-hint">Normal +1 · Gewöhnlich +3 · Selten +7 · Episch +15 · Legendär +30.<br><br>💎 Edelsteine, 📜 Verzauberungsrollen, mystische und prismatische Gegenstände sind ausgeschlossen.</div>
-        </section>
-
-        <section class="v490-center" id="v488Stage" aria-label="Amboss der Harzschmiede">
-          <div class="v490-live-hammer">🔨</div>
-        </section>
-
-        <section class="v490-panel v490-right">
-          <div class="v490-prism-art" aria-label="Prismatisches Beispielitem"></div>
-          <div class="v490-panel-head"><h3>🌿 Schmieden</h3><small>zufälliger Slot · deine Klasse</small></div>
-          <div class="v490-recipe-title">Rezept · Stufe ${level()}</div>
-          <div class="v490-costs">
-            <div class="v490-cost ${z.fragments>=c.fragments?'ok':'bad'}"><div class="ico">💠</div><b>Samenfragmente</b><span>${fmt(z.fragments)} / ${fmt(c.fragments)}</span></div>
-            <div class="v490-plus">+</div>
-            <div class="v490-cost ${(Number(s.gold)||0)>=c.gold?'ok':'bad'}"><div class="ico">🪙</div><b>Gold</b><span>${fmt(s.gold)} / ${fmt(c.gold)}</span></div>
-          </div>
-          <div class="v490-result"><div class="big">🌈❓</div><b>1 zufälliges prismatisches Item</b><small>Aktuelles Level · passende Klasse · +8 % Schmiede-Essenz</small></div>
-          <button type="button" class="v488-btn v490-craft" id="v488Craft" ${can?'':'disabled'}>🌈 PRISMATISCHES ITEM SCHMIEDEN</button>
-          ${lastCraft?`<div class="v490-last"><b>✨ Geschmiedet:</b><br>${esc(lastCraft.icon)} ${esc(lastCraft.name)}<br>${esc(typeof itemBonus==='function'?itemBonus(lastCraft):'')}</div>`:''}
-          <div class="v490-rules">
-            <div class="v490-rule"><strong>🚫 Nicht verkaufbar</strong>0 Gold</div>
-            <div class="v490-rule"><strong>🔨 Nicht zerlegbar</strong>Keine Endlosschleife</div>
-            <div class="v490-rule"><strong>🌈 Über Legendär</strong>+8 % Schmiede-Essenz</div>
-            <div class="v490-rule"><strong>💠 Unter Mystisch</strong>Kein Weltboss-Spezialeffekt</div>
-          </div>
-        </section>
-      </div>
-
-      <div class="v490-legend">
-        <div class="v490-legend-title">✦ SELTENHEITEN ✦</div>
-        <div class="v488-leg"><i style="--c:#9aa29e"></i><span>Normal</span></div>
-        <div class="v488-leg"><i style="--c:#66d24c"></i><span>Gewöhnlich</span></div>
-        <div class="v488-leg"><i style="--c:#3f9df4"></i><span>Selten</span></div>
-        <div class="v488-leg"><i style="--c:#ba65ef"></i><span>Episch</span></div>
-        <div class="v488-leg"><i style="--c:#f19a34"></i><span>Legendär</span></div>
-        <div class="v488-leg prism"><i style="--c:#e77bff"></i><span>Prismatisch</span></div>
+      <div class="v667-content">
+        <div class="v667-section-title">Ausrüstung zerlegen</div>
+        <div class="v667-inventory v490-inventory" id="v488ForgeInventory">${renderItems()}</div>
+        <div class="v667-summary"><div class="v667-count"><b>${rows.length}</b>&nbsp; ausgewählt</div><div class="v667-frags">💠 +${fmt(sum)} Samenfragmente</div></div>
+        <button type="button" class="v488-btn v667-action v667-dismantle" id="v488Dismantle" ${rows.length&&!busy?'':'disabled'}>🔨 ${rows.length?rows.length+' Item'+(rows.length===1?'':'s')+' ZERLEGEN':'ITEMS AUSWÄHLEN'}</button>
+        <div class="v667-note">💎 Edelsteine, 📜 Verzauberungsrollen sowie mystische und prismatische Gegenstände sind vom Zerlegen ausgeschlossen.</div>
       </div>
     </div>`;
+    const craftView=()=>`<div class="v667-view v667-view-craft">
+      <div class="v667-hero-wrap">
+        <section class="v667-hero v667-craft-hero v490-center" id="v488Stage" aria-label="Prismatisches Schmieden"><div class="v490-prism-art" aria-label="Prismatisches Beispielitem"></div></section>
+        <div class="v667-hero-title">Aus Ausrüstung wächst Legendäres</div>
+      </div>
+      <div class="v667-recipe">
+        <div class="v667-recipe-head">Rezept · Stufe ${level()}</div>
+        <div class="v667-cost-grid">
+          <div class="v667-cost ${z.fragments>=c.fragments?'ok':'bad'}"><div class="ico">💠</div><b>Samenfragmente</b><span>${fmt(z.fragments)} / ${fmt(c.fragments)}</span></div>
+          <div class="v667-cost ${(Number(s.gold)||0)>=c.gold?'ok':'bad'}"><div class="ico">🪙</div><b>Gold</b><span>${fmt(s.gold)} / ${fmt(c.gold)}</span></div>
+          <div class="v667-result"><div class="ico">🌈❓</div><b>1 zufälliges prismatisches Item</b><small>Aktuelles Level · passende Klasse · +8 % Schmiede-Essenz</small></div>
+        </div>
+        <button type="button" class="v488-btn v667-action v667-craft" id="v488Craft" ${can?'':'disabled'}>🔨 PRISMATISCHES ITEM SCHMIEDEN</button>
+        ${lastCraft?`<div class="v667-last"><b>✨ Geschmiedet:</b><br>${esc(lastCraft.icon)} ${esc(lastCraft.name)}<br>${esc(typeof itemBonus==='function'?itemBonus(lastCraft):'')}</div>`:''}
+        <div class="v667-rules">
+          <div class="v667-rule"><strong>🚫 Nicht verkaufbar</strong>0 Gold</div>
+          <div class="v667-rule"><strong>🔨 Nicht zerlegbar</strong>Keine Endlosschleife</div>
+          <div class="v667-rule"><strong>🌈 Über Legendär</strong>+8 % Schmiede-Essenz</div>
+          <div class="v667-rule"><strong>💠 Unter Mystisch</strong>Kein Weltboss-Spezialeffekt</div>
+        </div>
+      </div>
+    </div>`;
+    sec.innerHTML=`<div class="v488-shell v490-shell">
+      <div class="v490-titlebar">
+        <div><h2>Harzschmiede</h2><p>ZERLEGEN · VERWANDELN · PRISMATISCH SCHMIEDEN</p></div>
+        <div class="v490-frag-pill"><span class="v488-frag-gem">💠</span><span><small>Samenfragmente</small><b>${fmt(z.fragments)}</b></span></div>
+      </div>
+      <div class="v667-forge-body">
+        <div class="v667-tabs" role="tablist" aria-label="Harzschmiede Bereiche">
+          <button type="button" class="v667-tab ${forgeTab==='dismantle'?'active':''}" data-v667-tab="dismantle"><span class="ic">🔨</span><span>ZERLEGEN<small>Ausrüstung in Samenfragmente</small></span></button>
+          <button type="button" class="v667-tab ${forgeTab==='craft'?'active':''}" data-v667-tab="craft"><span class="ic">⚒️</span><span>SCHMIEDEN<small>Zufälliger Slot · deine Klasse</small></span></button>
+        </div>
+        ${forgeTab==='craft'?craftView():dismantleView()}
+        <div class="v490-legend v667-legend">
+          <div class="v490-legend-title">✦ FRAGMENTE PRO SELTENHEIT ✦</div>
+          <div class="v488-leg"><i style="--c:#9aa29e"></i><span>Normal</span><b>+1</b></div>
+          <div class="v488-leg"><i style="--c:#66d24c"></i><span>Gewöhnlich</span><b>+3</b></div>
+          <div class="v488-leg"><i style="--c:#3f9df4"></i><span>Selten</span><b>+7</b></div>
+          <div class="v488-leg"><i style="--c:#ba65ef"></i><span>Episch</span><b>+15</b></div>
+          <div class="v488-leg"><i style="--c:#f19a34"></i><span>Legendär</span><b>+30</b></div>
+        </div>
+      </div>
+    </div>`;
+    sec.querySelectorAll('[data-v667-tab]').forEach(btn=>btn.addEventListener('click',()=>{const next=btn.dataset.v667Tab;if(next!=='dismantle'&&next!=='craft')return;if(next===forgeTab)return;forgeTab=next;renderForge()}));
     const list=sec.querySelector('#v488ForgeInventory');if(list){list.scrollTop=listScroll;list.addEventListener('scroll',()=>listScroll=list.scrollTop,{passive:true})}
     sec.querySelectorAll('[data-v488-key]').forEach(card=>card.onclick=()=>{const k=card.dataset.v488Key;if(!k)return;listScroll=list?.scrollTop||0;selected.has(k)?selected.delete(k):selected.add(k);renderForge()});
     sec.querySelector('#v488Dismantle')?.addEventListener('click',dismantle);
     sec.querySelector('#v488Craft')?.addEventListener('click',craft);
+    try{if(typeof window.v4103DecorateAll==='function')setTimeout(()=>window.v4103DecorateAll(),0)}catch(e){}
   }
   function burst(kind='dismantle',quality='green'){
     const st=document.getElementById('v488Stage');if(!st)return;
