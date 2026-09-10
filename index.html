@@ -1179,7 +1179,7 @@ document.documentElement.classList.remove('v224-app-ready');
   </div>
 </section>
 
-<section id="hall" class="screen v646-hall" data-hall-build="V6.46">
+<section id="hall" class="screen v646-hall v647-hall" data-hall-build="V6.47">
   <div class="v052-scene-banner v052-character">
     <div>
       <div class="v052-title">HALL OF HAZE</div>
@@ -1189,9 +1189,8 @@ document.documentElement.classList.remove('v224-app-ready');
 
   <div class="card">
     <div class="section-title">
-      <div>
-        <h2>Hall of Haze</h2>
-        <div class="muted">Andere Spieler und ihre Fortschritte.</div>
+      <div class="v647-hall-status-copy">
+        <div class="muted">Rangliste & Spielerfortschritt</div>
       </div>
       <span class="pill" id="v072OnlineState">OFFLINE</span>
     </div>
@@ -49655,9 +49654,6 @@ html body .app section#hall.v646-hall .v646-footer-plaque{
 })();
 </script>
 <!-- ===== /V6.46 HALL OF HAZE ===== -->
-
-</body>
-</html>
 <style id="v268-inventory-multisell-css">
 #inventory .v268-sellbar{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:9px 10px;margin-bottom:2px;border:1px solid #476147;border-radius:12px;background:linear-gradient(180deg,#182619,#101811);font-size:10px}
 #inventory .v268-sellbar-actions{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
@@ -100950,3 +100946,192 @@ function sync(){bindPvp();ensureQuest();ensureQa()}document.addEventListener('cl
 <!-- ===== /V6.43 ===== -->
 
 
+
+
+<!-- ===== V6.47 HALL OF HAZE — MOBILE FEINSCHLIFF ===== -->
+<style id="v647-hall-feinschliff-css">
+/* Keep the supplied Hall artwork itself visible. The text and leaves are already
+   part of the artwork, so the old HTML overlay and emoji pseudo-elements only
+   duplicated/covered it. */
+html body .app section#hall.v647-hall > .v052-scene-banner{
+  min-height:0!important;
+  aspect-ratio:4.8/1!important;
+  margin:0 3px 9px!important;
+  padding:0!important;
+  background-size:cover!important;
+  background-position:center center!important;
+  border-radius:16px!important;
+}
+html body .app section#hall.v647-hall > .v052-scene-banner > div{
+  display:none!important;
+}
+html body .app section#hall.v647-hall > .v052-scene-banner::before,
+html body .app section#hall.v647-hall > .v052-scene-banner::after{
+  content:none!important;
+  display:none!important;
+}
+
+/* Remove the repeated Hall heading below the artwork and make the status row compact. */
+html body .app section#hall.v647-hall > .card{
+  padding:8px!important;
+}
+html body .app section#hall.v647-hall .section-title{
+  min-height:34px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:8px!important;
+  margin:0 2px 7px!important;
+  padding:2px 2px 7px!important;
+}
+html body .app section#hall.v647-hall .v647-hall-status-copy{
+  min-width:0!important;
+}
+html body .app section#hall.v647-hall .section-title .muted{
+  margin:0!important;
+  font-size:9px!important;
+  line-height:1.15!important;
+  color:#c7d0c2!important;
+  white-space:nowrap!important;
+}
+html body .app section#hall.v647-hall #v072OnlineState{
+  flex:0 0 auto!important;
+  padding:5px 10px!important;
+  font-size:8px!important;
+}
+
+/* Own profile: same information, less dead space. */
+html body .app section#hall.v647-hall .v072-profile-card.v646-own-decorated{
+  grid-template-columns:72px minmax(0,1fr)!important;
+  gap:8px!important;
+  padding:8px!important;
+  margin-bottom:8px!important;
+  border-radius:15px!important;
+}
+html body .app section#hall.v647-hall .v646-own-avatar{
+  width:66px!important;
+  height:80px!important;
+  border-width:2px!important;
+}
+html body .app section#hall.v647-hall .v646-own-avatar::after{
+  font-size:17px!important;
+}
+html body .app section#hall.v647-hall .v072-profile-name{
+  font-size:17px!important;
+  line-height:1.05!important;
+}
+html body .app section#hall.v647-hall .v072-profile-meta{
+  margin-top:2px!important;
+  font-size:8px!important;
+  line-height:1.2!important;
+}
+html body .app section#hall.v647-hall .v072-profile-stats{
+  gap:5px!important;
+  margin-top:6px!important;
+}
+html body .app section#hall.v647-hall .v072-profile-stat{
+  min-height:43px!important;
+  padding:5px 4px!important;
+  border-radius:10px!important;
+}
+html body .app section#hall.v647-hall .v072-profile-stat span{
+  font-size:6.5px!important;
+}
+html body .app section#hall.v647-hall .v072-profile-stat b{
+  font-size:13px!important;
+}
+html body .app section#hall.v647-hall .v4130-dungeon-line,
+html body .app section#hall.v647-hall .v083-hall-progress,
+html body .app section#hall.v647-hall .v116-wb-inline{
+  margin-top:5px!important;
+  padding:5px 5px 2px!important;
+  font-size:7px!important;
+  line-height:1.28!important;
+}
+
+/* Tabs: keep both labels on one line and save vertical space. */
+html body .app section#hall.v647-hall .v072-tabs{
+  gap:7px!important;
+  margin:0 2px 8px!important;
+}
+html body .app section#hall.v647-hall .v072-tab{
+  min-height:40px!important;
+  padding:7px 5px!important;
+  border-radius:12px!important;
+  font-size:11px!important;
+  line-height:1!important;
+  white-space:nowrap!important;
+}
+
+/* Ranking cards: tighter but still readable/tappable on phone. */
+html body .app section#hall.v647-hall .v072-player-row{
+  margin:0 2px 6px!important;
+  padding:7px!important;
+  border-radius:13px!important;
+}
+html body .app section#hall.v647-hall .v072-player-row.v646-row-decorated{
+  grid-template-columns:31px 38px minmax(0,1fr)!important;
+  gap:5px!important;
+  align-items:center!important;
+}
+html body .app section#hall.v647-hall .v072-rank{
+  width:29px!important;
+  height:29px!important;
+  font-size:10px!important;
+}
+html body .app section#hall.v647-hall .v646-row-avatar{
+  width:36px!important;
+  height:42px!important;
+}
+html body .app section#hall.v647-hall .v072-player-name{
+  font-size:11.5px!important;
+  line-height:1.05!important;
+}
+html body .app section#hall.v647-hall .v4124-social-lines{
+  margin-top:1px!important;
+}
+html body .app section#hall.v647-hall .v4124-social-line{
+  font-size:6.5px!important;
+  line-height:1.3!important;
+}
+html body .app section#hall.v647-hall .v073-row-actions{
+  grid-column:2/4!important;
+  display:flex!important;
+  flex-direction:row!important;
+  justify-content:flex-end!important;
+  align-items:center!important;
+  gap:5px!important;
+  min-width:0!important;
+  margin:2px 1px 0!important;
+}
+html body .app section#hall.v647-hall .v073-row-actions .btn,
+html body .app section#hall.v647-hall .v073-row-actions .pill{
+  min-height:27px!important;
+  padding:5px 7px!important;
+  border-radius:9px!important;
+  font-size:7px!important;
+  line-height:1!important;
+  white-space:nowrap!important;
+}
+html body .app section#hall.v647-hall .v646-footer-plaque{
+  margin:9px 7px 0!important;
+  padding:7px!important;
+  font-size:7.5px!important;
+}
+
+@media(max-width:380px){
+  html body .app section#hall.v647-hall > .v052-scene-banner{aspect-ratio:4.8/1!important}
+  html body .app section#hall.v647-hall .section-title .muted{font-size:8.5px!important}
+  html body .app section#hall.v647-hall .v072-profile-card.v646-own-decorated{grid-template-columns:66px minmax(0,1fr)!important}
+  html body .app section#hall.v647-hall .v646-own-avatar{width:60px!important;height:74px!important}
+  html body .app section#hall.v647-hall .v072-tab{font-size:10.5px!important}
+  html body .app section#hall.v647-hall .v4124-social-line{font-size:6.2px!important}
+}
+</style>
+<script id="v647-hall-feinschliff-marker">
+window.__V647_HALL_FEINSCHLIFF__=true;
+</script>
+<!-- ===== /V6.47 ===== -->
+
+</body>
+</html>
