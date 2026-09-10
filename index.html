@@ -102536,9 +102536,9 @@ body.v650-native-safe #v032MenuPanel{
 
 <!-- ===== V6.59: native Android status bar removed + HUD at true screen top ===== -->
 <style id="v659-native-fullscreen-statusbar-css">
-/* This mode is enabled only by the rebuilt Android app via ?gl_fullscreen=1.
-   Older APKs keep the V6.50 safe area, so deploying this web index first cannot
-   push the HUD underneath a still-visible Android status bar. */
+/* Native Capacitor builds hide the Android status bar and therefore use the true
+   top of the display. Browser builds keep the normal web layout. URL flag remains
+   supported only as a compatibility fallback; native detection is authoritative. */
 body.v659-native-fullscreen{
   --v650-safe-top:0px!important;
 }
@@ -102567,7 +102567,17 @@ body.v659-native-fullscreen #v074ProfileOverlay.v074-profile-overlay{
 (()=>{
   'use strict';
   function fullscreenBuild(){
-    try{return new URL(location.href).searchParams.get('gl_fullscreen')==='1'}catch(e){return false}
+    try{
+      const u=new URL(location.href);
+      if(u.searchParams.get('gl_fullscreen')==='1')return true;
+    }catch(e){}
+    try{
+      const C=window.Capacitor;
+      if(!C)return false;
+      if(typeof C.isNativePlatform==='function')return !!C.isNativePlatform();
+      if(typeof C.getPlatform==='function')return C.getPlatform()!=='web';
+      return !!C.platform && C.platform!=='web';
+    }catch(e){return false}
   }
   function measureHud(){
     requestAnimationFrame(()=>{
@@ -102597,5 +102607,10 @@ body.v659-native-fullscreen #v074ProfileOverlay.v074-profile-overlay{
 </script>
 <!-- ===== /V6.59 ===== -->
 
+
+<!-- ===== V6.63: login-safe native fullscreen detection =====
+Native fullscreen no longer depends on query parameters in capacitor.config/server URL.
+This keeps the app origin/URL clean for Supabase email/Google auth while still pinning HUD at y=0.
+===== /V6.63 ===== -->
 </body>
 </html>
