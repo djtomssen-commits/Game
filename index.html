@@ -1037,6 +1037,31 @@ document.documentElement.classList.remove('v224-app-ready');
 @keyframes v6104NewPetPulse{from{filter:brightness(1)}to{filter:brightness(1.18)}}
 </style>
 
+
+<style id="v6108-item-quality-color-authority">
+.v6108-quality-artbox{
+  overflow:hidden!important;
+  border-radius:12px!important;
+  background:#070b08!important;
+}
+.v6108-quality-artbox > .v6108-quality-art,
+img.v6108-quality-art{
+  width:100%!important;
+  height:100%!important;
+  object-fit:contain!important;
+  display:block!important;
+}
+
+/* Actual item quality always owns the visual glow. */
+.v6108-quality-artbox.v6108-q-gray{box-shadow:inset 0 0 0 1px #9aa0a6!important}
+.v6108-quality-artbox.v6108-q-green{box-shadow:inset 0 0 0 1px #54d568,0 0 8px #54d56844!important}
+.v6108-quality-artbox.v6108-q-blue{box-shadow:inset 0 0 0 1px #29a8ff,0 0 8px #29a8ff55!important}
+.v6108-quality-artbox.v6108-q-purple{box-shadow:inset 0 0 0 1px #d13cff,0 0 10px #d13cff55!important}
+.v6108-quality-artbox.v6108-q-orange{box-shadow:inset 0 0 0 1px #ff9f18,0 0 11px #ff9f1866!important}
+.v6108-quality-artbox.v6108-q-cyan{box-shadow:inset 0 0 0 1px #20e8e5,0 0 12px #20e8e566!important}
+.v6108-quality-artbox.v6108-q-prismatic{box-shadow:inset 0 0 0 1px #ff5ed2,0 0 12px #35cfff66!important}
+</style>
+
 </head>
 <body>
 <div class="app">
@@ -108174,8 +108199,85 @@ window.v6102EquipmentDiagnostics=function(){
  const real=window.v6106RealItemArt;
  if(typeof real!=='function')return;
 
- const canonical=it=>{try{return String(real(it)||'')}catch(e){return''}};
+ const V6108_Q={
+   gray:{label:'Normal',color:'#9aa0a6',glow:'#e4e8ec'},
+   green:{label:'Gewöhnlich',color:'#54d568',glow:'#9cff9f'},
+   blue:{label:'Rare',color:'#29a8ff',glow:'#83d2ff'},
+   purple:{label:'Episch',color:'#d13cff',glow:'#ed9cff'},
+   orange:{label:'Legendär',color:'#ff9f18',glow:'#ffd16d'},
+   cyan:{label:'Mystisch',color:'#20e8e5',glow:'#8ffffd'},
+   prismatic:{label:'Prismatisch',color:'#ff5ed2',glow:'#fff3a0'}
+ };
+ const V6108_CACHE=new Map();
+
+ function qualityOf(it){
+   let q=String(it?.quality||'').toLowerCase().trim();
+   if(V6108_Q[q])return q;
+
+   const r=(String(it?.rarity||'')+' '+String(it?.name||'')).toLowerCase();
+   if(/prism/.test(r))return'prismatic';
+   if(/cyan|myth|myst|mystisch/.test(r))return'cyan';
+   if(/orange|legend|legendär/.test(r))return'orange';
+   if(/purple|epic|episch|set/.test(r))return'purple';
+   if(/blue|rare|selten/.test(r))return'blue';
+   if(/green|uncommon|gewöhnlich/.test(r))return'green';
+   return'gray';
+ }
+ window.v6108ItemQuality=qualityOf;
+
+ function qualityFrame(base,it){
+   if(!base)return'';
+   const q=qualityOf(it),meta=V6108_Q[q]||V6108_Q.gray;
+   const key=q+'|'+base;
+   if(V6108_CACHE.has(key))return V6108_CACHE.get(key);
+
+   /* Crop the colored border from the source artwork and add ONE authoritative
+      quality frame. This prevents a green item from showing an orange/cyan
+      border just because its source crop came from another poster column. */
+   const prism=q==='prismatic';
+   const bg=q==='gray'?'#101315':'#07100c';
+   const stroke=prism?'url(#prism)':meta.color;
+   const glow=meta.glow;
+   const svg=
+   `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96">
+      <defs>
+        <clipPath id="crop"><rect x="9" y="9" width="78" height="78" rx="10"/></clipPath>
+        <linearGradient id="shade" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="${bg}"/>
+          <stop offset="1" stop-color="#020504"/>
+        </linearGradient>
+        <linearGradient id="prism" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#ff5ed2"/>
+          <stop offset=".22" stop-color="#a96bff"/>
+          <stop offset=".45" stop-color="#35cfff"/>
+          <stop offset=".66" stop-color="#44f090"/>
+          <stop offset=".83" stop-color="#ffe15a"/>
+          <stop offset="1" stop-color="#ff734b"/>
+        </linearGradient>
+        <filter id="g"><feGaussianBlur stdDeviation="2.1"/></filter>
+      </defs>
+      <rect x="3" y="3" width="90" height="90" rx="15" fill="url(#shade)"/>
+      <rect x="8" y="8" width="80" height="80" rx="11" fill="${meta.color}" opacity=".14" filter="url(#g)"/>
+      <image href="${base}" x="-7" y="-7" width="110" height="110"
+             preserveAspectRatio="xMidYMid slice" clip-path="url(#crop)"/>
+      <rect x="8" y="8" width="80" height="80" rx="11" fill="none" stroke="${stroke}" stroke-width="4"/>
+      <rect x="12" y="12" width="72" height="72" rx="8" fill="none" stroke="${glow}" stroke-width="1" opacity=".55"/>
+      <path d="M17 12 H31 M12 17 V31 M65 84 H79 M84 65 V79" stroke="${glow}" stroke-width="2" opacity=".9"/>
+    </svg>`;
+
+   const u='data:image/svg+xml;charset=UTF-8,'+encodeURIComponent(svg);
+   V6108_CACHE.set(key,u);
+   return u;
+ }
+
+ const canonical=it=>{
+   try{
+     const base=String(real(it)||'');
+     return qualityFrame(base,it);
+   }catch(e){return''}
+ };
  window.v6107CanonicalItemArt=canonical;
+ window.v6108QualityFramedItemArt=canonical;
  const ownResolvers=()=>{
    window.v466ItemArtUri=canonical;
    window.v4106ComicItemArtUri=canonical;
@@ -108189,15 +108291,34 @@ window.v6102EquipmentDiagnostics=function(){
  const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
  function imgHtml(it,extra=''){
    const u=canonical(it);if(!u)return'';
-   return `<img class="v466-item-art v6107-item-art ${esc(extra)}" data-v6107="1" src="${u}" alt="${esc(it?.name||'Item')}">`;
+   const q=qualityOf(it);
+   return `<img class="v466-item-art v6107-item-art v6108-quality-art v6108-q-${q} ${esc(extra)}" data-v6107="1" data-v6108-quality="${q}" src="${u}" alt="${esc(it?.name||'Item')}">`;
  }
  window.v6107ItemImgHtml=imgHtml;
  function setBox(box,it){
-   if(!box||!it)return false;const u=canonical(it);if(!u)return false;
+   if(!box||!it)return false;
+   const u=canonical(it);if(!u)return false;
+   const q=qualityOf(it);
+   box.dataset.v6107Art='1';
+   box.dataset.v6108Quality=q;
+   box.classList.add('v6108-quality-artbox');
+   ['gray','green','blue','purple','orange','cyan','prismatic'].forEach(x=>box.classList.toggle('v6108-q-'+x,x===q));
+
    const cur=box.querySelector(':scope > img.v6107-item-art');
-   if(cur&&cur.getAttribute('src')===u&&box.childElementCount===1)return true;
-   const im=document.createElement('img');im.className='v466-item-art v6107-item-art';im.dataset.v6107='1';im.src=u;im.alt=String(it?.name||'Item');im.loading='eager';im.decoding='sync';
-   box.replaceChildren(im);box.dataset.v6107Art='1';return true;
+   if(cur&&cur.getAttribute('src')===u&&box.childElementCount===1){
+     cur.dataset.v6108Quality=q;
+     return true;
+   }
+   const im=document.createElement('img');
+   im.className='v466-item-art v6107-item-art v6108-quality-art';
+   im.dataset.v6107='1';
+   im.dataset.v6108Quality=q;
+   im.src=u;
+   im.alt=String(it?.name||'Item');
+   im.loading='eager';
+   im.decoding='sync';
+   box.replaceChildren(im);
+   return true;
  }
  const clean=v=>String(v||'').replace(/^(Normal|Gewöhnlich|Rare|Selten|Episch|Legendär|Mystisch|Prismatisch):\s*/i,'').replace(/\s*\[Lv\.\d+\]\s*$/i,'').trim();
  function known(){const a=[];try{a.push(...(s?.inventory||[]),...Object.values(s?.equipment||{}).filter(Boolean),...(s?.weaponShop||[]),...(s?.magicShop||[]),...(s?.materials||[]))}catch(e){}return a.filter(Boolean)}
@@ -108260,10 +108381,19 @@ window.v6102EquipmentDiagnostics=function(){
 
  window.v6107ItemArtQA=()=>({
    oneResolver:[window.v466ItemArtUri,window.v4106ComicItemArtUri,window.v4111ComicItemArtUri,window.v4115ComicItemArtUri,window.v6105ItemArtUri].every(x=>x===canonical),
-   realWebp:[{slot:'weapon',classId:'grower'},{slot:'body',classId:'bruiser'},{slot:'weapon',classId:'scout'},{slot:'head',classId:'frost'}].every(x=>canonical(x).startsWith('data:image/webp;base64,')),
+   qualityFramed:['gray','green','blue','purple','orange','cyan'].every(q=>{
+     const u=canonical({name:'QA '+q,slot:'weapon',classId:'grower',quality:q});
+     return u.startsWith('data:image/svg+xml')&&decodeURIComponent(u).includes(V6108_Q[q].color);
+   }),
+   sourceRealWebp:[{slot:'weapon',classId:'grower'},{slot:'body',classId:'bruiser'},{slot:'weapon',classId:'scout'},{slot:'head',classId:'frost'}].every(x=>String(real(x)).startsWith('data:image/webp;base64,')),
    stable:true
  });
 })();
+</script>
+
+
+<script id="v6108-quality-color-marker">
+window.__V6108_ITEM_QUALITY_COLOR_FIX__=true;
 </script>
 
 </body>
