@@ -106879,21 +106879,57 @@ window.__V689_NEBELRISSE_PET_DROPS__=true;
 <!-- ===== /V6.89 NEBELRISSE PET DROP INTEGRATION ===== -->
 
 
-<!-- ===== V6.95 STARTSEITE ROLLBACK AUF LETZTEN STABILEN STAND ===== -->
-<script id="v695-startseite-rollback-marker">
+<!-- ===== V6.96 HARD ROLLBACK BUILD CHECK ===== -->
+<style id="v696-hard-rollback-buildcheck-css">
+#v696BuildCheck{
+  position:fixed;
+  right:6px;
+  bottom:calc(6px + env(safe-area-inset-bottom,0px));
+  z-index:99999;
+  padding:3px 6px;
+  border:1px solid #6c8f4d;
+  border-radius:6px;
+  background:rgba(2,9,5,.92);
+  color:#9ee677;
+  font:700 8px/1.2 system-ui,sans-serif;
+  pointer-events:none;
+  box-shadow:0 2px 8px #000;
+}
+</style>
+<script id="v696-hard-rollback-buildcheck-core">
 (function(){
 'use strict';
-window.__V695_STARTPAGE_ROLLBACK__=true;
-/*
-  Basis: V6.89
-  Grund: Die Startseiten-Neubauten ab V6.90 haben auf Android starke
-  Render-/Performance-Probleme verursacht. Für V6.95 wird deshalb der
-  komplette Homepage-Umbau zurückgenommen, während alle Systeme bis V6.89
-  erhalten bleiben.
-*/
+window.__V696_HARD_ROLLBACK__=true;
+
+function mark(){
+  let b=document.getElementById('v696BuildCheck');
+  if(!b){
+    b=document.createElement('div');
+    b.id='v696BuildCheck';
+    b.textContent='ROLLBACK V6.96';
+    document.body.appendChild(b);
+  }
+
+  /* If stale V6.90+ markup somehow survives inside a live shell, remove only
+     those redesign-specific classes/elements and let the V6.89 renderer repaint. */
+  document.querySelectorAll('#world .v690-section-title,#world .v690-footer,#world .v690-events-card')
+    .forEach(el=>el.remove());
+
+  document.querySelectorAll('#world .v690-world').forEach(el=>el.classList.remove('v690-world'));
+  document.querySelectorAll('#world .v690-hero').forEach(el=>el.classList.remove('v690-hero'));
+
+  try{
+    if(typeof v085InstallWorld==='function')v085InstallWorld(true);
+  }catch(e){}
+}
+
+document.addEventListener('DOMContentLoaded',()=>setTimeout(mark,50),{once:true});
+window.addEventListener('pageshow',()=>setTimeout(mark,30),{passive:true});
+window.addEventListener('growlegends:account-ready',()=>setTimeout(mark,120));
+setTimeout(mark,500);
 })();
 </script>
-<!-- ===== /V6.95 STARTSEITE ROLLBACK ===== -->
+<!-- ===== /V6.96 HARD ROLLBACK BUILD CHECK ===== -->
 
 </body>
 </html>
