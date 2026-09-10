@@ -1253,15 +1253,15 @@ document.documentElement.classList.remove('v224-app-ready');
 
 
 
-<section id="mail" class="screen">
+<section id="mail" class="screen v677-mail">
   <div class="v052-scene-banner v052-character">
     <div>
       <div class="v052-title">✉️ Nebel-Post</div>
       <div class="v052-sub">Private Nachrichten zwischen Spielern.</div>
     </div>
   </div>
-  <div class="card v381-mail-card">
-    <div class="section-title"><div><h2>Postfach</h2><div class="muted">Eingang, Gesendet und neue Nachricht.</div></div><span class="pill" id="v381UnreadPill">0 ungelesen</span></div>
+  <div class="card v381-mail-card v677-mail-card">
+    <div class="section-title v677-mail-title"><div><h2>Postfach</h2><div class="muted">Eingang, Gesendet und neue Nachricht.</div></div><span class="pill" id="v381UnreadPill">0 ungelesen</span></div>
     <div class="v381-tabs">
       <button class="btn secondary active" data-v381-tab="inbox">📥 Eingang</button>
       <button class="btn secondary" data-v381-tab="sent">📤 Gesendet</button>
@@ -1276,6 +1276,13 @@ document.documentElement.classList.remove('v224-app-ready');
       <textarea id="v381Body" maxlength="1000" placeholder="Nachricht schreiben …"></textarea>
       <div class="v381-compose-foot"><span id="v381Chars">0 / 1000</span><button class="btn" id="v381Send">Nachricht senden</button></div>
     </div>
+  </div>
+
+  <div class="v677-mail-footer" aria-hidden="true">
+    <span class="v677-footer-envelope">✉️</span>
+    <div class="v677-footer-copy"><b>NACHRICHTEN<br>VERBINDEN<br>LEGENDEN</b></div>
+    <span class="v677-footer-leaf">🌿</span>
+    <div class="v677-footer-sign"><b>NEBEL-POST</b><small>IMMER VERBUNDEN</small></div>
   </div>
 </section>
 
@@ -60296,7 +60303,24 @@ body > #v141SettingsMenu.v377-open{
      badge(count||0); const p=document.querySelector('#v381UnreadPill');if(p)p.textContent=`${count||0} ungelesen`;
    }finally{unreadBusy=false}
  }
- function row(m,box){const other=box==='in'?m.sender:m.receiver;return `<div class="v381-msg ${box==='in'&&!m.is_read?'unread':''}" data-v381-open="${esc(m.id)}" data-box="${box}"><div><b>${box==='in'?'Von':'An'}: ${esc(other?.character_name||'Spieler')}</b><small>${fmt(m.created_at)}</small><div class="v381-preview">${esc(m.body||'')}</div></div><div class="v381-msg-actions">${box==='in'&&!m.is_read?'<span class="v381-dot" title="Ungelesen"></span>':''}<button class="btn secondary v381-delete" data-v381-delete="${esc(m.id)}" data-box="${box}">Löschen</button></div></div>`}
+ function row(m,box){
+   const other=box==='in'?m.sender:m.receiver;
+   const name=String(other?.character_name||'Spieler');
+   const initial=(name.trim().charAt(0)||'?').toUpperCase();
+   const unreadClass=box==='in'&&!m.is_read?'unread':'';
+   return `<div class="v381-msg ${unreadClass}" data-v381-open="${esc(m.id)}" data-box="${box}">
+     <div class="v677-mail-avatar" aria-hidden="true"><span>${esc(initial)}</span></div>
+     <div class="v677-mail-copy">
+       <b>${box==='in'?'Von':'An'}: ${esc(name)}</b>
+       <small>${fmt(m.created_at)}</small>
+       <div class="v381-preview">${esc(m.body||'')}</div>
+     </div>
+     <div class="v381-msg-actions">
+       ${box==='in'&&!m.is_read?'<span class="v381-dot" title="Ungelesen"></span>':''}
+       <span class="v677-open-arrow" aria-hidden="true">›</span>
+     </div>
+   </div>`
+ }
  function render(){
    const i=document.querySelector('#v381Inbox'),s=document.querySelector('#v381Sent'); if(!i||!s)return;
    i.innerHTML=inbox.length?inbox.map(m=>row(m,'in')).join(''):'<div class="v381-empty">Keine Nachrichten im Eingang.</div>';
@@ -103942,6 +103966,508 @@ body.v650-native-safe .app section#friends.v673-friends .v673-crew-footer{
 }
 </style>
 <!-- ===== /V6.76 NEBEL-CREW ANDROID SAFE AREA FIX ===== -->
+
+
+<!-- ===== V6.77 NEBEL-POST REDESIGN ===== -->
+<style id="v677-nebel-post-redesign">
+/* Only Nebel-Post visuals are changed. Existing Supabase/RPC message logic stays intact. */
+html body .app section#mail.v677-mail{
+  position:relative!important;
+  overflow:hidden!important;
+  padding:10px 8px calc(150px + env(safe-area-inset-bottom,0px))!important;
+  background:
+    radial-gradient(circle at 50% -4%,rgba(76,150,60,.15),transparent 28%),
+    radial-gradient(circle at 4% 46%,rgba(54,127,48,.07),transparent 24%),
+    linear-gradient(180deg,#020704 0%,#07100a 52%,#020603 100%)!important;
+}
+
+/* ---------- Wooden fantasy header ---------- */
+html body .app section#mail.v677-mail > .v052-scene-banner{
+  min-height:118px!important;
+  margin:0 0 10px!important;
+  padding:18px 84px 15px!important;
+  border:2px solid #805d28!important;
+  border-radius:18px!important;
+  overflow:visible!important;
+  position:relative!important;
+  text-align:center!important;
+  background:
+    linear-gradient(90deg,rgba(0,0,0,.23),transparent 15%,transparent 85%,rgba(0,0,0,.23)),
+    repeating-linear-gradient(7deg,rgba(255,255,255,.022) 0 3px,rgba(0,0,0,.025) 3px 7px),
+    linear-gradient(180deg,#74471f 0%,#4d2b14 55%,#31190c 100%)!important;
+  box-shadow:
+    0 10px 24px rgba(0,0,0,.58),
+    inset 0 0 0 4px rgba(35,18,8,.78),
+    inset 0 0 0 6px rgba(177,119,47,.30),
+    inset 0 1px rgba(255,232,181,.22)!important;
+}
+html body .app section#mail.v677-mail > .v052-scene-banner::before{
+  content:"📫";
+  position:absolute;
+  left:14px;
+  top:50%;
+  transform:translateY(-50%);
+  width:58px;
+  height:58px;
+  display:grid;
+  place-items:center;
+  border-radius:16px;
+  font-size:35px;
+  background:
+    radial-gradient(circle at 50% 35%,rgba(82,200,77,.15),transparent 48%),
+    linear-gradient(180deg,#573416,#2c180b);
+  border:2px solid #96713a;
+  box-shadow:0 0 0 4px #21150b,0 0 18px rgba(67,216,79,.20);
+}
+html body .app section#mail.v677-mail > .v052-scene-banner::after{
+  content:"GUTE\A BUDS\A STÄRKERE\A LEGENDEN";
+  white-space:pre;
+  position:absolute;
+  right:12px;
+  top:14px;
+  width:61px;
+  padding:8px 5px;
+  border:1px solid #8f6934;
+  border-radius:7px;
+  background:
+    repeating-linear-gradient(4deg,rgba(255,255,255,.035) 0 2px,transparent 2px 5px),
+    linear-gradient(160deg,#9a6130,#603818);
+  color:#1c1008;
+  font-size:6.2px;
+  line-height:1.02;
+  font-weight:1000;
+  transform:rotate(2deg);
+  box-shadow:0 4px 9px #0008,inset 0 1px #d39c55;
+}
+html body .app section#mail.v677-mail > .v052-scene-banner > div{
+  width:100%!important;
+}
+html body .app section#mail.v677-mail .v052-title{
+  font-family:Georgia,"Times New Roman",serif!important;
+  color:#fff0c9!important;
+  font-size:26px!important;
+  font-weight:1000!important;
+  letter-spacing:.01em!important;
+  text-shadow:0 2px 0 #291408,0 0 10px rgba(248,195,93,.24)!important;
+}
+html body .app section#mail.v677-mail .v052-sub{
+  display:inline-block!important;
+  margin-top:7px!important;
+  padding:5px 12px!important;
+  border-radius:999px!important;
+  border:1px solid rgba(180,126,53,.62)!important;
+  background:rgba(20,11,6,.62)!important;
+  color:#ead9b7!important;
+  font-size:8px!important;
+  font-weight:850!important;
+}
+
+/* ---------- Main mailbox card ---------- */
+html body .app section#mail.v677-mail > .v677-mail-card{
+  max-width:none!important;
+  margin:0!important;
+  padding:12px!important;
+  border:1px solid #315d37!important;
+  border-radius:18px!important;
+  background:
+    radial-gradient(circle at 92% 0%,rgba(69,167,68,.09),transparent 27%),
+    linear-gradient(155deg,rgba(7,25,13,.995),rgba(2,11,6,.998))!important;
+  box-shadow:
+    0 14px 35px rgba(0,0,0,.55),
+    inset 0 1px rgba(174,236,143,.035),
+    inset 0 0 26px rgba(54,142,53,.025)!important;
+}
+html body .app section#mail.v677-mail .v677-mail-title{
+  margin:0 0 9px!important;
+  padding:0 0 10px!important;
+  border-bottom:1px solid rgba(78,139,76,.27)!important;
+}
+html body .app section#mail.v677-mail .v677-mail-title h2{
+  font-family:Georgia,"Times New Roman",serif!important;
+  font-size:19px!important;
+  color:#f4f3e9!important;
+}
+html body .app section#mail.v677-mail .v677-mail-title .muted{
+  margin-top:2px!important;
+  color:#acb7aa!important;
+  font-size:8px!important;
+}
+html body .app section#mail.v677-mail #v381UnreadPill{
+  padding:6px 10px!important;
+  border:1px solid #3e7a49!important;
+  background:linear-gradient(180deg,#173621,#0a1b10)!important;
+  color:#e1efe0!important;
+  font-size:7.6px!important;
+  font-weight:950!important;
+}
+html body .app section#mail.v677-mail #v381UnreadPill::before{
+  content:"●";
+  margin-right:5px;
+  color:#54ee74;
+  text-shadow:0 0 7px #54ee74;
+}
+
+/* ---------- Tabs ---------- */
+html body .app section#mail.v677-mail .v381-tabs{
+  display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:7px!important;
+  margin:0 0 10px!important;
+}
+html body .app section#mail.v677-mail .v381-tabs .btn{
+  min-width:0!important;
+  min-height:58px!important;
+  padding:8px 5px!important;
+  border:1px solid #34543c!important;
+  border-radius:12px!important;
+  background:linear-gradient(180deg,#173020,#0a180f)!important;
+  color:#eff4ec!important;
+  font-size:9px!important;
+  line-height:1.25!important;
+  font-weight:1000!important;
+  box-shadow:inset 0 1px rgba(255,255,255,.035)!important;
+}
+html body .app section#mail.v677-mail .v381-tabs .btn.active{
+  border-color:#8de35f!important;
+  background:
+    radial-gradient(circle at 50% 0%,rgba(154,243,91,.22),transparent 55%),
+    linear-gradient(180deg,#386b30,#17361c)!important;
+  color:#d9ffba!important;
+  box-shadow:0 0 16px rgba(92,216,65,.13),inset 0 1px rgba(255,255,255,.12)!important;
+}
+
+/* ---------- Message list ---------- */
+html body .app section#mail.v677-mail .v381-panel{
+  display:grid!important;
+  gap:7px!important;
+}
+html body .app section#mail.v677-mail .v381-empty{
+  padding:17px!important;
+  text-align:center!important;
+  border:1px solid #324d38!important;
+  border-radius:12px!important;
+  background:linear-gradient(180deg,#07110a,#030806)!important;
+  color:#89968c!important;
+  font-size:8px!important;
+}
+html body .app section#mail.v677-mail .v381-msg{
+  width:100%!important;
+  min-width:0!important;
+  box-sizing:border-box!important;
+  display:grid!important;
+  grid-template-columns:48px minmax(0,1fr) 28px!important;
+  gap:9px!important;
+  align-items:center!important;
+  margin:0!important;
+  padding:10px!important;
+  border:1px solid #315c38!important;
+  border-radius:12px!important;
+  background:
+    radial-gradient(circle at 8% 50%,rgba(52,125,55,.10),transparent 21%),
+    linear-gradient(155deg,#07170d 0%,#041008 65%,#020906 100%)!important;
+  box-shadow:inset 0 1px rgba(188,242,170,.025),0 5px 14px rgba(0,0,0,.20)!important;
+  cursor:pointer!important;
+}
+html body .app section#mail.v677-mail .v381-msg.unread{
+  border-color:#65b45d!important;
+  background:
+    radial-gradient(circle at 8% 50%,rgba(86,186,74,.15),transparent 22%),
+    linear-gradient(155deg,#0a1d10 0%,#051109 70%,#020906 100%)!important;
+  box-shadow:0 0 14px rgba(79,195,69,.07),inset 0 1px rgba(199,248,180,.04)!important;
+}
+html body .app section#mail.v677-mail .v677-mail-avatar{
+  width:42px!important;
+  height:42px!important;
+  display:grid!important;
+  place-items:center!important;
+  position:relative!important;
+  border:2px solid #476b4e!important;
+  border-radius:50%!important;
+  background:radial-gradient(circle,#101913 0 55%,#050a07 58% 100%)!important;
+  color:#f5f6ef!important;
+  font-size:13px!important;
+  font-weight:1000!important;
+  box-shadow:0 0 0 3px rgba(33,84,40,.42),0 0 12px rgba(65,174,72,.15)!important;
+}
+html body .app section#mail.v677-mail .v677-mail-avatar::before,
+html body .app section#mail.v677-mail .v677-mail-avatar::after{
+  content:"🌿";
+  position:absolute;
+  font-size:11px;
+  z-index:-1;
+}
+html body .app section#mail.v677-mail .v677-mail-avatar::before{
+  left:-8px;bottom:-4px;transform:rotate(-35deg);
+}
+html body .app section#mail.v677-mail .v677-mail-avatar::after{
+  right:-8px;top:-4px;transform:rotate(145deg);
+}
+html body .app section#mail.v677-mail .v677-mail-copy{
+  min-width:0!important;
+}
+html body .app section#mail.v677-mail .v381-msg b{
+  display:block!important;
+  margin:0!important;
+  color:#f2f3ec!important;
+  font-size:10px!important;
+  font-weight:1000!important;
+  line-height:1.2!important;
+}
+html body .app section#mail.v677-mail .v381-msg small{
+  display:block!important;
+  margin:2px 0 0!important;
+  color:#87948a!important;
+  font-size:6.6px!important;
+}
+html body .app section#mail.v677-mail .v381-preview{
+  max-width:none!important;
+  margin-top:4px!important;
+  color:#b4beb6!important;
+  font-size:7.5px!important;
+  line-height:1.35!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+}
+html body .app section#mail.v677-mail .v381-msg-actions{
+  position:relative!important;
+  min-width:28px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+}
+html body .app section#mail.v677-mail .v381-dot{
+  position:absolute!important;
+  right:20px!important;
+  top:-7px!important;
+  width:7px!important;
+  height:7px!important;
+  border-radius:50%!important;
+  background:#60ee75!important;
+  box-shadow:0 0 8px #60ee75!important;
+}
+html body .app section#mail.v677-mail .v677-open-arrow{
+  width:25px!important;
+  height:31px!important;
+  display:grid!important;
+  place-items:center!important;
+  border:1px solid #4bd85e!important;
+  border-radius:9px!important;
+  background:linear-gradient(180deg,#11351a,#07180c)!important;
+  color:#efffed!important;
+  font-size:22px!important;
+  font-family:Arial,sans-serif!important;
+  line-height:1!important;
+  box-shadow:0 0 10px rgba(73,220,88,.11)!important;
+}
+
+/* ---------- Compose panel ---------- */
+html body .app section#mail.v677-mail #v381Compose{
+  padding:10px!important;
+  border:1px solid #31513a!important;
+  border-radius:12px!important;
+  background:linear-gradient(180deg,#07130b,#030906)!important;
+}
+html body .app section#mail.v677-mail .v381-label{
+  margin:4px 0 2px!important;
+  color:#d9e3d8!important;
+  font-size:7.5px!important;
+  font-weight:1000!important;
+}
+html body .app section#mail.v677-mail .v381-panel input,
+html body .app section#mail.v677-mail .v381-panel textarea{
+  width:100%!important;
+  box-sizing:border-box!important;
+  border:1px solid #3b6443!important;
+  border-radius:10px!important;
+  background:#030906!important;
+  color:#eaf1e8!important;
+  padding:10px!important;
+  outline:none!important;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.02)!important;
+}
+html body .app section#mail.v677-mail .v381-panel input:focus,
+html body .app section#mail.v677-mail .v381-panel textarea:focus{
+  border-color:#69b95e!important;
+  box-shadow:0 0 0 2px rgba(101,185,94,.10)!important;
+}
+html body .app section#mail.v677-mail .v381-panel textarea{
+  min-height:130px!important;
+}
+html body .app section#mail.v677-mail #v381Send{
+  border:1px solid #87dd68!important;
+  background:linear-gradient(180deg,#7cdd5d,#3da53c)!important;
+  color:#061007!important;
+  font-weight:1000!important;
+}
+
+/* ---------- Open-message modal ---------- */
+html body .v381-modal{
+  background:rgba(0,0,0,.80)!important;
+  backdrop-filter:blur(2px)!important;
+}
+html body .v381-modal-card{
+  border:2px solid #7a5726!important;
+  border-radius:16px!important;
+  background:
+    radial-gradient(circle at 90% 0%,rgba(74,162,61,.08),transparent 28%),
+    linear-gradient(180deg,#0a190f,#040b07)!important;
+  box-shadow:0 18px 70px #000,inset 0 0 0 2px rgba(42,91,45,.32)!important;
+}
+html body .v381-modal-head b{
+  color:#f3e4bd!important;
+  font-family:Georgia,"Times New Roman",serif!important;
+  font-size:13px!important;
+}
+html body .v381-modal-body{
+  padding:11px!important;
+  border:1px solid #304c36!important;
+  border-radius:10px!important;
+  background:#030906!important;
+}
+
+/* ---------- Decorative wooden footer ---------- */
+html body .app section#mail.v677-mail .v677-mail-footer{
+  min-height:72px!important;
+  margin:12px 0 0!important;
+  padding:9px 10px!important;
+  display:grid!important;
+  grid-template-columns:34px 1fr 38px 1.08fr!important;
+  gap:8px!important;
+  align-items:center!important;
+  position:relative!important;
+  z-index:2!important;
+  bottom:0!important;
+  border:2px solid #795725!important;
+  border-radius:14px!important;
+  background:
+    repeating-linear-gradient(6deg,rgba(255,255,255,.02) 0 3px,rgba(0,0,0,.02) 3px 7px),
+    linear-gradient(180deg,#573419,#311a0c)!important;
+  box-shadow:inset 0 0 0 3px rgba(25,13,6,.72),0 8px 18px rgba(0,0,0,.42)!important;
+}
+html body .app section#mail.v677-mail .v677-footer-envelope{
+  font-size:25px!important;
+  text-align:center!important;
+  filter:drop-shadow(0 0 6px rgba(247,192,78,.20));
+}
+html body .app section#mail.v677-mail .v677-footer-copy b{
+  color:#76e25d!important;
+  font-size:7.7px!important;
+  line-height:1.05!important;
+  font-weight:1000!important;
+  text-shadow:0 0 8px rgba(65,210,75,.20)!important;
+}
+html body .app section#mail.v677-mail .v677-footer-leaf{
+  font-size:29px!important;
+  text-align:center!important;
+  filter:drop-shadow(0 0 7px rgba(67,220,78,.35));
+}
+html body .app section#mail.v677-mail .v677-footer-sign{
+  padding:7px 6px!important;
+  border:1px solid #8e6937!important;
+  border-radius:7px!important;
+  background:linear-gradient(160deg,#8e582b,#5a3318)!important;
+  color:#160d07!important;
+  text-align:center!important;
+  transform:rotate(-1deg)!important;
+}
+html body .app section#mail.v677-mail .v677-footer-sign b{
+  display:block!important;
+  font-size:8.6px!important;
+  font-weight:1000!important;
+}
+html body .app section#mail.v677-mail .v677-footer-sign small{
+  display:block!important;
+  margin-top:2px!important;
+  font-size:5.5px!important;
+  font-weight:900!important;
+}
+
+/* Android / phone fit */
+@media(max-width:560px){
+  html body .app section#mail.v677-mail{
+    padding-bottom:calc(170px + env(safe-area-inset-bottom,0px))!important;
+  }
+  html body .app section#mail.v677-mail > .v052-scene-banner{
+    min-height:100px!important;
+    padding:14px 66px 12px!important;
+  }
+  html body .app section#mail.v677-mail > .v052-scene-banner::before{
+    left:9px!important;
+    width:48px!important;
+    height:48px!important;
+    font-size:29px!important;
+  }
+  html body .app section#mail.v677-mail > .v052-scene-banner::after{
+    right:7px!important;
+    top:12px!important;
+    width:48px!important;
+    padding:6px 4px!important;
+    font-size:4.9px!important;
+  }
+  html body .app section#mail.v677-mail .v052-title{
+    font-size:20px!important;
+  }
+  html body .app section#mail.v677-mail .v052-sub{
+    margin-top:5px!important;
+    padding:4px 8px!important;
+    font-size:6.3px!important;
+  }
+  html body .app section#mail.v677-mail > .v677-mail-card{
+    padding:10px!important;
+  }
+  html body .app section#mail.v677-mail .v677-mail-title h2{
+    font-size:16px!important;
+  }
+  html body .app section#mail.v677-mail .v381-tabs{
+    gap:5px!important;
+  }
+  html body .app section#mail.v677-mail .v381-tabs .btn{
+    min-height:53px!important;
+    padding:7px 3px!important;
+    font-size:7.5px!important;
+  }
+  html body .app section#mail.v677-mail .v381-msg{
+    grid-template-columns:40px minmax(0,1fr) 26px!important;
+    gap:7px!important;
+    padding:9px!important;
+  }
+  html body .app section#mail.v677-mail .v677-mail-avatar{
+    width:35px!important;
+    height:35px!important;
+    font-size:10px!important;
+  }
+  html body .app section#mail.v677-mail .v381-msg b{
+    font-size:8.8px!important;
+  }
+  html body .app section#mail.v677-mail .v381-msg small{
+    font-size:5.9px!important;
+  }
+  html body .app section#mail.v677-mail .v381-preview{
+    font-size:6.6px!important;
+  }
+  html body .app section#mail.v677-mail .v677-open-arrow{
+    width:23px!important;
+    height:29px!important;
+    font-size:20px!important;
+  }
+  html body .app section#mail.v677-mail .v677-mail-footer{
+    min-height:64px!important;
+    grid-template-columns:28px 1fr 31px 1.08fr!important;
+    gap:5px!important;
+    padding:7px 8px!important;
+  }
+  html body .app section#mail.v677-mail .v677-footer-envelope{font-size:20px!important}
+  html body .app section#mail.v677-mail .v677-footer-copy b{font-size:6.3px!important}
+  html body .app section#mail.v677-mail .v677-footer-leaf{font-size:23px!important}
+  html body .app section#mail.v677-mail .v677-footer-sign b{font-size:7.1px!important}
+  html body .app section#mail.v677-mail .v677-footer-sign small{font-size:4.8px!important}
+}
+body.v650-native-safe .app section#mail.v677-mail{
+  padding-bottom:calc(190px + env(safe-area-inset-bottom,0px))!important;
+}
+</style>
+<!-- ===== /V6.77 NEBEL-POST REDESIGN ===== -->
 
 </body>
 </html>
