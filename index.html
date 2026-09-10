@@ -1062,6 +1062,24 @@ img.v6108-quality-art{
 .v6108-quality-artbox.v6108-q-prismatic{box-shadow:inset 0 0 0 1px #ff5ed2,0 0 12px #35cfff66!important}
 </style>
 
+
+<style id="v6110-pet-book-order-fix">
+/* V6.110: visual order authority inside the Heldenquartier book host.
+   An older hero rule gave #v106BookBtn order:21, while the Pet button
+   stayed at order:0. That is why Pet appeared above the book despite
+   correct DOM order. */
+#character.v514-reference-hero .v514-book-host{
+  display:grid!important;
+  grid-template-columns:1fr!important;
+}
+#character.v514-reference-hero .v514-book-host > #v106BookBtn{
+  order:1!important;
+}
+#character.v514-reference-hero .v514-book-host > #v686PetAlbumBtn{
+  order:2!important;
+}
+</style>
+
 </head>
 <body>
 <div class="app">
@@ -108447,94 +108465,118 @@ function mtof(m){return 440*Math.pow(2,(m-69)/12)}
 
 function makeLoop(audioCtx){
   const sr=22050;
-  const seconds=16;
+  const bpm=80;
+  const beat=60/bpm;          // .75 s
+  const bars=8;
+  const seconds=bars*4*beat;  // exact 24 s loop
   const len=Math.floor(sr*seconds);
   const b=audioCtx.createBuffer(2,len,sr);
   const L=b.getChannelData(0),R=b.getChannelData(1);
-  const bpm=84;
-  const beat=60/bpm;
-  const half=beat/2;
-  const roots=[45,48,43,50]; // original minor-ish progression
-  const thirds=[3,3,4,3];
 
-  let seed=13371337;
+  /* Dark, relaxed Grow-Legends fantasy progression.
+     Two bars per chord, with a small pentatonic lead. */
+  const roots=[45,45,41,41,48,48,43,43];
+  const chordType=[
+    [0,3,7,10], [0,3,7,10],
+    [0,4,7,11], [0,4,7,11],
+    [0,3,7,10], [0,3,7,10],
+    [0,3,7,10], [0,3,7,10]
+  ];
+  const leadPattern=[12,15,19,22,19,15,10,12, 12,10,7,10,12,15,19,15];
+
+  let seed=420710;
   const rnd=()=>{
     seed=(seed*1664525+1013904223)>>>0;
-    return (seed/4294967296)*2-1;
+    return seed/4294967296;
   };
-  const tri=(x)=>2/Math.PI*Math.asin(Math.sin(x));
+  const noise=()=>rnd()*2-1;
+  const soft=(x)=>Math.tanh(x);
 
   for(let i=0;i<len;i++){
     const t=i/sr;
-    const bar=Math.min(3,Math.floor(t/4));
-    const root=roots[bar];
-    const chord=[root,root+thirds[bar],root+7];
-
-    // warm pad
-    const breathe=.72+.28*Math.sin(2*Math.PI*t/8);
-    let pad=0;
-    for(let n=0;n<3;n++){
-      const f=mtof(chord[n]);
-      pad += Math.sin(2*Math.PI*f*t + n*.6)*(.018/(n+1));
-      pad += tri(2*Math.PI*(f*.5)*t + n*.3)*(.007/(n+1));
-    }
-    pad*=breathe;
-
-    // soft bass pulse each beat
-    const bp=t%beat;
+    const bar=Math.min(bars-1,Math.floor(t/(beat*4)));
+    const beatInBar=(t%(beat*4))/beat;
     const beatIndex=Math.floor(t/beat);
-    const bassRoot=roots[Math.min(3,Math.floor(t/4))]-12;
-    const bassEnv=Math.exp(-bp*3.8);
-    const bass=Math.sin(2*Math.PI*mtof(bassRoot)*t)*.045*bassEnv;
+    const root=roots[bar];
+    const chord=chordType[bar].map(x=>root+x);
 
-    // calm kick
+    /* warm low fantasy pad */
+    const swell=.62+.38*(.5-.5*Math.cos(2*Math.PI*(t%(beat*4))/(beat*4)));
+    let pad=0;
+    chord.forEach((m,idx)=>{
+      const f=mtof(m+12);
+      pad += Math.sin(2*Math.PI*f*t + idx*.72)*(.012/(1+idx*.18));
+      pad += Math.sin(2*Math.PI*(f*.5)*t + idx*.31)*(.006/(1+idx*.25));
+    });
+    pad*=swell;
+
+    /* round bass, root + occasional fifth */
+    const bp=t%beat;
+    const bassMidi=root-12+(beatIndex%4===3?7:0);
+    const bassEnv=Math.exp(-bp*3.15);
+    const bass=(
+      Math.sin(2*Math.PI*mtof(bassMidi)*t) +
+      .22*Math.sin(2*Math.PI*mtof(bassMidi)*2*t)
+    )*.043*bassEnv;
+
+    /* soft kick on 1/3, quieter ghost on 4 */
     let kick=0;
-    if(bp<.20){
-      const e=Math.exp(-bp*18);
-      const f=52+72*Math.exp(-bp*22);
-      kick=Math.sin(2*Math.PI*f*bp)*.075*e;
+    const beatPos=beatIndex%4;
+    if((beatPos===0||beatPos===2||beatPos===3)&&bp<.18){
+      const strength=beatPos===3?.35:1;
+      const e=Math.exp(-bp*20);
+      const phase=2*Math.PI*(54*bp + 22*(1-Math.exp(-bp*18)));
+      kick=Math.sin(phase)*.062*e*strength;
     }
 
-    // subdued snare on beats 2 and 4
+    /* brushed/snappy hit on 2 and 4 */
     let snare=0;
-    if((beatIndex%4===1||beatIndex%4===3) && bp<.14){
-      const e=Math.exp(-bp*26);
-      snare=(rnd()*.026 + Math.sin(2*Math.PI*175*bp)*.012)*e;
+    if((beatPos===1||beatPos===3)&&bp<.17){
+      const e=Math.exp(-bp*24);
+      snare=(noise()*.018 + Math.sin(2*Math.PI*168*bp)*.010)*e;
     }
 
-    // tiny hat every half beat
-    const hp=t%half;
+    /* sleepy closed hats, intentionally sparse */
+    const eighth=beat/2;
+    const ep=t%eighth;
     let hat=0;
-    if(hp<.045){
-      const e=Math.exp(-hp*65);
-      hat=rnd()*.011*e;
+    if(ep<.035 && ((Math.floor(t/eighth)%4)!==3)){
+      const e=Math.exp(-ep*78);
+      hat=noise()*.0065*e;
     }
 
-    // slow pluck pattern, gives the "battle" character without becoming hectic
-    const step=Math.floor(t/half);
-    const local=t-step*half;
-    const degree=[0,7,3,7,12,7,10,7][step%8];
-    const leadMidi=root+12+degree;
-    const leadEnv=Math.exp(-local*7.5);
-    const lead=(Math.sin(2*Math.PI*mtof(leadMidi)*local)
-              +.28*Math.sin(2*Math.PI*mtof(leadMidi)*2*local))
-              *.018*leadEnv;
+    /* woody/plucked fantasy motif */
+    const sixteenth=beat/2;
+    const step=Math.floor(t/sixteenth);
+    const local=t-step*sixteenth;
+    const degree=leadPattern[step%leadPattern.length];
+    const leadMidi=root+degree;
+    const leadEnv=Math.exp(-local*8.7);
+    const lf=mtof(leadMidi);
+    const lead=(
+      Math.sin(2*Math.PI*lf*local) +
+      .32*Math.sin(2*Math.PI*lf*2*local) +
+      .10*Math.sin(2*Math.PI*lf*3*local)
+    )*.0145*leadEnv*(step%2===0?1:.72);
 
-    // occasional low tom every 8 beats
-    let tom=0;
-    if(beatIndex%8===7 && bp<.22){
-      const e=Math.exp(-bp*14);
-      tom=Math.sin(2*Math.PI*(92-25*bp)*bp)*.026*e;
+    /* subtle high bell every two bars */
+    let bell=0;
+    const barT=t%(beat*8);
+    if(barT<1.5){
+      const e=Math.exp(-barT*2.5);
+      const bf=mtof(root+31);
+      bell=(Math.sin(2*Math.PI*bf*barT)+.4*Math.sin(2*Math.PI*bf*2.01*barT))*.006*e;
     }
 
-    const common=pad+bass+kick+snare+hat+lead+tom;
-    const side=.006*Math.sin(2*Math.PI*mtof(chord[1]+12)*t + .35)*breathe;
-    L[i]=Math.tanh((common+side)*1.15);
-    R[i]=Math.tanh((common-side)*1.15);
+    /* a very quiet smoky texture, stereo opposed */
+    const smoke=Math.sin(2*Math.PI*.083*t)*.004;
+    const common=pad+bass+kick+snare+hat+lead+bell;
+    L[i]=soft((common+smoke)*1.12);
+    R[i]=soft((common-smoke)*1.12);
   }
 
-  // short seam crossfade for a smooth loop
-  const fade=Math.floor(sr*.18);
+  /* seam crossfade */
+  const fade=Math.floor(sr*.22);
   for(let i=0;i<fade;i++){
     const a=i/fade;
     const j=len-fade+i;
@@ -108546,7 +108588,6 @@ function makeLoop(audioCtx){
   }
   return b;
 }
-
 function ensureAudio(){
   if(ctx)return true;
   const AC=window.AudioContext||window.webkitAudioContext;
@@ -108554,7 +108595,7 @@ function ensureAudio(){
   try{
     ctx=new AC({latencyHint:'playback'});
     master=ctx.createGain();
-    master.gain.value=.12;
+    master.gain.value=.10;
     master.connect(ctx.destination);
     building=true;
     loopBuffer=makeLoop(ctx);
@@ -108628,7 +108669,7 @@ function ensureMusicRow(){
       <span class="v141-setting-icon">🎵</span>
       <span class="v141-setting-copy">
         <b>Hintergrundmusik</b>
-        <span>Chillige Grow-Legends-Kampfmusik, solange die App geöffnet ist.</span>
+        <span>Dunkler, entspannter Grow-Legends-Fantasy-Beat, solange die App geöffnet ist.</span>
       </span>
       <input class="v141-switch" id="v6109MusicToggle" type="checkbox">
     `;
@@ -108707,10 +108748,15 @@ window.v6109MusicInfo=()=>({
   context:ctx?.state||'not-created',
   playing:!!source,
   hidden:document.hidden,
-  loopSeconds:16,
+  loopSeconds:24,
   persistentIntervals:0
 });
 })();
+</script>
+
+
+<script id="v6110-pet-order-music-marker">
+window.__V6110_PET_ORDER_AND_NEW_MUSIC__=true;
 </script>
 
 </body>
