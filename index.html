@@ -107842,5 +107842,358 @@ if(world){
 </script>
 <!-- ===== /V6.92 WELTSEITE ALT-RENDER HART BEREINIGT ===== -->
 
+
+<!-- ===== V6.93 PERFORMANCE: ONE NAVIGATION + ACTIVE-SCREEN RENDER ===== -->
+<style id="v693-performance-css">
+html{scroll-behavior:auto!important}
+.screen:not(.active){content-visibility:auto}
+</style>
+
+<script id="v693-performance-core">
+(function(){
+'use strict';
+if(window.__V693_PERFORMANCE_CORE__)return;
+window.__V693_PERFORMANCE_CORE__=true;
+
+/*
+  PERF-CLEANUP:
+  The file historically stacked a very large number of v032Go()/render() wrappers.
+  From this point on there is ONE navigation owner and ONE lightweight global render.
+  The old chains remain available only for emergency diagnostics and are no longer
+  traversed on every click/persist.
+*/
+const LEGACY_GO = (typeof v032Go==='function') ? v032Go : window.v032Go;
+const LEGACY_RENDER = (typeof render==='function') ? render : window.render;
+window.__V693_LEGACY_GO__ = LEGACY_GO;
+window.__V693_LEGACY_RENDER__ = LEGACY_RENDER;
+
+let navSeq=0;
+let renderRaf=0;
+let lastRenderMs=0;
+let lastNavMs=0;
+let activeRenderBusy=false;
+
+function call(fn,...args){
+  try{
+    return typeof fn==='function' ? fn(...args) : undefined;
+  }catch(e){
+    console.warn('V6.93 fast render hook',e);
+    return undefined;
+  }
+}
+function byId(id){return document.getElementById(id)}
+function activeId(){
+  return document.querySelector('.screen.active')?.id || 'world';
+}
+function setText(sel,val){
+  const el=document.querySelector(sel);
+  if(el)el.textContent=String(val??'');
+}
+function setTexts(sel,val){
+  document.querySelectorAll(sel).forEach(el=>{el.textContent=String(val??'')});
+}
+function cap(){
+  try{return typeof v271DampfCap==='function'?Math.max(1,Number(v271DampfCap())||100):100}
+  catch(_){return 100}
+}
+function num(v){return Math.max(0,Math.round(Number(v)||0))}
+function updateCommonHud(){
+  call(typeof regenEnergy==='function'?regenEnergy:null);
+
+  try{
+    const cp=typeof combatPower==='function'?combatPower():0;
+    const hp=typeof maxHp==='function'?maxHp():0;
+    const need=typeof xpNeed==='function'?xpNeed():Math.max(100,num(s?.level)*100);
+
+    setText('#level',num(s?.level));
+    setText('#charLevel',num(s?.level));
+    setText('#battleLevel',num(s?.level));
+    setText('#xp',`${num(s?.xp)}/${num(need)}`);
+    setText('#gold',num(s?.gold));
+    setText('#shopGold',num(s?.gold));
+    setText('#shopHarz',num(s?.harzTaler));
+    setText('#points',num(s?.points));
+    setText('#energy',`${num(s?.energy)}/${cap()}`);
+    setText('#power',num(cp));
+    setText('#charPower',num(cp));
+    setText('#charHp',num(hp));
+
+    setText('#v366Gold',num(s?.gold).toLocaleString('de-DE'));
+    setText('#v366Harz',num(s?.harzTaler).toLocaleString('de-DE'));
+    setText('#v366Dampf',`${num(s?.energy)}/${cap()}`);
+
+    const ticket=document.querySelector('#dungeonTicketText');
+    if(ticket && typeof dungeonWaitText==='function')ticket.textContent=dungeonWaitText();
+  }catch(e){
+    console.warn('V6.93 common HUD',e);
+  }
+}
+
+function renderCharacter(){
+  /*
+    Character needs inventory/talent data, but not Growroom, Quests, Dungeon and Shop.
+    Keep only the final dedicated character renderers.
+  */
+  call(typeof renderClasses==='function'?renderClasses:null);
+  call(typeof renderSetPanel==='function'?renderSetPanel:null);
+  call(typeof renderClassAvatar==='function'?renderClassAvatar:null);
+  call(typeof renderSkillTree==='function'?renderSkillTree:null);
+  call(typeof renderInventory==='function'?renderInventory:null);
+
+  call(window.v514ApplyHeroReference);
+  call(window.v4140PaintAttributes);
+  call(window.v459CompactInventory);
+  call(window.v470PaintEquipmentSlots);
+  call(window.v470PaintInventoryComparisons);
+  call(window.v229PaintPvpBuds);
+}
+
+function renderWorldFast(){
+  /*
+    V6.90/V6.92 already consolidated the world into v085InstallWorld().
+    One rebuild is enough; the V6.92 cleanup observer then normalizes the dock.
+  */
+  if(typeof v085InstallWorld==='function')call(v085InstallWorld,true);
+}
+
+function renderGuildFast(){
+  call(window.v254RenderGuild || (typeof v254RenderGuild==='function'?v254RenderGuild:null));
+  if(typeof window.v254LoadGuild==='function'){
+    Promise.resolve(window.v254LoadGuild()).catch(()=>{});
+  }else if(typeof v254LoadGuild==='function'){
+    Promise.resolve(v254LoadGuild()).catch(()=>{});
+  }
+}
+
+function renderFriendsFast(){
+  call(typeof v072RenderFriends==='function'?v072RenderFriends:null);
+  const loader=window.v073LoadFriends || (typeof v073LoadFriends==='function'?v073LoadFriends:null);
+  if(typeof loader==='function')Promise.resolve(loader()).catch(()=>{});
+}
+
+function renderHallFast(){
+  call(typeof v083FixHallList==='function'?v083FixHallList:null);
+  call(window.v646DecorateHall);
+  try{if(typeof syncHall==='function')syncHall()}catch(_){}
+}
+
+function renderAdminFast(){
+  if(typeof v093CheckAdmin==='function'){
+    Promise.resolve(v093CheckAdmin()).then(ok=>{
+      if(ok && typeof v093AdminLoadLists==='function')return v093AdminLoadLists();
+    }).catch(()=>{});
+  }
+}
+
+function renderActiveScreen(id=activeId()){
+  if(activeRenderBusy)return;
+  activeRenderBusy=true;
+  const started=performance.now();
+  try{
+    updateCommonHud();
+
+    switch(id){
+      case 'world':
+        renderWorldFast();
+        break;
+      case 'character':
+        renderCharacter();
+        break;
+      case 'grow':
+        call(typeof renderGrow==='function'?renderGrow:null);
+        break;
+      case 'quests':
+        call(typeof ensureQuests==='function'?ensureQuests:null);
+        call(typeof renderQuests==='function'?renderQuests:null);
+        call(typeof renderElitePanel==='function'?renderElitePanel:null);
+        break;
+      case 'dungeon':
+        call(typeof renderDungeon==='function'?renderDungeon:null);
+        break;
+      case 'shop':
+        call(typeof renderShop==='function'?renderShop:null);
+        break;
+      case 'endgame':
+        if(typeof window.v457RenderEndgame==='function')call(window.v457RenderEndgame);
+        else call(typeof renderEndgame==='function'?renderEndgame:null);
+        break;
+      case 'pvp':
+        call(typeof installPvp==='function'?installPvp:null);
+        call(typeof v210PvpCheck==='function'?v210PvpCheck:null);
+        break;
+      case 'guild':
+        renderGuildFast();
+        break;
+      case 'hall':
+        renderHallFast();
+        break;
+      case 'friends':
+        renderFriendsFast();
+        break;
+      case 'mail':
+        /* Mail has its own async loader/renderer and keeps its existing DOM. */
+        break;
+      case 'harzDealer':
+        call(window.v322RenderDealer);
+        break;
+      case 'admin':
+        renderAdminFast();
+        break;
+    }
+  }finally{
+    lastRenderMs=Math.round((performance.now()-started)*10)/10;
+    activeRenderBusy=false;
+  }
+}
+
+function scheduleRender(id=activeId()){
+  cancelAnimationFrame(renderRaf);
+  renderRaf=requestAnimationFrame(()=>{
+    renderRaf=0;
+    renderActiveScreen(id);
+  });
+}
+
+function activateScreen(id){
+  const target=byId(id);
+  if(!target)return false;
+
+  document.querySelectorAll('.screen.active').forEach(el=>{
+    if(el!==target)el.classList.remove('active');
+  });
+  target.classList.add('active');
+
+  document.querySelectorAll('.top-menu-item').forEach(btn=>{
+    btn.classList.toggle('active',btn.dataset.screen===id);
+  });
+
+  document.querySelector('#v032MenuPanel')?.classList.remove('open');
+  return true;
+}
+
+function fastGo(rawId){
+  const started=performance.now();
+  const seq=++navSeq;
+  let id=String(rawId||'world');
+
+  try{
+    if(id==='forge'){
+      if(typeof window.v488OpenForge==='function'){
+        window.v488OpenForge();
+        lastNavMs=Math.round((performance.now()-started)*10)/10;
+        return true;
+      }
+    }
+
+    if(id==='systemtech'){
+      if(typeof window.v4107OpenSystemtechnik==='function'){
+        window.v4107OpenSystemtechnik();
+        lastNavMs=Math.round((performance.now()-started)*10)/10;
+        return true;
+      }
+    }
+
+    if(id==='endgame' && !byId('endgame')){
+      if(typeof window.v457RenderEndgame==='function')call(window.v457RenderEndgame);
+      else call(typeof renderEndgame==='function'?renderEndgame:null);
+    }
+
+    if(id==='dungeon'){
+      try{
+        s.dungeon??={};
+        s.dungeon.layer='world';
+        s.dungeon.view='map';
+      }catch(_){}
+    }
+
+    if(!activateScreen(id)){
+      console.warn('V6.93 screen not found',id);
+      return false;
+    }
+
+    /*
+      Critical UX change: screen becomes visible BEFORE any heavy renderer starts.
+      No smooth-scroll animation; no old 100+ wrapper chain.
+    */
+    try{window.scrollTo(0,0)}catch(_){}
+    lastNavMs=Math.round((performance.now()-started)*10)/10;
+
+    requestAnimationFrame(()=>{
+      if(seq!==navSeq)return;
+      scheduleRender(id);
+    });
+
+    return true;
+  }catch(e){
+    console.warn('V6.93 navigation',id,e);
+    return false;
+  }
+}
+
+function fastRender(){
+  scheduleRender(activeId());
+  return true;
+}
+fastRender.__v693Fast=true;
+fastGo.__v693Fast=true;
+
+/* Final ownership: no historical render/v032Go chain is called from now on. */
+try{render=fastRender}catch(_){}
+window.render=fastRender;
+try{v032Go=fastGo}catch(_){}
+window.v032Go=fastGo;
+
+/* Make current top-menu buttons point directly to the new navigation core. */
+function rebindMenu(){
+  document.querySelectorAll('#v032MenuPanel [data-screen]').forEach(btn=>{
+    btn.onclick=e=>{
+      e.preventDefault();
+      e.stopPropagation();
+      fastGo(btn.dataset.screen);
+    };
+  });
+}
+rebindMenu();
+
+/* Header buttons created by v366 call v032Go dynamically, so they now hit fastGo. */
+
+/* Lightweight menu rebind only when menu content itself changes. */
+const menu=document.getElementById('v032MenuPanel');
+if(menu){
+  new MutationObserver(()=>requestAnimationFrame(rebindMenu))
+    .observe(menu,{childList:true});
+}
+
+/* Diagnostics to compare future reports without adding a permanent profiler loop. */
+window.v693PerformanceDiagnostics=function(){
+  return {
+    active:activeId(),
+    lastNavigationMs:lastNavMs,
+    lastActiveRenderMs:lastRenderMs,
+    fastNavigation:window.v032Go===fastGo,
+    fastRender:window.render===fastRender,
+    legacyNavigationSaved:typeof window.__V693_LEGACY_GO__==='function',
+    legacyRenderSaved:typeof window.__V693_LEGACY_RENDER__==='function'
+  };
+};
+
+/* Emergency rollback for debugging only; never called automatically. */
+window.v693RestoreLegacyPerformanceChain=function(){
+  try{v032Go=LEGACY_GO}catch(_){}
+  window.v032Go=LEGACY_GO;
+  try{render=LEGACY_RENDER}catch(_){}
+  window.render=LEGACY_RENDER;
+  return true;
+};
+
+/* Initial final paint once, not a retry storm. */
+requestAnimationFrame(()=>{
+  rebindMenu();
+  scheduleRender(activeId());
+});
+})();
+</script>
+<!-- ===== /V6.93 PERFORMANCE ===== -->
+
 </body>
 </html>
