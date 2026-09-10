@@ -58483,9 +58483,9 @@ html,body{
         <button data-go="character"><span class="ico">🛡️</span>Charakter</button>
         <button data-go="shop"><span class="ico">🏪</span>Händler</button>
         <button data-go="guild"><span class="ico">⚜️</span>Gilde</button>
-        <button data-go="harzDealer"><span class="ico">💎</span>Harz Dealer</button>
+        <button data-go="harzDealer"><span class="ico">💎</span>Harz<br>Dealer</button>
         <button data-go="friends"><span class="ico">👥</span>Freunde</button>
-        <button data-book="1"><span class="ico">📖</span>Illegales Buch</button>
+        <button data-book="1"><span class="ico">📖</span>Illegales<br>Buch</button>
       </nav>
 
       <div class="v690-footer">
@@ -107475,6 +107475,107 @@ if(world){
 })();
 </script>
 <!-- ===== /V6.90 WELTSEITE HOLZ-COMIC REDESIGN ===== -->
+
+
+<!-- ===== V6.91 WORLD RENDER CLEANUP ===== -->
+<style id="v691-world-cleanup-css">
+/* Hard cleanup: remove visible leftovers from older world renderers */
+#world.active .v366-hero{
+  background:
+    linear-gradient(90deg,rgba(1,8,4,.90) 0%,rgba(2,10,5,.70) 38%,rgba(1,7,4,.20) 65%,rgba(0,0,0,.10) 100%),
+    linear-gradient(180deg,transparent 52%,rgba(1,6,3,.84) 100%),
+    url("assets/world_hero_castle_v691.png") center 32%/cover no-repeat!important;
+}
+#world.active .v366-profile{z-index:3!important}
+#world.active .v366-welcome{z-index:3!important}
+#world.active .v366-dock{
+  grid-template-columns:repeat(8,minmax(0,1fr))!important;
+  align-items:stretch!important;
+}
+#world.active .v366-dock button{
+  padding:4px 1px!important;
+  min-height:58px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:2px!important;
+  font-size:4.2px!important;
+  line-height:1.05!important;
+  text-align:center!important;
+  white-space:normal!important;
+  word-break:keep-all!important;
+}
+#world.active .v366-dock .ico{
+  margin:0 0 1px!important;
+  font-size:18px!important;
+  line-height:1!important;
+}
+#world.active .v366-dock br{display:block!important}
+#world.active .v690-footer{margin-top:2px!important}
+#world.active .v488-home-link{margin-top:2px!important}
+#world.active .v366-world>.v366-events{display:none!important}
+@media(max-width:390px){
+  #world.active .v366-hero{height:338px!important;min-height:338px!important}
+  #world.active .v366-dock button{font-size:3.8px!important;min-height:54px!important}
+  #world.active .v366-dock .ico{font-size:16px!important}
+}
+</style>
+
+<script id="v691-world-cleanup-runtime">
+(function(){
+'use strict';
+if(window.__V691_WORLD_RENDER_CLEANUP__)return;
+window.__V691_WORLD_RENDER_CLEANUP__=true;
+
+function normalizeDock(){
+  const root=document.querySelector('#world.active .v366-world');
+  if(!root)return;
+  const dock=root.querySelector('.v366-dock');
+  if(!dock)return;
+  const buttons=[...dock.querySelectorAll('button')];
+  if(buttons.length!==8)return;
+  const labels=[
+    'Welt','Inventar','Charakter','Händler','Gilde','Harz<br>Dealer','Freunde','Illegales<br>Buch'
+  ];
+  buttons.forEach((btn,i)=>{
+    const ico=btn.querySelector('.ico')?.outerHTML || '';
+    btn.innerHTML=ico+labels[i];
+  });
+}
+
+function refresh(){
+  try{
+    if(document.querySelector('#world.active') && typeof v085InstallWorld==='function'){
+      v085InstallWorld(true);
+    }
+  }catch(e){}
+  requestAnimationFrame(()=>{
+    normalizeDock();
+    try{window.v488EnsureHomeLink?.()}catch(e){}
+  });
+}
+
+document.addEventListener('DOMContentLoaded',()=>setTimeout(refresh,60),{once:true});
+window.addEventListener('pageshow',()=>setTimeout(refresh,40),{passive:true});
+window.addEventListener('growlegends:account-ready',()=>setTimeout(refresh,140));
+
+const world=document.getElementById('world');
+if(world){
+  new MutationObserver(()=>{
+    const root=world.querySelector('.v366-world');
+    if(root && !root.classList.contains('v690-world')){
+      setTimeout(refresh,0);
+    }else{
+      setTimeout(normalizeDock,0);
+    }
+  }).observe(world,{childList:true,subtree:true});
+}
+
+[300,900,1800,3200].forEach(ms=>setTimeout(refresh,ms));
+})();
+</script>
+<!-- ===== /V6.91 WORLD RENDER CLEANUP ===== -->
 
 </body>
 </html>
