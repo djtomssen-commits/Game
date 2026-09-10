@@ -103032,9 +103032,9 @@ function hp(bar,txt,value,max){
 }
 
 const fight=async function(){
-  if(window.v204BattleBusy || !window.v204Opponent)return;
+  if(v204BattleBusy || !v204Opponent)return;
 
-  const enemy={...window.v204Opponent};
+  const enemy={...v204Opponent};
   const fightBtn=$('#v204FightBtn');
 
   if(fightBtn){
@@ -103063,8 +103063,7 @@ const fight=async function(){
     return;
   }
 
-  window.v204BattleBusy=true;
-  try{v204BattleBusy=true}catch(_){}
+  v204BattleBusy=true;
   window.v204CooldownLeft=typeof V204_COOLDOWN!=='undefined'?V204_COOLDOWN:1800000;
   try{v204CooldownLeft=window.v204CooldownLeft}catch(_){}
 
@@ -103249,8 +103248,7 @@ const fight=async function(){
     await v209FinishBattle(win,enemy,gold,xp);
   }catch(e){
     console.error('V6.72 PvP combat',e);
-    window.v204BattleBusy=false;
-    try{v204BattleBusy=false}catch(_){}
+    v204BattleBusy=false;
     if(fightBtn){fightBtn.disabled=false;fightBtn.textContent='⚔️ Kampf starten'}
     v063Toast('PvP-Kampf abgebrochen','error',e?.message||'Unbekannter Kampffehler');
   }
@@ -104574,6 +104572,13 @@ body.v650-native-safe .app section#mail.v677-mail .v677-mail-footer{
 }
 </style>
 <!-- ===== /V6.78 NEBEL-POST HEADER + ANDROID FIX ===== -->
+
+
+<!-- ===== V6.79 PVP START FIX =====
+Fix: V6.72 used window.v204Opponent/window.v204BattleBusy.
+Those values are declared with `let`, so they are not properties of window.
+The fight button therefore returned before the server start RPC.
+===== /V6.79 PVP START FIX ===== -->
 
 </body>
 </html>
