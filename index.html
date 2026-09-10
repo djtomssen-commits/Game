@@ -1016,6 +1016,27 @@ document.documentElement.classList.remove('v224-app-ready');
 }
 </style>
 
+
+<style id="v6104-pet-find-reliability-css">
+#v688PetPopup{z-index:2147483000!important}
+#v686PetAlbumOverlay .v686-qslot.v6104-new-find{
+  position:relative!important;
+  box-shadow:0 0 0 2px #79ef61,0 0 18px rgba(121,239,97,.75)!important;
+  animation:v6104NewPetPulse 1s ease-in-out infinite alternate!important;
+}
+#v686PetAlbumOverlay .v686-qslot.v6104-new-find::after{
+  content:"NEU"!important;
+  position:absolute!important;
+  right:2px!important;top:2px!important;z-index:5!important;
+  padding:2px 4px!important;
+  border:1px solid #b7ff91!important;border-radius:999px!important;
+  background:#236f24!important;color:#efffe7!important;
+  font:900 5px/1 system-ui,sans-serif!important;
+  box-shadow:0 0 8px #68ef5d!important;
+}
+@keyframes v6104NewPetPulse{from{filter:brightness(1)}to{filter:brightness(1.18)}}
+</style>
+
 </head>
 <body>
 <div class="app">
@@ -58597,7 +58618,10 @@ html,body{
   }
 
   function petUnseen(){
-    try{return Math.max(0,Number(s?.v686PetAlbum?.unseen)||0)}catch(e){return 0}
+    try{
+      if(typeof window.v6104PetUnseen==='function')return Math.max(0,Number(window.v6104PetUnseen())||0);
+      return Math.max(0,Number(s?.v686PetAlbum?.unseen)||0);
+    }catch(e){return 0}
   }
 
   function openCharacterTab(tab){
@@ -106386,6 +106410,8 @@ function album(){
   s.v686PetAlbum.dropState=(s.v686PetAlbum.dropState&&typeof s.v686PetAlbum.dropState==='object')?s.v686PetAlbum.dropState:{};
   s.v686PetAlbum.unseen=Math.max(0,Number(s.v686PetAlbum.unseen)||0);
   s.v686PetAlbum.titles=(s.v686PetAlbum.titles&&typeof s.v686PetAlbum.titles==='object')?s.v686PetAlbum.titles:{};
+  s.v686PetAlbum.newFinds=Array.isArray(s.v686PetAlbum.newFinds)?s.v686PetAlbum.newFinds:[];
+  s.v686PetAlbum.pendingFindPopups=Array.isArray(s.v686PetAlbum.pendingFindPopups)?s.v686PetAlbum.pendingFindPopups:[];
   return s.v686PetAlbum;
 }
 function dropState(){
@@ -106398,8 +106424,123 @@ function dropState(){
   d.lastMythicBossWin=Math.max(0,Number(d.lastMythicBossWin)||0);
   return d;
 }
-function save(){try{persist(false)}catch(_){try{localStorage.setItem(KEY,JSON.stringify(s))}catch(__){}}}
+const V6104_SHADOW='growLegends:petAlbum:v6104';
+
+function save(){
+  try{persist(false)}catch(_){try{localStorage.setItem(KEY,JSON.stringify(s))}catch(__){}}
+}
 function has(pid,q){return !!s?.v686PetAlbum?.found?.[pid]?.[q]}
+
+function validFindEntry(x){
+  return !!x&&typeof x==='object'&&!!pet(String(x.petId||''))&&!!QC[String(x.quality||'')]&&has(String(x.petId||''),String(x.quality||''));
+}
+function findKey(pid,q){return String(pid||'')+'|'+String(q||'')}
+
+function normalizeFindLedgers(){
+  const a=album();if(!a)return null;
+  const uniq=new Map();
+  for(const x of a.newFinds||[]){
+    if(!validFindEntry(x))continue;
+    const key=findKey(x.petId,x.quality);
+    const old=uniq.get(key);
+    if(!old||Number(x.foundAt||0)>Number(old.foundAt||0))uniq.set(key,x);
+  }
+
+  if(!uniq.size && Number(a.unseen)>0){
+    const all=[];
+    const found=a.found||{};
+    for(const p of pets()){
+      for(const q of Object.keys(QC)){
+        const rec=found?.[p.id]?.[q];
+        if(rec)all.push({petId:p.id,quality:q,source:String(rec.source||''),foundAt:Number(rec.foundAt)||0});
+      }
+    }
+    all.sort((x,y)=>Number(y.foundAt||0)-Number(x.foundAt||0));
+    all.slice(0,Math.min(Number(a.unseen)||0,all.length)).forEach(x=>uniq.set(findKey(x.petId,x.quality),x));
+  }
+
+  a.newFinds=[...uniq.values()].sort((x,y)=>Number(y.foundAt||0)-Number(x.foundAt||0));
+  a.unseen=a.newFinds.length;
+
+  const pending=new Map();
+  for(const x of a.pendingFindPopups||[]){
+    if(!validFindEntry(x))continue;
+    const key=findKey(x.petId,x.quality);
+    if(!pending.has(key))pending.set(key,x);
+  }
+  a.pendingFindPopups=[...pending.values()];
+  return a;
+}
+
+function saveShadow(){
+  try{
+    const a=normalizeFindLedgers()||album();if(!a)return;
+    localStorage.setItem(V6104_SHADOW,JSON.stringify({
+      ts:Date.now(),
+      found:a.found||{},
+      titles:a.titles||{},
+      newFinds:a.newFinds||[],
+      pendingFindPopups:a.pendingFindPopups||[]
+    }));
+  }catch(_){}
+}
+
+function mergeShadow(){
+  let sh=null;
+  try{sh=JSON.parse(localStorage.getItem(V6104_SHADOW)||'null')}catch(_){}
+  if(!sh||typeof sh!=='object')return false;
+
+  const a=album();if(!a)return false;
+  let changed=false;
+  const sf=sh.found&&typeof sh.found==='object'?sh.found:{};
+
+  for(const [pid,row] of Object.entries(sf)){
+    if(!pet(pid)||!row||typeof row!=='object')continue;
+    a.found[pid]=(a.found[pid]&&typeof a.found[pid]==='object')?a.found[pid]:{};
+    for(const [q,rec] of Object.entries(row)){
+      if(!QC[q]||!rec)continue;
+      const cur=a.found[pid][q];
+      if(!cur||Number(rec.foundAt||0)>Number(cur.foundAt||0)){
+        a.found[pid][q]=rec;
+        changed=true;
+      }
+    }
+  }
+
+  if(sh.titles&&typeof sh.titles==='object'){
+    for(const [pid,title] of Object.entries(sh.titles)){
+      if(title&&!a.titles[pid]){a.titles[pid]=title;changed=true}
+    }
+  }
+
+  const existingNew=new Map((a.newFinds||[]).filter(validFindEntry).map(x=>[findKey(x.petId,x.quality),x]));
+  for(const x of Array.isArray(sh.newFinds)?sh.newFinds:[]){
+    if(!x||!has(x.petId,x.quality))continue;
+    const k=findKey(x.petId,x.quality);
+    if(!existingNew.has(k)){existingNew.set(k,x);changed=true}
+  }
+  a.newFinds=[...existingNew.values()];
+
+  const existingPending=new Map((a.pendingFindPopups||[]).filter(validFindEntry).map(x=>[findKey(x.petId,x.quality),x]));
+  for(const x of Array.isArray(sh.pendingFindPopups)?sh.pendingFindPopups:[]){
+    if(!x||!has(x.petId,x.quality))continue;
+    const k=findKey(x.petId,x.quality);
+    if(!existingPending.has(k)){existingPending.set(k,x);changed=true}
+  }
+  a.pendingFindPopups=[...existingPending.values()];
+
+  normalizeFindLedgers();
+  if(changed){
+    window.v686InvalidatePetCache?.();
+    save();
+  }
+  return changed;
+}
+
+window.v6104PetUnseen=function(){
+  const a=normalizeFindLedgers();
+  return Math.max(0,Number(a?.unseen)||0);
+};
 function legendaryComplete(p){return STANDARD_Q.every(q=>has(p.id,q))}
 function titleComplete(p){return [...STANDARD_Q,'cyan'].every(q=>has(p.id,q))}
 function sourceForPet(pid){if(GROUPS.grow.includes(pid))return'grow';if(GROUPS.quest.includes(pid))return'quest';if(GROUPS.dungeon.includes(pid))return'dungeon';return'quest'}
@@ -106427,25 +106568,93 @@ function ensurePopup(){
   return ov;
 }
 let popupQueue=[],popupBusy=false;
-function queuePopup(data){popupQueue.push(data);if(!popupBusy)nextPopup()}
+function queuePopup(data){
+  if(!data)return;
+  popupQueue.push(data);
+  if(!popupBusy)nextPopup();
+}
+function removePendingPopup(key){
+  if(!key)return;
+  const a=album();if(!a)return;
+  const before=a.pendingFindPopups.length;
+  a.pendingFindPopups=a.pendingFindPopups.filter(x=>findKey(x.petId,x.quality)!==key);
+  if(a.pendingFindPopups.length!==before){saveShadow();save()}
+}
 function nextPopup(){
   const data=popupQueue.shift();if(!data){popupBusy=false;return}popupBusy=true;
   const ov=ensurePopup(),card=ov.querySelector('.v688-card');card.style.setProperty('--v688q',data.color||'#62d765');
-  ov.querySelector('.v688-kicker').textContent=data.kicker||'🐾 PET SAMMELALBUM';ov.querySelector('.v688-icon').textContent=data.icon||'🐾';ov.querySelector('h3').textContent=data.title||'Belohnung';ov.querySelector('.v688-quality').textContent=data.subtitle||'';ov.querySelector('.v688-source-text').textContent=data.source||'';ov.querySelector('.v688-reward-text').innerHTML=data.body||'';ov.querySelector('[data-v688-album]').style.display=data.hideAlbum?'none':'block';ov.classList.add('show');
+  ov.querySelector('.v688-kicker').textContent=data.kicker||'🐾 PET SAMMELALBUM';
+  ov.querySelector('.v688-icon').textContent=data.icon||'🐾';
+  ov.querySelector('h3').textContent=data.title||'Belohnung';
+  ov.querySelector('.v688-quality').textContent=data.subtitle||'';
+  ov.querySelector('.v688-source-text').textContent=data.source||'';
+  ov.querySelector('.v688-reward-text').innerHTML=data.body||'';
+  ov.querySelector('[data-v688-album]').style.display=data.hideAlbum?'none':'block';
+  ov.classList.add('show');
+  if(data.pendingKey)removePendingPopup(data.pendingKey);
 }
-function finishPopup(openAlbum){document.getElementById('v688PetPopup')?.classList.remove('show');if(openAlbum){try{const a=album();a.unseen=0;save();updateDot();window.v686OpenPetAlbum?.()}catch(_){}}setTimeout(nextPopup,120)}
+function finishPopup(openAlbum){
+  document.getElementById('v688PetPopup')?.classList.remove('show');
+  if(openAlbum){try{window.v686OpenPetAlbum?.()}catch(_){}}
+  setTimeout(nextPopup,120);
+}
 function updateDot(){
-  const b=document.getElementById('v686PetAlbumBtn');if(!b)return;
-  const unseen=Math.max(0,Number(album()?.unseen)||0);b.classList.toggle('v688-unseen',unseen>0);
-  const info=b.querySelector('.info');if(info)info.textContent=unseen?`${unseen} neuer Fund${unseen===1?'':'e'} · 20 Begleiter · Boni + Titel`:'20 Begleiter · 6 Qualitäten · Boni + Titel';
+  const unseen=window.v6104PetUnseen?.()??0;
+
+  const b=document.getElementById('v686PetAlbumBtn');
+  if(b){
+    b.classList.toggle('v688-unseen',unseen>0);
+    const info=b.querySelector('.info');
+    if(info)info.textContent=unseen?`${unseen} neuer Fund${unseen===1?'':'e'} · 20 Begleiter · Boni + Titel`:'20 Begleiter · 6 Qualitäten · Boni + Titel';
+  }
+
+  const q=document.querySelector('#world .v6103-quickbar [data-pets]');
+  if(q){
+    let badge=q.querySelector('.v6103-badge');
+    if(unseen>0){
+      if(!badge){badge=document.createElement('i');badge.className='v6103-badge';q.appendChild(badge)}
+      badge.textContent=String(unseen);
+    }else badge?.remove();
+  }
+}
+window.v6104UpdatePetIndicators=updateDot;
+
+function popupDataForFind(x){
+  const p=pet(x?.petId),q=QC[x?.quality];if(!p||!q)return null;
+  return {
+    kicker:'🐾 NEUES PET GEFUNDEN',
+    icon:p.emoji||'🐾',
+    title:p.name,
+    subtitle:q.label,
+    color:q.color,
+    source:`Quelle: ${SOURCE_LABEL[x.source]||x.source||'Unbekannt'}`,
+    body:`Neue Qualitätsstufe für dein Sammelalbum.<br><b>${q.label}</b> wurde bei ${p.name} dauerhaft freigeschaltet.`,
+    pendingKey:findKey(x.petId,x.quality)
+  };
+}
+function recoverPendingPopups(){
+  const a=normalizeFindLedgers();if(!a||!a.pendingFindPopups.length)return;
+  const already=new Set(popupQueue.map(x=>x.pendingKey).filter(Boolean));
+  for(const x of a.pendingFindPopups){
+    const key=findKey(x.petId,x.quality);
+    if(already.has(key))continue;
+    const data=popupDataForFind(x);
+    if(data){already.add(key);queuePopup(data)}
+  }
 }
 function decorateAlbum(){
   const ov=document.getElementById('v686PetAlbumOverlay');if(!ov)return;
   const summary=ov.querySelector('.v686-summary');
   if(summary&&!ov.querySelector('.v688-drop-guide')){const g=document.createElement('div');g.className='v688-drop-guide';g.innerHTML='<b>🐾 Wo findest du Pets?</b> &nbsp; 🌱 Growroom · 📜 Quests/Elite · 👹 Dungeons. <strong>Mythisch</strong> gibt es ausschließlich beim mystischen Boss. Bereits gefundene Pet-Qualitäten können nie doppelt droppen.';summary.insertAdjacentElement('afterend',g)}
+  const fresh=new Set((normalizeFindLedgers()?.newFinds||[]).map(x=>findKey(x.petId,x.quality)));
   ov.querySelectorAll('.v686-pet-row').forEach(row=>{
-    const id=row.querySelector('.v686-qslot[data-pet]')?.dataset.pet,host=row.querySelector('.v686-pet-id');if(!id||!host||host.querySelector('.v688-source'))return;
-    const badge=document.createElement('span');badge.className='v688-source';badge.textContent=SOURCE_LABEL[sourceForPet(id)]||sourceForPet(id);host.appendChild(badge);
+    const id=row.querySelector('.v686-qslot[data-pet]')?.dataset.pet,host=row.querySelector('.v686-pet-id');
+    if(id&&host&&!host.querySelector('.v688-source')){
+      const badge=document.createElement('span');badge.className='v688-source';badge.textContent=SOURCE_LABEL[sourceForPet(id)]||sourceForPet(id);host.appendChild(badge);
+    }
+    row.querySelectorAll('.v686-qslot[data-pet][data-q]').forEach(slot=>{
+      slot.classList.toggle('v6104-new-find',fresh.has(findKey(slot.dataset.pet,slot.dataset.q)));
+    });
   });
 }
 window.v688DecoratePetAlbum=decorateAlbum;
@@ -106454,14 +106663,41 @@ function grantWithRewards(pid,q,source){
   const p=pet(pid);if(!p||!QC[q])return false;
   const beforeBonus=legendaryComplete(p),beforeTitle=titleComplete(p);
   const base=window.__v688BaseGrant||window.v686GrantPet;
-  const ok=base(pid,q,source,{deferSave:true,deferRender:true,silent:true});if(!ok)return false;
-  const a=album();a.unseen=(Number(a.unseen)||0)+1;
-  const afterBonus=legendaryComplete(p),afterTitle=titleComplete(p);if(afterTitle)a.titles[p.id]=p.title;
+  const ok=base(pid,q,source,{deferSave:true,deferRender:true,silent:true});
+  if(!ok||!has(pid,q))return false;
+
+  const a=album(),rec=a?.found?.[pid]?.[q]||{};
+  const entry={petId:pid,quality:q,source:String(source||rec.source||''),foundAt:Number(rec.foundAt)||Date.now()};
+  const key=findKey(pid,q);
+
+  a.newFinds=(a.newFinds||[]).filter(x=>findKey(x.petId,x.quality)!==key);
+  a.newFinds.unshift(entry);
+  a.pendingFindPopups=(a.pendingFindPopups||[]).filter(x=>findKey(x.petId,x.quality)!==key);
+  a.pendingFindPopups.push(entry);
+  normalizeFindLedgers();
+
+  const afterBonus=legendaryComplete(p),afterTitle=titleComplete(p);
+  if(afterTitle)a.titles[p.id]=p.title;
+
   window.v686InvalidatePetCache?.();
-  save();updateDot();window.v686RefreshPetAlbum?.(true);
-  queuePopup({kicker:'🐾 NEUES PET GEFUNDEN',icon:p.emoji||'🐾',title:p.name,subtitle:QC[q].label,color:QC[q].color,source:`Quelle: ${SOURCE_LABEL[source]||source}`,body:`Neue Qualitätsstufe für dein Sammelalbum.<br><b>${QC[q].label}</b> kann bei ${p.name} ab jetzt nicht erneut droppen.`});
-  if(!beforeBonus&&afterBonus)queuePopup({kicker:'✨ SAMMEL-BONUS FREIGESCHALTET',icon:'🏆',title:p.name,subtitle:'Normal → Legendär komplett',color:'#f2c45f',source:'Dauerhafter Bonus aktiv',body:`Deine Reihe ist bis Legendär vollständig.<br><b>${p.bonus?.label?`+${p.bonus.value}${p.bonus.label}`:'Sammel-Bonus'}</b> ist jetzt dauerhaft aktiv.`});
-  if(!beforeTitle&&afterTitle)queuePopup({kicker:'👑 TITEL FREIGESCHALTET',icon:'👑',title:p.title,subtitle:`${p.name} · alle 6 Qualitäten`,color:'#31e7e2',source:'Normal · Grün · Blau · Lila · Legendär · Mythisch',body:'Du hast die komplette Pet-Reihe einschließlich Mythisch gesammelt.'});
+  saveShadow();
+  save();
+  updateDot();
+  window.v686RefreshPetAlbum?.(true);
+  recoverPendingPopups();
+
+  if(!beforeBonus&&afterBonus)queuePopup({
+    kicker:'✨ SAMMEL-BONUS FREIGESCHALTET',icon:'🏆',title:p.name,
+    subtitle:'Normal → Legendär komplett',color:'#f2c45f',
+    source:'Dauerhafter Bonus aktiv',
+    body:`Deine Reihe ist bis Legendär vollständig.<br><b>${p.bonus?.label?`+${p.bonus.value}${p.bonus.label}`:'Sammel-Bonus'}</b> ist jetzt dauerhaft aktiv.`
+  });
+  if(!beforeTitle&&afterTitle)queuePopup({
+    kicker:'👑 TITEL FREIGESCHALTET',icon:'👑',title:p.title,
+    subtitle:`${p.name} · alle 6 Qualitäten`,color:'#31e7e2',
+    source:'Normal · Grün · Blau · Lila · Legendär · Mythisch',
+    body:'Du hast die komplette Pet-Reihe einschließlich Mythisch gesammelt.'
+  });
   return true;
 }
 if(typeof window.v686GrantPet==='function'&&!window.__v688BaseGrant){window.__v688BaseGrant=window.v686GrantPet;window.v686GrantPet=grantWithRewards}
@@ -106536,11 +106772,55 @@ window.v688PetEndgameWin=function(riftNumber,boss=false){const rn=Math.max(1,Mat
 window.v688PetDropConfig={groups:GROUPS,weights:WEIGHTS,chances:{grow:'2–6 % pro geernteter Pflanze (+1 Prozentpunkt je erledigter Pflege, max. 4)',quest:'4 %',elite:'12 %',dungeon:'3–6 % Gegner 1–9, abhängig von Dungeon 1–20',dungeonBoss:'12 %',endgame:'5–7 % normale Nebelriss-Gegner, abhängig von Riss 1–9',endgameBoss:'12–15 % Nebelriss-Endboss, abhängig von Riss 1–9',mythicBoss:'1 % Basis +0,15 Prozentpunkte pro sieglosem Pet-Roll; 30. Fehlversuchsschutz'},legendaryPity:'Nach 25 normalen Pet-Funden ohne Legendär ist der nächste erfolgreiche Standard-Pet-Fund Legendär, sofern in dieser Quelle noch eines fehlt.',duplicateRule:'Jede Pet-Qualität pro Tier exakt einmal.',performance:'V6.99 cache + event-driven album; no Pet MutationObserver'};
 
 pets().forEach(p=>{p.source=sourceForPet(p.id)});
-document.addEventListener('click',e=>{if(e.target?.closest?.('#v686PetAlbumBtn')){const a=album();if(a&&a.unseen){a.unseen=0;save();updateDot()}}},true);
-document.addEventListener('DOMContentLoaded',()=>{album();window.v686InvalidatePetCache?.();updateDot()},{once:true});
-window.addEventListener('pageshow',()=>{window.v686InvalidatePetCache?.();updateDot()},{passive:true});
-window.addEventListener('growlegends:account-ready',()=>{window.v686InvalidatePetCache?.();setTimeout(updateDot,120)});
-setTimeout(updateDot,180);
+function clearNewFinds(){
+  const a=album();if(!a)return;
+  normalizeFindLedgers();
+  if(!a.newFinds.length&&a.unseen===0)return;
+  a.newFinds=[];
+  a.unseen=0;
+  saveShadow();save();updateDot();
+  try{window.v686RefreshPetAlbum?.(true)}catch(_){}
+}
+
+document.addEventListener('click',e=>{
+  if(e.target?.closest?.('#v686PetAlbumOverlay .v686-close'))setTimeout(clearNewFinds,0);
+},true);
+
+document.addEventListener('DOMContentLoaded',()=>{
+  album();
+  mergeShadow();
+  normalizeFindLedgers();
+  window.v686InvalidatePetCache?.();
+  updateDot();
+  setTimeout(recoverPendingPopups,250);
+},{once:true});
+
+window.addEventListener('pageshow',()=>{
+  mergeShadow();
+  normalizeFindLedgers();
+  window.v686InvalidatePetCache?.();
+  updateDot();
+  setTimeout(recoverPendingPopups,120);
+},{passive:true});
+
+window.addEventListener('growlegends:account-ready',()=>{
+  setTimeout(()=>{
+    mergeShadow();
+    normalizeFindLedgers();
+    window.v686InvalidatePetCache?.();
+    updateDot();
+    recoverPendingPopups();
+  },160);
+});
+
+setTimeout(()=>{
+  mergeShadow();
+  normalizeFindLedgers();
+  updateDot();
+  recoverPendingPopups();
+},240);
+
+window.v6104ClearPetNewFinds=clearNewFinds;
 })();
 </script>
 <!-- ===== /V6.88 PET DROPS + PITY + PERMANENT BONUSES ===== -->
