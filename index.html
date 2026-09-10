@@ -7,25 +7,24 @@ window.GROW_LEGENDS_VERSION=Object.freeze({short:'V4.159',label:'V4.159 Stable',
 
 <script id="v4106-preboot-tech">
 (()=>{
- 'use strict';
- if(window.__V4106_TECH__)return;
- const tech=window.__V4106_TECH__={version:'V4.123',startedAt:Date.now(),intervals:new Map(),timeouts:new Map(),listeners:new Map(),longTasks:[],renderSamples:{},mutations:0,maxDom:0,qaActive:false,qaWindows:[]};
- const callsite=()=>{try{return String(new Error().stack||'').split('\n').slice(3,6).join(' | ').replace(location.href,'PAGE').slice(0,420)}catch(e){return''}};
- const nativeSI=window.setInterval.bind(window),nativeCI=window.clearInterval.bind(window),nativeST=window.setTimeout.bind(window),nativeCT=window.clearTimeout.bind(window);
- const cbinfo=fn=>{try{if(typeof fn!=='function')return String(fn||'').slice(0,240);return `${fn.name||'anonymous'} :: ${String(fn).replace(/\s+/g,' ').slice(0,240)}`}catch(e){return''}};
- window.setInterval=function(fn,delay,...args){const site=callsite(),createdAt=Date.now();const id=nativeSI(fn,delay,...args);tech.intervals.set(id,{id,delay:Number(delay)||0,site,createdAt,callback:cbinfo(fn)});return id};
- window.clearInterval=function(id){tech.intervals.delete(id);return nativeCI(id)};
- window.setTimeout=function(fn,delay,...args){const site=callsite(),createdAt=Date.now();let id;if(typeof fn==='function'){const wrapped=function(...cb){tech.timeouts.delete(id);return fn.apply(this,cb)};id=nativeST(wrapped,delay,...args)}else{id=nativeST(fn,delay,...args)}tech.timeouts.set(id,{id,delay:Number(delay)||0,site,createdAt,callback:cbinfo(fn)});return id};
- window.clearTimeout=function(id){tech.timeouts.delete(id);return nativeCT(id)};
- let targetSeq=0,fnSeq=0;const targetIds=new WeakMap(),fnIds=new WeakMap();
- const tid=t=>{if(!targetIds.has(t))targetIds.set(t,++targetSeq);return targetIds.get(t)};const fid=f=>{if(typeof f!=='function'&&typeof f!=='object')return String(f);if(!fnIds.has(f))fnIds.set(f,++fnSeq);return fnIds.get(f)};
- const nativeAdd=EventTarget.prototype.addEventListener,nativeRemove=EventTarget.prototype.removeEventListener;
- EventTarget.prototype.addEventListener=function(type,listener,options){try{const capture=typeof options==='boolean'?options:!!options?.capture;const k=`${tid(this)}|${type}|${fid(listener)}|${capture?'1':'0'}`;const rec=tech.listeners.get(k)||{key:k,type:String(type),targetId:tid(this),fnId:fid(listener),capture,count:0,site:callsite(),targetRef:typeof WeakRef==='function'?new WeakRef(this):null};rec.count++;tech.listeners.set(k,rec)}catch(e){}return nativeAdd.call(this,type,listener,options)};
- EventTarget.prototype.removeEventListener=function(type,listener,options){try{const capture=typeof options==='boolean'?options:!!options?.capture;const k=`${tid(this)}|${type}|${fid(listener)}|${capture?'1':'0'}`;tech.listeners.delete(k)}catch(e){}return nativeRemove.call(this,type,listener,options)};
- try{const po=new PerformanceObserver(list=>{for(const e of list.getEntries()){tech.longTasks.push({at:Date.now(),startPerf:Number(e.startTime)||0,duration:e.duration||0,name:e.name||'longtask'});while(tech.longTasks.length>60)tech.longTasks.shift()}});po.observe({entryTypes:['longtask']});tech.longTaskObserver=po}catch(e){}
- try{const mo=new MutationObserver(m=>{tech.mutations+=m.length;const n=document.getElementsByTagName('*').length;tech.maxDom=Math.max(tech.maxDom,n)});document.addEventListener('DOMContentLoaded',()=>{try{mo.observe(document.body,{childList:true,subtree:true});tech.maxDom=document.getElementsByTagName('*').length}catch(e){}},{once:true});tech.domObserver=mo}catch(e){}
- window.__V4122_LIVE_LISTENER_COUNT__=()=>{let n=0;try{for(const r of tech.listeners.values()){if(!r?.targetRef){n++;continue}const t=r.targetRef.deref();if(!t)continue;if(t===window||t===document||t===document.documentElement||t===document.body){n++;continue}if(typeof Node!=='undefined'&&t instanceof Node){if(t.isConnected)n++;continue}n++}}catch(e){return tech.listeners.size}return n};
- window.__V4122_IS_QA_LONG_TASK__=x=>{try{const a=Number(x?.startPerf);if(!Number.isFinite(a))return false;return (tech.qaWindows||[]).some(w=>a<Number(w.end||0)+80&&a+Number(x.duration||0)>Number(w.start||0)-80)}catch(e){return false}};
+'use strict';
+if(window.__V4106_TECH__)return;
+window.__V4106_TECH__={
+  version:'V6.97-production-lite',
+  startedAt:Date.now(),
+  intervals:new Map(),
+  timeouts:new Map(),
+  listeners:new Map(),
+  longTasks:[],
+  renderSamples:{},
+  mutations:0,
+  maxDom:0,
+  qaActive:false,
+  qaWindows:[],
+  productionLite:true
+};
+window.__V4122_LIVE_LISTENER_COUNT__=()=>0;
+window.__V4122_IS_QA_LONG_TASK__=()=>false;
 })();
 </script>
 <meta charset="utf-8">
@@ -45044,7 +45043,7 @@ const v306Line=document.querySelector('#v141VersionLine');if(v306Line)v306Line.t
  try{if(typeof render==='function'&&!window.__v4103Render){const base=render;render=function(){const r=base.apply(this,arguments);queueDecorate();return r};try{window.render=render}catch(e){}window.__v4103Render=true}}catch(e){}
  try{if(typeof renderInventory==='function'&&!window.__v4103Inventory){const base=renderInventory;renderInventory=function(){const r=base.apply(this,arguments);queueDecorate();return r};try{window.renderInventory=renderInventory}catch(e){}window.__v4103Inventory=true}}catch(e){}
  try{if(typeof renderShop==='function'&&!window.__v4103Shop){const base=renderShop;renderShop=function(){const r=base.apply(this,arguments);queueDecorate();return r};try{window.renderShop=renderShop}catch(e){}window.__v4103Shop=true}}catch(e){}
- const mo=new MutationObserver(()=>queueDecorate());try{mo.observe(document.body,{childList:true,subtree:true})}catch(e){}
+ /* V6.97: body-wide item observer retired; render hooks remain. */
 
  /* Runtime UI audit: a visible known item surface may never silently fall back to legacy art. */
  function runtimeAudit(){decorate();const bad=[];const check=(sel,name)=>{const a=[...document.querySelectorAll(sel)].filter(x=>x.offsetParent!==null);a.forEach(x=>{if(x.dataset.v4103ItemCurrent!=='1')bad.push(name)})};check('#character #inventory .inventory-grid > .inv-item','Inventar');check('#shop .shop-item','Händler');check('#v488ForgeInventory [data-v488-key]','Harzschmiede');check('#v074ProfileContent .v4103-item-card','Spielerprofil');if(bad.length){try{const uid=String((typeof v073User!=='undefined'&&v073User?.id)||s?.__accountOwnerId||'local'),k='growLegendsQA:v4103:'+uid+':runtime',a=JSON.parse(localStorage.getItem(k)||'[]');const detail='Legacy Itemdarstellung erkannt: '+[...new Set(bad)].join(', ');if(!a.some(x=>x.code==='LEGACY_ITEM_RENDERER'&&x.detail===detail&&Date.now()-Number(x.at||0)<15000)){a.push({at:Date.now(),code:'LEGACY_ITEM_RENDERER',detail,severity:'error'});while(a.length>40)a.shift();localStorage.setItem(k,JSON.stringify(a))}}catch(e){}}return bad}
@@ -45169,7 +45168,7 @@ const v306Line=document.querySelector('#v141VersionLine');if(v306Line)v306Line.t
  window.v4106ComicItemArtUri=uri;window.v4106ComicAssets=ASSETS;window.v466ItemArtUri=uri;
  function tag(){document.querySelectorAll('img.v466-item-art').forEach(img=>{try{if(Object.values(ASSETS).includes(img.src)||img.src.startsWith('data:image/webp;base64,')){img.dataset.v4106Comic='1';img.classList.add('v4106-comic-art')}}catch(e){}})}
  function redecorate(){try{window.v4103DecorateItemSurfaces?.()}catch(e){}tag()}
- const mo=new MutationObserver(()=>{clearTimeout(window.__v4106ItemTagTimer);window.__v4106ItemTagTimer=setTimeout(redecorate,30)});try{mo.observe(document.body,{childList:true,subtree:true})}catch(e){}
+ /* V6.97: body-wide comic-item observer retired; render hook remains. */
  try{if(typeof render==='function'&&!render.__v4106Items){const b=render;render=function(){const r=b.apply(this,arguments);requestAnimationFrame(redecorate);return r};render.__v4106Items=true;window.render=render}}catch(e){}
  [0,80,250,700,1600,3500,8000,15000].forEach(ms=>setTimeout(redecorate,ms));
  function stamp(){try{document.title='Grow Legends '+SHORT}catch(e){}try{document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version').forEach(e=>e&&(e.textContent=VERSION));document.querySelectorAll('.v366-ver,.v371-logo em,.v372-logo em').forEach(e=>e&&(e.textContent=SHORT))}catch(e){}}
@@ -45329,9 +45328,9 @@ function historicalScriptCount(){if(historicCountCache!=null)return historicCoun
  }
  function audit(){const bad=[];const check=(sel,name)=>{document.querySelectorAll(sel).forEach(c=>{if(c.offsetParent===null)return;const img=c.querySelector('img.v466-item-art');if(!img||(!img.dataset.v4106Comic&&!img.src.startsWith('data:image/webp;base64,')))bad.push(name)})};check('#character #inventory .inventory-grid > .inv-item','Inventar');check('#v057WeaponGrid .shop-item,#v057MagicGrid .shop-item','Händler');check('#v488ForgeInventory [data-v488-key]','Harzschmiede');check('#v074ProfileContent .v4103-item-card','Spielerprofil');return [...new Set(bad)]}
  window.v4108DecorateComicItems=decorateAll;window.v4108AuditComicItems=audit;
- const mo=new MutationObserver(()=>{clearTimeout(window.__v4108DecorateTimer);window.__v4108DecorateTimer=setTimeout(decorateAll,35)});try{mo.observe(document.body,{childList:true,subtree:true})}catch(e){}
+ /* V6.97: body-wide placement observer retired. */
  [0,80,250,700,1600,3500,8000,15000,30000].forEach(ms=>setTimeout(decorateAll,ms));
- setInterval(()=>{if(!document.hidden)decorateAll()},5000);
+ /* V6.97: permanent full-item scan retired. */
  window.addEventListener('pageshow',decorateAll,{passive:true});document.addEventListener('visibilitychange',()=>{if(!document.hidden)decorateAll()},{passive:true});
  decorateAll();
 })();
@@ -49450,25 +49449,11 @@ Der Zahlungsanbieter ist noch nicht verbunden. Deshalb wird aktuell noch kein Ec
 }
 </style>
 <script id="v639-quest-attack-motion-diagnostic">
-/* Visual diagnostic only: marks the stage while the already-existing Dungeon
-   attack classes are active. No handlers, combat values, timers or rewards. */
 (function(){
- 'use strict';
- if(window.__V639_QUEST_ATTACK_MOTION__)return;
- window.__V639_QUEST_ATTACK_MOTION__=true;
- const sync=()=>{
-  const card=document.getElementById('v636QuestDungeonCard');
-  if(!card)return;
-  const p=document.getElementById('v636QuestPlayerFighter');
-  const e=document.getElementById('v636QuestEnemyFighter');
-  card.classList.toggle('v639-player-attacking',!!p?.classList.contains('attack-right'));
-  card.classList.toggle('v639-enemy-attacking',!!e?.classList.contains('attack-left'));
- };
- const mo=new MutationObserver(ms=>{
-  if(ms.some(m=>m.type==='attributes'&&m.attributeName==='class'))sync();
- });
- mo.observe(document.body,{subtree:true,attributes:true,attributeFilter:['class'],childList:true});
- requestAnimationFrame(sync);
+'use strict';
+if(window.__V639_QUEST_ATTACK_MOTION__)return;
+window.__V639_QUEST_ATTACK_MOTION__=true;
+/* V6.97 production: body-wide combat diagnostic observer retired. */
 })();
 </script>
 <!-- ===== /V6.39 ===== -->
@@ -54101,13 +54086,7 @@ setTimeout(()=>{try{v322InstallMenuEntry();v322InstallHarzPlus()}catch(e){consol
   }
 
   /* Keep menu/footer present even if later render functions rebuild the DOM. */
-  const v337Observer=new MutationObserver(()=>{
-    v337AddDealerMenuItem();
-    v337EnsureFooter();
-  });
-  try{
-    v337Observer.observe(document.body,{childList:true,subtree:true});
-  }catch(e){}
+  /* V6.97: global dealer/footer observer retired; startup hooks remain. */
 
   function v337ApplyVersion(){
     document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version]').forEach(el=>{
@@ -54942,8 +54921,7 @@ setTimeout(()=>{try{v322InstallMenuEntry();v322InstallHarzPlus()}catch(e){consol
     return true;
   }
 
-  const obs=new MutationObserver(()=>v341EnsureMenu());
-  try{obs.observe(document.body,{childList:true,subtree:true})}catch(e){}
+  /* V6.97: global dealer dropdown observer retired; startup retries remain. */
 
   function version(){
     document.querySelectorAll('.version').forEach(el=>el.textContent=V341_VERSION);
@@ -55939,7 +55917,7 @@ body:has(#world.active) .v280-harz-sub{display:none!important}
     bind(world);
   };
 
-  try{v085InstallWorld(true)}catch(e){console.error('V4.02 world install',e)}
+  try{v085InstallWorld(false)}catch(e){console.error('V4.02 world install',e)}
   function version(){document.querySelectorAll('.version').forEach(el=>el.textContent=V349_VERSION)}
   version();
   setTimeout(version,500);
@@ -56595,7 +56573,7 @@ body:has(#world.active) #v032MenuBtn{
   function v354RefreshWorld(){
     try{
       if(document.querySelector('#world')?.classList.contains('active') && typeof v085InstallWorld==='function'){
-        v085InstallWorld(true);
+        v085InstallWorld(false);
       }
     }catch(e){console.warn('V4.02 world refresh',e)}
   }
@@ -56653,7 +56631,7 @@ body:has(#world.active) #v032MenuBtn{
   function refreshWorld(){
     try{
       if(document.querySelector('#world')?.classList.contains('active') && typeof v085InstallWorld==='function'){
-        v085InstallWorld(true);
+        v085InstallWorld(false);
       }
     }catch(e){console.warn('V4.02 world refresh',e)}
   }
@@ -56714,7 +56692,7 @@ body:has(#world.active) #v032MenuBtn{
     preload();
     try{
       if(document.querySelector('#world')?.classList.contains('active') && typeof v085InstallWorld==='function'){
-        v085InstallWorld(true);
+        v085InstallWorld(false);
       }
     }catch(e){console.warn('V4.02 home avatar refresh',e)}
   }
@@ -58509,8 +58487,16 @@ html,body{
   function installWorld(force){
     const world=document.querySelector('#world');
     if(!world)return;
-    const sig=[playerName(),s?.level,s?.xp,s?.energy,s?.gold,s?.harzTaler,dungeonPos().d,dungeonPos().e,growReady(),events().map(x=>x.t).join('|'),ach().done].join('~');
-    if(!force && world.dataset.v366Sig===sig)return;
+    const sig=[
+      playerName(),s?.playerClass,s?.level,s?.xp,s?.energy,s?.gold,s?.harzTaler,
+      attr('staerke'),attr('ausdauer'),attr('geschick'),attr('intelligenz'),attr('glueck'),cp(),
+      dungeonPos().d,dungeonPos().e,growReady(),events().map(x=>x.t).join('|'),ach().done
+    ].join('~');
+
+    /* V6.94: "force" is intentionally ignored when the visible world is already current.
+       This stops old historical callers from rebuilding the whole page again and again. */
+    const current=world.querySelector(':scope > .v366-world.v690-world');
+    if(current && world.dataset.v366Sig===sig)return;
     world.dataset.v366Sig=sig;
     world.innerHTML=worldHtml();
     world.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>{const id=b.dataset.go;if(id!=='world')try{v032Go(id)}catch(e){}});
@@ -58526,7 +58512,7 @@ html,body{
   v032Go=function(id){
     const r=baseGo.apply(this,arguments);
     buildHeader();
-    if(id==='world')requestAnimationFrame(()=>installWorld(true));
+    if(id==='world')requestAnimationFrame(()=>installWorld(false));
     return r;
   };
 
@@ -58535,10 +58521,10 @@ html,body{
   }
 
   buildHeader();
-  installWorld(true);
+  installWorld(false);
   version();
-  document.addEventListener('DOMContentLoaded',()=>{buildHeader();installWorld(true);version()},{once:true});
-  setTimeout(()=>{buildHeader();installWorld(true);version()},400);
+  document.addEventListener('DOMContentLoaded',()=>{buildHeader();installWorld(false);version()},{once:true});
+  setTimeout(()=>{buildHeader();installWorld(false);version()},400);
 })();
 </script>
 
@@ -58632,7 +58618,7 @@ html,body{
 
     try{
       if(world && !world.querySelector(':scope > .v366-world') && typeof v085InstallWorld==='function'){
-        v085InstallWorld(true);
+        v085InstallWorld(false);
       }
     }catch(e){console.warn('V4.02 world repair',e)}
 
@@ -58726,7 +58712,7 @@ html,body{
 
     /* If still missing, ask the V4.02 installer to create it once. */
     if(!modern && typeof v085InstallWorld==='function'){
-      try{v085InstallWorld(true)}catch(e){console.warn('V4.02 install world',e)}
+      try{v085InstallWorld(false)}catch(e){console.warn('V4.02 install world',e)}
       modern=world.querySelector(':scope > .v366-world') || world.querySelector('.v366-world');
       if(modern && modern.parentElement!==world)world.insertBefore(modern,world.firstChild);
     }
@@ -59640,7 +59626,7 @@ body.v371-game-ui .app > header{
   function refresh(){
     try{
       if(document.querySelector('#world')?.classList.contains('active') && typeof v085InstallWorld==='function'){
-        v085InstallWorld(true);
+        v085InstallWorld(false);
       }
     }catch(e){}
     document.querySelectorAll(
@@ -67610,7 +67596,7 @@ create index if not exists player_messages_sender_idx on public.player_messages(
   document.addEventListener('DOMContentLoaded',cleanup,{once:true});
   window.addEventListener('pageshow',cleanup,{passive:true});
   [250,900,2200,5200].forEach(ms=>setTimeout(cleanup,ms));
-  const g=setInterval(cleanup,300);setTimeout(()=>clearInterval(g),30000);
+  /* V6.97: 30-second 300ms cleanup polling retired. */
 })();
 </script>
 
@@ -71803,7 +71789,7 @@ html.v481-hidden *,html.v481-hidden *::before,html.v481-hidden *::after{animatio
     released=true;
     window.__V483_POWER_READY__=true;
     document.documentElement.classList.add('v483-power-ready');
-    try{if(typeof v085InstallWorld==='function'&&document.querySelector('#world')?.classList.contains('active'))v085InstallWorld(true)}catch(e){}
+    try{if(typeof v085InstallWorld==='function'&&document.querySelector('#world')?.classList.contains('active'))v085InstallWorld(false)}catch(e){}
     try{if(typeof v446PaintCombatPower==='function')v446PaintCombatPower()}catch(e){}
     try{if(typeof v448PaintPower==='function')v448PaintPower()}catch(e){}
     return true;
@@ -74372,9 +74358,9 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();i
 
  /* Make care monotonic across every legacy normalizer/save/cloud/navigation path. */
  try{if(typeof normalizeState==='function'&&!window.__v4114Normalize){const base=normalizeState;normalizeState=function(){syncLedger('normalize-before');const r=base.apply(this,arguments);syncLedger('normalize-after');return r};try{window.normalizeState=normalizeState}catch(e){}window.__v4114Normalize=true}}catch(e){}
- try{if(typeof persist==='function'&&!window.__v4114Persist){const base=persist;persist=function(){syncLedger('persist-before');const r=base.apply(this,arguments);syncLedger('persist-after');return r};try{window.persist=persist}catch(e){}window.__v4114Persist=true}}catch(e){}
+ try{if(typeof persist==='function'&&!window.__v4114Persist){const base=persist;persist=function(){syncLedger('persist-before');return base.apply(this,arguments)};try{window.persist=persist}catch(e){}window.__v4114Persist=true}}catch(e){}
  try{if(typeof v075ApplyCloudSave==='function'&&!window.__v4114CloudApply){const base=v075ApplyCloudSave;v075ApplyCloudSave=async function(){syncLedger('cloud-before');const r=await base.apply(this,arguments);const changed=syncLedger('cloud-after');if(changed){try{if(typeof persist==='function')persist(false)}catch(e){}}return r};try{window.v075ApplyCloudSave=v075ApplyCloudSave}catch(e){}window.__v4114CloudApply=true}}catch(e){}
- try{if(typeof v032Go==='function'&&!window.__v4114Go){const base=v032Go;v032Go=function(id){syncLedger('nav-before');const r=base.apply(this,arguments);[0,80,300,900].forEach(ms=>setTimeout(()=>{const changed=syncLedger('nav-after');if(changed)try{persist(false)}catch(e){};if(id==='grow')decorateSlots()},ms));return r};try{window.v032Go=v032Go}catch(e){}window.__v4114Go=true}}catch(e){}
+ try{if(typeof v032Go==='function'&&!window.__v4114Go){const base=v032Go;v032Go=function(id){const r=base.apply(this,arguments);if(id==='grow')setTimeout(()=>{const changed=syncLedger('grow-open');if(changed)try{persist(false)}catch(e){};decorateSlots()},60);return r};try{window.v032Go=v032Go}catch(e){}window.__v4114Go=true}}catch(e){}
 
  function addQaTests(){
   try{
@@ -74392,10 +74378,10 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();i
  }
  function stamp(){try{document.title='Grow Legends '+SHORT;document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version').forEach(x=>x&&(x.textContent=VERSION));document.querySelectorAll('.v366-ver,.v371-logo em,.v372-logo em,.v4107-version').forEach(x=>x&&(x.textContent=SHORT))}catch(e){}}
  syncLedger('startup');decorateSlots();addQaTests();stamp();
- const mo=new MutationObserver(()=>{clearTimeout(window.__v4114DecorateTimer);window.__v4114DecorateTimer=setTimeout(()=>{syncLedger('mutation');decorateSlots();addQaTests();stamp()},40)});try{mo.observe(document.body,{childList:true,subtree:true})}catch(e){}
+ /* V6.97: body-wide grow-care observer retired. */
  document.addEventListener('visibilitychange',()=>{if(!document.hidden){const c=syncLedger('visible');if(c)try{persist(false)}catch(e){};decorateSlots();stamp()}},{passive:true});
  window.addEventListener('pageshow',()=>{const c=syncLedger('pageshow');if(c)try{persist(false)}catch(e){};decorateSlots();stamp()},{passive:true});
- [120,600,1800,5000,12000].forEach(ms=>setTimeout(()=>{syncLedger('delayed');decorateSlots();addQaTests();stamp()},ms));
+ [250,1500].forEach(ms=>setTimeout(()=>{syncLedger('delayed');decorateSlots();addQaTests();stamp()},ms));
 })();
 </script>
 
@@ -83495,7 +83481,7 @@ body:has(#world.active){background:#010302!important}
     Nur ein sehr leichter Existenz-Check. Solange der Button da ist,
     wird überhaupt nichts am DOM geändert und V46 Timer/Kampf bleiben unberührt.
   */
-  setInterval(ensureButton,1200);
+  /* V6.97: permanent D9 preview polling retired. */
 
   setTimeout(ensureButton,120);
   window.addEventListener('pageshow',()=>setTimeout(ensureButton,100),{passive:true});
@@ -96444,10 +96430,10 @@ html.v495-level-syncing #v420LevelUpOverlay{
     const card=document.getElementById('dungeonBattleCard');
     if(card&&!card.__v600Obs){card.__v600Obs=true;new MutationObserver(schedule).observe(card,{childList:true,subtree:true,characterData:true,attributes:true,attributeFilter:['class','style']})}
   }
-  document.addEventListener('click',()=>setTimeout(bind,0),true);
+  document.addEventListener('click',e=>{if(e.target?.closest?.('#dungeon,#dungeonBattleCard,#fightBtn'))setTimeout(bind,0)},true);
   window.addEventListener('pageshow',bind,{passive:true});
   document.addEventListener('visibilitychange',()=>{if(!document.hidden)bind()},{passive:true});
-  setInterval(schedule,1200);
+  /* V6.97: permanent dungeon template polling retired. */
   setTimeout(bind,0);setTimeout(bind,150);
 })();
 </script>
@@ -98231,10 +98217,10 @@ window.__V612_ANIMATION_RACE_FIX__=true;
     }).observe(strip,{childList:true,subtree:true});
   }
   function sync(){bindDungeonFx()}
-  document.addEventListener('click',()=>setTimeout(sync,0),true);
+  document.addEventListener('click',e=>{if(e.target?.closest?.('#dungeon,#battleStage'))setTimeout(sync,0)},true);
   window.addEventListener('pageshow',sync,{passive:true});
   document.addEventListener('visibilitychange',()=>{if(!document.hidden)sync()},{passive:true});
-  setInterval(sync,900);
+  /* V6.97: permanent animation finalizer polling retired. */
   setTimeout(sync,0);
 })();
 </script>
@@ -98304,7 +98290,7 @@ try{const base=window.v311PlayFight||(typeof v311PlayFight==='function'?v311Play
 async function questPreview(){const q={id:615,name:'Nebel über dem Gewächshaus',text:'Ein Quest-Gegner versperrt den Weg.',v310Elite:false};qReset();try{await (window.v311PlayFight||v311PlayFight)(q)}catch(e){console.error('V6.15 Quest preview',e)}}window.v615QuestVisualPreview=questPreview;
 function ensureQa(){const main=$('#systemtech .v4107-main')||$('#systemtech');if(!main||$('#v615QuestPreviewQa'))return;const panel=document.createElement('div');panel.id='v615QuestPreviewQa';panel.className='v4107-panel';panel.style.marginTop='14px';panel.innerHTML='<div style="display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap"><div><h3 style="margin:0;color:#f0d38f">⚔️ QUEST-VISUAL-QA</h3><div style="font-size:10px;color:#99ad99;line-height:1.45;margin-top:4px">Zeigt nur das neue Quest-Finale. Keine Belohnung, kein Dampf, kein Questfortschritt und kein Save.</div></div><button type="button" data-v615-quest-preview style="border:1px solid #6fd05d;border-radius:9px;background:linear-gradient(180deg,#4eaa43,#2b6f30);color:#071008;padding:8px 10px;font-weight:900">QUEST-VORSCHAU STARTEN</button></div>';const after=$('#v611PvpPreviewQa')||$('#v608AnimationQa')||$('#v606CombatQa');if(after?.parentNode)after.after(panel);else main.appendChild(panel)}
 document.addEventListener('click',e=>{if(e.target.closest?.('[data-v615-quest-preview]')){e.preventDefault();questPreview()}},{passive:false});const open=window.v4107OpenSystemtechnik;if(typeof open==='function'&&!open.__v615QuestQa){const w=function(){const r=open.apply(this,arguments);setTimeout(ensureQa,0);return r};w.__v615QuestQa=true;window.v4107OpenSystemtechnik=w;window.v4102OpenQA=w}
-function sync(){bindPvp();ensureQuest();ensureQa()}document.addEventListener('click',()=>setTimeout(sync,0),true);window.addEventListener('pageshow',sync,{passive:true});document.addEventListener('visibilitychange',()=>{if(!document.hidden)sync()},{passive:true});setInterval(sync,1000);setTimeout(sync,0)
+function sync(){bindPvp();ensureQuest();ensureQa()}document.addEventListener('click',e=>{if(e.target?.closest?.('#pvp,#quests,#systemtech,#v209PvpBattleOverlay'))setTimeout(sync,0)},true);window.addEventListener('pageshow',sync,{passive:true});document.addEventListener('visibilitychange',()=>{if(!document.hidden)sync()},{passive:true});/* V6.97: permanent shared-combat UI polling retired. */setTimeout(sync,0)
 })();
 </script>
 <!-- ===== /V6.15 ===== -->
@@ -100080,7 +100066,7 @@ function sync(){bindPvp();ensureQuest();ensureQa()}document.addEventListener('cl
  window.v636QuestDungeonPreview=()=>play({id:636,name:'Nebel über dem Gewächshaus',text:'Ein Quest-Gegner versperrt den Weg.',v310Elite:false});
  window.v634QuestDungeonPreview=window.v636QuestDungeonPreview;window.v625QuestVisualPreview=window.v636QuestDungeonPreview;window.v615QuestVisualPreview=window.v636QuestDungeonPreview;
  function ownPreviewButtons(){document.querySelectorAll('[data-v615-quest-preview]').forEach(b=>{b.removeAttribute('data-v615-quest-preview');b.setAttribute('data-v636-quest-preview','1')})}
- ownPreviewButtons();new MutationObserver(ownPreviewButtons).observe(document.body,{childList:true,subtree:true});
+ ownPreviewButtons();/* V6.97: global preview-button observer retired. */
  window.addEventListener('click',e=>{const b=e.target?.closest?.('[data-v636-quest-preview]');if(!b)return;e.preventDefault();e.stopImmediatePropagation();window.v636QuestDungeonPreview()},true);
 })();
 </script>
@@ -101062,8 +101048,8 @@ function sync(){bindPvp();ensureQuest();ensureQa()}document.addEventListener('cl
    el.style.setProperty('animation','v604SkillChip 1.55s cubic-bezier(.18,.8,.22,1) 0s 1 normal forwards running','important');
   });
  }
- new MutationObserver(sync).observe(document.body,{childList:true,subtree:true});
- document.addEventListener('click',()=>requestAnimationFrame(sync),true);
+ /* V6.97: global quest visual observer retired. */
+ document.addEventListener('click',e=>{if(e.target?.closest?.('#quests,#v636QuestDungeonCard'))requestAnimationFrame(sync)},true);
  window.addEventListener('pageshow',sync,{passive:true});setTimeout(sync,0);
 })();
 </script>
@@ -103297,7 +103283,7 @@ function bind(){
 document.addEventListener('click',e=>{
   if(e.target?.closest?.('#pvp,#v204FightBtn'))setTimeout(bind,0);
 },true);
-new MutationObserver(bind).observe(document.body,{childList:true,subtree:true});
+/* V6.97: body-wide PvP binding observer retired; page hooks remain. */
 window.addEventListener('pageshow',bind,{passive:true});
 setTimeout(bind,0);
 })();
@@ -105466,42 +105452,9 @@ if(root)new MutationObserver(schedule).observe(root,{childList:true,subtree:true
 'use strict';
 if(window.__V685_QUEST_DAMPF_FIX__)return;
 window.__V685_QUEST_DAMPF_FIX__=true;
-
-function paint(){
-  const res=document.querySelector('#quests .v4172-resource');
-  if(!res)return;
-
-  const cap=(typeof v271DampfCap==='function')
-    ? v271DampfCap()
-    : ((typeof v271DampfEventActive==='function' && v271DampfEventActive()) ? 300 : 100);
-
-  const current=Math.min(
-    cap,
-    Math.max(0,Math.floor(Number(s?.energy??s?.dampf??0)||0))
-  );
-
-  const first=res.firstElementChild;
-  if(first){
-    first.innerHTML=`💨 <b>${current}/${cap}</b> Dampf<br><small>Regeneriert täglich um 00:00 Uhr</small>`;
-  }
-}
-
-function schedule(){
-  requestAnimationFrame(paint);
-  setTimeout(paint,40);
-  setTimeout(paint,180);
-}
-
-document.addEventListener('DOMContentLoaded',schedule,{once:true});
-window.addEventListener('pageshow',schedule,{passive:true});
-document.addEventListener('click',e=>{
-  if(e.target?.closest?.('#quests,[data-nav="quests"]'))schedule();
-},true);
-
-const root=document.getElementById('quests');
-if(root)new MutationObserver(schedule).observe(root,{childList:true,subtree:true});
-
-[0,300,900,1800].forEach(ms=>setTimeout(schedule,ms));
+/* V6.97: actual quest renderer already uses v271DampfCap().
+   The old observer wrote innerHTML into the subtree it was observing and
+   could continuously retrigger itself. */
 })();
 </script>
 <!-- ===== /V6.85 QUEST DAMPF DISPLAY FIX ===== -->
@@ -106958,51 +106911,9 @@ body:has(#world.active){
 <script id="v690-world-wood-comic-runtime">
 (function(){
 'use strict';
-if(window.__V690_WORLD_WOOD_COMIC__)return;
 window.__V690_WORLD_WOOD_COMIC__=true;
-
-/* Keep the existing hero artwork, whose actual URL is declared in the old skin.
-   This copies the resolved background image into the new layered hero style. */
-function keepHeroArtwork(){
-  const hero=document.querySelector('#world.active .v366-hero');
-  if(!hero)return;
-  const old=getComputedStyle(hero).backgroundImage;
-  /* No runtime mutation if our final CSS is already painting a valid image. */
-  hero.dataset.v690Wood='1';
-}
-
-/* Repaint after the established v366 installer refreshes live values. */
-function refresh(){
-  try{
-    if(document.querySelector('#world.active') && typeof v085InstallWorld==='function'){
-      v085InstallWorld(true);
-    }
-  }catch(e){}
-  requestAnimationFrame(()=>{
-    keepHeroArtwork();
-    try{window.v488EnsureHomeLink?.()}catch(e){}
-  });
-}
-
-document.addEventListener('DOMContentLoaded',()=>setTimeout(refresh,40),{once:true});
-window.addEventListener('pageshow',()=>setTimeout(refresh,30),{passive:true});
-window.addEventListener('growlegends:account-ready',()=>setTimeout(refresh,120));
-
-/* If another late home painter replaces v366-world, restore the approved V6.90 structure. */
-const world=document.getElementById('world');
-if(world){
-  new MutationObserver(()=>{
-    const root=world.querySelector('.v366-world');
-    if(root && !root.classList.contains('v690-world')){
-      setTimeout(refresh,0);
-    }
-  }).observe(world,{childList:true});
-}
-
-[250,900,1800].forEach(ms=>setTimeout(()=>{
-  const root=document.querySelector('#world.active .v366-world');
-  if(root&&!root.classList.contains('v690-world'))refresh();
-},ms));
+/* V6.94: runtime observer/retry layer retired.
+   V6.90 visual CSS remains active; v366 is the only world renderer. */
 })();
 </script>
 <!-- ===== /V6.90 WELTSEITE HOLZ-COMIC REDESIGN ===== -->
@@ -107056,54 +106967,9 @@ if(world){
 <script id="v691-world-cleanup-runtime">
 (function(){
 'use strict';
-if(window.__V691_WORLD_RENDER_CLEANUP__)return;
 window.__V691_WORLD_RENDER_CLEANUP__=true;
-
-function normalizeDock(){
-  const root=document.querySelector('#world.active .v366-world');
-  if(!root)return;
-  const dock=root.querySelector('.v366-dock');
-  if(!dock)return;
-  const buttons=[...dock.querySelectorAll('button')];
-  if(buttons.length!==8)return;
-  const labels=[
-    'Welt','Inventar','Charakter','Händler','Gilde','Harz<br>Dealer','Freunde','Illegales<br>Buch'
-  ];
-  buttons.forEach((btn,i)=>{
-    const ico=btn.querySelector('.ico')?.outerHTML || '';
-    btn.innerHTML=ico+labels[i];
-  });
-}
-
-function refresh(){
-  try{
-    if(document.querySelector('#world.active') && typeof v085InstallWorld==='function'){
-      v085InstallWorld(true);
-    }
-  }catch(e){}
-  requestAnimationFrame(()=>{
-    normalizeDock();
-    try{window.v488EnsureHomeLink?.()}catch(e){}
-  });
-}
-
-document.addEventListener('DOMContentLoaded',()=>setTimeout(refresh,60),{once:true});
-window.addEventListener('pageshow',()=>setTimeout(refresh,40),{passive:true});
-window.addEventListener('growlegends:account-ready',()=>setTimeout(refresh,140));
-
-const world=document.getElementById('world');
-if(world){
-  new MutationObserver(()=>{
-    const root=world.querySelector('.v366-world');
-    if(root && !root.classList.contains('v690-world')){
-      setTimeout(refresh,0);
-    }else{
-      setTimeout(normalizeDock,0);
-    }
-  }).observe(world,{childList:true,subtree:true});
-}
-
-[300,900,1800,3200].forEach(ms=>setTimeout(refresh,ms));
+/* V6.94: retired old subtree observer.
+   Clean castle artwork and CSS remain active. */
 })();
 </script>
 <!-- ===== /V6.91 WORLD RENDER CLEANUP ===== -->
@@ -107204,161 +107070,9 @@ if(world){
 <script id="v692-world-hard-cleanup-runtime">
 (function(){
 'use strict';
-if(window.__V692_WORLD_HARD_CLEANUP__)return;
 window.__V692_WORLD_HARD_CLEANUP__=true;
-
-const DOCK_DEF=[
-  {go:'world',icon:'🌍',label:'Welt',active:true},
-  {go:'character',icon:'🎒',label:'Inventar'},
-  {go:'character',icon:'🛡️',label:'Charakter'},
-  {go:'shop',icon:'🏪',label:'Händler'},
-  {go:'guild',icon:'⚜️',label:'Gilde'},
-  {go:'harzDealer',icon:'💎',label:'Harz<br>Dealer'},
-  {go:'friends',icon:'👥',label:'Freunde'},
-  {book:true,icon:'📖',label:'Illegales<br>Buch'}
-];
-
-let cleaning=false;
-
-function bindDockButton(btn,def){
-  btn.type='button';
-  btn.removeAttribute('data-v341-harz-menu');
-  btn.removeAttribute('data-v337-harz-dealer');
-  btn.removeAttribute('data-v353-harz-dealer');
-  btn.removeAttribute('data-screen');
-  btn.removeAttribute('data-book');
-  btn.removeAttribute('data-go');
-
-  if(def.go)btn.dataset.go=def.go;
-  if(def.book)btn.dataset.book='1';
-  btn.classList.toggle('active',!!def.active);
-
-  btn.innerHTML=`<span class="ico">${def.icon}</span><span class="v692-label">${def.label}</span>`;
-
-  if(def.book){
-    btn.onclick=()=>{
-      try{if(typeof v106OpenBook==='function')v106OpenBook()}catch(e){}
-    };
-  }else{
-    btn.onclick=()=>{
-      try{
-        if(def.go==='harzDealer'&&typeof window.v322OpenDealer==='function')window.v322OpenDealer();
-        else if(def.go!=='world'&&typeof v032Go==='function')v032Go(def.go);
-      }catch(e){}
-    };
-  }
-}
-
-function normalizeDock(root){
-  let dock=root.querySelector('.v366-dock');
-  if(!dock)return;
-
-  /* Remove every legacy Dealer injection first. */
-  dock.querySelectorAll('[data-v341-harz-menu],[data-v337-harz-dealer],[data-v353-harz-dealer]').forEach(el=>el.remove());
-
-  let buttons=[...dock.querySelectorAll(':scope > button')];
-
-  /* Old heuristics sometimes inserted a plain ninth "Harz Dealer" button without a marker. */
-  if(buttons.length>8){
-    const native=buttons.find(b=>b.dataset.go==='harzDealer');
-    buttons.forEach(b=>{
-      if(buttons.length<=8)return;
-      const t=(b.textContent||'').replace(/\s+/g,' ').trim().toLowerCase();
-      if(b!==native && t.includes('harz') && t.includes('dealer')){
-        b.remove();
-        buttons=[...dock.querySelectorAll(':scope > button')];
-      }
-    });
-  }
-
-  /* If any old renderer still left the wrong count, rebuild ONLY the dock. */
-  buttons=[...dock.querySelectorAll(':scope > button')];
-  if(buttons.length!==8){
-    dock.innerHTML='';
-    DOCK_DEF.forEach(def=>{
-      const b=document.createElement('button');
-      bindDockButton(b,def);
-      dock.appendChild(b);
-    });
-    return;
-  }
-
-  buttons.forEach((b,i)=>bindDockButton(b,DOCK_DEF[i]));
-}
-
-function ensureForge(root){
-  let forge=root.querySelector('.v488-home-link');
-  if(!forge){
-    forge=document.createElement('button');
-    forge.type='button';
-    forge.className='v488-home-link';
-    forge.dataset.go='forge';
-    forge.innerHTML='<span class="left"><span class="ico">🔨🌿</span><span><b>Harzschmiede</b><small>Alte Ausrüstung zerlegen · prismatische Items schmieden</small></span></span><span class="go">›</span>';
-    const dock=root.querySelector('.v366-dock');
-    dock?.insertAdjacentElement('beforebegin',forge);
-  }
-  forge.onclick=()=>{
-    try{
-      if(typeof window.v488OpenForge==='function')window.v488OpenForge();
-      else if(typeof v032Go==='function')v032Go('forge');
-    }catch(e){}
-  };
-}
-
-function ensureGrowStatus(root){
-  let box=root.querySelector('#v492HomeGrowStatus');
-  if(!box){
-    box=document.createElement('div');
-    box.id='v492HomeGrowStatus';
-    box.className='v492-home-grow';
-    const footer=root.querySelector('.v690-footer');
-    footer?.insertAdjacentElement('beforebegin',box);
-  }
-  box.onclick=()=>{try{if(typeof v032Go==='function')v032Go('grow')}catch(e){}};
-
-  /* If V4.92 is available, let its own real grow-state painter update the box later.
-     Until then keep a safe current-value fallback. */
-  if(!box.innerHTML.trim()){
-    const plants=Array.isArray(s?.grow?.plants)?s.grow.plants.filter(Boolean).length:0;
-    box.innerHTML=`<b>🌱 Growroom · ${plants} Pflanze${plants===1?'':'n'} wachsen</b><small>Deine Pflanzen wachsen weiter, auch wenn du offline bist.</small>`;
-  }
-}
-
-function clean(){
-  if(cleaning)return;
-  const root=document.querySelector('#world.active .v366-world');
-  if(!root)return;
-  cleaning=true;
-  try{
-    normalizeDock(root);
-    ensureForge(root);
-    ensureGrowStatus(root);
-  }finally{
-    cleaning=false;
-  }
-}
-
-function refreshAndClean(){
-  try{
-    if(document.querySelector('#world.active')&&typeof v085InstallWorld==='function'){
-      v085InstallWorld(true);
-    }
-  }catch(e){}
-  requestAnimationFrame(clean);
-  setTimeout(clean,40);
-  setTimeout(clean,160);
-}
-
-document.addEventListener('DOMContentLoaded',()=>setTimeout(refreshAndClean,60),{once:true});
-window.addEventListener('pageshow',()=>setTimeout(refreshAndClean,40),{passive:true});
-window.addEventListener('growlegends:account-ready',()=>setTimeout(refreshAndClean,150));
-
-const world=document.getElementById('world');
-if(world){
-  new MutationObserver(()=>requestAnimationFrame(clean)).observe(world,{childList:true,subtree:true});
-}
-
-[300,900,1800,3200,5000].forEach(ms=>setTimeout(clean,ms));
+/* V6.94: retired old subtree observer and repeated dock rewrites.
+   V6.92 markup is now emitted directly by v366-world-reference-rebuild. */
 })();
 </script>
 <!-- ===== /V6.92 WELTSEITE ALT-RENDER HART BEREINIGT ===== -->
@@ -107374,6 +107088,78 @@ if(world){
 'use strict';
 window.__V699_PET_PERFORMANCE_REBUILD__=true;
 window.v699PetPerformanceInfo=()=>({cachedBonuses:true,petMutationObservers:false,pageRenderOnly:true,source:'uploaded Backup neu 10.9.zip'});
+})();
+</script>
+
+
+<script id="v6100-performance-consolidation">
+(function(){
+'use strict';
+if(window.__V6100_PERFORMANCE_CONSOLIDATION__)return;
+window.__V6100_PERFORMANCE_CONSOLIDATION__=true;
+
+let dockObs=null, observedDock=null;
+
+function normalizeDockLight(){
+  const dock=document.querySelector('#world .v366-world .v366-dock');
+  if(!dock)return;
+  let buttons=[...dock.querySelectorAll(':scope > button')];
+  if(buttons.length<=8)return;
+
+  const preferred=buttons.find(b=>b.dataset.go==='harzDealer');
+  buttons.forEach(b=>{
+    if(buttons.length<=8)return;
+    const txt=(b.textContent||'').replace(/\s+/g,' ').trim().toLowerCase();
+    const legacy=b.matches('[data-v341-harz-menu],[data-v337-harz-dealer],[data-v353-harz-dealer]');
+    const duplicate=b!==preferred && txt.includes('harz') && txt.includes('dealer');
+    if(legacy||duplicate){
+      b.remove();
+      buttons=[...dock.querySelectorAll(':scope > button')];
+    }
+  });
+
+  while(buttons.length>8){
+    buttons.at(-1)?.remove();
+    buttons=[...dock.querySelectorAll(':scope > button')];
+  }
+}
+
+function bindDock(){
+  const dock=document.querySelector('#world .v366-world .v366-dock');
+  if(!dock||dock===observedDock)return;
+  try{dockObs?.disconnect()}catch(_){}
+  observedDock=dock;
+  dockObs=new MutationObserver(()=>{
+    if(dock.children.length>8)requestAnimationFrame(normalizeDockLight);
+  });
+  dockObs.observe(dock,{childList:true});
+  normalizeDockLight();
+}
+
+document.addEventListener('DOMContentLoaded',()=>requestAnimationFrame(bindDock),{once:true});
+window.addEventListener('pageshow',()=>requestAnimationFrame(bindDock),{passive:true});
+window.addEventListener('growlegends:account-ready',()=>setTimeout(bindDock,100));
+
+try{
+  if(typeof v032Go==='function'&&!window.__v6100Go){
+    const base=v032Go;
+    v032Go=function(id){
+      const r=base.apply(this,arguments);
+      if(id==='world')requestAnimationFrame(bindDock);
+      return r;
+    };
+    try{window.v032Go=v032Go}catch(_){}
+    window.__v6100Go=true;
+  }
+}catch(_){}
+
+window.v6100PerformanceInfo=()=>({
+  optimizedPets:!!window.__V699_PET_PERFORMANCE_REBUILD__,
+  productionProfilerDisabled:window.__V4106_TECH__?.productionLite===true,
+  worldRepairObserversRetired:true,
+  forcedWorldRebuildsRetired:true,
+  globalBodyObserversRetired:true
+});
 })();
 </script>
 
