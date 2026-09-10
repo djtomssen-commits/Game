@@ -55939,7 +55939,7 @@ body:has(#world.active) .v280-harz-sub{display:none!important}
     bind(world);
   };
 
-  try{v085InstallWorld(true)}catch(e){console.error('V4.02 world install',e)}
+  try{v085InstallWorld(false)}catch(e){console.error('V4.02 world install',e)}
   function version(){document.querySelectorAll('.version').forEach(el=>el.textContent=V349_VERSION)}
   version();
   setTimeout(version,500);
@@ -56595,7 +56595,7 @@ body:has(#world.active) #v032MenuBtn{
   function v354RefreshWorld(){
     try{
       if(document.querySelector('#world')?.classList.contains('active') && typeof v085InstallWorld==='function'){
-        v085InstallWorld(true);
+        v085InstallWorld(false);
       }
     }catch(e){console.warn('V4.02 world refresh',e)}
   }
@@ -56653,7 +56653,7 @@ body:has(#world.active) #v032MenuBtn{
   function refreshWorld(){
     try{
       if(document.querySelector('#world')?.classList.contains('active') && typeof v085InstallWorld==='function'){
-        v085InstallWorld(true);
+        v085InstallWorld(false);
       }
     }catch(e){console.warn('V4.02 world refresh',e)}
   }
@@ -56714,7 +56714,7 @@ body:has(#world.active) #v032MenuBtn{
     preload();
     try{
       if(document.querySelector('#world')?.classList.contains('active') && typeof v085InstallWorld==='function'){
-        v085InstallWorld(true);
+        v085InstallWorld(false);
       }
     }catch(e){console.warn('V4.02 home avatar refresh',e)}
   }
@@ -58509,8 +58509,16 @@ html,body{
   function installWorld(force){
     const world=document.querySelector('#world');
     if(!world)return;
-    const sig=[playerName(),s?.level,s?.xp,s?.energy,s?.gold,s?.harzTaler,dungeonPos().d,dungeonPos().e,growReady(),events().map(x=>x.t).join('|'),ach().done].join('~');
-    if(!force && world.dataset.v366Sig===sig)return;
+    const sig=[
+      playerName(),s?.playerClass,s?.level,s?.xp,s?.energy,s?.gold,s?.harzTaler,
+      attr('staerke'),attr('ausdauer'),attr('geschick'),attr('intelligenz'),attr('glueck'),cp(),
+      dungeonPos().d,dungeonPos().e,growReady(),events().map(x=>x.t).join('|'),ach().done
+    ].join('~');
+
+    /* V6.94: "force" is intentionally ignored when the visible world is already current.
+       This stops old historical callers from rebuilding the whole page again and again. */
+    const current=world.querySelector(':scope > .v366-world.v690-world');
+    if(current && world.dataset.v366Sig===sig)return;
     world.dataset.v366Sig=sig;
     world.innerHTML=worldHtml();
     world.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>{const id=b.dataset.go;if(id!=='world')try{v032Go(id)}catch(e){}});
@@ -58526,7 +58534,7 @@ html,body{
   v032Go=function(id){
     const r=baseGo.apply(this,arguments);
     buildHeader();
-    if(id==='world')requestAnimationFrame(()=>installWorld(true));
+    if(id==='world')requestAnimationFrame(()=>installWorld(false));
     return r;
   };
 
@@ -58535,10 +58543,10 @@ html,body{
   }
 
   buildHeader();
-  installWorld(true);
+  installWorld(false);
   version();
-  document.addEventListener('DOMContentLoaded',()=>{buildHeader();installWorld(true);version()},{once:true});
-  setTimeout(()=>{buildHeader();installWorld(true);version()},400);
+  document.addEventListener('DOMContentLoaded',()=>{buildHeader();installWorld(false);version()},{once:true});
+  setTimeout(()=>{buildHeader();installWorld(false);version()},400);
 })();
 </script>
 
@@ -58632,7 +58640,7 @@ html,body{
 
     try{
       if(world && !world.querySelector(':scope > .v366-world') && typeof v085InstallWorld==='function'){
-        v085InstallWorld(true);
+        v085InstallWorld(false);
       }
     }catch(e){console.warn('V4.02 world repair',e)}
 
@@ -58726,7 +58734,7 @@ html,body{
 
     /* If still missing, ask the V4.02 installer to create it once. */
     if(!modern && typeof v085InstallWorld==='function'){
-      try{v085InstallWorld(true)}catch(e){console.warn('V4.02 install world',e)}
+      try{v085InstallWorld(false)}catch(e){console.warn('V4.02 install world',e)}
       modern=world.querySelector(':scope > .v366-world') || world.querySelector('.v366-world');
       if(modern && modern.parentElement!==world)world.insertBefore(modern,world.firstChild);
     }
@@ -59640,7 +59648,7 @@ body.v371-game-ui .app > header{
   function refresh(){
     try{
       if(document.querySelector('#world')?.classList.contains('active') && typeof v085InstallWorld==='function'){
-        v085InstallWorld(true);
+        v085InstallWorld(false);
       }
     }catch(e){}
     document.querySelectorAll(
@@ -71803,7 +71811,7 @@ html.v481-hidden *,html.v481-hidden *::before,html.v481-hidden *::after{animatio
     released=true;
     window.__V483_POWER_READY__=true;
     document.documentElement.classList.add('v483-power-ready');
-    try{if(typeof v085InstallWorld==='function'&&document.querySelector('#world')?.classList.contains('active'))v085InstallWorld(true)}catch(e){}
+    try{if(typeof v085InstallWorld==='function'&&document.querySelector('#world')?.classList.contains('active'))v085InstallWorld(false)}catch(e){}
     try{if(typeof v446PaintCombatPower==='function')v446PaintCombatPower()}catch(e){}
     try{if(typeof v448PaintPower==='function')v448PaintPower()}catch(e){}
     return true;
@@ -107437,51 +107445,9 @@ body:has(#world.active){
 <script id="v690-world-wood-comic-runtime">
 (function(){
 'use strict';
-if(window.__V690_WORLD_WOOD_COMIC__)return;
 window.__V690_WORLD_WOOD_COMIC__=true;
-
-/* Keep the existing hero artwork, whose actual URL is declared in the old skin.
-   This copies the resolved background image into the new layered hero style. */
-function keepHeroArtwork(){
-  const hero=document.querySelector('#world.active .v366-hero');
-  if(!hero)return;
-  const old=getComputedStyle(hero).backgroundImage;
-  /* No runtime mutation if our final CSS is already painting a valid image. */
-  hero.dataset.v690Wood='1';
-}
-
-/* Repaint after the established v366 installer refreshes live values. */
-function refresh(){
-  try{
-    if(document.querySelector('#world.active') && typeof v085InstallWorld==='function'){
-      v085InstallWorld(true);
-    }
-  }catch(e){}
-  requestAnimationFrame(()=>{
-    keepHeroArtwork();
-    try{window.v488EnsureHomeLink?.()}catch(e){}
-  });
-}
-
-document.addEventListener('DOMContentLoaded',()=>setTimeout(refresh,40),{once:true});
-window.addEventListener('pageshow',()=>setTimeout(refresh,30),{passive:true});
-window.addEventListener('growlegends:account-ready',()=>setTimeout(refresh,120));
-
-/* If another late home painter replaces v366-world, restore the approved V6.90 structure. */
-const world=document.getElementById('world');
-if(world){
-  new MutationObserver(()=>{
-    const root=world.querySelector('.v366-world');
-    if(root && !root.classList.contains('v690-world')){
-      setTimeout(refresh,0);
-    }
-  }).observe(world,{childList:true});
-}
-
-[250,900,1800].forEach(ms=>setTimeout(()=>{
-  const root=document.querySelector('#world.active .v366-world');
-  if(root&&!root.classList.contains('v690-world'))refresh();
-},ms));
+/* V6.94: runtime observer/retry layer retired.
+   V6.90 visual CSS remains active; v366 is the only world renderer. */
 })();
 </script>
 <!-- ===== /V6.90 WELTSEITE HOLZ-COMIC REDESIGN ===== -->
@@ -107535,54 +107501,9 @@ if(world){
 <script id="v691-world-cleanup-runtime">
 (function(){
 'use strict';
-if(window.__V691_WORLD_RENDER_CLEANUP__)return;
 window.__V691_WORLD_RENDER_CLEANUP__=true;
-
-function normalizeDock(){
-  const root=document.querySelector('#world.active .v366-world');
-  if(!root)return;
-  const dock=root.querySelector('.v366-dock');
-  if(!dock)return;
-  const buttons=[...dock.querySelectorAll('button')];
-  if(buttons.length!==8)return;
-  const labels=[
-    'Welt','Inventar','Charakter','Händler','Gilde','Harz<br>Dealer','Freunde','Illegales<br>Buch'
-  ];
-  buttons.forEach((btn,i)=>{
-    const ico=btn.querySelector('.ico')?.outerHTML || '';
-    btn.innerHTML=ico+labels[i];
-  });
-}
-
-function refresh(){
-  try{
-    if(document.querySelector('#world.active') && typeof v085InstallWorld==='function'){
-      v085InstallWorld(true);
-    }
-  }catch(e){}
-  requestAnimationFrame(()=>{
-    normalizeDock();
-    try{window.v488EnsureHomeLink?.()}catch(e){}
-  });
-}
-
-document.addEventListener('DOMContentLoaded',()=>setTimeout(refresh,60),{once:true});
-window.addEventListener('pageshow',()=>setTimeout(refresh,40),{passive:true});
-window.addEventListener('growlegends:account-ready',()=>setTimeout(refresh,140));
-
-const world=document.getElementById('world');
-if(world){
-  new MutationObserver(()=>{
-    const root=world.querySelector('.v366-world');
-    if(root && !root.classList.contains('v690-world')){
-      setTimeout(refresh,0);
-    }else{
-      setTimeout(normalizeDock,0);
-    }
-  }).observe(world,{childList:true,subtree:true});
-}
-
-[300,900,1800,3200].forEach(ms=>setTimeout(refresh,ms));
+/* V6.94: retired old subtree observer.
+   Clean castle artwork and CSS remain active. */
 })();
 </script>
 <!-- ===== /V6.91 WORLD RENDER CLEANUP ===== -->
@@ -107683,161 +107604,9 @@ if(world){
 <script id="v692-world-hard-cleanup-runtime">
 (function(){
 'use strict';
-if(window.__V692_WORLD_HARD_CLEANUP__)return;
 window.__V692_WORLD_HARD_CLEANUP__=true;
-
-const DOCK_DEF=[
-  {go:'world',icon:'🌍',label:'Welt',active:true},
-  {go:'character',icon:'🎒',label:'Inventar'},
-  {go:'character',icon:'🛡️',label:'Charakter'},
-  {go:'shop',icon:'🏪',label:'Händler'},
-  {go:'guild',icon:'⚜️',label:'Gilde'},
-  {go:'harzDealer',icon:'💎',label:'Harz<br>Dealer'},
-  {go:'friends',icon:'👥',label:'Freunde'},
-  {book:true,icon:'📖',label:'Illegales<br>Buch'}
-];
-
-let cleaning=false;
-
-function bindDockButton(btn,def){
-  btn.type='button';
-  btn.removeAttribute('data-v341-harz-menu');
-  btn.removeAttribute('data-v337-harz-dealer');
-  btn.removeAttribute('data-v353-harz-dealer');
-  btn.removeAttribute('data-screen');
-  btn.removeAttribute('data-book');
-  btn.removeAttribute('data-go');
-
-  if(def.go)btn.dataset.go=def.go;
-  if(def.book)btn.dataset.book='1';
-  btn.classList.toggle('active',!!def.active);
-
-  btn.innerHTML=`<span class="ico">${def.icon}</span><span class="v692-label">${def.label}</span>`;
-
-  if(def.book){
-    btn.onclick=()=>{
-      try{if(typeof v106OpenBook==='function')v106OpenBook()}catch(e){}
-    };
-  }else{
-    btn.onclick=()=>{
-      try{
-        if(def.go==='harzDealer'&&typeof window.v322OpenDealer==='function')window.v322OpenDealer();
-        else if(def.go!=='world'&&typeof v032Go==='function')v032Go(def.go);
-      }catch(e){}
-    };
-  }
-}
-
-function normalizeDock(root){
-  let dock=root.querySelector('.v366-dock');
-  if(!dock)return;
-
-  /* Remove every legacy Dealer injection first. */
-  dock.querySelectorAll('[data-v341-harz-menu],[data-v337-harz-dealer],[data-v353-harz-dealer]').forEach(el=>el.remove());
-
-  let buttons=[...dock.querySelectorAll(':scope > button')];
-
-  /* Old heuristics sometimes inserted a plain ninth "Harz Dealer" button without a marker. */
-  if(buttons.length>8){
-    const native=buttons.find(b=>b.dataset.go==='harzDealer');
-    buttons.forEach(b=>{
-      if(buttons.length<=8)return;
-      const t=(b.textContent||'').replace(/\s+/g,' ').trim().toLowerCase();
-      if(b!==native && t.includes('harz') && t.includes('dealer')){
-        b.remove();
-        buttons=[...dock.querySelectorAll(':scope > button')];
-      }
-    });
-  }
-
-  /* If any old renderer still left the wrong count, rebuild ONLY the dock. */
-  buttons=[...dock.querySelectorAll(':scope > button')];
-  if(buttons.length!==8){
-    dock.innerHTML='';
-    DOCK_DEF.forEach(def=>{
-      const b=document.createElement('button');
-      bindDockButton(b,def);
-      dock.appendChild(b);
-    });
-    return;
-  }
-
-  buttons.forEach((b,i)=>bindDockButton(b,DOCK_DEF[i]));
-}
-
-function ensureForge(root){
-  let forge=root.querySelector('.v488-home-link');
-  if(!forge){
-    forge=document.createElement('button');
-    forge.type='button';
-    forge.className='v488-home-link';
-    forge.dataset.go='forge';
-    forge.innerHTML='<span class="left"><span class="ico">🔨🌿</span><span><b>Harzschmiede</b><small>Alte Ausrüstung zerlegen · prismatische Items schmieden</small></span></span><span class="go">›</span>';
-    const dock=root.querySelector('.v366-dock');
-    dock?.insertAdjacentElement('beforebegin',forge);
-  }
-  forge.onclick=()=>{
-    try{
-      if(typeof window.v488OpenForge==='function')window.v488OpenForge();
-      else if(typeof v032Go==='function')v032Go('forge');
-    }catch(e){}
-  };
-}
-
-function ensureGrowStatus(root){
-  let box=root.querySelector('#v492HomeGrowStatus');
-  if(!box){
-    box=document.createElement('div');
-    box.id='v492HomeGrowStatus';
-    box.className='v492-home-grow';
-    const footer=root.querySelector('.v690-footer');
-    footer?.insertAdjacentElement('beforebegin',box);
-  }
-  box.onclick=()=>{try{if(typeof v032Go==='function')v032Go('grow')}catch(e){}};
-
-  /* If V4.92 is available, let its own real grow-state painter update the box later.
-     Until then keep a safe current-value fallback. */
-  if(!box.innerHTML.trim()){
-    const plants=Array.isArray(s?.grow?.plants)?s.grow.plants.filter(Boolean).length:0;
-    box.innerHTML=`<b>🌱 Growroom · ${plants} Pflanze${plants===1?'':'n'} wachsen</b><small>Deine Pflanzen wachsen weiter, auch wenn du offline bist.</small>`;
-  }
-}
-
-function clean(){
-  if(cleaning)return;
-  const root=document.querySelector('#world.active .v366-world');
-  if(!root)return;
-  cleaning=true;
-  try{
-    normalizeDock(root);
-    ensureForge(root);
-    ensureGrowStatus(root);
-  }finally{
-    cleaning=false;
-  }
-}
-
-function refreshAndClean(){
-  try{
-    if(document.querySelector('#world.active')&&typeof v085InstallWorld==='function'){
-      v085InstallWorld(true);
-    }
-  }catch(e){}
-  requestAnimationFrame(clean);
-  setTimeout(clean,40);
-  setTimeout(clean,160);
-}
-
-document.addEventListener('DOMContentLoaded',()=>setTimeout(refreshAndClean,60),{once:true});
-window.addEventListener('pageshow',()=>setTimeout(refreshAndClean,40),{passive:true});
-window.addEventListener('growlegends:account-ready',()=>setTimeout(refreshAndClean,150));
-
-const world=document.getElementById('world');
-if(world){
-  new MutationObserver(()=>requestAnimationFrame(clean)).observe(world,{childList:true,subtree:true});
-}
-
-[300,900,1800,3200,5000].forEach(ms=>setTimeout(clean,ms));
+/* V6.94: retired old subtree observer and repeated dock rewrites.
+   V6.92 markup is now emitted directly by v366-world-reference-rebuild. */
 })();
 </script>
 <!-- ===== /V6.92 WELTSEITE ALT-RENDER HART BEREINIGT ===== -->
@@ -107953,7 +107722,7 @@ function renderWorldFast(){
     V6.90/V6.92 already consolidated the world into v085InstallWorld().
     One rebuild is enough; the V6.92 cleanup observer then normalizes the dock.
   */
-  if(typeof v085InstallWorld==='function')call(v085InstallWorld,true);
+  if(typeof v085InstallWorld==='function')call(v085InstallWorld,false);
 }
 
 function renderGuildFast(){
@@ -108194,6 +107963,99 @@ requestAnimationFrame(()=>{
 })();
 </script>
 <!-- ===== /V6.93 PERFORMANCE ===== -->
+
+
+<!-- ===== V6.94 PERFORMANCE HOTFIX: WORLD RENDER LOOP STOP ===== -->
+<script id="v694-performance-hotfix-core">
+(function(){
+'use strict';
+if(window.__V694_PERFORMANCE_HOTFIX__)return;
+window.__V694_PERFORMANCE_HOTFIX__=true;
+
+let worldObserver=null;
+let dockObserver=null;
+let observedDock=null;
+let worldRebuilds=0;
+let dockCleanups=0;
+
+function removeLegacyDockExtras(){
+  const dock=document.querySelector('#world .v366-world .v366-dock');
+  if(!dock)return;
+
+  let buttons=[...dock.querySelectorAll(':scope > button')];
+  if(buttons.length<=8)return;
+
+  const preferred=buttons.find(b=>b.dataset.go==='harzDealer');
+
+  buttons.forEach(b=>{
+    if(buttons.length<=8)return;
+    const txt=(b.textContent||'').replace(/\s+/g,' ').trim().toLowerCase();
+    const marked=b.matches('[data-v341-harz-menu],[data-v337-harz-dealer],[data-v353-harz-dealer]');
+    const duplicateDealer=b!==preferred && txt.includes('harz') && txt.includes('dealer');
+    if(marked||duplicateDealer){
+      b.remove();
+      dockCleanups++;
+      buttons=[...dock.querySelectorAll(':scope > button')];
+    }
+  });
+
+  /* Safety: worldHtml itself owns exactly eight cells. Remove only trailing
+     accidental appenders if a legacy injector still created more. */
+  while(buttons.length>8){
+    buttons[buttons.length-1].remove();
+    dockCleanups++;
+    buttons=[...dock.querySelectorAll(':scope > button')];
+  }
+}
+
+function observeDock(){
+  const dock=document.querySelector('#world .v366-world .v366-dock');
+  if(!dock || dock===observedDock)return;
+
+  try{dockObserver?.disconnect()}catch(_){}
+  observedDock=dock;
+
+  dockObserver=new MutationObserver(()=>{
+    if(dock.children.length>8)requestAnimationFrame(removeLegacyDockExtras);
+  });
+  dockObserver.observe(dock,{childList:true});
+  removeLegacyDockExtras();
+}
+
+function onWorldRootChange(){
+  worldRebuilds++;
+  requestAnimationFrame(observeDock);
+}
+
+const world=document.getElementById('world');
+if(world){
+  worldObserver=new MutationObserver(onWorldRootChange);
+  /* Direct children only. No subtree=true. */
+  worldObserver.observe(world,{childList:true});
+}
+
+document.addEventListener('DOMContentLoaded',observeDock,{once:true});
+window.addEventListener('pageshow',observeDock,{passive:true});
+window.addEventListener('growlegends:account-ready',()=>setTimeout(observeDock,100));
+
+/* Extend the existing diagnostics with homepage-loop information. */
+const baseDiag=window.v693PerformanceDiagnostics;
+window.v694PerformanceDiagnostics=function(){
+  let base={};
+  try{base=typeof baseDiag==='function'?baseDiag():{}}catch(_){}
+  return {
+    ...base,
+    worldRootMutations:worldRebuilds,
+    legacyDockCleanups:dockCleanups,
+    worldSubtreeObserversRetired:true,
+    forcedWorldRebuildsRetired:true
+  };
+};
+
+requestAnimationFrame(observeDock);
+})();
+</script>
+<!-- ===== /V6.94 PERFORMANCE HOTFIX ===== -->
 
 </body>
 </html>
