@@ -85843,7 +85843,7 @@ html.v495-level-syncing #v420LevelUpOverlay{
   content:'';position:absolute;inset:3px;border:1px solid rgba(218,177,95,.13);border-radius:3px;pointer-events:none
 }
 #v510HeroRoot #slot-head{border-color:#a16e35!important}
-#v510HeroRoot #slot-weapon,#v510HeroRoot #slot-ring{border-color:#2c8bd0!important}
+#v510HeroRoot #slot-weapon,#v510HeroRoot #slot-weapon2,#v510HeroRoot #slot-ring{border-color:#2c8bd0!important}
 #v510HeroRoot #slot-body,#v510HeroRoot #slot-amulet{border-color:#914fc9!important}
 #v510HeroRoot #slot-boots{border-color:#779083!important}
 #v510HeroRoot .slot-icon{
@@ -86081,7 +86081,7 @@ html.v495-level-syncing #v420LevelUpOverlay{
       const stats=root.querySelector('.v510-stats');
       const footer=root.querySelector('.v510-footer');
 
-      ['slot-head','slot-weapon','slot-ring'].forEach(id=>move(left,document.getElementById(id)));
+      ['slot-head','slot-weapon','slot-weapon2','slot-ring'].forEach(id=>move(left,document.getElementById(id)));
       ['slot-body','slot-boots','slot-amulet'].forEach(id=>move(right,document.getElementById(id)));
 
       const scene=document.querySelector('#character .avatar-scene');
@@ -86167,7 +86167,7 @@ html.v495-level-syncing #v420LevelUpOverlay{
   box-shadow:inset 0 0 18px #000d,0 3px 8px #000b!important;
 }
 #v510HeroRoot #slot-head{border-color:#d8953f!important}
-#v510HeroRoot #slot-weapon,#v510HeroRoot #slot-ring{border-color:#2d9be8!important}
+#v510HeroRoot #slot-weapon,#v510HeroRoot #slot-weapon2,#v510HeroRoot #slot-ring{border-color:#2d9be8!important}
 #v510HeroRoot #slot-body,#v510HeroRoot #slot-amulet{border-color:#a94fe3!important}
 #v510HeroRoot #slot-boots{border-color:#778a7c!important}
 #v510HeroRoot .slot-icon{
@@ -87139,7 +87139,7 @@ html.v495-level-syncing #v420LevelUpOverlay{
     return Number.isFinite(n)&&n>0?Math.round(n):Math.max(1,Number(s?.level)||1);
   }
   function decorateSlots(){
-    const map={head:'slot-head',weapon:'slot-weapon',ring:'slot-ring',body:'slot-body',boots:'slot-boots',amulet:'slot-amulet'};
+    const map={head:'slot-head',weapon:'slot-weapon',weapon2:'slot-weapon2',ring:'slot-ring',body:'slot-body',boots:'slot-boots',amulet:'slot-amulet'};
     Object.entries(map).forEach(([key,id])=>{
       const el=document.getElementById(id); if(!el)return;
       const it=s?.equipment?.[key]||null;
@@ -104629,6 +104629,406 @@ body.v650-native-safe .app section#friends.v673-friends .v673-crew-footer{
 }
 </style>
 <!-- ===== /V6.80 NEBEL-CREW FOOTER FLOW FIX ===== -->
+
+
+<!-- ===== V6.81 EDELSTEINE + ROLLEN VERKAUFEN ===== -->
+<style id="v681-material-sell-css">
+#character #v030Materials .v546-material-item .v681-material-value{
+  margin:6px 0 5px!important;
+  padding:5px 6px!important;
+  border:1px solid rgba(218,174,83,.28)!important;
+  border-radius:8px!important;
+  background:rgba(13,10,5,.55)!important;
+  color:#d8c68d!important;
+  font-size:7px!important;
+  line-height:1.25!important;
+  text-align:center!important;
+}
+#character #v030Materials .v546-material-item .v681-material-value b{
+  color:#f3cf64!important;
+}
+#character #v030Materials .v546-material-item .v681-material-actions{
+  display:grid!important;
+  grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr)!important;
+  gap:5px!important;
+  width:100%!important;
+  margin-top:4px!important;
+}
+#character #v030Materials .v546-material-item .v681-material-actions .v546-use{
+  width:100%!important;
+  min-width:0!important;
+  margin:0!important;
+}
+#character #v030Materials .v546-material-item .v681-sell{
+  width:100%!important;
+  min-width:0!important;
+  margin:0!important;
+  padding:7px 5px!important;
+  border:1px solid #9b762e!important;
+  border-radius:9px!important;
+  background:linear-gradient(180deg,#51401c,#251b0c)!important;
+  color:#f0d46f!important;
+  font-size:6.7px!important;
+  font-weight:1000!important;
+  box-shadow:inset 0 1px rgba(255,255,255,.06),0 0 10px rgba(215,165,59,.07)!important;
+}
+#character #v030Materials .v546-material-item .v681-sell:active{
+  transform:scale(.98)!important;
+}
+@media(max-width:560px){
+  #character #v030Materials .v546-material-item .v681-material-actions{
+    grid-template-columns:1fr!important;
+  }
+  #character #v030Materials .v546-material-item .v681-sell{
+    min-height:30px!important;
+  }
+}
+</style>
+
+<script id="v681-material-sell-core">
+(function(){
+'use strict';
+if(window.__V681_MATERIAL_SELL__)return;
+window.__V681_MATERIAL_SELL__=true;
+
+const SALE_RATE=.40; // Händler kauft Materialien für 40 % des Kaufwerts zurück.
+
+function qNorm(m){
+  const q=String(m?.quality||'').toLowerCase();
+  if(['gray','green','blue','purple','orange','cyan'].includes(q))return q;
+  const r=String(m?.rarity||'').toLowerCase();
+  if(/myst|cyan/.test(r))return'cyan';
+  if(/legend|orange/.test(r))return'orange';
+  if(/epic|purple/.test(r))return'purple';
+  if(/rare|blue/.test(r))return'blue';
+  if(/green|uncommon/.test(r))return'green';
+  return'gray';
+}
+
+function purchaseValue(m){
+  const stored=Math.round(Number(m?.price)||0);
+  if(stored>0)return stored;
+
+  // Fallback für sehr alte/gedroppte Materialien ohne gespeicherten Preis.
+  const q=qNorm(m);
+  const v=Math.max(1,Number(m?.value)||1);
+
+  if(m?.type==='gem'){
+    const mult={gray:1,green:1.45,blue:2.45,purple:4.4,orange:6.2,cyan:8.2}[q]||1;
+    return Math.max(10,Math.round((75+v*38)*mult));
+  }
+  if(m?.type==='scroll'){
+    const mult={gray:1,green:1.5,blue:2.6,purple:4.7,orange:6.5,cyan:8.5}[q]||1;
+    return Math.max(10,Math.round((95+v*48)*mult));
+  }
+  return 10;
+}
+
+function sellValue(m){
+  const buy=purchaseValue(m);
+  // Immer klar unter Einkaufspreis, auch bei sehr kleinen Werten.
+  return Math.max(1,Math.min(buy-1,Math.floor(buy*SALE_RATE)));
+}
+
+window.v681MaterialPurchaseValue=purchaseValue;
+window.v681MaterialSellValue=sellValue;
+
+window.v681SellMaterial=async function(index){
+  index=Number(index);
+  if(!Number.isInteger(index)||index<0)return;
+
+  const m=s?.materials?.[index];
+  if(!m||!['gem','scroll'].includes(m.type))return;
+
+  const buy=purchaseValue(m);
+  const sell=sellValue(m);
+  const type=m.type==='gem'?'Edelstein':'Verzauberungsrolle';
+
+  const ok=typeof v115Confirm==='function'
+    ? await v115Confirm(
+        `${m.name}\n\nKaufwert: ${buy} Gold\nHändler zahlt: ${sell} Gold (40 %)\n\n${type} wirklich verkaufen?`,
+        {title:`${type} verkaufen?`,type:'warn',okText:`Für ${sell} Gold verkaufen`}
+      )
+    : confirm(`${m.name} für ${sell} Gold verkaufen?`);
+
+  if(!ok)return;
+
+  const current=s?.materials?.[index];
+  if(!current)return;
+
+  s.gold=(Number(s.gold)||0)+sell;
+  s.materials.splice(index,1);
+
+  try{persist()}catch(e){
+    try{localStorage.setItem(KEY,JSON.stringify(s))}catch(_){}
+  }
+
+  try{
+    if(typeof v063Toast==='function'){
+      v063Toast('💰 Material verkauft','success',`${m.name} · +${sell} Gold`);
+    }
+  }catch(e){}
+
+  requestAnimationFrame(()=>{
+    try{window.v546RenderMaterials?.()}catch(e){}
+    try{window.v546ArrangeMaterials?.()}catch(e){}
+  });
+};
+
+function enhance(){
+  const panel=document.querySelector('#character #v030Materials');
+  if(!panel)return;
+
+  panel.querySelectorAll('.v546-material-item').forEach(card=>{
+    const use=card.querySelector('.v546-use[data-index]');
+    if(!use)return;
+
+    const index=Number(use.dataset.index);
+    const m=s?.materials?.[index];
+    if(!m||!['gem','scroll'].includes(m.type))return;
+
+    // Render läuft häufig neu; Werte deshalb jedes Mal aktuell setzen.
+    let value=card.querySelector('.v681-material-value');
+    if(!value){
+      value=document.createElement('div');
+      value.className='v681-material-value';
+      const bonus=card.querySelector('.v546-material-bonus');
+      if(bonus)bonus.insertAdjacentElement('afterend',value);
+      else card.appendChild(value);
+    }
+
+    const buy=purchaseValue(m);
+    const sell=sellValue(m);
+    value.innerHTML=`Kaufwert <b>${buy}</b> · Verkauf <b>💰 ${sell}</b>`;
+
+    let actions=card.querySelector('.v681-material-actions');
+    if(!actions){
+      actions=document.createElement('div');
+      actions.className='v681-material-actions';
+      use.insertAdjacentElement('beforebegin',actions);
+      actions.appendChild(use);
+    }else if(use.parentElement!==actions){
+      actions.insertBefore(use,actions.firstChild);
+    }
+
+    let btn=actions.querySelector('.v681-sell');
+    if(!btn){
+      btn=document.createElement('button');
+      btn.type='button';
+      btn.className='btn v681-sell';
+      actions.appendChild(btn);
+    }
+    btn.dataset.index=String(index);
+    btn.innerHTML=`💰 Verkaufen<br>${sell} Gold`;
+    btn.onclick=e=>{
+      e.preventDefault();
+      e.stopPropagation();
+      window.v681SellMaterial(btn.dataset.index);
+    };
+  });
+}
+
+// Current material renderer is replaced in V5.46 and also rerenders itself from
+// filters/tabs. Observe only this panel so sell controls survive every rerender.
+let scheduled=false;
+function schedule(){
+  if(scheduled)return;
+  scheduled=true;
+  requestAnimationFrame(()=>{scheduled=false;enhance()});
+}
+
+function observe(){
+  const panel=document.querySelector('#character #v030Materials');
+  if(!panel)return false;
+  if(!panel.__v681Observed){
+    new MutationObserver(schedule).observe(panel,{childList:true,subtree:true});
+    panel.__v681Observed=true;
+  }
+  enhance();
+  return true;
+}
+
+document.addEventListener('click',e=>{
+  if(e.target?.closest?.('#v459CharacterTabs [data-tab="materials"],#v514HeroTabs [data-tab="materials"],#v546MaterialsHeader')){
+    setTimeout(()=>{observe();enhance()},30);
+  }
+},true);
+
+document.addEventListener('DOMContentLoaded',()=>{observe();enhance()},{once:true});
+window.addEventListener('pageshow',()=>{observe();enhance()},{passive:true});
+[0,120,400,900,1800].forEach(ms=>setTimeout(()=>{observe();enhance()},ms));
+})();
+</script>
+<!-- ===== /V6.81 EDELSTEINE + ROLLEN VERKAUFEN ===== -->
+
+
+<!-- ===== V6.82 FROST-TODESRITTER ZWEITE WAFFE FIX ===== -->
+<style id="v682-frost-second-weapon-css">
+/* Zweiter Waffenplatz ausschließlich für Bekiffter Frost-Todesritter */
+#character:not(.v4153-frost) #v510HeroRoot #slot-weapon2{
+  display:none!important;
+}
+#character.v4153-frost #v510HeroRoot #slot-weapon2{
+  display:flex!important;
+  --v514-rarity:#2d9be8;
+  border-color:var(--v514-rarity)!important;
+  box-shadow:
+    inset 0 0 15px rgba(0,0,0,.82),
+    0 0 9px rgba(55,166,235,.25),
+    0 4px 8px rgba(0,0,0,.62)!important;
+}
+
+/* Auf dem neuen Heldenlayout sind die Slot-Namen ausgeblendet.
+   I / II macht trotzdem sofort klar, welcher Waffenplatz welcher ist. */
+#character.v4153-frost #v510HeroRoot #slot-weapon::before,
+#character.v4153-frost #v510HeroRoot #slot-weapon2::before{
+  position:absolute!important;
+  z-index:8!important;
+  top:3px!important;
+  left:4px!important;
+  min-width:14px!important;
+  height:14px!important;
+  display:grid!important;
+  place-items:center!important;
+  padding:0 3px!important;
+  border:1px solid rgba(118,202,255,.72)!important;
+  border-radius:5px!important;
+  background:rgba(4,18,27,.90)!important;
+  color:#bce9ff!important;
+  font-size:6.5px!important;
+  line-height:1!important;
+  font-weight:1000!important;
+  text-shadow:0 0 5px rgba(77,188,255,.65)!important;
+  pointer-events:none!important;
+}
+#character.v4153-frost #v510HeroRoot #slot-weapon::before{content:"I"!important}
+#character.v4153-frost #v510HeroRoot #slot-weapon2::before{content:"II"!important}
+
+/* Vier linke Slots sollen auf Mobile nicht unnötig riesig auseinanderlaufen. */
+@media(max-width:430px){
+  #character.v4153-frost.v514-reference-hero #v510HeroRoot .v510-left{
+    gap:3px!important;
+  }
+}
+</style>
+
+<script id="v682-frost-second-weapon-core">
+(function(){
+'use strict';
+if(window.__V682_FROST_SECOND_WEAPON__)return;
+window.__V682_FROST_SECOND_WEAPON__=true;
+
+function rarityColor(it){
+  const q=String(it?.quality||it?.rarity||it?.grade||'').toLowerCase();
+  if(/myst|cyan|türkis|tuerkis/.test(q))return'#31e7e2';
+  if(/legend|orange/.test(q))return'#f0a13a';
+  if(/epic|episch|purple|lila/.test(q))return'#b75be8';
+  if(/rare|selten|blue|blau/.test(q))return'#36a7ef';
+  if(/gewöhn|gewoehn|green|grün|gruen/.test(q))return'#64c969';
+  return'#8b9790';
+}
+function itemLevel(it){
+  if(!it)return 0;
+  const n=Number(it.level??it.dropLevel??it.itemLevel??it.reqLevel??it.sourceLevel??0);
+  return Number.isFinite(n)&&n>0?Math.round(n):Math.max(1,Number(s?.level)||1);
+}
+
+function paintFallback(slot){
+  const it=s?.equipment?.weapon2||null;
+  let art=it?.icon||'⚔️';
+  try{
+    const u=window.v466ItemArtUri?.(it)||'';
+    if(u)art=`<img class="v466-item-art v470-slot-art" src="${u}" alt="${String(it?.name||'Waffe II').replace(/["<>]/g,'')}">`;
+  }catch(e){}
+  slot.className='slot'+(it?.rarity?(' '+it.rarity):'');
+  slot.innerHTML=`<div class="slot-icon">${art}</div><div class="slot-label">Waffe II · 10 % Attribute</div><div class="slot-name">${it?it.name:'Leer'}</div>${it?`<div class="tiny">${typeof itemBonus==='function'?itemBonus(it):''}</div><div class="slot-actions"><button class="mini-btn" onclick="unequip('weapon2')">Ablegen</button><button class="mini-btn" onclick="sellEquipped('weapon2')">💰 ${typeof sellValue==='function'?sellValue(it):0}</button></div>`:''}`;
+  slot.onclick=e=>{if(e.target.closest('button'))return;try{v123OpenItem('weapon2')}catch(_){}};
+}
+
+function sync(){
+  const ch=document.getElementById('character');
+  if(!ch)return;
+  const frost=String(s?.playerClass||'')==='frost';
+  ch.classList.toggle('v4153-frost',frost);
+
+  if(!frost){
+    document.getElementById('slot-weapon2')?.remove();
+    return;
+  }
+
+  s.equipment=(s.equipment&&typeof s.equipment==='object')?s.equipment:{};
+  if(!Object.prototype.hasOwnProperty.call(s.equipment,'weapon2'))s.equipment.weapon2=null;
+
+  let slot=document.getElementById('slot-weapon2');
+
+  /* Erst den bereits vorhandenen Frost-Renderer nutzen, damit Item, Buttons
+     und bestehende Zweiklingen-Regeln nicht dupliziert werden. */
+  if(!slot){
+    try{window.v4153RefreshFrostUi?.('v6.82-slot-create')}catch(e){}
+    slot=document.getElementById('slot-weapon2');
+  }
+
+  if(!slot){
+    slot=document.createElement('div');
+    slot.id='slot-weapon2';
+    slot.className='slot';
+    paintFallback(slot);
+  }else if(!slot.querySelector('.slot-icon')){
+    paintFallback(slot);
+  }
+
+  /* Entscheidender Fix: V5.10 hatte nur Kopf/Waffe/Ring ins neue sichtbare
+     Heldenquartier verschoben. Waffe II blieb im ausgeblendeten alten Grid. */
+  const left=document.querySelector('#v510HeroRoot .v510-left');
+  const main=document.getElementById('slot-weapon');
+  if(left){
+    if(main&&main.parentElement===left){
+      if(slot.parentElement!==left || slot.previousElementSibling!==main){
+        main.insertAdjacentElement('afterend',slot);
+      }
+    }else if(slot.parentElement!==left){
+      left.appendChild(slot);
+    }
+  }
+
+  const it=s?.equipment?.weapon2||null;
+  slot.style.setProperty('--v514-rarity',rarityColor(it));
+
+  let lvl=slot.querySelector('.v514-slot-level');
+  if(it){
+    if(!lvl){lvl=document.createElement('div');lvl.className='v514-slot-level';slot.appendChild(lvl)}
+    lvl.textContent=`Lv.${itemLevel(it)}`;
+  }else{
+    lvl?.remove();
+  }
+
+  const mainLabel=document.getElementById('slot-weapon')?.querySelector('.slot-label');
+  if(mainLabel)mainLabel.textContent='Waffe I · 100 %';
+  const offLabel=slot.querySelector('.slot-label');
+  if(offLabel)offLabel.textContent='Waffe II · 10 % Attribute';
+}
+
+let queued=false;
+function schedule(){
+  if(queued)return;
+  queued=true;
+  requestAnimationFrame(()=>{queued=false;sync()});
+}
+
+document.addEventListener('DOMContentLoaded',schedule,{once:true});
+window.addEventListener('pageshow',schedule,{passive:true});
+window.addEventListener('growlegends:account-ready',()=>{schedule();setTimeout(schedule,120);setTimeout(schedule,500)});
+document.addEventListener('click',e=>{
+  if(e.target?.closest?.('[data-nav="character"],#character,#v514HeroTabs,#v459CharacterTabs'))setTimeout(schedule,0);
+},true);
+
+const ch=document.getElementById('character');
+if(ch)new MutationObserver(schedule).observe(ch,{childList:true,subtree:true});
+
+[0,80,220,600,1400].forEach(ms=>setTimeout(schedule,ms));
+})();
+</script>
+<!-- ===== /V6.82 FROST-TODESRITTER ZWEITE WAFFE FIX ===== -->
 
 </body>
 </html>
