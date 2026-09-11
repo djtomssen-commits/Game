@@ -2684,17 +2684,48 @@ function makeClassLoot(classId,source='normal'){
  const bonus=Object.fromEntries(Object.entries(base.bonus).map(([k,v])=>[k,v+meta.mult+boost]));
  return {...base,price:0,name:`${meta.label}: ${base.name} [Lv.${s.level}]`,quality:q,rarity:meta.cls,dropLevel:s.level,bonus};
 }
-function makeSetItem(classId,slot){
- classId=normalizedClassId(classId);
- const set=classSets[classId]||classSets.grower,base=setBases.find(x=>x.slot===slot)||setBases[0];
+function v6170SetEnchant(it){return it?.enchant||(Array.isArray(it?.enchants)?it.enchants[0]:null)||null}
+function v6170SetNativeBonus(it){
+ const combat=['staerke','geschick','intelligenz','ausdauer','glueck'],out={};
+ const gem=it?.gem,e=v6170SetEnchant(it);
+ combat.forEach(k=>{let v=Number(it?.bonus?.[k])||0;if(gem?.stat===k)v-=Number(gem.value)||0;if(k==='glueck'&&e?.effect==='luck')v-=Number(e.value)||0;if(v)out[k]=Math.max(0,Math.round(v*100)/100)});
+ return out;
+}
+function v6170SetNativeTotal(it){try{if(typeof window.v447NativeTotal==='function')return Math.max(0,Number(window.v447NativeTotal(it))||0)}catch(_){}return Object.values(v6170SetNativeBonus(it)).reduce((n,v)=>n+(Number(v)||0),0)}
+function v6170IsMystic(it){return String(it?.quality||'').toLowerCase()==='cyan'||/myth|myst/i.test(String(it?.rarity||''))}
+function v6170SetClass(id){return (typeof classSets!=='undefined'&&classSets[id])?id:'grower'}
+function v6170SetPrimary(classId){return classId==='scout'?'geschick':classId==='bruiser'?'intelligenz':'staerke'}
+function v6170SetIcon(classId,slot){
+ const m={grower:{head:'🪖',weapon:'🪓',body:'🛡️',boots:'🥾',ring:'💍',amulet:'📿'},scout:{head:'🥷',weapon:'🏹',body:'🥼',boots:'👟',ring:'💍',amulet:'📿'},bruiser:{head:'🧙',weapon:'🔮',body:'🥋',boots:'👢',ring:'💠',amulet:'🧿'}};
+ return m[classId]?.[slot]||({head:'🪖',weapon:'⚔️',body:'🛡️',boots:'🥾',ring:'💍',amulet:'📿'}[slot]||'🧩');
+}
+function v6170BaseSetBonus(classId,slot,level){
+ classId=v6170SetClass(classId);level=Math.max(1,Math.floor(Number(level)||1));
  const statMap={
   grower:{head:{ausdauer:4},weapon:{staerke:6},body:{ausdauer:6},boots:{staerke:3,ausdauer:2},ring:{staerke:3},amulet:{ausdauer:3,glueck:1}},
   bruiser:{head:{intelligenz:4,glueck:2},weapon:{intelligenz:6},body:{intelligenz:4,ausdauer:2},boots:{intelligenz:3,glueck:2},ring:{intelligenz:5},amulet:{intelligenz:3,glueck:2}},
   scout:{head:{geschick:4},weapon:{geschick:6},body:{ausdauer:3,geschick:3},boots:{geschick:5},ring:{glueck:3,geschick:2},amulet:{geschick:3,glueck:2}}
  };
- const levelBoost=Math.max(0,Math.floor((s.level-1)/3));
- const bonus=Object.fromEntries(Object.entries(statMap[classId][slot]).map(([k,v])=>[k,v+levelBoost]));
- return {id:`set_${classId}_${slot}_${Date.now()}_${Math.random()}`,classId,name:`${set.name}: ${base.label} [Lv.${s.level}]`,slot,icon:setSlotIcon(slot,classId),price:0,quality:'purple',rarity:'epic',setId:classId,setName:set.name,dropLevel:s.level,bonus};
+ const src=statMap[classId]?.[slot]||{[v6170SetPrimary(classId)]:4};
+ const levelBoost=Math.max(0,Math.floor((level-1)/3));
+ return Object.fromEntries(Object.entries(src).map(([k,v])=>[k,Math.max(0,Number(v)||0)+levelBoost]));
+}
+function v6170GuaranteeSetBonus(bonus,classId,slot,competitor){
+ const out={...bonus};
+ if(!competitor||competitor?.setId||v6170IsMystic(competitor))return out;
+ const oldBase=v6170SetNativeTotal(competitor),target=Math.ceil(oldBase*1.08),now=Object.values(out).reduce((n,v)=>n+(Number(v)||0),0);
+ let missing=Math.max(0,target-now);if(!missing)return out;
+ const pk=v6170SetPrimary(classId),primaryAdd=Math.ceil(missing*.72),hpAdd=missing-primaryAdd;
+ out[pk]=(Number(out[pk])||0)+primaryAdd;
+ if(hpAdd>0)out.ausdauer=(Number(out.ausdauer)||0)+hpAdd;
+ return out;
+}
+function v6170BuildSetBonus(classId,slot,level,competitor){return v6170GuaranteeSetBonus(v6170BaseSetBonus(classId,slot,level),v6170SetClass(classId),slot,competitor)}
+function makeSetItem(classId,slot){
+ classId=v6170SetClass(classId);
+ const set=classSets[classId]||classSets.grower,base=setBases.find(x=>x.slot===slot)||setBases[0],level=Math.max(1,Math.floor(Number(s?.level)||1));
+ const competitor=s?.equipment?.[slot]||null,bonus=v6170BuildSetBonus(classId,slot,level,competitor);
+ const minNativeTotal=Object.values(bonus).reduce((n,v)=>n+(Number(v)||0),0);return {id:`set_${classId}_${slot}_${Date.now()}_${Math.random()}`,classId,name:`${set.name}: ${base.label} [Lv.${level}]`,slot,icon:v6170SetIcon(classId,slot),price:0,quality:'purple',rarity:'epic',setId:classId,setName:set.name,dropLevel:level,bonus,v6170Guaranteed:true,v6170ForgeLevel:level,v6170MinNativeTotal:minNativeTotal};
 }
 function equippedSetCount(classId){return Object.values(s.equipment).filter(it=>it?.setId===classId).length}
 function setBonusValue(kind){
@@ -67675,7 +67706,7 @@ create index if not exists player_messages_sender_idx on public.player_messages(
   }
   function targetNativeTotal(it,pattern){
     const lvl=Math.max(1,Math.floor(Number(it?.dropLevel)||Number(s?.level)||1));
-    return Math.max(1,Math.round(slotBaseBudget(it,pattern)+(lvl-1)*LEVEL_GAIN+RARITY_BONUS[q(it)]));
+    const curve=Math.max(1,Math.round(slotBaseBudget(it,pattern)+(lvl-1)*LEVEL_GAIN+RARITY_BONUS[q(it)]));const guaranteed=Math.max(0,Math.round(Number(it?.v6170MinNativeTotal)||0));return Math.max(curve,guaranteed);
   }
   function distribute(pattern,total){
     const rows=Object.entries(pattern||{}).filter(([k,v])=>COMBAT.includes(k)&&(Number(v)||0)>0);
@@ -71542,31 +71573,16 @@ create index if not exists player_messages_sender_idx on public.player_messages(
       return {state:'worse',mark:'⛔',label:'FALSCHE KLASSE',diff:null,reason:'Nicht für deine Klasse',newTotal:pointTotal(it),oldTotal:0,baseDiff:0};
     }
     const old=s?.equipment?.[it.slot]||null;
+    const nt=nativeTotal(it);
     if(!old){
-      return {state:'free',mark:'▲',label:'FREIER SLOT',diff:null,reason:'Direkte Verbesserung',newTotal:pointTotal(it),oldTotal:0,baseDiff:nativeTotal(it)};
+      return {state:'free',mark:'▲',label:'FREIER SLOT',diff:null,reason:'Grundwerte ohne Stein/Rolle',newTotal:nt,oldTotal:0,baseDiff:nt};
     }
     normalize(old);
-    const nt=pointTotal(it),ot=pointTotal(old),nb=nativeTotal(it),ob=nativeTotal(old);
-    const diff=Math.round((nt-ot)*100)/100,baseDiff=Math.round((nb-ob)*100)/100;
-    const newAdd=addonTotal(it),oldAdd=addonTotal(old);
-    let state='same',mark='◆',label='GLEICH',reason='Gleiche Attributwerte';
-    if(diff>0){
-      state='better';mark='▲';label='BESSER';
-      if(baseDiff>0&&newAdd>oldAdd)reason='Bessere Basis + Extras';
-      else if(baseDiff>0)reason='Bessere Grundwerte';
-      else if(newAdd>oldAdd)reason='Besser durch Stein/Stat-Rolle';
-      else reason='Insgesamt bessere Werte';
-    }else if(diff<0){
-      state='worse';mark='▼';label='SCHLECHTER';
-      if(baseDiff<0&&newAdd<oldAdd)reason='Schlechtere Basis + Extras';
-      else if(baseDiff<0)reason='Schlechtere Grundwerte';
-      else if(newAdd<oldAdd)reason='Angelegt gewinnt durch Extras';
-      else reason='Insgesamt schwächere Werte';
-    }else if(baseDiff!==0){
-      reason=baseDiff>0?'Bessere Basis, Extras gleichen aus':'Schwächere Basis, Extras gleichen aus';
-    }else if(specialCount(it)||specialCount(old)){
-      reason='Attributwerte gleich · Spezialeffekte separat';
-    }
+    const ot=nativeTotal(old),diff=Math.round((nt-ot)*100)/100,baseDiff=diff;
+    let state='same',mark='◆',label='GLEICH',reason='Gleiche Grundwerte · Stein/Rolle separat';
+    if(diff>0){state='better';mark='▲';label='BESSER';reason='Bessere Grundwerte · Stein/Rolle nicht eingerechnet'}
+    else if(diff<0){state='worse';mark='▼';label='SCHLECHTER';reason='Schlechtere Grundwerte · Stein/Rolle nicht eingerechnet'}
+    else if(specialCount(it)||specialCount(old)){reason='Grundwerte gleich · Extras/Spezialeffekte separat'}
     return {state,mark,label,diff,reason,newTotal:nt,oldTotal:ot,baseDiff};
   }
   window.v470CompareItem=compare;
@@ -71577,7 +71593,7 @@ create index if not exists player_messages_sender_idx on public.player_messages(
     const css=c.state==='free'?'empty':c.state;
     if(c.state==='free')return `<div class="${cls} ${css}">▲ FREIER SLOT · Verbesserung</div>`;
     if(c.diff==null)return `<div class="${cls} ${css}">${esc(c.label)} · ${esc(c.reason)}</div>`;
-    return `<div class="${cls} ${css}">${c.mark} ${c.label} · ${signed(c.diff)} Gesamtwerte</div>`;
+    return `<div class="${cls} ${css}">${c.mark} ${c.label} · ${signed(c.diff)} Grundwerte</div>`;
   }
   try{v090ComparisonHtml=function(it){return compactComparisonHtml(it,'v090-shop-compare')};window.v090ComparisonHtml=v090ComparisonHtml}catch(e){}
   try{v089ShopComparison=function(it){return compactComparisonHtml(it,'v089-shop-compare')};window.v089ShopComparison=v089ShopComparison}catch(e){}
@@ -71587,7 +71603,7 @@ create index if not exists player_messages_sender_idx on public.player_messages(
     if(c.state==='free')return '<span class="better">▲ Freier Slot · direkte Verbesserung</span>';
     if(c.diff==null)return `<span class="worse">⛔ ${esc(c.reason)}</span>`;
     const css=c.state==='better'?'better':c.state==='worse'?'worse':'same';
-    return `<span class="${css}">${c.mark} ${esc(c.label)} · ${signed(c.diff)} Gesamtwerte · ${esc(c.reason)}</span>`;
+    return `<span class="${css}">${c.mark} ${esc(c.label)} · ${signed(c.diff)} Grundwerte · ${esc(c.reason)}</span>`;
   };
   try{comparison=detailedComparison;window.comparison=detailedComparison}catch(e){}
 
@@ -74045,6 +74061,7 @@ html.v481-hidden *,html.v481-hidden *::before,html.v481-hidden *::after{animatio
  function estimatedGold(p){const d=SEEDS[p.seed]||SEEDS.moss,q=qualityFrom(p),lvl=Math.max(1,Math.min(300,Number(s.level)||1)),qMul=QMULT[q]||1,pot=(typeof potYield==='function'?potYield():1),lvlMul=.75+lvl*.0032,base=d.buy>0?Number(d.buy||0):Number(d.sell||0)*.25;let value=base+Number(d.sell||0)*.12*qMul*lvlMul*pot*masteryYield();if(p.mutation==='golden')value*=1.20;return Math.max(0,Math.round(value))}
  function xpFor(p){const d=SEEDS[p.seed]||SEEDS.moss,q=qualityFrom(p),lvl=Math.max(1,Math.min(300,Number(s.level)||1)),mins=Math.max(1,Number(d.growMs||60000)/60000),qMul=({C:.75,B:.85,A:1,S:1.10,'S+':1.20})[q]||1,rMul=({common:1,uncommon:1.05,rare:1.10,epic:1.15,legendary:1.25})[d.rarity]||1;return Math.max(1,Math.round(mins*(.8+lvl*.004)*qMul*rMul))}
  function fragFor(p){const q=qualityFrom(p),rar=SEEDS[p.seed]?.rarity||'common',grade={C:0,B:0,A:1,S:2,'S+':4}[q]||0,rarity={common:0,uncommon:0,rare:1,epic:2,legendary:3}[rar]||0,mutation=p.mutation?1:0,prism=p.mutation==='prismatic'?3:0;return Math.max(0,grade+rarity+mutation+prism)}
+ window.v492GrowFragmentYield=fragFor;
  function className(id){return id==='grower'?'Bud-Barbar':id==='scout'?'Blatt-Schütze':id==='bruiser'?'Bong-Magier':id==='frost'?'Bekiffter Frost-Todesritter':'Alle Klassen'}
  function affinityStars(d){return d.affinity==='all'?'⭐⭐⭐⭐':d.affinity===s.playerClass?'⭐⭐⭐⭐⭐':'⭐⭐⭐'}
  function statsText(st){const map={primaryPct:'Hauptattribut',hpPct:'Leben',damagePct:'Schaden',critChance:'Crit-Chance',critDamage:'Crit-Schaden',damageReduce:'Schadensreduktion',wuchtChance:'Wucht-Chance',wuchtDamage:'Wucht-Schaden',doubleChance:'Doppeltreffer',dodgeChance:'Ausweichen',lifeSteal:'Lebensraub',armorPen:'Durchdringung',dotChance:'Rauch/DOT-Chance',critChainChance:'Crit-Kette'};return Object.entries(st||{}).filter(([,v])=>Number(v)).map(([k,v])=>`+${Math.round(Number(v)*1000)/10}% ${map[k]||k}`).join(' · ')}
@@ -78872,7 +78889,7 @@ html:not(.v4142-systemtech-admin) #v4102QaButton{display:none!important}
 
  /* ---------- Manual equip / comparison ---------- */
  function normalizeGear(it){try{window.v447ApplyItemCurve?.(it)}catch(e){}try{v122NormalizeSocketState?.(it)}catch(e){}return it}
- function score(it){if(!it)return-1;normalizeGear(it);return COMBAT.reduce((n,k)=>n+(Number(it?.bonus?.[k])||0),0)}
+ function score(it){if(!it)return-1;normalizeGear(it);const gem=it?.gem,e=it?.enchant||(Array.isArray(it?.enchants)?it.enchants[0]:null);return COMBAT.reduce((n,k)=>{let v=Number(it?.bonus?.[k])||0;if(gem?.stat===k)v-=Number(gem.value)||0;if(k==='glueck'&&e?.effect==='luck')v-=Number(e.value)||0;return n+Math.max(0,v)},0)}
  function chooseWeaponTarget(){if(!s.equipment.weapon)return'weapon';if(!s.equipment.weapon2)return'weapon2';return score(s.equipment.weapon2)<score(s.equipment.weapon)?'weapon2':'weapon'}
  try{
   if(typeof window.equip==='function'&&!window.__v4153Equip){
@@ -110739,13 +110756,18 @@ async function craftSet(slot){
    if(liveFragments<c.fragments)return toast('Samenfragmente nicht mehr ausreichend','warn',`${fmt(liveFragments)}/${fmt(c.fragments)}`);
    if(liveGold<c.gold)return toast('Gold nicht mehr ausreichend','warn',`${fmt(liveGold)}/${fmt(c.gold)}`);
    z.essences[c.recipe]=haveEss-c.essence;s.v488Forge=(s.v488Forge&&typeof s.v488Forge==='object')?s.v488Forge:{};s.v488Forge.fragments=liveFragments-c.fragments;s.gold=liveGold-c.gold;
-   let item=null;try{item=makeSetItem(currentClass(),slot)}catch(e){console.warn('V4.164 makeSetItem',e)}
+   let item=null;
+   try{
+     window.__GL_CLASSSET_FORGE_CRAFT__=true;
+     item=makeSetItem(currentClass(),slot);
+   }catch(e){console.warn('V4.164 makeSetItem',e)}
+   finally{window.__GL_CLASSSET_FORGE_CRAFT__=false}
    if(!item){z.essences[c.recipe]=haveEss;s.v488Forge.fragments+=c.fragments;s.gold+=c.gold;return toast('Herstellung fehlgeschlagen','error','Set-Item konnte nicht erzeugt werden. Kosten wurden zurückgegeben.')}
    item.v6130Crafted=true;item.v6130GeneticRecipe=c.recipe;s.inventory=Array.isArray(s.inventory)?s.inventory:[];s.inventory.push(item);save();try{v069SyncCurrencies?.()}catch(_){ }try{v441PaintResources?.()}catch(_){ }try{render?.()}catch(_){ }toast('🧩 Klassenset hergestellt!','success',`${item.icon||'🎁'} ${item.name} · im Inventar`);setTimeout(()=>{decorateForge();openSetPanel()},30)
  }finally{v6130CraftBusy=false}
 }
 function setCard(slot){const c=slotCost(slot),r=RECIPES[c.recipe],z=state(),e=Math.max(0,Number(z?.essences?.[c.recipe])||0),b=buds(),f=fragments(),g=Math.max(0,Number(s?.gold)||0),unlock=b>=c.buds,ok=unlock&&e>=c.essence&&f>=c.fragments&&g>=c.gold,slotVisual=setSlotVisual(slot);return `<div class="v6130-set-card ${unlock?'unlocked':''}"><div class="top"><div class="ico">${slotVisual}</div><div><h4>${esc(c.label)}</h4><small>${esc(r.name)}-Rezept</small></div></div><div class="recipe">🧬 ${c.essence}× ${esc(r.essence)}<br>⚔️ Freischaltung ab ${fmt(c.buds)} PvP-Buds · <b>Buds werden nicht verbraucht.</b></div><div class="v6130-costs"><div class="v6130-cost ${e>=c.essence?'ok':'bad'}">🧬 Essenz<b>${e}/${c.essence}</b></div><div class="v6130-cost ${f>=c.fragments?'ok':'bad'}">💠 Fragmente<b>${fmt(f)}/${fmt(c.fragments)}</b></div><div class="v6130-cost ${g>=c.gold?'ok':'bad'}">🪙 Gold<b>${fmt(g)}/${fmt(c.gold)}</b></div><div class="v6130-cost ${unlock?'ok':'bad'}">⚔️ PvP-Buds<b>${fmt(b)}/${fmt(c.buds)}</b></div></div><button type="button" data-v6130-craft="${slot}" ${ok?'':'disabled'}>${unlock?'Set-Teil herstellen':'PvP-Rezept gesperrt'}</button></div>`}
-function panelHtml(){const si=setInfo(),bon=si.bonuses||{},z=state();return `<div class="v6130-set-head"><h3>🧩 ${esc(si.name)} · Klassenset</h3><p>GEZIELT HERSTELLEN · GENETIK + SCHMIEDE + PVP</p><div class="v6130-set-bonuses">${Object.values(bon).map(x=>`<span>${esc(x)}</span>`).join('')}</div></div><div class="v6130-set-res"><div><small>⚔️ PvP-Buds</small><b>${fmt(buds())}</b></div><div><small>💠 Samenfragmente</small><b>${fmt(fragments())}</b></div><div><small>🧩 Set getragen</small><b>${equippedSet()}/6</b></div></div><div class="v6130-set-grid">${Object.keys(SLOT_CFG).map(setCard).join('')}</div><div class="v6130-note"><b>Balance:</b> Klassenset-Teile bleiben epische Set-Items. Ihre Stärke entsteht vor allem über die bestehenden 2/4/6-Setboni. Mystische Gegenstände bleiben weiterhin exklusiv für den mystischen Boss. Die Gold- und Fragmentkosten steigen in 50-Level-Stufen mit deinem Charakterlevel.</div>`}
+function panelHtml(){const si=setInfo(),bon=si.bonuses||{},z=state();return `<div class="v6130-set-head"><h3>🧩 ${esc(si.name)} · Klassenset</h3><p>GEZIELT HERSTELLEN · GENETIK + SCHMIEDE + PVP</p><div class="v6130-set-bonuses">${Object.values(bon).map(x=>`<span>${esc(x)}</span>`).join('')}</div></div><div class="v6130-set-res"><div><small>⚔️ PvP-Buds</small><b>${fmt(buds())}</b></div><div><small>💠 Samenfragmente</small><b>${fmt(fragments())}</b></div><div><small>🧩 Set getragen</small><b>${equippedSet()}/6</b></div></div><div class="v6130-set-grid">${Object.keys(SLOT_CFG).map(setCard).join('')}</div><div class="v6130-note"><b>Exklusiv in der Harzschmiede:</b> Fertige Klassenset-Teile droppen nicht mehr zufällig aus Quests, Dungeons oder PvP. Aktivitäten können selten zusätzliche Samenfragmente liefern; die passende Genetik-Essenz und PvP-Freischaltung bleiben Pflicht. Mystische Gegenstände bleiben weiterhin exklusiv für den mystischen Boss. Die Gold- und Fragmentkosten steigen in 50-Level-Stufen mit deinem Charakterlevel.</div>`}
 function openSetPanel(){const body=document.querySelector('#forge .v667-forge-body');if(!body)return;body.classList.add('v6130-set-mode');let p=body.querySelector('#v6130ClassSetPanel');if(!p){p=document.createElement('div');p.id='v6130ClassSetPanel';body.appendChild(p)}p.innerHTML=panelHtml();body.querySelectorAll('.v667-tab').forEach(x=>x.classList.toggle('active',x.classList.contains('v6130-set-tab')))}
 function renderSetIfOpen(){const body=document.querySelector('#forge .v667-forge-body');if(body?.classList.contains('v6130-set-mode'))openSetPanel()}
 function decorateForge(){const body=document.querySelector('#forge .v667-forge-body'),tabs=body?.querySelector('.v667-tabs');if(!body||!tabs)return;if(!tabs.querySelector('.v6130-set-tab')){const b=document.createElement('button');b.type='button';b.className='v667-tab v6130-set-tab';b.dataset.v6130Settab='1';b.innerHTML='<span class="ic">🧩</span><span>KLASSENSET<small>Genetik · PvP · Fragmente</small></span>';tabs.appendChild(b)}}
@@ -110850,6 +110872,12 @@ function state(){if(typeof s==='undefined'||!s)return null;growState();s.grow.v6
 function save(cloud=true){try{persist(false)}catch(_){try{localStorage.setItem(KEY,JSON.stringify(s))}catch(__){}}if(cloud)try{if(typeof v075WriteCloudSave==='function')setTimeout(()=>v075WriteCloudSave(false),0)}catch(_){} }
 function toast(t,type='success',d=''){try{return v063Toast(t,type,d)}catch(_){} }
 function quality(p){const n=Array.isArray(p?.care)?p.care.filter(Boolean).length:0;return ['C','B','A','S','S+'][Math.min(4,n)]}
+function harvestFragmentYield(p){
+ try{if(typeof window.v492GrowFragmentYield==='function')return Math.max(0,Number(window.v492GrowFragmentYield(p))||0)}catch(_){}
+ const q=quality(p),rar=seed(p?.seed)?.rarity||'common';
+ const grade={C:0,B:0,A:1,S:2,'S+':4}[q]||0,rarity={common:0,uncommon:0,rare:1,epic:2,legendary:3}[rar]||0,mutation=p?.mutation?1:0,prism=p?.mutation==='prismatic'?3:0;
+ return Math.max(0,grade+rarity+mutation+prism);
+}
 function known(id){const d=seed(id);if(!d)return false;const g=growState();return Number(g.seeds?.[id])>0||!!g.v492?.discovered?.[id]||Number(d.buy)>0||HYBRIDS.includes(id)&&Number(g.v6130?.crosses?.[Object.keys(g.v6130?.crosses||{}).find(k=>k&&Number(g.v6130.crosses[k])>0)])>0}
 function availableCount(id){const stock=Math.max(0,Number(s?.grow?.seeds?.[id])||0),growing=Array.isArray(s?.grow?.plants)?s.grow.plants.filter(p=>p&&p.seed===id).length:0;return stock+growing}
 function standardCandidates(tier){let ids=STANDARD.filter(id=>seed(id)&&(availableCount(id)>0||Number(seed(id)?.buy)>0));if(!ids.length)ids=['moss','lime','jack'].filter(id=>seed(id));if(tier==='easy')return ids.filter(id=>['common','uncommon'].includes(seed(id)?.rarity)||Number(seed(id)?.buy)>0).length?ids.filter(id=>['common','uncommon'].includes(seed(id)?.rarity)||Number(seed(id)?.buy)>0):ids;if(tier==='medium')return ids.filter(id=>['uncommon','rare','epic'].includes(seed(id)?.rarity)).length?ids.filter(id=>['uncommon','rare','epic'].includes(seed(id)?.rarity)):ids;return ids.filter(id=>['rare','epic','legendary'].includes(seed(id)?.rarity)).length?ids.filter(id=>['rare','epic','legendary'].includes(seed(id)?.rarity)):ids}
@@ -110889,7 +110917,7 @@ function rewardText(arr){return (arr||[]).map(x=>x.type==='gold'?`🪙 ${fmt(x.a
 function freshContract(tier,used,rewardUsed,usedTypes=new Set()){const z=state(),recent=new Set(z?.history||[]);for(let i=0;i<90;i++){const c=makeTask(tier),s0=sig(c);if(!used.has(s0)&&!recent.has(s0)&&!usedTypes.has(c.type)){used.add(s0);usedTypes.add(c.type);c.reward=buildReward(tier,rewardUsed);return c}}for(let i=0;i<45;i++){const c=makeTask(tier),s0=sig(c);if(!used.has(s0)&&!recent.has(s0)){used.add(s0);usedTypes.add(c.type);c.reward=buildReward(tier,rewardUsed);return c}}for(let i=0;i<30;i++){const c=makeTask(tier),s0=sig(c);if(!used.has(s0)){used.add(s0);usedTypes.add(c.type);c.reward=buildReward(tier,rewardUsed);return c}}const c=makeTask(tier);usedTypes.add(c.type);c.reward=buildReward(tier,rewardUsed);return c}
 function rotateIfNeeded(force=false){const z=state();if(!z)return false;const key=berlinKey();if(!force&&z.dayKey===key&&z.contracts.length===6)return false;const used=new Set(),usedTypes=new Set(),rewardUsed=new Set(),tiers=['easy','easy','medium','medium',Math.random()<.28?'legendary':'hard',Math.random()<.42?'hard':'medium'];const old=z.contracts||[];old.forEach(c=>{const s0=sig(c);if(s0)z.history.push(s0)});z.history=z.history.slice(-36);z.contracts=tiers.map(t=>freshContract(t,used,rewardUsed,usedTypes));z.dayKey=key;z.rerollsLeft=1;z.lastRotateAt=Date.now();save(false);return true}
 function contractPct(c){return Math.max(0,Math.min(100,Math.round((Number(c.progress)||0)/Math.max(1,Number(c.target)||1)*100)))}
-function processHarvest(plants){rotateIfNeeded();const z=state();if(!z||!Array.isArray(plants)||!plants.length)return;let changed=false;for(const c of z.contracts){if(!c||c.claimed||c.completed)continue;let add=0;if(c.type==='care')add=plants.reduce((n,p)=>n+(Array.isArray(p?.care)?p.care.filter(Boolean).length:0),0);else if(c.type==='fragments')add=plants.reduce((n,p)=>{try{return n+(typeof fragFor==='function'?Number(fragFor(p))||0:0)}catch(_){return n}},0);else if(c.type==='diversity'){c.seenSeeds=Array.isArray(c.seenSeeds)?c.seenSeeds:[];for(const p of plants){if(!p?.seed||QR[quality(p)]<(QR[c.minQ]||0))continue;if(!c.seenSeeds.includes(p.seed)){c.seenSeeds.push(p.seed);changed=true}}c.progress=Math.min(c.target,c.seenSeeds.length);if(c.progress>=c.target&&!c.completed){c.completed=true;z.completedTotal++;changed=true;toast('📋 Grow-Auftrag geschafft','success',c.title)}continue}else{for(const p of plants){if(!p)continue;const q=quality(p),okQ=QR[q]>=(QR[c.minQ]||0);if(c.type==='harvest_any'&&okQ)add++;else if(c.type==='quality'&&okQ)add++;else if(c.type==='specific'&&p.seed===c.seed&&okQ)add++;else if(c.type==='perfect'&&q==='S+')add++;else if(c.type==='mutation'&&!!p.mutation)add++;else if(c.type==='mutated_quality'&&!!p.mutation&&QR[q]>=QR.S)add++;else if(c.type==='hybrid_any'&&HYBRIDS.includes(p.seed)&&QR[q]>=QR.S)add++;else if(c.type==='hybrid_specific'&&p.seed===c.seed&&okQ)add++}}
+function processHarvest(plants){rotateIfNeeded();const z=state();if(!z||!Array.isArray(plants)||!plants.length)return;let changed=false;for(const c of z.contracts){if(!c||c.claimed||c.completed)continue;let add=0;if(c.type==='care')add=plants.reduce((n,p)=>n+(Array.isArray(p?.care)?p.care.filter(Boolean).length:0),0);else if(c.type==='fragments')add=plants.reduce((n,p)=>n+harvestFragmentYield(p),0);else if(c.type==='diversity'){c.seenSeeds=Array.isArray(c.seenSeeds)?c.seenSeeds:[];for(const p of plants){if(!p?.seed||QR[quality(p)]<(QR[c.minQ]||0))continue;if(!c.seenSeeds.includes(p.seed)){c.seenSeeds.push(p.seed);changed=true}}c.progress=Math.min(c.target,c.seenSeeds.length);if(c.progress>=c.target&&!c.completed){c.completed=true;z.completedTotal++;changed=true;toast('📋 Grow-Auftrag geschafft','success',c.title)}continue}else{for(const p of plants){if(!p)continue;const q=quality(p),okQ=QR[q]>=(QR[c.minQ]||0);if(c.type==='harvest_any'&&okQ)add++;else if(c.type==='quality'&&okQ)add++;else if(c.type==='specific'&&p.seed===c.seed&&okQ)add++;else if(c.type==='perfect'&&q==='S+')add++;else if(c.type==='mutation'&&!!p.mutation)add++;else if(c.type==='mutated_quality'&&!!p.mutation&&QR[q]>=QR.S)add++;else if(c.type==='hybrid_any'&&HYBRIDS.includes(p.seed)&&QR[q]>=QR.S)add++;else if(c.type==='hybrid_specific'&&p.seed===c.seed&&okQ)add++}}
  if(add>0){c.progress=Math.min(c.target,(Number(c.progress)||0)+add);changed=true;if(c.progress>=c.target&&!c.completed){c.completed=true;z.completedTotal++;toast('📋 Grow-Auftrag geschafft','success',`${c.title} · Belohnung abholbereit`)}}}
  if(changed){save();renderIfOpen();decorateGrow();try{v106CheckAchievements?.()}catch(_){}}
 }
@@ -111266,5 +111294,103 @@ window.v6163QA=()=>({version:V.label,active,tabbar:!!document.querySelector('#gr
 })();
 </script>
 <!-- ===== /Play Store Step 2 ===== -->
+
+
+
+<!-- ===== V4.166 Klassenset Garantie + Aufwertung ===== -->
+<style id="v6170-classset-upgrade-css">
+#v6170SetUpgrade{grid-column:1/-1;margin-top:10px;padding:10px;border:2px solid #5c6f40;border-radius:12px;background:linear-gradient(155deg,#172218,#090f0a)}
+#v6170SetUpgrade h4{margin:0 0 4px;color:#f0d27c;font-size:13px}#v6170SetUpgrade>p{margin:0 0 8px;color:#aeb9aa;font-size:7px;line-height:1.45}
+.v6170-upgrade-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}.v6170-upgrade-item{padding:8px;border:1px solid #445638;border-radius:9px;background:#0a100b}.v6170-upgrade-item b{display:block;color:#e9ddb1;font-size:9px}.v6170-upgrade-item small{display:block;margin-top:3px;color:#9daa96;font-size:6.5px}.v6170-upgrade-item button{width:100%;margin-top:6px;min-height:31px;border:2px solid #587c38;border-radius:8px;background:linear-gradient(#74aa3e,#3d641f);color:#fff;font-size:7px;font-weight:1000}.v6170-upgrade-item button:disabled{opacity:.4;filter:grayscale(.8)}
+@media(max-width:650px){.v6170-upgrade-list{grid-template-columns:1fr}}
+</style>
+<script id="v6170-classset-upgrade-core">
+(()=>{
+ 'use strict';
+ if(window.__V6170_CLASSSET_UPGRADE__)return;window.__V6170_CLASSSET_UPGRADE__=true;
+ const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+ const fmt=v=>Math.max(0,Math.round(Number(v)||0)).toLocaleString('de-DE');
+ function setItems(){
+   const out=[];Object.entries(s?.equipment||{}).forEach(([slot,it])=>{if(it?.setId)out.push({item:it,where:'equip',slot})});
+   (s?.inventory||[]).forEach((it,index)=>{if(it?.setId)out.push({item:it,where:'inv',index})});return out;
+ }
+ function findItem(id){for(const [slot,it] of Object.entries(s?.equipment||{}))if(it?.id===id)return{item:it,where:'equip',slot};const i=(s?.inventory||[]).findIndex(it=>it?.id===id);return i>=0?{item:s.inventory[i],where:'inv',index:i}:null}
+ function costs(it){const level=Math.max(1,Number(s?.level)||1),old=Math.max(1,Number(it?.dropLevel)||1),gap=Math.max(0,level-old),slotBase={boots:18,head:24,ring:28,body:36,amulet:42,weapon:52}[it?.slot]||28;return{gap,fragments:Math.max(0,Math.round(slotBase*(1+gap/100))),gold:Math.max(0,Math.round((3500+slotBase*260)*(1+level/240+gap/120)))}}
+ function extrasInto(native,it){const out={...native},gem=it?.gem,e=it?.enchant||(Array.isArray(it?.enchants)?it.enchants[0]:null);if(gem?.stat&&Number(gem.value))out[gem.stat]=(Number(out[gem.stat])||0)+Number(gem.value);if(e?.effect==='luck'&&Number(e.value))out.glueck=(Number(out.glueck)||0)+Number(e.value);return out}
+ function upgradeHtml(){
+   const level=Math.max(1,Number(s?.level)||1),rows=setItems().filter(x=>Math.max(1,Number(x.item?.dropLevel)||1)<level);
+   if(!rows.length)return `<div id="v6170SetUpgrade"><h4>⬆️ Klassenset-Aufwertung</h4><p>Alle vorhandenen Set-Teile sind bereits auf deinem aktuellen Level. Einmal hergestellte Set-Teile müssen nicht neu über Genetik/PvP gebaut werden.</p></div>`;
+   return `<div id="v6170SetUpgrade"><h4>⬆️ Klassenset-Aufwertung</h4><p>Alte Set-Teile auf das aktuelle Charakterlevel bringen. <b>Keine neue Essenz und keine neuen PvP-Buds</b> – nur Gold + Samenfragmente. Stein und Verzauberung bleiben erhalten.</p><div class="v6170-upgrade-list">${rows.map(({item})=>{const c=costs(item),ok=(Number(s?.gold)||0)>=c.gold&&(Number(s?.v488Forge?.fragments)||0)>=c.fragments;return `<div class="v6170-upgrade-item"><b>${esc(item.name||'Set-Teil')}</b><small>Lv.${Math.max(1,Number(item.dropLevel)||1)} → Lv.${level}<br>💠 ${fmt(c.fragments)} Fragmente · 🪙 ${fmt(c.gold)} Gold</small><button data-v6170-upgrade="${esc(item.id)}" ${ok?'':'disabled'}>Auf aktuelles Level aufwerten</button></div>`}).join('')}</div></div>`;
+ }
+ function inject(){const p=document.querySelector('#v6130ClassSetPanel');if(!p)return;const old=p.querySelector('#v6170SetUpgrade');if(old)old.remove();p.insertAdjacentHTML('beforeend',upgradeHtml())}
+ async function doUpgrade(id){
+   const ref=findItem(id);if(!ref)return;const it=ref.item,level=Math.max(1,Number(s?.level)||1),oldLevel=Math.max(1,Number(it?.dropLevel)||1);if(oldLevel>=level)return;
+   const c=costs(it),fr=Math.max(0,Number(s?.v488Forge?.fragments)||0),gold=Math.max(0,Number(s?.gold)||0);if(fr<c.fragments||gold<c.gold)return;
+   let ok=true;try{ok=typeof v115Confirm==='function'?await v115Confirm(`${it.name} von Level ${oldLevel} auf Level ${level} aufwerten?\n\n${c.fragments} Samenfragmente\n${c.gold} Gold\n\nStein und Verzauberung bleiben erhalten.`,{title:'Klassenset aufwerten',type:'confirm',okText:'Aufwerten'}):window.confirm('Klassenset aufwerten?')}catch(_){ok=false}if(!ok)return;
+   const live=findItem(id);if(!live)return;const x=live.item,cc=costs(x),liveFr=Math.max(0,Number(s?.v488Forge?.fragments)||0),liveGold=Math.max(0,Number(s?.gold)||0);if(liveFr<cc.fragments||liveGold<cc.gold)return;
+   const cls=(typeof v6170SetClass==='function'?v6170SetClass(x.setId||x.classId):String(x.setId||x.classId||'grower')),competitor=(s?.equipment?.[x.slot]&&s.equipment[x.slot]!==x)?s.equipment[x.slot]:null;
+   let native=typeof v6170BuildSetBonus==='function'?v6170BuildSetBonus(cls,x.slot,level,competitor):{};
+   const oldNative=typeof v6170SetNativeBonus==='function'?v6170SetNativeBonus(x):{};Object.entries(oldNative).forEach(([k,v])=>native[k]=Math.max(Number(native[k])||0,Number(v)||0));
+   s.v488Forge.fragments=liveFr-cc.fragments;s.gold=liveGold-cc.gold;x.bonus=extrasInto(native,x);x.dropLevel=level;x.v6170ForgeLevel=level;x.v6170Guaranteed=true;x.v6170MinNativeTotal=Math.max(Number(x.v6170MinNativeTotal)||0,Object.values(native).reduce((n,v)=>n+(Number(v)||0),0));x.name=String(x.name||'Set-Teil').replace(/\s*\[Lv\.\d+\]\s*$/,'')+` [Lv.${level}]`;
+   try{persist(false)}catch(_){}try{v069SyncCurrencies?.()}catch(_){}try{v441PaintResources?.()}catch(_){}try{render?.()}catch(_){}try{v063Toast?.('⬆️ Klassenset aufgewertet','success',`${x.name} · Stein und Rolle behalten`)}catch(_){}setTimeout(inject,30)
+ }
+ document.addEventListener('click',e=>{const b=e.target instanceof Element?e.target.closest('[data-v6170-upgrade]'):null;if(!b)return;e.preventDefault();void doUpgrade(b.dataset.v6170Upgrade)},true);
+ const mo=new MutationObserver(()=>{if(document.querySelector('#v6130ClassSetPanel')&&!document.querySelector('#v6170SetUpgrade'))queueMicrotask(inject)});mo.observe(document.documentElement,{childList:true,subtree:true});
+ document.addEventListener('click',e=>{if(e.target instanceof Element&&e.target.closest('[data-v6130-settab]'))setTimeout(inject,35)},true);
+ window.v6170RefreshSetUpgrade=inject;window.v6170UpgradeSetItem=doUpgrade;
+})();
+</script>
+<!-- ===== /V4.166 ===== -->
+
+<!-- ===== V4.165 Klassenset NUR Harzschmiede ===== -->
+<script id="v6165-classset-forge-only">
+(()=>{
+'use strict';
+if(window.__V6165_CLASSSET_FORGE_ONLY__)return;window.__V6165_CLASSSET_FORGE_ONLY__=true;
+const originalSetMaker=(typeof makeSetItem==='function'?makeSetItem:window.makeSetItem);
+function cls(id){id=String(id||'grower');return ['grower','scout','bruiser','frost'].includes(id)?id:'grower'}
+function makeEpicNonSet(classId){
+ let it=null;
+ try{if(typeof makeClassLoot==='function')it=makeClassLoot(cls(classId),'dungeon')}catch(e){console.warn('V4.165 fallback loot',e)}
+ if(!it)return null;
+ it={...it};
+ it.quality='purple';it.rarity='epic';it.price=Number(it.price)||0;
+ it.name=`Episch: ${String(it.name||'Klassenitem').replace(/^.*?:\s*/,'')}`;
+ delete it.setId;delete it.setName;delete it.setFamily;delete it.setVariant;delete it.v6130Crafted;delete it.v6130GeneticRecipe;
+ return it;
+}
+if(typeof originalSetMaker==='function'){
+ const guarded=function(classId,slot){
+   if(window.__GL_CLASSSET_FORGE_CRAFT__===true)return originalSetMaker.apply(this,arguments);
+   return makeEpicNonSet(classId);
+ };
+ guarded.__v6165ForgeOnly=true;
+ try{makeSetItem=guarded}catch(_){}
+ try{window.makeSetItem=guarded}catch(_){}
+}
+function fragState(){
+ try{s.v488Forge=(s.v488Forge&&typeof s.v488Forge==='object')?s.v488Forge:{};s.v488Forge.fragments=Math.max(0,Math.floor(Number(s.v488Forge.fragments)||0));return s.v488Forge}catch(_){return null}
+}
+function addFragments(min,max,source){
+ const st=fragState();if(!st)return 0;
+ const n=Math.max(1,Math.floor(min+Math.random()*(max-min+1)));st.fragments+=n;
+ try{persist(false)}catch(_){}try{v069SyncCurrencies?.()}catch(_){}try{v441PaintResources?.()}catch(_){}
+ try{v063Toast?.('💠 Schmiedefragmente gefunden','success',`+${n} Samenfragmente · ${source}`)}catch(_){}
+ return n;
+}
+function installMaterialDrops(){
+ const bus=window.GL_EVENTS;if(!bus||typeof bus.on!=='function'||window.__V6165_CLASSSET_MATERIAL_EVENTS__)return false;
+ window.__V6165_CLASSSET_MATERIAL_EVENTS__=true;
+ bus.on('questCompleted',ev=>{try{const q=ev?.quest||{},elite=!!ev?.elite||!!q.v310Elite||/elite/i.test(String(q.v309Role||q.v310BaseRole||q.v392Kind||''));const chance=elite?.10:.04;if(Math.random()<chance)addFragments(elite?5:3,elite?9:6,elite?'Elite-Quest':'Quest')}catch(e){console.warn('V4.165 quest fragments',e)}});
+ bus.on('dungeonWon',ev=>{try{const boss=!!ev?.boss,chance=boss?.14:.02;if(Math.random()<chance)addFragments(boss?7:2,boss?14:4,boss?'Dungeonboss':'Dungeon')}catch(e){console.warn('V4.165 dungeon fragments',e)}});
+ bus.on('pvpWon',()=>{try{if(Math.random()<.06)addFragments(3,5,'PvP-Sieg')}catch(e){console.warn('V4.165 pvp fragments',e)}});
+ return true;
+}
+installMaterialDrops();
+if(!window.__V6165_CLASSSET_MATERIAL_RETRY__){window.__V6165_CLASSSET_MATERIAL_RETRY__=true;let n=0;const t=setInterval(()=>{n++;if(installMaterialDrops()||n>30)clearInterval(t)},500)}
+window.v6165ClassSetForgeOnlyQA=()=>({forgeOnly:!!window.__V6165_CLASSSET_FORGE_ONLY__,guarded:!!window.makeSetItem?.__v6165ForgeOnly,events:!!window.__V6165_CLASSSET_MATERIAL_EVENTS__,fragments:Number(s?.v488Forge?.fragments)||0});
+})();
+</script>
+<!-- ===== /V4.165 ===== -->
 </body>
 </html>
