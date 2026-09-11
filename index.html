@@ -1881,6 +1881,40 @@ img.v6108-quality-art{
 }
 </style>
 
+
+<style id="v6124-guild-lock-css">
+#guild .v6124-guild-lock{
+  display:grid;
+  grid-template-columns:40px minmax(0,1fr);
+  gap:10px;
+  align-items:center;
+  margin:10px 0 12px;
+  padding:11px;
+  border:1px solid #9b6b26;
+  border-radius:13px;
+  background:
+    radial-gradient(circle at 8% 20%,rgba(255,185,65,.10),transparent 35%),
+    linear-gradient(145deg,#21170b,#100d08);
+  box-shadow:inset 0 0 0 1px rgba(255,213,126,.04),0 5px 13px rgba(0,0,0,.24);
+}
+#guild .v6124-lock-icon{
+  width:38px;height:38px;display:grid;place-items:center;
+  border:1px solid #a77a37;border-radius:11px;background:#17120b;
+  font-size:22px;box-shadow:inset 0 0 10px rgba(218,154,56,.11);
+}
+#guild .v6124-guild-lock b{
+  display:block;margin-bottom:3px;color:#f4cc7b;font-size:9px;line-height:1.15;
+}
+#guild .v6124-guild-lock span{
+  display:block;color:#cfc6b5;font-size:7px;line-height:1.35;
+}
+#guild .v6124-guild-lock strong{color:#f4e1a7}
+#guild #v254GuildNoGuild input:disabled,
+#guild #v254CreateGuild:disabled{
+  opacity:.45!important;filter:grayscale(.45)!important;
+}
+</style>
+
 </head>
 <body>
 <div class="app">
@@ -39438,6 +39472,87 @@ let v254Membership=null;
 let v254Members=[];
 let v254Loading=false;
 
+/* V6.124: 24h guild lock after voluntarily leaving a guild. */
+const V6124_GUILD_LOCK_MS=24*60*60*1000;
+s.guildLeaveLockUntil=Math.max(0,Number(s.guildLeaveLockUntil)||0);
+
+function v6124GuildLockUntil(){
+  return Math.max(0,Number(s?.guildLeaveLockUntil)||0);
+}
+function v6124GuildLockRemaining(){
+  return Math.max(0,v6124GuildLockUntil()-Date.now());
+}
+function v6124GuildLockActive(){
+  const until=v6124GuildLockUntil();
+  if(!until)return false;
+  if(until<=Date.now()){
+    s.guildLeaveLockUntil=0;
+    try{persist(false)}catch(e){}
+    return false;
+  }
+  return true;
+}
+function v6124GuildLockText(ms=v6124GuildLockRemaining()){
+  ms=Math.max(0,Number(ms)||0);
+  const mins=Math.ceil(ms/60000);
+  const h=Math.floor(mins/60),m=mins%60;
+  if(h>0&&m>0)return `${h} Std. ${m} Min.`;
+  if(h>0)return `${h} Std.`;
+  return `${Math.max(1,m)} Min.`;
+}
+function v6124PaintGuildLock(){
+  const card=document.getElementById('v254GuildNoGuild');
+  if(!card)return false;
+  let box=document.getElementById('v6124GuildLockBox');
+  if(!box){
+    box=document.createElement('div');
+    box.id='v6124GuildLockBox';
+    box.className='v6124-guild-lock';
+    const row=card.querySelector('.v254-create-row');
+    if(row)row.insertAdjacentElement('beforebegin',box);
+    else card.appendChild(box);
+  }
+
+  const locked=v6124GuildLockActive();
+  box.style.display=locked?'':'none';
+  if(locked){
+    box.innerHTML=`<div class="v6124-lock-icon">⏳</div><div><b>24h Gildensperre aktiv</b><span>Du hast eine Gilde verlassen. Neue Gilde oder Beitritt wieder in <strong>${v6124GuildLockText()}</strong>.</span></div>`;
+  }
+
+  ['v254GuildName','v254GuildTag','v254CreateGuild'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el)el.disabled=locked;
+  });
+
+  card.querySelectorAll('[data-v257-apply]').forEach(btn=>{
+    if(locked){
+      btn.disabled=true;
+      btn.dataset.v6124Locked='1';
+      btn.textContent=`⏳ Gesperrt · ${v6124GuildLockText()}`;
+    }
+  });
+  return locked;
+}
+function v6124StartGuildLock(){
+  s.guildLeaveLockUntil=Date.now()+V6124_GUILD_LOCK_MS;
+  try{persist(false)}catch(e){
+    try{localStorage.setItem(KEY,JSON.stringify(s))}catch(_){}
+  }
+  try{
+    if(typeof v075WriteCloudSave==='function'){
+      setTimeout(()=>{try{void v075WriteCloudSave(true)}catch(e){}},0);
+    }
+  }catch(e){}
+  v6124PaintGuildLock();
+  return s.guildLeaveLockUntil;
+}
+
+window.v6124GuildLockActive=v6124GuildLockActive;
+window.v6124GuildLockRemaining=v6124GuildLockRemaining;
+window.v6124GuildLockText=v6124GuildLockText;
+window.v6124PaintGuildLock=v6124PaintGuildLock;
+window.v6124StartGuildLock=v6124StartGuildLock;
+
 async function v254EnsureOnline(){
   if(typeof v073Init!=='function')return false;
   if(!(await v073Init()))return false;
@@ -39541,7 +39656,10 @@ function v254RenderGuild(){
   no.style.display=has?'none':'';
   dash.style.display=has?'':'none';
 
-  if(!has)return;
+  if(!has){
+    v6124PaintGuildLock();
+    return;
+  }
 
   const buds=Number(v254Guild.guild_buds)||0;
   const xp=Number(v254Guild.xp_level)||0;
@@ -39582,6 +39700,10 @@ function v254RenderGuild(){
 }
 
 async function v254CreateGuild(){
+  if(v6124GuildLockActive()){
+    v6124PaintGuildLock();
+    return v063Toast('24h Gildensperre aktiv','warn',`Neue Gilde in ${v6124GuildLockText()} möglich.`);
+  }
   const name=String(document.querySelector('#v254GuildName')?.value||'').trim();
   const tag=String(document.querySelector('#v254GuildTag')?.value||'').trim().toUpperCase();
   if(name.length<3||name.length>24)return v063Toast('Gildenname ungültig','warn','3–24 Zeichen.');
@@ -39804,13 +39926,14 @@ function v257GuildResultHtml(g){
   const members=Number(g.member_count)||0;
   const max=Number(g.max_members)||20;
   const pending=!!g.request_pending;
+  const locked=typeof v6124GuildLockActive==='function'&&v6124GuildLockActive();
   return `<div class="v257-guild-result">
     <div>
       <b><span class="v257-result-tag">[${v254GuildEsc(g.tag||'GL')}]</span>${v254GuildEsc(g.name||'Gilde')}</b>
       <small>👥 ${members}/${max} · ⭐ EXP +${v254BonusPct(g.xp_level)}% · 💰 Gold +${v254BonusPct(g.gold_level)}%</small>
     </div>
-    <button type="button" class="btn secondary" data-v257-apply="${g.id}" ${pending||members>=max?'disabled':''}>
-      ${pending?'✓ Anfrage gesendet':members>=max?'Gilde voll':'Beitritt anfragen'}
+    <button type="button" class="btn secondary" data-v257-apply="${g.id}" ${locked||pending||members>=max?'disabled':''}>
+      ${locked?`⏳ Gesperrt · ${v6124GuildLockText()}`:pending?'✓ Anfrage gesendet':members>=max?'Gilde voll':'Beitritt anfragen'}
     </button>
   </div>`;
 }
@@ -39837,6 +39960,10 @@ async function v257SearchGuilds(){
 }
 
 async function v257ApplyGuild(guildId){
+  if(typeof v6124GuildLockActive==='function'&&v6124GuildLockActive()){
+    v6124PaintGuildLock?.();
+    return v063Toast('24h Gildensperre aktiv','warn',`Beitritt wieder in ${v6124GuildLockText()} möglich.`);
+  }
   if(!(await v254EnsureOnline()))return;
   const {error}=await v073Db.rpc('v257_apply_to_guild',{p_guild:guildId});
   if(error)return v063Toast('Beitrittsanfrage fehlgeschlagen','warn',error.message||'');
@@ -39939,13 +40066,17 @@ function v257RenderManagement(){
 }
 
 async function v257LeaveGuild(){
-  if(!confirm('Gilde wirklich verlassen?'))return;
+  if(!confirm('Gilde wirklich verlassen?\n\nDanach gilt eine 24-Stunden-Gildensperre. In dieser Zeit kannst du keiner anderen Gilde beitreten und keine neue Gilde gründen.'))return;
   const {error}=await v073Db.rpc('v257_leave_guild');
   if(error)return v063Toast('Gilde konnte nicht verlassen werden','warn',error.message||'');
-  v063Toast('Gilde verlassen','success');
+
+  v6124StartGuildLock();
+  v063Toast('Gilde verlassen','success','24h Gildensperre aktiviert.');
+
   v254Guild=null;v254Membership=null;v254Members=[];
   v254RenderGuild();
   await v257SearchGuilds();
+  v6124PaintGuildLock();
 }
 async function v257KickMember(userId){
   if(!confirm('Dieses Mitglied wirklich aus der Gilde entfernen?'))return;
@@ -54363,6 +54494,7 @@ setTimeout(()=>{try{v322InstallMenuEntry();v322InstallHarzPlus()}catch(e){consol
   /* V6.120: one cadence for heartbeat + visible member refresh. */
   setInterval(()=>{
     v329PresenceHeartbeat();
+    try{window.v6124PaintGuildLock?.()}catch(e){}
     const guild=document.querySelector('#guild');
     if(!guild?.classList.contains('active'))return;
     if(Date.now()-v329LastGuildRefresh<55000)return;
@@ -59589,11 +59721,12 @@ html,body{
         <article class="v366-panel v366-feature boss ${bossActive?'v6115-boss-open':'v6115-boss-closed'}">
           <h2>Weltboss</h2>
           <div class="v366-feature-art v6118-boss-art">
-            ${bossActive?`<span class="v6118-boss-live"><i></i> EVENT AKTIV</span>`:''}
+            ${bossActive?`<span class="v6118-boss-live"><i></i> EVENT AKTIV</span>
+            <div class="v6123-boss-overlay"><small>Mystischer Weltboss</small><b>Smaragd-Koloss</b></div>`:`<div class="v6123-boss-overlay v6123-boss-overlay-closed"><small>Der Slot ruht</small><b>Kein Weltboss aktiv</b></div>`}
           </div>
-          <div class="v6118-boss-name">${bossActive?'Smaragd-Koloss':'Kein Weltboss aktiv'}</div>
-          <div class="v690-mini-status v6115-boss-status">${bossActive?(bossFree()?'Gratisversuch bereit':'Nächster Versuch · 10 Harz'):'Warte auf das nächste Boss-Event'}</div>
-          <button class="v366-go" data-boss="1" ${bossActive?'':'disabled'}>${bossActive?'Herausfordern':'Geschlossen'}</button>
+          <div class="v6118-boss-name">${bossActive?(bossFree()?'Gratisversuch verfügbar':'Mystischer Boss ist offen'):'Das nächste Boss-Event abwarten'}</div>
+          <div class="v690-mini-status v6115-boss-status">${bossActive?(bossFree()?'1 Gratisversuch bereit':'Nächster Versuch · 10 Harz-Taler'):'Sobald das Event aktiv ist, kannst du den Koloss herausfordern'}</div>
+          <button class="v366-go" data-boss="1" ${bossActive?'':'disabled'}>${bossActive?(bossFree()?'Öffnen':'Herausfordern'):'Geschlossen'}</button>
         </article>
 
         <article class="v366-panel v366-feature book"><h2>Illegales Buch</h2><div class="v366-feature-art"></div><div class="v690-mini-status">⭐ ${ac.done}/${ac.total||'—'} Erfolge</div><button class="v366-go" data-book="1">Öffnen</button></article>
@@ -64068,7 +64201,7 @@ create index if not exists player_messages_sender_idx on public.player_messages(
  /* Search: enrich existing search RPC rows with server guild_xp, then render. */
  if(typeof v257SearchGuilds==='function'){
   v257SearchGuilds=async function(){const box=document.querySelector('#v257GuildSearchResults');if(!box)return;if(!(await v254EnsureOnline())){box.innerHTML='<div class="v257-search-empty">Für die Gildensuche musst du eingeloggt sein.</div>';return}const q=String(document.querySelector('#v257GuildSearchInput')?.value||'').trim();box.innerHTML='<div class="v257-search-empty">Gilden werden gesucht …</div>';const {data,error}=await v073Db.rpc('v257_search_guilds',{p_query:q});if(error){box.innerHTML=`<div class="v257-search-empty">${v254GuildEsc(error.message||'Suche fehlgeschlagen')}</div>`;return}const rows=Array.isArray(data)?data:[];if(rows.length){try{const ids=rows.map(x=>x.id).filter(Boolean);const lr=await v073Db.rpc('v411_get_guild_levels',{p_ids:ids});if(!lr.error){const m=new Map((lr.data||[]).map(x=>[String(x.id),Number(x.guild_xp)||0]));rows.forEach(x=>x.guild_xp=m.get(String(x.id))||0)}}catch(e){}}
-  box.innerHTML=rows.length?rows.map(g=>{const members=Number(g.member_count)||0,max=Number(g.max_members)||20,pending=!!g.request_pending,lv=level(g);return `<div class="v257-guild-result"><div><b><span class="v257-result-tag">[${v254GuildEsc(g.tag||'GL')}]</span>${v254GuildEsc(g.name||'Gilde')}</b><small><span class="v411-search-level">🏰 Gildenlevel ${lv}</span> · 👥 ${members}/${max} · ⭐ EXP +${v254BonusPct(g.xp_level)}% · 💰 Gold +${v254BonusPct(g.gold_level)}%</small></div><button type="button" class="btn secondary" data-v257-apply="${g.id}" ${pending||members>=max?'disabled':''}>${pending?'✓ Anfrage gesendet':members>=max?'Gilde voll':'Beitritt anfragen'}</button></div>`}).join(''):'<div class="v257-search-empty">Keine passende Gilde gefunden.</div>';box.querySelectorAll('[data-v257-apply]').forEach(btn=>btn.onclick=()=>v257ApplyGuild(btn.dataset.v257Apply))};window.v257SearchGuilds=v257SearchGuilds;
+  box.innerHTML=rows.length?rows.map(g=>{const members=Number(g.member_count)||0,max=Number(g.max_members)||20,pending=!!g.request_pending,lv=level(g),locked=typeof v6124GuildLockActive==='function'&&v6124GuildLockActive();return `<div class="v257-guild-result"><div><b><span class="v257-result-tag">[${v254GuildEsc(g.tag||'GL')}]</span>${v254GuildEsc(g.name||'Gilde')}</b><small><span class="v411-search-level">🏰 Gildenlevel ${lv}</span> · 👥 ${members}/${max} · ⭐ EXP +${v254BonusPct(g.xp_level)}% · 💰 Gold +${v254BonusPct(g.gold_level)}%</small></div><button type="button" class="btn secondary" data-v257-apply="${g.id}" ${locked||pending||members>=max?'disabled':''}>${locked?`⏳ Gesperrt · ${v6124GuildLockText()}`:pending?'✓ Anfrage gesendet':members>=max?'Gilde voll':'Beitritt anfragen'}</button></div>`}).join(''):'<div class="v257-search-empty">Keine passende Gilde gefunden.</div>';box.querySelectorAll('[data-v257-apply]').forEach(btn=>btn.onclick=()=>v257ApplyGuild(btn.dataset.v257Apply));try{v6124PaintGuildLock?.()}catch(e){}};window.v257SearchGuilds=v257SearchGuilds;
  }
  function version(){document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version').forEach(el=>{if(el)el.textContent=VERSION});document.querySelectorAll('.v366-ver').forEach(el=>el.textContent='V4.11')}
  version();paintOwn();setTimeout(()=>{version();paintOwn()},700);setTimeout(version,2000);
@@ -73077,8 +73210,9 @@ html.v481-hidden *,html.v481-hidden *::before,html.v481-hidden *::after{animatio
   function day7Item(){
     const cls=s.playerClass||'grower',pool=(typeof classGear!=='undefined'&&Array.isArray(classGear?.[cls]))?classGear[cls]:[];
     const base=pool.length?pool[Math.floor(Math.random()*pool.length)]:{id:'daily_ring',name:'Ring des Grünhains',slot:'ring',icon:'💍',bonus:{[cls==='scout'?'geschick':cls==='bruiser'?'intelligenz':'staerke']:3},classId:cls};
-    const r=Math.random(),q=r<.35?'gray':r<.65?'green':r<.90?'blue':'purple';
-    const meta=typeof qualityMeta==='function'?qualityMeta(q):{label:q==='purple'?'Episch':q==='blue'?'Rare':q==='green'?'Gewöhnlich':'Normal',cls:q==='purple'?'epic':q==='blue'?'rare':q==='green'?'uncommon':'common-gray'};
+    /* V6.122: Tag 7 is always EPISCH. No gray/green/blue roll anymore. */
+    const q='purple';
+    const meta=typeof qualityMeta==='function'?qualityMeta(q):{label:'Episch',cls:'epic'};
     const lvl=Math.min(300,Math.max(1,Math.floor(Number(s.level)||1)));
     const it={...base,id:`v484_daily_${Date.now()}_${Math.random().toString(36).slice(2,8)}`,baseId:base.id,classId:base.classId||cls,price:0,quality:q,rarity:meta.cls,dropLevel:lvl,name:`${meta.label}: ${cleanItemName(base.name)} [Lv.${lvl}]`,bonus:{...(base.bonus||{})}};
     try{if(typeof v447ApplyItemCurve==='function')v447ApplyItemCurve(it);else if(typeof v024Bonus==='function')it.bonus=v024Bonus(base.bonus||{},q,lvl)}catch(e){}
@@ -73150,10 +73284,10 @@ html.v481-hidden *,html.v481-hidden *::before,html.v481-hidden *::after{animatio
       const cls=`v484-day ${prev?'claimed':cur?'current':'future'} ${i===7?'day7':''}`;
       const middle=prev?`<div class="v484-claimed-icon">${esc(iconForSummary(entry))}</div>`:`<div class="v484-gift"></div>${future?'<span class="v484-lock">🔒</span>':''}`;
       const title=prev?(entry?.title||'Abgeholt'):cur?'GESCHENK ÖFFNEN':i===7?'LEVEL-ITEM':'Überraschung';
-      const sub=prev?'Abgeholt ✓':cur?(i===7?`Lv.${Math.max(1,Number(s.level)||1)} · Grau bis Episch`:'Heute verfügbar'):i===7?'Grau bis Episch':'Noch gesperrt';
+      const sub=prev?'Abgeholt ✓':cur?(i===7?`Lv.${Math.max(1,Number(s.level)||1)} · Garantiert Episch`:'Heute verfügbar'):i===7?'Garantiert Episch':'Noch gesperrt';
       cards.push(`<div class="${cls}" data-v484-day="${i}" ${cur?'role="button" tabindex="0"':''}><div class="v484-day-label">Tag ${i}</div><div class="v484-gift-wrap">${middle}</div><div class="v484-day-title">${esc(title)}</div><div class="v484-day-sub">${esc(sub)}</div></div>`);
     }
-    body.innerHTML=`<div class="v484-head"><div class="v484-kicker">Tägliche Belohnung</div><h2>🎁 7-Tage Login-Bonus</h2><p>Öffne jeden Tag ein Geschenk. Am siebten Tag wartet garantiert ein Ausrüstungsgegenstand für dein aktuelles Level.</p><div class="v484-streak">Serie: ${z.streak}/7 · Heute Tag ${day}</div></div><div class="v484-days">${cards.join('')}</div>`;
+    body.innerHTML=`<div class="v484-head"><div class="v484-kicker">Tägliche Belohnung</div><h2>🎁 7-Tage Login-Bonus</h2><p>Öffne jeden Tag ein Geschenk. Am siebten Tag erhältst du garantiert ein episches Ausrüstungsitem für dein aktuelles Level.</p><div class="v484-streak">Serie: ${z.streak}/7 · Heute Tag ${day}</div></div><div class="v484-days">${cards.join('')}</div>`;
     body.querySelectorAll('.v484-day.current').forEach(el=>{
       el.onclick=()=>claim(Number(el.dataset.v484Day));
       el.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();claim(Number(el.dataset.v484Day))}};
@@ -110276,6 +110410,153 @@ window.v6121MaterialArtQA=()=>({
   ].every(id=>String(window.v6121MaterialArt?.({type:'scroll',baseId:id})).startsWith('data:image/webp;base64,')),
   oldGemFallback:!!window.v6121MaterialArt?.({type:'gem',stat:'staerke'}),
   oldScrollFallback:!!window.v6121MaterialArt?.({type:'scroll',effect:'crit'})
+});
+})();
+</script>
+
+
+<script id="v6122-daily-login-epic-marker">
+window.__V6122_DAY7_GUARANTEED_EPIC__=true;
+window.v6122DailyLoginQA=()=>({
+  day7GuaranteedEpic:/const q='purple'/.test(
+    document.getElementById('v484-daily-login-core')?.textContent||''
+  )
+});
+</script>
+
+
+<style id="v6123-worldboss-slot-feinschliff-css">
+/* ===== V6.123 Weltboss-Slot Feinschliff ===== */
+#world.active .v366-feature.boss{
+  position:relative!important;
+  overflow:hidden!important;
+}
+#world.active .v366-feature.boss h2{
+  margin-top:6px!important;
+  color:#87f6c8!important;
+  letter-spacing:.06em!important;
+}
+#world.active .v366-feature.boss.v6115-boss-open{
+  border-color:#38e98f!important;
+  background:
+    radial-gradient(circle at 50% -10%,rgba(84,255,205,.14),transparent 42%),
+    linear-gradient(180deg,#081611,#040906)!important;
+  box-shadow:
+    0 0 0 1px rgba(65,255,171,.06) inset,
+    0 0 20px rgba(49,232,141,.16),
+    0 10px 22px rgba(0,0,0,.34)!important;
+}
+#world.active .v366-feature.boss.v6115-boss-closed{
+  background:linear-gradient(180deg,#111311,#060806)!important;
+}
+#world.active .v366-feature.boss .v6118-boss-art{
+  position:relative!important;
+  height:92px!important;
+  min-height:92px!important;
+  border-top:1px solid rgba(111,255,183,.12)!important;
+  border-bottom:1px solid rgba(73,182,111,.34)!important;
+}
+#world.active .v366-feature.boss .v6118-boss-art::before{
+  content:""!important;
+  position:absolute!important;
+  left:10px!important; right:10px!important; bottom:10px!important; height:34px!important;
+  border-radius:11px!important;
+  background:linear-gradient(180deg,rgba(4,10,7,.05),rgba(3,8,5,.82))!important;
+  box-shadow:inset 0 0 0 1px rgba(105,230,142,.14)!important;
+  pointer-events:none!important;
+  z-index:1!important;
+}
+#world.active .v6123-boss-overlay{
+  position:absolute!important;
+  left:14px!important; right:14px!important; bottom:14px!important;
+  z-index:2!important;
+  display:grid!important;
+  gap:2px!important;
+  text-align:left!important;
+}
+#world.active .v6123-boss-overlay small{
+  color:#99f2b6!important;
+  font-size:5px!important;
+  font-weight:900!important;
+  letter-spacing:.08em!important;
+  text-transform:uppercase!important;
+}
+#world.active .v6123-boss-overlay b{
+  color:#fff7d3!important;
+  font-size:8.2px!important;
+  line-height:1.03!important;
+  text-shadow:0 2px 8px rgba(0,0,0,.62)!important;
+  letter-spacing:.02em!important;
+}
+#world.active .v6123-boss-overlay.v6123-boss-overlay-closed small{
+  color:#b0b6b2!important;
+}
+#world.active .v6123-boss-overlay.v6123-boss-overlay-closed b{
+  color:#d8ddd7!important;
+}
+#world.active .v366-feature.boss .v6118-boss-name{
+  min-height:auto!important;
+  margin:7px 7px 0!important;
+  padding:0!important;
+  color:#8af0ad!important;
+  font-size:6px!important;
+  line-height:1.1!important;
+  font-weight:900!important;
+}
+#world.active .v366-feature.boss .v6115-boss-status{
+  min-height:28px!important;
+  margin:6px 7px 0!important;
+  padding:6px 7px!important;
+  border:1px solid rgba(88,198,124,.26)!important;
+  border-radius:10px!important;
+  background:linear-gradient(180deg,rgba(8,20,11,.95),rgba(6,12,7,.98))!important;
+  color:#e7efe8!important;
+  font-size:5.7px!important;
+  line-height:1.18!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.05)!important;
+}
+#world.active .v366-feature.boss.v6115-boss-closed .v6115-boss-status{
+  border-color:rgba(118,124,118,.18)!important;
+  color:#9da39e!important;
+}
+#world.active .v366-feature.boss .v366-go{
+  margin:7px 7px 8px!important;
+  min-height:32px!important;
+  height:32px!important;
+  font-size:6.5px!important;
+  letter-spacing:.04em!important;
+}
+#world.active .v366-feature.boss.v6115-boss-open .v366-go{
+  border-color:#45f09a!important;
+  background:linear-gradient(180deg,#2cb86a,#17703c)!important;
+  box-shadow:inset 0 1px rgba(255,255,255,.20),0 0 12px rgba(53,236,133,.18),0 2px 6px rgba(0,0,0,.55)!important;
+}
+#world.active .v366-feature.boss.v6115-boss-closed .v366-go{
+  border-color:#5e665f!important;
+  background:linear-gradient(180deg,#404442,#262927)!important;
+}
+@media(max-width:390px){
+  #world.active .v366-feature.boss .v6118-boss-art{height:88px!important;min-height:88px!important}
+  #world.active .v6123-boss-overlay b{font-size:7.5px!important}
+}
+</style>
+<script id="v6123-worldboss-slot-feinschliff-marker">window.__V6123_WORLDBOSS_SLOT_FEINSCHLIFF__=true;</script>
+
+
+<script id="v6124-guild-lock-marker">
+(()=>{
+'use strict';
+if(window.__V6124_GUILD_LEAVE_LOCK__)return;
+window.__V6124_GUILD_LEAVE_LOCK__=true;
+const refresh=()=>{try{window.v6124PaintGuildLock?.()}catch(e){}};
+document.addEventListener('DOMContentLoaded',()=>requestAnimationFrame(refresh),{once:true});
+window.addEventListener('growlegends:account-ready',()=>setTimeout(refresh,120));
+window.addEventListener('pageshow',refresh,{passive:true});
+window.v6124GuildLockQA=()=>({
+  until:Number(s?.guildLeaveLockUntil)||0,
+  active:!!window.v6124GuildLockActive?.(),
+  remainingMs:Number(window.v6124GuildLockRemaining?.())||0,
+  createDisabled:document.getElementById('v254CreateGuild')?.disabled||false
 });
 })();
 </script>
