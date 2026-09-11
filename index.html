@@ -24451,6 +24451,7 @@ function v135ScaleShopStats(item,base,forcedLevel=null){
   const sum=Object.values(out).reduce((a,b)=>a+(Number(b)||0),0);
   item.price=Math.max(30,Math.round((35+lvl*12+sum*11)*rarityPrice));
   item.shopItem=true;
+  item.source='shop';
   return item;
 }
 
@@ -24463,6 +24464,7 @@ v027ShopItem=function(base){
   item.rarity=qualityMeta(q).cls;
   item.dropLevel=lvl;
   item.shopItem=true;
+  item.source='shop';
   item.baseId=base.id;
   v135ScaleShopStats(item,base,lvl);
 
@@ -71107,13 +71109,41 @@ create index if not exists player_messages_sender_idx on public.player_messages(
       }
     }catch(e){}
   }
-  function focusedRefresh(){
+  function syncShopResources(){
+    try{document.querySelectorAll('#shopGold').forEach(el=>el.textContent=Math.max(0,Number(s?.gold)||0).toLocaleString('de-DE'))}catch(e){}
+    try{document.querySelectorAll('#shopHarz').forEach(el=>el.textContent=Math.max(0,Number(s?.harzTaler)||0).toLocaleString('de-DE'))}catch(e){}
+    try{if(typeof window.v441PaintResources==='function')window.v441PaintResources()}catch(e){}
+  }
+  function refreshPurchasedSlot(kind,index){
+    const i=Number(index);
+    if(!Number.isInteger(i)||i<0)return false;
+    const arr=kind==='weapon'?s?.weaponShop:s?.magicShop;
+    const it=arr?.[i];
+    const grid=document.querySelector(kind==='weapon'?'#v057WeaponGrid':'#v057MagicGrid');
+    if(!it||!grid||typeof v057OfferHtml!=='function')return false;
+    const cards=[...grid.children].filter(el=>el?.classList?.contains('shop-item'));
+    const oldCard=cards[i];
+    if(!oldCard)return false;
+    const holder=document.createElement('div');
+    holder.innerHTML=String(v057OfferHtml(it,i,kind)||'').trim();
+    const fresh=holder.firstElementChild;
+    if(!fresh)return false;
+    oldCard.replaceWith(fresh);
+    const btn=fresh.querySelector('.v057-buy');
+    if(btn)btn.onclick=()=>kind==='weapon'?window.v030BuyWeapon(i):window.v030BuyMagic(i);
+    syncShopResources();
+    try{decorateShop()}catch(e){}
+    return true;
+  }
+  function focusedRefresh(kind=null,index=null){
+    /* Successful purchases update exactly one merchant card. Full rendering is only a recovery fallback. */
+    if(kind&&(kind==='weapon'||kind==='magic')&&refreshPurchasedSlot(kind,index))return;
     try{if(typeof renderShop==='function')renderShop()}catch(e){console.warn('V4.68 shop refresh',e)}
     try{if(typeof renderInventory==='function')renderInventory()}catch(e){console.warn('V4.68 inventory refresh',e)}
     try{if(typeof v030Materials==='function')v030Materials()}catch(e){}
     try{if(typeof window.v459ArrangeCharacter==='function')window.v459ArrangeCharacter()}catch(e){}
     try{if(typeof window.v459CompactInventory==='function')window.v459CompactInventory()}catch(e){}
-    try{if(typeof window.v441PaintResources==='function')window.v441PaintResources()}catch(e){}
+    syncShopResources();
     try{decorateAll()}catch(e){}
   }
   function successToast(item,dest){
@@ -71146,7 +71176,7 @@ create index if not exists player_messages_sender_idx on public.player_messages(
       const live=(isMaterial?s.materials:s.inventory).some(x=>x&&String(x.id)===String(bought.id));
       if(!live)throw new Error('PURCHASE_NOT_IN_DESTINATION');
       window.__V466_LAST_PURCHASE__={ok:true,id:bought.id,name:bought.name,destination:isMaterial?'Materialien':'Inventar',at:Date.now()};
-      focusedRefresh();successToast(bought,isMaterial?'Materialien':'Inventar');
+      focusedRefresh(kind,i);successToast(bought,isMaterial?'Materialien':'Inventar');
       return true;
     }catch(e){
       s.gold=before.gold;s.inventory=before.inv;s.materials=before.mat;
@@ -73759,20 +73789,40 @@ html.v481-hidden *,html.v481-hidden *::before,html.v481-hidden *::after{animatio
     if(/green|uncommon|gewöhn/.test(x))return'green';
     return'gray';
   }
+  function isShopItem(it){return !!(it&&(it.shopItem===true||String(it.source||'').toLowerCase()==='shop'))}
+  function isClassSet(it){return !!(it&&(it.setId||it.v6130Crafted===true))}
+  function shopRefund(it){
+    if(!isShopItem(it))return 0;
+    const paid=Math.max(0,Number(it?.shopPaidPrice ?? it?.price)||0);
+    return paid>0?Math.max(1,Math.round(paid*.12)):0;
+  }
   function yieldOf(it){
-    if(!it||forgeMaterialExcluded(it)||forged(it)||q(it)==='cyan')return 0;
+    /* Händlerware can be destroyed, but can never convert Gold into Samenfragmente.
+       Class-set, mystic and prismatic gear stays protected. */
+    if(!it||forgeMaterialExcluded(it)||forged(it)||q(it)==='cyan'||isClassSet(it)||isShopItem(it))return 0;
     return YIELD[q(it)]||0;
   }
+  function canDismantle(it){
+    if(!it||forgeMaterialExcluded(it)||forged(it)||q(it)==='cyan'||isClassSet(it))return false;
+    if(isShopItem(it))return true;
+    return yieldOf(it)>0;
+  }
   function level(){return Math.max(1,Math.min(300,Math.floor(Number(s?.level)||1)))}
-  function cost(){const l=level();return{fragments:180+l*3,gold:50000+l*l*350}}
+  function cost(){
+    /* Stable 25-level recipe bands: fast levelling no longer moves the goal every level.
+       The created prism item still uses the exact current character level. */
+    const l=level(),tier=Math.floor((l-1)/25),minLevel=tier*25+1,maxLevel=Math.min(300,(tier+1)*25);
+    return{tier,minLevel,maxLevel,fragments:150+tier*40,gold:100000+tier*75000};
+  }
   function ensureItemId(it,i){if(it&&!it.id)it.id=`v488_legacy_${Date.now()}_${i}_${Math.random().toString(36).slice(2)}`;return String(it?.id||i)}
   function eligibleRows(){
-    return (Array.isArray(s.inventory)?s.inventory:[]).map((it,i)=>({it,i,key:ensureItemId(it,i)})).filter(x=>!forgeMaterialExcluded(x.it)&&yieldOf(x.it)>0);
+    return (Array.isArray(s.inventory)?s.inventory:[]).map((it,i)=>({it,i,key:ensureItemId(it,i)})).filter(x=>canDismantle(x.it));
   }
   function selectedRows(){
     return eligibleRows().filter(x=>selected.has(x.key));
   }
   function selectedFragments(){return selectedRows().reduce((n,x)=>n+yieldOf(x.it),0)}
+  function selectedGoldRefund(){return selectedRows().reduce((n,x)=>n+shopRefund(x.it),0)}
   function confirmBox(text,opt={}){
     try{if(typeof v115Confirm==='function')return v115Confirm(text,opt)}catch(e){}
     return Promise.resolve(window.confirm(text));
@@ -73804,14 +73854,16 @@ html.v481-hidden *,html.v481-hidden *::before,html.v481-hidden *::after{animatio
   }
   function renderItems(){
     const inv=(Array.isArray(s.inventory)?s.inventory:[]).map((it,i)=>({it,i})).filter(x=>!forgeMaterialExcluded(x.it));
-    if(!inv.length)return '<div class="empty" style="grid-column:1/-1;font-size:8px;padding:16px">Keine zerlegbare Ausrüstung im Inventar.</div>';
+    if(!inv.length)return '<div class="empty" style="grid-column:1/-1;font-size:8px;padding:16px">Keine Ausrüstung im Inventar.</div>';
     return inv.map(({it,i})=>{
-      const key=ensureItemId(it,i),qq=q(it),y=yieldOf(it),blocked=!y,sel=selected.has(key),reason=forged(it)?'Geschmiedet':qq==='cyan'?'Mystisch geschützt':'';
-      return `<button type="button" class="v488-item ${qq} ${blocked?'blocked':''} ${sel?'selected':''}" data-v488-key="${esc(key)}" ${blocked?'disabled':''}><span class="ico">${esc(it?.icon||SLOT_META[it?.slot]?.icon||'🎁')}</span><div class="nm">${esc(String(it?.name||'Item').replace(/^\w+\s*:\s*/,'').replace(/\s*\[Lv\.\d+\]\s*$/i,''))}</div><div class="yield">${blocked?esc(reason):`+${y} Frag.`}</div>${blocked?'<span class="lock">🔒</span>':''}</button>`;
+      const key=ensureItemId(it,i),qq=q(it),y=yieldOf(it),refund=shopRefund(it),blocked=!canDismantle(it),sel=selected.has(key);
+      const reason=forged(it)?'Prismatisch geschützt':qq==='cyan'?'Mystisch geschützt':isClassSet(it)?'Klassenset geschützt':'';
+      const gain=isShopItem(it)?`Händlerware · 0 Frag.${refund?` · +${fmt(refund)} Gold`:''}`:`+${y} Frag.`;
+      return `<button type="button" class="v488-item ${qq} ${blocked?'blocked':''} ${sel?'selected':''}" data-v488-key="${esc(key)}" ${blocked?'disabled':''}><span class="ico">${esc(it?.icon||SLOT_META[it?.slot]?.icon||'🎁')}</span><div class="nm">${esc(String(it?.name||'Item').replace(/^\w+\s*:\s*/,'').replace(/\s*\[Lv\.\d+\]\s*$/i,''))}</div><div class="yield">${blocked?esc(reason):gain}</div>${blocked?'<span class="lock">🔒</span>':''}</button>`;
     }).join('');
   }
   function renderForge(){
-    const sec=ensureScreen(),z=state(),c=cost(),rows=selectedRows(),sum=selectedFragments(),eligible=eligibleRows(),allEligibleSelected=eligible.length>0&&eligible.every(x=>selected.has(x.key)),can=z.fragments>=c.fragments&&(Number(s.gold)||0)>=c.gold&&!busy;
+    const sec=ensureScreen(),z=state(),c=cost(),rows=selectedRows(),sum=selectedFragments(),refund=selectedGoldRefund(),eligible=eligibleRows(),allEligibleSelected=eligible.length>0&&eligible.every(x=>selected.has(x.key)),can=z.fragments>=c.fragments&&(Number(s.gold)||0)>=c.gold&&!busy;
     const dismantleView=()=>`<div class="v667-view v667-view-dismantle">
       <div class="v667-hero-wrap">
         <section class="v667-hero v490-center" id="v488Stage" aria-label="Amboss der Harzschmiede"><div class="v490-live-hammer">🔨</div></section>
@@ -73821,9 +73873,9 @@ html.v481-hidden *,html.v481-hidden *::before,html.v481-hidden *::after{animatio
         <div class="v667-section-title">Ausrüstung zerlegen</div>
         <div class="v667-select-tools"><button type="button" class="v667-select-all ${allEligibleSelected?'active':''}" id="v667SelectAll" ${eligible.length&&!busy?'':'disabled'}>${allEligibleSelected?'✖ AUSWAHL AUFHEBEN':'✓ ALLE AUSWÄHLEN'}</button></div>
         <div class="v667-inventory v490-inventory" id="v488ForgeInventory">${renderItems()}</div>
-        <div class="v667-summary"><div class="v667-count"><b>${rows.length}</b>&nbsp; ausgewählt</div><div class="v667-frags">💠 +${fmt(sum)} Samenfragmente</div></div>
+        <div class="v667-summary"><div class="v667-count"><b>${rows.length}</b>&nbsp; ausgewählt</div><div class="v667-frags">💠 +${fmt(sum)} Samenfragmente${refund?` · 🪙 +${fmt(refund)} Gold`:''}</div></div>
         <button type="button" class="v488-btn v667-action v667-dismantle" id="v488Dismantle" ${rows.length&&!busy?'':'disabled'}>🔨 ${rows.length?rows.length+' Item'+(rows.length===1?'':'s')+' ZERLEGEN':'ITEMS AUSWÄHLEN'}</button>
-        <div class="v667-note">💎 Edelsteine, 📜 Verzauberungsrollen sowie mystische und prismatische Gegenstände sind vom Zerlegen ausgeschlossen.</div>
+        <div class="v667-note">🛒 Händlerware: <b>0 Samenfragmente</b>, nur 12 % des Kaufpreises als Gold zurück. 💎 Edelsteine, 📜 Rollen, Klassensets sowie mystische und prismatische Gegenstände sind geschützt.</div>
       </div>
     </div>`;
     const craftView=()=>`<div class="v667-view v667-view-craft">
@@ -73832,11 +73884,11 @@ html.v481-hidden *,html.v481-hidden *::before,html.v481-hidden *::after{animatio
         <div class="v667-hero-title">Aus Ausrüstung wächst Legendäres</div>
       </div>
       <div class="v667-recipe">
-        <div class="v667-recipe-head">Rezept · Stufe ${level()}</div>
+        <div class="v667-recipe-head">Rezeptkosten · Level ${c.minLevel}–${c.maxLevel}</div>
         <div class="v667-cost-grid">
           <div class="v667-cost ${z.fragments>=c.fragments?'ok':'bad'}"><div class="ico">💠</div><b>Samenfragmente</b><span>${fmt(z.fragments)} / ${fmt(c.fragments)}</span></div>
           <div class="v667-cost ${(Number(s.gold)||0)>=c.gold?'ok':'bad'}"><div class="ico">🪙</div><b>Gold</b><span>${fmt(s.gold)} / ${fmt(c.gold)}</span></div>
-          <div class="v667-result"><div class="ico">🌈❓</div><b>1 zufälliges prismatisches Item</b><small>Aktuelles Level · passende Klasse · +8 % Schmiede-Essenz</small></div>
+          <div class="v667-result"><div class="ico">🌈❓</div><b>1 zufälliges prismatisches Item</b><small>Item = aktuelles Level · Kosten steigen nur alle 25 Level · +8 % Schmiede-Essenz</small></div>
         </div>
         <button type="button" class="v488-btn v667-action v667-craft" id="v488Craft" ${can?'':'disabled'}>🔨 PRISMATISCHES ITEM SCHMIEDEN</button>
         ${lastCraft?`<div class="v667-last"><b>✨ Geschmiedet:</b><br>${esc(lastCraft.icon)} ${esc(lastCraft.name)}<br>${esc(typeof itemBonus==='function'?itemBonus(lastCraft):'')}</div>`:''}
@@ -73888,18 +73940,19 @@ html.v481-hidden *,html.v481-hidden *::before,html.v481-hidden *::after{animatio
   }
   async function dismantle(){
     if(busy)return;const rows=selectedRows();if(!rows.length)return;
-    const total=rows.reduce((n,x)=>n+yieldOf(x.it),0),valuable=rows.filter(x=>['purple','orange'].includes(q(x.it)));
+    const total=rows.reduce((n,x)=>n+yieldOf(x.it),0),refund=rows.reduce((n,x)=>n+shopRefund(x.it),0),valuable=rows.filter(x=>['purple','orange'].includes(q(x.it)));
     const warning=valuable.length?`\n\n⚠️ ${valuable.length} epische/legendäre Gegenstände sind ausgewählt.`:'';
-    const ok=await confirmBox(`${rows.length} Gegenstand${rows.length===1?'':'e'} wirklich zerlegen?\n\nDu erhältst ${total} Samenfragmente.${warning}`,{title:'In der Harzschmiede zerlegen?',type:valuable.length?'error':'warn',okText:`Zerlegen · +${total} Fragmente`});
+    const gains=[`${total} Samenfragmente`,refund?`${fmt(refund)} Gold Händler-Rückgewinnung`:null].filter(Boolean).join(' + ');
+    const ok=await confirmBox(`${rows.length} Gegenstand${rows.length===1?'':'e'} wirklich zerlegen?\n\nDu erhältst ${gains}.${warning}`,{title:'In der Harzschmiede zerlegen?',type:valuable.length?'error':'warn',okText:`Zerlegen · ${total} Frag.${refund?` + ${fmt(refund)} Gold`:''}`});
     if(!ok)return;busy=true;
     burst('dismantle',q(rows[0].it));await new Promise(r=>setTimeout(r,430));
-    const ids=new Set(rows.map(x=>x.key));s.inventory=(s.inventory||[]).filter((it,i)=>!ids.has(ensureItemId(it,i)));const z=state();z.fragments+=total;z.dismantled+=rows.length;selected.clear();save(false);busy=false;renderForge();
+    const ids=new Set(rows.map(x=>x.key));s.inventory=(s.inventory||[]).filter((it,i)=>!ids.has(ensureItemId(it,i)));const z=state();z.fragments+=total;s.gold=Math.max(0,Number(s.gold)||0)+refund;z.dismantled+=rows.length;selected.clear();save(false);busy=false;renderForge();
     try{if(typeof render==='function')render()}catch(e){}
-    try{if(typeof v063Toast==='function')v063Toast(`+${total} Samenfragmente`,'success',`${rows.length} Item${rows.length===1?'':'s'} zerlegt`)}catch(e){}
+    try{if(typeof v063Toast==='function')v063Toast(total?`+${total} Samenfragmente`:`🛒 Händlerware zerlegt`,'success',`${rows.length} Item${rows.length===1?'':'s'} zerlegt${refund?` · +${fmt(refund)} Gold`:''}`)}catch(e){}
   }
   function createPrismatic(){
     const cls=['grower','scout','bruiser','frost'].includes(String(s.playerClass))?String(s.playerClass):'grower';const slots=Object.keys(SLOT_META),slot=slots[Math.floor(Math.random()*slots.length)],names=NAMES[cls][slot],name=names[Math.floor(Math.random()*names.length)],lvl=level(),pat={...(PATTERN[cls][slot]||{})};
-    const item={id:`prism_${cls}_${slot}_${Date.now()}_${Math.random().toString(36).slice(2)}`,classId:cls,slot,icon:SLOT_META[slot].icon,name:`Prismatisch: ${name} [Lv.${lvl}]`,price:0,quality:'prismatic',rarity:'prismatic-orange',dropLevel:lvl,bonus:{...pat},baseBonusV055:{...pat},v488Prismatic:true,v488Bound:true,v488EssencePct:.08,v488CreatedAt:Date.now()};
+    const item={id:`prism_${cls}_${slot}_${Date.now()}_${Math.random().toString(36).slice(2)}`,classId:cls,slot,icon:SLOT_META[slot].icon,name:`Prismatisch: ${name} [Lv.${lvl}]`,price:0,quality:'prismatic',rarity:'prismatic-orange',dropLevel:lvl,bonus:{...pat},baseBonusV055:{...pat},source:'forge_prismatic',v488Prismatic:true,v488Bound:true,v488EssencePct:.08,v488CreatedAt:Date.now()};
     try{if(typeof window.v447ApplyItemCurve==='function')window.v447ApplyItemCurve(item)}catch(e){console.warn('Harzschmiede Itemkurve',e)}
     return item;
   }
@@ -111392,5 +111445,20 @@ window.v6165ClassSetForgeOnlyQA=()=>({forgeOnly:!!window.__V6165_CLASSSET_FORGE_
 })();
 </script>
 <!-- ===== /V4.165 ===== -->
+
+<!-- ===== 2026-09-11 Händler-Herkunft + Schmiede-Ökonomie Guard ===== -->
+<script id="gl-shop-provenance-guard">
+(()=>{'use strict';
+ if(window.__GL_SHOP_PROVENANCE_GUARD__)return;window.__GL_SHOP_PROVENANCE_GUARD__=true;
+ function tag(it){if(!it||typeof it!=='object')return it;it.shopItem=true;it.source='shop';if(it.shopPaidPrice==null&&Number(it.price)>0)it.shopPaidPrice=Number(it.price);return it}
+ function repair(){let changed=false;for(const it of (s?.inventory||[])){if(it?.shopItem===true&&String(it.source||'').toLowerCase()!=='shop'){it.source='shop';if(it.shopPaidPrice==null&&Number(it.price)>0)it.shopPaidPrice=Number(it.price);changed=true}}if(changed){try{persist(false)}catch(_){}}}
+ function wrap(name,arrName){const base=window[name];if(typeof base!=='function'||base.__glShopSource)return;const fn=function(i){try{tag(s?.[arrName]?.[Number(i)])}catch(_){}return base.apply(this,arguments)};fn.__glShopSource=true;window[name]=fn;try{if(name==='v030BuyWeapon')v030BuyWeapon=fn;if(name==='v030BuyMagic')v030BuyMagic=fn}catch(_){}}
+ function install(){try{(s?.weaponShop||[]).forEach(tag);(s?.magicShop||[]).forEach(tag);repair();wrap('v030BuyWeapon','weaponShop');wrap('v030BuyMagic','magicShop')}catch(_){}}
+ install();document.addEventListener('DOMContentLoaded',install,{once:true});window.addEventListener('growlegends:account-ready',()=>setTimeout(install,60));window.addEventListener('pageshow',()=>setTimeout(install,60),{passive:true});
+ window.vShopProvenanceQA=()=>({weaponTagged:(s?.weaponShop||[]).every(x=>!x||x.shopItem===true),magicTagged:(s?.magicShop||[]).every(x=>!x||x.shopItem===true),oldInventoryTagged:(s?.inventory||[]).filter(x=>x?.shopItem===true).every(x=>String(x.source||'').toLowerCase()==='shop')});
+})();
+</script>
+<!-- ===== /Händler-Herkunft Guard ===== -->
+
 </body>
 </html>
