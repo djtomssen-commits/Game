@@ -1483,6 +1483,377 @@ img.v6108-quality-art{
 }
 </style>
 
+
+<style id="v6118-event-x2-worldboss-design-css">
+/* ==========================================================
+   EXP EVENT: only ONE clean multiplier hint.
+   Old V4.02 badges are blocked in code; hide any already queued
+   legacy markers in the event card as a final safeguard.
+   ========================================================== */
+#world.active .v690-events-card .v095-xp2,
+#world.active .v690-events-card .v096-quest-xp2,
+#world.active .v690-events-card .v099-xp-event,
+#world.active .v690-events-card .v094-event-bonus{
+  display:none!important;
+}
+
+#world.active .v6115-event-row.purple b{
+  color:#bfff86!important;
+}
+#world.active .v6115-event-row.purple small{
+  color:#f0eadb!important;
+}
+#world.active .v6115-event-row.purple{
+  border-color:#735297!important;
+  box-shadow:inset 0 0 0 1px rgba(182,93,255,.07)!important;
+}
+
+/* ==========================================================
+   WORLD BOSS – clean active design
+   No giant pseudo-circle, no card scaling.
+   ========================================================== */
+#world.active .v366-feature.boss.v6115-boss-open::before,
+#world.active .v366-feature.boss.v6115-boss-open::after{
+  content:none!important;
+  display:none!important;
+}
+
+@keyframes v6118BossBorderPulse{
+  0%,100%{
+    border-color:#2fbf57;
+    box-shadow:
+      0 0 8px rgba(48,220,91,.23),
+      inset 0 0 0 1px rgba(112,255,139,.10);
+  }
+  50%{
+    border-color:#70f58c;
+    box-shadow:
+      0 0 18px rgba(53,229,98,.48),
+      inset 0 0 0 1px rgba(155,255,174,.22);
+  }
+}
+@keyframes v6118LiveDot{
+  0%,100%{opacity:.45;transform:scale(.82)}
+  50%{opacity:1;transform:scale(1.16)}
+}
+
+#world.active .v366-feature.boss.v6115-boss-open{
+  animation:v6118BossBorderPulse 1.9s ease-in-out infinite!important;
+  transform:none!important;
+  will-change:box-shadow,border-color!important;
+  overflow:hidden!important;
+  background:
+    radial-gradient(circle at 50% 28%,rgba(26,117,49,.13),transparent 42%),
+    linear-gradient(180deg,#07110a,#030805)!important;
+}
+
+#world.active .v366-feature.boss.v6115-boss-open>h2{
+  color:#8cf5a0!important;
+  text-shadow:0 1px #000,0 0 8px rgba(94,239,112,.35)!important;
+}
+
+#world.active .v6118-boss-art{
+  position:relative!important;
+  height:99px!important;
+  min-height:99px!important;
+  border-top:1px solid rgba(101,221,117,.14)!important;
+  border-bottom:1px solid #345b35!important;
+  background-position:center 34%!important;
+  background-size:cover!important;
+  filter:saturate(1.18) contrast(1.07) brightness(.92)!important;
+  box-shadow:
+    inset 0 -20px 24px rgba(2,10,4,.76),
+    inset 0 0 22px rgba(43,178,70,.08)!important;
+}
+#world.active .v6118-boss-art::after{
+  content:""!important;
+  display:block!important;
+  position:absolute!important;
+  inset:0!important;
+  pointer-events:none!important;
+  background:
+    linear-gradient(180deg,rgba(0,0,0,.04) 0%,rgba(2,10,5,.02) 45%,rgba(2,8,4,.78) 100%)!important;
+}
+
+#world.active .v6118-boss-live{
+  position:absolute!important;
+  z-index:3!important;
+  top:6px!important;
+  left:7px!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  gap:4px!important;
+  padding:3px 6px!important;
+  border:1px solid #61e87b!important;
+  border-radius:999px!important;
+  background:rgba(4,35,12,.90)!important;
+  color:#a9ffb6!important;
+  font:950 5px/1 system-ui,sans-serif!important;
+  letter-spacing:.05em!important;
+  box-shadow:0 2px 8px rgba(0,0,0,.62),0 0 9px rgba(59,226,89,.18)!important;
+}
+#world.active .v6118-boss-live i{
+  width:6px!important;
+  height:6px!important;
+  border-radius:50%!important;
+  background:#55ef72!important;
+  box-shadow:0 0 7px #55ef72!important;
+  animation:v6118LiveDot 1.05s ease-in-out infinite!important;
+}
+
+#world.active .v6118-boss-name{
+  min-height:20px!important;
+  display:grid!important;
+  place-items:center!important;
+  padding:4px 3px 2px!important;
+  color:#86efa0!important;
+  font-size:6.2px!important;
+  line-height:1.05!important;
+  font-weight:1000!important;
+  text-transform:uppercase!important;
+  letter-spacing:.03em!important;
+}
+
+#world.active .v366-feature.boss.v6115-boss-open .v6115-boss-status{
+  min-height:22px!important;
+  display:grid!important;
+  place-items:center!important;
+  padding:2px 4px!important;
+  color:#d8e7d5!important;
+  font-size:5.4px!important;
+  line-height:1.08!important;
+  font-weight:850!important;
+  animation:none!important;
+  text-shadow:none!important;
+}
+
+#world.active .v366-feature.boss.v6115-boss-open .v366-go{
+  margin-top:3px!important;
+  border-color:#4ee36d!important;
+  background:linear-gradient(180deg,#2d9d43,#176428)!important;
+  color:#fff!important;
+  box-shadow:
+    inset 0 1px rgba(255,255,255,.18),
+    0 0 9px rgba(61,226,91,.20),
+    0 2px 5px #000!important;
+}
+
+/* Closed state stays quiet and clearly inactive. */
+#world.active .v366-feature.boss.v6115-boss-closed .v6118-boss-art{
+  filter:grayscale(.35) brightness(.58)!important;
+}
+#world.active .v366-feature.boss.v6115-boss-closed .v6118-boss-name{
+  color:#999f98!important;
+}
+#world.active .v366-feature.boss.v6115-boss-closed .v6115-boss-status{
+  color:#8d928c!important;
+}
+
+@media (prefers-reduced-motion: reduce){
+  #world.active .v366-feature.boss.v6115-boss-open,
+  #world.active .v6118-boss-live i{
+    animation:none!important;
+  }
+}
+</style>
+
+
+<style id="v6119-guild-online-layout-css">
+/* =========================================================
+   GUILD MEMBERS – final mobile-safe layout
+   avatar | player info | online-status
+   flags are always on their own second row
+   ========================================================= */
+#guild #v254GuildMembers .v254-member{
+  display:grid!important;
+  grid-template-columns:38px minmax(0,1fr) auto!important;
+  grid-template-areas:
+    "avatar main presence"
+    "avatar flags flags"!important;
+  column-gap:7px!important;
+  row-gap:5px!important;
+  align-items:center!important;
+  min-height:66px!important;
+  padding:7px!important;
+  overflow:visible!important;
+}
+
+#guild #v254GuildMembers .v254-member>img{
+  grid-area:avatar!important;
+  width:36px!important;
+  height:36px!important;
+  align-self:start!important;
+}
+
+#guild #v254GuildMembers .v254-member-main{
+  grid-area:main!important;
+  min-width:0!important;
+  overflow:visible!important;
+}
+
+#guild #v254GuildMembers .v254-member-name-line{
+  display:flex!important;
+  align-items:center!important;
+  gap:4px!important;
+  flex-wrap:wrap!important;
+  min-width:0!important;
+}
+
+#guild #v254GuildMembers .v254-member-name-line>b{
+  max-width:110px!important;
+  min-width:0!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  white-space:nowrap!important;
+  font-size:7.4px!important;
+}
+
+#guild #v254GuildMembers .v6119-member-presence{
+  grid-area:presence!important;
+  justify-self:end!important;
+  align-self:center!important;
+  min-width:62px!important;
+  position:relative!important;
+  z-index:4!important;
+}
+
+#guild #v254GuildMembers .v329-presence{
+  width:auto!important;
+  min-width:62px!important;
+  min-height:23px!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:4px!important;
+  padding:3px 7px!important;
+  border:1px solid #4d5b50!important;
+  border-radius:999px!important;
+  background:#0a110c!important;
+  color:#8e9790!important;
+  font-size:5.4px!important;
+  line-height:1!important;
+  font-weight:950!important;
+  white-space:nowrap!important;
+  overflow:visible!important;
+}
+
+#guild #v254GuildMembers .v329-presence i{
+  width:7px!important;
+  height:7px!important;
+  flex:0 0 7px!important;
+  border-radius:50%!important;
+  background:#757d78!important;
+  box-shadow:none!important;
+}
+
+#guild #v254GuildMembers .v329-presence.online{
+  border-color:#49bc5d!important;
+  background:linear-gradient(180deg,#12371b,#0a2110)!important;
+  color:#9ff2a8!important;
+  box-shadow:0 0 8px rgba(72,210,91,.15)!important;
+}
+
+#guild #v254GuildMembers .v329-presence.online i{
+  background:#55ef6b!important;
+  box-shadow:0 0 7px rgba(85,239,107,.78)!important;
+}
+
+#guild #v254GuildMembers .v254-member-flags{
+  grid-area:flags!important;
+  width:100%!important;
+  max-width:none!important;
+  min-width:0!important;
+  display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:5px!important;
+  padding:0!important;
+  justify-self:stretch!important;
+  overflow:visible!important;
+}
+
+#guild #v254GuildMembers .v254-member-flags .v254-flag{
+  width:100%!important;
+  min-width:0!important;
+  max-width:none!important;
+  min-height:22px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  padding:3px 4px!important;
+  font-size:4.5px!important;
+  line-height:1!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+}
+
+#guild #v254GuildMembers .v254-member-flags .v254-flag.on{
+  min-width:0!important;
+}
+
+/* Old pseudo presence dots/lines must not occupy extra room. */
+#guild #v254GuildMembers .v329-presence::before,
+#guild #v254GuildMembers .v329-presence::after{
+  content:none!important;
+  display:none!important;
+}
+
+@media(max-width:390px){
+  #guild #v254GuildMembers .v254-member{
+    grid-template-columns:32px minmax(0,1fr) 58px!important;
+    column-gap:5px!important;
+    padding:6px!important;
+  }
+  #guild #v254GuildMembers .v254-member>img{
+    width:30px!important;
+    height:30px!important;
+  }
+  #guild #v254GuildMembers .v254-member-name-line>b{
+    max-width:72px!important;
+    font-size:6.2px!important;
+  }
+  #guild #v254GuildMembers .v552-role{
+    font-size:4px!important;
+    padding:1px 3px!important;
+  }
+  #guild #v254GuildMembers .v6119-member-presence{
+    min-width:58px!important;
+  }
+  #guild #v254GuildMembers .v329-presence{
+    min-width:58px!important;
+    min-height:21px!important;
+    padding:3px 5px!important;
+    font-size:4.7px!important;
+  }
+  #guild #v254GuildMembers .v254-member-flags{
+    gap:3px!important;
+  }
+  #guild #v254GuildMembers .v254-member-flags .v254-flag{
+    min-height:20px!important;
+    padding:3px 2px!important;
+    font-size:4px!important;
+  }
+}
+</style>
+
+
+<style id="v6120-guild-performance-sort-css">
+#guild #v254GuildMembers{
+  contain:layout style!important;
+}
+#guild #v254GuildMembers::before{
+  content:"Sortiert: Gildenrolle → Level";
+  display:block!important;
+  margin:0 0 5px!important;
+  padding:4px 7px!important;
+  border:1px solid #30583a!important;
+  border-radius:8px!important;
+  background:#08150c!important;
+  color:#91b998!important;
+  font:800 5px/1.2 system-ui,sans-serif!important;
+}
+</style>
+
 </head>
 <body>
 <div class="app">
@@ -16460,7 +16831,7 @@ function v095DecorateXp(){
     const parent=node.parentElement;
     if(!parent)continue;
     if(['SCRIPT','STYLE','TEXTAREA','INPUT','OPTION'].includes(parent.tagName))continue;
-    if(parent.closest('.v095-xp2,.v094-event-bonus,.v366-event,.v349-event,.v372-topbar,.v371-topbar'))continue;
+    if(parent.closest('.v095-xp2,.v094-event-bonus,.v366-event,.v349-event,.v372-topbar,.v371-topbar,.v690-events-card,.v6115-event-row'))continue;
 
     const text=(node.nodeValue||'').trim();
     if(!text)continue;
@@ -39159,7 +39530,18 @@ function v254RenderGuild(){
   document.querySelector('#v254GoldBonus').textContent=`Stufe ${gold} · +${v254BonusPct(gold)}%`;
   document.querySelector('#v254UpgradeXp').textContent=`${v254UpgradeCost(xp)} 🌿`;
   document.querySelector('#v254UpgradeGold').textContent=`${v254UpgradeCost(gold)} 🌿`;
-  document.querySelector('#v254GuildMembers').innerHTML=v254Members.length?v254Members.map(v254MemberHtml).join(''):'<div class="empty">Noch keine Mitglieder.</div>';
+  /* V6.120: Anführer -> Offiziere -> Mitglieder, then highest level first. */
+  const v6120RoleRank={leader:0,officer:1,member:2};
+  const v6120Members=[...v254Members].sort((a,b)=>{
+    const ra=v6120RoleRank[String(a?.role||'member')]??9;
+    const rb=v6120RoleRank[String(b?.role||'member')]??9;
+    if(ra!==rb)return ra-rb;
+    const la=Number(a?.profile?.level)||0;
+    const lb=Number(b?.profile?.level)||0;
+    if(la!==lb)return lb-la;
+    return String(a?.profile?.character_name||'').localeCompare(String(b?.profile?.character_name||''),'de');
+  });
+  document.querySelector('#v254GuildMembers').innerHTML=v6120Members.length?v6120Members.map(v254MemberHtml).join(''):'<div class="empty">Noch keine Mitglieder.</div>';
 
   const attack=!!v254Membership.attack_signed;
   const defense=!!v254Membership.defense_signed;
@@ -53804,13 +54186,18 @@ setTimeout(()=>{try{v322InstallMenuEntry();v322InstallHarzPlus()}catch(e){consol
 
   function v329IsOnline(m){
     try{
-      if(typeof v073User!=='undefined' && v073User && m?.user_id===v073User.id)return true;
+      if(typeof v073User!=='undefined' && v073User && String(m?.user_id||'')===String(v073User.id||''))return true;
       const stamp=m?.profile?.updated_at;
       if(!stamp)return false;
       const ts=new Date(stamp).getTime();
       return Number.isFinite(ts) && (Date.now()-ts)<=V329_ONLINE_MS;
     }catch(e){return false}
   }
+
+  /* V6.119: the final V5.54 guild renderer lives outside this IIFE.
+     Export the presence authority explicitly instead of relying on a scoped name. */
+  window.v329IsOnline=v329IsOnline;
+  window.v329PresenceHeartbeat=v329PresenceHeartbeat;
 
   async function v329PresenceHeartbeat(){
     if(v329HeartbeatBusy || document.hidden)return;
@@ -53825,12 +54212,23 @@ setTimeout(()=>{try{v322InstallMenuEntry();v322InstallHarzPlus()}catch(e){consol
 
       /* Keep local guild cache immediately in sync without waiting for reload. */
       if(Array.isArray(v254Members)){
-        const own=v254Members.find(x=>x.user_id===v073User.id);
+        const own=v254Members.find(x=>String(x.user_id||'')===String(v073User.id||''));
         if(own){
           own.profile??={id:v073User.id};
           own.profile.updated_at=now;
         }
       }
+
+      /* Don't wait for the next full guild reload to show our own green badge. */
+      try{
+        const ownRow=document.querySelector(`#guild .v254-member[data-v554-user="${CSS.escape(String(v073User.id||''))}"]`);
+        const badge=ownRow?.querySelector('.v329-presence');
+        if(badge){
+          badge.classList.remove('offline');
+          badge.classList.add('online');
+          badge.innerHTML='<i></i><span>Online</span>';
+        }
+      }catch(_){}
     }catch(e){
       console.warn('V4.02 presence heartbeat',e);
     }finally{
@@ -53935,16 +54333,15 @@ setTimeout(()=>{try{v322InstallMenuEntry();v322InstallHarzPlus()}catch(e){consol
   /* Ping once per minute. A player is online for at most two minutes after
      the last successful ping, so crashes/closed tabs cannot leave "online"
      stuck forever. */
-  setInterval(v329PresenceHeartbeat,60000);
-  setTimeout(v329PresenceHeartbeat,1200);
-
-  /* While the guild screen is open, refresh the member presence once per minute. */
+  /* V6.120: one cadence for heartbeat + visible member refresh. */
   setInterval(()=>{
+    v329PresenceHeartbeat();
     const guild=document.querySelector('#guild');
     if(!guild?.classList.contains('active'))return;
     if(Date.now()-v329LastGuildRefresh<55000)return;
     v254LoadGuild();
-  },15000);
+  },60000);
+  setTimeout(v329PresenceHeartbeat,1200);
 
   document.addEventListener('visibilitychange',()=>{
     if(!document.hidden){
@@ -59164,9 +59561,12 @@ html,body{
 
         <article class="v366-panel v366-feature boss ${bossActive?'v6115-boss-open':'v6115-boss-closed'}">
           <h2>Weltboss</h2>
-          <div class="v366-feature-art"></div>
-          <div class="v690-mini-status v6115-boss-status">${bossActive?`🟢 OFFEN · ${bossFree()?'Gratisversuch bereit':'weiterer Versuch 10 Harz'}`:'🔒 GESCHLOSSEN · Kein Weltboss-Event'}</div>
-          <button class="v366-go" data-boss="1" ${bossActive?'':'disabled'}>${bossActive?'Öffnen':'Geschlossen'}</button>
+          <div class="v366-feature-art v6118-boss-art">
+            ${bossActive?`<span class="v6118-boss-live"><i></i> EVENT AKTIV</span>`:''}
+          </div>
+          <div class="v6118-boss-name">${bossActive?'Smaragd-Koloss':'Kein Weltboss aktiv'}</div>
+          <div class="v690-mini-status v6115-boss-status">${bossActive?(bossFree()?'Gratisversuch bereit':'Nächster Versuch · 10 Harz'):'Warte auf das nächste Boss-Event'}</div>
+          <button class="v366-go" data-boss="1" ${bossActive?'':'disabled'}>${bossActive?'Herausfordern':'Geschlossen'}</button>
         </article>
 
         <article class="v366-panel v366-feature book"><h2>Illegales Buch</h2><div class="v366-feature-art"></div><div class="v690-mini-status">⭐ ${ac.done}/${ac.total||'—'} Erfolge</div><button class="v366-go" data-book="1">Öffnen</button></article>
@@ -86844,8 +87244,10 @@ html.v495-level-syncing #v420LevelUpOverlay{
 
       const grow=document.getElementById('v492CharGrowBuff');
       const buds=document.querySelector('#character .v204-avatar-badge');
-      const passive=document.getElementById('v4156ClassPassive');
-      [grow,buds,passive].forEach(n=>move(secondary,n));
+      /* V6.117: Class passive is owned by V5.14's visible footer row.
+         Do NOT move it back into .v510-secondary, because that donor area is
+         hidden in the final Heldenquartier layout. */
+      [grow,buds].forEach(n=>move(secondary,n));
 
       const bottom=hero.querySelector('.v459-hero-bottom,.char-bottom');
       const boxes=bottom?[...bottom.querySelectorAll('.combat-row .combat-box')]:[];
@@ -93715,17 +94117,9 @@ window.__V529_HEADER_RUNTIME_RETIRED__=true;
   }
   function paint(){ensureTitle();hero();pairAdmin()}
   patchMembers();
-  if(typeof v254RenderGuild==='function'&&!window.__v552GuildRenderWrapped){
-    const base=v254RenderGuild;
-    v254RenderGuild=function(){const r=base.apply(this,arguments);requestAnimationFrame(paint);return r};
-    try{window.v254RenderGuild=v254RenderGuild}catch(e){}
-    window.__v552GuildRenderWrapped=true;
-  }
+  /* V6.120: V5.54 is the final visual owner. Keep only one compatibility pass. */
   paint();
   document.addEventListener('DOMContentLoaded',()=>requestAnimationFrame(paint),{once:true});
-  window.addEventListener('pageshow',()=>requestAnimationFrame(paint),{passive:true});
-  document.addEventListener('click',e=>{if(e.target?.closest?.('[data-screen="guild"],.v254-tab'))setTimeout(paint,40)},true);
-  [150,650,1600].forEach(ms=>setTimeout(paint,ms));
 })();
 </script>
 <!-- ===== /V5.52 GILDE GROW LEGENDS REDESIGN ===== -->
@@ -93891,23 +94285,9 @@ window.__V529_HEADER_RUNTIME_RETIRED__=true;
     if(mgmt.parentElement!==grid)grid.appendChild(mgmt);
   }
   function paint(){ensureTitle();buildHero();moveProgress();markMemberLayout();adminGrid()}
-  if(typeof v254RenderGuild==='function'&&!window.__v553GuildWrapped){
-    const base=v254RenderGuild;
-    v254RenderGuild=function(){const r=base.apply(this,arguments);requestAnimationFrame(()=>{paint();setTimeout(paint,50)});return r};
-    try{window.v254RenderGuild=v254RenderGuild}catch(e){}
-    window.__v553GuildWrapped=true;
-  }
-  if(typeof v257RenderManagement==='function'&&!window.__v553MgmtWrapped){
-    const bm=v257RenderManagement;
-    v257RenderManagement=function(){const r=bm.apply(this,arguments);requestAnimationFrame(()=>{markMemberLayout();adminGrid()});return r};
-    try{window.v257RenderManagement=v257RenderManagement}catch(e){}
-    window.__v553MgmtWrapped=true;
-  }
+  /* V6.120: old strong-layout patch is one-time compatibility only. */
   paint();
   document.addEventListener('DOMContentLoaded',()=>requestAnimationFrame(paint),{once:true});
-  window.addEventListener('pageshow',()=>requestAnimationFrame(paint),{passive:true});
-  document.addEventListener('click',e=>{if(e.target?.closest?.('[data-screen="guild"],.v254-tab'))setTimeout(paint,60)},true);
-  [120,500,1100,2200].forEach(ms=>setTimeout(paint,ms));
 })();
 </script>
 <!-- ===== /V5.53 GILDE STRONG LAYOUT FIX ===== -->
@@ -94148,8 +94528,25 @@ window.__V529_HEADER_RUNTIME_RETIRED__=true;
       const cls=p?.class_id||'grower';
       const avatar=typeof v080AvatarFor==='function'?v080AvatarFor(cls):'';
       const role=m?.role==='leader'?'Anführer':m?.role==='officer'?'Offizier':'Mitglied';
-      const online=typeof v329IsOnline==='function'?!!v329IsOnline(m):false;
-      return `<div class="v254-member" data-v554-user="${esc(m?.user_id||'')}"><img src="${esc(avatar)}" alt=""><div class="v254-member-main"><div class="v254-member-name-line"><b>${esc(p?.character_name||'Spieler')}</b><span class="v552-role ${esc(m?.role||'member')}">${m?.role==='leader'?'👑 ':m?.role==='officer'?'⭐ ':''}${role}</span><span class="v329-presence ${online?'online':'offline'}">${online?'● Online':'● Offline'}</span></div><small>${esc(p?.class_name||'')} · Lv. ${Number(p?.level)||1}</small></div><div class="v254-member-flags"><span class="v254-flag ${m?.attack_signed?'on':''}">⚔ ${m?.attack_signed?'Angriff':'—'}</span><span class="v254-flag ${m?.defense_signed?'on':''}">🛡 ${m?.defense_signed?'Verteidigung':'—'}</span><span class="v254-flag ${m?.boss_signed?'on':''}">👹 ${m?.boss_signed?'Boss':'—'}</span></div></div>`;
+      const online=typeof window.v329IsOnline==='function'?!!window.v329IsOnline(m):false;
+      return `<div class="v254-member" data-v554-user="${esc(m?.user_id||'')}">
+        <img src="${esc(avatar)}" alt="">
+        <div class="v254-member-main">
+          <div class="v254-member-name-line">
+            <b>${esc(p?.character_name||'Spieler')}</b>
+            <span class="v552-role ${esc(m?.role||'member')}">${m?.role==='leader'?'👑 ':m?.role==='officer'?'⭐ ':''}${role}</span>
+          </div>
+          <small>${esc(p?.class_name||'')} · Lv. ${Number(p?.level)||1}</small>
+        </div>
+        <div class="v6119-member-presence">
+          <span class="v329-presence ${online?'online':'offline'}"><i></i><span>${online?'Online':'Offline'}</span></span>
+        </div>
+        <div class="v254-member-flags">
+          <span class="v254-flag ${m?.attack_signed?'on':''}">⚔ ${m?.attack_signed?'Angriff':'—'}</span>
+          <span class="v254-flag ${m?.defense_signed?'on':''}">🛡 ${m?.defense_signed?'Verteidigung':'—'}</span>
+          <span class="v254-flag ${m?.boss_signed?'on':''}">👹 ${m?.boss_signed?'Boss':'—'}</span>
+        </div>
+      </div>`;
     };
     try{window.v254MemberHtml=renderer;v254MemberHtml=renderer}catch(e){window.v254MemberHtml=renderer}
   }
@@ -94202,10 +94599,19 @@ window.__V529_HEADER_RUNTIME_RETIRED__=true;
     try{can=typeof v257CanManage==='function'&&v257CanManage();isLeader=typeof v257IsLeader==='function'&&v257IsLeader()}catch(e){}
     if(!can)return;
     const me=String(typeof v073User!=='undefined'&&v073User?.id||'');
-    const others=st.members.filter(m=>String(m?.user_id||'')!==me);
+    const rank={leader:0,officer:1,member:2};
+    const others=st.members
+      .filter(m=>String(m?.user_id||'')!==me)
+      .sort((a,b)=>{
+        const ra=rank[String(a?.role||'member')]??9, rb=rank[String(b?.role||'member')]??9;
+        if(ra!==rb)return ra-rb;
+        const la=Number(a?.profile?.level)||0, lb=Number(b?.profile?.level)||0;
+        if(la!==lb)return lb-la;
+        return String(a?.profile?.character_name||'').localeCompare(String(b?.profile?.character_name||''),'de');
+      });
     if(!others.length)return;
     const wrap=document.createElement('div');wrap.className='v554-member-admin';
-    wrap.innerHTML=`<div class="v554-member-admin-title">👥 Mitglied verwalten</div><div class="v554-member-admin-row"><select class="v554-admin-target">${others.map(m=>{const p=m?.profile||(Array.isArray(m?.profiles)?m.profiles[0]:m?.profiles)||{};return `<option value="${esc(m.user_id||'')}">${esc(p.character_name||'Spieler')} · ${m.role==='officer'?'Offizier':'Mitglied'}</option>`}).join('')}</select>${isLeader?'<button type="button" class="v554-admin-role">Rolle wechseln</button>':''}<button type="button" class="v554-admin-kick bad">Entfernen</button></div>`;
+    wrap.innerHTML=`<div class="v554-member-admin-title">👥 Mitglied verwalten</div><div class="v554-member-admin-row"><select class="v554-admin-target">${others.map(m=>{const p=m?.profile||(Array.isArray(m?.profiles)?m.profiles[0]:m?.profiles)||{};return `<option value="${esc(m.user_id||'')}">${esc(p.character_name||'Spieler')} · Lv. ${Number(p.level)||1} · ${m.role==='leader'?'Anführer':m.role==='officer'?'Offizier':'Mitglied'}</option>`}).join('')}</select>${isLeader?'<button type="button" class="v554-admin-role">Rolle wechseln</button>':''}<button type="button" class="v554-admin-kick bad">Entfernen</button></div>`;
     box.prepend(wrap);
     const sel=wrap.querySelector('.v554-admin-target');
     wrap.querySelector('.v554-admin-role')?.addEventListener('click',()=>{
@@ -94225,7 +94631,15 @@ window.__V529_HEADER_RUNTIME_RETIRED__=true;
 
   if(typeof v254RenderGuild==='function'&&!window.__v554GuildWrapped){
     const base=v254RenderGuild;
-    v254RenderGuild=function(){const r=base.apply(this,arguments);requestAnimationFrame(()=>{paint();setTimeout(paint,40)});return r};
+    let paintQueued=false;
+    v254RenderGuild=function(){
+      const r=base.apply(this,arguments);
+      if(!paintQueued){
+        paintQueued=true;
+        requestAnimationFrame(()=>{paintQueued=false;paint()});
+      }
+      return r;
+    };
     try{window.v254RenderGuild=v254RenderGuild}catch(e){}
     window.__v554GuildWrapped=true;
   }
@@ -94236,12 +94650,10 @@ window.__V529_HEADER_RUNTIME_RETIRED__=true;
     window.__v554GuildMgmtWrapped=true;
   }
 
-  /* Re-render once so member rows use the V5.54 renderer instead of legacy markup. */
-  setTimeout(()=>{try{if(typeof v254RenderGuild==='function')v254RenderGuild()}catch(e){} paint()},80);
+  /* V6.120: one deterministic startup pass instead of a repaint burst. */
+  setTimeout(()=>{try{if(typeof v254RenderGuild==='function')v254RenderGuild()}catch(e){}},80);
   document.addEventListener('DOMContentLoaded',()=>requestAnimationFrame(paint),{once:true});
-  window.addEventListener('pageshow',()=>requestAnimationFrame(paint),{passive:true});
-  document.addEventListener('click',e=>{if(e.target?.closest?.('[data-screen="guild"],.v254-tab'))setTimeout(paint,50)},true);
-  [250,800,1800].forEach(ms=>setTimeout(paint,ms));
+  window.addEventListener('pageshow',()=>{if(document.getElementById('guild')?.classList.contains('active'))requestAnimationFrame(paint)},{passive:true});
 })();
 </script>
 <!-- ===== /V5.54 GILDE REFERENCE LAYOUT OWNER ===== -->
@@ -94458,10 +94870,18 @@ window.__V529_HEADER_RUNTIME_RETIRED__=true;
   document.addEventListener('DOMContentLoaded',()=>requestAnimationFrame(paint),{once:true});
   window.addEventListener('pageshow',()=>requestAnimationFrame(paint),{passive:true});
   document.addEventListener('click',e=>{if(e.target?.closest?.('[data-screen="guild"],.v254-tab'))setTimeout(paint,40)},true);
-  [120,400,900,1800].forEach(ms=>setTimeout(paint,ms));
+  setTimeout(paint,120);
   if(typeof v254RenderGuild==='function'&&!window.__v555GuildProgressWrapped){
     const base=v254RenderGuild;
-    v254RenderGuild=function(){const r=base.apply(this,arguments);requestAnimationFrame(()=>setTimeout(paint,25));return r};
+    let queued=false;
+    v254RenderGuild=function(){
+      const r=base.apply(this,arguments);
+      if(!queued){
+        queued=true;
+        requestAnimationFrame(()=>{queued=false;paint()});
+      }
+      return r;
+    };
     try{window.v254RenderGuild=v254RenderGuild}catch(e){}
     window.__v555GuildProgressWrapped=true;
   }
@@ -94883,26 +95303,24 @@ window.__V529_HEADER_RUNTIME_RETIRED__=true;
 
   function paint(){syncEmptyRequests()}
   paint();
-  document.addEventListener('DOMContentLoaded',()=>requestAnimationFrame(paint),{once:true});
-  window.addEventListener('pageshow',()=>requestAnimationFrame(paint),{passive:true});
-  document.addEventListener('click',e=>{
-    if(e.target?.closest?.('#v380RefreshGuildRequests,[data-screen="guild"],.v254-tab')){
-      setTimeout(paint,50);
-      setTimeout(paint,350);
-    }
-  },true);
 
-  const root=document.getElementById('guild');
-  if(root&&typeof MutationObserver!=='undefined'){
-    let queued=false;
-    const obs=new MutationObserver(()=>{
-      if(queued)return;
-      queued=true;
-      requestAnimationFrame(()=>{queued=false;paint()});
-    });
-    obs.observe(root,{childList:true,subtree:true,characterData:true});
+  /* V6.120: no whole-guild observer. Update exactly when requests rerender. */
+  if(typeof v257RenderRequests==='function'&&!window.__v6120RequestEmptyHook){
+    const base=v257RenderRequests;
+    const wrapped=function(){
+      const r=base.apply(this,arguments);
+      requestAnimationFrame(paint);
+      return r;
+    };
+    try{v257RenderRequests=wrapped}catch(e){}
+    window.v257RenderRequests=wrapped;
+    window.__v6120RequestEmptyHook=true;
   }
-  [80,250,650,1400].forEach(ms=>setTimeout(paint,ms));
+
+  document.addEventListener('DOMContentLoaded',()=>requestAnimationFrame(paint),{once:true});
+  document.addEventListener('click',e=>{
+    if(e.target?.closest?.('#v380RefreshGuildRequests'))requestAnimationFrame(paint);
+  },true);
 })();
 </script>
 <!-- ===== /V5.59 GILDE FINAL EMPTY-REQUEST + ADMIN-TEXT FIX ===== -->
@@ -108212,8 +108630,11 @@ function paintSlots(){
   });
 
   try{window.v470PaintEquipmentSlots?.()}catch(e){}
-  try{window.v514ApplyHeroReference?.()}catch(e){}
   try{window.v510BuildCharacter?.()}catch(e){}
+  try{window.v4156PaintClassPassive?.()}catch(e){}
+  /* Final layout owner MUST run last, otherwise older hero code can put the
+     passive back into the hidden .v510-secondary donor. */
+  try{window.v514ApplyHeroReference?.()}catch(e){}
   return true;
 }
 window.v6102PaintEquipmentSlots=paintSlots;
@@ -109624,6 +110045,146 @@ window.__V6115_EVENTS_BOSS_PET_STABILITY__=true;
 
 <script id="v6116-event-text-boss-pulse-marker">
 window.__V6116_EVENT_TEXT_BOSS_PULSE__=true;
+</script>
+
+
+<style id="v6117-class-passive-prismatic-css">
+#character.v514-reference-hero .v514-passive-host{
+  min-width:0!important;
+  flex:1 1 auto!important;
+}
+#character.v514-reference-hero .v514-passive-host > #v4156ClassPassive{
+  display:block!important;
+  visibility:visible!important;
+  opacity:1!important;
+  position:relative!important;
+  width:100%!important;
+  height:auto!important;
+}
+</style>
+
+<script id="v6117-class-passive-prismatic-fix">
+(()=>{
+'use strict';
+if(window.__V6117_CLASS_PASSIVE_PRISMATIC_FIX__)return;
+window.__V6117_CLASS_PASSIVE_PRISMATIC_FIX__=true;
+
+function repair(){
+  const character=document.getElementById('character');
+  if(!character)return false;
+
+  try{window.v4156PaintClassPassive?.()}catch(e){}
+  try{window.v514ApplyHeroReference?.()}catch(e){}
+
+  const root=document.getElementById('v510HeroRoot');
+  const host=root?.querySelector('.v514-passive-host');
+  let passive=document.getElementById('v4156ClassPassive');
+
+  /* In case an older render removed the node entirely, recreate it through
+     the authoritative painter, then place it in the visible final host. */
+  if(!passive){
+    try{window.v4156PaintClassPassive?.()}catch(e){}
+    passive=document.getElementById('v4156ClassPassive');
+  }
+  if(host&&passive&&passive.parentElement!==host)host.appendChild(passive);
+
+  return !!(host&&passive&&passive.parentElement===host);
+}
+window.v6117RepairClassPassive=repair;
+
+function wrap(name){
+  try{
+    const fn=window[name];
+    if(typeof fn!=='function'||fn.__v6117Passive)return;
+    const wrapped=function(){
+      const r=fn.apply(this,arguments);
+      Promise.resolve(r).finally(()=>{
+        requestAnimationFrame(()=>{
+          try{window.v6102PaintEquipmentSlots?.()}catch(e){}
+          repair();
+        });
+      });
+      return r;
+    };
+    wrapped.__v6117Passive=true;
+    window[name]=wrapped;
+    try{
+      if(name==='equip')equip=wrapped;
+      if(name==='unequip')unequip=wrapped;
+      if(name==='sellEquipped')sellEquipped=wrapped;
+    }catch(e){}
+  }catch(e){}
+}
+
+['equip','unequip','sellEquipped'].forEach(wrap);
+
+/* Harzschmiede can create a prismatic item and immediately trigger character
+   refresh paths. Repair once after an actual craft as well. */
+try{
+  if(typeof window.v488ForgeRender==='function'&&!window.v488ForgeRender.__v6117Passive){
+    const base=window.v488ForgeRender;
+    const wrapped=function(){
+      const r=base.apply(this,arguments);
+      if(document.getElementById('character')?.classList.contains('active')){
+        requestAnimationFrame(repair);
+      }
+      return r;
+    };
+    wrapped.__v6117Passive=true;
+    window.v488ForgeRender=wrapped;
+  }
+}catch(e){}
+
+/* Character screen entry is another deterministic repair point. */
+try{
+  if(typeof v032Go==='function'&&!window.__v6117Go){
+    const base=v032Go;
+    const wrapped=function(id){
+      const r=base.apply(this,arguments);
+      if(String(id)==='character')requestAnimationFrame(repair);
+      return r;
+    };
+    try{v032Go=wrapped}catch(e){}
+    window.v032Go=wrapped;
+    window.__v6117Go=true;
+  }
+}catch(e){}
+
+document.addEventListener('DOMContentLoaded',()=>requestAnimationFrame(repair),{once:true});
+window.addEventListener('pageshow',()=>{
+  if(document.getElementById('character')?.classList.contains('active'))requestAnimationFrame(repair);
+},{passive:true});
+window.addEventListener('growlegends:account-ready',()=>setTimeout(repair,120));
+
+window.v6117ClassPassiveQA=()=>({
+  exists:!!document.getElementById('v4156ClassPassive'),
+  hostExists:!!document.querySelector('#v510HeroRoot .v514-passive-host'),
+  inVisibleHost:
+    document.getElementById('v4156ClassPassive')?.parentElement===
+    document.querySelector('#v510HeroRoot .v514-passive-host'),
+  secondaryHidden:(()=>{
+    const el=document.querySelector('#v510HeroRoot .v510-secondary');
+    if(!el)return null;
+    try{return getComputedStyle(el).display==='none'}catch(e){return null}
+  })(),
+  prismaticEquipped:Object.values(s?.equipment||{}).some(it=>it?.v488Prismatic===true||String(it?.quality||'').toLowerCase()==='prismatic')
+});
+})();
+</script>
+
+
+<script id="v6118-event-x2-worldboss-marker">
+window.__V6118_EVENT_X2_WORLDBOSS_FIX__=true;
+</script>
+
+
+<script id="v6119-guild-online-marker">
+window.__V6119_GUILD_ONLINE_MOBILE_FIX__=true;
+</script>
+
+
+<script id="v6120-guild-performance-sort-marker">
+window.__V6120_GUILD_PERFORMANCE_SORT__=true;
 </script>
 
 </body>
