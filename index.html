@@ -111029,5 +111029,108 @@ window.v6163QA=()=>({version:V.label,active,tabbar:!!document.querySelector('#gr
 </script>
 <!-- ===== /V4.164 FINAL ===== -->
 
+
+
+<!-- ===== PLAY STORE FREE BUILD GUARD 2026-09-11 ===== -->
+<style id="gl-playstore-free-guard-css">
+/* Free Play-Store build: keep Harz-Taler as earnable game currency, hide only Echtgeld purchase UI. */
+#harzDealer,
+#v032MenuPanel [data-screen="harzDealer"],
+.top-menu-panel [data-screen="harzDealer"],
+[data-v341-harz-menu],
+#v322HarzPlus,
+[data-v322-buy],
+[data-v567-buy],
+[data-v338-buy],
+[data-v339-buy]{display:none!important}
+</style>
+<script id="gl-playstore-free-guard-js">
+(()=>{'use strict';
+ if(window.__GL_PLAYSTORE_FREE_GUARD__)return;
+ window.__GL_PLAYSTORE_FREE_GUARD__=true;
+ window.GROW_LEGENDS_PLAYSTORE_FREE=true;
+
+ const BLOCKED='harzDealer';
+ function hidePurchaseUi(){
+   try{
+     document.getElementById(BLOCKED)?.classList.remove('active');
+     document.querySelectorAll(
+       '#v032MenuPanel [data-screen="harzDealer"],.top-menu-panel [data-screen="harzDealer"],[data-v341-harz-menu],#v322HarzPlus,[data-v322-buy],[data-v567-buy],[data-v338-buy],[data-v339-buy]'
+     ).forEach(el=>{
+       el.hidden=true;
+       el.setAttribute('aria-hidden','true');
+       if('disabled' in el)el.disabled=true;
+       el.tabIndex=-1;
+     });
+   }catch(_){}
+ }
+ function backToWorld(){
+   try{
+     document.querySelectorAll('.screen').forEach(x=>x.classList.remove('active'));
+     document.getElementById('world')?.classList.add('active');
+     document.querySelectorAll('.top-menu-item').forEach(x=>x.classList.toggle('active',x.dataset.screen==='world'));
+     try{typeof render==='function'&&render()}catch(_){}
+     window.scrollTo({top:0,behavior:'auto'});
+   }catch(_){}
+ }
+ function blockedNotice(){
+   const msg='Echtgeld-Käufe sind in dieser kostenlosen Play-Store-Version noch nicht verfügbar.';
+   try{if(typeof v115Alert==='function')return v115Alert(msg,'Grow Legends','info')}catch(_){}
+   try{if(typeof v063Toast==='function')return v063Toast('Noch nicht verfügbar','info',msg)}catch(_){}
+ }
+
+ /* Block the current global navigation path without changing the rest of the menu system. */
+ try{
+   if(typeof window.v032Go==='function'&&!window.v032Go.__glFreeWrapped){
+     const original=window.v032Go;
+     const wrapped=function(id){if(id===BLOCKED){backToWorld();blockedNotice();return false}return original.apply(this,arguments)};
+     wrapped.__glFreeWrapped=true;
+     window.v032Go=wrapped;
+   }
+ }catch(_){}
+ try{
+   if(typeof window.goScreen==='function'&&!window.goScreen.__glFreeWrapped){
+     const original=window.goScreen;
+     const wrapped=function(id){if(id===BLOCKED){backToWorld();blockedNotice();return false}return original.apply(this,arguments)};
+     wrapped.__glFreeWrapped=true;
+     window.goScreen=wrapped;
+   }
+ }catch(_){}
+
+ /* Older dealer entry points exist in legacy layers; neutralize them for this build. */
+ ['v322OpenDealer','v338OpenDealer','v339OpenDealer','v567OpenDealer'].forEach(name=>{
+   try{if(typeof window[name]==='function')window[name]=function(){backToWorld();blockedNotice();return false}}catch(_){}
+ });
+
+ /* Capture dynamically recreated legacy buttons before their old handlers can run. */
+ document.addEventListener('click',e=>{
+   const t=e.target instanceof Element?e.target:null;if(!t)return;
+   const blocked=t.closest(
+     '[data-screen="harzDealer"],[data-v341-harz-menu],#v322HarzPlus,[data-v322-buy],[data-v567-buy],[data-v338-buy],[data-v339-buy]'
+   );
+   if(!blocked)return;
+   e.preventDefault();e.stopImmediatePropagation();e.stopPropagation();
+   backToWorld();blockedNotice();
+ },true);
+
+ let queued=false;
+ const queueHide=()=>{if(queued)return;queued=true;requestAnimationFrame(()=>{queued=false;hidePurchaseUi()})};
+ try{new MutationObserver(queueHide).observe(document.documentElement,{childList:true,subtree:true})}catch(_){}
+ document.addEventListener('DOMContentLoaded',hidePurchaseUi,{once:true});
+ window.addEventListener('pageshow',hidePurchaseUi,{passive:true});
+ window.addEventListener('growlegends:account-ready',hidePurchaseUi);
+ [0,250,1000,3000,8000].forEach(ms=>setTimeout(hidePurchaseUi,ms));
+ hidePurchaseUi();
+
+ window.__GL_PLAYSTORE_FREE_QA__=()=>({
+   freeBuild:window.GROW_LEGENDS_PLAYSTORE_FREE===true,
+   dealerVisible:!!(document.getElementById(BLOCKED)&&getComputedStyle(document.getElementById(BLOCKED)).display!=='none'),
+   visibleDealerButtons:[...document.querySelectorAll('[data-screen="harzDealer"],#v322HarzPlus,[data-v322-buy],[data-v567-buy],[data-v338-buy],[data-v339-buy]')].filter(x=>getComputedStyle(x).display!=='none'&&!x.hidden).length,
+   harzCurrencyPreserved:typeof s==='object'&&s!==null&&Object.prototype.hasOwnProperty.call(s,'harzTaler')
+ });
+})();
+</script>
+<!-- ===== /PLAY STORE FREE BUILD GUARD ===== -->
+
 </body>
 </html>
