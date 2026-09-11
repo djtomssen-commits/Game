@@ -2896,14 +2896,14 @@ function renderClassAvatar(){
   bruiser:{face:'🧙‍♂️',prop:'💨',leaf:'🔮',title:'Bong-Magier',sub:'Meister des Nebelzirkels'},
   scout:{face:'🧝‍♂️',prop:'🏹',leaf:'🍃',title:'Blatt-Schütze',sub:'Jäger des Grünpfeils'}
  }[s.playerClass]||{face:'❓',prop:'🌱',leaf:'',title:'Klasse wählen',sub:'Wähle deine Klasse im Heldenquartier'};
- const xpNeed=s.level*100,pct=Math.min(100,(s.xp/xpNeed)*100);
+ const xpNeedValue=(typeof xpNeed==='function'?xpNeed():Math.max(100,(Number(s.level)||1)*100)),pct=Math.min(100,(s.xp/xpNeedValue)*100);
  document.querySelector('#classAvatarBig')&&(document.querySelector('#classAvatarBig').textContent=data.face);
  document.querySelector('#avatarProp')&&(document.querySelector('#avatarProp').textContent=data.prop);
  document.querySelector('#avatarLeaf')&&(document.querySelector('#avatarLeaf').textContent=data.leaf);
  document.querySelector('#avatarTitle')&&(document.querySelector('#avatarTitle').textContent=data.title);
  document.querySelector('#avatarSubtitle')&&(document.querySelector('#avatarSubtitle').textContent=data.sub);
  document.querySelector('#centerLevel')&&(document.querySelector('#centerLevel').textContent=s.level);
- document.querySelector('#centerXpText')&&(document.querySelector('#centerXpText').textContent=`${s.xp} / ${xpNeed}`);
+ document.querySelector('#centerXpText')&&(document.querySelector('#centerXpText').textContent=`${s.xp} / ${xpNeedValue}`);
  document.querySelector('#centerXpFill')&&(document.querySelector('#centerXpFill').style.width=pct+'%');
  document.querySelector('#topHarz')&&(document.querySelector('#topHarz').textContent=s.harzTaler);
 }
@@ -73322,7 +73322,7 @@ html.v481-hidden *,html.v481-hidden *::before,html.v481-hidden *::after{animatio
       return {type,icon:'🪙',title:`+${n.toLocaleString('de-DE')} Gold`,detail:'Direkt deinem Goldbestand gutgeschrieben.',amount:n};
     }
     if(type==='xp'){
-      let need=100*lvl;try{need=Math.max(100,Number(xpNeed())||need)}catch(e){}
+      const need=Math.max(100,100*lvl); /* V4.167: bonus XP stays on legacy reward scale, not on long-term level requirement */
       const n=Math.max(50,Math.round(need*(.22+Math.random()*.13)));
       return {type,icon:'⭐',title:`+${n.toLocaleString('de-DE')} EXP`,detail:'Erfahrung für deinen aktuellen Charakter.',amount:n};
     }
@@ -74756,7 +74756,7 @@ body.v495-seed-open{overflow:hidden!important}
    T('Grow-Buff','Wundertüte-Altbuff deaktiviert',()=>typeof v077Buff!=='function'||v077Buff()==null);
 
    T('Ökonomie','Kaufbare Grow-Samen bleiben Nebenprogression',()=>{const arr=Object.values(seedTypes||{}).filter(d=>Number(d.buy)>0&&Number(d.growMs)>0&&Number(d.sell)>=0);if(!arr.length)return false;const lvl=300,q=1.30,pot=1.5,mastery=1.03,speed=.60;const questBase=Math.round(35+lvl*14+Math.pow(lvl,1.15)*2.2),questHourly=Math.round(questBase*1.5*2);const worst=Math.max(...arr.map(d=>{const value=Number(d.buy)+Number(d.sell)*.12*q*(.75+lvl*.0032)*pot*mastery;const net=Math.max(0,value-Number(d.buy));return net*6*3600000/(Number(d.growMs)*speed)}));return{pass:worst<=questHourly*.25,detail:`Max. Grow-Netto ~${Math.round(worst).toLocaleString('de-DE')} Gold/h · schwere L300-Quest ~${questHourly.toLocaleString('de-DE')} Gold/h`}});
-   T('Ökonomie','Grow-EXP bleibt Nebenprogression',()=>{const arr=Object.values(seedTypes||{}).filter(d=>Number(d.growMs)>0);if(!arr.length)return false;const lvl=300,speed=.60;const worst=Math.max(...arr.map(d=>{const mins=Number(d.growMs)/60000,r=({common:1,uncommon:1.05,rare:1.10,epic:1.15,legendary:1.25})[d.rarity]||1,xp=mins*(.8+lvl*.004)*1.2*r;return xp*6*60/(mins*speed)}));const questHourly=Math.round((lvl*100*.16*1.45)*2);return{pass:worst<=questHourly*.20,detail:`Max. Grow ~${Math.round(worst).toLocaleString('de-DE')} EXP/h · schwere L300-Quest ~${questHourly.toLocaleString('de-DE')} EXP/h`}});
+   T('Ökonomie','Grow-EXP bleibt Nebenprogression',()=>{const arr=Object.values(seedTypes||{}).filter(d=>Number(d.growMs)>0);if(!arr.length)return false;const lvl=300,speed=.60;const worst=Math.max(...arr.map(d=>{const mins=Number(d.growMs)/60000,r=({common:1,uncommon:1.05,rare:1.10,epic:1.15,legendary:1.25})[d.rarity]||1,xp=mins*(.8+lvl*.004)*1.2*r;return xp*6*60/(mins*speed)}));const questHourly=Math.round((lvl*100*.16*1.45)*2);return{pass:worst<=questHourly*.20,detail:`Max. Grow ~${Math.round(worst).toLocaleString('de-DE')} EXP/h · schwere L300-Quest ~${questHourly.toLocaleString('de-DE')} EXP/h · Langzeit-Levelkurve aktiv`}});
    T('Ökonomie','C/B liefern keine Qualitäts-Fragmente',()=>({pass:true,detail:'Regel in V4.96: C=0, B=0; zusätzliche Raritätsboni bleiben separat.'}),'warn');
 
     /* V4.103: Item UI consistency / legacy renderer gate */
@@ -110955,7 +110955,7 @@ function makeTask(tier){const hybrids=hybridCandidates(),std=standardCandidates(
  if(type==='hybrid_specific'){c.seed=pick(hybrids);if(!c.seed){c.type='perfect';c.target=4}else{c.target=1;c.minQ=Math.random()<.45?'S+':'S'}}
  const tt=taskText(c);c.title=tt.title;c.desc=tt.desc;return c}
 function level(){return Math.max(1,Math.min(300,Math.floor(Number(s?.level)||1)))}
-function xpBase(){try{return Math.max(100,Number(xpNeed())||100*level())}catch(_){return Math.max(100,100*level())}}
+function xpBase(){return Math.max(100,100*level())} /* V4.167: reward base deliberately decoupled from long-term xpNeed */
 function rewardComponent(kind,tier){const lv=level(),r=(a,b)=>Math.round(a+Math.random()*(b-a));if(kind==='gold'){const f=tier==='easy'?[18,28]:tier==='medium'?[35,52]:tier==='hard'?[65,95]:[105,145];return{type:'gold',amount:r(lv*f[0]+250,lv*f[1]+500)}}if(kind==='xp'){const p=tier==='easy'?[.10,.16]:tier==='medium'?[.17,.25]:tier==='hard'?[.27,.38]:[.40,.55];return{type:'xp',amount:Math.max(50,r(xpBase()*p[0],xpBase()*p[1]))}}if(kind==='fragments'){const p=tier==='easy'?[5,9]:tier==='medium'?[11,18]:tier==='hard'?[22,36]:[40,62];return{type:'fragments',amount:r(...p)}}if(kind==='time')return{type:'time',amount:tier==='legendary'?2:1};if(kind==='harz')return{type:'harz',amount:tier==='legendary'?2:1};if(kind==='seed'){const pool=tier==='easy'?['moss','lime','jack']:tier==='medium'?['violet','blue','critical']:tier==='hard'?['critical','nebula','lemon','gorilla','greencrack','amnesia']:['nebula','lemon','gorilla','greencrack','amnesia'];const id=pick(pool.filter(seed))||'moss';return{type:'seed',seed:id,amount:tier==='legendary'?2:1}}return{type:'gold',amount:500}}
 function rewardSig(arr){return (arr||[]).map(x=>x.type+(x.seed?':'+x.seed:'')).sort().join('|')}
 function rememberRewardSig(rs){const z=state();if(!z||!rs)return;z.rewardHistory=Array.isArray(z.rewardHistory)?z.rewardHistory:[];z.rewardHistory=z.rewardHistory.filter(x=>x!==rs);z.rewardHistory.push(rs);z.rewardHistory=z.rewardHistory.slice(-18)}
@@ -111459,6 +111459,87 @@ window.v6165ClassSetForgeOnlyQA=()=>({forgeOnly:!!window.__V6165_CLASSSET_FORGE_
 })();
 </script>
 <!-- ===== /Händler-Herkunft Guard ===== -->
+
+
+<!-- ===== V4.167 Stable: LANGZEIT-LEVELKURVE 1-300 ===== -->
+<script id="v6167-longterm-xp-balance">
+(()=>{
+'use strict';
+if(window.__V6167_LONGTERM_XP__)return;window.__V6167_LONGTERM_XP__=true;
+const MAX=300, DIVISOR=57;
+/*
+  Zielkorridor aus der kompletten aktuellen Ökonomie:
+  - Casual: ca. 12-15 Monate
+  - normal aktiv: ca. 9-12 Monate
+  - sehr aktiv: ca. 6-8 Monate
+
+  Wichtig: Es gibt KEIN Tages-XP-Limit und KEIN Activity-Cap.
+  Mehr Dampf / PvP / Dungeons / Events bleiben echte Mehrleistung.
+  Die steigende Levelanforderung sorgt nur dafür, dass 150-300 langfristig bleibt.
+*/
+function needFor(level){
+  const lv=Math.max(1,Math.min(MAX,Math.floor(Number(level)||1)));
+  if(lv>=MAX)return 0;
+  return Math.max(100,Math.round((100*lv*(1+lv/DIVISOR))/10)*10);
+}
+window.v6167XpNeedFor=needFor;
+/* Final global owner. Core addXp resolves xpNeed dynamically, therefore every
+   historical source and modifier automatically uses the same requirement. */
+try{
+  xpNeed=function(){return Number(s?.level)>=MAX?0:needFor(s?.level)};
+  window.xpNeed=xpNeed;
+}catch(e){console.warn('V4.167 xpNeed install',e)}
+
+function paint(){
+  try{
+    const lv=Math.max(1,Math.min(MAX,Math.floor(Number(s?.level)||1)));
+    if(lv>=MAX){
+      if(Number(s.xp)!==0)s.xp=0;
+      const t=document.querySelector('#centerXpText');if(t)t.textContent='MAX LEVEL · 300';
+      const f=document.querySelector('#centerXpFill');if(f)f.style.width='100%';
+      const x=document.querySelector('#xp');if(x)x.textContent='MAX';
+      return;
+    }
+    const need=needFor(lv),cur=Math.max(0,Number(s?.xp)||0),pct=Math.max(0,Math.min(100,cur/need*100));
+    const t=document.querySelector('#centerXpText');if(t)t.textContent=`${Math.round(cur).toLocaleString('de-DE')} / ${need.toLocaleString('de-DE')}`;
+    const f=document.querySelector('#centerXpFill');if(f)f.style.width=pct+'%';
+    const x=document.querySelector('#xp');if(x)x.textContent=`${Math.round(cur)}/${need}`;
+  }catch(e){}
+}
+
+/* Existing render chain owns every other UI system. We only repaint XP after it. */
+try{
+  if(typeof render==='function'&&!render.__v6167XpPaint){
+    const base=render;
+    const wrapped=function(){const r=base.apply(this,arguments);paint();return r};
+    wrapped.__v6167XpPaint=true;render=wrapped;window.render=wrapped;
+  }
+}catch(e){console.warn('V4.167 render paint',e)}
+
+/* QA/simulation only; it never changes player state. The daily coefficients model
+   the present mix of quest, dungeon, PvP and side rewards, not a hard cap. */
+function projectedDays(coeff){
+  coeff=Math.max(1,Number(coeff)||330);
+  let days=0;
+  for(let lv=1;lv<MAX;lv++)days+=needFor(lv)/(coeff*lv);
+  return Math.round(days);
+}
+window.v6167XpBalanceQA=()=>({
+  divisor:DIVISOR,
+  requirements:{L1:needFor(1),L25:needFor(25),L50:needFor(50),L80:needFor(80),L100:needFor(100),L150:needFor(150),L200:needFor(200),L250:needFor(250),L299:needFor(299)},
+  targetDays:{casual:projectedDays(250),normal:projectedDays(330),veryActive:projectedDays(500)},
+  noDailyCap:true,
+  loginXpDecoupled:true,
+  growContractXpDecoupled:true
+});
+paint();
+document.addEventListener('DOMContentLoaded',paint,{once:true});
+window.addEventListener('pageshow',paint,{passive:true});
+window.addEventListener('growlegends:account-ready',()=>setTimeout(paint,100));
+[250,1000,3000].forEach(ms=>setTimeout(paint,ms));
+})();
+</script>
+<!-- ===== /V4.167 ===== -->
 
 </body>
 </html>
