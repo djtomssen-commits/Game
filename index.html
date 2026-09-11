@@ -1284,6 +1284,117 @@ img.v6108-quality-art{
 }
 </style>
 
+
+<style id="v6115-events-boss-pet-stability-css">
+/* ===== Pet position final authority ===== */
+#character.v514-reference-hero .v514-book-host{
+  display:flex!important;
+  flex-direction:column!important;
+}
+#character.v514-reference-hero .v514-book-host > #v106BookBtn{
+  order:1!important;
+}
+#character.v514-reference-hero .v514-book-host > #v686PetAlbumBtn{
+  order:2!important;
+}
+
+/* ===== Start page: all active events ===== */
+#world.active .v690-events-card{
+  overflow:hidden!important;
+}
+#world.active .v6115-events-list{
+  flex:1 1 auto!important;
+  min-height:0!important;
+  padding:4px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:center!important;
+  gap:3px!important;
+  background:
+    radial-gradient(circle at 70% 25%,rgba(91,225,71,.08),transparent 42%),
+    linear-gradient(180deg,#071109,#030704)!important;
+}
+#world.active .v6115-event-row{
+  min-height:25px!important;
+  display:grid!important;
+  grid-template-columns:20px minmax(0,1fr)!important;
+  align-items:center!important;
+  gap:3px!important;
+  padding:3px 4px!important;
+  border:1px solid #49612d!important;
+  border-radius:6px!important;
+  background:linear-gradient(180deg,#112015,#09110b)!important;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.025)!important;
+}
+#world.active .v6115-event-row.purple{border-color:#79469c!important}
+#world.active .v6115-event-row.cyan{border-color:#248f93!important}
+#world.active .v6115-event-row.gold{border-color:#9a7027!important}
+#world.active .v6115-event-icon{
+  font-size:15px!important;
+  line-height:1!important;
+}
+#world.active .v6115-event-row b{
+  display:block!important;
+  color:#b9ef83!important;
+  font-size:5.5px!important;
+  line-height:1.08!important;
+  text-transform:uppercase!important;
+}
+#world.active .v6115-event-row small{
+  display:block!important;
+  margin-top:1px!important;
+  color:#d5d5c8!important;
+  font-size:4.5px!important;
+  line-height:1.08!important;
+}
+#world.active .v6115-no-events{
+  display:grid!important;
+  place-items:center!important;
+  text-align:center!important;
+  gap:3px!important;
+  color:#cfc8b5!important;
+}
+#world.active .v6115-no-events span{font-size:29px!important}
+#world.active .v6115-no-events b{font-size:6px!important}
+#world.active .v6115-no-events small{font-size:4.7px!important}
+
+/* ===== Worldboss active/open state ===== */
+#world.active .v366-feature.boss.v6115-boss-open{
+  border-color:#42dc5d!important;
+  box-shadow:0 0 14px rgba(77,231,92,.22),inset 0 0 0 1px rgba(108,255,111,.12)!important;
+}
+#world.active .v366-feature.boss.v6115-boss-open>h2{
+  color:#74f684!important;
+}
+#world.active .v366-feature.boss.v6115-boss-open .v6115-boss-status{
+  color:#7df27c!important;
+  font-weight:950!important;
+  text-shadow:0 0 7px rgba(94,239,91,.45)!important;
+}
+#world.active .v366-feature.boss.v6115-boss-open .v366-go{
+  border-color:#53dd62!important;
+  background:linear-gradient(180deg,#278c35,#14591e)!important;
+  box-shadow:inset 0 1px #ffffff30,0 0 10px rgba(67,225,81,.35),0 2px 5px #000!important;
+}
+#world.active .v366-feature.boss.v6115-boss-closed{
+  filter:saturate(.62) brightness(.8)!important;
+}
+#world.active .v366-feature.boss.v6115-boss-closed .v6115-boss-status{
+  color:#a7a79e!important;
+}
+#world.active .v366-feature.boss .v366-go:disabled{
+  opacity:.5!important;
+  cursor:default!important;
+  filter:grayscale(.6)!important;
+}
+
+/* The old calendar artwork is no longer used when the list is present. */
+#world.active .v690-events-card .v690-event-art,
+#world.active .v690-events-card .v690-event-name{
+  display:none!important;
+}
+</style>
+
 </head>
 <body>
 <div class="app">
@@ -31500,6 +31611,29 @@ function v233ShowActualQuestReward(snapshot){
     x=>!snapshot.unlocked.has(x)
   );
 
+  if(newDungeonIndexes.length){
+    try{
+      const newest=Math.max(...newDungeonIndexes.map(Number).filter(Number.isFinite));
+      if(Number.isFinite(newest)){
+        const current=Math.max(0,Number(s.dungeon?.selected)||0);
+        if(typeof dungeonCompleted==='function' && dungeonCompleted(current)){
+          s.dungeon.selected=newest;
+          s.dungeon.room=Math.max(0,Math.min(9,Number(s.dungeon?.progress?.[newest])||0));
+        }
+        s.dungeon.layer='world';
+        s.dungeon.view='map';
+        try{persist(false)}catch(_){}
+        requestAnimationFrame(()=>{
+          try{v243RepairAndSaveDungeonKeys?.()}catch(_){}
+          try{v230ShowDungeonWorld?.()}catch(_){}
+          try{v242PaintDungeonWorldStatus?.()}catch(_){}
+          try{v250PaintKeyProgress?.()}catch(_){}
+          try{v067BindWorldMap?.()}catch(_){}
+        });
+      }
+    }catch(e){console.warn('V6.114 quest key refresh',e)}
+  }
+
   const extras=[];
 
   foundItems.forEach(it=>{
@@ -36509,6 +36643,24 @@ function v250GrantKey(i){
       );
   }
 
+  /*
+    V6.114: make the freshly unlocked dungeon live immediately.
+    Previously the key was saved correctly, but the already-built dungeon
+    DOM could still show the last completed dungeon until reload/login.
+  */
+  try{
+    const current=Math.max(0,Number(s.dungeon.selected)||0);
+    if(
+      current>=dungeons.length ||
+      (typeof dungeonCompleted==='function' && dungeonCompleted(current))
+    ){
+      s.dungeon.selected=i;
+      s.dungeon.room=Math.max(0,Math.min(9,Number(s.dungeon.progress?.[i])||0));
+    }
+    s.dungeon.layer='world';
+    s.dungeon.view='map';
+  }catch(e){}
+
   try{persist(false)}catch(e){
     try{
       localStorage.setItem(
@@ -36517,6 +36669,20 @@ function v250GrantKey(i){
       );
     }catch(_){}
   }
+
+  requestAnimationFrame(()=>{
+    try{
+      v243RepairAndSaveDungeonKeys();
+      if(typeof v230ShowDungeonWorld==='function')v230ShowDungeonWorld();
+      else if(typeof v065RenderWorld==='function')v065RenderWorld();
+
+      try{v242PaintDungeonWorldStatus?.()}catch(_){}
+      try{v250PaintKeyProgress?.()}catch(_){}
+      try{v067BindWorldMap?.()}catch(_){}
+    }catch(e){
+      console.warn('V6.114 dungeon key live repaint',e);
+    }
+  });
 
   return true;
 }
@@ -58803,6 +58969,19 @@ html,body{
     return a.slice(0,4);
   }
 
+  function worldBossEventActive(){
+    try{return typeof v110MysticEventActive==='function'&&v110MysticEventActive()}catch(e){return false}
+  }
+
+  function eventIcon(ev){
+    const t=String(ev?.t||'').toLowerCase();
+    if(t.includes('exp'))return '⚡';
+    if(t.includes('gold'))return '💰';
+    if(t.includes('dampf'))return '🔥';
+    if(t.includes('smaragd')||t.includes('koloss')||t.includes('weltboss'))return '💠';
+    return '✨';
+  }
+
   function buildHeader(){
     const h=document.querySelector('.app > header');
     if(!h)return;
@@ -58843,6 +59022,7 @@ html,body{
   function worldHtml(){
     const xp=Math.max(0,Number(s?.xp)||0),need=xpNeedSafe(),pct=Math.max(0,Math.min(100,xp/need*100));
     const dg=dungeonPos(),gr=growReady(),ac=ach(),ev=events(),ev0=ev[0]||null;
+    const bossActive=worldBossEventActive();
     return `
     <div class="v366-world v690-world">
       <section class="v366-hero v690-hero">
@@ -58890,19 +59070,27 @@ html,body{
         <article class="v366-panel v690-goals-panel"><div class="v366-goals-title">Tagesziele</div><div class="v366-goals">
           <div class="v366-goal"><i>📜</i><div><b>Erste Quest</b><span>${firstQuest()?'+2 Harz':'Erledigt ✓'}</span></div></div>
           <div class="v366-goal"><i>⚔️</i><div><b>Dungeon</b><span>${dungeonFree()?'Bereit':'Cooldown'}</span></div></div>
-          <div class="v366-goal"><i>💎</i><div><b>Koloss</b><span>${bossFree()?'Gratis':'Verbraucht'}</span></div></div>
+          <div class="v366-goal"><i>💎</i><div><b>Koloss</b><span>${bossActive?(bossFree()?'Offen · Gratis':'Offen · 10 Harz'):'Geschlossen'}</span></div></div>
           <div class="v366-goal"><i>⭐</i><div><b>Erfolge</b><span>${ac.done}/${ac.total||'—'}</span></div></div>
         </div></article>
 
-        <article class="v366-panel v366-feature boss"><h2>Weltboss</h2><div class="v366-feature-art"></div><div class="v690-mini-status">${bossFree()?'Gratisversuch':'Versuch verbraucht'}</div><button class="v366-go" data-boss="1">Öffnen</button></article>
+        <article class="v366-panel v366-feature boss ${bossActive?'v6115-boss-open':'v6115-boss-closed'}">
+          <h2>Weltboss</h2>
+          <div class="v366-feature-art"></div>
+          <div class="v690-mini-status v6115-boss-status">${bossActive?`🟢 OFFEN · ${bossFree()?'Gratisversuch bereit':'weiterer Versuch 10 Harz'}`:'🔒 GESCHLOSSEN · Kein Weltboss-Event'}</div>
+          <button class="v366-go" data-boss="1" ${bossActive?'':'disabled'}>${bossActive?'Öffnen':'Geschlossen'}</button>
+        </article>
 
         <article class="v366-panel v366-feature book"><h2>Illegales Buch</h2><div class="v366-feature-art"></div><div class="v690-mini-status">⭐ ${ac.done}/${ac.total||'—'} Erfolge</div><button class="v366-go" data-book="1">Öffnen</button></article>
 
         <article class="v366-panel v366-feature v690-events-card ${ev0?esc(ev0.c):''}">
           <h2>Events</h2>
-          <div class="v690-event-art"><span>📅</span></div>
-          <div class="v690-event-name">${ev0?esc(ev0.t.replace(/^[^\s]+\s*/,'')):'Keine Events'}</div>
-          <div class="v690-mini-status">${ev0?esc(ev0.s):'Aktuell kein Event aktiv'}</div>
+          <div class="v6115-events-list">
+            ${ev.length
+              ? ev.map(x=>`<div class="v6115-event-row ${esc(x.c||'')}"><span class="v6115-event-icon">${eventIcon(x)}</span><div><b>${esc(x.t.replace(/^[^\s]+\s*/,''))}</b><small>${esc(x.s)}</small></div></div>`).join('')
+              : `<div class="v6115-no-events"><span>📅</span><b>Keine Events</b><small>Aktuell kein Event aktiv</small></div>`
+            }
+          </div>
         </article>
 
         <article class="v366-panel v366-feature v6103-shop-card">
@@ -58937,7 +59125,7 @@ html,body{
     const sig=[
       playerName(),s?.playerClass,s?.level,s?.xp,s?.energy,s?.gold,s?.harzTaler,
       attr('staerke'),attr('ausdauer'),attr('geschick'),attr('intelligenz'),attr('glueck'),cp(),
-      dungeonPos().d,dungeonPos().e,growReady(),petUnseen(),events().map(x=>x.t).join('|'),ach().done
+      dungeonPos().d,dungeonPos().e,growReady(),petUnseen(),worldBossEventActive(),events().map(x=>`${x.t}:${x.s}`).join('|'),ach().done
     ].join('~');
 
     /* V6.94: "force" is intentionally ignored when the visible world is already current.
@@ -58949,7 +59137,7 @@ html,body{
     world.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>{const id=b.dataset.go;if(id!=='world')try{v032Go(id)}catch(e){}});
     world.querySelectorAll('[data-char-tab]').forEach(b=>b.onclick=()=>openCharacterTab(b.dataset.charTab));
     world.querySelectorAll('[data-pets]').forEach(b=>b.onclick=()=>{try{window.v686OpenPetAlbum?.()}catch(e){}});
-    world.querySelectorAll('[data-boss]').forEach(b=>b.onclick=()=>{try{if(typeof v110Open==='function')v110Open()}catch(e){}});
+    world.querySelectorAll('[data-boss]').forEach(b=>b.onclick=()=>{if(b.disabled)return;try{if(typeof v110Open==='function')v110Open()}catch(e){}});
     world.querySelectorAll('[data-book]').forEach(b=>b.onclick=()=>{try{if(typeof v106OpenBook==='function')v106OpenBook()}catch(e){}});
   }
 
@@ -86561,10 +86749,10 @@ html.v495-level-syncing #v420LevelUpOverlay{
       const sub=document.getElementById('avatarSubtitle');
       const level=document.querySelector('#character .level-shield');
       const xp=document.querySelector('#character .center-xp');
-      const book=document.getElementById('v106BookBtn');
-
+      /* V6.115: Book + Pet are owned exclusively by .v514-book-host.
+         Never pull the Illegal Book back above the EXP bar. */
       move(portrait,scene);
-      [name,sub,level,xp,book].forEach(n=>move(center,n));
+      [name,sub,level,xp].forEach(n=>move(center,n));
 
       const grow=document.getElementById('v492CharGrowBuff');
       const buds=document.querySelector('#character .v204-avatar-badge');
@@ -86746,8 +86934,8 @@ html.v495-level-syncing #v420LevelUpOverlay{
     const sub=document.getElementById('avatarSubtitle');
     const level=center.querySelector('.level-shield');
     const xp=center.querySelector('.center-xp');
-    const book=document.getElementById('v106BookBtn');
-    [portrait,name,sub,level,xp,book].forEach(n=>{if(n)center.appendChild(n)});
+    /* V6.115: don't move the Illegal Book. V5.14 owns Book + Pet. */
+    [portrait,name,sub,level,xp].forEach(n=>{if(n)center.appendChild(n)});
   }
   reorder();
   requestAnimationFrame(reorder);
@@ -109264,6 +109452,85 @@ window.v6113PetProfileQA=()=>({
 
 <script id="v6113-pet-album-profile-marker">
 window.__V6113_PET_ALBUM_PROFILE_POLISH__=true;
+</script>
+
+
+<style id="v6114-pet-navigation-css">
+/* Pet book stays below the HUD instead of covering the lower part of it. */
+#v686PetAlbumOverlay{
+  inset:94px 0 0 0!important;
+}
+
+/* Menu must open ABOVE the Pet album. */
+#v032TopMenu,
+.top-menu-wrap{
+  z-index:5200!important;
+}
+#v032MenuPanel,
+.top-menu-panel{
+  z-index:5201!important;
+}
+
+/* Keep the album close button below the navigation layer. */
+#v686PetAlbumOverlay .v686-close{
+  top:101px!important;
+  z-index:4190!important;
+}
+</style>
+
+<script id="v6114-pet-navigation-and-dungeon-live">
+(()=>{
+'use strict';
+if(window.__V6114_DUNGEON_KEY_AND_PET_NAV__)return;
+window.__V6114_DUNGEON_KEY_AND_PET_NAV__=true;
+
+function closePetForNavigation(){
+  const ov=document.getElementById('v686PetAlbumOverlay');
+  if(!ov?.classList.contains('show'))return false;
+  ov.classList.remove('show');
+  document.documentElement.style.overflow='';
+  try{window.v6104ClearPetNewFinds?.()}catch(e){}
+  return true;
+}
+window.v6114ClosePetForNavigation=closePetForNavigation;
+
+/* Final navigation authority: choosing another page closes the Pet album
+   automatically. No need to tap X first. */
+try{
+  if(typeof v032Go==='function'&&!window.__v6114GoWrapped){
+    const base=v032Go;
+    const wrapped=function(id){
+      closePetForNavigation();
+      return base.apply(this,arguments);
+    };
+    try{v032Go=wrapped}catch(e){}
+    window.v032Go=wrapped;
+    window.__v6114GoWrapped=true;
+  }
+}catch(e){}
+
+/* The hamburger/menu itself must also be reachable while the album is open. */
+document.addEventListener('click',e=>{
+  const item=e.target instanceof Element
+    ?e.target.closest('#v032MenuPanel .top-menu-item')
+    :null;
+  if(item)closePetForNavigation();
+},true);
+
+window.v6114DungeonLiveQA=()=>({
+  unlocked:[...(s?.dungeon?.unlocked||[])],
+  keys:{...(s?.dungeon?.keys||{})},
+  selected:Number(s?.dungeon?.selected)||0,
+  layer:s?.dungeon?.layer||'',
+  view:s?.dungeon?.view||'',
+  petOpen:document.getElementById('v686PetAlbumOverlay')?.classList.contains('show')||false
+});
+})();
+</script>
+
+
+<script id="v6115-events-boss-pet-marker">
+window.__V6115_EVENTS_BOSS_PET_STABILITY__=true;
 </script>
 
 </body>
