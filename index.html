@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
 <script id="v4131-version-source">
-window.GROW_LEGENDS_VERSION=Object.freeze({short:'V4.162',label:'V4.162 Stable',number:'4.162'});
+window.GROW_LEGENDS_VERSION=Object.freeze({short:'V4.163',label:'V4.163 Stable',number:'4.163'});
 </script>
 
 <script id="v6140-central-event-bus-preboot">
@@ -110858,6 +110858,117 @@ window.v6160QA=()=>({version:VERSION,day:state()?.dayKey,contracts:(state()?.con
 })();
 </script>
 <!-- ===== /V4.162 ===== -->
+
+<!-- ===== V4.163 Stable: GROWROOM PRIMARY TABS ===== -->
+<style id="v6163-growroom-primary-tabs-css">
+/* Approved Growroom navigation: core systems are first-class tabs directly below the existing header. */
+.app > header .v358-logo::after{content:"V4.163"!important}
+.app > header .v366-ver::after,.app > header .v371-logo em::after,.app > header .v372-logo em::after,#v372TopbarShell .v372-logo em::after{content:"V4.163"!important}
+#grow .v6130-genetics-btn,#grow .v6130-genetics-hint,#grow .v6160-grow-btn{display:none!important}
+#grow .v6163-tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin:9px 0 10px;padding:0 1px}
+#grow .v6163-tab{position:relative;min-width:0;min-height:56px;padding:7px 5px;border:2px solid #3a5634;border-radius:12px;background:linear-gradient(180deg,#142117,#0a110c);box-shadow:inset 0 1px rgba(255,255,255,.05),0 4px 10px #0008;color:#b9c6b5;font-weight:1000;text-align:center;cursor:pointer;transition:.14s transform,.14s border-color,.14s box-shadow,.14s background}
+#grow .v6163-tab:active{transform:translateY(2px)}
+#grow .v6163-tab .v6163-ico{display:inline-block;margin-right:4px;font-size:17px;vertical-align:-2px}
+#grow .v6163-tab b{font-size:10px;line-height:1.05}
+#grow .v6163-tab small{display:block;margin-top:3px;color:#7f927c;font-size:5.7px;line-height:1.2;white-space:normal}
+#grow .v6163-tab.active{border-color:#82e150;background:linear-gradient(180deg,#285c20,#153918);color:#efffe6;box-shadow:0 0 0 1px #b5ff7c55,0 0 17px #6ce13e55,inset 0 1px #d6ffae55}
+#grow .v6163-tab.active small{color:#c8efb0}
+#grow .v6163-tab.v6163-has-ready:not(.active){border-color:#6fa847;box-shadow:0 0 12px #62c63a33,inset 0 1px rgba(255,255,255,.05)}
+#grow .v6163-badge{position:absolute;right:5px;top:4px;min-width:24px;height:17px;padding:0 5px;display:inline-flex;align-items:center;justify-content:center;border:1px solid #ff825c;border-radius:999px;background:linear-gradient(#e45034,#9d241e);box-shadow:0 2px 0 #5f120f,0 0 8px #ff4e3444;color:#fff;font-size:6.7px;font-weight:1000;line-height:1}
+#grow .v6163-dot{position:absolute;right:8px;top:7px;width:8px;height:8px;border-radius:50%;background:#8cff5b;box-shadow:0 0 9px #76ff48}
+#grow .v6163-hidden{display:none!important}
+#grow #v6163Inline{margin:0 0 10px;border:2px solid #385134;border-radius:15px;background:linear-gradient(180deg,#122016,#070d09);box-shadow:inset 0 0 24px #0008,0 8px 18px #0008;overflow:hidden;color:#eef3e8}
+#grow #v6163Inline[hidden]{display:none!important}
+#grow .v6163-inline-head{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 11px;border-bottom:2px solid #51320e;background:repeating-linear-gradient(4deg,#7e4a15 0 13px,#63390f 14px 25px,#8b5017 26px 30px);box-shadow:0 5px 12px #0008}
+#grow .v6163-inline-head h3{margin:0;color:#fff1be;font-size:17px;text-shadow:0 2px #281503}
+#grow .v6163-inline-head small{display:block;margin-top:2px;color:#d8c595;font-size:6px;font-weight:900;letter-spacing:.06em}
+#grow .v6163-inline-meta{flex:0 0 auto;padding:5px 7px;border:1px solid #76602d;border-radius:9px;background:#10140d;color:#b9e991;font-size:6.5px;font-weight:1000;text-align:center}
+#grow #v6163Inline .v6130-pending{margin-top:9px}
+#grow #v6163Inline .v6130-grid{padding-top:2px}
+#grow #v6163Inline .v6160-summary{padding-top:9px}
+#grow #v6163Inline .v6160-footer{padding-bottom:12px}
+#grow #v6163Inline .v6160-card,#grow #v6163Inline .v6130-recipe{box-shadow:inset 0 0 18px #0007,0 4px 10px #0006}
+@media(max-width:520px){
+ #grow .v6163-tabs{gap:4px;margin-top:7px}
+ #grow .v6163-tab{min-height:51px;padding:6px 3px;border-radius:10px}
+ #grow .v6163-tab .v6163-ico{font-size:15px;margin-right:2px}
+ #grow .v6163-tab b{font-size:8.2px}
+ #grow .v6163-tab small{font-size:4.8px}
+ #grow .v6163-badge{right:3px;top:3px;min-width:20px;height:15px;font-size:5.8px}
+ #grow .v6163-inline-head h3{font-size:15px}
+ #grow .v6163-inline-meta{font-size:5.8px;padding:4px 5px}
+}
+</style>
+<script id="v6163-growroom-primary-tabs-core">
+(()=>{
+'use strict';
+if(window.__V6163_GROWROOM_PRIMARY_TABS__)return;
+window.__V6163_GROWROOM_PRIMARY_TABS__=true;
+const V={short:'V4.163',label:'V4.163 Stable',number:'4.163'};
+try{window.GROW_LEGENDS_VERSION=Object.freeze(V)}catch(_){window.GROW_LEGENDS_VERSION=V}
+const STORE='growLegends:growTab:v6163';
+let active='grow',mountQueued=false,lastRoot=null;
+try{const x=sessionStorage.getItem(STORE);if(['grow','genetics','orders'].includes(x))active=x}catch(_){}
+const $=(s,r=document)=>r?.querySelector?.(s)||null;
+function growRoot(){return $('#grow .v492-grow')}
+function contractSnapshot(){try{return window.v6160GrowContracts?.state?.()||null}catch(_){return null}}
+function geneticsSnapshot(){try{return window.v6130QA?.()||null}catch(_){return null}}
+function stats(){
+ const c=contractSnapshot(),g=geneticsSnapshot();
+ const rows=Array.isArray(c?.contracts)?c.contracts:[];
+ return {done:rows.filter(x=>x?.completed).length,ready:rows.filter(x=>x?.completed&&!x?.claimed).length,pending:!!g?.pending,crosses:Number(g?.totalCrosses)||0,essences:Number(g?.totalEssences)||0};
+}
+function tabsHtml(){return `<div class="v6163-tabs" role="tablist" aria-label="Growroom Bereiche">
+ <button type="button" class="v6163-tab" data-v6163-tab="grow" role="tab"><span class="v6163-ico">🌱</span><b>Growroom</b><small>PFLANZEN · PFLEGE · ERNTE</small></button>
+ <button type="button" class="v6163-tab" data-v6163-tab="genetics" role="tab"><span class="v6163-ico">🧬</span><b>Genetik</b><small>KREUZUNGEN · HYBRIDE · ESSENZEN</small><i class="v6163-dot" hidden></i></button>
+ <button type="button" class="v6163-tab" data-v6163-tab="orders" role="tab"><span class="v6163-ico">📋</span><b>Aufträge</b><small>TÄGLICHE GROW-AUFGABEN</small><i class="v6163-badge">0/6</i></button>
+ </div>`}
+function paintTabs(root=growRoot()){
+ if(!root)return;const st=stats();
+ root.querySelectorAll('[data-v6163-tab]').forEach(b=>{const on=b.dataset.v6163Tab===active;b.classList.toggle('active',on);b.setAttribute('aria-selected',on?'true':'false')});
+ const ob=$('[data-v6163-tab="orders"]',root),badge=$('.v6163-badge',ob);if(badge)badge.textContent=`${Math.max(0,Math.min(6,st.done))}/6`;ob?.classList.toggle('v6163-has-ready',st.ready>0);
+ const gb=$('[data-v6163-tab="genetics"]',root),dot=$('.v6163-dot',gb);if(dot)dot.hidden=!st.pending;gb?.classList.toggle('v6163-has-ready',st.pending);
+}
+function markBase(root){
+ [...root.children].forEach(el=>{if(el.classList.contains('v492-sign')||el.classList.contains('v6163-tabs')||el.id==='v6163Inline')return;el.classList.add('v6163-base')});
+}
+function copyGenetics(panel){
+ const oldBtn=document.querySelector('#grow [data-v6130-open]');
+ if(!oldBtn){panel.innerHTML='<div class="v6163-inline-head"><div><h3>🧬 Genetik-Labor</h3><small>KREUZEN · HYBRIDE · ESSENZEN</small></div></div><div class="v6130-help">Genetik-Labor wird geladen …</div>';setTimeout(()=>refreshActive(),120);return}
+ try{oldBtn.dispatchEvent(new MouseEvent('click',{bubbles:true,cancelable:true,view:window}))}catch(_){oldBtn.click?.()}
+ const ov=document.getElementById('v6130GeneticsOverlay'),body=ov?.querySelector('#v6130LabBody'),g=geneticsSnapshot();
+ ov?.classList.remove('show');
+ panel.innerHTML=`<div class="v6163-inline-head"><div><h3>🧬 Genetik-Labor</h3><small>KREUZEN · HYBRID ZIEHEN · ESSENZ GEWINNEN</small></div><div class="v6163-inline-meta">${g?.pending?'KREUZUNG AKTIV':`${Number(g?.totalCrosses)||0} Kreuzungen · ${Number(g?.totalEssences)||0} Essenzen`}</div></div><div class="v6163-inline-genetics">${body?.innerHTML||'<div class="v6130-help">Genetikdaten konnten noch nicht geladen werden.</div>'}</div>`;
+}
+function copyOrders(panel){
+ try{window.v6160GrowContracts?.open?.()}catch(_){}
+ const ov=document.getElementById('v6160ContractsOverlay'),body=ov?.querySelector('#v6160ContractsBody'),c=contractSnapshot(),rows=Array.isArray(c?.contracts)?c.contracts:[],ready=rows.filter(x=>x?.completed&&!x?.claimed).length;
+ ov?.classList.remove('show');
+ panel.innerHTML=`<div class="v6163-inline-head"><div><h3>📋 Grow-Aufträge</h3><small>TÄGLICH NEU · LEICHT BIS MEISTERAUFTRAG</small></div><div class="v6163-inline-meta">${ready?`🎁 ${ready} abholbereit`:`${rows.filter(x=>x?.completed).length}/6 geschafft`}</div></div><div class="v6163-inline-orders">${body?.innerHTML||'<div class="v6160-note">Grow-Aufträge werden geladen …</div>'}</div>`;
+}
+function applyView(root=growRoot()){
+ if(!root)return;markBase(root);paintTabs(root);const panel=$('#v6163Inline',root);if(!panel)return;
+ const inGrow=active==='grow';root.querySelectorAll(':scope > .v6163-base').forEach(el=>el.classList.toggle('v6163-hidden',!inGrow));
+ panel.hidden=inGrow;if(inGrow){panel.innerHTML='';return}
+ if(active==='genetics')copyGenetics(panel);else copyOrders(panel);
+}
+function mount(){mountQueued=false;const root=growRoot();if(!root)return;lastRoot=root;let tabs=$(':scope > .v6163-tabs',root);if(!tabs){const sign=$(':scope > .v492-sign',root);if(!sign)return;sign.insertAdjacentHTML('afterend',tabsHtml());tabs=$(':scope > .v6163-tabs',root)}let panel=$(':scope > #v6163Inline',root);if(!panel){panel=document.createElement('div');panel.id='v6163Inline';panel.hidden=true;tabs.insertAdjacentElement('afterend',panel)}applyView(root)}
+function queueMount(delay=0){if(delay){setTimeout(()=>queueMount(0),delay);return}if(mountQueued)return;mountQueued=true;requestAnimationFrame(mount)}
+function setTab(tab){if(!['grow','genetics','orders'].includes(tab))return;active=tab;try{sessionStorage.setItem(STORE,tab)}catch(_){}applyView()}
+function refreshActive(){const root=growRoot();if(!root)return;paintTabs(root);if(active!=='grow')applyView(root)}
+function attach(){const host=document.getElementById('grow');if(!host||host.dataset.v6163Observed==='1')return;host.dataset.v6163Observed='1';new MutationObserver(()=>{queueMount();queueMount(40);queueMount(160)}).observe(host,{childList:true,subtree:false});queueMount()}
+function stamp(){try{document.title='Grow Legends '+V.short;document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version').forEach(el=>{if(el)el.textContent=V.label});document.querySelectorAll('.v366-ver,.v371-logo em,.v372-logo em').forEach(el=>{if(el)el.textContent=V.short})}catch(_){} }
+document.addEventListener('click',e=>{const t=e.target instanceof Element?e.target:null;if(!t)return;const tab=t.closest('[data-v6163-tab]');if(tab){e.preventDefault();e.stopPropagation();return setTab(tab.dataset.v6163Tab)}if(t.closest('#v6163Inline [data-v6130-cross],#v6163Inline [data-v6160-claim],#v6163Inline [data-v6160-reroll]')){[40,180,600,1600,4200].forEach(ms=>setTimeout(refreshActive,ms))}},true);
+try{window.GL_EVENTS?.on?.('growHarvested',()=>{[0,80,350].forEach(ms=>setTimeout(refreshActive,ms))})}catch(_){}
+document.addEventListener('DOMContentLoaded',()=>{attach();queueMount(80);stamp()},{once:true});
+window.addEventListener('growlegends:account-ready',()=>{attach();queueMount(80);stamp()});
+window.addEventListener('pageshow',()=>{attach();queueMount(60);stamp()},{passive:true});
+[0,250,900,2200,5000].forEach(ms=>setTimeout(()=>{attach();queueMount();stamp()},ms));
+window.v6163GrowTabs={open:setTab,refresh:refreshActive,get active(){return active}};
+window.v6163QA=()=>({version:V.label,active,tabbar:!!document.querySelector('#grow .v6163-tabs'),inline:!!document.querySelector('#v6163Inline'),oldGeneticsButtonHidden:!!document.querySelector('#grow [data-v6130-open]'),oldOrdersButtonHidden:!!document.querySelector('#grow [data-v6160-open]'),stats:stats()});
+})();
+</script>
+<!-- ===== /V4.163 ===== -->
 
 </body>
 </html>
