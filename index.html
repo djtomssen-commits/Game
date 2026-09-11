@@ -2,7 +2,39 @@
 <html lang="de">
 <head>
 <script id="v4131-version-source">
-window.GROW_LEGENDS_VERSION=Object.freeze({short:'V4.159',label:'V4.159 Stable',number:'4.159'});
+window.GROW_LEGENDS_VERSION=Object.freeze({short:'V4.161',label:'V4.161 Stable',number:'4.161'});
+</script>
+
+<script id="v6140-central-event-bus-preboot">
+(()=>{
+'use strict';
+if(window.GL_EVENTS)return;
+const listeners=new Map(),seen=new Map(),stats={emitted:{},deduped:{},listeners:{},last:{}};
+const MAX_SEEN=400,TTL=10*60*1000;
+function prune(now=Date.now()){
+ if(seen.size<=MAX_SEEN)return;
+ for(const [k,t] of seen){if(now-t>TTL)seen.delete(k);if(seen.size<=MAX_SEEN)return}
+ while(seen.size>MAX_SEEN)seen.delete(seen.keys().next().value);
+}
+function on(type,fn){
+ type=String(type||'');if(!type||typeof fn!=='function')return()=>{};
+ let set=listeners.get(type);if(!set){set=new Set();listeners.set(type,set)}
+ set.add(fn);stats.listeners[type]=set.size;
+ return()=>{set.delete(fn);stats.listeners[type]=set.size};
+}
+function emit(type,detail={},token=''){
+ type=String(type||'');if(!type)return false;
+ const now=Date.now(),tk=String(token||detail?.token||'');
+ if(tk){const key=type+'|'+tk,prev=seen.get(key);if(prev&&now-prev<TTL){stats.deduped[type]=(stats.deduped[type]||0)+1;return false}seen.set(key,now);prune(now)}
+ const packet={...(detail&&typeof detail==='object'?detail:{}),type,token:tk,emittedAt:now};
+ stats.emitted[type]=(stats.emitted[type]||0)+1;stats.last[type]={token:tk,at:now};
+ const set=listeners.get(type);if(set)for(const fn of [...set]){try{fn(packet)}catch(e){console.error('[GL Event]',type,e)}}
+ try{window.dispatchEvent(new CustomEvent('growlegends:'+type,{detail:packet}))}catch(_){}
+ return true;
+}
+window.GL_EVENTS=Object.freeze({on,emit,stats:()=>JSON.parse(JSON.stringify(stats))});
+window.glOnGameEvent=on;window.glEmitGameEvent=emit;window.__V6140_EVENT_BUS__=true;
+})();
 </script>
 
 <script id="v4106-preboot-tech">
@@ -39862,13 +39894,13 @@ async function v255ClaimBossReward(){
     const r=Array.isArray(data)?data[0]:data;if(!r)throw new Error('Keine Belohnung erhalten.');
     /* V4.36: Gildenboss-Gilden-EP only on an actual Titan victory.
        A normal participation reward must never count as a defeated guild boss. */
-    try{if(r.won&&typeof window.v411AwardGuildActivity==='function')void window.v411AwardGuildActivity('guild_boss')}catch(e){console.warn('V4.36 guild boss XP',e)}
+    try{if(r.won&&window.GL_EVENTS)window.GL_EVENTS.emit('guildBossWon',{result:r},String(r.round_id||r.boss_id||r.day_key||r.date||Date.now()));else if(r.won&&typeof window.v411AwardGuildActivity==='function')void window.v411AwardGuildActivity('guild_boss')}catch(e){console.warn('V4.161 guild boss event',e)}
     const gold=Math.max(0,Number(r.gold)||0),xp=Math.max(0,Number(r.xp)||0),harz=Math.max(0,Number(r.harz)||0);
     s.gold=(Number(s.gold)||0)+gold;
     if(typeof addXp==='function')addXp(xp);else s.xp=(Number(s.xp)||0)+xp;
     s.harzTaler=(Number(s.harzTaler)||0)+harz;
     /* V4.92: successful guild-boss claims can also feed the Growroom seed loop. */
-    try{if(typeof window.v492GuildBossSeedReward==='function')window.v492GuildBossSeedReward(r)}catch(e){console.warn('V4.92 guild boss seed',e)}
+    try{if(!r.won&&typeof window.v492GuildBossSeedReward==='function')window.v492GuildBossSeedReward(r);else if(r.won&&!window.GL_EVENTS&&typeof window.v492GuildBossSeedReward==='function')window.v492GuildBossSeedReward(r)}catch(e){console.warn('V4.161 guild boss seed',e)}
     try{persist(false)}catch(e){} try{render()}catch(e){}
     v063Toast(r.won?'Gildenboss besiegt!':'Teilnahmebelohnung',r.won?'success':'info',`+${v255Fmt(xp)} EXP · +${v255Fmt(gold)} Gold${harz?` · +${harz} Harz-Taler`:''}`);
     await v254LoadGuild();await v255LoadBoss();
@@ -45120,6 +45152,7 @@ const v306Line=document.querySelector('#v141VersionLine');if(v306Line)v306Line.t
   window.v411AwardGuildActivity=awardGuildActivity;
 
   /* Re-own the final activity hooks so the corrected lexical checks are used. */
+  if(!window.__V6140_EVENT_BUS__){
   if(typeof claimQuest==='function'){
     const base=claimQuest;
     claimQuest=function(){
@@ -45145,6 +45178,7 @@ const v306Line=document.querySelector('#v141VersionLine');if(v306Line)v306Line.t
     const base=v209FinishBattle;
     v209FinishBattle=async function(win){const r=await base.apply(this,arguments);if(win)void awardGuildActivity('pvp_win');return r};
     window.v209FinishBattle=v209FinishBattle;
+  }
   }
 
   /* V4.14: guild-boss activity is awarded inside the confirmed reward RPC path.
@@ -64181,6 +64215,7 @@ create index if not exists player_messages_sender_idx on public.player_messages(
  window.v411AwardGuildActivity=award;
 
  /* Quest: only after a canonical completed quest has actually cleared active. */
+ if(!window.__V6140_EVENT_BUS__){
  if(typeof claimQuest==='function'){
    const base=claimQuest;claimQuest=function(){const q=s.quests?.active,ready=!!q&&Date.now()>=Number(q.ends||0);const r=base.apply(this,arguments);if(ready&&!s.quests?.active)void award('quest');return r};window.claimQuest=claimQuest;
  }
@@ -64191,6 +64226,7 @@ create index if not exists player_messages_sender_idx on public.player_messages(
  /* PvP: existing server-confirmed finish path remains authoritative; only wins contribute. */
  if(typeof v209FinishBattle==='function'){
    const base=v209FinishBattle;v209FinishBattle=async function(win){const r=await base.apply(this,arguments);if(win)void award('pvp_win');return r};window.v209FinishBattle=v209FinishBattle;
+ }
  }
  /* Boss reward is already server-authoritative. Detect successful claim by its can_claim transition. */
  /* V4.14: old guild-boss click/timer activity hook disabled; confirmed RPC path owns it. */
@@ -72290,6 +72326,7 @@ create index if not exists player_messages_sender_idx on public.player_messages(
       else{claimQuest=wrapped;try{window.claimQuest=wrapped}catch(e){}}
     }catch(e){console.warn('V4.74 quest wrap',name,e)}
   }
+  if(!window.__V6140_EVENT_BUS__){
   wrapQuestOwner('claimQuest');
   wrapQuestOwner('v233ClaimQuest');
 
@@ -72329,6 +72366,7 @@ create index if not exists player_messages_sender_idx on public.player_messages(
       window.__v474PvpGuildWrapped=true;
     }
   }catch(e){console.warn('V4.74 PvP guild wrap',e)}
+  }
 
   try{
     if(typeof v073Init==='function'&&!window.__v474InitGuildGuardWrapped){
@@ -73959,7 +73997,13 @@ html.v481-hidden *,html.v481-hidden *::before,html.v481-hidden *::after{animatio
   gorilla:{name:'Gorilla Glue',icon:'🦍',rarity:'epic',growMs:5*60*60*1000,buy:0,sell:3000,source:'Dungeonboss',affinity:'grower',buffMins:90,stats:{wuchtChance:.07,wuchtDamage:.12}},
   greencrack:{name:'Green Crack',icon:'⚡',rarity:'epic',growMs:5*60*60*1000,buy:0,sell:3200,source:'PvP / Gilde',affinity:'scout',buffMins:90,stats:{doubleChance:.06,dodgeChance:.03}},
   amnesia:{name:'Amnesia Haze',icon:'🌫️',rarity:'epic',growMs:6*60*60*1000,buy:0,sell:3800,source:'Elite-Quest / Dungeon',affinity:'bruiser',buffMins:95,stats:{damagePct:.07,critChainChance:.03,dotChance:.03}},
-  emerald:{name:'Smaragd OG',icon:'💚',rarity:'legendary',growMs:8*60*60*1000,buy:0,sell:5200,source:'Gildenboss / seltene Events',affinity:'all',buffMins:110,stats:{primaryPct:.05,hpPct:.04,critChance:.03,armorPen:.03}}
+  emerald:{name:'Smaragd OG',icon:'💚',rarity:'legendary',growMs:8*60*60*1000,buy:0,sell:5200,source:'Gildenboss / seltene Events',affinity:'all',buffMins:110,stats:{primaryPct:.05,hpPct:.04,critChance:.03,armorPen:.03}},
+  hy_widow_amnesia:{name:'Widownesia',icon:'🧬',rarity:'epic',growMs:4.5*60*60*1000,buy:0,sell:2800,source:'Genetik-Labor',affinity:'all',buffMins:90,stats:{primaryPct:.04,dotChance:.03}},
+  hy_northern_purple:{name:'Northern Purple',icon:'🧬',rarity:'epic',growMs:4.5*60*60*1000,buy:0,sell:3000,source:'Genetik-Labor',affinity:'all',buffMins:90,stats:{hpPct:.04,critChance:.03}},
+  hy_lemon_dream:{name:'Lemon Dream',icon:'🧬',rarity:'epic',growMs:5*60*60*1000,buy:0,sell:3400,source:'Genetik-Labor',affinity:'all',buffMins:95,stats:{critChance:.04,damagePct:.05}},
+  hy_purple_gorilla:{name:'Purple Gorilla',icon:'🧬',rarity:'epic',growMs:5.5*60*60*1000,buy:0,sell:3900,source:'Genetik-Labor',affinity:'all',buffMins:100,stats:{wuchtChance:.05,critDamage:.10}},
+  hy_critical_crack:{name:'Critical Crack',icon:'🧬',rarity:'epic',growMs:6*60*60*1000,buy:0,sell:4400,source:'Genetik-Labor',affinity:'all',buffMins:105,stats:{doubleChance:.05,armorPen:.03}},
+  hy_emerald_kush:{name:'Emerald Kush',icon:'🧬',rarity:'legendary',growMs:8*60*60*1000,buy:0,sell:6500,source:'Genetik-Labor',affinity:'all',buffMins:120,stats:{primaryPct:.05,hpPct:.05,damageReduce:.02}}
  };
  function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
  function fmt(v){return Math.max(0,Math.round(Number(v)||0)).toLocaleString('de-DE')}
@@ -74088,7 +74132,7 @@ html.v481-hidden *,html.v481-hidden *::before,html.v481-hidden *::after{animatio
  function carePlant(uid,intendedIndex=null){const z=ensure(),p=s.grow.plants.find(x=>x&&x.uid===uid);if(!p)return;const cs=careState(p),raw=Number(intendedIndex),bound=Number.isInteger(raw)&&raw>=0&&raw<CARE.length;let idx=bound?raw:cs.available;if(idx<0||idx>=CARE.length)return toast('Keine Pflegeaktion verfügbar','info',progress(p)>=1?'Die Pflanze ist bereits erntereif.':'Später wieder nachsehen.');p.care=Array.isArray(p.care)?[0,1,2,3].map(n=>!!p.care[n]):[false,false,false,false];if(p.care[idx])return toast('Pflege bereits erledigt','info',`${CARE[idx].name} wurde schon gespeichert.`);const x=progress(p),end=idx===CARE.length-1?1:CARE[idx+1].at,endAt=Number(p.start||0)+Number(p.duration||0)*end,graceMs=12000;if(bound&&x>=end&&Date.now()-endAt>graceMs){const live=careState(p);if(live.available>=0)idx=live.available;else return toast('Pflegefenster gerade gewechselt','info','Die angezeigte Aktion war nicht mehr aktuell. Der Growroom wurde neu geladen.');}p.care[idx]=true;p.careDoneAt=Array.isArray(p.careDoneAt)?p.careDoneAt.slice(0,4):[0,0,0,0];while(p.careDoneAt.length<4)p.careDoneAt.push(0);p.careDoneAt[idx]=Date.now();z.selectedPlantUid=p.uid;rollMutation(p);save(false);renderGrow();try{if(typeof window.glSyncGrowCarePushJob==='function')void window.glSyncGrowCarePushJob()}catch(e){console.warn('[GL Push] care resync',e)}}
  function addBloom(p){const z=ensure(),q=qualityFrom(p),d=SEEDS[p.seed]||SEEDS.moss,b={id:`bloom_${Date.now()}_${Math.random().toString(36).slice(2,6)}`,seed:p.seed,quality:q,mutation:p.mutation||null,createdAt:Date.now()};if(z.bag.length<3){z.bag.push(b);return'bag'}const score=x=>GRADES.indexOf(x.quality)+(RANK[SEEDS[x.seed]?.rarity]||0)+(x.mutation?1:0),min=Math.min(...z.bag.map(score)),ns=score(b);if(ns>min){const i=z.bag.findIndex(x=>score(x)===min);z.bag.splice(i,1,b);return'replaced'}return'full'}
  function tryMaterial(){try{const chance=.012;if(Math.random()>=chance)return'';if(Math.random()<.5&&typeof v030Gems!=='undefined'&&v030Gems.length){const g=v030Gems[Math.floor(Math.random()*v030Gems.length)],v=Math.max(1,Math.floor((g.min+g.max)/2));s.materials=Array.isArray(s.materials)?s.materials:[];s.materials.push({uid:`grow_gem_${Date.now()}`,baseId:g.id,type:'gem',name:g.name,icon:g.icon,quality:'green',rarity:'uncommon',stat:g.stat,value:v,price:0});return` · 💎 ${g.name}`}if(typeof v030Scrolls!=='undefined'&&v030Scrolls.length){const r=v030Scrolls[Math.floor(Math.random()*v030Scrolls.length)],v=Math.max(1,Math.floor((r.min+r.max)/2));s.materials=Array.isArray(s.materials)?s.materials:[];s.materials.push({uid:`grow_scroll_${Date.now()}`,baseId:r.id,type:'scroll',name:r.name,icon:r.icon,quality:'green',rarity:'uncommon',effect:r.effect,value:v,price:0});return` · 📜 ${r.name}`}}catch(e){}return''}
- function harvest(){ensure();const now=Date.now(),ready=s.grow.plants.filter(p=>p&&progress(p,now)>=1);if(!ready.length)return toast('Noch nichts erntereif','info','Der Growroom zeigt dir an, sobald eine Ernte bereit ist.');try{window.v688PetGrowHarvest?.(ready)}catch(e){console.warn('V6.88 Pet Grow Drop',e)}let gold=0,xp=0,fr=0,perfect=0,muts=0,splus=0,extra='';ready.forEach(p=>{if(!p.mutationChecked){p.mutationChecked=false;rollMutation(p)}const q=qualityFrom(p);gold+=estimatedGold(p);xp+=xpFor(p);fr+=fragFor(p);if(q==='S+'){perfect++;splus++}if(p.mutation)muts++;addBloom(p);extra+=tryMaterial()});try{if(typeof v077ModifyYield==='function')gold=v077ModifyYield(gold)}catch(e){}try{if(typeof v077ModifyGold==='function')gold=v077ModifyGold(gold,'harvest')}catch(e){}try{if(typeof window.v688ApplyPetHarvestBonus==='function')gold=window.v688ApplyPetHarvestBonus(gold)}catch(e){}try{gold=typeof v408GuildGold==='function'?v408GuildGold(gold):gold}catch(e){}s.gold=(Number(s.gold)||0)+gold;try{addXp(xp)}catch(e){s.xp=(Number(s.xp)||0)+xp}forge().fragments+=fr;const z=ensure();z.masteryXp+=ready.reduce((n,p)=>n+12+GRADES.indexOf(qualityFrom(p))*5+(RANK[SEEDS[p.seed]?.rarity]||0)*3+(p.mutation?8:0),0);z.stats.harvested+=ready.length;z.stats.perfect+=perfect;z.stats.splus+=splus;z.week.harvested+=ready.length;z.week.perfect+=perfect;s.grow.plants=s.grow.plants.map(p=>p&&progress(p,now)>=1?null:p);while(s.grow.plants.length&&!s.grow.plants[s.grow.plants.length-1])s.grow.plants.pop();z.selectedPlantUid=(s.grow.plants.find(Boolean)||{}).uid||'';save(false);try{if(typeof v069SyncCurrencies==='function')v069SyncCurrencies()}catch(e){}try{if(typeof v106CheckAchievements==='function')v106CheckAchievements()}catch(e){}renderGrow();try{if(typeof window.glSyncGrowCarePushJob==='function')void window.glSyncGrowCarePushJob()}catch(e){console.warn('[GL Push] harvest care resync',e)}toast('✂️ Ernte abgeschlossen','success',`${ready.length} Pflanze${ready.length===1?'':'n'} · +${fmt(gold)} Gold · +${fmt(xp)} EXP · +${fr} Samenfragmente${perfect?` · ${perfect} Perfect Grow`:''}${muts?` · ${muts} Mutation${muts===1?'':'en'}`:''}${extra}`)}
+ function harvest(){ensure();const now=Date.now(),ready=s.grow.plants.filter(p=>p&&progress(p,now)>=1);if(!ready.length)return toast('Noch nichts erntereif','info','Der Growroom zeigt dir an, sobald eine Ernte bereit ist.');try{if(window.GL_EVENTS)window.GL_EVENTS.emit('growHarvested',{plants:ready,count:ready.length},ready.map(p=>String(p?.uid||p?.seed||'')).sort().join('|'));else{window.v6130OnGrowHarvest?.(ready);window.v688PetGrowHarvest?.(ready)}}catch(e){console.warn('V4.161 growHarvested event',e)}let gold=0,xp=0,fr=0,perfect=0,muts=0,splus=0,extra='';ready.forEach(p=>{if(!p.mutationChecked){p.mutationChecked=false;rollMutation(p)}const q=qualityFrom(p);gold+=estimatedGold(p);xp+=xpFor(p);fr+=fragFor(p);if(q==='S+'){perfect++;splus++}if(p.mutation)muts++;addBloom(p);extra+=tryMaterial()});try{if(typeof v077ModifyYield==='function')gold=v077ModifyYield(gold)}catch(e){}try{if(typeof v077ModifyGold==='function')gold=v077ModifyGold(gold,'harvest')}catch(e){}try{if(typeof window.v688ApplyPetHarvestBonus==='function')gold=window.v688ApplyPetHarvestBonus(gold)}catch(e){}try{gold=typeof v408GuildGold==='function'?v408GuildGold(gold):gold}catch(e){}s.gold=(Number(s.gold)||0)+gold;try{addXp(xp)}catch(e){s.xp=(Number(s.xp)||0)+xp}forge().fragments+=fr;const z=ensure();z.masteryXp+=ready.reduce((n,p)=>n+12+GRADES.indexOf(qualityFrom(p))*5+(RANK[SEEDS[p.seed]?.rarity]||0)*3+(p.mutation?8:0),0);z.stats.harvested+=ready.length;z.stats.perfect+=perfect;z.stats.splus+=splus;z.week.harvested+=ready.length;z.week.perfect+=perfect;s.grow.plants=s.grow.plants.map(p=>p&&progress(p,now)>=1?null:p);while(s.grow.plants.length&&!s.grow.plants[s.grow.plants.length-1])s.grow.plants.pop();z.selectedPlantUid=(s.grow.plants.find(Boolean)||{}).uid||'';save(false);try{if(typeof v069SyncCurrencies==='function')v069SyncCurrencies()}catch(e){}try{if(typeof v106CheckAchievements==='function')v106CheckAchievements()}catch(e){}renderGrow();try{if(typeof window.glSyncGrowCarePushJob==='function')void window.glSyncGrowCarePushJob()}catch(e){console.warn('[GL Push] harvest care resync',e)}toast('✂️ Ernte abgeschlossen','success',`${ready.length} Pflanze${ready.length===1?'':'n'} · +${fmt(gold)} Gold · +${fmt(xp)} EXP · +${fr} Samenfragmente${perfect?` · ${perfect} Perfect Grow`:''}${muts?` · ${muts} Mutation${muts===1?'':'en'}`:''}${extra}`)}
  async function activateBloom(i){
   const z=ensure(),idx=Number(i),pick=z.bag[idx];if(!pick)return;
   const pickId=pick.id,d=SEEDS[pick.seed]||SEEDS.moss,active=z.active&&Number(z.active.expiresAt)>Date.now()?z.active:null;
@@ -74155,6 +74199,14 @@ html.v481-hidden *,html.v481-hidden *::before,html.v481-hidden *::after{animatio
  function installQuestDrops(){const wrapped=new WeakSet();['claimQuest','v233ClaimQuest'].forEach(name=>{try{let fn=name==='claimQuest'?(typeof claimQuest==='function'?claimQuest:null):(typeof v233ClaimQuest==='function'?v233ClaimQuest:null);if(typeof fn!=='function'||fn.__v492SeedDrop)return;const w=function(){const q=s.quests?.active,ready=q&&Date.now()>=Number(q.ends||0),token=q?`${q.name}|${q.ends}`:'';const before=q;const after=()=>{if(!ready||!before||s.quests?.active===before||ensure().lastQuestSeedToken===token)return;ensure().lastQuestSeedToken=token;const elite=String(q.v309Role||'').includes('elite'),roll=Math.random();if(roll<(elite?.42:.24)){const id=elite?randomSeed(['critical','lemon','amnesia','violet','blue']):randomSeed(['moss','lime','jack','violet','blue']);addSeed(id,1,elite?'Elite-Quest':'Quest')}};let r=fn.apply(this,arguments);if(r&&typeof r.then==='function')r.finally(after);else setTimeout(after,0);return r};w.__v492SeedDrop=true;if(name==='claimQuest'){claimQuest=w;window.claimQuest=w}else{v233ClaimQuest=w;window.v233ClaimQuest=w}}catch(e){}})}
  function installDungeonDrops(){try{if(typeof v247ShowDungeonReward!=='function'||v247ShowDungeonReward.__v492SeedDrop)return;const base=v247ShowDungeonReward;const w=function(data){let drop='';try{const token=`${data?.dungeonIndex}:${data?.roomIndex}:${data?.boss?'b':'n'}`;if(ensure().lastDungeonSeedToken!==token){ensure().lastDungeonSeedToken=token;const r=Math.random(),boss=!!data?.boss;if(r<(boss?.36:.07)){const id=boss?randomSeed(['nebula','gorilla','lemon','amnesia']):randomSeed(['violet','blue','jack']);s.grow.seeds[id]=(Number(s.grow.seeds[id])||0)+1;ensure().discovered[id]=true;ensure().stats.seedsFound++;drop=id;save(false)}}}catch(e){}const res=base.apply(this,arguments);if(drop)setTimeout(()=>{const extra=document.querySelector('#v247DungeonRewardExtra');if(extra&&!extra.querySelector('.v492-dungeon-seed'))extra.insertAdjacentHTML('beforeend',`<div class="v247-dungeon-line v492-dungeon-seed">🌰 Samen gefunden: ${esc(SEEDS[drop].name)}</div>`)},0);return res};w.__v492SeedDrop=true;v247ShowDungeonReward=w;window.v247ShowDungeonReward=w}catch(e){}}
  function installPvpDrops(){try{if(typeof v209FinishBattle!=='function'||v209FinishBattle.__v492SeedDrop)return;const base=v209FinishBattle;const w=async function(win){const r=await base.apply(this,arguments);if(win&&Math.random()<.20)addSeed('greencrack',1,'PvP-Sieg');return r};w.__v492SeedDrop=true;v209FinishBattle=w;window.v209FinishBattle=w}catch(e){}}
+ function installEventDrops(){
+  if(!window.GL_EVENTS||window.__V6140_GROW_SEED_EVENTS__)return;window.__V6140_GROW_SEED_EVENTS__=true;
+  window.GL_EVENTS.on('questCompleted',ev=>{try{const q=ev.quest||{},elite=!!ev.elite||!!q.v310Elite||/elite/i.test(String(q.v309Role||q.v310BaseRole||q.v392Kind||''));if(Math.random()<(elite?.42:.24)){const id=elite?randomSeed(['critical','lemon','amnesia','violet','blue']):randomSeed(['moss','lime','jack','violet','blue']);addSeed(id,1,elite?'Elite-Quest':'Quest')}}catch(e){console.warn('V4.161 quest seed event',e)}});
+  window.GL_EVENTS.on('dungeonWon',ev=>{try{const boss=!!ev.boss;if(Math.random()>=(boss?.36:.07))return;const id=boss?randomSeed(['nebula','gorilla','lemon','amnesia']):randomSeed(['violet','blue','jack']);s.grow.seeds[id]=(Number(s.grow.seeds[id])||0)+1;ensure().discovered[id]=true;ensure().stats.seedsFound++;save(false);setTimeout(()=>{const extra=document.querySelector('#v247DungeonRewardExtra');if(extra&&!extra.querySelector('.v492-dungeon-seed'))extra.insertAdjacentHTML('beforeend',`<div class="v247-dungeon-line v492-dungeon-seed">🌰 Samen gefunden: ${esc(SEEDS[id].name)}</div>`)},0)}catch(e){console.warn('V4.161 dungeon seed event',e)}});
+  window.GL_EVENTS.on('pvpWon',()=>{try{if(Math.random()<.20)addSeed('greencrack',1,'PvP-Sieg')}catch(e){console.warn('V4.161 pvp seed event',e)}});
+  window.GL_EVENTS.on('guildBossWon',ev=>{try{window.v492GuildBossSeedReward?.(ev.result||{won:true})}catch(e){console.warn('V4.161 guild boss seed event',e)}});
+ }
+
  /* Gildenboss -> Growroom: only an actually claimed reward can grant a seed.
     Victory has the real chance at Smaragd OG; participation can very rarely grant Green Crack. */
  window.v492GuildBossSeedReward=function(result){try{ensure();const won=!!result?.won;if(won){if(Math.random()<.38)addSeed(Math.random()<.14?'emerald':randomSeed(['gorilla','amnesia','greencrack']),1,'Gildenboss')}else if(Math.random()<.06)addSeed('greencrack',1,'Gildenboss-Teilnahme')}catch(e){console.warn('V4.92 guild boss grow reward',e)}};
@@ -74205,14 +74257,14 @@ html.v481-hidden *,html.v481-hidden *::before,html.v481-hidden *::after{animatio
  function livePaint(){try{s.grow.plants.forEach(p=>{if(!p)return;const st=stage(p),pct=Math.round(progress(p)*100);document.querySelectorAll(`[data-v492-time="${CSS.escape(p.uid)}"]`).forEach(el=>el.textContent=`${st[0]} · ${st[1]}`);document.querySelectorAll(`[data-v492-pbar="${CSS.escape(p.uid)}"]`).forEach(el=>el.style.width=pct+'%');document.querySelectorAll(`[data-v492-detail-time="${CSS.escape(p.uid)}"]`).forEach(el=>el.textContent=`${st[0]} · ${st[1]}`);document.querySelectorAll(`[data-v492-detail-bar="${CSS.escape(p.uid)}"]`).forEach(el=>el.style.width=pct+'%')});const a=ensure().active;if(a){const c=document.querySelector('#v492CharGrowBuff .top small');if(c)c.textContent=buffLeft()}}catch(e){}}
  function stamp(){try{document.title='Grow Legends '+SHORT;document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version').forEach(el=>{if(el)el.textContent=VERSION});document.querySelectorAll('.v366-ver,.v371-logo em,.v372-logo em').forEach(el=>{if(el)el.textContent=SHORT})}catch(e){}}
  document.addEventListener('click',e=>{const t=e.target instanceof Element?e.target:null;if(!t)return;if(t.closest('[data-v492-og]')){e.preventDefault();e.stopImmediatePropagation();const a=t.closest('[data-v492-og]').dataset.v492Og;try{if(a==='buy')return v077BuySeed();if(a==='plant')return v077Plant();if(a==='harvest')return v077Harvest()}catch(err){return toast('Wundertüte OG','warn','Spezial-Samen konnte nicht ausgeführt werden.')}}if(t.closest('[data-v492-buy]')){e.preventDefault();e.stopImmediatePropagation();return buySeed(t.closest('[data-v492-buy]').dataset.v492Buy)}if(t.closest('[data-v492-seed]')&&!t.closest('[data-v492-buy]')){e.preventDefault();return selectSeed(t.closest('[data-v492-seed]').dataset.v492Seed)}if(t.closest('[data-v492-plant]')){e.preventDefault();return plant(Number(t.closest('[data-v492-plant]').dataset.v492Plant))}if(t.closest('[data-v492-detail]')){ensure().selectedPlantUid=t.closest('[data-v492-detail]').dataset.v492Detail;return renderGrow2()}if(t.closest('[data-v492-care]')){const b=t.closest('[data-v492-care]');return carePlant(b.dataset.v492Care,Number(b.dataset.v492CareIndex))};if(t.closest('[data-v492-harvest]'))return harvest();if(t.closest('[data-v492-activate]'))return activateBloom(t.closest('[data-v492-activate]').dataset.v492Activate);if(t.closest('[data-v492-donate]'))return void donate(t.closest('[data-v492-donate]').dataset.v492Donate);if(t.closest('[data-v492-book]'))return openBook();if(t.closest('[data-v492-week]'))return claimWeek();if(t.closest('[data-v492-upgrade]'))return upgrade(t.closest('[data-v492-upgrade]').dataset.v492Upgrade);if(t.closest('[data-v492-room]'))return roomUpgrade()},true);
- ensure();try{if(typeof v077InjectGrow==='function')v077InjectGrow=function(){}}catch(e){}installAchievements();installBuffBridge();installQuestDrops();installDungeonDrops();installPvpDrops();
+ ensure();try{if(typeof v077InjectGrow==='function')v077InjectGrow=function(){}}catch(e){}installAchievements();installBuffBridge();if(window.GL_EVENTS)installEventDrops();else{installQuestDrops();installDungeonDrops();installPvpDrops();}
  renderGrow=renderGrow2;window.renderGrow=renderGrow2;
  function tick(){if(document.hidden)return;ensure();let changed=false;s.grow.plants.forEach(p=>{if(p&&rollMutation(p))changed=true});if(changed)save(false);const sig=statusSig();if(document.querySelector('#grow')?.classList.contains('active')){if(!document.querySelector('.v492-grow')||sig!==window.__v492GrowSig)renderGrow2();else livePaint()}else{paintIndicators();if(document.querySelector('#character')?.classList.contains('active'))paintCharacter()}stamp()}
  setInterval(tick,5000);
  setInterval(()=>{if(document.hidden)return;try{if(document.querySelector('#grow')?.classList.contains('active'))livePaint()}catch(e){}},1000);
  document.addEventListener('visibilitychange',()=>{if(!document.hidden){try{renderGrow2()}catch(e){}paintIndicators();paintCharacter();stamp()}},{passive:true});
  window.addEventListener('pageshow',()=>{try{renderGrow2()}catch(e){}paintIndicators();paintCharacter();stamp()},{passive:true});
- [0,120,700,2200,6500,20000].forEach(ms=>setTimeout(()=>{installAchievements();installBuffBridge();installQuestDrops();installDungeonDrops();installPvpDrops();try{renderGrow2()}catch(e){}paintIndicators();paintCharacter();stamp()},ms));
+ [0,120,700,2200,6500,20000].forEach(ms=>setTimeout(()=>{installAchievements();installBuffBridge();if(window.GL_EVENTS)installEventDrops();else{installQuestDrops();installDungeonDrops();installPvpDrops();}try{renderGrow2()}catch(e){}paintIndicators();paintCharacter();stamp()},ms));
 })();
 </script>
 
@@ -84455,7 +84507,7 @@ body:has(#world.active){background:#010302!important}
           s.dungeon.progress[di]=idx+1;
         }
 
-        try{window.v411AwardGuildActivity?.('dungeon')}catch(e){}
+        try{if(!window.GL_EVENTS)window.v411AwardGuildActivity?.('dungeon')}catch(e){}
 
         try{persist(false)}catch(e){}
 
@@ -107779,7 +107831,7 @@ function wrapQuest(name){
     wrapped.__v688PetDrop=true;if(name==='claimQuest'){claimQuest=wrapped;window.claimQuest=wrapped}else{v233ClaimQuest=wrapped;window.v233ClaimQuest=wrapped}
   }catch(e){console.warn('V6.99 quest pet hook',e)}
 }
-wrapQuest('claimQuest');wrapQuest('v233ClaimQuest');
+if(window.GL_EVENTS){window.GL_EVENTS.on('questCompleted',ev=>{const q=ev.quest||{},elite=!!ev.elite||!!q.v310Elite||/elite/i.test(String(q.v309Role||q.v310BaseRole||q.v392Kind||''));standardRoll(elite?'elite':'quest',elite?.12:.04,elite?'elite':'quest')})}else{wrapQuest('claimQuest');wrapQuest('v233ClaimQuest')}
 
 function dungeonWins(){try{if(typeof v336CanonicalDungeonWins==='function')return Math.max(0,Number(v336CanonicalDungeonWins())||0);return Math.max(0,Number(s?.v106Achievements?.stats?.dungeonWins)||0)}catch(_){return 0}}
 function dungeonPos(){try{const dp=typeof v074DungeonProgress==='function'?v074DungeonProgress():{completed:[...(s?.dungeon?.completed||[])],progress:{...(s?.dungeon?.progress||{})},selected:Number(s?.dungeon?.selected)||0,room:Number(s?.dungeon?.room)||0};if(typeof v081DungeonPosition==='function')return v081DungeonPosition(dp)}catch(_){}return{dungeonNumber:(Number(s?.dungeon?.selected)||0)+1,enemyNumber:(Number(s?.dungeon?.room)||0)+1}}
@@ -107787,11 +107839,11 @@ function checkDungeonWin(before,pos){
   const after=dungeonWins();if(after<=before)return;const d=dropState();if(after<=d.lastDungeonWin)return;d.lastDungeonWin=after;save();
   const dn=Math.max(1,Math.min(20,Number(pos?.dungeonNumber)||1)),boss=Math.max(1,Number(pos?.enemyNumber)||1)>=10,chance=boss?.12:Math.min(.06,.03+((dn-1)/19)*.03);standardRoll(boss?'dungeon_boss':'dungeon',chance,boss?'dungeon_boss':'dungeon');
 }
-try{
+if(window.GL_EVENTS){window.GL_EVENTS.on('dungeonWon',ev=>{const dn=Math.max(1,Math.min(20,Number(ev.dungeonNumber)||1)),boss=!!ev.boss,chance=boss?.12:Math.min(.06,.03+((dn-1)/19)*.03);standardRoll(boss?'dungeon_boss':'dungeon',chance,boss?'dungeon_boss':'dungeon')})}else{try{
   if(typeof fightDungeon==='function'&&!fightDungeon.__v688PetDrop){
     const base=fightDungeon;const wrapped=async function(){const before=dungeonWins(),pos=dungeonPos(),pg=window.__v688GoldContext,px=window.__v688XpContext;window.__v688GoldContext='dungeon';window.__v688XpContext='dungeon';try{const r=await base.apply(this,arguments);checkDungeonWin(before,pos);setTimeout(()=>checkDungeonWin(before,pos),700);return r}finally{window.__v688GoldContext=pg;window.__v688XpContext=px}};wrapped.__v688PetDrop=true;fightDungeon=wrapped;window.fightDungeon=wrapped;
   }
-}catch(e){console.warn('V6.99 dungeon pet hook',e)}
+}catch(e){console.warn('V6.99 dungeon pet hook',e)}}
 
 function mythicRoll(){
   const found=s?.v686PetAlbum?.found||{},pool=pets().filter(p=>!found?.[p.id]?.cyan);if(!pool.length)return null;
@@ -110560,6 +110612,157 @@ window.v6124GuildLockQA=()=>({
 });
 })();
 </script>
+
+
+<!-- ===== V4.160 Stable: GENETIK-LABOR + KLASSENSET-SCHMIEDE ===== -->
+<style id="v6130-genetics-classset-css">
+#v6130GeneticsOverlay{position:fixed;inset:0;z-index:7200;display:none;place-items:center;padding:14px;background:rgba(0,0,0,.82);backdrop-filter:blur(4px)}
+#v6130GeneticsOverlay.show{display:grid}
+.v6130-lab{width:min(920px,96vw);max-height:92vh;overflow:auto;border:3px solid #46300e;border-radius:18px;background:linear-gradient(180deg,#172218,#080d09 72%);box-shadow:0 20px 70px #000,inset 0 0 35px #0008;color:#eef2df}
+.v6130-head{position:sticky;top:0;z-index:3;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 14px;border-bottom:3px solid #4c2e09;background:repeating-linear-gradient(4deg,#865017 0 13px,#6e3e10 14px 25px,#96591a 26px 30px);box-shadow:0 6px 14px #0009}
+.v6130-head h2{margin:0;color:#fff0b8;font-size:25px;text-shadow:0 3px #2b1704}.v6130-head small{display:block;margin-top:3px;color:#d6c18d;font-size:7px;font-weight:900;letter-spacing:.08em}.v6130-x{width:34px;height:34px;border:2px solid #9a6b29;border-radius:9px;background:#15120b;color:#f4deb0;font-weight:1000}
+.v6130-pending{margin:10px;padding:10px;border:2px solid #4e7536;border-radius:13px;background:linear-gradient(150deg,#1b2d18,#0b130c);box-shadow:inset 0 0 18px #0007}.v6130-pending b{color:#a7ef72}.v6130-progress{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:7px}.v6130-prog{padding:7px;border:1px solid #3f5337;border-radius:9px;background:#0a110b;font-size:8px}.v6130-prog.done{border-color:#6bc64c;color:#aaf480}.v6130-help{margin:0 10px 10px;padding:8px;border:1px solid #394a33;border-radius:10px;background:#0a100b;color:#aebaa8;font-size:7px;line-height:1.45}
+.v6130-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;padding:10px}.v6130-recipe{padding:10px;border:2px solid #33492d;border-radius:13px;background:linear-gradient(160deg,#1b2819,#0b120c);box-shadow:inset 0 0 18px #0006}.v6130-recipe.ready{border-color:#69b940;box-shadow:0 0 16px #60bb3338,inset 0 0 18px #0006}.v6130-recipe h3{margin:0;color:#f0d27b;font-size:14px}.v6130-parentline{display:flex;align-items:center;justify-content:center;gap:7px;margin:8px 0;padding:7px;border:1px solid #40533a;border-radius:9px;background:#0b120c;font-size:9px;font-weight:900}.v6130-parent{min-width:0;text-align:center}.v6130-plus{color:#8fe05f;font-size:17px}.v6130-out{padding:7px;border:1px solid #6d5a2a;border-radius:9px;background:#15150e;text-align:center;font-size:8px}.v6130-out strong{display:block;color:#9de66c;font-size:11px}.v6130-stock{margin-top:6px;color:#a9b5a2;font-size:7px;line-height:1.4}.v6130-stock .ok{color:#8de46c}.v6130-stock .bad{color:#ff8686}.v6130-recipe button{width:100%;margin-top:8px;min-height:34px;border:2px solid #557632;border-radius:9px;background:linear-gradient(#79b842,#426d24);color:#fff;font-weight:1000;font-size:8px;box-shadow:0 4px 0 #1c350f}.v6130-recipe button:disabled{opacity:.42;filter:grayscale(.7);box-shadow:none}
+.v6130-genetics-btn{white-space:nowrap}.v6130-genetics-hint{display:block;margin-top:5px;color:#9fb095;font-size:6px;line-height:1.3}
+.v667-forge-body.v6130-set-mode>:not(.v667-tabs):not(#v6130ClassSetPanel){display:none!important}.v667-tab.v6130-set-tab .ic{filter:drop-shadow(0 0 5px #86e65d)}
+#v6130ClassSetPanel{padding:10px}.v6130-set-head{padding:12px;border:3px solid #412a0d;border-radius:14px;background:repeating-linear-gradient(3deg,#704213 0 14px,#54300d 15px 27px,#7c4915 28px 31px);box-shadow:inset 0 0 0 1px #bd8330,0 6px 14px #0009;text-align:center}.v6130-set-head h3{margin:0;color:#fff0bb;font-size:22px;text-shadow:0 3px #241404}.v6130-set-head p{margin:5px 0 0;color:#d9c491;font-size:7px;font-weight:900}.v6130-set-bonuses{display:flex;flex-wrap:wrap;justify-content:center;gap:5px;margin-top:8px}.v6130-set-bonuses span{padding:5px 7px;border:1px solid #5f773e;border-radius:999px;background:#10180e;color:#b9e58e;font-size:6.5px;font-weight:900}
+.v6130-set-res{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:8px 0}.v6130-set-res div{padding:8px;border:1px solid #3e4d34;border-radius:9px;background:#0b110c;text-align:center}.v6130-set-res small{display:block;color:#96a48f;font-size:6px}.v6130-set-res b{display:block;margin-top:2px;color:#fff1c2;font-size:10px}
+.v6130-set-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.v6130-set-card{padding:9px;border:2px solid #394b31;border-radius:12px;background:linear-gradient(155deg,#1b2518,#0b100c)}.v6130-set-card.unlocked{border-color:#6b9342}.v6130-set-card .top{display:flex;align-items:center;gap:8px}.v6130-set-card .ico{font-size:30px}.v6130-set-card h4{margin:0;color:#f0d27c;font-size:12px}.v6130-set-card .recipe{margin-top:6px;padding:6px;border:1px solid #4a5838;border-radius:8px;background:#0a100b;color:#c4d0b9;font-size:7px;line-height:1.45}.v6130-costs{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-top:6px}.v6130-cost{padding:5px 3px;border:1px solid #37452f;border-radius:7px;background:#0a100b;text-align:center;font-size:6px}.v6130-cost b{display:block;margin-top:2px;font-size:8px}.v6130-cost.ok{border-color:#4c7c35;color:#a8ea82}.v6130-cost.bad{border-color:#704039;color:#ff9990}.v6130-set-card button{width:100%;margin-top:7px;min-height:34px;border:2px solid #5d8036;border-radius:9px;background:linear-gradient(#78ad3d,#406621);color:#fff;font-weight:1000;font-size:8px;box-shadow:0 4px 0 #1d310f}.v6130-set-card button:disabled{opacity:.42;filter:grayscale(.8);box-shadow:none}.v6130-note{margin-top:8px;padding:8px;border:1px solid #4d5939;border-radius:9px;background:#0a0f0a;color:#aab5a3;font-size:6.5px;line-height:1.45}
+@media(max-width:650px){.v6130-grid,.v6130-set-grid{grid-template-columns:1fr}.v6130-lab{width:96vw}.v6130-head h2{font-size:20px}.v6130-set-res{grid-template-columns:1fr 1fr 1fr}.v6130-costs{grid-template-columns:1fr 1fr}.v6130-parentline{font-size:8px}}
+</style>
+<script id="v6130-genetics-classset-core">
+(()=>{
+'use strict';
+if(window.__V6130_GENETICS_CLASSSET__)return;window.__V6130_GENETICS_CLASSSET__=true;
+const VERSION='V4.161 Stable',SHORT='V4.161';
+const RECIPES={
+ widow_amnesia:{name:'Widownesia',a:'moss',b:'amnesia',hybrid:'hy_widow_amnesia',essence:'Widownesia-Essenz'},
+ northern_purple:{name:'Northern Purple',a:'lime',b:'violet',hybrid:'hy_northern_purple',essence:'Northern-Purple-Essenz'},
+ lemon_dream:{name:'Lemon Dream',a:'lemon',b:'blue',hybrid:'hy_lemon_dream',essence:'Lemon-Dream-Essenz'},
+ purple_gorilla:{name:'Purple Gorilla',a:'violet',b:'gorilla',hybrid:'hy_purple_gorilla',essence:'Purple-Gorilla-Essenz'},
+ critical_crack:{name:'Critical Crack',a:'critical',b:'greencrack',hybrid:'hy_critical_crack',essence:'Critical-Crack-Essenz'},
+ emerald_kush:{name:'Emerald Kush',a:'emerald',b:'nebula',hybrid:'hy_emerald_kush',essence:'Emerald-Kush-Essenz'}
+};
+const SLOT_CFG={
+ boots:{icon:'🥾',label:'Stiefel',recipe:'widow_amnesia',buds:100,fragments:50,gold:10000,essence:1},
+ head:{icon:'🪖',label:'Kopfschutz',recipe:'northern_purple',buds:250,fragments:70,gold:15000,essence:1},
+ ring:{icon:'💍',label:'Ring',recipe:'lemon_dream',buds:400,fragments:90,gold:22000,essence:1},
+ body:{icon:'🛡️',label:'Rüstung',recipe:'purple_gorilla',buds:650,fragments:120,gold:35000,essence:2},
+ amulet:{icon:'📿',label:'Amulett',recipe:'critical_crack',buds:900,fragments:150,gold:50000,essence:2},
+ weapon:{icon:'⚔️',label:'Waffe',recipe:'emerald_kush',buds:1200,fragments:200,gold:75000,essence:3}
+};
+const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fmt=v=>Math.max(0,Math.round(Number(v)||0)).toLocaleString('de-DE');
+function seed(id){try{return seedTypes?.[id]||null}catch(_){return null}}
+function seedName(id){return seed(id)?.name||id}
+function state(){
+ if(typeof s==='undefined'||!s)return null;
+ s.grow=(s.grow&&typeof s.grow==='object')?s.grow:{};s.grow.seeds=(s.grow.seeds&&typeof s.grow.seeds==='object')?s.grow.seeds:{};
+ s.grow.v6130=(s.grow.v6130&&typeof s.grow.v6130==='object')?s.grow.v6130:{};const z=s.grow.v6130;
+ z.essences=(z.essences&&typeof z.essences==='object')?z.essences:{};z.crosses=(z.crosses&&typeof z.crosses==='object')?z.crosses:{};
+ z.totalCrosses=Math.max(0,Math.floor(Number(z.totalCrosses)||0));z.totalEssences=Math.max(0,Math.floor(Number(z.totalEssences)||0));
+ if(z.pending&&(!RECIPES[z.pending.recipe]||typeof z.pending!=='object'))z.pending=null;
+ return z;
+}
+function save(){try{persist(false)}catch(_){ }try{if(typeof v075WriteCloudSave==='function')setTimeout(()=>v075WriteCloudSave(false),0)}catch(_){}}
+function toast(t,type='success',d=''){try{return v063Toast(t,type,d)}catch(_){}}
+function ownedOrGrowing(id){const stock=Math.max(0,Number(s?.grow?.seeds?.[id])||0);const growing=Array.isArray(s?.grow?.plants)&&s.grow.plants.some(p=>p&&p.seed===id);return stock>0||growing}
+function qualityByCare(p){const n=Array.isArray(p?.care)?p.care.filter(Boolean).length:0;return ['C','B','A','S','S+'][Math.min(4,n)]}
+function installAchievements(){try{if(typeof V106_ACH==='undefined'||!Array.isArray(V106_ACH))return;const old=V106_ACH.findIndex(x=>x?.[0]==='seed10');if(old>=0)V106_ACH.splice(old,1);if(!V106_ACH.some(x=>x?.[0]==='genetics1'))V106_ACH.push(['genetics1','Grüne Wissenschaft','Schließe deine erste erfolgreiche Kreuzung ab.',()=>Math.max(0,Number(s?.grow?.v6130?.totalCrosses)||0),1],['genetics10','Stabiler Stammbaum','Schließe 10 erfolgreiche Kreuzungen ab.',()=>Math.max(0,Number(s?.grow?.v6130?.totalCrosses)||0),10])}catch(e){console.warn('V4.160 genetics achievements',e)}}
+function beginCross(id){const z=state(),r=RECIPES[id];if(!z||!r)return;if(z.pending)return toast('Kreuzung läuft bereits','info',`${RECIPES[z.pending.recipe]?.name||'Genetik'} zuerst abschließen.`);const missing=[r.a,r.b].filter(x=>!ownedOrGrowing(x));if(missing.length)return toast('Elternsorte fehlt','warn',`Du brauchst ${missing.map(seedName).join(' + ')} als Samen oder bereits wachsende Pflanze.`);z.pending={recipe:id,aDone:false,bDone:false,startedAt:Date.now()};save();renderLab();toast('🧬 Kreuzung angesetzt','success',`${seedName(r.a)} + ${seedName(r.b)} · beide mindestens Qualität S ernten.`)}
+function onHarvest(ready){const z=state();if(!z||!Array.isArray(ready)||!ready.length)return;
+ let changed=false;
+ const p=z.pending,r=p&&RECIPES[p.recipe];
+ if(r){let low=false;for(const plant of ready){if(!plant)continue;const matchesA=plant.seed===r.a,matchesB=plant.seed===r.b;if(!matchesA&&!matchesB)continue;const good=(Array.isArray(plant.care)?plant.care.filter(Boolean).length:0)>=3;if(!good){low=true;continue}if(matchesA&&!p.aDone){p.aDone=true;changed=true}if(matchesB&&!p.bDone){p.bDone=true;changed=true}}
+   if(p.aDone&&p.bDone){s.grow.seeds[r.hybrid]=Math.max(0,Number(s.grow.seeds[r.hybrid])||0)+1;z.crosses[p.recipe]=Math.max(0,Number(z.crosses[p.recipe])||0)+1;z.totalCrosses++;z.pending=null;changed=true;toast('🧬 Kreuzung gelungen!','success',`+1 ${r.name} Hybrid-Samen · jetzt anbauen und mindestens S ernten.`);installAchievements();try{v106CheckAchievements?.()}catch(_){}}
+   else if(changed)toast('🧬 Genetikfortschritt','success',`${p.aDone?'✅':'⬜'} ${seedName(r.a)} · ${p.bDone?'✅':'⬜'} ${seedName(r.b)}`);else if(low)toast('Genetik: Qualität zu niedrig','info','Für die Kreuzung zählt nur Qualität S oder S+.');
+ }
+ for(const plant of ready){const entry=Object.entries(RECIPES).find(([,x])=>x.hybrid===plant?.seed);if(!entry)continue;const [id,rr]=entry;if((Array.isArray(plant.care)?plant.care.filter(Boolean).length:0)<3){toast('Hybrid nicht stabil genug','info',`${rr.name} benötigt Qualität S oder S+ für eine Essenz.`);continue}z.essences[id]=Math.max(0,Number(z.essences[id])||0)+1;z.totalEssences++;changed=true;toast('🧬 Genetik-Essenz gewonnen','success',`+1 ${rr.essence} · für die Klassenset-Schmiede.`)}
+ if(changed){save();setTimeout(()=>{try{decorateGrow();renderLabIfOpen();renderSetIfOpen()}catch(_){ }},0)}
+}
+window.v6130OnGrowHarvest=onHarvest;if(window.GL_EVENTS&&!window.__V6140_GENETICS_EVENT__){window.__V6140_GENETICS_EVENT__=true;window.GL_EVENTS.on('growHarvested',ev=>onHarvest(ev.plants||[]));}
+function pendingHtml(){const z=state(),p=z?.pending;if(!p)return '<div class="v6130-pending"><b>🧬 Keine Kreuzung aktiv</b><div class="v6130-stock">Wähle unten ein Rezept. Danach müssen beide Elternsorten jeweils mindestens mit Qualität S geerntet werden.</div></div>';const r=RECIPES[p.recipe];return `<div class="v6130-pending"><b>🧬 Aktive Kreuzung: ${esc(r.name)}</b><div class="v6130-progress"><div class="v6130-prog ${p.aDone?'done':''}">${p.aDone?'✅':'⬜'} ${esc(seedName(r.a))} · mindestens S</div><div class="v6130-prog ${p.bDone?'done':''}">${p.bDone?'✅':'⬜'} ${esc(seedName(r.b))} · mindestens S</div></div><div class="v6130-stock">Sind beide Eltern bestätigt, erhältst du genau 1 Hybrid-Samen. Der Hybrid muss anschließend selbst mindestens auf S gezogen werden, um seine Schmiede-Essenz zu gewinnen.</div></div>`}
+function ensureLab(){let ov=document.getElementById('v6130GeneticsOverlay');if(ov)return ov;ov=document.createElement('div');ov.id='v6130GeneticsOverlay';ov.innerHTML='<div class="v6130-lab"><div class="v6130-head"><div><h2>🧬 Genetik-Labor</h2><small>KREUZEN · HYBRID ZIEHEN · ESSENZ GEWINNEN</small></div><button type="button" class="v6130-x" data-v6130-close>✕</button></div><div id="v6130LabBody"></div></div>';document.body.appendChild(ov);ov.addEventListener('click',e=>{if(e.target===ov||e.target.closest('[data-v6130-close]'))ov.classList.remove('show')});return ov}
+function recipeCard(id,r){const z=state(),active=z?.pending?.recipe===id,blocked=!!z?.pending&&!active,aok=ownedOrGrowing(r.a),bok=ownedOrGrowing(r.b),ess=Math.max(0,Number(z?.essences?.[id])||0),hy=Math.max(0,Number(s?.grow?.seeds?.[r.hybrid])||0);return `<div class="v6130-recipe ${aok&&bok&&!blocked?'ready':''}"><h3>${esc(r.name)}</h3><div class="v6130-parentline"><span class="v6130-parent">🌰 ${esc(seedName(r.a))}<br><small>×${Math.max(0,Number(s?.grow?.seeds?.[r.a])||0)}</small></span><span class="v6130-plus">＋</span><span class="v6130-parent">🌰 ${esc(seedName(r.b))}<br><small>×${Math.max(0,Number(s?.grow?.seeds?.[r.b])||0)}</small></span></div><div class="v6130-out">Ergebnis<strong>🧬 ${esc(r.name)} Hybrid</strong></div><div class="v6130-stock"><span class="${aok?'ok':'bad'}">${aok?'✓':'✕'} ${esc(seedName(r.a))}</span> · <span class="${bok?'ok':'bad'}">${bok?'✓':'✕'} ${esc(seedName(r.b))}</span><br>Hybrid-Samen: <b>${hy}</b> · Essenzen: <b>${ess}</b> · Kreuzungen: <b>${Math.max(0,Number(z?.crosses?.[id])||0)}</b></div><button type="button" data-v6130-cross="${id}" ${blocked||active||!aok||!bok?'disabled':''}>${active?'Kreuzung läuft':blocked?'Andere Kreuzung aktiv':'Kreuzung ansetzen'}</button></div>`}
+function renderLab(){const ov=ensureLab(),body=ov.querySelector('#v6130LabBody');if(!body)return;body.innerHTML=`${pendingHtml()}<div class="v6130-help"><b>So funktioniert es:</b> Elternsorten müssen vorhanden oder bereits eingepflanzt sein. Nach dem Start erntest du beide Eltern mit Qualität <b>S oder S+</b>. Dann entsteht ein echter Hybrid-Samen im Samenlager. Erst wenn du diesen Hybrid ebenfalls mit <b>S/S+</b> erntest, erhältst du die Genetik-Essenz für ein Klassenset-Teil.</div><div class="v6130-grid">${Object.entries(RECIPES).map(([id,r])=>recipeCard(id,r)).join('')}</div>`}
+function openLab(){renderLab();ensureLab().classList.add('show')}
+function renderLabIfOpen(){if(document.getElementById('v6130GeneticsOverlay')?.classList.contains('show'))renderLab()}
+function decorateGrow(){const root=document.querySelector('#grow .v492-grow');if(!root||root.querySelector('[data-v6130-open]'))return;const actions=root.querySelector('.v492-bottom .v492-card:last-child .v492-actions')||root.querySelector('.v492-actions');if(!actions)return;const b=document.createElement('button');b.type='button';b.className='btn secondary v6130-genetics-btn';b.dataset.v6130Open='1';b.textContent='🧬 Genetik-Labor';actions.appendChild(b);const z=state(),hint=document.createElement('small');hint.className='v6130-genetics-hint';hint.textContent=z?.pending?`Aktiv: ${RECIPES[z.pending.recipe]?.name||'Kreuzung'} · Eltern mindestens S ernten`:`${z?.totalCrosses||0} Kreuzungen · ${z?.totalEssences||0} Essenzen`;actions.parentElement?.appendChild(hint)}
+function buds(){return Math.max(0,Math.floor(Number(s?.v204Pvp?.buds)||0))}
+function fragments(){return Math.max(0,Math.floor(Number(s?.v488Forge?.fragments)||0))}
+function levelFactor(){return 1+Math.floor((Math.max(1,Number(s?.level)||1)-1)/50)*.25}
+function slotCost(slot){const c=SLOT_CFG[slot],f=levelFactor();return {...c,gold:Math.round(c.gold*f),fragments:Math.round(c.fragments*(1+(f-1)*.65))}}
+function currentClass(){return ['grower','scout','bruiser','frost'].includes(String(s?.playerClass))?String(s.playerClass):'grower'}
+function setInfo(){const cls=currentClass();try{return classSets?.[cls]||{name:'Klassenset',bonuses:{}}}catch(_){return{name:'Klassenset',bonuses:{}}}}
+function equippedSet(){const cls=currentClass();return Object.values(s?.equipment||{}).filter(it=>it?.setId===cls).length}
+async function confirmBox(text,title){try{if(typeof v115Confirm==='function')return await v115Confirm(text,{title,type:'confirm',okText:'Set-Teil schmieden'})}catch(_){ }return window.confirm(text)}
+async function craftSet(slot){const z=state(),c=slotCost(slot),r=RECIPES[c.recipe];if(!z||!r)return;const haveEss=Math.max(0,Number(z.essences[c.recipe])||0);if(buds()<c.buds)return toast('PvP-Rang noch zu niedrig','warn',`Du brauchst mindestens ${fmt(c.buds)} PvP-Buds. Sie werden nicht ausgegeben.`);if(haveEss<c.essence)return toast('Genetik-Essenz fehlt','warn',`${r.essence}: ${haveEss}/${c.essence}`);if(fragments()<c.fragments)return toast('Samenfragmente fehlen','warn',`${fmt(fragments())}/${fmt(c.fragments)}`);if((Number(s.gold)||0)<c.gold)return toast('Gold fehlt','warn',`${fmt(Number(s.gold)||0)}/${fmt(c.gold)}`);const ok=await confirmBox(`${c.label} des ${setInfo().name}-Sets herstellen?\n\n${c.essence}× ${r.essence}\n${fmt(c.fragments)} Samenfragmente\n${fmt(c.gold)} Gold\nPvP-Freischaltung: ${fmt(c.buds)} Buds (werden NICHT verbraucht)\n\nDas Item wird für dein aktuelles Level hergestellt.`,`🧬 ${setInfo().name}: ${c.label}`);if(!ok)return;z.essences[c.recipe]=haveEss-c.essence;s.v488Forge=(s.v488Forge&&typeof s.v488Forge==='object')?s.v488Forge:{};s.v488Forge.fragments=Math.max(0,fragments()-c.fragments);s.gold=Math.max(0,(Number(s.gold)||0)-c.gold);let item=null;try{item=makeSetItem(currentClass(),slot)}catch(e){console.warn('V4.160 makeSetItem',e)}if(!item){z.essences[c.recipe]=haveEss;s.v488Forge.fragments+=c.fragments;s.gold+=c.gold;return toast('Herstellung fehlgeschlagen','error','Set-Item konnte nicht erzeugt werden. Kosten wurden zurückgegeben.')}item.v6130Crafted=true;item.v6130GeneticRecipe=c.recipe;s.inventory=Array.isArray(s.inventory)?s.inventory:[];s.inventory.push(item);save();try{v069SyncCurrencies?.()}catch(_){ }try{v441PaintResources?.()}catch(_){ }try{render?.()}catch(_){ }toast('🧩 Klassenset hergestellt!','success',`${item.icon||'🎁'} ${item.name} · im Inventar`);setTimeout(()=>{decorateForge();openSetPanel()},30)}
+function setCard(slot){const c=slotCost(slot),r=RECIPES[c.recipe],z=state(),e=Math.max(0,Number(z?.essences?.[c.recipe])||0),b=buds(),f=fragments(),g=Math.max(0,Number(s?.gold)||0),unlock=b>=c.buds,ok=unlock&&e>=c.essence&&f>=c.fragments&&g>=c.gold;return `<div class="v6130-set-card ${unlock?'unlocked':''}"><div class="top"><div class="ico">${c.icon}</div><div><h4>${esc(c.label)}</h4><small>${esc(r.name)}-Rezept</small></div></div><div class="recipe">🧬 ${c.essence}× ${esc(r.essence)}<br>⚔️ Freischaltung ab ${fmt(c.buds)} PvP-Buds · <b>Buds werden nicht verbraucht.</b></div><div class="v6130-costs"><div class="v6130-cost ${e>=c.essence?'ok':'bad'}">🧬 Essenz<b>${e}/${c.essence}</b></div><div class="v6130-cost ${f>=c.fragments?'ok':'bad'}">💠 Fragmente<b>${fmt(f)}/${fmt(c.fragments)}</b></div><div class="v6130-cost ${g>=c.gold?'ok':'bad'}">🪙 Gold<b>${fmt(g)}/${fmt(c.gold)}</b></div><div class="v6130-cost ${unlock?'ok':'bad'}">⚔️ PvP-Buds<b>${fmt(b)}/${fmt(c.buds)}</b></div></div><button type="button" data-v6130-craft="${slot}" ${ok?'':'disabled'}>${unlock?'Set-Teil herstellen':'PvP-Rezept gesperrt'}</button></div>`}
+function panelHtml(){const si=setInfo(),bon=si.bonuses||{},z=state();return `<div class="v6130-set-head"><h3>🧩 ${esc(si.name)} · Klassenset</h3><p>GEZIELT HERSTELLEN · GENETIK + SCHMIEDE + PVP</p><div class="v6130-set-bonuses">${Object.values(bon).map(x=>`<span>${esc(x)}</span>`).join('')}</div></div><div class="v6130-set-res"><div><small>⚔️ PvP-Buds</small><b>${fmt(buds())}</b></div><div><small>💠 Samenfragmente</small><b>${fmt(fragments())}</b></div><div><small>🧩 Set getragen</small><b>${equippedSet()}/6</b></div></div><div class="v6130-set-grid">${Object.keys(SLOT_CFG).map(setCard).join('')}</div><div class="v6130-note"><b>Balance:</b> Klassenset-Teile bleiben epische Set-Items. Ihre Stärke entsteht vor allem über die bestehenden 2/4/6-Setboni. Mystische Gegenstände bleiben weiterhin exklusiv für den mystischen Boss. Die Gold- und Fragmentkosten steigen in 50-Level-Stufen mit deinem Charakterlevel.</div>`}
+function openSetPanel(){const body=document.querySelector('#forge .v667-forge-body');if(!body)return;body.classList.add('v6130-set-mode');let p=body.querySelector('#v6130ClassSetPanel');if(!p){p=document.createElement('div');p.id='v6130ClassSetPanel';body.appendChild(p)}p.innerHTML=panelHtml();body.querySelectorAll('.v667-tab').forEach(x=>x.classList.toggle('active',x.classList.contains('v6130-set-tab')))}
+function renderSetIfOpen(){const body=document.querySelector('#forge .v667-forge-body');if(body?.classList.contains('v6130-set-mode'))openSetPanel()}
+function decorateForge(){const body=document.querySelector('#forge .v667-forge-body'),tabs=body?.querySelector('.v667-tabs');if(!body||!tabs)return;if(!tabs.querySelector('.v6130-set-tab')){const b=document.createElement('button');b.type='button';b.className='v667-tab v6130-set-tab';b.dataset.v6130Settab='1';b.innerHTML='<span class="ic">🧩</span><span>KLASSENSET<small>Genetik · PvP · Fragmente</small></span>';tabs.appendChild(b)}}
+function stamp(){try{document.title='Grow Legends '+SHORT;document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version').forEach(el=>{if(el)el.textContent=VERSION});document.querySelectorAll('.v366-ver,.v371-logo em,.v372-logo em').forEach(el=>{if(el)el.textContent=SHORT})}catch(_){}}
+document.addEventListener('click',e=>{const t=e.target instanceof Element?e.target:null;if(!t)return;if(t.closest('[data-v6130-open]')){e.preventDefault();return openLab()}if(t.closest('[data-v6130-cross]')){e.preventDefault();return beginCross(t.closest('[data-v6130-cross]').dataset.v6130Cross)}if(t.closest('[data-v6130-settab]')){e.preventDefault();e.stopPropagation();return openSetPanel()}if(t.closest('[data-v6130-craft]')){e.preventDefault();return void craftSet(t.closest('[data-v6130-craft]').dataset.v6130Craft)}if(t.closest('#forge [data-v667-tab]')){document.querySelector('#forge .v667-forge-body')?.classList.remove('v6130-set-mode');setTimeout(decorateForge,20)}},true);
+function attachObservers(){for(const [id,fn] of [['grow',decorateGrow],['forge',decorateForge]]){const el=document.getElementById(id);if(!el||el.dataset.v6130Observed)return;el.dataset.v6130Observed='1';let queued=false;new MutationObserver(()=>{if(queued)return;queued=true;requestAnimationFrame(()=>{queued=false;try{fn()}catch(_){}})}).observe(el,{childList:true,subtree:true});try{fn()}catch(_){}}}
+state();installAchievements();ensureLab();attachObservers();decorateGrow();decorateForge();stamp();
+document.addEventListener('DOMContentLoaded',()=>{state();installAchievements();attachObservers();decorateGrow();decorateForge();stamp()},{once:true});
+window.addEventListener('pageshow',()=>{attachObservers();decorateGrow();decorateForge();stamp()},{passive:true});
+window.addEventListener('growlegends:account-ready',()=>setTimeout(()=>{state();installAchievements();decorateGrow();decorateForge();stamp()},80));
+window.v6130GeneticsConfig={recipes:RECIPES,slots:SLOT_CFG};
+window.v6130QA=()=>({version:VERSION,pending:state()?.pending||null,totalCrosses:state()?.totalCrosses||0,totalEssences:state()?.totalEssences||0,buds:buds(),fragments:fragments(),growButton:!!document.querySelector('[data-v6130-open]'),forgeTab:!!document.querySelector('.v6130-set-tab'),hybrids:Object.values(RECIPES).map(r=>({id:r.hybrid,known:!!seed(r.hybrid),stock:Number(s?.grow?.seeds?.[r.hybrid])||0}))});
+})();
+</script>
+<!-- ===== /V4.160 ===== -->
+
+
+
+<!-- ===== V4.161 Stable: CENTRAL GAME EVENT DISTRIBUTOR ===== -->
+<style id="v6140-version-owner-css">
+.app > header .v358-logo::after{content:"V4.161"!important}
+.app > header .v366-ver::after,.app > header .v371-logo em::after,.app > header .v372-logo em::after,#v372TopbarShell .v372-logo em::after{content:"V4.161"!important}
+</style>
+<script id="v6140-central-game-event-bridge">
+(()=>{
+'use strict';
+if(window.__V6140_EVENT_BRIDGE__)return;window.__V6140_EVENT_BRIDGE__=true;
+const VERSION='V4.161 Stable',SHORT='V4.161',BUS=window.GL_EVENTS;
+if(!BUS){console.error('V4.161: central event bus missing');return}
+const n=v=>Math.max(0,Number(v)||0);
+function questLite(q){if(!q||typeof q!=='object')return null;return{id:q.id??null,uid:q.uid??null,name:String(q.name||''),ends:Number(q.ends)||0,v310Elite:!!q.v310Elite,v309Role:q.v309Role||'',v310BaseRole:q.v310BaseRole||'',v392Kind:q.v392Kind||'',gold:Number(q.gold)||0,xp:Number(q.xp)||0}}
+function questElite(q){return !!q&&(!!q.v310Elite||/elite/i.test(String(q.v309Role||q.v310BaseRole||q.v392Kind||'')))}
+function questToken(q){return q?String(q.id??q.uid??q.name??'quest')+'|'+String(Number(q.ends)||0):''}
+function dungeonWins(){try{return typeof v336CanonicalDungeonWins==='function'?n(v336CanonicalDungeonWins()):n(s?.v106Achievements?.stats?.dungeonWins)}catch(_){return 0}}
+function dungeonPos(){try{const dp=typeof v074DungeonProgress==='function'?v074DungeonProgress():{completed:[...(s?.dungeon?.completed||[])],progress:{...(s?.dungeon?.progress||{})},selected:Number(s?.dungeon?.selected)||0,room:Number(s?.dungeon?.room)||0};if(typeof v081DungeonPosition==='function')return v081DungeonPosition(dp)}catch(_){}return{dungeonNumber:(Number(s?.dungeon?.selected)||0)+1,enemyNumber:(Number(s?.dungeon?.room)||0)+1}}
+function installQuestSource(name){
+ try{
+  let fn=name==='claimQuest'?(typeof claimQuest==='function'?claimQuest:null):(typeof v233ClaimQuest==='function'?v233ClaimQuest:null);if(typeof fn!=='function'||fn.__v6140EventSource)return;
+  const wrapped=function(){const q=s?.quests?.active,token=questToken(q),prev=window.__v688XpContext;window.__v688XpContext='quest';let r;try{r=fn.apply(this,arguments)}finally{window.__v688XpContext=prev}
+   const done=()=>{try{if(q&&s?.quests?.active!==q&&token)BUS.emit('questCompleted',{quest:questLite(q),elite:questElite(q)},token)}catch(e){console.warn('V4.161 quest event source',e)}};
+   if(r&&typeof r.then==='function')return r.then(v=>{done();return v},e=>{done();throw e});done();return r;
+  };wrapped.__v6140EventSource=true;wrapped.__v6140SourceName=name;if(name==='claimQuest'){claimQuest=wrapped;window.claimQuest=wrapped}else{v233ClaimQuest=wrapped;window.v233ClaimQuest=wrapped}
+ }catch(e){console.warn('V4.161 install quest source',name,e)}
+}
+function installDungeonSource(){try{if(typeof fightDungeon!=='function'||fightDungeon.__v6140EventSource)return;const fn=fightDungeon;const wrapped=function(){const before=dungeonWins(),pos=dungeonPos(),pg=window.__v688GoldContext,px=window.__v688XpContext;window.__v688GoldContext='dungeon';window.__v688XpContext='dungeon';let r;try{r=fn.apply(this,arguments)}catch(e){window.__v688GoldContext=pg;window.__v688XpContext=px;throw e}
+ const done=()=>{try{const after=dungeonWins();if(after>before){const dn=Math.max(1,Number(pos?.dungeonNumber)||1),en=Math.max(1,Number(pos?.enemyNumber)||1);BUS.emit('dungeonWon',{dungeonNumber:dn,enemyNumber:en,boss:en>=10,winsBefore:before,winsAfter:after},String(after))}}finally{window.__v688GoldContext=pg;window.__v688XpContext=px}};
+ if(r&&typeof r.then==='function')return r.then(v=>{done();return v},e=>{done();throw e});done();return r};wrapped.__v6140EventSource=true;fightDungeon=wrapped;window.fightDungeon=wrapped}catch(e){console.warn('V4.161 install dungeon source',e)}}
+function installPvpSource(){try{if(typeof v209FinishBattle!=='function'||v209FinishBattle.__v6140EventSource)return;const fn=v209FinishBattle;const wrapped=function(win,enemy){const bf=n(s?.v204Pvp?.fights),bw=n(s?.v204Pvp?.wins),r=fn.apply(this,arguments);const done=()=>{if(!win)return;const af=n(s?.v204Pvp?.fights),aw=n(s?.v204Pvp?.wins),enemyId=String(enemy?.id||enemy?.user_id||enemy?.name||s?.v204Pvp?.lastOpponent||'');const token=(af||aw)?`${af}|${aw}|${enemyId}`:`${Date.now()}|${enemyId}`;BUS.emit('pvpWon',{enemy:enemy||null,fightsBefore:bf,fightsAfter:af,winsBefore:bw,winsAfter:aw},token)};if(r&&typeof r.then==='function')return r.then(v=>{done();return v},e=>{throw e});done();return r};wrapped.__v6140EventSource=true;v209FinishBattle=wrapped;window.v209FinishBattle=wrapped}catch(e){console.warn('V4.161 install pvp source',e)}}
+function installSubscribers(){if(window.__V6140_CORE_SUBSCRIBERS__)return;window.__V6140_CORE_SUBSCRIBERS__=true;
+ BUS.on('questCompleted',ev=>{try{if(typeof window.v474AwardGuildActivity==='function')window.v474AwardGuildActivity('quest','event:'+ev.token);else window.v411AwardGuildActivity?.('quest')}catch(_){}try{v106CheckAchievements?.()}catch(_){}});
+ BUS.on('dungeonWon',()=>{try{window.v411AwardGuildActivity?.('dungeon')}catch(_){}try{v106CheckAchievements?.()}catch(_){}});
+ BUS.on('pvpWon',ev=>{try{if(typeof window.v474AwardGuildActivity==='function')window.v474AwardGuildActivity('pvp_win','event:'+ev.token);else window.v411AwardGuildActivity?.('pvp_win')}catch(_){}try{v106CheckAchievements?.()}catch(_){}});
+ BUS.on('growHarvested',ev=>{try{window.v688PetGrowHarvest?.(ev.plants||[])}catch(e){console.warn('V4.161 pet grow listener',e)}try{v106CheckAchievements?.()}catch(_){}});
+ BUS.on('guildBossWon',()=>{try{window.v411AwardGuildActivity?.('guild_boss')}catch(_){}try{v106CheckAchievements?.()}catch(_){}});
+}
+function stamp(){try{document.title='Grow Legends '+SHORT;document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version').forEach(el=>{if(el)el.textContent=VERSION});document.querySelectorAll('.v366-ver,.v371-logo em,.v372-logo em').forEach(el=>{if(el)el.textContent=SHORT})}catch(_){}}
+installSubscribers();installQuestSource('claimQuest');installQuestSource('v233ClaimQuest');installDungeonSource();installPvpSource();stamp();
+document.addEventListener('DOMContentLoaded',()=>{installQuestSource('claimQuest');installQuestSource('v233ClaimQuest');installDungeonSource();installPvpSource();stamp()},{once:true});
+window.addEventListener('growlegends:account-ready',()=>setTimeout(()=>{installQuestSource('claimQuest');installQuestSource('v233ClaimQuest');installDungeonSource();installPvpSource();stamp()},120));
+window.addEventListener('pageshow',()=>{stamp()},{passive:true});[300,1200,4000].forEach(ms=>setTimeout(stamp,ms));
+window.v6140EventQA=()=>({version:VERSION,bus:BUS.stats(),sources:{quest:!!window.v233ClaimQuest?.__v6140EventSource||!!window.claimQuest?.__v6140EventSource,dungeon:!!window.fightDungeon?.__v6140EventSource,pvp:!!window.v209FinishBattle?.__v6140EventSource},legacyRewardWrappersSuppressed:!!window.__V6140_EVENT_BUS__});
+})();
+</script>
+<!-- ===== /V4.161 ===== -->
 
 </body>
 </html>
