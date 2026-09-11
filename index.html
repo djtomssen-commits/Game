@@ -2403,7 +2403,7 @@ img.v6108-quality-art{
       <button class="btn secondary" data-v381-tab="compose">✍️ Neue Nachricht</button>
       <button class="btn secondary v6200-battle-tab" data-v381-tab="battlelog">⚔️ Kampflog <span id="v6200CombatBadge" class="v6200-combat-badge" hidden>0</span></button>
     </div>
-    <div id="v381Inbox" class="v381-panel"></div>
+    <div id="v381Inbox" class="v381-panel v677-active-panel"></div>
     <div id="v381Sent" class="v381-panel" style="display:none"></div>
     <div id="v6200BattleLogPanel" class="v381-panel v6200-battle-panel" style="display:none"></div>
     <div id="v381Compose" class="v381-panel" style="display:none">
@@ -61739,7 +61739,7 @@ body > #v141SettingsMenu.v377-open{
    const close=()=>modal.remove();modal.querySelector('[data-close]').onclick=close;modal.onclick=e=>{if(e.target===modal)close()};modal.querySelector('[data-delete]').onclick=async()=>{await remove(id,box);close()};
    modal.querySelector('[data-reply]')?.addEventListener('click',()=>{close();tab('compose');document.querySelector('#v381Recipient').value=other?.character_name||'';document.querySelector('#v381Body').focus()});
  }
- function tab(which){document.querySelectorAll('[data-v381-tab]').forEach(b=>b.classList.toggle('active',b.dataset.v381Tab===which));[['inbox','v381Inbox'],['sent','v381Sent'],['compose','v381Compose'],['battlelog','v6200BattleLogPanel']].forEach(([k,id])=>{const e=document.getElementById(id);if(e)e.style.display=k===which?'':'none'});if(which==='battlelog')try{window.v6200LoadBattleLog?.()}catch(_){}}
+ function tab(which){document.querySelectorAll('[data-v381-tab]').forEach(b=>b.classList.toggle('active',b.dataset.v381Tab===which));[['inbox','v381Inbox'],['sent','v381Sent'],['compose','v381Compose'],['battlelog','v6200BattleLogPanel']].forEach(([k,id])=>{const e=document.getElementById(id);if(e){const on=k===which;e.classList.toggle('v677-active-panel',on);e.style.display=on?'':'none'}});if(which==='battlelog')try{window.v6200LoadBattleLog?.()}catch(_){}}
  function bind(){
    document.querySelectorAll('[data-v381-tab]').forEach(b=>{if(b.dataset.bound)return;b.dataset.bound='1';b.onclick=()=>tab(b.dataset.v381Tab)});
    const sendBtn=document.querySelector('#v381Send');if(sendBtn&&!sendBtn.dataset.bound){sendBtn.dataset.bound='1';sendBtn.onclick=send}
@@ -102937,6 +102937,33 @@ html body .app section#hall.v648-hall .v072-player-name .v648-self-pill{
       };
     }catch(e){return fallbackDp()}
   }
+  function petStats(){
+    /* V6.201: dungeon_progress is a shared public-profile JSON column. The old
+       dungeon mirror rebuilt that object from dungeon-only fields and therefore
+       erased pet_stats written by the Pet album profile payload immediately
+       afterwards. Derive the compact public Pet counters directly from the
+       authoritative local collection so every dungeon mirror write preserves them. */
+    const found=(s?.v686PetAlbum?.found&&typeof s.v686PetAlbum.found==='object')?s.v686PetAlbum.found:{};
+    const qualities=['normal','green','blue','purple','orange','cyan'];
+    const legendary=['normal','green','blue','purple','orange'];
+    let rows=0,foundCount=0,unique=0,mythic=0;
+    for(const row of Object.values(found)){
+      if(!row||typeof row!=='object')continue;
+      let any=false;
+      for(const q of qualities){if(row[q]){foundCount++;any=true}}
+      if(any)unique++;
+      if(legendary.every(q=>!!row[q]))rows++;
+      if(qualities.every(q=>!!row[q]))mythic++;
+    }
+    return {
+      rows:Math.max(0,Math.min(20,rows)),
+      found:Math.max(0,Math.min(120,foundCount)),
+      unique:Math.max(0,Math.min(20,unique)),
+      mythic:Math.max(0,Math.min(20,mythic)),
+      total_rows:20,
+      total_slots:120
+    };
+  }
   function fields(){
     const dp=liveDp();
     return {
@@ -102947,7 +102974,8 @@ html body .app section#hall.v648-hall .v072-player-name .v648-self-pill{
         selected:dp.selected,
         room:dp.room,
         lastActive:dp.lastActive,
-        unlocked:dp.unlocked
+        unlocked:dp.unlocked,
+        pet_stats:petStats()
       },
       updated_at:new Date().toISOString()
     };
@@ -103049,6 +103077,9 @@ html body .app section#hall.v648-hall .v072-player-name .v648-self-pill{
   setTimeout(()=>schedule(true),1200);
   setTimeout(()=>{paintOwnRow();schedule(true)},3500);
 })();
+</script>
+<script id="v6201-public-pet-profile-sync-marker">
+window.__V6201_PUBLIC_PET_PROFILE_SYNC_FIX__=true;
 </script>
 <!-- ===== /V6.49 ===== -->
 
@@ -105554,8 +105585,11 @@ html body .app section#mail.v677-mail .v381-tabs .btn.active{
 
 /* ---------- Message list ---------- */
 html body .app section#mail.v677-mail .v381-panel{
-  display:grid!important;
+  display:none!important;
   gap:7px!important;
+}
+html body .app section#mail.v677-mail .v381-panel.v677-active-panel{
+  display:grid!important;
 }
 html body .app section#mail.v677-mail .v381-empty{
   padding:17px!important;
@@ -111625,6 +111659,189 @@ window.addEventListener('growlegends:account-ready',()=>setTimeout(paint,100));
 </script>
 <!-- ===== /V4.167 ===== -->
 
+
+<!-- ===== V6.202 NEBEL-POST KOMPAKT / VORLAGEN-REDESIGN ===== -->
+<style id="v6202-nebel-post-compact-final">
+/* Final layout authority for the mailbox. Historical V6.77/V6.200 visuals stay underneath,
+   but only ONE content panel may be visible at a time. */
+html body .app section#mail.v677-mail{
+  overflow:visible!important;
+  padding:7px 7px calc(92px + env(safe-area-inset-bottom,0px))!important;
+  background:
+    radial-gradient(circle at 50% 0%,rgba(77,157,58,.13),transparent 26%),
+    linear-gradient(180deg,#020805 0%,#06100a 48%,#020704 100%)!important;
+}
+html body .app section#mail.v677-mail > .v052-scene-banner{
+  min-height:82px!important;
+  margin:0 0 7px!important;
+  padding:11px 62px 10px!important;
+  border-radius:14px!important;
+  border-color:#8b672d!important;
+}
+html body .app section#mail.v677-mail > .v052-scene-banner::before{
+  left:10px!important;width:43px!important;height:43px!important;border-radius:12px!important;font-size:26px!important;
+}
+html body .app section#mail.v677-mail .v052-title{font-size:21px!important;line-height:1!important}
+html body .app section#mail.v677-mail .v052-sub{margin-top:5px!important;padding:3px 8px!important;font-size:6.5px!important}
+
+html body .app section#mail.v677-mail > .v677-mail-card{
+  padding:9px!important;border-radius:15px!important;
+  border-color:#416744!important;
+  background:linear-gradient(160deg,#071b0e,#020b06)!important;
+}
+html body .app section#mail.v677-mail .v677-mail-title{
+  margin:0 0 7px!important;padding:0 0 7px!important;
+}
+html body .app section#mail.v677-mail .v677-mail-title h2{font-size:16px!important}
+html body .app section#mail.v677-mail .v677-mail-title .muted{font-size:6.5px!important}
+html body .app section#mail.v677-mail #v381UnreadPill{padding:5px 8px!important;font-size:6.4px!important}
+
+/* Four equal top tabs like the approved preview. */
+html body .app section#mail.v677-mail .v381-tabs,
+html body .app section#mail.v677-mail .v381-tabs.v6200-has-battle{
+  display:grid!important;
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  gap:4px!important;
+  margin:0 0 8px!important;
+}
+html body .app section#mail.v677-mail .v381-tabs .btn,
+html body .app section#mail.v677-mail .v381-tabs.v6200-has-battle .btn{
+  min-width:0!important;min-height:42px!important;padding:6px 2px!important;
+  border-radius:9px!important;font-size:7px!important;line-height:1.1!important;
+  white-space:normal!important;
+}
+html body .app section#mail.v677-mail .v381-tabs .btn.active{
+  border-color:#85dc58!important;
+  background:radial-gradient(circle at 50% 0%,rgba(126,235,82,.22),transparent 52%),linear-gradient(180deg,#315d2a,#102a17)!important;
+  box-shadow:inset 0 0 0 1px #96e46a22,0 0 12px #65d24c16!important;
+}
+#mail .v6200-combat-badge{right:3px!important;top:2px!important;min-width:14px!important;height:14px!important;font-size:6px!important}
+
+/* Critical visibility fix: no more Inbox + Sent + Battlelog + Compose stacked on the same page. */
+html body .app section#mail.v677-mail .v381-panel{display:none!important}
+html body .app section#mail.v677-mail .v381-panel.v677-active-panel{display:grid!important}
+html body .app section#mail.v677-mail #v6200BattleLogPanel.v677-active-panel{display:block!important}
+
+/* Inbox / sent become a compact scrollable list instead of a multi-screen page. */
+html body .app section#mail.v677-mail #v381Inbox.v677-active-panel,
+html body .app section#mail.v677-mail #v381Sent.v677-active-panel{
+  max-height:min(58dvh,510px)!important;
+  overflow-y:auto!important;overflow-x:hidden!important;
+  padding-right:2px!important;
+  scrollbar-width:thin;scrollbar-color:#477b47 #061008;
+}
+html body .app section#mail.v677-mail .v381-msg{
+  grid-template-columns:40px minmax(0,1fr) 25px!important;
+  gap:7px!important;padding:8px!important;border-radius:10px!important;
+}
+html body .app section#mail.v677-mail .v677-mail-avatar{width:34px!important;height:34px!important;font-size:10px!important}
+html body .app section#mail.v677-mail .v677-mail-avatar::before,
+html body .app section#mail.v677-mail .v677-mail-avatar::after{font-size:8px!important}
+html body .app section#mail.v677-mail .v381-msg b{font-size:8.2px!important}
+html body .app section#mail.v677-mail .v381-msg small{font-size:5.6px!important}
+html body .app section#mail.v677-mail .v381-preview{margin-top:3px!important;font-size:6.4px!important}
+html body .app section#mail.v677-mail .v677-open-arrow{width:22px!important;height:26px!important;border-radius:7px!important;font-size:17px!important}
+
+/* Compose is a single compact card and only exists visually when its tab is active. */
+html body .app section#mail.v677-mail #v381Compose.v677-active-panel{
+  display:grid!important;gap:5px!important;padding:9px!important;
+}
+html body .app section#mail.v677-mail #v381Compose textarea{min-height:112px!important}
+html body .app section#mail.v677-mail .v381-compose-foot{margin-top:2px!important}
+html body .app section#mail.v677-mail #v381Send{min-height:38px!important;padding:8px 12px!important}
+
+/* Battle log follows the preview: compact list + detailed report; no dead empty second card. */
+#mail .v6200-battle-panel{padding-bottom:0!important}
+#mail .v6200-log-shell{gap:7px!important;min-height:0!important}
+#mail .v6200-log-list,#mail .v6200-log-detail{border-color:#5e6c39!important;border-radius:11px!important}
+#mail .v6200-log-head{padding:8px!important}
+#mail .v6200-log-head b{font-size:9px!important}
+#mail .v6200-log-head select{max-width:118px!important;padding:5px!important;font-size:6px!important}
+#mail .v6200-rows{max-height:300px!important}
+#mail .v6200-row{grid-template-columns:34px minmax(0,1fr) auto!important;gap:6px!important;padding:7px!important}
+#mail .v6200-avatar{width:33px!important;height:33px!important}
+#mail .v6200-row-copy b{font-size:7.5px!important}
+#mail .v6200-row-copy small{font-size:5.4px!important}
+#mail .v6200-row-result b{font-size:6.6px!important}
+#mail .v6200-row-result small{font-size:5.3px!important}
+#mail .v6200-mark-all{width:calc(100% - 12px)!important;margin:6px!important;min-height:35px!important;padding:7px!important;font-size:6.5px!important}
+#mail .v6200-log-detail.v6200-detail-empty{display:none!important}
+#mail .v6200-detail-body{padding:8px!important;max-height:470px!important;overflow:auto!important}
+#mail .v6200-outcome{padding:8px!important}
+#mail .v6200-outcome strong{font-size:17px!important}
+#mail .v6200-outcome span{font-size:6px!important}
+#mail .v6200-versus{grid-template-columns:minmax(0,1fr) 24px minmax(0,1fr)!important;gap:5px!important;margin:7px 0!important}
+#mail .v6200-fighter-card{grid-template-columns:35px minmax(0,1fr)!important;gap:5px!important;padding:6px!important}
+#mail .v6200-fighter-card img{width:34px!important;height:34px!important}
+#mail .v6200-fighter-card b{font-size:7px!important}
+#mail .v6200-fighter-card small{font-size:5px!important}
+#mail .v6200-vs{font-size:11px!important}
+#mail .v6200-detail-actions{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:4px!important;margin:6px 0!important}
+#mail .v6200-detail-actions .btn{padding:6px 2px!important;font-size:5.6px!important;min-height:34px!important}
+#mail .v6200-summary{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:5px!important;margin-top:5px!important}
+#mail .v6200-summary>div{padding:6px!important;font-size:5.7px!important;line-height:1.4!important}
+#mail .v6200-rounds{margin-top:6px!important;max-height:150px!important;overflow:auto!important}
+#mail .v6200-rounds h4{position:sticky;top:0;z-index:2;padding:6px!important;font-size:6.5px!important}
+#mail .v6200-round{grid-template-columns:36px minmax(0,1fr)!important;gap:5px!important;padding:5px 6px!important;font-size:5.5px!important}
+
+/* Footer belongs directly below the active content, not several screens later. */
+html body .app section#mail.v677-mail .v677-mail-footer{
+  min-height:56px!important;margin:7px 0 0!important;padding:6px 8px!important;
+  grid-template-columns:25px 1fr 28px 1.05fr!important;gap:5px!important;border-radius:11px!important;
+}
+html body .app section#mail.v677-mail .v677-footer-envelope{font-size:18px!important}
+html body .app section#mail.v677-mail .v677-footer-copy b{font-size:5.6px!important}
+html body .app section#mail.v677-mail .v677-footer-leaf{font-size:20px!important}
+html body .app section#mail.v677-mail .v677-footer-sign{padding:5px 4px!important}
+html body .app section#mail.v677-mail .v677-footer-sign b{font-size:6px!important}
+html body .app section#mail.v677-mail .v677-footer-sign small{font-size:4.3px!important}
+
+@media(max-width:700px){
+  #mail .v381-tabs.v6200-has-battle{grid-template-columns:repeat(4,minmax(0,1fr))!important}
+  #mail .v6200-log-shell{grid-template-columns:1fr!important}
+  #mail .v6200-versus{grid-template-columns:minmax(0,1fr) 24px minmax(0,1fr)!important}
+  #mail .v6200-detail-actions{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+  #mail .v6200-summary{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+}
+@media(max-width:390px){
+  html body .app section#mail.v677-mail > .v052-scene-banner{min-height:74px!important;padding-left:56px!important;padding-right:8px!important;text-align:left!important}
+  html body .app section#mail.v677-mail > .v052-scene-banner::before{left:8px!important;width:38px!important;height:38px!important;font-size:23px!important}
+  html body .app section#mail.v677-mail .v052-title{font-size:18px!important}
+  html body .app section#mail.v677-mail .v052-sub{font-size:5.7px!important}
+  html body .app section#mail.v677-mail .v381-tabs .btn{font-size:6.1px!important;min-height:40px!important}
+  #mail .v6200-fighter-card{grid-template-columns:30px minmax(0,1fr)!important;padding:5px!important}
+  #mail .v6200-fighter-card img{width:29px!important;height:29px!important}
+  #mail .v6200-detail-actions .btn{font-size:5px!important}
+}
+</style>
+<script id="v6202-nebel-post-compact-final-js">
+(()=>{
+ 'use strict';
+ function activate(which){
+   const map={inbox:'v381Inbox',sent:'v381Sent',compose:'v381Compose',battlelog:'v6200BattleLogPanel'};
+   document.querySelectorAll('#mail [data-v381-tab]').forEach(b=>b.classList.toggle('active',b.dataset.v381Tab===which));
+   Object.entries(map).forEach(([k,id])=>{
+     const el=document.getElementById(id);if(!el)return;
+     const on=k===which;el.classList.toggle('v677-active-panel',on);el.style.display=on?'':'none';
+   });
+   if(which==='battlelog')try{window.v6200LoadBattleLog?.()}catch(_){}
+ }
+ function current(){return document.querySelector('#mail [data-v381-tab].active')?.dataset.v381Tab||'inbox'}
+ function repair(){activate(current())}
+ document.addEventListener('click',e=>{const b=e.target?.closest?.('#mail [data-v381-tab]');if(!b)return;activate(b.dataset.v381Tab)},true);
+ window.addEventListener('growlegends:account-ready',()=>setTimeout(repair,80));
+ document.addEventListener('DOMContentLoaded',repair,{once:true});
+ setTimeout(repair,250);
+ setTimeout(repair,1000);
+ try{
+   const mail=document.getElementById('mail');
+   if(mail)new MutationObserver(()=>{if(mail.classList.contains('active'))requestAnimationFrame(repair)}).observe(mail,{attributes:true,attributeFilter:['class']});
+ }catch(_){}
+ window.v6202MailTab=activate;
+})();
+</script>
+<!-- ===== /V6.202 ===== -->
+
 </body>
 </html>
 
@@ -111898,7 +112115,7 @@ function ensurePanel(){
  const p=document.getElementById('v6200BattleLogPanel');if(!p)return null;
  if(!p.dataset.v6200Built){
   p.dataset.v6200Built='1';
-  p.innerHTML=`<div class="v6200-log-shell"><div class="v6200-log-list"><div class="v6200-log-head"><b>⚔️ Kampflog <span id="v6200Count">0 / 50</span></b><select id="v6200Filter"><option value="all">Alle Kämpfe</option><option value="incoming">Angriffe auf mich</option><option value="outgoing">Meine Angriffe</option><option value="wins">Nur Siege</option><option value="losses">Nur Niederlagen</option></select></div><div id="v6200ServerNote"></div><div id="v6200Rows" class="v6200-rows"></div><button class="btn secondary v6200-mark-all" id="v6200MarkAll">✓ Alle als gesehen markieren</button></div><div id="v6200Detail" class="v6200-log-detail"><div class="v6200-empty">Wähle links einen Kampf aus.</div></div></div>`;
+  p.innerHTML=`<div class="v6200-log-shell"><div class="v6200-log-list"><div class="v6200-log-head"><b>⚔️ Kampflog <span id="v6200Count">0 / 50</span></b><select id="v6200Filter"><option value="all">Alle Kämpfe</option><option value="incoming">Angriffe auf mich</option><option value="outgoing">Meine Angriffe</option><option value="wins">Nur Siege</option><option value="losses">Nur Niederlagen</option></select></div><div id="v6200ServerNote"></div><div id="v6200Rows" class="v6200-rows"></div><button class="btn secondary v6200-mark-all" id="v6200MarkAll">✓ Alle als gesehen markieren</button></div><div id="v6200Detail" class="v6200-log-detail v6200-detail-empty"><div class="v6200-empty">Wähle einen Kampf aus.</div></div></div>`;
   p.querySelector('#v6200Filter').onchange=renderList;
   p.querySelector('#v6200MarkAll').onclick=markAll;
  }
@@ -111922,7 +112139,7 @@ function detailHtml(r){
 async function openRow(token){
  const r=rows.find(x=>String(x.client_token)===String(token));if(!r)return;activeToken=String(token);
  if(unseen(r)){r.defender_seen=true;try{if(online()&&r.id)await v073Db.rpc('v6200_mark_pvp_battle_seen',{p_id:Number(r.id)})}catch(e){console.warn('V6.200 mark seen',e)}paintBadge()}
- renderList();const d=document.getElementById('v6200Detail');if(d)d.innerHTML=detailHtml(r);
+ renderList();const d=document.getElementById('v6200Detail');if(d){d.classList.remove('v6200-detail-empty');d.innerHTML=detailHtml(r)};
  d?.querySelector('[data-v6200-profile]')?.addEventListener('click',e=>{try{v074OpenProfile(e.currentTarget.dataset.v6200Profile)}catch(_){}});
  d?.querySelector('[data-v6200-replay]')?.addEventListener('click',e=>replay(String(e.currentTarget.dataset.v6200Replay)));
  d?.querySelector('[data-v6200-message]')?.addEventListener('click',e=>composeTo(String(e.currentTarget.dataset.v6200Message||'')));
@@ -111938,7 +112155,7 @@ async function load(){
    if(error){const msg=String(error.message||error);if(/pvp_battle_logs|relation|schema cache|does not exist|PGRST205/i.test(msg)){serverReady=false}else throw error}else server=(data||[]).map(normalize);
   }
   const local=localRead().map(normalize),map=new Map();[...server,...local].sort((a,b)=>new Date(b.created_at)-new Date(a.created_at)).forEach(r=>{if(!map.has(r.client_token))map.set(r.client_token,r)});rows=[...map.values()].slice(0,50);
-  renderList();if(activeToken&&rows.some(r=>r.client_token===activeToken))openRow(activeToken);else{const d=document.getElementById('v6200Detail');if(d)d.innerHTML='<div class="v6200-empty">Wähle links einen Kampf aus.</div>'}
+  renderList();if(activeToken&&rows.some(r=>r.client_token===activeToken))openRow(activeToken);else{const d=document.getElementById('v6200Detail');if(d){d.classList.add('v6200-detail-empty');d.innerHTML='<div class="v6200-empty">Wähle einen Kampf aus.</div>'}}
  }catch(e){console.error('V6.200 battle log load',e);serverReady=false;rows=localRead().map(normalize).slice(0,50);renderList()}finally{loading=false}
 }
 window.v6200LoadBattleLog=load;
