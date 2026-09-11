@@ -1395,6 +1395,94 @@ img.v6108-quality-art{
 }
 </style>
 
+
+<style id="v6116-event-text-boss-pulse-css">
+/* =========================================================
+   EVENT CARD
+   "2 aktiv" above = number of active events.
+   The EXP row itself no longer says "2× EXP EVENT" as a title.
+   ========================================================= */
+#world.active .v6115-event-row::before,
+#world.active .v6115-event-row::after,
+#world.active .v6115-event-row > *::before,
+#world.active .v6115-event-row > *::after{
+  content:none!important;
+  display:none!important;
+}
+
+#world.active .v6115-event-row b{
+  white-space:normal!important;
+}
+#world.active .v6115-event-row small{
+  white-space:normal!important;
+}
+
+/* =========================================================
+   ACTIVE WORLD BOSS
+   Pulsing glow is CSS-only: no timer / JS polling.
+   ========================================================= */
+@keyframes v6116BossPulse{
+  0%{
+    box-shadow:
+      0 0 8px rgba(77,231,92,.22),
+      inset 0 0 0 1px rgba(108,255,111,.12);
+    border-color:#38b94b;
+    transform:translateZ(0) scale(1);
+  }
+  50%{
+    box-shadow:
+      0 0 24px rgba(77,231,92,.62),
+      0 0 8px rgba(93,255,107,.55),
+      inset 0 0 0 1px rgba(168,255,171,.28);
+    border-color:#79ff8a;
+    transform:translateZ(0) scale(1.012);
+  }
+  100%{
+    box-shadow:
+      0 0 8px rgba(77,231,92,.22),
+      inset 0 0 0 1px rgba(108,255,111,.12);
+    border-color:#38b94b;
+    transform:translateZ(0) scale(1);
+  }
+}
+@keyframes v6116BossStatusPulse{
+  0%,100%{opacity:.82;text-shadow:0 0 5px rgba(94,239,91,.32)}
+  50%{opacity:1;text-shadow:0 0 11px rgba(119,255,116,.85)}
+}
+
+#world.active .v366-feature.boss.v6115-boss-open{
+  position:relative!important;
+  isolation:isolate!important;
+  animation:v6116BossPulse 1.8s ease-in-out infinite!important;
+  will-change:transform,box-shadow!important;
+}
+#world.active .v366-feature.boss.v6115-boss-open::after{
+  content:"AKTIV"!important;
+  position:absolute!important;
+  top:31px!important;
+  right:5px!important;
+  z-index:4!important;
+  padding:2px 5px!important;
+  border:1px solid #7fff8a!important;
+  border-radius:999px!important;
+  background:#113b17e8!important;
+  color:#9cff9e!important;
+  font:950 4.8px/1 system-ui,sans-serif!important;
+  letter-spacing:.08em!important;
+  box-shadow:0 0 8px rgba(77,231,92,.55)!important;
+}
+#world.active .v366-feature.boss.v6115-boss-open .v6115-boss-status{
+  animation:v6116BossStatusPulse 1.15s ease-in-out infinite!important;
+}
+
+@media (prefers-reduced-motion: reduce){
+  #world.active .v366-feature.boss.v6115-boss-open,
+  #world.active .v366-feature.boss.v6115-boss-open .v6115-boss-status{
+    animation:none!important;
+  }
+}
+</style>
+
 </head>
 <body>
 <div class="app">
@@ -58962,8 +59050,8 @@ html,body{
 
   function events(){
     const a=[];
-    try{if(typeof v094XpEventActive==='function'&&v094XpEventActive())a.push({c:'purple',t:'⚡ 2× EXP EVENT',s:'Doppelte Erfahrung aktiv'})}catch(e){}
-    try{if(typeof v274GoldEventActive==='function'&&v274GoldEventActive())a.push({c:'gold',t:'💰 2× GOLD EVENT',s:'Doppelte Gold-Belohnungen aktiv'})}catch(e){}
+    try{if(typeof v094XpEventActive==='function'&&v094XpEventActive())a.push({c:'purple',t:'⚡ EXP EVENT',s:'2× Erfahrung aktiv'})}catch(e){}
+    try{if(typeof v274GoldEventActive==='function'&&v274GoldEventActive())a.push({c:'gold',t:'💰 GOLD EVENT',s:'2× Gold-Belohnungen aktiv'})}catch(e){}
     try{if(typeof v271DampfEventActive==='function'&&v271DampfEventActive())a.push({c:'',t:'🔥 300 DAMPF EVENT',s:'300 Dampf Maximum aktiv'})}catch(e){}
     try{if(typeof v110MysticEventActive==='function'&&v110MysticEventActive())a.push({c:'cyan',t:'💠 SMARAGD KOLOSS',s:'Weltboss aktiv!'})}catch(e){}
     return a.slice(0,4);
@@ -109531,6 +109619,11 @@ window.v6114DungeonLiveQA=()=>({
 
 <script id="v6115-events-boss-pet-marker">
 window.__V6115_EVENTS_BOSS_PET_STABILITY__=true;
+</script>
+
+
+<script id="v6116-event-text-boss-pulse-marker">
+window.__V6116_EVENT_TEXT_BOSS_PULSE__=true;
 </script>
 
 </body>
