@@ -2685,7 +2685,8 @@ function makeClassLoot(classId,source='normal'){
  return {...base,price:0,name:`${meta.label}: ${base.name} [Lv.${s.level}]`,quality:q,rarity:meta.cls,dropLevel:s.level,bonus};
 }
 function makeSetItem(classId,slot){
- const set=classSets[classId],base=setBases.find(x=>x.slot===slot)||setBases[0];
+ classId=normalizedClassId(classId);
+ const set=classSets[classId]||classSets.grower,base=setBases.find(x=>x.slot===slot)||setBases[0];
  const statMap={
   grower:{head:{ausdauer:4},weapon:{staerke:6},body:{ausdauer:6},boots:{staerke:3,ausdauer:2},ring:{staerke:3},amulet:{ausdauer:3,glueck:1}},
   bruiser:{head:{intelligenz:4,glueck:2},weapon:{intelligenz:6},body:{intelligenz:4,ausdauer:2},boots:{intelligenz:3,glueck:2},ring:{intelligenz:5},amulet:{intelligenz:3,glueck:2}},
@@ -2693,7 +2694,7 @@ function makeSetItem(classId,slot){
  };
  const levelBoost=Math.max(0,Math.floor((s.level-1)/3));
  const bonus=Object.fromEntries(Object.entries(statMap[classId][slot]).map(([k,v])=>[k,v+levelBoost]));
- return {id:`set_${classId}_${slot}_${Date.now()}_${Math.random()}`,classId,name:`${set.name}: ${base.label} [Lv.${s.level}]`,slot,icon:base.icon,price:0,quality:'purple',rarity:'epic',setId:classId,setName:set.name,dropLevel:s.level,bonus};
+ return {id:`set_${classId}_${slot}_${Date.now()}_${Math.random()}`,classId,name:`${set.name}: ${base.label} [Lv.${s.level}]`,slot,icon:setSlotIcon(slot,classId),price:0,quality:'purple',rarity:'epic',setId:classId,setName:set.name,dropLevel:s.level,bonus};
 }
 function equippedSetCount(classId){return Object.values(s.equipment).filter(it=>it?.setId===classId).length}
 function setBonusValue(kind){
@@ -110634,7 +110635,7 @@ window.v6124GuildLockQA=()=>({
 .v667-forge-body.v6130-set-mode>:not(.v667-tabs):not(#v6130ClassSetPanel){display:none!important}.v667-tab.v6130-set-tab .ic{filter:drop-shadow(0 0 5px #86e65d)}
 #v6130ClassSetPanel{padding:10px}.v6130-set-head{padding:12px;border:3px solid #412a0d;border-radius:14px;background:repeating-linear-gradient(3deg,#704213 0 14px,#54300d 15px 27px,#7c4915 28px 31px);box-shadow:inset 0 0 0 1px #bd8330,0 6px 14px #0009;text-align:center}.v6130-set-head h3{margin:0;color:#fff0bb;font-size:22px;text-shadow:0 3px #241404}.v6130-set-head p{margin:5px 0 0;color:#d9c491;font-size:7px;font-weight:900}.v6130-set-bonuses{display:flex;flex-wrap:wrap;justify-content:center;gap:5px;margin-top:8px}.v6130-set-bonuses span{padding:5px 7px;border:1px solid #5f773e;border-radius:999px;background:#10180e;color:#b9e58e;font-size:6.5px;font-weight:900}
 .v6130-set-res{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:8px 0}.v6130-set-res div{padding:8px;border:1px solid #3e4d34;border-radius:9px;background:#0b110c;text-align:center}.v6130-set-res small{display:block;color:#96a48f;font-size:6px}.v6130-set-res b{display:block;margin-top:2px;color:#fff1c2;font-size:10px}
-.v6130-set-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.v6130-set-card{padding:9px;border:2px solid #394b31;border-radius:12px;background:linear-gradient(155deg,#1b2518,#0b100c)}.v6130-set-card.unlocked{border-color:#6b9342}.v6130-set-card .top{display:flex;align-items:center;gap:8px}.v6130-set-card .ico{font-size:30px}.v6130-set-card h4{margin:0;color:#f0d27c;font-size:12px}.v6130-set-card .recipe{margin-top:6px;padding:6px;border:1px solid #4a5838;border-radius:8px;background:#0a100b;color:#c4d0b9;font-size:7px;line-height:1.45}.v6130-costs{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-top:6px}.v6130-cost{padding:5px 3px;border:1px solid #37452f;border-radius:7px;background:#0a100b;text-align:center;font-size:6px}.v6130-cost b{display:block;margin-top:2px;font-size:8px}.v6130-cost.ok{border-color:#4c7c35;color:#a8ea82}.v6130-cost.bad{border-color:#704039;color:#ff9990}.v6130-set-card button{width:100%;margin-top:7px;min-height:34px;border:2px solid #5d8036;border-radius:9px;background:linear-gradient(#78ad3d,#406621);color:#fff;font-weight:1000;font-size:8px;box-shadow:0 4px 0 #1d310f}.v6130-set-card button:disabled{opacity:.42;filter:grayscale(.8);box-shadow:none}.v6130-note{margin-top:8px;padding:8px;border:1px solid #4d5939;border-radius:9px;background:#0a0f0a;color:#aab5a3;font-size:6.5px;line-height:1.45}
+.v6130-set-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.v6130-set-card{padding:9px;border:2px solid #394b31;border-radius:12px;background:linear-gradient(155deg,#1b2518,#0b100c)}.v6130-set-card.unlocked{border-color:#6b9342}.v6130-set-card .top{display:flex;align-items:center;gap:8px}.v6130-set-card .ico{width:58px;height:58px;display:grid;place-items:center;flex:0 0 58px;font-size:30px}.v6130-set-card .ico img{width:58px;height:58px;object-fit:contain;display:block;filter:drop-shadow(0 4px 5px #0008)}.v6130-set-card h4{margin:0;color:#f0d27c;font-size:12px}.v6130-set-card .recipe{margin-top:6px;padding:6px;border:1px solid #4a5838;border-radius:8px;background:#0a100b;color:#c4d0b9;font-size:7px;line-height:1.45}.v6130-costs{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-top:6px}.v6130-cost{padding:5px 3px;border:1px solid #37452f;border-radius:7px;background:#0a100b;text-align:center;font-size:6px}.v6130-cost b{display:block;margin-top:2px;font-size:8px}.v6130-cost.ok{border-color:#4c7c35;color:#a8ea82}.v6130-cost.bad{border-color:#704039;color:#ff9990}.v6130-set-card button{width:100%;margin-top:7px;min-height:34px;border:2px solid #5d8036;border-radius:9px;background:linear-gradient(#78ad3d,#406621);color:#fff;font-weight:1000;font-size:8px;box-shadow:0 4px 0 #1d310f}.v6130-set-card button:disabled{opacity:.42;filter:grayscale(.8);box-shadow:none}.v6130-note{margin-top:8px;padding:8px;border:1px solid #4d5939;border-radius:9px;background:#0a0f0a;color:#aab5a3;font-size:6.5px;line-height:1.45}
 @media(max-width:650px){.v6130-grid,.v6130-set-grid{grid-template-columns:1fr}.v6130-lab{width:96vw}.v6130-head h2{font-size:20px}.v6130-set-res{grid-template-columns:1fr 1fr 1fr}.v6130-costs{grid-template-columns:1fr 1fr}.v6130-parentline{font-size:8px}}
 </style>
 <script id="v6130-genetics-classset-core">
@@ -110658,6 +110659,20 @@ const SLOT_CFG={
  amulet:{icon:'📿',label:'Amulett',recipe:'critical_crack',buds:900,fragments:150,gold:50000,essence:2},
  weapon:{icon:'⚔️',label:'Waffe',recipe:'emerald_kush',buds:1200,fragments:200,gold:75000,essence:3}
 };
+const SET_SLOT_ICONS={
+ grower:{head:'🪖',weapon:'🪓',body:'🛡️',boots:'🥾',ring:'💍',amulet:'📿'},
+ scout:{head:'🥷',weapon:'🏹',body:'🥼',boots:'👟',ring:'💍',amulet:'📿'},
+ bruiser:{head:'🧙',weapon:'🔮',body:'🥋',boots:'👢',ring:'💠',amulet:'🧿'},
+ frost:{head:'🪖',weapon:'🪓',body:'🛡️',boots:'🥾',ring:'💍',amulet:'📿'}
+};
+function normalizedClassId(id){return ['grower','scout','bruiser','frost'].includes(String(id))?String(id):'grower'}
+function setSlotIcon(slot,classId=currentClass()){const cls=normalizedClassId(classId);return SET_SLOT_ICONS[cls]?.[slot]||SLOT_CFG[slot]?.icon||'🧩'}
+function setSlotArt(slot,classId=currentClass()){
+ const cls=normalizedClassId(classId),set=(()=>{try{return classSets?.[cls]?.name||'Klassenset'}catch(_){return'Klassenset'}})();
+ const sample={name:`${set}: ${SLOT_CFG[slot]?.label||slot}`,slot,classId:cls,quality:'purple',rarity:'epic',setId:cls,setName:set,bonus:{}};
+ try{return window.v4115ComicItemArtUri?.(sample)||window.v466ItemArtUri?.(sample)||window.v4106ComicItemArtUri?.(sample)||''}catch(_){return''}
+}
+function setSlotVisual(slot,classId=currentClass()){const u=setSlotArt(slot,classId);return u?`<img class="v466-item-art" src="${u}" alt="${esc(SLOT_CFG[slot]?.label||slot)}">`:setSlotIcon(slot,classId)}
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const fmt=v=>Math.max(0,Math.round(Number(v)||0)).toLocaleString('de-DE');
 function seed(id){try{return seedTypes?.[id]||null}catch(_){return null}}
@@ -110700,7 +110715,7 @@ function buds(){return Math.max(0,Math.floor(Number(s?.v204Pvp?.buds)||0))}
 function fragments(){return Math.max(0,Math.floor(Number(s?.v488Forge?.fragments)||0))}
 function levelFactor(){return 1+Math.floor((Math.max(1,Number(s?.level)||1)-1)/50)*.25}
 function slotCost(slot){const c=SLOT_CFG[slot],f=levelFactor();return {...c,gold:Math.round(c.gold*f),fragments:Math.round(c.fragments*(1+(f-1)*.65))}}
-function currentClass(){return ['grower','scout','bruiser','frost'].includes(String(s?.playerClass))?String(s.playerClass):'grower'}
+function currentClass(){return normalizedClassId(s?.playerClass)}
 function setInfo(){const cls=currentClass();try{return classSets?.[cls]||{name:'Klassenset',bonuses:{}}}catch(_){return{name:'Klassenset',bonuses:{}}}}
 function equippedSet(){const cls=currentClass();return Object.values(s?.equipment||{}).filter(it=>it?.setId===cls).length}
 async function confirmBox(text,title){try{if(typeof v115Confirm==='function')return await v115Confirm(text,{title,type:'confirm',okText:'Set-Teil schmieden'})}catch(_){ }return window.confirm(text)}
@@ -110729,7 +110744,7 @@ async function craftSet(slot){
    item.v6130Crafted=true;item.v6130GeneticRecipe=c.recipe;s.inventory=Array.isArray(s.inventory)?s.inventory:[];s.inventory.push(item);save();try{v069SyncCurrencies?.()}catch(_){ }try{v441PaintResources?.()}catch(_){ }try{render?.()}catch(_){ }toast('🧩 Klassenset hergestellt!','success',`${item.icon||'🎁'} ${item.name} · im Inventar`);setTimeout(()=>{decorateForge();openSetPanel()},30)
  }finally{v6130CraftBusy=false}
 }
-function setCard(slot){const c=slotCost(slot),r=RECIPES[c.recipe],z=state(),e=Math.max(0,Number(z?.essences?.[c.recipe])||0),b=buds(),f=fragments(),g=Math.max(0,Number(s?.gold)||0),unlock=b>=c.buds,ok=unlock&&e>=c.essence&&f>=c.fragments&&g>=c.gold;return `<div class="v6130-set-card ${unlock?'unlocked':''}"><div class="top"><div class="ico">${c.icon}</div><div><h4>${esc(c.label)}</h4><small>${esc(r.name)}-Rezept</small></div></div><div class="recipe">🧬 ${c.essence}× ${esc(r.essence)}<br>⚔️ Freischaltung ab ${fmt(c.buds)} PvP-Buds · <b>Buds werden nicht verbraucht.</b></div><div class="v6130-costs"><div class="v6130-cost ${e>=c.essence?'ok':'bad'}">🧬 Essenz<b>${e}/${c.essence}</b></div><div class="v6130-cost ${f>=c.fragments?'ok':'bad'}">💠 Fragmente<b>${fmt(f)}/${fmt(c.fragments)}</b></div><div class="v6130-cost ${g>=c.gold?'ok':'bad'}">🪙 Gold<b>${fmt(g)}/${fmt(c.gold)}</b></div><div class="v6130-cost ${unlock?'ok':'bad'}">⚔️ PvP-Buds<b>${fmt(b)}/${fmt(c.buds)}</b></div></div><button type="button" data-v6130-craft="${slot}" ${ok?'':'disabled'}>${unlock?'Set-Teil herstellen':'PvP-Rezept gesperrt'}</button></div>`}
+function setCard(slot){const c=slotCost(slot),r=RECIPES[c.recipe],z=state(),e=Math.max(0,Number(z?.essences?.[c.recipe])||0),b=buds(),f=fragments(),g=Math.max(0,Number(s?.gold)||0),unlock=b>=c.buds,ok=unlock&&e>=c.essence&&f>=c.fragments&&g>=c.gold,slotVisual=setSlotVisual(slot);return `<div class="v6130-set-card ${unlock?'unlocked':''}"><div class="top"><div class="ico">${slotVisual}</div><div><h4>${esc(c.label)}</h4><small>${esc(r.name)}-Rezept</small></div></div><div class="recipe">🧬 ${c.essence}× ${esc(r.essence)}<br>⚔️ Freischaltung ab ${fmt(c.buds)} PvP-Buds · <b>Buds werden nicht verbraucht.</b></div><div class="v6130-costs"><div class="v6130-cost ${e>=c.essence?'ok':'bad'}">🧬 Essenz<b>${e}/${c.essence}</b></div><div class="v6130-cost ${f>=c.fragments?'ok':'bad'}">💠 Fragmente<b>${fmt(f)}/${fmt(c.fragments)}</b></div><div class="v6130-cost ${g>=c.gold?'ok':'bad'}">🪙 Gold<b>${fmt(g)}/${fmt(c.gold)}</b></div><div class="v6130-cost ${unlock?'ok':'bad'}">⚔️ PvP-Buds<b>${fmt(b)}/${fmt(c.buds)}</b></div></div><button type="button" data-v6130-craft="${slot}" ${ok?'':'disabled'}>${unlock?'Set-Teil herstellen':'PvP-Rezept gesperrt'}</button></div>`}
 function panelHtml(){const si=setInfo(),bon=si.bonuses||{},z=state();return `<div class="v6130-set-head"><h3>🧩 ${esc(si.name)} · Klassenset</h3><p>GEZIELT HERSTELLEN · GENETIK + SCHMIEDE + PVP</p><div class="v6130-set-bonuses">${Object.values(bon).map(x=>`<span>${esc(x)}</span>`).join('')}</div></div><div class="v6130-set-res"><div><small>⚔️ PvP-Buds</small><b>${fmt(buds())}</b></div><div><small>💠 Samenfragmente</small><b>${fmt(fragments())}</b></div><div><small>🧩 Set getragen</small><b>${equippedSet()}/6</b></div></div><div class="v6130-set-grid">${Object.keys(SLOT_CFG).map(setCard).join('')}</div><div class="v6130-note"><b>Balance:</b> Klassenset-Teile bleiben epische Set-Items. Ihre Stärke entsteht vor allem über die bestehenden 2/4/6-Setboni. Mystische Gegenstände bleiben weiterhin exklusiv für den mystischen Boss. Die Gold- und Fragmentkosten steigen in 50-Level-Stufen mit deinem Charakterlevel.</div>`}
 function openSetPanel(){const body=document.querySelector('#forge .v667-forge-body');if(!body)return;body.classList.add('v6130-set-mode');let p=body.querySelector('#v6130ClassSetPanel');if(!p){p=document.createElement('div');p.id='v6130ClassSetPanel';body.appendChild(p)}p.innerHTML=panelHtml();body.querySelectorAll('.v667-tab').forEach(x=>x.classList.toggle('active',x.classList.contains('v6130-set-tab')))}
 function renderSetIfOpen(){const body=document.querySelector('#forge .v667-forge-body');if(body?.classList.contains('v6130-set-mode'))openSetPanel()}
