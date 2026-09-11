@@ -2392,18 +2392,20 @@ img.v6108-quality-art{
   <div class="v052-scene-banner v052-character">
     <div>
       <div class="v052-title">✉️ Nebel-Post</div>
-      <div class="v052-sub">Private Nachrichten zwischen Spielern.</div>
+      <div class="v052-sub">Private Nachrichten, PvP-Kämpfe und wichtige Ereignisse.</div>
     </div>
   </div>
   <div class="card v381-mail-card v677-mail-card">
-    <div class="section-title v677-mail-title"><div><h2>Postfach</h2><div class="muted">Eingang, Gesendet und neue Nachricht.</div></div><span class="pill" id="v381UnreadPill">0 ungelesen</span></div>
-    <div class="v381-tabs">
+    <div class="section-title v677-mail-title"><div><h2>Postfach</h2><div class="muted">Nachrichten und deine letzten PvP-Kämpfe an einem Ort.</div></div><span class="pill" id="v381UnreadPill">0 ungelesen</span></div>
+    <div class="v381-tabs v6200-has-battle">
       <button class="btn secondary active" data-v381-tab="inbox">📥 Eingang</button>
       <button class="btn secondary" data-v381-tab="sent">📤 Gesendet</button>
       <button class="btn secondary" data-v381-tab="compose">✍️ Neue Nachricht</button>
+      <button class="btn secondary v6200-battle-tab" data-v381-tab="battlelog">⚔️ Kampflog <span id="v6200CombatBadge" class="v6200-combat-badge" hidden>0</span></button>
     </div>
     <div id="v381Inbox" class="v381-panel"></div>
     <div id="v381Sent" class="v381-panel" style="display:none"></div>
+    <div id="v6200BattleLogPanel" class="v381-panel v6200-battle-panel" style="display:none"></div>
     <div id="v381Compose" class="v381-panel" style="display:none">
       <label class="v381-label">Empfänger</label>
       <input id="v381Recipient" class="v071-name-input" maxlength="24" placeholder="Charaktername">
@@ -61737,7 +61739,7 @@ body > #v141SettingsMenu.v377-open{
    const close=()=>modal.remove();modal.querySelector('[data-close]').onclick=close;modal.onclick=e=>{if(e.target===modal)close()};modal.querySelector('[data-delete]').onclick=async()=>{await remove(id,box);close()};
    modal.querySelector('[data-reply]')?.addEventListener('click',()=>{close();tab('compose');document.querySelector('#v381Recipient').value=other?.character_name||'';document.querySelector('#v381Body').focus()});
  }
- function tab(which){document.querySelectorAll('[data-v381-tab]').forEach(b=>b.classList.toggle('active',b.dataset.v381Tab===which));[['inbox','v381Inbox'],['sent','v381Sent'],['compose','v381Compose']].forEach(([k,id])=>{const e=document.getElementById(id);if(e)e.style.display=k===which?'':'none'})}
+ function tab(which){document.querySelectorAll('[data-v381-tab]').forEach(b=>b.classList.toggle('active',b.dataset.v381Tab===which));[['inbox','v381Inbox'],['sent','v381Sent'],['compose','v381Compose'],['battlelog','v6200BattleLogPanel']].forEach(([k,id])=>{const e=document.getElementById(id);if(e)e.style.display=k===which?'':'none'});if(which==='battlelog')try{window.v6200LoadBattleLog?.()}catch(_){}}
  function bind(){
    document.querySelectorAll('[data-v381-tab]').forEach(b=>{if(b.dataset.bound)return;b.dataset.bound='1';b.onclick=()=>tab(b.dataset.v381Tab)});
    const sendBtn=document.querySelector('#v381Send');if(sendBtn&&!sendBtn.dataset.bound){sendBtn.dataset.bound='1';sendBtn.onclick=send}
@@ -104486,6 +104488,7 @@ const fight=async function(){
     }catch(e){console.warn('V6.72 combat state',e)}
 
     let round=0;
+    const replayEvents=[];
 
     const win=await new Promise(resolve=>{
       const step=()=>{
@@ -104549,6 +104552,12 @@ const fight=async function(){
           const leftText=enemyDodged
             ?`${enemy.character_name} weicht deinem Angriff aus.`
             :`${s.characterName||'Du'}: ${myLabel} · ${myDmg} Schaden${myHeal?` · Lebensraub +${myHeal} LP`:''}.`;
+
+          replayEvents.push({
+            round,actor:'attacker',damage:Math.max(0,Math.round(myDmg)),heal:Math.max(0,Math.round(myHeal)),
+            crit:!!myCrit,dodge:!!enemyDodged,offhand:Math.max(0,Math.round(myOffhand)),counter:0,
+            label:String(myLabel||''),attackerHp:Math.max(0,Math.round(myHp)),defenderHp:Math.max(0,Math.round(enHp)),text:leftText
+          });
 
           if(enHp<=0){
             renderRound(round,leftText,myCrit?'crit':enemyDodged?'dodge':'');
@@ -104617,6 +104626,12 @@ const fight=async function(){
                 ?`${s.characterName||'Du'} weicht aus.`
                 :`${enemy.character_name}: ${taken} Schaden${enCrit?' · KRIT':''}${enOffhand?' · Nebenhand':''}${defLabel!=='Gegner trifft'?` · ${defLabel.replace(/^Gegner trifft\s*·?\s*/i,'')}`:''}${defHeal?` · Heilung +${defHeal} LP`:''}${counter?` · Konter ${counter}`:''}.`;
 
+              replayEvents.push({
+                round,actor:'defender',damage:Math.max(0,Math.round(taken)),heal:Math.max(0,Math.round(defHeal)),
+                crit:!!enCrit,dodge:!!myBasicDodge,offhand:Math.max(0,Math.round(enOffhand)),counter:Math.max(0,Math.round(counter)),
+                label:String(defLabel||''),attackerHp:Math.max(0,Math.round(myHp)),defenderHp:Math.max(0,Math.round(enHp)),text:rightText
+              });
+
               renderRound(round,`${leftText} ${rightText}`,myCrit||enCrit?'crit':/AUSGEWICHEN/i.test(myLabel+defLabel)?'dodge':'');
 
               if(enHp<=0){resolve(true);return}
@@ -104633,8 +104648,22 @@ const fight=async function(){
 
     const gold=Math.max(25,Math.round(typeof window.v6168PvpGold==='function'?window.v6168PvpGold(Number(s?.level)||1,!!win):(35+s.level*7+(win?combatPower()*.035:combatPower()*.01))));
     const xp=Math.max(10,Math.round(18+s.level*4+(win?s.level*2:s.level)));
+    const replayPayload={
+      version:1,
+      attacker:{
+        id:(typeof v073User!=='undefined'&&v073User?.id)||'',name:String(s.characterName||'Spieler'),
+        level:Math.max(1,Number(s.level)||1),classId:String(myClass||'grower'),className:String(classes?.[myClass]?.name||''),
+        power:Math.max(1,Math.round(myPower)),maxHp:Math.max(1,Math.round(maxMy)),hpAfter:Math.max(0,Math.round(myHp))
+      },
+      defender:{
+        id:String(enemy.id||''),name:String(enemy.character_name||'Gegner'),
+        level:Math.max(1,Number(enemy.level)||1),classId:String(enClass||'grower'),className:String(enemy.class_name||classes?.[enClass]?.name||''),
+        power:Math.max(1,Math.round(enPower)),maxHp:Math.max(1,Math.round(maxEn)),hpAfter:Math.max(0,Math.round(enHp))
+      },
+      rounds:Math.max(1,round),events:replayEvents.slice(0,80)
+    };
 
-    await v209FinishBattle(win,enemy,gold,xp);
+    await v209FinishBattle(win,enemy,gold,xp,replayPayload);
   }catch(e){
     console.error('V6.72 PvP combat',e);
     v204BattleBusy=false;
@@ -111807,3 +111836,151 @@ window.addEventListener('growlegends:account-ready',()=>setTimeout(paint,100));
 })();
 </script>
 <!-- ===== /V4.165 ===== -->
+
+
+<!-- ===== V6.200: NEBEL-POST PVP KAMPFLOG + EXACT REPLAY ===== -->
+<style id="v6200-pvp-battlelog-css">
+#mail .v381-tabs.v6200-has-battle{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:6px!important}
+#mail .v6200-battle-tab{position:relative!important;color:#e8d894!important}
+#mail .v6200-combat-badge{position:absolute;right:5px;top:3px;min-width:16px;height:16px;padding:0 4px;display:grid;place-items:center;border-radius:99px;border:1px solid #ff9b98;background:#9f2630;color:#fff;font-size:7px;font-weight:1000;box-shadow:0 0 9px #d83f4770}
+#mail .v6200-battle-panel{padding-bottom:105px!important}
+.v6200-log-shell{display:grid;grid-template-columns:minmax(250px,.82fr) minmax(0,1.28fr);gap:10px;min-height:430px}
+.v6200-log-list,.v6200-log-detail{border:1px solid #5d6f3e;border-radius:13px;background:linear-gradient(160deg,#0b140d,#050a07);overflow:hidden;box-shadow:inset 0 0 24px #0008}
+.v6200-log-head{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px;border-bottom:1px solid #3f5536;background:linear-gradient(180deg,#162219,#0b130d)}
+.v6200-log-head b{color:#f2dda0;font-size:11px}.v6200-log-head select{max-width:138px;border:1px solid #506443;border-radius:8px;background:#08100a;color:#dfe8dc;padding:6px;font-size:7px}
+.v6200-rows{max-height:540px;overflow:auto}.v6200-row{display:grid;grid-template-columns:40px minmax(0,1fr) auto;gap:8px;align-items:center;padding:9px;border-bottom:1px solid #263a2d;background:#07100a;cursor:pointer}.v6200-row:hover,.v6200-row.active{background:#102218}.v6200-row.win{box-shadow:inset 3px 0 #63d65f}.v6200-row.loss{box-shadow:inset 3px 0 #c74b50}.v6200-avatar{width:40px;height:40px;border-radius:50%;border:2px solid #83652d;background:#07100a;object-fit:cover}.v6200-row-copy b,.v6200-row-copy small{display:block}.v6200-row-copy b{font-size:8.5px;color:#edf2e8}.v6200-row-copy small{font-size:6.5px;color:#85958b;margin-top:2px}.v6200-row-result{text-align:right}.v6200-row-result b,.v6200-row-result small{display:block}.v6200-row-result b{font-size:7.5px}.v6200-row-result small{font-size:6px;color:#849087;margin-top:3px}.v6200-row.win .v6200-row-result b{color:#8af179}.v6200-row.loss .v6200-row-result b{color:#ff7777}.v6200-unseen{width:7px;height:7px;border-radius:50%;background:#ef4545;box-shadow:0 0 8px #ef4545;display:inline-block;margin-left:4px}
+.v6200-empty{padding:30px 16px;text-align:center;color:#849087;font-size:8px}.v6200-server-note{margin:8px;padding:8px;border:1px solid #6d5426;border-radius:9px;background:#1b1408;color:#d7c28a;font-size:6.5px;line-height:1.4}
+.v6200-detail-body{padding:11px}.v6200-outcome{text-align:center;padding:12px;border:1px solid #355b38;border-radius:11px;background:radial-gradient(circle at 50% 10%,#214b2b55,transparent 55%),#08110a}.v6200-outcome.loss{border-color:#6e3438;background:radial-gradient(circle at 50% 10%,#5e232855,transparent 55%),#100809}.v6200-outcome strong{display:block;font-size:22px;color:#9bf080}.v6200-outcome.loss strong{color:#ff7777}.v6200-outcome span{display:block;margin-top:3px;color:#bac7b8;font-size:7px}
+.v6200-versus{display:grid;grid-template-columns:1fr 40px 1fr;gap:8px;align-items:center;margin:10px 0}.v6200-fighter-card{display:grid;grid-template-columns:46px minmax(0,1fr);gap:8px;align-items:center;padding:8px;border:1px solid #334a39;border-radius:10px;background:#08110b}.v6200-fighter-card.me{border-color:#4d843e}.v6200-fighter-card img{width:46px;height:46px;border-radius:50%;object-fit:cover;border:2px solid #8b6d31}.v6200-fighter-card b,.v6200-fighter-card small{display:block}.v6200-fighter-card b{font-size:9px}.v6200-fighter-card small{font-size:6px;color:#8d9c91;margin-top:2px}.v6200-vs{text-align:center;color:#f0c55d;font-weight:1000;font-size:16px}
+.v6200-detail-actions{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:9px 0}.v6200-detail-actions .btn{padding:8px 5px!important;font-size:7px!important}.v6200-summary{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:8px}.v6200-summary>div{padding:8px;border:1px solid #304336;border-radius:9px;background:#07100a;font-size:6.5px;line-height:1.55;color:#aab6ac}.v6200-summary b{color:#f0d78d}.v6200-rounds{margin-top:8px;border:1px solid #304336;border-radius:9px;overflow:hidden}.v6200-rounds h4{margin:0;padding:8px;background:#101b13;color:#e9d89c;font-size:8px}.v6200-round{display:grid;grid-template-columns:42px minmax(0,1fr);gap:6px;padding:7px 8px;border-top:1px solid #223329;background:#07100a;font-size:6.5px;color:#aeb9b0}.v6200-round b{color:#d9c687}.v6200-mark-all{width:calc(100% - 16px);margin:8px!important}
+#v6200ReplayOverlay{position:fixed;inset:0;z-index:2147483644;display:none;align-items:center;justify-content:center;padding:12px;background:rgba(0,0,0,.9);backdrop-filter:blur(8px)}#v6200ReplayOverlay.show{display:flex}.v6200-replay-card{width:min(760px,100%);max-height:94vh;overflow:auto;border:2px solid #7b602c;border-radius:18px;background:linear-gradient(160deg,#101a12,#030805);box-shadow:0 22px 80px #000;padding:12px}.v6200-replay-head{display:flex;justify-content:space-between;align-items:center;gap:8px}.v6200-replay-head h3{margin:0;color:#f1d78c}.v6200-replay-stage{position:relative;display:grid;grid-template-columns:1fr 56px 1fr;gap:8px;align-items:end;min-height:250px;margin-top:10px;padding:16px 10px 12px;border:1px solid #35523c;border-radius:13px;background:radial-gradient(circle at 50% 35%,#24452c 0,#0d1c11 44%,#050a07 100%);overflow:hidden}.v6200-rfighter{text-align:center;transition:.2s}.v6200-rfighter.attack-right{animation:v6200AttackRight .38s}.v6200-rfighter.attack-left{animation:v6200AttackLeft .38s}.v6200-rfighter.hit{animation:v6200Hit .34s}.v6200-rfighter img{width:82px;height:82px;border-radius:50%;object-fit:cover;border:3px solid #8b6b31;filter:drop-shadow(0 10px 10px #000)}.v6200-rfighter b,.v6200-rfighter small{display:block}.v6200-rfighter b{font-size:10px;color:#eef4e9;margin-top:6px}.v6200-rfighter small{font-size:6.5px;color:#98a79d}.v6200-rhp{height:9px;margin:6px auto 3px;border:1px solid #55402b;border-radius:99px;background:#280d0e;overflow:hidden}.v6200-rhp>span{display:block;height:100%;width:100%;background:linear-gradient(90deg,#54b64d,#9ae56e);transition:width .25s}.v6200-rhptext{font-size:6px;color:#bec9c0}.v6200-rvs{align-self:center;text-align:center;color:#f0bd4d;font-size:24px;font-weight:1000;text-shadow:0 0 12px #da9a3b88}.v6200-replay-log{margin-top:9px;min-height:45px;padding:9px;border:1px solid #33483a;border-radius:10px;background:#07100a;color:#bec8bf;font-size:7px;line-height:1.5}.v6200-replay-foot{display:flex;justify-content:space-between;gap:8px;align-items:center;margin-top:8px}.v6200-replay-foot span{font-size:7px;color:#93a096}
+@keyframes v6200AttackRight{50%{transform:translateX(38px) scale(1.04)}}@keyframes v6200AttackLeft{50%{transform:translateX(-38px) scale(1.04)}}@keyframes v6200Hit{25%{transform:translateX(-6px)}50%{transform:translateX(6px)}75%{transform:translateX(-3px)}}
+@media(max-width:700px){#mail .v381-tabs.v6200-has-battle{grid-template-columns:repeat(2,minmax(0,1fr))!important}.v6200-log-shell{grid-template-columns:1fr}.v6200-rows{max-height:330px}.v6200-detail-actions{grid-template-columns:1fr}.v6200-summary{grid-template-columns:1fr}.v6200-versus{grid-template-columns:1fr}.v6200-vs{font-size:10px}.v6200-replay-stage{grid-template-columns:1fr 34px 1fr;min-height:220px}.v6200-rfighter img{width:64px;height:64px}}
+</style>
+<script id="v6200-pvp-battlelog-core">
+(()=>{
+'use strict';
+if(window.__V6200_PVP_BATTLELOG__)return;window.__V6200_PVP_BATTLELOG__=true;
+const LOCAL_PREFIX='growLegendsV6200BattleLog:';
+let rows=[],activeToken='',loading=false,serverReady=true,replayRun=0;
+const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const n=v=>Number.isFinite(Number(v))?Number(v):0;
+const fmt=v=>Math.max(0,Math.round(n(v))).toLocaleString('de-DE');
+const uid=()=>{try{return String(v073User?.id||'')}catch(_){return''}};
+const online=()=>{try{return !!(uid()&&v073Db)}catch(_){return false}};
+const localKey=()=>LOCAL_PREFIX+(uid()||'guest');
+function avatar(cls){try{return typeof v080AvatarFor==='function'?v080AvatarFor(cls||'grower'):''}catch(_){return''}}
+function className(id,fallback=''){try{return fallback||classes?.[id]?.name||id||''}catch(_){return fallback||id||''}}
+function when(d){try{return new Date(d).toLocaleString('de-DE',{dateStyle:'short',timeStyle:'short'})}catch(_){return''}}
+function localRead(){try{const a=JSON.parse(localStorage.getItem(localKey())||'[]');return Array.isArray(a)?a:[]}catch(_){return[]}}
+function localWrite(list){try{localStorage.setItem(localKey(),JSON.stringify((Array.isArray(list)?list:[]).slice(0,50)))}catch(_){}}
+function localAdd(row){const a=localRead().filter(x=>String(x.client_token)!==String(row.client_token));a.unshift(row);localWrite(a)}
+function isAttacker(r){return uid()&&String(r.attacker_id)===uid()}
+function relativeWin(r){return isAttacker(r)?!!r.attacker_won:!r.attacker_won}
+function unseen(r){return !isAttacker(r)&&r.defender_seen===false}
+function opponent(r){return isAttacker(r)?{id:r.defender_id,name:r.defender_name,level:r.defender_level,classId:r.defender_class,className:r.defender_class_name,power:r.defender_power,maxHp:r.defender_max_hp,hpAfter:r.defender_hp_after}:{id:r.attacker_id,name:r.attacker_name,level:r.attacker_level,classId:r.attacker_class,className:r.attacker_class_name,power:r.attacker_power,maxHp:r.attacker_max_hp,hpAfter:r.attacker_hp_after}}
+function me(r){return isAttacker(r)?{id:r.attacker_id,name:r.attacker_name,level:r.attacker_level,classId:r.attacker_class,className:r.attacker_class_name,power:r.attacker_power,maxHp:r.attacker_max_hp,hpAfter:r.attacker_hp_after}:{id:r.defender_id,name:r.defender_name,level:r.defender_level,classId:r.defender_class,className:r.defender_class_name,power:r.defender_power,maxHp:r.defender_max_hp,hpAfter:r.defender_hp_after}}
+function normalize(r){
+ const replay=(r?.replay&&typeof r.replay==='object')?r.replay:{};
+ return {...r,
+  client_token:String(r?.client_token||r?.token||('legacy-'+r?.id||Date.now())),
+  attacker_name:String(r?.attacker_name||replay?.attacker?.name||'Spieler'),defender_name:String(r?.defender_name||replay?.defender?.name||'Spieler'),
+  attacker_class:String(r?.attacker_class||replay?.attacker?.classId||'grower'),defender_class:String(r?.defender_class||replay?.defender?.classId||'grower'),
+  attacker_class_name:String(r?.attacker_class_name||replay?.attacker?.className||''),defender_class_name:String(r?.defender_class_name||replay?.defender?.className||''),
+  attacker_level:Math.max(1,n(r?.attacker_level||replay?.attacker?.level)||1),defender_level:Math.max(1,n(r?.defender_level||replay?.defender?.level)||1),
+  attacker_power:Math.max(1,n(r?.attacker_power||replay?.attacker?.power)||1),defender_power:Math.max(1,n(r?.defender_power||replay?.defender?.power)||1),
+  attacker_max_hp:Math.max(1,n(r?.attacker_max_hp||replay?.attacker?.maxHp)||1),defender_max_hp:Math.max(1,n(r?.defender_max_hp||replay?.defender?.maxHp)||1),
+  attacker_hp_after:Math.max(0,n(r?.attacker_hp_after??replay?.attacker?.hpAfter)),defender_hp_after:Math.max(0,n(r?.defender_hp_after??replay?.defender?.hpAfter)),
+  rounds:Math.max(1,n(r?.rounds||replay?.rounds)||1),replay,created_at:r?.created_at||new Date().toISOString(),defender_seen:r?.defender_seen!==false
+ };
+}
+function ensurePanel(){
+ const p=document.getElementById('v6200BattleLogPanel');if(!p)return null;
+ if(!p.dataset.v6200Built){
+  p.dataset.v6200Built='1';
+  p.innerHTML=`<div class="v6200-log-shell"><div class="v6200-log-list"><div class="v6200-log-head"><b>⚔️ Kampflog <span id="v6200Count">0 / 50</span></b><select id="v6200Filter"><option value="all">Alle Kämpfe</option><option value="incoming">Angriffe auf mich</option><option value="outgoing">Meine Angriffe</option><option value="wins">Nur Siege</option><option value="losses">Nur Niederlagen</option></select></div><div id="v6200ServerNote"></div><div id="v6200Rows" class="v6200-rows"></div><button class="btn secondary v6200-mark-all" id="v6200MarkAll">✓ Alle als gesehen markieren</button></div><div id="v6200Detail" class="v6200-log-detail"><div class="v6200-empty">Wähle links einen Kampf aus.</div></div></div>`;
+  p.querySelector('#v6200Filter').onchange=renderList;
+  p.querySelector('#v6200MarkAll').onclick=markAll;
+ }
+ return p;
+}
+function paintBadge(){const c=rows.filter(unseen).length,b=document.getElementById('v6200CombatBadge');if(b){b.textContent=c>99?'99+':String(c);b.hidden=!c}}
+function serverNote(){const box=document.getElementById('v6200ServerNote');if(!box)return;box.innerHTML=serverReady?'':'<div class="v6200-server-note">⚠️ Kampflog-Server noch nicht eingerichtet. Eigene Kämpfe werden lokal angezeigt; Angriffe anderer Spieler erscheinen nach einmaligem Ausführen der mitgelieferten Supabase-SQL.</div>'}
+function filtered(){const f=document.getElementById('v6200Filter')?.value||'all';return rows.filter(r=>f==='all'||(f==='incoming'&&!isAttacker(r))||(f==='outgoing'&&isAttacker(r))||(f==='wins'&&relativeWin(r))||(f==='losses'&&!relativeWin(r)))}
+function renderList(){
+ ensurePanel();serverNote();const box=document.getElementById('v6200Rows'),count=document.getElementById('v6200Count');if(!box)return;
+ const list=filtered();if(count)count.textContent=`${rows.length} / 50`;
+ box.innerHTML=list.length?list.map(r=>{const o=opponent(r),win=relativeWin(r),dir=isAttacker(r)?'Du hast angegriffen':'hat dich angegriffen',active=String(r.client_token)===activeToken?' active':'';return `<div class="v6200-row ${win?'win':'loss'}${active}" data-v6200-open="${esc(r.client_token)}"><img class="v6200-avatar" src="${esc(avatar(o.classId))}" alt=""><div class="v6200-row-copy"><b>${esc(o.name)}${unseen(r)?'<span class="v6200-unseen"></span>':''}</b><small>${isAttacker(r)?dir:`${esc(r.attacker_name)} ${dir}`} · Lv. ${o.level} · ${fmt(o.power)} KP</small></div><div class="v6200-row-result"><b>${win?'🏆 Sieg':'💀 Niederlage'}</b><small>${esc(when(r.created_at))}</small></div></div>`}).join(''):'<div class="v6200-empty">Noch keine PvP-Kämpfe gespeichert.</div>';
+ box.querySelectorAll('[data-v6200-open]').forEach(el=>el.onclick=()=>openRow(el.dataset.v6200Open));paintBadge();
+}
+function detailHtml(r){
+ const o=opponent(r),m=me(r),win=relativeWin(r),incoming=!isAttacker(r),events=Array.isArray(r.replay?.events)?r.replay.events:[];
+ const reward=incoming?'<b>Verteidigung</b><br>Für eingehende Angriffe gibt es aktuell keine Gold-/EXP-Auszahlung.':`<b>Belohnung</b><br>🪙 +${fmt(r.gold)} Gold · ⭐ +${fmt(r.xp)} EXP · 🌿 +${fmt(r.buds)} PvP-Buds`;
+ const excerpt=events.length?events.slice(0,12).map(e=>`<div class="v6200-round"><b>Runde ${Math.max(1,n(e.round)||1)}</b><span>${esc(e.text||((e.actor==='attacker'?r.attacker_name:r.defender_name)+' greift an.'))}</span></div>`).join(''):'<div class="v6200-empty">Für diesen älteren Kampf ist keine Rundenaufzeichnung vorhanden.</div>';
+ return `<div class="v6200-log-head"><b>Kampfdetails</b><span>${esc(when(r.created_at))}</span></div><div class="v6200-detail-body"><div class="v6200-outcome ${win?'':'loss'}"><strong>${win?'🏆 Sieg!':'💀 Niederlage'}</strong><span>${incoming?(win?'Du hast den Angriff abgewehrt.':'Der Angreifer hat gewonnen.'):(win?'Du hast den Gegner besiegt.':'Der Gegner hat gewonnen.')}</span></div><div class="v6200-versus"><div class="v6200-fighter-card"><img src="${esc(avatar(o.classId))}" alt=""><div><b>${esc(o.name)}</b><small>Lv. ${o.level} · ${esc(className(o.classId,o.className))}</small><small>⚔️ ${fmt(o.power)} KP · ${fmt(o.hpAfter)} / ${fmt(o.maxHp)} HP</small></div></div><div class="v6200-vs">VS</div><div class="v6200-fighter-card me"><img src="${esc(avatar(m.classId))}" alt=""><div><b>Du · ${esc(m.name)}</b><small>Lv. ${m.level} · ${esc(className(m.classId,m.className))}</small><small>⚔️ ${fmt(m.power)} KP · ${fmt(m.hpAfter)} / ${fmt(m.maxHp)} HP</small></div></div></div><div class="v6200-detail-actions"><button class="btn secondary" data-v6200-profile="${esc(o.id)}">👤 Profil ansehen</button><button class="btn" data-v6200-replay="${esc(r.client_token)}" ${events.length?'':'disabled'}>▶ Kampf ansehen</button><button class="btn secondary" data-v6200-message="${esc(o.name)}">💬 Nachricht schreiben</button></div><div class="v6200-summary"><div><b>Kampfzusammenfassung</b><br>Runden: ${fmt(r.rounds)}<br>Deine HP: ${fmt(m.hpAfter)} / ${fmt(m.maxHp)}<br>Gegner HP: ${fmt(o.hpAfter)} / ${fmt(o.maxHp)}</div><div>${reward}</div></div><div class="v6200-rounds"><h4>Rundenverlauf</h4>${excerpt}</div></div>`;
+}
+async function openRow(token){
+ const r=rows.find(x=>String(x.client_token)===String(token));if(!r)return;activeToken=String(token);
+ if(unseen(r)){r.defender_seen=true;try{if(online()&&r.id)await v073Db.rpc('v6200_mark_pvp_battle_seen',{p_id:Number(r.id)})}catch(e){console.warn('V6.200 mark seen',e)}paintBadge()}
+ renderList();const d=document.getElementById('v6200Detail');if(d)d.innerHTML=detailHtml(r);
+ d?.querySelector('[data-v6200-profile]')?.addEventListener('click',e=>{try{v074OpenProfile(e.currentTarget.dataset.v6200Profile)}catch(_){}});
+ d?.querySelector('[data-v6200-replay]')?.addEventListener('click',e=>replay(String(e.currentTarget.dataset.v6200Replay)));
+ d?.querySelector('[data-v6200-message]')?.addEventListener('click',e=>composeTo(String(e.currentTarget.dataset.v6200Message||'')));
+}
+function composeTo(name){const b=document.querySelector('[data-v381-tab="compose"]');b?.click();setTimeout(()=>{const i=document.getElementById('v381Recipient');if(i){i.value=name;i.focus()}},0)}
+async function markAll(){rows.forEach(r=>{if(!isAttacker(r))r.defender_seen=true});paintBadge();renderList();try{if(online())await v073Db.rpc('v6200_mark_all_pvp_battles_seen')}catch(e){console.warn('V6.200 mark all',e)}}
+async function load(){
+ ensurePanel();if(loading)return;loading=true;
+ try{
+  let server=[];serverReady=true;
+  if(online()){
+   const id=uid();const {data,error}=await v073Db.from('pvp_battle_logs').select('*').or(`attacker_id.eq.${id},defender_id.eq.${id}`).order('created_at',{ascending:false}).limit(50);
+   if(error){const msg=String(error.message||error);if(/pvp_battle_logs|relation|schema cache|does not exist|PGRST205/i.test(msg)){serverReady=false}else throw error}else server=(data||[]).map(normalize);
+  }
+  const local=localRead().map(normalize),map=new Map();[...server,...local].sort((a,b)=>new Date(b.created_at)-new Date(a.created_at)).forEach(r=>{if(!map.has(r.client_token))map.set(r.client_token,r)});rows=[...map.values()].slice(0,50);
+  renderList();if(activeToken&&rows.some(r=>r.client_token===activeToken))openRow(activeToken);else{const d=document.getElementById('v6200Detail');if(d)d.innerHTML='<div class="v6200-empty">Wähle links einen Kampf aus.</div>'}
+ }catch(e){console.error('V6.200 battle log load',e);serverReady=false;rows=localRead().map(normalize).slice(0,50);renderList()}finally{loading=false}
+}
+window.v6200LoadBattleLog=load;
+function buildRecord(win,enemy,gold,xp,replay){
+ if(!replay||typeof replay!=='object')return null;const a=replay.attacker||{},d=replay.defender||{};if(!d.id)return null;
+ const token=`${uid()||a.id||'u'}:${d.id}:${Date.now()}:${Math.random().toString(36).slice(2,8)}`;
+ return normalize({client_token:token,attacker_id:uid()||a.id,defender_id:d.id,attacker_name:a.name||s.characterName||'Spieler',defender_name:d.name||enemy?.character_name||'Gegner',attacker_level:a.level,defender_level:d.level,attacker_class:a.classId,defender_class:d.classId,attacker_class_name:a.className,defender_class_name:d.className,attacker_power:a.power,defender_power:d.power,attacker_max_hp:a.maxHp,defender_max_hp:d.maxHp,attacker_hp_after:a.hpAfter,defender_hp_after:d.hpAfter,attacker_won:!!win,gold:win?Math.max(0,Math.round(n(gold))):Math.max(0,Math.round(n(gold)*.35)),xp:win?Math.max(0,Math.round(n(xp))):Math.max(0,Math.round(n(xp)*.45)),buds:win?Math.max(0,Math.round(n(s?.v204Pvp?.lastBudReward))):0,rounds:replay.rounds,replay,defender_seen:false,created_at:new Date().toISOString()});
+}
+async function saveFight(win,enemy,gold,xp,replay){
+ const r=buildRecord(win,enemy,gold,xp,replay);if(!r)return;localAdd({...r,defender_seen:true});
+ try{
+  if(online()){
+   const p={p_client_token:r.client_token,p_defender_id:r.defender_id,p_attacker_name:r.attacker_name,p_defender_name:r.defender_name,p_attacker_level:r.attacker_level,p_defender_level:r.defender_level,p_attacker_class:r.attacker_class,p_defender_class:r.defender_class,p_attacker_class_name:r.attacker_class_name,p_defender_class_name:r.defender_class_name,p_attacker_power:r.attacker_power,p_defender_power:r.defender_power,p_attacker_max_hp:r.attacker_max_hp,p_defender_max_hp:r.defender_max_hp,p_attacker_hp_after:r.attacker_hp_after,p_defender_hp_after:r.defender_hp_after,p_attacker_won:r.attacker_won,p_gold:r.gold,p_xp:r.xp,p_buds:r.buds,p_rounds:r.rounds,p_replay:r.replay};
+   const {error}=await v073Db.rpc('v6200_log_pvp_battle',p);if(error){if(/v6200_log_pvp_battle|function .* does not exist|schema cache/i.test(String(error.message||'')))serverReady=false;else console.warn('V6.200 server log',error)}
+  }
+ }catch(e){console.warn('V6.200 server log',e)}
+ if(document.getElementById('mail')?.classList.contains('active'))void load();
+}
+function ensureReplay(){
+ let ov=document.getElementById('v6200ReplayOverlay');if(ov)return ov;ov=document.createElement('div');ov.id='v6200ReplayOverlay';ov.innerHTML=`<div class="v6200-replay-card"><div class="v6200-replay-head"><h3>⚔️ Kampf-Wiederholung</h3><button class="btn secondary" data-v6200-close>✕</button></div><div class="v6200-replay-stage"><div class="v6200-rfighter" id="v6200ReplayA"><img alt=""><b></b><small></small><div class="v6200-rhp"><span></span></div><div class="v6200-rhptext"></div></div><div class="v6200-rvs">VS</div><div class="v6200-rfighter" id="v6200ReplayD"><img alt=""><b></b><small></small><div class="v6200-rhp"><span></span></div><div class="v6200-rhptext"></div></div></div><div class="v6200-replay-log" id="v6200ReplayLog">Kampf wird vorbereitet …</div><div class="v6200-replay-foot"><span id="v6200ReplayRound">RUNDE 1</span><button class="btn secondary" data-v6200-close>Wiederholung schließen</button></div></div>`;document.body.appendChild(ov);ov.querySelectorAll('[data-v6200-close]').forEach(b=>b.onclick=()=>{replayRun++;ov.classList.remove('show')});ov.onclick=e=>{if(e.target===ov){replayRun++;ov.classList.remove('show')}};return ov;
+}
+function sleep(ms){return new Promise(r=>setTimeout(r,ms))}
+function setReplayFighter(el,p){el.querySelector('img').src=avatar(p.classId);el.querySelector('b').textContent=p.name;el.querySelector('small').textContent=`Lv. ${p.level} · ${className(p.classId,p.className)} · ${fmt(p.power)} KP`;const bar=el.querySelector('.v6200-rhp>span'),t=el.querySelector('.v6200-rhptext');bar.style.width='100%';t.textContent=`${fmt(p.maxHp)} / ${fmt(p.maxHp)} HP`}
+function replayHp(el,value,max){const v=Math.max(0,n(value)),m=Math.max(1,n(max));el.querySelector('.v6200-rhp>span').style.width=`${Math.max(0,Math.min(100,v/m*100))}%`;el.querySelector('.v6200-rhptext').textContent=`${fmt(v)} / ${fmt(m)} HP`}
+async function replay(token){
+ const r=rows.find(x=>String(x.client_token)===String(token));if(!r)return;const events=Array.isArray(r.replay?.events)?r.replay.events:[];if(!events.length)return;const ov=ensureReplay(),a=r.replay.attacker||{},d=r.replay.defender||{},ae=ov.querySelector('#v6200ReplayA'),de=ov.querySelector('#v6200ReplayD'),log=ov.querySelector('#v6200ReplayLog'),roundEl=ov.querySelector('#v6200ReplayRound');setReplayFighter(ae,a);setReplayFighter(de,d);ov.classList.add('show');const run=++replayRun;await sleep(450);
+ for(const e of events){if(run!==replayRun||!ov.classList.contains('show'))return;roundEl.textContent=`RUNDE ${Math.max(1,n(e.round)||1)}`;const from=e.actor==='defender'?de:ae,to=e.actor==='defender'?ae:de;from.classList.remove('attack-right','attack-left');void from.offsetWidth;from.classList.add(e.actor==='defender'?'attack-left':'attack-right');await sleep(190);replayHp(ae,e.attackerHp,a.maxHp);replayHp(de,e.defenderHp,d.maxHp);to.classList.remove('hit');void to.offsetWidth;if(!e.dodge)to.classList.add('hit');log.textContent=e.text||`${e.actor==='defender'?d.name:a.name} greift an.`;await sleep(520)}
+ if(run===replayRun)log.textContent=relativeWin(r)?'🏆 Kampf beendet – Sieg.':'💀 Kampf beendet – Niederlage.';
+}
+/* Final canonical PvP finish hook. All historic wrappers underneath preserve extra arguments via arguments/apply. */
+try{
+ const base=window.v209FinishBattle||(typeof v209FinishBattle==='function'?v209FinishBattle:null);
+ if(typeof base==='function'&&!base.__v6200BattleLog){
+  const wrapped=async function(win,enemy,gold,xp,replayData){const result=await base.apply(this,arguments);try{await saveFight(!!win,enemy,gold,xp,replayData)}catch(e){console.warn('V6.200 save fight',e)}return result};
+  wrapped.__v6200BattleLog=true;window.v209FinishBattle=wrapped;try{v209FinishBattle=wrapped}catch(_){}
+ }
+}catch(e){console.warn('V6.200 finish hook',e)}
+/* Mail opening and tab badge refresh. */
+document.addEventListener('click',e=>{const t=e.target?.closest?.('[data-v381-tab="battlelog"]');if(t)setTimeout(()=>load(),0)},true);
+try{const baseGo=window.v032Go||(typeof v032Go==='function'?v032Go:null);if(typeof baseGo==='function'&&!baseGo.__v6200Mail){const w=function(id){const r=baseGo.apply(this,arguments);if(id==='mail')setTimeout(()=>load(),80);return r};w.__v6200Mail=true;window.v032Go=w;try{v032Go=w}catch(_){}}}catch(e){console.warn('V6.200 mail go',e)}
+setTimeout(()=>{ensurePanel();if(document.getElementById('mail')?.classList.contains('active'))load()},500);
+setInterval(()=>{if(!document.hidden&&document.getElementById('mail')?.classList.contains('active'))load()},60000);
+})();
+</script>
+<!-- ===== /V6.200 ===== -->
