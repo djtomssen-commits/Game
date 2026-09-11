@@ -71592,6 +71592,28 @@ create index if not exists player_messages_sender_idx on public.player_messages(
   function nativeTotal(it){const m=nativeMap(it);return COMBAT.reduce((n,k)=>n+(Number(m[k])||0),0)}
   function pointTotal(it){normalize(it);return COMBAT.reduce((n,k)=>n+(Number(it?.bonus?.[k])||0),0)}
   function addonTotal(it){return pointTotal(it)-nativeTotal(it)}
+  function mysticCompareValue(it){
+    if(!it?.mysticSpecial)return 0;
+    try{
+      if(typeof window.v6201MysticCompareValue==='function')return Math.max(0,Number(window.v6201MysticCompareValue(it))||0);
+    }catch(e){}
+    /* Safe early fallback until the final mystic bridge is installed. */
+    const sp=it.mysticSpecial||{},v=Math.max(0,Number(sp.value)||0),key=String(sp.key||'');
+    if(!v)return 0;
+    const cls=String(s?.playerClass||'grower'),pk=(cls==='scout'?'geschick':cls==='bruiser'?'intelligenz':'staerke');
+    let primary=0,endurance=0;
+    try{primary=Math.max(1,Number(totalAttr(pk))||1);endurance=Math.max(1,Number(totalAttr('ausdauer'))||1)}catch(e){primary=50;endurance=30}
+    const baseHp=Math.max(1,80+endurance*8+(Number(s?.level)||1)*5),hpEq=baseHp/8;
+    if(key==='mainPct')return primary*v;
+    if(key==='hpPct')return hpEq*v;
+    if(key==='critChance')return primary*v*.75;
+    if(key==='critDamage')return primary*v*.20;
+    if(key==='wuchtChance')return primary*v*.55;
+    if(key==='doubleChance')return primary*v*.45;
+    if(key==='dodgeChance')return hpEq*v*.80;
+    return primary*v*.35;
+  }
+  function effectiveTotal(it){return nativeTotal(it)+mysticCompareValue(it)}
   function specialCount(it){
     let n=0;const e=enchantOf(it);
     if(e&&e.effect!=='luck')n++;
@@ -71605,17 +71627,19 @@ create index if not exists player_messages_sender_idx on public.player_messages(
       return {state:'worse',mark:'⛔',label:'FALSCHE KLASSE',diff:null,reason:'Nicht für deine Klasse',newTotal:pointTotal(it),oldTotal:0,baseDiff:0};
     }
     const old=s?.equipment?.[it.slot]||null;
-    const nt=nativeTotal(it);
+    const nativeNew=nativeTotal(it),mysticNew=mysticCompareValue(it),nt=nativeNew+mysticNew;
     if(!old){
-      return {state:'free',mark:'▲',label:'FREIER SLOT',diff:null,reason:'Grundwerte ohne Stein/Rolle',newTotal:nt,oldTotal:0,baseDiff:nt};
+      const reason=mysticNew>0?'Grundwerte + mystischer Spezialeffekt · Stein/Rolle separat':'Grundwerte ohne Stein/Rolle';
+      return {state:'free',mark:'▲',label:'FREIER SLOT',diff:null,reason,newTotal:nt,oldTotal:0,baseDiff:nativeNew,mysticNew,mysticOld:0,nativeNew,nativeOld:0};
     }
     normalize(old);
-    const ot=nativeTotal(old),diff=Math.round((nt-ot)*100)/100,baseDiff=diff;
-    let state='same',mark='◆',label='GLEICH',reason='Gleiche Grundwerte · Stein/Rolle separat';
-    if(diff>0){state='better';mark='▲';label='BESSER';reason='Bessere Grundwerte · Stein/Rolle nicht eingerechnet'}
-    else if(diff<0){state='worse';mark='▼';label='SCHLECHTER';reason='Schlechtere Grundwerte · Stein/Rolle nicht eingerechnet'}
-    else if(specialCount(it)||specialCount(old)){reason='Grundwerte gleich · Extras/Spezialeffekte separat'}
-    return {state,mark,label,diff,reason,newTotal:nt,oldTotal:ot,baseDiff};
+    const nativeOld=nativeTotal(old),mysticOld=mysticCompareValue(old),ot=nativeOld+mysticOld;
+    const diff=Math.round((nt-ot)*100)/100,baseDiff=Math.round((nativeNew-nativeOld)*100)/100;
+    let state='same',mark='◆',label='GLEICH',reason='Gleicher Effektivwert · Stein/Rolle separat';
+    if(diff>0){state='better';mark='▲';label='BESSER';reason=(mysticNew||mysticOld)?'Grundwerte + mystischer Spezialeffekt · Stein/Rolle separat':'Bessere Grundwerte · Stein/Rolle nicht eingerechnet'}
+    else if(diff<0){state='worse';mark='▼';label='SCHLECHTER';reason=(mysticNew||mysticOld)?'Grundwerte + mystischer Spezialeffekt · Stein/Rolle separat':'Schlechtere Grundwerte · Stein/Rolle nicht eingerechnet'}
+    else if(specialCount(it)||specialCount(old)){reason='Effektivwert gleich · mystischer Effekt berücksichtigt · Stein/Rolle separat'}
+    return {state,mark,label,diff,reason,newTotal:nt,oldTotal:ot,baseDiff,mysticNew,mysticOld,nativeNew,nativeOld};
   }
   window.v470CompareItem=compare;
 
@@ -71625,7 +71649,8 @@ create index if not exists player_messages_sender_idx on public.player_messages(
     const css=c.state==='free'?'empty':c.state;
     if(c.state==='free')return `<div class="${cls} ${css}">▲ FREIER SLOT · Verbesserung</div>`;
     if(c.diff==null)return `<div class="${cls} ${css}">${esc(c.label)} · ${esc(c.reason)}</div>`;
-    return `<div class="${cls} ${css}">${c.mark} ${c.label} · ${signed(c.diff)} Grundwerte</div>`;
+    const metric=(Number(c.mysticNew||0)>0||Number(c.mysticOld||0)>0)?'Effektivwert':'Grundwerte';
+    return `<div class="${cls} ${css}">${c.mark} ${c.label} · ${signed(c.diff)} ${metric}</div>`;
   }
   try{v090ComparisonHtml=function(it){return compactComparisonHtml(it,'v090-shop-compare')};window.v090ComparisonHtml=v090ComparisonHtml}catch(e){}
   try{v089ShopComparison=function(it){return compactComparisonHtml(it,'v089-shop-compare')};window.v089ShopComparison=v089ShopComparison}catch(e){}
@@ -71635,7 +71660,8 @@ create index if not exists player_messages_sender_idx on public.player_messages(
     if(c.state==='free')return '<span class="better">▲ Freier Slot · direkte Verbesserung</span>';
     if(c.diff==null)return `<span class="worse">⛔ ${esc(c.reason)}</span>`;
     const css=c.state==='better'?'better':c.state==='worse'?'worse':'same';
-    return `<span class="${css}">${c.mark} ${esc(c.label)} · ${signed(c.diff)} Grundwerte · ${esc(c.reason)}</span>`;
+    const metric=(Number(c.mysticNew||0)>0||Number(c.mysticOld||0)>0)?'Effektivwert':'Grundwerte';
+    return `<span class="${css}">${c.mark} ${esc(c.label)} · ${signed(c.diff)} ${metric} · ${esc(c.reason)}</span>`;
   };
   try{comparison=detailedComparison;window.comparison=detailedComparison}catch(e){}
 
@@ -78944,7 +78970,7 @@ html:not(.v4142-systemtech-admin) #v4102QaButton{display:none!important}
 
  /* ---------- Manual equip / comparison ---------- */
  function normalizeGear(it){try{window.v447ApplyItemCurve?.(it)}catch(e){}try{v122NormalizeSocketState?.(it)}catch(e){}return it}
- function score(it){if(!it)return-1;normalizeGear(it);const gem=it?.gem,e=it?.enchant||(Array.isArray(it?.enchants)?it.enchants[0]:null);return COMBAT.reduce((n,k)=>{let v=Number(it?.bonus?.[k])||0;if(gem?.stat===k)v-=Number(gem.value)||0;if(k==='glueck'&&e?.effect==='luck')v-=Number(e.value)||0;return n+Math.max(0,v)},0)}
+ function score(it){if(!it)return-1;normalizeGear(it);const gem=it?.gem,e=it?.enchant||(Array.isArray(it?.enchants)?it.enchants[0]:null);let base=COMBAT.reduce((n,k)=>{let v=Number(it?.bonus?.[k])||0;if(gem?.stat===k)v-=Number(gem.value)||0;if(k==='glueck'&&e?.effect==='luck')v-=Number(e.value)||0;return n+Math.max(0,v)},0);try{if(typeof window.v6201MysticCompareValue==='function')base+=Math.max(0,Number(window.v6201MysticCompareValue(it))||0)}catch(e){}return base}
  function chooseWeaponTarget(){if(!s.equipment.weapon)return'weapon';if(!s.equipment.weapon2)return'weapon2';return score(s.equipment.weapon2)<score(s.equipment.weapon)?'weapon2':'weapon'}
  try{
   if(typeof window.equip==='function'&&!window.__v4153Equip){
@@ -111841,6 +111867,94 @@ html body .app section#mail.v677-mail .v677-footer-sign small{font-size:4.3px!im
 })();
 </script>
 <!-- ===== /V6.202 ===== -->
+
+
+
+<!-- ===== V6.201: MYTHISCHE SPEZIALEFFEKTE – GAMEPLAY + KANONISCHER ITEMVERGLEICH ===== -->
+<script id="v6201-mystic-special-gameplay-compare">
+(()=>{
+'use strict';
+if(window.__V6201_MYSTIC_SPECIALS__)return;
+window.__V6201_MYSTIC_SPECIALS__=true;
+
+const KNOWN=new Set(['mainPct','hpPct','critChance','critDamage','wuchtChance','doubleChance','dodgeChance','damagePct','damageReduce','lifeSteal','armorPen']);
+const CAPS={primaryPct:.40,hpPct:.62,critChance:.40,critDamage:.95,wuchtChance:.40,doubleChance:.40,dodgeChance:.40,damagePct:.62,damageReduce:.38,lifeSteal:.12,armorPen:.35};
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,Number(v)||0));
+function primaryKey(){const c=String(s?.playerClass||'grower');return c==='scout'?'geschick':c==='bruiser'?'intelligenz':'staerke'}
+function mystic(it){const sp=it?.mysticSpecial||it?.mystic_special||it?.special;return sp&&typeof sp==='object'?sp:null}
+function slotFactor(slot){return String(s?.playerClass||'')==='frost'&&slot==='weapon2'?.10:1}
+function equippedBonus(){
+ const out={};
+ try{
+  Object.entries(s?.equipment||{}).forEach(([slot,it])=>{
+   const sp=mystic(it),key=String(sp?.key||''),value=Math.max(0,Number(sp?.value)||0)*slotFactor(slot);
+   if(!sp||!KNOWN.has(key)||!value)return;
+   const target=key==='mainPct'?'primaryPct':key;
+   out[target]=(Number(out[target])||0)+value;
+  });
+ }catch(e){}
+ return out;
+}
+window.v6201MysticEquippedBonuses=equippedBonus;
+
+/* Item comparison intentionally ignores gems and enchantment rolls, but mystic
+   specials belong to the item itself and therefore DO count. Values below are
+   converted to a conservative attribute-equivalent so BESSER/SCHLECHTER matches
+   the real build impact instead of looking only at naked item points. */
+window.v6201MysticCompareValue=function(it){
+ const sp=mystic(it);if(!sp)return 0;
+ const key=String(sp.key||''),v=Math.max(0,Number(sp.value)||0);if(!v)return 0;
+ let primary=50,endurance=30,level=Math.max(1,Number(s?.level)||1),crit=.12;
+ try{primary=Math.max(1,Number(totalAttr(primaryKey()))||1)}catch(e){}
+ try{endurance=Math.max(1,Number(totalAttr('ausdauer'))||1)}catch(e){}
+ try{if(typeof v267CritChance==='function')crit=clamp(Number(v267CritChance())/100,0,.40)}catch(e){}
+ const hpEq=Math.max(1,(80+endurance*8+level*5)/8);
+ switch(key){
+  case 'mainPct': return primary*v;
+  case 'hpPct': return hpEq*v;
+  case 'critChance': return primary*v*.75;
+  case 'critDamage': return primary*v*Math.max(.08,crit);
+  case 'wuchtChance': return primary*v*.55;
+  case 'doubleChance': return primary*v*.45;
+  case 'dodgeChance': return hpEq*v*.80;
+  case 'damagePct': return primary*v;
+  case 'damageReduce': return hpEq*v*.90;
+  case 'lifeSteal': return primary*v*.55;
+  case 'armorPen': return primary*v*.50;
+  default: return 0;
+ }
+};
+
+/* Final central passive-stat bridge. This makes the same mystic effect that is
+   valued by the comparison actually active in every modern combat consumer. */
+try{
+ if(typeof v319ExactTalentStats==='function'&&!v319ExactTalentStats.__v6201Mystic){
+  const base=v319ExactTalentStats;
+  const wrapped=function(){
+   const o={...(base.apply(this,arguments)||{})},m=equippedBonus();
+   Object.entries(m).forEach(([k,v])=>{o[k]=(Number(o[k])||0)+Number(v||0)});
+   Object.entries(CAPS).forEach(([k,cap])=>{if(k in o)o[k]=clamp(o[k],0,cap)});
+   return o;
+  };
+  wrapped.__v6201Mystic=true;
+  v319ExactTalentStats=wrapped;
+  try{window.v319ExactTalentStats=wrapped}catch(e){}
+ }
+}catch(e){console.warn('V6.201 mystic gameplay bridge',e)}
+
+window.v6201MysticQA=()=>({
+ equipped:equippedBonus(),
+ compareValue:Object.fromEntries(Object.entries(s?.equipment||{}).filter(([,it])=>!!mystic(it)).map(([slot,it])=>[slot,Math.round((window.v6201MysticCompareValue(it)||0)*100)/100])),
+ exactStats:(()=>{try{return typeof v319ExactTalentStats==='function'?v319ExactTalentStats():null}catch(e){return null}})()
+});
+
+/* Repaint with the now-installed helper. V4.70's compare function looks this up
+   dynamically, so inventory/shop flags use mystic-aware values without counting
+   socket stones or enchantment rolls. */
+try{if(typeof render==='function')setTimeout(()=>render(),0)}catch(e){}
+})();
+</script>
+<!-- ===== /V6.201 ===== -->
 
 </body>
 </html>
