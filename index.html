@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
 <script id="v4131-version-source">
-window.GROW_LEGENDS_VERSION=Object.freeze({short:'V4.163',label:'V4.163 Stable',number:'4.163'});
+window.GROW_LEGENDS_VERSION=Object.freeze({short:'V4.164',label:'V4.164 Stable',number:'4.164'});
 </script>
 
 <script id="v6140-central-event-bus-preboot">
@@ -100,6 +100,13 @@ window.__V483_POWER_READY__=false;
   window.setInterval=function(fn,delay){
     const args=[].slice.call(arguments,2);
     let d=Number(delay)||0;
+    /* V4.164: Wundertüte OG is retired. Historic v077 recurring painters must never wake up again. */
+    try{
+      const src=typeof fn==='function'?Function.prototype.toString.call(fn):String(fn||'');
+      if(/\bv077(?:Buff|Inject|Now|Fmt|Seed|Plant|Harvest|Quest|fx|badge)/.test(src)){
+        return nativeSetInterval(()=>{},2147483647);
+      }
+    }catch(e){}
     if(d>0&&d<800){d=2200+(fastSeq++%6)*180}
     return nativeSetInterval(function(){return fn.apply(this,args)},d);
   };
@@ -110634,7 +110641,7 @@ window.v6124GuildLockQA=()=>({
 (()=>{
 'use strict';
 if(window.__V6130_GENETICS_CLASSSET__)return;window.__V6130_GENETICS_CLASSSET__=true;
-const VERSION='V4.161 Stable',SHORT='V4.161';
+const V=window.GROW_LEGENDS_VERSION||{short:'V4.164',label:'V4.164 Stable',number:'4.164'};const VERSION=V.label,SHORT=V.short;
 const RECIPES={
  widow_amnesia:{name:'Widownesia',a:'moss',b:'amnesia',hybrid:'hy_widow_amnesia',essence:'Widownesia-Essenz'},
  northern_purple:{name:'Northern Purple',a:'lime',b:'violet',hybrid:'hy_northern_purple',essence:'Northern-Purple-Essenz'},
@@ -110669,7 +110676,7 @@ function toast(t,type='success',d=''){try{return v063Toast(t,type,d)}catch(_){}}
 function ownedOrGrowing(id){const stock=Math.max(0,Number(s?.grow?.seeds?.[id])||0);const growing=Array.isArray(s?.grow?.plants)&&s.grow.plants.some(p=>p&&p.seed===id);return stock>0||growing}
 function qualityByCare(p){const n=Array.isArray(p?.care)?p.care.filter(Boolean).length:0;return ['C','B','A','S','S+'][Math.min(4,n)]}
 function installAchievements(){try{if(typeof V106_ACH==='undefined'||!Array.isArray(V106_ACH))return;const old=V106_ACH.findIndex(x=>x?.[0]==='seed10');if(old>=0)V106_ACH.splice(old,1);if(!V106_ACH.some(x=>x?.[0]==='genetics1'))V106_ACH.push(['genetics1','Grüne Wissenschaft','Schließe deine erste erfolgreiche Kreuzung ab.',()=>Math.max(0,Number(s?.grow?.v6130?.totalCrosses)||0),1],['genetics10','Stabiler Stammbaum','Schließe 10 erfolgreiche Kreuzungen ab.',()=>Math.max(0,Number(s?.grow?.v6130?.totalCrosses)||0),10])}catch(e){console.warn('V4.160 genetics achievements',e)}}
-function beginCross(id){const z=state(),r=RECIPES[id];if(!z||!r)return;if(z.pending)return toast('Kreuzung läuft bereits','info',`${RECIPES[z.pending.recipe]?.name||'Genetik'} zuerst abschließen.`);const missing=[r.a,r.b].filter(x=>!ownedOrGrowing(x));if(missing.length)return toast('Elternsorte fehlt','warn',`Du brauchst ${missing.map(seedName).join(' + ')} als Samen oder bereits wachsende Pflanze.`);z.pending={recipe:id,aDone:false,bDone:false,startedAt:Date.now()};save();renderLab();toast('🧬 Kreuzung angesetzt','success',`${seedName(r.a)} + ${seedName(r.b)} · beide mindestens Qualität S ernten.`)}
+function beginCross(id){const z=state(),r=RECIPES[id];if(!z||!r)return;if(z.pending)return toast('Kreuzung läuft bereits','info',`${RECIPES[z.pending.recipe]?.name||'Genetik'} zuerst abschließen.`);const missing=[r.a,r.b].filter(x=>!ownedOrGrowing(x));if(missing.length)return toast('Elternsorte fehlt','warn',`Du brauchst ${missing.map(seedName).join(' + ')} als Samen oder bereits wachsende Pflanze.`);z.pending={recipe:id,aDone:false,bDone:false,startedAt:Date.now()};save();renderLabIfOpen();try{window.v6163GrowTabs?.refresh?.()}catch(_){};toast('🧬 Kreuzung angesetzt','success',`${seedName(r.a)} + ${seedName(r.b)} · beide mindestens Qualität S ernten.`)}
 function onHarvest(ready){const z=state();if(!z||!Array.isArray(ready)||!ready.length)return;
  let changed=false;
  const p=z.pending,r=p&&RECIPES[p.recipe];
@@ -110678,16 +110685,17 @@ function onHarvest(ready){const z=state();if(!z||!Array.isArray(ready)||!ready.l
    else if(changed)toast('🧬 Genetikfortschritt','success',`${p.aDone?'✅':'⬜'} ${seedName(r.a)} · ${p.bDone?'✅':'⬜'} ${seedName(r.b)}`);else if(low)toast('Genetik: Qualität zu niedrig','info','Für die Kreuzung zählt nur Qualität S oder S+.');
  }
  for(const plant of ready){const entry=Object.entries(RECIPES).find(([,x])=>x.hybrid===plant?.seed);if(!entry)continue;const [id,rr]=entry;if((Array.isArray(plant.care)?plant.care.filter(Boolean).length:0)<3){toast('Hybrid nicht stabil genug','info',`${rr.name} benötigt Qualität S oder S+ für eine Essenz.`);continue}z.essences[id]=Math.max(0,Number(z.essences[id])||0)+1;z.totalEssences++;changed=true;toast('🧬 Genetik-Essenz gewonnen','success',`+1 ${rr.essence} · für die Klassenset-Schmiede.`)}
- if(changed){save();setTimeout(()=>{try{decorateGrow();renderLabIfOpen();renderSetIfOpen()}catch(_){ }},0)}
+ if(changed){save();setTimeout(()=>{try{decorateGrow();renderLabIfOpen();renderSetIfOpen();window.v6163GrowTabs?.refresh?.()}catch(_){ }},0)}
 }
 window.v6130OnGrowHarvest=onHarvest;if(window.GL_EVENTS&&!window.__V6140_GENETICS_EVENT__){window.__V6140_GENETICS_EVENT__=true;window.GL_EVENTS.on('growHarvested',ev=>onHarvest(ev.plants||[]));}
 function pendingHtml(){const z=state(),p=z?.pending;if(!p)return '<div class="v6130-pending"><b>🧬 Keine Kreuzung aktiv</b><div class="v6130-stock">Wähle unten ein Rezept. Danach müssen beide Elternsorten jeweils mindestens mit Qualität S geerntet werden.</div></div>';const r=RECIPES[p.recipe];return `<div class="v6130-pending"><b>🧬 Aktive Kreuzung: ${esc(r.name)}</b><div class="v6130-progress"><div class="v6130-prog ${p.aDone?'done':''}">${p.aDone?'✅':'⬜'} ${esc(seedName(r.a))} · mindestens S</div><div class="v6130-prog ${p.bDone?'done':''}">${p.bDone?'✅':'⬜'} ${esc(seedName(r.b))} · mindestens S</div></div><div class="v6130-stock">Sind beide Eltern bestätigt, erhältst du genau 1 Hybrid-Samen. Der Hybrid muss anschließend selbst mindestens auf S gezogen werden, um seine Schmiede-Essenz zu gewinnen.</div></div>`}
 function ensureLab(){let ov=document.getElementById('v6130GeneticsOverlay');if(ov)return ov;ov=document.createElement('div');ov.id='v6130GeneticsOverlay';ov.innerHTML='<div class="v6130-lab"><div class="v6130-head"><div><h2>🧬 Genetik-Labor</h2><small>KREUZEN · HYBRID ZIEHEN · ESSENZ GEWINNEN</small></div><button type="button" class="v6130-x" data-v6130-close>✕</button></div><div id="v6130LabBody"></div></div>';document.body.appendChild(ov);ov.addEventListener('click',e=>{if(e.target===ov||e.target.closest('[data-v6130-close]'))ov.classList.remove('show')});return ov}
 function recipeCard(id,r){const z=state(),active=z?.pending?.recipe===id,blocked=!!z?.pending&&!active,aok=ownedOrGrowing(r.a),bok=ownedOrGrowing(r.b),ess=Math.max(0,Number(z?.essences?.[id])||0),hy=Math.max(0,Number(s?.grow?.seeds?.[r.hybrid])||0);return `<div class="v6130-recipe ${aok&&bok&&!blocked?'ready':''}"><h3>${esc(r.name)}</h3><div class="v6130-parentline"><span class="v6130-parent">🌰 ${esc(seedName(r.a))}<br><small>×${Math.max(0,Number(s?.grow?.seeds?.[r.a])||0)}</small></span><span class="v6130-plus">＋</span><span class="v6130-parent">🌰 ${esc(seedName(r.b))}<br><small>×${Math.max(0,Number(s?.grow?.seeds?.[r.b])||0)}</small></span></div><div class="v6130-out">Ergebnis<strong>🧬 ${esc(r.name)} Hybrid</strong></div><div class="v6130-stock"><span class="${aok?'ok':'bad'}">${aok?'✓':'✕'} ${esc(seedName(r.a))}</span> · <span class="${bok?'ok':'bad'}">${bok?'✓':'✕'} ${esc(seedName(r.b))}</span><br>Hybrid-Samen: <b>${hy}</b> · Essenzen: <b>${ess}</b> · Kreuzungen: <b>${Math.max(0,Number(z?.crosses?.[id])||0)}</b></div><button type="button" data-v6130-cross="${id}" ${blocked||active||!aok||!bok?'disabled':''}>${active?'Kreuzung läuft':blocked?'Andere Kreuzung aktiv':'Kreuzung ansetzen'}</button></div>`}
-function renderLab(){const ov=ensureLab(),body=ov.querySelector('#v6130LabBody');if(!body)return;body.innerHTML=`${pendingHtml()}<div class="v6130-help"><b>So funktioniert es:</b> Elternsorten müssen vorhanden oder bereits eingepflanzt sein. Nach dem Start erntest du beide Eltern mit Qualität <b>S oder S+</b>. Dann entsteht ein echter Hybrid-Samen im Samenlager. Erst wenn du diesen Hybrid ebenfalls mit <b>S/S+</b> erntest, erhältst du die Genetik-Essenz für ein Klassenset-Teil.</div><div class="v6130-grid">${Object.entries(RECIPES).map(([id,r])=>recipeCard(id,r)).join('')}</div>`}
+function labBodyHtml(){return `${pendingHtml()}<div class="v6130-help"><b>So funktioniert es:</b> Elternsorten müssen vorhanden oder bereits eingepflanzt sein. Nach dem Start erntest du beide Eltern mit Qualität <b>S oder S+</b>. Dann entsteht ein echter Hybrid-Samen im Samenlager. Erst wenn du diesen Hybrid ebenfalls mit <b>S/S+</b> erntest, erhältst du die Genetik-Essenz für ein Klassenset-Teil.</div><div class="v6130-grid">${Object.entries(RECIPES).map(([id,r])=>recipeCard(id,r)).join('')}</div>`}
+function renderLab(){const ov=ensureLab(),body=ov.querySelector('#v6130LabBody');if(!body)return;body.innerHTML=labBodyHtml()}
 function openLab(){renderLab();ensureLab().classList.add('show')}
 function renderLabIfOpen(){if(document.getElementById('v6130GeneticsOverlay')?.classList.contains('show'))renderLab()}
-function decorateGrow(){const root=document.querySelector('#grow .v492-grow');if(!root||root.querySelector('[data-v6130-open]'))return;const actions=root.querySelector('.v492-bottom .v492-card:last-child .v492-actions')||root.querySelector('.v492-actions');if(!actions)return;const b=document.createElement('button');b.type='button';b.className='btn secondary v6130-genetics-btn';b.dataset.v6130Open='1';b.textContent='🧬 Genetik-Labor';actions.appendChild(b);const z=state(),hint=document.createElement('small');hint.className='v6130-genetics-hint';hint.textContent=z?.pending?`Aktiv: ${RECIPES[z.pending.recipe]?.name||'Kreuzung'} · Eltern mindestens S ernten`:`${z?.totalCrosses||0} Kreuzungen · ${z?.totalEssences||0} Essenzen`;actions.parentElement?.appendChild(hint)}
+function decorateGrow(){try{window.v6163GrowTabs?.refresh?.()}catch(_){}}
 function buds(){return Math.max(0,Math.floor(Number(s?.v204Pvp?.buds)||0))}
 function fragments(){return Math.max(0,Math.floor(Number(s?.v488Forge?.fragments)||0))}
 function levelFactor(){return 1+Math.floor((Math.max(1,Number(s?.level)||1)-1)/50)*.25}
@@ -110696,7 +110704,31 @@ function currentClass(){return ['grower','scout','bruiser','frost'].includes(Str
 function setInfo(){const cls=currentClass();try{return classSets?.[cls]||{name:'Klassenset',bonuses:{}}}catch(_){return{name:'Klassenset',bonuses:{}}}}
 function equippedSet(){const cls=currentClass();return Object.values(s?.equipment||{}).filter(it=>it?.setId===cls).length}
 async function confirmBox(text,title){try{if(typeof v115Confirm==='function')return await v115Confirm(text,{title,type:'confirm',okText:'Set-Teil schmieden'})}catch(_){ }return window.confirm(text)}
-async function craftSet(slot){const z=state(),c=slotCost(slot),r=RECIPES[c.recipe];if(!z||!r)return;const haveEss=Math.max(0,Number(z.essences[c.recipe])||0);if(buds()<c.buds)return toast('PvP-Rang noch zu niedrig','warn',`Du brauchst mindestens ${fmt(c.buds)} PvP-Buds. Sie werden nicht ausgegeben.`);if(haveEss<c.essence)return toast('Genetik-Essenz fehlt','warn',`${r.essence}: ${haveEss}/${c.essence}`);if(fragments()<c.fragments)return toast('Samenfragmente fehlen','warn',`${fmt(fragments())}/${fmt(c.fragments)}`);if((Number(s.gold)||0)<c.gold)return toast('Gold fehlt','warn',`${fmt(Number(s.gold)||0)}/${fmt(c.gold)}`);const ok=await confirmBox(`${c.label} des ${setInfo().name}-Sets herstellen?\n\n${c.essence}× ${r.essence}\n${fmt(c.fragments)} Samenfragmente\n${fmt(c.gold)} Gold\nPvP-Freischaltung: ${fmt(c.buds)} Buds (werden NICHT verbraucht)\n\nDas Item wird für dein aktuelles Level hergestellt.`,`🧬 ${setInfo().name}: ${c.label}`);if(!ok)return;z.essences[c.recipe]=haveEss-c.essence;s.v488Forge=(s.v488Forge&&typeof s.v488Forge==='object')?s.v488Forge:{};s.v488Forge.fragments=Math.max(0,fragments()-c.fragments);s.gold=Math.max(0,(Number(s.gold)||0)-c.gold);let item=null;try{item=makeSetItem(currentClass(),slot)}catch(e){console.warn('V4.160 makeSetItem',e)}if(!item){z.essences[c.recipe]=haveEss;s.v488Forge.fragments+=c.fragments;s.gold+=c.gold;return toast('Herstellung fehlgeschlagen','error','Set-Item konnte nicht erzeugt werden. Kosten wurden zurückgegeben.')}item.v6130Crafted=true;item.v6130GeneticRecipe=c.recipe;s.inventory=Array.isArray(s.inventory)?s.inventory:[];s.inventory.push(item);save();try{v069SyncCurrencies?.()}catch(_){ }try{v441PaintResources?.()}catch(_){ }try{render?.()}catch(_){ }toast('🧩 Klassenset hergestellt!','success',`${item.icon||'🎁'} ${item.name} · im Inventar`);setTimeout(()=>{decorateForge();openSetPanel()},30)}
+let v6130CraftBusy=false;
+async function craftSet(slot){
+ if(v6130CraftBusy)return;
+ const firstState=state(),firstCost=slotCost(slot),firstRecipe=RECIPES[firstCost.recipe];if(!firstState||!firstRecipe)return;
+ const firstEss=Math.max(0,Number(firstState.essences[firstCost.recipe])||0);
+ if(buds()<firstCost.buds)return toast('PvP-Rang noch zu niedrig','warn',`Du brauchst mindestens ${fmt(firstCost.buds)} PvP-Buds. Sie werden nicht ausgegeben.`);
+ if(firstEss<firstCost.essence)return toast('Genetik-Essenz fehlt','warn',`${firstRecipe.essence}: ${firstEss}/${firstCost.essence}`);
+ if(fragments()<firstCost.fragments)return toast('Samenfragmente fehlen','warn',`${fmt(fragments())}/${fmt(firstCost.fragments)}`);
+ if((Number(s.gold)||0)<firstCost.gold)return toast('Gold fehlt','warn',`${fmt(Number(s.gold)||0)}/${fmt(firstCost.gold)}`);
+ v6130CraftBusy=true;
+ try{
+   const ok=await confirmBox(`${firstCost.label} des ${setInfo().name}-Sets herstellen?\n\n${firstCost.essence}× ${firstRecipe.essence}\n${fmt(firstCost.fragments)} Samenfragmente\n${fmt(firstCost.gold)} Gold\nPvP-Freischaltung: ${fmt(firstCost.buds)} Buds (werden NICHT verbraucht)\n\nDas Item wird für dein aktuelles Level hergestellt.`,`🧬 ${setInfo().name}: ${firstCost.label}`);if(!ok)return;
+   /* Re-read every resource after the async confirmation. This closes stale-state races. */
+   const z=state(),c=slotCost(slot),r=RECIPES[c.recipe];if(!z||!r)return;
+   const haveEss=Math.max(0,Number(z.essences[c.recipe])||0),liveFragments=fragments(),liveGold=Math.max(0,Number(s.gold)||0),liveBuds=buds();
+   if(liveBuds<c.buds)return toast('PvP-Rang hat sich geändert','warn',`Benötigt: ${fmt(c.buds)} PvP-Buds.`);
+   if(haveEss<c.essence)return toast('Genetik-Essenz nicht mehr verfügbar','warn',`${r.essence}: ${haveEss}/${c.essence}`);
+   if(liveFragments<c.fragments)return toast('Samenfragmente nicht mehr ausreichend','warn',`${fmt(liveFragments)}/${fmt(c.fragments)}`);
+   if(liveGold<c.gold)return toast('Gold nicht mehr ausreichend','warn',`${fmt(liveGold)}/${fmt(c.gold)}`);
+   z.essences[c.recipe]=haveEss-c.essence;s.v488Forge=(s.v488Forge&&typeof s.v488Forge==='object')?s.v488Forge:{};s.v488Forge.fragments=liveFragments-c.fragments;s.gold=liveGold-c.gold;
+   let item=null;try{item=makeSetItem(currentClass(),slot)}catch(e){console.warn('V4.164 makeSetItem',e)}
+   if(!item){z.essences[c.recipe]=haveEss;s.v488Forge.fragments+=c.fragments;s.gold+=c.gold;return toast('Herstellung fehlgeschlagen','error','Set-Item konnte nicht erzeugt werden. Kosten wurden zurückgegeben.')}
+   item.v6130Crafted=true;item.v6130GeneticRecipe=c.recipe;s.inventory=Array.isArray(s.inventory)?s.inventory:[];s.inventory.push(item);save();try{v069SyncCurrencies?.()}catch(_){ }try{v441PaintResources?.()}catch(_){ }try{render?.()}catch(_){ }toast('🧩 Klassenset hergestellt!','success',`${item.icon||'🎁'} ${item.name} · im Inventar`);setTimeout(()=>{decorateForge();openSetPanel()},30)
+ }finally{v6130CraftBusy=false}
+}
 function setCard(slot){const c=slotCost(slot),r=RECIPES[c.recipe],z=state(),e=Math.max(0,Number(z?.essences?.[c.recipe])||0),b=buds(),f=fragments(),g=Math.max(0,Number(s?.gold)||0),unlock=b>=c.buds,ok=unlock&&e>=c.essence&&f>=c.fragments&&g>=c.gold;return `<div class="v6130-set-card ${unlock?'unlocked':''}"><div class="top"><div class="ico">${c.icon}</div><div><h4>${esc(c.label)}</h4><small>${esc(r.name)}-Rezept</small></div></div><div class="recipe">🧬 ${c.essence}× ${esc(r.essence)}<br>⚔️ Freischaltung ab ${fmt(c.buds)} PvP-Buds · <b>Buds werden nicht verbraucht.</b></div><div class="v6130-costs"><div class="v6130-cost ${e>=c.essence?'ok':'bad'}">🧬 Essenz<b>${e}/${c.essence}</b></div><div class="v6130-cost ${f>=c.fragments?'ok':'bad'}">💠 Fragmente<b>${fmt(f)}/${fmt(c.fragments)}</b></div><div class="v6130-cost ${g>=c.gold?'ok':'bad'}">🪙 Gold<b>${fmt(g)}/${fmt(c.gold)}</b></div><div class="v6130-cost ${unlock?'ok':'bad'}">⚔️ PvP-Buds<b>${fmt(b)}/${fmt(c.buds)}</b></div></div><button type="button" data-v6130-craft="${slot}" ${ok?'':'disabled'}>${unlock?'Set-Teil herstellen':'PvP-Rezept gesperrt'}</button></div>`}
 function panelHtml(){const si=setInfo(),bon=si.bonuses||{},z=state();return `<div class="v6130-set-head"><h3>🧩 ${esc(si.name)} · Klassenset</h3><p>GEZIELT HERSTELLEN · GENETIK + SCHMIEDE + PVP</p><div class="v6130-set-bonuses">${Object.values(bon).map(x=>`<span>${esc(x)}</span>`).join('')}</div></div><div class="v6130-set-res"><div><small>⚔️ PvP-Buds</small><b>${fmt(buds())}</b></div><div><small>💠 Samenfragmente</small><b>${fmt(fragments())}</b></div><div><small>🧩 Set getragen</small><b>${equippedSet()}/6</b></div></div><div class="v6130-set-grid">${Object.keys(SLOT_CFG).map(setCard).join('')}</div><div class="v6130-note"><b>Balance:</b> Klassenset-Teile bleiben epische Set-Items. Ihre Stärke entsteht vor allem über die bestehenden 2/4/6-Setboni. Mystische Gegenstände bleiben weiterhin exklusiv für den mystischen Boss. Die Gold- und Fragmentkosten steigen in 50-Level-Stufen mit deinem Charakterlevel.</div>`}
 function openSetPanel(){const body=document.querySelector('#forge .v667-forge-body');if(!body)return;body.classList.add('v6130-set-mode');let p=body.querySelector('#v6130ClassSetPanel');if(!p){p=document.createElement('div');p.id='v6130ClassSetPanel';body.appendChild(p)}p.innerHTML=panelHtml();body.querySelectorAll('.v667-tab').forEach(x=>x.classList.toggle('active',x.classList.contains('v6130-set-tab')))}
@@ -110704,12 +110736,12 @@ function renderSetIfOpen(){const body=document.querySelector('#forge .v667-forge
 function decorateForge(){const body=document.querySelector('#forge .v667-forge-body'),tabs=body?.querySelector('.v667-tabs');if(!body||!tabs)return;if(!tabs.querySelector('.v6130-set-tab')){const b=document.createElement('button');b.type='button';b.className='v667-tab v6130-set-tab';b.dataset.v6130Settab='1';b.innerHTML='<span class="ic">🧩</span><span>KLASSENSET<small>Genetik · PvP · Fragmente</small></span>';tabs.appendChild(b)}}
 function stamp(){try{document.title='Grow Legends '+SHORT;document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version').forEach(el=>{if(el)el.textContent=VERSION});document.querySelectorAll('.v366-ver,.v371-logo em,.v372-logo em').forEach(el=>{if(el)el.textContent=SHORT})}catch(_){}}
 document.addEventListener('click',e=>{const t=e.target instanceof Element?e.target:null;if(!t)return;if(t.closest('[data-v6130-open]')){e.preventDefault();return openLab()}if(t.closest('[data-v6130-cross]')){e.preventDefault();return beginCross(t.closest('[data-v6130-cross]').dataset.v6130Cross)}if(t.closest('[data-v6130-settab]')){e.preventDefault();e.stopPropagation();return openSetPanel()}if(t.closest('[data-v6130-craft]')){e.preventDefault();return void craftSet(t.closest('[data-v6130-craft]').dataset.v6130Craft)}if(t.closest('#forge [data-v667-tab]')){document.querySelector('#forge .v667-forge-body')?.classList.remove('v6130-set-mode');setTimeout(decorateForge,20)}},true);
-function attachObservers(){for(const [id,fn] of [['grow',decorateGrow],['forge',decorateForge]]){const el=document.getElementById(id);if(!el||el.dataset.v6130Observed)return;el.dataset.v6130Observed='1';let queued=false;new MutationObserver(()=>{if(queued)return;queued=true;requestAnimationFrame(()=>{queued=false;try{fn()}catch(_){}})}).observe(el,{childList:true,subtree:true});try{fn()}catch(_){}}}
-state();installAchievements();ensureLab();attachObservers();decorateGrow();decorateForge();stamp();
-document.addEventListener('DOMContentLoaded',()=>{state();installAchievements();attachObservers();decorateGrow();decorateForge();stamp()},{once:true});
-window.addEventListener('pageshow',()=>{attachObservers();decorateGrow();decorateForge();stamp()},{passive:true});
+function attachObservers(){const el=document.getElementById('forge');if(!el||el.dataset.v6130Observed)return;el.dataset.v6130Observed='1';let queued=false;new MutationObserver(()=>{if(queued)return;queued=true;requestAnimationFrame(()=>{queued=false;try{decorateForge()}catch(_){}})}).observe(el,{childList:true,subtree:true});try{decorateForge()}catch(_){}}
+state();installAchievements();attachObservers();decorateForge();stamp();
+document.addEventListener('DOMContentLoaded',()=>{state();installAchievements();attachObservers();decorateForge();stamp()},{once:true});
+window.addEventListener('pageshow',()=>{attachObservers();decorateForge();stamp()},{passive:true});
 window.addEventListener('growlegends:account-ready',()=>setTimeout(()=>{state();installAchievements();decorateGrow();decorateForge();stamp()},80));
-window.v6130GeneticsConfig={recipes:RECIPES,slots:SLOT_CFG};
+window.v6130GeneticsConfig={recipes:RECIPES,slots:SLOT_CFG};window.v6130RenderLabHtml=()=>labBodyHtml();
 window.v6130QA=()=>({version:VERSION,pending:state()?.pending||null,totalCrosses:state()?.totalCrosses||0,totalEssences:state()?.totalEssences||0,buds:buds(),fragments:fragments(),growButton:!!document.querySelector('[data-v6130-open]'),forgeTab:!!document.querySelector('.v6130-set-tab'),hybrids:Object.values(RECIPES).map(r=>({id:r.hybrid,known:!!seed(r.hybrid),stock:Number(s?.grow?.seeds?.[r.hybrid])||0}))});
 })();
 </script>
@@ -110726,7 +110758,7 @@ window.v6130QA=()=>({version:VERSION,pending:state()?.pending||null,totalCrosses
 (()=>{
 'use strict';
 if(window.__V6140_EVENT_BRIDGE__)return;window.__V6140_EVENT_BRIDGE__=true;
-const VERSION='V4.161 Stable',SHORT='V4.161',BUS=window.GL_EVENTS;
+const V=window.GROW_LEGENDS_VERSION||{short:'V4.164',label:'V4.164 Stable',number:'4.164'};const VERSION=V.label,SHORT=V.short,BUS=window.GL_EVENTS;
 if(!BUS){console.error('V4.161: central event bus missing');return}
 const n=v=>Math.max(0,Number(v)||0);
 function questLite(q){if(!q||typeof q!=='object')return null;return{id:q.id??null,uid:q.uid??null,name:String(q.name||''),ends:Number(q.ends)||0,v310Elite:!!q.v310Elite,v309Role:q.v309Role||'',v310BaseRole:q.v310BaseRole||'',v392Kind:q.v392Kind||'',gold:Number(q.gold)||0,xp:Number(q.xp)||0}}
@@ -110787,7 +110819,7 @@ window.v6140EventQA=()=>({version:VERSION,bus:BUS.stats(),sources:{quest:!!windo
 (()=>{
 'use strict';
 if(window.__V6160_GROW_CONTRACTS__)return;window.__V6160_GROW_CONTRACTS__=true;
-const VERSION='V4.162 Stable',SHORT='V4.162',BUS=window.GL_EVENTS;
+const V=window.GROW_LEGENDS_VERSION||{short:'V4.164',label:'V4.164 Stable',number:'4.164'};const VERSION=V.label,SHORT=V.short,BUS=window.GL_EVENTS;
 const QR={C:0,B:1,A:2,S:3,'S+':4};
 const TIER={easy:{label:'LEICHT',color:'#79c65d'},medium:{label:'MITTEL',color:'#4baee8'},hard:{label:'SCHWER',color:'#d39a42'},legendary:{label:'MEISTERAUFTRAG',color:'#d36ade'}};
 const HYBRIDS=['hy_widow_amnesia','hy_northern_purple','hy_lemon_dream','hy_purple_gorilla','hy_critical_crack','hy_emerald_kush'];
@@ -110814,10 +110846,14 @@ function makeTask(tier){const hybrids=hybridCandidates(),std=standardCandidates(
  if(type==='quality'){c.minQ=tier==='easy'?(Math.random()<.5?'A':'B'):tier==='medium'?(Math.random()<.6?'A':'S'):'S';c.target=tier==='easy'?2+Math.floor(Math.random()*2):2+Math.floor(Math.random()*3)}
  if(type==='specific'){c.seed=pick(std)||'moss';c.minQ=tier==='easy'?(Math.random()<.55?'A':'B'):tier==='medium'?(Math.random()<.55?'A':'S'):'S';const desired=tier==='hard'?2+Math.floor(Math.random()*2):1+Math.floor(Math.random()*2),canBuy=Number(seed(c.seed)?.buy)>0,available=Math.max(1,availableCount(c.seed));c.target=canBuy?desired:Math.min(desired,available)}
  if(type==='care')c.target=tier==='easy'?5+Math.floor(Math.random()*4):tier==='medium'?8+Math.floor(Math.random()*5):13+Math.floor(Math.random()*6);
- if(type==='diversity'){c.target=tier==='medium'?2+Math.floor(Math.random()*2):tier==='hard'?3+Math.floor(Math.random()*2):4+Math.floor(Math.random()*2);c.minQ=tier==='medium'?'A':tier==='hard'?'A':'S'}
- if(type==='fragments')c.target=tier==='medium'?6+Math.floor(Math.random()*7):tier==='hard'?14+Math.floor(Math.random()*10):25+Math.floor(Math.random()*16);
+ if(type==='diversity'){
+   const pool=[...new Set([...standardCandidates(tier),...hybrids])],desired=tier==='medium'?2+Math.floor(Math.random()*2):tier==='hard'?3+Math.floor(Math.random()*2):4+Math.floor(Math.random()*2);
+   if(pool.length<2){c.type='quality';c.minQ=tier==='medium'?'A':'S';c.target=tier==='medium'?2:3}
+   else{c.target=Math.min(desired,pool.length);c.minQ=tier==='medium'?'A':tier==='hard'?'A':'S'}
+ }
+ if(type==='fragments')c.target=tier==='medium'?6+Math.floor(Math.random()*7):tier==='hard'?12+Math.floor(Math.random()*9):18+Math.floor(Math.random()*13);
  if(type==='perfect')c.target=tier==='medium'?1:tier==='hard'?2+Math.floor(Math.random()*2):4+Math.floor(Math.random()*2);
- if(type==='mutation')c.target=tier==='hard'?1:1+Math.floor(Math.random()*2);
+ if(type==='mutation')c.target=1;
  if(type==='mutated_quality'){c.target=1;c.minQ='S'}
  if(type==='hybrid_any'){const total=hybrids.reduce((n,id)=>n+availableCount(id),0);c.target=tier==='legendary'&&total>=2?2:1;c.minQ='S'}
  if(type==='hybrid_specific'){c.seed=pick(hybrids);if(!c.seed){c.type='perfect';c.target=4}else{c.target=1;c.minQ=Math.random()<.45?'S+':'S'}}
@@ -110825,7 +110861,15 @@ function makeTask(tier){const hybrids=hybridCandidates(),std=standardCandidates(
 function level(){return Math.max(1,Math.min(300,Math.floor(Number(s?.level)||1)))}
 function xpBase(){try{return Math.max(100,Number(xpNeed())||100*level())}catch(_){return Math.max(100,100*level())}}
 function rewardComponent(kind,tier){const lv=level(),r=(a,b)=>Math.round(a+Math.random()*(b-a));if(kind==='gold'){const f=tier==='easy'?[18,28]:tier==='medium'?[35,52]:tier==='hard'?[65,95]:[105,145];return{type:'gold',amount:r(lv*f[0]+250,lv*f[1]+500)}}if(kind==='xp'){const p=tier==='easy'?[.10,.16]:tier==='medium'?[.17,.25]:tier==='hard'?[.27,.38]:[.40,.55];return{type:'xp',amount:Math.max(50,r(xpBase()*p[0],xpBase()*p[1]))}}if(kind==='fragments'){const p=tier==='easy'?[5,9]:tier==='medium'?[11,18]:tier==='hard'?[22,36]:[40,62];return{type:'fragments',amount:r(...p)}}if(kind==='time')return{type:'time',amount:tier==='legendary'?2:1};if(kind==='harz')return{type:'harz',amount:tier==='legendary'?2:1};if(kind==='seed'){const pool=tier==='easy'?['moss','lime','jack']:tier==='medium'?['violet','blue','critical']:tier==='hard'?['critical','nebula','lemon','gorilla','greencrack','amnesia']:['nebula','lemon','gorilla','greencrack','amnesia'];const id=pick(pool.filter(seed))||'moss';return{type:'seed',seed:id,amount:tier==='legendary'?2:1}}return{type:'gold',amount:500}}
-function buildReward(tier,usedRewardSigs=new Set()){const weighted=tier==='easy'?['gold','gold','xp','xp','fragments','seed']:tier==='medium'?['gold','gold','xp','fragments','fragments','seed','seed','time','harz']:tier==='hard'?['gold','xp','fragments','fragments','seed','seed','time','time','harz']:['gold','xp','fragments','fragments','seed','time','harz','harz'];const count=tier==='easy'?2:tier==='medium'?2:3;for(let tries=0;tries<40;tries++){const kinds=[];while(kinds.length<count){const k=pick(weighted);if(k&&!kinds.includes(k))kinds.push(k)}const arr=kinds.map(k=>rewardComponent(k,tier));const rs=arr.map(x=>x.type+(x.seed?':'+x.seed:'')).sort().join('|');if(!usedRewardSigs.has(rs)){usedRewardSigs.add(rs);return arr}}return['gold','fragments'].slice(0,count).map(k=>rewardComponent(k,tier))}
+function rewardSig(arr){return (arr||[]).map(x=>x.type+(x.seed?':'+x.seed:'')).sort().join('|')}
+function rememberRewardSig(rs){const z=state();if(!z||!rs)return;z.rewardHistory=Array.isArray(z.rewardHistory)?z.rewardHistory:[];z.rewardHistory=z.rewardHistory.filter(x=>x!==rs);z.rewardHistory.push(rs);z.rewardHistory=z.rewardHistory.slice(-18)}
+function buildReward(tier,usedRewardSigs=new Set()){
+ const weighted=tier==='easy'?['gold','gold','xp','xp','fragments','seed']:tier==='medium'?['gold','gold','xp','fragments','fragments','seed','seed','time','harz']:tier==='hard'?['gold','xp','fragments','fragments','seed','seed','time','time','harz']:['gold','xp','fragments','fragments','seed','time','harz','harz'];
+ const count=tier==='easy'?2:tier==='medium'?2:3,recent=new Set(state()?.rewardHistory||[]);
+ for(let tries=0;tries<60;tries++){const kinds=[];while(kinds.length<count){const k=pick(weighted);if(k&&!kinds.includes(k))kinds.push(k)}const arr=kinds.map(k=>rewardComponent(k,tier)),rs=rewardSig(arr);if(!usedRewardSigs.has(rs)&&!recent.has(rs)){usedRewardSigs.add(rs);rememberRewardSig(rs);return arr}}
+ for(let tries=0;tries<30;tries++){const kinds=[];while(kinds.length<count){const k=pick(weighted);if(k&&!kinds.includes(k))kinds.push(k)}const arr=kinds.map(k=>rewardComponent(k,tier)),rs=rewardSig(arr);if(!usedRewardSigs.has(rs)){usedRewardSigs.add(rs);rememberRewardSig(rs);return arr}}
+ const arr=['gold','fragments','xp'].slice(0,count).map(k=>rewardComponent(k,tier));rememberRewardSig(rewardSig(arr));return arr
+}
 function rewardText(arr){return (arr||[]).map(x=>x.type==='gold'?`🪙 ${fmt(x.amount)} Gold`:x.type==='xp'?`⭐ ${fmt(x.amount)} EXP`:x.type==='fragments'?`💠 ${fmt(x.amount)} Fragmente`:x.type==='time'?`🌱 ${x.amount} Zeit-Samen`:x.type==='harz'?`💎 ${x.amount} Harz-Taler`:x.type==='seed'?`🌰 ${x.amount}× ${seedName(x.seed)}`:'Belohnung').join(' · ')}
 function freshContract(tier,used,rewardUsed,usedTypes=new Set()){const z=state(),recent=new Set(z?.history||[]);for(let i=0;i<90;i++){const c=makeTask(tier),s0=sig(c);if(!used.has(s0)&&!recent.has(s0)&&!usedTypes.has(c.type)){used.add(s0);usedTypes.add(c.type);c.reward=buildReward(tier,rewardUsed);return c}}for(let i=0;i<45;i++){const c=makeTask(tier),s0=sig(c);if(!used.has(s0)&&!recent.has(s0)){used.add(s0);usedTypes.add(c.type);c.reward=buildReward(tier,rewardUsed);return c}}for(let i=0;i<30;i++){const c=makeTask(tier),s0=sig(c);if(!used.has(s0)){used.add(s0);usedTypes.add(c.type);c.reward=buildReward(tier,rewardUsed);return c}}const c=makeTask(tier);usedTypes.add(c.type);c.reward=buildReward(tier,rewardUsed);return c}
 function rotateIfNeeded(force=false){const z=state();if(!z)return false;const key=berlinKey();if(!force&&z.dayKey===key&&z.contracts.length===6)return false;const used=new Set(),usedTypes=new Set(),rewardUsed=new Set(),tiers=['easy','easy','medium','medium',Math.random()<.28?'legendary':'hard',Math.random()<.42?'hard':'medium'];const old=z.contracts||[];old.forEach(c=>{const s0=sig(c);if(s0)z.history.push(s0)});z.history=z.history.slice(-36);z.contracts=tiers.map(t=>freshContract(t,used,rewardUsed,usedTypes));z.dayKey=key;z.rerollsLeft=1;z.lastRotateAt=Date.now();save(false);return true}
@@ -110839,31 +110883,32 @@ function claim(id){rotateIfNeeded();const z=state(),c=z?.contracts?.find(x=>x.id
 async function reroll(id){rotateIfNeeded();const z=state(),idx=z?.contracts?.findIndex(x=>x.id===id);if(idx==null||idx<0||z.rerollsLeft<1)return;const old=z.contracts[idx];if(old.claimed||old.completed)return;let ok=true;if(Number(old.progress)>0){try{ok=typeof v115Confirm==='function'?await v115Confirm('Der bisherige Fortschritt dieses Auftrags geht verloren. Kostenlos tauschen?',{title:'Grow-Auftrag tauschen',type:'confirm',okText:'Auftrag tauschen'}):window.confirm('Auftrag tauschen? Fortschritt geht verloren.')}catch(_){ok=false}}if(!ok)return;z.history.push(sig(old));z.history=z.history.slice(-36);const others=z.contracts.filter((_,i)=>i!==idx),used=new Set(others.map(sig)),usedTypes=new Set(others.map(x=>x.type)),rewardUsed=new Set(others.map(x=>(x.reward||[]).map(r=>r.type+(r.seed?':'+r.seed:'')).sort().join('|')));z.contracts[idx]=freshContract(old.tier,used,rewardUsed,usedTypes);z.rerollsLeft--;save();renderIfOpen();decorateGrow();toast('🔄 Auftrag getauscht','success','Heute ist kein weiterer kostenloser Tausch verfügbar.')}
 function cardHtml(c){const t=TIER[c.tier]||TIER.easy,p=contractPct(c),done=!!c.completed;return `<div class="v6160-card ${done?'done':''} ${c.claimed?'claimed':''}" style="--tier:${t.color}"><span class="v6160-tier">${t.label}</span><h3>${esc(c.title)}</h3><div class="v6160-desc">${esc(c.desc)}</div><div class="v6160-progress-top"><span>Fortschritt</span><b>${fmt(c.progress)}/${fmt(c.target)}${done?' · ✓':''}</b></div><div class="v6160-bar"><i style="width:${p}%"></i></div><div class="v6160-reward"><small>Belohnung</small><b>${esc(rewardText(c.reward))}</b></div><div class="v6160-actions">${c.claimed?'<button disabled>✓ Abgeholt</button>':done?`<button data-v6160-claim="${esc(c.id)}">Belohnung holen</button>`:`<button disabled>In Arbeit</button><button class="secondary" data-v6160-reroll="${esc(c.id)}" ${state()?.rerollsLeft>0?'':'disabled'}>↻ Tauschen</button>`}</div></div>`}
 function ensureOverlay(){let ov=document.getElementById('v6160ContractsOverlay');if(ov)return ov;ov=document.createElement('div');ov.id='v6160ContractsOverlay';ov.innerHTML='<div class="v6160-board" role="dialog" aria-modal="true" aria-label="Grow-Aufträge"><div class="v6160-head"><div><h2>📋 Grow-Aufträge</h2><small>TÄGLICH NEU · LEICHT BIS MEISTERAUFTRAG · WECHSELNDE BELOHNUNGEN</small></div><button type="button" class="v6160-close" data-v6160-close>✕</button></div><div id="v6160ContractsBody"></div></div>';document.body.appendChild(ov);ov.addEventListener('click',e=>{if(e.target===ov||e.target.closest('[data-v6160-close]'))ov.classList.remove('show')});return ov}
-function renderBoard(){rotateIfNeeded();const z=state(),body=ensureOverlay().querySelector('#v6160ContractsBody');if(!body||!z)return;const done=z.contracts.filter(c=>c.completed).length,claimed=z.contracts.filter(c=>c.claimed).length;body.innerHTML=`<div class="v6160-summary"><div><small>HEUTE</small><b>${done}/6 geschafft</b></div><div class="ready"><small>ABHOLBEREIT</small><b>${z.contracts.filter(c=>c.completed&&!c.claimed).length}</b></div><div><small>KOSTENLOSER TAUSCH</small><b>${z.rerollsLeft}/1</b></div><div><small>GESAMT ABGEGEBEN</small><b>${fmt(z.claimedTotal)}</b></div></div><div class="v6160-note"><b>Keine starre Aufgabenliste:</b> Jeden Tag werden sechs Aufträge aus vielen Kombinationen von Sorten, Qualitätsstufen, Pflege, Vielfalt, Fragmenten, Perfect Grows, Mutationen und freigeschalteten Hybriden gebaut. Kürzlich verwendete Kombinationen werden gemieden. Neue Aufträge kommen täglich um <b>00:00 Uhr deutscher Zeit</b>.</div><div class="v6160-grid">${z.contracts.map(cardHtml).join('')}</div><div class="v6160-footer">Schwere Aufträge geben im Schnitt stärkere Belohnungen. Harz-Taler und seltene Samen sind möglich, aber nicht in jedem Auftrag garantiert. Nicht abgeholte Tagesaufträge verfallen beim Tageswechsel.</div>`}
+function boardBodyHtml(){rotateIfNeeded();const z=state();if(!z)return '<div class="v6160-note">Grow-Aufträge werden geladen …</div>';const done=z.contracts.filter(c=>c.completed).length,claimed=z.contracts.filter(c=>c.claimed).length;return `<div class="v6160-summary"><div><small>HEUTE</small><b>${done}/6 geschafft</b></div><div class="ready"><small>ABHOLBEREIT</small><b>${z.contracts.filter(c=>c.completed&&!c.claimed).length}</b></div><div><small>KOSTENLOSER TAUSCH</small><b>${z.rerollsLeft}/1</b></div><div><small>GESAMT ABGEGEBEN</small><b>${fmt(z.claimedTotal)}</b></div></div><div class="v6160-note"><b>Keine starre Aufgabenliste:</b> Jeden Tag werden sechs Aufträge aus vielen Kombinationen von Sorten, Qualitätsstufen, Pflege, Vielfalt, Fragmenten, Perfect Grows, Mutationen und freigeschalteten Hybriden gebaut. Kürzlich verwendete Kombinationen werden gemieden. Neue Aufträge kommen täglich um <b>00:00 Uhr deutscher Zeit</b>.</div><div class="v6160-grid">${z.contracts.map(cardHtml).join('')}</div><div class="v6160-footer">Schwere Aufträge geben im Schnitt stärkere Belohnungen. Harz-Taler und seltene Samen sind möglich, aber nicht in jedem Auftrag garantiert. Nicht abgeholte Tagesaufträge verfallen beim Tageswechsel.</div>`}
+function renderBoard(){const body=ensureOverlay().querySelector('#v6160ContractsBody');if(body)body.innerHTML=boardBodyHtml()}
 function openBoard(){renderBoard();ensureOverlay().classList.add('show')}
 function renderIfOpen(){if(document.getElementById('v6160ContractsOverlay')?.classList.contains('show'))renderBoard()}
-function decorateGrow(){rotateIfNeeded();const root=document.querySelector('#grow .v492-grow');if(!root)return;const actions=root.querySelector('.v492-bottom .v492-card:last-child .v492-actions')||root.querySelector('.v492-actions');if(!actions)return;let b=actions.querySelector('[data-v6160-open]');if(!b){b=document.createElement('button');b.type='button';b.className='btn secondary v6160-grow-btn';b.dataset.v6160Open='1';actions.appendChild(b)}const z=state(),ready=z?.contracts?.filter(c=>c.completed&&!c.claimed).length||0;b.classList.toggle('ready',ready>0);b.textContent=`📋 Grow-Aufträge${ready?` · ${ready} fertig`:''}`}
-function attachObserver(){const el=document.getElementById('grow');if(!el||el.dataset.v6160Observed)return;el.dataset.v6160Observed='1';let q=false;new MutationObserver(()=>{if(q)return;q=true;requestAnimationFrame(()=>{q=false;decorateGrow()})}).observe(el,{childList:true,subtree:true});decorateGrow()}
+function decorateGrow(){try{window.v6163GrowTabs?.refresh?.()}catch(_){}}
+function attachObserver(){return}
 function installAchievements(){try{if(typeof V106_ACH==='undefined'||!Array.isArray(V106_ACH))return;if(!V106_ACH.some(x=>x?.[0]==='groworders10'))V106_ACH.push(['groworders10','Zuverlässiger Lieferant','Gib 10 Grow-Aufträge ab.',()=>Math.max(0,Number(s?.grow?.v6160?.claimedTotal)||0),10],['groworders100','Kellerlogistik','Gib 100 Grow-Aufträge ab.',()=>Math.max(0,Number(s?.grow?.v6160?.claimedTotal)||0),100])}catch(e){console.warn('V4.162 grow-order achievements',e)}}
 function stamp(){try{document.title='Grow Legends '+SHORT;document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version').forEach(el=>{if(el)el.textContent=VERSION});document.querySelectorAll('.v366-ver,.v371-logo em,.v372-logo em').forEach(el=>{if(el)el.textContent=SHORT})}catch(_){} }
 if(BUS&&!window.__V6160_HARVEST_EVENT__){window.__V6160_HARVEST_EVENT__=true;BUS.on('growHarvested',ev=>{const rows=Array.isArray(ev.plants)?ev.plants.slice():[];setTimeout(()=>processHarvest(rows),0)})}
 document.addEventListener('click',e=>{const t=e.target instanceof Element?e.target:null;if(!t)return;if(t.closest('[data-v6160-open]')){e.preventDefault();return openBoard()}const c=t.closest('[data-v6160-claim]');if(c){e.preventDefault();return claim(c.dataset.v6160Claim)}const r=t.closest('[data-v6160-reroll]');if(r){e.preventDefault();return void reroll(r.dataset.v6160Reroll)}},true);
-rotateIfNeeded();installAchievements();ensureOverlay();attachObserver();decorateGrow();stamp();
-document.addEventListener('DOMContentLoaded',()=>{rotateIfNeeded();installAchievements();attachObserver();decorateGrow();stamp()},{once:true});
-window.addEventListener('growlegends:account-ready',()=>setTimeout(()=>{rotateIfNeeded();installAchievements();attachObserver();decorateGrow();stamp()},120));
-window.addEventListener('pageshow',()=>{rotateIfNeeded();attachObserver();decorateGrow();stamp()},{passive:true});
-[300,1200,4000,9000].forEach(ms=>setTimeout(()=>{stamp();decorateGrow()},ms));
-window.v6160GrowContracts={open:openBoard,rotate:()=>{rotateIfNeeded(true);renderIfOpen();decorateGrow()},state:()=>JSON.parse(JSON.stringify(state()||{})),processHarvest};
+rotateIfNeeded();installAchievements();stamp();
+document.addEventListener('DOMContentLoaded',()=>{rotateIfNeeded();installAchievements();stamp()},{once:true});
+window.addEventListener('growlegends:account-ready',()=>setTimeout(()=>{rotateIfNeeded();installAchievements();stamp();window.v6163GrowTabs?.refresh?.()},120));
+window.addEventListener('pageshow',()=>{rotateIfNeeded();stamp();window.v6163GrowTabs?.refresh?.()},{passive:true});
+[300,1200,4000].forEach(ms=>setTimeout(stamp,ms));
+window.v6160GrowContracts={open:openBoard,rotate:()=>{rotateIfNeeded(true);renderIfOpen();decorateGrow()},state:()=>JSON.parse(JSON.stringify(state()||{})),processHarvest,html:()=>boardBodyHtml()};window.v6160RenderBoardHtml=()=>boardBodyHtml();
 window.v6160QA=()=>({version:VERSION,day:state()?.dayKey,contracts:(state()?.contracts||[]).map(c=>({tier:c.tier,type:c.type,title:c.title,target:c.target,progress:c.progress,completed:c.completed,claimed:c.claimed,reward:rewardText(c.reward)})),rerollsLeft:state()?.rerollsLeft,button:!!document.querySelector('[data-v6160-open]'),eventBus:!!BUS});
 })();
 </script>
 <!-- ===== /V4.162 ===== -->
 
-<!-- ===== V4.163 Stable: GROWROOM PRIMARY TABS ===== -->
+<!-- ===== V4.164 Stable: STABILITY + DIRECT GROWROOM TABS ===== -->
 <style id="v6163-growroom-primary-tabs-css">
 /* Approved Growroom navigation: core systems are first-class tabs directly below the existing header. */
-.app > header .v358-logo::after{content:"V4.163"!important}
-.app > header .v366-ver::after,.app > header .v371-logo em::after,.app > header .v372-logo em::after,#v372TopbarShell .v372-logo em::after{content:"V4.163"!important}
+.app > header .v358-logo::after{content:"V4.164"!important}
+.app > header .v366-ver::after,.app > header .v371-logo em::after,.app > header .v372-logo em::after,#v372TopbarShell .v372-logo em::after{content:"V4.164"!important}
 #grow .v6130-genetics-btn,#grow .v6130-genetics-hint,#grow .v6160-grow-btn{display:none!important}
 #grow .v6163-tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin:9px 0 10px;padding:0 1px}
 #grow .v6163-tab{position:relative;min-width:0;min-height:56px;padding:7px 5px;border:2px solid #3a5634;border-radius:12px;background:linear-gradient(180deg,#142117,#0a110c);box-shadow:inset 0 1px rgba(255,255,255,.05),0 4px 10px #0008;color:#b9c6b5;font-weight:1000;text-align:center;cursor:pointer;transition:.14s transform,.14s border-color,.14s box-shadow,.14s background}
@@ -110904,7 +110949,7 @@ window.v6160QA=()=>({version:VERSION,day:state()?.dayKey,contracts:(state()?.con
 'use strict';
 if(window.__V6163_GROWROOM_PRIMARY_TABS__)return;
 window.__V6163_GROWROOM_PRIMARY_TABS__=true;
-const V={short:'V4.163',label:'V4.163 Stable',number:'4.163'};
+const V=window.GROW_LEGENDS_VERSION||{short:'V4.164',label:'V4.164 Stable',number:'4.164'};
 try{window.GROW_LEGENDS_VERSION=Object.freeze(V)}catch(_){window.GROW_LEGENDS_VERSION=V}
 const STORE='growLegends:growTab:v6163';
 let active='grow',mountQueued=false,lastRoot=null;
@@ -110933,18 +110978,12 @@ function markBase(root){
  [...root.children].forEach(el=>{if(el.classList.contains('v492-sign')||el.classList.contains('v6163-tabs')||el.id==='v6163Inline')return;el.classList.add('v6163-base')});
 }
 function copyGenetics(panel){
- const oldBtn=document.querySelector('#grow [data-v6130-open]');
- if(!oldBtn){panel.innerHTML='<div class="v6163-inline-head"><div><h3>🧬 Genetik-Labor</h3><small>KREUZEN · HYBRIDE · ESSENZEN</small></div></div><div class="v6130-help">Genetik-Labor wird geladen …</div>';setTimeout(()=>refreshActive(),120);return}
- try{oldBtn.dispatchEvent(new MouseEvent('click',{bubbles:true,cancelable:true,view:window}))}catch(_){oldBtn.click?.()}
- const ov=document.getElementById('v6130GeneticsOverlay'),body=ov?.querySelector('#v6130LabBody'),g=geneticsSnapshot();
- ov?.classList.remove('show');
- panel.innerHTML=`<div class="v6163-inline-head"><div><h3>🧬 Genetik-Labor</h3><small>KREUZEN · HYBRID ZIEHEN · ESSENZ GEWINNEN</small></div><div class="v6163-inline-meta">${g?.pending?'KREUZUNG AKTIV':`${Number(g?.totalCrosses)||0} Kreuzungen · ${Number(g?.totalEssences)||0} Essenzen`}</div></div><div class="v6163-inline-genetics">${body?.innerHTML||'<div class="v6130-help">Genetikdaten konnten noch nicht geladen werden.</div>'}</div>`;
+ const g=geneticsSnapshot(),html=typeof window.v6130RenderLabHtml==='function'?window.v6130RenderLabHtml():'';
+ panel.innerHTML=`<div class="v6163-inline-head"><div><h3>🧬 Genetik-Labor</h3><small>KREUZEN · HYBRID ZIEHEN · ESSENZ GEWINNEN</small></div><div class="v6163-inline-meta">${g?.pending?'KREUZUNG AKTIV':`${Number(g?.totalCrosses)||0} Kreuzungen · ${Number(g?.totalEssences)||0} Essenzen`}</div></div><div class="v6163-inline-genetics">${html||'<div class="v6130-help">Genetikdaten werden geladen …</div>'}</div>`;
 }
 function copyOrders(panel){
- try{window.v6160GrowContracts?.open?.()}catch(_){}
- const ov=document.getElementById('v6160ContractsOverlay'),body=ov?.querySelector('#v6160ContractsBody'),c=contractSnapshot(),rows=Array.isArray(c?.contracts)?c.contracts:[],ready=rows.filter(x=>x?.completed&&!x?.claimed).length;
- ov?.classList.remove('show');
- panel.innerHTML=`<div class="v6163-inline-head"><div><h3>📋 Grow-Aufträge</h3><small>TÄGLICH NEU · LEICHT BIS MEISTERAUFTRAG</small></div><div class="v6163-inline-meta">${ready?`🎁 ${ready} abholbereit`:`${rows.filter(x=>x?.completed).length}/6 geschafft`}</div></div><div class="v6163-inline-orders">${body?.innerHTML||'<div class="v6160-note">Grow-Aufträge werden geladen …</div>'}</div>`;
+ const c=contractSnapshot(),rows=Array.isArray(c?.contracts)?c.contracts:[],ready=rows.filter(x=>x?.completed&&!x?.claimed).length,html=typeof window.v6160RenderBoardHtml==='function'?window.v6160RenderBoardHtml():'';
+ panel.innerHTML=`<div class="v6163-inline-head"><div><h3>📋 Grow-Aufträge</h3><small>TÄGLICH NEU · LEICHT BIS MEISTERAUFTRAG</small></div><div class="v6163-inline-meta">${ready?`🎁 ${ready} abholbereit`:`${rows.filter(x=>x?.completed).length}/6 geschafft`}</div></div><div class="v6163-inline-orders">${html||'<div class="v6160-note">Grow-Aufträge werden geladen …</div>'}</div>`;
 }
 function applyView(root=growRoot()){
  if(!root)return;markBase(root);paintTabs(root);const panel=$('#v6163Inline',root);if(!panel)return;
@@ -110956,7 +110995,7 @@ function mount(){mountQueued=false;const root=growRoot();if(!root)return;lastRoo
 function queueMount(delay=0){if(delay){setTimeout(()=>queueMount(0),delay);return}if(mountQueued)return;mountQueued=true;requestAnimationFrame(mount)}
 function setTab(tab){if(!['grow','genetics','orders'].includes(tab))return;active=tab;try{sessionStorage.setItem(STORE,tab)}catch(_){}applyView()}
 function refreshActive(){const root=growRoot();if(!root)return;paintTabs(root);if(active!=='grow')applyView(root)}
-function attach(){const host=document.getElementById('grow');if(!host||host.dataset.v6163Observed==='1')return;host.dataset.v6163Observed='1';new MutationObserver(()=>{queueMount();queueMount(40);queueMount(160)}).observe(host,{childList:true,subtree:false});queueMount()}
+function attach(){const host=document.getElementById('grow');if(!host||host.dataset.v6163Observed==='1')return;host.dataset.v6163Observed='1';let pending=false;new MutationObserver(()=>{if(pending)return;pending=true;requestAnimationFrame(()=>{pending=false;queueMount()})}).observe(host,{childList:true,subtree:false});queueMount()}
 function stamp(){try{document.title='Grow Legends '+V.short;document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version').forEach(el=>{if(el)el.textContent=V.label});document.querySelectorAll('.v366-ver,.v371-logo em,.v372-logo em').forEach(el=>{if(el)el.textContent=V.short})}catch(_){} }
 document.addEventListener('click',e=>{const t=e.target instanceof Element?e.target:null;if(!t)return;const tab=t.closest('[data-v6163-tab]');if(tab){e.preventDefault();e.stopPropagation();return setTab(tab.dataset.v6163Tab)}if(t.closest('#v6163Inline [data-v6130-cross],#v6163Inline [data-v6160-claim],#v6163Inline [data-v6160-reroll]')){[40,180,600,1600,4200].forEach(ms=>setTimeout(refreshActive,ms))}},true);
 try{window.GL_EVENTS?.on?.('growHarvested',()=>{[0,80,350].forEach(ms=>setTimeout(refreshActive,ms))})}catch(_){}
@@ -110968,7 +111007,27 @@ window.v6163GrowTabs={open:setTab,refresh:refreshActive,get active(){return acti
 window.v6163QA=()=>({version:V.label,active,tabbar:!!document.querySelector('#grow .v6163-tabs'),inline:!!document.querySelector('#v6163Inline'),oldGeneticsButtonHidden:!!document.querySelector('#grow [data-v6130-open]'),oldOrdersButtonHidden:!!document.querySelector('#grow [data-v6160-open]'),stats:stats()});
 })();
 </script>
-<!-- ===== /V4.163 ===== -->
+<!-- ===== /V4.164 ===== -->
+
+<!-- ===== V4.164 FINAL VERSION AUTHORITY ===== -->
+<style id="v6164-version-authority-css">
+.app > header .v358-logo::after{content:"V4.164"!important}
+#v372TopbarShell .v372-logo em::after,.app > header .v366-ver::after,.app > header .v371-logo em::after,.app > header .v372-logo em::after{content:"V4.164"!important}
+</style>
+<script id="v6164-stability-finalizer">
+(()=>{'use strict';
+ const V=window.GROW_LEGENDS_VERSION||{short:'V4.164',label:'V4.164 Stable',number:'4.164'};
+ function stamp(){try{document.title='Grow Legends '+V.short;document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version').forEach(el=>{if(el)el.textContent=V.label});document.querySelectorAll('.v366-ver,.v371-logo em,.v372-logo em').forEach(el=>{if(el)el.textContent=V.short})}catch(_){}}
+ function retireLegacyOgDom(){try{document.querySelector('#v077SeedPanel')?.remove();document.querySelectorAll('.v077-fx,.v077-badge,.v495-og-wrap').forEach(x=>x.remove())}catch(_){}}
+ stamp();retireLegacyOgDom();
+ document.addEventListener('DOMContentLoaded',()=>{stamp();retireLegacyOgDom()},{once:true});
+ window.addEventListener('pageshow',()=>{stamp();retireLegacyOgDom()},{passive:true});
+ window.addEventListener('growlegends:account-ready',()=>{stamp();retireLegacyOgDom()});
+ [250,1200,4200,10000].forEach(ms=>setTimeout(stamp,ms));
+ window.__V6164_STABILITY__={version:V.label,retiredOgIntervals:true,directGrowTabs:true,classSetCraftLock:true,rewardHistory:true};
+})();
+</script>
+<!-- ===== /V4.164 FINAL ===== -->
 
 </body>
 </html>
