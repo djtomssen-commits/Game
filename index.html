@@ -24449,7 +24449,7 @@ function v135ScaleShopStats(item,base,forcedLevel=null){
   item.bonus=out;
   const rarityPrice={gray:1,green:1.45,blue:2.35,purple:4.6,orange:7.2,cyan:10}[q]||1;
   const sum=Object.values(out).reduce((a,b)=>a+(Number(b)||0),0);
-  item.price=Math.max(30,Math.round((35+lvl*12+sum*11)*rarityPrice));
+  item.price=Math.max(30,Math.round(typeof window.v6168ShopPrice==='function'?window.v6168ShopPrice(item,lvl):((35+lvl*12+sum*11)*rarityPrice)));
   item.shopItem=true;
   item.source='shop';
   return item;
@@ -27534,7 +27534,7 @@ async function v204Fight(){
 }
 async function v204Finish(win){
   const enemy=v204Opponent;
-  const gold=Math.max(25,Math.round(35+s.level*7+(win?combatPower()*.035:combatPower()*.01)));
+  const gold=Math.max(25,Math.round(typeof window.v6168PvpGold==='function'?window.v6168PvpGold(Number(s?.level)||1,!!win):(35+s.level*7+(win?combatPower()*.035:combatPower()*.01))));
   const xp=Math.max(10,Math.round(18+s.level*4+(win?s.level*2:s.level)));
   if(win){s.gold+=gold;s.xp+=xp;}else{s.gold+=Math.round(gold*.35);s.xp+=Math.round(xp*.45);}
 
@@ -51162,7 +51162,7 @@ function v309ApplyRole(q,roleIndex,usedNames){
  const heavyDuration=Math.max(90,level*6);
  const normalDuration=heavyDuration/1.55;
  const baseXp=Math.max(90,Math.round(level*100*.16));
- const baseGold=Math.max(45,Math.round(35+level*14+Math.pow(level,1.15)*2.2));
+ const baseGold=Math.max(45,Math.round(typeof window.v6168QuestBaseGold==='function'?window.v6168QuestBaseGold(level):(35+level*14+Math.pow(level,1.15)*2.2)));
 
  q.id=Date.now()+Math.random();
  q.name=t.name;
@@ -51936,7 +51936,7 @@ function v316BalanceQuest(q,level=Number(s.level)||1){
  const heavyDuration=Math.max(90,level*6);
  const normalDuration=heavyDuration/1.55;
  const baseXp=Math.max(90,Math.round(level*100*.16));
- const baseGold=Math.max(45,Math.round(35+level*14+Math.pow(level,1.15)*2.2));
+ const baseGold=Math.max(45,Math.round(typeof window.v6168QuestBaseGold==='function'?window.v6168QuestBaseGold(level):(35+level*14+Math.pow(level,1.15)*2.2)));
  const eliteMult=elite?1.35:1;
 
  q.duration=Math.max(15,Math.round(normalDuration*cfg.duration*eliteMult));
@@ -73812,7 +73812,7 @@ html.v481-hidden *,html.v481-hidden *::before,html.v481-hidden *::after{animatio
     /* Stable 25-level recipe bands: fast levelling no longer moves the goal every level.
        The created prism item still uses the exact current character level. */
     const l=level(),tier=Math.floor((l-1)/25),minLevel=tier*25+1,maxLevel=Math.min(300,(tier+1)*25);
-    return{tier,minLevel,maxLevel,fragments:150+tier*40,gold:100000+tier*75000};
+    return{tier,minLevel,maxLevel,fragments:150+tier*40,gold:Math.max(1000,Math.round(typeof window.v6168PrismGoldCost==='function'?window.v6168PrismGoldCost(l):(100000+tier*75000)))};
   }
   function ensureItemId(it,i){if(it&&!it.id)it.id=`v488_legacy_${Date.now()}_${i}_${Math.random().toString(36).slice(2)}`;return String(it?.id||i)}
   function eligibleRows(){
@@ -74111,7 +74111,7 @@ html.v481-hidden *,html.v481-hidden *::before,html.v481-hidden *::after{animatio
  function careState(p){const x=progress(p),done=p.care||[];let available=-1,missed=0;for(let i=0;i<CARE.length;i++){const end=i===CARE.length-1?1:CARE[i+1].at;if(done[i])continue;if(x>=end){missed++;continue}if(x>=CARE[i].at&&x<end){available=i;break}}return{available,missed}}
  function mutationVisible(p){return !!p.mutation&&progress(p)>=.70}
  function rollMutation(p){if(p.mutationChecked)return false;if(progress(p)<.70)return false;p.mutationChecked=true;const care=(p.care||[]).filter(Boolean).length,rar=RANK[SEEDS[p.seed]?.rarity]||0,ch=.018+care*.009+rar*.004+masteryMutation();if(Math.random()>=ch)return true;const r=Math.random()*100;let id=r<2?'prismatic':r<17?'emerald':r<35?'golden':r<55?'purple':r<75?'frost':r<90?'black':'emerald';if(id==='emerald'&&masteryLevel()<200&&Math.random()<.6)id='purple';p.mutation=id;const z=ensure();z.mutations[`${p.seed}:${id}`]=true;z.stats.mutationCount++;if(id==='prismatic')z.stats.prismatic++;z.week.mutations++;toast(`${MUT[id].icon} Mutation entdeckt!`,'success',`${SEEDS[p.seed].name} · ${MUT[id].name}`);return true}
- function estimatedGold(p){const d=SEEDS[p.seed]||SEEDS.moss,q=qualityFrom(p),lvl=Math.max(1,Math.min(300,Number(s.level)||1)),qMul=QMULT[q]||1,pot=(typeof potYield==='function'?potYield():1),lvlMul=.75+lvl*.0032,base=d.buy>0?Number(d.buy||0):Number(d.sell||0)*.25;let value=base+Number(d.sell||0)*.12*qMul*lvlMul*pot*masteryYield();if(p.mutation==='golden')value*=1.20;return Math.max(0,Math.round(value))}
+ function estimatedGold(p){const d=SEEDS[p.seed]||SEEDS.moss,q=qualityFrom(p),lvl=Math.max(1,Math.min(300,Number(s.level)||1)),qMul=QMULT[q]||1,pot=(typeof potYield==='function'?potYield():1),base=d.buy>0?Number(d.buy||0):0;let value;if(typeof window.v6168GrowHarvestGold==='function'){value=base+window.v6168GrowHarvestGold(lvl,Number(d.growMs)||60000,String(d.rarity||'common'),qMul,pot,masteryYield())}else{const lvlMul=.75+lvl*.0032;value=base+Number(d.sell||0)*.12*qMul*lvlMul*pot*masteryYield()}if(p.mutation==='golden')value*=1.20;return Math.max(0,Math.round(value))}
  function xpFor(p){const d=SEEDS[p.seed]||SEEDS.moss,q=qualityFrom(p),lvl=Math.max(1,Math.min(300,Number(s.level)||1)),mins=Math.max(1,Number(d.growMs||60000)/60000),qMul=({C:.75,B:.85,A:1,S:1.10,'S+':1.20})[q]||1,rMul=({common:1,uncommon:1.05,rare:1.10,epic:1.15,legendary:1.25})[d.rarity]||1;return Math.max(1,Math.round(mins*(.8+lvl*.004)*qMul*rMul))}
  function fragFor(p){const q=qualityFrom(p),rar=SEEDS[p.seed]?.rarity||'common',grade={C:0,B:0,A:1,S:2,'S+':4}[q]||0,rarity={common:0,uncommon:0,rare:1,epic:2,legendary:3}[rar]||0,mutation=p.mutation?1:0,prism=p.mutation==='prismatic'?3:0;return Math.max(0,grade+rarity+mutation+prism)}
  window.v492GrowFragmentYield=fragFor;
@@ -74755,7 +74755,7 @@ body.v495-seed-open{overflow:hidden!important}
    }else T('Grow-Buff','Modus-Schutz vorhanden',()=>false);
    T('Grow-Buff','Wundertüte-Altbuff deaktiviert',()=>typeof v077Buff!=='function'||v077Buff()==null);
 
-   T('Ökonomie','Kaufbare Grow-Samen bleiben Nebenprogression',()=>{const arr=Object.values(seedTypes||{}).filter(d=>Number(d.buy)>0&&Number(d.growMs)>0&&Number(d.sell)>=0);if(!arr.length)return false;const lvl=300,q=1.30,pot=1.5,mastery=1.03,speed=.60;const questBase=Math.round(35+lvl*14+Math.pow(lvl,1.15)*2.2),questHourly=Math.round(questBase*1.5*2);const worst=Math.max(...arr.map(d=>{const value=Number(d.buy)+Number(d.sell)*.12*q*(.75+lvl*.0032)*pot*mastery;const net=Math.max(0,value-Number(d.buy));return net*6*3600000/(Number(d.growMs)*speed)}));return{pass:worst<=questHourly*.25,detail:`Max. Grow-Netto ~${Math.round(worst).toLocaleString('de-DE')} Gold/h · schwere L300-Quest ~${questHourly.toLocaleString('de-DE')} Gold/h`}});
+   T('Ökonomie','Kaufbare Grow-Samen bleiben Nebenprogression',()=>{const arr=Object.values(seedTypes||{}).filter(d=>Number(d.buy)>0&&Number(d.growMs)>0&&Number(d.sell)>=0);if(!arr.length)return false;const lvl=300,q=1.30,pot=1.5,mastery=1.03,speed=.60;const questBase=Math.round(typeof window.v6168QuestBaseGold==='function'?window.v6168QuestBaseGold(lvl):(35+lvl*14+Math.pow(lvl,1.15)*2.2)),questHourly=Math.round(questBase*1.5*2);const worst=Math.max(...arr.map(d=>{const value=Number(d.buy)+(typeof window.v6168GrowHarvestGold==='function'?window.v6168GrowHarvestGold(lvl,Number(d.growMs)||60000,String(d.rarity||'common'),q,pot,mastery):Number(d.sell)*.12*q*(.75+lvl*.0032)*pot*mastery);const net=Math.max(0,value-Number(d.buy));return net*6*3600000/(Number(d.growMs)*speed)}));return{pass:worst<=questHourly*.25,detail:`Max. Grow-Netto ~${Math.round(worst).toLocaleString('de-DE')} Gold/h · schwere L300-Quest ~${questHourly.toLocaleString('de-DE')} Gold/h`}});
    T('Ökonomie','Grow-EXP bleibt Nebenprogression',()=>{const arr=Object.values(seedTypes||{}).filter(d=>Number(d.growMs)>0);if(!arr.length)return false;const lvl=300,speed=.60;const worst=Math.max(...arr.map(d=>{const mins=Number(d.growMs)/60000,r=({common:1,uncommon:1.05,rare:1.10,epic:1.15,legendary:1.25})[d.rarity]||1,xp=mins*(.8+lvl*.004)*1.2*r;return xp*6*60/(mins*speed)}));const questHourly=Math.round((lvl*100*.16*1.45)*2);return{pass:worst<=questHourly*.20,detail:`Max. Grow ~${Math.round(worst).toLocaleString('de-DE')} EXP/h · schwere L300-Quest ~${questHourly.toLocaleString('de-DE')} EXP/h · Langzeit-Levelkurve aktiv`}});
    T('Ökonomie','C/B liefern keine Qualitäts-Fragmente',()=>({pass:true,detail:'Regel in V4.96: C=0, B=0; zusätzliche Raritätsboni bleiben separat.'}),'warn');
 
@@ -84525,7 +84525,7 @@ body:has(#world.active){background:#010302!important}
 
       if(win){
         const baseXp=Math.max(0,Number(enemy.xp)||0);
-        const baseGold=Math.max(0,Number(enemy.gold)||0);
+        const baseGold=Math.max(0,Math.round(typeof window.v6168DungeonGold==='function'?window.v6168DungeonGold(Number(s?.level)||1,!!enemy.boss):(Number(enemy.gold)||0)));
 
         const xpEvent=(typeof v094XpEventActive==='function' && v094XpEventActive()) ? baseXp*2 : baseXp;
         const goldEvent=(typeof v274GoldEventActive==='function' && v274GoldEventActive()) ? baseGold*2 : baseGold;
@@ -104631,7 +104631,7 @@ const fight=async function(){
       setTimeout(step,500);
     });
 
-    const gold=Math.max(25,Math.round(35+s.level*7+(win?combatPower()*.035:combatPower()*.01)));
+    const gold=Math.max(25,Math.round(typeof window.v6168PvpGold==='function'?window.v6168PvpGold(Number(s?.level)||1,!!win):(35+s.level*7+(win?combatPower()*.035:combatPower()*.01))));
     const xp=Math.max(10,Math.round(18+s.level*4+(win?s.level*2:s.level)));
 
     await v209FinishBattle(win,enemy,gold,xp);
@@ -110784,7 +110784,7 @@ function decorateGrow(){try{window.v6163GrowTabs?.refresh?.()}catch(_){}}
 function buds(){return Math.max(0,Math.floor(Number(s?.v204Pvp?.buds)||0))}
 function fragments(){return Math.max(0,Math.floor(Number(s?.v488Forge?.fragments)||0))}
 function levelFactor(){return 1+Math.floor((Math.max(1,Number(s?.level)||1)-1)/50)*.25}
-function slotCost(slot){const c=SLOT_CFG[slot],f=levelFactor();return {...c,gold:Math.round(c.gold*f),fragments:Math.round(c.fragments*(1+(f-1)*.65))}}
+function slotCost(slot){const c=SLOT_CFG[slot],f=levelFactor(),lvl=Math.max(1,Number(s?.level)||1);return {...c,gold:Math.max(1,Math.round(typeof window.v6168ClassSetGoldCost==='function'?window.v6168ClassSetGoldCost(slot,lvl):(c.gold*f))),fragments:Math.round(c.fragments*(1+(f-1)*.65))}}
 function currentClass(){return normalizedClassId(s?.playerClass)}
 function setInfo(){const cls=currentClass();try{return classSets?.[cls]||{name:'Klassenset',bonuses:{}}}catch(_){return{name:'Klassenset',bonuses:{}}}}
 function equippedSet(){const cls=currentClass();return Object.values(s?.equipment||{}).filter(it=>it?.setId===cls).length}
@@ -111368,7 +111368,7 @@ window.v6163QA=()=>({version:V.label,active,tabbar:!!document.querySelector('#gr
    (s?.inventory||[]).forEach((it,index)=>{if(it?.setId)out.push({item:it,where:'inv',index})});return out;
  }
  function findItem(id){for(const [slot,it] of Object.entries(s?.equipment||{}))if(it?.id===id)return{item:it,where:'equip',slot};const i=(s?.inventory||[]).findIndex(it=>it?.id===id);return i>=0?{item:s.inventory[i],where:'inv',index:i}:null}
- function costs(it){const level=Math.max(1,Number(s?.level)||1),old=Math.max(1,Number(it?.dropLevel)||1),gap=Math.max(0,level-old),slotBase={boots:18,head:24,ring:28,body:36,amulet:42,weapon:52}[it?.slot]||28;return{gap,fragments:Math.max(0,Math.round(slotBase*(1+gap/100))),gold:Math.max(0,Math.round((3500+slotBase*260)*(1+level/240+gap/120)))}}
+ function costs(it){const level=Math.max(1,Number(s?.level)||1),old=Math.max(1,Number(it?.dropLevel)||1),gap=Math.max(0,level-old),slotBase={boots:18,head:24,ring:28,body:36,amulet:42,weapon:52}[it?.slot]||28;return{gap,fragments:Math.max(0,Math.round(slotBase*(1+gap/100))),gold:Math.max(0,Math.round(typeof window.v6168SetUpgradeGoldCost==='function'?window.v6168SetUpgradeGoldCost(it?.slot,level,gap):((3500+slotBase*260)*(1+level/240+gap/120))))}}
  function extrasInto(native,it){const out={...native},gem=it?.gem,e=it?.enchant||(Array.isArray(it?.enchants)?it.enchants[0]:null);if(gem?.stat&&Number(gem.value))out[gem.stat]=(Number(out[gem.stat])||0)+Number(gem.value);if(e?.effect==='luck'&&Number(e.value))out.glueck=(Number(out.glueck)||0)+Number(e.value);return out}
  function upgradeHtml(){
    const level=Math.max(1,Number(s?.level)||1),rows=setItems().filter(x=>Math.max(1,Number(x.item?.dropLevel)||1)<level);
@@ -111461,6 +111461,61 @@ window.v6165ClassSetForgeOnlyQA=()=>({forgeOnly:!!window.__V6165_CLASSSET_FORGE_
 <!-- ===== /Händler-Herkunft Guard ===== -->
 
 
+<!-- ===== V4.168 Stable: ZENTRALE GOLD-ÖKONOMIE 1-300 ===== -->
+<script id="v6168-central-gold-economy">
+(()=>{
+'use strict';
+if(window.__V6168_GOLD_ECONOMY__)return;window.__V6168_GOLD_ECONOMY__=true;
+const MAX=300;
+const clampLevel=v=>Math.max(1,Math.min(MAX,Math.floor(Number(v)||1)));
+const round10=v=>Math.max(1,Math.round((Number(v)||0)/10)*10);
+const round100=v=>Math.max(100,Math.round((Number(v)||0)/100)*100);
+const round5000=v=>Math.max(5000,Math.round((Number(v)||0)/5000)*5000);
+/* Referenz, kein Limit: normal aktiver Spieler ~500 Gold je Charakterlevel/Tag.
+   Mehr Dampf/PvP/Dungeon/Grow bleibt echter Mehrverdienst. */
+function daily(level){const lv=clampLevel(level);return round100(Math.max(1000,lv*500))}
+function bandMid(level){const lv=clampLevel(level),tier=Math.floor((lv-1)/25),lo=tier*25+1,hi=Math.min(MAX,(tier+1)*25);return Math.round((lo+hi)/2)}
+function questBase(level){return round10(daily(level)*.04)}
+function quality(it){const q=String(it?.quality||'').toLowerCase(),r=String(it?.rarity||'').toLowerCase();if(['gray','green','blue','purple','orange','cyan'].includes(q))return q;if(/myst|cyan/.test(r))return'cyan';if(/legend|orange/.test(r))return'orange';if(/epic|purple/.test(r))return'purple';if(/rare|blue/.test(r))return'blue';if(/green|uncommon/.test(r))return'green';return'gray'}
+function shopPrice(it,level){const lv=clampLevel(level||it?.dropLevel),q=quality(it),pct={gray:.08,green:.12,blue:.22,purple:.40,orange:.70,cyan:1.10}[q]||.08,slot={boots:.90,head:1,ring:.92,body:1.05,amulet:.96,weapon:1.12,weapon2:1.12}[it?.slot]||1;return round10(daily(lv)*pct*slot)}
+function prismGold(level){return round5000(daily(bandMid(level))*8)}
+function classSetGold(slot,level){const f={boots:.40,head:.50,ring:.65,body:.85,amulet:1.10,weapon:1.45,weapon2:1.45}[slot]||.65;return round100(daily(bandMid(level))*f)}
+function setUpgradeGold(slot,level,gap){gap=Math.max(1,Number(gap)||1);const f={boots:.18,head:.22,ring:.25,body:.30,amulet:.34,weapon:.40,weapon2:.40}[slot]||.25;return round100(daily(bandMid(level))*f*(.50+Math.min(2,gap/50)))}
+function pvpGold(level,win){return round10(daily(level)*(win?.025:.010))}
+function dungeonGold(level,boss){return round10(daily(level)*(boss?.08:.02))}
+function growGold(level,growMs,rarity,qMul,pot,mastery){const hours=Math.max(1/60,Number(growMs||60000)/3600000),rar={common:1,uncommon:1.05,rare:1.10,epic:1.18,legendary:1.30}[String(rarity||'common')]||1;/* 4 dauerhaft belegte Slots ~= 20 % eines Referenztages vor Qualitäts-/Upgrade-Boni. */return round10(daily(level)*.20*(hours/24)/4*(Number(qMul)||1)*rar*(Number(pot)||1)*(Number(mastery)||1))}
+window.v6168DailyGold=daily;
+window.v6168QuestBaseGold=questBase;
+window.v6168ShopPrice=shopPrice;
+window.v6168PrismGoldCost=prismGold;
+window.v6168ClassSetGoldCost=classSetGold;
+window.v6168SetUpgradeGoldCost=setUpgradeGold;
+window.v6168PvpGold=pvpGold;
+window.v6168DungeonGold=dungeonGold;
+window.v6168GrowHarvestGold=growGold;
+
+function questGold(q){if(!q)return q;let role=String(q.v309Role||q.v310BaseRole||'normal');if(role==='elite')role=String(q.v310BaseRole||'normal');const mult={quick:.76,normal:1,heavy:1.50}[role]||1;let gold=questBase(s?.level)*mult;if(q.v310Elite)gold*=1.35;q.gold=round10(gold);q.v274BaseGold=q.gold;q.v6168GoldBalanced=true;return q}
+/* Final quest generator wrapper: every new offer enters the same economy. */
+try{if(typeof makeQuest==='function'&&!makeQuest.__v6168Gold){const base=makeQuest;const wrapped=function(){return questGold(base.apply(this,arguments))};wrapped.__v6168Gold=true;makeQuest=wrapped;window.makeQuest=wrapped}}catch(e){console.warn('V4.168 quest gold',e)}
+/* Reprice only unaccepted visible offers. An already running quest keeps the reward shown when it was accepted. */
+try{if(Array.isArray(s?.quests?.offers))s.quests.offers.forEach(questGold)}catch(e){}
+
+function repriceShopItem(it){if(!it||typeof it!=='object')return it;if(it.shopItem===true||String(it.source||'').toLowerCase()==='shop'){it.price=shopPrice(it,it.dropLevel||s?.level);it.v6168GoldBalanced=true}return it}
+try{if(typeof v027ShopItem==='function'&&!v027ShopItem.__v6168Gold){const base=v027ShopItem;const wrapped=function(){return repriceShopItem(base.apply(this,arguments))};wrapped.__v6168Gold=true;v027ShopItem=wrapped;window.v027ShopItem=wrapped}}catch(e){console.warn('V4.168 shop generator',e)}
+try{[s?.weaponShop,s?.magicShop].forEach(arr=>Array.isArray(arr)&&arr.forEach(repriceShopItem))}catch(e){}
+
+/* Keep ordinary selling low; bought shop gear can never be resold above 12 % of paid/current shop price. */
+try{if(typeof sellValue==='function'&&!sellValue.__v6168Gold){const base=sellValue;const wrapped=function(it){const normal=Math.max(0,Number(base.apply(this,arguments))||0);if(it&&(it.shopItem===true||String(it.source||'').toLowerCase()==='shop')){const paid=Math.max(0,Number(it.shopPaidPrice??it.price)||0);return Math.max(1,Math.min(normal,Math.round(paid*.12)))}return normal};wrapped.__v6168Gold=true;sellValue=wrapped;window.sellValue=wrapped}}catch(e){console.warn('V4.168 sell guard',e)}
+
+function paint(){try{if(typeof renderShop==='function'&&document.querySelector('#shop.active'))renderShop();if(typeof window.v488ForgeRender==='function'&&document.querySelector('#forge.active'))window.v488ForgeRender()}catch(_){}}
+try{persist(false)}catch(_){}
+document.addEventListener('DOMContentLoaded',()=>setTimeout(paint,80),{once:true});
+window.addEventListener('growlegends:account-ready',()=>setTimeout(()=>{try{if(Array.isArray(s?.quests?.offers))s.quests.offers.forEach(questGold);[s?.weaponShop,s?.magicShop].forEach(arr=>Array.isArray(arr)&&arr.forEach(repriceShopItem));persist(false)}catch(_){}paint()},120));
+window.v6168GoldEconomyQA=()=>({referenceDaily:{L25:daily(25),L50:daily(50),L80:daily(80),L100:daily(100),L150:daily(150),L200:daily(200),L250:daily(250),L300:daily(300)},shopL80:{gray:shopPrice({quality:'gray',slot:'head'},80),green:shopPrice({quality:'green',slot:'head'},80),blue:shopPrice({quality:'blue',slot:'head'},80),epic:shopPrice({quality:'purple',slot:'head'},80),legendary:shopPrice({quality:'orange',slot:'head'},80)},prism:{L80:prismGold(80),L150:prismGold(150),L300:prismGold(300)},classSetL80:{boots:classSetGold('boots',80),head:classSetGold('head',80),ring:classSetGold('ring',80),body:classSetGold('body',80),amulet:classSetGold('amulet',80),weapon:classSetGold('weapon',80)},noGoldCap:true});
+})();
+</script>
+<!-- ===== /V4.168 ===== -->
+
 <!-- ===== V4.167 Stable: LANGZEIT-LEVELKURVE 1-300 ===== -->
 <script id="v6167-longterm-xp-balance">
 (()=>{
@@ -111543,3 +111598,212 @@ window.addEventListener('growlegends:account-ready',()=>setTimeout(paint,100));
 
 </body>
 </html>
+
+<!-- ===== V4.165 FRESH DUNGEON KEY -> LIVE BATTLE INDEX AUTHORITY ===== -->
+<script id="v4165-dungeon-key-live-battle-index-fix">
+(()=>{
+ 'use strict';
+ if(window.__V4165_DUNGEON_KEY_BATTLE_FIX__)return;
+ window.__V4165_DUNGEON_KEY_BATTLE_FIX__=true;
+
+ const clampDungeon=i=>{
+   const max=Math.max(0,Number((typeof dungeons!=='undefined'&&dungeons?.length)||20)-1);
+   return Math.max(0,Math.min(max,Math.floor(Number(i)||0)));
+ };
+ const clampRoom=i=>Math.max(0,Math.min(9,Math.floor(Number(i)||0)));
+
+ function ensure(){
+   if(typeof s==='undefined'||!s)return null;
+   s.dungeon=(s.dungeon&&typeof s.dungeon==='object')?s.dungeon:{};
+   s.dungeon.keys=(s.dungeon.keys&&typeof s.dungeon.keys==='object')?s.dungeon.keys:{};
+   s.dungeon.unlocked=Array.isArray(s.dungeon.unlocked)?s.dungeon.unlocked.map(Number).filter(Number.isInteger):[];
+   s.dungeon.completed=Array.isArray(s.dungeon.completed)?s.dungeon.completed.map(Number).filter(Number.isInteger):[];
+   s.dungeon.progress=(s.dungeon.progress&&typeof s.dungeon.progress==='object')?s.dungeon.progress:{};
+   if(!s.dungeon.unlocked.includes(0))s.dungeon.unlocked.push(0);
+   const count=Math.max(1,Number((typeof dungeons!=='undefined'&&dungeons?.length)||20));
+   for(let i=1;i<count;i++){
+     const key=!!s.dungeon.keys[i]||!!s.dungeon.keys[String(i)];
+     const unlocked=s.dungeon.unlocked.includes(i);
+     if(key&&!unlocked)s.dungeon.unlocked.push(i);
+     if(unlocked&&!key)s.dungeon.keys[i]=true;
+     if((key||unlocked)&&s.dungeon.progress[i]==null)s.dungeon.progress[i]=0;
+   }
+   s.dungeon.unlocked=[...new Set(s.dungeon.unlocked.map(Number).filter(Number.isInteger))].sort((a,b)=>a-b);
+   s.dungeon.completed=[...new Set(s.dungeon.completed.map(Number).filter(Number.isInteger))].sort((a,b)=>a-b);
+   s.dungeon.selected=clampDungeon(s.dungeon.selected);
+   return s.dungeon;
+ }
+
+ function hasKey(i){
+   i=clampDungeon(i);ensure();
+   if(i===0)return true;
+   return !!s.dungeon.keys[i]||!!s.dungeon.keys[String(i)]||s.dungeon.unlocked.includes(i);
+ }
+ function completed(i){
+   i=clampDungeon(i);ensure();
+   /* Keep the existing completion invariant: a dungeon is sealed only after boss progress exists. */
+   return s.dungeon.completed.includes(i)&&Number(s.dungeon.progress?.[i])>=9;
+ }
+ function available(i){
+   i=clampDungeon(i);ensure();
+   const d=(typeof dungeons!=='undefined'?dungeons?.[i]:null);
+   return !!d&&Number(s.level||1)>=Number(d.minLevel||1)&&hasKey(i)&&!completed(i);
+ }
+ function saveLocal(){
+   try{if(typeof KEY!=='undefined')localStorage.setItem(KEY,JSON.stringify(s))}catch(_){}
+ }
+
+ let liveIndex=null;
+ function setLiveIndex(i,reason='live'){
+   i=clampDungeon(i);ensure();
+   if(!hasKey(i)||completed(i))return false;
+   liveIndex=i;
+   window.__GL_LIVE_DUNGEON_INDEX__=i;
+   s.dungeon.selected=i;
+   s.dungeon.room=clampRoom(s.dungeon.progress?.[i]??0);
+   saveLocal();
+   try{window.__V4165_LAST_DUNGEON_SYNC__={i,reason,at:Date.now()}}catch(_){}
+   return true;
+ }
+ function visibleIndex(){
+   const card=document.getElementById('dungeonMapCard');
+   const raw=card?.dataset?.v4165DungeonIndex;
+   if(raw!=null&&raw!==''){
+     const i=clampDungeon(raw);
+     if(hasKey(i)&&!completed(i))return i;
+   }
+   if(Number.isInteger(liveIndex)&&hasKey(liveIndex)&&!completed(liveIndex))return liveIndex;
+   return clampDungeon(s?.dungeon?.selected||0);
+ }
+
+ /* Final live truth. Old key arrays and keys{} may be updated by different historical layers;
+    every availability check now reads both immediately. */
+ try{dungeonUnlocked=hasKey;window.dungeonUnlocked=hasKey}catch(_){}
+ try{dungeonAvailable=available;window.dungeonAvailable=available}catch(_){}
+ try{if(typeof v243HasDungeonKey==='function'){v243HasDungeonKey=hasKey;window.v243HasDungeonKey=hasKey}}catch(_){}
+ try{if(typeof v250HasKey==='function'){v250HasKey=hasKey;window.v250HasKey=hasKey}}catch(_){}
+
+ /* This is the important part of the fix: combat's v048DungeonIndex must use the dungeon
+    that was actually opened, not a stale selected value left by the previously sealed dungeon. */
+ try{
+   const base=(typeof v048DungeonIndex==='function'?v048DungeonIndex:null);
+   if(typeof base==='function'&&!base.__v4165LiveIndex){
+     const wrapped=function(){
+       ensure();
+       if(s.dungeon.layer==='dungeon'){
+         const i=visibleIndex();
+         if(hasKey(i)&&!completed(i))return i;
+       }
+       return clampDungeon(base.apply(this,arguments));
+     };
+     wrapped.__v4165LiveIndex=true;
+     v048DungeonIndex=wrapped;window.v048DungeonIndex=wrapped;
+   }
+ }catch(e){console.warn('V4.165 v048 index',e)}
+
+ /* When a key is granted, the newly opened dungeon becomes the canonical selection immediately.
+    No reload/login is needed to replace the previously completed selected dungeon. */
+ try{
+   const base=window.v250GrantKey||(typeof v250GrantKey==='function'?v250GrantKey:null);
+   if(typeof base==='function'&&!base.__v4165FreshSelection){
+     const wrapped=function(i){
+       const r=base.apply(this,arguments);
+       if(r){
+         setLiveIndex(Number(i),'key-grant');
+         s.dungeon.layer='world';s.dungeon.view='map';saveLocal();
+       }
+       return r;
+     };
+     wrapped.__v4165FreshSelection=true;
+     window.v250GrantKey=wrapped;try{v250GrantKey=wrapped}catch(_){}
+   }
+ }catch(e){console.warn('V4.165 key grant',e)}
+
+ function stampDetail(){
+   try{
+     ensure();
+     const card=document.getElementById('dungeonMapCard');
+     if(!card||!card.classList.contains('v261-detail-card'))return;
+     const i=clampDungeon(s.dungeon.selected);
+     if(hasKey(i)&&!completed(i)){
+       liveIndex=i;window.__GL_LIVE_DUNGEON_INDEX__=i;
+       card.dataset.v4165DungeonIndex=String(i);
+     }
+   }catch(_){}
+ }
+
+ /* Detail renderers are heavily wrapped elsewhere. Stamp the actually rendered dungeon after the
+    full render chain so subsequent enemy/fight clicks cannot fall back to the old selection. */
+ ['v251RenderDetail','v244RenderSelectedDungeonMap','v064RenderMap','v261RenderDetail'].forEach(name=>{
+   try{
+     const fn=window[name]||globalThis[name];
+     if(typeof fn!=='function'||fn.__v4165DetailStamp)return;
+     const wrapped=function(){const r=fn.apply(this,arguments);stampDetail();return r};
+     wrapped.__v4165DetailStamp=true;window[name]=wrapped;
+     try{
+       if(name==='v251RenderDetail')v251RenderDetail=wrapped;
+       if(name==='v244RenderSelectedDungeonMap')v244RenderSelectedDungeonMap=wrapped;
+       if(name==='v064RenderMap')v064RenderMap=wrapped;
+       if(name==='v261RenderDetail')v261RenderDetail=wrapped;
+     }catch(_){}
+   }catch(_){}
+ });
+
+ /* Final battle entry owner: synchronize selection BEFORE the existing battle renderer creates
+    #fightBtn. This fixes the exact "map open, fight says sealed" transition. */
+ try{
+   const base=window.v251StartCurrentDungeonFight||(typeof v251StartCurrentDungeonFight==='function'?v251StartCurrentDungeonFight:null);
+   if(typeof base==='function'&&!base.__v4165BattleSync){
+     const wrapped=function(i){
+       i=clampDungeon(i);
+       ensure();
+       if(!available(i))return false;
+       setLiveIndex(i,'enter-fight');
+       s.dungeon.layer='dungeon';s.dungeon.view='battle';saveLocal();
+       return base.apply(this,arguments);
+     };
+     wrapped.__v4165BattleSync=true;
+     window.v251StartCurrentDungeonFight=wrapped;try{v251StartCurrentDungeonFight=wrapped}catch(_){}
+   }
+ }catch(e){console.warn('V4.165 fight entry',e)}
+
+ /* Capture the dungeon tile before its target listener. This makes the clicked dungeon authoritative
+    even if an older async painter is still finishing after a freshly claimed quest reward. */
+ document.addEventListener('click',ev=>{
+   const target=ev.target instanceof Element?ev.target:null;if(!target)return;
+   const tile=target.closest('[data-gl20g-dungeon],[data-v065-dungeon]');
+   if(tile&&document.getElementById('dungeon')?.classList.contains('active')){
+     const raw=tile.getAttribute('data-gl20g-dungeon')??tile.getAttribute('data-v065-dungeon');
+     const i=clampDungeon(raw);
+     if(available(i))setLiveIndex(i,'world-tile');
+     return;
+   }
+   const enter=target.closest('#dungeonMapCard #v261EnterCurrent,#dungeonMapCard .v261-node.current');
+   if(enter&&document.getElementById('dungeon')?.classList.contains('active')){
+     const i=visibleIndex();
+     if(available(i))setLiveIndex(i,'detail-enter');
+   }
+ },true);
+
+ /* Any historical direct unlock path that bypasses v250GrantKey is normalized here. */
+ let known=new Set();
+ function snapshot(){ensure();known=new Set(s.dungeon.unlocked.filter(i=>i===0||hasKey(i)))}
+ function detectNew(reason){
+   ensure();
+   const now=new Set(s.dungeon.unlocked.filter(i=>i===0||hasKey(i)));
+   const added=[...now].filter(i=>!known.has(i)&&i>0).sort((a,b)=>a-b);
+   known=now;
+   if(added.length){const i=added[added.length-1];setLiveIndex(i,reason);s.dungeon.layer='world';s.dungeon.view='map';saveLocal()}
+ }
+ snapshot();
+ ['growlegends:dungeon-key-changed','growlegends:dungeon-key-live','growlegends:dungeon-key-live-unlocked'].forEach(name=>{
+   document.addEventListener(name,()=>detectNew(name));
+ });
+
+ window.v4165DungeonKeyBattleDiagnostics=()=>{
+   ensure();const i=visibleIndex();
+   return{selected:s.dungeon.selected,liveIndex,visibleIndex:i,layer:s.dungeon.layer,view:s.dungeon.view,hasKey:hasKey(i),completed:completed(i),available:available(i),unlocked:[...s.dungeon.unlocked],keys:{...s.dungeon.keys}};
+ };
+})();
+</script>
+<!-- ===== /V4.165 ===== -->
