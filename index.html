@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
 <script id="v4131-version-source">
-window.GROW_LEGENDS_VERSION=Object.freeze({short:'V4.169',label:'V4.169 Anbauturm Doors+Monsters Fix',number:'4.169'});
+window.GROW_LEGENDS_VERSION=Object.freeze({short:'V4.170',label:'V4.170 Anbauturm Start-Fix',number:'4.170'});
 </script>
 
 <script id="gl-runtime-profiler-preboot">
@@ -96896,7 +96896,7 @@ function playerAvatar(){try{if(typeof v080AvatarFor==='function')return v080Avat
 function typeMeta(type){return ({normal:['Normaler Gegner','Sichere Route mit normaler Belohnung.','⚔️'],elite:['Elite-Gegner','Stärker, gefährlicher – deutlich mehr Score und Beute.','☠️'],grow:['Grow-Etage','Heilung, Samenfund oder Turmblätter.','🌿'],lab:['Labor','Verändere deinen Lauf mit gezielten Eingriffen.','🧪'],merchant:['Schwarzmarkt','Tausche ungesichertes Gold gegen Vorteile.','💰'],mystery:['Unbekannte Tür','Kann helfen – oder dir wehtun.','❓'],secret:['Verbotener Growroom','Sehr selten. Hohe Chance auf besondere Vorteile.','🔐'],boss:['Boss-Etage','Alle 10 Etagen. Beste Belohnung – kein Ausweg.','👑']})[type]||['Etage','','']}
 function seededChoiceFloor(floor){
  if(floor%10===0)return [{type:'boss',id:`boss_${floor}`}];
- const run=ensure().run||{};
+ const run=(s?.tower?.run&&typeof s.tower.run==='object')?s.tower.run:{};
  const mkCombat=opts=>({type:opts?.elite?'elite':'normal',miniboss:!!opts?.miniboss,id:`${floor}_${opts?.elite?'elite':'normal'}_${Math.random().toString(36).slice(2,7)}`});
  const mkSpecial=()=>{const list=['grow','lab','merchant','mystery'];const type=(floor>18&&chance(.06))?'secret':pick(list);return {type,id:`${floor}_${type}_${Math.random().toString(36).slice(2,7)}`}};
  if(run.forceCombat||run.lastRoomType==='special'){
