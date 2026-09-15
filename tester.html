@@ -1,0 +1,296 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#07120c">
+  <title>Grow Legends – Closed Beta</title>
+  <meta name="description" content="Werde Tester von Grow Legends. Erst der Google-Testergruppe beitreten, danach den geschlossenen Play-Store-Test starten.">
+  <style>
+    :root {
+      --bg:#06100b;
+      --panel:#0b1710ee;
+      --panel2:#101d14;
+      --green:#79ff78;
+      --green2:#23d85f;
+      --gold:#e4b756;
+      --gold2:#8c6125;
+      --text:#f5f2e8;
+      --muted:#c8c3b5;
+      --danger:#ffcb64;
+      --shadow:0 18px 60px rgba(0,0,0,.45);
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth;background:var(--bg)}
+    body{
+      margin:0;
+      font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(circle at 50% -10%,rgba(39,219,91,.12),transparent 34rem),
+        linear-gradient(#07110c,#030806 70%);
+      min-height:100vh;
+    }
+    a{color:inherit}
+    .wrap{width:min(1120px,calc(100% - 28px));margin:auto}
+    .hero{
+      min-height:690px;
+      background:
+        linear-gradient(180deg,rgba(2,8,5,.12) 0%,rgba(2,8,5,.30) 48%,#06100b 100%),
+        url("/assets/world_hero_castle_v691.png") center top/cover no-repeat;
+      position:relative;
+      overflow:hidden;
+      border-bottom:1px solid rgba(228,183,86,.35);
+    }
+    .hero:after{
+      content:"";position:absolute;inset:auto 0 0;height:230px;
+      background:linear-gradient(transparent,#06100b);
+      pointer-events:none;
+    }
+    nav{
+      position:relative;z-index:5;
+      display:flex;align-items:center;justify-content:space-between;gap:20px;
+      padding:18px 0;
+    }
+    .brand{display:flex;align-items:center;gap:12px;font-weight:900;letter-spacing:.04em}
+    .brand img{width:58px;height:58px;border-radius:14px;box-shadow:0 0 24px rgba(56,255,105,.3)}
+    .beta-pill{
+      border:1px solid rgba(228,183,86,.55);background:rgba(6,16,11,.76);
+      padding:10px 14px;border-radius:999px;color:#f4d387;font-size:13px;font-weight:800;
+      backdrop-filter:blur(10px)
+    }
+    .hero-copy{
+      position:relative;z-index:4;
+      width:min(690px,100%);
+      padding-top:320px;
+      padding-bottom:70px;
+      text-shadow:0 3px 14px #000;
+    }
+    h1{
+      margin:0 0 12px;
+      font-family:Georgia,"Times New Roman",serif;
+      font-size:clamp(42px,7.5vw,78px);
+      line-height:.95;
+      color:#f4ce79;
+      letter-spacing:-.035em;
+    }
+    .lead{font-size:clamp(18px,2.8vw,25px);line-height:1.45;color:#fff;max-width:660px;margin:0}
+    .mini-tags{display:flex;flex-wrap:wrap;gap:9px;margin-top:20px}
+    .mini-tags span{background:#07110dcf;border:1px solid rgba(121,255,120,.28);padding:8px 11px;border-radius:999px;font-size:13px}
+    main{position:relative;z-index:6;margin-top:-20px}
+    .flow{
+      border:1px solid rgba(228,183,86,.42);
+      background:linear-gradient(180deg,rgba(11,23,16,.98),rgba(5,13,9,.98));
+      border-radius:26px;
+      padding:clamp(18px,3vw,34px);
+      box-shadow:var(--shadow),inset 0 0 0 1px rgba(255,255,255,.03);
+      overflow:hidden;
+      position:relative;
+    }
+    .flow:before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 50% 0,rgba(71,255,103,.08),transparent 45%);pointer-events:none}
+    .eyebrow{color:var(--green);text-transform:uppercase;letter-spacing:.18em;font-size:12px;font-weight:900;margin-bottom:8px}
+    h2{font-family:Georgia,"Times New Roman",serif;font-size:clamp(30px,5vw,46px);margin:0 0 8px;color:#f2cf83}
+    .intro{color:var(--muted);margin:0 0 26px;line-height:1.6}
+    .steps{display:grid;grid-template-columns:1fr 72px 1fr;align-items:stretch;gap:14px}
+    .connector{display:grid;place-items:center;font-size:38px;color:var(--green);filter:drop-shadow(0 0 12px rgba(60,255,95,.55))}
+    .step{
+      position:relative;border:1px solid rgba(228,183,86,.35);
+      border-radius:20px;padding:22px;background:linear-gradient(155deg,#101f16,#07110c);
+      min-height:260px;transition:.25s ease;
+    }
+    .step.locked{filter:saturate(.45);opacity:.58}
+    .step.done{border-color:rgba(121,255,120,.56);box-shadow:0 0 28px rgba(31,218,84,.11)}
+    .num{
+      width:50px;height:50px;border-radius:50%;display:grid;place-items:center;
+      color:#111;background:linear-gradient(#f5d98f,#b27b2c);font:900 23px Georgia,serif;
+      box-shadow:0 0 0 4px #24170a,0 0 24px rgba(228,183,86,.22)
+    }
+    .step h3{font:700 25px Georgia,serif;color:#f2d18b;margin:16px 0 8px}
+    .step p{color:var(--muted);line-height:1.55;margin:0 0 18px}
+    .btn{
+      appearance:none;border:0;text-decoration:none;cursor:pointer;
+      display:flex;align-items:center;justify-content:center;gap:10px;
+      width:100%;min-height:54px;border-radius:13px;padding:13px 18px;
+      font-size:16px;font-weight:900;
+      background:linear-gradient(180deg,#39e96c,#13883d);
+      color:#041007;border:1px solid #8cff9f;
+      box-shadow:0 0 0 3px #173c21,0 8px 26px rgba(30,222,80,.24);
+      transition:.18s transform,.18s filter,.18s opacity;
+    }
+    .btn:hover{transform:translateY(-1px);filter:brightness(1.08)}
+    .btn.secondary{background:linear-gradient(#f1c963,#a96922);border-color:#ffe5a1;box-shadow:0 0 0 3px #39270d,0 8px 26px rgba(224,168,69,.17)}
+    .btn[disabled]{cursor:not-allowed;opacity:.35;filter:grayscale(.7);transform:none;box-shadow:none}
+    .confirmation{
+      display:none;margin-top:14px;padding:14px;border-radius:13px;
+      background:#0a150e;border:1px dashed rgba(121,255,120,.35);
+    }
+    .confirmation.show{display:block}
+    .confirmation strong{display:block;margin-bottom:8px;color:#baffb9}
+    .done-badge{
+      display:none;margin-top:12px;color:#aaffb0;font-weight:800;font-size:14px;
+    }
+    .done .done-badge{display:block}
+    .notice{
+      margin:22px 0 0;padding:15px 17px;border-radius:14px;
+      border:1px solid rgba(255,203,100,.3);background:rgba(65,43,10,.33);
+      color:#ffe0a0;line-height:1.45;
+    }
+    .section{padding:62px 0}
+    .features{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:24px}
+    .feature{background:linear-gradient(#0d1912,#07100b);border:1px solid rgba(228,183,86,.24);border-radius:17px;padding:18px}
+    .feature .ico{font-size:30px}
+    .feature h3{margin:10px 0 5px;color:#f0cf89;font-family:Georgia,serif}
+    .feature p{margin:0;color:var(--muted);line-height:1.5;font-size:14px}
+    .faq{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:24px}
+    .faq div{border-top:1px solid rgba(228,183,86,.35);padding:18px 4px}
+    .faq strong{color:#fff;display:block;margin-bottom:8px}
+    .faq span{color:var(--muted);line-height:1.5;font-size:14px}
+    footer{border-top:1px solid rgba(228,183,86,.2);padding:34px 0 50px;color:#8f978f;text-align:center;font-size:13px}
+    .tiny-reset{margin-top:14px;background:none;border:0;color:#728078;text-decoration:underline;cursor:pointer;font-size:12px}
+    @media(max-width:780px){
+      .hero{min-height:630px;background-position:50% top}
+      nav{padding-top:12px}
+      .brand span{display:none}
+      .hero-copy{padding-top:320px}
+      .steps{grid-template-columns:1fr}
+      .connector{height:38px;transform:rotate(90deg)}
+      .features,.faq{grid-template-columns:1fr 1fr}
+    }
+    @media(max-width:520px){
+      .wrap{width:min(100% - 18px,1120px)}
+      .hero{min-height:590px;background-position:51% top}
+      .hero-copy{padding-top:300px;padding-bottom:44px}
+      .flow{border-radius:20px}
+      .step{min-height:auto}
+      .features,.faq{grid-template-columns:1fr}
+      .beta-pill{font-size:11px;padding:8px 10px}
+    }
+  </style>
+</head>
+<body>
+  <header class="hero">
+    <div class="wrap">
+      <nav>
+        <div class="brand"><span style="font-size:34px;color:#79ff78;filter:drop-shadow(0 0 10px rgba(121,255,120,.6))">♛</span><span>GROW LEGENDS</span></div>
+        <div class="beta-pill">ANDROID · CLOSED BETA</div>
+      </nav>
+      <div class="hero-copy">
+        <h1>Werde Tester von Grow Legends</h1>
+        <p class="lead">Pflanzen. Kämpfen. Leveln. Sammeln. Hilf uns, Grow Legends vor dem öffentlichen Release noch besser zu machen.</p>
+        <div class="mini-tags"><span>⚔️ PvP & Dungeons</span><span>🌿 Growroom</span><span>👑 Gilden & Weltboss</span><span>🐾 Pets</span></div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="wrap">
+      <section class="flow" id="beta">
+        <div class="eyebrow">Nur zwei Schritte</div>
+        <h2>Erst beitreten, dann testen</h2>
+        <p class="intro">Der Play-Store-Test ist geschlossen. Deshalb muss dein Google-Konto zuerst Mitglied unserer Testergruppe sein.</p>
+
+        <div class="steps">
+          <article class="step" id="step1">
+            <div class="num">1</div>
+            <h3>Google-Gruppe beitreten</h3>
+            <p>Öffne zuerst die offizielle Grow-Legends-Testergruppe und tritt ihr mit dem Google-Konto bei, das du auch im Play Store verwendest.</p>
+            <a class="btn" id="joinBtn" href="https://groups.google.com/g/grow-legends-tester" target="_blank" rel="noopener">👥 Jetzt Gruppe beitreten</a>
+
+            <div class="confirmation" id="confirmation">
+              <strong>Gruppe geöffnet.</strong>
+              Wenn du beigetreten bist, komm hierher zurück und bestätige den Schritt.
+              <button class="btn secondary" id="confirmBtn" style="margin-top:12px">✓ Ich bin der Gruppe beigetreten</button>
+            </div>
+            <div class="done-badge">✓ Schritt 1 erledigt</div>
+          </article>
+
+          <div class="connector">➜</div>
+
+          <article class="step locked" id="step2">
+            <div class="num">2</div>
+            <h3>Test im Play Store starten</h3>
+            <p>Dieser Schritt wird erst freigeschaltet, nachdem du Schritt 1 bestätigt hast. Anschließend kannst du dem geschlossenen Test beitreten und Grow Legends installieren.</p>
+            <a class="btn" id="testBtn" href="https://play.google.com/apps/testing/de.growlegends.app" target="_blank" rel="noopener" aria-disabled="true">▶ Zum Play-Store-Test</a>
+            <div class="done-badge" id="unlockedText">✓ Freigeschaltet</div>
+          </article>
+        </div>
+
+        <div class="notice"><strong>Wichtig:</strong> Verwende in der Google-Gruppe und im Play Store dasselbe Google-Konto. Sonst erkennt Google deine Testberechtigung nicht.</div>
+        <button class="tiny-reset" id="resetBtn" type="button">Tester-Schritte auf diesem Gerät zurücksetzen</button>
+      </section>
+
+      <section class="section">
+        <div class="eyebrow">Das erwartet dich</div>
+        <h2>Eine Welt voller Fortschritt</h2>
+        <div class="features">
+          <div class="feature"><div class="ico">🛡️</div><h3>Klassen & Builds</h3><p>Entwickle deinen Helden, verteile Talente und optimiere deine Ausrüstung.</p></div>
+          <div class="feature"><div class="ico">⚔️</div><h3>PvP & Dungeons</h3><p>Stelle dich anderen Spielern und kämpfe dich durch immer stärkere Gegner.</p></div>
+          <div class="feature"><div class="ico">🌿</div><h3>Growroom</h3><p>Pflanze, pflege und ernte – mit eigenen Samen, Aufträgen und Boni.</p></div>
+          <div class="feature"><div class="ico">👑</div><h3>Gilde & Weltboss</h3><p>Gemeinsam stärker werden und mächtige Bosse bezwingen.</p></div>
+          <div class="feature"><div class="ico">🐾</div><h3>Pets & Sammlung</h3><p>Sammle Begleiter in verschiedenen Qualitätsstufen und sichere dir Boni.</p></div>
+          <div class="feature"><div class="ico">💎</div><h3>Seltene Beute</h3><p>Legendäre, mystische und besondere Items für langfristige Progression.</p></div>
+        </div>
+      </section>
+
+      <section class="section" style="padding-top:0">
+        <div class="eyebrow">Kurz erklärt</div>
+        <h2>Häufige Fragen</h2>
+        <div class="faq">
+          <div><strong>Warum muss ich zuerst der Gruppe beitreten?</strong><span>Der Test ist nicht öffentlich. Google lässt nur Konten zu, die zur freigegebenen Testergruppe gehören.</span></div>
+          <div><strong>Ist der Test kostenlos?</strong><span>Ja. Für die Teilnahme am geschlossenen Test entstehen keine Kosten.</span></div>
+          <div><strong>Auf welchem Gerät?</strong><span>Der aktuelle geschlossene Test ist für Android vorgesehen.</span></div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer>
+    <div class="wrap">Grow Legends · Closed Beta · Good buds, better heroes.</div>
+  </footer>
+
+  <script>
+    (() => {
+      const KEY = "growLegendsTesterGroupConfirmedV1";
+      const step1 = document.getElementById("step1");
+      const step2 = document.getElementById("step2");
+      const joinBtn = document.getElementById("joinBtn");
+      const confirmBox = document.getElementById("confirmation");
+      const confirmBtn = document.getElementById("confirmBtn");
+      const testBtn = document.getElementById("testBtn");
+      const resetBtn = document.getElementById("resetBtn");
+
+      function unlock() {
+        localStorage.setItem(KEY, "1");
+        step1.classList.add("done");
+        step2.classList.remove("locked");
+        step2.classList.add("done");
+        confirmBox.classList.remove("show");
+        testBtn.removeAttribute("aria-disabled");
+        testBtn.style.pointerEvents = "auto";
+        testBtn.tabIndex = 0;
+      }
+
+      function lock() {
+        localStorage.removeItem(KEY);
+        step1.classList.remove("done");
+        step2.classList.add("locked");
+        step2.classList.remove("done");
+        confirmBox.classList.remove("show");
+        testBtn.setAttribute("aria-disabled", "true");
+        testBtn.style.pointerEvents = "none";
+        testBtn.tabIndex = -1;
+      }
+
+      joinBtn.addEventListener("click", () => {
+        setTimeout(() => confirmBox.classList.add("show"), 250);
+      });
+
+      confirmBtn.addEventListener("click", unlock);
+      resetBtn.addEventListener("click", lock);
+
+      if (localStorage.getItem(KEY) === "1") unlock();
+      else lock();
+    })();
+  </script>
+</body>
+</html>
