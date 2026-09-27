@@ -2,7 +2,7 @@
 <html lang="de" class="v7154-frame-pending">
 <head>
 <script id="v4131-version-source">
-window.GROW_LEGENDS_VERSION=Object.freeze({short:'V7.200',label:'V7.200 Stable',number:'7.200'});
+window.GROW_LEGENDS_VERSION=Object.freeze({short:'V7.201',label:'V7.201 Stable',number:'7.201'});
 </script>
 <script id="v7101-public-profile-coalescer">
 (()=>{
@@ -288,7 +288,7 @@ window.__V483_POWER_READY__=false;
 .app > header .v366-ver,.app > header .v371-logo em,.app > header .v372-logo em{font-size:0!important;color:transparent!important}
 .app > header .v366-ver::after,.app > header .v371-logo em::after,.app > header .v372-logo em::after{content:"V4.164"!important;font-size:5px!important;color:#63cdd1!important;font-style:normal!important;font-weight:900!important}
 </style>
-<title>Grow Legends V7.200</title>
+<title>Grow Legends V7.201</title>
 <style>
 :root{--bg:#0b100b;--panel:#151d14;--panel2:#1c281a;--panel3:#253423;--line:#354933;--text:#f2f5ed;--muted:#9fad99;--green:#83d65d;--green2:#b2f07e;--gold:#f2c75a;--red:#ee6b68;--blue:#68a7ea;--purple:#ad7bea;--shadow:0 12px 30px rgba(0,0,0,.28)}
 *{box-sizing:border-box}html{background:var(--bg)}body{margin:0;color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:radial-gradient(circle at 50% -10%,#253821 0,#10170f 40%,#090d09 100%);min-height:100vh}button{font:inherit}.app{max-width:820px;margin:auto;min-height:100vh;padding-bottom:88px}
@@ -1218,7 +1218,7 @@ img.v6108-quality-art{
   display:block!important;
 }
 
-/* V7.200: direct raster artwork. The parent owns the frame on normal item slots;
+/* V7.201: direct raster artwork. The parent owns the frame on normal item slots;
    standalone reward/detail images receive the same quality color themselves. */
 img.v6108-quality-art{box-sizing:border-box!important;border:2px solid transparent!important;border-radius:10px!important;background:#070b08!important}
 .v6108-quality-artbox > img.v6108-quality-art{border:0!important;border-radius:8px!important}
@@ -73493,7 +73493,7 @@ function ensureScreen(){
  const main=document.querySelector('main');if(!main)return null;
  let sec=document.getElementById('systemtech');if(!sec){sec=document.createElement('section');sec.id='systemtech';sec.className='screen';const footer=document.getElementById('v337LegalFooter');if(footer&&footer.parentElement===main)main.insertBefore(sec,footer);else main.appendChild(sec)}
  if(!sec.dataset.built){sec.dataset.built='1';sec.innerHTML=`<div class="v4107-page">
-  <div class="v4107-top"><div class="v4107-brand"><div class="v4107-brand-mark">🌿⚙️</div><div><h1>GROW LEGENDS <span>SYSTEMTEST & TECHNIK</span></h1><p>SERVERAUTORITÄT · SPIELZUSTAND · REAKTIONSZEITEN · UI · FEHLER · PERFORMANCE</p></div></div><div class="v4107-version">V7.200</div></div>
+  <div class="v4107-top"><div class="v4107-brand"><div class="v4107-brand-mark">🌿⚙️</div><div><h1>GROW LEGENDS <span>SYSTEMTEST & TECHNIK</span></h1><p>SERVERAUTORITÄT · SPIELZUSTAND · REAKTIONSZEITEN · UI · FEHLER · PERFORMANCE</p></div></div><div class="v4107-version">V7.201</div></div>
   <div class="v4107-layout">
    <aside class="v4107-sidebar"><div class="v4107-side-title">⚙️ SYSTEMTECHNIK</div>
     <button class="v4107-nav active" data-v4107-jump="status"><i>🧪</i>Systemtest</button>
@@ -76049,13 +76049,13 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();i
   let r=null;
   if(typeof window.v7133HydrateAllCore==='function')r=await window.v7133HydrateAllCore();
   else{
-   const jobs=[window.v7077ProgressRefresh,window.v7033BuildAuthorityRefresh,window.v7074ItemAuthorityRefresh||window.v7063ItemStageRefresh,()=>window.v7110SyncQuestAuthority?.(true),window.v7040AuthorityRefresh,()=>window.v7065GrowAuthorityRefresh?.(true),window.v7070GrowHydrationRefresh,window.v7079PetAuthorityRefresh,window.v7080AchievementRefresh,window.v7072AuthorityRefresh,window.v7073EndgameRefresh].filter(fn=>typeof fn==='function');
+   const jobs=[window.v7077ProgressRefresh,window.v7033BuildAuthorityRefresh,window.v7074ItemAuthorityRefresh||window.v7063ItemStageRefresh,()=>window.v7110SyncQuestAuthority?.(true),async()=>{await window.v7040AuthorityRefresh?.();const di=Math.max(0,Math.min(19,Number(s?.dungeon?.selected??s?.dungeon?.lastActive??0)||0));return await window.v7051EnsureDungeonState?.(di,{force:true,paint:false,reason:'login-fallback'})},()=>window.v7065GrowAuthorityRefresh?.(true),window.v7070GrowHydrationRefresh,window.v7079PetAuthorityRefresh,window.v7080AchievementRefresh,window.v7072AuthorityRefresh,window.v7073EndgameRefresh].filter(fn=>typeof fn==='function');
    for(const fn of jobs)await fn();
    r={ok:true};
   }
   if(r&&r.ok===false)throw new Error('CANONICAL_LOGIN_HYDRATION_FAILED');
   if(r?.result){
-   const critical=['progress','build','items'].filter(k=>!r.result?.[k]?.ok||r.result?.[k]?.value==null);
+   const critical=['progress','build','items','quest','dungeon'].filter(k=>!r.result?.[k]?.ok||r.result?.[k]?.value==null||r.result?.[k]?.value?.ok===false);
    if(critical.length)throw new Error('CANONICAL_LOGIN_CRITICAL_MISSING:'+critical.join(','));
   }
   LOGIN.lastHydrateOk=true;
@@ -76715,7 +76715,8 @@ html:not(.v4142-systemtech-admin) #v4102QaButton{display:none!important}
  function accountReady(id,reason='login'){
   id=String(id||uid());if(!id||!verified(id))return false;boot.accountReadyAt=Date.now();setPhase('account-ready',reason);emit('growlegends:account-ready',{reason});
   requestAnimationFrame(()=>{if(uid()!==id||!verified(id))return;try{window.v4129ReleaseOwnedPower?.(id)}catch(e){}try{window.v4140AttributeDiagnostics?.()}catch(e){}});
-  setTimeout(()=>{if(uid()===id&&verified(id))void runExtras(id,reason)},0);return true;
+  const launchExtras=()=>{if(uid()===id&&verified(id))void runExtras(id,reason)};
+  if(typeof requestIdleCallback==='function')requestIdleCallback(launchExtras,{timeout:1800});else setTimeout(launchExtras,900);return true;
  }
  function foreground(reason='foreground'){
   clearTimeout(foregroundTimer);foregroundTimer=setTimeout(async()=>{const id=uid();if(!id||!verified(id))return;boot.foregroundAt=Date.now();try{await window.v4146EnsureGuildChatIdentity?.('v4147-'+reason)}catch(e){}try{window.v4144SyncGuildChat?.()}catch(e){}try{window.v4142SyncAdminSystemtechnik?.()}catch(e){}try{window.v4129ReleaseOwnedPower?.(id)}catch(e){}emit('growlegends:foreground-ready',{reason})},80);
@@ -104800,7 +104801,7 @@ window.v6102EquipmentDiagnostics=function(){
  window.v6108ItemQuality=qualityOf;
 
  function qualityFrame(base,it){
-   /* V7.200: Base64 Phase 2 moved the real artwork to external files.
+   /* V7.201: Base64 Phase 2 moved the real artwork to external files.
       Do not embed an external asset again inside a data: SVG: SVG images used
       through <img> are isolated and the nested relative image URL stays blank.
       The existing .v6108-quality-artbox / v6108-q-* classes own the rarity frame. */
@@ -126719,7 +126720,7 @@ window.v6346AdminLoadBroadcasts=loadAdminBroadcasts;
   version:state.version,uid:state.uid,ready:state.ready,enabled:state.enabled,
   revision:Number(state.gate?.revision)||0,actions:state.actions,hydratedAt:state.hydratedAt,lastError:state.lastError
  });
- function boot(){const id=uid();if(state.uid&&state.uid!==id)reset();if(id&&db())void loadGate(true)}
+ function boot(){const id=uid();if(state.uid&&state.uid!==id)reset();const d=window.v7074ItemAuthorityDiagnostics?.();if(d?.enforce&&Date.now()-Number(d.lastSync||0)<5000){state.uid=id;state.ready=true;state.enabled=true;state.hydratedAt=Date.now();return}if(id&&db())void loadGate(true)}
  window.addEventListener('growlegends:account-ready',()=>setTimeout(boot,220));
  window.addEventListener('pageshow',()=>setTimeout(boot,420),{passive:true});
  document.addEventListener('visibilitychange',()=>{if(!document.hidden)setTimeout(boot,420)},{passive:true});
@@ -127451,25 +127452,6 @@ async function receipt(runId){
 async function pendingReceipt(){
  try{return await rpcTimeout('v7044_pending_quest_receipt',{},6000)}catch(_){return null}
 }
-async function ensureCanonicalEntry(di,{force=true,paint=true,reason='entry'}={}){
- C.entryGuards++;
- if(!enforced())return{ok:true,enforced:false,completed:false};
- try{
-  const q=await canonicalState({force:!!force});
-  if(!q?.ok){C.lastError=String(q?.reason||'DUNGEON_STATE_UNAVAILABLE');return{ok:false,enforced:true,completed:false,reason:C.lastError}}
-  persistLocal();ensureShape();
-  const i=Math.max(0,Math.min(19,Number(di)||0));
-  const completed=s.dungeon.completed.map(Number).includes(i)&&Number(s.dungeon.progress?.[i])>=9;
-  if(paint&&document.getElementById('dungeon')?.classList.contains('active')){
-   try{renderDungeon?.()}catch(e){console.warn('[V7051] canonical dungeon repaint',reason,e)}
-   try{window.v467RebuildDungeonWorld?.('v7051-'+reason)}catch(_){}
-  }
-  if(completed)C.blockedCompleted++;
-  return{ok:true,enforced:true,completed,state:q};
- }catch(e){C.lastError=String(e?.message||e);console.warn('[V7051] canonical entry guard',reason,e);return{ok:false,enforced:true,completed:false,reason:C.lastError}}
-}
-window.v7051EnsureDungeonState=(di,opts={})=>ensureCanonicalEntry(di,opts);
-
 async function ack(runId){
  let last=null;
  for(let i=0;i<3;i++){
@@ -128115,6 +128097,26 @@ async function canonicalState({force=false}={}){
  })().finally(()=>{stateFlight=null});
  return stateFlight;
 }
+/* V7.201: authoritative entry guard belongs to the dungeon owner. */
+async function ensureCanonicalEntry(di,{force=true,paint=true,reason='entry'}={}){
+ C.entryGuards++;
+ if(!enforced())return{ok:true,enforced:false,completed:false};
+ try{
+  const q=await canonicalState({force:!!force});
+  if(!q?.ok){C.lastError=String(q?.reason||'DUNGEON_STATE_UNAVAILABLE');return{ok:false,enforced:true,completed:false,reason:C.lastError}}
+  persistLocal();ensureShape();
+  const i=Math.max(0,Math.min(19,Number(di)||0));
+  const completed=s.dungeon.completed.map(Number).includes(i)&&Number(s.dungeon.progress?.[i])>=9;
+  if(paint&&document.getElementById('dungeon')?.classList.contains('active')){
+   try{renderDungeon?.()}catch(e){console.warn('[V7051] canonical dungeon repaint',reason,e)}
+   try{window.v467RebuildDungeonWorld?.('v7051-'+reason)}catch(_){}
+  }
+  if(completed)C.blockedCompleted++;
+  return{ok:true,enforced:true,completed,state:q};
+ }catch(e){C.lastError=String(e?.message||e);console.warn('[V7051] canonical entry guard',reason,e);return{ok:false,enforced:true,completed:false,reason:C.lastError}}
+}
+window.v7051EnsureDungeonState=(di,opts={})=>ensureCanonicalEntry(di,opts);
+
 async function ack(runId){
  let last=null;
  for(let i=0;i<4;i++){
@@ -128403,9 +128405,10 @@ document.addEventListener('click',ev=>{if(ev.target?.closest?.('#dungeon,[data-s
 
 async function syncDungeonOnOpen(reason='navigation'){
  try{
-  await refreshModes();
+  if(!enforced())await refreshModes();
   if(!enforced())return false;
-  const gate=await ensureCanonicalEntry(currentDungeonIndex(),{force:true,paint:true,reason});
+  const fresh=C.stateReady&&Date.now()-Number(C.lastCanonicalAt||0)<2500;
+  const gate=await ensureCanonicalEntry(currentDungeonIndex(),{force:!fresh,paint:!fresh,reason});
   claimButton();
   return !!gate?.ok;
  }catch(e){C.lastError=String(e?.message||e);console.warn('[V7051] dungeon open sync',reason,e);return false}
@@ -128431,10 +128434,11 @@ async function boot(){
  if(bootFlight)return bootFlight;
  bootFlight=(async()=>{
   try{
-   await refreshModes();
+   const fresh=C.stateReady&&Date.now()-Number(C.lastCanonicalAt||0)<5000;
+   if(!fresh)await refreshModes();
    if(!enforced()){claimButton();void reportReadiness();return}
    const recovered=await recoverPending({quiet:false});
-   if(!recovered){try{await canonicalState();persistLocal();paintAll()}catch(e){console.warn('[V7051] boot state',e)}}
+   if(!recovered&&!fresh){try{await canonicalState();persistLocal();paintAll()}catch(e){console.warn('[V7051] boot state',e)}}
    claimButton();void reportReadiness();
   }catch(e){C.lastError=String(e?.message||e);console.warn('[V7051] boot',e)}
  })().finally(()=>{bootFlight=null});
@@ -129208,6 +129212,7 @@ window.v7081CapabilitiesDiagnostics=()=>JSON.parse(JSON.stringify(C));
 function boot(){
   const id=uid();
   if(id&&C.uid!==id)loadCache(id);
+  if(C.ready&&Date.now()-Number(C.lastSync||0)<5000)return;
   void refresh(true);
 }
 window.addEventListener('growlegends:account-ready',()=>setTimeout(boot,20),{passive:true});
@@ -129238,6 +129243,8 @@ setTimeout(boot,30);
  async function confirmBox(text,opt={}){try{if(typeof v115Confirm==='function')return !!(await v115Confirm(text,opt))}catch(_){}return window.confirm(text)}
  async function gate(force=false){
   if(!window.v7081UseAuthority?.('items')){S.ready=true;S.enabled=false;return false;}
+  const finalState=window.v7074ItemAuthorityDiagnostics?.();
+  if(finalState?.enforce&&Date.now()-Number(finalState.lastSync||0)<5000){S.ready=true;S.enabled=true;return true}
   if(!force&&S.ready)return S.enabled;
   if(gateP)return gateP;
   gateP=(async()=>{try{const x=db();if(!x||!uid()){S.ready=true;S.enabled=false;return false}const {data,error}=await x.rpc('v7034_client_item_authority_state');if(error)throw error;const g=row(data);S.ready=true;S.enabled=!!g?.item_bridge_enabled;S.lastError='';return S.enabled}catch(e){S.ready=true;S.enabled=false;S.lastError=String(e?.message||e);console.warn('[V7062] item gate',e);return false}finally{gateP=null}})();
@@ -131762,6 +131769,7 @@ try{
    storage before the player interacts with it. No full-screen blocker is used. */
 async function boot(){
   if(!userId())return;
+  if(A.ready&&Date.now()-Number(A.lastSync||0)<5000)return;
   await refresh(true,true);
 }
 window.addEventListener('growlegends:account-ready',()=>setTimeout(boot,550),{passive:true});
@@ -131903,7 +131911,7 @@ try{
   }
 }catch(e){console.warn('[V7077] event hydrate',e)}
 
-window.addEventListener('growlegends:account-ready',()=>setTimeout(()=>void refresh({paint:true}),420),{passive:true});
+window.addEventListener('growlegends:account-ready',()=>setTimeout(()=>{if(Date.now()-Number(P.lastSync||0)>5000)void refresh({paint:true})},420),{passive:true});
 window.addEventListener('pageshow',()=>{if(Date.now()-P.lastSync>60000)setTimeout(()=>void refresh({paint:true}),850)},{passive:true});
 document.addEventListener('visibilitychange',()=>{
   if(!document.hidden&&Date.now()-P.lastSync>60000)setTimeout(()=>void refresh({paint:true}),320);
@@ -133838,7 +133846,7 @@ window.v7110SyncQuestAuthority=sync;
 window.v7110QuestAuthorityEnforced=enforced;
 window.__V7110_QUEST_ROUTE_WRAP_RETIRED__='v7122-shared-event';
 
-window.addEventListener('growlegends:account-ready',()=>setTimeout(()=>void sync(true),420),{passive:true});
+window.addEventListener('growlegends:account-ready',()=>setTimeout(()=>{if(Date.now()-Number(S.lastAt||0)>5000)void sync(true)},420),{passive:true});
 window.addEventListener('pageshow',()=>setTimeout(()=>{if(enforced())void sync(true)},700),{passive:true});
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&enforced())setTimeout(()=>void sync(true),250)},{passive:true});
 
@@ -134983,7 +134991,7 @@ window.__V7132_ITEM_AUTHORITY__=Object.freeze({
 'use strict';
 if(window.__V7133_GLOBAL_AUTHORITY_LOCKDOWN__)return;
 window.__V7133_GLOBAL_AUTHORITY_LOCKDOWN__=true;
-const VERSION='V7.200'; /* consolidated gameplay authority owner */
+const VERSION='V7.201'; /* consolidated gameplay authority owner */
 const GAMEPLAY_DOMAINS=Object.freeze([
  'achievements','billing','build','daily','dungeon','endgame','grow_dealer','grow_orders','guild','items','liveops',
  'pets','profile','progress','pvp','quest','seeds','shop','social','tower','weekly','worldboss'
@@ -134993,7 +135001,7 @@ const CAP_NAMES=new Set([
  'guild_rewards','guild','social','billing','shop','grow_dealer','profile','liveops','quest','dungeon','pvp','build','seeds'
 ]);
 const D={fullAuthority:false,fullAuthorityChecks:0,legacyCloudWritesSuppressed:0,legacyCloudAppliesBlocked:0,legacyGameplayFallbacksBlocked:0,
- dungeonRoutes:0,pvpRoutes:0,buildRoutes:0,legacyLegendarySeedBlocks:0,legacyKeyBlocks:0,rehydrates:0,fullHydrates:0,lastCloudApplyBlockAt:0,lastError:'',lastDomains:{},localDailyGuardVersion:'V7.174'};
+ dungeonRoutes:0,pvpRoutes:0,buildRoutes:0,legacyLegendarySeedBlocks:0,legacyKeyBlocks:0,rehydrates:0,fullHydrates:0,coreHydrating:false,lastFullHydrateAt:0,suppressedHydrates:0,lastCloudApplyBlockAt:0,lastError:'',lastDomains:{},localDailyGuardVersion:'V7.174'};
 let hydrateTimer=0,buildChain=Promise.resolve();
 const db=()=>{try{return (typeof v073Db!=='undefined'&&v073Db)||null}catch(_){return null}};
 const uid=()=>{try{return String((typeof v073User!=='undefined'&&v073User?.id)||'')}catch(_){return ''}};
@@ -135161,7 +135169,7 @@ async function hydrateActive(){
    if(screen==='character'){await window.v7033BuildAuthorityRefresh?.();await (window.v7074ItemAuthorityRefresh?.()||window.v7063ItemStageRefresh?.());}
    else if(screen==='shop'||screen==='forge'||screen==='harzForge')await (window.v7074ItemAuthorityRefresh?.()||window.v7063ItemStageRefresh?.());
    else if(screen==='quests')await window.v7110SyncQuestAuthority?.(true);
-   else if(screen==='dungeon')await window.v7040AuthorityRefresh?.();
+   else if(screen==='dungeon'){await window.v7040AuthorityRefresh?.();const di=Math.max(0,Math.min(19,Number(s?.dungeon?.selected??s?.dungeon?.lastActive??0)||0));await window.v7051EnsureDungeonState?.(di,{force:false,paint:true,reason:'active-hydrate'});}
    else if(screen==='grow'){await window.v7065GrowAuthorityRefresh?.(true);await window.v7070GrowHydrationRefresh?.();}
    else if(screen==='tower'||screen==='worldboss'||screen==='weekly')await window.v7072AuthorityRefresh?.();
    else if(screen==='endgame')await window.v7073EndgameRefresh?.();
@@ -135171,13 +135179,18 @@ async function hydrateActive(){
 /* Manual/system-test only: one complete canonical read pass, deliberately no interval. */
 async function hydrateAllCore(){
  if(!auth())return {ok:false,reason:'AUTH_REQUIRED'};
- D.fullHydrates++;
+ D.fullHydrates++;D.coreHydrating=true;
  const jobs=[
   ['progress',()=>window.v7077ProgressRefresh?.()],
   ['build',()=>window.v7033BuildAuthorityRefresh?.()],
   ['items',()=>window.v7074ItemAuthorityRefresh?.()||window.v7063ItemStageRefresh?.(true)],
   ['quest',()=>window.v7110SyncQuestAuthority?.(true)],
-  ['dungeon',()=>window.v7040AuthorityRefresh?.()],
+  ['dungeon',async()=>{
+    await window.v7040AuthorityRefresh?.();
+    const di=Math.max(0,Math.min(19,Number(s?.dungeon?.selected??s?.dungeon?.lastActive??0)||0));
+    if(typeof window.v7051EnsureDungeonState==='function')return await window.v7051EnsureDungeonState(di,{force:true,paint:false,reason:'login-hydrate'});
+    return null;
+  }],
   ['grow',async()=>{await window.v7065GrowAuthorityRefresh?.(true);return await window.v7070GrowHydrationRefresh?.()}],
   ['pets',()=>window.v7079PetAuthorityRefresh?.(true)],
   ['achievements',()=>window.v7080AchievementRefresh?.(false)],
@@ -135185,14 +135198,20 @@ async function hydrateAllCore(){
   ['endgame',()=>window.v7073EndgameRefresh?.()]
  ];
  const result={};
- for(const [name,fn] of jobs){
-  try{const r=await fn();result[name]={ok:true,value:r??null}}
-  catch(e){result[name]={ok:false,error:String(e?.message||e)};D.lastError=String(e?.message||e)}
- }
+ try{
+  for(const [name,fn] of jobs){
+   try{const r=await fn();result[name]={ok:true,value:r??null}}
+   catch(e){result[name]={ok:false,error:String(e?.message||e)};D.lastError=String(e?.message||e)}
+  }
+ }finally{D.coreHydrating=false;D.lastFullHydrateAt=Date.now()}
  return {ok:Object.values(result).every(x=>x.ok),result};
 }
 function scheduleHydrate(){
  const screen=activeScreen();
+ /* V7.201: canonical login already refreshes every gameplay domain. Do not let the
+    many legacy persist() calls fired by first-paint decorators immediately start a
+    second hydration wave while the app is settling. */
+ if(D.coreHydrating||Date.now()-Number(D.lastFullHydrateAt||0)<1400){D.suppressedHydrates++;return}
  /* V7.136: Grow has a fail-closed action owner that applies RPC responses directly.
     Generic persist() calls (seed selection, UI state, old decorators) must not fan
     out into two extra Grow state RPCs. */
@@ -135209,7 +135228,7 @@ try{
 
 async function boot(){
  if(!auth())return;
- try{await refreshAuthority();if(D.fullAuthority)scheduleHydrate()}
+ try{await refreshAuthority();if(D.fullAuthority&&Date.now()-Number(D.lastFullHydrateAt||0)>1800)scheduleHydrate()}
  catch(e){D.lastError=String(e?.message||e)}
 }
 window.addEventListener('growlegends:account-ready',()=>setTimeout(()=>void boot(),120),{passive:true});
@@ -137053,7 +137072,7 @@ html.v7154-frame-pending #world .v366-avatar{border:1px solid #3d5140!important;
 <script id="v7175-combat-release-owner">
 (()=>{'use strict';
  window.__V7169_COMBAT_COMPLETE__=window.__V7175_COMBAT_COMPLETE__=Object.freeze({version:'V7.193',singleVisibleArena:true,singleRendererFor:['dungeon','quest','tower','pvp'],classSpecificMotion:true,allClassTalentProcFx:true,statusAndDotHud:true,summonerPersistentCompanions:true,summonerRosterHud:true,summonGuaranteeCounter:true,summonerAttackFlight:true,companionReturnFlight:true,enemyFocusCrop:true,exactDungeonEnemyAsset:true,currentQuestStage:true,activeObserverOnly:true,serverCombatUnchanged:true,rewardsUnchanged:true});
- const V=Object.freeze({short:'V7.200',label:'V7.200 Stable',number:'7.200'});window.GROW_LEGENDS_VERSION=V;window.__GROW_LEGENDS_RELEASE__=V.short;window.__GL_CURRENT_BUILD__=V.short;
+ const V=Object.freeze({short:'V7.201',label:'V7.201 Stable',number:'7.201'});window.GROW_LEGENDS_VERSION=V;window.__GROW_LEGENDS_RELEASE__=V.short;window.__GL_CURRENT_BUILD__=V.short;
  document.documentElement.dataset.glBuild=V.short;
  window.glClientParityDiagnostics=()=>({build:V.short,combatOwner:'v7175',seedCatalog:'v492-static',href:location.href,native:!!window.Capacitor?.isNativePlatform?.(),userAgent:navigator.userAgent});
  const paint=()=>{try{document.querySelectorAll('.version,.v372-logo em,.v371-logo em,.v366-ver').forEach(el=>{if(el?.tagName!=='STYLE')el.textContent=V.short})}catch(_){}};paint();window.addEventListener('growlegends:account-ready',paint,{passive:true});
@@ -137678,13 +137697,13 @@ window.__V7166_DUNGEON_DETAIL_QA__=()=>({
   roadVisible:!!document.querySelector('#dungeonMapCard .v261-road')&&getComputedStyle(document.querySelector('#dungeonMapCard .v261-road')).display!=='none'
 });
 
-const V=Object.freeze({short:'V7.200',label:'V7.200 Stable',number:'7.200'});
+const V=Object.freeze({short:'V7.201',label:'V7.201 Stable',number:'7.201'});
 window.GROW_LEGENDS_VERSION=V;
-window.__GROW_LEGENDS_RELEASE__='V7.200';
-window.__GL_CURRENT_BUILD__='V7.200';
+window.__GROW_LEGENDS_RELEASE__='V7.201';
+window.__GL_CURRENT_BUILD__='V7.201';
 const paintVersion=()=>{
   try{document.querySelectorAll('.version,.v372-logo em,.v371-logo em,.v366-ver').forEach(el=>{if(el?.tagName!=='STYLE')el.textContent=V.short})}catch(_){}
-  try{document.title='Grow Legends V7.200'}catch(_){}
+  try{document.title='Grow Legends V7.201'}catch(_){}
 };
 paintVersion();
 window.addEventListener('growlegends:account-ready',paintVersion,{passive:true});
@@ -137692,8 +137711,8 @@ repair('boot');
 })();
 </script>
 <style id="v7166-final-version-css">
-html body .app > header .v358-logo::after{content:"V7.200"!important}
-html body .app > header .v366-ver::after,html body .app > header .v371-logo em::after,html body .app > header .v372-logo em::after,#v372TopbarShell .v372-logo em::after{content:"V7.200"!important}
+html body .app > header .v358-logo::after{content:"V7.201"!important}
+html body .app > header .v366-ver::after,html body .app > header .v371-logo em::after,html body .app > header .v372-logo em::after,#v372TopbarShell .v372-logo em::after{content:"V7.201"!important}
 </style>
 <!-- ===== /V7.168 DUNGEON DETAIL RENDER LOCK ===== -->
 
