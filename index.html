@@ -2,7 +2,7 @@
 <html lang="de" class="v7154-frame-pending">
 <head>
 <script id="v4131-version-source">
-window.GROW_LEGENDS_VERSION=Object.freeze({short:'V7.206',label:'V7.206 Stable',number:'7.205'});
+window.GROW_LEGENDS_VERSION=Object.freeze({short:'V7.207',label:'V7.207 Stable',number:'7.207'});
 </script>
 <script id="v7101-public-profile-coalescer">
 (()=>{
@@ -288,7 +288,7 @@ window.__V483_POWER_READY__=false;
 .app > header .v366-ver,.app > header .v371-logo em,.app > header .v372-logo em{font-size:0!important;color:transparent!important}
 .app > header .v366-ver::after,.app > header .v371-logo em::after,.app > header .v372-logo em::after{content:"V4.164"!important;font-size:5px!important;color:#63cdd1!important;font-style:normal!important;font-weight:900!important}
 </style>
-<title>Grow Legends V7.206</title>
+<title>Grow Legends V7.207</title>
 <style>
 :root{--bg:#0b100b;--panel:#151d14;--panel2:#1c281a;--panel3:#253423;--line:#354933;--text:#f2f5ed;--muted:#9fad99;--green:#83d65d;--green2:#b2f07e;--gold:#f2c75a;--red:#ee6b68;--blue:#68a7ea;--purple:#ad7bea;--shadow:0 12px 30px rgba(0,0,0,.28)}
 *{box-sizing:border-box}html{background:var(--bg)}body{margin:0;color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:radial-gradient(circle at 50% -10%,#253821 0,#10170f 40%,#090d09 100%);min-height:100vh}button{font:inherit}.app{max-width:820px;margin:auto;min-height:100vh;padding-bottom:88px}
@@ -1218,7 +1218,7 @@ img.v6108-quality-art{
   display:block!important;
 }
 
-/* V7.206: direct raster artwork. The parent owns the frame on normal item slots;
+/* V7.207: direct raster artwork. The parent owns the frame on normal item slots;
    standalone reward/detail images receive the same quality color themselves. */
 img.v6108-quality-art{box-sizing:border-box!important;border:2px solid transparent!important;border-radius:10px!important;background:#070b08!important}
 .v6108-quality-artbox > img.v6108-quality-art{border:0!important;border-radius:8px!important}
@@ -15594,6 +15594,41 @@ function v6101CommonHud(){
   }catch(e){}
 }
 
+let v7207CharacterRenderEpoch=0;
+function v7207CharacterActive(epoch){
+  return epoch===v7207CharacterRenderEpoch&&document.getElementById('character')?.classList.contains('active');
+}
+function v7207TimedCharacterStage(profile,name,fn){
+  const t=performance.now?.()||Date.now();
+  try{fn?.()}catch(e){console.warn('V7.207 character stage',name,e)}
+  profile[name]=Math.round((performance.now?.()||Date.now())-t);
+}
+function v7207RenderCharacterProgressive(){
+  const epoch=++v7207CharacterRenderEpoch,started=performance.now?.()||Date.now(),profile={};
+  /* Above-the-fold identity is the only character work allowed in the first
+     navigation frame. The large talent/inventory trees are presentation-only
+     and are split across later frames so tapping Held never blocks the UI. */
+  v7207TimedCharacterStage(profile,'avatar',()=>renderClassAvatar?.());
+  requestAnimationFrame(()=>{
+    if(!v7207CharacterActive(epoch))return;
+    v7207TimedCharacterStage(profile,'set',()=>renderSetPanel?.());
+    v7207TimedCharacterStage(profile,'classes',()=>renderClasses?.());
+    requestAnimationFrame(()=>{
+      if(!v7207CharacterActive(epoch))return;
+      v7207TimedCharacterStage(profile,'skills',()=>renderSkillTree?.());
+      const inventory=()=>{
+        if(!v7207CharacterActive(epoch))return;
+        v7207TimedCharacterStage(profile,'inventory',()=>renderInventory?.());
+        profile.total=Math.round((performance.now?.()||Date.now())-started);
+        try{window.__GL_RUNTIME_WATCHDOG__?.report?.('character_render_profile','info',profile,{screen:'character',incidentKey:'progressive-v7207'})}catch(_){}
+      };
+      if(typeof requestIdleCallback==='function')requestIdleCallback(inventory,{timeout:240});
+      else setTimeout(inventory,32);
+    });
+  });
+}
+window.v7207RenderCharacterProgressive=v7207RenderCharacterProgressive;
+
 function v6101RenderOpenedScreen(id){
   v6101CommonHud();
   try{
@@ -15602,11 +15637,7 @@ function v6101RenderOpenedScreen(id){
         if(typeof v085InstallWorld==='function')v085InstallWorld(false);
         break;
       case 'character':
-        try{renderClasses?.()}catch(e){}
-        try{renderSetPanel?.()}catch(e){}
-        try{renderClassAvatar?.()}catch(e){}
-        try{renderSkillTree?.()}catch(e){}
-        try{renderInventory?.()}catch(e){}
+        v7207RenderCharacterProgressive();
         break;
       case 'grow':
         try{renderGrow?.()}catch(e){}
@@ -26121,7 +26152,7 @@ async function v200FinalizeUser(user){
   if(!ok)return false;
 
   window.__V200_AUTH_READY__=true;
-  /* V7.206: keep the loading artwork above the app until the deterministic
+  /* V7.207: keep the loading artwork above the app until the deterministic
      boot owner confirms the first playable frame. Without the final owner
      (legacy/standalone fallback), retain the historical immediate release. */
   if(!window.__V7205_SPLASH_GATE__)v075Overlay(false);
@@ -73503,7 +73534,7 @@ function ensureScreen(){
  const main=document.querySelector('main');if(!main)return null;
  let sec=document.getElementById('systemtech');if(!sec){sec=document.createElement('section');sec.id='systemtech';sec.className='screen';const footer=document.getElementById('v337LegalFooter');if(footer&&footer.parentElement===main)main.insertBefore(sec,footer);else main.appendChild(sec)}
  if(!sec.dataset.built){sec.dataset.built='1';sec.innerHTML=`<div class="v4107-page">
-  <div class="v4107-top"><div class="v4107-brand"><div class="v4107-brand-mark">🌿⚙️</div><div><h1>GROW LEGENDS <span>SYSTEMTEST & TECHNIK</span></h1><p>SERVERAUTORITÄT · SPIELZUSTAND · REAKTIONSZEITEN · UI · FEHLER · PERFORMANCE</p></div></div><div class="v4107-version">V7.206</div></div>
+  <div class="v4107-top"><div class="v4107-brand"><div class="v4107-brand-mark">🌿⚙️</div><div><h1>GROW LEGENDS <span>SYSTEMTEST & TECHNIK</span></h1><p>SERVERAUTORITÄT · SPIELZUSTAND · REAKTIONSZEITEN · UI · FEHLER · PERFORMANCE</p></div></div><div class="v4107-version">V7.207</div></div>
   <div class="v4107-layout">
    <aside class="v4107-sidebar"><div class="v4107-side-title">⚙️ SYSTEMTECHNIK</div>
     <button class="v4107-nav active" data-v4107-jump="status"><i>🧪</i>Systemtest</button>
@@ -76089,7 +76120,7 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();i
    for(const fn of jobs)await fn();
    r={ok:true};
   }
-  /* V7.206: the dungeon owner is parsed much later than the account resolver. On a
+  /* V7.207: the dungeon owner is parsed much later than the account resolver. On a
      cold OAuth return it can briefly be unavailable even though the canonical RPC
      is healthy. Repair only that missing read directly from the server instead of
      failing the whole login into an empty shell. Gameplay stays fail-closed. */
@@ -76736,7 +76767,7 @@ html:not(.v4142-systemtech-admin) #v4102QaButton{display:none!important}
  let extrasPromise=null,extrasUid='',foregroundTimer=0;
  function quietRemaining(){return Math.max(0,Number(window.__V7204_STARTUP_QUIET_UNTIL__||0)-Date.now())}
  function startupQuiet(){return quietRemaining()>0}
- function afterStartupQuiet(fn,extra=0){const run=()=>{try{fn()}catch(e){console.warn('V7.206 deferred boot task',e)}};const wait=quietRemaining()+Math.max(0,Number(extra)||0);if(wait>0)return setTimeout(run,wait);run();return 0}
+ function afterStartupQuiet(fn,extra=0){const run=()=>{try{fn()}catch(e){console.warn('V7.207 deferred boot task',e)}};const wait=quietRemaining()+Math.max(0,Number(extra)||0);if(wait>0)return setTimeout(run,wait);run();return 0}
  window.v7204StartupQuiet=startupQuiet;window.v7204StartupQuietRemaining=quietRemaining;window.v7204AfterStartupQuiet=afterStartupQuiet;
  window.v7206StartupBusy=()=>window.__V7206_CANONICAL_LOGIN_RUNNING__===true||window.__V7206_FIRST_PLAYABLE_PENDING__===true;
  window.__V7205_SPLASH_GATE__=true;
@@ -76846,7 +76877,7 @@ html:not(.v4142-systemtech-admin) #v4102QaButton{display:none!important}
        boot.playableAt=Date.now();boot.accountToPlayableMs=Math.max(0,boot.playableAt-Number(boot.accountReadyAt||boot.playableAt));window.__V7206_FIRST_PLAYABLE_PENDING__=false;setPhase('playable','finalize');
        try{v075Overlay(false)}catch(_){}
        emit('growlegends:first-playable',{reason:'finalize',finalizeMs:boot.finalizeMs,splashGateMs:boot.splashGateMs,accountToPlayableMs:boot.accountToPlayableMs});
-       try{window.__GL_RUNTIME_WATCHDOG__?.report?.('startup_playable','info',{finalizeMs:boot.finalizeMs,splashGateMs:boot.splashGateMs,accountToPlayableMs:boot.accountToPlayableMs,totalFromFinalizeMs:Math.max(0,boot.playableAt-boot.finalizeStartedAt),quietRemainingMs:quietRemaining()},{screen:'world',incidentKey:'startup-v7206'})}catch(_){}
+       try{window.__GL_RUNTIME_WATCHDOG__?.report?.('startup_playable','info',{finalizeMs:boot.finalizeMs,splashGateMs:boot.splashGateMs,accountToPlayableMs:boot.accountToPlayableMs,totalFromFinalizeMs:Math.max(0,boot.playableAt-boot.finalizeStartedAt),quietRemainingMs:quietRemaining()},{screen:'world',incidentKey:'startup-v7207'})}catch(_){}
        setTimeout(()=>{if(uid()!==id||!verified(id))return;const go=()=>void runExtras(id,'post-playable');if(typeof requestIdleCallback==='function')requestIdleCallback(go,{timeout:2200});else setTimeout(go,250)},1200);
       }
      }
@@ -104975,7 +105006,7 @@ window.v6102EquipmentDiagnostics=function(){
  window.v6108ItemQuality=qualityOf;
 
  function qualityFrame(base,it){
-   /* V7.206: Base64 Phase 2 moved the real artwork to external files.
+   /* V7.207: Base64 Phase 2 moved the real artwork to external files.
       Do not embed an external asset again inside a data: SVG: SVG images used
       through <img> are isolated and the nested relative image URL stays blank.
       The existing .v6108-quality-artbox / v6108-q-* classes own the rarity frame. */
@@ -128285,7 +128316,7 @@ async function canonicalState({force=false}={}){
  })().finally(()=>{stateFlight=null});
  return stateFlight;
 }
-/* V7.206: authoritative entry guard belongs to the dungeon owner. */
+/* V7.207: authoritative entry guard belongs to the dungeon owner. */
 async function ensureCanonicalEntry(di,{force=true,paint=true,reason='entry'}={}){
  C.entryGuards++;
  if(!enforced())return{ok:true,enforced:false,completed:false};
@@ -134518,9 +134549,19 @@ if(typeof base==='function'&&!base.__v7119PostNavigation){
   const wrapped=function(id){
     const target=String(id||'');
     const out=base.apply(this,arguments);
-    requestAnimationFrame(()=>{
+    const fire=()=>{
+      const t=performance.now?.()||Date.now();
       try{window.dispatchEvent(new CustomEvent(EVENT,{detail:{id:target}}))}catch(e){console.warn('[V7.119] navigation refresh dispatch',e)}
-    });
+      if(target==='character'){
+        const ms=Math.round((performance.now?.()||Date.now())-t);
+        try{window.__GL_RUNTIME_WATCHDOG__?.report?.('character_postnav_profile','info',{listenersMs:ms},{screen:'character',incidentKey:'v7119-v7207'})}catch(_){}
+      }
+    };
+    /* Character has many historical presentation listeners. Dispatch them only
+       after two paints so the destination becomes interactive first. Other
+       routes keep the established single-frame dispatch. */
+    if(target==='character')requestAnimationFrame(()=>requestAnimationFrame(fire));
+    else requestAnimationFrame(fire);
     return out;
   };
   wrapped.__v7119PostNavigation=true;
@@ -134645,6 +134686,11 @@ window.v7123QuestDiagnostics=()=>({
 #character.v514-reference-hero #v459SetSummary{
   contain:layout style!important;
 }
+/* V7.207: lower Heldenquartier sections are not part of the first interactive
+   frame. Chromium can skip their style/paint work until they approach the
+   viewport; intrinsic sizes keep scroll geometry stable while they are skipped. */
+#character > .card{content-visibility:auto;contain-intrinsic-size:auto 360px}
+#character > .card:last-child{contain-intrinsic-size:auto 900px}
 </style>
 <script id="v7124-character-scroll-summary-owner">
 (()=>{
@@ -135183,7 +135229,7 @@ window.__V7132_ITEM_AUTHORITY__=Object.freeze({
 'use strict';
 if(window.__V7133_GLOBAL_AUTHORITY_LOCKDOWN__)return;
 window.__V7133_GLOBAL_AUTHORITY_LOCKDOWN__=true;
-const VERSION='V7.206'; /* consolidated gameplay authority owner */
+const VERSION='V7.207'; /* consolidated gameplay authority owner */
 const GAMEPLAY_DOMAINS=Object.freeze([
  'achievements','billing','build','daily','dungeon','endgame','grow_dealer','grow_orders','guild','items','liveops',
  'pets','profile','progress','pvp','quest','seeds','shop','social','tower','weekly','worldboss'
@@ -135400,7 +135446,7 @@ async function hydrateAllCore(){
 }
 function scheduleHydrate(){
  const screen=activeScreen();
- /* V7.206: canonical login already refreshes the critical first-frame domains. Do not let the
+ /* V7.207: canonical login already refreshes the critical first-frame domains. Do not let the
     many legacy persist() calls fired by first-paint decorators immediately start a
     second hydration wave while the app is settling. */
  if(D.coreHydrating||Date.now()-Number(D.lastFullHydrateAt||0)<1400){D.suppressedHydrates++;return}
@@ -137266,7 +137312,7 @@ html.v7154-frame-pending #world .v366-avatar{border:1px solid #3d5140!important;
 <script id="v7175-combat-release-owner">
 (()=>{'use strict';
  window.__V7169_COMBAT_COMPLETE__=window.__V7175_COMBAT_COMPLETE__=Object.freeze({version:'V7.193',singleVisibleArena:true,singleRendererFor:['dungeon','quest','tower','pvp'],classSpecificMotion:true,allClassTalentProcFx:true,statusAndDotHud:true,summonerPersistentCompanions:true,summonerRosterHud:true,summonGuaranteeCounter:true,summonerAttackFlight:true,companionReturnFlight:true,enemyFocusCrop:true,exactDungeonEnemyAsset:true,currentQuestStage:true,activeObserverOnly:true,serverCombatUnchanged:true,rewardsUnchanged:true});
- const V=Object.freeze({short:'V7.206',label:'V7.206 Stable',number:'7.205'});window.GROW_LEGENDS_VERSION=V;window.__GROW_LEGENDS_RELEASE__=V.short;window.__GL_CURRENT_BUILD__=V.short;
+ const V=Object.freeze({short:'V7.207',label:'V7.207 Stable',number:'7.207'});window.GROW_LEGENDS_VERSION=V;window.__GROW_LEGENDS_RELEASE__=V.short;window.__GL_CURRENT_BUILD__=V.short;
  document.documentElement.dataset.glBuild=V.short;
  window.glClientParityDiagnostics=()=>({build:V.short,combatOwner:'v7175',seedCatalog:'v492-static',href:location.href,native:!!window.Capacitor?.isNativePlatform?.(),userAgent:navigator.userAgent});
  const paint=()=>{try{document.querySelectorAll('.version,.v372-logo em,.v371-logo em,.v366-ver').forEach(el=>{if(el?.tagName!=='STYLE')el.textContent=V.short})}catch(_){}};paint();window.addEventListener('growlegends:account-ready',paint,{passive:true});
@@ -137891,13 +137937,13 @@ window.__V7166_DUNGEON_DETAIL_QA__=()=>({
   roadVisible:!!document.querySelector('#dungeonMapCard .v261-road')&&getComputedStyle(document.querySelector('#dungeonMapCard .v261-road')).display!=='none'
 });
 
-const V=Object.freeze({short:'V7.206',label:'V7.206 Stable',number:'7.205'});
+const V=Object.freeze({short:'V7.207',label:'V7.207 Stable',number:'7.207'});
 window.GROW_LEGENDS_VERSION=V;
-window.__GROW_LEGENDS_RELEASE__='V7.206';
-window.__GL_CURRENT_BUILD__='V7.206';
+window.__GROW_LEGENDS_RELEASE__='V7.207';
+window.__GL_CURRENT_BUILD__='V7.207';
 const paintVersion=()=>{
   try{document.querySelectorAll('.version,.v372-logo em,.v371-logo em,.v366-ver').forEach(el=>{if(el?.tagName!=='STYLE')el.textContent=V.short})}catch(_){}
-  try{document.title='Grow Legends V7.206'}catch(_){}
+  try{document.title='Grow Legends V7.207'}catch(_){}
 };
 paintVersion();
 window.addEventListener('growlegends:account-ready',paintVersion,{passive:true});
@@ -137905,8 +137951,8 @@ repair('boot');
 })();
 </script>
 <style id="v7166-final-version-css">
-html body .app > header .v358-logo::after{content:"V7.206"!important}
-html body .app > header .v366-ver::after,html body .app > header .v371-logo em::after,html body .app > header .v372-logo em::after,#v372TopbarShell .v372-logo em::after{content:"V7.206"!important}
+html body .app > header .v358-logo::after{content:"V7.207"!important}
+html body .app > header .v366-ver::after,html body .app > header .v371-logo em::after,html body .app > header .v372-logo em::after,#v372TopbarShell .v372-logo em::after{content:"V7.207"!important}
 </style>
 <!-- ===== /V7.168 DUNGEON DETAIL RENDER LOCK ===== -->
 
