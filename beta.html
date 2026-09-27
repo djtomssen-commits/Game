@@ -3,7 +3,7 @@
 <head>
 <script>window.GROW_RELEASE_CHANNEL='beta';</script>
 <script id="v4131-version-source">
-window.GROW_LEGENDS_VERSION=Object.freeze({short:'V7.224',label:'V7.224 Beta',number:'7.224'});
+window.GROW_LEGENDS_VERSION=Object.freeze({short:'V7.226',label:'V7.226 Beta',number:'7.226'});
 window.__V7210_BOOT_PENDING__=true;
 window.v7206StartupBusy=()=>window.__V7210_BOOT_PENDING__===true||window.__V7206_CANONICAL_LOGIN_RUNNING__===true||window.__V7206_FIRST_PLAYABLE_PENDING__===true;
 /* V7.214: account-ready listeners used to all wake in the same frame and caused
@@ -366,7 +366,7 @@ window.__V483_POWER_READY__=false;
 .app > header .v366-ver,.app > header .v371-logo em,.app > header .v372-logo em{font-size:0!important;color:transparent!important}
 .app > header .v366-ver::after,.app > header .v371-logo em::after,.app > header .v372-logo em::after{content:"V4.164"!important;font-size:5px!important;color:#63cdd1!important;font-style:normal!important;font-weight:900!important}
 </style>
-<title>Grow Legends V7.224</title>
+<title>Grow Legends V7.226</title>
 <style>
 :root{--bg:#0b100b;--panel:#151d14;--panel2:#1c281a;--panel3:#253423;--line:#354933;--text:#f2f5ed;--muted:#9fad99;--green:#83d65d;--green2:#b2f07e;--gold:#f2c75a;--red:#ee6b68;--blue:#68a7ea;--purple:#ad7bea;--shadow:0 12px 30px rgba(0,0,0,.28)}
 *{box-sizing:border-box}html{background:var(--bg)}body{margin:0;color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:radial-gradient(circle at 50% -10%,#253821 0,#10170f 40%,#090d09 100%);min-height:100vh}button{font:inherit}.app{max-width:820px;margin:auto;min-height:100vh;padding-bottom:88px}
@@ -13518,7 +13518,7 @@ async function v073Init(){
 
       if(!v073Db){
         const v073StoredServer=localStorage.getItem('growLegendsSelectedServer');
-        const v073SelectedServer=String(v073StoredServer||(window.GROW_RELEASE_CHANNEL==='beta'?'beta':(Date.now()>=Date.parse('2026-10-02T16:00:00+02:00')?'server1':'beta')));
+        const v073SelectedServer=String(window.GROW_RELEASE_CHANNEL==='beta'?'beta':(Date.now()>=Date.parse('2026-10-02T16:00:00+02:00')?'server1':(v073StoredServer||'beta')));
         const v073DbSchema=v073SelectedServer==='server1'?'server1':'public';
         window.__GROW_DB_SCHEMA__=v073DbSchema;
         v073Db=window.supabase.createClient(
@@ -55628,7 +55628,7 @@ setTimeout(()=>{try{v322InstallMenuEntry();v322InstallHarzPlus()}catch(e){consol
 })();
 </script>
 
-<!-- ===== V7.224: Beta / Server 1 release routing + isolated Supabase schemas ===== -->
+<!-- ===== V7.226: Beta / Server 1 routing, launch default + recommendation ===== -->
 <style id="v343-server-select-css">
 #v075AuthOverlay .v343-server-select{margin:12px 0 14px}
 #v075AuthOverlay .v343-server-title{display:flex;justify-content:space-between;align-items:center;margin-bottom:7px;color:#d9e7d4;font-size:11px;font-weight:900}
@@ -55644,7 +55644,7 @@ setTimeout(()=>{try{v322InstallMenuEntry();v322InstallHarzPlus()}catch(e){consol
 #v075AuthOverlay .v343-launch-countdown{margin-top:7px;padding:6px 7px;border:1px solid rgba(240,215,138,.22);border-radius:8px;background:rgba(0,0,0,.18);color:#f0d78a;font-size:8px;font-weight:1000;text-align:center;letter-spacing:.02em}
 @media(max-width:430px){#v075AuthOverlay .v343-server-grid{grid-template-columns:1fr}}
 </style>
-<script id="v343-server-selection-v7224">
+<script id="v343-server-selection-v7226">
 (function(){
   const V343_SERVER_KEY='growLegendsSelectedServer';
   const V343_LAUNCH_AT=Date.parse('2026-10-02T16:00:00+02:00');
@@ -55659,6 +55659,11 @@ setTimeout(()=>{try{v322InstallMenuEntry();v322InstallHarzPlus()}catch(e){consol
   });
 
   function v343Selected(){
+    if(V343_RELEASE_CHANNEL==='beta')return 'beta';
+    if(launchOpen()){
+      if(localStorage.getItem(V343_SERVER_KEY)!=='server1')localStorage.setItem(V343_SERVER_KEY,'server1');
+      return 'server1';
+    }
     const raw=localStorage.getItem(V343_SERVER_KEY)||defaultServer();
     return window.V343_SERVERS[raw]?raw:defaultServer();
   }
@@ -55712,11 +55717,11 @@ setTimeout(()=>{try{v322InstallMenuEntry();v322InstallHarzPlus()}catch(e){consol
     const live=launchOpen();
     return `<div class="v343-server-title"><span>🌐 Server wählen</span><small>Charaktere & Gilden sind getrennt</small></div>
       <div class="v343-server-grid">
-        <button type="button" class="v343-server ${selected==='beta'?'active':''}" data-v343-server="beta">
+        <button type="button" class="v343-server ${selected==='beta'?'active':''} ${live?'':'recommended'}" data-v343-server="beta">
           <div class="v343-server-name">🧪 Beta Server</div>
           <div class="v343-server-meta"><span class="v343-online">● ONLINE</span><span>Test-Build</span></div>
         </button>
-        <button type="button" class="v343-server ${selected==='server1'?'active':''} ${live?'':'preview'}" data-v343-server="server1">
+        <button type="button" class="v343-server ${selected==='server1'?'active':''} ${live?'recommended':'preview'}" data-v343-server="server1">
           <div class="v343-server-name">${live?'🌍':'🔒'} Server 1</div>
           <div class="v343-server-meta">${live?'<span class="v343-online">● ONLINE</span><span>Live-Server</span>':'<span class="v343-preview">VORABTEST</span><span>Start Fr. 16:00</span>'}</div>
           ${live?'':'<div class="v343-launch-countdown" data-v343-launch-countdown>⏳ Start wird berechnet …</div>'}
@@ -55729,7 +55734,7 @@ setTimeout(()=>{try{v322InstallMenuEntry();v322InstallHarzPlus()}catch(e){consol
     const card=document.querySelector('#v075AuthOverlay .v075-auth-card');if(!card)return false;
     let box=card.querySelector('.v343-server-select');
     if(!box){box=document.createElement('div');box.className='v343-server-select';const tabs=card.querySelector('.v075-auth-tabs');if(tabs)tabs.insertAdjacentElement('beforebegin',box);else{const brand=card.querySelector('.v200-auth-brand');if(brand)brand.insertAdjacentElement('afterend',box);else card.insertBefore(box,card.firstChild)}}
-    const selected=v343Selected(),signature='servers-v7224:'+selected+':'+(launchOpen()?'live':'preview')+':'+V343_RELEASE_CHANNEL;
+    const selected=v343Selected(),signature='servers-v7226:'+selected+':'+(launchOpen()?'live':'preview')+':'+V343_RELEASE_CHANNEL;
     if(force||box.dataset.v343Signature!==signature){box.dataset.v343Signature=signature;box.innerHTML=v343Markup(selected);box.querySelectorAll('[data-v343-server]').forEach(b=>b.onclick=()=>v343SetServer(String(b.dataset.v343Server||'beta')))}
     return true;
   }
@@ -55782,7 +55787,11 @@ setTimeout(()=>{try{v322InstallMenuEntry();v322InstallHarzPlus()}catch(e){consol
   }
 
   const oauthServer=sessionStorage.getItem('v343OAuthServer');
-  if(oauthServer&&window.V343_SERVERS[oauthServer]){window.v343CurrentServer=oauthServer;localStorage.setItem(V343_SERVER_KEY,oauthServer)}
+  if(oauthServer&&window.V343_SERVERS[oauthServer]){
+    const resolvedOAuthServer=V343_RELEASE_CHANNEL==='beta'?'beta':(launchOpen()?'server1':oauthServer);
+    window.v343CurrentServer=resolvedOAuthServer;
+    localStorage.setItem(V343_SERVER_KEY,resolvedOAuthServer);
+  }
 
   const baseBind=typeof v075BindAuthUi==='function'?v075BindAuthUi:null;
   if(baseBind)v075BindAuthUi=function(){const r=baseBind.apply(this,arguments);const email=document.querySelector('#v075EmailAction'),google=document.querySelector('#v075GoogleAction');if(email&&typeof v200EmailAuth==='function')email.onclick=v200EmailAuth;if(google&&typeof v200GoogleAuth==='function')google.onclick=v200GoogleAuth;v343RenderServerSelect(false);return r};
@@ -55879,7 +55888,7 @@ body:has(#v075AuthOverlay.show){background:#020704!important}
 #v075AuthOverlay .v343-server.active{
   border:2px solid #79ef28!important;box-shadow:0 0 26px rgba(110,242,31,.17),inset 0 0 36px rgba(78,184,28,.07)!important
 }
-#v075AuthOverlay .v343-server.active::before{
+#v075AuthOverlay .v343-server.recommended::before{
   content:"EMPFOHLEN";position:absolute;left:10px;top:-1px;padding:6px 10px;border-radius:0 0 7px 7px;
   background:#76e22c;color:#092207;font-size:10px;font-weight:1000
 }
@@ -55887,11 +55896,12 @@ body:has(#v075AuthOverlay.show){background:#020704!important}
 #v075AuthOverlay .v343-server-name{font-size:23px!important;line-height:1.1!important;font-weight:1000!important;color:#d9ffae!important;display:block!important}
 #v075AuthOverlay .v343-server.locked .v343-server-name{color:#d0d0d0!important}
 #v075AuthOverlay .v343-server-name::before{display:block;font-size:42px;margin-bottom:12px}
-#v075AuthOverlay button.v343-server .v343-server-name::before{content:"🧪"}
-#v075AuthOverlay .v343-server.locked .v343-server-name::before{content:"🔒"}
+#v075AuthOverlay button.v343-server[data-v343-server="beta"] .v343-server-name::before{content:"🧪"}
+#v075AuthOverlay button.v343-server[data-v343-server="server1"] .v343-server-name::before{content:"🌍"}
+#v075AuthOverlay button.v343-server[data-v343-server="server1"].preview .v343-server-name::before{content:"🔒"}
 #v075AuthOverlay .v343-server-name{font-size:0!important}
-#v075AuthOverlay button.v343-server .v343-server-name::after{content:"BETA SERVER";font-size:23px}
-#v075AuthOverlay .v343-server.locked .v343-server-name::after{content:"SERVER 1";font-size:23px}
+#v075AuthOverlay button.v343-server[data-v343-server="beta"] .v343-server-name::after{content:"BETA SERVER";font-size:23px}
+#v075AuthOverlay button.v343-server[data-v343-server="server1"] .v343-server-name::after{content:"SERVER 1";font-size:23px}
 #v075AuthOverlay .v343-server-meta{display:flex!important;flex-direction:column!important;gap:9px!important;margin-top:12px!important;font-size:12px!important;color:#b8bdb7!important}
 #v075AuthOverlay .v343-online{color:#72e735!important;font-size:13px!important;font-weight:1000!important}
 #v075AuthOverlay .v343-locked{color:#e9a334!important;font-size:13px!important;font-weight:1000!important}
@@ -136386,7 +136396,7 @@ window.v7136RewardDiagnostics=()=>({version:String(window.GROW_LEGENDS_VERSION?.
 <script id="v7135-absolute-final-version-owner">
 (()=>{
 'use strict';
-const V=Object.freeze({short:'V7.222',label:'V7.222 Stable',number:'7.222'});
+const V=Object.freeze({short:'V7.226',label:'V7.226 Stable',number:'7.226'});
 window.GROW_LEGENDS_VERSION=V;
 window.__GROW_LEGENDS_RELEASE__=V.short;
 window.__GL_CURRENT_BUILD__=V.short;
