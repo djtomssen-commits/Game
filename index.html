@@ -2,7 +2,7 @@
 <html lang="de" class="v7154-frame-pending">
 <head>
 <script id="v4131-version-source">
-window.GROW_LEGENDS_VERSION=Object.freeze({short:'V7.205',label:'V7.205 Stable',number:'7.205'});
+window.GROW_LEGENDS_VERSION=Object.freeze({short:'V7.206',label:'V7.206 Stable',number:'7.205'});
 </script>
 <script id="v7101-public-profile-coalescer">
 (()=>{
@@ -90,7 +90,7 @@ window.v7101SyncPublicProfile=sync;
 window.v7101SchedulePublicProfileSync=schedule;
 window.v7101PublicProfileDiagnostics=()=>({...P,inflight:!!inflight,uid:uid()});
 
-window.addEventListener('growlegends:account-ready',()=>schedule(true,250),{passive:true});
+window.addEventListener('growlegends:first-playable',()=>schedule(true,600),{passive:true});
 window.addEventListener('pageshow',()=>{if(Date.now()-P.lastOkAt>30000)schedule(true,350)},{passive:true});
 document.addEventListener('visibilitychange',()=>{
   if(!document.hidden&&Date.now()-P.lastOkAt>60000)schedule(true,350);
@@ -288,7 +288,7 @@ window.__V483_POWER_READY__=false;
 .app > header .v366-ver,.app > header .v371-logo em,.app > header .v372-logo em{font-size:0!important;color:transparent!important}
 .app > header .v366-ver::after,.app > header .v371-logo em::after,.app > header .v372-logo em::after{content:"V4.164"!important;font-size:5px!important;color:#63cdd1!important;font-style:normal!important;font-weight:900!important}
 </style>
-<title>Grow Legends V7.205</title>
+<title>Grow Legends V7.206</title>
 <style>
 :root{--bg:#0b100b;--panel:#151d14;--panel2:#1c281a;--panel3:#253423;--line:#354933;--text:#f2f5ed;--muted:#9fad99;--green:#83d65d;--green2:#b2f07e;--gold:#f2c75a;--red:#ee6b68;--blue:#68a7ea;--purple:#ad7bea;--shadow:0 12px 30px rgba(0,0,0,.28)}
 *{box-sizing:border-box}html{background:var(--bg)}body{margin:0;color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:radial-gradient(circle at 50% -10%,#253821 0,#10170f 40%,#090d09 100%);min-height:100vh}button{font:inherit}.app{max-width:820px;margin:auto;min-height:100vh;padding-bottom:88px}
@@ -1218,7 +1218,7 @@ img.v6108-quality-art{
   display:block!important;
 }
 
-/* V7.205: direct raster artwork. The parent owns the frame on normal item slots;
+/* V7.206: direct raster artwork. The parent owns the frame on normal item slots;
    standalone reward/detail images receive the same quality color themselves. */
 img.v6108-quality-art{box-sizing:border-box!important;border:2px solid transparent!important;border-radius:10px!important;background:#070b08!important}
 .v6108-quality-artbox > img.v6108-quality-art{border:0!important;border-radius:8px!important}
@@ -26121,7 +26121,7 @@ async function v200FinalizeUser(user){
   if(!ok)return false;
 
   window.__V200_AUTH_READY__=true;
-  /* V7.205: keep the loading artwork above the app until the deterministic
+  /* V7.206: keep the loading artwork above the app until the deterministic
      boot owner confirms the first playable frame. Without the final owner
      (legacy/standalone fallback), retain the historical immediate release. */
   if(!window.__V7205_SPLASH_GATE__)v075Overlay(false);
@@ -73503,7 +73503,7 @@ function ensureScreen(){
  const main=document.querySelector('main');if(!main)return null;
  let sec=document.getElementById('systemtech');if(!sec){sec=document.createElement('section');sec.id='systemtech';sec.className='screen';const footer=document.getElementById('v337LegalFooter');if(footer&&footer.parentElement===main)main.insertBefore(sec,footer);else main.appendChild(sec)}
  if(!sec.dataset.built){sec.dataset.built='1';sec.innerHTML=`<div class="v4107-page">
-  <div class="v4107-top"><div class="v4107-brand"><div class="v4107-brand-mark">🌿⚙️</div><div><h1>GROW LEGENDS <span>SYSTEMTEST & TECHNIK</span></h1><p>SERVERAUTORITÄT · SPIELZUSTAND · REAKTIONSZEITEN · UI · FEHLER · PERFORMANCE</p></div></div><div class="v4107-version">V7.205</div></div>
+  <div class="v4107-top"><div class="v4107-brand"><div class="v4107-brand-mark">🌿⚙️</div><div><h1>GROW LEGENDS <span>SYSTEMTEST & TECHNIK</span></h1><p>SERVERAUTORITÄT · SPIELZUSTAND · REAKTIONSZEITEN · UI · FEHLER · PERFORMANCE</p></div></div><div class="v4107-version">V7.206</div></div>
   <div class="v4107-layout">
    <aside class="v4107-sidebar"><div class="v4107-side-title">⚙️ SYSTEMTECHNIK</div>
     <button class="v4107-nav active" data-v4107-jump="status"><i>🧪</i>Systemtest</button>
@@ -76033,8 +76033,8 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();i
   if(!serverLoginPolicy())return false;
   /* Read only the authority gates here. Do not call v7133AuthorityRefresh(), because
      that owner also schedules an active-screen hydrate and would duplicate login RPCs. */
-  try{await window.v7040AuthorityRefresh?.()}catch(_){}
-  try{await window.v7081CapabilitiesRefresh?.()}catch(_){}
+  try{await window.v7040AuthorityRefresh?.(false)}catch(_){}
+  try{await window.v7081CapabilitiesRefresh?.(false)}catch(_){}
   return allAuthorityEnforced();
  }
  async function profileIdentity(id){
@@ -76089,7 +76089,7 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();i
    for(const fn of jobs)await fn();
    r={ok:true};
   }
-  /* V7.205: the dungeon owner is parsed much later than the account resolver. On a
+  /* V7.206: the dungeon owner is parsed much later than the account resolver. On a
      cold OAuth return it can briefly be unavailable even though the canonical RPC
      is healthy. Repair only that missing read directly from the server instead of
      failing the whole login into an empty shell. Gameplay stays fail-closed. */
@@ -76112,6 +76112,7 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();i
   window.__V7204_CANONICAL_LOGIN_AT__=v7204Now;
   window.__V7204_STARTUP_QUIET_UNTIL__=Math.max(Number(window.__V7204_STARTUP_QUIET_UNTIL__||0),v7204Now+4200);
   LOGIN.lastHydrateOk=true;
+  try{requestAnimationFrame(()=>{try{render?.()}catch(_){}try{window.v069SyncCurrencies?.()}catch(_){}try{window.v4149BuildCompleteMenu?.(false)}catch(_){}})}catch(_){}
   return true;
  }
  async function resolveServerFirst(id){
@@ -76731,12 +76732,13 @@ html:not(.v4142-systemtech-admin) #v4102QaButton{display:none!important}
 (()=>{
  'use strict';
  const V=window.GROW_LEGENDS_VERSION||{short:'V4.159',label:'V4.159 Stable'};
- const boot=window.__V4147_BOOT__={phase:'parsed',uid:'',seq:0,startedAt:Date.now(),accountReadyAt:0,extrasReadyAt:0,finalizeMs:0,extrasMs:0,lastReason:'parse',tasks:{},errors:[],foregroundAt:0,quietUntil:0};
+ const boot=window.__V4147_BOOT__={phase:'parsed',uid:'',seq:0,startedAt:Date.now(),finalizeStartedAt:0,accountReadyAt:0,playableAt:0,splashGateMs:0,accountToPlayableMs:0,extrasReadyAt:0,finalizeMs:0,extrasMs:0,lastReason:'parse',tasks:{},errors:[],foregroundAt:0,quietUntil:0};
  let extrasPromise=null,extrasUid='',foregroundTimer=0;
  function quietRemaining(){return Math.max(0,Number(window.__V7204_STARTUP_QUIET_UNTIL__||0)-Date.now())}
  function startupQuiet(){return quietRemaining()>0}
- function afterStartupQuiet(fn,extra=0){const run=()=>{try{fn()}catch(e){console.warn('V7.205 deferred boot task',e)}};const wait=quietRemaining()+Math.max(0,Number(extra)||0);if(wait>0)return setTimeout(run,wait);run();return 0}
+ function afterStartupQuiet(fn,extra=0){const run=()=>{try{fn()}catch(e){console.warn('V7.206 deferred boot task',e)}};const wait=quietRemaining()+Math.max(0,Number(extra)||0);if(wait>0)return setTimeout(run,wait);run();return 0}
  window.v7204StartupQuiet=startupQuiet;window.v7204StartupQuietRemaining=quietRemaining;window.v7204AfterStartupQuiet=afterStartupQuiet;
+ window.v7206StartupBusy=()=>window.__V7206_CANONICAL_LOGIN_RUNNING__===true||window.__V7206_FIRST_PLAYABLE_PENDING__===true;
  window.__V7205_SPLASH_GATE__=true;
  function uid(){try{return v073User&&!v073User.is_anonymous&&v073User.id?String(v073User.id):''}catch(e){return''}}
  function verified(id=uid()){
@@ -76801,12 +76803,17 @@ html:not(.v4142-systemtech-admin) #v4102QaButton{display:none!important}
   id=String(id||uid());if(!id||!verified(id))return false;if(extrasPromise&&extrasUid===id)return extrasPromise;
   extrasUid=id;const started=performance.now?.()||Date.now();setPhase('extras',reason);
   extrasPromise=(async()=>{
-   await Promise.allSettled([
-    task('guild-chat',async()=>typeof window.v4146EnsureGuildChatIdentity==='function'?await window.v4146EnsureGuildChatIdentity('v4147-'+reason):true),
-    task('events',async()=>typeof v276RefreshEventsForCurrentCharacter==='function'?await v276RefreshEventsForCurrentCharacter():true),
-    task('admin',async()=>{if(typeof v093CheckAdmin!=='function')return true;const ok=await v093CheckAdmin();try{window.v4142SyncAdminSystemtechnik?.()}catch(e){}if(ok&&typeof v093AdminLoadLists==='function')setTimeout(()=>{void v093AdminLoadLists()},0);return ok}),
-    task('public-profile',async()=>typeof v299RefreshPublicEquipment==='function'?await v299RefreshPublicEquipment():true)
-   ]);
+   const jobs=[
+    ['guild-chat',async()=>typeof window.v4146EnsureGuildChatIdentity==='function'?await window.v4146EnsureGuildChatIdentity('v4147-'+reason):true],
+    ['events',async()=>typeof v276RefreshEventsForCurrentCharacter==='function'?await v276RefreshEventsForCurrentCharacter():true],
+    ['admin',async()=>{if(typeof v093CheckAdmin!=='function')return true;const ok=await v093CheckAdmin();try{window.v4142SyncAdminSystemtechnik?.()}catch(e){}if(ok&&typeof v093AdminLoadLists==='function')setTimeout(()=>{void v093AdminLoadLists()},0);return ok}],
+    ['public-profile',async()=>typeof v299RefreshPublicEquipment==='function'?await v299RefreshPublicEquipment():true]
+   ];
+   for(const [name,fn] of jobs){
+    if(uid()!==id||!verified(id))return false;
+    await new Promise(r=>{if(typeof requestIdleCallback==='function')requestIdleCallback(()=>r(),{timeout:900});else setTimeout(r,120)});
+    await task(name,fn);
+   }
    if(uid()!==id||!verified(id))return false;
    try{window.v4144SyncGuildChat?.()}catch(e){}try{window.v4129ReleaseOwnedPower?.(id)}catch(e){}try{window.v4142SyncAdminSystemtechnik?.()}catch(e){}
    boot.extrasReadyAt=Date.now();boot.extrasMs=Math.round((performance.now?.()||Date.now())-started);setPhase('ready',reason);emit('growlegends:extras-ready',{reason});return true;
@@ -76818,18 +76825,37 @@ html:not(.v4142-systemtech-admin) #v4102QaButton{display:none!important}
   window.__V7204_STARTUP_QUIET_UNTIL__=Math.max(Number(window.__V7204_STARTUP_QUIET_UNTIL__||0),Date.now()+3200);boot.quietUntil=Number(window.__V7204_STARTUP_QUIET_UNTIL__||0);
   setPhase('account-ready',reason);emit('growlegends:account-ready',{reason});
   requestAnimationFrame(()=>{if(uid()!==id||!verified(id))return;try{window.v4129ReleaseOwnedPower?.(id)}catch(e){}try{window.v4140AttributeDiagnostics?.()}catch(e){}});
-  const launchExtras=()=>{if(uid()===id&&verified(id))void runExtras(id,reason)};
-  afterStartupQuiet(()=>{if(typeof requestIdleCallback==='function')requestIdleCallback(launchExtras,{timeout:1800});else setTimeout(launchExtras,500)},250);return true;
+  return true;
  }
  function foreground(reason='foreground'){
   clearTimeout(foregroundTimer);const run=async()=>{const id=uid();if(!id||!verified(id))return;boot.foregroundAt=Date.now();try{await window.v4146EnsureGuildChatIdentity?.('v4147-'+reason)}catch(e){}try{window.v4144SyncGuildChat?.()}catch(e){}try{window.v4142SyncAdminSystemtechnik?.()}catch(e){}try{window.v4129ReleaseOwnedPower?.(id)}catch(e){}emit('growlegends:foreground-ready',{reason})};
   foregroundTimer=setTimeout(()=>afterStartupQuiet(()=>void run(),80),80);
  }
  window.v4147RunExtras=()=>runExtras(uid(),'manual');
- window.v4147BootDiagnostics=()=>({version:V.short,phase:boot.phase,uid:uid(),verified:verified(),authReady:window.__V200_AUTH_READY__===true,cloudLoaded:String(typeof v075CloudLoadedFor==='undefined'?'':v075CloudLoadedFor||''),accountReadyAt:boot.accountReadyAt,extrasReadyAt:boot.extrasReadyAt,finalizeMs:boot.finalizeMs,extrasMs:boot.extrasMs,tasks:JSON.parse(JSON.stringify(boot.tasks||{})),errors:[...(boot.errors||[])],foregroundAt:boot.foregroundAt,quietUntil:Number(window.__V7204_STARTUP_QUIET_UNTIL__||0),quietRemaining:quietRemaining()});
+ window.v4147BootDiagnostics=()=>({version:V.short,phase:boot.phase,uid:uid(),verified:verified(),authReady:window.__V200_AUTH_READY__===true,cloudLoaded:String(typeof v075CloudLoadedFor==='undefined'?'':v075CloudLoadedFor||''),finalizeStartedAt:boot.finalizeStartedAt,accountReadyAt:boot.accountReadyAt,playableAt:boot.playableAt,splashGateMs:boot.splashGateMs,accountToPlayableMs:boot.accountToPlayableMs,extrasReadyAt:boot.extrasReadyAt,finalizeMs:boot.finalizeMs,extrasMs:boot.extrasMs,tasks:JSON.parse(JSON.stringify(boot.tasks||{})),errors:[...(boot.errors||[])],foregroundAt:boot.foregroundAt,quietUntil:Number(window.__V7204_STARTUP_QUIET_UNTIL__||0),quietRemaining:quietRemaining(),startupBusy:window.v7206StartupBusy?.()||false});
  try{
   if(typeof v200FinalizeUser==='function'&&!window.__v4147FinalizeOwner){
-   const base=v200FinalizeUser;v200FinalizeUser=async function(user){const id=String(user?.id||'');const started=performance.now?.()||Date.now();boot.seq++;setPhase('account-resolving','finalize');const r=await base.apply(this,arguments);boot.finalizeMs=Math.round((performance.now?.()||Date.now())-started);if(r&&id&&uid()===id&&verified(id)){accountReady(id,'finalize');setPhase('first-frame-settle','finalize');await waitFirstPlayable(id,'finalize');if(uid()===id&&verified(id)){setPhase('playable','finalize');try{v075Overlay(false)}catch(_){}}}return r};
+   const base=v200FinalizeUser;v200FinalizeUser=async function(user){
+    const id=String(user?.id||''),started=performance.now?.()||Date.now();
+    boot.seq++;boot.finalizeStartedAt=Date.now();window.__V7206_CANONICAL_LOGIN_RUNNING__=true;window.__V7206_FIRST_PLAYABLE_PENDING__=true;setPhase('account-resolving','finalize');
+    try{
+     const r=await base.apply(this,arguments);boot.finalizeMs=Math.round((performance.now?.()||Date.now())-started);window.__V7206_CANONICAL_LOGIN_RUNNING__=false;
+     if(r&&id&&uid()===id&&verified(id)){
+      accountReady(id,'finalize');setPhase('first-frame-settle','finalize');const settleStart=performance.now?.()||Date.now();await waitFirstPlayable(id,'finalize');boot.splashGateMs=Math.round((performance.now?.()||Date.now())-settleStart);
+      if(uid()===id&&verified(id)){
+       boot.playableAt=Date.now();boot.accountToPlayableMs=Math.max(0,boot.playableAt-Number(boot.accountReadyAt||boot.playableAt));window.__V7206_FIRST_PLAYABLE_PENDING__=false;setPhase('playable','finalize');
+       try{v075Overlay(false)}catch(_){}
+       emit('growlegends:first-playable',{reason:'finalize',finalizeMs:boot.finalizeMs,splashGateMs:boot.splashGateMs,accountToPlayableMs:boot.accountToPlayableMs});
+       try{window.__GL_RUNTIME_WATCHDOG__?.report?.('startup_playable','info',{finalizeMs:boot.finalizeMs,splashGateMs:boot.splashGateMs,accountToPlayableMs:boot.accountToPlayableMs,totalFromFinalizeMs:Math.max(0,boot.playableAt-boot.finalizeStartedAt),quietRemainingMs:quietRemaining()},{screen:'world',incidentKey:'startup-v7206'})}catch(_){}
+       setTimeout(()=>{if(uid()!==id||!verified(id))return;const go=()=>void runExtras(id,'post-playable');if(typeof requestIdleCallback==='function')requestIdleCallback(go,{timeout:2200});else setTimeout(go,250)},1200);
+      }
+     }
+     return r;
+    }finally{
+     window.__V7206_CANONICAL_LOGIN_RUNNING__=false;
+     if(uid()!==id||!verified(id))window.__V7206_FIRST_PLAYABLE_PENDING__=false;
+    }
+   };
    try{window.v200FinalizeUser=v200FinalizeUser}catch(e){}window.__v4147FinalizeOwner=true;
   }
  }catch(e){console.warn('V4.159 finalizer owner',e)}
@@ -77006,14 +77032,16 @@ html:not(.v4142-systemtech-admin) #v4102QaButton{display:none!important}
    const screen=document.getElementById('dungeon');
    const active=!!screen?.classList.contains('active');
    const layer=String(s.dungeon?.layer||'world');
-   if(!active||layer==='world'){
+   if(active&&layer==='world'){
     if(typeof v251RenderWorld==='function')v251RenderWorld();
     else if(typeof v230ShowDungeonWorld==='function')v230ShowDungeonWorld();
     else if(typeof v065RenderWorld==='function')v065RenderWorld();
    }
-   try{v242PaintDungeonWorldStatus?.()}catch(e){}
-   try{v250PaintKeyProgress?.()}catch(e){}
-   try{v067BindWorldMap?.()}catch(e){}
+   if(active){
+    try{v242PaintDungeonWorldStatus?.()}catch(e){}
+    try{v250PaintKeyProgress?.()}catch(e){}
+    try{v067BindWorldMap?.()}catch(e){}
+   }
   }catch(e){console.warn('V4.159 dungeon live repaint',reason,e)}
  }
  function changed(before,reason){
@@ -77361,9 +77389,12 @@ html:not(.v4142-systemtech-admin) #v4102QaButton{display:none!important}
   }catch(e){}
  }
  function refreshAll(reason='refresh'){
-  ensureWeapon2Slot();paintWeapon2();paintIdentity();refreshAvatars();
+  ensureWeapon2Slot();
+  if(!document.getElementById('character')?.classList.contains('active'))return false;
+  paintWeapon2();paintIdentity();refreshAvatars();
   try{window.v470PaintEquipmentSlots?.()}catch(e){}try{window.v4103DecorateItemSurfaces?.()}catch(e){}try{window.v459ArrangeCharacter?.()}catch(e){}try{window.v459CompactInventory?.()}catch(e){}
   /* V6.102: inventory already rendered by the active character renderer. */
+  return true;
  }
  window.v4153RefreshClassAvatars=refreshAvatars;window.v4153RefreshFrostUi=refreshAll;
 
@@ -84427,7 +84458,8 @@ html.v495-level-syncing #v420LevelUpOverlay{
  /* V7.193: remote social counters are refreshed only when they can matter.
     Gameplay events repaint local badges but no longer fan out into unrelated
     friend/mail/guild/PvP requests. */
- window.addEventListener('growlegends:account-ready',()=>{observeMenu();queuePaint();setTimeout(()=>remoteRefresh(true),150)},{passive:true});
+ window.addEventListener('growlegends:account-ready',()=>{observeMenu();queuePaint()},{passive:true});
+ window.addEventListener('growlegends:first-playable',()=>setTimeout(()=>remoteRefresh(true),1400),{passive:true});
  window.addEventListener('growlegends:foreground-ready',()=>{observeMenu();queuePaint();setTimeout(()=>remoteRefresh(false),150)},{passive:true});
  ['growlegends:extras-ready','growlegends:dungeon-key-live-unlocked'].forEach(ev=>{
   window.addEventListener(ev,()=>{observeMenu();queuePaint()},{passive:true});
@@ -84444,7 +84476,7 @@ html.v495-level-syncing #v420LevelUpOverlay{
   observeMenu();paint();void remoteRefresh(false);
  },15000);
 
- observeMenu();queuePaint();setTimeout(()=>remoteRefresh(false),800);
+ observeMenu();queuePaint();setTimeout(()=>{if(!window.v7206StartupBusy?.())void remoteRefresh(false)},1800);
  window.v4162RefreshMenuAttention=()=>{observeMenu();paint();return remoteRefresh(true)};
  window.__V7192_UI_LATENCY__=Object.freeze({menuRemoteFanout:'scoped',menuFallbackMs:15000,pvpCooldownSource:'shared-v210-cache',combatQaOwner:'v7175',growLegacyTick:'ui-only-on-authority',shiftTicker:'visible-only',towerTicker:'active-only',guildFirstPaint:'core-first',guildMetaRefresh:'deferred-parallel',persistWholeSave:'single-checkpoint-write'});
 })();
@@ -98667,9 +98699,9 @@ html body .app section#hall.v648-hall .v072-player-name .v648-self-pill{
   document.addEventListener('click',e=>{
     if(e.target.closest?.('[data-screen="hall"],[data-go="hall"]'))setTimeout(()=>{schedule(true);paintOwnRow()},0);
   },true);
-  window.addEventListener('growlegends:account-ready',()=>setTimeout(()=>schedule(true),0));
-  setTimeout(()=>schedule(true),1200);
-  setTimeout(()=>{paintOwnRow();schedule(true)},3500);
+  window.addEventListener('growlegends:first-playable',()=>setTimeout(()=>schedule(true),1600),{passive:true});
+  setTimeout(()=>{if(!window.v7206StartupBusy?.())schedule(false)},3200);
+  setTimeout(()=>{paintOwnRow();if(!window.v7206StartupBusy?.())schedule(false)},5200);
 })();
 </script>
 <script id="v6201-public-pet-profile-sync-marker">
@@ -104698,14 +104730,20 @@ window.v6102EquipmentDiagnostics=function(){
   window.v6105ItemArtSvg=fullSvg;
 
   function refreshArt(){
+    const charActive=!!document.getElementById('character')?.classList.contains('active');
+    const shopActive=!!document.getElementById('shop')?.classList.contains('active');
+    if(!charActive&&!shopActive)return false;
     try{window.v4103DecorateItemSurfaces?.()}catch(e){}
     try{window.v4108DecorateComicItems?.()}catch(e){}
     try{window.v4112RefreshAllItemArt?.()}catch(e){}
     try{window.v4111RefreshComicItems?.()}catch(e){}
-    try{window.v470PaintEquipmentSlots?.()}catch(e){}
-    try{window.v6102PaintEquipmentSlots?.()}catch(e){}
-    try{window.renderInventory?.()}catch(e){}
-    try{if(document.getElementById('shop')?.classList.contains('active'))window.renderShop?.()}catch(e){}
+    if(charActive){
+      try{window.v470PaintEquipmentSlots?.()}catch(e){}
+      try{window.v6102PaintEquipmentSlots?.()}catch(e){}
+      try{window.renderInventory?.()}catch(e){}
+    }
+    if(shopActive)try{window.renderShop?.()}catch(e){}
+    return true;
   }
 
   function refreshMerchantPools(force){
@@ -104751,12 +104789,12 @@ window.v6102EquipmentDiagnostics=function(){
     }
   }catch(e){}
 
-  document.addEventListener('DOMContentLoaded',()=>{refreshMerchantPools(false);setTimeout(refreshArt,80)},{once:true});
-  window.addEventListener('growlegends:account-ready',()=>setTimeout(()=>{refreshMerchantPools(false);refreshArt()},120));
+  document.addEventListener('DOMContentLoaded',()=>{if(!window.v7206StartupBusy?.())setTimeout(refreshArt,80)},{once:true});
+  window.addEventListener('growlegends:first-playable',()=>setTimeout(refreshArt,500),{passive:true});
+  window.addEventListener('growlegends:navigation-open-v7119',e=>{const id=String(e?.detail?.id||'');if(id==='character')requestAnimationFrame(refreshArt);if(id==='shop')requestAnimationFrame(()=>{refreshMerchantPools(false);refreshArt()})},{passive:true});
   window.addEventListener('pageshow',()=>setTimeout(refreshArt,80),{passive:true});
 
-  try{refreshMerchantPools(false)}catch(e){}
-  try{refreshArt()}catch(e){}
+  try{if(!window.v7206StartupBusy?.())refreshArt()}catch(e){}
   console.log('V6.105 item variety active',qa());
  }catch(e){console.error('V6.105 item variety failed',e)}
 })();
@@ -104862,14 +104900,16 @@ window.v6102EquipmentDiagnostics=function(){
  window.v6105ItemArtUri=resolver;
 
  function refresh(){
+   const charActive=!!document.getElementById('character')?.classList.contains('active');
+   const shopActive=!!document.getElementById('shop')?.classList.contains('active');
+   if(!charActive&&!shopActive)return false;
    try{window.v4103DecorateItemSurfaces?.()}catch(e){}
    try{window.v4108DecorateComicItems?.()}catch(e){}
    try{window.v4112RefreshAllItemArt?.()}catch(e){}
    try{window.v4111RefreshComicItems?.()}catch(e){}
-   try{window.v470PaintEquipmentSlots?.()}catch(e){}
-   try{window.v6102PaintEquipmentSlots?.()}catch(e){}
-   try{if(document.getElementById('character')?.classList.contains('active'))window.renderInventory?.()}catch(e){}
-   try{if(document.getElementById('shop')?.classList.contains('active'))window.renderShop?.()}catch(e){}
+   if(charActive){try{window.v470PaintEquipmentSlots?.()}catch(e){}try{window.v6102PaintEquipmentSlots?.()}catch(e){}try{window.renderInventory?.()}catch(e){}}
+   if(shopActive)try{window.renderShop?.()}catch(e){}
+   return true;
  }
  window.v6106RefreshItemArt=refresh;
 
@@ -104889,8 +104929,9 @@ window.v6102EquipmentDiagnostics=function(){
 
  document.addEventListener('DOMContentLoaded',()=>setTimeout(refresh,100),{once:true});
  window.addEventListener('pageshow',()=>setTimeout(refresh,100),{passive:true});
- window.addEventListener('growlegends:account-ready',()=>setTimeout(refresh,160));
- setTimeout(refresh,220);
+ window.addEventListener('growlegends:first-playable',()=>setTimeout(refresh,650),{passive:true});
+ window.addEventListener('growlegends:navigation-open-v7119',e=>{const id=String(e?.detail?.id||'');if(id==='character'||id==='shop')requestAnimationFrame(refresh)},{passive:true});
+ setTimeout(()=>{if(!window.v7206StartupBusy?.())refresh()},220);
 })();
 </script>
 
@@ -104934,7 +104975,7 @@ window.v6102EquipmentDiagnostics=function(){
  window.v6108ItemQuality=qualityOf;
 
  function qualityFrame(base,it){
-   /* V7.205: Base64 Phase 2 moved the real artwork to external files.
+   /* V7.206: Base64 Phase 2 moved the real artwork to external files.
       Do not embed an external asset again inside a data: SVG: SVG images used
       through <img> are isolated and the nested relative image URL stays blank.
       The existing .v6108-quality-artbox / v6108-q-* classes own the rarity frame. */
@@ -126445,6 +126486,7 @@ window.v6346AdminLoadBroadcasts=loadAdminBroadcasts;
   }catch(e){console.warn('[V7033] local authority mirror',e);return false}
  }
  function repaint(){
+  if(window.v7206StartupBusy?.())return;
   try{if(typeof render==='function')render()}catch(_){ }
   try{if(typeof renderSkillTree==='function')renderSkillTree()}catch(_){ }
   try{if(typeof window.v434PaintAttributePoints==='function')window.v434PaintAttributePoints()}catch(_){ }
@@ -126667,7 +126709,7 @@ window.v6346AdminLoadBroadcasts=loadAdminBroadcasts;
   }
  }catch(e){console.warn('[V7033] reset wrap',e)}
 
- window.v7033BuildAuthorityRefresh=()=>loadGate(true);
+ window.v7033BuildAuthorityRefresh=(force=false)=>loadGate(!!force);
  window.v7033BuildAuthorityDiagnostics=()=>({
   version:bridge.version,
   uid:bridge.uid,
@@ -126686,7 +126728,7 @@ window.v6346AdminLoadBroadcasts=loadAdminBroadcasts;
  function boot(){
   const id=currentUid();
   if(bridge.uid&&bridge.uid!==id)resetGate();
-  if(id&&db())void loadGate(true);
+  if(id&&db()&&!window.v7206StartupBusy?.())void loadGate(false);
  }
  window.addEventListener('growlegends:account-ready',()=>setTimeout(boot,150));
  window.addEventListener('growlegends:foreground-ready',()=>setTimeout(()=>void loadGate(true),120),{passive:true});
@@ -127264,7 +127306,7 @@ window.v6346AdminLoadBroadcasts=loadAdminBroadcasts;
  },true);
 
  /* One build now contains all staged paths. Backend flags can be changed without another APK/index build. */
- window.v7040AuthorityRefresh=()=>refresh({paint:true});
+ window.v7040AuthorityRefresh=(paint=true)=>refresh({paint:paint!==false});
  window.v7040AuthorityDiagnostics=()=>clone({...S,domains:S.domains});
  window.v7040RunServerDungeon=()=>runServerDungeon(false);
 
@@ -128243,7 +128285,7 @@ async function canonicalState({force=false}={}){
  })().finally(()=>{stateFlight=null});
  return stateFlight;
 }
-/* V7.205: authoritative entry guard belongs to the dungeon owner. */
+/* V7.206: authoritative entry guard belongs to the dungeon owner. */
 async function ensureCanonicalEntry(di,{force=true,paint=true,reason='entry'}={}){
  C.entryGuards++;
  if(!enforced())return{ok:true,enforced:false,completed:false};
@@ -129352,14 +129394,14 @@ window.v7081UseAuthority=(name)=>{
   if(C.uid!==id){C.ready=false;C.uid=id;C.caps=emptyCaps();loadCache(id)}
   return !!(C.ready&&C.caps?.[String(name||'')]);
 };
-window.v7081CapabilitiesRefresh=()=>refresh(true);
+window.v7081CapabilitiesRefresh=(force=false)=>refresh(!!force);
 window.v7081CapabilitiesDiagnostics=()=>JSON.parse(JSON.stringify(C));
 
 function boot(){
   const id=uid();
   if(id&&C.uid!==id)loadCache(id);
   if(C.ready&&Date.now()-Number(C.lastSync||0)<60000)return;
-  void refresh(true);
+  void refresh(false);
 }
 window.addEventListener('growlegends:account-ready',()=>setTimeout(boot,20),{passive:true});
 window.addEventListener('pageshow',()=>setTimeout(boot,80),{passive:true});
@@ -130020,9 +130062,9 @@ const poll=setInterval(async()=>{
  if(window.v7081UseAuthority?.('grow')&&uid()&&db())await gate(false);
  if(D.enabled||(!window.v7081UseAuthority?.('grow')&&window.v7081CapabilitiesDiagnostics?.()?.ready)||pollCount>=4)clearInterval(poll);
 },5000);
-window.addEventListener('growlegends:account-ready',()=>void gate(true),{passive:true});
+window.addEventListener('growlegends:account-ready',()=>{if(!window.v7206StartupBusy?.())void gate(true)},{passive:true});
 window.addEventListener('pageshow',()=>setTimeout(()=>void gate(false),250),{passive:true});
-setTimeout(()=>void gate(false),150);
+setTimeout(()=>{if(!window.v7206StartupBusy?.())void gate(false)},150);
 window.v7067ServerCare=async(plantUid,careIndex)=>{
  const pid=String(plantUid||'');const ci=Number(careIndex);
  if(!pid||!Number.isInteger(ci)||ci<0||ci>3)return false;
@@ -131918,7 +131960,7 @@ async function boot(){
   if(A.ready&&Date.now()-Number(A.lastSync||0)<5000)return;
   await refresh(true,true);
 }
-window.addEventListener('growlegends:account-ready',()=>setTimeout(boot,550),{passive:true});
+window.addEventListener('growlegends:account-ready',()=>setTimeout(()=>{if(!window.v7206StartupBusy?.())void boot()},550),{passive:true});
 window.addEventListener('pageshow',()=>setTimeout(boot,950),{passive:true});
 document.addEventListener('visibilitychange',()=>{
   if(!document.hidden&&Date.now()-A.lastSync>45000)setTimeout(()=>void refresh(true,true),250);
@@ -131927,9 +131969,9 @@ setInterval(()=>{
   if(document.hidden||!A.enforce||!userId())return;
   void refresh(true,true);
 },60000);
-setTimeout(boot,2700);
+setTimeout(()=>{if(!window.v7206StartupBusy?.())void boot()},2700);
 
-window.v7074ItemAuthorityRefresh=()=>refresh(true,true);
+window.v7074ItemAuthorityRefresh=(force=true,paint=true)=>refresh(!!force,paint!==false);
 window.v7074ItemAuthorityDiagnostics=()=>clone({
   version:VERSION,ready:A.ready,enforce:A.enforce,uid:A.uid,
   revision:A.revision,lastSync:A.lastSync,lastError:A.lastError,
@@ -132057,7 +132099,7 @@ try{
   }
 }catch(e){console.warn('[V7077] event hydrate',e)}
 
-window.addEventListener('growlegends:account-ready',()=>setTimeout(()=>{if(Date.now()-Number(P.lastSync||0)>5000)void refresh({paint:true})},420),{passive:true});
+window.addEventListener('growlegends:account-ready',()=>setTimeout(()=>{if(window.v7206StartupBusy?.())return;if(Date.now()-Number(P.lastSync||0)>5000)void refresh({paint:true})},420),{passive:true});
 window.addEventListener('pageshow',()=>{if(Date.now()-P.lastSync>60000)setTimeout(()=>void refresh({paint:true}),850)},{passive:true});
 document.addEventListener('visibilitychange',()=>{
   if(!document.hidden&&Date.now()-P.lastSync>60000)setTimeout(()=>void refresh({paint:true}),320);
@@ -132067,9 +132109,9 @@ setInterval(()=>{
   const active=document.querySelector('main > section.active,.screen.active')?.id||'';
   if(active==='world'||active==='character'||active==='inventory')void refresh({paint:true});
 },30000);
-setTimeout(()=>{if(!P.lastSync)void refresh({paint:true})},2600);
+setTimeout(()=>{if(!P.lastSync&&!window.v7206StartupBusy?.())void refresh({paint:true})},2600);
 
-window.v7077ProgressRefresh=()=>refresh({paint:true});
+window.v7077ProgressRefresh=(paint=true)=>refresh({paint:paint!==false});
 window.v7077ProgressDiagnostics=()=>clone({version:VERSION,...P,uid:uid()});
 })();
 </script>
@@ -132375,7 +132417,7 @@ if(baseEndgame){
   };
 }
 
-function boot(){setTimeout(()=>void refresh(true),350)}
+function boot(){setTimeout(()=>{if(!window.v7206StartupBusy?.())void refresh(true)},350)}
 window.addEventListener('growlegends:account-ready',boot,{passive:true});
 window.addEventListener('pageshow',()=>{if(Date.now()-P.lastSync>120000)setTimeout(()=>void refresh(true),650)},{passive:true});
 document.addEventListener('visibilitychange',()=>{
@@ -132385,7 +132427,7 @@ setInterval(()=>{
   if(document.hidden||!P.enforce||!uid()||Date.now()-P.lastSync<300000)return;
   void refresh(false);
 },60000);
-setTimeout(()=>{if(!P.lastSync)boot()},1500);
+setTimeout(()=>{if(!P.lastSync&&!window.v7206StartupBusy?.())boot()},1500);
 
 window.v7079PetAuthorityRefresh=()=>refresh(true);
 window.v7079PetAuthorityDiagnostics=()=>clone({
@@ -132758,7 +132800,7 @@ async function run(showToast=false){
   const errors=[];
 
   try{
-   await window.v7081CapabilitiesRefresh?.();
+   await window.v7081CapabilitiesRefresh?.(true);
   }catch(e){errors.push({step:'capabilities',message:trimErr(e)})}
   const caps=allCaps();
   const authorityDiag=(()=>{try{return window.v7133AuthorityDiagnostics?.()||null}catch(_){return null}})();
@@ -133895,7 +133937,7 @@ function paint(){
   try{window.v271PaintDampf?.()}catch(_){}
   try{window.renderQuests?.()}catch(_){}
 }
-async function sync(force=false){
+async function sync(force=false,paintNow=true){
   if(!enforced())return null;
   const now=Date.now();
   if(!force&&S.lastAt&&now-S.lastAt<2500)return null;
@@ -133907,8 +133949,8 @@ async function sync(force=false){
       const q=row(data);if(!q?.ok)throw new Error(String(q?.reason||'QUEST_STATE_REJECTED'));
       const before=questSig();
       applyQuestState(q);persistLocal();
-      if(before!==questSig())paint();
-      else{try{window.v069SyncCurrencies?.();window.v271PaintDampf?.()}catch(_){}}
+      if(paintNow&&before!==questSig())paint();
+      else if(paintNow){try{window.v069SyncCurrencies?.();window.v271PaintDampf?.()}catch(_){}}
       return q;
     }catch(e){S.lastError=String(e?.message||e);console.warn('[V7.110] quest authority sync',e);return null}
     finally{S.syncing=null}
@@ -134672,9 +134714,11 @@ function hardenAvatar(){
   return true;
 }
 function refresh(){
+  if(!document.getElementById('character')?.classList.contains('active'))return false;
   retireOldSummaryObserver();
   paintSummary();
   hardenAvatar();
+  return true;
 }
 window.v7124PaintCharacterSummary=paintSummary;
 window.v519ApplyHero=paintSummary;
@@ -134993,10 +135037,12 @@ async function ensureAuthority({paint=false}={}){
  /* V7.132 is deliberately fail-closed for authenticated gameplay item writes.
     No local mutation is allowed while authority state is unknown. */
  if(!use)throw new Error('ITEM_AUTHORITY_NOT_READY');
- const r=await rpc('v7034_client_item_authority_state');
+ let r=null;
+ try{r=await window.v7074ItemAuthorityRefresh?.(false,paint)}catch(_){}
+ if(!r){r=await rpc('v7034_client_item_authority_state');if(r?.ok)applyServer(r,{paint})}
  if(!r?.ok)throw new Error(String(r?.reason||'ITEM_AUTHORITY_STATE_FAILED'));
  if(String(r.item_mode||'')!=='enforce')throw new Error('ITEM_AUTHORITY_NOT_ENFORCED');
- applyServer(r,{paint});D.serverRefreshes++;return r;
+ D.serverRefreshes++;return r;
 }
 function equipmentIds(eq){const out={};['head','body','boots','ring','amulet','weapon','weapon2'].forEach(sl=>out[sl]=itemId(eq?.[sl])||null);return out}
 async function submitEquipment(eq,prefix){
@@ -135137,7 +135183,7 @@ window.__V7132_ITEM_AUTHORITY__=Object.freeze({
 'use strict';
 if(window.__V7133_GLOBAL_AUTHORITY_LOCKDOWN__)return;
 window.__V7133_GLOBAL_AUTHORITY_LOCKDOWN__=true;
-const VERSION='V7.205'; /* consolidated gameplay authority owner */
+const VERSION='V7.206'; /* consolidated gameplay authority owner */
 const GAMEPLAY_DOMAINS=Object.freeze([
  'achievements','billing','build','daily','dungeon','endgame','grow_dealer','grow_orders','guild','items','liveops',
  'pets','profile','progress','pvp','quest','seeds','shop','social','tower','weekly','worldboss'
@@ -135327,12 +135373,12 @@ async function hydrateAllCore(){
  if(!auth())return {ok:false,reason:'AUTH_REQUIRED'};
  D.fullHydrates++;D.coreHydrating=true;
  const jobs=[
-  ['progress',()=>window.v7077ProgressRefresh?.()],
-  ['build',()=>window.v7033BuildAuthorityRefresh?.()],
-  ['items',()=>window.v7074ItemAuthorityRefresh?.()||window.v7063ItemStageRefresh?.(true)],
-  ['quest',()=>window.v7110SyncQuestAuthority?.(true)],
+  ['progress',()=>window.v7077ProgressRefresh?.(false)],
+  ['build',()=>window.v7033BuildAuthorityRefresh?.(false)],
+  ['items',()=>window.v7074ItemAuthorityRefresh?.(false,false)||window.v7063ItemStageRefresh?.(false)],
+  ['quest',()=>window.v7110SyncQuestAuthority?.(true,false)],
   ['dungeon',async()=>{
-    await window.v7040AuthorityRefresh?.();
+    await window.v7040AuthorityRefresh?.(false);
     const di=Math.max(0,Math.min(19,Number(s?.dungeon?.selected??s?.dungeon?.lastActive??0)||0));
     if(typeof window.v7051EnsureDungeonState==='function')return await window.v7051EnsureDungeonState(di,{force:true,paint:false,reason:'login-hydrate'});
     /* Cold OAuth return fallback: read the same canonical RPC directly. */
@@ -135341,12 +135387,7 @@ async function hydrateAllCore(){
     const q=Array.isArray(data)?(data[0]??null):data;if(!q?.ok)throw new Error('DUNGEON_STATE_UNAVAILABLE');
     try{window.v7051SeedCanonicalState?.(q)}catch(_){}
     return q;
-  }],
-  ['grow',async()=>{await window.v7065GrowAuthorityRefresh?.(true);return await window.v7070GrowHydrationRefresh?.()}],
-  ['pets',()=>window.v7079PetAuthorityRefresh?.(true)],
-  ['achievements',()=>window.v7080AchievementRefresh?.(false)],
-  ['liveops',()=>window.v7072AuthorityRefresh?.()],
-  ['endgame',()=>window.v7073EndgameRefresh?.()]
+  }]
  ];
  const result={};
  try{
@@ -135359,7 +135400,7 @@ async function hydrateAllCore(){
 }
 function scheduleHydrate(){
  const screen=activeScreen();
- /* V7.205: canonical login already refreshes every gameplay domain. Do not let the
+ /* V7.206: canonical login already refreshes the critical first-frame domains. Do not let the
     many legacy persist() calls fired by first-paint decorators immediately start a
     second hydration wave while the app is settling. */
  if(D.coreHydrating||Date.now()-Number(D.lastFullHydrateAt||0)<1400){D.suppressedHydrates++;return}
@@ -135379,6 +135420,7 @@ try{
 
 async function boot(){
  if(!auth())return;
+ if(window.v7206StartupBusy?.()){D.suppressedHydrates++;return}
  if(window.v7204StartupQuiet?.()&&Date.now()-Number(D.lastFullHydrateAt||0)<7000){D.suppressedHydrates++;return}
  try{await refreshAuthority();if(D.fullAuthority&&Date.now()-Number(D.lastFullHydrateAt||0)>7000)scheduleHydrate()}
  catch(e){D.lastError=String(e?.message||e)}
@@ -137224,7 +137266,7 @@ html.v7154-frame-pending #world .v366-avatar{border:1px solid #3d5140!important;
 <script id="v7175-combat-release-owner">
 (()=>{'use strict';
  window.__V7169_COMBAT_COMPLETE__=window.__V7175_COMBAT_COMPLETE__=Object.freeze({version:'V7.193',singleVisibleArena:true,singleRendererFor:['dungeon','quest','tower','pvp'],classSpecificMotion:true,allClassTalentProcFx:true,statusAndDotHud:true,summonerPersistentCompanions:true,summonerRosterHud:true,summonGuaranteeCounter:true,summonerAttackFlight:true,companionReturnFlight:true,enemyFocusCrop:true,exactDungeonEnemyAsset:true,currentQuestStage:true,activeObserverOnly:true,serverCombatUnchanged:true,rewardsUnchanged:true});
- const V=Object.freeze({short:'V7.205',label:'V7.205 Stable',number:'7.205'});window.GROW_LEGENDS_VERSION=V;window.__GROW_LEGENDS_RELEASE__=V.short;window.__GL_CURRENT_BUILD__=V.short;
+ const V=Object.freeze({short:'V7.206',label:'V7.206 Stable',number:'7.205'});window.GROW_LEGENDS_VERSION=V;window.__GROW_LEGENDS_RELEASE__=V.short;window.__GL_CURRENT_BUILD__=V.short;
  document.documentElement.dataset.glBuild=V.short;
  window.glClientParityDiagnostics=()=>({build:V.short,combatOwner:'v7175',seedCatalog:'v492-static',href:location.href,native:!!window.Capacitor?.isNativePlatform?.(),userAgent:navigator.userAgent});
  const paint=()=>{try{document.querySelectorAll('.version,.v372-logo em,.v371-logo em,.v366-ver').forEach(el=>{if(el?.tagName!=='STYLE')el.textContent=V.short})}catch(_){}};paint();window.addEventListener('growlegends:account-ready',paint,{passive:true});
@@ -137849,13 +137891,13 @@ window.__V7166_DUNGEON_DETAIL_QA__=()=>({
   roadVisible:!!document.querySelector('#dungeonMapCard .v261-road')&&getComputedStyle(document.querySelector('#dungeonMapCard .v261-road')).display!=='none'
 });
 
-const V=Object.freeze({short:'V7.205',label:'V7.205 Stable',number:'7.205'});
+const V=Object.freeze({short:'V7.206',label:'V7.206 Stable',number:'7.205'});
 window.GROW_LEGENDS_VERSION=V;
-window.__GROW_LEGENDS_RELEASE__='V7.205';
-window.__GL_CURRENT_BUILD__='V7.205';
+window.__GROW_LEGENDS_RELEASE__='V7.206';
+window.__GL_CURRENT_BUILD__='V7.206';
 const paintVersion=()=>{
   try{document.querySelectorAll('.version,.v372-logo em,.v371-logo em,.v366-ver').forEach(el=>{if(el?.tagName!=='STYLE')el.textContent=V.short})}catch(_){}
-  try{document.title='Grow Legends V7.205'}catch(_){}
+  try{document.title='Grow Legends V7.206'}catch(_){}
 };
 paintVersion();
 window.addEventListener('growlegends:account-ready',paintVersion,{passive:true});
@@ -137863,8 +137905,8 @@ repair('boot');
 })();
 </script>
 <style id="v7166-final-version-css">
-html body .app > header .v358-logo::after{content:"V7.205"!important}
-html body .app > header .v366-ver::after,html body .app > header .v371-logo em::after,html body .app > header .v372-logo em::after,#v372TopbarShell .v372-logo em::after{content:"V7.205"!important}
+html body .app > header .v358-logo::after{content:"V7.206"!important}
+html body .app > header .v366-ver::after,html body .app > header .v371-logo em::after,html body .app > header .v372-logo em::after,#v372TopbarShell .v372-logo em::after{content:"V7.206"!important}
 </style>
 <!-- ===== /V7.168 DUNGEON DETAIL RENDER LOCK ===== -->
 
