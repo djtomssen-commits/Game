@@ -2,7 +2,7 @@
 <html lang="de" class="v7154-frame-pending">
 <head>
 <script id="v4131-version-source">
-window.GROW_LEGENDS_VERSION=Object.freeze({short:'V7.198',label:'V7.198 Stable',number:'7.198'});
+window.GROW_LEGENDS_VERSION=Object.freeze({short:'V7.200',label:'V7.200 Stable',number:'7.200'});
 </script>
 <script id="v7101-public-profile-coalescer">
 (()=>{
@@ -288,7 +288,7 @@ window.__V483_POWER_READY__=false;
 .app > header .v366-ver,.app > header .v371-logo em,.app > header .v372-logo em{font-size:0!important;color:transparent!important}
 .app > header .v366-ver::after,.app > header .v371-logo em::after,.app > header .v372-logo em::after{content:"V4.164"!important;font-size:5px!important;color:#63cdd1!important;font-style:normal!important;font-weight:900!important}
 </style>
-<title>Grow Legends V7.198</title>
+<title>Grow Legends V7.200</title>
 <style>
 :root{--bg:#0b100b;--panel:#151d14;--panel2:#1c281a;--panel3:#253423;--line:#354933;--text:#f2f5ed;--muted:#9fad99;--green:#83d65d;--green2:#b2f07e;--gold:#f2c75a;--red:#ee6b68;--blue:#68a7ea;--purple:#ad7bea;--shadow:0 12px 30px rgba(0,0,0,.28)}
 *{box-sizing:border-box}html{background:var(--bg)}body{margin:0;color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:radial-gradient(circle at 50% -10%,#253821 0,#10170f 40%,#090d09 100%);min-height:100vh}button{font:inherit}.app{max-width:820px;margin:auto;min-height:100vh;padding-bottom:88px}
@@ -1217,6 +1217,18 @@ img.v6108-quality-art{
   object-fit:contain!important;
   display:block!important;
 }
+
+/* V7.200: direct raster artwork. The parent owns the frame on normal item slots;
+   standalone reward/detail images receive the same quality color themselves. */
+img.v6108-quality-art{box-sizing:border-box!important;border:2px solid transparent!important;border-radius:10px!important;background:#070b08!important}
+.v6108-quality-artbox > img.v6108-quality-art{border:0!important;border-radius:8px!important}
+img.v6108-quality-art.v6108-q-gray{border-color:#9aa0a6!important}
+img.v6108-quality-art.v6108-q-green{border-color:#54d568!important}
+img.v6108-quality-art.v6108-q-blue{border-color:#29a8ff!important}
+img.v6108-quality-art.v6108-q-purple{border-color:#d13cff!important}
+img.v6108-quality-art.v6108-q-orange{border-color:#ff9f18!important}
+img.v6108-quality-art.v6108-q-cyan{border-color:#20e8e5!important}
+img.v6108-quality-art.v6108-q-prismatic{border-color:#ff5ed2!important}
 
 /* Actual item quality always owns the visual glow. */
 .v6108-quality-artbox.v6108-q-gray{box-shadow:inset 0 0 0 1px #9aa0a6!important}
@@ -69459,7 +69471,23 @@ normalize();
   ['v067OpenDungeon','v066OpenDungeon','selectDungeon'].forEach(name=>{
     try{
       const fn=window[name];if(typeof fn!=='function'||fn.__v467KeyWrapped)return;
-      const wrapped=function(i){ensure();return fn.apply(this,arguments)};
+      const wrapped=async function(i){
+        const self=this,args=[...arguments];ensure();
+        try{
+          const guard=window.v7051EnsureDungeonState;
+          if(typeof guard==='function'){
+            const g=await guard(Number(i),{force:true,paint:true,reason:name});ensure();
+            if(!g?.ok)return false;
+            const di=Math.max(0,Number(i)||0),sealed=Array.isArray(s.dungeon.completed)&&s.dungeon.completed.map(Number).includes(di)&&Number(s.dungeon.progress?.[di])>=9;
+            if(g.completed||sealed){
+              try{window.v467RebuildDungeonWorld?.('server-sealed-'+di)}catch(_){}
+              try{window.v115Alert?.('Dieser Dungeon ist bereits abgeschlossen und dauerhaft versiegelt.')}catch(_){}
+              return false;
+            }
+          }
+        }catch(e){console.warn('V7.199 dungeon entry guard',name,e);return false}
+        return fn.apply(self,args);
+      };
       wrapped.__v467KeyWrapped=true;window[name]=wrapped;
       try{if(name==='v067OpenDungeon')v067OpenDungeon=wrapped;if(name==='v066OpenDungeon')v066OpenDungeon=wrapped;if(name==='selectDungeon')selectDungeon=wrapped}catch(e){}
     }catch(e){}
@@ -73362,7 +73390,7 @@ function fullReport(){
  T('Build & Authority','Alter Cloud/Local-Restore nach Rollout blockiert',()=>({pass:!!window.v075ApplyCloudSave?.__v7133CloudApplyLock,detail:ad?`${Number(ad.legacyCloudAppliesBlocked)||0} Restore-Versuche abgefangen`:'Guard fehlt'}));
  T('Build & Authority','player_saves nur noch Kompatibilitäts-Cache',()=>({pass:ap?.playerSavesAfterFullEnforce==='read-compatibility-only'&&ap?.cloudApplyAfterFullEnforce==='blocked-and-server-rehydrated',detail:String(ap?.playerSavesAfterFullEnforce||'Policy fehlt')}));
  const loginAuth=window.__V4139_LOGIN_AUTHORITY__||null,loginDiag=(()=>{try{return window.v4139LoginAuthorityDiagnostics?.()||null}catch(_){return null}})();
- T('Build & Authority','Login lädt keinen Local/player_saves-Whole-Save mehr',()=>({pass:!!window.v075ResolveCloudAfterLogin?.__v7194ServerOnlyLogin&&loginAuth?.playerSavesGameplayRestore===false&&loginAuth?.localGameplayRestore===false,detail:loginDiag?`${loginAuth.mode} · Server-Hydrates ${Number(loginDiag.canonicalHydrates)||0} · Blocks ${Number(loginDiag.legacyWholeSaveBlocks)||0}`:'V7.198 Login-Guard fehlt'}));
+ T('Build & Authority','Login lädt keinen Local/player_saves-Whole-Save mehr',()=>({pass:!!window.v075ResolveCloudAfterLogin?.__v7194ServerOnlyLogin&&loginAuth?.playerSavesGameplayRestore===false&&loginAuth?.localGameplayRestore===false,detail:loginDiag?`${loginAuth.mode} · Server-Hydrates ${Number(loginDiag.canonicalHydrates)||0} · Blocks ${Number(loginDiag.legacyWholeSaveBlocks)||0}`:'V7.199 Login-Guard fehlt'}));
  T('Build & Authority','Admin-Synchronisierung nutzt Server-Signal statt player_saves-Restore',()=>{try{const f=Function.prototype.toString.call(window.v200AdminPoll||v200AdminPoll||(()=>{}));return{pass:/v7068_admin_change_state/.test(f)&&!/v075ApplyCloudSave/.test(f),detail:/v7068_admin_change_state/.test(f)?'v7068 Server-Signal aktiv':'alter Admin-Poll aktiv'}}catch(e){return{pass:false,detail:String(e?.message||e)}}});
  T('Build & Authority','Items server-only inkl. Auto-Funktionen',()=>({pass:window.__V7132_ITEM_AUTHORITY__?.manualEquip==='server-only'&&window.__V7132_ITEM_AUTHORITY__?.autoMaterials==='server-only',detail:window.__V7132_ITEM_AUTHORITY__?.localStorageRole||'Owner fehlt'}));
  T('Build & Authority','Growroom fail-closed serverseitig',()=>({pass:!!window.__V7065_GROW_FAIL_CLOSED__,detail:window.__V7065_GROW_FAIL_CLOSED__?'aktiv':'fehlt'}));
@@ -73465,7 +73493,7 @@ function ensureScreen(){
  const main=document.querySelector('main');if(!main)return null;
  let sec=document.getElementById('systemtech');if(!sec){sec=document.createElement('section');sec.id='systemtech';sec.className='screen';const footer=document.getElementById('v337LegalFooter');if(footer&&footer.parentElement===main)main.insertBefore(sec,footer);else main.appendChild(sec)}
  if(!sec.dataset.built){sec.dataset.built='1';sec.innerHTML=`<div class="v4107-page">
-  <div class="v4107-top"><div class="v4107-brand"><div class="v4107-brand-mark">🌿⚙️</div><div><h1>GROW LEGENDS <span>SYSTEMTEST & TECHNIK</span></h1><p>SERVERAUTORITÄT · SPIELZUSTAND · REAKTIONSZEITEN · UI · FEHLER · PERFORMANCE</p></div></div><div class="v4107-version">V7.198</div></div>
+  <div class="v4107-top"><div class="v4107-brand"><div class="v4107-brand-mark">🌿⚙️</div><div><h1>GROW LEGENDS <span>SYSTEMTEST & TECHNIK</span></h1><p>SERVERAUTORITÄT · SPIELZUSTAND · REAKTIONSZEITEN · UI · FEHLER · PERFORMANCE</p></div></div><div class="v4107-version">V7.200</div></div>
   <div class="v4107-layout">
    <aside class="v4107-sidebar"><div class="v4107-side-title">⚙️ SYSTEMTECHNIK</div>
     <button class="v4107-nav active" data-v4107-jump="status"><i>🧪</i>Systemtest</button>
@@ -76035,7 +76063,7 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();i
  }
  async function resolveServerFirst(id){
   LOGIN.serverFirstLogins++;LOGIN.lastMode='server-first';LOGIN.lastHydrateOk=false;
-  /* V7.198: authenticated gameplay never restores a monolithic local/player_saves snapshot.
+  /* V7.199: authenticated gameplay never restores a monolithic local/player_saves snapshot.
      Only immutable server identity is read here; every gameplay domain hydrates from its
      canonical server owner. If the server is unavailable, login fails closed instead of
      falling back to stale browser gameplay state. */
@@ -76131,14 +76159,14 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();i
     v075CloudLoadedFor=id;
     try{v213LastComparable=typeof v213Comparable==='function'?v213Comparable(s):'';v213StartMonitor?.()}catch(e){}
     return true;
-   }catch(e){LOGIN.lastError=String(e?.message||e);if(serverLoginPolicy())LOGIN.canonicalHydrateFailures++;console.error('V7.198 account resolver',e);warn('Account konnte nicht serverseitig geladen werden',e?.message||String(e));return false}
+   }catch(e){LOGIN.lastError=String(e?.message||e);if(serverLoginPolicy())LOGIN.canonicalHydrateFailures++;console.error('V7.199 account resolver',e);warn('Account konnte nicht serverseitig geladen werden',e?.message||String(e));return false}
    finally{resolvePromise=null;resolveUid=''}
   })();
   return resolvePromise;
  }
  resolve.__v7194ServerOnlyLogin=true;
  v075ResolveCloudAfterLogin=resolve;try{window.v075ResolveCloudAfterLogin=resolve}catch(e){}
- window.__V4139_LOGIN_AUTHORITY__=Object.freeze({version:'V7.198',mode:'server-first-fail-closed',playerSavesGameplayRestore:false,localGameplayRestore:false,identitySource:'profiles-server-identity-only',canonicalHydration:'v7133HydrateAllCore'});
+ window.__V4139_LOGIN_AUTHORITY__=Object.freeze({version:'V7.199',mode:'server-first-fail-closed',playerSavesGameplayRestore:false,localGameplayRestore:false,identitySource:'profiles-server-identity-only',canonicalHydration:'v7133HydrateAllCore'});
  window.v4139LoginAuthorityDiagnostics=()=>({...LOGIN,policy:window.__V4139_LOGIN_AUTHORITY__,allAuthorityEnforced:allAuthorityEnforced(),resolverGuarded:!!window.v075ResolveCloudAfterLogin?.__v7194ServerOnlyLogin});
 
  v075ApplyCloudSave=async function(data){const id=uid();if(!id)return false;return await apply(data,id)};
@@ -78119,8 +78147,9 @@ html:not(.v4142-systemtech-admin) #v4102QaButton{display:none!important}
    const wrapped=function(){
     const r=qa.apply(this,arguments);if(!r||!Array.isArray(r.results))return r;
     const add=(name,pass,detail)=>r.results.push({category:'Dungeon & Profil V4.159',name,pass:!!pass,severity:'error',detail});
-    add('Dungeon 1 ist ab Level 1 immer freigeschaltet',typeof dungeonUnlocked==='function'&&dungeonUnlocked(0)===true,'kein Schlüsselstein für Dungeon 1');
+    add('Dungeon 1 ist ab Level 1 grundsätzlich freigeschaltet',typeof dungeonUnlocked==='function'&&dungeonUnlocked(0)===true,'Abschluss/Versiegelung wird separat geprüft');
     add('Versiegelung braucht echten Bossfortschritt',(s.dungeon?.completed||[]).every(i=>Number(s.dungeon?.progress?.[i])>=9),'completed[] nur bei Bossraum');
+    add('Server-Guard schützt Dungeon-Einstieg',typeof window.v7051EnsureDungeonState==='function','vor Öffnen wird kanonischer Serverstatus geprüft');
     add('Frost-Auto-Ausrüsten kennt Waffe II',typeof window.v480AutoEquip==='function'&&/weapon2/.test(String(window.v480AutoEquip)),'stärkste zwei Frost-Waffen werden gewählt');
     try{const p=v073ProfilePayload?.()||{};const ks=['level','bosses','gear_score','dungeons','combat_power','worldboss_attempts','worldboss_wins','pvp_buds','pvp_wins','pvp_losses','pvp_fights'].filter(k=>k in p);add('Profil-Integerfelder sind ganzzahlig',ks.every(k=>Number.isInteger(Number(p[k]))),ks.map(k=>`${k}:${p[k]}`).join(' · '))}catch(e){add('Profil-Integerfelder sind ganzzahlig',false,e?.message||String(e))}
     r.total=r.results.length;r.passed=r.results.filter(x=>x.pass).length;r.failed=r.results.filter(x=>!x.pass&&x.severity!=='warn').length;r.warnings=r.results.filter(x=>!x.pass&&x.severity==='warn').length;r.ok=r.failed===0;return r;
@@ -102309,7 +102338,7 @@ function artUrl(id){
   if(ART_URL.has(id))return ART_URL.get(id);
   const raw=ART[id];
   if(!raw){ART_URL.set(id,'');return ''}
-  /* V7.198: extracted artwork is already a normal URL. Keep the legacy
+  /* V7.199: extracted artwork is already a normal URL. Keep the legacy
      data-URI decoder only as a compatibility fallback for old saves/builds. */
   if(!String(raw).startsWith('data:')){ART_URL.set(id,raw);return raw}
   try{
@@ -104771,48 +104800,11 @@ window.v6102EquipmentDiagnostics=function(){
  window.v6108ItemQuality=qualityOf;
 
  function qualityFrame(base,it){
-   if(!base)return'';
-   const q=qualityOf(it),meta=V6108_Q[q]||V6108_Q.gray;
-   const key=q+'|'+base;
-   if(V6108_CACHE.has(key))return V6108_CACHE.get(key);
-
-   /* Crop the colored border from the source artwork and add ONE authoritative
-      quality frame. This prevents a green item from showing an orange/cyan
-      border just because its source crop came from another poster column. */
-   const prism=q==='prismatic';
-   const bg=q==='gray'?'#101315':'#07100c';
-   const stroke=prism?'url(#prism)':meta.color;
-   const glow=meta.glow;
-   const svg=
-   `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96">
-      <defs>
-        <clipPath id="crop"><rect x="9" y="9" width="78" height="78" rx="10"/></clipPath>
-        <linearGradient id="shade" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stop-color="${bg}"/>
-          <stop offset="1" stop-color="#020504"/>
-        </linearGradient>
-        <linearGradient id="prism" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stop-color="#ff5ed2"/>
-          <stop offset=".22" stop-color="#a96bff"/>
-          <stop offset=".45" stop-color="#35cfff"/>
-          <stop offset=".66" stop-color="#44f090"/>
-          <stop offset=".83" stop-color="#ffe15a"/>
-          <stop offset="1" stop-color="#ff734b"/>
-        </linearGradient>
-        <filter id="g"><feGaussianBlur stdDeviation="2.1"/></filter>
-      </defs>
-      <rect x="3" y="3" width="90" height="90" rx="15" fill="url(#shade)"/>
-      <rect x="8" y="8" width="80" height="80" rx="11" fill="${meta.color}" opacity=".14" filter="url(#g)"/>
-      <image href="${base}" x="-7" y="-7" width="110" height="110"
-             preserveAspectRatio="xMidYMid slice" clip-path="url(#crop)"/>
-      <rect x="8" y="8" width="80" height="80" rx="11" fill="none" stroke="${stroke}" stroke-width="4"/>
-      <rect x="12" y="12" width="72" height="72" rx="8" fill="none" stroke="${glow}" stroke-width="1" opacity=".55"/>
-      <path d="M17 12 H31 M12 17 V31 M65 84 H79 M84 65 V79" stroke="${glow}" stroke-width="2" opacity=".9"/>
-    </svg>`;
-
-   const u='data:image/svg+xml;charset=UTF-8,'+encodeURIComponent(svg);
-   V6108_CACHE.set(key,u);
-   return u;
+   /* V7.200: Base64 Phase 2 moved the real artwork to external files.
+      Do not embed an external asset again inside a data: SVG: SVG images used
+      through <img> are isolated and the nested relative image URL stays blank.
+      The existing .v6108-quality-artbox / v6108-q-* classes own the rarity frame. */
+   return String(base||'');
  }
 
  const canonical=it=>{
@@ -127459,6 +127451,25 @@ async function receipt(runId){
 async function pendingReceipt(){
  try{return await rpcTimeout('v7044_pending_quest_receipt',{},6000)}catch(_){return null}
 }
+async function ensureCanonicalEntry(di,{force=true,paint=true,reason='entry'}={}){
+ C.entryGuards++;
+ if(!enforced())return{ok:true,enforced:false,completed:false};
+ try{
+  const q=await canonicalState({force:!!force});
+  if(!q?.ok){C.lastError=String(q?.reason||'DUNGEON_STATE_UNAVAILABLE');return{ok:false,enforced:true,completed:false,reason:C.lastError}}
+  persistLocal();ensureShape();
+  const i=Math.max(0,Math.min(19,Number(di)||0));
+  const completed=s.dungeon.completed.map(Number).includes(i)&&Number(s.dungeon.progress?.[i])>=9;
+  if(paint&&document.getElementById('dungeon')?.classList.contains('active')){
+   try{renderDungeon?.()}catch(e){console.warn('[V7051] canonical dungeon repaint',reason,e)}
+   try{window.v467RebuildDungeonWorld?.('v7051-'+reason)}catch(_){}
+  }
+  if(completed)C.blockedCompleted++;
+  return{ok:true,enforced:true,completed,state:q};
+ }catch(e){C.lastError=String(e?.message||e);console.warn('[V7051] canonical entry guard',reason,e);return{ok:false,enforced:true,completed:false,reason:C.lastError}}
+}
+window.v7051EnsureDungeonState=(di,opts={})=>ensureCanonicalEntry(di,opts);
+
 async function ack(runId){
  let last=null;
  for(let i=0;i<3;i++){
@@ -127937,7 +127948,7 @@ if(window.__V7051_ATOMIC_DUNGEON_CLIENT__)return;
 window.__V7051_ATOMIC_DUNGEON_CLIENT__=true;
 
 const VERSION='V7.051a';
-const C={busy:false,recovering:false,skipReplay:false,lastError:'',lastRunId:null,lastAck:null,lastRecovery:null,buttonOwned:false};
+const C={busy:false,recovering:false,skipReplay:false,lastError:'',lastRunId:null,lastAck:null,lastRecovery:null,buttonOwned:false,stateReady:false,lastCanonicalAt:0,entryGuards:0,blockedCompleted:0};
 let stateFlight=null,bootFlight=null,lastState=null,lastStateAt=0,lastReportAt=0;
 const clone=v=>{try{return JSON.parse(JSON.stringify(v))}catch(_){return v}};
 const db=()=>{try{return (typeof v073Db!=='undefined'&&v073Db)||null}catch(_){return null}};
@@ -128098,7 +128109,7 @@ async function canonicalState({force=false}={}){
   if(Array.isArray(q.unlocked))s.dungeon.unlocked=q.unlocked.map(Number);
   if(q.keyQuestCounts&&typeof q.keyQuestCounts==='object')s.dungeon.keyQuestCounts=clone(q.keyQuestCounts);
   if(Number.isFinite(Number(q.lastFreeMs)))s.dungeonPass.lastFree=Math.max(0,Number(q.lastFreeMs));
-  lastState=clone(q);lastStateAt=Date.now();
+  lastState=clone(q);lastStateAt=Date.now();C.stateReady=true;C.lastCanonicalAt=lastStateAt;
   try{window.v7144PaintDungeonTimer?.(true)}catch(_){}
   return q;
  })().finally(()=>{stateFlight=null});
@@ -128267,6 +128278,16 @@ async function runServerDungeon(){
   try{s.dungeon.view='map';s.dungeon.layer='dungeon';persistLocal();renderDungeon?.();window.v7144PaintDungeonTimer?.(true)}catch(_){}
  };
  try{
+  /* V7.199: never open a battle from a transient/stale local dungeon snapshot.
+     The authoritative dungeon state is checked before any battle UI is exposed. */
+  const gate=await ensureCanonicalEntry(di,{force:Date.now()-Number(C.lastCanonicalAt||0)>1500,paint:false,reason:'fight'});
+  if(!gate?.ok){wd?.end?.({ok:false,reason:'state_unavailable'});toast('Dungeonstatus wird geprüft','warn','Der Serverstatus konnte gerade nicht bestätigt werden. Bitte erneut versuchen.');return false}
+  if(gate.completed){
+   try{window.v467RebuildDungeonWorld?.('v7051-sealed-fight')}catch(_){}
+   wd?.end?.({ok:false,reason:'already_completed'});
+   toast('Dungeon abgeschlossen','info','Dieser Dungeon ist dauerhaft versiegelt.');
+   return false;
+  }
   /* V7.145: input feedback is immediate. The server still decides every combat
      result/reward; only the presentation opens before the network round-trip. */
   s.dungeon.view='battle';
@@ -128352,7 +128373,12 @@ function claimButton(){
   }
   const btn=own||document.getElementById('fightBtn');if(!btn)return;
   btn.id='v7051FightBtn';btn.setAttribute('data-v7051-server-fight','1');C.buttonOwned=true;
-  if(!C.busy){btn.disabled=false;if(!/ANGREIFEN|KAMPF|SIEG|ERNEUT/i.test(btn.textContent||''))btn.textContent='⚔️ ANGREIFEN'}
+  if(!C.busy){
+   const di=currentDungeonIndex(),sealed=Array.isArray(s?.dungeon?.completed)&&s.dungeon.completed.map(Number).includes(di)&&Number(s?.dungeon?.progress?.[di])>=9;
+   btn.disabled=!!sealed;
+   if(sealed)btn.textContent='⛓️ ABGESCHLOSSEN';
+   else if(!/ANGREIFEN|KAMPF|SIEG|ERNEUT/i.test(btn.textContent||''))btn.textContent='⚔️ ANGREIFEN';
+  }
  }catch(e){console.warn('[V7051] button owner',e)}
 }
 
@@ -128374,6 +128400,17 @@ window.addEventListener('click',ev=>{
 },true);
 
 document.addEventListener('click',ev=>{if(ev.target?.closest?.('#dungeon,[data-screen="dungeon"]'))setTimeout(claimButton,0)},false);
+
+async function syncDungeonOnOpen(reason='navigation'){
+ try{
+  await refreshModes();
+  if(!enforced())return false;
+  const gate=await ensureCanonicalEntry(currentDungeonIndex(),{force:true,paint:true,reason});
+  claimButton();
+  return !!gate?.ok;
+ }catch(e){C.lastError=String(e?.message||e);console.warn('[V7051] dungeon open sync',reason,e);return false}
+}
+window.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')==='dungeon')void syncDungeonOnOpen('navigation')},{passive:true});
 
 async function reportReadiness(){
  if(Date.now()-lastReportAt<60000)return;
@@ -131181,7 +131218,7 @@ function applyDaily(r,{openIfDue=false,keepOverlay=false,paint=true,heavy=true}=
   const today=berlinKey();
   if(r.due===true)setLock(today,false);
   else if(z.lastClaimKey===today)setLock(today,true);
-  /* V7.198: Daily Login is server-authoritative. Do not block the claim animation
+  /* V7.199: Daily Login is server-authoritative. Do not block the claim animation
      by serializing the complete legacy save back into localStorage. */
   D.dailyReady=true;
 
@@ -134946,7 +134983,7 @@ window.__V7132_ITEM_AUTHORITY__=Object.freeze({
 'use strict';
 if(window.__V7133_GLOBAL_AUTHORITY_LOCKDOWN__)return;
 window.__V7133_GLOBAL_AUTHORITY_LOCKDOWN__=true;
-const VERSION='V7.198'; /* consolidated gameplay authority owner */
+const VERSION='V7.200'; /* consolidated gameplay authority owner */
 const GAMEPLAY_DOMAINS=Object.freeze([
  'achievements','billing','build','daily','dungeon','endgame','grow_dealer','grow_orders','guild','items','liveops',
  'pets','profile','progress','pvp','quest','seeds','shop','social','tower','weekly','worldboss'
@@ -137016,7 +137053,7 @@ html.v7154-frame-pending #world .v366-avatar{border:1px solid #3d5140!important;
 <script id="v7175-combat-release-owner">
 (()=>{'use strict';
  window.__V7169_COMBAT_COMPLETE__=window.__V7175_COMBAT_COMPLETE__=Object.freeze({version:'V7.193',singleVisibleArena:true,singleRendererFor:['dungeon','quest','tower','pvp'],classSpecificMotion:true,allClassTalentProcFx:true,statusAndDotHud:true,summonerPersistentCompanions:true,summonerRosterHud:true,summonGuaranteeCounter:true,summonerAttackFlight:true,companionReturnFlight:true,enemyFocusCrop:true,exactDungeonEnemyAsset:true,currentQuestStage:true,activeObserverOnly:true,serverCombatUnchanged:true,rewardsUnchanged:true});
- const V=Object.freeze({short:'V7.198',label:'V7.198 Stable',number:'7.198'});window.GROW_LEGENDS_VERSION=V;window.__GROW_LEGENDS_RELEASE__=V.short;window.__GL_CURRENT_BUILD__=V.short;
+ const V=Object.freeze({short:'V7.200',label:'V7.200 Stable',number:'7.200'});window.GROW_LEGENDS_VERSION=V;window.__GROW_LEGENDS_RELEASE__=V.short;window.__GL_CURRENT_BUILD__=V.short;
  document.documentElement.dataset.glBuild=V.short;
  window.glClientParityDiagnostics=()=>({build:V.short,combatOwner:'v7175',seedCatalog:'v492-static',href:location.href,native:!!window.Capacitor?.isNativePlatform?.(),userAgent:navigator.userAgent});
  const paint=()=>{try{document.querySelectorAll('.version,.v372-logo em,.v371-logo em,.v366-ver').forEach(el=>{if(el?.tagName!=='STYLE')el.textContent=V.short})}catch(_){}};paint();window.addEventListener('growlegends:account-ready',paint,{passive:true});
@@ -137641,13 +137678,13 @@ window.__V7166_DUNGEON_DETAIL_QA__=()=>({
   roadVisible:!!document.querySelector('#dungeonMapCard .v261-road')&&getComputedStyle(document.querySelector('#dungeonMapCard .v261-road')).display!=='none'
 });
 
-const V=Object.freeze({short:'V7.198',label:'V7.198 Stable',number:'7.198'});
+const V=Object.freeze({short:'V7.200',label:'V7.200 Stable',number:'7.200'});
 window.GROW_LEGENDS_VERSION=V;
-window.__GROW_LEGENDS_RELEASE__='V7.198';
-window.__GL_CURRENT_BUILD__='V7.198';
+window.__GROW_LEGENDS_RELEASE__='V7.200';
+window.__GL_CURRENT_BUILD__='V7.200';
 const paintVersion=()=>{
   try{document.querySelectorAll('.version,.v372-logo em,.v371-logo em,.v366-ver').forEach(el=>{if(el?.tagName!=='STYLE')el.textContent=V.short})}catch(_){}
-  try{document.title='Grow Legends V7.198'}catch(_){}
+  try{document.title='Grow Legends V7.200'}catch(_){}
 };
 paintVersion();
 window.addEventListener('growlegends:account-ready',paintVersion,{passive:true});
@@ -137655,8 +137692,8 @@ repair('boot');
 })();
 </script>
 <style id="v7166-final-version-css">
-.app > header .v358-logo::after{content:"V7.198"!important}
-.app > header .v366-ver::after,.app > header .v371-logo em::after,.app > header .v372-logo em::after{content:"V7.198"!important}
+html body .app > header .v358-logo::after{content:"V7.200"!important}
+html body .app > header .v366-ver::after,html body .app > header .v371-logo em::after,html body .app > header .v372-logo em::after,#v372TopbarShell .v372-logo em::after{content:"V7.200"!important}
 </style>
 <!-- ===== /V7.168 DUNGEON DETAIL RENDER LOCK ===== -->
 
