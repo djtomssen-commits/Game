@@ -2,7 +2,7 @@
 <html lang="de" class="v7154-frame-pending">
 <head>
 <script id="v4131-version-source">
-window.GROW_LEGENDS_VERSION=Object.freeze({short:'V7.219',label:'V7.219 Stable',number:'7.219'});
+window.GROW_LEGENDS_VERSION=Object.freeze({short:'V7.222',label:'V7.222 Stable',number:'7.222'});
 window.__V7210_BOOT_PENDING__=true;
 window.v7206StartupBusy=()=>window.__V7210_BOOT_PENDING__===true||window.__V7206_CANONICAL_LOGIN_RUNNING__===true||window.__V7206_FIRST_PLAYABLE_PENDING__===true;
 /* V7.214: account-ready listeners used to all wake in the same frame and caused
@@ -15897,7 +15897,7 @@ function v7215Paint(){
       <div class="v7219-progress"><i style="width:${pct}%"></i></div>
       <button type="button" class="btn v7219-watch" id="v7215WatchBtn" ${disabled?'disabled':''}>${button}</button>
       <div class="v7219-status" id="v7215Status">${status}</div>
-      <div class="v7219-mini">Tütchen ${(Number(st.stage)||0)+1}/5 · Fortschritt wird serverseitig gespeichert.</div>
+      <div class="v7219-mini">Stufe ${(Number(st.stage)||0)+1} von 5 · ${String(b.title||'Aktuelles Tütchen')} · serverseitig gespeichert.</div>
      </div>
     </div>
    </div>
@@ -136422,7 +136422,7 @@ window.v7136RewardDiagnostics=()=>({version:String(window.GROW_LEGENDS_VERSION?.
 <script id="v7135-absolute-final-version-owner">
 (()=>{
 'use strict';
-const V=Object.freeze({short:'V7.219',label:'V7.219 Stable',number:'7.219'});
+const V=Object.freeze({short:'V7.222',label:'V7.222 Stable',number:'7.222'});
 window.GROW_LEGENDS_VERSION=V;
 window.__GROW_LEGENDS_RELEASE__=V.short;
 window.__GL_CURRENT_BUILD__=V.short;
@@ -136471,8 +136471,8 @@ window.v7135VersionDiagnostics=()=>({
 })();
 </script>
 <style id="v7135-absolute-final-version-css">
-.app > header .v358-logo::after{content:"V7.219"!important}
-.app > header .v366-ver::after,.app > header .v371-logo em::after,.app > header .v372-logo em::after{content:"V7.219"!important}
+.app > header .v358-logo::after{content:"V7.222"!important}
+.app > header .v366-ver::after,.app > header .v371-logo em::after,.app > header .v372-logo em::after{content:"V7.222"!important}
 </style>
 <!-- ===== /V7.136 ABSOLUTE FINAL VERSION OWNER ===== -->
 
@@ -138873,6 +138873,129 @@ html body .app > header .v366-ver::after,html body .app > header .v371-logo em::
   };
 })();
 </script>
+
+
+<!-- V7.222 Tütchen-Dealer mobile clarity fix -->
+<style id="v7222-bagdealer-mobile-fix">
+#bagDealer .v7219-mini{font-size:11px;color:#9eaa9b;line-height:1.35}
+@media(max-width:700px){
+  #bagDealer .v7219-main-grid{grid-template-columns:1fr 138px!important;gap:8px!important;align-items:stretch}
+  #bagDealer .v7219-next{display:flex!important;min-width:0}
+  #bagDealer .v7219-next .v7219-board-title{padding:9px 7px!important;font-size:11px!important;text-align:center}
+  #bagDealer .v7219-next-inner{padding:8px 6px 10px!important}
+  #bagDealer .v7219-next-pack{width:100%!important;height:165px!important;min-height:165px!important;border-radius:14px!important}
+  #bagDealer .v7219-next-name{font-size:10px!important;margin-top:7px!important}
+  #bagDealer .v7219-next-copy{font-size:8px!important;line-height:1.25!important}
+  #bagDealer .v7219-current-content{grid-template-columns:126px 1fr!important}
+}
+@media(max-width:430px){
+  #bagDealer .v7219-main-grid{grid-template-columns:1fr 112px!important;gap:6px!important}
+  #bagDealer .v7219-next-pack{height:138px!important;min-height:138px!important}
+  #bagDealer .v7219-next .v7219-board-title{font-size:9px!important;padding:8px 4px!important}
+  #bagDealer .v7219-next-name{font-size:8px!important}
+  #bagDealer .v7219-next-copy{font-size:7px!important}
+  #bagDealer .v7219-current-content{grid-template-columns:104px 1fr!important;gap:7px!important}
+  #bagDealer .v7219-mini{font-size:9px!important}
+}
+</style>
+
+
+<!-- V7.223 Tütchen-Dealer compact layout -->
+<style id="v7223-bagdealer-compact">
+#bagDealer{padding:7px 6px 24px!important}
+#bagDealer .v7219-dealer-shell{max-width:740px!important}
+#bagDealer .v7219-hero{
+  grid-template-columns:132px 1fr 38px!important;
+  min-height:168px!important;
+  padding:12px 10px!important;
+  gap:9px!important;
+  margin-bottom:9px!important;
+  border-radius:21px!important;
+}
+#bagDealer .v7219-dealer-portrait{height:132px!important;border-radius:18px!important}
+#bagDealer .v7219-sign-small{font-size:7.5px!important;padding:5px 8px!important;margin-bottom:6px!important;letter-spacing:.1em!important}
+#bagDealer .v7219-hero h2{font-size:31px!important;margin-bottom:5px!important;line-height:1!important}
+#bagDealer .v7219-hero p{font-size:10.5px!important;line-height:1.35!important;max-width:390px!important}
+#bagDealer .v7219-help{width:34px!important;height:34px!important;margin-top:5px!important;border-radius:11px!important;font-size:18px!important}
+
+#bagDealer .v7219-main-grid{grid-template-columns:minmax(0,1fr) 118px!important;gap:7px!important;margin:0!important}
+#bagDealer .v7219-board,#bagDealer .v7219-how,#bagDealer .v7219-today{border-radius:18px!important}
+#bagDealer .v7219-board-title,#bagDealer .v7219-how h3,#bagDealer .v7219-today h3{
+  padding:8px 10px!important;font-size:14px!important;line-height:1.1!important
+}
+#bagDealer .v7219-current-content{grid-template-columns:110px 1fr!important;gap:9px!important;padding:9px!important}
+#bagDealer .v7219-pack{min-height:158px!important;height:158px!important;border-radius:16px!important}
+#bagDealer .v7221-pack-art{inset:5px 5px 42px!important;border-radius:12px!important}
+#bagDealer .v7221-pack-footer{left:6px!important;right:6px!important;bottom:6px!important;min-height:31px!important;padding:5px 6px!important;border-radius:10px!important}
+#bagDealer .v7221-pack-title{font-size:11px!important}
+#bagDealer .v7221-pack-meta{font-size:8px!important;margin-top:2px!important}
+#bagDealer .v7219-fill h3{font-size:21px!important;margin-bottom:1px!important}
+#bagDealer .v7219-fill-sub{font-size:10px!important;line-height:1.2!important}
+#bagDealer .v7219-progress-line{margin:8px 0 5px!important;gap:6px!important;align-items:center!important}
+#bagDealer .v7219-progress-line b{font-size:24px!important}
+#bagDealer .v7219-progress-line span{font-size:7.5px!important;line-height:1.15!important}
+#bagDealer .v7219-progress{height:15px!important;padding:2px!important}
+#bagDealer .v7219-watch{min-height:46px!important;margin-top:9px!important;border-radius:12px!important;font-size:13px!important;padding:7px 8px!important}
+#bagDealer .v7219-status{min-height:0!important;margin-top:5px!important;font-size:9px!important;line-height:1.28!important}
+#bagDealer .v7219-mini{font-size:8px!important;line-height:1.25!important;margin-top:4px!important}
+
+#bagDealer .v7219-next .v7219-board-title{padding:7px 4px!important;font-size:9px!important;text-align:center!important}
+#bagDealer .v7219-next-inner{padding:6px 5px 8px!important}
+#bagDealer .v7219-next-pack{width:100%!important;height:118px!important;min-height:118px!important;border-radius:12px!important}
+#bagDealer .v7219-next-pack .v7221-pack-art{inset:4px 4px 34px!important}
+#bagDealer .v7219-next-pack .v7221-pack-footer{left:4px!important;right:4px!important;bottom:4px!important;min-height:25px!important;padding:4px!important}
+#bagDealer .v7219-next-pack .v7221-pack-title{font-size:8px!important}
+#bagDealer .v7219-next-pack .v7221-pack-meta{display:none!important}
+#bagDealer .v7219-next-name{font-size:8px!important;margin-top:5px!important;line-height:1.15!important}
+#bagDealer .v7219-next-copy{font-size:6.7px!important;line-height:1.2!important;margin-top:2px!important}
+
+#bagDealer .v7219-reward-board{margin-top:8px!important}
+#bagDealer .v7219-reward-grid{grid-template-columns:repeat(4,1fr)!important;gap:6px!important;padding:8px!important}
+#bagDealer .v7219-reward-card{min-height:75px!important;padding:7px 4px!important;border-radius:11px!important}
+#bagDealer .v7219-reward-card .ico{font-size:25px!important}
+#bagDealer .v7219-reward-card b{font-size:8.5px!important;margin-top:4px!important}
+#bagDealer .v7219-reward-card span{font-size:10px!important;margin-top:2px!important}
+
+#bagDealer .v7219-lower-grid{grid-template-columns:1.25fr .75fr!important;gap:7px!important;margin-top:8px!important}
+#bagDealer .v7219-how-list{gap:7px!important;padding:9px!important}
+#bagDealer .v7219-how-row{grid-template-columns:29px 1fr!important;gap:7px!important;font-size:9px!important;line-height:1.3!important}
+#bagDealer .v7219-how-icon{width:27px!important;height:27px!important;font-size:13px!important}
+#bagDealer .v7219-today-body{min-height:136px!important;padding:9px!important}
+#bagDealer .v7219-ring{width:82px!important;height:82px!important}
+#bagDealer .v7219-ring:before{inset:8px!important}
+#bagDealer .v7219-ring strong{font-size:23px!important}
+#bagDealer .v7219-ring small{font-size:6.5px!important;margin-top:2px!important}
+#bagDealer .v7219-today-copy{font-size:8px!important;line-height:1.3!important;margin-top:6px!important}
+#bagDealer .v7219-test{margin-top:8px!important;padding:7px 8px!important;border-radius:10px!important;font-size:7.5px!important}
+
+@media(max-width:430px){
+  #bagDealer{padding-left:4px!important;padding-right:4px!important}
+  #bagDealer .v7219-hero{grid-template-columns:86px 1fr 30px!important;min-height:137px!important;padding:9px 7px!important;gap:7px!important}
+  #bagDealer .v7219-dealer-portrait{height:103px!important;border-radius:14px!important}
+  #bagDealer .v7219-sign-small{font-size:6px!important;padding:4px 6px!important;margin-bottom:4px!important}
+  #bagDealer .v7219-hero h2{font-size:24px!important}
+  #bagDealer .v7219-hero p{font-size:8.3px!important;line-height:1.28!important}
+  #bagDealer .v7219-help{width:29px!important;height:29px!important;font-size:15px!important}
+  #bagDealer .v7219-main-grid{grid-template-columns:minmax(0,1fr) 91px!important;gap:5px!important}
+  #bagDealer .v7219-current-content{grid-template-columns:90px 1fr!important;gap:6px!important;padding:7px!important}
+  #bagDealer .v7219-pack{height:137px!important;min-height:137px!important}
+  #bagDealer .v7219-fill h3{font-size:18px!important}
+  #bagDealer .v7219-fill-sub{font-size:8.5px!important}
+  #bagDealer .v7219-progress-line b{font-size:20px!important}
+  #bagDealer .v7219-progress-line span{font-size:6.4px!important}
+  #bagDealer .v7219-progress{height:13px!important}
+  #bagDealer .v7219-watch{min-height:42px!important;font-size:11.5px!important;margin-top:7px!important}
+  #bagDealer .v7219-status{font-size:8px!important}
+  #bagDealer .v7219-mini{font-size:7px!important}
+  #bagDealer .v7219-next-pack{height:101px!important;min-height:101px!important}
+  #bagDealer .v7219-next-name{font-size:7.2px!important}
+  #bagDealer .v7219-next-copy{font-size:6px!important}
+  #bagDealer .v7219-reward-grid{grid-template-columns:repeat(2,1fr)!important}
+  #bagDealer .v7219-reward-card{min-height:68px!important}
+  #bagDealer .v7219-lower-grid{grid-template-columns:1fr!important}
+  #bagDealer .v7219-today-body{min-height:118px!important}
+}
+</style>
 
 </body>
 </html>
