@@ -413,7 +413,7 @@ window.__V483_POWER_READY__=false;
 .app > header .v366-ver,.app > header .v371-logo em,.app > header .v372-logo em{font-size:0!important;color:transparent!important}
 .app > header .v366-ver::after,.app > header .v371-logo em::after,.app > header .v372-logo em::after{content:"V4.164"!important;font-size:5px!important;color:#63cdd1!important;font-style:normal!important;font-weight:900!important}
 </style>
-<title>Grow Legends V7.246</title>
+<title>Grow Legends V7.247</title>
 <style>
 :root{--bg:#0b100b;--panel:#151d14;--panel2:#1c281a;--panel3:#253423;--line:#354933;--text:#f2f5ed;--muted:#9fad99;--green:#83d65d;--green2:#b2f07e;--gold:#f2c75a;--red:#ee6b68;--blue:#68a7ea;--purple:#ad7bea;--shadow:0 12px 30px rgba(0,0,0,.28)}
 *{box-sizing:border-box}html{background:var(--bg)}body{margin:0;color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:radial-gradient(circle at 50% -10%,#253821 0,#10170f 40%,#090d09 100%);min-height:100vh}button{font:inherit}.app{max-width:820px;margin:auto;min-height:100vh;padding-bottom:88px}
@@ -72541,7 +72541,7 @@ html.v481-hidden *,html.v481-hidden *::before,html.v481-hidden *::after{animatio
     }).join('');
   }
   function renderForge(){
-    /* V7.246 Beta: while Nebelschmied owns the forge, the legacy renderer
+    /* V7.247 Beta: while Nebelschmied owns the forge, the legacy renderer
        must not rebuild the entire forge DOM. Those rebuilds caused flicker. */
     if(document.getElementById('forge')?.classList.contains('v7240-nebel-open'))return;
     const sec=ensureScreen(),z=state(),c=cost(),rows=selectedRows(),sum=selectedFragments(),refund=selectedGoldRefund(),eligible=eligibleRows(),allEligibleSelected=eligible.length>0&&eligible.every(x=>selected.has(x.key)),can=z.fragments>=c.fragments&&(Number(s.gold)||0)>=c.gold&&!busy;
@@ -127014,7 +127014,7 @@ window.v6346AdminLoadBroadcasts=loadAdminBroadcasts;
    try{
      await native.consume({purchaseToken:String(purchase.purchaseToken)});
    }catch(e){
-     console.warn('V7.246 consume pending; will retry on original server',e);
+     console.warn('V7.247 consume pending; will retry on original server',e);
      if(!quiet)toast('Kauf gutgeschrieben','success',`Die Harz-Taler sind auf ${serverId==='server1'?'Server 1':'Beta'} gutgeschrieben. Google Play wird den Verbrauch beim nächsten App-Start erneut abschließen.`);
      return true;
    }
@@ -127053,11 +127053,11 @@ window.v6346AdminLoadBroadcasts=loadAdminBroadcasts;
      try{
        purchase=await native.purchase({productId:pkg.productId,accountId:String(v073User.id)});
      }catch(e){
-       console.warn('V7.246 Google Play purchase returned an error; checking open purchases first',e);
+       console.warn('V7.247 Google Play purchase returned an error; checking open purchases first',e);
        try{
          const restored=await recoverPending({notify:true,serverHint:purchaseServer,allowBusy:true});
          if(restored>0)return true;
-       }catch(re){console.warn('V7.246 immediate purchase recovery failed',re)}
+       }catch(re){console.warn('V7.247 immediate purchase recovery failed',re)}
        alertMsg(
          'Google Play hat den Kaufdialog nicht normal abgeschlossen. Offene Käufe wurden geprüft. Falls Google den Kauf bereits bestätigt hat, bleibt er gespeichert und wird automatisch erneut geprüft.',
          'Kaufprüfung läuft weiter',
@@ -127120,7 +127120,7 @@ window.v6346AdminLoadBroadcasts=loadAdminBroadcasts;
        bound.push({token,server,key});
      }
    }catch(e){
-     console.warn('V7.246 token binding scan',e);
+     console.warn('V7.247 token binding scan',e);
      return 0;
    }
 
@@ -127151,7 +127151,7 @@ window.v6346AdminLoadBroadcasts=loadAdminBroadcasts;
          try{
            await native.consume({purchaseToken:item.token});
          }catch(e){
-           console.warn('V7.246 recovered purchase consume pending',e);
+           console.warn('V7.247 recovered purchase consume pending',e);
          }
        }
 
@@ -127161,7 +127161,7 @@ window.v6346AdminLoadBroadcasts=loadAdminBroadcasts;
          toast('💎 Kauf wiederhergestellt','success',`+${added} Harz-Taler wurden auf ${item.server==='server1'?'Server 1':'Beta'} gutgeschrieben.`);
        }
      }catch(e){
-       console.warn('V7.246 bound purchase recovery',e);
+       console.warn('V7.247 bound purchase recovery',e);
        const msg=String(e?.message||e||'');
        if(/findet diesen offenen Kauf nicht mehr|nicht mehr abgeschlossen|purchaseState/i.test(msg)){
          /* Keep the token binding for one more app session; Google test purchases can
@@ -127177,7 +127177,7 @@ window.v6346AdminLoadBroadcasts=loadAdminBroadcasts;
    try{
      const boundRecovered=await v7237RecoverBoundTokens({notify});
      if(boundRecovered>0)return boundRecovered;
-   }catch(e){console.warn('V7.246 bound token pre-recovery',e)}
+   }catch(e){console.warn('V7.247 bound token pre-recovery',e)}
    const native=plugin();if(!native)return 0;
    if(!(await billingServerReady(false)))return 0;
    if(serverHint==='server1'||serverHint==='beta')v7235RememberPendingServer(serverHint);
@@ -127191,7 +127191,7 @@ window.v6346AdminLoadBroadcasts=loadAdminBroadcasts;
          const ok=await verifyAndConsume(purchase,{quiet:!notify});
          if(ok)recovered++;
        }catch(e){
-         console.warn('V7.246 pending purchase verification',e);
+         console.warn('V7.247 pending purchase verification',e);
        }
      }
      if(notify&&recovered===0&&purchases.length===0){
@@ -127199,7 +127199,7 @@ window.v6346AdminLoadBroadcasts=loadAdminBroadcasts;
      }
      return recovered;
    }catch(e){
-     console.warn('V7.246 pending lookup',e);
+     console.warn('V7.247 pending lookup',e);
      return 0;
    }finally{
      recoveryBusy=false;
@@ -129245,7 +129245,7 @@ async function animateReplay(b){
  const replay=Array.isArray(b?.replay)?b.replay:[];C.skipReplay=false;
  /* V7.214: combat remains visibly animated, but replay duration is bounded.
     Twelve replay events used to sleep ~7.7 s before any UI work. */
- /* V7.246: Dungeon presentation now uses the same replay cadence as the tower.
+ /* V7.247: Dungeon presentation now uses the same replay cadence as the tower.
     Combat rules/rewards are unchanged; only visual timing is slower. */
  const frameDelay=Math.max(140,Math.min(280,Math.floor(2600/Math.max(1,replay.length))));
  const attackDelay=Math.max(70,Math.round(frameDelay*.44));
@@ -139230,7 +139230,7 @@ html body .app > header .v366-ver::after,html body .app > header .v371-logo em::
 if(window.__V7229_SERVER1_CHARACTER_BOOTSTRAP__)return;
 window.__V7229_SERVER1_CHARACTER_BOOTSTRAP__=true;
 
-const VERSION=Object.freeze({short:'V7.246',label:(String(window.GROW_RELEASE_CHANNEL||'stable')==='beta'?'V7.246 Beta':'V7.246 Servergebundene Käufe'),number:'7.246'});
+const VERSION=Object.freeze({short:'V7.247',label:(String(window.GROW_RELEASE_CHANNEL||'stable')==='beta'?'V7.247 Beta':'V7.247 Servergebundene Käufe'),number:'7.247'});
 window.GROW_LEGENDS_VERSION=VERSION;
 window.__GROW_LEGENDS_RELEASE__=VERSION.short;
 window.__GL_CURRENT_BUILD__=VERSION.short;
@@ -139471,21 +139471,21 @@ window.v7230FrameDiagnostics=()=>({server:serverId(),syncing:!!flight,state:wind
 <!-- ===== /V7.230 SERVER-SCOPED AVATAR FRAME AUTHORITY ===== -->
 
 <style id="v7231-visible-version-css">
-html body .app > header .v358-logo::after{content:"V7.246"!important}
-html body .app > header .v366-ver::after,html body .app > header .v371-logo em::after,html body .app > header .v372-logo em::after,#v372TopbarShell .v372-logo em::after{content:"V7.246"!important}
+html body .app > header .v358-logo::after{content:"V7.247"!important}
+html body .app > header .v366-ver::after,html body .app > header .v371-logo em::after,html body .app > header .v372-logo em::after,#v372TopbarShell .v372-logo em::after{content:"V7.247"!important}
 </style>
 <script id="v7233-isolation-audit-marker">
-(()=>{'use strict';window.__V7233_ISOLATION_AUDIT__=Object.freeze({version:'V7.246',earlyStorageIsolation:true,serverScopedCloud:true,serverScopedRecoveryCaches:true,serverPrivateRpcLayer:true});})();
+(()=>{'use strict';window.__V7233_ISOLATION_AUDIT__=Object.freeze({version:'V7.247',earlyStorageIsolation:true,serverScopedCloud:true,serverScopedRecoveryCaches:true,serverPrivateRpcLayer:true});})();
 </script>
 
-<!-- ===== V7.246 CALENDAR ACHIEVEMENTS · SERVER AUTHORITY ===== -->
+<!-- ===== V7.247 CALENDAR ACHIEVEMENTS · SERVER AUTHORITY ===== -->
 <script id="v7239-calendar-achievements">
 (()=>{
 'use strict';
 if(window.__V7239_CALENDAR_ACHIEVEMENTS__)return;
 window.__V7239_CALENDAR_ACHIEVEMENTS__=true;
 
-const VERSION='V7.246';
+const VERSION='V7.247';
 const CAL=[
  ['calendar_newyear','Neues Jahr, neuer Grow','Logge dich am 1. Januar ein.'],
  ['calendar_valentine','Harzige Liebe','Logge dich am 14. Februar ein.'],
@@ -139507,7 +139507,7 @@ function installDefs(){
    if(!V106_ACH.some(x=>String(x?.[0])===id))V106_ACH.push([id,title,desc,()=>0,1]);
   }
   return true;
- }catch(e){console.warn('[V7.246] calendar defs',e);return false}
+ }catch(e){console.warn('[V7.247] calendar defs',e);return false}
 }
 function logged(){
  try{return !!(window.v073User?.id&&!window.v073User?.is_anonymous)}catch(_){return false}
@@ -139553,7 +139553,7 @@ async function claim(show=true){
   setTimeout(()=>{try{void window.v7080AchievementRefresh?.(false)}catch(_){}},16050);
   return r;
  }catch(e){
-  console.warn('[V7.246] calendar achievement claim',e);
+  console.warn('[V7.247] calendar achievement claim',e);
   return null;
  }finally{busy=false}
 }
@@ -139568,10 +139568,10 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden)setTimeout
 setTimeout(installDefs,600);
 })();
 </script>
-<!-- ===== /V7.246 CALENDAR ACHIEVEMENTS ===== -->
+<!-- ===== /V7.247 CALENDAR ACHIEVEMENTS ===== -->
 
 
-<!-- ===== V7.246 BETA · NEBELSCHMIED + NEBELKARAWANE ===== -->
+<!-- ===== V7.247 BETA · NEBELSCHMIED + NEBELKARAWANE ===== -->
 <style id="v7240-beta-gold-features-css">
 /* Beta-only premium visual layer. No generic browser-card aesthetic. */
 #forge.v7240-nebel-open .v667-forge-body>.v667-view,
@@ -139761,7 +139761,7 @@ setTimeout(installDefs,600);
 </style>
 
 <style id="v7245-caravan-overhaul-css">
-/* V7.246 · Nebelkarawane visual/UX overhaul */
+/* V7.247 · Nebelkarawane visual/UX overhaul */
 #caravan.screen{
   padding:8px 0 30px!important;
   background:
@@ -139946,6 +139946,176 @@ setTimeout(installDefs,600);
 }
 </style>
 
+
+<style id="v7247-caravan-v2-css">
+/* V7.247 · Karawane V2: event scene, compact choices, cinematic results */
+#caravan.screen{overflow-x:hidden!important}
+.v7245-caravan-banner{min-height:150px!important;margin-bottom:7px!important}
+.v7245-banner-stats{gap:4px!important}
+.v7245-banner-stat{padding:4px 7px!important;font-size:5.4px!important}
+
+/* Route selection now uses scene art instead of browser-like cards */
+.v7247-route-grid{display:grid;gap:9px}
+.v7247-route{
+  position:relative;overflow:hidden;min-height:184px;border:2px solid #42523b;border-radius:17px;
+  background:#07100a;box-shadow:0 11px 27px #000b,inset 0 0 0 1px #ffffff08
+}
+.v7247-route[data-tier="convoy"]{border-color:#6a5934}
+.v7247-route[data-tier="kingpin"]{border-color:#815b30}
+.v7247-route.locked{filter:grayscale(.7);opacity:.56}
+.v7247-route-bg{
+  position:absolute;inset:0;background-position:center;background-size:cover;filter:brightness(.43) saturate(.8);
+  transform:scale(1.03);transition:transform .35s ease,filter .35s ease
+}
+.v7247-route:not(.locked):active .v7247-route-bg{transform:scale(1.07);filter:brightness(.53) saturate(.95)}
+.v7247-route:after{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(90deg,#040806f4 0 48%,#040806b8 68%,#04080655 100%),linear-gradient(180deg,transparent 55%,#030604e8)
+}
+.v7247-route-body{position:relative;z-index:2;display:grid;grid-template-columns:1fr auto;gap:10px;min-height:184px;padding:13px}
+.v7247-route-copy{align-self:end;max-width:620px}
+.v7247-route-copy small{display:block;color:#79b86a;font-size:5.5px;font-weight:1000;letter-spacing:1px}
+.v7247-route-copy h3{margin:2px 0 5px;color:#f2d798;font:1000 22px Georgia,serif;text-shadow:0 2px #000}
+.v7247-route-copy p{margin:0 0 9px;color:#b0baaa;font-size:6.6px;line-height:1.42}
+.v7247-route-loot{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px}
+.v7247-loot-chip{
+  padding:4px 7px;border:1px solid #40503b;border-radius:999px;background:#07100be6;color:#b9c8b3;font-size:5.5px;font-weight:900
+}
+.v7247-route-side{
+  align-self:end;min-width:108px;padding:9px;border:1px solid #68552f;border-radius:12px;background:#0a0d09dc;text-align:center;
+  box-shadow:0 7px 17px #0008
+}
+.v7247-route-side small{display:block;color:#8f927d;font-size:5px}.v7247-route-side strong{display:block;margin:2px 0 6px;color:#f2d170;font-size:11px}
+.v7247-route-side button{
+  width:100%;min-height:37px;border:1px solid #718f56;border-radius:9px;background:linear-gradient(180deg,#527c42,#2d5127);
+  color:#f0ffe9;font-size:6.7px;font-weight:1000;box-shadow:0 3px 0 #172a12
+}
+.v7247-route[data-tier="convoy"] .v7247-route-side button,
+.v7247-route[data-tier="kingpin"] .v7247-route-side button{
+  border-color:#bc8b39;background:linear-gradient(180deg,#a97629,#5e4017);box-shadow:0 3px 0 #30200b;color:#fff0b4
+}
+
+/* Active run becomes one visual stage instead of stacked browser panels */
+.v7247-run-shell{position:relative}
+.v7247-stage{
+  position:relative;overflow:hidden;min-height:clamp(470px,70dvh,670px);border:2px solid #5d492a;border-radius:20px;
+  background:#050906;box-shadow:0 18px 42px #000d,inset 0 0 0 1px #a6803b44
+}
+.v7247-stage-bg{
+  position:absolute;inset:0;background-size:cover;background-position:center;filter:brightness(.60) saturate(.9);
+  animation:v7247StageIn .55s ease-out both
+}
+@keyframes v7247StageIn{from{transform:scale(1.06);filter:brightness(.38) blur(3px)}to{transform:scale(1);filter:brightness(.60) blur(0)}}
+.v7247-stage:after{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(180deg,#0005 0,#0000 25%,#0002 48%,#030604f2 88%),radial-gradient(circle at 50% 30%,transparent,#0008 95%)
+}
+.v7247-stage-top{
+  position:absolute;z-index:5;left:10px;right:10px;top:10px;display:grid;grid-template-columns:1fr auto;gap:7px;align-items:start
+}
+.v7247-hud{
+  padding:8px 9px;border:1px solid #506047;border-radius:11px;background:#07100ae8;box-shadow:0 6px 18px #0008
+}
+.v7247-hud small{display:block;color:#71876d;font-size:4.8px}.v7247-hud b{display:block;color:#f0d899;font-size:8px;margin-top:1px}
+.v7247-station{
+  padding:8px 10px;border:1px solid #856a31;border-radius:11px;background:#171108e8;color:#f2cf72;font-size:7.2px;font-weight:1000
+}
+.v7247-mini-path{
+  position:absolute;z-index:5;left:11px;right:11px;top:62px;display:grid;grid-template-columns:repeat(5,1fr);gap:3px
+}
+.v7247-mini-path i{height:5px;border-radius:99px;background:#273227;box-shadow:inset 0 1px #fff1}
+.v7247-mini-path i.done{background:linear-gradient(90deg,#567b3c,#96bd5d)}
+.v7247-mini-path i.current{background:#d49a3a;box-shadow:0 0 9px #e6a44177}
+.v7247-stage-copy{
+  position:absolute;z-index:5;left:12px;right:12px;bottom:194px;padding:11px 12px;border:1px solid #5f5a40;border-radius:13px;
+  background:#070c08e9;box-shadow:0 8px 20px #0009
+}
+.v7247-stage-copy .tag{display:inline-flex;margin-bottom:5px;padding:4px 7px;border:1px solid #617750;border-radius:999px;color:#a0d986;font-size:5.3px;font-weight:1000}
+.v7247-stage-copy h3{margin:0 0 4px;color:#f4dda6;font:1000 clamp(20px,4.6vw,30px) Georgia,serif}.v7247-stage-copy p{margin:0;color:#b7c0b0;font-size:7px;line-height:1.4}
+
+/* Choices live inside the scene and are compact enough to sit side-by-side on mobile */
+.v7247-choice-row{
+  position:absolute;z-index:6;left:10px;right:10px;bottom:10px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px
+}
+.v7247-choice{
+  position:relative;overflow:hidden;min-height:170px;padding:9px;border:1px solid #40513a;border-radius:13px;
+  background:linear-gradient(160deg,#142018ee,#080e0aee);box-shadow:0 9px 20px #000a,inset 0 1px #ffffff0b;
+  cursor:pointer;transition:transform .14s ease,border-color .14s ease,filter .14s ease
+}
+.v7247-choice:active{transform:scale(.985);filter:brightness(1.12)}
+.v7247-choice.risk{border-color:#7c5735;background:linear-gradient(160deg,#2a1d10ef,#0e0d08ef)}
+.v7247-choice.cost{border-color:#73682f;background:linear-gradient(160deg,#22200fef,#0d0e08ef)}
+.v7247-choice .kind{
+  display:inline-flex;margin-bottom:5px;padding:3px 6px;border:1px solid #52624b;border-radius:999px;color:#a3b59c;font-size:4.8px;font-weight:1000
+}
+.v7247-choice.risk .kind{border-color:#915e37;color:#e7a470}.v7247-choice.cost .kind{border-color:#83722e;color:#e3c669}
+.v7247-choice h4{margin:0 0 4px;color:#eef0e5;font-size:8.2px;line-height:1.18}
+.v7247-choice p{margin:0;color:#8d9a89;font-size:5.8px;line-height:1.32;min-height:34px}
+.v7247-choice-rewards{display:flex;gap:3px;flex-wrap:wrap;margin:7px 0}
+.v7247-choice-rewards span{
+  padding:3px 5px;border:1px solid #374634;border-radius:7px;background:#080e09;color:#aab8a5;font-size:4.8px;font-weight:900
+}
+.v7247-choice .cta{
+  position:absolute;left:8px;right:8px;bottom:8px;min-height:35px;display:grid;place-items:center;border:1px solid #668b50;border-radius:8px;
+  background:linear-gradient(180deg,#4d793e,#2b4d25);color:#efffe9;font-size:6.2px;font-weight:1000;box-shadow:0 3px 0 #14270f
+}
+.v7247-choice.risk .cta{border-color:#ae7838;background:linear-gradient(180deg,#8f5924,#4f2f11);box-shadow:0 3px 0 #281708}
+.v7247-choice.cost .cta{border-color:#9b8536;background:linear-gradient(180deg,#6e6724,#3b3914);box-shadow:0 3px 0 #1e1d0a}
+
+/* Result overlays the same scene instead of becoming another browser card */
+.v7247-result-overlay{
+  position:absolute;z-index:12;inset:0;display:grid;place-items:end center;padding:12px;
+  background:linear-gradient(180deg,#0002,#0005 34%,#020403ee);
+  animation:v7247ResultIn .3s ease-out both
+}
+@keyframes v7247ResultIn{from{opacity:0}to{opacity:1}}
+.v7247-result-card{
+  width:100%;padding:14px 12px;border:1px solid #826536;border-radius:15px;
+  background:radial-gradient(circle at 50% 0,#ae863542,transparent 44%),linear-gradient(180deg,#211a0e,#090b08);
+  box-shadow:0 13px 35px #000d,inset 0 1px #ffffff12;text-align:center
+}
+.v7247-result-card.bad{border-color:#784831;background:radial-gradient(circle at 50% 0,#8f3c2745,transparent 45%),linear-gradient(180deg,#24130e,#090908)}
+.v7247-result-icon{font-size:39px;filter:drop-shadow(0 6px 5px #000)}.v7247-result-card h3{margin:4px 0;color:#f3d58f;font:1000 19px Georgia,serif}.v7247-result-card p{margin:0;color:#aaa692;font-size:6.6px;line-height:1.38}
+.v7247-result-loot{display:flex;justify-content:center;gap:5px;flex-wrap:wrap;margin:9px 0}
+.v7247-result-loot span{padding:6px 8px;border:1px solid #544a2d;border-radius:9px;background:#0d0e09;color:#e8d7a0;font-size:7px;font-weight:1000}
+.v7247-auto{
+  position:relative;overflow:hidden;height:34px;border:1px solid #567448;border-radius:9px;background:#0b120c;color:#b7c6b1;
+  display:grid;place-items:center;font-size:6px;font-weight:900
+}
+.v7247-auto i{
+  position:absolute;left:0;bottom:0;height:3px;background:linear-gradient(90deg,#628e47,#d3b750);
+  animation:v7247Auto 2.8s linear forwards
+}
+@keyframes v7247Auto{from{width:0}to{width:100%}}
+.v7247-auto button{position:relative;z-index:2;border:0;background:transparent;color:#d7ddcf;font:inherit;padding:0}
+
+/* Final run screen feels like a run completion */
+.v7247-finish-scene{
+  position:relative;overflow:hidden;min-height:330px;border:2px solid #72582d;border-radius:19px;
+  background:
+    linear-gradient(180deg,#0002,#040604e8 82%),
+    url("assets/v7195-base64/06f5b41251d19dfe186a.webp") center/cover no-repeat;
+  box-shadow:0 16px 36px #000c
+}
+.v7247-finish-inner{position:absolute;z-index:3;left:12px;right:12px;bottom:12px;padding:14px;border:1px solid #755f35;border-radius:14px;background:#080b08ed;text-align:center}
+.v7247-finish-inner small{display:block;color:#8ca67c;font-size:5.5px;font-weight:1000;letter-spacing:1px}.v7247-finish-inner h3{margin:3px 0 8px;color:#f1d183;font:1000 22px Georgia,serif}
+.v7247-finish-loot{display:grid;grid-template-columns:repeat(3,1fr);gap:5px}.v7247-finish-loot div{padding:8px 4px;border:1px solid #45402a;border-radius:9px;background:#0d0e09}.v7247-finish-loot span{display:block;color:#766f59;font-size:4.8px}.v7247-finish-loot b{display:block;color:#eadba9;font-size:8px;margin-top:2px}
+
+.v7247-history-toggle{margin-top:7px}
+
+@media(max-width:560px){
+  .v7247-route-body{grid-template-columns:1fr!important}
+  .v7247-route-side{min-width:0!important;display:grid;grid-template-columns:1fr 1fr;gap:6px;align-items:center}
+  .v7247-route-side small,.v7247-route-side strong{grid-column:1}
+  .v7247-route-side button{grid-column:2;grid-row:1/3}
+  .v7247-stage{min-height:560px!important}
+  .v7247-stage-copy{bottom:210px!important}
+  .v7247-choice-row{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  .v7247-choice{min-height:190px!important}
+  .v7247-choice p{font-size:5.4px!important}
+}
+</style>
+
 <script id="v7240-beta-gold-features-js">
 (()=>{
 'use strict';
@@ -139953,7 +140123,7 @@ if(window.__V7240_BETA_GOLD_FEATURES__)return;
 window.__V7240_BETA_GOLD_FEATURES__=true;
 if(String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()!=='beta')return;
 
-const VERSION='V7.246';
+const VERSION='V7.247';
 const fmt=v=>Math.max(0,Math.round(Number(v)||0)).toLocaleString('de-DE');
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const LAB={
@@ -139962,7 +140132,8 @@ const LAB={
 const ICON={staerke:'💪',ausdauer:'❤️',geschick:'🏹',intelligenz:'🧠',glueck:'🍀'};
 const S={
  forge:null,forgeItemId:'',focus:'',forgeBusy:false,lastForge:null,forgeError:'',
- caravan:null,caravanBusy:false,resolution:null,caravanError:''
+ caravan:null,caravanBusy:false,resolution:null,caravanError:'',
+ caravanAutoTimer:0,caravanAutoToken:0
 };
 
 function authUser(){
@@ -140027,7 +140198,7 @@ async function loadForge(force=false){
   syncGold(S.forge.gold);
   return S.forge;
  }catch(e){
-  console.warn('[V7.246] nebelforge state',e);
+  console.warn('[V7.247] nebelforge state',e);
   S.forgeError=String(e?.message||e||'Nebelschmied konnte nicht geladen werden.');
   toast('Nebelschmied nicht erreichbar','warn',S.forgeError);
   return null
@@ -140124,7 +140295,7 @@ async function doForgeReroll(){
   setTimeout(()=>document.getElementById('v7240Nebelforge')?.classList.remove('v7240-hit'),850);
   toast('🔥 Neu geschmiedet','success',`${x.name} · ${fmt(r.cost)} Gold`);
  }catch(e){
-  console.warn('[V7.246] nebelforge reroll',e);
+  console.warn('[V7.247] nebelforge reroll',e);
   toast('Schmieden fehlgeschlagen','warn',String(e?.message||e));
  }finally{S.forgeBusy=false;renderForgePanel()}
 }
@@ -140198,7 +140369,7 @@ async function loadCaravan(force=false){
   S.caravan=Array.isArray(data)?data[0]:data;
   syncCaravanResources(S.caravan);return S.caravan;
  }catch(e){
-  console.warn('[V7.246] caravan state',e);
+  console.warn('[V7.247] caravan state',e);
   S.caravanError=String(e?.message||e||'Nebelkarawane konnte nicht geladen werden.');
   toast('Nebelkarawane nicht erreichbar','warn',S.caravanError);
   return null
@@ -140261,31 +140432,81 @@ function choicePresentation(type,id,run){
  if(riskIds.has(id))return{tag:'RISIKO',cls:'risk'};
  return{tag:'SICHER',cls:''};
 }
+function v7247ChoiceLoot(type,id){
+ const m={
+  'ambush:fight':['🪙 Gold','💠 Fragmente','⚠ Ladung'],
+  'ambush:hide':['🪙 kleiner Fund','✓ sicher'],
+  'trader:deal':['💠 Fragmente','⏳ Chance','🪙 Kosten'],
+  'trader:gamble':['🪙 Gold','⚠ Ladung'],
+  'chest:open':['🪙 Gold','💠 Fragmente','✦ Jackpot'],
+  'chest:leave':['🪙 kleiner Fund','✓ sicher'],
+  'shortcut:rush':['🪙 Gold','⏳ Chance','⚠ Ladung'],
+  'shortcut:detour':['🪙 kleiner Fund','✓ sicher'],
+  'fog:guide':['💠 Fragmente','🪙 kleiner Fund','🪙 Kosten'],
+  'fog:through':['🪙 Gold','⚠ Fehlschlag'],
+  'hermit:buy':['⏳ garantiert','💠 Fragmente','🪙 Kosten'],
+  'hermit:listen':['💠 Fragmente','⏳ kleine Chance']
+ };
+ return m[`${type}:${id}`]||['🎁 Beute'];
+}
+function v7247ResultMood(r){
+ const gain=(Number(r?.goldDelta)||0)+(Number(r?.fragmentsDelta)||0)*50+(Number(r?.timeSeedsDelta)||0)*500;
+ if(gain>0)return{icon:'✨',title:'Beute gesichert',bad:false};
+ if(Number(r?.extraSpend)>0)return{icon:'🤝',title:'Deal abgeschlossen',bad:false};
+ return{icon:'🌫️',title:'Knapp weitergekommen',bad:true};
+}
+function v7247RouteArt(tier){
+ if(tier==='kingpin')return META.ambush.img;
+ if(tier==='convoy')return META.trader.img;
+ return META.fog.img;
+}
+function v7247ClearAuto(){
+ if(S.caravanAutoTimer){clearTimeout(S.caravanAutoTimer);S.caravanAutoTimer=0}
+}
+function v7247ScheduleAuto(){
+ v7247ClearAuto();
+ const token=++S.caravanAutoToken;
+ if(!S.resolution)return;
+ S.caravanAutoTimer=setTimeout(()=>{
+  if(token!==S.caravanAutoToken)return;
+  S.caravanAutoTimer=0;
+  S.resolution=null;
+  renderCaravan();
+  try{document.getElementById('caravan')?.scrollIntoView({block:'start',behavior:'smooth'})}catch(_){}
+ },2800);
+}
 function tiersHtml(c){
- return `<div class="v7245-tier-list">${(c.tiers||[]).map(t=>{
+ return `<div class="v7247-route-grid">${(c.tiers||[]).map(t=>{
   const u=tierUi(t.id),locked=Number(c.level)<Number(t.level);
-  const rewardText=t.id==='spur'
-    ?'Ideal für eine schnelle Tour: solide Fragmentfunde, kleine Goldfunde und die Chance auf einen Zeit-Samen.'
+  const reward=t.id==='spur'
+    ?'Solide Fragmente · kleine Goldfunde · Zeit-Samen möglich'
     :t.id==='convoy'
-      ?'Mehr Beute unterwegs: doppelte Fragmentausbeute, bessere Zeit-Samen-Chance und stärkere Goldfunde.'
-      :'Die wertvollste Route: vierfache Fragmentausbeute, beste Zeit-Samen-Chance und die höchsten möglichen Goldfunde.';
+      ?'Fragmente ×2 · bessere Zeit-Samen-Chance · stärkere Goldfunde'
+      :'Fragmente ×4 · beste Zeit-Samen-Chance · höchste möglichen Goldfunde';
   const desc=t.id==='spur'
-    ?'Kurze Route mit überschaubarem Einsatz und guten Materialchancen.'
+    ?'Die kurze Route für regelmäßige Touren.'
     :t.id==='convoy'
-      ?'Für erfahrene Spieler: mehr Einsatz, mehr Materialbeute und spannendere Entscheidungen.'
-      :'Endgame-Route mit den stärksten Materialbelohnungen und den riskantesten Ereignissen.';
-  return `<article class="v7245-tier-card ${locked?'locked':''}" data-tier="${esc(t.id)}">
-    <div class="v7245-tier-main">
-      <div class="v7245-tier-name"><b>${esc(t.name)}</b><span class="v7245-risk ${u.riskCls}">${u.risk}</span></div>
-      <p>${desc}</p>
-      <div class="v7245-tier-metrics">
-        <div class="v7245-metric"><small>EINSATZ</small><b>🪙 ${fmt(t.cost)}</b></div>
-        <div class="v7245-metric"><small>GOLD-FUND BIS</small><b>🪙 ${fmt(t.goldCapPct)} %</b></div>
-        <div class="v7245-metric"><small>FRAGMENT-BONUS</small><b>💠 ×${fmt(t.fragmentMult||1)}</b></div>
-        <div class="v7245-metric"><small>ZEIT-SAMEN-CHANCE</small><b>⏳ bis ${fmt(u.seed)} %</b></div>
+      ?'Mehr Risiko und deutlich bessere Materialbeute.'
+      :'Die große Endgame-Route durch die gefährlichsten Nebelgebiete.';
+  return `<article class="v7247-route ${locked?'locked':''}" data-tier="${esc(t.id)}">
+    <div class="v7247-route-bg" style="background-image:url('${v7247RouteArt(t.id)}')"></div>
+    <div class="v7247-route-body">
+      <div class="v7247-route-copy">
+        <small>${u.risk}ES RISIKO · AB LEVEL ${fmt(t.level)}</small>
+        <h3>${esc(t.name)}</h3>
+        <p>${desc}</p>
+        <div class="v7247-route-loot">
+          <span class="v7247-loot-chip">💠 ×${fmt(t.fragmentMult||1)}</span>
+          <span class="v7247-loot-chip">⏳ bis ${fmt(u.seed)} %</span>
+          <span class="v7247-loot-chip">🪙 Fund bis ${fmt(t.goldCapPct)} %</span>
+        </div>
+        <div class="v7247-loot-chip">${reward}</div>
       </div>
-      <div class="v7245-reward-note"><b>🎁 Belohnungsprofil:</b> ${rewardText}</div>
-      <button class="v7245-tier-go" data-v7240-start="${esc(t.id)}" ${locked||Number(c.gold)<Number(t.cost)?'disabled':''}>${locked?`AB LEVEL ${fmt(t.level)}`:`ROUTE STARTEN · 🪙 ${fmt(t.cost)}`}</button>
+      <div class="v7247-route-side">
+        <small>EINSATZ</small>
+        <strong>🪙 ${fmt(t.cost)}</strong>
+        <button data-v7240-start="${esc(t.id)}" ${locked||Number(c.gold)<Number(t.cost)?'disabled':''}>${locked?`AB ${fmt(t.level)}`:'LOSFahren'}</button>
+      </div>
     </div>
   </article>`;
  }).join('')}</div>`;
@@ -140310,52 +140531,64 @@ function caravanHtml(){
  const head=caravanBanner(c,run);
 
  if(!run||run.status!=='active'){
-  const last=run?.status==='complete'?`<div class="v7245-finish"><div class="chest">🧰</div><h3>Letzte Tour abgeschlossen</h3><div class="v7245-finish-grid"><div><small>GOLD GESICHERT</small><b>🪙 ${fmt(Math.min(Number(run.cargoGold)||0,Number(run.goldCap)||Number(run.cargoGold)||0))}</b></div><div><small>FRAGMENTE</small><b>💠 ${fmt(run.fragments)}</b></div><div><small>ZEIT-SAMEN</small><b>⏳ ${fmt(run.timeSeeds)}</b></div></div><div class="v7245-finish-note">Eintritt 🪙 ${fmt(run.entryCost)} · zusätzliche Ausgaben 🪙 ${fmt(run.extraSpent||0)}</div></div>`:'';
+  const last=run?.status==='complete'
+   ?`<div class="v7247-finish-scene"><div class="v7247-finish-inner"><small>TOUR ABGESCHLOSSEN</small><h3>🧰 Beute aus dem Nebel</h3><div class="v7247-finish-loot"><div><span>GOLD</span><b>🪙 ${fmt(Math.min(Number(run.cargoGold)||0,Number(run.goldCap)||Number(run.cargoGold)||0))}</b></div><div><span>FRAGMENTE</span><b>💠 ${fmt(run.fragments)}</b></div><div><span>ZEIT-SAMEN</span><b>⏳ ${fmt(run.timeSeeds)}</b></div></div><div class="v7245-finish-note" style="margin-top:8px">Eintritt 🪙 ${fmt(run.entryCost)} · zusätzliche Ausgaben 🪙 ${fmt(run.extraSpent||0)}</div></div></div>`
+   :'';
 
   return `<div class="v7240-caravan">${head}${last}
    <section class="v7245-section">
-    <div class="v7245-section-title"><div><small>ROUTE WÄHLEN</small><h3>Wie tief willst du in den Nebel?</h3></div></div>
+    <div class="v7245-section-title"><div><small>ROUTE WÄHLEN</small><h3>Welche Tour fährst du?</h3></div></div>
     ${tiersHtml(c)}
-    <details class="v7245-rules"><summary>ℹ️ Wie funktioniert die Karawane?</summary><p>Der Eintritt wird beim Start bezahlt. Danach folgen fünf zufällige Stationen mit sicheren, riskanten und kostenpflichtigen Entscheidungen. Jede Route hat eigene Gold-, Fragment- und Zeit-Samen-Chancen. Die gesamte Beute wird nach Station 5 gesichert.</p></details>
+    <details class="v7245-rules"><summary>ℹ️ So läuft eine Tour</summary><p>Fünf zufällige Stationen. Sichere, riskante und kostenpflichtige Entscheidungen. Gold, Fragmente und Zeit-Samen werden am Ende der Route gesichert.</p></details>
    </section>
   </div>`;
  }
 
+ const idx=Math.max(0,Math.min(4,Number(run.station)||0));
+ const typ=run?.stations?.[Math.min(idx,4)]?.type||run?.lastResult?.type||'fog';
+ const m=META[typ]||META.fog,u=tierUi(run.tier);
+ const path=`<div class="v7247-mini-path">${[0,1,2,3,4].map(i=>`<i class="${i<idx?'done':i===idx&&idx<5?'current':''}"></i>`).join('')}</div>`;
+ const hud=`<div class="v7247-stage-top"><div class="v7247-hud"><small>ROUTE</small><b>${u.name} · 🪙 ${fmt(run.cargoGold||0)} · 💠 ${fmt(run.fragments||0)} · ⏳ ${fmt(run.timeSeeds||0)}</b></div><div class="v7247-station">STATION ${Math.min(5,idx+1)}/5</div></div>`;
+
  if(S.resolution){
-  const r=S.resolution,u=tierUi(run.tier);
-  const delta=[
+  const r=S.resolution,mood=v7247ResultMood(r);
+  const loot=[
    Number(r.goldDelta)>0?`🪙 +${fmt(r.goldDelta)}`:'',
    Number(r.fragmentsDelta)>0?`💠 +${fmt(r.fragmentsDelta)}`:'',
    Number(r.timeSeedsDelta)>0?`⏳ +${fmt(r.timeSeedsDelta)}`:'',
    Number(r.extraSpend)>0?`🪙 −${fmt(r.extraSpend)}`:''
-  ].filter(Boolean).join(' · ');
-  return `<div class="v7240-caravan">${head}
-   <div class="v7245-run-top"><div class="v7245-run-route"><small>AKTUELLE ROUTE</small><b>${u.icon} ${u.name}</b></div><div class="v7245-run-count">${Math.min(5,Number(run.station)||0)}/5</div></div>
-   ${routeHtml(run)}${cargoHtml(run)}
-   <div class="v7245-result"><div class="ico">${run.status==='complete'?'🧰':'✨'}</div><h3>${esc(r.text||'Entscheidung getroffen')}</h3><p>${delta||'Keine zusätzliche Beute an dieser Station.'}</p><button class="v7245-main-btn" data-v7240-next>${run.status==='complete'?'TOURABSCHLUSS ANSEHEN':'WEITER ZUR NÄCHSTEN STATION'}</button></div>
-   ${historyHtml(run)}
-  </div>`;
+  ].filter(Boolean);
+
+  return `<div class="v7240-caravan">${head}<div class="v7247-run-shell"><div class="v7247-stage">
+    <div class="v7247-stage-bg" style="background-image:url('${m.img}')"></div>${hud}${path}
+    <div class="v7247-stage-copy"><span class="tag">${m.tag}</span><h3>${esc(m.title)}</h3><p>${esc(m.text)}</p></div>
+    <div class="v7247-result-overlay"><div class="v7247-result-card ${mood.bad?'bad':''}">
+      <div class="v7247-result-icon">${mood.icon}</div><h3>${mood.title}</h3><p>${esc(r.text||'Die Karawane zieht weiter.')}</p>
+      <div class="v7247-result-loot">${(loot.length?loot:['Keine zusätzliche Beute']).map(x=>`<span>${esc(x)}</span>`).join('')}</div>
+      <div class="v7247-auto"><i></i><button type="button" data-v7247-skip>${run.status==='complete'?'Tourabschluss wird geöffnet …':'Karawane fährt automatisch weiter …'} · antippen zum Überspringen</button></div>
+    </div></div>
+  </div></div>${historyHtml(run)}</div>`;
  }
 
- const idx=Math.max(0,Math.min(4,Number(run.station)||0));
- const typ=run?.stations?.[idx]?.type||'fog',m=META[typ]||META.fog,u=tierUi(run.tier);
-
- return `<div class="v7240-caravan">${head}
-   <div class="v7245-run-top"><div class="v7245-run-route"><small>AKTUELLE ROUTE</small><b>${u.icon} ${u.name}</b></div><div class="v7245-run-count">STATION ${idx+1}/5</div></div>
-   ${routeHtml(run)}${cargoHtml(run)}
-   <div class="v7245-scene"><div class="v7245-scene-art" style="background-image:url('${m.img}')"></div><div class="v7245-scene-badge">${m.tag}</div><div class="v7245-scene-copy"><h3>${esc(m.title)}</h3><p>${esc(m.text)}</p></div></div>
-   <div class="v7245-decisions">${m.choices.map(([id,title,desc])=>{
-      const p=choicePresentation(typ,id,run);
-      return `<article class="v7245-decision ${p.cls}"><span class="v7245-decision-tag">${esc(p.tag)}</span><h4>${esc(title)}</h4><p>${esc(desc)}</p><button data-v7240-choice="${esc(id)}" ${S.caravanBusy?'disabled':''}>DIESE OPTION WÄHLEN</button></article>`;
+ return `<div class="v7240-caravan">${head}<div class="v7247-run-shell"><div class="v7247-stage">
+   <div class="v7247-stage-bg" style="background-image:url('${m.img}')"></div>${hud}${path}
+   <div class="v7247-stage-copy"><span class="tag">${m.tag}</span><h3>${esc(m.title)}</h3><p>${esc(m.text)}</p></div>
+   <div class="v7247-choice-row">${m.choices.map(([id,title,desc])=>{
+     const p=choicePresentation(typ,id,run),loot=v7247ChoiceLoot(typ,id);
+     return `<article class="v7247-choice ${p.cls}" data-v7240-choice="${esc(id)}" role="button" tabindex="0">
+       <span class="kind">${esc(p.tag)}</span><h4>${esc(title)}</h4><p>${esc(desc)}</p>
+       <div class="v7247-choice-rewards">${loot.map(x=>`<span>${esc(x)}</span>`).join('')}</div>
+       <div class="cta">OPTION WÄHLEN</div>
+     </article>`;
    }).join('')}</div>
-   ${historyHtml(run)}
- </div>`;
+ </div></div><div class="v7247-history-toggle">${historyHtml(run)}</div></div>`;
 }
 
 async function renderCaravan(){
  const sec=ensureCaravanSection();
  sec.innerHTML=caravanHtml();
  bindCaravan();
+ if(S.resolution)v7247ScheduleAuto();else v7247ClearAuto();
 }
 function bindCaravan(){
  const sec=document.getElementById('caravan');if(!sec)return;
@@ -140363,8 +140596,14 @@ function bindCaravan(){
   S.caravan=null;S.caravanError='';await loadCaravan(true);renderCaravan();
  });
  sec.querySelectorAll('[data-v7240-start]').forEach(b=>b.onclick=()=>void startCaravan(b.dataset.v7240Start));
- sec.querySelectorAll('[data-v7240-choice]').forEach(b=>b.onclick=()=>void chooseCaravan(b.dataset.v7240Choice));
- sec.querySelector('[data-v7240-next]')?.addEventListener('click',()=>{S.resolution=null;renderCaravan()});
+ sec.querySelectorAll('[data-v7240-choice]').forEach(card=>{
+  const go=()=>void chooseCaravan(card.dataset.v7240Choice);
+  card.addEventListener('click',go);
+  card.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();go()}});
+ });
+ sec.querySelector('[data-v7247-skip]')?.addEventListener('click',()=>{
+  v7247ClearAuto();S.caravanAutoToken++;S.resolution=null;renderCaravan();
+ });
 }
 async function startCaravan(tier){
  if(S.caravanBusy)return;
@@ -140382,22 +140621,28 @@ async function startCaravan(tier){
   if(error)throw error;
   S.caravan=Array.isArray(data)?data[0]:data;S.resolution=null;syncCaravanResources(S.caravan);
   try{window.v6111Sfx?.('click')}catch(_){}
- }catch(e){console.warn('[V7.246] caravan start',e);toast('Tour konnte nicht starten','warn',String(e?.message||e))}
+ }catch(e){console.warn('[V7.247] caravan start',e);toast('Tour konnte nicht starten','warn',String(e?.message||e))}
  finally{S.caravanBusy=false;renderCaravan()}
 }
 async function chooseCaravan(choice){
  if(S.caravanBusy)return;
- S.caravanBusy=true;renderCaravan();
+ S.caravanBusy=true;
  try{
+  const sec=document.getElementById('caravan');sec?.classList.add('v7247-resolving');
   const {data,error}=await v073Db.rpc('v7240_caravan_choose',{p_choice:choice});
   if(error)throw error;
   const r=Array.isArray(data)?data[0]:data;
   S.caravan=r;S.resolution=r?.resolution||null;syncCaravanResources(r);
   try{window.v6111Sfx?.(Number(r?.resolution?.goldDelta)>0?'reward':'click')}catch(_){}
- }catch(e){console.warn('[V7.246] caravan choose',e);toast('Entscheidung fehlgeschlagen','warn',String(e?.message||e))}
- finally{S.caravanBusy=false;renderCaravan()}
+ }catch(e){console.warn('[V7.247] caravan choose',e);toast('Entscheidung fehlgeschlagen','warn',String(e?.message||e))}
+ finally{
+  S.caravanBusy=false;
+  document.getElementById('caravan')?.classList.remove('v7247-resolving');
+  renderCaravan()
+ }
 }
 async function openCaravan(){
+ v7247ClearAuto();S.caravanAutoToken++;
  ensureCaravanSection();
  document.querySelectorAll('.screen').forEach(el=>el.classList.remove('active'));
  document.getElementById('caravan')?.classList.add('active');
@@ -140426,7 +140671,7 @@ try{
   const w=function(id){if(id==='caravan')return openCaravan();const r=base.apply(this,arguments);document.getElementById('caravan')?.classList.remove('active');return r};
   w.__v7240Caravan=true;window.v032Go=w;try{v032Go=w}catch(_){}
  }
-}catch(e){console.warn('[V7.246] caravan nav',e)}
+}catch(e){console.warn('[V7.247] caravan nav',e)}
 try{
  const base=window.v4149BuildCompleteMenu;
  if(typeof base==='function'&&!base.__v7240Caravan){
@@ -140497,7 +140742,7 @@ window.v7240BetaGoldDiagnostics=()=>({
 });
 })();
 </script>
-<!-- ===== /V7.246 BETA · NEBELSCHMIED + NEBELKARAWANE ===== -->
+<!-- ===== /V7.247 BETA · NEBELSCHMIED + NEBELKARAWANE ===== -->
 
 </body>
 </html>
