@@ -42,7 +42,7 @@
 })();
 </script>
 <script id="v4131-version-source">
-window.GROW_LEGENDS_VERSION=Object.freeze({short:'V7.283',label:'V7.283 Server 1',number:'7.283'});
+window.GROW_LEGENDS_VERSION=Object.freeze({short:'V7.284',label:'V7.284 Server 1',number:'7.284'});
 window.__V7210_BOOT_PENDING__=true;
 window.v7206StartupBusy=()=>window.__V7210_BOOT_PENDING__===true||window.__V7206_CANONICAL_LOGIN_RUNNING__===true||window.__V7206_FIRST_PLAYABLE_PENDING__===true;
 /* V7.214: account-ready listeners used to all wake in the same frame and caused
@@ -26060,6 +26060,10 @@ function v4143SetAuthBoot(active=true,text='Account wird geprüft …'){
     try{window.v660SetBootProgress?.(progress)}catch(_){}
   }else{
     try{window.v660SetBootProgress?.(100)}catch(_){}
+    /* V7.284: v4143-restoring itself has display:flex!important.
+       Leaving that class behind kept the splash visible forever even after
+       the game had already reached first-playable. */
+    overlay.classList.remove('v4143-restoring');
   }
 
   overlay.classList.toggle('v4143-restoring',!!active);
@@ -26077,7 +26081,8 @@ function v075Overlay(show=true){
   if(!overlay)return;
   if(!show){
     v4143SetAuthBoot(false);
-    overlay.classList.remove('show');
+    /* V7.284: remove BOTH visibility owners. */
+    overlay.classList.remove('show','v4143-restoring');
     return;
   }
   if(window.__V4143_AUTH_BOOTING__===true){
@@ -27115,11 +27120,17 @@ function v200InstallAuthListener(){
     const nextId=String(user.id||'');
     const currentId=String(v073User?.id||'');
 
-    /* V4.159: token refresh for the same account updates the auth object only.
-       It must never reopen the save resolver and reset/reselect the character. */
-    if(currentId===nextId && window.__V200_AUTH_READY__===true){
-      /* Same account: refresh the auth object only. SIGNED_IN can also be emitted
-         again for an already active session; it must not rerun the save resolver. */
+    /* V7.284: v200Boot / OAuth return owns initial-session resolution.
+       Token refreshes only refresh the auth object and must never launch another
+       canonical resolver while the splash/login finalizer is already running. */
+    if(event==='TOKEN_REFRESHED'||event==='INITIAL_SESSION'||event==='USER_UPDATED'){
+      v073User=user;v073Ready=true;return;
+    }
+    if(currentId===nextId && (
+      window.__V200_AUTH_READY__===true ||
+      window.__V7206_CANONICAL_LOGIN_RUNNING__===true ||
+      window.__V7206_FIRST_PLAYABLE_PENDING__===true
+    )){
       v073User=user;v073Ready=true;return;
     }
 
@@ -143584,6 +143595,35 @@ html body .app > header .v366-ver::after,html body .app > header .v371-logo em::
 window.__V7278_SERVER1_SYNC__=Object.freeze({version:'V7.278',source:'Beta V7.276 + promoted fixes',features:['combat-tempo','avatar-frame','karawane','illegal-book','navigation','guild-grow','atomic-registration','referral-progress'],earlyEmails:['tomssen5@gmail.com','test@gmail.com']});
 </script>
 
+
+<script id="v7284-splash-release-safeguard">
+(()=>{
+ 'use strict';
+ if(window.__V7284_SPLASH_RELEASE__)return;
+ window.__V7284_SPLASH_RELEASE__=true;
+ function accountReady(){
+  try{
+   const id=String(v073User?.id||'');
+   return !!id && window.__V200_AUTH_READY__===true && String(v075CloudLoadedFor||'')===id;
+  }catch(_){return false}
+ }
+ function release(){
+  if(!accountReady())return false;
+  const ov=document.getElementById('v075AuthOverlay');
+  if(!ov)return false;
+  try{window.__V4143_AUTH_BOOTING__=false}catch(_){}
+  ov.classList.remove('show','v4143-restoring');
+  try{window.v660SetBootProgress?.(100)}catch(_){}
+  return true;
+ }
+ window.addEventListener('growlegends:first-playable',()=>{release();setTimeout(release,80);setTimeout(release,450)},{passive:true});
+ /* If an older delayed boot callback races after first-playable, release again —
+    but only for a fully verified logged-in account. */
+ [1200,2600,5200].forEach(ms=>setTimeout(release,ms));
+ window.v7284ReleaseSplash=release;
+})();
+</script>
+
 </body>
 </html>
 
@@ -144325,7 +144365,7 @@ setTimeout(sync,0);setTimeout(sync,650);setTimeout(sync,1800);
 <script id="v7283-stable-version-lock">
 (()=>{'use strict';
  const channel=String(window.GROW_RELEASE_CHANNEL||'stable');
- const V=Object.freeze({short:'V7.283',label:channel==='beta'?'V7.283 Beta':'V7.283 Server 1',number:'7.283'});
+ const V=Object.freeze({short:'V7.284',label:channel==='beta'?'V7.284 Beta':'V7.284 Server 1',number:'7.284'});
  window.GROW_LEGENDS_VERSION=V;
  window.__GROW_LEGENDS_RELEASE__=V.short;
  window.__GL_CURRENT_BUILD__=V.short;
