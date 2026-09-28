@@ -413,7 +413,7 @@ window.__V483_POWER_READY__=false;
 .app > header .v366-ver,.app > header .v371-logo em,.app > header .v372-logo em{font-size:0!important;color:transparent!important}
 .app > header .v366-ver::after,.app > header .v371-logo em::after,.app > header .v372-logo em::after{content:"V4.164"!important;font-size:5px!important;color:#63cdd1!important;font-style:normal!important;font-weight:900!important}
 </style>
-<title>Grow Legends V7.265</title>
+<title>Grow Legends V7.267</title>
 <style>
 :root{--bg:#0b100b;--panel:#151d14;--panel2:#1c281a;--panel3:#253423;--line:#354933;--text:#f2f5ed;--muted:#9fad99;--green:#83d65d;--green2:#b2f07e;--gold:#f2c75a;--red:#ee6b68;--blue:#68a7ea;--purple:#ad7bea;--shadow:0 12px 30px rgba(0,0,0,.28)}
 *{box-sizing:border-box}html{background:var(--bg)}body{margin:0;color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:radial-gradient(circle at 50% -10%,#253821 0,#10170f 40%,#090d09 100%);min-height:100vh}button{font:inherit}.app{max-width:820px;margin:auto;min-height:100vh;padding-bottom:88px}
@@ -72541,7 +72541,7 @@ html.v481-hidden *,html.v481-hidden *::before,html.v481-hidden *::after{animatio
     }).join('');
   }
   function renderForge(){
-    /* V7.265 Beta: while Nebelschmied owns the forge, the legacy renderer
+    /* V7.267 Beta: while Nebelschmied owns the forge, the legacy renderer
        must not rebuild the entire forge DOM. Those rebuilds caused flicker. */
     if(document.getElementById('forge')?.classList.contains('v7240-nebel-open'))return;
     const sec=ensureScreen(),z=state(),c=cost(),rows=selectedRows(),sum=selectedFragments(),refund=selectedGoldRefund(),eligible=eligibleRows(),allEligibleSelected=eligible.length>0&&eligible.every(x=>selected.has(x.key)),can=z.fragments>=c.fragments&&(Number(s.gold)||0)>=c.gold&&!busy;
@@ -127016,7 +127016,7 @@ window.v6346AdminLoadBroadcasts=loadAdminBroadcasts;
    try{
      await native.consume({purchaseToken:String(purchase.purchaseToken)});
    }catch(e){
-     console.warn('V7.265 consume pending; will retry on original server',e);
+     console.warn('V7.267 consume pending; will retry on original server',e);
      if(!quiet)toast('Kauf gutgeschrieben','success',`Die Harz-Taler sind auf ${serverId==='server1'?'Server 1':'Beta'} gutgeschrieben. Google Play wird den Verbrauch beim nächsten App-Start erneut abschließen.`);
      return true;
    }
@@ -127055,11 +127055,11 @@ window.v6346AdminLoadBroadcasts=loadAdminBroadcasts;
      try{
        purchase=await native.purchase({productId:pkg.productId,accountId:String(v073User.id)});
      }catch(e){
-       console.warn('V7.265 Google Play purchase returned an error; checking open purchases first',e);
+       console.warn('V7.267 Google Play purchase returned an error; checking open purchases first',e);
        try{
          const restored=await recoverPending({notify:true,serverHint:purchaseServer,allowBusy:true});
          if(restored>0)return true;
-       }catch(re){console.warn('V7.265 immediate purchase recovery failed',re)}
+       }catch(re){console.warn('V7.267 immediate purchase recovery failed',re)}
        alertMsg(
          'Google Play hat den Kaufdialog nicht normal abgeschlossen. Offene Käufe wurden geprüft. Falls Google den Kauf bereits bestätigt hat, bleibt er gespeichert und wird automatisch erneut geprüft.',
          'Kaufprüfung läuft weiter',
@@ -127122,7 +127122,7 @@ window.v6346AdminLoadBroadcasts=loadAdminBroadcasts;
        bound.push({token,server,key});
      }
    }catch(e){
-     console.warn('V7.265 token binding scan',e);
+     console.warn('V7.267 token binding scan',e);
      return 0;
    }
 
@@ -127153,7 +127153,7 @@ window.v6346AdminLoadBroadcasts=loadAdminBroadcasts;
          try{
            await native.consume({purchaseToken:item.token});
          }catch(e){
-           console.warn('V7.265 recovered purchase consume pending',e);
+           console.warn('V7.267 recovered purchase consume pending',e);
          }
        }
 
@@ -127163,7 +127163,7 @@ window.v6346AdminLoadBroadcasts=loadAdminBroadcasts;
          toast('💎 Kauf wiederhergestellt','success',`+${added} Harz-Taler wurden auf ${item.server==='server1'?'Server 1':'Beta'} gutgeschrieben.`);
        }
      }catch(e){
-       console.warn('V7.265 bound purchase recovery',e);
+       console.warn('V7.267 bound purchase recovery',e);
        const msg=String(e?.message||e||'');
        if(/findet diesen offenen Kauf nicht mehr|nicht mehr abgeschlossen|purchaseState/i.test(msg)){
          /* Keep the token binding for one more app session; Google test purchases can
@@ -127179,7 +127179,7 @@ window.v6346AdminLoadBroadcasts=loadAdminBroadcasts;
    try{
      const boundRecovered=await v7237RecoverBoundTokens({notify});
      if(boundRecovered>0)return boundRecovered;
-   }catch(e){console.warn('V7.265 bound token pre-recovery',e)}
+   }catch(e){console.warn('V7.267 bound token pre-recovery',e)}
    const native=plugin();if(!native)return 0;
    if(!(await billingServerReady(false)))return 0;
    if(serverHint==='server1'||serverHint==='beta')v7235RememberPendingServer(serverHint);
@@ -127193,7 +127193,7 @@ window.v6346AdminLoadBroadcasts=loadAdminBroadcasts;
          const ok=await verifyAndConsume(purchase,{quiet:!notify});
          if(ok)recovered++;
        }catch(e){
-         console.warn('V7.265 pending purchase verification',e);
+         console.warn('V7.267 pending purchase verification',e);
        }
      }
      if(notify&&recovered===0&&purchases.length===0){
@@ -127201,7 +127201,7 @@ window.v6346AdminLoadBroadcasts=loadAdminBroadcasts;
      }
      return recovered;
    }catch(e){
-     console.warn('V7.265 pending lookup',e);
+     console.warn('V7.267 pending lookup',e);
      return 0;
    }finally{
      recoveryBusy=false;
@@ -129247,7 +129247,7 @@ async function animateReplay(b){
  const replay=Array.isArray(b?.replay)?b.replay:[];C.skipReplay=false;
  /* V7.214: combat remains visibly animated, but replay duration is bounded.
     Twelve replay events used to sleep ~7.7 s before any UI work. */
- /* V7.265: Dungeon presentation now uses the same replay cadence as the tower.
+ /* V7.267: Dungeon presentation now uses the same replay cadence as the tower.
     Combat rules/rewards are unchanged; only visual timing is slower. */
  const frameDelay=Math.max(140,Math.min(280,Math.floor(2600/Math.max(1,replay.length))));
  const attackDelay=Math.max(70,Math.round(frameDelay*.44));
@@ -139232,7 +139232,7 @@ html body .app > header .v366-ver::after,html body .app > header .v371-logo em::
 if(window.__V7229_SERVER1_CHARACTER_BOOTSTRAP__)return;
 window.__V7229_SERVER1_CHARACTER_BOOTSTRAP__=true;
 
-const VERSION=Object.freeze({short:'V7.265',label:(String(window.GROW_RELEASE_CHANNEL||'stable')==='beta'?'V7.265 Beta':'V7.265 Servergebundene Käufe'),number:'7.260'});
+const VERSION=Object.freeze({short:'V7.267',label:(String(window.GROW_RELEASE_CHANNEL||'stable')==='beta'?'V7.267 Beta':'V7.267 Servergebundene Käufe'),number:'7.260'});
 window.GROW_LEGENDS_VERSION=VERSION;
 window.__GROW_LEGENDS_RELEASE__=VERSION.short;
 window.__GL_CURRENT_BUILD__=VERSION.short;
@@ -139473,21 +139473,21 @@ window.v7230FrameDiagnostics=()=>({server:serverId(),syncing:!!flight,state:wind
 <!-- ===== /V7.230 SERVER-SCOPED AVATAR FRAME AUTHORITY ===== -->
 
 <style id="v7231-visible-version-css">
-html body .app > header .v358-logo::after{content:"V7.265"!important}
-html body .app > header .v366-ver::after,html body .app > header .v371-logo em::after,html body .app > header .v372-logo em::after,#v372TopbarShell .v372-logo em::after{content:"V7.265"!important}
+html body .app > header .v358-logo::after{content:"V7.267"!important}
+html body .app > header .v366-ver::after,html body .app > header .v371-logo em::after,html body .app > header .v372-logo em::after,#v372TopbarShell .v372-logo em::after{content:"V7.267"!important}
 </style>
 <script id="v7233-isolation-audit-marker">
-(()=>{'use strict';window.__V7233_ISOLATION_AUDIT__=Object.freeze({version:'V7.265',earlyStorageIsolation:true,serverScopedCloud:true,serverScopedRecoveryCaches:true,serverPrivateRpcLayer:true});})();
+(()=>{'use strict';window.__V7233_ISOLATION_AUDIT__=Object.freeze({version:'V7.267',earlyStorageIsolation:true,serverScopedCloud:true,serverScopedRecoveryCaches:true,serverPrivateRpcLayer:true});})();
 </script>
 
-<!-- ===== V7.265 CALENDAR ACHIEVEMENTS · SERVER AUTHORITY ===== -->
+<!-- ===== V7.267 CALENDAR ACHIEVEMENTS · SERVER AUTHORITY ===== -->
 <script id="v7239-calendar-achievements">
 (()=>{
 'use strict';
 if(window.__V7239_CALENDAR_ACHIEVEMENTS__)return;
 window.__V7239_CALENDAR_ACHIEVEMENTS__=true;
 
-const VERSION='V7.265';
+const VERSION='V7.267';
 const CAL=[
  ['calendar_newyear','Neues Jahr, neuer Grow','Logge dich am 1. Januar ein.'],
  ['calendar_valentine','Harzige Liebe','Logge dich am 14. Februar ein.'],
@@ -139509,7 +139509,7 @@ function installDefs(){
    if(!V106_ACH.some(x=>String(x?.[0])===id))V106_ACH.push([id,title,desc,()=>0,1]);
   }
   return true;
- }catch(e){console.warn('[V7.265] calendar defs',e);return false}
+ }catch(e){console.warn('[V7.267] calendar defs',e);return false}
 }
 function logged(){
  try{return !!(window.v073User?.id&&!window.v073User?.is_anonymous)}catch(_){return false}
@@ -139555,7 +139555,7 @@ async function claim(show=true){
   setTimeout(()=>{try{void window.v7080AchievementRefresh?.(false)}catch(_){}},16050);
   return r;
  }catch(e){
-  console.warn('[V7.265] calendar achievement claim',e);
+  console.warn('[V7.267] calendar achievement claim',e);
   return null;
  }finally{busy=false}
 }
@@ -139570,10 +139570,10 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden)setTimeout
 setTimeout(installDefs,600);
 })();
 </script>
-<!-- ===== /V7.265 CALENDAR ACHIEVEMENTS ===== -->
+<!-- ===== /V7.267 CALENDAR ACHIEVEMENTS ===== -->
 
 
-<!-- ===== V7.265 BETA · NEBELSCHMIED + NEBELKARAWANE ===== -->
+<!-- ===== V7.267 BETA · NEBELSCHMIED + NEBELKARAWANE ===== -->
 <style id="v7240-beta-gold-features-css">
 /* Beta-only premium visual layer. No generic browser-card aesthetic. */
 #forge.v7240-nebel-open .v667-forge-body>.v667-view,
@@ -139763,7 +139763,7 @@ setTimeout(installDefs,600);
 </style>
 
 <style id="v7245-caravan-overhaul-css">
-/* V7.265 · Nebelkarawane visual/UX overhaul */
+/* V7.267 · Nebelkarawane visual/UX overhaul */
 #caravan.screen{
   padding:8px 0 30px!important;
   background:
@@ -139950,7 +139950,7 @@ setTimeout(installDefs,600);
 
 
 <style id="v7247-caravan-v2-css">
-/* V7.265 · Karawane V2: event scene, compact choices, cinematic results */
+/* V7.267 · Karawane V2: event scene, compact choices, cinematic results */
 #caravan.screen{overflow-x:hidden!important}
 .v7245-caravan-banner{min-height:150px!important;margin-bottom:7px!important}
 .v7245-banner-stats{gap:4px!important}
@@ -140120,7 +140120,7 @@ setTimeout(installDefs,600);
 
 
 <style id="v7248-nebelkarawane-redesign-css">
-/* V7.265 · Nebelkarawane full visual overhaul */
+/* V7.267 · Nebelkarawane full visual overhaul */
 #caravan.screen{
   overflow-x:hidden!important;
   background:
@@ -140471,7 +140471,7 @@ setTimeout(installDefs,600);
 
 
 <style id="v7249-template-stage-css">
-/* V7.265 · use the approved mockup itself as the full visual stage */
+/* V7.267 · use the approved mockup itself as the full visual stage */
 #caravan.screen{
   background:#020704!important;
   padding:4px 0 26px!important;
@@ -140960,7 +140960,7 @@ setTimeout(installDefs,600);
 </style>
 
 <style id="v7250-template-cleanup-css">
-/* V7.265 · crop away baked UI + cover baked text zones */
+/* V7.267 · crop away baked UI + cover baked text zones */
 .v7249-stage{
   min-height:980px;
 }
@@ -141176,7 +141176,7 @@ setTimeout(installDefs,600);
 
 
 <style id="v7251-real-bg-fit-css">
-/* V7.265 · use generated clean background and fit it to the page */
+/* V7.267 · use generated clean background and fit it to the page */
 .v7249-stage{
   overflow:hidden;
   border-radius:28px;
@@ -141273,7 +141273,7 @@ setTimeout(installDefs,600);
 
 
 <style id="v7252-karawane-premium-pass">
-/* V7.265 · Nebelkarawane premium tuning */
+/* V7.267 · Nebelkarawane premium tuning */
 .v7249-page{padding-top:4px!important}
 .v7249-stage{
   min-height:1320px!important;
@@ -141491,7 +141491,7 @@ setTimeout(installDefs,600);
 
 
 <style id="v7253-karawane-layout-fix">
-/* V7.265 · compact composition pass based on real mobile screenshots */
+/* V7.267 · compact composition pass based on real mobile screenshots */
 .v7249-stage{
   min-height:1130px!important;
 }
@@ -141756,7 +141756,7 @@ setTimeout(installDefs,600);
   }
 }
 
-/* V7.265 · compact route selector + no persistent end-card */
+/* V7.267 · compact route selector + no persistent end-card */
 .v7254-route-select{
   min-height:980px!important;
 }
@@ -141827,7 +141827,7 @@ setTimeout(installDefs,600);
   .v7254-route-select .v7249-route-side button{min-width:96px!important;min-height:36px!important;font-size:8px!important}
 }
 
-/* V7.265 · lighter route-selection layout */
+/* V7.267 · lighter route-selection layout */
 .v7254-route-select{
   min-height:920px!important;
 }
@@ -141915,7 +141915,7 @@ setTimeout(installDefs,600);
   .v7254-route-select .v7249-route-side button{min-width:92px!important;min-height:34px!important;font-size:8px!important}
 }
 
-/* V7.265 · more background + premium route cards */
+/* V7.267 · more background + premium route cards */
 .v7254-route-select{min-height:888px!important}
 .v7254-route-select .v7250-hero{
   top:9.4%!important;
@@ -141995,7 +141995,7 @@ if(window.__V7240_BETA_GOLD_FEATURES__)return;
 window.__V7240_BETA_GOLD_FEATURES__=true;
 if(String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()!=='beta')return;
 
-const VERSION='V7.265';
+const VERSION='V7.267';
 const fmt=v=>Math.max(0,Math.round(Number(v)||0)).toLocaleString('de-DE');
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const LAB={
@@ -142071,7 +142071,7 @@ async function loadForge(force=false){
   syncGold(S.forge.gold);
   return S.forge;
  }catch(e){
-  console.warn('[V7.265] nebelforge state',e);
+  console.warn('[V7.267] nebelforge state',e);
   S.forgeError=String(e?.message||e||'Nebelschmied konnte nicht geladen werden.');
   toast('Nebelschmied nicht erreichbar','warn',S.forgeError);
   return null
@@ -142168,7 +142168,7 @@ async function doForgeReroll(){
   setTimeout(()=>document.getElementById('v7240Nebelforge')?.classList.remove('v7240-hit'),850);
   toast('🔥 Neu geschmiedet','success',`${x.name} · ${fmt(r.cost)} Gold`);
  }catch(e){
-  console.warn('[V7.265] nebelforge reroll',e);
+  console.warn('[V7.267] nebelforge reroll',e);
   toast('Schmieden fehlgeschlagen','warn',String(e?.message||e));
  }finally{S.forgeBusy=false;renderForgePanel()}
 }
@@ -142240,9 +142240,10 @@ async function loadCaravan(force=false){
   const {data,error}=await v073Db.rpc('v7240_caravan_state');
   if(error)throw error;
   S.caravan=Array.isArray(data)?data[0]:data;
+  v7266TrackActiveRun(S.caravan?.run);
   syncCaravanResources(S.caravan);return S.caravan;
  }catch(e){
-  console.warn('[V7.265] caravan state',e);
+  console.warn('[V7.267] caravan state',e);
   S.caravanError=String(e?.message||e||'Nebelkarawane konnte nicht geladen werden.');
   toast('Nebelkarawane nicht erreichbar','warn',S.caravanError);
   return null
@@ -142351,25 +142352,52 @@ function v7247ScheduleAuto(){
 
 function v7254RewardKey(run){
  if(!run||run.status!=='complete')return '';
- return [run.id||'',run.updated_at||'',run.started_at||'',run.tier||'',run.entryCost||0,run.cargoGold||0,run.fragments||0,run.timeSeeds||0,run.extraSpent||0].join('|');
+ return [run.id||run.run_id||'',run.updated_at||'',run.started_at||run.created_at||'',run.tier||'',run.entryCost||0,run.cargoGold||0,run.fragments||0,run.timeSeeds||0,run.extraSpent||0].join('|');
+}
+function v7266RunIdentity(run){
+ if(!run)return '';
+ return [run.id||run.run_id||'',run.started_at||run.created_at||'',run.tier||'',run.entryCost||0].join('|');
+}
+function v7266RewardOwner(){
+ return String(S.caravan?.run?.user_id||S.caravan?.user_id||window.v073User?.id||window.currentUser?.id||'beta');
+}
+function v7266RewardStorageKey(kind){
+ return `growLegends:caravanReward:${v7266RewardOwner()}:${kind}`;
+}
+function v7266ReadRewardStore(kind){
+ try{return String(localStorage.getItem(v7266RewardStorageKey(kind))||'')}catch(_){return ''}
+}
+function v7266WriteRewardStore(kind,value){
+ try{value?localStorage.setItem(v7266RewardStorageKey(kind),String(value)):localStorage.removeItem(v7266RewardStorageKey(kind))}catch(_){}
+}
+function v7266TrackActiveRun(run){
+ if(!run||run.status!=='active')return;
+ const id=v7266RunIdentity(run);
+ if(id)v7266WriteRewardStore('active',id);
 }
 function v7254RewardPopupText(run){
  const safeGold=Math.min(Number(run?.cargoGold)||0,Number(run?.goldCap)||Number(run?.cargoGold)||0);
- return `Deine Karawane ist zurück.
-
-🪙 Gold: ${fmt(safeGold)}
-💠 Fragmente: ${fmt(run?.fragments||0)}
-🌱 Zeit-Samen: ${fmt(run?.timeSeeds||0)}
-
-Eintritt: 🪙 ${fmt(run?.entryCost||0)}${Number(run?.extraSpent||0)>0?`
-Zusatzausgaben: 🪙 ${fmt(run?.extraSpent||0)}`:''}`;
+ return `Deine Karawane ist zurück.\n\n🪙 Gold: ${fmt(safeGold)}\n💠 Fragmente: ${fmt(run?.fragments||0)}\n🌱 Zeit-Samen: ${fmt(run?.timeSeeds||0)}\n\nEintritt: 🪙 ${fmt(run?.entryCost||0)}${Number(run?.extraSpent||0)>0?`\nZusatzausgaben: 🪙 ${fmt(run?.extraSpent||0)}`:''}`;
 }
 function v7254MaybeShowCompletionReward(){
  const run=S.caravan?.run;
  if(!run||run.status!=='complete')return;
  const key=v7254RewardKey(run);
- if(!key||S.caravanRewardKey===key)return;
+ if(!key)return;
+ const seen=v7266ReadRewardStore('seen');
+ if(S.caravanRewardKey===key||seen===key)return;
+ const active=v7266ReadRewardStore('active');
+ const runId=v7266RunIdentity(run);
+ /* Historical completion after login/page-open: mark it seen silently.
+    Only a run that was previously observed as active may create a popup. */
+ if(!runId||active!==runId){
+  S.caravanRewardKey=key;
+  v7266WriteRewardStore('seen',key);
+  return;
+ }
  S.caravanRewardKey=key;
+ v7266WriteRewardStore('seen',key);
+ v7266WriteRewardStore('active','');
  const text=v7254RewardPopupText(run);
  setTimeout(async()=>{
   try{
@@ -142565,9 +142593,9 @@ async function startCaravan(tier){
   if(!ok)return;
   const {data,error}=await v073Db.rpc('v7240_caravan_start',{p_tier:tier});
   if(error)throw error;
-  S.caravan=Array.isArray(data)?data[0]:data;S.resolution=null;syncCaravanResources(S.caravan);
+  S.caravan=Array.isArray(data)?data[0]:data;S.resolution=null;v7266TrackActiveRun(S.caravan?.run);syncCaravanResources(S.caravan);
   try{window.v6111Sfx?.('click')}catch(_){}
- }catch(e){console.warn('[V7.265] caravan start',e);toast('Tour konnte nicht starten','warn',String(e?.message||e))}
+ }catch(e){console.warn('[V7.267] caravan start',e);toast('Tour konnte nicht starten','warn',String(e?.message||e))}
  finally{S.caravanBusy=false;renderCaravan()}
 }
 async function chooseCaravan(choice){
@@ -142578,9 +142606,9 @@ async function chooseCaravan(choice){
   const {data,error}=await v073Db.rpc('v7240_caravan_choose',{p_choice:choice});
   if(error)throw error;
   const r=Array.isArray(data)?data[0]:data;
-  S.caravan=r;S.resolution=r?.resolution||null;syncCaravanResources(r);
+  S.caravan=r;S.resolution=r?.resolution||null;v7266TrackActiveRun(r?.run);syncCaravanResources(r);
   try{window.v6111Sfx?.(Number(r?.resolution?.goldDelta)>0?'reward':'click')}catch(_){}
- }catch(e){console.warn('[V7.265] caravan choose',e);toast('Entscheidung fehlgeschlagen','warn',String(e?.message||e))}
+ }catch(e){console.warn('[V7.267] caravan choose',e);toast('Entscheidung fehlgeschlagen','warn',String(e?.message||e))}
  finally{
   S.caravanBusy=false;
   document.getElementById('caravan')?.classList.remove('v7247-resolving');
@@ -142619,7 +142647,7 @@ try{
   const w=function(id){if(id==='caravan')return openCaravan();const r=base.apply(this,arguments);document.getElementById('caravan')?.classList.remove('active');return r};
   w.__v7240Caravan=true;window.v032Go=w;try{v032Go=w}catch(_){}
  }
-}catch(e){console.warn('[V7.265] caravan nav',e)}
+}catch(e){console.warn('[V7.267] caravan nav',e)}
 try{
  const base=window.v4149BuildCompleteMenu;
  if(typeof base==='function'&&!base.__v7240Caravan){
@@ -142685,20 +142713,23 @@ window.v7240BetaGoldDiagnostics=()=>({
  forgeState:!!S.forge,caravanState:!!S.caravan,
  nebelforgeTab:!!document.querySelector('#forge .v667-tabs [data-v667-tab="nebelforge"]'),
  caravanNav:!!document.querySelector('#v032MenuPanel [data-screen="caravan"]'),
+ caravanRewardSeen:v7266ReadRewardStore('seen'),
+ caravanRewardActive:v7266ReadRewardStore('active'),
  bagDealerNav:!!document.querySelector('#v032MenuPanel [data-screen="bagDealer"]'),
  legacyForgeSuppressed:!!document.getElementById('forge')?.classList.contains('v7240-nebel-open')
 });
 })();
 </script>
-<!-- ===== /V7.265 BETA · NEBELSCHMIED + NEBELKARAWANE ===== -->
+<!-- ===== /V7.267 BETA · NEBELSCHMIED + NEBELKARAWANE ===== -->
 
 
 
-<!-- ===== V7.265 AVATAR FRAME HARD CROP — stärker auf Gesicht ===== -->
-<style id="v7265-avatar-frame-hard-crop">
-/* Startseite: alter Bildfokus wie vorher, nur enger gecroppt. */
+<!-- ===== V7.267 AVATAR FRAME = SAME CROP AS WITHOUT FRAME ===== -->
+<style id="v7267-avatar-frame-same-crop">
+/* Ein einziger Crop fuer das Avatarbild – mit und ohne Rahmen identisch. */
 #world.active .v366-avatar{overflow:hidden!important}
-#world.active .v366-avatar img{
+#world.active .v366-avatar img,
+#world.active .v366-avatar.v7137-frame-target[data-v7137-frame] img{
   width:100%!important;
   height:100%!important;
   object-fit:cover!important;
@@ -142708,9 +142739,15 @@ window.v7240BetaGoldDiagnostics=()=>({
   display:block!important;
 }
 
-/* Hall of Haze wieder näher am bisherigen Look, nur leicht enger. */
+/* Hall of Haze / Profile: ebenfalls kein separater Frame-Crop mehr. */
 html body .app section#hall.v646-hall .v646-own-avatar img,
-html body .app section#hall.v646-hall .v646-row-avatar img{
+html body .app section#hall.v646-hall .v646-row-avatar img,
+html body .app section#hall.v646-hall .v646-own-avatar.v7137-frame-target img,
+html body .app section#hall.v646-hall .v646-row-avatar.v7137-frame-target img,
+#v072OwnProfile .v646-own-avatar img,
+#v072OwnProfile .v646-own-avatar.v7137-frame-target img,
+#v074ProfileContent .v652-profile-avatar img,
+#v074ProfileContent .v652-profile-avatar.v7137-frame-target img{
   object-fit:cover!important;
   object-position:center 20%!important;
   transform:scale(1.13)!important;
@@ -142718,50 +142755,23 @@ html body .app section#hall.v646-hall .v646-row-avatar img{
 }
 
 @media(max-width:390px){
-  #world.active .v366-avatar img{
+  #world.active .v366-avatar img,
+  #world.active .v366-avatar.v7137-frame-target[data-v7137-frame] img{
     object-position:center 22%!important;
     transform:scale(1.18)!important;
   }
   html body .app section#hall.v646-hall .v646-own-avatar img,
-  html body .app section#hall.v646-hall .v646-row-avatar img{
+  html body .app section#hall.v646-hall .v646-row-avatar img,
+  html body .app section#hall.v646-hall .v646-own-avatar.v7137-frame-target img,
+  html body .app section#hall.v646-hall .v646-row-avatar.v7137-frame-target img,
+  #v072OwnProfile .v646-own-avatar img,
+  #v072OwnProfile .v646-own-avatar.v7137-frame-target img,
+  #v074ProfileContent .v652-profile-avatar img,
+  #v074ProfileContent .v652-profile-avatar.v7137-frame-target img{
     object-position:center 20%!important;
     transform:scale(1.10)!important;
   }
 }
-
-/* Mit aktivem Avatar-Rahmen braucht die Startseite einen eigenen Crop.
-   Der Rahmen frisst sonst sichtbare Fläche und das Gesicht sitzt zu tief / zu klein.
-   Deshalb bei gerahmten Avataren: etwas stärker reinzoomen und leicht höher ausrichten. */
-#world.active .v366-avatar.v7137-frame-target[data-v7137-frame] img{
-  object-position:68% 6%!important;
-  transform:scale(1.72)!important;
-  transform-origin:66% 14%!important;
-}
-
-/* Hall/Profile mit Rahmen nur leicht anheben, damit der framed Look konsistent bleibt. */
-html body .app section#hall.v646-hall .v646-own-avatar.v7137-frame-target img,
-html body .app section#hall.v646-hall .v646-row-avatar.v7137-frame-target img,
-#v072OwnProfile .v646-own-avatar.v7137-frame-target img,
-#v074ProfileContent .v652-profile-avatar.v7137-frame-target img{
-  object-position:64% 10%!important;
-  transform:scale(1.34)!important;
-  transform-origin:62% 14%!important;
-}
-
-@media(max-width:390px){
-  #world.active .v366-avatar.v7137-frame-target[data-v7137-frame] img{
-    object-position:67% 8%!important;
-    transform:scale(1.60)!important;
-  }
-  html body .app section#hall.v646-hall .v646-own-avatar.v7137-frame-target img,
-  html body .app section#hall.v646-hall .v646-row-avatar.v7137-frame-target img,
-  #v072OwnProfile .v646-own-avatar.v7137-frame-target img,
-  #v074ProfileContent .v652-profile-avatar.v7137-frame-target img{
-    object-position:62% 11%!important;
-    transform:scale(1.26)!important;
-  }
-}
-
 </style>
 
 </body>
@@ -142794,7 +142804,7 @@ html body .app section#hall.v646-hall .v646-row-avatar.v7137-frame-target img,
 
 
 <style id="v7258-adaptive-mobile-fit-css">
-/* ===== V7.265 ADAPTIVER MOBILE-FIT · WORLD / STARTSEITE ===== */
+/* ===== V7.267 ADAPTIVER MOBILE-FIT · WORLD / STARTSEITE ===== */
 #world.active .v366-hero{
   --v7258-profile-left:12px;
   --v7258-profile-top:12px;
@@ -142979,7 +142989,7 @@ schedule();
 
 
 <style id="v7259-global-responsive-pass-css">
-/* ===== V7.265 · GLOBAL RESPONSIVE PASS ===== */
+/* ===== V7.267 · GLOBAL RESPONSIVE PASS ===== */
 html,body,.app,main{max-width:100%;overflow-x:hidden}
 .screen{max-width:100%;min-width:0}
 .screen *{box-sizing:border-box;min-width:0}
@@ -143143,7 +143153,7 @@ window.v7259ResponsiveDiagnostics=function(){
    }
   });
  });
- return {version:'V7.265',viewport:vw,activeScreens:active.map(x=>x.id),issues:issues.slice(0,80),count:issues.length};
+ return {version:'V7.267',viewport:vw,activeScreens:active.map(x=>x.id),issues:issues.slice(0,80),count:issues.length};
 };
 })();
 </script>
