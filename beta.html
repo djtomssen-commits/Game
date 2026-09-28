@@ -413,7 +413,7 @@ window.__V483_POWER_READY__=false;
 .app > header .v366-ver,.app > header .v371-logo em,.app > header .v372-logo em{font-size:0!important;color:transparent!important}
 .app > header .v366-ver::after,.app > header .v371-logo em::after,.app > header .v372-logo em::after{content:"V4.164"!important;font-size:5px!important;color:#63cdd1!important;font-style:normal!important;font-weight:900!important}
 </style>
-<title>Grow Legends V7.239</title>
+<title>Grow Legends V7.240</title>
 <style>
 :root{--bg:#0b100b;--panel:#151d14;--panel2:#1c281a;--panel3:#253423;--line:#354933;--text:#f2f5ed;--muted:#9fad99;--green:#83d65d;--green2:#b2f07e;--gold:#f2c75a;--red:#ee6b68;--blue:#68a7ea;--purple:#ad7bea;--shadow:0 12px 30px rgba(0,0,0,.28)}
 *{box-sizing:border-box}html{background:var(--bg)}body{margin:0;color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:radial-gradient(circle at 50% -10%,#253821 0,#10170f 40%,#090d09 100%);min-height:100vh}button{font:inherit}.app{max-width:820px;margin:auto;min-height:100vh;padding-bottom:88px}
@@ -127009,7 +127009,7 @@ window.v6346AdminLoadBroadcasts=loadAdminBroadcasts;
    try{
      await native.consume({purchaseToken:String(purchase.purchaseToken)});
    }catch(e){
-     console.warn('V7.239 consume pending; will retry on original server',e);
+     console.warn('V7.240 consume pending; will retry on original server',e);
      if(!quiet)toast('Kauf gutgeschrieben','success',`Die Harz-Taler sind auf ${serverId==='server1'?'Server 1':'Beta'} gutgeschrieben. Google Play wird den Verbrauch beim nächsten App-Start erneut abschließen.`);
      return true;
    }
@@ -127048,11 +127048,11 @@ window.v6346AdminLoadBroadcasts=loadAdminBroadcasts;
      try{
        purchase=await native.purchase({productId:pkg.productId,accountId:String(v073User.id)});
      }catch(e){
-       console.warn('V7.239 Google Play purchase returned an error; checking open purchases first',e);
+       console.warn('V7.240 Google Play purchase returned an error; checking open purchases first',e);
        try{
          const restored=await recoverPending({notify:true,serverHint:purchaseServer,allowBusy:true});
          if(restored>0)return true;
-       }catch(re){console.warn('V7.239 immediate purchase recovery failed',re)}
+       }catch(re){console.warn('V7.240 immediate purchase recovery failed',re)}
        alertMsg(
          'Google Play hat den Kaufdialog nicht normal abgeschlossen. Offene Käufe wurden geprüft. Falls Google den Kauf bereits bestätigt hat, bleibt er gespeichert und wird automatisch erneut geprüft.',
          'Kaufprüfung läuft weiter',
@@ -127115,7 +127115,7 @@ window.v6346AdminLoadBroadcasts=loadAdminBroadcasts;
        bound.push({token,server,key});
      }
    }catch(e){
-     console.warn('V7.239 token binding scan',e);
+     console.warn('V7.240 token binding scan',e);
      return 0;
    }
 
@@ -127146,7 +127146,7 @@ window.v6346AdminLoadBroadcasts=loadAdminBroadcasts;
          try{
            await native.consume({purchaseToken:item.token});
          }catch(e){
-           console.warn('V7.239 recovered purchase consume pending',e);
+           console.warn('V7.240 recovered purchase consume pending',e);
          }
        }
 
@@ -127156,7 +127156,7 @@ window.v6346AdminLoadBroadcasts=loadAdminBroadcasts;
          toast('💎 Kauf wiederhergestellt','success',`+${added} Harz-Taler wurden auf ${item.server==='server1'?'Server 1':'Beta'} gutgeschrieben.`);
        }
      }catch(e){
-       console.warn('V7.239 bound purchase recovery',e);
+       console.warn('V7.240 bound purchase recovery',e);
        const msg=String(e?.message||e||'');
        if(/findet diesen offenen Kauf nicht mehr|nicht mehr abgeschlossen|purchaseState/i.test(msg)){
          /* Keep the token binding for one more app session; Google test purchases can
@@ -127172,7 +127172,7 @@ window.v6346AdminLoadBroadcasts=loadAdminBroadcasts;
    try{
      const boundRecovered=await v7237RecoverBoundTokens({notify});
      if(boundRecovered>0)return boundRecovered;
-   }catch(e){console.warn('V7.239 bound token pre-recovery',e)}
+   }catch(e){console.warn('V7.240 bound token pre-recovery',e)}
    const native=plugin();if(!native)return 0;
    if(!(await billingServerReady(false)))return 0;
    if(serverHint==='server1'||serverHint==='beta')v7235RememberPendingServer(serverHint);
@@ -127186,7 +127186,7 @@ window.v6346AdminLoadBroadcasts=loadAdminBroadcasts;
          const ok=await verifyAndConsume(purchase,{quiet:!notify});
          if(ok)recovered++;
        }catch(e){
-         console.warn('V7.239 pending purchase verification',e);
+         console.warn('V7.240 pending purchase verification',e);
        }
      }
      if(notify&&recovered===0&&purchases.length===0){
@@ -127194,7 +127194,7 @@ window.v6346AdminLoadBroadcasts=loadAdminBroadcasts;
      }
      return recovered;
    }catch(e){
-     console.warn('V7.239 pending lookup',e);
+     console.warn('V7.240 pending lookup',e);
      return 0;
    }finally{
      recoveryBusy=false;
@@ -129240,7 +129240,7 @@ async function animateReplay(b){
  const replay=Array.isArray(b?.replay)?b.replay:[];C.skipReplay=false;
  /* V7.214: combat remains visibly animated, but replay duration is bounded.
     Twelve replay events used to sleep ~7.7 s before any UI work. */
- /* V7.239: Dungeon presentation now uses the same replay cadence as the tower.
+ /* V7.240: Dungeon presentation now uses the same replay cadence as the tower.
     Combat rules/rewards are unchanged; only visual timing is slower. */
  const frameDelay=Math.max(140,Math.min(280,Math.floor(2600/Math.max(1,replay.length))));
  const attackDelay=Math.max(70,Math.round(frameDelay*.44));
@@ -139225,7 +139225,7 @@ html body .app > header .v366-ver::after,html body .app > header .v371-logo em::
 if(window.__V7229_SERVER1_CHARACTER_BOOTSTRAP__)return;
 window.__V7229_SERVER1_CHARACTER_BOOTSTRAP__=true;
 
-const VERSION=Object.freeze({short:'V7.239',label:(String(window.GROW_RELEASE_CHANNEL||'stable')==='beta'?'V7.239 Beta':'V7.239 Servergebundene Käufe'),number:'7.239'});
+const VERSION=Object.freeze({short:'V7.240',label:(String(window.GROW_RELEASE_CHANNEL||'stable')==='beta'?'V7.240 Beta':'V7.240 Servergebundene Käufe'),number:'7.240'});
 window.GROW_LEGENDS_VERSION=VERSION;
 window.__GROW_LEGENDS_RELEASE__=VERSION.short;
 window.__GL_CURRENT_BUILD__=VERSION.short;
@@ -139466,21 +139466,21 @@ window.v7230FrameDiagnostics=()=>({server:serverId(),syncing:!!flight,state:wind
 <!-- ===== /V7.230 SERVER-SCOPED AVATAR FRAME AUTHORITY ===== -->
 
 <style id="v7231-visible-version-css">
-html body .app > header .v358-logo::after{content:"V7.239"!important}
-html body .app > header .v366-ver::after,html body .app > header .v371-logo em::after,html body .app > header .v372-logo em::after,#v372TopbarShell .v372-logo em::after{content:"V7.239"!important}
+html body .app > header .v358-logo::after{content:"V7.240"!important}
+html body .app > header .v366-ver::after,html body .app > header .v371-logo em::after,html body .app > header .v372-logo em::after,#v372TopbarShell .v372-logo em::after{content:"V7.240"!important}
 </style>
 <script id="v7233-isolation-audit-marker">
-(()=>{'use strict';window.__V7233_ISOLATION_AUDIT__=Object.freeze({version:'V7.239',earlyStorageIsolation:true,serverScopedCloud:true,serverScopedRecoveryCaches:true,serverPrivateRpcLayer:true});})();
+(()=>{'use strict';window.__V7233_ISOLATION_AUDIT__=Object.freeze({version:'V7.240',earlyStorageIsolation:true,serverScopedCloud:true,serverScopedRecoveryCaches:true,serverPrivateRpcLayer:true});})();
 </script>
 
-<!-- ===== V7.239 CALENDAR ACHIEVEMENTS · SERVER AUTHORITY ===== -->
+<!-- ===== V7.240 CALENDAR ACHIEVEMENTS · SERVER AUTHORITY ===== -->
 <script id="v7239-calendar-achievements">
 (()=>{
 'use strict';
 if(window.__V7239_CALENDAR_ACHIEVEMENTS__)return;
 window.__V7239_CALENDAR_ACHIEVEMENTS__=true;
 
-const VERSION='V7.239';
+const VERSION='V7.240';
 const CAL=[
  ['calendar_newyear','Neues Jahr, neuer Grow','Logge dich am 1. Januar ein.'],
  ['calendar_valentine','Harzige Liebe','Logge dich am 14. Februar ein.'],
@@ -139502,7 +139502,7 @@ function installDefs(){
    if(!V106_ACH.some(x=>String(x?.[0])===id))V106_ACH.push([id,title,desc,()=>0,1]);
   }
   return true;
- }catch(e){console.warn('[V7.239] calendar defs',e);return false}
+ }catch(e){console.warn('[V7.240] calendar defs',e);return false}
 }
 function logged(){
  try{return !!(window.v073User?.id&&!window.v073User?.is_anonymous)}catch(_){return false}
@@ -139548,7 +139548,7 @@ async function claim(show=true){
   setTimeout(()=>{try{void window.v7080AchievementRefresh?.(false)}catch(_){}},16050);
   return r;
  }catch(e){
-  console.warn('[V7.239] calendar achievement claim',e);
+  console.warn('[V7.240] calendar achievement claim',e);
   return null;
  }finally{busy=false}
 }
@@ -139563,7 +139563,563 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden)setTimeout
 setTimeout(installDefs,600);
 })();
 </script>
-<!-- ===== /V7.239 CALENDAR ACHIEVEMENTS ===== -->
+<!-- ===== /V7.240 CALENDAR ACHIEVEMENTS ===== -->
+
+
+<!-- ===== V7.240 BETA · NEBELSCHMIED + NEBELKARAWANE ===== -->
+<style id="v7240-beta-gold-features-css">
+/* Beta-only premium visual layer. No generic browser-card aesthetic. */
+#forge.v7240-nebel-open .v667-forge-body>.v667-view,
+#forge.v7240-nebel-open .v667-forge-body>.v490-legend,
+#forge.v7240-nebel-open .v667-forge-body>.v667-recipe{display:none!important}
+#forge .v667-tab[data-v667-tab="nebelforge"] .ic{filter:drop-shadow(0 0 8px #ff8a32)}
+#forge .v667-tab[data-v667-tab="nebelforge"].active{
+  border-color:#b86b26!important;
+  background:linear-gradient(180deg,#5b2e12,#241208)!important;
+  color:#ffe4ad!important;
+  box-shadow:0 0 18px #ff7b2f2e,inset 0 1px #ffd49433!important
+}
+#v7240Nebelforge{
+  position:relative;overflow:hidden;margin-top:8px;border:2px solid #6f4a20;border-radius:18px;
+  background:#080906;box-shadow:0 14px 38px #000c,inset 0 0 0 1px #b27b3155;color:#f4ead3
+}
+#v7240Nebelforge .v7240-forge-scene{
+  position:relative;min-height:clamp(300px,43dvh,470px);overflow:hidden;
+  background:
+    linear-gradient(180deg,rgba(3,4,2,.05),rgba(4,3,1,.20) 40%,#070704 96%),
+    url("assets/v7195-base64/f43016c6d1fa99c290aa.webp") center/cover no-repeat;
+}
+#v7240Nebelforge .v7240-forge-scene:before{
+  content:"";position:absolute;inset:0;background:
+    radial-gradient(circle at 50% 60%,#ff9a3c44 0 7%,#ff6c1b1f 16%,transparent 34%),
+    radial-gradient(circle at 25% 15%,#d9ff7a12,transparent 28%);
+  animation:v7240ForgeGlow 1.7s ease-in-out infinite alternate;pointer-events:none
+}
+@keyframes v7240ForgeGlow{to{filter:brightness(1.22);opacity:.72}}
+#v7240Nebelforge.v7240-hit .v7240-forge-scene:after{
+  content:"✦  ✧  ✦";position:absolute;left:50%;top:49%;transform:translate(-50%,-50%);
+  font-size:42px;color:#ffd06b;text-shadow:0 0 20px #ff5b16,0 0 42px #ff7b21;
+  animation:v7240Sparks .7s ease-out 1;pointer-events:none
+}
+@keyframes v7240Sparks{0%{opacity:0;transform:translate(-50%,-35%) scale(.5)}45%{opacity:1}100%{opacity:0;transform:translate(-50%,-80%) scale(1.45)}}
+.v7240-forge-head{
+  position:absolute;z-index:5;left:12px;right:12px;top:11px;display:flex;align-items:flex-start;justify-content:space-between;gap:10px
+}
+.v7240-forge-title{
+  padding:9px 12px;border:1px solid #836132;border-radius:12px;background:#080904df;
+  box-shadow:0 6px 16px #0009,inset 0 1px #fff1;text-shadow:0 2px #000
+}
+.v7240-forge-title small{display:block;color:#ffad57;font-size:6px;font-weight:1000;letter-spacing:1.2px}
+.v7240-forge-title b{display:block;color:#ffe0a0;font:1000 clamp(18px,4vw,30px) Georgia,serif}
+.v7240-forge-wallet{
+  padding:8px 10px;border:1px solid #8b6a2e;border-radius:11px;background:#171207e8;color:#ffe3a0;font-weight:1000;font-size:10px
+}
+.v7240-item-stage{
+  position:absolute;z-index:3;left:50%;top:53%;transform:translate(-50%,-50%);
+  width:min(42vw,235px);height:min(42vw,235px);min-width:150px;min-height:150px;
+  display:grid;place-items:center;border-radius:50%;
+  background:radial-gradient(circle,#e8b34d20 0 23%,#5e2f1026 42%,transparent 70%);
+  filter:drop-shadow(0 18px 15px #000a)
+}
+.v7240-item-stage img{width:82%;height:82%;object-fit:contain;filter:drop-shadow(0 8px 7px #000) drop-shadow(0 0 18px #f6a33b38)}
+.v7240-item-stage .fallback{font-size:82px;filter:drop-shadow(0 8px 7px #000)}
+.v7240-forge-copy{
+  position:absolute;z-index:4;left:12px;right:12px;bottom:12px;padding:9px 11px;border:1px solid #594426;
+  border-radius:11px;background:#080a07e8;text-align:center
+}
+.v7240-forge-copy b{display:block;color:#f8db9b;font-size:12px}
+.v7240-forge-copy small{display:block;margin-top:3px;color:#bbb39b;font-size:7px;line-height:1.35}
+.v7240-forge-control{
+  display:grid;grid-template-columns:minmax(0,.82fr) minmax(0,1.18fr);gap:8px;padding:9px;
+  background:linear-gradient(180deg,#0c0e09,#070805)
+}
+.v7240-forge-items,.v7240-forge-detail{
+  min-width:0;border:1px solid #414732;border-radius:13px;background:linear-gradient(165deg,#141a11,#090b08);
+  box-shadow:inset 0 0 18px #0008;padding:8px
+}
+.v7240-forge-section-title{margin-bottom:7px;color:#b9c99d;font-size:7px;font-weight:1000;letter-spacing:.7px;text-transform:uppercase}
+.v7240-forge-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;max-height:335px;overflow:auto;padding-right:2px}
+.v7240-forge-item{
+  min-width:0;min-height:86px;padding:6px;border:1px solid #3d4835;border-radius:10px;background:linear-gradient(180deg,#1b2118,#0d100c);
+  color:#ddd6c2;text-align:left;cursor:pointer;box-shadow:inset 0 1px #fff1
+}
+.v7240-forge-item.active{border-color:#da9b42;background:linear-gradient(180deg,#3a2811,#171108);box-shadow:0 0 13px #e4943033,inset 0 1px #ffd77f22}
+.v7240-forge-item .top{display:flex;gap:6px;align-items:center}
+.v7240-forge-item .art{width:42px;height:42px;display:grid;place-items:center;border:1px solid #4b4937;border-radius:8px;background:#090b08;flex:0 0 auto}
+.v7240-forge-item .art img{width:100%;height:100%;object-fit:contain}
+.v7240-forge-item b{display:block;font-size:7px;line-height:1.25;overflow-wrap:anywhere}
+.v7240-forge-item small{display:block;margin-top:4px;color:#8f9b84;font-size:5.7px}
+.v7240-stat-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px;margin-bottom:8px}
+.v7240-stat{
+  padding:7px;border:1px solid #36432f;border-radius:9px;background:#0b100a;
+  text-align:center
+}
+.v7240-stat small{display:block;color:#7f927a;font-size:5.8px}.v7240-stat b{display:block;margin-top:2px;color:#f0e8ce;font-size:13px}
+.v7240-focus-title{margin:8px 0 5px;color:#a5b997;font-size:6.4px;font-weight:1000}
+.v7240-focuses{display:flex;flex-wrap:wrap;gap:5px}
+.v7240-focus{
+  flex:1 1 31%;min-width:72px;padding:7px 5px;border:1px solid #3e4a35;border-radius:9px;background:#11160f;color:#aab7a3;font-size:6.7px;font-weight:900
+}
+.v7240-focus.active{border-color:#d99d44;background:#3b2a12;color:#ffe3a2;box-shadow:0 0 10px #d7933430}
+.v7240-costbox{
+  margin-top:9px;padding:9px;border:1px solid #644d28;border-radius:11px;background:linear-gradient(180deg,#1b160b,#0d0b07);
+  text-align:center
+}
+.v7240-costbox small{display:block;color:#9f977f;font-size:6px}.v7240-costbox strong{display:block;margin:2px 0 7px;color:#ffd46c;font-size:18px}
+.v7240-reroll{
+  width:100%;min-height:45px;border:1px solid #cc8a34;border-radius:11px;background:linear-gradient(180deg,#d89235,#7d4116);
+  box-shadow:0 4px 0 #3f210c,0 0 17px #ff8c2c32;color:#1a0e05;font-weight:1000;font-size:9px
+}
+.v7240-reroll:disabled{filter:grayscale(.6);opacity:.45}
+.v7240-resultline{margin-top:7px;color:#d2b66d;font-size:6.5px;line-height:1.35;text-align:center}
+
+/* ---------- Nebelkarawane ---------- */
+#caravan.screen{padding:6px 0 26px!important}
+.v7240-caravan{max-width:900px;margin:0 auto;color:#edf2e7}
+.v7240-caravan-head{
+  margin:0 5px 8px;padding:12px 14px;border:2px solid #5b492e;border-radius:17px;
+  background:
+    radial-gradient(circle at 82% -30%,#496b3d55,transparent 45%),
+    linear-gradient(180deg,#1b2619,#0a110c);
+  box-shadow:0 9px 25px #000a,inset 0 0 0 1px #a8874b44;
+  display:flex;justify-content:space-between;align-items:center;gap:10px
+}
+.v7240-caravan-head small{display:block;color:#79be6a;font-size:6px;font-weight:1000;letter-spacing:1px}
+.v7240-caravan-head h2{margin:1px 0 0;color:#f1d38c;font:1000 clamp(20px,5vw,34px) Georgia,serif;text-shadow:0 2px #000}
+.v7240-caravan-wallet{padding:7px 10px;border:1px solid #6a572f;border-radius:10px;background:#090d09;color:#f6d878;font-size:9px;font-weight:1000}
+.v7240-route{
+  display:grid;grid-template-columns:repeat(5,1fr);gap:4px;margin:0 7px 8px;padding:7px 8px;border:1px solid #33452f;border-radius:12px;background:#09100b
+}
+.v7240-route i{position:relative;height:9px;border-radius:99px;background:#1d2a1c;box-shadow:inset 0 1px #fff1}
+.v7240-route i.done{background:linear-gradient(90deg,#557d35,#b5d951);box-shadow:0 0 8px #85ca4c44}
+.v7240-route i.current{background:#d49b38;box-shadow:0 0 10px #ffba4e66}
+.v7240-caravan-scene{
+  position:relative;min-height:clamp(310px,48dvh,500px);margin:0 5px 8px;overflow:hidden;border:2px solid #5d4b2d;border-radius:18px;
+  background:#071009;box-shadow:0 14px 35px #000c,inset 0 0 0 1px #97723a44
+}
+.v7240-caravan-art{position:absolute;inset:0;background-position:center;background-size:cover;background-repeat:no-repeat;filter:brightness(.74) saturate(.88)}
+.v7240-caravan-scene:after{
+  content:"";position:absolute;inset:0;background:linear-gradient(180deg,#0001,#0002 45%,#050807ed 96%),radial-gradient(circle at 50% 30%,transparent,#0007 95%);pointer-events:none
+}
+.v7240-caravan-tag{
+  position:absolute;z-index:3;left:12px;top:12px;padding:6px 9px;border:1px solid #647a50;border-radius:999px;background:#07100add;
+  color:#99df78;font-size:7px;font-weight:1000;letter-spacing:.7px
+}
+.v7240-caravan-story{
+  position:absolute;z-index:4;left:12px;right:12px;bottom:12px;padding:12px;border:1px solid #5e5841;border-radius:13px;background:#080d09e9;
+  box-shadow:0 7px 20px #0009
+}
+.v7240-caravan-story h3{margin:0 0 4px;color:#f3d59a;font:1000 clamp(17px,4vw,26px) Georgia,serif}
+.v7240-caravan-story p{margin:0;color:#c5cbbd;font-size:8px;line-height:1.42}
+.v7240-caravan-cargo{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:0 7px 8px
+}
+.v7240-cargo{padding:8px 5px;border:1px solid #35462f;border-radius:10px;background:linear-gradient(180deg,#111a10,#080d09);text-align:center}
+.v7240-cargo small{display:block;color:#798c75;font-size:5.6px}.v7240-cargo b{display:block;margin-top:2px;color:#e9ddb9;font-size:12px}
+.v7240-choice-grid,.v7240-tier-grid{
+  display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin:0 7px
+}
+.v7240-choice,.v7240-tier{
+  position:relative;overflow:hidden;min-height:116px;padding:11px;border:1px solid #46573e;border-radius:14px;
+  background:linear-gradient(155deg,#172118,#0a0f0b);box-shadow:inset 0 1px #fff1,0 7px 15px #0007;color:#e8eadf;text-align:left
+}
+.v7240-choice:before,.v7240-tier:before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 100% 0,#78b45714,transparent 42%);pointer-events:none}
+.v7240-choice b,.v7240-tier b{display:block;position:relative;color:#edf1dd;font-size:10px}
+.v7240-choice p,.v7240-tier p{position:relative;margin:5px 0 9px;color:#94a08f;font-size:6.8px;line-height:1.4}
+.v7240-choice button,.v7240-tier button,.v7240-caravan-main{
+  position:relative;width:100%;min-height:39px;border:1px solid #688a4d;border-radius:10px;background:linear-gradient(180deg,#477338,#284621);
+  color:#efffe9;font-size:8px;font-weight:1000;box-shadow:0 3px 0 #14250f
+}
+.v7240-tier.gold{border-color:#7d6233;background:linear-gradient(155deg,#2d2515,#100e09)}
+.v7240-tier.gold button{border-color:#c99a3e;background:linear-gradient(180deg,#a97527,#604315);color:#fff0b7;box-shadow:0 3px 0 #332309}
+.v7240-tier.locked{filter:grayscale(.6);opacity:.56}
+.v7240-tier small{position:relative;display:block;margin-top:5px;color:#d6ba74;font-size:6px}
+.v7240-resolution{
+  margin:0 7px 8px;padding:12px;border:1px solid #7b6335;border-radius:14px;background:linear-gradient(180deg,#272110,#100e09);
+  box-shadow:0 0 18px #d59a3630,inset 0 1px #fff1;text-align:center
+}
+.v7240-resolution .ico{font-size:34px}.v7240-resolution h3{margin:4px 0;color:#f1d18a;font-size:15px}.v7240-resolution p{margin:0 0 9px;color:#c4bda7;font-size:7.5px;line-height:1.4}
+.v7240-finish{
+  margin:0 7px;padding:15px;border:1px solid #7d6332;border-radius:15px;
+  background:radial-gradient(circle at 50% 0,#b58d3040,transparent 45%),linear-gradient(180deg,#241d0e,#0a0b08);text-align:center
+}
+.v7240-finish .chest{font-size:54px;filter:drop-shadow(0 7px 5px #000)}.v7240-finish h3{margin:4px 0;color:#f3d382;font:1000 21px Georgia,serif}
+.v7240-finish p{color:#b8b39f;font-size:7.5px}
+.v7240-loading{padding:28px;text-align:center;color:#a8b49f;font-size:8px}
+
+@media(max-width:520px){
+  .v7240-forge-control{grid-template-columns:1fr}
+  .v7240-forge-list{grid-template-columns:repeat(2,minmax(0,1fr));max-height:240px}
+  .v7240-choice-grid,.v7240-tier-grid{grid-template-columns:1fr}
+  .v7240-caravan-scene{min-height:390px}
+}
+</style>
+
+<script id="v7240-beta-gold-features-js">
+(()=>{
+'use strict';
+if(window.__V7240_BETA_GOLD_FEATURES__)return;
+window.__V7240_BETA_GOLD_FEATURES__=true;
+if(String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()!=='beta')return;
+
+const VERSION='V7.240';
+const fmt=v=>Math.max(0,Math.round(Number(v)||0)).toLocaleString('de-DE');
+const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const LAB={
+ staerke:'Stärke',ausdauer:'Ausdauer',geschick:'Geschick',intelligenz:'Intelligenz',glueck:'Glück'
+};
+const ICON={staerke:'💪',ausdauer:'❤️',geschick:'🏹',intelligenz:'🧠',glueck:'🍀'};
+const S={
+ forge:null,forgeItemId:'',focus:'',forgeBusy:false,lastForge:null,
+ caravan:null,caravanBusy:false,resolution:null
+};
+
+function logged(){try{return !!(window.v073User?.id&&!window.v073User?.is_anonymous)}catch(_){return false}}
+function toast(t,type='info',d=''){try{window.v063Toast?.(t,type,d)}catch(_){}}
+function art(it){
+ try{
+  const u=window.v466ItemArtUri?.(it)||window.v4115ComicItemArtUri?.(it)||window.v4106ComicItemArtUri?.(it)||'';
+  if(u)return `<img src="${esc(u)}" alt="${esc(it?.name||'Item')}">`;
+ }catch(_){}
+ return `<span class="fallback">${esc(it?.icon||'⚔️')}</span>`;
+}
+function itemId(it){return String(it?.id||it?.uid||'')}
+function syncGold(g){
+ try{s.gold=Math.max(0,Number(g)||0)}catch(_){}
+ try{v069SyncCurrencies?.()}catch(_){}
+ try{v441PaintResources?.()}catch(_){}
+}
+function syncCaravanResources(x){
+ if(!x)return;
+ syncGold(x.gold);
+ try{
+  s.v488Forge=(s.v488Forge&&typeof s.v488Forge==='object')?s.v488Forge:{};
+  s.v488Forge.fragments=Math.max(0,Number(x.fragments)||0);
+  s.timeSeeds=Math.max(0,Number(x.timeSeeds)||0);
+ }catch(_){}
+}
+function syncForgeItem(r){
+ if(!r?.item)return;
+ try{
+  const iid=itemId(r.item);
+  const inv=Array.isArray(s.inventory)?s.inventory:[];
+  const ix=inv.findIndex(x=>itemId(x)===iid);
+  if(ix>=0)inv[ix]=r.item;
+  else if(r.slot&&s.equipment?.[r.slot])s.equipment[r.slot]=r.item;
+  syncGold(r.gold);
+ }catch(_){}
+}
+
+/* ------------------------- Nebelschmied ------------------------- */
+async function loadForge(force=false){
+ if(S.forge&&!force)return S.forge;
+ if(!logged()||typeof v073Db==='undefined'||!v073Db)return null;
+ try{
+  const {data,error}=await v073Db.rpc('v7240_nebelforge_state');
+  if(error)throw error;
+  S.forge=Array.isArray(data)?data[0]:data;
+  if(!S.forge?.ok)throw new Error('Nebelschmied-State ungültig');
+  const items=Array.isArray(S.forge.items)?S.forge.items:[];
+  if(!items.some(x=>x.id===S.forgeItemId))S.forgeItemId=items[0]?.id||'';
+  const cur=items.find(x=>x.id===S.forgeItemId);
+  const keys=Object.keys(cur?.native||{}).filter(k=>LAB[k]);
+  if(!keys.includes(S.focus))S.focus=keys[0]||'';
+  syncGold(S.forge.gold);
+  return S.forge;
+ }catch(e){console.warn('[V7.240] nebelforge state',e);toast('Nebelschmied nicht erreichbar','warn',String(e?.message||e));return null}
+}
+function forgeItem(){return (S.forge?.items||[]).find(x=>x.id===S.forgeItemId)||null}
+function statGrid(native){
+ const rows=Object.entries(native||{}).filter(([k])=>LAB[k]);
+ return `<div class="v7240-stat-grid">${rows.map(([k,v])=>`<div class="v7240-stat"><small>${ICON[k]||'◆'} ${esc(LAB[k]||k)}</small><b>${fmt(v)}</b></div>`).join('')}</div>`;
+}
+function forgePanelHtml(){
+ const f=S.forge,items=Array.isArray(f?.items)?f.items:[],x=forgeItem();
+ if(!f)return '<div id="v7240Nebelforge"><div class="v7240-loading">🔥 Nebelschmied wird geladen …</div></div>';
+ if(!x)return `<div id="v7240Nebelforge"><div class="v7240-loading">Keine Ausrüstung gefunden, die neu geschmiedet werden kann.</div></div>`;
+ const keys=Object.keys(x.native||{}).filter(k=>LAB[k]);
+ return `<div id="v7240Nebelforge" class="${S.lastForge?'v7240-hit':''}">
+   <div class="v7240-forge-scene">
+     <div class="v7240-forge-head">
+       <div class="v7240-forge-title"><small>BETA · GOLD-ENDGAME</small><b>🔥 Nebelschmied</b></div>
+       <div class="v7240-forge-wallet">🪙 ${fmt(f.gold)}</div>
+     </div>
+     <div class="v7240-item-stage">${art(x.item)}</div>
+     <div class="v7240-forge-copy">
+       <b>${esc(x.name)}</b>
+       <small>Der Schmied verteilt nur die natürlichen Itemwerte neu. Gesamtwert, Seltenheit, Level, Edelstein, Rolle und Spezialeffekte bleiben erhalten.</small>
+     </div>
+   </div>
+   <div class="v7240-forge-control">
+     <div class="v7240-forge-items">
+       <div class="v7240-forge-section-title">Ausrüstung auswählen</div>
+       <div class="v7240-forge-list">${items.map(it=>`<button class="v7240-forge-item ${it.id===x.id?'active':''}" data-v7240-forge-item="${esc(it.id)}"><div class="top"><span class="art">${art(it.item)}</span><span><b>${esc(it.name)}</b><small>${it.place==='equipment'?'Angelegt':'Inventar'} · ${fmt(it.rerolls)}× geschmiedet</small></span></div></button>`).join('')}</div>
+     </div>
+     <div class="v7240-forge-detail">
+       <div class="v7240-forge-section-title">Aktuelle natürliche Werte</div>
+       ${statGrid(x.native)}
+       <div class="v7240-focus-title">WUNSCHRICHTUNG · wird stärker gewichtet, aber nicht garantiert</div>
+       <div class="v7240-focuses">${keys.map(k=>`<button class="v7240-focus ${S.focus===k?'active':''}" data-v7240-focus="${k}">${ICON[k]||'◆'} ${esc(LAB[k])}</button>`).join('')}</div>
+       <div class="v7240-costbox">
+         <small>NÄCHSTER SCHMIEDEVERSUCH · Kosten steigen pro Item</small>
+         <strong>🪙 ${fmt(x.cost)} Gold</strong>
+         <button class="v7240-reroll" data-v7240-reroll ${S.forgeBusy||Number(f.gold)<Number(x.cost)?'disabled':''}>🔥 ITEM NEU SCHMIEDEN</button>
+         <div class="v7240-resultline">${S.lastForge&&S.lastForge.itemId===x.id?`Letzter Versuch: ${Object.entries(S.lastForge.newNative||{}).filter(([k])=>LAB[k]).map(([k,v])=>`${LAB[k]} ${fmt(v)}`).join(' · ')}`:`Der Gesamtwert wird nicht erhöht – du jagst die bessere Verteilung.`}</div>
+       </div>
+     </div>
+   </div>
+ </div>`;
+}
+async function renderForgePanel(){
+ const body=document.querySelector('#forge .v667-forge-body');if(!body)return;
+ let p=body.querySelector('#v7240Nebelforge');
+ if(!p){p=document.createElement('div');p.id='v7240Nebelforge';body.appendChild(p)}
+ if(!S.forge)p.innerHTML='<div class="v7240-loading">🔥 Nebelschmied wird geladen …</div>';
+ await loadForge(false);
+ const old=body.querySelector('#v7240Nebelforge');if(old)old.outerHTML=forgePanelHtml();
+ bindForgePanel();
+}
+function bindForgePanel(){
+ const p=document.getElementById('v7240Nebelforge');if(!p)return;
+ p.querySelectorAll('[data-v7240-forge-item]').forEach(b=>b.onclick=()=>{
+  S.forgeItemId=b.dataset.v7240ForgeItem||'';S.lastForge=null;
+  const x=forgeItem(),keys=Object.keys(x?.native||{}).filter(k=>LAB[k]);S.focus=keys[0]||'';
+  renderForgePanel();
+ });
+ p.querySelectorAll('[data-v7240-focus]').forEach(b=>b.onclick=()=>{S.focus=b.dataset.v7240Focus||'';renderForgePanel()});
+ p.querySelector('[data-v7240-reroll]')?.addEventListener('click',()=>void doForgeReroll());
+}
+async function doForgeReroll(){
+ if(S.forgeBusy)return;
+ const x=forgeItem();if(!x)return;
+ let ok=true;
+ try{
+  ok=typeof v115Confirm==='function'
+   ?await v115Confirm(`${x.name}\n\n${fmt(x.cost)} Gold ausgeben und die natürlichen Werte neu verteilen?\n\nGesamtwert, Edelstein und Verzauberung bleiben erhalten.`,{title:'🔥 Nebelschmied',type:'warn',okText:`Für ${fmt(x.cost)} Gold schmieden`})
+   :window.confirm(`${x.name} für ${fmt(x.cost)} Gold neu schmieden?`);
+ }catch(_){ok=false}
+ if(!ok)return;
+ S.forgeBusy=true;renderForgePanel();
+ try{
+  const {data,error}=await v073Db.rpc('v7240_nebelforge_reroll',{p_item_id:x.id,p_focus_stat:S.focus||null});
+  if(error)throw error;
+  const r=Array.isArray(data)?data[0]:data;
+  if(!r?.ok)throw new Error('Schmiedevorgang fehlgeschlagen');
+  syncForgeItem(r);S.lastForge=r;S.forge=null;
+  try{window.v6111Sfx?.('forge')}catch(_){}
+  await loadForge(true);renderForgePanel();
+  setTimeout(()=>document.getElementById('v7240Nebelforge')?.classList.remove('v7240-hit'),850);
+  toast('🔥 Neu geschmiedet','success',`${x.name} · ${fmt(r.cost)} Gold`);
+ }catch(e){
+  console.warn('[V7.240] nebelforge reroll',e);
+  toast('Schmieden fehlgeschlagen','warn',String(e?.message||e));
+ }finally{S.forgeBusy=false;renderForgePanel()}
+}
+function ensureForgeTab(){
+ const forge=document.getElementById('forge');const tabs=forge?.querySelector('.v667-tabs');if(!forge||!tabs)return;
+ let b=tabs.querySelector('[data-v667-tab="nebelforge"]');
+ if(!b){
+  b=document.createElement('button');b.type='button';b.className='v667-tab';b.dataset.v667Tab='nebelforge';
+  b.innerHTML='<span class="ic">🔥</span><span>NEBELSCHMIED<small>Gold · Werte neu verteilen</small></span>';
+  tabs.appendChild(b);
+  b.addEventListener('click',async e=>{
+   e.preventDefault();e.stopPropagation();
+   forge.classList.add('v7240-nebel-open');
+   tabs.querySelectorAll('.v667-tab').forEach(x=>x.classList.toggle('active',x===b));
+   S.forge=null;await renderForgePanel();
+  });
+ }
+ if(forge.classList.contains('v7240-nebel-open'))tabs.querySelectorAll('.v667-tab').forEach(x=>x.classList.toggle('active',x.dataset.v667Tab==='nebelforge'));
+}
+
+/* ------------------------- Nebelkarawane ------------------------- */
+const META={
+ ambush:{tag:'⚔️ HINTERHALT',title:'Räuber im Nebel',text:'Maskierte Plünderer blockieren die Straße. Sie haben deine Ladung bereits im Blick.',img:'assets/v7195-base64/1fb10cd5477636707061.webp',
+  choices:[['fight','⚔️ Durchbrechen','65 % Chance auf starke Beute. Bei Niederlage verlierst du 25 % deiner bisherigen Karawanen-Goldladung.'],['hide','🌫️ Im Nebel warten','Sicher. Kleine Goldbeute, dafür kein Verlust.']]},
+ trader:{tag:'🛒 FAHRENDER DEALER',title:'Der Händler ohne Namen',text:'Ein gepanzerter Wagen öffnet seine Seitenklappe. Niemand fragt, woher die Ware stammt.',img:'assets/v7195-base64/d7febd02e0a8451b1b68.webp',
+  choices:[['deal','🤝 Seltene Ware kaufen','Zusätzlich 25 % des Eintritts in Gold zahlen. Dafür sichere Fragmente und Chance auf einen Zeit-Samen.'],['gamble','🎲 Schattenhandel','55 % Chance auf viel Karawanen-Gold. Bei Pech verlierst du 20 % deiner bisherigen Ladung.']]},
+ chest:{tag:'📦 FUNDORT',title:'Kiste am Straßenrand',text:'Eine schwere Kiste liegt halb im Schlamm. Zu offensichtlich – oder genau deshalb echt?',img:'assets/v7195-base64/06f5b41251d19dfe186a.webp',
+  choices:[['open','🔓 Aufbrechen','60 % Chance auf starken Gold- und Fragmentfund. Sonst bleibt nur ein kleiner Rest.'],['leave','🚶 Weiterfahren','Kein Risiko. Ein kleiner sicherer Goldfund auf der Route.']]},
+ shortcut:{tag:'🛣️ ABKÜRZUNG',title:'Die versunkene Nebenroute',text:'Der Weg durch den alten Growbezirk spart Stunden – wenn der Wagen nicht stecken bleibt.',img:'assets/v7195-base64/145298215b1b7ed53710.webp',
+  choices:[['rush','🔥 Durchziehen','58 % Chance auf gute Beute und Chance auf einen Zeit-Samen. Bei Pech 15 % Ladungsverlust.'],['detour','🧭 Umweg nehmen','Sicherer kleiner Goldfund. Kein Ladungsverlust.']]},
+ fog:{tag:'🌫️ DICHTER NEBEL',title:'Kein Wegweiser mehr',text:'Die Straße verschwindet vollständig. Ein Fremder bietet an, euch durch den Nebel zu führen.',img:'assets/v7195-base64/5b5e276b2e07a7eea793.webp',
+  choices:[['guide','🕯️ Führer bezahlen','Zusätzlich 15 % des Eintritts zahlen. Dafür sicher Gold und Fragmente finden.'],['through','🌫️ Allein durch','50 % Chance auf einen starken Goldfund. Kein direkter Ladungsverlust bei Misserfolg.']]},
+ hermit:{tag:'🧙 EINSIEDLER',title:'Der Mann unter der Brücke',text:'Zwischen alten Lampen und Pflanzenkisten sitzt ein Händler, der nur in Rätseln spricht.',img:'assets/v7195-base64/b03e902fb4a2ae00ad63.webp',
+  choices:[['buy','⏳ Omen kaufen','Zusätzlich 20 % des Eintritts zahlen. Garantierter Zeit-Samen plus Fragmente.'],['listen','👂 Geschichte anhören','Kostenlos. Kleine Fragmente und geringe Chance auf einen Zeit-Samen.']]}
+};
+async function loadCaravan(force=false){
+ if(S.caravan&&!force)return S.caravan;
+ if(!logged()||typeof v073Db==='undefined'||!v073Db)return null;
+ try{
+  const {data,error}=await v073Db.rpc('v7240_caravan_state');
+  if(error)throw error;
+  S.caravan=Array.isArray(data)?data[0]:data;
+  syncCaravanResources(S.caravan);return S.caravan;
+ }catch(e){console.warn('[V7.240] caravan state',e);toast('Nebelkarawane nicht erreichbar','warn',String(e?.message||e));return null}
+}
+function ensureCaravanSection(){
+ let sec=document.getElementById('caravan');
+ if(!sec){
+  sec=document.createElement('section');sec.id='caravan';sec.className='screen';
+  const host=document.querySelector('main')||document.querySelector('.content')||document.body;
+  host.appendChild(sec);
+  const legal=document.getElementById('v337LegalFooter');if(legal&&legal.parentElement===host)host.appendChild(legal);
+ }
+ return sec;
+}
+function routeHtml(run){
+ const n=Math.max(0,Math.min(5,Number(run?.station)||0));
+ return `<div class="v7240-route">${[0,1,2,3,4].map(i=>`<i class="${i<n?'done':i===n&&n<5?'current':''}"></i>`).join('')}</div>`;
+}
+function cargoHtml(run){
+ return `<div class="v7240-caravan-cargo">
+  <div class="v7240-cargo"><small>KARAWANEN-GOLD</small><b>🪙 ${fmt(run?.cargoGold)}</b></div>
+  <div class="v7240-cargo"><small>FRAGMENTE</small><b>💠 ${fmt(run?.fragments)}</b></div>
+  <div class="v7240-cargo"><small>ZEIT-SAMEN</small><b>⏳ ${fmt(run?.timeSeeds)}</b></div>
+ </div>`;
+}
+function tiersHtml(c){
+ return `<div class="v7240-tier-grid">${(c.tiers||[]).map((t,i)=>{
+  const locked=Number(c.level)<Number(t.level),gold=i>0?'gold':'';
+  const desc=t.id==='spur'?'Kleine Tour · gute Einstiegsroute.'
+    :t.id==='convoy'?'Höherer Einsatz · stärkere Funde und teurere Entscheidungen.'
+    :'Großer Gold-Sink · hohe Schwankung und die stärksten möglichen Funde.';
+  return `<div class="v7240-tier ${gold} ${locked?'locked':''}"><b>${i===0?'🌫️':i===1?'🚚':'👑'} ${esc(t.name)}</b><p>${desc}</p><button data-v7240-start="${t.id}" ${locked||Number(c.gold)<Number(t.cost)?'disabled':''}>🪙 ${fmt(t.cost)} · TOUR STARTEN</button><small>${locked?`Freischaltung ab Level ${t.level}`:`Dein Level: ${c.level}`}</small></div>`;
+ }).join('')}</div>`;
+}
+function caravanHtml(){
+ const c=S.caravan;
+ if(!c)return '<div class="v7240-caravan"><div class="v7240-loading">🚚 Nebelkarawane wird geladen …</div></div>';
+ const run=c.run;
+ const head=`<div class="v7240-caravan-head"><div><small>BETA · GOLD-ABENTEUER</small><h2>🚚 Nebelkarawane</h2></div><div class="v7240-caravan-wallet">🪙 ${fmt(c.gold)}</div></div>`;
+ if(!run||run.status!=='active'){
+  const last=run?.status==='complete'?`<div class="v7240-finish"><div class="chest">🧰</div><h3>Tour abgeschlossen</h3><p>Gesichert: 🪙 ${fmt(run.cargoGold)} Gold · 💠 ${fmt(run.fragments)} Fragmente · ⏳ ${fmt(run.timeSeeds)} Zeit-Samen</p></div>`:'';
+  return `<div class="v7240-caravan">${head}${last}<div class="v7240-caravan-scene"><div class="v7240-caravan-art" style="background-image:url('assets/v7195-base64/1fb10cd5477636707061.webp')"></div><div class="v7240-caravan-tag">🌫️ GRÜNHAIN · AUSFAHRT</div><div class="v7240-caravan-story"><h3>Was liegt heute im Nebel?</h3><p>Jede Tour besteht aus fünf zufälligen Stationen. Der Einsatz ist weg, sobald der Wagen losfährt. Entscheidungen können zusätzlich Gold kosten. Die gesamte Beute wird erst am Ende sicher gutgeschrieben.</p></div></div>${tiersHtml(c)}</div>`;
+ }
+ if(S.resolution){
+  const r=S.resolution;
+  return `<div class="v7240-caravan">${head}${routeHtml(run)}${cargoHtml(run)}<div class="v7240-resolution"><div class="ico">✨</div><h3>${esc(r.text||'Entscheidung getroffen')}</h3><p>${Number(r.goldDelta)>0?`🪙 +${fmt(r.goldDelta)}  `:''}${Number(r.fragmentsDelta)>0?`💠 +${fmt(r.fragmentsDelta)}  `:''}${Number(r.timeSeedsDelta)>0?`⏳ +${fmt(r.timeSeedsDelta)}  `:''}${Number(r.extraSpend)>0?`· 🪙 ${fmt(r.extraSpend)} zusätzlich bezahlt`:''}</p><button class="v7240-caravan-main" data-v7240-next>${run.status==='complete'?'Beute sichern ansehen':'Weiter zur nächsten Station'}</button></div></div>`;
+ }
+ const idx=Math.max(0,Math.min(4,Number(run.station)||0));
+ const typ=run?.stations?.[idx]?.type||'fog',m=META[typ]||META.fog;
+ return `<div class="v7240-caravan">${head}${routeHtml(run)}${cargoHtml(run)}
+  <div class="v7240-caravan-scene"><div class="v7240-caravan-art" style="background-image:url('${m.img}')"></div><div class="v7240-caravan-tag">${m.tag} · STATION ${idx+1}/5</div><div class="v7240-caravan-story"><h3>${esc(m.title)}</h3><p>${esc(m.text)}</p></div></div>
+  <div class="v7240-choice-grid">${m.choices.map(([id,title,desc])=>`<div class="v7240-choice"><b>${esc(title)}</b><p>${esc(desc)}</p><button data-v7240-choice="${id}" ${S.caravanBusy?'disabled':''}>ENTSCHEIDEN</button></div>`).join('')}</div>
+ </div>`;
+}
+async function renderCaravan(){
+ const sec=ensureCaravanSection();
+ sec.innerHTML=caravanHtml();
+ bindCaravan();
+}
+function bindCaravan(){
+ const sec=document.getElementById('caravan');if(!sec)return;
+ sec.querySelectorAll('[data-v7240-start]').forEach(b=>b.onclick=()=>void startCaravan(b.dataset.v7240Start));
+ sec.querySelectorAll('[data-v7240-choice]').forEach(b=>b.onclick=()=>void chooseCaravan(b.dataset.v7240Choice));
+ sec.querySelector('[data-v7240-next]')?.addEventListener('click',()=>{S.resolution=null;renderCaravan()});
+}
+async function startCaravan(tier){
+ if(S.caravanBusy)return;
+ S.caravanBusy=true;
+ try{
+  const t=(S.caravan?.tiers||[]).find(x=>x.id===tier);
+  let ok=true;
+  if(t){
+   ok=typeof v115Confirm==='function'
+    ?await v115Confirm(`${t.name}\n\nEinsatz: ${fmt(t.cost)} Gold\n\nDer Einsatz ist nach dem Start verbraucht. Die Tour hat 5 zufällige Stationen.`,{title:'🚚 Nebelkarawane starten?',type:'warn',okText:`Für ${fmt(t.cost)} Gold losfahren`})
+    :window.confirm(`${t.name} für ${fmt(t.cost)} Gold starten?`);
+  }
+  if(!ok)return;
+  const {data,error}=await v073Db.rpc('v7240_caravan_start',{p_tier:tier});
+  if(error)throw error;
+  S.caravan=Array.isArray(data)?data[0]:data;S.resolution=null;syncCaravanResources(S.caravan);
+  try{window.v6111Sfx?.('click')}catch(_){}
+ }catch(e){console.warn('[V7.240] caravan start',e);toast('Tour konnte nicht starten','warn',String(e?.message||e))}
+ finally{S.caravanBusy=false;renderCaravan()}
+}
+async function chooseCaravan(choice){
+ if(S.caravanBusy)return;
+ S.caravanBusy=true;renderCaravan();
+ try{
+  const {data,error}=await v073Db.rpc('v7240_caravan_choose',{p_choice:choice});
+  if(error)throw error;
+  const r=Array.isArray(data)?data[0]:data;
+  S.caravan=r;S.resolution=r?.resolution||null;syncCaravanResources(r);
+  try{window.v6111Sfx?.(Number(r?.resolution?.goldDelta)>0?'reward':'click')}catch(_){}
+ }catch(e){console.warn('[V7.240] caravan choose',e);toast('Entscheidung fehlgeschlagen','warn',String(e?.message||e))}
+ finally{S.caravanBusy=false;renderCaravan()}
+}
+async function openCaravan(){
+ ensureCaravanSection();
+ document.querySelectorAll('.screen').forEach(el=>el.classList.remove('active'));
+ document.getElementById('caravan')?.classList.add('active');
+ try{document.getElementById('v032MenuPanel')?.classList.remove('show','open','active')}catch(_){}
+ S.caravan=null;S.resolution=null;
+ await loadCaravan(true);renderCaravan();
+ window.scrollTo?.({top:0,behavior:'instant'});
+ return true;
+}
+function ensureMenu(){
+ const p=document.getElementById('v032MenuPanel');if(!p)return;
+ let b=p.querySelector('[data-screen="caravan"]');
+ if(!b){
+  b=document.createElement('button');b.type='button';b.className='top-menu-item';b.dataset.screen='caravan';
+  b.innerHTML='<span>🚚</span>Nebelkarawane <small style="margin-left:auto;color:#d9a343;font-size:5px">BETA</small>';
+  const tower=p.querySelector('[data-screen="tower"]');
+  if(tower?.nextSibling)p.insertBefore(b,tower.nextSibling);else p.appendChild(b);
+  b.onclick=e=>{e.preventDefault();e.stopPropagation();void openCaravan()};
+ }
+}
+
+/* Integration with canonical navigation/menu without changing stable Server 1. */
+try{
+ const base=window.v032Go;
+ if(typeof base==='function'&&!base.__v7240Caravan){
+  const w=function(id){if(id==='caravan')return openCaravan();const r=base.apply(this,arguments);document.getElementById('caravan')?.classList.remove('active');return r};
+  w.__v7240Caravan=true;window.v032Go=w;try{v032Go=w}catch(_){}
+ }
+}catch(e){console.warn('[V7.240] caravan nav',e)}
+try{
+ const base=window.v4149BuildCompleteMenu;
+ if(typeof base==='function'&&!base.__v7240Caravan){
+  const w=function(){const r=base.apply(this,arguments);queueMicrotask(ensureMenu);return r};
+  w.__v7240Caravan=true;window.v4149BuildCompleteMenu=w;
+ }
+}catch(_){}
+
+/* Original forge tabs return ownership to the normal forge. */
+document.addEventListener('click',e=>{
+ const t=e.target instanceof Element?e.target.closest('#forge [data-v667-tab]'):null;
+ if(t&&t.dataset.v667Tab!=='nebelforge'){
+  document.getElementById('forge')?.classList.remove('v7240-nebel-open');
+  setTimeout(ensureForgeTab,20);
+ }
+ if(e.target instanceof Element&&e.target.closest('#v032MenuBtn,#v032MenuToggle'))requestAnimationFrame(ensureMenu);
+},true);
+
+window.addEventListener('growlegends:navigation-open-v7119',e=>{
+ const id=String(e?.detail?.id||'');
+ if(id==='forge')setTimeout(ensureForgeTab,50);
+ if(id!=='caravan')document.getElementById('caravan')?.classList.remove('active');
+},{passive:true});
+window.addEventListener('growlegends:account-ready',()=>{
+ setTimeout(()=>{ensureForgeTab();ensureMenu();ensureCaravanSection()},150);
+},{passive:true});
+window.addEventListener('pageshow',()=>{ensureForgeTab();ensureMenu();ensureCaravanSection()},{passive:true});
+document.addEventListener('DOMContentLoaded',()=>{ensureForgeTab();ensureMenu();ensureCaravanSection()},{once:true});
+[250,900,2200].forEach(ms=>setTimeout(()=>{ensureForgeTab();ensureMenu();ensureCaravanSection()},ms));
+
+window.v7240OpenCaravan=openCaravan;
+window.v7240OpenNebelforge=async()=>{try{v032Go('forge')}catch(_){}setTimeout(async()=>{ensureForgeTab();const b=document.querySelector('#forge [data-v667-tab="nebelforge"]');b?.click()},80)};
+window.v7240BetaGoldDiagnostics=()=>({
+ version:VERSION,beta:true,forgeTab:!!document.querySelector('#forge [data-v667-tab="nebelforge"]'),
+ caravanMenu:!!document.querySelector('#v032MenuPanel [data-screen="caravan"]'),
+ caravanScreen:!!document.getElementById('caravan'),
+ forgeState:!!S.forge,caravanState:!!S.caravan
+});
+})();
+</script>
+<!-- ===== /V7.240 BETA · NEBELSCHMIED + NEBELKARAWANE ===== -->
 
 </body>
 </html>
