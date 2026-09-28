@@ -42,7 +42,7 @@
 })();
 </script>
 <script id="v4131-version-source">
-window.GROW_LEGENDS_VERSION=Object.freeze({short:'V7.278',label:'V7.278 Server 1',number:'7.278'});
+window.GROW_LEGENDS_VERSION=Object.freeze({short:'V7.281',label:'V7.281 Server 1',number:'7.281'});
 window.__V7210_BOOT_PENDING__=true;
 window.v7206StartupBusy=()=>window.__V7210_BOOT_PENDING__===true||window.__V7206_CANONICAL_LOGIN_RUNNING__===true||window.__V7206_FIRST_PLAYABLE_PENDING__===true;
 /* V7.214: account-ready listeners used to all wake in the same frame and caused
@@ -143170,7 +143170,7 @@ html body .app section#hall.v646-hall .v646-row-avatar.v7137-frame-target > img.
 <script id="v7269-combat-cadence-diagnostics">
 window.v7269CombatCadenceDiagnostics=()=>{
  const d=window.v7269DungeonCadence?.(10);
- return {version:'V7.279',baseline:'dungeon',dungeon:d,tower:'shared dungeon cadence',pvp:'shared dungeon cadence'};
+ return {version:'V7.281',baseline:'dungeon',dungeon:d,tower:'shared dungeon cadence',pvp:'shared dungeon cadence'};
 };
 </script>
 
@@ -143178,7 +143178,7 @@ window.v7269CombatCadenceDiagnostics=()=>{
 (()=>{
  'use strict';
  window.v7271IllegalBookPageStability=()=>({
-   version:'V7.279',
+   version:'V7.281',
    state:window.v6235IllegalBookViewState?.()||null,
    serverAchievement:window.v7080AchievementDiagnostics?.()||null
  });
@@ -143327,7 +143327,7 @@ window.v7269CombatCadenceDiagnostics=()=>{
   const st=structure(),p=panel();
   const iconMissing=p?[...p.querySelectorAll(':scope > .top-menu-item[data-screen]')].filter(b=>!b.querySelector(':scope > .v7272-nav-icon svg')).map(b=>b.dataset.screen):[];
   const active=p?[...p.querySelectorAll(':scope > .top-menu-item.active[data-screen]')].map(b=>b.dataset.screen):[];
-  return {version:'V7.279',...st,iconMissing,active,lastRepairAt,observer:!!observer};
+  return {version:'V7.281',...st,iconMissing,active,lastRepairAt,observer:!!observer};
  };
 })();
 </script>
@@ -143420,13 +143420,16 @@ window.v7269CombatCadenceDiagnostics=()=>{
   const dailyT=[29.05,33.47,37.89,42.31,46.73],weekT=[55.25,61.75,68.25],contribT=[79.85,83.15,86.45,89.75,93.05];
   let html=`<div class="v7273-title">Gilden-Grow-Aufträge<small>${esc(s.guild.name||'Gilde')} [${esc(s.guild.tag||'')}] · ${num(s.activeMembers)} aktive Mitglieder</small></div>`;
   html+=`<div class="v7273-chest-summary">Wochen-Truhe ${num(ch.points)}/${num(ch.max||100)} · Stufe ${num(ch.level)}/5 · Gilden-Buds ${num(s.guild.guildBuds)}</div>`;
-  const chestX=[17.8,31.8,46.0,60.5,75.0]; for(let i=0;i<5;i++){const hit=Number(ch.level)>=i+1;const cur=Number(ch.level)+1===i+1;html+=`<div class="v7273-chest-ring ${hit?'hit':''} ${cur?'current':''}" style="left:${chestX[i]}%" title="Truhenstufe ${i+1} · ${[20,40,60,80,100][i]} Punkte${hit?' · erreicht':''}"></div>`;}
+  const chestPoints=Math.max(0,Math.min(100,Number(ch.points)||0));
+  const trackX=[15.5,27.5,41.9,56.2,70.5],trackW=[4.0,6.8,6.4,6.4,6.3];
+  for(let i=0;i<5;i++){const seg=Math.max(0,Math.min(100,((chestPoints-(i*20))/20)*100));html+=`<div class="v7281-chest-track" style="left:${trackX[i]}%;width:${trackW[i]}%"><i style="width:${seg}%"></i></div>`;}
+  const chestX=[17.8,31.8,46.0,60.5,75.0]; for(let i=0;i<5;i++){const hit=Number(ch.level)>=i+1;const cur=chestPoints>0&&Number(ch.level)===i&&Number(ch.level)<5;html+=`<div class="v7273-chest-ring ${hit?'hit':''} ${cur?'current':''}" style="left:${chestX[i]}%" title="Truhenstufe ${i+1} · ${[20,40,60,80,100][i]} Punkte${hit?' · erreicht':''}"></div>`;}
   html+=`<div class="v7273-section-title v7273-daily-title">Tagesaufträge</div><div class="v7273-reset v7273-daily-reset" data-v7273-countdown="daily">Neue Aufträge in ${countdown(s.dailyResetAt)}</div>`;
   d.slice(0,5).forEach((t,i)=>html+=taskHtml(t,dailyT[i],false));
   html+=`<div class="v7273-section-title v7273-week-title">Wochenaufträge</div><div class="v7273-reset v7273-week-reset" data-v7273-countdown="weekly">Reset in ${countdown(s.weeklyResetAt)}</div>`;
   w.slice(0,3).forEach((t,i)=>html+=taskHtml(t,weekT[i],true));
   html+=`<div class="v7273-section-title v7273-contrib-title">Gildenbeitrag diese Woche</div>`;
-  if(c.length){c.slice(0,5).forEach((x,i)=>{html+=`<div class="v7273-contrib" style="top:${contribT[i]}%"><div class="v7273-rank">${i+1}</div><div class="v7273-member">${esc(x.name||'Spieler')}<small>Lv. ${num(x.level)}</small></div><div class="v7273-actions">${num(x.actions)} Aktionen<small>Ernten ${num(x.harvested)} · Pflege ${num(x.cared)}</small></div></div>`;});}
+  if(c.length){c.slice(0,5).forEach((x,i)=>{html+=`<div class="v7273-contrib" style="top:${contribT[i]}%" title="Ernten ${num(x.harvested)} · Pflege ${num(x.cared)}"><div class="v7273-rank">${i+1}</div><div class="v7273-member">${esc(x.name||'Spieler')}<small>Lv. ${num(x.level)}</small></div><div class="v7273-actions">${num(x.actions)} Aktionen</div></div>`;});}
   else html+='<div class="v7273-empty">Diese Woche wurde noch keine Grow-Aktivität für die Gilde gezählt.</div>';
   box.innerHTML=html;
   ['v254GuildBuds','v254GuildBudsTop'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=num(s.guild.guildBuds)});
@@ -143438,16 +143441,15 @@ window.v7269CombatCadenceDiagnostics=()=>{
   if(V.loadingTimer){clearTimeout(V.loadingTimer);V.loadingTimer=0;}
   if(loading){loading.style.display='none';loading.textContent='Gilden-Grow-Aufträge werden geladen …';}
   /* Do not flash the loading card for normal fast refreshes. Only show it when the RPC actually takes noticeable time. */
-  if(!V.state&&loading){V.loadingTimer=setTimeout(()=>{if(V.loading&&loading)loading.style.display='block';},450);}
+  /* V7.281: no transient loading card. Background refresh stays invisible. */
   try{
     const {data,error}=await v073Db.rpc('v7273_guild_grow_state');
     if(error)throw error;
     V.state=data||null;V.lastLoad=Date.now();render();
   }
   catch(e){
-    console.warn('[V7.280] guild grow state',e);
-    if(loading){loading.style.display='block';loading.textContent='Gilden-Grow-Aufträge konnten nicht geladen werden.';}
-    try{v063Toast?.('Gilden-Grow-Aufträge','warn',String(e?.message||e))}catch(_){}
+    console.warn('[V7.281] guild grow state',e);
+    if(!V.state){const box=document.querySelector('#v7273GrowOverlay');if(box)box.innerHTML='<div class="v7273-empty">Gilden-Grow-Aufträge konnten gerade nicht geladen werden.</div>';}
   }
   finally{
     if(V.loadingTimer){clearTimeout(V.loadingTimer);V.loadingTimer=0;}
@@ -143458,7 +143460,7 @@ window.v7269CombatCadenceDiagnostics=()=>{
  function visible(){const p=document.querySelector('#v7273GuildGrow');return !!p&&p.style.display!=='none'&&document.querySelector('#guild')?.classList.contains('active');}
  document.addEventListener('click',e=>{const b=e.target instanceof Element?e.target.closest('[data-v254-tab]'):null;if(!b)return;const tab=b.getAttribute('data-v254-tab');const p=document.querySelector('#v7273GuildGrow');if(p)p.style.display=tab==='growtasks'?'':'none';if(tab==='growtasks')setTimeout(()=>load(true),20);},true);
  V.timer=setInterval(()=>{if(visible()){document.querySelectorAll('[data-v7273-countdown="daily"]').forEach(el=>el.textContent=`Neue Aufträge in ${countdown(V.state?.dailyResetAt)}`);document.querySelectorAll('[data-v7273-countdown="weekly"]').forEach(el=>el.textContent=`Reset in ${countdown(V.state?.weeklyResetAt)}`);if(Date.now()-V.lastLoad>15000)load(false);}},1000);
- window.v7273GuildGrow=Object.freeze({refresh:()=>load(true),version:'V7.279'});
+ window.v7273GuildGrow=Object.freeze({refresh:()=>load(true),version:'V7.281'});
 })();
 </script>
 
@@ -144050,3 +144052,67 @@ setTimeout(sync,0);setTimeout(sync,650);setTimeout(sync,1800);
 })();
 </script>
 
+
+<style id="v7281-guild-grow-final-fix">
+/* V7.281 · Guild Grow final visual stabilization */
+#v7273GrowLoading{display:none!important;visibility:hidden!important;opacity:0!important;pointer-events:none!important}
+.v7273-grow-stage,.v7273-grow-stage *{box-sizing:border-box}
+
+/* The approved background image contains a permanently green painted track.
+   Cover only the spaces between chests, then draw the real server progress over it. */
+.v7281-chest-track{
+  position:absolute;top:21.82%;height:1.08%;z-index:3;
+  border-radius:999px;overflow:hidden;pointer-events:none;
+  background:linear-gradient(180deg,#151c12,#07100a);
+  border:1px solid rgba(112,84,42,.9);
+  box-shadow:inset 0 1px 3px #000,0 1px 2px #0008;
+}
+.v7281-chest-track>i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,#35a33a,#72ea58);box-shadow:0 0 8px #4bef5c99;transition:width .35s ease}
+.v7273-chest-ring{
+  opacity:1!important;z-index:4!important;
+  border:2px solid rgba(92,67,33,.92)!important;
+  background:rgba(3,8,4,.13)!important;
+  box-shadow:inset 0 0 13px rgba(0,0,0,.52)!important;
+}
+.v7273-chest-ring.hit{
+  border-color:#75ee62!important;background:rgba(44,130,42,.08)!important;
+  box-shadow:0 0 0 2px #7ef55b,0 0 20px 6px #3cff5070,inset 0 0 12px #55ff6b44!important;
+}
+.v7273-chest-ring.current:not(.hit){
+  border-color:#c7a652!important;background:rgba(92,69,22,.08)!important;
+  box-shadow:0 0 0 2px #b89442aa,0 0 16px 4px #d5b64c44,inset 0 0 12px #0005!important;
+}
+
+/* Contribution rows: deliberately one-line right column; no vertical text pile-up. */
+.v7273-contrib{
+  left:10.0%!important;right:9.2%!important;height:2.45%!important;
+  grid-template-columns:7% minmax(0,1fr) 29%!important;gap:1.2%!important;
+  align-items:center!important;overflow:hidden!important;padding:0 .3%!important;
+  font-size:clamp(6px,1.18vw,10px)!important;line-height:1!important;
+}
+.v7273-member{min-width:0!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;line-height:1!important}
+.v7273-member small{display:inline!important;margin-left:4px!important;font-size:.82em!important;line-height:1!important}
+.v7273-actions{display:block!important;min-width:0!important;text-align:right!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;line-height:1!important;color:#bce79c!important}
+.v7273-actions small{display:none!important}
+
+/* Keep weekly rows and badges inside their wood slots. */
+.v7273-task.week{height:5.7%!important;overflow:hidden!important}
+.v7273-task.week .v7273-task-main,.v7273-task.week .v7273-reward{overflow:hidden!important}
+.v7273-reward strong{max-width:100%!important;overflow:hidden!important;text-overflow:ellipsis!important}
+
+@media(max-width:560px){
+ .v7273-contrib{left:9.4%!important;right:8.6%!important;grid-template-columns:7% minmax(0,1fr) 31%!important;font-size:6.1px!important}
+ .v7273-actions{font-size:6px!important}
+ .v7281-chest-track{height:1.0%!important}
+}
+</style>
+<script id="v7281-version-lock">
+(()=>{'use strict';
+ const ch=String(window.GROW_RELEASE_CHANNEL||'stable');
+ const V=Object.freeze({short:'V7.281',label:ch==='beta'?'V7.281 Beta':'V7.281 Server 1',number:'7.281'});
+ window.GROW_LEGENDS_VERSION=V;window.__GROW_LEGENDS_RELEASE__=V.short;window.__GL_CURRENT_BUILD__=V.short;
+ const apply=()=>{try{document.querySelectorAll('.v366-ver,.v371-logo em,.v372-logo em,[data-top-version],#topVersion').forEach(el=>{el.textContent=V.short})}catch(_){}};
+ apply();addEventListener('pageshow',apply,{passive:true});addEventListener('growlegends:account-ready',apply,{passive:true});
+ try{new MutationObserver(apply).observe(document.documentElement,{subtree:true,childList:true})}catch(_){}
+})();
+</script>
