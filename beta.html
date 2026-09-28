@@ -42,7 +42,7 @@
 })();
 </script>
 <script id="v4131-version-source">
-window.GROW_LEGENDS_VERSION=Object.freeze({short:'V7.293',label:'V7.293 Beta',number:'7.293'});
+window.GROW_LEGENDS_VERSION=Object.freeze({short:'V7.294',label:'V7.294 Beta',number:'7.294'});
 window.__V7210_BOOT_PENDING__=true;
 window.v7206StartupBusy=()=>window.__V7210_BOOT_PENDING__===true||window.__V7206_CANONICAL_LOGIN_RUNNING__===true||window.__V7206_FIRST_PLAYABLE_PENDING__===true;
 /* V7.214: account-ready listeners used to all wake in the same frame and caused
@@ -413,7 +413,7 @@ window.__V483_POWER_READY__=false;
 .app > header .v366-ver,.app > header .v371-logo em,.app > header .v372-logo em{font-size:0!important;color:transparent!important}
 .app > header .v366-ver::after,.app > header .v371-logo em::after,.app > header .v372-logo em::after{content:"V4.164"!important;font-size:5px!important;color:#63cdd1!important;font-style:normal!important;font-weight:900!important}
 </style>
-<title>Grow Legends V7.293 Beta</title>
+<title>Grow Legends V7.294 Beta</title>
 <style>
 :root{--bg:#0b100b;--panel:#151d14;--panel2:#1c281a;--panel3:#253423;--line:#354933;--text:#f2f5ed;--muted:#9fad99;--green:#83d65d;--green2:#b2f07e;--gold:#f2c75a;--red:#ee6b68;--blue:#68a7ea;--purple:#ad7bea;--shadow:0 12px 30px rgba(0,0,0,.28)}
 *{box-sizing:border-box}html{background:var(--bg)}body{margin:0;color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:radial-gradient(circle at 50% -10%,#253821 0,#10170f 40%,#090d09 100%);min-height:100vh}button{font:inherit}.app{max-width:820px;margin:auto;min-height:100vh;padding-bottom:88px}
@@ -102219,7 +102219,7 @@ function schedule(){
 function observe(){
   const panel=document.querySelector('#character #v030Materials');
   if(!panel)return false;
-  /* V7.293: retired subtree MutationObserver. v546RenderMaterials now drives this explicitly. */
+  /* V7.294: retired subtree MutationObserver. v546RenderMaterials now drives this explicitly. */
   enhance();
   return true;
 }
@@ -102400,7 +102400,7 @@ document.addEventListener('click',e=>{
 },true);
 
 const ch=document.getElementById('character');
-/* V7.293: no whole-character MutationObserver. Hero render/navigation hooks keep this current. */
+/* V7.294: no whole-character MutationObserver. Hero render/navigation hooks keep this current. */
 window.v682SyncFrostWeapon=sync;
 
 [0,80,220,600,1400].forEach(ms=>setTimeout(schedule,ms));
@@ -110299,7 +110299,7 @@ document.addEventListener('click',e=>{
   if(e.target?.closest?.('[data-v111-openboss],#v110WorldBossBtn,[data-v6118-open-worldboss]'))setTimeout(install,120);
 },true);
 
-/* V7.293 performance: document-wide worldboss observer retired; ensure/click hooks above own installation. */
+/* V7.294 performance: document-wide worldboss observer retired; ensure/click hooks above own installation. */
 window.addEventListener('pageshow',()=>{if(document.getElementById('v110Overlay')?.classList.contains('show'))setTimeout(install,40)},{passive:true});
 
 setTimeout(()=>{try{document.getElementById('v110Overlay')?.remove()}catch(_){}},50);
@@ -113225,7 +113225,7 @@ function enhance(){
 function schedule(){if(scheduled)return;scheduled=true;requestAnimationFrame(()=>{scheduled=false;enhance()})}
 function observe(){
  const panel=document.querySelector('#character #v030Materials');if(!panel)return false;
- /* V7.293: retired subtree MutationObserver. One post-render hook is authoritative. */
+ /* V7.294: retired subtree MutationObserver. One post-render hook is authoritative. */
  enhance();return true;
 }
 document.addEventListener('click',e=>{if(e.target?.closest?.('#v459CharacterTabs [data-tab="materials"],#v514HeroTabs [data-tab="materials"],#v546MaterialsHeader'))setTimeout(()=>{observe();enhance()},40)},true);
@@ -143436,7 +143436,7 @@ window.v7269CombatCadenceDiagnostics=()=>{
   return `<div class="v7273-task ${weekly?'week':''} ${done?'done':''}" style="top:${top}%">
     <div class="v7273-metric-icon">${icon(String(t?.metric||''))}</div>
     <div class="v7273-task-main"><div class="v7273-task-name">${done?'✓ ':''}${esc(t?.title||'Auftrag')}</div><div class="v7273-task-desc">${esc(t?.description||'')}</div><div class="v7273-progress-line"><div class="v7273-progress"><i style="width:${p}%"></i></div><b>${num(t?.progress)} / ${num(t?.target)}</b></div></div>
-    <div class="v7273-reward"><span class="v7293-xp">+${num(t?.guildXp)} EP</span><span class="v7293-buds">+${num(t?.guildBuds)} Buds</span><strong>${done?'ERLEDIGT':esc(String(t?.difficulty||'').replace('_',' ').toUpperCase())}</strong></div>
+    <div class="v7273-reward"><span class="v7293-xp">+${num(t?.guildXp)} EP</span><span class="v7293-buds">+${num(t?.guildBuds)} Buds</span><strong>${done?'ERLEDIGT':esc((()=>{const d=String(t?.difficulty||'').replace('_',' ').toUpperCase(); return d==='VERY HARD'?'V.HARD':d==='VERY EASY'?'V.EASY':d;})())}</strong></div>
   </div>`;
  }
  function countdown(ts){const end=Date.parse(ts||'');if(!Number.isFinite(end))return '—';const ms=Math.max(0,end-Date.now()),s=Math.floor(ms/1000),h=Math.floor(s/3600),m=Math.floor((s%3600)/60);return `${h}h ${String(m).padStart(2,'0')}m`;}
@@ -143837,7 +143837,7 @@ window.addEventListener('resize',schedule,{passive:true});
 window.addEventListener('orientationchange',()=>setTimeout(schedule,120),{passive:true});
 window.addEventListener('load',()=>{schedule();setTimeout(schedule,120);setTimeout(schedule,380)});
 document.addEventListener('DOMContentLoaded',()=>{schedule();setTimeout(schedule,120)});
-/* V7.293 performance: document-wide mutation observation + permanent 1.8 s polling retired.
+/* V7.294 performance: document-wide mutation observation + permanent 1.8 s polling retired.
    Fit only on real lifecycle/navigation changes. */
 window.addEventListener('growlegends:account-ready',()=>setTimeout(schedule,80),{passive:true});
 window.addEventListener('growlegends:navigation-open-v7119',e=>{
@@ -144160,11 +144160,11 @@ setTimeout(sync,0);setTimeout(sync,650);setTimeout(sync,1800);
 <script id="v7281-version-lock">
 (()=>{'use strict';
  const ch=String(window.GROW_RELEASE_CHANNEL||'stable');
- const V=Object.freeze({short:'V7.293',label:ch==='beta'?'V7.293 Beta':'V7.293 Server 1',number:'7.293'});
+ const V=Object.freeze({short:'V7.294',label:ch==='beta'?'V7.294 Beta':'V7.294 Server 1',number:'7.294'});
  window.GROW_LEGENDS_VERSION=V;window.__GROW_LEGENDS_RELEASE__=V.short;window.__GL_CURRENT_BUILD__=V.short;
  const apply=()=>{try{document.querySelectorAll('.v366-ver,.v371-logo em,.v372-logo em,[data-top-version],#topVersion').forEach(el=>{el.textContent=V.short})}catch(_){}};
  apply();addEventListener('pageshow',apply,{passive:true});addEventListener('growlegends:account-ready',apply,{passive:true});
- /* V7.293 STARTFIX: retired document-wide version MutationObserver; it could self-trigger and starve DOMContentLoaded after later patches were appended. */
+ /* V7.294 STARTFIX: retired document-wide version MutationObserver; it could self-trigger and starve DOMContentLoaded after later patches were appended. */
 })();
 </script>
 
@@ -144373,10 +144373,10 @@ setTimeout(sync,0);setTimeout(sync,650);setTimeout(sync,1800);
 </style>
 
 
-<!-- V7.293 STARTFIX: startup deadlock removed; guild visuals unchanged -->
+<!-- V7.294 STARTFIX: startup deadlock removed; guild visuals unchanged -->
 
 <style id="v7286-guild-grow-fit-final">
-/* V7.293 · final Guild Grow fit. Pure presentation fix. */
+/* V7.294 · final Guild Grow fit. Pure presentation fix. */
 .v7273-grow-stage::before{content:none!important;display:none!important}
 
 .v7281-chest-track{
@@ -144458,16 +144458,16 @@ setTimeout(sync,0);setTimeout(sync,650);setTimeout(sync,1800);
 }
 
 /* Final visible version owner */
-html body .app > header .v358-logo::after{content:"V7.293"!important}
+html body .app > header .v358-logo::after{content:"V7.294"!important}
 html body .app > header .v366-ver::after,
 html body .app > header .v371-logo em::after,
 html body .app > header .v372-logo em::after,
-#v372TopbarShell .v372-logo em::after{content:"V7.293"!important}
+#v372TopbarShell .v372-logo em::after{content:"V7.294"!important}
 </style>
 
 
 <style id="v7287-weekly-chest-compact-fit">
-/* V7.293 · safer weekly chest fit on narrower phones / larger display scaling */
+/* V7.294 · safer weekly chest fit on narrower phones / larger display scaling */
 @media (max-width:430px){
   #world.active .v6239-weekly-chest{
     left:92px!important;
@@ -144661,7 +144661,7 @@ document.addEventListener('click',e=>{
   setTimeout(kick,0);
   setTimeout(kick,120);
 },true);
-/* V7.293 performance: no permanent 900 ms dungeon repaint loop. */
+/* V7.294 performance: no permanent 900 ms dungeon repaint loop. */
 window.addEventListener('growlegends:navigation-open-v7119',e=>{
   const id=String(e?.detail?.id||e?.detail?.screen||'');
   if(id==='dungeon')setTimeout(kick,45);
@@ -144671,7 +144671,7 @@ window.addEventListener('growlegends:navigation-open-v7119',e=>{
 
 
 <style id="v7288-home-adaptive-fit-css">
-/* V7.293 · Home hero: keep motto/chest compact, but do NOT solve collisions
+/* V7.294 · Home hero: keep motto/chest compact, but do NOT solve collisions
    by endlessly shrinking them. The hero gets extra vertical room when the
    real rendered profile/checklist is taller on a specific phone. */
 @media(max-width:430px){
@@ -144733,7 +144733,7 @@ html body .app > header .v366-ver{
   font-size:0!important;
 }
 html body .app > header .v366-ver::after{
-  content:"V7.293"!important;
+  content:"V7.294"!important;
   display:inline!important;
   font-size:10px!important;
   line-height:1!important;
@@ -144827,7 +144827,7 @@ document.addEventListener('click',e=>{
   }
 },true);
 
-/* V7.293 performance: the 1.6 s layout-measurement poll is retired. */
+/* V7.294 performance: the 1.6 s layout-measurement poll is retired. */
 window.addEventListener('growlegends:navigation-open-v7119',e=>{
   const id=String(e?.detail?.id||e?.detail?.screen||'');
   if(!id||id==='world')setTimeout(schedule,70);
@@ -144839,7 +144839,7 @@ schedule();
 
 
 <style id="v7289-guild-grow-wideboard">
-/* V7.293 · Guild Grow: use more of the phone width instead of shrinking text.
+/* V7.294 · Guild Grow: use more of the phone width instead of shrinking text.
    The artwork is widened only horizontally, so the vertical task positions remain stable. */
 .v7273-grow-bg{
   transform:scaleX(1.065)!important;
@@ -144924,16 +144924,16 @@ schedule();
 }
 
 /* Current build */
-html body .app > header .v358-logo::after{content:"V7.293"!important}
+html body .app > header .v358-logo::after{content:"V7.294"!important}
 html body .app > header .v366-ver::after,
 html body .app > header .v371-logo em::after,
 html body .app > header .v372-logo em::after,
-#v372TopbarShell .v372-logo em::after{content:"V7.293"!important}
+#v372TopbarShell .v372-logo em::after{content:"V7.294"!important}
 </style>
 
 
 <style id="v7290-guild-chest-progress-fix">
-/* V7.293 · The artwork contains pre-painted green rails.
+/* V7.294 · The artwork contains pre-painted green rails.
    These opaque live segments cover those rails and then repaint only the real server progress. */
 .v7281-chest-track{
   top:21.92%!important;
@@ -144965,11 +144965,11 @@ html body .app > header .v372-logo em::after,
 }
 
 /* Current build */
-html body .app > header .v358-logo::after{content:"V7.293"!important}
+html body .app > header .v358-logo::after{content:"V7.294"!important}
 html body .app > header .v366-ver::after,
 html body .app > header .v371-logo em::after,
 html body .app > header .v372-logo em::after,
-#v372TopbarShell .v372-logo em::after{content:"V7.293"!important}
+#v372TopbarShell .v372-logo em::after{content:"V7.294"!important}
 </style>
 
 
@@ -144977,11 +144977,11 @@ html body .app > header .v372-logo em::after,
 /* Quest cards are committed only after all 3 scene/enemy assets are decoded. */
 #quests.v7291-quest-art-warming .v6344-card-enemy{opacity:0!important}
 #quests.v7291-quest-art-ready .v6344-card-enemy{opacity:1!important;transition:opacity .10s linear!important}
-html body .app > header .v358-logo::after{content:"V7.293"!important}
+html body .app > header .v358-logo::after{content:"V7.294"!important}
 html body .app > header .v366-ver::after,
 html body .app > header .v371-logo em::after,
 html body .app > header .v372-logo em::after,
-#v372TopbarShell .v372-logo em::after{content:"V7.293"!important}
+#v372TopbarShell .v372-logo em::after{content:"V7.294"!important}
 </style>
 <script id="v7291-combat-cadence-performance-final">
 (()=>{'use strict';
@@ -144992,7 +144992,7 @@ html body .app > header .v372-logo em::after,
  window.v7269DungeonCadence=questCadence;
  try{v7269DungeonCadence=questCadence}catch(_){}
  window.v7291PerformanceDiagnostics=()=>({
-   version:'V7.293',
+   version:'V7.294',
    combatCadence:questCadence(),
    runtime:window.__V477_RUNTIME_DIAGNOSTICS__?.()||null,
    accountQueue:window.v7214AccountReadyQueueDiagnostics?.()||null,
@@ -145075,7 +145075,7 @@ document.addEventListener('click',e=>{
 },true);
 
 window.v7292PerformanceDiagnostics=()=>({
-  version:'V7.293',
+  version:'V7.294',
   materialObserversRetired:true,
   characterWideObserverRetired:true,
   materialRenderHook:!!window.v546RenderMaterials?.__v7292PerfHook,
@@ -145087,16 +145087,16 @@ window.v7292PerformanceDiagnostics=()=>({
 })();
 </script>
 <style id="v7292-runtime-performance-version">
-html body .app > header .v358-logo::after{content:"V7.293"!important}
+html body .app > header .v358-logo::after{content:"V7.294"!important}
 html body .app > header .v366-ver::after,
 html body .app > header .v371-logo em::after,
 html body .app > header .v372-logo em::after,
-#v372TopbarShell .v372-logo em::after{content:"V7.293"!important}
+#v372TopbarShell .v372-logo em::after{content:"V7.294"!important}
 </style>
 
 
 <style id="v7293-guild-grow-textfit-final">
-/* V7.293 · Text now fits the actual painted wooden boxes. */
+/* V7.294 · Text now fits the actual painted wooden boxes. */
 .v7273-task{
   left:4.15%!important;
   right:4.15%!important;
@@ -145221,17 +145221,148 @@ html body .app > header .v372-logo em::after,
   .v7273-actions{font-size:4.2px!important}
 }
 
-html body .app > header .v358-logo::after{content:"V7.293"!important}
+html body .app > header .v358-logo::after{content:"V7.294"!important}
 html body .app > header .v366-ver::after,
 html body .app > header .v371-logo em::after,
 html body .app > header .v372-logo em::after,
-#v372TopbarShell .v372-logo em::after{content:"V7.293"!important}
+#v372TopbarShell .v372-logo em::after{content:"V7.294"!important}
+</style>
+
+
+<style id="v7294-guild-grow-boardfit-final">
+/* V7.294 · Refit the whole task board to the actual text.
+   Instead of only shrinking text, widen the reward plaques and give the
+   task rows a little more breathing room so the live overlay matches the art. */
+
+/* Slightly refit the visible board artwork area. */
+.v7273-grow-bg{
+  transform:scaleX(1.078) scaleY(1.022)!important;
+  transform-origin:50% 50%!important;
+}
+
+/* Daily / weekly rows */
+.v7273-task{
+  left:3.85%!important;
+  right:3.85%!important;
+  grid-template-columns:5.8% minmax(0,1fr) 15.8%!important;
+  column-gap:.55%!important;
+  padding:0 .15%!important;
+}
+.v7273-task.daily{height:4.95%!important}
+.v7273-task.week{height:6.18%!important}
+
+.v7273-task-main{
+  min-width:0!important;
+  overflow:hidden!important;
+  align-self:center!important;
+}
+.v7273-task-name{
+  margin:0!important;
+  font-size:5.32px!important;
+  line-height:1.02!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+}
+.v7273-task-desc{
+  margin:1px 0 0!important;
+  font-size:3.88px!important;
+  line-height:1.05!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+}
+.v7273-task.week .v7273-task-desc{
+  white-space:normal!important;
+  display:-webkit-box!important;
+  -webkit-box-orient:vertical!important;
+  -webkit-line-clamp:2!important;
+  overflow:hidden!important;
+  max-height:2.22em!important;
+  padding-right:2px!important;
+}
+
+.v7273-progress-line{
+  margin-top:2px!important;
+  gap:3px!important;
+  transform:none!important;
+}
+.v7273-progress{
+  height:3px!important;
+}
+.v7273-progress-line b{
+  min-width:22px!important;
+  font-size:3.68px!important;
+  line-height:1!important;
+}
+
+/* Reward plaques: make the painted box area effectively wider and center content better. */
+.v7273-reward{
+  min-width:0!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:0!important;
+  padding:1px 0!important;
+  margin-right:-1px!important;
+  overflow:hidden!important;
+  text-align:center!important;
+  font-size:3.62px!important;
+  line-height:1!important;
+  white-space:nowrap!important;
+  transform:scaleX(1.08)!important;
+  transform-origin:center center!important;
+}
+.v7273-reward .v7293-xp,
+.v7273-reward .v7293-buds{
+  display:block!important;
+  width:100%!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+}
+.v7273-reward strong{
+  display:inline-block!important;
+  max-width:100%!important;
+  margin-top:1px!important;
+  padding:1px 4px!important;
+  font-size:3.2px!important;
+  line-height:1!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+}
+
+/* Weekly section and contribution rows tuned to the widened board */
+.v7273-section-title{left:5.7%!important}
+.v7273-reset{right:5.8%!important}
+.v7273-contrib{
+  left:6.8%!important;
+  right:6.4%!important;
+  grid-template-columns:5.0% minmax(0,1fr) 16.0%!important;
+  column-gap:.55%!important;
+}
+.v7273-member{font-size:4.58px!important}
+.v7273-actions{
+  font-size:4.08px!important;
+  overflow:hidden!important;
+  white-space:nowrap!important;
+}
+
+/* Keep chest overlay aligned to the slightly rescaled board. */
+.v7273-chest-ring{width:9.05%!important}
+
+/* Current build */
+html body .app > header .v358-logo::after{content:"V7.294"!important}
+html body .app > header .v366-ver::after,
+html body .app > header .v371-logo em::after,
+html body .app > header .v372-logo em::after,
+#v372TopbarShell .v372-logo em::after{content:"V7.294"!important}
 </style>
 
 <script id="v7283-stable-version-lock">
 (()=>{'use strict';
  const channel=String(window.GROW_RELEASE_CHANNEL||'stable');
- const V=Object.freeze({short:'V7.293',label:channel==='beta'?'V7.293 Beta':'V7.293 Server 1',number:'7.293'});
+ const V=Object.freeze({short:'V7.294',label:channel==='beta'?'V7.294 Beta':'V7.294 Server 1',number:'7.294'});
  window.GROW_LEGENDS_VERSION=V;
  window.__GROW_LEGENDS_RELEASE__=V.short;
  window.__GL_CURRENT_BUILD__=V.short;
