@@ -59206,7 +59206,7 @@ html,body{
         <article class="v366-panel v366-feature v7129-referral-home-card">
           <h2>Freund werben</h2>
           <div class="v7129-referral-home-art" aria-hidden="true"><span>🤝</span><i>🌿</i></div>
-          <div class="v690-mini-status">${Math.min(10,Number(window.__V7129_REFERRAL_STATE__?.qualified_count)||0)}/10 freigeschaltet · ${Number(window.__V7129_REFERRAL_STATE__?.pending_count)||0} eingeladen</div>
+          <div class="v690-mini-status">${Math.min(10,Number(window.__V7129_REFERRAL_STATE__?.qualified_count)||0)}/10 Freunde · je 25 Harz</div>
           <button class="v366-go" data-referral-open="1">Einladungen</button>
         </article>
 
@@ -76363,11 +76363,11 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();i
    const r=Array.isArray(data)?(data[0]??null):data;
    window.__V7275_CHARACTER_READY_RESULT__=r||null;
    if(r?.reason==='CHARACTER_NOT_CREATED')return false;
-   if(!r?.ok||r?.ready!==true){console.warn('[V7.278] beta character authority incomplete',r);return false}
+   if(!r?.ok||r?.ready!==true){console.warn('[V7.276] beta character authority incomplete',r);return false}
    window.__V7274_CHARACTER_READY_FOR__=id;
    return true;
   }catch(e){
-   console.warn('[V7.278] ensure character ready',e);
+   console.warn('[V7.276] ensure character ready',e);
    return false;
   }
  }
@@ -76387,7 +76387,7 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();i
    const r=Array.isArray(data)?(data[0]??null):data;
    return r&&typeof r==='object'?r:{ok:false,reason:'EMPTY_RESPONSE'};
   }catch(e){
-   console.warn('[V7.278] atomic character create',e);
+   console.warn('[V7.276] atomic character create',e);
    return {ok:false,reason:String(e?.message||e)};
   }
  }
@@ -76405,7 +76405,7 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();i
    if(!ok)return false;
    clearContaminatedHighWater(String(id||''));
    return complete(s)&&owned(s,String(id||''),false)&&sameIdentity(s,{characterName:name,playerClass:classId});
-  }catch(e){console.warn('[V7.278] post-create resolve',e);return false}
+  }catch(e){console.warn('[V7.276] post-create resolve',e);return false}
  }
  window.v4136FlushNewCharacter=flushNewCharacter;
 
@@ -76457,7 +76457,7 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();i
     window.__V4136_NEW_CHARACTER_PENDING__=null;
     finishCreated(name,classId);
    }catch(e){
-    console.warn('[V7.278] post-create login',e);
+    console.warn('[V7.276] post-create login',e);
     status.className='error';status.textContent='Charakter ist erstellt. Verbindung wird neu aufgebaut …';
     buttons.forEach(x=>x.disabled=false);
     setTimeout(()=>{try{window.v075ResolveCloudAfterLogin?.().then(ok=>{if(ok)finishCreated(name,classId)})}catch(_){}},800);
@@ -76746,7 +76746,7 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();i
  }
  async function resolveServerFirst(id){
   LOGIN.serverFirstLogins++;LOGIN.lastMode='server-first';LOGIN.lastHydrateOk=false;
-  /* V7.278: identity is resolved first. A genuinely new account must not fire every
+  /* V7.276: identity is resolved first. A genuinely new account must not fire every
      gameplay-authority RPC before a character exists. Broken Beta save-only characters
      are repaired once here, then continue through the same canonical login path. */
   let p=await profileIdentity(id);if(uid()!==id)return false;
@@ -76760,7 +76760,7 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();i
   if(!hasIdentity){
    v075CloudLoadedFor=id;v200LastCloudStamp=null;
    writeMirrors(id,s,{stamp:false,allowIncomplete:true});
-   /* V7.278: do not render the gameplay tree for an account that has no character.
+   /* V7.276: do not render the gameplay tree for an account that has no character.
       Historical render wrappers would otherwise fire authority reads (quest/daily/
       achievements/etc.) against states that correctly do not exist yet. */
    LOGIN.lastMode='new-account-shell';LOGIN.lastHydrateOk=true;
@@ -117067,7 +117067,7 @@ body:has(#v6252RegisterOverlay.show) #v075AuthOverlay{pointer-events:none!import
   const characterVisible=()=>!!document.querySelector('#v200CharacterModal');
 
   let ok=false;
-  try{ok=!!(await v200FinalizeUser(user))}catch(e){console.warn('[V7.278] signup finalize handoff',e)}
+  try{ok=!!(await v200FinalizeUser(user))}catch(e){console.warn('[V7.276] signup finalize handoff',e)}
 
   /* SIGNED_IN can race the explicit post-signup finalize. Give the existing owner
      a short chance to finish before doing one resolver fallback. */
@@ -117079,7 +117079,7 @@ body:has(#v6252RegisterOverlay.show) #v075AuthOverlay{pointer-events:none!import
    try{
     const resolved=!!(await window.v075ResolveCloudAfterLogin?.());
     if(resolved){window.__V200_AUTH_READY__=true;ok=true}
-   }catch(e){console.warn('[V7.278] signup resolver fallback',e)}
+   }catch(e){console.warn('[V7.276] signup resolver fallback',e)}
   }
 
   if(ok||ready()||characterVisible()){
@@ -135977,7 +135977,7 @@ body.v7129-referral-frame #world .v366-avatar{box-shadow:none!important}
 .v7129-panel{width:min(680px,100%);border:2px solid #805d2c;border-radius:20px;background:radial-gradient(circle at 50% -10%,rgba(107,205,81,.14),transparent 35%),linear-gradient(180deg,#132018,#070c08);box-shadow:0 18px 60px #000;padding:13px;color:#e8eedf}
 .v7129-head{display:grid;grid-template-columns:44px 1fr 38px;gap:9px;align-items:center;margin-bottom:12px}.v7129-head-art{width:44px;height:44px;border:1px solid #8e7137;border-radius:12px;background:#182a19;display:grid;place-items:center;font-size:25px}.v7129-head h2{margin:0;color:#f0d890;font-size:18px}.v7129-head p{margin:2px 0 0;color:#9eaa9c;font-size:10px}.v7129-close{width:36px;height:36px;border-radius:10px;border:1px solid #5e694f;background:#101810;color:#e8eedf;font-size:18px}
 .v7129-progress{display:flex;justify-content:space-between;align-items:center;padding:9px 10px;border:1px solid #344a32;border-radius:11px;background:#0b120c;margin-bottom:10px}.v7129-progress b{color:#7ee16c}.v7129-progress span{font-size:10px;color:#aab5a5}
-.v7129-slots{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:7px}.v7129-slot{min-height:86px;border-radius:11px;border:1px solid #394039;background:linear-gradient(180deg,#171b17,#0b0e0b);color:#767d76;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;text-align:center;padding:6px}.v7129-slot strong{font-size:17px}.v7129-slot small{font-size:8px}.v7129-slot.locked{filter:grayscale(1);opacity:.62}.v7129-slot.pending{filter:none;opacity:1;border-color:#6b8f55;color:#e9f6e2;background:linear-gradient(180deg,#1d321e,#0d160f);box-shadow:inset 0 0 0 1px #87ba6533,0 0 12px #5faa4730}.v7129-slot.pending strong{font-size:15px}.v7129-slot.pending b{max-width:100%;font-size:9px;line-height:1.05;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.v7129-slot.pending small{color:#b9c9b3;line-height:1.15}.v7129-pending-bar{width:100%;height:5px;border-radius:999px;background:#070b08;border:1px solid #364b32;overflow:hidden;margin:2px 0}.v7129-pending-bar i{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,#4f9a45,#8ad66e);box-shadow:0 0 7px #71cf5c55}.v7129-slot.ready{border-color:#76cf60;color:#ecffe5;background:linear-gradient(180deg,#244528,#101b12);box-shadow:0 0 12px #65df4a38}.v7129-slot.claimed{border-color:#a98b43;color:#f3df9e;background:linear-gradient(180deg,#3d3218,#15130c)}.v7129-slot button{margin-top:3px;border:1px solid #92c978;border-radius:7px;background:#2b5c2c;color:#fff;padding:4px 6px;font-size:8px;font-weight:900}
+.v7129-slots{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:7px}.v7129-slot{min-height:86px;border-radius:11px;border:1px solid #394039;background:linear-gradient(180deg,#171b17,#0b0e0b);color:#767d76;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;text-align:center;padding:6px}.v7129-slot strong{font-size:17px}.v7129-slot small{font-size:8px}.v7129-slot.locked{filter:grayscale(1);opacity:.62}.v7129-slot.ready{border-color:#76cf60;color:#ecffe5;background:linear-gradient(180deg,#244528,#101b12);box-shadow:0 0 12px #65df4a38}.v7129-slot.claimed{border-color:#a98b43;color:#f3df9e;background:linear-gradient(180deg,#3d3218,#15130c)}.v7129-slot button{margin-top:3px;border:1px solid #92c978;border-radius:7px;background:#2b5c2c;color:#fff;padding:4px 6px;font-size:8px;font-weight:900}.v7129-slot.pending{filter:none;opacity:1;border-color:#66895d;color:#e8f5df;background:linear-gradient(180deg,#18311d,#0b170e);box-shadow:inset 0 0 0 1px #75c86422}.v7129-slot.pending strong{font-size:15px}.v7129-ref-name{max-width:100%;font-size:8px;font-weight:1000;color:#dff6d5;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.v7129-ref-level{font-size:7px;color:#aaca9f}.v7129-ref-bar{width:88%;height:5px;border-radius:999px;background:#080d09;border:1px solid #344c32;overflow:hidden}.v7129-ref-bar i{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,#4ca53f,#8be36e);box-shadow:0 0 7px #5be65555}.v7129-slot.pending small{color:#cdbf8b}
 .v7129-grand{margin-top:11px;border:1px solid #75612e;border-radius:14px;padding:11px;background:linear-gradient(145deg,#2f2612,#0c130d 60%,#18301a)}.v7129-grand.ready{box-shadow:0 0 18px rgba(229,191,74,.24);border-color:#c5a34a}.v7129-grand h3{margin:0 0 5px;color:#f0d890}.v7129-rewards{display:flex;flex-wrap:wrap;gap:5px;margin:7px 0}.v7129-rewards span{font-size:8px;border:1px solid #3f5539;border-radius:999px;padding:4px 7px;background:#111a11}.v7129-grand button{width:100%;min-height:38px;border:1px solid #c3a74f;border-radius:10px;background:linear-gradient(180deg,#6a5a24,#3e3417);color:#fff3c3;font-weight:1000}.v7129-grand button:disabled{filter:grayscale(1);opacity:.55}
 .v7129-linkbox{margin-top:11px;border-top:1px solid #2f3d2c;padding-top:10px}.v7129-linkbox label{display:block;font-size:9px;color:#aeb8aa;margin-bottom:5px}.v7129-linkrow{display:grid;grid-template-columns:1fr auto auto;gap:5px}.v7129-linkrow input{min-width:0;border:1px solid #43523e;border-radius:8px;background:#080d09;color:#dce5d9;padding:8px;font-size:9px}.v7129-linkrow button{border:1px solid #586b50;border-radius:8px;background:#162117;color:#e8eee2;padding:7px 9px;font-weight:900}.v7129-note{font-size:8px;line-height:1.45;color:#879385;margin:8px 1px 0}
 @media(max-width:430px){.v7129-slots{grid-template-columns:repeat(5,1fr);gap:5px}.v7129-slot{min-height:78px;padding:4px}.v7129-linkrow{grid-template-columns:1fr auto}.v7129-linkrow .share{grid-column:1/-1}.v7129-panel{padding:10px}}
@@ -136009,20 +136009,7 @@ async function boot(){const u=user();if(!u)return;if(bootFor===u.id&&state)retur
 function ensureCharIcon(){const root=document.getElementById('v510HeroRoot');if(!root||document.getElementById('v7129CharacterReferralBtn'))return;const b=document.createElement('button');b.id='v7129CharacterReferralBtn';b.type='button';b.dataset.referralOpen='1';b.title='Freund werben';b.setAttribute('aria-label','Freund werben');b.textContent='🤝';root.appendChild(b)}
 function ensurePopup(){let ov=document.getElementById('v7129ReferralOverlay');if(ov)return ov;ov=document.createElement('div');ov.id='v7129ReferralOverlay';ov.innerHTML='<div class="v7129-panel"><div class="v7129-head"><div class="v7129-head-art">🤝</div><div><h2>Freund werben</h2><p>Freunde einladen · Stufe 35 erreichen · Belohnungen sichern</p></div><button class="v7129-close" type="button">×</button></div><div id="v7129ReferralBody"></div></div>';document.body.appendChild(ov);ov.querySelector('.v7129-close').onclick=()=>ov.classList.remove('open');ov.addEventListener('click',e=>{if(e.target===ov)ov.classList.remove('open')});return ov}
 function link(){const code=String(state?.code||'').toUpperCase();return /^GL[0-9A-F]{8}$/.test(code)?`${PLAY_STORE}&referrer=${encodeURIComponent('gl_ref='+code)}`:''}
-function paintPopup(){
- const body=document.getElementById('v7129ReferralBody');if(!body||!state)return;
- const slots=Array.isArray(state.slots)?state.slots:[];
- const pending=Array.isArray(state.pending_invites)?state.pending_invites:[];
- const l=link();let pi=0;
- const slotHtml=slots.map(x=>{
-  if(x.claimed)return `<div class="v7129-slot claimed"><strong>✓</strong><b>${x.slot}</b><small>💎 25 Harz · abgeholt</small></div>`;
-  if(x.qualified)return `<div class="v7129-slot ready"><strong>💎</strong><b>${x.slot}</b><small>💎 25 Harz · bereit</small>${x.claimable?`<button data-referral-claim="${x.slot}">Abholen</button>`:''}</div>`;
-  const p=pending[pi++];
-  if(p){const lv=Math.max(1,Math.min(34,Number(p.level)||1));const pct=Math.max(3,Math.min(97,(lv/35)*100));return `<div class="v7129-slot pending"><strong>👤</strong><b title="${esc(p.character_name||'Spieler')}">${esc(p.character_name||'Spieler')}</b><small>Stufe ${lv} / 35</small><div class="v7129-pending-bar"><i style="width:${pct.toFixed(1)}%"></i></div><small>Eingeladen · wartet</small></div>`}
-  return `<div class="v7129-slot locked"><strong>🔒</strong><b>${x.slot}</b><small>💎 25 Harz · Stufe 35</small></div>`;
- }).join('');
- body.innerHTML=`<div class="v7129-progress"><b>${Math.min(10,Number(state.qualified_count)||0)}/10 freigeschaltet</b><span>${num(state.pending_count)} eingeladen · noch nicht Stufe 35</span></div><div class="v7129-slots">${slotHtml}</div><div class="v7129-grand ${state.grand_ready?'ready':''}"><h3>🎁 10-Freunde-Paket</h3><div class="v7129-rewards"><span>🪙 ${num(state.grand_gold)} Gold</span><span>🌰 10 Samen</span><span>⏱️ 10 Zeit-Samen</span><span>💎 100 Harz</span><span>🧩 250 Fragmente</span><span>🔷 1 mythisches Item</span><span>🖼️ Exklusiver Avatar-Rahmen</span></div><button data-referral-grand="1" ${state.grand_ready&&!state.grand_claimed?'':'disabled'}>${state.grand_claimed?'Paket abgeholt ✓':state.grand_ready?'Großes Paket abholen':'Bei 10 Freunden freigeschaltet'}</button></div><div class="v7129-linkbox"><label>Dein persönlicher Einladungslink</label><div class="v7129-linkrow"><input id="v7129ReferralLink" readonly value="${esc(l)}"><button data-referral-copy="1">Kopieren</button><button class="share" data-referral-share="1">Teilen</button></div><div class="v7129-note">Eine Einladung wird sofort als <b>eingeladen</b> angezeigt. Der Belohnungs-Slot wird erst freigeschaltet, sobald der Freund Stufe 35 erreicht. Pro Account nur eine Zuordnung.</div></div>`
-}
+function paintPopup(){const body=document.getElementById('v7129ReferralBody');if(!body||!state)return;const slots=Array.isArray(state.slots)?state.slots:[];const pending=Array.isArray(state.pending_invites)?state.pending_invites:[];let pi=0;const l=link();body.innerHTML=`<div class="v7129-progress"><b>${Math.min(10,Number(state.qualified_count)||0)}/10 freigeschaltet</b><span>${num(state.pending_count)} eingeladen · noch nicht Stufe 35</span></div><div class="v7129-slots">${slots.map(x=>{const friend=!x.qualified&&pi<pending.length?pending[pi++]:null;if(friend){const lv=Math.max(1,Math.min(35,Number(friend.level)||1));const pct=Math.max(3,Math.min(100,lv/35*100));return `<div class="v7129-slot pending"><strong>👤</strong><b>${x.slot}</b><div class="v7129-ref-name">${esc(friend.character_name||'Spieler')}</div><div class="v7129-ref-level">Stufe ${lv} / 35</div><div class="v7129-ref-bar"><i style="width:${pct}%"></i></div><small>⏳ Eingeladen</small></div>`}const cl=x.claimed?'claimed':x.qualified?'ready':'locked';return `<div class="v7129-slot ${cl}"><strong>${x.claimed?'✓':x.qualified?'💎':'🔒'}</strong><b>${x.slot}</b><small>${x.claimed?'💎 25 Harz · abgeholt':x.qualified?'💎 25 Harz · bereit':'💎 25 Harz · Stufe 35'}</small>${x.claimable?`<button data-referral-claim="${x.slot}">Abholen</button>`:''}</div>`}).join('')}</div><div class="v7129-grand ${state.grand_ready?'ready':''}"><h3>🎁 10-Freunde-Paket</h3><div class="v7129-rewards"><span>🪙 ${num(state.grand_gold)} Gold</span><span>🌰 10 Samen</span><span>⏱️ 10 Zeit-Samen</span><span>💎 100 Harz</span><span>🧩 250 Fragmente</span><span>🔷 1 mythisches Item</span><span>🖼️ Exklusiver Avatar-Rahmen</span></div><button data-referral-grand="1" ${state.grand_ready&&!state.grand_claimed?'':'disabled'}>${state.grand_claimed?'Paket abgeholt ✓':state.grand_ready?'Großes Paket abholen':'Bei 10 Freunden freigeschaltet'}</button></div><div class="v7129-linkbox"><label>Dein persönlicher Einladungslink</label><div class="v7129-linkrow"><input id="v7129ReferralLink" readonly value="${esc(l)}"><button data-referral-copy="1">Kopieren</button><button class="share" data-referral-share="1">Teilen</button></div><div class="v7129-note">Eingeladene Freunde werden sofort im Slot angezeigt. Die 25-Harz-Belohnung wird erst freigeschaltet, wenn der Freund Stufe 35 erreicht. Pro Account nur eine Zuordnung.</div></div>`}
 async function open(){const ov=ensurePopup();ov.classList.add('open');const body=document.getElementById('v7129ReferralBody');if(body&&!state)body.innerHTML='<div class="v7129-progress"><b>Freundesprogramm wird synchronisiert …</b></div>';try{await refresh()}catch(e){if(body)body.innerHTML='<div class="v7129-progress"><b>Serverstand nicht erreichbar</b><span>Bitte erneut öffnen.</span></div>'}}
 async function claim(slot){if(busy)return;busy=true;try{const r=await rpc('v7129_claim_referral_slot',{p_slot:Number(slot)});if(!r?.ok)throw new Error(String(r?.reason||'CLAIM_FAILED'));try{v063Toast?.('💎 25 Harz-Taler','success',`Einladung ${slot} abgeholt.`)}catch(_){};await window.v7072AuthorityRefresh?.();await refresh()}catch(e){try{v063Toast?.('Belohnung nicht verfügbar','error',String(e?.message||e))}catch(_){}}finally{busy=false}}
 async function claimGrand(){if(busy)return;busy=true;try{const r=await rpc('v7129_claim_referral_grand');if(!r?.ok)throw new Error(String(r?.reason||'CLAIM_FAILED'));try{v063Toast?.('🎁 10-Freunde-Paket','success','Gold, Samen, Harz, Fragmente, mythisches Item und Avatar-Rahmen erhalten.')}catch(_){};await window.v7072AuthorityRefresh?.();try{await window.v7063ItemStageRefresh?.(true)}catch(_){};try{await window.v7064GrowAuthorityRefresh?.()}catch(_){};await refresh()}catch(e){try{v063Toast?.('Paket nicht verfügbar','error',String(e?.message||e))}catch(_){}}finally{busy=false}}
@@ -136060,7 +136047,7 @@ window.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.det
 window.addEventListener('growlegends:account-ready',()=>{const run=()=>void boot();if(typeof window.v7204AfterStartupQuiet==='function')window.v7204AfterStartupQuiet(run,1300);else setTimeout(run,120)},{passive:true});
 window.addEventListener('pageshow',()=>{if(window.v7206StartupBusy?.()||window.v7204StartupQuiet?.())return;setTimeout(boot,220)},{passive:true});
 capture();ensureCharIcon();setTimeout(()=>{if(!window.v7206StartupBusy?.()&&!window.v7204StartupQuiet?.())void boot()},5200);
-window.v7129OpenReferral=open;window.v7129ReferralRefresh=refresh;window.v7129ReferralDiagnostics=()=>({version:VERSION,playStoreLink:link(),state:state?{qualified:state.qualified_count,claimed:state.claimed_count,pending:state.pending_count,pendingInvites:state.pending_invites||[],grandReady:state.grand_ready,grandClaimed:state.grand_claimed,frame:state.frame_unlocked}:null,pendingCode:(()=>{try{return localStorage.getItem(PENDING)||''}catch(_){return''}})()});
+window.v7129OpenReferral=open;window.v7129ReferralRefresh=refresh;window.v7129ReferralDiagnostics=()=>({version:VERSION,playStoreLink:link(),state:state?{qualified:state.qualified_count,claimed:state.claimed_count,pending:state.pending_count,grandReady:state.grand_ready,grandClaimed:state.grand_claimed,frame:state.frame_unlocked}:null,pendingCode:(()=>{try{return localStorage.getItem(PENDING)||''}catch(_){return''}})()});
 window.__GROW_LEGENDS_RELEASE__='V7.129';
 })();
 </script>
@@ -139650,7 +139637,7 @@ html body .app > header .v358-logo::after{content:"V7.273"!important}
 html body .app > header .v366-ver::after,html body .app > header .v371-logo em::after,html body .app > header .v372-logo em::after,#v372TopbarShell .v372-logo em::after{content:"V7.273"!important}
 </style>
 <script id="v7233-isolation-audit-marker">
-(()=>{'use strict';window.__V7233_ISOLATION_AUDIT__=Object.freeze({version:'V7.273',earlyStorageIsolation:true,serverScopedCloud:true,serverScopedRecoveryCaches:true,serverPrivateRpcLayer:true});})();
+(()=>{'use strict';window.__V7233_ISOLATION_AUDIT__=Object.freeze({version:'V7.280',earlyStorageIsolation:true,serverScopedCloud:true,serverScopedRecoveryCaches:true,serverPrivateRpcLayer:true});})();
 </script>
 
 <!-- ===== V7.273 CALENDAR ACHIEVEMENTS · SERVER AUTHORITY ===== -->
@@ -143164,7 +143151,7 @@ html body .app section#hall.v646-hall .v646-row-avatar.v7137-frame-target > img.
 <script id="v7269-combat-cadence-diagnostics">
 window.v7269CombatCadenceDiagnostics=()=>{
  const d=window.v7269DungeonCadence?.(10);
- return {version:'V7.273',baseline:'dungeon',dungeon:d,tower:'shared dungeon cadence',pvp:'shared dungeon cadence'};
+ return {version:'V7.279',baseline:'dungeon',dungeon:d,tower:'shared dungeon cadence',pvp:'shared dungeon cadence'};
 };
 </script>
 
@@ -143172,7 +143159,7 @@ window.v7269CombatCadenceDiagnostics=()=>{
 (()=>{
  'use strict';
  window.v7271IllegalBookPageStability=()=>({
-   version:'V7.273',
+   version:'V7.279',
    state:window.v6235IllegalBookViewState?.()||null,
    serverAchievement:window.v7080AchievementDiagnostics?.()||null
  });
@@ -143321,7 +143308,7 @@ window.v7269CombatCadenceDiagnostics=()=>{
   const st=structure(),p=panel();
   const iconMissing=p?[...p.querySelectorAll(':scope > .top-menu-item[data-screen]')].filter(b=>!b.querySelector(':scope > .v7272-nav-icon svg')).map(b=>b.dataset.screen):[];
   const active=p?[...p.querySelectorAll(':scope > .top-menu-item.active[data-screen]')].map(b=>b.dataset.screen):[];
-  return {version:'V7.273',...st,iconMissing,active,lastRepairAt,observer:!!observer};
+  return {version:'V7.279',...st,iconMissing,active,lastRepairAt,observer:!!observer};
  };
 })();
 </script>
@@ -143336,7 +143323,7 @@ window.v7269CombatCadenceDiagnostics=()=>{
 .v7273-grow-stage{position:relative;width:100%;aspect-ratio:941/1672;overflow:hidden;border-radius:18px;background:#07110a;box-shadow:0 18px 46px #000b;border:1px solid #785426}
 .v7273-grow-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;pointer-events:none;user-select:none}
 #v7273GrowOverlay{position:absolute;inset:0;z-index:3}
-.v7273-grow-loading{position:absolute;z-index:5;left:16%;right:16%;top:43%;padding:14px 12px;text-align:center;border:1px solid #99713a;border-radius:14px;background:#07110dda;color:#f1ddb0;font-weight:900;box-shadow:0 10px 25px #0009}
+.v7273-grow-loading{display:none;position:absolute;z-index:5;left:16%;right:16%;top:43%;padding:14px 12px;text-align:center;border:1px solid #99713a;border-radius:14px;background:#07110dda;color:#f1ddb0;font-weight:900;box-shadow:0 10px 25px #0009}
 .v7273-title{position:absolute;top:1.0%;left:14%;right:14%;height:6.2%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:#f0d99a;text-shadow:0 2px 4px #000,0 0 10px #000;font-family:Georgia,serif;font-weight:1000;font-size:clamp(15px,4.3vw,34px);letter-spacing:.02em}
 .v7273-title small{font-family:system-ui,sans-serif;font-size:clamp(6px,1.15vw,10px);color:#d5c699;letter-spacing:.08em;margin-top:2px}
 .v7273-chest-summary{position:absolute;top:17.6%;left:17%;right:17%;text-align:center;color:#f1d899;font-weight:900;font-size:clamp(7px,1.45vw,13px);text-shadow:0 2px 4px #000;background:#061009a6;border:1px solid #8e6c3655;border-radius:999px;padding:4px 8px}
@@ -143380,7 +143367,7 @@ window.v7269CombatCadenceDiagnostics=()=>{
 </style>
 <script id="v7273-guild-grow-core">
 (()=>{'use strict';
- const V={state:null,loading:false,lastLoad:0,timer:0};
+ const V={state:null,loading:false,lastLoad:0,timer:0,loadingTimer:0};
  const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
  const num=n=>Math.max(0,Number(n)||0).toLocaleString('de-DE');
  function icon(metric){
@@ -143411,32 +143398,164 @@ window.v7269CombatCadenceDiagnostics=()=>{
   if(load)load.style.display='none';
   if(!s?.guild){box.innerHTML='<div class="v7273-empty">Du bist aktuell in keiner Gilde.</div>';return;}
   const d=Array.isArray(s.daily)?s.daily:[],w=Array.isArray(s.weekly)?s.weekly:[],c=Array.isArray(s.contributors)?s.contributors:[],ch=s.chest||{};
-  const dailyT=[29.05,33.47,37.89,42.31,46.73],weekT=[55.35,61.75,68.15],contribT=[80.1,82.95,85.8,88.65,91.5];
+  const dailyT=[29.05,33.47,37.89,42.31,46.73],weekT=[55.25,61.75,68.25],contribT=[79.85,83.15,86.45,89.75,93.05];
   let html=`<div class="v7273-title">Gilden-Grow-Aufträge<small>${esc(s.guild.name||'Gilde')} [${esc(s.guild.tag||'')}] · ${num(s.activeMembers)} aktive Mitglieder</small></div>`;
   html+=`<div class="v7273-chest-summary">Wochen-Truhe ${num(ch.points)}/${num(ch.max||100)} · Stufe ${num(ch.level)}/5 · Gilden-Buds ${num(s.guild.guildBuds)}</div>`;
-  const chestX=[17.8,31.8,46.0,60.5,75.0]; for(let i=0;i<5;i++){const hit=Number(ch.level)>=i+1;const cur=Number(ch.level)+1===i+1;html+=`<div class="v7273-chest-ring ${hit?'hit':''} ${cur?'current':''}" style="left:${chestX[i]}%"></div>`;}
+  const chestX=[17.8,31.8,46.0,60.5,75.0]; for(let i=0;i<5;i++){const hit=Number(ch.level)>=i+1;const cur=Number(ch.level)+1===i+1;html+=`<div class="v7273-chest-ring ${hit?'hit':''} ${cur?'current':''}" style="left:${chestX[i]}%" title="Truhenstufe ${i+1} · ${[20,40,60,80,100][i]} Punkte${hit?' · erreicht':''}"></div>`;}
   html+=`<div class="v7273-section-title v7273-daily-title">Tagesaufträge</div><div class="v7273-reset v7273-daily-reset" data-v7273-countdown="daily">Neue Aufträge in ${countdown(s.dailyResetAt)}</div>`;
   d.slice(0,5).forEach((t,i)=>html+=taskHtml(t,dailyT[i],false));
   html+=`<div class="v7273-section-title v7273-week-title">Wochenaufträge</div><div class="v7273-reset v7273-week-reset" data-v7273-countdown="weekly">Reset in ${countdown(s.weeklyResetAt)}</div>`;
   w.slice(0,3).forEach((t,i)=>html+=taskHtml(t,weekT[i],true));
   html+=`<div class="v7273-section-title v7273-contrib-title">Gildenbeitrag diese Woche</div>`;
-  if(c.length){c.slice(0,5).forEach((x,i)=>{html+=`<div class="v7273-contrib" style="top:${contribT[i]}%"><div class="v7273-rank">${i+1}</div><div class="v7273-member">${esc(x.name||'Spieler')}<small>Lv. ${num(x.level)}</small></div><div class="v7273-actions">${num(x.actions)} Aktionen<small>${num(x.harvested)} Ernten · ${num(x.cared)} Pflege</small></div></div>`;});}
+  if(c.length){c.slice(0,5).forEach((x,i)=>{html+=`<div class="v7273-contrib" style="top:${contribT[i]}%"><div class="v7273-rank">${i+1}</div><div class="v7273-member">${esc(x.name||'Spieler')}<small>Lv. ${num(x.level)}</small></div><div class="v7273-actions">${num(x.actions)} Aktionen<small>Ernten ${num(x.harvested)} · Pflege ${num(x.cared)}</small></div></div>`;});}
   else html+='<div class="v7273-empty">Diese Woche wurde noch keine Grow-Aktivität für die Gilde gezählt.</div>';
   box.innerHTML=html;
   ['v254GuildBuds','v254GuildBudsTop'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=num(s.guild.guildBuds)});
  }
  async function load(force=false){
   if(V.loading)return; if(!force&&Date.now()-V.lastLoad<3500)return; if(typeof v073Db==='undefined'||!v073Db)return;
-  V.loading=true;const loading=document.querySelector('#v7273GrowLoading');if(loading)loading.style.display='block';
-  try{const {data,error}=await v073Db.rpc('v7273_guild_grow_state');if(error)throw error;V.state=data||null;V.lastLoad=Date.now();render();}
-  catch(e){console.warn('[V7.273] guild grow state',e);if(loading){loading.style.display='block';loading.textContent='Gilden-Grow-Aufträge konnten nicht geladen werden.'}try{v063Toast?.('Gilden-Grow-Aufträge','warn',String(e?.message||e))}catch(_){}}
-  finally{V.loading=false;}
+  V.loading=true;
+  const loading=document.querySelector('#v7273GrowLoading');
+  if(V.loadingTimer){clearTimeout(V.loadingTimer);V.loadingTimer=0;}
+  if(loading){loading.style.display='none';loading.textContent='Gilden-Grow-Aufträge werden geladen …';}
+  /* Do not flash the loading card for normal fast refreshes. Only show it when the RPC actually takes noticeable time. */
+  if(!V.state&&loading){V.loadingTimer=setTimeout(()=>{if(V.loading&&loading)loading.style.display='block';},450);}
+  try{
+    const {data,error}=await v073Db.rpc('v7273_guild_grow_state');
+    if(error)throw error;
+    V.state=data||null;V.lastLoad=Date.now();render();
+  }
+  catch(e){
+    console.warn('[V7.280] guild grow state',e);
+    if(loading){loading.style.display='block';loading.textContent='Gilden-Grow-Aufträge konnten nicht geladen werden.';}
+    try{v063Toast?.('Gilden-Grow-Aufträge','warn',String(e?.message||e))}catch(_){}
+  }
+  finally{
+    if(V.loadingTimer){clearTimeout(V.loadingTimer);V.loadingTimer=0;}
+    if(loading&&V.state)loading.style.display='none';
+    V.loading=false;
+  }
  }
  function visible(){const p=document.querySelector('#v7273GuildGrow');return !!p&&p.style.display!=='none'&&document.querySelector('#guild')?.classList.contains('active');}
  document.addEventListener('click',e=>{const b=e.target instanceof Element?e.target.closest('[data-v254-tab]'):null;if(!b)return;const tab=b.getAttribute('data-v254-tab');const p=document.querySelector('#v7273GuildGrow');if(p)p.style.display=tab==='growtasks'?'':'none';if(tab==='growtasks')setTimeout(()=>load(true),20);},true);
  V.timer=setInterval(()=>{if(visible()){document.querySelectorAll('[data-v7273-countdown="daily"]').forEach(el=>el.textContent=`Neue Aufträge in ${countdown(V.state?.dailyResetAt)}`);document.querySelectorAll('[data-v7273-countdown="weekly"]').forEach(el=>el.textContent=`Reset in ${countdown(V.state?.weeklyResetAt)}`);if(Date.now()-V.lastLoad>15000)load(false);}},1000);
- window.v7273GuildGrow=Object.freeze({refresh:()=>load(true),version:'V7.273'});
+ window.v7273GuildGrow=Object.freeze({refresh:()=>load(true),version:'V7.279'});
 })();
+</script>
+
+
+
+<style id="v7279-guild-grow-layout-fix">
+/* V7.279 · Guild Grow layout fix */
+#guild .v254-tab[data-v254-tab="growtasks"]::before{content:none!important}
+#guild .v254-tab[data-v254-tab="growtasks"]{letter-spacing:.01em!important}
+
+.v7273-task{overflow:visible!important}
+.v7273-task-main{
+  min-width:0!important;
+  align-self:center!important;
+  display:grid!important;
+  grid-template-rows:auto auto auto!important;
+  align-content:center!important;
+  row-gap:1px!important;
+  overflow:hidden!important;
+}
+.v7273-task-name{
+  line-height:1!important;
+  margin:0!important;
+}
+.v7273-task-desc{
+  margin:0!important;
+  line-height:1!important;
+  opacity:.92!important;
+}
+.v7273-progress-line{
+  margin-top:1px!important;
+  gap:4px!important;
+  min-height:6px!important;
+}
+.v7273-progress{height:4px!important}
+.v7273-progress-line b{line-height:1!important}
+.v7273-reward{
+  align-self:center!important;
+  line-height:1.12!important;
+  overflow:hidden!important;
+}
+.v7273-reward span{line-height:1.08!important}
+.v7273-reward strong{
+  margin-top:1px!important;
+  padding:1px 5px!important;
+  line-height:1.1!important;
+  white-space:nowrap!important;
+}
+
+.v7273-contrib{
+  left:9.8%!important;
+  right:8.6%!important;
+  height:3.05%!important;
+  grid-template-columns:7% minmax(0,1fr) 38%!important;
+  gap:1.5%!important;
+  align-items:center!important;
+  overflow:hidden!important;
+  padding:0 .4%!important;
+}
+.v7273-rank{
+  line-height:1!important;
+  align-self:center!important;
+}
+.v7273-member{
+  min-width:0!important;
+  line-height:1.05!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  white-space:nowrap!important;
+}
+.v7273-member small{
+  display:inline!important;
+  margin-left:4px!important;
+  line-height:1!important;
+}
+.v7273-actions{
+  min-width:0!important;
+  text-align:right!important;
+  line-height:1.02!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+}
+.v7273-actions small{
+  display:block!important;
+  margin-top:2px!important;
+  line-height:1!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+}
+
+@media(max-width:560px){
+  #guild .v254-tab[data-v254-tab="growtasks"]{font-size:6.4px!important}
+  .v7273-task{grid-template-columns:8.5% minmax(0,1fr) 27.5%!important;gap:.8%!important}
+  .v7273-task-name{font-size:7px!important}
+  .v7273-task-desc{font-size:4.8px!important}
+  .v7273-progress-line b{font-size:5px!important;min-width:27px!important}
+  .v7273-reward{font-size:5px!important}
+  .v7273-contrib{
+    left:9.2%!important;
+    right:8.2%!important;
+    grid-template-columns:7% minmax(0,1fr) 42%!important;
+    gap:1%!important;
+    font-size:6.2px!important;
+  }
+  .v7273-actions small{font-size:.76em!important}
+}
+</style>
+
+<style id="v7279-final-version-css">
+html body .app > header .v358-logo::after{content:"V7.279"!important}
+html body .app > header .v366-ver::after,html body .app > header .v371-logo em::after,html body .app > header .v372-logo em::after,#v372TopbarShell .v372-logo em::after{content:"V7.279"!important}
+</style>
+<script id="v7279-final-version-js">
+(()=>{const ch=String(window.GROW_RELEASE_CHANNEL||'stable');const beta=ch==='beta';const V=Object.freeze({short:'V7.279',label:beta?'V7.279 Beta':'V7.279 Server 1',number:'7.279'});window.GROW_LEGENDS_VERSION=V;window.__GROW_LEGENDS_RELEASE__=V.short;const p=()=>{try{document.querySelectorAll('.version,.v366-ver,.v371-logo em,.v372-logo em').forEach(el=>{if(el.tagName!=='STYLE')el.textContent=V.short})}catch(_){}};p();addEventListener('pageshow',p,{passive:true});addEventListener('growlegends:account-ready',p,{passive:true});})();
 </script>
 
 </body>
@@ -143818,7 +143937,7 @@ window.v7259ResponsiveDiagnostics=function(){
    }
   });
  });
- return {version:'V7.278',viewport:vw,activeScreens:active.map(x=>x.id),issues:issues.slice(0,80),count:issues.length};
+ return {version:'V7.276',viewport:vw,activeScreens:active.map(x=>x.id),issues:issues.slice(0,80),count:issues.length};
 };
 })();
 </script>
@@ -143889,7 +144008,7 @@ setTimeout(sync,0);setTimeout(sync,650);setTimeout(sync,1800);
    wrapped.__v7274Base=base;
    auth.refreshSession=wrapped;
    return true;
-  }catch(e){console.warn('[V7.278] auth refresh guard install',e);return false}
+  }catch(e){console.warn('[V7.276] auth refresh guard install',e);return false}
  }
  try{
   if(typeof v073Init==='function'&&!v073Init.__v7274RefreshGuard){
