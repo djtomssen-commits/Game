@@ -42,7 +42,7 @@
 })();
 </script>
 <script id="v4131-version-source">
-window.GROW_LEGENDS_VERSION=Object.freeze({short:'V7.285',label:'V7.285 Server 1',number:'7.285'});
+window.GROW_LEGENDS_VERSION=Object.freeze({short:'V7.288',label:'V7.288 Server 1',number:'7.288'});
 window.__V7210_BOOT_PENDING__=true;
 window.v7206StartupBusy=()=>window.__V7210_BOOT_PENDING__===true||window.__V7206_CANONICAL_LOGIN_RUNNING__===true||window.__V7206_FIRST_PLAYABLE_PENDING__===true;
 /* V7.214: account-ready listeners used to all wake in the same frame and caused
@@ -413,7 +413,7 @@ window.__V483_POWER_READY__=false;
 .app > header .v366-ver,.app > header .v371-logo em,.app > header .v372-logo em{font-size:0!important;color:transparent!important}
 .app > header .v366-ver::after,.app > header .v371-logo em::after,.app > header .v372-logo em::after{content:"V4.164"!important;font-size:5px!important;color:#63cdd1!important;font-style:normal!important;font-weight:900!important}
 </style>
-<title>Grow Legends V7.285 Server 1</title>
+<title>Grow Legends V7.288 Server 1</title>
 <style>
 :root{--bg:#0b100b;--panel:#151d14;--panel2:#1c281a;--panel3:#253423;--line:#354933;--text:#f2f5ed;--muted:#9fad99;--green:#83d65d;--green2:#b2f07e;--gold:#f2c75a;--red:#ee6b68;--blue:#68a7ea;--purple:#ad7bea;--shadow:0 12px 30px rgba(0,0,0,.28)}
 *{box-sizing:border-box}html{background:var(--bg)}body{margin:0;color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:radial-gradient(circle at 50% -10%,#253821 0,#10170f 40%,#090d09 100%);min-height:100vh}button{font:inherit}.app{max-width:820px;margin:auto;min-height:100vh;padding-bottom:88px}
@@ -143432,7 +143432,7 @@ window.v7269CombatCadenceDiagnostics=()=>{
   let html=`<div class="v7273-title">Gilden-Grow-Aufträge<small>${esc(s.guild.name||'Gilde')} [${esc(s.guild.tag||'')}] · ${num(s.activeMembers)} aktive Mitglieder</small></div>`;
   html+=`<div class="v7273-chest-summary">Wochen-Truhe ${num(ch.points)}/${num(ch.max||100)} · Stufe ${num(ch.level)}/5 · Gilden-Buds ${num(s.guild.guildBuds)}</div>`;
   const chestPoints=Math.max(0,Math.min(100,Number(ch.points)||0));
-  const trackX=[15.5,27.5,41.9,56.2,70.5],trackW=[4.0,6.8,6.4,6.4,6.3];
+  const trackX=[14.8,26.3,40.3,54.5,69.0],trackW=[2.9,5.2,5.4,5.7,5.7];
   for(let i=0;i<5;i++){const seg=Math.max(0,Math.min(100,((chestPoints-(i*20))/20)*100));html+=`<div class="v7281-chest-track" style="left:${trackX[i]}%;width:${trackW[i]}%"><i style="width:${seg}%"></i></div>`;}
   const chestX=[17.8,31.8,46.0,60.5,75.0]; for(let i=0;i<5;i++){const hit=Number(ch.level)>=i+1;const cur=chestPoints>0&&Number(ch.level)===i&&Number(ch.level)<5;html+=`<div class="v7273-chest-ring ${hit?'hit':''} ${cur?'current':''}" style="left:${chestX[i]}%" title="Truhenstufe ${i+1} · ${[20,40,60,80,100][i]} Punkte${hit?' · erreicht':''}"></div>`;}
   html+=`<div class="v7273-section-title v7273-daily-title">Tagesaufträge</div><div class="v7273-reset v7273-daily-reset" data-v7273-countdown="daily">Neue Aufträge in ${countdown(s.dailyResetAt)}</div>`;
@@ -144149,11 +144149,11 @@ setTimeout(sync,0);setTimeout(sync,650);setTimeout(sync,1800);
 <script id="v7281-version-lock">
 (()=>{'use strict';
  const ch=String(window.GROW_RELEASE_CHANNEL||'stable');
- const V=Object.freeze({short:'V7.285',label:ch==='beta'?'V7.285 Beta':'V7.285 Server 1',number:'7.285'});
+ const V=Object.freeze({short:'V7.288',label:ch==='beta'?'V7.288 Beta':'V7.288 Server 1',number:'7.288'});
  window.GROW_LEGENDS_VERSION=V;window.__GROW_LEGENDS_RELEASE__=V.short;window.__GL_CURRENT_BUILD__=V.short;
  const apply=()=>{try{document.querySelectorAll('.v366-ver,.v371-logo em,.v372-logo em,[data-top-version],#topVersion').forEach(el=>{el.textContent=V.short})}catch(_){}};
  apply();addEventListener('pageshow',apply,{passive:true});addEventListener('growlegends:account-ready',apply,{passive:true});
- /* V7.285 STARTFIX: retired document-wide version MutationObserver; it could self-trigger and starve DOMContentLoaded after later patches were appended. */
+ /* V7.288 STARTFIX: retired document-wide version MutationObserver; it could self-trigger and starve DOMContentLoaded after later patches were appended. */
 })();
 </script>
 
@@ -144362,11 +144362,476 @@ setTimeout(sync,0);setTimeout(sync,650);setTimeout(sync,1800);
 </style>
 
 
-<!-- V7.285 STARTFIX: startup deadlock removed; guild visuals unchanged -->
+<!-- V7.288 STARTFIX: startup deadlock removed; guild visuals unchanged -->
+
+<style id="v7286-guild-grow-fit-final">
+/* V7.288 · final Guild Grow fit. Pure presentation fix. */
+.v7273-grow-stage::before{content:none!important;display:none!important}
+
+.v7281-chest-track{
+  top:21.86%!important;height:.62%!important;z-index:4!important;
+  border-radius:999px!important;
+  background:linear-gradient(180deg,#251a0d,#080c07)!important;
+  border:1px solid rgba(112,80,39,.88)!important;
+  box-shadow:inset 0 1px 2px rgba(0,0,0,.9),0 1px 2px rgba(0,0,0,.55)!important;
+}
+.v7281-chest-track>i{
+  height:100%!important;
+  background:linear-gradient(90deg,#2a9233,#67dc4d)!important;
+  box-shadow:0 0 4px rgba(75,239,92,.42)!important;
+}
+.v7273-chest-ring{
+  top:19.72%!important;width:8.3%!important;z-index:5!important;
+  background:transparent!important;pointer-events:none!important;
+}
+.v7273-chest-ring:not(.hit):not(.current){
+  opacity:0!important;border-color:transparent!important;box-shadow:none!important;
+}
+.v7273-chest-ring.hit{opacity:1!important}
+.v7273-chest-ring.current:not(.hit){opacity:.70!important}
+
+.v7273-task{
+  left:6.35%!important;right:6.35%!important;
+  grid-template-columns:6.4% minmax(0,1fr) 18.8%!important;
+  column-gap:.65%!important;padding:0 .28%!important;overflow:hidden!important;
+}
+.v7273-task.week{height:5.62%!important}
+.v7273-metric-icon{width:68%!important}
+.v7273-task-main{
+  min-width:0!important;overflow:hidden!important;display:grid!important;
+  grid-template-rows:auto auto auto!important;align-content:center!important;row-gap:1px!important;
+}
+.v7273-task-name{
+  margin:0!important;line-height:1!important;white-space:nowrap!important;
+  overflow:hidden!important;text-overflow:ellipsis!important;
+}
+.v7273-task-desc{
+  margin:1px 0 0!important;line-height:1!important;white-space:nowrap!important;
+  overflow:hidden!important;text-overflow:ellipsis!important;
+}
+.v7273-progress-line{
+  min-width:0!important;gap:3px!important;margin-top:1px!important;
+  transform:translateY(-1px)!important;
+}
+.v7273-progress{height:3px!important;min-width:0!important}
+.v7273-progress-line b{min-width:23px!important;line-height:1!important;white-space:nowrap!important}
+.v7273-reward{
+  min-width:0!important;overflow:hidden!important;text-align:right!important;
+  line-height:1.01!important;white-space:nowrap!important;padding-right:.15%!important;
+}
+.v7273-reward span{display:block!important;line-height:1.01!important;white-space:nowrap!important}
+.v7273-reward strong{
+  max-width:100%!important;margin-top:1px!important;padding:1px 3px!important;
+  line-height:1!important;white-space:nowrap!important;overflow:hidden!important;
+  text-overflow:ellipsis!important;
+}
+
+.v7273-contrib{
+  left:9.8%!important;right:9.0%!important;
+  grid-template-columns:6% minmax(0,1fr) 20%!important;
+  gap:.7%!important;overflow:hidden!important;
+}
+.v7273-actions{
+  min-width:0!important;text-align:right!important;white-space:nowrap!important;
+  overflow:hidden!important;text-overflow:ellipsis!important;
+}
+
+@media(max-width:560px){
+  .v7273-task-name{font-size:5.15px!important}
+  .v7273-task-desc{font-size:3.55px!important;letter-spacing:-.01em!important}
+  .v7273-progress-line b{font-size:3.75px!important;min-width:22px!important}
+  .v7273-reward{font-size:3.72px!important}
+  .v7273-reward strong{font-size:.78em!important}
+  .v7273-contrib{font-size:4.55px!important;grid-template-columns:6% minmax(0,1fr) 19%!important}
+  .v7273-actions{font-size:4.35px!important}
+}
+
+/* Final visible version owner */
+html body .app > header .v358-logo::after{content:"V7.288"!important}
+html body .app > header .v366-ver::after,
+html body .app > header .v371-logo em::after,
+html body .app > header .v372-logo em::after,
+#v372TopbarShell .v372-logo em::after{content:"V7.288"!important}
+</style>
+
+
+<style id="v7287-weekly-chest-compact-fit">
+/* V7.288 · safer weekly chest fit on narrower phones / larger display scaling */
+@media (max-width:430px){
+  #world.active .v6239-weekly-chest{
+    left:92px!important;
+    bottom:12px!important;
+    width:70px!important;
+    height:40px!important;
+    min-height:40px!important;
+    padding:1px 3px 2px!important;
+    border-radius:8px!important;
+    overflow:hidden!important;
+  }
+  #world.active .v6239-weekly-chest .v6239-chest-art{
+    width:31px!important;
+    height:18px!important;
+    margin:0 auto!important;
+    transform:none!important;
+  }
+  #world.active .v6239-weekly-chest .v6239-chest-art .lid{
+    left:3px!important;top:1px!important;width:25px!important;height:7px!important;
+  }
+  #world.active .v6239-weekly-chest .v6239-chest-art .body{
+    left:2px!important;top:7px!important;width:27px!important;height:10px!important;
+  }
+  #world.active .v6239-weekly-chest .v6239-chest-art .band-a,
+  #world.active .v6239-weekly-chest .v6239-chest-art .band-b{
+    top:2px!important;width:2px!important;height:13px!important;
+  }
+  #world.active .v6239-weekly-chest .v6239-chest-art .band-a{left:6px!important}
+  #world.active .v6239-weekly-chest .v6239-chest-art .band-b{right:6px!important}
+  #world.active .v6239-weekly-chest .v6239-chest-art .lock{
+    left:12px!important;top:8px!important;width:5px!important;height:6px!important;
+  }
+  #world.active .v6239-weekly-chest .v6239-chest-art .leaf{
+    right:0!important;top:-1px!important;font-size:7px!important;
+  }
+  #world.active .v6239-weekly-chest .v6239-home-level{
+    margin-top:0!important;
+    font-size:4.45px!important;
+    line-height:1!important;
+  }
+  #world.active .v6239-weekly-chest .v6241-home-exp{
+    margin-top:1px!important;
+    font-size:3.25px!important;
+    line-height:1!important;
+    white-space:nowrap!important;
+  }
+  #world.active .v6239-home-bar{
+    height:2px!important;
+    margin:1px 1px 0!important;
+  }
+}
+</style>
+
+
+<script id="v7287-dungeon-meta-current-fix">
+(()=>{'use strict';
+if(window.__V7287_DUNGEON_META_FIX__)return;
+window.__V7287_DUNGEON_META_FIX__=true;
+
+const cfgTable=()=>window.__V468_CFG__||{};
+const esc=v=>String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+const clean=v=>String(v??'').replace(/\s+/g,' ').trim();
+const dungeonIndex=()=>{try{return typeof v048DungeonIndex==='function'?v048DungeonIndex():Math.max(0,Math.min(19,Number(window.s?.dungeon?.selected||0)||0));}catch(_){return 0}};
+const roomIndex=(di)=>{try{
+  if(typeof dungeonCompleted==='function'&&dungeonCompleted(di))return 9;
+  if(typeof v048RoomIndex==='function')return v048RoomIndex(di);
+  return Math.max(0,Math.min(9,Number(window.s?.dungeon?.progress?.[di]??window.s?.dungeon?.room??0)||0));
+}catch(_){return 0}};
+const roomLevel=(di,ri)=>{try{return typeof v244DungeonRoomLevel==='function'?v244DungeonRoomLevel(di,ri):Math.max(1,(di+1)*10+(ri+1)-1)}catch(_){return Math.max(1,(di+1)*10+(ri+1)-1)}};
+const enemyHp=(di,ri)=>{try{
+  const d=window.dungeons?.[di],e=d?.enemies?.[ri];
+  if(typeof v025EnemyStats==='function'&&e){return Math.max(0,Number(v025EnemyStats(di,ri,e)?.hp)||0)}
+}catch(_){}
+return 0};
+
+function cfgFor(di){
+  return cfgTable()?.[String((Number(di)||0)+1)]||null;
+}
+function labelFor(di,ri){
+  const cfg=cfgFor(di);
+  if(!cfg)return '';
+  return ri===9 ? String(cfg.boss||'Boss') : String((cfg.enemy||[])[ri]||`Gegner ${ri+1}`);
+}
+function artFor(di,ri){
+  const cfg=cfgFor(di);
+  if(!cfg)return '';
+  return ri===9 ? String(cfg.bossArt||'') : String((cfg.art||[])[ri]||'');
+}
+function syncData(di){
+  const cfg=cfgFor(di);
+  const d=window.dungeons?.[di];
+  if(!cfg||!d||!Array.isArray(d.enemies))return false;
+  for(let ri=0;ri<Math.min(10,d.enemies.length);ri++){
+    const e=d.enemies[ri];
+    if(!e||typeof e!=='object')continue;
+    const wanted=labelFor(di,ri);
+    if(wanted&&e.name!==wanted)e.name=wanted;
+    if(wanted&&!e.short)e.short=wanted;
+  }
+  return true;
+}
+function syncAllData(){
+  try{
+    const ds=window.dungeons||[];
+    for(let di=0;di<ds.length;di++)syncData(di);
+  }catch(_){}
+}
+function forceThumb(el,art,fallback){
+  if(!el)return;
+  try{
+    if(typeof window.glSetDungeonThumbImage==='function'){
+      window.glSetDungeonThumbImage(el,art,fallback||'👹');
+      return;
+    }
+  }catch(_){}
+  if(art){
+    el.textContent='';
+    el.style.setProperty('background-image',`url("${art}")`,'important');
+    el.style.setProperty('background-size','contain','important');
+    el.style.setProperty('background-position','center center','important');
+    el.style.setProperty('background-repeat','no-repeat','important');
+  }
+}
+function syncVisible(){
+  const dungeonScreen=document.getElementById('dungeon');
+  if(!dungeonScreen||!dungeonScreen.classList.contains('active'))return;
+  const di=dungeonIndex();
+  syncData(di);
+  const ri=roomIndex(di);
+  const wanted=labelFor(di,ri);
+  const art=artFor(di,ri);
+  const cfg=cfgFor(di);
+  if(!cfg)return;
+
+  const card=document.getElementById('dungeonMapCard');
+  if(card){
+    for(let room=0;room<10;room++){
+      const node=card.querySelector(`.v261-node[data-v261-room="${room}"]`);
+      if(!node)continue;
+      const nameEl=node.querySelector('.v261-name');
+      if(nameEl){
+        const txt=labelFor(di,room);
+        if(txt)nameEl.textContent=txt;
+      }
+      const lvEl=node.querySelector('.v261-lv');
+      if(lvEl){
+        lvEl.textContent = room===9 ? `BOSS · Lv. ${roomLevel(di,room)}` : `Lv. ${roomLevel(di,room)}`;
+      }
+    }
+
+    const currentBold=card.querySelector('.v251-current-title b');
+    if(currentBold && wanted){
+      currentBold.textContent=(ri===9 ? `10 · ${wanted}` : `${ri+1} · ${wanted}`);
+    }
+    const currentSpan=card.querySelector('.v251-current-title span');
+    if(currentSpan){
+      const hp=enemyHp(di,ri);
+      currentSpan.textContent = ri===9
+        ? `BOSS · Empfohlen Level ${roomLevel(di,ri)} · ${hp} HP`
+        : `Empfohlen Level ${roomLevel(di,ri)} · ${hp} HP`;
+    }
+    forceThumb(card.querySelector('.v251-current-icon'), art, '👹');
+    forceThumb(card.querySelector('.v261-thumb'), art, '👹');
+
+    const line1=card.querySelector('.v261-line1');
+    if(line1 && wanted){
+      line1.textContent = ri===9 ? `10 · ${wanted} – BOSS` : `${ri+1} · ${wanted}`;
+    }
+    const line2=card.querySelector('.v261-line2');
+    if(line2){
+      const hp=enemyHp(di,ri);
+      line2.textContent = `${ri===9?'BOSS':'Gegner'} · Empfohlen Level ${roomLevel(di,ri)} · ${hp} HP`;
+    }
+  }
+
+  const battleName=document.getElementById('enemyBattleName');
+  if(battleName && wanted)battleName.textContent=wanted;
+  const enemyName=document.getElementById('enemyName');
+  if(enemyName && wanted)enemyName.textContent=wanted;
+}
+function kick(){
+  syncAllData();
+  syncVisible();
+}
+document.addEventListener('DOMContentLoaded',()=>setTimeout(kick,0),{once:true});
+window.addEventListener('pageshow',()=>setTimeout(kick,50),{passive:true});
+window.addEventListener('growlegends:account-ready',()=>setTimeout(kick,80),{passive:true});
+document.addEventListener('click',e=>{
+  const el=e.target instanceof Element?e.target.closest('#dungeon [data-v261-room], #dungeon #v251EnterCurrent, #dungeon .v251-enter, #dungeon .v261-node'):null;
+  if(!el)return;
+  setTimeout(kick,0);
+  setTimeout(kick,120);
+},true);
+setInterval(()=>{
+  try{
+    const a=document.getElementById('dungeon');
+    if(a&&a.classList.contains('active'))kick();
+  }catch(_){}
+},900);
+})();
+</script>
+
+
+<style id="v7288-home-adaptive-fit-css">
+/* V7.288 · Home hero: keep motto/chest compact, but do NOT solve collisions
+   by endlessly shrinking them. The hero gets extra vertical room when the
+   real rendered profile/checklist is taller on a specific phone. */
+@media(max-width:430px){
+  #world.active .v6103-motto{
+    width:var(--v7258-motto-width,60px)!important;
+    padding:5px 4px!important;
+  }
+  #world.active .v6103-motto b{
+    font-size:5.8px!important;
+    line-height:.96!important;
+  }
+
+  #world.active .v6239-weekly-chest{
+    left:var(--v7258-chest-left,82px)!important;
+    bottom:var(--v7258-chest-bottom,10px)!important;
+    width:var(--v7258-chest-width,72px)!important;
+    height:auto!important;
+    min-height:40px!important;
+    padding:2px 3px 3px!important;
+    overflow:hidden!important;
+  }
+  #world.active .v6239-weekly-chest .v6239-chest-art{
+    width:32px!important;
+    height:19px!important;
+    margin:0 auto!important;
+    transform:none!important;
+  }
+  #world.active .v6239-weekly-chest .v6239-home-level{
+    font-size:4.7px!important;
+    line-height:1!important;
+    margin-top:0!important;
+  }
+  #world.active .v6239-weekly-chest .v6241-home-exp{
+    font-size:3.45px!important;
+    line-height:1!important;
+    margin-top:1px!important;
+    white-space:nowrap!important;
+  }
+  #world.active .v6239-home-bar{
+    height:2px!important;
+    margin:2px 1px 0!important;
+  }
+
+  /* Keep the checklist readable. Only tighten spacing slightly; the script below
+     increases the whole hero height if these rows need more room. */
+  #world.active .vHome-checklist{
+    gap:3px!important;
+    padding:5px!important;
+  }
+  #world.active .vHome-check-row{
+    min-height:20px!important;
+    padding:3px 4px!important;
+  }
+}
+
+/* The actual version text had old historical owners in front of the current build. */
+html body #world.active ~ * .v366-ver,
+html body .app > header .v366-ver{
+  font-size:0!important;
+}
+html body .app > header .v366-ver::after{
+  content:"V7.288"!important;
+  display:inline!important;
+  font-size:10px!important;
+  line-height:1!important;
+  color:#63cdd1!important;
+  font-style:normal!important;
+  font-weight:900!important;
+}
+</style>
+
+
+<script id="v7288-home-adaptive-fit-script">
+(()=>{'use strict';
+if(window.__V7288_HOME_ADAPTIVE_FIT__)return;
+window.__V7288_HOME_ADAPTIVE_FIT__=true;
+
+let raf=0,lastHero=null,lastWidth=0,baseHeight=0;
+
+function px(n){return `${Math.max(0,Math.round(Number(n)||0))}px`}
+
+function run(){
+  raf=0;
+  const world=document.getElementById('world');
+  if(!world||!world.classList.contains('active'))return;
+  const hero=world.querySelector('.v366-hero');
+  if(!hero)return;
+  const profile=hero.querySelector('.v366-profile');
+  const motto=hero.querySelector('.v6103-motto');
+  const chest=hero.querySelector('.v6239-weekly-chest');
+  const welcome=hero.querySelector('.v366-welcome');
+  if(!profile||!motto||!chest||!welcome)return;
+
+  const width=Math.round(hero.getBoundingClientRect().width||hero.clientWidth||360);
+
+  /* A rebuilt home or a real width change gets a fresh CSS baseline. */
+  if(hero!==lastHero || Math.abs(width-lastWidth)>12 || !baseHeight){
+    lastHero=hero;lastWidth=width;
+    hero.style.removeProperty('height');
+    hero.style.removeProperty('min-height');
+    baseHeight=Math.max(300,Math.round(hero.getBoundingClientRect().height||390));
+  }
+
+  /* Start every fit from the real CSS baseline. This makes the result deterministic
+     and prevents repeated calls from growing the hero forever. */
+  hero.style.setProperty('height',px(baseHeight),'important');
+  hero.style.setProperty('min-height',px(baseHeight),'important');
+
+  requestAnimationFrame(()=>{
+    if(!hero.isConnected)return;
+
+    const hr=hero.getBoundingClientRect();
+    const pr=profile.getBoundingClientRect();
+    const mr=motto.getBoundingClientRect();
+    const cr=chest.getBoundingClientRect();
+    const wr=welcome.getBoundingClientRect();
+
+    /* Everything at the bottom of the hero forms one reserved bottom zone.
+       This is the piece the previous fit missed: it checked chest vs welcome,
+       but not the real height of the character checklist/profile. */
+    const bottomTop=Math.min(mr.top,cr.top,wr.top);
+    const gap=width<=390?8:10;
+    let extra=Math.max(0,Math.ceil((pr.bottom+gap)-bottomTop));
+
+    /* Also protect against enlarged text / accessibility font scaling that can
+       make the bottom widgets themselves taller than expected. */
+    const lowest=Math.max(mr.bottom,cr.bottom,wr.bottom);
+    extra=Math.max(extra,Math.ceil(lowest-(hr.bottom-6)));
+
+    const target=Math.min(560,baseHeight+Math.max(0,extra));
+    hero.style.setProperty('height',px(target),'important');
+    hero.style.setProperty('min-height',px(target),'important');
+    hero.dataset.v7288Fit=`${width}:${baseHeight}:${target}`;
+  });
+}
+
+function schedule(){
+  cancelAnimationFrame(raf);
+  raf=requestAnimationFrame(()=>{
+    try{window.v7258AdaptiveMobileFitNow?.()}catch(_){}
+    setTimeout(run,45);
+  });
+}
+window.v7288HomeAdaptiveFitNow=schedule;
+window.addEventListener('resize',schedule,{passive:true});
+window.addEventListener('orientationchange',()=>setTimeout(schedule,150),{passive:true});
+window.addEventListener('pageshow',()=>setTimeout(schedule,80),{passive:true});
+window.addEventListener('growlegends:account-ready',()=>setTimeout(schedule,100),{passive:true});
+document.addEventListener('DOMContentLoaded',()=>setTimeout(schedule,50),{once:true});
+document.addEventListener('click',e=>{
+  if(e.target instanceof Element && e.target.closest('[data-screen="world"],[data-go="world"],.v366-menu')){
+    setTimeout(schedule,120);
+  }
+},true);
+
+/* The home is rebuilt by several legacy render paths. A low-frequency fit is
+   intentional; it only runs while the world screen is active. */
+setInterval(()=>{
+  const world=document.getElementById('world');
+  if(world&&world.classList.contains('active'))schedule();
+},1600);
+
+schedule();
+})();
+</script>
+
 <script id="v7283-stable-version-lock">
 (()=>{'use strict';
  const channel=String(window.GROW_RELEASE_CHANNEL||'stable');
- const V=Object.freeze({short:'V7.285',label:channel==='beta'?'V7.285 Beta':'V7.285 Server 1',number:'7.285'});
+ const V=Object.freeze({short:'V7.288',label:channel==='beta'?'V7.288 Beta':'V7.288 Server 1',number:'7.288'});
  window.GROW_LEGENDS_VERSION=V;
  window.__GROW_LEGENDS_RELEASE__=V.short;
  window.__GL_CURRENT_BUILD__=V.short;
