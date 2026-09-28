@@ -413,7 +413,7 @@ window.__V483_POWER_READY__=false;
 .app > header .v366-ver,.app > header .v371-logo em,.app > header .v372-logo em{font-size:0!important;color:transparent!important}
 .app > header .v366-ver::after,.app > header .v371-logo em::after,.app > header .v372-logo em::after{content:"V4.164"!important;font-size:5px!important;color:#63cdd1!important;font-style:normal!important;font-weight:900!important}
 </style>
-<title>Grow Legends V7.256</title>
+<title>Grow Legends V7.260</title>
 <style>
 :root{--bg:#0b100b;--panel:#151d14;--panel2:#1c281a;--panel3:#253423;--line:#354933;--text:#f2f5ed;--muted:#9fad99;--green:#83d65d;--green2:#b2f07e;--gold:#f2c75a;--red:#ee6b68;--blue:#68a7ea;--purple:#ad7bea;--shadow:0 12px 30px rgba(0,0,0,.28)}
 *{box-sizing:border-box}html{background:var(--bg)}body{margin:0;color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:radial-gradient(circle at 50% -10%,#253821 0,#10170f 40%,#090d09 100%);min-height:100vh}button{font:inherit}.app{max-width:820px;margin:auto;min-height:100vh;padding-bottom:88px}
@@ -16002,7 +16002,7 @@ async function v7215Load(force=false){
    return null;
  }
  if(!force&&v7215Bag.state?.ok)return v7215Bag.state;
- v7215Bag.loading=(async()=>{try{const {data,error}=await db.rpc('v7215_ad_bag_state');if(error)throw error;const st=Array.isArray(data)?data[0]:data;v7215Bag.state=st||null;v7215Bag.lastRevision=Number(st?.revision??v7215Bag.lastRevision);const visible=!!(st?.enabled||st?.adminTestAllowed);if(window.__V7215_AD_BAG_MENU_VISIBLE__!==visible){window.__V7215_AD_BAG_MENU_VISIBLE__=visible;try{v086BuildCompleteMenu()}catch(_){}}v7215Paint();return st}catch(e){console.warn('V7.219 bag state',e);v7215Bag.state=null;v7215Paint();return null}finally{v7215Bag.loading=null}})();return v7215Bag.loading;
+ v7215Bag.loading=(async()=>{try{const {data,error}=await db.rpc('v7215_ad_bag_state');if(error)throw error;const st=Array.isArray(data)?data[0]:data;v7215Bag.state=st||null;v7215Bag.lastRevision=Number(st?.revision??v7215Bag.lastRevision);const visible=(typeof v093IsAdmin!=='undefined'&&v093IsAdmin===true&&!!v073User&&!v073User.is_anonymous);if(window.__V7215_AD_BAG_MENU_VISIBLE__!==visible){window.__V7215_AD_BAG_MENU_VISIBLE__=visible;try{v086BuildCompleteMenu()}catch(_){}}v7215Paint();return st}catch(e){console.warn('V7.219 bag state',e);v7215Bag.state=null;v7215Paint();return null}finally{v7215Bag.loading=null}})();return v7215Bag.loading;
 }
 async function v7215PollAfterReward(oldRevision){
  const started=Date.now();
@@ -46365,7 +46365,7 @@ function historicalScriptCount(){if(historicCountCache!=null)return historicCoun
  ];
  function admin(){try{return typeof v093IsAdmin!=='undefined'&&v093IsAdmin===true&&!!v073User&&!v073User.is_anonymous}catch(e){return false}}
  function available(id){
-  if(id==='bagDealer')return !!document.getElementById('bagDealer');
+  if(id==='bagDealer')return admin()&&!!document.getElementById('bagDealer');
   if(document.getElementById(id))return true;
   if(id==='endgame')return typeof window.v457RenderEndgame==='function'||typeof window.renderEndgame==='function';
   if(id==='forge')return typeof window.v488OpenForge==='function'||typeof window.v488ForgeRender==='function';
@@ -72541,7 +72541,7 @@ html.v481-hidden *,html.v481-hidden *::before,html.v481-hidden *::after{animatio
     }).join('');
   }
   function renderForge(){
-    /* V7.256 Beta: while Nebelschmied owns the forge, the legacy renderer
+    /* V7.260 Beta: while Nebelschmied owns the forge, the legacy renderer
        must not rebuild the entire forge DOM. Those rebuilds caused flicker. */
     if(document.getElementById('forge')?.classList.contains('v7240-nebel-open'))return;
     const sec=ensureScreen(),z=state(),c=cost(),rows=selectedRows(),sum=selectedFragments(),refund=selectedGoldRefund(),eligible=eligibleRows(),allEligibleSelected=eligible.length>0&&eligible.every(x=>selected.has(x.key)),can=z.fragments>=c.fragments&&(Number(s.gold)||0)>=c.gold&&!busy;
@@ -77460,7 +77460,7 @@ html:not(.v4142-systemtech-admin) #v4102QaButton{display:none!important}
  let raf=0,lastBuildAt=0;
  function admin(){try{return typeof v093IsAdmin!=='undefined'&&v093IsAdmin===true&&!!v073User&&!v073User.is_anonymous}catch(e){return false}}
  function available(id){
-  if(id==='bagDealer')return !!document.getElementById(id);
+  if(id==='bagDealer')return admin()&&!!document.getElementById(id);
   if(document.getElementById(id))return true;
   if(id==='endgame')return typeof window.v457RenderEndgame==='function'||typeof window.renderEndgame==='function';
   if(id==='forge')return typeof window.v488OpenForge==='function'||typeof window.v488ForgeRender==='function';
@@ -77482,6 +77482,7 @@ html:not(.v4142-systemtech-admin) #v4102QaButton{display:none!important}
  function sep(){const x=document.createElement('div');x.className='v4149-menu-separator v086-menu-separator';return x}
  function go(id){
   try{
+   if(id==='bagDealer'&&!admin())return false;
    if(id==='systemtech')return admin()?window.v4107OpenSystemtechnik?.():false;
    if(id==='admin'){
     if(!admin())return false;
@@ -77541,6 +77542,7 @@ html:not(.v4142-systemtech-admin) #v4102QaButton{display:none!important}
   const current=(typeof v032Go==='function'?v032Go:window.v032Go);
   if(typeof current==='function'&&!current.__v4149Final){
    const finalGo=function(id){
+    if(id==='bagDealer'&&!admin())id='world';
     if(id==='systemtech'&&!admin())id='world';
     const r=current.call(this,id);
     if(id==='grow'&&window.v7081UseAuthority?.('grow')){const c=window.__V7208_GROW_ORDERS_CANONICAL__,rows=Array.isArray(c?.contracts)?c.contracts:[];if(rows.length!==6)setTimeout(()=>{Promise.resolve(window.v7065GrowAuthorityRefresh?.()).finally(()=>window.v6163GrowTabs?.refresh?.())},0)}
@@ -127014,7 +127016,7 @@ window.v6346AdminLoadBroadcasts=loadAdminBroadcasts;
    try{
      await native.consume({purchaseToken:String(purchase.purchaseToken)});
    }catch(e){
-     console.warn('V7.256 consume pending; will retry on original server',e);
+     console.warn('V7.260 consume pending; will retry on original server',e);
      if(!quiet)toast('Kauf gutgeschrieben','success',`Die Harz-Taler sind auf ${serverId==='server1'?'Server 1':'Beta'} gutgeschrieben. Google Play wird den Verbrauch beim nächsten App-Start erneut abschließen.`);
      return true;
    }
@@ -127053,11 +127055,11 @@ window.v6346AdminLoadBroadcasts=loadAdminBroadcasts;
      try{
        purchase=await native.purchase({productId:pkg.productId,accountId:String(v073User.id)});
      }catch(e){
-       console.warn('V7.256 Google Play purchase returned an error; checking open purchases first',e);
+       console.warn('V7.260 Google Play purchase returned an error; checking open purchases first',e);
        try{
          const restored=await recoverPending({notify:true,serverHint:purchaseServer,allowBusy:true});
          if(restored>0)return true;
-       }catch(re){console.warn('V7.256 immediate purchase recovery failed',re)}
+       }catch(re){console.warn('V7.260 immediate purchase recovery failed',re)}
        alertMsg(
          'Google Play hat den Kaufdialog nicht normal abgeschlossen. Offene Käufe wurden geprüft. Falls Google den Kauf bereits bestätigt hat, bleibt er gespeichert und wird automatisch erneut geprüft.',
          'Kaufprüfung läuft weiter',
@@ -127120,7 +127122,7 @@ window.v6346AdminLoadBroadcasts=loadAdminBroadcasts;
        bound.push({token,server,key});
      }
    }catch(e){
-     console.warn('V7.256 token binding scan',e);
+     console.warn('V7.260 token binding scan',e);
      return 0;
    }
 
@@ -127151,7 +127153,7 @@ window.v6346AdminLoadBroadcasts=loadAdminBroadcasts;
          try{
            await native.consume({purchaseToken:item.token});
          }catch(e){
-           console.warn('V7.256 recovered purchase consume pending',e);
+           console.warn('V7.260 recovered purchase consume pending',e);
          }
        }
 
@@ -127161,7 +127163,7 @@ window.v6346AdminLoadBroadcasts=loadAdminBroadcasts;
          toast('💎 Kauf wiederhergestellt','success',`+${added} Harz-Taler wurden auf ${item.server==='server1'?'Server 1':'Beta'} gutgeschrieben.`);
        }
      }catch(e){
-       console.warn('V7.256 bound purchase recovery',e);
+       console.warn('V7.260 bound purchase recovery',e);
        const msg=String(e?.message||e||'');
        if(/findet diesen offenen Kauf nicht mehr|nicht mehr abgeschlossen|purchaseState/i.test(msg)){
          /* Keep the token binding for one more app session; Google test purchases can
@@ -127177,7 +127179,7 @@ window.v6346AdminLoadBroadcasts=loadAdminBroadcasts;
    try{
      const boundRecovered=await v7237RecoverBoundTokens({notify});
      if(boundRecovered>0)return boundRecovered;
-   }catch(e){console.warn('V7.256 bound token pre-recovery',e)}
+   }catch(e){console.warn('V7.260 bound token pre-recovery',e)}
    const native=plugin();if(!native)return 0;
    if(!(await billingServerReady(false)))return 0;
    if(serverHint==='server1'||serverHint==='beta')v7235RememberPendingServer(serverHint);
@@ -127191,7 +127193,7 @@ window.v6346AdminLoadBroadcasts=loadAdminBroadcasts;
          const ok=await verifyAndConsume(purchase,{quiet:!notify});
          if(ok)recovered++;
        }catch(e){
-         console.warn('V7.256 pending purchase verification',e);
+         console.warn('V7.260 pending purchase verification',e);
        }
      }
      if(notify&&recovered===0&&purchases.length===0){
@@ -127199,7 +127201,7 @@ window.v6346AdminLoadBroadcasts=loadAdminBroadcasts;
      }
      return recovered;
    }catch(e){
-     console.warn('V7.256 pending lookup',e);
+     console.warn('V7.260 pending lookup',e);
      return 0;
    }finally{
      recoveryBusy=false;
@@ -129245,7 +129247,7 @@ async function animateReplay(b){
  const replay=Array.isArray(b?.replay)?b.replay:[];C.skipReplay=false;
  /* V7.214: combat remains visibly animated, but replay duration is bounded.
     Twelve replay events used to sleep ~7.7 s before any UI work. */
- /* V7.256: Dungeon presentation now uses the same replay cadence as the tower.
+ /* V7.260: Dungeon presentation now uses the same replay cadence as the tower.
     Combat rules/rewards are unchanged; only visual timing is slower. */
  const frameDelay=Math.max(140,Math.min(280,Math.floor(2600/Math.max(1,replay.length))));
  const attackDelay=Math.max(70,Math.round(frameDelay*.44));
@@ -139230,7 +139232,7 @@ html body .app > header .v366-ver::after,html body .app > header .v371-logo em::
 if(window.__V7229_SERVER1_CHARACTER_BOOTSTRAP__)return;
 window.__V7229_SERVER1_CHARACTER_BOOTSTRAP__=true;
 
-const VERSION=Object.freeze({short:'V7.256',label:(String(window.GROW_RELEASE_CHANNEL||'stable')==='beta'?'V7.256 Beta':'V7.256 Servergebundene Käufe'),number:'7.256'});
+const VERSION=Object.freeze({short:'V7.260',label:(String(window.GROW_RELEASE_CHANNEL||'stable')==='beta'?'V7.260 Beta':'V7.260 Servergebundene Käufe'),number:'7.260'});
 window.GROW_LEGENDS_VERSION=VERSION;
 window.__GROW_LEGENDS_RELEASE__=VERSION.short;
 window.__GL_CURRENT_BUILD__=VERSION.short;
@@ -139471,21 +139473,21 @@ window.v7230FrameDiagnostics=()=>({server:serverId(),syncing:!!flight,state:wind
 <!-- ===== /V7.230 SERVER-SCOPED AVATAR FRAME AUTHORITY ===== -->
 
 <style id="v7231-visible-version-css">
-html body .app > header .v358-logo::after{content:"V7.256"!important}
-html body .app > header .v366-ver::after,html body .app > header .v371-logo em::after,html body .app > header .v372-logo em::after,#v372TopbarShell .v372-logo em::after{content:"V7.256"!important}
+html body .app > header .v358-logo::after{content:"V7.260"!important}
+html body .app > header .v366-ver::after,html body .app > header .v371-logo em::after,html body .app > header .v372-logo em::after,#v372TopbarShell .v372-logo em::after{content:"V7.260"!important}
 </style>
 <script id="v7233-isolation-audit-marker">
-(()=>{'use strict';window.__V7233_ISOLATION_AUDIT__=Object.freeze({version:'V7.256',earlyStorageIsolation:true,serverScopedCloud:true,serverScopedRecoveryCaches:true,serverPrivateRpcLayer:true});})();
+(()=>{'use strict';window.__V7233_ISOLATION_AUDIT__=Object.freeze({version:'V7.260',earlyStorageIsolation:true,serverScopedCloud:true,serverScopedRecoveryCaches:true,serverPrivateRpcLayer:true});})();
 </script>
 
-<!-- ===== V7.256 CALENDAR ACHIEVEMENTS · SERVER AUTHORITY ===== -->
+<!-- ===== V7.260 CALENDAR ACHIEVEMENTS · SERVER AUTHORITY ===== -->
 <script id="v7239-calendar-achievements">
 (()=>{
 'use strict';
 if(window.__V7239_CALENDAR_ACHIEVEMENTS__)return;
 window.__V7239_CALENDAR_ACHIEVEMENTS__=true;
 
-const VERSION='V7.256';
+const VERSION='V7.260';
 const CAL=[
  ['calendar_newyear','Neues Jahr, neuer Grow','Logge dich am 1. Januar ein.'],
  ['calendar_valentine','Harzige Liebe','Logge dich am 14. Februar ein.'],
@@ -139507,7 +139509,7 @@ function installDefs(){
    if(!V106_ACH.some(x=>String(x?.[0])===id))V106_ACH.push([id,title,desc,()=>0,1]);
   }
   return true;
- }catch(e){console.warn('[V7.256] calendar defs',e);return false}
+ }catch(e){console.warn('[V7.260] calendar defs',e);return false}
 }
 function logged(){
  try{return !!(window.v073User?.id&&!window.v073User?.is_anonymous)}catch(_){return false}
@@ -139553,7 +139555,7 @@ async function claim(show=true){
   setTimeout(()=>{try{void window.v7080AchievementRefresh?.(false)}catch(_){}},16050);
   return r;
  }catch(e){
-  console.warn('[V7.256] calendar achievement claim',e);
+  console.warn('[V7.260] calendar achievement claim',e);
   return null;
  }finally{busy=false}
 }
@@ -139568,10 +139570,10 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden)setTimeout
 setTimeout(installDefs,600);
 })();
 </script>
-<!-- ===== /V7.256 CALENDAR ACHIEVEMENTS ===== -->
+<!-- ===== /V7.260 CALENDAR ACHIEVEMENTS ===== -->
 
 
-<!-- ===== V7.256 BETA · NEBELSCHMIED + NEBELKARAWANE ===== -->
+<!-- ===== V7.260 BETA · NEBELSCHMIED + NEBELKARAWANE ===== -->
 <style id="v7240-beta-gold-features-css">
 /* Beta-only premium visual layer. No generic browser-card aesthetic. */
 #forge.v7240-nebel-open .v667-forge-body>.v667-view,
@@ -139761,7 +139763,7 @@ setTimeout(installDefs,600);
 </style>
 
 <style id="v7245-caravan-overhaul-css">
-/* V7.256 · Nebelkarawane visual/UX overhaul */
+/* V7.260 · Nebelkarawane visual/UX overhaul */
 #caravan.screen{
   padding:8px 0 30px!important;
   background:
@@ -139948,7 +139950,7 @@ setTimeout(installDefs,600);
 
 
 <style id="v7247-caravan-v2-css">
-/* V7.256 · Karawane V2: event scene, compact choices, cinematic results */
+/* V7.260 · Karawane V2: event scene, compact choices, cinematic results */
 #caravan.screen{overflow-x:hidden!important}
 .v7245-caravan-banner{min-height:150px!important;margin-bottom:7px!important}
 .v7245-banner-stats{gap:4px!important}
@@ -140118,7 +140120,7 @@ setTimeout(installDefs,600);
 
 
 <style id="v7248-nebelkarawane-redesign-css">
-/* V7.256 · Nebelkarawane full visual overhaul */
+/* V7.260 · Nebelkarawane full visual overhaul */
 #caravan.screen{
   overflow-x:hidden!important;
   background:
@@ -140469,7 +140471,7 @@ setTimeout(installDefs,600);
 
 
 <style id="v7249-template-stage-css">
-/* V7.256 · use the approved mockup itself as the full visual stage */
+/* V7.260 · use the approved mockup itself as the full visual stage */
 #caravan.screen{
   background:#020704!important;
   padding:4px 0 26px!important;
@@ -140958,7 +140960,7 @@ setTimeout(installDefs,600);
 </style>
 
 <style id="v7250-template-cleanup-css">
-/* V7.256 · crop away baked UI + cover baked text zones */
+/* V7.260 · crop away baked UI + cover baked text zones */
 .v7249-stage{
   min-height:980px;
 }
@@ -141174,7 +141176,7 @@ setTimeout(installDefs,600);
 
 
 <style id="v7251-real-bg-fit-css">
-/* V7.256 · use generated clean background and fit it to the page */
+/* V7.260 · use generated clean background and fit it to the page */
 .v7249-stage{
   overflow:hidden;
   border-radius:28px;
@@ -141271,7 +141273,7 @@ setTimeout(installDefs,600);
 
 
 <style id="v7252-karawane-premium-pass">
-/* V7.256 · Nebelkarawane premium tuning */
+/* V7.260 · Nebelkarawane premium tuning */
 .v7249-page{padding-top:4px!important}
 .v7249-stage{
   min-height:1320px!important;
@@ -141489,7 +141491,7 @@ setTimeout(installDefs,600);
 
 
 <style id="v7253-karawane-layout-fix">
-/* V7.256 · compact composition pass based on real mobile screenshots */
+/* V7.260 · compact composition pass based on real mobile screenshots */
 .v7249-stage{
   min-height:1130px!important;
 }
@@ -141754,7 +141756,7 @@ setTimeout(installDefs,600);
   }
 }
 
-/* V7.256 · compact route selector + no persistent end-card */
+/* V7.260 · compact route selector + no persistent end-card */
 .v7254-route-select{
   min-height:980px!important;
 }
@@ -141825,7 +141827,7 @@ setTimeout(installDefs,600);
   .v7254-route-select .v7249-route-side button{min-width:96px!important;min-height:36px!important;font-size:8px!important}
 }
 
-/* V7.256 · lighter route-selection layout */
+/* V7.260 · lighter route-selection layout */
 .v7254-route-select{
   min-height:920px!important;
 }
@@ -141913,10 +141915,10 @@ setTimeout(installDefs,600);
   .v7254-route-select .v7249-route-side button{min-width:92px!important;min-height:34px!important;font-size:8px!important}
 }
 
-/* V7.256 · more background + premium route cards */
+/* V7.260 · more background + premium route cards */
 .v7254-route-select{min-height:888px!important}
 .v7254-route-select .v7250-hero{
-  top:10.6%!important;
+  top:9.4%!important;
   left:5.2%!important;
   right:5.2%!important;
   padding:12px 13px 11px!important;
@@ -141929,7 +141931,7 @@ setTimeout(installDefs,600);
 .v7254-route-select .v7250-hero-stats{gap:6px!important}
 .v7254-route-select .v7250-hero-stats span{padding:5px 9px!important;font-size:clamp(8px,1.2vw,10px)!important}
 .v7254-route-select .v7249-routes{
-  top:28.8%!important;
+  top:31.8%!important;
   left:3.5%!important;
   right:3.5%!important;
   bottom:6.4%!important;
@@ -141971,11 +141973,11 @@ setTimeout(installDefs,600);
 .v7254-route-select .v7249-route:nth-child(3) .v7249-route-side button{background:linear-gradient(180deg,#dbaf49,#a9751d)!important}
 @media(max-width:560px){
   .v7254-route-select{min-height:840px!important}
-  .v7254-route-select .v7250-hero{top:10.1%!important;left:4.2%!important;right:4.2%!important;padding:11px 11px 10px!important}
+  .v7254-route-select .v7250-hero{top:9.1%!important;left:4.2%!important;right:4.2%!important;padding:11px 11px 10px!important}
   .v7254-route-select .v7250-hero h1{font-size:28px!important}
   .v7254-route-select .v7250-hero p{font-size:9px!important;max-width:100%!important}
   .v7254-route-select .v7250-hero-stats span{font-size:7px!important;padding:4px 7px!important}
-  .v7254-route-select .v7249-routes{top:27.1%!important;left:3%!important;right:3%!important;bottom:6%!important;gap:9px!important}
+  .v7254-route-select .v7249-routes{top:30.2%!important;left:3%!important;right:3%!important;bottom:6%!important;gap:9px!important}
   .v7254-route-select .v7249-route{padding:10px 10px!important;border-radius:18px!important;gap:8px!important}
   .v7254-route-select .v7249-route h4{font-size:14px!important}
   .v7254-route-select .v7249-route p{font-size:7px!important}
@@ -141993,7 +141995,7 @@ if(window.__V7240_BETA_GOLD_FEATURES__)return;
 window.__V7240_BETA_GOLD_FEATURES__=true;
 if(String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()!=='beta')return;
 
-const VERSION='V7.256';
+const VERSION='V7.260';
 const fmt=v=>Math.max(0,Math.round(Number(v)||0)).toLocaleString('de-DE');
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const LAB={
@@ -142069,7 +142071,7 @@ async function loadForge(force=false){
   syncGold(S.forge.gold);
   return S.forge;
  }catch(e){
-  console.warn('[V7.256] nebelforge state',e);
+  console.warn('[V7.260] nebelforge state',e);
   S.forgeError=String(e?.message||e||'Nebelschmied konnte nicht geladen werden.');
   toast('Nebelschmied nicht erreichbar','warn',S.forgeError);
   return null
@@ -142166,7 +142168,7 @@ async function doForgeReroll(){
   setTimeout(()=>document.getElementById('v7240Nebelforge')?.classList.remove('v7240-hit'),850);
   toast('🔥 Neu geschmiedet','success',`${x.name} · ${fmt(r.cost)} Gold`);
  }catch(e){
-  console.warn('[V7.256] nebelforge reroll',e);
+  console.warn('[V7.260] nebelforge reroll',e);
   toast('Schmieden fehlgeschlagen','warn',String(e?.message||e));
  }finally{S.forgeBusy=false;renderForgePanel()}
 }
@@ -142240,7 +142242,7 @@ async function loadCaravan(force=false){
   S.caravan=Array.isArray(data)?data[0]:data;
   syncCaravanResources(S.caravan);return S.caravan;
  }catch(e){
-  console.warn('[V7.256] caravan state',e);
+  console.warn('[V7.260] caravan state',e);
   S.caravanError=String(e?.message||e||'Nebelkarawane konnte nicht geladen werden.');
   toast('Nebelkarawane nicht erreichbar','warn',S.caravanError);
   return null
@@ -142565,7 +142567,7 @@ async function startCaravan(tier){
   if(error)throw error;
   S.caravan=Array.isArray(data)?data[0]:data;S.resolution=null;syncCaravanResources(S.caravan);
   try{window.v6111Sfx?.('click')}catch(_){}
- }catch(e){console.warn('[V7.256] caravan start',e);toast('Tour konnte nicht starten','warn',String(e?.message||e))}
+ }catch(e){console.warn('[V7.260] caravan start',e);toast('Tour konnte nicht starten','warn',String(e?.message||e))}
  finally{S.caravanBusy=false;renderCaravan()}
 }
 async function chooseCaravan(choice){
@@ -142578,7 +142580,7 @@ async function chooseCaravan(choice){
   const r=Array.isArray(data)?data[0]:data;
   S.caravan=r;S.resolution=r?.resolution||null;syncCaravanResources(r);
   try{window.v6111Sfx?.(Number(r?.resolution?.goldDelta)>0?'reward':'click')}catch(_){}
- }catch(e){console.warn('[V7.256] caravan choose',e);toast('Entscheidung fehlgeschlagen','warn',String(e?.message||e))}
+ }catch(e){console.warn('[V7.260] caravan choose',e);toast('Entscheidung fehlgeschlagen','warn',String(e?.message||e))}
  finally{
   S.caravanBusy=false;
   document.getElementById('caravan')?.classList.remove('v7247-resolving');
@@ -142617,7 +142619,7 @@ try{
   const w=function(id){if(id==='caravan')return openCaravan();const r=base.apply(this,arguments);document.getElementById('caravan')?.classList.remove('active');return r};
   w.__v7240Caravan=true;window.v032Go=w;try{v032Go=w}catch(_){}
  }
-}catch(e){console.warn('[V7.256] caravan nav',e)}
+}catch(e){console.warn('[V7.260] caravan nav',e)}
 try{
  const base=window.v4149BuildCompleteMenu;
  if(typeof base==='function'&&!base.__v7240Caravan){
@@ -142688,7 +142690,7 @@ window.v7240BetaGoldDiagnostics=()=>({
 });
 })();
 </script>
-<!-- ===== /V7.256 BETA · NEBELSCHMIED + NEBELKARAWANE ===== -->
+<!-- ===== /V7.260 BETA · NEBELSCHMIED + NEBELKARAWANE ===== -->
 
 </body>
 </html>
@@ -142717,3 +142719,393 @@ window.v7240BetaGoldDiagnostics=()=>({
   .v7245-tier-card{grid-template-columns:1fr!important}
 }
 </style>
+
+
+<style id="v7258-adaptive-mobile-fit-css">
+/* ===== V7.260 ADAPTIVER MOBILE-FIT · WORLD / STARTSEITE ===== */
+#world.active .v366-hero{
+  --v7258-profile-left:12px;
+  --v7258-profile-top:12px;
+  --v7258-profile-width:48%;
+  --v7258-welcome-left:54%;
+  --v7258-welcome-right:3%;
+  --v7258-welcome-bottom:24px;
+  --v7258-motto-left:18px;
+  --v7258-motto-bottom:18px;
+  --v7258-motto-width:72px;
+  --v7258-chest-left:102px;
+  --v7258-chest-bottom:18px;
+  --v7258-chest-width:88px;
+}
+#world.active .v366-profile{
+  left:var(--v7258-profile-left)!important;
+  top:var(--v7258-profile-top)!important;
+  width:var(--v7258-profile-width)!important;
+  max-width:calc(100% - 24px)!important;
+}
+#world.active .v366-pname{
+  max-width:100%!important;
+  overflow-wrap:anywhere!important;
+  line-height:1.04!important;
+}
+#world.active .v366-plevel,
+#world.active .v366-xptxt,
+#world.active .v366-power{
+  overflow-wrap:anywhere!important;
+}
+#world.active .v366-welcome{
+  left:var(--v7258-welcome-left)!important;
+  right:var(--v7258-welcome-right)!important;
+  bottom:var(--v7258-welcome-bottom)!important;
+  max-width:calc(100% - var(--v7258-welcome-left) - var(--v7258-welcome-right))!important;
+}
+#world.active .v366-welcome small{font-size:clamp(6px,1.7vw,7px)!important}
+#world.active .v366-welcome h1{font-size:clamp(20px,7vw,28px)!important;line-height:.94!important;overflow-wrap:anywhere!important}
+#world.active .v366-welcome p{font-size:clamp(5px,1.55vw,6.2px)!important;line-height:1.25!important}
+#world.active .v6103-motto{
+  left:var(--v7258-motto-left)!important;
+  bottom:var(--v7258-motto-bottom)!important;
+  width:var(--v7258-motto-width)!important;
+}
+#world.active .v6103-motto b{font-size:clamp(6px,1.85vw,8px)!important}
+#world.active .v6239-weekly-chest{
+  left:var(--v7258-chest-left)!important;
+  bottom:var(--v7258-chest-bottom)!important;
+  width:var(--v7258-chest-width)!important;
+  max-width:calc(100% - var(--v7258-chest-left) - 8px)!important;
+  height:auto!important;
+  min-height:42px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+}
+#world.active .v6239-weekly-chest .v6239-home-level,
+#world.active .v6239-weekly-chest .v6241-home-exp{
+  max-width:100%!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  text-align:center!important;
+}
+#world.active .v6239-weekly-chest .v6241-home-exp{white-space:nowrap!important}
+@media(max-width:390px){
+  #world.active .v366-profile{padding:6px!important}
+  #world.active .vHome-check-row span{max-width:58%!important}
+  #world.active .vHome-check-row b{font-size:5.2px!important}
+}
+</style>
+
+<script id="v7258-adaptive-mobile-fit-script">
+(function(){
+'use strict';
+if(window.__V7258_ADAPTIVE_MOBILE_FIT__)return;
+window.__V7258_ADAPTIVE_MOBILE_FIT__=true;
+const PX=v=>`${Math.round(v)}px`;
+function overlap(a,b,pad){
+  pad=pad||0;
+  return !(a.right-pad<=b.left+pad||a.left+pad>=b.right-pad||a.bottom-pad<=b.top+pad||a.top+pad>=b.bottom-pad);
+}
+function applyWorldFit(){
+  const world=document.getElementById('world');
+  if(!world||!world.classList.contains('active'))return;
+  const hero=world.querySelector('.v366-hero');
+  if(!hero)return;
+  const profile=hero.querySelector('.v366-profile');
+  const welcome=hero.querySelector('.v366-welcome');
+  const motto=hero.querySelector('.v6103-motto');
+  const chest=hero.querySelector('.v6239-weekly-chest');
+  if(!profile||!welcome||!motto||!chest)return;
+  const w=Math.round(hero.clientWidth||hero.getBoundingClientRect().width||360);
+  const leftPad=w<=390?8:12;
+  const profileWidth=w<=350?Math.min(184,w*0.52):w<=390?Math.min(188,w*0.51):w<=430?Math.min(194,w*0.49):Math.min(205,w*0.48);
+  const mottoLeft=w<=390?12:18;
+  const mottoWidth=w<=350?54:w<=390?60:w<=430?68:72;
+  const mottoBottom=w<=390?10:18;
+  const chestWidth=w<=350?64:w<=390?72:w<=430?80:88;
+  const chestBottom=w<=390?10:18;
+  let chestLeft=mottoLeft+mottoWidth+8;
+  let welcomeLeftPx=Math.max(leftPad+profileWidth+(w<=390?8:12),Math.round(w*(w<=390?0.515:0.54)));
+  let welcomeRightPx=w<=390?2:3;
+  const maxWelcomeLeft=Math.max(leftPad+profileWidth+6,w-160);
+  if(welcomeLeftPx>maxWelcomeLeft)welcomeLeftPx=maxWelcomeLeft;
+  hero.style.setProperty('--v7258-profile-left',PX(leftPad));
+  hero.style.setProperty('--v7258-profile-top',PX(w<=390?9:12));
+  hero.style.setProperty('--v7258-profile-width',PX(profileWidth));
+  hero.style.setProperty('--v7258-motto-left',PX(mottoLeft));
+  hero.style.setProperty('--v7258-motto-bottom',PX(mottoBottom));
+  hero.style.setProperty('--v7258-motto-width',PX(mottoWidth));
+  hero.style.setProperty('--v7258-chest-left',PX(chestLeft));
+  hero.style.setProperty('--v7258-chest-bottom',PX(chestBottom));
+  hero.style.setProperty('--v7258-chest-width',PX(chestWidth));
+  hero.style.setProperty('--v7258-welcome-left',PX(welcomeLeftPx));
+  hero.style.setProperty('--v7258-welcome-right',PX(welcomeRightPx));
+  hero.style.setProperty('--v7258-welcome-bottom',PX(w<=390?16:22));
+
+  requestAnimationFrame(()=>{
+    const heroRect=hero.getBoundingClientRect();
+    let chestRect=chest.getBoundingClientRect();
+    let welcomeRect=welcome.getBoundingClientRect();
+    let mottoRect=motto.getBoundingClientRect();
+
+    if(overlap(chestRect,welcomeRect,2)){
+      let idealLeft=Math.round((welcomeRect.left-heroRect.left)-chestRect.width-8);
+      let minLeft=Math.round(mottoRect.right-heroRect.left+6);
+      let nextLeft=Math.max(minLeft,idealLeft);
+      if(nextLeft!==chestLeft){
+        chestLeft=nextLeft;
+        hero.style.setProperty('--v7258-chest-left',PX(chestLeft));
+      }
+    }
+
+    requestAnimationFrame(()=>{
+      chestRect=chest.getBoundingClientRect();
+      welcomeRect=welcome.getBoundingClientRect();
+      mottoRect=motto.getBoundingClientRect();
+
+      if(chestRect.right>heroRect.right-8){
+        chestLeft=Math.max(Math.round(mottoRect.right-heroRect.left+6),Math.round(heroRect.width-chestRect.width-10));
+        hero.style.setProperty('--v7258-chest-left',PX(chestLeft));
+      }
+
+      requestAnimationFrame(()=>{
+        chestRect=chest.getBoundingClientRect();
+        welcomeRect=welcome.getBoundingClientRect();
+        mottoRect=motto.getBoundingClientRect();
+
+        if(overlap(chestRect,welcomeRect,2)){
+          const smaller=Math.max(60,Math.round(chestRect.width-8));
+          hero.style.setProperty('--v7258-chest-width',PX(smaller));
+          chestLeft=Math.max(Math.round(mottoRect.right-heroRect.left+6),Math.round((welcomeRect.left-heroRect.left)-smaller-8));
+          hero.style.setProperty('--v7258-chest-left',PX(chestLeft));
+        }
+        if(overlap(chest.getBoundingClientRect(),motto.getBoundingClientRect(),2)){
+          hero.style.setProperty('--v7258-motto-width',PX(Math.max(48,mottoWidth-8)));
+          hero.style.setProperty('--v7258-chest-left',PX(Math.round(motto.getBoundingClientRect().right-heroRect.left+8)));
+        }
+      });
+    });
+  });
+}
+let raf=0;
+function schedule(){cancelAnimationFrame(raf);raf=requestAnimationFrame(applyWorldFit)}
+window.v7258AdaptiveMobileFitNow=schedule;
+window.addEventListener('resize',schedule,{passive:true});
+window.addEventListener('orientationchange',()=>setTimeout(schedule,120),{passive:true});
+window.addEventListener('load',()=>{schedule();setTimeout(schedule,120);setTimeout(schedule,380)});
+document.addEventListener('DOMContentLoaded',()=>{schedule();setTimeout(schedule,120)});
+try{
+  const mo=new MutationObserver(()=>schedule());
+  mo.observe(document.body||document.documentElement,{subtree:true,childList:true});
+}catch(_){}
+setInterval(()=>{
+  const world=document.getElementById('world');
+  if(world&&world.classList.contains('active'))schedule();
+},1800);
+schedule();
+})();
+</script>
+
+
+<style id="v7259-global-responsive-pass-css">
+/* ===== V7.260 · GLOBAL RESPONSIVE PASS ===== */
+html,body,.app,main{max-width:100%;overflow-x:hidden}
+.screen{max-width:100%;min-width:0}
+.screen *{box-sizing:border-box;min-width:0}
+.screen img,.screen video{max-width:100%;height:auto}
+.screen h1,.screen h2,.screen h3,.screen h4,.screen h5,.screen h6,
+.screen p,.screen small,.screen b,.screen strong,.screen span,.screen label,
+.screen button,.screen .btn{overflow-wrap:anywhere;word-break:normal}
+.screen .section-title{min-width:0;flex-wrap:wrap}
+.screen .section-title>*{min-width:0}
+.screen .card,.screen .hero-card,.screen [class*="panel"],.screen [class*="modal"]{max-width:100%}
+.screen button,.screen input,.screen select,.screen textarea{max-width:100%}
+
+/* Core screen padding scales with the real viewport, not a specific phone model. */
+#character,#quests,#dungeon,#shop,#bagDealer,#pvp,#guild,#hall,#friends,#mail,#admin,#harzDealer{
+  padding-left:clamp(4px,1.7vw,10px)!important;
+  padding-right:clamp(4px,1.7vw,10px)!important;
+}
+
+/* Character: remove the historic 396px minimum width that can overflow narrow phones. */
+@media(max-width:560px){
+  #character .equipment-grid{
+    grid-template-columns:minmax(0,29%) minmax(0,42%) minmax(0,29%)!important;
+    gap:clamp(3px,1vw,5px)!important;
+  }
+  #character .equip-col{min-width:0!important;gap:clamp(5px,1.6vw,9px)!important}
+  #character .slot{min-width:0!important;padding:clamp(5px,1.6vw,7px)!important}
+  #character .slot-name{font-size:clamp(6.6px,2vw,8px)!important;overflow-wrap:anywhere!important}
+  #character .slot .tiny{font-size:clamp(6px,1.75vw,7.5px)!important}
+  #character .center-hero{min-width:0!important;min-height:clamp(340px,112vw,420px)!important}
+  #character .avatar-scene{height:clamp(205px,69vw,260px)!important}
+  #character .center-name{font-size:clamp(17px,5.6vw,22px)!important;overflow-wrap:anywhere!important}
+  #character .v123-gear-summary{max-width:100%!important}
+  #character .v514-book-host{max-width:100%!important}
+}
+@media(max-width:350px){
+  #character .equipment-grid{grid-template-columns:minmax(0,30%) minmax(0,40%) minmax(0,30%)!important}
+  #character .slot-icon{width:31px!important;height:31px!important;font-size:17px!important}
+  #character .slot-name{font-size:6.4px!important}
+}
+
+/* Growroom: make every secondary row able to shrink even when long strain names appear. */
+@media(max-width:560px){
+  #grow .v492-topstats{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  #grow .v492-main{width:100%!important;max-width:100%!important}
+  #grow .v492-scene,#grow .v492-panel,#grow .v492-card,#grow .v492-upgrade{min-width:0!important;max-width:100%!important}
+  #grow .v492-plants{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  #grow .v492-upgrades{grid-template-columns:1fr!important}
+  #grow .v492-upgrade{grid-template-columns:minmax(0,1fr) auto!important}
+  #grow .v492-modal{width:min(96vw,760px)!important;max-height:88dvh!important;overflow:auto!important}
+}
+@media(max-width:350px){
+  #grow .v492-plants{grid-template-columns:1fr!important;position:relative!important;left:auto!important;right:auto!important;bottom:auto!important;padding:70px 6px 8px!important}
+  #grow .v492-scene{min-height:unset!important}
+  #grow .v492-upgrade{grid-template-columns:1fr!important}
+  #grow .v492-upgrade .btn{grid-column:1!important;grid-row:auto!important;width:100%!important}
+}
+
+/* Quests: long titles/rewards must never push cards beyond the viewport. */
+@media(max-width:560px){
+  #quests .quest,#quests .card,#quests .v386-mira{max-width:100%!important;min-width:0!important}
+  #quests .quest h3{font-size:clamp(10px,3.3vw,14px)!important;overflow-wrap:anywhere!important}
+  #quests .quest-meta{display:flex!important;flex-wrap:wrap!important;gap:4px!important}
+  #quests .quest-meta span{white-space:normal!important;max-width:100%!important}
+  #quests .v386-mira-copy{padding-left:clamp(10px,3vw,16px)!important;padding-right:clamp(42%,46vw,48%)!important}
+}
+
+/* Dungeon / combat: keep both fighters inside the stage on narrow screens. */
+@media(max-width:560px){
+  #dungeon .battle-stage{width:100%!important;max-width:100%!important;overflow:hidden!important}
+  #dungeon .fighter{max-width:47%!important;min-width:0!important}
+  #dungeon .fighter-name{font-size:clamp(7px,2vw,10px)!important;overflow-wrap:anywhere!important}
+  #dungeon .battle-log{max-width:100%!important;overflow-wrap:anywhere!important}
+  #dungeon .dungeon-detail,#dungeon .card{max-width:100%!important}
+}
+
+/* Shop / dealers */
+@media(max-width:560px){
+  #shop .shop-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:clamp(4px,1.4vw,7px)!important}
+  #shop .shop-item{min-width:0!important;max-width:100%!important}
+  #shop .shop-item h3{overflow-wrap:anywhere!important}
+  #bagDealer .v7219-main-grid{grid-template-columns:1fr!important}
+  #bagDealer .v7219-current-content{grid-template-columns:minmax(0,36%) minmax(0,64%)!important;gap:8px!important;padding:10px!important}
+  #bagDealer .v7219-pack{min-width:0!important;max-width:100%!important}
+  #harzDealer .v567-benefits{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:6px!important}
+  #harzDealer .v567-featured{grid-template-columns:1fr!important}
+  #harzDealer .v567-content{padding:clamp(7px,2.5vw,14px)!important}
+}
+@media(max-width:350px){
+  #shop .shop-grid{grid-template-columns:1fr!important}
+  #bagDealer .v7219-current-content{grid-template-columns:1fr!important}
+  #harzDealer .v567-benefits{grid-template-columns:1fr!important}
+}
+
+/* Forge tabs/items: allow wrapping instead of clipping. */
+@media(max-width:560px){
+  #forge .v667-tabs{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:4px!important}
+  #forge .v667-tab{min-width:0!important;width:100%!important}
+  #forge .v667-tab span{min-width:0!important;overflow-wrap:anywhere!important}
+  #forge .v667-inventory{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  #forge .v667-inventory .v488-item{min-width:0!important;grid-template-columns:clamp(36px,12vw,45px) minmax(0,1fr)!important}
+  #forge .v667-cost-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  #forge .v490-titlebar{padding-left:clamp(52px,18vw,78px)!important;padding-right:clamp(52px,18vw,78px)!important}
+}
+@media(max-width:350px){
+  #forge .v667-tabs{grid-template-columns:1fr!important}
+  #forge .v667-inventory{grid-template-columns:1fr!important}
+}
+
+/* PvP / guild / hall / friends / mail: lists should shrink, not force horizontal scroll. */
+@media(max-width:560px){
+  #pvp .v204-pvp-shell,#pvp .card,
+  #guild .card,#hall .card,#friends .card,#mail .card{width:100%!important;max-width:100%!important;min-width:0!important}
+  #guild #v254GuildMembers{max-width:100%!important;overflow:hidden!important}
+  #guild #v254GuildMembers .v254-member{grid-template-columns:auto minmax(0,1fr)!important;max-width:100%!important}
+  #guild #v254GuildMembers .v254-member-main{min-width:0!important}
+  #guild #v254GuildMembers .v254-member-name-line{flex-wrap:wrap!important;min-width:0!important}
+  #guild #v254GuildMembers .v254-member-flags{flex-wrap:wrap!important}
+  #hall [class*="grid"],#friends [class*="grid"],#mail [class*="grid"]{max-width:100%!important;min-width:0!important}
+  #friends button,#mail button,#guild button,#hall button{white-space:normal!important}
+}
+
+/* Caravan and any card-based future screen inherit safe width rules. */
+@media(max-width:560px){
+  #caravan .v7249-page,#caravan .v7249-stage,#caravan .v7249-route,#caravan .v7249-action{max-width:100%!important;min-width:0!important}
+  #caravan .v7249-route-tags{flex-wrap:wrap!important}
+}
+
+/* Modals/popups across the game: never exceed the physical screen. */
+@media(max-width:560px){
+  #v123ItemOverlay .v123-detail,
+  #v6239WeeklyChestOverlay .v6239-wc-modal,
+  .v492-overlay .v492-modal,
+  [role="dialog"]{max-width:calc(100vw - 14px)!important;max-height:calc(100dvh - 14px)!important;overflow:auto!important}
+}
+
+/* Extreme narrow phones / display scaling. */
+@media(max-width:330px){
+  .screen{font-size:94%}
+  .screen .btn,.screen button{padding-left:7px!important;padding-right:7px!important}
+  .screen .section-title{gap:5px!important}
+}
+</style>
+
+<script id="v7259-responsive-diagnostics-script">
+(function(){
+'use strict';
+if(window.__V7259_RESPONSIVE_DIAGNOSTICS__)return;
+window.__V7259_RESPONSIVE_DIAGNOSTICS__=true;
+window.v7259ResponsiveDiagnostics=function(){
+ const active=[...document.querySelectorAll('.screen.active')];
+ const vw=document.documentElement.clientWidth||window.innerWidth||0;
+ const issues=[];
+ active.forEach(screen=>{
+  const sr=screen.getBoundingClientRect();
+  [...screen.querySelectorAll('*')].forEach(el=>{
+   const cs=getComputedStyle(el);
+   if(cs.position==='fixed'||cs.display==='none'||cs.visibility==='hidden')return;
+   const r=el.getBoundingClientRect();
+   if(r.width>vw+4||r.right>vw+4||r.left<-4){
+    issues.push({screen:screen.id||screen.className,tag:el.tagName,id:el.id||'',className:String(el.className||'').slice(0,120),left:Math.round(r.left),right:Math.round(r.right),width:Math.round(r.width),viewport:vw});
+   }
+  });
+ });
+ return {version:'V7.260',viewport:vw,activeScreens:active.map(x=>x.id),issues:issues.slice(0,80),count:issues.length};
+};
+})();
+</script>
+
+
+<style id="v7260-bag-dealer-admin-only-css">
+html:not(.v7260-bag-admin) #bagDealer,
+html:not(.v7260-bag-admin) #v032MenuPanel [data-screen="bagDealer"]{
+  display:none!important;
+}
+</style>
+<script id="v7260-bag-dealer-admin-only-script">
+(function(){
+'use strict';
+if(window.__V7260_BAG_ADMIN_ONLY__)return;
+window.__V7260_BAG_ADMIN_ONLY__=true;
+function isAdmin(){
+ try{return typeof v093IsAdmin!=='undefined'&&v093IsAdmin===true&&!!v073User&&!v073User.is_anonymous}catch(_){return false}
+}
+function sync(){
+ const ok=isAdmin();
+ document.documentElement.classList.toggle('v7260-bag-admin',ok);
+ window.__V7215_AD_BAG_MENU_VISIBLE__=ok;
+ try{window.v086BuildCompleteMenu?.(true)}catch(_){}
+ const screen=document.getElementById('bagDealer');
+ if(!ok&&screen?.classList.contains('active')){
+  try{window.v032Go?.('world')}catch(_){screen.classList.remove('active');document.getElementById('world')?.classList.add('active')}
+ }
+ return ok;
+}
+window.v7260BagDealerAdminSync=sync;
+['growlegends:account-ready','growlegends:extras-ready','growlegends:foreground-ready'].forEach(ev=>window.addEventListener(ev,()=>setTimeout(sync,0)));
+window.addEventListener('pageshow',()=>setTimeout(sync,0),{passive:true});
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)setTimeout(sync,0)},{passive:true});
+setTimeout(sync,0);setTimeout(sync,650);setTimeout(sync,1800);
+})();
+</script>
