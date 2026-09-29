@@ -1,0 +1,47 @@
+name: V8.009 Beta combat and reward hotfix
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/v8009_beta_combat_reward_hotfix.py'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Wire beta-only hotfix
+        run: python3 .github/scripts/v8009_beta_combat_reward_hotfix.py
+      - name: Syntax-check new beta files
+        run: |
+          node --check js/system/performance/beta/v8009-combat-cadence-slower.js
+          node --check js/features/rewards/beta/v8009-dungeon-reward-feedback.js
+          node --check js/features/guild/beta/v8008-c10-guildboss-timing.js
+      - name: Validate beta-only wiring
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import json
+          beta=Path('beta.html').read_text(encoding='utf-8')
+          report=json.loads(Path('V8009_BETA_COMBAT_REWARD_HOTFIX.json').read_text(encoding='utf-8'))
+          if not report.get('stable_unchanged'): raise SystemExit('stable changed')
+          for src in (
+            'js/system/performance/beta/v8009-combat-cadence-slower.js',
+            'js/features/rewards/beta/v8009-dungeon-reward-feedback.js'
+          ):
+            if beta.count(src)!=1: raise SystemExit(f'{src}: expected once')
+          if "window.GROW_BETA_TECH_BUILD='V8.009-B1'" not in beta:
+            raise SystemExit('beta tech marker missing')
+          print('V8.009 beta hotfix wiring OK')
+          PY
+      - name: Commit beta hotfix wiring
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add beta.html V8009_BETA_COMBAT_REWARD_HOTFIX.json
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "V8.009 beta: slow combat and show exact dungeon activity rewards"
+          git push
