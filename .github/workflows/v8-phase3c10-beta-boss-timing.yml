@@ -1,0 +1,46 @@
+name: V8 Phase 3C10 Beta retire old boss test animation
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/v8_phase3c10_beta_boss_timing.py'
+permissions:
+  contents: write
+jobs:
+  consolidate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Replace retired boss animation with timing utility
+        run: python3 .github/scripts/v8_phase3c10_beta_boss_timing.py
+      - name: Syntax-check utility
+        run: node --check js/features/guild/beta/v8008-c10-guildboss-timing.js
+      - name: Validate beta-only scope
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re,json
+          beta=Path('beta.html').read_text(encoding='utf-8')
+          report=json.loads(Path('V8_PHASE3C10_BETA.json').read_text(encoding='utf-8'))
+          if not report.get('stable_unchanged'):
+              raise SystemExit('stable changed')
+          m=re.search(r'<script\b[^>]*\bid=["\']v259-guild-boss-animation-core["\'][^>]*>',beta,re.I)
+          if not m or 'js/features/guild/beta/v8008-c10-guildboss-timing.js' not in m.group(0):
+              raise SystemExit('C10 timing utility not loaded at v259 position')
+          util=Path('js/features/guild/beta/v8008-c10-guildboss-timing.js').read_text(encoding='utf-8')
+          if 'v259Sleep' not in util:
+              raise SystemExit('v259Sleep missing')
+          if 'v259AnimateBossResult' in util or 'v259SetBossHp' in util:
+              raise SystemExit('retired animation code still present')
+          print('Phase 3C10 validation OK')
+          PY
+      - name: Commit beta-only timing cleanup
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add beta.html js/features/guild/beta/v8008-c10-guildboss-timing.js V8_PHASE3C10_BETA.json
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "V8.008 beta Phase 3C10: retire old guild boss test animation"
+          git push
