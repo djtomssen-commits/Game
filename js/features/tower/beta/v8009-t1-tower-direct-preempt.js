@@ -3,11 +3,11 @@
 if(window.__V7096_TOWER_DIRECT_PREEMPT__)return;
 window.__V7096_TOWER_DIRECT_PREEMPT__=true;
 
-/* V8.009-T10B: one-tap authoritative Tower flow + replay cleanup.
-   Door choice -> longer door opening -> automatic server replay.
+/* V8.009-T10C: one-tap authoritative Tower flow + replay cleanup.
+   Door choice -> shorter door opening -> automatic server replay.
    Presentation-only guards; server combat math/rewards stay untouched. */
 const G=window.__V8009_TOWER_ROUTE_GUARD__||(window.__V8009_TOWER_ROUTE_GUARD__={
-  routeBusy:false,duplicateTaps:0,chooseCalls:0,lastError:'',doorPreviewMinMs:1500
+  routeBusy:false,duplicateTaps:0,chooseCalls:0,lastError:'',doorPreviewMinMs:900
 });
 Object.assign(G,{
   battleSeen:!!G.battleSeen,
@@ -45,11 +45,11 @@ function setBusy(on){
 function installDoorPreviewPacing(){
  try{
    const base=window.v7298TowerDoorPreview;
-   if(typeof base!=='function'||base.__v8009T10B)return false;
+   if(typeof base!=='function'||base.__v8009T10C)return false;
    const wrapped=function(run,routeIndex=0,ms=900){
      return base.call(this,run,routeIndex,Math.max(G.doorPreviewMinMs,Number(ms)||0));
    };
-   wrapped.__v8009T10B=true;
+   wrapped.__v8009T10C=true;
    wrapped.__v8009Base=base;
    window.v7298TowerDoorPreview=wrapped;
    return true;
@@ -62,7 +62,7 @@ function installDoorPreviewPacing(){
 function installTowerRenderGuard(){
  try{
    const base=window.vTowerRender;
-   if(typeof base!=='function'||base.__v8009T10BFlowGuard)return false;
+   if(typeof base!=='function'||base.__v8009T10CFlowGuard)return false;
    const wrapped=function(){
      const run=window.s?.tower?.run;
      const mode=String(run?.mode||'');
@@ -87,7 +87,7 @@ function installTowerRenderGuard(){
      }
      return base.apply(this,arguments);
    };
-   wrapped.__v8009T10BFlowGuard=true;
+   wrapped.__v8009T10CFlowGuard=true;
    wrapped.__v8009Base=base;
    window.vTowerRender=wrapped;
    G.renderInstalls++;
@@ -101,7 +101,7 @@ function installTowerRenderGuard(){
 function installTowerSfxGuard(){
  try{
    const base=window.v6111Sfx;
-   if(typeof base!=='function'||base.__v8009T10BSfxGuard)return false;
+   if(typeof base!=='function'||base.__v8009T10CSfxGuard)return false;
    const wrapped=function(name){
      const key=String(name||'').replace(/[^a-z0-9_]/gi,'').toLowerCase();
      if(COMBAT_SFX.has(key)){
@@ -125,7 +125,7 @@ function installTowerSfxGuard(){
      }
      return base.apply(this,arguments);
    };
-   wrapped.__v8009T10BSfxGuard=true;
+   wrapped.__v8009T10CSfxGuard=true;
    wrapped.__v8009Base=base;
    window.v6111Sfx=wrapped;
    G.sfxInstalls++;
@@ -194,7 +194,7 @@ window.addEventListener('click',e=>{
  }catch(err){
    G.lastError=String(err?.message||err);
    setBusy(false);
-   console.warn('[V8.009-T10B] tower direct route',err);
+   console.warn('[V8.009-T10C] tower direct route',err);
  }
 },true);
 
@@ -207,11 +207,11 @@ window.addEventListener('pageshow',()=>setTimeout(installPresentationGuards,80),
 
 window.v8009TowerRouteGuardDiagnostics=()=>({
  ...G,
- version:'V8.009-T10B',
+ version:'V8.009-T10C',
  oneTapFight:true,
  separateFightButton:false,
- previewWrapped:!!window.v7298TowerDoorPreview?.__v8009T10B,
- renderGuard:!!window.vTowerRender?.__v8009T10BFlowGuard,
- sfxGuard:!!window.v6111Sfx?.__v8009T10BSfxGuard
+ previewWrapped:!!window.v7298TowerDoorPreview?.__v8009T10C,
+ renderGuard:!!window.vTowerRender?.__v8009T10CFlowGuard,
+ sfxGuard:!!window.v6111Sfx?.__v8009T10CSfxGuard
 });
 })();
