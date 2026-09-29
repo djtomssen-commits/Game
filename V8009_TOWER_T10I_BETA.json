@@ -1,0 +1,25 @@
+{
+  "build": "V8.009-T10I-BETA",
+  "phase": "Block duplicate/late Tower door preview during active replay",
+  "scope": "beta only",
+  "evidence_from_video": {
+    "first_battle_visible": "~9.4 s",
+    "first_hit_visible": "~9.8 s",
+    "erroneous_door_preview_returns": "~10.2 s",
+    "erroneous_door_preview_persists_until": "~12.2 s",
+    "battle_visible_again": "~12.6 s",
+    "finding": "the apparent hang is a second door-preview paint replacing the already-running combat DOM; it bypasses vTowerRender and therefore was not stopped by the render guard"
+  },
+  "changes": [
+    "Only one door preview is allowed per authoritative Tower route.",
+    "Any later door preview is suppressed once the battle has been seen or the battle DOM exists.",
+    "Duplicate previews that arrive before battle start are also suppressed after the first preview call.",
+    "T10H sound, cadence, image-decode and replay guards remain active."
+  ],
+  "file": "js/features/tower/beta/v8009-t1-tower-direct-preempt.js",
+  "file_sha": "97a1282d4e9b79c0b0b49476476b44b9cb62ceee",
+  "stable_changed": false,
+  "server_authority_changed": false,
+  "combat_math_changed": false,
+  "syntax_check": "ok"
+}
