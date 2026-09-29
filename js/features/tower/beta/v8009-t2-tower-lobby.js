@@ -389,12 +389,38 @@ window.v8009CreateTowerLobbyController=function(c){
    if(!live.active)c.paintWednesdayPlacementReward(rows,target,uid);
   }catch(e){box.innerHTML='<div class="vT-empty">Mittwochs-Rangliste momentan nicht erreichbar.</div>'}
  }
- return{buyRecovery,scheduleRecoveryRender,startRun,loadRanking,loadWednesdayRanking};
+ function renderLobby(){
+  const t=c.ensure(),z=t.season;
+  c.normalizeRecovery(t);
+  const x=c.recoveryInfo(),canStart=x.pct>0,startFloor=1;
+  const ev=c.towerWednesdayEvent(),lastWed=c.lastCompletedWednesdayEvent(),w=ev.active?c.wednesdayState():(t.wednesday||{});
+  const view=window.v8009TowerLobbyView;
+  if(typeof view!=='function')throw new Error('V8.009 Tower lobby owner missing');
+  return view({
+   t,z,x,canStart,startFloor,ev,lastWed,w,
+   esc:c.esc,fmt:c.fmt,head:c.head,rewardTable:c.rewardTable
+  });
+ }
+ function bindLobby(root){
+  if(!root)return false;
+  root.querySelectorAll('[data-vt-tab]').forEach(b=>b.onclick=()=>{c.setTowerTab(b.dataset.vtTab);c.render()});
+  root.querySelectorAll('[data-vt-start]').forEach(b=>b.onclick=startRun);
+  root.querySelectorAll('[data-vt-recover]').forEach(b=>b.onclick=buyRecovery);
+  root.querySelectorAll('[data-vt-wed-rewards]').forEach(b=>b.onclick=()=>{
+   c.setTowerTab('rank');c.render();
+   setTimeout(()=>{
+    const d=document.querySelector('#tower .v6276-wed-prizes');
+    if(d){d.open=true;d.scrollIntoView({behavior:'smooth',block:'center'})}
+   },40);
+  });
+  return true;
+ }
+ return{buyRecovery,scheduleRecoveryRender,startRun,loadRanking,loadWednesdayRanking,renderLobby,bindLobby};
 };
 
 window.v8009TowerLobbyControllerDiagnostics=()=>({
  owner:true,
- version:'V8.009-T4',
+ version:'V8.009-T5',
  factory:typeof window.v8009CreateTowerLobbyController==='function'
 });
 })();
