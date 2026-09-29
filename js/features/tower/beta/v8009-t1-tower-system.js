@@ -442,6 +442,22 @@ function v7191PreloadTowerRoute(r){
 }
 window.v7191PreloadTowerAsset=v7191PreloadTowerAsset;
 window.v7191PreloadTowerRoute=v7191PreloadTowerRoute;
+let v8009TowerWarmStartDone=false;
+function v8009WarmTowerStartAssets(startFloor=1){
+ if(v8009TowerWarmStartDone)return;
+ v8009TowerWarmStartDone=true;
+ const first=Math.max(1,Math.floor(Number(startFloor)||1));
+ try{
+  for(let floor=first;floor<=first+1;floor++){
+   const priority=floor===first?'high':'low';
+   v7191PreloadTowerAsset(towerFloorBackground(floor,false),priority);
+   v7191PreloadTowerAsset(towerEnemyArt(floor,'normal'),priority);
+   v7191PreloadTowerAsset(towerEnemyArt(floor,'elite'),priority);
+   v7191PreloadTowerAsset(towerEnemyArt(floor,'miniboss'),priority);
+  }
+ }catch(_){}
+}
+window.v8009WarmTowerStartAssets=v8009WarmTowerStartAssets;
 
 function towerAssetEnemyName(floor,type){
  try{const d=type==='boss'?towerBossDungeon(floor):towerVisualDungeon(floor),room=type==='boss'?10:towerEnemyRoom(floor,type);const gd=(window.dungeons||dungeons)?.[d-1],e=gd?.enemies?.[room-1];const name=String(e?.short||e?.name||'').replace(/<[^>]*>/g,' ').replace(/\s+/g,' ').trim();if(name)return name}catch(e){}
@@ -620,7 +636,7 @@ function setVal(k){try{return Number(setBonusValue?.(k))||0}catch(e){return 0}}
 function critChance(r,c){let crit=.06+(Number(totalAttr?.('glueck'))||0)*.0025+buffFx(r,'crit');if(s.playerClass==='bruiser')crit+=.06+setVal('critChance');if(c?.mechanic==='blind')crit-=.08;return clamp(crit,.02,.65)}
 function playerDamage(r,c){const pk=primaryAttr();const base=Math.max(1,(Number(totalAttr?.(pk))||5)*2.1+(Number(s.level)||1)*2.15+(Number(totalAttr?.('geschick'))||0)*.25+Math.random()*10);let resolved=null;try{if(c?.talent&&typeof v318ResolvePlayerAttack==='function'){resolved=v318ResolvePlayerAttack(c.talent,{baseDamage:base,enemyHp:c.enemyHp,enemyMax:c.enemyMax,playerHp:r.hp,playerMax:r.maxHp,baseCrit:critChance(r,c),setCrit:s.playerClass==='bruiser'?(.07+setVal('critChance')):0,baseWucht:(s.playerClass==='grower'||s.playerClass==='frost')?(.13+setVal('wuchtChance')):0,baseDouble:s.playerClass==='scout'?(.15+setVal('doubleChance')):0,setDoubleDamage:setVal('doubleDamage')})}}catch(e){console.warn('Anbauturm Talentangriff',e)}let dmg=Math.max(1,Math.round(Number(resolved?.damage)||base)),heal=Math.max(0,Math.round(Number(resolved?.heal)||0)),special=String(resolved?.text||'TREFFER'),crit=!!resolved?.crit;if(!resolved&&chance(critChance(r,c))){dmg=Math.round(dmg*1.65);crit=true;special='KRIT'}let mult=1+buffFx(r,'damage');if(r.hp/r.maxHp<.4)mult+=buffFx(r,'lowHpDamage');dmg=Math.max(1,Math.round(dmg*mult));if(crit)dmg=Math.round(dmg*(1+buffFx(r,'critDmg')));heal+=Math.round(dmg*buffFx(r,'lifesteal'));return{dmg,heal,crit,special}}
 function enemyRawDamage(r,c){let d=c.enemyDmg*(.88+Math.random()*.24);let red=buffFx(r,'armor');d*=Math.max(.25,1-red+buffFx(r,'incoming'));if(c.mechanic==='rage')d*=1+Math.min(.7,c.round*.035);if(c.mechanic==='copy')d*=1+Math.min(.4,(r.buffs?.length||0)*.035);if(c.mechanic==='final')d*=1.12;return Math.max(1,Math.round(d))}
-function anim(sel,cl,ms=420){const el=document.querySelector(sel);if(!el)return;el.classList.remove(cl);void el.offsetWidth;el.classList.add(cl);setTimeout(()=>el.classList.remove(cl),ms)}
+function anim(sel,cl,ms=520){const el=document.querySelector(sel);if(!el)return;el.classList.remove(cl);requestAnimationFrame(()=>{if(!el.isConnected)return;el.classList.add(cl);setTimeout(()=>{if(el.isConnected)el.classList.remove(cl)},ms)})}
 function pop(sel,text){const el=document.querySelector(sel);if(!el)return;el.textContent=text;anim(sel,'pop',700)}
 function battlePaint(r,c){const p=document.querySelector('#vTPlayerBar i'),e=document.querySelector('#vTEnemyBar i');if(p)p.style.width=`${clamp(r.hp/r.maxHp*100,0,100)}%`;if(e)e.style.width=`${clamp(c.enemyHp/c.enemyMax*100,0,100)}%`;const pt=document.querySelector('#vTPlayerHp'),et=document.querySelector('#vTEnemyHp');if(pt)pt.textContent=`${fmt(r.hp)} / ${fmt(r.maxHp)}`;if(et)et.textContent=`${fmt(c.enemyHp)} / ${fmt(c.enemyMax)}`;const log=document.querySelector('#vTBattleLog');if(log)log.textContent=c.log.slice(-2).join(' ')}
 function resumeCombat(){const r=ensure().run;if(!r||r.mode!=='battle'||!r.combat)return;if(window.v7081UseAuthority?.('tower')||r?.v7085ServerReplay)return;const token=++battleToken,c=r.combat;const loop=()=>{if(token!==battleToken||ensure().run!==r||r.mode!=='battle')return;c.round++;
@@ -741,7 +757,7 @@ function v6259RiskBox(r){
 }
 function v6259RunLine(r){return v8009RunUiOwner.runLine(r)}
 
-function lobby(){return v8009LobbyController.renderLobby()}
+function lobby(){v8009WarmTowerStartAssets(1);return v8009LobbyController.renderLobby()}
 function routeView(r){return v8009RunUiOwner.routeView(r)}
 function doorTransitionView(r){return v8009RunUiOwner.doorTransitionView(r)}
 
