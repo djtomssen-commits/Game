@@ -442,47 +442,23 @@ function v7191PreloadTowerRoute(r){
 }
 window.v7191PreloadTowerAsset=v7191PreloadTowerAsset;
 window.v7191PreloadTowerRoute=v7191PreloadTowerRoute;
-function v8009WaitTowerAsset(src,timeout=3200){
- src=String(src||'');if(!src)return Promise.resolve(false);
- const im=v7191PreloadTowerAsset(src,'high');
- if(!im)return Promise.resolve(false);
- const decode=()=>{try{return typeof im.decode==='function'?im.decode().then(()=>true).catch(()=>im.complete&&im.naturalWidth>0):Promise.resolve(im.complete&&im.naturalWidth>0)}catch(_){return Promise.resolve(im.complete&&im.naturalWidth>0)}};
- if(im.complete&&im.naturalWidth>0)return decode();
- return new Promise(resolve=>{
-  let done=false;
-  const finish=ok=>{if(done)return;done=true;clearTimeout(timer);resolve(!!ok)};
-  const loaded=()=>{decode().then(ok=>finish(ok))};
-  const failed=()=>finish(false);
-  im.addEventListener?.('load',loaded,{once:true});
-  im.addEventListener?.('error',failed,{once:true});
-  const timer=setTimeout(()=>finish(im.complete&&im.naturalWidth>0),Math.max(500,Number(timeout)||3200));
- });
-}
-async function v8009WaitTowerEnemyAssets(enemy,timeout=3200){
- if(!enemy)return false;
- const art=String(enemy.art||''),bg=String(enemy.bg||'');
- const result=await Promise.allSettled([
-  v8009WaitTowerAsset(art,timeout),
-  v8009WaitTowerAsset(bg,timeout)
- ]);
- return result.some(x=>x.status==='fulfilled'&&x.value===true);
-}
-window.v8009WaitTowerAsset=v8009WaitTowerAsset;
-window.v8009WaitTowerEnemyAssets=v8009WaitTowerEnemyAssets;
 let v8009TowerWarmStartDone=false;
+function v8009WarmTowerFloor(floor,priority='low'){
+ try{
+  v7191PreloadTowerAsset(towerFloorBackground(floor,false),priority);
+  v7191PreloadTowerAsset(towerEnemyArt(floor,'normal'),priority);
+  v7191PreloadTowerAsset(towerEnemyArt(floor,'elite'),priority);
+  v7191PreloadTowerAsset(towerEnemyArt(floor,'miniboss'),priority);
+ }catch(_){}
+}
 function v8009WarmTowerStartAssets(startFloor=1){
  if(v8009TowerWarmStartDone)return;
  v8009TowerWarmStartDone=true;
  const first=Math.max(1,Math.floor(Number(startFloor)||1));
- try{
-  for(let floor=first;floor<=first+1;floor++){
-   const priority=floor===first?'high':'low';
-   v7191PreloadTowerAsset(towerFloorBackground(floor,false),priority);
-   v7191PreloadTowerAsset(towerEnemyArt(floor,'normal'),priority);
-   v7191PreloadTowerAsset(towerEnemyArt(floor,'elite'),priority);
-   v7191PreloadTowerAsset(towerEnemyArt(floor,'miniboss'),priority);
-  }
- }catch(_){}
+ v8009WarmTowerFloor(first,'high');
+ setTimeout(()=>v8009WarmTowerFloor(first+1,'high'),120);
+ setTimeout(()=>v8009WarmTowerFloor(first+2,'low'),900);
+ setTimeout(()=>v8009WarmTowerFloor(first+3,'low'),1800);
 }
 window.v8009WarmTowerStartAssets=v8009WarmTowerStartAssets;
 
@@ -632,28 +608,18 @@ function addRunReward(r,type,risk){const f=r.floor,rm=rewardMult(r,type,risk),sm
  r.lastReward={gold,xp,tokens,score,type};return r.lastReward}
 
 function updateBest(r){const z=ensure().season;z.bestFloor=Math.max(z.bestFloor,r.cleared||0);z.bestScore=Math.max(z.bestScore,Math.round(r.score||0));z.bossKills=Math.max(z.bossKills,Number(r.bossKills)||0);z.eliteKills=Math.max(z.eliteKills,Number(r.eliteKills)||0);const dur=Date.now()-r.startedAt;if((r.cleared||0)>=z.bestFloor&&(!z.bestTime||dur<z.bestTime))z.bestTime=dur}
-async function chooseRoute(i){
+function chooseRoute(i){
  const r=ensure().run;if(!r?.active||r.mode!=='route')return;
  const wanted=r.floor%10===0?1:2;
  if(!Array.isArray(r.choices)||r.choices.length!==wanted)r.choices=seededChoiceFloor(r.floor);
  const choice=r.choices?.[i];if(!choice)return;
- r.currentChoice=choice;r.routeChoiceIndex=i;
- const nonce=r.transitionNonce=(Number(r.transitionNonce)||0)+1;
+ r.currentChoice=choice;r.routeChoiceIndex=i;r.transitionNonce=(Number(r.transitionNonce)||0)+1;
  if(['normal','elite','boss'].includes(choice.type)){
   r.enemy=makeEnemy(r.floor,choice.miniboss?'miniboss':choice.type);
+  v7191PreloadTowerAsset(r.enemy?.bg,'high');
+  v7191PreloadTowerAsset(r.enemy?.art,'high');
   r.mode='doorTransition';
-  saveLocal();
-  try{
-   const btn=document.querySelector(`#tower [data-vt-route="${i}"]`);
-   if(btn){btn.disabled=true;btn.textContent='Gegner wird geladen …'}
-  }catch(_){}
-  await v8009WaitTowerEnemyAssets(r.enemy,3600);
-  const live=ensure().run;
-  if(live!==r||live.mode!=='doorTransition'||Number(live.transitionNonce)!==Number(nonce))return;
-  render();
-  return;
- }
- if(choice.type==='grow')r.mode='growEvent';
+ }else if(choice.type==='grow')r.mode='growEvent';
  else if(choice.type==='lab')r.mode='lab';
  else if(choice.type==='merchant')r.mode='merchant';
  else if(choice.type==='secret')r.mode='secret';
@@ -824,15 +790,17 @@ window.v7298TowerDoorPreview=async function(run,routeIndex=0,ms=1350){
    const rr=deep(run);
    rr.mode='doorTransition';
    rr.routeChoiceIndex=Math.max(0,Number(routeIndex)||0);
-   await v8009WaitTowerEnemyAssets(rr.enemy,3600);
-   if(!root.classList.contains('active'))return false;
+   try{
+     v7191PreloadTowerAsset(rr.enemy?.bg,'high');
+     v7191PreloadTowerAsset(rr.enemy?.art,'high');
+   }catch(_){}
    root.innerHTML=`<div class="vT-wrap">${doorTransitionView(rr)}</div>`;
    try{v6260TowerChrome(true)}catch(_){}
    document.body?.classList.add('v6259-tower-focus');
    await new Promise(resolve=>setTimeout(resolve,Math.max(900,Number(ms)||1350)));
    return true;
  }catch(err){
-   console.warn('[V8.009-T9B] Tower door preview',err);
+   console.warn('[V8.009-T9C] Tower door preview',err);
    return false;
  }
 };
@@ -1095,7 +1063,7 @@ function render(){
    if(r?.mode==='reward')setTimeout(()=>{try{window.v7308PrepareReward?.('tower')}catch(_){}},0);
    if(r?.mode==='route')v7191PreloadTowerRoute(r);
 
-   if(r?.mode==='doorTransition'&&!root.dataset.v6281TransitionLock){
+   if(r?.mode==='doorTransition'&&!window.v7081UseAuthority?.('tower')&&!root.dataset.v6281TransitionLock){
      const nonce=String(r.transitionNonce||'');
      root.dataset.v6281TransitionLock=nonce;
      setTimeout(()=>{
@@ -1104,7 +1072,7 @@ function render(){
          startFight(0);
        }
        if(root.dataset.v6281TransitionLock===nonce)delete root.dataset.v6281TransitionLock;
-     },720);
+     },980);
    }else if(r?.mode!=='doorTransition'){
      delete root.dataset.v6281TransitionLock;
    }
