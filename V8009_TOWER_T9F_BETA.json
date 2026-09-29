@@ -1,0 +1,46 @@
+{
+  "build": "V8.009-T9F-BETA",
+  "phase": "Tower combat flow stabilization + slower shared combat cadence",
+  "scope": "beta only",
+  "file": "js/system/performance/beta/v8009-combat-cadence-slower.js",
+  "file_sha": "99274107734bf1e7ac7317d801db959365bca8a8",
+  "cadence_before": {
+    "frameDelay": 720,
+    "attackDelay": 360,
+    "settleDelay": 360,
+    "visualAttackMs": 600,
+    "visualHitMs": 600,
+    "visualPopMs": 900,
+    "startDelayMs": 190
+  },
+  "cadence_after": {
+    "frameDelay": 840,
+    "attackDelay": 420,
+    "settleDelay": 420,
+    "visualAttackMs": 680,
+    "visualHitMs": 680,
+    "visualPopMs": 1050,
+    "startDelayMs": 220
+  },
+  "findings": [
+    "server v7095_tower_choose_and_fight resolves combat before the client replay is presented",
+    "background Tower renders can therefore replace the replay DOM with the already-resolved post-fight state",
+    "duplicate route taps can queue another authoritative route attempt and produce stale NOT_ROUTE responses",
+    "v7175CombatReplayStep and the older v6225 Tower effect bridge both feed the same Tower combat scene"
+  ],
+  "changes": [
+    "route clicks are locked client-side until the authoritative route/replay promise finishes",
+    "post-fight/background Tower renders are deferred while the visible replay is active",
+    "one-hit Tower fights remain visibly on the combat scene for at least 2.2 seconds",
+    "older duplicate v6225 extra-hit bridge is skipped only for Tower; v7175 replay/status rendering remains active",
+    "Dungeon/PvP/Tower shared combat cadence slowed further"
+  ],
+  "beta_html_changed": false,
+  "beta_html_sha": "1ee5bd5af84ad84b4b867545637b8faa7ffa944a",
+  "stable_changed": false,
+  "stable_index_sha": "0bc5fe3eb0e69c856070dfcb6682d3178c56a597",
+  "database_changed": false,
+  "server1_changed": false,
+  "combat_math_changed": false,
+  "syntax_check": "ok"
+}
