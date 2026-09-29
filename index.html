@@ -42,7 +42,7 @@
 })();
 </script>
 <script id="v4131-version-source">
-window.GROW_LEGENDS_VERSION=Object.freeze({short:'V7.302',label:'V7.302 Server 1',number:'7.302'});
+window.GROW_LEGENDS_VERSION=Object.freeze({short:'V7.305',label:'V7.305 Server 1',number:'7.305'});
 window.__V7210_BOOT_PENDING__=true;
 window.v7206StartupBusy=()=>window.__V7210_BOOT_PENDING__===true||window.__V7206_CANONICAL_LOGIN_RUNNING__===true||window.__V7206_FIRST_PLAYABLE_PENDING__===true;
 /* V7.214: account-ready listeners used to all wake in the same frame and caused
@@ -413,7 +413,7 @@ window.__V483_POWER_READY__=false;
 .app > header .v366-ver,.app > header .v371-logo em,.app > header .v372-logo em{font-size:0!important;color:transparent!important}
 .app > header .v366-ver::after,.app > header .v371-logo em::after,.app > header .v372-logo em::after{content:"V4.164"!important;font-size:5px!important;color:#63cdd1!important;font-style:normal!important;font-weight:900!important}
 </style>
-<title>Grow Legends V7.302 Server 1</title>
+<title>Grow Legends V7.305 Server 1</title>
 <style>
 :root{--bg:#0b100b;--panel:#151d14;--panel2:#1c281a;--panel3:#253423;--line:#354933;--text:#f2f5ed;--muted:#9fad99;--green:#83d65d;--green2:#b2f07e;--gold:#f2c75a;--red:#ee6b68;--blue:#68a7ea;--purple:#ad7bea;--shadow:0 12px 30px rgba(0,0,0,.28)}
 *{box-sizing:border-box}html{background:var(--bg)}body{margin:0;color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:radial-gradient(circle at 50% -10%,#253821 0,#10170f 40%,#090d09 100%);min-height:100vh}button{font:inherit}.app{max-width:820px;margin:auto;min-height:100vh;padding-bottom:88px}
@@ -102229,7 +102229,7 @@ function schedule(){
 function observe(){
   const panel=document.querySelector('#character #v030Materials');
   if(!panel)return false;
-  /* V7.302: retired subtree MutationObserver. v546RenderMaterials now drives this explicitly. */
+  /* V7.305: retired subtree MutationObserver. v546RenderMaterials now drives this explicitly. */
   enhance();
   return true;
 }
@@ -102410,7 +102410,7 @@ document.addEventListener('click',e=>{
 },true);
 
 const ch=document.getElementById('character');
-/* V7.302: no whole-character MutationObserver. Hero render/navigation hooks keep this current. */
+/* V7.305: no whole-character MutationObserver. Hero render/navigation hooks keep this current. */
 window.v682SyncFrostWeapon=sync;
 
 [0,80,220,600,1400].forEach(ms=>setTimeout(schedule,ms));
@@ -108535,7 +108535,7 @@ function monsterArt(kind,seed=1,boss=false){const hue=(seed*47+kind.length*21)%3
  return svgData(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400"><defs><radialGradient id="bg"><stop stop-color="${c2}" stop-opacity=".38"/><stop offset="1" stop-color="#08100b" stop-opacity="0"/></radialGradient><filter id="gl"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><rect width="600" height="400" fill="#0b120d"/><circle cx="300" cy="190" r="210" fill="url(#bg)"/><g fill="${c1}" stroke="${c2}" stroke-width="9" filter="url(#gl)">${body}</g><g fill="#f0e6b3"><circle cx="275" cy="175" r="8"/><circle cx="325" cy="175" r="8"/></g><path d="M272 220q28 22 56 0" fill="none" stroke="#1b120e" stroke-width="8" stroke-linecap="round"/><g fill="${c2}" opacity=".55"><circle cx="90" cy="80" r="8"/><circle cx="520" cy="110" r="6"/><circle cx="80" cy="300" r="5"/><circle cx="515" cy="315" r="9"/></g></svg>`)}
 function mutationArt(m,i){const hue=(i*51+100)%360;return svgData(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 260"><defs><radialGradient id="r"><stop stop-color="hsl(${hue} 68% 58%)" stop-opacity=".65"/><stop offset="1" stop-color="#08100b" stop-opacity="0"/></radialGradient></defs><rect width="500" height="260" fill="#0b120d"/><circle cx="250" cy="120" r="150" fill="url(#r)"/><text x="250" y="165" font-size="120" text-anchor="middle">${m.icon}</text><path d="M0 230q80-40 160 0t160 0 160 0 160 0v30H0z" fill="#071008"/></svg>`)}
 function playerAvatar(){try{if(typeof v080AvatarFor==='function')return v080AvatarFor(s.playerClass||'grower')}catch(e){}return svgData(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 400"><rect width="300" height="400" fill="none"/><circle cx="150" cy="95" r="55" fill="#b8794b"/><path d="M65 370q15-210 85-210t85 210" fill="#354c32" stroke="#76b55c" stroke-width="8"/><text x="150" y="245" text-anchor="middle" font-size="80">⚔️</text></svg>`)}
-function typeMeta(type){return ({normal:['Kampftür','Direkter Kampf. Solider Fortschritt und normale Beute.','⚔️'],elite:['Elite-Tür','Härterer Kampf – deutlich mehr Score und bessere Beute.','☠️'],grow:['Grow-Tür','Versorgung und Heilung. Danach folgt zwingend wieder Kampf.','🌿'],lab:['Labor-Tür','Verändere deinen Run gezielt. Danach folgt zwingend wieder Kampf.','🧪'],merchant:['Schwarzmarkt-Tür','Tausche ungesichertes Gold gegen Vorteile. Danach wieder Kampf.','💰'],mystery:['Unbekannte Tür','Kann helfen oder schaden. Danach folgt wieder Kampf.','❓'],secret:['Versiegelte Tür','Sehr seltene Sonderetage mit besonderer Genetik.','🔐'],boss:['Boss-Tor','Alle 10 Etagen. Kein Ausweg – der Boss muss fallen.','👑']})[type]||['Etage','','']}
+function typeMeta(type){return ({normal:['Kampftür','Direkter Kampf. Solider Fortschritt und normale Beute.','⚔️'],elite:['Elite-Tür','Härterer Kampf – deutlich mehr Score und bessere Beute.','☠️'],grow:['Grow-Tür','Versorgung und Heilung. Danach folgt zwingend wieder Kampf.','🌿'],lab:['Labor-Tür','Verändere deinen Run gezielt. Danach folgt zwingend wieder Kampf.','🧪'],merchant:['Schwarzmarkt-Tür','Tausche ungesichertes Gold gegen Vorteile. Danach wieder Kampf.','💰'],mystery:['Unbekannte Tür','Kann helfen oder schaden – Lebensverlust kann den Run beenden. Danach folgt wieder Kampf.','❓'],secret:['Versiegelte Tür','Sehr seltene Sonderetage mit besonderer Genetik.','🔐'],boss:['Boss-Tor','Alle 10 Etagen. Kein Ausweg – der Boss muss fallen.','👑']})[type]||['Etage','','']}
 function seededChoiceFloor(floor){
  floor=Math.max(1,Math.floor(Number(floor)||1));
  if(floor%10===0)return [{type:'boss',id:`boss_${floor}`}];
@@ -108975,7 +108975,7 @@ function doorTransitionView(r){
  <div class="v6281-enter-note">🚪 Tür gewählt · direkter Übergang in den Kampf …</div>`;
 }
 
-/* V7.302: server-authoritative Tower still shows the old slow door-opening presentation.
+/* V7.305: server-authoritative Tower still shows the old slow door-opening presentation.
    The fight is already resolved server-side; this is presentation-only and never mutates gameplay state. */
 window.v7298TowerDoorPreview=async function(run,routeIndex=0,ms=1350){
  try{
@@ -108990,7 +108990,7 @@ window.v7298TowerDoorPreview=async function(run,routeIndex=0,ms=1350){
    await new Promise(resolve=>setTimeout(resolve,Math.max(900,Number(ms)||1350)));
    return true;
  }catch(err){
-   console.warn('[V7.302] Tower door preview',err);
+   console.warn('[V7.305] Tower door preview',err);
    return false;
  }
 };
@@ -109086,21 +109086,24 @@ function labView(r){
  <div class="v6259-lab-scene"><div class="v6259-lab-art"></div></div>
  <div class="v6259-mutation-grid lab">
   <div class="v6259-mut"><div class="v6259-mut-icon">💉</div><h4>Stabilisator</h4><p>${healOff?'Leben bereits voll':`+${fmt(healPreview)} HP`}</p><button class="vT-btn primary" data-vt-lab="heal" ${healOff?'disabled':''}>${healOff?'Nicht nötig':'Auswählen'}</button></div>
-  <div class="v6259-mut"><div class="v6259-mut-icon">🌱</div><h4>Wurzelinjektion</h4><p>${rootsOwned?'Bereits aktiv':atCap?'Mutationslimit erreicht':'+10 % HP · +20 % Heilung'}</p><button class="vT-btn" data-vt-lab="boost" ${rootOff?'disabled':''}>${rootOff?'Nicht verfügbar':'Auswählen'}</button></div>
+  <div class="v6259-mut"><div class="v6259-mut-icon">🌱</div><h4>Wurzelinjektion</h4><p>${rootsOwned?'Bereits aktiv':atCap?'Mutationslimit erreicht':'+6 % max. HP · +10 % Heilung'}</p><button class="vT-btn" data-vt-lab="boost" ${rootOff?'disabled':''}>${rootOff?'Nicht verfügbar':'Auswählen'}</button></div>
   <div class="v6259-mut"><div class="v6259-mut-icon">🧬</div><h4>Genetik öffnen</h4><p>${atCap?'Mutationslimit erreicht':!hasMutation?'Keine Genetik übrig':'1 aus 3 Mutationen wählen'}</p><button class="vT-btn gold" data-vt-lab="mut" ${mutOff?'disabled':''}>${mutOff?'Nicht verfügbar':'Auswählen'}</button></div>
  </div>
  <div class="v6259-note">Der Laborraum zählt als Spezialetage. Danach wartet wieder ein Pflichtkampf.</div>`;
 }
 function merchantView(r){
- const p=towerMerchantPrices(r),soldOut=!!(r.shopFlags.heal&&r.shopFlags.damage&&r.shopFlags.insurance);
- if(soldOut)return `${v6259Head(r,'Händler · Der Schwarzmarkt')}<div class="v6259-result"><div class="v6259-result-icon">💰</div><h2>Schwarzmarkt leergekauft</h2><p>Du hast in diesem Run bereits alle Angebote gekauft.</p><button class="vT-btn primary" data-vt-shop-leave>Weiter</button></div>`;
+ const p=towerMerchantPrices(r),buffs=Array.isArray(r.buffs)?r.buffs:[],
+ dieselOwned=buffs.includes('diesel'),insuranceOwned=buffs.includes('insurance'),
+ damageOff=!!r.shopFlags.damage||dieselOwned,insuranceOff=!!r.shopFlags.insurance||insuranceOwned,
+ soldOut=!!(r.shopFlags.heal&&damageOff&&insuranceOff);
+ if(soldOut)return `${v6259Head(r,'Händler · Der Schwarzmarkt')}<div class="v6259-result"><div class="v6259-result-icon">💰</div><h2>Schwarzmarkt leergekauft</h2><p>Du hast in diesem Run bereits alle nutzbaren Angebote gekauft oder besitzt deren Mutation schon.</p><button class="vT-btn primary" data-vt-shop-leave>Weiter</button></div>`;
  return `${v6259Head(r,'Händler · Der Schwarzmarkt')}
  <div class="v6259-wallet">💰 ${fmt(r.unbanked.gold)} ungesichertes Gold</div>
  <div class="v6259-merchant-scene"><div class="v6259-merchant-art"></div></div>
  <div class="v6259-shop-list">
   <div><i>🧪</i><section><b>Regenerationsmix</b><span>Heilt 30 % Turm-Leben.</span></section><button class="vT-btn primary" data-vt-buy="heal" ${r.shopFlags.heal?'disabled':''}>${r.shopFlags.heal?'Gekauft':`${fmt(p.heal)} 💰`}</button></div>
-  <div><i>🧬</i><section><b>Sour-Diesel-Antrieb</b><span>Mehr Schaden und Ausweichen.</span></section><button class="vT-btn gold" data-vt-buy="damage" ${r.shopFlags.damage?'disabled':''}>${r.shopFlags.damage?'Gekauft':`${fmt(p.damage)} 💰`}</button></div>
-  <div><i>🔐</i><section><b>Beuteversicherung</b><span>Reduziert Verlust bei Niederlage.</span></section><button class="vT-btn" data-vt-buy="insurance" ${r.shopFlags.insurance?'disabled':''}>${r.shopFlags.insurance?'Gekauft':`${fmt(p.insurance)} 💰`}</button></div>
+  <div><i>🧬</i><section><b>Sour-Diesel-Antrieb</b><span>Mehr Schaden und Ausweichen.</span></section><button class="vT-btn gold" data-vt-buy="damage" ${damageOff?'disabled':''}>${r.shopFlags.damage?'Gekauft':dieselOwned?'Mutation aktiv':`${fmt(p.damage)} 💰`}</button></div>
+  <div><i>🔐</i><section><b>Beuteversicherung</b><span>Reduziert Verlust bei Niederlage.</span></section><button class="vT-btn" data-vt-buy="insurance" ${insuranceOff?'disabled':''}>${r.shopFlags.insurance?'Gekauft':insuranceOwned?'Mutation aktiv':`${fmt(p.insurance)} 💰`}</button></div>
  </div>
  <button class="vT-btn primary v6259-main-btn" data-vt-shop-leave>Etage verlassen</button>`;
 }
@@ -109111,12 +109114,13 @@ function mysteryView(r){
  <div class="v6259-result v6269-story-result"><div class="v6259-result-icon">❓</div><h2>${esc(r.event?.title||'Unbekannte Etage')}</h2><p>${esc(r.event?.text||'')} <b>${esc(r.event?.result||'')}</b></p><button class="vT-btn primary" data-vt-event-next>Weiter</button></div>`;
 }
 function secretView(r){
+ const buffs=Array.isArray(r.buffs)?r.buffs:[],genesOff=buffs.length>=6||!MUTATIONS.some(x=>!buffs.includes(x.id));
  return `${v6259Head(r,'Versiegelter Growraum')}
  ${v6259RunLine(r)}
  <div class="v6269-secret-scene"><div class="v6260-grow-art"></div><div class="v6269-scene-tag">🔐 VERBOTENER GROWROOM</div><div class="v6269-secret-copy">Ein versiegelter Raum voller illegaler Genetik. Du darfst genau eine Entscheidung treffen.</div></div>
  <div class="v6259-shop-list v6269-secret-actions">
-  <div><i>🌿</i><section><b>Ernte stehlen</b><span>58 % Chance auf viel Gold + Blätter. Sonst 24 % Leben verlieren.</span></section><button class="vT-btn danger" data-vt-secret="steal">Riskieren</button></div>
-  <div><i>🧬</i><section><b>Genetik klauen</b><span>Eine zufällige noch nicht vorhandene Mutation.</span></section><button class="vT-btn gold" data-vt-secret="genes">Nehmen</button></div>
+  <div><i>🌿</i><section><b>Ernte stehlen</b><span>58 % Chance auf viel Gold + Blätter. Sonst 24 % Leben verlieren – das kann den Run beenden.</span></section><button class="vT-btn danger" data-vt-secret="steal">Riskieren</button></div>
+  <div><i>🧬</i><section><b>Genetik klauen</b><span>${genesOff?'Mutationslimit erreicht.':'Eine zufällige noch nicht vorhandene Mutation.'}</span></section><button class="vT-btn gold" data-vt-secret="genes" ${genesOff?'disabled':''}>${genesOff?'Nicht verfügbar':'Nehmen'}</button></div>
   <div><i>💚</i><section><b>Ruhiger Raum</b><span>38 % heilen und sichere Turmblätter mitnehmen.</span></section><button class="vT-btn primary" data-vt-secret="rest">Ausruhen</button></div>
  </div>`;
 }
@@ -110329,7 +110333,7 @@ document.addEventListener('click',e=>{
   if(e.target?.closest?.('[data-v111-openboss],#v110WorldBossBtn,[data-v6118-open-worldboss]'))setTimeout(install,120);
 },true);
 
-/* V7.302 performance: document-wide worldboss observer retired; ensure/click hooks above own installation. */
+/* V7.305 performance: document-wide worldboss observer retired; ensure/click hooks above own installation. */
 window.addEventListener('pageshow',()=>{if(document.getElementById('v110Overlay')?.classList.contains('show'))setTimeout(install,40)},{passive:true});
 
 setTimeout(()=>{try{document.getElementById('v110Overlay')?.remove()}catch(_){}},50);
@@ -113255,7 +113259,7 @@ function enhance(){
 function schedule(){if(scheduled)return;scheduled=true;requestAnimationFrame(()=>{scheduled=false;enhance()})}
 function observe(){
  const panel=document.querySelector('#character #v030Materials');if(!panel)return false;
- /* V7.302: retired subtree MutationObserver. One post-render hook is authoritative. */
+ /* V7.305: retired subtree MutationObserver. One post-render hook is authoritative. */
  enhance();return true;
 }
 document.addEventListener('click',e=>{if(e.target?.closest?.('#v459CharacterTabs [data-tab="materials"],#v514HeroTabs [data-tab="materials"],#v546MaterialsHeader'))setTimeout(()=>{observe();enhance()},40)},true);
@@ -132032,6 +132036,14 @@ function reasonText(r){
     INSUFFICIENT_TOKENS:'Nicht genug Turmblätter.',
     INVALID_CHOICE:'Diese Tür ist nicht mehr verfügbar.',
     NOT_READY_FOR_FIGHT:'Der Server ist noch nicht kampfbereit.',
+    NOT_CHECKPOINT:'Diese Aktion ist nur am Kontrollpunkt möglich.',
+    NOT_GROW_EVENT:'Diese Grow-Aktion ist in diesem Raum nicht verfügbar.',
+    NOT_LAB:'Diese Labor-Aktion ist in diesem Raum nicht verfügbar.',
+    NOT_SECRET:'Diese Geheimraum-Aktion ist in diesem Raum nicht verfügbar.',
+    NOT_MERCHANT:'Diese Händler-Aktion ist hier nicht verfügbar.',
+    MUTATION_CAP:'Das Mutationslimit von 6 ist erreicht.',
+    ALREADY_OWNED:'Diese Mutation ist bereits aktiv.',
+    NO_MUTATION_AVAILABLE:'Es ist keine weitere Mutation verfügbar.',
     TASK_NOT_COMPLETE:'Die Mittwochs-Aufgabe ist noch nicht erfüllt.',
     ALREADY_CLAIMED:'Bereits abgeholt.',
     NO_PENDING_CHEST:'Keine Wochen-Truhe zur Abholung.',
@@ -143525,43 +143537,39 @@ window.v7269CombatCadenceDiagnostics=()=>{
   if(!s?.guild){box.innerHTML='<div class="v7273-empty">Du bist aktuell in keiner Gilde.</div>';return;}
   const d=Array.isArray(s.daily)?s.daily:[],w=Array.isArray(s.weekly)?s.weekly:[],c=Array.isArray(s.contributors)?s.contributors:[],ch=s.chest||{};
   const chestPoints=Math.max(0,Math.min(100,Number(ch.points)||0));
-  const milestones=[20,40,60,80,100];
+  const bgSrc=document.querySelector('#v7273GrowStage .v7273-grow-bg')?.getAttribute('src')||'';
   let html=`<div class="v7301-shell">`;
-  html+=`<section class="v7301-hero">
-    <div class="v7301-hero-kicker">GILDEN-GROW</div>
-    <h2>Gilden-Grow-Aufträge</h2>
-    <div class="v7301-hero-sub">${esc(s.guild.name||'Gilde')} [${esc(s.guild.tag||'')}] · ${num(s.activeMembers)} aktive Mitglieder</div>
-    <div class="v7301-summary">Wochen-Truhe ${num(ch.points)}/${num(ch.max||100)} · Stufe ${num(ch.level)}/5 · Gilden-Buds ${num(s.guild.guildBuds)}</div>
-    <div class="v7301-track-wrap">`;
-  for(let i=0;i<5;i++){
-    const seg=Math.max(0,Math.min(100,((chestPoints-(i*20))/20)*100));
-    html+=`<div class="v7301-track-seg"><i style="width:${seg}%"></i></div>`;
-  }
-  html+=`</div><div class="v7301-milestones">`;
-  milestones.forEach((m,i)=>{
-    const hit=Number(ch.level)>=i+1;
-    const cur=chestPoints>i*20 && chestPoints<(i+1)*20;
-    html+=`<div class="v7301-milestone ${hit?'hit':''} ${cur?'current':''}" title="Truhenstufe ${i+1} · ${m} Punkte">
-      <span>${i+1}</span><small>${m}</small>
-    </div>`;
-  });
-  html+=`</div></section>`;
+  html+=`<section class="v7303-hero" style="--v7303-bg:url('${bgSrc}')">
+    <div class="v7303-overlay"></div>
+    <div class="v7303-header">
+      <div class="v7303-kicker">GILDEN-GROW</div>
+      <h2>Gilden-Grow-Aufträge</h2>
+      <div class="v7303-sub">${esc(s.guild.name||'Gilde')} [${esc(s.guild.tag||'')}] · ${num(s.activeMembers)} aktive Mitglieder</div>
+      <div class="v7303-summary">Wochen-Truhe ${num(ch.points)}/${num(ch.max||100)} · Stufe ${num(ch.level)}/5 · Gilden-Buds ${num(s.guild.guildBuds)}</div>
+    </div>
+    <div class="v7303-track">
+      ${Array.from({length:5},(_,i)=>{const seg=Math.max(0,Math.min(100,((chestPoints-(i*20))/20)*100));return `<div class="v7303-track-seg"><i style="width:${seg}%"></i></div>`;}).join('')}
+    </div>
+    <div class="v7303-track-labels">
+      <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span>
+    </div>
+  </section>`;
 
-  html+=`<section class="v7301-block">
+  html+=`<section class="v7301-block v7303-board">
     <div class="v7301-block-head"><h3>Tagesaufträge</h3><span data-v7273-countdown="daily">Neue Aufträge in ${countdown(s.dailyResetAt)}</span></div>
     <div class="v7301-task-list">`;
   if(d.length) d.slice(0,5).forEach(t=>html+=taskHtml(t,false));
   else html+=`<div class="v7301-empty-card">Keine Tagesaufträge gefunden.</div>`;
   html+=`</div></section>`;
 
-  html+=`<section class="v7301-block">
+  html+=`<section class="v7301-block v7303-board">
     <div class="v7301-block-head"><h3>Wochenaufträge</h3><span data-v7273-countdown="weekly">Reset in ${countdown(s.weeklyResetAt)}</span></div>
     <div class="v7301-task-list">`;
   if(w.length) w.slice(0,3).forEach(t=>html+=taskHtml(t,true));
   else html+=`<div class="v7301-empty-card">Keine Wochenaufträge gefunden.</div>`;
   html+=`</div></section>`;
 
-  html+=`<section class="v7301-block">
+  html+=`<section class="v7301-block v7303-board">
     <div class="v7301-block-head"><h3>Gildenbeitrag diese Woche</h3><span>Top 5 Mitglieder</span></div>
     <div class="v7301-contrib-list">`;
   if(c.length){
@@ -143959,7 +143967,7 @@ window.addEventListener('resize',schedule,{passive:true});
 window.addEventListener('orientationchange',()=>setTimeout(schedule,120),{passive:true});
 window.addEventListener('load',()=>{schedule();setTimeout(schedule,120);setTimeout(schedule,380)});
 document.addEventListener('DOMContentLoaded',()=>{schedule();setTimeout(schedule,120)});
-/* V7.302 performance: document-wide mutation observation + permanent 1.8 s polling retired.
+/* V7.305 performance: document-wide mutation observation + permanent 1.8 s polling retired.
    Fit only on real lifecycle/navigation changes. */
 window.addEventListener('growlegends:account-ready',()=>setTimeout(schedule,80),{passive:true});
 window.addEventListener('growlegends:navigation-open-v7119',e=>{
@@ -144282,11 +144290,11 @@ setTimeout(sync,0);setTimeout(sync,650);setTimeout(sync,1800);
 <script id="v7281-version-lock">
 (()=>{'use strict';
  const ch=String(window.GROW_RELEASE_CHANNEL||'stable');
- const V=Object.freeze({short:'V7.302',label:ch==='beta'?'V7.302 Beta':'V7.302 Server 1',number:'7.302'});
+ const V=Object.freeze({short:'V7.305',label:ch==='beta'?'V7.305 Beta':'V7.305 Server 1',number:'7.305'});
  window.GROW_LEGENDS_VERSION=V;window.__GROW_LEGENDS_RELEASE__=V.short;window.__GL_CURRENT_BUILD__=V.short;
  const apply=()=>{try{document.querySelectorAll('.v366-ver,.v371-logo em,.v372-logo em,[data-top-version],#topVersion').forEach(el=>{el.textContent=V.short})}catch(_){}};
  apply();addEventListener('pageshow',apply,{passive:true});addEventListener('growlegends:account-ready',apply,{passive:true});
- /* V7.302 STARTFIX: retired document-wide version MutationObserver; it could self-trigger and starve DOMContentLoaded after later patches were appended. */
+ /* V7.305 STARTFIX: retired document-wide version MutationObserver; it could self-trigger and starve DOMContentLoaded after later patches were appended. */
 })();
 </script>
 
@@ -144495,10 +144503,10 @@ setTimeout(sync,0);setTimeout(sync,650);setTimeout(sync,1800);
 </style>
 
 
-<!-- V7.302 STARTFIX: startup deadlock removed; guild visuals unchanged -->
+<!-- V7.305 STARTFIX: startup deadlock removed; guild visuals unchanged -->
 
 <style id="v7286-guild-grow-fit-final">
-/* V7.302 · final Guild Grow fit. Pure presentation fix. */
+/* V7.305 · final Guild Grow fit. Pure presentation fix. */
 .v7273-grow-stage::before{content:none!important;display:none!important}
 
 .v7281-chest-track{
@@ -144580,16 +144588,16 @@ setTimeout(sync,0);setTimeout(sync,650);setTimeout(sync,1800);
 }
 
 /* Final visible version owner */
-html body .app > header .v358-logo::after{content:"V7.302"!important}
+html body .app > header .v358-logo::after{content:"V7.305"!important}
 html body .app > header .v366-ver::after,
 html body .app > header .v371-logo em::after,
 html body .app > header .v372-logo em::after,
-#v372TopbarShell .v372-logo em::after{content:"V7.302"!important}
+#v372TopbarShell .v372-logo em::after{content:"V7.305"!important}
 </style>
 
 
 <style id="v7287-weekly-chest-compact-fit">
-/* V7.302 · safer weekly chest fit on narrower phones / larger display scaling */
+/* V7.305 · safer weekly chest fit on narrower phones / larger display scaling */
 @media (max-width:430px){
   #world.active .v6239-weekly-chest{
     left:92px!important;
@@ -144783,7 +144791,7 @@ document.addEventListener('click',e=>{
   setTimeout(kick,0);
   setTimeout(kick,120);
 },true);
-/* V7.302 performance: no permanent 900 ms dungeon repaint loop. */
+/* V7.305 performance: no permanent 900 ms dungeon repaint loop. */
 window.addEventListener('growlegends:navigation-open-v7119',e=>{
   const id=String(e?.detail?.id||e?.detail?.screen||'');
   if(id==='dungeon')setTimeout(kick,45);
@@ -144793,7 +144801,7 @@ window.addEventListener('growlegends:navigation-open-v7119',e=>{
 
 
 <style id="v7288-home-adaptive-fit-css">
-/* V7.302 · Home hero: keep motto/chest compact, but do NOT solve collisions
+/* V7.305 · Home hero: keep motto/chest compact, but do NOT solve collisions
    by endlessly shrinking them. The hero gets extra vertical room when the
    real rendered profile/checklist is taller on a specific phone. */
 @media(max-width:430px){
@@ -144855,7 +144863,7 @@ html body .app > header .v366-ver{
   font-size:0!important;
 }
 html body .app > header .v366-ver::after{
-  content:"V7.302"!important;
+  content:"V7.305"!important;
   display:inline!important;
   font-size:10px!important;
   line-height:1!important;
@@ -144949,7 +144957,7 @@ document.addEventListener('click',e=>{
   }
 },true);
 
-/* V7.302 performance: the 1.6 s layout-measurement poll is retired. */
+/* V7.305 performance: the 1.6 s layout-measurement poll is retired. */
 window.addEventListener('growlegends:navigation-open-v7119',e=>{
   const id=String(e?.detail?.id||e?.detail?.screen||'');
   if(!id||id==='world')setTimeout(schedule,70);
@@ -144961,7 +144969,7 @@ schedule();
 
 
 <style id="v7289-guild-grow-wideboard">
-/* V7.302 · Guild Grow: use more of the phone width instead of shrinking text.
+/* V7.305 · Guild Grow: use more of the phone width instead of shrinking text.
    The artwork is widened only horizontally, so the vertical task positions remain stable. */
 .v7273-grow-bg{
   transform:scaleX(1.065)!important;
@@ -145046,16 +145054,16 @@ schedule();
 }
 
 /* Current build */
-html body .app > header .v358-logo::after{content:"V7.302"!important}
+html body .app > header .v358-logo::after{content:"V7.305"!important}
 html body .app > header .v366-ver::after,
 html body .app > header .v371-logo em::after,
 html body .app > header .v372-logo em::after,
-#v372TopbarShell .v372-logo em::after{content:"V7.302"!important}
+#v372TopbarShell .v372-logo em::after{content:"V7.305"!important}
 </style>
 
 
 <style id="v7290-guild-chest-progress-fix">
-/* V7.302 · The artwork contains pre-painted green rails.
+/* V7.305 · The artwork contains pre-painted green rails.
    These opaque live segments cover those rails and then repaint only the real server progress. */
 .v7281-chest-track{
   top:21.92%!important;
@@ -145087,11 +145095,11 @@ html body .app > header .v372-logo em::after,
 }
 
 /* Current build */
-html body .app > header .v358-logo::after{content:"V7.302"!important}
+html body .app > header .v358-logo::after{content:"V7.305"!important}
 html body .app > header .v366-ver::after,
 html body .app > header .v371-logo em::after,
 html body .app > header .v372-logo em::after,
-#v372TopbarShell .v372-logo em::after{content:"V7.302"!important}
+#v372TopbarShell .v372-logo em::after{content:"V7.305"!important}
 </style>
 
 
@@ -145099,11 +145107,11 @@ html body .app > header .v372-logo em::after,
 /* Quest cards are committed only after all 3 scene/enemy assets are decoded. */
 #quests.v7291-quest-art-warming .v6344-card-enemy{opacity:0!important}
 #quests.v7291-quest-art-ready .v6344-card-enemy{opacity:1!important;transition:opacity .10s linear!important}
-html body .app > header .v358-logo::after{content:"V7.302"!important}
+html body .app > header .v358-logo::after{content:"V7.305"!important}
 html body .app > header .v366-ver::after,
 html body .app > header .v371-logo em::after,
 html body .app > header .v372-logo em::after,
-#v372TopbarShell .v372-logo em::after{content:"V7.302"!important}
+#v372TopbarShell .v372-logo em::after{content:"V7.305"!important}
 </style>
 <script id="v7291-combat-cadence-performance-final">
 (()=>{'use strict';
@@ -145114,7 +145122,7 @@ html body .app > header .v372-logo em::after,
  window.v7269DungeonCadence=questCadence;
  try{v7269DungeonCadence=questCadence}catch(_){}
  window.v7291PerformanceDiagnostics=()=>({
-   version:'V7.302',
+   version:'V7.305',
    combatCadence:questCadence(),
    runtime:window.__V477_RUNTIME_DIAGNOSTICS__?.()||null,
    accountQueue:window.v7214AccountReadyQueueDiagnostics?.()||null,
@@ -145197,7 +145205,7 @@ document.addEventListener('click',e=>{
 },true);
 
 window.v7292PerformanceDiagnostics=()=>({
-  version:'V7.302',
+  version:'V7.305',
   materialObserversRetired:true,
   characterWideObserverRetired:true,
   materialRenderHook:!!window.v546RenderMaterials?.__v7292PerfHook,
@@ -145209,16 +145217,16 @@ window.v7292PerformanceDiagnostics=()=>({
 })();
 </script>
 <style id="v7292-runtime-performance-version">
-html body .app > header .v358-logo::after{content:"V7.302"!important}
+html body .app > header .v358-logo::after{content:"V7.305"!important}
 html body .app > header .v366-ver::after,
 html body .app > header .v371-logo em::after,
 html body .app > header .v372-logo em::after,
-#v372TopbarShell .v372-logo em::after{content:"V7.302"!important}
+#v372TopbarShell .v372-logo em::after{content:"V7.305"!important}
 </style>
 
 
 <style id="v7293-guild-grow-textfit-final">
-/* V7.302 · Text now fits the actual painted wooden boxes. */
+/* V7.305 · Text now fits the actual painted wooden boxes. */
 .v7273-task{
   left:4.15%!important;
   right:4.15%!important;
@@ -145343,16 +145351,16 @@ html body .app > header .v372-logo em::after,
   .v7273-actions{font-size:4.2px!important}
 }
 
-html body .app > header .v358-logo::after{content:"V7.302"!important}
+html body .app > header .v358-logo::after{content:"V7.305"!important}
 html body .app > header .v366-ver::after,
 html body .app > header .v371-logo em::after,
 html body .app > header .v372-logo em::after,
-#v372TopbarShell .v372-logo em::after{content:"V7.302"!important}
+#v372TopbarShell .v372-logo em::after{content:"V7.305"!important}
 </style>
 
 
 <style id="v7294-guild-grow-boardfit-final">
-/* V7.302 · Refit the whole task board to the actual text.
+/* V7.305 · Refit the whole task board to the actual text.
    Instead of only shrinking text, widen the reward plaques and give the
    task rows a little more breathing room so the live overlay matches the art. */
 
@@ -145474,16 +145482,16 @@ html body .app > header .v372-logo em::after,
 .v7273-chest-ring{width:9.05%!important}
 
 /* Current build */
-html body .app > header .v358-logo::after{content:"V7.302"!important}
+html body .app > header .v358-logo::after{content:"V7.305"!important}
 html body .app > header .v366-ver::after,
 html body .app > header .v371-logo em::after,
 html body .app > header .v372-logo em::after,
-#v372TopbarShell .v372-logo em::after{content:"V7.302"!important}
+#v372TopbarShell .v372-logo em::after{content:"V7.305"!important}
 </style>
 
 
 <style id="v7295-guild-grow-background-refit-final">
-/* V7.302 · Refit the BOARD / background to the live content, not the other way around.
+/* V7.305 · Refit the BOARD / background to the live content, not the other way around.
    Make the painted right reward plaques and bottom contribution area effectively larger. */
 
 /* Stronger board/background refit */
@@ -145610,16 +145618,16 @@ html body .app > header .v372-logo em::after,
 .v7273-chest-ring{width:9.3%!important}
 
 /* Build marker */
-html body .app > header .v358-logo::after{content:"V7.302"!important}
+html body .app > header .v358-logo::after{content:"V7.305"!important}
 html body .app > header .v366-ver::after,
 html body .app > header .v371-logo em::after,
 html body .app > header .v372-logo em::after,
-#v372TopbarShell .v372-logo em::after{content:"V7.302"!important}
+#v372TopbarShell .v372-logo em::after{content:"V7.305"!important}
 </style>
 
 
 <style id="v7296-guildgrow-new-background-final">
-/* V7.302 · New guild-grow background art with chest summary moved higher. */
+/* V7.305 · New guild-grow background art with chest summary moved higher. */
 .v7273-grow-bg{
   transform:none!important;
   object-fit:cover!important;
@@ -145684,16 +145692,16 @@ html body .app > header .v372-logo em::after,
 }
 
 /* Build marker */
-html body .app > header .v358-logo::after{content:"V7.302"!important}
+html body .app > header .v358-logo::after{content:"V7.305"!important}
 html body .app > header .v366-ver::after,
 html body .app > header .v371-logo em::after,
 html body .app > header .v372-logo em::after,
-#v372TopbarShell .v372-logo em::after{content:"V7.302"!important}
+#v372TopbarShell .v372-logo em::after{content:"V7.305"!important}
 </style>
 
 
 <style id="v7297-guildgrow-dynamicbar-final">
-/* V7.302 · Keep the existing new background image.
+/* V7.305 · Keep the existing new background image.
    The bright rail painted into that image is visually neutralized here.
    Only the live .v7281-chest-track bars show actual progress. */
 
@@ -145751,25 +145759,25 @@ html body .app > header .v372-logo em::after,
 }
 
 /* Current build */
-html body .app > header .v358-logo::after{content:"V7.302"!important}
+html body .app > header .v358-logo::after{content:"V7.305"!important}
 html body .app > header .v366-ver::after,
 html body .app > header .v371-logo em::after,
 html body .app > header .v372-logo em::after,
-#v372TopbarShell .v372-logo em::after{content:"V7.302"!important}
+#v372TopbarShell .v372-logo em::after{content:"V7.305"!important}
 </style>
 
 
 <style id="v7298-tower-door-version">
-html body .app > header .v358-logo::after{content:"V7.302"!important}
+html body .app > header .v358-logo::after{content:"V7.305"!important}
 html body .app > header .v366-ver::after,
 html body .app > header .v371-logo em::after,
 html body .app > header .v372-logo em::after,
-#v372TopbarShell .v372-logo em::after{content:"V7.302"!important}
+#v372TopbarShell .v372-logo em::after{content:"V7.305"!important}
 </style>
 
 
 <style id="v7299-guildgrow-cleanfit-final">
-/* V7.302 · Clean text fit on the new guild-grow background */
+/* V7.305 · Clean text fit on the new guild-grow background */
 
 .v7273-chest-summary{
   top:14.45%!important;
@@ -145883,16 +145891,16 @@ html body .app > header .v372-logo em::after,
 }
 
 /* Build marker */
-html body .app > header .v358-logo::after{content:"V7.302"!important}
+html body .app > header .v358-logo::after{content:"V7.305"!important}
 html body .app > header .v366-ver::after,
 html body .app > header .v371-logo em::after,
 html body .app > header .v372-logo em::after,
-#v372TopbarShell .v372-logo em::after{content:"V7.302"!important}
+#v372TopbarShell .v372-logo em::after{content:"V7.305"!important}
 </style>
 
 
 <style id="v7300-guildgrow-realign-final">
-/* V7.302 · Full vertical realignment for the new guild-grow board */
+/* V7.305 · Full vertical realignment for the new guild-grow board */
 
 .v7273-chest-summary{
   top:14.0%!important;
@@ -146021,16 +146029,16 @@ html body .app > header .v372-logo em::after,
 }
 
 /* Build marker */
-html body .app > header .v358-logo::after{content:"V7.302"!important}
+html body .app > header .v358-logo::after{content:"V7.305"!important}
 html body .app > header .v366-ver::after,
 html body .app > header .v371-logo em::after,
 html body .app > header .v372-logo em::after,
-#v372TopbarShell .v372-logo em::after{content:"V7.302"!important}
+#v372TopbarShell .v372-logo em::after{content:"V7.305"!important}
 </style>
 
 
 <style id="v7301-guildgrow-redesign-final">
-/* V7.302 · full guild-grow page redesign. Keep top header and tabs, rebuild the page content cleanly. */
+/* V7.305 · full guild-grow page redesign. Keep top header and tabs, rebuild the page content cleanly. */
 #guild .v7273-guild-grow-panel{
   padding:0!important;
   background:transparent!important;
@@ -146363,11 +146371,11 @@ html body .app > header .v372-logo em::after,
   .v7301-contrib-rank{width:30px!important;height:30px!important;font-size:14px!important}
   .v7301-contrib-player strong{font-size:15px!important}
 }
-html body .app > header .v358-logo::after{content:"V7.302"!important}
+html body .app > header .v358-logo::after{content:"V7.305"!important}
 html body .app > header .v366-ver::after,
 html body .app > header .v371-logo em::after,
 html body .app > header .v372-logo em::after,
-#v372TopbarShell .v372-logo em::after{content:"V7.302"!important}
+#v372TopbarShell .v372-logo em::after{content:"V7.305"!important}
 </style>
 
 
@@ -146384,17 +146392,198 @@ html body .app > header .v372-logo em::after,
   animation-duration:.9s!important;
 }
 
-html body .app > header .v358-logo::after{content:"V7.302"!important}
+html body .app > header .v358-logo::after{content:"V7.305"!important}
 html body .app > header .v366-ver::after,
 html body .app > header .v371-logo em::after,
 html body .app > header .v372-logo em::after,
-#v372TopbarShell .v372-logo em::after{content:"V7.302"!important}
+#v372TopbarShell .v372-logo em::after{content:"V7.305"!important}
+</style>
+
+
+<style id="v7303-guildgrow-hero-board-final">
+/* V7.305 · Keep the chest header art, but move live content into clean boards below. */
+.v7273-grow-bg{display:none!important}
+
+.v7303-hero{
+  position:relative!important;
+  min-height:348px!important;
+  border-radius:22px!important;
+  overflow:hidden!important;
+  border:1px solid rgba(128,176,95,.28)!important;
+  box-shadow:0 12px 28px rgba(0,0,0,.28)!important;
+  background-image:linear-gradient(180deg, rgba(0,0,0,.10) 0%, rgba(0,0,0,.18) 55%, rgba(0,0,0,.35) 100%), var(--v7303-bg)!important;
+  background-size:cover!important;
+  background-position:center top!important;
+}
+.v7303-overlay{
+  position:absolute!important;
+  inset:0!important;
+  background:
+    linear-gradient(180deg, rgba(6,16,9,.08) 0%, rgba(6,16,9,.12) 36%, rgba(6,16,9,.22) 100%)!important;
+}
+.v7303-header{
+  position:relative!important;
+  z-index:2!important;
+  padding:18px 14px 0!important;
+  text-align:center!important;
+}
+.v7303-kicker{
+  color:#93f06b!important;
+  font-size:11px!important;
+  letter-spacing:.16em!important;
+  font-weight:900!important;
+  text-shadow:0 1px 2px rgba(0,0,0,.55)!important;
+}
+.v7303-header h2{
+  margin:6px 0 0!important;
+  font-size:25px!important;
+  line-height:1.03!important;
+  color:#f4dfaf!important;
+  text-shadow:0 2px 8px rgba(0,0,0,.55)!important;
+}
+.v7303-sub{
+  margin-top:4px!important;
+  color:#fff7dc!important;
+  font-size:13px!important;
+  font-weight:700!important;
+  text-shadow:0 1px 5px rgba(0,0,0,.55)!important;
+}
+.v7303-summary{
+  display:inline-block!important;
+  margin-top:86px!important;
+  padding:10px 14px!important;
+  border-radius:14px!important;
+  background:rgba(4,12,7,.64)!important;
+  border:1px solid rgba(232,198,121,.22)!important;
+  color:#fff2cf!important;
+  font-size:14px!important;
+  font-weight:900!important;
+  text-shadow:0 1px 2px rgba(0,0,0,.45)!important;
+}
+
+.v7303-track{
+  position:absolute!important;
+  left:12px!important;
+  right:12px!important;
+  bottom:46px!important;
+  z-index:2!important;
+  display:grid!important;
+  grid-template-columns:repeat(5,minmax(0,1fr))!important;
+  gap:6px!important;
+}
+.v7303-track-seg{
+  height:15px!important;
+  border-radius:999px!important;
+  overflow:hidden!important;
+  background:linear-gradient(180deg,#191f16 0%,#090c08 100%)!important;
+  border:1px solid rgba(134,103,55,.92)!important;
+  box-shadow:
+    0 0 7px rgba(4,9,5,.92),
+    inset 0 1px 1px rgba(255,229,150,.08)!important;
+}
+.v7303-track-seg i{
+  display:block!important;
+  height:100%!important;
+  width:0!important;
+  border-radius:999px!important;
+  background:linear-gradient(180deg,#a9ff8c 0%,#45dd51 50%,#219134 100%)!important;
+  box-shadow:0 0 8px rgba(73,244,92,.72)!important;
+}
+.v7303-track-labels{
+  position:absolute!important;
+  left:20px!important;
+  right:20px!important;
+  bottom:14px!important;
+  z-index:2!important;
+  display:grid!important;
+  grid-template-columns:repeat(5,minmax(0,1fr))!important;
+  gap:8px!important;
+}
+.v7303-track-labels span{
+  justify-self:center!important;
+  width:24px!important;
+  height:24px!important;
+  display:grid!important;
+  place-items:center!important;
+  border-radius:999px!important;
+  background:rgba(3,8,4,.68)!important;
+  border:1px solid rgba(153,220,109,.24)!important;
+  color:#f5deb2!important;
+  font-size:12px!important;
+  font-weight:900!important;
+  text-shadow:0 1px 2px rgba(0,0,0,.65)!important;
+}
+
+.v7303-board{
+  position:relative!important;
+  overflow:hidden!important;
+}
+.v7303-board::before{
+  content:""!important;
+  position:absolute!important;
+  left:0!important;
+  top:0!important;
+  bottom:0!important;
+  width:5px!important;
+  background:linear-gradient(180deg,#95ff73 0%,#297a35 100%)!important;
+  opacity:.75!important;
+}
+.v7303-board .v7301-block-head{
+  padding-left:6px!important;
+}
+@media (max-width:460px){
+  .v7303-hero{min-height:332px!important}
+  .v7303-header h2{font-size:22px!important}
+  .v7303-summary{margin-top:78px!important;font-size:13px!important;padding:9px 12px!important}
+  .v7303-track{left:10px!important;right:10px!important;bottom:42px!important}
+  .v7303-track-labels{left:16px!important;right:16px!important;bottom:12px!important}
+}
+
+html body .app > header .v358-logo::after{content:"V7.305"!important}
+html body .app > header .v366-ver::after,
+html body .app > header .v371-logo em::after,
+html body .app > header .v372-logo em::after,
+#v372TopbarShell .v372-logo em::after{content:"V7.305"!important}
+</style>
+
+
+<style id="v7304-version-only">
+html body .app > header .v358-logo::after{content:"V7.305"!important}
+html body .app > header .v366-ver::after,
+html body .app > header .v371-logo em::after,
+html body .app > header .v372-logo em::after,
+#v372TopbarShell .v372-logo em::after{content:"V7.305"!important}
+</style>
+
+
+<script id="v7305-tower-integrity-audit">
+(()=>{
+ 'use strict';
+ window.v7305TowerIntegrity=Object.freeze({
+   serverHazardsCanKill:true,
+   mysteryDamageCanEndRun:true,
+   secretStealCanEndRun:true,
+   mutationCap:6,
+   mutationCount:18,
+   specialRoomModeGuards:true,
+   checkpointModeGuard:true,
+   maxHpMutationRecalc:['mutation','lab_boost','secret_genes'],
+   merchantDuplicateMutationGuard:['diesel','insurance']
+ });
+})();
+</script>
+<style id="v7305-version">
+html body .app > header .v358-logo::after{content:"V7.305"!important}
+html body .app > header .v366-ver::after,
+html body .app > header .v371-logo em::after,
+html body .app > header .v372-logo em::after,
+#v372TopbarShell .v372-logo em::after{content:"V7.305"!important}
 </style>
 
 <script id="v7283-stable-version-lock">
 (()=>{'use strict';
  const channel=String(window.GROW_RELEASE_CHANNEL||'stable');
- const V=Object.freeze({short:'V7.302',label:channel==='beta'?'V7.302 Beta':'V7.302 Server 1',number:'7.302'});
+ const V=Object.freeze({short:'V7.305',label:channel==='beta'?'V7.305 Beta':'V7.305 Server 1',number:'7.305'});
  window.GROW_LEGENDS_VERSION=V;
  window.__GROW_LEGENDS_RELEASE__=V.short;
  window.__GL_CURRENT_BUILD__=V.short;
