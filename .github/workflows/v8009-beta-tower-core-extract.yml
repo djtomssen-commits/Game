@@ -1,0 +1,40 @@
+name: V8.009 Beta Tower Core Extraction
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/v8009_beta_tower_core_extract.py'
+permissions:
+  contents: write
+jobs:
+  extract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Extract beta tower owner
+        run: python3 .github/scripts/v8009_beta_tower_core_extract.py
+      - name: Syntax-check tower owner
+        run: node --check js/features/tower/beta/v8009-tower-system-owner.js
+      - name: Validate beta-only extraction
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import json
+          beta=Path('beta.html').read_text(encoding='utf-8')
+          r=json.loads(Path('V8009_BETA_TOWER_CORE_EXTRACT.json').read_text(encoding='utf-8'))
+          if not r.get('stable_unchanged'): raise SystemExit('stable changed')
+          src='js/features/tower/beta/v8009-tower-system-owner.js'
+          if beta.count(src)!=1: raise SystemExit('tower owner not loaded exactly once')
+          if '<script id="vTower-system"' not in beta: raise SystemExit('tower marker missing')
+          print('Tower extraction OK')
+          PY
+      - name: Commit beta tower extraction
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add beta.html js/features/tower/beta/v8009-tower-system-owner.js V8009_BETA_TOWER_CORE_EXTRACT.json
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "V8.009 beta: extract tower core owner"
+          git push
