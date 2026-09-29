@@ -1,0 +1,70 @@
+/* V7.308 · Home hero: keep motto/chest compact, but do NOT solve collisions
+   by endlessly shrinking them. The hero gets extra vertical room when the
+   real rendered profile/checklist is taller on a specific phone. */
+@media(max-width:430px){
+  #world.active .v6103-motto{
+    width:var(--v7258-motto-width,60px)!important;
+    padding:5px 4px!important;
+  }
+  #world.active .v6103-motto b{
+    font-size:5.8px!important;
+    line-height:.96!important;
+  }
+
+  #world.active .v6239-weekly-chest{
+    left:var(--v7258-chest-left,82px)!important;
+    bottom:var(--v7258-chest-bottom,10px)!important;
+    width:var(--v7258-chest-width,72px)!important;
+    height:auto!important;
+    min-height:40px!important;
+    padding:2px 3px 3px!important;
+    overflow:hidden!important;
+  }
+  #world.active .v6239-weekly-chest .v6239-chest-art{
+    width:32px!important;
+    height:19px!important;
+    margin:0 auto!important;
+    transform:none!important;
+  }
+  #world.active .v6239-weekly-chest .v6239-home-level{
+    font-size:4.7px!important;
+    line-height:1!important;
+    margin-top:0!important;
+  }
+  #world.active .v6239-weekly-chest .v6241-home-exp{
+    font-size:3.45px!important;
+    line-height:1!important;
+    margin-top:1px!important;
+    white-space:nowrap!important;
+  }
+  #world.active .v6239-home-bar{
+    height:2px!important;
+    margin:2px 1px 0!important;
+  }
+
+  /* Keep the checklist readable. Only tighten spacing slightly; the script below
+     increases the whole hero height if these rows need more room. */
+  #world.active .vHome-checklist{
+    gap:3px!important;
+    padding:5px!important;
+  }
+  #world.active .vHome-check-row{
+    min-height:20px!important;
+    padding:3px 4px!important;
+  }
+}
+
+/* The actual version text had old historical owners in front of the current build. */
+html body #world.active ~ * .v366-ver,
+html body .app > header .v366-ver{
+  font-size:0!important;
+}
+html body .app > header .v366-ver::after{
+  content:"V8.001"!important;
+  display:inline!important;
+  font-size:10px!important;
+  line-height:1!important;
+  color:#63cdd1!important;
+  font-style:normal!important;
+  font-weight:900!important;
+}
