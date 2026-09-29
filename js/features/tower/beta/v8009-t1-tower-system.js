@@ -530,6 +530,9 @@ const v8009LobbyController=window.v8009CreateTowerLobbyController?.({
  getUserId:()=>{try{return String(v073User?.id||'')}catch(e){return''}},
  fetchWednesdayRows:target=>fetchWednesdayRows(target),
  lastCompletedWednesdayEvent:()=>lastCompletedWednesdayEvent(),
+ wednesdayState:()=>wednesdayState(),
+ head:v6259Head,
+ rewardTable:wednesdayRewardTable,
  paintWednesdayPlacementReward:(rows,target,uid)=>paintWednesdayPlacementReward(rows,target,uid)
 });
 if(!v8009LobbyController)throw new Error('V8.009 T4 tower lobby controller missing');
@@ -768,17 +771,7 @@ function v6259RunLine(r){
  return `<div class="v6259-runline"><span>❤️ Run-HP</span><div class="v6259-hp"><i style="width:${pct}%"></i></div><b>${pct}%</b><em>🍃 ${fmt(ensure().meta.tokens)}</em></div>`;
 }
 
-function lobby(){
- const t=ensure(),z=t.season;normalizeTowerRecovery(t);
- const x=towerRecoveryInfo(),canStart=x.pct>0,startFloor=1;
- const ev=towerWednesdayEvent(),lastWed=lastCompletedWednesdayEvent(),w=ev.active?wednesdayState():(t.wednesday||{});
- const view=window.v8009TowerLobbyView;
- if(typeof view!=='function')throw new Error('V8.009 Tower lobby owner missing');
- return view({
-   t,z,x,canStart,startFloor,ev,lastWed,w,
-   esc,fmt,head:v6259Head,rewardTable:wednesdayRewardTable
- });
-}
+function lobby(){return v8009LobbyController.renderLobby()}
 function routeView(r){
  const wanted=r.floor%10===0?1:2,marketSoldOut=!!(r?.shopFlags?.heal&&r?.shopFlags?.damage&&r?.shopFlags?.insurance);
  if(!Array.isArray(r.choices)||r.choices.length!==wanted||(marketSoldOut&&r.choices.some(c=>c?.type==='merchant')))r.choices=seededChoiceFloor(r.floor);
@@ -1163,7 +1156,7 @@ function render(){
    document.getElementById('v6262TowerBack')?.addEventListener('click',()=>typeof v032Go==='function'&&v032Go('world'));
  }
 }
-function bind(){const root=document.getElementById('tower');if(!root)return;root.querySelectorAll('[data-vt-guide]').forEach(b=>b.onclick=v6279OpenGuide);root.querySelectorAll('[data-vt-tab]').forEach(b=>b.onclick=()=>{towerTab=b.dataset.vtTab;render()});root.querySelectorAll('[data-vt-start]').forEach(b=>b.onclick=startRun);root.querySelectorAll('[data-vt-recover]').forEach(b=>b.onclick=buyTowerRecovery);root.querySelectorAll('[data-vt-route]').forEach(b=>b.onclick=()=>chooseRoute(Number(b.dataset.vtRoute)));root.querySelectorAll('[data-vt-fight]').forEach(b=>b.onclick=()=>startFight(Number(b.dataset.vtFight)));root.querySelectorAll('[data-vt-mut]').forEach(b=>b.onclick=()=>selectMutation(b.dataset.vtMut));root.querySelector('[data-vt-reroll]')?.addEventListener('click',rerollMutation);root.querySelector('[data-vt-next]')?.addEventListener('click',nextAfterReward);root.querySelector('[data-vt-bank]')?.addEventListener('click',bankAndFinish);root.querySelector('[data-vt-continue]')?.addEventListener('click',checkpointContinue);root.querySelectorAll('[data-vt-grow]').forEach(b=>b.onclick=()=>growOption(b.dataset.vtGrow));root.querySelectorAll('[data-vt-lab]').forEach(b=>b.onclick=()=>labOption(b.dataset.vtLab));root.querySelectorAll('[data-vt-buy]').forEach(b=>b.onclick=()=>merchantBuy(b.dataset.vtBuy));root.querySelector('[data-vt-shop-leave]')?.addEventListener('click',leaveMerchant);root.querySelector('[data-vt-event-next]')?.addEventListener('click',()=>completeNonCombat(false));root.querySelectorAll('[data-vt-secret]').forEach(b=>b.onclick=()=>secretOption(b.dataset.vtSecret));root.querySelectorAll('[data-vt-up]').forEach(b=>b.onclick=()=>buyUpgrade(b.dataset.vtUp));root.querySelectorAll('[data-vt-wed-claim]').forEach(b=>b.onclick=()=>claimWednesdayTask(b.dataset.vtWedClaim));root.querySelectorAll('[data-vt-wed-place-claim]').forEach(b=>b.onclick=()=>void claimWednesdayPlacement());root.querySelectorAll('[data-vt-wed-rewards]').forEach(b=>b.onclick=()=>{towerTab='rank';render();setTimeout(()=>{const d=document.querySelector('#tower .v6276-wed-prizes');if(d){d.open=true;d.scrollIntoView({behavior:'smooth',block:'center'})}},40)});root.querySelector('[data-vt-abort]')?.addEventListener('click',confirmAbort);root.querySelectorAll('[data-vt-exit]').forEach(b=>b.onclick=()=>{
+function bind(){const root=document.getElementById('tower');if(!root)return;root.querySelectorAll('[data-vt-guide]').forEach(b=>b.onclick=v6279OpenGuide);v8009LobbyController.bindLobby(root);root.querySelectorAll('[data-vt-route]').forEach(b=>b.onclick=()=>chooseRoute(Number(b.dataset.vtRoute)));root.querySelectorAll('[data-vt-fight]').forEach(b=>b.onclick=()=>startFight(Number(b.dataset.vtFight)));root.querySelectorAll('[data-vt-mut]').forEach(b=>b.onclick=()=>selectMutation(b.dataset.vtMut));root.querySelector('[data-vt-reroll]')?.addEventListener('click',rerollMutation);root.querySelector('[data-vt-next]')?.addEventListener('click',nextAfterReward);root.querySelector('[data-vt-bank]')?.addEventListener('click',bankAndFinish);root.querySelector('[data-vt-continue]')?.addEventListener('click',checkpointContinue);root.querySelectorAll('[data-vt-grow]').forEach(b=>b.onclick=()=>growOption(b.dataset.vtGrow));root.querySelectorAll('[data-vt-lab]').forEach(b=>b.onclick=()=>labOption(b.dataset.vtLab));root.querySelectorAll('[data-vt-buy]').forEach(b=>b.onclick=()=>merchantBuy(b.dataset.vtBuy));root.querySelector('[data-vt-shop-leave]')?.addEventListener('click',leaveMerchant);root.querySelector('[data-vt-event-next]')?.addEventListener('click',()=>completeNonCombat(false));root.querySelectorAll('[data-vt-secret]').forEach(b=>b.onclick=()=>secretOption(b.dataset.vtSecret));root.querySelectorAll('[data-vt-up]').forEach(b=>b.onclick=()=>buyUpgrade(b.dataset.vtUp));root.querySelectorAll('[data-vt-wed-claim]').forEach(b=>b.onclick=()=>claimWednesdayTask(b.dataset.vtWedClaim));root.querySelectorAll('[data-vt-wed-place-claim]').forEach(b=>b.onclick=()=>void claimWednesdayPlacement());root.querySelector('[data-vt-abort]')?.addEventListener('click',confirmAbort);root.querySelectorAll('[data-vt-exit]').forEach(b=>b.onclick=()=>{
  if((towerTab==='result'||towerTab==='meta'||towerTab==='rank')&&!ensure().run?.active){
    const t=ensure();
    if(towerTab==='result')t.lastResult=null;
