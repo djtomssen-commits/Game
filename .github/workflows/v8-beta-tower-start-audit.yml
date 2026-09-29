@@ -1,0 +1,21 @@
+name: V8 Beta Tower Start Audit
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/v8_beta_tower_start_audit.py'
+permissions:
+  contents: write
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 .github/scripts/v8_beta_tower_start_audit.py
+      - run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add V8_BETA_TOWER_START_AUDIT.json
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "Audit beta tower start screen"
+          git push
