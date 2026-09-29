@@ -81,7 +81,9 @@ await page.evaluate(()=>{
 
 await page.addScriptTag({path:p('js/features/guild/legacy/01-v255-daily-guild-boss-core.js')});
 await page.addScriptTag({path:p('js/features/guild/legacy/04-v260-real-daily-guild-boss.js')});
+await page.addScriptTag({path:p('js/features/guild/beta/v8008-c8-guildboss-pre-replay-visual-owner.js')});
 await page.addScriptTag({path:p('js/features/guild/beta/v8008-c7-guildboss-replay-owner.js')});
+await page.addScriptTag({path:p('js/features/guild/beta/v8008-c8-guildboss-post-replay-arena-owner.js')});
 
 const bossResult=await page.evaluate(async()=>{
   v255BossRound={
@@ -120,7 +122,14 @@ const bossResult=await page.evaluate(async()=>{
     bossAnim:getComputedStyle(document.getElementById('v6320BossCutout')).animationName,
     renderer:document.getElementById('v260WatchDailyBoss')?.dataset?.guildBossRenderer||'',
     replayRunningOwner:!!window.__V6209_GUILD_BOSS_REPLAY_PERF__,
-    combatAnimOwner:!!window.__V6321_GUILD_BOSS_COMBAT_ANIM__
+    combatAnimOwner:!!window.__V6321_GUILD_BOSS_COMBAT_ANIM__,
+    preVisualOwner:!!window.__V6203_GUILD_BOSS_WORLDLIKE__ && !!window.__V6305_GUILDBOSS_LAYOUT__,
+    postArenaOwner:!!window.__V6309_GUILD_BOSS_FINAL_ARENA__ && !!window.__V6315_GUILD_BOSS_LEGACY_CLEANUP__,
+    finalArena:{
+      clash:!!document.getElementById('v6309Clash'),
+      heroPlate:!!document.getElementById('v6309HeroPlate'),
+      bossPlate:!!document.getElementById('v6309BossPlate')
+    }
   };
 });
 
@@ -138,6 +147,9 @@ assert(bossResult.bossAnim && bossResult.bossAnim!=='none','Boss QA: boss CSS an
 assert(bossResult.renderer==='v6307','Boss QA: merged owner did not mark replay renderer');
 assert(bossResult.replayRunningOwner,'Boss QA: merged replay performance owner missing');
 assert(bossResult.combatAnimOwner,'Boss QA: merged combat animation owner missing');
+assert(bossResult.preVisualOwner,'Boss QA: C8 pre-replay visual owner missing');
+assert(bossResult.postArenaOwner,'Boss QA: C8 post-replay arena owner missing');
+assert(Object.values(bossResult.finalArena).every(Boolean),'Boss QA: C8 final arena nodes missing');
 
 await page.addScriptTag({path:p('js/features/guild/legacy/05-v262-guild-war-core--v263-guild-war-final.js')});
 
