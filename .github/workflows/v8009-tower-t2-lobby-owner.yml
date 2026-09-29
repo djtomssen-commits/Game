@@ -1,0 +1,64 @@
+name: V8.009 Beta Tower T2 Lobby Owner
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/v8009_tower_t2_lobby_owner.py'
+permissions:
+  contents: write
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Split tower lobby renderer
+        run: python3 .github/scripts/v8009_tower_t2_lobby_owner.py
+      - name: Syntax-check tower owners
+        run: |
+          node --check js/features/tower/beta/v8009-t1-tower-system.js
+          node --check js/features/tower/beta/v8009-t2-tower-lobby.js
+      - name: Smoke-test lobby renderer
+        run: |
+          node - <<'NODE'
+          global.window={};
+          require('./js/features/tower/beta/v8009-t2-tower-lobby.js');
+          const html=window.v8009TowerLobbyView({
+            t:{meta:{tokens:17}},
+            z:{bestFloor:23,bestScore:4567},
+            x:{pct:65,step:5,harz:9},
+            canStart:true,startFloor:1,
+            ev:{active:false,icon:'🧬',name:'Mutationssturm',desc:'Test'},
+            lastWed:{name:'Elite-Invasion',key:'2026-09-23'},
+            w:{bestFloor:12,bestScore:888},
+            esc:x=>String(x),fmt:x=>String(x),
+            head:()=>'<div id="head"></div>',
+            rewardTable:()=>'<div id="rewards"></div>'
+          });
+          const need=['data-vt-start','65%','Bestetage','23','Turmblätter','17','vTRanking','vTWednesdayRanking','data-vt-tab="meta"'];
+          for(const x of need)if(!html.includes(x))throw new Error('Lobby smoke missing '+x);
+          console.log('Tower lobby smoke OK');
+          NODE
+      - name: Validate beta-only T2
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import json
+          beta=Path('beta.html').read_text(encoding='utf-8')
+          r=json.loads(Path('V8009_TOWER_T2_BETA.json').read_text(encoding='utf-8'))
+          if not r.get('stable_unchanged'): raise SystemExit('stable changed')
+          if beta.count('js/features/tower/beta/v8009-t2-tower-lobby.js')!=1:
+              raise SystemExit('T2 lobby owner not loaded exactly once')
+          if "window.GROW_BETA_TECH_BUILD='V8.009-T2'" not in beta:
+              raise SystemExit('T2 marker missing')
+          print('Tower T2 validation OK')
+          PY
+      - name: Commit Tower T2
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add beta.html js/features/tower/beta/v8009-t1-tower-system.js js/features/tower/beta/v8009-t2-tower-lobby.js V8009_TOWER_T2_BETA.json
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "V8.009 beta Tower T2: split startpage lobby owner"
+          git push
