@@ -1,0 +1,62 @@
+name: V8 Phase 3C19-25 Final Beta Guild Batch
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/v8_phase3c19_25_beta_final_guild.py'
+permissions:
+  contents: write
+jobs:
+  finalize:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Build final beta guild owners
+        run: python3 .github/scripts/v8_phase3c19_25_beta_final_guild.py
+      - name: Syntax-check final owners
+        run: |
+          node --check js/features/guild/beta/v8008-c25-guildboss-runtime-owner.js
+          node --check js/features/guild/beta/v8008-c25-guildwar-owner.js
+          node --check js/features/guild/beta/v8008-c25-guildchat-owner.js
+          node --check js/features/guild/beta/v8008-c25-guildoverview-owner.js
+      - name: Validate final beta guild wiring
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import json
+          beta=Path('beta.html').read_text(encoding='utf-8')
+          r=json.loads(Path('V8_PHASE3C19_25_BETA.json').read_text(encoding='utf-8'))
+          if not r.get('stable_unchanged'):
+              raise SystemExit('stable changed')
+          required=[
+            'js/features/guild/beta/v8008-c25-guildboss-runtime-owner.js',
+            'js/features/guild/beta/v8008-c25-guildwar-owner.js',
+            'js/features/guild/beta/v8008-c25-guildchat-owner.js',
+            'js/features/guild/beta/v8008-c25-guildoverview-owner.js',
+            'window.v8008C25InstallReliability?.();',
+            'window.v8008C25InstallRewards?.();',
+            'window.v8008C25InstallWarAuthority?.();',
+            'window.v8008C25InstallWarVisual?.();',
+            'window.v8008C25InstallWarLower?.();',
+            'window.v8008C25InstallChatBootstrap?.();',
+            'window.v8008C25InstallChatViewport?.();',
+            'window.v8008C25InstallGuildLock?.();',
+            "window.GROW_BETA_TECH_BUILD='V8.008-C25'"
+          ]
+          missing=[x for x in required if x not in beta]
+          if missing: raise SystemExit('missing final wiring: '+repr(missing))
+          for old in r['retired_separate_loads']:
+              if f'src="{old}"' in beta or f"src='{old}'" in beta:
+                  raise SystemExit('old external load still active: '+old)
+          print('Final beta guild wiring OK')
+          PY
+      - name: Commit final beta guild batch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add beta.html js/features/guild/beta/v8008-c25-guildboss-runtime-owner.js js/features/guild/beta/v8008-c25-guildwar-owner.js js/features/guild/beta/v8008-c25-guildchat-owner.js js/features/guild/beta/v8008-c25-guildoverview-owner.js V8_PHASE3C19_25_BETA.json
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "V8.008 beta Phase 3C19-25: finalize guild owners"
+          git push
