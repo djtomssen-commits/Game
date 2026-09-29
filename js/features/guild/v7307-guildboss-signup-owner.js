@@ -11,9 +11,16 @@
   const bossViewSnapshot=()=>{
     const btn=document.getElementById('v254BossSignup');
     const root=scrolling();
+    const bossTab=document.querySelector('[data-v254-tab="boss"]');
+    const bossPanel=document.getElementById('v254GuildBoss');
+    const bossActive=!!(
+      bossTab?.classList?.contains('active') ||
+      (bossPanel && getComputedStyle(bossPanel).display!=='none')
+    );
     return {
       scrollTop:Number(root?.scrollTop||window.scrollY||0),
-      buttonTop:btn?.getBoundingClientRect?.().top??null
+      buttonTop:btn?.getBoundingClientRect?.().top??null,
+      bossActive
     };
   };
 
@@ -34,21 +41,22 @@
   };
 
   const restoreBossView=(view)=>{
-    if(!view)return;
+    if(!view?.bossActive)return;
     forceBossTab();
     const root=scrolling();
     if(root)root.scrollTop=view.scrollTop;
 
     requestAnimationFrame(()=>{
+      if(!view?.bossActive)return;
       forceBossTab();
       const r=scrolling();
       if(r)r.scrollTop=view.scrollTop;
     });
 
-    /* Several historical guild render wrappers repaint one frame later.
-       One short correction prevents them from switching the visible tab or
-       moving the viewport after the server response. */
+    /* Historical guild render wrappers may repaint one frame later.
+       Only pin the boss tab when the user was already on the boss page. */
     setTimeout(()=>{
+      if(!view?.bossActive)return;
       forceBossTab();
       const r=scrolling();
       if(r)r.scrollTop=view.scrollTop;
@@ -73,6 +81,7 @@
     if(!v254Membership||!(await v254EnsureOnline()))return false;
 
     const view=bossViewSnapshot();
+    view.bossActive=true;
     forceBossTab();
 
     const wanted=!v254Membership.boss_signed;
@@ -203,7 +212,7 @@
             paintStable(view);
           }
         }catch(e){
-          console.warn('[V8.005] canonical boss signup refresh',e);
+          console.warn('[V8.006] canonical boss signup refresh',e);
           restoreBossView(view);
         }
         return r;
@@ -216,6 +225,6 @@
       try{window.v255LoadBoss=canonicalBossLoad}catch(_){}
     }
   }catch(e){
-    console.warn('[V8.005] install boss live-signup owner',e);
+    console.warn('[V8.006] install boss live-signup owner',e);
   }
 })();
