@@ -73,6 +73,15 @@ function formatTime(ms){
  return `${h} Std. ${m} Min.`;
 }
 
+function panel(x,fmt){
+ x=x&&typeof x==='object'?x:{pct:100,step:5,nextMs:0,fullMs:0,harz:0};
+ fmt=typeof fmt==='function'?fmt:(n=>String(Math.round(Number(n)||0)));
+ const pct=Math.max(0,Math.min(100,Number(x.pct)||0)),canStart=pct>0,full=pct>=100;
+ const stepPct=Math.max(0,Number(x.step)||0);
+ const startLabel=canStart?`🗼 Mit ${Math.round(pct)} % HP starten`:'🕒 Erste Regeneration abwarten';
+ return `<div class="vT-recovery"><div class="vT-recovery-head"><b>💚 Turm-Erholung</b><strong>${Math.round(pct)} %</strong></div><div class="vT-recovery-bar"><i style="width:${pct}%"></i></div><div class="vT-recovery-meta"><span>+${Math.round(stepPct)} % pro Stunde</span><span>${full?'Vollständig erholt':`Nächste +${Math.round(stepPct)} % in ${formatTime(x.nextMs)} · 100 % in ${formatTime(x.fullMs)}`}</span></div><div class="vT-recovery-actions"><button class="vT-btn primary" data-vt-start ${canStart?'':'disabled'}>${startLabel}</button><button class="vT-btn gold" data-vt-recover ${full?'disabled':''}>🟢 +20 % auffüllen · 1 Harz-Taler <small style="display:block;opacity:.75">Bestand: ${fmt(x.harz)}</small></button></div></div>`;
+}
+
 function reset(t){
  if(!t||typeof t!=='object')return 0;
  const m=t.meta||(t.meta={});
@@ -92,6 +101,7 @@ window.v8009TowerRecoveryOwner=Object.freeze({
  normalize,
  info,
  formatTime,
+ panel,
  reset
 });
 

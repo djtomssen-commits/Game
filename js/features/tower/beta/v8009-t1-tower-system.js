@@ -463,7 +463,6 @@ function makeEnemy(floor,type){
  if(boss){const b=BOSSES[(Math.floor(floor/10)-1)%BOSSES.length],real=towerAssetEnemyName(floor,'boss');return {...b,name:real?`Turmboss: ${real}`:b.name,boss:true,elite:true,art:towerEnemyArt(floor,'boss'),bg:towerFloorBackground(floor,true)}}
  const [fallback,kind]=ENEMIES[(floor*3+Math.floor(Math.random()*ENEMIES.length))%ENEMIES.length];const visual=miniboss?'miniboss':elite?'elite':'normal',real=towerAssetEnemyName(floor,visual);return{name:`${miniboss?'Miniboss: ':elite?'Elite ':''}${real||fallback}`,kind,elite,boss:false,miniboss,mechanic:elite?pick(['armor','rage','dodge','thorns']):'',desc:miniboss?'Zwischenboss – deutlich härter, aber mit starker Wertung.':elite?'Elite-Mutation aktiv.':'Turmgegner',art:towerEnemyArt(floor,visual),bg:towerFloorBackground(floor,false)};
 }
-const TOWER_RECOVERY_HOUR=60*60*1000,TOWER_RECOVERY_REFILL=20;
 /* V8.009-T3: recovery math/state has one external Beta owner.
    The public V6.250 compatibility names remain available to the rest of the tower. */
 function v8009RecoveryOwner(){
@@ -485,14 +484,7 @@ function towerRecoveryInfo(){
    Number(s?.harzTaler)||0
  );
 }
-function recoveryTime(ms){
- return v8009RecoveryOwner().formatTime(ms);
-}
-function recoveryPanel(){
- const x=towerRecoveryInfo(),canStart=x.pct>0,full=x.pct>=100;
- const startLabel=canStart?`🗼 Mit ${Math.round(x.pct)} % HP starten`:'🕒 Erste Regeneration abwarten';
- return `<div class="vT-recovery"><div class="vT-recovery-head"><b>💚 Turm-Erholung</b><strong>${Math.round(x.pct)} %</strong></div><div class="vT-recovery-bar"><i style="width:${x.pct}%"></i></div><div class="vT-recovery-meta"><span>+${x.step} % pro Stunde</span><span>${full?'Vollständig erholt':`Nächste +${x.step} % in ${recoveryTime(x.nextMs)} · 100 % in ${recoveryTime(x.fullMs)}`}</span></div><div class="vT-recovery-actions"><button class="vT-btn primary" data-vt-start ${canStart?'':'disabled'}>${startLabel}</button><button class="vT-btn gold" data-vt-recover ${full?'disabled':''}>🟢 +20 % auffüllen · 1 Harz-Taler <small style="display:block;opacity:.75">Bestand: ${fmt(x.harz)}</small></button></div></div>`;
-}
+function recoveryPanel(){return v8009RecoveryOwner().panel(towerRecoveryInfo(),fmt)}
 window.v6250TowerRecoveryDiagnostics=()=>({
  level:Math.max(1,Math.floor(Number(s?.level)||1)),
  regenPerHour:v6250TowerRecoveryStep(),
