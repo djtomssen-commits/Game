@@ -1,0 +1,52 @@
+name: V8 Phase 3C14-18 Beta guild boss batch
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/v8_phase3c14_18_beta_batch.py'
+permissions:
+  contents: write
+jobs:
+  batch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Consolidate remaining beta boss wrappers
+        run: python3 .github/scripts/v8_phase3c14_18_beta_batch.py
+      - name: Syntax-check consolidated owners
+        run: |
+          node --check js/features/guild/beta/v8008-c18-guildboss-screen-visual-owner.js
+          node --check js/features/guild/beta/v8008-c18-guildboss-replay-owner.js
+      - name: Validate beta-only batch
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re,json
+          beta=Path('beta.html').read_text(encoding='utf-8')
+          r=json.loads(Path('V8_PHASE3C14_18_BETA.json').read_text(encoding='utf-8'))
+          if not r.get('stable_unchanged'):
+              raise SystemExit('stable changed')
+          checks={
+            'screen_owner':'js/features/guild/beta/v8008-c18-guildboss-screen-visual-owner.js',
+            'replay_owner':'js/features/guild/beta/v8008-c18-guildboss-replay-owner.js'
+          }
+          if checks['screen_owner'] not in beta or checks['replay_owner'] not in beta:
+              raise SystemExit('C18 owners not loaded')
+          for token in ('v8008C18InstallPreVisual','v8008C18InstallPostArena','v8008C18InstallSignup'):
+              if token not in beta:
+                  raise SystemExit(f'missing late installer call {token}')
+          for sid in r['removed_empty_markers']:
+              if re.search(rf'<script[^>]*\bid=["\']{re.escape(sid)}["\']',beta,re.I):
+                  raise SystemExit(f'dead marker still present: {sid}')
+          print('Phase 3C14-18 validation OK')
+          PY
+      - name: Commit beta-only batch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add beta.html js/features/guild/beta/v8008-c18-guildboss-screen-visual-owner.js js/features/guild/beta/v8008-c18-guildboss-replay-owner.js V8_PHASE3C14_18_BETA.json
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "V8.008 beta Phase 3C14-18: consolidate guild boss owners"
+          git push
