@@ -9,6 +9,7 @@ for name in ("index.html","beta.html","tester.html"):
       "sha256":hashlib.sha256(s.encode("utf-8")).hexdigest(),
       "release_channels":re.findall(r"GROW_RELEASE_CHANNEL\s*=\s*['\"]([^'\"]+)",s),
       "mentions_beta_html":"beta.html" in s,
+      "beta_html_contexts":[s[max(0,m.start()-180):min(len(s),m.end()+220)] for m in list(re.finditer(r"beta\\.html",s,re.I))[:20]],
       "mentions_tester_html":"tester.html" in s,
       "mentions_server1":len(re.findall(r"server1",s,re.I)),
       "mentions_beta":len(re.findall(r"\bbeta\b",s,re.I)),
