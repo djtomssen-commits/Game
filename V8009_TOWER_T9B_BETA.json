@@ -1,0 +1,29 @@
+{
+  "build": "V8.009-T9B-BETA",
+  "phase": "Tower door-transition enemy image readiness fix",
+  "scope": "beta only",
+  "main_system": "js/features/tower/beta/v8009-t1-tower-system.js",
+  "changes": [
+    "exact selected enemy image and background are preloaded and decoded before local door transition renders",
+    "server-authoritative door preview also waits for selected enemy assets before rendering",
+    "route button shows Gegner wird geladen while the selected asset is still decoding",
+    "pre-decoding also avoids image decode work landing on the first combat frames"
+  ],
+  "main_system_bytes_before": 104458,
+  "main_system_bytes_after": 106401,
+  "main_system_sha": "e511e198a364ba8817efde8a062e43aef2fcbbdb",
+  "beta_html_changed": false,
+  "beta_html_sha": "1ee5bd5af84ad84b4b867545637b8faa7ffa944a",
+  "stable_changed": false,
+  "stable_index_sha": "0bc5fe3eb0e69c856070dfcb6682d3178c56a597",
+  "gameplay_changed": false,
+  "combat_math_changed": false,
+  "server_authority_changed": false,
+  "syntax_check": "ok",
+  "verification": {
+    "asset_waiter": true,
+    "local_transition_gate": true,
+    "authority_preview_gate": true,
+    "loading_feedback": true
+  }
+}
