@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - '.github/scripts/v8_phase3a_extract_guild_css.py'
+      - '.github/workflows/v8-phase3a.yml'
 
 permissions:
   contents: write
@@ -30,7 +31,7 @@ jobs:
               s=Path(name).read_text(encoding='utf-8')
               inline=[
                   m.group(1) for m in re.finditer(
-                      r'<style\\b[^>]*\\bid=["\\']([^"\\']*(?:guild|gilde)[^"\\']*)["\\'][^>]*>',
+                      r"<style\\b[^>]*\\bid=[\"']([^\"']*(?:guild|gilde)[^\"']*)[\"'][^>]*>",
                       s,re.I
                   )
               ]
