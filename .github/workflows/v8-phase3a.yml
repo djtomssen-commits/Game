@@ -1,0 +1,59 @@
+name: V8 Phase 3A Guild CSS extraction
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/v8_phase3a_extract_guild_css.py'
+
+permissions:
+  contents: write
+
+jobs:
+  extract:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Extract guild CSS from HTML
+        run: python3 .github/scripts/v8_phase3a_extract_guild_css.py
+
+      - name: Validate generated structure
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re, sys
+          for name in ('index.html','beta.html'):
+              s=Path(name).read_text(encoding='utf-8')
+              inline=[
+                  m.group(1) for m in re.finditer(
+                      r'<style\\b[^>]*\\bid=["\\']([^"\\']*(?:guild|gilde)[^"\\']*)["\\'][^>]*>',
+                      s,re.I
+                  )
+              ]
+              if inline:
+                  raise SystemExit(f'{name}: guild styles still inline: {inline[:10]}')
+              if 'css/features/guild/legacy/' not in s:
+                  raise SystemExit(f'{name}: no guild CSS links found')
+              if len(re.findall(r'<script\\b',s,re.I)) != len(re.findall(r'</script\\s*>',s,re.I)):
+                  raise SystemExit(f'{name}: script tag mismatch')
+          css=list(Path('css/features/guild/legacy').glob('*.css'))
+          if len(css) < 40:
+              raise SystemExit(f'Expected many extracted guild CSS files, found {len(css)}')
+          print(f'Validation OK: {len(css)} guild CSS files')
+          PY
+
+      - name: Commit Phase 3A
+        run: |
+          if git diff --quiet; then
+            echo "No changes to commit"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html beta.html css/features/guild/legacy js/system/version/v7283-stable-version-lock.js
+          git commit -m "V8.005 Phase 3A: extract guild CSS from HTML"
+          git push
