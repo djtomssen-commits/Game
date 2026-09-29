@@ -15,8 +15,10 @@ jobs:
           fetch-depth: 0
       - name: Retire obsolete boss test guard on beta
         run: python3 .github/scripts/v8_phase3c13_beta_boss_test_guard.py
-      - name: Syntax-check beta chat fix
-        run: node --check js/features/guild/beta/v8008-c13-guild-chat-viewport-fix.js
+      - name: Syntax-check beta owners
+        run: |
+          node --check js/features/guild/beta/v8008-c13-guild-chat-viewport-fix.js
+          node --check js/features/guild/beta/v8008-c13-guildboss-replay-owner.js
       - name: Validate beta-only scope
         run: |
           python3 - <<'PY'
@@ -40,7 +42,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add beta.html js/features/guild/beta/v8008-c13-guild-chat-viewport-fix.js V8_PHASE3C13_BETA.json
+          git add beta.html js/features/guild/beta/v8008-c13-guild-chat-viewport-fix.js js/features/guild/beta/v8008-c13-guildboss-replay-owner.js V8_PHASE3C13_BETA.json
           if git diff --cached --quiet; then exit 0; fi
           git commit -m "V8.008 beta Phase 3C13: retire obsolete guild boss test guard"
           git push
