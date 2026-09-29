@@ -1,0 +1,22 @@
+{
+  "build": "V8.009-T10F-BETA",
+  "phase": "Retire legacy local Tower door/fight handlers under server authority",
+  "scope": "beta only",
+  "findings": [
+    "The external one-tap server-authoritative route owner already handles door selection and fight replay.",
+    "The extracted Tower core still kept a legacy 720 ms doorTransition -> startFight timer.",
+    "The extracted Tower core also still attached local onclick handlers for route/fight buttons even when authority mode was active."
+  ],
+  "changes": [
+    "Legacy 720 ms doorTransition auto-start now runs only when Tower server authority is disabled.",
+    "Local route button handlers are not attached in Tower authority mode.",
+    "Local Fight-button handlers are not attached in Tower authority mode.",
+    "Server-authoritative capture handler remains the single owner for one-tap Tower route actions."
+  ],
+  "file": "js/features/tower/beta/v8009-t1-tower-system.js",
+  "file_sha": "5502c1f55efd8264f3191be32af0769c654dada1",
+  "stable_changed": false,
+  "server_authority_changed": false,
+  "combat_math_changed": false,
+  "syntax_check": "ok"
+}
