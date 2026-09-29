@@ -1,0 +1,639 @@
+[
+  {
+    "id": "v105-admin-rewards-script",
+    "src": "",
+    "inline_bytes": 3071,
+    "line": 17916,
+    "body_excerpt": "/* ===== V4.02 Admin rewards ===== */ function v105InstallRewards(){ const editor=document.querySelector('#v103PlayerEditor'); if(!editor || document.querySelector('#v105Rewards'))"
+  },
+  {
+    "id": "v110-mystic-worldboss-script",
+    "src": "",
+    "inline_bytes": 10785,
+    "line": 18615,
+    "body_excerpt": "/* ===== V4.02 Mystisches Weltboss-Event ===== */ s.v110WorldBoss ??={day:'',freeUsed:false,wins:0,attempts:0}; function v110MysticEventActive(){ const now=Date.now(); return (v093"
+  },
+  {
+    "id": "v111-worldboss-visual-fix-script",
+    "src": "",
+    "inline_bytes": 5892,
+    "line": 18969,
+    "body_excerpt": "function v111BossArt(){ return `<div class=\"v111-boss-scene\" id=\"v111BossScene\"> <div class=\"v111-mist\"></div> <div class=\"v111-ground-glow\"></div><div class=\"v111-rune\"></div> <di"
+  },
+  {
+    "id": "v112-worldboss-state-fix",
+    "src": "",
+    "inline_bytes": 2824,
+    "line": 19132,
+    "body_excerpt": "/* ===== V4.02 Worldboss cloud-state fix ===== Older/cloud saves can replace the state object and remove v110WorldBoss. Always recreate the structure before any worldboss access. *"
+  },
+  {
+    "id": "v113-worldboss-retry-confirm",
+    "src": "",
+    "inline_bytes": 1255,
+    "line": 19225,
+    "body_excerpt": "/* ===== V4.02 Confirm Harz-Taler before paid worldboss retry ===== */ const v113OldWorldBossFight=v110Fight; v110Fight=function(){ v112EnsureWorldBossState(); v110ResetDay(); if(s"
+  },
+  {
+    "id": "v114-worldboss-confirm-modal-script",
+    "src": "",
+    "inline_bytes": 2626,
+    "line": 19351,
+    "body_excerpt": "function v114EnsureConfirmModal(){ if(document.querySelector('#v114ConfirmOverlay'))return; const ov=document.createElement('div'); ov.id='v114ConfirmOverlay'; ov.className='v114-c"
+  },
+  {
+    "id": "v116-worldboss-profile-stats-script",
+    "src": "",
+    "inline_bytes": 5467,
+    "line": 19662,
+    "body_excerpt": "/* ===== V4.02 public worldboss stats in Hall of Haze ===== */ const v116OldProfilePayload=v073ProfilePayload; v073ProfilePayload=function(){ const p=v116OldProfilePayload(); v112E"
+  },
+  {
+    "id": "v120-worldboss-countdown-script",
+    "src": "",
+    "inline_bytes": 3259,
+    "line": 20605,
+    "body_excerpt": "/* ===== V4.02 live worldboss event countdown ===== */ function v120ActiveWorldBossEvent(){ const now=Date.now(); return (v093Events||[]).find(ev=>{ if(!ev?.is_active)return false;"
+  },
+  {
+    "id": "v205-pvp-bud-reward",
+    "src": "",
+    "inline_bytes": 1080,
+    "line": 27581,
+    "body_excerpt": "function v205InstallBudScale(){ const rules=document.querySelector('#pvp .v204-rules'); if(!rules || document.querySelector('#v205BudScale'))return; const box=document.createElemen"
+  },
+  {
+    "id": "v233-quest-reward-final-click",
+    "src": "",
+    "inline_bytes": 5728,
+    "line": 31891,
+    "body_excerpt": "/* ===== V4.02 Quest reward final click path ===== */ let v233ClaimBusy=false; function v233XpTotalSnapshot(){ /* XP may level up during claim, so raw s.xp alone is not enough to c"
+  },
+  {
+    "id": "v235-quest-reward-stability",
+    "src": "",
+    "inline_bytes": 10151,
+    "line": 32460,
+    "body_excerpt": "/* ===== V4.02 definitive quest claim stabilization ===== */ /* Root cause: cloud-loaded saves may not contain the V4.02 achievement state because that structure was initialized be"
+  },
+  {
+    "id": "v241-harvest-reward-final-core",
+    "src": "",
+    "inline_bytes": 4712,
+    "line": 34340,
+    "body_excerpt": "/* ===== V4.02 definitive harvest path ===== Plants use {start,duration,seed}; there is no readyAt field. */ function v241PlantReady(pl,now=Date.now()){ if(!pl)return false; const "
+  },
+  {
+    "id": "v246-dungeon-final-fight-reward-fix",
+    "src": "",
+    "inline_bytes": 17820,
+    "line": 35442,
+    "body_excerpt": "/* ===== V4.02 canonical dungeon opponent + reward fix ===== */ /* One authoritative opponent repaint. This prevents a defeated enemy from remaining visible when the next room is s"
+  },
+  {
+    "id": "v247-dungeon-reward-modal-core",
+    "src": "",
+    "inline_bytes": 5138,
+    "line": 36199,
+    "body_excerpt": "/* ===== V4.02 Dungeon reward presentation ===== */ function v247EnsureDungeonReward(){ let overlay=document.querySelector('#v247DungeonReward'); if(overlay)return overlay; overlay"
+  },
+  {
+    "id": "v254-guild-foundation-core",
+    "src": "js/features/guild/legacy/00-v254-guild-foundation-core.js",
+    "inline_bytes": 0,
+    "line": 38998,
+    "body_excerpt": ""
+  },
+  {
+    "id": "v255-daily-guild-boss-core",
+    "src": "js/features/guild/legacy/01-v255-daily-guild-boss-core.js",
+    "inline_bytes": 0,
+    "line": 39002,
+    "body_excerpt": ""
+  },
+  {
+    "id": "v257-guild-discovery-management-core",
+    "src": "js/features/guild/legacy/02-v257-guild-discovery-management-core.js",
+    "inline_bytes": 0,
+    "line": 39008,
+    "body_excerpt": ""
+  },
+  {
+    "id": "v259-guild-boss-animation-core",
+    "src": "js/features/guild/beta/v8008-c10-guildboss-timing.js",
+    "inline_bytes": 0,
+    "line": 39011,
+    "body_excerpt": ""
+  },
+  {
+    "id": "v260-real-daily-guild-boss",
+    "src": "js/features/guild/beta/v8008-c12-guildboss-runtime-core.js",
+    "inline_bytes": 0,
+    "line": 39016,
+    "body_excerpt": ""
+  },
+  {
+    "id": "v262-guild-war-core",
+    "src": "js/features/guild/legacy/05-v262-guild-war-core--v263-guild-war-final.js",
+    "inline_bytes": 0,
+    "line": 39023,
+    "body_excerpt": ""
+  },
+  {
+    "id": "v263-guild-war-final",
+    "src": "",
+    "inline_bytes": 0,
+    "line": 39026,
+    "body_excerpt": ""
+  },
+  {
+    "id": "v265-war-animation",
+    "src": "",
+    "inline_bytes": 5272,
+    "line": 39054,
+    "body_excerpt": "let v265WarSkip=false; const v265Sleep=ms=>new Promise(r=>setTimeout(r,ms)); function v265Mine(){return v262War?.my_guild_id===v262War?.guild_a_id?'a':'b'} function v265Avatar(name"
+  },
+  {
+    "id": "v266-war-real-avatars",
+    "src": "",
+    "inline_bytes": 2891,
+    "line": 39144,
+    "body_excerpt": "const v266WarClassByName=new Map(); function v266NormName(x){return String(x||'').trim().toLowerCase()} function v266WarClassForName(name){ const key=v266NormName(name); if(v266War"
+  },
+  {
+    "id": "v290-worldboss-level-equipment-balance",
+    "src": "",
+    "inline_bytes": 9801,
+    "line": 42233,
+    "body_excerpt": "/* ===== V4.02 Smaragd-Koloss canonical balance ===== Goals: - Works at every level. - Boss target is derived from level + equipment quality/freshness, not the player's raw combat "
+  },
+  {
+    "id": "v291-worldboss-upgrades-balance",
+    "src": "",
+    "inline_bytes": 4238,
+    "line": 42568,
+    "body_excerpt": "/* ===== V4.02 Smaragd-Koloss: Edelsteine + Verzauberungen ===== Upgrades now improve worldboss equipment readiness, but crit-related upgrade bonuses still do NOT increase the norm"
+  },
+  {
+    "id": "v408-guild-upgrade-audit-fix",
+    "src": "js/features/guild/legacy/06-v408-guild-upgrade-audit-fix.js",
+    "inline_bytes": 0,
+    "line": 43378,
+    "body_excerpt": ""
+  },
+  {
+    "id": "v410-guild-level-system",
+    "src": "js/features/guild/legacy/07-v410-guild-level-system.js",
+    "inline_bytes": 0,
+    "line": 43383,
+    "body_excerpt": ""
+  },
+  {
+    "id": "v4105-guild-grow-qa-fix",
+    "src": "js/features/guild/legacy/08-v4105-guild-grow-qa-fix.js",
+    "inline_bytes": 0,
+    "line": 44388,
+    "body_excerpt": ""
+  },
+  {
+    "id": "v4159-guild-war-authority",
+    "src": "js/features/guild/legacy/09-v4159-guild-war-authority.js",
+    "inline_bytes": 0,
+    "line": 45028,
+    "body_excerpt": ""
+  },
+  {
+    "id": "v564-guild-war-reference-js",
+    "src": "js/features/guild/legacy/10-v564-guild-war-reference-js.js",
+    "inline_bytes": 0,
+    "line": 47475,
+    "body_excerpt": ""
+  },
+  {
+    "id": "v311-worldboss-no-pity",
+    "src": "",
+    "inline_bytes": 1131,
+    "line": 48864,
+    "body_excerpt": "/* ===== V4.02 Smaragd-Koloss: pity protection removed ===== Gear/readiness balance remains. Losses no longer make the boss weaker. */ const v311BaseWorldBossModel=v290WorldBossMod"
+  },
+  {
+    "id": "v327-worldboss-confirm-attributes",
+    "src": "",
+    "inline_bytes": 7867,
+    "line": 51527,
+    "body_excerpt": "(function(){ /* ---------- 1. Grow-Skill completely retired ---------- */ try{ if(s.attrs && 'growSkill' in s.attrs) delete s.attrs.growSkill; }catch(e){} function v327StripGrowBon"
+  },
+  {
+    "id": "v329-guild-online-status",
+    "src": "js/features/guild/legacy/11-v329-guild-online-status.js",
+    "inline_bytes": 0,
+    "line": 51779,
+    "body_excerpt": ""
+  },
+  {
+    "id": "v380-guild-membership-requests-fix",
+    "src": "js/features/guild/legacy/12-v380-guild-membership-requests-fix.js",
+    "inline_bytes": 0,
+    "line": 58263,
+    "body_excerpt": ""
+  },
+  {
+    "id": "v388-worldboss-attack-fix",
+    "src": "",
+    "inline_bytes": 3436,
+    "line": 59316,
+    "body_excerpt": "(function(){ const VERSION='V4.29 Stable'; let v388Starting=false; /* Keep the current final V4.02/V4.02 worldboss owner intact. This wrapper only makes failures visible and preven"
+  },
+  {
+    "id": "v395-quest-reward-showcase",
+    "src": "",
+    "inline_bytes": 4510,
+    "line": 60425,
+    "body_excerpt": "(function(){ const VERSION='V4.29 Stable'; function keyOf(x){ if(!x)return ''; return String( x.id||x.uid|| [x.name||'',x.type||'',x.slot||'',x.quality||'',x.value||'',JSON.stringi"
+  },
+  {
+    "id": "v411-guild-xp-system",
+    "src": "js/features/guild/legacy/13-v411-guild-xp-system.js",
+    "inline_bytes": 0,
+    "line": 60665,
+    "body_excerpt": ""
+  },
+  {
+    "id": "v414-guild-boss-longterm",
+    "src": "js/features/guild/beta/v8008-c18-guildboss-screen-visual-owner.js",
+    "inline_bytes": 0,
+    "line": 60670,
+    "body_excerpt": ""
+  },
+  {
+    "id": "v415-dungeon-guildxp-final-guard",
+    "src": "js/features/guild/legacy/15-v415-dungeon-guildxp-final-guard.js",
+    "inline_bytes": 0,
+    "line": 60674,
+    "body_excerpt": ""
+  },
+  {
+    "id": "v436-guild-xp-reliability",
+    "src": "",
+    "inline_bytes": 0,
+    "line": 61996,
+    "body_excerpt": ""
+  },
+  {
+    "id": "v439-guild-xp-server-bridge",
+    "src": "js/features/guild/legacy/17-v439-guild-xp-server-bridge.js",
+    "inline_bytes": 0,
+    "line": 62386,
+    "body_excerpt": ""
+  },
+  {
+    "id": "v440-quest-guild-xp-final-owner",
+    "src": "js/features/guild/legacy/18-v440-quest-guild-xp-final-owner.js",
+    "inline_bytes": 0,
+    "line": 62391,
+    "body_excerpt": ""
+  },
+  {
+    "id": "v473-shop-cards-guildxp-script",
+    "src": "js/features/guild/legacy/19-v473-shop-cards-guildxp-script.js",
+    "inline_bytes": 0,
+    "line": 67640,
+    "body_excerpt": ""
+  },
+  {
+    "id": "v474-guild-home-authority-script",
+    "src": "js/features/guild/legacy/20-v474-guild-home-authority-script.js",
+    "inline_bytes": 0,
+    "line": 67644,
+    "body_excerpt": ""
+  },
+  {
+    "id": "v479-guildxp-limit-ui-script",
+    "src": "",
+    "inline_bytes": 0,
+    "line": 67847,
+    "body_excerpt": ""
+  },
+  {
+    "id": "v4118-care-guildboss-fix",
+    "src": "",
+    "inline_bytes": 37,
+    "line": 71356,
+    "body_excerpt": "window.v8008C12InstallLateBridge?.();"
+  },
+  {
+    "id": "v4119-guild-reliability",
+    "src": "js/features/guild/legacy/23-v4119-guild-reliability.js",
+    "inline_bytes": 0,
+    "line": 71360,
+    "body_excerpt": ""
+  },
+  {
+    "id": "v4121-quest-reward-current-item",
+    "src": "",
+    "inline_bytes": 5237,
+    "line": 71395,
+    "body_excerpt": "(()=>{ 'use strict'; const VERSION='V4.121 Stable',SHORT='V4.121'; const esc=v=>String(v??'').replace(/[&<>\"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',\"'\":'&#39;'}[c]"
+  },
+  {
+    "id": "v4144-guild-chat",
+    "src": "js/features/guild/legacy/24-v4144-guild-chat.js",
+    "inline_bytes": 0,
+    "line": 73466,
+    "body_excerpt": ""
+  },
+  {
+    "id": "v4146-guild-chat-bootstrap-authority",
+    "src": "js/features/guild/legacy/25-v4146-guild-chat-bootstrap-authority.js",
+    "inline_bytes": 0,
+    "line": 73471,
+    "body_excerpt": ""
+  },
+  {
+    "id": "gl-worldboss-ready-push-v2",
+    "src": "",
+    "inline_bytes": 6171,
+    "line": 75824,
+    "body_excerpt": "(()=>{ 'use strict'; if(window.__glWorldBossReadyPushV2)return; window.__glWorldBossReadyPushV2=true; /* Retire V1 flag as well so only this implementation owns future scheduling. "
+  },
+  {
+    "id": "v434-d7-clean-boss-script",
+    "src": "",
+    "inline_bytes": 906,
+    "line": 78200,
+    "body_excerpt": "(function(){ const CLEAN_BOSS = `assets/v7198-base64/1a70a19b00e85b1d15ec.webp`; function applyBoss(){ try{ if(Number(s?.dungeon?.selected||0)!==6) return; const card=document.getE"
+  },
+  {
+    "id": "v552-guild-grow-legends-js",
+    "src": "",
+    "inline_bytes": 0,
+    "line": 87972,
+    "body_excerpt": ""
+  },
+  {
+    "id": "v553-guild-strong-layout-js",
+    "src": "",
+    "inline_bytes": 0,
+    "line": 87978,
+    "body_excerpt": ""
+  },
+  {
+    "id": "v554-guild-reference-owner-js",
+    "src": "js/features/guild/beta/v8008-c6-guild-overview-owner.js",
+    "inline_bytes": 0,
+    "line": 87984,
+    "body_excerpt": ""
+  },
+  {
+    "id": "v555-guild-compact-final-js",
+    "src": "",
+    "inline_bytes": 0,
+    "line": 87990,
+    "body_excerpt": ""
+  },
+  {
+    "id": "v556-guild-progress-admin-js",
+    "src": "",
+    "inline_bytes": 0,
+    "line": 87996,
+    "body_excerpt": ""
+  },
+  {
+    "id": "v559-guild-final-fixes-js",
+    "src": "",
+    "inline_bytes": 0,
+    "line": 88006,
+    "body_excerpt": ""
+  },
+  {
+    "id": "v561-guild-first-open-gate-js",
+    "src": "",
+    "inline_bytes": 0,
+    "line": 88017,
+    "body_excerpt": ""
+  },
+  {
+    "id": "v562-guild-boss-reference-js",
+    "src": "",
+    "inline_bytes": 41,
+    "line": 88023,
+    "body_excerpt": "window.v8008C9InstallReferenceLayout?.();"
+  },
+  {
+    "id": "v565-guild-war-lower-final-js",
+    "src": "js/features/guild/legacy/34-v565-guild-war-lower-final-js.js",
+    "inline_bytes": 0,
+    "line": 88032,
+    "body_excerpt": ""
+  },
+  {
+    "id": "v6115-events-boss-pet-marker",
+    "src": "",
+    "inline_bytes": 50,
+    "line": 100296,
+    "body_excerpt": "window.__V6115_EVENTS_BOSS_PET_STABILITY__=true;"
+  },
+  {
+    "id": "v6116-event-text-boss-pulse-marker",
+    "src": "",
+    "inline_bytes": 46,
+    "line": 100301,
+    "body_excerpt": "window.__V6116_EVENT_TEXT_BOSS_PULSE__=true;"
+  },
+  {
+    "id": "v6118-event-x2-worldboss-marker",
+    "src": "",
+    "inline_bytes": 47,
+    "line": 100420,
+    "body_excerpt": "window.__V6118_EVENT_X2_WORLDBOSS_FIX__=true;"
+  },
+  {
+    "id": "v6119-guild-online-marker",
+    "src": "",
+    "inline_bytes": 0,
+    "line": 100425,
+    "body_excerpt": ""
+  },
+  {
+    "id": "v6120-guild-performance-sort-marker",
+    "src": "",
+    "inline_bytes": 0,
+    "line": 100428,
+    "body_excerpt": ""
+  },
+  {
+    "id": "v6123-worldboss-slot-feinschliff-marker",
+    "src": "",
+    "inline_bytes": 49,
+    "line": 100584,
+    "body_excerpt": "window.__V6123_WORLDBOSS_SLOT_FEINSCHLIFF__=true;"
+  },
+  {
+    "id": "v6124-guild-lock-marker",
+    "src": "js/features/guild/legacy/36-v6124-guild-lock-marker.js",
+    "inline_bytes": 0,
+    "line": 100587,
+    "body_excerpt": ""
+  },
+  {
+    "id": "gl-worldboss-home-click-fix-js",
+    "src": "",
+    "inline_bytes": 2575,
+    "line": 101045,
+    "body_excerpt": "(()=>{'use strict'; if(window.__GL_WORLDBOSS_HOME_CLICK_FIX__)return; window.__GL_WORLDBOSS_HOME_CLICK_FIX__=true; function activeCard(){ return document.querySelector('#world.acti"
+  },
+  {
+    "id": "vGuildChatCloseVisibilityFixJs",
+    "src": "js/features/guild/beta/v8008-c13-guild-chat-viewport-fix.js",
+    "inline_bytes": 0,
+    "line": 103239,
+    "body_excerpt": ""
+  },
+  {
+    "id": "v6310-guildboss-test-removal-guard",
+    "src": "",
+    "inline_bytes": 0,
+    "line": 103241,
+    "body_excerpt": ""
+  },
+  {
+    "id": "v6201-worldboss-real-art-script",
+    "src": "",
+    "inline_bytes": 6643,
+    "line": 103831,
+    "body_excerpt": "(()=>{ 'use strict'; if(window.__V6201_WORLD_BOSS_REAL_ART__)return; window.__V6201_WORLD_BOSS_REAL_ART__=true; const ART=\"assets/v7198-base64/6dcb5b08e22d3bbdc409.webp\"; let hpObs"
+  },
+  {
+    "id": "v6203-guild-boss-live-polish-script",
+    "src": "",
+    "inline_bytes": 36,
+    "line": 103986,
+    "body_excerpt": "window.v8008C18InstallPreVisual?.();"
+  },
+  {
+    "id": "v6305-guildboss-layout-script",
+    "src": "",
+    "inline_bytes": 0,
+    "line": 103993,
+    "body_excerpt": ""
+  },
+  {
+    "id": "v6307-guildboss-multiexchange-script",
+    "src": "js/features/guild/beta/v8008-c18-guildboss-replay-owner.js",
+    "inline_bytes": 0,
+    "line": 104002,
+    "body_excerpt": ""
+  },
+  {
+    "id": "v6309-guildboss-final-arena-script",
+    "src": "",
+    "inline_bytes": 36,
+    "line": 104013,
+    "body_excerpt": "window.v8008C18InstallPostArena?.();"
+  },
+  {
+    "id": "v6315-guildboss-legacy-cleanup-script",
+    "src": "",
+    "inline_bytes": 0,
+    "line": 104035,
+    "body_excerpt": ""
+  },
+  {
+    "id": "v6319-guildboss-smooth-owner-script",
+    "src": "",
+    "inline_bytes": 0,
+    "line": 104212,
+    "body_excerpt": ""
+  },
+  {
+    "id": "v6321-guildboss-combat-animation-script",
+    "src": "",
+    "inline_bytes": 0,
+    "line": 104218,
+    "body_excerpt": ""
+  },
+  {
+    "id": "v6207-guild-scroll-safe-js",
+    "src": "",
+    "inline_bytes": 0,
+    "line": 106301,
+    "body_excerpt": ""
+  },
+  {
+    "id": "v6208-guild-boss-mobile-performance-js",
+    "src": "",
+    "inline_bytes": 0,
+    "line": 106306,
+    "body_excerpt": ""
+  },
+  {
+    "id": "v6209-guildboss-replay-performance-script",
+    "src": "",
+    "inline_bytes": 0,
+    "line": 106311,
+    "body_excerpt": ""
+  },
+  {
+    "id": "v6232-pvp-worldboss-fx-parity-core",
+    "src": "",
+    "inline_bytes": 6025,
+    "line": 107239,
+    "body_excerpt": "(()=>{ 'use strict'; if(window.__V6232_PVP_WORLDBOSS_FX__)return; window.__V6232_PVP_WORLDBOSS_FX__=true; const seen=new Map(),timers=new Map(); const clean=v=>String(v||'').replac"
+  },
+  {
+    "id": "v6245-guild-invites",
+    "src": "js/features/guild/legacy/48-v6245-guild-invites.js",
+    "inline_bytes": 0,
+    "line": 108586,
+    "body_excerpt": ""
+  },
+  {
+    "id": "v7046-quest-event-duplicate-reward-guard",
+    "src": "",
+    "inline_bytes": 1822,
+    "line": 120736,
+    "body_excerpt": "(()=>{ 'use strict'; if(window.__V7046_QUEST_EVENT_GUARD__)return; window.__V7046_QUEST_EVENT_GUARD__=true; function markAtomicQuestOwners(){ for(const name of ['claimQuest','v233C"
+  },
+  {
+    "id": "v7072-server-tower-weekly-worldboss-bridge",
+    "src": "",
+    "inline_bytes": 39412,
+    "line": 123492,
+    "body_excerpt": "(()=>{ 'use strict'; if(window.__V7072_TOWER_WEEKLY_WORLDBOSS__)return; window.__V7072_TOWER_WEEKLY_WORLDBOSS__=true; const VERSION='V7.091'; const bridge={ ready:false,busy:false,"
+  },
+  {
+    "id": "v7078-server-guild-reward-claims",
+    "src": "js/features/guild/legacy/49-v7078-server-guild-reward-claims.js",
+    "inline_bytes": 0,
+    "line": 125151,
+    "body_excerpt": ""
+  },
+  {
+    "id": "v7136-complete-server-reward-core",
+    "src": "",
+    "inline_bytes": 8164,
+    "line": 128462,
+    "body_excerpt": "(()=>{ 'use strict'; if(window.__V7136_COMPLETE_REWARDS__)return; window.__V7136_COMPLETE_REWARDS__=true; const esc=v=>String(v??'').replace(/[&<>\"']/g,c=>({'&':'&amp;','<':'&lt;',"
+  },
+  {
+    "id": "v7273-guild-grow-core",
+    "src": "js/features/guild/legacy/50-v7273-guild-grow-core.js",
+    "inline_bytes": 0,
+    "line": 134176,
+    "body_excerpt": ""
+  },
+  {
+    "id": "v7307-guildboss-signup-owner",
+    "src": "",
+    "inline_bytes": 33,
+    "line": 134743,
+    "body_excerpt": "window.v8008C18InstallSignup?.();"
+  },
+  {
+    "id": "v7308-reward-consolidation",
+    "src": "js/features/rewards/v7308-reward-consolidation.js",
+    "inline_bytes": 0,
+    "line": 134749,
+    "body_excerpt": ""
+  }
+]
