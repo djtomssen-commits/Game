@@ -1,0 +1,51 @@
+/* V7.281 · Guild Grow final visual stabilization */
+#v7273GrowLoading{display:none!important;visibility:hidden!important;opacity:0!important;pointer-events:none!important}
+.v7273-grow-stage,.v7273-grow-stage *{box-sizing:border-box}
+
+/* The approved background image contains a permanently green painted track.
+   Cover only the spaces between chests, then draw the real server progress over it. */
+.v7281-chest-track{
+  position:absolute;top:21.82%;height:1.08%;z-index:3;
+  border-radius:999px;overflow:hidden;pointer-events:none;
+  background:linear-gradient(180deg,#151c12,#07100a);
+  border:1px solid rgba(112,84,42,.9);
+  box-shadow:inset 0 1px 3px #000,0 1px 2px #0008;
+}
+.v7281-chest-track>i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,#35a33a,#72ea58);box-shadow:0 0 8px #4bef5c99;transition:width .35s ease}
+.v7273-chest-ring{
+  opacity:1!important;z-index:4!important;
+  border:2px solid rgba(92,67,33,.92)!important;
+  background:rgba(3,8,4,.13)!important;
+  box-shadow:inset 0 0 13px rgba(0,0,0,.52)!important;
+}
+.v7273-chest-ring.hit{
+  border-color:#75ee62!important;background:rgba(44,130,42,.08)!important;
+  box-shadow:0 0 0 2px #7ef55b,0 0 20px 6px #3cff5070,inset 0 0 12px #55ff6b44!important;
+}
+.v7273-chest-ring.current:not(.hit){
+  border-color:#c7a652!important;background:rgba(92,69,22,.08)!important;
+  box-shadow:0 0 0 2px #b89442aa,0 0 16px 4px #d5b64c44,inset 0 0 12px #0005!important;
+}
+
+/* Contribution rows: deliberately one-line right column; no vertical text pile-up. */
+.v7273-contrib{
+  left:10.0%!important;right:9.2%!important;height:2.45%!important;
+  grid-template-columns:7% minmax(0,1fr) 29%!important;gap:1.2%!important;
+  align-items:center!important;overflow:hidden!important;padding:0 .3%!important;
+  font-size:clamp(6px,1.18vw,10px)!important;line-height:1!important;
+}
+.v7273-member{min-width:0!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;line-height:1!important}
+.v7273-member small{display:inline!important;margin-left:4px!important;font-size:.82em!important;line-height:1!important}
+.v7273-actions{display:block!important;min-width:0!important;text-align:right!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;line-height:1!important;color:#bce79c!important}
+.v7273-actions small{display:none!important}
+
+/* Keep weekly rows and badges inside their wood slots. */
+.v7273-task.week{height:5.7%!important;overflow:hidden!important}
+.v7273-task.week .v7273-task-main,.v7273-task.week .v7273-reward{overflow:hidden!important}
+.v7273-reward strong{max-width:100%!important;overflow:hidden!important;text-overflow:ellipsis!important}
+
+@media(max-width:560px){
+ .v7273-contrib{left:9.4%!important;right:8.6%!important;grid-template-columns:7% minmax(0,1fr) 31%!important;font-size:6.1px!important}
+ .v7273-actions{font-size:6px!important}
+ .v7281-chest-track{height:1.0%!important}
+}

@@ -1,0 +1,127 @@
+/* V7.308 · Refit the whole task board to the actual text.
+   Instead of only shrinking text, widen the reward plaques and give the
+   task rows a little more breathing room so the live overlay matches the art. */
+
+/* Slightly refit the visible board artwork area. */
+.v7273-grow-bg{
+  transform:scaleX(1.078) scaleY(1.022)!important;
+  transform-origin:50% 50%!important;
+}
+
+/* Daily / weekly rows */
+.v7273-task{
+  left:3.85%!important;
+  right:3.85%!important;
+  grid-template-columns:5.8% minmax(0,1fr) 15.8%!important;
+  column-gap:.55%!important;
+  padding:0 .15%!important;
+}
+.v7273-task.daily{height:4.95%!important}
+.v7273-task.week{height:6.18%!important}
+
+.v7273-task-main{
+  min-width:0!important;
+  overflow:hidden!important;
+  align-self:center!important;
+}
+.v7273-task-name{
+  margin:0!important;
+  font-size:5.32px!important;
+  line-height:1.02!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+}
+.v7273-task-desc{
+  margin:1px 0 0!important;
+  font-size:3.88px!important;
+  line-height:1.05!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+}
+.v7273-task.week .v7273-task-desc{
+  white-space:normal!important;
+  display:-webkit-box!important;
+  -webkit-box-orient:vertical!important;
+  -webkit-line-clamp:2!important;
+  overflow:hidden!important;
+  max-height:2.22em!important;
+  padding-right:2px!important;
+}
+
+.v7273-progress-line{
+  margin-top:2px!important;
+  gap:3px!important;
+  transform:none!important;
+}
+.v7273-progress{
+  height:3px!important;
+}
+.v7273-progress-line b{
+  min-width:22px!important;
+  font-size:3.68px!important;
+  line-height:1!important;
+}
+
+/* Reward plaques: make the painted box area effectively wider and center content better. */
+.v7273-reward{
+  min-width:0!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:0!important;
+  padding:1px 0!important;
+  margin-right:-1px!important;
+  overflow:hidden!important;
+  text-align:center!important;
+  font-size:3.62px!important;
+  line-height:1!important;
+  white-space:nowrap!important;
+  transform:scaleX(1.08)!important;
+  transform-origin:center center!important;
+}
+.v7273-reward .v7293-xp,
+.v7273-reward .v7293-buds{
+  display:block!important;
+  width:100%!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+}
+.v7273-reward strong{
+  display:inline-block!important;
+  max-width:100%!important;
+  margin-top:1px!important;
+  padding:1px 4px!important;
+  font-size:3.2px!important;
+  line-height:1!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+}
+
+/* Weekly section and contribution rows tuned to the widened board */
+.v7273-section-title{left:5.7%!important}
+.v7273-reset{right:5.8%!important}
+.v7273-contrib{
+  left:6.8%!important;
+  right:6.4%!important;
+  grid-template-columns:5.0% minmax(0,1fr) 16.0%!important;
+  column-gap:.55%!important;
+}
+.v7273-member{font-size:4.58px!important}
+.v7273-actions{
+  font-size:4.08px!important;
+  overflow:hidden!important;
+  white-space:nowrap!important;
+}
+
+/* Keep chest overlay aligned to the slightly rescaled board. */
+.v7273-chest-ring{width:9.05%!important}
+
+/* Current build */
+html body .app > header .v358-logo::after{content:"V8.001"!important}
+html body .app > header .v366-ver::after,
+html body .app > header .v371-logo em::after,
+html body .app > header .v372-logo em::after,
+#v372TopbarShell .v372-logo em::after{content:"V8.001"!important}

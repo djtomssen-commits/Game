@@ -1,0 +1,200 @@
+/* V7.283
+   Stable V7.281 runtime + purely visual Guild Grow corrections.
+   IMPORTANT: no embedded-image replacement and no startup/auth code is touched. */
+
+#v7273GrowLoading{
+  display:none!important;
+  visibility:hidden!important;
+  opacity:0!important;
+  pointer-events:none!important;
+}
+
+/* The artwork itself contains a green painted chest rail.
+   Mask that rail with a neutral wood/metal rail below the live HTML overlay. */
+.v7273-grow-stage::before{
+  content:"";
+  position:absolute;
+  z-index:2;
+  left:14.3%;
+  right:14.2%;
+  top:21.47%;
+  height:1.48%;
+  border-radius:999px;
+  pointer-events:none;
+  background:
+    linear-gradient(180deg,
+      rgba(85,59,28,.98) 0%,
+      rgba(34,24,13,.99) 35%,
+      rgba(11,13,8,.99) 55%,
+      rgba(47,32,16,.99) 100%);
+  border:1px solid rgba(126,91,43,.96);
+  box-shadow:
+    inset 0 1px 2px rgba(245,203,111,.12),
+    inset 0 -1px 3px rgba(0,0,0,.9),
+    0 1px 2px rgba(0,0,0,.7);
+}
+
+/* Live progress segments sit above the neutral mask. */
+.v7281-chest-track{
+  z-index:4!important;
+  top:21.70%!important;
+  height:.82%!important;
+  background:linear-gradient(180deg,#261b0e,#0a0d08)!important;
+  border:1px solid rgba(122,88,42,.92)!important;
+  box-shadow:inset 0 1px 2px #000,0 1px 2px #0008!important;
+}
+.v7281-chest-track>i{
+  height:100%!important;
+  background:linear-gradient(90deg,#288d31,#69df50)!important;
+  box-shadow:0 0 5px rgba(75,239,92,.48)!important;
+}
+
+/* No "current" green glow before the first threshold. */
+.v7273-chest-ring{
+  z-index:5!important;
+  opacity:0!important;
+  background:transparent!important;
+}
+.v7273-chest-ring.hit{
+  opacity:1!important;
+  border:2px solid #75ee62!important;
+  box-shadow:0 0 0 2px #7ef55b,0 0 17px 5px #3cff5060,inset 0 0 10px #55ff6b35!important;
+}
+.v7273-chest-ring.current:not(.hit){
+  opacity:.76!important;
+  border:2px solid #d0ad54!important;
+  box-shadow:0 0 0 2px #b8944288,0 0 13px 3px #d5b64c35!important;
+}
+
+/* Task rows: everything must remain inside the wooden slots. */
+.v7273-task{
+  left:6.5%!important;
+  right:6.5%!important;
+  grid-template-columns:7.4% minmax(0,1fr) 24.5%!important;
+  gap:.65%!important;
+  padding:0 .35%!important;
+  overflow:hidden!important;
+}
+.v7273-task.week{height:5.7%!important}
+.v7273-task-main{
+  min-width:0!important;
+  overflow:hidden!important;
+}
+.v7273-task-name{
+  margin:0!important;
+  font-size:clamp(4.8px,.88vw,7.0px)!important;
+  line-height:1!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+}
+.v7273-task-desc{
+  margin:1px 0 0!important;
+  font-size:clamp(3.7px,.64vw,5.1px)!important;
+  line-height:1!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+}
+.v7273-progress-line{
+  gap:3px!important;
+  margin-top:2px!important;
+  min-width:0!important;
+}
+.v7273-progress{height:3px!important;min-width:0!important}
+.v7273-progress-line b{
+  min-width:25px!important;
+  font-size:clamp(3.7px,.63vw,5px)!important;
+  line-height:1!important;
+  white-space:nowrap!important;
+}
+.v7273-reward{
+  min-width:0!important;
+  overflow:hidden!important;
+  text-align:right!important;
+  font-size:clamp(3.9px,.67vw,5.3px)!important;
+  line-height:1.02!important;
+  white-space:nowrap!important;
+  padding-right:.6%!important;
+}
+.v7273-reward span{
+  display:block!important;
+  font-size:.92em!important;
+  line-height:1.02!important;
+  white-space:nowrap!important;
+}
+.v7273-reward strong{
+  display:inline-block!important;
+  max-width:96%!important;
+  margin-top:1px!important;
+  padding:1px 4px!important;
+  font-size:.78em!important;
+  line-height:1!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+}
+
+/* Section headers/reset timer. */
+.v7273-section-title{
+  font-size:clamp(7px,1.45vw,11px)!important;
+  line-height:1!important;
+}
+.v7273-reset{
+  font-size:clamp(4.2px,.76vw,6.1px)!important;
+  line-height:1!important;
+  white-space:nowrap!important;
+}
+
+/* Contribution list: one compact line per player. */
+.v7273-contrib{
+  left:10.0%!important;
+  right:9.5%!important;
+  height:2.45%!important;
+  grid-template-columns:6% minmax(0,1fr) 24%!important;
+  gap:.7%!important;
+  padding:0 .15%!important;
+  overflow:hidden!important;
+  align-items:center!important;
+  font-size:clamp(4.5px,.78vw,6.2px)!important;
+  line-height:1!important;
+}
+.v7273-rank{font-size:.9em!important;line-height:1!important}
+.v7273-member{
+  min-width:0!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  white-space:nowrap!important;
+  line-height:1!important;
+}
+.v7273-member small{
+  display:inline!important;
+  margin-left:3px!important;
+  font-size:.74em!important;
+  line-height:1!important;
+}
+.v7273-actions{
+  min-width:0!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  white-space:nowrap!important;
+  text-align:right!important;
+  font-size:.9em!important;
+  line-height:1!important;
+}
+.v7273-actions small{display:none!important}
+
+/* Phone-specific hard cap. */
+@media(max-width:560px){
+  .v7273-title{font-size:16px!important}
+  .v7273-title small{font-size:5px!important}
+  .v7273-chest-summary{font-size:5px!important;left:15.5%!important;right:15.5%!important}
+  .v7273-task-name{font-size:5.35px!important}
+  .v7273-task-desc{font-size:3.85px!important}
+  .v7273-progress-line b{font-size:3.9px!important;min-width:23px!important}
+  .v7273-reward{font-size:4.05px!important}
+  .v7273-section-title{font-size:7.5px!important}
+  .v7273-reset{font-size:4.3px!important}
+  .v7273-contrib{font-size:4.7px!important;grid-template-columns:6% minmax(0,1fr) 23%!important}
+  .v7273-actions{font-size:4.55px!important}
+}

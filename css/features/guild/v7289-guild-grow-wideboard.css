@@ -1,0 +1,90 @@
+/* V7.308 · Guild Grow: use more of the phone width instead of shrinking text.
+   The artwork is widened only horizontally, so the vertical task positions remain stable. */
+.v7273-grow-bg{
+  transform:scaleX(1.065)!important;
+  transform-origin:50% 50%!important;
+}
+
+/* The wooden task board now reaches closer to the screen edges after the horizontal crop. */
+.v7273-task{
+  left:4.25%!important;
+  right:4.25%!important;
+  grid-template-columns:6.2% minmax(0,1fr) 13.8%!important;
+  column-gap:.65%!important;
+  padding:0 .28%!important;
+}
+.v7273-metric-icon{
+  width:72%!important;
+}
+.v7273-task-main{
+  min-width:0!important;
+}
+.v7273-task-name{
+  font-size:5.55px!important;
+  line-height:1.02!important;
+}
+.v7273-task-desc{
+  font-size:4.15px!important;
+  line-height:1.02!important;
+  letter-spacing:0!important;
+}
+.v7273-progress-line{
+  margin-top:2px!important;
+  gap:3px!important;
+}
+.v7273-progress-line b{
+  min-width:23px!important;
+  font-size:4.0px!important;
+}
+.v7273-reward{
+  font-size:3.9px!important;
+  padding-right:0!important;
+  text-align:center!important;
+}
+.v7273-reward span{
+  font-size:.94em!important;
+}
+.v7273-reward strong{
+  font-size:.78em!important;
+  padding:1px 3px!important;
+}
+
+/* Weekly rows have enough height for the description; do not make it smaller than daily text. */
+.v7273-task.week .v7273-task-desc{
+  font-size:4.05px!important;
+}
+
+/* Match headings and contribution list to the widened wooden artwork. */
+.v7273-section-title{left:6.2%!important}
+.v7273-reset{right:6.0%!important}
+.v7273-contrib{
+  left:7.6%!important;
+  right:7.0%!important;
+  grid-template-columns:5.5% minmax(0,1fr) 15.5%!important;
+  column-gap:.65%!important;
+}
+.v7273-member{font-size:4.8px!important}
+.v7273-actions{font-size:4.45px!important}
+
+/* Chest overlays must follow the horizontally widened artwork. */
+.v7273-chest-ring{
+  width:8.84%!important;
+}
+
+/* Keep the mobile values above as the final owner. */
+@media(max-width:560px){
+  .v7273-task-name{font-size:5.55px!important}
+  .v7273-task-desc{font-size:4.15px!important}
+  .v7273-task.week .v7273-task-desc{font-size:4.05px!important}
+  .v7273-progress-line b{font-size:4.0px!important}
+  .v7273-reward{font-size:3.9px!important}
+  .v7273-contrib{font-size:4.8px!important;grid-template-columns:5.5% minmax(0,1fr) 15.5%!important}
+  .v7273-actions{font-size:4.45px!important}
+}
+
+/* Current build */
+html body .app > header .v358-logo::after{content:"V8.001"!important}
+html body .app > header .v366-ver::after,
+html body .app > header .v371-logo em::after,
+html body .app > header .v372-logo em::after,
+#v372TopbarShell .v372-logo em::after{content:"V8.001"!important}

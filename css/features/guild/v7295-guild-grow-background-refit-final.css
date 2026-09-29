@@ -1,0 +1,132 @@
+/* V7.308 · Refit the BOARD / background to the live content, not the other way around.
+   Make the painted right reward plaques and bottom contribution area effectively larger. */
+
+/* Stronger board/background refit */
+.v7273-grow-bg{
+  transform:scaleX(1.122) scaleY(1.048)!important;
+  transform-origin:50% 50%!important;
+  object-position:center 49%!important;
+}
+
+/* Board headings */
+.v7273-title{top:2.2%!important}
+.v7273-title small{font-size:4.9px!important}
+.v7273-chest-summary{top:18.95%!important;font-size:5.35px!important}
+.v7273-section-title{left:5.3%!important}
+.v7273-reset{right:5.0%!important;font-size:5.05px!important}
+
+/* Daily / weekly rows now use a wider overall board and a larger painted reward zone */
+.v7273-task{
+  left:3.15%!important;
+  right:3.10%!important;
+  grid-template-columns:5.6% minmax(0,1fr) 18.4%!important;
+  column-gap:.45%!important;
+  padding:0 .08%!important;
+}
+.v7273-task.week{height:6.28%!important}
+.v7273-metric-icon{width:68%!important}
+
+.v7273-task-main{
+  min-width:0!important;
+  overflow:hidden!important;
+  align-self:center!important;
+}
+.v7273-task-name{
+  margin:0!important;
+  font-size:5.18px!important;
+  line-height:1.02!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+}
+.v7273-task-desc{
+  margin:1px 0 0!important;
+  font-size:3.72px!important;
+  line-height:1.05!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+}
+.v7273-task.week .v7273-task-desc{
+  white-space:normal!important;
+  display:-webkit-box!important;
+  -webkit-box-orient:vertical!important;
+  -webkit-line-clamp:2!important;
+  overflow:hidden!important;
+  max-height:2.25em!important;
+  padding-right:3px!important;
+}
+.v7273-progress-line{
+  margin-top:1px!important;
+  gap:3px!important;
+}
+.v7273-progress{height:3px!important}
+.v7273-progress-line b{
+  min-width:21px!important;
+  font-size:3.55px!important;
+  line-height:1!important;
+}
+
+/* Reward plaque block: slightly wider and shifted inward so every label stays on the plaque */
+.v7273-reward{
+  min-width:0!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:0!important;
+  padding:1px 0 1px 1px!important;
+  overflow:hidden!important;
+  text-align:center!important;
+  font-size:3.48px!important;
+  line-height:1!important;
+  white-space:nowrap!important;
+  transform:scaleX(1.15) translateX(-1px)!important;
+  transform-origin:center center!important;
+}
+.v7273-reward .v7293-xp,
+.v7273-reward .v7293-buds{
+  display:block!important;
+  width:100%!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:clip!important;
+}
+.v7273-reward strong{
+  display:inline-block!important;
+  max-width:100%!important;
+  margin-top:1px!important;
+  padding:1px 4px!important;
+  font-size:3.05px!important;
+  line-height:1!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+}
+
+/* Weekly contribution list: widen the board and pull action counts inward */
+.v7273-contrib-title{top:76.2%!important}
+.v7273-contrib{
+  left:6.05%!important;
+  right:5.55%!important;
+  grid-template-columns:5.0% minmax(0,1fr) 18.2%!important;
+  column-gap:.45%!important;
+}
+.v7273-member{font-size:4.45px!important}
+.v7273-actions{
+  font-size:3.9px!important;
+  overflow:hidden!important;
+  white-space:nowrap!important;
+  text-align:right!important;
+  transform:translateX(-2px)!important;
+}
+
+/* Keep chest overlays aligned after the stronger board refit */
+.v7281-chest-track{top:21.95%!important}
+.v7273-chest-ring{width:9.3%!important}
+
+/* Build marker */
+html body .app > header .v358-logo::after{content:"V8.001"!important}
+html body .app > header .v366-ver::after,
+html body .app > header .v371-logo em::after,
+html body .app > header .v372-logo em::after,
+#v372TopbarShell .v372-logo em::after{content:"V8.001"!important}
