@@ -29,6 +29,15 @@ function installTowerVisualDedup(){
     wrapped.__v8009Base=extra;
     window.v6225ExtraHitVisual=wrapped;
   }
+  /* V7175 already owns Tower hit/talent/status presentation. The older
+     v6230 Tower-only layer duplicates the same hit effects and forces extra
+     layout work, which showed up as short stalls on mobile. */
+  const oldTowerFx=window.v6230TowerCombatFx;
+  if(typeof oldTowerFx==='function'&&!oldTowerFx.__v8009Retired){
+    const retired=function(){return false};
+    retired.__v8009Retired=true;retired.__v8009Base=oldTowerFx;
+    window.v6230TowerCombatFx=retired;
+  }
 }
 installTowerVisualDedup();
 setTimeout(installTowerVisualDedup,0);
@@ -39,6 +48,7 @@ window.v8009CombatCadenceDiagnostics=()=>({
   version:'V8.009-T10',
   dungeonPvpTower:slowerCadence(),
   towerExtraFxDedup:!!window.v6225ExtraHitVisual?.__v8009TowerDedup,
+  towerLegacyFxRetired:!!window.v6230TowerCombatFx?.__v8009Retired,
   routeRenderFlowGuardRetired:true,
   guildBossWarMultiplier:1.25
 });
