@@ -1,0 +1,98 @@
+#guild .v6245-invite-card{
+  border-color:#4d693d!important;
+  background:
+    radial-gradient(circle at 96% 0,rgba(84,190,67,.09),transparent 32%),
+    linear-gradient(155deg,#11190f,#091009)!important
+}
+#guild .v6245-search-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:7px;margin-top:8px}
+#guild .v6245-search-row input{
+  min-width:0;padding:10px 11px;border:1px solid #42543b;border-radius:10px;
+  background:#080d08;color:#e8ebdd;font-size:9px;outline:none
+}
+#guild .v6245-search-row input:focus{border-color:#75a85a;box-shadow:0 0 0 2px rgba(112,177,81,.12)}
+#guild .v6245-results,#guild .v6245-sent,#guild .v6245-incoming{display:grid;gap:6px;margin-top:8px}
+#guild .v6245-player,
+#guild .v6245-sent-row,
+#guild .v6245-incoming-row{
+  display:grid;grid-template-columns:42px minmax(0,1fr) auto;gap:8px;align-items:center;
+  padding:8px;border:1px solid #344536;border-radius:11px;background:#0a100b
+}
+#guild .v6245-player img,#guild .v6245-incoming-row .v6245-guild-icon{
+  width:42px;height:42px;border-radius:10px;border:1px solid #50664b;background:#111b12;object-fit:cover
+}
+#guild .v6245-guild-icon{display:grid;place-items:center;font-size:22px}
+#guild .v6245-player b,#guild .v6245-sent-row b,#guild .v6245-incoming-row b{
+  display:block;color:#e8ecdf;font-size:8.5px;line-height:1.15
+}
+#guild .v6245-player small,#guild .v6245-sent-row small,#guild .v6245-incoming-row small{
+  display:block;margin-top:3px;color:#839085;font-size:6.5px;line-height:1.35
+}
+#guild .v6245-player-actions,#guild .v6245-invite-actions{display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end}
+#guild .v6245-mini{
+  min-height:30px;padding:6px 8px;border:1px solid #577346;border-radius:8px;
+  background:#172216;color:#dceacb;font-size:7px;font-weight:1000;white-space:nowrap
+}
+#guild .v6245-mini.good{border-color:#5f9447;background:#1a3218;color:#bcec9c}
+#guild .v6245-mini.bad{border-color:#805044;background:#2a1714;color:#e9b3a8}
+#guild .v6245-mini:disabled{opacity:.52}
+#guild .v6245-empty{
+  padding:10px;border:1px dashed #354337;border-radius:10px;color:#758179;text-align:center;font-size:7px
+}
+#guild .v6245-subhead{
+  display:flex;align-items:center;justify-content:space-between;gap:8px;
+  margin-top:12px;padding-top:9px;border-top:1px solid #2d3b2d;color:#c7d3bd
+}
+#guild .v6245-subhead b{font-size:8px}
+#guild .v6245-subhead span{font-size:6px;color:#718074}
+#guild .v6245-incoming-card{
+  margin:10px 0;padding:10px;border:2px solid #7e6a2f;border-radius:14px;
+  background:radial-gradient(circle at 90% 0,rgba(135,215,76,.12),transparent 34%),linear-gradient(150deg,#17180d,#0a1009);
+  box-shadow:0 0 18px rgba(91,171,65,.10)
+}
+#guild .v6245-incoming-head{display:flex;justify-content:space-between;align-items:center;gap:8px}
+#guild .v6245-incoming-head h3{margin:0;color:#e6cc82;font-size:11px}
+#guild .v6245-incoming-head .pill{background:#63372a;color:#ffd2c1}
+.v6245-menu-badge{
+  display:inline-grid!important;place-items:center!important;min-width:16px;height:16px;padding:0 4px!important;
+  margin-left:auto!important;border:1px solid #ff9a76!important;border-radius:99px!important;
+  background:#b9372d!important;color:#fff!important;font:1000 8px/1 system-ui,sans-serif!important;
+  box-shadow:0 0 10px rgba(233,59,46,.45)!important
+}
+@media(max-width:560px){
+ #guild .v6245-player,#guild .v6245-sent-row,#guild .v6245-incoming-row{
+   grid-template-columns:36px minmax(0,1fr)
+ }
+ #guild .v6245-player img,#guild .v6245-incoming-row .v6245-guild-icon{width:36px;height:36px}
+ #guild .v6245-player-actions,#guild .v6245-invite-actions{grid-column:1/-1;justify-content:stretch}
+ #guild .v6245-player-actions button,#guild .v6245-invite-actions button{flex:1}
+}
+
+/* V6.247: invitation controls are integrated at the bottom of Gildenverwaltung. */
+#guild #v6245GuildInviteCard.v6247-in-management{
+  margin:10px 0 0!important;
+  padding:0!important;
+  border:0!important;
+  border-radius:0!important;
+  background:none!important;
+  box-shadow:none!important;
+}
+#guild #v6245GuildInviteCard .v6247-invite-divider{
+  height:1px!important;
+  margin:10px 0!important;
+  background:linear-gradient(90deg,transparent,#4b6547 15%,#4b6547 85%,transparent)!important;
+}
+#guild #v6245GuildInviteCard .section-title{margin-bottom:6px!important}
+#guild #v6245GuildInviteCard .section-title h3{color:#dfe9c7!important}
+#guild #v6245GuildInviteCard[data-v6246-visible]::before{
+  content:'GILDENLEITUNG · EINLADUNGEN';
+  display:inline-block;
+  margin:0 0 7px;
+  padding:3px 7px;
+  border:1px solid #568249;
+  border-radius:999px;
+  background:#102112;
+  color:#8fd278;
+  font-size:6px;
+  font-weight:1000;
+  letter-spacing:.08em;
+}

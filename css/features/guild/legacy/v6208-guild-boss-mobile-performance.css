@@ -1,0 +1,13 @@
+/* Decorative motion is paused only while the user is physically scrolling.
+   Fight/hit animations remain enabled. */
+#v254GuildBoss.v6208-scroll-pause .v259-arena:not(.attack):not(.hit):not(.win) .v261-titan-creature,
+#v254GuildBoss.v6208-scroll-pause .v261-spores circle{
+  animation-play-state:paused!important;
+}
+#v254GuildBoss.v6208-scroll-pause .v261-titan-art{
+  filter:none!important;
+}
+@media (prefers-reduced-motion: reduce){
+  #v254GuildBoss .v259-arena:not(.attack):not(.hit):not(.win) .v261-titan-creature,
+  #v254GuildBoss .v261-spores circle{animation:none!important}
+}

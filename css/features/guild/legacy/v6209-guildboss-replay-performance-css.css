@@ -1,0 +1,40 @@
+/* Outside an active replay the arena must be static: no permanent GPU churn while scrolling. */
+#v260DailyBossArena:not(.v6209-replay-running) #v6320HeroCutout,
+#v260DailyBossArena:not(.v6209-replay-running) #v6320BossCutout,
+#v260DailyBossArena:not(.v6209-replay-running) #v6321GroundPulse{
+  animation:none!important;
+  will-change:auto!important;
+  contain:none!important;
+}
+#v260DailyBossArena:not(.v6209-replay-running) #v6321HeroSlash,
+#v260DailyBossArena:not(.v6209-replay-running) #v6321BossClaw,
+#v260DailyBossArena:not(.v6209-replay-running) #v6321ImpactFlash{
+  animation:none!important;
+  opacity:0!important;
+  will-change:auto!important;
+}
+/* Keep a static result pose instead of an infinite post-fight animation. */
+#v260DailyBossArena:not(.v6209-replay-running).v261-final:not(.win) #v6320BossCutout{
+  opacity:1!important;
+  transform:translate3d(0,0,0)!important;
+}
+#v260DailyBossArena:not(.v6209-replay-running).win #v6320BossCutout{
+  opacity:.22!important;
+  transform:translate3d(0,38px,0) rotate(7deg) scale(.88)!important;
+}
+/* During replay, avoid re-rasterizing large drop-shadows on every transform frame. */
+#v260DailyBossArena.v6209-replay-running #v6320HeroCutout,
+#v260DailyBossArena.v6209-replay-running #v6320BossCutout{
+  filter:none!important;
+  contain:none!important;
+  will-change:transform,opacity!important;
+}
+#v260DailyBossArena.v6209-replay-running #v6321GroundPulse{animation:none!important;opacity:.32!important}
+@media(max-width:700px){
+  /* Stage shaking repaints the whole cinematic background on mobile. Impact FX still show the hit. */
+  #v260DailyBossArena.v6209-replay-running.hit .v259-stage,
+  #v260DailyBossArena.v6209-replay-running.v6307-hero-hit .v259-stage{
+    animation:none!important;
+  }
+  #v260DailyBossArena.v6209-replay-running .v259-stage:after{filter:none!important;opacity:.55!important}
+}

@@ -1,0 +1,175 @@
+/* =========================================================
+   GUILD MEMBERS – final mobile-safe layout
+   avatar | player info | online-status
+   flags are always on their own second row
+   ========================================================= */
+#guild #v254GuildMembers .v254-member{
+  display:grid!important;
+  grid-template-columns:38px minmax(0,1fr) auto!important;
+  grid-template-areas:
+    "avatar main presence"
+    "avatar flags flags"!important;
+  column-gap:7px!important;
+  row-gap:5px!important;
+  align-items:center!important;
+  min-height:66px!important;
+  padding:7px!important;
+  overflow:visible!important;
+}
+
+#guild #v254GuildMembers .v254-member>img{
+  grid-area:avatar!important;
+  width:36px!important;
+  height:36px!important;
+  align-self:start!important;
+}
+
+#guild #v254GuildMembers .v254-member-main{
+  grid-area:main!important;
+  min-width:0!important;
+  overflow:visible!important;
+}
+
+#guild #v254GuildMembers .v254-member-name-line{
+  display:flex!important;
+  align-items:center!important;
+  gap:4px!important;
+  flex-wrap:wrap!important;
+  min-width:0!important;
+}
+
+#guild #v254GuildMembers .v254-member-name-line>b{
+  max-width:110px!important;
+  min-width:0!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  white-space:nowrap!important;
+  font-size:7.4px!important;
+}
+
+#guild #v254GuildMembers .v6119-member-presence{
+  grid-area:presence!important;
+  justify-self:end!important;
+  align-self:center!important;
+  min-width:62px!important;
+  position:relative!important;
+  z-index:4!important;
+}
+
+#guild #v254GuildMembers .v329-presence{
+  width:auto!important;
+  min-width:62px!important;
+  min-height:23px!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:4px!important;
+  padding:3px 7px!important;
+  border:1px solid #4d5b50!important;
+  border-radius:999px!important;
+  background:#0a110c!important;
+  color:#8e9790!important;
+  font-size:5.4px!important;
+  line-height:1!important;
+  font-weight:950!important;
+  white-space:nowrap!important;
+  overflow:visible!important;
+}
+
+#guild #v254GuildMembers .v329-presence i{
+  width:7px!important;
+  height:7px!important;
+  flex:0 0 7px!important;
+  border-radius:50%!important;
+  background:#757d78!important;
+  box-shadow:none!important;
+}
+
+#guild #v254GuildMembers .v329-presence.online{
+  border-color:#49bc5d!important;
+  background:linear-gradient(180deg,#12371b,#0a2110)!important;
+  color:#9ff2a8!important;
+  box-shadow:0 0 8px rgba(72,210,91,.15)!important;
+}
+
+#guild #v254GuildMembers .v329-presence.online i{
+  background:#55ef6b!important;
+  box-shadow:0 0 7px rgba(85,239,107,.78)!important;
+}
+
+#guild #v254GuildMembers .v254-member-flags{
+  grid-area:flags!important;
+  width:100%!important;
+  max-width:none!important;
+  min-width:0!important;
+  display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:5px!important;
+  padding:0!important;
+  justify-self:stretch!important;
+  overflow:visible!important;
+}
+
+#guild #v254GuildMembers .v254-member-flags .v254-flag{
+  width:100%!important;
+  min-width:0!important;
+  max-width:none!important;
+  min-height:22px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  padding:3px 4px!important;
+  font-size:4.5px!important;
+  line-height:1!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+}
+
+#guild #v254GuildMembers .v254-member-flags .v254-flag.on{
+  min-width:0!important;
+}
+
+/* Old pseudo presence dots/lines must not occupy extra room. */
+#guild #v254GuildMembers .v329-presence::before,
+#guild #v254GuildMembers .v329-presence::after{
+  content:none!important;
+  display:none!important;
+}
+
+@media(max-width:390px){
+  #guild #v254GuildMembers .v254-member{
+    grid-template-columns:32px minmax(0,1fr) 58px!important;
+    column-gap:5px!important;
+    padding:6px!important;
+  }
+  #guild #v254GuildMembers .v254-member>img{
+    width:30px!important;
+    height:30px!important;
+  }
+  #guild #v254GuildMembers .v254-member-name-line>b{
+    max-width:72px!important;
+    font-size:6.2px!important;
+  }
+  #guild #v254GuildMembers .v552-role{
+    font-size:4px!important;
+    padding:1px 3px!important;
+  }
+  #guild #v254GuildMembers .v6119-member-presence{
+    min-width:58px!important;
+  }
+  #guild #v254GuildMembers .v329-presence{
+    min-width:58px!important;
+    min-height:21px!important;
+    padding:3px 5px!important;
+    font-size:4.7px!important;
+  }
+  #guild #v254GuildMembers .v254-member-flags{
+    gap:3px!important;
+  }
+  #guild #v254GuildMembers .v254-member-flags .v254-flag{
+    min-height:20px!important;
+    padding:3px 2px!important;
+    font-size:4px!important;
+  }
+}

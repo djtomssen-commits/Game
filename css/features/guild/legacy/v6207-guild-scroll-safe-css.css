@@ -1,0 +1,37 @@
+/* Samsung/Android safe version: keep the browser canvas and sticky HUD opaque,
+   but DO NOT force the sticky header into its own transformed/contained layer.
+   That V6.206 combination could swallow subsequent touch-scroll gestures. */
+html,body,.app{
+  background-color:#020704!important;
+}
+html,body{
+  overscroll-behavior-y:auto!important;
+}
+
+#v372TopbarShell{
+  background:#020704!important;
+  -webkit-backdrop-filter:none!important;
+  backdrop-filter:none!important;
+  -webkit-transform:none!important;
+  transform:none!important;
+  -webkit-backface-visibility:visible!important;
+  backface-visibility:visible!important;
+  isolation:auto!important;
+  contain:none!important;
+  will-change:auto!important;
+}
+#v372TopbarShell .v372-topbar{
+  -webkit-backdrop-filter:none!important;
+  backdrop-filter:none!important;
+  background:linear-gradient(180deg,#030905,#020704)!important;
+}
+
+/* Reduce only the expensive blur work on the guild screen. Do not apply
+   contain/transform to cards or the page scroll tree. */
+#guild.active *,#guild.active *::before,#guild.active *::after{
+  -webkit-backdrop-filter:none!important;
+  backdrop-filter:none!important;
+}
+#guild.active .v254-boss-monster{
+  animation:none!important;
+}

@@ -1,0 +1,29 @@
+.v259-arena{position:relative;margin-top:11px;padding:12px;border:1px solid #36523c;border-radius:14px;background:radial-gradient(circle at 70% 42%,rgba(120,35,151,.22),transparent 36%),linear-gradient(180deg,#07110a,#050906);overflow:hidden}
+.v259-arena:before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(108,49,128,.08),transparent);animation:v259Fog 3.4s linear infinite;pointer-events:none}
+@keyframes v259Fog{from{transform:translateX(-55%)}to{transform:translateX(55%)}}
+.v259-boss-title{position:relative;z-index:2;display:flex;justify-content:space-between;gap:8px;font-size:8px;margin-bottom:6px}
+.v259-boss-title span{color:#c68cdb}
+.v259-boss-hp{position:relative;z-index:2;height:13px;border:1px solid #6d3a7a;border-radius:99px;background:#170a19;overflow:hidden}
+.v259-boss-hp i{display:block;width:100%;height:100%;background:linear-gradient(90deg,#8b36a6,#dc65f2);transition:width .7s ease}
+.v259-stage{position:relative;z-index:2;min-height:210px;display:grid;grid-template-columns:1fr 36px 1fr;align-items:end;padding:15px 2px 8px}
+.v259-fighter-side,.v259-boss-side{display:flex;flex-direction:column;align-items:center;text-align:center;gap:5px}
+.v259-fighter-side img{width:92px;height:92px;object-fit:cover;border-radius:18px;border:2px solid #496b4f;box-shadow:0 0 22px rgba(78,157,88,.2);transition:transform .18s}
+.v259-fighter-side b,.v259-boss-side b{font-size:9px}.v259-fighter-side small{font-size:6.5px;color:#819087}
+.v259-vs{align-self:center;text-align:center;font-size:18px;opacity:.75}
+.v259-titan{position:relative;width:105px;height:128px;transform-origin:50% 100%;filter:drop-shadow(0 0 15px rgba(183,72,217,.35))}
+.v259-titan-aura{position:absolute;inset:6px -12px 0;border:2px solid rgba(193,75,226,.32);border-radius:50%;animation:v259Aura 1.5s ease-in-out infinite}
+.v259-titan-head{position:absolute;left:34px;top:8px;width:40px;height:40px;border-radius:48% 48% 40% 40%;display:grid;place-items:center;background:linear-gradient(#7d398c,#32183a);font-size:20px;border:2px solid #c660df;z-index:3}
+.v259-titan-body{position:absolute;left:25px;top:42px;width:58px;height:75px;border-radius:38% 38% 25% 25%;background:linear-gradient(90deg,#26122c,#773487,#251129);border:2px solid #7c3a8b}
+.v259-titan-arm{position:absolute;top:50px;width:24px;height:69px;border-radius:14px;background:#4d2258;border:2px solid #743482;transform-origin:50% 10%}
+.v259-titan-arm.left{left:11px;transform:rotate(16deg)}.v259-titan-arm.right{right:10px;transform:rotate(-16deg)}
+@keyframes v259Aura{50%{transform:scale(1.08);opacity:.45}}
+.v259-damage-pop{position:absolute;right:18%;top:38%;font-size:24px;font-weight:1000;color:#ff9a78;text-shadow:0 2px 8px #000;opacity:0;transform:translateY(10px) scale(.8);pointer-events:none}
+.v259-fight-text{position:relative;z-index:2;min-height:30px;text-align:center;font-size:8px;font-weight:900;color:#d5dfd6;padding:7px;border-top:1px solid #26362b}
+.v259-arena.attack .v259-fighter-side img{animation:v259Lunge .62s ease}
+.v259-arena.hit .v259-titan{animation:v259BossHit .55s ease}
+.v259-arena.hit .v259-damage-pop{animation:v259Damage .85s ease}
+.v259-arena.win .v259-titan{animation:v259Defeat 1s ease forwards}
+@keyframes v259Lunge{0%,100%{transform:translateX(0) rotate(0)}45%{transform:translateX(58px) rotate(4deg) scale(1.05)}}
+@keyframes v259BossHit{20%{transform:translateX(8px) rotate(3deg)}45%{transform:translateX(-8px) rotate(-3deg)}}
+@keyframes v259Damage{0%{opacity:0;transform:translateY(12px) scale(.7)}20%{opacity:1;transform:translateY(0) scale(1.15)}100%{opacity:0;transform:translateY(-32px) scale(.95)}}
+@keyframes v259Defeat{to{transform:translateY(28px) rotate(12deg) scale(.85);opacity:.25;filter:grayscale(1)}}

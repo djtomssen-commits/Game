@@ -1,0 +1,70 @@
+#v260DailyBossArena .v6307-endurance{
+  width:min(118px,94%);margin:2px auto 1px;display:grid;gap:3px
+}
+#v260DailyBossArena .v6307-endurance-head{
+  display:flex;align-items:center;justify-content:space-between;gap:6px;
+  font-size:5.3px;color:#95aa99;font-weight:900;letter-spacing:.05em
+}
+#v260DailyBossArena .v6307-endurance-bar{
+  height:7px;border-radius:999px;overflow:hidden;border:1px solid rgba(104,166,111,.28);background:#071008;
+  box-shadow:inset 0 0 7px rgba(0,0,0,.52)
+}
+#v260HeroEnduranceFill{
+  display:block;width:100%;height:100%;border-radius:inherit;
+  background:linear-gradient(90deg,#68c96f,#b3e06a);transition:width .36s ease,filter .2s ease
+}
+#v260HeroEnduranceFill.low{background:linear-gradient(90deg,#d99a46,#e8cf61)}
+#v260HeroEnduranceFill.danger{background:linear-gradient(90deg,#b64b45,#e27056);filter:drop-shadow(0 0 5px rgba(255,90,70,.28))}
+#v260BossDamagePop{
+  position:absolute;left:8%;top:26%;z-index:26;min-width:82px;text-align:center;pointer-events:none;
+  color:#ffb0a3;font-size:21px;line-height:.95;font-weight:1000;opacity:0;
+  text-shadow:0 2px 6px rgba(0,0,0,.95),0 0 15px rgba(255,75,60,.28)
+}
+#v260BossDamagePop span{display:block;margin-top:4px;font-size:5.7px;letter-spacing:.09em;color:#ffd1c9}
+#v260DailyBossArena.v6307-boss-attack #v260Titan .v6202-boss-frame{animation:v6307BossLunge .72s cubic-bezier(.2,.76,.25,1)!important}
+#v260DailyBossArena.v6307-hero-hit .v259-fighter-side img{animation:v6307HeroHit .62s ease!important}
+#v260DailyBossArena.v6307-boss-attack #v260BossDamagePop{animation:v6307BossDamage 1s ease!important}
+#v260DailyBossArena.v6307-boss-attack .v259-fighter-side:after{
+  content:"";position:absolute;inset:13% 8% 14%;z-index:20;pointer-events:none;border-radius:30%;
+  background:radial-gradient(circle,rgba(255,245,214,.38),rgba(255,102,74,.18) 32%,transparent 68%);
+  animation:v6307HeroImpact .65s ease
+}
+#v260ClassFx{
+  position:absolute;left:50%;top:49%;z-index:18;width:78px;height:78px;transform:translate(-50%,-50%);
+  border-radius:50%;pointer-events:none;opacity:0;mix-blend-mode:screen
+}
+#v260DailyBossArena.v6307-player-strike #v260ClassFx{animation:v6307ClassFx .58s ease}
+#v260DailyBossArena.v6307-cls-grower #v260ClassFx{background:radial-gradient(circle,rgba(255,207,92,.88),rgba(231,112,45,.35) 38%,transparent 70%)}
+#v260DailyBossArena.v6307-cls-scout #v260ClassFx{background:radial-gradient(circle,rgba(139,255,125,.88),rgba(43,203,112,.34) 38%,transparent 70%)}
+#v260DailyBossArena.v6307-cls-bruiser #v260ClassFx{background:radial-gradient(circle,rgba(204,123,255,.90),rgba(114,48,208,.36) 38%,transparent 70%)}
+#v260DailyBossArena.v6307-cls-frost #v260ClassFx{background:radial-gradient(circle,rgba(126,220,255,.92),rgba(66,108,255,.34) 38%,transparent 70%)}
+#v260DailyBossArena .v6307-combat-note{
+  color:#a9b9ac;font-size:5.8px;line-height:1.35;text-align:center;margin-top:2px;min-height:8px
+}
+@keyframes v6307BossLunge{
+  0%,100%{transform:translateX(0) scale(1)}
+  38%{transform:translateX(-20px) scale(1.055) rotate(-1.5deg)}
+  60%{transform:translateX(-7px) scale(1.025)}
+}
+@keyframes v6307HeroHit{
+  0%,100%{transform:translateX(0) rotate(0);filter:brightness(1)}
+  20%{transform:translateX(-8px) rotate(-2deg);filter:brightness(1.65) saturate(.7)}
+  45%{transform:translateX(6px) rotate(1.4deg);filter:brightness(1.16)}
+  70%{transform:translateX(-2px) rotate(-.5deg)}
+}
+@keyframes v6307BossDamage{
+  0%{opacity:0;transform:translateY(9px) scale(.75)}
+  18%{opacity:1;transform:translateY(0) scale(1.12)}
+  68%{opacity:1;transform:translateY(-16px) scale(1)}
+  100%{opacity:0;transform:translateY(-30px) scale(.92)}
+}
+@keyframes v6307HeroImpact{0%{opacity:0;transform:scale(.6)}22%{opacity:1;transform:scale(1.08)}100%{opacity:0;transform:scale(1.35)}}
+@keyframes v6307ClassFx{0%{opacity:0;transform:translate(-50%,-50%) scale(.25)}28%{opacity:1;transform:translate(-50%,-50%) scale(1.05)}100%{opacity:0;transform:translate(-50%,-50%) scale(1.7)}}
+@media(max-width:560px){
+  #v260BossDamagePop{left:4%!important;top:23%!important;font-size:19px!important;min-width:76px!important}
+  #v260DailyBossArena .v6307-endurance{width:min(112px,92%)}
+  #v260ClassFx{width:66px;height:66px;top:47%}
+}
+@media(prefers-reduced-motion:reduce){
+  #v260BossDamagePop,#v260ClassFx,#v260DailyBossArena.v6307-boss-attack #v260Titan .v6202-boss-frame,#v260DailyBossArena.v6307-hero-hit .v259-fighter-side img{animation-duration:.001ms!important;animation-iteration-count:1!important}
+}

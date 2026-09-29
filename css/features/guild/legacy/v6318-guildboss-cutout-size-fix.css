@@ -1,0 +1,39 @@
+/* Keep the transparent combat figures, but give the arena breathing room. */
+#v6320HeroCutout{
+  left:-4px!important;
+  bottom:34px!important;
+  width:166px!important;
+  height:242px!important;
+  object-position:50% 100%!important;
+}
+#v6320BossCutout{
+  right:-2px!important;
+  bottom:30px!important;
+  width:202px!important;
+  height:270px!important;
+  object-position:50% 100%!important;
+}
+/* More open impact zone between both fighters. */
+#v6309Clash{left:51%!important;top:58%!important;width:94px!important;height:94px!important}
+#v260DamagePop{right:12%!important;top:35%!important;max-width:38%!important}
+#v260BossDamagePop{left:7%!important;top:43%!important;max-width:34%!important}
+/* Compact HUDs stay clear of the feet and don't cover the artwork. */
+#v6309HeroPlate,#v6309BossPlate{
+  bottom:8px!important;
+  width:41%!important;
+  max-width:178px!important;
+}
+/* Tame movement now that the figures are correctly sized. */
+@keyframes v6318HeroStrike{0%,100%{transform:translateX(0) scale(1) rotate(0)}42%{transform:translateX(50px) scale(1.055) rotate(1.4deg)}66%{transform:translateX(17px) scale(1.018) rotate(.3deg)}}
+@keyframes v6318BossStrike{0%,100%{transform:translateX(0) scale(1) rotate(0)}40%{transform:translateX(-42px) scale(1.05) rotate(-1deg)}68%{transform:translateX(-13px) scale(1.018)}}
+#v260DailyBossArena.attack #v6320HeroCutout,
+#v260DailyBossArena.v6307-player-strike #v6320HeroCutout{animation:v6318HeroStrike .62s cubic-bezier(.2,.78,.22,1)!important}
+#v260DailyBossArena.v6307-boss-attack #v6320BossCutout{animation:v6318BossStrike .72s cubic-bezier(.18,.78,.22,1)!important}
+@media(max-width:560px){
+  #v260DailyBossArena .v259-stage{height:345px!important;min-height:345px!important}
+  #v6320HeroCutout{left:-5px!important;bottom:34px!important;width:150px!important;height:220px!important}
+  #v6320BossCutout{right:-4px!important;bottom:30px!important;width:184px!important;height:248px!important}
+  #v260DamagePop{right:8%!important;top:36%!important;font-size:22px!important}
+  #v260BossDamagePop{left:5%!important;top:44%!important;font-size:18px!important}
+  #v6309HeroPlate,#v6309BossPlate{width:42%!important;max-width:none!important}
+}

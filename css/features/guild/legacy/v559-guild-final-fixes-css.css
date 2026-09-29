@@ -1,0 +1,37 @@
+/* 1) When there are truly no requests, remove the empty placeholder body entirely. */
+#guild #v257RequestsCard.v559-no-requests{
+  padding:7px 8px 6px!important;
+}
+#guild #v257RequestsCard.v559-no-requests>.section-title{
+  margin-bottom:0!important;
+  padding-bottom:0!important;
+  border-bottom:0!important;
+}
+#guild #v257RequestsCard.v559-no-requests #v257GuildRequests{
+  display:none!important;
+}
+#guild #v257RequestsCard.v559-no-requests .v380-request-note{
+  display:none!important;
+}
+
+/* 2) Keep the leader explanation readable and clear of the right-side fixed rail. */
+#guild #v257GuildManagement .v257-management-note{
+  width:auto!important;
+  max-width:calc(100% - 18px)!important;
+  padding-right:12px!important;
+  margin:0 0 5px!important;
+  color:#89998d!important;
+  font-size:4.8px!important;
+  line-height:1.22!important;
+  white-space:normal!important;
+  overflow-wrap:anywhere!important;
+  text-wrap:pretty!important;
+}
+@media(max-width:390px){
+  #guild #v257GuildManagement .v257-management-note{
+    max-width:calc(100% - 24px)!important;
+    padding-right:8px!important;
+    font-size:4.55px!important;
+    line-height:1.2!important;
+  }
+}

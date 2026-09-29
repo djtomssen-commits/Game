@@ -1,0 +1,42 @@
+/* Targeted only: correct visible progress density, full signup labels, compact empty requests. */
+
+/* Give the three signup chips enough room so active labels do not truncate. */
+@media(max-width:620px){
+  #guild .v254-member{
+    grid-template-columns:30px minmax(0,1fr) 138px!important;
+    gap:4px!important;
+  }
+  #guild .v254-member-flags{
+    width:138px!important;
+    max-width:138px!important;
+    gap:3px!important;
+  }
+  #guild .v254-flag{
+    padding:3px 2px!important;
+    font-size:3.9px!important;
+    overflow:visible!important;
+    text-overflow:clip!important;
+    white-space:nowrap!important;
+  }
+  #guild .v254-member-name-line>b{max-width:62px!important}
+}
+@media(max-width:390px){
+  #guild .v254-member{grid-template-columns:28px minmax(0,1fr) 126px!important}
+  #guild .v254-member-flags{width:126px!important;max-width:126px!important}
+  #guild .v254-flag{font-size:3.55px!important;padding:3px 1px!important}
+  #guild .v254-member-name-line>b{max-width:50px!important}
+}
+
+/* No-request state should be a compact status line, not a large empty panel. */
+#guild #v257GuildRequests .v257-search-empty{
+  display:grid!important;
+  place-items:center!important;
+  min-height:34px!important;
+  height:34px!important;
+  max-height:34px!important;
+  margin:4px 0 0!important;
+  padding:4px 8px!important;
+  border-radius:8px!important;
+  line-height:1.1!important;
+}
+#guild #v257RequestsCard{padding-bottom:7px!important}

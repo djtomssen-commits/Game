@@ -1,0 +1,78 @@
+/* Pure presentation upgrade. Server boss result / rewards stay untouched. */
+#v260DailyBossArena .v259-stage{min-height:250px!important;align-items:end!important}
+#v260Titan.v6202-unused{}
+#v260Titan{
+  position:relative!important;
+  width:168px!important;
+  height:202px!important;
+  display:grid!important;
+  place-items:end center!important;
+  overflow:visible!important;
+  transform-origin:50% 90%!important;
+  filter:drop-shadow(0 14px 14px #000a) drop-shadow(0 0 24px rgba(86,255,96,.24))!important;
+}
+#v260Titan .v6202-boss-frame{
+  position:relative;
+  width:158px;
+  height:194px;
+  overflow:hidden;
+  border-radius:48% 48% 18% 18% / 25% 25% 12% 12%;
+  border:1px solid rgba(123,218,102,.38);
+  background:#071109;
+  box-shadow:inset 0 0 28px #000b,0 0 25px rgba(87,255,97,.18);
+  animation:v6202BossIdle 2.35s ease-in-out infinite;
+}
+#v260Titan .v6202-boss-img{
+  position:absolute;
+  inset:-8px -24px -12px -24px;
+  width:calc(100% + 48px);
+  height:calc(100% + 20px);
+  object-fit:cover;
+  object-position:50% 12%;
+  transform:scale(1.04);
+  filter:saturate(1.08) contrast(1.05) brightness(.98);
+  will-change:transform,filter,opacity;
+}
+#v260Titan .v6202-boss-frame:after{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(180deg,transparent 52%,rgba(3,10,4,.28) 74%,rgba(3,8,4,.78) 100%),radial-gradient(circle at 50% 38%,transparent 28%,rgba(0,0,0,.16) 72%);
+}
+#v260Titan .v6202-boss-aura{
+  position:absolute;inset:7px -12px 2px;border-radius:50%;pointer-events:none;
+  border:2px solid rgba(103,255,104,.28);
+  box-shadow:0 0 22px rgba(66,255,80,.28),inset 0 0 30px rgba(66,255,80,.12);
+  animation:v6202Aura 1.65s ease-in-out infinite alternate;
+}
+#v260Titan .v6202-boss-glow{
+  position:absolute;left:50%;top:38%;width:74px;height:74px;transform:translate(-50%,-50%);border-radius:50%;pointer-events:none;
+  background:radial-gradient(circle,rgba(126,255,102,.34),rgba(65,255,92,.12) 42%,transparent 72%);
+  mix-blend-mode:screen;animation:v6202Core 1.25s ease-in-out infinite alternate;
+}
+#v260Titan .v6202-boss-smoke{position:absolute;bottom:-8px;width:72px;height:76px;border-radius:50%;pointer-events:none;opacity:.36;filter:blur(10px);background:radial-gradient(circle,rgba(91,255,94,.50),rgba(44,145,61,.17) 48%,transparent 72%);animation:v6202Smoke 2.8s ease-in-out infinite}
+#v260Titan .smoke-a{left:-15px}.v6202-boss-smoke.smoke-b{right:-18px;animation-delay:-1.35s}
+@keyframes v6202BossIdle{0%,100%{transform:translateY(1px) scale(1)}50%{transform:translateY(-5px) scale(1.018)}}
+@keyframes v6202Aura{from{transform:scale(.96);opacity:.42}to{transform:scale(1.055);opacity:.9}}
+@keyframes v6202Core{from{opacity:.28;transform:translate(-50%,-50%) scale(.88)}to{opacity:.72;transform:translate(-50%,-50%) scale(1.18)}}
+@keyframes v6202Smoke{0%,100%{transform:translateY(9px) scale(.84);opacity:.20}50%{transform:translateY(-11px) scale(1.12);opacity:.46}}
+
+/* Existing fight classes now drive the real artwork. */
+#v260DailyBossArena.hit #v260Titan .v6202-boss-frame{animation:v6202BossHit .58s cubic-bezier(.2,.75,.25,1)!important}
+#v260DailyBossArena.hit #v260Titan .v6202-boss-img{animation:v6202BossHitFlash .58s ease!important}
+@keyframes v6202BossHit{0%,100%{transform:translateX(0) rotate(0) scale(1)}18%{transform:translateX(10px) rotate(2deg) scale(1.025)}38%{transform:translateX(-9px) rotate(-2deg) scale(.985)}58%{transform:translateX(6px) rotate(1deg)}78%{transform:translateX(-3px) rotate(-.5deg)}}
+@keyframes v6202BossHitFlash{0%,100%{filter:saturate(1.08) contrast(1.05) brightness(.98)}20%{filter:saturate(.35) contrast(1.35) brightness(2.05)}45%{filter:saturate(1.5) contrast(1.12) brightness(1.18)}}
+#v260DailyBossArena.win #v260Titan{animation:v6202BossDefeat 1.25s ease forwards!important}
+#v260DailyBossArena.win #v260Titan .v6202-boss-frame{animation:none!important}
+@keyframes v6202BossDefeat{0%{transform:translateY(0) rotate(0) scale(1);opacity:1}35%{transform:translateY(4px) rotate(-3deg) scale(1.02);filter:brightness(1.45) saturate(.55)}100%{transform:translateY(38px) rotate(9deg) scale(.84);opacity:.20;filter:grayscale(1) brightness(.55)}}
+#v260DailyBossArena.v261-final:not(.win) #v260Titan .v6202-boss-frame{animation:v6202BossVictory 1.35s ease-in-out infinite!important}
+@keyframes v6202BossVictory{0%,100%{transform:translateY(0) scale(1)}45%{transform:translateY(-7px) scale(1.055)}58%{transform:translateY(-4px) scale(1.035)}}
+
+/* Stop the legacy SVG animation rules from affecting the new image container. */
+#v260Titan .v261-titan-creature,#v260Titan .v261-spores,#v260Titan .v261-titan-svg{display:none!important}
+@media(max-width:560px){
+  #v260DailyBossArena .v259-stage{min-height:228px!important}
+  #v260Titan{width:150px!important;height:184px!important}
+  #v260Titan .v6202-boss-frame{width:142px;height:176px}
+}
+@media(prefers-reduced-motion:reduce){
+  #v260Titan,#v260Titan *{animation-duration:.001ms!important;animation-iteration-count:1!important}
+}

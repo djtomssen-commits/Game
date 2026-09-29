@@ -1,0 +1,102 @@
+/* V7.279 · Guild Grow layout fix */
+#guild .v254-tab[data-v254-tab="growtasks"]::before{content:none!important}
+#guild .v254-tab[data-v254-tab="growtasks"]{letter-spacing:.01em!important}
+
+.v7273-task{overflow:visible!important}
+.v7273-task-main{
+  min-width:0!important;
+  align-self:center!important;
+  display:grid!important;
+  grid-template-rows:auto auto auto!important;
+  align-content:center!important;
+  row-gap:1px!important;
+  overflow:hidden!important;
+}
+.v7273-task-name{
+  line-height:1!important;
+  margin:0!important;
+}
+.v7273-task-desc{
+  margin:0!important;
+  line-height:1!important;
+  opacity:.92!important;
+}
+.v7273-progress-line{
+  margin-top:1px!important;
+  gap:4px!important;
+  min-height:6px!important;
+}
+.v7273-progress{height:4px!important}
+.v7273-progress-line b{line-height:1!important}
+.v7273-reward{
+  align-self:center!important;
+  line-height:1.12!important;
+  overflow:hidden!important;
+}
+.v7273-reward span{line-height:1.08!important}
+.v7273-reward strong{
+  margin-top:1px!important;
+  padding:1px 5px!important;
+  line-height:1.1!important;
+  white-space:nowrap!important;
+}
+
+.v7273-contrib{
+  left:9.8%!important;
+  right:8.6%!important;
+  height:3.05%!important;
+  grid-template-columns:7% minmax(0,1fr) 38%!important;
+  gap:1.5%!important;
+  align-items:center!important;
+  overflow:hidden!important;
+  padding:0 .4%!important;
+}
+.v7273-rank{
+  line-height:1!important;
+  align-self:center!important;
+}
+.v7273-member{
+  min-width:0!important;
+  line-height:1.05!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  white-space:nowrap!important;
+}
+.v7273-member small{
+  display:inline!important;
+  margin-left:4px!important;
+  line-height:1!important;
+}
+.v7273-actions{
+  min-width:0!important;
+  text-align:right!important;
+  line-height:1.02!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+}
+.v7273-actions small{
+  display:block!important;
+  margin-top:2px!important;
+  line-height:1!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+}
+
+@media(max-width:560px){
+  #guild .v254-tab[data-v254-tab="growtasks"]{font-size:6.4px!important}
+  .v7273-task{grid-template-columns:8.5% minmax(0,1fr) 27.5%!important;gap:.8%!important}
+  .v7273-task-name{font-size:7px!important}
+  .v7273-task-desc{font-size:4.8px!important}
+  .v7273-progress-line b{font-size:5px!important;min-width:27px!important}
+  .v7273-reward{font-size:5px!important}
+  .v7273-contrib{
+    left:9.2%!important;
+    right:8.2%!important;
+    grid-template-columns:7% minmax(0,1fr) 42%!important;
+    gap:1%!important;
+    font-size:6.2px!important;
+  }
+  .v7273-actions small{font-size:.76em!important}
+}

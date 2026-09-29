@@ -1,0 +1,189 @@
+/* Keep the functional boss header, but make the fight itself one cinematic arena. */
+#v260DailyBossArena{
+  padding:12px!important;
+  background:linear-gradient(180deg,#071009,#040805)!important;
+  border:1px solid rgba(149,95,39,.52)!important;
+  border-radius:17px!important;
+  box-shadow:inset 0 0 0 1px rgba(255,198,91,.035),0 14px 34px rgba(0,0,0,.24)!important;
+}
+#v260DailyBossArena .v259-boss-title{
+  margin:0!important;padding:1px 2px 7px!important;align-items:center!important
+}
+#v260DailyBossArena .v259-boss-title b{
+  font-size:10.5px!important;color:#f0f6f0!important;letter-spacing:.01em!important
+}
+#v260BossHpText{font-size:7px!important;color:#d4dfd5!important}
+#v260DailyBossArena .v259-boss-hp{
+  height:12px!important;margin:0 0 7px!important;border-color:rgba(107,54,123,.76)!important;
+  background:#120817!important;box-shadow:inset 0 0 8px rgba(0,0,0,.72)!important
+}
+#v260DailyBossArena .v259-boss-hp i{
+  background:linear-gradient(90deg,#8c2fa7,#d755ec)!important;
+  box-shadow:0 0 12px rgba(207,65,231,.22)!important
+}
+
+/* One status pill only, like the approved preview. */
+#v260BattleTop{
+  position:relative!important;z-index:14!important;display:flex!important;justify-content:center!important;
+  margin:5px 0 -18px!important;pointer-events:none!important
+}
+#v260BattleState{display:none!important}
+#v260BattlePhase{
+  flex:0 0 auto!important;min-width:118px!important;max-width:72%!important;min-height:29px!important;
+  padding:7px 15px!important;border-radius:999px!important;text-align:center!important;
+  border:1px solid rgba(98,176,107,.34)!important;background:linear-gradient(180deg,rgba(12,31,16,.94),rgba(6,16,8,.94))!important;
+  color:#f1f8f1!important;font-size:7.2px!important;font-weight:1000!important;letter-spacing:.04em!important;
+  box-shadow:0 7px 18px rgba(0,0,0,.24),inset 0 0 0 1px rgba(255,255,255,.025)!important
+}
+
+/* Cinematic battlefield. */
+#v260DailyBossArena .v259-stage{
+  position:relative!important;display:block!important;min-height:330px!important;height:330px!important;
+  padding:0!important;margin:0!important;overflow:hidden!important;border-radius:15px!important;
+  border:1px solid rgba(73,122,80,.28)!important;
+  background:
+    radial-gradient(circle at 79% 30%,rgba(91,255,106,.18),transparent 30%),
+    radial-gradient(circle at 20% 53%,rgba(255,142,43,.07),transparent 31%),
+    linear-gradient(180deg,rgba(12,22,14,.86),rgba(3,8,4,.98))!important;
+  box-shadow:inset 0 -80px 90px rgba(0,0,0,.52),inset 0 0 48px rgba(0,0,0,.28)!important
+}
+/* silhouettes / ruined forest atmosphere */
+#v260DailyBossArena .v259-stage:before{
+  content:"";position:absolute;inset:0;z-index:0;pointer-events:none;opacity:.75;
+  background:
+    linear-gradient(105deg,transparent 0 8%,rgba(4,9,5,.68) 8.2% 10%,transparent 10.3% 18%,rgba(4,9,5,.62) 18.3% 20.5%,transparent 20.8% 72%,rgba(4,9,5,.62) 72.2% 75%,transparent 75.3%),
+    radial-gradient(ellipse at 50% 108%,rgba(69,206,83,.17),transparent 48%),
+    radial-gradient(ellipse at 82% 22%,rgba(90,255,110,.16),transparent 35%);
+}
+#v260DailyBossArena .v259-stage:after{
+  content:"";position:absolute;left:-8%;right:-8%;bottom:-24px;height:118px;z-index:1;pointer-events:none;
+  background:radial-gradient(ellipse at center,rgba(82,220,91,.17),rgba(31,91,38,.07) 43%,transparent 72%);
+  filter:blur(11px)
+}
+
+/* Remove all remaining card / info-box feeling inside the battlefield. */
+#v260DailyBossArena .v259-fighter-side,
+#v260DailyBossArena .v259-boss-side{
+  position:absolute!important;z-index:6!important;display:flex!important;flex-direction:column!important;
+  width:auto!important;height:auto!important;min-width:0!important;min-height:0!important;max-width:none!important;
+  padding:0!important;margin:0!important;border:0!important;border-radius:0!important;background:transparent!important;
+  box-shadow:none!important;gap:0!important;justify-content:flex-end!important
+}
+#v260DailyBossArena .v259-fighter-side{left:-8px!important;bottom:25px!important;align-items:flex-start!important}
+#v260DailyBossArena .v259-boss-side{right:-7px!important;bottom:19px!important;align-items:flex-end!important}
+#v260DailyBossArena .v6305-kicker,
+#v260DailyBossArena .v259-fighter-side>b,
+#v260DailyBossArena .v259-fighter-side>small,
+#v260DailyBossArena .v259-boss-side>b,
+#v260DailyBossArena #v260HeroEndurance,
+#v260DailyBossArena #v260HeroImpact,
+#v260DailyBossArena #v260BossImpact,
+#v6308HeroHud,#v6308BossHud,#v6308ArenaPrompt{display:none!important}
+
+/* Portraits become soft-edged arena figures instead of framed cards. */
+#v260FighterAvatar{
+  width:178px!important;height:220px!important;max-width:none!important;border:0!important;border-radius:0!important;
+  object-fit:cover!important;object-position:50% 26%!important;background:transparent!important;
+  box-shadow:none!important;filter:drop-shadow(0 15px 18px rgba(0,0,0,.58)) saturate(1.05)!important;
+  -webkit-mask-image:radial-gradient(ellipse 72% 84% at 50% 48%,#000 54%,rgba(0,0,0,.92) 67%,transparent 96%);
+  mask-image:radial-gradient(ellipse 72% 84% at 50% 48%,#000 54%,rgba(0,0,0,.92) 67%,transparent 96%);
+  transform-origin:50% 88%!important
+}
+#v260Titan{
+  width:210px!important;height:258px!important;max-width:none!important;filter:drop-shadow(0 17px 21px rgba(0,0,0,.58)) drop-shadow(0 0 22px rgba(65,255,86,.17))!important
+}
+#v260Titan .v6202-boss-frame{
+  width:204px!important;height:250px!important;max-width:none!important;border:0!important;border-radius:0!important;
+  background:transparent!important;box-shadow:none!important;overflow:visible!important
+}
+#v260Titan .v6202-boss-img{
+  width:100%!important;height:100%!important;object-fit:cover!important;object-position:50% 18%!important;border-radius:0!important;
+  -webkit-mask-image:radial-gradient(ellipse 72% 87% at 52% 48%,#000 55%,rgba(0,0,0,.96) 72%,transparent 98%);
+  mask-image:radial-gradient(ellipse 72% 87% at 52% 48%,#000 55%,rgba(0,0,0,.96) 72%,transparent 98%)
+}
+#v260Titan .v6202-boss-frame:after{display:none!important}
+#v260Titan .v6202-boss-aura{inset:8px -4px 2px!important;opacity:.75!important}
+
+/* No big VS card. Only a faint crossed-swords marker. */
+#v260DailyBossArena .v259-vs{
+  position:absolute!important;left:50%!important;top:57%!important;z-index:9!important;width:32px!important;height:32px!important;
+  transform:translate(-50%,-50%)!important;border:0!important;background:rgba(5,10,6,.44)!important;
+  box-shadow:0 0 18px rgba(255,207,77,.08)!important;font-size:12px!important;opacity:.72!important;pointer-events:none!important
+}
+
+/* Actual clash flash where the two figures meet. */
+#v6309Clash{
+  position:absolute;left:51%;top:56%;z-index:18;width:96px;height:96px;transform:translate(-50%,-50%);
+  pointer-events:none;opacity:0;border-radius:50%;mix-blend-mode:screen;
+  background:radial-gradient(circle,rgba(255,255,240,.95),rgba(255,190,67,.55) 17%,rgba(255,103,42,.18) 38%,transparent 68%)
+}
+#v260DailyBossArena.attack #v6309Clash,
+#v260DailyBossArena.v6307-player-strike #v6309Clash{animation:v6309Clash .58s ease}
+
+/* Damage sits on the impacted target. */
+#v260DamagePop{
+  left:auto!important;right:12%!important;top:38%!important;z-index:30!important;min-width:112px!important;max-width:44%!important;
+  font-size:25px!important;line-height:.9!important;color:#ffe99b!important;text-align:center!important;
+  text-shadow:0 3px 5px rgba(0,0,0,.95),0 0 14px rgba(255,215,88,.43)!important
+}
+#v260BossDamagePop{
+  left:9%!important;right:auto!important;top:40%!important;z-index:30!important;min-width:92px!important;
+  color:#ffb4a7!important;font-size:20px!important;text-shadow:0 3px 5px rgba(0,0,0,.95),0 0 14px rgba(255,89,68,.35)!important
+}
+
+/* Tiny bottom HUDs anchored to the fighters. */
+#v6309HeroPlate,#v6309BossPlate{
+  position:absolute;bottom:8px;z-index:20;display:grid;grid-template-columns:31px minmax(0,1fr);gap:7px;align-items:center;
+  width:42%;max-width:190px;padding:6px 7px;border-radius:12px;background:linear-gradient(180deg,rgba(5,12,7,.84),rgba(3,8,4,.90));
+  border:1px solid rgba(92,148,99,.24);box-shadow:0 8px 18px rgba(0,0,0,.28),inset 0 0 0 1px rgba(255,255,255,.02);
+  backdrop-filter:blur(2px)
+}
+#v6309HeroPlate{left:8px}
+#v6309BossPlate{right:8px}
+#v6309HeroPlate img,#v6309BossPlate img{
+  width:31px;height:31px;border-radius:50%;object-fit:cover;border:1px solid rgba(129,208,138,.42);box-shadow:0 0 10px rgba(77,211,92,.12)
+}
+#v6309HeroPlate b,#v6309BossPlate b{display:block;font-size:6.6px;color:#f3faf3;line-height:1.05;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#v6309HeroPlate small,#v6309BossPlate small{display:block;margin-top:2px;font-size:5.2px;color:#a4b6a8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#v6309HeroMiniBar,#v6309BossMiniBar{height:5px;margin-top:4px;border-radius:999px;overflow:hidden;background:#061008;border:1px solid rgba(90,138,95,.22)}
+#v6309HeroMiniBar i,#v6309BossMiniBar i{display:block;height:100%;width:100%;border-radius:inherit;transition:width .35s ease}
+#v6309HeroMiniBar i{background:linear-gradient(90deg,#4dc661,#91df70)}
+#v6309BossMiniBar i{background:linear-gradient(90deg,#b64851,#e37c78)}
+
+#v260FightText{
+  margin-top:7px!important;min-height:31px!important;padding:8px 10px!important;border-radius:10px!important;text-align:center!important;
+  font-size:7px!important;line-height:1.28!important;color:#e4ece5!important;background:linear-gradient(180deg,rgba(7,13,8,.96),rgba(4,8,5,.98))!important;
+  border:1px solid rgba(82,120,86,.18)!important
+}
+#v260BattleLog{
+  margin-top:8px!important;max-height:132px!important;padding:8px!important;border:1px solid rgba(76,115,81,.19)!important;
+  background:linear-gradient(180deg,rgba(6,12,7,.96),rgba(3,7,4,.98))!important;border-radius:11px!important
+}
+#v260BattleLog .v6305-log-head{font-size:5.8px!important;color:#9aae9e!important}
+#v260BattleLog .v6305-log-row{
+  grid-template-columns:auto 1fr auto!important;gap:6px!important;padding:6px 7px!important;background:rgba(255,255,255,.018)!important;
+  border-color:rgba(76,106,80,.12)!important;font-size:5.7px!important
+}
+#v260BattleLog .v6305-log-row .right{grid-column:auto!important;text-align:right!important;font-size:5.3px!important}
+
+@keyframes v6309Clash{0%{opacity:0;transform:translate(-50%,-50%) scale(.28)}18%{opacity:1;transform:translate(-50%,-50%) scale(1.04)}62%{opacity:.7;transform:translate(-50%,-50%) scale(1.38)}100%{opacity:0;transform:translate(-50%,-50%) scale(1.72)}}
+@keyframes v6309HeroRush{0%,100%{transform:translateX(0) scale(1)}42%{transform:translateX(40px) scale(1.06) rotate(1deg)}68%{transform:translateX(13px) scale(1.025)}}
+#v260DailyBossArena.attack #v260FighterAvatar,
+#v260DailyBossArena.v6307-player-strike #v260FighterAvatar{animation:v6309HeroRush .58s cubic-bezier(.2,.76,.25,1)!important}
+
+@media(max-width:560px){
+  #v260DailyBossArena{padding:10px!important}
+  #v260DailyBossArena .v259-stage{height:315px!important;min-height:315px!important}
+  #v260FighterAvatar{width:158px!important;height:205px!important}
+  #v260Titan{width:188px!important;height:236px!important}
+  #v260Titan .v6202-boss-frame{width:182px!important;height:228px!important}
+  #v260DamagePop{right:8%!important;top:37%!important;font-size:23px!important}
+  #v260BossDamagePop{left:6%!important;top:39%!important;font-size:18px!important}
+  #v6309HeroPlate,#v6309BossPlate{width:43%;padding:5px 6px;grid-template-columns:28px minmax(0,1fr);gap:6px}
+  #v6309HeroPlate img,#v6309BossPlate img{width:28px;height:28px}
+  #v6309HeroPlate b,#v6309BossPlate b{font-size:6.2px}
+  #v6309HeroPlate small,#v6309BossPlate small{font-size:4.9px}
+  #v260BattleLog .v6305-log-row{grid-template-columns:auto 1fr!important}
+  #v260BattleLog .v6305-log-row .right{grid-column:2!important;text-align:left!important}
+}
+@media(prefers-reduced-motion:reduce){#v6309Clash,#v260FighterAvatar{animation-duration:.001ms!important;animation-iteration-count:1!important}}

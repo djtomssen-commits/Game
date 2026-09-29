@@ -1,0 +1,206 @@
+/* Performance-first combat animation owner: transform + opacity only where possible. */
+#v260DailyBossArena .v259-stage{position:relative!important;overflow:hidden!important}
+#v6320HeroCutout,#v6320BossCutout{
+  will-change:transform,opacity;
+  backface-visibility:hidden;
+  transform-origin:50% 92%;
+}
+/* More alive while waiting, without expensive filter animation. */
+#v6320HeroCutout{animation:v6321HeroIdle 2.7s ease-in-out infinite!important}
+#v6320BossCutout{animation:v6321BossIdle 3.15s ease-in-out infinite!important}
+
+/* One-time FX nodes inside the arena. */
+#v6321HeroSlash,#v6321BossClaw,#v6321ImpactFlash,#v6321GroundPulse{
+  position:absolute;pointer-events:none;opacity:0;z-index:27;will-change:transform,opacity;
+}
+#v6321HeroSlash{
+  left:43%;top:43%;width:118px;height:54px;border-radius:58% 42% 58% 42%;
+  background:linear-gradient(105deg,transparent 8%,rgba(255,220,112,.10) 20%,rgba(255,242,184,.94) 48%,rgba(124,255,126,.38) 64%,transparent 84%);
+  transform:translate(-50%,-50%) rotate(-24deg) scale(.45,.72);
+  box-shadow:0 0 18px rgba(255,212,95,.20);
+}
+#v6321BossClaw{
+  left:58%;top:45%;width:128px;height:68px;border-radius:50%;
+  background:linear-gradient(72deg,transparent 8%,rgba(79,255,108,.05) 18%,rgba(128,255,142,.82) 47%,rgba(51,175,73,.34) 65%,transparent 84%);
+  transform:translate(-50%,-50%) rotate(20deg) scale(.42,.72);
+  box-shadow:0 0 20px rgba(77,255,98,.18);
+}
+#v6321ImpactFlash{
+  left:51%;top:54%;width:94px;height:94px;border-radius:50%;
+  background:radial-gradient(circle,rgba(255,255,235,.96) 0%,rgba(255,211,92,.54) 18%,rgba(100,255,119,.20) 40%,transparent 70%);
+  transform:translate(-50%,-50%) scale(.25);
+}
+#v6321GroundPulse{
+  left:50%;bottom:20px;width:220px;height:36px;border-radius:50%;z-index:3;
+  background:radial-gradient(ellipse at center,rgba(83,236,101,.24),rgba(40,116,52,.08) 45%,transparent 73%);
+  transform:translateX(-50%) scale(.94);opacity:.36;
+  animation:v6321GroundIdle 3.4s ease-in-out infinite;
+}
+
+/* Player attack: anticipation -> fast lunge -> recoil. */
+#v260DailyBossArena.attack #v6320HeroCutout,
+#v260DailyBossArena.v6307-player-strike #v6320HeroCutout{
+  animation:v6321HeroAttack .62s cubic-bezier(.18,.78,.22,1)!important;
+}
+#v260DailyBossArena.v6307-player-strike #v6321HeroSlash{
+  animation:v6321HeroSlash .48s cubic-bezier(.2,.8,.25,1)!important;
+}
+#v260DailyBossArena.hit #v6321ImpactFlash{
+  animation:v6321Impact .44s ease-out!important;
+}
+#v260DailyBossArena.hit #v6320BossCutout{
+  animation:v6321BossHit .48s ease-out!important;
+}
+#v260DailyBossArena.hit .v259-stage{
+  animation:v6321StageShakeLight .28s ease-out!important;
+}
+
+/* Boss counter: lean-in attack, player recoils, green claw arc. */
+#v260DailyBossArena.v6307-boss-attack #v6320BossCutout{
+  animation:v6321BossAttack .72s cubic-bezier(.18,.78,.22,1)!important;
+}
+#v260DailyBossArena.v6307-boss-attack #v6321BossClaw{
+  animation:v6321BossClaw .54s cubic-bezier(.2,.8,.25,1)!important;
+}
+#v260DailyBossArena.v6307-hero-hit #v6320HeroCutout{
+  animation:v6321HeroHit .48s ease-out!important;
+}
+#v260DailyBossArena.v6307-hero-hit .v259-stage{
+  animation:v6321StageShakeHeavy .34s ease-out!important;
+}
+#v260DailyBossArena.v6307-hero-hit #v6321ImpactFlash{
+  animation:v6321ImpactGreen .44s ease-out!important;
+}
+
+/* Floating combat text gets a crisp RPG pop. */
+#v260DailyBossArena.hit #v260DamagePop{
+  animation:v6321DamageBoss .72s ease-out!important;
+}
+#v260DailyBossArena.v6307-hero-hit #v260BossDamagePop{
+  animation:v6321DamageHero .72s ease-out!important;
+}
+
+/* Finisher / result polish. */
+#v260DailyBossArena.v6203-finisher.hit #v6320BossCutout{
+  animation:v6321BossFinisher .78s cubic-bezier(.2,.78,.22,1)!important;
+}
+#v260DailyBossArena.win #v6320BossCutout{
+  animation:v6321BossDefeat 1.05s ease forwards!important;
+}
+#v260DailyBossArena.v261-final:not(.win) #v6320BossCutout{
+  animation:v6321BossVictory 1.55s ease-in-out infinite!important;
+}
+
+@keyframes v6321HeroIdle{
+  0%,100%{transform:translate3d(0,0,0) rotate(0)}
+  50%{transform:translate3d(0,-3px,0) rotate(-.25deg)}
+}
+@keyframes v6321BossIdle{
+  0%,100%{transform:translate3d(0,0,0) scale(1)}
+  50%{transform:translate3d(0,-4px,0) scale(1.012)}
+}
+@keyframes v6321GroundIdle{
+  0%,100%{opacity:.24;transform:translateX(-50%) scale(.92)}
+  50%{opacity:.48;transform:translateX(-50%) scale(1.06)}
+}
+@keyframes v6321HeroAttack{
+  0%{transform:translate3d(0,0,0) scale(1) rotate(0)}
+  16%{transform:translate3d(-7px,2px,0) scale(.985) rotate(-1.1deg)}
+  48%{transform:translate3d(52px,-3px,0) scale(1.055) rotate(1.8deg)}
+  67%{transform:translate3d(27px,-1px,0) scale(1.02) rotate(.4deg)}
+  100%{transform:translate3d(0,0,0) scale(1) rotate(0)}
+}
+@keyframes v6321HeroSlash{
+  0%{opacity:0;transform:translate(-50%,-50%) rotate(-34deg) scale(.34,.55)}
+  30%{opacity:1;transform:translate(-50%,-50%) rotate(-12deg) scale(1.05,.92)}
+  70%{opacity:.65;transform:translate(-50%,-50%) rotate(6deg) scale(1.28,1.04)}
+  100%{opacity:0;transform:translate(-50%,-50%) rotate(13deg) scale(1.46,1.12)}
+}
+@keyframes v6321BossHit{
+  0%,100%{transform:translate3d(0,0,0) rotate(0) scale(1)}
+  20%{transform:translate3d(11px,-1px,0) rotate(1.4deg) scale(.99)}
+  45%{transform:translate3d(-7px,0,0) rotate(-.7deg) scale(1.008)}
+  70%{transform:translate3d(4px,0,0) rotate(.35deg) scale(1)}
+}
+@keyframes v6321BossAttack{
+  0%{transform:translate3d(0,0,0) scale(1) rotate(0)}
+  18%{transform:translate3d(7px,1px,0) scale(.99) rotate(.7deg)}
+  48%{transform:translate3d(-43px,-3px,0) scale(1.05) rotate(-1.2deg)}
+  69%{transform:translate3d(-18px,-1px,0) scale(1.018) rotate(-.3deg)}
+  100%{transform:translate3d(0,0,0) scale(1) rotate(0)}
+}
+@keyframes v6321BossClaw{
+  0%{opacity:0;transform:translate(-50%,-50%) rotate(33deg) scale(.34,.55)}
+  28%{opacity:1;transform:translate(-50%,-50%) rotate(10deg) scale(1.05,.92)}
+  70%{opacity:.62;transform:translate(-50%,-50%) rotate(-8deg) scale(1.32,1.05)}
+  100%{opacity:0;transform:translate(-50%,-50%) rotate(-15deg) scale(1.48,1.12)}
+}
+@keyframes v6321HeroHit{
+  0%,100%{transform:translate3d(0,0,0) rotate(0) scale(1)}
+  18%{transform:translate3d(-13px,1px,0) rotate(-2deg) scale(.98)}
+  44%{transform:translate3d(8px,0,0) rotate(.8deg) scale(1.006)}
+  68%{transform:translate3d(-3px,0,0) rotate(-.3deg) scale(1)}
+}
+@keyframes v6321Impact{
+  0%{opacity:0;transform:translate(-50%,-50%) scale(.20)}
+  20%{opacity:1;transform:translate(-50%,-50%) scale(.88)}
+  55%{opacity:.72;transform:translate(-50%,-50%) scale(1.30)}
+  100%{opacity:0;transform:translate(-50%,-50%) scale(1.58)}
+}
+@keyframes v6321ImpactGreen{
+  0%{opacity:0;transform:translate(-50%,-50%) scale(.20);filter:hue-rotate(70deg)}
+  20%{opacity:.92;transform:translate(-50%,-50%) scale(.84);filter:hue-rotate(70deg)}
+  100%{opacity:0;transform:translate(-50%,-50%) scale(1.52);filter:hue-rotate(70deg)}
+}
+@keyframes v6321StageShakeLight{
+  0%,100%{transform:translate3d(0,0,0)}
+  25%{transform:translate3d(-2px,0,0)}
+  50%{transform:translate3d(2px,0,0)}
+  75%{transform:translate3d(-1px,0,0)}
+}
+@keyframes v6321StageShakeHeavy{
+  0%,100%{transform:translate3d(0,0,0)}
+  20%{transform:translate3d(-4px,1px,0)}
+  40%{transform:translate3d(4px,-1px,0)}
+  60%{transform:translate3d(-3px,0,0)}
+  80%{transform:translate3d(2px,0,0)}
+}
+@keyframes v6321DamageBoss{
+  0%{opacity:0;transform:translate3d(0,10px,0) scale(.72)}
+  20%{opacity:1;transform:translate3d(0,-2px,0) scale(1.16)}
+  58%{opacity:1;transform:translate3d(0,-19px,0) scale(1.02)}
+  100%{opacity:0;transform:translate3d(0,-42px,0) scale(.96)}
+}
+@keyframes v6321DamageHero{
+  0%{opacity:0;transform:translate3d(0,10px,0) scale(.72)}
+  20%{opacity:1;transform:translate3d(0,-2px,0) scale(1.14)}
+  58%{opacity:1;transform:translate3d(0,-17px,0) scale(1.01)}
+  100%{opacity:0;transform:translate3d(0,-38px,0) scale(.96)}
+}
+@keyframes v6321BossFinisher{
+  0%{transform:translate3d(0,0,0) rotate(0) scale(1)}
+  18%{transform:translate3d(15px,-2px,0) rotate(2.1deg) scale(.98)}
+  40%{transform:translate3d(-12px,1px,0) rotate(-1.4deg) scale(1.01)}
+  67%{transform:translate3d(7px,2px,0) rotate(.8deg) scale(.99)}
+  100%{transform:translate3d(0,7px,0) rotate(2deg) scale(.97)}
+}
+@keyframes v6321BossDefeat{
+  0%{opacity:1;transform:translate3d(0,0,0) rotate(0) scale(1)}
+  58%{opacity:.88;transform:translate3d(0,10px,0) rotate(4deg) scale(.97)}
+  100%{opacity:.18;transform:translate3d(0,52px,0) rotate(9deg) scale(.84)}
+}
+@keyframes v6321BossVictory{
+  0%,100%{transform:translate3d(0,0,0) scale(1)}
+  50%{transform:translate3d(-2px,-6px,0) scale(1.028)}
+}
+
+@media(max-width:560px){
+  #v6321HeroSlash{left:43%;top:44%;width:96px;height:48px}
+  #v6321BossClaw{left:58%;top:46%;width:102px;height:58px}
+  #v6321ImpactFlash{left:51%;top:55%;width:78px;height:78px}
+}
+@media(prefers-reduced-motion:reduce){
+  #v6320HeroCutout,#v6320BossCutout,#v6321HeroSlash,#v6321BossClaw,#v6321ImpactFlash,#v6321GroundPulse,.v259-stage{
+    animation-duration:.001ms!important;animation-iteration-count:1!important;
+  }
+}

@@ -1,0 +1,48 @@
+#guild .v254-tabs{grid-template-columns:repeat(4,minmax(0,1fr))!important}
+#guild .v254-tab[data-v254-tab="growtasks"]{position:relative}
+#guild .v254-tab[data-v254-tab="growtasks"]::before{content:"";display:inline-block;width:9px;height:9px;margin-right:5px;border:1px solid currentColor;border-radius:70% 30% 70% 30%;transform:rotate(-32deg);vertical-align:-1px}
+#guild .v7273-guild-grow-panel{padding:0!important;background:transparent!important;border:0!important;box-shadow:none!important;overflow:visible!important}
+.v7273-grow-stage{position:relative;width:100%;aspect-ratio:941/1672;overflow:hidden;border-radius:18px;background:#07110a;box-shadow:0 18px 46px #000b;border:1px solid #785426}
+.v7273-grow-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;pointer-events:none;user-select:none}
+#v7273GrowOverlay{position:absolute;inset:0;z-index:3}
+.v7273-grow-loading{display:none;position:absolute;z-index:5;left:16%;right:16%;top:43%;padding:14px 12px;text-align:center;border:1px solid #99713a;border-radius:14px;background:#07110dda;color:#f1ddb0;font-weight:900;box-shadow:0 10px 25px #0009}
+.v7273-title{position:absolute;top:1.0%;left:14%;right:14%;height:6.2%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:#f0d99a;text-shadow:0 2px 4px #000,0 0 10px #000;font-family:Georgia,serif;font-weight:1000;font-size:clamp(15px,4.3vw,34px);letter-spacing:.02em}
+.v7273-title small{font-family:system-ui,sans-serif;font-size:clamp(6px,1.15vw,10px);color:#d5c699;letter-spacing:.08em;margin-top:2px}
+.v7273-chest-summary{position:absolute;top:17.6%;left:17%;right:17%;text-align:center;color:#f1d899;font-weight:900;font-size:clamp(7px,1.45vw,13px);text-shadow:0 2px 4px #000;background:#061009a6;border:1px solid #8e6c3655;border-radius:999px;padding:4px 8px}
+.v7273-chest-ring{position:absolute;top:19.75%;width:8.3%;aspect-ratio:1;border-radius:50%;pointer-events:none;opacity:0;transition:.25s}
+.v7273-chest-ring.hit{opacity:1;box-shadow:0 0 0 2px #7ef55b,0 0 20px 6px #3cff5070,inset 0 0 14px #55ff6b55}
+.v7273-chest-ring.current{opacity:.72;animation:v7273ChestPulse 1.7s ease-in-out infinite}
+@keyframes v7273ChestPulse{50%{filter:brightness(1.5);box-shadow:0 0 0 3px #d9b85f,0 0 28px 9px #69ff6f88,inset 0 0 16px #70ff7755}}
+.v7273-section-title{position:absolute;left:8.4%;color:#f1d89e;font-family:Georgia,serif;font-weight:1000;text-shadow:0 2px 4px #000;font-size:clamp(10px,2.55vw,21px)}
+.v7273-reset{position:absolute;right:8.2%;color:#d9cba7;font-weight:800;font-size:clamp(6px,1.12vw,10px);text-shadow:0 2px 3px #000}
+.v7273-daily-title{top:25.45%}.v7273-daily-reset{top:26.0%}.v7273-week-title{top:51.6%}.v7273-week-reset{top:52.15%}.v7273-contrib-title{top:76.5%}
+.v7273-task{position:absolute;left:6.1%;right:6.1%;height:4.35%;display:grid;grid-template-columns:8.5% minmax(0,1fr) 25%;align-items:center;gap:1.5%;padding:0 1%;border-radius:8px;color:#e9dec6;overflow:hidden}
+.v7273-task.week{height:6.0%}
+.v7273-task.done{background:linear-gradient(90deg,#2d8e2542,transparent 62%)}
+.v7273-metric-icon{width:72%;aspect-ratio:1;margin:auto;border-radius:8px;display:grid;place-items:center;color:#d8bd72;background:#07100bb5;border:1px solid #9f733c7d;box-shadow:inset 0 0 10px #0007}
+.v7273-metric-icon svg{width:68%;height:68%;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.v7273-task-main{min-width:0;align-self:center}
+.v7273-task-name{font-family:Georgia,serif;color:#f0d99f;font-weight:1000;font-size:clamp(7px,1.55vw,13px);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.05}
+.v7273-task-desc{margin-top:2px;color:#d5cdbc;font-size:clamp(5px,.95vw,8px);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.v7273-progress-line{display:flex;align-items:center;gap:5px;margin-top:3px}
+.v7273-progress{height:5px;flex:1;min-width:0;border-radius:999px;background:#0a0b08;border:1px solid #594624;overflow:hidden;box-shadow:inset 0 1px 3px #000}
+.v7273-progress i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,#36a733,#73ec58);box-shadow:0 0 7px #54ed5b88}
+.v7273-task.done .v7273-progress i{background:linear-gradient(90deg,#d6a53e,#ffe17e)}
+.v7273-progress-line b{min-width:34px;text-align:right;font-size:clamp(5px,1vw,8px);color:#eee1c0}
+.v7273-reward{text-align:center;font-weight:1000;color:#f0d28a;font-size:clamp(5px,1.03vw,9px);line-height:1.3;text-shadow:0 1px 2px #000}
+.v7273-reward span{display:block;color:#9ee27d;font-size:.9em}
+.v7273-reward strong{display:inline-block;margin-top:2px;padding:2px 5px;border-radius:99px;border:1px solid #8b6a38;background:#17110bc7;color:#ffe29c;font-size:.9em}
+.v7273-contrib{position:absolute;left:10.6%;right:9.5%;height:2.72%;display:grid;grid-template-columns:8% 1fr 24%;align-items:center;gap:1.3%;color:#e9dec7;font-size:clamp(6px,1.25vw,10px)}
+.v7273-rank{font-family:Georgia,serif;font-weight:1000;color:#e8c76f;text-align:center}
+.v7273-member{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:900}.v7273-member small{color:#8db27d;font-weight:700;margin-left:4px;font-size:.82em}
+.v7273-actions{text-align:right;color:#bce79c;font-weight:1000}.v7273-actions small{display:block;color:#a79875;font-weight:700;font-size:.8em}
+.v7273-empty{position:absolute;left:14%;right:14%;top:82%;padding:12px;text-align:center;color:#d7c79b;background:#07100ba8;border:1px solid #8f683b77;border-radius:12px;font-size:clamp(7px,1.3vw,11px)}
+@media(max-width:560px){
+  #guild .v254-tab{font-size:6.1px!important;padding-left:3px!important;padding-right:3px!important}
+  #guild .v254-tab[data-v254-tab="growtasks"]::before{width:7px;height:7px;margin-right:3px}
+  .v7273-grow-stage{border-radius:12px}
+  .v7273-title{font-size:18px}
+  .v7273-task{left:5.5%;right:5.5%;grid-template-columns:9% minmax(0,1fr) 26%;gap:1%}
+  .v7273-task-name{font-size:7px}.v7273-task-desc{font-size:5px}.v7273-progress-line b{min-width:28px;font-size:5px}.v7273-reward{font-size:5px}
+  .v7273-contrib{font-size:6px}
+}

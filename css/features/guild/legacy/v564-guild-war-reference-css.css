@@ -1,0 +1,265 @@
+:root{--v564-war-hero:url("assets/v7195-base64/d852f73a72ec11babd7c.webp")}
+
+/* The war panel keeps all existing server IDs/handlers; this pass replaces only its presentation. */
+#guild #v254GuildWar.v564-war-panel{
+  position:relative!important;
+  margin-top:0!important;
+  padding:0!important;
+}
+
+#guild #v254GuildWar .v564-war-hero{
+  position:relative!important;
+  isolation:isolate!important;
+  min-height:168px!important;
+  margin:0 0 8px!important;
+  padding:16px 49% 15px 15px!important;
+  display:flex!important;
+  align-items:center!important;
+  overflow:hidden!important;
+  border:1px solid #8e6231!important;
+  border-radius:14px!important;
+  background:
+    linear-gradient(90deg,rgba(3,14,7,.98) 0%,rgba(5,18,9,.93) 36%,rgba(4,12,7,.55) 55%,rgba(2,8,5,.06) 100%),
+    var(--v564-war-hero) right center/auto 100% no-repeat,
+    linear-gradient(180deg,#102419,#07100a)!important;
+  box-shadow:inset 0 1px 0 rgba(250,206,116,.17),0 5px 17px rgba(0,0,0,.30)!important;
+}
+#guild #v254GuildWar .v564-war-hero:after{
+  content:""!important;
+  position:absolute!important;
+  inset:0!important;
+  z-index:-1!important;
+  pointer-events:none!important;
+  background:linear-gradient(180deg,rgba(255,176,62,.035),transparent 40%,rgba(0,0,0,.18))!important;
+}
+#guild #v254GuildWar .v564-war-copy{position:relative!important;z-index:2!important;min-width:0!important}
+#guild #v254GuildWar .v564-war-copy .v254-kicker{
+  margin:0 0 6px!important;
+  color:#83ef66!important;
+  font-size:7px!important;
+  font-weight:1000!important;
+  letter-spacing:.13em!important;
+}
+#guild #v254GuildWar .v564-war-copy h3{
+  margin:0 0 8px!important;
+  color:#fff7e8!important;
+  font:900 25px/1.02 Georgia,serif!important;
+  text-shadow:0 2px 4px #000!important;
+}
+#guild #v254GuildWar .v564-war-copy p{
+  margin:0!important;
+  max-width:320px!important;
+  color:#d1d8cf!important;
+  font-size:8.4px!important;
+  line-height:1.46!important;
+}
+#guild #v254GuildWar .v254-war-shield{display:none!important}
+
+/* Live war explanation inserted by the existing V4.159 server renderer. */
+#guild #v254GuildWar .v4159-war-alert{
+  margin:-1px 0 8px!important;
+  padding:9px 12px!important;
+  border:1px solid #8a6434!important;
+  border-radius:10px!important;
+  background:linear-gradient(180deg,rgba(18,43,25,.98),rgba(7,20,11,.98))!important;
+  color:#dce7da!important;
+  font-size:7.2px!important;
+  line-height:1.42!important;
+  box-shadow:inset 0 1px rgba(255,255,255,.035)!important;
+}
+#guild #v254GuildWar .v4159-war-alert b{
+  display:inline!important;
+  margin:0 5px 0 0!important;
+  color:#f5e5bd!important;
+  font:900 10px/1 Georgia,serif!important;
+}
+#guild #v254GuildWar .v4159-war-alert.incoming{
+  border-color:#a44e40!important;
+  background:linear-gradient(180deg,#341916,#160b0a)!important;
+}
+#guild #v254GuildWar .v4159-war-alert.incoming b{color:#ffad9f!important}
+
+/* Attack / defense cards from the reference, with clear signed state. */
+#guild #v254GuildWar .v564-signup-grid{
+  display:grid!important;
+  grid-template-columns:1fr 1fr!important;
+  gap:8px!important;
+  margin:0 0 9px!important;
+}
+#guild #v254GuildWar .v564-signup{
+  position:relative!important;
+  min-height:110px!important;
+  padding:14px 9px 11px!important;
+  border:1px solid #38513c!important;
+  border-radius:12px!important;
+  background:linear-gradient(180deg,#0d1e12,#07100a)!important;
+  color:#e5ece3!important;
+  box-shadow:inset 0 1px rgba(255,255,255,.03)!important;
+}
+#guild #v254GuildWar .v564-signup span{font-size:32px!important;line-height:1!important;filter:drop-shadow(0 2px 3px #000)!important}
+#guild #v254GuildWar .v564-signup b{margin:7px 0 4px!important;font:900 14px/1 Georgia,serif!important;color:#efece4!important}
+#guild #v254GuildWar .v564-signup small{font-size:7px!important;color:#7d8c80!important}
+#guild #v254GuildWar .v564-signup.on{
+  border-color:#65db50!important;
+  background:radial-gradient(circle at 50% 20%,rgba(90,211,70,.18),transparent 46%),linear-gradient(180deg,#14331b,#0a190e)!important;
+  box-shadow:0 0 14px rgba(83,225,64,.12),inset 0 1px rgba(207,255,197,.07)!important;
+}
+#guild #v254GuildWar .v564-signup.on small{color:#84ed6c!important;font-weight:900!important}
+#guild #v254GuildWar .v564-signup.on small:before{content:"✓ ";font-weight:1000!important}
+#guild #v254GuildWar .v564-signup:disabled{opacity:.72!important}
+
+/* Daily war block */
+#guild #v254GuildWar .v564-war-daily{
+  margin:0!important;
+  padding:10px!important;
+  border:1px solid #8c6334!important;
+  border-radius:13px!important;
+  background:linear-gradient(180deg,rgba(8,28,14,.97),rgba(4,15,8,.985))!important;
+  box-shadow:inset 0 1px rgba(248,210,124,.08),0 5px 15px rgba(0,0,0,.24)!important;
+}
+#guild #v254GuildWar .v564-war-title{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:9px!important;
+  margin:0 0 8px!important;
+  padding:0 0 8px!important;
+  border-bottom:1px solid #304b34!important;
+}
+#guild #v254GuildWar .v564-war-title b{color:#f6ead2!important;font:900 17px/1 Georgia,serif!important}
+#guild #v254GuildWar .v564-war-title .muted{margin-top:3px!important;color:#95a294!important;font-size:6.5px!important}
+#guild #v254GuildWar #v262WarPhase{
+  flex:0 0 auto!important;
+  padding:6px 9px!important;
+  border:1px solid #546c4b!important;
+  border-radius:99px!important;
+  background:#132319!important;
+  color:#d9e5d5!important;
+  font-size:6.5px!important;
+  font-weight:1000!important;
+}
+#guild #v254GuildWar .v564-war-score{
+  display:grid!important;
+  grid-template-columns:1fr 25px 1fr!important;
+  align-items:center!important;
+  gap:5px!important;
+  margin:0 0 8px!important;
+  padding:12px 10px!important;
+  border:1px solid #314937!important;
+  border-radius:11px!important;
+  background:radial-gradient(circle at 50% 50%,rgba(78,160,64,.06),transparent 58%),#07110a!important;
+}
+#guild #v254GuildWar .v564-war-score small{font-size:6.3px!important;color:#819086!important;letter-spacing:.04em!important}
+#guild #v254GuildWar .v564-war-score b{font-size:9px!important;color:#edf2e9!important}
+#guild #v254GuildWar .v564-war-score strong{font-size:28px!important;color:#76e75d!important;text-shadow:0 0 10px rgba(89,230,67,.13)!important}
+#guild #v254GuildWar .v564-war-score>span{font-size:19px!important;color:#526158!important}
+#guild #v254GuildWar .v564-war-status{
+  margin:0 0 8px!important;
+  padding:8px 10px!important;
+  border:1px solid #2c4332!important;
+  border-radius:9px!important;
+  background:#09150d!important;
+  color:#9ead9f!important;
+  font-size:7px!important;
+  line-height:1.4!important;
+}
+#guild #v254GuildWar .v564-war-stats{
+  display:grid!important;
+  grid-template-columns:1fr 1fr!important;
+  gap:7px!important;
+  margin:0 0 8px!important;
+}
+#guild #v254GuildWar .v564-war-stats:empty{display:none!important}
+#guild #v254GuildWar .v262-war-stat{
+  padding:8px!important;
+  border:1px solid #2e4734!important;
+  border-radius:9px!important;
+  background:#07110a!important;
+}
+#guild #v254GuildWar .v262-war-stat small{font-size:6px!important;color:#809084!important}
+#guild #v254GuildWar .v262-war-stat b{margin-top:3px!important;font-size:12px!important;color:#eaf4e8!important}
+
+/* Compact two-guild rosters: visually matches the approved reference. */
+#guild #v254GuildWar #v4159Participants{
+  display:grid!important;
+  grid-template-columns:1fr 1fr!important;
+  gap:8px!important;
+  margin:8px 0 0!important;
+}
+#guild #v254GuildWar .v4159-side{
+  min-width:0!important;
+  padding:9px!important;
+  border:1px solid #896237!important;
+  border-radius:11px!important;
+  background:linear-gradient(180deg,#0a1a0e,#061009)!important;
+}
+#guild #v254GuildWar .v4159-side>h4{
+  margin:0 0 7px!important;
+  padding-bottom:6px!important;
+  border-bottom:1px solid #29422f!important;
+  color:#f0eadc!important;
+  font-size:8.5px!important;
+}
+#guild #v254GuildWar .v4159-role{margin:7px 0!important}
+#guild #v254GuildWar .v4159-role-head{margin-bottom:5px!important;font-size:6px!important}
+#guild #v254GuildWar .v4159-role-head b{font-size:7.2px!important;color:#e7eee4!important}
+#guild #v254GuildWar .v4159-person{grid-template-columns:28px minmax(0,1fr)!important;gap:6px!important;padding:5px 0!important}
+#guild #v254GuildWar .v4159-person img{width:28px!important;height:28px!important;border-radius:7px!important;border-color:#70562f!important}
+#guild #v254GuildWar .v4159-person b{font-size:6.8px!important;color:#e8eee5!important}
+#guild #v254GuildWar .v4159-person small{font-size:5.7px!important;color:#7e8b80!important}
+#guild #v254GuildWar .v4159-empty{font-size:6px!important;color:#69766d!important;padding:4px 0!important}
+
+/* War declaration panel shown only when no war exists, kept functional but in the same style. */
+#guild #v254GuildWar .v4159-war-manage{
+  margin:0 0 9px!important;
+  padding:10px!important;
+  border:1px solid #8a6235!important;
+  border-radius:12px!important;
+  background:linear-gradient(180deg,#0b1d10,#07100a)!important;
+}
+#guild #v254GuildWar .v4159-war-manage-head b{font:900 12px/1 Georgia,serif!important;color:#f0e7d3!important}
+#guild #v254GuildWar .v4159-war-manage-head small{font-size:6px!important}
+#guild #v254GuildWar .v4159-target{border-color:#38513c!important;background:#08140c!important}
+#guild #v254GuildWar .v4159-war-help{border-color:#42593f!important;background:#08120b!important}
+
+#guild #v254GuildWar #v262WarWatch,
+#guild #v254GuildWar #v262WarClaim{margin-top:7px!important;border-radius:10px!important}
+#guild #v254GuildWar #v262WarReplay{margin-top:8px!important}
+
+@media(max-width:620px){
+  #guild #v254GuildWar .v564-war-hero{
+    min-height:142px!important;
+    padding:13px 44% 12px 11px!important;
+    background:
+      linear-gradient(90deg,rgba(3,14,7,.98) 0%,rgba(5,18,9,.93) 43%,rgba(4,12,7,.50) 62%,rgba(2,8,5,.03) 100%),
+      var(--v564-war-hero) right center/auto 100% no-repeat,
+      linear-gradient(180deg,#102419,#07100a)!important;
+  }
+  #guild #v254GuildWar .v564-war-copy h3{font-size:20px!important}
+  #guild #v254GuildWar .v564-war-copy p{font-size:6.7px!important;line-height:1.4!important}
+  #guild #v254GuildWar .v564-war-copy .v254-kicker{font-size:5.8px!important}
+  #guild #v254GuildWar .v564-signup{min-height:94px!important;padding:11px 6px 9px!important}
+  #guild #v254GuildWar .v564-signup span{font-size:27px!important}
+  #guild #v254GuildWar .v564-signup b{font-size:11.5px!important}
+  #guild #v254GuildWar .v564-signup small{font-size:5.8px!important}
+  #guild #v254GuildWar .v564-war-title b{font-size:14px!important}
+  #guild #v254GuildWar .v564-war-title .muted{font-size:5.2px!important}
+  #guild #v254GuildWar #v262WarPhase{font-size:5.2px!important;padding:5px 7px!important}
+  #guild #v254GuildWar .v564-war-score{padding:9px 7px!important}
+  #guild #v254GuildWar .v564-war-score strong{font-size:23px!important}
+  #guild #v254GuildWar .v564-war-status{font-size:5.8px!important}
+  #guild #v254GuildWar #v4159Participants{grid-template-columns:1fr 1fr!important;gap:6px!important}
+  #guild #v254GuildWar .v4159-side{padding:7px!important}
+  #guild #v254GuildWar .v4159-side>h4{font-size:7px!important}
+  #guild #v254GuildWar .v4159-role-head b{font-size:6px!important}
+  #guild #v254GuildWar .v4159-person{grid-template-columns:23px minmax(0,1fr)!important;gap:4px!important}
+  #guild #v254GuildWar .v4159-person img{width:23px!important;height:23px!important}
+  #guild #v254GuildWar .v4159-person b{font-size:5.5px!important}
+  #guild #v254GuildWar .v4159-person small{font-size:4.7px!important}
+}
+
+@media(max-width:390px){
+  #guild #v254GuildWar .v564-war-hero{min-height:132px!important;padding-right:40%!important}
+  #guild #v254GuildWar .v564-war-copy h3{font-size:18px!important}
+  #guild #v254GuildWar #v4159Participants{grid-template-columns:1fr!important}
+}

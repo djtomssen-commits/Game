@@ -1,0 +1,45 @@
+/* The active request render now outputs no placeholder at count 0. Compact the card itself. */
+#guild #v257RequestsCard #v257GuildRequests:empty{
+  display:none!important;
+  min-height:0!important;
+  height:0!important;
+  margin:0!important;
+  padding:0!important;
+  border:0!important;
+}
+#guild #v257RequestsCard:has(#v257GuildRequests:empty){
+  padding:7px 8px 7px!important;
+  min-height:0!important;
+}
+#guild #v257RequestsCard:has(#v257GuildRequests:empty)>.section-title{
+  margin:0!important;
+  padding:0!important;
+  border-bottom:0!important;
+}
+#guild #v257RequestsCard:has(#v257GuildRequests:empty) .v380-request-note{
+  display:none!important;
+}
+/* Keep the management explanation inside the safe content width, away from the fixed ticket rail. */
+#guild #v257GuildManagement .v257-management-note{
+  box-sizing:border-box!important;
+  display:block!important;
+  width:calc(100% - 48px)!important;
+  max-width:calc(100% - 48px)!important;
+  margin:0 0 6px!important;
+  padding:0!important;
+  color:#89998d!important;
+  font-size:4.7px!important;
+  line-height:1.32!important;
+  white-space:normal!important;
+  overflow:visible!important;
+  overflow-wrap:normal!important;
+  word-break:normal!important;
+}
+@media(max-width:390px){
+  #guild #v257GuildManagement .v257-management-note{
+    width:calc(100% - 54px)!important;
+    max-width:calc(100% - 54px)!important;
+    font-size:4.45px!important;
+    line-height:1.3!important;
+  }
+}
