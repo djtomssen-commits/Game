@@ -42,7 +42,7 @@
 })();
 </script>
 <script id="v4131-version-source">
-window.GROW_LEGENDS_VERSION=Object.freeze({short:'V7.307',label:'V7.307 Beta',number:'7.305'});
+window.GROW_LEGENDS_VERSION=Object.freeze({short:'V7.308',label:'V7.308 Beta',number:'7.305'});
 window.__V7210_BOOT_PENDING__=true;
 window.v7206StartupBusy=()=>window.__V7210_BOOT_PENDING__===true||window.__V7206_CANONICAL_LOGIN_RUNNING__===true||window.__V7206_FIRST_PLAYABLE_PENDING__===true;
 /* V7.214: account-ready listeners used to all wake in the same frame and caused
@@ -413,7 +413,7 @@ window.__V483_POWER_READY__=false;
 .app > header .v366-ver,.app > header .v371-logo em,.app > header .v372-logo em{font-size:0!important;color:transparent!important}
 .app > header .v366-ver::after,.app > header .v371-logo em::after,.app > header .v372-logo em::after{content:"V4.164"!important;font-size:5px!important;color:#63cdd1!important;font-style:normal!important;font-weight:900!important}
 </style>
-<title>Grow Legends V7.307 Beta</title>
+<title>Grow Legends V7.308 Beta</title>
 <style>
 :root{--bg:#0b100b;--panel:#151d14;--panel2:#1c281a;--panel3:#253423;--line:#354933;--text:#f2f5ed;--muted:#9fad99;--green:#83d65d;--green2:#b2f07e;--gold:#f2c75a;--red:#ee6b68;--blue:#68a7ea;--purple:#ad7bea;--shadow:0 12px 30px rgba(0,0,0,.28)}
 *{box-sizing:border-box}html{background:var(--bg)}body{margin:0;color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:radial-gradient(circle at 50% -10%,#253821 0,#10170f 40%,#090d09 100%);min-height:100vh}button{font:inherit}.app{max-width:820px;margin:auto;min-height:100vh;padding-bottom:88px}
@@ -102219,7 +102219,7 @@ function schedule(){
 function observe(){
   const panel=document.querySelector('#character #v030Materials');
   if(!panel)return false;
-  /* V7.307: retired subtree MutationObserver. v546RenderMaterials now drives this explicitly. */
+  /* V7.308: retired subtree MutationObserver. v546RenderMaterials now drives this explicitly. */
   enhance();
   return true;
 }
@@ -102400,7 +102400,7 @@ document.addEventListener('click',e=>{
 },true);
 
 const ch=document.getElementById('character');
-/* V7.307: no whole-character MutationObserver. Hero render/navigation hooks keep this current. */
+/* V7.308: no whole-character MutationObserver. Hero render/navigation hooks keep this current. */
 window.v682SyncFrostWeapon=sync;
 
 [0,80,220,600,1400].forEach(ms=>setTimeout(schedule,ms));
@@ -108965,7 +108965,7 @@ function doorTransitionView(r){
  <div class="v6281-enter-note">🚪 Tür gewählt · direkter Übergang in den Kampf …</div>`;
 }
 
-/* V7.307: server-authoritative Tower still shows the old slow door-opening presentation.
+/* V7.308: server-authoritative Tower still shows the old slow door-opening presentation.
    The fight is already resolved server-side; this is presentation-only and never mutates gameplay state. */
 window.v7298TowerDoorPreview=async function(run,routeIndex=0,ms=1350){
  try{
@@ -108980,7 +108980,7 @@ window.v7298TowerDoorPreview=async function(run,routeIndex=0,ms=1350){
    await new Promise(resolve=>setTimeout(resolve,Math.max(900,Number(ms)||1350)));
    return true;
  }catch(err){
-   console.warn('[V7.307] Tower door preview',err);
+   console.warn('[V7.308] Tower door preview',err);
    return false;
  }
 };
@@ -109037,6 +109037,10 @@ function rewardView(r){
  <div class="v6259-result"><div class="v6259-result-icon">🏆</div><h2>SIEG · ETAGE ${r.cleared}</h2>
  <div class="v6259-result-grid"><div><small>Gold</small><b>+${fmt(x.gold||0)}</b></div><div><small>XP</small><b>+${fmt(x.xp||0)}</b></div><div><small>Score</small><b>+${fmt(x.score||0)}</b></div></div>
  ${x.tokens?`<p>🍃 +${fmt(x.tokens)} Turmblätter ungesichert</p>`:''}
+ <div class="v7308-activity-reward" data-v7308-kind="tower">
+   <div class="v7308-weekly-line pending">⭐ Wochen-Truhen-EP werden geprüft …</div>
+   <div class="v7308-guild-line tower-zero">🏰 Gilden-EP · im Turm aktuell keine Vergabe</div>
+ </div>
  <button class="vT-btn primary v6259-main-btn" data-vt-next>Weiter zu Etage ${r.floor}</button></div>`;
 }
 function mutationView(r){
@@ -109248,6 +109252,7 @@ function render(){
 
    root.innerHTML=`<div class="vT-wrap">${html}</div>`;
    bind();
+   if(r?.mode==='reward')setTimeout(()=>{try{window.v7308PrepareReward?.('tower')}catch(_){}},0);
    if(r?.mode==='route')v7191PreloadTowerRoute(r);
 
    if(r?.mode==='doorTransition'&&!root.dataset.v6281TransitionLock){
@@ -110323,7 +110328,7 @@ document.addEventListener('click',e=>{
   if(e.target?.closest?.('[data-v111-openboss],#v110WorldBossBtn,[data-v6118-open-worldboss]'))setTimeout(install,120);
 },true);
 
-/* V7.307 performance: document-wide worldboss observer retired; ensure/click hooks above own installation. */
+/* V7.308 performance: document-wide worldboss observer retired; ensure/click hooks above own installation. */
 window.addEventListener('pageshow',()=>{if(document.getElementById('v110Overlay')?.classList.contains('show'))setTimeout(install,40)},{passive:true});
 
 setTimeout(()=>{try{document.getElementById('v110Overlay')?.remove()}catch(_){}},50);
@@ -113249,7 +113254,7 @@ function enhance(){
 function schedule(){if(scheduled)return;scheduled=true;requestAnimationFrame(()=>{scheduled=false;enhance()})}
 function observe(){
  const panel=document.querySelector('#character #v030Materials');if(!panel)return false;
- /* V7.307: retired subtree MutationObserver. One post-render hook is authoritative. */
+ /* V7.308: retired subtree MutationObserver. One post-render hook is authoritative. */
  enhance();return true;
 }
 document.addEventListener('click',e=>{if(e.target?.closest?.('#v459CharacterTabs [data-tab="materials"],#v514HeroTabs [data-tab="materials"],#v546MaterialsHeader'))setTimeout(()=>{observe();enhance()},40)},true);
@@ -136736,13 +136741,9 @@ async function sync(show=true){
   const weekly=wr.reduce((a,x)=>a+n(x?.applied_xp),0);
   const guild=gr.reduce((a,x)=>a+n(x?.awarded),0);
   if(weekly<=0&&guild<=0)return true;
-  S.lastWeekly=weekly;S.lastGuild=guild;S.toasts++;
-  const types=[...new Set([...wr.filter(x=>n(x?.applied_xp)>0).map(x=>label(x?.activity_type)),...gr.filter(x=>n(x?.awarded)>0).map(x=>label(x?.kind))])];
-  const src=types.length===1?types[0]:types.length>1?'Aktivitäten':'Aktivität';
-  const parts=[];
-  if(weekly>0)parts.push(`⭐ +${weekly} Wochen-EP`);
-  if(guild>0)parts.push(`🏰 +${guild} Gilden-EP`);
-  toast(`${src} gewertet`,'success',parts.join(' · '));
+  S.lastWeekly=weekly;S.lastGuild=guild;
+  /* V7.308: reward feedback is rendered inside the activity reward window.
+     Do not create an additional bottom toast. */
   return true;
  }catch(e){S.lastError=String(e?.message||e);console.warn('[V7.136] activity feedback',e);return false}
  finally{S.busy=false}
@@ -143267,7 +143268,7 @@ window.v7269CombatCadenceDiagnostics=()=>{
 (()=>{
  'use strict';
  window.v7271IllegalBookPageStability=()=>({
-   version:'V7.307',
+   version:'V7.308',
    state:window.v6235IllegalBookViewState?.()||null,
    serverAchievement:window.v7080AchievementDiagnostics?.()||null
  });
@@ -143416,7 +143417,7 @@ window.v7269CombatCadenceDiagnostics=()=>{
   const st=structure(),p=panel();
   const iconMissing=p?[...p.querySelectorAll(':scope > .top-menu-item[data-screen]')].filter(b=>!b.querySelector(':scope > .v7272-nav-icon svg')).map(b=>b.dataset.screen):[];
   const active=p?[...p.querySelectorAll(':scope > .top-menu-item.active[data-screen]')].map(b=>b.dataset.screen):[];
-  return {version:'V7.307',...st,iconMissing,active,lastRepairAt,observer:!!observer};
+  return {version:'V7.308',...st,iconMissing,active,lastRepairAt,observer:!!observer};
  };
 })();
 </script>
@@ -143598,7 +143599,7 @@ window.v7269CombatCadenceDiagnostics=()=>{
  function visible(){const p=document.querySelector('#v7273GuildGrow');return !!p&&p.style.display!=='none'&&document.querySelector('#guild')?.classList.contains('active');}
  document.addEventListener('click',e=>{const b=e.target instanceof Element?e.target.closest('[data-v254-tab]'):null;if(!b)return;const tab=b.getAttribute('data-v254-tab');const p=document.querySelector('#v7273GuildGrow');if(p)p.style.display=tab==='growtasks'?'':'none';if(tab==='growtasks')setTimeout(()=>load(true),20);},true);
  V.timer=setInterval(()=>{if(visible()){document.querySelectorAll('[data-v7273-countdown="daily"]').forEach(el=>el.textContent=`Neue Aufträge in ${countdown(V.state?.dailyResetAt)}`);document.querySelectorAll('[data-v7273-countdown="weekly"]').forEach(el=>el.textContent=`Reset in ${countdown(V.state?.weeklyResetAt)}`);if(Date.now()-V.lastLoad>15000)load(false);}},1000);
- window.v7273GuildGrow=Object.freeze({refresh:()=>load(true),version:'V7.307'});
+ window.v7273GuildGrow=Object.freeze({refresh:()=>load(true),version:'V7.308'});
 })();
 </script>
 
@@ -143947,7 +143948,7 @@ window.addEventListener('resize',schedule,{passive:true});
 window.addEventListener('orientationchange',()=>setTimeout(schedule,120),{passive:true});
 window.addEventListener('load',()=>{schedule();setTimeout(schedule,120);setTimeout(schedule,380)});
 document.addEventListener('DOMContentLoaded',()=>{schedule();setTimeout(schedule,120)});
-/* V7.307 performance: document-wide mutation observation + permanent 1.8 s polling retired.
+/* V7.308 performance: document-wide mutation observation + permanent 1.8 s polling retired.
    Fit only on real lifecycle/navigation changes. */
 window.addEventListener('growlegends:account-ready',()=>setTimeout(schedule,80),{passive:true});
 window.addEventListener('growlegends:navigation-open-v7119',e=>{
@@ -144270,11 +144271,11 @@ setTimeout(sync,0);setTimeout(sync,650);setTimeout(sync,1800);
 <script id="v7281-version-lock">
 (()=>{'use strict';
  const ch=String(window.GROW_RELEASE_CHANNEL||'stable');
- const V=Object.freeze({short:'V7.307',label:ch==='beta'?'V7.307 Beta':'V7.307 Server 1',number:'7.305'});
+ const V=Object.freeze({short:'V7.308',label:ch==='beta'?'V7.308 Beta':'V7.308 Server 1',number:'7.305'});
  window.GROW_LEGENDS_VERSION=V;window.__GROW_LEGENDS_RELEASE__=V.short;window.__GL_CURRENT_BUILD__=V.short;
  const apply=()=>{try{document.querySelectorAll('.v366-ver,.v371-logo em,.v372-logo em,[data-top-version],#topVersion').forEach(el=>{el.textContent=V.short})}catch(_){}};
  apply();addEventListener('pageshow',apply,{passive:true});addEventListener('growlegends:account-ready',apply,{passive:true});
- /* V7.307 STARTFIX: retired document-wide version MutationObserver; it could self-trigger and starve DOMContentLoaded after later patches were appended. */
+ /* V7.308 STARTFIX: retired document-wide version MutationObserver; it could self-trigger and starve DOMContentLoaded after later patches were appended. */
 })();
 </script>
 
@@ -144483,10 +144484,10 @@ setTimeout(sync,0);setTimeout(sync,650);setTimeout(sync,1800);
 </style>
 
 
-<!-- V7.307 STARTFIX: startup deadlock removed; guild visuals unchanged -->
+<!-- V7.308 STARTFIX: startup deadlock removed; guild visuals unchanged -->
 
 <style id="v7286-guild-grow-fit-final">
-/* V7.307 · final Guild Grow fit. Pure presentation fix. */
+/* V7.308 · final Guild Grow fit. Pure presentation fix. */
 .v7273-grow-stage::before{content:none!important;display:none!important}
 
 .v7281-chest-track{
@@ -144568,16 +144569,16 @@ setTimeout(sync,0);setTimeout(sync,650);setTimeout(sync,1800);
 }
 
 /* Final visible version owner */
-html body .app > header .v358-logo::after{content:"V7.307"!important}
+html body .app > header .v358-logo::after{content:"V7.308"!important}
 html body .app > header .v366-ver::after,
 html body .app > header .v371-logo em::after,
 html body .app > header .v372-logo em::after,
-#v372TopbarShell .v372-logo em::after{content:"V7.307"!important}
+#v372TopbarShell .v372-logo em::after{content:"V7.308"!important}
 </style>
 
 
 <style id="v7287-weekly-chest-compact-fit">
-/* V7.307 · safer weekly chest fit on narrower phones / larger display scaling */
+/* V7.308 · safer weekly chest fit on narrower phones / larger display scaling */
 @media (max-width:430px){
   #world.active .v6239-weekly-chest{
     left:92px!important;
@@ -144771,7 +144772,7 @@ document.addEventListener('click',e=>{
   setTimeout(kick,0);
   setTimeout(kick,120);
 },true);
-/* V7.307 performance: no permanent 900 ms dungeon repaint loop. */
+/* V7.308 performance: no permanent 900 ms dungeon repaint loop. */
 window.addEventListener('growlegends:navigation-open-v7119',e=>{
   const id=String(e?.detail?.id||e?.detail?.screen||'');
   if(id==='dungeon')setTimeout(kick,45);
@@ -144781,7 +144782,7 @@ window.addEventListener('growlegends:navigation-open-v7119',e=>{
 
 
 <style id="v7288-home-adaptive-fit-css">
-/* V7.307 · Home hero: keep motto/chest compact, but do NOT solve collisions
+/* V7.308 · Home hero: keep motto/chest compact, but do NOT solve collisions
    by endlessly shrinking them. The hero gets extra vertical room when the
    real rendered profile/checklist is taller on a specific phone. */
 @media(max-width:430px){
@@ -144843,7 +144844,7 @@ html body .app > header .v366-ver{
   font-size:0!important;
 }
 html body .app > header .v366-ver::after{
-  content:"V7.307"!important;
+  content:"V7.308"!important;
   display:inline!important;
   font-size:10px!important;
   line-height:1!important;
@@ -144937,7 +144938,7 @@ document.addEventListener('click',e=>{
   }
 },true);
 
-/* V7.307 performance: the 1.6 s layout-measurement poll is retired. */
+/* V7.308 performance: the 1.6 s layout-measurement poll is retired. */
 window.addEventListener('growlegends:navigation-open-v7119',e=>{
   const id=String(e?.detail?.id||e?.detail?.screen||'');
   if(!id||id==='world')setTimeout(schedule,70);
@@ -144949,7 +144950,7 @@ schedule();
 
 
 <style id="v7289-guild-grow-wideboard">
-/* V7.307 · Guild Grow: use more of the phone width instead of shrinking text.
+/* V7.308 · Guild Grow: use more of the phone width instead of shrinking text.
    The artwork is widened only horizontally, so the vertical task positions remain stable. */
 .v7273-grow-bg{
   transform:scaleX(1.065)!important;
@@ -145034,16 +145035,16 @@ schedule();
 }
 
 /* Current build */
-html body .app > header .v358-logo::after{content:"V7.307"!important}
+html body .app > header .v358-logo::after{content:"V7.308"!important}
 html body .app > header .v366-ver::after,
 html body .app > header .v371-logo em::after,
 html body .app > header .v372-logo em::after,
-#v372TopbarShell .v372-logo em::after{content:"V7.307"!important}
+#v372TopbarShell .v372-logo em::after{content:"V7.308"!important}
 </style>
 
 
 <style id="v7290-guild-chest-progress-fix">
-/* V7.307 · The artwork contains pre-painted green rails.
+/* V7.308 · The artwork contains pre-painted green rails.
    These opaque live segments cover those rails and then repaint only the real server progress. */
 .v7281-chest-track{
   top:21.92%!important;
@@ -145075,11 +145076,11 @@ html body .app > header .v372-logo em::after,
 }
 
 /* Current build */
-html body .app > header .v358-logo::after{content:"V7.307"!important}
+html body .app > header .v358-logo::after{content:"V7.308"!important}
 html body .app > header .v366-ver::after,
 html body .app > header .v371-logo em::after,
 html body .app > header .v372-logo em::after,
-#v372TopbarShell .v372-logo em::after{content:"V7.307"!important}
+#v372TopbarShell .v372-logo em::after{content:"V7.308"!important}
 </style>
 
 
@@ -145087,11 +145088,11 @@ html body .app > header .v372-logo em::after,
 /* Quest cards are committed only after all 3 scene/enemy assets are decoded. */
 #quests.v7291-quest-art-warming .v6344-card-enemy{opacity:0!important}
 #quests.v7291-quest-art-ready .v6344-card-enemy{opacity:1!important;transition:opacity .10s linear!important}
-html body .app > header .v358-logo::after{content:"V7.307"!important}
+html body .app > header .v358-logo::after{content:"V7.308"!important}
 html body .app > header .v366-ver::after,
 html body .app > header .v371-logo em::after,
 html body .app > header .v372-logo em::after,
-#v372TopbarShell .v372-logo em::after{content:"V7.307"!important}
+#v372TopbarShell .v372-logo em::after{content:"V7.308"!important}
 </style>
 <script id="v7291-combat-cadence-performance-final">
 (()=>{'use strict';
@@ -145102,7 +145103,7 @@ html body .app > header .v372-logo em::after,
  window.v7269DungeonCadence=questCadence;
  try{v7269DungeonCadence=questCadence}catch(_){}
  window.v7291PerformanceDiagnostics=()=>({
-   version:'V7.307',
+   version:'V7.308',
    combatCadence:questCadence(),
    runtime:window.__V477_RUNTIME_DIAGNOSTICS__?.()||null,
    accountQueue:window.v7214AccountReadyQueueDiagnostics?.()||null,
@@ -145185,7 +145186,7 @@ document.addEventListener('click',e=>{
 },true);
 
 window.v7292PerformanceDiagnostics=()=>({
-  version:'V7.307',
+  version:'V7.308',
   materialObserversRetired:true,
   characterWideObserverRetired:true,
   materialRenderHook:!!window.v546RenderMaterials?.__v7292PerfHook,
@@ -145197,16 +145198,16 @@ window.v7292PerformanceDiagnostics=()=>({
 })();
 </script>
 <style id="v7292-runtime-performance-version">
-html body .app > header .v358-logo::after{content:"V7.307"!important}
+html body .app > header .v358-logo::after{content:"V7.308"!important}
 html body .app > header .v366-ver::after,
 html body .app > header .v371-logo em::after,
 html body .app > header .v372-logo em::after,
-#v372TopbarShell .v372-logo em::after{content:"V7.307"!important}
+#v372TopbarShell .v372-logo em::after{content:"V7.308"!important}
 </style>
 
 
 <style id="v7293-guild-grow-textfit-final">
-/* V7.307 · Text now fits the actual painted wooden boxes. */
+/* V7.308 · Text now fits the actual painted wooden boxes. */
 .v7273-task{
   left:4.15%!important;
   right:4.15%!important;
@@ -145331,16 +145332,16 @@ html body .app > header .v372-logo em::after,
   .v7273-actions{font-size:4.2px!important}
 }
 
-html body .app > header .v358-logo::after{content:"V7.307"!important}
+html body .app > header .v358-logo::after{content:"V7.308"!important}
 html body .app > header .v366-ver::after,
 html body .app > header .v371-logo em::after,
 html body .app > header .v372-logo em::after,
-#v372TopbarShell .v372-logo em::after{content:"V7.307"!important}
+#v372TopbarShell .v372-logo em::after{content:"V7.308"!important}
 </style>
 
 
 <style id="v7294-guild-grow-boardfit-final">
-/* V7.307 · Refit the whole task board to the actual text.
+/* V7.308 · Refit the whole task board to the actual text.
    Instead of only shrinking text, widen the reward plaques and give the
    task rows a little more breathing room so the live overlay matches the art. */
 
@@ -145462,16 +145463,16 @@ html body .app > header .v372-logo em::after,
 .v7273-chest-ring{width:9.05%!important}
 
 /* Current build */
-html body .app > header .v358-logo::after{content:"V7.307"!important}
+html body .app > header .v358-logo::after{content:"V7.308"!important}
 html body .app > header .v366-ver::after,
 html body .app > header .v371-logo em::after,
 html body .app > header .v372-logo em::after,
-#v372TopbarShell .v372-logo em::after{content:"V7.307"!important}
+#v372TopbarShell .v372-logo em::after{content:"V7.308"!important}
 </style>
 
 
 <style id="v7295-guild-grow-background-refit-final">
-/* V7.307 · Refit the BOARD / background to the live content, not the other way around.
+/* V7.308 · Refit the BOARD / background to the live content, not the other way around.
    Make the painted right reward plaques and bottom contribution area effectively larger. */
 
 /* Stronger board/background refit */
@@ -145598,16 +145599,16 @@ html body .app > header .v372-logo em::after,
 .v7273-chest-ring{width:9.3%!important}
 
 /* Build marker */
-html body .app > header .v358-logo::after{content:"V7.307"!important}
+html body .app > header .v358-logo::after{content:"V7.308"!important}
 html body .app > header .v366-ver::after,
 html body .app > header .v371-logo em::after,
 html body .app > header .v372-logo em::after,
-#v372TopbarShell .v372-logo em::after{content:"V7.307"!important}
+#v372TopbarShell .v372-logo em::after{content:"V7.308"!important}
 </style>
 
 
 <style id="v7296-guildgrow-new-background-final">
-/* V7.307 · New guild-grow background art with chest summary moved higher. */
+/* V7.308 · New guild-grow background art with chest summary moved higher. */
 .v7273-grow-bg{
   transform:none!important;
   object-fit:cover!important;
@@ -145672,16 +145673,16 @@ html body .app > header .v372-logo em::after,
 }
 
 /* Build marker */
-html body .app > header .v358-logo::after{content:"V7.307"!important}
+html body .app > header .v358-logo::after{content:"V7.308"!important}
 html body .app > header .v366-ver::after,
 html body .app > header .v371-logo em::after,
 html body .app > header .v372-logo em::after,
-#v372TopbarShell .v372-logo em::after{content:"V7.307"!important}
+#v372TopbarShell .v372-logo em::after{content:"V7.308"!important}
 </style>
 
 
 <style id="v7297-guildgrow-dynamicbar-final">
-/* V7.307 · Keep the existing new background image.
+/* V7.308 · Keep the existing new background image.
    The bright rail painted into that image is visually neutralized here.
    Only the live .v7281-chest-track bars show actual progress. */
 
@@ -145739,25 +145740,25 @@ html body .app > header .v372-logo em::after,
 }
 
 /* Current build */
-html body .app > header .v358-logo::after{content:"V7.307"!important}
+html body .app > header .v358-logo::after{content:"V7.308"!important}
 html body .app > header .v366-ver::after,
 html body .app > header .v371-logo em::after,
 html body .app > header .v372-logo em::after,
-#v372TopbarShell .v372-logo em::after{content:"V7.307"!important}
+#v372TopbarShell .v372-logo em::after{content:"V7.308"!important}
 </style>
 
 
 <style id="v7298-tower-door-version">
-html body .app > header .v358-logo::after{content:"V7.307"!important}
+html body .app > header .v358-logo::after{content:"V7.308"!important}
 html body .app > header .v366-ver::after,
 html body .app > header .v371-logo em::after,
 html body .app > header .v372-logo em::after,
-#v372TopbarShell .v372-logo em::after{content:"V7.307"!important}
+#v372TopbarShell .v372-logo em::after{content:"V7.308"!important}
 </style>
 
 
 <style id="v7299-guildgrow-cleanfit-final">
-/* V7.307 · Clean text fit on the new guild-grow background */
+/* V7.308 · Clean text fit on the new guild-grow background */
 
 .v7273-chest-summary{
   top:14.45%!important;
@@ -145871,16 +145872,16 @@ html body .app > header .v372-logo em::after,
 }
 
 /* Build marker */
-html body .app > header .v358-logo::after{content:"V7.307"!important}
+html body .app > header .v358-logo::after{content:"V7.308"!important}
 html body .app > header .v366-ver::after,
 html body .app > header .v371-logo em::after,
 html body .app > header .v372-logo em::after,
-#v372TopbarShell .v372-logo em::after{content:"V7.307"!important}
+#v372TopbarShell .v372-logo em::after{content:"V7.308"!important}
 </style>
 
 
 <style id="v7300-guildgrow-realign-final">
-/* V7.307 · Full vertical realignment for the new guild-grow board */
+/* V7.308 · Full vertical realignment for the new guild-grow board */
 
 .v7273-chest-summary{
   top:14.0%!important;
@@ -146009,16 +146010,16 @@ html body .app > header .v372-logo em::after,
 }
 
 /* Build marker */
-html body .app > header .v358-logo::after{content:"V7.307"!important}
+html body .app > header .v358-logo::after{content:"V7.308"!important}
 html body .app > header .v366-ver::after,
 html body .app > header .v371-logo em::after,
 html body .app > header .v372-logo em::after,
-#v372TopbarShell .v372-logo em::after{content:"V7.307"!important}
+#v372TopbarShell .v372-logo em::after{content:"V7.308"!important}
 </style>
 
 
 <style id="v7301-guildgrow-redesign-final">
-/* V7.307 · full guild-grow page redesign. Keep top header and tabs, rebuild the page content cleanly. */
+/* V7.308 · full guild-grow page redesign. Keep top header and tabs, rebuild the page content cleanly. */
 #guild .v7273-guild-grow-panel{
   padding:0!important;
   background:transparent!important;
@@ -146351,11 +146352,11 @@ html body .app > header .v372-logo em::after,
   .v7301-contrib-rank{width:30px!important;height:30px!important;font-size:14px!important}
   .v7301-contrib-player strong{font-size:15px!important}
 }
-html body .app > header .v358-logo::after{content:"V7.307"!important}
+html body .app > header .v358-logo::after{content:"V7.308"!important}
 html body .app > header .v366-ver::after,
 html body .app > header .v371-logo em::after,
 html body .app > header .v372-logo em::after,
-#v372TopbarShell .v372-logo em::after{content:"V7.307"!important}
+#v372TopbarShell .v372-logo em::after{content:"V7.308"!important}
 </style>
 
 
@@ -146372,17 +146373,17 @@ html body .app > header .v372-logo em::after,
   animation-duration:.9s!important;
 }
 
-html body .app > header .v358-logo::after{content:"V7.307"!important}
+html body .app > header .v358-logo::after{content:"V7.308"!important}
 html body .app > header .v366-ver::after,
 html body .app > header .v371-logo em::after,
 html body .app > header .v372-logo em::after,
-#v372TopbarShell .v372-logo em::after{content:"V7.307"!important}
+#v372TopbarShell .v372-logo em::after{content:"V7.308"!important}
 </style>
 
 
 
 <style id="v7306-guildgrow-oldheader-cleanboards">
-/* V7.307 · Old chest header look + clean task boards below */
+/* V7.308 · Old chest header look + clean task boards below */
 .v7273-grow-bg{display:none!important}
 .v7301-shell{gap:16px!important;padding:4px 0 12px!important}
 
@@ -146574,21 +146575,21 @@ html body .app > header .v372-logo em::after,
   .v7301-task-meta{flex-direction:column!important;align-items:flex-start!important}
 }
 
-html body .app > header .v358-logo::after{content:"V7.307"!important}
+html body .app > header .v358-logo::after{content:"V7.308"!important}
 html body .app > header .v366-ver::after,
 html body .app > header .v371-logo em::after,
 html body .app > header .v372-logo em::after,
-#v372TopbarShell .v372-logo em::after{content:"V7.307"!important}
+#v372TopbarShell .v372-logo em::after{content:"V7.308"!important}
 </style>
 
 
 
 <style id="v7304-version-only">
-html body .app > header .v358-logo::after{content:"V7.307"!important}
+html body .app > header .v358-logo::after{content:"V7.308"!important}
 html body .app > header .v366-ver::after,
 html body .app > header .v371-logo em::after,
 html body .app > header .v372-logo em::after,
-#v372TopbarShell .v372-logo em::after{content:"V7.307"!important}
+#v372TopbarShell .v372-logo em::after{content:"V7.308"!important}
 </style>
 
 
@@ -146609,16 +146610,16 @@ html body .app > header .v372-logo em::after,
 })();
 </script>
 <style id="v7305-version">
-html body .app > header .v358-logo::after{content:"V7.307"!important}
+html body .app > header .v358-logo::after{content:"V7.308"!important}
 html body .app > header .v366-ver::after,
 html body .app > header .v371-logo em::after,
 html body .app > header .v372-logo em::after,
-#v372TopbarShell .v372-logo em::after{content:"V7.307"!important}
+#v372TopbarShell .v372-logo em::after{content:"V7.308"!important}
 </style>
 
 
 <style id="v7307-guildgrow-chestheader-final">
-/* V7.307 · exact old chest artwork as real <img>, live progress layered above it */
+/* V7.308 · exact old chest artwork as real <img>, live progress layered above it */
 .v7273-grow-bg{display:none!important}
 .v7301-shell{display:grid!important;gap:14px!important;padding:4px 0 12px!important}
 
@@ -146785,11 +146786,11 @@ html body .app > header .v372-logo em::after,
 }
 
 /* final build marker */
-html body .app > header .v358-logo::after{content:"V7.307"!important}
+html body .app > header .v358-logo::after{content:"V7.308"!important}
 html body .app > header .v366-ver::after,
 html body .app > header .v371-logo em::after,
 html body .app > header .v372-logo em::after,
-#v372TopbarShell .v372-logo em::after{content:"V7.307"!important}
+#v372TopbarShell .v372-logo em::after{content:"V7.308"!important}
 </style>
 
 
@@ -146861,7 +146862,7 @@ html body .app > header .v372-logo em::after,
 
       return registered;
     }catch(e){
-      console.warn('[V7.307] guild boss signup',e);
+      console.warn('[V7.308] guild boss signup',e);
       try{v063Toast?.('Gildenboss-Anmeldung fehlgeschlagen','error',e?.message||'Serverfehler')}catch(_){}
       try{await v254LoadGuild()}catch(_){}
       try{await v255LoadBoss()}catch(_){}
@@ -146885,10 +146886,292 @@ html body .app > header .v372-logo em::after,
 })();
 </script>
 
+
+<style id="v7308-reward-consolidation-css">
+/* V7.308 · Weekly-chest and guild activity XP live inside reward windows. */
+.v7308-weekly-line,
+.v7308-guild-line{
+  margin-top:6px!important;
+  padding:7px 9px!important;
+  border-radius:9px!important;
+  font-size:9px!important;
+  line-height:1.3!important;
+  font-weight:900!important;
+  text-align:left!important;
+}
+.v7308-weekly-line{
+  color:#f3df9d!important;
+  border:1px solid rgba(218,177,81,.38)!important;
+  background:linear-gradient(180deg,rgba(55,42,14,.72),rgba(25,20,8,.80))!important;
+}
+.v7308-weekly-line.pending{opacity:.72!important}
+.v7308-weekly-line.zero{color:#d6c99a!important;border-color:rgba(166,144,82,.28)!important}
+.v7308-guild-line{
+  color:#c9f3bc!important;
+  border:1px solid rgba(113,205,92,.38)!important;
+  background:linear-gradient(180deg,rgba(19,48,23,.78),rgba(8,23,12,.82))!important;
+}
+.v7308-guild-line.zero,
+.v7308-guild-line.tower-zero{
+  color:#d9cc9d!important;
+  border-color:rgba(187,163,92,.30)!important;
+  background:rgba(37,31,14,.55)!important;
+}
+
+/* Existing V7.165 guild row becomes visually part of the same reward list. */
+.v7165-guild-reward-line{
+  margin-top:6px!important;
+  padding:7px 9px!important;
+  border-radius:9px!important;
+  font-size:9px!important;
+  line-height:1.3!important;
+  font-weight:900!important;
+}
+
+/* PvP uses a standalone modal. */
+#v211PvpResultCard .v7308-activity-reward{
+  margin:7px 10px 0!important;
+}
+#v211PvpResultCard .v7308-weekly-line,
+#v211PvpResultCard .v7308-guild-line,
+#v211PvpResultCard .v7165-guild-reward-line{
+  text-align:center!important;
+}
+
+/* Tower reward screen. */
+#tower .v7308-activity-reward{
+  display:grid!important;
+  gap:5px!important;
+  margin:9px 0 10px!important;
+}
+#tower .v7308-weekly-line,
+#tower .v7308-guild-line{
+  margin:0!important;
+  text-align:center!important;
+  font-size:8px!important;
+}
+
+/* Final build marker. */
+html body .app > header .v358-logo::after{content:"V7.308"!important}
+html body .app > header .v366-ver::after,
+html body .app > header .v371-logo em::after,
+html body .app > header .v372-logo em::after,
+#v372TopbarShell .v372-logo em::after{content:"V7.308"!important}
+</style>
+
+
+<script id="v7308-reward-consolidation">
+(()=>{
+'use strict';
+if(window.__V7308_REWARD_CONSOLIDATION__)return;
+window.__V7308_REWARD_CONSOLIDATION__=true;
+
+const A={last:Object.create(null),prepared:Object.create(null)};
+const n=v=>Math.max(0,Math.floor(Number(v)||0));
+const now=()=>Date.now();
+const fresh=x=>x&&now()-Number(x.at||0)<15000;
+
+function normWeekly(type){
+  type=String(type||'').toLowerCase();
+  if(type==='quest')return 'quest';
+  if(type==='dungeon')return 'dungeon';
+  if(type==='pvp')return 'pvp';
+  if(type==='tower')return 'tower';
+  return '';
+}
+function normGuild(type){
+  type=String(type||'').toLowerCase();
+  if(type==='quest')return 'quest';
+  if(type==='dungeon')return 'dungeon';
+  if(type==='pvp_win'||type==='pvp')return 'pvp';
+  if(type==='tower')return 'tower';
+  return '';
+}
+
+function host(kind){
+  if(kind==='quest'){
+    return document.querySelector('#v231QuestRewardExtra .v7136-reward-list')
+      ||document.querySelector('#v231QuestRewardExtra');
+  }
+  if(kind==='dungeon'){
+    return document.querySelector('#v247DungeonRewardExtra .v7136-reward-list')
+      ||document.querySelector('#v247DungeonRewardExtra');
+  }
+  if(kind==='pvp')return document.querySelector('#v211PvpResultCard');
+  if(kind==='tower')return document.querySelector('#tower .v7308-activity-reward[data-v7308-kind="tower"]');
+  return null;
+}
+
+function ensureWeekly(kind){
+  const h=host(kind);if(!h)return null;
+  let line=h.querySelector?.('.v7308-weekly-line');
+  if(line)return line;
+  line=document.createElement('div');
+  line.className='v7308-weekly-line pending';
+  line.dataset.v7308Kind=kind;
+  line.textContent='⭐ Wochen-Truhen-EP werden geprüft …';
+
+  if(kind==='pvp'){
+    let wrap=h.querySelector('.v7308-activity-reward[data-v7308-kind="pvp"]');
+    if(!wrap){
+      wrap=document.createElement('div');
+      wrap.className='v7308-activity-reward';
+      wrap.dataset.v7308Kind='pvp';
+      const guild=h.querySelector('.v7165-guild-reward-line');
+      const btn=h.querySelector('#v211PvpResultConfirm');
+      h.insertBefore(wrap,guild||btn||null);
+    }
+    wrap.appendChild(line);
+  }else{
+    h.appendChild(line);
+  }
+  return line;
+}
+
+function guildLine(kind){
+  const h=host(kind);if(!h)return null;
+  if(kind==='tower')return h.querySelector('.v7308-guild-line');
+  return h.querySelector('.v7165-guild-reward-line')||h.querySelector('.v7308-guild-line');
+}
+
+function apply(kind,data){
+  if(!data)return;
+  const w=ensureWeekly(kind);
+  if(w){
+    const gain=n(data.weekly);
+    const total=n(data.weeklyXp);
+    w.className='v7308-weekly-line'+(gain>0?'':' zero');
+    w.textContent=gain>0
+      ?`⭐ +${gain} Wochen-Truhen-EP · Stand ${total}/1.700`
+      :`⭐ 0 Wochen-Truhen-EP · Stand ${total}/1.700`;
+  }
+
+  if(kind==='tower')return; // Tower currently has no Guild-EP economy.
+
+  let g=guildLine(kind);
+  const h=host(kind);
+  if(!g&&h){
+    g=document.createElement('div');
+    g.className='v7308-guild-line';
+    const btn=kind==='pvp'?h.querySelector('#v211PvpResultConfirm'):null;
+    if(btn)h.insertBefore(g,btn);else h.appendChild(g);
+  }
+  if(g){
+    const gain=n(data.guild);
+    const hasGuild=data.guildId!=null;
+    g.className=(g.classList.contains('v7165-guild-reward-line')?'v7165-guild-reward-line':'v7308-guild-line')+(gain>0?'':' zero');
+    if(gain>0){
+      g.textContent=`🏰 +${gain} Gilden-EP`;
+    }else if(!hasGuild){
+      g.textContent='🏰 0 Gilden-EP · keine aktive Gilde';
+    }else{
+      g.textContent='🏰 0 Gilden-EP · Aktivitäts-/Tageslimit erreicht';
+    }
+  }
+}
+
+function prepare(kind){
+  kind=String(kind||'');
+  if(!['quest','dungeon','pvp','tower'].includes(kind))return false;
+  ensureWeekly(kind);
+  if(kind==='tower'){
+    const g=guildLine('tower');
+    if(g)g.textContent='🏰 Gilden-EP · im Turm aktuell keine Vergabe';
+  }
+  const last=A.last[kind];
+  if(fresh(last))apply(kind,last);
+  [40,420,1200,2300].forEach(ms=>setTimeout(()=>{
+    try{window.v7135ActivityFeedbackRefresh?.()}catch(_){}
+  },ms));
+  A.prepared[kind]=now();
+  return true;
+}
+window.v7308PrepareReward=prepare;
+
+window.addEventListener('growlegends:guild-xp-feedback',e=>{
+  const d=e?.detail||{};
+  const wr=Array.isArray(d.weeklyEvents)?d.weeklyEvents:[];
+  const gr=Array.isArray(d.guildEvents)?d.guildEvents:[];
+
+  const kinds=new Set;
+  for(const ev of wr){const k=normWeekly(ev?.activity_type);if(k)kinds.add(k)}
+  for(const ev of gr){const k=normGuild(ev?.kind);if(k)kinds.add(k)}
+
+  for(const kind of kinds){
+    const weekly=wr.filter(x=>normWeekly(x?.activity_type)===kind).reduce((a,x)=>a+n(x?.applied_xp),0);
+    const guild=gr.filter(x=>normGuild(x?.kind)===kind).reduce((a,x)=>a+n(x?.awarded),0);
+    const data={weekly,guild,weeklyXp:n(d.weeklyXp),guildXp:n(d.guildXp),guildId:d.guildId??null,at:now()};
+    A.last[kind]=data;
+    if(host(kind))apply(kind,data);
+  }
+},{passive:true});
+
+/* Quest + Dungeon reward windows. v7165 is already inside the current wrapper,
+   so its server-confirmed Guild-EP row remains and this adds the weekly row. */
+try{
+  const base=window.v7136ShowServerReward;
+  if(typeof base==='function'&&!base.__v7308){
+    const wrapped=function(kind,bundle,ctx={}){
+      const r=base.apply(this,arguments);
+      if(kind==='quest'||kind==='dungeon')setTimeout(()=>prepare(kind),0);
+      return r;
+    };
+    wrapped.__v7308=true;wrapped.__base=base;window.v7136ShowServerReward=wrapped;
+  }
+}catch(e){console.warn('[V7.308] reward wrapper',e)}
+
+/* PvP has its own result modal. Only wins receive weekly/guild activity XP. */
+try{
+  const base=window.v211ShowResult||((typeof v211ShowResult==='function')?v211ShowResult:null);
+  if(typeof base==='function'&&!base.__v7308){
+    const wrapped=function(win){
+      const r=base.apply(this,arguments);
+      if(win)setTimeout(()=>prepare('pvp'),0);
+      else{
+        document.querySelector('#v211PvpResultCard .v7308-activity-reward')?.remove();
+      }
+      return r;
+    };
+    wrapped.__v7308=true;wrapped.__base=base;
+    window.v211ShowResult=wrapped;try{v211ShowResult=wrapped}catch(_){}
+  }
+}catch(e){console.warn('[V7.308] pvp reward wrapper',e)}
+
+/* Last safety net: legacy reward-only success/info toasts must not leak underneath
+   an already visible reward window. Errors and warnings are never suppressed. */
+try{
+  const base=window.v063Toast||((typeof v063Toast==='function')?v063Toast:null);
+  if(typeof base==='function'&&!base.__v7308){
+    const wrapped=function(title,type='info',detail=''){
+      const t=String(type||'').toLowerCase();
+      const all=`${String(title||'')} ${String(detail||'')}`;
+      const rewardOpen=
+        document.querySelector('#v231QuestReward.show')||
+        document.querySelector('#v247DungeonReward.show')||
+        document.querySelector('#v211PvpResultOverlay.show')||
+        document.querySelector('#tower.active .v7308-activity-reward');
+      const rewardOnly=/Truhen-EXP|Wochen-EP|Wochen-Truhen-EP|Gilden-EP/i.test(all);
+      if(rewardOpen&&(t==='success'||t==='info')&&rewardOnly)return null;
+      return base.apply(this,arguments);
+    };
+    wrapped.__v7308=true;wrapped.__base=base;
+    window.v063Toast=wrapped;try{v063Toast=wrapped}catch(_){}
+  }
+}catch(e){console.warn('[V7.308] toast filter',e)}
+
+window.v7308RewardDiagnostics=()=>({
+  version:'V7.308',
+  bottomActivityRewardToasts:false,
+  rewardWindows:['quest','dungeon','pvp','tower'],
+  cached:Object.fromEntries(Object.entries(A.last).map(([k,v])=>[k,{...v}]))
+});
+})();
+</script>
+
 <script id="v7283-stable-version-lock">
 (()=>{'use strict';
  const channel=String(window.GROW_RELEASE_CHANNEL||'stable');
- const V=Object.freeze({short:'V7.307',label:channel==='beta'?'V7.307 Beta':'V7.307 Server 1',number:'7.305'});
+ const V=Object.freeze({short:'V7.308',label:channel==='beta'?'V7.308 Beta':'V7.308 Server 1',number:'7.305'});
  window.GROW_LEGENDS_VERSION=V;
  window.__GROW_LEGENDS_RELEASE__=V.short;
  window.__GL_CURRENT_BUILD__=V.short;
