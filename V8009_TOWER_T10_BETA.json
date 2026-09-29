@@ -1,0 +1,33 @@
+{
+  "build": "V8.009-T10-BETA",
+  "phase": "Tower authoritative door/fight separation + combat flow smoothing",
+  "scope": "beta only external overrides",
+  "changes": [
+    "authoritative route clicks now call v7072_tower_action choose instead of legacy v7095 choose-and-fight",
+    "combat doors render a prepared enemy and require the visible Fight button before the authoritative fight RPC",
+    "prepared-state guard prevents background authority refreshes from auto-submitting a fight",
+    "duplicate route taps are locked client-side to prevent NOT_ROUTE queues",
+    "shared Dungeon/PvP/Tower replay cadence is 900ms per event",
+    "duplicate legacy Tower v6225/v6230 visual FX layers are retired while V7175 remains the visible combat renderer"
+  ],
+  "route_owner_sha": "3d4b6af1bb63a11484b1e80e6e61d271e3ae9efe",
+  "cadence_sha": "4877b74a98a03c576b0597a861eb733e5988bf4c",
+  "beta_html_changed": false,
+  "beta_html_sha": "1ee5bd5af84ad84b4b867545637b8faa7ffa944a",
+  "stable_changed": false,
+  "stable_index_sha": "0bc5fe3eb0e69c856070dfcb6682d3178c56a597",
+  "server_authority_changed": false,
+  "combat_math_changed": false,
+  "syntax_check": {
+    "route_owner": "ok",
+    "cadence": "ok"
+  },
+  "verification": {
+    "separate_choose_rpc": true,
+    "no_legacy_direct_route_delegate": true,
+    "prepared_guard": true,
+    "duplicate_tap_guard": true,
+    "cadence_900": true,
+    "legacy_tower_fx_retired": true
+  }
+}
