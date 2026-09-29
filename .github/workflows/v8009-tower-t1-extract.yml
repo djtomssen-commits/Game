@@ -1,0 +1,49 @@
+name: V8.009 Beta Tower T1 Startpage Extraction
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/v8009_tower_t1_extract.py'
+permissions:
+  contents: write
+jobs:
+  extract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Extract tower startpage runtime and CSS
+        run: python3 .github/scripts/v8009_tower_t1_extract.py
+      - name: Syntax-check extracted tower JS
+        run: |
+          node --check js/features/tower/beta/v8009-t1-tower-system.js
+          node --check js/features/tower/beta/v8009-t1-tower-direct-preempt.js
+          node --check js/features/tower/beta/v8009-t1-tower-entry.js
+      - name: Validate beta-only extraction
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import json
+          beta=Path('beta.html').read_text(encoding='utf-8')
+          r=json.loads(Path('V8009_TOWER_T1_BETA.json').read_text(encoding='utf-8'))
+          if not r.get('stable_unchanged'):
+              raise SystemExit('stable changed')
+          for src in r['js_files']:
+              if beta.count(src)!=1:
+                  raise SystemExit(f'{src}: expected exactly one beta load')
+          for href in r['css_files']:
+              if beta.count(href)!=1:
+                  raise SystemExit(f'{href}: expected exactly one beta load')
+          if "window.GROW_BETA_TECH_BUILD='V8.009-T1'" not in beta:
+              raise SystemExit('T1 beta marker missing')
+          print('Tower T1 extraction validation OK')
+          PY
+      - name: Commit tower T1 extraction
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add beta.html js/features/tower/beta css/features/tower/beta V8009_TOWER_T1_BETA.json
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "V8.009 beta Tower T1: extract startpage runtime and styles"
+          git push
