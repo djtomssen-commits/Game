@@ -167,9 +167,18 @@
     if(typeof previousBossLoad==='function'&&!previousBossLoad.__v8005LiveSignupOwner){
       const canonicalBossLoad=async function(){
         const view=bossViewSnapshot();
-        const r=await previousBossLoad.apply(this,arguments);
+        const phase=v255LocalPhase?.();
+
+        /* While today's registration is open, bypass V7.165's historical
+           previous-round wrapper completely. Calling that wrapper caused the
+           visible sequence: today's list -> yesterday's list -> today's list.
+           Its __base is the normal current-day boss loader. */
+        const liveBase=(phase?.open && typeof previousBossLoad.__base==='function')
+          ?previousBossLoad.__base
+          :previousBossLoad;
+        const r=await liveBase.apply(this,arguments);
+
         try{
-          const phase=v255LocalPhase?.();
           if(phase?.open && typeof v073Db!=='undefined' && v073Db){
             const {data,error}=await v073Db.rpc('v255_get_guild_boss');
             if(error)throw error;
