@@ -3,7 +3,7 @@
 if(window.__V7096_TOWER_DIRECT_PREEMPT__)return;
 window.__V7096_TOWER_DIRECT_PREEMPT__=true;
 
-/* V8.009-T10I: one-tap authoritative Tower flow + replay cleanup.
+/* V8.009-T10J: one-tap authoritative Tower flow + replay cleanup.
    Door choice -> shorter door opening -> automatic server replay.
    Presentation-only guards; server combat math/rewards stay untouched. */
 const G=window.__V8009_TOWER_ROUTE_GUARD__||(window.__V8009_TOWER_ROUTE_GUARD__={
@@ -24,6 +24,7 @@ Object.assign(G,{
   cadenceInstalls:Number(G.cadenceInstalls)||0,
   previewCalls:Number(G.previewCalls)||0,
   suppressedDuplicatePreviews:Number(G.suppressedDuplicatePreviews)||0,
+  startupQueueFightGuards:Number(G.startupQueueFightGuards)||0,
   arenaWarmQueued:false
 });
 
@@ -54,7 +55,7 @@ function setBusy(on){
 function installTowerCadence(){
  try{
    const current=window.v7269DungeonCadence;
-   if(typeof current==='function'&&current.__v8009T10ITowerCadence)return true;
+   if(typeof current==='function'&&current.__v8009T10JTowerCadence)return true;
    const towerCadence=()=>({
      frameDelay:900,
      attackDelay:440,
@@ -64,7 +65,7 @@ function installTowerCadence(){
      visualPopMs:1000,
      startDelayMs:250
    });
-   towerCadence.__v8009T10ITowerCadence=true;
+   towerCadence.__v8009T10JTowerCadence=true;
    towerCadence.__v8009Base=current;
    window.v7269DungeonCadence=towerCadence;
    try{v7269DungeonCadence=towerCadence}catch(_){}
@@ -79,7 +80,7 @@ function installTowerCadence(){
 function installDoorPreviewPacing(){
  try{
    const base=window.v7298TowerDoorPreview;
-   if(typeof base!=='function'||base.__v8009T10I)return false;
+   if(typeof base!=='function'||base.__v8009T10J)return false;
    const wrapped=function(run,routeIndex=0,ms=900){
      /* A single authoritative route is allowed to paint the door preview once.
         The recording showed a second late preview replacing the already-running
@@ -110,7 +111,7 @@ function installDoorPreviewPacing(){
      });
      return out;
    };
-   wrapped.__v8009T10I=true;
+   wrapped.__v8009T10J=true;
    wrapped.__v8009Base=base;
    window.v7298TowerDoorPreview=wrapped;
    return true;
@@ -123,7 +124,7 @@ function installDoorPreviewPacing(){
 function installTowerRenderGuard(){
  try{
    const base=window.vTowerRender;
-   if(typeof base!=='function'||base.__v8009T10IFlowGuard)return false;
+   if(typeof base!=='function'||base.__v8009T10JFlowGuard)return false;
    const wrapped=function(){
      const run=window.s?.tower?.run;
      const mode=String(run?.mode||'');
@@ -167,7 +168,7 @@ function installTowerRenderGuard(){
      }
      return base.apply(this,arguments);
    };
-   wrapped.__v8009T10IFlowGuard=true;
+   wrapped.__v8009T10JFlowGuard=true;
    wrapped.__v8009Base=base;
    window.vTowerRender=wrapped;
    G.renderInstalls++;
@@ -181,7 +182,7 @@ function installTowerRenderGuard(){
 function installTowerReplayGuard(){
  try{
    const base=window.v7175CombatReplayStep;
-   if(typeof base!=='function'||base.__v8009T10IReplayGuard)return false;
+   if(typeof base!=='function'||base.__v8009T10JReplayGuard)return false;
    const wrapped=function(mode,event){
      if(String(mode||'')==='tower'&&G.routeBusy&&event&&typeof event==='object'){
        const e={...event};
@@ -201,7 +202,7 @@ function installTowerReplayGuard(){
      }
      return base.apply(this,arguments);
    };
-   wrapped.__v8009T10IReplayGuard=true;
+   wrapped.__v8009T10JReplayGuard=true;
    wrapped.__v8009Base=base;
    window.v7175CombatReplayStep=wrapped;
    try{window.v7169CombatReplayStep=wrapped}catch(_){}
@@ -216,7 +217,7 @@ function installTowerReplayGuard(){
 function installTowerSfxGuard(){
  try{
    const base=window.v6111Sfx;
-   if(typeof base!=='function'||base.__v8009T10ISfxGuard)return false;
+   if(typeof base!=='function'||base.__v8009T10JSfxGuard)return false;
    const wrapped=function(name){
      const key=String(name||'').replace(/[^a-z0-9_]/gi,'').toLowerCase();
      if(COMBAT_SFX.has(key)){
@@ -257,7 +258,7 @@ function installTowerSfxGuard(){
      }
      return base.apply(this,arguments);
    };
-   wrapped.__v8009T10ISfxGuard=true;
+   wrapped.__v8009T10JSfxGuard=true;
    wrapped.__v8009Base=base;
    window.v6111Sfx=wrapped;
    G.sfxInstalls++;
@@ -283,6 +284,12 @@ async function directRoute(idx){
  G.audioBlockUntil=0;
  G.previewCalls=0;
  G.arenaWarmQueued=false;
+
+ /* V7.214's deferred account-ready queue checks this historical flag before
+    draining startup jobs. The authoritative Tower replay never set it, so up
+    to ~149 queued login listeners were draining every ~45 ms through the first
+    fight. Keep that queue parked for the complete door + replay window. */
+ try{window.__V7085_TOWER_FIGHTING__=true;G.startupQueueFightGuards++}catch(_){}
  setBusy(true);G.chooseCalls++;
 
  try{
@@ -310,6 +317,7 @@ async function directRoute(idx){
    try{window.v7175CombatReset?.('tower')}catch(_){}
    G.audioBlockUntil=now()+2200;
    setBusy(false);
+   try{window.__V7085_TOWER_FIGHTING__=false}catch(_){}
 
    /* A render may have been deliberately suppressed while the replay was
       visible. Paint the final server state once, after the guard is released. */
@@ -330,7 +338,7 @@ window.addEventListener('click',e=>{
  }catch(err){
    G.lastError=String(err?.message||err);
    setBusy(false);
-   console.warn('[V8.009-T10I] tower direct route',err);
+   console.warn('[V8.009-T10J] tower direct route',err);
  }
 },true);
 
@@ -343,19 +351,20 @@ window.addEventListener('pageshow',()=>setTimeout(installPresentationGuards,80),
 
 window.v8009TowerRouteGuardDiagnostics=()=>({
  ...G,
- version:'V8.009-T10I',
+ version:'V8.009-T10J',
  oneTapFight:true,
  separateFightButton:false,
- previewWrapped:!!window.v7298TowerDoorPreview?.__v8009T10I,
- renderGuard:!!window.vTowerRender?.__v8009T10IFlowGuard,
- sfxGuard:!!window.v6111Sfx?.__v8009T10ISfxGuard,
- replayGuard:!!window.v7175CombatReplayStep?.__v8009T10IReplayGuard,
+ previewWrapped:!!window.v7298TowerDoorPreview?.__v8009T10J,
+ renderGuard:!!window.vTowerRender?.__v8009T10JFlowGuard,
+ sfxGuard:!!window.v6111Sfx?.__v8009T10JSfxGuard,
+ replayGuard:!!window.v7175CombatReplayStep?.__v8009T10JReplayGuard,
  firstFightArenaPrewarm:true,
  firstFightDoorDecode:true,
  towerCadenceLocked:true,
  impactSfxRequiresBattleDom:true,
  singleDoorPreviewPerRoute:true,
  lateDoorPreviewBlocked:true,
+ startupAccountReadyQueueBlockedDuringFight:true,
  prematureVictoryOverlayBlocked:true
 });
 })();
