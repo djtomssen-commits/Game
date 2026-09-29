@@ -1,0 +1,40 @@
+name: V8 Phase 3C2 Beta guild dead-marker cleanup
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/v8_phase3c2_beta_cleanup.py'
+permissions:
+  contents: write
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Apply beta-only dead marker cleanup
+        run: python3 .github/scripts/v8_phase3c2_beta_cleanup.py
+      - name: Validate beta-only scope
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import json,re
+          report=json.loads(Path('V8_PHASE3C2_BETA.json').read_text(encoding='utf-8'))
+          if not report.get('stable_unchanged'):
+              raise SystemExit('stable changed')
+          beta=Path('beta.html').read_text(encoding='utf-8')
+          for sid in ('v6119-guild-online-marker','v6207-guild-scroll-safe-js'):
+              m=re.search(rf'<script\b[^>]*\bid=["\']{re.escape(sid)}["\'][^>]*>',beta,re.I)
+              if not m: raise SystemExit(f'missing marker {sid}')
+              if re.search(r'\bsrc=',m.group(0),re.I): raise SystemExit(f'{sid} still loads retired bundle')
+          print('Phase 3C2 validation OK')
+          PY
+      - name: Commit beta-only cleanup
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add beta.html V8_PHASE3C2_BETA.json
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "V8.008 beta Phase 3C2: remove dead guild marker loads"
+          git push
