@@ -1104,10 +1104,30 @@ function render(){
    v6260TowerChrome(true);
    document.body?.classList.add('v6259-tower-focus');
 
-   if(towerTab==='rank'||(!r?.active&&towerTab==='run')){
+   /* V8.009-T10D: keep first-playable/Tower combat smooth.
+      Ranking/profile work is useful in the lobby, but it must not start on the
+      same frames as login restore or an immediately-started Tower run. */
+   if(towerTab==='rank'){
      setTimeout(loadRanking,20);
      if(document.getElementById('vTWednesdayRanking'))setTimeout(loadWednesdayRanking,35);
      if(document.getElementById('vTWednesdayReward'))setTimeout(loadWednesdayPlacementReward,55);
+   }else if(!r?.active&&towerTab==='run'&&!root.dataset.v8009LobbyWarmupQueued){
+     root.dataset.v8009LobbyWarmupQueued='1';
+     const stillIdleLobby=()=> {
+       const liveRoot=document.getElementById('tower');
+       return !!liveRoot?.classList.contains('active') && towerTab==='run' && !ensure().run?.active;
+     };
+     const idle=(fn,delay)=>{
+       const fire=()=>{if(stillIdleLobby())try{fn()}catch(_){}};
+       if(typeof requestIdleCallback==='function'){
+         try{return requestIdleCallback(fire,{timeout:Math.max(1200,delay+900)})}catch(_){}
+       }
+       return setTimeout(fire,delay);
+     };
+     idle(loadRanking,1800);
+     if(document.getElementById('vTWednesdayRanking'))idle(loadWednesdayRanking,2150);
+     if(document.getElementById('vTWednesdayReward'))idle(loadWednesdayPlacementReward,2500);
+     setTimeout(()=>{try{delete root.dataset.v8009LobbyWarmupQueued}catch(_){}},3200);
    }
    if(r?.mode==='battle'&&!window.v7081UseAuthority?.('tower')&&!r?.v7085ServerReplay)setTimeout(resumeCombat,120);
    else scheduleTowerRecoveryRender();
@@ -1209,7 +1229,27 @@ window.v7111TowerResultDiagnostics=()=>{
 };
 window.vTowerRender=render;window.vTowerSync=syncProfile;window.vTowerWednesdayEventInfo=()=>deep(towerWednesdayEvent());window.v6237WednesdayTowerDiagnostics=()=>{const ev=towerWednesdayEvent(),w=wednesdayState();return{event:ev,state:deep(w),tasks:WED_TASKS.map(t=>({id:t.id,value:wednesdayTaskValue(w,t),target:t.target,claimed:!!w.claimed?.[t.id]})),mirror:towerMirror(),serverLedger:{version:'V7.054',lastSignature:v7054WednesdaySubmitSignature,lastSubmitAt:v7054WednesdaySubmitAt}}};window.vTowerDiagnostics=()=>{const t=ensure(),r=t.run;return{season:t.season.id,bestFloor:t.season.bestFloor,bestScore:t.season.bestScore,tokens:t.meta.tokens,active:!!r?.active,floor:r?.floor||0,mode:r?.mode||'none',buffs:r?.buffs?.length||0,menu:!!document.querySelector('#v032MenuPanel [data-screen="tower"]'),screen:!!document.getElementById('tower'),recovery:towerRecoveryInfo().pct,wednesday:towerWednesdayEvent(),mirror:towerMirror()}};
 window.v7054SubmitWednesdayResult=()=>v7054SubmitWednesdayResult(true);
-window.addEventListener('growlegends:account-ready',()=>{ensure();wrapProfile();scheduleSync(true);setTimeout(()=>void v7054SubmitWednesdayResult(true),550)});
+window.addEventListener('growlegends:account-ready',()=>{
+ ensure();wrapProfile();
+ /* V8.009-T10D: the old code forced a profile write ~30 ms after account-ready
+    and a Wednesday ledger submit ~550 ms later. On mobile those requests and
+    their JSON/DOM follow-up competed with the first Tower combat. Defer this
+    non-visual work until startup is quiet, and never start it mid-replay. */
+ const backgroundSync=()=>{
+  const busy=!!window.__V8009_TOWER_ROUTE_GUARD__?.routeBusy;
+  const battle=String(ensure().run?.mode||'')==='battle';
+  if(busy||battle){setTimeout(backgroundSync,900);return}
+  scheduleSync(true);
+  setTimeout(()=>{
+   const busyNow=!!window.__V8009_TOWER_ROUTE_GUARD__?.routeBusy;
+   const battleNow=String(ensure().run?.mode||'')==='battle';
+   if(!busyNow&&!battleNow)void v7054SubmitWednesdayResult(true);
+   else setTimeout(()=>void v7054SubmitWednesdayResult(true),1200);
+  },900);
+ };
+ if(typeof window.v7204AfterStartupQuiet==='function')window.v7204AfterStartupQuiet(backgroundSync,1600);
+ else setTimeout(backgroundSync,1800);
+});
 window.addEventListener('pageshow',()=>setTimeout(()=>void v7054SubmitWednesdayResult(true),950),{passive:true});
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)setTimeout(()=>void v7054SubmitWednesdayResult(true),700)},{passive:true});
 })();
