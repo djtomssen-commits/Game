@@ -1,0 +1,39 @@
+{
+  "build": "V8.009-T9R-BETA",
+  "phase": "Tower emergency rollback to known-good T8 + special-room asset path fix",
+  "scope": "beta only",
+  "reason": "T9/T9A/T9B/T9C caused transition/special-room hangs in live Beta testing",
+  "restored": {
+    "main_system_sha": "19387b0e9f0e4d1fb1cbe509f565ee93d3918521",
+    "lobby_owner_sha": "6a80912ebba125bd22c79758baf98f5744fcc606",
+    "known_good": "V8.009-T8-BETA"
+  },
+  "css_fixes": [
+    {
+      "path": "css/features/tower/beta/v6259-tower-exact-css.css",
+      "asset_urls_fixed": 4,
+      "sha": "2299b95d47ccf7120569ed76fb2410ef4512f9cb"
+    },
+    {
+      "path": "css/features/tower/beta/v6260-tower-video-match-css.css",
+      "asset_urls_fixed": 6,
+      "sha": "82523c52cd4e2090139bde4cff2490ad696ea360"
+    }
+  ],
+  "changes": [
+    "rolled Tower core and owner bundle back to the exact T8 blobs that passed user testing",
+    "removed all T9 route/UI extraction and T9B/T9C transition gating changes by rollback",
+    "fixed broken CSS-relative image paths for Grow/Lab/Merchant/result Tower scenes",
+    "kept the separately requested slower beta combat cadence file unchanged"
+  ],
+  "beta_html_changed": false,
+  "beta_html_sha": "1ee5bd5af84ad84b4b867545637b8faa7ffa944a",
+  "stable_changed": false,
+  "stable_index_sha": "0bc5fe3eb0e69c856070dfcb6682d3178c56a597",
+  "gameplay_changed": false,
+  "server_authority_changed": false,
+  "syntax_check": {
+    "tower_system": "ok",
+    "tower_owner": "ok"
+  }
+}
