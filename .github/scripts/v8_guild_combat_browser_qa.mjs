@@ -18,9 +18,21 @@ await page.setContent(`<!doctype html><html><head></head><body>
 <div id="guild" class="active">
   <div class="v254-guild-shell"></div>
   <section id="v254GuildBoss" style="display:block">
-    <div class="v254-boss-stage v562-boss-hero">
-      <div class="v254-boss-monster v562-titan-art"></div>
+    <div class="v254-boss-stage">
+      <div class="v254-boss-monster"></div>
+      <div class="v254-status-grid"></div>
+      <button id="v254BossSignup">Anmelden</button>
+      <div class="muted">Anmeldung bis 19:00</div>
     </div>
+    <div id="v255BossLive">
+      <div id="v255BossHpText"></div>
+      <div><i id="v255BossHpFill"></i></div>
+      <div id="v255BossResult"></div>
+      <div id="v255BossTimeline"></div>
+    </div>
+    <div class="v254-card v254-inner"><b>Boss-Ablauf</b></div>
+    <span id="v254BossSignupState"></span><span id="v254BossCount"></span>
+    <button id="v255ClaimBossReward"></button>
     <div id="v260DailyBossArena">
       <div id="v260BattleTop"><span id="v260BattleState"></span><span id="v260BattlePhase"></span></div>
       <div class="v259-stage">
@@ -70,6 +82,7 @@ await page.evaluate(()=>{
   window.v254EnsureOnline=async()=>true;
   window.v063Toast=()=>{};
   window.v254LoadGuild=async()=>{};
+  window.v254RenderGuild=()=>{};
   window.v254ToggleSignup=async()=>{};
   window.v408GuildGold=(n)=>n;
   window.addXp=()=>{};
@@ -81,6 +94,8 @@ await page.evaluate(()=>{
 
 await page.addScriptTag({path:p('js/features/guild/legacy/01-v255-daily-guild-boss-core.js')});
 await page.addScriptTag({path:p('js/features/guild/legacy/04-v260-real-daily-guild-boss.js')});
+await page.addScriptTag({path:p('js/features/guild/beta/v8008-c9-guildboss-screen-owner.js')});
+await page.evaluate(()=>window.v8008C9InstallReferenceLayout?.());
 await page.addScriptTag({path:p('js/features/guild/beta/v8008-c8-guildboss-pre-replay-visual-owner.js')});
 await page.addScriptTag({path:p('js/features/guild/beta/v8008-c7-guildboss-replay-owner.js')});
 await page.addScriptTag({path:p('js/features/guild/beta/v8008-c8-guildboss-post-replay-arena-owner.js')});
@@ -101,6 +116,8 @@ const bossResult=await page.evaluate(async()=>{
     {user_id:'2',character_name:'Beta',class_id:'scout',class_name:'Blatt-Schütze',level:100,combat_power:3000,damage_done:3500,boss_hp_after:3300},
     {user_id:'3',character_name:'Gamma',class_id:'frost',class_name:'Frost-Todesritter',level:100,combat_power:3000,damage_done:3300,boss_hp_after:0}
   ];
+  v255RenderBoss();
+  await new Promise(r=>setTimeout(r,20));
   const arena=document.getElementById('v260DailyBossArena');
   const history=[];
   new MutationObserver(()=>history.push(arena.className)).observe(arena,{attributes:true,attributeFilter:['class']});
@@ -129,6 +146,17 @@ const bossResult=await page.evaluate(async()=>{
       clash:!!document.getElementById('v6309Clash'),
       heroPlate:!!document.getElementById('v6309HeroPlate'),
       bossPlate:!!document.getElementById('v6309BossPlate')
+    },
+    screenOwner:{
+      installed:!!window.__V8008_C9_REFERENCE_LAYOUT_INSTALLED__,
+      stageBox:!!document.getElementById('v414BossStageBox'),
+      panelClass:document.getElementById('v254GuildBoss')?.classList.contains('v562-boss-owner')||false,
+      heroClass:document.querySelector('#v254GuildBoss > .v254-boss-stage')?.classList.contains('v562-boss-hero')||false,
+      titanArt:document.querySelector('#v254GuildBoss .v254-boss-monster')?.classList.contains('v562-titan-art')||false,
+      signupMoved:document.getElementById('v254BossSignup')?.parentElement?.classList.contains('v254-boss-stage')||false,
+      signedClass:document.getElementById('v254BossSignup')?.classList.contains('v562-signed')||false,
+      participantSection:!!document.querySelector('#v254GuildBoss > .v562-boss-participants #v255BossTimeline'),
+      flowClass:document.querySelector('#v254GuildBoss > .v254-card.v254-inner')?.classList.contains('v562-boss-flow')||false
     }
   };
 });
@@ -150,6 +178,7 @@ assert(bossResult.combatAnimOwner,'Boss QA: merged combat animation owner missin
 assert(bossResult.preVisualOwner,'Boss QA: C8 pre-replay visual owner missing');
 assert(bossResult.postArenaOwner,'Boss QA: C8 post-replay arena owner missing');
 assert(Object.values(bossResult.finalArena).every(Boolean),'Boss QA: C8 final arena nodes missing');
+assert(Object.values(bossResult.screenOwner).every(Boolean),'Boss QA: C9 boss screen owner/layout incomplete');
 
 await page.addScriptTag({path:p('js/features/guild/legacy/05-v262-guild-war-core--v263-guild-war-final.js')});
 
