@@ -1081,7 +1081,11 @@ function render(){
    if(r?.mode==='reward')setTimeout(()=>{try{window.v7308PrepareReward?.('tower')}catch(_){}},0);
    if(r?.mode==='route')v7191PreloadTowerRoute(r);
 
-   if(r?.mode==='doorTransition'&&!root.dataset.v6281TransitionLock){
+   /* V8.009-T10F: this 720 ms timer belongs to the old local Tower path.
+      Server-authoritative Tower already owns door -> fight -> replay. Never let
+      the legacy timer submit/start a second client fight in authority mode. */
+   const authorityTower=!!window.v7081UseAuthority?.('tower');
+   if(r?.mode==='doorTransition'&&!authorityTower&&!root.dataset.v6281TransitionLock){
      const nonce=String(r.transitionNonce||'');
      root.dataset.v6281TransitionLock=nonce;
      setTimeout(()=>{
@@ -1091,7 +1095,7 @@ function render(){
        }
        if(root.dataset.v6281TransitionLock===nonce)delete root.dataset.v6281TransitionLock;
      },720);
-   }else if(r?.mode!=='doorTransition'){
+   }else if(r?.mode!=='doorTransition'||authorityTower){
      delete root.dataset.v6281TransitionLock;
    }
 
@@ -1145,7 +1149,7 @@ function render(){
    document.getElementById('v6262TowerBack')?.addEventListener('click',()=>typeof v032Go==='function'&&v032Go('world'));
  }
 }
-function bind(){const root=document.getElementById('tower');if(!root)return;root.querySelectorAll('[data-vt-guide]').forEach(b=>b.onclick=v6279OpenGuide);v8009LobbyController.bindLobby(root);root.querySelectorAll('[data-vt-route]').forEach(b=>b.onclick=()=>chooseRoute(Number(b.dataset.vtRoute)));root.querySelectorAll('[data-vt-fight]').forEach(b=>b.onclick=()=>startFight(Number(b.dataset.vtFight)));root.querySelectorAll('[data-vt-mut]').forEach(b=>b.onclick=()=>selectMutation(b.dataset.vtMut));root.querySelector('[data-vt-reroll]')?.addEventListener('click',rerollMutation);root.querySelector('[data-vt-next]')?.addEventListener('click',nextAfterReward);root.querySelector('[data-vt-bank]')?.addEventListener('click',bankAndFinish);root.querySelector('[data-vt-continue]')?.addEventListener('click',checkpointContinue);root.querySelectorAll('[data-vt-grow]').forEach(b=>b.onclick=()=>growOption(b.dataset.vtGrow));root.querySelectorAll('[data-vt-lab]').forEach(b=>b.onclick=()=>labOption(b.dataset.vtLab));root.querySelectorAll('[data-vt-buy]').forEach(b=>b.onclick=()=>merchantBuy(b.dataset.vtBuy));root.querySelector('[data-vt-shop-leave]')?.addEventListener('click',leaveMerchant);root.querySelector('[data-vt-event-next]')?.addEventListener('click',()=>completeNonCombat(false));root.querySelectorAll('[data-vt-secret]').forEach(b=>b.onclick=()=>secretOption(b.dataset.vtSecret));root.querySelectorAll('[data-vt-up]').forEach(b=>b.onclick=()=>buyUpgrade(b.dataset.vtUp));root.querySelectorAll('[data-vt-wed-claim]').forEach(b=>b.onclick=()=>claimWednesdayTask(b.dataset.vtWedClaim));root.querySelectorAll('[data-vt-wed-place-claim]').forEach(b=>b.onclick=()=>void claimWednesdayPlacement());root.querySelector('[data-vt-abort]')?.addEventListener('click',confirmAbort);root.querySelectorAll('[data-vt-exit]').forEach(b=>b.onclick=()=>{
+function bind(){const root=document.getElementById('tower');if(!root)return;root.querySelectorAll('[data-vt-guide]').forEach(b=>b.onclick=v6279OpenGuide);v8009LobbyController.bindLobby(root);const authorityTower=!!window.v7081UseAuthority?.('tower');root.querySelectorAll('[data-vt-route]').forEach(b=>b.onclick=authorityTower?null:()=>chooseRoute(Number(b.dataset.vtRoute)));root.querySelectorAll('[data-vt-fight]').forEach(b=>b.onclick=authorityTower?null:()=>startFight(Number(b.dataset.vtFight)));root.querySelectorAll('[data-vt-mut]').forEach(b=>b.onclick=()=>selectMutation(b.dataset.vtMut));root.querySelector('[data-vt-reroll]')?.addEventListener('click',rerollMutation);root.querySelector('[data-vt-next]')?.addEventListener('click',nextAfterReward);root.querySelector('[data-vt-bank]')?.addEventListener('click',bankAndFinish);root.querySelector('[data-vt-continue]')?.addEventListener('click',checkpointContinue);root.querySelectorAll('[data-vt-grow]').forEach(b=>b.onclick=()=>growOption(b.dataset.vtGrow));root.querySelectorAll('[data-vt-lab]').forEach(b=>b.onclick=()=>labOption(b.dataset.vtLab));root.querySelectorAll('[data-vt-buy]').forEach(b=>b.onclick=()=>merchantBuy(b.dataset.vtBuy));root.querySelector('[data-vt-shop-leave]')?.addEventListener('click',leaveMerchant);root.querySelector('[data-vt-event-next]')?.addEventListener('click',()=>completeNonCombat(false));root.querySelectorAll('[data-vt-secret]').forEach(b=>b.onclick=()=>secretOption(b.dataset.vtSecret));root.querySelectorAll('[data-vt-up]').forEach(b=>b.onclick=()=>buyUpgrade(b.dataset.vtUp));root.querySelectorAll('[data-vt-wed-claim]').forEach(b=>b.onclick=()=>claimWednesdayTask(b.dataset.vtWedClaim));root.querySelectorAll('[data-vt-wed-place-claim]').forEach(b=>b.onclick=()=>void claimWednesdayPlacement());root.querySelector('[data-vt-abort]')?.addEventListener('click',confirmAbort);root.querySelectorAll('[data-vt-exit]').forEach(b=>b.onclick=()=>{
  if((towerTab==='result'||towerTab==='meta'||towerTab==='rank')&&!ensure().run?.active){
    const t=ensure();
    if(towerTab==='result')t.lastResult=null;
