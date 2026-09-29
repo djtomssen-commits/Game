@@ -28,7 +28,10 @@ for token in retired:
             continue
         try:s=p.read_text(encoding='utf-8',errors='ignore')
         except Exception:continue
-        if token in s:hits.append(rel)
+        if token in s:
+            idx=s.find(token)
+            snippet=s[max(0,idx-220):min(len(s),idx+320)].replace('\n',' ')
+            hits.append(rel+" :: "+snippet)
     refs[token]=sorted(set(hits))
     if hits:
         raise RuntimeError(f'{token} still referenced outside legacy owner: {hits[:20]}')
