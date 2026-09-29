@@ -1,0 +1,62 @@
+name: V8 Phase 3B Guild JS extraction
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/v8_phase3b_extract_guild_js.py'
+      - '.github/workflows/v8-phase3b-extract.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  extract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Extract guild JavaScript bundles
+        run: python3 .github/scripts/v8_phase3b_extract_guild_js.py
+
+      - name: Syntax-check generated guild bundles
+        run: |
+          set -e
+          find js/features/guild/legacy -name '*.js' -print0 | while IFS= read -r -d '' f; do
+            node --check "$f"
+          done
+
+      - name: Validate HTML references
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          for name in ('index.html','beta.html'):
+              s=Path(name).read_text(encoding='utf-8')
+              if len(re.findall(r'<script\b',s,re.I)) != len(re.findall(r'</script\s*>',s,re.I)):
+                  raise SystemExit(f'{name}: script tag mismatch')
+              bad=[]
+              for m in re.finditer(r'<script([^>]*)>([\s\S]*?)</script\s*>',s,re.I):
+                  attrs,body=m.group(1),m.group(2)
+                  im=re.search(r'\bid=["\']([^"\']+)["\']',attrs,re.I)
+                  sid=im.group(1) if im else ''
+                  if re.search(r'(guild|gilde)',sid,re.I) and not re.search(r'\bsrc=',attrs,re.I) and body.strip():
+                      bad.append(sid)
+              if bad:
+                  raise SystemExit(f'{name}: nonempty guild scripts still inline: {bad[:10]}')
+          print('HTML validation OK')
+          PY
+
+      - name: Commit Phase 3B
+        run: |
+          if [ -z "$(git status --porcelain -- index.html beta.html js/features/guild/legacy js/system/version/v7283-stable-version-lock.js V8_PHASE3B_EXTRACTION.json)" ]; then
+            echo "No Phase 3B changes"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html beta.html js/features/guild/legacy js/system/version/v7283-stable-version-lock.js V8_PHASE3B_EXTRACTION.json
+          git commit -m "V8.007 Phase 3B: extract guild JavaScript"
+          git push
