@@ -68,7 +68,7 @@ for row in a:
         cur=[row]
     else:
         gap=base[prev["end"]:row["start"]]
-        if gap_ok.fullmatch(gap):
+        if comment_re.sub("",gap).strip()=="":
             cur.append(row)
         else:
             groups.append(cur)
