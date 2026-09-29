@@ -89,9 +89,9 @@ await page.evaluate(()=>{
   window.persist=()=>{};
   window.render=()=>{};
   window.s={gold:0,xp:0,harzTaler:0};
-  window.v259Sleep=async()=>{await new Promise(r=>setTimeout(r,3));};
 });
 
+await page.addScriptTag({path:p('js/features/guild/beta/v8008-c10-guildboss-timing.js')});
 await page.addScriptTag({path:p('js/features/guild/legacy/01-v255-daily-guild-boss-core.js')});
 await page.addScriptTag({path:p('js/features/guild/legacy/04-v260-real-daily-guild-boss.js')});
 await page.addScriptTag({path:p('js/features/guild/beta/v8008-c9-guildboss-screen-owner.js')});
@@ -147,6 +147,11 @@ const bossResult=await page.evaluate(async()=>{
       heroPlate:!!document.getElementById('v6309HeroPlate'),
       bossPlate:!!document.getElementById('v6309BossPlate')
     },
+    timingOwner:{
+      sleep:typeof v259Sleep==='function',
+      oldSetHp:typeof window.v259SetBossHp==='function',
+      oldAnimate:typeof window.v259AnimateBossResult==='function'
+    },
     screenOwner:{
       installed:!!window.__V8008_C9_REFERENCE_LAYOUT_INSTALLED__,
       stageBox:!!document.getElementById('v414BossStageBox'),
@@ -178,6 +183,8 @@ assert(bossResult.combatAnimOwner,'Boss QA: merged combat animation owner missin
 assert(bossResult.preVisualOwner,'Boss QA: C8 pre-replay visual owner missing');
 assert(bossResult.postArenaOwner,'Boss QA: C8 post-replay arena owner missing');
 assert(Object.values(bossResult.finalArena).every(Boolean),'Boss QA: C8 final arena nodes missing');
+assert(bossResult.timingOwner.sleep,'Boss QA: C10 v259Sleep utility missing');
+assert(!bossResult.timingOwner.oldSetHp && !bossResult.timingOwner.oldAnimate,'Boss QA: retired V259 test animation APIs unexpectedly present');
 assert(Object.values(bossResult.screenOwner).every(Boolean),'Boss QA: C9 boss screen owner/layout incomplete');
 
 await page.addScriptTag({path:p('js/features/guild/legacy/05-v262-guild-war-core--v263-guild-war-final.js')});
