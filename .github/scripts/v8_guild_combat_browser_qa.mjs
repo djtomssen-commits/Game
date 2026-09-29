@@ -265,24 +265,32 @@ assert(rewardResult.diagnostics?.bossClaims===1,'Boss QA: server reward claim co
 
 await page.addScriptTag({path:p('js/features/guild/beta/v8008-c25-guildwar-owner.js')});
 await page.evaluate(()=>{
-  window.__V200_AUTH_READY__=false;
+  window.__qaWar={
+    id:'qa-war',
+    my_guild_id:'a',guild_a_id:'a',guild_b_id:'b',
+    guild_a_name:'QA Guild',guild_b_name:'Test Gegner',
+    score_a:2,score_b:0,status:'a_won',
+    my_attackers:2,my_defenders:2,i_participated:true,reward_claimed:true,
+    phase:'battle',incoming:false,my_attack_list:[],my_defense_list:[],enemy_attack_list:[],enemy_defense_list:[]
+  };
+  window.__qaWarDuels=[
+    {winner_side:'attacker',attacker_name:'Alpha',defender_name:'Enemy A',attacker_level:100,defender_level:100,attacker_power:3000,defender_power:2800,attacker_hp_after:1200,defender_hp_after:0},
+    {winner_side:'defender',attacker_name:'Enemy B',defender_name:'Beta',attacker_level:100,defender_level:100,attacker_power:2700,defender_power:3100,attacker_hp_after:0,defender_hp_after:1400}
+  ];
+  window.__V200_AUTH_READY__=true;
+  v073Db.rpc=async(name,args)=>{
+    if(name==='v4159_get_guild_war')return {data:{war:window.__qaWar,duels:window.__qaWarDuels},error:null};
+    if(name==='v4159_get_guild_war_targets')return {data:[],error:null};
+    return {data:null,error:null};
+  };
   window.v8008C25InstallWarAuthority?.();
   window.v8008C25InstallWarVisual?.();
   window.v8008C25InstallWarLower?.();
 });
 
 const warResult=await page.evaluate(async()=>{
-  v262War={
-    id:'qa-war',
-    my_guild_id:'a',guild_a_id:'a',guild_b_id:'b',
-    guild_a_name:'QA Guild',guild_b_name:'Test Gegner',
-    score_a:2,score_b:0,status:'a_won',
-    my_attackers:2,my_defenders:2,i_participated:true,reward_claimed:true
-  };
-  v262WarDuels=[
-    {winner_side:'attacker',attacker_name:'Alpha',defender_name:'Enemy A',attacker_level:100,defender_level:100,attacker_power:3000,defender_power:2800,attacker_hp_after:1200,defender_hp_after:0},
-    {winner_side:'defender',attacker_name:'Enemy B',defender_name:'Beta',attacker_level:100,defender_level:100,attacker_power:2700,defender_power:3100,attacker_hp_after:0,defender_hp_after:1400}
-  ];
+  v262War={...window.__qaWar};
+  v262WarDuels=window.__qaWarDuels.map(x=>({...x}));
   await v262WatchWar();
   return {
     rows:document.querySelectorAll('#v262WarReplay .v262-duel').length,
