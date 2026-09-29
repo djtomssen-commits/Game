@@ -1,0 +1,61 @@
+name: V8 Phase 3C8 Beta guild boss visual owners
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/v8_phase3c8_beta_boss_visuals.py'
+permissions:
+  contents: write
+jobs:
+  consolidate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Build beta guild boss visual owners
+        run: python3 .github/scripts/v8_phase3c8_beta_boss_visuals.py
+      - name: Syntax-check owners
+        run: |
+          node --check js/features/guild/beta/v8008-c8-guildboss-pre-replay-visual-owner.js
+          node --check js/features/guild/beta/v8008-c8-guildboss-post-replay-arena-owner.js
+      - name: Validate beta-only load order
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re,json
+          beta=Path('beta.html').read_text(encoding='utf-8')
+          report=json.loads(Path('V8_PHASE3C8_BETA.json').read_text(encoding='utf-8'))
+          if not report.get('stable_unchanged'):
+              raise SystemExit('stable changed')
+          tags=[]
+          for sid in (
+            'v6203-guild-boss-live-polish-script',
+            'v6305-guildboss-layout-script',
+            'v6307-guildboss-multiexchange-script',
+            'v6309-guildboss-final-arena-script',
+            'v6315-guildboss-legacy-cleanup-script'
+          ):
+              m=re.search(rf'<script\b[^>]*\bid=["\']{re.escape(sid)}["\'][^>]*>',beta,re.I)
+              if not m: raise SystemExit(f'missing marker {sid}')
+              tags.append((sid,m.start(),m.group(0)))
+          if not (tags[0][1] < tags[2][1] < tags[3][1]):
+              raise SystemExit('boss visual/replay execution order changed')
+          if 'v8008-c8-guildboss-pre-replay-visual-owner.js' not in tags[0][2]:
+              raise SystemExit('pre-replay owner not loaded at v6203 position')
+          if re.search(r'\bsrc=',tags[1][2],re.I):
+              raise SystemExit('v6305 still loads separately')
+          if 'v8008-c8-guildboss-post-replay-arena-owner.js' not in tags[3][2]:
+              raise SystemExit('post-replay owner not loaded at v6309 position')
+          if re.search(r'\bsrc=',tags[4][2],re.I):
+              raise SystemExit('v6315 still loads separately')
+          print('Phase 3C8 validation OK')
+          PY
+      - name: Commit beta-only visual owners
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add beta.html js/features/guild/beta/v8008-c8-guildboss-pre-replay-visual-owner.js js/features/guild/beta/v8008-c8-guildboss-post-replay-arena-owner.js V8_PHASE3C8_BETA.json
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "V8.008 beta Phase 3C8: consolidate guild boss visual owners"
+          git push
