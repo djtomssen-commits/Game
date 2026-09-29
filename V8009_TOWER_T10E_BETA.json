@@ -1,0 +1,19 @@
+{
+  "build": "V8.009-T10E-BETA",
+  "phase": "Tower immediate-run startup smoothing",
+  "scope": "beta only",
+  "changes": [
+    "Tower entry no longer calls the full Tower renderer during startup events unless the Tower screen is actually visible.",
+    "Starting a Tower run no longer fires an immediate profile mirror write on the same frames as the first door/combat.",
+    "The run-start profile mirror is deferred to an idle gap and waits while a route, door transition, or battle is active.",
+    "T10D deferred lobby ranking/startup sync behavior remains active."
+  ],
+  "files": {
+    "js/features/tower/beta/v8009-t1-tower-entry.js": "57a238bd7f78903e39d71e2c601942c569c4e41f",
+    "js/features/tower/beta/v8009-t2-tower-lobby.js": "2c2304d01e5280150c04043bc510d56dd58ce1ed"
+  },
+  "stable_changed": false,
+  "server_authority_changed": false,
+  "combat_math_changed": false,
+  "syntax_check": "ok"
+}
