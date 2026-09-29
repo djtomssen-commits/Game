@@ -81,9 +81,7 @@ await page.evaluate(()=>{
 
 await page.addScriptTag({path:p('js/features/guild/legacy/01-v255-daily-guild-boss-core.js')});
 await page.addScriptTag({path:p('js/features/guild/legacy/04-v260-real-daily-guild-boss.js')});
-await page.addScriptTag({path:p('js/features/guild/legacy/40-v6307-guildboss-multiexchange-script.js')});
-await page.addScriptTag({path:p('js/features/guild/legacy/44-v6321-guildboss-combat-animation-script.js')});
-await page.addScriptTag({path:p('js/features/guild/legacy/47-v6209-guildboss-replay-performance-script.js')});
+await page.addScriptTag({path:p('js/features/guild/beta/v8008-c7-guildboss-replay-owner.js')});
 
 const bossResult=await page.evaluate(async()=>{
   v255BossRound={
@@ -119,7 +117,10 @@ const bossResult=await page.evaluate(async()=>{
       impact:!!document.getElementById('v6321ImpactFlash')
     },
     heroAnim:getComputedStyle(document.getElementById('v6320HeroCutout')).animationName,
-    bossAnim:getComputedStyle(document.getElementById('v6320BossCutout')).animationName
+    bossAnim:getComputedStyle(document.getElementById('v6320BossCutout')).animationName,
+    renderer:document.getElementById('v260WatchDailyBoss')?.dataset?.guildBossRenderer||'',
+    replayRunningOwner:!!window.__V6209_GUILD_BOSS_REPLAY_PERF__,
+    combatAnimOwner:!!window.__V6321_GUILD_BOSS_COMBAT_ANIM__
   };
 });
 
@@ -134,6 +135,9 @@ assert(bossResult.logRows===3,`Boss QA: expected 3 combat log rows, got ${bossRe
 assert(Object.values(bossResult.fx).every(Boolean),'Boss QA: one or more combat FX nodes missing');
 assert(bossResult.heroAnim && bossResult.heroAnim!=='none','Boss QA: hero CSS animation not active');
 assert(bossResult.bossAnim && bossResult.bossAnim!=='none','Boss QA: boss CSS animation not active');
+assert(bossResult.renderer==='v6307','Boss QA: merged owner did not mark replay renderer');
+assert(bossResult.replayRunningOwner,'Boss QA: merged replay performance owner missing');
+assert(bossResult.combatAnimOwner,'Boss QA: merged combat animation owner missing');
 
 await page.addScriptTag({path:p('js/features/guild/legacy/05-v262-guild-war-core--v263-guild-war-final.js')});
 
