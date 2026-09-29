@@ -93,7 +93,8 @@ await page.evaluate(()=>{
 
 await page.addScriptTag({path:p('js/features/guild/beta/v8008-c10-guildboss-timing.js')});
 await page.addScriptTag({path:p('js/features/guild/legacy/01-v255-daily-guild-boss-core.js')});
-await page.addScriptTag({path:p('js/features/guild/beta/v8008-c11-guildboss-runtime-core.js')});
+await page.addScriptTag({path:p('js/features/guild/beta/v8008-c12-guildboss-runtime-core.js')});
+await page.evaluate(()=>window.v8008C12InstallLateBridge?.());
 await page.addScriptTag({path:p('js/features/guild/beta/v8008-c9-guildboss-screen-owner.js')});
 await page.evaluate(()=>window.v8008C9InstallReferenceLayout?.());
 await page.addScriptTag({path:p('js/features/guild/beta/v8008-c8-guildboss-pre-replay-visual-owner.js')});
@@ -154,6 +155,8 @@ const bossResult=await page.evaluate(async()=>{
     },
     runtimeOwner:{
       installed:!!window.__V8008_C11_GUILD_BOSS_RUNTIME__,
+      c12:!!window.__V8008_C12_GUILD_BOSS_RUNTIME__,
+      lateBridge:!!window.__V8008_C12_LATE_BRIDGE_INSTALLED__,
       roundResolved:typeof window.v260RoundResolved==='function',
       maybeAutoPlay:typeof window.v260MaybeAutoPlay==='function',
       hpSetter:typeof window.v260SetRealBossHp==='function',
