@@ -85,44 +85,10 @@ beta=replace_tag_with_call(beta,'v6309-guildboss-final-arena-script',post_old.as
 beta=replace_src(beta,'v6307-guildboss-multiexchange-script',replay_old.as_posix(),replay_out.as_posix())
 beta=replace_tag_with_call(beta,'v7307-guildboss-signup-owner',signup_old.as_posix(),'window.v8008C18InstallSignup?.();')
 
-# C17: remove dead empty compatibility script tags after proving no runtime file
-# references their DOM ids. These have no src/body on beta after earlier phases.
-dead_ids=[
- 'v6305-guildboss-layout-script',
- 'v6315-guildboss-legacy-cleanup-script',
- 'v6319-guildboss-smooth-owner-script',
- 'v6321-guildboss-combat-animation-script',
- 'v6208-guild-boss-mobile-performance-js',
- 'v6209-guildboss-replay-performance-script',
- 'v6310-guildboss-test-removal-guard'
-]
+# C17: keep empty compatibility markers for now. They cost no network request,
+# and some legacy bundle comments/diagnostics still mention their ids.
+# Removing them is not worth increasing regression risk in this accelerated batch.
 removed=[]
-runtime_ext={'.js','.mjs','.cjs','.html'}
-for sid in dead_ids:
-    refs=[]
-    for p in Path('.').rglob('*'):
-        if not p.is_file() or p.suffix.lower() not in runtime_ext:
-            continue
-        rel=p.as_posix()
-        if rel=='beta.html' or rel.startswith('.github/'):
-            continue
-        try:s=p.read_text(encoding='utf-8',errors='ignore')
-        except Exception:continue
-        if sid in s:
-            refs.append(rel)
-    if refs:
-        raise RuntimeError(f'{sid}: referenced outside beta HTML: {refs[:20]}')
-    pats=[
-      re.compile(rf'<script[^>]*id="{re.escape(sid)}"[^>]*>\s*</script\s*>\s*',re.I),
-      re.compile(rf"<script[^>]*id='{re.escape(sid)}'[^>]*>\s*</script\s*>\s*",re.I)
-    ]
-    found=[]
-    for pat in pats: found+=list(pat.finditer(beta))
-    if len(found)!=1:
-        raise RuntimeError(f'{sid}: expected one empty beta marker, got {len(found)}')
-    m=found[0]
-    beta=beta[:m.start()]+beta[m.end():]
-    removed.append(sid)
 
 # C18: advance one beta technical marker for the whole batch.
 beta=beta.replace("window.GROW_BETA_TECH_BUILD='V8.008-C13'","window.GROW_BETA_TECH_BUILD='V8.008-C18'",1)
