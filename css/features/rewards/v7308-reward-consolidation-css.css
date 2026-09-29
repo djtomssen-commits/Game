@@ -1,0 +1,69 @@
+/* V7.308 · Weekly-chest and guild activity XP live inside reward windows. */
+.v7308-weekly-line,
+.v7308-guild-line{
+  margin-top:6px!important;
+  padding:7px 9px!important;
+  border-radius:9px!important;
+  font-size:9px!important;
+  line-height:1.3!important;
+  font-weight:900!important;
+  text-align:left!important;
+}
+.v7308-weekly-line{
+  color:#f3df9d!important;
+  border:1px solid rgba(218,177,81,.38)!important;
+  background:linear-gradient(180deg,rgba(55,42,14,.72),rgba(25,20,8,.80))!important;
+}
+.v7308-weekly-line.pending{opacity:.72!important}
+.v7308-weekly-line.zero{color:#d6c99a!important;border-color:rgba(166,144,82,.28)!important}
+.v7308-guild-line{
+  color:#c9f3bc!important;
+  border:1px solid rgba(113,205,92,.38)!important;
+  background:linear-gradient(180deg,rgba(19,48,23,.78),rgba(8,23,12,.82))!important;
+}
+.v7308-guild-line.zero,
+.v7308-guild-line.tower-zero{
+  color:#d9cc9d!important;
+  border-color:rgba(187,163,92,.30)!important;
+  background:rgba(37,31,14,.55)!important;
+}
+
+/* Existing V7.165 guild row becomes visually part of the same reward list. */
+.v7165-guild-reward-line{
+  margin-top:6px!important;
+  padding:7px 9px!important;
+  border-radius:9px!important;
+  font-size:9px!important;
+  line-height:1.3!important;
+  font-weight:900!important;
+}
+
+/* PvP uses a standalone modal. */
+#v211PvpResultCard .v7308-activity-reward{
+  margin:7px 10px 0!important;
+}
+#v211PvpResultCard .v7308-weekly-line,
+#v211PvpResultCard .v7308-guild-line,
+#v211PvpResultCard .v7165-guild-reward-line{
+  text-align:center!important;
+}
+
+/* Tower reward screen. */
+#tower .v7308-activity-reward{
+  display:grid!important;
+  gap:5px!important;
+  margin:9px 0 10px!important;
+}
+#tower .v7308-weekly-line,
+#tower .v7308-guild-line{
+  margin:0!important;
+  text-align:center!important;
+  font-size:8px!important;
+}
+
+/* Final build marker. */
+html body .app > header .v358-logo::after{content:"V8.002"!important}
+html body .app > header .v366-ver::after,
+html body .app > header .v371-logo em::after,
+html body .app > header .v372-logo em::after,
+#v372TopbarShell .v372-logo em::after{content:"V8.002"!important}
