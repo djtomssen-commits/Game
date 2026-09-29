@@ -370,7 +370,23 @@ window.v8009CreateTowerLobbyController=function(c){
    const good=['widow','northern','purplecrit','diesel','kush','trichome','roots','spore','cash','book','crown'];
    const id=c.pick(good.filter(x=>!r.buffs.includes(x)));if(id)c.applyTowerMutation(r,id);
   }
-  r.choices=c.seededChoiceFloor(1);t.season.runs++;c.setTowerTab('run');c.save(false);c.render();c.syncProfile(true);
+  r.choices=c.seededChoiceFloor(1);t.season.runs++;c.setTowerTab('run');c.save(false);c.render();
+
+  /* V8.009-T10E: starting a run must not launch a profile mirror write on the
+     same frames as the first door/combat. The local/server-authoritative run
+     state is already established; this mirror can safely wait for an idle gap. */
+  const syncRunMirror=()=>{
+   const busy=!!window.__V8009_TOWER_ROUTE_GUARD__?.routeBusy;
+   const mode=String(c.ensure()?.run?.mode||'');
+   if(busy||mode==='battle'||mode==='doorTransition'){
+    setTimeout(syncRunMirror,900);
+    return;
+   }
+   try{void c.syncProfile(true)}catch(_){}
+  };
+  if(typeof requestIdleCallback==='function'){
+   try{requestIdleCallback(syncRunMirror,{timeout:2200})}catch(_){setTimeout(syncRunMirror,1400)}
+  }else setTimeout(syncRunMirror,1400);
  }
  async function loadRanking(){
   if(rankBusy)return;rankBusy=true;
