@@ -76,7 +76,11 @@ await page.evaluate(()=>{
   window.v254Membership={guild_id:'qa-guild',role:'leader',boss_signed:true};
   window.v254Guild={id:'qa-guild',name:'QA Guild'};
   window.v254Members=[];
-  window.v073Db={};
+  window.v073Db={rpc:async(name,args)=>{
+    if(name==='v255_get_guild_boss')return {data:{round:null,participants:[]},error:null};
+    if(name==='v414_get_guild_boss_stage')return {data:{stage:1,wins:0,next_hp:12000,reward_buds:20},error:null};
+    return {data:null,error:null};
+  }};
   window.v254GuildEsc=(x)=>String(x??'');
   window.v080AvatarFor=()=>'/assets/avatar/qa.png';
   window.v254EnsureOnline=async()=>true;
