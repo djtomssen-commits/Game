@@ -410,8 +410,38 @@ function towerFloorBackground(floor,boss=false){const d=boss?towerBossDungeon(fl
 function towerEnemyRoom(floor,type){if(type==='miniboss')return 9;return 1+((Math.max(1,Number(floor)||1)*5+(type==='elite'?3:0))%9)}
 function towerEnemyArt(floor,type){if(type==='boss'){const d=towerBossDungeon(floor);return towerAsset(`v474_dungeon_assets/d${d}_boss.png`)}const d=towerVisualDungeon(floor),room=towerEnemyRoom(floor,type);return towerAsset(`v474_dungeon_assets/d${d}_${room}.png`)}
 const v7191TowerPreloaded=new Set();
-function v7191PreloadTowerAsset(src){src=String(src||'');if(!src||v7191TowerPreloaded.has(src))return;v7191TowerPreloaded.add(src);try{const im=new Image();im.decoding='async';im.src=src;im.decode?.().catch(()=>{})}catch(_){}}
-function v7191PreloadTowerRoute(r){if(!r?.active||r.mode!=='route')return;const work=()=>{try{for(const c of (r.choices||[])){if(!c)continue;const t=c.miniboss?'miniboss':String(c.type||'normal');if(['normal','elite','boss','miniboss'].includes(t)){v7191PreloadTowerAsset(towerEnemyArt(r.floor,t));v7191PreloadTowerAsset(towerFloorBackground(r.floor,t==='boss'))}}}catch(_){}};if('requestIdleCallback'in window)requestIdleCallback(work,{timeout:250});else setTimeout(work,45)}
+const v8009TowerPreloadKeep=new Map();
+function v7191PreloadTowerAsset(src,priority='high'){
+ src=String(src||'');if(!src)return null;
+ const held=v8009TowerPreloadKeep.get(src);
+ if(held){try{if(priority==='high')held.fetchPriority='high'}catch(_){}return held}
+ v7191TowerPreloaded.add(src);
+ try{
+  const im=new Image();
+  im.decoding='async';im.loading='eager';
+  try{im.fetchPriority=priority}catch(_){}
+  v8009TowerPreloadKeep.set(src,im);
+  const release=()=>setTimeout(()=>{try{if(v8009TowerPreloadKeep.get(src)===im)v8009TowerPreloadKeep.delete(src)}catch(_){}},30000);
+  im.onload=release;im.onerror=release;
+  im.src=src;
+  try{im.decode?.().catch(()=>{})}catch(_){}
+  return im;
+ }catch(_){return null}
+}
+function v7191PreloadTowerRoute(r){
+ if(!r?.active||!Array.isArray(r.choices))return;
+ try{
+  for(const choice of r.choices){
+   if(!choice)continue;
+   const type=choice.miniboss?'miniboss':String(choice.type||'normal');
+   if(!['normal','elite','boss','miniboss'].includes(type))continue;
+   v7191PreloadTowerAsset(towerFloorBackground(r.floor,type==='boss'),'high');
+   v7191PreloadTowerAsset(towerEnemyArt(r.floor,type),'high');
+  }
+ }catch(_){}
+}
+window.v7191PreloadTowerAsset=v7191PreloadTowerAsset;
+window.v7191PreloadTowerRoute=v7191PreloadTowerRoute;
 
 function towerAssetEnemyName(floor,type){
  try{const d=type==='boss'?towerBossDungeon(floor):towerVisualDungeon(floor),room=type==='boss'?10:towerEnemyRoom(floor,type);const gd=(window.dungeons||dungeons)?.[d-1],e=gd?.enemies?.[room-1];const name=String(e?.short||e?.name||'').replace(/<[^>]*>/g,' ').replace(/\s+/g,' ').trim();if(name)return name}catch(e){}
@@ -556,7 +586,7 @@ function mysteryEvent(r){const rolls=[
  {name:'Alter Turmplan',text:'Du findest einen kürzeren Weg.',do:()=>{r.score+=120+r.floor*10;return `+${120+r.floor*10} Score`}},
  {name:'Verbotene Kiste',text:'Die Kiste enthält gepresste Blätter.',do:()=>{const n=Math.max(1,Math.round(tokenMult(r)));r.unbanked.tokens+=n;return `+${n} Turmblatt`}}
  ];const ev=pick(rolls),result=ev.do();r.event={title:ev.name,text:ev.text,result};r.mode='mysteryResult';saveLocal();render()}
-function completeNonCombat(extraMutation=false){const r=ensure().run;if(!r)return;r.cleared=r.floor;addRunReward(r,r.currentChoice?.type||'normal',0);updateBest(r);updateWednesdayProgress(r,'');const cleared=r.floor;try{window.v6239WeeklyChestTowerFloor?.(cleared,r.currentChoice?.type||'special',r)}catch(_){}r.floor++;r.lastRoomType='special';r.forceCombat=true;r.choices=seededChoiceFloor(r.floor);r.currentChoice=null;r.enemy=null;if(extraMutation||cleared%7===0||seasonRule().mutation&&chance(.12)||wednesdayMutationRoll()){prepareMutation(r)}else r.mode='route';save(false);syncProfile(false);render()}
+function completeNonCombat(extraMutation=false){const r=ensure().run;if(!r)return;r.cleared=r.floor;addRunReward(r,r.currentChoice?.type||'normal',0);updateBest(r);updateWednesdayProgress(r,'');const cleared=r.floor;try{window.v6239WeeklyChestTowerFloor?.(cleared,r.currentChoice?.type||'special',r)}catch(_){}r.floor++;r.lastRoomType='special';r.forceCombat=true;r.choices=seededChoiceFloor(r.floor);v7191PreloadTowerRoute(r);r.currentChoice=null;r.enemy=null;if(extraMutation||cleared%7===0||seasonRule().mutation&&chance(.12)||wednesdayMutationRoll()){prepareMutation(r)}else r.mode='route';save(false);syncProfile(false);render()}
 function prepareMutation(r){const owned=new Set((r.buffs||[]).filter(id=>MUTATIONS.some(m=>m.id===id)));if(owned.size>=6){r.mutationChoices=[];r.geneticsComplete=true;r.mode='route';return false}const pool=MUTATIONS.filter(m=>!owned.has(m.id));const opts=[];while(pool.length&&opts.length<3){const ix=Math.floor(Math.random()*pool.length);opts.push(pool.splice(ix,1)[0].id)}r.mutationChoices=opts;if(!opts.length){r.geneticsComplete=true;r.mode='route';return false}r.mode='mutation';return true}
 
 function applyTowerMutation(r,id){
@@ -587,7 +617,7 @@ function resumeCombat(){const r=ensure().run;if(!r||r.mode!=='battle'||!r.combat
    const hit=playerDamage(r,c);if(c.mechanic==='armor')hit.dmg=Math.round(hit.dmg*.80);if(c.mechanic==='power'&&c.round<=2)hit.dmg=Math.round(hit.dmg*.75);anim('#vTPlayerFighter','attack-r');setTimeout(()=>{c.enemyHp=Math.max(0,c.enemyHp-hit.dmg);const hpBeforeHitHeal=Math.max(0,Number(r.hp)||0);r.hp=Math.min(r.maxHp,r.hp+(hit.heal||0));if(r.stats){r.stats.damage=(Number(r.stats.damage)||0)+Math.max(0,Number(hit.dmg)||0);r.stats.maxHit=Math.max(Number(r.stats.maxHit)||0,Math.max(0,Number(hit.dmg)||0));if(hit.crit)r.stats.crits=(Number(r.stats.crits)||0)+1;r.stats.healing=(Number(r.stats.healing)||0)+Math.max(0,r.hp-hpBeforeHitHeal)}pop('#vTDmgEnemy',`${hit.crit?'KRIT! ':''}-${hit.dmg}`);anim('#vTEnemyFighter','hit');c.log.push(`Runde ${c.round}: ${hit.special||'Treffer'} · ${hit.dmg} Schaden${hit.heal?` · +${hit.heal} LP`:''}.`);try{window.v6230TowerCombatFx?.({phase:'player',raw:hit.special,damage:hit.dmg,heal:hit.heal,crit:hit.crit,round:c.round})}catch(_){}try{window.v6225ExtraHitVisual?.('tower',hit.special,{round:c.round})}catch(_){}if(c.mechanic==='thorns'){const th=Math.max(1,Math.round(hit.dmg*.08));r.hp=Math.max(0,r.hp-th);if(r.stats)r.stats.damageTaken=(Number(r.stats.damageTaken)||0)+th;c.log.push(`Dornen werfen ${th} Schaden zurück.`)}battlePaint(r,c);saveLocal();try{window.v6111Sfx?.(hit.crit?'crit':'hit');if(hit.heal)window.v6111Sfx?.('heal')}catch(e){}if(c.enemyHp<=0)return winFight();if(r.hp<=0)return loseFight();setTimeout(enemyTurn,360)},260)};
    const enemyTurn=()=>{if(token!==battleToken||r.mode!=='battle')return;const towerEvade=clamp(buffFx(r,'evade'),0,.45);if(chance(towerEvade)){if(r.stats)r.stats.dodges=(Number(r.stats.dodges)||0)+1;anim('#vTPlayerFighter','dodge',450);c.log.push('Turm-Mutation: Du weichst dem Angriff aus.');battlePaint(r,c);try{window.v6230TowerCombatFx?.({phase:'playerDodge',raw:'AUSGEWICHEN',round:c.round})}catch(_){}try{window.v6111Sfx?.('dodge')}catch(e){}return setTimeout(loop,480)}let raw=enemyRawDamage(r,c);if(c.mechanic==='multi'&&c.round%3===0)raw=Math.round(raw*1.65);if(c.mechanic==='gift')raw=Math.round(raw*(1+Math.min(.45,c.round*.025)));let d=raw,heal=0,counter=0,prevent=false,label='TREFFER';try{if(c.talent&&typeof v318ResolveEnemyAttack==='function'){const out=v318ResolveEnemyAttack(c.talent,{damage:raw,playerHp:r.hp,playerMax:r.maxHp})||{};d=Math.max(0,Math.round(Number(out.damage)||0));heal=Math.max(0,Math.round(Number(out.heal)||0));counter=Math.max(0,Math.round(Number(out.counterDamage)||0));prevent=!!out.preventLethal;label=String(out.text||label)}}catch(e){console.warn('Anbauturm Talentverteidigung',e)}anim('#vTEnemyFighter','attack-l');setTimeout(()=>{const hpBeforeDefHeal=Math.max(0,Number(r.hp)||0);r.hp=Math.min(r.maxHp,r.hp+heal);const actualDefHeal=Math.max(0,r.hp-hpBeforeDefHeal);r.hp=Math.max(0,r.hp-d);if(prevent&&r.hp<=0)r.hp=1;if(counter)c.enemyHp=Math.max(0,c.enemyHp-counter);if(r.stats){r.stats.healing=(Number(r.stats.healing)||0)+actualDefHeal;r.stats.damageTaken=(Number(r.stats.damageTaken)||0)+Math.max(0,Number(d)||0);r.stats.damage=(Number(r.stats.damage)||0)+Math.max(0,Number(counter)||0)}if(d>0){pop('#vTDmgPlayer',`-${d}`);anim('#vTPlayerFighter','hit')}else{anim('#vTPlayerFighter','dodge',420);pop('#vTDmgPlayer','AUS')}c.log.push(`${r.enemy.name}: ${label} · ${d} Schaden${heal?` · +${heal} LP`:''}${counter?` · Konter ${counter}`:''}.`);try{window.v6230TowerCombatFx?.({phase:'enemy',raw:label,damage:d,heal,counter,prevent,round:c.round})}catch(_){}try{window.v6225ExtraHitVisual?.('tower',label,{round:c.round,actor:'defender'})}catch(_){}battlePaint(r,c);saveLocal();try{window.v6111Sfx?.(d?'enemyHit':'dodge');if(counter)window.v6111Sfx?.('block');if(heal)window.v6111Sfx?.('heal')}catch(e){}if(c.enemyHp<=0)return winFight();if(r.hp<=0)return loseFight();setTimeout(loop,430)},260)};
  loop()}
-function winFight(){battleToken++;const r=ensure().run;if(!r)return;const type=r.combat.type,risk=r.combat.risk,cleared=r.floor;const rw=addRunReward(r,type,risk);r.cleared=cleared;if(type==='elite')r.eliteKills++;if(type==='boss')r.bossKills++;const healPct=buffFx(r,'afterHeal');if(healPct>0)healRun(r,healPct);updateBest(r);updateWednesdayProgress(r,type);try{window.v6239WeeklyChestTowerFloor?.(cleared,type,r)}catch(_){}r.floor=cleared+1;r.lastRoomType='combat';r.forceCombat=false;r.choices=seededChoiceFloor(r.floor);r.combat=null;r.enemy=null;r.currentChoice=null;r.lastReward=rw;if(type==='boss'){r.pendingMutationAfterCheckpoint=true;r.mode='checkpoint'}else if(cleared%5===0||(type==='elite'&&chance(.35))||(seasonRule().mutation&&chance(.12))||wednesdayMutationRoll()){prepareMutation(r)}else{r.mode='reward'}save(false);syncProfile(true);render()}
+function winFight(){battleToken++;const r=ensure().run;if(!r)return;const type=r.combat.type,risk=r.combat.risk,cleared=r.floor;const rw=addRunReward(r,type,risk);r.cleared=cleared;if(type==='elite')r.eliteKills++;if(type==='boss')r.bossKills++;const healPct=buffFx(r,'afterHeal');if(healPct>0)healRun(r,healPct);updateBest(r);updateWednesdayProgress(r,type);try{window.v6239WeeklyChestTowerFloor?.(cleared,type,r)}catch(_){}r.floor=cleared+1;r.lastRoomType='combat';r.forceCombat=false;r.choices=seededChoiceFloor(r.floor);v7191PreloadTowerRoute(r);r.combat=null;r.enemy=null;r.currentChoice=null;r.lastReward=rw;if(type==='boss'){r.pendingMutationAfterCheckpoint=true;r.mode='checkpoint'}else if(cleared%5===0||(type==='elite'&&chance(.35))||(seasonRule().mutation&&chance(.12))||wednesdayMutationRoll()){prepareMutation(r)}else{r.mode='reward'}save(false);syncProfile(true);render()}
 function loseFight(){battleToken++;const r=ensure().run;if(!r)return;finishRun('death')}
 function nextAfterReward(){const r=ensure().run;if(!r)return;r.mode='route';saveLocal();render()}
 function checkpointContinue(){const r=ensure().run;if(!r)return;if(r.pendingMutationAfterCheckpoint){r.pendingMutationAfterCheckpoint=false;prepareMutation(r)}else r.mode='route';save(false);render()}
@@ -595,7 +625,7 @@ function bankAndFinish(){finishRun('secured')}
 function finishRun(reason){const t=ensure(),r=t.run;if(!r)return;battleToken++;const baseLoss=reason==='secured'?0:.25;const loss=Math.max(0,baseLoss-buffFx(r,'lossReduce'));const keep=1-loss;const gold=Math.floor(r.unbanked.gold*keep),xp=Math.floor(r.unbanked.xp*keep),tokens=Math.floor(r.unbanked.tokens*keep);s.gold=(Number(s.gold)||0)+gold;try{if(typeof addXp==='function')addXp(xp);else s.xp=(Number(s.xp)||0)+xp}catch(e){s.xp=(Number(s.xp)||0)+xp}t.meta.tokens+=tokens;const items=(r.unbanked.items||[]).filter(()=>reason==='secured'||Math.random()<keep);for(const it of items){try{s.inventory.push(it)}catch(e){}}const previousBestFloor=Math.max(0,Number(r.startBestFloor)||0),previousBestScore=Math.max(0,Number(r.startBestScore)||0),finalFloor=Math.max(0,Number(r.cleared)||0),finalScore=Math.max(0,Math.round(Number(r.score)||0));updateBest(r);const result={reason,floor:finalFloor,score:finalScore,gold,xp,tokens,items:items.length,lostPct:Math.round(loss*100),duration:Date.now()-r.startedAt,previousBestFloor,previousBestScore,newFloorRecord:finalFloor>previousBestFloor,newScoreRecord:finalScore>previousBestScore,buffs:[...(r.buffs||[])].slice(0,6),stats:{...(r.stats||{})},eliteKills:Number(r.eliteKills)||0,bossKills:Number(r.bossKills)||0};t.lastResult=result;resetTowerRecovery(t);t.run=null;towerTab='result';save(false);syncProfile(true);render();toast(reason==='secured'?'Beute gesichert.':'Turmlauf beendet.',reason==='secured'?'success':'warn')}
 function confirmAbort(){const go=async()=>{let ok=true;try{if(typeof v115Confirm==='function'){ok=await v115Confirm('Lauf wirklich abbrechen? 25 % der ungesicherten Beute gehen verloren.',{title:'Anbauturm verlassen',type:'warn',okText:'Lauf beenden'});}else{ok=confirm('Lauf wirklich abbrechen?')}}catch(e){}if(ok)finishRun('aborted')};void go()}
 function growOption(kind){const r=ensure().run;if(!r)return;if(kind==='heal'){const n=healRun(r,.28);r.event={title:'Frische Nährlösung',text:`Du regenerierst ${n} Leben.`}}else if(kind==='leaves'){const n=Math.max(1,Math.round((1+r.floor/25)*tokenMult(r)));r.unbanked.tokens+=n;r.event={title:'Blätterernte',text:`+${n} Turmblätter.`}}else{const g=15+r.floor*3;r.unbanked.gold+=g;r.event={title:'Erntekiste',text:`+${g} Gold.`}}completeNonCombat(false)}
-function labOption(kind){const r=ensure().run;if(!r)return;const buffs=Array.isArray(r.buffs)?r.buffs:[],atCap=buffs.length>=6;if(kind==='heal'){if(r.hp>=r.maxHp){toast('Dein Turm-Leben ist bereits voll.','warn');return}healRun(r,.20);r.event={title:'Stabilisator',text:'Leben wiederhergestellt.'};completeNonCombat(false)}else if(kind==='boost'){if(buffs.includes('roots')){toast('Wurzelnetz ist bereits aktiv.','warn');return}if(atCap){toast('Dein Mutationslimit ist erreicht.','warn');return}if(!applyTowerMutation(r,'roots'))return;r.event={title:'Wurzelinjektion',text:'Wurzelnetz für diesen Lauf erhalten.'};completeNonCombat(false)}else{const available=MUTATIONS.some(x=>!buffs.includes(x.id));if(atCap||!available){toast(atCap?'Dein Mutationslimit ist erreicht.':'Keine weitere Genetik verfügbar.','warn');return}const cleared=r.floor;r.cleared=cleared;addRunReward(r,'lab',0);updateBest(r);updateWednesdayProgress(r,'');r.floor=cleared+1;r.lastRoomType='special';r.forceCombat=true;r.choices=seededChoiceFloor(r.floor);r.currentChoice=null;prepareMutation(r);save(false);syncProfile(false);render()}}
+function labOption(kind){const r=ensure().run;if(!r)return;const buffs=Array.isArray(r.buffs)?r.buffs:[],atCap=buffs.length>=6;if(kind==='heal'){if(r.hp>=r.maxHp){toast('Dein Turm-Leben ist bereits voll.','warn');return}healRun(r,.20);r.event={title:'Stabilisator',text:'Leben wiederhergestellt.'};completeNonCombat(false)}else if(kind==='boost'){if(buffs.includes('roots')){toast('Wurzelnetz ist bereits aktiv.','warn');return}if(atCap){toast('Dein Mutationslimit ist erreicht.','warn');return}if(!applyTowerMutation(r,'roots'))return;r.event={title:'Wurzelinjektion',text:'Wurzelnetz für diesen Lauf erhalten.'};completeNonCombat(false)}else{const available=MUTATIONS.some(x=>!buffs.includes(x.id));if(atCap||!available){toast(atCap?'Dein Mutationslimit ist erreicht.':'Keine weitere Genetik verfügbar.','warn');return}const cleared=r.floor;r.cleared=cleared;addRunReward(r,'lab',0);updateBest(r);updateWednesdayProgress(r,'');r.floor=cleared+1;r.lastRoomType='special';r.forceCombat=true;r.choices=seededChoiceFloor(r.floor);v7191PreloadTowerRoute(r);r.currentChoice=null;prepareMutation(r);save(false);syncProfile(false);render()}}
 function towerMerchantPrices(r){const disc=1-buffFx(r,'shopDiscount');return{heal:Math.round((55+r.floor*3)*disc),damage:Math.round((80+r.floor*4)*disc),insurance:Math.round((110+r.floor*5)*disc)}}
 function merchantBuy(kind){
  const r=ensure().run;if(!r)return;
@@ -754,7 +784,7 @@ function doorTransitionView(r){
      <span>${boss?'Kein Ausweg – der Boss wartet dahinter.':hard?'Ein harter Wächter steht direkt hinter dieser Tür.':'Du gehst direkt durch die Tür in den Kampf.'}</span>
    </div>
    <div class="v6281-enter-enemy">
-     <img loading="eager" decoding="async" src="${e.art||''}" alt="${esc(e.name||'Gegner')}">
+     <img loading="eager" decoding="async" fetchpriority="high" src="${e.art||''}" alt="${esc(e.name||'Gegner')}">
    </div>
    <div class="v6281-enter-tag"><b>${esc(e.name||'Gegner')}</b><span>${boss?'BOSS':hard?'MINIBOSS':e.elite?'ELITE':'GEGNER'} · Etage ${r.floor}</span></div>
  </div>
@@ -786,7 +816,7 @@ function prepView(r){
  ${v6259RunLine(r)}
  <div class="v6259-prep ${boss?'boss':''}">
    <div class="v6259-prep-bg" style="background-image:url('${e.bg||towerFloorBackground(r.floor,e.boss)}')"></div>
-   <img class="v6259-prep-enemy" loading="eager" decoding="async" src="${e.art}" alt="${esc(e.name)}">
+   <img class="v6259-prep-enemy" loading="eager" decoding="async" fetchpriority="high" src="${e.art}" alt="${esc(e.name)}">
    <div class="v6259-enemy-tag"><b>${esc(e.name)}</b><span>${e.boss?'BOSS':hard?'MINIBOSS':e.elite?'ELITE':'GEGNER'} · Etage ${r.floor}</span></div>
    ${boss?'<div class="v6259-speech">„Alles wächst … und alles gehört mir!“</div>':''}
  </div>
@@ -806,11 +836,11 @@ function battleView(r){
 
    <div id="vTPlayerFighter" class="vT-fighter player v6259-fighter">
      ${s.playerClass==='summoner'
-       ?`<img class="v6333-tower-harz-avatar" loading="eager" decoding="async" src="${window.V6333_HARZ_TOWER_AVATAR||playerAvatar()}" alt="Harzruferin">`
-       :`<img class="v6294-tower-player-img" loading="eager" decoding="async" src="${playerAvatar()}" alt="Spieler" onerror="window.v6294TowerImgFallback?.(this,'player')">`}<div class="vT-fighter-name">${esc(playerName())}</div>
+       ?`<img class="v6333-tower-harz-avatar" loading="eager" decoding="async" fetchpriority="high" src="${window.V6333_HARZ_TOWER_AVATAR||playerAvatar()}" alt="Harzruferin">`
+       :`<img class="v6294-tower-player-img" loading="eager" decoding="async" fetchpriority="high" src="${playerAvatar()}" alt="Spieler" onerror="window.v6294TowerImgFallback?.(this,'player')">`}<div class="vT-fighter-name">${esc(playerName())}</div>
    </div>
    <div id="vTEnemyFighter" class="vT-fighter enemy v6259-fighter" data-enemy="${esc(e.name)}">
-     <img class="v6294-tower-enemy-img" loading="eager" decoding="async" src="${e.art}" alt="${esc(e.name)}" onerror="window.v6294TowerImgFallback?.(this,'enemy')"><div class="vT-fighter-name">${esc(e.name)}</div>
+     <img class="v6294-tower-enemy-img" loading="eager" decoding="async" fetchpriority="high" src="${e.art}" alt="${esc(e.name)}" onerror="window.v6294TowerImgFallback?.(this,'enemy')"><div class="vT-fighter-name">${esc(e.name)}</div>
    </div>
 
    <div id="vTDmgPlayer" class="vT-damage p"></div>
@@ -1032,7 +1062,7 @@ function render(){
    else if(towerTab==='meta')html=metaView();
    else if(towerTab==='result'&&!r)html=resultView();
    else if(!r?.active)html=lobby();
-   else if(r.mode==='route')html=routeView(r);
+   else if(r.mode==='route'){v7191PreloadTowerRoute(r);html=routeView(r);}
    else if(r.mode==='doorTransition')html=doorTransitionView(r);
    else if(r.mode==='prep')html=prepView(r);
    else if(r.mode==='battle')html=battleView(r);
