@@ -3,7 +3,7 @@
 if(window.__V7096_TOWER_DIRECT_PREEMPT__)return;
 window.__V7096_TOWER_DIRECT_PREEMPT__=true;
 
-/* V8.009-T10G: one-tap authoritative Tower flow + replay cleanup.
+/* V8.009-T10H: one-tap authoritative Tower flow + replay cleanup.
    Door choice -> shorter door opening -> automatic server replay.
    Presentation-only guards; server combat math/rewards stay untouched. */
 const G=window.__V8009_TOWER_ROUTE_GUARD__||(window.__V8009_TOWER_ROUTE_GUARD__={
@@ -20,10 +20,13 @@ Object.assign(G,{
   replayInstalls:Number(G.replayInstalls)||0,
   terminalResultsSuppressed:Number(G.terminalResultsSuppressed)||0,
   arenaPrewarms:Number(G.arenaPrewarms)||0,
+  previewDecodes:Number(G.previewDecodes)||0,
+  cadenceInstalls:Number(G.cadenceInstalls)||0,
   arenaWarmQueued:false
 });
 
 const COMBAT_SFX=new Set(['hit','crithit','crit','enemyhit','enemy_hit','block','dodge','heal','slash','strike','attack']);
+const IMPACT_SFX=new Set(['hit','crithit','crit','enemyhit','enemy_hit','block','dodge','slash','strike','attack']);
 
 function now(){
  try{return performance.now()}catch(_){return Date.now()}
@@ -46,14 +49,54 @@ function setBusy(on){
  }catch(_){}
 }
 
+function installTowerCadence(){
+ try{
+   const current=window.v7269DungeonCadence;
+   if(typeof current==='function'&&current.__v8009T10HTowerCadence)return true;
+   const towerCadence=()=>({
+     frameDelay:900,
+     attackDelay:440,
+     settleDelay:460,
+     visualAttackMs:700,
+     visualHitMs:700,
+     visualPopMs:1000,
+     startDelayMs:250
+   });
+   towerCadence.__v8009T10HTowerCadence=true;
+   towerCadence.__v8009Base=current;
+   window.v7269DungeonCadence=towerCadence;
+   try{v7269DungeonCadence=towerCadence}catch(_){}
+   G.cadenceInstalls++;
+   return true;
+ }catch(e){
+   G.lastError=String(e?.message||e);
+   return false;
+ }
+}
+
 function installDoorPreviewPacing(){
  try{
    const base=window.v7298TowerDoorPreview;
-   if(typeof base!=='function'||base.__v8009T10G)return false;
+   if(typeof base!=='function'||base.__v8009T10H)return false;
    const wrapped=function(run,routeIndex=0,ms=900){
-     return base.call(this,run,routeIndex,Math.max(G.doorPreviewMinMs,Number(ms)||0));
+     const out=base.call(this,run,routeIndex,Math.max(G.doorPreviewMinMs,Number(ms)||0));
+
+     /* Use the door-opening window to decode the selected enemy image before
+        the battle starts. Cold image decode on the very first run otherwise
+        lands on the first attack frames and is visible as a short stutter. */
+     requestAnimationFrame(()=>{
+       try{
+         document.querySelectorAll('#tower .v6281-enter-enemy img').forEach(img=>{
+           try{
+             const p=img.decode?.();
+             if(p&&typeof p.then==='function')p.then(()=>{G.previewDecodes++}).catch(()=>{});
+           }catch(_){}
+         });
+       }catch(_){}
+     });
+     return out;
    };
-   wrapped.__v8009T10G=true;
+   wrapped.__v8009T10H=true;
    wrapped.__v8009Base=base;
    window.v7298TowerDoorPreview=wrapped;
    return true;
@@ -66,7 +109,7 @@ function installDoorPreviewPacing(){
 function installTowerRenderGuard(){
  try{
    const base=window.vTowerRender;
-   if(typeof base!=='function'||base.__v8009T10GFlowGuard)return false;
+   if(typeof base!=='function'||base.__v8009T10HFlowGuard)return false;
    const wrapped=function(){
      const run=window.s?.tower?.run;
      const mode=String(run?.mode||'');
@@ -110,7 +153,7 @@ function installTowerRenderGuard(){
      }
      return base.apply(this,arguments);
    };
-   wrapped.__v8009T10GFlowGuard=true;
+   wrapped.__v8009T10HFlowGuard=true;
    wrapped.__v8009Base=base;
    window.vTowerRender=wrapped;
    G.renderInstalls++;
@@ -124,7 +167,7 @@ function installTowerRenderGuard(){
 function installTowerReplayGuard(){
  try{
    const base=window.v7175CombatReplayStep;
-   if(typeof base!=='function'||base.__v8009T10GReplayGuard)return false;
+   if(typeof base!=='function'||base.__v8009T10HReplayGuard)return false;
    const wrapped=function(mode,event){
      if(String(mode||'')==='tower'&&G.routeBusy&&event&&typeof event==='object'){
        const e={...event};
@@ -144,7 +187,7 @@ function installTowerReplayGuard(){
      }
      return base.apply(this,arguments);
    };
-   wrapped.__v8009T10GReplayGuard=true;
+   wrapped.__v8009T10HReplayGuard=true;
    wrapped.__v8009Base=base;
    window.v7175CombatReplayStep=wrapped;
    try{window.v7169CombatReplayStep=wrapped}catch(_){}
@@ -159,7 +202,7 @@ function installTowerReplayGuard(){
 function installTowerSfxGuard(){
  try{
    const base=window.v6111Sfx;
-   if(typeof base!=='function'||base.__v8009T10GSfxGuard)return false;
+   if(typeof base!=='function'||base.__v8009T10HSfxGuard)return false;
    const wrapped=function(name){
      const key=String(name||'').replace(/[^a-z0-9_]/gi,'').toLowerCase();
      if(COMBAT_SFX.has(key)){
@@ -170,6 +213,15 @@ function installTowerSfxGuard(){
        /* A visible V7175 result means the visual fight is already over. Any
           combat SFX arriving after that point is stale and must not leak. */
        if(resultVisible){
+         G.suppressedLateSfx++;
+         return false;
+       }
+
+       /* The recording showed impact sounds continuing on the Tower reward
+          screen after the battle DOM had already disappeared. Never allow an
+          impact/attack SFX on an active Tower screen unless the battle stage
+          itself is still mounted. */
+       if(active&&!hasBattle&&IMPACT_SFX.has(key)){
          G.suppressedLateSfx++;
          return false;
        }
@@ -191,7 +243,7 @@ function installTowerSfxGuard(){
      }
      return base.apply(this,arguments);
    };
-   wrapped.__v8009T10GSfxGuard=true;
+   wrapped.__v8009T10HSfxGuard=true;
    wrapped.__v8009Base=base;
    window.v6111Sfx=wrapped;
    G.sfxInstalls++;
@@ -203,6 +255,7 @@ function installTowerSfxGuard(){
 }
 
 function installPresentationGuards(){
+ installTowerCadence();
  installDoorPreviewPacing();
  installTowerRenderGuard();
  installTowerReplayGuard();
@@ -240,7 +293,7 @@ async function directRoute(idx){
    /* Kill trailing replay FX/timers before the result/next-room view becomes
       authoritative again. This also stops late hit sounds after combat. */
    try{window.v7175CombatReset?.('tower')}catch(_){}
-   G.audioBlockUntil=now()+1400;
+   G.audioBlockUntil=now()+2200;
    setBusy(false);
 
    /* A render may have been deliberately suppressed while the replay was
@@ -262,7 +315,7 @@ window.addEventListener('click',e=>{
  }catch(err){
    G.lastError=String(err?.message||err);
    setBusy(false);
-   console.warn('[V8.009-T10G] tower direct route',err);
+   console.warn('[V8.009-T10H] tower direct route',err);
  }
 },true);
 
@@ -275,14 +328,17 @@ window.addEventListener('pageshow',()=>setTimeout(installPresentationGuards,80),
 
 window.v8009TowerRouteGuardDiagnostics=()=>({
  ...G,
- version:'V8.009-T10G',
+ version:'V8.009-T10H',
  oneTapFight:true,
  separateFightButton:false,
- previewWrapped:!!window.v7298TowerDoorPreview?.__v8009T10G,
- renderGuard:!!window.vTowerRender?.__v8009T10GFlowGuard,
- sfxGuard:!!window.v6111Sfx?.__v8009T10GSfxGuard,
- replayGuard:!!window.v7175CombatReplayStep?.__v8009T10GReplayGuard,
+ previewWrapped:!!window.v7298TowerDoorPreview?.__v8009T10H,
+ renderGuard:!!window.vTowerRender?.__v8009T10HFlowGuard,
+ sfxGuard:!!window.v6111Sfx?.__v8009T10HSfxGuard,
+ replayGuard:!!window.v7175CombatReplayStep?.__v8009T10HReplayGuard,
  firstFightArenaPrewarm:true,
+ firstFightDoorDecode:true,
+ towerCadenceLocked:true,
+ impactSfxRequiresBattleDom:true,
  prematureVictoryOverlayBlocked:true
 });
 })();
