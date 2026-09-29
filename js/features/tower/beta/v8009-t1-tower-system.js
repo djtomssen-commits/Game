@@ -536,6 +536,17 @@ const v8009ChromeOwner=window.v8009CreateTowerChromeOwner?.({
  render:()=>render()
 });
 if(!v8009ChromeOwner)throw new Error('V8.009 T7 tower chrome owner missing');
+const v8009RunUiOwner=window.v8009CreateTowerRunUiOwner?.({
+ esc,fmt,clamp,
+ ensure,
+ getMutations:()=>MUTATIONS,
+ getBosses:()=>BOSSES,
+ seededChoiceFloor:f=>seededChoiceFloor(f),
+ typeMeta:t=>typeMeta(t),
+ head:(r,sub,back=true,title='')=>v8009ChromeOwner.head(r,sub,back,title),
+ towerFloorBackground:(floor,boss=false)=>towerFloorBackground(floor,boss)
+});
+if(!v8009RunUiOwner)throw new Error('V8.009 T9 tower run UI owner missing');
 const v8009LobbyController=window.v8009CreateTowerLobbyController?.({
  getState:()=>s,
  ensure,
@@ -719,14 +730,7 @@ function runTop(r){return `<div class="vT-topstats"><div class="vT-stat good"><s
 function v6259Head(r,sub,back=true,title=''){return v8009ChromeOwner.head(r,sub,back,title)}
 function v6279OpenGuide(){return v8009ChromeOwner.openGuide()}
 
-function v6259BuffBar(r){
- const all=Array.isArray(r?.buffs)?r.buffs:[];
- const cells=Array.from({length:6},(_,i)=>{
-   const id=all[i],m=MUTATIONS.find(x=>x.id===id);
-   return `<div class="v6259-buff ${m?'on':''}">${m?`<i>${m.icon}</i><b>${esc(m.name)}</b>`:'<i>＋</i><b>frei</b>'}</div>`;
- }).join('');
- const full=all.length>=6;return `<div class="v6259-buffs-title ${full?'v6347-genetics-full':''}">Aktive Mutationen (${all.length}/6)${full?' · GENETIK VOLL':''}</div><div class="v6259-buffs">${cells}</div>${full?'<div class="v6347-strength-mode">🧬 6/6 erreicht · Keine weiteren Mutationen. Ab jetzt zählt, wie weit dein Charakter kommt.</div>':''}`;
-}
+function v6259BuffBar(r){return v8009RunUiOwner.buffBar(r)}
 function v6259RiskBox(r){
  return `<details class="v6259-risk-more"><summary>🔥 Höheres Risiko / höhere Belohnung</summary>
    <div class="v6259-risk-grid">
@@ -735,61 +739,11 @@ function v6259RiskBox(r){
    </div>
  </details>`;
 }
-function v6259RunLine(r){
- const pct=Math.round(clamp(r.hp/r.maxHp*100,0,100));
- return `<div class="v6259-runline"><span>❤️ Run-HP</span><div class="v6259-hp"><i style="width:${pct}%"></i></div><b>${pct}%</b><em>🍃 ${fmt(ensure().meta.tokens)}</em></div>`;
-}
+function v6259RunLine(r){return v8009RunUiOwner.runLine(r)}
 
 function lobby(){return v8009LobbyController.renderLobby()}
-function routeView(r){
- const wanted=r.floor%10===0?1:2,marketSoldOut=!!(r?.shopFlags?.heal&&r?.shopFlags?.damage&&r?.shopFlags?.insurance);
- if(!Array.isArray(r.choices)||r.choices.length!==wanted||(marketSoldOut&&r.choices.some(c=>c?.type==='merchant')))r.choices=seededChoiceFloor(r.floor);
- const choices=r.choices||[],bossIx=Math.max(0,(Math.floor(r.floor/10)-1)%BOSSES.length),forced=r.forceCombat||r.lastRoomType==='special';
- const doors=choices.map((c,i)=>{
-   const [name,desc,ico]=typeMeta(c.type),title=c.type==='boss'?BOSSES[bossIx].name:c.miniboss?'Miniboss-Tür':name;
-   const hint=c.type==='boss'?'Kein Ausweg – der Boss muss fallen.':c.miniboss?'Ein besonders harter Wächter wartet dahinter.':desc;
-   return `<div class="v6263-door-ui ${choices.length===1?'solo':''} side-${i}">
-     <div class="v6263-door-room">${ico} Raum ${i+1}</div>
-     <div class="v6263-door-copy"><b>${esc(title)}</b><span>${esc(hint)}</span></div>
-     <button class="vT-btn ${c.type==='boss'?'gold':c.type==='elite'||c.miniboss?'danger':'primary'}" data-vt-route="${i}">${c.type==='boss'?'Boss-Tor öffnen':c.type==='elite'||c.miniboss?'Herausfordern':'Tür wählen'}</button>
-   </div>`;
- }).join('');
- return `${v6259Head(r,`Etage ${r.floor} · ${r.floor%10===0?'Boss-Tor öffnen':'Wähle eine Tür …'}`,true,'ANBAU-TURM')}
- ${v6259RunLine(r)}
- <div class="v6263-door-stage ${choices.length===1?'single':''}">
-   <div class="v6263-door-picture"></div>
-   <div class="v6263-door-ui-layer">${doors}</div>
- </div>
- <div class="v6263-mutation-panel">
-   ${v6259BuffBar(r)}
- </div>
- <div class="v6263-route-foot">
-   <span>${forced?'Nach diesem Spezialraum folgt zwingend wieder ein Kampf.':'Zwei Wege. Eine Entscheidung.'}</span>
-   <button class="v6263-abort-link" data-vt-abort>Run aufgeben</button>
- </div>`;
-}
-function doorTransitionView(r){
- const e=r.enemy||{},hard=!!r.currentChoice?.miniboss,boss=!!e.boss,idx=Math.max(0,Number(r.routeChoiceIndex)||0);
- return `${v6259Head(r,`Etage ${r.floor} · Tür betreten`,true,'ANBAU-TURM')}
- ${v6259RunLine(r)}
- <div class="v6281-door-enter ${boss?'boss':''}">
-   <div class="v6281-door-enter-bg" style="background-image:url('${e.bg||towerFloorBackground(r.floor,e.boss)}')"></div>
-   <div class="v6281-door-enter-vignette"></div>
-   <div class="v6281-door-leaf left"></div>
-   <div class="v6281-door-leaf right"></div>
-   <div class="v6281-door-crack"></div>
-   <div class="v6281-door-step">
-     <small>${boss?'BOSS-TOR':'GEWÄHLTE TÜR'}</small>
-     <b>${idx+1}. Tür bestätigt</b>
-     <span>${boss?'Kein Ausweg – der Boss wartet dahinter.':hard?'Ein harter Wächter steht direkt hinter dieser Tür.':'Du gehst direkt durch die Tür in den Kampf.'}</span>
-   </div>
-   <div class="v6281-enter-enemy">
-     <img loading="eager" decoding="async" fetchpriority="high" src="${e.art||''}" alt="${esc(e.name||'Gegner')}">
-   </div>
-   <div class="v6281-enter-tag"><b>${esc(e.name||'Gegner')}</b><span>${boss?'BOSS':hard?'MINIBOSS':e.elite?'ELITE':'GEGNER'} · Etage ${r.floor}</span></div>
- </div>
- <div class="v6281-enter-note">🚪 Tür gewählt · direkter Übergang in den Kampf …</div>`;
-}
+function routeView(r){return v8009RunUiOwner.routeView(r)}
+function doorTransitionView(r){return v8009RunUiOwner.doorTransitionView(r)}
 
 /* V7.308: server-authoritative Tower still shows the old slow door-opening presentation.
    The fight is already resolved server-side; this is presentation-only and never mutates gameplay state. */
@@ -810,19 +764,7 @@ window.v7298TowerDoorPreview=async function(run,routeIndex=0,ms=1350){
    return false;
  }
 };
-function prepView(r){
- const e=r.enemy,hard=!!r.currentChoice?.miniboss,boss=!!e.boss;
- return `${v6259Head(r,boss?`BOSS · ${e.name}`:hard?'MINIBOSS · Kampfvorbereitung':'Kampfvorbereitung')}
- ${v6259RunLine(r)}
- <div class="v6259-prep ${boss?'boss':''}">
-   <div class="v6259-prep-bg" style="background-image:url('${e.bg||towerFloorBackground(r.floor,e.boss)}')"></div>
-   <img class="v6259-prep-enemy" loading="eager" decoding="async" fetchpriority="high" src="${e.art}" alt="${esc(e.name)}">
-   <div class="v6259-enemy-tag"><b>${esc(e.name)}</b><span>${e.boss?'BOSS':hard?'MINIBOSS':e.elite?'ELITE':'GEGNER'} · Etage ${r.floor}</span></div>
-   ${boss?'<div class="v6259-speech">„Alles wächst … und alles gehört mir!“</div>':''}
- </div>
- <div class="v6280-locked-choice">🔒 Tür gewählt · Gegner festgelegt</div>
- <button class="vT-btn primary v6259-fight-main" data-vt-fight="0">⚔️ Kampf beginnen</button>`;
-}
+function prepView(r){return v8009RunUiOwner.prepView(r)}
 function battleView(r){
  const c=r.combat,e=r.enemy;
  return `${v6259Head(r,`Etage ${r.floor} · Kampf · Runde ${c.round+1}`,true,'ANBAU-TURM')}
