@@ -1,4 +1,4 @@
-/* === V8.008-C6 beta merged guild overview owner: v554 + v556 + v559 + v561 === */
+/* === V8.008-C6.1 beta merged guild overview owner: v554 + v556 + v559 + v561 === */
 (function(){
   'use strict';
   const esc=v=>typeof v254GuildEsc==='function'?v254GuildEsc(v):String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
@@ -208,20 +208,10 @@
   }
 
   function ensureGuildLoader(){
-    if(!guildRoot)return null;
-    const shell=guildRoot.querySelector('.v254-guild-shell');
-    if(!shell)return null;
-    let box=document.getElementById('v561GuildLoading');
-    if(!box){
-      box=document.createElement('div');
-      box.id='v561GuildLoading';
-      box.setAttribute('role','status');
-      box.setAttribute('aria-live','polite');
-      box.innerHTML='<div class="v561-guild-load-title">🌿 Gildendaten werden geladen</div><div class="v561-guild-load-sub">Mitgliedschaft und Gildenstatus werden vom Server geprüft.</div><div class="v561-guild-load-bar" aria-hidden="true"></div>';
-      const title=shell.querySelector(':scope > .v554-guild-title');
-      if(title)title.insertAdjacentElement('afterend',box); else shell.prepend(box);
-    }
-    return box;
+    /* Beta V8.008-C6.1: keep the authoritative first-open gate, but do not
+       show a visible "Gildendaten werden geladen" card. */
+    document.getElementById('v561GuildLoading')?.remove();
+    return null;
   }
 
   function setGuildPending(on){
