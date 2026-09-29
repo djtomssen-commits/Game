@@ -1,4 +1,4 @@
-/* === V8.008-C6.2 beta merged guild overview owner: v554 + v556 + v559 + v561 === */
+/* === V8.008-C6.3 beta merged guild overview owner: v554 + v556 + v559 + v561 === */
 (function(){
   'use strict';
   const esc=v=>typeof v254GuildEsc==='function'?v254GuildEsc(v):String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
@@ -196,10 +196,18 @@
 
 
   const guildRoot=document.getElementById('guild');
-  /* V8.008-C6.2 beta: CSS was externalized in Phase 3A, so legacy url("assets/...")
-     became relative to css/features/guild/legacy/. Pin the boss artwork to the
-     site root on beta until the guild CSS asset paths are normalized. */
+  /* V8.008-C6.3 beta: Phase 3A externalized guild CSS. Relative url("assets/...")
+     references then resolved below css/features/guild/legacy/ instead of the site root.
+     Pin every audited guild asset to an absolute root path on beta. */
+  document.documentElement.style.setProperty('--v552-guild-bg','url("/assets/v7195-base64/f3ed0b5031c8b98b91ea.webp")');
+  document.documentElement.style.setProperty('--v564-war-hero','url("/assets/v7195-base64/d852f73a72ec11babd7c.webp")');
   if(guildRoot)guildRoot.style.setProperty('--v562-boss-art','url("/assets/v7195-base64/34a8f96a5a6332903470.webp")');
+  if(!document.getElementById('v8008GuildAssetPathFix')){
+    const assetFix=document.createElement('style');
+    assetFix.id='v8008GuildAssetPathFix';
+    assetFix.textContent='#v260DailyBossArena .v259-stage{background:linear-gradient(180deg,rgba(2,8,4,.16),rgba(2,9,4,.42) 56%,rgba(1,4,2,.80)),radial-gradient(circle at 76% 34%,rgba(69,255,92,.19),transparent 26%),radial-gradient(circle at 24% 62%,rgba(255,171,70,.09),transparent 23%),url("/assets/world_hero_castle_v691.png") center 43%/cover no-repeat!important}';
+    document.head.appendChild(assetFix);
+  }
   let guildResolvedKey='';
   let guildActiveLoads=0;
 
