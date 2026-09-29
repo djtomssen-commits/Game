@@ -1,0 +1,46 @@
+name: V8 Phase 3C11 Beta guild boss runtime core
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/v8_phase3c11_beta_boss_runtime.py'
+permissions:
+  contents: write
+jobs:
+  consolidate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Build beta guild boss runtime core
+        run: python3 .github/scripts/v8_phase3c11_beta_boss_runtime.py
+      - name: Syntax-check runtime core
+        run: node --check js/features/guild/beta/v8008-c11-guildboss-runtime-core.js
+      - name: Validate beta-only scope
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re,json
+          beta=Path('beta.html').read_text(encoding='utf-8')
+          report=json.loads(Path('V8_PHASE3C11_BETA.json').read_text(encoding='utf-8'))
+          if not report.get('stable_unchanged'):
+              raise SystemExit('stable changed')
+          m=re.search(r'<script\b[^>]*\bid=["\']v260-real-daily-guild-boss["\'][^>]*>',beta,re.I)
+          if not m or 'js/features/guild/beta/v8008-c11-guildboss-runtime-core.js' not in m.group(0):
+              raise SystemExit('C11 runtime core not loaded at v260 position')
+          s=Path('js/features/guild/beta/v8008-c11-guildboss-runtime-core.js').read_text(encoding='utf-8')
+          for token in ('v260RoundResolved','v260MaybeAutoPlay','v260SetRealBossHp','v260RenderDailyControls','v260BossClock'):
+              if token not in s: raise SystemExit(f'C11 core missing {token}')
+          if 'for(let i=0;i<parts.length;i++)' in s or 'v259-fighter-side' in s:
+              raise SystemExit('legacy replay renderer still present in C11 core')
+          print('Phase 3C11 validation OK')
+          PY
+      - name: Commit beta-only runtime core
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add beta.html js/features/guild/beta/v8008-c11-guildboss-runtime-core.js V8_PHASE3C11_BETA.json
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "V8.008 beta Phase 3C11: remove legacy boss replay renderer"
+          git push
