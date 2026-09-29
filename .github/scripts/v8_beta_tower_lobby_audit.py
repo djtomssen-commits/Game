@@ -2,34 +2,47 @@ from pathlib import Path
 import re,json
 
 s=Path('beta.html').read_text(encoding='utf-8',errors='ignore')
-m=re.search(r'<script[^>]*id=["\\\']vTower-system["\\\'][^>]*>([\\s\\S]*?)</script\\s*>',s,re.I)
-if not m:
-    raise SystemExit('vTower-system missing')
-body=m.group(1)
+mark='id="vTower-system"'
+pos=s.find(mark)
+if pos<0:
+    mark="id='vTower-system'"
+    pos=s.find(mark)
+if pos<0:
+    raise SystemExit('vTower-system marker missing')
+tag_start=s.rfind('<script',0,pos)
+body_start=s.find('>',pos)+1
+body_end=s.find('</script',body_start)
+if tag_start<0 or body_start<=0 or body_end<0:
+    raise SystemExit('vTower-system bounds missing')
+body=s[body_start:body_end]
 
 names=[]
-for fm in re.finditer(r'\\b(?:async\\s+)?function\\s+([A-Za-z0-9_$]+)\\s*\\(',body):
+for fm in re.finditer(r'function\\s+([A-Za-z0-9_$]+)\\s*\\(',body):
     name=fm.group(1)
     if re.search(r'(lobby|start|head|home|route|render|recovery|tab|run|rank)',name,re.I):
         names.append({'name':name,'offset':fm.start()})
 
 def extract(name):
-    mm=re.search(r'\\b(?:async\\s+)?function\\s+'+re.escape(name)+r'\\s*\\([^)]*\\)\\s*\\{',body)
-    if not mm:
+    needles=['function '+name+'(','function '+name+' (','async function '+name+'(','async function '+name+' (']
+    starts=[body.find(x) for x in needles]
+    starts=[x for x in starts if x>=0]
+    if not starts:
         return None
-    i=mm.start()
-    j=mm.end()
+    i=min(starts)
+    brace=body.find('{',i)
+    if brace<0:
+        return None
     depth=1
     quote=None
     esc=False
-    k=j
+    k=brace+1
     template=chr(96)
     while k<len(body) and depth:
         ch=body[k]
         if quote is not None:
             if esc:
                 esc=False
-            elif ch=='\\':
+            elif ch=='\\\\':
                 esc=True
             elif ch==quote:
                 quote=None
