@@ -29,7 +29,7 @@ def extract(name):
         if quote is not None:
             if esc:
                 esc=False
-            elif ch=='\\\\':
+            elif ch=='\\':
                 esc=True
             elif ch==quote:
                 quote=None
