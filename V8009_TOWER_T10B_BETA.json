@@ -1,0 +1,19 @@
+{
+  "build": "V8.009-T10B-BETA",
+  "phase": "Tower replay flow smoothing + late combat SFX cleanup",
+  "scope": "beta only external override",
+  "changes": [
+    "restored the Tower background-render guard that had been retired in T10, now using the T10A one-tap routeBusy guard",
+    "server/background post-fight paints are suppressed while the visible replay is still running",
+    "the final authoritative Tower state is rendered once after replay unlock",
+    "v7175 Tower combat FX are reset before and after the route replay to clear trailing timers",
+    "late hit/crit/enemy-hit combat SFX are suppressed after the Tower combat DOM has already closed",
+    "door preview remains at least 1500 ms and shared replay cadence remains 900 ms"
+  ],
+  "file": "js/features/tower/beta/v8009-t1-tower-direct-preempt.js",
+  "file_sha": "4d507bb922750125b188e93db0ff0555740e8e7a",
+  "stable_changed": false,
+  "server_authority_changed": false,
+  "combat_math_changed": false,
+  "syntax_check": "ok"
+}
