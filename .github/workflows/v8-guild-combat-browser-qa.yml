@@ -26,6 +26,11 @@ on:
       - 'js/features/guild/beta/v8008-c18-guildboss-screen-visual-owner.js'
       - 'js/features/guild/beta/v8008-c18-guildboss-replay-owner.js'
 
+      - 'js/features/guild/beta/v8008-c25-guildboss-runtime-owner.js'
+      - 'js/features/guild/beta/v8008-c25-guildwar-owner.js'
+      - 'js/features/guild/beta/v8008-c25-guildchat-owner.js'
+      - 'js/features/guild/beta/v8008-c25-guildoverview-owner.js'
+      - '.github/scripts/v8_guild_final_smoke_qa.mjs'
 jobs:
   qa:
     runs-on: ubuntu-latest
@@ -41,3 +46,5 @@ jobs:
           npx playwright install chromium
       - name: Run Guild Boss + Guild War browser QA
         run: node .github/scripts/v8_guild_combat_browser_qa.mjs
+      - name: Run final Guild overview/chat/lock smoke QA
+        run: node .github/scripts/v8_guild_final_smoke_qa.mjs
