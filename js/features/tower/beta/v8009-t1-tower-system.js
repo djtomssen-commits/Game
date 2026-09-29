@@ -442,25 +442,6 @@ function v7191PreloadTowerRoute(r){
 }
 window.v7191PreloadTowerAsset=v7191PreloadTowerAsset;
 window.v7191PreloadTowerRoute=v7191PreloadTowerRoute;
-let v8009TowerWarmStartDone=false;
-function v8009WarmTowerFloor(floor,priority='low'){
- try{
-  v7191PreloadTowerAsset(towerFloorBackground(floor,false),priority);
-  v7191PreloadTowerAsset(towerEnemyArt(floor,'normal'),priority);
-  v7191PreloadTowerAsset(towerEnemyArt(floor,'elite'),priority);
-  v7191PreloadTowerAsset(towerEnemyArt(floor,'miniboss'),priority);
- }catch(_){}
-}
-function v8009WarmTowerStartAssets(startFloor=1){
- if(v8009TowerWarmStartDone)return;
- v8009TowerWarmStartDone=true;
- const first=Math.max(1,Math.floor(Number(startFloor)||1));
- v8009WarmTowerFloor(first,'high');
- setTimeout(()=>v8009WarmTowerFloor(first+1,'high'),120);
- setTimeout(()=>v8009WarmTowerFloor(first+2,'low'),900);
- setTimeout(()=>v8009WarmTowerFloor(first+3,'low'),1800);
-}
-window.v8009WarmTowerStartAssets=v8009WarmTowerStartAssets;
 
 function towerAssetEnemyName(floor,type){
  try{const d=type==='boss'?towerBossDungeon(floor):towerVisualDungeon(floor),room=type==='boss'?10:towerEnemyRoom(floor,type);const gd=(window.dungeons||dungeons)?.[d-1],e=gd?.enemies?.[room-1];const name=String(e?.short||e?.name||'').replace(/<[^>]*>/g,' ').replace(/\s+/g,' ').trim();if(name)return name}catch(e){}
@@ -555,17 +536,6 @@ const v8009ChromeOwner=window.v8009CreateTowerChromeOwner?.({
  render:()=>render()
 });
 if(!v8009ChromeOwner)throw new Error('V8.009 T7 tower chrome owner missing');
-const v8009RunUiOwner=window.v8009CreateTowerRunUiOwner?.({
- esc,fmt,clamp,
- ensure,
- getMutations:()=>MUTATIONS,
- getBosses:()=>BOSSES,
- seededChoiceFloor:f=>seededChoiceFloor(f),
- typeMeta:t=>typeMeta(t),
- head:(r,sub,back=true,title='')=>v8009ChromeOwner.head(r,sub,back,title),
- towerFloorBackground:(floor,boss=false)=>towerFloorBackground(floor,boss)
-});
-if(!v8009RunUiOwner)throw new Error('V8.009 T9 tower run UI owner missing');
 const v8009LobbyController=window.v8009CreateTowerLobbyController?.({
  getState:()=>s,
  ensure,
@@ -608,24 +578,7 @@ function addRunReward(r,type,risk){const f=r.floor,rm=rewardMult(r,type,risk),sm
  r.lastReward={gold,xp,tokens,score,type};return r.lastReward}
 
 function updateBest(r){const z=ensure().season;z.bestFloor=Math.max(z.bestFloor,r.cleared||0);z.bestScore=Math.max(z.bestScore,Math.round(r.score||0));z.bossKills=Math.max(z.bossKills,Number(r.bossKills)||0);z.eliteKills=Math.max(z.eliteKills,Number(r.eliteKills)||0);const dur=Date.now()-r.startedAt;if((r.cleared||0)>=z.bestFloor&&(!z.bestTime||dur<z.bestTime))z.bestTime=dur}
-function chooseRoute(i){
- const r=ensure().run;if(!r?.active||r.mode!=='route')return;
- const wanted=r.floor%10===0?1:2;
- if(!Array.isArray(r.choices)||r.choices.length!==wanted)r.choices=seededChoiceFloor(r.floor);
- const choice=r.choices?.[i];if(!choice)return;
- r.currentChoice=choice;r.routeChoiceIndex=i;r.transitionNonce=(Number(r.transitionNonce)||0)+1;
- if(['normal','elite','boss'].includes(choice.type)){
-  r.enemy=makeEnemy(r.floor,choice.miniboss?'miniboss':choice.type);
-  v7191PreloadTowerAsset(r.enemy?.bg,'high');
-  v7191PreloadTowerAsset(r.enemy?.art,'high');
-  r.mode='doorTransition';
- }else if(choice.type==='grow')r.mode='growEvent';
- else if(choice.type==='lab')r.mode='lab';
- else if(choice.type==='merchant')r.mode='merchant';
- else if(choice.type==='secret')r.mode='secret';
- else return mysteryEvent(r);
- saveLocal();render();
-}
+function chooseRoute(i){const r=ensure().run;if(!r?.active||r.mode!=='route')return;const wanted=r.floor%10===0?1:2;if(!Array.isArray(r.choices)||r.choices.length!==wanted)r.choices=seededChoiceFloor(r.floor);const c=r.choices?.[i];if(!c)return;r.currentChoice=c;r.routeChoiceIndex=i;r.transitionNonce=(Number(r.transitionNonce)||0)+1;if(['normal','elite','boss'].includes(c.type)){r.enemy=makeEnemy(r.floor,c.miniboss?'miniboss':c.type);r.mode='doorTransition'}else if(c.type==='grow'){r.mode='growEvent'}else if(c.type==='lab'){r.mode='lab'}else if(c.type==='merchant'){r.mode='merchant'}else if(c.type==='secret'){r.mode='secret'}else mysteryEvent(r);saveLocal();render()}
 function mysteryEvent(r){const rolls=[
  {name:'Defektes Bewässerungsrohr',text:'Du fängst sauberes Wasser auf.',do:()=>`+${healRun(r,.16)} Leben`},
  {name:'Versteckter Harzbeutel',text:'Jemand hat Beute liegen lassen.',do:()=>{const g=10+r.floor*2;r.unbanked.gold+=g;return `+${g} Gold`}},
@@ -656,7 +609,7 @@ function setVal(k){try{return Number(setBonusValue?.(k))||0}catch(e){return 0}}
 function critChance(r,c){let crit=.06+(Number(totalAttr?.('glueck'))||0)*.0025+buffFx(r,'crit');if(s.playerClass==='bruiser')crit+=.06+setVal('critChance');if(c?.mechanic==='blind')crit-=.08;return clamp(crit,.02,.65)}
 function playerDamage(r,c){const pk=primaryAttr();const base=Math.max(1,(Number(totalAttr?.(pk))||5)*2.1+(Number(s.level)||1)*2.15+(Number(totalAttr?.('geschick'))||0)*.25+Math.random()*10);let resolved=null;try{if(c?.talent&&typeof v318ResolvePlayerAttack==='function'){resolved=v318ResolvePlayerAttack(c.talent,{baseDamage:base,enemyHp:c.enemyHp,enemyMax:c.enemyMax,playerHp:r.hp,playerMax:r.maxHp,baseCrit:critChance(r,c),setCrit:s.playerClass==='bruiser'?(.07+setVal('critChance')):0,baseWucht:(s.playerClass==='grower'||s.playerClass==='frost')?(.13+setVal('wuchtChance')):0,baseDouble:s.playerClass==='scout'?(.15+setVal('doubleChance')):0,setDoubleDamage:setVal('doubleDamage')})}}catch(e){console.warn('Anbauturm Talentangriff',e)}let dmg=Math.max(1,Math.round(Number(resolved?.damage)||base)),heal=Math.max(0,Math.round(Number(resolved?.heal)||0)),special=String(resolved?.text||'TREFFER'),crit=!!resolved?.crit;if(!resolved&&chance(critChance(r,c))){dmg=Math.round(dmg*1.65);crit=true;special='KRIT'}let mult=1+buffFx(r,'damage');if(r.hp/r.maxHp<.4)mult+=buffFx(r,'lowHpDamage');dmg=Math.max(1,Math.round(dmg*mult));if(crit)dmg=Math.round(dmg*(1+buffFx(r,'critDmg')));heal+=Math.round(dmg*buffFx(r,'lifesteal'));return{dmg,heal,crit,special}}
 function enemyRawDamage(r,c){let d=c.enemyDmg*(.88+Math.random()*.24);let red=buffFx(r,'armor');d*=Math.max(.25,1-red+buffFx(r,'incoming'));if(c.mechanic==='rage')d*=1+Math.min(.7,c.round*.035);if(c.mechanic==='copy')d*=1+Math.min(.4,(r.buffs?.length||0)*.035);if(c.mechanic==='final')d*=1.12;return Math.max(1,Math.round(d))}
-function anim(sel,cl,ms=520){const el=document.querySelector(sel);if(!el)return;el.classList.remove(cl);requestAnimationFrame(()=>{if(!el.isConnected)return;el.classList.add(cl);setTimeout(()=>{if(el.isConnected)el.classList.remove(cl)},ms)})}
+function anim(sel,cl,ms=420){const el=document.querySelector(sel);if(!el)return;el.classList.remove(cl);void el.offsetWidth;el.classList.add(cl);setTimeout(()=>el.classList.remove(cl),ms)}
 function pop(sel,text){const el=document.querySelector(sel);if(!el)return;el.textContent=text;anim(sel,'pop',700)}
 function battlePaint(r,c){const p=document.querySelector('#vTPlayerBar i'),e=document.querySelector('#vTEnemyBar i');if(p)p.style.width=`${clamp(r.hp/r.maxHp*100,0,100)}%`;if(e)e.style.width=`${clamp(c.enemyHp/c.enemyMax*100,0,100)}%`;const pt=document.querySelector('#vTPlayerHp'),et=document.querySelector('#vTEnemyHp');if(pt)pt.textContent=`${fmt(r.hp)} / ${fmt(r.maxHp)}`;if(et)et.textContent=`${fmt(c.enemyHp)} / ${fmt(c.enemyMax)}`;const log=document.querySelector('#vTBattleLog');if(log)log.textContent=c.log.slice(-2).join(' ')}
 function resumeCombat(){const r=ensure().run;if(!r||r.mode!=='battle'||!r.combat)return;if(window.v7081UseAuthority?.('tower')||r?.v7085ServerReplay)return;const token=++battleToken,c=r.combat;const loop=()=>{if(token!==battleToken||ensure().run!==r||r.mode!=='battle')return;c.round++;
@@ -766,7 +719,14 @@ function runTop(r){return `<div class="vT-topstats"><div class="vT-stat good"><s
 function v6259Head(r,sub,back=true,title=''){return v8009ChromeOwner.head(r,sub,back,title)}
 function v6279OpenGuide(){return v8009ChromeOwner.openGuide()}
 
-function v6259BuffBar(r){return v8009RunUiOwner.buffBar(r)}
+function v6259BuffBar(r){
+ const all=Array.isArray(r?.buffs)?r.buffs:[];
+ const cells=Array.from({length:6},(_,i)=>{
+   const id=all[i],m=MUTATIONS.find(x=>x.id===id);
+   return `<div class="v6259-buff ${m?'on':''}">${m?`<i>${m.icon}</i><b>${esc(m.name)}</b>`:'<i>＋</i><b>frei</b>'}</div>`;
+ }).join('');
+ const full=all.length>=6;return `<div class="v6259-buffs-title ${full?'v6347-genetics-full':''}">Aktive Mutationen (${all.length}/6)${full?' · GENETIK VOLL':''}</div><div class="v6259-buffs">${cells}</div>${full?'<div class="v6347-strength-mode">🧬 6/6 erreicht · Keine weiteren Mutationen. Ab jetzt zählt, wie weit dein Charakter kommt.</div>':''}`;
+}
 function v6259RiskBox(r){
  return `<details class="v6259-risk-more"><summary>🔥 Höheres Risiko / höhere Belohnung</summary>
    <div class="v6259-risk-grid">
@@ -775,11 +735,61 @@ function v6259RiskBox(r){
    </div>
  </details>`;
 }
-function v6259RunLine(r){return v8009RunUiOwner.runLine(r)}
+function v6259RunLine(r){
+ const pct=Math.round(clamp(r.hp/r.maxHp*100,0,100));
+ return `<div class="v6259-runline"><span>❤️ Run-HP</span><div class="v6259-hp"><i style="width:${pct}%"></i></div><b>${pct}%</b><em>🍃 ${fmt(ensure().meta.tokens)}</em></div>`;
+}
 
-function lobby(){v8009WarmTowerStartAssets(1);return v8009LobbyController.renderLobby()}
-function routeView(r){return v8009RunUiOwner.routeView(r)}
-function doorTransitionView(r){return v8009RunUiOwner.doorTransitionView(r)}
+function lobby(){return v8009LobbyController.renderLobby()}
+function routeView(r){
+ const wanted=r.floor%10===0?1:2,marketSoldOut=!!(r?.shopFlags?.heal&&r?.shopFlags?.damage&&r?.shopFlags?.insurance);
+ if(!Array.isArray(r.choices)||r.choices.length!==wanted||(marketSoldOut&&r.choices.some(c=>c?.type==='merchant')))r.choices=seededChoiceFloor(r.floor);
+ const choices=r.choices||[],bossIx=Math.max(0,(Math.floor(r.floor/10)-1)%BOSSES.length),forced=r.forceCombat||r.lastRoomType==='special';
+ const doors=choices.map((c,i)=>{
+   const [name,desc,ico]=typeMeta(c.type),title=c.type==='boss'?BOSSES[bossIx].name:c.miniboss?'Miniboss-Tür':name;
+   const hint=c.type==='boss'?'Kein Ausweg – der Boss muss fallen.':c.miniboss?'Ein besonders harter Wächter wartet dahinter.':desc;
+   return `<div class="v6263-door-ui ${choices.length===1?'solo':''} side-${i}">
+     <div class="v6263-door-room">${ico} Raum ${i+1}</div>
+     <div class="v6263-door-copy"><b>${esc(title)}</b><span>${esc(hint)}</span></div>
+     <button class="vT-btn ${c.type==='boss'?'gold':c.type==='elite'||c.miniboss?'danger':'primary'}" data-vt-route="${i}">${c.type==='boss'?'Boss-Tor öffnen':c.type==='elite'||c.miniboss?'Herausfordern':'Tür wählen'}</button>
+   </div>`;
+ }).join('');
+ return `${v6259Head(r,`Etage ${r.floor} · ${r.floor%10===0?'Boss-Tor öffnen':'Wähle eine Tür …'}`,true,'ANBAU-TURM')}
+ ${v6259RunLine(r)}
+ <div class="v6263-door-stage ${choices.length===1?'single':''}">
+   <div class="v6263-door-picture"></div>
+   <div class="v6263-door-ui-layer">${doors}</div>
+ </div>
+ <div class="v6263-mutation-panel">
+   ${v6259BuffBar(r)}
+ </div>
+ <div class="v6263-route-foot">
+   <span>${forced?'Nach diesem Spezialraum folgt zwingend wieder ein Kampf.':'Zwei Wege. Eine Entscheidung.'}</span>
+   <button class="v6263-abort-link" data-vt-abort>Run aufgeben</button>
+ </div>`;
+}
+function doorTransitionView(r){
+ const e=r.enemy||{},hard=!!r.currentChoice?.miniboss,boss=!!e.boss,idx=Math.max(0,Number(r.routeChoiceIndex)||0);
+ return `${v6259Head(r,`Etage ${r.floor} · Tür betreten`,true,'ANBAU-TURM')}
+ ${v6259RunLine(r)}
+ <div class="v6281-door-enter ${boss?'boss':''}">
+   <div class="v6281-door-enter-bg" style="background-image:url('${e.bg||towerFloorBackground(r.floor,e.boss)}')"></div>
+   <div class="v6281-door-enter-vignette"></div>
+   <div class="v6281-door-leaf left"></div>
+   <div class="v6281-door-leaf right"></div>
+   <div class="v6281-door-crack"></div>
+   <div class="v6281-door-step">
+     <small>${boss?'BOSS-TOR':'GEWÄHLTE TÜR'}</small>
+     <b>${idx+1}. Tür bestätigt</b>
+     <span>${boss?'Kein Ausweg – der Boss wartet dahinter.':hard?'Ein harter Wächter steht direkt hinter dieser Tür.':'Du gehst direkt durch die Tür in den Kampf.'}</span>
+   </div>
+   <div class="v6281-enter-enemy">
+     <img loading="eager" decoding="async" fetchpriority="high" src="${e.art||''}" alt="${esc(e.name||'Gegner')}">
+   </div>
+   <div class="v6281-enter-tag"><b>${esc(e.name||'Gegner')}</b><span>${boss?'BOSS':hard?'MINIBOSS':e.elite?'ELITE':'GEGNER'} · Etage ${r.floor}</span></div>
+ </div>
+ <div class="v6281-enter-note">🚪 Tür gewählt · direkter Übergang in den Kampf …</div>`;
+}
 
 /* V7.308: server-authoritative Tower still shows the old slow door-opening presentation.
    The fight is already resolved server-side; this is presentation-only and never mutates gameplay state. */
@@ -790,21 +800,29 @@ window.v7298TowerDoorPreview=async function(run,routeIndex=0,ms=1350){
    const rr=deep(run);
    rr.mode='doorTransition';
    rr.routeChoiceIndex=Math.max(0,Number(routeIndex)||0);
-   try{
-     v7191PreloadTowerAsset(rr.enemy?.bg,'high');
-     v7191PreloadTowerAsset(rr.enemy?.art,'high');
-   }catch(_){}
    root.innerHTML=`<div class="vT-wrap">${doorTransitionView(rr)}</div>`;
    try{v6260TowerChrome(true)}catch(_){}
    document.body?.classList.add('v6259-tower-focus');
    await new Promise(resolve=>setTimeout(resolve,Math.max(900,Number(ms)||1350)));
    return true;
  }catch(err){
-   console.warn('[V8.009-T9C] Tower door preview',err);
+   console.warn('[V7.308] Tower door preview',err);
    return false;
  }
 };
-function prepView(r){return v8009RunUiOwner.prepView(r)}
+function prepView(r){
+ const e=r.enemy,hard=!!r.currentChoice?.miniboss,boss=!!e.boss;
+ return `${v6259Head(r,boss?`BOSS · ${e.name}`:hard?'MINIBOSS · Kampfvorbereitung':'Kampfvorbereitung')}
+ ${v6259RunLine(r)}
+ <div class="v6259-prep ${boss?'boss':''}">
+   <div class="v6259-prep-bg" style="background-image:url('${e.bg||towerFloorBackground(r.floor,e.boss)}')"></div>
+   <img class="v6259-prep-enemy" loading="eager" decoding="async" fetchpriority="high" src="${e.art}" alt="${esc(e.name)}">
+   <div class="v6259-enemy-tag"><b>${esc(e.name)}</b><span>${e.boss?'BOSS':hard?'MINIBOSS':e.elite?'ELITE':'GEGNER'} · Etage ${r.floor}</span></div>
+   ${boss?'<div class="v6259-speech">„Alles wächst … und alles gehört mir!“</div>':''}
+ </div>
+ <div class="v6280-locked-choice">🔒 Tür gewählt · Gegner festgelegt</div>
+ <button class="vT-btn primary v6259-fight-main" data-vt-fight="0">⚔️ Kampf beginnen</button>`;
+}
 function battleView(r){
  const c=r.combat,e=r.enemy;
  return `${v6259Head(r,`Etage ${r.floor} · Kampf · Runde ${c.round+1}`,true,'ANBAU-TURM')}
@@ -1063,7 +1081,7 @@ function render(){
    if(r?.mode==='reward')setTimeout(()=>{try{window.v7308PrepareReward?.('tower')}catch(_){}},0);
    if(r?.mode==='route')v7191PreloadTowerRoute(r);
 
-   if(r?.mode==='doorTransition'&&!window.v7081UseAuthority?.('tower')&&!root.dataset.v6281TransitionLock){
+   if(r?.mode==='doorTransition'&&!root.dataset.v6281TransitionLock){
      const nonce=String(r.transitionNonce||'');
      root.dataset.v6281TransitionLock=nonce;
      setTimeout(()=>{
@@ -1072,7 +1090,7 @@ function render(){
          startFight(0);
        }
        if(root.dataset.v6281TransitionLock===nonce)delete root.dataset.v6281TransitionLock;
-     },980);
+     },720);
    }else if(r?.mode!=='doorTransition'){
      delete root.dataset.v6281TransitionLock;
    }
