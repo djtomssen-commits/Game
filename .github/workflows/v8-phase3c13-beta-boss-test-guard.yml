@@ -1,0 +1,46 @@
+name: V8 Phase 3C13 Beta retire boss test guard
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/v8_phase3c13_beta_boss_test_guard.py'
+permissions:
+  contents: write
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Retire obsolete boss test guard on beta
+        run: python3 .github/scripts/v8_phase3c13_beta_boss_test_guard.py
+      - name: Syntax-check beta chat fix
+        run: node --check js/features/guild/beta/v8008-c13-guild-chat-viewport-fix.js
+      - name: Validate beta-only scope
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re,json
+          beta=Path('beta.html').read_text(encoding='utf-8')
+          report=json.loads(Path('V8_PHASE3C13_BETA.json').read_text(encoding='utf-8'))
+          if not report.get('stable_unchanged'):
+              raise SystemExit('stable changed')
+          chat=re.search(r'<script\b[^>]*\bid=["\']vGuildChatCloseVisibilityFixJs["\'][^>]*>',beta,re.I)
+          if not chat or 'js/features/guild/beta/v8008-c13-guild-chat-viewport-fix.js' not in chat.group(0):
+              raise SystemExit('C13 chat fix not loaded')
+          guard=re.search(r'<script\b[^>]*\bid=["\']v6310-guildboss-test-removal-guard["\'][^>]*>',beta,re.I)
+          if not guard:
+              raise SystemExit('v6310 compatibility marker missing')
+          if re.search(r'\bsrc=',guard.group(0),re.I):
+              raise SystemExit('v6310 still loads a file')
+          print('Phase 3C13 validation OK')
+          PY
+      - name: Commit beta-only guard cleanup
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add beta.html js/features/guild/beta/v8008-c13-guild-chat-viewport-fix.js V8_PHASE3C13_BETA.json
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "V8.008 beta Phase 3C13: retire obsolete guild boss test guard"
+          git push
