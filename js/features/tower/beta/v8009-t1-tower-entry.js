@@ -17,7 +17,7 @@
   p.dataset.v4166TowerObserved='1';let busy=false;
   new MutationObserver(()=>{if(busy)return;busy=true;queueMicrotask(()=>{busy=false;addMenu()})}).observe(p,{childList:true});
  }
- function refresh(){addMenu();bindPanelObserver();try{window.vTowerRender?.()}catch(e){}}
+ function refresh(){addMenu();bindPanelObserver();try{const root=document.getElementById('tower');if(root?.classList.contains('active'))window.vTowerRender?.()}catch(e){}}
  document.addEventListener('click',e=>{if(e.target?.closest?.('#v032MenuBtn,#v032MenuToggle,.v366-menu'))requestAnimationFrame(refresh)},true);
  ['growlegends:account-ready','growlegends:extras-ready','growlegends:foreground-ready'].forEach(ev=>window.addEventListener(ev,()=>requestAnimationFrame(refresh)));
  window.addEventListener('pageshow',()=>requestAnimationFrame(refresh),{passive:true});
