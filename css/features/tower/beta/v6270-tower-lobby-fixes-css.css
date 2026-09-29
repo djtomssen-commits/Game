@@ -1,0 +1,66 @@
+/* Header: title must stay readable on narrow devices. */
+#tower .v6259-head{min-height:86px!important}
+#tower .v6259-head h2{
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  letter-spacing:0!important;
+}
+#tower .v6259-head span{
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+}
+#tower .v6259-round.crown{font-size:19px!important}
+
+/* Lobby image: show the full scene instead of cropping too hard. */
+#tower .v6259-tower-picture{
+  background-size:contain!important;
+  background-repeat:no-repeat!important;
+  background-position:center center!important;
+  background-color:#07100a!important;
+}
+
+/* Lobby card: less zoomed on mobile. */
+#tower .v6259-lobby{min-height:300px!important}
+#tower .v6259-lobby-card{padding:10px 8px!important}
+#tower .v6259-lobby-card>strong{font-size:30px!important;margin:1px 0 5px!important}
+#tower .v6259-lobby-row{min-height:28px!important}
+#tower .v6259-lobby-card .v6259-main-btn{min-height:44px!important}
+
+/* Lobby rankings must scroll and never hide the bottom row. */
+#tower .v6269-lobby-rank-card{overflow:visible!important}
+#tower .v6269-lobby-leader{
+  max-height:260px!important;
+  overflow-y:auto!important;
+  overflow-x:hidden!important;
+  padding-right:2px!important;
+  -webkit-overflow-scrolling:touch!important;
+}
+#tower .v6269-lobby-leader .vT-leader-row:nth-child(n+6){display:grid!important}
+#tower .v6269-lobby-leader::-webkit-scrollbar{width:6px!important}
+#tower .v6269-lobby-leader::-webkit-scrollbar-thumb{background:#3c543b!important;border-radius:99px!important}
+
+/* Event card same behavior. */
+#tower .v6269-lobby-rank-card.event .v6269-lobby-leader{max-height:260px!important}
+
+@media(max-width:520px){
+  #tower .v6259-head{min-height:80px!important;padding:7px 8px!important}
+  #tower .v6259-head h2{font-size:15px!important}
+  #tower .v6259-head span{font-size:7px!important}
+  #tower .v6259-lobby{grid-template-columns:50% 50%!important;gap:6px!important;min-height:280px!important}
+  #tower .v6259-tower-picture{min-height:280px!important}
+  #tower .v6259-lobby-card{padding:8px 6px!important}
+  #tower .v6259-lobby-card>strong{font-size:26px!important}
+  #tower .v6259-lobby-row{font-size:7px!important;min-height:25px!important}
+  #tower .v6267-recovery-note{font-size:6.4px!important}
+  #tower .v6267-recover-inline{min-height:42px!important;font-size:7.2px!important}
+  #tower .v6259-lobby-card .v6259-main-btn{min-height:42px!important;font-size:8.6px!important}
+  #tower .v6269-lobby-leader{max-height:240px!important}
+}
+
+@media(max-width:360px){
+  #tower .v6259-head h2{font-size:14px!important}
+  #tower .v6259-lobby{min-height:270px!important}
+  #tower .v6259-tower-picture{min-height:270px!important}
+}

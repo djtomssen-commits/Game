@@ -1,0 +1,141 @@
+/* V6.263 hatte die Lobby noch als 52/48-Spaltenlayout.
+   Dadurch endete die Turmgrafik in der Mitte und rechts blieb eine schwarze Fläche.
+   V6.264 macht aus der Lobby eine einzige große Szene mit schwebender Statusbox. */
+#tower .v6259-lobby{
+  position:relative!important;
+  display:block!important;
+  min-height:clamp(560px,72dvh,760px)!important;
+  overflow:hidden!important;
+  border:2px solid #5f4521!important;
+  border-radius:17px!important;
+  background:#050a07!important;
+  box-shadow:0 14px 34px #000c,inset 0 0 0 1px #1d1307!important;
+}
+#tower .v6259-tower-picture{
+  position:absolute!important;
+  inset:0!important;
+  min-height:0!important;
+  width:100%!important;
+  height:100%!important;
+  background-position:center center!important;
+  background-size:cover!important;
+  background-repeat:no-repeat!important;
+}
+#tower .v6259-lobby:after{
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  background:
+    linear-gradient(90deg,rgba(1,5,3,.03) 0%,rgba(1,5,3,.05) 42%,rgba(1,5,3,.34) 67%,rgba(1,5,3,.82) 100%),
+    linear-gradient(180deg,rgba(1,5,3,.03),rgba(1,5,3,.12) 55%,rgba(1,5,3,.48) 100%);
+}
+#tower .v6259-lobby-card{
+  position:absolute!important;
+  z-index:3!important;
+  right:12px!important;
+  top:50%!important;
+  transform:translateY(-50%)!important;
+  width:min(46%,225px)!important;
+  margin:0!important;
+  padding:14px 12px!important;
+  border:1px solid #506947!important;
+  border-radius:14px!important;
+  background:linear-gradient(180deg,rgba(6,17,10,.97),rgba(4,11,7,.97))!important;
+  box-shadow:0 12px 28px #000c,inset 0 0 22px #0006!important;
+  backdrop-filter:blur(1.5px);
+  -webkit-backdrop-filter:blur(1.5px);
+}
+#tower .v6259-lobby-card>small{
+  color:#9eaa9c!important;
+  font-size:8px!important;
+}
+#tower .v6259-lobby-card>strong{
+  margin:2px 0 11px!important;
+  color:#f0cf69!important;
+  font-size:36px!important;
+  line-height:1!important;
+}
+#tower .v6259-lobby-row{
+  margin:9px 0 4px!important;
+  font-size:8.5px!important;
+}
+#tower .v6259-lobby-card .v6259-hp{
+  height:11px!important;
+}
+#tower .v6259-lobby-card .v6259-main-btn{
+  min-height:47px!important;
+  margin-top:12px!important;
+  border-color:#8be15e!important;
+  background:linear-gradient(180deg,#76d252,#3d8f30)!important;
+  color:#071008!important;
+  font-size:10px!important;
+  font-weight:1000!important;
+  box-shadow:0 7px 18px #000b,0 0 13px rgba(113,218,77,.18)!important;
+}
+
+/* Meilenstein wie in der Vorlage direkt unter der großen Turmszene. */
+#tower .v6259-milestone{
+  margin-top:8px!important;
+  min-height:88px!important;
+  padding:12px 13px!important;
+  border:1px solid #59431f!important;
+  border-radius:14px!important;
+  background:linear-gradient(180deg,#0c120b,#070c08)!important;
+}
+#tower .v6259-milestone small{
+  color:#96a194!important;
+  font-size:7px!important;
+}
+#tower .v6259-milestone b{
+  margin:3px 0!important;
+  color:#f0dfb1!important;
+  font-size:14px!important;
+}
+#tower .v6259-milestone span{
+  color:#879486!important;
+  font-size:6.6px!important;
+}
+#tower .v6259-milestone .vT-btn{
+  min-width:115px!important;
+  min-height:46px!important;
+  font-size:9px!important;
+}
+
+/* Die Regenerationszeile bleibt funktional, aber tritt optisch deutlich zurück. */
+#tower .v6259-recovery-mini{
+  margin-top:6px!important;
+  padding:6px 8px!important;
+  opacity:.78!important;
+  font-size:6px!important;
+}
+
+/* Samsung/Android Portrait – Zielgröße aus dem aktuellen Screenshot. */
+@media(max-width:430px){
+  #tower .v6259-lobby{
+    min-height:clamp(520px,70dvh,700px)!important;
+  }
+  #tower .v6259-lobby-card{
+    right:9px!important;
+    width:45%!important;
+    padding:12px 10px!important;
+  }
+  #tower .v6259-lobby-card>strong{
+    font-size:32px!important;
+  }
+  #tower .v6259-lobby-row{
+    font-size:7.8px!important;
+  }
+  #tower .v6259-lobby-card .v6259-main-btn{
+    min-height:45px!important;
+    font-size:9px!important;
+  }
+}
+@media(max-width:360px){
+  #tower .v6259-lobby-card{
+    width:47%!important;
+    right:6px!important;
+    padding:10px 8px!important;
+  }
+  #tower .v6259-lobby-card>strong{font-size:29px!important}
+}

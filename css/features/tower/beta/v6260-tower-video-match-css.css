@@ -1,0 +1,364 @@
+/* True tower fullscreen. V6.259 only relied on a class; V6.260 also hides the live HUD in JS. */
+body.v6260-tower-fullscreen{
+  overflow-x:hidden!important;
+  background:#020503!important;
+}
+body.v6260-tower-fullscreen #v372TopbarShell,
+body.v6260-tower-fullscreen .app>header,
+body.v6260-tower-fullscreen #v371TopbarShell,
+body.v6260-tower-fullscreen .v366-topbar,
+body.v6260-tower-fullscreen .v358-global-header,
+body.v6260-tower-fullscreen .v358-subbar,
+body.v6260-tower-fullscreen .v351-topbar,
+body.v6260-tower-fullscreen .bottom,
+body.v6260-tower-fullscreen #v269TicketTab,
+body.v6260-tower-fullscreen #v4144GuildChatTab,
+body.v6260-tower-fullscreen #v6254HelpBtn,
+body.v6260-tower-fullscreen #v337LegalFooter{
+  display:none!important;
+  visibility:hidden!important;
+}
+body.v6260-tower-fullscreen>.app{
+  margin:0!important;
+  padding:0!important;
+  max-width:none!important;
+}
+body.v6260-tower-fullscreen main{
+  width:100%!important;
+  max-width:none!important;
+  margin:0!important;
+  padding:0!important;
+}
+body.v6260-tower-fullscreen #tower.active{
+  width:min(100vw,560px)!important;
+  max-width:560px!important;
+  min-height:100dvh!important;
+  margin:0 auto!important;
+  padding:5px 5px max(12px,env(safe-area-inset-bottom,0px))!important;
+  background:
+    radial-gradient(circle at 50% -5%,rgba(86,170,57,.16),transparent 28%),
+    linear-gradient(180deg,#071009 0%,#020503 75%)!important;
+}
+
+/* Header from approved mockup: larger and visually dominant. */
+#tower .v6259-head{
+  min-height:64px!important;
+  margin-bottom:5px!important;
+  padding:7px 50px 8px!important;
+  border:2px solid #8a5f27!important;
+  border-radius:16px!important;
+  background:linear-gradient(180deg,#663819,#2a180b 88%)!important;
+  box-shadow:0 8px 24px #000d,inset 0 0 0 1px #b07b35!important;
+}
+#tower .v6259-head h2{
+  font-size:20px!important;
+  letter-spacing:.015em!important;
+}
+#tower .v6259-head span{
+  margin-top:4px!important;
+  font-size:8.5px!important;
+}
+#tower .v6259-round{
+  width:41px!important;height:41px!important;
+  border-width:2px!important;
+  font-size:22px!important;
+}
+
+/* Every screen now uses the display height instead of collapsing into the top third. */
+#tower .v6259-lobby{
+  min-height:calc(100dvh - 155px)!important;
+}
+#tower .v6259-tower-picture{
+  min-height:calc(100dvh - 155px)!important;
+  background-image:url("assets/v7195-base64/ca2595d9adacf20762bd.webp")!important;
+  background-position:center!important;
+  background-size:cover!important;
+}
+#tower .v6259-door-stage{
+  min-height:calc(100dvh - 230px)!important;
+  display:flex!important;
+  flex-direction:column!important;
+}
+#tower .v6259-door-art{
+  height:auto!important;
+  min-height:clamp(330px,53dvh,520px)!important;
+  flex:1!important;
+  background-image:url("assets/v7195-base64/9b304f01de5cdf259601.webp")!important;
+  background-position:center!important;
+  background-size:cover!important;
+}
+#tower .v6259-door-grid{
+  flex:0 0 auto!important;
+  padding:8px!important;
+}
+#tower .v6259-door-choice{
+  padding:9px 7px!important;
+}
+#tower .v6259-door-choice>b{font-size:10px!important}
+#tower .v6259-door-choice p{font-size:7px!important;min-height:37px!important}
+#tower .v6259-door-choice .vT-btn{min-height:42px!important;font-size:9px!important}
+
+/* Battle: the biggest difference visible in the user's V6.259 recording. */
+#tower .v6259-battle{
+  height:calc(100dvh - 188px)!important;
+  min-height:560px!important;
+  max-height:820px!important;
+  margin:0!important;
+  border:2px solid #604822!important;
+  border-radius:15px!important;
+}
+#tower .v6259-battle-progress{
+  top:9px!important;
+  left:18%!important;
+  right:18%!important;
+  height:18px!important;
+}
+#tower .v6259-battle-progress span{font-size:7.5px!important}
+#tower .v6259-fighter{
+  bottom:78px!important;
+  width:46%!important;
+  height:58%!important;
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:flex-end!important;
+}
+#tower .v6259-fighter.player{left:1%!important}
+#tower .v6259-fighter.enemy{right:1%!important}
+#tower .v6259-fighter img{
+  width:100%!important;
+  height:100%!important;
+  max-width:none!important;
+  max-height:none!important;
+  object-position:center 45%!important;
+  filter:drop-shadow(0 18px 12px #000e)!important;
+}
+/* Character portraits are very tall (384×1024). Crop them into a proper fighting silhouette
+   instead of showing the narrow full poster seen in the recording. */
+#tower .v6259-fighter.player img{
+  object-fit:cover!important;
+  clip-path:inset(3% 8% 0 8% round 10px)!important;
+}
+#tower .v6259-fighter.enemy img{
+  object-fit:contain!important;
+  object-position:center bottom!important;
+}
+#tower .v6259-fighter .vT-fighter-name{
+  position:absolute!important;
+  left:6px!important;right:6px!important;bottom:-23px!important;
+  font-size:8px!important;
+  text-align:center!important;
+}
+#tower .v6259-hud{
+  bottom:12px!important;
+  width:46%!important;
+  padding:7px 8px!important;
+  border:1px solid #56644c!important;
+  background:#07100af0!important;
+}
+#tower .v6259-hud .vT-hpline{
+  font-size:7px!important;
+}
+#tower .v6259-hud .vT-bar{
+  height:13px!important;
+}
+#tower .v6259-battle .vT-damage{
+  top:31%!important;
+  font-size:34px!important;
+  font-weight:1000!important;
+  text-shadow:0 3px 5px #000,0 0 10px #000!important;
+}
+#tower .v6259-battle-log{
+  min-height:118px!important;
+  margin:6px 0 0!important;
+  padding:10px 12px!important;
+  font-size:9px!important;
+  line-height:1.55!important;
+  border-color:#56624d!important;
+}
+
+/* Enemy/boss preparation should also fill the screen, like the approved boss panel. */
+#tower .v6259-prep{
+  height:calc(100dvh - 205px)!important;
+  min-height:540px!important;
+  max-height:760px!important;
+}
+#tower .v6259-prep-enemy{
+  width:86%!important;
+  height:88%!important;
+}
+#tower .v6259-enemy-tag{
+  top:14px!important;right:10px!important;
+  padding:9px 11px!important;
+}
+#tower .v6259-enemy-tag b{font-size:11px!important}
+#tower .v6259-speech{
+  bottom:72px!important;
+  padding:10px 11px!important;
+  font-size:8px!important;
+}
+#tower .v6259-fight-main{
+  width:72%!important;
+  min-height:50px!important;
+  margin-top:8px!important;
+  font-size:11px!important;
+}
+
+/* Laboratory / merchant: large scene first, controls below, not tiny content at the top. */
+#tower .v6259-lab-scene,
+#tower .v6259-merchant-scene{
+  height:clamp(270px,38dvh,430px)!important;
+}
+#tower .v6259-lab-art{background-image:url("assets/v7195-base64/b03e902fb4a2ae00ad63.webp")!important;background-size:cover!important}
+#tower .v6259-merchant-art{background-image:url("assets/v7195-base64/06f5b41251d19dfe186a.webp")!important;background-size:cover!important}
+#tower .v6259-lab-bubble,#tower .v6259-merchant-bubble{
+  top:54px!important;
+  padding:9px 10px!important;
+  font-size:8px!important;
+}
+#tower .v6259-mutation-grid{
+  gap:7px!important;
+  margin-top:8px!important;
+}
+#tower .v6259-mut{
+  padding:8px 6px!important;
+  border-width:2px!important;
+}
+#tower .v6259-mut-icon{
+  height:64px!important;
+  font-size:34px!important;
+}
+#tower .v6259-mut h4{
+  min-height:30px!important;
+  font-size:9px!important;
+}
+#tower .v6259-mut p{
+  min-height:52px!important;
+  font-size:6.5px!important;
+}
+#tower .v6259-mut .vT-btn{
+  min-height:41px!important;
+  font-size:7.5px!important;
+}
+
+/* Grow floor was only a plain list in the recording. Give it the same illustrated-room treatment. */
+#tower .v6260-grow-scene{
+  position:relative;
+  height:clamp(300px,44dvh,470px);
+  overflow:hidden;
+  border:2px solid #544223;
+  border-radius:15px;
+  background:#071009;
+  box-shadow:0 13px 28px #000b;
+}
+#tower .v6260-grow-art{
+  position:absolute;inset:0;
+  background:
+    linear-gradient(180deg,rgba(2,6,3,.03),rgba(2,6,3,.32) 62%,rgba(2,6,3,.9)),
+    url("assets/v7195-base64/b03e902fb4a2ae00ad63.webp") center/cover no-repeat;
+}
+#tower .v6260-scene-tag{
+  position:absolute;z-index:2;left:50%;top:12px;transform:translateX(-50%);
+  padding:6px 10px;border:1px solid #5e7b4d;border-radius:999px;background:#07100ade;
+  color:#8ce869;font-size:9px;font-weight:1000;white-space:nowrap;
+}
+#tower .v6260-grow-copy{
+  position:absolute;z-index:2;left:12px;right:12px;bottom:12px;
+  padding:8px 10px;border:1px solid #465a45;border-radius:10px;background:#07100ae8;
+  color:#d2dccf;font-size:8px;line-height:1.4;text-align:center;
+}
+#tower .v6260-grow-actions{margin-top:8px!important}
+
+/* Run result now has the visual reward/chest screen from the approved direction. */
+#tower .v6260-result-scene{
+  position:relative;
+  height:clamp(280px,40dvh,430px);
+  overflow:hidden;
+  border:2px solid #725221;
+  border-radius:15px;
+  background:#071009;
+  box-shadow:0 15px 32px #000c;
+}
+#tower .v6260-result-art{
+  position:absolute;inset:0;
+  background:
+    linear-gradient(180deg,rgba(2,5,3,.03),rgba(2,5,3,.1) 50%,rgba(2,5,3,.84)),
+    url("assets/v7195-base64/73f02c44e9ab5d6fd51d.webp") center/cover no-repeat;
+}
+#tower .v6260-result-title{
+  position:absolute;z-index:2;left:10px;right:10px;bottom:12px;
+  color:#f1d77f;font:1000 18px Georgia,serif;text-align:center;text-shadow:0 2px #000;
+}
+#tower .v6260-result-box{
+  margin-top:7px!important;
+  padding:11px!important;
+}
+#tower .v6260-result-box h2{
+  margin:2px 0 8px!important;
+  font-size:17px!important;
+}
+#tower .v6260-reward-row{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:5px;
+  margin:8px 0;
+}
+#tower .v6260-reward-row>div{
+  min-width:0;
+  padding:7px 3px;
+  border:1px solid #485441;
+  border-radius:9px;
+  background:#071009;
+  text-align:center;
+}
+#tower .v6260-reward-row i{
+  display:block;
+  min-height:24px;
+  color:#d8a7ff;
+  font-style:normal;
+  font-size:18px;
+  font-weight:1000;
+}
+#tower .v6260-reward-row small{
+  display:block;margin-top:2px;color:#879587;font-size:5.5px;
+}
+#tower .v6260-reward-row b{
+  display:block;margin-top:2px;color:#f1d47d;font-size:8px;
+}
+
+/* The recorded layout had huge dead black areas. Stretch compact special/result panels enough
+   to keep the screen visually occupied without changing gameplay. */
+#tower .v6259-result,
+#tower .v6259-panel{
+  width:100%!important;
+}
+#tower .v6259-shop-list>div{
+  min-height:58px!important;
+}
+#tower .v6259-shop-list i{
+  width:42px!important;height:42px!important;font-size:22px!important;
+}
+#tower .v6259-shop-list section b{font-size:9px!important}
+#tower .v6259-shop-list section span{font-size:6.5px!important}
+#tower .v6259-shop-list .vT-btn{
+  min-width:84px!important;
+  min-height:38px!important;
+  font-size:7px!important;
+}
+
+/* Phone portrait — the actual target seen in the user's recording. */
+@media(max-width:430px){
+ body.v6260-tower-fullscreen #tower.active{
+   width:100vw!important;
+   padding-left:4px!important;padding-right:4px!important;
+ }
+ #tower .v6259-head{border-radius:12px!important}
+ #tower .v6259-head h2{font-size:18px!important}
+ #tower .v6259-lobby{grid-template-columns:55% 45%!important}
+ #tower .v6259-lobby-card{margin-right:5px!important;padding:10px 8px!important}
+ #tower .v6259-door-art{min-height:47dvh!important}
+ #tower .v6259-battle{height:calc(100dvh - 178px)!important;min-height:520px!important}
+ #tower .v6259-fighter{height:56%!important}
+ #tower .v6259-battle-log{min-height:100px!important}
+ #tower .v6259-prep{height:calc(100dvh - 195px)!important;min-height:510px!important}
+ #tower .v6259-lab-scene,#tower .v6259-merchant-scene{height:34dvh!important;min-height:240px!important}
+}
