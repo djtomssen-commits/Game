@@ -62,7 +62,7 @@ base=texts["index.html"]
 groups=[]
 cur=[]
 prev=None
-gap_ok=re.compile(r'^(?:\s|<!--[\s\S]*?-->)*$')
+comment_re=re.compile(r'<!--[\\s\\S]*?-->')
 for row in a:
     if prev is None:
         cur=[row]
