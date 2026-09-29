@@ -1,0 +1,28 @@
+{
+  "build": "V8.009-T10J-BETA",
+  "phase": "First-fight startup queue isolation",
+  "scope": "beta only",
+  "root_cause": {
+    "finding": "The V7.214 deferred account-ready queue had 149 pending login listeners at first-playable and drains one listener roughly every 45 ms after startup.",
+    "defect": "Its combat busy check uses window.__V7085_TOWER_FIGHTING__, but the current server-authoritative Tower replay never set that flag.",
+    "effect": "The queue therefore resumed draining through the first Tower combat, overlapping the replay with many startup callbacks/RPC completions/DOM work.",
+    "measured_evidence": [
+      "Latest startup telemetry: queued=149, drained=0 at first-playable.",
+      "Latest first-floor Tower choose reported stalled_action at 6501 ms in replay phase.",
+      "A 781 ms long main-thread task was recorded on the Tower during the same startup window.",
+      "Earlier run recorded a 1873 ms long main-thread task and replay stalls."
+    ],
+    "timing_match": "149 queued listeners × ~45 ms drain spacing is at least ~6.7 s of startup queue activity, matching the reported first-fight-only pause/stutter window."
+  },
+  "change": [
+    "Set window.__V7085_TOWER_FIGHTING__=true for the complete authoritative door + replay route.",
+    "Clear the compatibility flag in finally after the replay ends.",
+    "This makes the existing V7.214 startup queue defer its jobs during Tower combat instead of competing with replay timers."
+  ],
+  "file": "js/features/tower/beta/v8009-t1-tower-direct-preempt.js",
+  "file_sha": "23dec5364dd16be1707a93a7a6fd30c59387db40",
+  "stable_changed": false,
+  "server_authority_changed": false,
+  "combat_math_changed": false,
+  "syntax_check": "ok"
+}
