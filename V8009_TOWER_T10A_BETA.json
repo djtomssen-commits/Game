@@ -1,0 +1,30 @@
+{
+  "build": "V8.009-T10A-BETA",
+  "phase": "Tower one-tap combat flow with longer door opening",
+  "scope": "beta only external override",
+  "changes": [
+    "combat door choice again calls the existing authoritative choose-and-fight route",
+    "removed the T10 prepared-state / separate Fight-button route override",
+    "door opening preview now has a 1500 ms minimum before replay proceeds",
+    "route clicks remain client-locked to prevent duplicate authoritative actions",
+    "T10 combat cadence and duplicate-FX cleanup remain unchanged"
+  ],
+  "file": "js/features/tower/beta/v8009-t1-tower-direct-preempt.js",
+  "bytes_before": 9987,
+  "bytes_after": 2943,
+  "sha": "1cd170a4d8b7d553101afa91d505157ddd15c294",
+  "beta_html_changed": false,
+  "beta_html_sha": "1ee5bd5af84ad84b4b867545637b8faa7ffa944a",
+  "stable_changed": false,
+  "stable_index_sha": "0bc5fe3eb0e69c856070dfcb6682d3178c56a597",
+  "server_authority_changed": false,
+  "combat_math_changed": false,
+  "syntax_check": "ok",
+  "verification": {
+    "one_tap_route": true,
+    "no_separate_choose_rpc": true,
+    "no_prepared_guard": true,
+    "door_preview_min_1500": true,
+    "duplicate_tap_guard": true
+  }
+}
