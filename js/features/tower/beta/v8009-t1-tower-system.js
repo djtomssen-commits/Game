@@ -464,33 +464,29 @@ function makeEnemy(floor,type){
  const [fallback,kind]=ENEMIES[(floor*3+Math.floor(Math.random()*ENEMIES.length))%ENEMIES.length];const visual=miniboss?'miniboss':elite?'elite':'normal',real=towerAssetEnemyName(floor,visual);return{name:`${miniboss?'Miniboss: ':elite?'Elite ':''}${real||fallback}`,kind,elite,boss:false,miniboss,mechanic:elite?pick(['armor','rage','dodge','thorns']):'',desc:miniboss?'Zwischenboss – deutlich härter, aber mit starker Wertung.':elite?'Elite-Mutation aktiv.':'Turmgegner',art:towerEnemyArt(floor,visual),bg:towerFloorBackground(floor,false)};
 }
 const TOWER_RECOVERY_HOUR=60*60*1000,TOWER_RECOVERY_REFILL=20;
-/* V6.250: kleine Charaktere regenerieren Turm-HP schneller.
-   Ab Spieler-Level 50 gilt die bisherige Rate von 5 %/h. */
+/* V8.009-T3: recovery math/state has one external Beta owner.
+   The public V6.250 compatibility names remain available to the rest of the tower. */
+function v8009RecoveryOwner(){
+ const o=window.v8009TowerRecoveryOwner;
+ if(!o)throw new Error('V8.009 Tower recovery owner missing');
+ return o;
+}
 function v6250TowerRecoveryStep(level=Number(s?.level)||1){
- level=Math.max(1,Math.floor(Number(level)||1));
- if(level<10)return 25;
- if(level<20)return 20;
- if(level<30)return 15;
- if(level<40)return 10;
- if(level<50)return 7;
- return 5;
+ return v8009RecoveryOwner().step(level);
 }
 window.v6250TowerRecoveryStep=v6250TowerRecoveryStep;
 function normalizeTowerRecovery(t){
- const m=t.meta||(t.meta={}),now=Date.now();
- if(!Number.isFinite(Number(m.recoveryPct))||!Number.isFinite(Number(m.recoveryAt))){m.recoveryPct=100;m.recoveryAt=now;m.recoveryVersion=1;return 100}
- let pct=clamp(Number(m.recoveryPct)||0,0,100),at=Math.max(0,Number(m.recoveryAt)||now);
- if(pct<100){const ticks=Math.max(0,Math.floor((now-at)/TOWER_RECOVERY_HOUR)),step=v6250TowerRecoveryStep();if(ticks>0){pct=Math.min(100,pct+ticks*step);at+=ticks*TOWER_RECOVERY_HOUR;m.recoveryPct=pct;m.recoveryAt=at}}
- else{m.recoveryPct=100}
- return pct;
+ return v8009RecoveryOwner().normalize(t,Number(s?.level)||1);
 }
-function towerRecoveryInfo(){const t=ensure(),pct=normalizeTowerRecovery(t),m=t.meta,now=Date.now(),step=v6250TowerRecoveryStep();let nextMs=0,fullMs=0;if(pct<100){const elapsed=Math.max(0,now-(Number(m.recoveryAt)||now));nextMs=Math.max(0,TOWER_RECOVERY_HOUR-(elapsed%TOWER_RECOVERY_HOUR));const steps=Math.ceil((100-pct)/step);fullMs=Math.max(0,nextMs+(steps-1)*TOWER_RECOVERY_HOUR)}return{pct,nextMs,fullMs,step,level:Math.max(1,Math.floor(Number(s?.level)||1)),harz:Math.max(0,Number(s.harzTaler)||0)}}
+function towerRecoveryInfo(){
+ return v8009RecoveryOwner().info(
+   ensure(),
+   Number(s?.level)||1,
+   Number(s?.harzTaler)||0
+ );
+}
 function recoveryTime(ms){
- ms=Math.max(0,Number(ms)||0);
- const totalMin=Math.max(1,Math.ceil(ms/60000));
- const h=Math.floor(totalMin/60),m=totalMin%60;
- if(h<=0)return `${m} Min.`;
- return `${h} Std. ${m} Min.`;
+ return v8009RecoveryOwner().formatTime(ms);
 }
 function recoveryPanel(){
  const x=towerRecoveryInfo(),canStart=x.pct>0,full=x.pct>=100;
@@ -508,10 +504,11 @@ window.v6250TowerRecoveryDiagnostics=()=>({
   {levels:'40–49',pctPerHour:7,fullFromZeroHours:15},
   {levels:'50+',pctPerHour:5,fullFromZeroHours:20}
  ],
- current:towerRecoveryInfo()
+ current:towerRecoveryInfo(),
+ owner:'v8009TowerRecoveryOwner'
 });
 function buyTowerRecovery(){const t=ensure(),m=t.meta,pct=normalizeTowerRecovery(t);if(t.run?.active)return toast('Während eines laufenden Turms nicht möglich.','warn');if(pct>=100)return toast('Turm-Erholung ist bereits voll.','info');if((Number(s.harzTaler)||0)<1)return toast('Du brauchst 1 Harz-Taler.','warn');s.harzTaler=Math.max(0,(Number(s.harzTaler)||0)-1);m.recoveryPct=Math.min(100,pct+TOWER_RECOVERY_REFILL);m.recoveryAt=Date.now();save(false);try{v282PaintHarzCard?.()}catch(e){try{v069SyncCurrencies?.()}catch(_){}}toast(`Turm-Erholung +${TOWER_RECOVERY_REFILL} %.`,'success');render()}
-function resetTowerRecovery(t){const bonus=Math.max(0,Math.min(100,Number(t.meta?.pendingWednesdayRecovery)||0));t.meta.recoveryPct=bonus;t.meta.recoveryAt=Date.now();t.meta.recoveryVersion=1;t.meta.pendingWednesdayRecovery=0}
+function resetTowerRecovery(t){return v8009RecoveryOwner().reset(t)}
 function scheduleTowerRecoveryRender(){try{clearTimeout(towerRecoveryTimer)}catch(e){}const t=ensure();if(t.run?.active)return;const x=towerRecoveryInfo();if(x.pct>=100)return;towerRecoveryTimer=setTimeout(()=>{
  try{
    const root=document.getElementById('tower');
