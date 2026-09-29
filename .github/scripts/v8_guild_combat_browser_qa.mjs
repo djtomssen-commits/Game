@@ -95,11 +95,13 @@ await page.addScriptTag({path:p('js/features/guild/beta/v8008-c10-guildboss-timi
 await page.addScriptTag({path:p('js/features/guild/legacy/01-v255-daily-guild-boss-core.js')});
 await page.addScriptTag({path:p('js/features/guild/beta/v8008-c12-guildboss-runtime-core.js')});
 await page.evaluate(()=>window.v8008C12InstallLateBridge?.());
-await page.addScriptTag({path:p('js/features/guild/beta/v8008-c9-guildboss-screen-owner.js')});
-await page.evaluate(()=>window.v8008C9InstallReferenceLayout?.());
-await page.addScriptTag({path:p('js/features/guild/beta/v8008-c8-guildboss-pre-replay-visual-owner.js')});
-await page.addScriptTag({path:p('js/features/guild/beta/v8008-c13-guildboss-replay-owner.js')});
-await page.addScriptTag({path:p('js/features/guild/beta/v8008-c8-guildboss-post-replay-arena-owner.js')});
+await page.addScriptTag({path:p('js/features/guild/beta/v8008-c18-guildboss-screen-visual-owner.js')});
+await page.evaluate(()=>{
+  window.v8008C9InstallReferenceLayout?.();
+  window.v8008C18InstallPreVisual?.();
+});
+await page.addScriptTag({path:p('js/features/guild/beta/v8008-c18-guildboss-replay-owner.js')});
+await page.evaluate(()=>window.v8008C18InstallPostArena?.());
 
 const bossResult=await page.evaluate(async()=>{
   v255BossRound={
@@ -199,6 +201,43 @@ assert(bossResult.timingOwner.sleep,'Boss QA: C10 v259Sleep utility missing');
 assert(!bossResult.timingOwner.oldSetHp && !bossResult.timingOwner.oldAnimate,'Boss QA: retired V259 test animation APIs unexpectedly present');
 assert(Object.values(bossResult.runtimeOwner).every(Boolean),'Boss QA: C11 runtime core incomplete');
 assert(Object.values(bossResult.screenOwner).every(Boolean),'Boss QA: C9 boss screen owner/layout incomplete');
+
+await page.evaluate(()=>window.v8008C18InstallSignup?.());
+const signupResult=await page.evaluate(async()=>{
+  v254Membership.boss_signed=false;
+  v255BossRound=null;
+  v255BossParticipants=[];
+  v073Db.rpc=async(name,args)=>{
+    if(name==='v7307_set_guild_boss_signup'){
+      return {data:{
+        ok:true,
+        registered:true,
+        participant_count:1,
+        participants:[{user_id:'qa-user',character_name:'QA User',class_id:'grower',class_name:'Bud-Barbar',level:100,combat_power:3200,damage_done:null}]
+      },error:null};
+    }
+    if(name==='v255_get_guild_boss'){
+      return {data:{
+        round:null,
+        participants:[{user_id:'qa-user',character_name:'QA User',class_id:'grower',class_name:'Bud-Barbar',level:100,combat_power:3200,damage_done:null}]
+      },error:null};
+    }
+    return {data:null,error:null};
+  };
+  const registered=await window.v7307SetGuildBossSignup();
+  return {
+    installer:!!window.__V8008_C18_SIGNUP_INSTALLER__,
+    owner:!!window.__v7307BossSignupOwner,
+    registered,
+    membership:!!v254Membership.boss_signed,
+    participantCount:Array.isArray(v255BossParticipants)?v255BossParticipants.length:0,
+    visibleCount:document.getElementById('v254BossCount')?.textContent||''
+  };
+});
+assert(signupResult.installer && signupResult.owner,'Boss QA: C18 signup owner not installed');
+assert(signupResult.registered===true && signupResult.membership,'Boss QA: authoritative signup did not register');
+assert(signupResult.participantCount===1,'Boss QA: signup participant read-back failed');
+
 
 await page.addScriptTag({path:p('js/features/guild/legacy/05-v262-guild-war-core--v263-guild-war-final.js')});
 
