@@ -158,4 +158,55 @@
   try{window.v254ToggleSignup=owner}catch(_){}
 
   window.v7307SetGuildBossSignup=setBossSignup;
+
+  /* V8.005: while today's signup is open, the live participant list from
+     v255_get_guild_boss is canonical. A historical completed round must not
+     overwrite it after render. */
+  try{
+    const previousBossLoad=window.v255LoadBoss||((typeof v255LoadBoss==='function')?v255LoadBoss:null);
+    if(typeof previousBossLoad==='function'&&!previousBossLoad.__v8005LiveSignupOwner){
+      const canonicalBossLoad=async function(){
+        const view=bossViewSnapshot();
+        const r=await previousBossLoad.apply(this,arguments);
+        try{
+          const phase=v255LocalPhase?.();
+          if(phase?.open && typeof v073Db!=='undefined' && v073Db){
+            const {data,error}=await v073Db.rpc('v255_get_guild_boss');
+            if(error)throw error;
+
+            const payload=Array.isArray(data)?data[0]:data;
+            v255BossRound=payload?.round||null;
+            v255BossParticipants=Array.isArray(payload?.participants)?payload.participants:[];
+
+            try{
+              window.v255BossRound=v255BossRound;
+              window.v255BossParticipants=v255BossParticipants;
+            }catch(_){}
+
+            setMembersFromParticipants(v255BossParticipants);
+
+            /* If the compatibility/history layer inserted yesterday's note,
+               remove it while the current signup list is being shown. */
+            if(!v255BossRound){
+              document.getElementById('v7165BossHistoryNote')?.remove();
+            }
+
+            paintStable(view);
+          }
+        }catch(e){
+          console.warn('[V8.005] canonical boss signup refresh',e);
+          restoreBossView(view);
+        }
+        return r;
+      };
+
+      canonicalBossLoad.__v8005LiveSignupOwner=true;
+      canonicalBossLoad.__base=previousBossLoad;
+
+      try{v255LoadBoss=canonicalBossLoad}catch(_){}
+      try{window.v255LoadBoss=canonicalBossLoad}catch(_){}
+    }
+  }catch(e){
+    console.warn('[V8.005] install boss live-signup owner',e);
+  }
 })();
