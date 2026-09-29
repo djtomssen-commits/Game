@@ -1,0 +1,24 @@
+{
+  "build": "V8.009-T10H-BETA",
+  "phase": "Post-fight audio hard stop + first-run combat warmup",
+  "scope": "beta only",
+  "evidence_from_video": {
+    "first_visible_battle_window": "approximately 11.2s–12.4s",
+    "reward_screen_visible": "from approximately 12.6s",
+    "strong_impact_audio_peaks_s": "11.50, 11.95, 12.40, 12.83, 13.27",
+    "finding": "impact sounds at ~12.83s and ~13.27s occur after the Tower reward screen is already visible"
+  },
+  "changes": [
+    "Tower impact/attack sounds are now rejected whenever the Tower screen is active but no battle stage exists.",
+    "The 900 ms Tower combat cadence is re-asserted by the one-tap route owner before the first route so late load-order overrides cannot make the first fight use the old fast cadence.",
+    "The enemy image is decoded during the 900 ms door-opening window so first-run cold decode work does not land on the first attack frames.",
+    "Existing T10G arena prewarm and terminal-result overlay guard remain active.",
+    "Post-route stale-audio block extended from 1400 ms to 2200 ms."
+  ],
+  "file": "js/features/tower/beta/v8009-t1-tower-direct-preempt.js",
+  "file_sha": "78a8813a31c1c7fcda9d1850d854099fbc4bb480",
+  "stable_changed": false,
+  "server_authority_changed": false,
+  "combat_math_changed": false,
+  "syntax_check": "ok"
+}
