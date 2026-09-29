@@ -1,0 +1,30 @@
+{
+  "build": "V8.009-T8-BETA",
+  "phase": "Tower T8 image preload latency fix",
+  "scope": "beta only",
+  "main_system": "js/features/tower/beta/v8009-t1-tower-system.js",
+  "changes": [
+    "removed requestIdleCallback delay from Tower combat asset preloading",
+    "current route background/enemy assets now preload immediately with high fetch priority",
+    "next-floor combat assets start preloading while reward/mutation screens are still visible",
+    "preload Image objects are retained briefly to avoid premature garbage collection",
+    "visible player/enemy combat images use fetchpriority=high"
+  ],
+  "main_system_bytes_before": 107121,
+  "main_system_bytes_after": 107905,
+  "main_system_sha": "19387b0e9f0e4d1fb1cbe509f565ee93d3918521",
+  "beta_html_changed": false,
+  "beta_html_sha": "1ee5bd5af84ad84b4b867545637b8faa7ffa944a",
+  "stable_changed": false,
+  "stable_index_sha": "0bc5fe3eb0e69c856070dfcb6682d3178c56a597",
+  "gameplay_changed": false,
+  "server_authority_changed": false,
+  "syntax_check": "ok",
+  "verification": {
+    "idle_preload_removed": true,
+    "high_priority_preload": true,
+    "route_preload_before_paint": true,
+    "next_floor_preload": false,
+    "visible_enemy_priority": true
+  }
+}
