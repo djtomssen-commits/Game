@@ -1,4 +1,4 @@
-/* === V8.008-C6.1 beta merged guild overview owner: v554 + v556 + v559 + v561 === */
+/* === V8.008-C6.2 beta merged guild overview owner: v554 + v556 + v559 + v561 === */
 (function(){
   'use strict';
   const esc=v=>typeof v254GuildEsc==='function'?v254GuildEsc(v):String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
@@ -196,6 +196,10 @@
 
 
   const guildRoot=document.getElementById('guild');
+  /* V8.008-C6.2 beta: CSS was externalized in Phase 3A, so legacy url("assets/...")
+     became relative to css/features/guild/legacy/. Pin the boss artwork to the
+     site root on beta until the guild CSS asset paths are normalized. */
+  if(guildRoot)guildRoot.style.setProperty('--v562-boss-art','url("/assets/v7195-base64/34a8f96a5a6332903470.webp")');
   let guildResolvedKey='';
   let guildActiveLoads=0;
 
