@@ -93,9 +93,10 @@ await page.evaluate(()=>{
 
 await page.addScriptTag({path:p('js/features/guild/beta/v8008-c10-guildboss-timing.js')});
 await page.addScriptTag({path:p('js/features/guild/legacy/01-v255-daily-guild-boss-core.js')});
-await page.addScriptTag({path:p('js/features/guild/beta/v8008-c12-guildboss-runtime-core.js')});
+await page.addScriptTag({path:p('js/features/guild/beta/v8008-c25-guildboss-runtime-owner.js')});
 await page.evaluate(()=>window.v8008C12InstallLateBridge?.());
 await page.addScriptTag({path:p('js/features/guild/beta/v8008-c18-guildboss-screen-visual-owner.js')});
+await page.evaluate(()=>window.v8008C25InstallReliability?.());
 await page.evaluate(()=>{
   window.v8008C9InstallReferenceLayout?.();
   window.v8008C18InstallPreVisual?.();
@@ -160,6 +161,7 @@ const bossResult=await page.evaluate(async()=>{
       installed:!!window.__V8008_C11_GUILD_BOSS_RUNTIME__,
       c12:!!window.__V8008_C12_GUILD_BOSS_RUNTIME__,
       lateBridge:!!window.__V8008_C12_LATE_BRIDGE_INSTALLED__,
+      reliability:typeof window.v4119LoadBossStage==='function',
       roundResolved:typeof window.v260RoundResolved==='function',
       maybeAutoPlay:typeof window.v260MaybeAutoPlay==='function',
       hpSetter:typeof window.v260SetRealBossHp==='function',
@@ -238,8 +240,36 @@ assert(signupResult.installer && signupResult.owner,'Boss QA: C18 signup owner n
 assert(signupResult.registered===true && signupResult.membership,'Boss QA: authoritative signup did not register');
 assert(signupResult.participantCount===1,'Boss QA: signup participant read-back failed');
 
+await page.evaluate(()=>{
+  window.v7081UseAuthority=()=>true;
+  s.gold=0;s.xp=0;s.harzTaler=0;
+  v073Db.rpc=async(name,args)=>{
+    if(name==='v255_claim_guild_boss_reward')return {data:{ok:true,won:true,gold:100,xp:50,harz:2,progress:{level:1,xp:50,gold:100,harz:2}},error:null};
+    if(name==='v255_get_guild_boss')return {data:{round:v255BossRound,participants:v255BossParticipants},error:null};
+    return {data:null,error:null};
+  };
+  window.v8008C25InstallRewards?.();
+  document.getElementById('v255ClaimBossReward')?.click();
+});
+await page.waitForTimeout(80);
+const rewardResult=await page.evaluate(()=>({
+  gold:s.gold,xp:s.xp,harz:s.harzTaler,
+  installed:!!window.__V7078_SERVER_GUILD_REWARDS__,
+  diagnostics:window.v7078GuildRewardDiagnostics?.()
+}));
+assert(rewardResult.installed,'Boss QA: C25 server reward owner not installed');
+assert(rewardResult.gold===100 && rewardResult.xp===50 && rewardResult.harz===2,'Boss QA: server reward claim did not apply authoritative progress');
+assert(rewardResult.diagnostics?.bossClaims===1,'Boss QA: server reward claim counter mismatch');
 
-await page.addScriptTag({path:p('js/features/guild/legacy/05-v262-guild-war-core--v263-guild-war-final.js')});
+
+
+await page.addScriptTag({path:p('js/features/guild/beta/v8008-c25-guildwar-owner.js')});
+await page.evaluate(()=>{
+  window.__V200_AUTH_READY__=false;
+  window.v8008C25InstallWarAuthority?.();
+  window.v8008C25InstallWarVisual?.();
+  window.v8008C25InstallWarLower?.();
+});
 
 const warResult=await page.evaluate(async()=>{
   v262War={
