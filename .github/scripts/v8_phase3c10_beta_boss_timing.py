@@ -29,6 +29,11 @@ for token in retired:
         try:s=p.read_text(encoding='utf-8',errors='ignore')
         except Exception:continue
         if token in s:
+            # Production cleanup deliberately replaces the retired test renderer
+            # with a no-op after removing its old DOM. That is proof of retirement,
+            # not a runtime consumer.
+            if token=='v259AnimateBossResult' and rel in ('index.html','beta.html') and "window.v259AnimateBossResult=async()=>false" in s:
+                continue
             idx=s.find(token)
             snippet=s[max(0,idx-220):min(len(s),idx+320)].replace('\n',' ')
             hits.append(rel+" :: "+snippet)
