@@ -1,0 +1,24 @@
+name: V8 Guild combat browser QA
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/v8_guild_combat_browser_qa.mjs'
+      - '.github/workflows/v8-guild-combat-browser-qa.yml'
+
+jobs:
+  qa:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install headless browser
+        run: |
+          npm install --no-save playwright@1.55.0
+          npx playwright install chromium
+      - name: Run Guild Boss + Guild War browser QA
+        run: node .github/scripts/v8_guild_combat_browser_qa.mjs
