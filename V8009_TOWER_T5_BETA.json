@@ -1,0 +1,37 @@
+{
+  "build": "V8.009-T5-BETA",
+  "phase": "Tower T5 lobby render and bindings owner",
+  "scope": "beta only",
+  "owner_bundle": "js/features/tower/beta/v8009-t2-tower-lobby.js",
+  "main_system": "js/features/tower/beta/v8009-t1-tower-system.js",
+  "changes": [
+    "lobby state composition and lobby view call moved behind v8009CreateTowerLobbyController.renderLobby",
+    "tower tab bindings delegated to lobby controller",
+    "run start and +20% Harz recovery bindings delegated to lobby controller",
+    "Wednesday reward navigation binding delegated to lobby controller",
+    "main tower system retains combat, route, reward and run-state gameplay owners"
+  ],
+  "owner_bundle_bytes": 18485,
+  "main_system_bytes": 113554,
+  "owner_bundle_sha": "441e26978935c8f9599016de354d1c8f55e262b8",
+  "main_system_sha": "cfb97946ef6d3148cd813f5a958e7aacdef3805d",
+  "beta_html_sha": "1ee5bd5af84ad84b4b867545637b8faa7ffa944a",
+  "stable_index_sha": "0bc5fe3eb0e69c856070dfcb6682d3178c56a597",
+  "beta_html_changed": false,
+  "stable_changed": false,
+  "gameplay_changed": false,
+  "server_authority_changed": false,
+  "syntax_check": {
+    "owner_bundle": "ok",
+    "main_system": "ok"
+  },
+  "verification": {
+    "owner_render_lobby": true,
+    "owner_bind_lobby": true,
+    "controller_t5": true,
+    "system_lobby_delegate": true,
+    "system_bind_delegate": true,
+    "duplicate_direct_tab_binding": false,
+    "syntax": "ok"
+  }
+}
