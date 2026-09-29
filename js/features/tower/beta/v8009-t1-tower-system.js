@@ -499,6 +499,13 @@ window.v6250TowerRecoveryDiagnostics=()=>({
  current:towerRecoveryInfo(),
  owner:'v8009TowerRecoveryOwner'
 });
+const v8009ChromeOwner=window.v8009CreateTowerChromeOwner?.({
+ esc,
+ towerWednesdayEvent:()=>towerWednesdayEvent(),
+ setTowerTab:v=>{towerTab=v},
+ render:()=>render()
+});
+if(!v8009ChromeOwner)throw new Error('V8.009 T7 tower chrome owner missing');
 const v8009LobbyController=window.v8009CreateTowerLobbyController?.({
  getState:()=>s,
  ensure,
@@ -678,69 +685,9 @@ async function loadWednesdayRanking(){return v8009LobbyController.loadWednesdayR
 
 function toast(msg,type='success'){try{if(typeof v063Toast==='function')v063Toast(msg,type);else console.log(msg)}catch(e){}}
 function runTop(r){return `<div class="vT-topstats"><div class="vT-stat good"><small>Etage</small><b>${r.floor}</b></div><div class="vT-stat"><small>Leben</small><b>${fmt(r.hp)} / ${fmt(r.maxHp)}</b></div><div class="vT-stat gold"><small>Turm-Score</small><b>${fmt(r.score)}</b></div><div class="vT-stat"><small>Ungesichert</small><b>💰 ${fmt(r.unbanked.gold)} · 🍃 ${fmt(r.unbanked.tokens)}</b></div></div><div class="vT-hpbox"><div class="vT-hpline"><span>Run-Leben bleibt zwischen Etagen erhalten</span><span>${Math.round(r.hp/r.maxHp*100)} %</span></div><div class="vT-bar"><i style="width:${clamp(r.hp/r.maxHp*100,0,100)}%"></i></div></div>${r.buffs.length?`<div class="vT-buffs" style="margin-top:8px">${r.buffs.map(id=>{const m=MUTATIONS.find(x=>x.id===id);return m?`<div class="vT-buffchip">${m.icon} <b>${esc(m.name)}</b></div>`:''}).join('')}</div>`:''}`}
-function hero(){const t=ensure(),z=t.season,rule=seasonRule();return `<div class="vT-hero"><div class="vT-hero-art" style="background-image:url('${towerBg()}')"></div><div class="vT-hero-copy"><div class="vT-kicker">ENDLOSER SAISON-MODUS <span class="vT-build-mark">2-TÜREN · REAL-ASSETS</span></div><div class="vT-title">DER ANBAUTURM</div><div class="vT-sub">Etage für Etage nach oben. Entscheide dich zwischen zwei Türen, baue deinen Mutations-Build und riskiere mehr für mehr Score. Spezialräume können helfen – danach musst du wieder kämpfen.</div><div class="vT-season">${rule.icon} Saison ${esc(z.id)} · ${esc(rule.name)} · ${esc(rule.desc)}</div></div></div>${wednesdayPanel()}`}
-function toolbar(){const t=ensure(),r=t.run;return `<div class="vT-token-stock"><div class="leaf">🍃</div><div class="copy"><small>Dein gesicherter Bestand</small><strong>${fmt(t.meta.tokens)}</strong><em>Turmblätter</em></div><span class="lock">✓ GESICHERT</span></div><div class="vT-toolbar"><button class="vT-btn ${towerTab==='run'?'primary':''}" data-vt-tab="run">🗼 ${r?.active?'Aktiver Lauf':'Turm'}</button><button class="vT-btn ${towerTab==='rank'?'primary':''}" data-vt-tab="rank">🏆 Rangliste</button><button class="vT-btn ${towerTab==='meta'?'primary':''}" data-vt-tab="meta">🍃 Turm-Aufstieg</button>${r?.active?'<button class="vT-btn danger" data-vt-abort>Run aufgeben</button>':''}</div>`}
-
-function v6259Head(r,sub,back=true,title=''){
- const floor=Math.max(1,Number(r?.floor)||1);
- const headTitle=title|| (r?`ANBAU-TURM · ETAGE ${floor}`:'ANBAU-TURM');
- return `<div class="v6259-head">
-   ${back?'<button class="v6259-round" data-vt-exit aria-label="Turm verlassen">←</button>':'<button class="v6259-round" data-vt-exit aria-label="Zurück">←</button>'}
-   <div class="v6259-head-copy"><h2>${esc(headTitle)}</h2><span>${esc(sub||'Je höher du steigst, desto stärker werden die Mutationen.')}</span></div>
-   <div class="v6279-head-actions">
-     <button class="v6259-round v6279-guide-btn" data-vt-guide aria-label="Anbau-Turm Guide" title="Anbau-Turm Guide">?</button>
-     <button class="v6259-round crown" data-vt-tab="rank" aria-label="Rangliste" title="Rangliste">🏆</button>
-   </div>
- </div>`;
-}
-function v6279TowerGuide(){
- const ev=towerWednesdayEvent();
- return `<div class="v6279-guide-overlay" data-vt-guide-overlay>
-   <div class="v6279-guide-modal" role="dialog" aria-modal="true" aria-label="Anbau-Turm Guide">
-     <div class="v6279-guide-head">
-       <div><small>INFORMATIONEN</small><h2>❓ Anbau-Turm Guide</h2></div>
-       <button class="v6279-guide-close" data-vt-guide-close aria-label="Guide schließen">✕</button>
-     </div>
-
-     <div class="v6279-guide-scroll">
-       <section class="v6279-guide-intro">
-         <b>Steige Etage für Etage höher, sammle Turmblätter und sichere deine Run-Beute.</b>
-         <span>Je höher du kommst, desto stärker werden Gegner und Belohnungen.</span>
-       </section>
-
-       <div class="v6279-guide-grid">
-         <article><i>❤️</i><div><b>Run-HP & Regeneration</b><span>Ein neuer Run startet mit deinem aktuell regenerierten Turm-Leben. Die automatische Regeneration ist levelabhängig. Für 1 Harz-Taler kannst du +20 % Turm-Leben regenerieren.</span></div></article>
-         <article><i>🚪</i><div><b>Etagen & Türen</b><span>Du wählst zwischen zwei Türen. Sobald du eine Tür gewählt hast, ist die Entscheidung für diese Etage fest. Hinter den Türen warten Kämpfe oder besondere Räume.</span></div></article>
-         <article><i>👹</i><div><b>Faire Kampfregeln</b><span>Es gibt keine wählbaren Risiko-Stufen. Alle Spieler kämpfen mit denselben Turm-Regeln. Alle 5 Etagen wartet eine stärkere Elite-/Miniboss-Stufe, alle 10 Etagen ein Boss.</span></div></article>
-         <article><i>🧬</i><div><b>Mutationen</b><span>Während des Runs kannst du bis zu 6 aktive Mutationen sammeln. Sie verstärken nur den aktuellen Lauf.</span></div></article>
-         <article><i>🎒</i><div><b>Run-Beute</b><span>Gold, EXP, Turmblätter und selten Items landen zuerst im Run. Items sind bewusst selten; bis Etage 50 sind maximal 3 Itemdrops möglich.</span></div></article>
-         <article><i>🍃</i><div><b>Turmblätter</b><span>Turmblätter werden dauerhaft gesichert und im Turm-Aufstieg für permanente Boni ausgegeben.</span></div></article>
-         <article><i>📦</i><div><b>Run beenden</b><span>Gesicherte Beute erhältst du nach dem Run. Stirbst du, geht ein Teil der ungesicherten Run-Beute verloren.</span></div></article>
-         <article><i>⭐</i><div><b>Wochen-EXP</b><span>Neue Turm-Etagen geben weiterhin Fortschritt für die Wochen-Truhe: +1 pro neuer Etage, zusätzlich +2 für Elite und +5 für Bosse.</span></div></article>
-       </div>
-
-       <section class="v6279-guide-wed ${ev.active?'active':''}">
-         <div class="v6279-guide-wed-icon">${ev.icon}</div>
-         <div><small>${ev.active?'🔴 MITTWOCHS-EVENT AKTIV':'MITTWOCHS-EVENT'}</small><b>${esc(ev.name)}</b><span>${esc(ev.desc)}</span><em>Mittwochs läuft eine eigene Event-Rangliste. Die Platzierungsbelohnung wird nach Ende des Events freigeschaltet. Keine Items als Eventbelohnung.</em></div>
-       </section>
-
-       <div class="v6279-guide-actions">
-         <button class="vT-btn gold" data-vt-guide-rank>🏆 Ranglisten ansehen</button>
-         <button class="vT-btn" data-vt-guide-close>Guide schließen</button>
-       </div>
-     </div>
-   </div>
- </div>`;
-}
-function v6279OpenGuide(){
- const root=document.getElementById('tower');if(!root)return;
- root.querySelector('[data-vt-guide-overlay]')?.remove();
- root.insertAdjacentHTML('beforeend',v6279TowerGuide());
- const overlay=root.querySelector('[data-vt-guide-overlay]');
- overlay?.querySelectorAll('[data-vt-guide-close]').forEach(b=>b.onclick=()=>overlay.remove());
- overlay?.querySelector('[data-vt-guide-rank]')?.addEventListener('click',()=>{overlay.remove();towerTab='rank';render()});
- overlay?.addEventListener('click',e=>{if(e.target===overlay)overlay.remove()});
-}
+/* V8.009-T7: dead hero/toolbar legacy removed; shared header/guide delegated to chrome owner. */
+function v6259Head(r,sub,back=true,title=''){return v8009ChromeOwner.head(r,sub,back,title)}
+function v6279OpenGuide(){return v8009ChromeOwner.openGuide()}
 
 function v6259BuffBar(r){
  const all=Array.isArray(r?.buffs)?r.buffs:[];
