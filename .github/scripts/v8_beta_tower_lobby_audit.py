@@ -1,26 +1,32 @@
 from pathlib import Path
-import re,json
+import json
 
 s=Path('beta.html').read_text(encoding='utf-8',errors='ignore')
-mark='id="vTower-system"'
-pos=s.find(mark)
+pos=s.find('id="vTower-system"')
 if pos<0:
-    mark="id='vTower-system'"
-    pos=s.find(mark)
+    pos=s.find("id='vTower-system'")
 if pos<0:
     raise SystemExit('vTower-system marker missing')
-tag_start=s.rfind('<script',0,pos)
 body_start=s.find('>',pos)+1
 body_end=s.find('</script',body_start)
-if tag_start<0 or body_start<=0 or body_end<0:
+if body_start<=0 or body_end<0:
     raise SystemExit('vTower-system bounds missing')
 body=s[body_start:body_end]
 
+keywords=('lobby','start','head','home','route','render','recovery','tab','run','rank')
 names=[]
-for fm in re.finditer(r'function\\s+([A-Za-z0-9_$]+)\\s*\\(',body):
-    name=fm.group(1)
-    if re.search(r'(lobby|start|head|home|route|render|recovery|tab|run|rank)',name,re.I):
-        names.append({'name':name,'offset':fm.start()})
+scan=0
+while True:
+    i=body.find('function ',scan)
+    if i<0: break
+    j=i+len('function ')
+    k=j
+    while k<len(body) and (body[k].isalnum() or body[k] in '_$'):
+        k+=1
+    name=body[j:k]
+    if name and any(x in name.lower() for x in keywords):
+        names.append({'name':name,'offset':i})
+    scan=max(k,i+9)
 
 def extract(name):
     needles=['function '+name+'(','function '+name+' (','async function '+name+'(','async function '+name+' (']
@@ -42,7 +48,7 @@ def extract(name):
         if quote is not None:
             if esc:
                 esc=False
-            elif ch=='\\\\':
+            elif ch==chr(92):
                 esc=True
             elif ch==quote:
                 quote=None
