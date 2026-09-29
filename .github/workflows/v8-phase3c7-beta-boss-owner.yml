@@ -1,0 +1,50 @@
+name: V8 Phase 3C7 Beta guild boss replay owner
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/v8_phase3c7_beta_boss_owner.py'
+permissions:
+  contents: write
+jobs:
+  consolidate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Build beta guild boss replay owner
+        run: python3 .github/scripts/v8_phase3c7_beta_boss_owner.py
+      - name: Syntax-check owner
+        run: node --check js/features/guild/beta/v8008-c7-guildboss-replay-owner.js
+      - name: Validate beta-only scope
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re,json
+          beta=Path('beta.html').read_text(encoding='utf-8')
+          report=json.loads(Path('V8_PHASE3C7_BETA.json').read_text(encoding='utf-8'))
+          if not report.get('stable_unchanged'):
+              raise SystemExit('stable changed')
+          owner=re.search(r'<script\b[^>]*\bid=["\']v6307-guildboss-multiexchange-script["\'][^>]*>',beta,re.I)
+          if not owner or 'js/features/guild/beta/v8008-c7-guildboss-replay-owner.js' not in owner.group(0):
+              raise SystemExit('C7 replay owner not loaded')
+          for sid in (
+            'v6319-guildboss-smooth-owner-script',
+            'v6321-guildboss-combat-animation-script',
+            'v6208-guild-boss-mobile-performance-js',
+            'v6209-guildboss-replay-performance-script'
+          ):
+              m=re.search(rf'<script\b[^>]*\bid=["\']{re.escape(sid)}["\'][^>]*>',beta,re.I)
+              if not m: raise SystemExit(f'missing compatibility marker {sid}')
+              if re.search(r'\bsrc=',m.group(0),re.I): raise SystemExit(f'{sid} still loads separately')
+          print('Phase 3C7 validation OK')
+          PY
+      - name: Commit beta-only replay owner
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add beta.html js/features/guild/beta/v8008-c7-guildboss-replay-owner.js V8_PHASE3C7_BETA.json
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "V8.008 beta Phase 3C7: consolidate guild boss replay owner"
+          git push
