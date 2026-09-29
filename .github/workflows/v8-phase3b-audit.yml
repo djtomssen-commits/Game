@@ -1,0 +1,34 @@
+name: V8 Phase 3B Guild JS audit
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/v8_phase3b_audit_guild_js.py'
+      - '.github/workflows/v8-phase3b-audit.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Audit guild JavaScript
+        run: python3 .github/scripts/v8_phase3b_audit_guild_js.py
+
+      - name: Commit audit
+        run: |
+          if git diff --quiet; then
+            echo "No audit changes"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add V8_PHASE3B_GUILD_JS_AUDIT.json V8_PHASE3B_GUILD_JS_AUDIT.md
+          git commit -m "V8 Phase 3B: audit guild JavaScript"
+          git push
