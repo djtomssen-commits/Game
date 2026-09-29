@@ -23,7 +23,7 @@ jobs:
 
       - name: Commit audit
         run: |
-          if git diff --quiet; then
+          if [ -z "$(git status --porcelain -- V8_PHASE3B_GUILD_JS_AUDIT.json V8_PHASE3B_GUILD_JS_AUDIT.md)" ]; then
             echo "No audit changes"
             exit 0
           fi
