@@ -45,14 +45,12 @@ chat_out.write_text(
 )
 
 def swap_src(html,sid,old_src,new_src):
-    pat=re.compile(rf"<script[^>]*\\bid=[\"']{re.escape(sid)}[\"'][^>]*></script\\s*>",re.I)
-    ms=list(pat.finditer(html))
-    if len(ms)!=1:
-        raise RuntimeError(f'{sid}: expected one beta tag, got {len(ms)}')
-    tag=ms[0].group(0)
-    if old_src not in tag:
-        raise RuntimeError(f'{sid}: unexpected beta source')
-    return html[:ms[0].start()]+tag.replace(old_src,new_src)+html[ms[0].end():]
+    if f'id="{sid}"' not in html and f"id='{sid}'" not in html:
+        raise RuntimeError(f'{sid}: beta marker missing')
+    n=html.count(old_src)
+    if n!=1:
+        raise RuntimeError(f'{sid}: expected source exactly once, got {n}')
+    return html.replace(old_src,new_src,1)
 
 beta=swap_src(
     beta,
@@ -69,12 +67,17 @@ beta=swap_src(
 
 # v6310 stays as an empty compatibility marker.
 guard_sid='v6310-guildboss-test-removal-guard'
-gpat=re.compile(rf"<script[^>]*\\bid=[\"']{guard_sid}[\"'][^>]*></script\\s*>",re.I)
-gms=list(gpat.finditer(beta))
-if len(gms)!=1:
-    raise RuntimeError(f'{guard_sid}: expected one marker, got {len(gms)}')
-if re.search(r'\\bsrc=',gms[0].group(0),re.I):
-    raise RuntimeError('v6310 marker unexpectedly has src')
+if f'id="{guard_sid}"' not in beta and f"id='{guard_sid}'" not in beta:
+    raise RuntimeError(f'{guard_sid}: marker missing')
+# It is already empty after Phase 3B; no file with this id may be loaded.
+for q in (f'id="{guard_sid}"',f"id='{guard_sid}'"):
+    pos=beta.find(q)
+    if pos>=0:
+        left=beta.rfind('<script',0,pos)
+        right=beta.find('>',pos)
+        if left>=0 and right>=0 and re.search(r'\\bsrc=',beta[left:right+1],re.I):
+            raise RuntimeError('v6310 marker unexpectedly has src')
+        break
 
 # Prove the retired V6.204 feature is absent from the active beta runtime.
 active_sources=set(re.findall(r"<script[^>]*\\bsrc=[\"']([^\"']+)[\"']",beta,re.I))
