@@ -1,0 +1,31 @@
+{
+  "build": "V8.009-T9C-BETA",
+  "phase": "Tower transition deadlock rollback + opening asset warmup",
+  "scope": "beta only",
+  "main_system": "js/features/tower/beta/v8009-t1-tower-system.js",
+  "changes": [
+    "removed T9B blocking image decode wait from local and server-authoritative door transitions",
+    "selected enemy art/background still begin loading immediately at high priority",
+    "first four tower floors are warmed in a staggered preload instead of one blocking gate",
+    "local auto-fight transition now runs only outside server authority and uses a 980ms presentation delay",
+    "server-authoritative preview remains presentation-only and cannot be held by image loading"
+  ],
+  "main_system_bytes_before": 106401,
+  "main_system_bytes_after": 104965,
+  "main_system_sha": "8b0b93ec9df4a0d5aeafa202185850338b313f17",
+  "beta_html_changed": false,
+  "beta_html_sha": "1ee5bd5af84ad84b4b867545637b8faa7ffa944a",
+  "stable_changed": false,
+  "stable_index_sha": "0bc5fe3eb0e69c856070dfcb6682d3178c56a597",
+  "gameplay_changed": false,
+  "combat_math_changed": false,
+  "server_authority_changed": false,
+  "syntax_check": "ok",
+  "verification": {
+    "blocking_wait_removed": true,
+    "route_is_nonblocking": true,
+    "authority_preview_no_asset_await": true,
+    "staggered_four_floor_warmup": true,
+    "local_transition_excludes_authority": true
+  }
+}
