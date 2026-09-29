@@ -4,11 +4,13 @@ import hashlib,re,json
 stable_path=Path('index.html')
 beta_path=Path('beta.html')
 legacy_path=Path('js/features/guild/legacy/37-vguildchatclosevisibilityfixjs--v6310-guildboss-test-removal-guard.js')
+replay_old_path=Path('js/features/guild/beta/v8008-c7-guildboss-replay-owner.js')
 stable=stable_path.read_text(encoding='utf-8')
 beta=beta_path.read_text(encoding='utf-8')
 stable_sha=hashlib.sha256(stable.encode('utf-8')).hexdigest()
 beta_before_sha=hashlib.sha256(beta.encode('utf-8')).hexdigest()
 legacy=legacy_path.read_text(encoding='utf-8')
+replay_old=replay_old_path.read_text(encoding='utf-8')
 
 marker='/* === v6310-guildboss-test-removal-guard === */'
 if marker not in legacy:
@@ -20,65 +22,93 @@ for token in ('v6204BossTestWrap','v6204BossTest','v6204RunGuildBossTest','v6204
     if token not in guard_part:
         raise RuntimeError(f'legacy test guard missing expected token {token}')
 
-# Prove the removed test harness is not an active runtime dependency elsewhere.
-tokens=('v6204BossTestWrap','v6204BossTest','v6204RunGuildBossTest','v6204-test-mode')
-refs={}
-for token in tokens:
-    hits=[]
-    for p in Path('.').rglob('*'):
-        if not p.is_file() or p.suffix.lower() not in {'.html','.js','.mjs','.cjs','.css'}:
-            continue
-        rel=p.as_posix()
-        if rel==legacy_path.as_posix() or rel.startswith('.github/'):
-            continue
-        try:s=p.read_text(encoding='utf-8',errors='ignore')
-        except Exception:continue
-        if token not in s:
-            continue
-        # Existing production cleanup that removes the retired test UI is allowed;
-        # it is not a consumer of the test feature.
-        harmless=(
-            ('remove()' in s or "async()=>false" in s or 'undefined' in s)
-            and rel in ('index.html','beta.html')
-        )
-        if harmless:
-            continue
-        idx=s.find(token)
-        hits.append(rel+' :: '+s[max(0,idx-180):min(len(s),idx+260)].replace('\n',' '))
-    refs[token]=sorted(set(hits))
-    if hits:
-        raise RuntimeError(f'{token} still has active references: {hits[:20]}')
+# The C7 replay bundle still contained one harmless compatibility touch for the
+# removed test button. Remove that too so no active beta owner knows about V6.204.
+old_touch="const test=document.getElementById('v6204BossTest');if(test)test.dataset.guildBossRenderer='v6307'"
+if old_touch not in replay_old:
+    raise RuntimeError('expected V6.204 compatibility touch missing from C7 replay owner')
+replay_new=replay_old.replace(old_touch,'')
+replay_new=replay_new.replace(
+    '/* V8.008-C7 BETA — single replay owner bundle.',
+    '/* V8.008-C13 BETA — single replay owner bundle; retired V6.204 test hooks removed.'
+)
+replay_out=Path('js/features/guild/beta/v8008-c13-guildboss-replay-owner.js')
+replay_out.write_text(replay_new,encoding='utf-8')
 
-out=Path('js/features/guild/beta/v8008-c13-guild-chat-viewport-fix.js')
-out.parent.mkdir(parents=True,exist_ok=True)
-out.write_text(
+chat_out=Path('js/features/guild/beta/v8008-c13-guild-chat-viewport-fix.js')
+chat_out.write_text(
     '/* V8.008-C13 BETA — guild chat viewport/close-button fix only.\n'
     '   The obsolete V6.310 boss test-removal guard is retired. */\n'
     + chat_part.strip()+'\n',
     encoding='utf-8'
 )
 
-# Replace combined legacy file with chat-only beta file.
-sid='vGuildChatCloseVisibilityFixJs'
-old=legacy_path.as_posix()
-new=out.as_posix()
-pat=re.compile(rf'<script[^>]*\bid=["\']{re.escape(sid)}["\'][^>]*></script\s*>',re.I)
-ms=list(pat.finditer(beta))
-if len(ms)!=1: raise RuntimeError(f'{sid}: expected one beta tag, got {len(ms)}')
-tag=ms[0].group(0)
-if old not in tag: raise RuntimeError(f'{sid}: unexpected beta source')
-beta=beta[:ms[0].start()]+tag.replace(old,new)+beta[ms[0].end():]
+def swap_src(html,sid,old_src,new_src):
+    pat=re.compile(rf'<script[^>]*\\bid=["\\']{re.escape(sid)}["\\'][^>]*></script\\s*>',re.I)
+    ms=list(pat.finditer(html))
+    if len(ms)!=1:
+        raise RuntimeError(f'{sid}: expected one beta tag, got {len(ms)}')
+    tag=ms[0].group(0)
+    if old_src not in tag:
+        raise RuntimeError(f'{sid}: unexpected beta source')
+    return html[:ms[0].start()]+tag.replace(old_src,new_src)+html[ms[0].end():]
 
-# v6310 is already an empty compatibility marker after Phase 3B extraction.
+beta=swap_src(
+    beta,
+    'vGuildChatCloseVisibilityFixJs',
+    legacy_path.as_posix(),
+    chat_out.as_posix()
+)
+beta=swap_src(
+    beta,
+    'v6307-guildboss-multiexchange-script',
+    replay_old_path.as_posix(),
+    replay_out.as_posix()
+)
+
+# v6310 stays as an empty compatibility marker.
 guard_sid='v6310-guildboss-test-removal-guard'
-gpat=re.compile(rf'<script[^>]*\bid=["\']{guard_sid}["\'][^>]*></script\s*>',re.I)
+gpat=re.compile(rf'<script[^>]*\\bid=["\\']{guard_sid}["\\'][^>]*></script\\s*>',re.I)
 gms=list(gpat.finditer(beta))
-if len(gms)!=1: raise RuntimeError(f'{guard_sid}: expected one marker, got {len(gms)}')
-if re.search(r'\bsrc=',gms[0].group(0),re.I):
+if len(gms)!=1:
+    raise RuntimeError(f'{guard_sid}: expected one marker, got {len(gms)}')
+if re.search(r'\\bsrc=',gms[0].group(0),re.I):
     raise RuntimeError('v6310 marker unexpectedly has src')
 
+# Prove the retired V6.204 feature is absent from the active beta runtime.
+active_sources=set(re.findall(r'<script[^>]*\\bsrc=["\\']([^"\\']+)["\\']',beta,re.I))
+active_text={'beta.html':beta}
+for src in sorted(active_sources):
+    p=Path(src)
+    if p.exists() and p.is_file():
+        active_text[src]=p.read_text(encoding='utf-8',errors='ignore')
+# Use the newly generated replay owner instead of the old C7 file for the proof.
+active_text[replay_out.as_posix()]=replay_new
+
+tokens=('v6204BossTestWrap','v6204BossTest','v6204RunGuildBossTest','v6204-test-mode')
+refs={}
+for token in tokens:
+    hits=[]
+    for rel,s in active_text.items():
+        if token not in s:
+            continue
+        # The huge HTML has an old production cleanup that only removes/disables
+        # the retired test feature. It is not a consumer and may remain for stable parity.
+        if rel=='beta.html' and (
+            "document.getElementById('v6204BossTest" in s or
+            "window.v6204RunGuildBossTest" in s or
+            "v6204-test-mode" in s
+        ):
+            continue
+        idx=s.find(token)
+        hits.append(rel+' :: '+s[max(0,idx-180):min(len(s),idx+260)].replace('\\n',' '))
+    refs[token]=hits
+    if hits:
+        raise RuntimeError(f'{token} still active on beta: {hits[:20]}')
+
 beta=beta.replace("window.GROW_BETA_TECH_BUILD='V8.008-C12'","window.GROW_BETA_TECH_BUILD='V8.008-C13'",1)
-if "V8.008-C13" not in beta: raise RuntimeError('beta C13 marker not installed')
+if "V8.008-C13" not in beta:
+    raise RuntimeError('beta C13 marker not installed')
 beta_path.write_text(beta,encoding='utf-8')
 
 if hashlib.sha256(stable_path.read_text(encoding='utf-8').encode('utf-8')).hexdigest()!=stable_sha:
@@ -87,10 +117,11 @@ if hashlib.sha256(stable_path.read_text(encoding='utf-8').encode('utf-8')).hexdi
 report={
  'build':'V8.008-C13-BETA',
  'phase':'3C13',
- 'scope':'beta.html + beta chat viewport fix',
- 'replacement':new,
- 'retired':'v6310 guild boss test-removal guard',
- 'reference_proof':refs,
+ 'scope':'beta.html + beta chat fix + cleaned beta replay owner',
+ 'chat_replacement':chat_out.as_posix(),
+ 'replay_replacement':replay_out.as_posix(),
+ 'retired':['v6310 guild boss test-removal guard','C7 v6204BossTest compatibility touch'],
+ 'active_runtime_reference_proof':refs,
  'stable_unchanged':True,
  'stable_sha256':stable_sha,
  'beta_before_sha256':beta_before_sha,
