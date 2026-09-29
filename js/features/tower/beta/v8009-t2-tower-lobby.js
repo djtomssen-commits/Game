@@ -434,3 +434,85 @@ window.v8009TowerLobbyControllerDiagnostics=()=>({
  factory:typeof window.v8009CreateTowerLobbyController==='function'
 });
 })();
+
+
+/* V8.009-T7 BETA · Shared Tower chrome/help owner.
+   Presentation only: shared header + guide modal. No gameplay/server authority. */
+(()=>{'use strict';
+if(window.__V8009_TOWER_CHROME_OWNER__)return;
+window.__V8009_TOWER_CHROME_OWNER__=true;
+
+window.v8009CreateTowerChromeOwner=function(c){
+ const esc=typeof c.esc==='function'?c.esc:(x=>String(x??''));
+
+ function head(r,sub,back=true,title=''){
+  const floor=Math.max(1,Number(r?.floor)||1);
+  const headTitle=title||(r?`ANBAU-TURM · ETAGE ${floor}`:'ANBAU-TURM');
+  return `<div class="v6259-head">
+   ${back?'<button class="v6259-round" data-vt-exit aria-label="Turm verlassen">←</button>':'<button class="v6259-round" data-vt-exit aria-label="Zurück">←</button>'}
+   <div class="v6259-head-copy"><h2>${esc(headTitle)}</h2><span>${esc(sub||'Je höher du steigst, desto stärker werden die Mutationen.')}</span></div>
+   <div class="v6279-head-actions">
+     <button class="v6259-round v6279-guide-btn" data-vt-guide aria-label="Anbau-Turm Guide" title="Anbau-Turm Guide">?</button>
+     <button class="v6259-round crown" data-vt-tab="rank" aria-label="Rangliste" title="Rangliste">🏆</button>
+   </div>
+ </div>`;
+ }
+
+ function guideHtml(){
+  const ev=c.towerWednesdayEvent();
+  return `<div class="v6279-guide-overlay" data-vt-guide-overlay>
+   <div class="v6279-guide-modal" role="dialog" aria-modal="true" aria-label="Anbau-Turm Guide">
+     <div class="v6279-guide-head">
+       <div><small>INFORMATIONEN</small><h2>❓ Anbau-Turm Guide</h2></div>
+       <button class="v6279-guide-close" data-vt-guide-close aria-label="Guide schließen">✕</button>
+     </div>
+     <div class="v6279-guide-scroll">
+       <section class="v6279-guide-intro">
+         <b>Steige Etage für Etage höher, sammle Turmblätter und sichere deine Run-Beute.</b>
+         <span>Je höher du kommst, desto stärker werden Gegner und Belohnungen.</span>
+       </section>
+       <div class="v6279-guide-grid">
+         <article><i>❤️</i><div><b>Run-HP & Regeneration</b><span>Ein neuer Run startet mit deinem aktuell regenerierten Turm-Leben. Die automatische Regeneration ist levelabhängig. Für 1 Harz-Taler kannst du +20 % Turm-Leben regenerieren.</span></div></article>
+         <article><i>🚪</i><div><b>Etagen & Türen</b><span>Du wählst zwischen zwei Türen. Sobald du eine Tür gewählt hast, ist die Entscheidung für diese Etage fest. Hinter den Türen warten Kämpfe oder besondere Räume.</span></div></article>
+         <article><i>👹</i><div><b>Faire Kampfregeln</b><span>Es gibt keine wählbaren Risiko-Stufen. Alle Spieler kämpfen mit denselben Turm-Regeln. Alle 5 Etagen wartet eine stärkere Elite-/Miniboss-Stufe, alle 10 Etagen ein Boss.</span></div></article>
+         <article><i>🧬</i><div><b>Mutationen</b><span>Während des Runs kannst du bis zu 6 aktive Mutationen sammeln. Sie verstärken nur den aktuellen Lauf.</span></div></article>
+         <article><i>🎒</i><div><b>Run-Beute</b><span>Gold, EXP, Turmblätter und selten Items landen zuerst im Run. Items sind bewusst selten; bis Etage 50 sind maximal 3 Itemdrops möglich.</span></div></article>
+         <article><i>🍃</i><div><b>Turmblätter</b><span>Turmblätter werden dauerhaft gesichert und im Turm-Aufstieg für permanente Boni ausgegeben.</span></div></article>
+         <article><i>📦</i><div><b>Run beenden</b><span>Gesicherte Beute erhältst du nach dem Run. Stirbst du, geht ein Teil der ungesicherten Run-Beute verloren.</span></div></article>
+         <article><i>⭐</i><div><b>Wochen-EXP</b><span>Neue Turm-Etagen geben weiterhin Fortschritt für die Wochen-Truhe: +1 pro neuer Etage, zusätzlich +2 für Elite und +5 für Bosse.</span></div></article>
+       </div>
+       <section class="v6279-guide-wed ${ev.active?'active':''}">
+         <div class="v6279-guide-wed-icon">${ev.icon}</div>
+         <div><small>${ev.active?'🔴 MITTWOCHS-EVENT AKTIV':'MITTWOCHS-EVENT'}</small><b>${esc(ev.name)}</b><span>${esc(ev.desc)}</span><em>Mittwochs läuft eine eigene Event-Rangliste. Die Platzierungsbelohnung wird nach Ende des Events freigeschaltet. Keine Items als Eventbelohnung.</em></div>
+       </section>
+       <div class="v6279-guide-actions">
+         <button class="vT-btn gold" data-vt-guide-rank>🏆 Ranglisten ansehen</button>
+         <button class="vT-btn" data-vt-guide-close>Guide schließen</button>
+       </div>
+     </div>
+   </div>
+ </div>`;
+ }
+
+ function openGuide(){
+  const root=document.getElementById('tower');if(!root)return false;
+  root.querySelector('[data-vt-guide-overlay]')?.remove();
+  root.insertAdjacentHTML('beforeend',guideHtml());
+  const overlay=root.querySelector('[data-vt-guide-overlay]');
+  overlay?.querySelectorAll('[data-vt-guide-close]').forEach(b=>b.onclick=()=>overlay.remove());
+  overlay?.querySelector('[data-vt-guide-rank]')?.addEventListener('click',()=>{
+   overlay.remove();c.setTowerTab('rank');c.render();
+  });
+  overlay?.addEventListener('click',e=>{if(e.target===overlay)overlay.remove()});
+  return true;
+ }
+
+ return{head,guideHtml,openGuide};
+};
+
+window.v8009TowerChromeDiagnostics=()=>({
+ owner:true,
+ version:'V8.009-T7',
+ factory:typeof window.v8009CreateTowerChromeOwner==='function'
+});
+})();
