@@ -7,7 +7,7 @@ const fmt=n=>Math.round(Number(n)||0).toLocaleString('de-DE');
 const pick=a=>a[Math.floor(Math.random()*a.length)];
 const chance=p=>Math.random()<p;
 const deep=x=>{try{return structuredClone(x)}catch(e){return JSON.parse(JSON.stringify(x))}};
-let towerTab='run', battleToken=0, rankBusy=false, syncTimer=0, lastMirror='', towerRecoveryTimer=0;
+let towerTab='run', battleToken=0, syncTimer=0, lastMirror='';
 
 const SEASON_RULES=[
  {name:'Purple-Haze-Zyklus',icon:'🟣',desc:'Elite-Etagen geben +20 % Turmpunkte.',eliteScore:.20},
@@ -507,15 +507,36 @@ window.v6250TowerRecoveryDiagnostics=()=>({
  current:towerRecoveryInfo(),
  owner:'v8009TowerRecoveryOwner'
 });
-function buyTowerRecovery(){const t=ensure(),m=t.meta,pct=normalizeTowerRecovery(t);if(t.run?.active)return toast('Während eines laufenden Turms nicht möglich.','warn');if(pct>=100)return toast('Turm-Erholung ist bereits voll.','info');if((Number(s.harzTaler)||0)<1)return toast('Du brauchst 1 Harz-Taler.','warn');s.harzTaler=Math.max(0,(Number(s.harzTaler)||0)-1);m.recoveryPct=Math.min(100,pct+TOWER_RECOVERY_REFILL);m.recoveryAt=Date.now();save(false);try{v282PaintHarzCard?.()}catch(e){try{v069SyncCurrencies?.()}catch(_){}}toast(`Turm-Erholung +${TOWER_RECOVERY_REFILL} %.`,'success');render()}
+const v8009LobbyController=window.v8009CreateTowerLobbyController?.({
+ getState:()=>s,
+ ensure,
+ recoveryOwner:()=>v8009RecoveryOwner(),
+ normalizeRecovery:t=>normalizeTowerRecovery(t),
+ recoveryInfo:()=>towerRecoveryInfo(),
+ save:x=>save(x),
+ render:()=>render(),
+ toast:(...a)=>toast(...a),
+ syncProfile:x=>syncProfile(x),
+ towerMaxHp:r=>towerMaxHp(r),
+ towerWednesdayEvent:()=>towerWednesdayEvent(),
+ applyTowerMutation:(r,id)=>applyTowerMutation(r,id),
+ seededChoiceFloor:f=>seededChoiceFloor(f),
+ pick,
+ setTowerTab:v=>{towerTab=v},
+ fetchAllTowerProfiles:force=>v6314FetchAllTowerProfiles(force),
+ seasonId:()=>seasonId(),
+ esc,
+ fmt,
+ getUserId:()=>{try{return String(v073User?.id||'')}catch(e){return''}},
+ fetchWednesdayRows:target=>fetchWednesdayRows(target),
+ lastCompletedWednesdayEvent:()=>lastCompletedWednesdayEvent(),
+ paintWednesdayPlacementReward:(rows,target,uid)=>paintWednesdayPlacementReward(rows,target,uid)
+});
+if(!v8009LobbyController)throw new Error('V8.009 T4 tower lobby controller missing');
+function buyTowerRecovery(){return v8009LobbyController.buyRecovery()}
 function resetTowerRecovery(t){return v8009RecoveryOwner().reset(t)}
-function scheduleTowerRecoveryRender(){try{clearTimeout(towerRecoveryTimer)}catch(e){}const t=ensure();if(t.run?.active)return;const x=towerRecoveryInfo();if(x.pct>=100)return;towerRecoveryTimer=setTimeout(()=>{
- try{
-   const root=document.getElementById('tower');
-   if(root?.classList.contains('active'))render();
- }catch(e){}
-},Math.max(1000,x.nextMs+250))}
-function startRun(){const t=ensure();if(!s.playerClass){toast('Wähle zuerst deine Klasse.','warn');return}const recovery=normalizeTowerRecovery(t);if(recovery<=0){toast('Dein Turm-Leben ist noch bei 0 %. Warte auf die erste Regeneration oder nutze 1 Harz-Taler für +20 %.','warn');return}const r={active:true,id:Date.now(),floor:1,cleared:0,hp:1,maxHp:1,score:0,buffs:[],unbanked:{gold:0,xp:0,tokens:0,items:[]},startedAt:Date.now(),eliteKills:0,bossKills:0,choices:[],mode:'route',mutationRerolls:1+(Number(t.meta.upgrades.mutation)||0),pendingMutationAfterCheckpoint:false,shopFlags:{},lastReward:null,lastRoomType:'combat',forceCombat:false,startBestFloor:Math.max(0,Number(t.season?.bestFloor)||0),startBestScore:Math.max(0,Number(t.season?.bestScore)||0),stats:{fights:0,damage:0,damageTaken:0,healing:0,crits:0,dodges:0,maxHit:0}};r.maxHp=towerMaxHp(r);r.hp=Math.max(1,Math.round(r.maxHp*recovery/100));r.startRecoveryPct=recovery;t.run=r;const wed=towerWednesdayEvent();if(wed.active&&wed.id==='mutation'){const good=['widow','northern','purplecrit','diesel','kush','trichome','roots','spore','cash','book','crown'];const id=pick(good.filter(x=>!r.buffs.includes(x)));if(id)applyTowerMutation(r,id)}r.choices=seededChoiceFloor(1);t.season.runs++;towerTab='run';save(false);render();syncProfile(true)}
+function scheduleTowerRecoveryRender(){return v8009LobbyController.scheduleRecoveryRender()}
+function startRun(){return v8009LobbyController.startRun()}
 function healRun(r,pct){const rule=seasonRule(),wed=towerWednesdayEvent();const mul=Math.max(.1,1+(tMeta('heal')*.06)+buffFx(r,'healBoost')-buffFx(r,'healPenalty')+(rule.heal||0)+(wed.active?(wed.heal||0):0));const amount=Math.round(r.maxHp*pct*mul),before=Math.max(0,Number(r.hp)||0);r.hp=Math.min(r.maxHp,r.hp+amount);const actual=Math.max(0,r.hp-before);if(r.stats)r.stats.healing=(Number(r.stats.healing)||0)+actual;return actual}
 function tMeta(k){return Number(ensure().meta.upgrades[k])||0}
 function rewardMult(r,type,risk=0){const rule=seasonRule();let m=1+buffFx(r,'reward')+tMeta('harvest')*.04;if(type==='boss')m+=rule.bossReward||0;else m+=rule.reward||0;return m*[1,1.32,1.72][risk]}
@@ -657,20 +678,8 @@ async function syncProfile(force=false){
  }catch(e){console.warn('Anbauturm Profil-Sync',e);return false}
 }
 function scheduleSync(force=false){clearTimeout(syncTimer);syncTimer=setTimeout(()=>void syncProfile(force),force?30:1250)}
-async function loadRanking(){if(rankBusy)return;rankBusy=true;const box=document.getElementById('vTRanking');if(box)box.innerHTML='<div class="vT-empty">Rangliste wird geladen …</div>';try{await syncProfile(true);const data=await v6314FetchAllTowerProfiles(true);const sid=seasonId();const rows=(data||[]).map(p=>{const t=p.dungeon_progress?.tower||{};return{...p,t}}).filter(p=>p.t?.season===sid&&(Number(p.t.best_score)||Number(p.t.active_score)||0)>0).sort((a,b)=>Math.max(Number(b.t.best_score)||0,Number(b.t.active_score)||0)-Math.max(Number(a.t.best_score)||0,Number(a.t.active_score)||0)||Math.max(Number(b.t.best_floor)||0,Number(b.t.active_floor)||0)-Math.max(Number(a.t.best_floor)||0,Number(a.t.active_floor)||0)).slice(0,50);const uid=(()=>{try{return String(v073User?.id||'')}catch(e){return''}})();if(box)box.innerHTML=rows.length?rows.map((p,i)=>`<div class="vT-leader-row ${String(p.id)===uid?'me':''}" data-class-id="${esc(p.class_id||'')}"><div class="vT-rank ${i<3?'top':''}">${i+1}</div><div class="vT-player"><b>${esc(p.character_name||'Unbekannt')}</b><span>${esc(p.class_name||'')} · Lv. ${Number(p.level)||1} · KP ${fmt(p.combat_power||0)}${Number(p.t.active_floor)>0?' · 🟢 Lauf aktiv':''}</span></div><div class="vT-score"><b>${fmt(Math.max(Number(p.t.best_score)||0,Number(p.t.active_score)||0))}</b><span>Etage ${Math.max(Number(p.t.best_floor)||0,Number(p.t.active_floor)||0)}</span></div></div>`).join(''):'<div class="vT-empty">In dieser Saison gibt es noch keine Turmwertung.</div>'}catch(e){if(box)box.innerHTML='<div class="vT-empty">Online-Rangliste momentan nicht erreichbar. Dein eigener Rekord bleibt gespeichert.</div>'}finally{rankBusy=false}}
-async function loadWednesdayRanking(){
- const live=towerWednesdayEvent(),target=live.active?live:lastCompletedWednesdayEvent(),box=document.getElementById('vTWednesdayRanking');
- if(!box)return;
- box.innerHTML=`<div class="vT-empty">${live.active?'Mittwochs-Rangliste wird geladen …':'Finale Mittwochs-Rangliste wird geladen …'}</div>`;
- try{
-  const rows=(await fetchWednesdayRows(target)).slice(0,50);
-  const uid=(()=>{try{return String(v073User?.id||'')}catch(e){return''}})();
-  box.innerHTML=rows.length?rows.map((p,i)=>`<div class="vT-leader-row ${String(p.id)===uid?'me':''}" data-class-id="${esc(p.class_id||'')}"><div class="vT-rank ${i<3?'top':''}">${i+1}</div><div class="vT-player"><b>${esc(p.character_name||'Unbekannt')}</b><span>${esc(p.class_name||'')} · Lv. ${Number(p.level)||1} · ${target.icon} ${esc(target.name)}</span></div><div class="vT-score"><b>${fmt(p.w.best_score||0)}</b><span>Etage ${Number(p.w.best_floor)||0}</span></div></div>`).join(''):`<div class="vT-empty">${live.active?'Heute hat noch niemand einen Mittwochs-Turmwert gespeichert.':'Für den letzten Mittwoch ist noch keine finale Wertung verfügbar.'}</div>`;
-  if(!live.active)paintWednesdayPlacementReward(rows,target,uid)
- }catch(e){
-  box.innerHTML='<div class="vT-empty">Mittwochs-Rangliste momentan nicht erreichbar.</div>'
- }
-}
+async function loadRanking(){return v8009LobbyController.loadRanking()}
+async function loadWednesdayRanking(){return v8009LobbyController.loadWednesdayRanking()}
 
 function toast(msg,type='success'){try{if(typeof v063Toast==='function')v063Toast(msg,type);else console.log(msg)}catch(e){}}
 function runTop(r){return `<div class="vT-topstats"><div class="vT-stat good"><small>Etage</small><b>${r.floor}</b></div><div class="vT-stat"><small>Leben</small><b>${fmt(r.hp)} / ${fmt(r.maxHp)}</b></div><div class="vT-stat gold"><small>Turm-Score</small><b>${fmt(r.score)}</b></div><div class="vT-stat"><small>Ungesichert</small><b>💰 ${fmt(r.unbanked.gold)} · 🍃 ${fmt(r.unbanked.tokens)}</b></div></div><div class="vT-hpbox"><div class="vT-hpline"><span>Run-Leben bleibt zwischen Etagen erhalten</span><span>${Math.round(r.hp/r.maxHp*100)} %</span></div><div class="vT-bar"><i style="width:${clamp(r.hp/r.maxHp*100,0,100)}%"></i></div></div>${r.buffs.length?`<div class="vT-buffs" style="margin-top:8px">${r.buffs.map(id=>{const m=MUTATIONS.find(x=>x.id===id);return m?`<div class="vT-buffchip">${m.icon} <b>${esc(m.name)}</b></div>`:''}).join('')}</div>`:''}`}
