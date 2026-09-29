@@ -98,7 +98,7 @@ await page.evaluate(()=>window.v8008C12InstallLateBridge?.());
 await page.addScriptTag({path:p('js/features/guild/beta/v8008-c9-guildboss-screen-owner.js')});
 await page.evaluate(()=>window.v8008C9InstallReferenceLayout?.());
 await page.addScriptTag({path:p('js/features/guild/beta/v8008-c8-guildboss-pre-replay-visual-owner.js')});
-await page.addScriptTag({path:p('js/features/guild/beta/v8008-c7-guildboss-replay-owner.js')});
+await page.addScriptTag({path:p('js/features/guild/beta/v8008-c13-guildboss-replay-owner.js')});
 await page.addScriptTag({path:p('js/features/guild/beta/v8008-c8-guildboss-post-replay-arena-owner.js')});
 
 const bossResult=await page.evaluate(async()=>{
@@ -140,6 +140,7 @@ const bossResult=await page.evaluate(async()=>{
     bossAnim:getComputedStyle(document.getElementById('v6320BossCutout')).animationName,
     renderer:document.getElementById('v260WatchDailyBoss')?.dataset?.guildBossRenderer||'',
     replayRunningOwner:!!window.__V6209_GUILD_BOSS_REPLAY_PERF__,
+    retiredTestHookAbsent:!document.getElementById('v6204BossTest') && typeof window.v6204RunGuildBossTest==='undefined',
     combatAnimOwner:!!window.__V6321_GUILD_BOSS_COMBAT_ANIM__,
     preVisualOwner:!!window.__V6203_GUILD_BOSS_WORLDLIKE__ && !!window.__V6305_GUILDBOSS_LAYOUT__,
     postArenaOwner:!!window.__V6309_GUILD_BOSS_FINAL_ARENA__ && !!window.__V6315_GUILD_BOSS_LEGACY_CLEANUP__,
@@ -189,6 +190,7 @@ assert(bossResult.heroAnim && bossResult.heroAnim!=='none','Boss QA: hero CSS an
 assert(bossResult.bossAnim && bossResult.bossAnim!=='none','Boss QA: boss CSS animation not active');
 assert(bossResult.renderer==='v6307','Boss QA: merged owner did not mark replay renderer');
 assert(bossResult.replayRunningOwner,'Boss QA: merged replay performance owner missing');
+assert(bossResult.retiredTestHookAbsent,'Boss QA: retired V6.204 test hook unexpectedly present');
 assert(bossResult.combatAnimOwner,'Boss QA: merged combat animation owner missing');
 assert(bossResult.preVisualOwner,'Boss QA: C8 pre-replay visual owner missing');
 assert(bossResult.postArenaOwner,'Boss QA: C8 post-replay arena owner missing');
