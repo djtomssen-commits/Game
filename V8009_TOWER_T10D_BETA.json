@@ -1,0 +1,23 @@
+{
+  "build": "V8.009-T10D-BETA",
+  "phase": "Tower first-run startup smoothing",
+  "scope": "beta only",
+  "findings": [
+    "Tower lobby render immediately started season ranking, Wednesday ranking, and placement-reward background work after 20/35/55 ms.",
+    "Tower account-ready handler forced a profile sync roughly 30 ms after login and a Wednesday ledger submit roughly 550 ms later.",
+    "Those non-visual tasks can overlap with an immediately-started Tower run on mobile, matching the report that combat is rough directly after login but becomes smooth later."
+  ],
+  "changes": [
+    "Lobby ranking/background work is now idle-deferred and is cancelled/skipped when a Tower run starts.",
+    "Explicitly opening the ranking tab still loads rankings immediately.",
+    "Account-ready Tower profile/Wednesday background sync is deferred until startup quiet.",
+    "Background sync waits if a Tower route/replay is currently busy."
+  ],
+  "files": {
+    "js/features/tower/beta/v8009-t1-tower-system.js": "1ad5d472ab267fdee44e5b20670026b34cb2c107"
+  },
+  "stable_changed": false,
+  "server_authority_changed": false,
+  "combat_math_changed": false,
+  "syntax_check": "ok"
+}
