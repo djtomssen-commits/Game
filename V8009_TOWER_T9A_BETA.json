@@ -1,0 +1,39 @@
+{
+  "build": "V8.009-T9A-BETA",
+  "phase": "Tower initial image warmup + smoother/slower combat presentation",
+  "scope": "beta only",
+  "changes": [
+    "first two Tower floors preload backgrounds plus normal/elite/miniboss enemy art from the lobby",
+    "Tower hit animation no longer forces synchronous layout with offsetWidth",
+    "shared Beta Dungeon/PvP/Tower replay cadence slowed from 600ms to 720ms",
+    "combat calculations, rewards and server authority unchanged"
+  ],
+  "files": [
+    "js/features/tower/beta/v8009-t1-tower-system.js",
+    "js/system/performance/beta/v8009-combat-cadence-slower.js"
+  ],
+  "main_system_bytes_before": 103711,
+  "main_system_bytes_after": 104458,
+  "cadence_bytes_before": 667,
+  "cadence_bytes_after": 670,
+  "main_system_sha": "6054b369cf21cde44b3f77b9862ba60ce1e270a5",
+  "cadence_sha": "89039124070fef0922714b19ddfecf12d47901a7",
+  "beta_html_changed": false,
+  "beta_html_sha": "1ee5bd5af84ad84b4b867545637b8faa7ffa944a",
+  "stable_changed": false,
+  "stable_index_sha": "0bc5fe3eb0e69c856070dfcb6682d3178c56a597",
+  "gameplay_changed": false,
+  "combat_math_changed": false,
+  "server_authority_changed": false,
+  "syntax_check": {
+    "tower_system": "ok",
+    "combat_cadence": "ok"
+  },
+  "verification": {
+    "lobby_warmup": true,
+    "two_floor_warmup": true,
+    "no_forced_reflow": true,
+    "frame_delay_720": true,
+    "attack_delay_360": true
+  }
+}
