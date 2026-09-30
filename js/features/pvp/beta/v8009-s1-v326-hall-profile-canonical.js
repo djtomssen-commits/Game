@@ -171,6 +171,7 @@
         <div class="v072-profile-stat"><span>Gegner</span><b>${pos.enemyNumber}/10</b></div>
       </div>
       <div class="v116-wb-inline" style="margin-top:7px">🔷 Mystisch: ${Math.max(0,Number(wb.attempts)||0)} Versuche · ${Math.max(0,Number(wb.wins)||0)} Siege</div>`;
+    requestAnimationFrame(()=>{try{window.v646DecorateHall?.()}catch(_){}});
   };
 
   function v326Row(p,i=null,actions=''){
