@@ -1400,3 +1400,38 @@ Der nächste fachliche Schritt ist **nicht HOME-32**, sondern die Restinventur d
   - Gilden-EP: `v474/v411`, kein v440-Beta-Owner mehr.
 - Stable / `index.html`: unverändert.
 - Nächster Schritt: Start-Quest-Wrapperkette `v443 / v4127 / gl-quest-ready-push / v7042 / v7045 / v7110` konsolidieren.
+
+
+### Quest Start-/Navigation-Kette weiter konsolidiert 30.09.2026
+
+- `v443-quest-dampf-live-fix.js`
+  - Commit `93feca96d4d4859aa280a31733556270e4a5f096`: `v443AfterQuestStart` malt Dampf nach dem kanonischen Start nur noch einmal direkt statt über `settle()`.
+  - Commit `155fa6dd1645d2944b5ec4863c78d852c38fa443`: gesamte historische Dampf-Repaint-Kette entfernt:
+    - kein RAF-Retry;
+    - keine 20/90/280-ms-Retries;
+    - keine 400/1200/5200/12000-ms-Startup-Retries;
+    - stattdessen direkte Paints bei Initialisierung, Persist, `growlegends:account-ready`, DOMContentLoaded und pageshow.
+  - QA: `V8009_QUEST_V443_RETRY_RETIRE_QA.json`, Bot-Commit `63d43575d8b6e62d30940646300711358578e001`, grün.
+
+- Navigation/Skip:
+  - Audit `V8009_QUEST_NAV_SKIP_AUDIT.json`, Bot-Commit `a2e9d49f9e50137f84368568a5a82eedf1b3f659`;
+  - gemeinsamer Post-Navigation-Owner `v7119` dispatcht `growlegends:navigation-open-v7119`;
+  - `v229` nutzt diesen Shared-Event bereits für Quest-/Character-Refresh.
+  - Commit `0d3c21a3ba45661365b183d2e2b5f4b3e76e8b13`:
+    - `v4127` wickelt `v032Go` nicht mehr;
+    - Skip-Reparatur lauscht stattdessen auf denselben Shared-Navigation-Event und reagiert nur bei `id==='quests'`;
+    - direkter `v4127EnsureQuestSkip`-Owner bleibt unverändert.
+  - QA: `V8009_QUEST_V4127_NAV_QA.json`, Bot-Commit `96149916e91ba5fb72cdd88e96ae3b1fae5a4027`, grün.
+
+- Aktuelle Start-Verantwortung:
+  - `v7110`: Preflight / serverseitiger State-Abgleich / Post-Start-Hooks;
+  - `v7045`: serverautoritäres Start-RPC im Enforce-Modus;
+  - `v443`, `v4127`, Push: direkte Hooks, keine eigenen Start-Wrapper;
+  - Navigation: gemeinsamer v7119-Post-Navigation-Event statt Quest-eigenem `v032Go`-Layer.
+- Stable / `index.html`: unverändert.
+- Nächster sinnvoller Meilenstein-Test:
+  1. Questseite öffnen;
+  2. Quest starten;
+  3. Dampf muss sofort einmal korrekt sinken;
+  4. Skip-/Zeit-Samen-Zeile muss sofort korrekt erscheinen;
+  5. Seite verlassen und wieder zu Quest wechseln; keine Verzögerung/kein Flackern/keine doppelte Skip-Zeile.
