@@ -4,7 +4,7 @@
  if(window.__V6145_HALL_PAGINATION__)return;
  window.__V6145_HALL_PAGINATION__=true;
  const PAGE=20,TOP=3;
- const SELECT='id,character_name,class_id,class_name,level,bosses,gear_score,dungeons,combat_power,equipment,dungeon_progress,worldboss_attempts,worldboss_wins,pvp_buds,pvp_wins,pvp_losses,pvp_fights,updated_at';
+ const SELECT='id,character_name,class_id,class_name,level,bosses,gear_score,dungeons,combat_power,equipment,dungeon_progress,worldboss_attempts,worldboss_wins,pvp_buds,pvp_wins,pvp_losses,pvp_fights,avatar_frame_id,updated_at';
  const state={page:1,mode:'page',total:0,pages:1,ownRank:null,seq:0,topRows:[],topAt:0};
  const q=id=>document.getElementById(id);
  const esc=v=>String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
@@ -16,7 +16,7 @@
    const me=String(p?.id||'')===ownId();
    const friend=me?'<span class="pill">DU</span>':`<button class="btn secondary" data-v073-add="${esc(p?.id||'') }" data-name="${esc(p?.character_name||'Spieler')}">Freund</button><button class="btn secondary" data-v6145-mail="${esc(p?.character_name||'Spieler')}">✉️ Nachricht</button>`;
    const classId=String(p?.class_id||'grower').toLowerCase();
-   const art=`<div class="v646-row-avatar" data-avatar-class="${esc(classId)}">${avatar(p)}</div>`;
+   const art=framedAvatar(p,'v646-row-avatar');
    const enhance=html=>{
      let out=String(html||'');
      out=out.replace('class="v072-player-row"','class="v072-player-row v646-row-decorated"');
@@ -57,9 +57,21 @@
    try{const src=typeof v080AvatarFor==='function'?v080AvatarFor(p?.class_id||'grower'):'';if(src)return `<img src="${esc(src)}" alt="">`}catch(e){}
    return '<span>🌿</span>';
  }
+ function frameArt(p){
+   const id=String(p?.avatar_frame_id||'');
+   if(!id)return '';
+   try{return String(window.v7137FrameArtMarkup?.(id)||'')}catch(e){return ''}
+ }
+ function framedAvatar(p,cls){
+   const id=String(p?.avatar_frame_id||'');
+   const frame=frameArt(p);
+   const target=frame?' v7137-frame-target':'';
+   const data=frame?` data-v7137-frame="${esc(id)}"`:'';
+   return `<div class="${cls}${target}" data-avatar-class="${esc(String(p?.class_id||'grower').toLowerCase())}"${data}>${avatar(p)}${frame}</div>`;
+ }
  function podiumHtml(rows){
    const me=ownId();
-   return `<div class="v6145-podium">${(rows||[]).map((p,i)=>{const r=i+1;return `<article class="v6145-podium-card rank-${r} ${String(p?.id||'')===me?'v6145-own':''}" data-v6145-profile="${esc(p?.id||'')}"><div class="v6145-podium-top"><span class="v6145-medal">${medal(r)}</span><span class="v6145-pos">#${r}</span></div><div class="v6145-podium-body"><div class="v6145-podium-avatar">${avatar(p)}</div><div class="v6145-podium-name">${esc(p?.character_name||'Spieler')}</div><div class="v6145-podium-meta">${esc(p?.class_name||'')} · Lv. ${Math.max(1,num(p?.level))}</div><div class="v6145-podium-power">⚔ ${num(p?.combat_power)} · 🌿 ${num(p?.pvp_buds)}</div></div></article>`}).join('')}</div>`;
+   return `<div class="v6145-podium">${(rows||[]).map((p,i)=>{const r=i+1;return `<article class="v6145-podium-card rank-${r} ${String(p?.id||'')===me?'v6145-own':''}" data-v6145-profile="${esc(p?.id||'')}"><div class="v6145-podium-top"><span class="v6145-medal">${medal(r)}</span><span class="v6145-pos">#${r}</span></div><div class="v6145-podium-body">${framedAvatar(p,'v6145-podium-avatar')}<div class="v6145-podium-name">${esc(p?.character_name||'Spieler')}</div><div class="v6145-podium-meta">${esc(p?.class_name||'')} · Lv. ${Math.max(1,num(p?.level))}</div><div class="v6145-podium-power">⚔ ${num(p?.combat_power)} · 🌿 ${num(p?.pvp_buds)}</div></div></article>`}).join('')}</div>`;
  }
  function modeBar(){return `<div class="v6145-modebar"><button type="button" class="v6145-mode-btn ${state.mode==='page'?'active':''}" data-v6145-mode="page">🏆 Rangliste</button><button type="button" class="v6145-mode-btn" data-v6145-mode="mine">🎯 Mein Rang</button><button type="button" class="v6145-mode-btn ${state.mode==='near'?'active':''}" data-v6145-mode="near">👥 Mein Umfeld</button></div>`}
  function rankHint(){return state.ownRank?`Dein Rang #${state.ownRank} · ${state.total} Spieler`:`${state.total} Spieler`}
