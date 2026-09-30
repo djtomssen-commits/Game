@@ -7,12 +7,12 @@ names=[
  'v072RenderOwnProfile','v074OpenProfile','v073PlayerRow','v073LoadRanking',
  'v073ProfilePayload','v073SyncProfile','combatPower','v4125StableCombatPower',
 ]
-assign_rx={n:re.compile(r'(?<![\\w$])(?:window\\.)?'+re.escape(n)+r'\\s*=(?!=)') for n in names}
-call_rx={n:re.compile(r'\\b'+re.escape(n)+r'\\s*\\(') for n in names}
+assign_rx={n:re.compile(r'(?<![\w$])(?:window\.)?'+re.escape(n)+r'\s*=(?!=)') for n in names}
+call_rx={n:re.compile(r'\b'+re.escape(n)+r'\s*\(') for n in names}
 
-script_tag=re.compile(r'<script(?P<attrs>[^>]*)>(?P<body>[\\s\\S]*?)</script\\s*>',re.I)
-src_attr=re.compile(r'''\\bsrc=["']([^"']+)["']''',re.I)
-id_attr=re.compile(r'''\\bid=["']([^"']+)["']''',re.I)
+script_tag=re.compile(r'<script(?P<attrs>[^>]*)>(?P<body>[\s\S]*?)</script\s*>',re.I)
+src_attr=re.compile(r'''\bsrc=["']([^"']+)["']''',re.I)
+id_attr=re.compile(r'''\bid=["']([^"']+)["']''',re.I)
 
 timeline={n:[] for n in names}
 scripts=[]
