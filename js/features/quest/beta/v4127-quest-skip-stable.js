@@ -43,8 +43,9 @@
   }
   btn.dataset.v4127Skip='1';
   if(btn.parentElement!==row)row.prepend(btn);
-  btn.innerHTML='⏩ Questzeit überspringen · 1 Zeit-Samen<small>Danach startet direkt der Quest-Kampf.</small>';
-  if(btn.dataset.v4127Busy!=='1')btn.disabled=false;
+  const skipHtml='⏩ Questzeit überspringen · 1 Zeit-Samen<small>Danach startet direkt der Quest-Kampf.</small>';
+  if(btn.innerHTML!==skipHtml)btn.innerHTML=skipHtml;
+  if(btn.dataset.v4127Busy!=='1'&&btn.disabled)btn.disabled=false;
 
   btn.onclick=async e=>{
    e.preventDefault();e.stopPropagation();
@@ -62,7 +63,11 @@
 
   let stock=row.querySelector('.v394-time-seed-stock');
   if(!stock){stock=document.createElement('div');stock.className='v394-time-seed-stock';row.appendChild(stock)}
-  stock.innerHTML=`🌱 <b>${seedCount()}</b><span>Zeit-Samen</span>`;
+  const count=seedCount();
+  if(stock.dataset.v4127Count!==String(count)){
+   stock.dataset.v4127Count=String(count);
+   stock.innerHTML=`🌱 <b>${count}</b><span>Zeit-Samen</span>`;
+  }
   return true;
  }
  window.v4127EnsureQuestSkip=ensureSkip;
@@ -72,7 +77,12 @@
  function scheduleSkip(){
   if(scheduled)return;
   scheduled=true;
-  requestAnimationFrame(()=>requestAnimationFrame(()=>{try{ensureSkip()}catch(e){scheduled=false}}));
+  try{
+   if(ensureSkip()){scheduled=false;return}
+  }catch(_){}
+  requestAnimationFrame(()=>{
+   try{ensureSkip()}finally{scheduled=false}
+  });
  }
  window.v4127ScheduleQuestSkip=scheduleSkip;
 
@@ -86,7 +96,10 @@
 
  function stamp(){}
 
- scheduleSkip();stamp();
- window.addEventListener('pageshow',()=>{scheduleSkip();stamp()},{passive:true});
- document.addEventListener('visibilitychange',()=>{if(!document.hidden){scheduleSkip();stamp()}},{passive:true});
+ /* V8.009: no unconditional delayed startup repaint. The canonical
+    Quest render/start hooks call ensureSkip directly. Navigation/focus only
+    repairs the row when the Quest page is actually visible. */
+ if(document.getElementById('quests')?.classList.contains('active'))scheduleSkip();stamp();
+ window.addEventListener('pageshow',()=>{if(document.getElementById('quests')?.classList.contains('active'))scheduleSkip();stamp()},{passive:true});
+ document.addEventListener('visibilitychange',()=>{if(!document.hidden&&document.getElementById('quests')?.classList.contains('active')){scheduleSkip();stamp()}},{passive:true});
 })();
