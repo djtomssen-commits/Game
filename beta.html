@@ -52265,59 +52265,8 @@ create index if not exists player_messages_sender_idx on public.player_messages(
 </style>
 
 <script id="v393-quest-skip-restored">
-(function(){
-  const VERSION='V4.29 Stable';
-
-  function bindSkip(){
-    const q=s.quests?.active;
-    const host=document.querySelector('#quests .v392-active-view .v386-card-body');
-    if(!q||!host)return;
-
-    host.querySelectorAll('.v393-skip').forEach(x=>x.remove());
-    if(Date.now()>=Number(q.ends||0))return;
-
-    const btn=document.createElement('button');
-    btn.type='button';
-    btn.className='v393-skip';
-    btn.innerHTML='⏩ Questzeit überspringen · 1 Harz-Taler<small>Danach startet direkt der Quest-Kampf.</small>';
-    btn.onclick=async e=>{
-      e.preventDefault();
-      e.stopPropagation();
-      if(typeof window.v316SkipActiveQuest==='function'){
-        btn.disabled=true;
-        try{
-          await window.v316SkipActiveQuest();
-        }finally{
-          if(btn.isConnected)btn.disabled=false;
-        }
-      }
-    };
-
-    const note=host.querySelector('.v392-running-note');
-    if(note)note.before(btn);
-    else host.appendChild(btn);
-  }
-
-  /*
-    V4.02 owns the new active quest presentation.
-    Extend its render result instead of changing the old V4.02 skip/reward logic.
-  */
-  const baseRenderQuests=renderQuests;
-  renderQuests=function(){
-    const r=baseRenderQuests.apply(this,arguments);
-    requestAnimationFrame(bindSkip);
-    return r;
-  };
-
-  /* V7.122: duplicate quest-nav skip bind retired; renderQuests owns it. */
-
-  setTimeout(()=>{
-    try{bindSkip()}catch(e){}
-    /* V7.113: obsolete version paints retired. */
-  },700);
-})();
+/* V8.009 retired: v4127 is the only Quest skip UI owner. */
 </script>
-
 <!-- ===== V4.29 Stable: Zeit-Samen currency for quest skipping ===== -->
 <style id="v394-time-seeds-style">
 #quests .v394-skip-row{
@@ -52477,67 +52426,12 @@ create index if not exists player_messages_sender_idx on public.player_messages(
     }
   };
 
-  function paintSkipCurrency(){
-    ensureTimeSeeds();
-
-    const host=document.querySelector('#quests .v392-active-view .v386-card-body');
-    if(!host)return;
-
-    const oldBtn=host.querySelector('.v393-skip');
-    if(!oldBtn)return;
-
-    oldBtn.innerHTML=
-      '⏩ Questzeit überspringen · 1 Zeit-Samen'+
-      '<small>Danach startet direkt der Quest-Kampf.</small>';
-    oldBtn.disabled=skipBusy;
-    oldBtn.onclick=async e=>{
-      e.preventDefault();
-      e.stopPropagation();
-      oldBtn.disabled=true;
-      try{await window.v316SkipActiveQuest()}
-      finally{if(oldBtn.isConnected)oldBtn.disabled=false}
-    };
-
-    let row=oldBtn.closest('.v394-skip-row');
-    if(!row){
-      row=document.createElement('div');
-      row.className='v394-skip-row';
-      oldBtn.before(row);
-      row.appendChild(oldBtn);
-    }
-
-    let stock=row.querySelector('.v394-time-seed-stock');
-    if(!stock){
-      stock=document.createElement('div');
-      stock.className='v394-time-seed-stock';
-      row.appendChild(stock);
-    }
-    stock.innerHTML=`🌱 <b>${s.timeSeeds}</b><span>Zeit-Samen</span>`;
-  }
-
-  /*
-    V4.02 installs the skip button in requestAnimationFrame.
-    Queue our currency paint one frame after that without a new interval/observer.
-  */
-  const baseRenderQuests=renderQuests;
-  renderQuests=function(){
-    const r=baseRenderQuests.apply(this,arguments);
-    requestAnimationFrame(()=>requestAnimationFrame(paintSkipCurrency));
-    return r;
-  };
-
-  /* V7.122: duplicate quest-nav currency paint retired; renderQuests owns it. */
+  /* V8.009: skip UI painting retired here.
+     v4127 owns the only .v394-skip-row/.v393-skip render lifecycle. */
 
   ensureTimeSeeds();
   saveQuiet();
 
-  setTimeout(()=>{
-    try{paintSkipCurrency()}catch(e){}
-    document.querySelectorAll(
-      '.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version'
-    ).forEach(el=>{if(el)el.textContent=VERSION});
-    document.querySelectorAll('.v366-ver').forEach(el=>el.textContent='V4.11');
-  },750);
 })();
 </script>
 
