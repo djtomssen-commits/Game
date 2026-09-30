@@ -1173,3 +1173,32 @@ Der nächste fachliche Schritt ist **nicht HOME-32**, sondern die Restinventur d
 - Kein neuer Renderer, Timer oder Observer.
 - Stable / `index.html`: unverändert.
 - Nächster Test: neu einloggen -> sofort erste Quest starten -> prüfen, ob der gesamte Bereich unterhalb Elite nun stabil bleibt.
+
+
+### Quest Skip-Bereich Flicker – Direktintegration – 30.09.2026
+
+- Nutzer bestätigt nach Elite-/v321-Fixes:
+  - Elite-Bereich stabil;
+  - verbleibendes Flackern offenbar nur noch im Skip-/Zeit-Samen-Bereich.
+- Ursachen im Code:
+  - `v4127` malte den Skip-Bereich standardmäßig erst über doppeltes `requestAnimationFrame` nach;
+  - `v6344` rief diesen verzögerten Skip-Paint nach dem kanonischen Quest-Render erneut auf;
+  - `v7110` und `v7045` schedulten denselben verzögerten Paint nach Start/Server-Sync ebenfalls;
+  - parallel existierte in `v316` noch ein alter Skip-Painter sowie ein 350-ms-Startup-`renderQuests()`.
+- Fixes:
+  - `1fea0a4e363b32000d97e0715bba8f5d7c84de6e`
+    - alter v316-Skip-Painter aus aktiver Renderkette genommen;
+    - 350-ms-Startup-Full-Repaint entfernt;
+    - Balance-Normalisierung bleibt erhalten.
+  - `fe998c423aba10eef2de8d7af0e65c93f577e2ba`
+    - v392 malt `v4127EnsureQuestSkip()` direkt im selben Paint wie die aktive Questkarte.
+  - `c55e0a41553b0bbe3ae2043341f5564e9bd826e4`
+    - v6344 schedult keinen alten/v316 Skip-Paint mehr;
+    - nutzt direkten v4127-Ensure-Aufruf.
+  - `1f161feaaad09a1ab4680c8c16a492650438ba81`
+    - v7110 Start-Posthook nutzt direkten Skip-Paint.
+  - `c680103cb9748ff61cb331967a20ef155ca85945`
+    - v7045 Server-Start/Claim/Skip nutzt direkten Skip-Paint statt verzögertem Scheduling.
+- Ziel: Skip-/Zeit-Samen-Zeile existiert bereits beim ersten sichtbaren Active-Quest-Paint und wird nicht 1–2 Frames später nachgebaut.
+- Stable / `index.html`: unverändert.
+- Nächster Test: neu einloggen -> erste Quest starten -> nur Skip-/Zeit-Samen-Zeile beobachten.
