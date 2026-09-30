@@ -10,22 +10,24 @@
 - Aktuelle Beta-Linie: **V8.009**
 - Arbeitsbranch: **main**
 - Letzter vollständig geprüfter Code-Commit vor dieser Statusdatei:
-  `9d9a873f2e75afb565e8253d4925692211e72685`
-- Letzte vollständig abgeschlossene Unterphase: **V8.009-DUNGEON-D2-BETA**
-- D2 Ergebnis: **erfolgreich**
-- D2 Extraktionscommit: `9d9a873f2e75afb565e8253d4925692211e72685`
-- D2 Workflow/QA: **grün**
-- D2 Workflow-Reparatur: `8df08dc2ed042afc5caff32070f35d0af3a2da3c`
-  - Ursache des ersten Fehlversuchs: doppelt escapte Regex-Klassen im Extraktionsskript.
-  - Kein Gameplay-/Dungeon-Codefehler; nach Korrektur vollständig erfolgreich.
-- D2 ausgelagert:
-  - `gl-dungeon-visual-owner-script` → `js/features/dungeon/beta/v8009-d2-visual-owner.js`
-  - `v7162-dungeon-map-final-owner-script` → `js/features/dungeon/beta/v8009-d2-map-finalizer.js`
-  - `v7166-dungeon-detail-render-lock` → `js/features/dungeon/beta/v8009-d2-detail-render-lock.js`
-- D2 Umfang: ca. **39 KB** Inline-JS aus `beta.html` entfernt.
-- `beta.html` danach: **6211491 Byte** statt **6250789 Byte**
+  `84ffb394cfef87710e751f73c4aa86add6058fdc`
+- Letzte vollständig abgeschlossene Unterphase: **V8.009-DUNGEON-D3-BETA**
+- D3 Ergebnis: **erfolgreich**
+- D3 Extraktionscommit: `84ffb394cfef87710e751f73c4aa86add6058fdc`
+- D3 Workflow/QA: **grün**
+- D3 ausgelagert:
+  - `v7166-dungeon-detail-render-lock-css` → `css/features/dungeon/beta/v8009-d3-detail-render-lock.css`
+- D3 Umfang: **68819 Byte** CSS aus `beta.html` entfernt.
+- `beta.html` danach: **6142744 Byte** statt **6211491 Byte**
+- D3 Audit-Ergebnis:
+  - `v251-modern-dungeon-maps-core`: weiterhin Runtime-JS-Kandidat; enthält direkte `renderDungeon`-/DOM-Arbeit.
+  - `v260-dungeon-detail-script`: weiterhin Runtime-JS-Kandidat; enthält direkte `renderDungeon`-/Event-/DOM-Arbeit.
+  - `v261-dungeon-detail-script`: weiterhin Runtime-JS-Kandidat; enthält direkte `renderDungeon`-/Event-/DOM-Arbeit.
+  - Diese drei Legacy-Kerne wurden **nicht gelöscht oder deaktiviert**.
+  - Weitere spätere Dungeon-Patches referenzieren die alten v251/v260/v261-Strukturen weiterhin; deshalb keine pauschale Legacy-Löschung.
+- D2-Owner-Kette: **unverändert erhalten**
 - Gameplay/Combat-Math/Rewards/Serverautorität: **unverändert**
-- Aktuell in Arbeit / nächster Schritt: **V8.009-DUNGEON-D3-BETA**
+- Aktuell in Arbeit / nächster Schritt: **V8.009-DUNGEON-D4-BETA**
 - Scope der laufenden Strukturierungsarbeit: **Beta zuerst**
 - **Server 1 / Stable bleibt unangetastet**, bis eine Phase ausdrücklich für Stable freigegeben wird.
 
@@ -113,9 +115,9 @@ Kein `HOME-32` beginnen, solange kein echter reproduzierbarer Home-Bug oder klar
 Aktueller Repo-Stand vor dieser Statusdatei:
 
 - `index.html`: ca. **6574124 Byte**
-- `beta.html`: ca. **6211491 Byte**
-- externe Dateien unter `js/`: **101**
-- externe Dateien unter `css/`: **97**
+- `beta.html`: ca. **6142744 Byte**
+- externe `.js`-Dateien unter `js/`: **94**
+- externe `.css`-Dateien unter `css/`: **91**
 
 Das heißt: Es wurde viel ausgelagert, aber die Haupt-HTML ist weiterhin mehrere MB groß und enthält noch erheblichen Alt-/Inline-Code.
 
@@ -139,32 +141,34 @@ Für jedes System gilt:
 
 ## 4. EXAKTER nächster Schritt
 
-### Nächste Unterphase: V8.009-DUNGEON-D3-BETA
+### Nächste Unterphase: V8.009-DUNGEON-D4-BETA
 
-D2 ist abgeschlossen. Den D1-Combat-Renderer und die in D2 ausgelagerte aktive Owner-Kette nicht erneut umbauen.
+D3 ist abgeschlossen. Der große `v7166`-Detail-Lock-CSS-Block ist extern, die historischen JS-Kerne sind bewusst noch aktiv.
 
 1. aktuellen `main`-HEAD lesen;
-2. die noch inline verbliebenen historischen Dungeon-Map/Detail-Layer inventarisieren, besonders:
-   - `v251`
-   - `v260`
-   - `v261`
-   - `v7166-dungeon-detail-render-lock-css`;
-3. für jeden Treffer belegen, ob er:
-   - noch Runtime-Verhalten besitzt,
-   - nur Guard/Fallback ist,
-   - nur Styling liefert,
-   - oder nachweislich vollständig vom D2-Owner überholt wurde;
-4. die Lifecycle-Kette gegen die jetzt externen D2-Owner prüfen:
-   - Dungeonwelt / Karte
-   - Detailansicht
-   - Kampf
-   - Reward
-   - Rückkehr zur Karte;
-5. insbesondere auf doppelte direkte Renderer, Observer, Timer und nachträgliche DOM-Reparaturen prüfen;
-6. nur den **nächsten klar aktiven oder klar isolierbaren Owner/Style-Block** aus `beta.html` externalisieren;
-7. alte Legacy-Blöcke **nicht löschen**, solange ihre Wirkung nicht durch statische Prüfung + Runtime/Browser-QA eindeutig ersetzt ist;
-8. Stable/Server 1 unverändert halten;
-9. nach erfolgreichem D3 diese Datei sofort aktualisieren und D4 festlegen.
+2. exakt diese sechs historischen Kernblöcke inventarisieren und in ihrer aktuellen Quellreihenfolge prüfen:
+   - `v251-modern-dungeon-maps-style`
+   - `v251-modern-dungeon-maps-core`
+   - `v260-dungeon-detail-style`
+   - `v260-dungeon-detail-script`
+   - `v261-dungeon-detail-style`
+   - `v261-dungeon-detail-script`;
+3. ihre Wrapper-/Override-Beziehungen zu:
+   - `renderDungeon`,
+   - D2 `glDungeonVisualRefresh`,
+   - D2 Detail-Render-Lock,
+   - späteren Dungeon-Patches
+   dokumentieren;
+4. diese sechs Blöcke **nur externalisieren**, nicht funktional konsolidieren oder löschen;
+5. Quellreihenfolge 1:1 bewahren, damit bestehende Monkey-Patch-/Override-Reihenfolge unverändert bleibt;
+6. nach der Extraktion prüfen:
+   - jeder externe Include genau einmal,
+   - keine alten Inline-Bodies mehr,
+   - D2/D3-Owner weiter genau einmal geladen,
+   - Stable/Server 1 unverändert,
+   - JS-Syntax grün,
+   - keine Änderung an Gameplay, Combat-Math, Rewards oder Serverautorität;
+7. erst nach erfolgreichem D4 in D5 entscheiden, welche dieser historischen Layer tatsächlich durch den finalen D2-Owner ersetzt und stilllegbar sind.
 
 ### Statusdatei-Regel
 
