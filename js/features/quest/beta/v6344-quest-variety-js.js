@@ -239,7 +239,13 @@ function migrateCurrentOffers(){
 try{
   if(typeof renderQuests==='function'&&!window.__V6344_RENDER_QUESTS_WRAP__){
     const base=renderQuests;
-    renderQuests=function(){const r=base.apply(this,arguments);schedule();return r};
+    renderQuests=function(){
+      const r=base.apply(this,arguments);
+      try{window.v392PaintActive?.()}catch(_){}
+      try{window.v4127ScheduleQuestSkip?.()}catch(_){}
+      schedule();
+      return r;
+    };
     window.renderQuests=renderQuests;window.__V6344_RENDER_QUESTS_WRAP__=true;
   }
 }catch(_){ }
