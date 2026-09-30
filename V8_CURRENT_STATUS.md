@@ -19,8 +19,8 @@
 - Aktuelle Beta-Linie: **V8.009**
 - Arbeitsbranch: **main**
 - Letzter automatisiert geprüfter Code-Commit vor dieser Statusdatei:
-  `b19b2d3b83006d1da7c65e002863f7aa27e03e25`
-- Aktuelle Unterphase: **V8.009-PVP-SPRINT-1-HALL-AVATAR-FRAME-MANUAL-CHECK**
+  `be3664b893ec479d49344baee6b032eff463ff6d`
+- Aktuelle Unterphase: **V8.009-PVP-SPRINT-1-HALL-AVATAR-FRAME-SOURCE-MANUAL-CHECK**
 - Nutzer-Video bestätigt: betroffen ist konkret **Dungeon 2**.
 - Sichtbares Fehlerbild:
   - zunächst korrekter D2-Hintergrund + korrekte Gegnergrafiken;
@@ -480,6 +480,32 @@
     - Stable/Server 1 unverändert;
     - Gameplay/Matchmaking/Combat-Math/Rewards/Serverautorität unverändert.
 - Aktuelle Beta-Größe nach Hall-Avatar/Rahmen-Direktintegration: **5.749.992 Byte**.
+- Manueller Screenshot danach zeigte zwei Restfehler:
+  - Top-3-Avatare weiterhin zu klein/schmal;
+  - Tomssen hatte im Top-3-Feld keinen Rahmen, obwohl das eigene Profil oben den aktiven Rahmen korrekt zeigte.
+- Root-Cause-Audit:
+  - Live-`profiles`-Datensatz von Tomssen geprüft: `avatar_frame_id = emerald_aura`; Datenbankwert ist korrekt;
+  - `v6145` wird in der Script-Reihenfolge deutlich vor dem alten v7137-Frame-System geladen;
+  - Hall darf deshalb nicht davon abhängen, dass ein später Frame-Helper den ersten Render nachbearbeitet.
+- Direkter Source-Fix:
+  - Commit `8b61274ea38abbb03dd9b162f3f184b05a3c0235`: `v6145` besitzt die für Hall benötigte Frame-Assetauflösung direkt im kanonischen Renderer und rendert Frame-Markup selbst;
+  - `v6145HallRefresh()` als kanonischer Hall-Neurender für echte Frame-Änderungen ergänzt;
+  - Commit `be3664b893ec479d49344baee6b032eff463ff6d`:
+    - bestehendes `v6145-hall-pagination-css` direkt bearbeitet;
+    - Top-3-Avatarcontainer jetzt quadratisch über die Kartenbreite;
+    - Klassenbild wird innerhalb dieses Containers gecroppt/skaliert (`scale(2.55)`) statt als schmale Ganzkörperfigur stehen zu bleiben;
+    - Frame-Art für Top 3 direkt als Overlay im gleichen Render;
+    - Frame-Art in normalen Ranglistenzeilen ebenfalls direkt sichtbar;
+    - alter Hall-`v073LoadRanking`-Frame-Repaint-Wrapper bleibt entfernt;
+    - Rahmenwechsel aktualisiert eine offene Hall über den kanonischen `v6145HallRefresh()` statt `decorateHallFrames()` nachträglich darüberzumalen.
+- Architektur-QA für diesen Fix: **grün**
+  - **0 neue Renderer**
+  - **0 neue Render-Wrapper**
+  - **0 neue Timer**
+  - **0 neue MutationObserver**
+  - Stable/Server 1 unverändert;
+  - Gameplay/Matchmaking/Combat-Math/Cooldown/Rewards/Serverautorität unverändert.
+- Aktuelle Beta-Größe nach Source-Fix: **5.751.007 Byte**.
 - **Quest Sprint NICHT starten**, bis diese zwei Hall-Fehler manuell erneut geprüft und bestätigt sind.
 - Scope: **Beta zuerst**
 - **Server 1 / Stable bleibt unangetastet**, bis eine Phase ausdrücklich für Stable freigegeben wird.
@@ -568,7 +594,7 @@ Kein `HOME-32` beginnen, solange kein echter reproduzierbarer Home-Bug oder klar
 Aktueller Repo-Stand vor dieser Statusdatei:
 
 - `index.html`: ca. **6574124 Byte**
-- `beta.html`: ca. **5749992 Byte**
+- `beta.html`: ca. **5751007 Byte**
 - externe `.js`-Dateien unter `js/`: **134**
 - externe `.css`-Dateien unter `css/`: **130**
 
@@ -594,31 +620,29 @@ Für jedes System gilt:
 
 ## 4. EXAKTER nächster Schritt
 
-### Hall-of-Haze – EIN gemeinsamer manueller Re-Test
+### Hall-of-Haze – Source-Fix manuell prüfen
 
-Bitte in Beta jetzt gesammelt prüfen:
+In Beta einmal Hall neu öffnen und nur prüfen:
 
-1. **Hall öffnen**
-   - eigenes Profil oberhalb der Top 3 sofort korrekt dekoriert;
-   - kein alter/schmaler Zwischenzustand.
-2. **Top 3**
-   - Avatare deutlich größer und über die Kartenbreite;
-   - wenn ein Top-3-Spieler einen aktiven Avatar-Rahmen besitzt, ist er direkt sichtbar;
-   - kein nachträgliches Einblenden durch einen Ranking-Wrapper.
-3. **Komplette Rangliste**
-   - Spieleravatare sichtbar;
-   - aktive Rahmen direkt sichtbar, sofern vorhanden.
-4. **Fremdes Spielerprofil**
-   - Kampfkraft zeigt vom ersten sichtbaren Frame an den fremden Wert;
-   - kein kurzer Own-Power-Zwischenwert.
+1. **Top 3**
+   - Avatar füllt das große Avatarfeld deutlich aus;
+   - keine schmale Ganzkörper-Miniatur mehr;
+   - Tomssen zeigt direkt den aktiven `emerald_aura`-Rahmen;
+   - andere Top-3-Spieler zeigen ihren Rahmen ebenfalls, falls `avatar_frame_id` gesetzt ist.
+2. **Komplette Rangliste**
+   - bei Spielern mit aktivem Rahmen ist der Rahmen direkt am Avatar sichtbar;
+   - kein nachträgliches Einblenden/Flackern.
+3. **Bereits offene Hall-Fehler mitprüfen**
+   - eigenes Profil oben bleibt beim ersten Paint korrekt;
+   - fremde Kampfkraft zeigt nicht kurz die eigene Kampfkraft.
 
-Wenn alle Punkte passen:
-- PvP / Hall of Haze als abgeschlossen markieren;
-- direkt mit **Quest Sprint** fortfahren.
+Wenn das passt:
+- PvP / Hall of Haze abschließen;
+- Quest Sprint starten.
 
-Wenn etwas nicht passt:
-- nur den konkreten Restfehler korrigieren;
-- **keinen neuen Renderer-/Timer-/Observer-Patch darüberlegen**.
+Wenn noch etwas nicht passt:
+- ausschließlich den bestehenden kanonischen `v6145`-/Profil-Owner direkt korrigieren;
+- **keinen neuen Patch-Renderer, Wrapper, Timer oder Observer hinzufügen**.
 
 ### Statusdatei-Regel
 
