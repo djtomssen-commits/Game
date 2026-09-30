@@ -1,0 +1,26 @@
+{
+  "build": "V8.009-HOME-15-BETA",
+  "phase": "Canonical Startseite header routing cleanup",
+  "scope": "beta only",
+  "base_commit": "5b21d423b89cd2a2dff6fa621cb44f2f375eb180",
+  "findings": [
+    "HOME-14 extracted the canonical beta V366 renderer, but Gold+ still pointed to the normal shop and Mail still pointed to friends inside that owner.",
+    "HOME-1 therefore still needed a global capture-phase click redirect even though the beta renderer can now own the correct routes directly."
+  ],
+  "changes": [
+    "Gold+ now opens the server-authoritative Gold shop directly from the canonical beta header renderer.",
+    "Mail now opens Nebel-Post directly from the canonical beta header renderer.",
+    "The HOME-1 global capture-phase redirect is retired in beta.",
+    "Existing friends, Harz, Dampf, settings and navigation behavior is unchanged.",
+    "Browser QA now verifies both routes with the helper capture layer disabled."
+  ],
+  "files": [
+    "js/features/home/beta/v8009-home-renderer.js",
+    "js/system/performance/v7288-home-adaptive-fit-script.js",
+    ".github/scripts/v8009_home_events_browser_qa.mjs"
+  ],
+  "stable_behavior_changed": false,
+  "gameplay_changed": false,
+  "rewards_changed": false,
+  "server_authority_changed": false
+}
