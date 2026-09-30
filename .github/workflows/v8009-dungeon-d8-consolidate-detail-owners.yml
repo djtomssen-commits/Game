@@ -1,0 +1,93 @@
+name: V8.009 Dungeon D8 Consolidate Detail Owners
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/v8009_dungeon_d8_consolidate_detail_owners.py'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  consolidate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Consolidate D1 D6 D7 detail owners
+        run: python3 .github/scripts/v8009_dungeon_d8_consolidate_detail_owners.py
+
+      - name: Syntax-check consolidated and archived JS
+        run: |
+          node --check js/features/dungeon/beta/v8009-d8-detail-decorator.js
+          node --check js/features/dungeon/legacy/v8009-d8-retired-detail-owner-chain.js
+          node --check js/features/dungeon/beta/v8009-d2-visual-owner.js
+          node --check js/features/dungeon/beta/v8009-d2-detail-render-lock.js
+          node --check js/features/dungeon/beta/v8009-d5-final-detail-seal.js
+
+      - name: Validate D8 consolidation
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import json,re
+
+          beta=Path('beta.html').read_text(encoding='utf-8')
+          deco=Path('js/features/dungeon/beta/v8009-d8-detail-decorator.js').read_text(encoding='utf-8')
+          owner=Path('js/features/dungeon/beta/v8009-d2-visual-owner.js').read_text(encoding='utf-8')
+          report=json.loads(Path('V8009_DUNGEON_D8_BETA.json').read_text(encoding='utf-8'))
+
+          retired=[
+            'v426-reference-owner','v427-d6-clean-script','v428-d6-final-owner',
+            'v429-d6-scenic-owner','v430-d6-10er-final-script','v432-d7-final-script'
+          ]
+          for sid in retired:
+              if re.search(r'<script[^>]*\bid=["\']'+re.escape(sid)+r'["\']',beta,re.I):
+                  raise SystemExit(f'legacy owner still active: {sid}')
+
+          src='js/features/dungeon/beta/v8009-d8-detail-decorator.js'
+          if beta.count(src)!=1:
+              raise SystemExit('D8 decorator include count != 1')
+          if beta.index(src)>beta.index('js/features/dungeon/beta/v8009-d2-visual-owner.js'):
+              raise SystemExit('D8 decorator must load before D2 visual owner')
+          if 'window.v8009DungeonDetailDecorate?.()' not in owner:
+              raise SystemExit('canonical paintMap does not call D8 decorator')
+
+          for needle in (
+              'DIE SCHIMMELMINEN',
+              'DER VERBOTENE<br>GEWÄCHSHAUSTRAKT',
+              "card.classList.toggle('v426-ref-d1',di===0)",
+              "card.classList.toggle('v427-d6',di===5)",
+              "card.classList.toggle('v432-d7',di===6)",
+          ):
+              if needle not in deco:
+                  raise SystemExit(f'missing migrated decoration: {needle}')
+
+          body_end=beta.lower().rfind('</body>')
+          last_script=beta.rfind('<script',0,body_end)
+          seal_pos=beta.rfind('<script id="v8009-dungeon-d5-final-detail-seal"',0,body_end)
+          if seal_pos!=last_script:
+              raise SystemExit('D5 final seal is no longer last script')
+
+          if not report.get('stable_unchanged') or report.get('legacy_owner_scripts_active'):
+              raise SystemExit('D8 scope/retirement report invalid')
+          print('DUNGEON-D8 consolidation OK')
+          PY
+
+      - name: Diff sanity
+        run: git diff --check
+
+      - name: Commit D8
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add beta.html \
+            js/features/dungeon/legacy/v8009-d8-retired-detail-owner-chain.js \
+            V8009_DUNGEON_D8_BETA.json
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "V8.009 DUNGEON-D8: consolidate D1 D6 D7 detail owners"
+          git push
