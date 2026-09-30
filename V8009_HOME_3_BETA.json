@@ -1,0 +1,19 @@
+{
+  "build": "V8.009-HOME-3-BETA",
+  "phase": "Startseite fit coalescing and beta build label",
+  "scope": "beta behavior inside shared home helper; stable behavior preserved",
+  "changes": [
+    "Repeated Startseite fit requests are coalesced into one RAF/timer pass instead of stacking several layout measurements.",
+    "Opening the menu no longer triggers an unnecessary Startseite layout-fit pass; only actual navigation to world does.",
+    "V7258 base geometry is only requested for a freshly rebuilt hero, avoiding a second full geometry pass on normal settles.",
+    "The beta build label is reapplied at DOM ready, pageshow and account-ready so historical V8.001 pseudo-elements cannot win later in load order.",
+    "HOME-1 Gold+ and Nebel-Post routing fixes remain active."
+  ],
+  "diagnostics": "window.v8009HomeHeaderDiagnostics() now reports scheduleCalls, coalesced, runCalls, baseFitCalls and pending fit work.",
+  "file": "js/system/performance/v7288-home-adaptive-fit-script.js",
+  "file_sha": "e24c2f57ad1b430f324e69377f4623d584aefcdc",
+  "commit": "b825a9262110e357f41bb52a5bd18ac564c6969b",
+  "stable_behavior_changed": false,
+  "gameplay_changed": false,
+  "server_authority_changed": false
+}
