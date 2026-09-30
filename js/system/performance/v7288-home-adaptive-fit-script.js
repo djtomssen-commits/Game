@@ -108,8 +108,49 @@ const v8009HomeHeaderFix={
   mailRedirects:0,
   menuGuardInstalls:0,
   menuRebuildsSuppressed:0,
-  menuRebuildsAllowed:0
+  menuRebuildsAllowed:0,
+  worldRenderGuardInstalls:0,
+  worldRenderCalls:0,
+  worldRenderBurstsSuppressed:0
 };
+
+function installBetaWorldRenderGuard(){
+  if(!IS_BETA)return false;
+  try{
+    const base=window.v085InstallWorld;
+    if(typeof base!=='function')return false;
+    if(base.__v8009Home5WorldGuard)return true;
+
+    let lastFalseAt=0;
+    const wrapped=function(){
+      const force=arguments[0]===true;
+      const active=!!document.getElementById('world')?.classList.contains('active');
+      const t=performance?.now?.()||Date.now();
+
+      /* V8.009 HOME-5: several server/lifecycle owners can ask the old V085
+         home installer to rebuild the already-mounted Startseite in the same
+         short UI burst. Keep the first rebuild, but drop only subsequent
+         non-forced calls inside 120 ms. Forced/navigation renders are never
+         suppressed. This removes duplicate DOM churn without caching state. */
+      if(!force&&active&&lastFalseAt&&t-lastFalseAt<120){
+        v8009HomeHeaderFix.worldRenderBurstsSuppressed++;
+        return false;
+      }
+
+      if(!force&&active)lastFalseAt=t;
+      v8009HomeHeaderFix.worldRenderCalls++;
+      const out=base.apply(this,arguments);
+      try{schedule('world-render')}catch(_){}
+      return out;
+    };
+    wrapped.__v8009Home5WorldGuard=true;
+    wrapped.__v8009Base=base;
+    window.v085InstallWorld=wrapped;
+    try{globalThis.v085InstallWorld=wrapped}catch(_){}
+    v8009HomeHeaderFix.worldRenderGuardInstalls++;
+    return true;
+  }catch(_){return false}
+}
 
 function installBetaMenuReplaceGuard(){
   if(!IS_BETA)return false;
@@ -183,7 +224,7 @@ if(IS_BETA)document.addEventListener('click',e=>{
   }catch(_){}
 },true);
 window.v8009HomeHeaderDiagnostics=()=>({
-  version:'V8.009-HOME-4',
+  version:'V8.009-HOME-5',
   beta:IS_BETA,
   ...v8009HomeHeaderFix,
   fit:{...HOME_DIAG,pendingRaf:!!raf,pendingTimer:!!runTimer},
@@ -209,11 +250,12 @@ function applyBetaVersionStyle(){
 if(IS_BETA){
  applyBetaVersionStyle();
  installBetaMenuReplaceGuard();
- document.addEventListener('DOMContentLoaded',()=>requestAnimationFrame(()=>{applyBetaVersionStyle();installBetaMenuReplaceGuard()}),{once:true});
- window.addEventListener('pageshow',()=>{applyBetaVersionStyle();installBetaMenuReplaceGuard()},{passive:true});
- window.addEventListener('growlegends:account-ready',()=>setTimeout(()=>{applyBetaVersionStyle();installBetaMenuReplaceGuard()},0),{passive:true});
- window.addEventListener('growlegends:extras-ready',()=>setTimeout(installBetaMenuReplaceGuard,0),{passive:true});
- window.addEventListener('growlegends:foreground-ready',()=>setTimeout(installBetaMenuReplaceGuard,0),{passive:true});
+ installBetaWorldRenderGuard();
+ document.addEventListener('DOMContentLoaded',()=>requestAnimationFrame(()=>{applyBetaVersionStyle();installBetaMenuReplaceGuard();installBetaWorldRenderGuard()}),{once:true});
+ window.addEventListener('pageshow',()=>{applyBetaVersionStyle();installBetaMenuReplaceGuard();installBetaWorldRenderGuard()},{passive:true});
+ window.addEventListener('growlegends:account-ready',()=>setTimeout(()=>{applyBetaVersionStyle();installBetaMenuReplaceGuard();installBetaWorldRenderGuard()},0),{passive:true});
+ window.addEventListener('growlegends:extras-ready',()=>setTimeout(()=>{installBetaMenuReplaceGuard();installBetaWorldRenderGuard()},0),{passive:true});
+ window.addEventListener('growlegends:foreground-ready',()=>setTimeout(()=>{installBetaMenuReplaceGuard();installBetaWorldRenderGuard()},0),{passive:true});
 }
 
 window.addEventListener('resize',()=>schedule('resize'),{passive:true});
@@ -233,6 +275,6 @@ window.addEventListener('growlegends:navigation-open-v7119',e=>{
   if(!id||id==='world')setTimeout(()=>schedule('navigation-world'),70);
 },{passive:true});
 
-if(IS_BETA)setTimeout(installBetaMenuReplaceGuard,0);
+if(IS_BETA)setTimeout(()=>{installBetaMenuReplaceGuard();installBetaWorldRenderGuard()},0);
 schedule('boot');
 })();
