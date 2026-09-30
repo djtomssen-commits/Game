@@ -1,0 +1,591 @@
+{
+  "build": "V8.009-HALL-AVATAR-FRAME-AUDIT",
+  "hits": [
+    {
+      "path": "beta.html",
+      "count": 65,
+      "contexts": [
+        {
+          "line": 2567,
+          "text": "<h2>Harz & Gold & Rahmen Dealer</h2>"
+        },
+        {
+          "line": 41713,
+          "text": "['harzDealer','🟢','Harz & Gold & Rahmen Dealer'],"
+        },
+        {
+          "line": 46943,
+          "text": "const b=document.createElement('button');b.className='top-menu-item';b.dataset.screen='harzDealer';b.innerHTML='<span>🟢</span>Harz &amp; Gold &amp; Rahmen Dealer';b.onclick=()=>v322OpenDealer();panel.appendChild(b);"
+        },
+        {
+          "line": 48267,
+          "text": "item.textContent='💎 Harz & Gold & Rahmen Dealer';"
+        },
+        {
+          "line": 49086,
+          "text": "item.textContent='💎 Harz & Gold & Rahmen Dealer';"
+        },
+        {
+          "line": 50657,
+          "text": "item.textContent='💎 Harz & Gold & Rahmen Dealer';"
+        },
+        {
+          "line": 68524,
+          "text": "['harzDealer','🟢','Harz & Gold & Rahmen Dealer'],['bagDealer','📦','Tütchen-Dealer'],['pvp','⚔️','PvP-Arena'],['guild','🏰','Gilde'],['hall','🏆','Hall of Haze'],"
+        },
+        {
+          "line": 73677,
+          "text": "/* Bossfeld etwas kompakter, damit es trotz tieferer Position sauber im Rahmen bleibt */"
+        },
+        {
+          "line": 99338,
+          "text": "harzDealer:{label:'Harz & Gold & Rahmen Dealer',icon:'🟢',steps:["
+        },
+        {
+          "line": 115142,
+          "text": "<div class=\"v7117-hub-title\"><div class=\"v7117-hub-emblem\">🌿</div><div class=\"v7117-hub-copy\"><small>Grow Legends · Händler</small><b>Harz &amp; Gold &amp; Rahmen Dealer</b></div></div>"
+        },
+        {
+          "line": 115163,
+          "text": "if(icon){[...el.childNodes].filter(n=>n.nodeType===3).forEach(n=>n.remove());el.append(' Harz & Gold & Rahmen Dealer')}"
+        },
+        {
+          "line": 115164,
+          "text": "else el.textContent='💎 Harz & Gold & Rahmen Dealer';"
+        },
+        {
+          "line": 115603,
+          "text": "function paintPopup(){const body=document.getElementById('v7129ReferralBody');if(!body||!state)return;const slots=Array.isArray(state.slots)?state.slots:[];const pending=Array.isArray(state.pending_invites)?state.pending_invites:[];let pi=0;const l=link();body.innerHTML=`<div class=\"v7129-progress\"><b>${Math.min(10,Number(state.qualified_count)||0)}/10 freigeschaltet</b><span>${num(state.pending_count)} eingeladen · noch nicht Stufe 35</span></div><div class=\"v7129-slots\">${slots.map(x=>{const friend=!x.qualified&&pi<pending.length?pending[pi++]:null;if(friend){const lv=Math.max(1,Math.min(35,Number(friend.level)||1));const pct=Math.max(3,Math.min(100,lv/35*100));return `<div class=\"v7129-slot pending\"><strong>👤</strong><b>${x.slot}</b><div class=\"v7129-ref-name\">${esc(friend.character_name||'Spieler')}</div><div class=\"v7129-ref-level\">Stufe ${lv} / 35</div><div class=\"v7129-ref-bar\"><i style=\"width:${pct}%\"></i></div><small>⏳ Eingeladen</small></div>`}const cl=x.claimed?'claimed':x.qualified?'ready':'locked';return `<div class=\"v7129-slot ${cl}\"><strong>${x.claimed?'✓':x.qualified?'💎':'🔒'}</strong><b>${x.slot}</b><small>${x.claimed?'💎 25 Harz · abgeholt':x.qualified?'💎 25 Harz · bereit':'💎 25 Harz · Stufe 35'}</small>${x.claimable?`<button data-referral-claim=\"${x.slot}\">Abholen</button>`:''}</div>`}).join('')}</div><div class=\"v7129-grand ${state.grand_ready?'ready':''}\"><h3>🎁 10-Freunde-Paket</h3><div class=\"v7129-rewards\"><span>🪙 ${num(state.grand_gold)} Gold</span><span>🌰 10 Samen</span><span>⏱️ 10 Zeit-Samen</span><span>💎 100 Harz</span><span>🧩 250 Fragmente</span><span>🔷 1 mythisches Item</span><span>🖼️ Exklusiver Avatar-Rahmen</span></div><button data-referral-grand=\"1\" ${state.grand_ready&&!state.grand_claimed?'':'disabled'}>${state.grand_claimed?'Paket abgeho"
+        },
+        {
+          "line": 115606,
+          "text": "async function claimGrand(){if(busy)return;busy=true;try{const r=await rpc('v7129_claim_referral_grand');if(!r?.ok)throw new Error(String(r?.reason||'CLAIM_FAILED'));try{v063Toast?.('🎁 10-Freunde-Paket','success','Gold, Samen, Harz, Fragmente, mythisches Item und Avatar-Rahmen erhalten.')}catch(_){};await window.v7072AuthorityRefresh?.();try{await window.v7063ItemStageRefresh?.(true)}catch(_){};try{await window.v7064GrowAuthorityRefresh?.()}catch(_){};await refresh()}catch(e){try{v063Toast?.('Paket nicht verfügbar','error',String(e?.message||e))}catch(_){}}finally{busy=false}}"
+        },
+        {
+          "line": 116442,
+          "text": "<!-- ===== V7.145 QUEST & SCHICHT + AVATAR-RAHMEN ===== -->"
+        },
+        {
+          "line": 116484,
+          "text": "/* V7.145: Avatar frames are real PNG assets from assets/avatar_frames/. */"
+        },
+        {
+          "line": 116594,
+          "text": "/* ---------- Avatar frames ---------- */"
+        },
+        {
+          "line": 116596,
+          "text": "ironwood:'assets/avatar_frames/ironwood.png',"
+        },
+        {
+          "line": 116597,
+          "text": "silver_vine:'assets/avatar_frames/silver_vine.png',"
+        },
+        {
+          "line": 116598,
+          "text": "gold_crown:'assets/avatar_frames/gold_crown.png',"
+        },
+        {
+          "line": 116599,
+          "text": "emerald_aura:'assets/avatar_frames/emerald_aura.png',"
+        },
+        {
+          "line": 116600,
+          "text": "haze_ring:'assets/avatar_frames/haze_ring.png',"
+        },
+        {
+          "line": 116601,
+          "text": "resin_flame:'assets/avatar_frames/resin_flame.png',"
+        },
+        {
+          "line": 116602,
+          "text": "prismatic_myth:'assets/avatar_frames/prismatic_myth.png',"
+        },
+        {
+          "line": 116603,
+          "text": "referral_legend:'assets/avatar_frames/referral_legend.png'"
+        },
+        {
+          "line": 116623,
+          "text": "function applyOwnFrames(){const id=String(S.frames?.active_frame_id||'');document.body?.classList.remove('v7129-referral-frame');applyFrame(ownPortraitTarget(),id);applyFrame(document.querySelector('#world .v366-avatar'),id);applyFrame(document.querySelector('#v072OwnProfile .v646-own-avatar'),id);document.documentElement?.classList.remove('v7154-frame-pending');}"
+        },
+        {
+          "line": 116630,
+          "text": "S.frameFlight=(async()=>{try{const r=await rpc('v7137_avatar_frame_state');if(r?.ok){S.frames=r;S.lastFrameLoad=Date.now();window.__V7137_FRAME_STATE__=r;applyOwnFrames();renderFrameShop();renderFrameSelector();return r}}catch(e){if(force)toast('Rahmen nicht erreichbar','error',String(e?.message||e))}return null})().finally(()=>{S.frameFlight=null});"
+        },
+        {
+          "line": 116633,
+          "text": "function ensureDealerFrameTab(){document.querySelectorAll('#harzDealer .v7117-tabs,#goldShop .v7117-tabs').forEach(t=>{if(!t.querySelector('[data-v7117-tab=\"frames\"]')){const b=document.createElement('button');b.type='button';b.className='v7117-tab';b.dataset.v7117Tab='frames';b.textContent='🖼️ Avatar-Rahmen';t.appendChild(b)}const framesOpen=!!t.closest('#harzDealer.v7137-frames-open');if(framesOpen)t.querySelectorAll('[data-v7117-tab]').forEach(b=>b.classList.toggle('active',b.dataset.v7117Tab==='frames'))});}"
+        },
+        {
+          "line": 116634,
+          "text": "function frameDesc(f){if(f.source==='referral')return 'Nicht kaufbar · exklusiv aus dem 10-Freunde-Paket.';if(f.effect)return 'Animierter Prestige-Rahmen mit sichtbarem Effekt.';return 'Hochwertiger dauerhafter Prestige-Rahmen.'}"
+        },
+        {
+          "line": 116635,
+          "text": "function framePreview(f,cls=''){const src=avatarFor(ownClass()),art=f?.id?frameArtMarkup(f.id):'';return `<div class=\"v7137-frame-preview v7137-frame-target ${cls}\" ${f?.id?`data-v7137-frame=\"${esc(f.id)}\"`:''}><span class=\"v7140-preview-avatar-clip\">${src?`<img class=\"v7139-preview-avatar\" src=\"${esc(src)}\" alt=\"Rahmen-Vorschau\">`:'🌿'}</span>${art}</div>`}"
+        },
+        {
+          "line": 116637,
+          "text": "function renderFrameShop(){const p=ensureFrameShop();if(!p||!S.frames)return;const fs=Array.isArray(S.frames.frames)?S.frames.frames:[];p.innerHTML=`<div class=\"v7137-frame-shop-head\"><div><small>PRESTIGE · PERMANENT</small><h2>🖼️ Avatar-Rahmen</h2></div><div class=\"v7137-frame-balance\">Dein Bestand <b>💎 ${fmt(S.frames.harz)}</b></div></div><div class=\"v7137-frame-guide\"><b>So funktioniert es:</b> Einmal gekaufte Rahmen bleiben dauerhaft auf deinem Account. Tippe anschließend auf dein eigenes Avatarbild, um zwischen deinen freigeschalteten Rahmen zu wechseln oder den Rahmen zu deaktivieren. Dein aktiver Rahmen ist auch in der <b>Hall of Haze</b> und im <b>Spielerprofil</b> sichtbar.</div><div class=\"v7137-frame-grid\">${fs.map(f=>`<div class=\"v7137-frame-card ${f.owned?'owned':''}\">${framePreview(f)}<div class=\"v7137-frame-info\"><h3>${esc(f.name)} ${f.effect?'✨':''}</h3><p>${esc(frameDesc(f))}</p><div class=\"v7137-frame-price ${f.source==='referral'?'v7137-frame-special':''}\">${f.source==='referral'?'🤝 Exklusiv':`💎 ${fmt(f.price)} Harz-Taler`}</div>${f.owned?`<button type=\"button\" class=\"btn ${f.active?'gold':'secondary'}\" data-v7137-set-frame=\"${esc(f.id)}\">${f.active?'Aktiv ✓':'Aktivieren'}</button>`:f.source==='shop'?`<button type=\"button\" class=\"btn gold\" data-v7137-buy-frame=\"${esc(f.id)}\">Kaufen · ${fmt(f.price)} 💎</button>`:`<button type=\"button\" class=\"btn secondary\" disabled>Freund werben</button>`}</div></div>`).join('')}</div>`}"
+        },
+        {
+          "line": 116640,
+          "text": "async function buyFrame(id){if(S.busy)return;const f=S.frames?.frames?.find(x=>x.id===id);if(!f||f.owned)return;if(!confirm(`${f.name} für ${fmt(f.price)} Harz-Taler kaufen?\\n\\nDer Rahmen bleibt dauerhaft auf deinem Account.`))return;S.busy=true;try{const pid=(crypto.randomUUID?.()||`${Date.now()}_${Math.random()}`).replaceAll('-','');const r=await rpc('v7137_buy_avatar_frame',{p_frame_id:id,p_purchase_id:pid});if(!r?.ok){if(r?.reason==='NOT_ENOUGH_HARZ')throw new Error(`Nicht genug Harz-Taler. Benötigt: ${fmt(r.required)}`);throw new Error(String(r?.reason||'PURCHASE_FAILED'))}S.frames=r;toast('🖼️ Rahmen freigeschaltet','success',f.name);try{await window.v7077ProgressRefresh?.()}catch(_){}try{await window.v7080AchievementRefresh?.(true)}catch(_){}renderFrameShop();renderFrameSelector()}catch(e){toast('Kauf fehlgeschlagen','error',String(e?.message||e))}finally{S.busy=false}}"
+        },
+        {
+          "line": 116641,
+          "text": "async function setFrame(id){if(S.busy)return;S.busy=true;try{const r=await rpc('v7137_set_avatar_frame',{p_frame_id:id||null});if(!r?.ok)throw new Error(String(r?.reason||'FRAME_SET_FAILED'));S.frames=r;applyOwnFrames();renderFrameShop();renderFrameSelector();await decorateHallFrames();toast(id?'🖼️ Rahmen aktiviert':'Rahmen deaktiviert','success',id?(r.frames?.find(x=>x.id===id)?.name||'Aktiv'):'Kein Rahmen')}catch(e){toast('Rahmen konnte nicht geändert werden','error',String(e?.message||e))}finally{S.busy=false}}"
+        },
+        {
+          "line": 116642,
+          "text": "function ensureFrameSelector(){let ov=document.getElementById('v7137FrameOverlay');if(ov)return ov;ov=document.createElement('div');ov.id='v7137FrameOverlay';ov.innerHTML='<div class=\"v7137-modal\"><div class=\"v7137-modal-head\"><div><small style=\"color:#75c85a\">DEIN LOOK</small><h2>Avatar-Rahmen</h2></div><button class=\"v7137-close\" type=\"button\">×</button></div><div id=\"v7137FrameSelectBody\"></div></div>';document.body.appendChild(ov);ov.querySelector('.v7137-close').onclick=()=>ov.classList.remove('show');ov.addEventListener('click',e=>{if(e.target===ov)ov.classList.remove('show')});return ov}"
+        },
+        {
+          "line": 116643,
+          "text": "function renderFrameSelector(){const body=document.getElementById('v7137FrameSelectBody');if(!body||!S.frames)return;const owned=(S.frames.frames||[]).filter(f=>f.owned);body.innerHTML=`<div class=\"v7137-frame-guide\">Hier aktivierst oder deaktivierst du deine dauerhaft freigeschalteten Rahmen. Änderungen sind sofort auch für andere Spieler sichtbar.</div><div class=\"v7137-frame-select-grid\"><button class=\"v7137-frame-choice ${!S.frames.active_frame_id?'active':''}\" data-v7137-set-frame=\"\"><div class=\"v7137-no-frame\">×</div><div><b>Kein Rahmen</b><small>Avatar ohne Prestige-Rahmen anzeigen.</small></div></button>${owned.map(f=>`<button class=\"v7137-frame-choice ${f.active?'active':''}\" data-v7137-set-frame=\"${esc(f.id)}\">${framePreview(f)}<div><b>${esc(f.name)} ${f.effect?'✨':''}</b><small>${f.active?'Aktiv':'Zum Aktivieren antippen'}</small></div></button>`).join('')}</div><button type=\"button\" class=\"btn gold\" data-v7137-open-frame-shop=\"1\" style=\"width:100%;margin-top:10px\">🛒 Zum Rahmen-Shop</button>`}"
+        },
+        {
+          "line": 116644,
+          "text": "async function openFrameSelector(){const ov=ensureFrameSelector();ov.classList.add('show');if(!S.frames)ov.querySelector('#v7137FrameSelectBody').innerHTML='<div class=\"v7137-frame-guide\">Rahmen werden synchronisiert …</div>';await loadFrames(true);renderFrameSelector()}"
+        },
+        {
+          "line": 116650,
+          "text": "S.profileFrameAt=S.profileFrameAt||new Map();"
+        },
+        {
+          "line": 116651,
+          "text": "S.profileFrameFlights=S.profileFrameFlights||new Map();"
+        },
+        {
+          "line": 116653,
+          "text": "ids.forEach(id=>{const p=S.profileCache.get(id),at=Number(S.profileFrameAt.get(id)||0);if(p&&now-at<ttl)out.set(id,p);else missing.push(id)});"
+        },
+        {
+          "line": 116657,
+          "text": "let flight=S.profileFrameFlights.get(key);"
+        },
+        {
+          "line": 116661,
+          "text": "const {data,error}=await x.from('profiles').select('id,class_id,avatar_frame_id').in('id',missing);"
+        },
+        {
+          "line": 116663,
+          "text": "const m=new Map();(data||[]).forEach(p=>{const id=String(p.id);m.set(id,p);S.profileCache.set(id,p);S.profileFrameAt.set(id,Date.now())});"
+        },
+        {
+          "line": 116666,
+          "text": "finally{S.profileFrameFlights.delete(key)}"
+        },
+        {
+          "line": 116668,
+          "text": "S.profileFrameFlights.set(key,flight);"
+        },
+        {
+          "line": 116677,
+          "text": "rows.forEach(r=>{const p=map.get(String(r.dataset.profileId||''));const av=r.querySelector('.v646-row-avatar');if(av)applyFrame(av,p?.avatar_frame_id||'')});"
+        },
+        {
+          "line": 116679,
+          "text": "async function decorateOpenProfile(id){const sid=String(id||'');if(!sid)return;let fid='';try{if(sid===String(v073User?.id||'')){if(!S.frames)await loadFrames(false);fid=String(S.frames?.active_frame_id||'')}else{let p=S.profileCache.get(sid);if(!p){const m=await publicFrameRows([sid]);p=m.get(sid)||{};S.profileCache.set(sid,p)}fid=String(p?.avatar_frame_id||'')}}catch(_){};[0,50,180].forEach(ms=>setTimeout(()=>applyFrame(document.querySelector('#v074ProfileContent .v652-profile-avatar'),fid),ms))}"
+        },
+        {
+          "line": 116689,
+          "text": "function installAchievements(){try{if(typeof V106_ACH==='undefined'||!Array.isArray(V106_ACH))return;const add=[['shift1','Erste Schicht','Schließe deine erste Schicht ab.',()=>0,1],['shift10h','Nachtschicht','Arbeite insgesamt 10 Stunden in Schichten.',()=>0,10],['shift50h','Fleißige Legende','Arbeite insgesamt 50 Stunden in Schichten.',()=>0,50],['shift100h','Dauerbrenner','Arbeite insgesamt 100 Stunden in Schichten.',()=>0,100],['shift250h','Schichtmeister','Arbeite insgesamt 250 Stunden in Schichten.',()=>0,250],['shift_full10','Durchgezogen','Schließe eine volle 10-Stunden-Schicht ab.',()=>0,1],['shift_lucky1','Fundstück','Finde deinen ersten seltenen Schicht-Bonus.',()=>0,1],['frame1','Erster Eindruck','Besitze deinen ersten Avatar-Rahmen.',()=>0,1],['frame3','Rahmensammler','Besitze 3 verschiedene Avatar-Rahmen.',()=>0,3],['frame5','Galerist','Besitze 5 verschiedene Avatar-Rahmen.',()=>0,5],['frame7','Prestige-Sammlung','Besitze 7 verschiedene Avatar-Rahmen.',()=>0,7]];add.forEach(a=>{if(!V106_ACH.some(x=>x?.[0]===a[0]))V106_ACH.push(a)})}catch(e){console.warn('[V7.145] achievements',e)}}"
+        },
+        {
+          "line": 116711,
+          "text": "function renameDealer7138(){try{document.querySelectorAll('#v032MenuPanel [data-screen=\"harzDealer\"],#v032MenuPanel [data-v341-harz-menu=\"1\"],.top-menu-panel [data-screen=\"harzDealer\"]').forEach(el=>{const icon=el.querySelector('span');if(icon){[...el.childNodes].filter(n=>n.nodeType===3).forEach(n=>n.remove());el.append(' Harz & Gold & Rahmen Dealer')}else el.textContent='💎 Harz & Gold & Rahmen Dealer'});document.querySelectorAll('#harzDealer .v7117-hub-copy b,#goldShop .v7117-hub-copy b').forEach(el=>el.textContent='Harz & Gold & Rahmen Dealer');const h=document.querySelector('#harzDealer .v322-dealer-head h2');if(h)h.textContent='Harz & Gold & Rahmen Dealer'}catch(_){}}"
+        },
+        {
+          "line": 116726,
+          "text": "window.v7137Diagnostics=()=>({version:VERSION,shift:S.shift?{active:!!S.shift.active,ready:!!S.shift.ready,totalHours:num(S.shift.total_hours)}:null,frames:S.frames?{active:S.frames.active_frame_id||null,count:num(S.frames.frame_count)}:null,questMode:S.mode,claimBusy:!!S.busy,lastClaimedShift:S.lastClaimedShift||'',serverAuthoritative:true,claimCacheBypass:true,duplicateReplaySuppressed:true,pushType:'shift_ready'});"
+        },
+        {
+          "line": 116729,
+          "text": "<style id=\"v7140-avatar-frame-assets-css\">"
+        },
+        {
+          "line": 116730,
+          "text": "/* V7.145: real PNG avatar frames, thinner presentation + clipped head/shoulder previews. */"
+        },
+        {
+          "line": 116830,
+          "text": "<!-- ===== /V7.145 QUEST & SCHICHT + AVATAR-RAHMEN ===== -->"
+        },
+        {
+          "line": 116862,
+          "text": "window.__V7154_CHARACTER_CLEANUP__=Object.freeze({singleTurnEquipmentSettle:true,legacyHeroTimersRetired:true,legacyHeroObserversRetired:true,avatarFrameIdempotent:true,frameObserverSelfTriggerFixed:true,gameplayRulesChanged:false});"
+        },
+        {
+          "line": 117493,
+          "text": "/* Tomssen repro: animated avatar frame + large inventory can exhaust Android WebView compositor layers."
+        },
+        {
+          "line": 118286,
+          "text": "<!-- ===== V7.230 SERVER-SCOPED AVATAR FRAME AUTHORITY ===== -->"
+        },
+        {
+          "line": 118324,
+          "text": "if(!st.active_frame_id)stripVisibleFrame();"
+        },
+        {
+          "line": 118347,
+          "text": "<!-- ===== /V7.230 SERVER-SCOPED AVATAR FRAME AUTHORITY ===== -->"
+        },
+        {
+          "line": 120829,
+          "text": "<style id=\"v7268-avatar-frame-layer-fix\">"
+        },
+        {
+          "line": 120831,
+          "text": "WICHTIG: Avatarbild und Rahmen sind zwei verschiedene Bildebenen."
+        },
+        {
+          "line": 120835,
+          "text": "/* Basis: das echte Charakterbild bleibt rund geclippt und identisch mit/ohne Rahmen. */"
+        },
+        {
+          "line": 120853,
+          "text": "/* Ohne Rahmen darf der Container normal rund clippen. */"
+        },
+        {
+          "line": 120858,
+          "text": "/* Mit Rahmen: Container offen lassen, damit der Rahmen außen sichtbar bleibt. */"
+        },
+        {
+          "line": 120865,
+          "text": "/* Rahmen-Bild explizit auf seine ursprüngliche Overlay-Geometrie zurücksetzen. */"
+        },
+        {
+          "line": 120884,
+          "text": "/* Hall / Profil: ebenfalls nur das Charakterbild croppen, niemals den Rahmen. */"
+        },
+        {
+          "line": 120904,
+          "text": "/* Rahmen in Hall / Profil bleibt ebenfalls eigene Overlay-Ebene. */"
+        }
+      ]
+    },
+    {
+      "path": "index.html",
+      "count": 70,
+      "contexts": [
+        {
+          "line": 2590,
+          "text": "<h2>Harz & Gold & Rahmen Dealer</h2>"
+        },
+        {
+          "line": 44945,
+          "text": "['harzDealer','🟢','Harz & Gold & Rahmen Dealer'],"
+        },
+        {
+          "line": 50932,
+          "text": "const b=document.createElement('button');b.className='top-menu-item';b.dataset.screen='harzDealer';b.innerHTML='<span>🟢</span>Harz &amp; Gold &amp; Rahmen Dealer';b.onclick=()=>v322OpenDealer();panel.appendChild(b);"
+        },
+        {
+          "line": 52552,
+          "text": "item.textContent='💎 Harz & Gold & Rahmen Dealer';"
+        },
+        {
+          "line": 53371,
+          "text": "item.textContent='💎 Harz & Gold & Rahmen Dealer';"
+        },
+        {
+          "line": 54942,
+          "text": "item.textContent='💎 Harz & Gold & Rahmen Dealer';"
+        },
+        {
+          "line": 73648,
+          "text": "['harzDealer','🟢','Harz & Gold & Rahmen Dealer'],['bagDealer','📦','Tütchen-Dealer'],['pvp','⚔️','PvP-Arena'],['guild','🏰','Gilde'],['hall','🏆','Hall of Haze'],"
+        },
+        {
+          "line": 79275,
+          "text": "/* Bossfeld etwas kompakter, damit es trotz tieferer Position sauber im Rahmen bleibt */"
+        },
+        {
+          "line": 79542,
+          "text": "/* Boss vollständig im Rahmen und mit Abstand zu Gegner 8/9 */"
+        },
+        {
+          "line": 79691,
+          "text": "/* Rechte lange Namen bleiben vollständig im Kartenrahmen. */"
+        },
+        {
+          "line": 79701,
+          "text": "/* Boss mit eigener größerer Rückplatte und komplett im Rahmen. */"
+        },
+        {
+          "line": 80142,
+          "text": "/* Boss minimal tiefer/rechter, aber noch sauber im Rahmen. */"
+        },
+        {
+          "line": 109307,
+          "text": "harzDealer:{label:'Harz & Gold & Rahmen Dealer',icon:'🟢',steps:["
+        },
+        {
+          "line": 127354,
+          "text": "<div class=\"v7117-hub-title\"><div class=\"v7117-hub-emblem\">🌿</div><div class=\"v7117-hub-copy\"><small>Grow Legends · Händler</small><b>Harz &amp; Gold &amp; Rahmen Dealer</b></div></div>"
+        },
+        {
+          "line": 127375,
+          "text": "if(icon){[...el.childNodes].filter(n=>n.nodeType===3).forEach(n=>n.remove());el.append(' Harz & Gold & Rahmen Dealer')}"
+        },
+        {
+          "line": 127376,
+          "text": "else el.textContent='💎 Harz & Gold & Rahmen Dealer';"
+        },
+        {
+          "line": 127815,
+          "text": "function paintPopup(){const body=document.getElementById('v7129ReferralBody');if(!body||!state)return;const slots=Array.isArray(state.slots)?state.slots:[];const pending=Array.isArray(state.pending_invites)?state.pending_invites:[];let pi=0;const l=link();body.innerHTML=`<div class=\"v7129-progress\"><b>${Math.min(10,Number(state.qualified_count)||0)}/10 freigeschaltet</b><span>${num(state.pending_count)} eingeladen · noch nicht Stufe 35</span></div><div class=\"v7129-slots\">${slots.map(x=>{const friend=!x.qualified&&pi<pending.length?pending[pi++]:null;if(friend){const lv=Math.max(1,Math.min(35,Number(friend.level)||1));const pct=Math.max(3,Math.min(100,lv/35*100));return `<div class=\"v7129-slot pending\"><strong>👤</strong><b>${x.slot}</b><div class=\"v7129-ref-name\">${esc(friend.character_name||'Spieler')}</div><div class=\"v7129-ref-level\">Stufe ${lv} / 35</div><div class=\"v7129-ref-bar\"><i style=\"width:${pct}%\"></i></div><small>⏳ Eingeladen</small></div>`}const cl=x.claimed?'claimed':x.qualified?'ready':'locked';return `<div class=\"v7129-slot ${cl}\"><strong>${x.claimed?'✓':x.qualified?'💎':'🔒'}</strong><b>${x.slot}</b><small>${x.claimed?'💎 25 Harz · abgeholt':x.qualified?'💎 25 Harz · bereit':'💎 25 Harz · Stufe 35'}</small>${x.claimable?`<button data-referral-claim=\"${x.slot}\">Abholen</button>`:''}</div>`}).join('')}</div><div class=\"v7129-grand ${state.grand_ready?'ready':''}\"><h3>🎁 10-Freunde-Paket</h3><div class=\"v7129-rewards\"><span>🪙 ${num(state.grand_gold)} Gold</span><span>🌰 10 Samen</span><span>⏱️ 10 Zeit-Samen</span><span>💎 100 Harz</span><span>🧩 250 Fragmente</span><span>🔷 1 mythisches Item</span><span>🖼️ Exklusiver Avatar-Rahmen</span></div><button data-referral-grand=\"1\" ${state.grand_ready&&!state.grand_claimed?'':'disabled'}>${state.grand_claimed?'Paket abgeho"
+        },
+        {
+          "line": 127818,
+          "text": "async function claimGrand(){if(busy)return;busy=true;try{const r=await rpc('v7129_claim_referral_grand');if(!r?.ok)throw new Error(String(r?.reason||'CLAIM_FAILED'));try{v063Toast?.('🎁 10-Freunde-Paket','success','Gold, Samen, Harz, Fragmente, mythisches Item und Avatar-Rahmen erhalten.')}catch(_){};await window.v7072AuthorityRefresh?.();try{await window.v7063ItemStageRefresh?.(true)}catch(_){};try{await window.v7064GrowAuthorityRefresh?.()}catch(_){};await refresh()}catch(e){try{v063Toast?.('Paket nicht verfügbar','error',String(e?.message||e))}catch(_){}}finally{busy=false}}"
+        },
+        {
+          "line": 128654,
+          "text": "<!-- ===== V7.145 QUEST & SCHICHT + AVATAR-RAHMEN ===== -->"
+        },
+        {
+          "line": 128696,
+          "text": "/* V7.145: Avatar frames are real PNG assets from assets/avatar_frames/. */"
+        },
+        {
+          "line": 128806,
+          "text": "/* ---------- Avatar frames ---------- */"
+        },
+        {
+          "line": 128808,
+          "text": "ironwood:'assets/avatar_frames/ironwood.png',"
+        },
+        {
+          "line": 128809,
+          "text": "silver_vine:'assets/avatar_frames/silver_vine.png',"
+        },
+        {
+          "line": 128810,
+          "text": "gold_crown:'assets/avatar_frames/gold_crown.png',"
+        },
+        {
+          "line": 128811,
+          "text": "emerald_aura:'assets/avatar_frames/emerald_aura.png',"
+        },
+        {
+          "line": 128812,
+          "text": "haze_ring:'assets/avatar_frames/haze_ring.png',"
+        },
+        {
+          "line": 128813,
+          "text": "resin_flame:'assets/avatar_frames/resin_flame.png',"
+        },
+        {
+          "line": 128814,
+          "text": "prismatic_myth:'assets/avatar_frames/prismatic_myth.png',"
+        },
+        {
+          "line": 128815,
+          "text": "referral_legend:'assets/avatar_frames/referral_legend.png'"
+        },
+        {
+          "line": 128835,
+          "text": "function applyOwnFrames(){const id=String(S.frames?.active_frame_id||'');document.body?.classList.remove('v7129-referral-frame');applyFrame(ownPortraitTarget(),id);applyFrame(document.querySelector('#world .v366-avatar'),id);applyFrame(document.querySelector('#v072OwnProfile .v646-own-avatar'),id);document.documentElement?.classList.remove('v7154-frame-pending');}"
+        },
+        {
+          "line": 128842,
+          "text": "S.frameFlight=(async()=>{try{const r=await rpc('v7137_avatar_frame_state');if(r?.ok){S.frames=r;S.lastFrameLoad=Date.now();window.__V7137_FRAME_STATE__=r;applyOwnFrames();renderFrameShop();renderFrameSelector();return r}}catch(e){if(force)toast('Rahmen nicht erreichbar','error',String(e?.message||e))}return null})().finally(()=>{S.frameFlight=null});"
+        },
+        {
+          "line": 128845,
+          "text": "function ensureDealerFrameTab(){document.querySelectorAll('#harzDealer .v7117-tabs,#goldShop .v7117-tabs').forEach(t=>{if(!t.querySelector('[data-v7117-tab=\"frames\"]')){const b=document.createElement('button');b.type='button';b.className='v7117-tab';b.dataset.v7117Tab='frames';b.textContent='🖼️ Avatar-Rahmen';t.appendChild(b)}const framesOpen=!!t.closest('#harzDealer.v7137-frames-open');if(framesOpen)t.querySelectorAll('[data-v7117-tab]').forEach(b=>b.classList.toggle('active',b.dataset.v7117Tab==='frames'))});}"
+        },
+        {
+          "line": 128846,
+          "text": "function frameDesc(f){if(f.source==='referral')return 'Nicht kaufbar · exklusiv aus dem 10-Freunde-Paket.';if(f.effect)return 'Animierter Prestige-Rahmen mit sichtbarem Effekt.';return 'Hochwertiger dauerhafter Prestige-Rahmen.'}"
+        },
+        {
+          "line": 128847,
+          "text": "function framePreview(f,cls=''){const src=avatarFor(ownClass()),art=f?.id?frameArtMarkup(f.id):'';return `<div class=\"v7137-frame-preview v7137-frame-target ${cls}\" ${f?.id?`data-v7137-frame=\"${esc(f.id)}\"`:''}><span class=\"v7140-preview-avatar-clip\">${src?`<img class=\"v7139-preview-avatar\" src=\"${esc(src)}\" alt=\"Rahmen-Vorschau\">`:'🌿'}</span>${art}</div>`}"
+        },
+        {
+          "line": 128849,
+          "text": "function renderFrameShop(){const p=ensureFrameShop();if(!p||!S.frames)return;const fs=Array.isArray(S.frames.frames)?S.frames.frames:[];p.innerHTML=`<div class=\"v7137-frame-shop-head\"><div><small>PRESTIGE · PERMANENT</small><h2>🖼️ Avatar-Rahmen</h2></div><div class=\"v7137-frame-balance\">Dein Bestand <b>💎 ${fmt(S.frames.harz)}</b></div></div><div class=\"v7137-frame-guide\"><b>So funktioniert es:</b> Einmal gekaufte Rahmen bleiben dauerhaft auf deinem Account. Tippe anschließend auf dein eigenes Avatarbild, um zwischen deinen freigeschalteten Rahmen zu wechseln oder den Rahmen zu deaktivieren. Dein aktiver Rahmen ist auch in der <b>Hall of Haze</b> und im <b>Spielerprofil</b> sichtbar.</div><div class=\"v7137-frame-grid\">${fs.map(f=>`<div class=\"v7137-frame-card ${f.owned?'owned':''}\">${framePreview(f)}<div class=\"v7137-frame-info\"><h3>${esc(f.name)} ${f.effect?'✨':''}</h3><p>${esc(frameDesc(f))}</p><div class=\"v7137-frame-price ${f.source==='referral'?'v7137-frame-special':''}\">${f.source==='referral'?'🤝 Exklusiv':`💎 ${fmt(f.price)} Harz-Taler`}</div>${f.owned?`<button type=\"button\" class=\"btn ${f.active?'gold':'secondary'}\" data-v7137-set-frame=\"${esc(f.id)}\">${f.active?'Aktiv ✓':'Aktivieren'}</button>`:f.source==='shop'?`<button type=\"button\" class=\"btn gold\" data-v7137-buy-frame=\"${esc(f.id)}\">Kaufen · ${fmt(f.price)} 💎</button>`:`<button type=\"button\" class=\"btn secondary\" disabled>Freund werben</button>`}</div></div>`).join('')}</div>`}"
+        },
+        {
+          "line": 128852,
+          "text": "async function buyFrame(id){if(S.busy)return;const f=S.frames?.frames?.find(x=>x.id===id);if(!f||f.owned)return;if(!confirm(`${f.name} für ${fmt(f.price)} Harz-Taler kaufen?\\n\\nDer Rahmen bleibt dauerhaft auf deinem Account.`))return;S.busy=true;try{const pid=(crypto.randomUUID?.()||`${Date.now()}_${Math.random()}`).replaceAll('-','');const r=await rpc('v7137_buy_avatar_frame',{p_frame_id:id,p_purchase_id:pid});if(!r?.ok){if(r?.reason==='NOT_ENOUGH_HARZ')throw new Error(`Nicht genug Harz-Taler. Benötigt: ${fmt(r.required)}`);throw new Error(String(r?.reason||'PURCHASE_FAILED'))}S.frames=r;toast('🖼️ Rahmen freigeschaltet','success',f.name);try{await window.v7077ProgressRefresh?.()}catch(_){}try{await window.v7080AchievementRefresh?.(true)}catch(_){}renderFrameShop();renderFrameSelector()}catch(e){toast('Kauf fehlgeschlagen','error',String(e?.message||e))}finally{S.busy=false}}"
+        },
+        {
+          "line": 128853,
+          "text": "async function setFrame(id){if(S.busy)return;S.busy=true;try{const r=await rpc('v7137_set_avatar_frame',{p_frame_id:id||null});if(!r?.ok)throw new Error(String(r?.reason||'FRAME_SET_FAILED'));S.frames=r;applyOwnFrames();renderFrameShop();renderFrameSelector();await decorateHallFrames();toast(id?'🖼️ Rahmen aktiviert':'Rahmen deaktiviert','success',id?(r.frames?.find(x=>x.id===id)?.name||'Aktiv'):'Kein Rahmen')}catch(e){toast('Rahmen konnte nicht geändert werden','error',String(e?.message||e))}finally{S.busy=false}}"
+        },
+        {
+          "line": 128854,
+          "text": "function ensureFrameSelector(){let ov=document.getElementById('v7137FrameOverlay');if(ov)return ov;ov=document.createElement('div');ov.id='v7137FrameOverlay';ov.innerHTML='<div class=\"v7137-modal\"><div class=\"v7137-modal-head\"><div><small style=\"color:#75c85a\">DEIN LOOK</small><h2>Avatar-Rahmen</h2></div><button class=\"v7137-close\" type=\"button\">×</button></div><div id=\"v7137FrameSelectBody\"></div></div>';document.body.appendChild(ov);ov.querySelector('.v7137-close').onclick=()=>ov.classList.remove('show');ov.addEventListener('click',e=>{if(e.target===ov)ov.classList.remove('show')});return ov}"
+        },
+        {
+          "line": 128855,
+          "text": "function renderFrameSelector(){const body=document.getElementById('v7137FrameSelectBody');if(!body||!S.frames)return;const owned=(S.frames.frames||[]).filter(f=>f.owned);body.innerHTML=`<div class=\"v7137-frame-guide\">Hier aktivierst oder deaktivierst du deine dauerhaft freigeschalteten Rahmen. Änderungen sind sofort auch für andere Spieler sichtbar.</div><div class=\"v7137-frame-select-grid\"><button class=\"v7137-frame-choice ${!S.frames.active_frame_id?'active':''}\" data-v7137-set-frame=\"\"><div class=\"v7137-no-frame\">×</div><div><b>Kein Rahmen</b><small>Avatar ohne Prestige-Rahmen anzeigen.</small></div></button>${owned.map(f=>`<button class=\"v7137-frame-choice ${f.active?'active':''}\" data-v7137-set-frame=\"${esc(f.id)}\">${framePreview(f)}<div><b>${esc(f.name)} ${f.effect?'✨':''}</b><small>${f.active?'Aktiv':'Zum Aktivieren antippen'}</small></div></button>`).join('')}</div><button type=\"button\" class=\"btn gold\" data-v7137-open-frame-shop=\"1\" style=\"width:100%;margin-top:10px\">🛒 Zum Rahmen-Shop</button>`}"
+        },
+        {
+          "line": 128856,
+          "text": "async function openFrameSelector(){const ov=ensureFrameSelector();ov.classList.add('show');if(!S.frames)ov.querySelector('#v7137FrameSelectBody').innerHTML='<div class=\"v7137-frame-guide\">Rahmen werden synchronisiert …</div>';await loadFrames(true);renderFrameSelector()}"
+        },
+        {
+          "line": 128862,
+          "text": "S.profileFrameAt=S.profileFrameAt||new Map();"
+        },
+        {
+          "line": 128863,
+          "text": "S.profileFrameFlights=S.profileFrameFlights||new Map();"
+        },
+        {
+          "line": 128865,
+          "text": "ids.forEach(id=>{const p=S.profileCache.get(id),at=Number(S.profileFrameAt.get(id)||0);if(p&&now-at<ttl)out.set(id,p);else missing.push(id)});"
+        },
+        {
+          "line": 128869,
+          "text": "let flight=S.profileFrameFlights.get(key);"
+        },
+        {
+          "line": 128873,
+          "text": "const {data,error}=await x.from('profiles').select('id,class_id,avatar_frame_id').in('id',missing);"
+        },
+        {
+          "line": 128875,
+          "text": "const m=new Map();(data||[]).forEach(p=>{const id=String(p.id);m.set(id,p);S.profileCache.set(id,p);S.profileFrameAt.set(id,Date.now())});"
+        },
+        {
+          "line": 128878,
+          "text": "finally{S.profileFrameFlights.delete(key)}"
+        },
+        {
+          "line": 128880,
+          "text": "S.profileFrameFlights.set(key,flight);"
+        },
+        {
+          "line": 128889,
+          "text": "rows.forEach(r=>{const p=map.get(String(r.dataset.profileId||''));const av=r.querySelector('.v646-row-avatar');if(av)applyFrame(av,p?.avatar_frame_id||'')});"
+        },
+        {
+          "line": 128891,
+          "text": "async function decorateOpenProfile(id){const sid=String(id||'');if(!sid)return;let fid='';try{if(sid===String(v073User?.id||'')){if(!S.frames)await loadFrames(false);fid=String(S.frames?.active_frame_id||'')}else{let p=S.profileCache.get(sid);if(!p){const m=await publicFrameRows([sid]);p=m.get(sid)||{};S.profileCache.set(sid,p)}fid=String(p?.avatar_frame_id||'')}}catch(_){};[0,50,180].forEach(ms=>setTimeout(()=>applyFrame(document.querySelector('#v074ProfileContent .v652-profile-avatar'),fid),ms))}"
+        },
+        {
+          "line": 128901,
+          "text": "function installAchievements(){try{if(typeof V106_ACH==='undefined'||!Array.isArray(V106_ACH))return;const add=[['shift1','Erste Schicht','Schließe deine erste Schicht ab.',()=>0,1],['shift10h','Nachtschicht','Arbeite insgesamt 10 Stunden in Schichten.',()=>0,10],['shift50h','Fleißige Legende','Arbeite insgesamt 50 Stunden in Schichten.',()=>0,50],['shift100h','Dauerbrenner','Arbeite insgesamt 100 Stunden in Schichten.',()=>0,100],['shift250h','Schichtmeister','Arbeite insgesamt 250 Stunden in Schichten.',()=>0,250],['shift_full10','Durchgezogen','Schließe eine volle 10-Stunden-Schicht ab.',()=>0,1],['shift_lucky1','Fundstück','Finde deinen ersten seltenen Schicht-Bonus.',()=>0,1],['frame1','Erster Eindruck','Besitze deinen ersten Avatar-Rahmen.',()=>0,1],['frame3','Rahmensammler','Besitze 3 verschiedene Avatar-Rahmen.',()=>0,3],['frame5','Galerist','Besitze 5 verschiedene Avatar-Rahmen.',()=>0,5],['frame7','Prestige-Sammlung','Besitze 7 verschiedene Avatar-Rahmen.',()=>0,7]];add.forEach(a=>{if(!V106_ACH.some(x=>x?.[0]===a[0]))V106_ACH.push(a)})}catch(e){console.warn('[V7.145] achievements',e)}}"
+        },
+        {
+          "line": 128923,
+          "text": "function renameDealer7138(){try{document.querySelectorAll('#v032MenuPanel [data-screen=\"harzDealer\"],#v032MenuPanel [data-v341-harz-menu=\"1\"],.top-menu-panel [data-screen=\"harzDealer\"]').forEach(el=>{const icon=el.querySelector('span');if(icon){[...el.childNodes].filter(n=>n.nodeType===3).forEach(n=>n.remove());el.append(' Harz & Gold & Rahmen Dealer')}else el.textContent='💎 Harz & Gold & Rahmen Dealer'});document.querySelectorAll('#harzDealer .v7117-hub-copy b,#goldShop .v7117-hub-copy b').forEach(el=>el.textContent='Harz & Gold & Rahmen Dealer');const h=document.querySelector('#harzDealer .v322-dealer-head h2');if(h)h.textContent='Harz & Gold & Rahmen Dealer'}catch(_){}}"
+        },
+        {
+          "line": 128938,
+          "text": "window.v7137Diagnostics=()=>({version:VERSION,shift:S.shift?{active:!!S.shift.active,ready:!!S.shift.ready,totalHours:num(S.shift.total_hours)}:null,frames:S.frames?{active:S.frames.active_frame_id||null,count:num(S.frames.frame_count)}:null,questMode:S.mode,claimBusy:!!S.busy,lastClaimedShift:S.lastClaimedShift||'',serverAuthoritative:true,claimCacheBypass:true,duplicateReplaySuppressed:true,pushType:'shift_ready'});"
+        },
+        {
+          "line": 128941,
+          "text": "<style id=\"v7140-avatar-frame-assets-css\">"
+        },
+        {
+          "line": 128942,
+          "text": "/* V7.145: real PNG avatar frames, thinner presentation + clipped head/shoulder previews. */"
+        },
+        {
+          "line": 129042,
+          "text": "<!-- ===== /V7.145 QUEST & SCHICHT + AVATAR-RAHMEN ===== -->"
+        },
+        {
+          "line": 129499,
+          "text": "window.__V7154_CHARACTER_CLEANUP__=Object.freeze({singleTurnEquipmentSettle:true,legacyHeroTimersRetired:true,legacyHeroObserversRetired:true,avatarFrameIdempotent:true,frameObserverSelfTriggerFixed:true,gameplayRulesChanged:false});"
+        },
+        {
+          "line": 130148,
+          "text": "/* Tomssen repro: animated avatar frame + large inventory can exhaust Android WebView compositor layers."
+        },
+        {
+          "line": 131371,
+          "text": "<!-- ===== V7.230 SERVER-SCOPED AVATAR FRAME AUTHORITY ===== -->"
+        },
+        {
+          "line": 131409,
+          "text": "if(!st.active_frame_id)stripVisibleFrame();"
+        },
+        {
+          "line": 131432,
+          "text": "<!-- ===== /V7.230 SERVER-SCOPED AVATAR FRAME AUTHORITY ===== -->"
+        },
+        {
+          "line": 133914,
+          "text": "<style id=\"v7268-avatar-frame-layer-fix\">"
+        },
+        {
+          "line": 133916,
+          "text": "WICHTIG: Avatarbild und Rahmen sind zwei verschiedene Bildebenen."
+        },
+        {
+          "line": 133920,
+          "text": "/* Basis: das echte Charakterbild bleibt rund geclippt und identisch mit/ohne Rahmen. */"
+        },
+        {
+          "line": 133938,
+          "text": "/* Ohne Rahmen darf der Container normal rund clippen. */"
+        },
+        {
+          "line": 133943,
+          "text": "/* Mit Rahmen: Container offen lassen, damit der Rahmen außen sichtbar bleibt. */"
+        },
+        {
+          "line": 133950,
+          "text": "/* Rahmen-Bild explizit auf seine ursprüngliche Overlay-Geometrie zurücksetzen. */"
+        },
+        {
+          "line": 133969,
+          "text": "/* Hall / Profil: ebenfalls nur das Charakterbild croppen, niemals den Rahmen. */"
+        },
+        {
+          "line": 133989,
+          "text": "/* Rahmen in Hall / Profil bleibt ebenfalls eigene Overlay-Ebene. */"
+        },
+        {
+          "line": 134210,
+          "text": "window.__V7278_SERVER1_SYNC__=Object.freeze({version:'V7.278',source:'Beta V7.276 + promoted fixes',features:['combat-tempo','avatar-frame','karawane','illegal-book','navigation','guild-grow','atomic-registration','referral-progress'],earlyEmails:['tomssen5@gmail.com','test@gmail.com']});"
+        }
+      ]
+    },
+    {
+      "path": "css/features/dungeon/beta/v8009-d11-v457-d1-clean-overlay-final.css",
+      "count": 2,
+      "contexts": [
+        {
+          "line": 45,
+          "text": "/* Rechte lange Namen bleiben vollständig im Kartenrahmen. */"
+        },
+        {
+          "line": 55,
+          "text": "/* Boss mit eigener größerer Rückplatte und komplett im Rahmen. */"
+        }
+      ]
+    },
+    {
+      "path": "css/features/dungeon/beta/v8009-d11-v463-d1-screenshot-polish.css",
+      "count": 1,
+      "contexts": [
+        {
+          "line": 45,
+          "text": "/* Boss minimal tiefer/rechter, aber noch sauber im Rahmen. */"
+        }
+      ]
+    },
+    {
+      "path": "css/features/dungeon/beta/v8009-d11-v455-d1-feinschliff-2.css",
+      "count": 1,
+      "contexts": [
+        {
+          "line": 24,
+          "text": "/* Boss vollständig im Rahmen und mit Abstand zu Gegner 8/9 */"
+        }
+      ]
+    }
+  ]
+}
