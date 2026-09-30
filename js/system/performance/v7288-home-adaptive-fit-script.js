@@ -392,7 +392,7 @@ if(IS_BETA)document.addEventListener('click',e=>{
   }catch(_){}
 },true);
 window.v8009HomeHeaderDiagnostics=()=>({
-  version:'V8.009-HOME-10',
+  version:'V8.009-HOME-11',
   beta:IS_BETA,
   ...v8009HomeHeaderFix,
   fit:{...HOME_DIAG,pendingRaf:!!raf,pendingTimer:!!runTimer},
@@ -400,8 +400,10 @@ window.v8009HomeHeaderDiagnostics=()=>({
   mailScreen:!!document.getElementById('mail'),
   legacyV474HomeRetired:!!window.__V8009_HOME9_V474_HOME_RETIRED__,
   legacyVersionWritesRetired:{
+    v380:!!window.__V8009_HOME11_V380_VERSION_RETIRED__,
     v408:!!window.__V8009_HOME10_V408_VERSION_RETIRED__,
-    v410:!!window.__V8009_HOME10_V410_VERSION_RETIRED__
+    v410:!!window.__V8009_HOME10_V410_VERSION_RETIRED__,
+    v411:!!window.__V8009_HOME11_V411_VERSION_RETIRED__
   },
   routeAudit:auditHomeRoutes()
 });
