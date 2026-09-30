@@ -575,6 +575,8 @@
     /* V7.162: the canonical asset pass runs in the SAME turn as the map build.
        No historic delayed renderer gets a visible frame in between. */
     paintMap();
+    /* Sprint 2: v7166 stays as a repair utility, not a renderer wrapper. */
+    try{window.v7166DungeonDetailRepair?.('canonical-map')}catch(_){ }
     return out;
   }
 
