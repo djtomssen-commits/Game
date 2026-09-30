@@ -11,7 +11,7 @@
 - Arbeitsbranch: **main**
 - Letzter automatisiert geprüfter Code-Commit vor dieser Statusdatei:
   `7be8c20c873f9ad169a91e791fc57bfe8983f827`
-- Aktuelle Unterphase: **V8.009-DUNGEON-SPRINT-2-MANUAL-CHECK**
+- Aktuelle Unterphase: **V8.009-PVP-SPRINT-1-AUDIT**
 - Nutzer-Video bestätigt: betroffen ist konkret **Dungeon 2**.
 - Sichtbares Fehlerbild:
   - zunächst korrekter D2-Hintergrund + korrekte Gegnergrafiken;
@@ -341,7 +341,7 @@
   - Stable/Server 1 unverändert;
   - Gameplay/Combat-Math/Rewards/Serverautorität unverändert.
 - Dungeon Beta-Größe nach Sprint 2: **6.005.343 Byte**.
-- Dungeon Status: **technisch abgeschlossen; ein gemeinsamer manueller Meilenstein-Test offen**.
+- Dungeon Status: **abgeschlossen – automatisierte QA + gemeinsamer manueller Meilenstein-Test erfolgreich**.
 - Scope: **Beta zuerst**
 - **Server 1 / Stable bleibt unangetastet**, bis eine Phase ausdrücklich für Stable freigegeben wird.
 
@@ -455,25 +455,18 @@ Für jedes System gilt:
 
 ## 4. EXAKTER nächster Schritt
 
-### Dungeon Sprint 2 – EIN gemeinsamer manueller Meilenstein-Test
+### V8.009-PVP-SPRINT-1-AUDIT – PvP / Hall of Haze
 
-Kein weiterer Mikro-Test. Einmal kurz in Beta prüfen:
+Dungeon ist abgeschlossen. Ab jetzt PvP / Hall of Haze im Sprint-Modus:
 
-1. Dungeon-Welt öffnen;
-2. D1, D2, D6, D7 und einen normalen späteren Dungeon (z. B. D10) jeweils kurz auf der 10er-Karte öffnen;
-3. dabei nur prüfen:
-   - Hintergrund bleibt sichtbar;
-   - Gegnerbilder/Bossbild sichtbar;
-   - keine Karte springt nachträglich um;
-   - aktueller Gegner + Angriffsbutton funktionieren;
-4. in **einem** Dungeon einen Kampf starten und danach zur Karte zurückkehren;
-5. wenn das passt:
-   - **Dungeon-Refactor als abgeschlossen markieren**;
-   - sofort mit dem nächsten Großsystem **PvP / Hall of Haze im Sprint-Modus** starten.
-6. Nur bei einem echten sichtbaren Fehler Dungeon wieder öffnen.
-
-### Danach: PvP / Hall of Haze Sprint
-Breiter Bestand-/Owner-Audit → Batch-Bereinigung → gemeinsame QA → ein manueller Meilenstein.
+1. alle aktiven PvP-/Hall-of-Haze-JS-/CSS-Layer in Beta breit inventarisieren;
+2. Render-/Lifecycle-/Timer-/Observer-/Listener-Owner gruppieren;
+3. Gameplay-/Matchmaking-/Cooldown-/Reward-/Serverautorität strikt von reiner UI-/Render-Kompatibilität trennen;
+4. redundante reine Render-/Compatibility-Owner in Batches konsolidieren;
+5. vorhandene PvP-Buds-/Pass-/Profil-/Hall-of-Haze-Anzeigen nicht funktional ändern;
+6. Stable/Server 1 unverändert lassen;
+7. gemeinsame QA statt Mikro-Tests;
+8. danach genau ein manueller PvP/Hall-of-Haze-Meilenstein.
 
 ### Statusdatei-Regel
 
