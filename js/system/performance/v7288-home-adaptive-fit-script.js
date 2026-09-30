@@ -3,12 +3,15 @@ if(window.__V7288_HOME_ADAPTIVE_FIT__)return;
 window.__V7288_HOME_ADAPTIVE_FIT__=true;
 const IS_BETA=String(window.GROW_RELEASE_CHANNEL||'stable')==='beta';
 
-let raf=0,lastHero=null,lastWidth=0,baseHeight=0;
+let raf=0,runTimer=0,lastHero=null,lastWidth=0,baseHeight=0;
+const HOME_DIAG={scheduleCalls:0,coalesced:0,runCalls:0,baseFitCalls:0,lastReason:'',lastRunAt:0};
 
 function px(n){return `${Math.max(0,Math.round(Number(n)||0))}px`}
 
 function run(){
-  raf=0;
+  runTimer=0;raf=0;
+  HOME_DIAG.runCalls++;
+  HOME_DIAG.lastRunAt=Date.now();
   const world=document.getElementById('world');
   if(!world||!world.classList.contains('active'))return;
   const hero=world.querySelector('.v366-hero');
@@ -62,30 +65,35 @@ function run(){
   });
 }
 
-function schedule(){
+function schedule(reason='manual'){
+  const why=typeof reason==='string'?reason:String(reason?.type||'event');
+  HOME_DIAG.scheduleCalls++;
+  HOME_DIAG.lastReason=why;
+  if(raf||runTimer)HOME_DIAG.coalesced++;
   cancelAnimationFrame(raf);
+  if(runTimer){clearTimeout(runTimer);runTimer=0}
   raf=requestAnimationFrame(()=>{
+    raf=0;
     if(!IS_BETA){
       /* Stable keeps the previous V7.308 behavior unchanged. */
       try{window.v7258AdaptiveMobileFitNow?.()}catch(_){}
-      setTimeout(run,45);
+      runTimer=setTimeout(run,45);
       return;
     }
 
-    /* V8.009 HOME-2: V7258 already owns its own account/navigation lifecycle.
-       Only ask it for a base fit when this is a freshly rebuilt hero with no
-       geometry variables yet. This removes the duplicate layout pass that was
-       being triggered by V7288 on every normal home settle. */
+    /* V8.009 HOME-3: V7258 already owns account/navigation/resize lifecycle.
+       Only request its base geometry when this is a freshly rebuilt hero.
+       Repeated home settles are coalesced into one height pass. */
     let needsBase=true;
     try{
       const hero=document.querySelector('#world.active .v366-hero');
       needsBase=!hero||!hero.style.getPropertyValue('--v7258-profile-width');
     }catch(_){}
     if(needsBase){
-      try{window.v7258AdaptiveMobileFitNow?.()}catch(_){}
-      setTimeout(run,45);
+      try{window.v7258AdaptiveMobileFitNow?.();HOME_DIAG.baseFitCalls++}catch(_){}
+      runTimer=setTimeout(run,45);
     }else{
-      setTimeout(run,0);
+      runTimer=setTimeout(run,0);
     }
   });
 }
@@ -118,43 +126,52 @@ if(IS_BETA)document.addEventListener('click',e=>{
   }catch(_){}
 },true);
 window.v8009HomeHeaderDiagnostics=()=>({
-  version:'V8.009-HOME-2',
+  version:'V8.009-HOME-3',
   beta:IS_BETA,
   ...v8009HomeHeaderFix,
+  fit:{...HOME_DIAG,pendingRaf:!!raf,pendingTimer:!!runTimer},
   goldShopApi:typeof window.v7114OpenGoldShop==='function',
   mailScreen:!!document.getElementById('mail')
 });
 
 /* Beta-only visible build owner. Shared CSS still contains historical version
    pseudo-elements used by stable, so do not edit those shared styles globally. */
+function applyBetaVersionStyle(){
+ if(!IS_BETA)return;
+ try{
+   let style=document.getElementById('v8009-home-beta-version');
+   if(!style){
+     style=document.createElement('style');
+     style.id='v8009-home-beta-version';
+   }
+   style.textContent='html body .app > header .v358-logo::after{content:"V8.009"!important} html body .app > header .v366-ver::after,html body .app > header .v371-logo em::after,html body .app > header .v372-logo em::after,#v372TopbarShell .v372-logo em::after{content:"V8.009"!important}';
+   /* Move this beta override to the end after the old V8.001 shared styles. */
+   document.head.appendChild(style);
+ }catch(_){}
+}
 if(IS_BETA){
-  try{
-    let style=document.getElementById('v8009-home-beta-version');
-    if(!style){
-      style=document.createElement('style');
-      style.id='v8009-home-beta-version';
-      style.textContent='html body .app > header .v358-logo::after{content:"V8.009"!important} html body .app > header .v366-ver::after,html body .app > header .v371-logo em::after,html body .app > header .v372-logo em::after,#v372TopbarShell .v372-logo em::after{content:"V8.009"!important}';
-      document.head.appendChild(style);
-    }
-  }catch(_){}
+ applyBetaVersionStyle();
+ document.addEventListener('DOMContentLoaded',()=>requestAnimationFrame(applyBetaVersionStyle),{once:true});
+ window.addEventListener('pageshow',applyBetaVersionStyle,{passive:true});
+ window.addEventListener('growlegends:account-ready',()=>setTimeout(applyBetaVersionStyle,0),{passive:true});
 }
 
-window.addEventListener('resize',schedule,{passive:true});
-window.addEventListener('orientationchange',()=>setTimeout(schedule,150),{passive:true});
-window.addEventListener('pageshow',()=>setTimeout(schedule,80),{passive:true});
-window.addEventListener('growlegends:account-ready',()=>setTimeout(schedule,100),{passive:true});
-document.addEventListener('DOMContentLoaded',()=>setTimeout(schedule,50),{once:true});
+window.addEventListener('resize',()=>schedule('resize'),{passive:true});
+window.addEventListener('orientationchange',()=>setTimeout(()=>schedule('orientationchange'),150),{passive:true});
+window.addEventListener('pageshow',()=>setTimeout(()=>schedule('pageshow'),80),{passive:true});
+window.addEventListener('growlegends:account-ready',()=>setTimeout(()=>schedule('account-ready'),100),{passive:true});
+document.addEventListener('DOMContentLoaded',()=>setTimeout(()=>schedule('dom-ready'),50),{once:true});
 document.addEventListener('click',e=>{
-  if(e.target instanceof Element && e.target.closest('[data-screen="world"],[data-go="world"],.v366-menu')){
-    setTimeout(schedule,120);
+  if(e.target instanceof Element && e.target.closest('[data-screen="world"],[data-go="world"]')){
+    setTimeout(()=>schedule('world-click'),120);
   }
 },true);
 
 /* V7.308 performance: the 1.6 s layout-measurement poll is retired. */
 window.addEventListener('growlegends:navigation-open-v7119',e=>{
   const id=String(e?.detail?.id||e?.detail?.screen||'');
-  if(!id||id==='world')setTimeout(schedule,70);
+  if(!id||id==='world')setTimeout(()=>schedule('navigation-world'),70);
 },{passive:true});
 
-schedule();
+schedule('boot');
 })();
