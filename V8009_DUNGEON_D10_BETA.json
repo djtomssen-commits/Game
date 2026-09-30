@@ -1,0 +1,25 @@
+{
+  "build": "V8.009-DUNGEON-D10-BETA",
+  "phase": "Remove dead v426/v427 JS compatibility aliases and audit remaining D1 style cascade",
+  "scope": "beta only",
+  "stable_unchanged": true,
+  "audit": "V8009_DUNGEON_D10_ALIAS_STYLE_AUDIT.json",
+  "removed_aliases": [
+    "v426RenderDetail",
+    "v427RenderDetail"
+  ],
+  "alias_calls_before_removal": 0,
+  "modified_files": [
+    "js/features/dungeon/beta/v8009-d2-detail-render-lock.js",
+    "js/features/dungeon/beta/v8009-d8-detail-decorator.js"
+  ],
+  "d1_css_class_retained": "v426-ref-d1",
+  "d1_style_conclusion": "Multiple active D1 style layers still form the effective cascade; no blind style retirement in D10.",
+  "canonical_detail_owner": "v261RenderDetail",
+  "canonical_decorator": "v8009-d8-detail-decorator.js",
+  "qa": "green",
+  "gameplay_changed": false,
+  "combat_math_changed": false,
+  "rewards_changed": false,
+  "server_authority_changed": false
+}
