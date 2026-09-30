@@ -1,0 +1,67 @@
+name: V8.009 Hall Top3 CSS Server Owner Fix
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/v8009_hall_top3_css_server_owner_fix.py'
+      - '.github/workflows/v8009-hall-top3-css-server-owner-fix.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    timeout-minutes: 9
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Apply canonical Hall CSS/server owner fix
+        run: python3 .github/scripts/v8009_hall_top3_css_server_owner_fix.py
+      - name: Syntax-check canonical Hall owners
+        run: |
+          node --check js/features/pvp/beta/v8009-s1-v6145-hall-pagination-js.js
+          python3 - <<'PY'
+          from pathlib import Path
+          beta=Path('beta.html').read_text(encoding='utf-8',errors='ignore')
+          sid='v7230-server-frame-isolation'
+          pos=beta.find(sid)
+          if pos<0: raise SystemExit('v7230 missing')
+          a=beta.rfind('<script',0,pos); b=beta.find('</script',pos)
+          if a<0 or b<0: raise SystemExit('v7230 bounds missing')
+          body_start=beta.find('>',a)+1
+          Path('/tmp/v7230.js').write_text(beta[body_start:b],encoding='utf-8')
+          PY
+          node --check /tmp/v7230.js
+      - name: Architecture QA
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import json
+          beta=Path('beta.html').read_text(encoding='utf-8',errors='ignore')
+          hall=Path('js/features/pvp/beta/v8009-s1-v6145-hall-pagination-js.js').read_text(encoding='utf-8')
+          r=json.loads(Path('V8009_HALL_TOP3_CSS_SERVER_OWNER_FIX.json').read_text(encoding='utf-8'))
+          if 'function podiumAvatar(p)' not in hall:
+              raise SystemExit('podiumAvatar missing')
+          if '#hall .v6145-podium-portrait{position:absolute' not in beta:
+              raise SystemExit('podium portrait CSS missing')
+          if "document.querySelectorAll('.v7137-frame-target').forEach" in beta:
+              raise SystemExit('broad v7230 frame stripping remains')
+          if 'v8009-s1-v6145-hall-pagination-js.js?v=8009-top3-owner2' not in beta:
+              raise SystemExit('canonical Hall cache version missing')
+          if any(r[x] for x in ('new_renderer_added','new_wrapper_added','new_timer_added','new_observer_added')):
+              raise SystemExit('no-overlay-patching architecture rule violated')
+          if not r['stable_unchanged']:
+              raise SystemExit('Stable scope failed')
+          print('Hall Top3 direct CSS/server owner QA OK')
+          PY
+      - name: Diff sanity
+        run: git diff --check
+      - name: Commit direct owner fix
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add beta.html V8009_HALL_TOP3_CSS_SERVER_OWNER_FIX.json
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "V8.009 PVP: scope Hall frame authority and Top3 portrait"
+          git push
