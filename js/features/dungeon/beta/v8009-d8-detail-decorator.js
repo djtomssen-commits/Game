@@ -7,6 +7,9 @@ const D1_BG='assets/v7198-base64/29f985c0f598ee45e47a.webp';
 const D1_NAMES=['Blattkriecher','Wurzelbeißer','Spinnmilben-Brut','Kleeblattkriecher','Netzjäger','Giftspringer','Brutwächter','Kellerweber','Kokonhüter','Milbenkönigin'];
 const D1_ICONS=['🪰','🐛','🍄','🌿','🕷️','🐸','🐛','🕷️','🥚','🕷️'];
 const D1_ROAD='14,15 28,17 43,19 56,21 67,23 77,26 83,31 71,35 56,39 37,43 19,49 30,54 40,61 49,68 57,75 66,70 74,64 81,58 89,50 86,62 83,74 80,85';
+/* Sprint 2: preserve the former v426-pos-fix default geometry without wrapping
+   v261RenderDetail. D1/D6/D7 special layouts override these defaults below. */
+const DEFAULT_POS=[[11,18],[35,20],[60,25],[84,31],[11,46],[31,58],[51,68],[70,59],[86,47],[82,78]];
 const D6_POS=[[12,17],[37,21],[63,25],[86,31],[12,45],[34,58],[53,68],[71,59],[88,47],[83,80]];
 const D7_POS=[[13,16],[38,20],[63,25],[86,30],[13,46],[35,59],[53,70],[70,61],[87,48],[83,82]];
 
@@ -74,6 +77,8 @@ function decorate(){
 
   const title=card.querySelector('.v261-title');
   const sign=card.querySelector('.v261-signboard');
+
+  applyPositions(card,DEFAULT_POS);
 
   if(di===0){
     normalizeD1Data(card);
