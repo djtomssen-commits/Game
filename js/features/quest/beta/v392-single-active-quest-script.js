@@ -67,9 +67,11 @@
     if(!host)return;
 
     if(!q){
-      host.innerHTML='';
+      host.replaceChildren();
+      host.hidden=true;
       return;
     }
+    host.hidden=false;
 
     const kind=kindFor(q);
     const left=Math.max(0,(Number(q.ends)||0)-Date.now());
