@@ -1,0 +1,24 @@
+{
+  "build": "V8.009-HOME-6-BETA",
+  "phase": "Startseite checklist correctness",
+  "scope": "beta only",
+  "findings": [
+    "The canonical V366 Startseite already de-duplicates full world renders with its own v366Sig signature, so HOME-5's additional 120 ms render throttle was unnecessary and could suppress a legitimate fast state change.",
+    "The Frost-Todesritter has a real weapon2 slot, but the Startseite checklist counted only the six standard equipment slots.",
+    "As a result, the checklist could show all gear enchanted/socketed even when Waffe II was not."
+  ],
+  "changes": [
+    "Removed the additional HOME-5 time-based v085InstallWorld suppression.",
+    "Kept V366's native signature-based render de-duplication as the sole world render authority.",
+    "Added a beta post-render checklist correction for Frost-Todesritter.",
+    "Frost enchant/gem checklist now evaluates 7 slots: head, weapon, weapon2, ring, body, boots, amulet.",
+    "The visible counters now show x/7 for Frost and only show Komplett when all seven real slots are equipped and upgraded."
+  ],
+  "file": "js/system/performance/v7288-home-adaptive-fit-script.js",
+  "file_sha": "a34d1bc52f9ecf710c912a25ab1d9c2445dede0a",
+  "commit": "2d0d4280f545a2545f8e84534370ab311b37a81c",
+  "stable_behavior_changed": false,
+  "gameplay_changed": false,
+  "server_authority_changed": false,
+  "syntax_check": "ok"
+}
