@@ -2,6 +2,7 @@
 'use strict';
 if(window.__V8009_DUNGEON_D5_FINAL_DETAIL_SEAL__)return;
 window.__V8009_DUNGEON_D5_FINAL_DETAIL_SEAL__=true;
+/* Workflow-triggered install: keep this file as the final post-legacy owner. */
 
 const ALIASES=['v251RenderDetail','v244RenderSelectedDungeonMap','v064RenderMap','v260RenderDetail'];
 let observer=null;
