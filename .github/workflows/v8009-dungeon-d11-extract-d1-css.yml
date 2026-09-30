@@ -1,0 +1,71 @@
+name: V8.009 Dungeon D11 Extract D1 CSS
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/v8009_dungeon_d11_extract_d1_css.py'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  extract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Extract D1 CSS cascade
+        run: python3 .github/scripts/v8009_dungeon_d11_extract_d1_css.py
+
+      - name: Validate D11 extraction
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import json,re,hashlib
+
+          beta=Path('beta.html').read_text(encoding='utf-8')
+          stable=Path('index.html').read_text(encoding='utf-8')
+          report=json.loads(Path('V8009_DUNGEON_D11_BETA.json').read_text(encoding='utf-8'))
+
+          if report.get('block_count')!=11:
+              raise SystemExit('unexpected D1 CSS block count')
+          if not report.get('source_order_preserved') or not report.get('stable_unchanged'):
+              raise SystemExit('D11 scope/order validation failed')
+
+          last=-1
+          for item in report['blocks']:
+              sid=item['id']; path=item['file']
+              if re.search(r'<style[^>]*\bid=["\']'+re.escape(sid)+r'["\']',beta,re.I):
+                  raise SystemExit(f'inline D1 style remains: {sid}')
+              if beta.count(path)!=1:
+                  raise SystemExit(f'D1 CSS href count != 1: {path}')
+              pos=beta.index(path)
+              if pos<=last:
+                  raise SystemExit('D1 CSS load order changed')
+              last=pos
+              txt=Path(path).read_text(encoding='utf-8')
+              if hashlib.sha256(txt.encode()).hexdigest()!=item['sha256']:
+                  raise SystemExit(f'D1 CSS hash mismatch: {path}')
+
+          if 'css/features/dungeon/beta/v8009-d11-v426-exact-reference-layout.css' in stable:
+              raise SystemExit('Stable unexpectedly loads D11 Beta CSS')
+
+          print('DUNGEON-D11 exact CSS extraction OK')
+          PY
+
+      - name: Diff sanity
+        run: git diff --check
+
+      - name: Commit D11
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add beta.html css/features/dungeon/beta/v8009-d11-*.css V8009_DUNGEON_D11_BETA.json
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "V8.009 DUNGEON-D11: extract D1 CSS cascade"
+          git push
