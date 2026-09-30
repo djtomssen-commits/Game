@@ -1284,3 +1284,30 @@ Der nächste fachliche Schritt ist **nicht HOME-32**, sondern die Restinventur d
   - Zieloutput: `V8009_QUEST_CLAIM_GUILD_AUDIT.json`
 - Bis der Audit die tatsächliche v6140-Rolle bestätigt: **keinen v440/v474/v411 Quest-Claim-Wrapper entfernen**.
 - Stable / `index.html`: unverändert.
+
+
+### Quest Claim/Gilden-EP Konsolidierung – v440 in Beta retired 30.09.2026
+
+- Claim/Gilden-Audit Ergebnis: `V8009_QUEST_CLAIM_GUILD_AUDIT.json` (Bot-Commit `71ea80778e7986633a899c0dbdcc9b81a1984b02`).
+- Audit bestätigt:
+  - `v6140-central-game-event-bridge` ist in Beta aktiv und erzeugt das zentrale `questCompleted`-Event;
+  - der Subscriber vergibt Gilden-EP über `v474AwardGuildActivity('quest', ...)` bzw. Fallback `v411AwardGuildActivity('quest')`;
+  - `v411` und `v474` besitzen ihre historischen Quest-Claim-Wrapper nur hinter `__V6140_EVENT_BUS__`-Guards und sind bei aktivem Bus deshalb nicht zusätzliche Beta-Owner;
+  - `v440` war dagegen nicht gegated und legte weiterhin einen zusätzlichen Claim-/RPC-Guard-Pfad über die Beta.
+- Modus-Trennung:
+  - Enforce: `v7045` ist der autoritäre Claim-/Receipt-Owner und führt serverseitige Sideeffects direkt aus;
+  - Local/Mirror: `v7045` delegiert an die bestehende Claim-Kette, wodurch `v6140` genau den lokalen Completion-/Guild-XP-Pfad besitzt.
+- Fix Commit: `58278f533a1740a9ce84ef4ac149fb5a4742bddf`
+  - `v440` bleibt für Stable/Legacy unverändert funktionsfähig;
+  - in Beta kehrt `v440` nach Export seiner Legacy-Hilfsfunktion sofort zurück;
+  - kein zusätzlicher `v233ClaimQuest`-/`claimQuest`-Wrapper mehr aus v440;
+  - kein zusätzlicher v440-RPC-Guard / v073Init-Wrapper / Startup-Timer in Beta.
+- QA hinzugefügt:
+  - `.github/scripts/v8009_quest_v440_retire_qa.py`
+  - `.github/workflows/v8009-quest-v440-retire-qa.yml`
+  - Commits `85ef09f31e7ef6bf070eb42497da0884fe1ebb00`, `68f994cbc7efad323002b718b647655e2cbc71d8`.
+- Stable / `index.html`: funktional unverändert.
+- Nächster manueller Meilenstein:
+  - mit einem Charakter in einer Gilde genau eine Quest abschließen;
+  - Gilden-EP müssen weiterhin gebucht werden;
+  - es darf nur ein Gilden-EP-Award/Toast für die Quest erscheinen.
