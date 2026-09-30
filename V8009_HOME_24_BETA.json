@@ -1,0 +1,24 @@
+{
+  "build": "V8.009-HOME-24-BETA",
+  "phase": "Clean Startseite signature fast path",
+  "scope": "beta only",
+  "base_commit": "039d1755435244b3811ad0a676d11d0a1fcb8cf7",
+  "findings": [
+    "Every unchanged v085InstallWorld signature hit still called finalizeOwnedWorld.",
+    "That repeated child scanning, class/dataset normalization, three important style writes and character ownership work even when the canonical Startseite DOM was already clean."
+  ],
+  "changes": [
+    "Added a cheap canonical ownership check for unchanged signature hits.",
+    "Already-clean Startseite DOM now returns without repeated ownership writes.",
+    "If a historic renderer appends a sibling or owner styles/flags are disturbed, the existing finalizeOwnedWorld repair path still runs.",
+    "Full renders and event-only panel updates retain their ownership finalization."
+  ],
+  "files": [
+    "js/features/home/beta/v8009-home-renderer.js",
+    "js/system/performance/v7288-home-adaptive-fit-script.js",
+    ".github/scripts/v8009_home_events_browser_qa.mjs"
+  ],
+  "stable_behavior_changed": false,
+  "gameplay_changed": false,
+  "server_authority_changed": false
+}

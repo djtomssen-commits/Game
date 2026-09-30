@@ -218,6 +218,27 @@ try{
  assert.deepEqual({active:canonicalState.snapshot.active,ready:canonicalState.snapshot.ready},{active:2,ready:1});
  checks.push('canonical renderer owns Frost 7-slot checklist and weather-aware Growroom status');
  await canonical.close();
+ const ownershipFastPath=await fixture('2026-09-30T12:00:00+02:00',{helper:false});
+ const ownerBefore=await ownershipFastPath.evaluate(()=>window.v8009HomeEventDiagnostics?.());
+ await ownershipFastPath.evaluate(()=>v085InstallWorld(false));
+ const ownerClean=await ownershipFastPath.evaluate(()=>window.v8009HomeEventDiagnostics?.());
+ assert.equal(ownerClean.ownershipFinalizes,ownerBefore.ownershipFinalizes,'Unchanged clean home must not repeat ownership DOM writes');
+ assert.equal(ownerClean.cleanSignatureHits,ownerBefore.cleanSignatureHits+1);
+ await ownershipFastPath.evaluate(()=>{
+  const rogue=document.createElement('div');rogue.id='legacy-home-sibling';document.getElementById('world').appendChild(rogue);
+  v085InstallWorld(false);
+ });
+ const ownerRepair=await ownershipFastPath.evaluate(()=>({
+  diag:window.v8009HomeEventDiagnostics?.(),
+  rogue:!!document.getElementById('legacy-home-sibling'),
+  children:document.getElementById('world').childElementCount
+ }));
+ assert.equal(ownerRepair.rogue,false,'Dirty signature hit must still remove historic sibling DOM');
+ assert.equal(ownerRepair.children,1);
+ assert.equal(ownerRepair.diag.dirtySignatureRepairs,ownerClean.dirtySignatureRepairs+1);
+ assert.equal(ownerRepair.diag.ownershipFinalizes,ownerClean.ownershipFinalizes+1);
+ checks.push('clean signature hits skip ownership writes while dirty legacy siblings are still repaired');
+ await ownershipFastPath.close();
  const bossFreePaint=await fixture('2026-09-30T12:00:00+02:00');
  await bossFreePaint.clock.runFor(300);
  await bossFreePaint.evaluate(()=>{
@@ -313,7 +334,7 @@ try{
  assert.equal(versionState.visible,'"V8.009"','Canonical renderer must override historical V8.001 pseudo-element CSS');
  assert.equal(versionState.styleCount,1,'Version override style must be installed exactly once');
  assert.equal(versionState.legacy,'SERVER-VERSION-SENTINEL','Home renderer must not rewrite unrelated legacy version nodes');
- assert.equal(versionState.diag?.version,'V8.009-HOME-23');
+ assert.equal(versionState.diag?.version,'V8.009-HOME-24');
  assert.equal(versionState.diag?.versionStyleInstalls,1);
  checks.push('canonical home renderer owns visible V8.009 style without lifecycle rewrites');
  await versionOwner.close();

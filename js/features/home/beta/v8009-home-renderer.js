@@ -1,7 +1,7 @@
 
 (function(){
   if(String(window.GROW_RELEASE_CHANNEL||'stable')!=='beta')return;
-  const diagnostics={fullRenders:0,eventPanelPatches:0,goldDirectOpens:0,mailDirectOpens:0,versionStyleInstalls:0};
+  const diagnostics={fullRenders:0,eventPanelPatches:0,goldDirectOpens:0,mailDirectOpens:0,versionStyleInstalls:0,ownershipFinalizes:0,cleanSignatureHits:0,dirtySignatureRepairs:0};
   const BETA_VERSION='V8.009';
   function installBetaVersionStyle(){
     try{
@@ -362,8 +362,19 @@
     </div>`;
   }
 
+  function ownedWorldClean(world,modern){
+    if(!world||!modern)return false;
+    if(world.childElementCount!==1||world.firstElementChild!==modern)return false;
+    if(world.classList.contains('v350-isolated')||world.dataset.v368SingleWorld!=='1')return false;
+    if(modern.style.getPropertyValue('display')!=='grid'||modern.style.getPropertyPriority('display')!=='important')return false;
+    if(modern.style.getPropertyValue('visibility')!=='visible'||modern.style.getPropertyPriority('visibility')!=='important')return false;
+    if(modern.style.getPropertyValue('opacity')!=='1'||modern.style.getPropertyPriority('opacity')!=='important')return false;
+    return true;
+  }
+
   function finalizeOwnedWorld(world){
     if(!world)return false;
+    diagnostics.ownershipFinalizes++;
     let modern=world.querySelector(':scope > .v366-world.v690-world');
     if(!modern){
       modern=world.querySelector('.v366-world.v690-world');
@@ -408,10 +419,16 @@
     ];
     const sig=sigParts.join('~');
 
-    /* V6.94: "force" is intentionally ignored when the visible world is already current.
-       Even on a signature hit, finalize ownership so no historic sibling can survive. */
+    /* HOME-24: unchanged, already-clean Startseite DOM can return immediately.
+       If a historic renderer appended a sibling or disturbed owner styles, retain
+       the old repair path and normalize ownership before returning. */
     const current=world.querySelector(':scope > .v366-world.v690-world');
-    if(current && world.dataset.v366Sig===sig){finalizeOwnedWorld(world);return}
+    if(current && world.dataset.v366Sig===sig){
+      if(ownedWorldClean(world,current)){diagnostics.cleanSignatureHits++;return}
+      diagnostics.dirtySignatureRepairs++;
+      finalizeOwnedWorld(world);
+      return;
+    }
     /* HOME-14: an event-only change updates its two panels and counter without
        replacing the hero, navigation, weather or adventure cards. V366 remains
        the sole renderer and uses the same event functions for both paths. */
@@ -433,7 +450,7 @@
     finalizeOwnedWorld(world);
   }
 
-  window.v8009HomeEventDiagnostics=()=>({version:'V8.009-HOME-23',...diagnostics,events:events().map(x=>({...x})),worldBossActive:worldBossEventActive()});
+  window.v8009HomeEventDiagnostics=()=>({version:'V8.009-HOME-24',...diagnostics,events:events().map(x=>({...x})),worldBossActive:worldBossEventActive()});
 
   /* Re-own only the world installer; do not touch core game render/persist. */
   v085WorldHtml=worldHtml;
