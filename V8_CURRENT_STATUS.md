@@ -1090,3 +1090,39 @@ Dann:
 Diese Datei wurde angelegt, nachdem **V8.009 HOME-31** einschließlich Browser-QA erfolgreich war.
 
 Der nächste fachliche Schritt ist **nicht HOME-32**, sondern die Restinventur der großen `beta.html` und anschließend der systematische Dungeon-Auszug.
+
+
+### Quest Active-Card Restfix – 30.09.2026
+
+- Manueller Test nach Skip-Layout-Lock:
+  - aktiver Questbereich flackert/springt weiterhin;
+  - nach erfolgreichem Claim blieb die aktive Questkarte teilweise sichtbar;
+  - außerdem zeigte die aktive Questkarte ein anderes Bild als das zuvor gewählte Angebot.
+- Root Cause Bild/Flackern:
+  - `v6344 decorateCards()` dekorierte global alle `.v386-card` per Index der drei aktuellen Angebote;
+  - dadurch wurde auch `.v392-active-view > .v386-card` fälschlich mit Angebot 0/1/2 dekoriert;
+  - `v392PaintActive()` und der spätere v6344-Decorator malten deshalb abwechselnd unterschiedliche Art auf dieselbe aktive Karte.
+- Fix:
+  - Commit `976d62c47102d960e436abacee559c86bf4891b6`:
+    - v6344 dekoriert Angebotskarten nur noch innerhalb `.v386-list`;
+    - aktive Karte wird separat mit `s.quests.active` dekoriert;
+    - gemeinsamer direkter Helper `v6344DecorateQuestCard(card,q)`.
+  - Commit `93b59faff24a9d3120e067fc0de3dc404df96976`:
+    - v392 ruft den exakten Active-Quest-Art-Helper direkt im selben Paint auf;
+    - kein nachträglicher Index-Repaint mehr nötig.
+- Fix für stehenbleibende Active-Card:
+  - Commit `479da8ed5a02715bff70a3403ad6352a2ae2a8a8`:
+    - v392 leert und versteckt die Active-View hart, sobald `s.quests.active` null ist.
+  - Commit `aa988d216bc1593beb3212a0614050baffdbcfbe`:
+    - nach bestätigtem erfolgreichem Server-Claim wird die lokale Projektion `s.quests.active=null` sofort gesetzt;
+    - ein fehlgeschlagener/staler Folge-Sync kann dadurch die konsumierte Quest nicht sichtbar stehen lassen;
+    - explizite Server-Bundle-/State-Daten bleiben danach weiterhin autoritativ.
+- Keine neue Render-Schicht, kein neuer Timer, kein MutationObserver.
+- Stable / `index.html`: unverändert.
+- Nächster manueller Test:
+  1. neu einloggen;
+  2. erste Quest starten;
+  3. prüfen, ob Bild exakt dem gewählten Angebot entspricht und die Karte nicht mehr zwischen zwei Zuständen springt;
+  4. Timer/Skip prüfen;
+  5. Claim ausführen;
+  6. aktive Karte muss unmittelbar verschwinden und die drei neuen Angebote müssen sichtbar sein.
