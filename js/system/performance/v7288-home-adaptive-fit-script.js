@@ -124,6 +124,7 @@ const v8009HomeHeaderFix={
   growStatusPatches:0,
   growPostRenderSchedules:0,
   inactivePostRenderSkips:0,
+  unchangedPostRenderSkips:0,
   growReadyTimerFires:0,
   growWeatherReschedules:0,
   xpDecoratorGuardInstalls:0,
@@ -365,7 +366,9 @@ function installBetaWorldPostRender(){
 
     const wrapped=function(){
       const force=arguments[0]===true;
-      const active=!!document.getElementById('world')?.classList.contains('active');
+      const worldBefore=document.getElementById('world');
+      const active=!!worldBefore?.classList.contains('active');
+      const heroBefore=active?worldBefore.querySelector('.v366-hero'):null;
       const t=(()=>{try{return performance.now()}catch(_){return Date.now()}})();
 
       /* HOME-8: live weather already repaints its own mounted widget. Bring only
@@ -395,6 +398,14 @@ function installBetaWorldPostRender(){
       }
 
       requestAnimationFrame(()=>{
+        try{
+          const worldAfter=document.getElementById('world');
+          const heroAfter=worldAfter?.querySelector('.v366-hero')||null;
+          if(heroAfter&&heroAfter===heroBefore){
+            v8009HomeHeaderFix.unchangedPostRenderSkips++;
+            return;
+          }
+        }catch(_){}
         try{
           scheduleHomeGrowReady(homeGrowSnapshot());
           v8009HomeHeaderFix.growPostRenderSchedules++;
@@ -467,7 +478,7 @@ function installBetaMenuReplaceGuard(){
    capture-phase redirect from HOME-1 is retired. */
 if(IS_BETA)window.__V8009_HOME15_DIRECT_HEADER_ROUTES__=true;
 window.v8009HomeHeaderDiagnostics=()=>({
-  version:'V8.009-HOME-29',
+  version:'V8.009-HOME-30',
   beta:IS_BETA,
   ...v8009HomeHeaderFix,
   fit:{...HOME_DIAG,pendingRaf:!!raf,pendingTimer:!!runTimer},

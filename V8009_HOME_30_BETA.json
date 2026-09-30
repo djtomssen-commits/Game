@@ -1,0 +1,24 @@
+{
+  "build": "V8.009-HOME-30-BETA",
+  "phase": "Clean signature helper fast path",
+  "scope": "beta only",
+  "base_commit": "8780785fec5db9eb0149d163bc8778c4dab5bb24",
+  "findings": [
+    "HOME-24 lets the canonical renderer return quickly when the Startseite signature is unchanged and ownership is already clean.",
+    "The helper wrapper still treated that clean no-op like a real render and queued Growroom readiness work plus a Startseite layout-fit pass."
+  ],
+  "changes": [
+    "The helper records the mounted hero before v085InstallWorld and compares it after the canonical call.",
+    "If the same hero remains mounted, no DOM rebuild occurred, so post-render Growroom and fit work is skipped.",
+    "Full renders replace the hero and continue receiving the existing readiness scheduling and layout fit.",
+    "Inactive no-ops keep the HOME-28 fast path."
+  ],
+  "files": [
+    "js/system/performance/v7288-home-adaptive-fit-script.js",
+    "js/features/home/beta/v8009-home-renderer.js",
+    ".github/scripts/v8009_home_events_browser_qa.mjs"
+  ],
+  "stable_behavior_changed": false,
+  "gameplay_changed": false,
+  "server_authority_changed": false
+}
