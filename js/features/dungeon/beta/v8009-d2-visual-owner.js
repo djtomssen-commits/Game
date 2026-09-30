@@ -55,11 +55,13 @@
          art is allowed to win visually anymore. */
       bg:liveAsset(`${assetRoot}/d${number}_bg.jpg`),
       art:Array.from({length:9},(_,i)=>liveAsset(`${assetRoot}/d${number}_${i+1}.png`)),
-      bossArt:liveAsset(`${assetRoot}/d${number}_boss.png`),
-      /* D1-D9 currently have no packaged dN_boss.png files. Keep the known
-         historical boss art as a visual-only fallback; D2's archived v467
-         boss asset is verified to exist in the repository. */
-      bossFallback:raw.bossArt||(number===2?'assets/v7195-base64/10036d96d08155bdc84a.svg':'')
+      /* Packaged boss PNGs exist only for D10-D20. D1-D9 must not request
+         missing files: use their existing bossArt when available. D2 has a
+         repository-verified legacy SVG fallback. */
+      bossFallback:raw.bossArt||(number===2?'assets/v7195-base64/10036d96d08155bdc84a.svg':''),
+      bossArt:number>=10
+        ?liveAsset(`${assetRoot}/d${number}_boss.png`)
+        :liveAsset(raw.bossArt||(number===2?'assets/v7195-base64/10036d96d08155bdc84a.svg':''))
     };
   }
   function assetFor(c,ri){return c?(ri===9?c.bossArt:c.art?.[ri]):''}
