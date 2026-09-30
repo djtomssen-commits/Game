@@ -49,3 +49,5 @@ report={'build':'V8.009-QUEST-SKIP-UI-OWNER-FIX','before_bytes':before,'after_by
 Path('V8009_QUEST_SKIP_UI_OWNER_FIX.json').write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
 print(json.dumps(report,ensure_ascii=False,indent=2))
 if failed: raise SystemExit(1)
+
+# trigger after workflow install
