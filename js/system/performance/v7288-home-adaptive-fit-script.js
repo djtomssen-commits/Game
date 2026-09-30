@@ -99,10 +99,9 @@ function schedule(reason='manual'){
 }
 window.v7288HomeAdaptiveFitNow=schedule;
 
-/* V8.009 HOME-1: the current V366 home header still carries two historical
-   routes: Gold+ opens the item shop and the mail icon opens friends. Capture
-   those clicks before the old inline onclick handlers so the visible home
-   controls use their intended destinations. */
+/* V8.009 HOME support layer: layout fitting and narrow targeted refreshes live
+   here; visible Startseite content and header routes are owned by the extracted
+   beta renderer. */
 const v8009HomeHeaderFix={
   goldRedirects:0,
   mailRedirects:0,
@@ -110,8 +109,7 @@ const v8009HomeHeaderFix={
   menuRebuildsSuppressed:0,
   menuRebuildsAllowed:0,
   worldPostRenderInstalls:0,
-  checklistPatches:0,
-  frostChecklistFixes:0,
+  canonicalChecklistOwner:0,
   weeklyWidgetPaints:0,
   weeklyFullRendersAvoided:0,
   weeklyFeedbackEvents:0,
@@ -202,6 +200,8 @@ function auditHomeRoutes(){
 
 function homeGrowSnapshot(now=Date.now()){
   try{
+    const canonical=window.v8009HomeGrowSnapshot?.(now);
+    if(canonical&&Number.isFinite(Number(canonical.active))&&Number.isFinite(Number(canonical.ready)))return canonical;
     const st=stateNow();
     const plants=Array.isArray(st?.grow?.plants)?st.grow.plants.filter(Boolean):[];
     const wm=Math.max(.80,Math.min(1.30,Number(window.GL_WEATHER?.bonus?.growMul)||1));
@@ -209,11 +209,9 @@ function homeGrowSnapshot(now=Date.now()){
     for(const p of plants){
       const start=Number(p?.start)||0;
       const duration=Math.max(0,Number(p?.duration)||0);
-      let at=0;
-      /* Match the canonical V492 Growroom progression exactly: elapsed time is
-         multiplied by the live weather growth multiplier. */
-      if(start>0&&duration>0)at=start+Math.round(duration/wm);
-      else at=Number(p?.readyAt||p?.endsAt||p?.endAt)||0;
+      const at=start>0&&duration>0
+        ? start+Math.round(duration/wm)
+        : Number(p?.readyAt||p?.endsAt||p?.endAt)||0;
       if(at>0&&now>=at)ready++;
       else if(at>now&&(!nextAt||at<nextAt))nextAt=at;
     }
@@ -347,52 +345,9 @@ function patchWeeklyChest(){
   }catch(_){return false}
 }
 
-function patchHomeChecklist(){
-  if(!IS_BETA)return false;
-  try{
-    const world=document.getElementById('world');
-    if(!world?.classList.contains('active'))return false;
-    const list=world.querySelector('.vHome-checklist');
-    if(!list)return false;
-
-    const st=stateNow();
-    if(String(st?.playerClass||'')!=='frost')return false;
-
-    /* V8.009 HOME-6: Frost-Todesritter has a real second weapon slot.
-       V366's historical checklist still counts only the six standard slots,
-       so it can report "Komplett" while Waffe II has no gem/enchant. */
-    const slots=['head','weapon','weapon2','ring','body','boots','amulet'];
-    const eq=st?.equipment&&typeof st.equipment==='object'?st.equipment:{};
-    const gear=slots.map(k=>eq[k]).filter(Boolean);
-    const hasGem=it=>!!(it?.gem||it?.socketGem||it?.socket||it?.edelstein||it?.gemItem);
-    const hasEnchant=it=>!!(it?.enchant||(Array.isArray(it?.enchants)&&it.enchants.length)||it?.verzauberung||it?.rolle);
-    const gemmed=gear.filter(hasGem).length;
-    const enchanted=gear.filter(hasEnchant).length;
-    const total=slots.length;
-    const full=gear.length===total;
-
-    const rows=[...list.querySelectorAll('.vHome-check-row[data-char-tab="materials"]')];
-    const enchantRow=rows.find(r=>/verzaubert/i.test(r.querySelector('span')?.textContent||''));
-    const gemRow=rows.find(r=>/stein|gesockelt/i.test(r.querySelector('span')?.textContent||''));
-
-    const paint=(row,count,done)=>{
-      if(!row)return;
-      row.classList.toggle('ok',done);
-      row.classList.toggle('warn',!done);
-      const icon=row.querySelector('i'),value=row.querySelector('b');
-      if(icon)icon.textContent=done?'✓':'!';
-      if(value)value.textContent=done?'Komplett':`${count}/${total}`;
-    };
-    paint(enchantRow,enchanted,full&&enchanted===total);
-    paint(gemRow,gemmed,full&&gemmed===total);
-
-    list.dataset.v8009FrostSlots=String(total);
-    v8009HomeHeaderFix.checklistPatches++;
-    v8009HomeHeaderFix.frostChecklistFixes++;
-    return true;
-  }catch(_){return false}
-}
-
+/* V8.009 HOME-16: Frost weapon2 is counted by the canonical renderer.
+   The former post-render checklist DOM correction is retired. */
+if(IS_BETA)window.__V8009_HOME16_CANONICAL_CHECKLIST__=true;
 function installBetaWorldPostRender(){
   if(!IS_BETA)return false;
   try{
@@ -418,14 +373,12 @@ function installBetaWorldPostRender(){
       if(!force&&active&&weeklyFeedbackUntil&&t<=weeklyFeedbackUntil&&patchWeeklyChest()){
         weeklyFeedbackUntil=0;
         v8009HomeHeaderFix.weeklyFullRendersAvoided++;
-        try{patchHomeChecklist()}catch(_){}
         try{patchHomeGrowStatus()}catch(_){}
         return false;
       }
 
       const out=base.apply(this,arguments);
       requestAnimationFrame(()=>{
-        try{patchHomeChecklist()}catch(_){}
         try{patchHomeGrowStatus()}catch(_){}
         try{syncPaintedWeatherSignature()}catch(_){}
         try{auditHomeRoutes()}catch(_){}
@@ -497,7 +450,7 @@ function installBetaMenuReplaceGuard(){
    capture-phase redirect from HOME-1 is retired. */
 if(IS_BETA)window.__V8009_HOME15_DIRECT_HEADER_ROUTES__=true;
 window.v8009HomeHeaderDiagnostics=()=>({
-  version:'V8.009-HOME-15',
+  version:'V8.009-HOME-16',
   beta:IS_BETA,
   ...v8009HomeHeaderFix,
   fit:{...HOME_DIAG,pendingRaf:!!raf,pendingTimer:!!runTimer},
@@ -506,6 +459,8 @@ window.v8009HomeHeaderDiagnostics=()=>({
   goldShopApi:typeof window.v7114OpenGoldShop==='function',
   mailScreen:!!document.getElementById('mail'),
   directHeaderRoutes:!!window.__V8009_HOME15_DIRECT_HEADER_ROUTES__,
+  canonicalChecklistOwner:!!window.__V8009_HOME16_CANONICAL_CHECKLIST__,
+  canonicalGrowSnapshot:typeof window.v8009HomeGrowSnapshot==='function',
   legacyV474HomeRetired:!!window.__V8009_HOME9_V474_HOME_RETIRED__,
   legacyVersionWritesRetired:{
     v380:!!window.__V8009_HOME11_V380_VERSION_RETIRED__,
@@ -575,6 +530,6 @@ window.addEventListener('growlegends:navigation-open-v7119',e=>{
   if(!id||id==='world')setTimeout(()=>schedule('navigation-world'),70);
 },{passive:true});
 
-if(IS_BETA)setTimeout(()=>{installBetaMenuReplaceGuard();installBetaWorldPostRender();installGrowWeatherObserver();installXpDecoratorStartupGuard();patchHomeChecklist();patchHomeGrowStatus()},0);
+if(IS_BETA)setTimeout(()=>{installBetaMenuReplaceGuard();installBetaWorldPostRender();installGrowWeatherObserver();installXpDecoratorStartupGuard();patchHomeGrowStatus()},0);
 schedule('boot');
 })();

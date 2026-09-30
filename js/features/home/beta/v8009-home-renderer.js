@@ -28,14 +28,22 @@
       return {d:Number(p.dungeonNumber)||1,e:Number(p.enemyNumber)||1};
     }catch(e){return {d:1,e:1}}
   }
-  function growReady(){
-    const now=Date.now();
-    return (s?.grow?.plants||[]).filter(p=>{
-      if(!p)return false;
-      const end=Number(p.readyAt||p.endsAt||p.endAt)||((Number(p.start)||0)+(Number(p.duration)||0));
-      return end>0&&now>=end;
-    }).length;
+  function growSnapshot(now=Date.now()){
+    const plants=Array.isArray(s?.grow?.plants)?s.grow.plants.filter(Boolean):[];
+    const weatherMul=Math.max(.80,Math.min(1.30,Number(window.GL_WEATHER?.bonus?.growMul)||1));
+    let ready=0,nextAt=0;
+    for(const p of plants){
+      const start=Number(p?.start)||0;
+      const duration=Math.max(0,Number(p?.duration)||0);
+      let at=0;
+      if(start>0&&duration>0)at=start+Math.round(duration/weatherMul);
+      else at=Number(p?.readyAt||p?.endsAt||p?.endAt)||0;
+      if(at>0&&now>=at)ready++;
+      else if(at>now&&(!nextAt||at<nextAt))nextAt=at;
+    }
+    return {active:plants.length,ready,nextAt,weatherMul};
   }
+  window.v8009HomeGrowSnapshot=growSnapshot;
   function bossFree(){try{if(typeof v110ResetDay==='function')v110ResetDay();return !s?.v110WorldBoss?.freeUsed}catch(e){return true}}
   function dungeonFree(){try{return typeof freeDungeonReady==='function'?!!freeDungeonReady():true}catch(e){return true}}
   function firstQuest(){return !s?.v109HarzDaily?.firstQuest}
@@ -192,14 +200,16 @@
   function homeChecklist(){
     const talentFree=(()=>{try{return typeof v314Available==='function'?Math.max(0,Number(v314Available())||0):Math.max(0,Number(s?.skillPoints)||0)}catch(e){return Math.max(0,Number(s?.skillPoints)||0)}})();
     const skillFree=Math.max(0,Number(s?.points)||0);
-    const slots=['head','weapon','ring','body','boots','amulet'];
+    const cls=String(s?.playerClass||'');
+    const slots=cls==='frost'
+      ? ['head','weapon','weapon2','ring','body','boots','amulet']
+      : ['head','weapon','ring','body','boots','amulet'];
     const gear=slots.map(k=>s?.equipment?.[k]).filter(Boolean);
     const hasGem=it=>!!(it?.gem||it?.socketGem||it?.socket||it?.edelstein||it?.gemItem);
     const hasEnchant=it=>!!(it?.enchant||(Array.isArray(it?.enchants)&&it.enchants.length)||it?.verzauberung||it?.rolle);
     const gemmed=gear.filter(hasGem).length;
     const enchanted=gear.filter(hasEnchant).length;
     const fullGear=gear.length===slots.length;
-    const cls=String(s?.playerClass||'');
     let setPieces=0;
     try{setPieces=cls&&typeof equippedSetCount==='function'?Math.max(0,Number(equippedSetCount(cls))||0):gear.filter(it=>it?.setId===cls).length}catch(e){setPieces=gear.filter(it=>it?.setId===cls).length}
     let thresholds=[];
@@ -208,7 +218,7 @@
     const setActive=thresholds.filter(n=>setPieces>=n).length;
     const setTotal=thresholds.length;
     return {
-      talentFree,skillFree,gearCount:gear.length,gemmed,enchanted,fullGear,setPieces,setActive,setTotal,
+      talentFree,skillFree,gearCount:gear.length,gemmed,enchanted,fullGear,setPieces,setActive,setTotal,slotTotal:slots.length,
       talentDone:talentFree===0,skillDone:skillFree===0,
       enchantDone:fullGear&&enchanted===slots.length,
       gemDone:fullGear&&gemmed===slots.length,
@@ -218,7 +228,7 @@
 
   function worldHtml(){
     const xp=Math.max(0,Number(s?.xp)||0),need=xpNeedSafe(),pct=Math.max(0,Math.min(100,xp/need*100));
-    const dg=dungeonPos(),gr=growReady(),ac=ach(),ev=events();
+    const dg=dungeonPos(),grow=growSnapshot(),ac=ach(),ev=events();
     const hc=homeChecklist();
     const bossActive=worldBossEventActive();
     const twSeason=(s?.tower?.season&&typeof s.tower.season==='object')?s.tower.season:{};
@@ -244,8 +254,8 @@
             <div class="vHome-check-head"><span>CHARAKTER-CHECK</span><small>Was noch zu tun ist</small></div>
             <button type="button" class="vHome-check-row ${hc.talentDone?'ok':'warn'}" data-char-tab="talents"><i>${hc.talentDone?'✓':'!'}</i><span>Talentpunkte</span><b>${hc.talentDone?'Alle vergeben':`${num(hc.talentFree)} zu verteilen`}</b></button>
             <button type="button" class="vHome-check-row ${hc.skillDone?'ok':'warn'}" data-char-tab="attributes"><i>${hc.skillDone?'✓':'!'}</i><span>Skillpunkte</span><b>${hc.skillDone?'Alle vergeben':`${num(hc.skillFree)} zu verteilen`}</b></button>
-            <button type="button" class="vHome-check-row ${hc.enchantDone?'ok':'warn'}" data-char-tab="materials"><i>${hc.enchantDone?'✓':'!'}</i><span>Ausrüstung verzaubert</span><b>${hc.enchantDone?'Komplett':`${hc.enchanted}/6`}</b></button>
-            <button type="button" class="vHome-check-row ${hc.gemDone?'ok':'warn'}" data-char-tab="materials"><i>${hc.gemDone?'✓':'!'}</i><span>Mit Steinen gesockelt</span><b>${hc.gemDone?'Komplett':`${hc.gemmed}/6`}</b></button>
+            <button type="button" class="vHome-check-row ${hc.enchantDone?'ok':'warn'}" data-char-tab="materials"><i>${hc.enchantDone?'✓':'!'}</i><span>Ausrüstung verzaubert</span><b>${hc.enchantDone?'Komplett':`${hc.enchanted}/${hc.slotTotal}`}</b></button>
+            <button type="button" class="vHome-check-row ${hc.gemDone?'ok':'warn'}" data-char-tab="materials"><i>${hc.gemDone?'✓':'!'}</i><span>Mit Steinen gesockelt</span><b>${hc.gemDone?'Komplett':`${hc.gemmed}/${hc.slotTotal}`}</b></button>
             <button type="button" class="vHome-check-row set" data-char-tab="inventory"><i>◆</i><span>Aktive Klassenset-Boni</span><b>${hc.setActive}/${hc.setTotal} aktiv</b></button>
           </div>
         </div>
@@ -271,7 +281,7 @@
         <article class="v366-card quest"><h2>Quests</h2><div class="v366-card-art"></div><div class="v366-cardbody"><p>Dampf verbrauchen,<br>Belohnungen sichern!</p><div class="v366-status">💨 <b>${num(s?.energy)}/${num(cap())} Dampf</b></div><button class="v366-go" data-go="quests">Zu den Quests</button></div></article>
         <article class="v366-card dungeon"><h2>Dungeon</h2><div class="v366-card-art"></div><div class="v366-cardbody"><p>Kämpfe dich durch<br>epische Dungeons!</p><div class="v366-status">⚔️ <b>Dungeon ${dg.d}<br>Gegner ${dg.e}/10</b></div><button class="v366-go" data-go="dungeon">Zum Dungeon</button></div></article>
         <article class="v366-card tower v4166-tower-card"><h2>Anbauturm</h2><div class="v366-card-art v4166-tower-art"><span class="v4166-tower-emblem">🗼</span></div><div class="v366-cardbody"><p>Steig Etage für Etage<br>und riskiere deinen Run!</p><div class="v366-status">🏆 <b>${tw.active?`Aktiver Run · Etage ${tw.floor}`:`Bestwert · Etage ${tw.bestFloor}`}<br>${tw.bestScore?`${num(tw.bestScore)} Punkte`:'Saison-Rangliste'}</b></div><button class="v366-go" data-go="tower">Zum Anbauturm</button></div></article>
-        <article class="v366-card grow"><h2>Growroom</h2><div class="v366-card-art"></div><div class="v366-cardbody"><p>Ziehe mächtige Pflanzen<br>und ernte Erträge!</p><div class="v366-status">🌿 <b>${gr} Pflanze${gr===1?'':'n'} erntereif</b></div><button class="v366-go" data-go="grow">Zum Growroom</button></div></article>
+        <article class="v366-card grow"><h2>Growroom</h2><div class="v366-card-art"></div><div class="v366-cardbody"><p>Ziehe mächtige Pflanzen<br>und ernte Erträge!</p><div class="v366-status">🌿 <b>${grow.ready} Pflanze${grow.ready===1?'':'n'} erntereif</b></div><button class="v366-go" data-go="grow">Zum Growroom</button></div></article>
       </section>
 
       <div class="v690-section-title v690-current-title"><span>Aktuelles</span><small>${ev.length?`${ev.length} aktiv`:'Alles ruhig'}</small></div>
@@ -308,7 +318,7 @@
       </section>
 
       <div id="v492HomeGrowStatus" class="v492-home-grow" data-go="grow">
-        <b>🌱 Growroom · ${gr} Pflanze${gr===1?'':'n'} wachsen</b>
+        <b>${grow.active?`🌱 Growroom · ${grow.active} Pflanze${grow.active===1?'':'n'} aktiv${grow.ready?` · ${grow.ready} erntereif`:''}`:'🌱 Growroom · Keine Pflanzen aktiv'}</b>
         <small>Deine Pflanzen wachsen weiter, auch wenn du offline bist.</small>
       </div>
 
@@ -357,11 +367,11 @@
   function installWorld(force){
     const world=document.querySelector('#world');
     if(!world)return;
-    const ev=events(),bossActive=worldBossEventActive();
+    const ev=events(),bossActive=worldBossEventActive(),grow=growSnapshot();
     const sigParts=[
       playerName(),s?.playerClass,s?.level,s?.xp,s?.energy,s?.gold,s?.harzTaler,
       attr('staerke'),attr('ausdauer'),attr('geschick'),attr('intelligenz'),attr('glueck'),cp(),
-      dungeonPos().d,dungeonPos().e,growReady(),petUnseen(),bossActive,ev.map(x=>`${x.t}:${x.s}`).join('|'),ach().done,homeChecklist().signature,Number(s?.tower?.season?.bestFloor)||0,Number(s?.tower?.season?.bestScore)||0,(s?.tower?.run?.active?Number(s.tower.run.floor)||1:0),window.v6239WeeklyChestSignature?.()||'',window.GL_WEATHER?.kind||'',window.GL_WEATHER?.label||'',Math.round(Number(window.GL_WEATHER?.temp)||0),window.GL_WEATHER?.bonus?.text||'',Number(window.__V7129_REFERRAL_STATE__?.qualified_count)||0,!!window.__V7129_REFERRAL_STATE__?.grand_claimed
+      dungeonPos().d,dungeonPos().e,`${grow.active}:${grow.ready}`,petUnseen(),bossActive,ev.map(x=>`${x.t}:${x.s}`).join('|'),ach().done,homeChecklist().signature,Number(s?.tower?.season?.bestFloor)||0,Number(s?.tower?.season?.bestScore)||0,(s?.tower?.run?.active?Number(s.tower.run.floor)||1:0),window.v6239WeeklyChestSignature?.()||'',window.GL_WEATHER?.kind||'',window.GL_WEATHER?.label||'',Math.round(Number(window.GL_WEATHER?.temp)||0),window.GL_WEATHER?.bonus?.text||'',Number(window.__V7129_REFERRAL_STATE__?.qualified_count)||0,!!window.__V7129_REFERRAL_STATE__?.grand_claimed
     ];
     const sig=sigParts.join('~');
 
@@ -390,7 +400,7 @@
     finalizeOwnedWorld(world);
   }
 
-  window.v8009HomeEventDiagnostics=()=>({version:'V8.009-HOME-15',...diagnostics,events:events().map(x=>({...x})),worldBossActive:worldBossEventActive()});
+  window.v8009HomeEventDiagnostics=()=>({version:'V8.009-HOME-16',...diagnostics,events:events().map(x=>({...x})),worldBossActive:worldBossEventActive()});
 
   /* Re-own only the world installer; do not touch core game render/persist. */
   v085WorldHtml=worldHtml;

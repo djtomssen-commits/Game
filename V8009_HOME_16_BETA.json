@@ -1,0 +1,27 @@
+{
+  "build": "V8.009-HOME-16-BETA",
+  "phase": "Canonical checklist and Growroom status ownership",
+  "scope": "beta only",
+  "base_commit": "3caad64180b202fe41206f4d94cb49cbf34b3062",
+  "findings": [
+    "After HOME-14 extracted V366, the renderer still calculated Growroom readiness without the live-weather multiplier and rendered the lower Growroom strip from ready-count instead of active plants.",
+    "Frost-Todesritter still rendered a six-slot equipment checklist first and HOME-6 corrected it afterward with a second DOM pass."
+  ],
+  "changes": [
+    "The beta home renderer now owns the seven-slot Frost checklist including weapon2.",
+    "Checklist totals are rendered from the actual class slot count instead of hard-coded /6 values.",
+    "The renderer now owns the same weather-aware Growroom readiness formula used by the Growroom and exposes it for targeted timer/weather refreshes.",
+    "The lower Growroom strip is correct on first render: active plants plus ready count.",
+    "The obsolete Frost post-render checklist patch and its repeated DOM work are retired.",
+    "The Growroom targeted timer/weather updater remains for real-time transitions without polling or full-home rebuilds."
+  ],
+  "files": [
+    "js/features/home/beta/v8009-home-renderer.js",
+    "js/system/performance/v7288-home-adaptive-fit-script.js",
+    ".github/scripts/v8009_home_events_browser_qa.mjs"
+  ],
+  "stable_behavior_changed": false,
+  "gameplay_changed": false,
+  "grow_state_changed": false,
+  "server_authority_changed": false
+}

@@ -186,6 +186,36 @@ try{
  checks.push('home header owns Gold+ and Nebel-Post routes without helper capture');
  await routes.close();
 
+ const canonical=await fixture('2026-09-30T12:00:00+02:00',{playerClass:'frost',helper:false});
+ await canonical.evaluate(()=>{
+  const done=()=>({gem:{id:'g'},enchant:{id:'e'}});
+  s.equipment={head:done(),weapon:done(),weapon2:{},ring:done(),body:done(),boots:done(),amulet:done()};
+  GL_WEATHER={kind:'rain',icon:'🌧️',label:'Regen',temp:17,bonus:{text:'Schnelleres Wachstum',growMul:1.30}};
+  const now=Date.now();
+  s.grow={plants:[
+   {start:now-900,duration:1000},
+   {start:now-100,duration:1000}
+  ]};
+  v085InstallWorld(false);
+ });
+ const canonicalState=await canonical.evaluate(()=>{
+  const rows=[...document.querySelectorAll('.vHome-check-row[data-char-tab="materials"]')];
+  const enchant=rows.find(r=>/verzaubert/i.test(r.querySelector('span')?.textContent||''))?.querySelector('b')?.textContent;
+  const gem=rows.find(r=>/stein|gesockelt/i.test(r.querySelector('span')?.textContent||''))?.querySelector('b')?.textContent;
+  return {
+   enchant,gem,
+   growCard:document.querySelector('.v366-card.grow .v366-status b')?.textContent,
+   growStrip:document.querySelector('#v492HomeGrowStatus b')?.textContent,
+   snapshot:window.v8009HomeGrowSnapshot?.()
+  };
+ });
+ assert.equal(canonicalState.enchant,'6/7','Frost checklist must include weapon2 in canonical renderer');
+ assert.equal(canonicalState.gem,'6/7','Frost gem checklist must include weapon2 in canonical renderer');
+ assert.equal(canonicalState.growCard,'1 Pflanze erntereif','Weather-aware readiness must be correct before helper patches');
+ assert.equal(canonicalState.growStrip,'🌱 Growroom · 2 Pflanzen aktiv · 1 erntereif','Grow strip must show active and ready plants directly');
+ assert.deepEqual({active:canonicalState.snapshot.active,ready:canonicalState.snapshot.ready},{active:2,ready:1});
+ checks.push('canonical renderer owns Frost 7-slot checklist and weather-aware Growroom status');
+ await canonical.close();
  const stable=await fixture('2026-09-18T12:00:00+02:00',{channel:'stable',helper:false});
  const isolated=await stable.evaluate(()=>({scheduler:window.__V6251_AUTO_WEEKEND_EVENTS__,renderer:window.v8009HomeEventDiagnostics,energy:s.energy,content:document.getElementById('world').innerHTML}));
  assert.deepEqual(isolated,{scheduler:undefined,renderer:undefined,energy:60,content:''});
