@@ -6,6 +6,16 @@
  const PAGE=20,TOP=3;
  const SELECT='id,character_name,class_id,class_name,level,bosses,gear_score,dungeons,combat_power,equipment,dungeon_progress,worldboss_attempts,worldboss_wins,pvp_buds,pvp_wins,pvp_losses,pvp_fights,avatar_frame_id,updated_at';
  const state={page:1,mode:'page',total:0,pages:1,ownRank:null,seq:0,topRows:[],topAt:0};
+ const FRAME_ASSETS=Object.freeze({
+   ironwood:'assets/avatar_frames/ironwood.png',
+   silver_vine:'assets/avatar_frames/silver_vine.png',
+   gold_crown:'assets/avatar_frames/gold_crown.png',
+   emerald_aura:'assets/avatar_frames/emerald_aura.png',
+   haze_ring:'assets/avatar_frames/haze_ring.png',
+   resin_flame:'assets/avatar_frames/resin_flame.png',
+   prismatic_myth:'assets/avatar_frames/prismatic_myth.png',
+   referral_legend:'assets/avatar_frames/referral_legend.png'
+ });
  const q=id=>document.getElementById(id);
  const esc=v=>String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
  const num=v=>Math.max(0,Math.floor(Number(v)||0));
@@ -59,8 +69,8 @@
  }
  function frameArt(p){
    const id=String(p?.avatar_frame_id||'');
-   if(!id)return '';
-   try{return String(window.v7137FrameArtMarkup?.(id)||'')}catch(e){return ''}
+   const src=FRAME_ASSETS[id]||'';
+   return src?`<img class="v7139-frame-art" src="${esc(src)}" alt="" aria-hidden="true" decoding="async">`:'';
  }
  function framedAvatar(p,cls){
    const id=String(p?.avatar_frame_id||'');
@@ -178,7 +188,9 @@
  }
  async function loadRanking(){return state.mode==='near'?loadNear():loadPage(state.page||1,false)}
  try{v073LoadRanking=loadRanking;window.v073LoadRanking=loadRanking}catch(e){window.v073LoadRanking=loadRanking}
- window.v6145HallPage=loadPage;window.v6145HallMyRank=loadMyRank;window.v6145HallNear=loadNear;window.v6145HallState=()=>({...state,topRows:state.topRows.map(x=>({id:x.id,name:x.character_name}))});
+ window.v6145HallPage=loadPage;window.v6145HallMyRank=loadMyRank;window.v6145HallNear=loadNear;
+ window.v6145HallRefresh=async()=>{state.topAt=0;state.ownRank=null;return loadPage(state.page||1,false)};
+ window.v6145HallState=()=>({...state,topRows:state.topRows.map(x=>({id:x.id,name:x.character_name}))});
  document.addEventListener('click',e=>{if(e.target.closest?.('[data-screen="hall"],[data-go="hall"]')){state.mode='page';state.page=1;state.ownRank=null;state.topAt=0;setTimeout(()=>void loadPage(1),0)}},true);
  window.addEventListener('growlegends:account-ready',()=>{state.ownRank=null;state.topAt=0});
 })();
