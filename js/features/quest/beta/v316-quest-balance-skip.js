@@ -108,11 +108,9 @@ function v316PaintSkip(){
 
 /* Direct render hooks used by the canonical Quest renderer. */
 window.v316PrepareQuestRender=v316BalanceVisibleOffers;
-window.v316ScheduleSkipPaint=()=>requestAnimationFrame(v316PaintSkip);
+window.v316ScheduleSkipPaint=()=>{}; /* V8.009 retired: v4127 owns visible skip row. */
 
-setTimeout(()=>{
- try{v316BalanceVisibleOffers();renderQuests()}catch(e){}
-},350);
+try{v316BalanceVisibleOffers()}catch(e){}
 
 const v316BaseRender=render;
 render=function(){
