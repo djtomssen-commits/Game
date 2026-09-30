@@ -342,6 +342,7 @@ function claimWrapper(base){
    try{window.v229QuestClaimSync?.()}catch(_){}
    try{window.v392PaintActive?.()}catch(_){}
    try{window.v4127ScheduleQuestSkip?.()}catch(_){}
+   try{if(!s?.quests?.active)void window.glCancelQuestPushJob?.()}catch(_){}
   }
  };
  w.__v7045Atomic=true;w.__v7045Base=base;return w;
@@ -352,7 +353,11 @@ const wClaim=claimWrapper(baseClaim);if(wClaim){window.claimQuest=wClaim;try{cla
 const baseSkip=window.v316SkipActiveQuest;
 if(typeof baseSkip==='function'){
  const w=async function(){
-  if(!enforced())return baseSkip.apply(this,arguments);
+  if(!enforced()){
+   const r=await baseSkip.apply(this,arguments);
+   try{void window.glCancelQuestPushJob?.()}catch(_){}
+   return r;
+  }
   if(C.busy)return false;C.busy=true;window.__V7214_QUEST_MUTATION_BUSY__=true;invalidateQuestState();
   try{
    let r;
