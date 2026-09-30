@@ -10,8 +10,8 @@
 - Aktuelle Beta-Linie: **V8.009**
 - Arbeitsbranch: **main**
 - Letzter automatisiert geprüfter Code-Commit vor dieser Statusdatei:
-  `8c3d3a44ec3c453c61f6798a798c99e2632ed602`
-- Aktuelle Unterphase: **V8.009-PVP-SPRINT-1-OWNER-AUDIT**
+  `4d0c39fd351e51e4eab64ad27261515341fa3d02`
+- Aktuelle Unterphase: **V8.009-PVP-SPRINT-1-MANUAL-CHECK**
 - Nutzer-Video bestätigt: betroffen ist konkret **Dungeon 2**.
 - Sichtbares Fehlerbild:
   - zunächst korrekter D2-Hintergrund + korrekte Gegnergrafiken;
@@ -378,6 +378,43 @@
   - `v7052` Shadow-Parity;
   - `v7053` Atomic Server-PvP/Receipt Authority;
   - Reward-/Cooldown-/Achievement-/Guild-XP-Seiteneffekte.
+- PvP Sprint 1 Owner-Cleanup:
+  - Owner-Audit: `V8009_PVP_SPRINT1_OWNER_AUDIT.json`;
+  - finaler Hall-Ranking-Owner: `js/features/pvp/beta/v8009-s1-v6145-hall-pagination-js.js`;
+  - zwei nachweislich überschriebene Ranking-Wrapper entfernt:
+    - v424 Hall-Ranking-Wrapper;
+    - PvP-Buds Hall-Ranking-Wrapper;
+  - ihre eigentliche Profil-/Bud-Synchronisation bleibt aktiv und wird von v6145 direkt ausgelöst.
+- Retired Marker-Cores:
+  - v611 Stage-Fix Core
+  - v619 Dungeon-Motion Core
+  - v620 Dungeon-Parity Core
+  - v672 Effect-Parity Core
+  - v7155 Hall-Cleanup Marker
+  - alle fünf Dateien bleiben im Repo, werden aber von Beta nicht mehr geladen.
+- v6290 Performance-Hall-Wrapper:
+  - alter Post-Render-Wrapper vollständig retired;
+  - Ranking-Dekoration läuft jetzt direkt aus v6145;
+  - Own-Profile-Dekoration läuft direkt aus v326;
+  - `v646DecorateHall()` bleibt der gemeinsame sichtbare Hall-Decorator;
+  - Archiv: `js/features/pvp/legacy/v8009-s1-retired-v6290-performance-hall-fix.js`.
+- v437 UI-Cleanup:
+  - doppelte 2000-/5000-ms-PvP-Bind-Retries entfernt;
+  - die einmaligen 500/2000/5000-ms-Startup-Retries bleiben.
+- PvP Sprint 1 Abschluss-QA:
+  - Manifest: `V8009_PVP_SPRINT1_FINAL.json`;
+  - Commit: `4d0c39fd351e51e4eab64ad27261515341fa3d02`;
+  - **29 extrahierte JS-Dateien erhalten, 24 aktiv, 5 bewusst retired**;
+  - **21/21 PvP/Hall-CSS-Dateien aktiv extern**;
+  - alle 29 extrahierten JS-Dateien per `node --check` grün;
+  - fünf assetbasierte CSS-Referenzen verifiziert;
+  - finaler Hall-Ranking-Owner = v6145;
+  - v7053 Atomic Server-PvP/Receipt Authority unverändert erhalten;
+  - späterer globaler Gameplay-Authority-Lock bleibt in der bestehenden Owner-Kette erhalten;
+  - Stable SHA256 unverändert:
+    `e476eb4437df8c0763a36220f99fe5f14b09b3acd8f76e8ed4f5821962d9fbab`.
+- PvP Sprint 1 aktueller Beta-Stand: **5.749.031 Byte**.
+- PvP / Hall Status: **technisch grün; ein gemeinsamer manueller Meilenstein-Test offen**.
 - Scope: **Beta zuerst**
 - **Server 1 / Stable bleibt unangetastet**, bis eine Phase ausdrücklich für Stable freigegeben wird.
 
@@ -465,9 +502,9 @@ Kein `HOME-32` beginnen, solange kein echter reproduzierbarer Home-Bug oder klar
 Aktueller Repo-Stand vor dieser Statusdatei:
 
 - `index.html`: ca. **6574124 Byte**
-- `beta.html`: ca. **6076288 Byte**
-- externe `.js`-Dateien unter `js/`: **97**
-- externe `.css`-Dateien unter `css/`: **94**
+- `beta.html`: ca. **5749031 Byte**
+- externe `.js`-Dateien unter `js/`: **134**
+- externe `.css`-Dateien unter `css/`: **130**
 
 Das heißt: Es wurde viel ausgelagert, aber die Haupt-HTML ist weiterhin mehrere MB groß und enthält noch erheblichen Alt-/Inline-Code.
 
@@ -491,28 +528,35 @@ Für jedes System gilt:
 
 ## 4. EXAKTER nächster Schritt
 
-### V8.009-PVP-SPRINT-1-OWNER-AUDIT – Hall/UI-Owner konsolidieren
+### PvP / Hall of Haze – EIN gemeinsamer manueller Meilenstein-Test
 
-Jetzt keine weitere reine Extraktion. In einem breiten Batch:
+Einmal kurz in Beta prüfen:
 
-1. externe PvP/Hall-Dateien auf tatsächliche Owner-/Wrapper-Ketten prüfen;
-2. besonders vergleichen:
-   - `v326-hall-profile-canonical`
-   - `v424-hall-combat-power-fix`
-   - `v437-pvp-combat-power-canonical`
-   - `v646-hall-template-js`
-   - `vPvpBudsHallSyncFix`
-   - `v6145-hall-pagination-js`
-   - v549/v550/v551 UI-Layer;
-3. feststellen, welcher Hall-of-Haze-Renderer/Ranglisten-Owner tatsächlich zuletzt sichtbar ist;
-4. alte reine UI-/Navigation-/Profile-Wrapper gesammelt durch direkte Hooks ersetzen oder stilllegen;
-5. **nicht anfassen**:
-   - Matchmaking/Combat-Berechnung;
-   - Cooldown;
-   - Bud-/Gold-/EXP-/Achievement-Rewards;
-   - v7053 Serverautorität/Receipts;
-6. gemeinsame Syntax-/Owner-/DOM-Integrations-QA;
-7. danach erst ein manueller Hall-of-Haze/PvP-Meilenstein.
+1. **Hall of Haze öffnen**
+   - Top 3 sichtbar;
+   - Rangliste lädt;
+   - „Mein Rang“ / „Mein Umfeld“ reagieren;
+   - Avatare, Kampfkraft und PvP-Buds sichtbar.
+2. **Ein Spielerprofil aus der Hall öffnen**
+   - Profil öffnet;
+   - eigene/andere Werte wirken plausibel;
+   - Schließen funktioniert.
+3. **PvP öffnen**
+   - Gegner suchen funktioniert;
+   - Gegnerdaten/Kampfkraft erscheinen;
+   - Cooldown-/Button-Zustand wirkt korrekt.
+4. **Einen PvP-Kampf starten**
+   - Kampfanimation/Overlay läuft;
+   - Ergebnis-Modal erscheint;
+   - Gold/EXP/Buds bzw. Niederlagenzustand werden angezeigt;
+   - Rückkehr zu PvP funktioniert.
+5. Wenn das passt:
+   - **PvP / Hall of Haze als abgeschlossen markieren**;
+   - direkt mit **Quest im Sprint-Modus** starten.
+6. Nur bei einem echten sichtbaren/ funktionalen Fehler PvP/Hall wieder öffnen.
+
+### Danach: Quest Sprint
+Breiter Bestand-/Owner-Audit → 1:1-Extraktion → Owner-Konsolidierung → gemeinsame QA → ein manueller Meilenstein.
 
 ### Statusdatei-Regel
 
