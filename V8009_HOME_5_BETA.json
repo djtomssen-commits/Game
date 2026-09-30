@@ -1,0 +1,25 @@
+{
+  "build": "V8.009-HOME-5-BETA",
+  "phase": "Startseite duplicate render burst cleanup",
+  "scope": "beta only",
+  "finding": [
+    "Server activity feedback can call v085InstallWorld(false) while the Startseite is already active.",
+    "Other lifecycle owners can request the same legacy V085 home installer in the same short UI burst.",
+    "Those back-to-back non-forced calls rebuild the mounted Startseite more than once."
+  ],
+  "change": [
+    "The beta wraps v085InstallWorld and keeps the first non-forced active-home render.",
+    "Only additional non-forced calls within 120 ms are suppressed.",
+    "Forced renders are never suppressed.",
+    "No home-state fingerprint/cache is used, so genuine later state changes still render normally.",
+    "After an allowed V085 render, the existing V7288 fit pass is coalesced through the HOME-3 scheduler."
+  ],
+  "diagnostics": "window.v8009HomeHeaderDiagnostics() now also reports worldRenderGuardInstalls, worldRenderCalls and worldRenderBurstsSuppressed.",
+  "file": "js/system/performance/v7288-home-adaptive-fit-script.js",
+  "file_sha": "fece77402273ff71556103c1c8787b2e392270d2",
+  "commit": "2c7537f25c2b87b971b6e6da66cc7435918827f8",
+  "stable_behavior_changed": false,
+  "gameplay_changed": false,
+  "server_authority_changed": false,
+  "syntax_check": "ok"
+}
