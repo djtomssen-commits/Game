@@ -1,0 +1,25 @@
+name: V8.009 Beta Entry Audit
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/v8009_beta_entry_audit.py'
+      - '.github/workflows/v8009-beta-entry-audit.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 .github/scripts/v8009_beta_entry_audit.py
+      - name: Commit report
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add V8009_BETA_ENTRY_AUDIT.json
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "V8.009: audit actual Beta entry files"
+          git push
