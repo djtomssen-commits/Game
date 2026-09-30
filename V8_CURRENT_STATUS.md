@@ -19,8 +19,8 @@
 - Aktuelle Beta-Linie: **V8.009**
 - Arbeitsbranch: **main**
 - Letzter automatisiert geprüfter Code-Commit vor dieser Statusdatei:
-  `2d7c1bdfcad3e83dddc2fca8a5abd05957729279`
-- Aktuelle Unterphase: **V8.009-AUTH-IDLE-LOGIN-RACE-FIX-COMMITTED-LIVE-BETA-DEPLOY-BLOCKED**
+  `06be757c3faf109c2f3c3f18195086d1909592d0`
+- Aktuelle Unterphase: **V8.009-BETA-STARTUP-STABILITY-FIX-COMMITTED-LIVE-BETA-DEPLOY-PENDING**
 - Nutzer-Video bestätigt: betroffen ist konkret **Dungeon 2**.
 - Sichtbares Fehlerbild:
   - zunächst korrekter D2-Hintergrund + korrekte Gegnergrafiken;
@@ -682,6 +682,43 @@ Für jedes System gilt:
   - Stable/`index.html` unverändert.
 - Manueller Test ist noch offen und kann erst sinnvoll erfolgen, wenn der aktuelle Repo-`beta.html`-Stand tatsächlich live unter `/beta` ausgeliefert wird.
 
+### Beta-Startstabilität / Seite wirkt teilweise hängend – Fix 30.09.2026
+
+- Nutzer meldete direkt nach dem Idle-Login-Thema, dass die Seite teilweise hängt bzw. Probleme macht.
+- Live-/Repo-Browservergleich zeigte: **echte Runtime-Startfehler existierten auch im aktuellen Repo-Build**, also nicht nur ein Cloudflare-Verzögerungsproblem.
+- Reproduzierte kritische Fehler vor Fix:
+  - `v030MakeWeaponOffer is not defined`
+  - `v030MakeMaterialOffer is not defined`
+  - `v030RenderMaterials is not defined`
+  - `questPool is not defined`
+  - `fightDungeon is not defined`
+  - Null-DOM-Zugriffe auf `onclick` / `className`
+  - Social/Friends-Zugriffe auf `v073User.id` vor bestehender Session
+  - Guild-Legacy-Dateien nutzten nicht definiertes `IS_BETA`
+  - vor Login unnötige Supabase-Anfragen mit 401/permission denied.
+- Direkte Owner-/Legacy-Bereinigung ohne neue Render-Schicht:
+  - Guild-Beta-Guards in
+    - `js/features/guild/legacy/06-v408-guild-upgrade-audit-fix.js`
+    - `js/features/guild/legacy/07-v410-guild-level-system.js`
+    auf `window.GROW_RELEASE_CHANNEL` umgestellt;
+  - Hall/Friends-Owner `js/features/pvp/beta/v8009-s1-v4130-hall-dungeon-authority.js` blockiert Serverabfragen vor echter Auth-Session;
+  - `beta.html` nutzt bei Shop-Refresh die vorhandenen aktuellen Generatoren statt entfernter `v030MakeWeaponOffer`/`v030MakeMaterialOffer`;
+  - Tagesreset bevorzugt den bestehenden `v057FillShops`-Owner;
+  - alte Material-/Quest-/Dungeon-Hooks greifen nur noch ein, wenn ihr jeweiliger Legacy-Owner tatsächlich existiert;
+  - Reset-Button und Equipment-Slot-Zugriffe null-sicher;
+  - Social/Public-Abfragen werden vor Login gestoppt statt 401-Schleifen auszulösen.
+- Finaler Beta-Code-Commit:
+  - `06be757c3faf109c2f3c3f18195086d1909592d0` — `V8.009 beta: fix startup runtime faults`
+- Automatische Chromium-QA **grün**:
+  - aktueller Repo-`beta.html` lädt HTTP 200 vollständig;
+  - **0** `ReferenceError`;
+  - **0** `TypeError`;
+  - **0** `Cannot read properties of null`;
+  - **0** Supabase-401/`permission denied for table profiles` im ausgeloggten Starttest;
+  - bekannte kritische Startfehler vollständig entfernt.
+- Stable/`index.html` unverändert.
+- Kein neuer Renderer, kein neuer Render-Wrapper, kein neuer MutationObserver für diesen Fix.
+
 ## LIVE-BETA DEPLOY-BEFUND 30.09.2026
 
 - Nutzer-Screenshot 15:28 zeigte weiterhin exakt den alten Top-3-Stand.
@@ -724,8 +761,10 @@ Für jedes System gilt:
    - Bytes/Hash müssen dem aktuellen Repo-Stand entsprechen;
    - `v6145-podium-portrait` muss live vorhanden sein;
    - `v8009-s1-v6145-hall-pagination-js.js?v=8009-top3-owner2` muss live geladen werden;
-   - der Auth-Race-Fix aus Commit `2d7c1bdfcad3e83dddc2fca8a5abd05957729279` muss live enthalten sein.
+   - der Auth-Race-Fix muss live enthalten sein;
+   - die Startup-Stability-Fixes aus Commit `06be757c3faf109c2f3c3f18195086d1909592d0` müssen live enthalten sein.
 3. Erst **danach** zwei manuelle Meilenstein-Tests:
+   - Beta frisch öffnen: Login-Maske muss ohne Hänger/Runtime-Fehler stabil erscheinen;
    - Hall Top 3 / Avatar-Rahmen erneut prüfen;
    - 10-Minuten-Idle-Logout auslösen und anschließend erneut anmelden; kein `BETA_CHARACTER_BOOTSTRAP_INCOMPLETE`, kein leerer Zwischenzustand.
 4. Wenn Hall danach noch falsch ist, am bestehenden kanonischen `v6145`-/`v7230`-Owner weiterarbeiten.
