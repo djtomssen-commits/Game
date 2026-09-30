@@ -173,16 +173,13 @@
     });
   }
 
-  const baseRenderQuests=renderQuests;
-  renderQuests=function(){
-    const result=baseRenderQuests.apply(this,arguments);
+  window.v386RenderQuestShell=()=>{
     install();
     hideOldQuestBlocks();
     renderCards();
-    return result;
   };
 
-  /* V7.122: duplicate quest-nav redesign pass retired; renderQuests owns it. */
+  /* V7.122: duplicate quest-nav redesign pass retired; v6344 owns the final quest paint. */
 
   setTimeout(()=>{
     install();
