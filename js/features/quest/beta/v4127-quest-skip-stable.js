@@ -77,30 +77,6 @@
  window.v4127ScheduleQuestSkip=scheduleSkip;
 
  try{
-  if(typeof window.startQuest==='function'&&!window.startQuest.__v4127Skip){
-   const base=window.startQuest;
-   const wrapped=function(){
-    const had=!!s?.quests?.active;
-    const r=base.apply(this,arguments);
-    if(!had&&s?.quests?.active)scheduleSkip();
-    else if(s?.quests?.active)scheduleSkip();
-    if(r&&typeof r.then==='function')r.finally(scheduleSkip);
-    return r;
-   };
-   wrapped.__v4127Skip=true;window.startQuest=wrapped;
-   try{startQuest=wrapped}catch(e){}
-  }
- }catch(e){}
-
- try{
-  if(typeof renderQuests==='function'&&!renderQuests.__v4127Skip){
-   const base=renderQuests;
-   const wrapped=function(){const r=base.apply(this,arguments);scheduleSkip();return r};
-   wrapped.__v4127Skip=true;renderQuests=wrapped;try{window.renderQuests=wrapped}catch(e){}
-  }
- }catch(e){}
-
- try{
   if(typeof v032Go==='function'&&!v032Go.__v4127Skip){
    const base=v032Go;
    const wrapped=function(id){const r=base.apply(this,arguments);if(id==='quests')scheduleSkip();return r};
