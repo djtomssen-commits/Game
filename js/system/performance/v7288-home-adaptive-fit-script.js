@@ -103,7 +103,64 @@ window.v7288HomeAdaptiveFitNow=schedule;
    routes: Gold+ opens the item shop and the mail icon opens friends. Capture
    those clicks before the old inline onclick handlers so the visible home
    controls use their intended destinations. */
-const v8009HomeHeaderFix={goldRedirects:0,mailRedirects:0};
+const v8009HomeHeaderFix={
+  goldRedirects:0,
+  mailRedirects:0,
+  menuGuardInstalls:0,
+  menuRebuildsSuppressed:0,
+  menuRebuildsAllowed:0
+};
+
+function installBetaMenuReplaceGuard(){
+  if(!IS_BETA)return false;
+  try{
+    const panel=document.getElementById('v032MenuPanel');
+    if(!panel)return false;
+    if(panel.__v8009Home4ReplaceGuard)return true;
+
+    const nativeReplace=panel.replaceChildren.bind(panel);
+    const directIds=root=>{
+      try{return [...root.children].filter(x=>x instanceof Element&&x.dataset?.screen).map(x=>String(x.dataset.screen||''))}catch(_){return[]}
+    };
+    const incomingIds=nodes=>{
+      const ids=[];
+      const visit=n=>{
+        if(!n)return;
+        if(n.nodeType===11){
+          try{[...n.children].forEach(visit)}catch(_){}
+          return;
+        }
+        if(n instanceof Element&&n.dataset?.screen)ids.push(String(n.dataset.screen||''));
+      };
+      nodes.forEach(visit);
+      return ids;
+    };
+
+    panel.replaceChildren=function(...nodes){
+      try{
+        const current=directIds(panel);
+        const incoming=incomingIds(nodes);
+        const same=incoming.length===current.length&&incoming.every((id,i)=>id===current[i]);
+
+        /* V8.009 HOME-4: V4148 still blindly replaces the complete menu on
+           several lifecycle events. V4149/V7272 already own canonical order,
+           weather preservation and icon decoration. If the direct screen list
+           is already identical, keep the mounted DOM instead of causing a full
+           menu mutation + observer repair cycle. */
+        if(same&&incoming.length){
+          v8009HomeHeaderFix.menuRebuildsSuppressed++;
+          return;
+        }
+      }catch(_){}
+      v8009HomeHeaderFix.menuRebuildsAllowed++;
+      return nativeReplace(...nodes);
+    };
+    panel.__v8009Home4ReplaceGuard=true;
+    panel.__v8009Home4NativeReplace=nativeReplace;
+    v8009HomeHeaderFix.menuGuardInstalls++;
+    return true;
+  }catch(_){return false}
+}
 if(IS_BETA)document.addEventListener('click',e=>{
   try{
     const t=e.target instanceof Element?e.target:null;
@@ -126,7 +183,7 @@ if(IS_BETA)document.addEventListener('click',e=>{
   }catch(_){}
 },true);
 window.v8009HomeHeaderDiagnostics=()=>({
-  version:'V8.009-HOME-3',
+  version:'V8.009-HOME-4',
   beta:IS_BETA,
   ...v8009HomeHeaderFix,
   fit:{...HOME_DIAG,pendingRaf:!!raf,pendingTimer:!!runTimer},
@@ -151,9 +208,12 @@ function applyBetaVersionStyle(){
 }
 if(IS_BETA){
  applyBetaVersionStyle();
- document.addEventListener('DOMContentLoaded',()=>requestAnimationFrame(applyBetaVersionStyle),{once:true});
- window.addEventListener('pageshow',applyBetaVersionStyle,{passive:true});
- window.addEventListener('growlegends:account-ready',()=>setTimeout(applyBetaVersionStyle,0),{passive:true});
+ installBetaMenuReplaceGuard();
+ document.addEventListener('DOMContentLoaded',()=>requestAnimationFrame(()=>{applyBetaVersionStyle();installBetaMenuReplaceGuard()}),{once:true});
+ window.addEventListener('pageshow',()=>{applyBetaVersionStyle();installBetaMenuReplaceGuard()},{passive:true});
+ window.addEventListener('growlegends:account-ready',()=>setTimeout(()=>{applyBetaVersionStyle();installBetaMenuReplaceGuard()},0),{passive:true});
+ window.addEventListener('growlegends:extras-ready',()=>setTimeout(installBetaMenuReplaceGuard,0),{passive:true});
+ window.addEventListener('growlegends:foreground-ready',()=>setTimeout(installBetaMenuReplaceGuard,0),{passive:true});
 }
 
 window.addEventListener('resize',()=>schedule('resize'),{passive:true});
@@ -173,5 +233,6 @@ window.addEventListener('growlegends:navigation-open-v7119',e=>{
   if(!id||id==='world')setTimeout(()=>schedule('navigation-world'),70);
 },{passive:true});
 
+if(IS_BETA)setTimeout(installBetaMenuReplaceGuard,0);
 schedule('boot');
 })();
