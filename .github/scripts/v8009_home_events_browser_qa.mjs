@@ -219,7 +219,11 @@ try{
  checks.push('canonical renderer owns Frost 7-slot checklist and weather-aware Growroom status');
  await canonical.close();
  const bossActiveSnapshot=await fixture('2026-09-30T12:00:00+02:00',{helper:false});
- await bossActiveSnapshot.evaluate(()=>{qa.bossActiveCalls=0;s.gold+=1;v085InstallWorld(false)});
+ await bossActiveSnapshot.evaluate(()=>{
+  const realBossActive=window.v110MysticEventActive;
+  window.v110MysticEventActive=()=>{qa.bossActiveCalls++;return !!realBossActive?.()};
+  qa.bossActiveCalls=0;s.gold+=1;v085InstallWorld(false);
+ });
  const bossActiveCount=await bossActiveSnapshot.evaluate(()=>qa.bossActiveCalls);
  assert.equal(bossActiveCount,1,'One home snapshot must query mystic worldboss activity only once');
  checks.push('home snapshot reuses one mystic worldboss-active query for event list and boss slot');
