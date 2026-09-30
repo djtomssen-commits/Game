@@ -54,7 +54,6 @@ function assign(name,wrapped){
     if(name==='v251RenderDetail')v251RenderDetail=wrapped;
     else if(name==='v244RenderSelectedDungeonMap')v244RenderSelectedDungeonMap=wrapped;
     else if(name==='v064RenderMap')v064RenderMap=wrapped;
-    else if(name==='v261RenderDetail')v261RenderDetail=wrapped;
     else if(name==='v260RenderDetail')v260RenderDetail=wrapped;
   }catch(_){}
 }
