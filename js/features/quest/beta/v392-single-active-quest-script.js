@@ -123,6 +123,29 @@
       V4.02 already owns the approved artwork through these classes.
       Emptying the generated SVG lets the CSS artwork remain authoritative.
     */
+    /* V8.009: keep the running quest card stable when Android/WebView
+       briefly crosses the <=390px CSS viewport breakpoint during repaint. */
+    const activeCard=host.querySelector('.v386-card');
+    const activeScene=host.querySelector('.v386-scene');
+    const activeBody=host.querySelector('.v386-card-body');
+    if(activeCard){
+      activeCard.style.setProperty('width','100%','important');
+      activeCard.style.setProperty('max-width','100%','important');
+      activeCard.style.setProperty('min-width','0','important');
+      activeCard.style.setProperty('grid-template-columns','34% 66%','important');
+      activeCard.style.setProperty('min-height','176px','important');
+    }
+    if(activeScene){
+      activeScene.style.setProperty('min-width','0','important');
+      activeScene.style.setProperty('min-height','176px','important');
+      activeScene.style.setProperty('height','100%','important');
+    }
+    if(activeBody){
+      activeBody.style.setProperty('min-width','0','important');
+      activeBody.style.setProperty('padding','10px','important');
+      activeBody.style.setProperty('gap','7px','important');
+    }
+
     const art=host.querySelector('.v386-scene-art');
     if(art)art.innerHTML='';
 
