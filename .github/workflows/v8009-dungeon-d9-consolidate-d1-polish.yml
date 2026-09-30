@@ -1,0 +1,103 @@
+name: V8.009 Dungeon D9 Consolidate D1 Polish
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/v8009_dungeon_d9_consolidate_d1_polish.py'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  consolidate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Consolidate D1 polish chain
+        run: python3 .github/scripts/v8009_dungeon_d9_consolidate_d1_polish.py
+
+      - name: Syntax-check active and archived Dungeon JS
+        run: |
+          node --check js/features/dungeon/beta/v8009-d8-detail-decorator.js
+          node --check js/features/dungeon/legacy/v8009-d9-retired-d1-polish-chain.js
+          node --check js/features/dungeon/beta/v8009-d2-visual-owner.js
+          node --check js/features/dungeon/beta/v8009-d2-detail-render-lock.js
+          node --check js/features/dungeon/beta/v8009-d5-final-detail-seal.js
+
+      - name: Validate D9 consolidation
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import json,re
+
+          beta=Path('beta.html').read_text(encoding='utf-8')
+          deco=Path('js/features/dungeon/beta/v8009-d8-detail-decorator.js').read_text(encoding='utf-8')
+          owner=Path('js/features/dungeon/beta/v8009-d2-visual-owner.js').read_text(encoding='utf-8')
+          report=json.loads(Path('V8009_DUNGEON_D9_BETA.json').read_text(encoding='utf-8'))
+
+          retired=[
+            'v454-d1-feinschliff-script',
+            'v458-d1-road-and-sign-final',
+            'v459-d1-right-side-thumb-final-script',
+            'v460-d1-thumb-owner-fix-script',
+            'v461-d1-node9-collision-fix-script',
+            'v463-d1-screenshot-polish-script',
+          ]
+          for sid in retired:
+              if re.search(r'<script[^>]*\bid=["\']'+re.escape(sid)+r'["\']',beta,re.I):
+                  raise SystemExit(f'D1 polish script still active: {sid}')
+
+          required=[
+            "const D1_NAMES=['Blattkriecher'",
+            "const D1_ROAD='14,15 28,17 43,19",
+            "title.innerHTML='DER<br>VERSEUCHTE<br>KELLER'",
+            "VERSEUCHTER KELLER",
+            "line1.textContent=",
+            "D1 thumb ownership stays canonical",
+          ]
+          for needle in required:
+              if needle not in deco:
+                  raise SystemExit(f'missing migrated D1 behavior: {needle}')
+
+          for needle in (
+              "setCurrentThumbImage(thumb,assetFor(c,ri),fallback)",
+              "ring.dataset.glAssetFallback='legacy'",
+              "stage.dataset.glMapFallback='legacy'",
+          ):
+              if needle not in owner:
+                  raise SystemExit(f'canonical D1/Dungeon asset behavior missing: {needle}')
+
+          if beta.count('js/features/dungeon/beta/v8009-d8-detail-decorator.js')!=1:
+              raise SystemExit('D8 decorator include count changed')
+          if beta.count('js/features/dungeon/beta/v8009-d2-visual-owner.js')!=1:
+              raise SystemExit('D2 owner include count changed')
+
+          body_end=beta.lower().rfind('</body>')
+          if beta.rfind('<script',0,body_end)!=beta.rfind('<script id="v8009-dungeon-d5-final-detail-seal"',0,body_end):
+              raise SystemExit('D5 final seal no longer last script')
+
+          if not report.get('stable_unchanged') or report.get('retired_d1_polish_active'):
+              raise SystemExit('D9 report invalid')
+
+          print('DUNGEON-D9 D1 polish consolidation OK')
+          PY
+
+      - name: Diff sanity
+        run: git diff --check
+
+      - name: Commit D9
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add beta.html \
+            js/features/dungeon/legacy/v8009-d9-retired-d1-polish-chain.js \
+            V8009_DUNGEON_D9_BETA.json
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "V8.009 DUNGEON-D9: consolidate D1 polish chain"
+          git push
