@@ -1,5 +1,10 @@
 name: V8.009 Levelup Owner Audit
 on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/v8009_levelup_owner_audit.py'
+      - '.github/workflows/v8009-levelup-owner-audit.yml'
   workflow_dispatch:
 permissions:
   contents: write
