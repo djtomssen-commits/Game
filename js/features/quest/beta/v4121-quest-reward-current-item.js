@@ -77,8 +77,9 @@
   requestAnimationFrame(()=>upgrade(before));
   setTimeout(()=>upgrade(before),60);
  };
- /* Also catch reward DOM created by a future claim wrapper without adding a new timer. */
- document.addEventListener('click',e=>{if(!e.target?.closest?.('#v392ClaimQuest,#claimQuest'))return;setTimeout(()=>upgrade(null),120)},true);
+ /* V8.009 Quest consolidation: the canonical claim owner (v7045) invokes
+    v4121AfterQuestClaim directly. The historical global click retry duplicated
+    the same reward-art paint 120 ms later and is retired. */
  function stamp(){}
  upgrade(null);stamp();window.addEventListener('pageshow',()=>{upgrade(null);stamp()},{passive:true});
 })();
