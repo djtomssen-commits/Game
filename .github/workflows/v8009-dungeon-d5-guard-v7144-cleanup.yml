@@ -1,0 +1,71 @@
+name: V8.009 Dungeon D5 Guard v7144 Cleanup
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/v8009_dungeon_d5_guard_v7144_cleanup.py'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Guard v7144 cleanup by asset load state
+        run: python3 .github/scripts/v8009_dungeon_d5_guard_v7144_cleanup.py
+      - name: Syntax-check canonical owners
+        run: |
+          node --check js/features/dungeon/beta/v8009-d2-visual-owner.js
+          node --check js/features/dungeon/beta/v8009-d5-final-detail-seal.js
+      - name: Validate D5 asset fallback fix
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import json
+          beta=Path('beta.html').read_text(encoding='utf-8')
+          visual=Path('js/features/dungeon/beta/v8009-d2-visual-owner.js').read_text(encoding='utf-8')
+          seal=Path('js/features/dungeon/beta/v8009-d5-final-detail-seal.js').read_text(encoding='utf-8')
+          report=json.loads(Path('V8009_DUNGEON_D5_GUARD_V7144_CLEANUP.json').read_text(encoding='utf-8'))
+
+          required_beta=[
+            "const canonicalReady=!!bg&&!bg.hidden&&(!bg.complete||bg.naturalWidth>0);",
+            "if(canonicalReady){",
+          ]
+          for x in required_beta:
+            if x not in beta: raise SystemExit(f'missing v7144 guard: {x}')
+
+          for x in [
+            "ring.dataset.glAssetFallback='legacy';",
+            "stage.dataset.glMapFallback='legacy';",
+            "if(oldBg)important(oldBg,'display','block');",
+          ]:
+            if x not in visual: raise SystemExit(f'missing visual fallback: {x}')
+
+          for x in [
+            "bg.naturalWidth>0",
+            "ring.dataset.glAssetFallback==='legacy'",
+            "attributes:true",
+          ]:
+            if x not in seal: raise SystemExit(f'missing seal load-state check: {x}')
+
+          if not report.get('stable_unchanged'):
+            raise SystemExit('stable scope failed')
+          print('DUNGEON-D5 asset fallback/cleanup QA OK')
+          PY
+      - name: Diff sanity
+        run: git diff --check
+      - name: Commit guarded cleanup
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add beta.html V8009_DUNGEON_D5_GUARD_V7144_CLEANUP.json
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "V8.009 DUNGEON-D5: preserve map assets on canonical load failure"
+          git push
