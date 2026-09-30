@@ -123398,9 +123398,17 @@ window.__V7154_CHARACTER_CLEANUP__=Object.freeze({singleTurnEquipmentSettle:true
  function cleanMap(){
   const card=document.getElementById('dungeonMapCard');if(!card||card.style.display==='none')return;
   const stage=card.querySelector('.v261-stage');if(!stage)return;
-  stage.querySelectorAll(':scope>.v261-bg,:scope>.v261-fx').forEach(n=>n.remove());
-  stage.style.setProperty('background-image','none','important');
-  const imgs=[...stage.querySelectorAll(':scope>.gl-dungeon-map-bg-img')];imgs.slice(1).forEach(n=>n.remove());
+  const imgs=[...stage.querySelectorAll(':scope>.gl-dungeon-map-bg-img')];
+  const bg=imgs[0];
+  const canonicalReady=!!bg&&!bg.hidden&&(!bg.complete||bg.naturalWidth>0);
+  /* V8.009 D5: never destroy the visible fallback before the canonical
+     background has actually loaded. This was the source of the black map. */
+  stage.querySelectorAll(':scope>.v261-fx').forEach(n=>n.remove());
+  if(canonicalReady){
+    stage.querySelectorAll(':scope>.v261-bg').forEach(n=>n.remove());
+    stage.style.setProperty('background-image','none','important');
+  }
+  imgs.slice(1).forEach(n=>n.remove());
   paintDungeonTimer(true);
  }
  window.v7144CleanDungeonMap=cleanMap;
