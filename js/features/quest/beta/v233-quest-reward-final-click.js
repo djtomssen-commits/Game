@@ -197,21 +197,13 @@ document.addEventListener('click',e=>{
 },true);
 
 
-/*
-  renderQuests replaces the button DOM, so explicitly bind the current
-  button after every quest render as a second safety layer.
-*/
-const v233BaseRenderQuests=renderQuests;
-renderQuests=function(){
-  const r=v233BaseRenderQuests();
-
+/* Direct render hook used by the canonical Quest renderer. */
+window.v233BindClaimButton=()=>{
   const btn=document.querySelector('#claimQuest');
   if(btn){
     btn.onclick=null;
     btn.dataset.v233Claim='1';
   }
-
-  return r;
 };
 
 
