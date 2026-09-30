@@ -246,7 +246,8 @@ async function recoverClaimAfterTimeout(runId,qSnapshot,before){
    if(qSnapshot&&typeof v311PlayFight==='function'){
     try{await Promise.race([Promise.resolve(v311PlayFight(clone(qSnapshot))),sleep(6000)])}catch(_){}
    }
-   applyBundle(r);try{await canonicalQuestState()}catch(_){};markQuestSideEffects(runId,qSnapshot,r);persistLocal();paintAll();secondaryToasts(r);
+   const rewardOnly=clone(r)||{};delete rewardOnly.active;
+   applyBundle(rewardOnly);try{await canonicalQuestState(true)}catch(_){};markQuestSideEffects(runId,qSnapshot,r);persistLocal();paintAll();secondaryToasts(r);
    try{
     if(typeof window.v7136ShowServerReward==='function')window.v7136ShowServerReward('quest',r,{quest:qSnapshot||before?.q,recovered:true});
     else if(before&&typeof v235ShowQuestReward==='function')v235ShowQuestReward(before);
@@ -322,8 +323,12 @@ async function claimServerQuest(){
   ensureShape();s.quests.active=null;
   /* Presentation is never allowed to block the committed server reward. */
   try{if(typeof v311PlayFight==='function')await Promise.race([Promise.resolve(v311PlayFight(clone(q))),sleep(6000)])}catch(e){console.warn('[V7045] quest presentation',e)}
-  applyBundle(b);
-  try{await canonicalQuestState()}catch(_){}
+  /* A resolved claim must never resurrect the consumed run from a stale
+     receipt/bundle. Rewards are applied, while active quest state is fetched
+     separately from the canonical server state below. */
+  const rewardOnly=clone(b)||{};delete rewardOnly.active;
+  applyBundle(rewardOnly);
+  try{await canonicalQuestState(true)}catch(_){}
   markQuestSideEffects(runId,q,b);
   persistLocal();paintAll();secondaryToasts(b);
   try{window.glCancelQuestPushJob?.()}catch(_){}
