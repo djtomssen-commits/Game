@@ -10,8 +10,8 @@
 - Aktuelle Beta-Linie: **V8.009**
 - Arbeitsbranch: **main**
 - Letzter automatisiert geprüfter Code-Commit vor dieser Statusdatei:
-  `bf0ed81dfb40c97e41142fe903965b54db0ae871`
-- Aktuelle Unterphase: **V8.009-PVP-SPRINT-1-HALL-VIDEO-FIX-MANUAL-CHECK**
+  `b19b2d3b83006d1da7c65e002863f7aa27e03e25`
+- Aktuelle Unterphase: **V8.009-PVP-SPRINT-1-HALL-AVATAR-FRAME-MANUAL-CHECK**
 - Nutzer-Video bestätigt: betroffen ist konkret **Dungeon 2**.
 - Sichtbares Fehlerbild:
   - zunächst korrekter D2-Hintergrund + korrekte Gegnergrafiken;
@@ -446,6 +446,31 @@
   - Stable/Server 1 unverändert;
   - Gameplay/Matchmaking/Combat-Math/Cooldown/Rewards/Serverautorität unverändert.
 - Aktuelle Beta-Größe nach Fix: **5.749.692 Byte**.
+- Hall Top-3 / Avatar-Rahmen Direktintegration:
+  - Nutzerwunsch: Top-3-Avatare deutlich größer über die ganze Kartenbreite; aktive Avatar-Rahmen in Top 3 und kompletter Rangliste sichtbar.
+  - **Architekturregel ausdrücklich eingehalten: kein neuer Renderer-/Wrapper-Patch.**
+  - Commit `87c887e20a0fd040540eb90cadbc70ac579884f6`:
+    - `v6145` lädt `avatar_frame_id` direkt mit der bestehenden Hall-Profilabfrage;
+    - Top 3 und normale Ranglistenzeilen erzeugen Avatar + Rahmen im selben HTML-Render;
+    - bestehender `v7137FrameArtMarkup`-Pfad wird als gemeinsame Rahmen-Assetquelle verwendet;
+    - keine zweite Rahmen-Mapping-Logik eingeführt.
+  - Commit `b19b2d3b83006d1da7c65e002863f7aa27e03e25`:
+    - vorhandenes `v6145-hall-pagination-css` direkt geändert;
+    - Top-3-Avatar nutzt jetzt die Kartenbreite und ist deutlich größer;
+    - Frame-Art bleibt separate Overlay-Ebene;
+    - alter `v7137`-Post-Render-Wrapper um `v073LoadRanking` entfernt;
+    - Search/Friends-Rahmenrefresh bleibt separat bestehen, da diese Renderer nicht von v6145 kommen.
+  - QA: **vollständig grün**
+    - v6145 Syntax grün;
+    - `avatar_frame_id` direkt im Hall-SELECT;
+    - Top-3 + Ranglisten-Frame-Markup direkt im kanonischen Renderer;
+    - 8 Rahmenassets vorhanden;
+    - **0 neue Render-Wrapper**;
+    - **0 neue Timer**;
+    - **0 neue MutationObserver**;
+    - Stable/Server 1 unverändert;
+    - Gameplay/Matchmaking/Combat-Math/Rewards/Serverautorität unverändert.
+- Aktuelle Beta-Größe nach Hall-Avatar/Rahmen-Direktintegration: **5.749.992 Byte**.
 - **Quest Sprint NICHT starten**, bis diese zwei Hall-Fehler manuell erneut geprüft und bestätigt sind.
 - Scope: **Beta zuerst**
 - **Server 1 / Stable bleibt unangetastet**, bis eine Phase ausdrücklich für Stable freigegeben wird.
@@ -534,7 +559,7 @@ Kein `HOME-32` beginnen, solange kein echter reproduzierbarer Home-Bug oder klar
 Aktueller Repo-Stand vor dieser Statusdatei:
 
 - `index.html`: ca. **6574124 Byte**
-- `beta.html`: ca. **5749692 Byte**
+- `beta.html`: ca. **5749992 Byte**
 - externe `.js`-Dateien unter `js/`: **134**
 - externe `.css`-Dateien unter `css/`: **130**
 
@@ -560,26 +585,31 @@ Für jedes System gilt:
 
 ## 4. EXAKTER nächster Schritt
 
-### Hall-of-Haze Video-Fix – EIN manueller Re-Test
+### Hall-of-Haze – EIN gemeinsamer manueller Re-Test
 
-Bitte in Beta nur diese zwei Punkte prüfen:
+Bitte in Beta jetzt gesammelt prüfen:
 
 1. **Hall öffnen**
-   - eigenes Profil oberhalb der Top 3 muss sofort korrekt dekoriert sein;
-   - Avatar sichtbar;
-   - Level/Kampfkraft/Dungeon/Gegner normal angeordnet;
-   - kein kurzer alter/schmaler Zwischenzustand.
-2. **Fremdes Spielerprofil öffnen**
-   - Kampfkraft muss vom ersten sichtbaren Frame an die fremde Kampfkraft sein;
-   - sie darf nicht mehr kurz die eigene Kampfkraft anzeigen und danach umspringen.
+   - eigenes Profil oberhalb der Top 3 sofort korrekt dekoriert;
+   - kein alter/schmaler Zwischenzustand.
+2. **Top 3**
+   - Avatare deutlich größer und über die Kartenbreite;
+   - wenn ein Top-3-Spieler einen aktiven Avatar-Rahmen besitzt, ist er direkt sichtbar;
+   - kein nachträgliches Einblenden durch einen Ranking-Wrapper.
+3. **Komplette Rangliste**
+   - Spieleravatare sichtbar;
+   - aktive Rahmen direkt sichtbar, sofern vorhanden.
+4. **Fremdes Spielerprofil**
+   - Kampfkraft zeigt vom ersten sichtbaren Frame an den fremden Wert;
+   - kein kurzer Own-Power-Zwischenwert.
 
-Wenn beide Punkte passen:
+Wenn alle Punkte passen:
 - PvP / Hall of Haze als abgeschlossen markieren;
-- direkt mit **Quest Sprint** starten.
+- direkt mit **Quest Sprint** fortfahren.
 
-Wenn einer der beiden Punkte noch fehlschlägt:
-- nur den reproduzierten Restfehler weiterverfolgen;
-- Quest Sprint weiterhin nicht starten.
+Wenn etwas nicht passt:
+- nur den konkreten Restfehler korrigieren;
+- **keinen neuen Renderer-/Timer-/Observer-Patch darüberlegen**.
 
 ### Statusdatei-Regel
 
