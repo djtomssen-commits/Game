@@ -36,20 +36,13 @@
     setTimeout(paintDampf,280);
   }
 
-  /* Final owner after V392/V321/V271/V109: do not alter quest price or reward logic.
-     Only detect a successful start by the real Dampf delta / active quest transition. */
-  if(typeof window.startQuest==='function'&&!window.__v443QuestDampfWrapped){
-    const baseStart=window.startQuest;
-    window.startQuest=function(i){
-      const before=n(s?.energy), hadActive=!!s?.quests?.active;
-      const r=baseStart.apply(this,arguments);
-      const after=n(s?.energy), hasActive=!!s?.quests?.active;
-      if(!hadActive&&hasActive&&after!==before)saveNow();
-      settle();
-      return r;
-    };
-    window.__v443QuestDampfWrapped=true;
-  }
+  /* Direct post-start hook used by the canonical Quest start owner.
+     It does not alter quest price/reward logic. */
+  window.v443AfterQuestStart=(beforeEnergy,hadActive)=>{
+    const before=n(beforeEnergy),after=n(s?.energy),hasActive=!!s?.quests?.active;
+    if(!hadActive&&hasActive&&after!==before)saveNow();
+    settle();
+  };
 
   /* Persistence remains a safety net for any future quest-start implementation that
      changes Dampf without going through the current startQuest wrapper. */
