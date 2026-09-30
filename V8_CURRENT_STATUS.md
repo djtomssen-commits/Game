@@ -10,7 +10,7 @@
 - Aktuelle Beta-Linie: **V8.009**
 - Arbeitsbranch: **main**
 - Letzter automatisiert geprüfter Code-Commit vor dieser Statusdatei:
-  `44db5805762f2d111a0be284df6fd4474816eebb`
+  `674cad87ffe5c49d1e7ee2f1dfe617c6a075bfb9`
 - Aktuelle Unterphase: **V8.009-DUNGEON-D5-BETA**
 - Nutzer-Video bestätigt: betroffen ist konkret **Dungeon 2**.
 - Sichtbares Fehlerbild:
@@ -54,8 +54,29 @@
   - erkennt per eng begrenztem MutationObserver, wenn eine sichtbare 10er-Karte nachträglich durch Legacy-DOM ersetzt wird;
   - baut dann v261/D2 erneut kanonisch auf und stellt `v474_dungeon_assets` wieder her;
   - QA bestätigt: Seal ist exakt das letzte Script vor `</body>`, Syntax grün, Stable unverändert.
-- D5 Status: **finaler post-legacy Seal automatisiert grün; manueller Dungeon-2-Repro-Test erneut offen**
-- Nächster Schritt: exakt Dungeon 2 erneut öffnen und mindestens 3 Sekunden beobachten.
+- Weitere D5 Ursachenanalyse anhand des Nutzer-Videos:
+  - Nach dem Umsprung bleibt die 10er-DOM-Struktur erhalten;
+  - nur Hintergrund und Gegnerbilder verschwinden;
+  - Asset-Remover-Audit zeigt keinen fremden Entferner für `.gl-dungeon-node-art`;
+  - der kanonische D2-Owner selbst blendete Legacy-Art vor erfolgreichem Laden aus und setzte bei Bildfehlern die neuen Gegnerbilder auf `hidden`;
+  - gleichzeitig entfernte `v7144CleanDungeonMap` den alten Kartenhintergrund unabhängig davon, ob das kanonische Hintergrundbild erfolgreich geladen war.
+- D5 Asset-Fallback-Fix:
+  - `0d35d3cdd952b148b00bf45690a846bdb2067e8e`
+    - vorhandene sichtbare Gegner-/Hintergrund-Art bleibt aktiv, bis das kanonische Bild wirklich geladen ist;
+    - bei Asset-Fehler wird auf die bereits sichtbare Legacy-Art zurückgefallen statt auf schwarz/leer.
+  - `e2def0ebcb4dc11fc01b53b80f3744f03924584a`
+    - finaler Seal prüft nun echten Ladezustand (`naturalWidth`, `hidden`) statt nur DOM-Präsenz;
+    - überwacht zusätzlich `class/style/src/hidden`-Änderungen.
+  - `674cad87ffe5c49d1e7ee2f1dfe617c6a075bfb9`
+    - `v7144CleanDungeonMap` entfernt den Legacy-Hintergrund nur noch, wenn das kanonische Hintergrundbild tatsächlich geladen ist.
+- QA: **vollständig grün**
+  - D2 Visual Owner Syntax grün;
+  - finaler D5 Seal Syntax grün;
+  - v7144 Load-State-Guard vorhanden;
+  - Stable unverändert.
+- Gameplay/Combat-Math/Rewards/Serverautorität: **nicht verändert**
+- D5 Status: **Asset-Ladefehler/Fallback-Pfad korrigiert; manueller Dungeon-2-Repro-Test erneut offen**
+- Nächster Schritt: Dungeon 2 erneut öffnen; Hintergrund und Gegnerbilder dürfen auch bei fehlgeschlagenem v474-Asset-Load nicht mehr verschwinden.
 - Scope: **Beta zuerst**
 - **Server 1 / Stable bleibt unangetastet**, bis eine Phase ausdrücklich für Stable freigegeben wird.
 
