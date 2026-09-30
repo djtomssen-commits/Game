@@ -20,7 +20,7 @@
 - Arbeitsbranch: **main**
 - Letzter automatisiert geprüfter Code-Commit vor dieser Statusdatei:
   `06be757c3faf109c2f3c3f18195086d1909592d0`
-- Aktuelle Unterphase: **V8.009-QUEST-SPRINT-1-MANUAL-MILESTONE-TEST-READY**
+- Aktuelle Unterphase: **V8.009-QUEST-FIRST-RUN-FLICKER-SKIP-LAYOUT-FIX-PENDING**
 - Nutzer-Video bestätigt: betroffen ist konkret **Dungeon 2**.
 - Sichtbares Fehlerbild:
   - zunächst korrekter D2-Hintergrund + korrekte Gegnergrafiken;
@@ -690,6 +690,42 @@
   - Wochen-Truhen-EP werden wieder korrekt verbucht.
 - Server-Hotfix `fix_dungeon_activity_triggers_on_resolve` damit praktisch bestätigt.
 - Dungeon-Activity-Reward-Fehler geschlossen.
+
+### Quest / Dungeon Übergabestand für neuen Chat – 30.09.2026
+
+- Dungeon Activity Reward Hotfix ist **manuell bestätigt**:
+  - Gilden-EP im Dungeon funktionieren wieder.
+  - Wochen-Truhen-EP im Dungeon funktionieren wieder.
+  - Servermigration: `fix_dungeon_activity_triggers_on_resolve`.
+  - Ursache war: Activity-Trigger liefen auf `AFTER INSERT`, obwohl `won/resolved_at` erst später per UPDATE gesetzt werden.
+  - Trigger laufen jetzt auf erfolgreichem resolved UPDATE.
+- Quest Sprint:
+  - viele alte `renderQuests`-/`startQuest`-/`claimQuest`-Wrapper wurden bereits in direkte Hooks überführt.
+  - kanonische Owner weiterhin:
+    - Render: `v6344`
+    - Start: `v7110`
+    - Claim/Receipt: `v7045`
+  - Startup-Painter in `v386`, `v392`, `v4172` wurden entfernt; alle drei Dateien haben dort keinen eigenen verzögerten Startup-`setTimeout` mehr.
+  - Active-Quest-Geometrie wurde zusätzlich direkt in `v392` stabilisiert.
+- Manueller Restfehler:
+  - vor allem bei der **ersten Quest nach Login** springt/flackert die aktive Questkarte noch gelegentlich.
+  - Videoanalyse zeigte: nicht die ganze App zoomt; konkret ändert sich der Skip-/Zeit-Samen-Block.
+  - `v394-time-seeds-style` besitzt einen `@media(max-width:390px)`-Breakpoint, der Spaltenbreite/Gap/Seed-Kachel ändert.
+  - Dadurch kann der Block zwischen zwei Geometrien springen.
+- Letzter gestarteter Fix:
+  - Workflow: `.github/workflows/v8009-quest-skip-layout-lock.yml`
+  - Transform: `.github/scripts/v8009_quest_skip_layout_lock.py`
+  - aktueller HEAD beim Übergabestand: `aefd513172bffe75982ced1ad14378b3063a055b`
+  - letzter Commit-Text: `V8.009 QUEST: lock skip row layout`
+  - Ziel: den mobilen `v394`-Sonderblock entfernen und eine feste 2-Spalten-Geometrie `minmax(0,1fr) 76px` verwenden.
+  - WICHTIG: Der Transform war beim letzten Check noch nicht als Ergebnis-Commit in `beta.html` angekommen.
+- Nächster Schritt im neuen Chat:
+  1. aktuellen HEAD lesen;
+  2. prüfen, ob `V8009_QUEST_SKIP_LAYOUT_LOCK.json` existiert;
+  3. prüfen, ob `beta.html` im Style `v394-time-seeds-style` bereits `grid-template-columns:minmax(0,1fr) 76px;` enthält und der 390px-Mobile-Override weg ist;
+  4. erst dann Nutzer ausdrücklich sagen **„jetzt testen“**;
+  5. Testfall: neu einloggen -> sofort erste Quest starten -> beobachten, ob Skip-/Zeit-Samen-Bereich bzw. Karte noch springt/flackert.
+- Stable / `index.html` weiterhin unangetastet.
 
 ### Wichtige Einordnung der Namen
 
