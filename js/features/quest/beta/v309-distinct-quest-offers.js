@@ -126,7 +126,7 @@ function v309PaintQuestRoles(){
 v309EnsureCurrentOffers();
 
 window.v309PrepareQuestRender=v309EnsureCurrentOffers;
-window.v309PaintQuestRoles=()=>requestAnimationFrame(v309PaintQuestRoles);
+window.v309ScheduleQuestRolePaint=()=>requestAnimationFrame(v309PaintQuestRoles);
 
 /* Keep rerolled/new offers visibly different immediately. */
 setTimeout(()=>{
