@@ -216,6 +216,18 @@ try{
  assert.deepEqual({active:canonicalState.snapshot.active,ready:canonicalState.snapshot.ready},{active:2,ready:1});
  checks.push('canonical renderer owns Frost 7-slot checklist and weather-aware Growroom status');
  await canonical.close();
+ const routeAudit=await fixture('2026-09-30T12:00:00+02:00');
+ await routeAudit.clock.runFor(300);
+ const auditBefore=await routeAudit.evaluate(()=>window.v8009HomeHeaderDiagnostics?.());
+ await routeAudit.evaluate(()=>{s.gold+=1;v085InstallWorld(false)});
+ await routeAudit.clock.runFor(100);
+ const auditAfter=await routeAudit.evaluate(()=>window.v8009HomeHeaderDiagnostics?.());
+ assert.equal(auditAfter.routeAudits-auditBefore.routeAudits,1,'Only the second diagnostics read may add a route audit; home render itself must not');
+ assert.deepEqual(auditAfter.routeAudit?.missing,[],'On-demand route audit must still validate all expected home routes');
+ assert.deepEqual(auditAfter.routeAudit?.badApis,[],'On-demand route audit APIs must remain valid');
+ assert.equal(auditAfter.postRenderRouteAuditRetired,true);
+ checks.push('route audit remains on-demand and no longer scans the home after every render');
+ await routeAudit.close();
  const postRenderGrow=await fixture('2026-09-30T12:00:00+02:00');
  await postRenderGrow.clock.runFor(300);
  const growBefore=await postRenderGrow.evaluate(()=>window.v8009HomeHeaderDiagnostics?.());
@@ -258,7 +270,7 @@ try{
  assert.equal(versionState.visible,'"V8.009"','Canonical renderer must override historical V8.001 pseudo-element CSS');
  assert.equal(versionState.styleCount,1,'Version override style must be installed exactly once');
  assert.equal(versionState.legacy,'SERVER-VERSION-SENTINEL','Home renderer must not rewrite unrelated legacy version nodes');
- assert.equal(versionState.diag?.version,'V8.009-HOME-19');
+ assert.equal(versionState.diag?.version,'V8.009-HOME-20');
  assert.equal(versionState.diag?.versionStyleInstalls,1);
  checks.push('canonical home renderer owns visible V8.009 style without lifecycle rewrites');
  await versionOwner.close();

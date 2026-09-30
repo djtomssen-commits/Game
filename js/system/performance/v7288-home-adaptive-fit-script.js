@@ -117,6 +117,7 @@ const v8009HomeHeaderFix={
   weatherCatchupRendersAvoided:0,
   routeAudits:0,
   routeIssues:0,
+  postRenderRouteAuditRetired:true,
   growStatusPatchCalls:0,
   growStatusPatches:0,
   growPostRenderSchedules:0,
@@ -387,7 +388,6 @@ function installBetaWorldPostRender(){
           v8009HomeHeaderFix.growPostRenderSchedules++;
         }catch(_){}
         try{syncPaintedWeatherSignature()}catch(_){}
-        try{auditHomeRoutes()}catch(_){}
         try{schedule('world-render')}catch(_){}
       });
       return out;
@@ -456,7 +456,7 @@ function installBetaMenuReplaceGuard(){
    capture-phase redirect from HOME-1 is retired. */
 if(IS_BETA)window.__V8009_HOME15_DIRECT_HEADER_ROUTES__=true;
 window.v8009HomeHeaderDiagnostics=()=>({
-  version:'V8.009-HOME-19',
+  version:'V8.009-HOME-20',
   beta:IS_BETA,
   ...v8009HomeHeaderFix,
   fit:{...HOME_DIAG,pendingRaf:!!raf,pendingTimer:!!runTimer},

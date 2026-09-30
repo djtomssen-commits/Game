@@ -1,0 +1,24 @@
+{
+  "build": "V8.009-HOME-20-BETA",
+  "phase": "On-demand Startseite route diagnostics",
+  "scope": "beta only",
+  "base_commit": "6dcd09b8b75422eeb773eead94117ad9276ce197",
+  "findings": [
+    "The helper ran auditHomeRoutes after every v085InstallWorld render even though that function is diagnostic-only.",
+    "The diagnostics API already runs the same route audit when explicitly requested, so the post-render scan duplicated querySelector work across the whole home."
+  ],
+  "changes": [
+    "Removed the automatic route audit from every Startseite render.",
+    "Route validation remains available through window.v8009HomeHeaderDiagnostics().routeAudit.",
+    "Rendering, navigation, rewards, state, fit scheduling, and server-authority behavior are unchanged.",
+    "Browser QA verifies a real home render no longer adds an audit while the on-demand audit still reports all routes/APIs valid."
+  ],
+  "files": [
+    "js/system/performance/v7288-home-adaptive-fit-script.js",
+    "js/features/home/beta/v8009-home-renderer.js",
+    ".github/scripts/v8009_home_events_browser_qa.mjs"
+  ],
+  "stable_behavior_changed": false,
+  "gameplay_changed": false,
+  "server_authority_changed": false
+}
