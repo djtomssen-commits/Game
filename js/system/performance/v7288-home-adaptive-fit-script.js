@@ -111,11 +111,52 @@ const v8009HomeHeaderFix={
   menuRebuildsAllowed:0,
   worldPostRenderInstalls:0,
   checklistPatches:0,
-  frostChecklistFixes:0
+  frostChecklistFixes:0,
+  weeklyWidgetPaints:0,
+  weeklyFullRendersAvoided:0,
+  weeklyFeedbackEvents:0
 };
 
 function stateNow(){
   try{return (typeof s!=='undefined'&&s)||window.s||null}catch(_){return window.s||null}
+}
+
+let weeklyFeedbackUntil=0;
+
+function patchWeeklyChest(){
+  if(!IS_BETA)return false;
+  try{
+    const world=document.getElementById('world');
+    if(!world?.classList.contains('active'))return false;
+    const current=world.querySelector('.v6239-weekly-chest');
+    const make=window.v6239WeeklyChestHomeHtml;
+    if(!current||typeof make!=='function')return false;
+
+    const holder=document.createElement('div');
+    holder.innerHTML=String(make()||'').trim();
+    const fresh=holder.firstElementChild;
+    if(!(fresh instanceof Element)||!fresh.classList.contains('v6239-weekly-chest'))return false;
+
+    current.replaceWith(fresh);
+    fresh.onclick=e=>{
+      try{e.preventDefault();e.stopPropagation()}catch(_){}
+      try{window.v6239OpenWeeklyChest?.()}catch(_){}
+    };
+
+    /* V366 stores one complete home signature. Weekly chest is component 24.
+       Keep just that component current so the next ordinary world refresh does
+       not perform a full catch-up rebuild for an already-painted chest. */
+    try{
+      const sig=String(world.dataset.v366Sig||'');
+      const parts=sig.split('~');
+      const weekly=String(window.v6239WeeklyChestSignature?.()||'');
+      if(parts.length>24&&weekly){parts[24]=weekly;world.dataset.v366Sig=parts.join('~')}
+    }catch(_){}
+
+    v8009HomeHeaderFix.weeklyWidgetPaints++;
+    try{schedule('weekly-chest')}catch(_){}
+    return true;
+  }catch(_){return false}
 }
 
 function patchHomeChecklist(){
@@ -172,6 +213,21 @@ function installBetaWorldPostRender(){
     if(base.__v8009Home6WorldPost)return true;
 
     const wrapped=function(){
+      const force=arguments[0]===true;
+      const active=!!document.getElementById('world')?.classList.contains('active');
+      const t=(()=>{try{return performance.now()}catch(_){return Date.now()}})();
+
+      /* V8.009 HOME-7: server activity feedback used to rebuild the complete
+         Startseite just to update Wochen-EXP. The feedback event is dispatched
+         in the same task before its queued RAF calls v085InstallWorld(false).
+         Consume that one call and repaint only the weekly-chest widget. */
+      if(!force&&active&&weeklyFeedbackUntil&&t<=weeklyFeedbackUntil&&patchWeeklyChest()){
+        weeklyFeedbackUntil=0;
+        v8009HomeHeaderFix.weeklyFullRendersAvoided++;
+        try{patchHomeChecklist()}catch(_){}
+        return false;
+      }
+
       const out=base.apply(this,arguments);
       requestAnimationFrame(()=>{
         try{patchHomeChecklist()}catch(_){}
@@ -260,7 +316,7 @@ if(IS_BETA)document.addEventListener('click',e=>{
   }catch(_){}
 },true);
 window.v8009HomeHeaderDiagnostics=()=>({
-  version:'V8.009-HOME-6',
+  version:'V8.009-HOME-7',
   beta:IS_BETA,
   ...v8009HomeHeaderFix,
   fit:{...HOME_DIAG,pendingRaf:!!raf,pendingTimer:!!runTimer},
@@ -293,6 +349,19 @@ if(IS_BETA){
  window.addEventListener('growlegends:extras-ready',()=>setTimeout(()=>{installBetaMenuReplaceGuard();installBetaWorldPostRender()},0),{passive:true});
  window.addEventListener('growlegends:foreground-ready',()=>setTimeout(()=>{installBetaMenuReplaceGuard();installBetaWorldPostRender()},0),{passive:true});
 }
+
+window.addEventListener('growlegends:guild-xp-feedback',e=>{
+  if(!IS_BETA)return;
+  try{
+    if(!document.getElementById('world')?.classList.contains('active'))return;
+    const xp=Number(e?.detail?.weeklyXp);
+    if(!Number.isFinite(xp))return;
+    v8009HomeHeaderFix.weeklyFeedbackEvents++;
+    const t=(()=>{try{return performance.now()}catch(_){return Date.now()}})();
+    weeklyFeedbackUntil=t+250;
+    requestAnimationFrame(()=>{try{patchWeeklyChest()}catch(_){}});
+  }catch(_){}
+},{passive:true});
 
 window.addEventListener('resize',()=>schedule('resize'),{passive:true});
 window.addEventListener('orientationchange',()=>setTimeout(()=>schedule('orientationchange'),150),{passive:true});
