@@ -10,8 +10,8 @@
 - Aktuelle Beta-Linie: **V8.009**
 - Arbeitsbranch: **main**
 - Letzter automatisiert geprüfter Code-Commit vor dieser Statusdatei:
-  `5aa7c766972e4ed6efd46ba324fcfda2e35e4be3`
-- Aktuelle Unterphase: **V8.009-DUNGEON-D8-BETA**
+  `56c829007685c763a368d66ddf12524ea1f95b15`
+- Aktuelle Unterphase: **V8.009-DUNGEON-D9-BETA**
 - Nutzer-Video bestätigt: betroffen ist konkret **Dungeon 2**.
 - Sichtbares Fehlerbild:
   - zunächst korrekter D2-Hintergrund + korrekte Gegnergrafiken;
@@ -162,6 +162,42 @@
   - Gameplay/Combat-Math/Rewards/Serverautorität unverändert.
 - D8 Beta-Größe: **6.055.242 Byte** (vorher 6.069.032 Byte).
 - D8 Status: **abgeschlossen**
+- Manueller Meilenstein nach D8:
+  - D1, D2, D6 und D7 wirken laut Gerätetest korrekt.
+- D9 Audit:
+  - `v454/v458/v459/v460/v461/v463` analysiert;
+  - finale sichtbare D1-Endfassung stammt aus:
+    - Namen/Icons: v454;
+    - Titel/Schild: v458;
+    - finaler Straßenverlauf: v463;
+  - historische Thumb-Repaints aus v454/v459/v460 sind durch den kanonischen D2-Thumb-Owner überholt.
+- D9 Konsolidierung:
+  - Commit `56c829007685c763a368d66ddf12524ea1f95b15`;
+  - finale D1-Namen/Icons, Titel, Schild, Straße und aktuelle Gegnerzeile in `v8009-d8-detail-decorator.js` übernommen;
+  - aus aktiver Beta entfernt:
+    - `v454-d1-feinschliff-script`
+    - `v458-d1-road-and-sign-final`
+    - `v459-d1-right-side-thumb-final-script`
+    - `v460-d1-thumb-owner-fix-script`
+    - `v461-d1-node9-collision-fix-script`
+    - `v463-d1-screenshot-polish-script`
+  - alte Kette archiviert unter:
+    `js/features/dungeon/legacy/v8009-d9-retired-d1-polish-chain.js`;
+  - kanonischer Thumb-Owner bleibt D2 Visual Owner.
+- D9 entfernte Scheduling-Arbeit aus aktiver Beta:
+  - 16× `setTimeout`
+  - 11× `requestAnimationFrame`
+  - 15× `addEventListener`
+  aus den sechs D1-Polish-Blöcken.
+- D9 QA: **vollständig grün**
+  - Decorator + Archiv + D2/D5 Owner Syntax grün;
+  - alle sechs D1-Polish-IDs aus aktiver Beta entfernt;
+  - D1-Endsignaturen im Decorator vorhanden;
+  - D5 Final Seal weiterhin letztes Script;
+  - Stable unverändert;
+  - Gameplay/Combat-Math/Rewards/Serverautorität unverändert.
+- D9 Beta-Größe: **6.043.690 Byte** (vorher 6.055.242 Byte).
+- D9 Status: **abgeschlossen**
 - Nächster Schritt: D1 sowie D3–D20 bei Gelegenheit visuell stichprobenartig prüfen; strukturell sind Hintergrund/Gegner komplett und die Boss-Pfade jetzt korrekt getrennt.
 - Scope: **Beta zuerst**
 - **Server 1 / Stable bleibt unangetastet**, bis eine Phase ausdrücklich für Stable freigegeben wird.
@@ -276,23 +312,20 @@ Für jedes System gilt:
 
 ## 4. EXAKTER nächster Schritt
 
-### V8.009-DUNGEON-D9-BETA – D1-Polish-Kette konsolidieren
+### V8.009-DUNGEON-D10-BETA – verbleibende v426/v427-Kompatibilitätsaliases und D1-Restlayer auditieren
 
-1. verbleibende D1-spezifische Inline-Skripte auditieren:
-   - `v454-d1-feinschliff-script`
-   - `v458-d1-road-and-sign-final`
-   - `v459-d1-right-side-thumb-final-script`
-   - `v460-d1-thumb-owner-fix-script`
-   - `v461-d1-node9-collision-fix-script`
-   - `v463-d1-screenshot-polish-script`;
-2. pro Block unterscheiden:
-   - echte sichtbare D1-Dekoration;
-   - nur Wrapper auf `v426/v251/v244`;
-   - verzögerter Repaint/Click-Handler;
-3. sichtbare D1-Regeln in den D8-Decorator übernehmen;
-4. reine Wrapper/Timer/Listener danach aus aktiver Beta entfernen;
-5. D1-Kompatibilitätsalias nur so lange behalten, wie ein realer Aufrufer existiert;
-6. D1/D2/D6/D7-Dekoration und D5 Asset-Fallback statisch prüfen;
+1. repo-weit aktuelle Beta-Referenzen auf `v426RenderDetail` und `v427RenderDetail` neu erfassen;
+2. unterscheiden:
+   - echter Aufrufer;
+   - D2-Lock-/D5-Seal-Kompatibilitätsguard;
+   - D8-Decorator-Alias;
+   - historischer/archivierter Treffer;
+3. wenn keine aktiven Aufrufer außerhalb der Guards existieren:
+   - `v426RenderDetail` / `v427RenderDetail` aus der aktiven Kompatibilitätskette entfernen;
+   - D2-Lock/D5-Seal entsprechend vereinfachen;
+4. parallel D1-spezifische verbliebene CSS/Inline-Style-Layer auf `v426-ref-d1`, `v454`, `v458`, `v459`, `v460`, `v461`, `v463` auditieren;
+5. nur eindeutig verwaiste Style-Layer stilllegen;
+6. D1/D2/D6/D7 Visuals, D5 Asset-Fallback und D8 Decorator unverändert halten;
 7. Stable/Server 1 unverändert;
 8. Gameplay/Combat-Math/Rewards/Serverautorität unverändert.
 
