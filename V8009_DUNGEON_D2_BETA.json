@@ -1,0 +1,44 @@
+{
+  "build": "V8.009-DUNGEON-D2-BETA",
+  "phase": "Dungeon map/detail visual owner chain extraction",
+  "scope": "beta only",
+  "stable_unchanged": true,
+  "stable_sha256": "e476eb4437df8c0763a36220f99fe5f14b09b3acd8f76e8ed4f5821962d9fbab",
+  "beta_before_sha256": "3ceb4d7efe8b723230007a837fa95ac6b0ba95b6a50e063452e9d6cfc9ee9b24",
+  "beta_after_sha256": "ca9f7999c4c5e007ea3c51741fbc6ced0ab3bc78ad9b7512532959a5c7d9f0e5",
+  "beta_before_bytes": 6250789,
+  "beta_after_bytes": 6211491,
+  "extracted": [
+    {
+      "legacy_id": "gl-dungeon-visual-owner-script",
+      "file": "js/features/dungeon/beta/v8009-d2-visual-owner.js",
+      "bytes": 32950,
+      "sha256": "c0084c0cad9ed6897fcb08e13a36f896b6435235c3ac6b6d6f37f587857e9eae"
+    },
+    {
+      "legacy_id": "v7162-dungeon-map-final-owner-script",
+      "file": "js/features/dungeon/beta/v8009-d2-map-finalizer.js",
+      "bytes": 1007,
+      "sha256": "1bd6b3ad6b8e40b46c3f271da672c6526899299bb68d7cfc619ad88a84e85954"
+    },
+    {
+      "legacy_id": "v7166-dungeon-detail-render-lock",
+      "file": "js/features/dungeon/beta/v8009-d2-detail-render-lock.js",
+      "bytes": 5513,
+      "sha256": "45d07119ae78f1155dcda7807c5a9b186efe45ff7597bc31e23f2a2260537111"
+    }
+  ],
+  "owner_chain": [
+    "gl-dungeon-visual-owner-script: canonical map/battle visual owner; exports glDungeonVisualRefresh and wraps renderDungeon",
+    "v7162-dungeon-map-final-owner-script: lifecycle-only finalizer; calls glDungeonVisualRefresh; no observer/interval",
+    "v7166-dungeon-detail-render-lock: guards historical direct detail renderers and repairs canonical detail after legacy calls"
+  ],
+  "left_inline_for_later_audit": [
+    "v7166-dungeon-detail-render-lock-css",
+    "v251/v260/v261 historical map/detail renderers and styles"
+  ],
+  "gameplay_changed": false,
+  "combat_math_changed": false,
+  "rewards_changed": false,
+  "server_authority_changed": false
+}
