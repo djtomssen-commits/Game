@@ -1,0 +1,19 @@
+{
+  "build": "V8.009-HOME-1-BETA",
+  "phase": "Startseite header action cleanup",
+  "scope": "beta external home owner",
+  "findings": [
+    "The current V366 home header still bound Gold+ to the normal item shop.",
+    "The current V366 mail icon still opened the friends screen.",
+    "The newer Gold shop capture handles V372/V371 headers, but did not match the V366 button shape."
+  ],
+  "changes": [
+    "V366 Gold+ is intercepted before the legacy handler and now opens the server-authoritative Gold shop/dealer tab.",
+    "V366 mail icon is intercepted before the legacy handler and now opens Nebel-Post.",
+    "No gameplay, rewards, currencies, or server-authority logic changed."
+  ],
+  "file": "js/system/performance/v7288-home-adaptive-fit-script.js",
+  "file_sha": "a17ca26c9e7573835d9b405adf4557856c618570",
+  "stable_changed": false,
+  "syntax_check": "ok"
+}
