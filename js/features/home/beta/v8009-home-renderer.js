@@ -1,7 +1,7 @@
 
 (function(){
   if(String(window.GROW_RELEASE_CHANNEL||'stable')!=='beta')return;
-  const diagnostics={fullRenders:0,eventPanelPatches:0,goldDirectOpens:0,mailDirectOpens:0,versionStyleInstalls:0,ownershipFinalizes:0,cleanSignatureHits:0,dirtySignatureRepairs:0};
+  const diagnostics={fullRenders:0,eventPanelPatches:0,goldDirectOpens:0,mailDirectOpens:0,versionStyleInstalls:0,ownershipFinalizes:0,cleanSignatureHits:0,dirtySignatureRepairs:0,inactiveWorldSkips:0};
   const BETA_VERSION='V8.009';
   function installBetaVersionStyle(){
     try{
@@ -413,7 +413,14 @@
 
   function installWorld(force){
     const world=document.querySelector('#world');
-    if(!world)return;
+    if(!world)return false;
+    /* HOME-27: background activity may still request the legacy home installer
+       while another screen is open. Non-forced work can wait until the world
+       screen is actually entered; v032Go('world') already schedules a catch-up. */
+    if(!force&&!world.classList.contains('active')){
+      diagnostics.inactiveWorldSkips++;
+      return false;
+    }
     const view=homeViewSnapshot();
     const {name,power,dg,grow,ac,ev,hc,pets,bossActive}=view;
     const sigParts=[
@@ -454,7 +461,7 @@
     finalizeOwnedWorld(world);
   }
 
-  window.v8009HomeEventDiagnostics=()=>({version:'V8.009-HOME-26',...diagnostics,events:events().map(x=>({...x})),worldBossActive:worldBossEventActive()});
+  window.v8009HomeEventDiagnostics=()=>({version:'V8.009-HOME-27',...diagnostics,events:events().map(x=>({...x})),worldBossActive:worldBossEventActive()});
 
   /* Re-own only the world installer; do not touch core game render/persist. */
   v085WorldHtml=worldHtml;

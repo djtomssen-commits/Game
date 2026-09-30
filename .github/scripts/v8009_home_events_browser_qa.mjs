@@ -219,6 +219,27 @@ try{
  assert.deepEqual({active:canonicalState.snapshot.active,ready:canonicalState.snapshot.ready},{active:2,ready:1});
  checks.push('canonical renderer owns Frost 7-slot checklist and weather-aware Growroom status');
  await canonical.close();
+ const inactiveHome=await fixture('2026-09-30T12:00:00+02:00',{helper:false});
+ const inactiveBefore=await inactiveHome.evaluate(()=>({diag:window.v8009HomeEventDiagnostics?.(),sig:document.getElementById('world').dataset.v366Sig,html:document.getElementById('world').innerHTML}));
+ await inactiveHome.evaluate(()=>{
+  document.getElementById('world').classList.remove('active');
+  s.gold+=77;
+  v085InstallWorld(false);
+ });
+ const inactiveSkipped=await inactiveHome.evaluate(()=>({diag:window.v8009HomeEventDiagnostics?.(),sig:document.getElementById('world').dataset.v366Sig,html:document.getElementById('world').innerHTML}));
+ assert.equal(inactiveSkipped.diag.fullRenders,inactiveBefore.diag.fullRenders,'Inactive non-forced home request must not repaint');
+ assert.equal(inactiveSkipped.diag.inactiveWorldSkips,inactiveBefore.diag.inactiveWorldSkips+1);
+ assert.equal(inactiveSkipped.sig,inactiveBefore.sig);
+ assert.equal(inactiveSkipped.html,inactiveBefore.html);
+ await inactiveHome.evaluate(()=>{document.getElementById('world').classList.add('active');v085InstallWorld(false)});
+ const inactiveCaughtUp=await inactiveHome.evaluate(()=>({diag:window.v8009HomeEventDiagnostics?.(),gold:document.getElementById('v366Gold')?.textContent,sig:document.getElementById('world').dataset.v366Sig}));
+ assert.ok(inactiveCaughtUp.diag.fullRenders>inactiveSkipped.diag.fullRenders,'Re-entering world must catch up deferred home state');
+ assert.notEqual(inactiveCaughtUp.sig,inactiveSkipped.sig);
+ await inactiveHome.evaluate(()=>{document.getElementById('world').classList.remove('active');s.gold+=1;v085InstallWorld(true)});
+ const forcedInactive=await inactiveHome.evaluate(()=>window.v8009HomeEventDiagnostics?.());
+ assert.ok(forcedInactive.fullRenders>inactiveCaughtUp.diag.fullRenders,'Forced home render must still work while inactive');
+ checks.push('inactive home requests skip hidden DOM work and catch up on re-entry');
+ await inactiveHome.close();
  const avatarReuse=await fixture('2026-09-30T12:00:00+02:00',{helper:false});
  await avatarReuse.evaluate(()=>{qa.avatarCalls=0;s.gold+=1;v085InstallWorld(false)});
  const avatarState=await avatarReuse.evaluate(()=>({
@@ -357,7 +378,7 @@ try{
  assert.equal(versionState.visible,'"V8.009"','Canonical renderer must override historical V8.001 pseudo-element CSS');
  assert.equal(versionState.styleCount,1,'Version override style must be installed exactly once');
  assert.equal(versionState.legacy,'SERVER-VERSION-SENTINEL','Home renderer must not rewrite unrelated legacy version nodes');
- assert.equal(versionState.diag?.version,'V8.009-HOME-26');
+ assert.equal(versionState.diag?.version,'V8.009-HOME-27');
  assert.equal(versionState.diag?.versionStyleInstalls,1);
  checks.push('canonical home renderer owns visible V8.009 style without lifecycle rewrites');
  await versionOwner.close();

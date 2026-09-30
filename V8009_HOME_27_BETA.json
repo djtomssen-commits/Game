@@ -1,0 +1,24 @@
+{
+  "build": "V8.009-HOME-27-BETA",
+  "phase": "Inactive Startseite render fast path",
+  "scope": "beta only",
+  "base_commit": "25476c388da75c62997000ee5587a9f1235fe288",
+  "findings": [
+    "Background activity can still call v085InstallWorld(false) while the player is on another screen.",
+    "The canonical renderer previously calculated a complete home snapshot and could rebuild hidden Startseite DOM even though the user could not see it."
+  ],
+  "changes": [
+    "Non-forced v085InstallWorld calls now return immediately when #world is not active.",
+    "State is caught up when the player actually enters Startseite because v032Go('world') already schedules the canonical installer.",
+    "Forced renders still work while the world screen is inactive.",
+    "No gameplay, rewards, navigation state or stable behavior changed."
+  ],
+  "files": [
+    "js/features/home/beta/v8009-home-renderer.js",
+    "js/system/performance/v7288-home-adaptive-fit-script.js",
+    ".github/scripts/v8009_home_events_browser_qa.mjs"
+  ],
+  "stable_behavior_changed": false,
+  "gameplay_changed": false,
+  "server_authority_changed": false
+}
