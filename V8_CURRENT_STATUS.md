@@ -1338,3 +1338,28 @@ Der nächste fachliche Schritt ist **nicht HOME-32**, sondern die Restinventur d
 - Nächster Schritt:
   - verbleibende Claim-Kette `v496 -> v6140 -> v233 -> v7045` weiter inventarisieren;
   - nur Wrapper entfernen, deren Local/Mirror-Fallback oder Single-Payout-Schutz nachweislich anderweitig abgedeckt ist.
+
+
+### Quest Level-Up vor Belohnung – Reihenfolge festgelegt 30.09.2026
+
+- Nutzerwunsch:
+  - bei Quest-Claim muss ein echter Levelaufstieg **immer vor** dem Quest-Belohnungsfenster erscheinen.
+- Root Cause:
+  - im serverautoritären Quest-Claim setzt `v7045` Level/XP direkt aus dem Server-Bundle;
+  - dadurch läuft der normale `addXp()`-Pfad mit dem bestehenden Level-Up-Owner `v420` nicht;
+  - das Reward-Popup wurde anschließend sofort geöffnet.
+- Owner-Audit:
+  - `V8009_LEVELUP_OWNER_AUDIT.json`, Commit `2727101871132e493039eee91d5ab33fe776cac9`;
+  - aktiver Level-Up-Owner: `v420-levelup-notification-fix`;
+  - `v6211` ist nur Reliability/Fallback.
+- Fix Commit: `ef1dbd6147048b19909886bdf66d95817105ff78`
+  - `v420` exportiert jetzt den bestehenden Presenter als `window.v420ShowLevelUp`;
+  - der vorhandene 3,6-s-Lifecycle liefert einen Abschluss-Promise;
+  - `v7045` snapshottet das Level vor dem Claim;
+  - bei serverbestätigtem Levelanstieg wird erst `v420ShowLevelUp(oldLevel,newLevel)` vollständig abgearbeitet;
+  - erst danach öffnet `v7136ShowServerReward(...)` das Quest-Belohnungsfenster.
+- Keine zusätzliche Level-Up-UI, kein neuer Popup-Renderer.
+- Stable / `index.html`: unverändert.
+- Nächster manueller Test:
+  - Quest so abschließen, dass Tomssen ein Level steigt;
+  - Reihenfolge muss sein: Kampf -> LEVEL UP -> danach Quest-Belohnungsfenster.
