@@ -11,15 +11,7 @@ if stable_sha!=STABLE_SHA:
 extract=json.loads(Path('V8009_PVP_SPRINT1_EXTRACTION.json').read_text(encoding='utf-8'))
 asset_css=json.loads(Path('V8009_PVP_SPRINT1_ASSET_CSS.json').read_text(encoding='utf-8'))
 
-# Every extracted artifact must be loaded exactly once.
-missing=[]
-for x in extract['js_extracted']+extract['css_extracted']+asset_css['extracted']:
-    if beta.count(x['file'])!=1:
-        missing.append({'file':x['file'],'count':beta.count(x['file'])})
-if missing:
-    raise RuntimeError('PvP extracted include count failure: '+json.dumps(missing,ensure_ascii=False))
-
-# Retired marker cores must stay inactive.
+# Five originally extracted JS files were later proven marker-only and retired.
 retired_markers=[
  'js/features/pvp/beta/v8009-s1-v611-pvp-stage-fix-core.js',
  'js/features/pvp/beta/v8009-s1-v619-pvp-dungeon-motion-core.js',
@@ -27,6 +19,23 @@ retired_markers=[
  'js/features/pvp/beta/v8009-s1-v672-pvp-effect-parity-core.js',
  'js/features/pvp/beta/v8009-s1-v7155-pvp-hall-cleanup-marker.js',
 ]
+retired_set=set(retired_markers)
+
+# Active extracted artifacts load exactly once; retired marker JS loads zero times.
+missing=[]
+for x in extract['js_extracted']:
+    want=0 if x['file'] in retired_set else 1
+    got=beta.count(x['file'])
+    if got!=want:
+        missing.append({'file':x['file'],'expected':want,'count':got})
+for x in extract['css_extracted']+asset_css['extracted']:
+    got=beta.count(x['file'])
+    if got!=1:
+        missing.append({'file':x['file'],'expected':1,'count':got})
+if missing:
+    raise RuntimeError('PvP extracted include count failure: '+json.dumps(missing,ensure_ascii=False))
+
+# Retired marker cores must stay inactive.
 for p in retired_markers:
     if p in beta: raise RuntimeError('retired marker core active: '+p)
     if not Path(p).exists(): raise RuntimeError('retired marker file not retained: '+p)
@@ -109,6 +118,7 @@ report={
  'stable_unchanged':True,
  'beta_bytes':len(beta.encode()),
  'extracted_js':extract['counts']['js_extracted'],
+ 'active_extracted_js':extract['counts']['js_extracted']-len(retired_markers),
  'extracted_css':extract['counts']['css_extracted']+asset_css['count'],
  'retired_marker_cores':len(retired_markers),
  'final_hall_ranking_owner':final_rank,
