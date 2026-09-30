@@ -112,7 +112,17 @@ try{
   const base=window.startQuest;
   if(typeof base==='function'&&!base.__v7110Preflight){
     const wrapped=async function(i){
-      if(!enforced())return base.apply(this,arguments);
+      try{window.v392PrepareStart?.(i)}catch(_){}
+      const post=()=>{
+        try{window.v392PaintActive?.()}catch(_){}
+        try{window.v4127ScheduleQuestSkip?.()}catch(_){}
+        try{window.v229QuestStartSync?.()}catch(_){}
+      };
+      if(!enforced()){
+        const r=await base.apply(this,arguments);
+        post();
+        return r;
+      }
       const idx=Number(i);
       const before=s?.quests?.offers?.[idx];
       const beforeServer=serverOffer(before);
@@ -138,6 +148,7 @@ try{
       }
       const r=await base.apply(this,arguments);
       if(r&&Number.isFinite(Number(r.energy))){S.lastEnergy=Math.max(0,Number(r.energy));S.lastAt=Date.now()}
+      post();
       return r;
     };
     wrapped.__v7110Preflight=true;wrapped.__v7110Base=base;window.startQuest=wrapped;try{startQuest=wrapped}catch(_){}
