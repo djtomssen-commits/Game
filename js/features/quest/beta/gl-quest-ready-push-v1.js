@@ -112,70 +112,8 @@
   window.glSyncQuestPushJob=syncQuestPush;
   window.glCancelQuestPushJob=cancelQuestPush;
 
-  /* Hook the final active quest-start implementation only after all historical wrappers. */
-  try{
-    if(typeof window.startQuest==='function'&&!window.startQuest.__glQuestPushV1){
-      const base=window.startQuest;
-      const wrapped=function(...args){
-        const before=!!(typeof s!=='undefined'&&s?.quests?.active);
-        const result=base.apply(this,args);
-        const schedule=()=>{
-          try{
-            const q=(typeof s!=='undefined')?s?.quests?.active:null;
-            if(!before&&q&&Number(q.ends)>Date.now())void syncQuestPush(Number(q.ends));
-          }catch(e){console.warn('[GL Quest Push] start hook',e);}
-        };
-        if(result&&typeof result.then==='function')result.finally(()=>setTimeout(schedule,30));
-        else setTimeout(schedule,30);
-        return result;
-      };
-      wrapped.__glQuestPushV1=true;
-      wrapped.__glQuestPushBase=base;
-      window.startQuest=wrapped;
-      try{startQuest=wrapped}catch(e){}
-    }
-  }catch(e){console.warn('[GL Quest Push] install start hook',e);}
-
-  /* Zeit-Samen skip: once the quest is skipped, its scheduled completion push is obsolete. */
-  try{
-    if(typeof window.v316SkipActiveQuest==='function'&&!window.v316SkipActiveQuest.__glQuestPushV1){
-      const base=window.v316SkipActiveQuest;
-      const wrapped=function(...args){
-        const result=base.apply(this,args);
-        const done=()=>setTimeout(()=>void cancelQuestPush(),20);
-        if(result&&typeof result.then==='function')result.then(done,()=>{});
-        else done();
-        return result;
-      };
-      wrapped.__glQuestPushV1=true;
-      wrapped.__glQuestPushBase=base;
-      window.v316SkipActiveQuest=wrapped;
-      try{v316SkipActiveQuest=wrapped}catch(e){}
-    }
-  }catch(e){console.warn('[GL Quest Push] install skip hook',e);}
-
-  /* If the reward is claimed before cron processes the job, prevent a stale notification. */
-  try{
-    if(typeof claimQuest==='function'&&!claimQuest.__glQuestPushV1){
-      const base=claimQuest;
-      const wrapped=function(...args){
-        const wasReady=!!(typeof s!=='undefined'&&s?.quests?.active&&Date.now()>=Number(s.quests.active.ends||0));
-        const result=base.apply(this,args);
-        const done=()=>{
-          try{
-            if(wasReady&&!(typeof s!=='undefined'&&s?.quests?.active))void cancelQuestPush();
-          }catch(e){}
-        };
-        if(result&&typeof result.then==='function')result.finally(()=>setTimeout(done,20));
-        else setTimeout(done,20);
-        return result;
-      };
-      wrapped.__glQuestPushV1=true;
-      wrapped.__glQuestPushBase=base;
-      claimQuest=wrapped;
-      try{window.claimQuest=wrapped}catch(e){}
-    }
-  }catch(e){console.warn('[GL Quest Push] install claim hook',e);}
+  /* Start / skip / claim integration is owned directly by the canonical
+     Quest owners (v7110/v7045). No additional wrappers are installed here. */
 
   function resyncActiveQuest(){
     try{
