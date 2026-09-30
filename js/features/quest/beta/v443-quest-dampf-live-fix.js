@@ -41,7 +41,9 @@
   window.v443AfterQuestStart=(beforeEnergy,hadActive)=>{
     const before=n(beforeEnergy),after=n(s?.energy),hasActive=!!s?.quests?.active;
     if(!hadActive&&hasActive&&after!==before)saveNow();
-    settle();
+    /* V8.009: the canonical start owner has already committed the new Dampf
+       value before this hook runs. Paint it once; no delayed repaint train. */
+    paintDampf();
   };
 
   /* Persistence remains a safety net for any future quest-start implementation that
