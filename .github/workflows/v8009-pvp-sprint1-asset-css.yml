@@ -1,0 +1,52 @@
+name: V8.009 PvP Sprint 1 Asset CSS
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/v8009_pvp_sprint1_extract_asset_css.py'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  extract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Extract URL-sensitive PvP CSS with path rewrite
+        run: python3 .github/scripts/v8009_pvp_sprint1_extract_asset_css.py
+
+      - name: Validate asset paths
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import json,re
+          beta=Path('beta.html').read_text(encoding='utf-8')
+          r=json.loads(Path('V8009_PVP_SPRINT1_ASSET_CSS.json').read_text(encoding='utf-8'))
+          if r['count']!=3: raise SystemExit('expected 3 CSS blocks')
+          for x in r['extracted']:
+              css=Path(x['file']).read_text(encoding='utf-8')
+              if beta.count(x['file'])!=1: raise SystemExit('include count !=1: '+x['file'])
+              for asset in x['assets']:
+                  if not Path(asset).exists(): raise SystemExit('asset missing: '+asset)
+                  if '../../../../'+asset not in css: raise SystemExit('rewritten asset missing in CSS: '+asset)
+          print('PvP asset CSS extraction OK')
+          PY
+
+      - name: Diff sanity
+        run: git diff --check
+
+      - name: Commit asset CSS extraction
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add beta.html css/features/pvp/beta/v8009-s1-v549-pvp-grow-legends-css.css             css/features/pvp/beta/v8009-s1-v550-pvp-hero-cleanup-css.css             css/features/pvp/beta/v8009-s1-v611-pvp-stage-fix-css.css             V8009_PVP_SPRINT1_ASSET_CSS.json
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "V8.009 PVP-SPRINT-1: extract asset-backed PvP CSS"
+          git push
