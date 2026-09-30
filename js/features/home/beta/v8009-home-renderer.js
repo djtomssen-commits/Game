@@ -1,7 +1,7 @@
 
 (function(){
   if(String(window.GROW_RELEASE_CHANNEL||'stable')!=='beta')return;
-  const diagnostics={fullRenders:0,eventPanelPatches:0,goldDirectOpens:0,mailDirectOpens:0,versionStyleInstalls:0,ownershipFinalizes:0,cleanSignatureHits:0,dirtySignatureRepairs:0,inactiveWorldSkips:0};
+  const diagnostics={fullRenders:0,eventPanelPatches:0,goldDirectOpens:0,mailDirectOpens:0,versionStyleInstalls:0,ownershipFinalizes:0,cleanSignatureHits:0,dirtySignatureRepairs:0,inactiveWorldSkips:0,headerLegacyHideWrites:0,headerValueWrites:0};
   const BETA_VERSION='V8.009';
   function installBetaVersionStyle(){
     try{
@@ -167,7 +167,12 @@
   function buildHeader(){
     const h=document.querySelector('.app > header');
     if(!h)return;
-    h.querySelectorAll(':scope > :not(.v366-topbar)').forEach(el=>el.style.setProperty('display','none','important'));
+    h.querySelectorAll(':scope > :not(.v366-topbar)').forEach(el=>{
+      if(el.style.getPropertyValue('display')!=='none'||el.style.getPropertyPriority('display')!=='important'){
+        el.style.setProperty('display','none','important');
+        diagnostics.headerLegacyHideWrites++;
+      }
+    });
     let bar=h.querySelector('.v366-topbar');
     if(!bar){
       bar=document.createElement('div');
@@ -205,12 +210,19 @@
         const b=document.querySelector('[data-settings],#settingsBtn,.settings-btn'); if(b){try{b.click()}catch(e){}}
       };
     }
+    const writeHeaderText=(el,value)=>{
+      if(!el)return;
+      const next=String(value);
+      if(el.textContent===next)return;
+      el.textContent=next;
+      diagnostics.headerValueWrites++;
+    };
     const ver=bar.querySelector('.v366-ver');
-    if(ver&&ver.textContent!==BETA_VERSION)ver.textContent=BETA_VERSION;
+    writeHeaderText(ver,BETA_VERSION);
     const g=bar.querySelector('#v366Gold'),hr=bar.querySelector('#v366Harz'),d=bar.querySelector('#v366Dampf');
-    if(g)g.textContent=num(s?.gold);
-    if(hr)hr.textContent=num(s?.harzTaler);
-    if(d)d.textContent=num(s?.energy)+'/'+num(cap());
+    writeHeaderText(g,num(s?.gold));
+    writeHeaderText(hr,num(s?.harzTaler));
+    writeHeaderText(d,num(s?.energy)+'/'+num(cap()));
   }
 
   function homeChecklist(){
@@ -461,7 +473,7 @@
     finalizeOwnedWorld(world);
   }
 
-  window.v8009HomeEventDiagnostics=()=>({version:'V8.009-HOME-30',...diagnostics,events:events().map(x=>({...x})),worldBossActive:worldBossEventActive()});
+  window.v8009HomeEventDiagnostics=()=>({version:'V8.009-HOME-31',...diagnostics,events:events().map(x=>({...x})),worldBossActive:worldBossEventActive()});
 
   /* Re-own only the world installer; do not touch core game render/persist. */
   v085WorldHtml=worldHtml;

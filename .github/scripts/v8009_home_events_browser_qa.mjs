@@ -219,6 +219,29 @@ try{
  assert.deepEqual({active:canonicalState.snapshot.active,ready:canonicalState.snapshot.ready},{active:2,ready:1});
  checks.push('canonical renderer owns Frost 7-slot checklist and weather-aware Growroom status');
  await canonical.close();
+ const headerWrites=await fixture('2026-09-30T12:00:00+02:00',{helper:false});
+ const headerBefore=await headerWrites.evaluate(()=>window.v8009HomeEventDiagnostics?.());
+ await headerWrites.evaluate(()=>v032Go('quests'));
+ const headerNoop=await headerWrites.evaluate(()=>window.v8009HomeEventDiagnostics?.());
+ assert.equal(headerNoop.headerValueWrites,headerBefore.headerValueWrites,'Unchanged navigation must not rewrite header values');
+ assert.equal(headerNoop.headerLegacyHideWrites,headerBefore.headerLegacyHideWrites,'Unchanged navigation must not rewrite legacy header styles');
+ await headerWrites.evaluate(()=>{
+  const legacy=document.createElement('div');legacy.id='qa-legacy-header';legacy.textContent='legacy';document.querySelector('.app > header').appendChild(legacy);
+  v032Go('quests');
+ });
+ const headerHidden=await headerWrites.evaluate(()=>({diag:window.v8009HomeEventDiagnostics?.(),display:document.getElementById('qa-legacy-header')?.style.getPropertyValue('display'),priority:document.getElementById('qa-legacy-header')?.style.getPropertyPriority('display')}));
+ assert.equal(headerHidden.display,'none');
+ assert.equal(headerHidden.priority,'important');
+ assert.equal(headerHidden.diag.headerLegacyHideWrites,headerNoop.headerLegacyHideWrites+1);
+ await headerWrites.evaluate(()=>v032Go('quests'));
+ const headerSecondHide=await headerWrites.evaluate(()=>window.v8009HomeEventDiagnostics?.());
+ assert.equal(headerSecondHide.headerLegacyHideWrites,headerHidden.diag.headerLegacyHideWrites,'Already hidden legacy header must not be rewritten');
+ await headerWrites.evaluate(()=>{s.gold+=77;v032Go('quests')});
+ const headerChanged=await headerWrites.evaluate(()=>({diag:window.v8009HomeEventDiagnostics?.(),gold:document.getElementById('v366Gold')?.textContent}));
+ assert.equal(headerChanged.gold,'277');
+ assert.equal(headerChanged.diag.headerValueWrites,headerSecondHide.headerValueWrites+1,'Only changed Gold text should be written');
+ checks.push('header navigation reuses unchanged text and legacy hide styles');
+ await headerWrites.close();
  const noOpPost=await fixture('2026-09-30T12:00:00+02:00');
  await noOpPost.clock.runFor(300);
  const noOpBefore=await noOpPost.evaluate(()=>window.v8009HomeHeaderDiagnostics?.());
@@ -423,7 +446,7 @@ try{
  assert.equal(versionState.visible,'"V8.009"','Canonical renderer must override historical V8.001 pseudo-element CSS');
  assert.equal(versionState.styleCount,1,'Version override style must be installed exactly once');
  assert.equal(versionState.legacy,'SERVER-VERSION-SENTINEL','Home renderer must not rewrite unrelated legacy version nodes');
- assert.equal(versionState.diag?.version,'V8.009-HOME-30');
+ assert.equal(versionState.diag?.version,'V8.009-HOME-31');
  assert.equal(versionState.diag?.versionStyleInstalls,1);
  checks.push('canonical home renderer owns visible V8.009 style without lifecycle rewrites');
  await versionOwner.close();

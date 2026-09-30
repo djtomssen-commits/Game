@@ -1,0 +1,24 @@
+{
+  "build": "V8.009-HOME-31-BETA",
+  "phase": "Idempotent Startseite header writes",
+  "scope": "beta only",
+  "base_commit": "e243484bf768ac1b61fba186370708ccd2f83f0a",
+  "findings": [
+    "The canonical beta header is refreshed after navigation so resources and ownership stay current.",
+    "Each refresh still rewrote Gold, Harz and Dampf text even when unchanged and reapplied display:none!important to already-hidden historical header siblings."
+  ],
+  "changes": [
+    "Header resource/version text is now written only when its visible value actually changed.",
+    "Historical header siblings receive display:none!important only when that style is not already present.",
+    "Navigation and header ownership checks still run on every existing buildHeader call.",
+    "Gold+, mail, friends, settings, Harz and Dampf button behavior is unchanged."
+  ],
+  "files": [
+    "js/features/home/beta/v8009-home-renderer.js",
+    "js/system/performance/v7288-home-adaptive-fit-script.js",
+    ".github/scripts/v8009_home_events_browser_qa.mjs"
+  ],
+  "stable_behavior_changed": false,
+  "gameplay_changed": false,
+  "server_authority_changed": false
+}
