@@ -1,0 +1,24 @@
+{
+  "build": "V8.009-HOME-13-BETA",
+  "phase": "Startup EXP decorator scan coalescing",
+  "scope": "beta only",
+  "finding": [
+    "V6251 can call the historical global v095DecorateXp several times while the startup quiet/loading gate is still active.",
+    "v095DecorateXp performs a presentation-only DOM TreeWalker scan over the visible game UI, so repeated startup calls add avoidable work before first-playable.",
+    "The event reward logic and EXP event state are separate from this decorator."
+  ],
+  "changes": [
+    "During the canonical startup-quiet window, repeated v095DecorateXp calls are deferred and coalesced into one trailing pass.",
+    "Outside startup quiet, v095DecorateXp behaves unchanged.",
+    "No EXP values, event activation, rewards or gameplay state are changed.",
+    "Diagnostics report xpDecoratorGuardInstalls, xpStartupScansDeferred and xpDeferredRuns."
+  ],
+  "file": "js/system/performance/v7288-home-adaptive-fit-script.js",
+  "file_sha": "bb18aba810dc393026696732a301ea0a18b10e62",
+  "commit": "782379fd635a085f0c34676db63f0ab2fe82af96",
+  "stable_behavior_changed": false,
+  "gameplay_changed": false,
+  "event_logic_changed": false,
+  "server_authority_changed": false,
+  "syntax_check": "ok"
+}
