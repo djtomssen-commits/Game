@@ -10,7 +10,7 @@
 - Aktuelle Beta-Linie: **V8.009**
 - Arbeitsbranch: **main**
 - Letzter automatisiert geprüfter Code-Commit vor dieser Statusdatei:
-  `34d16bb351b81591b1a65025495f1d1d8bab5593`
+  `44db5805762f2d111a0be284df6fd4474816eebb`
 - Aktuelle Unterphase: **V8.009-DUNGEON-D5-BETA**
 - Nutzer-Video bestätigt: betroffen ist konkret **Dungeon 2**.
 - Sichtbares Fehlerbild:
@@ -43,8 +43,19 @@
   - keine aktiven v467-D2-Blöcke mehr in `beta.html`;
   - Stable unverändert.
 - Gameplay/Combat-Math/Rewards/Serverautorität: **nicht verändert**
-- D5 Status: **D2-spezifischer Code-Fix erfolgreich; manueller Repro-Test erneut offen**
-- Nächster Schritt: exakt Dungeon 2 erneut öffnen und 3 Sekunden beobachten.
+- Weitere Last-Writer-Analyse nach erneutem Nutzer-Repro:
+  - nach dem kanonischen D2-Owner existieren noch spätere Legacy-/Cleanup-Schichten;
+  - deshalb wurde zusätzlich ein **finaler post-legacy Detail-Seal** als letztes Script vor `</body>` installiert.
+- Finaler D5 Seal:
+  - Datei: `js/features/dungeon/beta/v8009-d5-final-detail-seal.js`
+  - Commit: `44db5805762f2d111a0be284df6fd4474816eebb`
+  - wird nach sämtlichen alten Inline-Dungeon-Patches geladen;
+  - zwingt die historischen Detail-Aliase auf den kanonischen v261-Owner;
+  - erkennt per eng begrenztem MutationObserver, wenn eine sichtbare 10er-Karte nachträglich durch Legacy-DOM ersetzt wird;
+  - baut dann v261/D2 erneut kanonisch auf und stellt `v474_dungeon_assets` wieder her;
+  - QA bestätigt: Seal ist exakt das letzte Script vor `</body>`, Syntax grün, Stable unverändert.
+- D5 Status: **finaler post-legacy Seal automatisiert grün; manueller Dungeon-2-Repro-Test erneut offen**
+- Nächster Schritt: exakt Dungeon 2 erneut öffnen und mindestens 3 Sekunden beobachten.
 - Scope: **Beta zuerst**
 - **Server 1 / Stable bleibt unangetastet**, bis eine Phase ausdrücklich für Stable freigegeben wird.
 
@@ -158,7 +169,7 @@ Für jedes System gilt:
 
 ## 4. EXAKTER nächster Schritt
 
-### V8.009-DUNGEON-D5-BETA – Repro-Test nach Delayed-Repaint-Fix
+### V8.009-DUNGEON-D5-BETA – Repro-Test nach finalem post-legacy Seal
 
 1. Beta öffnen;
 2. Dungeonwelt → 10er-Karte wechseln;
