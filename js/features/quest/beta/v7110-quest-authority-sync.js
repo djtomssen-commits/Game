@@ -122,6 +122,8 @@ try{
         try{window.v229QuestStartSync?.()}catch(_){}
       };
       if(!enforced()){
+        const prep=window.v321PrepareLocalQuestStart?.(i);
+        if(prep&&prep.ok===false)return false;
         const r=await base.apply(this,arguments);
         post();
         return r;
