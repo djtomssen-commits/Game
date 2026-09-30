@@ -1,0 +1,64 @@
+{
+  "build": "V8.009-QUEST-CLAIM-GUILD-AUDIT",
+  "v6140_found": true,
+  "v6140_bytes": 6253,
+  "v6140": {
+    "claim_writers": 4,
+    "v233_writers": 4,
+    "calls_v474_award": true,
+    "calls_v411_award": true,
+    "dispatches_custom_event": false,
+    "quest_mentions": 43,
+    "guild_mentions": 10
+  },
+  "layers": {
+    "v411": {
+      "claim_writers": 4,
+      "v233_writers": 0,
+      "calls_v474_award": false,
+      "calls_v411_award": true,
+      "has_beta_guard": true,
+      "event_bus_guard": true
+    },
+    "v440": {
+      "claim_writers": 4,
+      "v233_writers": 4,
+      "calls_v474_award": false,
+      "calls_v411_award": false,
+      "has_beta_guard": false,
+      "event_bus_guard": false
+    },
+    "v474": {
+      "claim_writers": 4,
+      "v233_writers": 4,
+      "calls_v474_award": true,
+      "calls_v411_award": false,
+      "has_beta_guard": true,
+      "event_bus_guard": true
+    },
+    "v7045": {
+      "claim_writers": 4,
+      "v233_writers": 4,
+      "calls_v474_award": true,
+      "calls_v411_award": true,
+      "has_beta_guard": false,
+      "event_bus_guard": false
+    }
+  },
+  "v6140_excerpt": [
+    "function questLite(q){if(!q||typeof q!=='object')return null;return{id:q.id??null,uid:q.uid??null,name:String(q.name||''),ends:Number(q.ends)||0,v310Elite:!!q.v310Elite,v309Role:q.v309Role||'',v310BaseRole:q.v310BaseRole||'',v392Kind:q.v392Kind||'',gold:Number(q.gold)||0,xp:Number(q.xp)||0}}",
+    "function questElite(q){return !!q&&(!!q.v310Elite||/elite/i.test(String(q.v309Role||q.v310BaseRole||q.v392Kind||'')))}",
+    "function questToken(q){return q?String(q.id??q.uid??q.name??'quest')+'|'+String(Number(q.ends)||0):''}",
+    "let fn=name==='claimQuest'?(typeof claimQuest==='function'?claimQuest:null):(typeof v233ClaimQuest==='function'?v233ClaimQuest:null);if(typeof fn!=='function'||fn.__v6140EventSource)return;",
+    "const wrapped=function(){const q=s?.quests?.active,token=questToken(q),prev=window.__v688XpContext;window.__v688XpContext='quest';let r;try{r=fn.apply(this,arguments)}finally{window.__v688XpContext=prev}",
+    "const done=()=>{try{if(q&&s?.quests?.active!==q&&token)BUS.emit('questCompleted',{quest:questLite(q),elite:questElite(q)},token)}catch(e){console.warn('V4.161 quest event source',e)}};",
+    "};wrapped.__v6140EventSource=true;wrapped.__v6140SourceName=name;if(name==='claimQuest'){claimQuest=wrapped;window.claimQuest=wrapped}else{v233ClaimQuest=wrapped;window.v233ClaimQuest=wrapped}",
+    "}catch(e){console.warn('V4.161 install quest source',name,e)}",
+    "BUS.on('questCompleted',ev=>{try{if(typeof window.v474AwardGuildActivity==='function')window.v474AwardGuildActivity('quest','event:'+ev.token);else window.v411AwardGuildActivity?.('quest')}catch(_){}try{v106CheckAchievements?.()}catch(_){}});",
+    "BUS.on('guildBossWon',()=>{try{window.v411AwardGuildActivity?.('guild_boss')}catch(_){}try{v106CheckAchievements?.()}catch(_){}});",
+    "installSubscribers();installQuestSource('claimQuest');installQuestSource('v233ClaimQuest');installDungeonSource();installPvpSource();stamp();",
+    "document.addEventListener('DOMContentLoaded',()=>{installQuestSource('claimQuest');installQuestSource('v233ClaimQuest');installDungeonSource();installPvpSource();stamp()},{once:true});",
+    "window.addEventListener('growlegends:account-ready',()=>setTimeout(()=>{installQuestSource('claimQuest');installQuestSource('v233ClaimQuest');installDungeonSource();installPvpSource();stamp()},120));",
+    "window.v6140EventQA=()=>({version:VERSION,bus:BUS.stats(),sources:{quest:!!window.v233ClaimQuest?.__v6140EventSource||!!window.claimQuest?.__v6140EventSource,dungeon:!!window.fightDungeon?.__v6140EventSource,pvp:!!window.v209FinishBattle?.__v6140EventSource},legacyRewardWrappersSuppressed:!!window.__V6140_EVENT_BUS__});"
+  ]
+}
