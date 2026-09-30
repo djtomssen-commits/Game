@@ -106,9 +106,7 @@
         if((k&&inflight.has(k))||alreadyPaid(q)){
           repairStalePaidQuest();
           setClaimUiBusy(true,'Bereits abgeholt');
-          requestAnimationFrame(()=>{
-            try{if(typeof renderQuests==='function')renderQuests()}catch(e){}
-          });
+          try{if(typeof renderQuests==='function')renderQuests()}catch(e){}
           return false;
         }
 
@@ -126,12 +124,8 @@
         if(paid){
           markPaid(q);
           setClaimUiBusy(true,'Abgeholt');
-          requestAnimationFrame(()=>{
-            try{if(typeof renderQuests==='function')renderQuests()}catch(e){}
-          });
-          setTimeout(()=>{
-            try{if(typeof renderQuests==='function')renderQuests()}catch(e){}
-          },80);
+          /* The canonical claim path already performs the successful render.
+             Do not repaint the whole Quest page again here. */
         }else{
           setClaimUiBusy(false);
         }
