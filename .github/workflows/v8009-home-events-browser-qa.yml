@@ -1,0 +1,36 @@
+name: V8 Home events browser QA
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'beta.html'
+      - 'js/features/home/beta/v8009-home-renderer.js'
+      - 'js/features/events/beta/v8009-weekend-events.js'
+      - 'js/system/performance/v7288-home-adaptive-fit-script.js'
+      - '.github/scripts/v8009_home_events_browser_qa.mjs'
+      - '.github/workflows/v8009-home-events-browser-qa.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  qa:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install test browser
+        run: |
+          npm install --no-save playwright@1.55.0
+          npx playwright install --with-deps chromium --only-shell
+      - name: Check event owners and HOME-13 integration
+        run: |
+          node --check js/features/home/beta/v8009-home-renderer.js
+          node --check js/features/events/beta/v8009-weekend-events.js
+          node --check js/system/performance/v7288-home-adaptive-fit-script.js
+          node .github/scripts/v8009_home_events_browser_qa.mjs

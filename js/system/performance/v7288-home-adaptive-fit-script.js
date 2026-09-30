@@ -514,10 +514,12 @@ if(IS_BETA)document.addEventListener('click',e=>{
   }catch(_){}
 },true);
 window.v8009HomeHeaderDiagnostics=()=>({
-  version:'V8.009-HOME-13',
+  version:'V8.009-HOME-14',
   beta:IS_BETA,
   ...v8009HomeHeaderFix,
   fit:{...HOME_DIAG,pendingRaf:!!raf,pendingTimer:!!runTimer},
+  events:window.v8009HomeEventDiagnostics?.()||null,
+  eventScheduler:window.v8009HomeEventSchedulerDiagnostics?.()||null,
   goldShopApi:typeof window.v7114OpenGoldShop==='function',
   mailScreen:!!document.getElementById('mail'),
   legacyV474HomeRetired:!!window.__V8009_HOME9_V474_HOME_RETIRED__,

@@ -1,0 +1,75 @@
+{
+  "build": "V8.009-HOME-14-BETA",
+  "phase": "Home event panels and lifecycle scheduling",
+  "scope": "beta only",
+  "base_commit": "da5fb565e509fd76f2a803673bd87fda5f417a25",
+  "findings": [
+    "V366 is already the sole visible home renderer; V690/V6115/V6116/V6118 historical event renderers are markers.",
+    "V6251 still forced event UI refreshes at 100, 600, 1800 and 4500 ms and polled every 30 seconds.",
+    "A pure event change previously replaced the complete V366 home.",
+    "V355 still requested historical startup home/version updates; V374 scheduled event-card cleanup already covered by V095 exclusions."
+  ],
+  "changes": [
+    "Extract the existing V366 and V6251 scripts into beta-only files at the same parser positions.",
+    "Coalesce cosmetic event refreshes and re-check the canonical startup quiet gate before running.",
+    "Keep per-character Dampf grants and state synchronization immediate on hydration.",
+    "Replace event polling with a single timer for Berlin Wednesday/Thursday/Friday/Monday boundaries and lifecycle catch-up.",
+    "Update event card/count and worldboss panel/goal/button for event-only signature changes; retain full rendering for real character state changes.",
+    "Retire V355 and V374 only in beta.html.",
+    "Expose renderer and scheduling counters through the existing home diagnostics."
+  ],
+  "files": [
+    "beta.html",
+    "js/features/home/beta/v8009-home-renderer.js",
+    "js/features/events/beta/v8009-weekend-events.js",
+    "js/system/performance/v7288-home-adaptive-fit-script.js",
+    ".github/scripts/v8009_home_events_browser_qa.mjs",
+    ".github/workflows/v8009-home-events-browser-qa.yml"
+  ],
+  "verification": {
+    "browser_qa": "passed",
+    "browser_errors": 0,
+    "home13_layout_comparisons": 15,
+    "classes_checked": [
+      "grower",
+      "scout",
+      "bruiser",
+      "frost",
+      "summoner"
+    ],
+    "weekend_schedules_and_rows_compared": 1460,
+    "schedule_comparison_period": [
+      "2026-09-01",
+      "2027-08-31"
+    ],
+    "cases": [
+      "startup coalescing",
+      "extended startup quiet",
+      "immediate once-per-account Dampf grant",
+      "account hydration",
+      "no idle poll",
+      "weekend starts and ends",
+      "Wednesday starts and ends",
+      "Berlin DST",
+      "hidden suspension and foreground catch-up",
+      "worldboss button binding",
+      "normal resource/character updates",
+      "stable guards"
+    ],
+    "syntax_checks": "passed",
+    "beta_html_outside_four_script_blocks": "identical",
+    "browser_test_command": "node .github/scripts/v8009_home_events_browser_qa.mjs"
+  },
+  "stable_behavior_changed": false,
+  "gameplay_changed": false,
+  "event_rewards_changed": false,
+  "server_authority_changed": false,
+  "file_git_blob_shas": {
+    "beta.html": "092be576c9353ea5c5b04f472590cc6d0066e019",
+    "js/features/home/beta/v8009-home-renderer.js": "70de01a5eda721878a6fe5cecf1ac3f9a64035f5",
+    "js/features/events/beta/v8009-weekend-events.js": "56ffd878a662fd05f63e2b33e840eded045eb3e6",
+    "js/system/performance/v7288-home-adaptive-fit-script.js": "f06e5ab09b78d27fa91d5411b847870288911eb3",
+    ".github/scripts/v8009_home_events_browser_qa.mjs": "f1dc37780b181c5690305067c3b6c1d0e5a6abcf",
+    ".github/workflows/v8009-home-events-browser-qa.yml": "1a8f48eea671bad5b8193675a167211ced866dd7"
+  }
+}
