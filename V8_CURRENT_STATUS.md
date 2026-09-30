@@ -20,7 +20,7 @@
 - Arbeitsbranch: **main**
 - Letzter automatisiert geprüfter Code-Commit vor dieser Statusdatei:
   `0acaa527b314d613f3971fd4d344b667894fbdfd`
-- Aktuelle Unterphase: **V8.009-PVP-SPRINT-1-HALL-TOP3-DIRECT-OWNER-MANUAL-CHECK**
+- Aktuelle Unterphase: **V8.009-PVP-SPRINT-1-LIVE-BETA-DEPLOY-BLOCKED**
 - Nutzer-Video bestätigt: betroffen ist konkret **Dungeon 2**.
 - Sichtbares Fehlerbild:
   - zunächst korrekter D2-Hintergrund + korrekte Gegnergrafiken;
@@ -649,30 +649,41 @@ Für jedes System gilt:
 - erst danach alte Inline- oder Legacy-Owner stilllegen;
 - danach nächstes System.
 
+## LIVE-BETA DEPLOY-BEFUND 30.09.2026
+
+- Nutzer-Screenshot 15:28 zeigte weiterhin exakt den alten Top-3-Stand.
+- GitHub-Repo ist **nicht** die Ursache:
+  - aktuelles `beta.html`: **5.751.305 Byte**
+  - SHA256: `371da8a6dbb69cde45d36f0896abe7399120469b3200846f9c5820604a8a82dd`
+  - enthält `v6145-podium-portrait`
+  - enthält cache-versionierten Include `v8009-s1-v6145-hall-pagination-js.js?v=8009-top3-owner2`.
+- Live-Audit gegen `https://gamenew.djtomssen.workers.dev/beta`:
+  - ausgeliefert: **5.749.692 Byte**
+  - SHA256: `0b5e785c78ab730e48000e30ab95891aebf654369bac730b466175c8f62b2562`
+  - **kein** `v6145-podium-portrait`
+  - **kein** cache-versionierter v6145-Include
+  - entspricht dem älteren Hall-Video-Fix-Stand.
+- Cloudflare-Header:
+  - `Cache-Control: public, max-age=0, must-revalidate`
+  - `CF-Cache-Status: MISS`
+  - damit ist es **kein Browser-/CDN-Cacheproblem**, sondern der Worker/Host liefert tatsächlich einen älteren Beta-Build.
+- `tester.html` ist nur die Beta-Tester-Anleitungsseite und nicht die Spiel-Beta.
+- Im GitHub-Repo existiert **kein Cloudflare/Wrangler/Deploy-Workflow** für den Worker; der Live-Deploy liegt außerhalb dieses Repos bzw. muss extern neu veröffentlicht werden.
+- **Keine weiteren Hall-Code-Patches durchführen, bis Live-`/beta` denselben Stand wie Repo-`beta.html` ausliefert.**
+- Stable `/` stimmt exakt mit `index.html` überein und bleibt unverändert.
+
 ## 4. EXAKTER nächster Schritt
 
-### Hall-of-Haze – zweiten direkten Top-3-Owner-Fix manuell prüfen
+### ZUERST: aktuellen `beta.html`-Stand live nach `/beta` deployen
 
-Beta/Hall einmal **neu laden** und prüfen:
-
-1. **Top 3**
-   - Charakterbilder füllen die Portraitfläche breit aus;
-   - keine schmalen Ganzkörperstreifen mehr;
-   - Tomssen zeigt direkt den aktiven `emerald_aura`-Rahmen.
-2. **Rangliste**
-   - Spieler mit `avatar_frame_id` zeigen den Rahmen direkt am Avatar;
-   - kein nachträgliches Einblenden und kein Entfernen durch Server-Frame-Sync.
-3. **Bestehende Hall-Fixes**
-   - eigenes Profil oberhalb Top 3 bleibt beim ersten Paint korrekt;
-   - fremde Kampfkraft zeigt nicht kurz die eigene Kampfkraft.
-
-Wenn das passt:
-- PvP / Hall of Haze abschließen;
-- Quest Sprint starten.
-
-Wenn noch etwas nicht passt:
-- nur den bestehenden kanonischen `v6145`-/`v7230`-Owner korrigieren;
-- **keine neue Patch-Schicht, keinen Render-Wrapper, Timer oder Observer hinzufügen**.
+1. Cloudflare-/Worker-Beta neu veröffentlichen, sodass Live-`/beta` dem aktuellen Repo-`beta.html` entspricht.
+2. Danach Live-Audit erneut ausführen und prüfen:
+   - Bytes/Hash müssen dem aktuellen Repo-Stand entsprechen;
+   - `v6145-podium-portrait` muss live vorhanden sein;
+   - `v8009-s1-v6145-hall-pagination-js.js?v=8009-top3-owner2` muss live geladen werden.
+3. Erst **danach** Hall manuell testen.
+4. Wenn Top 3 dann noch falsch ist, am bestehenden kanonischen `v6145`-/`v7230`-Owner weiterarbeiten.
+5. **Keine neue Patch-Schicht, keinen neuen Renderer, Wrapper, Timer oder Observer hinzufügen.**
 
 ### Statusdatei-Regel
 
