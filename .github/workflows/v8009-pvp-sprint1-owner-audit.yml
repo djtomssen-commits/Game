@@ -1,0 +1,38 @@
+name: V8.009 PvP Sprint 1 Owner Audit
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/v8009_pvp_sprint1_owner_audit.py'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - name: Audit Hall and PvP owner chain
+        run: python3 .github/scripts/v8009_pvp_sprint1_owner_audit.py
+      - name: Validate ranking owner resolution
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import json
+          r=json.loads(Path('V8009_PVP_SPRINT1_OWNER_AUDIT.json').read_text(encoding='utf-8'))
+          if not r['hypotheses']['v6145_is_final_ranking_owner']:
+              raise SystemExit('v6145 is not the final ranking owner')
+          print('PvP/Hall owner audit OK')
+          PY
+      - name: Commit audit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add V8009_PVP_SPRINT1_OWNER_AUDIT.json
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "V8.009 PVP-SPRINT-1: audit Hall owner chain"
+          git push
