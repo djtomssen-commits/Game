@@ -1,0 +1,28 @@
+name: V8.009 Live Beta Runtime Audit
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/v8009_live_beta_runtime_audit.mjs'
+      - '.github/workflows/v8009-live-beta-runtime-audit.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install Chromium
+        run: |
+          npm install --no-save playwright@1.55.0
+          npx playwright install --with-deps chromium --only-shell
+      - name: Audit live Beta runtime
+        run: node .github/scripts/v8009_live_beta_runtime_audit.mjs
