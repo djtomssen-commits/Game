@@ -1,0 +1,64 @@
+name: V8.009 Dungeon D3 Audit and Extraction
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/v8009_dungeon_d3_audit_extract.py'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  audit-extract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Audit historical Dungeon layers and extract isolated CSS
+        run: python3 .github/scripts/v8009_dungeon_d3_audit_extract.py
+
+      - name: Validate D3 extraction
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import json, hashlib, re
+
+          beta = Path('beta.html').read_text(encoding='utf-8')
+          stable = Path('index.html').read_text(encoding='utf-8')
+          css_path = Path('css/features/dungeon/beta/v8009-d3-detail-render-lock.css')
+          report = json.loads(Path('V8009_DUNGEON_D3_BETA.json').read_text(encoding='utf-8'))
+
+          if not css_path.exists() or css_path.stat().st_size < 100:
+              raise SystemExit('D3 CSS file missing/small')
+          if beta.count(css_path.as_posix()) != 1:
+              raise SystemExit('D3 CSS include count != 1')
+          if css_path.as_posix() in stable:
+              raise SystemExit('Stable unexpectedly loads D3 CSS')
+          if re.search(r'<style[^>]*id=["\']v7166-dungeon-detail-render-lock-css["\']', beta, re.I):
+              raise SystemExit('Inline v7166 CSS still present')
+          if hashlib.sha256(css_path.read_text(encoding='utf-8').encode()).hexdigest() != report['extracted']['sha256']:
+              raise SystemExit('Extracted CSS hash mismatch')
+          if not report.get('stable_unchanged') or report.get('historical_js_removed'):
+              raise SystemExit('D3 scope violation')
+          for token in ('v251','v260','v261'):
+              if report['token_occurrences_before_extraction'].get(token, 0) < 1:
+                  raise SystemExit(f'Missing inventory token: {token}')
+          print('DUNGEON-D3 audit/extraction OK')
+          PY
+
+      - name: Diff sanity
+        run: git diff --check
+
+      - name: Commit D3 extraction
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add beta.html css/features/dungeon/beta/v8009-d3-detail-render-lock.css V8009_DUNGEON_D3_BETA.json
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "V8.009 DUNGEON-D3: audit legacy layers and extract detail lock CSS"
+          git push
