@@ -56,8 +56,8 @@ fight_assign=re.compile(r'(?<![\\w$])(?:window\\.)?v204Fight\\s*=(?!=)')
 timeline={'v073LoadRanking':[],'v204Fight':[]}
 
 script_tag=re.compile(r'<script(?P<attrs>[^>]*)>(?P<body>[\\s\\S]*?)</script\\s*>',re.I)
-src_attr=re.compile(r'\\bsrc=["\\']([^"\\']+)["\\']',re.I)
-id_attr=re.compile(r'\\bid=["\\']([^"\\']+)["\\']',re.I)
+src_attr=re.compile(r"""\\bsrc=["']([^"']+)["']""",re.I)
+id_attr=re.compile(r"""\\bid=["']([^"']+)["']""",re.I)
 
 for order,m in enumerate(script_tag.finditer(beta)):
     attrs=m.group('attrs')
