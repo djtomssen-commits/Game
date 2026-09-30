@@ -1,0 +1,524 @@
+/* ===== V4.02 modern dungeon maps ===== */
+
+#dungeonMapCard.v251-world-card,
+#dungeonMapCard.v251-detail-card{
+  position:relative!important;
+  overflow:hidden!important;
+  padding:0!important;
+  min-height:0!important;
+  border:1px solid #304c35!important;
+  border-radius:20px!important;
+  background:
+    radial-gradient(circle at 50% -10%,rgba(78,191,70,.11),transparent 34%),
+    linear-gradient(180deg,#09130c,#060b08)!important;
+  box-shadow:0 18px 45px #000a,inset 0 0 45px #0007!important;
+}
+
+#dungeonMapCard.v251-world-card:before,
+#dungeonMapCard.v251-detail-card:before{
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  background:
+    radial-gradient(circle at 15% 15%,rgba(76,155,63,.08),transparent 22%),
+    radial-gradient(circle at 82% 58%,rgba(92,51,121,.08),transparent 24%),
+    linear-gradient(120deg,transparent 0 48%,rgba(255,255,255,.012) 49% 50%,transparent 51%);
+}
+
+.v251-map-head{
+  position:relative;
+  z-index:2;
+  padding:20px 18px 16px;
+  text-align:center;
+  border-bottom:1px solid #263b2b;
+  background:
+    radial-gradient(circle at 50% 0,rgba(104,218,78,.11),transparent 62%),
+    linear-gradient(180deg,rgba(15,31,18,.97),rgba(7,14,9,.92));
+}
+.v251-map-kicker{
+  color:#76db5f;
+  font-size:7px;
+  font-weight:1000;
+  letter-spacing:.22em;
+  text-transform:uppercase;
+}
+.v251-map-title{
+  margin-top:4px;
+  color:#e7f5e2;
+  font-family:Georgia,serif;
+  font-size:29px;
+  font-weight:900;
+  letter-spacing:.035em;
+  text-shadow:0 0 18px rgba(95,220,68,.22);
+}
+.v251-map-sub{
+  margin-top:5px;
+  color:#8fa393;
+  font-size:8px;
+  line-height:1.45;
+}
+
+.v251-ticket{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  margin-top:13px;
+  padding:8px 10px;
+  border:1px solid #2f5134;
+  border-radius:11px;
+  background:#08110b;
+  text-align:left;
+}
+.v251-ticket b{font-size:8px;color:#d9e6d8}
+.v251-ticket span{font-size:7px;color:#8fe86e;font-weight:900;text-align:right}
+
+.v251-world-grid{
+  position:relative;
+  z-index:2;
+  display:grid;
+  grid-template-columns:repeat(5,minmax(0,1fr));
+  gap:9px;
+  padding:14px;
+}
+
+.v251-portal{
+  position:relative;
+  min-width:0;
+  min-height:132px;
+  padding:9px 5px 8px;
+  border:1px solid #2f4532;
+  border-radius:14px;
+  background:
+    radial-gradient(circle at 50% 35%,rgba(85,126,77,.09),transparent 40%),
+    linear-gradient(180deg,#101a12,#080d09);
+  color:#cbd6c9;
+  box-shadow:inset 0 0 22px #0008,0 6px 15px #0006;
+  cursor:pointer;
+  touch-action:manipulation;
+}
+.v251-portal:active{transform:scale(.98)}
+.v251-portal-ring{
+  position:relative;
+  width:58px;
+  height:70px;
+  margin:0 auto 6px;
+  border:4px solid #414942;
+  border-bottom-width:6px;
+  border-radius:30px 30px 8px 8px;
+  background:
+    radial-gradient(ellipse at 50% 55%,#071009 0 39%,#121b13 40% 57%,transparent 58%),
+    linear-gradient(180deg,#3b443b,#171c18);
+  box-shadow:inset 0 0 15px #000b,0 6px 12px #0009;
+}
+.v251-portal-ring:before{
+  content:"";
+  position:absolute;
+  inset:10px 9px 7px;
+  border-radius:20px 20px 4px 4px;
+  background:#060906;
+  box-shadow:inset 0 0 17px #000;
+}
+.v251-portal-num{
+  position:absolute;
+  z-index:2;
+  top:-7px;
+  left:50%;
+  transform:translateX(-50%);
+  width:28px;
+  height:28px;
+  display:grid;
+  place-items:center;
+  border:2px solid #59625a;
+  border-radius:50%;
+  background:#121914;
+  color:#e3e8e1;
+  font-family:Georgia,serif;
+  font-size:13px;
+  font-weight:1000;
+  box-shadow:0 4px 8px #000b;
+}
+.v251-portal-core{
+  position:absolute;
+  z-index:1;
+  left:13px;right:13px;top:18px;bottom:9px;
+  border-radius:16px 16px 3px 3px;
+  background:radial-gradient(circle at 50% 60%,#222,#080a08 70%);
+}
+.v251-portal-lock{
+  position:absolute;
+  z-index:3;
+  left:50%;top:50%;
+  transform:translate(-50%,-45%);
+  font-size:22px;
+  filter:grayscale(1);
+}
+.v251-portal-name{
+  min-height:24px;
+  font-size:6.4px;
+  line-height:1.15;
+  font-weight:1000;
+  color:#c0cbbf;
+  overflow:hidden;
+}
+.v251-portal-state{
+  margin-top:4px;
+  font-size:6.2px;
+  font-weight:1000;
+  color:#738077;
+  text-transform:uppercase;
+}
+
+.v251-portal.available{
+  border-color:#7b6d36;
+  box-shadow:inset 0 0 24px rgba(219,181,58,.05),0 0 12px rgba(219,181,58,.05);
+}
+.v251-portal.available .v251-portal-ring{border-color:#977d37}
+.v251-portal.available .v251-portal-core{
+  background:radial-gradient(circle at 50% 62%,#b28324 0,#6a4516 22%,#1c1608 58%,#060906 80%);
+  box-shadow:0 0 16px rgba(237,190,67,.28),inset 0 0 16px #0008;
+}
+.v251-portal.available .v251-portal-state{color:#e2c665}
+
+.v251-portal.current{
+  border-color:#4ea43d;
+  box-shadow:inset 0 0 26px rgba(80,202,61,.08),0 0 16px rgba(80,202,61,.12);
+}
+.v251-portal.current .v251-portal-ring{border-color:#65bb4d}
+.v251-portal.current .v251-portal-core{
+  background:radial-gradient(circle at 50% 62%,#87f45f 0,#3ba735 20%,#123519 55%,#050a06 82%);
+  box-shadow:0 0 22px rgba(97,235,75,.46),inset 0 0 16px #0008;
+}
+.v251-portal.current .v251-portal-num{border-color:#70d458;color:#b9ff9f}
+.v251-portal.current .v251-portal-state{color:#7ce861}
+
+.v251-portal.completed{
+  border-color:#355f38;
+}
+.v251-portal.completed .v251-portal-ring{border-color:#568851}
+.v251-portal.completed .v251-portal-core{
+  background:radial-gradient(circle at 50% 62%,#5fd845 0,#287a29 24%,#0c2b14 58%,#050a06 82%);
+  box-shadow:0 0 17px rgba(90,220,65,.23);
+}
+.v251-portal.completed .v251-portal-state{color:#78d962}
+
+.v251-portal.locked{
+  opacity:.66;
+  filter:saturate(.55);
+}
+.v251-portal.locked .v251-portal-name{color:#7f8980}
+
+.v251-world-footer{
+  position:relative;
+  z-index:2;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:9px;
+  margin:0 14px 14px;
+  padding:11px;
+  border:1px solid #314335;
+  border-radius:13px;
+  background:linear-gradient(180deg,#0d1510,#070c08);
+}
+.v251-world-footer > div{
+  min-width:0;
+  padding:4px 7px;
+}
+.v251-world-footer > div+div{border-left:1px solid #26362a}
+.v251-foot-label{
+  font-size:6px;
+  color:#6f8274;
+  font-weight:1000;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+}
+.v251-foot-main{
+  margin-top:4px;
+  color:#d6dfd4;
+  font-size:9px;
+  font-weight:1000;
+}
+.v251-foot-sub{
+  margin-top:3px;
+  color:#7f9183;
+  font-size:6.6px;
+  line-height:1.35;
+}
+.v251-foot-accent{color:#88e36e!important}
+
+/* 10-room detail */
+.v251-route-wrap{
+  position:relative;
+  z-index:2;
+  padding:18px 14px 10px;
+  background:
+    radial-gradient(circle at 50% 35%,rgba(28,123,75,.10),transparent 43%),
+    linear-gradient(180deg,#07110c,#080d09);
+}
+.v251-route{
+  position:relative;
+  display:grid;
+  grid-template-columns:repeat(5,minmax(0,1fr));
+  gap:20px 8px;
+}
+.v251-route:before,
+.v251-route:after{
+  content:"";
+  position:absolute;
+  z-index:0;
+  left:8%;right:8%;
+  height:3px;
+  border-radius:99px;
+  background:linear-gradient(90deg,#2d6430,#74ce4e,#2d6430);
+  box-shadow:0 0 9px rgba(91,217,70,.26);
+}
+.v251-route:before{top:48px}
+.v251-route:after{bottom:48px}
+
+.v251-room{
+  position:relative;
+  z-index:2;
+  min-width:0;
+  border:0;
+  background:transparent;
+  color:#d7e0d5;
+  padding:0;
+  text-align:center;
+  touch-action:manipulation;
+}
+.v251-room-orb{
+  position:relative;
+  width:66px;
+  height:66px;
+  margin:auto;
+  display:grid;
+  place-items:center;
+  border:3px solid #465d48;
+  border-radius:50%;
+  background:
+    radial-gradient(circle,#15251a,#070d09 70%);
+  box-shadow:0 0 0 4px #061008,0 8px 14px #0009,inset 0 0 15px #0009;
+  font-size:28px;
+}
+.v251-room-num{
+  position:absolute;
+  left:50%;top:-11px;
+  transform:translateX(-50%);
+  width:25px;height:25px;
+  display:grid;place-items:center;
+  border:2px solid #536b56;
+  border-radius:50%;
+  background:#101812;
+  color:#e6ece4;
+  font-size:9px;
+  font-weight:1000;
+}
+.v251-room-check{
+  position:absolute;
+  right:-3px;
+  bottom:-4px;
+  width:23px;height:23px;
+  display:grid;place-items:center;
+  border:2px solid #0c170e;
+  border-radius:50%;
+  background:#4aaa37;
+  color:white;
+  font-size:11px;
+}
+.v251-room-name{
+  margin-top:7px;
+  min-height:22px;
+  color:#91a095;
+  font-size:6px;
+  font-weight:900;
+  line-height:1.15;
+}
+.v251-room-level{
+  color:#697a6e;
+  font-size:5.8px;
+  font-weight:900;
+}
+.v251-room.done .v251-room-orb{
+  border-color:#4e9e45;
+  opacity:.82;
+}
+.v251-room.current .v251-room-orb{
+  border-color:#86dc5c;
+  box-shadow:0 0 0 4px #061008,0 0 22px rgba(110,234,80,.32),0 8px 14px #0009;
+}
+.v251-room.current{cursor:pointer}
+.v251-room.current .v251-room-name{color:#bfeead}
+.v251-room.locked{opacity:.46;filter:grayscale(.7)}
+
+.v251-room.boss .v251-room-orb{
+  border-radius:17px;
+  border-color:#a357d8;
+  background:radial-gradient(circle,#3a164d,#100817 72%);
+  box-shadow:0 0 0 4px #09050c,0 0 20px rgba(193,80,239,.30),0 8px 14px #0009;
+}
+.v251-room.boss .v251-room-level{color:#cf86f1}
+
+.v251-current-panel{
+  position:relative;
+  z-index:2;
+  display:grid;
+  grid-template-columns:minmax(0,1.25fr) minmax(0,.75fr);
+  gap:10px;
+  margin:0 14px 10px;
+  padding:12px;
+  border:1px solid #324438;
+  border-radius:13px;
+  background:linear-gradient(180deg,#0d1510,#070c08);
+}
+.v251-current-title{
+  display:flex;
+  align-items:center;
+  gap:9px;
+}
+.v251-current-icon{
+  width:40px;height:40px;
+  flex:0 0 40px;
+  display:grid;place-items:center;
+  border:1px solid #435d48;
+  border-radius:10px;
+  background:#08100a;
+  font-size:24px;
+}
+.v251-current-title b{
+  display:block;
+  color:#e3eae1;
+  font-size:10px;
+}
+.v251-current-title span{
+  display:block;
+  margin-top:2px;
+  color:#82db64;
+  font-size:6.5px;
+}
+.v251-reward-box{
+  border-left:1px solid #29382d;
+  padding-left:10px;
+}
+.v251-reward-label{
+  font-size:6px;
+  color:#728076;
+  font-weight:1000;
+  letter-spacing:.12em;
+}
+.v251-rewards{
+  display:flex;
+  gap:5px;
+  margin-top:6px;
+}
+.v251-reward{
+  flex:1;
+  min-width:0;
+  padding:7px 4px;
+  border:1px solid #304234;
+  border-radius:8px;
+  background:#08100a;
+  text-align:center;
+  color:#b8c5b8;
+  font-size:6px;
+  font-weight:900;
+}
+.v251-reward.epic{
+  border-color:#743da0;
+  color:#d88aff;
+  box-shadow:inset 0 0 11px rgba(177,77,225,.08);
+}
+.v251-reward.legendary{
+  border-color:#a96b1f;
+  color:#ffb24a;
+  box-shadow:inset 0 0 11px rgba(255,154,45,.10);
+}
+
+.v251-detail-bottom{
+  position:relative;
+  z-index:2;
+  display:grid;
+  grid-template-columns:1fr 1fr 1.35fr;
+  align-items:center;
+  gap:7px;
+  margin:0 14px 14px;
+}
+.v251-mini-stat{
+  min-height:50px;
+  padding:8px;
+  border:1px solid #2c4030;
+  border-radius:10px;
+  background:#08100a;
+}
+.v251-mini-stat span{
+  display:block;
+  color:#738176;
+  font-size:5.8px;
+  font-weight:1000;
+  letter-spacing:.08em;
+}
+.v251-mini-stat b{
+  display:block;
+  margin-top:4px;
+  color:#93e875;
+  font-size:11px;
+}
+.v251-enter{
+  min-height:50px!important;
+  margin:0!important;
+  border-radius:10px!important;
+  font-size:9px!important;
+  letter-spacing:.04em;
+  box-shadow:0 0 16px rgba(102,220,71,.14)!important;
+}
+.v251-enter:disabled{
+  filter:grayscale(1);
+  opacity:.55;
+}
+
+#dungeonMapCard.v251-detail-card #v065BackWorld{
+  position:relative!important;
+  z-index:3!important;
+  width:calc(100% - 28px)!important;
+  margin:0 14px 12px!important;
+  border-radius:10px!important;
+}
+
+/* old terrain/path layers hidden when V4.02 owns map */
+#dungeonMapCard.v251-world-card .v067-terrain,
+#dungeonMapCard.v251-detail-card .v068-detail-terrain,
+#dungeonMapCard.v251-detail-card .v064-map,
+#dungeonMapCard.v251-world-card .v065-dungeon-world{
+  display:none!important;
+}
+
+@media(max-width:620px){
+  .v251-world-grid{
+    grid-template-columns:repeat(4,minmax(0,1fr));
+    gap:7px;
+    padding:10px;
+  }
+  .v251-portal{min-height:121px;padding:8px 4px}
+  .v251-portal-ring{width:49px;height:61px}
+  .v251-portal-name{font-size:5.8px}
+  .v251-portal-state{font-size:5.6px}
+  .v251-route{gap:18px 4px}
+  .v251-room-orb{width:54px;height:54px;font-size:23px}
+  .v251-room-name{font-size:5.4px}
+  .v251-route:before{top:41px}
+  .v251-route:after{bottom:41px}
+  .v251-current-panel{grid-template-columns:1fr}
+  .v251-reward-box{
+    border-left:0;
+    border-top:1px solid #29382d;
+    padding:9px 0 0;
+  }
+}
+@media(max-width:420px){
+  .v251-world-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .v251-route-wrap{overflow-x:auto}
+  .v251-route{min-width:440px}
+  .v251-detail-bottom{grid-template-columns:1fr 1fr}
+  .v251-enter{grid-column:1/-1}
+  .v251-map-title{font-size:24px}
+}
