@@ -1,0 +1,21 @@
+name: V8.009 Levelup Blocks
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/v8009_levelup_blocks.py'
+      - '.github/workflows/v8009-levelup-blocks.yml'
+permissions:
+  contents: write
+jobs:
+  extract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 .github/scripts/v8009_levelup_blocks.py
+      - run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add V8009_LEVELUP_BLOCKS.json
+          git commit -m "V8.009: record levelup blocks" || exit 0
+          git push
