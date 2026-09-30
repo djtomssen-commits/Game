@@ -1,0 +1,115 @@
+name: V8.009 Dungeon Sprint 2 Cleanup
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/v8009_dungeon_sprint2_cleanup.py'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Apply Sprint 2 owner cleanup
+        run: python3 .github/scripts/v8009_dungeon_sprint2_cleanup.py
+
+      - name: Syntax-check canonical and archived JS
+        run: |
+          node --check js/features/dungeon/beta/v8009-d2-visual-owner.js
+          node --check js/features/dungeon/beta/v8009-d5-final-detail-seal.js
+          node --check js/features/dungeon/beta/v8009-d8-detail-decorator.js
+          node --check js/features/dungeon/legacy/v8009-sprint2-retired-render-owners.js
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          beta=Path('beta.html').read_text(encoding='utf-8')
+          for sid in ('v446-dungeon-runtime-root-fix','v494-production-dungeon-fix-script','v585-dungeon-safe-owner-core'):
+              m=re.search(r'<script[^>]*id=["\']'+re.escape(sid)+r'["\'][^>]*>([\s\S]*?)</script\s*>',beta,re.I)
+              if not m: raise SystemExit(f'missing modified inline script: {sid}')
+              Path('/tmp/'+sid+'.js').write_text(m.group(1),encoding='utf-8')
+          PY
+          node --check /tmp/v446-dungeon-runtime-root-fix.js
+          node --check /tmp/v494-production-dungeon-fix-script.js
+          node --check /tmp/v585-dungeon-safe-owner-core.js
+
+      - name: Validate all-Dungeon canonical contract
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import json,re
+
+          beta=Path('beta.html').read_text(encoding='utf-8')
+          owner=Path('js/features/dungeon/beta/v8009-d2-visual-owner.js').read_text(encoding='utf-8')
+          report=json.loads(Path('V8009_DUNGEON_SPRINT2_BETA.json').read_text(encoding='utf-8'))
+
+          # D1-D20 background + rooms 1-9.
+          missing=[]
+          for d in range(1,21):
+              bg=Path(f'v474_dungeon_assets/d{d}_bg.jpg')
+              if not bg.exists(): missing.append(str(bg))
+              for room in range(1,10):
+                  p=Path(f'v474_dungeon_assets/d{d}_{room}.png')
+                  if not p.exists(): missing.append(str(p))
+          # Native packaged bosses exist for D10-D20.
+          for d in range(10,21):
+              p=Path(f'v474_dungeon_assets/d{d}_boss.png')
+              if not p.exists(): missing.append(str(p))
+          # Explicit early boss fallbacks already manually verified.
+          for p in (
+              Path('assets/v7195-base64/0f1a0253845b46d9a03d.jpg'),
+              Path('assets/v7195-base64/10036d96d08155bdc84a.svg'),
+          ):
+              if not p.exists(): missing.append(str(p))
+          if missing:
+              raise SystemExit('missing Dungeon assets: '+', '.join(missing))
+
+          if 'window.v494DungeonProductionSync?.()' not in owner:
+              raise SystemExit('canonical owner missing direct v494 production sync')
+          if 'window.v585SyncDungeonBattle?.()' not in owner:
+              raise SystemExit('canonical owner missing direct v585 battle sync')
+
+          for sid in ('v4225-final-10er-owner','v447-d9-preview-button-restore'):
+              if re.search(r'<script[^>]*id=["\']'+re.escape(sid)+r'["\']',beta,re.I):
+                  raise SystemExit(f'retired owner still active: {sid}')
+          for forbidden in ('__v446PostRender','ensureD9PreviewButton','__v494Production','__v586VisualSync'):
+              if forbidden in beta:
+                  raise SystemExit(f'redundant owner hook still active: {forbidden}')
+
+          # Critical gameplay/server owners must remain.
+          for sid in (
+              'v246-dungeon-final-fight-reward-fix',
+              'v4165-dungeon-key-live-battle-index-fix',
+              'v446-dungeon-runtime-root-fix',
+              'v467-hard-live-dungeon-key-authority',
+              'v7051-atomic-dungeon-receipt-client',
+          ):
+              if not re.search(r'<script[^>]*id=["\']'+re.escape(sid)+r'["\']',beta,re.I):
+                  raise SystemExit(f'critical Dungeon system missing: {sid}')
+
+          if not report.get('stable_unchanged'):
+              raise SystemExit('Stable scope failed')
+          print('DUNGEON SPRINT 2 canonical D1-D20 contract OK')
+          PY
+
+      - name: Diff sanity
+        run: git diff --check
+
+      - name: Commit Sprint 2
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add beta.html \
+            js/features/dungeon/legacy/v8009-sprint2-retired-render-owners.js \
+            V8009_DUNGEON_SPRINT2_BETA.json
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "V8.009 DUNGEON-SPRINT-2: retire redundant render owners"
+          git push
