@@ -21,7 +21,10 @@ if not m:
     raise SystemExit('v394 script missing')
 body=m.group(2)
 start=body.find('  function paintSkipCurrency(){')
-end=body.find('  ensureTimeSeeds();',start)
+# Important: the first ensureTimeSeeds() after start belongs INSIDE paintSkipCurrency.
+# Cut through the complete legacy painter + render wrapper and stop only at the
+# top-level currency initialization pair.
+end=body.find('  ensureTimeSeeds();\n  saveQuiet();',start)
 if start<0 or end<0:
     raise SystemExit('v394 UI block missing')
 body=body[:start]+'''  /* V8.009: skip UI painting retired here.
@@ -55,3 +58,5 @@ if failed: raise SystemExit(1)
 # retrigger after duplicate-seed repro 2026-09-30T19:57Z
 
 # retrigger after narrowing UI-wrapper QA 2026-09-30T20:00Z
+
+# retrigger exact v394 legacy UI span fix 2026-09-30T20:03Z
