@@ -492,29 +492,12 @@ function installBetaMenuReplaceGuard(){
     return true;
   }catch(_){return false}
 }
-if(IS_BETA)document.addEventListener('click',e=>{
-  try{
-    const t=e.target instanceof Element?e.target:null;
-    if(!t)return;
-    const gold=t.closest('.v366-topbar [data-plus="gold"]');
-    if(gold){
-      e.preventDefault();e.stopPropagation();e.stopImmediatePropagation();
-      v8009HomeHeaderFix.goldRedirects++;
-      if(typeof window.v7114OpenGoldShop==='function')window.v7114OpenGoldShop();
-      else if(typeof window.v7117OpenDealerTab==='function')window.v7117OpenDealerTab('gold');
-      else if(typeof window.v032Go==='function')window.v032Go('goldShop');
-      return;
-    }
-    const mail=t.closest('.v366-topbar [data-head="mail"]');
-    if(mail){
-      e.preventDefault();e.stopPropagation();e.stopImmediatePropagation();
-      v8009HomeHeaderFix.mailRedirects++;
-      if(typeof window.v032Go==='function')window.v032Go('mail');
-    }
-  }catch(_){}
-},true);
+/* V8.009 HOME-15: HOME-14 extracted the canonical beta header renderer, so
+   Gold+ and Nebel-Post are now bound correctly at the owner. The old global
+   capture-phase redirect from HOME-1 is retired. */
+if(IS_BETA)window.__V8009_HOME15_DIRECT_HEADER_ROUTES__=true;
 window.v8009HomeHeaderDiagnostics=()=>({
-  version:'V8.009-HOME-14',
+  version:'V8.009-HOME-15',
   beta:IS_BETA,
   ...v8009HomeHeaderFix,
   fit:{...HOME_DIAG,pendingRaf:!!raf,pendingTimer:!!runTimer},
@@ -522,6 +505,7 @@ window.v8009HomeHeaderDiagnostics=()=>({
   eventScheduler:window.v8009HomeEventSchedulerDiagnostics?.()||null,
   goldShopApi:typeof window.v7114OpenGoldShop==='function',
   mailScreen:!!document.getElementById('mail'),
+  directHeaderRoutes:!!window.__V8009_HOME15_DIRECT_HEADER_ROUTES__,
   legacyV474HomeRetired:!!window.__V8009_HOME9_V474_HOME_RETIRED__,
   legacyVersionWritesRetired:{
     v380:!!window.__V8009_HOME11_V380_VERSION_RETIRED__,
