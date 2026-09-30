@@ -1,0 +1,31 @@
+name: V8.009 Quest Reward Art QA
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/v8009_quest_reward_art_qa.py'
+      - 'js/features/quest/beta/v4121-quest-reward-current-item.js'
+      - 'js/features/quest/beta/v7045-atomic-quest-receipt-client.js'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  qa:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - name: Syntax
+        run: |
+          node --check js/features/quest/beta/v4121-quest-reward-current-item.js
+          node --check js/features/quest/beta/v7045-atomic-quest-receipt-client.js
+      - name: Contract
+        run: python3 .github/scripts/v8009_quest_reward_art_qa.py
+      - name: Commit QA
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add V8009_QUEST_REWARD_ART_QA.json
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "V8.009 QUEST: record reward art QA"
+          git push
