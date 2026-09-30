@@ -63,9 +63,12 @@
    if(error)throw error;state.topRows=Array.isArray(data)?data:[];state.topAt=Date.now();return state.topRows;
  }
  function medal(rank){return rank===1?'🥇':rank===2?'🥈':'🥉'}
+ function avatarSrc(p){
+   try{return typeof v080AvatarFor==='function'?(v080AvatarFor(p?.class_id||'grower')||''):''}catch(e){return ''}
+ }
  function avatar(p){
-   try{const src=typeof v080AvatarFor==='function'?v080AvatarFor(p?.class_id||'grower'):'';if(src)return `<img src="${esc(src)}" alt="">`}catch(e){}
-   return '<span>🌿</span>';
+   const src=avatarSrc(p);
+   return src?`<img src="${esc(src)}" alt="">`:'<span>🌿</span>';
  }
  function frameArt(p){
    const id=String(p?.avatar_frame_id||'');
@@ -79,9 +82,20 @@
    const data=frame?` data-v7137-frame="${esc(id)}"`:'';
    return `<div class="${cls}${target}" data-avatar-class="${esc(String(p?.class_id||'grower').toLowerCase())}"${data}>${avatar(p)}${frame}</div>`;
  }
+ function podiumAvatar(p){
+   const id=String(p?.avatar_frame_id||'');
+   const src=avatarSrc(p);
+   const frame=frameArt(p);
+   const target=frame?' v7137-frame-target':'';
+   const data=frame?` data-v7137-frame="${esc(id)}"`:'';
+   const portrait=src
+     ?`<span class="v6145-podium-portrait" style="background-image:url(&quot;${esc(src)}&quot;)"></span>`
+     :'<span class="v6145-podium-fallback">🌿</span>';
+   return `<div class="v6145-podium-avatar${target}" data-avatar-class="${esc(String(p?.class_id||'grower').toLowerCase())}"${data}>${portrait}${frame}</div>`;
+ }
  function podiumHtml(rows){
    const me=ownId();
-   return `<div class="v6145-podium">${(rows||[]).map((p,i)=>{const r=i+1;return `<article class="v6145-podium-card rank-${r} ${String(p?.id||'')===me?'v6145-own':''}" data-v6145-profile="${esc(p?.id||'')}"><div class="v6145-podium-top"><span class="v6145-medal">${medal(r)}</span><span class="v6145-pos">#${r}</span></div><div class="v6145-podium-body">${framedAvatar(p,'v6145-podium-avatar')}<div class="v6145-podium-name">${esc(p?.character_name||'Spieler')}</div><div class="v6145-podium-meta">${esc(p?.class_name||'')} · Lv. ${Math.max(1,num(p?.level))}</div><div class="v6145-podium-power">⚔ ${num(p?.combat_power)} · 🌿 ${num(p?.pvp_buds)}</div></div></article>`}).join('')}</div>`;
+   return `<div class="v6145-podium">${(rows||[]).map((p,i)=>{const r=i+1;return `<article class="v6145-podium-card rank-${r} ${String(p?.id||'')===me?'v6145-own':''}" data-v6145-profile="${esc(p?.id||'')}"><div class="v6145-podium-top"><span class="v6145-medal">${medal(r)}</span><span class="v6145-pos">#${r}</span></div><div class="v6145-podium-body">${podiumAvatar(p)}<div class="v6145-podium-name">${esc(p?.character_name||'Spieler')}</div><div class="v6145-podium-meta">${esc(p?.class_name||'')} · Lv. ${Math.max(1,num(p?.level))}</div><div class="v6145-podium-power">⚔ ${num(p?.combat_power)} · 🌿 ${num(p?.pvp_buds)}</div></div></article>`}).join('')}</div>`;
  }
  function modeBar(){return `<div class="v6145-modebar"><button type="button" class="v6145-mode-btn ${state.mode==='page'?'active':''}" data-v6145-mode="page">🏆 Rangliste</button><button type="button" class="v6145-mode-btn" data-v6145-mode="mine">🎯 Mein Rang</button><button type="button" class="v6145-mode-btn ${state.mode==='near'?'active':''}" data-v6145-mode="near">👥 Mein Umfeld</button></div>`}
  function rankHint(){return state.ownRank?`Dein Rang #${state.ownRank} · ${state.total} Spieler`:`${state.total} Spieler`}
