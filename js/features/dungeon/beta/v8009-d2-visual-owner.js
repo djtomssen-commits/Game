@@ -56,7 +56,10 @@
       bg:liveAsset(`${assetRoot}/d${number}_bg.jpg`),
       art:Array.from({length:9},(_,i)=>liveAsset(`${assetRoot}/d${number}_${i+1}.png`)),
       bossArt:liveAsset(`${assetRoot}/d${number}_boss.png`),
-      bossFallback:raw.bossArt||''
+      /* D1-D9 currently have no packaged dN_boss.png files. Keep the known
+         historical boss art as a visual-only fallback; D2's archived v467
+         boss asset is verified to exist in the repository. */
+      bossFallback:raw.bossArt||(number===2?'assets/v7195-base64/10036d96d08155bdc84a.svg':'')
     };
   }
   function assetFor(c,ri){return c?(ri===9?c.bossArt:c.art?.[ri]):''}
@@ -330,9 +333,12 @@
       const ring=node?.querySelector('.v261-ring');
       if(!ring)continue;
       const art=room===9?c.bossArt:c.art[room];
+      const fallback=fallbackFor(c,room);
       preloadAsset(art);
-      setMapNodeArt(ring,art,'');
+      if(fallback)preloadAsset(fallback);
+      setMapNodeArt(ring,art,fallback);
       node.dataset.glDungeonAsset=plainAsset(art);
+      if(fallback)node.dataset.glDungeonFallback=plainAsset(fallback);
     }
 
     const thumb=card.querySelector('.v261-thumb');
