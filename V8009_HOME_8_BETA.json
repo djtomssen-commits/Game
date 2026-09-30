@@ -1,0 +1,24 @@
+{
+  "build": "V8.009-HOME-8-BETA",
+  "phase": "Startseite weather catch-up cleanup and route audit",
+  "scope": "beta only",
+  "findings": [
+    "Live weather already repaints the mounted Startseite weather widget directly through paintWeatherSlots().",
+    "V366's full-home signature still retained the old weather fields, so a later unrelated v085InstallWorld(false) could rebuild the whole Startseite merely to catch the signature up.",
+    "The current home route surface was also statically checked: quests, dungeon, tower, grow, forge, shop and guild use data-go; referral has its global data-referral-open owner; worldboss/book keep their dedicated APIs."
+  ],
+  "changes": [
+    "Before a non-forced V085 home render, beta verifies that the visible weather widget already exactly matches GL_WEATHER.",
+    "Only then are V366 signature fields 25-28 (kind, label, rounded temperature, bonus text) synchronized.",
+    "That lets V366's own signature dedupe skip a needless full-home catch-up rebuild.",
+    "Added route diagnostics for the current Startseite buttons/APIs; no navigation behavior was changed."
+  ],
+  "diagnostics": "window.v8009HomeHeaderDiagnostics() now reports weatherSignatureSyncs, weatherCatchupRendersAvoided and routeAudit.",
+  "file": "js/system/performance/v7288-home-adaptive-fit-script.js",
+  "file_sha": "b97c011e61611515fcb18bdb0c18ef19efaeaa66",
+  "commit": "2791c5729f99247cb832b54b360bd899ce8fde08",
+  "stable_behavior_changed": false,
+  "gameplay_changed": false,
+  "server_authority_changed": false,
+  "syntax_check": "ok"
+}
