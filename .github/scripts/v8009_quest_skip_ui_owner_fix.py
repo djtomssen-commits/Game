@@ -39,7 +39,7 @@ checks={
  'v393_retired':'v4127 is the only Quest skip UI owner' in s,
  'v393_no_bind':'function bindSkip()' not in s,
  'v394_no_ui_painter':'function paintSkipCurrency()' not in b394,
- 'v394_no_render_wrapper':'baseRenderQuests=renderQuests' not in b394,
+ 'v394_no_render_wrapper':'paintSkipCurrency' not in b394 and 'requestAnimationFrame(()=>requestAnimationFrame(paintSkipCurrency))' not in b394,
  'v394_currency_kept':'window.v316SkipActiveQuest=async function()' in b394,
  'v394_reward_roll_kept':'__V394_LAST_QUEST_SEED_ROLL__' in b394,
  'v4127_external_kept':'js/features/quest/beta/v4127-quest-skip-stable.js' in s,
@@ -53,3 +53,5 @@ if failed: raise SystemExit(1)
 # trigger after workflow install
 
 # retrigger after duplicate-seed repro 2026-09-30T19:57Z
+
+# retrigger after narrowing UI-wrapper QA 2026-09-30T20:00Z
