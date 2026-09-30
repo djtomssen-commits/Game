@@ -148,6 +148,7 @@
 
     const art=host.querySelector('.v386-scene-art');
     if(art)art.innerHTML='';
+    try{window.v6344DecorateQuestCard?.(activeCard,q)}catch(_){}
 
     const claim=host.querySelector('#v392ClaimQuest');
     if(claim){
