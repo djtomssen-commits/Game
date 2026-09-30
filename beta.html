@@ -35240,23 +35240,9 @@ v067BindWorldMap=function(){
 };
 
 
-/* Repaint the currently open detail map if necessary. */
-setTimeout(()=>{
-  try{
-    if(
-      document.querySelector('#dungeon')?.classList.contains('active') &&
-      s.dungeon?.layer==='dungeon' &&
-      s.dungeon?.view==='map'
-    ){
-      v244RenderSelectedDungeonMap();
-    }
-  }catch(e){}
-
-  document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V4.29 Stable');
-
-  const line=document.querySelector('#v141VersionLine');
-},520);
+/* V8.009 D5: delayed 520 ms detail repaint retired.
+   The canonical D2/v261 owner renders the active 10er map; a later v244
+   repaint can replace the correct background/enemy art with legacy DOM. */
 </script>
 
 
