@@ -10,34 +10,36 @@
 - Aktuelle Beta-Linie: **V8.009**
 - Arbeitsbranch: **main**
 - Letzter automatisiert geprüfter Code-Commit vor dieser Statusdatei:
-  `ce1f938e5cfe1382f783e4b0d0d4c9ac6982e144`
+  `ab87ae23091b7f6e0007cd35bc691f9fdcd69649`
 - Aktuelle Unterphase: **V8.009-DUNGEON-D5-BETA**
 - D5 Anlass: reproduzierbarer 10er-Karten-Render-Race aus Nutzer-Video.
 - Sichtbares Fehlerbild:
   - zunächst korrekter Dungeon-Hintergrund + Gegnergrafiken;
-  - ca. 1 Sekunde später Umsprung auf schwarzen/vereinfachten Legacy-Render.
+  - danach Umsprung auf schwarzen/vereinfachten Legacy-Render.
 - D5 Audit-Commit: `d28127ed375259a0c40e2f418e1059299a1e8282`
-- Gefundene Ursache:
-  - mehrere Legacy-Layer halten direkte Aliase auf `v251RenderDetail` / `v244RenderSelectedDungeonMap` / `v064RenderMap`;
-  - `v7051-atomic-dungeon-receipt-client` ruft bei späteren Refreshes direkt `v251RenderDetail()` auf;
-  - der bisherige v7166-Lock reparierte nach Legacy-Rendern nur Assets/Klassen, erzwang aber **nicht einen einzigen Detail-DOM-Owner**;
-  - dadurch konnte ein späterer Legacy-Detailrenderer die bereits korrekt gerenderte v261/D2-Karte wieder ersetzen.
-- D5 Fix:
+- Erste D5 Owner-Lock-Fixes:
   - `6d869d91d91aa1352c16c231506e03860a1e2d2d`
-    - v7166 hält `v251RenderDetail`, `v244RenderSelectedDungeonMap`, `v064RenderMap` und `v260RenderDetail` auf dem kanonischen v261-Detailowner;
-    - Re-Lock bei Boot, Click, Navigation, Foreground und Pageshow.
   - `41f369a22d975dfae48f97b04ec7eb0a0686565e`
-    - D2-Dispatcher bevorzugt explizit den kanonischen/v261 Detailowner vor historischen Aliasen.
-- D5 QA-Workflow: **grün**
-  - Commit: `ce1f938e5cfe1382f783e4b0d0d4c9ac6982e144`
-  - JS-Syntax grün;
-  - Canonical-Alias-Lock vorhanden;
-  - D2-Dispatcher-Priorität korrekt;
-  - Beta-Includes genau einmal;
-  - Stable lädt die Beta-D5-Dateien nicht.
+  - automatisierte QA grün.
+- Manueller Repro danach: **Fehler weiterhin vorhanden**.
+- Zweite D5 Ursachenanalyse:
+  - `v251-modern-dungeon-maps-core` enthielt einen eigenen verzögerten Repaint nach **1350 ms**;
+  - `v244-dungeon-detail-map-final` enthielt einen weiteren verzögerten Repaint nach **520 ms**;
+  - beide Repaints riefen historische Detailrenderer nach dem bereits korrekten D2/v261-Render erneut auf;
+  - diese direkten Legacy-Repaints konnten den Alias-Lock umgehen bzw. bereits gecapturete alte Funktionen ausführen.
+- Zweite D5 Fixes:
+  - `07c4e371444fba487da6300394533a26a3c090a8`
+    - 1350-ms-v251-Dungeon-Repaint stillgelegt;
+  - `ab87ae23091b7f6e0007cd35bc691f9fdcd69649`
+    - 520-ms-v244-Dungeon-Repaint stillgelegt.
+- QA:
+  - Fix-Workflow vollständig **grün**;
+  - v251 JS-Syntax grün;
+  - v244 delayed repaint nachweislich entfernt;
+  - Stable unverändert.
 - Gameplay/Combat-Math/Rewards/Serverautorität: **nicht verändert**
-- D5 Status: **Code-Fix + automatisierte QA erfolgreich; manueller Repro-Test auf Gerät noch offen**
-- Nächster Schritt: 10er-Karte auf Beta erneut öffnen und mindestens 2–3 Sekunden beobachten; sie darf nach dem korrekten Render nicht mehr auf Legacy/Schwarz springen.
+- D5 Status: **zweiter Code-Fix + automatisierte QA erfolgreich; manueller Repro-Test erneut offen**
+- Nächster Schritt: dieselbe 10er-Karte erneut öffnen und mindestens 2–3 Sekunden beobachten.
 - Scope: **Beta zuerst**
 - **Server 1 / Stable bleibt unangetastet**, bis eine Phase ausdrücklich für Stable freigegeben wird.
 
@@ -151,25 +153,22 @@ Für jedes System gilt:
 
 ## 4. EXAKTER nächster Schritt
 
-### V8.009-DUNGEON-D5-BETA – manueller Repro-Test
+### V8.009-DUNGEON-D5-BETA – Repro-Test nach Delayed-Repaint-Fix
 
-Der Code-Fix ist automatisiert grün. Bevor D5 als vollständig abgeschlossen gilt:
-
-1. Beta auf dem Gerät öffnen;
+1. Beta öffnen;
 2. Dungeonwelt → 10er-Karte wechseln;
-3. mindestens 2–3 Sekunden auf derselben 10er-Karte bleiben;
-4. zusätzlich einmal zurück zur Dungeonwelt und dieselbe/andere 10er-Karte erneut öffnen;
+3. mindestens 3 Sekunden auf der Karte bleiben;
+4. besonders auf die ersten 0,5–1,5 Sekunden achten;
 5. prüfen:
-   - richtiger Dungeon-Hintergrund bleibt dauerhaft sichtbar;
-   - Gegnerbilder bleiben sichtbar;
-   - kein Umsprung auf schwarzen/vereinfachten Legacy-Render;
-   - Nodes, Boss, aktuelle Gegnerkarte und Angriffsbutton bleiben korrekt;
-6. wenn der Fehler weg ist:
-   - D5 als vollständig abgeschlossen markieren;
-   - mit D6 fortfahren: verbliebene redundante Detail-Owner (zuerst v260) kontrolliert stilllegen;
-7. wenn der Fehler noch auftritt:
-   - neuen Repro-Zeitpunkt/Video verwenden;
-   - D5 bleibt offen und der nächste verspätete Schreiber wird aus dem Audit isoliert.
+   - korrekter Hintergrund bleibt;
+   - Gegnerbilder bleiben;
+   - kein schwarzer/vereinfachter Legacy-Umsprung;
+6. wenn stabil:
+   - D5 vollständig abschließen;
+   - D6: v260 als redundanten Detail-Owner kontrolliert stilllegen;
+7. wenn weiterhin Umsprung:
+   - D5 offen lassen;
+   - den nächsten verbleibenden späteren DOM-Schreiber anhand des bestehenden D5-Audits isolieren.
 
 ### Statusdatei-Regel
 
