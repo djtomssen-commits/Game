@@ -112,16 +112,16 @@
     return '✨';
   }
 
-  function bossCardHtml(bossActive){
+  function bossCardHtml(bossActive,bossFreeReady=true){
     return `        <article class="v366-panel v366-feature boss ${bossActive?'v6115-boss-open':'v6115-boss-closed'}">
           <h2>Weltboss</h2>
           <div class="v366-feature-art v6118-boss-art">
             ${bossActive?`<span class="v6118-boss-live"><i></i> EVENT AKTIV</span>
             <div class="v6123-boss-overlay"><small>Mystischer Weltboss</small><b>Smaragd-Koloss</b></div>`:`<div class="v6123-boss-overlay v6123-boss-overlay-closed"><small>Der Slot ruht</small><b>Kein Weltboss aktiv</b></div>`}
           </div>
-          <div class="v6118-boss-name">${bossActive?(bossFree()?'Gratisversuch verfügbar':'Mystischer Boss ist offen'):'Das nächste Boss-Event abwarten'}</div>
-          <div class="v690-mini-status v6115-boss-status">${bossActive?(bossFree()?'1 Gratisversuch bereit':'Nächster Versuch · 10 Harz-Taler'):'Sobald das Event aktiv ist, kannst du den Koloss herausfordern'}</div>
-          <button class="v366-go" data-boss="1" ${bossActive?'':'disabled'}>${bossActive?(bossFree()?'Öffnen':'Herausfordern'):'Geschlossen'}</button>
+          <div class="v6118-boss-name">${bossActive?(bossFreeReady?'Gratisversuch verfügbar':'Mystischer Boss ist offen'):'Das nächste Boss-Event abwarten'}</div>
+          <div class="v690-mini-status v6115-boss-status">${bossActive?(bossFreeReady?'1 Gratisversuch bereit':'Nächster Versuch · 10 Harz-Taler'):'Sobald das Event aktiv ist, kannst du den Koloss herausfordern'}</div>
+          <button class="v366-go" data-boss="1" ${bossActive?'':'disabled'}>${bossActive?(bossFreeReady?'Öffnen':'Herausfordern'):'Geschlossen'}</button>
         </article>`;
   }
 
@@ -153,11 +153,12 @@
     card.replaceWith(template.content.firstElementChild);
     count.textContent=ev.length?`${ev.length} aktiv`:'Alles ruhig';
     if(bossActive!==previousBossActive){
-      template.innerHTML=bossCardHtml(bossActive);
+      const bossFreeReady=bossActive?bossFree():true;
+      template.innerHTML=bossCardHtml(bossActive,bossFreeReady);
       const next=template.content.firstElementChild;
       boss.replaceWith(next);
       bindBossButtons(next);
-      goal.textContent=bossActive?(bossFree()?'Offen · Gratis':'Offen · 10 Harz'):'Geschlossen';
+      goal.textContent=bossActive?(bossFreeReady?'Offen · Gratis':'Offen · 10 Harz'):'Geschlossen';
     }
     diagnostics.eventPanelPatches++;
     return true;
@@ -258,6 +259,9 @@
   function worldHtml(view=homeViewSnapshot()){
     const {name,power,dg,grow,ac,ev,hc,pets,bossActive}=view;
     const avatar=avatarSrc();
+    const firstQuestReady=firstQuest();
+    const dungeonFreeReady=dungeonFree();
+    const bossFreeReady=bossActive?bossFree():true;
     const xp=Math.max(0,Number(s?.xp)||0),need=xpNeedSafe(),pct=Math.max(0,Math.min(100,xp/need*100));
     const twSeason=(s?.tower?.season&&typeof s.tower.season==='object')?s.tower.season:{};
     const twRun=(s?.tower?.run&&typeof s.tower.run==='object'&&s.tower.run.active)?s.tower.run:null;
@@ -316,13 +320,13 @@
 
       <section class="v366-lower">
         <article class="v366-panel v690-goals-panel"><div class="v366-goals-title">Tagesziele</div><div class="v366-goals">
-          <div class="v366-goal"><i>📜</i><div><b>Erste Quest</b><span>${firstQuest()?'+2 Harz':'Erledigt ✓'}</span></div></div>
-          <div class="v366-goal"><i>⚔️</i><div><b>Dungeon</b><span>${dungeonFree()?'Bereit':'Cooldown'}</span></div></div>
-          <div class="v366-goal"><i>💎</i><div><b>Koloss</b><span>${bossActive?(bossFree()?'Offen · Gratis':'Offen · 10 Harz'):'Geschlossen'}</span></div></div>
+          <div class="v366-goal"><i>📜</i><div><b>Erste Quest</b><span>${firstQuestReady?'+2 Harz':'Erledigt ✓'}</span></div></div>
+          <div class="v366-goal"><i>⚔️</i><div><b>Dungeon</b><span>${dungeonFreeReady?'Bereit':'Cooldown'}</span></div></div>
+          <div class="v366-goal"><i>💎</i><div><b>Koloss</b><span>${bossActive?(bossFreeReady?'Offen · Gratis':'Offen · 10 Harz'):'Geschlossen'}</span></div></div>
           <div class="v366-goal"><i>⭐</i><div><b>Erfolge</b><span>${ac.done}/${ac.total||'—'}</span></div></div>
         </div></article>
 
-        ${bossCardHtml(bossActive)}
+        ${bossCardHtml(bossActive,bossFreeReady)}
 
         <article class="v366-panel v366-feature book"><h2>Illegales Buch</h2><div class="v366-feature-art"></div><div class="v690-mini-status">⭐ ${ac.done}/${ac.total||'—'} Erfolge</div><button class="v366-go" data-book="1">Öffnen</button></article>
 
@@ -429,7 +433,7 @@
     finalizeOwnedWorld(world);
   }
 
-  window.v8009HomeEventDiagnostics=()=>({version:'V8.009-HOME-22',...diagnostics,events:events().map(x=>({...x})),worldBossActive:worldBossEventActive()});
+  window.v8009HomeEventDiagnostics=()=>({version:'V8.009-HOME-23',...diagnostics,events:events().map(x=>({...x})),worldBossActive:worldBossEventActive()});
 
   /* Re-own only the world installer; do not touch core game render/persist. */
   v085WorldHtml=worldHtml;

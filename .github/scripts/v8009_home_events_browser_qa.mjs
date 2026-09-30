@@ -23,7 +23,7 @@ async function fixture(time,{quiet=0,channel='beta',helper=true,playerClass='gro
   window.v073User={id:'qa-a'};
   window.classSets={};
   window.v093Events=[];window.v271EventDataReady=false;
-  window.qa={quests:0,gold:0,xp:0,paints:0,persists:0,bossOpens:0,intervals:0,nav:[],goldShop:0,dungeonCalls:0,petCalls:0};
+  window.qa={quests:0,gold:0,xp:0,paints:0,persists:0,bossOpens:0,bossResetCalls:0,intervals:0,nav:[],goldShop:0,dungeonCalls:0,petCalls:0};
   window.qaQuietUntil=Date.now()+quiet;
   window.v7204StartupQuietRemaining=()=>Math.max(0,qaQuietUntil-Date.now());
   window.v7204StartupQuiet=()=>v7204StartupQuietRemaining()>0;
@@ -31,7 +31,7 @@ async function fixture(time,{quiet=0,channel='beta',helper=true,playerClass='gro
   window.setInterval=(...args)=>{qa.intervals++;return nativeInterval(...args)};
   window.v094XpEventActive=()=>false;window.v274GoldEventActive=()=>false;
   window.v271DampfEventActive=()=>false;window.v271ActiveDampfEvent=()=>null;
-  window.v110MysticEventActive=()=>false;window.v120ActiveWorldBossEvent=()=>null;
+  window.v110MysticEventActive=()=>false;window.v120ActiveWorldBossEvent=()=>null;window.v110ResetDay=()=>{qa.bossResetCalls++};
   window.v271DampfCap=()=>v271DampfEventActive()?300:100;
   window.v271PaintDampf=()=>{qa.paints++;s.energy=Math.min(v271DampfCap(),s.energy)};
   window.v093LoadPublicContent=async()=>true;
@@ -218,6 +218,33 @@ try{
  assert.deepEqual({active:canonicalState.snapshot.active,ready:canonicalState.snapshot.ready},{active:2,ready:1});
  checks.push('canonical renderer owns Frost 7-slot checklist and weather-aware Growroom status');
  await canonical.close();
+ const bossFreePaint=await fixture('2026-09-30T12:00:00+02:00');
+ await bossFreePaint.clock.runFor(300);
+ await bossFreePaint.evaluate(()=>{
+  qa.bossResetCalls=0;
+  window.v110MysticEventActive=()=>true;
+  s.gold+=1;
+  v085InstallWorld(false);
+ });
+ await bossFreePaint.clock.runFor(50);
+ let bossPaintState=await bossFreePaint.evaluate(()=>({
+  resetCalls:qa.bossResetCalls,
+  bossName:document.querySelector('.v6118-boss-name')?.textContent,
+  bossStatus:document.querySelector('.v6115-boss-status')?.textContent,
+  bossButton:document.querySelector('[data-boss]')?.textContent,
+  goal:document.querySelector('.v366-goals .v366-goal:nth-child(3) span')?.textContent
+ }));
+ assert.equal(bossPaintState.resetCalls,1,'Full worldboss paint must run the daily reset helper once');
+ assert.deepEqual([bossPaintState.bossName,bossPaintState.bossStatus,bossPaintState.bossButton,bossPaintState.goal],['Gratisversuch verfügbar','1 Gratisversuch bereit','Öffnen','Offen · Gratis']);
+ await bossFreePaint.evaluate(()=>{window.v110MysticEventActive=()=>false;v085InstallWorld(false)});
+ await bossFreePaint.clock.runFor(20);
+ await bossFreePaint.evaluate(()=>{qa.bossResetCalls=0;window.v110MysticEventActive=()=>true;v085InstallWorld(false)});
+ await bossFreePaint.clock.runFor(20);
+ bossPaintState=await bossFreePaint.evaluate(()=>({resetCalls:qa.bossResetCalls,goal:document.querySelector('.v366-goals .v366-goal:nth-child(3) span')?.textContent}));
+ assert.equal(bossPaintState.resetCalls,1,'Event-only worldboss paint must run the daily reset helper once');
+ assert.equal(bossPaintState.goal,'Offen · Gratis');
+ checks.push('worldboss free-attempt state is calculated once per full or event-only paint');
+ await bossFreePaint.close();
  const snapshotReuse=await fixture('2026-09-30T12:00:00+02:00');
  await snapshotReuse.clock.runFor(300);
  await snapshotReuse.evaluate(()=>{qa.dungeonCalls=0;qa.petCalls=0;s.gold+=1;v085InstallWorld(false)});
@@ -286,7 +313,7 @@ try{
  assert.equal(versionState.visible,'"V8.009"','Canonical renderer must override historical V8.001 pseudo-element CSS');
  assert.equal(versionState.styleCount,1,'Version override style must be installed exactly once');
  assert.equal(versionState.legacy,'SERVER-VERSION-SENTINEL','Home renderer must not rewrite unrelated legacy version nodes');
- assert.equal(versionState.diag?.version,'V8.009-HOME-22');
+ assert.equal(versionState.diag?.version,'V8.009-HOME-23');
  assert.equal(versionState.diag?.versionStyleInstalls,1);
  checks.push('canonical home renderer owns visible V8.009 style without lifecycle rewrites');
  await versionOwner.close();

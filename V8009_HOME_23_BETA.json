@@ -1,0 +1,26 @@
+{
+  "build": "V8.009-HOME-23-BETA",
+  "phase": "Worldboss daily-status render cleanup",
+  "scope": "beta only",
+  "base_commit": "c21e0256f20031977d3eafe3011d13800524acb3",
+  "findings": [
+    "When the mystic worldboss was active, one full Startseite paint called bossFree three times inside the boss card plus once for Tagesziele.",
+    "bossFree invokes v110ResetDay, so a purely visual render repeated the daily-reset helper up to four times.",
+    "The event-only boss panel path also repeated the same helper."
+  ],
+  "changes": [
+    "A full home paint now calculates the worldboss free-attempt state once and reuses it for the boss name, status, button and Tagesziel.",
+    "An event-only boss activation also calculates that state once and reuses it for the patched boss card and goal.",
+    "First-quest and dungeon-ready statuses are likewise captured once within a full worldHtml paint instead of being called inline.",
+    "No reward, attempt, reset rule or server state is changed."
+  ],
+  "files": [
+    "js/features/home/beta/v8009-home-renderer.js",
+    "js/system/performance/v7288-home-adaptive-fit-script.js",
+    ".github/scripts/v8009_home_events_browser_qa.mjs"
+  ],
+  "stable_behavior_changed": false,
+  "gameplay_changed": false,
+  "rewards_changed": false,
+  "server_authority_changed": false
+}
