@@ -256,6 +256,7 @@ try{
       try{window.v386RenderQuestShell?.()}catch(_){}
       try{window.v392PaintActive?.()}catch(_){}
       try{window.v4172EnhanceQuestPage?.()}catch(_){}
+      try{window.v4222RenderElitePanel?.()}catch(_){}
       try{window.v233BindClaimButton?.()}catch(_){}
       try{window.v4127ScheduleQuestSkip?.()}catch(_){}
       schedule();
