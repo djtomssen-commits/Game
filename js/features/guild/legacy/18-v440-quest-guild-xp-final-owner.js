@@ -1,6 +1,7 @@
 /* === v440-quest-guild-xp-final-owner === */
 (function(){
   const VERSION='V4.40 Stable', SHORT='V4.40';
+  const IS_BETA=String(window.GROW_RELEASE_CHANNEL||'stable')==='beta';
   let suppressLegacyQuestRpc=false;
 
   function toast(title,type,detail){
@@ -89,6 +90,15 @@
     }
   }
   window.v440AwardQuestGuildXp=awardQuestGuildXp;
+
+  /* V8.009 Quest consolidation:
+     Beta uses v6140 as the single Quest completion event source and v474/v7045
+     for Guild-XP/server side effects. Keep the historical V4.40 owner only for
+     Stable/legacy builds so Beta does not add another claim wrapper/RPC guard. */
+  if(IS_BETA){
+    window.__V8009_QUEST_V440_RETIRED__=true;
+    return;
+  }
 
   /* This is the actual final reward-button owner in the current quest system. */
   if(typeof v233ClaimQuest==='function'&&!window.__v440QuestClaimWrapped){
