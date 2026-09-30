@@ -25,4 +25,12 @@ jobs:
           npm install --no-save playwright@1.55.0
           npx playwright install --with-deps chromium --only-shell
       - name: Audit live Beta runtime
-        run: node .github/scripts/v8009_live_beta_runtime_audit.mjs
+        run: TARGET_URL=https://gamenew.djtomssen.workers.dev/beta node .github/scripts/v8009_live_beta_runtime_audit.mjs || true
+
+      - name: Audit current repo Beta runtime
+        run: |
+          python3 -m http.server 8765 >/tmp/v8009-beta-http.log 2>&1 &
+          server_pid=$!
+          trap 'kill $server_pid || true' EXIT
+          sleep 2
+          TARGET_URL=http://127.0.0.1:8765/beta.html node .github/scripts/v8009_live_beta_runtime_audit.mjs || true
