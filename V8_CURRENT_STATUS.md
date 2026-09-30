@@ -9,33 +9,36 @@
 - Projekt: **Grow Legends**
 - Aktuelle Beta-Linie: **V8.009**
 - Arbeitsbranch: **main**
-- Letzter vollständig geprüfter Code-Commit vor dieser Statusdatei:
-  `52723a2191f29c67b8a20e3e252ac9b598967db6`
-- Letzte vollständig abgeschlossene Unterphase: **V8.009-DUNGEON-D4-BETA**
-- D4 Ergebnis: **erfolgreich**
-- D4 Extraktionscommit: `52723a2191f29c67b8a20e3e252ac9b598967db6`
-- D4 Workflow/QA: **grün**
-- D4 ausgelagert:
-  - `v251-modern-dungeon-maps-style` → `css/features/dungeon/beta/v8009-d4-v251-modern-maps.css`
-  - `v251-modern-dungeon-maps-core` → `js/features/dungeon/beta/v8009-d4-v251-modern-maps.js`
-  - `v260-dungeon-detail-style` → `css/features/dungeon/beta/v8009-d4-v260-detail.css`
-  - `v260-dungeon-detail-script` → `js/features/dungeon/beta/v8009-d4-v260-detail.js`
-  - `v261-dungeon-detail-style` → `css/features/dungeon/beta/v8009-d4-v261-detail.css`
-  - `v261-dungeon-detail-script` → `js/features/dungeon/beta/v8009-d4-v261-detail.js`
-- D4 Umfang: ca. **66 KB** Inline-Code aus `beta.html` entfernt.
-- `beta.html` danach: **6076288 Byte** statt **6142744 Byte**
-- Quellreihenfolge der sechs Legacy-Kerne: **1:1 erhalten**
-- JS-Syntax der drei extrahierten Scripts: **grün**
-- Aktuelle Owner-Erkenntnis:
-  - D2 ersetzt `renderDungeon` durch den kanonischen Dispatcher und umgeht die historische Render-Wrapper-Kette.
-  - Weltkarte: D2 ruft weiterhin bevorzugt `window.v251RenderWorld` auf → **v251 World ist aktiv**.
-  - Detailkarte: `v261-dungeon-detail-script` überschreibt `window.v251RenderDetail`, `v244RenderSelectedDungeonMap` und `v064RenderMap` mit `v261RenderDetail` → **v261 Detail ist aktiv**.
-  - `v260RenderDetail` wird danach von v261 als Owner überschrieben und ist damit ein **Retirement-Kandidat**, aber noch nicht gelöscht.
-  - Der v251-Block enthält zusätzlich `v251StartCurrentDungeonFight`, den v261 weiterhin benutzt; v251 darf daher nicht pauschal entfernt werden.
-- D2/D3-Owner-Kette: **unverändert erhalten**
-- Gameplay/Combat-Math/Rewards/Serverautorität: **unverändert**
-- Aktuell in Arbeit / nächster Schritt: **V8.009-DUNGEON-D5-BETA**
-- Scope der laufenden Strukturierungsarbeit: **Beta zuerst**
+- Letzter automatisiert geprüfter Code-Commit vor dieser Statusdatei:
+  `ce1f938e5cfe1382f783e4b0d0d4c9ac6982e144`
+- Aktuelle Unterphase: **V8.009-DUNGEON-D5-BETA**
+- D5 Anlass: reproduzierbarer 10er-Karten-Render-Race aus Nutzer-Video.
+- Sichtbares Fehlerbild:
+  - zunächst korrekter Dungeon-Hintergrund + Gegnergrafiken;
+  - ca. 1 Sekunde später Umsprung auf schwarzen/vereinfachten Legacy-Render.
+- D5 Audit-Commit: `d28127ed375259a0c40e2f418e1059299a1e8282`
+- Gefundene Ursache:
+  - mehrere Legacy-Layer halten direkte Aliase auf `v251RenderDetail` / `v244RenderSelectedDungeonMap` / `v064RenderMap`;
+  - `v7051-atomic-dungeon-receipt-client` ruft bei späteren Refreshes direkt `v251RenderDetail()` auf;
+  - der bisherige v7166-Lock reparierte nach Legacy-Rendern nur Assets/Klassen, erzwang aber **nicht einen einzigen Detail-DOM-Owner**;
+  - dadurch konnte ein späterer Legacy-Detailrenderer die bereits korrekt gerenderte v261/D2-Karte wieder ersetzen.
+- D5 Fix:
+  - `6d869d91d91aa1352c16c231506e03860a1e2d2d`
+    - v7166 hält `v251RenderDetail`, `v244RenderSelectedDungeonMap`, `v064RenderMap` und `v260RenderDetail` auf dem kanonischen v261-Detailowner;
+    - Re-Lock bei Boot, Click, Navigation, Foreground und Pageshow.
+  - `41f369a22d975dfae48f97b04ec7eb0a0686565e`
+    - D2-Dispatcher bevorzugt explizit den kanonischen/v261 Detailowner vor historischen Aliasen.
+- D5 QA-Workflow: **grün**
+  - Commit: `ce1f938e5cfe1382f783e4b0d0d4c9ac6982e144`
+  - JS-Syntax grün;
+  - Canonical-Alias-Lock vorhanden;
+  - D2-Dispatcher-Priorität korrekt;
+  - Beta-Includes genau einmal;
+  - Stable lädt die Beta-D5-Dateien nicht.
+- Gameplay/Combat-Math/Rewards/Serverautorität: **nicht verändert**
+- D5 Status: **Code-Fix + automatisierte QA erfolgreich; manueller Repro-Test auf Gerät noch offen**
+- Nächster Schritt: 10er-Karte auf Beta erneut öffnen und mindestens 2–3 Sekunden beobachten; sie darf nach dem korrekten Render nicht mehr auf Legacy/Schwarz springen.
+- Scope: **Beta zuerst**
 - **Server 1 / Stable bleibt unangetastet**, bis eine Phase ausdrücklich für Stable freigegeben wird.
 
 ### Wichtige Einordnung der Namen
@@ -148,32 +151,25 @@ Für jedes System gilt:
 
 ## 4. EXAKTER nächster Schritt
 
-### Nächste Unterphase: V8.009-DUNGEON-D5-BETA
+### V8.009-DUNGEON-D5-BETA – manueller Repro-Test
 
-D4 ist abgeschlossen. Die alten v251/v260/v261-Kerne sind nun extern und können erstmals sauber gegeneinander auditiert werden.
+Der Code-Fix ist automatisiert grün. Bevor D5 als vollständig abgeschlossen gilt:
 
-1. aktuellen `main`-HEAD lesen;
-2. repo-weit die tatsächlichen Abhängigkeiten von `v260RenderDetail`, den `v260d-*`-DOM-Klassen und den beiden v260-D4-Dateien erfassen;
-3. belegen, ob außerhalb des v260-Owners noch aktiver Runtime-Code von v260 abhängt;
-4. gleichzeitig die kanonische Laufzeitkette festhalten:
-   - Welt → `v251RenderWorld`
-   - Detail → `v261RenderDetail`
-   - Kampf → D1 Combat-Renderer / D2 Dispatcher
-   - Reward → Rückkehr über D2 Lifecycle-Sync;
-5. wenn der Repo-Audit **keine notwendige v260-Abhängigkeit** findet:
-   - v260 als ersten historischen Detail-Owner kontrolliert aus der Beta-Ladekette nehmen;
-   - die Dateien zunächst behalten, nicht löschen;
-   - prüfen, dass v261 direkt und unverändert Owner bleibt;
-6. wenn noch notwendige v260-Abhängigkeiten existieren:
-   - v260 nicht deaktivieren;
-   - Abhängigkeiten im D5-Manifest dokumentieren und nur den nächsten eindeutig redundanten Patch wählen;
-7. Tests:
-   - D2/D3/D4 Includes und Reihenfolge,
-   - JS-Syntax,
-   - keine doppelte aktive Detail-Owner-Zuweisung nach Bootstrap,
-   - Stable/Server 1 unverändert,
-   - keine Änderung an Gameplay, Combat-Math, Rewards oder Serverautorität;
-8. danach Statusdatei auf D5-Ergebnis und exakten D6-Schritt aktualisieren.
+1. Beta auf dem Gerät öffnen;
+2. Dungeonwelt → 10er-Karte wechseln;
+3. mindestens 2–3 Sekunden auf derselben 10er-Karte bleiben;
+4. zusätzlich einmal zurück zur Dungeonwelt und dieselbe/andere 10er-Karte erneut öffnen;
+5. prüfen:
+   - richtiger Dungeon-Hintergrund bleibt dauerhaft sichtbar;
+   - Gegnerbilder bleiben sichtbar;
+   - kein Umsprung auf schwarzen/vereinfachten Legacy-Render;
+   - Nodes, Boss, aktuelle Gegnerkarte und Angriffsbutton bleiben korrekt;
+6. wenn der Fehler weg ist:
+   - D5 als vollständig abgeschlossen markieren;
+   - mit D6 fortfahren: verbliebene redundante Detail-Owner (zuerst v260) kontrolliert stilllegen;
+7. wenn der Fehler noch auftritt:
+   - neuen Repro-Zeitpunkt/Video verwenden;
+   - D5 bleibt offen und der nächste verspätete Schreiber wird aus dem Audit isoliert.
 
 ### Statusdatei-Regel
 
