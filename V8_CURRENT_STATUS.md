@@ -10,7 +10,7 @@
 - Aktuelle Beta-Linie: **V8.009**
 - Arbeitsbranch: **main**
 - Letzter automatisiert geprüfter Code-Commit vor dieser Statusdatei:
-  `674cad87ffe5c49d1e7ee2f1dfe617c6a075bfb9`
+  `3cf52f01dd8bb7180c293824a784c2476c2793fd`
 - Aktuelle Unterphase: **V8.009-DUNGEON-D5-BETA**
 - Nutzer-Video bestätigt: betroffen ist konkret **Dungeon 2**.
 - Sichtbares Fehlerbild:
@@ -75,8 +75,27 @@
   - v7144 Load-State-Guard vorhanden;
   - Stable unverändert.
 - Gameplay/Combat-Math/Rewards/Serverautorität: **nicht verändert**
-- D5 Status: **Asset-Ladefehler/Fallback-Pfad korrigiert; manueller Dungeon-2-Repro-Test erneut offen**
-- Nächster Schritt: Dungeon 2 erneut öffnen; Hintergrund und Gegnerbilder dürfen auch bei fehlgeschlagenem v474-Asset-Load nicht mehr verschwinden.
+- Manueller Repro nach Asset-Fallback-Fix:
+  - Dungeon 2 Hintergrund bleibt korrekt;
+  - Gegner 1–9 bleiben korrekt sichtbar;
+  - der vorherige Umsprung auf schwarz/leer ist **behoben**;
+  - einzig der Boss war noch ohne Bild.
+- Boss-Ursache:
+  - `v474_dungeon_assets/d2_boss.png` existiert nicht;
+  - im Repo existieren Boss-PNGs im v474-Vertrag erst für D10–D20;
+  - für D2 existiert der alte verifizierte Boss `assets/v7195-base64/10036d96d08155bdc84a.svg`;
+  - die 10er-Karten-Schleife hatte `bossFallback` bisher nicht an `setMapNodeArt()` weitergegeben.
+- Boss-Fix:
+  - Commit `3cf52f01dd8bb7180c293824a784c2476c2793fd`;
+  - Karten-Boss nutzt jetzt `fallbackFor(c, room)`;
+  - D2 erhält explizit den verifizierten alten Boss-Assetpfad als Fallback;
+  - vorhandene `raw.bossArt`-Fallbacks können damit auch für andere frühe Dungeons verwendet werden.
+- QA für Boss-Fix: **grün**
+  - D2 Visual Owner Syntax grün;
+  - Canonical Detail Lock grün;
+  - Diff-Check grün.
+- D5 Status: **Dungeon-2 Umsprung behoben; Boss-Fallback-Fix automatisiert grün; manueller Boss-Repro-Test offen**
+- Nächster Schritt: Dungeon 2 bis Raum 10/Boss öffnen und prüfen, ob das Bossbild sichtbar bleibt.
 - Scope: **Beta zuerst**
 - **Server 1 / Stable bleibt unangetastet**, bis eine Phase ausdrücklich für Stable freigegeben wird.
 
