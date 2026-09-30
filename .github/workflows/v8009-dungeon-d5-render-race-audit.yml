@@ -1,0 +1,40 @@
+name: V8.009 Dungeon D5 Render Race Audit
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/v8009_dungeon_d5_render_race_audit.py'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Audit delayed Dungeon render writers
+        run: python3 .github/scripts/v8009_dungeon_d5_render_race_audit.py
+      - name: Validate report
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          r=json.loads(Path('V8009_DUNGEON_D5_RENDER_RACE_AUDIT.json').read_text(encoding='utf-8'))
+          if not r['inline_candidates'] and not r['external_candidates']:
+              raise SystemExit('No delayed Dungeon render candidates found')
+          print('D5 render-race audit OK')
+          PY
+      - name: Commit audit report
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add V8009_DUNGEON_D5_RENDER_RACE_AUDIT.json
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "V8.009 DUNGEON-D5: audit delayed 10er render writers"
+          git push
