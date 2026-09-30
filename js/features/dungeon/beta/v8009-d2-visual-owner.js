@@ -569,6 +569,9 @@
     const fn=window.__V7166_CANONICAL_DETAIL__||window.v261RenderDetail||window.v251RenderDetail||window.v244RenderSelectedDungeonMap||window.v064RenderMap;
     if(typeof fn!=='function')throw new Error('Aktueller 10er-Dungeon-Renderer fehlt');
     const out=fn();
+    /* Sprint 2: v4165 no longer wraps four historical detail renderers.
+       Stamp the actually rendered Dungeon directly from the canonical path. */
+    try{window.v4165StampDetail?.()}catch(_){ }
     /* V7.162: the canonical asset pass runs in the SAME turn as the map build.
        No historic delayed renderer gets a visible frame in between. */
     paintMap();
@@ -643,6 +646,9 @@
       /* Sprint 2: production preview cleanup/live-control repair is invoked
          directly by the canonical owner; no v494 renderDungeon wrapper needed. */
       try{window.v494DungeonProductionSync?.()}catch(_){ }
+      /* Sprint 2: server-authoritative fight button ownership is synced directly;
+         v7051 no longer wraps global renderDungeon just to repaint the button. */
+      try{window.v7051ClaimButtonSync?.()}catch(_){ }
       try{window.v433PaintResources?.()}catch(_){ }
       queue(true);
       requestAnimationFrame(()=>{try{window.v7144CleanDungeonMap?.()}catch(_){ }try{window.v7144PaintDungeonTimer?.(true)}catch(_){ }});
