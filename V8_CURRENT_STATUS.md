@@ -10,8 +10,8 @@
 - Aktuelle Beta-Linie: **V8.009**
 - Arbeitsbranch: **main**
 - Letzter automatisiert geprüfter Code-Commit vor dieser Statusdatei:
-  `7be8c20c873f9ad169a91e791fc57bfe8983f827`
-- Aktuelle Unterphase: **V8.009-PVP-SPRINT-1-AUDIT**
+  `8c3d3a44ec3c453c61f6798a798c99e2632ed602`
+- Aktuelle Unterphase: **V8.009-PVP-SPRINT-1-OWNER-AUDIT**
 - Nutzer-Video bestätigt: betroffen ist konkret **Dungeon 2**.
 - Sichtbares Fehlerbild:
   - zunächst korrekter D2-Hintergrund + korrekte Gegnergrafiken;
@@ -342,6 +342,42 @@
   - Gameplay/Combat-Math/Rewards/Serverautorität unverändert.
 - Dungeon Beta-Größe nach Sprint 2: **6.005.343 Byte**.
 - Dungeon Status: **abgeschlossen – automatisierte QA + gemeinsamer manueller Meilenstein-Test erfolgreich**.
+- PvP / Hall of Haze Sprint 1 Bestand:
+  - deterministischer Audit: `V8009_PVP_SPRINT1_INVENTORY.json`;
+  - 113 PvP/Hall-relevante Inline-Script-Treffer, 55 Inline-Style-Treffer breit erfasst;
+  - daraus 29 klar systemeigene PvP/Hall-JS-Blöcke und 21 klar systemeigene CSS-Blöcke für 1:1-Extraktion ausgewählt.
+- PvP Sprint 1 JS/CSS-Extraktion:
+  - Commit `ae1ea11bdd2832a4cd3e8f230c4910a3689ad2b8`;
+  - **29/29 JS-Blöcke** extern unter `js/features/pvp/beta/`;
+  - **18/21 CSS-Blöcke** direkt extern unter `css/features/pvp/beta/`;
+  - JS-Reihenfolge 1:1 erhalten;
+  - alle extrahierten JS-Dateien per `node --check` grün;
+  - Inhalt Hash-genau zum Inline-Original.
+- PvP assetbasiertes CSS:
+  - Commit `8c3d3a44ec3c453c61f6798a798c99e2632ed602`;
+  - verbleibende v549/v550/v611 CSS-Blöcke ebenfalls extern;
+  - relative `assets/...`-URLs kontrolliert zu `../../../../assets/...` umgeschrieben;
+  - alle referenzierten Assets existieren;
+  - dadurch **21/21 PvP/Hall-CSS-Blöcke extern**.
+- PvP Sprint 1 Beta-Größe:
+  - vor PvP Sprint: **6.005.343 Byte**
+  - nach kompletter PvP/Hall-Extraktion: **5.751.014 Byte**
+  - Reduktion: **254.329 Byte** Inline-Code.
+- PvP Sprint 1 Scope:
+  - Gameplay unverändert;
+  - Matchmaking unverändert;
+  - Cooldown unverändert;
+  - Rewards unverändert;
+  - Serverautorität unverändert;
+  - Stable/Server 1 unverändert.
+- Kritische PvP-Systeme, die im Owner-Cleanup nicht blind stillgelegt werden dürfen:
+  - `v204` Basissystem;
+  - `v209` Kampfdarstellung;
+  - `v211` Ergebnis-Modal;
+  - `v216` Finish-Flow;
+  - `v7052` Shadow-Parity;
+  - `v7053` Atomic Server-PvP/Receipt Authority;
+  - Reward-/Cooldown-/Achievement-/Guild-XP-Seiteneffekte.
 - Scope: **Beta zuerst**
 - **Server 1 / Stable bleibt unangetastet**, bis eine Phase ausdrücklich für Stable freigegeben wird.
 
@@ -455,18 +491,28 @@ Für jedes System gilt:
 
 ## 4. EXAKTER nächster Schritt
 
-### V8.009-PVP-SPRINT-1-AUDIT – PvP / Hall of Haze
+### V8.009-PVP-SPRINT-1-OWNER-AUDIT – Hall/UI-Owner konsolidieren
 
-Dungeon ist abgeschlossen. Ab jetzt PvP / Hall of Haze im Sprint-Modus:
+Jetzt keine weitere reine Extraktion. In einem breiten Batch:
 
-1. alle aktiven PvP-/Hall-of-Haze-JS-/CSS-Layer in Beta breit inventarisieren;
-2. Render-/Lifecycle-/Timer-/Observer-/Listener-Owner gruppieren;
-3. Gameplay-/Matchmaking-/Cooldown-/Reward-/Serverautorität strikt von reiner UI-/Render-Kompatibilität trennen;
-4. redundante reine Render-/Compatibility-Owner in Batches konsolidieren;
-5. vorhandene PvP-Buds-/Pass-/Profil-/Hall-of-Haze-Anzeigen nicht funktional ändern;
-6. Stable/Server 1 unverändert lassen;
-7. gemeinsame QA statt Mikro-Tests;
-8. danach genau ein manueller PvP/Hall-of-Haze-Meilenstein.
+1. externe PvP/Hall-Dateien auf tatsächliche Owner-/Wrapper-Ketten prüfen;
+2. besonders vergleichen:
+   - `v326-hall-profile-canonical`
+   - `v424-hall-combat-power-fix`
+   - `v437-pvp-combat-power-canonical`
+   - `v646-hall-template-js`
+   - `vPvpBudsHallSyncFix`
+   - `v6145-hall-pagination-js`
+   - v549/v550/v551 UI-Layer;
+3. feststellen, welcher Hall-of-Haze-Renderer/Ranglisten-Owner tatsächlich zuletzt sichtbar ist;
+4. alte reine UI-/Navigation-/Profile-Wrapper gesammelt durch direkte Hooks ersetzen oder stilllegen;
+5. **nicht anfassen**:
+   - Matchmaking/Combat-Berechnung;
+   - Cooldown;
+   - Bud-/Gold-/EXP-/Achievement-Rewards;
+   - v7053 Serverautorität/Receipts;
+6. gemeinsame Syntax-/Owner-/DOM-Integrations-QA;
+7. danach erst ein manueller Hall-of-Haze/PvP-Meilenstein.
 
 ### Statusdatei-Regel
 
