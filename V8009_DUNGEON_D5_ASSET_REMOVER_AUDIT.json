@@ -1,0 +1,109 @@
+{
+  "build": "V8.009-DUNGEON-D5-ASSET-REMOVER-AUDIT",
+  "results": [
+    {
+      "name": "js/features/dungeon/beta/v8009-d1-combat-renderer.js",
+      "origin": "external",
+      "hits": [
+        {
+          "line": 111,
+          "chunk": "function companionSources(){\n const out={};\n try{window.v6287EnsureRoster?.()}catch(_){}\n document.querySelectorAll('[data-v6287-comp]').forEach(card=>{const key=String(card.dataset.v6287Comp||'');const img=card.querySelector('img');const src=String(img?.currentSrc||img?.src||img?.getAttribute?.('src')||'').trim();if(key&&src)out[key]=src});\n return out;\n}\nfunction summonChanceNow(){let c=.10;try{const t=typeof v314TalentSummary==='function'?v314TalentSummary():(typeof v314Summary==='function'?v314Summary():null);c+=Number(t?.summonChance)||0}catch(_){}try{if(typeof setBonusValue==='function')c+=Number(setBonusValue('summonChance'))||0}catch(_){}return Math.max(.10,Math.min(.34,c))}\nfunction syncCompanionSquad(arena){"
+        }
+      ]
+    },
+    {
+      "name": "js/features/dungeon/beta/v8009-d2-detail-render-lock.js",
+      "origin": "external",
+      "hits": [
+        {
+          "line": 156,
+          "chunk": "  lastAliasReason,\n  cardClass:document.getElementById('dungeonMapCard')?.className||'',\n  bg:document.querySelector('#dungeonMapCard .v261-stage')?.style?.backgroundImage||'',\n  canonicalBg:document.querySelector('#dungeonMapCard .gl-dungeon-map-bg-img')?.getAttribute('src')||'',\n  nodeArts:document.querySelectorAll('#dungeonMapCard .gl-dungeon-node-art').length,\n  roadVisible:!!document.querySelector('#dungeonMapCard .v261-road')&&getComputedStyle(document.querySelector('#dungeonMapCard .v261-road')).display!=='none'\n});\n"
+        },
+        {
+          "line": 157,
+          "chunk": "  cardClass:document.getElementById('dungeonMapCard')?.className||'',\n  bg:document.querySelector('#dungeonMapCard .v261-stage')?.style?.backgroundImage||'',\n  canonicalBg:document.querySelector('#dungeonMapCard .gl-dungeon-map-bg-img')?.getAttribute('src')||'',\n  nodeArts:document.querySelectorAll('#dungeonMapCard .gl-dungeon-node-art').length,\n  roadVisible:!!document.querySelector('#dungeonMapCard .v261-road')&&getComputedStyle(document.querySelector('#dungeonMapCard .v261-road')).display!=='none'\n});\n\nconst V=Object.freeze({short:'V7.214',label:'V7.214 Stable',number:'7.213'});"
+        }
+      ]
+    },
+    {
+      "name": "js/features/dungeon/beta/v8009-d2-visual-owner.js",
+      "origin": "external",
+      "hits": [
+        {
+          "line": 72,
+          "chunk": "    /* The historical node renderer writes emoji as raw text. Remove text nodes only;\n       number/check/lock badges are element nodes and stay untouched. */\n    [...ring.childNodes].forEach(n=>{if(n.nodeType===Node.TEXT_NODE&&clean(n.nodeValue))n.remove()});\n    let img=ring.querySelector(':scope > .gl-dungeon-node-art');\n    if(!img){\n      img=document.createElement('img');img.className='gl-dungeon-node-art';img.alt='Dungeon Gegner';img.decoding='async';img.draggable=false;\n      img.addEventListener('load',()=>{img.hidden=false;img.dataset.glPlainRetry='0';img.dataset.glFallbackRetry='0'});\n      img.addEventListener('error',()=>{"
+        },
+        {
+          "line": 74,
+          "chunk": "    [...ring.childNodes].forEach(n=>{if(n.nodeType===Node.TEXT_NODE&&clean(n.nodeValue))n.remove()});\n    let img=ring.querySelector(':scope > .gl-dungeon-node-art');\n    if(!img){\n      img=document.createElement('img');img.className='gl-dungeon-node-art';img.alt='Dungeon Gegner';img.decoding='async';img.draggable=false;\n      img.addEventListener('load',()=>{img.hidden=false;img.dataset.glPlainRetry='0';img.dataset.glFallbackRetry='0'});\n      img.addEventListener('error',()=>{\n        const current=img.getAttribute('src')||'';\n        if(current.includes('?gl=')&&img.dataset.glPlainRetry!=='1'){"
+        },
+        {
+          "line": 117,
+          "chunk": "    important(thumb,'background-repeat','no-repeat');\n    if(art)important(thumb,'background-image',`url(\"${plainAsset(art)}\")`);\n\n    let img=thumb.querySelector(':scope > .gl-dungeon-current-thumb-img');\n    if(!img){\n      [...thumb.childNodes].forEach(n=>n.remove());\n      img=document.createElement('img');\n      img.className='gl-dungeon-current-thumb-img';"
+        },
+        {
+          "line": 121,
+          "chunk": "    if(!img){\n      [...thumb.childNodes].forEach(n=>n.remove());\n      img=document.createElement('img');\n      img.className='gl-dungeon-current-thumb-img';\n      img.alt='Dungeon Gegner';\n      img.decoding='async';\n      img.draggable=false;\n      img.style.cssText='display:block;width:100%;height:100%;object-fit:contain;object-position:center center;pointer-events:none;';"
+        },
+        {
+          "line": 267,
+          "chunk": "      important(stage,'background-position','center center');\n      important(stage,'background-repeat','no-repeat');\n      preloadAsset(c.bg);\n      let bgImg=stage.querySelector(':scope > .gl-dungeon-map-bg-img');\n      if(!bgImg){\n        bgImg=document.createElement('img');\n        bgImg.className='gl-dungeon-map-bg-img';\n        bgImg.alt='';"
+        },
+        {
+          "line": 270,
+          "chunk": "      let bgImg=stage.querySelector(':scope > .gl-dungeon-map-bg-img');\n      if(!bgImg){\n        bgImg=document.createElement('img');\n        bgImg.className='gl-dungeon-map-bg-img';\n        bgImg.alt='';\n        bgImg.decoding='async';\n        bgImg.draggable=false;\n        bgImg.addEventListener('error',()=>{"
+        },
+        {
+          "line": 636,
+          "chunk": "    const img=document.querySelector('#enemyFighter .gl-dungeon-enemy-art');\n    const playerImg=document.querySelector('#playerFighter .gl-dungeon-player-art');\n    const mapStage=document.querySelector('#dungeonMapCard .v261-stage');\n    const mapBg=document.querySelector('#dungeonMapCard .gl-dungeon-map-bg-img');\n    const battleBg=document.querySelector('#battleStage>.gl-dungeon-battle-bg-img');\n    return{\n      phase:'V7.160',dungeon:di+1,room:ri+1,\n      bg:c.bg,enemyArt:assetFor(c,ri),"
+        },
+        {
+          "line": 660,
+          "chunk": "\n  window.glDungeonPhase32QA=()=>{\n    const thumb=document.querySelector('#dungeonMapCard .v261-thumb');\n    const img=thumb?.querySelector(':scope > .gl-dungeon-current-thumb-img');\n    return{\n      phase:'3.2',\n      thumbPresent:!!thumb,\n      thumbImagePresent:!!img,"
+        }
+      ]
+    },
+    {
+      "name": "js/features/dungeon/beta/v8009-d5-final-detail-seal.js",
+      "origin": "external",
+      "hits": [
+        {
+          "line": 54,
+          "chunk": "  if(card.classList.contains('v467-d2'))return false;\n  if(!card.classList.contains('gl-dungeon-canonical-map'))return false;\n  if(String(card.dataset.glDungeonVisual||'')!==String(di+1))return false;\n  const bg=stage.querySelector(':scope > .gl-dungeon-map-bg-img');\n  if(!bg)return false;\n  const src=String(bg.getAttribute('src')||'');\n  if(!src.includes(`v474_dungeon_assets/d${di+1}_bg.jpg`))return false;\n  if(stage.querySelectorAll('.gl-dungeon-node-art').length<10)return false;"
+        },
+        {
+          "line": 58,
+          "chunk": "  if(!bg)return false;\n  const src=String(bg.getAttribute('src')||'');\n  if(!src.includes(`v474_dungeon_assets/d${di+1}_bg.jpg`))return false;\n  if(stage.querySelectorAll('.gl-dungeon-node-art').length<10)return false;\n  return true;\n}\nfunction connect(){\n  try{observer?.disconnect()}catch(_){}"
+        },
+        {
+          "line": 107,
+          "chunk": "  aliases:ALIASES.filter(n=>window[n]===canonicalDetail()),\n  dungeon:dungeonIndex()+1,\n  cardClass:document.getElementById('dungeonMapCard')?.className||'',\n  bg:document.querySelector('#dungeonMapCard .gl-dungeon-map-bg-img')?.getAttribute('src')||'',\n  nodeArts:document.querySelectorAll('#dungeonMapCard .gl-dungeon-node-art').length\n});\n\nenforceAliases();"
+        },
+        {
+          "line": 108,
+          "chunk": "  dungeon:dungeonIndex()+1,\n  cardClass:document.getElementById('dungeonMapCard')?.className||'',\n  bg:document.querySelector('#dungeonMapCard .gl-dungeon-map-bg-img')?.getAttribute('src')||'',\n  nodeArts:document.querySelectorAll('#dungeonMapCard .gl-dungeon-node-art').length\n});\n\nenforceAliases();\nconnect();"
+        }
+      ]
+    },
+    {
+      "name": "v7144-responsiveness-dungeon-core",
+      "origin": "inline",
+      "hits": [
+        {
+          "line": 66,
+          "chunk": "  const stage=card.querySelector('.v261-stage');if(!stage)return;\n  stage.querySelectorAll(':scope>.v261-bg,:scope>.v261-fx').forEach(n=>n.remove());\n  stage.style.setProperty('background-image','none','important');\n  const imgs=[...stage.querySelectorAll(':scope>.gl-dungeon-map-bg-img')];imgs.slice(1).forEach(n=>n.remove());\n  paintDungeonTimer(true);\n }\n window.v7144CleanDungeonMap=cleanMap;\n"
+        }
+      ]
+    },
+    {
+      "name": "v7152-dungeon-cleanup-marker",
+      "origin": "inline",
+      "hits": [
+        {
+          "line": 11,
+          "chunk": "  legacyFx604Retired:!!window.v604DungeonFxDiagnostics?.().retired,\n  legacyFx6221Retired:!!window.v6221DungeonFxDiagnostics?.().retired,\n  enemyGlobalObserverRetired:!!window.v6324DungeonEnemyPoseDiagnostics?.().observerRetired,\n  mapBackgrounds:document.querySelectorAll('#dungeonMapCard .gl-dungeon-map-bg-img').length,\n  oldMapLayers:document.querySelectorAll('#dungeonMapCard .v261-stage > .v261-bg,#dungeonMapCard .v261-stage > .v261-fx').length\n });\n})();"
+        }
+      ]
+    }
+  ]
+}
