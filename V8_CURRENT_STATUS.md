@@ -10,24 +10,31 @@
 - Aktuelle Beta-Linie: **V8.009**
 - Arbeitsbranch: **main**
 - Letzter vollständig geprüfter Code-Commit vor dieser Statusdatei:
-  `84ffb394cfef87710e751f73c4aa86add6058fdc`
-- Letzte vollständig abgeschlossene Unterphase: **V8.009-DUNGEON-D3-BETA**
-- D3 Ergebnis: **erfolgreich**
-- D3 Extraktionscommit: `84ffb394cfef87710e751f73c4aa86add6058fdc`
-- D3 Workflow/QA: **grün**
-- D3 ausgelagert:
-  - `v7166-dungeon-detail-render-lock-css` → `css/features/dungeon/beta/v8009-d3-detail-render-lock.css`
-- D3 Umfang: **68819 Byte** CSS aus `beta.html` entfernt.
-- `beta.html` danach: **6142744 Byte** statt **6211491 Byte**
-- D3 Audit-Ergebnis:
-  - `v251-modern-dungeon-maps-core`: weiterhin Runtime-JS-Kandidat; enthält direkte `renderDungeon`-/DOM-Arbeit.
-  - `v260-dungeon-detail-script`: weiterhin Runtime-JS-Kandidat; enthält direkte `renderDungeon`-/Event-/DOM-Arbeit.
-  - `v261-dungeon-detail-script`: weiterhin Runtime-JS-Kandidat; enthält direkte `renderDungeon`-/Event-/DOM-Arbeit.
-  - Diese drei Legacy-Kerne wurden **nicht gelöscht oder deaktiviert**.
-  - Weitere spätere Dungeon-Patches referenzieren die alten v251/v260/v261-Strukturen weiterhin; deshalb keine pauschale Legacy-Löschung.
-- D2-Owner-Kette: **unverändert erhalten**
+  `52723a2191f29c67b8a20e3e252ac9b598967db6`
+- Letzte vollständig abgeschlossene Unterphase: **V8.009-DUNGEON-D4-BETA**
+- D4 Ergebnis: **erfolgreich**
+- D4 Extraktionscommit: `52723a2191f29c67b8a20e3e252ac9b598967db6`
+- D4 Workflow/QA: **grün**
+- D4 ausgelagert:
+  - `v251-modern-dungeon-maps-style` → `css/features/dungeon/beta/v8009-d4-v251-modern-maps.css`
+  - `v251-modern-dungeon-maps-core` → `js/features/dungeon/beta/v8009-d4-v251-modern-maps.js`
+  - `v260-dungeon-detail-style` → `css/features/dungeon/beta/v8009-d4-v260-detail.css`
+  - `v260-dungeon-detail-script` → `js/features/dungeon/beta/v8009-d4-v260-detail.js`
+  - `v261-dungeon-detail-style` → `css/features/dungeon/beta/v8009-d4-v261-detail.css`
+  - `v261-dungeon-detail-script` → `js/features/dungeon/beta/v8009-d4-v261-detail.js`
+- D4 Umfang: ca. **66 KB** Inline-Code aus `beta.html` entfernt.
+- `beta.html` danach: **6076288 Byte** statt **6142744 Byte**
+- Quellreihenfolge der sechs Legacy-Kerne: **1:1 erhalten**
+- JS-Syntax der drei extrahierten Scripts: **grün**
+- Aktuelle Owner-Erkenntnis:
+  - D2 ersetzt `renderDungeon` durch den kanonischen Dispatcher und umgeht die historische Render-Wrapper-Kette.
+  - Weltkarte: D2 ruft weiterhin bevorzugt `window.v251RenderWorld` auf → **v251 World ist aktiv**.
+  - Detailkarte: `v261-dungeon-detail-script` überschreibt `window.v251RenderDetail`, `v244RenderSelectedDungeonMap` und `v064RenderMap` mit `v261RenderDetail` → **v261 Detail ist aktiv**.
+  - `v260RenderDetail` wird danach von v261 als Owner überschrieben und ist damit ein **Retirement-Kandidat**, aber noch nicht gelöscht.
+  - Der v251-Block enthält zusätzlich `v251StartCurrentDungeonFight`, den v261 weiterhin benutzt; v251 darf daher nicht pauschal entfernt werden.
+- D2/D3-Owner-Kette: **unverändert erhalten**
 - Gameplay/Combat-Math/Rewards/Serverautorität: **unverändert**
-- Aktuell in Arbeit / nächster Schritt: **V8.009-DUNGEON-D4-BETA**
+- Aktuell in Arbeit / nächster Schritt: **V8.009-DUNGEON-D5-BETA**
 - Scope der laufenden Strukturierungsarbeit: **Beta zuerst**
 - **Server 1 / Stable bleibt unangetastet**, bis eine Phase ausdrücklich für Stable freigegeben wird.
 
@@ -115,9 +122,9 @@ Kein `HOME-32` beginnen, solange kein echter reproduzierbarer Home-Bug oder klar
 Aktueller Repo-Stand vor dieser Statusdatei:
 
 - `index.html`: ca. **6574124 Byte**
-- `beta.html`: ca. **6142744 Byte**
-- externe `.js`-Dateien unter `js/`: **94**
-- externe `.css`-Dateien unter `css/`: **91**
+- `beta.html`: ca. **6076288 Byte**
+- externe `.js`-Dateien unter `js/`: **97**
+- externe `.css`-Dateien unter `css/`: **94**
 
 Das heißt: Es wurde viel ausgelagert, aber die Haupt-HTML ist weiterhin mehrere MB groß und enthält noch erheblichen Alt-/Inline-Code.
 
@@ -141,34 +148,32 @@ Für jedes System gilt:
 
 ## 4. EXAKTER nächster Schritt
 
-### Nächste Unterphase: V8.009-DUNGEON-D4-BETA
+### Nächste Unterphase: V8.009-DUNGEON-D5-BETA
 
-D3 ist abgeschlossen. Der große `v7166`-Detail-Lock-CSS-Block ist extern, die historischen JS-Kerne sind bewusst noch aktiv.
+D4 ist abgeschlossen. Die alten v251/v260/v261-Kerne sind nun extern und können erstmals sauber gegeneinander auditiert werden.
 
 1. aktuellen `main`-HEAD lesen;
-2. exakt diese sechs historischen Kernblöcke inventarisieren und in ihrer aktuellen Quellreihenfolge prüfen:
-   - `v251-modern-dungeon-maps-style`
-   - `v251-modern-dungeon-maps-core`
-   - `v260-dungeon-detail-style`
-   - `v260-dungeon-detail-script`
-   - `v261-dungeon-detail-style`
-   - `v261-dungeon-detail-script`;
-3. ihre Wrapper-/Override-Beziehungen zu:
-   - `renderDungeon`,
-   - D2 `glDungeonVisualRefresh`,
-   - D2 Detail-Render-Lock,
-   - späteren Dungeon-Patches
-   dokumentieren;
-4. diese sechs Blöcke **nur externalisieren**, nicht funktional konsolidieren oder löschen;
-5. Quellreihenfolge 1:1 bewahren, damit bestehende Monkey-Patch-/Override-Reihenfolge unverändert bleibt;
-6. nach der Extraktion prüfen:
-   - jeder externe Include genau einmal,
-   - keine alten Inline-Bodies mehr,
-   - D2/D3-Owner weiter genau einmal geladen,
+2. repo-weit die tatsächlichen Abhängigkeiten von `v260RenderDetail`, den `v260d-*`-DOM-Klassen und den beiden v260-D4-Dateien erfassen;
+3. belegen, ob außerhalb des v260-Owners noch aktiver Runtime-Code von v260 abhängt;
+4. gleichzeitig die kanonische Laufzeitkette festhalten:
+   - Welt → `v251RenderWorld`
+   - Detail → `v261RenderDetail`
+   - Kampf → D1 Combat-Renderer / D2 Dispatcher
+   - Reward → Rückkehr über D2 Lifecycle-Sync;
+5. wenn der Repo-Audit **keine notwendige v260-Abhängigkeit** findet:
+   - v260 als ersten historischen Detail-Owner kontrolliert aus der Beta-Ladekette nehmen;
+   - die Dateien zunächst behalten, nicht löschen;
+   - prüfen, dass v261 direkt und unverändert Owner bleibt;
+6. wenn noch notwendige v260-Abhängigkeiten existieren:
+   - v260 nicht deaktivieren;
+   - Abhängigkeiten im D5-Manifest dokumentieren und nur den nächsten eindeutig redundanten Patch wählen;
+7. Tests:
+   - D2/D3/D4 Includes und Reihenfolge,
+   - JS-Syntax,
+   - keine doppelte aktive Detail-Owner-Zuweisung nach Bootstrap,
    - Stable/Server 1 unverändert,
-   - JS-Syntax grün,
    - keine Änderung an Gameplay, Combat-Math, Rewards oder Serverautorität;
-7. erst nach erfolgreichem D4 in D5 entscheiden, welche dieser historischen Layer tatsächlich durch den finalen D2-Owner ersetzt und stilllegbar sind.
+8. danach Statusdatei auf D5-Ergebnis und exakten D6-Schritt aktualisieren.
 
 ### Statusdatei-Regel
 
