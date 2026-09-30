@@ -59,8 +59,10 @@
   /* Existing backend remains authoritative for Bud balance and purchases. */
   setTimeout(()=>{
     try{v254RenderGuild()}catch(e){}
-    document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version').forEach(el=>el.textContent=VERSION);
-    document.querySelectorAll('.v366-ver').forEach(el=>el.textContent='V4.11');
+    if(!IS_BETA){
+      document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version').forEach(el=>el.textContent=VERSION);
+      document.querySelectorAll('.v366-ver').forEach(el=>el.textContent='V4.11');
+    }else window.__V8009_HOME10_V408_VERSION_RETIRED__=true;
   },750);
 })();
 
