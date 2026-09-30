@@ -1,0 +1,74 @@
+name: V8.009 PvP Sprint 1 Extraction
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/v8009_pvp_sprint1_extract.py'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  extract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Extract PvP and Hall of Haze layers
+        run: python3 .github/scripts/v8009_pvp_sprint1_extract.py
+
+      - name: Syntax-check extracted JS
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import json
+          r=json.loads(Path('V8009_PVP_SPRINT1_EXTRACTION.json').read_text(encoding='utf-8'))
+          Path('/tmp/pvp-js-list.txt').write_text('\n'.join(x['file'] for x in r['js_extracted'])+'\n',encoding='utf-8')
+          PY
+          while IFS= read -r f; do
+            [ -z "$f" ] || node --check "$f"
+          done < /tmp/pvp-js-list.txt
+
+      - name: Validate exact extraction
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import json,hashlib,re
+          beta=Path('beta.html').read_text(encoding='utf-8')
+          stable=Path('index.html').read_text(encoding='utf-8')
+          r=json.loads(Path('V8009_PVP_SPRINT1_EXTRACTION.json').read_text(encoding='utf-8'))
+
+          if not r.get('stable_unchanged'): raise SystemExit('Stable scope failed')
+          if r['counts']['js_extracted'] < 20: raise SystemExit('unexpectedly small JS extraction')
+          if r['counts']['css_extracted'] < 10: raise SystemExit('unexpectedly small CSS extraction')
+
+          for x in r['js_extracted']+r['css_extracted']:
+              txt=Path(x['file']).read_text(encoding='utf-8')
+              if hashlib.sha256(txt.encode()).hexdigest()!=x['sha256']:
+                  raise SystemExit('hash mismatch: '+x['file'])
+              if beta.count(x['file'])!=1:
+                  raise SystemExit('include count !=1: '+x['file'])
+
+          for x in r['css_skipped']:
+              if x['reason']=='contains_url' and not re.search(r'<style[^>]*id=["\']'+re.escape(x['id'])+r'["\']',beta,re.I):
+                  raise SystemExit('URL-sensitive CSS should remain inline: '+x['id'])
+
+          print('PvP Sprint 1 exact extraction OK')
+          PY
+
+      - name: Diff sanity
+        run: git diff --check
+
+      - name: Commit extraction
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add beta.html js/features/pvp/beta css/features/pvp/beta V8009_PVP_SPRINT1_EXTRACTION.json
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "V8.009 PVP-SPRINT-1: extract PvP and Hall layers"
+          git push
