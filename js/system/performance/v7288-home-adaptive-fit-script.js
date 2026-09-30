@@ -69,6 +69,40 @@ function schedule(){
   });
 }
 window.v7288HomeAdaptiveFitNow=schedule;
+
+/* V8.009 HOME-1: the current V366 home header still carries two historical
+   routes: Gold+ opens the item shop and the mail icon opens friends. Capture
+   those clicks before the old inline onclick handlers so the visible home
+   controls use their intended destinations. */
+const v8009HomeHeaderFix={goldRedirects:0,mailRedirects:0};
+document.addEventListener('click',e=>{
+  try{
+    const t=e.target instanceof Element?e.target:null;
+    if(!t)return;
+    const gold=t.closest('.v366-topbar [data-plus="gold"]');
+    if(gold){
+      e.preventDefault();e.stopPropagation();e.stopImmediatePropagation();
+      v8009HomeHeaderFix.goldRedirects++;
+      if(typeof window.v7114OpenGoldShop==='function')window.v7114OpenGoldShop();
+      else if(typeof window.v7117OpenDealerTab==='function')window.v7117OpenDealerTab('gold');
+      else if(typeof window.v032Go==='function')window.v032Go('goldShop');
+      return;
+    }
+    const mail=t.closest('.v366-topbar [data-head="mail"]');
+    if(mail){
+      e.preventDefault();e.stopPropagation();e.stopImmediatePropagation();
+      v8009HomeHeaderFix.mailRedirects++;
+      if(typeof window.v032Go==='function')window.v032Go('mail');
+    }
+  }catch(_){}
+},true);
+window.v8009HomeHeaderDiagnostics=()=>({
+  version:'V8.009-HOME-1',
+  ...v8009HomeHeaderFix,
+  goldShopApi:typeof window.v7114OpenGoldShop==='function',
+  mailScreen:!!document.getElementById('mail')
+});
+
 window.addEventListener('resize',schedule,{passive:true});
 window.addEventListener('orientationchange',()=>setTimeout(schedule,150),{passive:true});
 window.addEventListener('pageshow',()=>setTimeout(schedule,80),{passive:true});
