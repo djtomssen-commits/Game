@@ -10,8 +10,8 @@
 - Aktuelle Beta-Linie: **V8.009**
 - Arbeitsbranch: **main**
 - Letzter automatisiert geprüfter Code-Commit vor dieser Statusdatei:
-  `cfcc01e029459ec51ed5d40350b31dc4c6de4fb6`
-- Aktuelle Unterphase: **V8.009-DUNGEON-D5-BETA**
+  `64786125d0d7d53e8b9c62ace556df181674ccbe`
+- Aktuelle Unterphase: **V8.009-DUNGEON-D6-BETA**
 - Nutzer-Video bestätigt: betroffen ist konkret **Dungeon 2**.
 - Sichtbares Fehlerbild:
   - zunächst korrekter D2-Hintergrund + korrekte Gegnergrafiken;
@@ -107,6 +107,26 @@
   - D2 bleibt zusätzlich mit `assets/v7195-base64/10036d96d08155bdc84a.svg` abgesichert.
 - QA der allgemeinen D1–D20 Boss-Regel: **grün**.
 - D5 Status: **Dungeon-2 Umsprung + Boss behoben; technische Asset-Regel auf alle 20 Dungeons erweitert**
+- D6 Dependency-Audit:
+  - Manifest: `V8009_DUNGEON_D6_V260_DEPENDENCY_AUDIT.json`;
+  - Beta hatte genau 1× v260 CSS + 1× v260 JS geladen;
+  - außerhalb des v260-Pakets existieren in Beta nur Kompatibilitäts-Aliase in D2-Lock/D5-Seal;
+  - diese Aliase benötigen die v260-Datei nicht und zeigen weiterhin auf v261;
+  - Stable enthält seinen eigenen historischen inline-v260-Code und bleibt bewusst unangetastet.
+- D6 Umsetzung:
+  - Commit `64786125d0d7d53e8b9c62ace556df181674ccbe`;
+  - `css/features/dungeon/beta/v8009-d4-v260-detail.css` nicht mehr in Beta geladen;
+  - `js/features/dungeon/beta/v8009-d4-v260-detail.js` nicht mehr in Beta geladen;
+  - beide Dateien bleiben im Repo für Rollback/Referenz;
+  - kanonischer Detailowner bleibt `v261RenderDetail`;
+  - World-Owner bleibt `v251RenderWorld`.
+- D6 QA: **vollständig grün**
+  - retained v260 JS Syntax grün;
+  - v261/D2/D5 Owner Syntax grün;
+  - Beta enthält keine aktiven v260-Datei-Includes mehr;
+  - Stable unverändert;
+  - Gameplay/Combat-Math/Rewards/Serverautorität unverändert.
+- D6 Status: **abgeschlossen**
 - Nächster Schritt: D1 sowie D3–D20 bei Gelegenheit visuell stichprobenartig prüfen; strukturell sind Hintergrund/Gegner komplett und die Boss-Pfade jetzt korrekt getrennt.
 - Scope: **Beta zuerst**
 - **Server 1 / Stable bleibt unangetastet**, bis eine Phase ausdrücklich für Stable freigegeben wird.
@@ -221,22 +241,25 @@ Für jedes System gilt:
 
 ## 4. EXAKTER nächster Schritt
 
-### V8.009-DUNGEON-D5-BETA – Repro-Test nach finalem post-legacy Seal
+### V8.009-DUNGEON-D7-BETA – verbleibende Detail-Owner-Kette auditieren
 
-1. Beta öffnen;
-2. Dungeonwelt → 10er-Karte wechseln;
-3. mindestens 3 Sekunden auf der Karte bleiben;
-4. besonders auf die ersten 0,5–1,5 Sekunden achten;
-5. prüfen:
-   - korrekter Hintergrund bleibt;
-   - Gegnerbilder bleiben;
-   - kein schwarzer/vereinfachter Legacy-Umsprung;
-6. wenn stabil:
-   - D5 vollständig abschließen;
-   - D6: v260 als redundanten Detail-Owner kontrolliert stilllegen;
-7. wenn weiterhin Umsprung:
-   - D5 offen lassen;
-   - den nächsten verbleibenden späteren DOM-Schreiber anhand des bestehenden D5-Audits isolieren.
+1. aktuelle Beta-Abhängigkeiten auf `v426RenderDetail`, `v427RenderDetail`, `v430RenderDetail`, `v432RenderDetail` repo-weit erfassen;
+2. unterscheiden:
+   - echter Runtime-Aufrufer;
+   - historischer Owner-Installer/Wrapper;
+   - CSS/DOM-Sonderpatch;
+   - reine Kompatibilitätsreferenz;
+3. kanonische Kette darf nicht geändert werden:
+   - World → `v251RenderWorld`;
+   - Detail → `v261RenderDetail`;
+   - Visual Assets → D2 Visual Owner + D5 finaler Seal;
+   - Combat → D1 Combat Renderer / D2 Dispatcher;
+4. wenn ein historischer Detail-Owner nachweislich vollständig überschrieben ist:
+   - zuerst nur aus der Beta-Ladekette nehmen;
+   - Datei/Legacy-Code zunächst behalten;
+5. JS-Syntax + Include-Order + Stable-Unverändertheit prüfen;
+6. keine Gameplay-/Combat-Math-/Reward-/Serverautoritätsänderung;
+7. nach Erfolg Statusdatei sofort auf D8 fortschreiben.
 
 ### Statusdatei-Regel
 
