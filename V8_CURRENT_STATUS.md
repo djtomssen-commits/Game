@@ -649,6 +649,27 @@ Für jedes System gilt:
 - erst danach alte Inline- oder Legacy-Owner stilllegen;
 - danach nächstes System.
 
+
+### First-Login / schwarzer Bildschirm – Fix 30.09.2026
+
+- Repro: normaler E-Mail-/Passwort-Login wurde von Supabase erfolgreich mit HTTP 200 akzeptiert, danach zeigte der Client trotzdem schwarzen Zwischenzustand / Login-Fehler.
+- Server-Profil des betroffenen Accounts war vorhanden und gültig; Fehler lag nach erfolgreicher Authentifizierung im Client-Finalize/Bootstrap.
+- Nutzerbeobachtung bestätigte: manuelles Abmelden aus dem schwarzen Zustand + erneuter Login funktionierte. Damit war ein staler/in-flight Session-/Finalize-Zustand der entscheidende Unterschied.
+- Fix Commit: `d727c979dfb9c5b7fa6de304cae90494a65f6b58`
+  - neuer Helper im bestehenden `v200-stable-core`: `v200LoginReadyFor(user)`;
+  - E-Mail-Login nutzt jetzt `v200FinalizeAuthenticatedLogin(user)`;
+  - erster kanonischer Finalizer bleibt unverändert der Owner;
+  - wenn der erste Finalize wegen einer bereits laufenden Auth-Transition fehlschlägt, wartet der Login kurz auf denselben Accountzustand;
+  - falls nötig wird die weiterhin gültige Supabase-Sitzung geprüft und exakt ein zweiter Lauf desselben kanonischen Finalizers ausgeführt;
+  - kein Sign-out/Sign-in-Workaround mehr nötig;
+  - echte Session-/Bootstrap-Fehler bleiben weiterhin sichtbar und werden nicht als Erfolg maskiert.
+- Automatische QA: **grün**
+  - `v200-stable-core` Syntax grün;
+  - Recovery-Vertrag grün;
+  - Diff-Sanity grün.
+- Gleichzeitig bestätigt: die zuvor gefundenen toten Shop-Aufrufe `v030MakeWeaponOffer()` und `v030MakeMaterialOffer()` sind im aktuellen Beta-Stand bereits entfernt; aktiver Shop nutzt `v030MakeGear(v030WeaponBase())` bzw. `v030MakeMaterial()`.
+- Stable / `index.html`: unverändert.
+
 ### Login / 10-Minuten-Idle-Race – Fix 30.09.2026
 
 - Nutzer-Video reproduziert einen sporadischen Fehler direkt nach erneutem Login:
