@@ -121,8 +121,12 @@ const v8009HomeHeaderFix={
   routeIssues:0,
   growStatusPatches:0,
   growReadyTimerFires:0,
-  growWeatherReschedules:0
+  growWeatherReschedules:0,
+  xpDecoratorGuardInstalls:0,
+  xpStartupScansDeferred:0,
+  xpDeferredRuns:0
 };
+let v8009XpDeferredTimer=0;
 let v8009GrowReadyTimer=0;
 let v8009GrowWeatherObserver=null;
 
@@ -255,6 +259,41 @@ function patchHomeGrowStatus(){
     world.dataset.v8009GrowWeatherMul=String(snap.weatherMul);
     scheduleHomeGrowReady(snap);
     if(changed)v8009HomeHeaderFix.growStatusPatches++;
+    return true;
+  }catch(_){return false}
+}
+
+function installXpDecoratorStartupGuard(){
+  if(!IS_BETA)return false;
+  try{
+    const base=window.v095DecorateXp||globalThis.v095DecorateXp;
+    if(typeof base!=='function')return false;
+    if(base.__v8009Home13Guard)return true;
+
+    const wrapped=function(){
+      /* V8.009 HOME-13: V6251 still asks the old global EXP decorator to
+         TreeWalk the whole visible game UI several times during startup.
+         While the canonical loading gate is active, defer those identical
+         presentation scans and execute one trailing pass after startup quiet.
+         Event reward logic itself is untouched. */
+      if(window.v7204StartupQuiet?.()){
+        v8009HomeHeaderFix.xpStartupScansDeferred++;
+        clearTimeout(v8009XpDeferredTimer);
+        const wait=Math.max(80,Number(window.v7204StartupQuietRemaining?.()||0)+80);
+        v8009XpDeferredTimer=setTimeout(()=>{
+          v8009XpDeferredTimer=0;
+          v8009HomeHeaderFix.xpDeferredRuns++;
+          try{base()}catch(_){}
+        },wait);
+        return;
+      }
+      return base.apply(this,arguments);
+    };
+    wrapped.__v8009Home13Guard=true;
+    wrapped.__v8009Base=base;
+    window.v095DecorateXp=wrapped;
+    try{globalThis.v095DecorateXp=wrapped}catch(_){}
+    v8009HomeHeaderFix.xpDecoratorGuardInstalls++;
     return true;
   }catch(_){return false}
 }
@@ -475,7 +514,7 @@ if(IS_BETA)document.addEventListener('click',e=>{
   }catch(_){}
 },true);
 window.v8009HomeHeaderDiagnostics=()=>({
-  version:'V8.009-HOME-12',
+  version:'V8.009-HOME-13',
   beta:IS_BETA,
   ...v8009HomeHeaderFix,
   fit:{...HOME_DIAG,pendingRaf:!!raf,pendingTimer:!!runTimer},
@@ -511,8 +550,9 @@ if(IS_BETA){
  installBetaMenuReplaceGuard();
  installBetaWorldPostRender();
  installGrowWeatherObserver();
+ installXpDecoratorStartupGuard();
  requestAnimationFrame(()=>{try{patchHomeGrowStatus()}catch(_){}});
- document.addEventListener('DOMContentLoaded',()=>requestAnimationFrame(()=>{applyBetaVersionStyle();installBetaMenuReplaceGuard();installBetaWorldPostRender();installGrowWeatherObserver();patchHomeGrowStatus()}),{once:true});
+ document.addEventListener('DOMContentLoaded',()=>requestAnimationFrame(()=>{applyBetaVersionStyle();installBetaMenuReplaceGuard();installBetaWorldPostRender();installGrowWeatherObserver();installXpDecoratorStartupGuard();patchHomeGrowStatus()}),{once:true});
  window.addEventListener('pageshow',()=>{applyBetaVersionStyle();installBetaMenuReplaceGuard();installBetaWorldPostRender();installGrowWeatherObserver();patchHomeGrowStatus()},{passive:true});
  window.addEventListener('growlegends:account-ready',()=>setTimeout(()=>{applyBetaVersionStyle();installBetaMenuReplaceGuard();installBetaWorldPostRender();installGrowWeatherObserver();patchHomeGrowStatus()},0),{passive:true});
  window.addEventListener('growlegends:extras-ready',()=>setTimeout(()=>{installBetaMenuReplaceGuard();installBetaWorldPostRender()},0),{passive:true});
@@ -549,6 +589,6 @@ window.addEventListener('growlegends:navigation-open-v7119',e=>{
   if(!id||id==='world')setTimeout(()=>schedule('navigation-world'),70);
 },{passive:true});
 
-if(IS_BETA)setTimeout(()=>{installBetaMenuReplaceGuard();installBetaWorldPostRender();installGrowWeatherObserver();patchHomeChecklist();patchHomeGrowStatus()},0);
+if(IS_BETA)setTimeout(()=>{installBetaMenuReplaceGuard();installBetaWorldPostRender();installGrowWeatherObserver();installXpDecoratorStartupGuard();patchHomeChecklist();patchHomeGrowStatus()},0);
 schedule('boot');
 })();
