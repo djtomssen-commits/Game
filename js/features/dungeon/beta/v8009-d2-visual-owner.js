@@ -390,6 +390,10 @@
       }
       if(img.getAttribute('src')!==art){img.dataset.glPlainRetry='0';img.hidden=false;img.setAttribute('src',art)}
     }
+
+    /* V8.009 D8: one canonical post-render decorator owns the remaining
+       D1/D6/D7 map-specific title/sign/position polish. */
+    try{window.v8009DungeonDetailDecorate?.()}catch(e){console.warn('[V8.009 D8] detail decorate',e)}
   }
 
   function removeLegacyBattleVisuals(stage,avatar,enemy){
