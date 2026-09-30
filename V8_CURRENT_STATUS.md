@@ -10,8 +10,8 @@
 - Aktuelle Beta-Linie: **V8.009**
 - Arbeitsbranch: **main**
 - Letzter automatisiert geprüfter Code-Commit vor dieser Statusdatei:
-  `56c829007685c763a368d66ddf12524ea1f95b15`
-- Aktuelle Unterphase: **V8.009-DUNGEON-D9-BETA**
+  `6e4e0ec6274075736ee716a6f33c98c16ba72923`
+- Aktuelle Unterphase: **V8.009-DUNGEON-D10-BETA**
 - Nutzer-Video bestätigt: betroffen ist konkret **Dungeon 2**.
 - Sichtbares Fehlerbild:
   - zunächst korrekter D2-Hintergrund + korrekte Gegnergrafiken;
@@ -198,6 +198,25 @@
   - Gameplay/Combat-Math/Rewards/Serverautorität unverändert.
 - D9 Beta-Größe: **6.043.690 Byte** (vorher 6.055.242 Byte).
 - D9 Status: **abgeschlossen**
+- D10 Alias-/Style-Audit:
+  - Manifest: `V8009_DUNGEON_D10_ALIAS_STYLE_AUDIT.json`;
+  - aktive Aufrufe von `v426RenderDetail`: **0**;
+  - aktive Aufrufe von `v427RenderDetail`: **0**;
+  - verbleibende Treffer waren nur D8-Alias-Installer und D2-Lock-Guards.
+- D10 Umsetzung:
+  - `v426RenderDetail` / `v427RenderDetail` aus `v8009-d8-detail-decorator.js` entfernt;
+  - dieselben Namen aus der Wrapper-Liste und `assign()`-Logik von `v8009-d2-detail-render-lock.js` entfernt;
+  - kanonischer Detailowner bleibt `v261RenderDetail`.
+- D10 CSS-Ergebnis:
+  - `v426-ref-d1` bleibt als reine D1-Layoutklasse aktiv;
+  - die D1-CSS-Blöcke v426/v454/v455/v456/v457/v458/v459/v460/v461/v463/v464 bilden weiterhin eine echte Cascade;
+  - deshalb in D10 **keine blinde CSS-Stilllegung**.
+- D10 QA: **grün**
+  - D2-Lock/D8-Decorator/D2-Visual-Owner/D5-Seal Syntax grün;
+  - keine v426/v427-JS-Aliase mehr in D2-Lock/D8-Decorator;
+  - D1/D6/D7-Dekorationssignaturen unverändert;
+  - Stable unverändert.
+- D10 Status: **abgeschlossen**
 - Nächster Schritt: D1 sowie D3–D20 bei Gelegenheit visuell stichprobenartig prüfen; strukturell sind Hintergrund/Gegner komplett und die Boss-Pfade jetzt korrekt getrennt.
 - Scope: **Beta zuerst**
 - **Server 1 / Stable bleibt unangetastet**, bis eine Phase ausdrücklich für Stable freigegeben wird.
@@ -312,22 +331,27 @@ Für jedes System gilt:
 
 ## 4. EXAKTER nächster Schritt
 
-### V8.009-DUNGEON-D10-BETA – verbleibende v426/v427-Kompatibilitätsaliases und D1-Restlayer auditieren
+### V8.009-DUNGEON-D11-BETA – D1-CSS-Kette aus beta.html herausziehen
 
-1. repo-weit aktuelle Beta-Referenzen auf `v426RenderDetail` und `v427RenderDetail` neu erfassen;
-2. unterscheiden:
-   - echter Aufrufer;
-   - D2-Lock-/D5-Seal-Kompatibilitätsguard;
-   - D8-Decorator-Alias;
-   - historischer/archivierter Treffer;
-3. wenn keine aktiven Aufrufer außerhalb der Guards existieren:
-   - `v426RenderDetail` / `v427RenderDetail` aus der aktiven Kompatibilitätskette entfernen;
-   - D2-Lock/D5-Seal entsprechend vereinfachen;
-4. parallel D1-spezifische verbliebene CSS/Inline-Style-Layer auf `v426-ref-d1`, `v454`, `v458`, `v459`, `v460`, `v461`, `v463` auditieren;
-5. nur eindeutig verwaiste Style-Layer stilllegen;
-6. D1/D2/D6/D7 Visuals, D5 Asset-Fallback und D8 Decorator unverändert halten;
+1. aktive D1-Style-Blöcke in ihrer exakten Reihenfolge erfassen:
+   - `v426-exact-reference-layout`
+   - `v454-d1-feinschliff`
+   - `v455-d1-feinschliff-2`
+   - `v456-d1-reference-alignment-final`
+   - `v457-d1-clean-overlay-final`
+   - `v458-d1-clean-background-final`
+   - `v459-d1-right-side-thumb-final`
+   - `v460-d1-thumb-owner-fix`
+   - `v461-d1-node9-collision-fix`
+   - `v463-d1-screenshot-polish`
+   - `v464-d1-boss-micro-position`;
+2. zunächst **nur extern auslagern**, keine CSS-Regel zusammenfassen oder löschen;
+3. Reihenfolge 1:1 erhalten, damit die bestehende Cascade unverändert bleibt;
+4. CSS-Inhalt Hash-/Byte-genau pro Block dokumentieren;
+5. Beta-Inline-CSS reduzieren;
+6. D1/D2/D6/D7 Visual-Owner und D5 Asset-Fallback nicht verändern;
 7. Stable/Server 1 unverändert;
-8. Gameplay/Combat-Math/Rewards/Serverautorität unverändert.
+8. danach erst D12: prüfen, welche frühen D1-Style-Layer durch spätere Regeln vollständig überschrieben sind.
 
 ### Statusdatei-Regel
 
