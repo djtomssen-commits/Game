@@ -1126,3 +1126,32 @@ Der nächste fachliche Schritt ist **nicht HOME-32**, sondern die Restinventur d
   4. Timer/Skip prüfen;
   5. Claim ausführen;
   6. aktive Karte muss unmittelbar verschwinden und die drei neuen Angebote müssen sichtbar sein.
+
+
+### Quest Elite-Panel Flicker Root Fix – 30.09.2026
+
+- Nutzer bestätigt: Questbild ist nach Active-Art-Fix korrekt, aber das Flackern bleibt.
+- Entscheidender Hinweis aus manuellem Test: Beim Flackern wechselt sichtbar auch der Text im Elite-Quest-Block.
+- Root Cause im Code bestätigt:
+  - `v4172-quest-rpg-script.js` schrieb bei jedem kanonischen Quest-Paint eigenen Elite-Text in `.v4172-elite-info`;
+  - `v4222-separate-elite-quest-script.js` schrieb kurz danach per verzögertem `setTimeout` einen anderen Elite-Text in denselben DOM-Knoten;
+  - v4222 besaß zusätzlich noch einen eigenen `renderQuests`-Wrapper mit verzögertem 10-ms-Repaint sowie einen 800-ms-Startup-Paint.
+  - Damit existierten zwei sichtbare Owner für denselben Elite-Block; der Textwechsel im Gerätetest bestätigt genau diesen Race.
+- Fixes:
+  - `70bdb9551de29eaf8e93bf802827e5e86e278f8d`
+    - v4172 erzeugt/positioniert den Elite-Host nur noch;
+    - v4172 schreibt keinen Elite-Inhalt mehr.
+  - `a87ba524c17a08dc74a59ee9313590d37a7ab05d`
+    - v4222 ist jetzt alleiniger Content-Owner über `v4222RenderElitePanel`;
+    - alter verzögerter `renderQuests`-Wrapper entfernt;
+    - 800-ms-Startup-Elite-Repaint entfernt;
+    - 10/20-ms Panel-Repaints auf direkte Aufrufe reduziert.
+  - `f7519c18a6d9af7aae03bcf13a593c5e679a61b5`
+    - kanonischer v6344-Quest-Render ruft v4222 direkt unmittelbar nach v4172 auf.
+- Architektur:
+  - kein neuer Renderer;
+  - kein neuer Timer;
+  - kein MutationObserver;
+  - ein sichtbarer Owner für Elite-Panel-Inhalt.
+- Stable / `index.html`: unverändert.
+- Manueller Test jetzt sinnvoll: erste Quest direkt nach Login starten und auf Elite-Text + gesamte aktive Karte achten.
