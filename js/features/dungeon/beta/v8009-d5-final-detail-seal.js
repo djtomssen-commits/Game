@@ -51,11 +51,24 @@ function canonicalDomHealthy(){
   if(card.classList.contains('v467-d2'))return false;
   if(!card.classList.contains('gl-dungeon-canonical-map'))return false;
   if(String(card.dataset.glDungeonVisual||'')!==String(di+1))return false;
+
   const bg=stage.querySelector(':scope > .gl-dungeon-map-bg-img');
-  if(!bg)return false;
-  const src=String(bg.getAttribute('src')||'');
-  if(!src.includes(`v474_dungeon_assets/d${di+1}_bg.jpg`))return false;
-  if(stage.querySelectorAll('.gl-dungeon-node-art').length<10)return false;
+  const bgLoaded=!!bg&&!bg.hidden&&(!bg.complete||bg.naturalWidth>0);
+  const bgFallback=stage.dataset.glMapFallback==='legacy'&&String(getComputedStyle(stage).backgroundImage||'')!=='none';
+  if(!bgLoaded&&!bgFallback)return false;
+
+  const rings=[...stage.querySelectorAll('.v261-ring')];
+  if(rings.length<10)return false;
+  const visibleRooms=rings.filter(ring=>{
+    const img=ring.querySelector(':scope > .gl-dungeon-node-art');
+    if(img&&!img.hidden&&(!img.complete||img.naturalWidth>0))return true;
+    if(ring.dataset.glAssetFallback==='legacy'){
+      try{if(String(getComputedStyle(ring).backgroundImage||'')!=='none')return true}catch(_){}
+      if(ring.querySelector(':scope > .v261-bossart'))return true;
+    }
+    return false;
+  }).length;
+  if(visibleRooms<10)return false;
   return true;
 }
 function connect(){
@@ -67,7 +80,7 @@ function connect(){
     if(canonicalDomHealthy())return;
     schedule('mutation');
   });
-  observer.observe(root,{childList:true,subtree:true});
+  observer.observe(root,{childList:true,subtree:true,attributes:true,attributeFilter:['class','style','src','hidden']});
 }
 function seal(reason='manual'){
   lastReason=reason;
