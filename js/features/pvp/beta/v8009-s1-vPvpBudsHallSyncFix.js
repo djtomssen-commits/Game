@@ -92,19 +92,9 @@
     }
   }catch(e){console.warn('PvP profile sync wrapper install',e)}
 
-  /* Before Hall data is fetched, flush the viewing player's own PvP mirror. Other rows
-     come directly from their server profile and are therefore the latest committed values. */
-  try{
-    if(typeof v073LoadRanking==='function'&&!window.__vPvpBudsHallRankingWrapped){
-      const base=v073LoadRanking;
-      v073LoadRanking=async function(){
-        await writeNow(true);
-        return base.apply(this,arguments);
-      };
-      try{window.v073LoadRanking=v073LoadRanking}catch(e){}
-      window.__vPvpBudsHallRankingWrapped=true;
-    }
-  }catch(e){console.warn('PvP Hall ranking wrapper install',e)}
+  /* V8.009 PvP Sprint 1: ranking wrapper retired.
+     v6145 calls vPvpBudsHallSync(true) directly inside syncOwn() before/while
+     Hall data refreshes. Payload + profile-sync ownership remains unchanged. */
 
   window.vPvpBudsHallSync=writeNow;
   window.vPvpBudsHallDiagnostics=()=>({local:stats(),lastMirrored:lastJson,ownId:ownId(),busy:writeBusy});
