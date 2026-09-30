@@ -27,7 +27,9 @@
   let btn=buttons[0]||null;
   buttons.slice(1).forEach(x=>x.remove());
 
-  let row=host.querySelector('.v394-skip-row');
+  const rows=[...host.querySelectorAll('.v394-skip-row')];
+  let row=rows[0]||null;
+  rows.slice(1).forEach(x=>x.remove());
   if(!row){
    row=document.createElement('div');
    row.className='v394-skip-row';
@@ -61,8 +63,11 @@
    }
   };
 
-  let stock=row.querySelector('.v394-time-seed-stock');
-  if(!stock){stock=document.createElement('div');stock.className='v394-time-seed-stock';row.appendChild(stock)}
+  const stocks=[...host.querySelectorAll('.v394-time-seed-stock')];
+  let stock=stocks[0]||null;
+  stocks.slice(1).forEach(x=>x.remove());
+  if(!stock){stock=document.createElement('div');stock.className='v394-time-seed-stock'}
+  if(stock.parentElement!==row)row.appendChild(stock);
   const count=seedCount();
   if(stock.dataset.v4127Count!==String(count)){
    stock.dataset.v4127Count=String(count);
