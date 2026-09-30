@@ -1,3 +1,4 @@
+/* V8.009 BETA HALL REPUSH 2026-09-30 — canonical owner unchanged */
 
 (()=>{
  'use strict';
