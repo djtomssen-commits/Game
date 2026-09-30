@@ -1,0 +1,26 @@
+{
+  "build": "V8.009-HOME-7-BETA",
+  "phase": "Startseite weekly-chest targeted refresh",
+  "scope": "beta only",
+  "finding": [
+    "Server activity feedback updates the confirmed weekly XP and then queues v085InstallWorld(false) while the Startseite is active.",
+    "V366's signature correctly detects the weekly value change, but that means the complete Startseite was rebuilt even though only the small Wochen-Truhe widget changed.",
+    "The activity feedback event is dispatched in the same task before the queued RAF reaches v085InstallWorld, allowing the beta helper to identify exactly that refresh."
+  ],
+  "changes": [
+    "On growlegends:guild-xp-feedback, beta marks one short-lived weekly-feedback refresh window.",
+    "The next non-forced active-home v085InstallWorld call in that window is consumed and only .v6239-weekly-chest is replaced.",
+    "The new chest button is rebound to v6239OpenWeeklyChest.",
+    "V366's stored home signature weekly component is updated after the targeted paint, preventing a later catch-up full rebuild.",
+    "If the widget/API is unavailable or the timing does not match, the normal V366 full render still runs unchanged.",
+    "HOME-6 Frost checklist correction remains active after both full and targeted refreshes."
+  ],
+  "diagnostics": "window.v8009HomeHeaderDiagnostics() reports weeklyWidgetPaints, weeklyFullRendersAvoided and weeklyFeedbackEvents.",
+  "file": "js/system/performance/v7288-home-adaptive-fit-script.js",
+  "file_sha": "fd829a47ce6267e3788f996644b06e2748ed58dc",
+  "commit": "2e5af6142d7f02df022b343455aadb28391e755b",
+  "stable_behavior_changed": false,
+  "gameplay_changed": false,
+  "server_authority_changed": false,
+  "syntax_check": "ok"
+}
