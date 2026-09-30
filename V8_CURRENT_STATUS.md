@@ -10,8 +10,8 @@
 - Aktuelle Beta-Linie: **V8.009**
 - Arbeitsbranch: **main**
 - Letzter automatisiert geprüfter Code-Commit vor dieser Statusdatei:
-  `b697b7e7573c711af603302be6255151b722b22f`
-- Aktuelle Unterphase: **V8.009-DUNGEON-D11-BETA**
+  `05ec33af1d1c3e5cf7ac9cd3f77d231e638cd590`
+- Aktuelle Unterphase: **V8.009-DUNGEON-D1-BOSS-HOTFIX**
 - Nutzer-Video bestätigt: betroffen ist konkret **Dungeon 2**.
 - Sichtbares Fehlerbild:
   - zunächst korrekter D2-Hintergrund + korrekte Gegnergrafiken;
@@ -242,6 +242,26 @@
   - CSS-Regeln/Gameplay/Combat-Math/Rewards/Serverautorität unverändert.
 - D11 Beta-Größe: **6.014.540 Byte** (vorher 6.043.690 Byte).
 - D11 Status: **abgeschlossen**
+- D1 Boss-Hotfix nach manuellem D1-Screenshot:
+  - D1 Layout, Hintergrund und Gegner 1–9 visuell korrekt;
+  - einzig Boss 10 ohne Bild.
+- Ursache:
+  - ursprüngliches D1-Bossbild: `assets/v7195-base64/0f1a0253845b46d9a03d.jpg`;
+  - Datei existiert im Repo;
+  - nach D11 lag die alte CSS-Regel in `css/features/dungeon/beta/...`;
+  - dadurch wurde `url("assets/...")` relativ zum CSS-Dateipfad aufgelöst und traf nicht mehr das echte Asset.
+- Hotfix:
+  - Code-Commit `573f83edc6789c5e5dbae84cd01060913559bb90`;
+  - D1-Bossbild jetzt direkt im kanonischen D2 Visual Owner als `bossArt` + `bossFallback` verdrahtet;
+  - 10er-Karte, aktuelles Gegnerportrait und Bosskampf verwenden damit denselben dokumentrelativen D1-Bosspfad.
+- QA-Commit `05ec33af1d1c3e5cf7ac9cd3f77d231e638cd590`:
+  - JS-Syntax grün;
+  - D1-Bossdatei existiert;
+  - Assetpfad ist in `bossArt` und `bossFallback` vorhanden;
+  - Beta lädt den Visual Owner genau einmal;
+  - Stable lädt den Beta-Owner nicht.
+- Hotfix-Status: **automatisiert grün; manueller D1-Boss-Repro offen**
+- D12 bleibt bis zur manuellen Boss-Bestätigung pausiert.
 - Nächster Schritt: D1 sowie D3–D20 bei Gelegenheit visuell stichprobenartig prüfen; strukturell sind Hintergrund/Gegner komplett und die Boss-Pfade jetzt korrekt getrennt.
 - Scope: **Beta zuerst**
 - **Server 1 / Stable bleibt unangetastet**, bis eine Phase ausdrücklich für Stable freigegeben wird.
@@ -356,16 +376,18 @@ Für jedes System gilt:
 
 ## 4. EXAKTER nächster Schritt
 
-### V8.009-DUNGEON-D12-BETA – D1-CSS-Cascade auf Redundanz prüfen
+### V8.009-DUNGEON-D1-BOSS-HOTFIX – manueller Kontrollpunkt
 
-1. die 11 D11-CSS-Dateien in echter Cascade-Reihenfolge analysieren;
-2. selector/property-genau erfassen, welche frühen D1-Regeln durch spätere Layer vollständig überschrieben werden;
-3. Media-Queries, `!important`, Shorthands und Spezifität berücksichtigen;
-4. nur Regeln/Blöcke als redundant markieren, deren sichtbare Wirkung vollständig durch spätere aktive Regeln ersetzt ist;
-5. keine Entfernung ohne belastbaren Audit;
-6. bei eindeutigen Kandidaten zuerst einen kleinen Satz stilllegen und D1 statisch + manuell prüfen;
-7. D2/D6/D7 sowie D5 Asset-Fallback unverändert halten;
-8. Stable/Server 1 unverändert.
+1. Beta neu laden;
+2. Dungeon 1 → 10er-Karte öffnen;
+3. prüfen, ob Boss 10 / Milbenkönigin jetzt ein Bild hat;
+4. optional Bosskampf öffnen und dasselbe Bossbild dort prüfen;
+5. wenn korrekt:
+   - Hotfix abschließen;
+   - mit **V8.009-DUNGEON-D12-BETA** fortfahren: D1-CSS-Cascade auf echte Redundanz prüfen;
+6. wenn Boss weiterhin leer:
+   - Hotfix offen lassen;
+   - tatsächlichen Runtime-`src`/Fallback-Zustand des Boss-Nodes isolieren.
 
 ### Statusdatei-Regel
 
