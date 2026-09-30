@@ -109,12 +109,19 @@ for target in TARGETS:
 for target in TARGETS:
     if beta.count(target['file']) != 1:
         raise RuntimeError(f"external include count != 1: {target['file']}")
+    script_match = re.search(
+        r'<script[^>]*\bid=["\']' + re.escape(target['id']) + r'["\'][^>]*>([\s\S]*?)</script>',
+        beta,
+        re.I,
+    )
+    if script_match and script_match.group(1).strip():
+        raise RuntimeError(f"inline script body remains: {target['id']}")
     if re.search(
-        r'<(?:script|style)[^>]*\bid=["\']' + re.escape(target['id']) + r'["\'][^>]*>[\s\S]*?</(?:script|style)>',
+        r'<style[^>]*\bid=["\']' + re.escape(target['id']) + r'["\']',
         beta,
         re.I,
     ):
-        raise RuntimeError(f"inline body remains: {target['id']}")
+        raise RuntimeError(f"inline style remains: {target['id']}")
 
 for required in (
     'js/features/dungeon/beta/v8009-d2-visual-owner.js',
