@@ -1,0 +1,1206 @@
+{
+  "build": "V8.009-DUNGEON-D5-RENDER-RACE-AUDIT",
+  "symptom": "10er map briefly shows canonical background/enemy art, then a delayed pass replaces it with simplified/black rendering",
+  "video_observation": "second reproduced transition occurs roughly one second after correct map appears",
+  "inline_candidates": [
+    {
+      "index": 683,
+      "id": "v7051-atomic-dungeon-receipt-client",
+      "bytes": 35283,
+      "score": 15,
+      "setTimeout_count": 13,
+      "setInterval_count": 0,
+      "MutationObserver_count": 0,
+      "timer_delays": [
+        40,
+        120,
+        150,
+        360,
+        3600,
+        8000
+      ],
+      "mentions": {
+        "renderDungeon": 11,
+        "v251RenderDetail": 2,
+        "v244RenderSelectedDungeonMap": 2
+      },
+      "snippets": [
+        "window.v7051ResetAccountScope=resetAccountScope;\nconst sleep=ms=>new Promise(r=>setTimeout(r,ms));\nconst row=d=>Array.isArray(d)?d[0]:d;",
+        "x.rpc(name,args).then(({data,error})=>{if(error)throw error;return row(data)}),\n  new Promise((_,rej)=>setTimeout(()=>rej(new Error('RPC_TIMEOUT:'+name)),ms))\n ]);",
+        "Promise.resolve(v075WriteCloudSave(false)),\n   new Promise((_,rej)=>setTimeout(()=>rej(new Error('CLOUD_SAVE_TIMEOUT')),8000))\n  ]);",
+        "try{window.v441PaintResources?.()}catch(_){}\n try{if(document.getElementById('dungeon')?.classList.contains('active'))renderDungeon?.()}catch(_){}\n try{if(document.getElementById('character')?.classList.contains('active'))renderInventory?.()}catch(_){}",
+        "try{if(document.getElementById('character')?.classList.contains('active'))renderInventory?.()}catch(_){}\n setTimeout(claimButton,0);\n}",
+        "try{window.v467RebuildDungeonWorld?.('v7051-'+reason)}catch(_){}\n      if(typeof window.v467RebuildDungeonWorld!=='function')renderDungeon?.();\n    }else if(layer==='dungeon'&&view==='map'){",
+        "/* V7.214: preserve the active 10er map during canonical refresh. */\n      if(typeof window.v251RenderDetail==='function')window.v251RenderDetail(i);\n      else if(typeof window.v244RenderSelectedDungeonMap==='function')window.v244RenderSelectedDungeonMap();",
+        "if(typeof window.v251RenderDetail==='function')window.v251RenderDetail(i);\n      else if(typeof window.v244RenderSelectedDungeonMap==='function')window.v244RenderSelectedDungeonMap();\n      else renderDungeon?.();",
+        "else if(typeof window.v244RenderSelectedDungeonMap==='function')window.v244RenderSelectedDungeonMap();\n      else renderDungeon?.();\n    }else if(layer==='dungeon'&&view==='battle'){",
+        "try{window.v587ShowDungeonDefeat?.({dungeonIndex:di,roomIndex:ri,enemy,rec:Number(b?.rec_level)||0})}catch(_){}\n const back=document.getElementById('v7051ReturnMap');if(back)back.onclick=()=>{s.dungeon.layer='dungeon';s.dungeon.view='map';persistLocal();try{renderDungeon?.()}catch(_){}};\n}",
+        "});\n      if(comp2)setTimeout(()=>window.v6287ShowSummon?.(comp2,Math.max(0,Number(a?.second_damage)||0),true,{note:'2. RUF'}),secondSummonDelay);\n    }catch(_){}",
+        "const work=()=>{try{markSideEffects(b)}catch(_){}try{persistLocal()}catch(_){}try{paintAll()}catch(_){}};\n  if(typeof requestIdleCallback==='function')requestIdleCallback(work,{timeout:450});else setTimeout(work,40);\n });",
+        "const returnToMap=()=>{\n  try{s.dungeon.view='map';s.dungeon.layer='dungeon';persistLocal();renderDungeon?.();window.v7144PaintDungeonTimer?.(true)}catch(_){}\n };",
+        "persistLocal();\n  try{renderDungeon?.()}catch(e){console.warn('[V7144] immediate dungeon render',e)}\n  await sleep(16);",
+        "try{\n const base=window.renderDungeon||((typeof renderDungeon==='function')?renderDungeon:null);\n if(typeof base==='function'&&!base.__v7051ButtonOwner){",
+        "if(typeof base==='function'&&!base.__v7051ButtonOwner){\n  const w=function(){const r=base.apply(this,arguments);setTimeout(claimButton,0);return r};w.__v7051ButtonOwner=true;w.__v7051Base=base;window.renderDungeon=w;try{renderDungeon=w}catch(_){}\n }",
+        "document.addEventListener('click',ev=>{if(ev.target?.closest?.('#dungeon,[data-screen=\"dungeon\"]'))setTimeout(claimButton,0)},false);",
+        "window.v7051RunServerDungeon=()=>runServerDungeon();\nwindow.addEventListener('growlegends:account-ready',()=>{resetAccountScope('account-ready');setTimeout(()=>void boot(),360)},{passive:true});\nwindow.addEventListener('pageshow',()=>setTimeout(claimButton,150),{passive:true});",
+        "window.addEventListener('growlegends:account-ready',()=>{resetAccountScope('account-ready');setTimeout(()=>void boot(),360)},{passive:true});\nwindow.addEventListener('pageshow',()=>setTimeout(claimButton,150),{passive:true});\ndocument.addEventListener('visibilitychange',()=>{if(!document.hidden)setTimeout(claimButton,120)},{passive:true});",
+        "window.addEventListener('pageshow',()=>setTimeout(claimButton,150),{passive:true});\ndocument.addEventListener('visibilitychange',()=>{if(!document.hidden)setTimeout(claimButton,120)},{passive:true});\n[100,450,1400].forEach(ms=>setTimeout(claimButton,ms));"
+      ]
+    },
+    {
+      "index": 424,
+      "id": "v4225-final-10er-owner",
+      "bytes": 1967,
+      "score": 13,
+      "setTimeout_count": 2,
+      "setInterval_count": 0,
+      "MutationObserver_count": 0,
+      "timer_delays": [],
+      "mentions": {
+        "renderDungeon": 5,
+        "v251RenderDetail": 2,
+        "v261RenderDetail": 2,
+        "v244RenderSelectedDungeonMap": 2,
+        "v064RenderMap": 2
+      },
+      "snippets": [
+        "function installV261Owner(){\n    const detail=window.v261RenderDetail;\n    if(typeof detail!=='function'){",
+        "if(typeof detail!=='function'){\n      console.error('V4.225: v261RenderDetail fehlt');\n      return false;",
+        "/* Alle alten Detail-Einstiegspunkte hart auf den neuesten Renderer legen. */\n    try{window.v251RenderDetail=detail}catch(e){}\n    try{v251RenderDetail=detail}catch(e){}",
+        "try{window.v251RenderDetail=detail}catch(e){}\n    try{v251RenderDetail=detail}catch(e){}\n    try{window.v244RenderSelectedDungeonMap=detail}catch(e){}",
+        "try{v251RenderDetail=detail}catch(e){}\n    try{window.v244RenderSelectedDungeonMap=detail}catch(e){}\n    try{v244RenderSelectedDungeonMap=detail}catch(e){}",
+        "try{window.v244RenderSelectedDungeonMap=detail}catch(e){}\n    try{v244RenderSelectedDungeonMap=detail}catch(e){}\n    try{window.v064RenderMap=detail}catch(e){}",
+        "try{v244RenderSelectedDungeonMap=detail}catch(e){}\n    try{window.v064RenderMap=detail}catch(e){}\n    try{v064RenderMap=detail}catch(e){}",
+        "try{window.v064RenderMap=detail}catch(e){}\n    try{v064RenderMap=detail}catch(e){}",
+        "try{\n      const current=window.renderDungeon || renderDungeon;\n      if(typeof current==='function' && !current.__v4225DetailOwner){",
+        "wrapped.__v4225Base=base;\n        try{window.renderDungeon=wrapped}catch(e){}\n        try{renderDungeon=wrapped}catch(e){}",
+        "try{window.renderDungeon=wrapped}catch(e){}\n        try{renderDungeon=wrapped}catch(e){}\n      }",
+        "}\n    }catch(e){console.error('V4.225 renderDungeon owner',e)}",
+        "installV261Owner();\n  window.addEventListener('pageshow',()=>setTimeout(installV261Owner,0),{passive:true});\n  document.addEventListener('visibilitychange',()=>{",
+        "document.addEventListener('visibilitychange',()=>{\n    if(!document.hidden)setTimeout(installV261Owner,0);\n  },{passive:true});"
+      ]
+    },
+    {
+      "index": 428,
+      "id": "v432-d7-final-script",
+      "bytes": 3261,
+      "score": 12,
+      "setTimeout_count": 2,
+      "setInterval_count": 0,
+      "MutationObserver_count": 0,
+      "timer_delays": [
+        60
+      ],
+      "mentions": {
+        "renderDungeon": 4,
+        "v251RenderDetail": 2,
+        "v261RenderDetail": 1,
+        "v244RenderSelectedDungeonMap": 2,
+        "v064RenderMap": 2,
+        "dungeonMapCard": 1
+      },
+      "snippets": [
+        "const latest=window.v430RenderDetail || window.v427RenderDetail || window.v426RenderDetail || window.v261RenderDetail;\n  if(typeof latest!=='function') return;",
+        "function install(){\n    try{window.v251RenderDetail=detail;v251RenderDetail=detail}catch(e){}\n    try{window.v244RenderSelectedDungeonMap=detail;v244RenderSelectedDungeonMap=detail}catch(e){}",
+        "try{window.v251RenderDetail=detail;v251RenderDetail=detail}catch(e){}\n    try{window.v244RenderSelectedDungeonMap=detail;v244RenderSelectedDungeonMap=detail}catch(e){}\n    try{window.v064RenderMap=detail;v064RenderMap=detail}catch(e){}",
+        "try{window.v244RenderSelectedDungeonMap=detail;v244RenderSelectedDungeonMap=detail}catch(e){}\n    try{window.v064RenderMap=detail;v064RenderMap=detail}catch(e){}",
+        "try{\n      const current=window.renderDungeon || renderDungeon;\n      if(typeof current==='function' && !current.__v432FinalOwner){",
+        "wrapped.__v4225DetailOwner=true;\n        try{window.renderDungeon=wrapped}catch(e){}\n        try{renderDungeon=wrapped}catch(e){}",
+        "try{window.renderDungeon=wrapped}catch(e){}\n        try{renderDungeon=wrapped}catch(e){}\n      }",
+        "install();\n  window.addEventListener('pageshow',()=>setTimeout(install,60),{passive:true});\n  document.addEventListener('visibilitychange',()=>{",
+        "document.addEventListener('visibilitychange',()=>{\n    if(!document.hidden) setTimeout(install,60);\n  },{passive:true});"
+      ]
+    },
+    {
+      "index": 430,
+      "id": "v446-dungeon-runtime-root-fix",
+      "bytes": 23635,
+      "score": 11,
+      "setTimeout_count": 5,
+      "setInterval_count": 1,
+      "MutationObserver_count": 2,
+      "timer_delays": [
+        80,
+        120
+      ],
+      "mentions": {
+        "renderDungeon": 6,
+        "v244RenderSelectedDungeonMap": 2,
+        "dungeonMapCard": 2,
+        "v261-stage": 1
+      },
+      "snippets": [
+        "/* =========================================================\n     A) D9-VORSCHAU: Endlosschleife des alten MutationObservers stoppen.\n     Der alte Observer entfernte/erzeugte in der Vorschau fortlaufend DOM",
+        "/* Kein MutationObserver mehr für die Vorschau.\n     Nur nach echten Dungeon-Rendern neu einsetzen. */",
+        "try{\n    const baseRender=window.renderDungeon || renderDungeon;\n    if(typeof baseRender==='function' && !baseRender.__v446PostRender){",
+        "wrapped.__v446PostRender=true;\n      try{window.renderDungeon=wrapped}catch(e){}\n      try{renderDungeon=wrapped}catch(e){}",
+        "try{window.renderDungeon=wrapped}catch(e){}\n      try{renderDungeon=wrapped}catch(e){}\n    }",
+        "setTimeout(ensureD9PreviewButton,120);\n  window.addEventListener('pageshow',()=>setTimeout(ensureD9PreviewButton,80),{passive:true});",
+        "}\n    v586TimerClock=setTimeout(v586ScheduleTimer,Math.max(90,wait));\n  }",
+        "try{\n              if(typeof renderDungeon==='function')renderDungeon();\n              else if(typeof v244RenderSelectedDungeonMap==='function')v244RenderSelectedDungeonMap();",
+        "if(typeof renderDungeon==='function')renderDungeon();\n              else if(typeof v244RenderSelectedDungeonMap==='function')v244RenderSelectedDungeonMap();\n            }catch(e){}",
+        "}\n        setTimeout(finalize,wait);\n        return;",
+        "/* Erster Schlag sofort. Danach rAF-Takt, unabhängig von den alten\n       setTimeout/setInterval-Ketten und deren Runtime-Governor. */\n    playerAttack();"
+      ]
+    },
+    {
+      "index": 442,
+      "id": "v494-production-dungeon-fix-script",
+      "bytes": 6364,
+      "score": 11,
+      "setTimeout_count": 2,
+      "setInterval_count": 0,
+      "MutationObserver_count": 0,
+      "timer_delays": [],
+      "mentions": {
+        "renderDungeon": 7,
+        "dungeonMapCard": 4
+      },
+      "snippets": [
+        "try{\n    const base=window.renderDungeon || (typeof renderDungeon==='function'?renderDungeon:null);\n    if(typeof base==='function' && !base.__v494Production){",
+        "wrapped.__v494Production=true;\n      try{window.renderDungeon=wrapped}catch(e){}\n      try{renderDungeon=wrapped}catch(e){}",
+        "try{window.renderDungeon=wrapped}catch(e){}\n      try{renderDungeon=wrapped}catch(e){}\n    }",
+        "try{\n      const r=window.renderDungeon || renderDungeon;\n      if(typeof r==='function') r();",
+        "document.addEventListener('DOMContentLoaded',()=>{previewOff();restoreLiveControls();},{once:true});\n  window.addEventListener('pageshow',()=>setTimeout(()=>{previewOff();restoreLiveControls();},0),{passive:true});\n  document.addEventListener('visibilitychange',()=>{",
+        "document.addEventListener('visibilitychange',()=>{\n    if(!document.hidden)setTimeout(()=>{previewOff();restoreLiveControls();},0);\n  },{passive:true});"
+      ]
+    },
+    {
+      "index": 422,
+      "id": "gl20-v4218-js",
+      "bytes": 9525,
+      "score": 10,
+      "setTimeout_count": 3,
+      "setInterval_count": 0,
+      "MutationObserver_count": 0,
+      "timer_delays": [],
+      "mentions": {
+        "renderDungeon": 2,
+        "v251RenderDetail": 2,
+        "v244RenderSelectedDungeonMap": 2,
+        "v064RenderMap": 2,
+        "dungeonMapCard": 2
+      },
+      "snippets": [
+        "const mark=st==='completed'?'✓':st==='locked'?'🔒':st==='current'?'⚔':'◆';\n   return `<button type=\"button\" class=\"gl20g-card ${st}\" data-gl20g-dungeon=\"${i}\" aria-label=\"Dungeon ${i+1}: ${esc(nm)}\"><span class=\"gl20g-art\" style=\"background-image:url('${ARTS[i]}')\"></span><span class=\"gl20g-badge\">${i+1}</span><span class=\"gl20g-mark\">${mark}</span><span class=\"gl20g-info\"><span class=\"gl20g-name\">${esc(nm)}</span><span class=\"gl20g-state\">${esc(stateText(i,st))}</span></span></button>`;\n }",
+        "function hideLegacy(card){\n   card.style.removeProperty('background-image');\n   let el=card.previousElementSibling,n=0;while(el&&n++<8){const prev=el.previousElementSibling;const t=(el.textContent||'').replace(/\\s+/g,' ').trim().toLowerCase();if(t.includes('verseuchte gebiete')&&!t.includes('dungeons'))el.style.setProperty('display','none','important');el=prev}",
+        "document.getElementById('dungeonBattleCard')?.style.setProperty('display','none');\n     card.id='dungeonMapCard';card.className='card gl20g-world';card.style.display='';card.style.backgroundImage='none';\n     if(!canonicalDungeonReady()){",
+        "let ok=false;\n   try{if(typeof v251RenderDetail==='function')ok=v251RenderDetail()!==false;else if(typeof v244RenderSelectedDungeonMap==='function')ok=v244RenderSelectedDungeonMap()!==false;else if(typeof v064RenderMap==='function')ok=v064RenderMap()!==false}catch(e){console.error('GL20 V4.218 detail',e)}\n   if(!ok)try{if(typeof renderDungeon==='function'){renderDungeon();ok=true}}catch(e){console.error(e)}",
+        "try{if(typeof v251RenderDetail==='function')ok=v251RenderDetail()!==false;else if(typeof v244RenderSelectedDungeonMap==='function')ok=v244RenderSelectedDungeonMap()!==false;else if(typeof v064RenderMap==='function')ok=v064RenderMap()!==false}catch(e){console.error('GL20 V4.218 detail',e)}\n   if(!ok)try{if(typeof renderDungeon==='function'){renderDungeon();ok=true}}catch(e){console.error(e)}\n   if(ok)try{window.scrollTo({top:0,behavior:'smooth'})}catch(e){}",
+        "const boot=()=>{const sec=document.getElementById('dungeon');if(sec?.classList.contains('active')&&s?.dungeon?.layer!=='dungeon')render()};\n if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>setTimeout(boot,0),{once:true});else setTimeout(boot,0);\n window.addEventListener('pageshow',()=>setTimeout(boot,0));",
+        "if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>setTimeout(boot,0),{once:true});else setTimeout(boot,0);\n window.addEventListener('pageshow',()=>setTimeout(boot,0));\n})();"
+      ]
+    },
+    {
+      "index": 425,
+      "id": "v428-d6-final-owner",
+      "bytes": 2130,
+      "score": 10,
+      "setTimeout_count": 2,
+      "setInterval_count": 0,
+      "MutationObserver_count": 0,
+      "timer_delays": [
+        20
+      ],
+      "mentions": {
+        "renderDungeon": 4,
+        "v251RenderDetail": 2,
+        "v244RenderSelectedDungeonMap": 2,
+        "v064RenderMap": 2
+      },
+      "snippets": [
+        "/* Direkte Detail-Einstiegspunkte immer auf D6-Clean-Renderer. */\n    try{window.v251RenderDetail=detail}catch(e){}\n    try{v251RenderDetail=detail}catch(e){}",
+        "try{window.v251RenderDetail=detail}catch(e){}\n    try{v251RenderDetail=detail}catch(e){}\n    try{window.v244RenderSelectedDungeonMap=detail}catch(e){}",
+        "try{v251RenderDetail=detail}catch(e){}\n    try{window.v244RenderSelectedDungeonMap=detail}catch(e){}\n    try{v244RenderSelectedDungeonMap=detail}catch(e){}",
+        "try{window.v244RenderSelectedDungeonMap=detail}catch(e){}\n    try{v244RenderSelectedDungeonMap=detail}catch(e){}\n    try{window.v064RenderMap=detail}catch(e){}",
+        "try{v244RenderSelectedDungeonMap=detail}catch(e){}\n    try{window.v064RenderMap=detail}catch(e){}\n    try{v064RenderMap=detail}catch(e){}",
+        "try{window.v064RenderMap=detail}catch(e){}\n    try{v064RenderMap=detail}catch(e){}",
+        "try{\n      const current = window.renderDungeon || renderDungeon;\n      if(typeof current==='function' && !current.__v428D6FinalOwner){",
+        "wrapped.__v428Base=base;\n        try{window.renderDungeon=wrapped}catch(e){}\n        try{renderDungeon=wrapped}catch(e){}",
+        "try{window.renderDungeon=wrapped}catch(e){}\n        try{renderDungeon=wrapped}catch(e){}\n      }",
+        "/* Ältere Listener laufen zuerst; danach setzen wir den finalen Owner erneut. */\n  window.addEventListener('pageshow',()=>setTimeout(install,20),{passive:true});\n  document.addEventListener('visibilitychange',()=>{",
+        "document.addEventListener('visibilitychange',()=>{\n    if(!document.hidden)setTimeout(install,20);\n  },{passive:true});"
+      ]
+    },
+    {
+      "index": 144,
+      "id": "v244-dungeon-detail-map-final",
+      "bytes": 6675,
+      "score": 9,
+      "setTimeout_count": 1,
+      "setInterval_count": 0,
+      "MutationObserver_count": 0,
+      "timer_delays": [
+        520
+      ],
+      "mentions": {
+        "renderDungeon": 1,
+        "v244RenderSelectedDungeonMap": 4,
+        "v064RenderMap": 2,
+        "dungeonMapCard": 2
+      },
+      "snippets": [
+        "function v244RenderSelectedDungeonMap(){\n  v243RepairAndSaveDungeonKeys();",
+        "renderDungeon();\n      window.scrollTo({top:0,behavior:'smooth'});",
+        "/*\n  Make every historical call to v064RenderMap use the generic renderer.\n  Dungeon 1 keeps its custom room names; Dungeon 2–20 use their own",
+        "*/\nv064RenderMap=v244RenderSelectedDungeonMap;",
+        "const ok=v244RenderSelectedDungeonMap();",
+        "/* Repaint the currently open detail map if necessary. */\nsetTimeout(()=>{\n  try{",
+        "){\n      v244RenderSelectedDungeonMap();\n    }"
+      ]
+    },
+    {
+      "index": 431,
+      "id": "v447-d9-preview-button-restore",
+      "bytes": 2730,
+      "score": 7,
+      "setTimeout_count": 4,
+      "setInterval_count": 0,
+      "MutationObserver_count": 1,
+      "timer_delays": [
+        80,
+        100,
+        120
+      ],
+      "mentions": {
+        "renderDungeon": 4,
+        "dungeonMapCard": 2,
+        "v261-stage": 1
+      },
+      "snippets": [
+        "/*\n    Bewusst KEIN MutationObserver.\n    Nur ein sehr leichter Existenz-Check. Solange der Button da ist,",
+        "setTimeout(ensureButton,120);\n  window.addEventListener('pageshow',()=>setTimeout(ensureButton,100),{passive:true});",
+        "setTimeout(ensureButton,120);\n  window.addEventListener('pageshow',()=>setTimeout(ensureButton,100),{passive:true});\n  document.addEventListener('visibilitychange',()=>{",
+        "document.addEventListener('visibilitychange',()=>{\n    if(!document.hidden)setTimeout(ensureButton,100);\n  },{passive:true});",
+        "try{\n    const current=window.renderDungeon || renderDungeon;\n    if(typeof current==='function' && !current.__v447PreviewButtonOwner){",
+        "const out=base.apply(this,arguments);\n        setTimeout(ensureButton,80);\n        return out;",
+        "wrapped.__v447PreviewButtonOwner=true;\n      try{window.renderDungeon=wrapped}catch(e){}\n      try{renderDungeon=wrapped}catch(e){}",
+        "try{window.renderDungeon=wrapped}catch(e){}\n      try{renderDungeon=wrapped}catch(e){}\n    }"
+      ]
+    },
+    {
+      "index": 437,
+      "id": "v460-d1-thumb-owner-fix-script",
+      "bytes": 2272,
+      "score": 7,
+      "setTimeout_count": 4,
+      "setInterval_count": 0,
+      "MutationObserver_count": 0,
+      "timer_delays": [
+        70,
+        90
+      ],
+      "mentions": {
+        "v251RenderDetail": 3,
+        "v244RenderSelectedDungeonMap": 3,
+        "dungeonMapCard": 1
+      },
+      "snippets": [
+        "const bg=getComputedStyle(ring).backgroundImage;\n      if(bg && bg!=='none'){",
+        "thumb.textContent='';\n        thumb.style.setProperty('background-image',bg,'important');\n        thumb.style.setProperty('background-size','cover','important');",
+        "const icon=dungeons?.[0]?.enemies?.[ri]?.icon||'👹';\n        thumb.style.setProperty('background-image','none','important');\n        thumb.style.setProperty('color','#fff','important');",
+        "paintThumb();\n      setTimeout(paintThumb,70); /* nach alten D1-Dekorierern final übernehmen */\n    });",
+        "schedule();\n  window.addEventListener('pageshow',()=>setTimeout(paintThumb,90),{passive:true});\n  document.addEventListener('visibilitychange',()=>{if(!document.hidden)setTimeout(paintThumb,90)},{passive:true});",
+        "window.addEventListener('pageshow',()=>setTimeout(paintThumb,90),{passive:true});\n  document.addEventListener('visibilitychange',()=>{if(!document.hidden)setTimeout(paintThumb,90)},{passive:true});\n  document.addEventListener('click',()=>setTimeout(paintThumb,90),true);",
+        "document.addEventListener('visibilitychange',()=>{if(!document.hidden)setTimeout(paintThumb,90)},{passive:true});\n  document.addEventListener('click',()=>setTimeout(paintThumb,90),true);",
+        "['v426RenderDetail','v251RenderDetail','v244RenderSelectedDungeonMap'].forEach(name=>{\n    try{",
+        "window[name]=wrap;\n        try{if(name==='v251RenderDetail')v251RenderDetail=wrap;if(name==='v244RenderSelectedDungeonMap')v244RenderSelectedDungeonMap=wrap}catch(e){}\n      }"
+      ]
+    },
+    {
+      "index": 436,
+      "id": "v459-d1-right-side-thumb-final-script",
+      "bytes": 2276,
+      "score": 7,
+      "setTimeout_count": 3,
+      "setInterval_count": 0,
+      "MutationObserver_count": 1,
+      "timer_delays": [
+        35,
+        50,
+        60
+      ],
+      "mentions": {
+        "v251RenderDetail": 3,
+        "v244RenderSelectedDungeonMap": 3,
+        "dungeonMapCard": 1
+      },
+      "snippets": [
+        "if(thumb.textContent!==icon)thumb.textContent=icon;\n        thumb.style.setProperty('background-image','none','important');\n        thumb.style.setProperty('color','#fff','important');",
+        "requestAnimationFrame(paint);\n  document.addEventListener('click',()=>setTimeout(paint,35),true);\n  window.addEventListener('pageshow',()=>setTimeout(paint,60),{passive:true});",
+        "document.addEventListener('click',()=>setTimeout(paint,35),true);\n  window.addEventListener('pageshow',()=>setTimeout(paint,60),{passive:true});\n  document.addEventListener('visibilitychange',()=>{if(!document.hidden)setTimeout(paint,50)},{passive:true});",
+        "window.addEventListener('pageshow',()=>setTimeout(paint,60),{passive:true});\n  document.addEventListener('visibilitychange',()=>{if(!document.hidden)setTimeout(paint,50)},{passive:true});",
+        "/* Nur nach echten D1-Rendern nachmalen; kein MutationObserver. */\n  ['v426RenderDetail','v251RenderDetail','v244RenderSelectedDungeonMap'].forEach(name=>{",
+        "/* Nur nach echten D1-Rendern nachmalen; kein MutationObserver. */\n  ['v426RenderDetail','v251RenderDetail','v244RenderSelectedDungeonMap'].forEach(name=>{\n    try{",
+        "window[name]=wrap;\n        try{if(name==='v251RenderDetail')v251RenderDetail=wrap;if(name==='v244RenderSelectedDungeonMap')v244RenderSelectedDungeonMap=wrap}catch(e){}\n      }"
+      ]
+    },
+    {
+      "index": 438,
+      "id": "v461-d1-node9-collision-fix-script",
+      "bytes": 1450,
+      "score": 7,
+      "setTimeout_count": 3,
+      "setInterval_count": 0,
+      "MutationObserver_count": 0,
+      "timer_delays": [
+        45,
+        60,
+        70
+      ],
+      "mentions": {
+        "v251RenderDetail": 3,
+        "v244RenderSelectedDungeonMap": 3,
+        "dungeonMapCard": 1
+      },
+      "snippets": [
+        "requestAnimationFrame(paint);\n  document.addEventListener('click',()=>setTimeout(paint,45),true);\n  window.addEventListener('pageshow',()=>setTimeout(paint,70),{passive:true});",
+        "document.addEventListener('click',()=>setTimeout(paint,45),true);\n  window.addEventListener('pageshow',()=>setTimeout(paint,70),{passive:true});\n  document.addEventListener('visibilitychange',()=>{if(!document.hidden)setTimeout(paint,60)},{passive:true});",
+        "window.addEventListener('pageshow',()=>setTimeout(paint,70),{passive:true});\n  document.addEventListener('visibilitychange',()=>{if(!document.hidden)setTimeout(paint,60)},{passive:true});",
+        "['v426RenderDetail','v251RenderDetail','v244RenderSelectedDungeonMap'].forEach(name=>{\n    try{",
+        "window[name]=wrap;\n        try{if(name==='v251RenderDetail')v251RenderDetail=wrap;if(name==='v244RenderSelectedDungeonMap')v244RenderSelectedDungeonMap=wrap}catch(e){}\n      }"
+      ]
+    },
+    {
+      "index": 439,
+      "id": "v463-d1-screenshot-polish-script",
+      "bytes": 1430,
+      "score": 7,
+      "setTimeout_count": 3,
+      "setInterval_count": 0,
+      "MutationObserver_count": 0,
+      "timer_delays": [
+        45,
+        60,
+        70
+      ],
+      "mentions": {
+        "v251RenderDetail": 3,
+        "v244RenderSelectedDungeonMap": 3,
+        "dungeonMapCard": 1
+      },
+      "snippets": [
+        "requestAnimationFrame(paint);\n  document.addEventListener('click',()=>setTimeout(paint,45),true);\n  window.addEventListener('pageshow',()=>setTimeout(paint,70),{passive:true});",
+        "document.addEventListener('click',()=>setTimeout(paint,45),true);\n  window.addEventListener('pageshow',()=>setTimeout(paint,70),{passive:true});\n  document.addEventListener('visibilitychange',()=>{if(!document.hidden)setTimeout(paint,60)},{passive:true});",
+        "window.addEventListener('pageshow',()=>setTimeout(paint,70),{passive:true});\n  document.addEventListener('visibilitychange',()=>{if(!document.hidden)setTimeout(paint,60)},{passive:true});",
+        "['v426RenderDetail','v251RenderDetail','v244RenderSelectedDungeonMap'].forEach(name=>{\n    try{",
+        "window[name]=wrap;\n        try{if(name==='v251RenderDetail')v251RenderDetail=wrap;if(name==='v244RenderSelectedDungeonMap')v244RenderSelectedDungeonMap=wrap}catch(e){}\n      }"
+      ]
+    },
+    {
+      "index": 432,
+      "id": "v454-d1-feinschliff-script",
+      "bytes": 2980,
+      "score": 7,
+      "setTimeout_count": 1,
+      "setInterval_count": 0,
+      "MutationObserver_count": 1,
+      "timer_delays": [
+        40
+      ],
+      "mentions": {
+        "v251RenderDetail": 3,
+        "v244RenderSelectedDungeonMap": 3,
+        "dungeonMapCard": 1
+      },
+      "snippets": [
+        "const want=`url(\"${P[ri]}\")`;\n        if(thumb.style.backgroundImage!==want)thumb.style.backgroundImage=want;\n      }",
+        "/* Kein MutationObserver: nur nach echten Render-Aktionen dekorieren. */\n  const funcs=['v426RenderDetail','v251RenderDetail','v244RenderSelectedDungeonMap'];",
+        "/* Kein MutationObserver: nur nach echten Render-Aktionen dekorieren. */\n  const funcs=['v426RenderDetail','v251RenderDetail','v244RenderSelectedDungeonMap'];\n  funcs.forEach(name=>{",
+        "window[name]=wrap;\n        try{if(name==='v251RenderDetail')v251RenderDetail=wrap;if(name==='v244RenderSelectedDungeonMap')v244RenderSelectedDungeonMap=wrap}catch(e){}\n      }",
+        "requestAnimationFrame(decorate);\n  document.addEventListener('click',()=>setTimeout(decorate,40),true);\n})();"
+      ]
+    },
+    {
+      "index": 45,
+      "id": "",
+      "bytes": 8863,
+      "score": 6,
+      "setTimeout_count": 3,
+      "setInterval_count": 0,
+      "MutationObserver_count": 0,
+      "timer_delays": [
+        330
+      ],
+      "mentions": {
+        "renderDungeon": 2,
+        "v064RenderMap": 2,
+        "dungeonMapCard": 2
+      },
+      "snippets": [
+        "/* Cleanly switch the shared card from world-map styling to 10-room styling. */\nconst v068BaseRenderMap = v064RenderMap;\nv064RenderMap=function(){",
+        "const v068BaseRenderMap = v064RenderMap;\nv064RenderMap=function(){\n  const result = v068BaseRenderMap();",
+        "setTimeout(()=>{\n        if(!battleBusy)return;",
+        "setTimeout(()=>{\n          if(!battleBusy)return;",
+        "setTimeout(step,330);\n        },300);",
+        "/* Phase 2 retired: v068 renderDungeon fight wrapper. The final canonical dungeon owner replaces this render layer. */",
+        "if(document.querySelector('#dungeon')?.classList.contains('active')){\n    try{renderDungeon();}catch(e){console.error('V4.02 dungeon render',e);}\n  }"
+      ]
+    },
+    {
+      "index": 146,
+      "id": "v246-dungeon-final-fight-reward-fix",
+      "bytes": 17820,
+      "score": 5,
+      "setTimeout_count": 4,
+      "setInterval_count": 0,
+      "MutationObserver_count": 0,
+      "timer_delays": [
+        330,
+        560
+      ],
+      "mentions": {
+        "renderDungeon": 4,
+        "v244RenderSelectedDungeonMap": 1
+      },
+      "snippets": [
+        "/* Phase 2.4: route the return through the canonical renderer. */\n          if(typeof renderDungeon==='function')renderDungeon();\n          else v244RenderSelectedDungeonMap();",
+        "if(typeof renderDungeon==='function')renderDungeon();\n          else v244RenderSelectedDungeonMap();",
+        "setTimeout(()=>{\n        if(!battleBusy)return;",
+        "setTimeout(()=>{\n          if(!battleBusy)return;",
+        "setTimeout(step,330);\n        },300);",
+        "*/\n/* Phase 2 retired: v246 renderDungeon battle wrapper.\n   Canonical battle rendering calls the opponent refresh directly. */",
+        "/*\n  The V4.02 detail-map current-room button eventually calls renderDungeon().\n  The wrapper above guarantees that the freshly selected opponent is painted",
+        "*/\nsetTimeout(()=>{\n  try{"
+      ]
+    },
+    {
+      "index": 480,
+      "id": "v585-dungeon-safe-owner-core",
+      "bytes": 7862,
+      "score": 5,
+      "setTimeout_count": 3,
+      "setInterval_count": 0,
+      "MutationObserver_count": 1,
+      "timer_delays": [],
+      "mentions": {
+        "renderDungeon": 5
+      },
+      "snippets": [
+        "const paint=()=>{const t=clean(src.textContent);if(!t||t===lastLog)return;lastLog=t;renderLog(t)};\n    new MutationObserver(paint).observe(src,{childList:true,characterData:true,subtree:true});\n    paint();",
+        "dungeon dispatcher can invoke it directly. This replaces the retired\n     renderDungeon wrapper without creating another render layer. */\n  window.v585SyncDungeonBattle=sync;",
+        "try{\n    const base=window.renderDungeon||renderDungeon;\n    if(typeof base==='function'&&!base.__v586VisualSync){",
+        "const out=base.apply(this,arguments);\n        setTimeout(sync,0);\n        return out;",
+        "wrapped.__v586VisualSync=true;\n      try{window.renderDungeon=wrapped}catch(_){ }\n      try{renderDungeon=wrapped}catch(_){ }",
+        "try{window.renderDungeon=wrapped}catch(_){ }\n      try{renderDungeon=wrapped}catch(_){ }\n    }",
+        "}catch(_){ }\n  document.addEventListener('click',ev=>{if(ev.target?.closest?.('#dungeon'))setTimeout(sync,0)},{passive:true});\n  window.addEventListener('pageshow',sync,{passive:true});",
+        "document.addEventListener('visibilitychange',()=>{if(!document.hidden)sync()},{passive:true});\n  setTimeout(sync,0);\n})();"
+      ]
+    },
+    {
+      "index": 440,
+      "id": "v467-d2-direct-script",
+      "bytes": 2878,
+      "score": 5,
+      "setTimeout_count": 1,
+      "setInterval_count": 0,
+      "MutationObserver_count": 0,
+      "timer_delays": [
+        40
+      ],
+      "mentions": {
+        "renderDungeon": 4,
+        "dungeonMapCard": 1
+      },
+      "snippets": [
+        "const sign=card.querySelector('.v261-signboard'); if(sign)sign.innerHTML='ACHTUNG<br>ÜBERWUCHERTES<br>LABOR<br>BETRETEN AUF<br>EIGENE GEFAHR!<small>☠</small>';\n const line1=card.querySelector('.v261-line1'); if(line1){const m=String(line1.textContent||'').match(/^(\\d+)\\s*·/); const ri=m?Math.max(0,Math.min(9,Number(m[1])-1)):0; line1.textContent=(ri+1)+' · '+NAMES[ri]+(ri===9?' – BOSS':''); const thumb=card.querySelector('.v261-thumb'); if(thumb){thumb.textContent='';thumb.style.backgroundImage='url(\"'+(ri===9?BOSS_ART:ART[ri])+'\")';} }\n}",
+        "}\ntry{const baseRender=window.renderDungeon||renderDungeon;if(typeof baseRender==='function'&&!baseRender.__v467D2){const rw=function(){const out=baseRender.apply(this,arguments);applyD2(false);return out;};rw.__v467D2=true;window.renderDungeon=rw;try{renderDungeon=rw}catch(e){}}}catch(e){}\nsetTimeout(()=>applyD2(false),40);",
+        "try{const baseRender=window.renderDungeon||renderDungeon;if(typeof baseRender==='function'&&!baseRender.__v467D2){const rw=function(){const out=baseRender.apply(this,arguments);applyD2(false);return out;};rw.__v467D2=true;window.renderDungeon=rw;try{renderDungeon=rw}catch(e){}}}catch(e){}\nsetTimeout(()=>applyD2(false),40);\n})();"
+      ]
+    },
+    {
+      "index": 147,
+      "id": "v247-dungeon-reward-modal-core",
+      "bytes": 5138,
+      "score": 4,
+      "setTimeout_count": 2,
+      "setInterval_count": 0,
+      "MutationObserver_count": 0,
+      "timer_delays": [
+        80,
+        580
+      ],
+      "mentions": {
+        "renderDungeon": 2,
+        "v244RenderSelectedDungeonMap": 2
+      },
+      "snippets": [
+        "try{\n      if(typeof renderDungeon==='function')renderDungeon();\n      else v244RenderSelectedDungeonMap();",
+        "if(typeof renderDungeon==='function')renderDungeon();\n      else v244RenderSelectedDungeonMap();\n    }catch(e){",
+        "}catch(e){\n      try{v244RenderSelectedDungeonMap()}catch(_){}\n    }",
+        "setTimeout(()=>{\n    if(document.body.contains(overlay)){",
+        "/* Final version stamp. */\nsetTimeout(()=>{\n  document.querySelectorAll('.version')"
+      ]
+    },
+    {
+      "index": 353,
+      "id": "v458-key-live-unlock",
+      "bytes": 5996,
+      "score": 4,
+      "setTimeout_count": 2,
+      "setInterval_count": 0,
+      "MutationObserver_count": 0,
+      "timer_delays": [
+        50,
+        220
+      ],
+      "mentions": {
+        "renderDungeon": 2,
+        "v251RenderDetail": 2
+      },
+      "snippets": [
+        "}else if(layer==='dungeon' && view==='map'){\n        if(typeof v251RenderDetail==='function')painted=!!v251RenderDetail();\n        else if(typeof renderDungeon==='function'){renderDungeon();painted=true;}",
+        "if(typeof v251RenderDetail==='function')painted=!!v251RenderDetail();\n        else if(typeof renderDungeon==='function'){renderDungeon();painted=true;}\n      }",
+        "requestAnimationFrame(()=>repaintDungeon(reason+'-raf'));\n    setTimeout(()=>repaintDungeon(reason+'-50'),50);\n    setTimeout(()=>repaintDungeon(reason+'-220'),220);",
+        "setTimeout(()=>repaintDungeon(reason+'-50'),50);\n    setTimeout(()=>repaintDungeon(reason+'-220'),220);\n  }"
+      ]
+    },
+    {
+      "index": 204,
+      "id": "v428-dungeon-rebalance",
+      "bytes": 2174,
+      "score": 4,
+      "setTimeout_count": 1,
+      "setInterval_count": 0,
+      "MutationObserver_count": 0,
+      "timer_delays": [],
+      "mentions": {
+        "renderDungeon": 2,
+        "v244RenderSelectedDungeonMap": 2
+      },
+      "snippets": [
+        "// Refresh any open dungeon so map/card and battle use the same final values immediately.\n  setTimeout(()=>{\n    try{",
+        "if(s.dungeon?.layer==='world' && typeof v230ShowDungeonWorld==='function')v230ShowDungeonWorld();\n        else if(s.dungeon?.view==='map' && typeof v244RenderSelectedDungeonMap==='function')v244RenderSelectedDungeonMap();\n        else if(s.dungeon?.view==='battle' && typeof renderDungeon==='function')renderDungeon();",
+        "else if(s.dungeon?.view==='map' && typeof v244RenderSelectedDungeonMap==='function')v244RenderSelectedDungeonMap();\n        else if(s.dungeon?.view==='battle' && typeof renderDungeon==='function')renderDungeon();\n      }"
+      ]
+    },
+    {
+      "index": 482,
+      "id": "v587-dungeon-result-overlay-core",
+      "bytes": 3000,
+      "score": 4,
+      "setTimeout_count": 1,
+      "setInterval_count": 0,
+      "MutationObserver_count": 0,
+      "timer_delays": [],
+      "mentions": {
+        "renderDungeon": 2,
+        "v244RenderSelectedDungeonMap": 2
+      },
+      "snippets": [
+        "persist(false);\n          if(typeof renderDungeon==='function')renderDungeon();\n          else if(typeof v244RenderSelectedDungeonMap==='function')v244RenderSelectedDungeonMap();",
+        "if(typeof renderDungeon==='function')renderDungeon();\n          else if(typeof v244RenderSelectedDungeonMap==='function')v244RenderSelectedDungeonMap();\n          window.scrollTo({top:0,behavior:'smooth'});",
+        "mark();\n  document.addEventListener('click',()=>setTimeout(mark,0),true);\n})();"
+      ]
+    },
+    {
+      "index": 12,
+      "id": "",
+      "bytes": 68664,
+      "score": 3,
+      "setTimeout_count": 10,
+      "setInterval_count": 1,
+      "MutationObserver_count": 0,
+      "timer_delays": [
+        380,
+        450,
+        650,
+        2600
+      ],
+      "mentions": {
+        "renderDungeon": 2,
+        "dungeonMapCard": 1
+      },
+      "snippets": [
+        "renderInventory();\n renderGrow();renderQuests();renderDungeon();renderShop();}\nwindow.incAttr=k=>{if(s.points>0){s.points--;s.attrs[k]++;persist()}};window.equip=i=>{const it=s.inventory[i];if(!it)return;if(it.classId&&it.classId!==s.playerClass)return v115Alert(`Dieses Item ist nur für ${classLabel(it.classId)}.`);const old=s.equipment[it.slot];s.equipment[it.slot]=it;s.inventory.splice(i,1);if(old)s.inventory.push(old);persist()};",
+        "const box=document.querySelector('#growFeedback');if(!box)return;\n box.textContent=msg;box.classList.add('show');clearTimeout(window._growMsgTimer);window._growMsgTimer=setTimeout(()=>box.classList.remove('show'),2600);\n}",
+        "try{if(typeof window.glPushDebug==='function')window.glPushDebug('Pflanze gesetzt – Push wird geplant…\\nsend_at: '+new Date(glReadyAt).toISOString())}catch(e){}\n [0,1200,3500].forEach(delay=>setTimeout(()=>{\n   try{",
+        "}\nfunction renderDungeon(){\n const mapCard=document.querySelector('#dungeonMapCard'),battleCard=document.querySelector('#dungeonBattleCard');",
+        "}\nfunction animClass(el,cl,ms=400){el.classList.remove(cl);void el.offsetWidth;el.classList.add(cl);setTimeout(()=>el.classList.remove(cl),ms)}function popDamage(el,text){el.textContent=text;animClass(el,'pop',650)}\ndocument.querySelector('#fightBtn').onclick=()=>{if(battleBusy)return;if(dungeonCompleted(s.dungeon.selected||0))return v115Alert('Dieser Dungeon ist bereits abgeschlossen und dauerhaft versiegelt.');if(!dungeonAvailable(s.dungeon.selected||0))return v115Alert('Dieser Dungeon ist noch nicht betretbar.');const gateEnemy=currentDungeonEnemy();if(!s.playerClass)return v115Alert('Wähle zuerst im Heldenquartier deine Klasse.');if(!consumeDungeonAttempt())return;persist(false);battleBusy=true;const btn=document.querySelector('#fightBtn');btn.disabled=true;document.querySelector('#loot').innerHTML='';const d=currentDungeon(),idx=Math.max(0,Math.min(9,(s.dungeon.progress?.[s.dungeon.selected] ?? s.dungeon.room ?? 0))),e=d.enemies[idx],maxP=maxHp();let pHp=maxP,eHp=e.hp;const pBar=d",
+        "if(s.playerClass==='bruiser'&&crit){pDmg=Math.floor(pDmg*(1+setBonusValue('critDamage')+skillValue('overload')*.07));special=' MAGIE-KRIT!';}\n if((s.playerClass==='grower'||s.playerClass==='frost')&&skillValue('raserei'))pDmg=Math.floor(pDmg*(1+skillValue('raserei')*.04));animClass(document.querySelector('#playerFighter'),'attack-right');setTimeout(()=>{eHp=Math.max(0,eHp-pDmg);eBar.style.width=(eHp/e.hp*100)+'%';eTxt.textContent=eHp;popDamage(document.querySelector('#damageEnemy'),`${special||crit?'KRIT! ':''}-${pDmg}`);animClass(document.querySelector('#enemyFighter'),'hit');log.textContent=`Runde ${round}: Du triffst für ${pDmg} Schaden${special|| (crit?' – kritischer Treffer!':'')}.`;if(eHp<=0)return finish(true);\n setTimeout(()=>{const reduction=Math.floor(totalAttr('ausdauer')*.45);let eDmg=Math.max(2,Math.floor(e.hp/12+Math.random()*8)-reduction);",
+        "if((s.playerClass==='grower'||s.playerClass==='frost')&&skillValue('raserei'))pDmg=Math.floor(pDmg*(1+skillValue('raserei')*.04));animClass(document.querySelector('#playerFighter'),'attack-right');setTimeout(()=>{eHp=Math.max(0,eHp-pDmg);eBar.style.width=(eHp/e.hp*100)+'%';eTxt.textContent=eHp;popDamage(document.querySelector('#damageEnemy'),`${special||crit?'KRIT! ':''}-${pDmg}`);animClass(document.querySelector('#enemyFighter'),'hit');log.textContent=`Runde ${round}: Du triffst für ${pDmg} Schaden${special|| (crit?' – kritischer Treffer!':'')}.`;if(eHp<=0)return finish(true);\n setTimeout(()=>{const reduction=Math.floor(totalAttr('ausdauer')*.45);let eDmg=Math.max(2,Math.floor(e.hp/12+Math.random()*8)-reduction);\n const skillReduce=(s.playerClass==='grower'||s.playerClass==='frost')?skillValue('fell')*.04:s.playerClass==='bruiser'?skillValue('mantel')*.03:s.playerClass==='scout'?skillValue('tarn')*.03:0;",
+        "const skillReduce=(s.playerClass==='grower'||s.playerClass==='frost')?skillValue('fell')*.04:s.playerClass==='bruiser'?skillValue('mantel')*.03:s.playerClass==='scout'?skillValue('tarn')*.03:0;\n eDmg=Math.max(1,Math.floor(eDmg*(1-skillReduce)));animClass(document.querySelector('#enemyFighter'),'attack-left');setTimeout(()=>{pHp=Math.max(0,pHp-eDmg);pBar.style.width=(pHp/maxP*100)+'%';pTxt.textContent=pHp;popDamage(document.querySelector('#damagePlayer'),`-${eDmg}`);animClass(document.querySelector('#playerFighter'),'hit');log.textContent+=` Gegner verursacht ${eDmg}.`;if(pHp<=0)return finish(false);setTimeout(step,380)},260)},420)},260)};\n const finish=win=>{setTimeout(()=>{battleBusy=false;btn.disabled=false;if(win){s.gold+=e.gold;addXp(e.xp);let html=`<div class=\"loot good\">🏆 Sieg! +${e.xp} XP · +${e.gold} Gold</div>`;if(e.boss||Math.random()<.22){let found;if(e.boss){if(Math.random()<0.12){const slot=setBases[Math.floor(Math.random()*setBases.length)].slot;found=makeSetItem(s.player",
+        "eDmg=Math.max(1,Math.floor(eDmg*(1-skillReduce)));animClass(document.querySelector('#enemyFighter'),'attack-left');setTimeout(()=>{pHp=Math.max(0,pHp-eDmg);pBar.style.width=(pHp/maxP*100)+'%';pTxt.textContent=pHp;popDamage(document.querySelector('#damagePlayer'),`-${eDmg}`);animClass(document.querySelector('#playerFighter'),'hit');log.textContent+=` Gegner verursacht ${eDmg}.`;if(pHp<=0)return finish(false);setTimeout(step,380)},260)},420)},260)};\n const finish=win=>{setTimeout(()=>{battleBusy=false;btn.disabled=false;if(win){s.gold+=e.gold;addXp(e.xp);let html=`<div class=\"loot good\">🏆 Sieg! +${e.xp} XP · +${e.gold} Gold</div>`;if(e.boss||Math.random()<.22){let found;if(e.boss){if(Math.random()<0.12){const slot=setBases[Math.floor(Math.random()*setBases.length)].slot;found=makeSetItem(s.playerClass||'grower',slot)}else{found=makeClassLoot(s.playerClass||'grower','dungeon');found.quality='purple';found.rarity='epic';found.name=`Episch: ${found.name.replace(/^.*?:\\s*/,'')}`;}}else{if(Ma",
+        "document.querySelector('#upgradeRoom').addEventListener('click',upgradeRoomAction);\nensureQuests();setInterval(()=>{if(document.hidden)return;/* V4.81: live Growroom is owned by v239; do not rebuild the full Growroom every second. */regenEnergy();document.querySelector('#energy')&&(document.querySelector('#energy').textContent=`${s.energy}/100`);document.querySelector('#dungeonTicketText')&&(document.querySelector('#dungeonTicketText').textContent=dungeonWaitText())},1000);persist();"
+      ]
+    },
+    {
+      "index": 360,
+      "id": "v467-hard-live-dungeon-key-authority",
+      "bytes": 9509,
+      "score": 3,
+      "setTimeout_count": 5,
+      "setInterval_count": 0,
+      "MutationObserver_count": 0,
+      "timer_delays": [
+        80,
+        100,
+        120,
+        300
+      ],
+      "mentions": {
+        "renderDungeon": 2,
+        "dungeonMapCard": 1
+      },
+      "snippets": [
+        "else if(typeof v065RenderWorld==='function'){v065RenderWorld();ok=true}\n        else if(typeof renderDungeon==='function'){renderDungeon();ok=true}\n      }catch(e){console.warn('V4.68 dungeon world rebuild',reason,e)}",
+        "try{requestAnimationFrame(()=>rebuildWorld(reason+'-raf'))}catch(e){}\n      setTimeout(()=>rebuildWorld(reason+'-80'),80);\n      setTimeout(()=>rebuildWorld(reason+'-300'),300);",
+        "setTimeout(()=>rebuildWorld(reason+'-80'),80);\n      setTimeout(()=>rebuildWorld(reason+'-300'),300);\n    }",
+        "try{requestAnimationFrame(()=>rebuildWorld('v032Go-raf'))}catch(e){}\n          setTimeout(()=>rebuildWorld('v032Go-100'),100);\n        }",
+        "ensure();s.dungeon.layer='world';s.dungeon.view='map';\n    setTimeout(()=>rebuildWorld('captured-dungeon-nav'),0);\n    setTimeout(()=>rebuildWorld('captured-dungeon-nav-120'),120);",
+        "setTimeout(()=>rebuildWorld('captured-dungeon-nav'),0);\n    setTimeout(()=>rebuildWorld('captured-dungeon-nav-120'),120);\n  },true);"
+      ]
+    },
+    {
+      "index": 130,
+      "id": "v230-stability-core",
+      "bytes": 4220,
+      "score": 3,
+      "setTimeout_count": 1,
+      "setInterval_count": 0,
+      "MutationObserver_count": 0,
+      "timer_delays": [
+        250
+      ],
+      "mentions": {
+        "renderDungeon": 1,
+        "dungeonMapCard": 2
+      },
+      "snippets": [
+        "*/\n/* Phase 2 retired: v230 renderDungeon world wrapper.\n   The canonical dungeon owner calls the current GL20 world renderer directly. */",
+        "*/\nsetTimeout(()=>{\n  try{"
+      ]
+    },
+    {
+      "index": 14,
+      "id": "",
+      "bytes": 8401,
+      "score": 2,
+      "setTimeout_count": 5,
+      "setInterval_count": 0,
+      "MutationObserver_count": 0,
+      "timer_delays": [
+        360
+      ],
+      "mentions": {
+        "renderDungeon": 2
+      },
+      "snippets": [
+        "/* Phase 2 retired: v025 renderDungeon label wrapper. The final canonical dungeon owner replaces this render layer. */",
+        "const finish=win=>{\n    setTimeout(()=>{\n      battleBusy=false;",
+        "animClass(document.querySelector('#playerFighter'),'attack-right');\n    setTimeout(()=>{\n      eHp=Math.max(0,eHp-pDmg);",
+        "setTimeout(()=>{\n        // Defense helps, but cannot completely erase a much stronger enemy.",
+        "animClass(document.querySelector('#enemyFighter'),'attack-left');\n        setTimeout(()=>{\n          pHp=Math.max(0,pHp-eDmg);",
+        "if(pHp<=0)return finish(false);\n          setTimeout(step,360);\n        },240);",
+        "try{renderDungeon()}catch(e){console.error('V4.02 combat balance',e)}"
+      ]
+    },
+    {
+      "index": 207,
+      "id": "v4100-dungeon-key-live-fix",
+      "bytes": 5853,
+      "score": 2,
+      "setTimeout_count": 2,
+      "setInterval_count": 0,
+      "MutationObserver_count": 0,
+      "timer_delays": [],
+      "mentions": {
+        "renderDungeon": 2
+      },
+      "snippets": [
+        "try{if(typeof v067BindWorldMap==='function')v067BindWorldMap()}catch(e){}\n   try{if(typeof renderDungeonTicket==='function')renderDungeonTicket()}catch(e){}\n  }catch(e){console.warn('V4.100 dungeon world render',reason,e)}",
+        "let r;\n    try{r=fn.apply(this,arguments)}catch(err){setTimeout(()=>keyChanged(name+'-error'),0);throw err}\n    const done=()=>{",
+        "if(r&&typeof r.then==='function')return r.then(x=>{done();return x},err=>{done();throw err});\n    setTimeout(done,0);return r;\n   };"
+      ]
+    },
+    {
+      "index": 145,
+      "id": "v245-dungeon2-balance-final",
+      "bytes": 2508,
+      "score": 2,
+      "setTimeout_count": 1,
+      "setInterval_count": 0,
+      "MutationObserver_count": 0,
+      "timer_delays": [],
+      "mentions": {
+        "renderDungeon": 1,
+        "v244RenderSelectedDungeonMap": 1
+      },
+      "snippets": [
+        "*/\nsetTimeout(()=>{\n  try{",
+        "){\n        v244RenderSelectedDungeonMap();\n      }else if(",
+        "){\n        renderDungeon();\n      }"
+      ]
+    },
+    {
+      "index": 149,
+      "id": "v249-central-dungeon-balance",
+      "bytes": 6939,
+      "score": 2,
+      "setTimeout_count": 1,
+      "setInterval_count": 0,
+      "MutationObserver_count": 0,
+      "timer_delays": [],
+      "mentions": {
+        "renderDungeon": 1,
+        "v244RenderSelectedDungeonMap": 1
+      },
+      "snippets": [
+        "/* Repaint open dungeon immediately with canonical values. */\nsetTimeout(()=>{\n  try{",
+        "}else if(s.dungeon?.view==='map'){\n        v244RenderSelectedDungeonMap();\n      }else if(s.dungeon?.view==='battle'){",
+        "}else if(s.dungeon?.view==='battle'){\n        renderDungeon();\n      }"
+      ]
+    },
+    {
+      "index": 247,
+      "id": "v319-exact-talents-dungeon-balance",
+      "bytes": 24703,
+      "score": 2,
+      "setTimeout_count": 1,
+      "setInterval_count": 0,
+      "MutationObserver_count": 0,
+      "timer_delays": [
+        500
+      ],
+      "mentions": {
+        "renderDungeon": 1,
+        "v244RenderSelectedDungeonMap": 1
+      },
+      "snippets": [
+        "/* Repaint canonical dungeon after the balance override. */\nsetTimeout(()=>{\n try{",
+        "if(s.dungeon?.layer==='world')v230ShowDungeonWorld();\n   else if(s.dungeon?.view==='map')v244RenderSelectedDungeonMap();\n   else if(s.dungeon?.view==='battle')renderDungeon();",
+        "else if(s.dungeon?.view==='map')v244RenderSelectedDungeonMap();\n   else if(s.dungeon?.view==='battle')renderDungeon();\n  }"
+      ]
+    },
+    {
+      "index": 373,
+      "id": "v482-dungeon-paid-timer-owner",
+      "bytes": 3570,
+      "score": 2,
+      "setTimeout_count": 1,
+      "setInterval_count": 0,
+      "MutationObserver_count": 0,
+      "timer_delays": [
+        80
+      ],
+      "mentions": {
+        "renderDungeon": 2
+      },
+      "snippets": [
+        "try{if(typeof v324Paint==='function')v324Paint()}catch(e){}\n    try{if(typeof renderDungeon==='function'&&document.querySelector('#dungeon')?.classList.contains('active'))renderDungeon()}catch(e){}\n    try{if(typeof v441PaintResources==='function')v441PaintResources()}catch(e){}",
+        "try{requestAnimationFrame(()=>{shape();if(paidAnchor!==null)s.dungeonPass.lastFree=paidAnchor;paint()})}catch(e){}\n        setTimeout(()=>{\n          if(paidAnchor===null)return;"
+      ]
+    },
+    {
+      "index": 63,
+      "id": "v086-polish-script",
+      "bytes": 18248,
+      "score": 1,
+      "setTimeout_count": 6,
+      "setInterval_count": 0,
+      "MutationObserver_count": 0,
+      "timer_delays": [
+        32,
+        350,
+        650,
+        750,
+        1200,
+        1800
+      ],
+      "mentions": {
+        "renderDungeon": 1
+      },
+      "snippets": [
+        "}\n   setTimeout(()=>{if(document.getElementById('bagDealer')?.classList.contains('active'))void v7215Load(true)},650);\n   return null;",
+        "const started=Date.now();\n while(Date.now()-started<12000){await new Promise(r=>setTimeout(r,750));const st=await v7215Load(true);if(Number(st?.revision)>Number(oldRevision)){return st}}\n return v7215Bag.state;",
+        "window.addEventListener('growlegends:first-playable',()=>setTimeout(()=>void v7215Load(true),1200),{passive:true});\nwindow.addEventListener('growlegends:account-ready',()=>{v7215Bag.state=null;v7215Bag.lastRevision=-1;window.__V7215_AD_BAG_MENU_VISIBLE__=false;setTimeout(()=>void v7215Load(true),1800)},{passive:true});",
+        "window.addEventListener('growlegends:first-playable',()=>setTimeout(()=>void v7215Load(true),1200),{passive:true});\nwindow.addEventListener('growlegends:account-ready',()=>{v7215Bag.state=null;v7215Bag.lastRevision=-1;window.__V7215_AD_BAG_MENU_VISIBLE__=false;setTimeout(()=>void v7215Load(true),1800)},{passive:true});\ndocument.addEventListener('visibilitychange',()=>{if(!document.hidden&&document.getElementById('bagDealer')?.classList.contains('active'))setTimeout(()=>void v7215Load(true),350)},{passive:true});",
+        "window.addEventListener('growlegends:account-ready',()=>{v7215Bag.state=null;v7215Bag.lastRevision=-1;window.__V7215_AD_BAG_MENU_VISIBLE__=false;setTimeout(()=>void v7215Load(true),1800)},{passive:true});\ndocument.addEventListener('visibilitychange',()=>{if(!document.hidden&&document.getElementById('bagDealer')?.classList.contains('active'))setTimeout(()=>void v7215Load(true),350)},{passive:true});",
+        "if(typeof requestIdleCallback==='function')requestIdleCallback(inventory,{timeout:240});\n      else setTimeout(inventory,32);\n    });",
+        "case 'dungeon':\n        try{renderDungeon?.()}catch(e){}\n        break;"
+      ]
+    },
+    {
+      "index": 328,
+      "id": "v433-dungeon-resource-consistency",
+      "bytes": 7785,
+      "score": 1,
+      "setTimeout_count": 5,
+      "setInterval_count": 0,
+      "MutationObserver_count": 0,
+      "timer_delays": [
+        40,
+        80,
+        1000,
+        4200
+      ],
+      "mentions": {
+        "renderDungeon": 1
+      },
+      "snippets": [
+        "requestAnimationFrame(paintResources);\n      setTimeout(paintResources,40);\n      return r;",
+        "/* Phase 2 retired: v433 renderDungeon wrapper. v433RepairDungeonState and\n     v433PaintResources are called explicitly by the canonical owner. */",
+        "requestAnimationFrame(()=>{paintResources();stamp()});\n      setTimeout(()=>{paintResources();stamp()},80);\n      return r;",
+        "/* V6.217: legacy 250ms startup poll retired; targeted retries are enough. */\n  [250,1200,4200].forEach(ms=>setTimeout(()=>{paintResources();stamp()},ms));\n  document.addEventListener('DOMContentLoaded',()=>{repairDungeonState(true);paintResources();stamp()},{once:true});",
+        "window.addEventListener('pageshow',()=>{repairDungeonState(true);paintResources();stamp()},{passive:true});\n  setTimeout(()=>{repairDungeonState(true);paintResources();stamp()},1000);\n  setTimeout(()=>{repairDungeonState(true);paintResources();stamp()},4200);",
+        "setTimeout(()=>{repairDungeonState(true);paintResources();stamp()},1000);\n  setTimeout(()=>{repairDungeonState(true);paintResources();stamp()},4200);\n})();"
+      ]
+    },
+    {
+      "index": 583,
+      "id": "gl-code-diag-script",
+      "bytes": 22752,
+      "score": 1,
+      "setTimeout_count": 4,
+      "setInterval_count": 12,
+      "MutationObserver_count": 9,
+      "timer_delays": [
+        1200
+      ],
+      "mentions": {
+        "renderDungeon": 1
+      },
+      "snippets": [
+        "const fast=[];let m;\n  const re=/setInterval\\s*\\([\\s\\S]{0,260}?,\\s*(\\d{1,6})\\s*\\)/g;\n  while((m=re.exec(code))){const ms=Number(m[1]);if(ms>0&&ms<500)fast.push(ms)}",
+        "while((m=re.exec(code))){const ms=Number(m[1]);if(ms>0&&ms<500)fast.push(ms)}\n  return {intervals:count(/\\bsetInterval\\s*\\(/g),timeouts:count(/\\bsetTimeout\\s*\\(/g),observers:count(/\\bnew\\s+MutationObserver\\s*\\(/g),listeners:count(/\\.addEventListener\\s*\\(/g),raf:count(/\\brequestAnimationFrame\\s*\\(/g),fast:fast.sort((a,b)=>a-b)};\n }",
+        "const code=stripPayload(b.raw);let m;\n   const re=/\\bsetInterval\\s*\\(/g;\n   while((m=re.exec(code))){",
+        "}\n   const nr=/\\(\\s*window\\.__V477_NATIVE_SET_INTERVAL__\\s*\\|\\|\\s*window\\.setInterval\\s*\\)\\s*\\(/g;\n   while((m=nr.exec(code))){",
+        "const out=[];\n  for(const b of blocks){const code=stripPayload(b.raw);let m;const re=/\\bnew\\s+MutationObserver\\s*\\(/g;while((m=re.exec(code))){const open=code.indexOf('(',m.index),call=callAt(code,m.index,open);out.push({script:b.id,line:lineNo(code,m.index),callback:compact(call?.args?.[0]||code.slice(m.index,m.index+170),150)});if(call)re.lastIndex=Math.max(re.lastIndex,call.close+1)}}\n  return out;",
+        "function ownerChains(blocks){\n  const names=['v032Go','renderInventory','renderQuests','renderDungeon','renderShop','v254RenderGuild','v073LoadRanking','v073ProfilePayload','v075WriteCloudSave','v075ApplyCloudSave','v110Fight','claimQuest','v233ClaimQuest','startQuest','v209FinishBattle','v200FinalizeUser'];\n  const out=[];",
+        "if(btn){btn.disabled=true;btn.textContent='Prüfung läuft…'}if(copy)copy.disabled=true;\n  body.className='gl-code-diag-loading';body.innerHTML='<b>🔎 Code wird nur gelesen…</b>Zusätzlich werden jetzt die exakten Timer-, MutationObserver- und wichtigen Owner-Stellen mit Script-ID und Zeilennummer ermittelt.';\n  setTimeout(()=>{",
+        "body.className='gl-code-diag-loading';body.innerHTML='<b>🔎 Code wird nur gelesen…</b>Zusätzlich werden jetzt die exakten Timer-, MutationObserver- und wichtigen Owner-Stellen mit Script-ID und Zeilennummer ermittelt.';\n  setTimeout(()=>{\n   const started=performance.now();",
+        "if(x.callback)d+=` · Callback: ${x.callback}`;\n    return row(st,x.native?'Native/ungefilterter setInterval':hot?'Schneller setInterval':'setInterval',d);\n  });",
+        "});\n  const observerRows=r.observerSites.slice(0,70).map(x=>row('yellow',`MutationObserver · ${x.script} · Zeile ${x.line}`,x.callback?`Callback: ${x.callback}`:'Callback nicht aufgelöst'));\n  const ownerRowsExact=r.ownerChains.map(x=>row('yellow',`${x.name}: ${x.count} Owner-/Definitionstreffer`,`Letzter Treffer: ${x.last.script} · Zeile ${x.last.line} · ${x.last.kind} | Kette: ${x.hits.slice(-8).map(h=>h.script+':'+h.line).join(' → ')}`));",
+        "const cssRows=r.cssSuspects.slice(0,40).map(x=>row('yellow',x.id,`Keines der geprüften Ziele aktuell im DOM: ${x.tokens.join(', ')} · ${(x.chars/1024).toFixed(1)} KB`));\n  const timerRows=[row('green',`${r.timers.intervals} setInterval · ${r.timers.timeouts} setTimeout`,`Quelltext-Vorkommen. Die exakten setInterval-Stellen stehen jetzt direkt darunter.`),row(r.timers.fast.length?'yellow':'green',`${r.timers.fast.length} grob erkannte Intervalle unter 500 ms`,r.timers.fast.length?`Heuristikwerte: ${r.timers.fast.slice(0,20).join(', ')} ms${r.timers.fast.length>20?' …':''}`:'Keine per Heuristik gefunden.'),row('green',`${r.timers.observers} MutationObserver · ${r.timers.listeners} addEventListener · ${r.timers.raf} requestAnimationFrame`,`Quelltext-Vorkommen zur Orientierung.`)];\n  const layerRows=r.versionLayers.slice(0,30).map(x=>row('yellow',`${x.prefix}: ${x.count} Script/Style-Blöcke`,`Beispiele: ${x.ids.join(', ')}. Mehrere Blöcke sind nicht automatisch tot.`));",
+        "body.className='';\n  body.innerHTML=`<div class=\"gl-code-diag-summary\"><div class=\"gl-code-diag-stat ${red?'red':'green'}\"><small>Sichere Konflikte</small><b>${red}</b></div><div class=\"gl-code-diag-stat yellow\"><small>Verdachtsstellen</small><b>${yellow}</b></div><div class=\"gl-code-diag-stat\"><small>Scripts / Styles</small><b>${r.scripts} / ${r.styles}</b></div><div class=\"gl-code-diag-stat\"><small>Scan</small><b>${r.ms} ms</b></div></div><div class=\"gl-code-diag-note\"><b>Phase 1.5 + 1.6:</b> Die statische Diagnose zeigt Timer/Observer/Owner-Ketten; darunter misst der 30-Sekunden-Profiler nur auf Knopfdruck, welche davon tatsächlich laufen. Es wird nichts gelöscht oder gestoppt.</div>${section('⏱️ EXAKTE setInterval-STELLEN',`${r.intervalSites.length} Fundstellen`,intervalRows,'Keine setInterval-Aufrufe erkannt.')}${section('👁️ EXAKTE MutationObserver-STELLEN',`${r.observerSites.length} Fundstellen`,observerRows,'Keine MutationObserver erkannt.')}${section('🧭 WICHTIGE OWNER-KETTEN',`",
+        "const add=(title,a,fmt,limit=100)=>{lines.push(`${title} (${a.length})`);a.slice(0,limit).forEach(x=>lines.push('- '+fmt(x)));if(a.length>limit)lines.push(`- … +${a.length-limit} weitere`);lines.push('')};\n  add('EXAKT: setInterval-Fundstellen',r.intervalSites,x=>`${x.script}:${x.line} :: delay=${x.delay!=null?x.delay+'ms':x.delayRaw} :: ${x.native?'NATIVE-BYPASS':'governed='+x.governed} :: ${x.callback}`,120);\n  add('EXAKT: MutationObserver-Fundstellen',r.observerSites,x=>`${x.script}:${x.line} :: ${x.callback}`,100);",
+        "add('EXAKT: setInterval-Fundstellen',r.intervalSites,x=>`${x.script}:${x.line} :: delay=${x.delay!=null?x.delay+'ms':x.delayRaw} :: ${x.native?'NATIVE-BYPASS':'governed='+x.governed} :: ${x.callback}`,120);\n  add('EXAKT: MutationObserver-Fundstellen',r.observerSites,x=>`${x.script}:${x.line} :: ${x.callback}`,100);\n  add('EXAKT: wichtige Owner-Ketten',r.ownerChains,x=>`${x.name} ×${x.count} :: last=${x.last.script}:${x.last.line} (${x.last.kind}) :: ${x.hits.map(h=>h.script+':'+h.line).join(' -> ')}`,50);",
+        "add('VERDACHT: CSS ohne aktuellen DOM-Treffer',r.cssSuspects,x=>`${x.id} :: ${x.tokens.join(', ')}`);\n  lines.push(`TIMER SUMME QUELLCODE: intervals=${r.timers.intervals}, timeouts=${r.timers.timeouts}, MutationObserver=${r.timers.observers}, addEventListener=${r.timers.listeners}, rAF=${r.timers.raf}, fast<500ms=${r.timers.fast.length}`,`TIMER LAUFZEIT AKTIV: intervals=${r.runtime.intervals??'—'}, timeouts=${r.runtime.timeouts??'—'}, longTasks60s=${r.runtime.longTasks??'—'}`,'');\n  add('Historische Patch-Gruppen',r.versionLayers,x=>`${x.prefix} ×${x.count} :: ${x.ids.join(', ')}`);",
+        "}\n async function copy(){if(!last)return;const txt=reportText(last);try{await navigator.clipboard.writeText(txt)}catch(_){const ta=document.createElement('textarea');ta.value=txt;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();try{document.execCommand('copy')}catch(e){}ta.remove()}const b=$('glCodeDiagCopy');if(b){const old=b.textContent;b.textContent='✅ Kopiert';setTimeout(()=>b.textContent=old,1200)}}\n document.addEventListener('click',e=>{if(e.target.closest?.('#glCodeDiagRun')){e.preventDefault();run()}else if(e.target.closest?.('#glCodeDiagCopy')){e.preventDefault();copy()}},true);"
+      ]
+    },
+    {
+      "index": 29,
+      "id": "",
+      "bytes": 9933,
+      "score": 1,
+      "setTimeout_count": 4,
+      "setInterval_count": 0,
+      "MutationObserver_count": 1,
+      "timer_delays": [
+        360
+      ],
+      "mentions": {
+        "renderDungeon": 1
+      },
+      "snippets": [
+        "One flow only: map -> battle -> reward -> map.\n   No MutationObserver. No post-battle polling. No recurring battle timers.\n*/",
+        "/* Phase 2 retired: v048 renderDungeon visibility wrapper. The final canonical dungeon owner replaces this render layer. */",
+        "setTimeout(()=>{\n        if(!battleBusy)return;",
+        "setTimeout(()=>{\n          if(!battleBusy)return;",
+        "setTimeout(()=>{\n            if(!battleBusy)return;",
+        "setTimeout(step,360);\n          },240);"
+      ]
+    },
+    {
+      "index": 37,
+      "id": "",
+      "bytes": 9187,
+      "score": 1,
+      "setTimeout_count": 3,
+      "setInterval_count": 0,
+      "MutationObserver_count": 0,
+      "timer_delays": [
+        330
+      ],
+      "mentions": {
+        "renderDungeon": 1
+      },
+      "snippets": [
+        "setTimeout(()=>{\n        if(!battleBusy)return;",
+        "setTimeout(()=>{\n          if(!battleBusy)return;",
+        "setTimeout(step,330);\n        },300);",
+        "/* Phase 2 retired: v060 renderDungeon warning/fight wrapper. The final canonical dungeon owner replaces this render layer. */"
+      ]
+    },
+    {
+      "index": 429,
+      "id": "v434-d7-clean-boss-script",
+      "bytes": 906,
+      "score": 1,
+      "setTimeout_count": 2,
+      "setInterval_count": 0,
+      "MutationObserver_count": 1,
+      "timer_delays": [
+        30
+      ],
+      "mentions": {
+        "dungeonMapCard": 1
+      },
+      "snippets": [
+        "const art=card.querySelector('.v261-node.boss .v261-bossart');\n      if(art) art.style.backgroundImage=`url(\"${CLEAN_BOSS}\")`;\n    }catch(e){}",
+        "if(sec && !sec.__v434BossObserver){\n    const obs=new MutationObserver(()=>applyBoss());\n    obs.observe(sec,{subtree:true,childList:true});",
+        "window.addEventListener('pageshow',()=>setTimeout(applyBoss,30),{passive:true});\n  document.addEventListener('visibilitychange',()=>{",
+        "document.addEventListener('visibilitychange',()=>{\n    if(!document.hidden)setTimeout(applyBoss,30);\n  },{passive:true});"
+      ]
+    },
+    {
+      "index": 435,
+      "id": "v458-d1-road-and-sign-final",
+      "bytes": 1234,
+      "score": 1,
+      "setTimeout_count": 2,
+      "setInterval_count": 0,
+      "MutationObserver_count": 0,
+      "timer_delays": [
+        35,
+        60
+      ],
+      "mentions": {
+        "dungeonMapCard": 1
+      },
+      "snippets": [
+        "requestAnimationFrame(paintD1);\n  document.addEventListener('click',()=>setTimeout(paintD1,35),true);\n  window.addEventListener('pageshow',()=>setTimeout(paintD1,60),{passive:true});",
+        "document.addEventListener('click',()=>setTimeout(paintD1,35),true);\n  window.addEventListener('pageshow',()=>setTimeout(paintD1,60),{passive:true});\n  try{"
+      ]
+    },
+    {
+      "index": 709,
+      "id": "v7094-v6349-production-parity-monitor",
+      "bytes": 1725,
+      "score": 1,
+      "setTimeout_count": 2,
+      "setInterval_count": 0,
+      "MutationObserver_count": 0,
+      "timer_delays": [
+        5000,
+        12000
+      ],
+      "mentions": {
+        "renderDungeon": 1
+      },
+      "snippets": [
+        "const screens=['world','character','inventory','shop','grow','quests','dungeon','tower','endgame','pvp','guild','hall','friends','mail'];\nconst funcs=['render','renderInventory','renderShop','renderGrow','renderQuests','renderDungeon','vTowerRender','v204Fight','v106OpenBook'];\nlet last=null;",
+        "window.v7094ParityDiagnostics=()=>snapshot();\nwindow.addEventListener('growlegends:account-ready',()=>setTimeout(snapshot,5000),{passive:true});\nsetTimeout(snapshot,12000);",
+        "window.addEventListener('growlegends:account-ready',()=>setTimeout(snapshot,5000),{passive:true});\nsetTimeout(snapshot,12000);\n})();"
+      ]
+    },
+    {
+      "index": 753,
+      "id": "v7145-render-owner-core",
+      "bytes": 4683,
+      "score": 1,
+      "setTimeout_count": 1,
+      "setInterval_count": 0,
+      "MutationObserver_count": 1,
+      "timer_delays": [],
+      "mentions": {
+        "renderDungeon": 1
+      },
+      "snippets": [
+        "gate('renderQuests','quests');\n gate('renderDungeon','dungeon');",
+        "if(!root)return;\n   const o=new MutationObserver(list=>{\n    rec.mutationBatches++;result.totals.mutationBatches++;let add=0,rem=0;",
+        "try{if('PerformanceObserver'in window&&PerformanceObserver.supportedEntryTypes?.includes('longtask')){po=new PerformanceObserver(l=>l.getEntries().forEach(e=>result.longTasks.push({start:Math.round(e.startTime),duration:Math.round(e.duration)})));po.observe({entryTypes:['longtask']})}}catch(_){}\n  return new Promise(resolve=>setTimeout(()=>{observers.forEach(o=>o.disconnect());try{po?.disconnect()}catch(_){};result.finishedAt=Date.now();result.longTaskCount=result.longTasks.length;result.longTaskMs=result.longTasks.reduce((a,b)=>a+b.duration,0);window.__V7145_LAST_RENDER_AUDIT__=result;resolve(result)},ms));\n };"
+      ]
+    },
+    {
+      "index": 137,
+      "id": "v237-grow-dungeon-fixes-core",
+      "bytes": 5203,
+      "score": 1,
+      "setTimeout_count": 1,
+      "setInterval_count": 0,
+      "MutationObserver_count": 0,
+      "timer_delays": [
+        380
+      ],
+      "mentions": {
+        "renderDungeon": 1
+      },
+      "snippets": [
+        "try{localStorage.setItem(KEY,JSON.stringify(s))}catch(e){}\n    try{renderDungeon()}catch(e){}\n  }",
+        "setTimeout(()=>{\n  try{"
+      ]
+    },
+    {
+      "index": 211,
+      "id": "v4106-qa2-performance",
+      "bytes": 22338,
+      "score": 1,
+      "setTimeout_count": 1,
+      "setInterval_count": 0,
+      "MutationObserver_count": 0,
+      "timer_delays": [],
+      "mentions": {
+        "renderDungeon": 1
+      },
+      "snippets": [
+        "function wrapPerf(name){try{const fn=window[name];if(typeof fn!=='function'||fn.__v4106Perf)return;const w=function(){const t=performance.now();try{return fn.apply(this,arguments)}finally{const ms=performance.now()-t,tc=tech();if(!tc.qaActive&&Date.now()>Number(tc.startedAt||0)+6000){(tc.renderSamples[name]??=[]).push(ms);if(tc.renderSamples[name].length>80)tc.renderSamples[name].shift();if(ms>100){tc.slowRenders??=[];tc.slowRenders.push({at:Date.now(),name,ms,screen:document.querySelector('section.screen.active')?.id||'—'});while(tc.slowRenders.length>20)tc.slowRenders.shift()}}}};Object.defineProperty(w,'name',{value:fn.name||name,configurable:true});w.__v4106Perf=true;window[name]=w;try{if(name in globalThis)globalThis[name]=w}catch(e){}}catch(e){}}\n ['render','renderGrow','renderDungeon','renderQuests','renderInventory','renderShop','v254RenderGuild','renderEndgame'].forEach(wrapPerf);\n function extra(){const out=[],T=(c,n,f,s='error')=>out.push(one(c,n,f,s)),src=source();",
+        "function bind(){const runBtn=document.getElementById('v4102QaRun');if(runBtn){runBtn.textContent='🧪 QA 2.0 erneut starten';runBtn.onclick=()=>{const r=run();render(r);paintSettings(r)}}const clear=document.getElementById('v4102QaClear');if(clear&&!clear.__v4106){const old=clear.onclick;clear.onclick=()=>{try{localStorage.removeItem(rkey())}catch(e){}old?.();const r=run();render(r);paintSettings(r)};clear.__v4106=true}}\n function open(){if(typeof baseOpen==='function')baseOpen();setTimeout(()=>{const r=run();render(r);bind();paintSettings(r);document.querySelector('.v4102-qa-head small')?.replaceChildren(document.createTextNode('QA 2.0 · Flow + UI/Pixel + State + Performance/Legacy · Spielstand bleibt geschützt'))},0)}\n function paintSettings(r=null){try{const row=document.getElementById('v4104QaRow');if(row){const b=row.querySelector('.v141-setting-copy b'),sml=row.querySelector('.v141-setting-copy span');if(b)b.textContent='Systemtest & Technik';if(sml)sml.textContent='QA 2.0 prüft Sp"
+      ]
+    },
+    {
+      "index": 252,
+      "id": "v324-dungeon-countdown",
+      "bytes": 2033,
+      "score": 1,
+      "setTimeout_count": 1,
+      "setInterval_count": 1,
+      "MutationObserver_count": 0,
+      "timer_delays": [
+        250
+      ],
+      "mentions": {
+        "renderDungeon": 1
+      },
+      "snippets": [
+        "window.v324Paint=v324Paint;\n  /* Phase 2 retired: countdown renderDungeon wrapper; the countdown has its own clock\n     and the canonical battle owner performs an immediate paint. */",
+        "and the canonical battle owner performs an immediate paint. */\n  setInterval(()=>{\n    if(document.hidden||!document.querySelector('#dungeon')?.classList.contains('active'))return;",
+        "},1000);\n  setTimeout(v324Paint,250);"
+      ]
+    },
+    {
+      "index": 433,
+      "id": "v455-d1-title-fix",
+      "bytes": 402,
+      "score": 1,
+      "setTimeout_count": 1,
+      "setInterval_count": 0,
+      "MutationObserver_count": 0,
+      "timer_delays": [
+        35
+      ],
+      "mentions": {
+        "dungeonMapCard": 1
+      },
+      "snippets": [
+        "requestAnimationFrame(paint);\n  document.addEventListener('click',()=>setTimeout(paint,35),true);\n})();"
+      ]
+    }
+  ],
+  "external_candidates": [
+    {
+      "file": "js/features/dungeon/beta/v8009-d2-visual-owner.js",
+      "bytes": 32950,
+      "score": 26,
+      "setTimeout_count": 3,
+      "setInterval_count": 0,
+      "MutationObserver_count": 0,
+      "timer_delays": [
+        80,
+        90,
+        240
+      ],
+      "mentions": {
+        "renderDungeon": 8,
+        "v251RenderDetail": 1,
+        "v261RenderDetail": 1,
+        "v244RenderSelectedDungeonMap": 1,
+        "v064RenderMap": 1,
+        "dungeonMapCard": 7,
+        "v261-stage": 2,
+        "v261-bg": 1,
+        "gl-dungeon-map-bg-img": 3,
+        "glDungeonVisualRefresh": 1
+      },
+      "snippets": [
+        "if(!ring||!art)return false;\n    ring.style.setProperty('background-image','none','important');\n    ring.querySelectorAll(':scope > .v261-bossart').forEach(n=>n.style.setProperty('display','none','important'));",
+        "important(thumb,'background-repeat','no-repeat');\n    if(art)important(thumb,'background-image',`url(\"${plainAsset(art)}\")`);",
+        "let bg='';\n    try{bg=artSource?getComputedStyle(artSource).backgroundImage:''}catch(_){bg=''}\n    if(bg&&bg!=='none'){",
+        "if(!art){art=document.createElement('div');art.className='gl-dungeon-d1-art';avatar.appendChild(art)}\n      art.style.setProperty('background-image',bg,'important');\n      enemy.classList.add('gl-dungeon-enemy-ready');",
+        "const stage=card.querySelector('.v261-stage');\n    const oldBg=stage?.querySelector(':scope > .v261-bg');\n    if(oldBg){",
+        "important(oldBg,'display','none');\n      important(oldBg,'background-image','none');\n    }",
+        "cache query used by the direct image element. */\n      important(stage,'background-image','none');\n      important(stage,'background-size','cover');",
+        "preloadAsset(c.bg);\n      let bgImg=stage.querySelector(':scope > .gl-dungeon-map-bg-img');\n      if(!bgImg){",
+        "bgImg=document.createElement('img');\n        bgImg.className='gl-dungeon-map-bg-img';\n        bgImg.alt='';",
+        "important(detailThumb,'padding','0');\n      important(detailThumb,'background-image',`url(\"${plainAsset(art)}\")`);\n      important(detailThumb,'background-size','contain');",
+        "img.remove();\n          detailThumb.style.removeProperty('background-image');\n          detailThumb.textContent=fallback;",
+        "/* Direct image element owns the arena background. This bypasses every old\n       background-image/blur rule on .battle-stage and its legacy canvases. */\n    important(stage,'background-image','none');",
+        "background-image/blur rule on .battle-stage and its legacy canvases. */\n    important(stage,'background-image','none');\n    let bgImg=stage.querySelector(':scope > .gl-dungeon-battle-bg-img');",
+        "/* The canonical image is the only visual source inside the enemy avatar.\n         This prevents a surviving legacy background-image from showing an old monster. */\n      important(avatar,'background-image','none');",
+        "This prevents a surviving legacy background-image from showing an old monster. */\n      important(avatar,'background-image','none');\n      important(avatar,'background-color','transparent');",
+        "if(!raf)raf=requestAnimationFrame(sync);\n    if(settle){clearTimeout(timer);timer=setTimeout(sync,80)}\n  }",
+        "/* ===== Phase 2: ONE ACTIVE DUNGEON RENDER OWNER =====\n     The historic renderDungeon chain still exists in the file for compatibility,\n     but it is no longer executed during normal play. This dispatcher calls the",
+        "current world-map, detail-map and battle owners directly. */\n  const legacyRenderDungeon=(()=>{try{return window.renderDungeon||renderDungeon}catch(_){return null}})();\n  window.__GL_LEGACY_RENDER_DUNGEON_CHAIN__=legacyRenderDungeon;",
+        "if(screen)screen.classList.remove('v230-world-open');\n    const fn=window.v251RenderDetail||window.v244RenderSelectedDungeonMap||window.v261RenderDetail||window.v064RenderMap;\n    if(typeof fn!=='function')throw new Error('Aktueller 10er-Dungeon-Renderer fehlt');",
+        "/* Phase 2.2: restore the canonical battle information shell that used to\n       be reached only through a retired renderDungeon wrapper. It contains\n       dungeon title, opponent position (x/10), recommended level and the"
+      ]
+    },
+    {
+      "file": "js/features/dungeon/beta/v8009-d4-v251-modern-maps.js",
+      "bytes": 12485,
+      "score": 18,
+      "setTimeout_count": 1,
+      "setInterval_count": 0,
+      "MutationObserver_count": 0,
+      "timer_delays": [
+        1350
+      ],
+      "mentions": {
+        "renderDungeon": 6,
+        "v251RenderDetail": 5,
+        "v244RenderSelectedDungeonMap": 1,
+        "v064RenderMap": 1,
+        "dungeonMapCard": 5
+      },
+      "snippets": [
+        "try{\n    if(typeof renderDungeonTicket==='function')renderDungeonTicket();\n    if(typeof updateDungeonTicket==='function')updateDungeonTicket();",
+        "renderDungeon();\n  window.scrollTo({top:0,behavior:'smooth'});",
+        "function v251RenderDetail(){\n  try{v243RepairAndSaveDungeonKeys()}catch(e){}",
+        "v065RenderWorld=v251RenderWorld;\nv244RenderSelectedDungeonMap=v251RenderDetail;\nv064RenderMap=v251RenderDetail;",
+        "v244RenderSelectedDungeonMap=v251RenderDetail;\nv064RenderMap=v251RenderDetail;",
+        "const ok=v251RenderDetail();\n  if(ok)window.scrollTo({top:0,behavior:'smooth'});",
+        "/* Phase 2 retired: v251 renderDungeon world/detail wrapper.\n   Current world/detail renderers are called directly by the canonical owner. */",
+        "setTimeout(()=>{\n  try{",
+        "}else if(s.dungeon?.view==='map'){\n        v251RenderDetail();\n      }"
+      ]
+    },
+    {
+      "file": "js/features/dungeon/beta/v8009-d2-map-finalizer.js",
+      "bytes": 1007,
+      "score": 3,
+      "setTimeout_count": 3,
+      "setInterval_count": 0,
+      "MutationObserver_count": 0,
+      "timer_delays": [
+        80,
+        120
+      ],
+      "mentions": {
+        "dungeonMapCard": 2,
+        "glDungeonVisualRefresh": 1
+      },
+      "snippets": [
+        "window.addEventListener('growlegends:foreground-ready',()=>requestAnimationFrame(finalize));\n setTimeout(finalize,0);\n setTimeout(finalize,120);",
+        "setTimeout(finalize,0);\n setTimeout(finalize,120);\n try{",
+        "};\n   paintVersion();setTimeout(paintVersion,80);\n }catch(_){ }"
+      ]
+    },
+    {
+      "file": "js/features/dungeon/v7287-dungeon-meta-current-fix.js",
+      "bytes": 5603,
+      "score": 1,
+      "setTimeout_count": 6,
+      "setInterval_count": 0,
+      "MutationObserver_count": 0,
+      "timer_delays": [
+        45,
+        50,
+        80,
+        120
+      ],
+      "mentions": {
+        "dungeonMapCard": 1
+      },
+      "snippets": [
+        "el.textContent='';\n    el.style.setProperty('background-image',`url(\"${art}\")`,'important');\n    el.style.setProperty('background-size','contain','important');",
+        "}\ndocument.addEventListener('DOMContentLoaded',()=>setTimeout(kick,0),{once:true});\nwindow.addEventListener('pageshow',()=>setTimeout(kick,50),{passive:true});",
+        "document.addEventListener('DOMContentLoaded',()=>setTimeout(kick,0),{once:true});\nwindow.addEventListener('pageshow',()=>setTimeout(kick,50),{passive:true});\nwindow.addEventListener('growlegends:account-ready',()=>setTimeout(kick,80),{passive:true});",
+        "window.addEventListener('pageshow',()=>setTimeout(kick,50),{passive:true});\nwindow.addEventListener('growlegends:account-ready',()=>setTimeout(kick,80),{passive:true});\ndocument.addEventListener('click',e=>{",
+        "if(!el)return;\n  setTimeout(kick,0);\n  setTimeout(kick,120);",
+        "setTimeout(kick,0);\n  setTimeout(kick,120);\n},true);",
+        "const id=String(e?.detail?.id||e?.detail?.screen||'');\n  if(id==='dungeon')setTimeout(kick,45);\n},{passive:true});"
+      ]
+    }
+  ]
+}
