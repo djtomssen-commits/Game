@@ -240,6 +240,7 @@ try{
   if(typeof renderQuests==='function'&&!window.__V6344_RENDER_QUESTS_WRAP__){
     const base=renderQuests;
     renderQuests=function(){
+      try{window.v392SyncActiveMode?.()}catch(_){}
       try{window.v496RepairStalePaidQuest?.()}catch(_){}
       try{window.v316PrepareQuestRender?.()}catch(_){}
       try{window.v309PrepareQuestRender?.()}catch(_){}
