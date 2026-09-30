@@ -1,7 +1,8 @@
 from pathlib import Path
 import re, hashlib, json
 
-BUILD = 'V8.009-DUNGEON-D3-BETA'\n# Workflow trigger after workflow installation.
+BUILD = 'V8.009-DUNGEON-D3-BETA'
+# Workflow trigger after workflow installation.
 BETA = Path('beta.html')
 STABLE = Path('index.html')
 CSS_ID = 'v7166-dungeon-detail-render-lock-css'
