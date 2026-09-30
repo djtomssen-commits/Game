@@ -96482,9 +96482,10 @@ window.v684InventoryRarityQA=()=>({
 #hall .v6145-medal{font-size:15px;line-height:1}.v6145-pos{font-size:7px;font-weight:1000;color:#d7c892}
 #hall .v6145-podium-body{padding:0 0 7px;text-align:center}
 #hall .v6145-podium-avatar{position:relative;width:100%;aspect-ratio:1/1;min-height:92px;height:auto;display:grid;place-items:center;margin:0 0 7px;overflow:hidden;isolation:isolate;background:#08100a}
-#hall .v6145-podium-avatar>img:not(.v7139-frame-art){position:absolute;inset:0;z-index:1;display:block;width:100%;height:100%;max-width:none;max-height:none;object-fit:cover;object-position:center 22%;transform:scale(2.55);transform-origin:center 28%;filter:drop-shadow(0 5px 5px #0008)}
+#hall .v6145-podium-portrait{position:absolute;inset:0;z-index:1;display:block;background-repeat:no-repeat;background-size:cover;background-position:center 18%;filter:drop-shadow(0 5px 5px #0008)}
+#hall .v6145-podium-fallback{position:absolute;inset:0;z-index:1;display:grid;place-items:center;font-size:38px;line-height:1}
 #hall .v6145-podium-avatar>.v7139-frame-art{position:absolute!important;inset:0!important;z-index:4!important;display:block!important;width:100%!important;height:100%!important;max-width:none!important;max-height:none!important;object-fit:fill!important;transform:none!important;filter:none!important;pointer-events:none!important}
-#hall .v6145-podium-avatar span{font-size:38px;line-height:1}
+#hall .v6145-podium-avatar>span:not(.v6145-podium-portrait){font-size:38px;line-height:1}
 #hall .v6145-podium-name{padding:0 6px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#f2f5ee;font-size:8px;font-weight:1000}
 #hall .v6145-podium-meta{padding:0 6px;margin-top:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#879489;font-size:5.5px}
 #hall .v6145-podium-power{padding:0 6px;margin-top:6px;color:#d8bd69;font-size:6px;font-weight:900}
@@ -96510,12 +96511,12 @@ window.v684InventoryRarityQA=()=>({
 @media(max-width:430px){
  #hall .v6145-podium{gap:5px}
  #hall .v6145-podium-card.rank-1{min-height:126px}.v6145-podium-card.rank-2{min-height:112px}.v6145-podium-card.rank-3{min-height:108px}
- #hall .v6145-podium-body{padding:0 0 6px}#hall .v6145-podium-avatar{min-height:0;height:auto;aspect-ratio:1/1}#hall .v6145-podium-avatar>img:not(.v7139-frame-art){width:100%;height:100%;max-width:none;max-height:none}
+ #hall .v6145-podium-body{padding:0 0 6px}#hall .v6145-podium-avatar{min-height:0;height:auto;aspect-ratio:1/1}
  #hall .v6145-mode-btn{font-size:6.2px;padding:5px 2px}
  #hall .v6145-pager{grid-template-columns:1fr 88px 1fr;gap:5px}.v6145-page-state{min-width:0}
 }
 </style>
-<script  src="js/features/pvp/beta/v8009-s1-v6145-hall-pagination-js.js"></script>
+<script  src="js/features/pvp/beta/v8009-s1-v6145-hall-pagination-js.js?v=8009-top3-owner2"></script>
 <!-- ===== /V6.145 HALL OF HAZE ===== -->
 
 <!-- ===== V6.207 GUILD SCROLL SAFE + ANDROID HEADER FLICKER FIX ===== -->
@@ -118289,7 +118290,7 @@ window.v7229CharacterBootstrapDiagnostics=()=>({
 
 <!-- ===== V7.230 SERVER-SCOPED AVATAR FRAME AUTHORITY ===== -->
 <style id="v7230-server-frame-isolation-css">
-html.v7230-frame-server-sync .v7137-frame-target>.v7139-frame-art{display:none!important}
+html.v7230-frame-server-sync #world .v366-avatar.v7137-frame-target>.v7139-frame-art,html.v7230-frame-server-sync #character .avatar-scene.v7137-frame-target>.v7139-frame-art,html.v7230-frame-server-sync #v072OwnProfile .v646-own-avatar.v7137-frame-target>.v7139-frame-art{display:none!important}
 html.v7230-frame-server-sync #world .v366-avatar.v7137-frame-target{border:1px solid #3d5140!important;box-shadow:none!important}
 html body .app > header .v358-logo::after{content:"V7.230"!important}
 html body .app > header .v366-ver::after,html body .app > header .v371-logo em::after,html body .app > header .v372-logo em::after,#v372TopbarShell .v372-logo em::after{content:"V7.230"!important}
@@ -118303,7 +118304,7 @@ const serverId=()=>String(window.v343CurrentServer||localStorage.getItem('growLe
 const isServer1=()=>serverId()==='server1';
 function stripVisibleFrame(){
   try{
-    document.querySelectorAll('.v7137-frame-target').forEach(el=>{
+    document.querySelectorAll('#world .v366-avatar.v7137-frame-target,#character .avatar-scene.v7137-frame-target,#v072OwnProfile .v646-own-avatar.v7137-frame-target').forEach(el=>{
       el.querySelectorAll(':scope > .v7139-frame-art').forEach(n=>n.remove());
       delete el.dataset.v7137Frame;
     });
