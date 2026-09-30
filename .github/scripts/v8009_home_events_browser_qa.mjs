@@ -225,7 +225,7 @@ try{
  await inactiveHelper.evaluate(()=>{document.getElementById('world').classList.remove('active');s.gold+=5;v085InstallWorld(false)});
  await inactiveHelper.clock.runFor(120);
  const helperSkipped=await inactiveHelper.evaluate(()=>window.v8009HomeHeaderDiagnostics?.());
- assert.equal(helperSkipped.inactiveWorldSkips,helperBefore.events.inactiveWorldSkips+1,'Canonical renderer must record hidden skip');
+ assert.equal(helperSkipped.events.inactiveWorldSkips,helperBefore.events.inactiveWorldSkips+1,'Canonical renderer must record hidden skip');
  assert.equal(helperSkipped.inactivePostRenderSkips,helperBefore.inactivePostRenderSkips+1,'Helper must record hidden post-render skip');
  assert.equal(helperSkipped.growPostRenderSchedules,helperBefore.growPostRenderSchedules,'Hidden no-op must not reschedule Growroom post-render work');
  assert.equal(helperSkipped.fit.scheduleCalls,helperBefore.fit.scheduleCalls,'Hidden no-op must not schedule a Startseite fit pass');
