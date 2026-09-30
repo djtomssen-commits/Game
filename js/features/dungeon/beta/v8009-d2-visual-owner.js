@@ -58,10 +58,16 @@
       /* Packaged boss PNGs exist only for D10-D20. D1-D9 must not request
          missing files: use their existing bossArt when available. D2 has a
          repository-verified legacy SVG fallback. */
-      bossFallback:raw.bossArt||(number===2?'assets/v7195-base64/10036d96d08155bdc84a.svg':''),
+      bossFallback:raw.bossArt||(
+        number===1?'assets/v7195-base64/0f1a0253845b46d9a03d.jpg':
+        number===2?'assets/v7195-base64/10036d96d08155bdc84a.svg':''
+      ),
       bossArt:number>=10
         ?liveAsset(`${assetRoot}/d${number}_boss.png`)
-        :liveAsset(raw.bossArt||(number===2?'assets/v7195-base64/10036d96d08155bdc84a.svg':''))
+        :liveAsset(raw.bossArt||(
+          number===1?'assets/v7195-base64/0f1a0253845b46d9a03d.jpg':
+          number===2?'assets/v7195-base64/10036d96d08155bdc84a.svg':''
+        ))
     };
   }
   function assetFor(c,ri){return c?(ri===9?c.bossArt:c.art?.[ri]):''}
