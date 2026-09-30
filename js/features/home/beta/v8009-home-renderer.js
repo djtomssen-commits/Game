@@ -1,7 +1,7 @@
 
 (function(){
   if(String(window.GROW_RELEASE_CHANNEL||'stable')!=='beta')return;
-  const diagnostics={fullRenders:0,eventPanelPatches:0};
+  const diagnostics={fullRenders:0,eventPanelPatches:0,goldDirectOpens:0,mailDirectOpens:0};
   const V366_VERSION='V4.29 Stable';
   const esc=v=>typeof v073Escape==='function'?v073Escape(String(v??'')):String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const num=v=>Math.max(0,Math.round(Number(v)||0)).toLocaleString('de-DE');
@@ -163,12 +163,22 @@
 
       bar.querySelector('.v366-menu').onclick=e=>{e.preventDefault();e.stopPropagation();document.querySelector('#v032MenuPanel')?.classList.toggle('open')};
       bar.querySelector('[data-plus="harz"]').onclick=()=>{try{v032Go('harzDealer')}catch(e){}};
-      bar.querySelector('[data-plus="gold"]').onclick=()=>{try{v032Go('shop')}catch(e){}};
+      bar.querySelector('[data-plus="gold"]').onclick=()=>{
+        diagnostics.goldDirectOpens++;
+        try{
+          if(typeof window.v7114OpenGoldShop==='function')window.v7114OpenGoldShop();
+          else if(typeof window.v7117OpenDealerTab==='function')window.v7117OpenDealerTab('gold');
+          else if(typeof v032Go==='function')v032Go('goldShop');
+        }catch(e){}
+      };
       bar.querySelector('[data-plus="dampf"]').onclick=()=>{
         const b=document.querySelector('#v026RefillBtn'); if(b){try{b.click()}catch(e){}}
       };
       bar.querySelector('[data-head="friends"]').onclick=()=>{try{v032Go('friends')}catch(e){}};
-      bar.querySelector('[data-head="mail"]').onclick=()=>{try{v032Go('friends')}catch(e){}};
+      bar.querySelector('[data-head="mail"]').onclick=()=>{
+        diagnostics.mailDirectOpens++;
+        try{v032Go('mail')}catch(e){}
+      };
       bar.querySelector('[data-head="settings"]').onclick=()=>{
         const b=document.querySelector('[data-settings],#settingsBtn,.settings-btn'); if(b){try{b.click()}catch(e){}}
       };
@@ -380,7 +390,7 @@
     finalizeOwnedWorld(world);
   }
 
-  window.v8009HomeEventDiagnostics=()=>({version:'V8.009-HOME-14',...diagnostics,events:events().map(x=>({...x})),worldBossActive:worldBossEventActive()});
+  window.v8009HomeEventDiagnostics=()=>({version:'V8.009-HOME-15',...diagnostics,events:events().map(x=>({...x})),worldBossActive:worldBossEventActive()});
 
   /* Re-own only the world installer; do not touch core game render/persist. */
   v085WorldHtml=worldHtml;
