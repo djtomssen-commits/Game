@@ -1,0 +1,26 @@
+{
+  "build": "V8.009-HOME-29-BETA",
+  "phase": "Post-render weather signature cleanup",
+  "scope": "beta only",
+  "base_commit": "1a96ad5ad1f3dba1fac08c5732f093734f2cc3f5",
+  "findings": [
+    "The helper already synchronizes a live-painted weather widget into the V366 signature before every visible non-forced home refresh.",
+    "After the canonical renderer returned, the helper queued the same weather-signature scan again in requestAnimationFrame.",
+    "A canonical full render already writes the current weather into both DOM and signature, while a signature hit is already handled by the pre-render sync."
+  ],
+  "changes": [
+    "Removed the redundant post-render syncPaintedWeatherSignature call.",
+    "The pre-render HOME-8 weather catch-up remains intact and continues preventing full-home rebuilds after targeted weather paints.",
+    "Growroom readiness scheduling and Startseite layout fitting remain unchanged.",
+    "Added diagnostics and browser QA to ensure one weather signature check per visible refresh instead of two."
+  ],
+  "files": [
+    "js/system/performance/v7288-home-adaptive-fit-script.js",
+    "js/features/home/beta/v8009-home-renderer.js",
+    ".github/scripts/v8009_home_events_browser_qa.mjs"
+  ],
+  "stable_behavior_changed": false,
+  "gameplay_changed": false,
+  "weather_behavior_changed": false,
+  "server_authority_changed": false
+}

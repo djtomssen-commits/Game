@@ -219,6 +219,18 @@ try{
  assert.deepEqual({active:canonicalState.snapshot.active,ready:canonicalState.snapshot.ready},{active:2,ready:1});
  checks.push('canonical renderer owns Frost 7-slot checklist and weather-aware Growroom status');
  await canonical.close();
+ const weatherPost=await fixture('2026-09-30T12:00:00+02:00');
+ await weatherPost.clock.runFor(300);
+ const weatherBefore=await weatherPost.evaluate(()=>window.v8009HomeHeaderDiagnostics?.());
+ await weatherPost.evaluate(()=>{s.gold+=9;v085InstallWorld(false)});
+ await weatherPost.clock.runFor(120);
+ const weatherAfter=await weatherPost.evaluate(()=>window.v8009HomeHeaderDiagnostics?.());
+ assert.equal(weatherAfter.weatherSignatureSyncCalls,weatherBefore.weatherSignatureSyncCalls+1,'A visible home refresh must only run the pre-render weather signature check');
+ assert.equal(weatherAfter.postRenderWeatherSyncRetired,true);
+ assert.ok(weatherAfter.growPostRenderSchedules>weatherBefore.growPostRenderSchedules);
+ assert.ok(weatherAfter.fit.scheduleCalls>weatherBefore.fit.scheduleCalls);
+ checks.push('home refresh keeps pre-render weather catch-up but retires redundant post-render weather sync');
+ await weatherPost.close();
  const inactiveHelper=await fixture('2026-09-30T12:00:00+02:00');
  await inactiveHelper.clock.runFor(300);
  const helperBefore=await inactiveHelper.evaluate(()=>window.v8009HomeHeaderDiagnostics?.());
@@ -395,7 +407,7 @@ try{
  assert.equal(versionState.visible,'"V8.009"','Canonical renderer must override historical V8.001 pseudo-element CSS');
  assert.equal(versionState.styleCount,1,'Version override style must be installed exactly once');
  assert.equal(versionState.legacy,'SERVER-VERSION-SENTINEL','Home renderer must not rewrite unrelated legacy version nodes');
- assert.equal(versionState.diag?.version,'V8.009-HOME-28');
+ assert.equal(versionState.diag?.version,'V8.009-HOME-29');
  assert.equal(versionState.diag?.versionStyleInstalls,1);
  checks.push('canonical home renderer owns visible V8.009 style without lifecycle rewrites');
  await versionOwner.close();
