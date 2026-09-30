@@ -315,6 +315,11 @@ async function claimServerQuest(){
   }
   if(!b?.ok){toast('Quest nicht abgeschlossen','warn',String(b?.reason||'Serveraktion fehlgeschlagen.'));return false}
   if(b.won===false)return false;
+  /* A successful server claim has consumed the active run. Clear the local
+     projection immediately so a failed/stale follow-up state fetch cannot
+     leave the finished Quest card visible. Any explicit server bundle/state
+     below may still replace this value authoritatively. */
+  ensureShape();s.quests.active=null;
   /* Presentation is never allowed to block the committed server reward. */
   try{if(typeof v311PlayFight==='function')await Promise.race([Promise.resolve(v311PlayFight(clone(q))),sleep(6000)])}catch(e){console.warn('[V7045] quest presentation',e)}
   applyBundle(b);
