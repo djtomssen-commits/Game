@@ -98751,22 +98751,9 @@ body:has(#tower.active) #v337LegalFooter{margin-top:48px!important;padding-top:1
    }catch(_){}
  }
 
- /* Detail renderers are heavily wrapped elsewhere. Stamp the actually rendered dungeon after the
-    full render chain so subsequent enemy/fight clicks cannot fall back to the old selection. */
- ['v251RenderDetail','v244RenderSelectedDungeonMap','v064RenderMap','v261RenderDetail'].forEach(name=>{
-   try{
-     const fn=window[name]||globalThis[name];
-     if(typeof fn!=='function'||fn.__v4165DetailStamp)return;
-     const wrapped=function(){const r=fn.apply(this,arguments);stampDetail();return r};
-     wrapped.__v4165DetailStamp=true;window[name]=wrapped;
-     try{
-       if(name==='v251RenderDetail')v251RenderDetail=wrapped;
-       if(name==='v244RenderSelectedDungeonMap')v244RenderSelectedDungeonMap=wrapped;
-       if(name==='v064RenderMap')v064RenderMap=wrapped;
-       if(name==='v261RenderDetail')v261RenderDetail=wrapped;
-     }catch(_){}
-   }catch(_){}
- });
+ /* Sprint 2: expose the detail stamp directly. The canonical D2 map path calls
+    this after v261 renders, so four historical detail wrappers are unnecessary. */
+ window.v4165StampDetail=stampDetail;
 
  /* Final battle entry owner. Do not hand control back to the historical entry guard:
     it could return early while the map already showed the freshly found key. */
@@ -98799,23 +98786,8 @@ body:has(#tower.active) #v337LegalFooter{margin-top:48px!important;padding-top:1
    }
  }catch(e){console.warn('V4.165 fight entry',e)}
 
- /* Reconcile the button after the complete renderer chain. This is event-driven,
-    not another polling timer/observer. It specifically repairs disabled=true
-    left by an old completed-dungeon render. */
- try{
-   const base=window.renderDungeon||(typeof renderDungeon==='function'?renderDungeon:null);
-   if(typeof base==='function'&&!base.__v4165BattleGate){
-     const wrapped=function(){
-       const r=base.apply(this,arguments);
-       if(s?.dungeon?.layer==='dungeon'&&s?.dungeon?.view==='battle'){
-         requestAnimationFrame(()=>syncBattleGate('render-raf'));
-       }
-       return r;
-     };
-     wrapped.__v4165BattleGate=true;
-     window.renderDungeon=wrapped;try{renderDungeon=wrapped}catch(_){ }
-   }
- }catch(e){console.warn('V4.165 render battle gate',e)}
+ /* Sprint 2: renderDungeon battle-gate wrapper retired.
+    The canonical D2 battle path already calls v4165SyncBattleGate directly. */
 
  /* Capture the dungeon tile before its target listener. This makes the clicked dungeon authoritative
     even if an older async painter is still finishing after a freshly claimed quest reward. */
@@ -114306,13 +114278,9 @@ function claimButton(){
  }catch(e){console.warn('[V7051] button owner',e)}
 }
 
-/* Re-own rendering only for button identity. Mirror mode remains byte-for-byte behaviorally legacy. */
-try{
- const base=window.renderDungeon||((typeof renderDungeon==='function')?renderDungeon:null);
- if(typeof base==='function'&&!base.__v7051ButtonOwner){
-  const w=function(){const r=base.apply(this,arguments);setTimeout(claimButton,0);return r};w.__v7051ButtonOwner=true;w.__v7051Base=base;window.renderDungeon=w;try{renderDungeon=w}catch(_){}
- }
-}catch(e){console.warn('[V7051] render owner',e)}
+/* Sprint 2: button identity is synchronized directly by the canonical D2
+   renderer. Server receipt, authority and click interception remain unchanged. */
+window.v7051ClaimButtonSync=claimButton;
 
 /* V4.246's earlier window-capture listener only owns #fightBtn. In enforce mode
    V7.051 renames that button before interaction, so the legacy fight/loot path
