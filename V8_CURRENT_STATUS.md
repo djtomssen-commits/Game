@@ -682,6 +682,15 @@
 - Triggerdefinitionen nach Migration nochmals verifiziert.
 - Test erforderlich: nächster erfolgreicher Dungeonkampf muss im Rewardfenster konkrete Wochen-Truhen-EP und Gilden-EP (oder legitimen Cap/keine-Gilde-Status) anzeigen.
 
+### Dungeon Activity Reward – manuell bestätigt 30.09.2026
+
+- Manueller Test durch Nutzer erfolgreich:
+  - Dungeon-Sieg abgeschlossen.
+  - Gilden-EP werden wieder korrekt verbucht.
+  - Wochen-Truhen-EP werden wieder korrekt verbucht.
+- Server-Hotfix `fix_dungeon_activity_triggers_on_resolve` damit praktisch bestätigt.
+- Dungeon-Activity-Reward-Fehler geschlossen.
+
 ### Wichtige Einordnung der Namen
 
 Bezeichnungen wie `HOME-1 ... HOME-31`, `TOWER-T1 ...` oder frühere `B1/C...` sind **Unterphasen innerhalb des V8-Umbaus**.
