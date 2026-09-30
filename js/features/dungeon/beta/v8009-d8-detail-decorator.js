@@ -99,19 +99,4 @@ function decorate(){
 }
 window.v8009DungeonDetailDecorate=decorate;
 
-/* Compatibility only for surviving D1 polish scripts. These aliases do not
-   own renderDungeon and do not replace the canonical v261 owner. */
-const base=window.v261RenderDetail;
-if(typeof base==='function'){
-  const compat=function(){
-    const out=base.apply(this,arguments);
-    try{decorate()}catch(_){}
-    return out;
-  };
-  compat.__v8009DetailDecoratorCompat=true;
-  window.v426RenderDetail=compat;
-  window.v427RenderDetail=compat;
-  try{v426RenderDetail=compat}catch(_){}
-  try{v427RenderDetail=compat}catch(_){}
-}
 })();
