@@ -59054,9 +59054,15 @@ normalize();
           if(String(row.getAttribute('data-profile-id')||'')!==uid)return;
           const sub=row.querySelector('.v072-player-sub');if(sub)replacePowerText(sub,cp);
         });
-        document.querySelectorAll('#v072OwnProfile .v326-profile-stat,#v072OwnProfile .v072-profile-stat,#v074ProfileContent .v326-profile-stat,#v074ProfileContent .v072-profile-stat,#v074ProfileContent .v074-power').forEach(box=>{
+        document.querySelectorAll('#v072OwnProfile .v326-profile-stat,#v072OwnProfile .v072-profile-stat').forEach(box=>{
           if(/Kampf(?:kraft|wert)/i.test(box.textContent||'')){const b=box.querySelector('b');if(b)setText(b,cp)}
         });
+        const openProfile=document.querySelector('#v074ProfileContent');
+        if(openProfile&&String(openProfile.dataset.profileId||'')===uid){
+          openProfile.querySelectorAll('.v326-profile-stat,.v072-profile-stat,.v074-power').forEach(box=>{
+            if(/Kampf(?:kraft|wert)/i.test(box.textContent||'')){const b=box.querySelector('b');if(b)setText(b,cp)}
+          });
+        }
       }
     }finally{powerPainting=false}
   }
@@ -66809,9 +66815,15 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();i
       }
      }
     });
-    document.querySelectorAll('#v072OwnProfile .v072-profile-stat,#v074ProfileContent .v326-profile-stat,#v074ProfileContent .v072-profile-stat').forEach(box=>{
+    document.querySelectorAll('#v072OwnProfile .v072-profile-stat').forEach(box=>{
      if(/Kampf(?:kraft|wert)/i.test(box.textContent||'')){const b=box.querySelector('b');if(b)b.textContent=cp}
     });
+    const openProfile=document.querySelector('#v074ProfileContent');
+    if(openProfile&&String(openProfile.dataset.profileId||'')===own){
+     openProfile.querySelectorAll('.v326-profile-stat,.v072-profile-stat').forEach(box=>{
+      if(/Kampf(?:kraft|wert)/i.test(box.textContent||'')){const b=box.querySelector('b');if(b)b.textContent=cp}
+     });
+    }
    }
   }catch(e){}
  }
@@ -86570,11 +86582,12 @@ body.v654-hud-measured > #v141SettingsMenu.v377-open{
     if(btn)btn.onclick=()=>{requestSeq++; try{v074CloseProfile()}catch(e){document.querySelector('#v074ProfileOverlay')?.classList.remove('show')}};
   }
 
-  function showLoading(){
+  function showLoading(id){
     const {overlay,content,modal}=overlayParts();
     if(!overlay||!content)return false;
     overlay.classList.add('show');
     if(modal)modal.scrollTop=0;
+    content.dataset.profileId=String(id||'');
     content.innerHTML=`
       <button class="btn secondary v074-close" id="v074CloseBtn" aria-label="Spielerprofil schließen">✕</button>
       <div class="v655-profile-loading">
@@ -86627,6 +86640,7 @@ body.v654-hud-measured > #v141SettingsMenu.v377-open{
   function renderProfile(p){
     const {content,modal}=overlayParts();
     if(!content||!p)return;
+    content.dataset.profileId=String(p.id||'');
     const pos=dungeonPos(p);
     const dp=(p.dungeon_progress&&typeof p.dungeon_progress==='object')?p.dungeon_progress:{};
     const publicTitle=String(dp?.public_title?.label||'');
@@ -86718,7 +86732,7 @@ body.v654-hud-measured > #v141SettingsMenu.v377-open{
 
   async function robustOpen(id){
     const mySeq=++requestSeq;
-    if(!showLoading())return;
+    if(!showLoading(id))return;
     const sid=String(id||'');
     let own=false;
     try{
