@@ -20,7 +20,7 @@
 - Arbeitsbranch: **main**
 - Letzter automatisiert geprüfter Code-Commit vor dieser Statusdatei:
   `06be757c3faf109c2f3c3f18195086d1909592d0`
-- Aktuelle Unterphase: **V8.009-BETA-STARTUP-STABILITY-FIX-COMMITTED-LIVE-BETA-DEPLOY-PENDING**
+- Aktuelle Unterphase: **V8.009-QUEST-SPRINT-1-EXTRACTION-COMPLETED-OWNER-AUDIT-NEXT**
 - Nutzer-Video bestätigt: betroffen ist konkret **Dungeon 2**.
 - Sichtbares Fehlerbild:
   - zunächst korrekter D2-Hintergrund + korrekte Gegnergrafiken;
@@ -540,6 +540,34 @@
 - **Quest Sprint NICHT starten**, bis diese zwei Hall-Fehler manuell erneut geprüft und bestätigt sind.
 - Scope: **Beta zuerst**
 - **Server 1 / Stable bleibt unangetastet**, bis eine Phase ausdrücklich für Stable freigegeben wird.
+
+### Quest Sprint 1 – Start und Extraktion 30.09.2026
+
+- Nutzer hat den Quest Sprint ausdrücklich freigegeben.
+- Breiter deterministischer Bestand:
+  - Manifest: `V8009_QUEST_SPRINT1_INVENTORY.json`
+  - Commit: `4072d0e9390bb747e9855dc9d68f838b4adac5d5`
+  - 333 Quest-bezogene Inline-Script-Treffer
+  - 89 Inline-Style-Treffer
+  - 44 externe JS-Treffer
+  - 14 externe CSS-Treffer
+  - 111 Owner-/Wrapper-Kandidaten in der Audit-Shortlist
+- Einordnung: Die breiten Treffer enthalten viele Fremdsysteme, die Quest nur referenzieren. Diese werden nicht blind verschoben oder stillgelegt.
+- Sicherer JS-Extraktionsbatch:
+  - Commit: `80147bd24fee4ec1069bd22b231a2c52ed6489d0`
+  - Manifest: `V8009_QUEST_SPRINT1_EXTRACT.json`
+  - 28 klar Quest-eigene Inline-JS-Blöcke 1:1 nach `js/features/quest/beta/` ausgelagert
+  - ausgelagerter JS-Inhalt: **196.768 Byte**
+  - Source-Reihenfolge beibehalten
+  - alle extrahierten Dateien per `node --check` grün
+  - `index.html` / Stable unverändert
+  - kein Gameplay-, Reward-, Combat-Math- oder Serverautoritätsverhalten geändert
+  - keine Owner stillgelegt; dies war reine Struktur-Extraktion
+- Nächster Schritt:
+  - Quest-Owner-/Wrapper-Kette gezielt auditieren;
+  - insbesondere `renderQuests`, `startQuest`, `claimQuest`, Quest-Timer, Elite-Quest und Server-Authority-Layer;
+  - erst danach redundante Wrapper in einem gemeinsamen Batch entfernen bzw. Aufgaben in den kanonischen Owner integrieren;
+  - keine neue Render-/Timer-/Observer-Schicht hinzufügen.
 
 ### Wichtige Einordnung der Namen
 
