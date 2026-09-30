@@ -23,7 +23,7 @@ async function fixture(time,{quiet=0,channel='beta',helper=true,playerClass='gro
   window.v073User={id:'qa-a'};
   window.classSets={};
   window.v093Events=[];window.v271EventDataReady=false;
-  window.qa={quests:0,gold:0,xp:0,paints:0,persists:0,bossOpens:0,intervals:0,nav:[],goldShop:0};
+  window.qa={quests:0,gold:0,xp:0,paints:0,persists:0,bossOpens:0,intervals:0,nav:[],goldShop:0,dungeonCalls:0,petCalls:0};
   window.qaQuietUntil=Date.now()+quiet;
   window.v7204StartupQuietRemaining=()=>Math.max(0,qaQuietUntil-Date.now());
   window.v7204StartupQuiet=()=>v7204StartupQuietRemaining()>0;
@@ -40,6 +40,8 @@ async function fixture(time,{quiet=0,channel='beta',helper=true,playerClass='gro
   window.v276DecorateGold=()=>{qa.gold++};window.v095DecorateXp=()=>{qa.xp++};
   window.v032Go=id=>{qa.nav.push(String(id||''))};window.v7114OpenGoldShop=()=>{qa.goldShop++};window.v085InstallWorld=()=>{};window.v085WorldHtml=()=>'';
   window.v110Open=()=>{qa.bossOpens++};window.v488OpenForge=()=>{};window.v106OpenBook=()=>{};
+  window.v081DungeonPosition=()=>{qa.dungeonCalls++;return {dungeonNumber:2,enemyNumber:4}};
+  window.v6104PetUnseen=()=>{qa.petCalls++;return 0};
   window.vTowerWednesdayEventInfo=()=>({active:new Intl.DateTimeFormat('en-US',{timeZone:'Europe/Berlin',weekday:'short'}).format(new Date())==='Wed',name:'Mutationssturm',icon:'🧬'});
  },{quiet,channel,playerClass});
  await page.addScriptTag({content:grant});
@@ -216,6 +218,14 @@ try{
  assert.deepEqual({active:canonicalState.snapshot.active,ready:canonicalState.snapshot.ready},{active:2,ready:1});
  checks.push('canonical renderer owns Frost 7-slot checklist and weather-aware Growroom status');
  await canonical.close();
+ const snapshotReuse=await fixture('2026-09-30T12:00:00+02:00');
+ await snapshotReuse.clock.runFor(300);
+ await snapshotReuse.evaluate(()=>{qa.dungeonCalls=0;qa.petCalls=0;s.gold+=1;v085InstallWorld(false)});
+ await snapshotReuse.clock.runFor(50);
+ const snapshotCounts=await snapshotReuse.evaluate(()=>({dungeonCalls:qa.dungeonCalls,petCalls:qa.petCalls}));
+ assert.deepEqual(snapshotCounts,{dungeonCalls:1,petCalls:1},'A real home render must reuse one canonical view snapshot');
+ checks.push('full home render reuses one canonical state snapshot for signature and markup');
+ await snapshotReuse.close();
  const bootstrapGrow=await fixture('2026-09-30T12:00:00+02:00');
  await bootstrapGrow.clock.runFor(300);
  const bootstrapDiag=await bootstrapGrow.evaluate(()=>window.v8009HomeHeaderDiagnostics?.());
@@ -276,7 +286,7 @@ try{
  assert.equal(versionState.visible,'"V8.009"','Canonical renderer must override historical V8.001 pseudo-element CSS');
  assert.equal(versionState.styleCount,1,'Version override style must be installed exactly once');
  assert.equal(versionState.legacy,'SERVER-VERSION-SENTINEL','Home renderer must not rewrite unrelated legacy version nodes');
- assert.equal(versionState.diag?.version,'V8.009-HOME-21');
+ assert.equal(versionState.diag?.version,'V8.009-HOME-22');
  assert.equal(versionState.diag?.versionStyleInstalls,1);
  checks.push('canonical home renderer owns visible V8.009 style without lifecycle rewrites');
  await versionOwner.close();

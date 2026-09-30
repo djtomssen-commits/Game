@@ -1,0 +1,25 @@
+{
+  "build": "V8.009-HOME-22-BETA",
+  "phase": "Single Startseite render snapshot",
+  "scope": "beta only",
+  "base_commit": "dad1f82e98ab0c82a1ee613ae9a1af321e5fad68",
+  "findings": [
+    "A real full Startseite render calculated several state helpers for the render signature and then recalculated the same values while building the HTML.",
+    "Dungeon position was queried twice inside the signature and pet-unseen state was queried twice inside the quickbar markup."
+  ],
+  "changes": [
+    "One canonical homeViewSnapshot is now created per v085InstallWorld call.",
+    "The same snapshot is reused for the signature and, when a full repaint is needed, for worldHtml.",
+    "Dungeon position, Growroom snapshot, achievements, events, checklist, pet count, combat power and worldboss-active state are no longer recomputed during the same full render.",
+    "Avatar lookup is reduced to one call inside worldHtml instead of two markup calls.",
+    "Rendered content and game rules are unchanged."
+  ],
+  "files": [
+    "js/features/home/beta/v8009-home-renderer.js",
+    "js/system/performance/v7288-home-adaptive-fit-script.js",
+    ".github/scripts/v8009_home_events_browser_qa.mjs"
+  ],
+  "stable_behavior_changed": false,
+  "gameplay_changed": false,
+  "server_authority_changed": false
+}

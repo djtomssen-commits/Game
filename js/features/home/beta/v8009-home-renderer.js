@@ -241,11 +241,24 @@
     };
   }
 
-  function worldHtml(){
+  function homeViewSnapshot(){
+    return {
+      name:playerName(),
+      power:cp(),
+      dg:dungeonPos(),
+      grow:growSnapshot(),
+      ac:ach(),
+      ev:events(),
+      hc:homeChecklist(),
+      pets:petUnseen(),
+      bossActive:worldBossEventActive()
+    };
+  }
+
+  function worldHtml(view=homeViewSnapshot()){
+    const {name,power,dg,grow,ac,ev,hc,pets,bossActive}=view;
+    const avatar=avatarSrc();
     const xp=Math.max(0,Number(s?.xp)||0),need=xpNeedSafe(),pct=Math.max(0,Math.min(100,xp/need*100));
-    const dg=dungeonPos(),grow=growSnapshot(),ac=ach(),ev=events();
-    const hc=homeChecklist();
-    const bossActive=worldBossEventActive();
     const twSeason=(s?.tower?.season&&typeof s.tower.season==='object')?s.tower.season:{};
     const twRun=(s?.tower?.run&&typeof s.tower.run==='object'&&s.tower.run.active)?s.tower.run:null;
     const tw={bestFloor:Math.max(0,Number(twSeason.bestFloor)||0),bestScore:Math.max(0,Number(twSeason.bestScore)||0),active:!!twRun,floor:Math.max(1,Number(twRun?.floor)||1)};
@@ -259,12 +272,12 @@
         <div class="v366-character" aria-hidden="true"></div>
         <div class="v366-profile">
           <div class="v366-profile-row">
-            <div class="v366-avatar">${avatarSrc()?`<img src="${avatarSrc()}" alt="Charakter">`:''}</div>
-            <div><div class="v366-pname">${esc(playerName())}</div><div class="v366-plevel">Stufe ${num(s?.level||1)} · <span class="v366-class">${className()}</span></div></div>
+            <div class="v366-avatar">${avatar?`<img src="${avatar}" alt="Charakter">`:''}</div>
+            <div><div class="v366-pname">${esc(name)}</div><div class="v366-plevel">Stufe ${num(s?.level||1)} · <span class="v366-class">${className()}</span></div></div>
           </div>
           <div class="v366-xpbar"><div class="v366-xpfill" style="width:${pct}%"></div></div>
           <div class="v366-xptxt">${num(xp)} / ${num(need)} EXP</div>
-          <div class="v366-power">⚔️ Kampfkraft <b>${cp()}</b></div>
+          <div class="v366-power">⚔️ Kampfkraft <b>${power}</b></div>
           <div class="vHome-checklist" aria-label="Charakter-Checkliste">
             <div class="vHome-check-head"><span>CHARAKTER-CHECK</span><small>Was noch zu tun ist</small></div>
             <button type="button" class="vHome-check-row ${hc.talentDone?'ok':'warn'}" data-char-tab="talents"><i>${hc.talentDone?'✓':'!'}</i><span>Talentpunkte</span><b>${hc.talentDone?'Alle vergeben':`${num(hc.talentFree)} zu verteilen`}</b></button>
@@ -274,7 +287,7 @@
             <button type="button" class="vHome-check-row set" data-char-tab="inventory"><i>◆</i><span>Aktive Klassenset-Boni</span><b>${hc.setActive}/${hc.setTotal} aktiv</b></button>
           </div>
         </div>
-        <div class="v366-welcome"><small>Willkommen zurück,</small><h1>${esc(playerName())}!</h1><p>Die Legende wächst weiter.</p></div>
+        <div class="v366-welcome"><small>Willkommen zurück,</small><h1>${esc(name)}!</h1><p>Die Legende wächst weiter.</p></div>
         <div class="v6103-motto" aria-hidden="true"><b>GOOD</b><b>WEED</b><b>BETTER</b><b>LEGENDS.</b></div>
         ${typeof window.v6239WeeklyChestHomeHtml==='function'?window.v6239WeeklyChestHomeHtml():''}
       </section>
@@ -283,7 +296,7 @@
         <button type="button" data-char-tab="inventory"><span class="v6103-qicon">🎒</span><span>Inventar</span></button>
         <button type="button" data-char-tab="attributes"><span class="v6103-qicon">💪</span><span>Attribute</span></button>
         <button type="button" data-char-tab="talents"><span class="v6103-qicon">🌳</span><span>Talente</span></button>
-        <button type="button" data-pets="1"><span class="v6103-qicon">🐾</span><span>Pets</span>${petUnseen()?`<i class="v6103-badge">${petUnseen()}</i>`:''}</button>
+        <button type="button" data-pets="1"><span class="v6103-qicon">🐾</span><span>Pets</span>${pets?`<i class="v6103-badge">${pets}</i>`:''}</button>
         <button type="button" data-book="1"><span class="v6103-qicon">🏆</span><span>Erfolge</span></button>
         <button type="button" data-go="guild"><span class="v6103-qicon">🏰</span><span>Gilde</span></button>
       </nav>
@@ -382,11 +395,12 @@
   function installWorld(force){
     const world=document.querySelector('#world');
     if(!world)return;
-    const ev=events(),bossActive=worldBossEventActive(),grow=growSnapshot();
+    const view=homeViewSnapshot();
+    const {name,power,dg,grow,ac,ev,hc,pets,bossActive}=view;
     const sigParts=[
-      playerName(),s?.playerClass,s?.level,s?.xp,s?.energy,s?.gold,s?.harzTaler,
-      attr('staerke'),attr('ausdauer'),attr('geschick'),attr('intelligenz'),attr('glueck'),cp(),
-      dungeonPos().d,dungeonPos().e,`${grow.active}:${grow.ready}`,petUnseen(),bossActive,ev.map(x=>`${x.t}:${x.s}`).join('|'),ach().done,homeChecklist().signature,Number(s?.tower?.season?.bestFloor)||0,Number(s?.tower?.season?.bestScore)||0,(s?.tower?.run?.active?Number(s.tower.run.floor)||1:0),window.v6239WeeklyChestSignature?.()||'',window.GL_WEATHER?.kind||'',window.GL_WEATHER?.label||'',Math.round(Number(window.GL_WEATHER?.temp)||0),window.GL_WEATHER?.bonus?.text||'',Number(window.__V7129_REFERRAL_STATE__?.qualified_count)||0,!!window.__V7129_REFERRAL_STATE__?.grand_claimed
+      name,s?.playerClass,s?.level,s?.xp,s?.energy,s?.gold,s?.harzTaler,
+      attr('staerke'),attr('ausdauer'),attr('geschick'),attr('intelligenz'),attr('glueck'),power,
+      dg.d,dg.e,`${grow.active}:${grow.ready}`,pets,bossActive,ev.map(x=>`${x.t}:${x.s}`).join('|'),ac.done,hc.signature,Number(s?.tower?.season?.bestFloor)||0,Number(s?.tower?.season?.bestScore)||0,(s?.tower?.run?.active?Number(s.tower.run.floor)||1:0),window.v6239WeeklyChestSignature?.()||'',window.GL_WEATHER?.kind||'',window.GL_WEATHER?.label||'',Math.round(Number(window.GL_WEATHER?.temp)||0),window.GL_WEATHER?.bonus?.text||'',Number(window.__V7129_REFERRAL_STATE__?.qualified_count)||0,!!window.__V7129_REFERRAL_STATE__?.grand_claimed
     ];
     const sig=sigParts.join('~');
 
@@ -405,7 +419,7 @@
     }
     world.dataset.v366Sig=sig;
     diagnostics.fullRenders++;
-    world.innerHTML=worldHtml();
+    world.innerHTML=worldHtml(view);
     world.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>{const id=b.dataset.go;if(id!=='world')try{v032Go(id)}catch(e){}});
     world.querySelectorAll('[data-char-tab]').forEach(b=>b.onclick=()=>openCharacterTab(b.dataset.charTab));
     world.querySelectorAll('[data-pets]').forEach(b=>b.onclick=()=>{try{window.v686OpenPetAlbum?.()}catch(e){}});
@@ -415,7 +429,7 @@
     finalizeOwnedWorld(world);
   }
 
-  window.v8009HomeEventDiagnostics=()=>({version:'V8.009-HOME-21',...diagnostics,events:events().map(x=>({...x})),worldBossActive:worldBossEventActive()});
+  window.v8009HomeEventDiagnostics=()=>({version:'V8.009-HOME-22',...diagnostics,events:events().map(x=>({...x})),worldBossActive:worldBossEventActive()});
 
   /* Re-own only the world installer; do not touch core game render/persist. */
   v085WorldHtml=worldHtml;
