@@ -3,7 +3,6 @@
 if(window.__V7166_DUNGEON_DETAIL_RENDER_LOCK__)return;
 window.__V7166_DUNGEON_DETAIL_RENDER_LOCK__=true;
 const VERSION='V7.170';
-const names=['v251RenderDetail','v244RenderSelectedDungeonMap','v064RenderMap','v261RenderDetail','v260RenderDetail'];
 let repairs=0,lastDungeon=0,lastReason='boot';
 
 function dungeonIndex(){
@@ -59,22 +58,9 @@ function assign(name,wrapped){
     else if(name==='v260RenderDetail')v260RenderDetail=wrapped;
   }catch(_){}
 }
-names.forEach(name=>{
-  try{
-    const fn=window[name]||globalThis[name];
-    if(typeof fn!=='function'||fn.__v7166DungeonDetailLock)return;
-    const wrapped=function(){
-      const out=fn.apply(this,arguments);
-      repair(name);
-      queueMicrotask(()=>repair(name+'-microtask'));
-      requestAnimationFrame(()=>repair(name+'-raf'));
-      return out;
-    };
-    wrapped.__v7166DungeonDetailLock=true;
-    wrapped.__v7166Base=fn;
-    assign(name,wrapped);
-  }catch(e){console.warn('[V7.168] detail wrapper',name,e)}
-});
+/* Sprint 2: historical detail wrappers retired. The canonical D2 map owner
+   calls v7166DungeonDetailRepair() directly after v261 renders. */
+
 
 /* V8.009 D5: v261 is the final 10-room DOM owner.
    Older receipt/key/preview layers still call v251/v244/v064 directly.
@@ -101,20 +87,9 @@ enforceCanonicalDetail('boot');
 setTimeout(()=>enforceCanonicalDetail('boot-120'),120);
 setTimeout(()=>enforceCanonicalDetail('boot-500'),500);
 
-try{
-  const base=window.renderDungeon||((typeof renderDungeon==='function')?renderDungeon:null);
-  if(typeof base==='function'&&!base.__v7166DungeonDetailLock){
-    const wrapped=function(){
-      const out=base.apply(this,arguments);
-      repair('renderDungeon');
-      return out;
-    };
-    wrapped.__v7166DungeonDetailLock=true;
-    wrapped.__v7166Base=base;
-    window.renderDungeon=wrapped;
-    try{renderDungeon=wrapped}catch(_){}
-  }
-}catch(e){console.warn('[V7.168] renderDungeon wrapper',e)}
+/* Sprint 2: global renderDungeon wrapper retired. Repair is now a direct
+   canonical hook plus event/foreground safety net. */
+
 
 document.addEventListener('click',e=>{
   const el=e.target instanceof Element?e.target:null;
@@ -144,8 +119,9 @@ window.__V7166_DUNGEON_DETAIL_QA__=()=>({
   repairs,
   lastDungeon,
   lastReason,
-  active:!!window.renderDungeon?.__v7166DungeonDetailLock,
-  detailWrapped:names.filter(n=>!!window[n]?.__v7166DungeonDetailLock),
+  active:typeof window.v7166DungeonDetailRepair==='function',
+  wrapperMode:false,
+  detailWrapped:[],
   canonicalAliases:canonicalAliases.filter(n=>window[n]===window.__V7166_CANONICAL_DETAIL__),
   aliasRepairs,
   lastAliasReason,
