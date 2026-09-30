@@ -10,8 +10,8 @@
 - Aktuelle Beta-Linie: **V8.009**
 - Arbeitsbranch: **main**
 - Letzter automatisiert geprüfter Code-Commit vor dieser Statusdatei:
-  `64786125d0d7d53e8b9c62ace556df181674ccbe`
-- Aktuelle Unterphase: **V8.009-DUNGEON-D6-BETA**
+  `5aa7c766972e4ed6efd46ba324fcfda2e35e4be3`
+- Aktuelle Unterphase: **V8.009-DUNGEON-D8-BETA**
 - Nutzer-Video bestätigt: betroffen ist konkret **Dungeon 2**.
 - Sichtbares Fehlerbild:
   - zunächst korrekter D2-Hintergrund + korrekte Gegnergrafiken;
@@ -127,6 +127,41 @@
   - Stable unverändert;
   - Gameplay/Combat-Math/Rewards/Serverautorität unverändert.
 - D6 Status: **abgeschlossen**
+- D7 Audit:
+  - Manifest: `V8009_DUNGEON_D7_BETA.json`;
+  - `v426` enthält noch D1-Referenzdarstellung;
+  - `v427/v429/v430` enthalten noch D6-Titel/Namen/Schild/Node-Positionen;
+  - `v432` enthält noch D7-Titel/Schild/Node-Positionen;
+  - daher kein blindes Unload in D7.
+- D8 Konsolidierung:
+  - Commit `5aa7c766972e4ed6efd46ba324fcfda2e35e4be3`;
+  - neuer kanonischer Post-Render-Decorator:
+    `js/features/dungeon/beta/v8009-d8-detail-decorator.js`;
+  - D2 Visual Owner ruft den Decorator direkt aus `paintMap()` auf;
+  - migriert:
+    - D1 Referenzklasse/Titel/Fallback-Hintergrund;
+    - D6 Titel/Namen/Schild/Node-Positionen;
+    - D7 Titel/Namen/Schild/Node-Positionen;
+  - aus aktiver Beta entfernt:
+    - `v426-reference-owner`
+    - `v427-d6-clean-script`
+    - `v428-d6-final-owner`
+    - `v429-d6-scenic-owner`
+    - `v430-d6-10er-final-script`
+    - `v432-d7-final-script`
+  - alte Kette archiviert unter:
+    `js/features/dungeon/legacy/v8009-d8-retired-detail-owner-chain.js`;
+  - `v426RenderDetail` / `v427RenderDetail` bleiben nur als schlanke Kompatibilitätsaliases für spätere D1-Polish-Skripte;
+  - die alten `renderDungeon`-Monkey-Patches dieser sechs Blöcke sind entfernt.
+- D8 QA: **vollständig grün**
+  - Decorator + Archiv + D2/D5 Owner Syntax grün;
+  - alle sechs alten Owner-IDs aus aktiver Beta entfernt;
+  - D1/D6/D7-Dekorationssignaturen im neuen Decorator vorhanden;
+  - D5 Final Seal weiterhin letztes Script;
+  - Stable unverändert;
+  - Gameplay/Combat-Math/Rewards/Serverautorität unverändert.
+- D8 Beta-Größe: **6.055.242 Byte** (vorher 6.069.032 Byte).
+- D8 Status: **abgeschlossen**
 - Nächster Schritt: D1 sowie D3–D20 bei Gelegenheit visuell stichprobenartig prüfen; strukturell sind Hintergrund/Gegner komplett und die Boss-Pfade jetzt korrekt getrennt.
 - Scope: **Beta zuerst**
 - **Server 1 / Stable bleibt unangetastet**, bis eine Phase ausdrücklich für Stable freigegeben wird.
@@ -241,25 +276,25 @@ Für jedes System gilt:
 
 ## 4. EXAKTER nächster Schritt
 
-### V8.009-DUNGEON-D7-BETA – verbleibende Detail-Owner-Kette auditieren
+### V8.009-DUNGEON-D9-BETA – D1-Polish-Kette konsolidieren
 
-1. aktuelle Beta-Abhängigkeiten auf `v426RenderDetail`, `v427RenderDetail`, `v430RenderDetail`, `v432RenderDetail` repo-weit erfassen;
-2. unterscheiden:
-   - echter Runtime-Aufrufer;
-   - historischer Owner-Installer/Wrapper;
-   - CSS/DOM-Sonderpatch;
-   - reine Kompatibilitätsreferenz;
-3. kanonische Kette darf nicht geändert werden:
-   - World → `v251RenderWorld`;
-   - Detail → `v261RenderDetail`;
-   - Visual Assets → D2 Visual Owner + D5 finaler Seal;
-   - Combat → D1 Combat Renderer / D2 Dispatcher;
-4. wenn ein historischer Detail-Owner nachweislich vollständig überschrieben ist:
-   - zuerst nur aus der Beta-Ladekette nehmen;
-   - Datei/Legacy-Code zunächst behalten;
-5. JS-Syntax + Include-Order + Stable-Unverändertheit prüfen;
-6. keine Gameplay-/Combat-Math-/Reward-/Serverautoritätsänderung;
-7. nach Erfolg Statusdatei sofort auf D8 fortschreiben.
+1. verbleibende D1-spezifische Inline-Skripte auditieren:
+   - `v454-d1-feinschliff-script`
+   - `v458-d1-road-and-sign-final`
+   - `v459-d1-right-side-thumb-final-script`
+   - `v460-d1-thumb-owner-fix-script`
+   - `v461-d1-node9-collision-fix-script`
+   - `v463-d1-screenshot-polish-script`;
+2. pro Block unterscheiden:
+   - echte sichtbare D1-Dekoration;
+   - nur Wrapper auf `v426/v251/v244`;
+   - verzögerter Repaint/Click-Handler;
+3. sichtbare D1-Regeln in den D8-Decorator übernehmen;
+4. reine Wrapper/Timer/Listener danach aus aktiver Beta entfernen;
+5. D1-Kompatibilitätsalias nur so lange behalten, wie ein realer Aufrufer existiert;
+6. D1/D2/D6/D7-Dekoration und D5 Asset-Fallback statisch prüfen;
+7. Stable/Server 1 unverändert;
+8. Gameplay/Combat-Math/Rewards/Serverautorität unverändert.
 
 ### Statusdatei-Regel
 
