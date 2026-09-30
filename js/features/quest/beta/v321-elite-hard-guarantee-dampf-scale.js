@@ -254,9 +254,7 @@ render=function(){
  return r;
 };
 
-setTimeout(()=>{
- try{
-   v271NormalizeQuestOffers();
-   renderQuests();
- }catch(e){console.error('V4.02 quest init',e)}
-},420);
+/* V8.009: startup full Quest repaint retired.
+   Offer cost normalization remains synchronous/data-only; the canonical
+   v6344 renderer paints the page once from the normal lifecycle. */
+try{v271NormalizeQuestOffers()}catch(e){console.error('V4.02 quest init',e)}
