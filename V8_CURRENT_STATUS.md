@@ -11,7 +11,7 @@
 - Arbeitsbranch: **main**
 - Letzter automatisiert geprüfter Code-Commit vor dieser Statusdatei:
   `4d0c39fd351e51e4eab64ad27261515341fa3d02`
-- Aktuelle Unterphase: **V8.009-PVP-SPRINT-1-MANUAL-CHECK**
+- Aktuelle Unterphase: **V8.009-PVP-SPRINT-1-HALL-VIDEO-FIX**
 - Nutzer-Video bestätigt: betroffen ist konkret **Dungeon 2**.
 - Sichtbares Fehlerbild:
   - zunächst korrekter D2-Hintergrund + korrekte Gegnergrafiken;
@@ -415,6 +415,25 @@
     `e476eb4437df8c0763a36220f99fe5f14b09b3acd8f76e8ed4f5821962d9fbab`.
 - PvP Sprint 1 aktueller Beta-Stand: **5.749.031 Byte**.
 - PvP / Hall Status: **technisch grün; ein gemeinsamer manueller Meilenstein-Test offen**.
+- Manueller Video-Test 30.09.2026: **2 sichtbare Hall-of-Haze-Fehler reproduziert**
+  1. **Eigenes Profil oberhalb der Top 3**
+     - beim ersten Hall-Aufruf erscheint das eigene Profil zunächst im alten/undekorierten Layout;
+     - Avatar fehlt;
+     - Level/Kampfkraft/Dungeon/Gegner stehen in extrem schmalen, mehrzeilig umgebrochenen Feldern;
+     - großer leerer Bereich im Profil;
+     - nach späterer Navigation/Dekoration erscheint das Profil korrekt.
+     - Arbeitshypothese: ein späterer `v072RenderOwnProfile`-Owner oder eine Render-Reihenfolge umgeht den direkten v326→v646-Decorator-Hook beim ersten Paint.
+  2. **Kampfkraft fremder Spieler**
+     - bei einem fremden Spieler wird kurz die eigene Kampfkraft angezeigt;
+     - anschließend springt der Wert auf die richtige Kampfkraft des fremden Spielers.
+     - Ziel: fremde Profile/Rows dürfen nie einen lokalen Own-Combat-Power-Wert als Zwischenzustand rendern.
+- Video-Datei im Chat: `1000098671.mp4`.
+- Nächster Reparaturschritt:
+  - exakte Runtime-Owner-Kette für `v072RenderOwnProfile`, `v074OpenProfile`, `v073PlayerRow` und Combat-Power-Painter auditieren;
+  - den ersten Hall-Paint direkt an den finalen Decorator koppeln;
+  - den falschen Own-Power-Zwischenwert an der Quelle entfernen;
+  - danach gemeinsame Hall-QA und erneuter manueller Meilenstein-Test.
+- **Quest Sprint NICHT starten**, bis diese zwei Hall-Fehler behoben und manuell bestätigt sind.
 - Scope: **Beta zuerst**
 - **Server 1 / Stable bleibt unangetastet**, bis eine Phase ausdrücklich für Stable freigegeben wird.
 
@@ -528,35 +547,24 @@ Für jedes System gilt:
 
 ## 4. EXAKTER nächster Schritt
 
-### PvP / Hall of Haze – EIN gemeinsamer manueller Meilenstein-Test
+### V8.009-PVP-SPRINT-1-HALL-VIDEO-FIX
 
-Einmal kurz in Beta prüfen:
+Aus dem Nutzer-Video zuerst **beide** Hall-Fehler in einem Reparaturdurchgang beheben:
 
-1. **Hall of Haze öffnen**
-   - Top 3 sichtbar;
-   - Rangliste lädt;
-   - „Mein Rang“ / „Mein Umfeld“ reagieren;
-   - Avatare, Kampfkraft und PvP-Buds sichtbar.
-2. **Ein Spielerprofil aus der Hall öffnen**
-   - Profil öffnet;
-   - eigene/andere Werte wirken plausibel;
-   - Schließen funktioniert.
-3. **PvP öffnen**
-   - Gegner suchen funktioniert;
-   - Gegnerdaten/Kampfkraft erscheinen;
-   - Cooldown-/Button-Zustand wirkt korrekt.
-4. **Einen PvP-Kampf starten**
-   - Kampfanimation/Overlay läuft;
-   - Ergebnis-Modal erscheint;
-   - Gold/EXP/Buds bzw. Niederlagenzustand werden angezeigt;
-   - Rückkehr zu PvP funktioniert.
-5. Wenn das passt:
-   - **PvP / Hall of Haze als abgeschlossen markieren**;
-   - direkt mit **Quest im Sprint-Modus** starten.
-6. Nur bei einem echten sichtbaren/ funktionalen Fehler PvP/Hall wieder öffnen.
-
-### Danach: Quest Sprint
-Breiter Bestand-/Owner-Audit → 1:1-Extraktion → Owner-Konsolidierung → gemeinsame QA → ein manueller Meilenstein.
+1. repo-/load-order-weit alle Zuweisungen/Wrapper für
+   - `v072RenderOwnProfile`
+   - `v074OpenProfile`
+   - `v073PlayerRow`
+   - `v073LoadRanking`
+   - Combat-Power-Painter/Profile-Sync
+   erfassen;
+2. feststellen, welcher späte Owner den ersten Own-Profile-Paint nach v326 wieder undekoriert erzeugt;
+3. Own-Profile-Render so verdrahten, dass Avatar + Layout bereits beim **ersten Hall-Paint** korrekt sind;
+4. Fremdprofil-/Hall-Row-Pfad prüfen und verhindern, dass lokale eigene Kampfkraft jemals als Initialwert für einen anderen Spieler verwendet wird;
+5. Matchmaking, Kampfberechnung, Cooldown, Rewards und v7053 Serverautorität nicht verändern;
+6. Syntax-/Owner-/DOM-QA;
+7. danach genau **einen** manuellen Hall/PvP-Test anfordern;
+8. erst nach Bestätigung PvP/Hall abschließen und Quest Sprint starten.
 
 ### Statusdatei-Regel
 
