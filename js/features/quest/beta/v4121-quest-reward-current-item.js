@@ -72,21 +72,11 @@
   try{window.v4112RefreshAllItemArt?.(extra)}catch(e){}
  }
  window.v4121RefreshQuestRewardArt=upgrade;
- function wrapClaim(name){
-  try{
-   const fn=window[name];if(typeof fn!=='function'||fn.__v4121QuestArt)return;
-   const wrapped=function(){
-    const before=snap();let r;
-    try{r=fn.apply(this,arguments)}catch(err){setTimeout(()=>upgrade(before),0);throw err}
-    const done=x=>{requestAnimationFrame(()=>upgrade(before));setTimeout(()=>upgrade(before),60);return x};
-    if(r&&typeof r.then==='function')return r.then(done,err=>{done();throw err});
-    return done(r);
-   };
-   wrapped.__v4121QuestArt=true;window[name]=wrapped;
-   try{if(name==='v233ClaimQuest')v233ClaimQuest=wrapped;if(name==='claimQuest')claimQuest=wrapped}catch(e){}
-  }catch(e){}
- }
- wrapClaim('v233ClaimQuest');wrapClaim('claimQuest');
+ window.v4121QuestRewardSnapshot=snap;
+ window.v4121AfterQuestClaim=before=>{
+  requestAnimationFrame(()=>upgrade(before));
+  setTimeout(()=>upgrade(before),60);
+ };
  /* Also catch reward DOM created by a future claim wrapper without adding a new timer. */
  document.addEventListener('click',e=>{if(!e.target?.closest?.('#v392ClaimQuest,#claimQuest'))return;setTimeout(()=>upgrade(null),120)},true);
  function stamp(){}
