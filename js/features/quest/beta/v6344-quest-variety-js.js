@@ -240,7 +240,12 @@ try{
   if(typeof renderQuests==='function'&&!window.__V6344_RENDER_QUESTS_WRAP__){
     const base=renderQuests;
     renderQuests=function(){
+      try{window.v496RepairStalePaidQuest?.()}catch(_){}
+      try{window.v316PrepareQuestRender?.()}catch(_){}
+      try{window.v309PrepareQuestRender?.()}catch(_){}
       const r=base.apply(this,arguments);
+      try{window.v309ScheduleQuestRolePaint?.()}catch(_){}
+      try{window.v316ScheduleSkipPaint?.()}catch(_){}
       try{window.v386RenderQuestShell?.()}catch(_){}
       try{window.v392PaintActive?.()}catch(_){}
       try{window.v4172EnhanceQuestPage?.()}catch(_){}
