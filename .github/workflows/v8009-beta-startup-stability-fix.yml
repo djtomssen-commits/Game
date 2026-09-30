@@ -1,0 +1,103 @@
+name: V8.009 Beta Startup Stability Fix
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/v8009_beta_startup_stability_fix.py'
+      - '.github/workflows/v8009-beta-startup-stability-fix.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Apply startup stability fixes
+        run: python3 .github/scripts/v8009_beta_startup_stability_fix.py
+
+      - name: Static contract checks
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          s=Path('beta.html').read_text(encoding='utf-8')
+          forbidden=[
+            'v030MakeWeaponOffer()',
+            'v030MakeMaterialOffer()',
+            'const v031OldMaterials=v030RenderMaterials;',
+            'const v122OldRenderMaterials=v030RenderMaterials;',
+            'const v094OldQuestPool=questPool;',
+            'const v332BaseDungeonFight = fightDungeon;'
+          ]
+          for x in forbidden:
+              if x in s: raise SystemExit('stale startup reference remains: '+x)
+          required=[
+            "if(!el)return;el.className='slot'",
+            "typeof v057FillShops==='function'",
+            "if(!v073User?.id)return;",
+            "typeof questPool==='function'",
+            "typeof fightDungeon==='function'?fightDungeon:null"
+          ]
+          for x in required:
+              if x not in s: raise SystemExit('missing startup guard: '+x)
+          PY
+          git diff --check
+          if ! git diff --quiet -- index.html; then
+            echo "Stable changed unexpectedly"
+            exit 1
+          fi
+
+      - name: Install Chromium
+        run: |
+          npm install --no-save playwright@1.55.0
+          npx playwright install --with-deps chromium --only-shell
+
+      - name: Browser-start current Beta
+        run: |
+          python3 -m http.server 8765 >/tmp/v8009-beta-http.log 2>&1 &
+          pid=$!
+          trap 'kill $pid || true' EXIT
+          sleep 2
+          TARGET_URL=http://127.0.0.1:8765/beta.html node .github/scripts/v8009_live_beta_runtime_audit.mjs > /tmp/runtime.json || true
+          cat /tmp/runtime.json
+          python3 - <<'PY'
+          import json,re
+          raw=open('/tmp/runtime.json',encoding='utf-8').read()
+          data=json.loads(raw[raw.find('{'):])
+          text='\n'.join(data.get('console_errors',[])+data.get('page_errors',[]))
+          critical=[
+            'v030MakeWeaponOffer is not defined',
+            'v030MakeMaterialOffer is not defined',
+            'v030RenderMaterials is not defined',
+            'questPool is not defined',
+            'fightDungeon is not defined',
+            "Cannot set properties of null (setting 'onclick')",
+            "Cannot set properties of null (setting 'className')",
+            "Cannot read properties of null (reading 'id')",
+            'IS_BETA is not defined'
+          ]
+          bad=[x for x in critical if x in text]
+          if bad:
+              raise SystemExit('critical startup errors remain: '+repr(bad))
+          print('critical startup runtime errors cleared')
+          PY
+
+      - name: Commit Beta startup fixes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add beta.html
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "V8.009 beta: fix startup runtime faults"
+          git push
