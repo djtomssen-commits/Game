@@ -1311,3 +1311,30 @@ Der nächste fachliche Schritt ist **nicht HOME-32**, sondern die Restinventur d
   - mit einem Charakter in einer Gilde genau eine Quest abschließen;
   - Gilden-EP müssen weiterhin gebucht werden;
   - es darf nur ein Gilden-EP-Award/Toast für die Quest erscheinen.
+
+
+### Quest Gilden-EP manuell bestätigt + v4121 Doppel-Repaint entfernt 30.09.2026
+
+- Manueller Test nach v440-Retirement:
+  - Quest mit Tomssen abgeschlossen;
+  - Gilden-EP erscheinen korrekt im Belohnungsfenster;
+  - keine zusätzliche Gilden-EP-Toast-Meldung sichtbar;
+  - kein doppelter sichtbarer Award.
+- Damit ist Commit `58278f533a1740a9ce84ef4ac149fb5a4742bddf` manuell bestätigt.
+
+- Nächste Claim-Konsolidierung:
+  - `v4121-quest-reward-current-item.js` erhielt den Reward-Art-Paint bereits direkt über `v7045 -> v4121AfterQuestClaim`;
+  - zusätzlich existierte noch ein globaler Click-Listener auf `#v392ClaimQuest,#claimQuest`, der 120 ms später dieselbe Reward-Art nochmals malte.
+- Fix Commit: `350b6e4fd071a199955a52c05c1131e572aa12fe`
+  - globalen 120-ms-Click-Repaint entfernt;
+  - direkter `v4121AfterQuestClaim`-Hook bleibt unverändert;
+  - Snapshot-/Art-Auflösung bleibt unverändert;
+  - keine Reward-, Item-, XP-, Gold- oder Serverlogik verändert.
+- QA hinzugefügt:
+  - `.github/scripts/v8009_quest_v4121_repaint_retire_qa.py`
+  - `.github/workflows/v8009-quest-v4121-repaint-retire-qa.yml`
+  - Commits `c54467a0ed608d75ff07508b9ab6a8df5694113f`, `7d3c1349be1fa84a916e30d51f8f9fb9b0871c92`.
+- Stable / `index.html`: unverändert.
+- Nächster Schritt:
+  - verbleibende Claim-Kette `v496 -> v6140 -> v233 -> v7045` weiter inventarisieren;
+  - nur Wrapper entfernen, deren Local/Mirror-Fallback oder Single-Payout-Schutz nachweislich anderweitig abgedeckt ist.
