@@ -1,0 +1,23 @@
+{
+  "build": "V8.009-T10K-BETA",
+  "phase": "Post-run Tower leaderboard reload",
+  "scope": "beta only",
+  "root_cause": [
+    "A leaderboard request could start on the pre-run lobby, capture the old leaderboard DOM node, then continue while the Tower replaced that lobby with the run.",
+    "When the run ended, the new lobby created fresh loading placeholders, but the old request still painted the detached old node.",
+    "For the season ranking, rankBusy could also reject the fresh post-run load while the stale pre-run request was still in progress.",
+    "The Wednesday ranking had the same stale-node race without a busy/reload handoff."
+  ],
+  "changes": [
+    "Leaderboard painters now resolve the currently mounted DOM node at paint time instead of keeping an obsolete node reference.",
+    "Season ranking queues one guaranteed reload when a request arrives while rankBusy is true.",
+    "Wednesday ranking now has the same busy/reload handoff.",
+    "Starting a run clears the lobby warmup guard so the next post-run lobby can always schedule fresh ranking work."
+  ],
+  "file": "js/features/tower/beta/v8009-t2-tower-lobby.js",
+  "file_sha": "313d57936934a355a73f149654a5e3ef0a94646f",
+  "stable_changed": false,
+  "combat_changed": false,
+  "server_authority_changed": false,
+  "syntax_check": "ok"
+}
