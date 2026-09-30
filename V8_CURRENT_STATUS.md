@@ -10,7 +10,7 @@
 - Aktuelle Beta-Linie: **V8.009**
 - Arbeitsbranch: **main**
 - Letzter automatisiert geprüfter Code-Commit vor dieser Statusdatei:
-  `3cf52f01dd8bb7180c293824a784c2476c2793fd`
+  `cfcc01e029459ec51ed5d40350b31dc4c6de4fb6`
 - Aktuelle Unterphase: **V8.009-DUNGEON-D5-BETA**
 - Nutzer-Video bestätigt: betroffen ist konkret **Dungeon 2**.
 - Sichtbares Fehlerbild:
@@ -94,8 +94,20 @@
   - D2 Visual Owner Syntax grün;
   - Canonical Detail Lock grün;
   - Diff-Check grün.
-- D5 Status: **Dungeon-2 Umsprung behoben; Boss-Fallback-Fix automatisiert grün; manueller Boss-Repro-Test offen**
-- Nächster Schritt: Dungeon 2 bis Raum 10/Boss öffnen und prüfen, ob das Bossbild sichtbar bleibt.
+- Manueller D2-Boss-Repro: **erfolgreich**.
+- Gesamt-Audit aller 20 Dungeon-Assetverträge:
+  - D1–D20: Hintergrund vorhanden;
+  - D1–D20: Gegner 1–9 vollständig vorhanden;
+  - D1–D9: kein eigenes `v474_dungeon_assets/dN_boss.png`;
+  - D10–D20: eigenes Boss-PNG vorhanden.
+- Allgemeine Boss-Regel ab Commit `cfcc01e029459ec51ed5d40350b31dc4c6de4fb6`:
+  - D10–D20 verwenden ihr echtes `dN_boss.png`;
+  - D1–D9 fordern keine nicht existierenden Boss-PNGs mehr an;
+  - D1–D9 verwenden vorhandenes `raw.bossArt`/Legacy-Bossbild;
+  - D2 bleibt zusätzlich mit `assets/v7195-base64/10036d96d08155bdc84a.svg` abgesichert.
+- QA der allgemeinen D1–D20 Boss-Regel: **grün**.
+- D5 Status: **Dungeon-2 Umsprung + Boss behoben; technische Asset-Regel auf alle 20 Dungeons erweitert**
+- Nächster Schritt: D1 sowie D3–D20 bei Gelegenheit visuell stichprobenartig prüfen; strukturell sind Hintergrund/Gegner komplett und die Boss-Pfade jetzt korrekt getrennt.
 - Scope: **Beta zuerst**
 - **Server 1 / Stable bleibt unangetastet**, bis eine Phase ausdrücklich für Stable freigegeben wird.
 
