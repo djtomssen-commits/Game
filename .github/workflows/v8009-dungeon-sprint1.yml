@@ -1,0 +1,79 @@
+name: V8.009 Dungeon Sprint 1
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/v8009_dungeon_sprint1_residualize_css.py'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  sprint:
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Residualize D1 CSS batch
+        run: python3 .github/scripts/v8009_dungeon_sprint1_residualize_css.py
+
+      - name: Validate Sprint 1
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import json
+          beta=Path('beta.html').read_text(encoding='utf-8')
+          r=json.loads(Path('V8009_DUNGEON_SPRINT1_BETA.json').read_text(encoding='utf-8'))
+
+          if r['total_proven_redundant_removed'] != 100:
+              raise SystemExit('expected exactly 100 proven redundant declarations removed')
+          if r['total_residual_declarations'] != 9:
+              raise SystemExit('expected exactly 9 residual declarations')
+          if not r['source_order_preserved'] or not r['stable_unchanged']:
+              raise SystemExit('scope/order failure')
+
+          for item in r['items']:
+              if item['old'] in beta:
+                  raise SystemExit(f'old active CSS link remains: {item["old"]}')
+              if beta.count(item['new']) != 1:
+                  raise SystemExit(f'residual CSS include count != 1: {item["new"]}')
+              if not Path(item['old']).exists():
+                  raise SystemExit(f'original CSS not retained: {item["old"]}')
+              if not Path(item['new']).exists():
+                  raise SystemExit(f'residual CSS missing: {item["new"]}')
+
+          for ref in (
+            'css/features/dungeon/beta/v8009-d11-v463-d1-screenshot-polish.css',
+            'css/features/dungeon/beta/v8009-d11-v464-d1-boss-micro-position.css',
+            'js/features/dungeon/beta/v8009-d8-detail-decorator.js',
+            'js/features/dungeon/beta/v8009-d2-visual-owner.js',
+            'js/features/dungeon/beta/v8009-d5-final-detail-seal.js',
+          ):
+              if beta.count(ref)!=1:
+                  raise SystemExit(f'critical include regression: {ref}')
+
+          print('DUNGEON SPRINT 1 batch QA OK')
+          PY
+
+      - name: Syntax-check canonical JS
+        run: |
+          node --check js/features/dungeon/beta/v8009-d8-detail-decorator.js
+          node --check js/features/dungeon/beta/v8009-d2-visual-owner.js
+          node --check js/features/dungeon/beta/v8009-d5-final-detail-seal.js
+
+      - name: Diff sanity
+        run: git diff --check
+
+      - name: Commit Sprint 1
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add beta.html css/features/dungeon/beta/v8009-sprint1-*.css V8009_DUNGEON_SPRINT1_BETA.json
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "V8.009 DUNGEON-SPRINT-1: batch residualize D1 CSS"
+          git push
