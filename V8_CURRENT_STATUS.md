@@ -659,6 +659,29 @@
   8. keine doppelte Gilden-EP-/Reward-Ausgabe und keine Fehlermeldung.
 - Nach diesem manuellen Meilenstein erst weitere Claim-/Guild-Konsolidierung.
 
+### Dungeon Activity Reward Hotfix 30.09.2026
+
+- Manueller Fund im Dungeon-Rewardfenster:
+  - `Keine Gilden-EP für diese Aktivität verbucht`
+  - `Wochen-Truhen-EP werden geprüft …`
+  - Quest-Activity-XP funktionierte dagegen.
+- Root Cause serverseitig bestätigt:
+  - `player_dungeon_runs` hatte zwei Activity-Trigger auf **AFTER INSERT**:
+    - `trg_v7165_guild_xp_dungeon_runs`
+    - `trg_v8009_dungeon_side_rewards`
+  - Beim INSERT ist der Dungeon-Run noch nicht ausgewertet; `won=false` / `resolved_at=null`.
+  - Der Kampf wird erst danach ausgewertet und derselbe Run per UPDATE auf `won=true` + `resolved_at` gesetzt.
+  - Dadurch liefen weder Weekly-Chest- noch Guild-XP-Award.
+- Supabase Migration angewendet:
+  - `fix_dungeon_activity_triggers_on_resolve`
+  - beide Trigger laufen jetzt auf `AFTER UPDATE OF won, resolved_at`
+  - Guard: nur `new.won is true`, `new.resolved_at is not null` und nur beim Übergang von unresolved/not-won.
+- Award-Funktionen bleiben unverändert und idempotent über `dungeon:<run_id>`:
+  - `v6359_weekly_chest_activity_for`
+  - `v6360_award_guild_activity_for`
+- Triggerdefinitionen nach Migration nochmals verifiziert.
+- Test erforderlich: nächster erfolgreicher Dungeonkampf muss im Rewardfenster konkrete Wochen-Truhen-EP und Gilden-EP (oder legitimen Cap/keine-Gilde-Status) anzeigen.
+
 ### Wichtige Einordnung der Namen
 
 Bezeichnungen wie `HOME-1 ... HOME-31`, `TOWER-T1 ...` oder frühere `B1/C...` sind **Unterphasen innerhalb des V8-Umbaus**.
