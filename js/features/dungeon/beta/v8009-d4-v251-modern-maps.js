@@ -419,15 +419,10 @@ window.__V251_GO_RETIRED__='v7121-v467';
 
 
 setTimeout(()=>{
-  try{
-    if(document.querySelector('#dungeon')?.classList.contains('active')){
-      if(s.dungeon?.layer==='world'){
-        v251RenderWorld();
-      }else if(s.dungeon?.view==='map'){
-        v251RenderDetail();
-      }
-    }
-  }catch(e){}
+  /* V8.009 D5: retired delayed Dungeon repaint.
+     The canonical D2 dispatcher owns visible world/detail rendering now.
+     Keeping a 1350 ms legacy repaint caused the correct 10er map to be
+     replaced after it was already painted. */
 
   document.querySelectorAll('.version')
     .forEach(el=>el.textContent='V4.29 Stable');
