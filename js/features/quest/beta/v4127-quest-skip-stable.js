@@ -91,13 +91,11 @@
  }
  window.v4127ScheduleQuestSkip=scheduleSkip;
 
- try{
-  if(typeof v032Go==='function'&&!v032Go.__v4127Skip){
-   const base=v032Go;
-   const wrapped=function(id){const r=base.apply(this,arguments);if(id==='quests')scheduleSkip();return r};
-   wrapped.__v4127Skip=true;v032Go=wrapped;try{window.v032Go=wrapped}catch(e){}
-  }
- }catch(e){}
+ /* V8.009: shared navigation owner v7119 dispatches one post-navigation
+    event. Listen there instead of adding another v032Go wrapper. */
+ window.addEventListener('growlegends:navigation-open-v7119',e=>{
+  if(String(e?.detail?.id||'')==='quests')scheduleSkip();
+ },{passive:true});
 
  function stamp(){}
 
