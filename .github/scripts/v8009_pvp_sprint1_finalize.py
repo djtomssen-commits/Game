@@ -50,35 +50,33 @@ for x in asset_css['extracted']:
         if not Path(asset).exists(): raise RuntimeError('PvP CSS asset missing: '+asset)
         asset_refs.append({'css':x['file'],'asset':asset})
 
-# Active script timeline. We care strongly about Hall ranking ownership.
-src_re=re.compile(r'<script[^>]+src=["\']([^"\']+)["\']',re.I)
-srcs=[x.split('?')[0] for x in src_re.findall(beta)]
-rank_assign=re.compile(r'(?<![\w$])(?:window\.)?v073LoadRanking\s*=(?!=)')
-fight_assign=re.compile(r'(?<![\w$])(?:window\.)?v204Fight\s*=(?!=)')
+# Active script timeline in the exact HTML execution order.
+rank_assign=re.compile(r'(?<![\\w$])(?:window\\.)?v073LoadRanking\\s*=(?!=)')
+fight_assign=re.compile(r'(?<![\\w$])(?:window\\.)?v204Fight\\s*=(?!=)')
 timeline={'v073LoadRanking':[],'v204Fight':[]}
-for idx,src in enumerate(srcs):
-    p=Path(src)
-    if not p.exists() or p.suffix.lower()!='.js': continue
-    txt=p.read_text(encoding='utf-8',errors='ignore')
-    if rank_assign.search(txt):
-        timeline['v073LoadRanking'].append({'order':idx,'file':src,'count':len(rank_assign.findall(txt))})
-    if fight_assign.search(txt):
-        timeline['v204Fight'].append({'order':idx,'file':src,'count':len(fight_assign.findall(txt))})
 
-# Include active inline assignments too.
-for m in re.finditer(r'<script(?P<attrs>[^>]*)>(?P<body>[\s\S]*?)</script\s*>',beta,re.I):
-    if 'src=' in m.group('attrs').lower(): continue
-    body=m.group('body')
-    im=re.search(r'\bid=["\']([^"\']+)["\']',m.group('attrs'),re.I)
-    sid=im.group(1) if im else f'inline@{m.start()}'
-    idx=len(srcs)+m.start()/max(1,len(beta))
+script_tag=re.compile(r'<script(?P<attrs>[^>]*)>(?P<body>[\\s\\S]*?)</script\\s*>',re.I)
+src_attr=re.compile(r'\\bsrc=["\\']([^"\\']+)["\\']',re.I)
+id_attr=re.compile(r'\\bid=["\\']([^"\\']+)["\\']',re.I)
+
+for order,m in enumerate(script_tag.finditer(beta)):
+    attrs=m.group('attrs')
+    sm=src_attr.search(attrs)
+    im=id_attr.search(attrs)
+    if sm:
+        src=sm.group(1).split('?')[0]
+        p=Path(src)
+        body=p.read_text(encoding='utf-8',errors='ignore') if p.exists() and p.suffix.lower()=='.js' else ''
+        label=src
+    else:
+        body=m.group('body')
+        sid=im.group(1) if im else f'inline@{m.start()}'
+        label='beta.html#'+sid
     if rank_assign.search(body):
-        timeline['v073LoadRanking'].append({'order':idx,'file':'beta.html#'+sid,'count':len(rank_assign.findall(body))})
+        timeline['v073LoadRanking'].append({'order':order,'file':label,'count':len(rank_assign.findall(body))})
     if fight_assign.search(body):
-        timeline['v204Fight'].append({'order':idx,'file':'beta.html#'+sid,'count':len(fight_assign.findall(body))})
+        timeline['v204Fight'].append({'order':order,'file':label,'count':len(fight_assign.findall(body))})
 
-timeline['v073LoadRanking'].sort(key=lambda x:x['order'])
-timeline['v204Fight'].sort(key=lambda x:x['order'])
 if not timeline['v073LoadRanking']:
     raise RuntimeError('no Hall ranking owner found')
 final_rank=timeline['v073LoadRanking'][-1]['file']
