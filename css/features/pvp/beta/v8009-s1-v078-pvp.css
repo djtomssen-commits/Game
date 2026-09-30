@@ -1,0 +1,46 @@
+
+/* ===== V4.02 Hall of Haze PvP ===== */
+.v078-pvp-card{
+  margin-top:12px;
+  padding:11px;
+  border:1px solid #573b32;
+  border-radius:12px;
+  background:
+    radial-gradient(circle at 100% 0%,rgba(163,73,53,.08),transparent 35%),
+    linear-gradient(180deg,#1d1714,#10130f);
+}
+.v078-pvp-title{font-size:11px;font-weight:1000;color:#e2b5a8}
+.v078-pvp-sub{margin-top:3px;font-size:8px;color:#9eaaa0;line-height:1.4}
+.v078-attack-btn{
+  width:100%!important;
+  margin-top:8px!important;
+  min-height:42px!important;
+  border-color:#7e4438!important;
+  background:linear-gradient(180deg,#662c24,#351713)!important;
+  color:#f0c3b8!important;
+}
+.v078-attack-btn:disabled{opacity:.48!important;filter:grayscale(.5)}
+.v078-battle-overlay{
+  position:fixed;inset:0;z-index:45000;display:none;
+  align-items:center;justify-content:center;padding:14px;
+  background:rgba(2,5,3,.92);backdrop-filter:blur(8px)
+}
+.v078-battle-overlay.show{display:flex}
+.v078-battle{
+  width:min(96vw,620px);
+  border:1px solid #5a4438;border-radius:18px;
+  background:linear-gradient(180deg,#191a16,#0c100c);
+  box-shadow:0 28px 80px #000c;padding:14px
+}
+.v078-fighters{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.v078-fighter{padding:10px;border:1px solid #344536;border-radius:12px;background:#0e1510}
+.v078-fighter.enemy{border-color:#5e3e36}
+.v078-fighter-name{font-size:12px;font-weight:1000}
+.v078-meta{margin-top:3px;font-size:8px;color:#91a090}
+.v078-hp{height:10px;margin-top:9px;border-radius:999px;overflow:hidden;background:#251010;border:1px solid #4a2a27}
+.v078-hp > div{height:100%;width:100%;background:linear-gradient(90deg,#a3372e,#dc6655);transition:width .25s ease}
+.v078-log{margin-top:10px;min-height:78px;padding:10px;border:1px solid #2f4230;border-radius:10px;background:#0b120d;font-size:9px;color:#aab5a7;line-height:1.45}
+.v078-result{margin-top:10px;padding:10px;border-radius:10px;border:1px solid #40553e;background:#101810;font-size:10px}
+.v078-result.win{border-color:#8b6b31;color:#edc66b}
+.v078-result.loss{border-color:#75443e;color:#d99d92}
+@media(max-width:520px){.v078-fighters{grid-template-columns:1fr}}

@@ -1,0 +1,36 @@
+
+/* Match the working dungeon's damage-number language, not just its fighter movement. */
+#v209PvpBattleOverlay .v209-damage{
+  top:130px!important;
+  padding:3px 7px!important;
+  border-radius:8px!important;
+  background:rgba(8,8,8,.34)!important;
+  font-size:28px!important;
+  line-height:1!important;
+  font-weight:1000!important;
+  letter-spacing:.02em!important;
+  color:#ff7867!important;
+  text-shadow:0 2px 5px #000!important;
+  pointer-events:none!important;
+}
+#v209PvpBattleOverlay .v209-damage.right{color:#ffd05c!important}
+#v209PvpBattleOverlay .v209-damage.pop{animation:v620DungeonDamagePop .72s cubic-bezier(.16,.8,.25,1)!important}
+#v209PvpBattleOverlay .v209-damage.v620-crit{
+  color:#ffd66e!important;
+  font-size:31px!important;
+  text-shadow:0 0 9px #f0a632,0 2px 5px #000!important;
+}
+@keyframes v620DungeonDamagePop{
+  0%{opacity:0;transform:translateY(14px) scale(.58) rotate(-5deg)}
+  22%{opacity:1;transform:translateY(-4px) scale(1.22) rotate(2deg)}
+  65%{opacity:1;transform:translateY(-29px) scale(1)}
+  100%{opacity:0;transform:translateY(-62px) scale(.82)}
+}
+/* Stronger impact pulse exactly on the target side. */
+#v209PvpBattleOverlay .v619-pvp-impact:after{
+  box-shadow:0 0 20px #8fe46caa,0 0 34px rgba(255,224,125,.28)!important;
+}
+@media(max-width:560px){
+  #v209PvpBattleOverlay .v209-damage{top:124px!important;font-size:25px!important}
+  #v209PvpBattleOverlay .v209-damage.v620-crit{font-size:29px!important}
+}

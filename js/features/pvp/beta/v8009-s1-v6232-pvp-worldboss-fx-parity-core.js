@@ -1,0 +1,29 @@
+
+(()=>{
+ 'use strict';
+ if(window.__V6232_PVP_WORLDBOSS_FX__)return;
+ window.__V6232_PVP_WORLDBOSS_FX__=true;
+ const seen=new Map(),timers=new Map();
+ const clean=v=>String(v||'').replace(/[^\p{L}\p{N}+]+/gu,' ').replace(/\s+/g,' ').trim().toUpperCase();
+ const EFFECTS=[
+  [/ABSOLUTER NULLPUNKT/i,'❄️ ABSOLUTER NULLPUNKT','frost','power'],[/PERFEKTER SCHUSS/i,'🎯 PERFEKTER SCHUSS','scout','power'],[/GRÜNER HAGEL/i,'🌿 GRÜNER HAGEL','scout','power'],[/BRUTALE ERNTE/i,'⚔️ BRUTALE ERNTE','wucht','power'],[/KETTENREAKTION/i,'⚡ KETTENREAKTION','magic','power'],[/SUPERNOVA/i,'✨ SUPERNOVA','magic','power'],[/TODESNEBEL/i,'☁️ TODESNEBEL','magic','power'],[/SEELENERNTE/i,'💀 SEELENERNTE','frost','power'],[/ZWILLINGSSCHNITT/i,'⚔️ ZWILLINGSSCHNITT','frost','power'],[/SEELENSCHNITT/i,'❄️ SEELENSCHNITT','frost','power'],[/FROSTSCHNITT/i,'❄️ FROSTSCHNITT','frost','power'],[/DOPPELREIF/i,'❄️ DOPPELREIF','frost','power'],[/KÄLTEMARKE/i,'❄️ KÄLTEMARKE','frost','power'],[/EISBRUCH/i,'🧊 EISBRUCH','frost','power'],[/NEBENHAND/i,'⚔️ NEBENHAND','frost','power'],[/HINRICHTUNG/i,'🎯 HINRICHTUNG','scout','power'],[/SALVE/i,'🏹 SALVE','scout','power'],[/DETONATION/i,'💣 DETONATION','magic','power'],[/RASEREI/i,'🔥 RASEREI','rage','power'],[/WUCHT/i,'⚔️ WUCHT','wucht','power'],[/\bKRIT\b|KRITISCH/i,'💥 KRITISCHER TREFFER','crit','power'],[/AUSGEWICHEN/i,'💨 AUSGEWICHEN','dodge','dodge'],[/RAUCHBARRIERE/i,'🛡️ RAUCHBARRIERE','guard','guard'],[/REIFBARRIERE/i,'🧊 REIFBARRIERE','guard','guard'],[/EWIGES EIS/i,'🧊 EWIGES EIS','frost','guard'],[/TOTENSTARRE/i,'❄️ TOTENSTARRE','frost','guard'],[/ZWEITE LUFT/i,'❤️ ZWEITE LUFT','heal','heal'],[/UNKRAUT VERGEHT NICHT/i,'🌿 UNKRAUT VERGEHT NICHT','guard','guard'],[/GEBLOCKT|\bBLOCK\b|\bSCHILD\b|REDUZIERT/i,'🛡️ GEBLOCKT','guard','guard'],[/\bDOT\b/i,'☠️ RAUCHSCHADEN','magic','power']
+ ];
+ function stage(mode){if(mode==='pvp')return document.querySelector('#v209PvpBattleOverlay .v209-stage');if(mode==='worldboss')return document.querySelector('#v111BossScene');return null}
+ function strip(mode){const s=stage(mode);if(!s)return null;let x=s.querySelector('.v6232-proc-strip');if(!x){x=document.createElement('div');x.className='v6232-proc-strip';s.appendChild(x)}return x}
+ function existingText(mode,label){if(mode!=='pvp')return false;const wanted=clean(label);return [...document.querySelectorAll('#v209PvpBattleOverlay .v610-pvp-chip')].some(x=>{const t=clean(x.textContent);return t===wanted||t.includes(wanted)||wanted.includes(t)})}
+ function dedupe(mode,phase,round,label){const now=Date.now();for(const [k,v] of seen)if(now-v>5000)seen.delete(k);const key=[mode,phase,Number(round)||0,clean(label)].join('|');if(seen.has(key))return false;seen.set(key,now);return true}
+ function restart(sel,cl,ms=650){const el=document.querySelector(sel);if(!el)return;const k=sel+'|'+cl;clearTimeout(timers.get(k));el.classList.remove(cl);void el.offsetWidth;el.classList.add(cl);timers.set(k,setTimeout(()=>{try{el.classList.remove(cl)}catch(_){}timers.delete(k)},ms))}
+ function impact(mode,side='enemy'){const s=stage(mode);if(!s)return;const el=document.createElement('i');el.className='v6232-impact '+side;s.appendChild(el);setTimeout(()=>{try{el.remove()}catch(_){}},460)}
+ function react(mode,kind,side){if(mode!=='pvp')return;if(kind==='heal')restart('#v209PlayerFighter','v6232-heal',680);else if(kind==='guard')restart('#v209PlayerFighter','v6232-guard',680);else if(kind==='dodge')restart(side==='player'?'#v209PlayerFighter':'#v209EnemyFighter','v6232-dodge',560);else if(kind==='power')restart(side==='player'?'#v209PlayerFighter':'#v209EnemyFighter','v6232-power',560)}
+ function chip(mode,label,cls='',kind='',side='enemy',phase='',round=0){if(!label||existingText(mode,label)||!dedupe(mode,phase,round,label))return false;const box=strip(mode);if(!box)return false;const el=document.createElement('span');el.className='v6232-chip '+cls;el.textContent=label;box.appendChild(el);react(mode,kind,side);setTimeout(()=>{try{el.remove()}catch(_){}},1700);while(box.querySelectorAll('.v6232-chip').length>3)box.querySelector('.v6232-chip')?.remove();return true}
+ function showRaw(mode,raw,side,phase,round){let any=false;for(const [re,label,cls,kind] of EFFECTS){re.lastIndex=0;if(re.test(String(raw||'')))any=chip(mode,label,cls,kind,side,phase,round)||any}return any}
+ window.v6232CombatParityFx=function(mode,ev={}){
+  mode=String(mode||'');if(!['pvp','worldboss'].includes(mode)||!stage(mode))return false;
+  const phase=String(ev.phase||''),raw=String(ev.raw||''),round=Number(ev.round)||0;
+  if(phase==='enemyDodge'){impact(mode,'enemy');chip(mode,'💨 AUSGEWICHEN','dodge','dodge','enemy',phase,round);return true}
+  if(phase==='player'){impact(mode,'enemy');showRaw(mode,raw,'player',phase,round);if(ev.crit&&!/KRIT/i.test(raw))chip(mode,'💥 KRITISCHER TREFFER','crit','power','player',phase,round);if(ev.wucht&&!/WUCHT/i.test(raw))chip(mode,'⚔️ WUCHT','wucht','power','player',phase,round);if(Number(ev.heal)>0)chip(mode,`💚 LEBENSRAUB +${Math.round(Number(ev.heal)||0)} LP`,'heal','heal','player',phase,round);return true}
+  if(phase==='enemy'){impact(mode,'player');showRaw(mode,raw,'player',phase,round);if(Number(ev.damage)===0&&!/AUSGEWICHEN/i.test(raw)&&!/BLOCK|SCHILD|BARRIERE|REDUZIERT/i.test(raw))chip(mode,'🛡️ GEBLOCKT','guard','guard','player',phase,round);if(Number(ev.heal)>0)chip(mode,`💚 HEILUNG +${Math.round(Number(ev.heal)||0)} LP`,'heal','heal','player',phase,round);if(Number(ev.counter)>0){chip(mode,`↩️ KONTER ${Math.round(Number(ev.counter)||0)}`,'scout','power','player',phase,round);impact(mode,'enemy')}return true}
+  return false
+ };
+ window.v6232CombatFxDiagnostics=()=>({enabled:true,pvpStage:!!stage('pvp'),worldbossStage:!!stage('worldboss'),pvpChips:stage('pvp')?.querySelectorAll?.('.v6232-chip')?.length||0,worldbossChips:stage('worldboss')?.querySelectorAll?.('.v6232-chip')?.length||0,mode:'visual-only'});
+})();

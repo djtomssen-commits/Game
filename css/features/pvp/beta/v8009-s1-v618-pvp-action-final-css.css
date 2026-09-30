@@ -1,0 +1,55 @@
+
+/* Make the actual lunge unmistakable on mobile. Name/HP cards remain fixed. */
+#v209PvpBattleOverlay .v209-fighter.attack-right .v209-avatar{animation:v618StrikeRight .72s cubic-bezier(.16,.78,.2,1)!important;z-index:48!important}
+#v209PvpBattleOverlay .v209-fighter.attack-left .v209-avatar{animation:v618StrikeLeft .72s cubic-bezier(.16,.78,.2,1)!important;z-index:48!important}
+#v209PvpBattleOverlay .v209-fighter.hit .v209-avatar{animation:v618Hit .52s cubic-bezier(.2,.75,.25,1)!important}
+#v209PvpBattleOverlay .v209-fighter.v617-dodge .v209-avatar{animation:v618DodgePlayer .62s cubic-bezier(.2,.8,.2,1)!important}
+#v209PvpBattleOverlay .v209-fighter.enemy.v617-dodge .v209-avatar{animation:v618DodgeEnemy .62s cubic-bezier(.2,.8,.2,1)!important}
+@keyframes v618StrikeRight{
+  0%,100%{transform:translate3d(0,0,0) rotate(0) scale(1);filter:brightness(1)}
+  15%{transform:translate3d(-8px,3px,0) rotate(-2deg) scale(.98)}
+  43%{transform:translate3d(72px,-10px,0) rotate(3deg) scale(1.08);filter:brightness(1.24) saturate(1.08)}
+  58%{transform:translate3d(62px,-5px,0) rotate(2deg) scale(1.055)}
+  78%{transform:translate3d(16px,0,0) rotate(.5deg) scale(1.015)}
+}
+@keyframes v618StrikeLeft{
+  0%,100%{transform:translate3d(0,0,0) rotate(0) scale(1);filter:brightness(1)}
+  15%{transform:translate3d(8px,3px,0) rotate(2deg) scale(.98)}
+  43%{transform:translate3d(-72px,-10px,0) rotate(-3deg) scale(1.08);filter:brightness(1.24) saturate(1.08)}
+  58%{transform:translate3d(-62px,-5px,0) rotate(-2deg) scale(1.055)}
+  78%{transform:translate3d(-16px,0,0) rotate(-.5deg) scale(1.015)}
+}
+@keyframes v618Hit{
+  0%,100%{transform:translate3d(0,0,0) rotate(0);filter:brightness(1)}
+  12%{transform:translate3d(-15px,1px,0) rotate(-2deg);filter:brightness(2.15) saturate(.55)}
+  29%{transform:translate3d(16px,-2px,0) rotate(2.5deg);filter:brightness(1.35)}
+  48%{transform:translate3d(-10px,1px,0) rotate(-1.2deg)}
+  68%{transform:translate3d(6px,0,0) rotate(.6deg)}
+}
+@keyframes v618DodgePlayer{0%,100%{transform:translate3d(0,0,0)}30%{transform:translate3d(55px,-12px,0) rotate(4deg) scale(.97)}58%{transform:translate3d(68px,-6px,0) rotate(2deg) scale(.98)}78%{transform:translate3d(12px,0,0)}}
+@keyframes v618DodgeEnemy{0%,100%{transform:translate3d(0,0,0)}30%{transform:translate3d(-55px,-12px,0) rotate(-4deg) scale(.97)}58%{transform:translate3d(-68px,-6px,0) rotate(-2deg) scale(.98)}78%{transform:translate3d(-12px,0,0)}}
+
+/* Slightly dissolve portrait edges further into the arena. */
+#v209PvpBattleOverlay .v209-avatar img{
+  -webkit-mask-image:radial-gradient(ellipse 78% 82% at 50% 48%,#000 0 66%,rgba(0,0,0,.93) 73%,rgba(0,0,0,.42) 88%,transparent 100%)!important;
+  mask-image:radial-gradient(ellipse 78% 82% at 50% 48%,#000 0 66%,rgba(0,0,0,.93) 73%,rgba(0,0,0,.42) 88%,transparent 100%)!important;
+}
+
+/* Effect belongs to the fighter that caused/received it instead of floating ambiguously in the center. */
+#v209PvpBattleOverlay .v610-pvp-procs{display:block!important;top:102px!important;left:0!important;right:0!important;position:absolute!important;pointer-events:none!important}
+#v209PvpBattleOverlay .v610-pvp-chip{position:absolute!important;top:0!important;max-width:43%!important;white-space:nowrap!important}
+#v209PvpBattleOverlay .v610-pvp-chip.v618-side-player{left:5%!important;right:auto!important;transform:none!important}
+#v209PvpBattleOverlay .v610-pvp-chip.v618-side-enemy{right:5%!important;left:auto!important;transform:none!important}
+#v209PvpBattleOverlay .v610-pvp-chip.v618-side-center{left:50%!important;right:auto!important;transform:translateX(-50%)!important}
+
+/* Punchier action layer. */
+.v617-pvp-slash{top:48%!important;width:38%!important;height:76px!important;filter:drop-shadow(0 0 11px #ffe09acc)!important}
+.v617-pvp-slash:before{height:7px!important;box-shadow:0 0 12px #fff0ad,0 0 25px #e89032cc!important}
+.v617-pvp-impact{width:88px!important;height:88px!important;filter:drop-shadow(0 0 15px #ffd269)!important}
+
+@media(max-width:560px){
+  @keyframes v618StrikeRight{0%,100%{transform:translate3d(0,0,0)}15%{transform:translate3d(-6px,2px,0) rotate(-1.5deg)}43%{transform:translate3d(52px,-8px,0) rotate(2.5deg) scale(1.07)}60%{transform:translate3d(44px,-4px,0) rotate(1.5deg) scale(1.04)}80%{transform:translate3d(10px,0,0)}}
+  @keyframes v618StrikeLeft{0%,100%{transform:translate3d(0,0,0)}15%{transform:translate3d(6px,2px,0) rotate(1.5deg)}43%{transform:translate3d(-52px,-8px,0) rotate(-2.5deg) scale(1.07)}60%{transform:translate3d(-44px,-4px,0) rotate(-1.5deg) scale(1.04)}80%{transform:translate3d(-10px,0,0)}}
+  #v209PvpBattleOverlay .v610-pvp-chip{max-width:45%!important;font-size:5.7px!important;padding:6px 8px!important}
+  .v617-pvp-slash{width:35%!important;height:66px!important}.v617-pvp-impact{width:70px!important;height:70px!important}
+}

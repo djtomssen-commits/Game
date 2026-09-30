@@ -1,0 +1,115 @@
+
+/* Make PvP use the same motion language and cadence as the working dungeon fight. */
+#v209PvpBattleOverlay .v209-fighter{
+  transition:transform .16s ease,filter .16s ease!important;
+  will-change:transform,filter!important;
+  transform-origin:50% 90%!important;
+}
+/* Disable the old nested-avatar strike animations; the whole fighter now moves like dungeon. */
+#v209PvpBattleOverlay .v209-fighter.attack-right .v209-avatar,
+#v209PvpBattleOverlay .v209-fighter.attack-left .v209-avatar,
+#v209PvpBattleOverlay .v209-fighter.hit .v209-avatar,
+#v209PvpBattleOverlay .v209-fighter.v617-dodge .v209-avatar,
+#v209PvpBattleOverlay .v209-fighter.v617-guard .v209-avatar{
+  animation:none!important;
+}
+#v209PvpBattleOverlay .v209-fighter.attack-right{
+  animation:v619DungeonAttackRight .43s cubic-bezier(.2,.75,.25,1)!important;
+  z-index:50!important;
+}
+#v209PvpBattleOverlay .v209-fighter.attack-left{
+  animation:v619DungeonAttackLeft .43s cubic-bezier(.2,.75,.25,1)!important;
+  z-index:50!important;
+}
+#v209PvpBattleOverlay .v209-fighter.hit{
+  animation:v619DungeonHit .40s ease!important;
+  z-index:48!important;
+}
+#v209PvpBattleOverlay .v209-fighter.v617-dodge{
+  animation:v619DungeonDodge .46s cubic-bezier(.2,.8,.2,1)!important;
+  z-index:49!important;
+}
+#v209PvpBattleOverlay .v209-fighter.enemy.v617-dodge{
+  animation:v619DungeonDodgeEnemy .46s cubic-bezier(.2,.8,.2,1)!important;
+}
+#v209PvpBattleOverlay .v209-fighter.v617-guard{
+  animation:v619DungeonGuard .42s ease!important;
+  z-index:49!important;
+}
+@keyframes v619DungeonAttackRight{
+  0%{transform:translateX(0) scale(1)}
+  42%{transform:translateX(74px) scale(1.08) rotate(3deg)}
+  68%{transform:translateX(54px) scale(1.05)}
+  100%{transform:translateX(0) scale(1)}
+}
+@keyframes v619DungeonAttackLeft{
+  0%{transform:translateX(0) scale(1)}
+  42%{transform:translateX(-74px) scale(1.08) rotate(-3deg)}
+  68%{transform:translateX(-54px) scale(1.05)}
+  100%{transform:translateX(0) scale(1)}
+}
+@keyframes v619DungeonHit{
+  0%,100%{transform:translateX(0);filter:brightness(1)}
+  15%{transform:translateX(-12px);filter:brightness(2.1) saturate(.4)}
+  35%{transform:translateX(10px);filter:brightness(1.6)}
+  55%{transform:translateX(-7px);filter:brightness(1.3)}
+  75%{transform:translateX(4px);filter:brightness(1)}
+}
+@keyframes v619DungeonDodge{
+  0%,100%{transform:translateX(0) scale(1)}
+  36%{transform:translateX(-32px) translateY(-5px) rotate(-3deg) scale(.97)}
+  68%{transform:translateX(-22px) translateY(-2px) rotate(-1deg)}
+}
+@keyframes v619DungeonDodgeEnemy{
+  0%,100%{transform:translateX(0) scale(1)}
+  36%{transform:translateX(32px) translateY(-5px) rotate(3deg) scale(.97)}
+  68%{transform:translateX(22px) translateY(-2px) rotate(1deg)}
+}
+@keyframes v619DungeonGuard{
+  0%,100%{transform:scale(1);filter:brightness(1)}
+  35%{transform:scale(1.035);filter:brightness(1.55) drop-shadow(0 0 14px rgba(116,197,255,.55))}
+  65%{transform:scale(1.015);filter:brightness(1.22)}
+}
+/* Subtle idle like dungeon, on the image only so attacks can move the fighter container. */
+#v209PvpBattleOverlay .v209-fighter:not(.attack-right):not(.attack-left):not(.hit):not(.v617-dodge):not(.v617-guard) .v209-avatar img{
+  animation:v619DungeonIdle 2s ease-in-out infinite!important;
+}
+#v209PvpBattleOverlay .v209-fighter.enemy:not(.attack-right):not(.attack-left):not(.hit):not(.v617-dodge):not(.v617-guard) .v209-avatar img{
+  animation-duration:2.35s!important;
+}
+@keyframes v619DungeonIdle{
+  0%,100%{transform:translateY(0) rotate(-.5deg)}
+  50%{transform:translateY(-6px) rotate(.5deg)}
+}
+/* Dungeon-style slash, impact and screen flash. */
+.v619-pvp-slash{
+  position:absolute;z-index:54;width:108px;height:5px;border-radius:99px;
+  background:linear-gradient(90deg,transparent,#fff,#8fe46c,transparent);
+  box-shadow:0 0 12px #a8f38a;opacity:0;pointer-events:none;transform:rotate(-25deg);
+}
+.v619-pvp-slash.show{animation:v619Slash .36s ease-out forwards}
+@keyframes v619Slash{
+  0%{opacity:0;transform:translate(-32px,25px) rotate(-25deg) scaleX(.3)}
+  25%{opacity:1}
+  100%{opacity:0;transform:translate(35px,-25px) rotate(-25deg) scaleX(1.25)}
+}
+.v619-pvp-impact{
+  position:absolute;z-index:53;width:78px;height:78px;transform:translate(-50%,-50%) scale(.2);pointer-events:none;opacity:0;
+}
+.v619-pvp-impact:before,.v619-pvp-impact:after{content:"";position:absolute;inset:0;border-radius:50%;border:3px solid #fff7}
+.v619-pvp-impact:after{inset:18px;border-color:#92e86eaa;box-shadow:0 0 18px rgba(146,232,110,.34)}
+.v619-pvp-impact.show{animation:v619Impact .43s ease-out forwards}
+@keyframes v619Impact{
+  0%{opacity:0;transform:translate(-50%,-50%) scale(.15)}
+  22%{opacity:1;transform:translate(-50%,-50%) scale(1)}
+  100%{opacity:0;transform:translate(-50%,-50%) scale(1.65)}
+}
+.v619-pvp-flash{position:absolute;z-index:52;inset:0;pointer-events:none;opacity:0;background:rgba(226,255,218,.22)}
+.v619-pvp-flash.show{animation:v619Flash .28s ease-out forwards}
+@keyframes v619Flash{0%{opacity:0}22%{opacity:1}100%{opacity:0}}
+@media(max-width:560px){
+  @keyframes v619DungeonAttackRight{0%{transform:translateX(0)}45%{transform:translateX(50px) scale(1.07)}100%{transform:translateX(0)}}
+  @keyframes v619DungeonAttackLeft{0%{transform:translateX(0)}45%{transform:translateX(-50px) scale(1.07)}100%{transform:translateX(0)}}
+  .v619-pvp-slash{width:94px}
+  .v619-pvp-impact{width:68px;height:68px}
+}

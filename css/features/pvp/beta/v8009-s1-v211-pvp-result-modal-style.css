@@ -1,0 +1,110 @@
+
+#v211PvpResultOverlay{
+  position:fixed;
+  inset:0;
+  z-index:100900;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:14px;
+  background:rgba(2,6,3,.88);
+  backdrop-filter:blur(8px);
+}
+#v211PvpResultOverlay.show{display:flex}
+
+.v211-result-card{
+  width:min(420px,100%);
+  overflow:hidden;
+  border-radius:18px;
+  border:1px solid #3d513f;
+  background:linear-gradient(155deg,#131d16,#07100a);
+  box-shadow:0 28px 90px #000e,inset 0 0 36px #0008;
+}
+.v211-result-card.win{
+  border-color:#6fa44d;
+  box-shadow:0 0 34px rgba(123,220,82,.18),0 28px 90px #000e;
+}
+.v211-result-card.loss{
+  border-color:#8c4943;
+  box-shadow:0 0 34px rgba(221,93,79,.16),0 28px 90px #000e;
+}
+.v211-result-head{
+  padding:18px 16px 14px;
+  text-align:center;
+}
+.v211-result-card.win .v211-result-head{
+  background:linear-gradient(180deg,rgba(104,190,74,.20),transparent);
+}
+.v211-result-card.loss .v211-result-head{
+  background:linear-gradient(180deg,rgba(178,72,64,.20),transparent);
+}
+.v211-result-icon{font-size:34px}
+.v211-result-title{
+  margin-top:6px;
+  font-size:22px;
+  font-weight:1000;
+}
+.v211-result-card.win .v211-result-title{color:#b9ef82}
+.v211-result-card.loss .v211-result-title{color:#f1a39a}
+.v211-result-sub{
+  margin-top:5px;
+  color:#8ea095;
+  font-size:7px;
+  line-height:1.45;
+}
+.v211-loot{
+  margin:0 14px 14px;
+  padding:12px;
+  border:1px solid #304438;
+  border-radius:12px;
+  background:#07100b;
+}
+.v211-loot-title{
+  margin-bottom:8px;
+  color:#d5e3d6;
+  font-size:8px;
+  font-weight:1000;
+}
+.v211-loot-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:7px;
+}
+.v211-loot-item{
+  padding:9px 6px;
+  border:1px solid #30473a;
+  border-radius:10px;
+  background:#0a130d;
+  text-align:center;
+}
+.v211-loot-item span{
+  display:block;
+  color:#748477;
+  font-size:5.8px;
+  text-transform:uppercase;
+}
+.v211-loot-item b{
+  display:block;
+  margin-top:3px;
+  color:#edf4ec;
+  font-size:13px;
+}
+.v211-result-card.win .v211-loot-item.buds b{color:#b8ec81}
+.v211-result-card.loss .v211-loot-item.buds b{color:#98a49a}
+#v211PvpResultConfirm{
+  width:calc(100% - 28px);
+  min-height:46px!important;
+  margin:0 14px 14px!important;
+}
+.v211-result-card.win #v211PvpResultConfirm{
+  background:linear-gradient(180deg,#8add66,#55ae40)!important;
+  color:#071009!important;
+}
+.v211-result-card.loss #v211PvpResultConfirm{
+  background:linear-gradient(180deg,#a14f49,#753a36)!important;
+  border-color:#b35d55!important;
+  color:#fff!important;
+}
+@media(max-width:480px){
+  .v211-loot-grid{grid-template-columns:1fr}
+}

@@ -1,0 +1,87 @@
+
+#v209PvpBattleOverlay{
+  position:fixed;inset:0;z-index:100700;display:none;
+  align-items:center;justify-content:center;padding:12px;
+  background:rgba(2,6,3,.94);backdrop-filter:blur(8px);
+}
+#v209PvpBattleOverlay.show{display:flex}
+.v209-battle-card{
+  width:min(760px,100%);max-height:96vh;overflow:auto;
+  border:1px solid #35523d;border-radius:20px;
+  background:linear-gradient(155deg,#142019,#07100b);
+  box-shadow:0 30px 90px #000e,inset 0 0 40px #0008;
+  padding:14px;box-sizing:border-box
+}
+.v209-battle-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px}
+.v209-battle-head h3{margin:0;color:#eef6ef;font-size:16px}
+.v209-battle-head .pill{font-size:7px}
+.v209-stage{
+  position:relative;height:330px;overflow:hidden;border:1px solid #354331;border-radius:14px;
+  background:radial-gradient(circle at 50% 38%,#354430 0,#20291f 43%,#121812 100%);
+}
+.v209-stage:after{
+  content:"";position:absolute;left:0;right:0;bottom:0;height:70px;
+  background:linear-gradient(#263324,#172016)
+}
+.v209-fighter{
+  position:absolute;bottom:48px;width:44%;text-align:center;z-index:2;
+  transition:transform .18s
+}
+.v209-fighter.player{left:3%}
+.v209-fighter.enemy{right:3%}
+.v209-fighter.hit{animation:hit .35s}
+.v209-fighter.attack-right{animation:attackRight .4s}
+.v209-fighter.attack-left{animation:attackLeft .4s}
+.v209-avatar{
+  height:175px;display:flex;align-items:flex-end;justify-content:center
+}
+.v209-avatar img{
+  max-width:100%;max-height:100%;object-fit:contain;object-position:center bottom;
+  filter:drop-shadow(0 12px 8px rgba(0,0,0,.55))
+}
+.v209-fighter-name{font-size:11px;font-weight:1000;color:#eef5ee}
+.v209-fighter-sub{font-size:7px;color:#8ea094;margin-top:2px}
+.v209-hpbar{
+  height:9px;background:#280f0f;border-radius:999px;border:1px solid #58302f;
+  overflow:hidden;margin:6px auto;width:90%
+}
+.v209-hpfill{
+  height:100%;background:linear-gradient(90deg,#d24f4d,#ef7a68);width:100%;
+  transition:width .25s
+}
+.v209-hptext{font-size:7px;color:#9daa9d}
+.v209-damage{
+  position:absolute;top:100px;font-size:29px;font-weight:1000;color:#fff;
+  text-shadow:0 2px 3px #000;z-index:6;opacity:0
+}
+.v209-damage.left{left:17%}.v209-damage.right{right:17%}
+.v209-damage.pop{animation:pop .65s}
+.v209-log{
+  min-height:44px;margin-top:9px;padding:9px;border:1px solid #303f2d;border-radius:10px;
+  background:#0f150e;color:#b1bbae;font-size:8px;line-height:1.45
+}
+.v209-result{
+  display:none;margin-top:10px;padding:14px;border:1px solid #45643e;border-radius:14px;
+  background:linear-gradient(145deg,#122015,#09110b)
+}
+.v209-result.show{display:block}
+.v209-result.win{border-color:#5f8d43;box-shadow:0 0 20px rgba(145,222,88,.12)}
+.v209-result.loss{border-color:#78413a}
+.v209-result-title{text-align:center;font-size:20px;font-weight:1000}
+.v209-result.win .v209-result-title{color:#b9ef7e}
+.v209-result.loss .v209-result-title{color:#e7a099}
+.v209-rewards{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:12px
+}
+.v209-reward{
+  padding:10px;border:1px solid #30452f;border-radius:10px;background:#07100a;text-align:center
+}
+.v209-reward span{display:block;color:#758575;font-size:6px;text-transform:uppercase}
+.v209-reward b{display:block;margin-top:3px;color:#f0f6eb;font-size:14px}
+.v209-return-btn{width:100%;min-height:45px!important;margin-top:12px!important}
+@media(max-width:560px){
+  .v209-stage{height:300px}
+  .v209-avatar{height:145px}
+  .v209-fighter{width:47%}.v209-fighter.player{left:1%}.v209-fighter.enemy{right:1%}
+  .v209-rewards{grid-template-columns:1fr}
+}

@@ -1,0 +1,31 @@
+
+/* PvP now shows the same combat mechanics as Dungeon/Quest.
+   Stack simultaneous procs instead of drawing them on top of each other. */
+#v209PvpBattleOverlay .v610-pvp-procs{
+  overflow:visible!important;
+  min-height:82px!important;
+}
+#v209PvpBattleOverlay .v610-pvp-chip.v672-proc{
+  z-index:72!important;
+  animation:v672PvpProc 1.85s cubic-bezier(.18,.8,.22,1) forwards!important;
+}
+#v209PvpBattleOverlay .v610-pvp-chip.v672-proc.heal{
+  border-color:#4ce264!important;
+  color:#b8ffbd!important;
+  text-shadow:0 0 9px rgba(62,220,90,.5),0 2px 2px #000!important;
+}
+#v209PvpBattleOverlay .v610-pvp-chip.v672-proc.rage{
+  border-color:#ef6b57!important;color:#ffd0bf!important;
+}
+#v209PvpBattleOverlay .v610-pvp-chip.v672-proc.magic{
+  border-color:#d477ff!important;color:#f2caff!important;
+}
+@keyframes v672PvpProc{
+  0%{opacity:0;transform:translateY(6px) scale(.84)}
+  10%,80%{opacity:1;transform:translateY(0) scale(1)}
+  100%{opacity:0;transform:translateY(-9px) scale(.96)}
+}
+@media(max-width:560px){
+  #v209PvpBattleOverlay .v610-pvp-procs{min-height:76px!important}
+  #v209PvpBattleOverlay .v610-pvp-chip.v672-proc{font-size:5.55px!important;padding:6px 8px!important}
+}
