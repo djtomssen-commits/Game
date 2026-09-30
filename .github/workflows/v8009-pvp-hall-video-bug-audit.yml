@@ -1,0 +1,29 @@
+name: V8.009 PvP Hall Video Bug Audit
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/v8009_pvp_hall_video_bug_audit.py'
+      - '.github/workflows/v8009-pvp-hall-video-bug-audit.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 9
+    steps:
+      - uses: actions/checkout@v4
+      - name: Audit Hall owner chain from video bugs
+        run: python3 .github/scripts/v8009_pvp_hall_video_bug_audit.py
+      - name: Commit audit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add V8009_PVP_HALL_VIDEO_BUG_AUDIT.json
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "V8.009 PVP: audit Hall video bugs"
+          git push
