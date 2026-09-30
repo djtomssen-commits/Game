@@ -10,8 +10,8 @@
 - Aktuelle Beta-Linie: **V8.009**
 - Arbeitsbranch: **main**
 - Letzter automatisiert geprüfter Code-Commit vor dieser Statusdatei:
-  `05ec33af1d1c3e5cf7ac9cd3f77d231e638cd590`
-- Aktuelle Unterphase: **V8.009-DUNGEON-D1-BOSS-HOTFIX**
+  `02e01294083c9150329e15bc20dd99eb9ce22621`
+- Aktuelle Unterphase: **V8.009-DUNGEON-D12-BETA**
 - Nutzer-Video bestätigt: betroffen ist konkret **Dungeon 2**.
 - Sichtbares Fehlerbild:
   - zunächst korrekter D2-Hintergrund + korrekte Gegnergrafiken;
@@ -260,8 +260,30 @@
   - Assetpfad ist in `bossArt` und `bossFallback` vorhanden;
   - Beta lädt den Visual Owner genau einmal;
   - Stable lädt den Beta-Owner nicht.
-- Hotfix-Status: **automatisiert grün; manueller D1-Boss-Repro offen**
-- D12 bleibt bis zur manuellen Boss-Bestätigung pausiert.
+- Manueller D1-Boss-Repro: **erfolgreich** – Milbenkönigin/Boss 10 hat wieder ein Bild.
+- Hotfix-Status: **abgeschlossen**.
+- D12 CSS-Cascade-Audit:
+  - Audit-Commit `fcb8b11e58446e9b6939d77bfedd2097b2041b44`;
+  - 563 D1-CSS-Deklarationen klassifiziert;
+  - 253 davon konservativ als später überschrieben nachgewiesen;
+  - 310 bleiben wirksam oder sind wegen Media/Spezifität bewusst nicht als redundant gewertet;
+  - berücksichtigt: gleiche Selector-/At-Rule-Kontexte, `!important` und gängige Shorthand-Familien;
+  - nur **eine komplette Datei** war belastbar zu 100 % redundant:
+    `v8009-d11-v461-d1-node9-collision-fix.css` (11/11 Deklarationen).
+- D12 Umsetzung:
+  - Commit `02e01294083c9150329e15bc20dd99eb9ce22621`;
+  - v461 D1 Node9-Collision-CSS aus aktiver Beta-Ladekette entfernt;
+  - Datei bleibt für Rollback/Referenz im Repo;
+  - v463 Screenshot-Polish und v464 Boss-Micro-Position bleiben aktiv;
+  - keine anderen D1-CSS-Layer entfernt.
+- D12 QA: **vollständig grün**
+  - Redundanzbeweis 11/11;
+  - spätere D1-Layer weiterhin geladen;
+  - D8 Decorator/D2 Visual Owner/D5 Seal unverändert;
+  - Stable unverändert;
+  - Gameplay/Combat-Math/Rewards/Serverautorität unverändert.
+- D12 Beta-Größe: **6.014.499 Byte**.
+- D12 Status: **abgeschlossen**
 - Nächster Schritt: D1 sowie D3–D20 bei Gelegenheit visuell stichprobenartig prüfen; strukturell sind Hintergrund/Gegner komplett und die Boss-Pfade jetzt korrekt getrennt.
 - Scope: **Beta zuerst**
 - **Server 1 / Stable bleibt unangetastet**, bis eine Phase ausdrücklich für Stable freigegeben wird.
@@ -376,18 +398,28 @@ Für jedes System gilt:
 
 ## 4. EXAKTER nächster Schritt
 
-### V8.009-DUNGEON-D1-BOSS-HOTFIX – manueller Kontrollpunkt
+### V8.009-DUNGEON-D13-BETA – fast vollständig redundante D1-CSS-Layer verkleinern
 
-1. Beta neu laden;
-2. Dungeon 1 → 10er-Karte öffnen;
-3. prüfen, ob Boss 10 / Milbenkönigin jetzt ein Bild hat;
-4. optional Bosskampf öffnen und dasselbe Bossbild dort prüfen;
-5. wenn korrekt:
-   - Hotfix abschließen;
-   - mit **V8.009-DUNGEON-D12-BETA** fortfahren: D1-CSS-Cascade auf echte Redundanz prüfen;
-6. wenn Boss weiterhin leer:
-   - Hotfix offen lassen;
-   - tatsächlichen Runtime-`src`/Fallback-Zustand des Boss-Nodes isolieren.
+D12 hat zwei klare Kandidaten gefunden, die **nicht komplett** entfernt werden dürfen:
+
+1. `v455-d1-feinschliff-2.css`
+   - 35 Deklarationen;
+   - 34 nachweislich redundant;
+   - einzig verbleibende Wirkung: `word-break: normal!important` am D1-Titel.
+2. `v459-d1-right-side-thumb-final.css`
+   - 24 Deklarationen;
+   - 22 nachweislich redundant;
+   - verbleibend: Thumb-`background` und `border-color`.
+
+D13 soll:
+1. beide Originaldateien in der aktiven Beta durch **kleine Residual-CSS-Dateien an exakt derselben Ladeposition** ersetzen;
+2. nur die nach D12 noch wirksamen Deklarationen übernehmen;
+3. Originaldateien im Repo behalten;
+4. Position/Reihenfolge unverändert halten;
+5. danach den Cascade-Audit erneut laufen lassen;
+6. D1 visuell nicht neu gestalten;
+7. D2/D6/D7, D5 Asset-Fallback und D1 Boss-Fallback unverändert halten;
+8. Stable/Server 1 unangetastet lassen.
 
 ### Statusdatei-Regel
 
