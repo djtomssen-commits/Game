@@ -1155,3 +1155,21 @@ Der nächste fachliche Schritt ist **nicht HOME-32**, sondern die Restinventur d
   - ein sichtbarer Owner für Elite-Panel-Inhalt.
 - Stable / `index.html`: unverändert.
 - Manueller Test jetzt sinnvoll: erste Quest direkt nach Login starten und auf Elite-Text + gesamte aktive Karte achten.
+
+
+### Quest Flicker – v321 Startup Repaint entfernt – 30.09.2026
+
+- Nutzer bestätigt nach Elite-Owner-Fix:
+  - Elite-Block flackert nicht mehr;
+  - der Bereich darunter flackert weiterhin.
+- Weitere Ursache gefunden:
+  - `v321-elite-hard-guarantee-dampf-scale.js` führte 420 ms nach Startup noch einen vollständigen `renderQuests()` aus;
+  - damit wurde die komplette Questdarstellung nach dem ersten kanonischen Paint erneut aufgebaut;
+  - das passt exakt zum verbleibenden sichtbaren Flicker unterhalb des inzwischen stabilen Elite-Blocks.
+- Fix:
+  - Commit `6b3c57a890be0bb33d9a694165edb9ddc9681440`
+  - verzögerten 420-ms-`renderQuests()`-Startup-Paint entfernt;
+  - nur die reine Daten-Normalisierung `v271NormalizeQuestOffers()` bleibt bestehen.
+- Kein neuer Renderer, Timer oder Observer.
+- Stable / `index.html`: unverändert.
+- Nächster Test: neu einloggen -> sofort erste Quest starten -> prüfen, ob der gesamte Bereich unterhalb Elite nun stabil bleibt.
