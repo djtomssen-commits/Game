@@ -10,18 +10,22 @@
 - Aktuelle Beta-Linie: **V8.009**
 - Arbeitsbranch: **main**
 - Letzter vollständig geprüfter Code-Commit vor dieser Statusdatei:
-  `e0931472b1407fad1a752aae90596093f6b8800d`
-- Letzte vollständig abgeschlossene Unterphase: **V8.009-DUNGEON-D1-BETA**
-- D1 Ergebnis: **erfolgreich**
-- D1 Extraktionscommit: `d775736c74034980d5db9ece96f29117a01e2694`
-- D1 Workflow/QA: **grün**
-- D1 ausgelagert:
-  - `v7175-combat-renderer-core` → `js/features/dungeon/beta/v8009-d1-combat-renderer.js`
-  - `v7175-combat-renderer-css` → `css/features/dungeon/beta/v8009-d1-combat-renderer.css`
-- D1 Umfang: ca. **96 KB** Inline-Code aus `beta.html` entfernt.
-- `beta.html` danach: **6250789 Byte** statt **6347047 Byte**
+  `9d9a873f2e75afb565e8253d4925692211e72685`
+- Letzte vollständig abgeschlossene Unterphase: **V8.009-DUNGEON-D2-BETA**
+- D2 Ergebnis: **erfolgreich**
+- D2 Extraktionscommit: `9d9a873f2e75afb565e8253d4925692211e72685`
+- D2 Workflow/QA: **grün**
+- D2 Workflow-Reparatur: `8df08dc2ed042afc5caff32070f35d0af3a2da3c`
+  - Ursache des ersten Fehlversuchs: doppelt escapte Regex-Klassen im Extraktionsskript.
+  - Kein Gameplay-/Dungeon-Codefehler; nach Korrektur vollständig erfolgreich.
+- D2 ausgelagert:
+  - `gl-dungeon-visual-owner-script` → `js/features/dungeon/beta/v8009-d2-visual-owner.js`
+  - `v7162-dungeon-map-final-owner-script` → `js/features/dungeon/beta/v8009-d2-map-finalizer.js`
+  - `v7166-dungeon-detail-render-lock` → `js/features/dungeon/beta/v8009-d2-detail-render-lock.js`
+- D2 Umfang: ca. **39 KB** Inline-JS aus `beta.html` entfernt.
+- `beta.html` danach: **6211491 Byte** statt **6250789 Byte**
 - Gameplay/Combat-Math/Rewards/Serverautorität: **unverändert**
-- Aktuell in Arbeit / nächster Schritt: **V8.009-DUNGEON-D2-BETA**
+- Aktuell in Arbeit / nächster Schritt: **V8.009-DUNGEON-D3-BETA**
 - Scope der laufenden Strukturierungsarbeit: **Beta zuerst**
 - **Server 1 / Stable bleibt unangetastet**, bis eine Phase ausdrücklich für Stable freigegeben wird.
 
@@ -109,7 +113,7 @@ Kein `HOME-32` beginnen, solange kein echter reproduzierbarer Home-Bug oder klar
 Aktueller Repo-Stand vor dieser Statusdatei:
 
 - `index.html`: ca. **6574124 Byte**
-- `beta.html`: ca. **6347047 Byte**
+- `beta.html`: ca. **6211491 Byte**
 - externe Dateien unter `js/`: **101**
 - externe Dateien unter `css/`: **97**
 
@@ -135,26 +139,32 @@ Für jedes System gilt:
 
 ## 4. EXAKTER nächster Schritt
 
-### Nächste Unterphase: V8.009-DUNGEON-D2-BETA
+### Nächste Unterphase: V8.009-DUNGEON-D3-BETA
 
-D1 ist abgeschlossen. Als Nächstes nicht den Kampf-Renderer erneut anfassen.
+D2 ist abgeschlossen. Den D1-Combat-Renderer und die in D2 ausgelagerte aktive Owner-Kette nicht erneut umbauen.
 
 1. aktuellen `main`-HEAD lesen;
-2. Dungeon-**Map/Detail/Visual-Owner-Kette** inventarisieren;
-3. besonders prüfen:
-   - `gl-dungeon-visual-owner-script`
-   - `v7162-dungeon-map-final-owner-script`
-   - `v7166-dungeon-detail-render-lock`
-   - ältere `v251/v260/v261` Map-/Detail-Renderer
-   - welche davon aktuell wirklich rendern und welche nur Guards/Altlasten sind;
-4. Render-/Lifecycle-Kette prüfen:
-   - 20er-Dungeonwelt
-   - 10er-Karte
-   - Wechsel Karte → Kampf → Reward → Karte
-   - keine doppelten Renderer/Observer/Timer;
-5. danach den **nächsten klaren aktiven Dungeon-Owner** aus `beta.html` externalisieren;
-6. Verhalten, Quellreihenfolge und Stable-Unverändertheit testen;
-7. nach erfolgreichem D2 diese Datei sofort wieder aktualisieren und D3 eintragen.
+2. die noch inline verbliebenen historischen Dungeon-Map/Detail-Layer inventarisieren, besonders:
+   - `v251`
+   - `v260`
+   - `v261`
+   - `v7166-dungeon-detail-render-lock-css`;
+3. für jeden Treffer belegen, ob er:
+   - noch Runtime-Verhalten besitzt,
+   - nur Guard/Fallback ist,
+   - nur Styling liefert,
+   - oder nachweislich vollständig vom D2-Owner überholt wurde;
+4. die Lifecycle-Kette gegen die jetzt externen D2-Owner prüfen:
+   - Dungeonwelt / Karte
+   - Detailansicht
+   - Kampf
+   - Reward
+   - Rückkehr zur Karte;
+5. insbesondere auf doppelte direkte Renderer, Observer, Timer und nachträgliche DOM-Reparaturen prüfen;
+6. nur den **nächsten klar aktiven oder klar isolierbaren Owner/Style-Block** aus `beta.html` externalisieren;
+7. alte Legacy-Blöcke **nicht löschen**, solange ihre Wirkung nicht durch statische Prüfung + Runtime/Browser-QA eindeutig ersetzt ist;
+8. Stable/Server 1 unverändert halten;
+9. nach erfolgreichem D3 diese Datei sofort aktualisieren und D4 festlegen.
 
 ### Statusdatei-Regel
 
