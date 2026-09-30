@@ -113,7 +113,10 @@ try{
   if(typeof base==='function'&&!base.__v7110Preflight){
     const wrapped=async function(i){
       try{window.v392PrepareStart?.(i)}catch(_){}
+      const beforeEnergy=Math.max(0,Math.floor(Number(s?.energy)||0));
+      const hadActive=!!s?.quests?.active;
       const post=()=>{
+        try{window.v443AfterQuestStart?.(beforeEnergy,hadActive)}catch(_){}
         try{window.v392PaintActive?.()}catch(_){}
         try{window.v4127ScheduleQuestSkip?.()}catch(_){}
         try{window.v229QuestStartSync?.()}catch(_){}
