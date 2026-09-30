@@ -111,20 +111,9 @@ function v233ShowActualQuestReward(snapshot){
     }
   }
 
+  /* The canonical local/mirror claim render completes before this presenter
+     runs. Show the reward once; do not repaint the same overlay in later frames. */
   overlay.classList.add('show');
-
-  /*
-    Make sure an old render or focus handler cannot hide it in the same frame.
-  */
-  requestAnimationFrame(()=>{
-    overlay.classList.add('show');
-  });
-
-  setTimeout(()=>{
-    if(document.body.contains(overlay)){
-      overlay.classList.add('show');
-    }
-  },80);
 }
 
 
