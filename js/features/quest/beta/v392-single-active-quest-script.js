@@ -48,12 +48,20 @@
     return host;
   }
 
+  function syncActiveMode(){
+    const root=document.querySelector('#quests');
+    if(!root)return false;
+    const active=!!s.quests?.active;
+    root.classList.toggle('v392-active-mode',active);
+    return active;
+  }
+
   function paintActive(){
     const root=document.querySelector('#quests');
     if(!root)return;
 
     const q=s.quests?.active||null;
-    root.classList.toggle('v392-active-mode',!!q);
+    syncActiveMode();
 
     const host=activeHost();
     if(!host)return;
@@ -154,6 +162,7 @@
     const q=s.quests?.offers?.[Number(i)];
     if(q && !s.quests?.active)q.v392Kind=['fast','normal','hard'][Number(i)]||'normal';
   };
+  window.v392SyncActiveMode=syncActiveMode;
   window.v392PaintActive=paintActive;
 
   /* Reuse the EXISTING one-second quest timer through one direct tick hook. */
