@@ -10,8 +10,8 @@
 - Aktuelle Beta-Linie: **V8.009**
 - Arbeitsbranch: **main**
 - Letzter automatisiert geprüfter Code-Commit vor dieser Statusdatei:
-  `02e01294083c9150329e15bc20dd99eb9ce22621`
-- Aktuelle Unterphase: **V8.009-DUNGEON-D12-BETA**
+  `c0840d3faf513e85a131afe3c5a3c874eb3e55ea`
+- Aktuelle Unterphase: **V8.009-DUNGEON-SPRINT-1-BETA**
 - Nutzer-Video bestätigt: betroffen ist konkret **Dungeon 2**.
 - Sichtbares Fehlerbild:
   - zunächst korrekter D2-Hintergrund + korrekte Gegnergrafiken;
@@ -284,6 +284,22 @@
   - Gameplay/Combat-Math/Rewards/Serverautorität unverändert.
 - D12 Beta-Größe: **6.014.499 Byte**.
 - D12 Status: **abgeschlossen**
+- Arbeitsmodus ab jetzt: **Sprint-Modus**
+  - keine Mikro-Unterphasen mehr für jeden einzelnen Legacy-Block;
+  - pro System ein breiter Audit;
+  - mehrere nachweislich sichere Bereinigungen in einem Batch;
+  - eine gemeinsame QA;
+  - manueller Test erst an sinnvollen System-Meilensteinen.
+- Dungeon Sprint 1:
+  - Commit `c0840d3faf513e85a131afe3c5a3c874eb3e55ea`;
+  - v455/v456/v459 gleichzeitig auf Residual-CSS verkleinert;
+  - 109 ursprüngliche Deklarationen → 9 verbleibende Deklarationen;
+  - **100 nachweislich redundante CSS-Deklarationen in einem Batch entfernt**;
+  - Ladeposition/Reihenfolge erhalten;
+  - Originaldateien bleiben im Repo;
+  - Stable unverändert;
+  - Gameplay/Combat-Math/Rewards/Serverautorität unverändert;
+  - gemeinsame QA vollständig grün.
 - Nächster Schritt: D1 sowie D3–D20 bei Gelegenheit visuell stichprobenartig prüfen; strukturell sind Hintergrund/Gegner komplett und die Boss-Pfade jetzt korrekt getrennt.
 - Scope: **Beta zuerst**
 - **Server 1 / Stable bleibt unangetastet**, bis eine Phase ausdrücklich für Stable freigegeben wird.
@@ -398,28 +414,25 @@ Für jedes System gilt:
 
 ## 4. EXAKTER nächster Schritt
 
-### V8.009-DUNGEON-D13-BETA – fast vollständig redundante D1-CSS-Layer verkleinern
+### V8.009-DUNGEON-SPRINT-2-BETA – Dungeon als System abschließen
 
-D12 hat zwei klare Kandidaten gefunden, die **nicht komplett** entfernt werden dürfen:
+Nicht mehr blockweise arbeiten. In einem gemeinsamen Pass:
 
-1. `v455-d1-feinschliff-2.css`
-   - 35 Deklarationen;
-   - 34 nachweislich redundant;
-   - einzig verbleibende Wirkung: `word-break: normal!important` am D1-Titel.
-2. `v459-d1-right-side-thumb-final.css`
-   - 24 Deklarationen;
-   - 22 nachweislich redundant;
-   - verbleibend: Thumb-`background` und `border-color`.
+1. alle verbliebenen aktiven Dungeon-CSS-/JS-Layer repo-weit inventarisieren;
+2. nach Kategorien gruppieren:
+   - kanonischer Owner;
+   - echter visueller Spezialfall;
+   - reine Kompatibilität;
+   - vollständig überschrieben/tot;
+3. alle eindeutig toten Wrapper, Timer, Listener und Includes **batchweise** entfernen;
+4. verbleibende sichtbare D1/D6/D7-Sonderregeln in möglichst wenige Owner-Dateien konsolidieren;
+5. keine neue UI gestalten und keine Gameplay-/Combat-/Reward-/Serverlogik ändern;
+6. einen gemeinsamen automatischen Dungeon-QA-Lauf über D1–D20 durchführen;
+7. danach genau **einen** manuellen Meilenstein-Test statt Tests nach jedem Mini-Schritt;
+8. wenn grün: Dungeon-Refactor abschließen und direkt zum nächsten großen System wechseln.
 
-D13 soll:
-1. beide Originaldateien in der aktiven Beta durch **kleine Residual-CSS-Dateien an exakt derselben Ladeposition** ersetzen;
-2. nur die nach D12 noch wirksamen Deklarationen übernehmen;
-3. Originaldateien im Repo behalten;
-4. Position/Reihenfolge unverändert halten;
-5. danach den Cascade-Audit erneut laufen lassen;
-6. D1 visuell nicht neu gestalten;
-7. D2/D6/D7, D5 Asset-Fallback und D1 Boss-Fallback unverändert halten;
-8. Stable/Server 1 unangetastet lassen.
+### Danach
+Nächstes Großsystem ebenfalls im Sprint-Modus, nicht als Dutzende Mikro-Pässe.
 
 ### Statusdatei-Regel
 
