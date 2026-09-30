@@ -120,6 +120,10 @@ try{
         try{window.v392PaintActive?.()}catch(_){}
         try{window.v4127ScheduleQuestSkip?.()}catch(_){}
         try{window.v229QuestStartSync?.()}catch(_){}
+        try{
+          const q=s?.quests?.active;
+          if(!hadActive&&q&&Number(q.ends)>Date.now())void window.glSyncQuestPushJob?.(Number(q.ends));
+        }catch(_){}
       };
       if(!enforced()){
         const prep=window.v321PrepareLocalQuestStart?.(i);
