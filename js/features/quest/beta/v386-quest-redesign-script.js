@@ -132,6 +132,7 @@
     const root=document.querySelector('#quests');
     if(!root || root.querySelector('.v386-shell'))return;
 
+    try{window.v392SyncActiveMode?.()}catch(_){}
     hideOldQuestBlocks();
 
     const shell=document.createElement('div');
@@ -174,6 +175,7 @@
   }
 
   window.v386RenderQuestShell=()=>{
+    try{window.v392SyncActiveMode?.()}catch(_){}
     install();
     hideOldQuestBlocks();
     renderCards();
@@ -182,6 +184,7 @@
   /* V7.122: duplicate quest-nav redesign pass retired; v6344 owns the final quest paint. */
 
   setTimeout(()=>{
+    try{window.v392SyncActiveMode?.()}catch(_){}
     install();
     hideOldQuestBlocks();
     renderCards();
