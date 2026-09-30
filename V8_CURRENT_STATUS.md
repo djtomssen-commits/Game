@@ -10,8 +10,8 @@
 - Aktuelle Beta-Linie: **V8.009**
 - Arbeitsbranch: **main**
 - Letzter automatisiert geprüfter Code-Commit vor dieser Statusdatei:
-  `c0840d3faf513e85a131afe3c5a3c874eb3e55ea`
-- Aktuelle Unterphase: **V8.009-DUNGEON-SPRINT-1-BETA**
+  `7be8c20c873f9ad169a91e791fc57bfe8983f827`
+- Aktuelle Unterphase: **V8.009-DUNGEON-SPRINT-2-MANUAL-CHECK**
 - Nutzer-Video bestätigt: betroffen ist konkret **Dungeon 2**.
 - Sichtbares Fehlerbild:
   - zunächst korrekter D2-Hintergrund + korrekte Gegnergrafiken;
@@ -300,7 +300,48 @@
   - Stable unverändert;
   - Gameplay/Combat-Math/Rewards/Serverautorität unverändert;
   - gemeinsame QA vollständig grün.
-- Nächster Schritt: D1 sowie D3–D20 bei Gelegenheit visuell stichprobenartig prüfen; strukturell sind Hintergrund/Gegner komplett und die Boss-Pfade jetzt korrekt getrennt.
+- Dungeon Sprint 2 – Owner-/Wrapper-Konsolidierung:
+  - finaler Code-Commit `7be8c20c873f9ad169a91e791fc57bfe8983f827`;
+  - vollständig retired:
+    - `v4225-final-10er-owner`
+    - `v447-d9-preview-button-restore`
+    - `v426-pos-fix`;
+  - v426-Standardpositionen 1:1 in `v8009-d8-detail-decorator.js` migriert;
+  - redundante `renderDungeon`-/Detail-Wrapper entfernt aus:
+    - v446 Preview-Postrender
+    - v494 Production Sync
+    - v585 Battle-HUD Sync
+    - v4165 vier Detailrenderer + Battle-Gate
+    - v7051 Button-Owner
+    - v7166 Detail-/renderDungeon-Lock;
+  - benötigte Aufgaben laufen jetzt als direkte Hooks aus dem kanonischen D2-Owner:
+    - `v7166DungeonDetailRepair`
+    - `v4165StampDetail`
+    - `v4165SyncBattleGate`
+    - `v494DungeonProductionSync`
+    - `v585SyncDungeonBattle`
+    - `v7051ClaimButtonSync`;
+  - kritische Gameplay-/Server-Systeme bewusst erhalten:
+    - v246 Fight/Reward
+    - v4165 Key/Battle-Index + Battle Entry
+    - v446 Timer/Combat
+    - v458/v467/v497 Key Authority
+    - v482 Paid/Free-Timer
+    - v7051 Atomic Server Receipt/Authority.
+- Dungeon Sprint 2 Abschluss-QA: **vollständig grün**
+  - kanonischer Runtime-Owner: `js/features/dungeon/beta/v8009-d2-visual-owner.js`;
+  - **0** spätere `renderDungeon`-Owner nach dem kanonischen Owner;
+  - **0** spätere `v261RenderDetail`-Owner;
+  - v7166 läuft nur noch im Direct-Repair-Modus, nicht als Renderer-Wrapper;
+  - D5 Final Seal bleibt letztes Script;
+  - D1–D20: Background + Gegner 1–9 Assetvertrag vollständig;
+  - D10–D20: native Boss-PNGs geprüft;
+  - D1/D2: verifizierte Boss-Fallbacks geprüft;
+  - kritische Inline-Dungeon-Systeme per Node-Syntaxcheck grün;
+  - Stable/Server 1 unverändert;
+  - Gameplay/Combat-Math/Rewards/Serverautorität unverändert.
+- Dungeon Beta-Größe nach Sprint 2: **6.005.343 Byte**.
+- Dungeon Status: **technisch abgeschlossen; ein gemeinsamer manueller Meilenstein-Test offen**.
 - Scope: **Beta zuerst**
 - **Server 1 / Stable bleibt unangetastet**, bis eine Phase ausdrücklich für Stable freigegeben wird.
 
@@ -414,25 +455,25 @@ Für jedes System gilt:
 
 ## 4. EXAKTER nächster Schritt
 
-### V8.009-DUNGEON-SPRINT-2-BETA – Dungeon als System abschließen
+### Dungeon Sprint 2 – EIN gemeinsamer manueller Meilenstein-Test
 
-Nicht mehr blockweise arbeiten. In einem gemeinsamen Pass:
+Kein weiterer Mikro-Test. Einmal kurz in Beta prüfen:
 
-1. alle verbliebenen aktiven Dungeon-CSS-/JS-Layer repo-weit inventarisieren;
-2. nach Kategorien gruppieren:
-   - kanonischer Owner;
-   - echter visueller Spezialfall;
-   - reine Kompatibilität;
-   - vollständig überschrieben/tot;
-3. alle eindeutig toten Wrapper, Timer, Listener und Includes **batchweise** entfernen;
-4. verbleibende sichtbare D1/D6/D7-Sonderregeln in möglichst wenige Owner-Dateien konsolidieren;
-5. keine neue UI gestalten und keine Gameplay-/Combat-/Reward-/Serverlogik ändern;
-6. einen gemeinsamen automatischen Dungeon-QA-Lauf über D1–D20 durchführen;
-7. danach genau **einen** manuellen Meilenstein-Test statt Tests nach jedem Mini-Schritt;
-8. wenn grün: Dungeon-Refactor abschließen und direkt zum nächsten großen System wechseln.
+1. Dungeon-Welt öffnen;
+2. D1, D2, D6, D7 und einen normalen späteren Dungeon (z. B. D10) jeweils kurz auf der 10er-Karte öffnen;
+3. dabei nur prüfen:
+   - Hintergrund bleibt sichtbar;
+   - Gegnerbilder/Bossbild sichtbar;
+   - keine Karte springt nachträglich um;
+   - aktueller Gegner + Angriffsbutton funktionieren;
+4. in **einem** Dungeon einen Kampf starten und danach zur Karte zurückkehren;
+5. wenn das passt:
+   - **Dungeon-Refactor als abgeschlossen markieren**;
+   - sofort mit dem nächsten Großsystem **PvP / Hall of Haze im Sprint-Modus** starten.
+6. Nur bei einem echten sichtbaren Fehler Dungeon wieder öffnen.
 
-### Danach
-Nächstes Großsystem ebenfalls im Sprint-Modus, nicht als Dutzende Mikro-Pässe.
+### Danach: PvP / Hall of Haze Sprint
+Breiter Bestand-/Owner-Audit → Batch-Bereinigung → gemeinsame QA → ein manueller Meilenstein.
 
 ### Statusdatei-Regel
 
