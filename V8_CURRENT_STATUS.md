@@ -10,36 +10,41 @@
 - Aktuelle Beta-Linie: **V8.009**
 - Arbeitsbranch: **main**
 - Letzter automatisiert geprüfter Code-Commit vor dieser Statusdatei:
-  `ab87ae23091b7f6e0007cd35bc691f9fdcd69649`
+  `34d16bb351b81591b1a65025495f1d1d8bab5593`
 - Aktuelle Unterphase: **V8.009-DUNGEON-D5-BETA**
-- D5 Anlass: reproduzierbarer 10er-Karten-Render-Race aus Nutzer-Video.
+- Nutzer-Video bestätigt: betroffen ist konkret **Dungeon 2**.
 - Sichtbares Fehlerbild:
-  - zunächst korrekter Dungeon-Hintergrund + Gegnergrafiken;
-  - danach Umsprung auf schwarzen/vereinfachten Legacy-Render.
-- D5 Audit-Commit: `d28127ed375259a0c40e2f418e1059299a1e8282`
-- Erste D5 Owner-Lock-Fixes:
-  - `6d869d91d91aa1352c16c231506e03860a1e2d2d`
-  - `41f369a22d975dfae48f97b04ec7eb0a0686565e`
-  - automatisierte QA grün.
-- Manueller Repro danach: **Fehler weiterhin vorhanden**.
-- Zweite D5 Ursachenanalyse:
-  - `v251-modern-dungeon-maps-core` enthielt einen eigenen verzögerten Repaint nach **1350 ms**;
-  - `v244-dungeon-detail-map-final` enthielt einen weiteren verzögerten Repaint nach **520 ms**;
-  - beide Repaints riefen historische Detailrenderer nach dem bereits korrekten D2/v261-Render erneut auf;
-  - diese direkten Legacy-Repaints konnten den Alias-Lock umgehen bzw. bereits gecapturete alte Funktionen ausführen.
-- Zweite D5 Fixes:
-  - `07c4e371444fba487da6300394533a26a3c090a8`
-    - 1350-ms-v251-Dungeon-Repaint stillgelegt;
-  - `ab87ae23091b7f6e0007cd35bc691f9fdcd69649`
-    - 520-ms-v244-Dungeon-Repaint stillgelegt.
-- QA:
-  - Fix-Workflow vollständig **grün**;
-  - v251 JS-Syntax grün;
-  - v244 delayed repaint nachweislich entfernt;
+  - zunächst korrekter D2-Hintergrund + korrekte Gegnergrafiken;
+  - danach Umsprung auf alte/vereinfachte Darstellung.
+- D5 allgemeiner Race-Audit: `d28127ed375259a0c40e2f418e1059299a1e8282`
+- Frühere D5 Fixes:
+  - Canonical Alias Lock: `6d869d91d91aa1352c16c231506e03860a1e2d2d`
+  - D2 Dispatcher Priorität: `41f369a22d975dfae48f97b04ec7eb0a0686565e`
+  - v251 1350-ms-Repaint entfernt: `07c4e371444fba487da6300394533a26a3c090a8`
+  - v244 520-ms-Repaint entfernt: `ab87ae23091b7f6e0007cd35bc691f9fdcd69649`
+- Dungeon-2-spezifischer Audit:
+  - `v467-d2-direct-style` erzwingt alten D2-Hintergrund und alte Gegner-SVGs aus `assets/v7195-base64/` mit `!important`;
+  - `v467-d2-direct-script` hängt `v467-d2` an die Karte, überschreibt D2-Nodes/Thumb und hängt sich nach `renderDungeon`;
+  - gleichzeitig besitzt der kanonische D2-Owner bereits den vollständigen neuen D2-Asset-Vertrag:
+    - `v474_dungeon_assets/d2_bg.jpg`
+    - `v474_dungeon_assets/d2_1.png ... d2_9.png`
+    - `v474_dungeon_assets/d2_boss.png`.
+- D2-spezifischer Fix:
+  - Commit `34d16bb351b81591b1a65025495f1d1d8bab5593`
+  - `v467-d2-direct-style` aus aktiver Beta entfernt;
+  - `v467-d2-direct-script` aus aktiver Beta entfernt;
+  - beide nur noch archiviert unter:
+    - `css/features/dungeon/legacy/v467-d2-direct-style.retired.css`
+    - `js/features/dungeon/legacy/v467-d2-direct-script.retired.js`
+  - Archive werden weder von Beta noch Stable geladen.
+- QA: **vollständig grün**
+  - Archiv-JS Syntax grün;
+  - kanonische D2/D4 Owner Syntax grün;
+  - keine aktiven v467-D2-Blöcke mehr in `beta.html`;
   - Stable unverändert.
 - Gameplay/Combat-Math/Rewards/Serverautorität: **nicht verändert**
-- D5 Status: **zweiter Code-Fix + automatisierte QA erfolgreich; manueller Repro-Test erneut offen**
-- Nächster Schritt: dieselbe 10er-Karte erneut öffnen und mindestens 2–3 Sekunden beobachten.
+- D5 Status: **D2-spezifischer Code-Fix erfolgreich; manueller Repro-Test erneut offen**
+- Nächster Schritt: exakt Dungeon 2 erneut öffnen und 3 Sekunden beobachten.
 - Scope: **Beta zuerst**
 - **Server 1 / Stable bleibt unangetastet**, bis eine Phase ausdrücklich für Stable freigegeben wird.
 
