@@ -30,10 +30,6 @@
   }
   function settle(){
     paintDampf();
-    try{requestAnimationFrame(paintDampf)}catch(e){}
-    setTimeout(paintDampf,20);
-    setTimeout(paintDampf,90);
-    setTimeout(paintDampf,280);
   }
 
   /* Direct post-start hook used by the canonical Quest start owner.
@@ -63,10 +59,6 @@
 
   settle();stamp();
   document.addEventListener('DOMContentLoaded',()=>{settle();stamp()},{once:true});
+  window.addEventListener('growlegends:account-ready',()=>{settle();stamp()},{passive:true});
   window.addEventListener('pageshow',()=>{settle();stamp()},{passive:true});
-  /* V6.217: persist/pageshow hooks own Dampf repaint; finite retries cover startup. */
-  [400,1200,5200,12000].forEach(ms=>setTimeout(()=>{paintDampf();stamp()},ms));
-  setTimeout(()=>{settle();stamp()},1200);
-  setTimeout(()=>{settle();stamp()},5200);
-  setTimeout(()=>{settle();stamp()},12000);
 })();
