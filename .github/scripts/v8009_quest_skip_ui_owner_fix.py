@@ -51,3 +51,5 @@ print(json.dumps(report,ensure_ascii=False,indent=2))
 if failed: raise SystemExit(1)
 
 # trigger after workflow install
+
+# retrigger after duplicate-seed repro 2026-09-30T19:57Z
