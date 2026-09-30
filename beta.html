@@ -3081,7 +3081,7 @@ function renderInventory(){
 function render(){regenEnergy();ensureQuests();renderClasses();renderSetPanel();renderClassAvatar();renderSkillTree();document.querySelector('#className')&&(document.querySelector('#className').textContent=classes[s.playerClass]?.name||'Noch nicht gewählt');
  document.querySelector('#level')&&(document.querySelector('#level').textContent=s.level);document.querySelector('#charLevel')&&(document.querySelector('#charLevel').textContent=s.level);document.querySelector('#battleLevel').textContent=s.level;document.querySelector('#xp')&&(document.querySelector('#xp').textContent=`${s.xp}/${xpNeed()}`);document.querySelector('#gold')&&(document.querySelector('#gold').textContent=s.gold);document.querySelector('#shopGold').textContent=s.gold;document.querySelector('#shopHarz')&&(document.querySelector('#shopHarz').textContent=s.harzTaler);document.querySelector('#points')&&(document.querySelector('#points').textContent=s.points);document.querySelector('#energy')&&(document.querySelector('#energy').textContent=`${s.energy}/100`);document.querySelector('#dungeonTicketText')&&(document.querySelector('#dungeonTicketText').textContent=dungeonWaitText());document.querySelector('#power')&&(document.querySelector('#power').textContent=combatPower());document.querySelector('#charPower').textContent=combatPower();document.querySelector('#charHp').textContent=maxHp();document.querySelector('#storyChapter')&&(document.querySelector('#storyChapter').textContent=s.story.chapter);const bp=Math.min(100,(s.story.bossesDefeated/6)*100);document.querySelector('#bossProgressBar')&&(document.querySelector('#bossProgressBar').style.width=bp+'%');document.querySelector('#bossProgressText')&&(document.querySelector('#bossProgressText').textContent=s.story.bossesDefeated?`${s.story.bossesDefeated} Boss${s.story.bossesDefeated===1?'':'e'} besiegt · Kapitel ${s.story.chapter}`:'Noch kein Dungeonboss besiegt.');
  const map=[['staerke','💪 Stärke'],['geschick','🎯 Geschick'],['ausdauer','❤️ Ausdauer'],['glueck','🍀 Glück'],['growSkill','🌱 Grow-Skill']];document.querySelector('#attrs').innerHTML=map.map(([k,n])=>`<div class="attr"><span>${n}: <b>${totalAttr(k)}</b></span><button onclick="incAttr('${k}')" ${s.points<1?'disabled':''}>+</button></div>`).join('');
- Object.keys(slotLabels).forEach(sl=>{const el=document.querySelector('#slot-'+sl),it=s.equipment[sl],[ic,la]=slotLabels[sl];el.className='slot'+(it?.rarity?(' '+it.rarity):'');el.innerHTML=`<div class="slot-icon">${it?.icon||ic}</div><div class="slot-label">${la}</div><div class="slot-name">${it?it.name:'Leer'}</div>${it?`<div class="tiny">${itemBonus(it)}</div>${it.mysticSpecial?`<div class="v296-mystic-special">✨ Spezialeffekt: ${v296MysticSpecialText(it)}</div>`:''}${it.setName?`<div class="set-tag">${it.setName}-Set</div>`:''}<div class="slot-actions"><button class="mini-btn" onclick="unequip('${sl}')">Ablegen</button><button class="mini-btn" onclick="sellEquipped('${sl}')">💰 ${sellValue(it)}</button></div>`:''}`});
+ Object.keys(slotLabels).forEach(sl=>{const el=document.querySelector('#slot-'+sl),it=s.equipment[sl],[ic,la]=slotLabels[sl];if(!el)return;el.className='slot'+(it?.rarity?(' '+it.rarity):'');el.innerHTML=`<div class="slot-icon">${it?.icon||ic}</div><div class="slot-label">${la}</div><div class="slot-name">${it?it.name:'Leer'}</div>${it?`<div class="tiny">${itemBonus(it)}</div>${it.mysticSpecial?`<div class="v296-mystic-special">✨ Spezialeffekt: ${v296MysticSpecialText(it)}</div>`:''}${it.setName?`<div class="set-tag">${it.setName}-Set</div>`:''}<div class="slot-actions"><button class="mini-btn" onclick="unequip('${sl}')">Ablegen</button><button class="mini-btn" onclick="sellEquipped('${sl}')">💰 ${sellValue(it)}</button></div>`:''}`});
  renderInventory();
  renderGrow();renderQuests();renderDungeon();renderShop();}
 window.incAttr=k=>{if(s.points>0){s.points--;s.attrs[k]++;persist()}};window.equip=i=>{const it=s.inventory[i];if(!it)return;if(it.classId&&it.classId!==s.playerClass)return v115Alert(`Dieses Item ist nur für ${classLabel(it.classId)}.`);const old=s.equipment[it.slot];s.equipment[it.slot]=it;s.inventory.splice(i,1);if(old)s.inventory.push(old);persist()};
@@ -3313,7 +3313,7 @@ function shopStock(){const daily=Math.floor(Date.now()/86400000),seed=daily+s.sh
 function renderShop(){document.querySelector('#shopItems').innerHTML=shopStock().map(it=>`<div class="shop-item"><div class="shop-icon">${it.icon}</div><h3>${it.name}</h3><div class="tiny">${itemBonus(it)}</div>${it.classId?`<div class="set-tag">${classLabel(it.classId)}</div>`:''}<div class="price" style="margin:7px 0">💰 ${it.price} Gold</div><button class="btn" style="width:100%;padding:8px" onclick="buy('${it.id}')">Kaufen</button></div>`).join('')}
 window.buy=id=>{const it=[...items,...allClassGear].find(x=>x.id===id);if(!it)return;if(s.gold<it.price)return v115Alert('Zu wenig Gold.');s.gold-=it.price;s.inventory.push({...it});persist()};
 document.querySelector('#refreshShop').onclick=()=>{if(s.harzTaler<1)return v115Alert('Du brauchst 1 Harz-Taler.');s.harzTaler--;s.shopRefreshes++;persist()};
-document.querySelector('#resetBtn').onclick=()=>{if(confirm('Spielstand wirklich löschen?')){localStorage.removeItem(KEY);OLD_KEYS.forEach(k=>localStorage.removeItem(k));location.reload()}};
+const vCoreResetBtn=document.querySelector('#resetBtn');if(vCoreResetBtn)vCoreResetBtn.onclick=()=>{if(confirm('Spielstand wirklich löschen?')){localStorage.removeItem(KEY);OLD_KEYS.forEach(k=>localStorage.removeItem(k));location.reload()}};
 document.querySelectorAll('.nav').forEach(b=>b.onclick=()=>{if(b.dataset.screen==='dungeon')s.dungeon.view='map';document.querySelectorAll('.nav').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.querySelectorAll('.screen').forEach(x=>x.classList.remove('active'));document.querySelector('#'+b.dataset.screen).classList.add('active');render()});
 
 function goScreen(id){if(id==='dungeon')s.dungeon.view='map';document.querySelectorAll('.nav').forEach(x=>x.classList.toggle('active',x.dataset.screen===id));document.querySelectorAll('.screen').forEach(x=>x.classList.remove('active'));document.querySelector('#'+id)?.classList.add('active');render()}
@@ -4367,13 +4367,15 @@ window.v030UseMaterial=function(i){
 })();
 
 /* Clarify the rule in the materials UI. */
-const v031OldMaterials=v030RenderMaterials;
-v030RenderMaterials=function(){
+const v031OldMaterials=typeof v030RenderMaterials==='function'?v030RenderMaterials:null;
+if(v031OldMaterials){
+ v030RenderMaterials=function(){
   v031OldMaterials();
   const panel=document.querySelector('#v030Materials');
   const muted=panel?.querySelector('.muted');
   if(muted)muted.textContent='Pro Ausrüstungsteil: maximal 1 Edelstein + 1 Verzauberung. Neue ersetzen die vorhandenen.';
-};
+ };
+}
 try{render()}catch(e){console.error('V4.02',e)}
 </script>
 
@@ -5169,7 +5171,7 @@ window.v030BuyWeapon=function(i){
   s.gold-=it.price;
   const bought={...it,id:it.uid||`gear_${Date.now()}_${Math.random().toString(36).slice(2,7)}`};
   s.inventory.push(bought);
-  s.weaponShop[i]=v030MakeWeaponOffer();
+  s.weaponShop[i]=v030MakeGear(v030WeaponBase());
   v037BoughtMessage(bought,'Inventar');
   persist();
 };
@@ -5187,12 +5189,12 @@ window.v030BuyMagic=function(i){
   if(it.type==='gem'||it.type==='scroll'){
     const bought={...it};
     s.materials.push(bought);
-    s.magicShop[i]=(i<2?v030MakeJewelryOffer():v030MakeMaterialOffer());
+    s.magicShop[i]=(i<2?v030MakeJewelryOffer():v030MakeMaterial());
     v037BoughtMessage(bought,'Material-Inventar');
   }else{
     const bought={...it,id:it.uid||`jewel_${Date.now()}_${Math.random().toString(36).slice(2,7)}`};
     s.inventory.push(bought);
-    s.magicShop[i]=(i<2?v030MakeJewelryOffer():v030MakeMaterialOffer());
+    s.magicShop[i]=(i<2?v030MakeJewelryOffer():v030MakeMaterial());
     v037BoughtMessage(bought,'Inventar');
   }
   persist();
@@ -5406,8 +5408,8 @@ if(typeof v038OldBuyWeapon==='function'){
     v038OldBuyWeapon(i);
     if(s.weaponShop?.[i]){
       const after=s.weaponShop[i]?.uid || s.weaponShop[i]?.id || '';
-      if(before===after && typeof v030MakeWeaponOffer==='function'){
-        s.weaponShop[i]=v030MakeWeaponOffer();
+      if(before===after && (typeof v030MakeGear==='function'&&typeof v030WeaponBase==='function')){
+        s.weaponShop[i]=v030MakeGear(v030WeaponBase());
         localStorage.setItem(KEY,JSON.stringify(s));
         render();
       }
@@ -5425,7 +5427,7 @@ if(typeof v038OldBuyMagic==='function'){
       if(before===after){
         s.magicShop[i]=(i<2 && typeof v030MakeJewelryOffer==='function')
           ? v030MakeJewelryOffer()
-          : (typeof v030MakeMaterialOffer==='function'?v030MakeMaterialOffer():s.magicShop[i]);
+          : (typeof v030MakeMaterial==='function'?v030MakeMaterial():s.magicShop[i]);
         localStorage.setItem(KEY,JSON.stringify(s));
         render();
       }
@@ -8794,8 +8796,8 @@ window.v030BuyWeapon=function(i){
   };
   s.inventory.push(bought);
 
-  if(typeof v030MakeWeaponOffer==='function'){
-    s.weaponShop[i]=v030MakeWeaponOffer();
+  if((typeof v030MakeGear==='function'&&typeof v030WeaponBase==='function')){
+    s.weaponShop[i]=v030MakeGear(v030WeaponBase());
   }
 
   localStorage.setItem(KEY,JSON.stringify(s));
@@ -8819,8 +8821,8 @@ window.v030BuyMagic=function(i){
     s.materials??=[];
     s.materials.push(bought);
 
-    if(typeof v030MakeJewelryOffer==='function' && typeof v030MakeMaterialOffer==='function'){
-      s.magicShop[i]=i<3?v030MakeJewelryOffer():v030MakeMaterialOffer();
+    if(typeof v030MakeJewelryOffer==='function' && typeof v030MakeMaterial==='function'){
+      s.magicShop[i]=i<3?v030MakeJewelryOffer():v030MakeMaterial();
     }
 
     localStorage.setItem(KEY,JSON.stringify(s));
@@ -8835,8 +8837,8 @@ window.v030BuyMagic=function(i){
   };
   s.inventory.push(bought);
 
-  if(typeof v030MakeJewelryOffer==='function' && typeof v030MakeMaterialOffer==='function'){
-    s.magicShop[i]=i<3?v030MakeJewelryOffer():v030MakeMaterialOffer();
+  if(typeof v030MakeJewelryOffer==='function' && typeof v030MakeMaterial==='function'){
+    s.magicShop[i]=i<3?v030MakeJewelryOffer():v030MakeMaterial();
   }
 
   localStorage.setItem(KEY,JSON.stringify(s));
@@ -9284,7 +9286,7 @@ function v056UniqueOffers(count, maker, maxTries=250){
 /* Regenerate both shops with uniqueness rules. */
 v030FillShops=function(force=false){
   if(force || !Array.isArray(s.weaponShop) || s.weaponShop.length!==9){
-    s.weaponShop=v056UniqueOffers(9,()=>v030MakeWeaponOffer());
+    s.weaponShop=v056UniqueOffers(9,()=>v030MakeGear(v030WeaponBase()));
   }
 
   if(force || !Array.isArray(s.magicShop) || s.magicShop.length!==9){
@@ -9296,7 +9298,7 @@ v030FillShops=function(force=false){
 
     while(mats.length<6 && tries<200){
       tries++;
-      const it=v030MakeMaterialOffer();
+      const it=v030MakeMaterial();
       if(!it)continue;
       const key=`${it.baseId||it.name}|${it.quality||'gray'}|${it.type||''}`;
       if(seenMat.has(key))continue;
@@ -9341,7 +9343,7 @@ window.v030BuyWeapon=function(i){
   s.inventory.push(bought);
 
   s.weaponShop[i]=null;
-  s.weaponShop[i]=v056FreshReplacement(s.weaponShop,()=>v030MakeWeaponOffer());
+  s.weaponShop[i]=v056FreshReplacement(s.weaponShop,()=>v030MakeGear(v030WeaponBase()));
 
   localStorage.setItem(KEY,JSON.stringify(s));
 
@@ -9370,7 +9372,7 @@ window.v030BuyMagic=function(i){
     s.magicShop[i]=null;
     s.magicShop[i]=v056FreshReplacement(
       s.magicShop,
-      ()=>v030MakeMaterialOffer()
+      ()=>v030MakeMaterial()
     );
 
     localStorage.setItem(KEY,JSON.stringify(s));
@@ -13498,6 +13500,7 @@ async function v073SearchPlayer(name,targetSelector){
   }
 
   if(!(await v073Init()))return;
+  if(!v073User?.id)return;
 
   target.innerHTML='<div class="v072-empty">Suche...</div>';
 
@@ -13529,6 +13532,7 @@ async function v073SearchPlayer(name,targetSelector){
 
 async function v073SendFriendRequest(receiverId,name='Spieler'){
   if(!(await v073Init()))return;
+  if(!v073User?.id)return;
   if(receiverId===v073User.id)return;
 
   /* Prevent same or reverse duplicate request. */
@@ -13614,6 +13618,7 @@ async function v073LoadFriends(){
   if(!friendsEl||!requestsEl)return;
 
   if(!(await v073Init()))return;
+  if(!v073User?.id)return;
 
   friendsEl.innerHTML='<div class="v072-empty">Lade Freunde...</div>';
   requestsEl.innerHTML='<div class="v072-empty">Lade Anfragen...</div>';
@@ -13684,6 +13689,7 @@ async function v073LoadFriends(){
 
 async function v073AnswerRequest(id,status){
   if(!(await v073Init()))return;
+  if(!v073User?.id)return;
 
   const {error}=await v073Db
     .from('friend_requests')
@@ -13705,6 +13711,7 @@ async function v073AnswerRequest(id,status){
 
 async function v073RemoveFriend(otherId){
   if(!(await v073Init()))return;
+  if(!v073User?.id)return;
 
   const ok=await v063Confirm(
     'Diesen Spieler wirklich aus deiner Nebel-Crew entfernen?',
@@ -13906,6 +13913,7 @@ function v074EquipmentHtml(eq){
 
 async function v074OpenProfile(id){
   if(!(await v073Init()))return;
+  if(!v073User?.id)return;
   const overlay=document.querySelector('#v074ProfileOverlay');
   const content=document.querySelector('#v074ProfileContent');
   if(!overlay||!content)return;
@@ -13964,6 +13972,7 @@ v073LoadRanking=async function(){
   const el=document.querySelector('#v072HallRanking');
   if(!el)return;
   if(!(await v073Init()))return;
+  if(!v073User?.id)return;
   await v073SyncProfile(false);
   el.innerHTML='<div class="v072-empty">Rangliste wird geladen...</div>';
   const {data,error}=await v073Db.from('profiles')
@@ -13978,6 +13987,7 @@ v073SearchPlayer=async function(name,targetSelector){
   const target=document.querySelector(targetSelector);if(!target)return;
   name=String(name||'').trim();if(name.length<2){v063Toast('Mindestens 2 Zeichen eingeben','warn');return}
   if(!(await v073Init()))return;
+  if(!v073User?.id)return;
   target.innerHTML='<div class="v072-empty">Suche...</div>';
   const safe=name.replace(/[%_,]/g,'');
   const {data,error}=await v073Db.from('profiles')
@@ -16221,6 +16231,7 @@ async function v093CheckAdmin(){
 
 async function v093LoadPublicContent(){
   if(!(await v073Init()))return;
+  if(!v073User?.id)return;
 
   try{
     const now=new Date().toISOString();
@@ -16504,14 +16515,16 @@ function v094XpMultiplier(){
 /* Quest rewards are generated in questPool(). Mark base EXP once.
    The actual payout is doubled at claim time, so an event can start/end
    even while a quest is already running. */
-const v094OldQuestPool=questPool;
-questPool=function(){
+if(typeof questPool==='function'){
+ const v094OldQuestPool=questPool;
+ questPool=function(){
   const list=v094OldQuestPool();
   return (list||[]).map(q=>({
     ...q,
     v094BaseXp:Number(q.v094BaseXp ?? q.xp ?? 0)
   }));
-};
+ };
+}
 
 /* Override quest finish with the current event multiplier.
    Keeps the existing gold, key stone, drops and energy logic. */
@@ -19527,6 +19540,7 @@ v073SearchPlayer=async function(name,targetSelector){
     return;
   }
   if(!(await v073Init()))return;
+  if(!v073User?.id)return;
 
   target.innerHTML='<div class="v072-empty">Suche...</div>';
   const safe=name.replace(/[%_,]/g,'');
@@ -21034,15 +21048,17 @@ if(!s.v122SocketMigrated){
 }
 
 /* Materials UI: make the rule explicit. */
-const v122OldRenderMaterials=v030RenderMaterials;
-v030RenderMaterials=function(){
+const v122OldRenderMaterials=typeof v030RenderMaterials==='function'?v030RenderMaterials:null;
+if(v122OldRenderMaterials){
+ v030RenderMaterials=function(){
   v122OldRenderMaterials();
   const panel=document.querySelector('#v030Materials');
   const muted=panel?.querySelector('.muted');
   if(muted){
     muted.textContent='Pro Ausrüstungsteil maximal 1 Stein + 1 Rollen-Verzauberung. Neue ersetzen die vorhandenen.';
   }
-};
+ };
+}
 
 const v122BaseRender=render;
 render=function(){
@@ -22172,6 +22188,11 @@ function v127EnsureWorldBoss(){
 function v127FreshShop(){
   s.weaponShop=[];
   s.magicShop=[];
+
+  if(typeof v057FillShops==='function'){
+    v057FillShops(true);
+    return true;
+  }
 
   if(typeof v030FillShops==='function'){
     v030FillShops(true);
@@ -47731,8 +47752,8 @@ setTimeout(()=>{try{v322InstallMenuEntry();v322InstallHarzPlus()}catch(e){consol
   let v332PaidFight=false;
   let v332SavedLastFree=0;
 
-  const v332BaseDungeonFight = fightDungeon;
-  fightDungeon = async function(){
+  const v332BaseDungeonFight = typeof fightDungeon==='function'?fightDungeon:null;
+  if(v332BaseDungeonFight)fightDungeon = async function(){
     const before=Number(s.dungeonPass?.lastFree)||0;
     const left=Math.max(0,3600000-(Date.now()-before));
     const isPaid=left>0;
@@ -47833,6 +47854,7 @@ setTimeout(()=>{try{v322InstallMenuEntry();v322InstallHarzPlus()}catch(e){consol
     if(!friendsEl||!requestsEl||v333Loading)return;
 
     if(!(await v073Init()))return;
+  if(!v073User?.id)return;
     v333Loading=true;
 
     try{
@@ -66696,6 +66718,7 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();i
 
  v073SearchPlayer=async function(name,targetSelector){
   const target=document.querySelector(targetSelector);if(!target)return;name=String(name||'').trim();if(name.length<2){v063Toast?.('Mindestens 2 Zeichen eingeben','warn');return}if(!(await v073Init()))return;
+  if(!v073User?.id)return;
   target.innerHTML='<div class="v072-empty">Suche...</div>';const safe=name.replace(/[%_,]/g,'');
   const {data,error}=await v073Db.from('profiles').select(PROFILE_SELECT).ilike('character_name',`%${safe}%`).limit(20);
   if(error){console.error('V4.124 Hall search',error);target.innerHTML='<div class="v072-status-offline">Suche fehlgeschlagen.</div>';return}
@@ -66726,6 +66749,7 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();i
  v073LoadFriends=async function(){
   const friendsEl=document.getElementById('v072FriendsList'),requestsEl=document.getElementById('v072RequestsList'),countEl=document.getElementById('v072FriendCount');if(!friendsEl||!requestsEl)return;
   if(!(await v073Init()))return;
+  if(!v073User?.id)return;
   friendsEl.innerHTML='<div class="v072-empty">Lade Freunde...</div>';requestsEl.innerHTML='<div class="v072-empty">Lade Anfragen...</div>';
   const {data,error}=await v073Db.from('friend_requests').select('id,sender_id,receiver_id,status,created_at').or(`sender_id.eq.${v073User.id},receiver_id.eq.${v073User.id}`).order('created_at',{ascending:false});
   if(error){console.error('V4.124 Nebel-Crew',error);friendsEl.innerHTML='<div class="v072-status-offline">Freundesliste konnte nicht geladen werden.</div>';requestsEl.innerHTML='';return}
