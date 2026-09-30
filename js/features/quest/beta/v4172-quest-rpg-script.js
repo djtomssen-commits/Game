@@ -25,9 +25,9 @@
    });
    let elite=shell.querySelector('.v4172-elite-info');
    if(!elite){elite=document.createElement('section');elite.className='v4172-elite-info';const ref=shell.querySelector('.v387-refresh');if(ref)ref.before(elite);else shell.appendChild(elite)}
-   const activeElite=qs.some(q=>q?.v310Elite);
-   elite.innerHTML=`<div class="v4172-elite-icon">👑</div><div><b>Elite-Quest</b><span>${activeElite?'Elite-Auftrag ist in den aktuellen Angeboten verfügbar.':'Kann nur nach einer erfolgreich abgeschlossenen Quest erscheinen.'}</span></div><b class="v4172-elite-chance">${ELITE_CHANCE} % Chance</b>`;
-   /* V7.151: one owner places the elite block during the normal quest paint. */
+   /* V8.009: v4222 is the sole content owner for the Elite panel.
+      v4172 only ensures and positions the shared host to avoid two writers
+      alternating different text during the same Quest paint. */
    const list=shell.querySelector('.v386-list');
    if(list&&elite.nextElementSibling!==list)shell.insertBefore(elite,list);
  }
