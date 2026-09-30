@@ -8,6 +8,8 @@ ids=[
  'v655-player-profile-load-fix-js',
  'v7137-shift-frame-client',
  'v6338-central-title-system-js',
+ 'v448-final-ui-power-account-integrity',
+ 'v4126-power-rpc-diagnostics',
 ]
 out={}
 for sid in ids:
