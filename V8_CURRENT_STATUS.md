@@ -20,7 +20,7 @@
 - Arbeitsbranch: **main**
 - Letzter automatisiert geprüfter Code-Commit vor dieser Statusdatei:
   `06be757c3faf109c2f3c3f18195086d1909592d0`
-- Aktuelle Unterphase: **V8.009-QUEST-SPRINT-1-RENDER-PASS3-CODE-COMPLETED-QA-PENDING**
+- Aktuelle Unterphase: **V8.009-QUEST-SPRINT-1-MANUAL-MILESTONE-TEST-READY**
 - Nutzer-Video bestätigt: betroffen ist konkret **Dungeon 2**.
 - Sichtbares Fehlerbild:
   - zunächst korrekter D2-Hintergrund + korrekte Gegnergrafiken;
@@ -637,6 +637,27 @@
 - Pass-3-QA Workflow + Contract liegen im Repo und wurden ausgelöst.
 - Beim unmittelbaren Nachcheck war `V8009_QUEST_RENDER_PASS3_QA.json` noch nicht zurückgeschrieben; deshalb QA-Status aktuell **pending**.
 - Stable / `index.html`: unverändert.
+
+### Quest Sprint 1 – manueller Testpunkt 30.09.2026
+
+- `V8009_QUEST_PUSH_CHAIN_QA.json`: vollständig grün.
+- `V8009_QUEST_REWARD_ART_QA.json`: vollständig grün.
+- Push-Wrapper für Quest Start/Skip/Claim entfernt; direkte Hooks liegen in `v7110` und `v7045`.
+- `v4121` überschreibt `claimQuest`/`v233ClaimQuest` nicht mehr; Reward-Art läuft direkt über Snapshot-/After-Claim-Hooks aus `v7045`.
+- Guild-XP Claim-Wrapper `v440`/`v474` wurden bewusst **nicht** entfernt:
+  - `v7045` deckt serverautoritäre Quest-Sideeffects ab;
+  - Local/Mirror braucht weiterhin den Legacy-Guild-XP-Pfad.
+  - Entfernen wäre aktuell nicht verhaltensneutral.
+- Erster manueller Quest-Meilensteintest ist jetzt fällig:
+  1. Questseite öffnen – drei Angebote sichtbar, kein Flackern/Leerseite;
+  2. Quest starten – korrekter Dampf-Abzug, aktive Karte erscheint;
+  3. Timer zählt sichtbar;
+  4. optional Skip testen – Zeit-Samen/Skip-Funktion prüfen;
+  5. Quest abschließen/Claim – genau eine Belohnung;
+  6. Reward-Popup inkl. Item-Art prüfen;
+  7. neue Questangebote erscheinen;
+  8. keine doppelte Gilden-EP-/Reward-Ausgabe und keine Fehlermeldung.
+- Nach diesem manuellen Meilenstein erst weitere Claim-/Guild-Konsolidierung.
 
 ### Wichtige Einordnung der Namen
 
