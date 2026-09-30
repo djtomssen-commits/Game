@@ -19,7 +19,7 @@
 - Aktuelle Beta-Linie: **V8.009**
 - Arbeitsbranch: **main**
 - Letzter automatisiert geprüfter Code-Commit vor dieser Statusdatei:
-  `0acaa527b314d613f3971fd4d344b667894fbdfd`
+  `0300cc18d02bdd32b157bd11bd293809630b0535`
 - Aktuelle Unterphase: **V8.009-PVP-SPRINT-1-LIVE-BETA-DEPLOY-BLOCKED**
 - Nutzer-Video bestätigt: betroffen ist konkret **Dungeon 2**.
 - Sichtbares Fehlerbild:
@@ -669,6 +669,11 @@ Für jedes System gilt:
   - damit ist es **kein Browser-/CDN-Cacheproblem**, sondern der Worker/Host liefert tatsächlich einen älteren Beta-Build.
 - `tester.html` ist nur die Beta-Tester-Anleitungsseite und nicht die Spiel-Beta.
 - Im GitHub-Repo existiert **kein Cloudflare/Wrangler/Deploy-Workflow** für den Worker; der Live-Deploy liegt außerhalb dieses Repos bzw. muss extern neu veröffentlicht werden.
+- Verifikation:
+  - `V8009_LIVE_BETA_AUDIT.json` prüft den echten Cloudflare-Endpunkt aus GitHub Actions;
+  - `V8009_DEPLOY_PATH_AUDIT.json` bestätigt: kein Wrangler-/Cloudflare-/Worker-Deploypfad im Repo;
+  - `tester.html` ist nur die Beta-Tester-Anleitungsseite, nicht die Spiel-Beta.
+- Aktueller Blocker ist **Deployment**, nicht Hall-Code.
 - **Keine weiteren Hall-Code-Patches durchführen, bis Live-`/beta` denselben Stand wie Repo-`beta.html` ausliefert.**
 - Stable `/` stimmt exakt mit `index.html` überein und bleibt unverändert.
 
