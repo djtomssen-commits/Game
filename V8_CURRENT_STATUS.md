@@ -11,8 +11,12 @@
 - Arbeitsbranch: **main**
 - Letzter vollständig geprüfter Code-Commit vor dieser Statusdatei:
   `e0931472b1407fad1a752aae90596093f6b8800d`
-- Letzte abgeschlossene Unterphase: **V8.009 HOME-31**
+- Letzte vollständig abgeschlossene Unterphase: **V8.009 HOME-31**
 - HOME-31 Browser-QA: **grün**
+- Aktuell in Arbeit: **V8.009-DUNGEON-D1-BETA**
+- D1-Ziel: den aktuellen finalen V7175-2D-Kampf-Renderer (JS + CSS) aus `beta.html` in externe Beta-Dungeon-Dateien ziehen, Quellreihenfolge beibehalten und Verhalten unverändert lassen.
+- D1-Vorbereitungscommit / Workflow: `d0cd70dd045a5fdf79bf788c6e98a61f44f83e11`
+- D1-Status: **Extraktions-Workflow vorbereitet; eigentliche Extraktion/QA noch nicht als abgeschlossen markieren, bis der Workflow erfolgreich durchgelaufen und der resultierende Commit geprüft ist.**
 - Scope der laufenden Strukturierungsarbeit: **Beta zuerst**
 - **Server 1 / Stable bleibt unangetastet**, bis eine Phase ausdrücklich für Stable freigegeben wird.
 
@@ -126,26 +130,32 @@ Für jedes System gilt:
 
 ## 4. EXAKTER nächster Schritt
 
-### Nächste Hauptphase: verbleibenden Inline-Code inventarisieren
+### Aktuell laufend: V8.009-DUNGEON-D1-BETA
 
-Nicht mit HOME weitermachen.
+1. Workflow `.github/workflows/v8009-dungeon-d1-extract.yml` ausführen/prüfen.
+2. Erwartete Extraktion:
+   - `v7175-combat-renderer-core` → `js/features/dungeon/beta/v8009-d1-combat-renderer.js`
+   - `v7175-combat-renderer-css` → `css/features/dungeon/beta/v8009-d1-combat-renderer.css`
+3. Prüfen:
+   - Syntax des ausgelagerten JS
+   - Include jeweils exakt einmal
+   - gleiche JS-/CSS-Quellreihenfolge
+   - keine Änderung an `index.html`
+   - kein Gameplay-/Combat-Math-/Reward-/Server-Authority-Change
+4. Nach erfolgreichem D1:
+   - `V8_CURRENT_STATUS.md` sofort aktualisieren;
+   - D1 als abgeschlossen markieren;
+   - exakten D2-Schritt eintragen.
+5. Danach Dungeon systematisch weiterführen: Owner/Renderer/Lifecycle/Timer/Observer/Legacy-Patches prüfen und jeweils nur eine klar abgegrenzte Unterphase ändern.
 
-1. aktuellen `main`-HEAD lesen;
-2. `beta.html` programmgesteuert inventarisieren:
-   - Inline-`<script>`-Blöcke
-   - Inline-`<style>`-Blöcke
-   - IDs/Versionen/Owner
-   - ungefähre Byte-Größen
-   - erkannte Systeme/Funktionspräfixe
-3. bereits ausgelagerte Includes gegen Inline-Duplikate abgleichen;
-4. daraus eine **Restbestand-Liste pro System** erstellen;
-5. als nächstes **Dungeon** vollständig abgrenzen und in eine neue V8.009-Dungeon-Unterphase gehen.
+### Statusdatei-Regel
 
-Empfohlene Namensfolge:
-- `V8.009-DUNGEON-D1-BETA`
-- danach `D2`, `D3` usw. nur wenn wirklich mehrere sichere Schritte nötig sind.
+`V8_CURRENT_STATUS.md` wird **ab jetzt bei jedem V8-Durchgang gepflegt**:
+- beim **Start** einer neuen Unterphase: `Aktuell in Arbeit` + exaktes Ziel;
+- nach **erfolgreichem Abschluss**: letzter geprüfter Commit/Teststatus + nächster Schritt;
+- bei **Fehler/Blocker**: Fehlerursache + was bereits geändert wurde + was als Nächstes zu tun ist.
 
-Nicht wieder eine neue HOME-Serie starten.
+So bleibt ein neuer Chat auch dann fortsetzbar, wenn der alte Chat mitten in einer Phase endet.
 
 ## 5. Arbeitsregeln
 
