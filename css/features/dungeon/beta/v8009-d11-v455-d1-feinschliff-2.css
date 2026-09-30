@@ -1,0 +1,35 @@
+
+/* Nur Dungeon 1: Titel und Knoten sauber in den sichtbaren Kartenbereich setzen. */
+#dungeonMapCard.v426-ref-d1 .v261-title{
+  font-size:11.7px!important;
+  line-height:.96!important;
+  white-space:normal!important;
+  overflow:visible!important;
+  word-break:normal!important;
+}
+
+/* obere Reihe etwas tiefer, damit Nummern und Kreise nicht am Kartenrand abgeschnitten werden */
+#dungeonMapCard.v426-ref-d1 .v261-node[data-v261-room="0"]{--x:15!important;--y:15!important}
+#dungeonMapCard.v426-ref-d1 .v261-node[data-v261-room="1"]{--x:39!important;--y:18.5!important}
+#dungeonMapCard.v426-ref-d1 .v261-node[data-v261-room="2"]{--x:64!important;--y:22!important}
+#dungeonMapCard.v426-ref-d1 .v261-node[data-v261-room="3"]{--x:84!important;--y:25!important}
+
+/* mittlere/untere Gegner entzerren und vom Rand weg */
+#dungeonMapCard.v426-ref-d1 .v261-node[data-v261-room="4"]{--x:15!important;--y:40!important}
+#dungeonMapCard.v426-ref-d1 .v261-node[data-v261-room="5"]{--x:33!important;--y:46!important}
+#dungeonMapCard.v426-ref-d1 .v261-node[data-v261-room="6"]{--x:51!important;--y:53!important}
+#dungeonMapCard.v426-ref-d1 .v261-node[data-v261-room="7"]{--x:70!important;--y:49!important}
+#dungeonMapCard.v426-ref-d1 .v261-node[data-v261-room="8"]{--x:84!important;--y:43!important}
+
+/* Boss vollständig im Rahmen und mit Abstand zu Gegner 8/9 */
+#dungeonMapCard.v426-ref-d1 .v261-node[data-v261-room="9"]{--x:82!important;--y:73!important}
+#dungeonMapCard.v426-ref-d1 .v261-node.boss{width:98px!important}
+#dungeonMapCard.v426-ref-d1 .v261-node.boss .v261-ring{width:78px!important;height:78px!important}
+#dungeonMapCard.v426-ref-d1 .v261-node.boss .v261-panel{width:90px!important;min-height:42px!important;padding:5px 3px!important}
+#dungeonMapCard.v426-ref-d1 .v261-node.boss .v261-name{font-size:5.3px!important;line-height:1.05!important}
+
+/* lange D1-Namen auf Mobile lesbar halten */
+#dungeonMapCard.v426-ref-d1 .v261-node[data-v261-room="3"] .v261-name,
+#dungeonMapCard.v426-ref-d1 .v261-node[data-v261-room="2"] .v261-name{
+  font-size:4.7px!important;
+}

@@ -1,0 +1,86 @@
+
+/* Dungeon 1 bekommt wieder seine eigenen, exakt zum Keller-Hintergrund passenden Positionen.
+   Dadurch werden die Doppelungen aus dem globalen D9-Template entfernt. */
+#dungeonMapCard.v426-ref-d1 .v261-road{display:none!important}
+#dungeonMapCard.v426-ref-d1 .v261-signboard{display:none!important}
+#dungeonMapCard.v426-ref-d1 .v261-title{
+  font-size:13.8px!important;
+  line-height:.98!important;
+  white-space:nowrap!important;
+  letter-spacing:.01em!important;
+}
+#dungeonMapCard.v426-ref-d1 .v261-bg{
+  inset:0!important;
+  transform:none!important;
+  filter:none!important;
+  background-size:cover!important;
+  background-position:center center!important;
+}
+#dungeonMapCard.v426-ref-d1 .v261-fx{
+  background:linear-gradient(180deg,rgba(0,0,0,.02),rgba(0,0,0,.00) 64%,rgba(0,0,0,.08) 100%)!important;
+}
+#dungeonMapCard.v426-ref-d1 .v261-node[data-v261-room="0"]{--x:13.6!important;--y:10.1!important}
+#dungeonMapCard.v426-ref-d1 .v261-node[data-v261-room="1"]{--x:38.8!important;--y:16.2!important}
+#dungeonMapCard.v426-ref-d1 .v261-node[data-v261-room="2"]{--x:62.7!important;--y:19.4!important}
+#dungeonMapCard.v426-ref-d1 .v261-node[data-v261-room="3"]{--x:87.1!important;--y:21.5!important}
+#dungeonMapCard.v426-ref-d1 .v261-node[data-v261-room="4"]{--x:13.1!important;--y:38.1!important}
+#dungeonMapCard.v426-ref-d1 .v261-node[data-v261-room="5"]{--x:31.7!important;--y:44.2!important}
+#dungeonMapCard.v426-ref-d1 .v261-node[data-v261-room="6"]{--x:49.4!important;--y:51.3!important}
+#dungeonMapCard.v426-ref-d1 .v261-node[data-v261-room="7"]{--x:69.9!important;--y:47.2!important}
+#dungeonMapCard.v426-ref-d1 .v261-node[data-v261-room="8"]{--x:88.4!important;--y:42.6!important}
+#dungeonMapCard.v426-ref-d1 .v261-node[data-v261-room="9"]{--x:88.7!important;--y:69.9!important}
+
+/* Reale Dungeon-1-Monster aus der vorhandenen Keller-Grafik statt generischer Emojis. */
+#dungeonMapCard.v426-ref-d1 .v261-node:not(.boss) .v261-ring{
+  font-size:0!important;
+  background-repeat:no-repeat!important;
+  background-size:cover!important;
+  background-position:center!important;
+  background-color:#071008!important;
+}
+#dungeonMapCard.v426-ref-d1 .v261-node[data-v261-room="0"] .v261-ring{background-image:url("assets/v7195-base64/4583d2c2217b99d15b91.jpg")!important}
+#dungeonMapCard.v426-ref-d1 .v261-node[data-v261-room="1"] .v261-ring{background-image:url("assets/v7195-base64/ee919763875facf5b3b6.jpg")!important}
+#dungeonMapCard.v426-ref-d1 .v261-node[data-v261-room="2"] .v261-ring{background-image:url("assets/v7195-base64/8712de00a158f959e38a.jpg")!important}
+#dungeonMapCard.v426-ref-d1 .v261-node[data-v261-room="3"] .v261-ring{background-image:url("assets/v7195-base64/4f6fc6c1c7ccefde4135.jpg")!important}
+#dungeonMapCard.v426-ref-d1 .v261-node[data-v261-room="4"] .v261-ring{background-image:url("assets/v7195-base64/bedd65f73777c8416b0c.jpg")!important}
+#dungeonMapCard.v426-ref-d1 .v261-node[data-v261-room="5"] .v261-ring{background-image:url("assets/v7195-base64/f8536ecfcfdd643284f0.jpg")!important}
+#dungeonMapCard.v426-ref-d1 .v261-node[data-v261-room="6"] .v261-ring{background-image:url("assets/v7195-base64/5bd000a5fade11346630.jpg")!important}
+#dungeonMapCard.v426-ref-d1 .v261-node[data-v261-room="7"] .v261-ring{background-image:url("assets/v7195-base64/862f132710f1a1fdbefb.jpg")!important}
+#dungeonMapCard.v426-ref-d1 .v261-node[data-v261-room="8"] .v261-ring{background-image:url("assets/v7195-base64/7f0b7b112e9c10916051.jpg")!important}
+
+#dungeonMapCard.v426-ref-d1 .v261-node.boss{width:108px!important;z-index:6!important}
+#dungeonMapCard.v426-ref-d1 .v261-node.boss .v261-ring{
+  width:82px!important;
+  height:82px!important;
+  border-color:#ef4b42!important;
+  overflow:hidden!important;
+}
+#dungeonMapCard.v426-ref-d1 .v261-node.boss .v261-bossart{
+  inset:4px!important;
+  background-image:url("assets/v7195-base64/0f1a0253845b46d9a03d.jpg")!important;
+  background-size:cover!important;
+  background-position:center 55%!important;
+  filter:none!important;
+}
+#dungeonMapCard.v426-ref-d1 .v261-node.boss .v261-panel{
+  width:102px!important;
+  min-height:43px!important;
+  margin-top:5px!important;
+  padding:5px 3px!important;
+}
+#dungeonMapCard.v426-ref-d1 .v261-node.boss .v261-name{font-size:5.5px!important;line-height:1.04!important}
+
+/* Unterer Infobereich bleibt im gemeinsamen Template, aber der aktuelle Gegner bekommt sein passendes D1-Portrait. */
+#dungeonMapCard.v426-ref-d1 .v261-thumb{
+  background-repeat:no-repeat!important;
+  background-size:cover!important;
+  background-position:center!important;
+  color:transparent!important;
+}
+
+@media(max-width:420px){
+  #dungeonMapCard.v426-ref-d1 .v261-title{font-size:12.8px!important}
+  #dungeonMapCard.v426-ref-d1 .v261-node.boss{width:104px!important}
+  #dungeonMapCard.v426-ref-d1 .v261-node.boss .v261-ring{width:78px!important;height:78px!important}
+  #dungeonMapCard.v426-ref-d1 .v261-node.boss .v261-panel{width:98px!important}
+}

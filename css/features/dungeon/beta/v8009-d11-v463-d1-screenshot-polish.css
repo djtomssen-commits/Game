@@ -1,0 +1,68 @@
+
+/* Reiner D1-Feinschliff nach aktuellem Handy-Screenshot.
+   Keine Kampf-, Timer- oder Progress-Logik anfassen. */
+
+/* Knoten insgesamt etwas sauberer entlang des sichtbaren Wegs verteilen. */
+#dungeonMapCard.v426-ref-d1 .v261-node[data-v261-room="0"]{--x:14!important;--y:15!important}
+#dungeonMapCard.v426-ref-d1 .v261-node[data-v261-room="1"]{--x:43!important;--y:19!important}
+#dungeonMapCard.v426-ref-d1 .v261-node[data-v261-room="2"]{--x:64!important;--y:23!important}
+#dungeonMapCard.v426-ref-d1 .v261-node[data-v261-room="3"]{--x:83!important;--y:31!important}
+#dungeonMapCard.v426-ref-d1 .v261-node[data-v261-room="4"]{--x:19!important;--y:49!important}
+#dungeonMapCard.v426-ref-d1 .v261-node[data-v261-room="5"]{--x:40!important;--y:61!important}
+#dungeonMapCard.v426-ref-d1 .v261-node[data-v261-room="6"]{--x:57!important;--y:75!important}
+#dungeonMapCard.v426-ref-d1 .v261-node[data-v261-room="7"]{--x:74!important;--y:64!important}
+#dungeonMapCard.v426-ref-d1 .v261-node[data-v261-room="8"]{--x:89!important;--y:50!important}
+#dungeonMapCard.v426-ref-d1 .v261-node[data-v261-room="9"]{--x:80!important;--y:85!important}
+
+/* Rechte und untere Hälfte entzerren, damit 7/8/9 nicht ineinander laufen. */
+#dungeonMapCard.v426-ref-d1 .v261-node[data-v261-room="6"] .v261-panel,
+#dungeonMapCard.v426-ref-d1 .v261-node[data-v261-room="7"] .v261-panel,
+#dungeonMapCard.v426-ref-d1 .v261-node[data-v261-room="8"] .v261-panel{
+  width:68px!important;
+  min-height:39px!important;
+  padding:5px 3px!important;
+}
+#dungeonMapCard.v426-ref-d1 .v261-node[data-v261-room="6"] .v261-name,
+#dungeonMapCard.v426-ref-d1 .v261-node[data-v261-room="7"] .v261-name,
+#dungeonMapCard.v426-ref-d1 .v261-node[data-v261-room="8"] .v261-name{
+  font-size:4.7px!important;
+  line-height:1.03!important;
+}
+
+/* Lange Namen oben rechts/mitte kompakt halten. */
+#dungeonMapCard.v426-ref-d1 .v261-node[data-v261-room="2"] .v261-panel,
+#dungeonMapCard.v426-ref-d1 .v261-node[data-v261-room="3"] .v261-panel{
+  width:74px!important;
+  padding-left:3px!important;
+  padding-right:3px!important;
+}
+#dungeonMapCard.v426-ref-d1 .v261-node[data-v261-room="2"] .v261-name,
+#dungeonMapCard.v426-ref-d1 .v261-node[data-v261-room="3"] .v261-name{
+  font-size:4.6px!important;
+  line-height:1.02!important;
+}
+
+/* Boss minimal tiefer/rechter, aber noch sauber im Rahmen. */
+#dungeonMapCard.v426-ref-d1 .v261-node.boss{width:100px!important}
+#dungeonMapCard.v426-ref-d1 .v261-node.boss .v261-ring{width:80px!important;height:80px!important}
+#dungeonMapCard.v426-ref-d1 .v261-node.boss .v261-panel{
+  width:92px!important;
+  min-height:42px!important;
+  padding:5px 3px!important;
+  margin-top:4px!important;
+}
+#dungeonMapCard.v426-ref-d1 .v261-node.boss .v261-name{
+  font-size:5.3px!important;
+  line-height:1.04!important;
+}
+
+/* Warnschild unten links etwas kompakter, damit mehr Bühne frei bleibt. */
+#dungeonMapCard.v426-ref-d1 .v261-signboard{
+  left:1.6%!important;
+  bottom:2.2%!important;
+  max-width:64px!important;
+  padding:5px 5px 6px!important;
+  font-size:4.8px!important;
+  line-height:1.07!important;
+}
+#dungeonMapCard.v426-ref-d1 .v261-signboard small{font-size:8px!important}

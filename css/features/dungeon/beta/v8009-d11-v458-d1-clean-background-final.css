@@ -1,0 +1,100 @@
+
+/* V57-Rückplatten vollständig entfernen. D1 bekommt jetzt einen echten, knotefreien Keller-Hintergrund. */
+#dungeonMapCard.v426-ref-d1 .v261-node::before,
+#dungeonMapCard.v426-ref-d1 .v261-node.boss::before{display:none!important;content:none!important}
+
+#dungeonMapCard.v426-ref-d1 .v261-stage{
+  aspect-ratio:.72 / 1!important;
+  overflow:hidden!important;
+  border-color:#789d43!important;
+}
+#dungeonMapCard.v426-ref-d1 .v261-bg{
+  inset:0!important;
+  width:100%!important;
+  height:100%!important;
+  transform:none!important;
+  filter:saturate(1.03) contrast(1.02) brightness(.82)!important;
+  background-image:url("assets/v7195-base64/3ed9ff4b9272080dedf4.webp")!important;
+  background-size:cover!important;
+  background-position:center center!important;
+  background-repeat:no-repeat!important;
+  opacity:1!important;
+}
+#dungeonMapCard.v426-ref-d1 .v261-fx{
+  background:linear-gradient(180deg,rgba(0,8,3,.08),rgba(0,5,2,.02) 54%,rgba(0,6,2,.16) 100%)!important;
+}
+
+/* Saubere, luftige D1-Positionen auf der 10er-Karte. */
+#dungeonMapCard.v426-ref-d1 .v261-node[data-v261-room="0"]{--x:15!important;--y:12!important}
+#dungeonMapCard.v426-ref-d1 .v261-node[data-v261-room="1"]{--x:40!important;--y:17!important}
+#dungeonMapCard.v426-ref-d1 .v261-node[data-v261-room="2"]{--x:67!important;--y:22!important}
+#dungeonMapCard.v426-ref-d1 .v261-node[data-v261-room="3"]{--x:84!important;--y:31!important}
+#dungeonMapCard.v426-ref-d1 .v261-node[data-v261-room="4"]{--x:15!important;--y:42!important}
+#dungeonMapCard.v426-ref-d1 .v261-node[data-v261-room="5"]{--x:36!important;--y:52!important}
+#dungeonMapCard.v426-ref-d1 .v261-node[data-v261-room="6"]{--x:57!important;--y:61!important}
+#dungeonMapCard.v426-ref-d1 .v261-node[data-v261-room="7"]{--x:76!important;--y:53!important}
+#dungeonMapCard.v426-ref-d1 .v261-node[data-v261-room="8"]{--x:86!important;--y:43!important}
+#dungeonMapCard.v426-ref-d1 .v261-node[data-v261-room="9"]{--x:80!important;--y:82!important}
+
+#dungeonMapCard.v426-ref-d1 .v261-node{width:72px!important}
+#dungeonMapCard.v426-ref-d1 .v261-ring{width:49px!important;height:49px!important}
+#dungeonMapCard.v426-ref-d1 .v261-panel{
+  width:72px!important;
+  min-height:39px!important;
+  padding:5px 4px!important;
+  margin-top:6px!important;
+  border-radius:10px!important;
+}
+#dungeonMapCard.v426-ref-d1 .v261-name{font-size:5px!important;line-height:1.04!important}
+#dungeonMapCard.v426-ref-d1 .v261-lv{font-size:4.9px!important}
+
+#dungeonMapCard.v426-ref-d1 .v261-node.boss{width:104px!important}
+#dungeonMapCard.v426-ref-d1 .v261-node.boss .v261-ring{width:82px!important;height:82px!important}
+#dungeonMapCard.v426-ref-d1 .v261-node.boss .v261-panel{
+  width:94px!important;
+  min-height:43px!important;
+  padding:5px 4px!important;
+}
+#dungeonMapCard.v426-ref-d1 .v261-node.boss .v261-name{font-size:5.3px!important}
+
+/* Weg wieder dynamisch, diesmal schmal und dezent. */
+#dungeonMapCard.v426-ref-d1 .v261-road{display:block!important;z-index:1!important}
+#dungeonMapCard.v426-ref-d1 .v261-road .bg{
+  stroke:#152216!important;
+  stroke-width:3.0!important;
+  opacity:.72!important;
+}
+#dungeonMapCard.v426-ref-d1 .v261-road .dots{
+  stroke:#b8e766!important;
+  stroke-width:1.55!important;
+  stroke-dasharray:1 4.8!important;
+  opacity:.9!important;
+  filter:drop-shadow(0 0 2px rgba(166,255,90,.52))!important;
+}
+
+/* Warnschild ist jetzt wieder echtes HTML und nicht mehr im Hintergrund eingebrannt. */
+#dungeonMapCard.v426-ref-d1 .v261-signboard{
+  display:block!important;
+  left:2%!important;
+  bottom:2%!important;
+  max-width:72px!important;
+  padding:5px 5px!important;
+  font-size:5px!important;
+  line-height:1.07!important;
+  z-index:3!important;
+  background:linear-gradient(180deg,#5b4124,#332314)!important;
+  border-color:#c29a55!important;
+}
+#dungeonMapCard.v426-ref-d1 .v261-signboard small{font-size:9px!important;margin-top:4px!important}
+
+/* Titel sauber lesbar. */
+#dungeonMapCard.v426-ref-d1 .v261-title{font-size:0!important}
+#dungeonMapCard.v426-ref-d1 .v261-title::after{
+  content:"DER\A VERSEUCHTE\A KELLER"!important;
+  white-space:pre-line!important;
+  display:block!important;
+  font-family:Georgia,serif!important;
+  font-size:10.8px!important;
+  line-height:.94!important;
+  color:#f0d39a!important;
+}
