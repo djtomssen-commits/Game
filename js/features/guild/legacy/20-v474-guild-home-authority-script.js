@@ -1,6 +1,7 @@
 /* === v474-guild-home-authority-script === */
 (function(){
   const VERSION='V4.74',SHORT='V4.74';
+  const IS_BETA=String(window.GROW_RELEASE_CHANNEL||'stable')==='beta';
   const questAwards=new Set();
   const pvpAwards=new Set();
   let headerObserver=null;
@@ -8,6 +9,10 @@
   function stamp(){}
 
   function markModernHomeReady(force=false){
+    /* V8.009 HOME-9: beta has a canonical V366 Startseite owner. The old
+       V4.74 guild bridge must no longer hide/show #world children or restyle
+       the modern home during startup/navigation. Stable keeps legacy behavior. */
+    if(IS_BETA)return false;
     try{
       const world=document.querySelector('#world');
       if(!world)return false;
@@ -219,7 +224,7 @@
     }
   }catch(e){}
 
-  if(typeof v032Go==='function'&&!window.__v474HomeGoWrapped){
+  if(!IS_BETA&&typeof v032Go==='function'&&!window.__v474HomeGoWrapped){
     const baseGo=v032Go;
     v032Go=function(id){
       const r=baseGo.apply(this,arguments);
@@ -239,10 +244,11 @@
 
 
   installGuildRpcGuard();
-  markModernHomeReady(true);
+  if(!IS_BETA)markModernHomeReady(true);
   stamp();
-  document.addEventListener('DOMContentLoaded',()=>{installGuildRpcGuard();markModernHomeReady(true);stamp()},{once:true});
-  window.addEventListener('pageshow',()=>{installGuildRpcGuard();markModernHomeReady(true);stamp()},{passive:true});
-  [180,900,2200].forEach(ms=>setTimeout(()=>{installGuildRpcGuard();markModernHomeReady();stamp()},ms));
+  document.addEventListener('DOMContentLoaded',()=>{installGuildRpcGuard();if(!IS_BETA)markModernHomeReady(true);stamp()},{once:true});
+  window.addEventListener('pageshow',()=>{installGuildRpcGuard();if(!IS_BETA)markModernHomeReady(true);stamp()},{passive:true});
+  [180,900,2200].forEach(ms=>setTimeout(()=>{installGuildRpcGuard();if(!IS_BETA)markModernHomeReady();stamp()},ms));
+  if(IS_BETA)window.__V8009_HOME9_V474_HOME_RETIRED__=true;
 })();
 
