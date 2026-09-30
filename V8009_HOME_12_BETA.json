@@ -1,0 +1,27 @@
+{
+  "build": "V8.009-HOME-12-BETA",
+  "phase": "Startseite Growroom status correctness",
+  "scope": "beta only",
+  "findings": [
+    "The canonical V366 Startseite counted ready plants with start + duration and ignored the live-weather growth multiplier.",
+    "The canonical V492 Growroom actually uses ((now-start) * weatherGrowMul) / duration, so rain/cloud/thunder/frost could make the Startseite ready count disagree with the Growroom.",
+    "The lower Startseite Growroom strip reused the ready-count variable but labelled it as plants that are growing, so e.g. four growing plants and zero ready plants could display as '0 Pflanzen wachsen'."
+  ],
+  "changes": [
+    "Beta now computes Startseite Growroom readiness with the same V492 live-weather formula.",
+    "The main Growroom card is corrected to the real number of harvest-ready plants.",
+    "The lower Growroom strip now reports total active plants and, when applicable, how many are ready.",
+    "A single one-shot timer is scheduled for the next plant readiness transition so the Startseite can update without a polling loop or full home rebuild.",
+    "A narrow body data-gl-weather observer only reschedules this status when the weather kind/multiplier changes.",
+    "No grow state is mutated; this is display-only."
+  ],
+  "diagnostics": "window.v8009HomeHeaderDiagnostics() reports growStatusPatches, growReadyTimerFires and growWeatherReschedules; #world exposes v8009GrowReady/v8009GrowActive/v8009GrowWeatherMul data fields.",
+  "file": "js/system/performance/v7288-home-adaptive-fit-script.js",
+  "file_sha": "9f2f3507eb7aee99dbb5b8b43c450006f356b861",
+  "commit": "dfc7223d0ec49a92dbbf31214e1d0e438a7b6115",
+  "stable_behavior_changed": false,
+  "gameplay_changed": false,
+  "grow_state_changed": false,
+  "server_authority_changed": false,
+  "syntax_check": "ok"
+}
