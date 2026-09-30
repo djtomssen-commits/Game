@@ -31,7 +31,7 @@
    const list=shell.querySelector('.v386-list');
    if(list&&elite.nextElementSibling!==list)shell.insertBefore(elite,list);
  }
- const oldRender=renderQuests;renderQuests=function(){const r=oldRender.apply(this,arguments);setTimeout(enhance,0);return r};
- /* V7.122: duplicate quest-nav enhancement retired; renderQuests owns it. */
+ window.v4172EnhanceQuestPage=enhance;
+ /* V7.122: duplicate quest-nav enhancement retired; v6344 calls this directly. */
  setTimeout(enhance,700);
 })();
