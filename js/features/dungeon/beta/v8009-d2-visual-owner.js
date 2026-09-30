@@ -64,15 +64,33 @@
 
   function setMapNodeArt(ring,art,fallback=''){
     if(!ring||!art)return false;
-    ring.style.setProperty('background-image','none','important');
-    ring.querySelectorAll(':scope > .v261-bossart').forEach(n=>n.style.setProperty('display','none','important'));
-    /* The historical node renderer writes emoji as raw text. Remove text nodes only;
-       number/check/lock badges are element nodes and stay untouched. */
-    [...ring.childNodes].forEach(n=>{if(n.nodeType===Node.TEXT_NODE&&clean(n.nodeValue))n.remove()});
+    /* V8.009 D5: preserve the already visible legacy art until the canonical
+       image has actually loaded. The former code blanked the ring first and
+       then hid the <img> on error, which produced the black/empty map seen on D2. */
+    try{
+      const legacy=getComputedStyle(ring).backgroundImage;
+      if(legacy&&legacy!=='none'&&!ring.dataset.glLegacyBg)ring.dataset.glLegacyBg=legacy;
+    }catch(_){}
     let img=ring.querySelector(':scope > .gl-dungeon-node-art');
+    const activateCanonical=()=>{
+      img.hidden=false;
+      img.dataset.glPlainRetry='0';img.dataset.glFallbackRetry='0';
+      delete ring.dataset.glAssetFallback;
+      ring.style.setProperty('background-image','none','important');
+      ring.querySelectorAll(':scope > .v261-bossart').forEach(n=>n.style.setProperty('display','none','important'));
+      [...ring.childNodes].forEach(n=>{if(n!==img&&n.nodeType===Node.TEXT_NODE&&clean(n.nodeValue))n.remove()});
+    };
+    const restoreLegacy=()=>{
+      img.hidden=true;
+      ring.dataset.glAssetFallback='legacy';
+      const legacy=String(ring.dataset.glLegacyBg||'');
+      if(legacy&&legacy!=='none')ring.style.setProperty('background-image',legacy,'important');
+      else ring.style.removeProperty('background-image');
+      ring.querySelectorAll(':scope > .v261-bossart').forEach(n=>n.style.setProperty('display','block','important'));
+    };
     if(!img){
-      img=document.createElement('img');img.className='gl-dungeon-node-art';img.alt='Dungeon Gegner';img.decoding='async';img.draggable=false;
-      img.addEventListener('load',()=>{img.hidden=false;img.dataset.glPlainRetry='0';img.dataset.glFallbackRetry='0'});
+      img=document.createElement('img');img.className='gl-dungeon-node-art';img.alt='Dungeon Gegner';img.decoding='async';img.draggable=false;img.hidden=true;
+      img.addEventListener('load',activateCanonical);
       img.addEventListener('error',()=>{
         const current=img.getAttribute('src')||'';
         if(current.includes('?gl=')&&img.dataset.glPlainRetry!=='1'){
@@ -81,12 +99,14 @@
         if(fallback&&img.dataset.glFallbackRetry!=='1'){
           img.dataset.glFallbackRetry='1';img.setAttribute('src',fallback);return;
         }
-        img.hidden=true;
+        restoreLegacy();
       });
       ring.insertBefore(img,ring.firstChild);
     }
-    img.dataset.glPlainRetry='0';img.dataset.glFallbackRetry='0';img.hidden=false;
-    if(img.getAttribute('src')!==art)img.setAttribute('src',art);
+    img.dataset.glPlainRetry='0';img.dataset.glFallbackRetry='0';
+    if(img.getAttribute('src')!==art){img.hidden=true;img.setAttribute('src',art)}
+    else if(img.complete&&img.naturalWidth>0)activateCanonical();
+    else if(img.complete&&img.naturalWidth===0)restoreLegacy();
     return true;
   }
 
@@ -251,26 +271,39 @@
 
     const stage=card.querySelector('.v261-stage');
     const oldBg=stage?.querySelector(':scope > .v261-bg');
-    if(oldBg){
-      important(oldBg,'display','none');
-      important(oldBg,'background-image','none');
-    }
     if(stage){
-      /* Keep a plain-path CSS fallback on the stage itself. This survives a
-         rebuilt map DOM and also covers workers/static routes that reject the
-         cache query used by the direct image element. */
-      important(stage,'background-image','none');
+      /* V8.009 D5: capture the already working background before any later
+         cleanup/style layer can hide it. It becomes the hard fallback when
+         v474_dungeon_assets is unavailable on the served Beta route. */
+      try{
+        const legacy=oldBg?getComputedStyle(oldBg).backgroundImage:getComputedStyle(stage).backgroundImage;
+        if(legacy&&legacy!=='none'&&!stage.dataset.glLegacyMapBg)stage.dataset.glLegacyMapBg=legacy;
+      }catch(_){}
       important(stage,'background-size','cover');
       important(stage,'background-position','center center');
       important(stage,'background-repeat','no-repeat');
       preloadAsset(c.bg);
       let bgImg=stage.querySelector(':scope > .gl-dungeon-map-bg-img');
+      const activateCanonicalBg=()=>{
+        bgImg.hidden=false;bgImg.dataset.glPlainRetry='0';
+        delete stage.dataset.glMapBgError;delete stage.dataset.glMapFallback;
+        important(stage,'background-image','none');
+        if(oldBg){important(oldBg,'display','none');important(oldBg,'background-image','none')}
+      };
+      const restoreLegacyBg=()=>{
+        bgImg.hidden=true;
+        stage.dataset.glMapFallback='legacy';
+        const legacy=String(stage.dataset.glLegacyMapBg||'');
+        if(legacy&&legacy!=='none')important(stage,'background-image',legacy);
+        if(oldBg)important(oldBg,'display','block');
+      };
       if(!bgImg){
         bgImg=document.createElement('img');
         bgImg.className='gl-dungeon-map-bg-img';
         bgImg.alt='';
         bgImg.decoding='async';
         bgImg.draggable=false;
+        bgImg.hidden=true;
         bgImg.addEventListener('error',()=>{
           const current=bgImg.getAttribute('src')||'';
           if(current.includes('?gl=')&&bgImg.dataset.glPlainRetry!=='1'){
@@ -279,11 +312,14 @@
             return;
           }
           stage.dataset.glMapBgError=current;
+          restoreLegacyBg();
         });
-        bgImg.addEventListener('load',()=>{bgImg.dataset.glPlainRetry='0';delete stage.dataset.glMapBgError});
+        bgImg.addEventListener('load',activateCanonicalBg);
         stage.insertBefore(bgImg,stage.firstChild);
       }
-      if(bgImg.getAttribute('src')!==c.bg){bgImg.dataset.glPlainRetry='0';bgImg.setAttribute('src',c.bg)}
+      if(bgImg.getAttribute('src')!==c.bg){bgImg.dataset.glPlainRetry='0';bgImg.hidden=true;bgImg.setAttribute('src',c.bg)}
+      else if(bgImg.complete&&bgImg.naturalWidth>0)activateCanonicalBg();
+      else if(bgImg.complete&&bgImg.naturalWidth===0)restoreLegacyBg();
       /* Preload the room opponent while the player is on the 10-room map so
          entering combat does not expose a legacy emoji or a blank frame. */
       preloadAsset(assetFor(c,ri));
