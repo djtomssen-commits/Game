@@ -161,13 +161,8 @@ function v310PaintEliteQuests(){
  });
 }
 
-/* Final renderer: paint only, never rolls Elite. */
-const v310BaseRenderQuests=renderQuests;
-renderQuests=function(){
- const r=v310BaseRenderQuests.apply(this,arguments);
- requestAnimationFrame(v310PaintEliteQuests);
- return r;
-};
+/* Final paint function is called by the later canonical quest render chain.
+   No renderQuests wrapper is installed here anymore. */
 setTimeout(()=>{
  try{requestAnimationFrame(v310PaintEliteQuests)}catch(e){}
  /* V7.151: no third startup full render. */
