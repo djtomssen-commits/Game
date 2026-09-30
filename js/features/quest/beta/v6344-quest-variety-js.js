@@ -241,7 +241,10 @@ try{
     const base=renderQuests;
     renderQuests=function(){
       const r=base.apply(this,arguments);
+      try{window.v386RenderQuestShell?.()}catch(_){}
       try{window.v392PaintActive?.()}catch(_){}
+      try{window.v4172EnhanceQuestPage?.()}catch(_){}
+      try{window.v233BindClaimButton?.()}catch(_){}
       try{window.v4127ScheduleQuestSkip?.()}catch(_){}
       schedule();
       return r;
