@@ -1261,3 +1261,26 @@ Der nächste fachliche Schritt ist **nicht HOME-32**, sondern die Restinventur d
   2. Belohnung abholen;
   3. nach Combat/Reward darf keine alte `Aktiver Auftrag`-Questseite mehr erscheinen;
   4. danach müssen direkt die neuen drei Angebote sichtbar sein.
+
+
+### Quest Claim Hotfix – manuell bestätigt + Claim/Gilden-Audit gestartet 30.09.2026
+
+- Nutzer bestätigt nach Commit `3a5caba3765325d5dd020153188923d90eb8e676`:
+  - Quest-Claim funktioniert vollständig;
+  - keine alte Questseite erscheint mehr;
+  - Reward-/Claim-Flow funktioniert;
+  - neue Questangebote erscheinen korrekt.
+- Damit ist der Quest-Claim stale-active Hotfix **manuell bestätigt**.
+- Nächste Konsolidierungsphase: verbleibende Claim-/Gilden-Wrapper.
+- Aktueller Bestand:
+  - `v411` und `v474` besitzen Legacy-Quest-Claim-Hooks hinter `__V6140_EVENT_BUS__`-Guards;
+  - `v440` besitzt weiterhin einen direkten Quest-Claim-Wrapper;
+  - `v7045` ist weiterhin der letzte serverautoritäre Claim-/Receipt-Owner.
+- Vor weiterer Entfernung wird der zentrale Inline-Event-Bus `v6140-central-game-event-bridge` deterministisch auditiert, damit Local/Mirror-Gilden-EP nicht verloren gehen.
+- Audit hinzugefügt:
+  - Script: `.github/scripts/v8009_quest_claim_guild_audit.py`
+  - Workflow: `.github/workflows/v8009-quest-claim-guild-audit.yml`
+  - Commits: `1a74ec7a33741f7cab8c31fc83ec90c981c26719`, `48c9b16497594ec5e7c14645ce85aaadbc317865`
+  - Zieloutput: `V8009_QUEST_CLAIM_GUILD_AUDIT.json`
+- Bis der Audit die tatsächliche v6140-Rolle bestätigt: **keinen v440/v474/v411 Quest-Claim-Wrapper entfernen**.
+- Stable / `index.html`: unverändert.
