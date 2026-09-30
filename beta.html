@@ -74921,63 +74921,7 @@ body:has(#world.active){background:#010302!important}
 })();
 </script>
 <!-- ===== V4.225 FINAL 10ER OWNER – V261 ===== -->
-<script id="v4225-final-10er-owner">
-(function(){
-  function installV261Owner(){
-    const detail=window.v261RenderDetail;
-    if(typeof detail!=='function'){
-      console.error('V4.225: v261RenderDetail fehlt');
-      return false;
-    }
-
-    /* Alle alten Detail-Einstiegspunkte hart auf den neuesten Renderer legen. */
-    try{window.v251RenderDetail=detail}catch(e){}
-    try{v251RenderDetail=detail}catch(e){}
-    try{window.v244RenderSelectedDungeonMap=detail}catch(e){}
-    try{v244RenderSelectedDungeonMap=detail}catch(e){}
-    try{window.v064RenderMap=detail}catch(e){}
-    try{v064RenderMap=detail}catch(e){}
-
-    /* Nur Kartenmodus übernehmen. Kampf/Reward laufen weiter über das bestehende System. */
-    try{
-      const current=window.renderDungeon || renderDungeon;
-      if(typeof current==='function' && !current.__v4225DetailOwner){
-        const base=current;
-        const wrapped=function(){
-          try{
-            if(s?.dungeon?.layer==='dungeon' && s?.dungeon?.view==='map'){
-              return detail();
-            }
-          }catch(e){}
-          return base.apply(this,arguments);
-        };
-        wrapped.__v4225DetailOwner=true;
-        wrapped.__v4225Base=base;
-        try{window.renderDungeon=wrapped}catch(e){}
-        try{renderDungeon=wrapped}catch(e){}
-      }
-    }catch(e){console.error('V4.225 renderDungeon owner',e)}
-
-    /* Bereits offene Detailkarte sofort neu zeichnen. */
-    try{
-      const sec=document.getElementById('dungeon');
-      if(sec?.classList.contains('active') &&
-         s?.dungeon?.layer==='dungeon' &&
-         s?.dungeon?.view==='map'){
-        requestAnimationFrame(()=>{try{detail()}catch(e){console.error('V4.225 repaint',e)}});
-      }
-    }catch(e){}
-
-    return true;
-  }
-
-  installV261Owner();
-  window.addEventListener('pageshow',()=>setTimeout(installV261Owner,0),{passive:true});
-  document.addEventListener('visibilitychange',()=>{
-    if(!document.hidden)setTimeout(installV261Owner,0);
-  },{passive:true});
-})();
-</script>
+<!-- v4225-final-10er-owner retired in V8.009-DUNGEON-SPRINT-2: canonical D2/D5 owner supersedes it -->
 
 
 <!-- ===== V4.228 ABSOLUT LETZTER D6-OWNER ===== -->
@@ -76059,52 +76003,9 @@ body:has(#world.active){background:#010302!important}
     );
   }
 
-  function ensureD9PreviewButton(){
-    try{
-      if(previewActive()) return;
-      const card=document.getElementById('dungeonMapCard');
-      if(!card) return;
-      const selected=Number(s?.dungeon?.selected||0);
-      if(selected!==6) return; // derzeit von Dungeon 7 aus testen
-      if(card.querySelector('.v441-preview-launch')) return;
-
-      const stage=card.querySelector('.v261-stage');
-      if(!stage?.parentNode) return;
-
-      const btn=document.createElement('button');
-      btn.type='button';
-      btn.className='v441-preview-launch';
-      btn.textContent='👁 DUNGEON 9 VORSCHAU – NUR OPTIK, KEIN FORTSCHRITT';
-      btn.addEventListener('click',ev=>{
-        ev.preventDefault();
-        ev.stopPropagation();
-        window.v441OpenDungeon9Preview?.();
-      });
-      stage.parentNode.insertBefore(btn,stage);
-    }catch(e){}
-  }
-
-  /* Kein MutationObserver mehr für die Vorschau.
-     Nur nach echten Dungeon-Rendern neu einsetzen. */
-  try{
-    const baseRender=window.renderDungeon || renderDungeon;
-    if(typeof baseRender==='function' && !baseRender.__v446PostRender){
-      const wrapped=function(){
-        const out=baseRender.apply(this,arguments);
-        requestAnimationFrame(()=>{
-          try{ensureD9PreviewButton()}catch(e){}
-          try{paintTimer(true)}catch(e){}
-        });
-        return out;
-      };
-      wrapped.__v446PostRender=true;
-      try{window.renderDungeon=wrapped}catch(e){}
-      try{renderDungeon=wrapped}catch(e){}
-    }
-  }catch(e){}
-
-  setTimeout(ensureD9PreviewButton,120);
-  window.addEventListener('pageshow',()=>setTimeout(ensureD9PreviewButton,80),{passive:true});
+  /* Sprint 2: retired production-dead D9 preview launcher and its
+     renderDungeon wrapper. previewActive() remains as a safety guard for any
+     stale preview state, while timer/combat ownership stays unchanged. */
 
   /* =========================================================
      B) TIMER: eine einzige Zeitquelle.
@@ -76738,93 +76639,7 @@ body:has(#world.active){background:#010302!important}
 
 
 <!-- ===== V4.247 DUNGEON 9 PREVIEW BUTTON RESTORE ===== -->
-<script id="v447-d9-preview-button-restore">
-(function(){
-  'use strict';
-  if(window.__V447_D9_PREVIEW_BUTTON__) return;
-  window.__V447_D9_PREVIEW_BUTTON__=true;
-
-  function previewActive(){
-    return !!(
-      window.__v441Dungeon9Preview?.active ||
-      document.querySelector('#dungeonMapCard.v441-preview-mode')
-    );
-  }
-
-  function ensureButton(){
-    try{
-      if(previewActive()) return;
-
-      const dungeon=document.getElementById('dungeon');
-      if(!dungeon?.classList.contains('active')) return;
-
-      const card=document.getElementById('dungeonMapCard');
-      if(!card) return;
-
-      /* Auf Dungeon 7 ODER 8 darf die D9-Vorschau zum Testen geöffnet werden. */
-      const selected=Number(s?.dungeon?.selected||0);
-      if(selected!==6 && selected!==7) return;
-
-      if(card.querySelector('.v447-d9-preview-launch')) return;
-
-      const stage=card.querySelector('.v261-stage');
-      if(!stage?.parentNode) return;
-
-      /* Alte/unsichtbare Preview-Buttons sicher entfernen. */
-      card.querySelectorAll('.v441-preview-launch').forEach(el=>el.remove());
-
-      const btn=document.createElement('button');
-      btn.type='button';
-      btn.className='v441-preview-launch v447-d9-preview-launch';
-      btn.textContent='👁 DUNGEON 9 VORSCHAU – NUR OPTIK, KEIN FORTSCHRITT';
-      btn.style.display='block';
-      btn.style.width='100%';
-
-      btn.addEventListener('click',function(ev){
-        ev.preventDefault();
-        ev.stopPropagation();
-
-        if(typeof window.v441OpenDungeon9Preview==='function'){
-          window.v441OpenDungeon9Preview();
-        }
-      });
-
-      stage.parentNode.insertBefore(btn,stage);
-    }catch(e){
-      console.error('V4.247 D9 Preview Button',e);
-    }
-  }
-
-  /*
-    Bewusst KEIN MutationObserver.
-    Nur ein sehr leichter Existenz-Check. Solange der Button da ist,
-    wird überhaupt nichts am DOM geändert und V46 Timer/Kampf bleiben unberührt.
-  */
-  /* V6.97: permanent D9 preview polling retired. */
-
-  setTimeout(ensureButton,120);
-  window.addEventListener('pageshow',()=>setTimeout(ensureButton,100),{passive:true});
-  document.addEventListener('visibilitychange',()=>{
-    if(!document.hidden)setTimeout(ensureButton,100);
-  },{passive:true});
-
-  /* Auch nach normalen Dungeon-Rendern sofort wieder einsetzen. */
-  try{
-    const current=window.renderDungeon || renderDungeon;
-    if(typeof current==='function' && !current.__v447PreviewButtonOwner){
-      const base=current;
-      const wrapped=function(){
-        const out=base.apply(this,arguments);
-        setTimeout(ensureButton,80);
-        return out;
-      };
-      wrapped.__v447PreviewButtonOwner=true;
-      try{window.renderDungeon=wrapped}catch(e){}
-      try{renderDungeon=wrapped}catch(e){}
-    }
-  }catch(e){}
-})();
-</script>
+<!-- v447-d9-preview-button-restore retired in V8.009-DUNGEON-SPRINT-2: production v494 disables preview openers -->
 <!-- ===== /V4.247 DUNGEON 9 PREVIEW BUTTON RESTORE ===== -->
 
 <!-- ===== V4.248 DUNGEON 9 LAYOUT FIX ===== -->
@@ -77352,21 +77167,12 @@ window.__V468_DUNGEON_MASTER_DATA_ONLY__=true;
   try{ window.v441OpenDungeon9Preview=function(){}; }catch(e){}
   try{ window.v453OpenDungeonPreview=function(){}; }catch(e){}
 
-  /* Final render owner: preview state is cleared before old wrappers can inspect it. */
-  try{
-    const base=window.renderDungeon || (typeof renderDungeon==='function'?renderDungeon:null);
-    if(typeof base==='function' && !base.__v494Production){
-      const wrapped=function(){
-        previewOff();
-        const out=base.apply(this,arguments);
-        requestAnimationFrame(restoreLiveControls);
-        return out;
-      };
-      wrapped.__v494Production=true;
-      try{window.renderDungeon=wrapped}catch(e){}
-      try{renderDungeon=wrapped}catch(e){}
-    }
-  }catch(e){}
+  /* Sprint 2: called directly by the canonical D2 renderer after each
+     Dungeon render. No global renderDungeon wrapper is needed anymore. */
+  window.v494DungeonProductionSync=function(){
+    previewOff();
+    restoreLiveControls();
+  };
 
   /* One delegated live-map handler. This also repairs a button that was cloned
      by an old preview and therefore lost its original click listener. */
@@ -85532,19 +85338,8 @@ window.v531HardenHero=harden;
      no render wrapper, no combat timer, and no requestAnimationFrame owner. */
   /* V5.86: no periodic full-card repaint. Sync only after actual dungeon renders
      or user/navigation events. */
-  try{
-    const base=window.renderDungeon||renderDungeon;
-    if(typeof base==='function'&&!base.__v586VisualSync){
-      const wrapped=function(){
-        const out=base.apply(this,arguments);
-        setTimeout(sync,0);
-        return out;
-      };
-      wrapped.__v586VisualSync=true;
-      try{window.renderDungeon=wrapped}catch(_){ }
-      try{renderDungeon=wrapped}catch(_){ }
-    }
-  }catch(_){ }
+  /* Sprint 2: renderDungeon wrapper retired. The canonical D2 battle
+     pipeline invokes window.v585SyncDungeonBattle() directly. */
   document.addEventListener('click',ev=>{if(ev.target?.closest?.('#dungeon'))setTimeout(sync,0)},{passive:true});
   window.addEventListener('pageshow',sync,{passive:true});
   document.addEventListener('visibilitychange',()=>{if(!document.hidden)sync()},{passive:true});
