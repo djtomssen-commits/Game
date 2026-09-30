@@ -1,0 +1,48 @@
+name: V8.009 Dungeon D1 Boss Hotfix
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'js/features/dungeon/beta/v8009-d2-visual-owner.js'
+      - '.github/workflows/v8009-dungeon-d1-boss-hotfix.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  qa:
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Syntax-check Dungeon visual owner
+        run: node --check js/features/dungeon/beta/v8009-d2-visual-owner.js
+
+      - name: Validate D1 boss asset contract
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          owner=Path('js/features/dungeon/beta/v8009-d2-visual-owner.js').read_text(encoding='utf-8')
+          beta=Path('beta.html').read_text(encoding='utf-8')
+          stable=Path('index.html').read_text(encoding='utf-8')
+          asset='assets/v7195-base64/0f1a0253845b46d9a03d.jpg'
+          owner_ref='js/features/dungeon/beta/v8009-d2-visual-owner.js'
+
+          if not Path(asset).exists():
+              raise SystemExit('D1 boss asset missing')
+          if owner.count(asset) < 2:
+              raise SystemExit('D1 boss asset is not wired into bossArt + bossFallback')
+          if beta.count(owner_ref)!=1:
+              raise SystemExit('Beta visual owner include count != 1')
+          if owner_ref in stable:
+              raise SystemExit('Stable unexpectedly loads Beta visual owner')
+
+          print('D1 boss hotfix contract OK')
+          PY
+
+      - name: Diff sanity
+        run: git diff --check
