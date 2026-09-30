@@ -284,7 +284,7 @@ async function startServerQuest(i,argsThis,argsObj){
    toast('Quest nicht gestartet','warn',detail);return false
   }
   applyQuestState(r);persistLocal();paintAll();
-  try{window.v4127ScheduleQuestSkip?.()}catch(_){}
+  try{window.v4127EnsureQuestSkip?.()}catch(_){}
   try{if(s.quests?.active?.ends)window.glSyncQuestPushJob?.(Number(s.quests.active.ends))}catch(_){}
   return r;
  }finally{C.busy=false;window.__V7214_QUEST_MUTATION_BUSY__=false}
@@ -348,7 +348,7 @@ function claimWrapper(base){
    try{window.v4121AfterQuestClaim?.(rewardArtBefore)}catch(_){}
    try{window.v229QuestClaimSync?.()}catch(_){}
    try{window.v392PaintActive?.()}catch(_){}
-   try{window.v4127ScheduleQuestSkip?.()}catch(_){}
+   try{window.v4127EnsureQuestSkip?.()}catch(_){}
    try{if(!s?.quests?.active)void window.glCancelQuestPushJob?.()}catch(_){}
   }
  };
@@ -375,7 +375,7 @@ if(typeof baseSkip==='function'){
    if(r.active){ensureShape();s.quests.active=clone(r.active)}
    if(Number.isFinite(Number(r.time_seeds)))s.timeSeeds=Math.max(0,Number(r.time_seeds));
    persistLocal();paintAll();
-   try{window.v4127ScheduleQuestSkip?.()}catch(_){};try{window.glCancelQuestPushJob?.()}catch(_){}
+   try{window.v4127EnsureQuestSkip?.()}catch(_){};try{window.glCancelQuestPushJob?.()}catch(_){}
    return r;
   }finally{C.busy=false;window.__V7214_QUEST_MUTATION_BUSY__=false}
  };
