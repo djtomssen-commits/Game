@@ -55,7 +55,7 @@
    window.v257GuildResultHtml=v257GuildResultHtml;
  }
  function version(){
-   if(IS_BETA){window.__V8009_HOME10_V410_VERSION_RETIRED__=true;return}
+   if(String(window.GROW_RELEASE_CHANNEL||'stable')==='beta'){window.__V8009_HOME10_V410_VERSION_RETIRED__=true;return}
    document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version').forEach(el=>{if(el)el.textContent=VERSION});
    document.querySelectorAll('.v366-ver').forEach(el=>el.textContent='V4.11');
  }
