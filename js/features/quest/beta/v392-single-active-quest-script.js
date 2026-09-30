@@ -191,13 +191,6 @@
   /* Reuse the EXISTING one-second quest timer through one direct tick hook. */
   window.v392TickActive=tickActive;
 
-  /* V7.122: duplicate quest-nav active paint retired; renderQuests owns it. */
-
-  setTimeout(()=>{
-    paintActive();
-    document.querySelectorAll(
-      '.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version'
-    ).forEach(el=>{if(el)el.textContent=VERSION});
-    document.querySelectorAll('.v366-ver').forEach(el=>el.textContent='V4.11');
-  },650);
+  /* V8.009: delayed startup active-paint retired.
+     v6344 invokes v392PaintActive directly from the canonical render path. */
 })();
