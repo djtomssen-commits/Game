@@ -1,0 +1,227 @@
+{
+  "build": "V8.009-DUNGEON-D9-D1-POLISH-AUDIT",
+  "scripts": {
+    "v454-d1-feinschliff-script": {
+      "found": true,
+      "bytes": 2980,
+      "setTimeout_count": 1,
+      "requestAnimationFrame_count": 2,
+      "addEventListener_count": 1,
+      "MutationObserver_count": 1,
+      "refs": [
+        {
+          "line": 49,
+          "text": "const funcs=['v426RenderDetail','v251RenderDetail','v244RenderSelectedDungeonMap'];"
+        },
+        {
+          "line": 55,
+          "text": "const wrap=function(){const out=base.apply(this,arguments);requestAnimationFrame(decorate);return out};"
+        },
+        {
+          "line": 58,
+          "text": "try{if(name==='v251RenderDetail')v251RenderDetail=wrap;if(name==='v244RenderSelectedDungeonMap')v244RenderSelectedDungeonMap=wrap}catch(e){}"
+        },
+        {
+          "line": 62,
+          "text": "requestAnimationFrame(decorate);"
+        },
+        {
+          "line": 63,
+          "text": "document.addEventListener('click',()=>setTimeout(decorate,40),true);"
+        }
+      ],
+      "body": "\n(function(){\n  'use strict';\n  if(window.__V454_D1_FEINSCHLIFF__)return;\n  window.__V454_D1_FEINSCHLIFF__=true;\n  const P=['assets/v7195-base64/4583d2c2217b99d15b91.jpg', 'assets/v7195-base64/ee919763875facf5b3b6.jpg', 'assets/v7195-base64/8712de00a158f959e38a.jpg', 'assets/v7195-base64/4f6fc6c1c7ccefde4135.jpg', 'assets/v7195-base64/bedd65f73777c8416b0c.jpg', 'assets/v7195-base64/f8536ecfcfdd643284f0.jpg', 'assets/v7195-base64/5bd000a5fade11346630.jpg', 'assets/v7195-base64/862f132710f1a1fdbefb.jpg', 'assets/v7195-base64/7f0b7b112e9c10916051.jpg', 'assets/v7195-base64/0f1a0253845b46d9a03d.jpg'];\n  try{\n    if(Array.isArray(window.V064_D1_NAMES)){}\n  }catch(e){}\n  try{\n    /* const-Array ist selbst unveränderlich gebunden, seine Einträge aber schon. */\n    if(typeof V064_D1_NAMES!=='undefined' && Array.isArray(V064_D1_NAMES)){\n      V064_D1_NAMES[0]='Blattkriecher';\n      V064_D1_NAMES[1]='Wurzelbeißer';\n      V064_D1_NAMES[2]='Spinnmilben-Brut';\n      V064_D1_NAMES[3]='Kleeblattkriecher';\n      V064_D1_NAMES[4]='Netzjäger';\n      V064_D1_NAMES[5]='Giftspringer';\n      V064_D1_NAMES[6]='Brutwächter';\n      V064_D1_NAMES[7]='Kellerweber';\n      V064_D1_NAMES[8]='Kokonhüter';\n      V064_D1_NAMES[9]='Milbenkönigin';\n    }\n    const icons=['🪰','🐛','🍄','🌿','🕷️','🐸','🐛','🕷️','🥚','🕷️'];\n    dungeons?.[0]?.enemies?.forEach((e,i)=>{\n      if(typeof V064_D1_NAMES!=='undefined'&&V064_D1_NAMES[i])e.name=V064_D1_NAMES[i];\n      if(icons[i])e.icon=icons[i];\n    });\n  }catch(e){console.warn('V4.254 D1 data',e)}\n\n  function decorate(){\n    try{\n      const card=document.getElementById('dungeonMapCard');\n      if(!card?.classList.contains('v426-ref-d1'))return;\n      const title=card.querySelector('.v261-title');\n      if(title && title.innerHTML!=='DER VERSEUCHTE<br>KELLER')title.innerHTML='DER VERSEUCHTE<br>KELLER';\n      let ri=0;\n      try{ri=Math.max(0,Math.min(9,Number(v048RoomIndex?.(0))||0))}catch(e){}\n      const thumb=card.querySelector('.v261-thumb');\n      if(thumb){\n        thumb.textContent='';\n        const want=`url(\"${P[ri]}\")`;\n        if(thumb.style.backgroundImage!==want)thumb.style.backgroundImage=want;\n      }\n    }catch(e){}\n  }\n\n  /* Kein MutationObserver: nur nach echten Render-Aktionen dekorieren. */\n  const funcs=['v426RenderDetail','v251RenderDetail','v244RenderSelectedDungeonMap'];\n  funcs.forEach(name=>{\n    try{\n      const fn=window[name];\n      if(typeof fn==='function'&&!fn.__v454D1Decor){\n        const base=fn;\n        const wrap=function(){const out=base.apply(this,arguments);requestAnimationFrame(decorate);return out};\n        wrap.__v454D1Decor=true;\n        window[name]=wrap;\n        try{if(name==='v251RenderDetail')v251RenderDetail=wrap;if(name==='v244RenderSelectedDungeonMap')v244RenderSelectedDungeonMap=wrap}catch(e){}\n      }\n    }catch(e){}\n  });\n  requestAnimationFrame(decorate);\n  document.addEventListener('click',()=>setTimeout(decorate,40),true);\n})();\n"
+    },
+    "v458-d1-road-and-sign-final": {
+      "found": true,
+      "bytes": 1234,
+      "setTimeout_count": 2,
+      "requestAnimationFrame_count": 2,
+      "addEventListener_count": 2,
+      "MutationObserver_count": 0,
+      "refs": [
+        {
+          "line": 16,
+          "text": "requestAnimationFrame(paintD1);"
+        },
+        {
+          "line": 17,
+          "text": "document.addEventListener('click',()=>setTimeout(paintD1,35),true);"
+        },
+        {
+          "line": 18,
+          "text": "window.addEventListener('pageshow',()=>setTimeout(paintD1,60),{passive:true});"
+        },
+        {
+          "line": 20,
+          "text": "const fn=window.v426RenderDetail;"
+        },
+        {
+          "line": 23,
+          "text": "const wrap=function(){const out=base.apply(this,arguments);requestAnimationFrame(paintD1);return out};"
+        },
+        {
+          "line": 25,
+          "text": "window.v426RenderDetail=wrap;"
+        }
+      ],
+      "body": "\n(function(){\n  'use strict';\n  function paintD1(){\n    try{\n      const card=document.getElementById('dungeonMapCard');\n      if(!card?.classList.contains('v426-ref-d1'))return;\n      const pts='15,12 26,14 40,17 54,19 67,22 77,25 84,31 72,36 56,39 36,40 15,42 24,47 36,52 47,57 57,61 67,57 76,53 83,48 86,43 83,55 81,68 80,82';\n      card.querySelectorAll('.v261-road polyline').forEach(el=>el.setAttribute('points',pts));\n      const sign=card.querySelector('.v261-signboard');\n      if(sign)sign.innerHTML='ACHTUNG<br>VERSEUCHTER KELLER<br>BETRETEN AUF<br>EIGENE GEFAHR!<small>☠</small>';\n      const title=card.querySelector('.v261-title');\n      if(title)title.innerHTML='DER<br>VERSEUCHTE<br>KELLER';\n    }catch(e){}\n  }\n  requestAnimationFrame(paintD1);\n  document.addEventListener('click',()=>setTimeout(paintD1,35),true);\n  window.addEventListener('pageshow',()=>setTimeout(paintD1,60),{passive:true});\n  try{\n    const fn=window.v426RenderDetail;\n    if(typeof fn==='function'&&!fn.__v458D1Paint){\n      const base=fn;\n      const wrap=function(){const out=base.apply(this,arguments);requestAnimationFrame(paintD1);return out};\n      wrap.__v458D1Paint=true;\n      window.v426RenderDetail=wrap;\n    }\n  }catch(e){}\n})();\n"
+    },
+    "v459-d1-right-side-thumb-final-script": {
+      "found": true,
+      "bytes": 2276,
+      "setTimeout_count": 3,
+      "requestAnimationFrame_count": 2,
+      "addEventListener_count": 3,
+      "MutationObserver_count": 1,
+      "refs": [
+        {
+          "line": 36,
+          "text": "requestAnimationFrame(paint);"
+        },
+        {
+          "line": 37,
+          "text": "document.addEventListener('click',()=>setTimeout(paint,35),true);"
+        },
+        {
+          "line": 38,
+          "text": "window.addEventListener('pageshow',()=>setTimeout(paint,60),{passive:true});"
+        },
+        {
+          "line": 39,
+          "text": "document.addEventListener('visibilitychange',()=>{if(!document.hidden)setTimeout(paint,50)},{passive:true});"
+        },
+        {
+          "line": 42,
+          "text": "['v426RenderDetail','v251RenderDetail','v244RenderSelectedDungeonMap'].forEach(name=>{"
+        },
+        {
+          "line": 47,
+          "text": "const wrap=function(){const out=base.apply(this,arguments);requestAnimationFrame(paint);return out};"
+        },
+        {
+          "line": 50,
+          "text": "try{if(name==='v251RenderDetail')v251RenderDetail=wrap;if(name==='v244RenderSelectedDungeonMap')v244RenderSelectedDungeonMap=wrap}catch(e){}"
+        }
+      ],
+      "body": "\n(function(){\n  'use strict';\n  if(window.__V459_D1_FINAL__)return;\n  window.__V459_D1_FINAL__=true;\n\n  function paint(){\n    try{\n      const card=document.getElementById('dungeonMapCard');\n      if(!card?.classList.contains('v426-ref-d1'))return;\n\n      /* Pfad exakt durch die jetzt entzerrten Knoten führen. */\n      const pts='15,12 27,14 40,17 54,19 67,22 76,24 82,28 71,35 55,39 34,40 15,42 25,47 36,52 46,57 56,62 65,59 73,55 80,50 84,46 82,58 81,70 80,83';\n      card.querySelectorAll('.v261-road polyline').forEach(el=>el.setAttribute('points',pts));\n\n      /* Untere aktuelle Gegner-Kachel wieder sichtbar. */\n      let ri=0;\n      try{ri=Math.max(0,Math.min(9,Number(v048RoomIndex?.(0))||0))}catch(e){}\n      const thumb=card.querySelector('.v261-thumb');\n      if(thumb){\n        const icon=dungeons?.[0]?.enemies?.[ri]?.icon||'👹';\n        if(thumb.textContent!==icon)thumb.textContent=icon;\n        thumb.style.setProperty('background-image','none','important');\n        thumb.style.setProperty('color','#fff','important');\n      }\n\n      /* langer Name ohne unnötigen Bindestrich */\n      try{\n        if(dungeons?.[0]?.enemies?.[3])dungeons[0].enemies[3].name='Kleeblattkriecher';\n      }catch(e){}\n      const n4=card.querySelector('[data-v261-room=\"3\"] .v261-name');\n      if(n4)n4.textContent='Kleeblattkriecher';\n    }catch(e){}\n  }\n\n  requestAnimationFrame(paint);\n  document.addEventListener('click',()=>setTimeout(paint,35),true);\n  window.addEventListener('pageshow',()=>setTimeout(paint,60),{passive:true});\n  document.addEventListener('visibilitychange',()=>{if(!document.hidden)setTimeout(paint,50)},{passive:true});\n\n  /* Nur nach echten D1-Rendern nachmalen; kein MutationObserver. */\n  ['v426RenderDetail','v251RenderDetail','v244RenderSelectedDungeonMap'].forEach(name=>{\n    try{\n      const fn=window[name];\n      if(typeof fn==='function'&&!fn.__v459D1Paint){\n        const base=fn;\n        const wrap=function(){const out=base.apply(this,arguments);requestAnimationFrame(paint);return out};\n        wrap.__v459D1Paint=true;\n        window[name]=wrap;\n        try{if(name==='v251RenderDetail')v251RenderDetail=wrap;if(name==='v244RenderSelectedDungeonMap')v244RenderSelectedDungeonMap=wrap}catch(e){}\n      }\n    }catch(e){}\n  });\n})();\n"
+    },
+    "v460-d1-thumb-owner-fix-script": {
+      "found": true,
+      "bytes": 2272,
+      "setTimeout_count": 4,
+      "requestAnimationFrame_count": 1,
+      "addEventListener_count": 3,
+      "MutationObserver_count": 0,
+      "refs": [
+        {
+          "line": 37,
+          "text": "requestAnimationFrame(()=>{"
+        },
+        {
+          "line": 39,
+          "text": "setTimeout(paintThumb,70); /* nach alten D1-Dekorierern final übernehmen */"
+        },
+        {
+          "line": 44,
+          "text": "window.addEventListener('pageshow',()=>setTimeout(paintThumb,90),{passive:true});"
+        },
+        {
+          "line": 45,
+          "text": "document.addEventListener('visibilitychange',()=>{if(!document.hidden)setTimeout(paintThumb,90)},{passive:true});"
+        },
+        {
+          "line": 46,
+          "text": "document.addEventListener('click',()=>setTimeout(paintThumb,90),true);"
+        },
+        {
+          "line": 48,
+          "text": "['v426RenderDetail','v251RenderDetail','v244RenderSelectedDungeonMap'].forEach(name=>{"
+        },
+        {
+          "line": 56,
+          "text": "try{if(name==='v251RenderDetail')v251RenderDetail=wrap;if(name==='v244RenderSelectedDungeonMap')v244RenderSelectedDungeonMap=wrap}catch(e){}"
+        }
+      ],
+      "body": "\n(function(){\n  'use strict';\n  if(window.__V460_D1_THUMB_OWNER__)return;\n  window.__V460_D1_THUMB_OWNER__=true;\n\n  function paintThumb(){\n    try{\n      const card=document.getElementById('dungeonMapCard');\n      if(!card?.classList.contains('v426-ref-d1'))return;\n\n      let ri=0;\n      try{ri=Math.max(0,Math.min(9,Number(v048RoomIndex?.(0))||0))}catch(e){}\n\n      const thumb=card.querySelector('.v261-thumb');\n      const ring=card.querySelector(`[data-v261-room=\"${ri}\"] .v261-ring`);\n      if(!thumb||!ring)return;\n\n      const bg=getComputedStyle(ring).backgroundImage;\n      if(bg && bg!=='none'){\n        thumb.textContent='';\n        thumb.style.setProperty('background-image',bg,'important');\n        thumb.style.setProperty('background-size','cover','important');\n        thumb.style.setProperty('background-position','center center','important');\n        thumb.style.setProperty('background-repeat','no-repeat','important');\n      }else{\n        const icon=dungeons?.[0]?.enemies?.[ri]?.icon||'👹';\n        thumb.style.setProperty('background-image','none','important');\n        thumb.style.setProperty('color','#fff','important');\n        thumb.style.setProperty('font-size','30px','important');\n        thumb.textContent=icon;\n      }\n    }catch(e){}\n  }\n\n  function schedule(){\n    requestAnimationFrame(()=>{\n      paintThumb();\n      setTimeout(paintThumb,70); /* nach alten D1-Dekorierern final übernehmen */\n    });\n  }\n\n  schedule();\n  window.addEventListener('pageshow',()=>setTimeout(paintThumb,90),{passive:true});\n  document.addEventListener('visibilitychange',()=>{if(!document.hidden)setTimeout(paintThumb,90)},{passive:true});\n  document.addEventListener('click',()=>setTimeout(paintThumb,90),true);\n\n  ['v426RenderDetail','v251RenderDetail','v244RenderSelectedDungeonMap'].forEach(name=>{\n    try{\n      const fn=window[name];\n      if(typeof fn==='function'&&!fn.__v460D1Thumb){\n        const base=fn;\n        const wrap=function(){const out=base.apply(this,arguments);schedule();return out};\n        wrap.__v460D1Thumb=true;\n        window[name]=wrap;\n        try{if(name==='v251RenderDetail')v251RenderDetail=wrap;if(name==='v244RenderSelectedDungeonMap')v244RenderSelectedDungeonMap=wrap}catch(e){}\n      }\n    }catch(e){}\n  });\n})();\n"
+    },
+    "v461-d1-node9-collision-fix-script": {
+      "found": true,
+      "bytes": 1450,
+      "setTimeout_count": 3,
+      "requestAnimationFrame_count": 2,
+      "addEventListener_count": 3,
+      "MutationObserver_count": 0,
+      "refs": [
+        {
+          "line": 17,
+          "text": "requestAnimationFrame(paint);"
+        },
+        {
+          "line": 18,
+          "text": "document.addEventListener('click',()=>setTimeout(paint,45),true);"
+        },
+        {
+          "line": 19,
+          "text": "window.addEventListener('pageshow',()=>setTimeout(paint,70),{passive:true});"
+        },
+        {
+          "line": 20,
+          "text": "document.addEventListener('visibilitychange',()=>{if(!document.hidden)setTimeout(paint,60)},{passive:true});"
+        },
+        {
+          "line": 22,
+          "text": "['v426RenderDetail','v251RenderDetail','v244RenderSelectedDungeonMap'].forEach(name=>{"
+        },
+        {
+          "line": 27,
+          "text": "const wrap=function(){const out=base.apply(this,arguments);requestAnimationFrame(paint);return out};"
+        },
+        {
+          "line": 30,
+          "text": "try{if(name==='v251RenderDetail')v251RenderDetail=wrap;if(name==='v244RenderSelectedDungeonMap')v244RenderSelectedDungeonMap=wrap}catch(e){}"
+        }
+      ],
+      "body": "\n(function(){\n  'use strict';\n  if(window.__V461_D1_NODE9__)return;\n  window.__V461_D1_NODE9__=true;\n\n  function paint(){\n    try{\n      const card=document.getElementById('dungeonMapCard');\n      if(!card?.classList.contains('v426-ref-d1'))return;\n      /* Pfad durch die finalen D1-Positionen: 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> Boss. */\n      const pts='15,12 27,14 40,17 54,19 67,22 76,24 82,27 70,34 53,38 33,40 15,42 25,47 36,52 46,57 56,62 64,59 72,55 80,53 90,49 87,60 83,71 80,83';\n      card.querySelectorAll('.v261-road polyline').forEach(el=>el.setAttribute('points',pts));\n    }catch(e){}\n  }\n\n  requestAnimationFrame(paint);\n  document.addEventListener('click',()=>setTimeout(paint,45),true);\n  window.addEventListener('pageshow',()=>setTimeout(paint,70),{passive:true});\n  document.addEventListener('visibilitychange',()=>{if(!document.hidden)setTimeout(paint,60)},{passive:true});\n\n  ['v426RenderDetail','v251RenderDetail','v244RenderSelectedDungeonMap'].forEach(name=>{\n    try{\n      const fn=window[name];\n      if(typeof fn==='function'&&!fn.__v461D1Paint){\n        const base=fn;\n        const wrap=function(){const out=base.apply(this,arguments);requestAnimationFrame(paint);return out};\n        wrap.__v461D1Paint=true;\n        window[name]=wrap;\n        try{if(name==='v251RenderDetail')v251RenderDetail=wrap;if(name==='v244RenderSelectedDungeonMap')v244RenderSelectedDungeonMap=wrap}catch(e){}\n      }\n    }catch(e){}\n  });\n})();\n"
+    },
+    "v463-d1-screenshot-polish-script": {
+      "found": true,
+      "bytes": 1430,
+      "setTimeout_count": 3,
+      "requestAnimationFrame_count": 2,
+      "addEventListener_count": 3,
+      "MutationObserver_count": 0,
+      "refs": [
+        {
+          "line": 17,
+          "text": "requestAnimationFrame(paint);"
+        },
+        {
+          "line": 18,
+          "text": "document.addEventListener('click',()=>setTimeout(paint,45),true);"
+        },
+        {
+          "line": 19,
+          "text": "window.addEventListener('pageshow',()=>setTimeout(paint,70),{passive:true});"
+        },
+        {
+          "line": 20,
+          "text": "document.addEventListener('visibilitychange',()=>{if(!document.hidden)setTimeout(paint,60)},{passive:true});"
+        },
+        {
+          "line": 22,
+          "text": "['v426RenderDetail','v251RenderDetail','v244RenderSelectedDungeonMap'].forEach(name=>{"
+        },
+        {
+          "line": 27,
+          "text": "const wrap=function(){const out=base.apply(this,arguments);requestAnimationFrame(paint);return out};"
+        },
+        {
+          "line": 30,
+          "text": "try{if(name==='v251RenderDetail')v251RenderDetail=wrap;if(name==='v244RenderSelectedDungeonMap')v244RenderSelectedDungeonMap=wrap}catch(e){}"
+        }
+      ],
+      "body": "\n(function(){\n  'use strict';\n  if(window.__V463_D1_POLISH__)return;\n  window.__V463_D1_POLISH__=true;\n\n  function paint(){\n    try{\n      const card=document.getElementById('dungeonMapCard');\n      if(!card?.classList.contains('v426-ref-d1'))return;\n      /* Weg an die neuen D1-Screenshot-Positionen anpassen. */\n      const pts='14,15 28,17 43,19 56,21 67,23 77,26 83,31 71,35 56,39 37,43 19,49 30,54 40,61 49,68 57,75 66,70 74,64 81,58 89,50 86,62 83,74 80,85';\n      card.querySelectorAll('.v261-road polyline').forEach(el=>el.setAttribute('points',pts));\n    }catch(e){}\n  }\n\n  requestAnimationFrame(paint);\n  document.addEventListener('click',()=>setTimeout(paint,45),true);\n  window.addEventListener('pageshow',()=>setTimeout(paint,70),{passive:true});\n  document.addEventListener('visibilitychange',()=>{if(!document.hidden)setTimeout(paint,60)},{passive:true});\n\n  ['v426RenderDetail','v251RenderDetail','v244RenderSelectedDungeonMap'].forEach(name=>{\n    try{\n      const fn=window[name];\n      if(typeof fn==='function'&&!fn.__v463D1Paint){\n        const base=fn;\n        const wrap=function(){const out=base.apply(this,arguments);requestAnimationFrame(paint);return out};\n        wrap.__v463D1Paint=true;\n        window[name]=wrap;\n        try{if(name==='v251RenderDetail')v251RenderDetail=wrap;if(name==='v244RenderSelectedDungeonMap')v244RenderSelectedDungeonMap=wrap}catch(e){}\n      }\n    }catch(e){}\n  });\n})();\n"
+    }
+  }
+}
