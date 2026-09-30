@@ -1,0 +1,114 @@
+name: V8.009 Dungeon Sprint 2 Finalize
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/v8009_dungeon_sprint2_finalize.py'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  finalize:
+    runs-on: ubuntu-latest
+    timeout-minutes: 9
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Finalize Dungeon owner cleanup
+        run: python3 .github/scripts/v8009_dungeon_sprint2_finalize.py
+
+      - name: Syntax-check canonical Dungeon JS
+        run: |
+          node --check js/features/dungeon/beta/v8009-d2-visual-owner.js
+          node --check js/features/dungeon/beta/v8009-d2-detail-render-lock.js
+          node --check js/features/dungeon/beta/v8009-d5-final-detail-seal.js
+          node --check js/features/dungeon/beta/v8009-d8-detail-decorator.js
+          node --check js/features/dungeon/legacy/v8009-sprint2-retired-v426-pos-fix.js
+
+      - name: Validate D1-D20 asset contract
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import json,re
+          beta=Path('beta.html').read_text(encoding='utf-8')
+          report=json.loads(Path('V8009_DUNGEON_SPRINT2_FINAL.json').read_text(encoding='utf-8'))
+
+          missing=[]
+          for d in range(1,21):
+              if not Path(f'v474_dungeon_assets/d{d}_bg.jpg').exists():
+                  missing.append(f'd{d}_bg.jpg')
+              for room in range(1,10):
+                  if not Path(f'v474_dungeon_assets/d{d}_{room}.png').exists():
+                      missing.append(f'd{d}_{room}.png')
+          for d in range(10,21):
+              if not Path(f'v474_dungeon_assets/d{d}_boss.png').exists():
+                  missing.append(f'd{d}_boss.png')
+          for p in (
+              'assets/v7195-base64/0f1a0253845b46d9a03d.jpg',
+              'assets/v7195-base64/10036d96d08155bdc84a.svg',
+          ):
+              if not Path(p).exists(): missing.append(p)
+          if missing: raise SystemExit('missing canonical Dungeon assets: '+', '.join(missing))
+
+          if report['late_renderDungeon_assigners']:
+              raise SystemExit('late render owner remains')
+          if report['late_v261_assigners']:
+              raise SystemExit('late v261 owner remains')
+          if report.get('v7166_wrapper_mode') is not False:
+              raise SystemExit('v7166 wrapper mode still active')
+
+          # D1 CSS Sprint state.
+          if 'css/features/dungeon/beta/v8009-d11-v461-d1-node9-collision-fix.css' in beta:
+              raise SystemExit('retired v461 CSS active again')
+          for p in (
+              'css/features/dungeon/beta/v8009-sprint1-v455-residual.css',
+              'css/features/dungeon/beta/v8009-sprint1-v456-residual.css',
+              'css/features/dungeon/beta/v8009-sprint1-v459-residual.css',
+          ):
+              if beta.count(p)!=1: raise SystemExit(f'residual D1 CSS include missing: {p}')
+
+          print('D1-D20 canonical asset/owner contract OK')
+          PY
+
+      - name: Syntax-check critical inline Dungeon systems
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          beta=Path('beta.html').read_text(encoding='utf-8')
+          ids=(
+            'v246-dungeon-final-fight-reward-fix',
+            'v4165-dungeon-key-live-battle-index-fix',
+            'v446-dungeon-runtime-root-fix',
+            'v458-key-live-unlock',
+            'v467-hard-live-dungeon-key-authority',
+            'v482-dungeon-paid-timer-owner',
+            'v494-production-dungeon-fix-script',
+            'v585-dungeon-safe-owner-core',
+            'v7051-atomic-dungeon-receipt-client',
+          )
+          for sid in ids:
+              m=re.search(r'<script[^>]*id=["\']'+re.escape(sid)+r'["\'][^>]*>([\s\S]*?)</script\s*>',beta,re.I)
+              if not m: raise SystemExit(f'missing critical inline script: {sid}')
+              Path('/tmp/'+sid+'.js').write_text(m.group(1),encoding='utf-8')
+          PY
+          for f in /tmp/v246-dungeon-final-fight-reward-fix.js                    /tmp/v4165-dungeon-key-live-battle-index-fix.js                    /tmp/v446-dungeon-runtime-root-fix.js                    /tmp/v458-key-live-unlock.js                    /tmp/v467-hard-live-dungeon-key-authority.js                    /tmp/v482-dungeon-paid-timer-owner.js                    /tmp/v494-production-dungeon-fix-script.js                    /tmp/v585-dungeon-safe-owner-core.js                    /tmp/v7051-atomic-dungeon-receipt-client.js; do
+            node --check "$f"
+          done
+
+      - name: Diff sanity
+        run: git diff --check
+
+      - name: Commit Sprint 2 finalization
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add beta.html             js/features/dungeon/legacy/v8009-sprint2-retired-v426-pos-fix.js             V8009_DUNGEON_SPRINT2_FINAL.json
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "V8.009 DUNGEON-SPRINT-2: finalize canonical owner chain"
+          git push
