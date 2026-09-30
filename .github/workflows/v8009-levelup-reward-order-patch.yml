@@ -1,0 +1,32 @@
+name: V8.009 Levelup Reward Order Patch
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/v8009_levelup_reward_order_patch.py'
+      - '.github/workflows/v8009-levelup-reward-order-patch.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 .github/scripts/v8009_levelup_reward_order_patch.py
+      - run: |
+          node --check js/features/quest/beta/v7045-atomic-quest-receipt-client.js
+          python3 - <<'PY'
+          from pathlib import Path
+          s=Path('beta.html').read_text(encoding='utf-8')
+          assert 'window.v420ShowLevelUp=show' in s
+          assert 'window.v420LevelUpDone=()=>levelDone' in s
+          q=Path('js/features/quest/beta/v7045-atomic-quest-receipt-client.js').read_text(encoding='utf-8')
+          assert "await Promise.resolve(window.v420ShowLevelUp(oldLevel,newLevel))" in q
+          PY
+      - run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add beta.html js/features/quest/beta/v7045-atomic-quest-receipt-client.js
+          git commit -m "V8.009 QUEST: show level-up before reward popup"
+          git push
