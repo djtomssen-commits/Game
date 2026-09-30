@@ -179,32 +179,12 @@ function v233ClaimQuest(){
 }
 
 
-/*
-  Capture phase bypasses every stale historical onclick reference.
-  Only this V4.02 path handles the reward button.
-*/
-document.addEventListener('click',e=>{
-  const target=e.target;
-  if(!(target instanceof Element))return;
-
-  const btn=target.closest('#claimQuest');
-  if(!btn)return;
-
-  e.preventDefault();
-  e.stopImmediatePropagation();
-
-  v233ClaimQuest();
-},true);
-
-
-/* Direct render hook used by the canonical Quest renderer. */
-window.v233BindClaimButton=()=>{
-  const btn=document.querySelector('#claimQuest');
-  if(btn){
-    btn.onclick=null;
-    btn.dataset.v233Claim='1';
-  }
-};
+/* V8.009 Quest consolidation:
+   The canonical active-card owner v392 binds #v392ClaimQuest directly to
+   v233ClaimQuest. The historical document-level capture owner for #claimQuest
+   is retired so one click has one owner. Keep this hook as a compatibility
+   no-op because the canonical renderer still calls it. */
+window.v233BindClaimButton=()=>{};
 
 
 setTimeout(()=>{
