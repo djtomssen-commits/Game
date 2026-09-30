@@ -640,6 +640,9 @@
         if(s?.dungeon)s.dungeon.view='map';
         out=renderMapDirect();
       }
+      /* Sprint 2: production preview cleanup/live-control repair is invoked
+         directly by the canonical owner; no v494 renderDungeon wrapper needed. */
+      try{window.v494DungeonProductionSync?.()}catch(_){ }
       try{window.v433PaintResources?.()}catch(_){ }
       queue(true);
       requestAnimationFrame(()=>{try{window.v7144CleanDungeonMap?.()}catch(_){ }try{window.v7144PaintDungeonTimer?.(true)}catch(_){ }});
