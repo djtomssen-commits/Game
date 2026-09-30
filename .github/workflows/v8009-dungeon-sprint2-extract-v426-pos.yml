@@ -1,0 +1,24 @@
+name: V8.009 Dungeon Sprint 2 Extract v426 Pos
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/v8009_dungeon_sprint2_extract_v426_pos.py'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  extract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 .github/scripts/v8009_dungeon_sprint2_extract_v426_pos.py
+      - name: Commit report
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add V8009_DUNGEON_SPRINT2_V426_POS.json
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "V8.009 DUNGEON-SPRINT-2: inspect v426 position wrapper"
+          git push
