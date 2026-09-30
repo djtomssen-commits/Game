@@ -1,0 +1,18 @@
+name: V8.009 Levelup Owner Audit
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 .github/scripts/v8009_levelup_owner_audit.py
+      - run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add V8009_LEVELUP_OWNER_AUDIT.json
+          git commit -m "V8.009: record levelup owner audit" || exit 0
+          git push
