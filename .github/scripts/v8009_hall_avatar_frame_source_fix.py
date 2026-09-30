@@ -47,12 +47,13 @@ replace_once(
 'mobile podium avatar'
 )
 
-# Retire Hall ranking from the old v7137 post-render frame wrapper.
-replace_once(
-"['v073LoadRanking','v073SearchPlayer','v073LoadFriends'].forEach(name=>",
-"['v073SearchPlayer','v073LoadFriends'].forEach(name=>",
-'v7137 Hall ranking wrapper removal'
-)
+# Hall ranking must not be in the old v7137 post-render frame wrapper.
+old_wrapper="['v073LoadRanking','v073SearchPlayer','v073LoadFriends'].forEach(name=>"
+new_wrapper="['v073SearchPlayer','v073LoadFriends'].forEach(name=>"
+if old_wrapper in beta:
+    replace_once(old_wrapper,new_wrapper,'v7137 Hall ranking wrapper removal')
+elif new_wrapper not in beta:
+    raise RuntimeError('v7137 social frame wrapper state is unexpected')
 
 # Frame changes must refresh Hall through the canonical renderer, not repaint it afterwards.
 replace_once(
