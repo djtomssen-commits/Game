@@ -1,0 +1,23 @@
+{
+  "build": "V8.009-HOME-28-BETA",
+  "phase": "Inactive Startseite helper follow-up cleanup",
+  "scope": "beta only",
+  "base_commit": "b1db33d2434bb742fe67455bbd786896c6c6643b",
+  "findings": [
+    "HOME-27 stopped the canonical renderer from rebuilding hidden Startseite DOM, but the helper wrapper still queued Growroom snapshot work and a layout-fit pass after that no-op.",
+    "Those follow-up tasks cannot affect a hidden world screen."
+  ],
+  "changes": [
+    "After an inactive non-forced v085InstallWorld no-op, the helper now returns without queuing post-render Growroom or fit work.",
+    "Visible and forced Startseite renders keep the existing post-render scheduling.",
+    "Re-entering Startseite still catches up state and resumes normal layout fitting."
+  ],
+  "files": [
+    "js/system/performance/v7288-home-adaptive-fit-script.js",
+    "js/features/home/beta/v8009-home-renderer.js",
+    ".github/scripts/v8009_home_events_browser_qa.mjs"
+  ],
+  "stable_behavior_changed": false,
+  "gameplay_changed": false,
+  "server_authority_changed": false
+}

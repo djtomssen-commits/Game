@@ -121,6 +121,7 @@ const v8009HomeHeaderFix={
   growStatusPatchCalls:0,
   growStatusPatches:0,
   growPostRenderSchedules:0,
+  inactivePostRenderSkips:0,
   growReadyTimerFires:0,
   growWeatherReschedules:0,
   xpDecoratorGuardInstalls:0,
@@ -382,6 +383,14 @@ function installBetaWorldPostRender(){
       }
 
       const out=base.apply(this,arguments);
+
+      /* HOME-28: HOME-27 already skips hidden non-forced Startseite renders.
+         Do not follow that no-op with Growroom snapshots or layout-fit scheduling. */
+      if(!active&&!force){
+        v8009HomeHeaderFix.inactivePostRenderSkips++;
+        return out;
+      }
+
       requestAnimationFrame(()=>{
         try{
           scheduleHomeGrowReady(homeGrowSnapshot());
@@ -456,7 +465,7 @@ function installBetaMenuReplaceGuard(){
    capture-phase redirect from HOME-1 is retired. */
 if(IS_BETA)window.__V8009_HOME15_DIRECT_HEADER_ROUTES__=true;
 window.v8009HomeHeaderDiagnostics=()=>({
-  version:'V8.009-HOME-27',
+  version:'V8.009-HOME-28',
   beta:IS_BETA,
   ...v8009HomeHeaderFix,
   fit:{...HOME_DIAG,pendingRaf:!!raf,pendingTimer:!!runTimer},

@@ -219,6 +219,23 @@ try{
  assert.deepEqual({active:canonicalState.snapshot.active,ready:canonicalState.snapshot.ready},{active:2,ready:1});
  checks.push('canonical renderer owns Frost 7-slot checklist and weather-aware Growroom status');
  await canonical.close();
+ const inactiveHelper=await fixture('2026-09-30T12:00:00+02:00');
+ await inactiveHelper.clock.runFor(300);
+ const helperBefore=await inactiveHelper.evaluate(()=>window.v8009HomeHeaderDiagnostics?.());
+ await inactiveHelper.evaluate(()=>{document.getElementById('world').classList.remove('active');s.gold+=5;v085InstallWorld(false)});
+ await inactiveHelper.clock.runFor(120);
+ const helperSkipped=await inactiveHelper.evaluate(()=>window.v8009HomeHeaderDiagnostics?.());
+ assert.equal(helperSkipped.inactiveWorldSkips,helperBefore.events.inactiveWorldSkips+1,'Canonical renderer must record hidden skip');
+ assert.equal(helperSkipped.inactivePostRenderSkips,helperBefore.inactivePostRenderSkips+1,'Helper must record hidden post-render skip');
+ assert.equal(helperSkipped.growPostRenderSchedules,helperBefore.growPostRenderSchedules,'Hidden no-op must not reschedule Growroom post-render work');
+ assert.equal(helperSkipped.fit.scheduleCalls,helperBefore.fit.scheduleCalls,'Hidden no-op must not schedule a Startseite fit pass');
+ await inactiveHelper.evaluate(()=>{document.getElementById('world').classList.add('active');v085InstallWorld(false)});
+ await inactiveHelper.clock.runFor(120);
+ const helperReentry=await inactiveHelper.evaluate(()=>window.v8009HomeHeaderDiagnostics?.());
+ assert.ok(helperReentry.growPostRenderSchedules>helperSkipped.growPostRenderSchedules,'Visible re-entry must restore normal post-render scheduling');
+ assert.ok(helperReentry.fit.scheduleCalls>helperSkipped.fit.scheduleCalls,'Visible re-entry must restore layout fitting');
+ checks.push('hidden home no-ops skip helper Growroom and fit follow-up work');
+ await inactiveHelper.close();
  const inactiveHome=await fixture('2026-09-30T12:00:00+02:00',{helper:false});
  const inactiveBefore=await inactiveHome.evaluate(()=>({diag:window.v8009HomeEventDiagnostics?.(),sig:document.getElementById('world').dataset.v366Sig,html:document.getElementById('world').innerHTML}));
  await inactiveHome.evaluate(()=>{
@@ -378,7 +395,7 @@ try{
  assert.equal(versionState.visible,'"V8.009"','Canonical renderer must override historical V8.001 pseudo-element CSS');
  assert.equal(versionState.styleCount,1,'Version override style must be installed exactly once');
  assert.equal(versionState.legacy,'SERVER-VERSION-SENTINEL','Home renderer must not rewrite unrelated legacy version nodes');
- assert.equal(versionState.diag?.version,'V8.009-HOME-27');
+ assert.equal(versionState.diag?.version,'V8.009-HOME-28');
  assert.equal(versionState.diag?.versionStyleInstalls,1);
  checks.push('canonical home renderer owns visible V8.009 style without lifecycle rewrites');
  await versionOwner.close();
