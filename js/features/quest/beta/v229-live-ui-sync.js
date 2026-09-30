@@ -32,6 +32,7 @@ function v229UpdateQuestTimer(){
 
   const ends=Number(q.ends)||0;
   const left=Math.max(0,ends-Date.now());
+  try{window.v392TickActive?.()}catch(_){}
 
   /*
     A newly started quest can replace the old DOM in renderQuests().
