@@ -1,0 +1,87 @@
+name: V8.009 Auth Idle Login Race Fix
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/v8009_auth_idle_login_race_fix.py'
+      - '.github/workflows/v8009-auth-idle-login-race-fix.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Apply idle logout/login race fix
+        run: python3 .github/scripts/v8009_auth_idle_login_race_fix.py
+
+      - name: Syntax-check touched owners
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          beta=Path('beta.html').read_text(encoding='utf-8',errors='ignore')
+          for sid in ('v200-stable-core','v4136-account-save-owner'):
+              pos=beta.find('id="'+sid+'"')
+              if pos < 0:
+                  raise SystemExit('missing script id: '+sid)
+              a=beta.rfind('<script',0,pos)
+              b=beta.find('</script',pos)
+              if a < 0 or b < 0:
+                  raise SystemExit('script bounds missing: '+sid)
+              body_start=beta.find('>',a)+1
+              Path('/tmp/'+sid+'.js').write_text(beta[body_start:b],encoding='utf-8')
+          PY
+          node --check /tmp/v200-stable-core.js
+          node --check /tmp/v4136-account-save-owner.js
+
+      - name: Validate race-fix contract
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import json
+          beta=Path('beta.html').read_text(encoding='utf-8',errors='ignore')
+          report=json.loads(Path('V8009_AUTH_IDLE_LOGIN_RACE_FIX.json').read_text(encoding='utf-8'))
+          required=(
+            'window.__V4136_LOGOUT_PREPARING__=true',
+            'let logoutPromise=null',
+            "if(logoutPromise)return logoutPromise",
+            "window.__V4136_LOGOUT_PREPARING__=false",
+            "Spielstand konnte nach der Anmeldung nicht geladen werden.",
+            "window.__V301_LOGOUT_IN_PROGRESS__ || window.__V4136_LOGOUT_PREPARING__",
+          )
+          for sig in required:
+              if sig not in beta:
+                  raise SystemExit('missing race-fix signature: '+sig)
+          if report.get('new_renderers') != 0 or report.get('new_timers') != 0 or report.get('new_mutation_observers') != 0:
+              raise SystemExit('architecture regression in report')
+          print('Idle logout/login race contract OK')
+          PY
+
+      - name: Beta-only diff sanity
+        run: |
+          git diff --check
+          changed="$(git diff --name-only)"
+          echo "$changed"
+          echo "$changed" | grep -qx 'V8009_AUTH_IDLE_LOGIN_RACE_FIX.json'
+          echo "$changed" | grep -qx 'beta.html'
+          if echo "$changed" | grep -q '^index.html$'; then
+            echo "Stable index.html changed unexpectedly"
+            exit 1
+          fi
+
+      - name: Commit auth race fix
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add beta.html V8009_AUTH_IDLE_LOGIN_RACE_FIX.json
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "V8.009 auth: serialize idle logout before login"
+          git push
