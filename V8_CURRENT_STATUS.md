@@ -1363,3 +1363,40 @@ Der nächste fachliche Schritt ist **nicht HOME-32**, sondern die Restinventur d
 - Nächster manueller Test:
   - Quest so abschließen, dass Tomssen ein Level steigt;
   - Reihenfolge muss sein: Kampf -> LEVEL UP -> danach Quest-Belohnungsfenster.
+
+
+### Quest Claim-Kette weiter konsolidiert 30.09.2026
+
+- `v496-quest-claim-single-payout.js`
+  - Fix `058c708bc497efa4ee4d20acb495a7df26ace1db`;
+  - Single-Payout-Lock bleibt erhalten;
+  - `v496RepairStalePaidQuest` bleibt erhalten und wird vom kanonischen `v6344`-Render direkt vor dem Paint aufgerufen;
+  - nach normal erfolgreichem Claim keine zusätzlichen RAF-/80-ms-`renderQuests()`-Repaints mehr;
+  - beim echten bereits-bezahlten Stale-Fall nur noch ein synchroner Reparatur-Render.
+  - QA: `V8009_QUEST_V496_REPAINT_RETIRE_QA.json`, Commit `58170bf6fb4edd9bf2147d469a5cd879aa5e5655`, grün.
+
+- `v233-quest-reward-final-click.js`
+  - Fix `28baeadd266653f447567c8134ccc71d20e0061d`;
+  - historischen documentweiten Capture-Click-Owner für `#claimQuest` entfernt;
+  - kanonischer aktiver Button `#v392ClaimQuest` ruft weiterhin direkt `v233ClaimQuest()` auf;
+  - `v233BindClaimButton` bleibt als Compatibility-No-op für den bestehenden v6344-Aufruf.
+  - QA: `V8009_QUEST_V233_CAPTURE_RETIRE_QA.json`, Commit `e16daa30d4b7e5a4a11426c5e63aeff535e073aa`, grün.
+
+- Reward-Overlay:
+  - Fix `ad0bd72882bfe7dae6aef86284c2f686ed445d01`;
+  - v233 zeigt das lokale Reward-Overlay nur noch einmal synchron;
+  - alter RAF-Repaint + 80-ms-Repaint entfernt.
+  - QA: `V8009_QUEST_V233_REWARD_RETRY_RETIRE_QA.json`, Commit `0fdea38b419f5af274ea52db146f232e58b10b5c`, grün.
+
+- Fremder Altballast in v233:
+  - Commit `4a903af5262dcae0ba398725a5a4b9e0a53d45bf`;
+  - 300-ms-Startup-Timer entfernt, der alte `V4.29 Stable`-Versionslabels schrieb;
+  - Quest-Claim-Datei besitzt damit keinen Versions-Writer mehr.
+
+- Aktuelle Claim-Verantwortung:
+  - Server-Enforce: `v7045` Claim/Receipt/Recovery/Reward;
+  - Local/Mirror: `v233` Präsentation + `v496` Single-Payout-Guard;
+  - Completion-Events: `v6140`;
+  - Gilden-EP: `v474/v411`, kein v440-Beta-Owner mehr.
+- Stable / `index.html`: unverändert.
+- Nächster Schritt: Start-Quest-Wrapperkette `v443 / v4127 / gl-quest-ready-push / v7042 / v7045 / v7110` konsolidieren.
