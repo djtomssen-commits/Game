@@ -1,0 +1,25 @@
+{
+  "build": "V8.009-HOME-25-BETA",
+  "phase": "Single worldboss-active query per home snapshot",
+  "scope": "beta only",
+  "base_commit": "5b0f94c38d5ed40a30c62db4366fd506ef4e0c1a",
+  "findings": [
+    "homeViewSnapshot built the event list and the worldboss slot separately.",
+    "events() queried v110MysticEventActive and worldBossEventActive queried the same API again, so every home signature check called the same event predicate twice."
+  ],
+  "changes": [
+    "homeViewSnapshot now resolves worldboss-active once.",
+    "The resolved boolean is passed into events() and reused for the worldboss slot/signature.",
+    "Standalone diagnostics can still call events() without arguments and keep the same behavior.",
+    "No event schedule, rewards, boss attempts, or server authority changed."
+  ],
+  "files": [
+    "js/features/home/beta/v8009-home-renderer.js",
+    "js/system/performance/v7288-home-adaptive-fit-script.js",
+    ".github/scripts/v8009_home_events_browser_qa.mjs"
+  ],
+  "stable_behavior_changed": false,
+  "gameplay_changed": false,
+  "rewards_changed": false,
+  "server_authority_changed": false
+}

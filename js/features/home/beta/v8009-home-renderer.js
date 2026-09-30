@@ -88,13 +88,13 @@
     requestAnimationFrame(()=>{activate();setTimeout(activate,40)});
   }
 
-  function events(){
+  function events(bossActive=worldBossEventActive()){
     const a=[];
     try{const tw=window.vTowerWednesdayEventInfo?.();if(tw?.active)a.push({c:'green',t:'🗼 TURM-ANOMALIE',s:`${tw.icon||'🗼'} ${tw.name} aktiv`})}catch(e){}
     try{if(typeof v094XpEventActive==='function'&&v094XpEventActive())a.push({c:'purple',t:'⚡ EXP EVENT',s:'2× Erfahrung aktiv'})}catch(e){}
     try{if(typeof v274GoldEventActive==='function'&&v274GoldEventActive())a.push({c:'gold',t:'💰 GOLD EVENT',s:'2× Gold-Belohnungen aktiv'})}catch(e){}
     try{if(typeof v271DampfEventActive==='function'&&v271DampfEventActive())a.push({c:'',t:'🔥 300 DAMPF EVENT',s:'300 Dampf Maximum aktiv'})}catch(e){}
-    try{if(typeof v110MysticEventActive==='function'&&v110MysticEventActive())a.push({c:'cyan',t:'💠 SMARAGD KOLOSS',s:'Weltboss aktiv!'})}catch(e){}
+    if(bossActive)a.push({c:'cyan',t:'💠 SMARAGD KOLOSS',s:'Weltboss aktiv!'});
     return a.slice(0,5);
   }
 
@@ -243,16 +243,17 @@
   }
 
   function homeViewSnapshot(){
+    const bossActive=worldBossEventActive();
     return {
       name:playerName(),
       power:cp(),
       dg:dungeonPos(),
       grow:growSnapshot(),
       ac:ach(),
-      ev:events(),
+      ev:events(bossActive),
       hc:homeChecklist(),
       pets:petUnseen(),
-      bossActive:worldBossEventActive()
+      bossActive
     };
   }
 
@@ -450,7 +451,7 @@
     finalizeOwnedWorld(world);
   }
 
-  window.v8009HomeEventDiagnostics=()=>({version:'V8.009-HOME-24',...diagnostics,events:events().map(x=>({...x})),worldBossActive:worldBossEventActive()});
+  window.v8009HomeEventDiagnostics=()=>({version:'V8.009-HOME-25',...diagnostics,events:events().map(x=>({...x})),worldBossActive:worldBossEventActive()});
 
   /* Re-own only the world installer; do not touch core game render/persist. */
   v085WorldHtml=worldHtml;

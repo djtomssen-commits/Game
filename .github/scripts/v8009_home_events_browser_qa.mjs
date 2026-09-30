@@ -23,7 +23,7 @@ async function fixture(time,{quiet=0,channel='beta',helper=true,playerClass='gro
   window.v073User={id:'qa-a'};
   window.classSets={};
   window.v093Events=[];window.v271EventDataReady=false;
-  window.qa={quests:0,gold:0,xp:0,paints:0,persists:0,bossOpens:0,bossResetCalls:0,intervals:0,nav:[],goldShop:0,dungeonCalls:0,petCalls:0};
+  window.qa={quests:0,gold:0,xp:0,paints:0,persists:0,bossOpens:0,bossResetCalls:0,bossActiveCalls:0,intervals:0,nav:[],goldShop:0,dungeonCalls:0,petCalls:0};
   window.qaQuietUntil=Date.now()+quiet;
   window.v7204StartupQuietRemaining=()=>Math.max(0,qaQuietUntil-Date.now());
   window.v7204StartupQuiet=()=>v7204StartupQuietRemaining()>0;
@@ -31,7 +31,7 @@ async function fixture(time,{quiet=0,channel='beta',helper=true,playerClass='gro
   window.setInterval=(...args)=>{qa.intervals++;return nativeInterval(...args)};
   window.v094XpEventActive=()=>false;window.v274GoldEventActive=()=>false;
   window.v271DampfEventActive=()=>false;window.v271ActiveDampfEvent=()=>null;
-  window.v110MysticEventActive=()=>false;window.v120ActiveWorldBossEvent=()=>null;window.v110ResetDay=()=>{qa.bossResetCalls++};
+  window.v110MysticEventActive=()=>{qa.bossActiveCalls++;return false};window.v120ActiveWorldBossEvent=()=>null;window.v110ResetDay=()=>{qa.bossResetCalls++};
   window.v271DampfCap=()=>v271DampfEventActive()?300:100;
   window.v271PaintDampf=()=>{qa.paints++;s.energy=Math.min(v271DampfCap(),s.energy)};
   window.v093LoadPublicContent=async()=>true;
@@ -218,6 +218,12 @@ try{
  assert.deepEqual({active:canonicalState.snapshot.active,ready:canonicalState.snapshot.ready},{active:2,ready:1});
  checks.push('canonical renderer owns Frost 7-slot checklist and weather-aware Growroom status');
  await canonical.close();
+ const bossActiveSnapshot=await fixture('2026-09-30T12:00:00+02:00',{helper:false});
+ await bossActiveSnapshot.evaluate(()=>{qa.bossActiveCalls=0;s.gold+=1;v085InstallWorld(false)});
+ const bossActiveCount=await bossActiveSnapshot.evaluate(()=>qa.bossActiveCalls);
+ assert.equal(bossActiveCount,1,'One home snapshot must query mystic worldboss activity only once');
+ checks.push('home snapshot reuses one mystic worldboss-active query for event list and boss slot');
+ await bossActiveSnapshot.close();
  const ownershipFastPath=await fixture('2026-09-30T12:00:00+02:00',{helper:false});
  const ownerBefore=await ownershipFastPath.evaluate(()=>window.v8009HomeEventDiagnostics?.());
  await ownershipFastPath.evaluate(()=>v085InstallWorld(false));
@@ -334,7 +340,7 @@ try{
  assert.equal(versionState.visible,'"V8.009"','Canonical renderer must override historical V8.001 pseudo-element CSS');
  assert.equal(versionState.styleCount,1,'Version override style must be installed exactly once');
  assert.equal(versionState.legacy,'SERVER-VERSION-SENTINEL','Home renderer must not rewrite unrelated legacy version nodes');
- assert.equal(versionState.diag?.version,'V8.009-HOME-24');
+ assert.equal(versionState.diag?.version,'V8.009-HOME-25');
  assert.equal(versionState.diag?.versionStyleInstalls,1);
  checks.push('canonical home renderer owns visible V8.009 style without lifecycle rewrites');
  await versionOwner.close();
