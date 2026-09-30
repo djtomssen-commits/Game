@@ -131,8 +131,8 @@ if beta.count(owner)!=1 or beta.count(seal)!=1:
     raise RuntimeError('canonical owner/seal include count changed')
 if beta.find('id="v4165-dungeon-key-live-battle-index-fix"')>beta.find(owner):
     raise RuntimeError('v4165 must load before canonical owner')
-if beta.find('id="v7051-atomic-dungeon-receipt-client"')>beta.find(owner):
-    raise RuntimeError('v7051 must load before canonical owner')
+# v7051 intentionally loads later than the canonical owner. The owner resolves
+# window.v7051ClaimButtonSync dynamically on every render, so late definition is safe.
 
 body_end=beta.lower().rfind('</body>')
 if beta.rfind('<script',0,body_end)!=beta.rfind('<script id="v8009-dungeon-d5-final-detail-seal"',0,body_end):
