@@ -392,12 +392,13 @@ if(IS_BETA)document.addEventListener('click',e=>{
   }catch(_){}
 },true);
 window.v8009HomeHeaderDiagnostics=()=>({
-  version:'V8.009-HOME-8',
+  version:'V8.009-HOME-9',
   beta:IS_BETA,
   ...v8009HomeHeaderFix,
   fit:{...HOME_DIAG,pendingRaf:!!raf,pendingTimer:!!runTimer},
   goldShopApi:typeof window.v7114OpenGoldShop==='function',
   mailScreen:!!document.getElementById('mail'),
+  legacyV474HomeRetired:!!window.__V8009_HOME9_V474_HOME_RETIRED__,
   routeAudit:auditHomeRoutes()
 });
 
