@@ -44,6 +44,13 @@ function normalizeD1Data(card){
     const name=node.querySelector('.v261-name');
     if(name&&D1_NAMES[i])name.textContent=D1_NAMES[i];
   });
+  try{
+    const line1=card.querySelector('.v261-line1');
+    if(line1&&!/DUNGEON ABGESCHLOSSEN/i.test(String(line1.textContent||''))){
+      let ri=Math.max(0,Math.min(9,Number(window.v048RoomIndex?.(0))||0));
+      line1.textContent=`${ri+1} · ${D1_NAMES[ri]||''}${ri===9?' – BOSS':''}`;
+    }
+  }catch(_){}
 }
 function cleanRoomNames(card){
   card.querySelectorAll('.v261-name').forEach(el=>{el.textContent=cleanName(el.textContent)});
