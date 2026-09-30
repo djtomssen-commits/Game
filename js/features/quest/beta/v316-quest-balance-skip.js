@@ -106,14 +106,9 @@ function v316PaintSkip(){
  card.appendChild(wrap);
 }
 
-/* One final presentation layer only: no reward or generation logic is duplicated. */
-const v316BaseRenderQuests=renderQuests;
-renderQuests=function(){
- v316BalanceVisibleOffers();
- const r=v316BaseRenderQuests.apply(this,arguments);
- requestAnimationFrame(v316PaintSkip);
- return r;
-};
+/* Direct render hooks used by the canonical Quest renderer. */
+window.v316PrepareQuestRender=v316BalanceVisibleOffers;
+window.v316ScheduleSkipPaint=()=>requestAnimationFrame(v316PaintSkip);
 
 setTimeout(()=>{
  try{v316BalanceVisibleOffers();renderQuests()}catch(e){}
