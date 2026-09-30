@@ -118,8 +118,13 @@ const v8009HomeHeaderFix={
   weatherSignatureSyncs:0,
   weatherCatchupRendersAvoided:0,
   routeAudits:0,
-  routeIssues:0
+  routeIssues:0,
+  growStatusPatches:0,
+  growReadyTimerFires:0,
+  growWeatherReschedules:0
 };
+let v8009GrowReadyTimer=0;
+let v8009GrowWeatherObserver=null;
 
 function stateNow(){
   try{return (typeof s!=='undefined'&&s)||window.s||null}catch(_){return window.s||null}
@@ -189,6 +194,82 @@ function auditHomeRoutes(){
     v8009HomeHeaderFix.routeIssues+=missing.length+badApis.length;
     return {missing,badApis,present:[...new Set(present)],api};
   }catch(_){return null}
+}
+
+function homeGrowSnapshot(now=Date.now()){
+  try{
+    const st=stateNow();
+    const plants=Array.isArray(st?.grow?.plants)?st.grow.plants.filter(Boolean):[];
+    const wm=Math.max(.80,Math.min(1.30,Number(window.GL_WEATHER?.bonus?.growMul)||1));
+    let ready=0,nextAt=0;
+    for(const p of plants){
+      const start=Number(p?.start)||0;
+      const duration=Math.max(0,Number(p?.duration)||0);
+      let at=0;
+      /* Match the canonical V492 Growroom progression exactly: elapsed time is
+         multiplied by the live weather growth multiplier. */
+      if(start>0&&duration>0)at=start+Math.round(duration/wm);
+      else at=Number(p?.readyAt||p?.endsAt||p?.endAt)||0;
+      if(at>0&&now>=at)ready++;
+      else if(at>now&&(!nextAt||at<nextAt))nextAt=at;
+    }
+    return {active:plants.length,ready,nextAt,weatherMul:wm};
+  }catch(_){return {active:0,ready:0,nextAt:0,weatherMul:1}}
+}
+
+function scheduleHomeGrowReady(snapshot){
+  if(v8009GrowReadyTimer){clearTimeout(v8009GrowReadyTimer);v8009GrowReadyTimer=0}
+  const s=snapshot||homeGrowSnapshot();
+  if(!s.nextAt)return;
+  const delay=Math.max(80,Math.min(2147480000,s.nextAt-Date.now()+60));
+  v8009GrowReadyTimer=setTimeout(()=>{
+    v8009GrowReadyTimer=0;
+    v8009HomeHeaderFix.growReadyTimerFires++;
+    try{patchHomeGrowStatus()}catch(_){}
+  },delay);
+}
+
+function patchHomeGrowStatus(){
+  if(!IS_BETA)return false;
+  try{
+    const world=document.getElementById('world');
+    if(!world?.classList.contains('active'))return false;
+    const snap=homeGrowSnapshot();
+    const card=world.querySelector('.v366-card.grow .v366-status b');
+    const strip=world.querySelector('#v492HomeGrowStatus b');
+    let changed=false;
+
+    if(card){
+      const txt=`${snap.ready} Pflanze${snap.ready===1?'':'n'} erntereif`;
+      if(card.textContent!==txt){card.textContent=txt;changed=true}
+    }
+    if(strip){
+      const txt=snap.active
+        ? `🌱 Growroom · ${snap.active} Pflanze${snap.active===1?'':'n'} aktiv${snap.ready?` · ${snap.ready} erntereif`:''}`
+        : '🌱 Growroom · Keine Pflanzen aktiv';
+      if(strip.textContent!==txt){strip.textContent=txt;changed=true}
+    }
+
+    world.dataset.v8009GrowReady=String(snap.ready);
+    world.dataset.v8009GrowActive=String(snap.active);
+    world.dataset.v8009GrowWeatherMul=String(snap.weatherMul);
+    scheduleHomeGrowReady(snap);
+    if(changed)v8009HomeHeaderFix.growStatusPatches++;
+    return true;
+  }catch(_){return false}
+}
+
+function installGrowWeatherObserver(){
+  if(!IS_BETA||v8009GrowWeatherObserver||!document.body)return false;
+  try{
+    v8009GrowWeatherObserver=new MutationObserver(list=>{
+      if(!list.some(m=>m.type==='attributes'&&m.attributeName==='data-gl-weather'))return;
+      v8009HomeHeaderFix.growWeatherReschedules++;
+      requestAnimationFrame(()=>{try{patchHomeGrowStatus()}catch(_){}});
+    });
+    v8009GrowWeatherObserver.observe(document.body,{attributes:true,attributeFilter:['data-gl-weather']});
+    return true;
+  }catch(_){return false}
 }
 
 function patchWeeklyChest(){
@@ -299,12 +380,14 @@ function installBetaWorldPostRender(){
         weeklyFeedbackUntil=0;
         v8009HomeHeaderFix.weeklyFullRendersAvoided++;
         try{patchHomeChecklist()}catch(_){}
+        try{patchHomeGrowStatus()}catch(_){}
         return false;
       }
 
       const out=base.apply(this,arguments);
       requestAnimationFrame(()=>{
         try{patchHomeChecklist()}catch(_){}
+        try{patchHomeGrowStatus()}catch(_){}
         try{syncPaintedWeatherSignature()}catch(_){}
         try{auditHomeRoutes()}catch(_){}
         try{schedule('world-render')}catch(_){}
@@ -392,7 +475,7 @@ if(IS_BETA)document.addEventListener('click',e=>{
   }catch(_){}
 },true);
 window.v8009HomeHeaderDiagnostics=()=>({
-  version:'V8.009-HOME-11',
+  version:'V8.009-HOME-12',
   beta:IS_BETA,
   ...v8009HomeHeaderFix,
   fit:{...HOME_DIAG,pendingRaf:!!raf,pendingTimer:!!runTimer},
@@ -427,9 +510,11 @@ if(IS_BETA){
  applyBetaVersionStyle();
  installBetaMenuReplaceGuard();
  installBetaWorldPostRender();
- document.addEventListener('DOMContentLoaded',()=>requestAnimationFrame(()=>{applyBetaVersionStyle();installBetaMenuReplaceGuard();installBetaWorldPostRender()}),{once:true});
- window.addEventListener('pageshow',()=>{applyBetaVersionStyle();installBetaMenuReplaceGuard();installBetaWorldPostRender()},{passive:true});
- window.addEventListener('growlegends:account-ready',()=>setTimeout(()=>{applyBetaVersionStyle();installBetaMenuReplaceGuard();installBetaWorldPostRender()},0),{passive:true});
+ installGrowWeatherObserver();
+ requestAnimationFrame(()=>{try{patchHomeGrowStatus()}catch(_){}});
+ document.addEventListener('DOMContentLoaded',()=>requestAnimationFrame(()=>{applyBetaVersionStyle();installBetaMenuReplaceGuard();installBetaWorldPostRender();installGrowWeatherObserver();patchHomeGrowStatus()}),{once:true});
+ window.addEventListener('pageshow',()=>{applyBetaVersionStyle();installBetaMenuReplaceGuard();installBetaWorldPostRender();installGrowWeatherObserver();patchHomeGrowStatus()},{passive:true});
+ window.addEventListener('growlegends:account-ready',()=>setTimeout(()=>{applyBetaVersionStyle();installBetaMenuReplaceGuard();installBetaWorldPostRender();installGrowWeatherObserver();patchHomeGrowStatus()},0),{passive:true});
  window.addEventListener('growlegends:extras-ready',()=>setTimeout(()=>{installBetaMenuReplaceGuard();installBetaWorldPostRender()},0),{passive:true});
  window.addEventListener('growlegends:foreground-ready',()=>setTimeout(()=>{installBetaMenuReplaceGuard();installBetaWorldPostRender()},0),{passive:true});
 }
@@ -464,6 +549,6 @@ window.addEventListener('growlegends:navigation-open-v7119',e=>{
   if(!id||id==='world')setTimeout(()=>schedule('navigation-world'),70);
 },{passive:true});
 
-if(IS_BETA)setTimeout(()=>{installBetaMenuReplaceGuard();installBetaWorldPostRender();patchHomeChecklist()},0);
+if(IS_BETA)setTimeout(()=>{installBetaMenuReplaceGuard();installBetaWorldPostRender();installGrowWeatherObserver();patchHomeChecklist();patchHomeGrowStatus()},0);
 schedule('boot');
 })();
