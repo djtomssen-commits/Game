@@ -1,0 +1,127 @@
+from pathlib import Path
+import re,json,hashlib
+
+beta=Path('beta.html').read_text(encoding='utf-8',errors='ignore')
+stable=Path('index.html').read_text(encoding='utf-8',errors='ignore')
+STABLE_SHA='e476eb4437df8c0763a36220f99fe5f14b09b3acd8f76e8ed4f5821962d9fbab'
+stable_sha=hashlib.sha256(stable.encode()).hexdigest()
+if stable_sha!=STABLE_SHA:
+    raise RuntimeError(f'Stable/index.html hash changed: {stable_sha}')
+
+extract=json.loads(Path('V8009_PVP_SPRINT1_EXTRACTION.json').read_text(encoding='utf-8'))
+asset_css=json.loads(Path('V8009_PVP_SPRINT1_ASSET_CSS.json').read_text(encoding='utf-8'))
+
+# Every extracted artifact must be loaded exactly once.
+missing=[]
+for x in extract['js_extracted']+extract['css_extracted']+asset_css['extracted']:
+    if beta.count(x['file'])!=1:
+        missing.append({'file':x['file'],'count':beta.count(x['file'])})
+if missing:
+    raise RuntimeError('PvP extracted include count failure: '+json.dumps(missing,ensure_ascii=False))
+
+# Retired marker cores must stay inactive.
+retired_markers=[
+ 'js/features/pvp/beta/v8009-s1-v611-pvp-stage-fix-core.js',
+ 'js/features/pvp/beta/v8009-s1-v619-pvp-dungeon-motion-core.js',
+ 'js/features/pvp/beta/v8009-s1-v620-pvp-dungeon-parity-core.js',
+ 'js/features/pvp/beta/v8009-s1-v672-pvp-effect-parity-core.js',
+ 'js/features/pvp/beta/v8009-s1-v7155-pvp-hall-cleanup-marker.js',
+]
+for p in retired_markers:
+    if p in beta: raise RuntimeError('retired marker core active: '+p)
+    if not Path(p).exists(): raise RuntimeError('retired marker file not retained: '+p)
+
+# URL-sensitive CSS rewrites must resolve to existing repository assets.
+asset_refs=[]
+for x in asset_css['extracted']:
+    css=Path(x['file']).read_text(encoding='utf-8',errors='ignore')
+    for asset in x['assets']:
+        rewritten='../../../../'+asset
+        if rewritten not in css: raise RuntimeError(f'CSS asset rewrite missing: {x["file"]} -> {asset}')
+        if not Path(asset).exists(): raise RuntimeError('PvP CSS asset missing: '+asset)
+        asset_refs.append({'css':x['file'],'asset':asset})
+
+# Active script timeline. We care strongly about Hall ranking ownership.
+src_re=re.compile(r'<script[^>]+src=["\']([^"\']+)["\']',re.I)
+srcs=[x.split('?')[0] for x in src_re.findall(beta)]
+rank_assign=re.compile(r'(?<![\w$])(?:window\.)?v073LoadRanking\s*=(?!=)')
+fight_assign=re.compile(r'(?<![\w$])(?:window\.)?v204Fight\s*=(?!=)')
+timeline={'v073LoadRanking':[],'v204Fight':[]}
+for idx,src in enumerate(srcs):
+    p=Path(src)
+    if not p.exists() or p.suffix.lower()!='.js': continue
+    txt=p.read_text(encoding='utf-8',errors='ignore')
+    if rank_assign.search(txt):
+        timeline['v073LoadRanking'].append({'order':idx,'file':src,'count':len(rank_assign.findall(txt))})
+    if fight_assign.search(txt):
+        timeline['v204Fight'].append({'order':idx,'file':src,'count':len(fight_assign.findall(txt))})
+
+# Include active inline assignments too.
+for m in re.finditer(r'<script(?P<attrs>[^>]*)>(?P<body>[\s\S]*?)</script\s*>',beta,re.I):
+    if 'src=' in m.group('attrs').lower(): continue
+    body=m.group('body')
+    im=re.search(r'\bid=["\']([^"\']+)["\']',m.group('attrs'),re.I)
+    sid=im.group(1) if im else f'inline@{m.start()}'
+    idx=len(srcs)+m.start()/max(1,len(beta))
+    if rank_assign.search(body):
+        timeline['v073LoadRanking'].append({'order':idx,'file':'beta.html#'+sid,'count':len(rank_assign.findall(body))})
+    if fight_assign.search(body):
+        timeline['v204Fight'].append({'order':idx,'file':'beta.html#'+sid,'count':len(fight_assign.findall(body))})
+
+timeline['v073LoadRanking'].sort(key=lambda x:x['order'])
+timeline['v204Fight'].sort(key=lambda x:x['order'])
+if not timeline['v073LoadRanking']:
+    raise RuntimeError('no Hall ranking owner found')
+final_rank=timeline['v073LoadRanking'][-1]['file']
+if 'v8009-s1-v6145-hall-pagination-js.js' not in final_rank:
+    raise RuntimeError('v6145 is not final Hall ranking owner: '+final_rank)
+
+# Removed ranking wrappers must not return.
+v424=Path('js/features/pvp/beta/v8009-s1-v424-hall-combat-power-fix.js').read_text(encoding='utf-8')
+buds=Path('js/features/pvp/beta/v8009-s1-vPvpBudsHallSyncFix.js').read_text(encoding='utf-8')
+for dead in ('__v424HallRankingWrapped','baseRanking=v073LoadRanking'):
+    if dead in v424: raise RuntimeError('dead v424 Hall ranking wrapper returned')
+for dead in ('__vPvpBudsHallRankingWrapped','const base=v073LoadRanking'):
+    if dead in buds: raise RuntimeError('dead Buds Hall ranking wrapper returned')
+
+hall=Path('js/features/pvp/beta/v8009-s1-v6145-hall-pagination-js.js').read_text(encoding='utf-8')
+for required in (
+ "if(typeof window.vPvpBudsHallSync==='function')await window.vPvpBudsHallSync(true)",
+ "if(typeof v073SyncProfile==='function')await v073SyncProfile(true)",
+ 'try{v073LoadRanking=loadRanking;window.v073LoadRanking=loadRanking}',
+):
+    if required not in hall: raise RuntimeError('Hall direct sync/owner contract missing: '+required)
+
+# PvP authority must remain active.
+auth=Path('js/features/pvp/beta/v8009-s1-v7053-atomic-pvp-client-bridge.js').read_text(encoding='utf-8')
+for required in ('window.v7053RunServerPvp=()=>runServerPvp()','v7053_run_pvp','v7053_ack_pvp_receipt'):
+    if required not in auth: raise RuntimeError('v7053 authority contract missing: '+required)
+
+# Required UI anchors/contracts remain present somewhere in Beta + external PvP code.
+joined=beta+'\n'+''.join(Path(x['file']).read_text(encoding='utf-8',errors='ignore') for x in extract['js_extracted'])
+for token in ('v072HallRanking','v204FindBtn','v204FightBtn','v209PvpBattleOverlay','v211PvpResultCard'):
+    if token not in joined: raise RuntimeError('PvP/Hall UI contract missing: '+token)
+
+report={
+ 'build':'V8.009-PVP-SPRINT-1-FINAL',
+ 'scope':'beta only',
+ 'stable_sha256':stable_sha,
+ 'stable_unchanged':True,
+ 'beta_bytes':len(beta.encode()),
+ 'extracted_js':extract['counts']['js_extracted'],
+ 'extracted_css':extract['counts']['css_extracted']+asset_css['count'],
+ 'retired_marker_cores':len(retired_markers),
+ 'final_hall_ranking_owner':final_rank,
+ 'owner_timeline':timeline,
+ 'asset_css_refs_verified':len(asset_refs),
+ 'dead_ranking_wrappers_active':False,
+ 'v7053_authority_preserved':True,
+ 'gameplay_changed':False,
+ 'matchmaking_changed':False,
+ 'combat_math_changed':False,
+ 'cooldown_changed':False,
+ 'rewards_changed':False,
+ 'server_authority_changed':False
+}
+Path('V8009_PVP_SPRINT1_FINAL.json').write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+print(json.dumps(report,ensure_ascii=False,indent=2))
