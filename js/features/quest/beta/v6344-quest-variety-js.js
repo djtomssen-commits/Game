@@ -164,40 +164,46 @@ function v7291QuestAssetSignature(qs){return v7291QuestAssetSet(qs).join('|')}
 function v7291WarmQuestAssets(qs){return Promise.allSettled(v7291QuestAssetSet(qs).map(v7291QuestAssetReady))}
 window.v7291WarmQuestAssets=()=>v7291WarmQuestAssets(liveQuests());
 
+function decorateQuestCard(card,q){
+  if(!card||!q)return;
+  const sp=specForQuest(q)||{scene:q.v6344Scene,enemy:q.v6344EnemyName,enemyArt:q.v6344EnemyArt};
+  if(!sp?.scene)return;
+  const title=card.querySelector('.v386-title'),desc=card.querySelector('.v386-desc');
+  const nextTitle=String(q.name||q.title||'Auftrag');
+  const nextDesc=String(q.text||q.description||q.desc||'Ein neuer Auftrag wartet auf dich.');
+  if(title&&title.textContent!==nextTitle)title.textContent=nextTitle;
+  if(desc&&desc.textContent!==nextDesc)desc.textContent=nextDesc;
+  const art=card.querySelector('.v386-scene-art');if(!art)return;
+  const sceneKey=String(sp.scene||'');
+  if(art.dataset.v6344Scene!==sceneKey){
+    art.style.setProperty('background',`linear-gradient(180deg,rgba(4,9,6,.02) 0%,rgba(4,9,6,.16) 52%,rgba(4,9,6,.86) 100%),url("${asset(sp.scene)}") center/cover no-repeat`,'important');
+    art.dataset.v6344Scene=sceneKey;
+  }
+  const enemyArt=sp.enemyArt||ENEMY_ART[sp.enemy]||'';
+  let img=art.querySelector(':scope > .v6344-card-enemy');
+  if(enemyArt){
+    const src=asset(enemyArt);
+    if(!img){img=document.createElement('img');img.className='v6344-card-enemy';img.decoding='async';img.draggable=false;art.appendChild(img)}
+    if(img.dataset.v6344Src!==src){img.src=src;img.dataset.v6344Src=src}
+    const alt=String(sp.enemy||'Quest-Gegner');if(img.alt!==alt)img.alt=alt;
+    img.dataset.v7193Enemy=v7193QuestEnemyKey(alt);
+  }else if(img){img.remove()}
+  const scene=card.querySelector('.v386-scene');
+  let tag=scene?.querySelector(':scope > .v6344-variety-tag');
+  const tagText=`${sp.enemyIcon||ENEMY_ICON[sp.enemy]||'👹'} ${sp.enemy||'QUEST'}`;
+  if(scene&&!tag){tag=document.createElement('div');tag.className='v6344-variety-tag';scene.appendChild(tag)}
+  if(tag&&tag.textContent!==tagText)tag.textContent=tagText;
+  card.dataset.v6344Quest=String(sp.id||'');
+}
+window.v6344DecorateQuestCard=decorateQuestCard;
+
 function decorateCards(){
   const root=document.getElementById('quests');if(!root?.classList.contains('active'))return;
   const qs=liveQuests();
-  root.querySelectorAll('.v386-card').forEach((card,i)=>{
-    const q=qs[i];if(!q)return;
-    const sp=specForQuest(q)||{scene:q.v6344Scene,enemy:q.v6344EnemyName,enemyArt:q.v6344EnemyArt};
-    if(!sp?.scene)return;
-    const title=card.querySelector('.v386-title'),desc=card.querySelector('.v386-desc');
-    const nextTitle=String(q.name||q.title||'Auftrag');
-    const nextDesc=String(q.text||q.description||q.desc||'Ein neuer Auftrag wartet auf dich.');
-    if(title&&title.textContent!==nextTitle)title.textContent=nextTitle;
-    if(desc&&desc.textContent!==nextDesc)desc.textContent=nextDesc;
-    const art=card.querySelector('.v386-scene-art');if(!art)return;
-    const sceneKey=String(sp.scene||'');
-    if(art.dataset.v6344Scene!==sceneKey){
-      art.style.setProperty('background',`linear-gradient(180deg,rgba(4,9,6,.02) 0%,rgba(4,9,6,.16) 52%,rgba(4,9,6,.86) 100%),url("${asset(sp.scene)}") center/cover no-repeat`,'important');
-      art.dataset.v6344Scene=sceneKey;
-    }
-    const enemyArt=sp.enemyArt||ENEMY_ART[sp.enemy]||'';
-    let img=art.querySelector(':scope > .v6344-card-enemy');
-    if(enemyArt){
-      const src=asset(enemyArt);
-      if(!img){img=document.createElement('img');img.className='v6344-card-enemy';img.decoding='async';img.draggable=false;art.appendChild(img)}
-      if(img.dataset.v6344Src!==src){img.src=src;img.dataset.v6344Src=src}
-      const alt=String(sp.enemy||'Quest-Gegner');if(img.alt!==alt)img.alt=alt;
-      img.dataset.v7193Enemy=v7193QuestEnemyKey(alt);
-    }else if(img){img.remove()}
-    const scene=card.querySelector('.v386-scene');
-    let tag=scene?.querySelector(':scope > .v6344-variety-tag');
-    const tagText=`${sp.enemyIcon||ENEMY_ICON[sp.enemy]||'👹'} ${sp.enemy||'QUEST'}`;
-    if(scene&&!tag){tag=document.createElement('div');tag.className='v6344-variety-tag';scene.appendChild(tag)}
-    if(tag&&tag.textContent!==tagText)tag.textContent=tagText;
-    card.dataset.v6344Quest=String(sp.id||'');
-  });
+  root.querySelectorAll('.v386-list > .v386-card').forEach((card,i)=>decorateQuestCard(card,qs[i]));
+  const active=s?.quests?.active;
+  const activeCard=root.querySelector('.v392-active-view > .v386-card');
+  if(active&&activeCard)decorateQuestCard(activeCard,active);
 }
 let v6344DecorRaf=0;
 function schedule(){
