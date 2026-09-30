@@ -1220,3 +1220,22 @@ Der nächste fachliche Schritt ist **nicht HOME-32**, sondern die Restinventur d
   - pageshow/visibility reparieren nur noch, wenn die Questseite wirklich sichtbar ist.
 - Stable / `index.html`: unverändert.
 - Nächster Test: neu einloggen -> erste Quest starten -> Skip-/Zeit-Samen-Zeile beobachten.
+
+
+### Quest Skip – doppelte Zeit-Samen-Kachel – 30.09.2026
+
+- Screenshot bestätigt:
+  - Skip-Bereich flackert weiterhin leicht;
+  - Zeit-Samen-Kachel erscheint doppelt: einmal separat oberhalb und einmal korrekt rechts im Skip-Row.
+- Root Cause im v4127-Owner:
+  - v4127 suchte die Bestandskachel nur innerhalb der kanonischen `.v394-skip-row`;
+  - eine bereits vorhandene historische `.v394-time-seed-stock` außerhalb der Row wurde dadurch nicht übernommen;
+  - v4127 erzeugte deshalb eine zweite Kachel.
+- Fix:
+  - Commit `4bf52bf7e6d2e632d29039df8316e45065c7cb23`
+  - vorhandene Zeit-Samen-Kachel wird jetzt hostweit gefunden und in die kanonische Skip-Row verschoben;
+  - zusätzliche doppelte Seed-Kacheln werden entfernt;
+  - zusätzliche doppelte Skip-Rows werden ebenfalls entfernt;
+  - kein neuer Renderer/Timer/Observer.
+- Stable / `index.html`: unverändert.
+- Nächster Test: erste Quest starten; es darf nur noch genau eine Zeit-Samen-Kachel geben. Restflackern weiter beobachten.
