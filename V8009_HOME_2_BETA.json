@@ -1,0 +1,23 @@
+{
+  "build": "V8.009-HOME-2-BETA",
+  "phase": "Startseite render/layout cleanup",
+  "scope": "beta behavior inside shared home helper; stable path preserved",
+  "findings": [
+    "The external V7288 home fit called the older V7258 fit again on its own lifecycle events, while V7258 already listens to the same account/navigation lifecycle.",
+    "That caused a duplicate layout-measurement pass on normal home settles.",
+    "Shared late version CSS still exposes historical V8.001 pseudo-element text, which can visually override the beta build label.",
+    "HOME-1 click redirects lived in a shared script and therefore needed explicit beta scoping."
+  ],
+  "changes": [
+    "Beta home fit no longer re-runs V7258 on every settle when the current hero already has V7258 geometry variables.",
+    "A fresh/rebuilt hero still receives the base V7258 fit before V7288 height fitting.",
+    "HOME-1 Gold+ and Mail route interception is now beta-only.",
+    "Beta gets a final V8.009 version override without changing shared stable CSS."
+  ],
+  "file": "js/system/performance/v7288-home-adaptive-fit-script.js",
+  "file_sha": "9c92c7cf6411518435b2992f5a5cac6f287360c2",
+  "stable_behavior_changed": false,
+  "gameplay_changed": false,
+  "server_authority_changed": false,
+  "syntax_check": "ok"
+}
