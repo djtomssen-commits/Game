@@ -335,10 +335,12 @@ async function claimServerQuest(){
 function claimWrapper(base){
  if(typeof base!=='function')return null;
  const w=async function(){
+  const rewardArtBefore=(()=>{try{return window.v4121QuestRewardSnapshot?.()||null}catch(_){return null}})();
   try{
    if(!enforced())return await base.apply(this,arguments);
    return await claimServerQuest();
   }finally{
+   try{window.v4121AfterQuestClaim?.(rewardArtBefore)}catch(_){}
    try{window.v229QuestClaimSync?.()}catch(_){}
    try{window.v392PaintActive?.()}catch(_){}
    try{window.v4127ScheduleQuestSkip?.()}catch(_){}
