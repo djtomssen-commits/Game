@@ -145,20 +145,8 @@
     }
   }catch(e){console.warn('V4.496 quest claim guard install',e)}
 
-  /* If an older cloud/UI snapshot restores an already-paid quest, clear that
-     stale active quest before it can re-render another payout button. */
-  try{
-    if(typeof renderQuests==='function'&&!window.__v496QuestRenderGuard){
-      const baseRender=renderQuests;
-      const wrappedRender=function(){
-        repairStalePaidQuest();
-        return baseRender.apply(this,arguments);
-      };
-      renderQuests=wrappedRender;
-      try{window.renderQuests=wrappedRender}catch(e){}
-      window.__v496QuestRenderGuard=true;
-    }
-  }catch(e){console.warn('V4.496 quest render guard install',e)}
+  /* Direct pre-render guard used by the canonical Quest renderer. */
+  window.v496RepairStalePaidQuest=repairStalePaidQuest;
 
   try{repairStalePaidQuest()}catch(e){}
 })();
