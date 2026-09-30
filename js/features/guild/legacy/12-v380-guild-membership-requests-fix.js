@@ -1,9 +1,11 @@
 /* === v380-guild-membership-requests-fix === */
 (function(){
   const VERSION='V4.29 Stable';
+  const IS_BETA=String(window.GROW_RELEASE_CHANNEL||'stable')==='beta';
   let loadPromise=null;
 
   function v380Version(){
+    if(IS_BETA){window.__V8009_HOME11_V380_VERSION_RETIRED__=true;return}
     document.querySelectorAll(
       '.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version'
     ).forEach(el=>{if(el)el.textContent=VERSION});
