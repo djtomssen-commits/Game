@@ -334,7 +334,16 @@ async function claimServerQuest(){
 }
 function claimWrapper(base){
  if(typeof base!=='function')return null;
- const w=async function(){if(!enforced())return base.apply(this,arguments);return claimServerQuest()};
+ const w=async function(){
+  try{
+   if(!enforced())return await base.apply(this,arguments);
+   return await claimServerQuest();
+  }finally{
+   try{window.v229QuestClaimSync?.()}catch(_){}
+   try{window.v392PaintActive?.()}catch(_){}
+   try{window.v4127ScheduleQuestSkip?.()}catch(_){}
+  }
+ };
  w.__v7045Atomic=true;w.__v7045Base=base;return w;
 }
 const w233=claimWrapper(base233);if(w233){window.v233ClaimQuest=w233;try{v233ClaimQuest=w233}catch(_){} }
