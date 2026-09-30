@@ -36,13 +36,13 @@ beta_before_bytes=len(beta.encode())
 
 extracted=[]
 for t in TARGETS:
-    pat=re.compile(r'<script(?P<attrs>[^>]*\\bid=["\']'+re.escape(t['id'])+r'["\'][^>]*)>(?P<body>[\\s\\S]*?)</script\\s*>',re.I)
+    pat=re.compile(r'<script(?P<attrs>[^>]*\bid=["\']'+re.escape(t['id'])+r'["\'][^>]*)>(?P<body>[\s\S]*?)</script\s*>',re.I)
     m=pat.search(beta)
     if not m:
         raise RuntimeError(f"inline {t['id']} not found")
     if 'src=' in m.group('attrs').lower():
         raise RuntimeError(f"{t['id']} already external")
-    body=m.group('body').strip()+'\\n'
+    body=m.group('body').strip()+'\n'
     if t['sentinel'] not in body:
         raise RuntimeError(f"sentinel missing for {t['id']}")
     if len(body.encode())<700:
@@ -61,7 +61,7 @@ for t in TARGETS:
 for t in TARGETS:
     if beta.count(t['path'])!=1:
         raise RuntimeError(f"external include count != 1 for {t['path']}")
-    if re.search(r'<script[^>]*\\bid=["\']'+re.escape(t['id'])+r'["\'][^>]*>(?!\\s*</script>)',beta,re.I):
+    if re.search(r'<script[^>]*\bid=["\']'+re.escape(t['id'])+r'["\'][^>]*>(?!\s*</script>)',beta,re.I):
         # External tags have no inline body; exact inline presence is checked below.
         pass
     marker=f'id="{t["id"]}"'
@@ -71,7 +71,7 @@ for t in TARGETS:
 
 # Ensure the old inline bodies/sentinels are no longer embedded in beta HTML.
 for t in TARGETS:
-    tag_re=re.compile(r'<script[^>]*\\bid=["\']'+re.escape(t['id'])+r'["\'][^>]*>(?P<body>[\\s\\S]*?)</script\\s*>',re.I)
+    tag_re=re.compile(r'<script[^>]*\bid=["\']'+re.escape(t['id'])+r'["\'][^>]*>(?P<body>[\s\S]*?)</script\s*>',re.I)
     mm=tag_re.search(beta)
     if not mm:
         raise RuntimeError(f"replacement tag missing for {t['id']}")
@@ -107,5 +107,5 @@ report={
   'rewards_changed':False,
   'server_authority_changed':False
 }
-Path('V8009_DUNGEON_D2_BETA.json').write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\\n',encoding='utf-8')
+Path('V8009_DUNGEON_D2_BETA.json').write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
 print(json.dumps(report,ensure_ascii=False,indent=2))
