@@ -1,0 +1,65 @@
+name: V8.009 Dungeon D10 Remove Dead Aliases
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'js/features/dungeon/beta/v8009-d2-detail-render-lock.js'
+      - 'js/features/dungeon/beta/v8009-d8-detail-decorator.js'
+      - '.github/workflows/v8009-dungeon-d10-remove-dead-aliases.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  qa:
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Syntax-check canonical Dungeon JS
+        run: |
+          node --check js/features/dungeon/beta/v8009-d2-detail-render-lock.js
+          node --check js/features/dungeon/beta/v8009-d8-detail-decorator.js
+          node --check js/features/dungeon/beta/v8009-d2-visual-owner.js
+          node --check js/features/dungeon/beta/v8009-d5-final-detail-seal.js
+
+      - name: Validate dead alias removal
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          lock=Path('js/features/dungeon/beta/v8009-d2-detail-render-lock.js').read_text(encoding='utf-8')
+          deco=Path('js/features/dungeon/beta/v8009-d8-detail-decorator.js').read_text(encoding='utf-8')
+          beta=Path('beta.html').read_text(encoding='utf-8')
+          stable=Path('index.html').read_text(encoding='utf-8')
+
+          for name in ('v426RenderDetail','v427RenderDetail'):
+              if name in lock:
+                  raise SystemExit(f'dead alias remains in D2 lock: {name}')
+              if name in deco:
+                  raise SystemExit(f'dead alias remains in D8 decorator: {name}')
+
+          for needle in (
+              "card.classList.toggle('v426-ref-d1',di===0)",
+              "title.innerHTML='DER<br>VERSEUCHTE<br>KELLER'",
+              "const D1_ROAD='14,15 28,17 43,19",
+              "DIE SCHIMMELMINEN",
+              "DER VERBOTENE<br>GEWÄCHSHAUSTRAKT",
+          ):
+              if needle not in deco:
+                  raise SystemExit(f'D1/D6/D7 decorator regression: {needle}')
+
+          if beta.count('js/features/dungeon/beta/v8009-d8-detail-decorator.js')!=1:
+              raise SystemExit('D8 decorator include count changed')
+          if beta.count('js/features/dungeon/beta/v8009-d2-detail-render-lock.js')!=1:
+              raise SystemExit('D2 lock include count changed')
+          if 'js/features/dungeon/beta/v8009-d8-detail-decorator.js' in stable:
+              raise SystemExit('Stable unexpectedly loads Beta D8 decorator')
+
+          print('DUNGEON-D10 dead alias removal OK')
+          PY
+
+      - name: Diff sanity
+        run: git diff --check
