@@ -336,7 +336,7 @@ if(window.__V8009_TOWER_LOBBY_CONTROLLER_OWNER__)return;
 window.__V8009_TOWER_LOBBY_CONTROLLER_OWNER__=true;
 
 window.v8009CreateTowerLobbyController=function(c){
- let recoveryTimer=0,rankBusy=false;
+ let recoveryTimer=0,rankBusy=false,rankReloadQueued=false,wedBusy=false,wedReloadQueued=false;
  function buyRecovery(){
   const t=c.ensure(),m=t.meta,pct=c.normalizeRecovery(t),state=c.getState();
   if(t.run?.active)return c.toast('Während eines laufenden Turms nicht möglich.','warn');
@@ -370,7 +370,12 @@ window.v8009CreateTowerLobbyController=function(c){
    const good=['widow','northern','purplecrit','diesel','kush','trichome','roots','spore','cash','book','crown'];
    const id=c.pick(good.filter(x=>!r.buffs.includes(x)));if(id)c.applyTowerMutation(r,id);
   }
-  r.choices=c.seededChoiceFloor(1);t.season.runs++;c.setTowerTab('run');c.save(false);c.render();
+  r.choices=c.seededChoiceFloor(1);t.season.runs++;c.setTowerTab('run');c.save(false);
+  /* V8.009-T10K: any lobby ranking warmup belongs to the DOM that is about
+     to be replaced by the run. Clear its guard so the next post-run lobby can
+     always queue a fresh ranking load. */
+  try{const root=document.getElementById('tower');if(root)delete root.dataset.v8009LobbyWarmupQueued}catch(_){}
+  c.render();
 
   /* V8.009-T10E: starting a run must not launch a profile mirror write on the
      same frames as the first door/combat. The local/server-authoritative run
@@ -389,9 +394,10 @@ window.v8009CreateTowerLobbyController=function(c){
   }else setTimeout(syncRunMirror,1400);
  }
  async function loadRanking(){
-  if(rankBusy)return;rankBusy=true;
-  const box=document.getElementById('vTRanking');
-  if(box)box.innerHTML='<div class="vT-empty">Rangliste wird geladen …</div>';
+  if(rankBusy){rankReloadQueued=true;return}
+  rankBusy=true;
+  const paint=html=>{const liveBox=document.getElementById('vTRanking');if(liveBox)liveBox.innerHTML=html};
+  paint('<div class="vT-empty">Rangliste wird geladen …</div>');
   try{
    await c.syncProfile(true);
    const data=await c.fetchAllTowerProfiles(true),sid=c.seasonId();
@@ -400,20 +406,37 @@ window.v8009CreateTowerLobbyController=function(c){
     .sort((a,b)=>Math.max(Number(b.t.best_score)||0,Number(b.t.active_score)||0)-Math.max(Number(a.t.best_score)||0,Number(a.t.active_score)||0)||Math.max(Number(b.t.best_floor)||0,Number(b.t.active_floor)||0)-Math.max(Number(a.t.best_floor)||0,Number(a.t.active_floor)||0))
     .slice(0,50);
    const uid=c.getUserId();
-   if(box)box.innerHTML=rows.length?rows.map((p,i)=>`<div class="vT-leader-row ${String(p.id)===uid?'me':''}" data-class-id="${c.esc(p.class_id||'')}"><div class="vT-rank ${i<3?'top':''}">${i+1}</div><div class="vT-player"><b>${c.esc(p.character_name||'Unbekannt')}</b><span>${c.esc(p.class_name||'')} · Lv. ${Number(p.level)||1} · KP ${c.fmt(p.combat_power||0)}${Number(p.t.active_floor)>0?' · 🟢 Lauf aktiv':''}</span></div><div class="vT-score"><b>${c.fmt(Math.max(Number(p.t.best_score)||0,Number(p.t.active_score)||0))}</b><span>Etage ${Math.max(Number(p.t.best_floor)||0,Number(p.t.active_floor)||0)}</span></div></div>`).join(''):'<div class="vT-empty">In dieser Saison gibt es noch keine Turmwertung.</div>';
+   paint(rows.length?rows.map((p,i)=>`<div class="vT-leader-row ${String(p.id)===uid?'me':''}" data-class-id="${c.esc(p.class_id||'')}"><div class="vT-rank ${i<3?'top':''}">${i+1}</div><div class="vT-player"><b>${c.esc(p.character_name||'Unbekannt')}</b><span>${c.esc(p.class_name||'')} · Lv. ${Number(p.level)||1} · KP ${c.fmt(p.combat_power||0)}${Number(p.t.active_floor)>0?' · 🟢 Lauf aktiv':''}</span></div><div class="vT-score"><b>${c.fmt(Math.max(Number(p.t.best_score)||0,Number(p.t.active_score)||0))}</b><span>Etage ${Math.max(Number(p.t.best_floor)||0,Number(p.t.active_floor)||0)}</span></div></div>`).join(''):'<div class="vT-empty">In dieser Saison gibt es noch keine Turmwertung.</div>');
   }catch(e){
-   if(box)box.innerHTML='<div class="vT-empty">Online-Rangliste momentan nicht erreichbar. Dein eigener Rekord bleibt gespeichert.</div>';
-  }finally{rankBusy=false}
+   paint('<div class="vT-empty">Online-Rangliste momentan nicht erreichbar. Dein eigener Rekord bleibt gespeichert.</div>');
+  }finally{
+   rankBusy=false;
+   if(rankReloadQueued){
+    rankReloadQueued=false;
+    setTimeout(()=>{try{if(document.getElementById('vTRanking'))void loadRanking()}catch(_){}},0);
+   }
+  }
  }
  async function loadWednesdayRanking(){
-  const live=c.towerWednesdayEvent(),target=live.active?live:c.lastCompletedWednesdayEvent(),box=document.getElementById('vTWednesdayRanking');
-  if(!box)return;
-  box.innerHTML=`<div class="vT-empty">${live.active?'Mittwochs-Rangliste wird geladen …':'Finale Mittwochs-Rangliste wird geladen …'}</div>`;
+  if(wedBusy){wedReloadQueued=true;return}
+  const live=c.towerWednesdayEvent(),target=live.active?live:c.lastCompletedWednesdayEvent();
+  if(!document.getElementById('vTWednesdayRanking'))return;
+  wedBusy=true;
+  const paint=html=>{const liveBox=document.getElementById('vTWednesdayRanking');if(liveBox)liveBox.innerHTML=html};
+  paint(`<div class="vT-empty">${live.active?'Mittwochs-Rangliste wird geladen …':'Finale Mittwochs-Rangliste wird geladen …'}</div>`);
   try{
    const rows=(await c.fetchWednesdayRows(target)).slice(0,50),uid=c.getUserId();
-   box.innerHTML=rows.length?rows.map((p,i)=>`<div class="vT-leader-row ${String(p.id)===uid?'me':''}" data-class-id="${c.esc(p.class_id||'')}"><div class="vT-rank ${i<3?'top':''}">${i+1}</div><div class="vT-player"><b>${c.esc(p.character_name||'Unbekannt')}</b><span>${c.esc(p.class_name||'')} · Lv. ${Number(p.level)||1} · ${target.icon} ${c.esc(target.name)}</span></div><div class="vT-score"><b>${c.fmt(p.w.best_score||0)}</b><span>Etage ${Number(p.w.best_floor)||0}</span></div></div>`).join(''):`<div class="vT-empty">${live.active?'Heute hat noch niemand einen Mittwochs-Turmwert gespeichert.':'Für den letzten Mittwoch ist noch keine finale Wertung verfügbar.'}</div>`;
+   paint(rows.length?rows.map((p,i)=>`<div class="vT-leader-row ${String(p.id)===uid?'me':''}" data-class-id="${c.esc(p.class_id||'')}"><div class="vT-rank ${i<3?'top':''}">${i+1}</div><div class="vT-player"><b>${c.esc(p.character_name||'Unbekannt')}</b><span>${c.esc(p.class_name||'')} · Lv. ${Number(p.level)||1} · ${target.icon} ${c.esc(target.name)}</span></div><div class="vT-score"><b>${c.fmt(p.w.best_score||0)}</b><span>Etage ${Number(p.w.best_floor)||0}</span></div></div>`).join(''):`<div class="vT-empty">${live.active?'Heute hat noch niemand einen Mittwochs-Turmwert gespeichert.':'Für den letzten Mittwoch ist noch keine finale Wertung verfügbar.'}</div>`);
    if(!live.active)c.paintWednesdayPlacementReward(rows,target,uid);
-  }catch(e){box.innerHTML='<div class="vT-empty">Mittwochs-Rangliste momentan nicht erreichbar.</div>'}
+  }catch(e){
+   paint('<div class="vT-empty">Mittwochs-Rangliste momentan nicht erreichbar.</div>');
+  }finally{
+   wedBusy=false;
+   if(wedReloadQueued){
+    wedReloadQueued=false;
+    setTimeout(()=>{try{if(document.getElementById('vTWednesdayRanking'))void loadWednesdayRanking()}catch(_){}},0);
+   }
+  }
  }
  function renderLobby(){
   const t=c.ensure(),z=t.season;
