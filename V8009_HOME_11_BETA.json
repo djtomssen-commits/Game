@@ -1,0 +1,32 @@
+{
+  "build": "V8.009-HOME-11-BETA",
+  "phase": "Startseite remaining legacy header-writer cleanup",
+  "scope": "beta only",
+  "findings": [
+    "A full scan of the extracted legacy guild JS found two additional modules still writing old version text into shared header nodes.",
+    "V380 writes V4.29/V4.11 around 350 ms.",
+    "V411 writes V4.29/V4.11 immediately and again around 700 ms and 2000 ms.",
+    "Their guild membership/XP behavior is independent from those version writes."
+  ],
+  "changes": [
+    "V380 version writes are disabled in beta; guild membership refresh/navigation behavior remains unchanged.",
+    "V411 version writes are disabled in beta; guild XP/progress logic remains unchanged.",
+    "HOME diagnostics now cover all four known legacy JS header writers: V380, V408, V410 and V411.",
+    "Stable behavior remains unchanged."
+  ],
+  "files": [
+    "js/features/guild/legacy/12-v380-guild-membership-requests-fix.js",
+    "js/features/guild/legacy/13-v411-guild-xp-system.js",
+    "js/system/performance/v7288-home-adaptive-fit-script.js"
+  ],
+  "commits": [
+    "5ea0c27edee7243995b40577802a9509abbf0c87",
+    "937f4810ac3ca377477d5fd8658d4e33f82546b9",
+    "e091404412531a64c261d4039cdd75e38ea6acc6"
+  ],
+  "stable_behavior_changed": false,
+  "gameplay_changed": false,
+  "guild_behavior_changed": false,
+  "server_authority_changed": false,
+  "syntax_check": "ok"
+}
