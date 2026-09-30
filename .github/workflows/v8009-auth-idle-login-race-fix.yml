@@ -68,14 +68,13 @@ jobs:
       - name: Beta-only diff sanity
         run: |
           git diff --check
-          changed="$(git diff --name-only)"
-          echo "$changed"
-          echo "$changed" | grep -qx 'V8009_AUTH_IDLE_LOGIN_RACE_FIX.json'
-          echo "$changed" | grep -qx 'beta.html'
-          if echo "$changed" | grep -q '^index.html$'; then
+          test -f V8009_AUTH_IDLE_LOGIN_RACE_FIX.json
+          git diff --quiet -- beta.html && { echo "beta.html was not changed"; exit 1; }
+          if ! git diff --quiet -- index.html; then
             echo "Stable index.html changed unexpectedly"
             exit 1
           fi
+          git status --short
 
       - name: Commit auth race fix
         run: |
