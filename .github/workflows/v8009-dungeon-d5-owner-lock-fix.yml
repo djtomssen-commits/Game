@@ -1,0 +1,64 @@
+name: V8.009 Dungeon D5 Owner Lock Fix
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'js/features/dungeon/beta/v8009-d2-detail-render-lock.js'
+      - 'js/features/dungeon/beta/v8009-d2-visual-owner.js'
+      - '.github/workflows/v8009-dungeon-d5-owner-lock-fix.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  qa:
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Syntax-check canonical Dungeon owners
+        run: |
+          node --check js/features/dungeon/beta/v8009-d2-detail-render-lock.js
+          node --check js/features/dungeon/beta/v8009-d2-visual-owner.js
+
+      - name: Validate canonical detail lock
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          lock=Path('js/features/dungeon/beta/v8009-d2-detail-render-lock.js').read_text(encoding='utf-8')
+          visual=Path('js/features/dungeon/beta/v8009-d2-visual-owner.js').read_text(encoding='utf-8')
+          beta=Path('beta.html').read_text(encoding='utf-8')
+          stable=Path('index.html').read_text(encoding='utf-8')
+
+          required_lock=[
+              "const canonicalAliases=['v251RenderDetail','v244RenderSelectedDungeonMap','v064RenderMap','v260RenderDetail'];",
+              'window.__V7166_CANONICAL_DETAIL__=fn;',
+              "enforceCanonicalDetail('click');",
+              "setTimeout(()=>enforceCanonicalDetail('pageshow-500'),500);",
+          ]
+          for needle in required_lock:
+              if needle not in lock:
+                  raise SystemExit(f'missing canonical lock assertion: {needle}')
+
+          preference='window.__V7166_CANONICAL_DETAIL__||window.v261RenderDetail||window.v251RenderDetail||window.v244RenderSelectedDungeonMap||window.v064RenderMap'
+          if preference not in visual:
+              raise SystemExit('D2 dispatcher does not prefer canonical v261 owner')
+
+          for f in [
+              'js/features/dungeon/beta/v8009-d2-detail-render-lock.js',
+              'js/features/dungeon/beta/v8009-d2-visual-owner.js',
+          ]:
+              if beta.count(f)!=1:
+                  raise SystemExit(f'beta include count != 1: {f}')
+              if f in stable:
+                  raise SystemExit(f'stable unexpectedly loads beta D5 file: {f}')
+
+          print('DUNGEON-D5 canonical owner lock OK')
+          PY
+
+      - name: Diff sanity
+        run: git diff --check
