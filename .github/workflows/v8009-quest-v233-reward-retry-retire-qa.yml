@@ -1,0 +1,24 @@
+name: V8.009 Quest v233 Reward Retry Retire QA
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'js/features/quest/beta/v233-quest-reward-final-click.js'
+      - '.github/scripts/v8009_quest_v233_reward_retry_retire_qa.py'
+      - '.github/workflows/v8009-quest-v233-reward-retry-retire-qa.yml'
+permissions:
+  contents: write
+jobs:
+  qa:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - run: node --check js/features/quest/beta/v233-quest-reward-final-click.js
+      - run: python3 .github/scripts/v8009_quest_v233_reward_retry_retire_qa.py
+      - run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add V8009_QUEST_V233_REWARD_RETRY_RETIRE_QA.json
+          git commit -m "V8.009 QUEST: record v233 reward retry retire QA" || exit 0
+          git push
