@@ -1202,3 +1202,21 @@ Der nächste fachliche Schritt ist **nicht HOME-32**, sondern die Restinventur d
 - Ziel: Skip-/Zeit-Samen-Zeile existiert bereits beim ersten sichtbaren Active-Quest-Paint und wird nicht 1–2 Frames später nachgebaut.
 - Stable / `index.html`: unverändert.
 - Nächster Test: neu einloggen -> erste Quest starten -> nur Skip-/Zeit-Samen-Zeile beobachten.
+
+
+### Quest Skip Restflackern – idempotenter Paint – 30.09.2026
+
+- Nutzer bestätigt: Restflackern deutlich schwächer, aber im Skip-Bereich noch sichtbar.
+- Letzte konkrete Ursache im v4127-Owner:
+  - `scheduleSkip()` lief weiterhin über doppeltes `requestAnimationFrame`;
+  - derselbe Skip-Block konnte nach dem direkten Paint nochmals 1–2 Frames später neu geschrieben werden;
+  - `ensureSkip()` setzte bei jedem Aufruf erneut `btn.innerHTML` und `stock.innerHTML`, auch wenn Inhalt unverändert war.
+- Fix:
+  - Commit `0d0a293c04a299ddabfc7ffb5f495c586eef1565`
+  - `scheduleSkip()` versucht zuerst synchron zu malen und nutzt nur noch einen einzelnen RAF-Retry, wenn der Host noch nicht existiert;
+  - Button-Markup wird nur noch geändert, wenn es sich tatsächlich unterscheidet;
+  - Zeit-Samen-Bestand wird nur noch bei geänderter Anzahl neu ins DOM geschrieben;
+  - kein unconditional delayed Startup-Repaint mehr;
+  - pageshow/visibility reparieren nur noch, wenn die Questseite wirklich sichtbar ist.
+- Stable / `index.html`: unverändert.
+- Nächster Test: neu einloggen -> erste Quest starten -> Skip-/Zeit-Samen-Zeile beobachten.
