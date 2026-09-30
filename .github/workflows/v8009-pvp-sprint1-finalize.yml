@@ -1,0 +1,62 @@
+name: V8.009 PvP Sprint 1 Finalize
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/v8009_pvp_sprint1_finalize.py'
+      - '.github/workflows/v8009-pvp-sprint1-finalize.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  finalize:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run PvP Hall final contract audit
+        run: python3 .github/scripts/v8009_pvp_sprint1_finalize.py
+
+      - name: Syntax-check every extracted PvP JS file
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import json
+          r=json.loads(Path('V8009_PVP_SPRINT1_EXTRACTION.json').read_text(encoding='utf-8'))
+          Path('/tmp/v8009-pvp-js.txt').write_text('\n'.join(x['file'] for x in r['js_extracted'])+'\n',encoding='utf-8')
+          PY
+          while IFS= read -r f; do
+            [ -z "$f" ] || node --check "$f"
+          done < /tmp/v8009-pvp-js.txt
+
+      - name: Validate Sprint 1 final report
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import json
+          r=json.loads(Path('V8009_PVP_SPRINT1_FINAL.json').read_text(encoding='utf-8'))
+          if r['extracted_js']!=29: raise SystemExit('expected 29 extracted PvP JS files')
+          if r['extracted_css']!=21: raise SystemExit('expected 21 extracted PvP CSS files')
+          if r['retired_marker_cores']!=5: raise SystemExit('expected 5 retired marker cores')
+          if 'v6145-hall-pagination-js.js' not in r['final_hall_ranking_owner']:
+              raise SystemExit('v6145 not final Hall owner')
+          if not r['stable_unchanged'] or not r['v7053_authority_preserved']:
+              raise SystemExit('scope/authority regression')
+          print('PVP SPRINT 1 FINAL QA OK')
+          PY
+
+      - name: Diff sanity
+        run: git diff --check
+
+      - name: Commit final report
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add V8009_PVP_SPRINT1_FINAL.json
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "V8.009 PVP-SPRINT-1: finalize Hall owner cleanup"
+          git push
