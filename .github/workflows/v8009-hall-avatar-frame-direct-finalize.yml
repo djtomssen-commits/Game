@@ -1,0 +1,74 @@
+name: V8.009 Hall Avatar Frame Direct Finalize
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/v8009_hall_avatar_frame_direct_finalize.py'
+      - '.github/workflows/v8009-hall-avatar-frame-direct-finalize.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  finalize:
+    runs-on: ubuntu-latest
+    timeout-minutes: 9
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Apply direct Hall avatar/frame cleanup
+        run: python3 .github/scripts/v8009_hall_avatar_frame_direct_finalize.py
+
+      - name: Syntax-check canonical Hall renderer
+        run: node --check js/features/pvp/beta/v8009-s1-v6145-hall-pagination-js.js
+
+      - name: Validate direct-render contract
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import json,re
+          beta=Path('beta.html').read_text(encoding='utf-8',errors='ignore')
+          hall=Path('js/features/pvp/beta/v8009-s1-v6145-hall-pagination-js.js').read_text(encoding='utf-8')
+          r=json.loads(Path('V8009_HALL_AVATAR_FRAME_DIRECT.json').read_text(encoding='utf-8'))
+
+          for required in (
+              'avatar_frame_id,updated_at',
+              "function frameArt(p)",
+              "window.v7137FrameArtMarkup?.(id)",
+              "const art=framedAvatar(p,'v646-row-avatar')",
+              "framedAvatar(p,'v6145-podium-avatar')",
+          ):
+              if required not in hall:
+                  raise SystemExit('direct Hall frame contract missing: '+required)
+
+          if "['v073LoadRanking','v073SearchPlayer','v073LoadFriends']" in beta:
+              raise SystemExit('legacy Hall ranking frame wrapper still active')
+          if "['v073SearchPlayer','v073LoadFriends'].forEach" not in beta:
+              raise SystemExit('search/friends frame refresh unexpectedly removed')
+          if 'window.v7137FrameArtMarkup=frameArtMarkup' not in beta:
+              raise SystemExit('canonical frame helper not exposed')
+          if '#hall .v6145-podium-avatar{position:relative;width:100%;height:86px' not in beta:
+              raise SystemExit('large Top-3 avatar CSS missing')
+
+          if r.get('new_render_wrapper_added') or r.get('new_timer_added') or r.get('new_observer_added'):
+              raise SystemExit('architecture regression: new patching primitive added')
+          if not r.get('stable_unchanged'):
+              raise SystemExit('Stable scope failed')
+          print('Hall direct avatar/frame contract OK')
+          PY
+
+      - name: Diff sanity
+        run: git diff --check
+
+      - name: Commit direct Hall avatar/frame integration
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add beta.html V8009_HALL_AVATAR_FRAME_DIRECT.json
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "V8.009 PVP: render Hall avatar frames directly"
+          git push
