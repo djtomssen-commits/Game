@@ -1,0 +1,25 @@
+name: V8.009 Dungeon Sprint 2 Owner Bodies
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/v8009_dungeon_sprint2_owner_bodies.py'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  extract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    steps:
+      - uses: actions/checkout@v4
+      - name: Extract candidate owner bodies
+        run: python3 .github/scripts/v8009_dungeon_sprint2_owner_bodies.py
+      - name: Commit report
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add V8009_DUNGEON_SPRINT2_OWNER_BODIES.json
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "V8.009 DUNGEON-SPRINT-2: capture remaining owner bodies"
+          git push
