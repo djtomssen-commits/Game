@@ -20,7 +20,7 @@
 - Arbeitsbranch: **main**
 - Letzter automatisiert geprüfter Code-Commit vor dieser Statusdatei:
   `06be757c3faf109c2f3c3f18195086d1909592d0`
-- Aktuelle Unterphase: **V8.009-QUEST-SPRINT-1-EXTRACTION-COMPLETED-OWNER-AUDIT-NEXT**
+- Aktuelle Unterphase: **V8.009-QUEST-SPRINT-1-OWNER-AUDIT-COMPLETED-CONSOLIDATION-NEXT**
 - Nutzer-Video bestätigt: betroffen ist konkret **Dungeon 2**.
 - Sichtbares Fehlerbild:
   - zunächst korrekter D2-Hintergrund + korrekte Gegnergrafiken;
@@ -568,6 +568,27 @@
   - insbesondere `renderQuests`, `startQuest`, `claimQuest`, Quest-Timer, Elite-Quest und Server-Authority-Layer;
   - erst danach redundante Wrapper in einem gemeinsamen Batch entfernen bzw. Aufgaben in den kanonischen Owner integrieren;
   - keine neue Render-/Timer-/Observer-Schicht hinzufügen.
+
+### Quest Sprint 1 – Owner-Audit 30.09.2026
+
+- Audit-Manifest: `V8009_QUEST_OWNER_AUDIT.json`.
+- Last-Writer-Kette im aktuellen Beta-Dokument:
+  - `renderQuests`: **21 Schreiber**, letzter Writer `js/features/quest/beta/v6344-quest-variety-js.js`
+  - `startQuest`: **15 Schreiber**, letzter Writer `js/features/quest/beta/v7110-quest-authority-sync.js`
+  - `claimQuest`: **30 Schreiber**, letzter Writer `js/features/quest/beta/v7045-atomic-quest-receipt-client.js`
+- Wichtige aktive Nebenaufgaben älterer Layer:
+  - `v229-live-ui-sync`: leichter 1-Sekunden-Questcountdown und Completion-Repaint;
+  - `v392-single-active-quest-script`: aktive Quest-Karte/Claim-Ansicht;
+  - `v4127-quest-skip-stable`: Skip-Button-/Zeit-Samen-Lifecycle;
+  - `v386-quest-redesign-script`: sichtbare Angebotskarten;
+  - `v7045`: serverautoritärer Claim-/Receipt-Pfad bei enforce;
+  - `v7110`: letzter Start-Quest-Authority-Layer;
+  - `v6344`: letzter sichtbarer Quest-Render-Decorator/Variety-Layer.
+- Konsequenz:
+  - keine pauschale Stilllegung älterer Quest-Wrapper;
+  - nächster Konsolidierungsbatch migriert Nebenaufgaben zuerst direkt in kanonische Owner/Hooks;
+  - Timer, aktive Karte, Skip, sichtbare Angebotskarten und Server-Authority getrennt behandeln.
+- Stable / `index.html`: unverändert.
 
 ### Wichtige Einordnung der Namen
 
