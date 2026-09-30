@@ -1,0 +1,49 @@
+name: V8.009 Dungeon D5 Retire Delayed Detail Repaints
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/v8009_dungeon_d5_retire_delayed_detail_repaints.py'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Retire delayed v244 detail repaint
+        run: python3 .github/scripts/v8009_dungeon_d5_retire_delayed_detail_repaints.py
+      - name: Syntax-check v251 owner
+        run: node --check js/features/dungeon/beta/v8009-d4-v251-modern-maps.js
+      - name: Validate delayed repaint retirement
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import json
+          beta=Path('beta.html').read_text(encoding='utf-8')
+          r=json.loads(Path('V8009_DUNGEON_D5_DELAYED_REPAINT_RETIRE.json').read_text(encoding='utf-8'))
+          if 'Repaint the currently open detail map if necessary.' in beta:
+              raise SystemExit('v244 delayed repaint marker still present')
+          if 'Keeping a 1350 ms legacy repaint caused' not in Path('js/features/dungeon/beta/v8009-d4-v251-modern-maps.js').read_text(encoding='utf-8'):
+              raise SystemExit('v251 delayed repaint retirement missing')
+          if not r.get('stable_unchanged'):
+              raise SystemExit('stable changed')
+          print('D5 delayed detail repaints retired')
+          PY
+      - name: Diff sanity
+        run: git diff --check
+      - name: Commit delayed repaint fix
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add beta.html V8009_DUNGEON_D5_DELAYED_REPAINT_RETIRE.json
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "V8.009 DUNGEON-D5: retire delayed v244 detail repaint"
+          git push
