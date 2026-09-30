@@ -59,8 +59,15 @@ jobs:
               'v261-dungeon-detail-style',
               'v261-dungeon-detail-script',
           ]:
-              if re.search(r'<(?:script|style)[^>]*id=["\']'+re.escape(legacy)+r'["\'][^>]*>[\s\S]*?</(?:script|style)>', beta, re.I):
-                  raise SystemExit(f"inline legacy body remains: {legacy}")
+              m = re.search(
+                  r'<script[^>]*id=["\']'+re.escape(legacy)+r'["\'][^>]*>([\s\S]*?)</script>',
+                  beta,
+                  re.I,
+              )
+              if m and m.group(1).strip():
+                  raise SystemExit(f"inline script body remains: {legacy}")
+              if re.search(r'<style[^>]*id=["\']'+re.escape(legacy)+r'["\']', beta, re.I):
+                  raise SystemExit(f"inline style remains: {legacy}")
 
           for required in [
               'js/features/dungeon/beta/v8009-d2-visual-owner.js',
