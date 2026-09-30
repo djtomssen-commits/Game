@@ -1,0 +1,28 @@
+name: V8.009 Dungeon D7 Detail Owner Chain Audit
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/v8009_dungeon_d7_detail_owner_chain_audit.py'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    steps:
+      - uses: actions/checkout@v4
+      - name: Audit legacy detail owner chain
+        run: python3 .github/scripts/v8009_dungeon_d7_detail_owner_chain_audit.py
+      - name: Commit audit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add V8009_DUNGEON_D7_DETAIL_OWNER_CHAIN_AUDIT.json
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "V8.009 DUNGEON-D7: audit legacy detail owner chain"
+          git push
