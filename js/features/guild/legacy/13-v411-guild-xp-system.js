@@ -1,6 +1,7 @@
 /* === v411-guild-xp-system === */
 (function(){
  const VERSION='V4.29 Stable';
+ const IS_BETA=String(window.GROW_RELEASE_CHANNEL||'stable')==='beta';
  /* Level 20 is deliberately a long-term guild goal. At the theoretical daily
     cap a full 20-member guild still needs about 144 days; normal play takes longer. */
  const THRESH=[0,500,1500,3500,7000,12500,20500,31500,46000,65000,90000,122000,162000,212000,275000,355000,460000,600000,900000,1800000];
@@ -37,7 +38,7 @@
   v257SearchGuilds=async function(){const box=document.querySelector('#v257GuildSearchResults');if(!box)return;if(!(await v254EnsureOnline())){box.innerHTML='<div class="v257-search-empty">Für die Gildensuche musst du eingeloggt sein.</div>';return}const q=String(document.querySelector('#v257GuildSearchInput')?.value||'').trim();box.innerHTML='<div class="v257-search-empty">Gilden werden gesucht …</div>';const {data,error}=await v073Db.rpc('v257_search_guilds',{p_query:q});if(error){box.innerHTML=`<div class="v257-search-empty">${v254GuildEsc(error.message||'Suche fehlgeschlagen')}</div>`;return}const rows=Array.isArray(data)?data:[];if(rows.length){try{const ids=rows.map(x=>x.id).filter(Boolean);const lr=await v073Db.rpc('v411_get_guild_levels',{p_ids:ids});if(!lr.error){const m=new Map((lr.data||[]).map(x=>[String(x.id),Number(x.guild_xp)||0]));rows.forEach(x=>x.guild_xp=m.get(String(x.id))||0)}}catch(e){}}
   box.innerHTML=rows.length?rows.map(g=>{const members=Number(g.member_count)||0,max=Number(g.max_members)||20,pending=!!g.request_pending,lv=level(g),locked=typeof v6124GuildLockActive==='function'&&v6124GuildLockActive();return `<div class="v257-guild-result"><div><b><span class="v257-result-tag">[${v254GuildEsc(g.tag||'GL')}]</span>${v254GuildEsc(g.name||'Gilde')}</b><small><span class="v411-search-level">🏰 Gildenlevel ${lv}</span> · 👥 ${members}/${max} · ⭐ EXP +${v254BonusPct(g.xp_level)}% · 💰 Gold +${v254BonusPct(g.gold_level)}%</small></div><button type="button" class="btn secondary" data-v257-apply="${g.id}" ${locked||pending||members>=max?'disabled':''}>${locked?`⏳ Gesperrt · ${v6124GuildLockText()}`:pending?'✓ Anfrage gesendet':members>=max?'Gilde voll':'Beitritt anfragen'}</button></div>`}).join(''):'<div class="v257-search-empty">Keine passende Gilde gefunden.</div>';box.querySelectorAll('[data-v257-apply]').forEach(btn=>btn.onclick=()=>v257ApplyGuild(btn.dataset.v257Apply));try{v6124PaintGuildLock?.()}catch(e){}};window.v257SearchGuilds=v257SearchGuilds;
  }
- function version(){document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version').forEach(el=>{if(el)el.textContent=VERSION});document.querySelectorAll('.v366-ver').forEach(el=>el.textContent='V4.11')}
+ function version(){if(IS_BETA){window.__V8009_HOME11_V411_VERSION_RETIRED__=true;return}document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version').forEach(el=>{if(el)el.textContent=VERSION});document.querySelectorAll('.v366-ver').forEach(el=>el.textContent='V4.11')}
  version();paintOwn();setTimeout(()=>{version();paintOwn()},700);setTimeout(version,2000);
 })();
 
