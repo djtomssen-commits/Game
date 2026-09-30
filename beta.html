@@ -26261,7 +26261,7 @@ function v029ShowClassChoice(){
 }
 
 async function v200FinalizeUser(user){
-  if(!user || user.is_anonymous || v200Deleting || window.__V301_LOGOUT_IN_PROGRESS__)return false;
+  if(!user || user.is_anonymous || v200Deleting || window.__V301_LOGOUT_IN_PROGRESS__ || window.__V4136_LOGOUT_PREPARING__)return false;
 
   v073User=user;
   v073Ready=true;
@@ -26294,6 +26294,10 @@ async function v200FinalizeUser(user){
 
 async function v200EmailAuth(){
   if(v200AuthBusy)return;
+  if(window.__V301_LOGOUT_IN_PROGRESS__ || window.__V4136_LOGOUT_PREPARING__){
+    v200AuthStatus('Abmeldung wird abgeschlossen …');
+    return;
+  }
 
   const email=String(document.querySelector('#v075Email')?.value||'').trim();
   const password=String(document.querySelector('#v075Password')?.value||'');
@@ -26348,7 +26352,8 @@ async function v200EmailAuth(){
       if(!data?.user)throw new Error('Keine Benutzersitzung erhalten.');
 
       v200AuthStatus('Anmeldung erfolgreich. Spielstand wird geladen …','success');
-      await v200FinalizeUser(data.user);
+      const finalized=await v200FinalizeUser(data.user);
+      if(finalized===false)throw new Error('Spielstand konnte nach der Anmeldung nicht geladen werden.');
     }
   }catch(e){
     const raw=String(e?.message||e||'Unbekannter Fehler');
@@ -26376,6 +26381,10 @@ async function v200EmailAuth(){
 
 async function v200GoogleAuth(){
   if(v200AuthBusy)return;
+  if(window.__V301_LOGOUT_IN_PROGRESS__ || window.__V4136_LOGOUT_PREPARING__){
+    v200AuthStatus('Abmeldung wird abgeschlossen …');
+    return;
+  }
   v200AuthBusy=true;
 
   try{
@@ -26664,7 +26673,7 @@ function v200InstallAuthListener(){
 
   v073Db.auth.onAuthStateChange((event,session)=>{
     const user=session?.user||null;
-    if(window.__V301_LOGOUT_IN_PROGRESS__ && event!=='SIGNED_OUT')return;
+    if((window.__V301_LOGOUT_IN_PROGRESS__ || window.__V4136_LOGOUT_PREPARING__) && event!=='SIGNED_OUT')return;
 
     if(event==='SIGNED_OUT'){
       if(!v200Deleting){
@@ -67709,12 +67718,25 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();i
  try{
   if(typeof v136Logout==='function'){
    const baseLogout=v136Logout;
-   v136Logout=async function(reason='manual'){
-    const id=uid();if(id&&complete(s)&&owned(s,id,false)&&window.__V200_AUTH_READY__===true){
-     const ok=await directCloudWrite(id);if(!ok){try{v063Toast('Abmelden gestoppt','error','Der Account-Spielstand konnte noch nicht bestätigt gespeichert werden.')}catch(e){};return false}
-     window.__V4136_NEW_CHARACTER_PENDING__=null;
-    }
-    return await baseLogout.apply(this,arguments);
+   let logoutPromise=null;
+   v136Logout=function(reason='manual'){
+    if(logoutPromise)return logoutPromise;
+    const self=this,args=arguments;
+    window.__V4136_LOGOUT_PREPARING__=true;
+    try{v200AuthBusy=true}catch(_){}
+    logoutPromise=(async()=>{
+     try{
+      const id=uid();if(id&&complete(s)&&owned(s,id,false)&&window.__V200_AUTH_READY__===true){
+       const ok=await directCloudWrite(id);if(!ok){try{v063Toast('Abmelden gestoppt','error','Der Account-Spielstand konnte noch nicht bestätigt gespeichert werden.')}catch(e){};return false}
+       window.__V4136_NEW_CHARACTER_PENDING__=null;
+      }
+      return await baseLogout.apply(self,args);
+     }finally{
+      window.__V4136_LOGOUT_PREPARING__=false;
+      try{if(!window.__V301_LOGOUT_IN_PROGRESS__)v200AuthBusy=false}catch(_){}
+     }
+    })().finally(()=>{logoutPromise=null});
+    return logoutPromise;
    };
    try{window.v136Logout=v136Logout}catch(e){}
   }

@@ -1,0 +1,16 @@
+{
+  "phase": "V8.009-AUTH-IDLE-LOGIN-RACE-FIX",
+  "scope": "beta-only",
+  "cause": "10-minute idle logout could still be saving/signing out while a new login began",
+  "changes": [
+    "serialize the existing v4136 canonical logout owner with one in-flight promise",
+    "mark logout preparation before directCloudWrite begins",
+    "block email/google/finalize/auth-listener login paths during logout preparation",
+    "treat finalize=false after email sign-in as a failed login instead of silent success"
+  ],
+  "new_renderers": 0,
+  "new_render_wrappers": 0,
+  "new_timers": 0,
+  "new_mutation_observers": 0,
+  "stable_changed": false
+}
