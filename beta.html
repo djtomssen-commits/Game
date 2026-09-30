@@ -96480,13 +96480,14 @@ window.v684InventoryRarityQA=()=>({
 #hall .v6145-podium-card.v6145-own{box-shadow:0 0 0 2px #72cf57 inset,0 0 18px rgba(114,207,87,.28),0 8px 20px #0008}
 #hall .v6145-podium-top{height:28px;display:flex;align-items:center;justify-content:space-between;padding:5px 7px;border-bottom:1px solid #2f3b30;background:#0b130d}
 #hall .v6145-medal{font-size:15px;line-height:1}.v6145-pos{font-size:7px;font-weight:1000;color:#d7c892}
-#hall .v6145-podium-body{padding:8px;text-align:center}
-#hall .v6145-podium-avatar{height:48px;display:flex;align-items:flex-end;justify-content:center;margin-bottom:5px}
-#hall .v6145-podium-avatar img{display:block;max-width:52px;max-height:48px;object-fit:contain;filter:drop-shadow(0 5px 5px #0008)}
-#hall .v6145-podium-avatar span{font-size:27px;line-height:1}
-#hall .v6145-podium-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#f2f5ee;font-size:8px;font-weight:1000}
-#hall .v6145-podium-meta{margin-top:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#879489;font-size:5.5px}
-#hall .v6145-podium-power{margin-top:6px;color:#d8bd69;font-size:6px;font-weight:900}
+#hall .v6145-podium-body{padding:0 0 7px;text-align:center}
+#hall .v6145-podium-avatar{position:relative;width:100%;height:86px;display:grid;place-items:center;margin:0 0 7px;overflow:visible;background:#08100a}
+#hall .v6145-podium-avatar>img:not(.v7139-frame-art){display:block;width:100%;height:100%;max-width:none;max-height:none;object-fit:cover;object-position:center 24%;filter:drop-shadow(0 5px 5px #0008)}
+#hall .v6145-podium-avatar>.v7139-frame-art{pointer-events:none}
+#hall .v6145-podium-avatar span{font-size:38px;line-height:1}
+#hall .v6145-podium-name{padding:0 6px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#f2f5ee;font-size:8px;font-weight:1000}
+#hall .v6145-podium-meta{padding:0 6px;margin-top:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#879489;font-size:5.5px}
+#hall .v6145-podium-power{padding:0 6px;margin-top:6px;color:#d8bd69;font-size:6px;font-weight:900}
 #hall .v6145-modebar{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;padding:7px;border:1px solid #344635;border-radius:12px;background:#0b130d}
 #hall .v6145-mode-btn{min-width:0;min-height:34px;border:1px solid #405441;border-radius:9px;background:linear-gradient(180deg,#17231a,#101711);color:#c9d5c8;padding:5px 4px;font:900 7px/1.15 system-ui;cursor:pointer}
 #hall .v6145-mode-btn.active{border-color:#6eb856;background:linear-gradient(180deg,#244125,#142817);color:#c6f3ae;box-shadow:0 0 12px rgba(109,193,83,.13)}
@@ -96507,7 +96508,7 @@ window.v684InventoryRarityQA=()=>({
 @media(max-width:430px){
  #hall .v6145-podium{gap:5px}
  #hall .v6145-podium-card.rank-1{min-height:126px}.v6145-podium-card.rank-2{min-height:112px}.v6145-podium-card.rank-3{min-height:108px}
- #hall .v6145-podium-body{padding:7px 5px}.v6145-podium-avatar{height:43px}.v6145-podium-avatar img{max-width:47px;max-height:43px}
+ #hall .v6145-podium-body{padding:0 0 6px}#hall .v6145-podium-avatar{height:72px}#hall .v6145-podium-avatar>img:not(.v7139-frame-art){width:100%;height:100%;max-width:none;max-height:none}
  #hall .v6145-mode-btn{font-size:6.2px;padding:5px 2px}
  #hall .v6145-pager{grid-template-columns:1fr 88px 1fr;gap:5px}.v6145-page-state{min-width:0}
 }
@@ -116604,6 +116605,7 @@ const V7139_FRAME_ASSETS=Object.freeze({
 });
 function frameAssetUrl(id){return V7139_FRAME_ASSETS[String(id||'')]||''}
 function frameArtMarkup(id){const src=frameAssetUrl(id);return src?`<img class="v7139-frame-art" src="${esc(src)}" alt="" aria-hidden="true" decoding="async">`:''}
+window.v7137FrameArtMarkup=frameArtMarkup;
 function applyFrame(el,id){
  if(!el)return;
  const fid=frameAssetUrl(id)?String(id):'';
@@ -116679,7 +116681,7 @@ async function decorateHallFrames(){
 async function decorateOpenProfile(id){const sid=String(id||'');if(!sid)return;let fid='';try{if(sid===String(v073User?.id||'')){if(!S.frames)await loadFrames(false);fid=String(S.frames?.active_frame_id||'')}else{let p=S.profileCache.get(sid);if(!p){const m=await publicFrameRows([sid]);p=m.get(sid)||{};S.profileCache.set(sid,p)}fid=String(p?.avatar_frame_id||'')}}catch(_){};[0,50,180].forEach(ms=>setTimeout(()=>applyFrame(document.querySelector('#v074ProfileContent .v652-profile-avatar'),fid),ms))}
 function wrapSocial(){
  try{if(typeof window.v074OpenProfile==='function'&&!window.__V7137_PROFILE_WRAP__){const base=window.v074OpenProfile;const w=async function(id){const r=await base.apply(this,arguments);void decorateOpenProfile(id);return r};window.v074OpenProfile=w;try{v074OpenProfile=w}catch(_){}window.__V7137_PROFILE_WRAP__=true}}catch(_){}
- ['v073LoadRanking','v073SearchPlayer','v073LoadFriends'].forEach(name=>{try{const base=window[name]||globalThis[name];if(typeof base!=='function'||base.__v7137)return;const w=async function(){const r=await base.apply(this,arguments);setTimeout(()=>void decorateHallFrames(),0);return r};w.__v7137=true;window[name]=w;try{globalThis[name]=w}catch(_){}}catch(_){}});
+ ['v073SearchPlayer','v073LoadFriends'].forEach(name=>{try{const base=window[name]||globalThis[name];if(typeof base!=='function'||base.__v7137)return;const w=async function(){const r=await base.apply(this,arguments);setTimeout(()=>void decorateHallFrames(),0);return r};w.__v7137=true;window[name]=w;try{globalThis[name]=w}catch(_){}}catch(_){}});
 }
 
 /* Gold page copyright really stays at the bottom. */
