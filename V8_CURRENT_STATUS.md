@@ -1239,3 +1239,25 @@ Der nächste fachliche Schritt ist **nicht HOME-32**, sondern die Restinventur d
   - kein neuer Renderer/Timer/Observer.
 - Stable / `index.html`: unverändert.
 - Nächster Test: erste Quest starten; es darf nur noch genau eine Zeit-Samen-Kachel geben. Restflackern weiter beobachten.
+
+
+### Quest Claim stale-active Hotfix 30.09.2026
+
+- Nutzer-Video nach Skip-/Flicker-Arbeiten:
+  - nach Quest-Claim erschien hinter/anschließend wieder eine sehr alte Questansicht;
+  - zusätzlich war weiterhin ein Rewardfenster sichtbar.
+- Root Cause im serverautoritären Claim-Pfad:
+  - `claimServerQuest()` setzte `s.quests.active=null`,
+  - danach konnte `applyBundle(b)` denselben bereits verbrauchten Run aus einem stale Claim-Receipt/Bundle wieder als `active` einsetzen;
+  - dadurch durfte ein alter Quest-Renderer nach `paintAll()` nochmals eine abgeschlossene/alte aktive Questoberfläche aufbauen.
+- Fix Commit: `3a5caba3765325d5dd020153188923d90eb8e676`
+  - Claim- und Timeout-Recovery-Bundles wenden Rewards weiterhin vollständig an;
+  - Feld `active` wird aus dem Reward-Bundle vor `applyBundle()` entfernt;
+  - aktiver Questzustand wird anschließend ausschließlich über `canonicalQuestState(true)` frisch vom Server bezogen;
+  - verhindert, dass ein verbrauchter Quest-Run nach dem Claim wieder aufersteht.
+- Stable / `index.html`: unverändert.
+- Manueller Test erforderlich:
+  1. Quest bis Claim spielen;
+  2. Belohnung abholen;
+  3. nach Combat/Reward darf keine alte `Aktiver Auftrag`-Questseite mehr erscheinen;
+  4. danach müssen direkt die neuen drei Angebote sichtbar sein.
