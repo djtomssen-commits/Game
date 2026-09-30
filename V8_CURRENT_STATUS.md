@@ -20,7 +20,7 @@
 - Arbeitsbranch: **main**
 - Letzter automatisiert geprüfter Code-Commit vor dieser Statusdatei:
   `06be757c3faf109c2f3c3f18195086d1909592d0`
-- Aktuelle Unterphase: **V8.009-QUEST-SPRINT-1-CONSOLIDATION-PASS2-COMPLETED-START-CHAIN-NEXT**
+- Aktuelle Unterphase: **V8.009-QUEST-SPRINT-1-RENDER-PASS3-CODE-COMPLETED-QA-PENDING**
 - Nutzer-Video bestätigt: betroffen ist konkret **Dungeon 2**.
 - Sichtbares Fehlerbild:
   - zunächst korrekter D2-Hintergrund + korrekte Gegnergrafiken;
@@ -613,6 +613,30 @@
 - Nächster Schritt:
   - Startkette `v321 -> v443 -> v7045 -> v7110` auditieren und nur sichere Wrapper weiter reduzieren;
   - Dampf-Kosten, Local/Server-Authority und Receipt/Reward-Pfade strikt erhalten.
+
+### Quest Sprint 1 – Start Chain + Render Pass 3 30.09.2026
+
+- Start-Chain-QA: `V8009_QUEST_START_CHAIN_QA.json` – vollständig grün.
+- Startkette weiter reduziert:
+  - `v443-quest-dampf-live-fix` schreibt `startQuest` nicht mehr; direkte Nacharbeit über `v443AfterQuestStart` aus `v7110`;
+  - `v321-elite-hard-guarantee-dampf-scale` schreibt `startQuest` nicht mehr; lokale Dampf-Vorbereitung über `v321PrepareLocalQuestStart` direkt aus `v7110`;
+  - `v7110` bleibt letzter Start-Owner;
+  - `v7045` bleibt Server-Authority-/Receipt-Grenze.
+- Render Pass 3 Code fertig:
+  - `v309-distinct-quest-offers`: kein `renderQuests`-Writer mehr; direkte Pre-/Post-Hooks;
+  - `v316-quest-balance-skip`: kein `renderQuests`-Writer mehr; direkte Balance-/Skip-Paint-Hooks;
+  - `v496-quest-claim-single-payout`: kein `renderQuests`-Guard-Wrapper mehr; stale-paid Reparatur als direkter Pre-Render-Hook;
+  - `v6344` übernimmt die ursprüngliche Reihenfolge:
+    1. v496 stale-paid repair,
+    2. v316 balance,
+    3. v309 offer prepare,
+    4. Basis-Render,
+    5. v309 role paint,
+    6. v316 skip paint,
+    7. danach bestehende v386/v392/v4172/v233/v4127 Hooks.
+- Pass-3-QA Workflow + Contract liegen im Repo und wurden ausgelöst.
+- Beim unmittelbaren Nachcheck war `V8009_QUEST_RENDER_PASS3_QA.json` noch nicht zurückgeschrieben; deshalb QA-Status aktuell **pending**.
+- Stable / `index.html`: unverändert.
 
 ### Wichtige Einordnung der Namen
 
