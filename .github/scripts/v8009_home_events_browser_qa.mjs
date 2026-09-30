@@ -39,7 +39,7 @@ async function fixture(time,{quiet=0,channel='beta',helper=true,playerClass='gro
   window.renderQuests=()=>{qa.quests++};
   window.v276DecorateGold=()=>{qa.gold++};window.v095DecorateXp=()=>{qa.xp++};
   window.v032Go=id=>{qa.nav.push(String(id||''))};window.v7114OpenGoldShop=()=>{qa.goldShop++};window.v085InstallWorld=()=>{};window.v085WorldHtml=()=>'';
-  window.v110Open=()=>{qa.bossOpens++};
+  window.v110Open=()=>{qa.bossOpens++};window.v488OpenForge=()=>{};window.v106OpenBook=()=>{};
   window.vTowerWednesdayEventInfo=()=>({active:new Intl.DateTimeFormat('en-US',{timeZone:'Europe/Berlin',weekday:'short'}).format(new Date())==='Wed',name:'Mutationssturm',icon:'🧬'});
  },{quiet,channel,playerClass});
  await page.addScriptTag({content:grant});
