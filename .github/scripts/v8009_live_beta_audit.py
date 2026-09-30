@@ -7,8 +7,9 @@ repo_beta=Path('beta.html').read_bytes()
 out={'repo_beta':{
   'bytes':len(repo_beta),
   'sha256':hashlib.sha256(repo_beta).hexdigest(),
-  'has_cache_include':b'v8009-s1-v6145-hall-pagination-js.js?v=8009-top3-owner2' in repo_beta,
+  'has_cache_include':b'v8009-s1-v6145-hall-pagination-js.js?v=8009-top3-owner3' in repo_beta,
   'has_portrait_css':b'v6145-podium-portrait' in repo_beta,
+  'has_idle_login_race_fix':b'__V4136_LOGOUT_PREPARING__' in repo_beta and b'let logoutPromise=null' in repo_beta,
 }}
 for p in paths:
     url=base+p
@@ -30,6 +31,8 @@ for p in paths:
               'has_plain_include':'v8009-s1-v6145-hall-pagination-js.js' in txt,
               'has_portrait_css':'v6145-podium-portrait' in txt,
               'has_v7230_scope':'#world .v366-avatar.v7137-frame-target' in txt,
+              'has_idle_login_race_fix':'__V4136_LOGOUT_PREPARING__' in txt and 'let logoutPromise=null' in txt,
+              'has_finalize_guard':'Spielstand konnte nach der Anmeldung nicht geladen werden.' in txt,
             }
     except Exception as e:
         out[p]={'ok':False,'error':repr(e)}
