@@ -149,37 +149,15 @@
     }
   }
 
-  /*
-    Capture the difficulty before the canonical startQuest copies the selected
-    offer into s.quests.active. No reward/cost/timer math is changed.
-  */
-  const baseStartQuest=window.startQuest;
-  window.startQuest=function(i){
+  /* Direct hooks used by the canonical Quest owners. */
+  window.v392PrepareStart=i=>{
     const q=s.quests?.offers?.[Number(i)];
-    if(q && !s.quests?.active){
-      q.v392Kind=['fast','normal','hard'][Number(i)]||'normal';
-    }
-    const r=baseStartQuest.apply(this,arguments);
-    requestAnimationFrame(paintActive);
-    return r;
+    if(q && !s.quests?.active)q.v392Kind=['fast','normal','hard'][Number(i)]||'normal';
   };
+  window.v392PaintActive=paintActive;
 
-  const baseRenderQuests=renderQuests;
-  renderQuests=function(){
-    const r=baseRenderQuests.apply(this,arguments);
-    paintActive();
-    return r;
-  };
-
-  /* Reuse the EXISTING one-second quest timer. No additional interval. */
-  if(typeof v229UpdateQuestTimer==='function'){
-    const baseTimer=v229UpdateQuestTimer;
-    v229UpdateQuestTimer=function(){
-      const r=baseTimer.apply(this,arguments);
-      tickActive();
-      return r;
-    };
-  }
+  /* Reuse the EXISTING one-second quest timer through one direct tick hook. */
+  window.v392TickActive=tickActive;
 
   /* V7.122: duplicate quest-nav active paint retired; renderQuests owns it. */
 
