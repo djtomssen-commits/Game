@@ -1,0 +1,32 @@
+{
+  "build": "V8.009-HOME-10-BETA",
+  "phase": "Startseite legacy header mutation cleanup",
+  "scope": "beta only",
+  "findings": [
+    "Two old guild modules still rewrote visible version/header DOM after startup.",
+    "V408 performed a delayed write around 750 ms.",
+    "V410 performed immediate and delayed writes, including around 700 ms and 2000 ms.",
+    "Those writes targeted .v366-ver and other generic version nodes even though beta already has one current version owner."
+  ],
+  "changes": [
+    "V408 no longer writes version/header DOM in beta; guild upgrade rendering remains active.",
+    "V410 no longer writes version/header DOM in beta; guild level/progress rendering remains active.",
+    "Stable behavior is unchanged.",
+    "HOME diagnostics now report whether both legacy writers are retired."
+  ],
+  "files": [
+    "js/features/guild/legacy/06-v408-guild-upgrade-audit-fix.js",
+    "js/features/guild/legacy/07-v410-guild-level-system.js",
+    "js/system/performance/v7288-home-adaptive-fit-script.js"
+  ],
+  "commits": [
+    "7514d422b53a3fbb8fdc4c0fc76ded37b981d0b4",
+    "c52bd1eeb3d8cd356e5ff3c890563fc6a42afb42",
+    "0aa2f2a1a2aaf39befdb87ca459f6fd75a3fc2b7"
+  ],
+  "stable_behavior_changed": false,
+  "gameplay_changed": false,
+  "guild_behavior_changed": false,
+  "server_authority_changed": false,
+  "syntax_check": "ok"
+}
