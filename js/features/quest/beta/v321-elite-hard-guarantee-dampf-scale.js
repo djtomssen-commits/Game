@@ -150,13 +150,12 @@ v271EffectiveQuestCost=function(q){
  return base;
 };
 
-/* Re-own the final quest start path so every historical wrapper receives the
-   exact actual cost (important for daily Harz / 100-Dampf tracking). */
-const v321BaseStartQuest=window.startQuest;
-window.startQuest=function(i){
+/* Direct local-start preflight used by the canonical Quest start owner.
+   It prepares the exact local Dampf cost but does not own startQuest anymore. */
+window.v321PrepareLocalQuestStart=function(i){
  v271NormalizeQuestOffers();
  const q=s.quests?.offers?.[i];
- if(!q)return v321BaseStartQuest(i);
+ if(!q)return {ok:true};
 
  const base=v321QuestDampfBase(q);
  q.energy=base;
@@ -164,17 +163,18 @@ window.startQuest=function(i){
 
  const cost=v271EffectiveQuestCost(q);
  if(cost<=0){
-   return v115Alert(
+   v115Alert(
      `Für diese ${v321QuestRole(q)==='heavy'?'schwere':v321QuestRole(q)==='quick'?'schnelle':'normale'} Quest brauchst du ${base} Dampf.`,
      'Nicht genug Dampf',
      'warn'
    );
+   return {ok:false};
  }
 
  q.energy=cost;
  q.v271ActualDampfCost=cost;
  window.v109PendingQuestEnergy=cost;
- return v321BaseStartQuest(i);
+ return {ok:true,cost,base};
 };
 
 /* Final display layer: exact cost + level band on each offer. */
