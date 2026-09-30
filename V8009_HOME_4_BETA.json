@@ -1,0 +1,24 @@
+{
+  "build": "V8.009-HOME-4-BETA",
+  "phase": "Startseite/navigation DOM churn cleanup",
+  "scope": "beta only",
+  "root_cause": [
+    "V4148 still performs a full replaceChildren() of the navigation panel on several lifecycle events.",
+    "V4149 already owns canonical navigation ordering/state and V7272 observes/decorates the same panel.",
+    "When V4148 rebuilds an already-correct menu, it creates a needless full DOM mutation and can trigger another V7272 repair/decorate cycle."
+  ],
+  "changes": [
+    "Beta installs an instance-level guard on #v032MenuPanel.replaceChildren().",
+    "If the direct data-screen order is already identical, the full menu replacement is skipped.",
+    "Real structural changes are still allowed through unchanged.",
+    "The guard is reinstalled after DOM/account/extras/foreground/pageshow lifecycle points in case the menu panel itself is recreated.",
+    "Diagnostics count suppressed vs allowed menu rebuilds."
+  ],
+  "file": "js/system/performance/v7288-home-adaptive-fit-script.js",
+  "file_sha": "f55d197a7dae037aa8db12379546b7ec2a7ac0ef",
+  "commit": "ac2e25f6b4a03b053124d0ba341d837fbdc02b5e",
+  "stable_behavior_changed": false,
+  "gameplay_changed": false,
+  "server_authority_changed": false,
+  "syntax_check": "ok"
+}
