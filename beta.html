@@ -38870,11 +38870,12 @@ const v306Line=document.querySelector('#v141VersionLine');
 (function(){
   const VERSION='V4.29 Stable';
   let hideTimer=0;
+  let levelDone=Promise.resolve();
 
   function stamp(){}
 
   function show(oldLevel,newLevel){
-    if(!(newLevel>oldLevel))return;
+    if(!(newLevel>oldLevel))return Promise.resolve(false);
     try{window.v6111Sfx?.('levelup')}catch(e){}
     const gained=newLevel-oldLevel;
     const attrGain=gained*2;
@@ -38890,9 +38891,14 @@ const v306Line=document.querySelector('#v141VersionLine');
     </div>`;
     document.body.appendChild(ov);
     clearTimeout(hideTimer);
-    hideTimer=setTimeout(()=>ov.remove(),3600);
+    levelDone=new Promise(resolve=>{
+      hideTimer=setTimeout(()=>{ov.remove();resolve(true)},3600);
+    });
     try{if(typeof v063Toast==='function')v063Toast('🎉 Level Up!','success',`Du bist jetzt Level ${newLevel}.`)}catch(e){}
+    return levelDone;
   }
+  window.v420ShowLevelUp=show;
+  window.v420LevelUpDone=()=>levelDone;
 
   /* Final owner: a genuine Level-Up can only happen inside addXp().
      Comparing state before/after avoids fake popups during login/cloud hydration. */

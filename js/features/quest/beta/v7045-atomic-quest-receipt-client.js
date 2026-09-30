@@ -305,7 +305,11 @@ async function claimServerQuest(){
  const q=s?.quests?.active;if(!q||Date.now()<Number(q.ends||0))return false;
  const runId=Number(q.serverRunId)||0;if(!runId){toast('Quest-Serverfehler','error','Server-Quest-ID fehlt.');return false}
  C.busy=true;window.__V7214_QUEST_MUTATION_BUSY__=true;invalidateQuestState();C.lastRunId=runId;
- const before=(()=>{try{return typeof v235RewardSnapshot==='function'?v235RewardSnapshot(q):{q:clone(q),gold:Number(s.gold)||0,harz:Number(s.harzTaler)||0,inventory:(s.inventory||[]).map(itemId)}}catch(_){return{q:clone(q)}}})();
+ const before=(()=>{try{
+  const snap=typeof v235RewardSnapshot==='function'?v235RewardSnapshot(q):{q:clone(q),gold:Number(s.gold)||0,harz:Number(s.harzTaler)||0,inventory:(s.inventory||[]).map(itemId)};
+  snap.level=Math.max(1,Number(s.level)||1);
+  return snap;
+ }catch(_){return{q:clone(q),level:Math.max(1,Number(s?.level)||1)}}})();
  try{
   let b;
   try{b=await rpcTimeout('v7044_claim_quest',{},9000)}catch(e){
@@ -327,8 +331,15 @@ async function claimServerQuest(){
      receipt/bundle. Rewards are applied, while active quest state is fetched
      separately from the canonical server state below. */
   const rewardOnly=clone(b)||{};delete rewardOnly.active;
+  const oldLevel=Math.max(1,Number(before?.level)||Number(s.level)||1);
+  const newLevel=Math.max(1,Number(rewardOnly.level)||oldLevel);
   applyBundle(rewardOnly);
   try{await canonicalQuestState(true)}catch(_){}
+  if(newLevel>oldLevel){
+   try{
+    if(typeof window.v420ShowLevelUp==='function')await Promise.resolve(window.v420ShowLevelUp(oldLevel,newLevel));
+   }catch(e){console.warn('[V7045] level-up presentation',e)}
+  }
   markQuestSideEffects(runId,q,b);
   persistLocal();paintAll();secondaryToasts(b);
   try{window.glCancelQuestPushJob?.()}catch(_){}
