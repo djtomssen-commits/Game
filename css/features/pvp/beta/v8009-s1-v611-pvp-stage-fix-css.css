@@ -1,0 +1,70 @@
+
+/* Visual-only PvP corrections. No cooldown, matchmaking, rewards or combat maths changed. */
+#v209PvpBattleOverlay .v209-stage{
+  background-image:
+    linear-gradient(180deg,rgba(1,8,6,.24) 0%,rgba(2,12,9,.08) 34%,rgba(1,7,5,.36) 73%,rgba(1,5,3,.88) 100%),
+    radial-gradient(circle at 50% 45%,rgba(71,205,86,.14),transparent 25%),
+    url("../../../../assets/v7195-base64/c43c0f746c3b3cbd8fda.webp")!important;
+  background-size:cover!important;
+  background-position:center 44%!important;
+  background-repeat:no-repeat!important;
+  box-shadow:inset 0 0 100px rgba(0,0,0,.60),inset 0 -62px 82px rgba(0,0,0,.55),0 10px 24px #0009!important;
+}
+#v209PvpBattleOverlay .v209-stage:before{
+  background:
+    radial-gradient(ellipse at 50% 93%,rgba(0,0,0,.62),transparent 58%),
+    radial-gradient(circle at 17% 42%,rgba(255,187,86,.10),transparent 11%),
+    radial-gradient(circle at 83% 42%,rgba(255,187,86,.10),transparent 11%),
+    linear-gradient(90deg,rgba(0,0,0,.16),transparent 18%,transparent 82%,rgba(0,0,0,.16))!important;
+}
+.v610-pvp-title{top:17px!important;min-width:52%!important;padding:10px 22px 9px!important;font-size:12.5px!important}
+.v610-pvp-title:before{display:none!important;content:none!important}
+.v610-pvp-round{top:70px!important}
+.v610-pvp-procs{top:108px!important}
+.v610-pvp-vs{top:58%!important;width:48px!important;height:48px!important;font-size:18px!important}
+
+/* Portrait sources contain scenery. Fade all edges so the people read as fighters, not portrait cards. */
+#v209PvpBattleOverlay .v209-avatar{
+  height:272px!important;
+  overflow:visible!important;
+  background:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+}
+#v209PvpBattleOverlay .v209-avatar img{
+  max-width:110%!important;
+  max-height:270px!important;
+  width:auto!important;height:auto!important;
+  border:0!important;border-radius:0!important;background:transparent!important;
+  object-fit:contain!important;object-position:center bottom!important;
+  -webkit-mask-image:radial-gradient(ellipse 74% 84% at 50% 49%,#000 0 54%,rgba(0,0,0,.98) 65%,rgba(0,0,0,.66) 81%,transparent 100%)!important;
+  mask-image:radial-gradient(ellipse 74% 84% at 50% 49%,#000 0 54%,rgba(0,0,0,.98) 65%,rgba(0,0,0,.66) 81%,transparent 100%)!important;
+  filter:drop-shadow(0 18px 15px rgba(0,0,0,.94)) drop-shadow(0 0 13px rgba(85,225,76,.11))!important;
+}
+#v209PvpBattleOverlay .v209-fighter.player{left:1.5%!important;width:45%!important}
+#v209PvpBattleOverlay .v209-fighter.enemy{right:1.5%!important;width:45%!important}
+#v209PvpBattleOverlay .v209-fighter-name{width:88%!important}
+#v209PvpBattleOverlay .v209-hpbar{width:88%!important}
+#v209PvpBattleOverlay .v209-avatar:after{
+  content:"";position:absolute;left:50%;bottom:12px;transform:translateX(-50%);width:150px;height:38px;border-radius:50%;z-index:1;pointer-events:none;
+  background:radial-gradient(ellipse,rgba(0,0,0,.60),rgba(0,0,0,.08) 68%,transparent 73%);
+}
+#v209PvpBattleOverlay .v209-fighter:before{
+  content:"";position:absolute;left:50%;top:92px;transform:translateX(-50%);width:180px;height:210px;border-radius:50%;z-index:-1;pointer-events:none;
+  background:radial-gradient(ellipse,rgba(74,202,76,.10),rgba(22,88,38,.04) 48%,transparent 72%);filter:blur(3px);
+}
+#v209PvpBattleOverlay.v611-preview .v209-battle-head .pill:after{content:" · VORSCHAU";color:#f0d38f}
+
+@media(max-width:560px){
+  #v209PvpBattleOverlay .v209-stage{height:455px!important;background-position:center 44%!important}
+  .v610-pvp-title{top:14px!important;min-width:55%!important;font-size:10.8px!important;padding:9px 15px 8px!important}
+  .v610-pvp-round{top:64px!important}
+  .v610-pvp-procs{top:99px!important}
+  .v610-pvp-vs{top:57.5%!important;width:43px!important;height:43px!important;font-size:16px!important}
+  #v209PvpBattleOverlay .v209-avatar{height:242px!important}
+  #v209PvpBattleOverlay .v209-avatar img{max-height:238px!important;max-width:114%!important}
+  #v209PvpBattleOverlay .v209-fighter{width:47%!important;bottom:27px!important}
+  #v209PvpBattleOverlay .v209-fighter.player{left:-1%!important}
+  #v209PvpBattleOverlay .v209-fighter.enemy{right:-1%!important}
+  #v209PvpBattleOverlay .v209-fighter-name,#v209PvpBattleOverlay .v209-hpbar{width:90%!important}
+}

@@ -1,0 +1,25 @@
+
+/* Remove baked-in text from the hero artwork by using a clean scenic crop derived
+   from the same Hall-of-Haze background. Keep the large arena scene unchanged. */
+#pvp .v204-pvp-hero{
+  background-image:
+    linear-gradient(90deg,rgba(5,13,7,.28) 0%,rgba(5,13,7,.38) 34%,rgba(5,13,7,.70) 67%,rgba(5,13,7,.90) 100%),
+    url("../../../../assets/v7195-base64/db86d5a8b0563a07ce31.webp")!important;
+  background-size:cover!important;
+  background-position:center center!important;
+  background-repeat:no-repeat!important;
+}
+/* Keep the content readable while letting more of the arena background show. */
+#pvp .v204-pvp-hero>div:first-child{
+  position:relative!important;
+  z-index:1!important;
+  max-width:64%!important;
+  text-shadow:0 2px 4px rgba(0,0,0,.78)!important;
+}
+#pvp .v204-pvp-buds{position:relative!important;z-index:1!important}
+/* Arena/fight counter: neutral arena icon instead of the green helmet. */
+#pvp .v204-pvp-status>div:nth-child(3):before{content:'🏟️'!important}
+@media(max-width:600px){
+  #pvp .v204-pvp-hero{background-position:center 48%!important}
+  #pvp .v204-pvp-hero>div:first-child{max-width:66%!important}
+}
