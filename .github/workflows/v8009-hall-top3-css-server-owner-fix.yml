@@ -24,12 +24,12 @@ jobs:
           python3 - <<'PY'
           from pathlib import Path
           beta=Path('beta.html').read_text(encoding='utf-8',errors='ignore')
-          sid='v7230-server-frame-isolation'
-          pos=beta.find(sid)
-          if pos<0: raise SystemExit('v7230 missing')
-          a=beta.rfind('<script',0,pos); b=beta.find('</script',pos)
-          if a<0 or b<0: raise SystemExit('v7230 bounds missing')
-          body_start=beta.find('>',a)+1
+          tag='<script id="v7230-server-frame-isolation">'
+          a=beta.find(tag)
+          if a<0: raise SystemExit('v7230 script missing')
+          body_start=a+len(tag)
+          b=beta.find('</script',body_start)
+          if b<0: raise SystemExit('v7230 script end missing')
           Path('/tmp/v7230.js').write_text(beta[body_start:b],encoding='utf-8')
           PY
           node --check /tmp/v7230.js
