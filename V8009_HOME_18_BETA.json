@@ -1,0 +1,25 @@
+{
+  "build": "V8.009-HOME-18-BETA",
+  "phase": "Canonical visible build-style ownership",
+  "scope": "beta only",
+  "base_commit": "3d577139ed20adf852c717bd6d5f19040b3801b8",
+  "findings": [
+    "HOME-17 fixed the underlying header text, but the helper still owned a second beta version-style layer because shared historical CSS exposes V8.001 through ::after.",
+    "That helper re-applied and re-appended the same style on boot, DOMContentLoaded, pageshow and account-ready."
+  ],
+  "changes": [
+    "The canonical beta home renderer now installs the V8.009 pseudo-element override itself exactly once.",
+    "The helper's separate applyBetaVersionStyle function is retired.",
+    "DOMContentLoaded/pageshow/account-ready no longer rewrite or move the version style.",
+    "The existing shared/stable version CSS is untouched.",
+    "Browser QA simulates historical V8.001 CSS and verifies visible V8.009, one style owner, and no unrelated version-node writes with the helper disabled."
+  ],
+  "files": [
+    "js/features/home/beta/v8009-home-renderer.js",
+    "js/system/performance/v7288-home-adaptive-fit-script.js",
+    ".github/scripts/v8009_home_events_browser_qa.mjs"
+  ],
+  "stable_behavior_changed": false,
+  "gameplay_changed": false,
+  "server_authority_changed": false
+}

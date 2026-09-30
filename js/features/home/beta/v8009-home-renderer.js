@@ -1,8 +1,21 @@
 
 (function(){
   if(String(window.GROW_RELEASE_CHANNEL||'stable')!=='beta')return;
-  const diagnostics={fullRenders:0,eventPanelPatches:0,goldDirectOpens:0,mailDirectOpens:0};
+  const diagnostics={fullRenders:0,eventPanelPatches:0,goldDirectOpens:0,mailDirectOpens:0,versionStyleInstalls:0};
   const BETA_VERSION='V8.009';
+  function installBetaVersionStyle(){
+    try{
+      let style=document.getElementById('v8009-home-beta-version');
+      if(style)return true;
+      if(!document.head)return false;
+      style=document.createElement('style');
+      style.id='v8009-home-beta-version';
+      style.textContent=`html body .app > header .v358-logo::after{content:"${BETA_VERSION}"!important} html body .app > header .v366-ver::after,html body .app > header .v371-logo em::after,html body .app > header .v372-logo em::after,#v372TopbarShell .v372-logo em::after{content:"${BETA_VERSION}"!important}`;
+      document.head.appendChild(style);
+      diagnostics.versionStyleInstalls++;
+      return true;
+    }catch(e){return false}
+  }
   const esc=v=>typeof v073Escape==='function'?v073Escape(String(v??'')):String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const num=v=>Math.max(0,Math.round(Number(v)||0)).toLocaleString('de-DE');
 
@@ -402,7 +415,7 @@
     finalizeOwnedWorld(world);
   }
 
-  window.v8009HomeEventDiagnostics=()=>({version:'V8.009-HOME-17',...diagnostics,events:events().map(x=>({...x})),worldBossActive:worldBossEventActive()});
+  window.v8009HomeEventDiagnostics=()=>({version:'V8.009-HOME-18',...diagnostics,events:events().map(x=>({...x})),worldBossActive:worldBossEventActive()});
 
   /* Re-own only the world installer; do not touch core game render/persist. */
   v085WorldHtml=worldHtml;
@@ -418,8 +431,9 @@
 
   /* HOME-17: the extracted beta header owns its own build label. Historical
      document-wide V4.29 version writes are retired. */
+  installBetaVersionStyle();
   buildHeader();
   installWorld(false);
-  document.addEventListener('DOMContentLoaded',()=>{buildHeader();installWorld(false)},{once:true});
+  document.addEventListener('DOMContentLoaded',()=>{installBetaVersionStyle();buildHeader();installWorld(false)},{once:true});
   /* V7.156: delayed 400ms full home repaint retired; initial/DOMContentLoaded owner is sufficient. */
 })();

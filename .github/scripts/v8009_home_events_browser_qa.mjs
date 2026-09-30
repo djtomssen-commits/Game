@@ -15,7 +15,7 @@ async function fixture(time,{quiet=0,channel='beta',helper=true,playerClass='gro
  const page=await browser.newPage({viewport:{width:390,height:844}});
  page.on('pageerror',e=>errors.push(e.message));
  await page.clock.install({time:new Date(time)});
- await page.setContent('<!doctype html><html><head></head><body><div class="app"><header></header><main><div id="world" class="active"></div><div id="quests"></div></main></div></body></html>');
+ await page.setContent('<!doctype html><html><head><style id="legacy-version-css">html body .app > header .v366-ver::after{content:"V8.001"!important}</style></head><body><div class="app"><header></header><main><div id="world" class="active"></div><div id="quests"></div></main></div></body></html>');
  await page.evaluate(({quiet,channel,playerClass})=>{
   window.GROW_RELEASE_CHANNEL=channel;
   window.s={characterName:'QA',playerClass:'grower',level:30,xp:5,energy:60,gold:200,harzTaler:10,points:0,skillPoints:0,attrs:{},equipment:{},quests:{offers:[]},grow:{plants:[]},social:{playerId:'qa-a'}};
@@ -222,15 +222,24 @@ try{
   window.v032Go('world');
  });
  await versionOwner.clock.runFor(100);
+ await versionOwner.evaluate(()=>{
+  window.dispatchEvent(new Event('pageshow'));
+  window.dispatchEvent(new Event('growlegends:account-ready'));
+ });
  const versionState=await versionOwner.evaluate(()=>({
   header:document.querySelector('.v366-ver')?.textContent,
+  visible:getComputedStyle(document.querySelector('.v366-ver'),'::after').content,
+  styleCount:document.querySelectorAll('#v8009-home-beta-version').length,
   legacy:document.getElementById('topVersion')?.textContent,
   diag:window.v8009HomeEventDiagnostics?.()
  }));
  assert.equal(versionState.header,'V8.009','Canonical beta header must own the current build label');
+ assert.equal(versionState.visible,'"V8.009"','Canonical renderer must override historical V8.001 pseudo-element CSS');
+ assert.equal(versionState.styleCount,1,'Version override style must be installed exactly once');
  assert.equal(versionState.legacy,'SERVER-VERSION-SENTINEL','Home renderer must not rewrite unrelated legacy version nodes');
- assert.equal(versionState.diag?.version,'V8.009-HOME-17');
- checks.push('canonical home header owns V8.009 without document-wide legacy version writes');
+ assert.equal(versionState.diag?.version,'V8.009-HOME-18');
+ assert.equal(versionState.diag?.versionStyleInstalls,1);
+ checks.push('canonical home renderer owns visible V8.009 style without lifecycle rewrites');
  await versionOwner.close();
  const stable=await fixture('2026-09-18T12:00:00+02:00',{channel:'stable',helper:false});
  const isolated=await stable.evaluate(()=>({scheduler:window.__V6251_AUTO_WEEKEND_EVENTS__,renderer:window.v8009HomeEventDiagnostics,energy:s.energy,content:document.getElementById('world').innerHTML}));

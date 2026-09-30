@@ -450,7 +450,7 @@ function installBetaMenuReplaceGuard(){
    capture-phase redirect from HOME-1 is retired. */
 if(IS_BETA)window.__V8009_HOME15_DIRECT_HEADER_ROUTES__=true;
 window.v8009HomeHeaderDiagnostics=()=>({
-  version:'V8.009-HOME-17',
+  version:'V8.009-HOME-18',
   beta:IS_BETA,
   ...v8009HomeHeaderFix,
   fit:{...HOME_DIAG,pendingRaf:!!raf,pendingTimer:!!runTimer},
@@ -462,6 +462,7 @@ window.v8009HomeHeaderDiagnostics=()=>({
   canonicalChecklistOwner:!!window.__V8009_HOME16_CANONICAL_CHECKLIST__,
   canonicalGrowSnapshot:typeof window.v8009HomeGrowSnapshot==='function',
   canonicalHeaderVersion:document.querySelector('.v366-ver')?.textContent||null,
+  canonicalVersionStyle:document.querySelectorAll('#v8009-home-beta-version').length,
   legacyV474HomeRetired:!!window.__V8009_HOME9_V474_HOME_RETIRED__,
   legacyVersionWritesRetired:{
     v380:!!window.__V8009_HOME11_V380_VERSION_RETIRED__,
@@ -472,31 +473,17 @@ window.v8009HomeHeaderDiagnostics=()=>({
   routeAudit:auditHomeRoutes()
 });
 
-/* Beta-only visible build owner. Shared CSS still contains historical version
-   pseudo-elements used by stable, so do not edit those shared styles globally. */
-function applyBetaVersionStyle(){
- if(!IS_BETA)return;
- try{
-   let style=document.getElementById('v8009-home-beta-version');
-   if(!style){
-     style=document.createElement('style');
-     style.id='v8009-home-beta-version';
-   }
-   style.textContent='html body .app > header .v358-logo::after{content:"V8.009"!important} html body .app > header .v366-ver::after,html body .app > header .v371-logo em::after,html body .app > header .v372-logo em::after,#v372TopbarShell .v372-logo em::after{content:"V8.009"!important}';
-   /* Move this beta override to the end after the old V8.001 shared styles. */
-   document.head.appendChild(style);
- }catch(_){}
-}
+/* HOME-18: visible beta build CSS is owned by the canonical home renderer.
+   The helper no longer rewrites or re-appends version styles on lifecycle events. */
 if(IS_BETA){
- applyBetaVersionStyle();
  installBetaMenuReplaceGuard();
  installBetaWorldPostRender();
  installGrowWeatherObserver();
  installXpDecoratorStartupGuard();
  requestAnimationFrame(()=>{try{patchHomeGrowStatus()}catch(_){}});
- document.addEventListener('DOMContentLoaded',()=>requestAnimationFrame(()=>{applyBetaVersionStyle();installBetaMenuReplaceGuard();installBetaWorldPostRender();installGrowWeatherObserver();installXpDecoratorStartupGuard();patchHomeGrowStatus()}),{once:true});
- window.addEventListener('pageshow',()=>{applyBetaVersionStyle();installBetaMenuReplaceGuard();installBetaWorldPostRender();installGrowWeatherObserver();patchHomeGrowStatus()},{passive:true});
- window.addEventListener('growlegends:account-ready',()=>setTimeout(()=>{applyBetaVersionStyle();installBetaMenuReplaceGuard();installBetaWorldPostRender();installGrowWeatherObserver();patchHomeGrowStatus()},0),{passive:true});
+ document.addEventListener('DOMContentLoaded',()=>requestAnimationFrame(()=>{installBetaMenuReplaceGuard();installBetaWorldPostRender();installGrowWeatherObserver();installXpDecoratorStartupGuard();patchHomeGrowStatus()}),{once:true});
+ window.addEventListener('pageshow',()=>{installBetaMenuReplaceGuard();installBetaWorldPostRender();installGrowWeatherObserver();patchHomeGrowStatus()},{passive:true});
+ window.addEventListener('growlegends:account-ready',()=>setTimeout(()=>{installBetaMenuReplaceGuard();installBetaWorldPostRender();installGrowWeatherObserver();patchHomeGrowStatus()},0),{passive:true});
  window.addEventListener('growlegends:extras-ready',()=>setTimeout(()=>{installBetaMenuReplaceGuard();installBetaWorldPostRender()},0),{passive:true});
  window.addEventListener('growlegends:foreground-ready',()=>setTimeout(()=>{installBetaMenuReplaceGuard();installBetaWorldPostRender()},0),{passive:true});
 }
