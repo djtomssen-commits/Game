@@ -117,7 +117,9 @@ const v8009HomeHeaderFix={
   weatherCatchupRendersAvoided:0,
   routeAudits:0,
   routeIssues:0,
+  growStatusPatchCalls:0,
   growStatusPatches:0,
+  growPostRenderSchedules:0,
   growReadyTimerFires:0,
   growWeatherReschedules:0,
   xpDecoratorGuardInstalls:0,
@@ -233,6 +235,7 @@ function scheduleHomeGrowReady(snapshot){
 
 function patchHomeGrowStatus(){
   if(!IS_BETA)return false;
+  v8009HomeHeaderFix.growStatusPatchCalls++;
   try{
     const world=document.getElementById('world');
     if(!world?.classList.contains('active'))return false;
@@ -379,7 +382,10 @@ function installBetaWorldPostRender(){
 
       const out=base.apply(this,arguments);
       requestAnimationFrame(()=>{
-        try{patchHomeGrowStatus()}catch(_){}
+        try{
+          scheduleHomeGrowReady(homeGrowSnapshot());
+          v8009HomeHeaderFix.growPostRenderSchedules++;
+        }catch(_){}
         try{syncPaintedWeatherSignature()}catch(_){}
         try{auditHomeRoutes()}catch(_){}
         try{schedule('world-render')}catch(_){}
@@ -450,7 +456,7 @@ function installBetaMenuReplaceGuard(){
    capture-phase redirect from HOME-1 is retired. */
 if(IS_BETA)window.__V8009_HOME15_DIRECT_HEADER_ROUTES__=true;
 window.v8009HomeHeaderDiagnostics=()=>({
-  version:'V8.009-HOME-18',
+  version:'V8.009-HOME-19',
   beta:IS_BETA,
   ...v8009HomeHeaderFix,
   fit:{...HOME_DIAG,pendingRaf:!!raf,pendingTimer:!!runTimer},

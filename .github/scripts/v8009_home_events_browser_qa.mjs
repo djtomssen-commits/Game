@@ -216,6 +216,27 @@ try{
  assert.deepEqual({active:canonicalState.snapshot.active,ready:canonicalState.snapshot.ready},{active:2,ready:1});
  checks.push('canonical renderer owns Frost 7-slot checklist and weather-aware Growroom status');
  await canonical.close();
+ const postRenderGrow=await fixture('2026-09-30T12:00:00+02:00');
+ await postRenderGrow.clock.runFor(300);
+ const growBefore=await postRenderGrow.evaluate(()=>window.v8009HomeHeaderDiagnostics?.());
+ await postRenderGrow.evaluate(()=>{
+  const now=Date.now();
+  s.grow={plants:[{start:now-900,duration:1000},{start:now-100,duration:1000}]};
+  GL_WEATHER={kind:'rain',icon:'🌧️',label:'Regen',temp:17,bonus:{text:'Schnelleres Wachstum',growMul:1.30}};
+  v085InstallWorld(false);
+ });
+ await postRenderGrow.clock.runFor(100);
+ const growAfter=await postRenderGrow.evaluate(()=>({
+  diag:window.v8009HomeHeaderDiagnostics?.(),
+  card:document.querySelector('.v366-card.grow .v366-status b')?.textContent,
+  strip:document.querySelector('#v492HomeGrowStatus b')?.textContent
+ }));
+ assert.equal(growAfter.card,'1 Pflanze erntereif');
+ assert.equal(growAfter.strip,'🌱 Growroom · 2 Pflanzen aktiv · 1 erntereif');
+ assert.equal(growAfter.diag.growStatusPatchCalls,growBefore.growStatusPatchCalls,'Canonical full render must not trigger a redundant Growroom DOM patch');
+ assert.ok(growAfter.diag.growPostRenderSchedules>growBefore.growPostRenderSchedules,'Full render must still schedule the next Growroom readiness boundary');
+ checks.push('full home renders schedule Growroom readiness without redundant DOM patch');
+ await postRenderGrow.close();
  const versionOwner=await fixture('2026-09-30T12:00:00+02:00',{helper:false});
  await versionOwner.evaluate(()=>{
   const legacy=document.createElement('div');legacy.id='topVersion';legacy.textContent='SERVER-VERSION-SENTINEL';document.body.appendChild(legacy);

@@ -1,0 +1,25 @@
+{
+  "build": "V8.009-HOME-19-BETA",
+  "phase": "Growroom post-render DOM cleanup",
+  "scope": "beta only",
+  "base_commit": "b882ea7de588d1e910b8b0b627677223936df4fa",
+  "findings": [
+    "HOME-16 made the canonical renderer produce the correct weather-aware Growroom card and lower status strip immediately.",
+    "The HOME helper still called patchHomeGrowStatus after every v085InstallWorld render, causing another DOM query/compare pass over content that had just been rendered correctly."
+  ],
+  "changes": [
+    "After a canonical full home render, the helper now only schedules the next Growroom readiness boundary from the canonical snapshot.",
+    "The redundant post-render Growroom DOM patch is removed.",
+    "Weather-change and readiness-timer patches remain active because those are real targeted updates that can occur without a full home render.",
+    "No grow state, timing formula, rewards, or server authority changed."
+  ],
+  "files": [
+    "js/system/performance/v7288-home-adaptive-fit-script.js",
+    "js/features/home/beta/v8009-home-renderer.js",
+    ".github/scripts/v8009_home_events_browser_qa.mjs"
+  ],
+  "stable_behavior_changed": false,
+  "gameplay_changed": false,
+  "grow_state_changed": false,
+  "server_authority_changed": false
+}
