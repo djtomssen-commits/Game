@@ -1,0 +1,25 @@
+name: V8.009 Quest Layout CSS Audit
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/v8009_quest_layout_css_audit.py'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - name: Audit quest layout CSS
+        run: python3 .github/scripts/v8009_quest_layout_css_audit.py
+      - name: Commit audit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add V8009_QUEST_LAYOUT_CSS_AUDIT.json
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "V8.009 QUEST: audit layout CSS"
+          git push
