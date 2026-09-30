@@ -1,0 +1,98 @@
+name: V8.009 Dungeon D4 Extraction
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/v8009_dungeon_d4_extract.py'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  extract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Extract v251 v260 v261 Dungeon core layers
+        run: python3 .github/scripts/v8009_dungeon_d4_extract.py
+
+      - name: Syntax-check extracted JS
+        run: |
+          node --check js/features/dungeon/beta/v8009-d4-v251-modern-maps.js
+          node --check js/features/dungeon/beta/v8009-d4-v260-detail.js
+          node --check js/features/dungeon/beta/v8009-d4-v261-detail.js
+
+      - name: Validate D4 extraction
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import json, re, hashlib
+
+          beta = Path('beta.html').read_text(encoding='utf-8')
+          stable = Path('index.html').read_text(encoding='utf-8')
+          report = json.loads(Path('V8009_DUNGEON_D4_BETA.json').read_text(encoding='utf-8'))
+
+          targets = report['extracted']
+          for item in targets:
+              p = Path(item['file'])
+              if not p.exists():
+                  raise SystemExit(f"missing extracted file: {p}")
+              if beta.count(item['file']) != 1:
+                  raise SystemExit(f"include count != 1: {p}")
+              if item['file'] in stable:
+                  raise SystemExit(f"stable unexpectedly references: {p}")
+              data = p.read_text(encoding='utf-8')
+              if hashlib.sha256(data.encode()).hexdigest() != item['sha256']:
+                  raise SystemExit(f"hash mismatch: {p}")
+
+          for legacy in [
+              'v251-modern-dungeon-maps-style',
+              'v251-modern-dungeon-maps-core',
+              'v260-dungeon-detail-style',
+              'v260-dungeon-detail-script',
+              'v261-dungeon-detail-style',
+              'v261-dungeon-detail-script',
+          ]:
+              if re.search(r'<(?:script|style)[^>]*id=["\']'+re.escape(legacy)+r'["\'][^>]*>[\s\S]*?</(?:script|style)>', beta, re.I):
+                  raise SystemExit(f"inline legacy body remains: {legacy}")
+
+          for required in [
+              'js/features/dungeon/beta/v8009-d2-visual-owner.js',
+              'js/features/dungeon/beta/v8009-d2-map-finalizer.js',
+              'js/features/dungeon/beta/v8009-d2-detail-render-lock.js',
+              'css/features/dungeon/beta/v8009-d3-detail-render-lock.css',
+          ]:
+              if beta.count(required) != 1:
+                  raise SystemExit(f"owner include count changed: {required}")
+
+          if not report.get('stable_unchanged'):
+              raise SystemExit('stable changed flag')
+          if report.get('gameplay_changed') or report.get('combat_math_changed') or report.get('rewards_changed') or report.get('server_authority_changed'):
+              raise SystemExit('scope violation')
+          print('DUNGEON-D4 extraction OK')
+          PY
+
+      - name: Diff sanity
+        run: git diff --check
+
+      - name: Commit D4 extraction
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add beta.html \
+            css/features/dungeon/beta/v8009-d4-v251-modern-maps.css \
+            js/features/dungeon/beta/v8009-d4-v251-modern-maps.js \
+            css/features/dungeon/beta/v8009-d4-v260-detail.css \
+            js/features/dungeon/beta/v8009-d4-v260-detail.js \
+            css/features/dungeon/beta/v8009-d4-v261-detail.css \
+            js/features/dungeon/beta/v8009-d4-v261-detail.js \
+            V8009_DUNGEON_D4_BETA.json
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "V8.009 DUNGEON-D4: extract v251 v260 v261 core layers"
+          git push
