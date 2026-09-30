@@ -450,7 +450,7 @@ function installBetaMenuReplaceGuard(){
    capture-phase redirect from HOME-1 is retired. */
 if(IS_BETA)window.__V8009_HOME15_DIRECT_HEADER_ROUTES__=true;
 window.v8009HomeHeaderDiagnostics=()=>({
-  version:'V8.009-HOME-16',
+  version:'V8.009-HOME-17',
   beta:IS_BETA,
   ...v8009HomeHeaderFix,
   fit:{...HOME_DIAG,pendingRaf:!!raf,pendingTimer:!!runTimer},
@@ -461,6 +461,7 @@ window.v8009HomeHeaderDiagnostics=()=>({
   directHeaderRoutes:!!window.__V8009_HOME15_DIRECT_HEADER_ROUTES__,
   canonicalChecklistOwner:!!window.__V8009_HOME16_CANONICAL_CHECKLIST__,
   canonicalGrowSnapshot:typeof window.v8009HomeGrowSnapshot==='function',
+  canonicalHeaderVersion:document.querySelector('.v366-ver')?.textContent||null,
   legacyV474HomeRetired:!!window.__V8009_HOME9_V474_HOME_RETIRED__,
   legacyVersionWritesRetired:{
     v380:!!window.__V8009_HOME11_V380_VERSION_RETIRED__,

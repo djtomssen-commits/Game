@@ -1,0 +1,26 @@
+{
+  "build": "V8.009-HOME-17-BETA",
+  "phase": "Canonical Startseite version ownership",
+  "scope": "beta only",
+  "base_commit": "94100964c3a7a41473d792f579716aea7066c16f",
+  "findings": [
+    "The extracted beta V366 renderer still carried its historical V4.29 Stable constant.",
+    "On boot and DOMContentLoaded it scanned multiple generic version selectors and rewrote them to V4.29 Stable, while the current beta build label is V8.009.",
+    "The visible beta CSS override hid most of that stale write, but the underlying DOM and unrelated version nodes could still be wrong."
+  ],
+  "changes": [
+    "The canonical beta header now writes V8.009 directly into .v366-ver.",
+    "Existing mounted headers are synchronized only at their own .v366-ver node.",
+    "The document-wide V4.29 version writer and its DOMContentLoaded scan are retired.",
+    "Shared/stable version files and Server 1 behavior are unchanged.",
+    "Browser QA verifies the header label with the helper layer disabled and verifies unrelated version nodes remain untouched."
+  ],
+  "files": [
+    "js/features/home/beta/v8009-home-renderer.js",
+    "js/system/performance/v7288-home-adaptive-fit-script.js",
+    ".github/scripts/v8009_home_events_browser_qa.mjs"
+  ],
+  "stable_behavior_changed": false,
+  "gameplay_changed": false,
+  "server_authority_changed": false
+}

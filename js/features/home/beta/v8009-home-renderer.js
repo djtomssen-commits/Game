@@ -2,7 +2,7 @@
 (function(){
   if(String(window.GROW_RELEASE_CHANNEL||'stable')!=='beta')return;
   const diagnostics={fullRenders:0,eventPanelPatches:0,goldDirectOpens:0,mailDirectOpens:0};
-  const V366_VERSION='V4.29 Stable';
+  const BETA_VERSION='V8.009';
   const esc=v=>typeof v073Escape==='function'?v073Escape(String(v??'')):String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const num=v=>Math.max(0,Math.round(Number(v)||0)).toLocaleString('de-DE');
 
@@ -160,7 +160,7 @@
       bar.className='v366-topbar';
       bar.innerHTML=`
         <button class="v366-menu" type="button">☰</button>
-        <div class="v366-logo"><strong>🌿 GROW</strong><span>LEGENDS</span><i class="v366-ver">${window.GROW_LEGENDS_VERSION?.short||'V4.159'}</i></div>
+        <div class="v366-logo"><strong>🌿 GROW</strong><span>LEGENDS</span><i class="v366-ver">${BETA_VERSION}</i></div>
         <div class="v366-res"><span class="ico">🪙</span><div><small>Gold</small><span class="val" id="v366Gold"></span></div><button class="v366-plus" data-plus="gold">+</button></div>
         <div class="v366-res"><span class="ico">💎</span><div><small>Harz</small><span class="val" id="v366Harz"></span></div><button class="v366-plus" data-plus="harz">+</button></div>
         <div class="v366-res"><span class="ico">💨</span><div><small>Dampf</small><span class="val" id="v366Dampf"></span></div><button class="v366-plus" data-plus="dampf">+</button></div>
@@ -191,6 +191,8 @@
         const b=document.querySelector('[data-settings],#settingsBtn,.settings-btn'); if(b){try{b.click()}catch(e){}}
       };
     }
+    const ver=bar.querySelector('.v366-ver');
+    if(ver&&ver.textContent!==BETA_VERSION)ver.textContent=BETA_VERSION;
     const g=bar.querySelector('#v366Gold'),hr=bar.querySelector('#v366Harz'),d=bar.querySelector('#v366Dampf');
     if(g)g.textContent=num(s?.gold);
     if(hr)hr.textContent=num(s?.harzTaler);
@@ -400,7 +402,7 @@
     finalizeOwnedWorld(world);
   }
 
-  window.v8009HomeEventDiagnostics=()=>({version:'V8.009-HOME-16',...diagnostics,events:events().map(x=>({...x})),worldBossActive:worldBossEventActive()});
+  window.v8009HomeEventDiagnostics=()=>({version:'V8.009-HOME-17',...diagnostics,events:events().map(x=>({...x})),worldBossActive:worldBossEventActive()});
 
   /* Re-own only the world installer; do not touch core game render/persist. */
   v085WorldHtml=worldHtml;
@@ -414,13 +416,10 @@
     return r;
   };
 
-  function version(){
-    document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version').forEach(el=>{if(el)el.textContent=V366_VERSION});
-  }
-
+  /* HOME-17: the extracted beta header owns its own build label. Historical
+     document-wide V4.29 version writes are retired. */
   buildHeader();
   installWorld(false);
-  version();
-  document.addEventListener('DOMContentLoaded',()=>{buildHeader();installWorld(false);version()},{once:true});
+  document.addEventListener('DOMContentLoaded',()=>{buildHeader();installWorld(false)},{once:true});
   /* V7.156: delayed 400ms full home repaint retired; initial/DOMContentLoaded owner is sufficient. */
 })();

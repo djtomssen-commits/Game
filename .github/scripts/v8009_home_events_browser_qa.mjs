@@ -216,6 +216,22 @@ try{
  assert.deepEqual({active:canonicalState.snapshot.active,ready:canonicalState.snapshot.ready},{active:2,ready:1});
  checks.push('canonical renderer owns Frost 7-slot checklist and weather-aware Growroom status');
  await canonical.close();
+ const versionOwner=await fixture('2026-09-30T12:00:00+02:00',{helper:false});
+ await versionOwner.evaluate(()=>{
+  const legacy=document.createElement('div');legacy.id='topVersion';legacy.textContent='SERVER-VERSION-SENTINEL';document.body.appendChild(legacy);
+  window.v032Go('world');
+ });
+ await versionOwner.clock.runFor(100);
+ const versionState=await versionOwner.evaluate(()=>({
+  header:document.querySelector('.v366-ver')?.textContent,
+  legacy:document.getElementById('topVersion')?.textContent,
+  diag:window.v8009HomeEventDiagnostics?.()
+ }));
+ assert.equal(versionState.header,'V8.009','Canonical beta header must own the current build label');
+ assert.equal(versionState.legacy,'SERVER-VERSION-SENTINEL','Home renderer must not rewrite unrelated legacy version nodes');
+ assert.equal(versionState.diag?.version,'V8.009-HOME-17');
+ checks.push('canonical home header owns V8.009 without document-wide legacy version writes');
+ await versionOwner.close();
  const stable=await fixture('2026-09-18T12:00:00+02:00',{channel:'stable',helper:false});
  const isolated=await stable.evaluate(()=>({scheduler:window.__V6251_AUTO_WEEKEND_EVENTS__,renderer:window.v8009HomeEventDiagnostics,energy:s.energy,content:document.getElementById('world').innerHTML}));
  assert.deepEqual(isolated,{scheduler:undefined,renderer:undefined,energy:60,content:''});
