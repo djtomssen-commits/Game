@@ -185,8 +185,7 @@
   stamp();
   document.addEventListener('DOMContentLoaded',()=>{bindFindButton();stamp()},{once:true});
   window.addEventListener('pageshow',()=>{bindFindButton();stamp()},{passive:true});
-  /* V6.217: navigation/pageshow hooks own PvP binding; only finite startup retries remain. */
+  /* V8.009 PvP Sprint 1: navigation/pageshow hooks own PvP binding.
+     Keep one finite startup retry per checkpoint; duplicate 2000/5000 ms retries retired. */
   [500,2000,5000].forEach(ms=>setTimeout(()=>{bindFindButton();stamp()},ms));
-  setTimeout(()=>{bindFindButton();stamp()},2000);
-  setTimeout(()=>{bindFindButton();stamp()},5000);
 })();
