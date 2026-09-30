@@ -1,6 +1,6 @@
 import { chromium } from 'playwright';
 
-const url = 'https://gamenew.djtomssen.workers.dev/beta';
+const url = process.env.TARGET_URL || 'https://gamenew.djtomssen.workers.dev/beta';
 const out = {
   url,
   started_at: new Date().toISOString(),
