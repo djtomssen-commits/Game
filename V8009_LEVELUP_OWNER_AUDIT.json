@@ -1,0 +1,545 @@
+{
+  "build": "V8.009-LEVELUP-OWNER-AUDIT",
+  "hits": [
+    {
+      "path": "beta.html",
+      "line": 5232,
+      "text": "v037Toast(`✅ ${label} auf Level ${lv+1} verbessert.`,'success');"
+    },
+    {
+      "path": "beta.html",
+      "line": 5246,
+      "text": "v037Toast(`✅ Growroom auf Level ${s.grow.roomLevel} verbessert.`,'success');"
+    },
+    {
+      "path": "beta.html",
+      "line": 11704,
+      "text": "v063Toast(`Benötigt Level ${d.minLevel}`,'warn',d.name);"
+    },
+    {
+      "path": "beta.html",
+      "line": 17072,
+      "text": "<style id=\"v101-levelup-toast\">"
+    },
+    {
+      "path": "beta.html",
+      "line": 17073,
+      "text": ".v101-levelup{"
+    },
+    {
+      "path": "beta.html",
+      "line": 17090,
+      "text": "animation:v101LevelUpIn .35s ease forwards,v101LevelUpOut .35s ease 2.9s forwards;"
+    },
+    {
+      "path": "beta.html",
+      "line": 17092,
+      "text": ".v101-levelup-title{"
+    },
+    {
+      "path": "beta.html",
+      "line": 17099,
+      "text": ".v101-levelup-level{"
+    },
+    {
+      "path": "beta.html",
+      "line": 17105,
+      "text": ".v101-levelup-sub{"
+    },
+    {
+      "path": "beta.html",
+      "line": 17110,
+      "text": "@keyframes v101LevelUpIn{"
+    },
+    {
+      "path": "beta.html",
+      "line": 17114,
+      "text": "@keyframes v101LevelUpOut{"
+    },
+    {
+      "path": "beta.html",
+      "line": 17119,
+      "text": "<script id=\"v101-levelup-notification\">"
+    },
+    {
+      "path": "beta.html",
+      "line": 17120,
+      "text": "function v101ShowLevelUp(oldLevel,newLevel,skillGain){"
+    },
+    {
+      "path": "beta.html",
+      "line": 17121,
+      "text": "document.querySelectorAll('.v101-levelup').forEach(x=>x.remove());"
+    },
+    {
+      "path": "beta.html",
+      "line": 17124,
+      "text": "box.className='v101-levelup';"
+    },
+    {
+      "path": "beta.html",
+      "line": 17126,
+      "text": "<div class=\"v101-levelup-title\">LEVEL UP!</div>"
+    },
+    {
+      "path": "beta.html",
+      "line": 17127,
+      "text": "<div class=\"v101-levelup-level\">Level ${oldLevel} → ${newLevel}</div>"
+    },
+    {
+      "path": "beta.html",
+      "line": 17128,
+      "text": "<div class=\"v101-levelup-sub\">+${skillGain} Skillpunkt${skillGain===1?'':'e'}</div>"
+    },
+    {
+      "path": "beta.html",
+      "line": 17147,
+      "text": "v101ShowLevelUp(oldLevel,newLevel,gain);"
+    },
+    {
+      "path": "beta.html",
+      "line": 17150,
+      "text": "v063Toast('🎉 Level Up!','success',`Du bist jetzt Level ${newLevel}.`);"
+    },
+    {
+      "path": "beta.html",
+      "line": 17161,
+      "text": "<style id=\"v102-levelup-robust\">"
+    },
+    {
+      "path": "beta.html",
+      "line": 17163,
+      "text": ".v102-levelup-overlay{"
+    },
+    {
+      "path": "beta.html",
+      "line": 17176,
+      "text": ".v102-levelup-card{"
+    },
+    {
+      "path": "beta.html",
+      "line": 17188,
+      "text": ".v102-levelup-title{"
+    },
+    {
+      "path": "beta.html",
+      "line": 17194,
+      "text": ".v102-levelup-level{"
+    },
+    {
+      "path": "beta.html",
+      "line": 17200,
+      "text": ".v102-levelup-reward{"
+    },
+    {
+      "path": "beta.html",
+      "line": 17215,
+      "text": "<script id=\"v102-levelup-observer\">"
+    },
+    {
+      "path": "beta.html",
+      "line": 17220,
+      "text": "let v102LevelPopupBusy=false;"
+    },
+    {
+      "path": "beta.html",
+      "line": 17221,
+      "text": "let v102PendingLevelups=[];"
+    },
+    {
+      "path": "beta.html",
+      "line": 17223,
+      "text": "function v102QueueLevelUp(oldLevel,newLevel){"
+    },
+    {
+      "path": "beta.html",
+      "line": 17225,
+      "text": "v102PendingLevelups.push({oldLevel,newLevel});"
+    },
+    {
+      "path": "beta.html",
+      "line": 17226,
+      "text": "v102ShowNextLevelUp();"
+    },
+    {
+      "path": "beta.html",
+      "line": 17229,
+      "text": "function v102ShowNextLevelUp(){"
+    },
+    {
+      "path": "beta.html",
+      "line": 17230,
+      "text": "if(v102LevelPopupBusy || !v102PendingLevelups.length)return;"
+    },
+    {
+      "path": "beta.html",
+      "line": 17231,
+      "text": "v102LevelPopupBusy=true;"
+    },
+    {
+      "path": "beta.html",
+      "line": 17233,
+      "text": "const {oldLevel,newLevel}=v102PendingLevelups.shift();"
+    },
+    {
+      "path": "beta.html",
+      "line": 17237,
+      "text": "document.querySelectorAll('.v101-levelup,.v102-levelup-overlay').forEach(x=>x.remove());"
+    },
+    {
+      "path": "beta.html",
+      "line": 17240,
+      "text": "overlay.className='v102-levelup-overlay';"
+    },
+    {
+      "path": "beta.html",
+      "line": 17242,
+      "text": "<div class=\"v102-levelup-card\">"
+    },
+    {
+      "path": "beta.html",
+      "line": 17243,
+      "text": "<div class=\"v102-levelup-title\">LEVEL UP!</div>"
+    },
+    {
+      "path": "beta.html",
+      "line": 17244,
+      "text": "<div class=\"v102-levelup-level\">Level ${oldLevel} → ${newLevel}</div>"
+    },
+    {
+      "path": "beta.html",
+      "line": 17245,
+      "text": "<div class=\"v102-levelup-reward\">"
+    },
+    {
+      "path": "beta.html",
+      "line": 17254,
+      "text": "try{v063Toast('🎉 Level Up!','success',`Du bist jetzt Level ${newLevel}.`)}catch(e){}"
+    },
+    {
+      "path": "beta.html",
+      "line": 17260,
+      "text": "v102LevelPopupBusy=false;"
+    },
+    {
+      "path": "beta.html",
+      "line": 17261,
+      "text": "v102ShowNextLevelUp();"
+    },
+    {
+      "path": "beta.html",
+      "line": 17270,
+      "text": "v102QueueLevelUp(old,current);"
+    },
+    {
+      "path": "beta.html",
+      "line": 21940,
+      "text": "`<div class=\"v125-skill-info\">ⓘ <b>Mehr Talentpunkte</b> bekommst du durch Levelaufstiege. Neue Klassen-Skills werden mit höheren Leveln freigeschaltet.</div>`;"
+    },
+    {
+      "path": "beta.html",
+      "line": 38860,
+      "text": "<style id=\"v420-levelup-fix-style\">"
+    },
+    {
+      "path": "beta.html",
+      "line": 38861,
+      "text": "#v420LevelUpOverlay{position:fixed;inset:0;z-index:2147483000;display:flex;align-items:center;justify-content:center;padding:18px;background:rgba(2,6,3,.72);backdrop-filter:blur(5px);pointer-events:none}"
+    },
+    {
+      "path": "beta.html",
+      "line": 38862,
+      "text": "#v420LevelUpOverlay .v420-card{width:min(90vw,380px);padding:26px 20px 22px;border-radius:22px;border:1px solid #d0a43d;background:radial-gradient(circle at 50% 0%,rgba(255,219,79,.25),transparent 43%),linear-gradient(180deg,#241a08,#0d120d);box-shadow:0 24px 80px #000e,0 0 38px rgba(255,200,50,.28);text-align:center;animation:v420Pop .28s cubic-bezier(.2,.9,.3,1.2)}"
+    },
+    {
+      "path": "beta.html",
+      "line": 38863,
+      "text": "#v420LevelUpOverlay .v420-title{font-size:31px;font-weight:1000;color:#ffe173;text-shadow:0 0 10px #ffc83c,0 0 24px rgba(255,199,52,.72)}"
+    },
+    {
+      "path": "beta.html",
+      "line": 38864,
+      "text": "#v420LevelUpOverlay .v420-level{margin-top:8px;font-size:20px;font-weight:1000;color:#f7f8f3}"
+    },
+    {
+      "path": "beta.html",
+      "line": 38865,
+      "text": "#v420LevelUpOverlay .v420-rewards{margin-top:12px;font-size:13px;line-height:1.65;color:#d4ddcf}"
+    },
+    {
+      "path": "beta.html",
+      "line": 38866,
+      "text": "#v420LevelUpOverlay .v420-rewards b{color:#8ee66c}"
+    },
+    {
+      "path": "beta.html",
+      "line": 38869,
+      "text": "<script id=\"v420-levelup-notification-fix\">"
+    },
+    {
+      "path": "beta.html",
+      "line": 38876,
+      "text": "function show(oldLevel,newLevel){"
+    },
+    {
+      "path": "beta.html",
+      "line": 38878,
+      "text": "try{window.v6111Sfx?.('levelup')}catch(e){}"
+    },
+    {
+      "path": "beta.html",
+      "line": 38883,
+      "text": "document.querySelectorAll('.v101-levelup,.v102-levelup-overlay,#v420LevelUpOverlay').forEach(x=>x.remove());"
+    },
+    {
+      "path": "beta.html",
+      "line": 38885,
+      "text": "ov.id='v420LevelUpOverlay';"
+    },
+    {
+      "path": "beta.html",
+      "line": 38887,
+      "text": "<div class=\"v420-title\">🎉 LEVEL UP!</div>"
+    },
+    {
+      "path": "beta.html",
+      "line": 38894,
+      "text": "try{if(typeof v063Toast==='function')v063Toast('🎉 Level Up!','success',`Du bist jetzt Level ${newLevel}.`)}catch(e){}"
+    },
+    {
+      "path": "beta.html",
+      "line": 38899,
+      "text": "if(typeof addXp==='function' && !window.__v420LevelUpWrapped){"
+    },
+    {
+      "path": "beta.html",
+      "line": 38907,
+      "text": "show(oldLevel,newLevel);"
+    },
+    {
+      "path": "beta.html",
+      "line": 38912,
+      "text": "window.__v420LevelUpWrapped=true;"
+    },
+    {
+      "path": "beta.html",
+      "line": 45351,
+      "text": "<!-- ===== V4.29 Stable: no Level-Up popup on returning login ===== -->"
+    },
+    {
+      "path": "beta.html",
+      "line": 45352,
+      "text": "<script id=\"v335-no-levelup-popup-login\">"
+    },
+    {
+      "path": "beta.html",
+      "line": 45363,
+      "text": "function v335LooksLikeLevelUp(text){"
+    },
+    {
+      "path": "beta.html",
+      "line": 45374,
+      "text": "if(v335InLoginGrace() && v335LooksLikeLevelUp(msg))return;"
+    },
+    {
+      "path": "beta.html",
+      "line": 45381,
+      "text": "'showLevelUp','showLevelUpPopup','openLevelUpPopup','levelUpPopup',"
+    },
+    {
+      "path": "beta.html",
+      "line": 45382,
+      "text": "'v125ShowLevelUp','v141ShowLevelUp'"
+    },
+    {
+      "path": "beta.html",
+      "line": 45400,
+      "text": "if(v335LooksLikeLevelUp(el.textContent||'')){"
+    },
+    {
+      "path": "beta.html",
+      "line": 56672,
+      "text": "XP modifier (events, Grow buff, guild bonus, level-up overlay) still runs through"
+    },
+    {
+      "path": "beta.html",
+      "line": 56748,
+      "text": "window.addEventListener('pageshow',()=>{maxLevelUi();stamp()},{passive:true});"
+    },
+    {
+      "path": "beta.html",
+      "line": 56825,
+      "text": "if(busy)return;const st=ensureState();if(!uidReady())return v063Toast?.('Account wird geprüft','warn','Bitte einen Moment warten, bevor du den Endgame-Kampf startest.');const i=st.selected,r=currentRoom(i);if(complete(i)||!unlocked(i))return renderEndgame();const en=enemy(i,r),lvl=Number(s.level)||1;if(lvl<en.rec)return v063Toast?.('Noch zu früh','warn',`Dieser Gegner ist für Level ${en.rec} vorgesehen.`);"
+    },
+    {
+      "path": "beta.html",
+      "line": 64373,
+      "text": "try{v102PendingLevelups=[];v102LevelPopupBusy=false;v102ObservedLevel=afterLoad?Math.max(1,Number(s?.level)||1):1}catch(e){}"
+    },
+    {
+      "path": "beta.html",
+      "line": 70446,
+      "text": "<style id=\"v495-startup-levelup-guard-style\">"
+    },
+    {
+      "path": "beta.html",
+      "line": 70447,
+      "text": "html.v495-level-syncing .v101-levelup,"
+    },
+    {
+      "path": "beta.html",
+      "line": 70448,
+      "text": "html.v495-level-syncing .v102-levelup-overlay,"
+    },
+    {
+      "path": "beta.html",
+      "line": 70449,
+      "text": "html.v495-level-syncing #v420LevelUpOverlay{"
+    },
+    {
+      "path": "beta.html",
+      "line": 70456,
+      "text": "<script id=\"v495-startup-levelup-guard\">"
+    },
+    {
+      "path": "beta.html",
+      "line": 70466,
+      "text": "function isLevelUpText(value){"
+    },
+    {
+      "path": "beta.html",
+      "line": 70472,
+      "text": "document.querySelectorAll('.v101-levelup,.v102-levelup-overlay,#v420LevelUpOverlay').forEach(el=>el.remove());"
+    },
+    {
+      "path": "beta.html",
+      "line": 70479,
+      "text": "if(typeof v102PendingLevelups!=='undefined')v102PendingLevelups.length=0;"
+    },
+    {
+      "path": "beta.html",
+      "line": 70480,
+      "text": "if(typeof v102LevelPopupBusy!=='undefined')v102LevelPopupBusy=false;"
+    },
+    {
+      "path": "beta.html",
+      "line": 70510,
+      "text": "if(syncing && Array.from(arguments).some(isLevelUpText))return;"
+    },
+    {
+      "path": "beta.html",
+      "line": 70523,
+      "text": "if(syncing && Array.from(arguments).some(isLevelUpText))return;"
+    },
+    {
+      "path": "beta.html",
+      "line": 88770,
+      "text": "case'levelup':seq([[330,0,.08],[440,.07,.08],[554,.14,.08],[660,.21,.09],[880,.29,.16]],.10,'triangle');break;"
+    },
+    {
+      "path": "beta.html",
+      "line": 92627,
+      "text": "<!-- ===== V6.211 LEVEL-UP + PET POPUP RELIABILITY ===== -->"
+    },
+    {
+      "path": "beta.html",
+      "line": 92631,
+      "text": "#v420LevelUpOverlay,"
+    },
+    {
+      "path": "beta.html",
+      "line": 92633,
+      "text": "#v6211LevelUpFallback,"
+    },
+    {
+      "path": "beta.html",
+      "line": 92637,
+      "text": "#v6211LevelUpFallback,"
+    },
+    {
+      "path": "beta.html",
+      "line": 92642,
+      "text": "#v6211LevelUpFallback{pointer-events:none}"
+    },
+    {
+      "path": "beta.html",
+      "line": 92643,
+      "text": "#v6211LevelUpFallback .v6211-level-card{"
+    },
+    {
+      "path": "beta.html",
+      "line": 92650,
+      "text": "#v6211LevelUpFallback .v6211-title{font-size:31px;font-weight:1000;color:#ffe173;text-shadow:0 0 10px #ffc83c,0 0 24px rgba(255,199,52,.72)}"
+    },
+    {
+      "path": "beta.html",
+      "line": 92651,
+      "text": "#v6211LevelUpFallback .v6211-level{margin-top:8px;font-size:20px;font-weight:1000;color:#f7f8f3}"
+    },
+    {
+      "path": "beta.html",
+      "line": 92652,
+      "text": "#v6211LevelUpFallback .v6211-rewards{margin-top:12px;font-size:13px;line-height:1.65;color:#d4ddcf}"
+    },
+    {
+      "path": "beta.html",
+      "line": 92653,
+      "text": "#v6211LevelUpFallback .v6211-rewards b{color:#8ee66c}"
+    },
+    {
+      "path": "beta.html",
+      "line": 92687,
+      "text": "const legacy=document.getElementById('v420LevelUpOverlay');"
+    },
+    {
+      "path": "beta.html",
+      "line": 92689,
+      "text": "if(document.getElementById('v6211LevelUpFallback'))return;"
+    },
+    {
+      "path": "beta.html",
+      "line": 92694,
+      "text": "ov.id='v6211LevelUpFallback';"
+    },
+    {
+      "path": "beta.html",
+      "line": 92695,
+      "text": "ov.innerHTML=`<div class=\"v6211-level-card\"><div class=\"v6211-title\">🎉 LEVEL UP!</div><div class=\"v6211-level\">Level ${oldLevel} → ${newLevel}</div><div class=\"v6211-rewards\"><b>+${attrGain} Attributpunkte</b>${talentGain?` · +${talentGain} Talentpunkt${talentGain===1?'':'e'}`:''}</div></div>`;"
+    },
+    {
+      "path": "beta.html",
+      "line": 92717,
+      "text": "}catch(e){console.warn('V6.211 level popup guard',e)}"
+    },
+    {
+      "path": "beta.html",
+      "line": 92787,
+      "text": "levelOverlay:visible(document.getElementById('v420LevelUpOverlay'))||visible(document.getElementById('v6211LevelUpFallback')),"
+    },
+    {
+      "path": "beta.html",
+      "line": 92794,
+      "text": "<!-- ===== /V6.211 LEVEL-UP + PET POPUP RELIABILITY ===== -->"
+    },
+    {
+      "path": "beta.html",
+      "line": 94463,
+      "text": "try{v063Toast?.(`🧰 Wochen-Truhe Level ${level}!`,'success',`${source} · +${gain} Truhen-EXP`)}catch(_){}"
+    },
+    {
+      "path": "js/features/quest/beta/v233-quest-reward-final-click.js",
+      "line": 8,
+      "text": "XP may level up during claim, so raw s.xp alone is not enough to"
+    },
+    {
+      "path": "js/features/quest/beta/v321-elite-hard-guarantee-dampf-scale.js",
+      "line": 118,
+      "text": "Offers always show their level-scaled BASE cost."
+    },
+    {
+      "path": "js/features/dungeon/beta/v8009-d4-v251-modern-maps.js",
+      "line": 381,
+      "text": "v063Toast(`Benötigt Level ${d.minLevel}.`,'warn',d.name);"
+    }
+  ]
+}
