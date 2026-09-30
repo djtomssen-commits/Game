@@ -1,0 +1,24 @@
+name: V8.009 Quest v496 Repaint Retire QA
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'js/features/quest/beta/v496-quest-claim-single-payout.js'
+      - '.github/scripts/v8009_quest_v496_repaint_retire_qa.py'
+      - '.github/workflows/v8009-quest-v496-repaint-retire-qa.yml'
+permissions:
+  contents: write
+jobs:
+  qa:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - run: node --check js/features/quest/beta/v496-quest-claim-single-payout.js
+      - run: python3 .github/scripts/v8009_quest_v496_repaint_retire_qa.py
+      - run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add V8009_QUEST_V496_REPAINT_RETIRE_QA.json
+          git commit -m "V8.009 QUEST: record v496 repaint retire QA" || exit 0
+          git push
