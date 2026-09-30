@@ -1,0 +1,395 @@
+{
+  "hits": [
+    {
+      "order": 51,
+      "file": "beta.html#inline@531661",
+      "bytes": 7463,
+      "signals": [
+        "v074ProfileContent",
+        "combatPower("
+      ],
+      "contexts": [
+        {
+          "line": 4,
+          "text": "/* V4.46: public/online power is exactly the character-page combatPower(). */"
+        },
+        {
+          "line": 5,
+          "text": "try{return Math.max(0,Math.round(Number(combatPower())||0))}catch(e){return 0}"
+        },
+        {
+          "line": 69,
+          "text": "const content=document.querySelector('#v074ProfileContent');"
+        }
+      ]
+    },
+    {
+      "order": 58,
+      "file": "beta.html#inline@570988",
+      "bytes": 4402,
+      "signals": [
+        "v074ProfileContent"
+      ],
+      "contexts": [
+        {
+          "line": 106,
+          "text": "const content=document.querySelector('#v074ProfileContent');"
+        }
+      ]
+    },
+    {
+      "order": 60,
+      "file": "beta.html#v083-hall-progress-fix-script",
+      "bytes": 3468,
+      "signals": [
+        "v074ProfileContent"
+      ],
+      "contexts": [
+        {
+          "line": 50,
+          "text": "v083FixLegacyProfileMetrics(document.querySelector('#v074ProfileContent'),p);"
+        }
+      ]
+    },
+    {
+      "order": 61,
+      "file": "js/features/pvp/beta/v8009-s1-v084-hall-dungeon-display-fix-script.js",
+      "bytes": 5273,
+      "signals": [
+        "v074ProfileContent"
+      ],
+      "contexts": [
+        {
+          "line": 113,
+          "text": "const content=document.querySelector('#v074ProfileContent');"
+        }
+      ]
+    },
+    {
+      "order": 90,
+      "file": "beta.html#v116-worldboss-profile-stats-script",
+      "bytes": 5467,
+      "signals": [
+        "v074ProfileContent"
+      ],
+      "contexts": [
+        {
+          "line": 131,
+          "text": "const content=document.querySelector('#v074ProfileContent');"
+        }
+      ]
+    },
+    {
+      "order": 195,
+      "file": "js/features/pvp/beta/v8009-s1-v407-pvp-bud-leagues.js",
+      "bytes": 3898,
+      "signals": [
+        "v074ProfileContent"
+      ],
+      "contexts": [
+        {
+          "line": 42,
+          "text": "if(typeof baseOpen==='function')window.v074OpenProfile=async function(id){const r=await baseOpen.apply(this,arguments);try{if(window.v073User&&id===v073User.id){const sec=document.querySelector('#v074ProfileContent .v326-pvp');if(sec){sec.querySelectorAll('.v406-hall-league,.v407-hall-league').forEach(x=>x.remove());const L=league(buds());sec.insertAdjacentHTML('beforeend',`<div class=\"v326-profile-note v407-hall-league\">${L.icon} ${L.name}-Liga · 🌿 ${L.buds} PvP-Buds</div>`)}}}catch(e){}return r};"
+        }
+      ]
+    },
+    {
+      "order": 208,
+      "file": "beta.html#v4103-item-ui-consistency",
+      "bytes": 11289,
+      "signals": [
+        "v074ProfileContent"
+      ],
+      "contexts": [
+        {
+          "line": 34,
+          "text": "const relevant=!!document.querySelector('#character.active,#shop.active,#forge.active,#harzForge.active,#v488Forge.active,#v074ProfileContent:not(:empty)');if(!relevant)return;"
+        },
+        {
+          "line": 40,
+          "text": "try{document.querySelectorAll('.v240-loot-item[data-v4103-item-current=\"1\"],#v074ProfileContent .v4103-item-card').forEach(c=>c.dataset.v4103ItemCurrent='1')}catch(e){}"
+        },
+        {
+          "line": 55,
+          "text": "function runtimeAudit(){decorate();const bad=[];const check=(sel,name)=>{const a=[...document.querySelectorAll(sel)].filter(x=>x.offsetParent!==null);a.forEach(x=>{if(x.dataset.v4103ItemCurrent!=='1')bad.push(name)})};check('#character #inventory .inventory-grid > .inv-item','Inventar');check('#shop .shop-item','Händler');check('#v488ForgeInventory [data-v488-key]','Harzschmiede');check('#v074ProfileContent .v4103-item-card','Spielerprofil');if(bad.length){try{const uid=String((typeof v073User!=='undefined'&&v073User?.id)||s?.__accountOwnerId||'local'),k='growLegendsQA:v4103:'+uid+':runtime',a=JSON.parse(localStorage.getItem(k)||'[]');const detail='Legacy Itemdarstellung erkannt: '+[...new Set(bad)].join(', ');if(!a.some(x=>x.code==='LEGACY_ITEM_RENDERER'&&x.detail===detail&&Date.now()-Number(x.at||0)<15000)){a.push({at:Date.now(),code:'LEGACY_ITEM_RENDERER',detail,severity:'error'});while(a.length>40)a.shift();localStorage.setItem(k,JSON.stringify(a))}}catch(e){}}return bad}"
+        }
+      ]
+    },
+    {
+      "order": 212,
+      "file": "beta.html#v4108-item-placement-fix",
+      "bytes": 3350,
+      "signals": [
+        "v074ProfileContent"
+      ],
+      "contexts": [
+        {
+          "line": 10,
+          "text": "const relevant=!!document.querySelector('#character.active,#shop.active,#forge.active,#harzForge.active,#v488Forge.active,#v074ProfileContent:not(:empty)');if(!relevant){cleanSystemtechnik();stamp();return}"
+        },
+        {
+          "line": 19,
+          "text": "function audit(){const bad=[];const check=(sel,name)=>{document.querySelectorAll(sel).forEach(c=>{if(c.offsetParent===null)return;const img=c.querySelector('img.v466-item-art');if(!img||(!img.dataset.v4106Comic&&!/\\/assets\\/v71(?:95|98)-base64\\//.test(img.src)||img.src.startsWith('data:image/webp;base64,')))bad.push(name)})};check('#character #inventory .inventory-grid > .inv-item','Inventar');check('#v057WeaponGrid .shop-item,#v057MagicGrid .shop-item','Händler');check('#v488ForgeInventory [data-v488-key]','Harzschmiede');check('#v074ProfileContent .v4103-item-card','Spielerprofil');return [...new Set(bad)]}"
+        }
+      ]
+    },
+    {
+      "order": 215,
+      "file": "beta.html#v4117-boots-art-fix",
+      "bytes": 9346,
+      "signals": [
+        "v074ProfileContent"
+      ],
+      "contexts": [
+        {
+          "line": 101,
+          "text": "if(!document.querySelector('#character.active,#shop.active,#forge.active,#harzForge.active,#v488Forge.active,#v074ProfileContent:not(:empty)'))return;"
+        }
+      ]
+    },
+    {
+      "order": 252,
+      "file": "js/features/pvp/beta/v8009-s1-v326-hall-profile-canonical.js",
+      "bytes": 13007,
+      "signals": [
+        "v074ProfileContent",
+        "combatPower(",
+        "v4125StableCombatPower",
+        "Kampfkraft"
+      ],
+      "contexts": [
+        {
+          "line": 5,
+          "text": "const fn=window.v4125StableCombatPower;"
+        },
+        {
+          "line": 6,
+          "text": "return Math.max(0,Math.round(Number(typeof fn==='function'?fn():combatPower())||0))"
+        },
+        {
+          "line": 67,
+          "text": "const content=document.querySelector('#v074ProfileContent');"
+        },
+        {
+          "line": 114,
+          "text": "<div class=\"v326-profile-stat\"><span>⚔️ Kampfkraft</span><b>${Math.max(0,Number(p.combat_power)||0)}</b></div>"
+        },
+        {
+          "line": 156,
+          "text": "/* Own Hall card: use exactly the same live combatPower() as Character. */"
+        },
+        {
+          "line": 169,
+          "text": "<div class=\"v072-profile-stat\"><span>Kampfkraft</span><b>${v326CurrentPower()}</b></div>"
+        },
+        {
+          "line": 187,
+          "text": "Kampfkraft ${Math.max(0,Number(p.combat_power)||0)} ·"
+        }
+      ]
+    },
+    {
+      "order": 339,
+      "file": "beta.html#v446-global-combat-power-authority",
+      "bytes": 9780,
+      "signals": [
+        "v074ProfileContent",
+        "combatPower(",
+        "v446CombatPower",
+        "paintProfileStat",
+        "Kampfkraft"
+      ],
+      "contexts": [
+        {
+          "line": 9,
+          "text": "try{return Math.max(0,Math.round(Number(combatPower())||0))}catch(e){return 0}"
+        },
+        {
+          "line": 11,
+          "text": "window.v446CombatPower=livePower;"
+        },
+        {
+          "line": 21,
+          "text": "the exact current combatPower(). */"
+        },
+        {
+          "line": 44,
+          "text": "if(/Kampfkraft\\s*[\\d.]+/i.test(txt)){"
+        },
+        {
+          "line": 45,
+          "text": "const next=txt.replace(/Kampfkraft\\s*[\\d.]+/i,`Kampfkraft ${cp}`);"
+        },
+        {
+          "line": 49,
+          "text": "function paintProfileStat(root,cp){"
+        },
+        {
+          "line": 84,
+          "text": "paintProfileStat(document.querySelector('#v072OwnProfile'),cp);"
+        },
+        {
+          "line": 85,
+          "text": "if(String(ownProfileOpenId||'')===uid)paintProfileStat(document.querySelector('#v074ProfileContent'),cp);"
+        }
+      ]
+    },
+    {
+      "order": 342,
+      "file": "beta.html#v448-final-ui-power-account-integrity",
+      "bytes": 18110,
+      "signals": [
+        "v074ProfileContent",
+        "combatPower(",
+        "v446CombatPower",
+        "Kampfkraft"
+      ],
+      "contexts": [
+        {
+          "line": 144,
+          "text": "try{return Math.max(0,Math.round(Number(typeof v446CombatPower==='function'?v446CombatPower():combatPower())||0))}catch(e){return 0}"
+        },
+        {
+          "line": 147,
+          "text": "function replacePowerText(el,cp){if(!el)return;const t=String(el.textContent||'');const n=t.replace(/Kampfkraft\\s*[\\d.]+/i,`Kampfkraft ${cp}`);if(n!==t)el.textContent=n}"
+        },
+        {
+          "line": 161,
+          "text": "document.querySelectorAll('#v072OwnProfile .v326-profile-stat,#v072OwnProfile .v072-profile-stat,#v074ProfileContent .v326-profile-stat,#v074ProfileContent .v072-profile-stat,#v074ProfileContent .v074-power').forEach(box=>{"
+        },
+        {
+          "line": 301,
+          "text": "single Kampfkraft value; paintPower() is idempotent and never rewrites it when"
+        }
+      ]
+    },
+    {
+      "order": 383,
+      "file": "beta.html#v4112-item-art-sweep",
+      "bytes": 11113,
+      "signals": [
+        "v074ProfileContent"
+      ],
+      "contexts": [
+        {
+          "line": 70,
+          "text": "try{document.querySelectorAll('#v074ProfileContent .v4103-item-card,#v074ProfileContent .v210-profile-item').forEach((x,i)=>check(x,`Spielerprofil ${i+1}`,true))}catch(e){}"
+        }
+      ]
+    },
+    {
+      "order": 393,
+      "file": "beta.html#v4126-power-rpc-diagnostics",
+      "bytes": 4715,
+      "signals": [
+        "v074ProfileContent",
+        "combatPower(",
+        "v4125StableCombatPower",
+        "Kampfkraft"
+      ],
+      "contexts": [
+        {
+          "line": 7,
+          "text": "/* Public/character Kampfkraft must never depend on which screen is open."
+        },
+        {
+          "line": 12,
+          "text": "try{return Math.max(0,Math.round(Number(combatPower())||0))}catch(e){return 0}"
+        },
+        {
+          "line": 19,
+          "text": "return Math.max(0,Math.round(Number(combatPower())||0));"
+        },
+        {
+          "line": 28,
+          "text": "window.v4125StableCombatPower=stablePower;"
+        },
+        {
+          "line": 40,
+          "text": "if(sub&&/Kampfkraft\\s+\\d+/i.test(sub.textContent||'')){"
+        },
+        {
+          "line": 44,
+          "text": "if(/Kampfkraft\\s+\\d+/i.test(n.nodeValue||'')){n.nodeValue=(n.nodeValue||'').replace(/Kampfkraft\\s+\\d+/i,`Kampfkraft ${cp}`);break}"
+        },
+        {
+          "line": 48,
+          "text": "document.querySelectorAll('#v072OwnProfile .v072-profile-stat,#v074ProfileContent .v326-profile-stat,#v074ProfileContent .v072-profile-stat').forEach(box=>{"
+        },
+        {
+          "line": 95,
+          "text": "window.v4125Diagnostics=()=>({stablePower:stablePower(),rawPower:(()=>{try{return Number(combatPower())||0}catch(e){return 0}})(),activeScreen:document.querySelector('section.screen.active')?.id||'',lastGuildRpcError:window.__V4125_LAST_GUILD_RPC_ERROR__||''});"
+        }
+      ]
+    },
+    {
+      "order": 487,
+      "file": "beta.html#v652-player-profile-redesign-js",
+      "bytes": 4119,
+      "signals": [
+        "v074ProfileContent"
+      ],
+      "contexts": [
+        {
+          "line": 14,
+          "text": "const content=document.querySelector('#v074ProfileContent');"
+        },
+        {
+          "line": 90,
+          "text": "const content=document.querySelector('#v074ProfileContent');"
+        }
+      ]
+    },
+    {
+      "order": 488,
+      "file": "beta.html#v653-player-profile-polish-js",
+      "bytes": 1110,
+      "signals": [
+        "v074ProfileContent"
+      ],
+      "contexts": [
+        {
+          "line": 13,
+          "text": "const content=document.querySelector('#v074ProfileContent');"
+        },
+        {
+          "line": 27,
+          "text": "const content=document.querySelector('#v074ProfileContent');"
+        }
+      ]
+    },
+    {
+      "order": 490,
+      "file": "beta.html#v655-player-profile-load-fix-js",
+      "bytes": 11043,
+      "signals": [
+        "v074ProfileContent",
+        "Kampfkraft"
+      ],
+      "contexts": [
+        {
+          "line": 17,
+          "text": "content:document.querySelector('#v074ProfileContent'),"
+        },
+        {
+          "line": 110,
+          "text": "<div class=\"v326-profile-stat\"><span>⚔️ Kampfkraft</span><b>${num(p.combat_power)}</b></div>"
+        }
+      ]
+    },
+    {
+      "order": 728,
+      "file": "beta.html#v7137-shift-frame-client",
+      "bytes": 32593,
+      "signals": [
+        "v074ProfileContent"
+      ],
+      "contexts": [
+        {
+          "line": 189,
+          "text": "async function decorateOpenProfile(id){const sid=String(id||'');if(!sid)return;let fid='';try{if(sid===String(v073User?.id||'')){if(!S.frames)await loadFrames(false);fid=String(S.frames?.active_frame_id||'')}else{let p=S.profileCache.get(sid);if(!p){const m=await publicFrameRows([sid]);p=m.get(sid)||{};S.profileCache.set(sid,p)}fid=String(p?.avatar_frame_id||'')}}catch(_){};[0,50,180].forEach(ms=>setTimeout(()=>applyFrame(document.querySelector('#v074ProfileContent .v652-profile-avatar'),fid),ms))}"
+        }
+      ]
+    }
+  ]
+}
