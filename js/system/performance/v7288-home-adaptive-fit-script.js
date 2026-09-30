@@ -114,7 +114,11 @@ const v8009HomeHeaderFix={
   frostChecklistFixes:0,
   weeklyWidgetPaints:0,
   weeklyFullRendersAvoided:0,
-  weeklyFeedbackEvents:0
+  weeklyFeedbackEvents:0,
+  weatherSignatureSyncs:0,
+  weatherCatchupRendersAvoided:0,
+  routeAudits:0,
+  routeIssues:0
 };
 
 function stateNow(){
@@ -122,6 +126,70 @@ function stateNow(){
 }
 
 let weeklyFeedbackUntil=0;
+
+function syncPaintedWeatherSignature(){
+  if(!IS_BETA)return false;
+  try{
+    const world=document.getElementById('world');
+    if(!world?.classList.contains('active'))return false;
+    const slot=world.querySelector('.glw-home-slot');
+    const w=window.GL_WEATHER;
+    if(!slot||!w)return false;
+
+    const expectedIcon=String(w.icon||'🌤️');
+    const expectedLabel=String(w.label||'Server-Wetter');
+    const expectedBonus=String(w?.bonus?.text||'Kein Wetterbonus');
+    const expectedTemp=Number.isFinite(Number(w.temp))?`${Math.round(Number(w.temp))} °C`:'';
+
+    const paintedIcon=String(slot.querySelector('.glw-home-icon')?.textContent||'').trim();
+    const paintedLabel=String(slot.querySelector('.glw-home-copy b')?.textContent||'').trim();
+    const paintedBonus=String(slot.querySelector('.glw-home-copy span')?.textContent||'').trim();
+    const paintedTemp=String(slot.querySelector('.glw-home-temp')?.textContent||'').trim();
+
+    /* Only advance V366's signature when the already-mounted weather widget
+       visibly matches the current weather state. This prevents a later unrelated
+       home refresh from rebuilding the whole Startseite just to catch up a value
+       that paintWeatherSlots() already painted. */
+    if(paintedIcon!==expectedIcon||paintedLabel!==expectedLabel||paintedBonus!==expectedBonus||paintedTemp!==expectedTemp)return false;
+
+    const sig=String(world.dataset.v366Sig||'');
+    const parts=sig.split('~');
+    if(parts.length<=28)return false;
+    const next=[expectedIcon,expectedLabel,String(Math.round(Number(w.temp)||0)),expectedBonus];
+    const changed=parts[25]!==String(w.kind||'')||parts[26]!==expectedLabel||parts[27]!==next[2]||parts[28]!==expectedBonus;
+    if(!changed)return false;
+
+    parts[25]=String(w.kind||'');
+    parts[26]=expectedLabel;
+    parts[27]=next[2];
+    parts[28]=expectedBonus;
+    world.dataset.v366Sig=parts.join('~');
+    v8009HomeHeaderFix.weatherSignatureSyncs++;
+    return true;
+  }catch(_){return false}
+}
+
+function auditHomeRoutes(){
+  if(!IS_BETA)return null;
+  try{
+    const world=document.getElementById('world');
+    if(!world?.classList.contains('active'))return null;
+    const expected=['quests','dungeon','tower','grow','forge','shop','guild'];
+    const present=[...world.querySelectorAll('[data-go]')].map(x=>String(x.dataset.go||''));
+    const missing=expected.filter(id=>!present.includes(id));
+    const api={
+      navigation:typeof window.v032Go==='function',
+      forge:typeof window.v488OpenForge==='function'||!!document.getElementById('forge'),
+      referral:typeof window.v7129OpenReferral==='function'||!!world.querySelector('[data-referral-open]'),
+      worldboss:typeof window.v110Open==='function'||!world.querySelector('[data-boss]:not([disabled])'),
+      achievements:typeof window.v106OpenBook==='function'
+    };
+    const badApis=Object.entries(api).filter(([,ok])=>!ok).map(([k])=>k);
+    v8009HomeHeaderFix.routeAudits++;
+    v8009HomeHeaderFix.routeIssues+=missing.length+badApis.length;
+    return {missing,badApis,present:[...new Set(present)],api};
+  }catch(_){return null}
+}
 
 function patchWeeklyChest(){
   if(!IS_BETA)return false;
@@ -217,6 +285,12 @@ function installBetaWorldPostRender(){
       const active=!!document.getElementById('world')?.classList.contains('active');
       const t=(()=>{try{return performance.now()}catch(_){return Date.now()}})();
 
+      /* HOME-8: live weather already repaints its own mounted widget. Bring only
+         the V366 signature in sync before the canonical installer compares it. */
+      if(active&&!force&&syncPaintedWeatherSignature()){
+        v8009HomeHeaderFix.weatherCatchupRendersAvoided++;
+      }
+
       /* V8.009 HOME-7: server activity feedback used to rebuild the complete
          Startseite just to update Wochen-EXP. The feedback event is dispatched
          in the same task before its queued RAF calls v085InstallWorld(false).
@@ -231,6 +305,8 @@ function installBetaWorldPostRender(){
       const out=base.apply(this,arguments);
       requestAnimationFrame(()=>{
         try{patchHomeChecklist()}catch(_){}
+        try{syncPaintedWeatherSignature()}catch(_){}
+        try{auditHomeRoutes()}catch(_){}
         try{schedule('world-render')}catch(_){}
       });
       return out;
@@ -316,12 +392,13 @@ if(IS_BETA)document.addEventListener('click',e=>{
   }catch(_){}
 },true);
 window.v8009HomeHeaderDiagnostics=()=>({
-  version:'V8.009-HOME-7',
+  version:'V8.009-HOME-8',
   beta:IS_BETA,
   ...v8009HomeHeaderFix,
   fit:{...HOME_DIAG,pendingRaf:!!raf,pendingTimer:!!runTimer},
   goldShopApi:typeof window.v7114OpenGoldShop==='function',
-  mailScreen:!!document.getElementById('mail')
+  mailScreen:!!document.getElementById('mail'),
+  routeAudit:auditHomeRoutes()
 });
 
 /* Beta-only visible build owner. Shared CSS still contains historical version
