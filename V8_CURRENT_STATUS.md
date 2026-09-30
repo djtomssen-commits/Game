@@ -10,8 +10,8 @@
 - Aktuelle Beta-Linie: **V8.009**
 - Arbeitsbranch: **main**
 - Letzter automatisiert geprüfter Code-Commit vor dieser Statusdatei:
-  `6e4e0ec6274075736ee716a6f33c98c16ba72923`
-- Aktuelle Unterphase: **V8.009-DUNGEON-D10-BETA**
+  `b697b7e7573c711af603302be6255151b722b22f`
+- Aktuelle Unterphase: **V8.009-DUNGEON-D11-BETA**
 - Nutzer-Video bestätigt: betroffen ist konkret **Dungeon 2**.
 - Sichtbares Fehlerbild:
   - zunächst korrekter D2-Hintergrund + korrekte Gegnergrafiken;
@@ -217,6 +217,31 @@
   - D1/D6/D7-Dekorationssignaturen unverändert;
   - Stable unverändert.
 - D10 Status: **abgeschlossen**
+- D11 CSS-Extraktion:
+  - Commit `b697b7e7573c711af603302be6255151b722b22f`;
+  - 11 aktive D1-Style-Blöcke aus `beta.html` ausgelagert;
+  - jeder Block bleibt als eigene externe CSS-Datei an exakt derselben Position/Reihenfolge;
+  - pro Block Bytezahl + SHA256 im Manifest `V8009_DUNGEON_D11_BETA.json` dokumentiert;
+  - CSS-Regeln wurden **nicht verändert**.
+- D11 ausgelagerte Blöcke:
+  - v426 exact reference layout
+  - v454/v455 D1 Feinschliff
+  - v456 reference alignment
+  - v457 clean overlay
+  - v458 clean background
+  - v459 right-side/thumb
+  - v460 thumb owner CSS
+  - v461 node9 collision
+  - v463 screenshot polish
+  - v464 boss micro-position
+- D11 QA: **vollständig grün**
+  - alle 11 Inline-Styles entfernt;
+  - alle 11 externen Dateien Hash-genau zum Originalinhalt;
+  - Source Order 1:1 erhalten;
+  - Stable unverändert;
+  - CSS-Regeln/Gameplay/Combat-Math/Rewards/Serverautorität unverändert.
+- D11 Beta-Größe: **6.014.540 Byte** (vorher 6.043.690 Byte).
+- D11 Status: **abgeschlossen**
 - Nächster Schritt: D1 sowie D3–D20 bei Gelegenheit visuell stichprobenartig prüfen; strukturell sind Hintergrund/Gegner komplett und die Boss-Pfade jetzt korrekt getrennt.
 - Scope: **Beta zuerst**
 - **Server 1 / Stable bleibt unangetastet**, bis eine Phase ausdrücklich für Stable freigegeben wird.
@@ -331,27 +356,16 @@ Für jedes System gilt:
 
 ## 4. EXAKTER nächster Schritt
 
-### V8.009-DUNGEON-D11-BETA – D1-CSS-Kette aus beta.html herausziehen
+### V8.009-DUNGEON-D12-BETA – D1-CSS-Cascade auf Redundanz prüfen
 
-1. aktive D1-Style-Blöcke in ihrer exakten Reihenfolge erfassen:
-   - `v426-exact-reference-layout`
-   - `v454-d1-feinschliff`
-   - `v455-d1-feinschliff-2`
-   - `v456-d1-reference-alignment-final`
-   - `v457-d1-clean-overlay-final`
-   - `v458-d1-clean-background-final`
-   - `v459-d1-right-side-thumb-final`
-   - `v460-d1-thumb-owner-fix`
-   - `v461-d1-node9-collision-fix`
-   - `v463-d1-screenshot-polish`
-   - `v464-d1-boss-micro-position`;
-2. zunächst **nur extern auslagern**, keine CSS-Regel zusammenfassen oder löschen;
-3. Reihenfolge 1:1 erhalten, damit die bestehende Cascade unverändert bleibt;
-4. CSS-Inhalt Hash-/Byte-genau pro Block dokumentieren;
-5. Beta-Inline-CSS reduzieren;
-6. D1/D2/D6/D7 Visual-Owner und D5 Asset-Fallback nicht verändern;
-7. Stable/Server 1 unverändert;
-8. danach erst D12: prüfen, welche frühen D1-Style-Layer durch spätere Regeln vollständig überschrieben sind.
+1. die 11 D11-CSS-Dateien in echter Cascade-Reihenfolge analysieren;
+2. selector/property-genau erfassen, welche frühen D1-Regeln durch spätere Layer vollständig überschrieben werden;
+3. Media-Queries, `!important`, Shorthands und Spezifität berücksichtigen;
+4. nur Regeln/Blöcke als redundant markieren, deren sichtbare Wirkung vollständig durch spätere aktive Regeln ersetzt ist;
+5. keine Entfernung ohne belastbaren Audit;
+6. bei eindeutigen Kandidaten zuerst einen kleinen Satz stilllegen und D1 statisch + manuell prüfen;
+7. D2/D6/D7 sowie D5 Asset-Fallback unverändert halten;
+8. Stable/Server 1 unverändert.
 
 ### Statusdatei-Regel
 
