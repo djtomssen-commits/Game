@@ -85,26 +85,13 @@ setInterval(()=>{
 },1000);
 
 
-/* Immediately sync when quest screen opens or a quest is started. */
-const v229BaseStartQuest=window.startQuest;
-window.startQuest=function(i){
-  const r=v229BaseStartQuest(i);
-
-  requestAnimationFrame(v229UpdateQuestTimer);
-
-  return r;
-};
-
-const v229BaseClaimQuest=claimQuest;
-claimQuest=function(){
-  const r=v229BaseClaimQuest();
-
+/* Direct hooks used by the canonical Quest start/claim owners.
+   No startQuest/claimQuest wrapper is installed here anymore. */
+window.v229QuestStartSync=()=>requestAnimationFrame(v229UpdateQuestTimer);
+window.v229QuestClaimSync=()=>{
   v229QuestTimerLastEnds=0;
   v229QuestTimerDonePainted=false;
-
   requestAnimationFrame(v229UpdateQuestTimer);
-
-  return r;
 };
 
 
