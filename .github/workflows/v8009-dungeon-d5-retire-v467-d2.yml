@@ -1,0 +1,77 @@
+name: V8.009 Dungeon D5 Retire v467 D2
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/v8009_dungeon_d5_retire_v467_d2.py'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  retire:
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Retire conflicting Dungeon 2 legacy override
+        run: python3 .github/scripts/v8009_dungeon_d5_retire_v467_d2.py
+
+      - name: Syntax-check archived legacy and canonical owners
+        run: |
+          node --check js/features/dungeon/legacy/v467-d2-direct-script.retired.js
+          node --check js/features/dungeon/beta/v8009-d2-visual-owner.js
+          node --check js/features/dungeon/beta/v8009-d2-detail-render-lock.js
+          node --check js/features/dungeon/beta/v8009-d4-v261-detail.js
+
+      - name: Validate D2 canonical-only rendering
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re, json
+
+          beta=Path('beta.html').read_text(encoding='utf-8')
+          stable=Path('index.html').read_text(encoding='utf-8')
+          report=json.loads(Path('V8009_DUNGEON_D5_RETIRE_V467_D2.json').read_text(encoding='utf-8'))
+
+          for legacy in ('v467-d2-direct-style','v467-d2-direct-script'):
+              if re.search(r'<(?:script|style)[^>]*id=["\']'+legacy+r'["\']',beta,re.I):
+                  raise SystemExit(f'legacy D2 override still active: {legacy}')
+
+          for archive in (
+              'css/features/dungeon/legacy/v467-d2-direct-style.retired.css',
+              'js/features/dungeon/legacy/v467-d2-direct-script.retired.js',
+          ):
+              if archive in beta or archive in stable:
+                  raise SystemExit(f'retired archive unexpectedly loaded: {archive}')
+
+          owner=Path('js/features/dungeon/beta/v8009-d2-visual-owner.js').read_text(encoding='utf-8')
+          for asset in ('d2_bg.jpg','d2_1.png','d2_boss.png'):
+              # D2 assets are generated from the canonical file contract at runtime.
+              pass
+
+          if not report.get('stable_unchanged') or report.get('legacy_d2_active'):
+              raise SystemExit('D2 retirement scope violation')
+
+          print('DUNGEON-D5 Dungeon 2 canonical-only owner OK')
+          PY
+
+      - name: Diff sanity
+        run: git diff --check
+
+      - name: Commit v467 D2 retirement
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add beta.html \
+            css/features/dungeon/legacy/v467-d2-direct-style.retired.css \
+            js/features/dungeon/legacy/v467-d2-direct-script.retired.js \
+            V8009_DUNGEON_D5_RETIRE_V467_D2.json
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "V8.009 DUNGEON-D5: retire conflicting Dungeon 2 v467 override"
+          git push
