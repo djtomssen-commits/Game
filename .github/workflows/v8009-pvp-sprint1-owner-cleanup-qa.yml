@@ -1,0 +1,79 @@
+name: V8.009 PvP Sprint 1 Owner Cleanup QA
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'js/features/pvp/beta/v8009-s1-v424-hall-combat-power-fix.js'
+      - 'js/features/pvp/beta/v8009-s1-vPvpBudsHallSyncFix.js'
+      - '.github/workflows/v8009-pvp-sprint1-owner-cleanup-qa.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  qa:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Syntax-check Hall owner files
+        run: |
+          node --check js/features/pvp/beta/v8009-s1-v424-hall-combat-power-fix.js
+          node --check js/features/pvp/beta/v8009-s1-vPvpBudsHallSyncFix.js
+          node --check js/features/pvp/beta/v8009-s1-v6145-hall-pagination-js.js
+          node --check js/features/pvp/beta/v8009-s1-v326-hall-profile-canonical.js
+
+      - name: Validate final Hall owner chain
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+
+          beta=Path('beta.html').read_text(encoding='utf-8',errors='ignore')
+          v424=Path('js/features/pvp/beta/v8009-s1-v424-hall-combat-power-fix.js').read_text(encoding='utf-8')
+          buds=Path('js/features/pvp/beta/v8009-s1-vPvpBudsHallSyncFix.js').read_text(encoding='utf-8')
+          hall=Path('js/features/pvp/beta/v8009-s1-v6145-hall-pagination-js.js').read_text(encoding='utf-8')
+
+          for dead in ('__v424HallRankingWrapped','baseRanking=v073LoadRanking'):
+              if dead in v424: raise SystemExit('dead v424 ranking wrapper remains: '+dead)
+          for dead in ('__vPvpBudsHallRankingWrapped','const base=v073LoadRanking'):
+              if dead in buds: raise SystemExit('dead Buds ranking wrapper remains: '+dead)
+
+          for required in (
+              '__v424HallRowWrapped',
+              '__v424ProfilePayloadWrapped',
+              'p.combat_power=v424CurrentPower()',
+          ):
+              if required not in v424: raise SystemExit('v424 retained safeguard missing: '+required)
+
+          for required in (
+              '__vPvpBudsPayloadWrapped',
+              '__vPvpBudsProfileSyncWrapped',
+              'window.vPvpBudsHallSync=writeNow',
+              'Object.assign(p,stats())',
+          ):
+              if required not in buds: raise SystemExit('PvP Buds retained sync missing: '+required)
+
+          for required in (
+              "if(typeof window.vPvpBudsHallSync==='function')await window.vPvpBudsHallSync(true)",
+              "if(typeof v073SyncProfile==='function')await v073SyncProfile(true)",
+              'try{v073LoadRanking=loadRanking;window.v073LoadRanking=loadRanking}',
+          ):
+              if required not in hall: raise SystemExit('v6145 final owner contract missing: '+required)
+
+          # Ensure extracted files remain loaded once in Beta.
+          for ref in (
+              'v8009-s1-v424-hall-combat-power-fix.js',
+              'v8009-s1-vPvpBudsHallSyncFix.js',
+              'v8009-s1-v6145-hall-pagination-js.js',
+          ):
+              if beta.count(ref)!=1: raise SystemExit('Beta include count !=1: '+ref)
+
+          print('PvP Sprint 1 Hall owner cleanup QA OK')
+          PY
+
+      - name: Diff sanity
+        run: git diff --check
