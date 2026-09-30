@@ -1,0 +1,33 @@
+{
+  "build": "V8.009-DUNGEON-D7-BETA",
+  "phase": "Audit remaining legacy detail-owner chain before consolidation",
+  "scope": "beta only",
+  "stable_unchanged": true,
+  "audited": [
+    "v426-reference-owner",
+    "v427-d6-clean-script",
+    "v428-d6-final-owner",
+    "v429-d6-scenic-owner",
+    "v430-d6-10er-final-script",
+    "v432-d7-final-script"
+  ],
+  "canonical_chain": {
+    "world": "v251RenderWorld",
+    "detail": "v261RenderDetail",
+    "visuals": "v8009-d2-visual-owner + v8009-d5-final-detail-seal"
+  },
+  "findings": {
+    "v426": "still owns D1 reference background/title decoration",
+    "v427_v429_v430": "still own D6 cleanup/title/sign/node-position decoration",
+    "v432": "still owns D7 title/sign/node-position decoration",
+    "owner_monkey_patching": "redundant and superseded by canonical detail owner",
+    "decoration_logic": "not redundant; must be migrated before retiring scripts"
+  },
+  "unload_performed": false,
+  "reason_not_unloaded": "Unique D1/D6/D7 visual decoration behavior remains inside the historical owner blocks.",
+  "next": "D8: migrate D1/D6/D7 decoration behavior into one canonical post-render decorator, keep compatibility aliases, then retire legacy owner installers.",
+  "gameplay_changed": false,
+  "combat_math_changed": false,
+  "rewards_changed": false,
+  "server_authority_changed": false
+}
