@@ -11,12 +11,17 @@
 - Arbeitsbranch: **main**
 - Letzter vollständig geprüfter Code-Commit vor dieser Statusdatei:
   `e0931472b1407fad1a752aae90596093f6b8800d`
-- Letzte vollständig abgeschlossene Unterphase: **V8.009 HOME-31**
-- HOME-31 Browser-QA: **grün**
-- Aktuell in Arbeit: **V8.009-DUNGEON-D1-BETA**
-- D1-Ziel: den aktuellen finalen V7175-2D-Kampf-Renderer (JS + CSS) aus `beta.html` in externe Beta-Dungeon-Dateien ziehen, Quellreihenfolge beibehalten und Verhalten unverändert lassen.
-- D1-Vorbereitungscommit / Workflow: `d0cd70dd045a5fdf79bf788c6e98a61f44f83e11`
-- D1-Status: **Extraktions-Workflow vorbereitet; eigentliche Extraktion/QA noch nicht als abgeschlossen markieren, bis der Workflow erfolgreich durchgelaufen und der resultierende Commit geprüft ist.**
+- Letzte vollständig abgeschlossene Unterphase: **V8.009-DUNGEON-D1-BETA**
+- D1 Ergebnis: **erfolgreich**
+- D1 Extraktionscommit: `d775736c74034980d5db9ece96f29117a01e2694`
+- D1 Workflow/QA: **grün**
+- D1 ausgelagert:
+  - `v7175-combat-renderer-core` → `js/features/dungeon/beta/v8009-d1-combat-renderer.js`
+  - `v7175-combat-renderer-css` → `css/features/dungeon/beta/v8009-d1-combat-renderer.css`
+- D1 Umfang: ca. **96 KB** Inline-Code aus `beta.html` entfernt.
+- `beta.html` danach: **6250789 Byte** statt **6347047 Byte**
+- Gameplay/Combat-Math/Rewards/Serverautorität: **unverändert**
+- Aktuell in Arbeit / nächster Schritt: **V8.009-DUNGEON-D2-BETA**
 - Scope der laufenden Strukturierungsarbeit: **Beta zuerst**
 - **Server 1 / Stable bleibt unangetastet**, bis eine Phase ausdrücklich für Stable freigegeben wird.
 
@@ -130,32 +135,35 @@ Für jedes System gilt:
 
 ## 4. EXAKTER nächster Schritt
 
-### Aktuell laufend: V8.009-DUNGEON-D1-BETA
+### Nächste Unterphase: V8.009-DUNGEON-D2-BETA
 
-1. Workflow `.github/workflows/v8009-dungeon-d1-extract.yml` ausführen/prüfen.
-2. Erwartete Extraktion:
-   - `v7175-combat-renderer-core` → `js/features/dungeon/beta/v8009-d1-combat-renderer.js`
-   - `v7175-combat-renderer-css` → `css/features/dungeon/beta/v8009-d1-combat-renderer.css`
-3. Prüfen:
-   - Syntax des ausgelagerten JS
-   - Include jeweils exakt einmal
-   - gleiche JS-/CSS-Quellreihenfolge
-   - keine Änderung an `index.html`
-   - kein Gameplay-/Combat-Math-/Reward-/Server-Authority-Change
-4. Nach erfolgreichem D1:
-   - `V8_CURRENT_STATUS.md` sofort aktualisieren;
-   - D1 als abgeschlossen markieren;
-   - exakten D2-Schritt eintragen.
-5. Danach Dungeon systematisch weiterführen: Owner/Renderer/Lifecycle/Timer/Observer/Legacy-Patches prüfen und jeweils nur eine klar abgegrenzte Unterphase ändern.
+D1 ist abgeschlossen. Als Nächstes nicht den Kampf-Renderer erneut anfassen.
+
+1. aktuellen `main`-HEAD lesen;
+2. Dungeon-**Map/Detail/Visual-Owner-Kette** inventarisieren;
+3. besonders prüfen:
+   - `gl-dungeon-visual-owner-script`
+   - `v7162-dungeon-map-final-owner-script`
+   - `v7166-dungeon-detail-render-lock`
+   - ältere `v251/v260/v261` Map-/Detail-Renderer
+   - welche davon aktuell wirklich rendern und welche nur Guards/Altlasten sind;
+4. Render-/Lifecycle-Kette prüfen:
+   - 20er-Dungeonwelt
+   - 10er-Karte
+   - Wechsel Karte → Kampf → Reward → Karte
+   - keine doppelten Renderer/Observer/Timer;
+5. danach den **nächsten klaren aktiven Dungeon-Owner** aus `beta.html` externalisieren;
+6. Verhalten, Quellreihenfolge und Stable-Unverändertheit testen;
+7. nach erfolgreichem D2 diese Datei sofort wieder aktualisieren und D3 eintragen.
 
 ### Statusdatei-Regel
 
-`V8_CURRENT_STATUS.md` wird **ab jetzt bei jedem V8-Durchgang gepflegt**:
-- beim **Start** einer neuen Unterphase: `Aktuell in Arbeit` + exaktes Ziel;
-- nach **erfolgreichem Abschluss**: letzter geprüfter Commit/Teststatus + nächster Schritt;
-- bei **Fehler/Blocker**: Fehlerursache + was bereits geändert wurde + was als Nächstes zu tun ist.
+`V8_CURRENT_STATUS.md` wird **bei jedem V8-Durchgang gepflegt**:
+- beim **Start** einer Unterphase: aktueller Schritt + Ziel;
+- nach **erfolgreichem Abschluss**: letzter geprüfter Commit, Teststatus, ausgelagerte Dateien und exakter nächster Schritt;
+- bei **Fehler/Blocker**: Fehlerursache + aktueller Stand + nächster Reparaturschritt.
 
-So bleibt ein neuer Chat auch dann fortsetzbar, wenn der alte Chat mitten in einer Phase endet.
+Damit bleibt das Projekt auch bei einem Chatwechsel mitten in einer Phase exakt fortsetzbar.
 
 ## 5. Arbeitsregeln
 
