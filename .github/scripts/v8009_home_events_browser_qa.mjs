@@ -258,7 +258,7 @@ try{
  assert.equal(versionState.visible,'"V8.009"','Canonical renderer must override historical V8.001 pseudo-element CSS');
  assert.equal(versionState.styleCount,1,'Version override style must be installed exactly once');
  assert.equal(versionState.legacy,'SERVER-VERSION-SENTINEL','Home renderer must not rewrite unrelated legacy version nodes');
- assert.equal(versionState.diag?.version,'V8.009-HOME-18');
+ assert.equal(versionState.diag?.version,'V8.009-HOME-19');
  assert.equal(versionState.diag?.versionStyleInstalls,1);
  checks.push('canonical home renderer owns visible V8.009 style without lifecycle rewrites');
  await versionOwner.close();
