@@ -1,0 +1,61 @@
+name: V8.009 Dungeon D2 Extraction
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/v8009_dungeon_d2_extract.py'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  extract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Extract Dungeon map/detail visual owner chain
+        run: python3 .github/scripts/v8009_dungeon_d2_extract.py
+      - name: Syntax-check extracted Dungeon owners
+        run: |
+          node --check js/features/dungeon/beta/v8009-d2-visual-owner.js
+          node --check js/features/dungeon/beta/v8009-d2-map-finalizer.js
+          node --check js/features/dungeon/beta/v8009-d2-detail-render-lock.js
+      - name: Validate D2 extraction
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import json
+          beta=Path('beta.html').read_text(encoding='utf-8')
+          stable=Path('index.html').read_text(encoding='utf-8')
+          r=json.loads(Path('V8009_DUNGEON_D2_BETA.json').read_text(encoding='utf-8'))
+          files=[
+            'js/features/dungeon/beta/v8009-d2-visual-owner.js',
+            'js/features/dungeon/beta/v8009-d2-map-finalizer.js',
+            'js/features/dungeon/beta/v8009-d2-detail-render-lock.js'
+          ]
+          for f in files:
+            if beta.count(f)!=1: raise SystemExit(f'D2 include count != 1: {f}')
+            if f in stable: raise SystemExit(f'stable unexpectedly loads D2 file: {f}')
+          for legacy in ['gl-dungeon-visual-owner-script','v7162-dungeon-map-final-owner-script','v7166-dungeon-detail-render-lock']:
+            import re
+            m=re.search(r'<script[^>]*id=["\']'+re.escape(legacy)+r'["\'][^>]*>([\s\S]*?)</script>',beta,re.I)
+            if not m or m.group(1).strip(): raise SystemExit(f'inline body remains/missing replacement: {legacy}')
+          if not r.get('stable_unchanged'): raise SystemExit('stable changed flag')
+          if r.get('gameplay_changed') or r.get('server_authority_changed'): raise SystemExit('scope violation')
+          print('DUNGEON-D2 extraction OK')
+          PY
+      - name: Diff sanity
+        run: git diff --check
+      - name: Commit D2 extraction
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add beta.html js/features/dungeon/beta/v8009-d2-visual-owner.js js/features/dungeon/beta/v8009-d2-map-finalizer.js js/features/dungeon/beta/v8009-d2-detail-render-lock.js V8009_DUNGEON_D2_BETA.json
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "V8.009 DUNGEON-D2: extract map detail visual owner chain"
+          git push
