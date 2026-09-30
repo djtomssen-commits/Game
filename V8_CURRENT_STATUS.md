@@ -19,8 +19,8 @@
 - Aktuelle Beta-Linie: **V8.009**
 - Arbeitsbranch: **main**
 - Letzter automatisiert geprüfter Code-Commit vor dieser Statusdatei:
-  `be3664b893ec479d49344baee6b032eff463ff6d`
-- Aktuelle Unterphase: **V8.009-PVP-SPRINT-1-HALL-AVATAR-FRAME-SOURCE-MANUAL-CHECK**
+  `0acaa527b314d613f3971fd4d344b667894fbdfd`
+- Aktuelle Unterphase: **V8.009-PVP-SPRINT-1-HALL-TOP3-DIRECT-OWNER-MANUAL-CHECK**
 - Nutzer-Video bestätigt: betroffen ist konkret **Dungeon 2**.
 - Sichtbares Fehlerbild:
   - zunächst korrekter D2-Hintergrund + korrekte Gegnergrafiken;
@@ -506,6 +506,37 @@
   - Stable/Server 1 unverändert;
   - Gameplay/Matchmaking/Combat-Math/Cooldown/Rewards/Serverautorität unverändert.
 - Aktuelle Beta-Größe nach Source-Fix: **5.751.007 Byte**.
+- Manueller Screenshot 30.09.2026 15:08 zeigte: Source-Fix noch nicht ausreichend.
+  - Top-3-Avatare weiterhin als schmale Ganzkörperstreifen;
+  - Tomssen weiterhin ohne `emerald_aura`-Rahmen im Top-3-Feld.
+- Zweiter Root-Cause-Audit:
+  - Top 3 hing trotz v6145 noch an der generischen Avatar-`<img>`-Kette; späte Alt-CSS konnte diese Darstellung weiter beeinflussen;
+  - `v7230-server-frame-isolation` entfernte auf Server 1 pauschal **alle** `.v7137-frame-target > .v7139-frame-art` im DOM und löschte damit auch korrekt serverseitig geladene öffentliche Hall-Rahmen;
+  - Live-Supabase bestätigt Top-3-Daten: Tomssen hat weiterhin `avatar_frame_id = emerald_aura`; Daten sind nicht die Ursache.
+- Direkter Owner-Fix ohne Overlay-Patch:
+  - Commit `188d2f032248621b9daf8daea619ddf4436648eb`:
+    - `v6145` besitzt jetzt `podiumAvatar()`;
+    - Top-3-Charakterbild wird direkt als eigene Portrait-Fläche im kanonischen Podium-HTML erzeugt;
+    - Top 3 benutzt nicht mehr die generische Avatar-`<img>`-Kette.
+  - Commit `0acaa527b314d613f3971fd4d344b667894fbdfd`:
+    - bestehendes `v6145-hall-pagination-css` direkt auf `.v6145-podium-portrait` umgestellt;
+    - `v7230` Frame-Isolation auf lokale/Own-Surfaces begrenzt (World, Character, eigenes Hall-Profil);
+    - öffentliche Top-3-/Ranglisten-Rahmen werden von v7230 nicht mehr entfernt;
+    - bestehender kanonischer v6145-Include nur cache-versioniert:
+      `v8009-s1-v6145-hall-pagination-js.js?v=8009-top3-owner2`;
+      dadurch kein zweiter Renderer, aber garantiert frische JS-Datei.
+- QA für zweiten Root-Fix: **vollständig grün**
+  - v6145 Syntax grün;
+  - v7230 Syntax grün;
+  - Architektur-/Ownership-QA grün;
+  - Diff-QA grün;
+  - **0 neue Renderer**;
+  - **0 neue Wrapper**;
+  - **0 neue Timer**;
+  - **0 neue MutationObserver**;
+  - Stable/index.html unverändert;
+  - Gameplay/Matchmaking/Combat-Math/Cooldown/Rewards/Serverautorität funktional unverändert.
+- Aktuelle Beta-Größe: **5.751.305 Byte**.
 - **Quest Sprint NICHT starten**, bis diese zwei Hall-Fehler manuell erneut geprüft und bestätigt sind.
 - Scope: **Beta zuerst**
 - **Server 1 / Stable bleibt unangetastet**, bis eine Phase ausdrücklich für Stable freigegeben wird.
@@ -594,7 +625,7 @@ Kein `HOME-32` beginnen, solange kein echter reproduzierbarer Home-Bug oder klar
 Aktueller Repo-Stand vor dieser Statusdatei:
 
 - `index.html`: ca. **6574124 Byte**
-- `beta.html`: ca. **5751007 Byte**
+- `beta.html`: ca. **5751305 Byte**
 - externe `.js`-Dateien unter `js/`: **134**
 - externe `.css`-Dateien unter `css/`: **130**
 
@@ -620,20 +651,19 @@ Für jedes System gilt:
 
 ## 4. EXAKTER nächster Schritt
 
-### Hall-of-Haze – Source-Fix manuell prüfen
+### Hall-of-Haze – zweiten direkten Top-3-Owner-Fix manuell prüfen
 
-In Beta einmal Hall neu öffnen und nur prüfen:
+Beta/Hall einmal **neu laden** und prüfen:
 
 1. **Top 3**
-   - Avatar füllt das große Avatarfeld deutlich aus;
-   - keine schmale Ganzkörper-Miniatur mehr;
-   - Tomssen zeigt direkt den aktiven `emerald_aura`-Rahmen;
-   - andere Top-3-Spieler zeigen ihren Rahmen ebenfalls, falls `avatar_frame_id` gesetzt ist.
-2. **Komplette Rangliste**
-   - bei Spielern mit aktivem Rahmen ist der Rahmen direkt am Avatar sichtbar;
-   - kein nachträgliches Einblenden/Flackern.
-3. **Bereits offene Hall-Fehler mitprüfen**
-   - eigenes Profil oben bleibt beim ersten Paint korrekt;
+   - Charakterbilder füllen die Portraitfläche breit aus;
+   - keine schmalen Ganzkörperstreifen mehr;
+   - Tomssen zeigt direkt den aktiven `emerald_aura`-Rahmen.
+2. **Rangliste**
+   - Spieler mit `avatar_frame_id` zeigen den Rahmen direkt am Avatar;
+   - kein nachträgliches Einblenden und kein Entfernen durch Server-Frame-Sync.
+3. **Bestehende Hall-Fixes**
+   - eigenes Profil oberhalb Top 3 bleibt beim ersten Paint korrekt;
    - fremde Kampfkraft zeigt nicht kurz die eigene Kampfkraft.
 
 Wenn das passt:
@@ -641,8 +671,8 @@ Wenn das passt:
 - Quest Sprint starten.
 
 Wenn noch etwas nicht passt:
-- ausschließlich den bestehenden kanonischen `v6145`-/Profil-Owner direkt korrigieren;
-- **keinen neuen Patch-Renderer, Wrapper, Timer oder Observer hinzufügen**.
+- nur den bestehenden kanonischen `v6145`-/`v7230`-Owner korrigieren;
+- **keine neue Patch-Schicht, keinen Render-Wrapper, Timer oder Observer hinzufügen**.
 
 ### Statusdatei-Regel
 
