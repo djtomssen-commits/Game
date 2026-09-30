@@ -1,0 +1,1019 @@
+{
+  "build": "V8.009-LEVELUP-BLOCKS",
+  "ranges": [
+    {
+      "start": 38869,
+      "end": 38925,
+      "lines": [
+        {
+          "line": 38869,
+          "text": "<script id=\"v420-levelup-notification-fix\">"
+        },
+        {
+          "line": 38870,
+          "text": "(function(){"
+        },
+        {
+          "line": 38871,
+          "text": "  const VERSION='V4.29 Stable';"
+        },
+        {
+          "line": 38872,
+          "text": "  let hideTimer=0;"
+        },
+        {
+          "line": 38873,
+          "text": ""
+        },
+        {
+          "line": 38874,
+          "text": "  function stamp(){}"
+        },
+        {
+          "line": 38875,
+          "text": ""
+        },
+        {
+          "line": 38876,
+          "text": "  function show(oldLevel,newLevel){"
+        },
+        {
+          "line": 38877,
+          "text": "    if(!(newLevel>oldLevel))return;"
+        },
+        {
+          "line": 38878,
+          "text": "    try{window.v6111Sfx?.('levelup')}catch(e){}"
+        },
+        {
+          "line": 38879,
+          "text": "    const gained=newLevel-oldLevel;"
+        },
+        {
+          "line": 38880,
+          "text": "    const attrGain=gained*2;"
+        },
+        {
+          "line": 38881,
+          "text": "    const talentGain=Math.max(0,Math.floor(newLevel/2)-Math.floor(oldLevel/2));"
+        },
+        {
+          "line": 38882,
+          "text": ""
+        },
+        {
+          "line": 38883,
+          "text": "    document.querySelectorAll('.v101-levelup,.v102-levelup-overlay,#v420LevelUpOverlay').forEach(x=>x.remove());"
+        },
+        {
+          "line": 38884,
+          "text": "    const ov=document.createElement('div');"
+        },
+        {
+          "line": 38885,
+          "text": "    ov.id='v420LevelUpOverlay';"
+        },
+        {
+          "line": 38886,
+          "text": "    ov.innerHTML=`<div class=\"v420-card\">"
+        },
+        {
+          "line": 38887,
+          "text": "      <div class=\"v420-title\">🎉 LEVEL UP!</div>"
+        },
+        {
+          "line": 38888,
+          "text": "      <div class=\"v420-level\">Level ${oldLevel} → ${newLevel}</div>"
+        },
+        {
+          "line": 38889,
+          "text": "      <div class=\"v420-rewards\"><b>+${attrGain} Attributpunkte</b>${talentGain?` · +${talentGain} Talentpunkt${talentGain===1?'':'e'}`:''}</div>"
+        },
+        {
+          "line": 38890,
+          "text": "    </div>`;"
+        },
+        {
+          "line": 38891,
+          "text": "    document.body.appendChild(ov);"
+        },
+        {
+          "line": 38892,
+          "text": "    clearTimeout(hideTimer);"
+        },
+        {
+          "line": 38893,
+          "text": "    hideTimer=setTimeout(()=>ov.remove(),3600);"
+        },
+        {
+          "line": 38894,
+          "text": "    try{if(typeof v063Toast==='function')v063Toast('🎉 Level Up!','success',`Du bist jetzt Level ${newLevel}.`)}catch(e){}"
+        },
+        {
+          "line": 38895,
+          "text": "  }"
+        },
+        {
+          "line": 38896,
+          "text": ""
+        },
+        {
+          "line": 38897,
+          "text": "  /* Final owner: a genuine Level-Up can only happen inside addXp()."
+        },
+        {
+          "line": 38898,
+          "text": "     Comparing state before/after avoids fake popups during login/cloud hydration. */"
+        },
+        {
+          "line": 38899,
+          "text": "  if(typeof addXp==='function' && !window.__v420LevelUpWrapped){"
+        },
+        {
+          "line": 38900,
+          "text": "    const baseAddXp=addXp;"
+        },
+        {
+          "line": 38901,
+          "text": "    addXp=function(n){"
+        },
+        {
+          "line": 38902,
+          "text": "      const oldLevel=Math.max(1,Number(s?.level)||1);"
+        },
+        {
+          "line": 38903,
+          "text": "      const result=baseAddXp.apply(this,arguments);"
+        },
+        {
+          "line": 38904,
+          "text": "      const newLevel=Math.max(1,Number(s?.level)||1);"
+        },
+        {
+          "line": 38905,
+          "text": "      if(newLevel>oldLevel){"
+        },
+        {
+          "line": 38906,
+          "text": "        try{if(typeof v102ObservedLevel!=='undefined')v102ObservedLevel=newLevel}catch(e){}"
+        },
+        {
+          "line": 38907,
+          "text": "        show(oldLevel,newLevel);"
+        },
+        {
+          "line": 38908,
+          "text": "      }"
+        },
+        {
+          "line": 38909,
+          "text": "      return result;"
+        },
+        {
+          "line": 38910,
+          "text": "    };"
+        },
+        {
+          "line": 38911,
+          "text": "    window.addXp=addXp;"
+        },
+        {
+          "line": 38912,
+          "text": "    window.__v420LevelUpWrapped=true;"
+        },
+        {
+          "line": 38913,
+          "text": "  }"
+        },
+        {
+          "line": 38914,
+          "text": ""
+        },
+        {
+          "line": 38915,
+          "text": "  stamp();"
+        },
+        {
+          "line": 38916,
+          "text": "})();"
+        },
+        {
+          "line": 38917,
+          "text": "</script>"
+        },
+        {
+          "line": 38918,
+          "text": ""
+        },
+        {
+          "line": 38919,
+          "text": ""
+        },
+        {
+          "line": 38920,
+          "text": "<!-- ===== V4.29 Stable: monotonic item level + rarity progression ===== -->"
+        },
+        {
+          "line": 38921,
+          "text": "<script id=\"v423-item-progression-fix\">"
+        },
+        {
+          "line": 38922,
+          "text": "(function(){"
+        },
+        {
+          "line": 38923,
+          "text": "  /*"
+        },
+        {
+          "line": 38924,
+          "text": "    Root cause fixed here:"
+        },
+        {
+          "line": 38925,
+          "text": "    V4.22 added the level bonus once PER ATTRIBUTE. A two-stat item therefore"
+        }
+      ]
+    },
+    {
+      "start": 92620,
+      "end": 92735,
+      "lines": [
+        {
+          "line": 92620,
+          "text": "  return true;"
+        },
+        {
+          "line": 92621,
+          "text": " }"
+        },
+        {
+          "line": 92622,
+          "text": " window.v6210DungeonSinglePlayerArtClean=()=>clean(true);"
+        },
+        {
+          "line": 92623,
+          "text": "})();"
+        },
+        {
+          "line": 92624,
+          "text": "</script>"
+        },
+        {
+          "line": 92625,
+          "text": "<!-- ===== /V6.210 ===== -->"
+        },
+        {
+          "line": 92626,
+          "text": ""
+        },
+        {
+          "line": 92627,
+          "text": "<!-- ===== V6.211 LEVEL-UP + PET POPUP RELIABILITY ===== -->"
+        },
+        {
+          "line": 92628,
+          "text": "<style id=\"v6211-popup-reliability-css\">"
+        },
+        {
+          "line": 92629,
+          "text": "/* Quest/harvest rewards use z-index values up to 2147483646. Gameplay milestone"
+        },
+        {
+          "line": 92630,
+          "text": "   popups must stay above them or they can expire unseen behind the reward card. */"
+        },
+        {
+          "line": 92631,
+          "text": "#v420LevelUpOverlay,"
+        },
+        {
+          "line": 92632,
+          "text": "#v688PetPopup,"
+        },
+        {
+          "line": 92633,
+          "text": "#v6211LevelUpFallback,"
+        },
+        {
+          "line": 92634,
+          "text": "#v6211PetFallback{"
+        },
+        {
+          "line": 92635,
+          "text": "  z-index:2147483647!important;"
+        },
+        {
+          "line": 92636,
+          "text": "}"
+        },
+        {
+          "line": 92637,
+          "text": "#v6211LevelUpFallback,"
+        },
+        {
+          "line": 92638,
+          "text": "#v6211PetFallback{"
+        },
+        {
+          "line": 92639,
+          "text": "  position:fixed;inset:0;display:flex;align-items:center;justify-content:center;"
+        },
+        {
+          "line": 92640,
+          "text": "  padding:18px;background:rgba(2,6,3,.78);backdrop-filter:blur(5px);"
+        },
+        {
+          "line": 92641,
+          "text": "}"
+        },
+        {
+          "line": 92642,
+          "text": "#v6211LevelUpFallback{pointer-events:none}"
+        },
+        {
+          "line": 92643,
+          "text": "#v6211LevelUpFallback .v6211-level-card{"
+        },
+        {
+          "line": 92644,
+          "text": "  width:min(90vw,380px);padding:26px 20px 22px;border-radius:22px;"
+        },
+        {
+          "line": 92645,
+          "text": "  border:1px solid #d0a43d;"
+        },
+        {
+          "line": 92646,
+          "text": "  background:radial-gradient(circle at 50% 0%,rgba(255,219,79,.25),transparent 43%),linear-gradient(180deg,#241a08,#0d120d);"
+        },
+        {
+          "line": 92647,
+          "text": "  box-shadow:0 24px 80px #000e,0 0 38px rgba(255,200,50,.28);text-align:center;"
+        },
+        {
+          "line": 92648,
+          "text": "  animation:v6211Pop .28s cubic-bezier(.2,.9,.3,1.2)"
+        },
+        {
+          "line": 92649,
+          "text": "}"
+        },
+        {
+          "line": 92650,
+          "text": "#v6211LevelUpFallback .v6211-title{font-size:31px;font-weight:1000;color:#ffe173;text-shadow:0 0 10px #ffc83c,0 0 24px rgba(255,199,52,.72)}"
+        },
+        {
+          "line": 92651,
+          "text": "#v6211LevelUpFallback .v6211-level{margin-top:8px;font-size:20px;font-weight:1000;color:#f7f8f3}"
+        },
+        {
+          "line": 92652,
+          "text": "#v6211LevelUpFallback .v6211-rewards{margin-top:12px;font-size:13px;line-height:1.65;color:#d4ddcf}"
+        },
+        {
+          "line": 92653,
+          "text": "#v6211LevelUpFallback .v6211-rewards b{color:#8ee66c}"
+        },
+        {
+          "line": 92654,
+          "text": "#v6211PetFallback .v6211-pet-card{"
+        },
+        {
+          "line": 92655,
+          "text": "  width:min(360px,92vw);padding:14px;border:2px solid var(--v6211q,#62d765);border-radius:17px;"
+        },
+        {
+          "line": 92656,
+          "text": "  background:radial-gradient(circle at 50% 0%,color-mix(in srgb,var(--v6211q,#62d765) 18%,transparent),transparent 42%),linear-gradient(160deg,#0c1b10,#030806);"
+        },
+        {
+          "line": 92657,
+          "text": "  box-shadow:0 18px 65px #000,0 0 28px color-mix(in srgb,var(--v6211q,#62d765) 28%,transparent),inset 0 0 0 2px rgba(255,255,255,.025);"
+        },
+        {
+          "line": 92658,
+          "text": "  text-align:center;animation:v6211Pop .24s ease-out"
+        },
+        {
+          "line": 92659,
+          "text": "}"
+        },
+        {
+          "line": 92660,
+          "text": "#v6211PetFallback .v6211-kicker{color:var(--v6211q,#62d765);font-size:8px;font-weight:1000;letter-spacing:.12em}"
+        },
+        {
+          "line": 92661,
+          "text": "#v6211PetFallback .v6211-icon{width:80px;height:80px;margin:10px auto 8px;display:grid;place-items:center;border:2px solid var(--v6211q,#62d765);border-radius:18px;background:#07100a;font-size:50px}"
+        },
+        {
+          "line": 92662,
+          "text": "#v6211PetFallback h3{margin:0;color:#f5f4ec;font-family:Georgia,\"Times New Roman\",serif;font-size:22px}"
+        },
+        {
+          "line": 92663,
+          "text": "#v6211PetFallback .v6211-quality{margin-top:5px;color:var(--v6211q,#62d765);font-size:11px;font-weight:1000}"
+        },
+        {
+          "line": 92664,
+          "text": "#v6211PetFallback .v6211-source{margin-top:7px;color:#9eaa9e;font-size:8px}"
+        },
+        {
+          "line": 92665,
+          "text": "#v6211PetFallback .v6211-body{margin-top:9px;padding:8px;border:1px solid #39593e;border-radius:9px;background:#061009;color:#d5e0d2;font-size:9px;line-height:1.45}"
+        },
+        {
+          "line": 92666,
+          "text": "#v6211PetFallback .v6211-actions{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:10px}"
+        },
+        {
+          "line": 92667,
+          "text": "#v6211PetFallback button{min-height:39px;border:1px solid #4d744e;border-radius:9px;background:#112017;color:#e5eee1;font-weight:1000;font-size:9px}"
+        },
+        {
+          "line": 92668,
+          "text": "#v6211PetFallback button.primary{border-color:#72cf59;background:linear-gradient(180deg,#62c84f,#307f31);color:#071008}"
+        },
+        {
+          "line": 92669,
+          "text": "@keyframes v6211Pop{from{opacity:0;transform:scale(.78)}to{opacity:1;transform:scale(1)}}"
+        },
+        {
+          "line": 92670,
+          "text": "</style>"
+        },
+        {
+          "line": 92671,
+          "text": "<script id=\"v6211-popup-reliability\">"
+        },
+        {
+          "line": 92672,
+          "text": "(()=>{"
+        },
+        {
+          "line": 92673,
+          "text": "  'use strict';"
+        },
+        {
+          "line": 92674,
+          "text": "  if(window.__V6211_POPUP_RELIABILITY__)return;"
+        },
+        {
+          "line": 92675,
+          "text": "  window.__V6211_POPUP_RELIABILITY__=true;"
+        },
+        {
+          "line": 92676,
+          "text": ""
+        },
+        {
+          "line": 92677,
+          "text": "  const SOURCE_LABEL={grow:'🌱 Growroom',quest:'📜 Quest',elite:'🔴 Elite-Quest',dungeon:'👹 Dungeon',dungeon_boss:'👑 Dungeon-Boss',endgame:'🌀 Nebelriss',endgame_boss:'👑 Riss-Endboss',mythic_boss:'💎 Mystischer Boss'};"
+        },
+        {
+          "line": 92678,
+          "text": "  let levelTimer=0;"
+        },
+        {
+          "line": 92679,
+          "text": ""
+        },
+        {
+          "line": 92680,
+          "text": "  function visible(el){"
+        },
+        {
+          "line": 92681,
+          "text": "    if(!el||!el.isConnected)return false;"
+        },
+        {
+          "line": 92682,
+          "text": "    try{const cs=getComputedStyle(el);return cs.display!=='none'&&cs.visibility!=='hidden'&&Number(cs.opacity||1)!==0}catch(_){return true}"
+        },
+        {
+          "line": 92683,
+          "text": "  }"
+        },
+        {
+          "line": 92684,
+          "text": ""
+        },
+        {
+          "line": 92685,
+          "text": "  function levelFallback(oldLevel,newLevel){"
+        },
+        {
+          "line": 92686,
+          "text": "    if(!(newLevel>oldLevel))return;"
+        },
+        {
+          "line": 92687,
+          "text": "    const legacy=document.getElementById('v420LevelUpOverlay');"
+        },
+        {
+          "line": 92688,
+          "text": "    if(visible(legacy))return;"
+        },
+        {
+          "line": 92689,
+          "text": "    if(document.getElementById('v6211LevelUpFallback'))return;"
+        },
+        {
+          "line": 92690,
+          "text": "    const gained=newLevel-oldLevel;"
+        },
+        {
+          "line": 92691,
+          "text": "    const attrGain=gained*2;"
+        },
+        {
+          "line": 92692,
+          "text": "    const talentGain=Math.max(0,Math.floor(newLevel/2)-Math.floor(oldLevel/2));"
+        },
+        {
+          "line": 92693,
+          "text": "    const ov=document.createElement('div');"
+        },
+        {
+          "line": 92694,
+          "text": "    ov.id='v6211LevelUpFallback';"
+        },
+        {
+          "line": 92695,
+          "text": "    ov.innerHTML=`<div class=\"v6211-level-card\"><div class=\"v6211-title\">🎉 LEVEL UP!</div><div class=\"v6211-level\">Level ${oldLevel} → ${newLevel}</div><div class=\"v6211-rewards\"><b>+${attrGain} Attributpunkte</b>${talentGain?` · +${talentGain} Talentpunkt${talentGain===1?'':'e'}`:''}</div></div>`;"
+        },
+        {
+          "line": 92696,
+          "text": "    document.body.appendChild(ov);"
+        },
+        {
+          "line": 92697,
+          "text": "    clearTimeout(levelTimer);"
+        },
+        {
+          "line": 92698,
+          "text": "    levelTimer=setTimeout(()=>ov.remove(),3800);"
+        },
+        {
+          "line": 92699,
+          "text": "  }"
+        },
+        {
+          "line": 92700,
+          "text": ""
+        },
+        {
+          "line": 92701,
+          "text": "  /* Final XP guard. Existing Level-Up code remains authoritative; this only"
+        },
+        {
+          "line": 92702,
+          "text": "     creates a fallback if its overlay was not actually visible. */"
+        },
+        {
+          "line": 92703,
+          "text": "  try{"
+        },
+        {
+          "line": 92704,
+          "text": "    if(typeof addXp==='function'&&!addXp.__v6211PopupGuard){"
+        },
+        {
+          "line": 92705,
+          "text": "      const base=addXp;"
+        },
+        {
+          "line": 92706,
+          "text": "      const wrapped=function(){"
+        },
+        {
+          "line": 92707,
+          "text": "        const oldLevel=Math.max(1,Number(s?.level)||1);"
+        },
+        {
+          "line": 92708,
+          "text": "        const out=base.apply(this,arguments);"
+        },
+        {
+          "line": 92709,
+          "text": "        const newLevel=Math.max(1,Number(s?.level)||1);"
+        },
+        {
+          "line": 92710,
+          "text": "        if(newLevel>oldLevel)setTimeout(()=>levelFallback(oldLevel,newLevel),40);"
+        },
+        {
+          "line": 92711,
+          "text": "        return out;"
+        },
+        {
+          "line": 92712,
+          "text": "      };"
+        },
+        {
+          "line": 92713,
+          "text": "      wrapped.__v6211PopupGuard=true;"
+        },
+        {
+          "line": 92714,
+          "text": "      addXp=wrapped;"
+        },
+        {
+          "line": 92715,
+          "text": "      try{window.addXp=wrapped}catch(_){}"
+        },
+        {
+          "line": 92716,
+          "text": "    }"
+        },
+        {
+          "line": 92717,
+          "text": "  }catch(e){console.warn('V6.211 level popup guard',e)}"
+        },
+        {
+          "line": 92718,
+          "text": ""
+        },
+        {
+          "line": 92719,
+          "text": "  function petDef(id){"
+        },
+        {
+          "line": 92720,
+          "text": "    try{return (window.v686PetDefinitions||[]).find(p=>String(p?.id||'')===String(id||''))||null}catch(_){return null}"
+        },
+        {
+          "line": 92721,
+          "text": "  }"
+        },
+        {
+          "line": 92722,
+          "text": "  function qualityDef(q){"
+        },
+        {
+          "line": 92723,
+          "text": "    try{return (window.v686PetQualities||[]).find(x=>String(x?.id||'')===String(q||''))||null}catch(_){return null}"
+        },
+        {
+          "line": 92724,
+          "text": "  }"
+        },
+        {
+          "line": 92725,
+          "text": "  function petPopupVisible(){return visible(document.getElementById('v688PetPopup'))||visible(document.getElementById('v6211PetFallback'))}"
+        },
+        {
+          "line": 92726,
+          "text": "  function acknowledgePending(pid,q){"
+        },
+        {
+          "line": 92727,
+          "text": "    try{"
+        },
+        {
+          "line": 92728,
+          "text": "      const a=s?.v686PetAlbum;if(!a||!Array.isArray(a.pendingFindPopups))return;"
+        },
+        {
+          "line": 92729,
+          "text": "      a.pendingFindPopups=a.pendingFindPopups.filter(x=>!(String(x?.petId||'')===String(pid)&&String(x?.quality||'')===String(q)));"
+        },
+        {
+          "line": 92730,
+          "text": "      try{persist(false)}catch(_){}"
+        },
+        {
+          "line": 92731,
+          "text": "    }catch(_){}"
+        },
+        {
+          "line": 92732,
+          "text": "  }"
+        },
+        {
+          "line": 92733,
+          "text": "  function showPetFallback(pid,q,source){"
+        },
+        {
+          "line": 92734,
+          "text": "    if(petPopupVisible())return;"
+        },
+        {
+          "line": 92735,
+          "text": "    const p=petDef(pid),qd=qualityDef(q);"
+        }
+      ]
+    },
+    {
+      "start": 92735,
+      "end": 92810,
+      "lines": [
+        {
+          "line": 92735,
+          "text": "    const p=petDef(pid),qd=qualityDef(q);"
+        },
+        {
+          "line": 92736,
+          "text": "    if(!p)return;"
+        },
+        {
+          "line": 92737,
+          "text": "    const ov=document.createElement('div');"
+        },
+        {
+          "line": 92738,
+          "text": "    ov.id='v6211PetFallback';"
+        },
+        {
+          "line": 92739,
+          "text": "    ov.style.setProperty('--v6211q',qd?.color||'#62d765');"
+        },
+        {
+          "line": 92740,
+          "text": "    ov.innerHTML=`<div class=\"v6211-pet-card\"><div class=\"v6211-kicker\">🐾 NEUES PET GEFUNDEN</div><div class=\"v6211-icon\">${p.emoji||'🐾'}</div><h3>${p.name||'Pet'}</h3><div class=\"v6211-quality\">${qd?.label||q||''}</div><div class=\"v6211-source\">Quelle: ${SOURCE_LABEL[source]||source||'Unbekannt'}</div><div class=\"v6211-body\">Neue Qualitätsstufe für dein Sammelalbum wurde dauerhaft freigeschaltet.</div><div class=\"v6211-actions\"><button type=\"button\" data-v6211-close>Schließen</button><button type=\"button\" class=\"primary\" data-v6211-album>Zum Album</button></div></div>`;"
+        },
+        {
+          "line": 92741,
+          "text": "    const close=(openAlbum)=>{acknowledgePending(pid,q);ov.remove();if(openAlbum)try{window.v686OpenPetAlbum?.()}catch(_){}};"
+        },
+        {
+          "line": 92742,
+          "text": "    ov.querySelector('[data-v6211-close]').onclick=()=>close(false);"
+        },
+        {
+          "line": 92743,
+          "text": "    ov.querySelector('[data-v6211-album]').onclick=()=>close(true);"
+        },
+        {
+          "line": 92744,
+          "text": "    ov.addEventListener('click',e=>{if(e.target===ov)close(false)});"
+        },
+        {
+          "line": 92745,
+          "text": "    document.body.appendChild(ov);"
+        },
+        {
+          "line": 92746,
+          "text": "  }"
+        },
+        {
+          "line": 92747,
+          "text": ""
+        },
+        {
+          "line": 92748,
+          "text": "  /* The V6.99 queue normally opens the popup immediately. This final wrapper"
+        },
+        {
+          "line": 92749,
+          "text": "     only steps in if a successful new grant produced no visible popup. */"
+        },
+        {
+          "line": 92750,
+          "text": "  try{"
+        },
+        {
+          "line": 92751,
+          "text": "    if(typeof window.v686GrantPet==='function'&&!window.v686GrantPet.__v6211PopupGuard){"
+        },
+        {
+          "line": 92752,
+          "text": "      const baseGrant=window.v686GrantPet;"
+        },
+        {
+          "line": 92753,
+          "text": "      const wrappedGrant=function(pid,q,source){"
+        },
+        {
+          "line": 92754,
+          "text": "        const existed=!!s?.v686PetAlbum?.found?.[pid]?.[q];"
+        },
+        {
+          "line": 92755,
+          "text": "        const out=baseGrant.apply(this,arguments);"
+        },
+        {
+          "line": 92756,
+          "text": "        const check=(ok)=>{"
+        },
+        {
+          "line": 92757,
+          "text": "          const now=!!s?.v686PetAlbum?.found?.[pid]?.[q];"
+        },
+        {
+          "line": 92758,
+          "text": "          if(!existed&&now&&ok!==false){"
+        },
+        {
+          "line": 92759,
+          "text": "            setTimeout(()=>{if(!petPopupVisible())showPetFallback(pid,q,source)},220);"
+        },
+        {
+          "line": 92760,
+          "text": "          }"
+        },
+        {
+          "line": 92761,
+          "text": "          return ok;"
+        },
+        {
+          "line": 92762,
+          "text": "        };"
+        },
+        {
+          "line": 92763,
+          "text": "        return out&&typeof out.then==='function'?out.then(check):check(out);"
+        },
+        {
+          "line": 92764,
+          "text": "      };"
+        },
+        {
+          "line": 92765,
+          "text": "      wrappedGrant.__v6211PopupGuard=true;"
+        },
+        {
+          "line": 92766,
+          "text": "      window.v686GrantPet=wrappedGrant;"
+        },
+        {
+          "line": 92767,
+          "text": "    }"
+        },
+        {
+          "line": 92768,
+          "text": "  }catch(e){console.warn('V6.211 pet popup guard',e)}"
+        },
+        {
+          "line": 92769,
+          "text": ""
+        },
+        {
+          "line": 92770,
+          "text": "  /* If a popup was already pending from a previous interrupted render, let the"
+        },
+        {
+          "line": 92771,
+          "text": "     existing recovery code get first chance, then fall back to the newest item. */"
+        },
+        {
+          "line": 92772,
+          "text": "  function recoverPendingFallback(){"
+        },
+        {
+          "line": 92773,
+          "text": "    setTimeout(()=>{"
+        },
+        {
+          "line": 92774,
+          "text": "      if(petPopupVisible())return;"
+        },
+        {
+          "line": 92775,
+          "text": "      try{"
+        },
+        {
+          "line": 92776,
+          "text": "        const rows=s?.v686PetAlbum?.pendingFindPopups;"
+        },
+        {
+          "line": 92777,
+          "text": "        if(!Array.isArray(rows)||!rows.length)return;"
+        },
+        {
+          "line": 92778,
+          "text": "        const x=rows[rows.length-1];"
+        },
+        {
+          "line": 92779,
+          "text": "        if(x?.petId&&x?.quality)showPetFallback(x.petId,x.quality,x.source||'');"
+        },
+        {
+          "line": 92780,
+          "text": "      }catch(_){}"
+        },
+        {
+          "line": 92781,
+          "text": "    },420);"
+        },
+        {
+          "line": 92782,
+          "text": "  }"
+        },
+        {
+          "line": 92783,
+          "text": "  window.addEventListener('growlegends:account-ready',recoverPendingFallback);"
+        },
+        {
+          "line": 92784,
+          "text": "  window.addEventListener('pageshow',recoverPendingFallback,{passive:true});"
+        },
+        {
+          "line": 92785,
+          "text": ""
+        },
+        {
+          "line": 92786,
+          "text": "  window.v6211PopupDiagnostics=()=>({"
+        },
+        {
+          "line": 92787,
+          "text": "    levelOverlay:visible(document.getElementById('v420LevelUpOverlay'))||visible(document.getElementById('v6211LevelUpFallback')),"
+        },
+        {
+          "line": 92788,
+          "text": "    petOverlay:petPopupVisible(),"
+        },
+        {
+          "line": 92789,
+          "text": "    petPending:Array.isArray(s?.v686PetAlbum?.pendingFindPopups)?s.v686PetAlbum.pendingFindPopups.length:0,"
+        },
+        {
+          "line": 92790,
+          "text": "    level:Number(s?.level)||1"
+        },
+        {
+          "line": 92791,
+          "text": "  });"
+        },
+        {
+          "line": 92792,
+          "text": "})();"
+        },
+        {
+          "line": 92793,
+          "text": "</script>"
+        },
+        {
+          "line": 92794,
+          "text": "<!-- ===== /V6.211 LEVEL-UP + PET POPUP RELIABILITY ===== -->"
+        },
+        {
+          "line": 92795,
+          "text": ""
+        },
+        {
+          "line": 92796,
+          "text": "<!-- ===== V6.212 STRUCTURE + FINAL AUTHORITY ORDER ===== -->"
+        },
+        {
+          "line": 92797,
+          "text": "<style id=\"v6212-version-authority-css\">"
+        },
+        {
+          "line": 92798,
+          "text": ".app > header .v358-logo::after{content:\"V4.168\"!important}"
+        },
+        {
+          "line": 92799,
+          "text": ".app > header .v366-ver::after,"
+        },
+        {
+          "line": 92800,
+          "text": ".app > header .v371-logo em::after,"
+        },
+        {
+          "line": 92801,
+          "text": ".app > header .v372-logo em::after,"
+        },
+        {
+          "line": 92802,
+          "text": "#v372TopbarShell .v372-logo em::after{content:\"V4.168\"!important}"
+        },
+        {
+          "line": 92803,
+          "text": "</style>"
+        },
+        {
+          "line": 92804,
+          "text": "<script id=\"v6212-structure-authority\">"
+        },
+        {
+          "line": 92805,
+          "text": "(()=>{"
+        },
+        {
+          "line": 92806,
+          "text": "  'use strict';"
+        },
+        {
+          "line": 92807,
+          "text": "  const VERSION=window.GROW_LEGENDS_VERSION||{short:'V4.168',label:'V4.168 Anbauturm Rework',number:'4.168'};"
+        },
+        {
+          "line": 92808,
+          "text": "  function stamp(){}"
+        },
+        {
+          "line": 92809,
+          "text": "  window.__V6212_STRUCTURE_AUTHORITY__=Object.freeze({"
+        },
+        {
+          "line": 92810,
+          "text": "    structuralCleanup:true,"
+        }
+      ]
+    }
+  ]
+}
