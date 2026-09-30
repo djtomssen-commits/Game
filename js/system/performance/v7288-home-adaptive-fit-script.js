@@ -109,45 +109,81 @@ const v8009HomeHeaderFix={
   menuGuardInstalls:0,
   menuRebuildsSuppressed:0,
   menuRebuildsAllowed:0,
-  worldRenderGuardInstalls:0,
-  worldRenderCalls:0,
-  worldRenderBurstsSuppressed:0
+  worldPostRenderInstalls:0,
+  checklistPatches:0,
+  frostChecklistFixes:0
 };
 
-function installBetaWorldRenderGuard(){
+function stateNow(){
+  try{return (typeof s!=='undefined'&&s)||window.s||null}catch(_){return window.s||null}
+}
+
+function patchHomeChecklist(){
+  if(!IS_BETA)return false;
+  try{
+    const world=document.getElementById('world');
+    if(!world?.classList.contains('active'))return false;
+    const list=world.querySelector('.vHome-checklist');
+    if(!list)return false;
+
+    const st=stateNow();
+    if(String(st?.playerClass||'')!=='frost')return false;
+
+    /* V8.009 HOME-6: Frost-Todesritter has a real second weapon slot.
+       V366's historical checklist still counts only the six standard slots,
+       so it can report "Komplett" while Waffe II has no gem/enchant. */
+    const slots=['head','weapon','weapon2','ring','body','boots','amulet'];
+    const eq=st?.equipment&&typeof st.equipment==='object'?st.equipment:{};
+    const gear=slots.map(k=>eq[k]).filter(Boolean);
+    const hasGem=it=>!!(it?.gem||it?.socketGem||it?.socket||it?.edelstein||it?.gemItem);
+    const hasEnchant=it=>!!(it?.enchant||(Array.isArray(it?.enchants)&&it.enchants.length)||it?.verzauberung||it?.rolle);
+    const gemmed=gear.filter(hasGem).length;
+    const enchanted=gear.filter(hasEnchant).length;
+    const total=slots.length;
+    const full=gear.length===total;
+
+    const rows=[...list.querySelectorAll('.vHome-check-row[data-char-tab="materials"]')];
+    const enchantRow=rows.find(r=>/verzaubert/i.test(r.querySelector('span')?.textContent||''));
+    const gemRow=rows.find(r=>/stein|gesockelt/i.test(r.querySelector('span')?.textContent||''));
+
+    const paint=(row,count,done)=>{
+      if(!row)return;
+      row.classList.toggle('ok',done);
+      row.classList.toggle('warn',!done);
+      const icon=row.querySelector('i'),value=row.querySelector('b');
+      if(icon)icon.textContent=done?'✓':'!';
+      if(value)value.textContent=done?'Komplett':`${count}/${total}`;
+    };
+    paint(enchantRow,enchanted,full&&enchanted===total);
+    paint(gemRow,gemmed,full&&gemmed===total);
+
+    list.dataset.v8009FrostSlots=String(total);
+    v8009HomeHeaderFix.checklistPatches++;
+    v8009HomeHeaderFix.frostChecklistFixes++;
+    return true;
+  }catch(_){return false}
+}
+
+function installBetaWorldPostRender(){
   if(!IS_BETA)return false;
   try{
     const base=window.v085InstallWorld;
     if(typeof base!=='function')return false;
-    if(base.__v8009Home5WorldGuard)return true;
+    if(base.__v8009Home6WorldPost)return true;
 
-    let lastFalseAt=0;
     const wrapped=function(){
-      const force=arguments[0]===true;
-      const active=!!document.getElementById('world')?.classList.contains('active');
-      const t=performance?.now?.()||Date.now();
-
-      /* V8.009 HOME-5: several server/lifecycle owners can ask the old V085
-         home installer to rebuild the already-mounted Startseite in the same
-         short UI burst. Keep the first rebuild, but drop only subsequent
-         non-forced calls inside 120 ms. Forced/navigation renders are never
-         suppressed. This removes duplicate DOM churn without caching state. */
-      if(!force&&active&&lastFalseAt&&t-lastFalseAt<120){
-        v8009HomeHeaderFix.worldRenderBurstsSuppressed++;
-        return false;
-      }
-
-      if(!force&&active)lastFalseAt=t;
-      v8009HomeHeaderFix.worldRenderCalls++;
       const out=base.apply(this,arguments);
-      try{schedule('world-render')}catch(_){}
+      requestAnimationFrame(()=>{
+        try{patchHomeChecklist()}catch(_){}
+        try{schedule('world-render')}catch(_){}
+      });
       return out;
     };
-    wrapped.__v8009Home5WorldGuard=true;
+    wrapped.__v8009Home6WorldPost=true;
     wrapped.__v8009Base=base;
     window.v085InstallWorld=wrapped;
     try{globalThis.v085InstallWorld=wrapped}catch(_){}
-    v8009HomeHeaderFix.worldRenderGuardInstalls++;
+    v8009HomeHeaderFix.worldPostRenderInstalls++;
     return true;
   }catch(_){return false}
 }
@@ -224,7 +260,7 @@ if(IS_BETA)document.addEventListener('click',e=>{
   }catch(_){}
 },true);
 window.v8009HomeHeaderDiagnostics=()=>({
-  version:'V8.009-HOME-5',
+  version:'V8.009-HOME-6',
   beta:IS_BETA,
   ...v8009HomeHeaderFix,
   fit:{...HOME_DIAG,pendingRaf:!!raf,pendingTimer:!!runTimer},
@@ -250,12 +286,12 @@ function applyBetaVersionStyle(){
 if(IS_BETA){
  applyBetaVersionStyle();
  installBetaMenuReplaceGuard();
- installBetaWorldRenderGuard();
- document.addEventListener('DOMContentLoaded',()=>requestAnimationFrame(()=>{applyBetaVersionStyle();installBetaMenuReplaceGuard();installBetaWorldRenderGuard()}),{once:true});
- window.addEventListener('pageshow',()=>{applyBetaVersionStyle();installBetaMenuReplaceGuard();installBetaWorldRenderGuard()},{passive:true});
- window.addEventListener('growlegends:account-ready',()=>setTimeout(()=>{applyBetaVersionStyle();installBetaMenuReplaceGuard();installBetaWorldRenderGuard()},0),{passive:true});
- window.addEventListener('growlegends:extras-ready',()=>setTimeout(()=>{installBetaMenuReplaceGuard();installBetaWorldRenderGuard()},0),{passive:true});
- window.addEventListener('growlegends:foreground-ready',()=>setTimeout(()=>{installBetaMenuReplaceGuard();installBetaWorldRenderGuard()},0),{passive:true});
+ installBetaWorldPostRender();
+ document.addEventListener('DOMContentLoaded',()=>requestAnimationFrame(()=>{applyBetaVersionStyle();installBetaMenuReplaceGuard();installBetaWorldPostRender()}),{once:true});
+ window.addEventListener('pageshow',()=>{applyBetaVersionStyle();installBetaMenuReplaceGuard();installBetaWorldPostRender()},{passive:true});
+ window.addEventListener('growlegends:account-ready',()=>setTimeout(()=>{applyBetaVersionStyle();installBetaMenuReplaceGuard();installBetaWorldPostRender()},0),{passive:true});
+ window.addEventListener('growlegends:extras-ready',()=>setTimeout(()=>{installBetaMenuReplaceGuard();installBetaWorldPostRender()},0),{passive:true});
+ window.addEventListener('growlegends:foreground-ready',()=>setTimeout(()=>{installBetaMenuReplaceGuard();installBetaWorldPostRender()},0),{passive:true});
 }
 
 window.addEventListener('resize',()=>schedule('resize'),{passive:true});
@@ -275,6 +311,6 @@ window.addEventListener('growlegends:navigation-open-v7119',e=>{
   if(!id||id==='world')setTimeout(()=>schedule('navigation-world'),70);
 },{passive:true});
 
-if(IS_BETA)setTimeout(()=>{installBetaMenuReplaceGuard();installBetaWorldRenderGuard()},0);
+if(IS_BETA)setTimeout(()=>{installBetaMenuReplaceGuard();installBetaWorldPostRender();patchHomeChecklist()},0);
 schedule('boot');
 })();
