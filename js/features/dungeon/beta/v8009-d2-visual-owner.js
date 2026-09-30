@@ -512,7 +512,7 @@
     renderStats.map++;
     const screen=document.getElementById('dungeon');
     if(screen)screen.classList.remove('v230-world-open');
-    const fn=window.v251RenderDetail||window.v244RenderSelectedDungeonMap||window.v261RenderDetail||window.v064RenderMap;
+    const fn=window.__V7166_CANONICAL_DETAIL__||window.v261RenderDetail||window.v251RenderDetail||window.v244RenderSelectedDungeonMap||window.v064RenderMap;
     if(typeof fn!=='function')throw new Error('Aktueller 10er-Dungeon-Renderer fehlt');
     const out=fn();
     /* V7.162: the canonical asset pass runs in the SAME turn as the map build.
