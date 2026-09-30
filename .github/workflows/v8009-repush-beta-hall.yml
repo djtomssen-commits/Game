@@ -1,0 +1,42 @@
+name: V8.009 Re-push Beta Hall
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/v8009_repush_beta_hall.py'
+      - '.github/workflows/v8009-repush-beta-hall.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  repush:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Re-push current Beta Hall files
+        run: python3 .github/scripts/v8009_repush_beta_hall.py
+      - name: Validate current Hall owner
+        run: |
+          node --check js/features/pvp/beta/v8009-s1-v6145-hall-pagination-js.js
+          python3 - <<'PY'
+          from pathlib import Path
+          beta=Path('beta.html').read_text(encoding='utf-8',errors='ignore')
+          hall=Path('js/features/pvp/beta/v8009-s1-v6145-hall-pagination-js.js').read_text(encoding='utf-8')
+          if 'v8009-s1-v6145-hall-pagination-js.js?v=8009-top3-owner3' not in beta:
+              raise SystemExit('fresh v6145 cache version missing')
+          if 'v6145-podium-portrait' not in beta:
+              raise SystemExit('Top3 portrait CSS missing')
+          if 'function podiumAvatar(p)' not in hall:
+              raise SystemExit('canonical Top3 renderer missing')
+          print('Beta Hall re-push QA OK')
+          PY
+      - name: Commit fresh Beta Hall state
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add beta.html js/features/pvp/beta/v8009-s1-v6145-hall-pagination-js.js V8009_BETA_HALL_REPUSH.json
+          git commit -m "V8.009 BETA: re-push current Hall Top3 fix"
+          git push
