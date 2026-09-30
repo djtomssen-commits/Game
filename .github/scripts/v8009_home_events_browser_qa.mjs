@@ -23,7 +23,7 @@ async function fixture(time,{quiet=0,channel='beta',helper=true,playerClass='gro
   window.v073User={id:'qa-a'};
   window.classSets={};
   window.v093Events=[];window.v271EventDataReady=false;
-  window.qa={quests:0,gold:0,xp:0,paints:0,persists:0,bossOpens:0,intervals:0};
+  window.qa={quests:0,gold:0,xp:0,paints:0,persists:0,bossOpens:0,intervals:0,nav:[],goldShop:0};
   window.qaQuietUntil=Date.now()+quiet;
   window.v7204StartupQuietRemaining=()=>Math.max(0,qaQuietUntil-Date.now());
   window.v7204StartupQuiet=()=>v7204StartupQuietRemaining()>0;
@@ -38,7 +38,7 @@ async function fixture(time,{quiet=0,channel='beta',helper=true,playerClass='gro
   window.persist=()=>{qa.persists++};window.v063Toast=()=>{};
   window.renderQuests=()=>{qa.quests++};
   window.v276DecorateGold=()=>{qa.gold++};window.v095DecorateXp=()=>{qa.xp++};
-  window.v032Go=()=>{};window.v085InstallWorld=()=>{};window.v085WorldHtml=()=>'';
+  window.v032Go=id=>{qa.nav.push(String(id||''))};window.v7114OpenGoldShop=()=>{qa.goldShop++};window.v085InstallWorld=()=>{};window.v085WorldHtml=()=>'';
   window.v110Open=()=>{qa.bossOpens++};
   window.vTowerWednesdayEventInfo=()=>({active:new Intl.DateTimeFormat('en-US',{timeZone:'Europe/Berlin',weekday:'short'}).format(new Date())==='Wed',name:'Mutationssturm',icon:'🧬'});
  },{quiet,channel,playerClass});
@@ -173,6 +173,18 @@ try{
  assert.match(await progress.locator('.v366-xptxt').textContent(),/^9 \/ /);
  checks.push('real character/resource changes still render immediately');
  await progress.close();
+
+ const routes=await fixture('2026-09-30T12:00:00+02:00',{helper:false});
+ await routes.locator('.v366-topbar [data-plus="gold"]').click();
+ await routes.locator('.v366-topbar [data-head="mail"]').click();
+ const routeState=await routes.evaluate(()=>({goldShop:qa.goldShop,nav:[...qa.nav],diag:window.v8009HomeEventDiagnostics?.()}));
+ assert.equal(routeState.goldShop,1,'Gold+ must be owned directly by the beta header renderer');
+ assert.ok(routeState.nav.includes('mail'),'Mail icon must open Nebel-Post directly');
+ assert.ok(!routeState.nav.includes('shop')&&!routeState.nav.includes('friends'),'Retired legacy header routes must not fire');
+ assert.equal(routeState.diag?.goldDirectOpens,1);
+ assert.equal(routeState.diag?.mailDirectOpens,1);
+ checks.push('home header owns Gold+ and Nebel-Post routes without helper capture');
+ await routes.close();
 
  const stable=await fixture('2026-09-18T12:00:00+02:00',{channel:'stable',helper:false});
  const isolated=await stable.evaluate(()=>({scheduler:window.__V6251_AUTO_WEEKEND_EVENTS__,renderer:window.v8009HomeEventDiagnostics,energy:s.energy,content:document.getElementById('world').innerHTML}));
