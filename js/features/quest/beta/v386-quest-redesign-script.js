@@ -181,16 +181,6 @@
     renderCards();
   };
 
-  /* V7.122: duplicate quest-nav redesign pass retired; v6344 owns the final quest paint. */
-
-  setTimeout(()=>{
-    try{window.v392SyncActiveMode?.()}catch(_){}
-    install();
-    hideOldQuestBlocks();
-    renderCards();
-    document.querySelectorAll(
-      '.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version'
-    ).forEach(el=>{if(el)el.textContent=VERSION});
-    document.querySelectorAll('.v366-ver').forEach(el=>el.textContent='V4.11');
-  },550);
+  /* V8.009: delayed startup paint retired.
+     v6344 is the only Quest render lifecycle owner now. */
 })();
