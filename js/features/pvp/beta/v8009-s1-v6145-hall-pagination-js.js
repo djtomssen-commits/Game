@@ -39,6 +39,9 @@
    root.querySelectorAll('[data-v6145-mail]').forEach(b=>{b.onclick=e=>{e.preventDefault();e.stopPropagation();try{window.v382OpenMailTo?.(b.dataset.v6145Mail)}catch(_){}}});
    const me=ownId();root.querySelectorAll('.v072-player-row[data-profile-id]').forEach(row=>row.classList.toggle('v6145-own-row',String(row.dataset.profileId||'')===me));
  }
+ function decorateHall(){
+   requestAnimationFrame(()=>{try{window.v646DecorateHall?.()}catch(_){}});
+ }
  async function syncOwn(){
    try{if(typeof window.vPvpBudsHallSync==='function')await window.vPvpBudsHallSync(true)}catch(e){}
    try{if(typeof window.v649SyncDungeonProgress==='function')await window.v649SyncDungeonProgress(true)}catch(e){}
@@ -73,6 +76,7 @@
    el.querySelector('[data-v6145-page="prev"]')?.addEventListener('click',()=>loadPage(Math.max(1,state.page-1)));
    el.querySelector('[data-v6145-page="next"]')?.addEventListener('click',()=>loadPage(Math.min(state.pages,state.page+1)));
    bindRows(el);
+   decorateHall();
  }
  async function getOwnProfile(){
    const id=ownId();if(!id)return null;
