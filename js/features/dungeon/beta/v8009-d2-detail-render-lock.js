@@ -3,7 +3,7 @@
 if(window.__V7166_DUNGEON_DETAIL_RENDER_LOCK__)return;
 window.__V7166_DUNGEON_DETAIL_RENDER_LOCK__=true;
 const VERSION='V7.170';
-const names=['v251RenderDetail','v244RenderSelectedDungeonMap','v064RenderMap','v261RenderDetail','v260RenderDetail','v426RenderDetail','v427RenderDetail'];
+const names=['v251RenderDetail','v244RenderSelectedDungeonMap','v064RenderMap','v261RenderDetail','v260RenderDetail'];
 let repairs=0,lastDungeon=0,lastReason='boot';
 
 function dungeonIndex(){
@@ -57,8 +57,6 @@ function assign(name,wrapped){
     else if(name==='v064RenderMap')v064RenderMap=wrapped;
     else if(name==='v261RenderDetail')v261RenderDetail=wrapped;
     else if(name==='v260RenderDetail')v260RenderDetail=wrapped;
-    else if(name==='v426RenderDetail')v426RenderDetail=wrapped;
-    else if(name==='v427RenderDetail')v427RenderDetail=wrapped;
   }catch(_){}
 }
 names.forEach(name=>{
