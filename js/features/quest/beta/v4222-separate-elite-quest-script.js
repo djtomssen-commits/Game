@@ -120,6 +120,8 @@
     if(btn)btn.onclick=e=>{e.preventDefault();e.stopPropagation();startEliteQuest()};
   }
 
+  window.v4222RenderElitePanel=renderElitePanel;
+
   function startEliteQuest(){
     if(s?.quests?.active)return;
     const q=s?.quests?.eliteOffer;
@@ -160,7 +162,7 @@
     if(moved){
       try{renderQuests()}catch(e){}
     }
-    setTimeout(renderElitePanel,20);
+    renderElitePanel();
   }
 
   /* Migrate a save that was created by the old "Elite replaces one of 3" system. */
@@ -207,7 +209,7 @@
           s.quests.eliteOffer=null;
           try{persist(false)}catch(e){}
         }
-        setTimeout(renderElitePanel,10);
+        renderElitePanel();
         return r;
       };
       wrapped.__v4222EliteBatch=true;
@@ -216,16 +218,6 @@
     }
   }catch(e){console.error('V4.222 start wrap',e)}
 
-  try{
-    const baseRender=renderQuests;
-    renderQuests=function(){
-      const r=baseRender.apply(this,arguments);
-      setTimeout(()=>{try{separateEliteFromOffers()}catch(e){};renderElitePanel()},10);
-      return r;
-    };
-  }catch(e){console.error('V4.222 render wrap',e)}
-
-  /* V7.122: duplicate quest-nav repaint retired; renderQuests already schedules this pass. */
-
-  setTimeout(()=>{try{separateEliteFromOffers()}catch(e){};renderElitePanel()},800);
+  /* V8.009: delayed renderQuests wrapper/startup repaint retired.
+     v6344 calls v4222RenderElitePanel directly in the canonical Quest paint. */
 })();
