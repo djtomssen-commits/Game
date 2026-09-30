@@ -1,0 +1,70 @@
+name: V8.009 Login Bootstrap Recovery
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/v8009_login_bootstrap_recovery.py'
+      - '.github/workflows/v8009-login-bootstrap-recovery.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Apply login bootstrap recovery
+        run: python3 .github/scripts/v8009_login_bootstrap_recovery.py
+
+      - name: Syntax-check auth owner
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          beta=Path('beta.html').read_text(encoding='utf-8',errors='ignore')
+          pos=beta.find('id="v200-stable-core"')
+          if pos<0: raise SystemExit('v200-stable-core missing')
+          a=beta.rfind('<script',0,pos); b=beta.find('</script',pos)
+          body=beta[beta.find('>',a)+1:b]
+          Path('/tmp/v200-stable-core.js').write_text(body,encoding='utf-8')
+          PY
+          node --check /tmp/v200-stable-core.js
+
+      - name: Validate login recovery contract
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          beta=Path('beta.html').read_text(encoding='utf-8',errors='ignore')
+          required=(
+            'function v200LoginReadyFor(user)',
+            'async function v200FinalizeAuthenticatedLogin(user)',
+            'const finalized=await v200FinalizeAuthenticatedLogin(data.user);',
+            "const {data,error}=await v073Db.auth.getSession();",
+            'for(let i=0;i<20;i++)',
+          )
+          for x in required:
+              if x not in beta: raise SystemExit('missing login recovery contract: '+x)
+          if 'v030MakeWeaponOffer(' in beta:
+              raise SystemExit('dead shop offer call still active')
+          if 'v030MakeMaterialOffer(' in beta:
+              raise SystemExit('dead material offer call still active')
+          print('login recovery contract OK')
+          PY
+
+      - name: Diff sanity
+        run: git diff --check
+
+      - name: Commit login recovery
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add beta.html
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "V8.009 auth: recover first email login bootstrap"
+          git push
