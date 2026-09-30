@@ -1,0 +1,55 @@
+name: V8.009 PvP Sprint 1 Retire Markers
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/v8009_pvp_sprint1_retire_markers.py'
+      - '.github/workflows/v8009-pvp-sprint1-retire-markers.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  retire:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Retire marker-only PvP cores
+        run: python3 .github/scripts/v8009_pvp_sprint1_retire_markers.py
+      - name: Validate retained PvP owner chain
+        run: |
+          node --check js/features/pvp/beta/v8009-s1-v610-pvp-combat-visual-core.js
+          node --check js/features/pvp/beta/v8009-s1-v6145-hall-pagination-js.js
+          node --check js/features/pvp/beta/v8009-s1-v7053-atomic-pvp-client-bridge.js
+          python3 - <<'PY'
+          from pathlib import Path
+          import json
+          beta=Path('beta.html').read_text(encoding='utf-8',errors='ignore')
+          r=json.loads(Path('V8009_PVP_SPRINT1_MARKER_RETIREMENT.json').read_text(encoding='utf-8'))
+          if len(r['retired'])!=5: raise SystemExit('expected 5 retired marker cores')
+          for x in r['retired']:
+              if x['file'] in beta: raise SystemExit('marker still active: '+x['file'])
+              if not Path(x['file']).exists(): raise SystemExit('marker file not retained: '+x['file'])
+          for ref in (
+              'v8009-s1-v610-pvp-combat-visual-core.js',
+              'v8009-s1-v6145-hall-pagination-js.js',
+              'v8009-s1-v7053-atomic-pvp-client-bridge.js',
+          ):
+              if beta.count(ref)!=1: raise SystemExit('critical PvP include count !=1: '+ref)
+          print('PvP marker retirement QA OK')
+          PY
+      - name: Diff sanity
+        run: git diff --check
+      - name: Commit marker retirement
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add beta.html V8009_PVP_SPRINT1_MARKER_RETIREMENT.json
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "V8.009 PVP-SPRINT-1: retire marker-only cores"
+          git push
