@@ -38,6 +38,7 @@ function tagCard(di){
   return true;
 }
 function repair(reason='manual'){
+  try{enforceCanonicalDetail('repair:'+reason)}catch(_){}
   if(!isDetailVisible())return false;
   const di=dungeonIndex();
   lastDungeon=di+1;lastReason=reason;repairs++;
@@ -55,6 +56,9 @@ function assign(name,wrapped){
     else if(name==='v244RenderSelectedDungeonMap')v244RenderSelectedDungeonMap=wrapped;
     else if(name==='v064RenderMap')v064RenderMap=wrapped;
     else if(name==='v261RenderDetail')v261RenderDetail=wrapped;
+    else if(name==='v260RenderDetail')v260RenderDetail=wrapped;
+    else if(name==='v426RenderDetail')v426RenderDetail=wrapped;
+    else if(name==='v427RenderDetail')v427RenderDetail=wrapped;
   }catch(_){}
 }
 names.forEach(name=>{
@@ -74,6 +78,31 @@ names.forEach(name=>{
   }catch(e){console.warn('[V7.168] detail wrapper',name,e)}
 });
 
+/* V8.009 D5: v261 is the final 10-room DOM owner.
+   Older receipt/key/preview layers still call v251/v244/v064 directly.
+   Point every historical detail entry at ONE canonical function so a late
+   refresh cannot rebuild the black/simplified legacy map after D2 painted it. */
+const canonicalAliases=['v251RenderDetail','v244RenderSelectedDungeonMap','v064RenderMap','v260RenderDetail'];
+const canonicalDetail=window.v261RenderDetail;
+let aliasRepairs=0,lastAliasReason='boot';
+function enforceCanonicalDetail(reason='manual'){
+  const fn=window.__V7166_CANONICAL_DETAIL__||canonicalDetail||window.v261RenderDetail;
+  if(typeof fn!=='function')return false;
+  window.__V7166_CANONICAL_DETAIL__=fn;
+  lastAliasReason=reason;
+  canonicalAliases.forEach(name=>{
+    if(window[name]!==fn){
+      assign(name,fn);
+      aliasRepairs++;
+    }
+  });
+  return true;
+}
+window.v7166EnforceCanonicalDetail=enforceCanonicalDetail;
+enforceCanonicalDetail('boot');
+setTimeout(()=>enforceCanonicalDetail('boot-120'),120);
+setTimeout(()=>enforceCanonicalDetail('boot-500'),500);
+
 try{
   const base=window.renderDungeon||((typeof renderDungeon==='function')?renderDungeon:null);
   if(typeof base==='function'&&!base.__v7166DungeonDetailLock){
@@ -91,12 +120,26 @@ try{
 
 document.addEventListener('click',e=>{
   const el=e.target instanceof Element?e.target:null;
-  if(el?.closest?.('#dungeonMapCard,[data-screen="dungeon"],[data-go="dungeon"]'))requestAnimationFrame(()=>repair('click'));
+  if(el?.closest?.('#dungeonMapCard,[data-screen="dungeon"],[data-go="dungeon"]')){
+    enforceCanonicalDetail('click');
+    requestAnimationFrame(()=>repair('click'));
+  }
 },true);
 window.addEventListener('growlegends:navigation-open-v7119',e=>{
-  if(String(e?.detail?.screen||e?.detail||'')==='dungeon')requestAnimationFrame(()=>repair('navigation'));
+  if(String(e?.detail?.screen||e?.detail||'')==='dungeon'){
+    enforceCanonicalDetail('navigation');
+    requestAnimationFrame(()=>repair('navigation'));
+  }
 },{passive:true});
-window.addEventListener('growlegends:foreground-ready',()=>requestAnimationFrame(()=>repair('foreground')),{passive:true});
+window.addEventListener('growlegends:foreground-ready',()=>{
+  enforceCanonicalDetail('foreground');
+  requestAnimationFrame(()=>repair('foreground'));
+},{passive:true});
+window.addEventListener('pageshow',()=>{
+  enforceCanonicalDetail('pageshow');
+  setTimeout(()=>enforceCanonicalDetail('pageshow-120'),120);
+  setTimeout(()=>enforceCanonicalDetail('pageshow-500'),500);
+},{passive:true});
 
 window.__V7166_DUNGEON_DETAIL_QA__=()=>({
   version:VERSION,
@@ -105,6 +148,9 @@ window.__V7166_DUNGEON_DETAIL_QA__=()=>({
   lastReason,
   active:!!window.renderDungeon?.__v7166DungeonDetailLock,
   detailWrapped:names.filter(n=>!!window[n]?.__v7166DungeonDetailLock),
+  canonicalAliases:canonicalAliases.filter(n=>window[n]===window.__V7166_CANONICAL_DETAIL__),
+  aliasRepairs,
+  lastAliasReason,
   cardClass:document.getElementById('dungeonMapCard')?.className||'',
   bg:document.querySelector('#dungeonMapCard .v261-stage')?.style?.backgroundImage||'',
   canonicalBg:document.querySelector('#dungeonMapCard .gl-dungeon-map-bg-img')?.getAttribute('src')||'',
