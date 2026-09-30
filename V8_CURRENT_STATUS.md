@@ -20,7 +20,7 @@
 - Arbeitsbranch: **main**
 - Letzter automatisiert geprüfter Code-Commit vor dieser Statusdatei:
   `06be757c3faf109c2f3c3f18195086d1909592d0`
-- Aktuelle Unterphase: **V8.009-QUEST-SPRINT-1-OWNER-AUDIT-COMPLETED-CONSOLIDATION-NEXT**
+- Aktuelle Unterphase: **V8.009-QUEST-SPRINT-1-CONSOLIDATION-PASS2-COMPLETED-START-CHAIN-NEXT**
 - Nutzer-Video bestätigt: betroffen ist konkret **Dungeon 2**.
 - Sichtbares Fehlerbild:
   - zunächst korrekter D2-Hintergrund + korrekte Gegnergrafiken;
@@ -589,6 +589,30 @@
   - nächster Konsolidierungsbatch migriert Nebenaufgaben zuerst direkt in kanonische Owner/Hooks;
   - Timer, aktive Karte, Skip, sichtbare Angebotskarten und Server-Authority getrennt behandeln.
 - Stable / `index.html`: unverändert.
+
+### Quest Sprint 1 – Konsolidierung Pass 1/2 30.09.2026
+
+- Pass 1 QA: `V8009_QUEST_CONSOLIDATION_QA.json` – vollständig grün.
+- Pass 1 entfernte Quest-Wrapper:
+  - `v229-live-ui-sync`: kein `startQuest`-/`claimQuest`-Wrapper mehr; direkte Timer-Hooks `v229QuestStartSync` / `v229QuestClaimSync`;
+  - `v392-single-active-quest-script`: kein `startQuest`-/`renderQuests`-Wrapper mehr; direkte Hooks `v392PrepareStart`, `v392PaintActive`, `v392TickActive`;
+  - `v4127-quest-skip-stable`: kein `startQuest`-/`renderQuests`-Wrapper mehr; bestehender `v4127ScheduleQuestSkip` bleibt;
+  - `v6344` ruft aktive Karte + Skip direkt im finalen Quest-Render auf;
+  - `v7110` ruft Start-Hooks direkt im finalen Start-Owner auf;
+  - `v7045` ruft Claim-Hooks direkt im finalen Claim-Owner auf.
+- Pass 2 QA: `V8009_QUEST_CONSOLIDATION_PASS2_QA.json` – vollständig grün.
+- Pass 2 entfernte Render-Wrapper:
+  - `v386-quest-redesign-script`: kein eigener `renderQuests`-Writer mehr; `v386RenderQuestShell` wird direkt aus `v6344` aufgerufen;
+  - `v4172-quest-rpg-script`: kein eigener `renderQuests`-Writer mehr; `v4172EnhanceQuestPage` wird direkt aus `v6344` aufgerufen;
+  - `v233-quest-reward-final-click`: kein eigener `renderQuests`-Writer mehr; Claim-Button-Bindung läuft über `v233BindClaimButton` direkt aus `v6344`.
+- Zusätzliche sichere Bereinigung:
+  - `v310-elite-quests` verliert den doppelten `renderQuests`-Wrapper;
+  - Elite-Paint bleibt erhalten, weil `v321-elite-hard-guarantee-dampf-scale` weiterhin `v310PaintEliteQuests()` nach dem Quest-Render ausführt.
+- Keine neue Render-/Timer-/Observer-Schicht hinzugefügt.
+- Stable / `index.html` unverändert.
+- Nächster Schritt:
+  - Startkette `v321 -> v443 -> v7045 -> v7110` auditieren und nur sichere Wrapper weiter reduzieren;
+  - Dampf-Kosten, Local/Server-Authority und Receipt/Reward-Pfade strikt erhalten.
 
 ### Wichtige Einordnung der Namen
 
