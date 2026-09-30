@@ -152,6 +152,8 @@
     if(art)art.innerHTML='';
     try{window.v6344DecorateQuestCard?.(activeCard,q)}catch(_){}
 
+    try{window.v4127EnsureQuestSkip?.()}catch(_){}
+
     const claim=host.querySelector('#v392ClaimQuest');
     if(claim){
       claim.onclick=e=>{
