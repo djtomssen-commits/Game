@@ -677,7 +677,12 @@ Für jedes System gilt:
 - **Keine weiteren Hall-Code-Patches durchführen, bis Live-`/beta` denselben Stand wie Repo-`beta.html` ausliefert.**
 - Stable `/` stimmt exakt mit `index.html` überein und bleibt unverändert.
 
-## 4. EXAKTER nächster Schritt
+- Klarstellung Nutzer 30.09.2026 16:13:
+  - der Screenshot mit „Hall of Haze wird geladen …“ zeigt **nur den normalen initialen Ladezustand direkt beim Betreten**;
+  - die Hall lädt danach vollständig;
+  - **kein Hall-Loader-Hänger / kein neuer Runtime-Loader-Bug**;
+  - nicht weiter am Loader arbeiten.
+\n## 4. EXAKTER nächster Schritt
 
 ### ZUERST: aktuellen `beta.html`-Stand live nach `/beta` deployen
 
