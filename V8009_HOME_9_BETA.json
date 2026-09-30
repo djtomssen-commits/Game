@@ -1,0 +1,31 @@
+{
+  "build": "V8.009-HOME-9-BETA",
+  "phase": "Startseite legacy owner retirement",
+  "scope": "beta only",
+  "finding": [
+    "The legacy V4.74 guild/home bridge still manipulated #world during startup, pageshow and navigation.",
+    "markModernHomeReady() repeatedly queried #world, moved .v366-world, hid sibling children and forced display/visibility/opacity styles.",
+    "It also wrapped v032Go and scheduled additional startup passes at 180 ms, 900 ms and 2200 ms.",
+    "The current beta already has the canonical V366 Startseite owner, so this historical home enforcement is redundant and can fight later render owners."
+  ],
+  "changes": [
+    "In beta, V4.74 markModernHomeReady() is retired and performs no DOM changes.",
+    "The legacy v032Go home wrapper is no longer installed in beta.",
+    "Startup/pageshow/delayed V4.74 calls keep the guild RPC guard but skip all Startseite DOM enforcement.",
+    "Stable behavior is unchanged.",
+    "HOME diagnostics expose legacyV474HomeRetired."
+  ],
+  "files": [
+    "js/features/guild/legacy/20-v474-guild-home-authority-script.js",
+    "js/system/performance/v7288-home-adaptive-fit-script.js"
+  ],
+  "commits": [
+    "0f3302a720dc83310f9da7899bd2f8edb3b1499a",
+    "dbd9de1902ad457343a7f1a1057b1f340502eda5"
+  ],
+  "stable_behavior_changed": false,
+  "gameplay_changed": false,
+  "guild_rpc_behavior_changed": false,
+  "server_authority_changed": false,
+  "syntax_check": "ok"
+}
