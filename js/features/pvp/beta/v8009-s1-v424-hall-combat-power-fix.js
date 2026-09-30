@@ -22,20 +22,9 @@
     window.__v424HallRowWrapped=true;
   }
 
-  /* Force a fresh profile write BEFORE every Hall ranking fetch. V4.23 can
-     recalculate item stats during load/equip; a non-forced profile sync could
-     otherwise leave Hall of Haze showing the previous cached combat_power. */
-  if(typeof v073LoadRanking==='function'&&!window.__v424HallRankingWrapped){
-    const baseRanking=v073LoadRanking;
-    v073LoadRanking=async function(){
-      try{
-        if(typeof v073Init==='function')await v073Init();
-        if(typeof v073SyncProfile==='function')await v073SyncProfile(true);
-      }catch(e){console.warn('V4.24 Hall combat power sync',e)}
-      return baseRanking.apply(this,arguments);
-    };
-    window.__v424HallRankingWrapped=true;
-  }
+  /* V8.009 PvP Sprint 1: ranking wrapper retired.
+     v6145 is the final Hall ranking owner and performs v073SyncProfile(true)
+     itself through syncOwn(). Row + profile payload safeguards remain active. */
 
   /* Final payload owner: the DB receives exactly the same combat power shown on
      the character page, not the legacy Hall-only v074CombatPower formula. */
