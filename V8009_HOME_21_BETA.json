@@ -1,0 +1,25 @@
+{
+  "build": "V8.009-HOME-21-BETA",
+  "phase": "Startseite Growroom bootstrap cleanup",
+  "scope": "beta only",
+  "base_commit": "dc3f195b0dc33643edaac73d5aff3f94a16aa6b7",
+  "findings": [
+    "HOME-16 made initial Growroom markup correct in the canonical renderer, but the helper still ran extra Growroom DOM patch passes during bootstrap.",
+    "Those bootstrap passes existed to repair the old renderer and now duplicate work during the most performance-sensitive startup window."
+  ],
+  "changes": [
+    "Removed the bootstrap requestAnimationFrame Growroom DOM patch.",
+    "DOMContentLoaded and the zero-delay helper settle now only schedule the next Growroom readiness boundary from state.",
+    "pageshow and account-ready keep their targeted catch-up patch because time/state may genuinely have changed while hidden or during hydration.",
+    "Weather observer and readiness timer patches remain unchanged."
+  ],
+  "files": [
+    "js/system/performance/v7288-home-adaptive-fit-script.js",
+    "js/features/home/beta/v8009-home-renderer.js",
+    ".github/scripts/v8009_home_events_browser_qa.mjs"
+  ],
+  "stable_behavior_changed": false,
+  "gameplay_changed": false,
+  "grow_state_changed": false,
+  "server_authority_changed": false
+}

@@ -456,7 +456,7 @@ function installBetaMenuReplaceGuard(){
    capture-phase redirect from HOME-1 is retired. */
 if(IS_BETA)window.__V8009_HOME15_DIRECT_HEADER_ROUTES__=true;
 window.v8009HomeHeaderDiagnostics=()=>({
-  version:'V8.009-HOME-20',
+  version:'V8.009-HOME-21',
   beta:IS_BETA,
   ...v8009HomeHeaderFix,
   fit:{...HOME_DIAG,pendingRaf:!!raf,pendingTimer:!!runTimer},
@@ -469,6 +469,7 @@ window.v8009HomeHeaderDiagnostics=()=>({
   canonicalGrowSnapshot:typeof window.v8009HomeGrowSnapshot==='function',
   canonicalHeaderVersion:document.querySelector('.v366-ver')?.textContent||null,
   canonicalVersionStyle:document.querySelectorAll('#v8009-home-beta-version').length,
+  growReadyTimerPending:!!v8009GrowReadyTimer,
   legacyV474HomeRetired:!!window.__V8009_HOME9_V474_HOME_RETIRED__,
   legacyVersionWritesRetired:{
     v380:!!window.__V8009_HOME11_V380_VERSION_RETIRED__,
@@ -486,8 +487,8 @@ if(IS_BETA){
  installBetaWorldPostRender();
  installGrowWeatherObserver();
  installXpDecoratorStartupGuard();
- requestAnimationFrame(()=>{try{patchHomeGrowStatus()}catch(_){}});
- document.addEventListener('DOMContentLoaded',()=>requestAnimationFrame(()=>{installBetaMenuReplaceGuard();installBetaWorldPostRender();installGrowWeatherObserver();installXpDecoratorStartupGuard();patchHomeGrowStatus()}),{once:true});
+ try{scheduleHomeGrowReady(homeGrowSnapshot())}catch(_){}
+ document.addEventListener('DOMContentLoaded',()=>requestAnimationFrame(()=>{installBetaMenuReplaceGuard();installBetaWorldPostRender();installGrowWeatherObserver();installXpDecoratorStartupGuard();try{scheduleHomeGrowReady(homeGrowSnapshot())}catch(_){}}),{once:true});
  window.addEventListener('pageshow',()=>{installBetaMenuReplaceGuard();installBetaWorldPostRender();installGrowWeatherObserver();patchHomeGrowStatus()},{passive:true});
  window.addEventListener('growlegends:account-ready',()=>setTimeout(()=>{installBetaMenuReplaceGuard();installBetaWorldPostRender();installGrowWeatherObserver();patchHomeGrowStatus()},0),{passive:true});
  window.addEventListener('growlegends:extras-ready',()=>setTimeout(()=>{installBetaMenuReplaceGuard();installBetaWorldPostRender()},0),{passive:true});
@@ -524,6 +525,6 @@ window.addEventListener('growlegends:navigation-open-v7119',e=>{
   if(!id||id==='world')setTimeout(()=>schedule('navigation-world'),70);
 },{passive:true});
 
-if(IS_BETA)setTimeout(()=>{installBetaMenuReplaceGuard();installBetaWorldPostRender();installGrowWeatherObserver();installXpDecoratorStartupGuard();patchHomeGrowStatus()},0);
+if(IS_BETA)setTimeout(()=>{installBetaMenuReplaceGuard();installBetaWorldPostRender();installGrowWeatherObserver();installXpDecoratorStartupGuard();try{scheduleHomeGrowReady(homeGrowSnapshot())}catch(_){}},0);
 schedule('boot');
 })();

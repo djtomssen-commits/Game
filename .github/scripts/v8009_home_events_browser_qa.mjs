@@ -216,6 +216,12 @@ try{
  assert.deepEqual({active:canonicalState.snapshot.active,ready:canonicalState.snapshot.ready},{active:2,ready:1});
  checks.push('canonical renderer owns Frost 7-slot checklist and weather-aware Growroom status');
  await canonical.close();
+ const bootstrapGrow=await fixture('2026-09-30T12:00:00+02:00');
+ await bootstrapGrow.clock.runFor(300);
+ const bootstrapDiag=await bootstrapGrow.evaluate(()=>window.v8009HomeHeaderDiagnostics?.());
+ assert.equal(bootstrapDiag.growStatusPatchCalls,0,'Helper bootstrap must not repaint canonical Growroom DOM');
+ checks.push('helper bootstrap no longer runs redundant Growroom DOM patches');
+ await bootstrapGrow.close();
  const routeAudit=await fixture('2026-09-30T12:00:00+02:00');
  await routeAudit.clock.runFor(300);
  const auditBefore=await routeAudit.evaluate(()=>window.v8009HomeHeaderDiagnostics?.());
@@ -270,7 +276,7 @@ try{
  assert.equal(versionState.visible,'"V8.009"','Canonical renderer must override historical V8.001 pseudo-element CSS');
  assert.equal(versionState.styleCount,1,'Version override style must be installed exactly once');
  assert.equal(versionState.legacy,'SERVER-VERSION-SENTINEL','Home renderer must not rewrite unrelated legacy version nodes');
- assert.equal(versionState.diag?.version,'V8.009-HOME-20');
+ assert.equal(versionState.diag?.version,'V8.009-HOME-21');
  assert.equal(versionState.diag?.versionStyleInstalls,1);
  checks.push('canonical home renderer owns visible V8.009 style without lifecycle rewrites');
  await versionOwner.close();
