@@ -1,6 +1,7 @@
 (()=>{'use strict';
 if(window.__V7288_HOME_ADAPTIVE_FIT__)return;
 window.__V7288_HOME_ADAPTIVE_FIT__=true;
+const IS_BETA=String(window.GROW_RELEASE_CHANNEL||'stable')==='beta';
 
 let raf=0,lastHero=null,lastWidth=0,baseHeight=0;
 
@@ -64,8 +65,28 @@ function run(){
 function schedule(){
   cancelAnimationFrame(raf);
   raf=requestAnimationFrame(()=>{
-    try{window.v7258AdaptiveMobileFitNow?.()}catch(_){}
-    setTimeout(run,45);
+    if(!IS_BETA){
+      /* Stable keeps the previous V7.308 behavior unchanged. */
+      try{window.v7258AdaptiveMobileFitNow?.()}catch(_){}
+      setTimeout(run,45);
+      return;
+    }
+
+    /* V8.009 HOME-2: V7258 already owns its own account/navigation lifecycle.
+       Only ask it for a base fit when this is a freshly rebuilt hero with no
+       geometry variables yet. This removes the duplicate layout pass that was
+       being triggered by V7288 on every normal home settle. */
+    let needsBase=true;
+    try{
+      const hero=document.querySelector('#world.active .v366-hero');
+      needsBase=!hero||!hero.style.getPropertyValue('--v7258-profile-width');
+    }catch(_){}
+    if(needsBase){
+      try{window.v7258AdaptiveMobileFitNow?.()}catch(_){}
+      setTimeout(run,45);
+    }else{
+      setTimeout(run,0);
+    }
   });
 }
 window.v7288HomeAdaptiveFitNow=schedule;
@@ -75,7 +96,7 @@ window.v7288HomeAdaptiveFitNow=schedule;
    those clicks before the old inline onclick handlers so the visible home
    controls use their intended destinations. */
 const v8009HomeHeaderFix={goldRedirects:0,mailRedirects:0};
-document.addEventListener('click',e=>{
+if(IS_BETA)document.addEventListener('click',e=>{
   try{
     const t=e.target instanceof Element?e.target:null;
     if(!t)return;
@@ -97,11 +118,26 @@ document.addEventListener('click',e=>{
   }catch(_){}
 },true);
 window.v8009HomeHeaderDiagnostics=()=>({
-  version:'V8.009-HOME-1',
+  version:'V8.009-HOME-2',
+  beta:IS_BETA,
   ...v8009HomeHeaderFix,
   goldShopApi:typeof window.v7114OpenGoldShop==='function',
   mailScreen:!!document.getElementById('mail')
 });
+
+/* Beta-only visible build owner. Shared CSS still contains historical version
+   pseudo-elements used by stable, so do not edit those shared styles globally. */
+if(IS_BETA){
+  try{
+    let style=document.getElementById('v8009-home-beta-version');
+    if(!style){
+      style=document.createElement('style');
+      style.id='v8009-home-beta-version';
+      style.textContent='html body .app > header .v358-logo::after{content:"V8.009"!important} html body .app > header .v366-ver::after,html body .app > header .v371-logo em::after,html body .app > header .v372-logo em::after,#v372TopbarShell .v372-logo em::after{content:"V8.009"!important}';
+      document.head.appendChild(style);
+    }
+  }catch(_){}
+}
 
 window.addEventListener('resize',schedule,{passive:true});
 window.addEventListener('orientationchange',()=>setTimeout(schedule,150),{passive:true});
