@@ -1,0 +1,80 @@
+name: V8.009 PvP Hall Video Fix
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/v8009_pvp_hall_video_fix.py'
+      - '.github/workflows/v8009-pvp-hall-video-fix.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    timeout-minutes: 9
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Apply Hall video fixes
+        run: python3 .github/scripts/v8009_pvp_hall_video_fix.py
+
+      - name: Syntax-check modified Hall owners
+        run: |
+          node --check js/features/pvp/beta/v8009-s1-v4130-hall-dungeon-authority.js
+          python3 - <<'PY'
+          from pathlib import Path
+          beta=Path('beta.html').read_text(encoding='utf-8',errors='ignore')
+          for sid in (
+            'v448-final-ui-power-account-integrity',
+            'v4126-power-rpc-diagnostics',
+            'v655-player-profile-load-fix-js',
+          ):
+              pos=beta.find(sid)
+              if pos<0: raise SystemExit('missing script id: '+sid)
+              a=beta.rfind('<script',0,pos); b=beta.find('</script',pos)
+              if a<0 or b<0: raise SystemExit('script bounds missing: '+sid)
+              body_start=beta.find('>',a)+1
+              Path('/tmp/'+sid+'.js').write_text(beta[body_start:b],encoding='utf-8')
+          PY
+          node --check /tmp/v448-final-ui-power-account-integrity.js
+          node --check /tmp/v4126-power-rpc-diagnostics.js
+          node --check /tmp/v655-player-profile-load-fix-js.js
+
+      - name: Validate Hall fix contracts
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import json
+          beta=Path('beta.html').read_text(encoding='utf-8',errors='ignore')
+          v4130=Path('js/features/pvp/beta/v8009-s1-v4130-hall-dungeon-authority.js').read_text(encoding='utf-8')
+          r=json.loads(Path('V8009_PVP_HALL_VIDEO_FIX.json').read_text(encoding='utf-8'))
+
+          if "window.v646DecorateHall?.()" not in v4130:
+              raise SystemExit('v4130 direct own-card decorator missing')
+          for required in (
+            "content.dataset.profileId=String(id||'')",
+            "content.dataset.profileId=String(p.id||'')",
+            "String(openProfile.dataset.profileId||'')===uid",
+            "String(openProfile.dataset.profileId||'')===own",
+          ):
+              if required not in beta: raise SystemExit('profile identity guard missing: '+required)
+          if not r.get('stable_unchanged'): raise SystemExit('Stable scope failed')
+          print('Hall video fixes contract OK')
+          PY
+
+      - name: Diff sanity
+        run: git diff --check
+
+      - name: Commit Hall video fixes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add beta.html V8009_PVP_HALL_VIDEO_FIX.json
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "V8.009 PVP: fix Hall own card and foreign power flash"
+          git push
