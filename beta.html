@@ -25436,6 +25436,9 @@ const V200_IDLE_MS=10*60*1000;
 const V200_ACCOUNT_SAVE_PREFIX='growLegendsAccountSave:';
 
 let v200AuthBusy=false;
+let v200EmailOwnsFinalize=false;
+let v200EmailFinalizeUid='';
+let v200EmailFinalizeUntil=0;
 let v200CloudPromise=null;
 let v200CloudPromiseUser=null;
 let v200LastCloudStamp=null;
@@ -26334,6 +26337,8 @@ async function v200EmailAuth(){
   }
 
   v200AuthBusy=true;
+  v200EmailOwnsFinalize=true;
+  let v200AuthSucceeded=false;
   const btn=document.querySelector('#v075EmailAction');
   if(btn){
     btn.disabled=true;
@@ -26356,8 +26361,12 @@ async function v200EmailAuth(){
       if(error)throw error;
 
       if(data?.session?.user){
+        v200AuthSucceeded=true;
+        v200EmailFinalizeUid=String(data.session.user.id||'');
+        v200EmailFinalizeUntil=Date.now()+5000;
         v200AuthStatus('Account erstellt. Charaktererstellung wird geöffnet …','success');
-        await v200FinalizeUser(data.session.user);
+        const finalized=await v200FinalizeUser(data.session.user);
+        if(finalized===false)throw new Error('Spielstand konnte nach der Registrierung nicht geladen werden.');
       }else if(data?.user){
         v200AuthStatus(
           'Registrierung erfolgreich. Bitte bestätige die E-Mail in deinem Postfach und melde dich danach an.',
@@ -26372,6 +26381,9 @@ async function v200EmailAuth(){
       if(error)throw error;
       if(!data?.user)throw new Error('Keine Benutzersitzung erhalten.');
 
+      v200AuthSucceeded=true;
+      v200EmailFinalizeUid=String(data.user.id||'');
+      v200EmailFinalizeUntil=Date.now()+5000;
       v200AuthStatus('Anmeldung erfolgreich. Spielstand wird geladen …','success');
       const finalized=await v200FinalizeUser(data.user);
       if(finalized===false)throw new Error('Spielstand konnte nach der Anmeldung nicht geladen werden.');
@@ -26389,9 +26401,17 @@ async function v200EmailAuth(){
     }
 
     console.error('V4.02 email auth',e);
-    v200AuthStatus(msg,'error');
-    v063Toast(mode==='register'?'Registrierung fehlgeschlagen':'Anmeldung fehlgeschlagen','error',msg);
+    if(v200AuthSucceeded){
+      try{v4143SetAuthBoot(false)}catch(_){}
+      try{v075SetAuthMode('login');v075Overlay(true)}catch(_){}
+      v200AuthStatus(msg,'error');
+      v063Toast('Spielstand konnte nicht geladen werden','error',msg);
+    }else{
+      v200AuthStatus(msg,'error');
+      v063Toast(mode==='register'?'Registrierung fehlgeschlagen':'Anmeldung fehlgeschlagen','error',msg);
+    }
   }finally{
+    v200EmailOwnsFinalize=false;
     v200AuthBusy=false;
     if(btn){
       btn.disabled=false;
@@ -26707,6 +26727,17 @@ function v200InstallAuthListener(){
     if(!user || user.is_anonymous)return;
     const nextId=String(user.id||'');
     const currentId=String(v073User?.id||'');
+
+    /* Password/email auth owns this finalize. Supabase also emits SIGNED_IN,
+       so the listener must not launch a second finalizer for the same action. */
+    if(event==='SIGNED_IN' && (
+      v200EmailOwnsFinalize ||
+      (nextId && nextId===v200EmailFinalizeUid && Date.now()<v200EmailFinalizeUntil)
+    )){
+      v073User=user;
+      v073Ready=true;
+      return;
+    }
 
     /* V7.284: v200Boot / OAuth return owns initial-session resolution.
        Token refreshes only refresh the auth object and must never launch another
