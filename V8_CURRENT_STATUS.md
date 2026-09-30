@@ -19,8 +19,8 @@
 - Aktuelle Beta-Linie: **V8.009**
 - Arbeitsbranch: **main**
 - Letzter automatisiert geprüfter Code-Commit vor dieser Statusdatei:
-  `0300cc18d02bdd32b157bd11bd293809630b0535`
-- Aktuelle Unterphase: **V8.009-PVP-SPRINT-1-LIVE-BETA-DEPLOY-BLOCKED**
+  `2d7c1bdfcad3e83dddc2fca8a5abd05957729279`
+- Aktuelle Unterphase: **V8.009-AUTH-IDLE-LOGIN-RACE-FIX-COMMITTED-LIVE-BETA-DEPLOY-BLOCKED**
 - Nutzer-Video bestätigt: betroffen ist konkret **Dungeon 2**.
 - Sichtbares Fehlerbild:
   - zunächst korrekter D2-Hintergrund + korrekte Gegnergrafiken;
@@ -649,6 +649,39 @@ Für jedes System gilt:
 - erst danach alte Inline- oder Legacy-Owner stilllegen;
 - danach nächstes System.
 
+### Login / 10-Minuten-Idle-Race – Fix 30.09.2026
+
+- Nutzer-Video reproduziert einen sporadischen Fehler direkt nach erneutem Login:
+  - Toast: `Account konnte nicht serverseitig geladen werden`
+  - Fehler: `BETA_CHARACTER_BOOTSTRAP_INCOMPLETE`
+  - anschließend leerer/inkonsistenter App-Zustand statt sauberem Login oder Startseite.
+- Nutzerbeobachtung: Fehler tritt insbesondere nach dem automatischen Logout nach 10 Minuten Inaktivität auf.
+- Root Cause im bestehenden Auth-/Logout-Lifecycle:
+  - `v301-auth-idle-hard-lock` startet `v136Logout('idle')`;
+  - der kanonische V4.159/`v4136-account-save-owner` bestätigt vor dem eigentlichen Supabase-`signOut()` noch den Server-Spielstand;
+  - während dieser Vorbereitungsphase war `__V301_LOGOUT_IN_PROGRESS__` noch nicht gesetzt;
+  - dadurch konnte ein neuer E-Mail-/Google-Login bzw. Finalize parallel zum noch laufenden Logout starten;
+  - `v200FinalizeUser()` konnte dann gegen eine Sitzung laufen, die parallel beendet wurde, wodurch der Beta-Character-Bootstrap fehlschlug.
+- Direkter Owner-Fix, Commit `2d7c1bdfcad3e83dddc2fca8a5abd05957729279`:
+  - bestehender `v4136`-Logout-Owner mit genau einer laufenden `logoutPromise` serialisiert;
+  - neue reine Lifecycle-Flag `__V4136_LOGOUT_PREPARING__` wird vor `directCloudWrite()` gesetzt und danach sicher gelöscht;
+  - E-Mail-Login, Google-Login, zentraler Finalize und Auth-State-Listener blockieren während Logout-Vorbereitung/Logout;
+  - E-Mail-Login behandelt `v200FinalizeUser() === false` nicht mehr stillschweigend als Erfolg.
+- Architektur:
+  - **kein neuer Renderer**
+  - **kein neuer Render-Wrapper**
+  - **kein neuer Timer**
+  - **kein neuer MutationObserver**
+  - bestehende Auth-/Logout-Owner direkt geändert.
+- Automatische QA: **vollständig grün**
+  - `v200-stable-core` Syntax grün;
+  - `v4136-account-save-owner` Syntax grün;
+  - Race-Fix-Vertrag grün;
+  - Diff-Sanity grün;
+  - nur `beta.html` + `V8009_AUTH_IDLE_LOGIN_RACE_FIX.json` geändert;
+  - Stable/`index.html` unverändert.
+- Manueller Test ist noch offen und kann erst sinnvoll erfolgen, wenn der aktuelle Repo-`beta.html`-Stand tatsächlich live unter `/beta` ausgeliefert wird.
+
 ## LIVE-BETA DEPLOY-BEFUND 30.09.2026
 
 - Nutzer-Screenshot 15:28 zeigte weiterhin exakt den alten Top-3-Stand.
@@ -690,10 +723,14 @@ Für jedes System gilt:
 2. Danach Live-Audit erneut ausführen und prüfen:
    - Bytes/Hash müssen dem aktuellen Repo-Stand entsprechen;
    - `v6145-podium-portrait` muss live vorhanden sein;
-   - `v8009-s1-v6145-hall-pagination-js.js?v=8009-top3-owner2` muss live geladen werden.
-3. Erst **danach** Hall manuell testen.
-4. Wenn Top 3 dann noch falsch ist, am bestehenden kanonischen `v6145`-/`v7230`-Owner weiterarbeiten.
-5. **Keine neue Patch-Schicht, keinen neuen Renderer, Wrapper, Timer oder Observer hinzufügen.**
+   - `v8009-s1-v6145-hall-pagination-js.js?v=8009-top3-owner2` muss live geladen werden;
+   - der Auth-Race-Fix aus Commit `2d7c1bdfcad3e83dddc2fca8a5abd05957729279` muss live enthalten sein.
+3. Erst **danach** zwei manuelle Meilenstein-Tests:
+   - Hall Top 3 / Avatar-Rahmen erneut prüfen;
+   - 10-Minuten-Idle-Logout auslösen und anschließend erneut anmelden; kein `BETA_CHARACTER_BOOTSTRAP_INCOMPLETE`, kein leerer Zwischenzustand.
+4. Wenn Hall danach noch falsch ist, am bestehenden kanonischen `v6145`-/`v7230`-Owner weiterarbeiten.
+5. Wenn Login nach dem Idle-Logout weiterhin fehlschlägt, zuerst den bestehenden `v200`/`v301`/`v4136`-Lifecycle anhand der neuen Guards diagnostizieren; **keinen zusätzlichen Auth-Patch darüberlegen**.
+6. **Keine neue Patch-Schicht, keinen neuen Renderer, Wrapper, Timer oder Observer hinzufügen.**
 
 ### Statusdatei-Regel
 
