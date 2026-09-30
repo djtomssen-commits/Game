@@ -32,6 +32,5 @@
    if(list&&elite.nextElementSibling!==list)shell.insertBefore(elite,list);
  }
  window.v4172EnhanceQuestPage=enhance;
- /* V7.122: duplicate quest-nav enhancement retired; v6344 calls this directly. */
- setTimeout(enhance,700);
+ /* V8.009: delayed startup enhancement retired; v6344 calls this directly. */
 })();
