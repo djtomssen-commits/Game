@@ -23,7 +23,7 @@ async function fixture(time,{quiet=0,channel='beta',helper=true,playerClass='gro
   window.v073User={id:'qa-a'};
   window.classSets={};
   window.v093Events=[];window.v271EventDataReady=false;
-  window.qa={quests:0,gold:0,xp:0,paints:0,persists:0,bossOpens:0,bossResetCalls:0,bossActiveCalls:0,intervals:0,nav:[],goldShop:0,dungeonCalls:0,petCalls:0};
+  window.qa={quests:0,gold:0,xp:0,paints:0,persists:0,bossOpens:0,bossResetCalls:0,bossActiveCalls:0,intervals:0,nav:[],goldShop:0,dungeonCalls:0,petCalls:0,avatarCalls:0};
   window.qaQuietUntil=Date.now()+quiet;
   window.v7204StartupQuietRemaining=()=>Math.max(0,qaQuietUntil-Date.now());
   window.v7204StartupQuiet=()=>v7204StartupQuietRemaining()>0;
@@ -42,6 +42,7 @@ async function fixture(time,{quiet=0,channel='beta',helper=true,playerClass='gro
   window.v110Open=()=>{qa.bossOpens++};window.v488OpenForge=()=>{};window.v106OpenBook=()=>{};
   window.v081DungeonPosition=()=>{qa.dungeonCalls++;return {dungeonNumber:2,enemyNumber:4}};
   window.v6104PetUnseen=()=>{qa.petCalls++;return 0};
+  window.v080AvatarFor=()=>{qa.avatarCalls++;return '/qa-avatar.png'};
   window.vTowerWednesdayEventInfo=()=>({active:new Intl.DateTimeFormat('en-US',{timeZone:'Europe/Berlin',weekday:'short'}).format(new Date())==='Wed',name:'Mutationssturm',icon:'🧬'});
  },{quiet,channel,playerClass});
  await page.addScriptTag({content:grant});
@@ -218,6 +219,18 @@ try{
  assert.deepEqual({active:canonicalState.snapshot.active,ready:canonicalState.snapshot.ready},{active:2,ready:1});
  checks.push('canonical renderer owns Frost 7-slot checklist and weather-aware Growroom status');
  await canonical.close();
+ const avatarReuse=await fixture('2026-09-30T12:00:00+02:00',{helper:false});
+ await avatarReuse.evaluate(()=>{qa.avatarCalls=0;s.gold+=1;v085InstallWorld(false)});
+ const avatarState=await avatarReuse.evaluate(()=>({
+  calls:qa.avatarCalls,
+  image:document.querySelector('.v366-avatar img')?.getAttribute('src'),
+  background:document.querySelector('.v366-character')?.style.getPropertyValue('background-image')
+ }));
+ assert.equal(avatarState.calls,1,'Full home render must resolve the avatar only once');
+ assert.equal(avatarState.image,'/qa-avatar.png');
+ assert.ok(avatarState.background.includes('/qa-avatar.png'),'Character background must reuse the rendered avatar source');
+ checks.push('full home render reuses the mounted avatar source during ownership finalization');
+ await avatarReuse.close();
  const bossActiveSnapshot=await fixture('2026-09-30T12:00:00+02:00',{helper:false});
  await bossActiveSnapshot.evaluate(()=>{
   const realBossActive=window.v110MysticEventActive;
@@ -344,7 +357,7 @@ try{
  assert.equal(versionState.visible,'"V8.009"','Canonical renderer must override historical V8.001 pseudo-element CSS');
  assert.equal(versionState.styleCount,1,'Version override style must be installed exactly once');
  assert.equal(versionState.legacy,'SERVER-VERSION-SENTINEL','Home renderer must not rewrite unrelated legacy version nodes');
- assert.equal(versionState.diag?.version,'V8.009-HOME-25');
+ assert.equal(versionState.diag?.version,'V8.009-HOME-26');
  assert.equal(versionState.diag?.versionStyleInstalls,1);
  checks.push('canonical home renderer owns visible V8.009 style without lifecycle rewrites');
  await versionOwner.close();

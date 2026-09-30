@@ -1,0 +1,24 @@
+{
+  "build": "V8.009-HOME-26-BETA",
+  "phase": "Startseite avatar reuse during ownership finalization",
+  "scope": "beta only",
+  "base_commit": "d51b218175569c71611de24bc3a7fa9b7e51e6a2",
+  "findings": [
+    "A full canonical Startseite render resolved the class avatar in worldHtml and then finalizeOwnedWorld immediately called v080AvatarFor again for the large character portrait.",
+    "The already-rendered profile image contains the exact avatar source needed by the portrait finalizer."
+  ],
+  "changes": [
+    "finalizeOwnedWorld now reuses the mounted .v366-avatar img source for the large portrait background.",
+    "A full Startseite render resolves the avatar helper once instead of twice.",
+    "If no avatar image exists, the previous no-background behavior remains.",
+    "No character selection, asset mapping, gameplay or stable behavior changed."
+  ],
+  "files": [
+    "js/features/home/beta/v8009-home-renderer.js",
+    "js/system/performance/v7288-home-adaptive-fit-script.js",
+    ".github/scripts/v8009_home_events_browser_qa.mjs"
+  ],
+  "stable_behavior_changed": false,
+  "gameplay_changed": false,
+  "server_authority_changed": false
+}

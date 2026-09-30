@@ -396,7 +396,10 @@
        Keep the exact visual result inside the canonical owner instead. */
     const character=modern.querySelector('.v366-character');
     if(character){
-      const src=avatarSrc();
+      /* HOME-26: worldHtml already resolved the avatar once for this canonical
+         DOM. Reuse the mounted profile image instead of calling v080AvatarFor
+         again during ownership finalization. */
+      const src=String(modern.querySelector('.v366-avatar img')?.getAttribute('src')||'');
       if(src){
         character.classList.add('v369-real-character');
         character.style.setProperty('background-image',`url("${src}")`,'important');
@@ -451,7 +454,7 @@
     finalizeOwnedWorld(world);
   }
 
-  window.v8009HomeEventDiagnostics=()=>({version:'V8.009-HOME-25',...diagnostics,events:events().map(x=>({...x})),worldBossActive:worldBossEventActive()});
+  window.v8009HomeEventDiagnostics=()=>({version:'V8.009-HOME-26',...diagnostics,events:events().map(x=>({...x})),worldBossActive:worldBossEventActive()});
 
   /* Re-own only the world installer; do not touch core game render/persist. */
   v085WorldHtml=worldHtml;
