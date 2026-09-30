@@ -176,10 +176,3 @@ function v233ClaimQuest(){
 window.v233BindClaimButton=()=>{};
 
 
-setTimeout(()=>{
-  /* V7.151: startup full quest repaint retired; bind/version work only. */
-  document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V4.29 Stable');
-
-  const line=document.querySelector('#v141VersionLine');
-},300);
