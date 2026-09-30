@@ -1,0 +1,63 @@
+name: V8.009 Hall Avatar Frame Source Fix
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/v8009_hall_avatar_frame_source_fix.py'
+      - '.github/workflows/v8009-hall-avatar-frame-source-fix.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    timeout-minutes: 9
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Apply direct source fix
+        run: python3 .github/scripts/v8009_hall_avatar_frame_source_fix.py
+      - name: Syntax and architecture QA
+        run: |
+          node --check js/features/pvp/beta/v8009-s1-v6145-hall-pagination-js.js
+          python3 - <<'PY'
+          from pathlib import Path
+          import json
+          beta=Path('beta.html').read_text(encoding='utf-8',errors='ignore')
+          hall=Path('js/features/pvp/beta/v8009-s1-v6145-hall-pagination-js.js').read_text(encoding='utf-8')
+          r=json.loads(Path('V8009_HALL_AVATAR_FRAME_SOURCE_FIX.json').read_text(encoding='utf-8'))
+
+          for required in (
+            "const FRAME_ASSETS=Object.freeze({",
+            "emerald_aura:'assets/avatar_frames/emerald_aura.png'",
+            "function frameArt(p)",
+            "const src=FRAME_ASSETS[id]||''",
+            "window.v6145HallRefresh=async()=>",
+          ):
+            if required not in hall:
+              raise SystemExit('canonical v6145 frame source missing: '+required)
+
+          for forbidden in (
+            "['v073LoadRanking','v073SearchPlayer','v073LoadFriends'].forEach",
+            "renderFrameSelector();await decorateHallFrames();toast(",
+          ):
+            if forbidden in beta:
+              raise SystemExit('legacy Hall repaint path remains: '+forbidden)
+
+          if r['new_renderer_added'] or r['new_render_wrapper_added'] or r['new_timer_added'] or r['new_observer_added']:
+            raise SystemExit('architecture rule violated')
+          if not r['stable_unchanged']:
+            raise SystemExit('Stable scope failed')
+          print('Hall avatar/frame source fix architecture OK')
+          PY
+      - name: Diff sanity
+        run: git diff --check
+      - name: Commit source fix
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add beta.html V8009_HALL_AVATAR_FRAME_SOURCE_FIX.json
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "V8.009 PVP: fix Hall avatars and frames at source"
+          git push
