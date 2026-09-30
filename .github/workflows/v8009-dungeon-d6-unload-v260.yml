@@ -1,0 +1,78 @@
+name: V8.009 Dungeon D6 Unload v260
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/v8009_dungeon_d6_unload_v260.py'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  unload:
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Unload superseded v260 detail layer
+        run: python3 .github/scripts/v8009_dungeon_d6_unload_v260.py
+
+      - name: Syntax-check retained and canonical Dungeon JS
+        run: |
+          node --check js/features/dungeon/beta/v8009-d4-v260-detail.js
+          node --check js/features/dungeon/beta/v8009-d4-v261-detail.js
+          node --check js/features/dungeon/beta/v8009-d2-visual-owner.js
+          node --check js/features/dungeon/beta/v8009-d2-detail-render-lock.js
+          node --check js/features/dungeon/beta/v8009-d5-final-detail-seal.js
+
+      - name: Validate v260 retirement
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import json
+
+          beta=Path('beta.html').read_text(encoding='utf-8')
+          stable=Path('index.html').read_text(encoding='utf-8')
+          report=json.loads(Path('V8009_DUNGEON_D6_BETA.json').read_text(encoding='utf-8'))
+
+          for ref in ('v8009-d4-v260-detail.css','v8009-d4-v260-detail.js'):
+              if ref in beta:
+                  raise SystemExit(f'v260 still active in Beta: {ref}')
+
+          for ref in (
+              'js/features/dungeon/beta/v8009-d4-v251-modern-maps.js',
+              'js/features/dungeon/beta/v8009-d4-v261-detail.js',
+              'js/features/dungeon/beta/v8009-d2-visual-owner.js',
+              'js/features/dungeon/beta/v8009-d2-detail-render-lock.js',
+              'js/features/dungeon/beta/v8009-d5-final-detail-seal.js',
+          ):
+              if beta.count(ref)!=1:
+                  raise SystemExit(f'canonical include count != 1: {ref}')
+
+          lock=Path('js/features/dungeon/beta/v8009-d2-detail-render-lock.js').read_text(encoding='utf-8')
+          seal=Path('js/features/dungeon/beta/v8009-d5-final-detail-seal.js').read_text(encoding='utf-8')
+          if 'v260RenderDetail' not in lock or 'v260RenderDetail' not in seal:
+              raise SystemExit('v260 compatibility alias guard missing')
+
+          if not report.get('stable_unchanged') or report.get('v260_js_loaded') or report.get('v260_css_loaded'):
+              raise SystemExit('D6 report invalid')
+
+          print('DUNGEON-D6 v260 unload OK')
+          PY
+
+      - name: Diff sanity
+        run: git diff --check
+
+      - name: Commit D6
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add beta.html V8009_DUNGEON_D6_BETA.json
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "V8.009 DUNGEON-D6: unload superseded v260 detail layer"
+          git push
