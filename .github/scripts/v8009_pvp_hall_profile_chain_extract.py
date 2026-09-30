@@ -11,7 +11,7 @@ ids=[
 ]
 out={}
 for sid in ids:
-    m=re.search(r'<script[^>]*\\bid=["\\']'+re.escape(sid)+r'["\\'][^>]*>(?P<body>[\\s\\S]*?)</script\\s*>',beta,re.I)
+    m=re.search(r"""<script[^>]*\\bid=["']"""+re.escape(sid)+r"""["'][^>]*>(?P<body>[\\s\\S]*?)</script\\s*>""",beta,re.I)
     if not m:
         out[sid]={'found':False};continue
     body=m.group('body')
