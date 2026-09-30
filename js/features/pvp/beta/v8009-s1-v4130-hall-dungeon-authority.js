@@ -142,6 +142,10 @@
   const p=typeof v072Profile==='function'?v072Profile():{name:s?.characterName||'Spieler',className:'',level:s?.level||1,id:v073User?.id||''};
   const dp=liveDp(),pos=canonicalPos(dp,dp.completed.length),name=dungeonName(pos);let cp=0;try{const fn=window.v4125StableCombatPower;cp=Math.max(0,Math.round(Number(typeof fn==='function'?fn():combatPower())||0))}catch(e){}
   el.innerHTML=`<div class="v072-profile-name">${esc(p.name)}</div><div class="v072-profile-meta">${esc(p.className||'')} · Spieler-ID ${String(p.id||v073User?.id||'').slice(0,8)}</div><div class="v072-profile-stats"><div class="v072-profile-stat"><span>Level</span><b>${Math.max(1,Number(s?.level)||1)}</b></div><div class="v072-profile-stat"><span>Kampfkraft</span><b>${cp}</b></div><div class="v072-profile-stat"><span>Dungeon</span><b>${pos.dungeonNumber}</b></div><div class="v072-profile-stat"><span>${pos.enemyNumber>=10?'Boss':'Gegner'}</span><b>${pos.enemyNumber}/10</b></div></div><div class="v4130-dungeon-line">🗺️ <strong>Dungeon ${pos.dungeonNumber}</strong> · ${esc(name)} · ${pos.enemyNumber>=10?'Boss':'Gegner'} <strong>${pos.enemyNumber}/10</strong>${pos.completed?' · abgeschlossen':''} · 🏁 ${dp.completed.length} abgeschlossen</div>`;
+  /* V8.009 Hall video fix: decorate the own card immediately after the final
+     authoritative renderer writes it, so the first visible frame is canonical. */
+  try{window.v646DecorateHall?.()}catch(e){}
+  requestAnimationFrame(()=>{try{window.v646DecorateHall?.()}catch(e){}});
  };
  try{window.v072RenderOwnProfile=v072RenderOwnProfile}catch(e){}
 
