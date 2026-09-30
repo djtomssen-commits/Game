@@ -1,0 +1,1260 @@
+{
+  "build": "V8.009-DUNGEON-D6-V260-DEPENDENCY-AUDIT",
+  "beta_js_include_count": 1,
+  "beta_css_include_count": 1,
+  "stable_js_include_count": 0,
+  "stable_css_include_count": 0,
+  "external_runtime_dependencies": [
+    {
+      "path": "index.html",
+      "hits": {
+        "v260RenderDetail": 6,
+        "v260d-": 235
+      },
+      "snippets": [
+        {
+          "line": 45658,
+          "text": ".v260d-shell{position:relative;z-index:1;padding:12px}"
+        },
+        {
+          "line": 45659,
+          "text": ".v260d-top{display:grid;grid-template-columns:minmax(0,132px) minmax(0,1fr) minmax(0,132px);gap:10px;align-items:start}"
+        },
+        {
+          "line": 45660,
+          "text": ".v260d-back,.v260d-ticket{border:1px solid #78592a;border-radius:14px;background:linear-gradient(180deg,#14180f,#0a0d08);box-shadow:inset 0 0 18px #0007,0 5px 14px #0008;padding:10px 12px;min-height:70px}"
+        },
+        {
+          "line": 45661,
+          "text": ".v260d-back{display:flex;align-items:center;gap:10px;color:#eef3e6;font-weight:1000;font-size:9px;line-height:1.15;cursor:pointer;touch-action:manipulation}"
+        },
+        {
+          "line": 45662,
+          "text": ".v260d-back i{font-style:normal;font-size:21px;line-height:1;color:#f6efcf}"
+        },
+        {
+          "line": 45663,
+          "text": ".v260d-ticket b{display:block;color:#f4eed7;font-size:8px;letter-spacing:.04em;text-transform:uppercase}"
+        },
+        {
+          "line": 45664,
+          "text": ".v260d-ticket #dungeonTicketText{display:block;margin-top:8px;color:#84f06f;font-size:11px;font-weight:1000;text-align:right}"
+        },
+        {
+          "line": 45665,
+          "text": ".v260d-sign{position:relative;padding:10px 12px 9px;border:1px solid #6e5328;border-radius:16px;background:linear-gradient(180deg,#3f2b17,#20140d);box-shadow:0 8px 18px #0008,inset 0 0 18px rgba(0,0,0,.42);text-align:center}"
+        },
+        {
+          "line": 45666,
+          "text": ".v260d-sign:before,.v260d-sign:after{content:\"🍄\";position:absolute;top:6px;font-size:18px;opacity:.92;filter:drop-shadow(0 2px 2px #0008)}"
+        },
+        {
+          "line": 45667,
+          "text": ".v260d-sign:before{left:10px} .v260d-sign:after{right:10px}"
+        },
+        {
+          "line": 45668,
+          "text": ".v260d-kicker{color:#6cf14c;font-weight:1000;font-size:8px;letter-spacing:.13em;text-transform:uppercase}"
+        },
+        {
+          "line": 45669,
+          "text": ".v260d-title{margin-top:4px;color:#f0d39a;font-family:Georgia,serif;font-size:28px;font-weight:1000;letter-spacing:.02em;line-height:1.02;text-shadow:0 3px 0 #43250d,0 0 12px rgba(0,0,0,.42)}"
+        },
+        {
+          "line": 45670,
+          "text": ".v260d-sub{margin-top:7px;color:#edf0ea;font-size:8px;line-height:1.35}"
+        },
+        {
+          "line": 45671,
+          "text": ".v260d-stage{position:relative;overflow:hidden;margin-top:12px;border:2px solid #8a622c;border-radius:18px;background:#050906;aspect-ratio:1000/760;box-shadow:inset 0 0 55px #000a,0 10px 24px #0008}"
+        },
+        {
+          "line": 45672,
+          "text": ".v260d-stagebg{position:absolute;inset:0;background-position:center;background-size:cover;filter:saturate(1.08) brightness(.82)}"
+        },
+        {
+          "line": 45673,
+          "text": ".v260d-stagefx{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.24),rgba(0,0,0,.08) 14%,rgba(0,0,0,.05) 58%,rgba(0,0,0,.35) 100%),radial-gradient(circle at 16% 10%,rgba(255,219,130,.08),transparent 18%),radial-gradient(circle at 88% 82%,rgba(255,62,44,.10),transparent 21%),radial-gradient(circle at 34% 52%,rgba(54,255,127,.08),transparent 22%)}"
+        },
+        {
+          "line": 45674,
+          "text": ".v260d-path{position:absolute;inset:0;pointer-events:none;z-index:1}"
+        },
+        {
+          "line": 45675,
+          "text": ".v260d-path .v260d-road-bg{fill:none;stroke:#271a0b;stroke-width:10;stroke-linecap:round;stroke-linejoin:round;opacity:.86}"
+        },
+        {
+          "line": 45676,
+          "text": ".v260d-path .v260d-road{fill:none;stroke:#d7b359;stroke-width:6.3;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:1 12;opacity:.95;filter:drop-shadow(0 0 4px rgba(255,212,104,.42))}"
+        },
+        {
+          "line": 45677,
+          "text": ".v260d-node{position:absolute;left:calc(var(--x) * 1%);top:calc(var(--y) * 1%);transform:translate(-50%,-50%);width:122px;background:none;border:0;padding:0;z-index:3;color:#fff;text-align:center;touch-action:manipulation}"
+        },
+        {
+          "line": 45678,
+          "text": ".v260d-node .v260d-ring{position:relative;width:76px;height:76px;margin:0 auto;border:4px solid #4b4f4a;border-radius:50%;background:radial-gradient(circle at 50% 44%,#1e221e 0,#0c0f0d 72%);box-shadow:0 0 0 3px #0b100d,0 12px 18px #0008,inset 0 0 20px #0009;display:grid;place-items:center;font-size:31px;overflow:visible}"
+        },
+        {
+          "line": 45679,
+          "text": ".v260d-node .v260d-num{position:absolute;top:-13px;left:50%;transform:translateX(-50%);width:34px;height:34px;border:2px solid #6b706a;border-radius:50%;background:linear-gradient(180deg,#151816,#070907);display:grid;place-items:center;font-family:Georgia,serif;font-size:18px;font-weight:1000;color:#f0f0ef;box-shadow:0 4px 8px #000a}"
+        },
+        {
+          "line": 45680,
+          "text": ".v260d-node .v260d-check{position:absolute;right:-4px;bottom:0;width:28px;height:28px;border:2px solid #08100a;border-radius:50%;background:#23af34;display:grid;place-items:center;font-size:16px;font-weight:1000;color:#fff;box-shadow:0 4px 8px #000a}"
+        },
+        {
+          "line": 45681,
+          "text": ".v260d-node .v260d-lock{position:absolute;right:-3px;bottom:2px;width:27px;height:27px;border:2px solid #060907;border-radius:50%;background:#f2b521;display:grid;place-items:center;font-size:16px;box-shadow:0 4px 8px #000a}"
+        },
+        {
+          "line": 45682,
+          "text": ".v260d-node .v260d-panel{margin:8px auto 0;min-height:56px;width:116px;padding:8px 6px 7px;border:2px solid #48553e;border-radius:12px;background:linear-gradient(180deg,rgba(8,12,8,.96),rgba(3,6,3,.98));box-shadow:0 8px 18px #0008,inset 0 0 14px rgba(75,163,64,.06)}"
+        },
+        {
+          "line": 45683,
+          "text": ".v260d-node .v260d-name{font-size:7.4px;line-height:1.05;font-weight:1000;color:#f2f4ed;word-break:normal;overflow-wrap:normal;hyphens:none}"
+        },
+        {
+          "line": 45684,
+          "text": ".v260d-node .v260d-lv{margin-top:4px;font-size:6.8px;line-height:1;color:#8efa72;font-weight:1000}"
+        },
+        {
+          "line": 45685,
+          "text": ".v260d-node.v260d-done .v260d-ring{border-color:#55da45;box-shadow:0 0 0 3px #0b100d,0 0 24px rgba(93,230,67,.20),0 12px 18px #0008,inset 0 0 20px #0009}"
+        },
+        {
+          "line": 45686,
+          "text": ".v260d-node.v260d-done .v260d-panel{border-color:#4da73d}"
+        },
+        {
+          "line": 45687,
+          "text": ".v260d-node.v260d-current{cursor:pointer}"
+        },
+        {
+          "line": 45688,
+          "text": ".v260d-node.v260d-current .v260d-ring{border-color:#6cf34c;box-shadow:0 0 0 3px #0b100d,0 0 28px rgba(108,243,76,.36),0 12px 18px #0008,inset 0 0 20px #0009}"
+        },
+        {
+          "line": 45689,
+          "text": ".v260d-node.v260d-current .v260d-num{border-color:#87f170;color:#bffd9e}"
+        },
+        {
+          "line": 45690,
+          "text": ".v260d-node.v260d-current .v260d-panel{border-color:#6dea55;box-shadow:0 0 22px rgba(98,239,79,.16),0 8px 18px #0008,inset 0 0 14px rgba(75,163,64,.10)}"
+        },
+        {
+          "line": 45691,
+          "text": ".v260d-node.v260d-current .v260d-name{color:#ffffff}"
+        },
+        {
+          "line": 45692,
+          "text": ".v260d-node.v260d-locked{opacity:.88;cursor:default}"
+        },
+        {
+          "line": 45693,
+          "text": ".v260d-node.v260d-locked .v260d-ring{border-color:#5f655e;background:radial-gradient(circle at 50% 44%,#1a1b1a 0,#080908 72%)}"
+        },
+        {
+          "line": 45694,
+          "text": ".v260d-node.v260d-locked .v260d-panel{border-color:#555c53}"
+        },
+        {
+          "line": 45695,
+          "text": ".v260d-node.v260d-locked .v260d-lv{color:#dfe6da}"
+        },
+        {
+          "line": 45696,
+          "text": ".v260d-node.v260d-boss{width:210px;z-index:4}"
+        },
+        {
+          "line": 45697,
+          "text": ".v260d-node.v260d-boss .v260d-ring{width:92px;height:92px;border-color:#c34937;background:radial-gradient(circle at 50% 44%,#3d120d 0,#130606 72%);box-shadow:0 0 0 3px #130808,0 0 26px rgba(246,73,40,.26),0 12px 18px #0008,inset 0 0 24px #000a}"
+        },
+        {
+          "line": 45698,
+          "text": ".v260d-node.v260d-boss .v260d-num{width:40px;height:40px;font-size:22px;border-color:#f08e79}"
+        },
+        {
+          "line": 45699,
+          "text": ".v260d-node.v260d-boss .v260d-panel{width:164px;min-height:62px;border-color:#a23d30;box-shadow:0 0 28px rgba(241,77,42,.12),0 8px 18px #0008,inset 0 0 16px rgba(189,67,54,.10)}"
+        },
+        {
+          "line": 45700,
+          "text": ".v260d-node.v260d-boss.v260d-current .v260d-ring{border-color:#ff7058;box-shadow:0 0 0 3px #130808,0 0 36px rgba(255,91,61,.46),0 12px 18px #0008,inset 0 0 24px #000a}"
+        },
+        {
+          "line": 45701,
+          "text": ".v260d-node.v260d-boss.v260d-done .v260d-ring{border-color:#ee705c;box-shadow:0 0 0 3px #130808,0 0 32px rgba(252,106,84,.30),0 12px 18px #0008,inset 0 0 24px #000a}"
+        },
+        {
+          "line": 45702,
+          "text": ".v260d-node.v260d-boss .v260d-name{font-size:9px}"
+        },
+        {
+          "line": 45703,
+          "text": ".v260d-signboard{position:absolute;left:1.8%;bottom:9.8%;z-index:2;max-width:132px;padding:9px 10px;border:2px solid #8a622c;border-radius:10px;background:linear-gradient(180deg,rgba(82,53,27,.94),rgba(36,23,12,.98));color:#f2e6c9;font-size:8px;line-height:1.18;font-weight:1000;box-shadow:0 10px 16px #0008;transform:rotate(-2deg)}"
+        },
+        {
+          "line": 45704,
+          "text": ".v260d-signboard small{display:block;margin-top:6px;color:#d5c29d;font-size:13px;line-height:1}"
+        },
+        {
+          "line": 45705,
+          "text": ".v260d-panel{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,.8fr) minmax(0,.85fr);gap:10px;margin-top:12px;padding:14px;border:1px solid #35543a;border-radius:16px;background:linear-gradient(180deg,#0b120d,#070b08);box-shadow:inset 0 0 18px #0007,0 7px 18px #0008}"
+        },
+        {
+          "line": 45706,
+          "text": ".v260d-enemy-head{display:flex;gap:12px;align-items:center}"
+        },
+        {
+          "line": 45707,
+          "text": ".v260d-thumb{width:62px;height:62px;border:1px solid #5f704f;border-radius:12px;background:linear-gradient(180deg,#10150f,#050705);display:grid;place-items:center;font-size:38px;box-shadow:inset 0 0 14px #0009}"
+        },
+        {
+          "line": 45708,
+          "text": ".v260d-titleline{color:#f2f4ed;font-size:10px;font-weight:1000;line-height:1.15}"
+        },
+        {
+          "line": 45709,
+          "text": ".v260d-titleline .accent{color:#7feb62}"
+        },
+        {
+          "line": 45710,
+          "text": ".v260d-bossline{margin-top:5px;color:#7fe36a;font-size:7.4px;line-height:1.35}"
+        },
+        {
+          "line": 45711,
+          "text": ".v260d-sectionlabel{margin-top:10px;color:#9aa79d;font-size:6.8px;font-weight:1000;letter-spacing:.14em;text-transform:uppercase}"
+        },
+        {
+          "line": 45712,
+          "text": ".v260d-rewards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;align-content:start}"
+        },
+        {
+          "line": 45713,
+          "text": ".v260d-reward{padding:12px 6px;border:1px solid #35543a;border-radius:12px;background:linear-gradient(180deg,#0b120d,#07100a);text-align:center;color:#f0f2ed;font-size:8px;font-weight:1000;box-shadow:inset 0 0 12px #0008}"
+        },
+        {
+          "line": 45714,
+          "text": ".v260d-reward.legendary{border-color:#d08729;color:#ffd36b;box-shadow:inset 0 0 16px rgba(255,157,39,.12),0 0 14px rgba(255,162,54,.05)}"
+        },
+        {
+          "line": 45715,
+          "text": ".v260d-reward .big{display:block;margin-top:4px;font-size:13px}"
+        },
+        {
+          "line": 45716,
+          "text": ".v260d-stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;align-content:end}"
+        },
+        {
+          "line": 45717,
+          "text": ".v260d-stat{padding:11px;border:1px solid #35543a;border-radius:12px;background:linear-gradient(180deg,#0b120d,#07100a)}"
+        },
+        {
+          "line": 45718,
+          "text": ".v260d-stat span{display:block;color:#839085;font-size:6.8px;font-weight:1000;letter-spacing:.08em;text-transform:uppercase}"
+        },
+        {
+          "line": 45719,
+          "text": ".v260d-stat b{display:block;margin-top:7px;color:#8ef36f;font-size:16px;line-height:1.05}"
+        },
+        {
+          "line": 45720,
+          "text": ".v260d-enter{margin-top:9px;width:100%;min-height:72px;border:0;border-radius:14px;background:linear-gradient(180deg,#89f461,#54d84a);color:#051006;font-size:13px;font-weight:1000;letter-spacing:.03em;box-shadow:0 0 20px rgba(110,240,82,.18), inset 0 1px 0 rgba(255,255,255,.35);cursor:pointer;touch-action:manipulation}"
+        },
+        {
+          "line": 45721,
+          "text": ".v260d-enter.danger{background:linear-gradient(180deg,#ff7d62,#df4530);color:#fff;box-shadow:0 0 20px rgba(255,104,79,.16), inset 0 1px 0 rgba(255,255,255,.2)}"
+        },
+        {
+          "line": 45722,
+          "text": ".v260d-enter:disabled{filter:grayscale(1);opacity:.64;cursor:default}"
+        },
+        {
+          "line": 45724,
+          "text": "  .v260d-top{grid-template-columns:1fr 1.45fr 1fr;gap:8px}"
+        },
+        {
+          "line": 45725,
+          "text": "  .v260d-back,.v260d-ticket{padding:8px 9px;min-height:62px}"
+        },
+        {
+          "line": 45726,
+          "text": "  .v260d-back{font-size:8px}"
+        },
+        {
+          "line": 45727,
+          "text": "  .v260d-back i{font-size:18px}"
+        },
+        {
+          "line": 45728,
+          "text": "  .v260d-ticket b{font-size:7px}"
+        },
+        {
+          "line": 45729,
+          "text": "  .v260d-ticket #dungeonTicketText{font-size:10px}"
+        },
+        {
+          "line": 45730,
+          "text": "  .v260d-sign{padding:9px 10px 8px}"
+        },
+        {
+          "line": 45731,
+          "text": "  .v260d-sign:before,.v260d-sign:after{font-size:16px;top:5px}"
+        },
+        {
+          "line": 45732,
+          "text": "  .v260d-title{font-size:23px}"
+        },
+        {
+          "line": 45733,
+          "text": "  .v260d-sub{font-size:7.2px}"
+        },
+        {
+          "line": 45734,
+          "text": "  .v260d-stage{aspect-ratio:1000/820}"
+        },
+        {
+          "line": 45735,
+          "text": "  .v260d-node{width:92px}"
+        },
+        {
+          "line": 45736,
+          "text": "  .v260d-node .v260d-ring{width:56px;height:56px;font-size:21px;border-width:3px}"
+        },
+        {
+          "line": 45737,
+          "text": "  .v260d-node .v260d-num{top:-10px;width:28px;height:28px;font-size:16px}"
+        },
+        {
+          "line": 45738,
+          "text": "  .v260d-node .v260d-check,.v260d-node .v260d-lock{width:22px;height:22px;font-size:12px}"
+        }
+      ]
+    },
+    {
+      "path": "js/features/dungeon/beta/v8009-d2-detail-render-lock.js",
+      "hits": {
+        "v260RenderDetail": 4
+      },
+      "snippets": [
+        {
+          "line": 6,
+          "text": "const names=['v251RenderDetail','v244RenderSelectedDungeonMap','v064RenderMap','v261RenderDetail','v260RenderDetail','v426RenderDetail','v427RenderDetail'];"
+        },
+        {
+          "line": 59,
+          "text": "    else if(name==='v260RenderDetail')v260RenderDetail=wrapped;"
+        },
+        {
+          "line": 85,
+          "text": "const canonicalAliases=['v251RenderDetail','v244RenderSelectedDungeonMap','v064RenderMap','v260RenderDetail'];"
+        }
+      ]
+    },
+    {
+      "path": "js/features/dungeon/beta/v8009-d5-final-detail-seal.js",
+      "hits": {
+        "v260RenderDetail": 3
+      },
+      "snippets": [
+        {
+          "line": 7,
+          "text": "const ALIASES=['v251RenderDetail','v244RenderSelectedDungeonMap','v064RenderMap','v260RenderDetail'];"
+        },
+        {
+          "line": 41,
+          "text": "      else if(name==='v260RenderDetail')v260RenderDetail=fn;"
+        }
+      ]
+    }
+  ],
+  "all_hits": [
+    {
+      "path": "beta.html",
+      "hits": {
+        "v8009-d4-v260-detail.js": 1,
+        "v8009-d4-v260-detail.css": 1
+      },
+      "snippets": [
+        {
+          "line": 44634,
+          "text": "<link id=\"v260-dungeon-detail-style\" rel=\"stylesheet\" href=\"css/features/dungeon/beta/v8009-d4-v260-detail.css\">"
+        },
+        {
+          "line": 44635,
+          "text": "<script id=\"v260-dungeon-detail-script\" src=\"js/features/dungeon/beta/v8009-d4-v260-detail.js\"></script>"
+        }
+      ]
+    },
+    {
+      "path": "index.html",
+      "hits": {
+        "v260RenderDetail": 6,
+        "v260d-": 235
+      },
+      "snippets": [
+        {
+          "line": 45658,
+          "text": ".v260d-shell{position:relative;z-index:1;padding:12px}"
+        },
+        {
+          "line": 45659,
+          "text": ".v260d-top{display:grid;grid-template-columns:minmax(0,132px) minmax(0,1fr) minmax(0,132px);gap:10px;align-items:start}"
+        },
+        {
+          "line": 45660,
+          "text": ".v260d-back,.v260d-ticket{border:1px solid #78592a;border-radius:14px;background:linear-gradient(180deg,#14180f,#0a0d08);box-shadow:inset 0 0 18px #0007,0 5px 14px #0008;padding:10px 12px;min-height:70px}"
+        },
+        {
+          "line": 45661,
+          "text": ".v260d-back{display:flex;align-items:center;gap:10px;color:#eef3e6;font-weight:1000;font-size:9px;line-height:1.15;cursor:pointer;touch-action:manipulation}"
+        },
+        {
+          "line": 45662,
+          "text": ".v260d-back i{font-style:normal;font-size:21px;line-height:1;color:#f6efcf}"
+        },
+        {
+          "line": 45663,
+          "text": ".v260d-ticket b{display:block;color:#f4eed7;font-size:8px;letter-spacing:.04em;text-transform:uppercase}"
+        },
+        {
+          "line": 45664,
+          "text": ".v260d-ticket #dungeonTicketText{display:block;margin-top:8px;color:#84f06f;font-size:11px;font-weight:1000;text-align:right}"
+        },
+        {
+          "line": 45665,
+          "text": ".v260d-sign{position:relative;padding:10px 12px 9px;border:1px solid #6e5328;border-radius:16px;background:linear-gradient(180deg,#3f2b17,#20140d);box-shadow:0 8px 18px #0008,inset 0 0 18px rgba(0,0,0,.42);text-align:center}"
+        },
+        {
+          "line": 45666,
+          "text": ".v260d-sign:before,.v260d-sign:after{content:\"🍄\";position:absolute;top:6px;font-size:18px;opacity:.92;filter:drop-shadow(0 2px 2px #0008)}"
+        },
+        {
+          "line": 45667,
+          "text": ".v260d-sign:before{left:10px} .v260d-sign:after{right:10px}"
+        },
+        {
+          "line": 45668,
+          "text": ".v260d-kicker{color:#6cf14c;font-weight:1000;font-size:8px;letter-spacing:.13em;text-transform:uppercase}"
+        },
+        {
+          "line": 45669,
+          "text": ".v260d-title{margin-top:4px;color:#f0d39a;font-family:Georgia,serif;font-size:28px;font-weight:1000;letter-spacing:.02em;line-height:1.02;text-shadow:0 3px 0 #43250d,0 0 12px rgba(0,0,0,.42)}"
+        },
+        {
+          "line": 45670,
+          "text": ".v260d-sub{margin-top:7px;color:#edf0ea;font-size:8px;line-height:1.35}"
+        },
+        {
+          "line": 45671,
+          "text": ".v260d-stage{position:relative;overflow:hidden;margin-top:12px;border:2px solid #8a622c;border-radius:18px;background:#050906;aspect-ratio:1000/760;box-shadow:inset 0 0 55px #000a,0 10px 24px #0008}"
+        },
+        {
+          "line": 45672,
+          "text": ".v260d-stagebg{position:absolute;inset:0;background-position:center;background-size:cover;filter:saturate(1.08) brightness(.82)}"
+        },
+        {
+          "line": 45673,
+          "text": ".v260d-stagefx{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.24),rgba(0,0,0,.08) 14%,rgba(0,0,0,.05) 58%,rgba(0,0,0,.35) 100%),radial-gradient(circle at 16% 10%,rgba(255,219,130,.08),transparent 18%),radial-gradient(circle at 88% 82%,rgba(255,62,44,.10),transparent 21%),radial-gradient(circle at 34% 52%,rgba(54,255,127,.08),transparent 22%)}"
+        },
+        {
+          "line": 45674,
+          "text": ".v260d-path{position:absolute;inset:0;pointer-events:none;z-index:1}"
+        },
+        {
+          "line": 45675,
+          "text": ".v260d-path .v260d-road-bg{fill:none;stroke:#271a0b;stroke-width:10;stroke-linecap:round;stroke-linejoin:round;opacity:.86}"
+        },
+        {
+          "line": 45676,
+          "text": ".v260d-path .v260d-road{fill:none;stroke:#d7b359;stroke-width:6.3;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:1 12;opacity:.95;filter:drop-shadow(0 0 4px rgba(255,212,104,.42))}"
+        },
+        {
+          "line": 45677,
+          "text": ".v260d-node{position:absolute;left:calc(var(--x) * 1%);top:calc(var(--y) * 1%);transform:translate(-50%,-50%);width:122px;background:none;border:0;padding:0;z-index:3;color:#fff;text-align:center;touch-action:manipulation}"
+        },
+        {
+          "line": 45678,
+          "text": ".v260d-node .v260d-ring{position:relative;width:76px;height:76px;margin:0 auto;border:4px solid #4b4f4a;border-radius:50%;background:radial-gradient(circle at 50% 44%,#1e221e 0,#0c0f0d 72%);box-shadow:0 0 0 3px #0b100d,0 12px 18px #0008,inset 0 0 20px #0009;display:grid;place-items:center;font-size:31px;overflow:visible}"
+        },
+        {
+          "line": 45679,
+          "text": ".v260d-node .v260d-num{position:absolute;top:-13px;left:50%;transform:translateX(-50%);width:34px;height:34px;border:2px solid #6b706a;border-radius:50%;background:linear-gradient(180deg,#151816,#070907);display:grid;place-items:center;font-family:Georgia,serif;font-size:18px;font-weight:1000;color:#f0f0ef;box-shadow:0 4px 8px #000a}"
+        },
+        {
+          "line": 45680,
+          "text": ".v260d-node .v260d-check{position:absolute;right:-4px;bottom:0;width:28px;height:28px;border:2px solid #08100a;border-radius:50%;background:#23af34;display:grid;place-items:center;font-size:16px;font-weight:1000;color:#fff;box-shadow:0 4px 8px #000a}"
+        },
+        {
+          "line": 45681,
+          "text": ".v260d-node .v260d-lock{position:absolute;right:-3px;bottom:2px;width:27px;height:27px;border:2px solid #060907;border-radius:50%;background:#f2b521;display:grid;place-items:center;font-size:16px;box-shadow:0 4px 8px #000a}"
+        },
+        {
+          "line": 45682,
+          "text": ".v260d-node .v260d-panel{margin:8px auto 0;min-height:56px;width:116px;padding:8px 6px 7px;border:2px solid #48553e;border-radius:12px;background:linear-gradient(180deg,rgba(8,12,8,.96),rgba(3,6,3,.98));box-shadow:0 8px 18px #0008,inset 0 0 14px rgba(75,163,64,.06)}"
+        },
+        {
+          "line": 45683,
+          "text": ".v260d-node .v260d-name{font-size:7.4px;line-height:1.05;font-weight:1000;color:#f2f4ed;word-break:normal;overflow-wrap:normal;hyphens:none}"
+        },
+        {
+          "line": 45684,
+          "text": ".v260d-node .v260d-lv{margin-top:4px;font-size:6.8px;line-height:1;color:#8efa72;font-weight:1000}"
+        },
+        {
+          "line": 45685,
+          "text": ".v260d-node.v260d-done .v260d-ring{border-color:#55da45;box-shadow:0 0 0 3px #0b100d,0 0 24px rgba(93,230,67,.20),0 12px 18px #0008,inset 0 0 20px #0009}"
+        },
+        {
+          "line": 45686,
+          "text": ".v260d-node.v260d-done .v260d-panel{border-color:#4da73d}"
+        },
+        {
+          "line": 45687,
+          "text": ".v260d-node.v260d-current{cursor:pointer}"
+        },
+        {
+          "line": 45688,
+          "text": ".v260d-node.v260d-current .v260d-ring{border-color:#6cf34c;box-shadow:0 0 0 3px #0b100d,0 0 28px rgba(108,243,76,.36),0 12px 18px #0008,inset 0 0 20px #0009}"
+        },
+        {
+          "line": 45689,
+          "text": ".v260d-node.v260d-current .v260d-num{border-color:#87f170;color:#bffd9e}"
+        },
+        {
+          "line": 45690,
+          "text": ".v260d-node.v260d-current .v260d-panel{border-color:#6dea55;box-shadow:0 0 22px rgba(98,239,79,.16),0 8px 18px #0008,inset 0 0 14px rgba(75,163,64,.10)}"
+        },
+        {
+          "line": 45691,
+          "text": ".v260d-node.v260d-current .v260d-name{color:#ffffff}"
+        },
+        {
+          "line": 45692,
+          "text": ".v260d-node.v260d-locked{opacity:.88;cursor:default}"
+        },
+        {
+          "line": 45693,
+          "text": ".v260d-node.v260d-locked .v260d-ring{border-color:#5f655e;background:radial-gradient(circle at 50% 44%,#1a1b1a 0,#080908 72%)}"
+        },
+        {
+          "line": 45694,
+          "text": ".v260d-node.v260d-locked .v260d-panel{border-color:#555c53}"
+        },
+        {
+          "line": 45695,
+          "text": ".v260d-node.v260d-locked .v260d-lv{color:#dfe6da}"
+        },
+        {
+          "line": 45696,
+          "text": ".v260d-node.v260d-boss{width:210px;z-index:4}"
+        },
+        {
+          "line": 45697,
+          "text": ".v260d-node.v260d-boss .v260d-ring{width:92px;height:92px;border-color:#c34937;background:radial-gradient(circle at 50% 44%,#3d120d 0,#130606 72%);box-shadow:0 0 0 3px #130808,0 0 26px rgba(246,73,40,.26),0 12px 18px #0008,inset 0 0 24px #000a}"
+        },
+        {
+          "line": 45698,
+          "text": ".v260d-node.v260d-boss .v260d-num{width:40px;height:40px;font-size:22px;border-color:#f08e79}"
+        },
+        {
+          "line": 45699,
+          "text": ".v260d-node.v260d-boss .v260d-panel{width:164px;min-height:62px;border-color:#a23d30;box-shadow:0 0 28px rgba(241,77,42,.12),0 8px 18px #0008,inset 0 0 16px rgba(189,67,54,.10)}"
+        },
+        {
+          "line": 45700,
+          "text": ".v260d-node.v260d-boss.v260d-current .v260d-ring{border-color:#ff7058;box-shadow:0 0 0 3px #130808,0 0 36px rgba(255,91,61,.46),0 12px 18px #0008,inset 0 0 24px #000a}"
+        },
+        {
+          "line": 45701,
+          "text": ".v260d-node.v260d-boss.v260d-done .v260d-ring{border-color:#ee705c;box-shadow:0 0 0 3px #130808,0 0 32px rgba(252,106,84,.30),0 12px 18px #0008,inset 0 0 24px #000a}"
+        },
+        {
+          "line": 45702,
+          "text": ".v260d-node.v260d-boss .v260d-name{font-size:9px}"
+        },
+        {
+          "line": 45703,
+          "text": ".v260d-signboard{position:absolute;left:1.8%;bottom:9.8%;z-index:2;max-width:132px;padding:9px 10px;border:2px solid #8a622c;border-radius:10px;background:linear-gradient(180deg,rgba(82,53,27,.94),rgba(36,23,12,.98));color:#f2e6c9;font-size:8px;line-height:1.18;font-weight:1000;box-shadow:0 10px 16px #0008;transform:rotate(-2deg)}"
+        },
+        {
+          "line": 45704,
+          "text": ".v260d-signboard small{display:block;margin-top:6px;color:#d5c29d;font-size:13px;line-height:1}"
+        },
+        {
+          "line": 45705,
+          "text": ".v260d-panel{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,.8fr) minmax(0,.85fr);gap:10px;margin-top:12px;padding:14px;border:1px solid #35543a;border-radius:16px;background:linear-gradient(180deg,#0b120d,#070b08);box-shadow:inset 0 0 18px #0007,0 7px 18px #0008}"
+        },
+        {
+          "line": 45706,
+          "text": ".v260d-enemy-head{display:flex;gap:12px;align-items:center}"
+        },
+        {
+          "line": 45707,
+          "text": ".v260d-thumb{width:62px;height:62px;border:1px solid #5f704f;border-radius:12px;background:linear-gradient(180deg,#10150f,#050705);display:grid;place-items:center;font-size:38px;box-shadow:inset 0 0 14px #0009}"
+        },
+        {
+          "line": 45708,
+          "text": ".v260d-titleline{color:#f2f4ed;font-size:10px;font-weight:1000;line-height:1.15}"
+        },
+        {
+          "line": 45709,
+          "text": ".v260d-titleline .accent{color:#7feb62}"
+        },
+        {
+          "line": 45710,
+          "text": ".v260d-bossline{margin-top:5px;color:#7fe36a;font-size:7.4px;line-height:1.35}"
+        },
+        {
+          "line": 45711,
+          "text": ".v260d-sectionlabel{margin-top:10px;color:#9aa79d;font-size:6.8px;font-weight:1000;letter-spacing:.14em;text-transform:uppercase}"
+        },
+        {
+          "line": 45712,
+          "text": ".v260d-rewards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;align-content:start}"
+        },
+        {
+          "line": 45713,
+          "text": ".v260d-reward{padding:12px 6px;border:1px solid #35543a;border-radius:12px;background:linear-gradient(180deg,#0b120d,#07100a);text-align:center;color:#f0f2ed;font-size:8px;font-weight:1000;box-shadow:inset 0 0 12px #0008}"
+        },
+        {
+          "line": 45714,
+          "text": ".v260d-reward.legendary{border-color:#d08729;color:#ffd36b;box-shadow:inset 0 0 16px rgba(255,157,39,.12),0 0 14px rgba(255,162,54,.05)}"
+        },
+        {
+          "line": 45715,
+          "text": ".v260d-reward .big{display:block;margin-top:4px;font-size:13px}"
+        },
+        {
+          "line": 45716,
+          "text": ".v260d-stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;align-content:end}"
+        },
+        {
+          "line": 45717,
+          "text": ".v260d-stat{padding:11px;border:1px solid #35543a;border-radius:12px;background:linear-gradient(180deg,#0b120d,#07100a)}"
+        },
+        {
+          "line": 45718,
+          "text": ".v260d-stat span{display:block;color:#839085;font-size:6.8px;font-weight:1000;letter-spacing:.08em;text-transform:uppercase}"
+        },
+        {
+          "line": 45719,
+          "text": ".v260d-stat b{display:block;margin-top:7px;color:#8ef36f;font-size:16px;line-height:1.05}"
+        },
+        {
+          "line": 45720,
+          "text": ".v260d-enter{margin-top:9px;width:100%;min-height:72px;border:0;border-radius:14px;background:linear-gradient(180deg,#89f461,#54d84a);color:#051006;font-size:13px;font-weight:1000;letter-spacing:.03em;box-shadow:0 0 20px rgba(110,240,82,.18), inset 0 1px 0 rgba(255,255,255,.35);cursor:pointer;touch-action:manipulation}"
+        },
+        {
+          "line": 45721,
+          "text": ".v260d-enter.danger{background:linear-gradient(180deg,#ff7d62,#df4530);color:#fff;box-shadow:0 0 20px rgba(255,104,79,.16), inset 0 1px 0 rgba(255,255,255,.2)}"
+        },
+        {
+          "line": 45722,
+          "text": ".v260d-enter:disabled{filter:grayscale(1);opacity:.64;cursor:default}"
+        },
+        {
+          "line": 45724,
+          "text": "  .v260d-top{grid-template-columns:1fr 1.45fr 1fr;gap:8px}"
+        },
+        {
+          "line": 45725,
+          "text": "  .v260d-back,.v260d-ticket{padding:8px 9px;min-height:62px}"
+        },
+        {
+          "line": 45726,
+          "text": "  .v260d-back{font-size:8px}"
+        },
+        {
+          "line": 45727,
+          "text": "  .v260d-back i{font-size:18px}"
+        },
+        {
+          "line": 45728,
+          "text": "  .v260d-ticket b{font-size:7px}"
+        },
+        {
+          "line": 45729,
+          "text": "  .v260d-ticket #dungeonTicketText{font-size:10px}"
+        },
+        {
+          "line": 45730,
+          "text": "  .v260d-sign{padding:9px 10px 8px}"
+        },
+        {
+          "line": 45731,
+          "text": "  .v260d-sign:before,.v260d-sign:after{font-size:16px;top:5px}"
+        },
+        {
+          "line": 45732,
+          "text": "  .v260d-title{font-size:23px}"
+        },
+        {
+          "line": 45733,
+          "text": "  .v260d-sub{font-size:7.2px}"
+        },
+        {
+          "line": 45734,
+          "text": "  .v260d-stage{aspect-ratio:1000/820}"
+        },
+        {
+          "line": 45735,
+          "text": "  .v260d-node{width:92px}"
+        },
+        {
+          "line": 45736,
+          "text": "  .v260d-node .v260d-ring{width:56px;height:56px;font-size:21px;border-width:3px}"
+        },
+        {
+          "line": 45737,
+          "text": "  .v260d-node .v260d-num{top:-10px;width:28px;height:28px;font-size:16px}"
+        },
+        {
+          "line": 45738,
+          "text": "  .v260d-node .v260d-check,.v260d-node .v260d-lock{width:22px;height:22px;font-size:12px}"
+        }
+      ]
+    },
+    {
+      "path": "js/features/dungeon/beta/v8009-d2-detail-render-lock.js",
+      "hits": {
+        "v260RenderDetail": 4
+      },
+      "snippets": [
+        {
+          "line": 6,
+          "text": "const names=['v251RenderDetail','v244RenderSelectedDungeonMap','v064RenderMap','v261RenderDetail','v260RenderDetail','v426RenderDetail','v427RenderDetail'];"
+        },
+        {
+          "line": 59,
+          "text": "    else if(name==='v260RenderDetail')v260RenderDetail=wrapped;"
+        },
+        {
+          "line": 85,
+          "text": "const canonicalAliases=['v251RenderDetail','v244RenderSelectedDungeonMap','v064RenderMap','v260RenderDetail'];"
+        }
+      ]
+    },
+    {
+      "path": "js/features/dungeon/beta/v8009-d4-v260-detail.js",
+      "hits": {
+        "v260RenderDetail": 5,
+        "v260d-": 40
+      },
+      "snippets": [
+        {
+          "line": 31,
+          "text": "    const classes=['v260d-node',`v260d-${state}`,boss?'v260d-boss':''].filter(Boolean).join(' ');"
+        },
+        {
+          "line": 33,
+          "text": "      <div class=\"v260d-ring\">"
+        },
+        {
+          "line": 35,
+          "text": "        <span class=\"v260d-num\">${ri+1}</span>"
+        },
+        {
+          "line": 36,
+          "text": "        ${state==='done' ? '<span class=\"v260d-check\">✓</span>' : (state==='locked' ? '<span class=\"v260d-lock\">🔒</span>' : '')}"
+        },
+        {
+          "line": 38,
+          "text": "      <div class=\"v260d-panel\">"
+        },
+        {
+          "line": 39,
+          "text": "        <div class=\"v260d-name\">${esc(roomName(di,ri))}</div>"
+        },
+        {
+          "line": 40,
+          "text": "        <div class=\"v260d-lv\">${boss?'BOSS · ':''}Lv. ${lv}</div>"
+        },
+        {
+          "line": 44,
+          "text": "  window.v260RenderDetail=function(){"
+        },
+        {
+          "line": 68,
+          "text": "      <div class=\"v260d-shell\">"
+        },
+        {
+          "line": 69,
+          "text": "        <div class=\"v260d-top\">"
+        },
+        {
+          "line": 70,
+          "text": "          <button type=\"button\" class=\"v260d-back\" id=\"v260BackWorld\"><i>‹</i><span>Zurück zur<br>Dungeon-Weltkarte</span></button>"
+        },
+        {
+          "line": 71,
+          "text": "          <div class=\"v260d-sign\">"
+        },
+        {
+          "line": 72,
+          "text": "            <div class=\"v260d-kicker\">Dungeon ${di+1}</div>"
+        },
+        {
+          "line": 73,
+          "text": "            <div class=\"v260d-title\">${esc(title)}</div>"
+        },
+        {
+          "line": 74,
+          "text": "            <div class=\"v260d-sub\">Besiege alle 10 Gegner der Reihe nach · Fortschritt ${progress}/10</div>"
+        },
+        {
+          "line": 76,
+          "text": "          <div class=\"v260d-ticket\"><b>🎟️ Dungeon-Versuch</b><span id=\"dungeonTicketText\">${esc(typeof dungeonWaitText==='function'?dungeonWaitText():'Gratisversuch prüfen …')}</span></div>"
+        },
+        {
+          "line": 78,
+          "text": "        <div class=\"v260d-stage\">"
+        },
+        {
+          "line": 79,
+          "text": "          <div class=\"v260d-stagebg\" style=\"background-image:url('${art}')\"></div>"
+        },
+        {
+          "line": 80,
+          "text": "          <div class=\"v260d-stagefx\"></div>"
+        },
+        {
+          "line": 81,
+          "text": "          <svg class=\"v260d-path\" viewBox=\"0 0 100 100\" preserveAspectRatio=\"none\" aria-hidden=\"true\">"
+        },
+        {
+          "line": 82,
+          "text": "            <polyline class=\"v260d-road-bg\" points=\"11,24 21,30 29,35 20,44 10,49 20,56 32,61 41,65 52,68 62,65 72,60 80,55 89,50 90,63 89,80\"></polyline>"
+        },
+        {
+          "line": 83,
+          "text": "            <polyline class=\"v260d-road\" points=\"11,24 21,30 29,35 20,44 10,49 20,56 32,61 41,65 52,68 62,65 72,60 80,55 89,50 90,63 89,80\"></polyline>"
+        },
+        {
+          "line": 86,
+          "text": "          <div class=\"v260d-signboard\">ACHTUNG<br>${esc(title.slice(4, title.length>23?23:title.length) || 'DUNGEON')}<br>BETRETEN AUF<br>EIGENE GEFAHR!<small>☠</small></div>"
+        },
+        {
+          "line": 88,
+          "text": "        <div class=\"v260d-panel\">"
+        },
+        {
+          "line": 90,
+          "text": "            <div class=\"v260d-enemy-head\">"
+        },
+        {
+          "line": 91,
+          "text": "              <div class=\"v260d-thumb\">${esc(e.icon||'👹')}</div>"
+        },
+        {
+          "line": 93,
+          "text": "                <div class=\"v260d-titleline\">${completed ? 'DUNGEON ABGESCHLOSSEN' : `${ri+1} · ${esc(e.name||roomName(di,ri))}${boss?' – BOSS':''}`}</div>"
+        },
+        {
+          "line": 94,
+          "text": "                <div class=\"v260d-bossline\">${completed ? 'Alle 10 Gegner wurden besiegt.' : `${boss?'BOSS':'Gegner'} · Empfohlen Level ${bal?.rec||roomLevel(di,ri)} · ${bal?.hp||0} HP`}</div>"
+        },
+        {
+          "line": 97,
+          "text": "            <div class=\"v260d-sectionlabel\">Mögliche Belohnungen</div>"
+        },
+        {
+          "line": 99,
+          "text": "          <div class=\"v260d-rewards\">"
+        },
+        {
+          "line": 100,
+          "text": "            <div class=\"v260d-reward ${boss?'legendary':''}\">${boss?'LEGENDÄR':'ITEM'}<span class=\"big\">${boss?'🟠':'🎁'}</span></div>"
+        },
+        {
+          "line": 101,
+          "text": "            <div class=\"v260d-reward\">EXP<span class=\"big\">${xp}</span></div>"
+        },
+        {
+          "line": 102,
+          "text": "            <div class=\"v260d-reward\">GOLD<span class=\"big\">${gold}</span></div>"
+        },
+        {
+          "line": 103,
+          "text": "            <div class=\"v260d-reward\">HARZ<span class=\"big\">🟢</span></div>"
+        },
+        {
+          "line": 106,
+          "text": "            <div class=\"v260d-stats\">"
+        },
+        {
+          "line": 107,
+          "text": "              <div class=\"v260d-stat\"><span>Deine Stärke</span><b>${Math.round(typeof combatPower==='function' ? combatPower() : 0)}</b></div>"
+        },
+        {
+          "line": 108,
+          "text": "              <div class=\"v260d-stat\"><span>Gegner</span><b>${completed ? '—' : `Lv. ${bal?.rec||1}`}</b></div>"
+        },
+        {
+          "line": 110,
+          "text": "            <button type=\"button\" class=\"v260d-enter ${boss&&!completed?'danger':''}\" id=\"v260EnterCurrent\" ${completed?'disabled':''}>${completed ? '✓ DUNGEON ABGESCHLOSSEN' : (boss ? '⚔️ BOSS ANGREIFEN' : '⚔️ GEGNER ANGREIFEN')}</button>"
+        },
+        {
+          "line": 137,
+          "text": "  window.v244RenderSelectedDungeonMap=window.v260RenderDetail;"
+        },
+        {
+          "line": 138,
+          "text": "  window.v064RenderMap=window.v260RenderDetail;"
+        },
+        {
+          "line": 139,
+          "text": "  try{v244RenderSelectedDungeonMap=window.v260RenderDetail;v064RenderMap=window.v260RenderDetail;}catch(_){ }"
+        }
+      ]
+    },
+    {
+      "path": "js/features/dungeon/beta/v8009-d5-final-detail-seal.js",
+      "hits": {
+        "v260RenderDetail": 3
+      },
+      "snippets": [
+        {
+          "line": 7,
+          "text": "const ALIASES=['v251RenderDetail','v244RenderSelectedDungeonMap','v064RenderMap','v260RenderDetail'];"
+        },
+        {
+          "line": 41,
+          "text": "      else if(name==='v260RenderDetail')v260RenderDetail=fn;"
+        }
+      ]
+    },
+    {
+      "path": "css/features/dungeon/beta/v8009-d4-v260-detail.css",
+      "hits": {
+        "v260d-": 195
+      },
+      "snippets": [
+        {
+          "line": 15,
+          "text": ".v260d-shell{position:relative;z-index:1;padding:12px}"
+        },
+        {
+          "line": 16,
+          "text": ".v260d-top{display:grid;grid-template-columns:minmax(0,132px) minmax(0,1fr) minmax(0,132px);gap:10px;align-items:start}"
+        },
+        {
+          "line": 17,
+          "text": ".v260d-back,.v260d-ticket{border:1px solid #78592a;border-radius:14px;background:linear-gradient(180deg,#14180f,#0a0d08);box-shadow:inset 0 0 18px #0007,0 5px 14px #0008;padding:10px 12px;min-height:70px}"
+        },
+        {
+          "line": 18,
+          "text": ".v260d-back{display:flex;align-items:center;gap:10px;color:#eef3e6;font-weight:1000;font-size:9px;line-height:1.15;cursor:pointer;touch-action:manipulation}"
+        },
+        {
+          "line": 19,
+          "text": ".v260d-back i{font-style:normal;font-size:21px;line-height:1;color:#f6efcf}"
+        },
+        {
+          "line": 20,
+          "text": ".v260d-ticket b{display:block;color:#f4eed7;font-size:8px;letter-spacing:.04em;text-transform:uppercase}"
+        },
+        {
+          "line": 21,
+          "text": ".v260d-ticket #dungeonTicketText{display:block;margin-top:8px;color:#84f06f;font-size:11px;font-weight:1000;text-align:right}"
+        },
+        {
+          "line": 22,
+          "text": ".v260d-sign{position:relative;padding:10px 12px 9px;border:1px solid #6e5328;border-radius:16px;background:linear-gradient(180deg,#3f2b17,#20140d);box-shadow:0 8px 18px #0008,inset 0 0 18px rgba(0,0,0,.42);text-align:center}"
+        },
+        {
+          "line": 23,
+          "text": ".v260d-sign:before,.v260d-sign:after{content:\"🍄\";position:absolute;top:6px;font-size:18px;opacity:.92;filter:drop-shadow(0 2px 2px #0008)}"
+        },
+        {
+          "line": 24,
+          "text": ".v260d-sign:before{left:10px} .v260d-sign:after{right:10px}"
+        },
+        {
+          "line": 25,
+          "text": ".v260d-kicker{color:#6cf14c;font-weight:1000;font-size:8px;letter-spacing:.13em;text-transform:uppercase}"
+        },
+        {
+          "line": 26,
+          "text": ".v260d-title{margin-top:4px;color:#f0d39a;font-family:Georgia,serif;font-size:28px;font-weight:1000;letter-spacing:.02em;line-height:1.02;text-shadow:0 3px 0 #43250d,0 0 12px rgba(0,0,0,.42)}"
+        },
+        {
+          "line": 27,
+          "text": ".v260d-sub{margin-top:7px;color:#edf0ea;font-size:8px;line-height:1.35}"
+        },
+        {
+          "line": 28,
+          "text": ".v260d-stage{position:relative;overflow:hidden;margin-top:12px;border:2px solid #8a622c;border-radius:18px;background:#050906;aspect-ratio:1000/760;box-shadow:inset 0 0 55px #000a,0 10px 24px #0008}"
+        },
+        {
+          "line": 29,
+          "text": ".v260d-stagebg{position:absolute;inset:0;background-position:center;background-size:cover;filter:saturate(1.08) brightness(.82)}"
+        },
+        {
+          "line": 30,
+          "text": ".v260d-stagefx{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.24),rgba(0,0,0,.08) 14%,rgba(0,0,0,.05) 58%,rgba(0,0,0,.35) 100%),radial-gradient(circle at 16% 10%,rgba(255,219,130,.08),transparent 18%),radial-gradient(circle at 88% 82%,rgba(255,62,44,.10),transparent 21%),radial-gradient(circle at 34% 52%,rgba(54,255,127,.08),transparent 22%)}"
+        },
+        {
+          "line": 31,
+          "text": ".v260d-path{position:absolute;inset:0;pointer-events:none;z-index:1}"
+        },
+        {
+          "line": 32,
+          "text": ".v260d-path .v260d-road-bg{fill:none;stroke:#271a0b;stroke-width:10;stroke-linecap:round;stroke-linejoin:round;opacity:.86}"
+        },
+        {
+          "line": 33,
+          "text": ".v260d-path .v260d-road{fill:none;stroke:#d7b359;stroke-width:6.3;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:1 12;opacity:.95;filter:drop-shadow(0 0 4px rgba(255,212,104,.42))}"
+        },
+        {
+          "line": 34,
+          "text": ".v260d-node{position:absolute;left:calc(var(--x) * 1%);top:calc(var(--y) * 1%);transform:translate(-50%,-50%);width:122px;background:none;border:0;padding:0;z-index:3;color:#fff;text-align:center;touch-action:manipulation}"
+        },
+        {
+          "line": 35,
+          "text": ".v260d-node .v260d-ring{position:relative;width:76px;height:76px;margin:0 auto;border:4px solid #4b4f4a;border-radius:50%;background:radial-gradient(circle at 50% 44%,#1e221e 0,#0c0f0d 72%);box-shadow:0 0 0 3px #0b100d,0 12px 18px #0008,inset 0 0 20px #0009;display:grid;place-items:center;font-size:31px;overflow:visible}"
+        },
+        {
+          "line": 36,
+          "text": ".v260d-node .v260d-num{position:absolute;top:-13px;left:50%;transform:translateX(-50%);width:34px;height:34px;border:2px solid #6b706a;border-radius:50%;background:linear-gradient(180deg,#151816,#070907);display:grid;place-items:center;font-family:Georgia,serif;font-size:18px;font-weight:1000;color:#f0f0ef;box-shadow:0 4px 8px #000a}"
+        },
+        {
+          "line": 37,
+          "text": ".v260d-node .v260d-check{position:absolute;right:-4px;bottom:0;width:28px;height:28px;border:2px solid #08100a;border-radius:50%;background:#23af34;display:grid;place-items:center;font-size:16px;font-weight:1000;color:#fff;box-shadow:0 4px 8px #000a}"
+        },
+        {
+          "line": 38,
+          "text": ".v260d-node .v260d-lock{position:absolute;right:-3px;bottom:2px;width:27px;height:27px;border:2px solid #060907;border-radius:50%;background:#f2b521;display:grid;place-items:center;font-size:16px;box-shadow:0 4px 8px #000a}"
+        },
+        {
+          "line": 39,
+          "text": ".v260d-node .v260d-panel{margin:8px auto 0;min-height:56px;width:116px;padding:8px 6px 7px;border:2px solid #48553e;border-radius:12px;background:linear-gradient(180deg,rgba(8,12,8,.96),rgba(3,6,3,.98));box-shadow:0 8px 18px #0008,inset 0 0 14px rgba(75,163,64,.06)}"
+        },
+        {
+          "line": 40,
+          "text": ".v260d-node .v260d-name{font-size:7.4px;line-height:1.05;font-weight:1000;color:#f2f4ed;word-break:normal;overflow-wrap:normal;hyphens:none}"
+        },
+        {
+          "line": 41,
+          "text": ".v260d-node .v260d-lv{margin-top:4px;font-size:6.8px;line-height:1;color:#8efa72;font-weight:1000}"
+        },
+        {
+          "line": 42,
+          "text": ".v260d-node.v260d-done .v260d-ring{border-color:#55da45;box-shadow:0 0 0 3px #0b100d,0 0 24px rgba(93,230,67,.20),0 12px 18px #0008,inset 0 0 20px #0009}"
+        },
+        {
+          "line": 43,
+          "text": ".v260d-node.v260d-done .v260d-panel{border-color:#4da73d}"
+        },
+        {
+          "line": 44,
+          "text": ".v260d-node.v260d-current{cursor:pointer}"
+        },
+        {
+          "line": 45,
+          "text": ".v260d-node.v260d-current .v260d-ring{border-color:#6cf34c;box-shadow:0 0 0 3px #0b100d,0 0 28px rgba(108,243,76,.36),0 12px 18px #0008,inset 0 0 20px #0009}"
+        },
+        {
+          "line": 46,
+          "text": ".v260d-node.v260d-current .v260d-num{border-color:#87f170;color:#bffd9e}"
+        },
+        {
+          "line": 47,
+          "text": ".v260d-node.v260d-current .v260d-panel{border-color:#6dea55;box-shadow:0 0 22px rgba(98,239,79,.16),0 8px 18px #0008,inset 0 0 14px rgba(75,163,64,.10)}"
+        },
+        {
+          "line": 48,
+          "text": ".v260d-node.v260d-current .v260d-name{color:#ffffff}"
+        },
+        {
+          "line": 49,
+          "text": ".v260d-node.v260d-locked{opacity:.88;cursor:default}"
+        },
+        {
+          "line": 50,
+          "text": ".v260d-node.v260d-locked .v260d-ring{border-color:#5f655e;background:radial-gradient(circle at 50% 44%,#1a1b1a 0,#080908 72%)}"
+        },
+        {
+          "line": 51,
+          "text": ".v260d-node.v260d-locked .v260d-panel{border-color:#555c53}"
+        },
+        {
+          "line": 52,
+          "text": ".v260d-node.v260d-locked .v260d-lv{color:#dfe6da}"
+        },
+        {
+          "line": 53,
+          "text": ".v260d-node.v260d-boss{width:210px;z-index:4}"
+        },
+        {
+          "line": 54,
+          "text": ".v260d-node.v260d-boss .v260d-ring{width:92px;height:92px;border-color:#c34937;background:radial-gradient(circle at 50% 44%,#3d120d 0,#130606 72%);box-shadow:0 0 0 3px #130808,0 0 26px rgba(246,73,40,.26),0 12px 18px #0008,inset 0 0 24px #000a}"
+        },
+        {
+          "line": 55,
+          "text": ".v260d-node.v260d-boss .v260d-num{width:40px;height:40px;font-size:22px;border-color:#f08e79}"
+        },
+        {
+          "line": 56,
+          "text": ".v260d-node.v260d-boss .v260d-panel{width:164px;min-height:62px;border-color:#a23d30;box-shadow:0 0 28px rgba(241,77,42,.12),0 8px 18px #0008,inset 0 0 16px rgba(189,67,54,.10)}"
+        },
+        {
+          "line": 57,
+          "text": ".v260d-node.v260d-boss.v260d-current .v260d-ring{border-color:#ff7058;box-shadow:0 0 0 3px #130808,0 0 36px rgba(255,91,61,.46),0 12px 18px #0008,inset 0 0 24px #000a}"
+        },
+        {
+          "line": 58,
+          "text": ".v260d-node.v260d-boss.v260d-done .v260d-ring{border-color:#ee705c;box-shadow:0 0 0 3px #130808,0 0 32px rgba(252,106,84,.30),0 12px 18px #0008,inset 0 0 24px #000a}"
+        },
+        {
+          "line": 59,
+          "text": ".v260d-node.v260d-boss .v260d-name{font-size:9px}"
+        },
+        {
+          "line": 60,
+          "text": ".v260d-signboard{position:absolute;left:1.8%;bottom:9.8%;z-index:2;max-width:132px;padding:9px 10px;border:2px solid #8a622c;border-radius:10px;background:linear-gradient(180deg,rgba(82,53,27,.94),rgba(36,23,12,.98));color:#f2e6c9;font-size:8px;line-height:1.18;font-weight:1000;box-shadow:0 10px 16px #0008;transform:rotate(-2deg)}"
+        },
+        {
+          "line": 61,
+          "text": ".v260d-signboard small{display:block;margin-top:6px;color:#d5c29d;font-size:13px;line-height:1}"
+        },
+        {
+          "line": 62,
+          "text": ".v260d-panel{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,.8fr) minmax(0,.85fr);gap:10px;margin-top:12px;padding:14px;border:1px solid #35543a;border-radius:16px;background:linear-gradient(180deg,#0b120d,#070b08);box-shadow:inset 0 0 18px #0007,0 7px 18px #0008}"
+        },
+        {
+          "line": 63,
+          "text": ".v260d-enemy-head{display:flex;gap:12px;align-items:center}"
+        },
+        {
+          "line": 64,
+          "text": ".v260d-thumb{width:62px;height:62px;border:1px solid #5f704f;border-radius:12px;background:linear-gradient(180deg,#10150f,#050705);display:grid;place-items:center;font-size:38px;box-shadow:inset 0 0 14px #0009}"
+        },
+        {
+          "line": 65,
+          "text": ".v260d-titleline{color:#f2f4ed;font-size:10px;font-weight:1000;line-height:1.15}"
+        },
+        {
+          "line": 66,
+          "text": ".v260d-titleline .accent{color:#7feb62}"
+        },
+        {
+          "line": 67,
+          "text": ".v260d-bossline{margin-top:5px;color:#7fe36a;font-size:7.4px;line-height:1.35}"
+        },
+        {
+          "line": 68,
+          "text": ".v260d-sectionlabel{margin-top:10px;color:#9aa79d;font-size:6.8px;font-weight:1000;letter-spacing:.14em;text-transform:uppercase}"
+        },
+        {
+          "line": 69,
+          "text": ".v260d-rewards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;align-content:start}"
+        },
+        {
+          "line": 70,
+          "text": ".v260d-reward{padding:12px 6px;border:1px solid #35543a;border-radius:12px;background:linear-gradient(180deg,#0b120d,#07100a);text-align:center;color:#f0f2ed;font-size:8px;font-weight:1000;box-shadow:inset 0 0 12px #0008}"
+        },
+        {
+          "line": 71,
+          "text": ".v260d-reward.legendary{border-color:#d08729;color:#ffd36b;box-shadow:inset 0 0 16px rgba(255,157,39,.12),0 0 14px rgba(255,162,54,.05)}"
+        },
+        {
+          "line": 72,
+          "text": ".v260d-reward .big{display:block;margin-top:4px;font-size:13px}"
+        },
+        {
+          "line": 73,
+          "text": ".v260d-stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;align-content:end}"
+        },
+        {
+          "line": 74,
+          "text": ".v260d-stat{padding:11px;border:1px solid #35543a;border-radius:12px;background:linear-gradient(180deg,#0b120d,#07100a)}"
+        },
+        {
+          "line": 75,
+          "text": ".v260d-stat span{display:block;color:#839085;font-size:6.8px;font-weight:1000;letter-spacing:.08em;text-transform:uppercase}"
+        },
+        {
+          "line": 76,
+          "text": ".v260d-stat b{display:block;margin-top:7px;color:#8ef36f;font-size:16px;line-height:1.05}"
+        },
+        {
+          "line": 77,
+          "text": ".v260d-enter{margin-top:9px;width:100%;min-height:72px;border:0;border-radius:14px;background:linear-gradient(180deg,#89f461,#54d84a);color:#051006;font-size:13px;font-weight:1000;letter-spacing:.03em;box-shadow:0 0 20px rgba(110,240,82,.18), inset 0 1px 0 rgba(255,255,255,.35);cursor:pointer;touch-action:manipulation}"
+        },
+        {
+          "line": 78,
+          "text": ".v260d-enter.danger{background:linear-gradient(180deg,#ff7d62,#df4530);color:#fff;box-shadow:0 0 20px rgba(255,104,79,.16), inset 0 1px 0 rgba(255,255,255,.2)}"
+        },
+        {
+          "line": 79,
+          "text": ".v260d-enter:disabled{filter:grayscale(1);opacity:.64;cursor:default}"
+        },
+        {
+          "line": 81,
+          "text": "  .v260d-top{grid-template-columns:1fr 1.45fr 1fr;gap:8px}"
+        },
+        {
+          "line": 82,
+          "text": "  .v260d-back,.v260d-ticket{padding:8px 9px;min-height:62px}"
+        },
+        {
+          "line": 83,
+          "text": "  .v260d-back{font-size:8px}"
+        },
+        {
+          "line": 84,
+          "text": "  .v260d-back i{font-size:18px}"
+        },
+        {
+          "line": 85,
+          "text": "  .v260d-ticket b{font-size:7px}"
+        },
+        {
+          "line": 86,
+          "text": "  .v260d-ticket #dungeonTicketText{font-size:10px}"
+        },
+        {
+          "line": 87,
+          "text": "  .v260d-sign{padding:9px 10px 8px}"
+        },
+        {
+          "line": 88,
+          "text": "  .v260d-sign:before,.v260d-sign:after{font-size:16px;top:5px}"
+        },
+        {
+          "line": 89,
+          "text": "  .v260d-title{font-size:23px}"
+        },
+        {
+          "line": 90,
+          "text": "  .v260d-sub{font-size:7.2px}"
+        },
+        {
+          "line": 91,
+          "text": "  .v260d-stage{aspect-ratio:1000/820}"
+        },
+        {
+          "line": 92,
+          "text": "  .v260d-node{width:92px}"
+        },
+        {
+          "line": 93,
+          "text": "  .v260d-node .v260d-ring{width:56px;height:56px;font-size:21px;border-width:3px}"
+        },
+        {
+          "line": 94,
+          "text": "  .v260d-node .v260d-num{top:-10px;width:28px;height:28px;font-size:16px}"
+        },
+        {
+          "line": 95,
+          "text": "  .v260d-node .v260d-check,.v260d-node .v260d-lock{width:22px;height:22px;font-size:12px}"
+        }
+      ]
+    }
+  ],
+  "safe_to_unload_beta": false
+}
