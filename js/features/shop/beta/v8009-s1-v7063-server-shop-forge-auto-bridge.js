@@ -217,14 +217,62 @@
   });
  },true);
 
- /* Server-owned prismatische Schmiede. */
- document.addEventListener('click',async ev=>{
-  const b=ev.target?.closest?.('#v488Craft');if(!b||!(await loadStage()))return;
+ /* Server-owned Harzschmiede. Authority clicks are captured synchronously,
+    before any historical local handler can mutate inventory/currencies. */
+ document.addEventListener('click',ev=>{
+  const dismantleBtn=ev.target?.closest?.('#v488Dismantle');
+  const craftBtn=ev.target?.closest?.('#v488Craft');
+  if((!dismantleBtn&&!craftBtn)||!window.v7081UseAuthority?.('items'))return;
+
   ev.preventDefault();ev.stopPropagation();ev.stopImmediatePropagation();
-  const lv=Math.max(1,Math.min(300,Math.floor(Number(s?.level)||1))),tier=Math.floor((lv-1)/25),frag=150+tier*40;
-  const gold=Math.max(1000,Math.round(typeof window.v6168PrismGoldCost==='function'?window.v6168PrismGoldCost(lv):(100000+tier*75000)));
-  const ok=await confirmBox(`Prismatisches Item serverseitig schmieden?\n\n${frag} Samenfragmente\n${gold.toLocaleString('de-DE')} Gold`,{title:'🌈 Prismatisches Item schmieden',type:'confirm',okText:'Jetzt schmieden'});if(!ok)return;
-  await q(async()=>{try{const r=await rpc('v7097_forge_prismatic',{p_request_id:req('v7097_prism')});toast('🌈 Prismatisches Item geschmiedet!','success',String(r.item?.name||'Neues prismatisches Item'));if(r?.item)void window.v7097ShowItemResult?.(r.item,'🌈 Prismatisches Item geschmiedet');return true}catch(e){S.lastError=String(e?.message||e);toast('Schmieden abgelehnt','error',S.lastError);return false}});
+
+  if(dismantleBtn){
+   void q(async()=>{
+    if(!(await loadStage()))return false;
+    const snap=window.v488ForgeSelectionSnapshot?.()||{};
+    const ids=Array.isArray(snap.ids)?snap.ids.filter(Boolean):[];
+    if(!ids.length)return false;
+    const warning=Number(snap.valuable)>0?`\n\n⚠️ ${Number(snap.valuable)} epische/legendäre Gegenstände sind ausgewählt.`:'';
+    const gains=[
+      `${Number(snap.fragments)||0} Samenfragmente`,
+      Number(snap.goldRefund)>0?`${Number(snap.goldRefund).toLocaleString('de-DE')} Gold Händler-Rückgewinnung`:null
+    ].filter(Boolean).join(' + ');
+    const ok=await confirmBox(
+      `${ids.length} Gegenstand${ids.length===1?'':'e'} wirklich serverseitig zerlegen?\n\nVorschau: ${gains}.${warning}`,
+      {title:'In der Harzschmiede zerlegen?',type:Number(snap.valuable)>0?'error':'warn',okText:`Zerlegen · ${ids.length} Item${ids.length===1?'':'s'}`}
+    );
+    if(!ok)return false;
+    try{
+      const r=await rpc('v7062_dismantle_items',{p_item_ids:ids,p_request_id:req('v7062_dismantle')});
+      window.v488ForgeClearSelection?.();
+      toast('🔨 Server-Zerlegung bestätigt','success',`${Number(r.removed)||ids.length} Item${(Number(r.removed)||ids.length)===1?'':'s'} · +${Number(r.fragments_awarded)||0} Fragmente${Number(r.gold_refund)>0?` · +${Number(r.gold_refund).toLocaleString('de-DE')} Gold`:''}`);
+      return true;
+    }catch(e){
+      S.lastError=String(e?.message||e);
+      toast('Zerlegen abgelehnt','error',S.lastError);
+      return false;
+    }
+   });
+   return;
+  }
+
+  void q(async()=>{
+    if(!(await loadStage()))return false;
+    const lv=Math.max(1,Math.min(300,Math.floor(Number(s?.level)||1))),tier=Math.floor((lv-1)/25),frag=150+tier*40;
+    const gold=Math.max(1000,Math.round(typeof window.v6168PrismGoldCost==='function'?window.v6168PrismGoldCost(lv):(100000+tier*75000)));
+    const ok=await confirmBox(`Prismatisches Item serverseitig schmieden?\n\n${frag} Samenfragmente\n${gold.toLocaleString('de-DE')} Gold`,{title:'🌈 Prismatisches Item schmieden',type:'confirm',okText:'Jetzt schmieden'});
+    if(!ok)return false;
+    try{
+      const r=await rpc('v7097_forge_prismatic',{p_request_id:req('v7097_prism')});
+      toast('🌈 Prismatisches Item geschmiedet!','success',String(r.item?.name||'Neues prismatisches Item'));
+      if(r?.item)void window.v7097ShowItemResult?.(r.item,'🌈 Prismatisches Item geschmiedet');
+      return true;
+    }catch(e){
+      S.lastError=String(e?.message||e);
+      toast('Schmieden abgelehnt','error',S.lastError);
+      return false;
+    }
+   });
  },true);
 
  /* Multi-Sell stays server-authoritative by selling each selected owned item through V7.062. */
