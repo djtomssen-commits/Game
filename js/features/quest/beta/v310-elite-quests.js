@@ -88,19 +88,22 @@ makeQuest=function(){
  return q;
 };
 
-/* claimQuest is the only allowed window for automatic post-completion offers. */
-const v310BaseClaimQuest=claimQuest;
-claimQuest=function(...args){
+/* V8.009 Quest consolidation:
+   Local/Mirror claim owner v235 opens/closes the completion offer window
+   directly. Keep the anti-reroll semantics without wrapping claimQuest. */
+function v310BeginQuestClaim(){
  const active=s.quests?.active;
  const ready=!!active && Date.now()>=Number(active.ends||0);
- if(!ready)return v310BaseClaimQuest.apply(this,args);
-
+ if(!ready)return null;
  v310CompletionOfferWindow=true;
  v310BatchIndex=0;
+ return active;
+}
+window.v310BeginQuestClaim=v310BeginQuestClaim;
+
+function v310FinishQuestClaim(active,paid){
  try{
-   const result=v310BaseClaimQuest.apply(this,args);
-   const paid=!s.quests?.active;
-   if(paid && active.v310Elite){
+   if(paid && active?.v310Elite){
      /* Guaranteed Elite rewards, added only after successful quest payout. */
      const harz=1+Math.floor(Math.random()*3); /* 1-3 guaranteed */
      s.harzTaler=(Number(s.harzTaler)||0)+harz;
@@ -109,19 +112,18 @@ claimQuest=function(...args){
      s.inventory.push(item);
      active.v310EliteHarz=harz;
      active.v310EliteItemName=item.name;
-     /* Carry data into V4.02 snapshot's quest copy via the object it captured. */
      window.v310LastEliteReward={questId:active.id,harz,itemName:item.name};
      try{persist(false)}catch(e){}
      try{v282PaintHarzCard()}catch(e){try{v069SyncCurrencies()}catch(_){}}
    }
-   return result;
  }finally{
    v310CompletionOfferWindow=false;
    v310EliteRolledThisBatch=false;
    v310EliteTarget=-1;
    v310BatchIndex=0;
  }
-};
+}
+window.v310FinishQuestClaim=v310FinishQuestClaim;
 
 /* Add Elite guaranteed rewards to the existing reward modal.
    Inventory/Harz deltas are already detected by V4.02; this labels them clearly. */
@@ -162,9 +164,5 @@ function v310PaintEliteQuests(){
 }
 
 /* Final paint function is called by the later canonical quest render chain.
-   No renderQuests wrapper is installed here anymore. */
-setTimeout(()=>{
- try{requestAnimationFrame(v310PaintEliteQuests)}catch(e){}
- /* V7.151: no third startup full render. */
- const line=document.querySelector('#v141VersionLine');
-},300);
+   No renderQuests wrapper or delayed startup repaint is installed here. */
+window.v310PaintEliteQuests=v310PaintEliteQuests;
