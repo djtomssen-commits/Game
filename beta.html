@@ -61571,7 +61571,7 @@ body.v495-seed-open{overflow:hidden!important}
  document.addEventListener('DOMContentLoaded',()=>{retireLegacyOg(true);stamp()},{once:true});
  window.addEventListener('pageshow',()=>{retireLegacyOg(true);stamp()},{passive:true});
  document.addEventListener('visibilitychange',()=>{if(!document.hidden){retireLegacyOg(true);stamp()}},{passive:true});
- [250,1200,5000,15000].forEach(ms=>setTimeout(()=>{retireLegacyOg(true);stamp()},ms));
+ window.addEventListener('growlegends:account-ready',()=>{retireLegacyOg(true);stamp()},{passive:true});
 })();
 </script>
 
@@ -82877,7 +82877,8 @@ body.v650-native-safe #v032MenuPanel{
   window.addEventListener('resize',()=>setTimeout(measureHud,0),{passive:true});
   window.addEventListener('orientationchange',()=>setTimeout(measureHud,80),{passive:true});
   document.addEventListener('DOMContentLoaded',()=>{bind();queueReset()},{once:true});
-  [0,80,300,900].forEach(ms=>setTimeout(()=>{bind();queueReset()},ms));
+  window.addEventListener('pageshow',()=>{bind();queueReset()},{passive:true});
+  window.addEventListener('growlegends:account-ready',()=>{bind();queueReset()},{passive:true});
 })();
 </script>
 <!-- ===== /V6.58 ===== -->
@@ -102179,9 +102180,9 @@ document.addEventListener('click',e=>{
   if(el.closest('[data-v6338-select],[data-v6338-clear]'))setTimeout(v6340SyncCharacterTitle,20);
   if(el.closest('[data-screen="character"],[data-go="character"],#character'))setTimeout(v6340SyncCharacterTitle,120);
 },true);
-window.addEventListener('growlegends:account-ready',()=>setTimeout(v6340SyncCharacterTitle,240));
-window.addEventListener('pageshow',()=>setTimeout(v6340SyncCharacterTitle,220),{passive:true});
-window.addEventListener('growlegends:navigation-ready',()=>setTimeout(v6340SyncCharacterTitle,160),{passive:true});
+window.addEventListener('growlegends:account-ready',v6340SyncCharacterTitle,{passive:true});
+window.addEventListener('pageshow',v6340SyncCharacterTitle,{passive:true});
+window.addEventListener('growlegends:navigation-ready',v6340SyncCharacterTitle,{passive:true});
 
 try{
   if(typeof render==='function'&&!window.__V6340_RENDER_WRAP__){
@@ -102197,7 +102198,7 @@ try{
   }
 }catch(_){ }
 
-[0,220,1100,2400].forEach(ms=>setTimeout(v6340SyncCharacterTitle,ms));
+
 window.v6340CharacterTitleDiagnostics=()=>({
   version:'V6.347',
   active:v6340ActiveLabel(),
