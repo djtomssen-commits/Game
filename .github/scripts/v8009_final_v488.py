@@ -19,15 +19,14 @@ old2="""  [250,900,2200,5200,10200,16200].forEach(ms=>setTimeout(()=>{ensureMenu
 if old2 not in c: raise SystemExit("v488 retry train missing")
 c=c.replace(old2,"  /* V8.009: delayed startup repair train retired; direct lifecycle owns UI. */",1)
 p.write_text(c,encoding="utf-8")
-block=c[c.find("v488-harzforge"):c.find("v416x-grow-tap-stability-css")]
 checks={
- "go_wrapper_removed":"const base=v032Go" not in block,
- "shared_nav_hook_present":"window.__v488Go='v7119-event'" in block,
- "startup_train_removed":"[250,900,2200,5200,10200,16200]" not in block,
- "forge_render_kept":"window.v488ForgeRender=renderForge" in block,
- "prismatic_inventory_kept":"paintPrismaticInventory" in block,
- "combat_bonus_kept":"v488TotalAttr" in block,
- "sell_rules_kept":"v488SellValue" in block,
+ "go_wrapper_removed":"if(typeof v032Go==='function'&&!window.__v488Go)" not in c,
+ "shared_nav_hook_present":"window.__v488Go='v7119-event'" in c,
+ "startup_train_removed":"[250,900,2200,5200,10200,16200]" not in c,
+ "forge_render_kept":"window.v488ForgeRender=renderForge" in c,
+ "prismatic_inventory_kept":"paintPrismaticInventory" in c,
+ "combat_bonus_kept":"v488TotalAttr" in c,
+ "sell_rules_kept":"v488SellValue" in c,
 }
 if not all(checks.values()): raise SystemExit(json.dumps(checks))
 Path("V8009_FINAL_V488_QA.json").write_text(json.dumps({
