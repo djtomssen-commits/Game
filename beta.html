@@ -41543,12 +41543,12 @@ body:has(#world.active) #v337LegalFooter{display:none!important}
     ensureDecor();
   }
   window.v526ApplyHero=apply;
-  window.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')==='character')requestAnimationFrame(apply)});
+  window.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')==='character')apply()},{passive:true});
   apply();
-  document.addEventListener('DOMContentLoaded',()=>requestAnimationFrame(apply),{once:true});
-  window.addEventListener('pageshow',()=>requestAnimationFrame(apply),{passive:true});
-  document.addEventListener('visibilitychange',()=>{if(!document.hidden)requestAnimationFrame(apply)});
-  /* V8.009: bounded startup retry train retired. */
+  document.addEventListener('DOMContentLoaded',apply,{once:true});
+  window.addEventListener('pageshow',apply,{passive:true});
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden)apply()});
+  /* V8.009: direct lifecycle only. */
 })();
 </script>
 <!-- ===== /V5.26 HELDENQUARTIER FINAL REFERENCE ORNAMENT POLISH ===== -->
@@ -75129,7 +75129,7 @@ window.v531HardenHero=harden;
   try{
     if(typeof renderInventory==='function'&&!window.__v533InventoryWrapped){
       const base=renderInventory;
-      renderInventory=function(){const r=base.apply(this,arguments);requestAnimationFrame(apply);return r};
+      renderInventory=function(){const r=base.apply(this,arguments);apply();return r};
       try{window.renderInventory=renderInventory}catch(e){}
       window.__v533InventoryWrapped=true;
     }
@@ -75137,17 +75137,17 @@ window.v531HardenHero=harden;
   try{
     if(typeof window.v459ArrangeCharacter==='function'&&!window.__v533ArrangeWrapped){
       const base=window.v459ArrangeCharacter;
-      window.v459ArrangeCharacter=function(){const r=base.apply(this,arguments);requestAnimationFrame(apply);return r};
+      window.v459ArrangeCharacter=function(){const r=base.apply(this,arguments);apply();return r};
       window.__v533ArrangeWrapped=true;
     }
   }catch(e){}
 
-  window.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')==='character')requestAnimationFrame(apply)});
+  window.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')==='character')apply()},{passive:true});
   apply();
-  document.addEventListener('DOMContentLoaded',()=>requestAnimationFrame(apply),{once:true});
-  window.addEventListener('pageshow',()=>requestAnimationFrame(apply),{passive:true});
-  document.addEventListener('visibilitychange',()=>{if(!document.hidden)requestAnimationFrame(apply)});
-  /* V8.009: renderInventory/arrange/navigation/pageshow own inventory refresh. */
+  document.addEventListener('DOMContentLoaded',apply,{once:true});
+  window.addEventListener('pageshow',apply,{passive:true});
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden)apply()});
+  /* V8.009: direct renderInventory/arrange/navigation/pageshow lifecycle. */
 })();
 </script>
 <!-- ===== /V5.33 INVENTAR REFERENCE REBUILD ===== -->
