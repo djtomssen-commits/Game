@@ -89,15 +89,6 @@ v103InstallPlayerAdmin=function(){
   v105InstallRewards();
 };
 
-const v105BaseRender=render;
-render=function(){
-  const result=v105BaseRender();
-  
-  if(v093IsAdmin){
-    v103InstallPlayerAdmin();
-    v105InstallRewards();
-  }
-  return result;
-};
-
+/* Player-admin installation is the only lifecycle owner for rewards.
+   No global render hook: v103InstallPlayerAdmin() installs this surface exactly once. */
 try{if(v093IsAdmin){v103InstallPlayerAdmin();v105InstallRewards()}}catch(e){}
