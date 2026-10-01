@@ -1,0 +1,3127 @@
+{
+  "build": "V8.009-REMAINING-INLINE-LIFECYCLE-AUDIT",
+  "targets": {
+    "v306PaintFirstDailyQuestHarz": [
+      {
+        "line": 38388,
+        "text": "function v306PaintFirstDailyQuestHarz(){",
+        "context": [
+          {
+            "line": 38380,
+            "text": ""
+          },
+          {
+            "line": 38381,
+            "text": "<style id=\"v306-first-daily-quest-harz-style\">"
+          },
+          {
+            "line": 38382,
+            "text": "#questList .v306-first-daily-harz{"
+          },
+          {
+            "line": 38383,
+            "text": " margin-top:5px;padding:5px 7px;border:1px solid #477f3d;border-radius:8px;"
+          },
+          {
+            "line": 38384,
+            "text": " background:#0b1a0d;color:#9ee986;font-size:7px;font-weight:900"
+          },
+          {
+            "line": 38385,
+            "text": "}"
+          },
+          {
+            "line": 38386,
+            "text": "</style>"
+          },
+          {
+            "line": 38387,
+            "text": "<script id=\"v306-first-daily-quest-harz\">"
+          },
+          {
+            "line": 38388,
+            "text": "function v306PaintFirstDailyQuestHarz(){"
+          },
+          {
+            "line": 38389,
+            "text": " try{v109ResetDaily()}catch(e){}"
+          },
+          {
+            "line": 38390,
+            "text": " const due=!s.v109HarzDaily?.firstQuest;"
+          },
+          {
+            "line": 38391,
+            "text": " const cards=document.querySelectorAll('#questList .quest');"
+          },
+          {
+            "line": 38392,
+            "text": " if(!due){"
+          },
+          {
+            "line": 38393,
+            "text": "  document.querySelectorAll('#questList .v306-first-daily-harz').forEach(el=>el.remove());"
+          },
+          {
+            "line": 38394,
+            "text": "  return;"
+          },
+          {
+            "line": 38395,
+            "text": " }"
+          },
+          {
+            "line": 38396,
+            "text": " cards.forEach(card=>{"
+          }
+        ]
+      },
+      {
+        "line": 38407,
+        "text": "requestAnimationFrame(v306PaintFirstDailyQuestHarz);",
+        "context": [
+          {
+            "line": 38399,
+            "text": "  line.className='v306-first-daily-harz';"
+          },
+          {
+            "line": 38400,
+            "text": "  line.textContent='🟢 Erste Quest heute: +2 Harz-Taler garantiert';"
+          },
+          {
+            "line": 38401,
+            "text": "  card.appendChild(line);"
+          },
+          {
+            "line": 38402,
+            "text": " });"
+          },
+          {
+            "line": 38403,
+            "text": "}"
+          },
+          {
+            "line": 38404,
+            "text": "const v306BaseRenderQuests=renderQuests;"
+          },
+          {
+            "line": 38405,
+            "text": "renderQuests=function(){"
+          },
+          {
+            "line": 38406,
+            "text": " const r=v306BaseRenderQuests.apply(this,arguments);"
+          },
+          {
+            "line": 38407,
+            "text": " requestAnimationFrame(v306PaintFirstDailyQuestHarz);"
+          },
+          {
+            "line": 38408,
+            "text": " return r;"
+          },
+          {
+            "line": 38409,
+            "text": "};"
+          },
+          {
+            "line": 38410,
+            "text": "/* Reward popup is opened after claimQuest has marked firstQuest=true."
+          },
+          {
+            "line": 38411,
+            "text": "   Remove the three labels immediately after that successful payout. */"
+          },
+          {
+            "line": 38412,
+            "text": "if(typeof v235ShowQuestReward==='function'){"
+          },
+          {
+            "line": 38413,
+            "text": " const v306BaseShowQuestReward=v235ShowQuestReward;"
+          },
+          {
+            "line": 38414,
+            "text": " v235ShowQuestReward=function(before){"
+          },
+          {
+            "line": 38415,
+            "text": "  const r=v306BaseShowQuestReward.apply(this,arguments);"
+          }
+        ]
+      },
+      {
+        "line": 38416,
+        "text": "requestAnimationFrame(v306PaintFirstDailyQuestHarz);",
+        "context": [
+          {
+            "line": 38408,
+            "text": " return r;"
+          },
+          {
+            "line": 38409,
+            "text": "};"
+          },
+          {
+            "line": 38410,
+            "text": "/* Reward popup is opened after claimQuest has marked firstQuest=true."
+          },
+          {
+            "line": 38411,
+            "text": "   Remove the three labels immediately after that successful payout. */"
+          },
+          {
+            "line": 38412,
+            "text": "if(typeof v235ShowQuestReward==='function'){"
+          },
+          {
+            "line": 38413,
+            "text": " const v306BaseShowQuestReward=v235ShowQuestReward;"
+          },
+          {
+            "line": 38414,
+            "text": " v235ShowQuestReward=function(before){"
+          },
+          {
+            "line": 38415,
+            "text": "  const r=v306BaseShowQuestReward.apply(this,arguments);"
+          },
+          {
+            "line": 38416,
+            "text": "  requestAnimationFrame(v306PaintFirstDailyQuestHarz);"
+          },
+          {
+            "line": 38417,
+            "text": "  return r;"
+          },
+          {
+            "line": 38418,
+            "text": " };"
+          },
+          {
+            "line": 38419,
+            "text": "}"
+          },
+          {
+            "line": 38420,
+            "text": "setTimeout(v306PaintFirstDailyQuestHarz,300);"
+          },
+          {
+            "line": 38421,
+            "text": ""
+          },
+          {
+            "line": 38422,
+            "text": "const v306Line=document.querySelector('#v141VersionLine');"
+          },
+          {
+            "line": 38423,
+            "text": "</script>"
+          },
+          {
+            "line": 38424,
+            "text": ""
+          }
+        ]
+      },
+      {
+        "line": 38420,
+        "text": "setTimeout(v306PaintFirstDailyQuestHarz,300);",
+        "context": [
+          {
+            "line": 38412,
+            "text": "if(typeof v235ShowQuestReward==='function'){"
+          },
+          {
+            "line": 38413,
+            "text": " const v306BaseShowQuestReward=v235ShowQuestReward;"
+          },
+          {
+            "line": 38414,
+            "text": " v235ShowQuestReward=function(before){"
+          },
+          {
+            "line": 38415,
+            "text": "  const r=v306BaseShowQuestReward.apply(this,arguments);"
+          },
+          {
+            "line": 38416,
+            "text": "  requestAnimationFrame(v306PaintFirstDailyQuestHarz);"
+          },
+          {
+            "line": 38417,
+            "text": "  return r;"
+          },
+          {
+            "line": 38418,
+            "text": " };"
+          },
+          {
+            "line": 38419,
+            "text": "}"
+          },
+          {
+            "line": 38420,
+            "text": "setTimeout(v306PaintFirstDailyQuestHarz,300);"
+          },
+          {
+            "line": 38421,
+            "text": ""
+          },
+          {
+            "line": 38422,
+            "text": "const v306Line=document.querySelector('#v141VersionLine');"
+          },
+          {
+            "line": 38423,
+            "text": "</script>"
+          },
+          {
+            "line": 38424,
+            "text": ""
+          },
+          {
+            "line": 38425,
+            "text": "<!-- V4.02: Quest duration balance. Only quest duration curve changed; XP, Gold and Dampf formulas remain unchanged. -->"
+          },
+          {
+            "line": 38426,
+            "text": "<script id=\"v400-dungeon-progression-guard\">"
+          },
+          {
+            "line": 38427,
+            "text": "/* ===== V4.29 Stable: Dungeon progression + rarity guard ====="
+          },
+          {
+            "line": 38428,
+            "text": "   - Normal dungeons can never create Mythic/cyan equipment."
+          }
+        ]
+      }
+    ],
+    "v300ReconcileTimedEvents": [
+      {
+        "line": 38224,
+        "text": "function v300ReconcileTimedEvents(){",
+        "context": [
+          {
+            "line": 38216,
+            "text": "try{v271PaintDampf();}catch(e){}"
+          },
+          {
+            "line": 38217,
+            "text": ""
+          },
+          {
+            "line": 38218,
+            "text": ""
+          },
+          {
+            "line": 38219,
+            "text": "const v294Line=document.querySelector('#v141VersionLine');"
+          },
+          {
+            "line": 38220,
+            "text": "</script>"
+          },
+          {
+            "line": 38221,
+            "text": "<script  src=\"js/features/pvp/beta/v8009-s1-v299-hall-mystic-profile-sync-fix.js\"></script>"
+          },
+          {
+            "line": 38222,
+            "text": "<script id=\"v300-event-expiry-dampf-fix\">"
+          },
+          {
+            "line": 38223,
+            "text": "let v300LastDampfActive=null;"
+          },
+          {
+            "line": 38224,
+            "text": "function v300ReconcileTimedEvents(){"
+          },
+          {
+            "line": 38225,
+            "text": " try{"
+          },
+          {
+            "line": 38226,
+            "text": "  if(!v271EventDataReady)return;"
+          },
+          {
+            "line": 38227,
+            "text": "  const active=v271DampfEventActive();"
+          },
+          {
+            "line": 38228,
+            "text": "  if(v300LastDampfActive===null){v300LastDampfActive=active;v271SyncDampfEvent();v271PaintDampf();return}"
+          },
+          {
+            "line": 38229,
+            "text": "  if(active!==v300LastDampfActive){"
+          },
+          {
+            "line": 38230,
+            "text": "   v300LastDampfActive=active;v271SyncDampfEvent();v271PaintDampf();"
+          },
+          {
+            "line": 38231,
+            "text": "   try{renderQuests()}catch(e){} try{persist(false)}catch(e){}"
+          },
+          {
+            "line": 38232,
+            "text": "  }"
+          }
+        ]
+      },
+      {
+        "line": 38235,
+        "text": "setInterval(()=>{if(!document.hidden)v300ReconcileTimedEvents()},30000);",
+        "context": [
+          {
+            "line": 38227,
+            "text": "  const active=v271DampfEventActive();"
+          },
+          {
+            "line": 38228,
+            "text": "  if(v300LastDampfActive===null){v300LastDampfActive=active;v271SyncDampfEvent();v271PaintDampf();return}"
+          },
+          {
+            "line": 38229,
+            "text": "  if(active!==v300LastDampfActive){"
+          },
+          {
+            "line": 38230,
+            "text": "   v300LastDampfActive=active;v271SyncDampfEvent();v271PaintDampf();"
+          },
+          {
+            "line": 38231,
+            "text": "   try{renderQuests()}catch(e){} try{persist(false)}catch(e){}"
+          },
+          {
+            "line": 38232,
+            "text": "  }"
+          },
+          {
+            "line": 38233,
+            "text": " }catch(e){}"
+          },
+          {
+            "line": 38234,
+            "text": "}"
+          },
+          {
+            "line": 38235,
+            "text": "setInterval(()=>{if(!document.hidden)v300ReconcileTimedEvents()},30000);"
+          },
+          {
+            "line": 38236,
+            "text": "setTimeout(v300ReconcileTimedEvents,1000);"
+          },
+          {
+            "line": 38237,
+            "text": ""
+          },
+          {
+            "line": 38238,
+            "text": "const v300Line=document.querySelector('#v141VersionLine');"
+          },
+          {
+            "line": 38239,
+            "text": "</script>"
+          },
+          {
+            "line": 38240,
+            "text": ""
+          },
+          {
+            "line": 38241,
+            "text": "<script id=\"v301-auth-idle-hard-lock\">"
+          },
+          {
+            "line": 38242,
+            "text": "/* ===== V4.02 robust 10-minute idle logout ====="
+          },
+          {
+            "line": 38243,
+            "text": "   A backgrounded mobile browser may throttle intervals. Therefore timeout is"
+          }
+        ]
+      },
+      {
+        "line": 38236,
+        "text": "setTimeout(v300ReconcileTimedEvents,1000);",
+        "context": [
+          {
+            "line": 38228,
+            "text": "  if(v300LastDampfActive===null){v300LastDampfActive=active;v271SyncDampfEvent();v271PaintDampf();return}"
+          },
+          {
+            "line": 38229,
+            "text": "  if(active!==v300LastDampfActive){"
+          },
+          {
+            "line": 38230,
+            "text": "   v300LastDampfActive=active;v271SyncDampfEvent();v271PaintDampf();"
+          },
+          {
+            "line": 38231,
+            "text": "   try{renderQuests()}catch(e){} try{persist(false)}catch(e){}"
+          },
+          {
+            "line": 38232,
+            "text": "  }"
+          },
+          {
+            "line": 38233,
+            "text": " }catch(e){}"
+          },
+          {
+            "line": 38234,
+            "text": "}"
+          },
+          {
+            "line": 38235,
+            "text": "setInterval(()=>{if(!document.hidden)v300ReconcileTimedEvents()},30000);"
+          },
+          {
+            "line": 38236,
+            "text": "setTimeout(v300ReconcileTimedEvents,1000);"
+          },
+          {
+            "line": 38237,
+            "text": ""
+          },
+          {
+            "line": 38238,
+            "text": "const v300Line=document.querySelector('#v141VersionLine');"
+          },
+          {
+            "line": 38239,
+            "text": "</script>"
+          },
+          {
+            "line": 38240,
+            "text": ""
+          },
+          {
+            "line": 38241,
+            "text": "<script id=\"v301-auth-idle-hard-lock\">"
+          },
+          {
+            "line": 38242,
+            "text": "/* ===== V4.02 robust 10-minute idle logout ====="
+          },
+          {
+            "line": 38243,
+            "text": "   A backgrounded mobile browser may throttle intervals. Therefore timeout is"
+          },
+          {
+            "line": 38244,
+            "text": "   checked on resume/focus/pageshow AND before accepting the next interaction."
+          }
+        ]
+      }
+    ],
+    "v301CheckIdle": [
+      {
+        "line": 38277,
+        "text": "function v301CheckIdle(){",
+        "context": [
+          {
+            "line": 38269,
+            "text": "    return false;"
+          },
+          {
+            "line": 38270,
+            "text": "  }"
+          },
+          {
+            "line": 38271,
+            "text": ""
+          },
+          {
+            "line": 38272,
+            "text": "  v200LastActivity=now;"
+          },
+          {
+            "line": 38273,
+            "text": "  sessionStorage.setItem(V301_ACTIVITY_KEY,String(now));"
+          },
+          {
+            "line": 38274,
+            "text": "  return true;"
+          },
+          {
+            "line": 38275,
+            "text": "}"
+          },
+          {
+            "line": 38276,
+            "text": ""
+          },
+          {
+            "line": 38277,
+            "text": "function v301CheckIdle(){"
+          },
+          {
+            "line": 38278,
+            "text": "  if(!v200DurableUser() || window.__V301_LOGOUT_IN_PROGRESS__)return false;"
+          },
+          {
+            "line": 38279,
+            "text": ""
+          },
+          {
+            "line": 38280,
+            "text": "  const now=Date.now();"
+          },
+          {
+            "line": 38281,
+            "text": "  const last=Number(v200LastActivity)||v301LoadLastActivity();"
+          },
+          {
+            "line": 38282,
+            "text": ""
+          },
+          {
+            "line": 38283,
+            "text": "  if(now-last>=V200_IDLE_MS){"
+          },
+          {
+            "line": 38284,
+            "text": "    v136Logout('idle');"
+          },
+          {
+            "line": 38285,
+            "text": "    return true;"
+          }
+        ]
+      },
+      {
+        "line": 38300,
+        "text": "v301CheckIdle();",
+        "context": [
+          {
+            "line": 38292,
+            "text": "['pointerdown','touchstart','keydown','scroll'].forEach(ev=>{"
+          },
+          {
+            "line": 38293,
+            "text": "  window.addEventListener(ev,()=>{"
+          },
+          {
+            "line": 38294,
+            "text": "    v301TouchActivity();"
+          },
+          {
+            "line": 38295,
+            "text": "  },{passive:true,capture:true});"
+          },
+          {
+            "line": 38296,
+            "text": "});"
+          },
+          {
+            "line": 38297,
+            "text": ""
+          },
+          {
+            "line": 38298,
+            "text": "document.addEventListener('visibilitychange',()=>{"
+          },
+          {
+            "line": 38299,
+            "text": "  if(document.visibilityState==='visible'){"
+          },
+          {
+            "line": 38300,
+            "text": "    v301CheckIdle();"
+          },
+          {
+            "line": 38301,
+            "text": "  }"
+          },
+          {
+            "line": 38302,
+            "text": "});"
+          },
+          {
+            "line": 38303,
+            "text": ""
+          },
+          {
+            "line": 38304,
+            "text": "window.addEventListener('focus',v301CheckIdle,{passive:true});"
+          },
+          {
+            "line": 38305,
+            "text": "window.addEventListener('pageshow',v301CheckIdle,{passive:true});"
+          },
+          {
+            "line": 38306,
+            "text": ""
+          },
+          {
+            "line": 38307,
+            "text": "/* Foreground safety net. Resume checks above are authoritative when mobile"
+          },
+          {
+            "line": 38308,
+            "text": "   browsers pause timers in the background. */"
+          }
+        ]
+      },
+      {
+        "line": 38304,
+        "text": "window.addEventListener('focus',v301CheckIdle,{passive:true});",
+        "context": [
+          {
+            "line": 38296,
+            "text": "});"
+          },
+          {
+            "line": 38297,
+            "text": ""
+          },
+          {
+            "line": 38298,
+            "text": "document.addEventListener('visibilitychange',()=>{"
+          },
+          {
+            "line": 38299,
+            "text": "  if(document.visibilityState==='visible'){"
+          },
+          {
+            "line": 38300,
+            "text": "    v301CheckIdle();"
+          },
+          {
+            "line": 38301,
+            "text": "  }"
+          },
+          {
+            "line": 38302,
+            "text": "});"
+          },
+          {
+            "line": 38303,
+            "text": ""
+          },
+          {
+            "line": 38304,
+            "text": "window.addEventListener('focus',v301CheckIdle,{passive:true});"
+          },
+          {
+            "line": 38305,
+            "text": "window.addEventListener('pageshow',v301CheckIdle,{passive:true});"
+          },
+          {
+            "line": 38306,
+            "text": ""
+          },
+          {
+            "line": 38307,
+            "text": "/* Foreground safety net. Resume checks above are authoritative when mobile"
+          },
+          {
+            "line": 38308,
+            "text": "   browsers pause timers in the background. */"
+          },
+          {
+            "line": 38309,
+            "text": "setInterval(v301CheckIdle,15000);"
+          },
+          {
+            "line": 38310,
+            "text": ""
+          },
+          {
+            "line": 38311,
+            "text": "/* Prevent cloud-save scheduling while a logout is already in progress. */"
+          },
+          {
+            "line": 38312,
+            "text": "if(typeof v075ScheduleSave==='function'){"
+          }
+        ]
+      },
+      {
+        "line": 38305,
+        "text": "window.addEventListener('pageshow',v301CheckIdle,{passive:true});",
+        "context": [
+          {
+            "line": 38297,
+            "text": ""
+          },
+          {
+            "line": 38298,
+            "text": "document.addEventListener('visibilitychange',()=>{"
+          },
+          {
+            "line": 38299,
+            "text": "  if(document.visibilityState==='visible'){"
+          },
+          {
+            "line": 38300,
+            "text": "    v301CheckIdle();"
+          },
+          {
+            "line": 38301,
+            "text": "  }"
+          },
+          {
+            "line": 38302,
+            "text": "});"
+          },
+          {
+            "line": 38303,
+            "text": ""
+          },
+          {
+            "line": 38304,
+            "text": "window.addEventListener('focus',v301CheckIdle,{passive:true});"
+          },
+          {
+            "line": 38305,
+            "text": "window.addEventListener('pageshow',v301CheckIdle,{passive:true});"
+          },
+          {
+            "line": 38306,
+            "text": ""
+          },
+          {
+            "line": 38307,
+            "text": "/* Foreground safety net. Resume checks above are authoritative when mobile"
+          },
+          {
+            "line": 38308,
+            "text": "   browsers pause timers in the background. */"
+          },
+          {
+            "line": 38309,
+            "text": "setInterval(v301CheckIdle,15000);"
+          },
+          {
+            "line": 38310,
+            "text": ""
+          },
+          {
+            "line": 38311,
+            "text": "/* Prevent cloud-save scheduling while a logout is already in progress. */"
+          },
+          {
+            "line": 38312,
+            "text": "if(typeof v075ScheduleSave==='function'){"
+          },
+          {
+            "line": 38313,
+            "text": "  const v301BaseScheduleSave=v075ScheduleSave;"
+          }
+        ]
+      },
+      {
+        "line": 38309,
+        "text": "setInterval(v301CheckIdle,15000);",
+        "context": [
+          {
+            "line": 38301,
+            "text": "  }"
+          },
+          {
+            "line": 38302,
+            "text": "});"
+          },
+          {
+            "line": 38303,
+            "text": ""
+          },
+          {
+            "line": 38304,
+            "text": "window.addEventListener('focus',v301CheckIdle,{passive:true});"
+          },
+          {
+            "line": 38305,
+            "text": "window.addEventListener('pageshow',v301CheckIdle,{passive:true});"
+          },
+          {
+            "line": 38306,
+            "text": ""
+          },
+          {
+            "line": 38307,
+            "text": "/* Foreground safety net. Resume checks above are authoritative when mobile"
+          },
+          {
+            "line": 38308,
+            "text": "   browsers pause timers in the background. */"
+          },
+          {
+            "line": 38309,
+            "text": "setInterval(v301CheckIdle,15000);"
+          },
+          {
+            "line": 38310,
+            "text": ""
+          },
+          {
+            "line": 38311,
+            "text": "/* Prevent cloud-save scheduling while a logout is already in progress. */"
+          },
+          {
+            "line": 38312,
+            "text": "if(typeof v075ScheduleSave==='function'){"
+          },
+          {
+            "line": 38313,
+            "text": "  const v301BaseScheduleSave=v075ScheduleSave;"
+          },
+          {
+            "line": 38314,
+            "text": "  v075ScheduleSave=function(){"
+          },
+          {
+            "line": 38315,
+            "text": "    if(window.__V301_LOGOUT_IN_PROGRESS__ || !window.__V200_AUTH_READY__)return;"
+          },
+          {
+            "line": 38316,
+            "text": "    return v301BaseScheduleSave.apply(this,arguments);"
+          },
+          {
+            "line": 38317,
+            "text": "  };"
+          }
+        ]
+      }
+    ],
+    "v322OpenDealer": [
+      {
+        "line": 40294,
+        "text": "if(id==='harzDealer'&&typeof window.v322OpenDealer==='function')return window.v322OpenDealer();",
+        "context": [
+          {
+            "line": 40286,
+            "text": "  if(id==='bagDealer')return admin()&&!!document.getElementById('bagDealer');"
+          },
+          {
+            "line": 40287,
+            "text": "  if(document.getElementById(id))return true;"
+          },
+          {
+            "line": 40288,
+            "text": "  if(id==='endgame')return typeof window.v457RenderEndgame==='function'||typeof window.renderEndgame==='function';"
+          },
+          {
+            "line": 40289,
+            "text": "  if(id==='forge')return typeof window.v488OpenForge==='function'||typeof window.v488ForgeRender==='function';"
+          },
+          {
+            "line": 40290,
+            "text": "  return false;"
+          },
+          {
+            "line": 40291,
+            "text": " }"
+          },
+          {
+            "line": 40292,
+            "text": " function go(id){"
+          },
+          {
+            "line": 40293,
+            "text": "  try{"
+          },
+          {
+            "line": 40294,
+            "text": "   if(id==='harzDealer'&&typeof window.v322OpenDealer==='function')return window.v322OpenDealer();"
+          },
+          {
+            "line": 40295,
+            "text": "   if(id==='forge'&&typeof window.v488OpenForge==='function')return window.v488OpenForge();"
+          },
+          {
+            "line": 40296,
+            "text": "   if(id==='systemtech')return admin()?window.v4107OpenSystemtechnik?.():false;"
+          },
+          {
+            "line": 40297,
+            "text": "   if(id==='admin'){"
+          },
+          {
+            "line": 40298,
+            "text": "    if(!admin())return false;"
+          },
+          {
+            "line": 40299,
+            "text": "    if(typeof v032Go==='function')v032Go('admin');"
+          },
+          {
+            "line": 40300,
+            "text": "    setTimeout(async()=>{try{const ok=await v093CheckAdmin?.();if(ok)await v093AdminLoadLists?.()}catch(e){}},0);"
+          },
+          {
+            "line": 40301,
+            "text": "    return true;"
+          },
+          {
+            "line": 40302,
+            "text": "   }"
+          }
+        ]
+      },
+      {
+        "line": 44271,
+        "text": "function v322OpenDealer(){try{v032Go('harzDealer')}catch(e){}requestAnimationFrame(v322RenderDealer)}",
+        "context": [
+          {
+            "line": 44263,
+            "text": "function v322SavingPct(p){const base=v322BaseEquivalent(p);return Math.max(0,Math.round((1-p.price/base)*100))}"
+          },
+          {
+            "line": 44264,
+            "text": "function v322RenderDealer(){"
+          },
+          {
+            "line": 44265,
+            "text": " const box=document.querySelector('#v322DealerPackages'),bal=document.querySelector('#v322DealerHarz');"
+          },
+          {
+            "line": 44266,
+            "text": " if(bal)bal.textContent=Math.max(0,Number(s.harzTaler)||0);"
+          },
+          {
+            "line": 44267,
+            "text": " if(!box)return;"
+          },
+          {
+            "line": 44268,
+            "text": " box.innerHTML=V322_HARZ_PACKAGES.map((p,i)=>{const save=v322SavingPct(p),best=i===V322_HARZ_PACKAGES.length-1;return `<div class=\"v322-pack ${best?'best':''}\">${best?'<div class=\"v322-best\">BESTER WERT</div>':''}<div class=\"v322-pack-amount\">🟢 ${p.harz} Harz-Taler</div><div class=\"v322-pack-price\">${v322Money(p.price)}</div><div class=\"v322-pack-save\">${p.label}${save?` · ca. ${save}% günstiger als 25er-Preis`:''}</div><div class=\"v322-pack-unit\">${v322UnitPrice(p)}</div><button class=\"btn ${best?'gold':''}\" type=\"button\" data-v322-buy=\"${i}\">Kaufen</button></div>`}).join('');"
+          },
+          {
+            "line": 44269,
+            "text": " box.querySelectorAll('[data-v322-buy]').forEach(btn=>btn.addEventListener('click',()=>{const idx=Number(btn.dataset.v322Buy);if(typeof window.glPlayBuy==='function')return window.glPlayBuy(idx);v115Alert('Google Play Billing ist in dieser App-Version noch nicht verfügbar.','🟢 Harz-Taler Dealer','warn')}));"
+          },
+          {
+            "line": 44270,
+            "text": "}"
+          },
+          {
+            "line": 44271,
+            "text": "function v322OpenDealer(){try{v032Go('harzDealer')}catch(e){}requestAnimationFrame(v322RenderDealer)}"
+          },
+          {
+            "line": 44272,
+            "text": "window.v322OpenDealer=v322OpenDealer;"
+          },
+          {
+            "line": 44273,
+            "text": "function v322InstallMenuEntry(){"
+          },
+          {
+            "line": 44274,
+            "text": " const panel=document.querySelector('#v032MenuPanel');"
+          },
+          {
+            "line": 44275,
+            "text": " if(!panel||panel.querySelector('[data-screen=\"harzDealer\"]'))return;"
+          },
+          {
+            "line": 44276,
+            "text": " const b=document.createElement('button');b.className='top-menu-item';b.dataset.screen='harzDealer';b.innerHTML='<span>🟢</span>Harz &amp; Gold &amp; Rahmen Dealer';b.onclick=()=>v322OpenDealer();panel.appendChild(b);"
+          },
+          {
+            "line": 44277,
+            "text": "}"
+          },
+          {
+            "line": 44278,
+            "text": "function v322InstallHarzPlus(){"
+          },
+          {
+            "line": 44279,
+            "text": " const card=document.querySelector('.v280-harz-card');"
+          }
+        ]
+      },
+      {
+        "line": 44272,
+        "text": "window.v322OpenDealer=v322OpenDealer;",
+        "context": [
+          {
+            "line": 44264,
+            "text": "function v322RenderDealer(){"
+          },
+          {
+            "line": 44265,
+            "text": " const box=document.querySelector('#v322DealerPackages'),bal=document.querySelector('#v322DealerHarz');"
+          },
+          {
+            "line": 44266,
+            "text": " if(bal)bal.textContent=Math.max(0,Number(s.harzTaler)||0);"
+          },
+          {
+            "line": 44267,
+            "text": " if(!box)return;"
+          },
+          {
+            "line": 44268,
+            "text": " box.innerHTML=V322_HARZ_PACKAGES.map((p,i)=>{const save=v322SavingPct(p),best=i===V322_HARZ_PACKAGES.length-1;return `<div class=\"v322-pack ${best?'best':''}\">${best?'<div class=\"v322-best\">BESTER WERT</div>':''}<div class=\"v322-pack-amount\">🟢 ${p.harz} Harz-Taler</div><div class=\"v322-pack-price\">${v322Money(p.price)}</div><div class=\"v322-pack-save\">${p.label}${save?` · ca. ${save}% günstiger als 25er-Preis`:''}</div><div class=\"v322-pack-unit\">${v322UnitPrice(p)}</div><button class=\"btn ${best?'gold':''}\" type=\"button\" data-v322-buy=\"${i}\">Kaufen</button></div>`}).join('');"
+          },
+          {
+            "line": 44269,
+            "text": " box.querySelectorAll('[data-v322-buy]').forEach(btn=>btn.addEventListener('click',()=>{const idx=Number(btn.dataset.v322Buy);if(typeof window.glPlayBuy==='function')return window.glPlayBuy(idx);v115Alert('Google Play Billing ist in dieser App-Version noch nicht verfügbar.','🟢 Harz-Taler Dealer','warn')}));"
+          },
+          {
+            "line": 44270,
+            "text": "}"
+          },
+          {
+            "line": 44271,
+            "text": "function v322OpenDealer(){try{v032Go('harzDealer')}catch(e){}requestAnimationFrame(v322RenderDealer)}"
+          },
+          {
+            "line": 44272,
+            "text": "window.v322OpenDealer=v322OpenDealer;"
+          },
+          {
+            "line": 44273,
+            "text": "function v322InstallMenuEntry(){"
+          },
+          {
+            "line": 44274,
+            "text": " const panel=document.querySelector('#v032MenuPanel');"
+          },
+          {
+            "line": 44275,
+            "text": " if(!panel||panel.querySelector('[data-screen=\"harzDealer\"]'))return;"
+          },
+          {
+            "line": 44276,
+            "text": " const b=document.createElement('button');b.className='top-menu-item';b.dataset.screen='harzDealer';b.innerHTML='<span>🟢</span>Harz &amp; Gold &amp; Rahmen Dealer';b.onclick=()=>v322OpenDealer();panel.appendChild(b);"
+          },
+          {
+            "line": 44277,
+            "text": "}"
+          },
+          {
+            "line": 44278,
+            "text": "function v322InstallHarzPlus(){"
+          },
+          {
+            "line": 44279,
+            "text": " const card=document.querySelector('.v280-harz-card');"
+          },
+          {
+            "line": 44280,
+            "text": " if(!card||document.querySelector('#v322HarzPlus'))return;"
+          }
+        ]
+      },
+      {
+        "line": 44276,
+        "text": "const b=document.createElement('button');b.className='top-menu-item';b.dataset.screen='harzDealer';b.innerHTML='<span>🟢</span>Harz &amp; Gold &amp; Rahmen Dealer';b.onclick=()=>v322OpenDealer();panel.appendChild(b);",
+        "context": [
+          {
+            "line": 44268,
+            "text": " box.innerHTML=V322_HARZ_PACKAGES.map((p,i)=>{const save=v322SavingPct(p),best=i===V322_HARZ_PACKAGES.length-1;return `<div class=\"v322-pack ${best?'best':''}\">${best?'<div class=\"v322-best\">BESTER WERT</div>':''}<div class=\"v322-pack-amount\">🟢 ${p.harz} Harz-Taler</div><div class=\"v322-pack-price\">${v322Money(p.price)}</div><div class=\"v322-pack-save\">${p.label}${save?` · ca. ${save}% günstiger als 25er-Preis`:''}</div><div class=\"v322-pack-unit\">${v322UnitPrice(p)}</div><button class=\"btn ${best?'gold':''}\" type=\"button\" data-v322-buy=\"${i}\">Kaufen</button></div>`}).join('');"
+          },
+          {
+            "line": 44269,
+            "text": " box.querySelectorAll('[data-v322-buy]').forEach(btn=>btn.addEventListener('click',()=>{const idx=Number(btn.dataset.v322Buy);if(typeof window.glPlayBuy==='function')return window.glPlayBuy(idx);v115Alert('Google Play Billing ist in dieser App-Version noch nicht verfügbar.','🟢 Harz-Taler Dealer','warn')}));"
+          },
+          {
+            "line": 44270,
+            "text": "}"
+          },
+          {
+            "line": 44271,
+            "text": "function v322OpenDealer(){try{v032Go('harzDealer')}catch(e){}requestAnimationFrame(v322RenderDealer)}"
+          },
+          {
+            "line": 44272,
+            "text": "window.v322OpenDealer=v322OpenDealer;"
+          },
+          {
+            "line": 44273,
+            "text": "function v322InstallMenuEntry(){"
+          },
+          {
+            "line": 44274,
+            "text": " const panel=document.querySelector('#v032MenuPanel');"
+          },
+          {
+            "line": 44275,
+            "text": " if(!panel||panel.querySelector('[data-screen=\"harzDealer\"]'))return;"
+          },
+          {
+            "line": 44276,
+            "text": " const b=document.createElement('button');b.className='top-menu-item';b.dataset.screen='harzDealer';b.innerHTML='<span>🟢</span>Harz &amp; Gold &amp; Rahmen Dealer';b.onclick=()=>v322OpenDealer();panel.appendChild(b);"
+          },
+          {
+            "line": 44277,
+            "text": "}"
+          },
+          {
+            "line": 44278,
+            "text": "function v322InstallHarzPlus(){"
+          },
+          {
+            "line": 44279,
+            "text": " const card=document.querySelector('.v280-harz-card');"
+          },
+          {
+            "line": 44280,
+            "text": " if(!card||document.querySelector('#v322HarzPlus'))return;"
+          },
+          {
+            "line": 44281,
+            "text": " const b=document.createElement('button');b.type='button';b.id='v322HarzPlus';b.setAttribute('aria-label','Harz-Taler Dealer öffnen');b.textContent='+';b.onclick=e=>{e.preventDefault();e.stopPropagation();v322OpenDealer()};card.appendChild(b);"
+          },
+          {
+            "line": 44282,
+            "text": "}"
+          },
+          {
+            "line": 44283,
+            "text": "const v322BaseInstallMenu=v032InstallMenu;"
+          },
+          {
+            "line": 44284,
+            "text": "v032InstallMenu=function(){const r=v322BaseInstallMenu.apply(this,arguments);v322InstallMenuEntry();v322InstallHarzPlus();return r};"
+          }
+        ]
+      },
+      {
+        "line": 44281,
+        "text": "const b=document.createElement('button');b.type='button';b.id='v322HarzPlus';b.setAttribute('aria-label','Harz-Taler Dealer öffnen');b.textContent='+';b.onclick=e=>{e.preventDefault();e.stopPropagation();v322OpenDealer()};card.appendChild(b);",
+        "context": [
+          {
+            "line": 44273,
+            "text": "function v322InstallMenuEntry(){"
+          },
+          {
+            "line": 44274,
+            "text": " const panel=document.querySelector('#v032MenuPanel');"
+          },
+          {
+            "line": 44275,
+            "text": " if(!panel||panel.querySelector('[data-screen=\"harzDealer\"]'))return;"
+          },
+          {
+            "line": 44276,
+            "text": " const b=document.createElement('button');b.className='top-menu-item';b.dataset.screen='harzDealer';b.innerHTML='<span>🟢</span>Harz &amp; Gold &amp; Rahmen Dealer';b.onclick=()=>v322OpenDealer();panel.appendChild(b);"
+          },
+          {
+            "line": 44277,
+            "text": "}"
+          },
+          {
+            "line": 44278,
+            "text": "function v322InstallHarzPlus(){"
+          },
+          {
+            "line": 44279,
+            "text": " const card=document.querySelector('.v280-harz-card');"
+          },
+          {
+            "line": 44280,
+            "text": " if(!card||document.querySelector('#v322HarzPlus'))return;"
+          },
+          {
+            "line": 44281,
+            "text": " const b=document.createElement('button');b.type='button';b.id='v322HarzPlus';b.setAttribute('aria-label','Harz-Taler Dealer öffnen');b.textContent='+';b.onclick=e=>{e.preventDefault();e.stopPropagation();v322OpenDealer()};card.appendChild(b);"
+          },
+          {
+            "line": 44282,
+            "text": "}"
+          },
+          {
+            "line": 44283,
+            "text": "const v322BaseInstallMenu=v032InstallMenu;"
+          },
+          {
+            "line": 44284,
+            "text": "v032InstallMenu=function(){const r=v322BaseInstallMenu.apply(this,arguments);v322InstallMenuEntry();v322InstallHarzPlus();return r};"
+          },
+          {
+            "line": 44285,
+            "text": "window.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')==='harzDealer')v322RenderDealer()});"
+          },
+          {
+            "line": 44286,
+            "text": "window.__v322GlobalRenderRetired=true;"
+          },
+          {
+            "line": 44287,
+            "text": "try{v322InstallMenuEntry();v322InstallHarzPlus()}catch(e){console.error('V4.02 Harz Dealer init',e)}"
+          },
+          {
+            "line": 44288,
+            "text": "document.addEventListener('DOMContentLoaded',()=>{try{v322InstallMenuEntry();v322InstallHarzPlus()}catch(e){}},{once:true});"
+          },
+          {
+            "line": 44289,
+            "text": "</script>"
+          }
+        ]
+      },
+      {
+        "line": 45572,
+        "text": "if(typeof v322OpenDealer==='function')return v322OpenDealer();",
+        "context": [
+          {
+            "line": 45564,
+            "text": "</style>"
+          },
+          {
+            "line": 45565,
+            "text": ""
+          },
+          {
+            "line": 45566,
+            "text": "<script id=\"v337-harz-dealer-menu-copyright\">"
+          },
+          {
+            "line": 45567,
+            "text": "(function(){"
+          },
+          {
+            "line": 45568,
+            "text": "  const V337_VERSION='V4.29 Stable';"
+          },
+          {
+            "line": 45569,
+            "text": ""
+          },
+          {
+            "line": 45570,
+            "text": "  function v337OpenHarzDealer(){"
+          },
+          {
+            "line": 45571,
+            "text": "    try{"
+          },
+          {
+            "line": 45572,
+            "text": "      if(typeof v322OpenDealer==='function')return v322OpenDealer();"
+          },
+          {
+            "line": 45573,
+            "text": "      if(typeof openHarzDealer==='function')return openHarzDealer();"
+          },
+          {
+            "line": 45574,
+            "text": "      const existing=document.querySelector('#v322HarzDealer,#harzDealer,.harz-dealer');"
+          },
+          {
+            "line": 45575,
+            "text": "      if(existing){"
+          },
+          {
+            "line": 45576,
+            "text": "        existing.scrollIntoView({behavior:'smooth',block:'start'});"
+          },
+          {
+            "line": 45577,
+            "text": "        return;"
+          },
+          {
+            "line": 45578,
+            "text": "      }"
+          },
+          {
+            "line": 45579,
+            "text": "      if(typeof toast==='function')toast('Harz Dealer konnte nicht geöffnet werden.');"
+          },
+          {
+            "line": 45580,
+            "text": "    }catch(e){console.warn('V4.02 Harz dealer open',e)}"
+          }
+        ]
+      },
+      {
+        "line": 46358,
+        "text": "if(typeof v322OpenDealer==='function'){",
+        "context": [
+          {
+            "line": 46350,
+            "text": "  const V341_VERSION='V4.29 Stable';"
+          },
+          {
+            "line": 46351,
+            "text": ""
+          },
+          {
+            "line": 46352,
+            "text": "  function v341OpenDealer(){"
+          },
+          {
+            "line": 46353,
+            "text": "    try{"
+          },
+          {
+            "line": 46354,
+            "text": "      if(typeof v032Go==='function'){"
+          },
+          {
+            "line": 46355,
+            "text": "        v032Go('harzDealer');"
+          },
+          {
+            "line": 46356,
+            "text": "        return;"
+          },
+          {
+            "line": 46357,
+            "text": "      }"
+          },
+          {
+            "line": 46358,
+            "text": "      if(typeof v322OpenDealer==='function'){"
+          },
+          {
+            "line": 46359,
+            "text": "        v322OpenDealer();"
+          },
+          {
+            "line": 46360,
+            "text": "        return;"
+          },
+          {
+            "line": 46361,
+            "text": "      }"
+          },
+          {
+            "line": 46362,
+            "text": "      const el=document.querySelector('#harzDealer');"
+          },
+          {
+            "line": 46363,
+            "text": "      if(el){"
+          },
+          {
+            "line": 46364,
+            "text": "        document.querySelectorAll('.page,.screen,section').forEach(x=>x.classList.remove('active'));"
+          },
+          {
+            "line": 46365,
+            "text": "        el.classList.add('active');"
+          },
+          {
+            "line": 46366,
+            "text": "      }"
+          }
+        ]
+      },
+      {
+        "line": 46359,
+        "text": "v322OpenDealer();",
+        "context": [
+          {
+            "line": 46351,
+            "text": ""
+          },
+          {
+            "line": 46352,
+            "text": "  function v341OpenDealer(){"
+          },
+          {
+            "line": 46353,
+            "text": "    try{"
+          },
+          {
+            "line": 46354,
+            "text": "      if(typeof v032Go==='function'){"
+          },
+          {
+            "line": 46355,
+            "text": "        v032Go('harzDealer');"
+          },
+          {
+            "line": 46356,
+            "text": "        return;"
+          },
+          {
+            "line": 46357,
+            "text": "      }"
+          },
+          {
+            "line": 46358,
+            "text": "      if(typeof v322OpenDealer==='function'){"
+          },
+          {
+            "line": 46359,
+            "text": "        v322OpenDealer();"
+          },
+          {
+            "line": 46360,
+            "text": "        return;"
+          },
+          {
+            "line": 46361,
+            "text": "      }"
+          },
+          {
+            "line": 46362,
+            "text": "      const el=document.querySelector('#harzDealer');"
+          },
+          {
+            "line": 46363,
+            "text": "      if(el){"
+          },
+          {
+            "line": 46364,
+            "text": "        document.querySelectorAll('.page,.screen,section').forEach(x=>x.classList.remove('active'));"
+          },
+          {
+            "line": 46365,
+            "text": "        el.classList.add('active');"
+          },
+          {
+            "line": 46366,
+            "text": "      }"
+          },
+          {
+            "line": 46367,
+            "text": "    }catch(e){console.warn('V4.02 Harz Dealer navigation',e)}"
+          }
+        ]
+      },
+      {
+        "line": 47992,
+        "text": "else if(typeof v322OpenDealer==='function')v322OpenDealer();",
+        "context": [
+          {
+            "line": 47984,
+            "text": "      const sibling=[...panel.children].find(x=>x.tagName==='BUTTON'||x.matches?.('a,[role=\"menuitem\"]'));"
+          },
+          {
+            "line": 47985,
+            "text": "      if(sibling && sibling.className)item.className=sibling.className;"
+          },
+          {
+            "line": 47986,
+            "text": ""
+          },
+          {
+            "line": 47987,
+            "text": "      item.onclick=(e)=>{"
+          },
+          {
+            "line": 47988,
+            "text": "        e.preventDefault();"
+          },
+          {
+            "line": 47989,
+            "text": "        e.stopPropagation();"
+          },
+          {
+            "line": 47990,
+            "text": "        try{"
+          },
+          {
+            "line": 47991,
+            "text": "          if(typeof v032Go==='function')v032Go('harzDealer');"
+          },
+          {
+            "line": 47992,
+            "text": "          else if(typeof v322OpenDealer==='function')v322OpenDealer();"
+          },
+          {
+            "line": 47993,
+            "text": "        }catch(err){console.warn('V4.02 Harz Dealer',err)}"
+          },
+          {
+            "line": 47994,
+            "text": "      };"
+          },
+          {
+            "line": 47995,
+            "text": "      panel.appendChild(item);"
+          },
+          {
+            "line": 47996,
+            "text": "    }"
+          },
+          {
+            "line": 47997,
+            "text": "  }"
+          },
+          {
+            "line": 47998,
+            "text": ""
+          },
+          {
+            "line": 47999,
+            "text": "  function v353Polish(){"
+          },
+          {
+            "line": 48000,
+            "text": "    v353FixDealerPlacement();"
+          }
+        ]
+      }
+    ],
+    "v6317Observed": [
+      {
+        "line": 91383,
+        "text": "['v260FighterName','v260FighterMeta'].forEach(id=>{const el=document.getElementById(id);if(el&&!el.dataset.v6317Observed){el.dataset.v6317Observed='1';new MutationObserver(()=>requestAnimationFrame(sync)).observe(el,{subtree:true,childList:true,characterData:true})}});",
+        "context": [
+          {
+            "line": 91375,
+            "text": "    const cls=classFromMeta();"
+          },
+          {
+            "line": 91376,
+            "text": "    if(hero && cls!==lastClass){hero.src=artForClass(cls);hero.dataset.cls=cls;lastClass=cls;}"
+          },
+          {
+            "line": 91377,
+            "text": "    if(boss && !boss.src)boss.src=ART.boss;"
+          },
+          {
+            "line": 91378,
+            "text": "    const heroThumb=document.getElementById('v6309HeroThumb');if(heroThumb && hero?.src)heroThumb.src=hero.src;"
+          },
+          {
+            "line": 91379,
+            "text": "    const bossThumb=document.getElementById('v6309BossThumb');if(bossThumb)bossThumb.src=ART.boss;"
+          },
+          {
+            "line": 91380,
+            "text": "  }"
+          },
+          {
+            "line": 91381,
+            "text": "  function observeClass(){"
+          },
+          {
+            "line": 91382,
+            "text": "    ensure();sync();"
+          },
+          {
+            "line": 91383,
+            "text": "    ['v260FighterName','v260FighterMeta'].forEach(id=>{const el=document.getElementById(id);if(el&&!el.dataset.v6317Observed){el.dataset.v6317Observed='1';new MutationObserver(()=>requestAnimationFrame(sync)).observe(el,{subtree:true,childList:true,characterData:true})}});"
+          },
+          {
+            "line": 91384,
+            "text": "  }"
+          },
+          {
+            "line": 91385,
+            "text": "  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',observeClass,{once:true});else observeClass();"
+          },
+          {
+            "line": 91386,
+            "text": "  setTimeout(observeClass,700);"
+          },
+          {
+            "line": 91387,
+            "text": "})();"
+          },
+          {
+            "line": 91388,
+            "text": "</script>"
+          },
+          {
+            "line": 91389,
+            "text": "<!-- ===== /V6.317 ===== -->"
+          },
+          {
+            "line": 91390,
+            "text": ""
+          },
+          {
+            "line": 91391,
+            "text": ""
+          }
+        ]
+      }
+    ],
+    "v484OpenDailyLogin": [
+      {
+        "line": 60470,
+        "text": "window.v484OpenDailyLogin=()=>{openedKey='';return tryOpen()};",
+        "context": [
+          {
+            "line": 60462,
+            "text": "    const today=berlinDay();"
+          },
+          {
+            "line": 60463,
+            "text": "    if(openedKey===today.key||!accountReady()||!due())return false;"
+          },
+          {
+            "line": 60464,
+            "text": "    openedKey=today.key;ensureOverlay().classList.add('show');renderPopup();return true;"
+          },
+          {
+            "line": 60465,
+            "text": "  }"
+          },
+          {
+            "line": 60466,
+            "text": "  function close(){"
+          },
+          {
+            "line": 60467,
+            "text": "    const ov=document.getElementById('v484DailyLogin');if(ov)ov.classList.remove('show');"
+          },
+          {
+            "line": 60468,
+            "text": "  }"
+          },
+          {
+            "line": 60469,
+            "text": "  function tryOpen(){stamp();if(open())return true;return false}"
+          },
+          {
+            "line": 60470,
+            "text": "  window.v484OpenDailyLogin=()=>{openedKey='';return tryOpen()};"
+          },
+          {
+            "line": 60471,
+            "text": ""
+          },
+          {
+            "line": 60472,
+            "text": "  /* Finalizer hook covers slow sign-ins; the one-shot checks cover already-hydrated reloads. */"
+          },
+          {
+            "line": 60473,
+            "text": "  try{"
+          },
+          {
+            "line": 60474,
+            "text": "    if(typeof v200FinalizeUser==='function'&&!window.__v484FinalizeWrapped){"
+          },
+          {
+            "line": 60475,
+            "text": "      const base=v200FinalizeUser;"
+          },
+          {
+            "line": 60476,
+            "text": "      v200FinalizeUser=async function(){const r=await base.apply(this,arguments);setTimeout(tryOpen,120);return r};"
+          },
+          {
+            "line": 60477,
+            "text": "      try{window.v200FinalizeUser=v200FinalizeUser}catch(e){}window.__v484FinalizeWrapped=true;"
+          },
+          {
+            "line": 60478,
+            "text": "    }"
+          }
+        ]
+      },
+      {
+        "line": 107518,
+        "text": "setTimeout(()=>{try{window.v484OpenDailyLogin?.()}catch(_){}},80);",
+        "context": [
+          {
+            "line": 107510,
+            "text": "  /* V7.199: Daily Login is server-authoritative. Do not block the claim animation"
+          },
+          {
+            "line": 107511,
+            "text": "     by serializing the complete legacy save back into localStorage. */"
+          },
+          {
+            "line": 107512,
+            "text": "  D.dailyReady=true;"
+          },
+          {
+            "line": 107513,
+            "text": ""
+          },
+          {
+            "line": 107514,
+            "text": "  if(r.due!==true&&!keepOverlay){"
+          },
+          {
+            "line": 107515,
+            "text": "    document.getElementById('v484DailyLogin')?.classList.remove('show');"
+          },
+          {
+            "line": 107516,
+            "text": "  }else if(r.due===true&&openIfDue&&dailyShownKey!==today){"
+          },
+          {
+            "line": 107517,
+            "text": "    dailyShownKey=today;"
+          },
+          {
+            "line": 107518,
+            "text": "    setTimeout(()=>{try{window.v484OpenDailyLogin?.()}catch(_){}},80);"
+          },
+          {
+            "line": 107519,
+            "text": "  }"
+          },
+          {
+            "line": 107520,
+            "text": "  if(paint)paintDailyLight();"
+          },
+          {
+            "line": 107521,
+            "text": "  if(heavy)scheduleDailyHeavy(Array.isArray(r.inventory));"
+          },
+          {
+            "line": 107522,
+            "text": "  return true;"
+          },
+          {
+            "line": 107523,
+            "text": "}"
+          },
+          {
+            "line": 107524,
+            "text": "async function refreshDaily(openIfDue=false){"
+          },
+          {
+            "line": 107525,
+            "text": "  if(!window.v7081UseAuthority?.('daily')){D.dailyReady=false;return null;}"
+          },
+          {
+            "line": 107526,
+            "text": "  if(dailyP)return dailyP;"
+          }
+        ]
+      },
+      {
+        "line": 107800,
+        "text": "window.v484OpenDailyLogin?.();",
+        "context": [
+          {
+            "line": 107792,
+            "text": "  if(!uid())return;"
+          },
+          {
+            "line": 107793,
+            "text": "  const [daily]=await Promise.all([refreshDaily(false),refreshEndgame(false)]);"
+          },
+          {
+            "line": 107794,
+            "text": "  if(daily?.due===true){"
+          },
+          {
+            "line": 107795,
+            "text": "    setTimeout(()=>{"
+          },
+          {
+            "line": 107796,
+            "text": "      try{"
+          },
+          {
+            "line": 107797,
+            "text": "        if(!uid()||window.__V200_AUTH_READY__!==true)return;"
+          },
+          {
+            "line": 107798,
+            "text": "        const home=document.getElementById('world');"
+          },
+          {
+            "line": 107799,
+            "text": "        if(home&&!home.classList.contains('active'))return;"
+          },
+          {
+            "line": 107800,
+            "text": "        window.v484OpenDailyLogin?.();"
+          },
+          {
+            "line": 107801,
+            "text": "      }catch(_){}"
+          },
+          {
+            "line": 107802,
+            "text": "    },1600);"
+          },
+          {
+            "line": 107803,
+            "text": "  }"
+          },
+          {
+            "line": 107804,
+            "text": "}"
+          },
+          {
+            "line": 107805,
+            "text": "window.addEventListener('growlegends:account-ready',()=>{const run=()=>void boot();if(typeof window.v7204AfterStartupQuiet==='function')window.v7204AfterStartupQuiet(run,1100);else setTimeout(run,500)},{passive:true});"
+          },
+          {
+            "line": 107806,
+            "text": "window.addEventListener('pageshow',()=>{if(window.v7204StartupQuiet?.())return;setTimeout(()=>void refreshDaily(false),1200)},{passive:true});"
+          },
+          {
+            "line": 107807,
+            "text": "document.addEventListener('visibilitychange',()=>{"
+          },
+          {
+            "line": 107808,
+            "text": "  if(!document.hidden&&document.getElementById('endgame')?.classList.contains('active'))setTimeout(()=>void refreshEndgame(false),350);"
+          }
+        ]
+      }
+    ],
+    "v4107Run": [
+      {
+        "line": 62486,
+        "text": "if(e.target.closest?.('#v4107Run')){renderLoading();void runAndRender(true);return}",
+        "context": [
+          {
+            "line": 62478,
+            "text": "   <aside class=\"v4107-right\" id=\"v4107Right\"></aside>"
+          },
+          {
+            "line": 62479,
+            "text": "  </div>"
+          },
+          {
+            "line": 62480,
+            "text": "  <div class=\"v4107-footerbar\" id=\"v4107Footerbar\"></div>"
+          },
+          {
+            "line": 62481,
+            "text": " </div>`;"
+          },
+          {
+            "line": 62482,
+            "text": " sec.addEventListener('click',e=>{"
+          },
+          {
+            "line": 62483,
+            "text": "  const b=e.target.closest?.('[data-v4107-jump]');if(b){const map={status:'v4107Status',groups:'v4107Groups',tests:'v4107Tests',performance:'v4107PerfCard',errors:'v4107ErrorCard',codedebug:'glCodeDiag'};document.getElementById(map[b.dataset.v4107Jump])?.scrollIntoView({behavior:'smooth',block:'start'});sec.querySelectorAll('.v4107-nav').forEach(x=>x.classList.toggle('active',x===b));return}"
+          },
+          {
+            "line": 62484,
+            "text": "  const g=e.target.closest?.('[data-v4107-group]');if(g){selectedGroup=decodeURIComponent(g.dataset.v4107Group);renderPage(last||fullReport());document.getElementById('v4107Tests')?.scrollIntoView({behavior:'smooth',block:'start'});return}"
+          },
+          {
+            "line": 62485,
+            "text": "  const f=e.target.closest?.('[data-v4107-filter]');if(f){filter=f.dataset.v4107Filter;renderPage(last||fullReport());return}"
+          },
+          {
+            "line": 62486,
+            "text": "  if(e.target.closest?.('#v4107Run')){renderLoading();void runAndRender(true);return}"
+          },
+          {
+            "line": 62487,
+            "text": "  if(e.target.closest?.('#v7173Hydrate')){renderLoading();void (async()=>{try{await window.v7133HydrateAllCore?.();await window.v7084RunSystemTest?.(false);last=fullReport();renderPage(last);try{window.v063Toast?.('🛡️ Serverstand geladen','success','Kanonische Zustände wurden neu vom Server übernommen.')}catch(_){}}catch(err){renderFatal(err)}})();return}"
+          },
+          {
+            "line": 62488,
+            "text": "  if(e.target.closest?.('#v4107Clear')){try{localStorage.removeItem(runtimeKey());localStorage.removeItem(`growLegendsQA:v4106:${owner()}:runtime`)}catch(_){}errlog.length=0;renderPage(last||fullReport());return}"
+          },
+          {
+            "line": 62489,
+            "text": "  if(e.target.closest?.('#v4107Copy')){copyReport(last||fullReport());return}"
+          },
+          {
+            "line": 62490,
+            "text": " });"
+          },
+          {
+            "line": 62491,
+            "text": " }"
+          },
+          {
+            "line": 62492,
+            "text": " return sec"
+          },
+          {
+            "line": 62493,
+            "text": "}"
+          },
+          {
+            "line": 62494,
+            "text": "function cachedReport(){"
+          }
+        ]
+      },
+      {
+        "line": 62540,
+        "text": "const status=document.getElementById('v4107Status');if(status)status.innerHTML=`<div class=\"v4107-status\" data-v4107-anchor=\"status\"><div class=\"v4107-shield\">${r.failed?'!':'✓'}</div><div class=\"v4107-status-copy\"><small>SYSTEMSTATUS</small><h2 class=\"${st[2]==='bad'?'v4107-bad':st[2]==='warn'?'v4107-warn':'v4107-ok'}\">${esc(st[0])}</h2><p>${esc(st[1])}</p></div><div class=\"v4107-score\"><small>TESTABDECKUNG</small><strong>${pct}%</strong><span>${r.passed} / ${r.total}</span></div><div class=\"v4107-progress\"><i style=\"width:${pct}%\"></i></div></div><div class=\"v4107-summary\"><div class=\"v4107-stat\"><small>TESTS</small><b>${r.total}</b></div><div class=\"v4107-stat\"><small>BESTANDEN</small><b class=\"v4107-ok\">${r.passed}</b></div><div class=\"v4107-stat\"><small>WARNUNGEN</small><b class=\"v4107-warn\">${r.warnings}</b></div><div class=\"v4107-stat\"><small>FEHLER</small><b class=\"v4107-bad\">${r.failed}</b></div></div><div class=\"v4107-actions\"><button class=\"btn\" id=\"v4107Run\">↻ Tests erneut starten</button><button class=\"btn secondary\" id=\"v7173Hydrate\">🛡️ Serverstand neu laden</button><button class=\"btn secondary\" id=\"v4107Copy\">📋 Bericht kopieren</button><button class=\"btn secondary\" id=\"v4107Clear\">🧹 Fehlerlog löschen</button></div>${problemSummaryHtml(r)}`;",
+        "context": [
+          {
+            "line": 62532,
+            "text": " let rows=g?.rows||[];if(filter==='problems')rows=rows.filter(x=>!x.pass);else if(filter==='errors')rows=rows.filter(x=>!x.pass&&x.severity!=='warn');else if(filter==='warnings')rows=rows.filter(x=>!x.pass&&x.severity==='warn');"
+          },
+          {
+            "line": 62533,
+            "text": " if(!rows.length&&filter!=='all')return `<div class=\"v4107-clean\">✅ In diesem Filter keine Treffer.</div>`;"
+          },
+          {
+            "line": 62534,
+            "text": " return `<div class=\"v4107-test-list\">${rows.map(x=>`<div class=\"v4107-test-row ${x.pass?'':x.severity==='warn'?'warn':'fail'}\"><div class=\"ico\">${x.pass?'✅':x.severity==='warn'?'⚠️':'❌'}</div><div><b>${esc(x.name)}</b>${x.detail?`<small>${esc(x.detail)}</small>`:''}</div><em>${x.pass?'OK':x.severity==='warn'?'WARNUNG':'FEHLER'}</em></div>`).join('')}</div>`"
+          },
+          {
+            "line": 62535,
+            "text": "}"
+          },
+          {
+            "line": 62536,
+            "text": "function renderPage(r){"
+          },
+          {
+            "line": 62537,
+            "text": " const sec=ensureScreen();if(!sec||!r)return;"
+          },
+          {
+            "line": 62538,
+            "text": " const groups=groupData(r);if(!selectedGroup||!groups.some(x=>x.name===selectedGroup)){selectedGroup=(groups.find(x=>x.failed)?.name||groups.find(x=>x.warnings)?.name||groups[0]?.name||'')}"
+          },
+          {
+            "line": 62539,
+            "text": " const st=statusText(r),pct=r.total?Math.round(r.passed/r.total*100):0;"
+          },
+          {
+            "line": 62540,
+            "text": " const status=document.getElementById('v4107Status');if(status)status.innerHTML=`<div class=\"v4107-status\" data-v4107-anchor=\"status\"><div class=\"v4107-shield\">${r.failed?'!':'✓'}</div><div class=\"v4107-status-copy\"><small>SYSTEMSTATUS</small><h2 class=\"${st[2]==='bad'?'v4107-bad':st[2]==='warn'?'v4107-warn':'v4107-ok'}\">${esc(st[0])}</h2><p>${esc(st[1])}</p></div><div class=\"v4107-score\"><small>TESTABDECKUNG</small><strong>${pct}%</strong><span>${r.passed} / ${r.total}</span></div><div class=\"v4107-progress\"><i style=\"width:${pct}%\"></i></div></div><div class=\"v4107-summary\"><div class=\"v4107-stat\"><small>TESTS</small><b>${r.total}</b></div><div class=\"v4107-stat\"><small>BESTANDEN</small><b class=\"v4107-ok\">${r.passed}</b></div><div class=\"v4107-stat\"><small>WARNUNGEN</small><b class=\"v4107-warn\">${r.warnings}</b></div><div class=\"v4107-stat\"><small>FEHLER</small><b class=\"v4107-bad\">${r.failed}</b></div></div><div class=\"v4107-actions\"><button class=\"btn\" id=\"v4107Run\">↻ Tests erneut starten</button><button class=\"btn secondary\" id=\"v7173Hydrate\">🛡️ Serverstand neu laden</button><button class=\"btn secondary\" id=\"v4107Copy\">📋 Bericht kopieren</button><button class=\"btn secondary\" id=\"v4107Clear\">🧹 Fehlerlog löschen</button></div>${problemSummaryHtml(r)}`;"
+          },
+          {
+            "line": 62541,
+            "text": " const grp=document.getElementById('v4107Groups');if(grp)grp.innerHTML=`<div class=\"v4107-section-head\"><h3>TEST-MATRIX · ${groups.length} BEREICHE</h3><span>Gruppe antippen für Details</span></div><div class=\"v4107-groups\">${groups.map(g=>`<div class=\"v4107-group ${g.name===selectedGroup?'active':''}\" data-v4107-group=\"${encodeURIComponent(g.name)}\"><div class=\"v4107-group-top\"><div class=\"v4107-group-title\">${esc(g.name)}</div><div class=\"v4107-group-score\">${g.passed}/${g.total}</div></div><div class=\"v4107-group-mini\"><span>${g.passed} ✅</span>${g.warnings?` · <span class=\"warn\">${g.warnings} ⚠️</span>`:''}${g.failed?` · <span class=\"fail\">${g.failed} ❌</span>`:''}<br>${g.failed?'Fehler vorhanden':g.warnings?'Technische Hinweise':'Bereich ohne Fehler'}</div></div>`).join('')}</div>`;"
+          },
+          {
+            "line": 62542,
+            "text": " const cur=groups.find(x=>x.name===selectedGroup);const tests=document.getElementById('v4107Tests');if(tests)tests.innerHTML=`<div class=\"v4107-section-head\"><h3>${esc(selectedGroup||'TESTDETAILS')}</h3><span>${cur?.total||0} Prüfungen</span></div><div class=\"v4107-test-tools\"><button class=\"v4107-filter ${filter==='problems'?'active':''}\" data-v4107-filter=\"problems\">FEHLER + WARNUNGEN</button><button class=\"v4107-filter ${filter==='errors'?'active':''}\" data-v4107-filter=\"errors\">NUR FEHLER</button><button class=\"v4107-filter ${filter==='warnings'?'active':''}\" data-v4107-filter=\"warnings\">NUR WARNUNGEN</button><button class=\"v4107-filter ${filter==='all'?'active':''}\" data-v4107-filter=\"all\">ALLE</button></div>${rowsForGroup(cur)}`;"
+          },
+          {
+            "line": 62543,
+            "text": " renderRight(r);"
+          },
+          {
+            "line": 62544,
+            "text": " const foot=document.getElementById('v4107Footerbar'),pm=perfMetrics();if(foot)foot.innerHTML=`<span>✅ QA <b>${r.passed}/${r.total}</b></span><span>❌ Fehler <b>${r.failed}</b></span><span>⚠️ Warnungen <b>${r.warnings}</b></span><span>⚡ Render <b>${pm.renderMax.toFixed(0)} ms</b></span><span>🧠 Speicher <b>${pm.heap==null?'—':pm.heap.toFixed(0)+' MB'}</b></span><span>🛡️ Wächter <b>AKTIV</b></span>`;"
+          },
+          {
+            "line": 62545,
+            "text": " paintSettingsBadge(r);"
+          },
+          {
+            "line": 62546,
+            "text": "}"
+          },
+          {
+            "line": 62547,
+            "text": "function renderRight(r){"
+          },
+          {
+            "line": 62548,
+            "text": " const box=document.getElementById('v4107Right');if(!box)return;const p=perfMetrics(),logs=allRuntime(),ti=timerInfo(),errors=logs.filter(x=>x.severity!=='warn'),rs=reactionStats();"
+          }
+        ]
+      },
+      {
+        "line": 62629,
+        "text": "window.v4107RunQA=fullReport;window.v4107OpenSystemtechnik=openPage;window.v4102OpenQA=openPage;window.v4102RunQA=(opts={})=>{const r=fullReport();if(opts.open)openPage();return r};",
+        "context": [
+          {
+            "line": 62621,
+            "text": "   else if(status>=400&&expectedRpcReject){pushErr('RPC_REJECTED',url,'warn')}"
+          },
+          {
+            "line": 62622,
+            "text": "  }"
+          },
+          {
+            "line": 62623,
+            "text": " };"
+          },
+          {
+            "line": 62624,
+            "text": " w.__v4107=true;w.__v4123PlayerSaveGetRetry=true;w.__v7174PvpGetRetry=true;window.fetch=w"
+          },
+          {
+            "line": 62625,
+            "text": "}}catch(e){}"
+          },
+          {
+            "line": 62626,
+            "text": "/* Cache Storage estimate where supported. */"
+          },
+          {
+            "line": 62627,
+            "text": "try{navigator.storage?.estimate?.().then(x=>storageEstimate=x).catch(()=>{})}catch(e){}"
+          },
+          {
+            "line": 62628,
+            "text": "/* Make Systemtechnik the canonical QA destination. */"
+          },
+          {
+            "line": 62629,
+            "text": "window.v4107RunQA=fullReport;window.v4107OpenSystemtechnik=openPage;window.v4102OpenQA=openPage;window.v4102RunQA=(opts={})=>{const r=fullReport();if(opts.open)openPage();return r};"
+          },
+          {
+            "line": 62630,
+            "text": "/* Keep our page integrated with the many historical navigation wrappers. */"
+          },
+          {
+            "line": 62631,
+            "text": "try{if(typeof v032Go==='function'&&!window.__v4107Go){const base=v032Go;const wrap=function(id){ensureScreen();installMenu();if(id==='systemtech'&&(typeof v093IsAdmin==='undefined'||v093IsAdmin!==true))return base.call(this,'world');let p0=null,sig='';try{const pf=window.v4125StableCombatPower;p0=typeof pf==='function'?Number(pf()):(typeof combatPower==='function'?Number(combatPower()):null);sig=corePowerSignature()}catch(e){}const r=base.apply(this,arguments);if(id==='systemtech')setTimeout(runAndRender,0);else lastNav=id||lastNav;setTimeout(()=>{try{if(id!=='systemtech'&&p0!=null&&sig===corePowerSignature()){const pf=window.v4125StableCombatPower;const p1=typeof pf==='function'?Number(pf()):Number(combatPower());if(Number.isFinite(p1)&&p1!==p0)pushErr('POWER_NAVIGATION_DRIFT',`Kampfkraft änderte sich nur durch Seitenwechsel: ${p0} → ${p1}`,'warn')}}catch(e){}},180);return r};v032Go=wrap;window.v032Go=wrap;window.__v4107Go=true}}catch(e){}"
+          },
+          {
+            "line": 62632,
+            "text": "/* Lightweight live refresh; no full source scan unless Systemtechnik is open. */"
+          },
+          {
+            "line": 62633,
+            "text": "setInterval(()=>{try{"
+          },
+          {
+            "line": 62634,
+            "text": " const st=!!document.getElementById('systemtech')?.classList.contains('active');"
+          },
+          {
+            "line": 62635,
+            "text": " const sm=!!document.getElementById('v141SettingsMenu')?.classList.contains('open');"
+          },
+          {
+            "line": 62636,
+            "text": " if(document.hidden||(!st&&!sm))return;"
+          },
+          {
+            "line": 62637,
+            "text": " installMenu();paintSettingsBadge(last);"
+          }
+        ]
+      },
+      {
+        "line": 62990,
+        "text": "const runner=window.v4107RunQA||window.v4102RunQA;if(typeof runner!=='function'||window.__v4114QaWrapped)return;",
+        "context": [
+          {
+            "line": 62982,
+            "text": " /* Make care monotonic across every legacy normalizer/save/cloud/navigation path. */"
+          },
+          {
+            "line": 62983,
+            "text": " try{if(typeof normalizeState==='function'&&!window.__v4114Normalize){const base=normalizeState;normalizeState=function(){syncLedger('normalize-before');const r=base.apply(this,arguments);syncLedger('normalize-after');return r};try{window.normalizeState=normalizeState}catch(e){}window.__v4114Normalize=true}}catch(e){}"
+          },
+          {
+            "line": 62984,
+            "text": " try{if(typeof persist==='function'&&!window.__v4114Persist){const base=persist;persist=function(){syncLedger('persist-before');return base.apply(this,arguments)};try{window.persist=persist}catch(e){}window.__v4114Persist=true}}catch(e){}"
+          },
+          {
+            "line": 62985,
+            "text": " try{if(typeof v075ApplyCloudSave==='function'&&!window.__v4114CloudApply){const base=v075ApplyCloudSave;v075ApplyCloudSave=async function(){syncLedger('cloud-before');const r=await base.apply(this,arguments);const changed=syncLedger('cloud-after');if(changed){try{if(typeof persist==='function')persist(false)}catch(e){}}return r};try{window.v075ApplyCloudSave=v075ApplyCloudSave}catch(e){}window.__v4114CloudApply=true}}catch(e){}"
+          },
+          {
+            "line": 62986,
+            "text": " try{if(!window.__v4114Go){window.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')!=='grow')return;const changed=syncLedger('grow-open');if(changed)try{persist(false)}catch(_){};decorateSlots()},{passive:true});window.__v4114Go=true}}catch(e){}"
+          },
+          {
+            "line": 62987,
+            "text": ""
+          },
+          {
+            "line": 62988,
+            "text": " function addQaTests(){"
+          },
+          {
+            "line": 62989,
+            "text": "  try{"
+          },
+          {
+            "line": 62990,
+            "text": "   const runner=window.v4107RunQA||window.v4102RunQA;if(typeof runner!=='function'||window.__v4114QaWrapped)return;"
+          },
+          {
+            "line": 62991,
+            "text": "   const wrapped=function(){"
+          },
+          {
+            "line": 62992,
+            "text": "    syncLedger('qa');const r=runner.apply(this,arguments);if(!r||!Array.isArray(r.results))return r;"
+          },
+          {
+            "line": 62993,
+            "text": "    const tests=[];const T=(name,fn)=>{let pass=false,detail='';try{const x=fn();pass=typeof x==='object'?!!x.pass:!!x;detail=typeof x==='object'?String(x.detail||''):''}catch(e){detail=e.message||String(e)}tests.push({category:'Growroom Pflege',name,pass,severity:'error',detail})};"
+          },
+          {
+            "line": 62994,
+            "text": "    T('Pflege-Ledger accountgebunden aktiv',()=>typeof window.v4114SyncCare==='function'&&!!embedded());"
+          },
+          {
+            "line": 62995,
+            "text": "    T('Erledigte Pflege ist monoton (true kann nicht zurück auf false)',()=>{const p={uid:'qa_care_monotonic',seed:'moss',start:Date.now()-30000,duration:100000,care:[false,false,false,false],careDoneAt:[0,0,0,0]};const z=embedded(),old=z[p.uid];z[p.uid]={uid:p.uid,care:[false,true,false,false],doneAt:[0,123456,0,0],updatedAt:Date.now()};const oldPlants=s.grow.plants;try{s.grow.plants=[p];syncLedger('qa-monotonic');return p.care[1]===true&&p.careDoneAt[1]>=123456}finally{s.grow.plants=oldPlants;if(old)z[p.uid]=old;else delete z[p.uid]}});"
+          },
+          {
+            "line": 62996,
+            "text": "    T('Pflegebutton direkt im Pflanzenslot implementiert',()=>typeof window.v4114DecorateCareSlots==='function'&&document.getElementById('v4114-grow-care-css'));"
+          },
+          {
+            "line": 62997,
+            "text": "    r.results.push(...tests);r.total=r.results.length;r.passed=r.results.filter(x=>x.pass).length;r.failed=r.results.filter(x=>!x.pass&&x.severity!=='warn').length;r.warnings=r.results.filter(x=>!x.pass&&x.severity==='warn').length;r.ok=r.failed===0;return r;"
+          },
+          {
+            "line": 62998,
+            "text": "   };"
+          }
+        ]
+      },
+      {
+        "line": 62999,
+        "text": "window.v4107RunQA=wrapped;if(window.v4102RunQA===runner)window.v4102RunQA=wrapped;window.__v4114QaWrapped=true;",
+        "context": [
+          {
+            "line": 62991,
+            "text": "   const wrapped=function(){"
+          },
+          {
+            "line": 62992,
+            "text": "    syncLedger('qa');const r=runner.apply(this,arguments);if(!r||!Array.isArray(r.results))return r;"
+          },
+          {
+            "line": 62993,
+            "text": "    const tests=[];const T=(name,fn)=>{let pass=false,detail='';try{const x=fn();pass=typeof x==='object'?!!x.pass:!!x;detail=typeof x==='object'?String(x.detail||''):''}catch(e){detail=e.message||String(e)}tests.push({category:'Growroom Pflege',name,pass,severity:'error',detail})};"
+          },
+          {
+            "line": 62994,
+            "text": "    T('Pflege-Ledger accountgebunden aktiv',()=>typeof window.v4114SyncCare==='function'&&!!embedded());"
+          },
+          {
+            "line": 62995,
+            "text": "    T('Erledigte Pflege ist monoton (true kann nicht zurück auf false)',()=>{const p={uid:'qa_care_monotonic',seed:'moss',start:Date.now()-30000,duration:100000,care:[false,false,false,false],careDoneAt:[0,0,0,0]};const z=embedded(),old=z[p.uid];z[p.uid]={uid:p.uid,care:[false,true,false,false],doneAt:[0,123456,0,0],updatedAt:Date.now()};const oldPlants=s.grow.plants;try{s.grow.plants=[p];syncLedger('qa-monotonic');return p.care[1]===true&&p.careDoneAt[1]>=123456}finally{s.grow.plants=oldPlants;if(old)z[p.uid]=old;else delete z[p.uid]}});"
+          },
+          {
+            "line": 62996,
+            "text": "    T('Pflegebutton direkt im Pflanzenslot implementiert',()=>typeof window.v4114DecorateCareSlots==='function'&&document.getElementById('v4114-grow-care-css'));"
+          },
+          {
+            "line": 62997,
+            "text": "    r.results.push(...tests);r.total=r.results.length;r.passed=r.results.filter(x=>x.pass).length;r.failed=r.results.filter(x=>!x.pass&&x.severity!=='warn').length;r.warnings=r.results.filter(x=>!x.pass&&x.severity==='warn').length;r.ok=r.failed===0;return r;"
+          },
+          {
+            "line": 62998,
+            "text": "   };"
+          },
+          {
+            "line": 62999,
+            "text": "   window.v4107RunQA=wrapped;if(window.v4102RunQA===runner)window.v4102RunQA=wrapped;window.__v4114QaWrapped=true;"
+          },
+          {
+            "line": 63000,
+            "text": "  }catch(e){}"
+          },
+          {
+            "line": 63001,
+            "text": " }"
+          },
+          {
+            "line": 63002,
+            "text": " function stamp(){}"
+          },
+          {
+            "line": 63003,
+            "text": " syncLedger('startup');decorateSlots();addQaTests();stamp();"
+          },
+          {
+            "line": 63004,
+            "text": " /* V6.97: body-wide grow-care observer retired. */"
+          },
+          {
+            "line": 63005,
+            "text": " document.addEventListener('visibilitychange',()=>{if(!document.hidden){const c=syncLedger('visible');if(c)try{persist(false)}catch(e){};decorateSlots();stamp()}},{passive:true});"
+          },
+          {
+            "line": 63006,
+            "text": " window.addEventListener('pageshow',()=>{const c=syncLedger('pageshow');if(c)try{persist(false)}catch(e){};decorateSlots();stamp()},{passive:true});"
+          },
+          {
+            "line": 63007,
+            "text": " window.addEventListener('growlegends:account-ready',()=>{syncLedger('account-ready');decorateSlots();addQaTests();stamp()},{passive:true});"
+          }
+        ]
+      },
+      {
+        "line": 63108,
+        "text": "const runner=window.v4107RunQA||window.v4102RunQA;if(typeof runner!=='function'||window.__v4115QaWrapped)return;",
+        "context": [
+          {
+            "line": 63100,
+            "text": "  ];"
+          },
+          {
+            "line": 63101,
+            "text": "  const resolved=samples.map(x=>comic(x));"
+          },
+          {
+            "line": 63102,
+            "text": "  const ringArt=comic({name:'QA Ring',slot:'ring',quality:'purple'}),amuletArt=comic({name:'QA Amulett',slot:'amulet',quality:'purple'});"
+          },
+          {
+            "line": 63103,
+            "text": "  return {same,resolved:resolved.every(Boolean),webp:resolved.every((u,i)=>i<3?/^(?:data:image\\/webp;base64,|assets\\/v71(?:95|98)-base64\\/)/.test(String(u||'')):!!u),ringDistinct:!!ringArt&&!!amuletArt&&ringArt!==amuletArt};"
+          },
+          {
+            "line": 63104,
+            "text": " }"
+          },
+          {
+            "line": 63105,
+            "text": " window.v4115ItemArtQA=qa;"
+          },
+          {
+            "line": 63106,
+            "text": " function addQa(){"
+          },
+          {
+            "line": 63107,
+            "text": "  try{"
+          },
+          {
+            "line": 63108,
+            "text": "   const runner=window.v4107RunQA||window.v4102RunQA;if(typeof runner!=='function'||window.__v4115QaWrapped)return;"
+          },
+          {
+            "line": 63109,
+            "text": "   const wrapped=function(){const r=runner.apply(this,arguments);if(!r||!Array.isArray(r.results))return r;const q=qa();const rows=["
+          },
+          {
+            "line": 63110,
+            "text": "    {category:'Item-Art final',name:'Alle historischen Item-Resolver zeigen auf dieselbe Comic-Quelle',pass:q.same,severity:'error',detail:q.same?'V4.115 ist alleiniger Artwork-Owner':'Ein alter Renderer besitzt noch eine andere Quelle'},"
+          },
+          {
+            "line": 63111,
+            "text": "    {category:'Item-Art final',name:'Krieger/Magier/Schütze + Ausrüstung/Materialien lösen Comic-Art auf',pass:q.resolved,severity:'error',detail:q.resolved?'Alle Testitems liefern Artwork':'Mindestens ein Itemtyp ohne Artwork'},"
+          },
+          {
+            "line": 63112,
+            "text": "    {category:'Item-Art final',name:'Ring und Amulett besitzen unterschiedliche Grafiken',pass:q.ringDistinct,severity:'error',detail:q.ringDistinct?'Ring-Art ist eigenständig':'Ring verwendet fälschlich Amulett-Art'},"
+          },
+          {
+            "line": 63113,
+            "text": "    {category:'Item-Art final',name:'V4.106 Comic-WebP-Set ist die aktive Hauptquelle',pass:q.webp,severity:'error',detail:q.webp?'Freigegebenes Comic-Set aktiv':'Artwork fällt auf eine falsche Quelle zurück'}"
+          },
+          {
+            "line": 63114,
+            "text": "   ];r.results.push(...rows);r.total=r.results.length;r.passed=r.results.filter(x=>x.pass).length;r.failed=r.results.filter(x=>!x.pass&&x.severity!=='warn').length;r.warnings=r.results.filter(x=>!x.pass&&x.severity==='warn').length;r.ok=r.failed===0;return r};"
+          },
+          {
+            "line": 63115,
+            "text": "   window.v4107RunQA=wrapped;if(window.v4102RunQA===runner)window.v4102RunQA=wrapped;window.__v4115QaWrapped=true;"
+          },
+          {
+            "line": 63116,
+            "text": "  }catch(e){}"
+          }
+        ]
+      },
+      {
+        "line": 63115,
+        "text": "window.v4107RunQA=wrapped;if(window.v4102RunQA===runner)window.v4102RunQA=wrapped;window.__v4115QaWrapped=true;",
+        "context": [
+          {
+            "line": 63107,
+            "text": "  try{"
+          },
+          {
+            "line": 63108,
+            "text": "   const runner=window.v4107RunQA||window.v4102RunQA;if(typeof runner!=='function'||window.__v4115QaWrapped)return;"
+          },
+          {
+            "line": 63109,
+            "text": "   const wrapped=function(){const r=runner.apply(this,arguments);if(!r||!Array.isArray(r.results))return r;const q=qa();const rows=["
+          },
+          {
+            "line": 63110,
+            "text": "    {category:'Item-Art final',name:'Alle historischen Item-Resolver zeigen auf dieselbe Comic-Quelle',pass:q.same,severity:'error',detail:q.same?'V4.115 ist alleiniger Artwork-Owner':'Ein alter Renderer besitzt noch eine andere Quelle'},"
+          },
+          {
+            "line": 63111,
+            "text": "    {category:'Item-Art final',name:'Krieger/Magier/Schütze + Ausrüstung/Materialien lösen Comic-Art auf',pass:q.resolved,severity:'error',detail:q.resolved?'Alle Testitems liefern Artwork':'Mindestens ein Itemtyp ohne Artwork'},"
+          },
+          {
+            "line": 63112,
+            "text": "    {category:'Item-Art final',name:'Ring und Amulett besitzen unterschiedliche Grafiken',pass:q.ringDistinct,severity:'error',detail:q.ringDistinct?'Ring-Art ist eigenständig':'Ring verwendet fälschlich Amulett-Art'},"
+          },
+          {
+            "line": 63113,
+            "text": "    {category:'Item-Art final',name:'V4.106 Comic-WebP-Set ist die aktive Hauptquelle',pass:q.webp,severity:'error',detail:q.webp?'Freigegebenes Comic-Set aktiv':'Artwork fällt auf eine falsche Quelle zurück'}"
+          },
+          {
+            "line": 63114,
+            "text": "   ];r.results.push(...rows);r.total=r.results.length;r.passed=r.results.filter(x=>x.pass).length;r.failed=r.results.filter(x=>!x.pass&&x.severity!=='warn').length;r.warnings=r.results.filter(x=>!x.pass&&x.severity==='warn').length;r.ok=r.failed===0;return r};"
+          },
+          {
+            "line": 63115,
+            "text": "   window.v4107RunQA=wrapped;if(window.v4102RunQA===runner)window.v4102RunQA=wrapped;window.__v4115QaWrapped=true;"
+          },
+          {
+            "line": 63116,
+            "text": "  }catch(e){}"
+          },
+          {
+            "line": 63117,
+            "text": " }"
+          },
+          {
+            "line": 63118,
+            "text": " function stamp(){}"
+          },
+          {
+            "line": 63119,
+            "text": " refresh();addQa();stamp();"
+          },
+          {
+            "line": 63120,
+            "text": " /* Existing observers and render hooks do the ongoing work now that their resolver aliases agree. */"
+          },
+          {
+            "line": 63121,
+            "text": " [80,300,900,2200,5200,12500].forEach(ms=>setTimeout(()=>{refresh();addQa();stamp()},ms));"
+          },
+          {
+            "line": 63122,
+            "text": " window.addEventListener('pageshow',()=>{refresh();addQa();stamp()},{passive:true});"
+          },
+          {
+            "line": 63123,
+            "text": " document.addEventListener('visibilitychange',()=>{if(!document.hidden){refresh();stamp()}},{passive:true});"
+          }
+        ]
+      },
+      {
+        "line": 63136,
+        "text": "if(typeof window.v4107RunQA!=='function')issues.push('v4107RunQA fehlt');",
+        "context": [
+          {
+            "line": 63128,
+            "text": "<script id=\"v4116-systemtech-engine-fix\">"
+          },
+          {
+            "line": 63129,
+            "text": "(()=>{"
+          },
+          {
+            "line": 63130,
+            "text": " 'use strict';"
+          },
+          {
+            "line": 63131,
+            "text": " const VERSION=window.GROW_LEGENDS_VERSION?.label||'V4.159 Stable',SHORT=window.GROW_LEGENDS_VERSION?.short||'V4.159';"
+          },
+          {
+            "line": 63132,
+            "text": " function stamp(){}"
+          },
+          {
+            "line": 63133,
+            "text": " function engineSelfCheck(){"
+          },
+          {
+            "line": 63134,
+            "text": "  const issues=[];"
+          },
+          {
+            "line": 63135,
+            "text": "  try{"
+          },
+          {
+            "line": 63136,
+            "text": "   if(typeof window.v4107RunQA!=='function')issues.push('v4107RunQA fehlt');"
+          },
+          {
+            "line": 63137,
+            "text": "   if(typeof window.v4107OpenSystemtechnik!=='function')issues.push('Systemtechnik-Öffner fehlt');"
+          },
+          {
+            "line": 63138,
+            "text": "   const t=window.__V4106_TECH__;"
+          },
+          {
+            "line": 63139,
+            "text": "   if(t&&!(t.listeners instanceof Map))issues.push('Listener-Registry ungültig');"
+          },
+          {
+            "line": 63140,
+            "text": "  }catch(e){issues.push(e.message||String(e))}"
+          },
+          {
+            "line": 63141,
+            "text": "  return issues;"
+          },
+          {
+            "line": 63142,
+            "text": " }"
+          },
+          {
+            "line": 63143,
+            "text": " window.v4116SystemtechnikSelfCheck=engineSelfCheck;"
+          },
+          {
+            "line": 63144,
+            "text": " stamp();"
+          }
+        ]
+      },
+      {
+        "line": 65813,
+        "text": "const fn=window.v4107RunQA||window.v4102RunQA;",
+        "context": [
+          {
+            "line": 65805,
+            "text": "  const allBaseEqual=Object.values(baseBudgets).every(x=>x===7);"
+          },
+          {
+            "line": 65806,
+            "text": "  return {version:V.short,addedTemplates:ADDED,baseBudgets,slotBudgets,allBaseEqual,frostGrowerSame,frostWeaponBudget,frostTalentTreeReady,dualRule:'weapon1 100% + weapon2 10% attributes + offhand proc'};"
+          },
+          {
+            "line": 65807,
+            "text": " }"
+          },
+          {
+            "line": 65808,
+            "text": " window.v4154ClassBalanceAudit=audit;"
+          },
+          {
+            "line": 65809,
+            "text": " window.v4154EffectiveEquipmentScore=effectiveEquipmentScore;"
+          },
+          {
+            "line": 65810,
+            "text": ""
+          },
+          {
+            "line": 65811,
+            "text": " /* Add targeted QA without replacing the existing runner. */"
+          },
+          {
+            "line": 65812,
+            "text": " try{"
+          },
+          {
+            "line": 65813,
+            "text": "  const fn=window.v4107RunQA||window.v4102RunQA;"
+          },
+          {
+            "line": 65814,
+            "text": "  if(typeof fn==='function'&&!window.__v4154QaWrapped){"
+          },
+          {
+            "line": 65815,
+            "text": "   const wrapped=function(){const r=fn.apply(this,arguments);if(!r||!Array.isArray(r.results))return r;const a=audit();const add=(name,pass,detail)=>r.results.push({category:'Klassenbalance & Itemvielfalt',name,pass:!!pass,severity:'error',detail});"
+          },
+          {
+            "line": 65816,
+            "text": "    add('Alle vier Klassen besitzen dasselbe Basisbudget',a.allBaseEqual,JSON.stringify(a.baseBudgets));"
+          },
+          {
+            "line": 65817,
+            "text": "    add('Frost-Todesritter hat dasselbe Grundbudget wie Bud-Barbar',a.frostGrowerSame,JSON.stringify(classes?.frost?.bonus||{}));"
+          },
+          {
+            "line": 65818,
+            "text": "    add('Frost-Waffenbudget entspricht Bud-Barbar',a.frostWeaponBudget,`Frost ${a.slotBudgets.frost?.weapon} / Barbar ${a.slotBudgets.grower?.weapon}`);"
+          },
+          {
+            "line": 65819,
+            "text": "    add('Frost-Talentbaum besitzt drei vollständige Äste',a.frostTalentTreeReady,`${V314_BRANCHES?.frost?.length||0} Äste`);"
+          },
+          {
+            "line": 65820,
+            "text": "    add('Erweiterter Itempool aktiv',a.addedTemplates>=96,`${a.addedTemplates} neue Basistemplates`);"
+          },
+          {
+            "line": 65821,
+            "text": "    add('Jede Klasse hat neue Varianten in allen sechs Slots',CLASS_IDS.every(c=>SLOT_IDS.every(sl=>(NEW[c]||[]).some(x=>x[2]===sl))),'Waffe/Kopf/Körper/Schuhe/Ring/Amulett');"
+          }
+        ]
+      },
+      {
+        "line": 65823,
+        "text": "window.v4107RunQA=wrapped;if(window.v4102RunQA===fn)window.v4102RunQA=wrapped;window.__v4154QaWrapped=true;",
+        "context": [
+          {
+            "line": 65815,
+            "text": "   const wrapped=function(){const r=fn.apply(this,arguments);if(!r||!Array.isArray(r.results))return r;const a=audit();const add=(name,pass,detail)=>r.results.push({category:'Klassenbalance & Itemvielfalt',name,pass:!!pass,severity:'error',detail});"
+          },
+          {
+            "line": 65816,
+            "text": "    add('Alle vier Klassen besitzen dasselbe Basisbudget',a.allBaseEqual,JSON.stringify(a.baseBudgets));"
+          },
+          {
+            "line": 65817,
+            "text": "    add('Frost-Todesritter hat dasselbe Grundbudget wie Bud-Barbar',a.frostGrowerSame,JSON.stringify(classes?.frost?.bonus||{}));"
+          },
+          {
+            "line": 65818,
+            "text": "    add('Frost-Waffenbudget entspricht Bud-Barbar',a.frostWeaponBudget,`Frost ${a.slotBudgets.frost?.weapon} / Barbar ${a.slotBudgets.grower?.weapon}`);"
+          },
+          {
+            "line": 65819,
+            "text": "    add('Frost-Talentbaum besitzt drei vollständige Äste',a.frostTalentTreeReady,`${V314_BRANCHES?.frost?.length||0} Äste`);"
+          },
+          {
+            "line": 65820,
+            "text": "    add('Erweiterter Itempool aktiv',a.addedTemplates>=96,`${a.addedTemplates} neue Basistemplates`);"
+          },
+          {
+            "line": 65821,
+            "text": "    add('Jede Klasse hat neue Varianten in allen sechs Slots',CLASS_IDS.every(c=>SLOT_IDS.every(sl=>(NEW[c]||[]).some(x=>x[2]===sl))),'Waffe/Kopf/Körper/Schuhe/Ring/Amulett');"
+          },
+          {
+            "line": 65822,
+            "text": "    r.total=r.results.length;r.passed=r.results.filter(x=>x.pass).length;r.failed=r.results.filter(x=>!x.pass&&x.severity!=='warn').length;r.warnings=r.results.filter(x=>!x.pass&&x.severity==='warn').length;r.ok=r.failed===0;return r};"
+          },
+          {
+            "line": 65823,
+            "text": "   window.v4107RunQA=wrapped;if(window.v4102RunQA===fn)window.v4102RunQA=wrapped;window.__v4154QaWrapped=true;"
+          },
+          {
+            "line": 65824,
+            "text": "  }"
+          },
+          {
+            "line": 65825,
+            "text": " }catch(e){}"
+          },
+          {
+            "line": 65826,
+            "text": ""
+          },
+          {
+            "line": 65827,
+            "text": " function stamp(){}"
+          },
+          {
+            "line": 65828,
+            "text": " stamp();normalizeItems();if(window.__V200_AUTH_READY__===true)setTimeout(accountActivate,0);"
+          },
+          {
+            "line": 65829,
+            "text": " window.addEventListener('growlegends:account-ready',()=>setTimeout(accountActivate,0));"
+          },
+          {
+            "line": 65830,
+            "text": " window.addEventListener('pageshow',()=>{stamp();if(window.__V200_AUTH_READY__===true)setTimeout(accountActivate,0)},{passive:true});"
+          },
+          {
+            "line": 65831,
+            "text": "})();"
+          }
+        ]
+      },
+      {
+        "line": 66293,
+        "text": "const qa=window.v4107RunQA||window.v4102RunQA;",
+        "context": [
+          {
+            "line": 66285,
+            "text": "   bruiser:(V314_BRANCHES?.bruiser||[]).map(x=>x.id),"
+          },
+          {
+            "line": 66286,
+            "text": "   scout:(V314_BRANCHES?.scout||[]).map(x=>x.id),"
+          },
+          {
+            "line": 66287,
+            "text": "   frost:(V314_BRANCHES?.frost||[]).map(x=>x.id)"
+          },
+          {
+            "line": 66288,
+            "text": "  }"
+          },
+          {
+            "line": 66289,
+            "text": " });"
+          },
+          {
+            "line": 66290,
+            "text": ""
+          },
+          {
+            "line": 66291,
+            "text": " /* Add explicit Systemtechnik contracts without replacing the existing runner. */"
+          },
+          {
+            "line": 66292,
+            "text": " try{"
+          },
+          {
+            "line": 66293,
+            "text": "  const qa=window.v4107RunQA||window.v4102RunQA;"
+          },
+          {
+            "line": 66294,
+            "text": "  if(typeof qa==='function'&&!window.__v4156Qa){"
+          },
+          {
+            "line": 66295,
+            "text": "   const wrapped=function(){"
+          },
+          {
+            "line": 66296,
+            "text": "    const r=qa.apply(this,arguments);if(!r||!Array.isArray(r.results))return r;"
+          },
+          {
+            "line": 66297,
+            "text": "    const add=(name,pass,detail)=>r.results.push({category:'Klassenidentität & Balance',name,pass:!!pass,severity:'error',detail});"
+          },
+          {
+            "line": 66298,
+            "text": "    const a=window.v4156ClassBalanceAudit();"
+          },
+          {
+            "line": 66299,
+            "text": "    const trees=Object.values(a.uniqueTrees).map(x=>JSON.stringify(x));"
+          },
+          {
+            "line": 66300,
+            "text": "    add('Vier unterschiedliche Talentbäume',new Set(trees).size===4,trees.join(' | '));"
+          },
+          {
+            "line": 66301,
+            "text": "    add('Bud-Barbar: +5 % direkter Schaden',passive.grower.damage===.05,'fester Klassenbonus');"
+          }
+        ]
+      },
+      {
+        "line": 66308,
+        "text": "window.v4107RunQA=wrapped;if(window.v4102RunQA===qa)window.v4102RunQA=wrapped;window.__v4156Qa=true;",
+        "context": [
+          {
+            "line": 66300,
+            "text": "    add('Vier unterschiedliche Talentbäume',new Set(trees).size===4,trees.join(' | '));"
+          },
+          {
+            "line": 66301,
+            "text": "    add('Bud-Barbar: +5 % direkter Schaden',passive.grower.damage===.05,'fester Klassenbonus');"
+          },
+          {
+            "line": 66302,
+            "text": "    add('Bong-Magier: +5 Prozentpunkte Crit',passive.bruiser.crit===.05,'echter Crit-Bonus vor dem Kampfresolver');"
+          },
+          {
+            "line": 66303,
+            "text": "    add('Blatt-Schütze: +5 Prozentpunkte echtes Ausweichen',passive.scout.dodge===.05,'wirkt im Gegnerangriff-Resolver');"
+          },
+          {
+            "line": 66304,
+            "text": "    add('Frost: Waffe I 100 % / Waffe II 10 %',String(window.v4155FrostTalentAudit?.().dualRule||'').includes('100 %')&&String(window.v4155FrostTalentAudit?.().dualRule||'').includes('10 %'),'kein zweites volles Waffenbudget');"
+          },
+          {
+            "line": 66305,
+            "text": "    add('Frost: Nebenhandtreffer 8 % × 40 %',passive.frost.offhandChance===.08&&passive.frost.offhandDamage===.40,'nur mit zwei ausgerüsteten Waffen');"
+          },
+          {
+            "line": 66306,
+            "text": "    r.total=r.results.length;r.passed=r.results.filter(x=>x.pass).length;r.failed=r.results.filter(x=>!x.pass&&x.severity!=='warn').length;r.warnings=r.results.filter(x=>!x.pass&&x.severity==='warn').length;r.ok=r.failed===0;return r;"
+          },
+          {
+            "line": 66307,
+            "text": "   };"
+          },
+          {
+            "line": 66308,
+            "text": "   window.v4107RunQA=wrapped;if(window.v4102RunQA===qa)window.v4102RunQA=wrapped;window.__v4156Qa=true;"
+          },
+          {
+            "line": 66309,
+            "text": "  }"
+          },
+          {
+            "line": 66310,
+            "text": " }catch(e){console.warn('V4.159 QA hook',e)}"
+          },
+          {
+            "line": 66311,
+            "text": ""
+          },
+          {
+            "line": 66312,
+            "text": " function stamp(){}"
+          },
+          {
+            "line": 66313,
+            "text": " try{"
+          },
+          {
+            "line": 66314,
+            "text": "  window.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')==='character'){paintPassive();stamp()}},{passive:true});window.__v4156Go='v7119-event';window.__v4156Render='retired'"
+          },
+          {
+            "line": 66315,
+            "text": " }catch(e){}"
+          },
+          {
+            "line": 66316,
+            "text": " stamp();requestAnimationFrame(paintPassive);"
+          }
+        ]
+      },
+      {
+        "line": 66453,
+        "text": "const qa=window.v4107RunQA||window.v4102RunQA;",
+        "context": [
+          {
+            "line": 66445,
+            "text": "  version:V.short,level:Number(s?.level)||1,dungeon1Unlocked:typeof dungeonUnlocked==='function'?dungeonUnlocked(0):true,"
+          },
+          {
+            "line": 66446,
+            "text": "  dungeon1Completed:typeof dungeonCompleted==='function'?dungeonCompleted(0):false,"
+          },
+          {
+            "line": 66447,
+            "text": "  completed:[...(s?.dungeon?.completed||[])],progress0:Number(s?.dungeon?.progress?.[0])||0,"
+          },
+          {
+            "line": 66448,
+            "text": "  frostAutoEquipRecognizesWeapon2:typeof window.v480AutoEquip==='function'&&/weapon2/.test(String(window.v480AutoEquip))"
+          },
+          {
+            "line": 66449,
+            "text": " });"
+          },
+          {
+            "line": 66450,
+            "text": ""
+          },
+          {
+            "line": 66451,
+            "text": " /* Targeted Systemtechnik contracts, no replacement of the established runner. */"
+          },
+          {
+            "line": 66452,
+            "text": " try{"
+          },
+          {
+            "line": 66453,
+            "text": "  const qa=window.v4107RunQA||window.v4102RunQA;"
+          },
+          {
+            "line": 66454,
+            "text": "  if(typeof qa==='function'&&!window.__v4158Qa){"
+          },
+          {
+            "line": 66455,
+            "text": "   const wrapped=function(){"
+          },
+          {
+            "line": 66456,
+            "text": "    const r=qa.apply(this,arguments);if(!r||!Array.isArray(r.results))return r;"
+          },
+          {
+            "line": 66457,
+            "text": "    const add=(name,pass,detail)=>r.results.push({category:'Dungeon & Profil V4.159',name,pass:!!pass,severity:'error',detail});"
+          },
+          {
+            "line": 66458,
+            "text": "    add('Dungeon 1 ist ab Level 1 grundsätzlich freigeschaltet',typeof dungeonUnlocked==='function'&&dungeonUnlocked(0)===true,'Abschluss/Versiegelung wird separat geprüft');"
+          },
+          {
+            "line": 66459,
+            "text": "    add('Versiegelung braucht echten Bossfortschritt',(s.dungeon?.completed||[]).every(i=>Number(s.dungeon?.progress?.[i])>=9),'completed[] nur bei Bossraum');"
+          },
+          {
+            "line": 66460,
+            "text": "    add('Server-Guard schützt Dungeon-Einstieg',typeof window.v7051EnsureDungeonState==='function','vor Öffnen wird kanonischer Serverstatus geprüft');"
+          },
+          {
+            "line": 66461,
+            "text": "    add('Frost-Auto-Ausrüsten kennt Waffe II',typeof window.v480AutoEquip==='function'&&/weapon2/.test(String(window.v480AutoEquip)),'stärkste zwei Frost-Waffen werden gewählt');"
+          }
+        ]
+      },
+      {
+        "line": 66465,
+        "text": "window.v4107RunQA=wrapped;if(window.v4102RunQA===qa)window.v4102RunQA=wrapped;window.__v4158Qa=true;",
+        "context": [
+          {
+            "line": 66457,
+            "text": "    const add=(name,pass,detail)=>r.results.push({category:'Dungeon & Profil V4.159',name,pass:!!pass,severity:'error',detail});"
+          },
+          {
+            "line": 66458,
+            "text": "    add('Dungeon 1 ist ab Level 1 grundsätzlich freigeschaltet',typeof dungeonUnlocked==='function'&&dungeonUnlocked(0)===true,'Abschluss/Versiegelung wird separat geprüft');"
+          },
+          {
+            "line": 66459,
+            "text": "    add('Versiegelung braucht echten Bossfortschritt',(s.dungeon?.completed||[]).every(i=>Number(s.dungeon?.progress?.[i])>=9),'completed[] nur bei Bossraum');"
+          },
+          {
+            "line": 66460,
+            "text": "    add('Server-Guard schützt Dungeon-Einstieg',typeof window.v7051EnsureDungeonState==='function','vor Öffnen wird kanonischer Serverstatus geprüft');"
+          },
+          {
+            "line": 66461,
+            "text": "    add('Frost-Auto-Ausrüsten kennt Waffe II',typeof window.v480AutoEquip==='function'&&/weapon2/.test(String(window.v480AutoEquip)),'stärkste zwei Frost-Waffen werden gewählt');"
+          },
+          {
+            "line": 66462,
+            "text": "    try{const p=v073ProfilePayload?.()||{};const ks=['level','bosses','gear_score','dungeons','combat_power','worldboss_attempts','worldboss_wins','pvp_buds','pvp_wins','pvp_losses','pvp_fights'].filter(k=>k in p);add('Profil-Integerfelder sind ganzzahlig',ks.every(k=>Number.isInteger(Number(p[k]))),ks.map(k=>`${k}:${p[k]}`).join(' · '))}catch(e){add('Profil-Integerfelder sind ganzzahlig',false,e?.message||String(e))}"
+          },
+          {
+            "line": 66463,
+            "text": "    r.total=r.results.length;r.passed=r.results.filter(x=>x.pass).length;r.failed=r.results.filter(x=>!x.pass&&x.severity!=='warn').length;r.warnings=r.results.filter(x=>!x.pass&&x.severity==='warn').length;r.ok=r.failed===0;return r;"
+          },
+          {
+            "line": 66464,
+            "text": "   };"
+          },
+          {
+            "line": 66465,
+            "text": "   window.v4107RunQA=wrapped;if(window.v4102RunQA===qa)window.v4102RunQA=wrapped;window.__v4158Qa=true;"
+          },
+          {
+            "line": 66466,
+            "text": "  }"
+          },
+          {
+            "line": 66467,
+            "text": " }catch(e){}"
+          },
+          {
+            "line": 66468,
+            "text": ""
+          },
+          {
+            "line": 66469,
+            "text": " repair('startup',false);stamp();"
+          },
+          {
+            "line": 66470,
+            "text": " window.addEventListener('growlegends:account-ready',()=>{repair('account-ready',true);stamp();requestAnimationFrame(()=>{try{if(document.getElementById('dungeon')?.classList.contains('active'))renderDungeon?.()}catch(e){}})});"
+          },
+          {
+            "line": 66471,
+            "text": " window.addEventListener('pageshow',()=>{repair('pageshow',true);stamp()},{passive:true});"
+          },
+          {
+            "line": 66472,
+            "text": "})();"
+          },
+          {
+            "line": 66473,
+            "text": "</script>"
+          }
+        ]
+      },
+      {
+        "line": 87983,
+        "text": "const runner=window.v4107RunQA||window.v4102RunQA;",
+        "context": [
+          {
+            "line": 87975,
+            "text": "      {name:'Waldläuferkapuze',slot:'head',classId:'scout',quality:'orange'},"
+          },
+          {
+            "line": 87976,
+            "text": "      {name:'Arkanrobe des Nebelzirkels',slot:'body',classId:'bruiser',quality:'purple'}"
+          },
+          {
+            "line": 87977,
+            "text": "    ].map(artResolver);"
+          },
+          {
+            "line": 87978,
+            "text": "    return {counts,extraOk,setOk,artOk:artSamples.every(Boolean),added,variants:Object.fromEntries(Object.entries(SET_VARIANTS).map(([k,v])=>[k,v.map(x=>x.name)]))};"
+          },
+          {
+            "line": 87979,
+            "text": "  }"
+          },
+          {
+            "line": 87980,
+            "text": "  window.v6105ItemVarietyQA=qa;"
+          },
+          {
+            "line": 87981,
+            "text": ""
+          },
+          {
+            "line": 87982,
+            "text": "  try{"
+          },
+          {
+            "line": 87983,
+            "text": "    const runner=window.v4107RunQA||window.v4102RunQA;"
+          },
+          {
+            "line": 87984,
+            "text": "    if(typeof runner==='function'&&!window.__v6105QaWrapped){"
+          },
+          {
+            "line": 87985,
+            "text": "      const wrapped=function(){"
+          },
+          {
+            "line": 87986,
+            "text": "        const r=runner.apply(this,arguments);if(!r||!Array.isArray(r.results))return r;"
+          },
+          {
+            "line": 87987,
+            "text": "        const q=qa();"
+          },
+          {
+            "line": 87988,
+            "text": "        r.results.push({category:'Item-Vielfalt V6.105',name:'Jede Klasse hat mindestens 24 neue Item-Templates',pass:q.extraOk,severity:'error',detail:JSON.stringify(q.counts)});"
+          },
+          {
+            "line": 87989,
+            "text": "        r.results.push({category:'Item-Vielfalt V6.105',name:'Jede Klasse besitzt 3 Set-Varianten',pass:q.setOk,severity:'error',detail:JSON.stringify(q.variants)});"
+          },
+          {
+            "line": 87990,
+            "text": "        r.results.push({category:'Item-Vielfalt V6.105',name:'Neue Art-Resolver liefert für alle Beispielitems ein Comic-Artwork',pass:q.artOk,severity:'error',detail:'V6.105 art sample check'});"
+          },
+          {
+            "line": 87991,
+            "text": "        r.total=r.results.length;r.passed=r.results.filter(x=>x.pass).length;r.failed=r.results.filter(x=>!x.pass&&x.severity!=='warn').length;r.warnings=r.results.filter(x=>!x.pass&&x.severity==='warn').length;r.ok=r.failed===0;return r;"
+          }
+        ]
+      },
+      {
+        "line": 87993,
+        "text": "window.v4107RunQA=wrapped;if(window.v4102RunQA===runner)window.v4102RunQA=wrapped;window.__v6105QaWrapped=true;",
+        "context": [
+          {
+            "line": 87985,
+            "text": "      const wrapped=function(){"
+          },
+          {
+            "line": 87986,
+            "text": "        const r=runner.apply(this,arguments);if(!r||!Array.isArray(r.results))return r;"
+          },
+          {
+            "line": 87987,
+            "text": "        const q=qa();"
+          },
+          {
+            "line": 87988,
+            "text": "        r.results.push({category:'Item-Vielfalt V6.105',name:'Jede Klasse hat mindestens 24 neue Item-Templates',pass:q.extraOk,severity:'error',detail:JSON.stringify(q.counts)});"
+          },
+          {
+            "line": 87989,
+            "text": "        r.results.push({category:'Item-Vielfalt V6.105',name:'Jede Klasse besitzt 3 Set-Varianten',pass:q.setOk,severity:'error',detail:JSON.stringify(q.variants)});"
+          },
+          {
+            "line": 87990,
+            "text": "        r.results.push({category:'Item-Vielfalt V6.105',name:'Neue Art-Resolver liefert für alle Beispielitems ein Comic-Artwork',pass:q.artOk,severity:'error',detail:'V6.105 art sample check'});"
+          },
+          {
+            "line": 87991,
+            "text": "        r.total=r.results.length;r.passed=r.results.filter(x=>x.pass).length;r.failed=r.results.filter(x=>!x.pass&&x.severity!=='warn').length;r.warnings=r.results.filter(x=>!x.pass&&x.severity==='warn').length;r.ok=r.failed===0;return r;"
+          },
+          {
+            "line": 87992,
+            "text": "      };"
+          },
+          {
+            "line": 87993,
+            "text": "      window.v4107RunQA=wrapped;if(window.v4102RunQA===runner)window.v4102RunQA=wrapped;window.__v6105QaWrapped=true;"
+          },
+          {
+            "line": 87994,
+            "text": "    }"
+          },
+          {
+            "line": 87995,
+            "text": "  }catch(e){}"
+          },
+          {
+            "line": 87996,
+            "text": ""
+          },
+          {
+            "line": 87997,
+            "text": "  document.addEventListener('DOMContentLoaded',()=>{if(!window.v7206StartupBusy?.())setTimeout(refreshArt,80)},{once:true});"
+          },
+          {
+            "line": 87998,
+            "text": "  window.addEventListener('growlegends:first-playable',()=>setTimeout(refreshArt,500),{passive:true});"
+          },
+          {
+            "line": 87999,
+            "text": "  window.addEventListener('growlegends:navigation-open-v7119',e=>{const id=String(e?.detail?.id||'');if(id==='character')requestAnimationFrame(refreshArt);if(id==='shop')requestAnimationFrame(()=>{refreshMerchantPools(false);refreshArt()})},{passive:true});"
+          },
+          {
+            "line": 88000,
+            "text": "  window.addEventListener('pageshow',()=>setTimeout(refreshArt,80),{passive:true});"
+          },
+          {
+            "line": 88001,
+            "text": ""
+          }
+        ]
+      },
+      {
+        "line": 109518,
+        "text": "if(document.getElementById('systemtech')?.classList.contains('active'))setTimeout(()=>document.getElementById('v4107Run')?.click(),30);",
+        "context": [
+          {
+            "line": 109510,
+            "text": " inflight=(async()=>{"
+          },
+          {
+            "line": 109511,
+            "text": "  try{"
+          },
+          {
+            "line": 109512,
+            "text": "   const since=new Date(Date.now()-24*60*60*1000).toISOString();"
+          },
+          {
+            "line": 109513,
+            "text": "   const {data,error}=await x.rpc('v7107_golden_master_qa',{p_since:since});"
+          },
+          {
+            "line": 109514,
+            "text": "   if(error)throw error;"
+          },
+          {
+            "line": 109515,
+            "text": "   const r=row(data);if(!r?.ok)throw new Error(String(r?.reason||'SERVER_QA_REJECTED'));"
+          },
+          {
+            "line": 109516,
+            "text": "   window.__V7098_SERVER_QA__=r;lastAt=Date.now();"
+          },
+          {
+            "line": 109517,
+            "text": "   window.dispatchEvent(new CustomEvent('growlegends:server-qa-ready',{detail:{version:VERSION,failed:Number(r.failed_checks)||0}}));"
+          },
+          {
+            "line": 109518,
+            "text": "   if(document.getElementById('systemtech')?.classList.contains('active'))setTimeout(()=>document.getElementById('v4107Run')?.click(),30);"
+          },
+          {
+            "line": 109519,
+            "text": "   return r;"
+          },
+          {
+            "line": 109520,
+            "text": "  }catch(e){console.warn('[V7098] server QA',e);window.__V7098_SERVER_QA_ERROR__=String(e?.message||e);return null}"
+          },
+          {
+            "line": 109521,
+            "text": "  finally{inflight=null}"
+          },
+          {
+            "line": 109522,
+            "text": " })();"
+          },
+          {
+            "line": 109523,
+            "text": " return inflight;"
+          },
+          {
+            "line": 109524,
+            "text": "}"
+          },
+          {
+            "line": 109525,
+            "text": "window.v7098RefreshServerQA=refresh;"
+          },
+          {
+            "line": 109526,
+            "text": "function maybeRefresh(){if(document.getElementById('systemtech')?.classList.contains('active'))void refresh(false)}"
+          }
+        ]
+      }
+    ]
+  }
+}
