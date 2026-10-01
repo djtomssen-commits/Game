@@ -155,11 +155,11 @@
   document.getElementById('v231QuestReward')?.classList.add('show');return true;
  }
  window.v4124AppendQuestSeedReward=appendQuestSeedReward;
- function wrapQuestClaim(name){
-  try{const fn=window[name];if(typeof fn!=='function'||fn.__v4124SeedReward)return;const wrapped=function(){const before=seedSnapshot();let r;try{r=fn.apply(this,arguments)}catch(err){setTimeout(()=>appendQuestSeedReward(before),80);throw err}const done=x=>{[0,50,160].forEach(ms=>setTimeout(()=>appendQuestSeedReward(before),ms));return x};if(r&&typeof r.then==='function')return r.then(done,err=>{done();throw err});return done(r)};wrapped.__v4124SeedReward=true;window[name]=wrapped;try{if(name==='v233ClaimQuest')v233ClaimQuest=wrapped;if(name==='claimQuest')claimQuest=wrapped}catch(e){}}
-  catch(e){}
- }
- wrapQuestClaim('v233ClaimQuest');wrapQuestClaim('claimQuest');
+ window.v4124QuestSeedSnapshot=seedSnapshot;
+ /* V8.009: Quest claim wrappers retired.
+    v235 captures the seed snapshot and calls appendQuestSeedReward after the
+    canonical Local/Mirror payout. Server-enforced rewards remain v7045-owned. */
+
 
  /* V7.118 cleanup: retired duplicate v4124 social navigation wrapper.
     v4130 is the later/final Hall + friends entry refresh and performs the same loads. */
