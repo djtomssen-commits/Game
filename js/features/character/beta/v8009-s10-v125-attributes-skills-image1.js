@@ -79,29 +79,5 @@ function v125RenderSkills(){
   `<div class="v125-skill-info">ⓘ <b>Mehr Talentpunkte</b> bekommst du durch Levelaufstiege. Neue Klassen-Skills werden mit höheren Leveln freigeschaltet.</div>`;
 }
 
-/* Active overrides: old renderers may still run, but these repaint last. */
-const v125OldRenderSkillTree=renderSkillTree;
-renderSkillTree=function(){
-  v125RenderSkills();
-};
-
-const v125BaseRender=render;
-render=function(){
-  const result=v125BaseRender();
-  if(document.querySelector('#character')?.classList.contains('active')){
-    v125RenderAttrs();
-    v125RenderSkills();
-    const hp=document.querySelector('#charHp');
-    const cp=document.querySelector('#charPower');
-    if(hp)hp.textContent=v125Fmt(maxHp());
-    if(cp)cp.textContent=v125Fmt(combatPower());
-  }
-  return result;
-};
-
-setTimeout(()=>{
-  try{
-    v125RenderAttrs();
-    v125RenderSkills();
-  }catch(e){console.error('V4.02 UI',e)}
-},150);
+/* V8.009: active attribute/talent ownership retired here.
+   v4140 owns attributes and v543 owns the talent tree. */
