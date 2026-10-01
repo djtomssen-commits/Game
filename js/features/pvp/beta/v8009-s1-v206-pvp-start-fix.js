@@ -278,6 +278,8 @@ window.addEventListener('growlegends:navigation-open-v7119',async e=>{
   try{
     v204CooldownLeft=await v204LoadCooldown();
     v204RenderPage();
+    const find=document.querySelector('#v204FindBtn');
+    if(find)find.onclick=v204FindOpponent;
   }catch(err){console.warn('V4.206 PvP open sync',err)}
 },{passive:true});
 
