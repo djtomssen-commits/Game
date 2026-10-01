@@ -4333,3 +4333,85 @@ Arbeitsmodus:
   - Forge = **[x]**
   - Matrix-Commit: `822d26d5fd21a265925dd50454927a7c0c59de76`
 - Manueller Endtest für Zerlegen / Craft / Nebelschmied bleibt für den gemeinsamen Test-Milestone offen.
+
+#### Powerblock: World / Startseite + Worldboss strukturell abgeschlossen
+- Scope:
+  - World / Startseite / Navigation / World-Module
+  - Weltboss Entry / Overlay / Combat / Reward / Authority
+- Startseite:
+  - `js/features/home/beta/v8009-home-renderer.js` bleibt kanonischer Home-Renderer.
+  - Weltboss-Slot ist jetzt direkt im Home-Owner vollständig klickbar und per Tastatur bedienbar.
+  - Startseite verwendet direkt den gehärteten `v111OpenWorldBoss`-Opener, Fallback bleibt `v110Open`.
+  - separater `gl-worldboss-home-click-fix` mit Capture-Handler + World-MutationObserver aus aktiver Beta entfernt und Datei gelöscht.
+  - kanonischer Home-Renderer emittiert gezielt `growlegends:home-rendered-v8009`.
+- Home-Lifecycle:
+  - v483 globaler `render()`-Wrapper entfernt.
+  - v483 achtstufiger 120/300/650/1100/1800/2800/4200/6500-ms Startup-Retry-Zug entfernt.
+  - v483 läuft jetzt über DOM/account/pageshow/foreground/extras-Lifecycle; 9-s-Fallback bleibt nur für Gast/offline.
+  - v7288 wrappt `v085InstallWorld` nicht mehr nachträglich.
+  - v7288 reagiert auf den gezielten kanonischen Home-Render-Event statt einen zweiten Post-Render-Owner aufzubauen.
+  - mehrere 0-ms Lifecycle-Nachläufe im v7288-Boot entfernt.
+- Weltboss-Lifecycle:
+  - v112:
+    - globaler `render()`-Wrapper entfernt
+    - 10-s Legacy-State-Polling entfernt
+    - unnötige Refresh/Fight-State-Wrapper entfernt
+    - State-Sicherung bleibt an echten Entry-/Account-Pfaden.
+  - v120:
+    - globaler `render()`-Wrapper entfernt
+    - 150-ms Startup-Install entfernt
+    - genau ein 1-s Countdown-Ticker bleibt; arbeitet nur bei sichtbarer World-Seite.
+  - v290:
+    - globaler `render()`-Wrapper + 350-ms Startup-State-Repaint entfernt.
+  - v291:
+    - 350-ms Startup-Refresh entfernt.
+  - v327:
+    - globaler `render()`-Wrapper + 200-ms Confirm-Prebuild entfernt.
+    - Grow-Skill-Migration/Attribute-Cleanup läuft gezielt nach Account-Hydration bzw. Character-Navigation.
+  - v111:
+    - alter 150-ms Phase-Polling-Fight-Wrapper entfernt; spätere Balance-/FX-Owner besitzen den echten Kampfpfad.
+  - v388:
+    - spätere Opener-/Refresh-Rebind-Wrapper, RAF/30-ms Rebind und 500-ms Version-/Button-Timeout entfernt.
+    - Fehler-/Startlock um den finalen Fight-Owner bleibt erhalten.
+- Retired komplett aus aktiver Beta + physisch gelöscht:
+  - `v113-worldboss-retry-confirm`
+  - `v114-worldboss-confirm-modal`
+  - `gl-worldboss-home-click-fix-js`
+  - zugehöriges v114 Confirm-CSS.
+- Authority:
+  - `v7072` öffnet den Weltboss jetzt ebenfalls bevorzugt über `v111OpenWorldBoss`.
+  - serverseitiger `v7072_worldboss_run`-Pfad, Replay, Harz-Prüfung und Reward-Authority bleiben unverändert.
+  - v6201 behält bewusst seine zwei gezielten Observer auf HP-/Log-Nodes für echte Kampf-FX; kein breiter Seiten-Reparaturobserver.
+- Wichtige Commits:
+  - v483 Lifecycle: `0a2341881368a88aa395f2fe75f6213ad1a8280f`
+  - v112 Cleanup: `63ce063e9d1504f2555fa993a5b67625aa84588b`
+  - v120 Lifecycle: `c8d3e6cdcb62e352f22293c10e1e33a52912895b`
+  - v290 Render-Hook Cleanup: `a2361796e41779670140d8fb574629a3c952b57c`
+  - v327 gezielter Attribute-Cleanup: `f101f76e55efde3cf0566354cc8ac405a7ee12ee`
+  - Home-Weltboss Canonical Ownership: `2769bbbc156b5a5251e20ab9e3a73b355fa44e85`, `169734f16bf37eea9cfe203d146f9693b87acab7`
+  - v7072 gehärteter Opener: `984ff495d7038cc1f04691226551728cf1746c78`
+  - v7288 Post-Render-Wrapper entfernt: `21ea2adb103e916f1787dfa49935492a532a6623`
+  - v111/v291/v388 Cleanup: `a942ed7454d7114af48bb885bf0f02145c15c321`, `6eff12721518c3623833bf30b1da02c3a38c1545`, `c6c290daebdf2b0179ae12ee2a96d5443c0e2ad3`
+  - obsolete Includes entfernt: `d47fa3fa37e3b299106d730ee9e38565b04aca57`
+- Abschluss-QA:
+  - `V8009_WORLD_WORLDBOSS_POWER_FINAL_QA.json`
+  - QA-Commit: `d15bc1f9e14069bc55f12725ef80bc47ba7075aa`
+  - alle strukturellen Checks true
+  - Syntax aller geänderten aktiven JS-Dateien grün
+  - v113/v114/Home-Click-Layer aktiv: **0**
+  - v112 Polling-Intervalle: **0**
+  - v120 sichtbarer Countdown-Ticker: **1**
+  - globale `render=function`-Wrapper in den bereinigten Worldboss-Layern: **0**
+  - Stable `index.html` unverändert; SHA weiterhin `0bc5fe3eb0e69c856070dfcb6682d3178c56a597`.
+- Matrix:
+  - World / Startseite = **[x]**
+  - Worldboss = **[x]**
+  - Matrix-Commit: `d72d499004d7f083cfef1c8f15ba854802569418`
+- Manueller Endtest für Startseite + Weltboss bleibt für den gemeinsamen Test-Milestone offen.
+
+#### Nächster Powerblock
+- Admin komplett:
+  - Overview
+  - Players
+  - Content
+
