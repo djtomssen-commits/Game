@@ -310,15 +310,5 @@ if(!s.v057ShopCore){
   localStorage.setItem(KEY,JSON.stringify(s));
 }
 
-const v057BaseRender=render;
-render=function(){
-  v057BaseRender();
-  
-  renderShop();
-};
-
-try{
-  render();
-}catch(e){
-  console.error('V4.02 clean shop core',e);
-}
+/* V8.009: global render -> renderShop fan-out retired.
+   Shop updates are now driven by navigation, purchases and authority state changes. */
