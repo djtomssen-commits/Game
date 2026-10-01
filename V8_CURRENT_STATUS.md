@@ -2635,3 +2635,20 @@ Arbeitsmodus:
 - Alle acht externen Dateien mit `node --check` geprüft.
 - QA `V8009_FEATURE_EXTRACTION_BATCH5_QA.json`: vollständig grün.
 - Stable / `index.html`: unverändert.
+
+
+#### Feature Extraction Batch 6
+- Acht weitere große Owner 1:1 aus `beta.html` ausgelagert:
+  - `v6111-global-sound-system` → `js/features/audio/beta/v8009-s1-v6111-global-sound-system.js`
+  - `v4103-item-ui-consistency` → `js/features/items/beta/v8009-s2-v4103-item-ui-consistency.js`
+  - `v7229-server1-character-bootstrap` → `js/features/account/beta/v8009-s4-v7229-server1-character-bootstrap.js`
+  - `v655-player-profile-load-fix-js` → `js/features/profile/beta/v8009-s1-v655-player-profile-load-fix.js`
+  - `v4112-item-art-sweep` → `js/features/items/beta/v8009-s2-v4112-item-art-sweep.js`
+  - `v110-mystic-worldboss-script` → `js/features/worldboss/beta/v8009-s1-v110-mystic-worldboss.js`
+  - `v210-profile-skills-notifications` → `js/features/profile/beta/v8009-s1-v210-profile-skills-notifications.js`
+  - `v7061-dungeon-all-class-parity-shadow` → `js/features/dungeon/beta/v8009-s3-v7061-dungeon-all-class-parity-shadow.js`
+- Zusammen 88.872 Bytes Inline-JS aus dem Monolithen entfernt.
+- Originale Script-Attribute, IDs und Reihenfolge beibehalten; nur um `src=` ergänzt.
+- Alle acht externen Dateien mit `node --check` geprüft.
+- QA `V8009_FEATURE_EXTRACTION_BATCH6_QA.json`: vollständig grün.
+- Stable / `index.html`: unverändert.
