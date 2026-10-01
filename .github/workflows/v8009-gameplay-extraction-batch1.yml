@@ -1,0 +1,28 @@
+name: V8.009 Gameplay Extraction Batch 1
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/v8009_gameplay_extraction_batch1.py'
+      - '.github/workflows/v8009-gameplay-extraction-batch1.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 .github/scripts/v8009_gameplay_extraction_batch1.py
+      - run: |
+          node --check js/features/shift/beta/v8009-s1-v7137-shift-frame-client.js
+          node --check js/features/combat/beta/v8009-s1-v6287-harzruferin.js
+          node --check js/features/talents/beta/v8009-s1-v319-exact-talents-dungeon-balance.js
+          node --check js/features/talents/beta/v8009-s1-v318-talent-combat-complete.js
+      - run: |
+          git config user.name github-actions
+          git config user.email github-actions@users.noreply.github.com
+          git add beta.html js/features/shift/beta/v8009-s1-v7137-shift-frame-client.js js/features/combat/beta/v8009-s1-v6287-harzruferin.js js/features/talents/beta/v8009-s1-v319-exact-talents-dungeon-balance.js js/features/talents/beta/v8009-s1-v318-talent-combat-complete.js V8009_GAMEPLAY_EXTRACTION_BATCH1_QA.json
+          git commit -m "V8.009 GAMEPLAY: extract first owner batch" || exit 0
+          git pull --rebase origin main
+          git push
