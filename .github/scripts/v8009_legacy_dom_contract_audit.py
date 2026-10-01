@@ -8,11 +8,18 @@ static_ids=re.findall(r'\bid=["\']([^"\']+)["\']',beta,re.I)
 static_dups={k:v for k,v in collections.Counter(static_ids).items() if v>1}
 
 def ids_from_js(txt):
-    ids=[]
-    ids+=re.findall(r'\bid=["\']([A-Za-z0-9_:\-.]+)["\']',txt)
-    ids+=re.findall(r'\.id\s*=\s*["\']([A-Za-z0-9_:\-.]+)["\']',txt)
-    ids+=re.findall(r'setAttribute\(\s*["\']id["\']\s*,\s*["\']([A-Za-z0-9_:\-.]+)["\']',txt)
-    return ids
+    out=[]
+    # Literal id="..." inside querySelector/querySelectorAll/closest/matches is
+    # a read-only selector, not a DOM producer.
+    for m in re.finditer(r'\\bid=["\\']([A-Za-z0-9_:\\-.]+)["\\']',txt):
+        pre=txt[max(0,m.start()-140):m.start()]
+        if re.search(r'(?:querySelector(?:All)?|closest|matches)\\s*\\([^)]*$',pre,re.I):
+            continue
+        out.append(m.group(1))
+    out+=re.findall(r'\\.id\\s*=\\s*["\\']([A-Za-z0-9_:\\-.]+)["\\']',txt)
+    out+=re.findall(r'setAttribute\\(\\s*["\\']id["\\']\\s*,\\s*["\\']([A-Za-z0-9_:\\-.]+)["\\']',txt)
+    return out
+
 
 producers=collections.defaultdict(list)
 legacy_hits=[]
