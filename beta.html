@@ -84722,7 +84722,7 @@ document.addEventListener('click',e=>{
 
 document.addEventListener('DOMContentLoaded',()=>{observe();enhance()},{once:true});
 window.addEventListener('pageshow',()=>{observe();enhance()},{passive:true});
-[0,120,400,900,1800].forEach(ms=>setTimeout(()=>{observe();enhance()},ms));
+window.addEventListener('growlegends:account-ready',()=>{observe();enhance()},{passive:true});
 })();
 </script>
 <!-- ===== /V6.81 EDELSTEINE + ROLLEN VERKAUFEN ===== -->
@@ -84892,7 +84892,7 @@ const ch=document.getElementById('character');
 /* V7.308: no whole-character MutationObserver. Hero render/navigation hooks keep this current. */
 window.v682SyncFrostWeapon=sync;
 
-[0,80,220,600,1400].forEach(ms=>setTimeout(schedule,ms));
+window.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')==='character')schedule()},{passive:true});
 })();
 </script>
 <!-- ===== /V6.82 FROST-TODESRITTER ZWEITE WAFFE FIX ===== -->
@@ -89642,7 +89642,7 @@ try{window.GL_EVENTS?.on?.('growHarvested',()=>{[0,80,350].forEach(ms=>setTimeou
 document.addEventListener('DOMContentLoaded',()=>{attach();queueMount(80);stamp()},{once:true});
 window.addEventListener('growlegends:account-ready',()=>{attach();queueMount(80);stamp()});
 window.addEventListener('pageshow',()=>{attach();queueMount(60);stamp()},{passive:true});
-[0,250,900,2200,5000].forEach(ms=>setTimeout(()=>{attach();queueMount();stamp()},ms));
+window.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')==='grow'){attach();queueMount();stamp()}},{passive:true});
 window.v6163GrowTabs={open:setTab,refresh:refreshActive,mountNow:mount,get active(){return active}};
 window.v6163QA=()=>({version:V.label,active,tabbar:!!document.querySelector('#grow .v6163-tabs'),inline:!!document.querySelector('#v6163Inline'),oldGeneticsButtonHidden:!!document.querySelector('#grow [data-v6130-open]'),oldOrdersButtonHidden:!!document.querySelector('#grow [data-v6160-open]'),stats:stats()});
 })();
@@ -89741,7 +89741,7 @@ window.v6163QA=()=>({version:V.label,active,tabbar:!!document.querySelector('#gr
  window.addEventListener('pageshow',refresh,{passive:true});
  window.addEventListener('growlegends:account-ready',refresh);
  try{new MutationObserver(refresh).observe(document.getElementById('world')||document.documentElement,{childList:true,subtree:true})}catch(_){}
- [0,250,1000,3000].forEach(ms=>setTimeout(prepareCard,ms));
+ window.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')==='world')prepareCard()},{passive:true});
  prepareCard();
 
  window.__GL_WORLDBOSS_HOME_CLICK_QA__=()=>({
