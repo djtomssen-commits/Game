@@ -53581,9 +53581,7 @@ create index if not exists player_messages_sender_idx on public.player_messages(
      first seconds keep the visible label pinned to the current build, then stop. */ /* V4.123: removed useless late clear of already-fired one-shot timeout. */
   document.addEventListener('DOMContentLoaded',()=>{repaint();stamp()},{once:true});
   document.addEventListener('click',()=>setTimeout(()=>{repaint();stamp()},0),true);
-  setTimeout(()=>{repaint();stamp()},1000);
-  setTimeout(()=>{repaint();stamp()},4000);
-  setTimeout(()=>{repaint();stamp()},7800);
+  window.addEventListener('growlegends:account-ready',()=>{repaint();stamp()},{passive:true});
 })();
 </script>
 
@@ -53848,8 +53846,7 @@ create index if not exists player_messages_sender_idx on public.player_messages(
   function stamp(){}
 
   paint();stamp();
-  /* V6.217: no continuous startup polling; direct click/render hooks remain authoritative. */
-  [250,1200,3500].forEach(ms=>setTimeout(()=>{paint();stamp()},ms));
+  /* V8.009: delayed startup paints retired; direct spend/persist/lifecycle hooks own updates. */
   document.addEventListener('DOMContentLoaded',()=>{paint();stamp()},{once:true});
   window.addEventListener('pageshow',()=>{paint();stamp()},{passive:true});
   setTimeout(()=>{paint();stamp()},800);
