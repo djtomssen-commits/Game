@@ -189,7 +189,3 @@ setTimeout(()=>{
 },300);
 
 
-setTimeout(()=>{
-  document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V4.29 Stable');
-},350);
