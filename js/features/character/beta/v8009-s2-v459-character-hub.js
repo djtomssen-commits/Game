@@ -12,8 +12,8 @@
     try{
       if(name==='inventory'){
         compactInventory();
-        window.v533ApplyInventory?.();
         window.v480UpdateAutoBars?.('inventory');
+        window.v533ApplyInventory?.();
       }else if(name==='attributes'){
         window.v4140PaintAttributes?.();
       }else if(name==='talents'){
