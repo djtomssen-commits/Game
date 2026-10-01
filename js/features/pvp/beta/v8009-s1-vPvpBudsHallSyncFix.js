@@ -4,47 +4,15 @@
   if(window.__VPVP_BUDS_HALL_SYNC_FIX__)return;
   window.__VPVP_BUDS_HALL_SYNC_FIX__=true;
 
-  let writeBusy=false;
-  let writeTimer=0;
-  let lastJson='';
-
   function n(v){return Math.max(0,Math.floor(Number(v)||0))}
   function stats(){
     const p=(typeof s!=='undefined'&&s?.v204Pvp&&typeof s.v204Pvp==='object')?s.v204Pvp:{};
-    return {
-      pvp_buds:n(p.buds),
-      pvp_wins:n(p.wins),
-      pvp_losses:n(p.losses),
-      pvp_fights:n(p.fights)
-    };
-  }
-  function ownId(){
-    try{return (!v073User?.is_anonymous&&v073User?.id)?String(v073User.id):''}catch(e){return''}
-  }
-  async function writeNow(force=false){
-    const id=ownId();
-    if(!id||writeBusy)return false;
-    try{
-      if(typeof v073Init==='function')await v073Init();
-      if(typeof v073Db==='undefined'||!v073Db)return false;
-      const f=stats();
-      const json=JSON.stringify(f);
-      if(!force&&json===lastJson)return true;
-      writeBusy=true;
-      const {error}=await window.v7101ProfileUpdate({...f,updated_at:new Date().toISOString()}).eq('id',id);
-      if(error)throw error;
-      lastJson=json;
-      return true;
-    }catch(e){
-      console.warn('PvP Buds Hall mirror sync',e);
-      return false;
-    }finally{writeBusy=false}
+    return {pvp_buds:n(p.buds),pvp_wins:n(p.wins),pvp_losses:n(p.losses),pvp_fights:n(p.fights)};
   }
   function schedule(force=false){
-    clearTimeout(writeTimer);
-    if(force){queueMicrotask(()=>void writeNow(true));return}
-    writeTimer=setTimeout(()=>void writeNow(false),180);
+    try{window.v7101SchedulePublicProfileSync?.(!!force);return true}catch(_){return false}
   }
+
 
   /* A public profile response may be slightly older than the just-confirmed PvP RPC.
      PvP totals are cumulative, so never allow a stale row to decrease them locally. */
@@ -77,27 +45,14 @@
     }
   }catch(e){console.warn('PvP payload mirror install',e)}
 
-  /* Even when an older profile-sync guard skips the general mirror, PvP totals are safe
-     to update independently because only the authenticated user's own row is touched. */
-  try{
-    if(typeof v073SyncProfile==='function'&&!window.__vPvpBudsProfileSyncWrapped){
-      const base=v073SyncProfile;
-      v073SyncProfile=async function(force=false){
-        let ok=false;
-        try{ok=!!(await base.apply(this,arguments))}catch(e){console.warn('PvP base profile sync',e)}
-        const pvpOk=await writeNow(!!force);
-        return ok||pvpOk;
-      };
-      try{window.v073SyncProfile=v073SyncProfile}catch(e){}
-      window.__vPvpBudsProfileSyncWrapped=true;
-    }
-  }catch(e){console.warn('PvP profile sync wrapper install',e)}
+  /* V8.009: dedicated v073SyncProfile wrapper retired.
+     v7101-final is the sole public-profile writer. */
 
   /* V8.009 PvP Sprint 1: ranking wrapper retired.
      v6145 calls vPvpBudsHallSync(true) directly inside syncOwn() before/while
      Hall data refreshes. Payload + profile-sync ownership remains unchanged. */
 
-  window.vPvpBudsHallSync=writeNow;
-  window.vPvpBudsHallDiagnostics=()=>({local:stats(),lastMirrored:lastJson,ownId:ownId(),busy:writeBusy});
-  window.addEventListener('growlegends:account-ready',()=>queueMicrotask(()=>schedule(true)));
+  window.vPvpBudsHallSync=(force=false)=>{schedule(force);return Promise.resolve(true)};
+  window.vPvpBudsHallDiagnostics=()=>({local:stats(),canonicalWriter:'v7101'});
+  window.addEventListener('growlegends:account-ready',()=>queueMicrotask(()=>schedule(true)),{passive:true});
 })();
