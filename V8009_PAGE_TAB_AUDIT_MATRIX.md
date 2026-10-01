@@ -43,7 +43,7 @@ Die Matrix wird nach jedem großen Cleanup-Batch aktualisiert.
 | Modul | Tabs / Unteransichten | Status | Notiz |
 |---|---|---|---|
 | Tower | Lobby / Ranking / Meta-Aufstieg / Run / Result | [x] | kompletter DOM-/Lifecycle-/Owner-/Timer-/Authority-Pass grün; Einzel-Repair-Skripte und Doppel-Timer retired; manueller Endtest offen |
-| Forge | Dismantle / Craft / Nebelforge | [ ] | kompletter 3-Tab-Pass offen |
+| Forge | Dismantle / Craft / Nebelforge | [x] | 3 Tabs aus einem Shell-Owner; Zerlegen + Prismatisch serverautoritativ/idempotent; Nebelschmied-Tab-Injection/Observer retired, Reroll mit persistenter Request-ID; manueller Endtest offen |
 | Worldboss | Entry / Overlay / Combat / Reward | [~] | Overlay/Art auf einen Owner reduziert; kompletter Funktionspass offen |
 | Guildboss | Signup / Fight / Replay / Reward | [x] | Server-Gate: Vortagsbelohnung muss vor neuer Anmeldung abgeholt werden; Visual-/Replay-/Reward-Lifecycle konsolidiert; manueller Endtest offen |
 | Profile Modal | Profil / Equipment / Friend action | [x] | v655 finaler Loader/Renderer, v652 nur Decoration-Observer, Deadlines/Fallbacks erhalten; manueller Endtest offen |
