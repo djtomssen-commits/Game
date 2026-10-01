@@ -1,0 +1,29 @@
+name: V8.009 Quest V306 Direct Hook
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/v8009_quest_v306_direct_hook.py'
+      - '.github/workflows/v8009-quest-v306-direct-hook.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 .github/scripts/v8009_quest_v306_direct_hook.py
+      - run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          s=Path('js/features/quest/beta/v6344-quest-variety-js.js').read_text(encoding='utf-8')
+          assert "window.v306PaintFirstDailyQuestHarz?.()" in s
+          print("canonical v6344 hook present")
+          PY
+      - run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add beta.html V8009_QUEST_V306_DIRECT_HOOK_QA.json
+          git commit -m "V8.009 QUEST: retire v306 repaint wrappers" || exit 0
+          git push
