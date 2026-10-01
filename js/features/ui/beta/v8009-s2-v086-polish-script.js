@@ -36,19 +36,6 @@ function v7215Db(){try{return (typeof v073Db!=='undefined'&&v073Db)||null}catch(
 function v7215Uid(){try{return String(((typeof v073User!=='undefined'&&v073User)||window.v073User||{})?.id||'')}catch(_){return ''}}
 function v7215AdsPlugin(){try{return window.Capacitor?.Plugins?.GrowLegendsAds||null}catch(_){return null}}
 function v7215Fmt(n){return Math.max(0,Number(n)||0).toLocaleString('de-DE')}
-function v7215RewardHtml(r){
- r=r||{};
- const defs=[
-  ['gold','💰','Gold'],
-  ['fragments','🧩','Fragmente'],
-  ['harz','💎','Harz-Taler'],
-  ['time','⏳','Zeit-Samen']
- ];
- return defs.map(([k,ico,label])=>{
-   const v=Math.max(0,Number(r[k])||0);
-   return `<div class="v7219-reward-card ${v?'':'zero'}"><div class="ico">${ico}</div><b>${label}</b><span>${v?v7215Fmt(v):'—'}</span></div>`;
- }).join('');
-}
 function v7215RewardText(r){r=r||{};const a=[];if(Number(r.gold)>0)a.push(`${v7215Fmt(r.gold)} Gold`);if(Number(r.fragments)>0)a.push(`${v7215Fmt(r.fragments)} Fragmente`);if(Number(r.harz)>0)a.push(`${v7215Fmt(r.harz)} Harz-Taler`);if(Number(r.time)>0)a.push(`${v7215Fmt(r.time)} Zeit-Samen`);return a.join(' · ')||'Belohnung'}
 function v7219RarityClass(r){return `v7219-r-${['gray','green','blue','purple','orange'].includes(String(r))?String(r):'gray'}`}
 const V7215_BAG_ART=Object.freeze({
@@ -144,8 +131,11 @@ function v7215Paint(){
   </div>
 
   <div class="v7219-board v7219-reward-board">
-   <div class="v7219-board-title">🎁 BELOHNUNG IN DIESEM TÜTCHEN</div>
-   <div class="v7219-reward-grid">${v7215RewardHtml(b.reward)}</div>
+   <div class="v7219-board-title">🎁 STEIGENDE BELOHNUNG</div>
+   <div class="v7219-reward-rise">
+    <div class="v7219-reward-rise-icon">⬆️</div>
+    <div><b>Je weiter du kommst, desto wertvoller wird die Belohnung.</b><span>Der genaue Inhalt und die Mengen werden erst beim Öffnen des Tütchens angezeigt.</span></div>
+   </div>
   </div>
 
   <div class="v7219-lower-grid">
@@ -154,7 +144,7 @@ function v7215Paint(){
     <div class="v7219-how-list">
       <div class="v7219-how-row"><div class="v7219-how-icon">▶</div><div>Nur vollständig bestätigte Rewarded-Videos zählen.</div></div>
       <div class="v7219-how-row"><div class="v7219-how-icon">☁️</div><div>Dein Fortschritt wird serverseitig gespeichert und bleibt auf anderen Geräten erhalten.</div></div>
-      <div class="v7219-how-row"><div class="v7219-how-icon">🎁</div><div>Ist das Tütchen voll, bekommst du die angezeigte Belohnung und das nächste Tütchen wird aufgelegt.</div></div>
+      <div class="v7219-how-row"><div class="v7219-how-icon">🎁</div><div>Beim Öffnen wird deine tatsächliche Belohnung angezeigt. Möglich sind Gold, Fragmente, Harz-Taler und Zeit-Samen – die Mengen bleiben vorher verborgen.</div></div>
     </div>
    </div>
    <div class="v7219-today">
@@ -223,7 +213,7 @@ window.v7215BagDealerOpen=()=>{
 };
 window.v7215BagDealerRefresh=()=>v7215Load(true);
 document.getElementById('v7219HelpBtn')?.addEventListener('click',async()=>{
- const msg='Du entscheidest selbst, ob du ein Rewarded-Video ansehen möchtest. Nur vollständig bestätigte Videos erhöhen den Tütchen-Fortschritt. Ist ein Tütchen voll, wird die vorher angezeigte Belohnung serverseitig gutgeschrieben.';
+ const msg='Du entscheidest selbst, ob du ein Rewarded-Video ansehen möchtest. Nur vollständig bestätigte Videos erhöhen den Tütchen-Fortschritt. Mit jeder Stufe steigt der Wert der Belohnung. Möglich sind Gold, Fragmente, Harz-Taler und Zeit-Samen; Inhalt und Mengen werden erst beim Öffnen angezeigt und serverseitig gutgeschrieben.';
  try{
    if(typeof v115Alert==='function')await v115Alert(msg,'📦 Tütchen-Dealer','info');
    else if(typeof v063Toast==='function')v063Toast('📦 Tütchen-Dealer','info',msg);
