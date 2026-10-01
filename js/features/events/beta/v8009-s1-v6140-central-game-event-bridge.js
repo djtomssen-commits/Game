@@ -9,15 +9,9 @@ function questElite(q){return !!q&&(!!q.v310Elite||/elite/i.test(String(q.v309Ro
 function questToken(q){return q?String(q.id??q.uid??q.name??'quest')+'|'+String(Number(q.ends)||0):''}
 function dungeonWins(){try{return typeof v336CanonicalDungeonWins==='function'?n(v336CanonicalDungeonWins()):n(s?.v106Achievements?.stats?.dungeonWins)}catch(_){return 0}}
 function dungeonPos(){try{const dp=typeof v074DungeonProgress==='function'?v074DungeonProgress():{completed:[...(s?.dungeon?.completed||[])],progress:{...(s?.dungeon?.progress||{})},selected:Number(s?.dungeon?.selected)||0,room:Number(s?.dungeon?.room)||0};if(typeof v081DungeonPosition==='function')return v081DungeonPosition(dp)}catch(_){}return{dungeonNumber:(Number(s?.dungeon?.selected)||0)+1,enemyNumber:(Number(s?.dungeon?.room)||0)+1}}
-function installQuestSource(name){
- try{
-  let fn=name==='claimQuest'?(typeof claimQuest==='function'?claimQuest:null):(typeof v233ClaimQuest==='function'?v233ClaimQuest:null);if(typeof fn!=='function'||fn.__v6140EventSource)return;
-  const wrapped=function(){const q=s?.quests?.active,token=questToken(q),prev=window.__v688XpContext;window.__v688XpContext='quest';let r;try{r=fn.apply(this,arguments)}finally{window.__v688XpContext=prev}
-   const done=()=>{try{if(q&&s?.quests?.active!==q&&token)BUS.emit('questCompleted',{quest:questLite(q),elite:questElite(q)},token)}catch(e){console.warn('V4.161 quest event source',e)}};
-   if(r&&typeof r.then==='function')return r.then(v=>{done();return v},e=>{done();throw e});done();return r;
-  };wrapped.__v6140EventSource=true;wrapped.__v6140SourceName=name;if(name==='claimQuest'){claimQuest=wrapped;window.claimQuest=wrapped}else{v233ClaimQuest=wrapped;window.v233ClaimQuest=wrapped}
- }catch(e){console.warn('V4.161 install quest source',name,e)}
-}
+/* V8.009: Quest source wrappers retired.
+   v235 emits questCompleted directly on the preboot GL_EVENTS bus after a
+   successful Local/Mirror claim. Server-enforced Quest side effects stay in v7045. */
 function installDungeonSource(){try{if(typeof fightDungeon!=='function'||fightDungeon.__v6140EventSource)return;const fn=fightDungeon;const wrapped=function(){const before=dungeonWins(),pos=dungeonPos(),pg=window.__v688GoldContext,px=window.__v688XpContext;window.__v688GoldContext='dungeon';window.__v688XpContext='dungeon';let r;try{r=fn.apply(this,arguments)}catch(e){window.__v688GoldContext=pg;window.__v688XpContext=px;throw e}
  const done=()=>{try{const after=dungeonWins();if(after>before){const dn=Math.max(1,Number(pos?.dungeonNumber)||1),en=Math.max(1,Number(pos?.enemyNumber)||1);BUS.emit('dungeonWon',{dungeonNumber:dn,enemyNumber:en,boss:en>=10,winsBefore:before,winsAfter:after},String(after))}}finally{window.__v688GoldContext=pg;window.__v688XpContext=px}};
  if(r&&typeof r.then==='function')return r.then(v=>{done();return v},e=>{done();throw e});done();return r};wrapped.__v6140EventSource=true;fightDungeon=wrapped;window.fightDungeon=wrapped}catch(e){console.warn('V4.161 install dungeon source',e)}}
@@ -30,8 +24,8 @@ function installSubscribers(){if(window.__V6140_CORE_SUBSCRIBERS__)return;window
  BUS.on('guildBossWon',()=>{try{window.v411AwardGuildActivity?.('guild_boss')}catch(_){}try{v106CheckAchievements?.()}catch(_){}});
 }
 function stamp(){}
-installSubscribers();installQuestSource('claimQuest');installQuestSource('v233ClaimQuest');installDungeonSource();installPvpSource();stamp();
-document.addEventListener('DOMContentLoaded',()=>{installQuestSource('claimQuest');installQuestSource('v233ClaimQuest');installDungeonSource();installPvpSource();stamp()},{once:true});
-window.addEventListener('growlegends:account-ready',()=>setTimeout(()=>{installQuestSource('claimQuest');installQuestSource('v233ClaimQuest');installDungeonSource();installPvpSource();stamp()},120));
-window.v6140EventQA=()=>({version:VERSION,bus:BUS.stats(),sources:{quest:!!window.v233ClaimQuest?.__v6140EventSource||!!window.claimQuest?.__v6140EventSource,dungeon:!!window.fightDungeon?.__v6140EventSource,pvp:!!window.v209FinishBattle?.__v6140EventSource},legacyRewardWrappersSuppressed:!!window.__V6140_EVENT_BUS__});
+installSubscribers();installDungeonSource();installPvpSource();stamp();
+document.addEventListener('DOMContentLoaded',()=>{installDungeonSource();installPvpSource();stamp()},{once:true});
+window.addEventListener('growlegends:account-ready',()=>setTimeout(()=>{installDungeonSource();installPvpSource();stamp()},120));
+window.v6140EventQA=()=>({version:VERSION,bus:BUS.stats(),sources:{quest:'v235-local-event',dungeon:!!window.fightDungeon?.__v6140EventSource,pvp:!!window.v209FinishBattle?.__v6140EventSource},legacyRewardWrappersSuppressed:!!window.__V6140_EVENT_BUS__});
 })();
