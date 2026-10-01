@@ -39,6 +39,10 @@ const v080OldRenderClassAvatar=renderClassAvatar;
 renderClassAvatar=function(){
   try{v080OldRenderClassAvatar()}catch(e){}
   v41InstallPortrait();
+  try{
+    if(typeof v079UpdateBuffFx==='function')v079UpdateBuffFx();
+    else if(typeof v077InjectCharacterFx==='function')v077InjectCharacterFx();
+  }catch(e){console.error('V4.02 buff fx',e)}
 };
 
 /* Replace the mandatory class-selection popup with image cards. */
@@ -81,24 +85,5 @@ v029ShowClassChoice=function(){
   });
 };
 
-/* Keep portrait current after all older render wrappers execute. */
-const v080BaseRender=render;
-render=function(){
-  v080BaseRender();
-  
-  try{v41InstallPortrait()}catch(e){console.error('V4.02 portrait',e)}
-  /* V4.02 glitter is attached after portrait exists. */
-  setTimeout(()=>{
-    try{
-      if(typeof v079UpdateBuffFx==='function')v079UpdateBuffFx();
-      else if(typeof v077InjectCharacterFx==='function')v077InjectCharacterFx();
-    }catch(e){console.error('V4.02 buff fx',e)}
-  },0);
-};
-
-try{
-  v41InstallPortrait();
-  render();
-}catch(e){
-  console.error('V4.02 avatar init',e);
-}
+/* Portrait refresh is owned directly by renderClassAvatar; no global render wrapper. */
+try{v41InstallPortrait()}catch(e){console.error('V4.02 avatar init',e)}
