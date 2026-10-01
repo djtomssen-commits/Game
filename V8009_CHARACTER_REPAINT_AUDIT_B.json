@@ -1,0 +1,333 @@
+{
+  "build": "V8.009-CHARACTER-REPAINT-AUDIT-B",
+  "hits": [
+    {
+      "line": 4564,
+      "text": "function v032InstallMenu(){document.querySelector('.bottom')?.remove();if(document.querySelector('#v032TopMenu'))return;const wrap=document.createElement('div');wrap.className='top-menu-wrap';wrap.id='v032TopMenu';wrap.innerHTML=`<button class=\"top-menu-btn\" id=\"v032MenuBtn\" aria-label=\"Menü\">☰</button><div class=\"top-menu-panel\" id=\"v032MenuPanel\"><button class=\"top-menu-item active\" data-screen=\"world\"><span>🗺️</span>Welt</button><button class=\"top-menu-item\" data-screen=\"character\"><span>🧙</span>Held</button><button class=\"top-menu-item\" data-screen=\"grow\"><span>🌱</span>Growroom</button><button class=\"top-menu-item\" data-screen=\"quests\"><span>🍺</span>Quest &amp; Schicht</button><button class=\"top-menu-item\" data-screen=\"dungeon\"><span>👹</span>Dungeons</button><button class=\"top-menu-item\" data-screen=\"shop\"><span>🛒</span>Händler</button></div>`;document.body.appendChild(wrap);document.querySelector('#v032MenuBtn').onclick=()=>document.querySelector('#v032MenuPanel').classList.toggle('open');wrap.querySelectorAll('.top-menu-item').forEach(b=>b.onclick=()=>v032Go(b.dataset.screen));document.addEventListener('click',e=>{if(!wrap.contains(e.target))document.querySelector('#v032MenuP"
+    },
+    {
+      "line": 15832,
+      "text": "requestAnimationFrame(v087FixMainAttributeBadge);"
+    },
+    {
+      "line": 21280,
+      "text": "if(document.querySelector('#character')?.classList.contains('active'))requestAnimationFrame(v123PolishEquipment);"
+    },
+    {
+      "line": 23342,
+      "text": "if(document.querySelector('#character')?.classList.contains('active'))requestAnimationFrame(v132Polish);"
+    },
+    {
+      "line": 23555,
+      "text": "if(document.querySelector('#character')?.classList.contains('active'))requestAnimationFrame(v133Polish);"
+    },
+    {
+      "line": 23754,
+      "text": "render=function(){const r=v134BaseRender();if(document.querySelector('#character')?.classList.contains('active'))requestAnimationFrame(v134Apply);return r;};"
+    },
+    {
+      "line": 35400,
+      "text": "requestAnimationFrame(v272PaintCharacterIdentity);"
+    },
+    {
+      "line": 40215,
+      "text": "window.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')==='character')paint()},{passive:true});window.__v4140GoWrapped='v7119-event';"
+    },
+    {
+      "line": 40216,
+      "text": "document.addEventListener('click',e=>{if(e.target?.closest?.('#v459CharacterTabs [data-tab=\"attributes\"]'))requestAnimationFrame(paint)},true);"
+    },
+    {
+      "line": 41419,
+      "text": "window.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')==='character')requestAnimationFrame(polish)},{passive:true});"
+    },
+    {
+      "line": 41546,
+      "text": "window.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')==='character')requestAnimationFrame(apply)});"
+    },
+    {
+      "line": 50996,
+      "text": "modal.querySelector('[data-reply]')?.addEventListener('click',()=>{close();tab('compose');document.querySelector('#v381Recipient').value=other?.character_name||'';document.querySelector('#v381Body').focus()});"
+    },
+    {
+      "line": 54663,
+      "text": "render=function(){const r=baseRender.apply(this,arguments);if(document.getElementById('character')?.classList.contains('active'))requestAnimationFrame(arrangeCharacter);return r;};"
+    },
+    {
+      "line": 54670,
+      "text": "document.addEventListener('DOMContentLoaded',()=>requestAnimationFrame(arrangeCharacter),{once:true});"
+    },
+    {
+      "line": 54671,
+      "text": "window.addEventListener('pageshow',()=>{if(document.getElementById('character')?.classList.contains('active'))requestAnimationFrame(arrangeCharacter)},{passive:true});"
+    },
+    {
+      "line": 57449,
+      "text": "window.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')==='character'){layout();compactInventory();updateHero();stamp()}});window.__v459GoWrapped='v7119-event';"
+    },
+    {
+      "line": 57694,
+      "text": "window.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')==='character')apply()});"
+    },
+    {
+      "line": 59333,
+      "text": "window.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')==='character'){paintEquipmentSlots();paintInventoryComparisons()}});"
+    },
+    {
+      "line": 59340,
+      "text": "const mo=new MutationObserver(()=>{if(!document.getElementById('character')?.classList.contains('active'))return;if(!paintingSlots)queueMicrotask(paintEquipmentSlots)});"
+    },
+    {
+      "line": 59346,
+      "text": "const mo=new MutationObserver(()=>{if(!document.getElementById('character')?.classList.contains('active'))return;if(!paintingCompare)queueMicrotask(paintInventoryComparisons)});"
+    },
+    {
+      "line": 60022,
+      "text": "window.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')==='character')updateBars()});window.__v480GoWrapped='v7119-event';"
+    },
+    {
+      "line": 61474,
+      "text": "document.addEventListener('visibilitychange',()=>{if(!document.hidden){syncGrowUi();paintIndicators();paintCharacter();stamp()}},{passive:true});"
+    },
+    {
+      "line": 61475,
+      "text": "window.addEventListener('pageshow',()=>{syncGrowUi();paintIndicators();paintCharacter();stamp()},{passive:true});"
+    },
+    {
+      "line": 61476,
+      "text": "[0,120,700,2200,6500,20000].forEach(ms=>setTimeout(()=>{installAchievements();installBuffBridge();if(window.GL_EVENTS)installEventDrops();else{installQuestDrops();installDungeonDrops();installPvpDrops();}syncGrowUi();paintIndicators();paintCharacter();stamp()},ms));"
+    },
+    {
+      "line": 64106,
+      "text": "new Promise((_,rej)=>setTimeout(()=>rej(new Error('RPC_TIMEOUT:v7274_ensure_character_ready')),12000))"
+    },
+    {
+      "line": 64130,
+      "text": "new Promise((_,rej)=>setTimeout(()=>rej(new Error('RPC_TIMEOUT:gl_create_character')),18000))"
+    },
+    {
+      "line": 65001,
+      "text": "requestAnimationFrame(()=>{if(uid()!==id||!verified(id)||!characterComplete())return;try{window.v4129ReleaseOwnedPower?.(id)}catch(e){}try{window.v4140AttributeDiagnostics?.()}catch(e){}});"
+    },
+    {
+      "line": 65597,
+      "text": "window.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')==='character')refreshAll('nav-character')},{passive:true});window.__v4153Go='v7119-event';window.__v4153Render='retired'"
+    },
+    {
+      "line": 66321,
+      "text": "window.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')==='character'){paintPassive();stamp()}},{passive:true});window.__v4156Go='v7119-event';window.__v4156Render='retired'"
+    },
+    {
+      "line": 71541,
+      "text": "window.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')==='character')build()});"
+    },
+    {
+      "line": 72631,
+      "text": "passiveRow.querySelector('.v514-set-btn')?.addEventListener('click',openSetDetails);"
+    },
+    {
+      "line": 72671,
+      "text": "window.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')==='character')apply()});"
+    },
+    {
+      "line": 75140,
+      "text": "window.v459ArrangeCharacter=function(){const r=base.apply(this,arguments);requestAnimationFrame(apply);return r};"
+    },
+    {
+      "line": 75145,
+      "text": "window.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')==='character')requestAnimationFrame(apply)});"
+    },
+    {
+      "line": 75691,
+      "text": "window.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')==='character')requestAnimationFrame(apply)});"
+    },
+    {
+      "line": 75695,
+      "text": "document.addEventListener('click',e=>{if(e.target?.closest?.('#v459CharacterTabs [data-tab=\"attributes\"],#v514HeroTabs [data-tab=\"attributes\"]'))requestAnimationFrame(apply)},true);"
+    },
+    {
+      "line": 76560,
+      "text": "window.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')==='character')requestAnimationFrame(apply)});"
+    },
+    {
+      "line": 76565,
+      "text": "if(e.target?.closest?.('#v459CharacterTabs [data-tab=\"talents\"],#v514HeroTabs [data-tab=\"talents\"]'))requestAnimationFrame(apply);"
+    },
+    {
+      "line": 77250,
+      "text": "window.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')==='character')requestAnimationFrame(apply)});"
+    },
+    {
+      "line": 77255,
+      "text": "if(e.target?.closest?.('#v459CharacterTabs [data-tab=\"materials\"],#v514HeroTabs [data-tab=\"materials\"]'))requestAnimationFrame(apply);"
+    },
+    {
+      "line": 78165,
+      "text": "new MutationObserver(paint).observe(src,{childList:true,characterData:true,subtree:true});"
+    },
+    {
+      "line": 84741,
+      "text": "/* V7.308: retired subtree MutationObserver. v546RenderMaterials now drives this explicitly. */"
+    },
+    {
+      "line": 84918,
+      "text": "if(e.target?.closest?.('[data-nav=\"character\"],#character,#v514HeroTabs,#v459CharacterTabs'))setTimeout(schedule,0);"
+    },
+    {
+      "line": 84922,
+      "text": "/* V7.308: no whole-character MutationObserver. Hero render/navigation hooks keep this current. */"
+    },
+    {
+      "line": 85877,
+      "text": "if(e.target?.closest?.('[data-screen=\"character\"],[data-go=\"character\"],[data-nav=\"character\"],#character'))setTimeout(sync,0);"
+    },
+    {
+      "line": 87571,
+      "text": "window.addEventListener('pageshow',()=>{if(document.getElementById('character')?.classList.contains('active'))requestAnimationFrame(paintSlots)},{passive:true});"
+    },
+    {
+      "line": 87572,
+      "text": "window.addEventListener('growlegends:account-ready',()=>setTimeout(()=>{if(document.getElementById('character')?.classList.contains('active'))paintSlots()},100));"
+    },
+    {
+      "line": 88006,
+      "text": "window.addEventListener('growlegends:navigation-open-v7119',e=>{const id=String(e?.detail?.id||'');if(id==='character')requestAnimationFrame(refreshArt);if(id==='shop')requestAnimationFrame(()=>{refreshMerchantPools(false);refreshArt()})},{passive:true});"
+    },
+    {
+      "line": 88145,
+      "text": "window.addEventListener('growlegends:navigation-open-v7119',e=>{const id=String(e?.detail?.id||'');if(id==='character'||id==='shop')requestAnimationFrame(refresh)},{passive:true});"
+    },
+    {
+      "line": 88300,
+      "text": "document.addEventListener('click',e=>{if(!e.target?.closest?.('#shop,#character,#v231QuestReward,#v247DungeonReward'))return;paint(document.querySelector('.screen.active')||document)},false);"
+    },
+    {
+      "line": 88774,
+      "text": "document.addEventListener('click',e=>{const el=e.target?.closest?.('button,[role=\"button\"],.top-menu-item,.v459-tab,.v514-tab,.v686-page-btn,[data-go],[data-book],[data-pets]');if(el)play(classify(el))},true);"
+    },
+    {
+      "line": 89062,
+      "text": "window.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')==='character')repair()});"
+    },
+    {
+      "line": 89067,
+      "text": "if(document.getElementById('character')?.classList.contains('active'))requestAnimationFrame(repair);"
+    },
+    {
+      "line": 89865,
+      "text": "const mo=new MutationObserver(()=>{if(document.querySelector('#v6130ClassSetPanel')&&!document.querySelector('#v6170SetUpgrade'))queueMicrotask(inject)});const v7291SetHost=document.getElementById('character');if(v7291SetHost)mo.observe(v7291SetHost,{childList:true,subtree:true});"
+    },
+    {
+      "line": 90556,
+      "text": "document.addEventListener('click',e=>{if(e.target?.closest?.('[data-screen=\"character\"],[data-go=\"character\"],[data-nav=\"character\"]'))setTimeout(sync,80)},true);"
+    },
+    {
+      "line": 91391,
+      "text": "['v260FighterName','v260FighterMeta'].forEach(id=>{const el=document.getElementById(id);if(el&&!el.dataset.v6317Observed){el.dataset.v6317Observed='1';new MutationObserver(()=>requestAnimationFrame(sync)).observe(el,{subtree:true,childList:true,characterData:true})}});"
+    },
+    {
+      "line": 92158,
+      "text": "requestAnimationFrame(()=>{try{window.v546RenderMaterials?.()}catch(e){};setTimeout(enhance,0)});"
+    },
+    {
+      "line": 92170,
+      "text": "document.addEventListener('click',e=>{if(e.target?.closest?.('#v459CharacterTabs [data-tab=\"materials\"],#v514HeroTabs [data-tab=\"materials\"],#v546MaterialsHeader'))setTimeout(()=>{observe();enhance()},40)},true);"
+    },
+    {
+      "line": 92299,
+      "text": "if(e.target?.closest?.('#character,#inventory'))requestAnimationFrame(repairInventory);"
+    },
+    {
+      "line": 95568,
+      "text": "setTimeout(()=>{armForNewCharacter();updateHelp()},150);"
+    },
+    {
+      "line": 95569,
+      "text": "setTimeout(()=>{armForNewCharacter();updateHelp()},900);"
+    },
+    {
+      "line": 99819,
+      "text": "requestAnimationFrame(()=>syncCharacterAvatar('render'));"
+    },
+    {
+      "line": 99836,
+      "text": "requestAnimationFrame(()=>syncCharacterAvatar(name));"
+    },
+    {
+      "line": 99854,
+      "text": "if(hit)setTimeout(()=>syncCharacterAvatar('open-character'),40);"
+    },
+    {
+      "line": 99856,
+      "text": "window.addEventListener('growlegends:account-ready',()=>setTimeout(()=>syncCharacterAvatar('account-ready'),100));"
+    },
+    {
+      "line": 99857,
+      "text": "window.addEventListener('pageshow',()=>setTimeout(()=>syncCharacterAvatar('pageshow'),80),{passive:true});"
+    },
+    {
+      "line": 99859,
+      "text": "[0,180,700].forEach(ms=>setTimeout(()=>syncCharacterAvatar('startup'),ms));"
+    },
+    {
+      "line": 102002,
+      "text": "document.addEventListener('click',e=>{if(e.target?.closest?.('[data-book],#v106BookBtn'))setTimeout(()=>{ensureBook();showMain('ach');renderTitles()},150);if(e.target?.closest?.('[data-screen=\"character\"],[data-go=\"character\"],[data-screen=\"hall\"],[data-go=\"hall\"]'))setTimeout(syncOwnBadges,120)},true);"
+    },
+    {
+      "line": 102091,
+      "text": "if(el.closest('[data-screen=\"character\"],[data-go=\"character\"],#character'))setTimeout(syncAvatarTitle,80);"
+    },
+    {
+      "line": 102227,
+      "text": "if(el.closest('[data-v6338-select],[data-v6338-clear]'))setTimeout(v6340SyncCharacterTitle,20);"
+    },
+    {
+      "line": 102228,
+      "text": "if(el.closest('[data-screen=\"character\"],[data-go=\"character\"],#character'))setTimeout(v6340SyncCharacterTitle,120);"
+    },
+    {
+      "line": 102230,
+      "text": "window.addEventListener('growlegends:account-ready',()=>setTimeout(v6340SyncCharacterTitle,240));"
+    },
+    {
+      "line": 102231,
+      "text": "window.addEventListener('pageshow',()=>setTimeout(v6340SyncCharacterTitle,220),{passive:true});"
+    },
+    {
+      "line": 102232,
+      "text": "window.addEventListener('growlegends:navigation-ready',()=>setTimeout(v6340SyncCharacterTitle,160),{passive:true});"
+    },
+    {
+      "line": 102239,
+      "text": "requestAnimationFrame(()=>requestAnimationFrame(v6340SyncCharacterTitle));"
+    },
+    {
+      "line": 102248,
+      "text": "[0,220,1100,2400].forEach(ms=>setTimeout(v6340SyncCharacterTitle,ms));"
+    },
+    {
+      "line": 103634,
+      "text": "window.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')==='character')setTimeout(()=>void loadGate(true),60)},{passive:true});"
+    },
+    {
+      "line": 110367,
+      "text": "if(target==='character')requestAnimationFrame(()=>requestAnimationFrame(fire));"
+    },
+    {
+      "line": 110760,
+      "text": "window.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')==='character')requestAnimationFrame(ensureCharIcon)});"
+    },
+    {
+      "line": 111018,
+      "text": "window.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')==='character'){bindFinalAutoButtons();void ensureAuthority({paint:false}).catch(()=>{})}});"
+    },
+    {
+      "line": 111834,
+      "text": "function watchOwnAvatar(){try{const scene=document.querySelector('#character #v510HeroRoot .avatar-scene')||document.querySelector('#character .avatar-scene');if(!scene||scene.__v7138Watched)return;scene.__v7138Watched=true;v7138AvatarObserver?.disconnect?.();let queued=false;v7138AvatarObserver=new MutationObserver(ms=>{const meaningful=ms.some(m=>[...m.addedNodes,...m.removedNodes].some(n=>!(n instanceof Element)||!n.classList?.contains('v7139-frame-art')));if(!meaningful||queued)return;queued=true;requestAnimationFrame(()=>{queued=false;applyOwnFrames()})});v7138AvatarObserver.observe(scene,{childList:true,subtree:false})}catch(_){}}"
+    },
+    {
+      "line": 111983,
+      "text": "window.addEventListener('growlegends:navigation-open-v7119',e=>{const id=String(e?.detail?.id||'');if(id==='character'||id==='world')settle()},{passive:true});"
+    }
+  ]
+}
