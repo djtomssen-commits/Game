@@ -4150,3 +4150,66 @@ Arbeitsmodus:
 - Friends + Mail komplett:
   - Friends: Ranking / Suche
   - Mail: Inbox / Sent / Compose / Battlelog
+
+
+#### Powerblock: Friends + Mail strukturell abgeschlossen
+- Scope:
+  - Friends / Nebel-Crew: Liste / Anfragen / Suche / Presence
+  - Mail: Inbox / Sent / Compose / Battlelog
+- Friends finaler Owner:
+  - `js/features/pvp/beta/v8009-s1-v4130-hall-dungeon-authority.js`
+  - finaler `v073LoadFriends` mit Singleflight
+  - finale Spielersuche
+  - Online/Offline aus `updated_at`
+  - ein gezielter 60-s-Presence-Refresh nur bei sichtbarer Friends-Seite
+  - Navigation über gemeinsamen `growlegends:navigation-open-v7119`-Lifecycle.
+- Retired aus aktiver Beta:
+  - v333 Friends-Online-Renderer/15-s-Poller
+  - v382 Social-Mail-Button-Repair
+  - v383 Friend-Mail-Name-Repair
+- Mail:
+  - `v381` ist finaler Mail-/Tab-/Compose-Owner.
+  - `v381OpenMailTo` übernimmt direkt das Öffnen einer neuen Nachricht an einen Spieler.
+  - Kompatibilitätsalias `v382OpenMailTo` bleibt ohne eigenes Repair-Script.
+  - alter 30-ms Compose-Nachlauf vollständig entfernt.
+  - Battlelog-Tab wird durch v381 geöffnet; doppelter document-click Loader in v6200 entfernt.
+  - Replay-Sleeps bleiben als echte Animationstaktung.
+  - Mail-Unread 60 s und Battlelog 60 s bleiben als echte Daten-Cadence.
+- Social Foundation:
+  - `anon-0018.js` globaler `render()`-Wrapper entfernt.
+  - Hall/Friends-Menü nutzt jetzt `v032Go` statt eigener Screen-Umschaltung + Full-Render.
+  - `v8009-a1-supabase-online-system.js` globaler `render()`-Wrapper entfernt.
+  - alter `v072AddMenuItems`-Wrapper + 0-ms Social-Repaint entfernt.
+  - Profil-Daten-Sync: ein 60-s Dirty-Check plus Account-/Foreground-/Pageshow-Lifecycle; Payload-Dedupe verhindert unnötige Writes.
+- v4124:
+  - Profil-Payload-Enrichment und Quest-Samen-Reward bleiben erhalten.
+  - **9.552 Byte** überholte Hall/Friends-DOM-/Loader-Logik entfernt.
+  - kein eigener Hall/Friends-DOM-Producer mehr.
+- Wichtige Commits:
+  - Canonical Mail Recipient Routing: `083e57a1ef0ad3c31c3bc2be0c3026904b7082c0`
+  - v4130 Friends Presence/Singleflight: `18b5c7728ba61cc6306e51c561a0b136369b8fd3`
+  - v4124 Mail-Alias auf Canonical Owner: `abb2415ff64a9ce6a0a7b0c1ef1622380eae4dff`
+  - v333/v382/v383 aus Beta retired: `9c3c1d794e61d7dc3173663ec5d6c6663f68f24d`
+  - globaler v073 Render-/Menu-Wrapper retired: `1b7e93033a2f07114ab6b31e519a9ce24a2c4fa3`
+  - v072 Foundation Render-Wrapper retired: `25503e6ef214761adc066c8730fee811de061072`
+  - v4124 Social-Doppelrenderer entfernt: `3a8a84076bd8334d6fc0fcec4337c8b3aa490b87`
+  - Battlelog doppelter Tab-Loader entfernt: `5f42c3f0a1d017d3d62d14c8d571da0297e6ee96`
+- Abschluss-QA:
+  - `V8009_FRIENDS_MAIL_POWER_FINAL_QA.json`
+  - Manifest-Commit: `d9e73a685ff5cb1619967a7ba8e76785bee6622c`
+  - alle Checks **true**
+  - keine globalen Render-Wrapper im aktiven Friends/Mail-Scope
+  - keine aktiven Social-MutationObserver
+  - v333/v382/v383 nicht mehr geladen
+  - genau ein finaler Friends-Loader und eine finale Suche in v4130
+  - Mail vier Tabs vollständig
+  - Compose-Routing ohne Timeout
+  - Stable/Server 1 unverändert; `index.html` SHA `0bc5fe3eb0e69c856070dfcb6682d3178c56a597`.
+- Matrix:
+  - Friends = **[x]**
+  - Mail = **[x]**
+  - Matrix-Commit: `5cb4c101ac8bead2c23ce931fd977126938f5a94`
+- Manueller Friends/Mail-Endtest bleibt für den gemeinsamen Test-Milestone offen.
+
+#### Nächster Powerblock
+- Tütchen-Dealer + Harz Dealer komplett.
