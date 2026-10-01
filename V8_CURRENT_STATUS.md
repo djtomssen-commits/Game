@@ -4819,3 +4819,24 @@ Arbeitsmodus:
   - Server 1 lädt jetzt exakt dieselben Harz-Dealer-JS/CSS-URLs wie Beta.
 - Die aktuelle kanonische v567-Datei enthält bereits das 3-spaltige Featured-Layout für „Beliebte Angebote“.
 - Commit: `d61588117a08315251f1e9f8c9c6b43be826e7b5`.
+
+
+### Server 1 UI-Parität – Harz Dealer + Nebelschmied · 01.10.2026
+
+- Screenshot-Analyse korrigiert: Die sichtbare `V8.003`-Anzeige stammt aus der V8-Phase2-Strukturkennung und beweist nicht, dass Server 1 einen alten Client lädt.
+- Reale Server-1-Abweichung in der Harzschmiede gefunden:
+  - der kanonische v488-Forge-Owner renderte den Tab **Nebelschmied** nur bei `GROW_RELEASE_CHANNEL === 'beta'`;
+  - der v7240-Nebelschmied selbst unterstützt bereits `beta` und `server1`.
+- Direkt im kanonischen Owner korrigiert:
+  - Nebelschmied-Tab wird jetzt für `beta` **und** `server1` gerendert;
+  - Commit: `2d73d0f679350fc26622e10121633b53ebc054d4`.
+- Harz-Dealer ebenfalls direkt im bestehenden v567-CSS bereinigt:
+  - `Beliebte Angebote` ist jetzt im kanonischen CSS selbst ein fixes 3-Spalten-Grid auf Desktop und Mobile;
+  - alte Flex-/Breitenregeln entfernt, kein zusätzlicher Override-Layer;
+  - Commit: `54d93b645208ef2a64752e7b6ed828a7747fdc4c`.
+- Gemeinsame Asset-Revision für Beta + Server 1 aktualisiert:
+  - Dealer: `?v=8009dealer4`
+  - Forge: `?v=8009forge1`
+  - Beta Commit: `3060f5a148e84a28ce511e074e33b86e02bd12b3`
+  - Server-1 Commit: `47e857443102996edc0db2e72f0a6ea7b4249c1a`.
+- Verifiziert: `beta.html` und `server1.html` unterscheiden sich weiterhin nur in Release-Channel und Seitentitel; Dealer-/Forge-Includes sind identisch.
