@@ -104,9 +104,4 @@ if(!s.v108ItemPool){
   try{localStorage.setItem(KEY,JSON.stringify(s))}catch(e){}
 }
 
-const v108BaseRender=render;
-render=function(){
-  const result=v108BaseRender();
-  
-  return result;
-};
+/* V8.009: no-op global render wrapper retired. */;
