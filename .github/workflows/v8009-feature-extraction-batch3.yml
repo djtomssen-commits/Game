@@ -1,0 +1,30 @@
+name: V8.009 Feature Extraction Batch 3
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/v8009_feature_extraction_batch3.py'
+      - '.github/workflows/v8009-feature-extraction-batch3.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 .github/scripts/v8009_feature_extraction_batch3.py
+      - run: |
+          node --check js/features/items/beta/v8009-s1-v447-unified-item-balance.js
+          node --check js/features/system/beta/v8009-s3-v608-animation-qa-core.js
+          node --check js/features/talents/beta/v8009-s2-v6226-talent-proc-core.js
+          node --check js/features/character/beta/v8009-s4-v470-character-slot-art-canonical-comparison.js
+          node --check js/features/items/beta/v8009-s1-v465-item-art-script.js
+          node --check js/features/talents/beta/v8009-s2-v314-talent-tree.js
+      - run: |
+          git config user.name github-actions
+          git config user.email github-actions@users.noreply.github.com
+          git add beta.html js/features/items/beta/v8009-s1-v447-unified-item-balance.js js/features/system/beta/v8009-s3-v608-animation-qa-core.js js/features/talents/beta/v8009-s2-v6226-talent-proc-core.js js/features/character/beta/v8009-s4-v470-character-slot-art-canonical-comparison.js js/features/items/beta/v8009-s1-v465-item-art-script.js js/features/talents/beta/v8009-s2-v314-talent-tree.js V8009_FEATURE_EXTRACTION_BATCH3_QA.json
+          git commit -m "V8.009 FEATURES: extract third owner batch" || exit 0
+          git pull --rebase origin main
+          git push
