@@ -34,5 +34,4 @@ try{window.v029PrimaryStat=v267PrimaryStat}catch(e){}
 /* V8.009: attribute DOM ownership moved to v4140.
    Combat stat helpers above remain canonical. */
 
-/* Update profile sync before its existing upload path reads combatPower(). */
-setTimeout(()=>{try{render()}catch(e){}},300);
+/* Combat/profile readers consume these helpers directly; no global render kick is required. */
