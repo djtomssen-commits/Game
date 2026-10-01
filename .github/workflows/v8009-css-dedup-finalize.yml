@@ -1,0 +1,23 @@
+name: V8.009 CSS Dedup Finalize
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/v8009_css_dedup_finalize.py'
+      - '.github/workflows/v8009-css-dedup-finalize.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 .github/scripts/v8009_css_dedup_finalize.py
+      - run: |
+          git config user.name github-actions
+          git config user.email github-actions@users.noreply.github.com
+          git add -A v8009-extracted-v7145-final-version-css.css v8009-extracted-v7165-final-version-css.css V8009_CSS_DEDUP_FINAL_QA.json
+          git commit -m "V8.009 CLEANUP: finalize exact css dedupe" || exit 0
+          git pull --rebase origin main
+          git push
