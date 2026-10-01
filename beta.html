@@ -38401,23 +38401,7 @@ function v306PaintFirstDailyQuestHarz(){
   card.appendChild(line);
  });
 }
-const v306BaseRenderQuests=renderQuests;
-renderQuests=function(){
- const r=v306BaseRenderQuests.apply(this,arguments);
- requestAnimationFrame(v306PaintFirstDailyQuestHarz);
- return r;
-};
-/* Reward popup is opened after claimQuest has marked firstQuest=true.
-   Remove the three labels immediately after that successful payout. */
-if(typeof v235ShowQuestReward==='function'){
- const v306BaseShowQuestReward=v235ShowQuestReward;
- v235ShowQuestReward=function(before){
-  const r=v306BaseShowQuestReward.apply(this,arguments);
-  requestAnimationFrame(v306PaintFirstDailyQuestHarz);
-  return r;
- };
-}
-setTimeout(v306PaintFirstDailyQuestHarz,300);
+window.v306PaintFirstDailyQuestHarz=v306PaintFirstDailyQuestHarz;
 
 const v306Line=document.querySelector('#v141VersionLine');
 </script>
