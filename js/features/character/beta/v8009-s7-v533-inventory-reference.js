@@ -117,8 +117,6 @@
       }
       ensureTip(card);
       syncAuto(auto);
-      requestAnimationFrame(()=>syncAuto(auto));
-      setTimeout(()=>syncAuto(auto),90);
       card.dataset.inventoryLayout='reference-v533';
     }catch(e){console.warn('V5.33 inventory reference',e)}
     finally{applying=false}
@@ -126,26 +124,5 @@
 
   window.v533ApplyInventory=apply;
 
-  try{
-    if(typeof renderInventory==='function'&&!window.__v533InventoryWrapped){
-      const base=renderInventory;
-      renderInventory=function(){const r=base.apply(this,arguments);apply();return r};
-      try{window.renderInventory=renderInventory}catch(e){}
-      window.__v533InventoryWrapped=true;
-    }
-  }catch(e){}
-  try{
-    if(typeof window.v459ArrangeCharacter==='function'&&!window.__v533ArrangeWrapped){
-      const base=window.v459ArrangeCharacter;
-      window.v459ArrangeCharacter=function(){const r=base.apply(this,arguments);apply();return r};
-      window.__v533ArrangeWrapped=true;
-    }
-  }catch(e){}
-
-  window.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')==='character')apply()},{passive:true});
-  apply();
-  document.addEventListener('DOMContentLoaded',apply,{once:true});
-  window.addEventListener('pageshow',apply,{passive:true});
-  document.addEventListener('visibilitychange',()=>{if(!document.hidden)apply()});
-  /* V8.009: direct renderInventory/arrange/navigation/pageshow lifecycle. */
+  /* v459 is the canonical character-tab lifecycle owner. */
 })();
