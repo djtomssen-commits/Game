@@ -3763,3 +3763,23 @@ Arbeitsmodus:
   - Audit Trigger `1e8e85709ffde8b9a9e274516d7e90b0dadf5cdf`
   - Guard Trigger `9e879e2b95115406d871cf5b12126c297be9912a`
 - `v048ReturnMap` bewusst noch nicht blind entfernt: die doppelte ID sitzt in zwei historischen Kampf-/Reward-Implementierungen und wird zusammen mit dem Combat-Owner konsolidiert, damit Reward-/Battle-Verhalten nicht beschädigt wird.
+
+
+#### Tower Saison-Rangliste – Monatswechsel 2026-10-01
+- Nutzerhinweis per Screenshot: normale `SAISON · Turm-Rangliste` zeigte keine Wertung, während die Mittwochsrangliste korrekt geladen wurde.
+- Root Cause:
+  - Tower-Saison-ID ist monatlich (`YYYY-MM`).
+  - Am 2026-10-01 wechselte die aktive Saison automatisch von `2026-09` auf `2026-10`.
+  - Der alte Loader filterte ausschließlich `profiles.dungeon_progress.tower.season === currentSeason`.
+  - Zusätzlich wurde vor dem Ranking-Fetch `syncProfile(true)` ausgeführt, wodurch ein frischer 0er-Oktober-Mirror einen noch vorhandenen September-Mirror überschreiben konnte.
+- Dauerhafte Season-History eingebaut:
+  - beim Saisonwechsel wird der vorige Saisonstand unter `s.tower.seasonHistory[seasonId]` archiviert (max. 6 Saisons)
+  - Profil-Mirror enthält jetzt `season_history`
+  - Commit: `74d0f089d48f546a4cc87662366b29c8af3f988b`
+- Ranking-Loader korrigiert:
+  - liest Rankingdaten zuerst, bevor der aktuelle 0er-Mirror synchronisiert wird
+  - zeigt aktuelle Saison, sobald Werte vorhanden sind
+  - ist aktuelle Saison leer, zeigt er automatisch die vorherige Monatswertung mit Hinweis auf den Saisonwechsel
+  - unterstützt alte flache Season-Mirrors und neue `season_history`
+  - Commit: `e840ec0cab85872fe811fa102a35a07ba326e6a9`
+- Mittwochsrangliste bleibt unverändert auf ihrem dedizierten serverseitigen Ledger/RPC.
