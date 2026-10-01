@@ -1,0 +1,28 @@
+name: V8.009 Social Admin Extraction Batch 1
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/v8009_social_admin_extraction_batch1.py'
+      - '.github/workflows/v8009-social-admin-extraction-batch1.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 .github/scripts/v8009_social_admin_extraction_batch1.py
+      - run: |
+          node --check js/features/social/beta/v8009-s1-v6144-player-safety.js
+          node --check js/features/admin/beta/v8009-s1-v6346-admin-broadcast.js
+          node --check js/features/social/beta/v8009-s1-v4124-social-quest-fix.js
+          node --check js/features/guide/beta/v8009-s1-v6254-grow-guide.js
+      - run: |
+          git config user.name github-actions
+          git config user.email github-actions@users.noreply.github.com
+          git add beta.html js/features/social/beta/v8009-s1-v6144-player-safety.js js/features/admin/beta/v8009-s1-v6346-admin-broadcast.js js/features/social/beta/v8009-s1-v4124-social-quest-fix.js js/features/guide/beta/v8009-s1-v6254-grow-guide.js V8009_SOCIAL_ADMIN_EXTRACTION_BATCH1_QA.json
+          git commit -m "V8.009 SOCIAL ADMIN: extract first owner batch" || exit 0
+          git pull --rebase origin main
+          git push
