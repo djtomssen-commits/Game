@@ -3182,3 +3182,38 @@ Arbeitsmodus:
 - Workflow: `.github/workflows/v8009-feature-extraction-mega30.yml`.
 - Trigger nach schnellem Mega29-Lauf korrigiert mit Commit `1cef889c90be31c23654ede19b1a9a5161273acf`.
 - Status: Workflow angestoßen; Ergebnis-Commit/QA zum Zeitpunkt dieses Status-Updates noch nicht im main-Verlauf sichtbar.
+
+
+#### Feature Extraction Mega Batch 30
+- Ergebnis-Commit: `848bab366147013edbc0e7d1b3b4f28d33beae73`.
+- 26 verbliebene anonyme klassische Inline-JS-Blöcke aus `beta.html` ausgelagert.
+- 56.739 Bytes Inline-JS entfernt.
+- Ergebnis: `remaining_anonymous_classic_inline_count = 0`.
+- QA `V8009_FEATURE_EXTRACTION_MEGA30_QA.json`: grün.
+- Stable / `index.html`: Hash unverändert.
+
+#### Post-Extraction Rest-Audit
+- Audit-Commit: `b032cfa9b24e7523327595199f12105fbcb52249`.
+- `beta.html`: 2.302.792 Bytes.
+- 781 Script-Tags insgesamt, 774 extern.
+- Keine klassischen Inline-JS-Blöcke mehr.
+- Übrig waren 7 explizit retired Script-Blöcke vom Typ `application/x-grow-legends-retired`.
+- 604 Inline-Styleblöcke mit zusammen 2.027.630 Bytes.
+- Keine doppelten externen Script-SRCs.
+- Keine Inline-Eventhandler.
+
+#### Mega31 Safe CSS + Retired Cleanup
+- Ergebnis-Commit: `b754c70c8e0a04fd8fa7caff0614e57113fdeeeb`.
+- 7 retired Inline-Skripte vollständig aus aktivem HTML entfernt und archiviert unter `js/features/legacy/retired-inline/`.
+- 21.120 Bytes retired Script-Inhalt aus dem Monolithen entfernt.
+- 6 konservativ sichere CSS-Blöcke ausgelagert.
+- 47.450 CSS-Bytes aus `beta.html` entfernt.
+- QA `V8009_MEGA31_SAFE_CSS_AND_RETIRED_QA.json`: grün.
+- Stable / `index.html`: Hash unverändert.
+
+#### Mega32 Root-CSS Extraction
+- Ziel: alle verbleibenden Style-Blöcke auslagern, deren Style-ID nicht tatsächlich per DOM angesprochen wird.
+- Relative Asset-Pfade bleiben erhalten, indem assetführende CSS-Dateien direkt auf Repo-Root liegen; damit bleibt `assets/...` semantisch identisch zur bisherigen Inline-CSS-Auflösung.
+- Script-Commit: `48ca45b8c6c3c05b897e5c149862ebfd3c61ce89`.
+- Workflow-Commit: `4512be96fb3a3fd0874163832a7fea15f8718834`.
+- Status: Workflow angestoßen; Ergebnis-Commit/QA bei letzter Prüfung noch nicht im main-Verlauf sichtbar.
