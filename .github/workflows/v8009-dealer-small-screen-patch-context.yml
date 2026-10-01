@@ -1,0 +1,23 @@
+name: V8.009 Dealer Small Screen Patch Context
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/v8009_dealer_small_screen_patch_context.py'
+      - '.github/workflows/v8009-dealer-small-screen-patch-context.yml'
+permissions:
+  contents: write
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 .github/scripts/v8009_dealer_small_screen_patch_context.py
+      - run: |
+          git config user.name github-actions
+          git config user.email github-actions@users.noreply.github.com
+          git add V8009_DEALER_SMALL_SCREEN_PATCH_CONTEXT.json
+          git commit -m "V8.009 FINAL: record dealer small screen patch context" || exit 0
+          git pull --rebase origin main
+          git push
