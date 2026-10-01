@@ -170,6 +170,7 @@
     /* V7.273 Beta: while Nebelschmied owns the forge, the legacy renderer
        must not rebuild the entire forge DOM. Those rebuilds caused flicker. */
     if(document.getElementById('forge')?.classList.contains('v7240-nebel-open'))return;
+    const keepClassSet=!!document.querySelector('#forge .v667-forge-body.v6130-set-mode');
     const sec=ensureScreen(),z=state(),c=cost(),rows=selectedRows(),sum=selectedFragments(),refund=selectedGoldRefund(),eligible=eligibleRows(),allEligibleSelected=eligible.length>0&&eligible.every(x=>selected.has(x.key)),can=z.fragments>=c.fragments&&(Number(s.gold)||0)>=c.gold&&!busy;
     const dismantleView=()=>`<div class="v667-view v667-view-dismantle">
       <div class="v667-hero-wrap">
@@ -245,6 +246,7 @@
     sec.querySelector('#v488Craft')?.addEventListener('click',craft);
     try{if(typeof window.v4103DecorateItemSurfaces==='function')queueMicrotask(()=>window.v4103DecorateItemSurfaces())}catch(e){}
     try{if(typeof window.v4112RefreshAllItemArt==='function')queueMicrotask(()=>window.v4112RefreshAllItemArt(sec))}catch(e){}
+    if(keepClassSet)queueMicrotask(()=>{try{window.v6130OpenSetPanel?.({refreshPvp:false})}catch(_){}});
   }
   function burst(kind='dismantle',quality='green'){
     const st=document.getElementById('v488Stage');if(!st)return;
