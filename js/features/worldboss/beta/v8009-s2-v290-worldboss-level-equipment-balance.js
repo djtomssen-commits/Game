@@ -15,11 +15,8 @@ function v290EnsureWorldBossState(){
     ?v112EnsureWorldBossState()
     :(s.v110WorldBoss||(s.v110WorldBoss={day:'',freeUsed:false,wins:0,attempts:0}));
 
-  wb.lossStreak=Math.max(
-    0,
-    Number(wb.lossStreak) ||
-      ((Number(wb.wins)||0)===0 ? Math.min(10,Number(wb.attempts)||0) : 0)
-  );
+  /* V8.009 canonical no-pity rule: legacy loss streak is kept neutral. */
+  wb.lossStreak=0;
   return wb;
 }
 
@@ -87,8 +84,8 @@ function v290WorldBossModel(){
   const bossHp=Math.round(idealDamage*9.375);
   const bossAtk=Math.round(idealHp*.11);
 
-  const pitySteps=Math.min(10,Math.max(0,Number(wb.lossStreak)||0));
-  const pityDamage=1+pitySteps*.02;
+  const pitySteps=0;
+  const pityDamage=1;
 
   return {
     level,
@@ -127,9 +124,7 @@ v110BossScale=function(){
   };
 };
 
-/* Refresh keeps the existing UI, but adds an honest equipment readiness hint.
-   Pity remains hidden numerically; only the player-facing encouragement is
-   shown after repeated defeats. */
+/* Refresh keeps the existing UI and adds an honest equipment readiness hint. */
 const v290BaseRefresh=v110Refresh;
 v110Refresh=function(){
   v290EnsureWorldBossState();
@@ -150,8 +145,7 @@ v110Refresh=function(){
     box.innerHTML=
       `Ausrüstung für Level ${m.level}: <b class="${cls}">${label}</b> · `+
       `${m.gear.equipped}/${m.gear.slots} Slots<br>`+
-      `Der Koloss normalisiert kritische Treffer. Crit-Skill kann ihn nicht umgehen.`+
-      (m.pitySteps>=3?`<br><b>Der Koloss zeigt nach deinen Niederlagen erste Schwächen.</b>`:'');
+      `Der Koloss normalisiert kritische Treffer. Crit-Skill kann ihn nicht umgehen.`;
   }
   return r;
 };
@@ -208,7 +202,6 @@ v110Fight=function(){
       5,
       Math.round(
         m.playerBaseDamage *
-        m.pityDamage *
         (.90+Math.random()*.20)
       )
     );
@@ -284,7 +277,7 @@ v110Fight=function(){
           `${item.name} erhalten!`
         );
       }else{
-        wb.lossStreak=Math.min(10,(Number(wb.lossStreak)||0)+1);
+        wb.lossStreak=0;
 
         if(logEl){
           logEl.textContent=
@@ -298,7 +291,7 @@ v110Fight=function(){
         v063Toast(
           'Weltboss nicht bezwungen',
           'warn',
-          'Der Koloss wird nach Niederlagen schrittweise verwundbarer.'
+          'Verbessere deine Ausrüstung und fordere den Koloss erneut heraus.'
         );
       }
 
