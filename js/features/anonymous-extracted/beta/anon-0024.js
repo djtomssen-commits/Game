@@ -1,0 +1,1 @@
+window.__V630_QUEST_VISUAL_FIX__=true;

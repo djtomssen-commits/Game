@@ -1,0 +1,1 @@
+window.__V632_QUEST_ENEMY_VISUAL_HOOK__=true;
