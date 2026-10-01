@@ -1,0 +1,21 @@
+name: V8.009 Character Repaint Audit B
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/v8009_character_repaint_audit_b.py'
+      - '.github/workflows/v8009-character-repaint-audit-b.yml'
+permissions:
+  contents: write
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 .github/scripts/v8009_character_repaint_audit_b.py
+      - run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add V8009_CHARACTER_REPAINT_AUDIT_B.json
+          git commit -m "V8.009 CHARACTER: record repaint audit B" || exit 0
+          git push
