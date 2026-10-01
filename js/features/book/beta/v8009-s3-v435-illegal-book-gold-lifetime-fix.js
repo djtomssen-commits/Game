@@ -128,12 +128,24 @@
     if(!ov||typeof V106_ACH==='undefined')return;
     const list=document.querySelector('#v106BookList');
     if(!list)return;
-    /* The current book renderer owns category/layout state. Re-opening through the
-       public function is safest and preserves all later visual/category wrappers. */
-    clearTimeout(window.__v435BookRefreshTimer);
-    window.__v435BookRefreshTimer=setTimeout(()=>{
-      try{if(document.querySelector('#v106Overlay.show')&&typeof v106OpenBook==='function')v106OpenBook()}catch(e){}
-    },25);
+    /* Never reopen/rebuild the whole Illegal Book just because lifetime Gold
+       changed. Update only the affected Gold achievement cards in place. */
+    const cards=[...list.querySelectorAll('.v106-ach')];
+    V106_ACH.forEach((row,i)=>{
+      if(!['gold10k','gold100k','gold1m'].includes(row?.[0]))return;
+      const card=cards[i];if(!card)return;
+      const target=Math.max(1,Number(row?.[4])||1);
+      const val=Math.max(0,Number(row?.[3]?.())||0);
+      const complete=!!s?.v106Achievements?.done?.[row[0]];
+      card.classList.toggle('done',complete);
+      const pct=complete?100:Math.min(100,Math.round(val/target*100));
+      const bar=card.querySelector('.v106-progress>i');if(bar)bar.style.width=pct+'%';
+      const txt=card.querySelector('.v106-progress-text');
+      if(txt)txt.textContent=complete?'ABGESCHLOSSEN':`${Math.min(val,target).toLocaleString('de-DE')} / ${target.toLocaleString('de-DE')}`;
+      const title=card.querySelector('.v106-ach-title');
+      if(title)title.textContent=(complete?'✓':'○')+' '+String(row?.[1]||'Erfolg');
+    });
+    try{window.v6235IllegalBookRender?.(false)}catch(_){}
   }
 
   document.addEventListener('click',()=>{
