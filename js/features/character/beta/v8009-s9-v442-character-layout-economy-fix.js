@@ -45,20 +45,6 @@
   try{window.sellValue=saleValue}catch(e){}
   window.v442SellValue=saleValue;
 
-  function moveInventory(){
-    const inv=document.querySelector('#character #inventory');
-    const card=inv?.closest('.card');
-    const attrs=document.querySelector('#character #attrs');
-    const bottom=attrs?.closest('.char-bottom');
-    if(!card||!attrs||!bottom)return false;
-    card.classList.add('v442-inventory-card');
-    if(card.parentElement!==bottom || card.nextElementSibling!==attrs){
-      bottom.insertBefore(card,attrs);
-    }
-    return true;
-  }
-  window.v442MoveInventory=moveInventory;
-
   /* Remove literal old patch artifacts such as "\\n" / "\\n\\n" or "n/n/"
      when they exist as standalone visible text nodes. Never touches script/style text. */
   function cleanArtifacts(root=document.body){
@@ -78,32 +64,8 @@
 
   function stamp(){}
 
-  /* Keep the requested order after any historical render wrapper runs. */
-  if(typeof render==='function'&&!window.__v442RenderWrapped){
-    const baseRender=render;
-    render=function(){
-      const r=baseRender.apply(this,arguments);
-      moveInventory();
-      cleanArtifacts();
-      stamp();
-      return r;
-    };
-    try{window.render=render}catch(e){}
-    window.__v442RenderWrapped=true;
-  }
-
-  function refreshVisiblePrices(){
-    try{if(typeof renderInventory==='function')renderInventory()}catch(e){console.warn('V4.42 inventory price repaint',e)}
-    /* Equipment price labels are rendered by the main render path; one safe boot pass
-       updates them to the new sale formula as well. */
-    try{if(typeof render==='function')render()}catch(e){console.warn('V4.42 character repaint',e)}
-    moveInventory();cleanArtifacts();stamp();
-  }
-
-  moveInventory();cleanArtifacts();stamp();
-  document.addEventListener('DOMContentLoaded',refreshVisiblePrices,{once:true});
-  window.addEventListener('pageshow',()=>{moveInventory();cleanArtifacts();stamp()},{passive:true});
-  setTimeout(refreshVisiblePrices,250);
-  setTimeout(()=>{moveInventory();cleanArtifacts();stamp()},1600);
-  setTimeout(()=>{moveInventory();cleanArtifacts();stamp()},5200); /* V4.123: removed useless late clear of already-fired one-shot timeout. */
+  /* v459 owns Character layout. This module only owns sale-value economy and
+     a one-time cleanup of literal legacy text artifacts. */
+  try{cleanArtifacts()}catch(e){}
+  document.addEventListener('DOMContentLoaded',()=>{try{cleanArtifacts()}catch(e){}},{once:true});
 })();
