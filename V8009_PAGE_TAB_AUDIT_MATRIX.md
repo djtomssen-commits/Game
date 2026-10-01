@@ -24,7 +24,7 @@ Die Matrix wird nach jedem großen Cleanup-Batch aktualisiert.
 | Seite | Tabs / Unteransichten | Status | Notiz |
 |---|---|---|---|
 | World / Startseite | Home / Navigation / World-Module | [x] | kanonischer Home-Renderer besitzt Weltboss-Slot/Navigation; v483/v7288 Lifecycle konsolidiert; globaler Render-/Postrender-Wrapper entfernt; manueller Endtest offen |
-| Character | Attribute / Inventar / Talente / Materialien | [~] | mehrere globale Render-Hooks entfernt; Material-DOM auf v546 reduziert; kompletter Tab-für-Tab-Pass noch offen |
+| Character | Attribute / Inventar / Talente / Materialien | [x] | v459 alleiniger sichtbarer Tab-Lifecycle-Owner; Material-/Inventar-Autoberechnung getrennt; alte v442 Layout-Rückverschiebung entfernt; globale Render-/Inventory-Wrapperketten konsolidiert; manueller Endtest offen |
 | Growroom | Grow / Stock / Genetics / Orders | [x] | Event-Bus/Tab/Care/Hydration/Genetik/Stock/Orders-Lifecycle konsolidiert; manueller Endtest offen |
 | Quests | Quest / Schicht-Arbeiten-Chillen | [x] | Dampf-/Quest-Renderowner konsolidiert, Claim/Event/Reward-Kette vereinheitlicht, Schicht-Timer bereinigt; manueller Endtest offen |
 | Dungeon | Weltkarte / 10er-Detailkarte / Kampf / Reward | [x] | Combat bleibt beim v7175 Renderer; v7051 serverautoritativ; v247 alleiniger Reward-Modal-Owner; doppelter Reward-DOM/Sound entfernt; Feedback-Run-ID erhalten; manueller Endtest offen |
@@ -47,7 +47,7 @@ Die Matrix wird nach jedem großen Cleanup-Batch aktualisiert.
 | Worldboss | Entry / Overlay / Combat / Reward | [x] | Entry/State/Countdown/Balance/Authority konsolidiert; v113/v114/Home-Click-Layer retired; globale Render-/Polling-Schichten entfernt; manueller Endtest offen |
 | Guildboss | Signup / Fight / Replay / Reward | [x] | Server-Gate korrigiert: nur eigene offene Belohnung vom unmittelbaren Vortag sperrt die neue Anmeldung; ältere offene Rewards sperren nicht; Visual-/Replay-/Reward-Lifecycle konsolidiert; erneuter manueller Signup-Test offen |
 | Profile Modal | Profil / Equipment / Friend action | [x] | v655 finaler Loader/Renderer, v652 nur Decoration-Observer, Deadlines/Fallbacks erhalten; manueller Endtest offen |
-| Character Creation | Beta Creator / Server-1 Creator | [~] | alte v029/v4131/v4135 Producer retired; kontextabhängige v4136/v7229 Owner bleiben |
+| Character Creation | Beta Creator / Server-1 Creator | [x] | v4136 einziger direkter gl_create_character-Owner; Server1 nutzt denselben Create-Helper, eigene UI/Isolation bleibt; Finalizer-/Retry-Doppelpfade entfernt; Launch-Gate unverändert; manueller Endtest offen |
 | Settings | Account / Cloud / Logout / Delete / Version | [x] | v141 alleiniger DOM-Builder, v225 nur Binder/Repair |
 | Global Header | Gold / Harz / Dampf / Navigation | [x] | v358 Header-Owner, v283 Harz, v284 Dampf; DOM-Contracts aktiv |
 
