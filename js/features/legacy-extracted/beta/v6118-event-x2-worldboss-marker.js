@@ -1,2 +1,0 @@
-
-window.__V6118_EVENT_X2_WORLDBOSS_FIX__=true;

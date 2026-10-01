@@ -1,1 +1,0 @@
-window.__V633_QUEST_FINAL_HP_FIX__=true;

@@ -1,1 +1,0 @@
-window.__V643_QUEST_SMOOTH_MOBILE__=true;

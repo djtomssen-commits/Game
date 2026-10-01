@@ -1,1 +1,0 @@
-window.__V575_DISABLE_OLD_DUNGEON_FX__=true;

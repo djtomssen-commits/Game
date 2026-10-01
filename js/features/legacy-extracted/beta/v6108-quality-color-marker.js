@@ -1,2 +1,0 @@
-
-window.__V6108_ITEM_QUALITY_COLOR_FIX__=true;

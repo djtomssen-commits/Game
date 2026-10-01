@@ -1,1 +1,0 @@
-window.__V6123_WORLDBOSS_SLOT_FEINSCHLIFF__=true;

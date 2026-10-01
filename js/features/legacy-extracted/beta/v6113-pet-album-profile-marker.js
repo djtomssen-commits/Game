@@ -1,2 +1,0 @@
-
-window.__V6113_PET_ALBUM_PROFILE_POLISH__=true;

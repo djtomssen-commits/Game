@@ -1,2 +1,0 @@
-
-window.__V6112_PET_FINAL_POSITION_FIX__=true;

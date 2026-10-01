@@ -1,1 +1,0 @@
-window.__V631_QUEST_RAF_TIMERS__=true;

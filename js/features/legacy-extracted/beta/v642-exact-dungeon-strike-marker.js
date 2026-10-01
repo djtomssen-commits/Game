@@ -1,1 +1,0 @@
-window.__V642_EXACT_DUNGEON_STRIKE__=true;
