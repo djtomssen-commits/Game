@@ -1,0 +1,23 @@
+name: V8.009 Post Extraction Coverage V10
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/v8009_post_extraction_coverage_v10.py'
+      - '.github/workflows/v8009-post-extraction-coverage-v10.yml'
+permissions:
+  contents: write
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 .github/scripts/v8009_post_extraction_coverage_v10.py
+      - run: |
+          git config user.name github-actions
+          git config user.email github-actions@users.noreply.github.com
+          git add V8009_POST_EXTRACTION_COVERAGE_V10.json
+          git commit -m "V8.009 FINAL: record post extraction coverage v10" || exit 0
+          git pull --rebase origin main
+          git push
