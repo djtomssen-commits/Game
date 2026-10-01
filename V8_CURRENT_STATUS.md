@@ -2463,3 +2463,15 @@ Arbeitsmodus:
 - Alle drei externen Dateien mit `node --check` geprüft.
 - QA `V8009_DUNGEON_EXTRACTION_BATCH1_QA.json`: vollständig grün.
 - Stable / `index.html`: unverändert.
+
+
+#### Authority Extraction Batch 1
+- Drei große serverautoritäre Bridge-Owner 1:1 aus `beta.html` nach `js/features/authority/beta/` ausgelagert:
+  - `v7072-server-tower-weekly-worldboss-bridge` → `v8009-s1-v7072-server-tower-weekly-worldboss-bridge.js`
+  - `v7073-server-daily-endgame-bridge` → `v8009-s1-v7073-server-daily-endgame-bridge.js`
+  - `v7042-unified-authority-bridge` → `v8009-s1-v7042-unified-authority-bridge.js`
+- Zusammen 75.147 Bytes Inline-JS aus dem Monolithen entfernt.
+- Script-IDs und Reihenfolge in `beta.html` beibehalten; nur auf `src=` umgestellt.
+- Alle drei externen Dateien mit `node --check` geprüft.
+- QA `V8009_AUTHORITY_EXTRACTION_BATCH1_QA.json`: vollständig grün.
+- Stable / `index.html`: unverändert.
