@@ -1,0 +1,34 @@
+name: V8.009 Feature Extraction Batch 9
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/v8009_feature_extraction_batch9.py'
+      - '.github/workflows/v8009-feature-extraction-batch9.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 .github/scripts/v8009_feature_extraction_batch9.py
+      - run: |
+          node --check js/features/book/beta/v8009-s2-v106-illegal-book.js
+          node --check js/features/dungeon/beta/v8009-s6-v250-all-dungeon-key-progression.js
+          node --check js/features/admin/beta/v8009-s3-v093-admin-core.js
+          node --check js/features/materials/beta/v8009-s1-v122-material-dialog-fix.js
+          node --check js/features/authority/beta/v8009-s6-v7062-server-item-action-bridge.js
+          node --check js/features/grow/beta/v8009-s5-v7070-authoritative-grow-hydration.js
+          node --check js/features/hall/beta/v8009-s1-v649-hall-dungeon-progress-fix.js
+          node --check js/features/account/beta/v8009-s7-v6252-register-popup.js
+          node --check js/features/materials/beta/v8009-s1-v546-materials-grow-legends.js
+          node --check js/features/items/beta/v8009-s5-v423-item-progression-fix.js
+      - run: |
+          git config user.name github-actions
+          git config user.email github-actions@users.noreply.github.com
+          git add beta.html js/features/book/beta/v8009-s2-v106-illegal-book.js js/features/dungeon/beta/v8009-s6-v250-all-dungeon-key-progression.js js/features/admin/beta/v8009-s3-v093-admin-core.js js/features/materials/beta/v8009-s1-v122-material-dialog-fix.js js/features/authority/beta/v8009-s6-v7062-server-item-action-bridge.js js/features/grow/beta/v8009-s5-v7070-authoritative-grow-hydration.js js/features/hall/beta/v8009-s1-v649-hall-dungeon-progress-fix.js js/features/account/beta/v8009-s7-v6252-register-popup.js js/features/materials/beta/v8009-s1-v546-materials-grow-legends.js js/features/items/beta/v8009-s5-v423-item-progression-fix.js V8009_FEATURE_EXTRACTION_BATCH9_QA.json
+          git commit -m "V8.009 FEATURES: extract ninth owner batch" || exit 0
+          git pull --rebase origin main
+          git push
