@@ -7,17 +7,17 @@ p6344=Path('js/features/quest/beta/v6344-quest-variety-js.js').read_text(encodin
 checks={
  'v309_no_render_writer':'renderQuests=function' not in p309,
  'v309_prepare_hook':'window.v309PrepareQuestRender' in p309,
- 'v309_paint_hook':'window.v309ScheduleQuestRolePaint' in p309,
+ 'v309_direct_paint_hook':'window.v309PaintQuestRoles' in p309,
  'v316_no_render_writer':'renderQuests=function' not in p316,
  'v316_prepare_hook':'window.v316PrepareQuestRender' in p316,
- 'v316_paint_hook':'window.v316ScheduleSkipPaint' in p316,
+ 'v316_legacy_skip_paint_retired':'window.v316ScheduleSkipPaint=()=>{}' in p316,
  'v496_no_render_writer':'wrappedRender' not in p496 and '__v496QuestRenderGuard' not in p496,
  'v496_repair_hook':'window.v496RepairStalePaidQuest' in p496,
  'v6344_pre_v496':'window.v496RepairStalePaidQuest?.()' in p6344,
  'v6344_pre_v316':'window.v316PrepareQuestRender?.()' in p6344,
  'v6344_pre_v309':'window.v309PrepareQuestRender?.()' in p6344,
- 'v6344_post_v309':'window.v309ScheduleQuestRolePaint?.()' in p6344,
- 'v6344_post_v316':'window.v316ScheduleSkipPaint?.()' in p6344,
+ 'v6344_post_v309_direct':'window.v309PaintQuestRoles?.()' in p6344,
+ 'v6344_post_skip_direct':'window.v4127EnsureQuestSkip?.()' in p6344,
 }
 failed=[k for k,v in checks.items() if not v]
 report={'build':'V8.009-QUEST-RENDER-PASS3-QA','checks':checks,'failed':failed,'passed':not failed}
