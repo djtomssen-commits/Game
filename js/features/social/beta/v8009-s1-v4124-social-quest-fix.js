@@ -73,7 +73,7 @@
 
  function bindRows(root){
   try{if(typeof v074BindProfileRows==='function')v074BindProfileRows(root)}catch(e){}
-  root?.querySelectorAll('[data-v4124-mail]').forEach(b=>{b.onclick=e=>{e.preventDefault();e.stopPropagation();window.v382OpenMailTo?.(b.dataset.v4124Mail)}});
+  root?.querySelectorAll('[data-v4124-mail]').forEach(b=>{b.onclick=e=>{e.preventDefault();e.stopPropagation();window.v381OpenMailTo?.(b.dataset.v4124Mail)}});
  }
  function mailButton(p){return `<button class="btn secondary v382-message-btn" data-v4124-mail="${esc(p?.character_name||'')}">✉️ Nachricht</button>`}
 
