@@ -32,11 +32,46 @@
    magic:(Array.isArray(s?.magicShop)?s.magicShop:[]).map(offerViewSig),
    equipment:Object.fromEntries(Object.entries(s?.equipment||{}).map(([k,v])=>[k,offerViewSig(v)]))
  });
+ function pruneLegacyShopTop(){
+  const shop=document.getElementById('shop');if(!shop)return false;
+  const hero=document.getElementById('v461ShopHero');
+  if(hero){
+   /* V8.009: the canonical Bork/Mira hero is the first visible shop block.
+      Any legacy NPC/header/card inserted before it is obsolete. */
+   let n=shop.firstElementChild;
+   while(n&&n!==hero){
+    const next=n.nextElementSibling;
+    n.remove();
+    n=next;
+   }
+  }
+  shop.querySelectorAll('*').forEach(el=>{
+   if(el.closest?.('#v461ShopHero'))return;
+   const t=String(el.textContent||'').replace(/\s+/g,' ').trim().toLowerCase();
+   if(!t)return;
+   if(t.startsWith('⚖️ werte steigen jetzt klar mit der seltenheit')||
+      t.startsWith('werte steigen jetzt klar mit der seltenheit')){
+    const box=el.closest?.('#v055RarityHint,.card,[class*="hint"],[class*="rarity"],div,p')||el;
+    if(box!==shop&&!box.closest?.('#v461ShopHero'))box.remove();
+   }
+   if((t.includes('händler von grünhain')||t.includes('haendler von gruenhain'))&&
+      !el.closest?.('#v461ShopHero')){
+    const box=el.closest?.('.card,[class*="npc"],[class*="dealer"],[class*="merchant"],div')||el;
+    if(box!==shop&&!box.closest?.('#v461ShopHero'))box.remove();
+   }
+  });
+  return true;
+ }
  function stableRenderShop(force=false){
   shopPaintCalls++;
   if(typeof rawRenderShop!=='function')return false;
-  if(!window.v7081UseAuthority?.('items'))return rawRenderShop.apply(this,arguments);
   const shop=document.getElementById('shop');
+  pruneLegacyShopTop();
+  if(!window.v7081UseAuthority?.('items')){
+   const r=rawRenderShop.apply(this,arguments);
+   pruneLegacyShopTop();
+   return r;
+  }
   if(!force&&!shop?.classList.contains('active'))return false;
   const sig=shopViewSig();
   const domReady=!!(
@@ -48,6 +83,7 @@
   lastShopPaint=performance.now();
   shopPaintExec++;
   const r=rawRenderShop.apply(this,arguments);
+  pruneLegacyShopTop();
   lastShopViewSig=shopViewSig();
   return r;
  }
