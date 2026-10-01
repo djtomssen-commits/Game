@@ -1,0 +1,28 @@
+name: V8.009 Quest Fight Art Retire QA
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'js/features/quest/beta/v626-quest-enemy-art-fix-core.js'
+      - 'js/features/quest/beta/v627-quest-crisp-art-core.js'
+      - '.github/scripts/v8009_quest_fight_art_retire_qa.py'
+      - '.github/workflows/v8009-quest-fight-art-retire-qa.yml'
+permissions:
+  contents: write
+jobs:
+  qa:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          node --check js/features/quest/beta/v626-quest-enemy-art-fix-core.js
+          node --check js/features/quest/beta/v627-quest-crisp-art-core.js
+          node --check js/features/quest/beta/v636-quest-dungeon-authority-core.js
+      - run: python3 .github/scripts/v8009_quest_fight_art_retire_qa.py
+      - run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add V8009_QUEST_FIGHT_ART_RETIRE_QA.json
+          git commit -m "V8.009 QUEST: record fight art retire QA" || exit 0
+          git push
