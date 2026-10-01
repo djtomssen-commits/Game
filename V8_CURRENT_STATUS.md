@@ -2296,3 +2296,29 @@ Arbeitsmodus:
   4. danach gemeinsame Integrations-QA über alle 14 Screens + 4 Tabs;
   5. erst dann kann „jede Seite / jeder Tab geprüft“ als abgeschlossen markiert werden.
 - Stable / `index.html`: unverändert.
+
+
+#### Character Attribute + Talente Coverage-Pass
+- Vollständigkeits-Audit hat die Character-Tabs separat geprüft.
+- Attribute:
+  - aktueller Owner bleibt `v4140-attribute-display-owner`;
+  - Attributkauf/Spend-Logik unverändert.
+- Talente:
+  - aktueller Owner bleibt `v543-talents-mobile-tree-js`;
+  - alter globale `v314`-`render()`-Wrapper entfernt.
+- Character-Layout:
+  - alter globale `v444`-`render()`-Wrapper entfernt;
+  - Anordnung läuft direkt über DOM/pageshow/Character-v7119.
+- Heldenquartier v514:
+  - alter globale `render()`-Wrapper entfernt;
+  - direkter Character-v7119 + pageshow übernimmt.
+- Talent-Tab:
+  - extra `requestAnimationFrame(apply)` beim Tab-Wechsel entfernt; direkter Apply.
+- Unverändert:
+  - Talent-Upgrades/Reset;
+  - Attributpunkte/Spend;
+  - Tab-State;
+  - Character-Owner v459;
+  - aktuelle Attribute-/Talent-Renderer.
+- QA `V8009_CHARACTER_ATTR_TALENT_QA.json`: grün.
+- Stable / `index.html`: unverändert.
