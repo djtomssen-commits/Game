@@ -1,0 +1,28 @@
+name: V8.009 Feature Extraction Batch 2
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/v8009_feature_extraction_batch2.py'
+      - '.github/workflows/v8009-feature-extraction-batch2.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 .github/scripts/v8009_feature_extraction_batch2.py
+      - run: |
+          node --check js/features/ui/beta/v8009-s2-v086-polish-script.js
+          node --check js/features/endgame/beta/v8009-s1-v457-level300-endgame.js
+          node --check js/features/character/beta/v8009-s4-v4154-class-balance-item-variety.js
+          node --check js/features/grow/beta/v8009-s2-v6282-grow-economy.js
+      - run: |
+          git config user.name github-actions
+          git config user.email github-actions@users.noreply.github.com
+          git add beta.html js/features/ui/beta/v8009-s2-v086-polish-script.js js/features/endgame/beta/v8009-s1-v457-level300-endgame.js js/features/character/beta/v8009-s4-v4154-class-balance-item-variety.js js/features/grow/beta/v8009-s2-v6282-grow-economy.js V8009_FEATURE_EXTRACTION_BATCH2_QA.json
+          git commit -m "V8.009 FEATURES: extract second owner batch" || exit 0
+          git pull --rebase origin main
+          git push
