@@ -474,47 +474,24 @@ v072RenderFriends=function(){
   v073LoadFriends();
 };
 
-/* Refresh social data whenever those pages are opened. */
-const v073OldAddMenuItems=v072AddMenuItems;
-v072AddMenuItems=function(){
-  v073OldAddMenuItems();
+/* V8.009: Hall/Friends entry refresh is owned by the final v4130 navigation lifecycle.
+   The old v072AddMenuItems wrapper and its 0-ms repaint lane are retired. */
 
-  document.querySelectorAll('.top-menu-panel [data-screen="hall"],.top-menu-panel [data-screen="friends"]').forEach(btn=>{
-    const old=btn.onclick;
-    btn.onclick=()=>{
-      if(old)old();
-      const id=btn.dataset.screen;
-      setTimeout(()=>{
-        if(id==='hall'){
-          v073SyncProfile(true);
-          v073LoadRanking();
-        }else{
-          v073LoadFriends();
-        }
-      },0);
-    };
-  });
-};
-
-/* Profile sync after meaningful local changes, without writing every render. */
-function v073ScheduleProfileSync(){
-  clearTimeout(window.__v073SyncTimer);
-  if(window.__V200_AUTH_READY__!==true)return;
-  if(!v073Ready || !v073User || v073User.is_anonymous)return;
-  if(!s.playerClass || !s.characterNameSet || !v071NameValid(s.characterName))return;
-
-  window.__v073SyncTimer=setTimeout(async()=>{
-    if(v073Ready && v073User && !v073User.is_anonymous){
-      await v073SyncProfile(false);
-    }
-  },900);
+/* V8.009: profile dirty-check has a real data lifecycle instead of wrapping
+   the global app render. The payload comparison in v073SyncProfile prevents
+   unnecessary writes; presence heartbeat remains independently owned by v329. */
+function v073ScheduleProfileSync(force=false){
+  if(window.__V200_AUTH_READY__!==true)return false;
+  if(!v073Ready || !v073User || v073User.is_anonymous)return false;
+  if(!s.playerClass || !s.characterNameSet || !v071NameValid(s.characterName))return false;
+  queueMicrotask(()=>{try{void v073SyncProfile(!!force)}catch(_){}});
+  return true;
 }
-const v073BaseRender=render;
-render=function(){
-  v073BaseRender();
-  
-  v073ScheduleProfileSync();
-};
+window.v073ScheduleProfileSync=v073ScheduleProfileSync;
+window.addEventListener('growlegends:account-ready',()=>v073ScheduleProfileSync(true),{passive:true});
+window.addEventListener('growlegends:foreground-ready',()=>v073ScheduleProfileSync(false),{passive:true});
+window.addEventListener('pageshow',()=>v073ScheduleProfileSync(false),{passive:true});
+setInterval(()=>{if(!document.hidden)v073ScheduleProfileSync(false)},60000);
 
 window.addEventListener('online',()=>{
   v073InitPromise=null;
