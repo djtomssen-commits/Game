@@ -167,7 +167,7 @@
       const r=base.apply(this,arguments);
       if(!paintQueued){
         paintQueued=true;
-        requestAnimationFrame(()=>{paintQueued=false;paint()});
+        try{paint()}finally{paintQueued=false}
       }
       return r;
     };
@@ -176,7 +176,7 @@
   }
   if(typeof v257RenderManagement==='function'&&!window.__v554GuildMgmtWrapped){
     const base=v257RenderManagement;
-    v257RenderManagement=function(){const r=base.apply(this,arguments);requestAnimationFrame(()=>{installManagementPicker();cleanLegacy()});return r};
+    v257RenderManagement=function(){const r=base.apply(this,arguments);installManagementPicker();cleanLegacy();return r};
     try{window.v257RenderManagement=v257RenderManagement}catch(e){}
     window.__v554GuildMgmtWrapped=true;
   }
@@ -186,7 +186,7 @@
     const baseRequests=v257RenderRequests;
     const wrappedRequests=function(){
       const r=baseRequests.apply(this,arguments);
-      requestAnimationFrame(syncEmptyRequests);
+      syncEmptyRequests();
       return r;
     };
     try{v257RenderRequests=wrappedRequests}catch(e){}
@@ -268,14 +268,10 @@
       window.__v561GuildLoadGate=true;
     }
 
-    if(typeof v032Go==='function'&&!window.__v561GuildGoGate){
-      const baseGo=v032Go;
-      const wrappedGo=function(id){
-        if(id==='guild'&&guildNeedsGate())setGuildPending(true);
-        return baseGo.apply(this,arguments);
-      };
-      try{v032Go=wrappedGo}catch(e){}
-      window.v032Go=wrappedGo;
+    if(!window.__v561GuildGoGate){
+      window.addEventListener('growlegends:navigation-open-v7119',e=>{
+        if(String(e?.detail?.id||'')==='guild'&&guildNeedsGate())setGuildPending(true);
+      },{passive:true});
       window.__v561GuildGoGate=true;
     }
 
@@ -295,7 +291,7 @@
   installGuildLoadGate();
   setTimeout(()=>{try{if(typeof v254RenderGuild==='function')v254RenderGuild()}catch(e){}},80);
   document.addEventListener('DOMContentLoaded',()=>requestAnimationFrame(paint),{once:true});
-  window.addEventListener('pageshow',()=>{if(document.getElementById('guild')?.classList.contains('active'))requestAnimationFrame(paint)},{passive:true});
+  window.addEventListener('pageshow',()=>{if(document.getElementById('guild')?.classList.contains('active'))paint()},{passive:true});
   document.addEventListener('click',e=>{if(e.target?.closest?.('[data-screen="guild"],.v254-tab,#v380RefreshGuildRequests'))setTimeout(paint,40)},true);
 })();
 
