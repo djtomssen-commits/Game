@@ -111,7 +111,22 @@ async function craftSet(slot){
 }
 function setCard(slot){const c=slotCost(slot),r=RECIPES[c.recipe],z=state(),e=Math.max(0,Number(z?.essences?.[c.recipe])||0),b=buds(),f=fragments(),g=Math.max(0,Number(s?.gold)||0),unlock=b>=c.buds,ok=unlock&&e>=c.essence&&f>=c.fragments&&g>=c.gold,slotVisual=setSlotVisual(slot);return `<div class="v6130-set-card ${unlock?'unlocked':''}"><div class="top"><div class="ico">${slotVisual}</div><div><h4>${esc(c.label)}</h4><small>${esc(r.name)}-Rezept</small></div></div><div class="recipe">🧬 ${c.essence}× ${esc(r.essence)}<br>⚔️ Freischaltung ab ${fmt(c.buds)} PvP-Buds · <b>Buds werden nicht verbraucht.</b></div><div class="v6130-costs"><div class="v6130-cost ${e>=c.essence?'ok':'bad'}">🧬 Essenz<b>${e}/${c.essence}</b></div><div class="v6130-cost ${f>=c.fragments?'ok':'bad'}">💠 Fragmente<b>${fmt(f)}/${fmt(c.fragments)}</b></div><div class="v6130-cost ${g>=c.gold?'ok':'bad'}">🪙 Gold<b>${fmt(g)}/${fmt(c.gold)}</b></div><div class="v6130-cost ${unlock?'ok':'bad'}">⚔️ PvP-Buds<b>${fmt(b)}/${fmt(c.buds)}</b></div></div><button type="button" data-v6130-craft="${slot}" ${ok?'':'disabled'}>${unlock?'Set-Teil herstellen':'PvP-Rezept gesperrt'}</button></div>`}
 function panelHtml(){const si=setInfo(),bon=si.bonuses||{},z=state();return `<div class="v6130-set-head"><h3>🧩 ${esc(si.name)} · Klassenset</h3><p>GEZIELT HERSTELLEN · GENETIK + SCHMIEDE + PVP</p><div class="v6130-set-bonuses">${Object.values(bon).map(x=>`<span>${esc(x)}</span>`).join('')}</div></div><div class="v6130-set-res"><div><small>⚔️ PvP-Buds</small><b>${fmt(buds())}</b></div><div><small>💠 Samenfragmente</small><b>${fmt(fragments())}</b></div><div><small>🧩 Set getragen</small><b>${equippedSet()}/6</b></div></div><div class="v6130-set-grid">${Object.keys(SLOT_CFG).map(setCard).join('')}</div><div class="v6130-note"><b>Exklusiv in der Harzschmiede:</b> Fertige Klassenset-Teile droppen nicht mehr zufällig aus Quests, Dungeons oder PvP. Aktivitäten können selten zusätzliche Samenfragmente liefern; die passende Genetik-Essenz und PvP-Freischaltung bleiben Pflicht. Mystische Gegenstände bleiben weiterhin exklusiv für den mystischen Boss. Die Gold- und Fragmentkosten steigen in 50-Level-Stufen mit deinem Charakterlevel.</div>`}
-function openSetPanel(){const body=document.querySelector('#forge .v667-forge-body');if(!body)return;body.classList.add('v6130-set-mode');let p=body.querySelector('#v6130ClassSetPanel');if(!p){p=document.createElement('div');p.id='v6130ClassSetPanel';body.appendChild(p)}p.innerHTML=panelHtml();body.querySelectorAll('.v667-tab').forEach(x=>x.classList.toggle('active',x.classList.contains('v6130-set-tab')))}
+async function openSetPanel(options={}){
+ const body=document.querySelector('#forge .v667-forge-body');if(!body)return;
+ body.classList.add('v6130-set-mode');
+ let p=body.querySelector('#v6130ClassSetPanel');if(!p){p=document.createElement('div');p.id='v6130ClassSetPanel';body.appendChild(p)}
+ p.innerHTML=panelHtml();
+ body.querySelectorAll('.v667-tab').forEach(x=>x.classList.toggle('active',x.classList.contains('v6130-set-tab')));
+ if(options.refreshPvp===false)return;
+ try{
+  const before=buds();
+  const q=await window.v7053SyncPvpState?.();
+  if(q?.ok&&buds()!==before){
+   const live=document.querySelector('#forge .v667-forge-body.v6130-set-mode');
+   if(live)openSetPanel({refreshPvp:false});
+  }
+ }catch(_){}
+}
 function renderSetIfOpen(){const body=document.querySelector('#forge .v667-forge-body');if(body?.classList.contains('v6130-set-mode'))openSetPanel()}
 function decorateForge(){const body=document.querySelector('#forge .v667-forge-body'),tabs=body?.querySelector('.v667-tabs');if(!body||!tabs)return;if(!tabs.querySelector('.v6130-set-tab')){const b=document.createElement('button');b.type='button';b.className='v667-tab v6130-set-tab';b.dataset.v6130Settab='1';b.innerHTML='<span class="ic">🧩</span><span>KLASSENSET<small>Genetik · PvP · Fragmente</small></span>';tabs.appendChild(b)}}
 function stamp(){}
@@ -122,6 +137,6 @@ document.addEventListener('DOMContentLoaded',()=>{state();installAchievements();
 window.addEventListener('pageshow',()=>{refreshForge();stamp()},{passive:true});
 window.addEventListener('growlegends:account-ready',()=>{state();installAchievements();decorateGrow();refreshForge();stamp()},{passive:true});
 window.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')==='forge')refreshForge()},{passive:true});
-window.v6130GeneticsConfig={recipes:RECIPES,slots:SLOT_CFG};window.v6130RenderLabHtml=()=>labBodyHtml();
+window.v6130GeneticsConfig={recipes:RECIPES,slots:SLOT_CFG};window.v6130RenderLabHtml=()=>labBodyHtml();window.v6130OpenSetPanel=openSetPanel;
 window.v6130QA=()=>({version:VERSION,pending:state()?.pending||null,totalCrosses:state()?.totalCrosses||0,totalEssences:state()?.totalEssences||0,buds:buds(),fragments:fragments(),growButton:!!document.querySelector('[data-v6130-open]'),forgeTab:!!document.querySelector('.v6130-set-tab'),hybrids:Object.values(RECIPES).map(r=>({id:r.hybrid,known:!!seed(r.hybrid),stock:Number(s?.grow?.seeds?.[r.hybrid])||0}))});
 })();
