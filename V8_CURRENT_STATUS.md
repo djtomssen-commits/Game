@@ -2361,3 +2361,19 @@ Arbeitsmodus:
   - zentrale Bestätigungsdialoge.
 - QA `V8009_ADMIN_SMALL_SCREEN_QA.json`: grün.
 - Stable / `index.html`: unverändert.
+
+
+#### Small-Screen Coverage: friends + mail
+- Social-Audit abgeschlossen.
+- Friends:
+  - v333 Online-Status/Remote-Refresh bleibt funktional;
+  - 350-ms Refresh nach Visibility bleibt bewusst als Server-/Lifecycle-Followup.
+- Mail:
+  - v382 Compose-Öffnung bleibt mit 30-ms Action-Ordering nach Navigation;
+  - v383 Name-/Mail-Button-Korrektur bleibt.
+- Alter Header v371:
+  - Mail-Button navigierte fälschlich zu `friends`;
+  - auf `mail` korrigiert.
+- v372 aktueller Header war bereits korrekt.
+- QA `V8009_SOCIAL_SMALL_SCREEN_QA.json`: grün.
+- Stable / `index.html`: unverändert.
