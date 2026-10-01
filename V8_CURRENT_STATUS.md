@@ -4737,3 +4737,15 @@ Arbeitsmodus:
   - `js/features/authority/beta/v8009-s1-v7072-server-tower-weekly-worldboss-bridge.js`
   - `js/features/dungeon/beta/v8009-s1-v7051-atomic-dungeon-receipt-client.js`
 - Commits: `1c5845552a341f394d8fc8940eeee97f895b7371`, `70a6203eca77f3a4fa8201a7a3b15440800b7d30`
+
+
+#### Grow-Aufträge – Belohnungs-Popup statt Toast
+- Wenn ein Grow-Auftrag abgeschlossen wird, erscheint jetzt ein echtes Belohnungs-Popup mit Auftragsname und den konkreten Rewards; der bisherige Abschluss-Toast wurde entfernt.
+- Beim Abholen der Grow-Auftrags-Belohnung erscheint ebenfalls das kanonische Belohnungs-Popup; der serverseitige Erfolgs-Toast `Grow-Auftrag serverseitig abgeholt` wurde entfernt.
+- Reward-Logik bleibt unverändert: Abschluss macht die Belohnung abholbereit, erst der Claim schreibt die Belohnung gut.
+- Direkt in bestehenden Ownern geändert, **kein zusätzlicher Patch-/Overlay-Owner**:
+  - `js/features/rewards/beta/v8009-s3-v7136-complete-server-reward-core.js`
+  - `v8009-extracted-v7136-complete-server-reward-style.css`
+  - `js/features/authority/beta/v8009-s2-v7065-fail-closed-grow-authority-hotfix.js`
+  - `js/features/grow/beta/v8009-s1-v6160-grow-contracts-core.js`
+- Commits: `4f5db05a6db619b5899c15d17ca6197a07d6d079`, `6015e8f2d1b22760c04dc596e957d2c30f4223d7`, `3622511bdc58666135968834009b22b1ce37b118`, `a346ab71403a3b9c549b9b041b0bead0bb64a3d4`
