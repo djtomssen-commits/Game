@@ -4714,3 +4714,17 @@ Arbeitsmodus:
 - Nach `compactInventory`, Multisell, Auto-Bar und v533-Layout wird jetzt wieder der kanonische v470-Vergleich gemalt.
 - Geänderte Datei: `js/features/character/beta/v8009-s2-v459-character-hub.js`
 - Commit: `9d297f10b065cabe68c8a02f9358624991449873`
+
+
+#### Growroom Startup-Hydration – Pflanzen und Slots sofort korrekt
+- Video geprüft: Growroom öffnete zunächst mit Defaultzustand (`Lv.1 / 1 Topf`, gesperrte Slots), die echte Pflanze und freigeschalteten Slots kamen erst deutlich später nach.
+- Ursache: Die Capability-Prüfung (`v7081`) war beim ersten Growroom-Render teils noch nicht bereit. Dadurch ließ die Hydration-Barriere den lokalen/default Grow-State einmal durch. Erst ein späterer Authority-Refresh ersetzte ihn durch den korrekten Serverstand.
+- Direkt in den bestehenden Authority-/Hydration-Ownern repariert, **kein neuer Patch-/Overlay-Layer**:
+  - `v7065` reagiert jetzt sofort auf `growlegends:authority-capabilities-ready` und hydratisiert Grow direkt.
+  - Beim Öffnen des Growrooms wird bei noch fehlenden Capabilities die Capability-Prüfung sofort angestoßen.
+  - `v7070` blockiert den Growroom-Render jetzt bereits während der Capability-Phase und wartet auf den aktuellen Account, bevor Default-/Altzustand sichtbar werden kann.
+  - Danach wird direkt der serverautoritative Grow-State gerendert.
+- Geänderte Dateien:
+  - `js/features/authority/beta/v8009-s2-v7065-fail-closed-grow-authority-hotfix.js`
+  - `js/features/grow/beta/v8009-s5-v7070-authoritative-grow-hydration.js`
+- Commits: `258937542d462eeb80a1aa3bbc0293cb7e636275`, `0ac2d1494980243a1c3a352a9db8129e1bc1466b`
