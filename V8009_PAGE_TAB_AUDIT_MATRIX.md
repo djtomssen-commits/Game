@@ -26,7 +26,7 @@ Die Matrix wird nach jedem großen Cleanup-Batch aktualisiert.
 | World / Startseite | Home / Navigation / World-Module | [~] | Navigation/World-Lifecycle bereits teilweise konsolidiert; kompletter Seitenpass noch offen |
 | Character | Attribute / Inventar / Talente / Materialien | [~] | mehrere globale Render-Hooks entfernt; Material-DOM auf v546 reduziert; kompletter Tab-für-Tab-Pass noch offen |
 | Growroom | Grow / Stock / Genetics / Orders | [ ] | kompletter 4-Tab-Pass offen |
-| Quests | Quest / Schicht-Arbeiten-Chillen | [~] | Quest-Claim/Event/Reward-Lifecycle stark konsolidiert; kompletter UI-Tab-Pass noch offen |
+| Quests | Quest / Schicht-Arbeiten-Chillen | [x] | Dampf-/Quest-Renderowner konsolidiert, Claim/Event/Reward-Kette vereinheitlicht, Schicht-Timer bereinigt; manueller Endtest offen |
 | Dungeon | Weltkarte / 10er-Detailkarte / Kampf / Reward | [~] | Karten-Owner reduziert, v048 Combat retired, Lifecycle deutlich bereinigt; Combat/Reward-Finalpass offen |
 | Shop | Waffen & Rüstung / Schmuck & Magie | [x][T] | Repaint-Flicker, Legacy-Header, alte Shop-DOM-Producer und delayed Repaints bereinigt; Header vom Nutzer bestätigt |
 | Tütchen-Dealer | Dealer / Rundenfortschritt / Reward | [ ] | kompletter Seitenpass offen |
