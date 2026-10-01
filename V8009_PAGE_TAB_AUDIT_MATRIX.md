@@ -23,7 +23,7 @@ Die Matrix wird nach jedem großen Cleanup-Batch aktualisiert.
 
 | Seite | Tabs / Unteransichten | Status | Notiz |
 |---|---|---|---|
-| World / Startseite | Home / Navigation / World-Module | [~] | Navigation/World-Lifecycle bereits teilweise konsolidiert; kompletter Seitenpass noch offen |
+| World / Startseite | Home / Navigation / World-Module | [x] | kanonischer Home-Renderer besitzt Weltboss-Slot/Navigation; v483/v7288 Lifecycle konsolidiert; globaler Render-/Postrender-Wrapper entfernt; manueller Endtest offen |
 | Character | Attribute / Inventar / Talente / Materialien | [~] | mehrere globale Render-Hooks entfernt; Material-DOM auf v546 reduziert; kompletter Tab-für-Tab-Pass noch offen |
 | Growroom | Grow / Stock / Genetics / Orders | [x] | Event-Bus/Tab/Care/Hydration/Genetik/Stock/Orders-Lifecycle konsolidiert; manueller Endtest offen |
 | Quests | Quest / Schicht-Arbeiten-Chillen | [x] | Dampf-/Quest-Renderowner konsolidiert, Claim/Event/Reward-Kette vereinheitlicht, Schicht-Timer bereinigt; manueller Endtest offen |
@@ -44,7 +44,7 @@ Die Matrix wird nach jedem großen Cleanup-Batch aktualisiert.
 |---|---|---|---|
 | Tower | Lobby / Ranking / Meta-Aufstieg / Run / Result | [x] | kompletter DOM-/Lifecycle-/Owner-/Timer-/Authority-Pass grün; Einzel-Repair-Skripte und Doppel-Timer retired; manueller Endtest offen |
 | Forge | Dismantle / Craft / Nebelforge | [x] | 3 Tabs aus einem Shell-Owner; Zerlegen + Prismatisch serverautoritativ/idempotent; Nebelschmied-Tab-Injection/Observer retired, Reroll mit persistenter Request-ID; manueller Endtest offen |
-| Worldboss | Entry / Overlay / Combat / Reward | [~] | Overlay/Art auf einen Owner reduziert; kompletter Funktionspass offen |
+| Worldboss | Entry / Overlay / Combat / Reward | [x] | Entry/State/Countdown/Balance/Authority konsolidiert; v113/v114/Home-Click-Layer retired; globale Render-/Polling-Schichten entfernt; manueller Endtest offen |
 | Guildboss | Signup / Fight / Replay / Reward | [x] | Server-Gate: Vortagsbelohnung muss vor neuer Anmeldung abgeholt werden; Visual-/Replay-/Reward-Lifecycle konsolidiert; manueller Endtest offen |
 | Profile Modal | Profil / Equipment / Friend action | [x] | v655 finaler Loader/Renderer, v652 nur Decoration-Observer, Deadlines/Fallbacks erhalten; manueller Endtest offen |
 | Character Creation | Beta Creator / Server-1 Creator | [~] | alte v029/v4131/v4135 Producer retired; kontextabhängige v4136/v7229 Owner bleiben |
