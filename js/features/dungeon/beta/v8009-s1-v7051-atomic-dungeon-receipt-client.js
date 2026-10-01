@@ -244,32 +244,31 @@ async function pendingReceipt(){return rpcTimeout('v7051_pending_dungeon_receipt
 function petLabel(p){if(!p?.drop)return'';return `${String(p.pet_id||'Pet').replaceAll('_',' ')} · ${String(p.quality||'')}`}
 function seedLabel(sr){if(!sr||Number(sr.grow_amount)<=0)return'';return `${String(sr.grow_seed||'Samen').replaceAll('_',' ')} +${Number(sr.grow_amount)||1}`}
 function showReward(b,{recovered=false}={}){
- if(!b?.won)return;
- if(typeof window.v7136ShowServerReward==='function'){
-  try{return window.v7136ShowServerReward('dungeon',b,{recovered})}catch(e){console.warn('[V7.136] dungeon complete reward',e)}
- }
+ const di=Number(b?.dungeon_index)||0,ri=Number(b?.room_index)||0,enemy=currentEnemy(di,ri);
+ const seed=seedLabel(b?.seed_reward),pet=petLabel(b?.pet);
  try{window.v6111Sfx?.('reward')}catch(_){}
- let overlay=null;try{overlay=typeof v247EnsureDungeonReward==='function'?v247EnsureDungeonReward():document.getElementById('v247DungeonReward')}catch(_){}
- if(!overlay){toast(recovered?'Dungeon-Belohnung wiederhergestellt':'Dungeon gewonnen','success',`+${Number(b.xp_awarded)||0} XP · +${Number(b.gold_awarded)||0} Gold`);return}
- const di=Number(b.dungeon_index)||0,ri=Number(b.room_index)||0,enemy=currentEnemy(di,ri),dungeon=(()=>{try{return dungeons?.[di]}catch(_){return null}})();
- const icon=overlay.querySelector('.v231-quest-icon'),title=overlay.querySelector('.v231-quest-title'),name=overlay.querySelector('#v247DungeonRewardName'),xp=overlay.querySelector('#v247DungeonRewardXp'),gold=overlay.querySelector('#v247DungeonRewardGold'),extra=overlay.querySelector('#v247DungeonRewardExtra'),ok=overlay.querySelector('#v247DungeonRewardOk');
- if(icon)icon.textContent=b.boss?'👑':'⚔️';
- if(title)title.textContent=b.boss?'DUNGEON ABGESCHLOSSEN':(recovered?'BELOHNUNG WIEDERHERGESTELLT':'GEGNER BESIEGT');
- if(name)name.textContent=b.boss?`${dungeon?.name||'Dungeon'} · ${enemy?.name||'Boss'}`:`${enemy?.name||'Gegner'} · Dungeon ${di+1}`;
- if(xp)xp.textContent=`+${Math.max(0,Number(b.xp_awarded)||0)}`;
- if(gold)gold.textContent=`+${Math.max(0,Number(b.gold_awarded)||0)}`;
- const rows=[];
- if(b.boss)rows.push('<div class="v247-dungeon-line v247-boss">🟠 Boss-Belohnung · garantiert 1 legendäres Klassenitem</div>');
- if(b.item){try{rows.push(v240ItemRewardHtml(b.item))}catch(_){rows.push(`<div class="v247-dungeon-line">🎁 ${String(b.item.name||'Item gefunden')}</div>`)}}
- else if(!b.boss)rows.push('<div class="v247-dungeon-line">Keine zusätzliche Item-Beute gefunden.</div>');
- if(Number(b.harz_awarded)>0)rows.push(`<div class="v247-dungeon-line v247-harz">🟢 +${Number(b.harz_awarded)} Harz-Taler</div>`);
- if(Number(b.fragments_awarded)>0)rows.push(`<div class="v247-dungeon-line">💠 +${Number(b.fragments_awarded)} Fragmente</div>`);
- const seed=seedLabel(b.seed_reward);if(seed)rows.push(`<div class="v247-dungeon-line">🌰 Samen gefunden: ${seed}</div>`);
- const pet=petLabel(b.pet);if(pet)rows.push(`<div class="v247-dungeon-line">🐾 Pet gefunden: ${pet}</div>`);
- if(b.boss)rows.push('<div class="v247-dungeon-line v247-complete">⛓️ Dungeon abgeschlossen · Eingang dauerhaft versiegelt</div>');
- if(extra)extra.innerHTML=rows.join('');
- if(ok){ok.textContent=b.boss?'Belohnung bestätigen · Zur Dungeon-Karte':'Belohnung bestätigen · Zur 10er-Karte';ok.onclick=()=>{try{v247ReturnAfterDungeonReward?.({dungeonIndex:di,roomIndex:ri,enemy,boss:!!b.boss})}catch(_){overlay.classList.remove('show')}}}
- overlay.classList.add('show');requestAnimationFrame(()=>overlay.classList.add('show'));
+ try{
+  return window.v247ShowDungeonReward?.({
+   dungeonIndex:di,
+   roomIndex:ri,
+   enemy,
+   xp:Math.max(0,Number(b?.xp_awarded)||0),
+   gold:Math.max(0,Number(b?.gold_awarded)||0),
+   item:b?.item||null,
+   harz:Math.max(0,Number(b?.harz_awarded)||0),
+   fragments:Math.max(0,Number(b?.fragments_awarded)||0),
+   seedLabel:seed,
+   petLabel:pet,
+   boss:!!b?.boss,
+   title:recovered?'BELOHNUNG WIEDERHERGESTELLT':undefined,
+   bossRewardText:'🟠 Boss-Belohnung · garantiert 1 legendäres Klassenitem'
+  });
+ }catch(e){
+  console.warn('[V7051] canonical reward modal',e);
+  const overlay=document.getElementById('v247DungeonReward');
+  overlay?.classList.add('show');
+  return false;
+ }
 }
 function showDefeat(b){
  const di=Number(b?.dungeon_index)||0,ri=Number(b?.room_index)||0,enemy=currentEnemy(di,ri);
