@@ -2513,3 +2513,16 @@ Arbeitsmodus:
 - Alle vier externen Dateien mit `node --check` geprüft.
 - QA `V8009_GAMEPLAY_EXTRACTION_BATCH1_QA.json`: vollständig grün.
 - Stable / `index.html`: unverändert.
+
+
+#### Social / Admin / Guide Extraction Batch 1
+- Vier eigenständige Owner 1:1 aus `beta.html` ausgelagert:
+  - `v6144-player-safety-js` → `js/features/social/beta/v8009-s1-v6144-player-safety.js`
+  - `v6346-admin-broadcast-js` → `js/features/admin/beta/v8009-s1-v6346-admin-broadcast.js`
+  - `v4124-social-quest-fix` → `js/features/social/beta/v8009-s1-v4124-social-quest-fix.js`
+  - `v6254-grow-guide` → `js/features/guide/beta/v8009-s1-v6254-grow-guide.js`
+- Zusammen 65.489 Bytes Inline-JS aus dem Monolithen entfernt.
+- Script-IDs und Reihenfolge in `beta.html` beibehalten; nur auf `src=` umgestellt.
+- Alle vier externen Dateien mit `node --check` geprüft.
+- QA `V8009_SOCIAL_ADMIN_EXTRACTION_BATCH1_QA.json`: vollständig grün.
+- Stable / `index.html`: unverändert.
