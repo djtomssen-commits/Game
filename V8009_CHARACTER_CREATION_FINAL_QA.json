@@ -1,0 +1,41 @@
+{
+  "build": "V8.009-CHARACTER-CREATION-FINAL-QA",
+  "checked_at": "2026-10-01",
+  "scope": [
+    "Beta character creation",
+    "Server1 character creation",
+    "account finalizer handoff",
+    "server schema routing",
+    "Server1 launch gate isolation"
+  ],
+  "ownership": {
+    "create_rpc_owner": "v4136 -> v7275CreateCharacterServer",
+    "beta_creator": "v4136 creator",
+    "server1_ui": "v7229 creator UI using v7275CreateCharacterServer",
+    "finalizer_owner": "v4136 v200FinalizeUser wrapper",
+    "server1_access_gate": "v343 server selection"
+  },
+  "checks": {
+    "client_direct_gl_create_character_calls": 1,
+    "v7229_direct_create_rpc_calls": 0,
+    "v7229_finalizer_wrappers": 0,
+    "v7229_creator_polling_loops": 0,
+    "v7229_startup_retry_train": 0,
+    "v029_legacy_text_creator_retired": true,
+    "public_gl_create_character_exists": true,
+    "server1_gl_create_character_exists": true,
+    "beta_result_ready_contract": true,
+    "server1_initialized_normalized_to_ready": true,
+    "schema_routing_server1_before_launch": true,
+    "launch_gate_unchanged": true,
+    "launch_at": "2026-10-02T16:00:00+02:00"
+  },
+  "security": {
+    "public_create_uses_auth_uid": true,
+    "server1_create_uses_auth_uid": true,
+    "names_unique_per_schema": true,
+    "class_locked_after_creation": true
+  },
+  "note": "Server1 remains closed to normal users until the independent v343 launch gate opens. Character-creation cleanup does not alter that gate.",
+  "ok": true
+}
