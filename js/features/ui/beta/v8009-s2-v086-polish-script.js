@@ -165,7 +165,7 @@ function v7215Paint(){
     </div>
    </div>
   </div>
-  ${test&&st.adminTestAllowed?'<div class="v7219-test">🧪 TESTBETRIEB · nur Admin-Testkonto · Google-Testanzeigen · keine echten Werbeeinnahmen</div>':''}
+  ${test?'<div class="v7219-test">🧪 TESTBETRIEB · Google-Testanzeigen · keine echten Werbeeinnahmen</div>':''}
  `;
  document.getElementById('v7215WatchBtn')?.addEventListener('click',()=>void v7215Watch());
 }
