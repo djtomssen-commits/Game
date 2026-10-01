@@ -59046,7 +59046,7 @@ normalize();
   stamp();paint();
   document.addEventListener('DOMContentLoaded',()=>{stamp();paint()},{once:true});
   window.addEventListener('pageshow',()=>{stamp();paint()},{passive:true});
-  [200,800,2200,5000].forEach(ms=>setTimeout(()=>{stamp();paint()},ms));
+  window.addEventListener('growlegends:account-ready',()=>{stamp();paint()},{passive:true});
 })();
 </script>
 
@@ -64829,7 +64829,7 @@ html:not(.v4142-systemtech-admin) #v4102QaButton{display:none!important}
  }catch(e){}
  document.addEventListener('click',e=>{if(e.target instanceof Element&&e.target.closest('#v032MenuToggle,#v141SettingsBtn'))requestAnimationFrame(sync)},true);
  document.addEventListener('DOMContentLoaded',sync,{once:true});window.addEventListener('pageshow',sync,{passive:true});
- setTimeout(sync,0);setTimeout(sync,250);setTimeout(sync,1200);
+ window.addEventListener('growlegends:account-ready',sync,{passive:true});
  function stamp(){}
  stamp();sync();
 })();
@@ -90034,8 +90034,7 @@ window.v6167XpBalanceQA=()=>({
 paint();
 document.addEventListener('DOMContentLoaded',paint,{once:true});
 window.addEventListener('pageshow',paint,{passive:true});
-window.addEventListener('growlegends:account-ready',()=>setTimeout(paint,100));
-[250,1000,3000].forEach(ms=>setTimeout(paint,ms));
+window.addEventListener('growlegends:account-ready',paint,{passive:true});
 })();
 </script>
 <!-- ===== /V4.167 ===== -->
