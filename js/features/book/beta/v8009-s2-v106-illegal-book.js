@@ -150,15 +150,20 @@ claimQuest=function(){
   return result;
 };
 
-/* Generic checks catch level, dungeon completion, gear/gems/enchants, Harz and power. */
-const v106BaseRender=render;
-render=function(){
-  const result=v106BaseRender();
-  
-  v106InstallBook();
-  v106CheckAchievements(true);
-  return result;
-};
-
+/* Generic checks catch level, dungeon completion, gear/gems/enchants, Harz and power.
+   The Illegal Book is mounted only from the Character lifecycle. A global render
+   wrapper used to reinsert it during unrelated renders and made the button jump. */
 setInterval(()=>{if(document.hidden)return;try{v106CheckAchievements(true)}catch(e){}},12000);
-setTimeout(()=>{try{v106InstallBook();v106CheckAchievements(false)}catch(e){}},300);
+
+function v106CharacterBookSync(){
+  if(!document.getElementById('character'))return;
+  try{v106InstallBook();v106CheckAchievements(false)}catch(e){}
+}
+window.addEventListener('growlegends:navigation-open-v7119',e=>{
+  if(String(e?.detail?.id||'')==='character')v106CharacterBookSync();
+},{passive:true});
+window.addEventListener('growlegends:account-ready',()=>{
+  if(document.getElementById('character')?.classList.contains('active'))v106CharacterBookSync();
+},{passive:true});
+document.addEventListener('DOMContentLoaded',v106CharacterBookSync,{once:true});
+if(document.readyState!=='loading')v106CharacterBookSync();
