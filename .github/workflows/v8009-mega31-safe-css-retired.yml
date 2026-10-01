@@ -1,0 +1,23 @@
+name: V8.009 Mega31 Safe CSS Retired Cleanup
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/v8009_mega31_safe_css_retired.py'
+      - '.github/workflows/v8009-mega31-safe-css-retired.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 .github/scripts/v8009_mega31_safe_css_retired.py
+      - run: |
+          git config user.name github-actions
+          git config user.email github-actions@users.noreply.github.com
+          git add beta.html css/features/extracted-safe js/features/legacy/retired-inline V8009_MEGA31_SAFE_CSS_AND_RETIRED_QA.json
+          git commit -m "V8.009 CLEANUP: mega31 safe css extraction and retired scripts" || exit 0
+          git pull --rebase origin main
+          git push
