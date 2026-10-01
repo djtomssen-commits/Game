@@ -2112,3 +2112,21 @@ Arbeitsmodus:
   - 40-ms Combat-Klick-Followup bleibt.
 - QA `V8009_FINAL_BIG_BATCH13_QA.json`: grün.
 - Stable / `index.html`: unverändert.
+
+
+#### Big Batch 14
+- v358 Global Header:
+  - eigenen `v032Go`-Wrapper entfernt;
+  - 300/1200/2500-ms Startup-Paint-Zug entfernt;
+  - direkte Shared-v7119-/pageshow-/account-ready-Hooks übernehmen.
+- zweiter aktiver Header-Fix:
+  - eigenen `v032Go`-Wrapper entfernt;
+  - 250/900/1800-ms Startup-Fix-Zug entfernt;
+  - direkte Shared-v7119-/pageshow-/account-ready-Hooks.
+- v6100 Dock-Normalisierung:
+  - eigenen `v032Go`-Wrapper entfernt;
+  - passive RAF/100-ms Lifecycle-Nachläufer entfernt;
+  - direkte DOMContentLoaded/pageshow/account-ready + Shared-v7119-World-Hooks.
+- Resource-Werte, Gameplay und Navigationssemantik unverändert.
+- QA `V8009_FINAL_BIG_BATCH14_QA.json`: grün.
+- Stable / `index.html`: unverändert.
