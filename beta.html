@@ -91159,7 +91159,7 @@ document.addEventListener('click',e=>{
 },true);
 
 /* V7.308 performance: document-wide worldboss observer retired; ensure/click hooks above own installation. */
-window.addEventListener('pageshow',()=>{if(document.getElementById('v110Overlay')?.classList.contains('show'))setTimeout(install,40)},{passive:true});
+window.addEventListener('pageshow',()=>{if(document.getElementById('v110Overlay')?.classList.contains('show'))install()},{passive:true});
 
 setTimeout(()=>{try{document.getElementById('v110Overlay')?.remove()}catch(_){}},50);
 })();
