@@ -3,7 +3,12 @@ import re,json
 ROOT=Path(".")
 beta=(ROOT/"beta.html").read_text(encoding="utf-8")
 srcs=re.findall(r'<script\b[^>]*\bsrc=["\']([^"\']+)["\']',beta,re.I)
-scope=[s for s in srcs if "/quest/" in s or "/shift/" in s or "quest" in s.lower() or "shift" in s.lower()]
+def in_scope(src):
+ low=src.lower()
+ if "/quest/" in low or "/shift/" in low:return True
+ name=Path(low).name
+ return bool(re.search(r'(^|[-_])(?:elite-)?quest(?:[-_]|\.)|daily-quest|quest-authority|quest-server',name))
+scope=[s for s in srcs if in_scope(s)]
 rows=[]
 for order,src in enumerate(scope):
  p=ROOT/src
