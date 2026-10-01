@@ -3126,3 +3126,31 @@ Arbeitsmodus:
 - Originale Script-Attribute, IDs und Reihenfolge beibehalten; nur um `src=` ergänzt.
 - QA `V8009_FEATURE_EXTRACTION_BATCH25_QA.json`: vollständig grün.
 - Stable / `index.html`: unverändert.
+
+
+#### Feature Extraction Batch 26
+- 20 weitere benannte Owner 1:1 aus `beta.html` ausgelagert:
+  - `v342-event-dampf-300-fix`
+  - `v6341-tower-recovery-live-js`
+  - `gl-playstore-legal-links-js`
+  - `v082-dungeon-balance`
+  - `v6295-harzruferin-corefix-js`
+  - `v302-dungeon-progress-source-fix`
+  - `v387-quest-page-final-script`
+  - `v7094-v6349-production-parity-monitor`
+  - `v6214-legacy-cleanup-authority`
+  - `v129-shop-inventory-character-premium-script`
+  - `v096-quest-xp-star-fix-script`
+  - `v107-book-position-fix-script`
+  - `gl-shop-provenance-guard`
+  - `v7123-quest-instant-open`
+  - `v294-dampf-canonical`
+  - `v6337-item-class-stat-rule`
+  - `v493-growroom-mobile-js`
+  - `v6140-central-event-bus-preboot`
+  - `v659-native-fullscreen-statusbar-js`
+  - `v138-shop-match-inventory-script`
+- Zusammen 33.484 Bytes Inline-JS aus dem Monolithen entfernt.
+- Originale Script-Attribute, IDs und Reihenfolge beibehalten; nur um `src=` ergänzt.
+- QA `V8009_FEATURE_EXTRACTION_BATCH26_QA.json`: vollständig grün.
+- Stable / `index.html`: unverändert.
