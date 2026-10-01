@@ -87,6 +87,17 @@
   }
   function selectedFragments(){return selectedRows().reduce((n,x)=>n+yieldOf(x.it),0)}
   function selectedGoldRefund(){return selectedRows().reduce((n,x)=>n+shopRefund(x.it),0)}
+  function selectionSnapshot(){
+    const rows=selectedRows();
+    return {
+      ids:rows.map(x=>String(x.key)).filter(Boolean),
+      count:rows.length,
+      fragments:rows.reduce((n,x)=>n+yieldOf(x.it),0),
+      goldRefund:rows.reduce((n,x)=>n+shopRefund(x.it),0),
+      valuable:rows.filter(x=>['purple','orange'].includes(q(x.it))).length
+    };
+  }
+  function clearSelection(){selected.clear();listScroll=0}
   function confirmBox(text,opt={}){
     try{if(typeof v115Confirm==='function')return v115Confirm(text,opt)}catch(e){}
     return Promise.resolve(window.confirm(text));
@@ -201,6 +212,7 @@
         <div class="v667-tabs" role="tablist" aria-label="Harzschmiede Bereiche">
           <button type="button" class="v667-tab ${forgeTab==='dismantle'?'active':''}" data-v667-tab="dismantle"><span class="ic">🔨</span><span>ZERLEGEN<small>Ausrüstung in Samenfragmente</small></span></button>
           <button type="button" class="v667-tab ${forgeTab==='craft'?'active':''}" data-v667-tab="craft"><span class="ic">⚒️</span><span>SCHMIEDEN<small>Zufälliger Slot · deine Klasse</small></span></button>
+          ${String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta'?'<button type="button" class="v667-tab" data-v667-tab="nebelforge"><span class="ic">🔥</span><span>NEBELSCHMIED<small>Gold · Werte neu verteilen</small></span></button>':''}
         </div>
         ${forgeTab==='craft'?craftView():dismantleView()}
         <div class="v490-legend v667-legend">
@@ -213,14 +225,21 @@
         </div>
       </div>
     </div>`;
-    sec.querySelectorAll('[data-v667-tab]').forEach(btn=>btn.addEventListener('click',()=>{const next=btn.dataset.v667Tab;if(next!=='dismantle'&&next!=='craft')return;if(next===forgeTab)return;forgeTab=next;renderForge()}));
+    sec.querySelectorAll('[data-v667-tab]').forEach(btn=>btn.addEventListener('click',()=>{
+      const next=btn.dataset.v667Tab;
+      if(next==='nebelforge'){void window.v7240OpenNebelforge?.();return}
+      if(next!=='dismantle'&&next!=='craft')return;
+      document.getElementById('forge')?.classList.remove('v7240-nebel-open');
+      if(next===forgeTab)return;
+      forgeTab=next;renderForge();
+    }));
     const list=sec.querySelector('#v488ForgeInventory');if(list){list.scrollTop=listScroll;list.addEventListener('scroll',()=>listScroll=list.scrollTop,{passive:true})}
     sec.querySelector('#v667SelectAll')?.addEventListener('click',()=>{if(busy)return;listScroll=list?.scrollTop||0;const rows=eligibleRows(),all=rows.length>0&&rows.every(x=>selected.has(x.key));if(all)rows.forEach(x=>selected.delete(x.key));else rows.forEach(x=>selected.add(x.key));renderForge()});
     sec.querySelectorAll('[data-v488-key]').forEach(card=>card.onclick=()=>{const k=card.dataset.v488Key;if(!k)return;listScroll=list?.scrollTop||0;selected.has(k)?selected.delete(k):selected.add(k);renderForge()});
     sec.querySelector('#v488Dismantle')?.addEventListener('click',dismantle);
     sec.querySelector('#v488Craft')?.addEventListener('click',craft);
-    try{if(typeof window.v4103DecorateItemSurfaces==='function')setTimeout(()=>window.v4103DecorateItemSurfaces(),0)}catch(e){}
-    try{if(typeof window.v4112RefreshAllItemArt==='function')setTimeout(()=>window.v4112RefreshAllItemArt(sec),0)}catch(e){}
+    try{if(typeof window.v4103DecorateItemSurfaces==='function')queueMicrotask(()=>window.v4103DecorateItemSurfaces())}catch(e){}
+    try{if(typeof window.v4112RefreshAllItemArt==='function')queueMicrotask(()=>window.v4112RefreshAllItemArt(sec))}catch(e){}
   }
   function burst(kind='dismantle',quality='green'){
     const st=document.getElementById('v488Stage');if(!st)return;
@@ -317,4 +336,6 @@
   window.addEventListener('pageshow',()=>{ensureMenu();ensureHomeLink();paintPrismaticInventory();stamp()},{passive:true});
   /* V8.009: delayed startup repair train retired; direct lifecycle owns UI. */
   window.v488OpenForge=()=>v032Go('forge');window.v488ForgeState=state;window.v488ForgeRender=renderForge;
+  window.v488ForgeSelectionSnapshot=selectionSnapshot;
+  window.v488ForgeClearSelection=()=>{clearSelection();if(document.getElementById('forge')?.classList.contains('active'))renderForge()};
 })();
