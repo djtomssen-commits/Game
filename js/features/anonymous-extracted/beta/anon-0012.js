@@ -78,74 +78,9 @@ function v064Line(x1,y1,x2,y2){
   return `<div class="v064-path" style="left:${x1}%;top:${y1}%;width:${len}%;transform:rotate(${ang}deg)"></div>`;
 }
 
-function v064RenderMap(){
-  const di=v048DungeonIndex();
-  if(di!==0)return false;
-
-  const d=dungeons[0];
-  const current=v048RoomIndex(0);
-  const completed=dungeonCompleted(0);
-
-  const card=document.querySelector('#dungeonMapCard') || document.querySelector('#dungeon .card');
-  if(!card)return false;
-  card.id='dungeonMapCard';
-
-  let paths='';
-  for(let i=0;i<V064_POS.length-1;i++){
-    paths+=v064Line(...V064_POS[i],...V064_POS[i+1]);
-  }
-
-  let nodes='';
-  V064_POS.forEach(([x,y],i)=>{
-    const state=v064NodeState(0,i);
-    const boss=i===9;
-    const clickable=(state==='current'&&!completed);
-    nodes+=`
-      <button type="button"
-        class="v064-node ${state} ${boss?'boss':''}"
-        style="left:${x}%;top:${y}%"
-        data-v064-room="${i}"
-        ${clickable?'':'disabled'}>
-        ${i+1}
-        <span class="v064-node-label">${V064_D1_NAMES[i]}<br>Lv. ${V064_D1_LEVELS[i]}</span>
-      </button>`;
-  });
-
-  card.innerHTML=`
-    <div class="v064-dungeon-head">
-      <div class="v064-dungeon-kicker">Dungeon 1</div>
-      <div class="v064-dungeon-title">Der überwucherte Keller</div>
-      <div class="v064-dungeon-desc">
-        Unter dem Growroom hat sich eine verseuchte Brut ausgebreitet.
-        Je tiefer du vordringst, desto stärker werden die Kreaturen.
-        Die Milbenkönigin wartet im letzten Nest.
-      </div>
-    </div>
-    <div class="v064-map">
-      ${paths}
-      ${nodes}
-    </div>
-    <div class="v064-map-info">
-      <b>Fortschritt ${Math.min(current+1,10)} / 10</b>
-      <div class="tiny" style="margin-top:5px">
-        Aktueller Gegner: ${V064_D1_NAMES[Math.min(current,9)]}<br>
-        Empfohlenes Level: ${V064_D1_LEVELS[Math.min(current,9)]}<br>
-        Boss-Ziel: ungefähr Level 22–25
-      </div>
-    </div>`;
-
-  card.querySelectorAll('[data-v064-room]').forEach(btn=>{
-    btn.onclick=()=>{
-      const i=Number(btn.dataset.v064Room);
-      if(i!==v048RoomIndex(0))return;
-      s.dungeon.view='battle';
-      localStorage.setItem(KEY,JSON.stringify(s));
-      renderDungeon();
-    };
-  });
-
-  return true;
-}
+function v064RenderMap(){return false}
+/* V8.009: retired V064 Dungeon-1 map DOM producer removed.
+   Balance/name helpers above remain active; v261 is the live detail-map owner. */
 
 function v064UpgradeBattle(){
   const di=v048DungeonIndex();
@@ -186,9 +121,5 @@ try{
 
 /* Phase 2 retired: v064 renderDungeon D1 wrapper. The final canonical dungeon owner replaces this render layer. */
 
-const v064BaseRender=render;
-render=function(){
-  return v064BaseRender();
-};
+/* V8.009: retired pass-through global render/init removed. */
 
-try{render();}catch(e){console.error('V4.02 init',e);}
