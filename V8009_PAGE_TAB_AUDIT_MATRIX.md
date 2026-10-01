@@ -29,14 +29,14 @@ Die Matrix wird nach jedem großen Cleanup-Batch aktualisiert.
 | Quests | Quest / Schicht-Arbeiten-Chillen | [x] | Dampf-/Quest-Renderowner konsolidiert, Claim/Event/Reward-Kette vereinheitlicht, Schicht-Timer bereinigt; manueller Endtest offen |
 | Dungeon | Weltkarte / 10er-Detailkarte / Kampf / Reward | [~] | Karten-Owner reduziert, v048 Combat retired, Lifecycle deutlich bereinigt; Combat/Reward-Finalpass offen |
 | Shop | Waffen & Rüstung / Schmuck & Magie | [x][T] | Repaint-Flicker, Legacy-Header, alte Shop-DOM-Producer und delayed Repaints bereinigt; Header vom Nutzer bestätigt |
-| Tütchen-Dealer | Dealer / Rundenfortschritt / Reward | [ ] | kompletter Seitenpass offen |
+| Tütchen-Dealer | Dealer / Rundenfortschritt / Reward | [x] | Admin-only Gate retired; öffentlicher Menü-/Serverzugang, v7215 Reward-/SSV-Authority + v7224 Tageskurve geprüft; manueller Endtest offen |
 | PvP | Hall-/Battle-Lifecycle | [x] | Cooldown ohne Full-Rerender, Legacy-Finish konsolidiert, v7053 Server-Authority + Fallback sauber getrennt; manueller Endtest offen |
 | Guild | Übersicht / Growtasks / Boss / Krieg | [x] | kompletter Struktur-/DOM-/Lifecycle-/Authority-Pass grün; manueller Endtest offen |
 | Hall of Haze | Ranking / Gegner / Profil-Interaktion | [x] | v6145 Ranking-Owner, v649 gezielter Progress-Sync, globale Hall-Repaints entfernt; manueller Endtest offen |
 | Friends | Ranking / Suche | [x] | v4130 finaler Friends/Search-Owner, Presence-Singleflight + 60s Refresh; v333/v382/v383 und globale Social-Renderwrapper retired; manueller Endtest offen |
 | Mail | Inbox / Sent / Compose / Battlelog | [x] | v381 finaler Mail-/Tab-/Compose-Owner, v6200 Battlelog; Recipient-Routing ohne Delay, doppelte Tab-Loader entfernt; manueller Endtest offen |
 | Admin | Overview / Players / Content | [ ] | kompletter 3-Tab-Pass offen |
-| Harz Dealer | Harz / Gold / Frames | [ ] | kompletter 3-Tab-Pass offen |
+| Harz Dealer | Harz / Gold / Frames | [x] | 3 Tabs mit einem Hub-Owner; Harz via Google-Play-Verifikation, Gold + Rahmen serverautoritativ; Frame-Tab-Injection/Wrapper retired; manueller Endtest offen |
 
 ## Zusätzliche Feature-Seiten / Submodule
 
