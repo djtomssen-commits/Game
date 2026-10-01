@@ -1655,3 +1655,51 @@ Der nächste fachliche Schritt ist **nicht HOME-32**, sondern die Restinventur d
   - QA `V8009_QUEST_V7046_RETRY_QA.json`: alle Checks grün.
 
 - Stable / `index.html`: unverändert.
+
+
+### Quest Render-/Guard-/Local-Claim-Kette weiter vereinfacht 01.10.2026
+
+- `v309-distinct-quest-offers.js`
+  - Commit `a29cff01021c9fde2a5cb403460a89ab026654f5`: RAF + 250-ms-Startup-Repaint entfernt.
+  - `v309PaintQuestRoles` als direkter Painter exportiert.
+  - Commit `ee9c63944d6c433acb3dc9fdc7a9c5cd2a575872`: direkter Aufruf aus `v6344`.
+  - QA `V8009_QUEST_V309_DIRECT_PAINT_QA.json`, Bot-Commit `53443ff27e540920d04984b9450c528171d2fedb`, grün.
+
+- `v6344-quest-variety-js.js`
+  - Commit `57a9970bab2c90d4f5ab30be13ff0f371762c689`;
+  - freien 700-ms-Startup-Repaint entfernt;
+  - account-ready/pageshow bleiben Lifecycle-Owner;
+  - first-playable bleibt Asset-Warmup-Owner.
+
+- `v7046-quest-event-duplicate-reward-guard.js`
+  - Ladefolge durch Audit bestätigt: `v6140 -> v7045 -> v7046`;
+  - Commit `1658e28840852548586bc5c1345d4a30d324ef19`: 50/180/500/1400/3200-ms-Startup-Retry-Zug entfernt;
+  - direkter Load/account-ready/DOMContentLoaded/pageshow-Guard bleibt.
+  - QA `V8009_QUEST_V7046_RETRY_QA.json`, Bot-Commit `3aaaefb12864d23e28883ad8c6b5eb8f7626d15b`, grün.
+
+- `v637-quest-exact-dungeon-core.js`
+  - Commit `39c318a128388da851e6fa9f3571d25cd984cb6e`: Click-/pageshow-/RAF-/Startup-Repaint entfernt.
+  - Commit `3addfdea9c59417222ff239c316d3bd17b6d0331`: direkter Sync aus v636 nach Fight-Root-Aufbau und Skill-Chip-Erzeugung.
+  - QA `V8009_QUEST_V637_DIRECT_HOOK_QA.json`, Bot-Commit `988d85fa2f8c8fc4c268baf89c926faa401398b4`, grün.
+
+- `v496-quest-claim-single-payout.js`
+  - Commit `1d2cf4a51a904cb879f84c81018075936c53d4b6`;
+  - `claimQuest`-Wrapper vollständig entfernt;
+  - neue direkte Hooks:
+    - `v496BeginQuestClaim(q)`: Single-Payout-/Inflight-/Already-Paid-Guard;
+    - `v496FinishQuestClaim(txn,paid)`: Lock-Abschluss und UI-State;
+  - `v496RepairStalePaidQuest` bleibt als direkter Pre-Render-Repair.
+- `v235-quest-reward-stability.js`
+  - Commit `546eef58e8d7b8ead2b2fc52c91ad279041315b6`;
+  - finaler Local/Mirror-Claim-Owner ruft v496 Begin/Finish direkt um den Basisclaim;
+  - Duplicate-Claim wird vor Basis-Payout blockiert;
+  - v496 Finish läuft vor v310 Finish.
+- QA `V8009_QUEST_V496_DIRECT_HOOK_QA.json`: alle Checks grün.
+
+- Aktuelle Local/Mirror-Claim-Verantwortung:
+  - `v099`: einzige Basis-`claimQuest`-Payout-Funktion;
+  - `v235`: finaler Local/Mirror-Transaktionsowner;
+  - `v496`: direkter Single-Payout-Hook, kein Wrapper;
+  - `v310`: direkter Elite-Hook, kein Wrapper;
+  - `v4222`: direkter Elite-Panel/Lifecycle-Hook, kein Wrapper.
+- Stable / `index.html`: unverändert.
