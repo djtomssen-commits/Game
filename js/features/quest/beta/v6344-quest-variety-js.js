@@ -276,8 +276,9 @@ document.addEventListener('click',e=>{if(e.target?.closest?.('#quests .v387-refr
 window.addEventListener('growlegends:account-ready',()=>setTimeout(()=>{migrateCurrentOffers();void v7291WarmQuestAssets(liveQuests());if(document.getElementById('quests')?.classList.contains('active'))schedule()},220));
 window.addEventListener('growlegends:first-playable',()=>setTimeout(()=>void v7291WarmQuestAssets(liveQuests()),420),{passive:true});
 window.addEventListener('pageshow',()=>setTimeout(()=>{migrateCurrentOffers();if(document.getElementById('quests')?.classList.contains('active'))schedule()},300),{passive:true});
-setTimeout(()=>{migrateCurrentOffers();if(document.getElementById('quests')?.classList.contains('active'))schedule()},700);
 
+/* V8.009: free-running 700 ms startup repaint retired.
+   account-ready/pageshow own initialization; first-playable owns asset warmup. */
 window.v6344QuestVarietyDiagnostics=()=>({
   version:'V6.347',pool:POOL.length,recent:recent().slice(),
   offers:liveQuests().map(q=>({name:q.name,id:q.v6344QuestId,scene:q.v6344Scene,enemy:q.v6344EnemyName})),
