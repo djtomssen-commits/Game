@@ -32,11 +32,7 @@ function statusReason(reason){
 }
 
 const previousCreator=(typeof window.v029ShowClassChoice==='function'?window.v029ShowClassChoice:(typeof v029ShowClassChoice==='function'?v029ShowClassChoice:null));
-let opening=false,retryTimer=0,lastAttempt=0;
-function schedule(delay=80){
-  clearTimeout(retryTimer);
-  retryTimer=setTimeout(()=>{retryTimer=0;try{showServer1Creator()}catch(e){console.warn('[V7.229] onboarding retry',e)}},Math.max(0,delay));
-}
+let opening=false;
 
 async function postCreateHydrate(){
   try{await window.v7040AuthorityRefresh?.(false)}catch(_){ }
@@ -65,10 +61,8 @@ function showServer1Creator(){
     return true;
   }
   if(!verified(id)){
-    /* The historical finalizer used to call the creator before V4.52 marked the
-       account transition ready. Keep retrying instead of silently discarding it. */
-    if(Date.now()-lastAttempt>30)lastAttempt=Date.now();
-    schedule(120);
+    /* Account-ready / first-playable are the only recovery triggers.
+       Never poll the creator while account verification is incomplete. */
     return false;
   }
   if(opening||document.getElementById('v200CharacterModal'))return true;
@@ -95,7 +89,7 @@ function showServer1Creator(){
       if(moderation?.blocked){status.className='error';status.textContent=moderation.message||'Dieser Charaktername ist nicht zulässig.';input?.focus();return}
       const classId=String(btn.dataset.v4135Class||'');
       if(classId==='summoner'&&btn.classList.contains('v6289-beta-locked'))return;
-      if(!verified(id)||uid()!==id){status.className='error';status.textContent='Account-Prüfung noch nicht abgeschlossen. Bitte kurz erneut versuchen.';schedule(200);return}
+      if(!verified(id)||uid()!==id){status.className='error';status.textContent='Account-Prüfung noch nicht abgeschlossen. Bitte kurz erneut versuchen.';return}
       setButtons(false);status.className='';status.textContent='Name wird geprüft …';
       try{
         if(typeof v200NameAvailable==='function'&&!(await v200NameAvailable(name))){status.className='error';status.textContent='Dieser Charaktername ist bereits vergeben.';setButtons(true);input?.focus();return}
@@ -151,8 +145,8 @@ try{v029ShowClassChoice=window.v029ShowClassChoice}catch(_){ }
 /* v4136 canonical account finalizer owns the onboarding handoff.
    Keep account-ready/first-playable only as bounded recovery signals; no finalizer
    wrapper, pageshow repair, or startup retry train. */
-window.addEventListener('growlegends:account-ready',()=>{if(serverId()==='server1'&&!complete())schedule(80)},{passive:true});
-window.addEventListener('growlegends:first-playable',()=>{if(serverId()==='server1'&&!complete())schedule(80)},{passive:true});
+window.addEventListener('growlegends:account-ready',()=>{if(serverId()==='server1'&&!complete())queueMicrotask(()=>showServer1Creator())},{passive:true});
+window.addEventListener('growlegends:first-playable',()=>{if(serverId()==='server1'&&!complete())queueMicrotask(()=>showServer1Creator())},{passive:true});
 
 window.v7229CharacterBootstrapDiagnostics=()=>({
  version:VERSION.short,server:serverId(),uid:uid(),authReady:window.__V200_AUTH_READY__===true,
