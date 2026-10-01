@@ -1,0 +1,32 @@
+name: V8.009 Feature Extraction Batch 6
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/v8009_feature_extraction_batch6.py'
+      - '.github/workflows/v8009-feature-extraction-batch6.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 .github/scripts/v8009_feature_extraction_batch6.py
+      - run: |
+          node --check js/features/audio/beta/v8009-s1-v6111-global-sound-system.js
+          node --check js/features/items/beta/v8009-s2-v4103-item-ui-consistency.js
+          node --check js/features/account/beta/v8009-s4-v7229-server1-character-bootstrap.js
+          node --check js/features/profile/beta/v8009-s1-v655-player-profile-load-fix.js
+          node --check js/features/items/beta/v8009-s2-v4112-item-art-sweep.js
+          node --check js/features/worldboss/beta/v8009-s1-v110-mystic-worldboss.js
+          node --check js/features/profile/beta/v8009-s1-v210-profile-skills-notifications.js
+          node --check js/features/dungeon/beta/v8009-s3-v7061-dungeon-all-class-parity-shadow.js
+      - run: |
+          git config user.name github-actions
+          git config user.email github-actions@users.noreply.github.com
+          git add beta.html js/features/audio/beta/v8009-s1-v6111-global-sound-system.js js/features/items/beta/v8009-s2-v4103-item-ui-consistency.js js/features/account/beta/v8009-s4-v7229-server1-character-bootstrap.js js/features/profile/beta/v8009-s1-v655-player-profile-load-fix.js js/features/items/beta/v8009-s2-v4112-item-art-sweep.js js/features/worldboss/beta/v8009-s1-v110-mystic-worldboss.js js/features/profile/beta/v8009-s1-v210-profile-skills-notifications.js js/features/dungeon/beta/v8009-s3-v7061-dungeon-all-class-parity-shadow.js V8009_FEATURE_EXTRACTION_BATCH6_QA.json
+          git commit -m "V8.009 FEATURES: extract sixth owner batch" || exit 0
+          git pull --rebase origin main
+          git push
