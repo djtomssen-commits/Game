@@ -17,7 +17,12 @@ const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 const row=d=>Array.isArray(d)?d[0]:d;
 const itemId=it=>String(it?.id||it?.uid||'');
 const mode=()=>{try{return String(window.v7040AuthorityDiagnostics?.()?.domains?.quest||'off')}catch(_){return'off'}};
-const enforced=()=>mode()==='enforce';
+const enforced=()=>{
+ try{
+  if(typeof window.v7081UseAuthority==='function'&&window.v7081UseAuthority('quest'))return true;
+  return mode()==='enforce';
+ }catch(_){return mode()==='enforce'}
+};
 const toast=(title,type='info',detail='')=>{try{return window.v063Toast?.(title,type,detail)}catch(_){try{return window.v115Alert?.(detail||title,title,type)}catch(__){}}};
 
 function ensureShape(){
@@ -443,9 +448,14 @@ if(typeof baseRefill==='function'){
     try{r=await rpcTimeout('v7044_refill_dampf',{p_request_id:req},8000);break}catch(e){C.lastError=String(e?.message||e);if(attempt===0)await sleep(550)}
    }
    if(!r?.ok){toast('Dampf nicht aufgefüllt','warn',String(r?.reason||C.lastError||'Serveraktion fehlgeschlagen.'));return false}
+   invalidateQuestState();
    s.energy=Math.max(0,Number(r.energy)||0);s.harzTaler=Math.max(0,Number(r.harz)||0);
    const day=s.v271DampfRefill?.day||s.v026DampfDay||'';s.v271DampfRefill={day,count:Math.max(0,Number(r.refills)||0)};
-   persistLocal();paintAll();return r;
+   persistLocal();
+   try{window.v069SyncCurrencies?.()}catch(_){}
+   try{window.v271PaintDampf?.()}catch(_){}
+   try{window.renderQuests?.()}catch(_){}
+   return r;
   }finally{C.busy=false}
  };
  w.__v7045Atomic=true;w.__v7045Base=baseRefill;try{v271RefillDampf=w}catch(_){};window.v271RefillDampf=w;try{v026Refill=w}catch(_){};window.v026Refill=w;
