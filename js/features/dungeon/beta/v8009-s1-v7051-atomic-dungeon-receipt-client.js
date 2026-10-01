@@ -246,7 +246,6 @@ function seedLabel(sr){if(!sr||Number(sr.grow_amount)<=0)return'';return `${Stri
 function showReward(b,{recovered=false}={}){
  const di=Number(b?.dungeon_index)||0,ri=Number(b?.room_index)||0,enemy=currentEnemy(di,ri);
  const seed=seedLabel(b?.seed_reward),pet=petLabel(b?.pet);
- try{window.v6111Sfx?.('reward')}catch(_){}
  try{
   return window.v247ShowDungeonReward?.({
    dungeonIndex:di,
