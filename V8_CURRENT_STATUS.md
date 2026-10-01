@@ -3352,3 +3352,22 @@ Arbeitsmodus:
 - Cleanup-Script: `2333506c1c0cf1a2fca2297e8566ec0805994ec3`.
 - Cleanup-Workflow: `482b26e8aa9a97c381fdd9a6c1a9d8194d951820`.
 - Ergebnis-Commit bei letzter Prüfung noch nicht sichtbar.
+
+
+#### Release Marker Cleanup abgeschlossen
+- Ergebnis-Commit: `e86cc756eec5f2fd7a9a2efaee1bda4603d59898`.
+- 8 in der geladenen Beta-Runtime ungenutzte Release-Marker aus `beta.html` und Repo entfernt.
+- 3 Release-Marker bleiben aktiv, weil sie weiterhin Runtime-Werte liefern (`__GROW_LEGENDS_RELEASE__` / Gold-Shop-Release-Metadaten).
+
+#### Attribute-Points Legacy Cleanup
+- Gruppe geprüft:
+  - `v419-attribute-points-display.js`
+  - `v426-attribute-points-live-update.js`
+  - `v434-attribute-points-final-live-sync.js`
+  - `v671-attribute-points-duplicate-remove-js.js`
+- `v419`, `v426` und `v671` bestehen nur noch aus Retirement-Kommentaren und haben keine Runtime-Wirkung.
+- `v4140-attribute-display-owner.js` ist der kanonische Attribut-Renderer.
+- `v434` bleibt vorerst aktiv, weil es zusätzlich Repaints nach `persist()` und externen Punkteänderungen übernimmt; diese Funktion muss zuerst sauber in `v4140` integriert werden.
+- Cleanup für die 3 wirkungslosen Scripts:
+  - Script-Commit `9389d2301fce54eb25c688f2a0a8bc7e78e37993`
+  - Workflow-Commit `76f2fd692a1ef3fea1983cbba5faf07c66eb9038`
