@@ -163,13 +163,7 @@ v110Refresh=function(){
   return r;
 };
 
-const v291BaseRender=render;
-render=function(){
-  const r=v291BaseRender();
-  
-  const line=document.querySelector('#v141VersionLine');
-  return r;
-};
+/* V8.009: obsolete no-op/version global render wrapper retired. */
 
 setTimeout(()=>{
   try{
