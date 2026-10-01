@@ -1,0 +1,27 @@
+name: V8.009 Account Extraction Batch 1
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/v8009_account_extraction_batch1.py'
+      - '.github/workflows/v8009-account-extraction-batch1.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 .github/scripts/v8009_account_extraction_batch1.py
+      - run: |
+          node --check js/features/account/beta/v8009-s1-v200-stable-core.js
+          node --check js/features/account/beta/v8009-s1-v4139-account-switch-authority.js
+          node --check js/features/account/beta/v8009-s1-v4136-account-save-owner.js
+      - run: |
+          git config user.name github-actions
+          git config user.email github-actions@users.noreply.github.com
+          git add beta.html js/features/account/beta/v8009-s1-v200-stable-core.js js/features/account/beta/v8009-s1-v4139-account-switch-authority.js js/features/account/beta/v8009-s1-v4136-account-save-owner.js V8009_ACCOUNT_EXTRACTION_BATCH1_QA.json
+          git commit -m "V8.009 ACCOUNT: extract first owner batch" || exit 0
+          git pull --rebase origin main
+          git push
