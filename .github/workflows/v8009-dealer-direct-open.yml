@@ -1,0 +1,22 @@
+name: V8.009 Dealer Direct Open
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/v8009_dealer_direct_open.py'
+      - '.github/workflows/v8009-dealer-direct-open.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 .github/scripts/v8009_dealer_direct_open.py
+      - run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add beta.html V8009_DEALER_DIRECT_OPEN_QA.json
+          git commit -m "V8.009 DEALER: retire open RAF repaint" || exit 0
+          git push
