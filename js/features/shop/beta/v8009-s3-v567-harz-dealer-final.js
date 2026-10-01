@@ -16,18 +16,24 @@
      shell=document.createElement('div');shell.className='v567-shell';
      shell.innerHTML=`
        <div class="v567-titlebar"><h1>HARZ &amp; GOLD DEALER</h1></div>
-       <div class="v567-hero"><div class="v567-hero-art"></div><div class="v567-hero-copy"><div class="v567-kicker">💎 PREMIUM-WÄHRUNG</div><div class="v567-tag">Deine Abkürzung zu mehr Fortschritt.</div><div class="v567-desc">Harz-Taler geben dir zusätzliche Möglichkeiten im Spiel. Wähle das Paket, das zu dir passt – größere Pakete bieten mehr Harz für dein Geld.</div><div class="v567-balance">💎 Dein Bestand: <strong id="v567Balance">0</strong> Harz-Taler</div></div></div>
+       <div class="v567-hero"><div class="v567-hero-art"></div><div class="v567-hero-copy"><div class="v567-kicker">💎 PREMIUM-WÄHRUNG</div><div class="v567-tag">Deine Abkürzung zu mehr Fortschritt.</div><div class="v567-desc">Harz-Taler geben dir zusätzliche Möglichkeiten im Spiel. Wähle das Paket, das zu dir passt – größere Pakete bieten mehr Harz für dein Geld.</div><div class="v567-balance"><span>💎 Dein Bestand</span><strong id="v567Balance">0</strong></div></div></div>
        <div class="v567-benefits"><div class="v567-benefit"><i>⚡</i><div><b>Sofort einsetzbar</b><span>Dungeon-Kämpfe und Komfortfunktionen.</span></div></div><div class="v567-benefit"><i>🛡️</i><div><b>Fair & transparent</b><span>Paket, Preis und Wert klar sichtbar.</span></div></div><div class="v567-benefit"><i>💚</i><div><b>Unterstützt das Spiel</b><span>Premium-Käufe unterstützen die Weiterentwicklung.</span></div></div><div class="v567-benefit"><i>♛</i><div><b>Besserer Wert</b><span>Größere Pakete bieten mehr Harz pro Euro.</span></div></div></div>
        <div class="v567-content"><div class="v567-section-title">Beliebte Angebote</div><div class="v567-featured" id="v567Featured"></div><div class="v567-section-title">Harz-Taler Pakete</div><div class="v567-pack-grid" id="v567Packs"></div><div class="v567-info"><div><b>💎 Wofür Harz-Taler?</b><span>Zusätzliche Dungeon-Versuche, Shop-Komfort und weitere Premium-Funktionen.</span></div><div><b>🔒 Zahlung</b><span>Sichere Zahlung über Google Play. Harz-Taler werden erst nach serverseitig bestätigtem Kauf gutgeschrieben.</span></div><div><b>❓ Hinweis</b><span>Käufe werden deinem angemeldeten Grow-Legends-Account gutgeschrieben.</span></div></div><div class="v567-thanks">💚 Vielen Dank für deine Unterstützung – gemeinsam wächst Grow Legends weiter.</div></div>`;
      screen.appendChild(shell);
    }
    const packs=typeof V322_HARZ_PACKAGES!=='undefined'?V322_HARZ_PACKAGES:[];
    if(packs.length){
-     shell.querySelector('#v567Featured').innerHTML=feature(packs[0],0,'Starter Paket',IMG_STARTER)+feature(packs[4],4,'Abenteurer Paket',IMG_ADV,'purple','BESTSELLER')+feature(packs[9],9,'Legenden Paket',IMG_LEGEND,'gold','BESTER WERT');
-     shell.querySelector('#v567Packs').innerHTML=LOWER.map(i=>pack(packs[i],i)).join('');
-     shell.querySelectorAll('[data-v567-buy]').forEach(btn=>btn.onclick=()=>buy(Number(btn.dataset.v567Buy)));
+     const sig=packs.map(p=>[p?.harz,p?.price,p?.label||''].join(':')).join('|');
+     if(shell.dataset.v567PackSig!==sig){
+       shell.querySelector('#v567Featured').innerHTML=feature(packs[0],0,'Starter Paket',IMG_STARTER)+feature(packs[4],4,'Abenteurer Paket',IMG_ADV,'purple','BESTSELLER')+feature(packs[9],9,'Legenden Paket',IMG_LEGEND,'gold','BESTER WERT');
+       shell.querySelector('#v567Packs').innerHTML=LOWER.map(i=>pack(packs[i],i)).join('');
+       shell.querySelectorAll('[data-v567-buy]').forEach(btn=>btn.onclick=()=>buy(Number(btn.dataset.v567Buy)));
+       shell.dataset.v567PackSig=sig;
+     }
    }
-   const bal=shell.querySelector('#v567Balance');if(bal)bal.textContent=Math.max(0,Number(s.harzTaler)||0).toLocaleString('de-DE');
+   const bal=shell.querySelector('#v567Balance');
+   const nextBalance=Math.max(0,Number(s.harzTaler)||0).toLocaleString('de-DE');
+   if(bal&&bal.textContent!==nextBalance)bal.textContent=nextBalance;
  }
  window.v567EnsureDealer=ensure;
  window.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')==='harzDealer')ensure()},{passive:true});
