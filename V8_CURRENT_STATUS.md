@@ -4705,3 +4705,12 @@ Arbeitsmodus:
 - Public + Server1 erhalten 3 Sekunden sichere Starttoleranz nur am unteren Pflegefenster-Rand; das obere Fenster/Verpassen bleibt unverändert.
 - Migration: `fix_grow_care_first_tap_boundary`.
 - Verifiziert: public und server1 enthalten die neue First-Tap-Toleranz.
+
+
+#### Inventar – Besser/Schlechter-Vergleich wiederhergestellt
+- Fehlerbild: In den Inventar-Itemkarten fehlten die sichtbaren Besser/Schlechter/Gleich/Freier-Slot-Vergleichsindikatoren.
+- Ursache: Beim letzten Character-Owner-Cleanup wurde v470 als Vergleichs-Owner beibehalten, aber der kanonische v459-Inventar-Refresh rief `v470PaintInventoryComparisons()` nicht mehr auf.
+- Direkt im bestehenden v459-Inventory-Refresh repariert, **kein neuer Patch-/Observer-Layer**.
+- Nach `compactInventory`, Multisell, Auto-Bar und v533-Layout wird jetzt wieder der kanonische v470-Vergleich gemalt.
+- Geänderte Datei: `js/features/character/beta/v8009-s2-v459-character-hub.js`
+- Commit: `9d297f10b065cabe68c8a02f9358624991449873`
