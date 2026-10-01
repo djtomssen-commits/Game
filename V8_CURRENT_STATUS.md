@@ -2563,3 +2563,16 @@ Arbeitsmodus:
 - Alle vier externen Dateien mit `node --check` geprüft.
 - QA `V8009_SYSTEM_UI_EXTRACTION_BATCH1_QA.json`: vollständig grün.
 - Stable / `index.html`: unverändert.
+
+
+#### Feature Extraction Batch 2
+- Vier weitere große Feature-Owner 1:1 aus `beta.html` ausgelagert:
+  - `v086-polish-script` → `js/features/ui/beta/v8009-s2-v086-polish-script.js`
+  - `v457-level300-endgame` → `js/features/endgame/beta/v8009-s1-v457-level300-endgame.js`
+  - `v4154-class-balance-item-variety` → `js/features/character/beta/v8009-s4-v4154-class-balance-item-variety.js`
+  - `v6282-grow-economy-js` → `js/features/grow/beta/v8009-s2-v6282-grow-economy.js`
+- Zusammen 65.884 Bytes Inline-JS aus dem Monolithen entfernt.
+- Script-IDs und Reihenfolge in `beta.html` beibehalten; nur auf `src=` umgestellt.
+- Alle vier externen Dateien mit `node --check` geprüft.
+- QA `V8009_FEATURE_EXTRACTION_BATCH2_QA.json`: vollständig grün.
+- Stable / `index.html`: unverändert.
