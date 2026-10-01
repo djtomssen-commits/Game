@@ -2080,3 +2080,16 @@ Arbeitsmodus:
   - direkte Admin-Check-, Settings-Build-, DOM/pageshow/account-ready-Hooks bleiben.
 - QA `V8009_FINAL_BIG_BATCH11_QA.json`: grün.
 - Stable / `index.html`: unverändert.
+
+
+#### Big Batch 12
+- v477 Home-Exposure:
+  - 150/800/1800-ms Startup-Retry-Zug entfernt;
+  - direkte account-ready + Shared-v7119-World-Hooks ergänzt.
+- v7117 Dealer-Hub:
+  - 50/300/900-ms Startup-Sync entfernt;
+  - RAF-Nachmaler aus `openHarz()` / `openGold()` entfernt;
+  - Harz-/Gold-Dealer synchronisieren direkt über `growlegends:navigation-open-v7119`.
+- Menü-Owner und gemeinsamer v7119-Navigation-Owner bleiben unverändert.
+- QA `V8009_FINAL_BIG_BATCH12_QA.json`: grün.
+- Stable / `index.html`: unverändert.
