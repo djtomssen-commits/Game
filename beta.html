@@ -3,45 +3,7 @@
 <head>
 <script>window.GROW_RELEASE_CHANNEL='beta';</script>
 <script id="v8008-beta-phase3c1-marker">window.GROW_BETA_TECH_BUILD='V8.009-T2';</script>
-<script id="v7233-server-scoped-storage">
-(()=>{
- 'use strict';
- if(window.__V7233_SERVER_SCOPED_STORAGE__)return;
- window.__V7233_SERVER_SCOPED_STORAGE__=true;
- const P=Storage.prototype;
- const g=P.getItem, s=P.setItem, r=P.removeItem;
- const LAUNCH=Date.parse('2026-10-02T16:00:00+02:00');
- const exact=new Set([
-  'growLegendsV020','growLegendsV016','growLegendsV015','growLegendsV014','growLegendsV013','growLegendsV0121','growLegendsV012','growLegendsV011','growLegendsV010','growLegendsV09','growLegendsV08','growLegendsV07','growLegendsV06','growLegendsV05','growLegendsV04','growLegendsV03','growLegendsV02','growLegendsV01',
-  'grow_idle_save_v1','growLegendsSave','growlegends_quest_claim_locks_v496','growLegends_v7037_dungeonLootPending','growlegends_adbag_v1','growLegendsGrowPlantsV498','growLegendsV210Notifications'
- ]);
- const prefixes=[
-  'growLegendsAccountSave:','growLegendsBestSave:','growLegendsProgressFloor:',
-  'growLegendsCharacterIdentity:','growLegendsCharacterLockV4139:','growLegendsAccountTransitionBackup:',
-  'growLegendsGrowPlantsV498:','growLegendsGrowStateV499:','growLegendsCareAuthorityV4120:',
-  'growLegendsCareLedgerV4114:','growLegendsV210Notifications:','growLegendsLastVisit:',
-  'growLegendsV486AutoPending:','growLegendsV6200BattleLog:'
- ];
- const raw=k=>{try{return g.call(localStorage,k)}catch(_){return null}};
- function sid(){
-  if(String(window.GROW_RELEASE_CHANNEL||'stable')==='beta')return 'beta';
-  if(Date.now()>=LAUNCH)return 'server1';
-  const x=raw('growLegendsSelectedServer')||raw('growLegends:selectedServer')||raw('growLegends:server')||'beta';
-  return String(x)==='server1'?'server1':'beta';
- }
- function scoped(k){
-  k=String(k??'');
-  if(sid()!=='server1')return k;
-  if(/:server:(?:beta|server1)$/.test(k))return k;
-  if(exact.has(k)||prefixes.some(p=>k.startsWith(p)))return k+':server:server1';
-  return k;
- }
- P.getItem=function(k){return this===localStorage?g.call(this,scoped(k)):g.call(this,k)};
- P.setItem=function(k,v){return this===localStorage?s.call(this,scoped(k),v):s.call(this,k,v)};
- P.removeItem=function(k){return this===localStorage?r.call(this,scoped(k)):r.call(this,k)};
- window.v7233StorageDiagnostics=()=>({server:sid(),isolated:sid()==='server1',patterns:exact.size+prefixes.length,mainKey:scoped('growLegendsV020'),growKey:scoped('grow_idle_save_v1')});
-})();
-</script>
+<script id="v7233-server-scoped-storage" src="js/features/account/beta/v8009-s15-v7233-server-scoped-storage.js"></script>
 <script id="v4131-version-source" src="js/features/system/beta/v8009-s13-v4131-version-source.js"></script>
 <script id="v7101-public-profile-coalescer" src="js/features/profile/beta/v8009-s2-v7101-public-profile-coalescer.js"></script>
 
@@ -9526,108 +9488,7 @@ try{v087FixMainAttributeBadge()}catch(e){console.error('V4.02 main attribute fix
 .v090-shop-compare.empty{border-color:#74683f;color:#e2cf85}
 </style>
 
-<script id="v090-shop-comparison-fix-script">
-/* ===== V4.02 comparison on the ACTUAL v057 shop renderer ===== */
-
-function v090Score(it){
-  if(!it)return 0;
-
-  const weights={
-    staerke:1,
-    geschick:1,
-    intelligenz:1,
-    ausdauer:1,
-    glueck:.8,
-
-  };
-
-  let total=0;
-  Object.entries(it.bonus||{}).forEach(([k,v])=>{
-    total+=(Number(v)||0)*(weights[k]??1);
-  });
-
-  if(it.gem?.value)total+=(Number(it.gem.value)||0);
-
-  const enchants=Array.isArray(it.enchants)
-    ? it.enchants
-    : it.enchant ? [it.enchant] : [];
-
-  enchants.forEach(e=>{
-    const v=Number(e?.value)||0;
-    if(e?.effect==='primaryPct')total+=v*1.4;
-    else if(e?.effect==='crit')total+=v;
-    else if(e?.effect==='damageReduce')total+=v*1.1;
-    else total+=v*.8;
-  });
-
-  return Math.round(total*10)/10;
-}
-
-function v090ComparisonHtml(it){
-  if(!it?.slot)return '';
-
-  if(it.classId && it.classId!==s.playerClass){
-    return `<div class="v090-shop-compare worse">Nicht für deine Klasse</div>`;
-  }
-
-  const old=s.equipment?.[it.slot];
-
-  if(!old){
-    return `<div class="v090-shop-compare empty">▲ Slot leer · Verbesserung</div>`;
-  }
-
-  const neu=v090Score(it);
-  const alt=v090Score(old);
-  const diff=Math.round((neu-alt)*10)/10;
-
-  if(diff>0){
-    return `<div class="v090-shop-compare better">▲ BESSER · +${diff} Gesamtwerte</div>`;
-  }
-
-  if(diff<0){
-    return `<div class="v090-shop-compare worse">▼ SCHLECHTER · ${diff} Gesamtwerte</div>`;
-  }
-
-  return `<div class="v090-shop-compare same">= GLEICHWERTIG</div>`;
-}
-
-/* Override the actual offer renderer used by V4.02+ */
-v057OfferHtml=function(it,i,kind){
-  const info=it.type==='gem'
-    ? `💎 +${it.value} ${v030StatLabel(it.stat)}`
-    : it.type==='scroll'
-      ? `✨ ${v030EffectLabel(it.effect,it.value)}`
-      : itemBonus(it);
-
-  const comparison=(it.type==='gem'||it.type==='scroll')
-    ? ''
-    : v090ComparisonHtml(it);
-
-  return `
-    <div class="shop-item ${it.rarity||''}">
-      <div class="shop-icon">${it.icon||'🎁'}</div>
-      <h3>${it.name}</h3>
-      <div class="${qualityMeta(it.quality||'gray').color}">
-        ${qualityMeta(it.quality||'gray').label}
-      </div>
-      <div class="tiny" style="margin-top:5px">${info}</div>
-      ${comparison}
-      <div class="price" style="margin:7px 0">💰 ${it.price} Gold</div>
-      <button type="button" class="btn v057-buy" data-kind="${kind}" data-index="${i}">
-        Kaufen
-      </button>
-    </div>`;
-};
-
-const v090BaseRender=render;
-render=function(){
-  v090BaseRender();
-  
-  try{renderShop()}catch(e){console.error('V4.02 shop comparison',e)}
-};
-
-try{renderShop()}catch(e){}
-</script>
+<script id="v090-shop-comparison-fix-script" src="js/features/shop/beta/v8009-s10-v090-shop-comparison-fix.js"></script>
 
 
 <script id="v092-dampf-regen-fix">
@@ -10120,90 +9981,7 @@ addXp=function(n){
 }
 </style>
 
-<script id="v102-levelup-observer">
-/* ===== V4.02 robust level-up detection =====
-   Tracks level changes after render, independent of which XP code path caused them.
-*/
-let v102ObservedLevel=Number(s.level)||1;
-let v102LevelPopupBusy=false;
-let v102PendingLevelups=[];
-
-function v102QueueLevelUp(oldLevel,newLevel){
-  if(newLevel<=oldLevel)return;
-  v102PendingLevelups.push({oldLevel,newLevel});
-  v102ShowNextLevelUp();
-}
-
-function v102ShowNextLevelUp(){
-  if(v102LevelPopupBusy || !v102PendingLevelups.length)return;
-  v102LevelPopupBusy=true;
-
-  const {oldLevel,newLevel}=v102PendingLevelups.shift();
-  const gainedLevels=Math.max(1,newLevel-oldLevel);
-  const skillGain=Math.floor(newLevel/2)-Math.floor(oldLevel/2);
-
-  document.querySelectorAll('.v101-levelup,.v102-levelup-overlay').forEach(x=>x.remove());
-
-  const overlay=document.createElement('div');
-  overlay.className='v102-levelup-overlay';
-  overlay.innerHTML=`
-    <div class="v102-levelup-card">
-      <div class="v102-levelup-title">LEVEL UP!</div>
-      <div class="v102-levelup-level">Level ${oldLevel} → ${newLevel}</div>
-      <div class="v102-levelup-reward">
-        ${skillGain>0?`+${skillGain} Talentpunkt${skillGain===1?'':'e'} · `:''}
-        Neue Stärke für deinen Helden
-      </div>
-    </div>`;
-  document.body.appendChild(overlay);
-
-  if(typeof v063Toast==='function'){
-    setTimeout(()=>{
-      try{v063Toast('🎉 Level Up!','success',`Du bist jetzt Level ${newLevel}.`)}catch(e){}
-    },250);
-  }
-
-  setTimeout(()=>{
-    overlay.remove();
-    v102LevelPopupBusy=false;
-    v102ShowNextLevelUp();
-  },3200);
-}
-
-function v102DetectLevelChange(){
-  const current=Number(s.level)||1;
-  if(current>v102ObservedLevel){
-    const old=v102ObservedLevel;
-    v102ObservedLevel=current;
-    v102QueueLevelUp(old,current);
-  }else if(current<v102ObservedLevel){
-    /* Reset/new game/cloud load: sync silently, no fake level-up. */
-    v102ObservedLevel=current;
-  }
-}
-
-/* Last render wrapper: detect AFTER every older render path has finished. */
-const v102BaseRender=render;
-render=function(){
-  const before=Number(s.level)||1;
-  const result=v102BaseRender();
-
-  
-
-  requestAnimationFrame(()=>{
-    try{v102DetectLevelChange()}catch(e){console.error('V4.02 level detection',e)}
-  });
-
-  return result;
-};
-
-/* Extra observer for code paths that change level and do not call render immediately. */
-setInterval(()=>{
-  if(document.hidden)return;
-  try{v102DetectLevelChange()}catch(e){}
-},1000);
-
-</script>
+<script id="v102-levelup-observer" src="js/features/progress/beta/v8009-s4-v102-levelup-observer.js"></script>
 
 
 <style id="v103-admin-player-editor">
@@ -14058,84 +13836,7 @@ setTimeout(v138PaintMerchant,160);
 }
 </style>
 
-<script id="v139-real-shop-rarity-fix-script">
-/* Rendert direkt die Funktion, die der aktuelle Händler wirklich benutzt. */
-function v139QualityClass(q){
-  return {
-    gray:'v139-gray',
-    green:'v139-green',
-    blue:'v139-blue',
-    purple:'v139-purple',
-    orange:'v139-orange',
-    cyan:'v139-cyan'
-  }[q]||'v139-gray';
-}
-
-function v139ActualOffer(it,i,kind){
-  const q=it?.quality||'gray';
-  const info=it.type==='gem'
-    ? `💎 +${it.value} ${v030StatLabel(it.stat)}`
-    : it.type==='scroll'
-      ? `✨ ${v030EffectLabel(it.effect,it.value)}`
-      : itemBonus(it);
-
-  const comparison=(it.type==='gem'||it.type==='scroll')
-    ? ''
-    : (typeof v090ComparisonHtml==='function' ? v090ComparisonHtml(it) :
-       typeof v089ShopComparison==='function' ? v089ShopComparison(it) : '');
-
-  const qm=qualityMeta(q);
-
-  return `
-    <div class="shop-item ${it.rarity||''} ${v139QualityClass(q)}">
-      <div class="shop-icon">${it.icon||'🎁'}</div>
-      <h3>${it.name}</h3>
-      <div class="v139-quality">${qm.label}</div>
-      <div class="tiny" style="margin-top:5px">${info}</div>
-      ${comparison}
-      <div class="price" style="margin:7px 0">💰 ${it.price} Gold</div>
-      <button type="button" class="btn v057-buy" data-kind="${kind}" data-index="${i}">Kaufen</button>
-    </div>`;
-}
-
-/* Override NACH V4.02: das ist die tatsächlich verwendete Funktion. */
-v057OfferHtml=v139ActualOffer;
-
-/* Auch ältere Renderer, falls irgendwo noch benutzt. */
-v030Offer=function(it,fn,i){
-  const q=it?.quality||'gray';
-  const info=it.type==='gem'
-    ? `💎 +${it.value} ${v030StatLabel(it.stat)}`
-    : it.type==='scroll'
-      ? `✨ ${v030EffectLabel(it.effect,it.value)}`
-      : itemBonus(it);
-  const comparison=(it.type==='gem'||it.type==='scroll')?'':(typeof v090ComparisonHtml==='function'?v090ComparisonHtml(it):'');
-  return `
-    <div class="shop-item ${it.rarity||''} ${v139QualityClass(q)}">
-      <div class="shop-icon">${it.icon||'🎁'}</div>
-      <h3>${it.name}</h3>
-      <div class="v139-quality">${qualityMeta(q).label}</div>
-      <div class="tiny" style="margin-top:5px">${info}</div>
-      ${comparison}
-      <div class="price" style="margin:7px 0">💰 ${it.price} Gold</div>
-      <button class="btn" style="width:100%;padding:8px" onclick="${fn}(${i})">Kaufen</button>
-    </div>`;
-};
-
-function v139RepaintShop(){
-  try{renderShop()}catch(e){console.error('V4.02 shop repaint',e)}
-  
-}
-
-const v139BaseRender=render;
-render=function(){
-  const r=v139BaseRender();
-  if(document.querySelector('#shop')?.classList.contains('active'))requestAnimationFrame(v139RepaintShop);
-  return r;
-};
-
-setTimeout(v139RepaintShop,180);
-</script>
+<script id="v139-real-shop-rarity-fix-script" src="js/features/shop/beta/v8009-s10-v139-real-shop-rarity-fix.js"></script>
 
 
 <style id="v141-settings-menu">
@@ -14467,81 +14168,7 @@ setTimeout(v142PositionSettings,250);
 <script id="v200-stable-core" src="js/features/account/beta/v8009-s1-v200-stable-core.js"></script>
 
 
-<script id="v201-startpage-fix">
-/* ===== V4.02 Startseite: vorhandene Navigations-/Dashboard-Kette benutzen ===== */
-
-function v200OpenHome(){
-  try{
-    /*
-      v032Go('world') ist die zentrale Navigation des Spiels.
-      Daran hängen bereits:
-      - v085 aktuelles Startseiten-Dashboard
-      - v086 Menüstatus
-      - spätere Worldboss-/Event-Erweiterungen
-    */
-    if(typeof v032Go==='function'){
-      v032Go('world');
-    }else{
-      document.querySelectorAll('.screen').forEach(el=>el.classList.remove('active'));
-      document.querySelector('#world')?.classList.add('active');
-    }
-
-    /*
-      Sicherheit: Dashboard nach der Navigation noch einmal installieren.
-      Einige ältere Render-Wrapper können den Inhalt während desselben
-      Renderdurchlaufs ersetzen.
-    */
-    if(typeof v085InstallWorld==='function'){
-      v085InstallWorld();
-    }
-
-    requestAnimationFrame(()=>{
-      try{
-        const world=document.querySelector('#world');
-        if(!world)return;
-
-        if(!world.classList.contains('active')){
-          document.querySelectorAll('.screen').forEach(el=>el.classList.remove('active'));
-          world.classList.add('active');
-        }
-
-        if(
-          typeof v085InstallWorld==='function' &&
-          !world.querySelector('.v085-dashboard')
-        ){
-          v085InstallWorld();
-        }
-
-        /* spätere Worldboss-Erweiterung auf bestehendem Dashboard nachziehen */
-        try{
-          if(typeof v111InstallWorldBossCard==='function'){
-            v111InstallWorldBossCard();
-          }
-        }catch(e){}
-
-      }catch(e){
-        console.error('V4.02 Startseite',e);
-      }
-    });
-
-  }catch(e){
-    console.error('V4.02 Startseite öffnen',e);
-  }
-}
-
-function v201EnsureHome(){
-  try{
-    const world=document.querySelector('#world');
-    if(!world)return false;
-    if(typeof v085InstallWorld==='function'&&!world.querySelector('.v085-dashboard'))v085InstallWorld();
-    try{if(typeof v111InstallWorldBossCard==='function')v111InstallWorldBossCard()}catch(e){}
-    return true;
-  }catch(e){console.error('V4.02 world ensure',e);return false}
-}
-window.v201EnsureHome=v201EnsureHome;
-window.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')==='world')v201EnsureHome()},{passive:true});
-window.addEventListener('pageshow',()=>{if(document.querySelector('#world')?.classList.contains('active'))v201EnsureHome()},{passive:true});
-</script>
+<script id="v201-startpage-fix" src="js/features/world/beta/v8009-s3-v201-startpage-fix.js"></script>
 
 
 <link id="v204-pvp-system-style" rel="stylesheet" href="css/features/pvp/beta/v8009-s1-v204-pvp-system-style.css">
@@ -16311,134 +15938,7 @@ body > #v141SettingsMenu #v141Delete{
 <script id="v244-dungeon-detail-map-final" src="js/features/dungeon/beta/v8009-s9-v244-dungeon-detail-map-final.js"></script>
 
 
-<script id="v245-dungeon2-balance-final">
-/* ===== V4.02 Dungeon 2 rebalance =====
-   Goal:
-   - Lv. 23: first rooms possible, but no easy five-room sweep
-   - middle rooms require noticeable gear/skill progression
-   - final rooms aimed at high 20s / low 30s
-   - boss aimed around Lv. 32–33
-*/
-
-const V245_D2_RECOMMENDED=[
-  23,24,25,26,27,28,29,30,31,33
-];
-
-const v245BaseRecommendedLevel=v025RecommendedLevel;
-v025RecommendedLevel=function(dungeonIndex,roomIndex){
-  dungeonIndex=Number(dungeonIndex)||0;
-  roomIndex=Math.max(
-    0,
-    Math.min(9,Number(roomIndex)||0)
-  );
-
-  if(dungeonIndex===1){
-    return V245_D2_RECOMMENDED[roomIndex];
-  }
-
-  return v245BaseRecommendedLevel(
-    dungeonIndex,
-    roomIndex
-  );
-};
-
-
-const v245BaseEnemyStats=v025EnemyStats;
-v025EnemyStats=function(dungeonIndex,roomIndex,enemy){
-  dungeonIndex=Number(dungeonIndex)||0;
-  roomIndex=Math.max(
-    0,
-    Math.min(9,Number(roomIndex)||0)
-  );
-
-  if(dungeonIndex!==1){
-    return v245BaseEnemyStats(
-      dungeonIndex,
-      roomIndex,
-      enemy
-    );
-  }
-
-  const rec=V245_D2_RECOMMENDED[roomIndex];
-  const boss=
-    roomIndex===9 ||
-    !!enemy?.boss;
-
-  /*
-    V4.02 was too forgiving:
-      hpBase     = 125 + rec*23 + room*18
-      attackBase = 12  + rec*3.9 + room*1.15
-
-    V4.02 deliberately raises both durability and incoming damage,
-    with the curve increasing further in later rooms.
-  */
-  const hpBase=
-    170 +
-    rec*30 +
-    roomIndex*26;
-
-  const attackBase=
-    18 +
-    rec*4.7 +
-    roomIndex*1.7;
-
-  const roomHpScale=
-    1.14 +
-    roomIndex*.025;
-
-  const roomAttackScale=
-    1.12 +
-    roomIndex*.018;
-
-  const hp=Math.round(
-    hpBase *
-    roomHpScale *
-    (boss?1.55:1)
-  );
-
-  const attack=Math.round(
-    attackBase *
-    roomAttackScale *
-    (boss?1.30:1)
-  );
-
-  return {
-    rec,
-    hp,
-    attack
-  };
-};
-
-
-/*
-  Keep the visible 10-room map aligned with the actual combat values.
-  V4.02 already calls v025RecommendedLevel(), so repainting is enough.
-*/
-setTimeout(()=>{
-  try{
-    if(
-      document.querySelector('#dungeon')?.classList.contains('active') &&
-      Number(s.dungeon?.selected)===1
-    ){
-      if(
-        s.dungeon?.layer==='dungeon' &&
-        s.dungeon?.view==='map'
-      ){
-        v244RenderSelectedDungeonMap();
-      }else if(
-        s.dungeon?.view==='battle'
-      ){
-        renderDungeon();
-      }
-    }
-  }catch(e){}
-
-  document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V4.29 Stable');
-
-  const line=document.querySelector('#v141VersionLine');
-},540);
-</script>
+<script id="v245-dungeon2-balance-final" src="js/features/dungeon/beta/v8009-s16-v245-dungeon2-balance-final.js"></script>
 
 
 <style id="v246-dungeon-reward-card-style">
@@ -17592,84 +17092,7 @@ header .resource-stats .v277-dampf-card .pill{
 }
 </style>
 
-<script id="v278-resource-stability-script">
-/* ===== V4.02 resource card stability =====
-   Fixes:
-   1) Harz-Taler uses the same left-icon/right-value layout as the other cards.
-   2) Remove duplicated Dampf event labels.
-   3) Re-assert resource card DOM state after scroll/repaint without rebuilding cards.
-*/
-
-function v278NormalizeDampfBadges(){
-  const card=document.querySelector('#energy')?.closest('.stat');
-  if(!card)return;
-
-  /* Keep exactly one dedicated V4.02 chip. */
-  const own=[...card.querySelectorAll('.v277-dampf-event-chip')];
-  own.slice(1).forEach(x=>x.remove());
-
-  /* Remove older visual duplicates that contain the same event text. */
-  [...card.querySelectorAll('*')].forEach(el=>{
-    if(el.classList.contains('v277-dampf-event-chip'))return;
-    const t=(el.textContent||'').trim().replace(/\s+/g,' ');
-    if(/EVENT\s*300\/300/i.test(t) && el.children.length===0){
-      el.remove();
-    }
-  });
-}
-
-function v278FixHarzCard(){
-  const card=document.querySelector('#topHarz')?.closest('.stat');
-  if(!card)return;
-  card.classList.add('v277-harz-card');
-
-  let sub=card.querySelector('.v277-resource-sub');
-  if(!sub){
-    sub=document.createElement('div');
-    sub.className='v277-resource-sub';
-    card.appendChild(sub);
-  }
-  sub.textContent='Premium-Währung';
-}
-
-function v278StabilizeResources(){
-  try{
-    v277PrepareResourceCards();
-    v278FixHarzCard();
-    v278NormalizeDampfBadges();
-
-    /* Prevent duplicate top Gold badge as well. */
-    const topGold=document.querySelector('#gold');
-    if(topGold){
-      const badges=[...topGold.querySelectorAll(':scope > .v276-gold2')];
-      badges.slice(1).forEach(x=>x.remove());
-    }
-  }catch(e){
-    console.error('V4.02 resource stabilize',e);
-  }
-}
-
-/* V7.157: global scroll-time resource DOM normalization retired.
-   Resource cards are stable after render/account events; mutating the header on every
-   scroll frame forced whole-page repaints on Android WebView and could drop character
-   equipment paint layers while scrolling. */
-window.__V7157_RESOURCE_SCROLL_REPAINT_RETIRED__=true;
-
-const v278BaseRender=render;
-render=function(){
-  const r=v278BaseRender();
-  requestAnimationFrame(v278StabilizeResources);
-  
-  const line=document.querySelector('#v141VersionLine');
-  return r;
-};
-
-setTimeout(v278StabilizeResources,250);
-setTimeout(v278StabilizeResources,900);
-
-
-const v278Line=document.querySelector('#v141VersionLine');
-</script>
+<script id="v278-resource-stability-script" src="js/features/ui/beta/v8009-s13-v278-resource-stability.js"></script>
 
 <style id="v279-resource-root-fix-css">
 /* ===== V4.02 final resource-card ownership ===== */
@@ -19750,82 +19173,7 @@ body:has(#world.active) #v337LegalFooter{display:none!important}
 
 <!-- ===== Grow Legends: Handy-Push getrennt von Ingame-Hinweisen ===== -->
 <!-- ===== Grow Legends: Einstellungen Push AN/AUS ===== -->
-<script id="gl-push-master-switch-controller-v1">
-(()=>{
- 'use strict';
- if(window.__GL_PUSH_MASTER_SWITCH_V1__)return;
- window.__GL_PUSH_MASTER_SWITCH_V1__=true;
-
- function enabled(){
-  try{return !(typeof v141Settings==='object'&&v141Settings&&v141Settings.pushNotifications===false)}catch(e){return true}
- }
- window.glPushEnabled=enabled;
-
- async function user(){
-  try{
-   if(typeof v073Db==='undefined'||!v073Db?.auth)return null;
-   const r=await v073Db.auth.getSession();
-   if(r?.data?.session?.user)return r.data.session.user;
-   const u=await v073Db.auth.getUser();
-   return u?.data?.user||null;
-  }catch(e){return null}
- }
-
- async function cancelAllPending(){
-  try{
-   const u=await user();
-   if(!u?.id||typeof v073Db==='undefined')return false;
-   const nowIso=new Date().toISOString();
-   const {error}=await v073Db.from('push_jobs')
-    .update({cancelled_at:nowIso,updated_at:nowIso})
-    .eq('user_id',u.id)
-    .is('sent_at',null)
-    .is('cancelled_at',null);
-   if(error)throw error;
-   console.info('[GL Push] alle offenen Push-Jobs deaktiviert');
-   return true;
-  }catch(e){
-   console.warn('[GL Push] offene Jobs konnten nicht deaktiviert werden',e);
-   return false;
-  }
- }
-
- async function resyncAll(){
-  try{if(typeof window.glRegisterNativePushDevice==='function')await window.glRegisterNativePushDevice()}catch(e){}
-  try{if(typeof window.glSyncGrowPushJob==='function')await window.glSyncGrowPushJob()}catch(e){}
-  try{if(typeof window.glSyncGrowCarePushJob==='function')await window.glSyncGrowCarePushJob()}catch(e){}
-  try{if(typeof window.glSyncQuestPushJob==='function')await window.glSyncQuestPushJob()}catch(e){}
-  try{if(typeof window.glSyncDungeonPushJob==='function')await window.glSyncDungeonPushJob()}catch(e){}
-  try{if(typeof window.glSyncWorldBossPushJob==='function')await window.glSyncWorldBossPushJob()}catch(e){}
- }
-
- window.glSetPushEnabled=async function(on){
-  const value=!!on;
-  try{
-   if(typeof v141Settings==='object'&&v141Settings){
-    v141Settings.pushNotifications=value;
-    localStorage.setItem('growLegendsSettingsV141',JSON.stringify(v141Settings));
-   }
-  }catch(e){}
-
-  if(!value){
-   await cancelAllPending();
-   return true;
-  }
-
-  try{
-   if(typeof Notification!=='undefined'&&Notification.permission==='default')
-    await Notification.requestPermission();
-  }catch(e){}
-  await resyncAll();
-  return true;
- };
-
- window.addEventListener('growlegends:account-ready',()=>{
-  setTimeout(()=>{if(!enabled())void cancelAllPending()},1200);
- });
-})();
-</script>
+<script id="gl-push-master-switch-controller-v1" src="js/features/push/beta/v8009-s4-gl-push-master-switch-controller.js"></script>
 
 
 <!-- ===== V4.496 QUEST CLAIM SINGLE-PAYOUT GUARD ===== -->
@@ -21098,75 +20446,7 @@ render=function(){
 
 
 
-<script id="v315-new-player-dampf-event-grant-fix">
-/* ===== V4.02 New-player Dampf event grant fix =====
-   Root cause: the global event sync can run while a brand-new account still
-   has NO finished character. That can consume/store the per-event grant key
-   before character creation is authoritative. If the fresh character state
-   later has 100 Dampf, sync sees the same key and correctly avoids a second
-   grant -> UI becomes 100/300.
-   Fix: mark genuinely fresh account states and apply the initial event grant
-   once, after the character/profile has been completed.
-*/
-if(typeof v200FreshState==='function'){
- const v315BaseFreshState=v200FreshState;
- v200FreshState=function(uid){
-   const r=v315BaseFreshState(uid);
-   s.v315NeedsInitialDampfGrant=true;
-   try{localStorage.setItem(KEY,JSON.stringify(s))}catch(e){}
-   return r;
- };
-}
-
-if(typeof v073SyncProfile==='function'){
- const v315BaseSyncProfile=v073SyncProfile;
- v073SyncProfile=async function(force=false){
-  if(window.__V200_AUTH_READY__!==true)return false;
-   const r=await v315BaseSyncProfile(force);
-   if(r && s.v315NeedsInitialDampfGrant && v200CharacterComplete?.()){
-     try{
-       /* Event data is normally ready here through V4.02. Refresh once if not. */
-       if(!v271EventDataReady && typeof v093LoadPublicContent==='function'){
-         await v093LoadPublicContent();
-         v271EventDataReady=true;
-       }
-       if(v271DampfEventActive()){
-         /* This is NOT a repeat refill. It is the deferred first grant belonging
-            to this newly completed character. */
-         s.v271DampfEventGrantKey='';
-         s.v271DampfEventWasActive=false;
-         v271SyncDampfEvent();
-       }
-       s.v315NeedsInitialDampfGrant=false;
-       try{persist(false)}catch(e){}
-       try{v271PaintDampf()}catch(e){}
-     }catch(e){
-       console.error('V4.02 initial Dampf event grant',e);
-       /* Keep the marker so the next successful profile sync can retry. */
-     }
-   }
-   return r;
- };
-}
-
-/* Safety for a fresh character created during an already-running event:
-   profile sync above is canonical, this only reconciles display after boot. */
-setTimeout(()=>{
- try{
-   if(s.v315NeedsInitialDampfGrant && v200CharacterComplete?.() && v271EventDataReady){
-     v073SyncProfile(true);
-   }
- }catch(e){}
-},1200);
-
-const v315BaseRender=render;
-render=function(){
- const r=v315BaseRender();
- 
- const line=document.querySelector('#v141VersionLine');
- return r;
-};
-</script>
+<script id="v315-new-player-dampf-event-grant-fix" src="js/features/quest/beta/v8009-s7-v315-new-player-dampf-event-grant-fix.js"></script>
 
 
 
@@ -21251,86 +20531,7 @@ window.v317QuestDurations=v317QuestDurations;
 
 
 <!-- ===== V4.29 Stable: canonical public dungeon profile position ===== -->
-<script id="v323-profile-dungeon-canonical-fix">
-(function(){
-  function v323CanonicalDungeonPosition(dp, legacyDungeons=0){
-    dp=(dp && typeof dp==='object')?dp:{};
-
-    const completedRaw=Array.isArray(dp.completed)?dp.completed:[];
-    const completed=new Set(
-      completedRaw
-        .map(Number)
-        .filter(n=>Number.isInteger(n) && n>=0 && n<20)
-    );
-
-    /* Dungeon progression is sequential: the player's real current dungeon is
-       the first dungeon in the chain that has not been completed yet.
-       `selected` is only a UI selection and must not decide the public profile. */
-    let dungeonIndex=0;
-    while(dungeonIndex<20 && completed.has(dungeonIndex))dungeonIndex++;
-
-    if(dungeonIndex>=20){
-      return {
-        dungeonIndex:19,
-        dungeonNumber:20,
-        enemyNumber:10,
-        completed:true
-      };
-    }
-
-    const rawRoom=dp.progress?.[dungeonIndex];
-    const room=Math.max(0,Math.min(9,Number(rawRoom)||0));
-
-    return {
-      dungeonIndex,
-      dungeonNumber:dungeonIndex+1,
-      enemyNumber:room+1,
-      completed:false
-    };
-  }
-
-  /* Replace the old profile helper. V4.02 and all later callers resolve this
-     function dynamically, so profile popup / Hall progress use one source. */
-  window.v081DungeonPosition=v323CanonicalDungeonPosition;
-  try{v081DungeonPosition=v323CanonicalDungeonPosition}catch(e){}
-
-  /* Publish the canonical position as profile metadata without changing which
-     dungeon the player currently has open in the local UI. */
-  if(typeof v073ProfilePayload==='function'){
-    const v323BaseProfilePayload=v073ProfilePayload;
-    v073ProfilePayload=function(){
-      const payload=v323BaseProfilePayload.apply(this,arguments)||{};
-      const localDp={
-        completed:Array.isArray(s.dungeon?.completed)?[...s.dungeon.completed]:[],
-        progress:{...(s.dungeon?.progress||{})}
-      };
-      const pos=v323CanonicalDungeonPosition(localDp,localDp.completed.length);
-      payload.dungeon_progress={
-        ...localDp,
-        selected:pos.dungeonIndex,
-        room:Math.max(0,pos.enemyNumber-1)
-      };
-      payload.dungeons=localDp.completed.length;
-      return payload;
-    };
-  }
-
-  /* Refresh the signed-in player's public profile once after boot so existing
-     stale `selected` values in Supabase are corrected as well. */
-  setTimeout(async()=>{
-    try{
-      if(typeof v073SyncProfile==='function' && typeof v073Ready!=='undefined' && v073Ready){
-        await v073SyncProfile(true);
-      }
-    }catch(e){
-      console.error('V4.02 canonical dungeon profile sync',e);
-    }
-  },1600);
-
-  
-  const line=document.querySelector('#v141VersionLine');
-})();
-</script>
+<script id="v323-profile-dungeon-canonical-fix" src="js/features/profile/beta/v8009-s4-v323-profile-dungeon-canonical-fix.js"></script>
 
 
 <!-- ===== V4.29 Stable: Dungeon 1h countdown / 1 Harz direct fight ===== -->
@@ -21542,80 +20743,7 @@ window.v317QuestDurations=v317QuestDurations;
 <script id="v334-login-name-version-fix" src="js/features/account/beta/v8009-s14-v334-login-name-version-fix.js"></script>
 
 <!-- ===== V4.29 Stable: no Level-Up popup on returning login ===== -->
-<script id="v335-no-levelup-popup-login">
-(function(){
-  const V335_VERSION='V4.29 Stable';
-  const V335_LOGIN_GRACE_MS=8000;
-  const v335BootAt=Date.now();
-  const v335InitialLevel=Math.max(1,Number(s?.level)||1);
-
-  function v335InLoginGrace(){
-    return (Date.now()-v335BootAt)<V335_LOGIN_GRACE_MS;
-  }
-
-  function v335LooksLikeLevelUp(text){
-    return /level[\s-]*up|stufe\s+\d+.*erreicht|neue\s+stufe/i.test(String(text||''));
-  }
-
-  /* Returning-login hydration can replay old Level-Up UI. During the short
-     boot/auth window suppress presentation only; real gameplay state/level
-     remains untouched. */
-  ['v063Toast','toast'].forEach(name=>{
-    const old=window[name];
-    if(typeof old!=='function')return;
-    window[name]=function(msg){
-      if(v335InLoginGrace() && v335LooksLikeLevelUp(msg))return;
-      return old.apply(this,arguments);
-    };
-  });
-
-  /* Catch legacy modal/notification functions if present. */
-  [
-    'showLevelUp','showLevelUpPopup','openLevelUpPopup','levelUpPopup',
-    'v125ShowLevelUp','v141ShowLevelUp'
-  ].forEach(name=>{
-    const old=window[name];
-    if(typeof old!=='function')return;
-    window[name]=function(){
-      if(v335InLoginGrace())return;
-      return old.apply(this,arguments);
-    };
-  });
-
-  /* Remove a legacy Level-Up dialog that was already inserted by an earlier
-     boot script. Only during login grace and only when its text is Level-Up. */
-  const v335Observer=new MutationObserver(()=>{
-    if(!v335InLoginGrace()){
-      v335Observer.disconnect();
-      return;
-    }
-    document.querySelectorAll('[role="dialog"],.modal,.popup,.overlay').forEach(el=>{
-      if(v335LooksLikeLevelUp(el.textContent||'')){
-        const levelNow=Math.max(1,Number(s?.level)||1);
-        /* At login, unchanged/restored level is not a new level-up event. */
-        if(levelNow===v335InitialLevel || Date.now()-v335BootAt<2500){
-          const close=el.querySelector('[data-close],.close,.modal-close,.popup-close');
-          if(close)close.click();
-          else el.remove();
-        }
-      }
-    });
-  });
-  try{
-    v335Observer.observe(document.documentElement,{childList:true,subtree:true});
-    setTimeout(()=>v335Observer.disconnect(),V335_LOGIN_GRACE_MS+500);
-  }catch(e){}
-
-  function v335ApplyVersion(){
-    document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version]').forEach(el=>{
-      if(el)el.textContent=V335_VERSION;
-    });
-  }
-  v335ApplyVersion();
-  setTimeout(v335ApplyVersion,600);
-  setTimeout(v335ApplyVersion,2000);
-})();
-</script>
+<script id="v335-no-levelup-popup-login" src="js/features/account/beta/v8009-s15-v335-no-levelup-popup-login.js"></script>
 
 <!-- ===== V4.29 Stable: Illegal Book quest + dungeon enemy progress fix ===== -->
 <script id="v336-illegal-book-progress-fix" src="js/features/book/beta/v8009-s4-v336-illegal-book-progress-fix.js"></script>
@@ -28925,39 +28053,7 @@ body.v495-seed-open{overflow:hidden!important}
 .app > header .v358-logo::after{content:"V4.99"!important}
 .app > header .v366-ver::after,.app > header .v371-logo em::after,.app > header .v372-logo em::after{content:"V4.99"!important}
 </style>
-<script id="v496-og-retire-fragment-balance-js">
-(()=>{
- 'use strict';
- const VERSION='V4.99 Stable',SHORT='V4.99',EPIC=['nebula','lemon','gorilla','greencrack','amnesia'];
- function stamp(){}
- function save(){try{persist(false)}catch(e){try{localStorage.setItem(KEY,JSON.stringify(s))}catch(_){}}try{if(typeof v075WriteCloudSave==='function')setTimeout(()=>v075WriteCloudSave(false),0)}catch(e){}}
- function giveEpic(n){
-  n=Math.max(0,Math.floor(Number(n)||0));if(!n)return[];
-  s.grow=(s.grow&&typeof s.grow==='object')?s.grow:{};s.grow.seeds=(s.grow.seeds&&typeof s.grow.seeds==='object')?s.grow.seeds:{};
-  const got=[];for(let i=0;i<n;i++){const id=EPIC[Math.floor(Math.random()*EPIC.length)];s.grow.seeds[id]=(Number(s.grow.seeds[id])||0)+1;got.push(id)}return got;
- }
- function retireLegacyOg(showToast=true){
-  try{
-   s.grow=(s.grow&&typeof s.grow==='object')?s.grow:{};s.grow.v496=(s.grow.v496&&typeof s.grow.v496==='object')?s.grow.v496:{};
-   const old=(s.v077&&typeof s.v077==='object')?s.v077:null;
-   const seeds=Math.max(0,Math.floor(Number(old?.seeds)||0)),planted=old?.planted?1:0,total=seeds+planted;
-   if(total>0){giveEpic(total);s.grow.v496.ogConverted=(Number(s.grow.v496.ogConverted)||0)+total}
-   if(old){old.seeds=0;old.lastPlantAt=0;old.planted=null;old.buff=null;old.removed=true}else s.v077={seeds:0,lastPlantAt:0,planted:null,buff:null,removed:true};
-   document.querySelector('#v077SeedPanel')?.remove();document.querySelectorAll('.v495-og-wrap').forEach(el=>el.remove());
-   if(total>0){save();if(showToast&&typeof v063Toast==='function')v063Toast('🌰 Wundertüte OG ersetzt','success',`${total===1?'1 alter Samen / Pflanze':total+' alte Samen / Pflanzen'} → ${total} epische Grow-Samen`)}
-   return total;
-  }catch(e){console.warn('V4.96 OG migration',e);return 0}
- }
- function disabled(){try{retireLegacyOg(false)}catch(e){}return null}
- try{v077Buff=function(){return null};window.v077Buff=v077Buff}catch(e){window.v077Buff=()=>null}
- ['v077BuySeed','v077Plant','v077Harvest','v077QuestFind','v077InjectGrow'].forEach(name=>{try{window[name]=disabled;eval(name+'=window[name]')}catch(e){}});
- retireLegacyOg(true);stamp();
- document.addEventListener('DOMContentLoaded',()=>{retireLegacyOg(true);stamp()},{once:true});
- window.addEventListener('pageshow',()=>{retireLegacyOg(true);stamp()},{passive:true});
- document.addEventListener('visibilitychange',()=>{if(!document.hidden){retireLegacyOg(true);stamp()}},{passive:true});
- window.addEventListener('growlegends:account-ready',()=>{retireLegacyOg(true);stamp()},{passive:true});
-})();
-</script>
+<script id="v496-og-retire-fragment-balance-js" src="js/features/grow/beta/v8009-s10-v496-og-retire-fragment-balance.js"></script>
 
 
 <!-- ===== V4.99 Stable: Growroom plant persistence / navigation integrity ===== -->
@@ -29349,53 +28445,7 @@ html:not(.v4142-systemtech-admin) #v4104QaRow,
 html:not(.v4142-systemtech-admin) #v032MenuPanel [data-screen="systemtech"],
 html:not(.v4142-systemtech-admin) #v4102QaButton{display:none!important}
 </style>
-<script id="v4142-admin-systemtechnik-authority">
-(()=>{
- 'use strict';
- const V=window.GROW_LEGENDS_VERSION||{short:'V4.159',label:'V4.159 Stable'};
- function admin(){try{return typeof v093IsAdmin!=='undefined'&&v093IsAdmin===true&&!!v073User&&!v073User.is_anonymous}catch(e){return false}}
- function leaveSystemtech(){
-  const sec=document.getElementById('systemtech');if(!sec?.classList.contains('active'))return;
-  try{if(typeof v032Go==='function'){v032Go('world');return}}catch(e){}
-  try{document.querySelectorAll('section.screen').forEach(x=>x.classList.remove('active'));document.getElementById('world')?.classList.add('active')}catch(e){}
- }
- function ensureAdminUi(){
-  const panel=document.getElementById('v032MenuPanel');
-  if(panel&&!panel.querySelector('[data-screen="systemtech"]')){
-   const b=document.createElement('button');b.className='top-menu-item';b.dataset.screen='systemtech';b.innerHTML='<span>⚙️</span>Systemtechnik';
-   b.onclick=()=>{if(admin())window.v4107OpenSystemtechnik?.()};panel.appendChild(b);
-  }
-  /* V4.160: Systemtechnik remains available through the admin navigation only, not settings. */
-  document.getElementById('v4104QaRow')?.remove();
- }
- function sync(){
-  const ok=admin();document.documentElement.classList.toggle('v4142-systemtech-admin',ok);
-  if(!ok){
-   document.querySelectorAll('#v032MenuPanel [data-screen="systemtech"]').forEach(x=>x.remove());
-   document.getElementById('v4104QaRow')?.remove();document.getElementById('v4102QaButton')?.remove();leaveSystemtech();return false;
-  }
-  ensureAdminUi();return true;
- }
- window.v4142SyncAdminSystemtechnik=sync;
- try{
-  if(typeof v093CheckAdmin==='function'&&!window.__v4142AdminCheckWrapped){
-   const base=v093CheckAdmin;v093CheckAdmin=async function(){const r=await base.apply(this,arguments);sync();return r};
-   try{window.v093CheckAdmin=v093CheckAdmin}catch(e){}window.__v4142AdminCheckWrapped=true;
-  }
- }catch(e){}
- try{
-  if(typeof v141BuildSettings==='function'&&!window.__v4142SettingsWrapped){
-   const base=v141BuildSettings;v141BuildSettings=function(){const r=base.apply(this,arguments);requestAnimationFrame(sync);return r};
-   try{window.v141BuildSettings=v141BuildSettings}catch(e){}window.__v4142SettingsWrapped=true;
-  }
- }catch(e){}
- document.addEventListener('click',e=>{if(e.target instanceof Element&&e.target.closest('#v032MenuToggle,#v141SettingsBtn'))requestAnimationFrame(sync)},true);
- document.addEventListener('DOMContentLoaded',sync,{once:true});window.addEventListener('pageshow',sync,{passive:true});
- window.addEventListener('growlegends:account-ready',sync,{passive:true});
- function stamp(){}
- stamp();sync();
-})();
-</script>
+<script id="v4142-admin-systemtechnik-authority" src="js/features/admin/beta/v8009-s6-v4142-admin-systemtechnik-authority.js"></script>
 <!-- V4.159: temporary player-repair setting removed. Systemtechnik/Systemtest UI is visible only for a confirmed admin account; direct non-admin navigation is blocked. -->
 
 
@@ -41528,69 +40578,7 @@ body.v654-hud-measured > #v141SettingsMenu.v377-open{
   top:calc(var(--v654-hud-bottom, 60px) + 3px)!important;
 }
 </style>
-<script id="v654-global-header-layout-fix-js">
-(()=>{
-  'use strict';
-  const root=document.documentElement;
-  const body=document.body;
-  let raf=0,hudObserver=null,menuObserver=null,observedHud=null,observedPanel=null;
-
-  function measure(){
-    raf=0;
-    const hud=document.getElementById('v372TopbarShell');
-    if(!hud||!body)return;
-    const r=hud.getBoundingClientRect();
-    /* Sticky HUD is at viewport top while visible. Its bottom is the only safe
-       anchor for fixed dropdowns/modals on every Android status-bar size. */
-    const bottom=Math.max(0,Math.round(r.bottom));
-    if(bottom>0){
-      root.style.setProperty('--v654-hud-bottom',bottom+'px');
-      body.classList.add('v654-hud-measured');
-    }
-  }
-  function queue(){
-    if(raf)return;
-    raf=requestAnimationFrame(measure);
-  }
-
-  function normalizeMenu(){
-    const panel=document.getElementById('v032MenuPanel');
-    if(!panel)return;
-    /* Re-opening an already scrolled drawer could make its first entry look as
-       if it were hidden by the HUD. Always open at the top. */
-    if(panel.classList.contains('open')||panel.classList.contains('show')){
-      panel.scrollTop=0;
-    }
-    queue();
-  }
-
-  queue();
-  document.addEventListener('DOMContentLoaded',queue,{once:true});
-  window.addEventListener('resize',queue,{passive:true});
-  window.addEventListener('orientationchange',()=>setTimeout(queue,80),{passive:true});
-  window.addEventListener('pageshow',queue,{passive:true});
-
-  const boot=()=>{
-    const hud=document.getElementById('v372TopbarShell');
-    if(hud&&typeof ResizeObserver==='function'&&hud!==observedHud){
-      try{hudObserver?.disconnect?.()}catch(_){}
-      observedHud=hud;hudObserver=new ResizeObserver(queue);hudObserver.observe(hud);
-    }
-    const panel=document.getElementById('v032MenuPanel');
-    if(panel&&panel!==observedPanel){
-      try{menuObserver?.disconnect?.()}catch(_){}
-      observedPanel=panel;menuObserver=new MutationObserver(normalizeMenu);
-      menuObserver.observe(panel,{attributes:true,attributeFilter:['class']});
-    }
-    queue();
-  };
-  window.addEventListener('growlegends:account-ready',boot,{passive:true});
-
-  document.addEventListener('click',e=>{
-    if(e.target.closest?.('.v372-menu,#v032MenuBtn')) setTimeout(normalizeMenu,0);
-  },true);
-})();
-</script>
+<script id="v654-global-header-layout-fix-js" src="js/features/ui/beta/v8009-s13-v654-global-header-layout-fix.js"></script>
 <!-- ===== /V6.54 ===== -->
 
 
@@ -41674,72 +40662,7 @@ body.v650-native-safe #v032MenuPanel{
   max-height:calc(100dvh - var(--v654-hud-bottom,76px) - 6px)!important;
 }
 </style>
-<script id="v658-header-menu-offset-js">
-(()=>{
-  'use strict';
-  let resetRaf=0,lastOpen=false,observedPanel=null,menuObserver=null;
-
-  function measureHud(){
-    const hud=document.getElementById('v372TopbarShell');
-    if(!hud)return;
-    const bottom=Math.max(0,Math.round(hud.getBoundingClientRect().bottom));
-    if(bottom>0){
-      document.documentElement.style.setProperty('--v654-hud-bottom',bottom+'px');
-      document.body?.classList.add('v654-hud-measured');
-    }
-  }
-
-  function resetMenuTop(){
-    const panel=document.getElementById('v032MenuPanel');
-    if(!panel)return;
-    if(!(panel.classList.contains('open')||panel.classList.contains('show')))return;
-    panel.scrollTop=0;
-    try{panel.scrollTo({top:0,left:0,behavior:'instant'})}catch(e){try{panel.scrollTo(0,0)}catch(_){} }
-    measureHud();
-  }
-
-  function queueReset(){
-    if(resetRaf)return;
-    resetRaf=requestAnimationFrame(()=>{
-      resetRaf=0;
-      const panel=document.getElementById('v032MenuPanel');
-      if(!panel)return;
-      const open=panel.classList.contains('open')||panel.classList.contains('show');
-      if(open&&!lastOpen)resetMenuTop();
-      else measureHud();
-      lastOpen=open;
-    });
-  }
-
-  function bind(){
-    const panel=document.getElementById('v032MenuPanel');
-    if(panel&&panel!==observedPanel){
-      try{menuObserver?.disconnect?.()}catch(_){}
-      observedPanel=panel;
-      lastOpen=panel.classList.contains('open')||panel.classList.contains('show');
-      menuObserver=new MutationObserver(queueReset);
-      menuObserver.observe(panel,{attributes:true,attributeFilter:['class']});
-    }
-    measureHud();
-  }
-
-  /* Reset directly from the actual authoritative hamburger as well as historical
-     fallback menu buttons. Capture phase makes this run before the drawer paints. */
-  document.addEventListener('click',e=>{
-    if(e.target.closest?.('#v372TopbarShell .v372-menu,#v032MenuBtn,.v366-menu')){
-      const panel=document.getElementById('v032MenuPanel');
-      if(panel&&!panel.classList.contains('open')&&!panel.classList.contains('show'))panel.scrollTop=0;
-      requestAnimationFrame(queueReset);
-    }
-  },true);
-
-  window.addEventListener('resize',()=>setTimeout(measureHud,0),{passive:true});
-  window.addEventListener('orientationchange',()=>setTimeout(measureHud,80),{passive:true});
-  document.addEventListener('DOMContentLoaded',()=>{bind();queueReset()},{once:true});
-  window.addEventListener('pageshow',()=>{bind();queueReset()},{passive:true});
-  window.addEventListener('growlegends:account-ready',()=>{bind();queueReset()},{passive:true});
-})();
-</script>
+<script id="v658-header-menu-offset-js" src="js/features/ui/beta/v8009-s13-v658-header-menu-offset.js"></script>
 <!-- ===== /V6.58 ===== -->
 
 
@@ -47698,74 +46621,7 @@ window.__V6222_QUEST_UI_TIMER_GATING__=true;
 <script id="v6239-weekly-chest-system" src="js/features/rewards/beta/v8009-s1-v6239-weekly-chest-system.js"></script>
 <!-- ===== /V6.239 ===== -->
 
-<script id="v6243-weekly-chest-audit-fix">
-(()=>{
- 'use strict';
- if(window.__V6243_WEEKLY_CHEST_AUDIT__)return;
- window.__V6243_WEEKLY_CHEST_AUDIT__=true;
-
- function n(v){return Math.max(0,Math.floor(Number(v)||0))}
- function canonicalDungeonCount(data){
-   /* v336 keeps this lifetime counter synced from real room progression. */
-   const a=n(s?.v106Achievements?.stats?.dungeonWins);
-   if(a>0)return a;
-   try{
-     const done=new Set((s?.dungeon?.completed||[]).map(Number));
-     const prog=s?.dungeon?.progress||{};
-     const count=Array.isArray(dungeons)?dungeons.length:20;
-     let total=0;
-     for(let i=0;i<count;i++)total+=done.has(i)?10:Math.max(0,Math.min(9,n(prog[i])));
-     return total;
-   }catch(_){
-     return `${n(data?.dungeonIndex)}:${n(data?.roomIndex)}`
-   }
- }
-
- function installDungeonChestHook(){
-   try{
-     const base=window.v247ShowDungeonReward||(typeof v247ShowDungeonReward==='function'?v247ShowDungeonReward:null);
-     if(typeof base!=='function')return false;
-     if(base.__v6243WeeklyChestDungeon)return true;
-
-     const wrapped=function(data){
-       const result=base.apply(this,arguments);
-       try{
-         const di=n(data?.dungeonIndex),ri=n(data?.roomIndex);
-         const boss=!!data?.boss||!!data?.enemy?.boss||ri>=9;
-         const count=canonicalDungeonCount(data);
-         const token=`chest:${count}`;
-         window.v6239WeeklyChestActivity?.(
-           'dungeon',
-           {dungeonIndex:di,roomIndex:ri,boss,winsAfter:count,source:'v247ShowDungeonReward'},
-           token
-         );
-       }catch(e){console.warn('V6.243 weekly chest dungeon XP',e)}
-       return result;
-     };
-     wrapped.__v6243WeeklyChestDungeon=true;
-     wrapped.__v6243Base=base;
-     window.v247ShowDungeonReward=wrapped;
-     try{v247ShowDungeonReward=wrapped}catch(_){}
-     return true;
-   }catch(e){console.warn('V6.243 install dungeon chest hook',e);return false}
- }
-
- installDungeonChestHook();
- [80,350,1200,3500].forEach(ms=>setTimeout(installDungeonChestHook,ms));
-
- window.v6243WeeklyChestAudit=()=>({
-   questBus:!!window.GL_EVENTS,
-   dungeonCanonical:!!(window.v247ShowDungeonReward?.__v6243WeeklyChestDungeon),
-   pvpBus:!!window.GL_EVENTS,
-   growBus:!!window.GL_EVENTS,
-   growOrder:typeof window.v6239WeeklyChestActivity==='function',
-   tower:typeof window.v6239WeeklyChestTowerFloor==='function',
-   worldBoss:typeof window.v6239WeeklyChestActivity==='function',
-   guildBossBus:!!window.GL_EVENTS,
-   chest:window.v6239WeeklyChestDiagnostics?.()||null
- });
-})();
-</script>
+<script id="v6243-weekly-chest-audit-fix" src="js/features/rewards/beta/v8009-s8-v6243-weekly-chest-audit-fix.js"></script>
 
 
 <!-- ===== V6.245 GILDEN-EINLADUNGEN ===== -->
@@ -51576,56 +50432,7 @@ window.v6316VersionDiagnostics=()=>window.v7112VersionDiagnostics?.()||({actual:
   z-index:-1!important;
 }
 </style>
-<script id="v6321-companion-actor-render-fix-js">
-(()=>{
-'use strict';
-if(window.__V6321_COMPANION_ACTOR_RENDER_FIX__)return;
-window.__V6321_COMPANION_ACTOR_RENDER_FIX__=true;
-function sanitizeActor(root=document){
-  root.querySelectorAll('.v6287-summon-fx').forEach(el=>{
-    try{
-      el.style.setProperty('overflow','hidden','important');
-      el.style.setProperty('contain','layout paint style','important');
-      el.style.setProperty('isolation','isolate','important');
-      const img=el.querySelector('.v6303-spirit img');
-      if(img){
-        img.style.setProperty('left','0','important');
-        img.style.setProperty('top','0','important');
-        img.style.setProperty('width','100%','important');
-        img.style.setProperty('height','100%','important');
-        img.style.setProperty('max-width','100%','important');
-        img.style.setProperty('max-height','100%','important');
-        img.style.setProperty('object-fit','cover','important');
-        img.style.setProperty('object-position','center center','important');
-        img.style.setProperty('transform','none','important');
-        img.style.setProperty('-webkit-mask-image','none','important');
-        img.style.setProperty('mask-image','none','important');
-        img.style.setProperty('clip-path','circle(47% at 50% 50%)','important');
-        img.style.setProperty('-webkit-clip-path','circle(47% at 50% 50%)','important');
-      }
-    }catch(_){ }
-  });
-}
-const mo=new MutationObserver(muts=>{
-  let hit=false;
-  for(const m of muts){
-    for(const n of m.addedNodes||[]){
-      if(n&&n.nodeType===1&&((n.matches&&n.matches('.v6287-summon-fx'))||(n.querySelector&&n.querySelector('.v6287-summon-fx')))){hit=true;break}
-    }
-    if(hit)break;
-  }
-  if(hit)sanitizeActor(document);
-});
-try{mo.observe(document.documentElement,{childList:true,subtree:true})}catch(_){ }
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>sanitizeActor(document),{once:true});
-else sanitizeActor(document);
-window.v6321CompanionActorDiagnostics=()=>({
-  version:'V6.321',
-  actorCount:document.querySelectorAll('.v6287-summon-fx').length,
-  actorClipped:[...document.querySelectorAll('.v6287-summon-fx .v6303-spirit img')].every(img=>(getComputedStyle(img).clipPath||getComputedStyle(img).webkitClipPath||'').includes('circle'))
-});
-})();
-</script>
+<script id="v6321-companion-actor-render-fix-js" src="js/features/combat/beta/v8009-s8-v6321-companion-actor-render-fix.js"></script>
 <!-- ===== /V6.321 ===== -->
 
 
@@ -53348,78 +52155,7 @@ window.v7102QuestDiagnostics=()=>({
 })();
 </script>
 
-<script id="v7103-shared-combat-presentation">
-(()=>{
-'use strict';
-if(window.__V7103_SHARED_COMBAT_PRESENTATION__)return;
-window.__V7103_SHARED_COMBAT_PRESENTATION__=true;
-
-function isSummoner(){
-  try{return String(s?.playerClass||'')==='summoner'}catch(_){return false}
-}
-function chance(){
-  let bonus=0;
-  try{
-    const t=window.v314TalentSummary?.()||{};
-    bonus=Math.max(0,Number(t.summonChance)||0);
-  }catch(_){}
-  return Math.max(.10,Math.min(.40,.10+bonus));
-}
-function begin(mode='combat'){
-  if(!isSummoner()){
-    try{window.v6287ClearSummonerVisuals?.()}catch(_){}
-    return null;
-  }
-  const t={mode,state:{v6287NoSummon:0},chance:chance(),attacks:0};
-  try{
-    window.v6287EnsureRoster?.();
-    window.v6287UpdateRosterState?.(t.state,t.chance,null,'Ruf aus dem Dunst bereit');
-  }catch(_){}
-  return t;
-}
-function playerEvent(e){
-  return String(e?.side||'')==='player'||String(e?.actor||'')==='attacker';
-}
-function step(t,e){
-  if(!t||!playerEvent(e))return;
-  t.attacks++;
-  const comp=String(e?.companion||'').toLowerCase();
-  const comp2=String(e?.second_companion||'').toLowerCase();
-  const forced=!!e?.forced_summon || (!comp ? false : t.state.v6287NoSummon>=4);
-
-  if(comp){
-    const before=t.state.v6287NoSummon;
-    t.state.v6287NoSummon=0;
-    const action=forced||before>=4
-      ?`${comp.toUpperCase()} · GARANTIERTER 5. RUF`
-      :`${comp.toUpperCase()}${comp2?' + 2. RUF':''}`;
-    try{window.v6287UpdateRosterState?.(t.state,t.chance,comp,action)}catch(_){}
-  }else{
-    t.state.v6287NoSummon=Math.min(4,Math.max(0,Number(t.state.v6287NoSummon)||0)+1);
-    const left=Math.max(1,5-t.state.v6287NoSummon);
-    const action=t.state.v6287NoSummon>=4?'Nächster Angriff garantiert':`Kein Ruf · Garantie in ${left}`;
-    try{window.v6287UpdateRosterState?.(t.state,t.chance,null,action)}catch(_){}
-  }
-}
-function finish(t){
-  if(!t)return;
-  try{
-    window.v6287UpdateRosterState?.(
-      t.state,t.chance,null,
-      `Kampf beendet · ${t.attacks} eigene Angriffe`
-    );
-  }catch(_){}
-}
-window.v7103CompanionReplay=Object.freeze({begin,step,finish});
-window.v7103CombatPresentationDiagnostics=()=>({
-  release:window.__GROW_LEGENDS_RELEASE__||'',
-  summoner:isSummoner(),
-  roster:!!document.querySelector('.v6287-summon-roster'),
-  battleStage:!!document.querySelector('.battle-stage'),
-  pvpStage:!!document.querySelector('#v209PvpBattleOverlay .battle-stage')
-});
-})();
-</script>
+<script id="v7103-shared-combat-presentation" src="js/features/combat/beta/v8009-s8-v7103-shared-combat-presentation.js"></script>
 <link id="v7103-pvp-dungeon-parity-css" rel="stylesheet" href="css/features/pvp/beta/v8009-s1-v7103-pvp-dungeon-parity-css.css">
 
 <script id="v7104-v6349-parity-foundation">
@@ -54139,57 +52875,7 @@ window.__V7130_QUEST_CANONICAL_RENDER__=Object.freeze({
 <!-- ===== /V7.136 COMPLETE SERVER REWARD WINDOWS ===== -->
 
 <!-- ===== V7.136 ABSOLUTE FINAL VERSION OWNER · TOPBAR + TELEMETRY CONSISTENCY ===== -->
-<script id="v7135-absolute-final-version-owner">
-(()=>{
-'use strict';
-const V=Object.freeze({short:'V7.227',label:'V7.227 Stable',number:'7.227'});
-window.GROW_LEGENDS_VERSION=V;
-window.__GROW_LEGENDS_RELEASE__=V.short;
-window.__GL_CURRENT_BUILD__=V.short;
-const selectors='.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version,.v366-ver,.v371-logo em,.v372-logo em';
-let painting=false;
-function paint(){
- if(painting)return;painting=true;
- try{
-  window.GROW_LEGENDS_VERSION=V;window.__GROW_LEGENDS_RELEASE__=V.short;window.__GL_CURRENT_BUILD__=V.short;
-  document.querySelectorAll(selectors).forEach(el=>{
-   if(!el||el.tagName==='STYLE')return;
-   const wanted=(el.matches('.version,#v141VersionLine,[data-version],#version,#gameVersion,#topVersion,[data-top-version],.v358-version'))?V.short:V.short;
-   if(el.textContent!==wanted)el.textContent=wanted;
-   try{el.dataset.glBuild=V.short}catch(_){}
-  });
- }catch(_){}finally{painting=false}
-}
-function installObserver(){
- try{
-  const root=document.querySelector('.app > header')||document.querySelector('header');if(!root||root.__v7135VersionObserver)return;
-  root.__v7135VersionObserver=true;
-  const mo=new MutationObserver(ms=>{
-   let relevant=false;
-   for(const m of ms){
-    const t=m.target?.nodeType===1?m.target:m.target?.parentElement;
-    if(t?.closest?.('header')||[...m.addedNodes||[]].some(n=>n?.nodeType===1&&n.matches?.(selectors))){relevant=true;break}
-   }
-   if(relevant)queueMicrotask(paint);
-  });
-  mo.observe(root,{subtree:true,childList:true,characterData:true});
-  window.__V7135_VERSION_OBSERVER__=mo;
- }catch(_){}
-}
-paint();
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>{paint();installObserver()},{once:true});else installObserver();
-window.addEventListener('pageshow',paint,{passive:true});
-window.addEventListener('growlegends:account-ready',paint,{passive:true});
-window.addEventListener('growlegends:navigation-open-v7119',paint,{passive:true});
-window.v7135VersionDiagnostics=()=>({
- expected:V.short,
- growVersion:window.GROW_LEGENDS_VERSION?.short||'',
- release:window.__GROW_LEGENDS_RELEASE__||'',
- runtime:window.__GL_RUNTIME_WATCHDOG__?.diagnostics?.()?.version||'',
- visible:[...document.querySelectorAll(selectors)].filter(x=>x.tagName!=='STYLE').map(x=>String(x.textContent||'').trim()).slice(0,20)
-});
-})();
-</script>
+<script id="v7135-absolute-final-version-owner" src="js/features/system/beta/v8009-s16-v7135-absolute-final-version-owner.js"></script>
 <style id="v7135-absolute-final-version-css">
 .app > header .v358-logo::after{content:"V7.222"!important}
 .app > header .v366-ver::after,.app > header .v371-logo em::after,.app > header .v372-logo em::after{content:"V7.222"!important}
@@ -55313,60 +53999,7 @@ html.v7230-frame-server-sync #world .v366-avatar.v7137-frame-target{border:1px s
 html body .app > header .v358-logo::after{content:"V7.230"!important}
 html body .app > header .v366-ver::after,html body .app > header .v371-logo em::after,html body .app > header .v372-logo em::after,#v372TopbarShell .v372-logo em::after{content:"V7.230"!important}
 </style>
-<script id="v7230-server-frame-isolation">
-(()=>{
-'use strict';
-if(window.__V7230_SERVER_FRAME_ISOLATION__)return;
-window.__V7230_SERVER_FRAME_ISOLATION__=true;
-const serverId=()=>String(window.v343CurrentServer||localStorage.getItem('growLegends:selectedServer')||localStorage.getItem('growLegends:server')||'beta');
-const isServer1=()=>serverId()==='server1';
-function stripVisibleFrame(){
-  try{
-    document.querySelectorAll('#world .v366-avatar.v7137-frame-target,#character .avatar-scene.v7137-frame-target,#v072OwnProfile .v646-own-avatar.v7137-frame-target').forEach(el=>{
-      el.querySelectorAll(':scope > .v7139-frame-art').forEach(n=>n.remove());
-      delete el.dataset.v7137Frame;
-    });
-  }catch(_){}
-}
-function arm(){
-  if(!isServer1())return;
-  document.documentElement.classList.add('v7230-frame-server-sync');
-  try{window.__V7137_FRAME_STATE__=null}catch(_){}
-  stripVisibleFrame();
-}
-let flight=null;
-async function sync(){
-  if(!isServer1())return false;
-  arm();
-  if(flight)return flight;
-  flight=(async()=>{
-    try{
-      const r=await window.v7137FrameRefresh?.();
-      const st=(r&&typeof r==='object')?r:window.__V7137_FRAME_STATE__;
-      if(!st?.ok){stripVisibleFrame();return false}
-      if(!st.active_frame_id)stripVisibleFrame();
-      else try{window.v7137ApplyOwnFrames?.()}catch(_){}
-      return true;
-    }catch(e){
-      stripVisibleFrame();
-      console.warn('[V7.230] server frame sync',e);
-      return false;
-    }finally{
-      document.documentElement.classList.remove('v7230-frame-server-sync');
-      flight=null;
-    }
-  })();
-  return flight;
-}
-arm();
-window.addEventListener('growlegends:account-ready',()=>{if(isServer1())void sync()},{passive:true});
-window.addEventListener('growlegends:first-playable',()=>{if(isServer1())void sync()},{passive:true});
-window.addEventListener('pageshow',()=>{if(isServer1())setTimeout(()=>void sync(),120)},{passive:true});
-document.addEventListener('click',e=>{const b=e.target instanceof Element?e.target.closest?.('[data-v343-server]'):null;if(!b)return;if(String(b.dataset.v343Server||'')==='server1')setTimeout(arm,0)},true);
-[0,250,900,2200].forEach(ms=>setTimeout(()=>{if(isServer1())void sync()},ms));
-window.v7230FrameDiagnostics=()=>({server:serverId(),syncing:!!flight,state:window.__V7137_FRAME_STATE__||null,guard:document.documentElement.classList.contains('v7230-frame-server-sync')});
-})();
-</script>
+<script id="v7230-server-frame-isolation" src="js/features/account/beta/v8009-s15-v7230-server-frame-isolation.js"></script>
 <!-- ===== /V7.230 SERVER-SCOPED AVATAR FRAME AUTHORITY ===== -->
 
 <style id="v7231-visible-version-css">
