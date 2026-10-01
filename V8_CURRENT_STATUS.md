@@ -4667,3 +4667,14 @@ Arbeitsmodus:
 - Mobile Größen separat mitgezogen.
 - Geänderte Datei: `v8009-extracted-v497-plant-art-economy-css.css`
 - Commit: `47a80e7854e1cd0f5f51101a8bf6934ca3578f9b`
+
+
+#### Growroom Login-Hydration-Fix – Pflanzen / freigeschaltete Töpfe
+- Ursache gefunden: Der Growroom konnte beim Login kurz mit Default-/Altzustand rendern (`roomLevel=1`, leere/alte Pflanzen), bevor der serverautoritative Grow-State des aktuellen Accounts fertig geladen war.
+- Zusätzlich konnte der alte v498-Local-Snapshot-Recovery noch zeitversetzt nach 250/1000/3500/12000 ms eingreifen.
+- Direkt an den bestehenden Ownern repariert, **kein zusätzlicher Patch-/Overlay-Layer**:
+  - v7065 Authority-Readiness ist jetzt an die aktuelle Account-UID gebunden (`authorityUid`). Ein alter Login darf nicht mehr als ready für einen neuen Login gelten.
+  - v7070 rendert den Growroom erst, wenn `enabled + ready + gleiche UID` bestätigt sind; vorher bleibt die vorhandene Sync-Barriere sichtbar.
+  - v498 Local-Snapshot-Write/Repair ist unter Grow-Serverauthority deaktiviert; die historischen Delayed-Recovery-Timer können damit keinen Serverstand mehr überschreiben.
+- Erwartetes Verhalten: Beim Login kein temporäres `1/1 Töpfe`, keine verspätet auftauchende Pflanze und keine erst später freigeschalteten Slots; stattdessen kurz Sync-Barriere, dann direkt der vollständige Serverstand.
+- Commits: `08e511521892a64dc33c5e1be2c92bb957fdfa79`, `7e64f38be3b55fb0823ffca6de8614ba0274864d`, `c5c55569388539069327aead4e800f9f875b1435`
