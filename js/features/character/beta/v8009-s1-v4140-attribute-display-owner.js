@@ -37,14 +37,8 @@
   try{window.persist=persist}catch(e){}
   window.__v4140PersistWrapped=true;
  }
- /* V8.009: direct character lifecycle owns the canonical five-row output. */
+ /* v459 owns visible attribute-tab lifecycle; persist repaint remains for actual point changes. */
  window.__v4140RenderWrapped='retired';
- window.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')==='character')paint()},{passive:true});window.__v4140GoWrapped='v7119-event';
- document.addEventListener('click',e=>{if(e.target?.closest?.('#v459CharacterTabs [data-tab="attributes"]'))paint()},true);
- document.addEventListener('DOMContentLoaded',paint,{once:true});
- window.addEventListener('pageshow',paint,{passive:true});
- /* V8.009: startup retry train retired; direct lifecycle hooks are sufficient. */
- function stamp(){}
- stamp();paint();
+ window.__v4140GoWrapped='v459-tab-owner';
  window.v4140AttributeDiagnostics=()=>{const rows=[...document.querySelectorAll('#attrs > [data-v4140-attr]')];return{version:V.short,rowCount:rows.length,keys:rows.map(x=>x.dataset.v4140Attr),duplicates:rows.length-new Set(rows.map(x=>x.dataset.v4140Attr)).size,primary:primary(),points:points()}};
 })();
