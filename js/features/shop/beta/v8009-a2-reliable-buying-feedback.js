@@ -165,15 +165,5 @@ function v054BindShopButtons(){
   });
 }
 
-const v054BaseRender=render;
-render=function(){
-  v054BaseRender();
-  
-  v054BindShopButtons();
-};
-
-try{
-  render();
-}catch(e){
-  console.error('V4.02 inventory/shop',e);
-}
+/* V8.009: global render button-rebind hook retired.
+   v058/v466 bind the active shop DOM directly after renderShop. */
