@@ -165,11 +165,4 @@ v110Refresh=function(){
 
 /* V8.009: obsolete no-op/version global render wrapper retired. */
 
-setTimeout(()=>{
-  try{
-    if(document.querySelector('#v110Overlay.show'))v110Refresh();
-  }catch(e){}
-},350);
-
-
 const v291Line=document.querySelector('#v141VersionLine');
