@@ -47623,13 +47623,6 @@ body:has(#world.active) #v032MenuPanel{top:64px!important}
     return r;
   };
 
-  const baseGo=v032Go;
-  v032Go=function(id){
-    const r=baseGo.apply(this,arguments);
-    if(id==='world')requestAnimationFrame(()=>requestAnimationFrame(v351Install));
-    return r;
-  };
-
   function version(){
     document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version]').forEach(el=>{
       if(el)el.textContent=V351_VERSION;
@@ -47637,8 +47630,10 @@ body:has(#world.active) #v032MenuPanel{top:64px!important}
   }
 
   v351Install();version();
-  setTimeout(()=>{v351Install();version()},300);
-  setTimeout(()=>{v351Install();version()},1100);
+  document.addEventListener('DOMContentLoaded',()=>{v351Install();version()},{once:true});
+  window.addEventListener('pageshow',()=>{v351Install();version()},{passive:true});
+  window.addEventListener('growlegends:account-ready',()=>{v351Install();version()},{passive:true});
+  window.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')==='world')v351Install()},{passive:true});
 })();
 </script>
 
@@ -47726,23 +47721,12 @@ body:has(#world.active) #v032MenuBtn{
     return r;
   };
 
-  const baseGo=v032Go;
-  v032Go=function(id){
-    const r=baseGo.apply(this,arguments);
-    if(id==='world'){
-      requestAnimationFrame(()=>requestAnimationFrame(()=>{
-        v352CleanWorld();
-        v352Version();
-      }));
-    }
-    return r;
-  };
-
   v352CleanWorld();
   v352Version();
   document.addEventListener('DOMContentLoaded',()=>{v352CleanWorld();v352Version()},{once:true});
-  setTimeout(()=>{v352CleanWorld();v352Version()},300);
-  setTimeout(()=>{v352CleanWorld();v352Version()},1200);
+  window.addEventListener('pageshow',()=>{v352CleanWorld();v352Version()},{passive:true});
+  window.addEventListener('growlegends:account-ready',()=>{v352CleanWorld();v352Version()},{passive:true});
+  window.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')==='world'){v352CleanWorld();v352Version()}},{passive:true});
 })();
 </script>
 
