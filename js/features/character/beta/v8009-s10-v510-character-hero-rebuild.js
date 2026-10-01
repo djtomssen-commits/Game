@@ -83,19 +83,8 @@
 
   window.v510BuildCharacter=build;
 
-  /* Re-apply after existing render owners update data. Moving nodes preserves handlers/IDs. */
-  try{
-    if(typeof render==='function'&&!window.__v510RenderWrapped){
-      const base=render;
-      render=function(){
-        const r=base.apply(this,arguments);
-        if(document.getElementById('character')?.classList.contains('active'))build();
-        return r;
-      };
-      try{window.render=render}catch(e){}
-      window.__v510RenderWrapped=true;
-    }
-  }catch(e){}
+  /* Character navigation/stability lifecycles own structural re-parenting.
+     Data renders update the already-moved nodes in place. */
   window.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')==='character')build()});
   window.__v510GoWrapped='v7119-event';
 
