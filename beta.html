@@ -22913,11 +22913,11 @@ function v129PolishDynamicCards(){
 }
 if(typeof renderShop==='function'&&!window.__v6320V129ShopWrapped){
   const v6320V129BaseShop=renderShop;
-  renderShop=function(){const r=v6320V129BaseShop.apply(this,arguments);requestAnimationFrame(v129PolishDynamicCards);return r};
+  renderShop=function(){const r=v6320V129BaseShop.apply(this,arguments);v129PolishDynamicCards();return r};
   try{window.renderShop=renderShop}catch(e){}
   window.__v6320V129ShopWrapped=true;
 }
-setTimeout(v129PolishDynamicCards,180);
+v129PolishDynamicCards();
 </script>
 
 
@@ -23068,13 +23068,14 @@ function v131CleanShop(){
 
   
 }
-const v131BaseRender=render;
-render=function(){
-  const r=v131BaseRender();
-  if(document.querySelector('#shop')?.classList.contains('active'))requestAnimationFrame(v131CleanShop);
-  return r;
-};
-setTimeout(v131CleanShop,120);
+if(typeof renderShop==='function'&&!window.__v131ShopCleanWrapped){
+  const v131BaseRenderShop=renderShop;
+  renderShop=function(){const r=v131BaseRenderShop.apply(this,arguments);v131CleanShop();return r};
+  try{window.renderShop=renderShop}catch(_){}
+  window.__v131ShopCleanWrapped=true;
+}
+v131CleanShop();
+window.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')==='shop')v131CleanShop()},{passive:true});
 </script>
 
 
@@ -23924,13 +23925,14 @@ if(!s.v135ShopLevelScaling){
   try{localStorage.setItem(KEY,JSON.stringify(s))}catch(e){}
 }
 
-const v135BaseRender=render;
-render=function(){
-  const r=v135BaseRender();
-  if(document.querySelector('#shop')?.classList.contains('active'))requestAnimationFrame(v135PaintShop);
-  return r;
-};
-setTimeout(v135PaintShop,150);
+if(typeof renderShop==='function'&&!window.__v135ShopPaintWrapped){
+  const v135BaseRenderShop=renderShop;
+  renderShop=function(){const r=v135BaseRenderShop.apply(this,arguments);v135PaintShop();return r};
+  try{window.renderShop=renderShop}catch(_){}
+  window.__v135ShopPaintWrapped=true;
+}
+v135PaintShop();
+window.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')==='shop')v135PaintShop()},{passive:true});
 </script>
 
 
@@ -63020,7 +63022,7 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();i
  try{if(typeof normalizeState==='function'&&!window.__v4114Normalize){const base=normalizeState;normalizeState=function(){syncLedger('normalize-before');const r=base.apply(this,arguments);syncLedger('normalize-after');return r};try{window.normalizeState=normalizeState}catch(e){}window.__v4114Normalize=true}}catch(e){}
  try{if(typeof persist==='function'&&!window.__v4114Persist){const base=persist;persist=function(){syncLedger('persist-before');return base.apply(this,arguments)};try{window.persist=persist}catch(e){}window.__v4114Persist=true}}catch(e){}
  try{if(typeof v075ApplyCloudSave==='function'&&!window.__v4114CloudApply){const base=v075ApplyCloudSave;v075ApplyCloudSave=async function(){syncLedger('cloud-before');const r=await base.apply(this,arguments);const changed=syncLedger('cloud-after');if(changed){try{if(typeof persist==='function')persist(false)}catch(e){}}return r};try{window.v075ApplyCloudSave=v075ApplyCloudSave}catch(e){}window.__v4114CloudApply=true}}catch(e){}
- try{if(typeof v032Go==='function'&&!window.__v4114Go){const base=v032Go;v032Go=function(id){const r=base.apply(this,arguments);if(id==='grow')setTimeout(()=>{const changed=syncLedger('grow-open');if(changed)try{persist(false)}catch(e){};decorateSlots()},60);return r};try{window.v032Go=v032Go}catch(e){}window.__v4114Go=true}}catch(e){}
+ try{if(!window.__v4114Go){window.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')!=='grow')return;const changed=syncLedger('grow-open');if(changed)try{persist(false)}catch(_){};decorateSlots()},{passive:true});window.__v4114Go=true}}catch(e){}
 
  function addQaTests(){
   try{
@@ -63041,7 +63043,7 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();i
  /* V6.97: body-wide grow-care observer retired. */
  document.addEventListener('visibilitychange',()=>{if(!document.hidden){const c=syncLedger('visible');if(c)try{persist(false)}catch(e){};decorateSlots();stamp()}},{passive:true});
  window.addEventListener('pageshow',()=>{const c=syncLedger('pageshow');if(c)try{persist(false)}catch(e){};decorateSlots();stamp()},{passive:true});
- [250,1500].forEach(ms=>setTimeout(()=>{syncLedger('delayed');decorateSlots();addQaTests();stamp()},ms));
+ window.addEventListener('growlegends:account-ready',()=>{syncLedger('account-ready');decorateSlots();addQaTests();stamp()},{passive:true});
 })();
 </script>
 
@@ -89425,12 +89427,13 @@ function openSetPanel(){const body=document.querySelector('#forge .v667-forge-bo
 function renderSetIfOpen(){const body=document.querySelector('#forge .v667-forge-body');if(body?.classList.contains('v6130-set-mode'))openSetPanel()}
 function decorateForge(){const body=document.querySelector('#forge .v667-forge-body'),tabs=body?.querySelector('.v667-tabs');if(!body||!tabs)return;if(!tabs.querySelector('.v6130-set-tab')){const b=document.createElement('button');b.type='button';b.className='v667-tab v6130-set-tab';b.dataset.v6130Settab='1';b.innerHTML='<span class="ic">🧩</span><span>KLASSENSET<small>Genetik · PvP · Fragmente</small></span>';tabs.appendChild(b)}}
 function stamp(){}
-document.addEventListener('click',e=>{const t=e.target instanceof Element?e.target:null;if(!t)return;if(t.closest('[data-v6130-open]')){e.preventDefault();return openLab()}if(t.closest('[data-v6130-cross]')){e.preventDefault();return beginCross(t.closest('[data-v6130-cross]').dataset.v6130Cross)}if(t.closest('[data-v6130-settab]')){e.preventDefault();e.stopPropagation();return openSetPanel()}if(t.closest('[data-v6130-craft]')){e.preventDefault();return void craftSet(t.closest('[data-v6130-craft]').dataset.v6130Craft)}if(t.closest('#forge [data-v667-tab]')){document.querySelector('#forge .v667-forge-body')?.classList.remove('v6130-set-mode');setTimeout(decorateForge,20)}},true);
-function attachObservers(){const el=document.getElementById('forge');if(!el||el.dataset.v6130Observed)return;el.dataset.v6130Observed='1';let queued=false;new MutationObserver(()=>{if(queued)return;queued=true;requestAnimationFrame(()=>{queued=false;try{decorateForge()}catch(_){}})}).observe(el,{childList:true,subtree:true});try{decorateForge()}catch(_){}}
-state();installAchievements();attachObservers();decorateForge();stamp();
-document.addEventListener('DOMContentLoaded',()=>{state();installAchievements();attachObservers();decorateForge();stamp()},{once:true});
-window.addEventListener('pageshow',()=>{attachObservers();decorateForge();stamp()},{passive:true});
-window.addEventListener('growlegends:account-ready',()=>setTimeout(()=>{state();installAchievements();decorateGrow();decorateForge();stamp()},80));
+document.addEventListener('click',e=>{const t=e.target instanceof Element?e.target:null;if(!t)return;if(t.closest('[data-v6130-open]')){e.preventDefault();return openLab()}if(t.closest('[data-v6130-cross]')){e.preventDefault();return beginCross(t.closest('[data-v6130-cross]').dataset.v6130Cross)}if(t.closest('[data-v6130-settab]')){e.preventDefault();e.stopPropagation();return openSetPanel()}if(t.closest('[data-v6130-craft]')){e.preventDefault();return void craftSet(t.closest('[data-v6130-craft]').dataset.v6130Craft)}if(t.closest('#forge [data-v667-tab]')){document.querySelector('#forge .v667-forge-body')?.classList.remove('v6130-set-mode');decorateForge()}},true);
+function refreshForge(){try{decorateForge();renderSetIfOpen()}catch(_){}}
+state();installAchievements();refreshForge();stamp();
+document.addEventListener('DOMContentLoaded',()=>{state();installAchievements();refreshForge();stamp()},{once:true});
+window.addEventListener('pageshow',()=>{refreshForge();stamp()},{passive:true});
+window.addEventListener('growlegends:account-ready',()=>{state();installAchievements();decorateGrow();refreshForge();stamp()},{passive:true});
+window.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')==='forge')refreshForge()},{passive:true});
 window.v6130GeneticsConfig={recipes:RECIPES,slots:SLOT_CFG};window.v6130RenderLabHtml=()=>labBodyHtml();
 window.v6130QA=()=>({version:VERSION,pending:state()?.pending||null,totalCrosses:state()?.totalCrosses||0,totalEssences:state()?.totalEssences||0,buds:buds(),fragments:fragments(),growButton:!!document.querySelector('[data-v6130-open]'),forgeTab:!!document.querySelector('.v6130-set-tab'),hybrids:Object.values(RECIPES).map(r=>({id:r.hybrid,known:!!seed(r.hybrid),stock:Number(s?.grow?.seeds?.[r.hybrid])||0}))});
 })();
