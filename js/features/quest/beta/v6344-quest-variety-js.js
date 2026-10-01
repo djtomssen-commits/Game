@@ -254,6 +254,8 @@ try{
       const r=base.apply(this,arguments);
       try{window.v309PaintQuestRoles?.()}catch(_){}
       try{window.v386RenderQuestShell?.()}catch(_){}
+      try{window.v387QuestClean?.()}catch(_){}
+      try{window.v391QuestFinish?.()}catch(_){}
       try{window.v099PaintQuestXp?.()}catch(_){}
       try{window.v321PaintQuestCosts?.()}catch(_){}
       try{window.v306PaintFirstDailyQuestHarz?.()}catch(_){}
@@ -273,10 +275,10 @@ try{
     window.__V6344_QUEST_GO_WRAP__='retired-v7122-render-owner';
   }
 }catch(_){ }
-document.addEventListener('click',e=>{if(e.target?.closest?.('#quests .v387-refresh,#quests #refreshQuests'))setTimeout(schedule,80)},true);
-window.addEventListener('growlegends:account-ready',()=>setTimeout(()=>{migrateCurrentOffers();void v7291WarmQuestAssets(liveQuests());if(document.getElementById('quests')?.classList.contains('active'))schedule()},220));
-window.addEventListener('growlegends:first-playable',()=>setTimeout(()=>void v7291WarmQuestAssets(liveQuests()),420),{passive:true});
-window.addEventListener('pageshow',()=>setTimeout(()=>{migrateCurrentOffers();if(document.getElementById('quests')?.classList.contains('active'))schedule()},300),{passive:true});
+document.addEventListener('click',e=>{if(e.target?.closest?.('#quests .v387-refresh,#quests #refreshQuests'))queueMicrotask(schedule)},true);
+window.addEventListener('growlegends:account-ready',()=>queueMicrotask(()=>{migrateCurrentOffers();void v7291WarmQuestAssets(liveQuests());if(document.getElementById('quests')?.classList.contains('active'))schedule()}));
+window.addEventListener('growlegends:first-playable',()=>void v7291WarmQuestAssets(liveQuests()),{passive:true});
+window.addEventListener('pageshow',()=>queueMicrotask(()=>{migrateCurrentOffers();if(document.getElementById('quests')?.classList.contains('active'))schedule()}),{passive:true});
 
 /* V8.009: free-running 700 ms startup repaint retired.
    account-ready/pageshow own initialization; first-playable owns asset warmup. */
