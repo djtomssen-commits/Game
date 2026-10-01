@@ -256,6 +256,7 @@ try{
       try{window.v386RenderQuestShell?.()}catch(_){}
       try{window.v099PaintQuestXp?.()}catch(_){}
       try{window.v321PaintQuestCosts?.()}catch(_){}
+      try{window.v306PaintFirstDailyQuestHarz?.()}catch(_){}
       try{window.v392PaintActive?.()}catch(_){}
       try{window.v4172EnhanceQuestPage?.()}catch(_){}
       try{window.v4222RenderElitePanel?.()}catch(_){}
