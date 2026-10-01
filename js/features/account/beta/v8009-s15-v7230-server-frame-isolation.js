@@ -45,8 +45,8 @@ async function sync(){
 arm();
 window.addEventListener('growlegends:account-ready',()=>{if(isServer1())void sync()},{passive:true});
 window.addEventListener('growlegends:first-playable',()=>{if(isServer1())void sync()},{passive:true});
-window.addEventListener('pageshow',()=>{if(isServer1())setTimeout(()=>void sync(),120)},{passive:true});
-document.addEventListener('click',e=>{const b=e.target instanceof Element?e.target.closest?.('[data-v343-server]'):null;if(!b)return;if(String(b.dataset.v343Server||'')==='server1')setTimeout(arm,0)},true);
-[0,250,900,2200].forEach(ms=>setTimeout(()=>{if(isServer1())void sync()},ms));
+window.addEventListener('pageshow',()=>{if(isServer1())void sync()},{passive:true});
+document.addEventListener('click',e=>{const b=e.target instanceof Element?e.target.closest?.('[data-v343-server]'):null;if(!b)return;if(String(b.dataset.v343Server||'')==='server1')queueMicrotask(arm)},true);
+queueMicrotask(()=>{if(isServer1())void sync()});
 window.v7230FrameDiagnostics=()=>({server:serverId(),syncing:!!flight,state:window.__V7137_FRAME_STATE__||null,guard:document.documentElement.classList.contains('v7230-frame-server-sync')});
 })();
