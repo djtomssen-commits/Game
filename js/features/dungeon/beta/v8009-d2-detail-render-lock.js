@@ -83,35 +83,9 @@ function enforceCanonicalDetail(reason='manual'){
 }
 window.v7166EnforceCanonicalDetail=enforceCanonicalDetail;
 enforceCanonicalDetail('boot');
-setTimeout(()=>enforceCanonicalDetail('boot-120'),120);
-setTimeout(()=>enforceCanonicalDetail('boot-500'),500);
 
-/* Sprint 2: global renderDungeon wrapper retired. Repair is now a direct
-   canonical hook plus event/foreground safety net. */
-
-
-document.addEventListener('click',e=>{
-  const el=e.target instanceof Element?e.target:null;
-  if(el?.closest?.('#dungeonMapCard,[data-screen="dungeon"],[data-go="dungeon"]')){
-    enforceCanonicalDetail('click');
-    requestAnimationFrame(()=>repair('click'));
-  }
-},true);
-window.addEventListener('growlegends:navigation-open-v7119',e=>{
-  if(String(e?.detail?.screen||e?.detail||'')==='dungeon'){
-    enforceCanonicalDetail('navigation');
-    requestAnimationFrame(()=>repair('navigation'));
-  }
-},{passive:true});
-window.addEventListener('growlegends:foreground-ready',()=>{
-  enforceCanonicalDetail('foreground');
-  requestAnimationFrame(()=>repair('foreground'));
-},{passive:true});
-window.addEventListener('pageshow',()=>{
-  enforceCanonicalDetail('pageshow');
-  setTimeout(()=>enforceCanonicalDetail('pageshow-120'),120);
-  setTimeout(()=>enforceCanonicalDetail('pageshow-500'),500);
-},{passive:true});
+/* V8.009: D5 final seal is the single Dungeon-detail lifecycle owner.
+   v7166 only exposes canonical alias/repair helpers and performs one boot pass. */
 
 window.__V7166_DUNGEON_DETAIL_QA__=()=>({
   version:VERSION,
