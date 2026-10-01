@@ -223,9 +223,5 @@ function v060InstallFight(){
 
 /* Phase 2 retired: v060 renderDungeon warning/fight wrapper. The final canonical dungeon owner replaces this render layer. */
 
-const v060BaseRender=render;
-render=function(){
-  return v060BaseRender();
-};
-
-try{render();}catch(e){console.error('V4.02 dungeon balance',e);}
+/* V8.009: no-op global render wrapper and eager rerender retired.
+   Balance helpers and v060InstallFight remain available to the canonical Dungeon chain. */
