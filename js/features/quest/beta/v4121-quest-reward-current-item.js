@@ -74,8 +74,8 @@
  window.v4121RefreshQuestRewardArt=upgrade;
  window.v4121QuestRewardSnapshot=snap;
  window.v4121AfterQuestClaim=before=>{
-  requestAnimationFrame(()=>upgrade(before));
-  setTimeout(()=>upgrade(before),60);
+  /* Reward DOM already exists when the canonical claim owner invokes this hook. */
+  upgrade(before);
  };
  /* V8.009 Quest consolidation: the canonical claim owner (v7045) invokes
     v4121AfterQuestClaim directly. The historical global click retry duplicated
