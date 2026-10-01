@@ -16445,12 +16445,7 @@ function v093BuildMenu(){
 document.querySelector('#v093SaveEvent')?.addEventListener('click',v093SaveEvent);
 document.querySelector('#v093SaveNews')?.addEventListener('click',v093SaveNews);
 
-const v093BaseRender=render;
-render=function(){
-  v093BaseRender();
-  
-  v093BuildMenu();
-};
+/* Admin menu ownership is driven by v093CheckAdmin / account lifecycle. */
 
 (async()=>{
   try{
@@ -17536,12 +17531,7 @@ v093AdminLoadLists=async function(){
   return result;
 };
 
-const v103BaseRender=render;
-render=function(){
-  v103BaseRender();
-  
-  if(v093IsAdmin)v103InstallPlayerAdmin();
-};
+/* v093AdminLoadLists is the direct owner for installing the player editor. */
 
 try{
   if(v093IsAdmin)v103InstallPlayerAdmin();
@@ -19282,14 +19272,8 @@ v114AskRetry=function(){
   );
 };
 
-const v115BaseRender=render;
-render=function(){
-  const result=v115BaseRender();
-  
-  return result;
-};
-
-setTimeout(v115EnsureUi,150);
+document.addEventListener('DOMContentLoaded',v115EnsureUi,{once:true});
+window.addEventListener('growlegends:account-ready',v115EnsureUi,{passive:true});
 </script>
 
 
@@ -35644,23 +35628,9 @@ v085ActiveEvents=function(){
   return `${html}<div>${badges.join(' ')}</div>`;
 };
 
-const v274BaseRender=render;
-render=function(){
-  const r=v274BaseRender();
-  if(v093IsAdmin)v274InstallEventPresets();
-  
-  const line=document.querySelector('#v141VersionLine');
-  return r;
-};
-
-setTimeout(()=>{
-  try{
-    if(v093IsAdmin)v274InstallEventPresets();
-    renderQuests();
-  }catch(e){}
-  
-  const line=document.querySelector('#v141VersionLine');
-},2100);
+/* v093CheckAdmin / v093AdminLoadLists directly own preset installation. */
+window.addEventListener('growlegends:account-ready',()=>{if(v093IsAdmin)v274InstallEventPresets()},{passive:true});
+window.addEventListener('pageshow',()=>{if(v093IsAdmin&&document.getElementById('admin')?.classList.contains('active'))v274InstallEventPresets()},{passive:true});
 </script>
 
 <script id="v275-character-name-source-of-truth">
