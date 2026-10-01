@@ -1,0 +1,25 @@
+
+/* Samsung Internet / mobile Chrome can occasionally drop the title plaque paint layer
+   during scroll on long pages. Keep the plaque on its own stable layer and force its
+   visible state without touching gameplay data or handlers. */
+#character.v514-reference-hero #v510HeroRoot .v510-titlebar{
+  display:flex!important;
+  visibility:visible!important;
+  opacity:1!important;
+  position:relative!important;
+  z-index:90!important;
+  transform:translateZ(0)!important;
+  -webkit-transform:translateZ(0)!important;
+  backface-visibility:hidden!important;
+  -webkit-backface-visibility:hidden!important;
+  will-change:transform!important;
+  contain:paint!important;
+}
+#character.v514-reference-hero #v510HeroRoot .v514-kicker{
+  position:relative!important;
+  z-index:80!important;
+  transform:translateZ(0)!important;
+  -webkit-transform:translateZ(0)!important;
+  backface-visibility:hidden!important;
+  -webkit-backface-visibility:hidden!important;
+}

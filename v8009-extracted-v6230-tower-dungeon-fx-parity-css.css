@@ -1,0 +1,42 @@
+
+/* Visual-only parity layer. Turm-Kampfwerte und Resolver bleiben unverändert. */
+#tower .vT-proc-strip{
+  position:absolute;z-index:82;top:91px;left:7%;right:7%;min-height:30px;
+  display:flex;align-items:center;justify-content:center;gap:6px;flex-wrap:wrap;
+  overflow:visible;pointer-events:none;
+}
+#tower .vT-proc-strip .v604-skill-chip{
+  position:relative;display:inline-flex;align-items:center;justify-content:center;gap:4px;
+  max-width:92%;padding:6px 11px;border:2px solid #7f6339;border-radius:999px;
+  background:linear-gradient(180deg,rgba(10,15,10,.97),rgba(2,5,3,.97));
+  color:#f3e2ad;font-size:6.1px;font-weight:1000;line-height:1;letter-spacing:.035em;
+  white-space:nowrap;text-shadow:0 2px 2px #000;
+  box-shadow:0 5px 14px rgba(0,0,0,.68),inset 0 0 12px rgba(255,215,127,.04);
+  animation:v6230TowerChip 1.55s cubic-bezier(.18,.8,.22,1) forwards;
+}
+#tower .vT-proc-strip .v604-skill-chip.crit{border-color:#d9a337;color:#ffe478;box-shadow:0 0 18px rgba(255,190,55,.26),0 5px 14px #000b}
+#tower .vT-proc-strip .v604-skill-chip.wucht{border-color:#d77d2e;color:#ffc36d;box-shadow:0 0 18px rgba(255,126,38,.22),0 5px 14px #000b}
+#tower .vT-proc-strip .v604-skill-chip.rage{border-color:#61c84e;color:#a7ff83;box-shadow:0 0 18px rgba(88,235,72,.22),0 5px 14px #000b}
+#tower .vT-proc-strip .v604-skill-chip.heal{border-color:#40d55a;color:#8dff9a;box-shadow:0 0 20px rgba(57,255,95,.24),0 5px 14px #000b}
+#tower .vT-proc-strip .v604-skill-chip.dodge{border-color:#63bde8;color:#b7e9ff;box-shadow:0 0 20px rgba(71,190,255,.25),0 5px 14px #000b}
+#tower .vT-proc-strip .v604-skill-chip.guard{border-color:#7bc9ef;color:#c9efff;box-shadow:0 0 20px rgba(96,203,255,.22),0 5px 14px #000b}
+#tower .vT-proc-strip .v604-skill-chip.magic{border-color:#b45adb;color:#eab7ff;box-shadow:0 0 20px rgba(197,81,255,.24),0 5px 14px #000b}
+#tower .vT-proc-strip .v604-skill-chip.frost{border-color:#5dd7ef;color:#baf5ff;box-shadow:0 0 20px rgba(68,224,255,.25),0 5px 14px #000b}
+#tower .vT-proc-strip .v604-skill-chip.scout{border-color:#8bdb57;color:#d1ff9d;box-shadow:0 0 20px rgba(139,229,72,.20),0 5px 14px #000b}
+#tower .v6230-impact{position:absolute;z-index:74;top:49%;width:58px;height:58px;margin:-29px 0 0 -29px;border-radius:50%;pointer-events:none;opacity:0;border:3px solid rgba(255,236,164,.86);box-shadow:0 0 18px rgba(255,181,65,.72),inset 0 0 16px rgba(255,241,186,.50);animation:v6230Impact .38s ease-out forwards}
+#tower .v6230-impact.player{left:24%}#tower .v6230-impact.enemy{left:76%}
+#tower #vTPlayerFighter.v6230-heal{animation:v6230Heal .60s ease!important}
+#tower #vTPlayerFighter.v6230-dodge{animation:v6230Dodge .48s ease!important}
+#tower #vTPlayerFighter.v6230-guard{animation:v6230Guard .62s ease!important}
+#tower #vTPlayerFighter.v6230-power{animation:v6230Power .48s ease!important}
+#tower #vTEnemyFighter.v6230-power{animation:v6230EnemyPower .42s ease!important}
+#tower #vTEnemyFighter.v6230-dodge{animation:v6230EnemyDodge .48s ease!important}
+@keyframes v6230TowerChip{0%{opacity:0;transform:translateY(8px) scale(.76)}14%{opacity:1;transform:translateY(0) scale(1.07)}74%{opacity:1;transform:translateY(0) scale(1)}100%{opacity:0;transform:translateY(-10px) scale(.95)}}
+@keyframes v6230Impact{0%{opacity:0;transform:scale(.18) rotate(0)}30%{opacity:1;transform:scale(1.05) rotate(12deg)}100%{opacity:0;transform:scale(1.75) rotate(38deg)}}
+@keyframes v6230Heal{0%,100%{filter:none}35%{filter:drop-shadow(0 0 20px rgba(83,255,105,.9)) brightness(1.10)}}
+@keyframes v6230Dodge{0%,100%{transform:translateX(0)}35%{transform:translateX(-24px) translateY(-5px)}68%{transform:translateX(8px)}}
+@keyframes v6230Guard{0%,100%{filter:none}35%{filter:drop-shadow(0 0 22px rgba(112,214,255,.95)) brightness(1.13)}}
+@keyframes v6230Power{0%,100%{filter:none}35%{filter:drop-shadow(0 0 18px rgba(255,188,77,.85)) brightness(1.12)}}
+@keyframes v6230EnemyPower{0%,100%{filter:none}30%{filter:brightness(1.45) drop-shadow(0 0 16px rgba(255,153,70,.75))}}
+@keyframes v6230EnemyDodge{0%,100%{transform:translateX(0)}35%{transform:translateX(24px) translateY(-5px)}68%{transform:translateX(-8px)}}
+@media(max-width:560px){#tower .vT-proc-strip{top:88px;left:4%;right:4%;gap:4px}#tower .vT-proc-strip .v604-skill-chip{font-size:5.65px;padding:5px 8px}}

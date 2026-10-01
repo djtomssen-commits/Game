@@ -1,0 +1,90 @@
+
+/* Begleiter-Schaden: gleiche visuelle Wertigkeit wie normale Trefferzahlen. */
+.v6303-companion-impact{
+  width:148px!important;
+  height:132px!important;
+}
+.v6303-companion-impact>b{
+  top:-8px!important;
+  left:50%!important;
+  transform:translateX(-50%)!important;
+  font-size:30px!important;
+  line-height:1!important;
+  font-weight:1000!important;
+  letter-spacing:-.03em!important;
+  color:#98ff72!important;
+  text-shadow:0 3px 4px #000,0 0 10px rgba(122,255,91,.92),0 0 22px rgba(88,217,65,.58)!important;
+  filter:drop-shadow(0 2px 1px #000)!important;
+  animation:v6312CompanionDamagePop .78s cubic-bezier(.14,.76,.18,1) forwards!important;
+}
+.v6303-companion-impact>small{
+  bottom:-3px!important;
+  max-width:150px!important;
+  padding:4px 7px!important;
+  font-size:7px!important;
+  letter-spacing:.02em!important;
+  color:#eef7eb!important;
+  border-color:#60775d!important;
+  background:rgba(5,11,7,.92)!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+}
+.v6303-impact-bud>b{color:#79ff69!important;text-shadow:0 3px 4px #000,0 0 12px #63e84f,0 0 24px rgba(73,211,65,.55)!important}
+.v6303-impact-bone>b{color:#ffd878!important;text-shadow:0 3px 4px #000,0 0 12px #e9b84f,0 0 24px rgba(219,165,59,.56)!important}
+.v6303-impact-spore>b{color:#dd8cff!important;text-shadow:0 3px 4px #000,0 0 12px #b454df,0 0 24px rgba(167,68,211,.60)!important}
+.v6303-impact-crow>b{color:#86eaff!important;text-shadow:0 3px 4px #000,0 0 12px #54cbe7,0 0 24px rgba(66,184,216,.60)!important}
+.v6303-companion-impact.crit>b{
+  font-size:34px!important;
+  filter:drop-shadow(0 0 5px currentColor)!important;
+}
+@keyframes v6312CompanionDamagePop{
+  0%{opacity:0;transform:translateX(-50%) translateY(16px) scale(.58)}
+  24%{opacity:1;transform:translateX(-50%) translateY(-6px) scale(1.22)}
+  52%{opacity:1;transform:translateX(-50%) translateY(-13px) scale(1)}
+  100%{opacity:0;transform:translateX(-50%) translateY(-52px) scale(.88)}
+}
+
+/* Samenlager: Goldbestand permanent oben im Lagerkopf sichtbar. */
+.v6312-seed-head-actions{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-end!important;
+  gap:8px!important;
+  flex:0 0 auto!important;
+}
+.v6312-seed-gold{
+  min-width:112px!important;
+  padding:7px 10px!important;
+  border:1px solid #d1a34b!important;
+  border-radius:12px!important;
+  background:linear-gradient(180deg,rgba(45,33,12,.95),rgba(19,14,6,.96))!important;
+  box-shadow:inset 0 0 13px rgba(233,184,76,.10),0 4px 10px #0007!important;
+  text-align:right!important;
+  white-space:nowrap!important;
+}
+.v6312-seed-gold span{
+  display:block!important;
+  color:#d9b558!important;
+  font-size:6px!important;
+  font-weight:1000!important;
+  letter-spacing:.10em!important;
+}
+.v6312-seed-gold b{
+  display:block!important;
+  margin-top:1px!important;
+  color:#ffe18a!important;
+  font-size:15px!important;
+  line-height:1.05!important;
+  text-shadow:0 1px 2px #000!important;
+}
+@media(max-width:560px){
+  .v6303-companion-impact{width:126px!important;height:116px!important}
+  .v6303-companion-impact>b{font-size:25px!important}
+  .v6303-companion-impact.crit>b{font-size:29px!important}
+  .v6303-companion-impact>small{font-size:6.2px!important;max-width:126px!important}
+  .v495-seed-head{gap:7px!important}
+  .v6312-seed-head-actions{gap:5px!important}
+  .v6312-seed-gold{min-width:88px!important;padding:6px 7px!important;border-radius:10px!important}
+  .v6312-seed-gold span{font-size:5px!important}
+  .v6312-seed-gold b{font-size:12px!important}
+}

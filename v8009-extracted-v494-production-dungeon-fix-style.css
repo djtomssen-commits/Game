@@ -1,0 +1,20 @@
+
+/* Production: no dungeon preview/test controls may be visible or clickable. */
+#v453PreviewHub,
+#v453PreviewPicker,
+#dungeon .v435-preview-launch,
+#dungeon .v441-preview-launch,
+#dungeon .v447-d9-preview-launch,
+#dungeonMapCard .v435-preview-banner,
+#dungeonMapCard .v441-preview-banner,
+#dungeonMapCard .v453-preview-banner,
+#dungeonMapCard .v453-preview-nav{
+  display:none!important;
+  pointer-events:none!important;
+}
+/* Current live room must always stay tappable outside a completed dungeon. */
+#dungeonMapCard:not(.v441-preview-mode):not(.v435-preview-mode):not(.v453-all-preview) .v261-node.current,
+#dungeonMapCard:not(.v441-preview-mode):not(.v435-preview-mode):not(.v453-all-preview) #v261EnterCurrent{
+  pointer-events:auto!important;
+  touch-action:manipulation!important;
+}

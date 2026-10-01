@@ -1,0 +1,43 @@
+
+/* Character scroll fix stays intact, but remove the heavy black halo left by the old
+   mobile hero polish. No filter/transform is reintroduced, so V7.163 compositor stability remains. */
+#character.v514-reference-hero #v510HeroRoot .slot{
+  box-shadow:inset 0 0 7px rgba(55,104,62,.20),0 0 5px color-mix(in srgb,var(--v514-rarity,#79b866) 34%,transparent)!important;
+}
+#character.v514-reference-hero #v510HeroRoot .v510-portrait,
+#character.v514-reference-hero #v510HeroRoot .avatar-scene,
+#character.v514-reference-hero #v510HeroRoot .class-avatar-big,
+#character.v514-reference-hero #v510HeroRoot .v41-portrait,
+#character.v514-reference-hero #v510HeroRoot .v080-class-avatar-img{
+  background-color:transparent!important;
+  box-shadow:none!important;
+}
+#character #v510HeroRoot .avatar-scene.v7137-frame-target>.v7139-frame-art{
+  background:transparent!important;
+  box-shadow:none!important;
+  mix-blend-mode:normal!important;
+}
+
+/* Illegal Book: reward badge must remain one atomic line on narrow phones. */
+#v106Overlay .v106-ach-top{align-items:flex-start!important;flex-wrap:nowrap!important;min-width:0!important}
+#v106Overlay .v106-ach-title{min-width:0!important;overflow-wrap:anywhere!important}
+#v106Overlay .v106-ach-reward{
+  flex:0 0 auto!important;min-width:max-content!important;width:max-content!important;
+  white-space:nowrap!important;word-break:keep-all!important;overflow-wrap:normal!important;hyphens:none!important;
+  line-height:1.2!important;text-align:center!important;
+}
+
+/* Server-confirmed Guild XP appears inside the same reward surface as the activity. */
+.v7165-guild-reward-line{
+  margin-top:6px;padding:7px 9px;border:1px solid rgba(113,205,92,.38);border-radius:9px;
+  background:linear-gradient(180deg,rgba(19,48,23,.78),rgba(8,23,12,.82));color:#c9f3bc;
+  font-size:9px;line-height:1.3;font-weight:800;
+}
+.v7165-guild-reward-line.pending{opacity:.72}
+.v7165-guild-reward-line.zero{border-color:rgba(187,163,92,.30);color:#d9cc9d;background:rgba(37,31,14,.55)}
+#v211PvpResultCard .v7165-guild-reward-line{margin:7px 10px 0;text-align:center}
+
+#v7165BossHistoryNote{
+  margin:7px 0;padding:6px 8px;border:1px solid rgba(200,157,78,.32);border-radius:9px;
+  background:rgba(39,28,10,.52);color:#e8d49c;font-size:6.5px;line-height:1.35;text-align:center;
+}

@@ -1,0 +1,64 @@
+
+/* ===== V4.02 world dashboard ===== */
+.v085-dashboard{display:grid;gap:12px}
+.v085-welcome{
+  position:relative;overflow:hidden;
+  padding:20px 16px;
+  border-radius:18px;
+  border:1px solid #3d563a;
+  background:
+    radial-gradient(circle at 85% 0%,rgba(115,195,82,.16),transparent 34%),
+    linear-gradient(160deg,#1c2d1d,#101812 70%);
+  box-shadow:0 12px 28px #0007;
+}
+.v085-welcome:after{
+  content:"";
+  position:absolute;right:-24px;bottom:-28px;
+  width:150px;height:150px;border-radius:50%;
+  background:radial-gradient(circle,#6db85733,transparent 70%);
+}
+.v085-greeting{font-size:24px;font-weight:1000;letter-spacing:-.4px}
+.v085-sub{margin-top:4px;color:#9eaa9d;font-size:11px;line-height:1.45}
+.v085-return{
+  display:inline-block;margin-top:10px;padding:5px 9px;
+  border-radius:999px;border:1px solid #456744;
+  background:#152318;color:#b9e4aa;font-size:9px;font-weight:900;
+}
+.v085-section{
+  border:1px solid #334831;border-radius:16px;
+  background:linear-gradient(160deg,#151f16,#0e150f);
+  padding:13px;
+}
+.v085-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
+.v085-head h2{margin:0;font-size:17px}
+.v085-event-card{
+  padding:12px;border-radius:13px;border:1px solid #4f4a35;
+  background:
+    radial-gradient(circle at 100% 0%,rgba(209,171,76,.10),transparent 34%),
+    linear-gradient(160deg,#1c1c13,#12150f);
+}
+.v085-event-title{font-size:13px;font-weight:1000;color:#e4c56d}
+.v085-event-sub{margin-top:3px;font-size:9px;color:#a5aca1}
+.v085-event-status{
+  display:inline-block;margin-top:7px;padding:4px 7px;border-radius:999px;
+  border:1px solid #6c5730;background:#20190d;color:#edc873;font-size:8px;font-weight:1000;
+}
+.v085-news-list{display:grid;gap:8px}
+.v085-news{
+  padding:10px;border-radius:12px;border:1px solid #30442f;background:#111812
+}
+.v085-news-top{display:flex;justify-content:space-between;gap:8px;align-items:center}
+.v085-news-title{font-size:11px;font-weight:1000}
+.v085-news-version{font-size:7px;padding:3px 6px;border-radius:999px;border:1px solid #4b633f;color:#b9dea9}
+.v085-news-text{margin-top:4px;font-size:9px;color:#9da99b;line-height:1.4}
+.v085-quick-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.v085-quick{
+  min-height:92px;padding:11px;border-radius:14px;border:1px solid #344934;
+  background:linear-gradient(155deg,#182319,#101711);color:#eef4ed;text-align:left
+}
+.v085-quick .ico{font-size:27px}
+.v085-quick b{display:block;margin-top:5px;font-size:12px}
+.v085-quick span{display:block;margin-top:2px;font-size:8px;color:#95a093}
+@media(min-width:600px){
+  .v085-quick-grid{grid-template-columns:repeat(3,1fr)}
+}

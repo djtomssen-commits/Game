@@ -1,0 +1,62 @@
+
+/* The legacy header children have stronger historical !important rules.
+   V4.02 also hides them inline in JS; these selectors are a second guard. */
+html body .app > header > .brand,
+html body .app > header > .stats.resource-stats{
+  display:none!important;
+  visibility:hidden!important;
+  height:0!important;
+  min-height:0!important;
+  max-height:0!important;
+  margin:0!important;
+  padding:0!important;
+  overflow:hidden!important;
+}
+
+/* V4.02 custom hamburger is replaced by the original real menu button. */
+.v358-global-header > .v358-menu{
+  display:none!important;
+}
+
+/* Original menu button, once moved inside the new header. */
+.v358-global-header > #v032MenuBtn{
+  display:flex!important;
+  position:static!important;
+  inset:auto!important;
+  width:50px!important;
+  height:50px!important;
+  margin:0!important;
+  padding:0!important;
+  align-items:center!important;
+  justify-content:center!important;
+  border:1px solid #5a782e!important;
+  border-radius:12px!important;
+  background:linear-gradient(180deg,#15231a,#081109)!important;
+  color:#fff!important;
+  font-size:27px!important;
+  box-shadow:0 7px 18px rgba(0,0,0,.46),inset 0 0 15px rgba(117,204,71,.05)!important;
+  z-index:auto!important;
+}
+
+/* Keep only one compact top block. */
+.app > header{
+  min-height:0!important;
+  height:auto!important;
+  padding:0!important;
+}
+.app > header > .v358-global-header{
+  margin:0!important;
+}
+.app > header > .v358-subbar{
+  display:flex!important;
+  visibility:visible!important;
+  height:auto!important;
+  min-height:0!important;
+  max-height:none!important;
+  overflow:visible!important;
+}
+
+/* The world-specific V4.02 bar must stay gone. */
+#world .v351-topbar{
+  display:none!important;
+}

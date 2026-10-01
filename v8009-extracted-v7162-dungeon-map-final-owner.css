@@ -1,0 +1,42 @@
+
+/* V7.162 — one visible 10-room map owner. */
+#dungeonMapCard.v468-master .v261-stage{
+  position:relative!important;overflow:hidden!important;background:#050906!important;
+}
+#dungeonMapCard.v468-master .v261-stage>.v261-bg{
+  display:none!important;visibility:hidden!important;opacity:0!important;background-image:none!important;
+}
+#dungeonMapCard.v468-master .v261-stage>.v261-road,
+#dungeonMapCard.v468-master .v261-stage::after{
+  display:none!important;visibility:hidden!important;opacity:0!important;content:none!important;background:none!important;
+}
+#dungeonMapCard.v468-master .v261-stage>.gl-dungeon-map-bg-img{
+  display:block!important;position:absolute!important;inset:0!important;z-index:0!important;
+  width:100%!important;height:100%!important;max-width:none!important;max-height:none!important;
+  object-fit:cover!important;object-position:center center!important;transform:none!important;
+  filter:none!important;opacity:1!important;pointer-events:none!important;
+}
+#dungeonMapCard.v468-master .v261-stage>.v261-fx{position:absolute!important;inset:0!important;z-index:1!important;opacity:.18!important}
+#dungeonMapCard.v468-master .v261-node{z-index:4!important}
+#dungeonMapCard.v468-master .v261-ring{
+  background-image:none!important;background-color:rgba(3,8,4,.82)!important;overflow:hidden!important;
+}
+#dungeonMapCard.v468-master .v261-ring>.v261-bossart{display:none!important;background-image:none!important}
+#dungeonMapCard.v468-master .v261-ring>.gl-dungeon-node-art{
+  display:block!important;visibility:visible!important;opacity:1!important;
+  position:absolute!important;inset:2px!important;z-index:2!important;
+  width:calc(100% - 4px)!important;height:calc(100% - 4px)!important;
+  max-width:none!important;max-height:none!important;object-fit:contain!important;object-position:center!important;
+  border-radius:50%!important;background:transparent!important;pointer-events:none!important;
+}
+#dungeonMapCard.v468-master .v261-num,
+#dungeonMapCard.v468-master .v261-check,
+#dungeonMapCard.v468-master .v261-lock{z-index:9!important}
+
+/* Make the currently selected opponent use the same exact asset as its map node. */
+#dungeonMapCard.v468-master .v261-thumb,
+#dungeonMapCard.v468-master .v251-current-icon{background-size:contain!important;background-position:center!important;background-repeat:no-repeat!important}
+
+/* Final visible build number; old pseudo-version owners may no longer paint V7.124 over it. */
+.app>header .v358-logo::after{content:"V7.162"!important}
+.app>header .v366-ver::after,.app>header .v371-logo em::after,.app>header .v372-logo em::after{content:"V7.162"!important}

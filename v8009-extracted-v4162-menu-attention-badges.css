@@ -1,0 +1,36 @@
+
+#v032MenuPanel .top-menu-item.v4162-attn{
+  position:relative!important;
+  padding-right:38px!important;
+}
+#v032MenuPanel .top-menu-item.v4162-attn::after{
+  content:attr(data-v4162-badge)!important;
+  position:absolute!important;
+  right:8px!important;
+  top:50%!important;
+  transform:translateY(-50%)!important;
+  min-width:17px!important;
+  height:17px!important;
+  padding:0 4px!important;
+  box-sizing:border-box!important;
+  display:grid!important;
+  place-items:center!important;
+  border-radius:999px!important;
+  background:linear-gradient(180deg,#dff45d,#a9cb35)!important;
+  border:1px solid #efff91!important;
+  color:#10200d!important;
+  font:1000 8px/1 system-ui,sans-serif!important;
+  box-shadow:0 0 11px rgba(209,232,78,.58),0 2px 5px #0008!important;
+  z-index:3!important;
+}
+#v032MenuPanel .top-menu-item.v4162-attn.v4162-social::after{
+  background:linear-gradient(180deg,#ff765f,#c63e31)!important;
+  border-color:#ffad9e!important;
+  color:#fff!important;
+  box-shadow:0 0 11px rgba(235,84,63,.52),0 2px 5px #0008!important;
+}
+/* V4.99 Growroom had its own ! pseudo badge. V4.162 now owns the same visual
+   for every menu page, so there is exactly one badge per row. */
+#v032MenuPanel .top-menu-item.v492-attn.v4162-attn::after{
+  content:attr(data-v4162-badge)!important;
+}

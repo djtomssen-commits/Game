@@ -1,0 +1,44 @@
+
+/* ===== V4.02 settings portal =====
+   The menu is moved to <body>, outside all header stacking contexts.
+*/
+
+body > #v141SettingsMenu{
+  position:fixed!important;
+  z-index:2147483000!important;
+  box-sizing:border-box!important;
+  isolation:isolate!important;
+  transform:none!important;
+}
+
+/* Absolutely nothing in the game may paint above the open settings menu. */
+body > #v141SettingsMenu.open{
+  display:block!important;
+  visibility:visible!important;
+  opacity:1!important;
+}
+
+/* Full dropdown, no internal scrolling. */
+@media(max-width:700px){
+  body > #v141SettingsMenu.open{
+    width:min(330px,calc(100vw - 16px))!important;
+    max-width:calc(100vw - 16px)!important;
+    height:auto!important;
+    max-height:none!important;
+    overflow:visible!important;
+    overflow-y:visible!important;
+    left:auto!important;
+    right:8px!important;
+    bottom:auto!important;
+  }
+}
+
+/* Keep account actions definitely visible. */
+body > #v141SettingsMenu #v141Logout,
+body > #v141SettingsMenu #v141Delete{
+  display:block!important;
+  visibility:visible!important;
+  opacity:1!important;
+  position:relative!important;
+  z-index:2!important;
+}

@@ -1,0 +1,180 @@
+
+/* V4.02 — compact mobile inventory */
+#character #v130GearInvHead{display:none!important}
+
+/* tighter equipment cards */
+#character #inventory .inventory-grid{
+  gap:7px!important;
+  align-items:stretch!important;
+}
+#character #inventory .inv-item{
+  min-height:0!important;
+  height:auto!important;
+  padding:9px 8px!important;
+  border-radius:15px!important;
+  justify-content:flex-start!important;
+}
+#character #inventory .inv-item .v41-inv-icon,
+#character #inventory .inv-item .inv-icon{
+  width:50px!important;height:50px!important;
+  margin:0 auto 5px!important;
+  font-size:26px!important;
+  border-radius:13px!important;
+}
+#character #inventory .item-name{
+  min-height:31px!important;
+  margin:2px 0 4px!important;
+  font-size:7.8px!important;
+  line-height:1.18!important;
+}
+#character #inventory .rarity-badge,
+#character #inventory .v123-rarity{
+  margin:2px auto 5px!important;
+  padding:2px 7px!important;
+  font-size:6.5px!important;
+}
+#character #inventory .class-lock,
+#character #inventory [class*="class-lock"]{
+  margin:3px 0!important;
+  padding:3px 7px!important;
+  font-size:7px!important;
+}
+#character #inventory .item-bonus{
+  min-height:31px!important;
+  margin:5px 0!important;
+  font-size:6.8px!important;
+  line-height:1.35!important;
+}
+#character #inventory .v029Compare,
+#character #inventory [class*="compare"]{
+  min-height:42px!important;
+  margin:5px 0!important;
+  padding:6px 5px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  font-size:5.8px!important;
+  line-height:1.25!important;
+}
+#character #inventory .price,
+#character #inventory [class*="sell-value"]{
+  margin:4px auto 7px!important;
+  padding:3px 7px!important;
+  font-size:6.2px!important;
+}
+#character #inventory .inv-actions{
+  margin-top:0!important;
+  padding-top:3px!important;
+  gap:5px!important;
+}
+#character #inventory .inv-actions .btn{
+  min-height:37px!important;
+  padding:7px 5px!important;
+  border-radius:9px!important;
+  font-size:7px!important;
+}
+#character #inventory .sell-btn{
+  min-height:34px!important;
+}
+
+/* More obvious rarity identity */
+#character #inventory .inv-item.epic-purple{
+  box-shadow:inset 0 0 25px rgba(164,86,224,.10),0 0 12px rgba(164,86,224,.10)!important;
+}
+#character #inventory .inv-item.common-green{
+  box-shadow:inset 0 0 24px rgba(89,187,70,.08),0 0 10px rgba(89,187,70,.07)!important;
+}
+#character #inventory .inv-item.rare-blue{
+  box-shadow:inset 0 0 25px rgba(74,137,216,.10),0 0 12px rgba(74,137,216,.09)!important;
+}
+#character #inventory .inv-item.legendary-orange{
+  box-shadow:inset 0 0 26px rgba(224,142,50,.11),0 0 13px rgba(224,142,50,.10)!important;
+}
+#character #inventory .inv-item.mystic-cyan{
+  box-shadow:inset 0 0 27px rgba(65,220,215,.13),0 0 15px rgba(65,220,215,.11)!important;
+}
+
+/* Gems & scrolls — same premium language */
+#character .card:has(#v030Materials){
+  overflow:hidden!important;
+  border:1px solid #347a76!important;
+  border-radius:18px!important;
+  background:
+    radial-gradient(circle at 90% 0%,rgba(72,225,217,.10),transparent 30%),
+    radial-gradient(circle at 5% 15%,rgba(167,84,231,.07),transparent 25%),
+    linear-gradient(150deg,#0e1d1b,#07100d)!important;
+}
+#character .card:has(#v030Materials) .section-title{
+  border-bottom-color:#28504e!important;
+}
+#character .card:has(#v030Materials) .section-title h2{
+  font-size:19px!important;
+  text-shadow:0 0 13px rgba(66,222,216,.13)!important;
+}
+#character .card:has(#v030Materials) .section-title .pill{
+  border-color:#3b8580!important;
+  color:#76dfda!important;
+}
+#character #v130MatInvHead{display:none!important}
+#character #v030Materials .inventory-grid{
+  gap:7px!important;
+}
+#character #v030Materials .inv-item{
+  min-height:155px!important;
+  padding:8px!important;
+  border-radius:14px!important;
+  border-color:#376d68!important;
+  background:
+    radial-gradient(circle at 50% 0%,rgba(67,221,214,.07),transparent 30%),
+    linear-gradient(150deg,#10201e,#08110f)!important;
+}
+#character #v030Materials .item-name{
+  min-height:26px!important;
+  font-size:7.8px!important;
+}
+#character #v030Materials .item-bonus{
+  min-height:30px!important;
+  font-size:6.7px!important;
+  line-height:1.35!important;
+}
+#character #v030Materials .btn{
+  min-height:36px!important;
+  padding:6px!important;
+  font-size:7px!important;
+}
+#character #v030Materials:empty,
+#character #v030Materials .empty{
+  min-height:110px!important;
+}
+
+/* empty material state */
+#character .v133-material-empty{
+  position:relative;
+  min-height:108px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:16px 10px 12px;
+  border:1px dashed #396a66;
+  border-radius:14px;
+  background:linear-gradient(145deg,#0b1715,#07100d);
+  color:#819791;
+  text-align:center;
+}
+#character .v133-material-empty:before{
+  content:"💎";
+  position:absolute;top:11px;
+  font-size:20px;opacity:.48;
+}
+#character .v133-material-empty span{
+  padding-top:22px;
+  font-size:9px;
+}
+
+@media(max-width:560px){
+  #character #inventory .inventory-grid,
+  #character #v030Materials .inventory-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  }
+  #character #inventory .inv-item{padding:8px 7px!important}
+}

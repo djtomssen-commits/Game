@@ -1,0 +1,101 @@
+
+/* V4.02 — remove legacy header overlap and clean the mobile composition */
+body:has(#world.active) > header{display:none!important}
+body:has(#world.active) #v032TopMenu > #v032MenuBtn{display:none!important}
+body:has(#world.active) #v032TopMenu{z-index:2000!important}
+body:has(#world.active) #v032MenuPanel{top:64px!important}
+
+#world.v350-isolated{padding-top:0!important}
+#world.v350-isolated > .v349-home{padding-top:0!important}
+
+.v351-topbar{
+  position:sticky;top:0;z-index:40;
+  display:grid;grid-template-columns:48px minmax(96px,1.2fr) repeat(3,minmax(0,1fr));
+  gap:5px;align-items:center;
+  padding:7px 6px;
+  margin:0 -7px;
+  background:rgba(2,7,4,.97);
+  border-bottom:1px solid rgba(131,151,34,.35);
+  box-shadow:0 8px 22px rgba(0,0,0,.48);
+  backdrop-filter:blur(9px);
+}
+.v351-menu{
+  width:44px;height:44px;border:1px solid #567328;border-radius:10px;
+  background:linear-gradient(180deg,#152218,#071009);color:white;font-size:24px;font-weight:900
+}
+.v351-logo{line-height:.82;text-align:left;min-width:0}
+.v351-logo strong{
+  display:block;font-family:Georgia,"Times New Roman",serif;font-size:17px;color:#86df43;
+  text-shadow:0 2px 0 #294913;white-space:nowrap
+}
+.v351-logo span{display:block;margin-left:8px;font-family:Georgia,"Times New Roman",serif;font-size:10px;color:#d3a54a;font-weight:900}
+.v351-res{
+  min-width:0;min-height:40px;padding:4px 3px;border:1px solid #555c21;border-radius:8px;
+  background:linear-gradient(180deg,#10150c,#070c07);text-align:center;display:flex;flex-direction:column;justify-content:center
+}
+.v351-res small{display:block;font-size:5.7px;color:#95a18d;text-transform:uppercase;line-height:1}
+.v351-res b{display:block;margin-top:3px;font-size:8.8px;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.v351-res.dampf b{color:#8fe8ff} .v351-res.harz b{color:#cf82ff}
+
+.v349-hero{
+  height:365px!important;
+  border-radius:0 0 13px 13px!important;
+  background:
+    linear-gradient(180deg,rgba(1,5,2,.06),rgba(1,5,2,.10) 52%,rgba(1,5,2,.91) 100%),
+    url("assets/v7195-base64/9af7675077d34512e8d0.webp") center 30%/cover no-repeat!important
+}
+.v349-profile{top:10px!important;left:9px!important;width:54%!important}
+.v349-avatar{width:48px!important;height:48px!important;flex-basis:48px!important;font-size:26px!important}
+.v349-name{font-size:17px!important}
+.v349-level{font-size:9px!important}
+.v349-xptrack{margin-top:6px!important}
+.v349-power{font-size:9px!important;margin-top:5px!important}
+.v349-power b{font-size:14px!important}
+
+.v349-events{top:10px!important;right:7px!important;width:38%!important;gap:4px!important}
+.v349-event{min-height:39px!important;padding:6px 7px!important}
+.v349-event b{font-size:7.7px!important}
+.v349-event span{font-size:6px!important}
+
+.v349-warrior{left:-8px!important;width:55%!important;height:61%!important}
+.v349-welcome{left:32%!important;right:2%!important;bottom:13px!important}
+.v349-welcome small{font-size:9px!important}
+.v349-welcome h1{font-size:26px!important;margin-top:2px!important}
+.v349-welcome p{font-size:7px!important;margin-top:4px!important}
+
+.v349-primary{gap:5px!important}
+.v349-card{min-height:250px!important}
+.v349-art{height:91px!important}
+.v349-cardbody{margin-top:0!important;padding:7px 5px 6px!important}
+.v349-card h2{font-size:11px!important}
+.v349-card p{min-height:25px!important;margin:4px 0!important;font-size:6px!important}
+.v349-status{min-height:27px!important;font-size:7px!important}
+.v349-btn{min-height:30px!important;font-size:7px!important}
+
+.v349-lower{gap:5px!important}
+.v349-panel{min-height:188px!important}
+.v349-feature-art{height:95px!important}
+.v349-feature h2{margin:-7px 2px 0!important;font-size:9px!important}
+.v349-feature p{font-size:6px!important}
+.v349-goals-title{font-size:9px!important}
+.v349-goal{grid-template-columns:19px 1fr!important;gap:3px!important;padding-bottom:4px!important}
+.v349-goal i{font-size:14px!important}
+.v349-goal b,.v349-goal span{font-size:5.8px!important}
+.v349-feature .v349-btn{margin:3px 5px 6px!important}
+
+.v349-dock{
+  position:sticky;bottom:0;z-index:35;
+  margin:2px -7px -14px;padding:6px 3px 7px!important;
+  background:rgba(2,7,4,.97);backdrop-filter:blur(9px)
+}
+.v349-dock button{min-height:45px!important}
+.v349-dock .ico{font-size:18px!important}
+
+@media(min-width:600px){
+  .v351-topbar{grid-template-columns:58px 180px repeat(3,1fr);gap:9px;padding:9px 12px;margin:0 -14px}
+  .v351-menu{width:52px;height:52px}
+  .v351-logo strong{font-size:25px} .v351-logo span{font-size:14px}
+  .v351-res{min-height:48px} .v351-res small{font-size:8px} .v351-res b{font-size:13px}
+  .v349-hero{height:570px!important}
+  .v349-primary,.v349-lower{gap:12px!important}
+}

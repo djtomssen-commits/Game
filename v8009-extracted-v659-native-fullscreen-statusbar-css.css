@@ -1,0 +1,38 @@
+
+/* Native Capacitor builds hide the Android status bar and therefore use the true
+   top of the display. Browser builds keep the normal web layout. URL flag remains
+   supported only as a compatibility fallback; native detection is authoritative. */
+body.v659-native-fullscreen{
+  --v650-safe-top:0px!important;
+}
+body.v659-native-fullscreen #v372TopbarShell,
+body.v659-native-fullscreen.v650-native-safe #v372TopbarShell{
+  padding-top:0!important;
+  top:0!important;
+  left:0!important;
+  right:0!important;
+  width:100%!important;
+  position:fixed!important;
+  transform:none!important;
+  -webkit-transform:none!important;
+}
+body.v659-native-fullscreen > .app,
+body.v659-native-fullscreen.v650-native-safe > .app{
+  margin-top:0!important;
+  padding-top:var(--v654-hud-bottom,50px)!important;
+}
+/* The tower intentionally owns the whole viewport and hides the global HUD. */
+body.v659-native-fullscreen.v6259-tower-focus > .app{
+  padding-top:0!important;
+}
+body.v659-native-fullscreen #v032MenuPanel{
+  top:calc(var(--v654-hud-bottom,50px) + 2px)!important;
+  max-height:calc(100dvh - var(--v654-hud-bottom,50px) - 6px)!important;
+}
+body.v659-native-fullscreen > #v141SettingsMenu.v377-open{
+  top:calc(var(--v654-hud-bottom,50px) + 2px)!important;
+  max-height:calc(100dvh - var(--v654-hud-bottom,50px) - 6px)!important;
+}
+body.v659-native-fullscreen #v074ProfileOverlay.v074-profile-overlay{
+  top:calc(var(--v654-hud-bottom,50px) + 2px)!important;
+}

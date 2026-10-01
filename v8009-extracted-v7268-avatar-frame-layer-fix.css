@@ -1,0 +1,109 @@
+
+/*
+   WICHTIG: Avatarbild und Rahmen sind zwei verschiedene Bildebenen.
+   Der Charakter-Crop darf NIE auf .v7139-frame-art angewendet werden.
+*/
+
+/* Basis: das echte Charakterbild bleibt rund geclippt und identisch mit/ohne Rahmen. */
+#world.active .v366-avatar{position:relative!important}
+#world.active .v366-avatar > img:not(.v7139-frame-art){
+  position:relative!important;
+  z-index:1!important;
+  width:100%!important;
+  height:100%!important;
+  max-width:none!important;
+  max-height:none!important;
+  object-fit:cover!important;
+  object-position:center 22%!important;
+  transform:scale(1.22)!important;
+  transform-origin:center 24%!important;
+  display:block!important;
+  border-radius:50%!important;
+  clip-path:circle(50% at 50% 50%)!important;
+}
+
+/* Ohne Rahmen darf der Container normal rund clippen. */
+#world.active .v366-avatar:not(.v7137-frame-target[data-v7137-frame]){
+  overflow:hidden!important;
+}
+
+/* Mit Rahmen: Container offen lassen, damit der Rahmen außen sichtbar bleibt. */
+#world.active .v366-avatar.v7137-frame-target[data-v7137-frame]{
+  overflow:visible!important;
+  border-color:transparent!important;
+  box-shadow:none!important;
+}
+
+/* Rahmen-Bild explizit auf seine ursprüngliche Overlay-Geometrie zurücksetzen. */
+#world.active .v366-avatar.v7137-frame-target[data-v7137-frame] > img.v7139-frame-art{
+  position:absolute!important;
+  left:-21%!important;
+  top:-21%!important;
+  width:142%!important;
+  height:142%!important;
+  max-width:none!important;
+  max-height:none!important;
+  object-fit:fill!important;
+  object-position:center!important;
+  border-radius:0!important;
+  clip-path:none!important;
+  transform:translateZ(0)!important;
+  transform-origin:center!important;
+  z-index:45!important;
+  pointer-events:none!important;
+}
+
+/* Hall / Profil: ebenfalls nur das Charakterbild croppen, niemals den Rahmen. */
+html body .app section#hall.v646-hall .v646-own-avatar > img:not(.v7139-frame-art),
+html body .app section#hall.v646-hall .v646-row-avatar > img:not(.v7139-frame-art),
+#v072OwnProfile .v646-own-avatar > img:not(.v7139-frame-art),
+#v074ProfileContent .v652-profile-avatar > img:not(.v7139-frame-art){
+  object-fit:cover!important;
+  object-position:center 20%!important;
+  transform:scale(1.13)!important;
+  transform-origin:center 24%!important;
+  border-radius:50%!important;
+  clip-path:circle(50% at 50% 50%)!important;
+}
+
+html body .app section#hall.v646-hall .v646-own-avatar.v7137-frame-target,
+html body .app section#hall.v646-hall .v646-row-avatar.v7137-frame-target,
+#v072OwnProfile .v646-own-avatar.v7137-frame-target,
+#v074ProfileContent .v652-profile-avatar.v7137-frame-target{
+  overflow:visible!important;
+}
+
+/* Rahmen in Hall / Profil bleibt ebenfalls eigene Overlay-Ebene. */
+html body .app section#hall.v646-hall .v646-own-avatar.v7137-frame-target > img.v7139-frame-art,
+html body .app section#hall.v646-hall .v646-row-avatar.v7137-frame-target > img.v7139-frame-art,
+#v072OwnProfile .v646-own-avatar.v7137-frame-target > img.v7139-frame-art,
+#v074ProfileContent .v652-profile-avatar.v7137-frame-target > img.v7139-frame-art{
+  position:absolute!important;
+  left:-25%!important;
+  top:-25%!important;
+  width:150%!important;
+  height:150%!important;
+  max-width:none!important;
+  max-height:none!important;
+  object-fit:fill!important;
+  object-position:center!important;
+  border-radius:0!important;
+  clip-path:none!important;
+  transform:translateZ(0)!important;
+  z-index:45!important;
+  pointer-events:none!important;
+}
+
+@media(max-width:390px){
+  #world.active .v366-avatar > img:not(.v7139-frame-art){
+    object-position:center 22%!important;
+    transform:scale(1.18)!important;
+  }
+  html body .app section#hall.v646-hall .v646-own-avatar > img:not(.v7139-frame-art),
+  html body .app section#hall.v646-hall .v646-row-avatar > img:not(.v7139-frame-art),
+  #v072OwnProfile .v646-own-avatar > img:not(.v7139-frame-art),
+  #v074ProfileContent .v652-profile-avatar > img:not(.v7139-frame-art){
+    object-position:center 20%!important;
+    transform:scale(1.10)!important;
+  }
+}

@@ -1,0 +1,38 @@
+
+/* V6.36: Quest finale uses the same visual language and motion classes as the live Dungeon fight. */
+#v311QuestFight.v636-dungeon-quest{
+  position:fixed!important;inset:0!important;z-index:12180!important;display:none!important;
+  align-items:flex-start!important;justify-content:center!important;padding:8px 6px max(10px,env(safe-area-inset-bottom))!important;
+  overflow:auto!important;background:rgba(0,0,0,.96)!important;backdrop-filter:blur(7px)!important
+}
+#v311QuestFight.v636-dungeon-quest.show{display:flex!important}
+#v636QuestDungeonCard{width:min(650px,100%)!important;margin:auto!important;box-sizing:border-box!important}
+#v636QuestDungeonCard .battle-stage{position:relative!important;overflow:hidden!important}
+#v636QuestDungeonCard .v600-bg{display:block!important;position:absolute!important;inset:0!important;z-index:0!important;opacity:1!important;visibility:visible!important;pointer-events:none!important}
+#v636QuestDungeonCard .fighter{z-index:18!important;overflow:visible!important}
+#v636QuestDungeonCard .fighter.attack-right{animation:v252AttackRight .43s cubic-bezier(.2,.75,.25,1)!important}
+#v636QuestDungeonCard .fighter.attack-left{animation:v252AttackLeft .43s cubic-bezier(.2,.75,.25,1)!important}
+#v636QuestDungeonCard .fighter.hit{animation:v252Hit .40s ease!important}
+#v636QuestDungeonCard .v636-monster{display:block!important;visibility:visible!important;opacity:1!important;width:194px!important;height:238px!important;max-width:none!important;max-height:none!important;overflow:visible!important;filter:drop-shadow(0 18px 13px rgba(0,0,0,.92)) drop-shadow(0 0 16px rgba(98,220,76,.20))!important;pointer-events:none!important}
+#v636QuestDungeonCard .v575-proc-strip{top:108px!important;left:7%!important;right:7%!important;z-index:90!important;display:flex!important;justify-content:center!important;align-items:center!important;gap:5px!important;min-height:30px!important;overflow:visible!important;pointer-events:none!important}
+#v636QuestDungeonCard .v575-chip.v604-skill-chip{position:relative!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;gap:4px!important;max-width:94%!important;padding:6px 11px!important;border:2px solid #7f6339!important;border-radius:999px!important;background:linear-gradient(180deg,rgba(10,15,10,.97),rgba(2,5,3,.97))!important;color:#f3e2ad!important;font-size:6.1px!important;font-weight:1000!important;line-height:1!important;letter-spacing:.035em!important;white-space:nowrap!important;text-shadow:0 2px 2px #000!important;box-shadow:0 5px 14px rgba(0,0,0,.68),inset 0 0 12px rgba(255,215,127,.04)!important;animation:v604SkillChip 1.55s cubic-bezier(.18,.8,.22,1) forwards!important}
+#v636QuestDungeonCard .v575-chip.v604-skill-chip.crit{border-color:#d9a337!important;color:#ffe478!important;box-shadow:0 0 18px rgba(255,190,55,.26),0 5px 14px #000b!important}
+#v636QuestDungeonCard .v575-chip.v604-skill-chip.wucht{border-color:#d77d2e!important;color:#ffc36d!important;box-shadow:0 0 18px rgba(255,126,38,.22),0 5px 14px #000b!important}
+#v636QuestDungeonCard .v575-chip.v604-skill-chip.rage{border-color:#61c84e!important;color:#a7ff83!important;box-shadow:0 0 18px rgba(88,235,72,.22),0 5px 14px #000b!important}
+#v636QuestDungeonCard .v575-chip.v604-skill-chip.heal{border-color:#40d55a!important;color:#8dff9a!important;box-shadow:0 0 20px rgba(57,255,95,.24),0 5px 14px #000b!important}
+#v636QuestDungeonCard .v575-chip.v604-skill-chip.dodge{border-color:#63bde8!important;color:#b7e9ff!important;box-shadow:0 0 20px rgba(71,190,255,.25),0 5px 14px #000b!important}
+#v636QuestDungeonCard .v575-chip.v604-skill-chip.guard{border-color:#7bc9ef!important;color:#c9efff!important;box-shadow:0 0 20px rgba(96,203,255,.22),0 5px 14px #000b!important}
+#v636QuestDungeonCard .v575-chip.v604-skill-chip.magic{border-color:#b45adb!important;color:#eab7ff!important;box-shadow:0 0 20px rgba(197,81,255,.24),0 5px 14px #000b!important}
+#v636QuestDungeonCard .v575-chip.v604-skill-chip.frost{border-color:#5dd7ef!important;color:#baf5ff!important;box-shadow:0 0 20px rgba(68,224,255,.25),0 5px 14px #000b!important}
+#v636QuestDungeonCard .v575-chip.v604-skill-chip.scout{border-color:#8bdb57!important;color:#d1ff9d!important;box-shadow:0 0 20px rgba(139,229,72,.20),0 5px 14px #000b!important}
+#v636QuestPlayerFighter.v604-heal-flash{animation:v604HealFlash .60s ease!important}
+#v636QuestPlayerFighter.v604-dodge-flash{animation:v604DodgeFlash .48s ease!important}
+#v636QuestPlayerFighter.v604-guard-flash{animation:v604GuardFlash .62s ease!important}
+#v636QuestPlayerFighter.v604-power-flash{animation:v604PowerFlash .48s ease!important}
+#v636QuestEnemyFighter.v604-hit-flash{animation:v604EnemyHit .42s ease!important}
+#v636QuestDungeonCard.v577-victory .v636-monster{filter:grayscale(.55) brightness(.55) drop-shadow(0 15px 10px #000e)!important;opacity:.40!important;transform:translateY(16px) rotate(4deg)!important;transition:opacity .45s ease,filter .45s ease,transform .45s ease!important}
+@media(max-width:560px){
+ #v636QuestDungeonCard .v636-monster{width:160px!important;height:202px!important}
+ #v636QuestDungeonCard .v575-proc-strip{top:104px!important;left:4%!important;right:4%!important}
+ #v636QuestDungeonCard .v575-chip.v604-skill-chip{font-size:5.65px!important;padding:5px 8px!important}
+}

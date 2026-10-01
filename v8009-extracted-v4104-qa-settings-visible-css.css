@@ -1,0 +1,29 @@
+
+.app > header .v358-logo::after{content:"V4.104"!important}
+.app > header .v366-ver::after,.app > header .v371-logo em::after,.app > header .v372-logo em::after{content:"V4.104"!important}
+/* Old QA action stays available internally, but the visible entry now lives at the top. */
+#v4102QaButton{display:none!important}
+#v4104QaRow{
+  width:100%;border:0;border-bottom:1px solid #31503a!important;border-radius:0!important;
+  background:linear-gradient(90deg,#142b1a,#0c1710)!important;color:inherit!important;
+  cursor:pointer;text-align:left;font:inherit;
+}
+#v4104QaRow:hover,#v4104QaRow:active{background:linear-gradient(90deg,#1b3a23,#102017)!important}
+#v4104QaRow .v141-setting-icon{border-color:#4f8a5f!important;background:#0e2114!important}
+#v4104QaStatus{
+  display:inline-flex;align-items:center;justify-content:center;min-width:48px;padding:4px 7px;
+  border:1px solid #526158;border-radius:999px;background:#101711;color:#9cac9f;
+  font-size:6px;font-weight:1000;white-space:nowrap
+}
+#v4104QaStatus.ok{border-color:#4e8b58;background:#102114;color:#8ce89a}
+#v4104QaStatus.warn{border-color:#9a7934;background:#241c0d;color:#ffd873}
+#v4104QaStatus.bad{border-color:#9b4040;background:#250d0d;color:#ff8e88}
+/* The settings menu has grown over time. Never let lower controls disappear off-screen. */
+@media(max-width:700px){
+  body > #v141SettingsMenu.open,#v141SettingsMenu.open{
+    max-height:calc(100vh - 16px)!important;
+    overflow-y:auto!important;
+    overscroll-behavior:contain!important;
+    scrollbar-width:thin;
+  }
+}

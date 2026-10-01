@@ -1,0 +1,185 @@
+
+/* Material chamber atmosphere. UI only; material/socket logic stays untouched. */
+#character #v459PanelMaterials{
+  isolation:isolate!important;
+}
+#character #v459PanelMaterials::before{
+  content:''!important;
+  position:absolute!important;
+  inset:-10px -4px -16px!important;
+  pointer-events:none!important;
+  z-index:-1!important;
+  border-radius:18px!important;
+  background:
+    radial-gradient(circle at 8% 28%,rgba(94,207,64,.08),transparent 18%),
+    radial-gradient(circle at 92% 38%,rgba(70,177,52,.07),transparent 20%),
+    linear-gradient(180deg,rgba(12,26,15,.72),rgba(3,9,5,.92))!important;
+  box-shadow:inset 0 0 46px rgba(0,0,0,.52)!important;
+}
+
+#character #v030Materials.v546-material-card{
+  background:
+    radial-gradient(circle at 14% 8%,rgba(92,184,64,.11),transparent 23%),
+    radial-gradient(circle at 87% 11%,rgba(92,184,64,.08),transparent 22%),
+    radial-gradient(circle at 50% 54%,rgba(45,113,42,.09),transparent 35%),
+    linear-gradient(180deg,#0d190f 0%,#071109 64%,#050b06 100%)!important;
+}
+#character #v030Materials.v546-material-card::before{
+  content:''!important;
+  position:absolute!important;
+  inset:0!important;
+  pointer-events:none!important;
+  opacity:.13!important;
+  background-image:
+    radial-gradient(ellipse at 10% 20%,rgba(91,167,68,.55) 0 1px,transparent 2px),
+    radial-gradient(ellipse at 72% 38%,rgba(91,167,68,.45) 0 1px,transparent 2px),
+    radial-gradient(ellipse at 38% 78%,rgba(91,167,68,.40) 0 1px,transparent 2px)!important;
+  background-size:22px 30px,28px 38px,34px 46px!important;
+  mix-blend-mode:screen!important;
+  z-index:0!important;
+}
+#character #v030Materials.v546-material-card::after{
+  content:''!important;
+  position:absolute!important;
+  left:0!important;right:0!important;bottom:0!important;
+  height:54px!important;
+  pointer-events:none!important;
+  opacity:.34!important;
+  background:
+    linear-gradient(180deg,transparent 0%,rgba(50,30,15,.20) 25%,rgba(72,42,20,.42) 26%,rgba(39,23,12,.58) 100%),
+    repeating-linear-gradient(90deg,rgba(115,73,34,.13) 0 1px,transparent 1px 38px)!important;
+  border-top:1px solid rgba(140,94,43,.25)!important;
+  z-index:0!important;
+}
+#character #v030Materials.v546-material-card > *{position:relative!important;z-index:1!important}
+
+/* Real inventory-like material slots */
+#character .v546-material-grid{
+  gap:6px!important;
+  align-items:stretch!important;
+}
+#character .v546-material-item,
+#character .v547-empty-slot{
+  min-height:150px!important;
+}
+#character .v546-material-item{
+  border-width:1.5px!important;
+  border-radius:11px!important;
+  background:
+    linear-gradient(135deg,rgba(255,255,255,.025),transparent 24%),
+    radial-gradient(circle at 50% 12%,color-mix(in srgb,var(--q) 15%,transparent),transparent 34%),
+    linear-gradient(160deg,#0f1a12 0%,#061008 100%)!important;
+  box-shadow:
+    inset 0 0 0 1px rgba(0,0,0,.34),
+    inset 0 0 16px rgba(0,0,0,.42),
+    0 0 10px color-mix(in srgb,var(--q) 12%,transparent),
+    0 3px 8px rgba(0,0,0,.25)!important;
+}
+#character .v546-material-item::before,
+#character .v547-empty-slot::before,
+#character .v547-empty-slot::after{
+  content:''!important;
+  position:absolute!important;
+  width:14px!important;height:14px!important;
+  pointer-events:none!important;
+  opacity:.58!important;
+}
+#character .v546-material-item::before{
+  left:4px!important;top:4px!important;
+  border-left:1px solid var(--q)!important;
+  border-top:1px solid var(--q)!important;
+}
+#character .v546-material-art{
+  margin-top:3px!important;
+  border-radius:10px!important;
+}
+#character .v546-material-name{font-size:6.5px!important;line-height:1.1!important}
+#character .v546-rarity-badge{margin-top:3px!important;font-size:5px!important;padding:3px 5px!important}
+#character .v546-material-bonus{font-size:5.4px!important;line-height:1.17!important;padding:4px 4px!important}
+#character .v546-material-item .v546-use{min-height:27px!important;font-size:5.4px!important;padding:4px!important}
+
+#character .v547-empty-slot{
+  position:relative!important;
+  min-width:0!important;
+  padding:8px 5px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:6px!important;
+  border:1px solid #425246!important;
+  border-radius:11px!important;
+  background:
+    radial-gradient(circle at 50% 44%,rgba(65,112,64,.12),transparent 34%),
+    linear-gradient(155deg,#0b150e,#050b07)!important;
+  box-shadow:inset 0 0 18px rgba(0,0,0,.48),0 3px 8px rgba(0,0,0,.20)!important;
+  overflow:hidden!important;
+}
+#character .v547-empty-slot::before{
+  left:5px!important;top:5px!important;
+  border-left:1px solid #6b765f!important;
+  border-top:1px solid #6b765f!important;
+}
+#character .v547-empty-slot::after{
+  right:5px!important;bottom:5px!important;
+  border-right:1px solid #6b765f!important;
+  border-bottom:1px solid #6b765f!important;
+}
+#character .v547-slot-watermark{
+  position:absolute!important;
+  inset:auto auto 9px 50%!important;
+  transform:translateX(-50%) scale(1.55)!important;
+  opacity:.055!important;
+  font-size:36px!important;
+  filter:grayscale(1)!important;
+}
+#character .v547-slot-plus{
+  width:34px!important;height:34px!important;
+  display:grid!important;place-items:center!important;
+  border:1px solid #5d705b!important;
+  border-radius:50%!important;
+  background:rgba(7,15,9,.74)!important;
+  color:#839780!important;
+  font-size:20px!important;
+  line-height:1!important;
+  box-shadow:inset 0 0 10px rgba(0,0,0,.46)!important;
+}
+#character .v547-slot-label{
+  max-width:80%!important;
+  color:#788a78!important;
+  font-size:5.4px!important;
+  line-height:1.18!important;
+  font-weight:800!important;
+  text-align:center!important;
+}
+#character .v547-empty-hint{
+  margin:0 0 7px!important;
+  padding:6px 8px!important;
+  display:grid!important;
+  grid-template-columns:auto minmax(0,1fr)!important;
+  column-gap:7px!important;
+  align-items:center!important;
+  border:1px solid #324b36!important;
+  border-radius:9px!important;
+  background:linear-gradient(180deg,rgba(12,27,16,.76),rgba(7,15,9,.82))!important;
+}
+#character .v547-empty-hint > span{grid-row:1/3;font-size:19px!important;opacity:.78!important}
+#character .v547-empty-hint > b{color:#e7e1cd!important;font-size:6.6px!important;line-height:1.1!important}
+#character .v547-empty-hint > em{color:#879789!important;font-size:5.4px!important;line-height:1.2!important;font-style:normal!important}
+
+/* Make auto socket a little tighter so the slots stay visible sooner. */
+#character #v480MaterialAutoBar{padding:7px 9px!important;gap:6px!important}
+#character #v480MaterialAutoBar .v480-auto-btn{min-height:32px!important;padding:6px 9px!important}
+
+@media(max-width:390px){
+  #character .v546-material-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:5px!important}
+  #character .v546-material-item,
+  #character .v547-empty-slot{min-height:141px!important}
+  #character .v546-material-art{width:43px!important;height:43px!important;font-size:25px!important}
+  #character .v546-material-art img{width:37px!important;height:37px!important;max-width:37px!important;max-height:37px!important}
+  #character .v546-material-name{font-size:5.8px!important}
+  #character .v546-material-bonus{font-size:4.9px!important;min-height:25px!important}
+  #character .v546-material-item .v546-use{font-size:4.9px!important;min-height:25px!important}
+  #character .v547-slot-plus{width:30px!important;height:30px!important;font-size:18px!important}
+  #character .v547-slot-label{font-size:4.9px!important}
+}

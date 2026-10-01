@@ -1,0 +1,112 @@
+
+/* Opaque modal backdrop: no Hall/other page artwork may shine through between HUD and profile. */
+#v074ProfileOverlay.v074-profile-overlay{
+  background:#020805!important;
+}
+
+/* Keep side flaps out of the way while a player profile is open. */
+body.v653-profile-open #v269TicketTab,
+body.v653-profile-open #v4144GuildChatTab{
+  opacity:0!important;
+  pointer-events:none!important;
+  transform:translateX(115%) translateY(-50%)!important;
+  transition:opacity .14s ease,transform .14s ease!important;
+}
+
+/* Slightly stronger/denser hero card: larger avatar, less dead space. */
+#v074ProfileContent.v652-profile .v074-profile-head{
+  grid-template-columns:84px minmax(0,1fr) 94px!important;
+  gap:8px!important;
+  min-height:98px!important;
+  padding:8px 9px!important;
+}
+#v074ProfileContent.v652-profile .v652-profile-avatar{
+  width:78px!important;height:78px!important;
+  border-width:2px!important;
+}
+#v074ProfileContent.v652-profile .v074-profile-title{
+  font-size:20px!important;line-height:1.02!important;
+}
+#v074ProfileContent.v652-profile .v074-profile-class{
+  margin-top:5px!important;font-size:8.5px!important;line-height:1.2!important;
+}
+#v074ProfileContent.v652-profile .v074-profile-head .v652-head-power{
+  padding:9px 5px!important;
+}
+#v074ProfileContent.v652-profile .v074-profile-head .v652-head-power span{
+  font-size:6.1px!important;
+}
+#v074ProfileContent.v652-profile .v074-profile-head .v652-head-power b{
+  font-size:19px!important;
+}
+
+/* On phones the five progression values become a readable 3 + 2 layout. */
+#v074ProfileContent.v652-profile > .v326-profile-grid{
+  grid-template-columns:repeat(6,minmax(0,1fr))!important;
+  gap:5px!important;
+}
+#v074ProfileContent.v652-profile > .v326-profile-grid > .v326-profile-stat{
+  grid-column:span 2!important;
+  padding:7px 4px!important;
+  font-size:6px!important;
+}
+#v074ProfileContent.v652-profile > .v326-profile-grid > .v326-profile-stat:nth-child(4),
+#v074ProfileContent.v652-profile > .v326-profile-grid > .v326-profile-stat:nth-child(5){
+  grid-column:span 3!important;
+}
+#v074ProfileContent.v652-profile > .v326-profile-grid > .v326-profile-stat span{
+  white-space:nowrap!important;overflow:visible!important;text-overflow:clip!important;
+}
+#v074ProfileContent.v652-profile > .v326-profile-grid > .v326-profile-stat b{
+  font-size:13px!important;
+}
+
+/* The explanatory world-boss paragraph was visually noisy and adds no live value. */
+#v074ProfileContent.v652-profile .v326-mystic .v326-profile-note{
+  display:none!important;
+}
+#v074ProfileContent.v652-profile .v652-profile-dual .v326-section{
+  min-height:126px!important;
+}
+
+/* Cleaner item cards: two-line names line up and cards stretch evenly in the two-column grid. */
+#v074ProfileContent.v652-profile .v4103-profile-equipment{
+  align-items:stretch!important;
+}
+#v074ProfileContent.v652-profile .v4103-profile-equipment .v4103-item-card{
+  height:100%!important;box-sizing:border-box!important;
+}
+#v074ProfileContent.v652-profile .v4103-profile-equipment .v4103-item-name{
+  display:-webkit-box!important;
+  -webkit-box-orient:vertical!important;
+  -webkit-line-clamp:2!important;
+  overflow:hidden!important;
+  min-height:2.30em!important;
+  max-height:2.30em!important;
+  font-size:7.1px!important;
+  line-height:1.15!important;
+}
+#v074ProfileContent.v652-profile .v4103-profile-equipment .v4103-item-chip{
+  overflow-wrap:anywhere!important;
+}
+
+@media(max-width:390px){
+  #v074ProfileContent.v652-profile .v074-profile-head{
+    grid-template-columns:73px minmax(0,1fr) 83px!important;
+    gap:6px!important;min-height:89px!important;padding:7px!important;
+  }
+  #v074ProfileContent.v652-profile .v652-profile-avatar{
+    width:68px!important;height:68px!important;
+  }
+  #v074ProfileContent.v652-profile .v074-profile-title{font-size:18px!important}
+  #v074ProfileContent.v652-profile .v074-profile-class{font-size:7.7px!important}
+  #v074ProfileContent.v652-profile .v074-profile-head .v652-head-power span{font-size:5.7px!important}
+  #v074ProfileContent.v652-profile .v074-profile-head .v652-head-power b{font-size:17px!important}
+  #v074ProfileContent.v652-profile > .v326-profile-grid{gap:4px!important}
+  #v074ProfileContent.v652-profile > .v326-profile-grid > .v326-profile-stat{
+    padding:6px 3px!important;font-size:5.55px!important;
+  }
+  #v074ProfileContent.v652-profile > .v326-profile-grid > .v326-profile-stat b{font-size:12px!important}
+  #v074ProfileContent.v652-profile .v652-profile-dual .v326-section{min-height:118px!important}
+  #v074ProfileContent.v652-profile .v4103-profile-equipment .v4103-item-name{font-size:6.85px!important}
+}

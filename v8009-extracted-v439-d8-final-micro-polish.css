@@ -1,0 +1,40 @@
+
+/* Nur D8-Optik. Keine Vorschau-/Kampf-/Fortschrittslogik geändert. */
+
+/* 8 und 9 etwas weiter auseinander. */
+#dungeonMapCard.v437-d8 .v261-node[data-v261-room="7"]{
+  --x:66!important;
+  --y:62!important;
+}
+#dungeonMapCard.v437-d8 .v261-node[data-v261-room="8"]{
+  --x:88!important;
+  --y:46!important;
+}
+#dungeonMapCard.v437-d8 .v261-node[data-v261-room="9"]{
+  --x:80!important;
+  --y:82!important;
+}
+
+/* Bossbild klarer/heller, ohne zweite eingebrannte 10. */
+#dungeonMapCard.v437-d8 .v261-node.boss .v261-bossart{
+  inset:4px!important;
+  background-image:url("assets/v7195-base64/65038c7bd10bae1a66a6.webp")!important;
+  background-size:cover!important;
+  background-position:center center!important;
+  filter:saturate(1.04) contrast(1.03) brightness(1.08)!important;
+}
+#dungeonMapCard.v437-d8 .v261-node.boss .v261-num{
+  z-index:9!important;
+}
+
+@media(max-width:390px){
+  #dungeonMapCard.v437-d8 .v261-node[data-v261-room="7"]{
+    --x:65!important;
+  }
+  #dungeonMapCard.v437-d8 .v261-node[data-v261-room="8"]{
+    --x:86!important;
+  }
+  #dungeonMapCard.v437-d8 .v261-node[data-v261-room="9"]{
+    --x:78!important;
+  }
+}

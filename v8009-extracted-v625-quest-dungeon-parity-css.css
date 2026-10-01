@@ -1,0 +1,53 @@
+
+/* Visual-only quest finale. Reward/Dampf/drop/save logic stays in the existing quest claim path. */
+#v311QuestFight.v625-quest-live .v311-arena{isolation:isolate!important}
+#v311QuestFight.v625-quest-live .v311-fighter{transform-origin:50% 90%!important;will-change:transform,filter!important}
+#v311QuestFight.v625-quest-live .v311-fighter.v625-player-attack{animation:v625AttackRight .43s cubic-bezier(.2,.75,.25,1)!important}
+#v311QuestFight.v625-quest-live .v311-fighter.v625-enemy-attack{animation:v625AttackLeft .43s cubic-bezier(.2,.75,.25,1)!important}
+#v311QuestFight.v625-quest-live .v311-fighter.v625-hit{animation:v625Hit .40s ease!important}
+#v311QuestFight.v625-quest-live .v311-fighter.v625-defeated{animation:v625Defeat .55s ease forwards!important}
+#v311QuestFight.v625-quest-live .v311-avatar img{animation:v625Idle 2s ease-in-out infinite!important;transform-origin:50% 85%!important}
+#v311QuestFight.v625-quest-live .v311-fighter:last-of-type .v311-avatar img{animation-duration:2.3s!important}
+@keyframes v625AttackRight{0%{transform:translateX(0) scale(1)}42%{transform:translateX(74px) scale(1.08) rotate(3deg)}68%{transform:translateX(54px) scale(1.05)}100%{transform:translateX(0) scale(1)}}
+@keyframes v625AttackLeft{0%{transform:translateX(0) scale(1)}42%{transform:translateX(-74px) scale(1.08) rotate(-3deg)}68%{transform:translateX(-54px) scale(1.05)}100%{transform:translateX(0) scale(1)}}
+@keyframes v625Hit{0%,100%{transform:translateX(0);filter:brightness(1)}15%{transform:translateX(-12px);filter:brightness(2.1) saturate(.45)}35%{transform:translateX(10px);filter:brightness(1.6)}55%{transform:translateX(-7px);filter:brightness(1.3)}75%{transform:translateX(4px);filter:brightness(1)}}
+@keyframes v625Defeat{0%{opacity:1;transform:translateY(0) rotate(0)}100%{opacity:.28;transform:translateY(24px) rotate(4deg);filter:grayscale(.65) brightness(.6)}}
+@keyframes v625Idle{0%,100%{transform:translateY(0) rotate(-.4deg)}50%{transform:translateY(-6px) rotate(.5deg)}}
+
+.v625-q-screen-flash{position:absolute;z-index:25;inset:0;pointer-events:none;opacity:0;background:radial-gradient(circle at 50% 52%,rgba(242,255,234,.55),transparent 34%)}
+.v625-q-screen-flash.show{animation:v625Flash .25s ease-out}
+@keyframes v625Flash{0%{opacity:0}24%{opacity:.65}100%{opacity:0}}
+.v625-q-impact{position:absolute;z-index:52;top:49%;width:78px;height:78px;transform:translate(-50%,-50%) scale(.15);opacity:0;pointer-events:none}
+.v625-q-impact:before,.v625-q-impact:after{content:"";position:absolute;inset:0;border-radius:50%;border:3px solid #fff8}
+.v625-q-impact:after{inset:18px;border-color:#92e86ecc;box-shadow:0 0 20px rgba(146,232,110,.32)}
+.v625-q-impact.magic:after{border-color:#cf78ffdd;box-shadow:0 0 22px rgba(185,77,231,.55)}
+.v625-q-impact.arrow:after{border-color:#77e1a2dd;box-shadow:0 0 20px rgba(86,201,134,.5)}
+.v625-q-impact.show{animation:v625Impact .43s ease-out}
+@keyframes v625Impact{0%{opacity:0;transform:translate(-50%,-50%) scale(.15)}22%{opacity:1;transform:translate(-50%,-50%) scale(1)}100%{opacity:0;transform:translate(-50%,-50%) scale(1.65)}}
+.v625-q-slash{position:absolute;z-index:53;width:105px;height:5px;border-radius:99px;background:linear-gradient(90deg,transparent,#fff,#8fe46c,transparent);box-shadow:0 0 12px #a8f38a;opacity:0;pointer-events:none;transform:rotate(-25deg)}
+.v625-q-slash.show{animation:v625Slash .36s ease-out}
+@keyframes v625Slash{0%{opacity:0;transform:translate(-32px,25px) rotate(-25deg) scaleX(.3)}25%{opacity:1}100%{opacity:0;transform:translate(35px,-25px) rotate(-25deg) scaleX(1.25)}}
+.v625-q-projectile{position:absolute;z-index:54;left:24%;top:50%;width:18px;height:18px;border-radius:50%;opacity:0;pointer-events:none;background:radial-gradient(circle,#fff,#99f074 35%,#3da349 62%,transparent 68%);box-shadow:0 0 18px #75df5c}
+.v625-q-projectile.magic{background:radial-gradient(circle,#fff,#d77aff 35%,#8c36bc 62%,transparent 68%);box-shadow:0 0 20px #b550e2}
+.v625-q-projectile.arrow{width:36px;height:4px;border-radius:99px;background:linear-gradient(90deg,#e9ffe8,#89e38f,#2b793c);box-shadow:0 0 9px #70d77a}
+.v625-q-projectile.player-shot{animation:v625ShotRight .38s linear}
+.v625-q-projectile.enemy-shot{left:72%;animation:v625ShotLeft .38s linear;background:radial-gradient(circle,#fff,#ff9a75 35%,#a53e32 62%,transparent 68%);box-shadow:0 0 18px #e85c46}
+@keyframes v625ShotRight{0%{opacity:0;transform:translateX(0) scale(.7)}15%{opacity:1}100%{opacity:0;transform:translateX(230px) scale(1.2)}}
+@keyframes v625ShotLeft{0%{opacity:0;transform:translateX(0) scale(.7)}15%{opacity:1}100%{opacity:0;transform:translateX(-230px) scale(1.2)}}
+.v625-q-damage{position:absolute;z-index:70;top:45%;min-width:56px;padding:3px 7px;border-radius:8px;background:rgba(8,8,8,.68);opacity:0;color:#fff;font-size:24px;font-weight:1000;letter-spacing:.02em;text-align:center;text-shadow:0 2px 5px #000;pointer-events:none}
+.v625-q-damage.player{left:18%}.v625-q-damage.enemy{right:18%}.v625-q-damage.crit{color:#ffd66e;font-size:29px;text-shadow:0 0 9px #f0a632,0 2px 5px #000}
+.v625-q-damage.pop{animation:v625DamagePop .72s cubic-bezier(.16,.8,.25,1)}
+@keyframes v625DamagePop{0%{opacity:0;transform:translateY(14px) scale(.58) rotate(-5deg)}22%{opacity:1;transform:translateY(-4px) scale(1.22) rotate(2deg)}65%{opacity:1;transform:translateY(-29px) scale(1)}100%{opacity:0;transform:translateY(-62px) scale(.82)}}
+#v311QuestFight.v625-quest-live .v615-quest-round{z-index:65!important}
+#v311QuestFight.v625-quest-live .v615-quest-procs{z-index:75!important}
+#v311QuestFight.v625-quest-live .v615-quest-log{position:relative;z-index:5}
+#v311QuestFight.v625-quest-live .v615-quest-hptext{font-size:7px!important;color:#eee3ce!important}
+#v311QuestFight.v625-quest-live .v615-quest-line.player{color:#b7d7b4}
+#v311QuestFight.v625-quest-live .v615-quest-line.enemy{color:#efb3a8}
+#v311QuestFight.v625-quest-live .v615-quest-line.finish{color:#f2d27f}
+@media(max-width:560px){
+ @keyframes v625AttackRight{0%{transform:translateX(0)}45%{transform:translateX(50px) scale(1.07)}100%{transform:translateX(0)}}
+ @keyframes v625AttackLeft{0%{transform:translateX(0)}45%{transform:translateX(-50px) scale(1.07)}100%{transform:translateX(0)}}
+ .v625-q-damage{top:43%;font-size:21px}.v625-q-damage.crit{font-size:26px}
+ .v625-q-impact{width:68px;height:68px}.v625-q-slash{width:94px}
+}

@@ -1,0 +1,23 @@
+
+@media(max-width:560px){
+  /* Die vier alten Portraits sind sehr schmal (384×1024).
+     "contain" machte sie optisch deutlich kleiner als die Harzruferin.
+     Gleiche Bildbox + cover = alle fünf Klassen wirken gleich groß. */
+  #v200CharacterModal .v200-class img,
+  [data-v200-class] img,
+  [data-v4135-class] img,
+  [data-v4136-class] img{
+    width:100%!important;
+    height:105px!important;
+    object-fit:cover!important;
+    object-position:center 20%!important;
+    transform:none!important;
+  }
+
+  /* Harzruferin-Crop beibehalten – ihr freigegebenes Bild sitzt bereits richtig. */
+  [data-v200-class="summoner"] img,
+  [data-v4135-class="summoner"] img,
+  [data-v4136-class="summoner"] img{
+    object-position:center 42%!important;
+  }
+}

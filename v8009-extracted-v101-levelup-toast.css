@@ -1,0 +1,45 @@
+
+.v101-levelup{
+  position:fixed;
+  left:50%;
+  top:24%;
+  transform:translate(-50%,-50%) scale(.9);
+  z-index:12000;
+  width:min(86vw,360px);
+  padding:20px 18px;
+  border-radius:18px;
+  border:1px solid #9a7b32;
+  background:
+    radial-gradient(circle at 50% 0%,rgba(255,219,96,.18),transparent 40%),
+    linear-gradient(180deg,#20180a,#11120d);
+  box-shadow:0 18px 50px #000c,0 0 28px rgba(255,204,63,.25);
+  text-align:center;
+  opacity:0;
+  pointer-events:none;
+  animation:v101LevelUpIn .35s ease forwards,v101LevelUpOut .35s ease 2.9s forwards;
+}
+.v101-levelup-title{
+  font-size:26px;
+  font-weight:1000;
+  color:#ffe071;
+  text-shadow:0 0 10px #ffca3a,0 0 20px rgba(255,202,58,.65);
+  letter-spacing:.04em;
+}
+.v101-levelup-level{
+  margin-top:7px;
+  font-size:17px;
+  font-weight:900;
+  color:#f3f6ef;
+}
+.v101-levelup-sub{
+  margin-top:7px;
+  font-size:10px;
+  color:#c4cdbf;
+}
+@keyframes v101LevelUpIn{
+  from{opacity:0;transform:translate(-50%,-50%) scale(.8)}
+  to{opacity:1;transform:translate(-50%,-50%) scale(1)}
+}
+@keyframes v101LevelUpOut{
+  to{opacity:0;transform:translate(-50%,-50%) scale(1.04)}
+}

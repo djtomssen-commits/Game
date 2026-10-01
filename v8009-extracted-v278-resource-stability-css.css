@@ -1,0 +1,69 @@
+
+/* ===== V4.02 resource card polish + scroll stability ===== */
+
+/* Keep resource cards in normal document flow and prevent browser repaint flicker. */
+header .resource-stats{
+  position:relative!important;
+  z-index:2!important;
+  transform:none!important;
+  will-change:auto!important;
+  contain:layout paint style;
+}
+header .resource-stats .stat{
+  transform:none!important;
+  backface-visibility:visible!important;
+  -webkit-backface-visibility:visible!important;
+  will-change:auto!important;
+  contain:layout paint;
+}
+
+/* Harz-Taler now follows the same visual hierarchy as Gold/Skill. */
+header .resource-stats .v277-harz-card{
+  justify-content:center!important;
+  align-items:flex-start!important;
+  padding-left:82px!important;
+  min-height:145px!important;
+}
+header .resource-stats .v277-harz-card:before,
+header .resource-stats .v277-harz-card:after{
+  top:50%!important;
+}
+header .resource-stats .v277-harz-card .v277-resource-sub{
+  margin-top:8px!important;
+}
+header .resource-stats .v277-harz-card > b{
+  display:flex!important;
+  align-items:center!important;
+  gap:6px!important;
+  margin-top:5px!important;
+}
+header .resource-stats .v277-harz-card > b:before{
+  content:"";
+  display:none!important;
+}
+header .resource-stats .v277-harz-card #topHarz{
+  display:inline-block!important;
+  font-size:27px!important;
+  line-height:1.05!important;
+  font-weight:1000!important;
+  color:#82e88c!important;
+  text-shadow:0 0 12px #4bd95c!important;
+}
+
+/* One single Dampf event badge. */
+header .resource-stats .v277-dampf-card .v277-dampf-event-chip{
+  margin-top:8px!important;
+}
+header .resource-stats .v277-dampf-card .v271-dampf-badge,
+header .resource-stats .v277-dampf-card .v271-event-badge,
+header .resource-stats .v277-dampf-card .pill{
+  /* historical event painters sometimes inject a second badge in the card */
+}
+@media(max-width:520px){
+  header .resource-stats .v277-harz-card{
+    padding-left:70px!important;
+  }
+  header .resource-stats .v277-harz-card #topHarz{
+    font-size:25px!important;
+  }
+}

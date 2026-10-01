@@ -1,0 +1,43 @@
+
+/* V4.96 — mobile-first Growroom layout + Grow-Buff balance guard. Desktop layout remains preserved. */
+.v493-mobile-tools{display:none}
+@media(max-width:760px){
+  #grow.screen{padding:6px 4px 88px!important}
+  .v492-grow{border-radius:17px;overflow:hidden}
+  .v492-sign{min-height:74px;margin:7px 7px 6px;padding:8px 48px;border-radius:15px}
+  .v492-sign h2{font-size:28px}.v492-sign small{font-size:6.5px;line-height:1.35}
+  .v492-sign:before,.v492-sign:after{font-size:29px}
+  .v492-topstats{grid-template-columns:repeat(2,minmax(0,1fr));gap:5px;padding:5px 7px 7px}
+  .v492-stat{padding:8px 5px;border-radius:10px}.v492-stat small{font-size:6.5px}.v492-stat b{font-size:11px;margin-top:3px}
+  .v493-mobile-tools{display:flex;align-items:center;gap:7px;padding:0 7px 8px}
+  .v493-mobile-tools span{flex:1;color:#91a38f;font-size:6px;line-height:1.25}
+  .v493-seed-toggle{min-height:34px;padding:7px 10px;border:2px solid #71893c;border-radius:10px;background:linear-gradient(180deg,#5f8b2c,#345519);color:#fff6cc;font:900 8px/1 inherit;box-shadow:0 4px 0 #1a2d0d,0 6px 12px #0007}
+  .v492-main{display:flex;flex-direction:column;gap:8px;padding:0 7px 8px}
+  .v492-main>.v492-scene{order:1;width:100%;min-height:560px}
+  .v492-main>.v492-detail-panel{order:2;width:100%}
+  .v492-main>.v492-seed-panel{order:3;width:100%;display:none}
+  .v492-grow.v493-seeds-open .v492-main>.v492-seed-panel{display:block}
+  .v492-panel{border-radius:13px}
+  .v492-panel-head{padding:9px 10px;font-size:10px}.v492-panel-head span:last-child{font-size:6.5px}
+  .v492-scene-label{top:9px;padding:7px 11px;font-size:7px}
+  .v492-plants{left:7px;right:7px;bottom:8px;gap:6px}
+  .v492-plant{min-height:91px;padding:6px 5px;border-radius:11px}
+  .v492-plant .plantico{font-size:32px}.v492-plant b{font-size:7px}.v492-plant small{font-size:6px;line-height:1.25}.v492-quality{font-size:5.8px;padding:2px 5px}
+  .v492-mini-bar{height:6px}
+  .v492-details{padding:10px}.v492-detail-name{font-size:14px}.v492-detail-sub{font-size:7px;line-height:1.35}
+  .v492-stage,.v492-quality-big,.v492-care,.v492-perfect{margin-top:8px;padding:8px}.v492-stage b,.v492-care-title{font-size:8px}
+  .v492-progress{height:8px}.v492-quality-big b{font-size:19px}.v492-stars{font-size:10px}
+  .v492-yield{grid-template-columns:1fr 1fr;gap:6px}.v492-yield div{padding:7px}.v492-yield small{font-size:5.8px}.v492-yield b{font-size:8px}
+  .v492-care p{font-size:6.8px;line-height:1.45;margin:5px 0 7px}.v492-care .btn{min-height:34px!important;font-size:7px!important}.v492-perfect-top{font-size:7px}
+  .v492-seed-scroll{max-height:430px;padding:7px;overflow:auto}.v492-seed-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+  .v492-seed{min-height:112px;padding:7px 5px}.v492-seed .seedico{font-size:27px}.v492-seed b{font-size:7px}.v492-seed small{font-size:5.6px;line-height:1.25}.v492-seed .stock{font-size:5.5px}.v492-seed .buy{font-size:6px!important;min-height:27px!important}
+  .v492-bottom{grid-template-columns:1fr;gap:7px;padding:0 7px 8px}.v492-card{padding:10px;border-radius:13px}.v492-card h3{font-size:11px;margin-bottom:8px}
+  .v492-active-row{grid-template-columns:55px 1fr}.v492-hero{font-size:43px}.v492-active b{font-size:9px}.v492-active small,.v492-buff-lines{font-size:6.8px}
+  .v492-bloom b{font-size:7px}.v492-bloom small{font-size:5.8px}.v492-bloom .btn{font-size:6px!important}
+  .v492-book-progress b{font-size:9px}.v492-book-progress small{font-size:6.5px}.v492-actions .btn{font-size:7px!important;min-height:32px!important}
+  .v492-upgrades{grid-template-columns:1fr;padding:0 7px 9px;gap:6px}.v492-upgrade{display:grid;grid-template-columns:1fr auto;gap:3px 8px;align-items:center;text-align:left;padding:9px 10px}.v492-upgrade b{font-size:8px}.v492-upgrade small{font-size:6.3px;margin:1px 0}.v492-upgrade .btn{grid-column:2;grid-row:1/3;min-width:112px;font-size:6.5px!important}
+  .v492-book-grid{grid-template-columns:1fr 1fr}
+}
+@media(max-width:390px){
+  .v492-main>.v492-scene{min-height:535px}.v492-plant{min-height:86px}.v492-sign h2{font-size:25px}.v492-yield{grid-template-columns:1fr}.v492-upgrade{grid-template-columns:1fr}.v492-upgrade .btn{grid-column:1;grid-row:auto;width:100%}
+}

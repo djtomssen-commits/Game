@@ -1,0 +1,16 @@
+
+#battleStage,#v636QuestBattleStage,#v209PvpBattleOverlay .v209-stage,#tower .vT-battle-stage,#v6200ReplayOverlay .v6200-replay-stage,#v111BossScene{position:relative}
+.v6225-extra-slash,.v6225-extra-impact,.v6225-extra-label{position:absolute;pointer-events:none;z-index:96}
+.v6225-extra-slash{top:43%;width:92px;height:7px;border-radius:999px;background:linear-gradient(90deg,transparent,rgba(239,255,224,.95),rgba(111,238,95,.88),transparent);box-shadow:0 0 10px rgba(129,255,107,.72),0 0 20px rgba(255,229,130,.28);opacity:0;transform-origin:center;animation:v6225Slash .28s cubic-bezier(.12,.75,.2,1) forwards}
+.v6225-extra-slash.to-right{left:52%;transform:rotate(-19deg)}
+.v6225-extra-slash.to-left{right:52%;transform:rotate(19deg)}
+.v6225-extra-impact{top:43%;width:54px;height:54px;margin:-27px 0 0 -27px;border-radius:50%;border:3px solid rgba(222,255,195,.9);box-shadow:0 0 14px rgba(104,237,82,.75),inset 0 0 16px rgba(255,232,145,.55);opacity:0;animation:v6225Impact .34s ease-out forwards}
+.v6225-extra-impact.right{left:76%}.v6225-extra-impact.left{left:24%}
+.v6225-extra-label{top:31%;max-width:160px;padding:5px 8px;border:1px solid #73915c;border-radius:9px;background:rgba(5,12,7,.92);color:#edffd9;font:900 7px/1.1 Arial,sans-serif;letter-spacing:.04em;text-align:center;box-shadow:0 4px 12px #000b,0 0 13px rgba(95,220,77,.22);opacity:0;animation:v6225Label .9s ease-out forwards}
+.v6225-extra-label.right{left:62%}.v6225-extra-label.left{right:62%}
+.v6225-extra-label.frost{border-color:#5dd7ef;color:#c8f8ff;box-shadow:0 4px 12px #000b,0 0 13px rgba(68,224,255,.30)}
+.v6225-extra-label.rage{border-color:#ef6b57;color:#ffd5c8}.v6225-extra-label.scout{border-color:#8bdb57;color:#dcffb9}.v6225-extra-label.magic{border-color:#d477ff;color:#f4d1ff}
+@keyframes v6225Slash{0%{opacity:0;filter:blur(3px);scale:.45}28%{opacity:1;filter:blur(0);scale:1.1}100%{opacity:0;translate:24px -10px;scale:1.35}}
+@keyframes v6225Impact{0%{opacity:0;transform:scale(.18) rotate(0deg)}30%{opacity:1;transform:scale(1.1) rotate(12deg)}100%{opacity:0;transform:scale(1.7) rotate(34deg)}}
+@keyframes v6225Label{0%{opacity:0;transform:translateY(8px) scale(.86)}18%,68%{opacity:1;transform:translateY(0) scale(1)}100%{opacity:0;transform:translateY(-17px) scale(.96)}}
+@media(max-width:560px){.v6225-extra-slash{width:72px}.v6225-extra-label{font-size:5.8px;max-width:128px;padding:4px 6px}.v6225-extra-impact{width:46px;height:46px;margin:-23px 0 0 -23px}}

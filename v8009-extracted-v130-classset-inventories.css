@@ -1,0 +1,117 @@
+
+/* V4.02 — class set + both inventory blocks */
+#character .set-card,
+#character [class*="set-card"],
+#character .class-set,
+#character [class*="class-set"]{
+  position:relative!important;
+  overflow:hidden!important;
+  border:1px solid #956c2d!important;
+  border-radius:18px!important;
+  background:
+    radial-gradient(circle at 85% 15%,rgba(232,179,65,.12),transparent 30%),
+    linear-gradient(150deg,#211a0e,#0b120d)!important;
+  box-shadow:inset 0 0 30px #0007,0 8px 20px #0004!important;
+}
+#character .set-tag{
+  border:1px solid #987032!important;
+  border-radius:999px!important;
+  background:#171207!important;
+  color:#e7bb55!important;
+  box-shadow:0 0 10px rgba(225,171,56,.08)!important;
+}
+#character .set-bonus,
+#character [class*="set-bonus"]{
+  padding:7px 9px!important;
+  margin-top:5px!important;
+  border-radius:10px!important;
+  border:1px solid #5f512d!important;
+  background:linear-gradient(145deg,#17170d,#0b100b)!important;
+  color:#c9d0c8!important;
+}
+#character .set-bonus.active,
+#character [class*="set-bonus"].active{
+  border-color:#b88a32!important;
+  color:#f0c65b!important;
+  box-shadow:0 0 12px rgba(224,172,55,.09)!important;
+}
+
+/* Both inventories: equipment inventory and gems/scrolls */
+#character #inventory,
+#character #v030Materials{
+  padding:4px 0 1px!important;
+}
+#character #inventory .inventory-grid,
+#character #v030Materials .inventory-grid{
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:8px!important;
+}
+#character #inventory .inv-item,
+#character #v030Materials .inv-item{
+  display:flex!important;
+  flex-direction:column!important;
+  min-height:198px!important;
+  padding:10px!important;
+  border-radius:16px!important;
+  border:1px solid #3c5942!important;
+  background:
+    radial-gradient(circle at 50% 0%,rgba(103,202,82,.055),transparent 30%),
+    linear-gradient(150deg,#132018,#09110d)!important;
+}
+#character #inventory .inv-item:before,
+#character #v030Materials .inv-item:before{
+  content:"";
+  position:absolute!important;
+  left:8px!important;right:8px!important;top:7px!important;
+  height:1px!important;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.08),transparent)!important;
+}
+#character #inventory .item-name,
+#character #v030Materials .item-name{
+  color:#f0f4ef!important;
+  font-weight:1000!important;
+}
+#character #inventory .inv-actions{
+  margin-top:auto!important;
+  padding-top:8px!important;
+}
+#character #inventory .inv-actions .btn:first-child{
+  background:linear-gradient(180deg,#7ddc59,#4da638)!important;
+  color:#071008!important;
+  border-color:#74c953!important;
+}
+#character #inventory .sell-btn{
+  background:linear-gradient(180deg,#32271a,#1c1710)!important;
+  border-color:#7b5e31!important;
+  color:#dfbd74!important;
+}
+#character #v030Materials .btn{
+  margin-top:auto!important;
+  background:linear-gradient(180deg,#267b77,#17534f)!important;
+  border-color:#3da49f!important;
+  color:#d9ffff!important;
+}
+
+/* Clear headings separating both inventories */
+#character .v130-inventory-heading{
+  display:flex;
+  align-items:center;
+  gap:9px;
+  margin:4px 0 10px;
+  padding:9px 11px;
+  border:1px solid #34533d;
+  border-radius:12px;
+  background:linear-gradient(145deg,#101d15,#09120d);
+}
+#character .v130-inventory-heading .v130-icon{
+  width:32px;height:32px;display:grid;place-items:center;
+  border:1px solid #49644d;border-radius:10px;
+  background:#08110c;font-size:18px;
+}
+#character .v130-inventory-heading b{font-size:11px;color:#eef4ed}
+#character .v130-inventory-heading span{display:block;font-size:7px;color:#82968a;margin-top:2px}
+
+@media(max-width:560px){
+  #character #inventory .inv-item,
+  #character #v030Materials .inv-item{min-height:185px!important;padding:8px!important}
+}

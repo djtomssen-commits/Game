@@ -1,0 +1,34 @@
+
+.v6108-quality-artbox{
+  overflow:hidden!important;
+  border-radius:12px!important;
+  background:#070b08!important;
+}
+.v6108-quality-artbox > .v6108-quality-art,
+img.v6108-quality-art{
+  width:100%!important;
+  height:100%!important;
+  object-fit:contain!important;
+  display:block!important;
+}
+
+/* V7.207: direct raster artwork. The parent owns the frame on normal item slots;
+   standalone reward/detail images receive the same quality color themselves. */
+img.v6108-quality-art{box-sizing:border-box!important;border:2px solid transparent!important;border-radius:10px!important;background:#070b08!important}
+.v6108-quality-artbox > img.v6108-quality-art{border:0!important;border-radius:8px!important}
+img.v6108-quality-art.v6108-q-gray{border-color:#9aa0a6!important}
+img.v6108-quality-art.v6108-q-green{border-color:#54d568!important}
+img.v6108-quality-art.v6108-q-blue{border-color:#29a8ff!important}
+img.v6108-quality-art.v6108-q-purple{border-color:#d13cff!important}
+img.v6108-quality-art.v6108-q-orange{border-color:#ff9f18!important}
+img.v6108-quality-art.v6108-q-cyan{border-color:#20e8e5!important}
+img.v6108-quality-art.v6108-q-prismatic{border-color:#ff5ed2!important}
+
+/* Actual item quality always owns the visual glow. */
+.v6108-quality-artbox.v6108-q-gray{box-shadow:inset 0 0 0 1px #9aa0a6!important}
+.v6108-quality-artbox.v6108-q-green{box-shadow:inset 0 0 0 1px #54d568,0 0 8px #54d56844!important}
+.v6108-quality-artbox.v6108-q-blue{box-shadow:inset 0 0 0 1px #29a8ff,0 0 8px #29a8ff55!important}
+.v6108-quality-artbox.v6108-q-purple{box-shadow:inset 0 0 0 1px #d13cff,0 0 10px #d13cff55!important}
+.v6108-quality-artbox.v6108-q-orange{box-shadow:inset 0 0 0 1px #ff9f18,0 0 11px #ff9f1866!important}
+.v6108-quality-artbox.v6108-q-cyan{box-shadow:inset 0 0 0 1px #20e8e5,0 0 12px #20e8e566!important}
+.v6108-quality-artbox.v6108-q-prismatic{box-shadow:inset 0 0 0 1px #ff5ed2,0 0 12px #35cfff66!important}

@@ -1,0 +1,74 @@
+
+/* The old portrait/boss image containers stay only as data sources for legacy logic. */
+#v260DailyBossArena .v259-fighter-side,
+#v260DailyBossArena .v259-boss-side{
+  opacity:0!important;
+  visibility:hidden!important;
+  pointer-events:none!important;
+}
+#v6320HeroCutout,#v6320BossCutout{
+  position:absolute!important;
+  z-index:12!important;
+  display:block!important;
+  pointer-events:none!important;
+  user-select:none!important;
+  -webkit-user-drag:none!important;
+  object-fit:contain!important;
+  background:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+  max-width:none!important;
+  transform-origin:50% 90%!important;
+  will-change:transform,filter,opacity;
+}
+#v6320HeroCutout{
+  left:-18px!important;
+  bottom:31px!important;
+  width:210px!important;
+  height:302px!important;
+  object-position:50% 100%!important;
+  filter:drop-shadow(0 22px 20px rgba(0,0,0,.62)) drop-shadow(0 0 10px rgba(246,180,71,.10))!important;
+  animation:v6317HeroIdle 2.8s ease-in-out infinite;
+}
+#v6320BossCutout{
+  right:-19px!important;
+  bottom:27px!important;
+  width:250px!important;
+  height:324px!important;
+  object-position:50% 100%!important;
+  filter:drop-shadow(0 24px 26px rgba(0,0,0,.66)) drop-shadow(0 0 26px rgba(74,255,95,.26))!important;
+  animation:v6317BossIdle 3.2s ease-in-out infinite;
+}
+/* Hero/boss now stand inside the scenery with no rectangle around them. */
+#v260DailyBossArena .v259-stage{isolation:isolate!important}
+#v260DailyBossArena .v259-stage:before{z-index:1!important}
+#v260DailyBossArena .v259-stage:after{z-index:2!important}
+#v6309Clash{z-index:21!important}
+#v260DamagePop,#v260BossDamagePop{z-index:34!important}
+#v6309HeroPlate,#v6309BossPlate{z-index:30!important}
+/* Attack / hit / counter animations use the transparent combat figures. */
+#v260DailyBossArena.attack #v6320HeroCutout,
+#v260DailyBossArena.v6307-player-strike #v6320HeroCutout{animation:v6317HeroStrike .62s cubic-bezier(.2,.78,.22,1)!important}
+#v260DailyBossArena.v6307-boss-attack #v6320BossCutout{animation:v6317BossStrike .72s cubic-bezier(.18,.78,.22,1)!important}
+#v260DailyBossArena.v6307-hero-hit #v6320HeroCutout{animation:v6317HeroHit .55s ease!important}
+#v260DailyBossArena.hit #v6320BossCutout{animation:v6317BossHit .56s ease!important}
+#v260DailyBossArena.win #v6320BossCutout{animation:v6317BossDefeat 1.15s ease forwards!important}
+#v260DailyBossArena.v261-final:not(.win) #v6320BossCutout{animation:v6317BossVictory 1.45s ease-in-out infinite!important}
+/* Put floating numbers on the actual transparent figures. */
+#v260DamagePop{right:11%!important;top:34%!important}
+#v260BossDamagePop{left:7%!important;top:41%!important}
+@keyframes v6317HeroIdle{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-3px) rotate(-.35deg)}}
+@keyframes v6317BossIdle{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-4px) scale(1.012)}}
+@keyframes v6317HeroStrike{0%,100%{transform:translateX(0) scale(1) rotate(0)}42%{transform:translateX(72px) scale(1.08) rotate(2deg)}66%{transform:translateX(25px) scale(1.025) rotate(.4deg)}}
+@keyframes v6317BossStrike{0%,100%{transform:translateX(0) scale(1) rotate(0)}40%{transform:translateX(-58px) scale(1.07) rotate(-1.5deg)}68%{transform:translateX(-18px) scale(1.025)}}
+@keyframes v6317HeroHit{0%,100%{transform:translateX(0);filter:drop-shadow(0 22px 20px rgba(0,0,0,.62))}20%{transform:translateX(-12px) rotate(-2deg);filter:brightness(1.55) saturate(.7) drop-shadow(0 0 18px rgba(255,78,61,.45))}48%{transform:translateX(8px) rotate(1deg)}}
+@keyframes v6317BossHit{0%,100%{transform:translateX(0);filter:drop-shadow(0 24px 26px rgba(0,0,0,.66)) drop-shadow(0 0 26px rgba(74,255,95,.26))}20%{transform:translateX(11px) rotate(1.4deg);filter:brightness(1.55) saturate(.75) drop-shadow(0 0 26px rgba(255,221,97,.45))}45%{transform:translateX(-8px) rotate(-1deg)}}
+@keyframes v6317BossDefeat{0%{opacity:1;transform:translateY(0) rotate(0) scale(1);filter:brightness(1)}55%{opacity:.9;transform:translateY(8px) rotate(4deg) scale(.97);filter:brightness(1.25)}100%{opacity:.18;transform:translateY(56px) rotate(10deg) scale(.83);filter:brightness(.45) saturate(.5)}}
+@keyframes v6317BossVictory{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-7px) scale(1.035);filter:drop-shadow(0 0 34px rgba(88,255,104,.48))}}
+@media(max-width:560px){
+  #v6320HeroCutout{left:-24px!important;bottom:31px!important;width:190px!important;height:278px!important}
+  #v6320BossCutout{right:-24px!important;bottom:28px!important;width:232px!important;height:304px!important}
+  #v260DamagePop{right:7%!important;top:35%!important}
+  #v260BossDamagePop{left:4%!important;top:42%!important}
+}
+@media(prefers-reduced-motion:reduce){#v6320HeroCutout,#v6320BossCutout{animation-duration:.001ms!important;animation-iteration-count:1!important}}

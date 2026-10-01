@@ -1,0 +1,16 @@
+
+/* V4.74: first-paint authority. Never expose retired header/world DOM while
+   the late modern builders are still parsing. */
+.app > header{min-height:58px!important;background:#020704!important}
+.app > header > :not(.v366-topbar){display:none!important;visibility:hidden!important}
+#world.active{position:relative!important;min-height:calc(100vh - 58px)!important;background:#020704!important}
+#world.active > :not(.v366-world){display:none!important;visibility:hidden!important;opacity:0!important;pointer-events:none!important}
+#world.active:not(.v474-home-ready)::before{
+  content:'🌿  GROW LEGENDS';
+  display:grid;place-items:center;
+  min-height:58vh;padding:24px;box-sizing:border-box;
+  color:#9cdb63;font:900 16px Georgia,serif;letter-spacing:.08em;
+  text-shadow:0 0 16px rgba(111,224,73,.28);
+  background:radial-gradient(circle at 50% 36%,rgba(90,160,52,.10),transparent 32%),#020704;
+}
+#world.active.v474-home-ready::before{display:none!important}

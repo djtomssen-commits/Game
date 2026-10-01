@@ -1,0 +1,22 @@
+
+/* ===== V4.02 stability ===== */
+
+/* 20-dungeon map must always be visible when rendered. */
+#dungeonMapCard.v065-worldmap-card{
+  display:block!important;
+  visibility:visible!important;
+  opacity:1!important;
+  width:100%!important;
+}
+
+/* World nodes remain above map decoration and tappable. */
+#dungeonMapCard.v065-worldmap-card .v065-dungeon-node{
+  z-index:20!important;
+  pointer-events:auto!important;
+  touch-action:manipulation!important;
+}
+
+/* The world overview owns the full dungeon screen while active. */
+#dungeon.v230-world-open #dungeonBattleCard{
+  display:none!important;
+}

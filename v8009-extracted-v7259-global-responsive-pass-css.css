@@ -1,0 +1,143 @@
+
+/* ===== V7.273 · GLOBAL RESPONSIVE PASS ===== */
+html,body,.app,main{max-width:100%;overflow-x:hidden}
+.screen{max-width:100%;min-width:0}
+.screen *{box-sizing:border-box;min-width:0}
+.screen img,.screen video{max-width:100%;height:auto}
+.screen h1,.screen h2,.screen h3,.screen h4,.screen h5,.screen h6,
+.screen p,.screen small,.screen b,.screen strong,.screen span,.screen label,
+.screen button,.screen .btn{overflow-wrap:anywhere;word-break:normal}
+.screen .section-title{min-width:0;flex-wrap:wrap}
+.screen .section-title>*{min-width:0}
+.screen .card,.screen .hero-card,.screen [class*="panel"],.screen [class*="modal"]{max-width:100%}
+.screen button,.screen input,.screen select,.screen textarea{max-width:100%}
+
+/* Core screen padding scales with the real viewport, not a specific phone model. */
+#character,#quests,#dungeon,#shop,#bagDealer,#pvp,#guild,#hall,#friends,#mail,#admin,#harzDealer{
+  padding-left:clamp(4px,1.7vw,10px)!important;
+  padding-right:clamp(4px,1.7vw,10px)!important;
+}
+
+/* Character: remove the historic 396px minimum width that can overflow narrow phones. */
+@media(max-width:560px){
+  #character .equipment-grid{
+    grid-template-columns:minmax(0,29%) minmax(0,42%) minmax(0,29%)!important;
+    gap:clamp(3px,1vw,5px)!important;
+  }
+  #character .equip-col{min-width:0!important;gap:clamp(5px,1.6vw,9px)!important}
+  #character .slot{min-width:0!important;padding:clamp(5px,1.6vw,7px)!important}
+  #character .slot-name{font-size:clamp(6.6px,2vw,8px)!important;overflow-wrap:anywhere!important}
+  #character .slot .tiny{font-size:clamp(6px,1.75vw,7.5px)!important}
+  #character .center-hero{min-width:0!important;min-height:clamp(340px,112vw,420px)!important}
+  #character .avatar-scene{height:clamp(205px,69vw,260px)!important}
+  #character .center-name{font-size:clamp(17px,5.6vw,22px)!important;overflow-wrap:anywhere!important}
+  #character .v123-gear-summary{max-width:100%!important}
+  #character .v514-book-host{max-width:100%!important}
+}
+@media(max-width:350px){
+  #character .equipment-grid{grid-template-columns:minmax(0,30%) minmax(0,40%) minmax(0,30%)!important}
+  #character .slot-icon{width:31px!important;height:31px!important;font-size:17px!important}
+  #character .slot-name{font-size:6.4px!important}
+}
+
+/* Growroom: make every secondary row able to shrink even when long strain names appear. */
+@media(max-width:560px){
+  #grow .v492-topstats{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  #grow .v492-main{width:100%!important;max-width:100%!important}
+  #grow .v492-scene,#grow .v492-panel,#grow .v492-card,#grow .v492-upgrade{min-width:0!important;max-width:100%!important}
+  #grow .v492-plants{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  #grow .v492-upgrades{grid-template-columns:1fr!important}
+  #grow .v492-upgrade{grid-template-columns:minmax(0,1fr) auto!important}
+  #grow .v492-modal{width:min(96vw,760px)!important;max-height:88dvh!important;overflow:auto!important}
+}
+@media(max-width:350px){
+  #grow .v492-plants{grid-template-columns:1fr!important;position:relative!important;left:auto!important;right:auto!important;bottom:auto!important;padding:70px 6px 8px!important}
+  #grow .v492-scene{min-height:unset!important}
+  #grow .v492-upgrade{grid-template-columns:1fr!important}
+  #grow .v492-upgrade .btn{grid-column:1!important;grid-row:auto!important;width:100%!important}
+}
+
+/* Quests: long titles/rewards must never push cards beyond the viewport. */
+@media(max-width:560px){
+  #quests .quest,#quests .card,#quests .v386-mira{max-width:100%!important;min-width:0!important}
+  #quests .quest h3{font-size:clamp(10px,3.3vw,14px)!important;overflow-wrap:anywhere!important}
+  #quests .quest-meta{display:flex!important;flex-wrap:wrap!important;gap:4px!important}
+  #quests .quest-meta span{white-space:normal!important;max-width:100%!important}
+  #quests .v386-mira-copy{padding-left:clamp(10px,3vw,16px)!important;padding-right:clamp(42%,46vw,48%)!important}
+}
+
+/* Dungeon / combat: keep both fighters inside the stage on narrow screens. */
+@media(max-width:560px){
+  #dungeon .battle-stage{width:100%!important;max-width:100%!important;overflow:hidden!important}
+  #dungeon .fighter{max-width:47%!important;min-width:0!important}
+  #dungeon .fighter-name{font-size:clamp(7px,2vw,10px)!important;overflow-wrap:anywhere!important}
+  #dungeon .battle-log{max-width:100%!important;overflow-wrap:anywhere!important}
+  #dungeon .dungeon-detail,#dungeon .card{max-width:100%!important}
+}
+
+/* Shop / dealers */
+@media(max-width:560px){
+  #shop .shop-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:clamp(4px,1.4vw,7px)!important}
+  #shop .shop-item{min-width:0!important;max-width:100%!important}
+  #shop .shop-item h3{overflow-wrap:anywhere!important}
+  #bagDealer .v7219-main-grid{grid-template-columns:1fr!important}
+  #bagDealer .v7219-current-content{grid-template-columns:minmax(0,36%) minmax(0,64%)!important;gap:8px!important;padding:10px!important}
+  #bagDealer .v7219-pack{min-width:0!important;max-width:100%!important}
+  #harzDealer .v567-benefits{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:6px!important}
+  #harzDealer .v567-featured{grid-template-columns:1fr!important}
+  #harzDealer .v567-content{padding:clamp(7px,2.5vw,14px)!important}
+}
+@media(max-width:350px){
+  #shop .shop-grid{grid-template-columns:1fr!important}
+  #bagDealer .v7219-current-content{grid-template-columns:1fr!important}
+  #harzDealer .v567-benefits{grid-template-columns:1fr!important}
+}
+
+/* Forge tabs/items: allow wrapping instead of clipping. */
+@media(max-width:560px){
+  #forge .v667-tabs{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:4px!important}
+  #forge .v667-tab{min-width:0!important;width:100%!important}
+  #forge .v667-tab span{min-width:0!important;overflow-wrap:anywhere!important}
+  #forge .v667-inventory{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  #forge .v667-inventory .v488-item{min-width:0!important;grid-template-columns:clamp(36px,12vw,45px) minmax(0,1fr)!important}
+  #forge .v667-cost-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  #forge .v490-titlebar{padding-left:clamp(52px,18vw,78px)!important;padding-right:clamp(52px,18vw,78px)!important}
+}
+@media(max-width:350px){
+  #forge .v667-tabs{grid-template-columns:1fr!important}
+  #forge .v667-inventory{grid-template-columns:1fr!important}
+}
+
+/* PvP / guild / hall / friends / mail: lists should shrink, not force horizontal scroll. */
+@media(max-width:560px){
+  #pvp .v204-pvp-shell,#pvp .card,
+  #guild .card,#hall .card,#friends .card,#mail .card{width:100%!important;max-width:100%!important;min-width:0!important}
+  #guild #v254GuildMembers{max-width:100%!important;overflow:hidden!important}
+  #guild #v254GuildMembers .v254-member{grid-template-columns:auto minmax(0,1fr)!important;max-width:100%!important}
+  #guild #v254GuildMembers .v254-member-main{min-width:0!important}
+  #guild #v254GuildMembers .v254-member-name-line{flex-wrap:wrap!important;min-width:0!important}
+  #guild #v254GuildMembers .v254-member-flags{flex-wrap:wrap!important}
+  #hall [class*="grid"],#friends [class*="grid"],#mail [class*="grid"]{max-width:100%!important;min-width:0!important}
+  #friends button,#mail button,#guild button,#hall button{white-space:normal!important}
+}
+
+/* Caravan and any card-based future screen inherit safe width rules. */
+@media(max-width:560px){
+  #caravan .v7249-page,#caravan .v7249-stage,#caravan .v7249-route,#caravan .v7249-action{max-width:100%!important;min-width:0!important}
+  #caravan .v7249-route-tags{flex-wrap:wrap!important}
+}
+
+/* Modals/popups across the game: never exceed the physical screen. */
+@media(max-width:560px){
+  #v123ItemOverlay .v123-detail,
+  #v6239WeeklyChestOverlay .v6239-wc-modal,
+  .v492-overlay .v492-modal,
+  [role="dialog"]{max-width:calc(100vw - 14px)!important;max-height:calc(100dvh - 14px)!important;overflow:auto!important}
+}
+
+/* Extreme narrow phones / display scaling. */
+@media(max-width:330px){
+  .screen{font-size:94%}
+  .screen .btn,.screen button{padding-left:7px!important;padding-right:7px!important}
+  .screen .section-title{gap:5px!important}
+}

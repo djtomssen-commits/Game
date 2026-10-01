@@ -1,0 +1,14 @@
+
+/* Questseite: störenden Schriftzug im unteren Bereich der Questgeber-Grafik abdecken. */
+#quests .v4172-giver-art::after{
+  content:"";
+  position:absolute;
+  left:0;right:0;bottom:0;
+  height:54px;
+  z-index:2;
+  pointer-events:none;
+  background:linear-gradient(180deg,rgba(7,14,9,0),rgba(7,14,9,.92) 42%,rgba(7,14,9,.98));
+}
+@media(max-width:390px){
+  #quests .v4172-giver-art::after{height:50px;}
+}

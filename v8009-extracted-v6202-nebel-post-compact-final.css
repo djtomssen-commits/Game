@@ -1,0 +1,152 @@
+
+/* Final layout authority for the mailbox. Historical V6.77/V6.200 visuals stay underneath,
+   but only ONE content panel may be visible at a time. */
+html body .app section#mail.v677-mail{
+  overflow:visible!important;
+  padding:7px 7px calc(92px + env(safe-area-inset-bottom,0px))!important;
+  background:
+    radial-gradient(circle at 50% 0%,rgba(77,157,58,.13),transparent 26%),
+    linear-gradient(180deg,#020805 0%,#06100a 48%,#020704 100%)!important;
+}
+html body .app section#mail.v677-mail > .v052-scene-banner{
+  min-height:82px!important;
+  margin:0 0 7px!important;
+  padding:11px 62px 10px!important;
+  border-radius:14px!important;
+  border-color:#8b672d!important;
+}
+html body .app section#mail.v677-mail > .v052-scene-banner::before{
+  left:10px!important;width:43px!important;height:43px!important;border-radius:12px!important;font-size:26px!important;
+}
+html body .app section#mail.v677-mail .v052-title{font-size:21px!important;line-height:1!important}
+html body .app section#mail.v677-mail .v052-sub{margin-top:5px!important;padding:3px 8px!important;font-size:6.5px!important}
+
+html body .app section#mail.v677-mail > .v677-mail-card{
+  padding:9px!important;border-radius:15px!important;
+  border-color:#416744!important;
+  background:linear-gradient(160deg,#071b0e,#020b06)!important;
+}
+html body .app section#mail.v677-mail .v677-mail-title{
+  margin:0 0 7px!important;padding:0 0 7px!important;
+}
+html body .app section#mail.v677-mail .v677-mail-title h2{font-size:16px!important}
+html body .app section#mail.v677-mail .v677-mail-title .muted{font-size:6.5px!important}
+html body .app section#mail.v677-mail #v381UnreadPill{padding:5px 8px!important;font-size:6.4px!important}
+
+/* Four equal top tabs like the approved preview. */
+html body .app section#mail.v677-mail .v381-tabs,
+html body .app section#mail.v677-mail .v381-tabs.v6200-has-battle{
+  display:grid!important;
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  gap:4px!important;
+  margin:0 0 8px!important;
+}
+html body .app section#mail.v677-mail .v381-tabs .btn,
+html body .app section#mail.v677-mail .v381-tabs.v6200-has-battle .btn{
+  min-width:0!important;min-height:42px!important;padding:6px 2px!important;
+  border-radius:9px!important;font-size:7px!important;line-height:1.1!important;
+  white-space:normal!important;
+}
+html body .app section#mail.v677-mail .v381-tabs .btn.active{
+  border-color:#85dc58!important;
+  background:radial-gradient(circle at 50% 0%,rgba(126,235,82,.22),transparent 52%),linear-gradient(180deg,#315d2a,#102a17)!important;
+  box-shadow:inset 0 0 0 1px #96e46a22,0 0 12px #65d24c16!important;
+}
+#mail .v6200-combat-badge{right:3px!important;top:2px!important;min-width:14px!important;height:14px!important;font-size:6px!important}
+
+/* Critical visibility fix: no more Inbox + Sent + Battlelog + Compose stacked on the same page. */
+html body .app section#mail.v677-mail .v381-panel{display:none!important}
+html body .app section#mail.v677-mail .v381-panel.v677-active-panel{display:grid!important}
+html body .app section#mail.v677-mail #v6200BattleLogPanel.v677-active-panel{display:block!important}
+
+/* Inbox / sent become a compact scrollable list instead of a multi-screen page. */
+html body .app section#mail.v677-mail #v381Inbox.v677-active-panel,
+html body .app section#mail.v677-mail #v381Sent.v677-active-panel{
+  max-height:min(58dvh,510px)!important;
+  overflow-y:auto!important;overflow-x:hidden!important;
+  padding-right:2px!important;
+  scrollbar-width:thin;scrollbar-color:#477b47 #061008;
+}
+html body .app section#mail.v677-mail .v381-msg{
+  grid-template-columns:40px minmax(0,1fr) 25px!important;
+  gap:7px!important;padding:8px!important;border-radius:10px!important;
+}
+html body .app section#mail.v677-mail .v677-mail-avatar{width:34px!important;height:34px!important;font-size:10px!important}
+html body .app section#mail.v677-mail .v677-mail-avatar::before,
+html body .app section#mail.v677-mail .v677-mail-avatar::after{font-size:8px!important}
+html body .app section#mail.v677-mail .v381-msg b{font-size:8.2px!important}
+html body .app section#mail.v677-mail .v381-msg small{font-size:5.6px!important}
+html body .app section#mail.v677-mail .v381-preview{margin-top:3px!important;font-size:6.4px!important}
+html body .app section#mail.v677-mail .v677-open-arrow{width:22px!important;height:26px!important;border-radius:7px!important;font-size:17px!important}
+
+/* Compose is a single compact card and only exists visually when its tab is active. */
+html body .app section#mail.v677-mail #v381Compose.v677-active-panel{
+  display:grid!important;gap:5px!important;padding:9px!important;
+}
+html body .app section#mail.v677-mail #v381Compose textarea{min-height:112px!important}
+html body .app section#mail.v677-mail .v381-compose-foot{margin-top:2px!important}
+html body .app section#mail.v677-mail #v381Send{min-height:38px!important;padding:8px 12px!important}
+
+/* Battle log follows the preview: compact list + detailed report; no dead empty second card. */
+#mail .v6200-battle-panel{padding-bottom:0!important}
+#mail .v6200-log-shell{gap:7px!important;min-height:0!important}
+#mail .v6200-log-list,#mail .v6200-log-detail{border-color:#5e6c39!important;border-radius:11px!important}
+#mail .v6200-log-head{padding:8px!important}
+#mail .v6200-log-head b{font-size:9px!important}
+#mail .v6200-log-head select{max-width:118px!important;padding:5px!important;font-size:6px!important}
+#mail .v6200-rows{max-height:300px!important}
+#mail .v6200-row{grid-template-columns:34px minmax(0,1fr) auto!important;gap:6px!important;padding:7px!important}
+#mail .v6200-avatar{width:33px!important;height:33px!important}
+#mail .v6200-row-copy b{font-size:7.5px!important}
+#mail .v6200-row-copy small{font-size:5.4px!important}
+#mail .v6200-row-result b{font-size:6.6px!important}
+#mail .v6200-row-result small{font-size:5.3px!important}
+#mail .v6200-mark-all{width:calc(100% - 12px)!important;margin:6px!important;min-height:35px!important;padding:7px!important;font-size:6.5px!important}
+#mail .v6200-log-detail.v6200-detail-empty{display:none!important}
+#mail .v6200-detail-body{padding:8px!important;max-height:470px!important;overflow:auto!important}
+#mail .v6200-outcome{padding:8px!important}
+#mail .v6200-outcome strong{font-size:17px!important}
+#mail .v6200-outcome span{font-size:6px!important}
+#mail .v6200-versus{grid-template-columns:minmax(0,1fr) 24px minmax(0,1fr)!important;gap:5px!important;margin:7px 0!important}
+#mail .v6200-fighter-card{grid-template-columns:35px minmax(0,1fr)!important;gap:5px!important;padding:6px!important}
+#mail .v6200-fighter-card img{width:34px!important;height:34px!important}
+#mail .v6200-fighter-card b{font-size:7px!important}
+#mail .v6200-fighter-card small{font-size:5px!important}
+#mail .v6200-vs{font-size:11px!important}
+#mail .v6200-detail-actions{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:4px!important;margin:6px 0!important}
+#mail .v6200-detail-actions .btn{padding:6px 2px!important;font-size:5.6px!important;min-height:34px!important}
+#mail .v6200-summary{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:5px!important;margin-top:5px!important}
+#mail .v6200-summary>div{padding:6px!important;font-size:5.7px!important;line-height:1.4!important}
+#mail .v6200-rounds{margin-top:6px!important;max-height:150px!important;overflow:auto!important}
+#mail .v6200-rounds h4{position:sticky;top:0;z-index:2;padding:6px!important;font-size:6.5px!important}
+#mail .v6200-round{grid-template-columns:36px minmax(0,1fr)!important;gap:5px!important;padding:5px 6px!important;font-size:5.5px!important}
+
+/* Footer belongs directly below the active content, not several screens later. */
+html body .app section#mail.v677-mail .v677-mail-footer{
+  min-height:56px!important;margin:7px 0 0!important;padding:6px 8px!important;
+  grid-template-columns:25px 1fr 28px 1.05fr!important;gap:5px!important;border-radius:11px!important;
+}
+html body .app section#mail.v677-mail .v677-footer-envelope{font-size:18px!important}
+html body .app section#mail.v677-mail .v677-footer-copy b{font-size:5.6px!important}
+html body .app section#mail.v677-mail .v677-footer-leaf{font-size:20px!important}
+html body .app section#mail.v677-mail .v677-footer-sign{padding:5px 4px!important}
+html body .app section#mail.v677-mail .v677-footer-sign b{font-size:6px!important}
+html body .app section#mail.v677-mail .v677-footer-sign small{font-size:4.3px!important}
+
+@media(max-width:700px){
+  #mail .v381-tabs.v6200-has-battle{grid-template-columns:repeat(4,minmax(0,1fr))!important}
+  #mail .v6200-log-shell{grid-template-columns:1fr!important}
+  #mail .v6200-versus{grid-template-columns:minmax(0,1fr) 24px minmax(0,1fr)!important}
+  #mail .v6200-detail-actions{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+  #mail .v6200-summary{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+}
+@media(max-width:390px){
+  html body .app section#mail.v677-mail > .v052-scene-banner{min-height:74px!important;padding-left:56px!important;padding-right:8px!important;text-align:left!important}
+  html body .app section#mail.v677-mail > .v052-scene-banner::before{left:8px!important;width:38px!important;height:38px!important;font-size:23px!important}
+  html body .app section#mail.v677-mail .v052-title{font-size:18px!important}
+  html body .app section#mail.v677-mail .v052-sub{font-size:5.7px!important}
+  html body .app section#mail.v677-mail .v381-tabs .btn{font-size:6.1px!important;min-height:40px!important}
+  #mail .v6200-fighter-card{grid-template-columns:30px minmax(0,1fr)!important;padding:5px!important}
+  #mail .v6200-fighter-card img{width:29px!important;height:29px!important}
+  #mail .v6200-detail-actions .btn{font-size:5px!important}
+}

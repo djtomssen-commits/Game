@@ -1,0 +1,27 @@
+
+.v6302-harz-chip{
+ position:absolute;z-index:140;left:50%;top:13%;transform:translateX(-50%);
+ max-width:84%;padding:6px 10px;border:2px solid #6fbd63;border-radius:999px;
+ background:linear-gradient(180deg,rgba(10,24,13,.97),rgba(7,8,12,.97));
+ color:#dfffd7;font:1000 7.5px/1 Arial,sans-serif;letter-spacing:.04em;
+ white-space:nowrap;pointer-events:none;
+ box-shadow:0 5px 14px #000b,0 0 18px rgba(118,224,92,.24),0 0 20px rgba(151,77,223,.15);
+ animation:v6302HarzChip 1.45s ease forwards
+}
+.v6302-harz-aura{
+ position:absolute;z-index:125;left:74%;top:48%;width:66px;height:66px;margin:-33px;
+ border-radius:50%;pointer-events:none;border:3px solid rgba(121,237,99,.75);
+ box-shadow:0 0 21px rgba(117,239,94,.55),inset 0 0 19px rgba(158,78,225,.30);
+ animation:v6302HarzAura .48s ease-out forwards
+}
+.v6302-harz-aura.def{left:25%;border-color:rgba(121,237,99,.82)}
+@keyframes v6302HarzChip{
+ 0%{opacity:0;transform:translate(-50%,8px) scale(.82)}
+ 18%,72%{opacity:1;transform:translate(-50%,0) scale(1)}
+ 100%{opacity:0;transform:translate(-50%,-12px) scale(.94)}
+}
+@keyframes v6302HarzAura{
+ 0%{opacity:0;transform:scale(.2)}
+ 35%{opacity:1;transform:scale(1.05)}
+ 100%{opacity:0;transform:scale(1.75)}
+}

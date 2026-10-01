@@ -1,0 +1,215 @@
+
+/* ===== V4.02 Compact Growroom ===== */
+
+/* Overall spacing */
+#grow{
+  padding-left:8px!important;
+  padding-right:8px!important;
+}
+#grow > .card,
+#grow .card{
+  padding:10px!important;
+  margin-bottom:8px!important;
+  border-radius:13px!important;
+}
+#grow .section-title{
+  margin-bottom:7px!important;
+  padding-bottom:6px!important;
+}
+#grow .section-title h2{font-size:15px!important}
+#grow .section-title h3{font-size:12px!important}
+
+/* Top stats become a compact dashboard */
+#grow .grow-stats,
+#grow .stats-grid,
+#grow .growroom-stats{
+  gap:5px!important;
+}
+#grow .stat,
+#grow .mini-stat{
+  padding:6px!important;
+  min-height:0!important;
+  border-radius:9px!important;
+}
+
+/* Equipment: two small horizontal cards */
+#grow #growEquipment{
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:6px!important;
+}
+#grow .equip-card{
+  display:grid!important;
+  grid-template-columns:30px 1fr!important;
+  grid-template-rows:auto auto!important;
+  column-gap:7px!important;
+  align-items:center!important;
+  padding:7px!important;
+  min-height:0!important;
+  border-radius:10px!important;
+}
+#grow .equip-card .big{
+  grid-row:1/3!important;
+  width:30px!important;
+  height:30px!important;
+  display:grid!important;
+  place-items:center!important;
+  margin:0!important;
+  font-size:20px!important;
+}
+#grow .equip-card h4{
+  margin:0!important;
+  font-size:8px!important;
+  line-height:1.2!important;
+}
+#grow .equip-card .tiny{
+  display:none!important;
+}
+#grow .equip-card .grow-upgrade{
+  grid-column:1/-1!important;
+  min-height:29px!important;
+  margin-top:5px!important;
+  padding:5px!important;
+  font-size:6.5px!important;
+}
+
+/* Plants: 2 columns even on narrow phones, much less scrolling */
+#grow #growShelf{
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:6px!important;
+}
+#grow .grow-slot{
+  min-height:102px!important;
+  padding:6px!important;
+  border-radius:10px!important;
+}
+#grow .grow-slot-label{
+  font-size:6px!important;
+}
+#grow .plant-visual{
+  min-height:38px!important;
+  font-size:25px!important;
+}
+#grow .slot-plant-btn{
+  min-height:27px!important;
+  margin-top:3px!important;
+  padding:4px!important;
+  font-size:6px!important;
+}
+
+/* Seed shop: compact rows instead of giant cards */
+#grow #seedShop{
+  display:flex!important;
+  flex-direction:column!important;
+  gap:5px!important;
+}
+#grow .seed-card{
+  display:grid!important;
+  grid-template-columns:35px minmax(0,1fr) auto!important;
+  grid-template-rows:auto auto!important;
+  column-gap:7px!important;
+  align-items:center!important;
+  padding:6px 7px!important;
+  min-height:0!important;
+  border-radius:10px!important;
+}
+#grow .seed-card:before{
+  left:5px!important;
+  right:auto!important;
+  top:5px!important;
+  bottom:5px!important;
+  width:2px!important;
+  height:auto!important;
+  background:linear-gradient(180deg,transparent,#75d95c,transparent)!important;
+}
+#grow .seed-card .big{
+  grid-row:1/3!important;
+  width:33px!important;
+  height:33px!important;
+  margin:0!important;
+  border-radius:9px!important;
+  font-size:19px!important;
+}
+#grow .seed-card h4{
+  grid-column:2!important;
+  min-height:0!important;
+  margin:0!important;
+  text-align:left!important;
+  font-size:8px!important;
+  line-height:1.2!important;
+}
+#grow .seed-card .tiny{
+  grid-column:2!important;
+  margin:1px 0 0!important;
+  text-align:left!important;
+  font-size:5.8px!important;
+  line-height:1.25!important;
+}
+#grow .seed-card .seed-stock{
+  grid-column:3!important;
+  grid-row:1!important;
+  min-width:40px!important;
+  justify-content:center!important;
+  gap:3px!important;
+  margin:0!important;
+  padding:3px 5px!important;
+  font-size:5.5px!important;
+}
+#grow .seed-card .seed-stock span:after{
+  content:":";
+}
+#grow .seed-card .seed-stock b{
+  font-size:7px!important;
+}
+#grow .seed-buy,
+#grow .seed-select{
+  grid-row:2!important;
+  min-height:25px!important;
+  margin:2px 0 0!important;
+  padding:4px 6px!important;
+  font-size:5.8px!important;
+  white-space:nowrap!important;
+}
+#grow .seed-buy{
+  grid-column:3!important;
+}
+#grow .seed-select{
+  grid-column:3!important;
+}
+#grow .seed-card .seed-buy + .seed-select{
+  display:none!important;
+}
+/* Whole seed row selects seed; only buy needs a dedicated button. */
+#grow .seed-card.selected{
+  border-color:#76cf5e!important;
+}
+#grow .seed-card.selected h4:after{
+  content:"  ✓";
+  color:#86e36a;
+}
+
+/* Main actions compact */
+#grow #plantBtn,
+#grow #harvestBtn,
+#grow #upgradeRoom{
+  min-height:34px!important;
+  padding:6px 8px!important;
+  font-size:7px!important;
+}
+#grow #growFeedback{
+  min-height:0!important;
+  padding:6px 8px!important;
+  font-size:6.5px!important;
+}
+
+/* Undo V4.02's one-column phone rule. */
+@media(max-width:390px){
+  #grow #growEquipment,
+  #grow #growShelf{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  }
+  #grow #seedShop{
+    display:flex!important;
+  }
+}

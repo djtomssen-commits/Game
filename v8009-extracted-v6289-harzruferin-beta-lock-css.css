@@ -1,0 +1,52 @@
+
+/* Die Klasse bleibt sichtbar, ist für NEUE Charaktere aber klar als gesperrt markiert. */
+[data-v029-class="summoner"].v6289-beta-locked,
+[data-v200-class="summoner"].v6289-beta-locked,
+[data-v4135-class="summoner"].v6289-beta-locked,
+[data-v4136-class="summoner"].v6289-beta-locked{
+  position:relative!important;
+  overflow:hidden!important;
+  filter:saturate(.48) brightness(.72)!important;
+  cursor:not-allowed!important;
+  opacity:.88!important;
+}
+[data-v029-class="summoner"].v6289-beta-locked::after,
+[data-v200-class="summoner"].v6289-beta-locked::after,
+[data-v4135-class="summoner"].v6289-beta-locked::after,
+[data-v4136-class="summoner"].v6289-beta-locked::after{
+  content:attr(data-v6289-lock-label)!important;
+  position:absolute!important;
+  z-index:30!important;
+  left:50%!important;
+  bottom:9px!important;
+  transform:translateX(-50%)!important;
+  width:max-content!important;
+  max-width:calc(100% - 16px)!important;
+  padding:6px 10px!important;
+  border:1px solid #9b7d3f!important;
+  border-radius:9px!important;
+  background:linear-gradient(180deg,rgba(38,28,14,.96),rgba(13,10,7,.97))!important;
+  color:#f0d78a!important;
+  font-size:8px!important;
+  font-weight:1000!important;
+  letter-spacing:.08em!important;
+  text-align:center!important;
+  box-shadow:0 4px 12px #000b!important;
+  pointer-events:none!important;
+}
+[data-v029-class="summoner"].v6289-beta-locked img,
+[data-v200-class="summoner"].v6289-beta-locked img,
+[data-v4135-class="summoner"].v6289-beta-locked img,
+[data-v4136-class="summoner"].v6289-beta-locked img{
+  filter:grayscale(.18)!important;
+}
+
+/* Bereits erstellte Harzruferinnen bleiben optisch und technisch unangetastet. */
+body.v6289-existing-summoner [data-v029-class="summoner"],
+body.v6289-existing-summoner [data-v200-class="summoner"],
+body.v6289-existing-summoner [data-v4135-class="summoner"],
+body.v6289-existing-summoner [data-v4136-class="summoner"]{
+  filter:none!important;
+  opacity:1!important;
+  cursor:default!important;
+}

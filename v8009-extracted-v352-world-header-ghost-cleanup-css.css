@@ -1,0 +1,47 @@
+
+/* The real old header is inside .app. V4.02 targeted body > header, so it never matched. */
+body:has(#world.active) .app > header{
+  display:none!important;
+}
+
+/* Only the new V4.02 hamburger should remain visible on the world page. */
+body:has(#world.active) #v032TopMenu > #v032MenuBtn,
+body:has(#world.active) #v032MenuBtn{
+  display:none!important;
+}
+
+/* Previous mockup crops contained baked UI text. Remove the contaminated warrior crop. */
+#world.active .v349-warrior{
+  display:none!important;
+}
+
+/* Clean castle-only crop with no player stats / event boxes / welcome text baked into it. */
+#world.active .v349-hero{
+  background:
+    linear-gradient(180deg,rgba(1,5,2,.04),rgba(1,5,2,.10) 48%,rgba(1,5,2,.94) 100%),
+    radial-gradient(circle at 53% 36%,rgba(93,188,31,.08),transparent 34%),
+    url("assets/v7195-base64/fb32f8c2927c762ab376.webp") center 32%/cover no-repeat!important;
+}
+
+#world.active .v349-profile{width:55%!important}
+#world.active .v349-welcome{
+  left:23%!important;
+  right:4%!important;
+  bottom:17px!important;
+}
+#world.active .v349-welcome h1{font-size:29px!important}
+#world.active .v351-topbar{margin-top:0!important}
+
+/* Old world presentation nodes must not appear behind the new dashboard. */
+#world.v350-isolated > .v052-scene-banner,
+#world.v350-isolated > .v085-dashboard,
+#world.v350-isolated > .v118-worldboss-hero,
+#world.v350-isolated > #v118WorldBossHero,
+#world.v350-isolated > #v111WorldBossCard{
+  display:none!important;
+}
+
+@media(min-width:600px){
+  #world.active .v349-welcome{left:28%!important}
+  #world.active .v349-welcome h1{font-size:50px!important}
+}

@@ -1,0 +1,9 @@
+
+/* V4.77: never depend on a JS class to remove the startup splash. The retired
+   home stays hidden; the modern home becomes visible as soon as it exists. */
+#world.active:not(.v474-home-ready)::before{display:none!important}
+#world.active > .v349-home{display:none!important;visibility:hidden!important;opacity:0!important;pointer-events:none!important}
+#world.active > .v366-world{display:grid!important;visibility:visible!important;opacity:1!important}
+.app > header .v358-logo::after{content:"V4.164"!important}
+.app > header .v366-ver,.app > header .v371-logo em,.app > header .v372-logo em{font-size:0!important;color:transparent!important}
+.app > header .v366-ver::after,.app > header .v371-logo em::after,.app > header .v372-logo em::after{content:"V4.164"!important;font-size:5px!important;color:#63cdd1!important;font-style:normal!important;font-weight:900!important}

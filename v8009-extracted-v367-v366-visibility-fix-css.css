@@ -1,0 +1,64 @@
+
+/* Root cause:
+   V4.02 still had ".app > header > :not(.v358-global-header){display:none!important}"
+   which ALSO matched the new .v366-topbar.
+   V4.02 still had "#world.v350-isolated > :not(.v349-home){display:none!important}"
+   which ALSO matched the new .v366-world.
+   Explicitly make the new V4.02 owners visible and retire the old owners. */
+
+.app > header > .v366-topbar{
+  display:grid!important;
+  visibility:visible!important;
+  opacity:1!important;
+  height:auto!important;
+  min-height:58px!important;
+  max-height:none!important;
+  overflow:visible!important;
+}
+
+.app > header > .v358-global-header,
+.app > header > .v358-subbar{
+  display:none!important;
+  visibility:hidden!important;
+  height:0!important;
+  min-height:0!important;
+  max-height:0!important;
+  overflow:hidden!important;
+}
+
+#world.active > .v366-world,
+#world.v350-isolated > .v366-world{
+  display:grid!important;
+  visibility:visible!important;
+  opacity:1!important;
+  height:auto!important;
+  min-height:0!important;
+  max-height:none!important;
+  overflow:visible!important;
+}
+
+#world > .v349-home,
+#world.v350-isolated > .v349-home{
+  display:none!important;
+  visibility:hidden!important;
+  height:0!important;
+  min-height:0!important;
+  max-height:0!important;
+  overflow:hidden!important;
+}
+
+/* Version belongs visibly under the logo, not absolutely outside it. */
+.v366-logo{
+  position:relative!important;
+}
+.v366-ver{
+  position:static!important;
+  display:block!important;
+  margin:3px 0 0 9px!important;
+  color:#67d5d8!important;
+  font-size:5.5px!important;
+  line-height:1!important;
+  font-style:normal!important;
+  font-family:system-ui,sans-serif!important;
+  font-weight:1000!important;
+}

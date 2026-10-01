@@ -1,0 +1,35 @@
+
+/* V5.99 still paints its own generic proc chip. V6.04 already restores the
+   richer class/skill badges, so hide only the legacy duplicate renderer. */
+#dungeonBattleCard.v599-clean .v575-proc-strip > .v599-fx{
+  display:none!important;
+  visibility:hidden!important;
+  opacity:0!important;
+  width:0!important;
+  height:0!important;
+  min-width:0!important;
+  min-height:0!important;
+  padding:0!important;
+  margin:0!important;
+  border:0!important;
+  overflow:hidden!important;
+  pointer-events:none!important;
+}
+
+/* One clean event lane under the round chip. Different simultaneous real
+   effects may coexist briefly, but the old duplicate chip can no longer show. */
+#dungeonBattleCard.v599-clean .v575-proc-strip{
+  top:108px!important;
+  left:7%!important;
+  right:7%!important;
+  gap:5px!important;
+  justify-content:center!important;
+  align-items:center!important;
+}
+#dungeonBattleCard.v599-clean .v575-chip.v604-skill-chip{
+  position:relative!important;
+  z-index:82!important;
+}
+@media(max-width:560px){
+  #dungeonBattleCard.v599-clean .v575-proc-strip{top:104px!important;left:4%!important;right:4%!important}
+}

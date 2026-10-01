@@ -1,0 +1,66 @@
+
+/*
+  Android/Samsung WebView: keep the ENTIRE visible hero/equipment grid in normal
+  document paint flow. Earlier fixes hardened mainly the portrait; the two equipment
+  columns could still be dropped by the compositor during kinetic scrolling.
+*/
+#character.v514-reference-hero #v510HeroRoot,
+#character.v514-reference-hero #v510HeroRoot > .v510-stage,
+#character.v514-reference-hero #v510HeroRoot .v510-layout,
+#character.v514-reference-hero #v510HeroRoot .v510-col,
+#character.v514-reference-hero #v510HeroRoot .v510-left,
+#character.v514-reference-hero #v510HeroRoot .v510-right,
+#character.v514-reference-hero #v510HeroRoot .slot,
+#character.v514-reference-hero #v510HeroRoot .slot-icon,
+#character.v514-reference-hero #v510HeroRoot .slot-icon img,
+#character.v514-reference-hero #v510HeroRoot .slot-icon svg,
+#character.v514-reference-hero #v510HeroRoot .slot-icon .v41-badge-art,
+#character.v514-reference-hero #v510HeroRoot .slot-icon .v466-item-art,
+#character.v514-reference-hero #v510HeroRoot .slot-icon .v6107-item-art{
+  visibility:visible!important;
+  opacity:1!important;
+  transform:none!important;
+  -webkit-transform:none!important;
+  filter:none!important;
+  -webkit-filter:none!important;
+  contain:none!important;
+  content-visibility:visible!important;
+  will-change:auto!important;
+  backface-visibility:visible!important;
+  -webkit-backface-visibility:visible!important;
+}
+#character.v514-reference-hero #v510HeroRoot .v510-layout,
+#character.v514-reference-hero #v510HeroRoot .v510-col{
+  isolation:auto!important;
+}
+/* Avoid a separate clipped/composited layer for each complete slot. The icon itself
+   remains clipped so item art cannot bleed outside its tile. */
+#character.v514-reference-hero #v510HeroRoot .slot{overflow:visible!important}
+#character.v514-reference-hero #v510HeroRoot .slot-icon{overflow:hidden!important}
+/* Decorative filters on the stage are visual-only and created additional compositor
+   surfaces across the same area as the slots. */
+#character.v514-reference-hero #v510HeroRoot > .v510-stage::before,
+#character.v514-reference-hero #v510HeroRoot > .v510-stage::after{
+  filter:none!important;
+  -webkit-filter:none!important;
+}
+
+
+/* ===== V7.160 · CHARACTER SCROLL PAINT OWNER =====
+   No JavaScript writes while scrolling. Keep the whole three-column equipment
+   layout in one stable paint plane and prevent legacy donor layout from clipping it. */
+#character.v514-reference-hero #v510HeroRoot{overflow:visible!important}
+#character.v514-reference-hero #v510HeroRoot>.v510-stage{overflow:visible!important}
+#character.v514-reference-hero #v510HeroRoot .v510-layout{
+  display:grid!important;position:relative!important;z-index:6!important;overflow:visible!important;
+}
+#character.v514-reference-hero #v510HeroRoot .v510-left,
+#character.v514-reference-hero #v510HeroRoot .v510-right{
+  display:grid!important;position:relative!important;z-index:8!important;overflow:visible!important;
+  min-width:0!important;height:auto!important;
+}
+#character.v514-reference-hero #v510HeroRoot .v510-left>.slot,
+#character.v514-reference-hero #v510HeroRoot .v510-right>.slot{
+  display:flex!important;position:relative!important;z-index:9!important;visibility:visible!important;opacity:1!important;
+}
+#character.v514-reference-hero #v510HeroRoot .v510-center{position:relative!important;z-index:7!important;min-width:0!important}

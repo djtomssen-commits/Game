@@ -1,0 +1,41 @@
+
+/* V5.26's side vines were visually too strong on mobile. The approved reference
+   uses cannabis accents as details, not as a foreground overlay on the equipment. */
+#character.v514-reference-hero #v510HeroRoot .v526-vine{
+  display:none!important;
+  visibility:hidden!important;
+  opacity:0!important;
+}
+
+/* Keep the crafted corner caps, but make them slightly quieter so the hero and
+   rarity frames stay dominant. */
+#character.v514-reference-hero #v510HeroRoot .v526-corner{
+  opacity:.78!important;
+  width:15px!important;
+  height:15px!important;
+}
+
+/* Give the stage a restrained inner brass line instead of extra foliage. */
+#character.v514-reference-hero .v510-stage{
+  box-shadow:
+    inset 0 1px 0 rgba(213,154,74,.14),
+    inset 0 -1px 0 rgba(213,154,74,.12)!important;
+}
+
+/* Slightly soften the decorative torch glow so it reads as frame lighting and
+   does not compete with item rarity colors. */
+#character.v514-reference-hero .v510-stage::before,
+#character.v514-reference-hero .v510-stage::after{
+  opacity:.78!important;
+  filter:drop-shadow(0 0 4px rgba(255,119,24,.72))!important;
+}
+
+/* Final spacing match to the reference: title plaque and book stay strong while
+   the lower utility rows remain compact. */
+#character.v514-reference-hero .v510-titlebar{
+  margin-top:5px!important;
+  margin-bottom:3px!important;
+}
+#character.v514-reference-hero #v106BookBtn{
+  margin-top:1px!important;
+}

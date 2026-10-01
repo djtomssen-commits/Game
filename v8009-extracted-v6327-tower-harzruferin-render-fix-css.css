@@ -1,0 +1,38 @@
+
+/* The Harzruferin portrait is a tall, detailed source image. On some Android/WebView
+   devices the transformed <img> layer was split/repainted in two texture tiles.
+   Render this one class as a CSS background layer instead of an IMG texture. */
+#tower .v6294-summoner-tower #vTPlayerFighter{
+  isolation:isolate!important;
+  contain:layout paint!important;
+  overflow:hidden!important;
+  background:none!important;
+}
+#tower .v6294-summoner-tower #vTPlayerFighter>img.v6294-tower-player-img{
+  display:none!important;
+  visibility:hidden!important;
+  opacity:0!important;
+}
+#tower .v6294-summoner-tower #vTPlayerFighter>.v6327-tower-player-art{
+  position:absolute!important;
+  z-index:1!important;
+  inset:0!important;
+  display:block!important;
+  pointer-events:none!important;
+  background-image:var(--v6327-player-art)!important;
+  background-repeat:no-repeat!important;
+  background-position:center bottom!important;
+  background-size:contain!important;
+  transform:translateZ(0)!important;
+  transform-origin:center bottom!important;
+  backface-visibility:hidden!important;
+  -webkit-backface-visibility:hidden!important;
+  filter:drop-shadow(0 18px 16px #000f) saturate(1.05) contrast(1.04)!important;
+}
+#tower .v6294-summoner-tower #vTPlayerFighter>.v6327-tower-player-art::after{
+  content:""!important;
+  position:absolute!important;
+  inset:0!important;
+  pointer-events:none!important;
+  background:linear-gradient(180deg,transparent 0 73%,rgba(7,15,9,.20) 84%,rgba(5,10,7,.62) 100%)!important;
+}

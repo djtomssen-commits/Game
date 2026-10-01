@@ -1,0 +1,28 @@
+
+/* V4.02 – mobile Kopfzeile: Kampfkraft vollständig im Viewport halten */
+@media (max-width: 760px){
+  header{
+    max-width:100vw!important;
+    overflow:visible!important;
+  }
+  header .brand{
+    min-width:0!important;
+  }
+  header .brand > div:last-child{
+    min-width:0!important;
+  }
+  header .top-stats,
+  header .header-stats{
+    min-width:0!important;
+    max-width:100%!important;
+  }
+  header .power,
+  header [class*="power"]{
+    min-width:0!important;
+    max-width:clamp(118px,26vw,160px)!important;
+    box-sizing:border-box!important;
+    padding-left:10px!important;
+    padding-right:10px!important;
+    flex-shrink:1!important;
+  }
+}

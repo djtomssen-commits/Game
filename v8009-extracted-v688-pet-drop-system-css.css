@@ -1,0 +1,145 @@
+
+/* New/unseen pet indicator below Illegales Buch */
+#character #v686PetAlbumBtn.v688-unseen::before{
+  content:"";
+  position:absolute;
+  right:7px;
+  top:6px;
+  width:7px;
+  height:7px;
+  border-radius:50%;
+  background:#61ef69;
+  box-shadow:0 0 0 2px #0b190d,0 0 10px #61ef69;
+  animation:v688PetDot 1.2s ease-in-out infinite alternate;
+}
+@keyframes v688PetDot{from{transform:scale(.82);opacity:.72}to{transform:scale(1.18);opacity:1}}
+
+/* Source badges inside album rows */
+#v686PetAlbumOverlay .v688-source{
+  display:inline-flex;
+  align-items:center;
+  gap:3px;
+  width:max-content;
+  max-width:100%;
+  margin-top:4px;
+  padding:2px 4px;
+  border:1px solid #355a3b;
+  border-radius:5px;
+  background:#07130a;
+  color:#a9c3a4;
+  font-size:4.8px;
+  font-weight:900;
+  line-height:1.1;
+}
+#v686PetAlbumOverlay .v688-drop-guide{
+  margin:0;
+  padding:8px 9px;
+  border:1px solid #355d3d;
+  border-radius:10px;
+  background:linear-gradient(160deg,#07150b,#030906);
+  color:#9fac9f;
+  font-size:6px;
+  line-height:1.5;
+}
+#v686PetAlbumOverlay .v688-drop-guide b{color:#dfead9}
+#v686PetAlbumOverlay .v688-drop-guide strong{color:#e8c96f}
+
+/* Dedicated find/reward popup */
+#v688PetPopup{
+  position:fixed;
+  inset:0;
+  z-index:6900;
+  display:none;
+  place-items:center;
+  padding:18px;
+  background:rgba(0,0,0,.78);
+  backdrop-filter:blur(3px);
+}
+#v688PetPopup.show{display:grid}
+#v688PetPopup .v688-card{
+  width:min(360px,92vw);
+  overflow:hidden;
+  position:relative;
+  padding:14px;
+  border:2px solid var(--v688q,#62d765);
+  border-radius:17px;
+  background:
+    radial-gradient(circle at 50% 0%,color-mix(in srgb,var(--v688q,#62d765) 18%,transparent),transparent 42%),
+    linear-gradient(160deg,#0c1b10,#030806);
+  box-shadow:
+    0 18px 65px #000,
+    0 0 28px color-mix(in srgb,var(--v688q,#62d765) 28%,transparent),
+    inset 0 0 0 2px rgba(255,255,255,.025);
+  text-align:center;
+}
+#v688PetPopup .v688-kicker{
+  color:var(--v688q,#62d765);
+  font-size:7px;
+  font-weight:1000;
+  letter-spacing:.12em;
+}
+#v688PetPopup .v688-icon{
+  width:86px;
+  height:86px;
+  margin:10px auto 8px;
+  display:grid;
+  place-items:center;
+  border:2px solid var(--v688q,#62d765);
+  border-radius:18px;
+  background:#07100a;
+  font-size:55px;
+  box-shadow:0 0 20px color-mix(in srgb,var(--v688q,#62d765) 25%,transparent);
+}
+#v688PetPopup h3{
+  margin:0;
+  color:#f5f4ec;
+  font-family:Georgia,"Times New Roman",serif;
+  font-size:23px;
+  line-height:1.05;
+}
+#v688PetPopup .v688-quality{
+  margin-top:4px;
+  color:var(--v688q,#62d765);
+  font-size:10px;
+  font-weight:1000;
+}
+#v688PetPopup .v688-source-text{
+  margin-top:7px;
+  color:#9eaa9e;
+  font-size:7px;
+}
+#v688PetPopup .v688-reward-text{
+  margin-top:8px;
+  padding:8px;
+  border:1px solid #39593e;
+  border-radius:9px;
+  background:#061009;
+  color:#d5e0d2;
+  font-size:8px;
+  line-height:1.45;
+}
+#v688PetPopup .v688-actions{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:7px;
+  margin-top:10px;
+}
+#v688PetPopup button{
+  min-height:37px;
+  border:1px solid #4d744e;
+  border-radius:9px;
+  background:#112017;
+  color:#e5eee1;
+  font-weight:1000;
+  font-size:8px;
+}
+#v688PetPopup button.primary{
+  border-color:#72cf59;
+  background:linear-gradient(180deg,#62c84f,#307f31);
+  color:#071008;
+}
+@media(max-width:560px){
+  #v688PetPopup .v688-card{width:min(330px,94vw);padding:12px}
+  #v688PetPopup .v688-icon{width:72px;height:72px;font-size:46px}
+  #v688PetPopup h3{font-size:20px}
+}

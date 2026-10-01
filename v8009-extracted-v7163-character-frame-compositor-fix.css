@@ -1,0 +1,35 @@
+
+/* Tomssen repro: animated avatar frame + large inventory can exhaust Android WebView compositor layers.
+   Keep the frame visible on the character page, but render it as a normal static image there. */
+#character #v510HeroRoot .avatar-scene.v7137-frame-target{
+  isolation:auto!important;
+  transform:none!important;
+  -webkit-transform:none!important;
+  will-change:auto!important;
+  contain:none!important;
+}
+#character #v510HeroRoot .avatar-scene.v7137-frame-target>.v7139-frame-art{
+  animation:none!important;
+  filter:none!important;
+  -webkit-filter:none!important;
+  transform:none!important;
+  -webkit-transform:none!important;
+  will-change:auto!important;
+  contain:none!important;
+  backface-visibility:visible!important;
+  -webkit-backface-visibility:visible!important;
+}
+/* Equipment and hero content must stay in the normal paint tree while scrolling into inventory. */
+#character #v510HeroRoot .v510-equipment-grid,
+#character #v510HeroRoot .v510-equip-col,
+#character #v510HeroRoot .v510-slot,
+#character #v510HeroRoot .v510-slot img{
+  transform:none!important;
+  -webkit-transform:none!important;
+  filter:none!important;
+  -webkit-filter:none!important;
+  will-change:auto!important;
+  contain:none!important;
+  backface-visibility:visible!important;
+  -webkit-backface-visibility:visible!important;
+}

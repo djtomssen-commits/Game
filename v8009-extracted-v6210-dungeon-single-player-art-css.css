@@ -1,0 +1,26 @@
+
+/* Dungeon: exactly one visible player artwork. Historical renderers are not
+   allowed to leave a second Barbar image/background beside the canonical one. */
+#dungeonBattleCard #playerFighter .fighter-avatar{
+  background-image:none!important;
+  background-color:transparent!important;
+}
+#dungeonBattleCard #playerFighter .fighter-avatar:after{
+  content:none!important;
+  display:none!important;
+  background:none!important;
+  background-image:none!important;
+}
+#dungeonBattleCard #playerFighter .fighter-avatar > img:not(.gl-dungeon-player-art),
+#dungeonBattleCard #playerFighter .fighter-avatar > .v41-enemy-art,
+#dungeonBattleCard #playerFighter .fighter-avatar > .v600-barbar-art,
+#dungeonBattleCard #playerFighter .fighter-avatar > .v684-barbar-fallback{
+  display:none!important;
+  visibility:hidden!important;
+  opacity:0!important;
+}
+#dungeonBattleCard #playerFighter .fighter-avatar > .gl-dungeon-player-art{
+  display:block!important;
+  visibility:visible!important;
+  opacity:1!important;
+}

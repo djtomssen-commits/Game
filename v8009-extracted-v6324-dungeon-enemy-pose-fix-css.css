@@ -1,0 +1,29 @@
+
+/* Generic canonical enemy image stays the only owner. */
+#dungeonBattleCard.gl-dungeon-canonical-battle #enemyFighter.gl-dungeon-enemy-ready .fighter-avatar{
+  background-image:none!important;
+  background:none!important;
+  overflow:hidden!important;
+}
+#dungeonBattleCard.gl-dungeon-canonical-battle #enemyFighter.gl-dungeon-enemy-ready .fighter-avatar>.gl-dungeon-enemy-art{
+  display:block!important;
+  width:100%!important;
+  height:100%!important;
+  object-fit:contain!important;
+  object-position:center bottom!important;
+  transform:translate3d(0,0,0) scale(1)!important;
+  transform-origin:center bottom!important;
+}
+/* Specific asset correction: Säurefalter artwork has too much scene around the moth.
+   Zoom and reframe it so it reads like the other dungeon enemies. */
+#dungeonBattleCard.gl-dungeon-canonical-battle #enemyFighter.gl-dungeon-pose-saeurefalter .fighter-avatar>.gl-dungeon-enemy-art{
+  object-fit:cover!important;
+  object-position:76% 64%!important;
+  transform:scale(1.78)!important;
+}
+@media(max-width:560px){
+  #dungeonBattleCard.gl-dungeon-canonical-battle #enemyFighter.gl-dungeon-pose-saeurefalter .fighter-avatar>.gl-dungeon-enemy-art{
+    object-position:76% 64%!important;
+    transform:scale(1.86)!important;
+  }
+}

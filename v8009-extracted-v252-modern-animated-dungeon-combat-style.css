@@ -1,0 +1,186 @@
+
+/* ===== V4.02 animated modern dungeon combat ===== */
+#dungeonBattleCard{
+  position:relative!important;
+  overflow:hidden!important;
+  padding:12px!important;
+  border:1px solid #314b36!important;
+  border-radius:20px!important;
+  background:linear-gradient(180deg,#0b150e,#070b08)!important;
+  box-shadow:0 18px 45px #000a,inset 0 0 35px #0007!important;
+}
+#dungeonBattleCard .section-title{
+  position:relative;z-index:8;margin-bottom:7px!important;
+}
+#dungeonBattleCard #enemyName{font-size:15px!important;color:#e8f0e5!important}
+#dungeonBattleCard #enemyTier{
+  border-color:#465c49!important;background:#09110b!important;color:#92d77e!important;
+}
+#dungeonBattleCard .battle-stage{
+  position:relative!important;
+  height:390px!important;
+  margin:8px 0 10px!important;
+  overflow:hidden!important;
+  border:1px solid #2d4734!important;
+  border-radius:18px!important;
+  background:
+    radial-gradient(circle at 50% 25%,rgba(55,124,72,.18),transparent 28%),
+    radial-gradient(circle at 20% 70%,rgba(45,103,52,.14),transparent 26%),
+    radial-gradient(circle at 84% 64%,rgba(93,44,105,.13),transparent 28%),
+    linear-gradient(180deg,#09150f 0%,#0c1710 45%,#080d09 72%,#050806 100%)!important;
+  box-shadow:inset 0 0 48px #000c,0 10px 24px #0007!important;
+  perspective:800px;
+}
+#dungeonBattleCard .battle-stage:before{
+  content:"";position:absolute;z-index:0;inset:0;pointer-events:none;
+  background:
+    radial-gradient(ellipse at 50% 100%,rgba(79,122,64,.18) 0 28%,transparent 29%),
+    linear-gradient(90deg,transparent 0 12%,rgba(90,135,78,.045) 13% 14%,transparent 15% 85%,rgba(90,135,78,.045) 86% 87%,transparent 88%),
+    repeating-linear-gradient(115deg,transparent 0 42px,rgba(255,255,255,.012) 43px 44px);
+}
+#dungeonBattleCard .battle-stage:after{
+  content:""!important;position:absolute!important;z-index:1!important;left:-8%!important;right:-8%!important;bottom:-45px!important;height:155px!important;
+  background:
+    radial-gradient(ellipse at 25% 28%,#263421 0 9%,transparent 10%),
+    radial-gradient(ellipse at 72% 20%,#1d2c1f 0 12%,transparent 13%),
+    linear-gradient(180deg,#18251a,#09110b 55%,#040704)!important;
+  border-radius:50% 50% 0 0!important;
+  box-shadow:inset 0 12px 30px #0008!important;
+}
+.v252-battle-fog{position:absolute;z-index:2;inset:0;pointer-events:none;overflow:hidden}
+.v252-battle-fog:before,.v252-battle-fog:after{
+  content:"";position:absolute;width:70%;height:80px;border-radius:50%;filter:blur(18px);opacity:.18;
+  background:radial-gradient(ellipse,#7fc67d,transparent 70%);animation:v252Fog 8s linear infinite;
+}
+.v252-battle-fog:before{left:-45%;top:28%}.v252-battle-fog:after{right:-45%;top:48%;animation-delay:-4s}
+@keyframes v252Fog{0%{transform:translateX(-10%) scaleX(.9)}50%{transform:translateX(70%) scaleX(1.2)}100%{transform:translateX(140%) scaleX(.9)}}
+.v252-battle-vs{
+  position:absolute;z-index:3;left:50%;top:22px;transform:translateX(-50%);
+  color:#607267;font-size:8px;font-weight:1000;letter-spacing:.18em;text-shadow:0 2px 8px #000;
+}
+.v252-round-chip{
+  position:absolute;z-index:8;left:50%;top:42px;transform:translateX(-50%);
+  min-width:48px;padding:4px 8px;border:1px solid #33483a;border-radius:999px;background:rgba(5,10,7,.82);
+  color:#819086;font-size:6px;font-weight:1000;text-align:center;opacity:.9;
+}
+#dungeonBattleCard .fighter{
+  z-index:5!important;bottom:58px!important;width:43%!important;
+  transition:transform .16s ease,filter .16s ease!important;
+  will-change:transform,filter;
+}
+#dungeonBattleCard .fighter.player{left:4%!important}
+#dungeonBattleCard .fighter.enemy-side{right:4%!important}
+.v252-fighter-shell{
+  position:relative;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;min-height:245px;
+}
+.v252-aura{
+  position:absolute;z-index:0;left:50%;bottom:68px;transform:translateX(-50%);width:120px;height:145px;border-radius:50%;
+  background:radial-gradient(ellipse,rgba(98,211,75,.18),rgba(50,119,52,.07) 43%,transparent 70%);
+  filter:blur(2px);animation:v252Aura 2.3s ease-in-out infinite alternate;pointer-events:none;
+}
+.enemy-side .v252-aura{background:radial-gradient(ellipse,rgba(185,71,211,.14),rgba(105,48,120,.06) 43%,transparent 70%)}
+.enemy-side.v252-boss .v252-aura{background:radial-gradient(ellipse,rgba(211,77,244,.28),rgba(122,41,150,.10) 44%,transparent 72%)}
+@keyframes v252Aura{from{transform:translateX(-50%) scale(.92);opacity:.65}to{transform:translateX(-50%) scale(1.08);opacity:1}}
+.v252-shadow{
+  position:absolute;z-index:1;bottom:45px;left:50%;transform:translateX(-50%);width:92px;height:22px;border-radius:50%;
+  background:radial-gradient(ellipse,#000a,transparent 70%);filter:blur(3px);
+}
+#dungeonBattleCard .fighter-avatar{
+  position:relative;z-index:3!important;display:grid!important;place-items:center!important;
+  width:128px!important;height:142px!important;margin:0 auto!important;
+  font-size:82px!important;line-height:1!important;
+  filter:drop-shadow(0 15px 8px #000b)!important;
+  transform-origin:50% 90%;animation:v252Idle 2.0s ease-in-out infinite!important;
+}
+#dungeonBattleCard .enemy-side .fighter-avatar{animation-duration:2.35s!important}
+@keyframes v252Idle{0%,100%{transform:translateY(0) rotate(-1deg)}50%{transform:translateY(-7px) rotate(1deg)}}
+.v252-weapon{
+  position:absolute;z-index:5;font-size:38px;filter:drop-shadow(0 6px 4px #000b);pointer-events:none;
+}
+.player .v252-weapon{right:6px;top:54px;transform:rotate(-22deg)}
+.enemy-side .v252-weapon{left:7px;top:58px;transform:rotate(18deg)}
+.v252-class-mark{
+  position:absolute;z-index:6;top:26px;left:50%;transform:translateX(-50%);font-size:17px;opacity:.85;filter:drop-shadow(0 3px 4px #000b)
+}
+#dungeonBattleCard .fighter-name{
+  position:relative;z-index:5;width:95%;margin-top:-2px;padding:5px 7px 4px;border:1px solid #314438;border-radius:9px 9px 0 0;
+  background:rgba(5,10,7,.88);color:#e1e8df!important;font-size:8px!important;font-weight:1000!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+#dungeonBattleCard .hpbar{
+  position:relative;z-index:5;width:95%!important;height:14px!important;margin:0 auto!important;border:1px solid #3a4a3d!important;border-radius:0 0 9px 9px!important;
+  background:#130808!important;overflow:hidden!important;box-shadow:inset 0 2px 8px #000a!important;
+}
+#dungeonBattleCard .hpfill{
+  height:100%!important;background:linear-gradient(90deg,#d34846,#ef7b59,#f39a62)!important;
+  box-shadow:0 0 13px rgba(235,85,65,.35)!important;transition:width .28s cubic-bezier(.2,.8,.2,1)!important;
+}
+#dungeonBattleCard .fighter .tiny{
+  position:relative;z-index:5;margin-top:4px;color:#85958a!important;font-size:7px!important;font-weight:900;
+}
+#dungeonBattleCard .fighter.attack-right{animation:v252AttackRight .43s cubic-bezier(.2,.75,.25,1)!important}
+#dungeonBattleCard .fighter.attack-left{animation:v252AttackLeft .43s cubic-bezier(.2,.75,.25,1)!important}
+#dungeonBattleCard .fighter.hit{animation:v252Hit .40s ease!important}
+@keyframes v252AttackRight{0%{transform:translateX(0) scale(1)}42%{transform:translateX(74px) scale(1.08) rotate(3deg)}68%{transform:translateX(54px) scale(1.05)}100%{transform:translateX(0) scale(1)}}
+@keyframes v252AttackLeft{0%{transform:translateX(0) scale(1)}42%{transform:translateX(-74px) scale(1.08) rotate(-3deg)}68%{transform:translateX(-54px) scale(1.05)}100%{transform:translateX(0) scale(1)}}
+@keyframes v252Hit{0%,100%{transform:translateX(0);filter:brightness(1)}15%{transform:translateX(-12px);filter:brightness(2.1) saturate(.4)}35%{transform:translateX(10px);filter:brightness(1.6)}55%{transform:translateX(-7px);filter:brightness(1.3)}75%{transform:translateX(4px);filter:brightness(1)}}
+#dungeonBattleCard .damage{
+  z-index:20!important;top:105px!important;padding:3px 7px;border-radius:8px;background:rgba(8,8,8,.6);
+  font-size:24px!important;font-weight:1000!important;letter-spacing:.02em;color:#fff!important;text-shadow:0 2px 5px #000!important;
+  pointer-events:none;
+}
+#dungeonBattleCard .damage.v252-crit{color:#ffd66e!important;font-size:29px!important;text-shadow:0 0 9px #f0a632,0 2px 5px #000!important}
+#dungeonBattleCard .damage.pop{animation:v252DamagePop .72s cubic-bezier(.16,.8,.25,1)!important}
+@keyframes v252DamagePop{0%{opacity:0;transform:translateY(14px) scale(.58) rotate(-5deg)}22%{opacity:1;transform:translateY(-4px) scale(1.22) rotate(2deg)}65%{opacity:1;transform:translateY(-29px) scale(1)}100%{opacity:0;transform:translateY(-62px) scale(.82)}}
+.v252-impact{
+  position:absolute;z-index:15;left:50%;top:50%;width:78px;height:78px;transform:translate(-50%,-50%) scale(.2);pointer-events:none;opacity:0;
+}
+.v252-impact:before,.v252-impact:after{content:"";position:absolute;inset:0;border-radius:50%;border:3px solid #fff7}
+.v252-impact:after{inset:18px;border-color:#92e86eaa}
+.v252-impact.show{animation:v252Impact .43s ease-out}
+.v252-impact.magic:after{border-color:#cf78ffcc;box-shadow:0 0 20px #b94de7aa}
+.v252-impact.arrow:after{border-color:#77e1a2cc;box-shadow:0 0 20px #56c98688}
+@keyframes v252Impact{0%{opacity:0;transform:translate(-50%,-50%) scale(.15)}22%{opacity:1;transform:translate(-50%,-50%) scale(1)}100%{opacity:0;transform:translate(-50%,-50%) scale(1.65)}}
+.v252-slash{
+  position:absolute;z-index:16;width:105px;height:5px;border-radius:99px;background:linear-gradient(90deg,transparent,#fff,#8fe46c,transparent);
+  box-shadow:0 0 12px #a8f38a;opacity:0;pointer-events:none;transform:rotate(-25deg);
+}
+.v252-slash.show{animation:v252Slash .36s ease-out}
+@keyframes v252Slash{0%{opacity:0;transform:translate(-32px,25px) rotate(-25deg) scaleX(.3)}25%{opacity:1}100%{opacity:0;transform:translate(35px,-25px) rotate(-25deg) scaleX(1.25)}}
+.v252-projectile{
+  position:absolute;z-index:17;left:25%;top:47%;width:18px;height:18px;border-radius:50%;opacity:0;pointer-events:none;
+  background:radial-gradient(circle,#fff,#99f074 35%,#3da349 62%,transparent 68%);box-shadow:0 0 18px #75df5c;
+}
+.v252-projectile.magic{background:radial-gradient(circle,#fff,#d77aff 35%,#8c36bc 62%,transparent 68%);box-shadow:0 0 20px #b550e2}
+.v252-projectile.arrow{width:36px;height:4px;border-radius:99px;background:linear-gradient(90deg,#e9ffe8,#89e38f,#2b793c);box-shadow:0 0 9px #70d77a}
+.v252-projectile.player-shot{animation:v252ShotRight .38s linear}
+.v252-projectile.enemy-shot{left:72%;animation:v252ShotLeft .38s linear}
+@keyframes v252ShotRight{0%{opacity:0;transform:translateX(0) scale(.7)}15%{opacity:1}100%{opacity:0;transform:translateX(230px) scale(1.2)}}
+@keyframes v252ShotLeft{0%{opacity:0;transform:translateX(0) scale(.7)}15%{opacity:1}100%{opacity:0;transform:translateX(-230px) scale(1.2)}}
+.v252-screen-flash{position:absolute;z-index:14;inset:0;pointer-events:none;opacity:0;background:radial-gradient(circle at 50% 52%,#fff8,transparent 34%)}
+.v252-screen-flash.show{animation:v252Flash .25s ease-out}
+@keyframes v252Flash{0%{opacity:0}.25%{opacity:.65}100%{opacity:0}}
+#dungeonBattleCard .battle-log{
+  min-height:50px!important;margin:8px 0!important;padding:10px 11px!important;border:1px solid #2c4332!important;border-radius:12px!important;
+  background:linear-gradient(180deg,#0b130d,#070c08)!important;color:#a7b8aa!important;font-size:8px!important;line-height:1.5!important;
+  box-shadow:inset 0 0 18px #0005!important;
+}
+#dungeonBattleCard #fightBtn{
+  min-height:48px!important;border-radius:12px!important;font-size:10px!important;letter-spacing:.05em!important;
+  box-shadow:0 8px 20px #0007,0 0 16px rgba(110,215,79,.12)!important;
+}
+#dungeonBattleCard #fightBtn:disabled{filter:saturate(.55);opacity:.68}
+#dungeonBattleCard.v252-fighting #fightBtn:after{content:" · KAMPF LÄUFT"}
+#dungeonBattleCard.v252-victory .battle-stage{box-shadow:inset 0 0 48px #000c,0 0 24px rgba(88,218,77,.24)!important}
+#dungeonBattleCard.v252-defeat .battle-stage{filter:saturate(.55) brightness(.72)}
+@media(max-width:560px){
+  #dungeonBattleCard .battle-stage{height:350px!important}
+  #dungeonBattleCard .fighter-avatar{width:105px!important;height:124px!important;font-size:70px!important}
+  .v252-fighter-shell{min-height:218px}
+  .v252-aura{width:100px;height:126px}
+  .v252-weapon{font-size:32px}
+  #dungeonBattleCard .fighter{width:46%!important}
+  #dungeonBattleCard .fighter.player{left:1%!important}
+  #dungeonBattleCard .fighter.enemy-side{right:1%!important}
+  @keyframes v252AttackRight{0%{transform:translateX(0)}45%{transform:translateX(50px) scale(1.07)}100%{transform:translateX(0)}}
+  @keyframes v252AttackLeft{0%{transform:translateX(0)}45%{transform:translateX(-50px) scale(1.07)}100%{transform:translateX(0)}}
+}

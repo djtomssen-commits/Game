@@ -1,0 +1,41 @@
+
+#character #attrs{display:grid!important;grid-template-columns:1fr!important;gap:10px!important}
+#character #attrs > .v4140-attr{
+  position:relative!important;display:grid!important;grid-template-columns:58px minmax(0,1fr) 64px!important;
+  align-items:center!important;gap:12px!important;min-height:118px!important;padding:14px!important;
+  border:1px solid #34523b!important;border-radius:22px!important;background:linear-gradient(155deg,#102018,#07130d)!important;
+  overflow:hidden!important;box-shadow:inset 0 0 18px rgba(74,150,82,.045)!important
+}
+#character #attrs > .v4140-attr.v4140-primary{
+  border-color:#b86d2e!important;background:linear-gradient(155deg,#29180d,#151006)!important;
+  box-shadow:inset 0 0 22px rgba(218,123,42,.10),0 0 12px rgba(218,123,42,.05)!important
+}
+#character .v4140-attr-icon{
+  width:58px;height:58px;display:grid;place-items:center;border-radius:50%;border:2px solid #31523b;
+  background:#08110c;font-size:31px;line-height:1;box-shadow:inset 0 0 14px #0008
+}
+#character .v4140-primary .v4140-attr-icon{border-color:#a85b26}
+#character .v4140-attr-copy{min-width:0;align-self:center}
+#character .v4140-attr-name{font-size:14px!important;line-height:1.1;font-weight:950;color:#d8e5d5}
+#character .v4140-attr-value{margin-top:3px;font-size:28px!important;line-height:1;font-weight:1000;color:#f3f6ef}
+#character .v4140-attr-desc{margin-top:7px;font-size:9px!important;line-height:1.3;color:#849987}
+#character .v4140-attr-role{margin-top:9px;font-size:10px;font-weight:900;color:#829887}
+#character .v4140-primary .v4140-attr-role{color:#c79a70}
+#character .v4140-primary:before{
+  content:'HAUPTATTRIBUT';position:absolute;right:82px;top:13px;padding:3px 8px;border:1px solid #a65f2c;border-radius:999px;
+  color:#e1ae76;background:#1d1008;font-size:7px;font-weight:1000;letter-spacing:.08em
+}
+#character #attrs > .v4140-attr > button{
+  justify-self:end!important;width:62px!important;height:62px!important;border:0!important;border-radius:18px!important;
+  background:linear-gradient(180deg,#62705d,#485344)!important;color:#09100b!important;font-size:30px!important;font-weight:1000!important
+}
+#character #attrs > .v4140-attr > button:not(:disabled){background:linear-gradient(180deg,#79ca5c,#57a940)!important;cursor:pointer}
+#character #attrs > .v4140-attr > button:disabled{opacity:.56!important}
+/* Retire every historical attribute-row skin/clone inside the current hub. */
+#character #attrs > [data-v267-int]{display:none!important}
+@media(max-width:430px){
+ #character #attrs > .v4140-attr{grid-template-columns:52px minmax(0,1fr) 58px!important;gap:9px!important;min-height:108px!important;padding:12px!important}
+ #character .v4140-attr-icon{width:52px;height:52px;font-size:28px}
+ #character #attrs > .v4140-attr > button{width:58px!important;height:58px!important}
+ #character .v4140-primary:before{right:75px;top:11px;font-size:6px}
+}

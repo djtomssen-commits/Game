@@ -1,0 +1,120 @@
+
+.v6287-summon-roster{
+  left:50%!important;right:auto!important;bottom:58px!important;
+  transform:translateX(-50%)!important;
+  width:min(92%,350px)!important;
+  display:grid!important;gap:4px!important;padding:5px 6px 6px!important;
+  border:1px solid rgba(117,165,91,.82)!important;border-radius:13px!important;
+  background:
+    radial-gradient(circle at 50% 0,rgba(119,226,93,.11),transparent 48%),
+    linear-gradient(180deg,rgba(10,24,13,.96),rgba(5,11,8,.97))!important;
+  box-shadow:0 7px 19px #000c,inset 0 0 20px rgba(93,173,76,.07)!important;
+  opacity:1!important;overflow:visible!important
+}
+.v6303-roster-head,.v6303-roster-foot{display:flex;align-items:center;justify-content:space-between;gap:6px;min-width:0}
+.v6303-roster-head b{font-size:6.4px;color:#d7ffc9;letter-spacing:.10em;text-shadow:0 0 7px rgba(124,239,99,.35)}
+.v6303-roster-head span{font-size:5.7px;color:#a9bbac;white-space:nowrap}
+.v6303-roster-grid{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:4px!important}
+.v6287-summon-roster .v6303-comp-card{
+  position:relative!important;width:auto!important;height:42px!important;min-width:0!important;
+  display:grid!important;grid-template-columns:32px minmax(0,1fr)!important;
+  grid-template-rows:1fr 13px!important;align-items:center!important;gap:0 3px!important;
+  padding:3px!important;overflow:hidden!important;
+  border:1px solid rgba(76,104,75,.78)!important;border-radius:8px!important;
+  background:linear-gradient(145deg,#0b1710,#07100a)!important;
+  box-shadow:inset 0 0 12px #0008!important;opacity:.78!important;
+  transform:none!important;transition:.17s ease!important
+}
+.v6303-portrait{grid-row:1/3;width:30px;height:34px;border-radius:7px;overflow:hidden;border:1px solid #425b43;background:#050b07}
+.v6303-portrait img{width:100%!important;height:100%!important;object-fit:cover!important}
+.v6303-comp-card em{font-style:normal;font-size:5.2px;font-weight:1000;color:#c5d3c7;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.v6303-comp-card small{font-size:4.8px;font-weight:1000;color:#78907d;letter-spacing:.04em;white-space:nowrap}
+.v6303-comp-card.last{border-color:#68925f!important}
+.v6287-summon-roster .v6303-comp-card.active{
+  opacity:1!important;transform:translateY(-3px) scale(1.035)!important;
+  border-color:#a5f276!important;background:linear-gradient(145deg,#18321c,#09140c)!important;
+  box-shadow:0 0 17px rgba(116,244,82,.48),inset 0 0 15px rgba(127,245,96,.11)!important
+}
+.v6303-comp-card.active em{color:#edffe8}.v6303-comp-card.active small{color:#e2c66c}
+.v6303-roster-foot{border-top:1px solid rgba(75,107,75,.42);padding-top:4px}
+.v6303-roster-foot>span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:5.2px;color:#8ea390;text-align:right}
+.v6303-pity{display:flex;align-items:center;gap:3px;flex:0 0 auto}
+.v6303-pity i{width:13px;height:4px;border-radius:999px;background:#172119;border:1px solid #354639;box-shadow:inset 0 0 4px #000}
+.v6303-pity i.filled{background:linear-gradient(90deg,#55bc4b,#8be768);border-color:#86d66e;box-shadow:0 0 6px rgba(108,229,83,.35)}
+.v6303-pity i.next{border-color:#c3a657}
+.v6303-pity i.guarantee{height:11px;width:11px;display:grid;place-items:center;font-style:normal;font-size:6px;color:#d9bc62;background:#1e190d;border-color:#8e7639}
+
+/* Real companion actor */
+.v6287-summon-fx{
+  position:absolute!important;z-index:126!important;margin:0!important;
+  pointer-events:none!important;display:block!important;animation:none!important;
+  filter:none!important;opacity:1!important
+}
+.v6287-summon-fx .v6303-spirit{
+  position:absolute;inset:0;display:block;border-radius:50%;
+  filter:drop-shadow(0 0 11px rgba(113,245,88,.68)) drop-shadow(0 7px 7px #000a)
+}
+.v6287-summon-fx .v6303-spirit img{
+  width:100%!important;height:100%!important;display:block!important;object-fit:cover!important;border-radius:18px!important;
+  -webkit-mask-image:radial-gradient(circle at 50% 48%,#000 48%,rgba(0,0,0,.83) 70%,transparent 96%)!important;
+  mask-image:radial-gradient(circle at 50% 48%,#000 48%,rgba(0,0,0,.83) 70%,transparent 96%)!important
+}
+.v6287-summon-fx>b{
+  position:absolute!important;left:50%!important;top:-12px!important;transform:translateX(-50%)!important;
+  padding:3px 6px!important;border-radius:999px!important;background:#071009e6!important;
+  border:1px solid #5a8350!important;color:#e5ffdd!important;font-size:5.8px!important;
+  text-shadow:0 2px 3px #000!important;white-space:nowrap!important
+}
+.v6287-summon-fx .v6303-trail{
+  position:absolute;z-index:-1;left:-38px;top:42%;width:62px;height:8px;border-radius:50%;
+  background:linear-gradient(90deg,transparent,rgba(114,235,94,.16),rgba(140,255,118,.68));
+  filter:blur(2px);transform:rotate(-4deg)
+}
+.v6303-strike-bone .v6303-spirit{filter:drop-shadow(0 0 11px rgba(245,220,163,.72)) drop-shadow(0 7px 7px #000a)}
+.v6303-strike-bone .v6303-trail{background:linear-gradient(90deg,transparent,rgba(237,210,157,.20),rgba(255,237,190,.82))}
+.v6303-strike-spore .v6303-spirit{filter:drop-shadow(0 0 12px rgba(183,91,221,.75)) drop-shadow(0 7px 7px #000a)}
+.v6303-strike-spore .v6303-trail{background:linear-gradient(90deg,transparent,rgba(131,75,178,.18),rgba(178,87,221,.72))}
+.v6303-strike-crow .v6303-spirit{filter:drop-shadow(0 0 12px rgba(97,196,224,.68)) drop-shadow(0 7px 7px #000a)}
+.v6303-strike-crow .v6303-trail{height:4px;background:linear-gradient(90deg,transparent,rgba(110,201,222,.18),rgba(147,230,246,.85))}
+
+/* Impact at the actual enemy position */
+.v6303-companion-impact{
+  position:absolute;z-index:132;width:112px;height:112px;transform:translate(-50%,-50%);
+  display:grid;place-items:center;pointer-events:none
+}
+.v6303-companion-impact>i{position:absolute;width:54px;height:54px;border-radius:50%;border:3px solid #84ee69;box-shadow:0 0 20px rgba(124,245,99,.58);animation:v6303ImpactRing .55s ease-out forwards}
+.v6303-companion-impact>b{
+  position:absolute;top:2px;left:50%;transform:translateX(-50%);
+  color:#ffe68a;font-size:8px;font-weight:1000;white-space:nowrap;text-shadow:0 2px 3px #000,0 0 7px #000
+}
+.v6303-companion-impact>small{
+  position:absolute;bottom:1px;left:50%;transform:translateX(-50%);
+  padding:3px 6px;border-radius:999px;background:#071009e6;border:1px solid #617a55;
+  color:#d7f7d1;font-size:5.5px;font-weight:1000;white-space:nowrap;text-shadow:0 1px 2px #000
+}
+.v6303-impact-bone>i{border-radius:11px;border-color:#efd58e;transform:rotate(45deg);box-shadow:0 0 22px rgba(243,204,122,.62)}
+.v6303-impact-spore>i{border-color:#b462d7;background:radial-gradient(circle,rgba(146,74,178,.38),rgba(100,215,83,.10),transparent 72%);box-shadow:0 0 25px rgba(178,84,216,.52)}
+.v6303-impact-crow>i{width:68px;height:28px;border:0;border-radius:0;background:linear-gradient(165deg,transparent 43%,#b3eff8 46% 51%,transparent 54%);filter:drop-shadow(0 0 5px #65c9df);box-shadow:none}
+.v6303-impact-bud>i{background:radial-gradient(circle,rgba(128,255,104,.30),transparent 68%)}
+.v6303-companion-hit{animation:v6303EnemyHit .34s ease!important}
+
+@keyframes v6303ImpactRing{
+  0%{opacity:0;transform:scale(.25)}
+  35%{opacity:1;transform:scale(1.02)}
+  100%{opacity:0;transform:scale(1.75)}
+}
+@keyframes v6303EnemyHit{
+  0%,100%{filter:brightness(1)}
+  36%{filter:brightness(1.9) saturate(1.25);transform:translateX(5px)}
+  62%{transform:translateX(-3px)}
+}
+
+/* Mobile: keep the bar readable without covering the HP text. */
+@media(max-width:560px){
+ .v6287-summon-roster{bottom:56px!important;width:94%!important;padding:4px 5px 5px!important}
+ .v6303-roster-head b{font-size:5.8px}.v6303-roster-head span{font-size:5px}
+ .v6287-summon-roster .v6303-comp-card{height:38px!important;grid-template-columns:30px minmax(0,1fr)!important}
+ .v6303-portrait{width:26px;height:30px}.v6303-comp-card em{font-size:4.6px}.v6303-comp-card small{font-size:4.2px}
+ .v6303-pity i{width:10px}
+ .v6303-roster-foot>span{font-size:4.6px}
+}

@@ -1,0 +1,83 @@
+
+/* ===== V4.02 Harz-Taler root layout fix =====
+   The visual problem was not the inner Harz markup anymore:
+   Dampf and Harz share one CSS-grid row. Dampf is much taller because of
+   refill controls, so Grid stretched the Harz card to the same height.
+   Harz now opts out of that stretch and keeps the same compact height as Gold/Skill.
+*/
+
+@media(max-width:520px){
+  header .resource-stats{
+    align-items:start!important;
+  }
+
+  header .resource-stats .v280-harz-card{
+    align-self:start!important;
+    height:154px!important;
+    min-height:154px!important;
+    max-height:154px!important;
+    padding:15px 11px 13px 70px!important;
+    justify-content:center!important;
+    overflow:hidden!important;
+  }
+}
+
+/* Explicit hierarchy identical to the compact Gold/Skill cards. */
+header .resource-stats .v280-harz-card .v280-harz-label{
+  position:relative;
+  z-index:2;
+  margin:0!important;
+  color:#8fd798!important;
+  font-size:9px!important;
+  line-height:1!important;
+  letter-spacing:.13em!important;
+  font-weight:800!important;
+}
+
+header .resource-stats .v280-harz-card .v280-harz-value{
+  position:relative;
+  z-index:2;
+  display:block!important;
+  margin:7px 0 0!important;
+  padding:0!important;
+  font-size:0!important;
+  line-height:1!important;
+}
+
+header .resource-stats .v280-harz-card .v280-harz-value #topHarz{
+  display:inline-block!important;
+  font-size:27px!important;
+  line-height:1!important;
+  font-weight:1000!important;
+  color:#82e88c!important;
+  text-shadow:0 0 12px rgba(75,217,92,.72)!important;
+}
+
+header .resource-stats .v280-harz-card .v280-harz-sub{
+  position:relative;
+  z-index:2;
+  margin-top:10px!important;
+  padding:4px 8px;
+  border:1px solid rgba(91,205,105,.35);
+  border-radius:999px;
+  background:rgba(28,75,34,.22);
+  color:#9bdd9f!important;
+  font-size:7px!important;
+  line-height:1!important;
+  letter-spacing:.04em!important;
+  text-transform:none!important;
+  white-space:nowrap;
+}
+
+/* The diamond stays on the left, matching the other compact cards. */
+header .resource-stats .v280-harz-card:before,
+header .resource-stats .v280-harz-card:after{
+  left:11px!important;
+  top:50%!important;
+  width:47px!important;
+  height:47px!important;
+}
+header .resource-stats .v280-harz-card:after{
+  content:"💎"!important;
+  font-size:24px!important;
+}

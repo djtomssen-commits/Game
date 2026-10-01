@@ -1,0 +1,211 @@
+
+/* V4.230 – Dungeon 6: sauberes Szenenbild + echte dynamische UI darüber. */
+#dungeonMapCard.v427-d6{
+  overflow:hidden!important;
+}
+#dungeonMapCard.v427-d6 .v261-shell{
+  padding:9px!important;
+}
+#dungeonMapCard.v427-d6 .v261-top{
+  grid-template-columns:24% 52% 24%!important;
+  gap:7px!important;
+  align-items:stretch!important;
+}
+#dungeonMapCard.v427-d6 .v261-back,
+#dungeonMapCard.v427-d6 .v261-ticket{
+  min-height:78px!important;
+  height:78px!important;
+  padding:8px 9px!important;
+  border-radius:14px!important;
+}
+#dungeonMapCard.v427-d6 .v261-back{
+  justify-content:center!important;
+  text-align:left!important;
+  font-size:7.4px!important;
+  line-height:1.12!important;
+  gap:7px!important;
+}
+#dungeonMapCard.v427-d6 .v261-back i{
+  font-size:20px!important;
+}
+#dungeonMapCard.v427-d6 .v261-ticket b{
+  font-size:6.2px!important;
+  line-height:1.06!important;
+}
+#dungeonMapCard.v427-d6 .v261-ticket #dungeonTicketText{
+  margin-top:7px!important;
+  font-size:7.5px!important;
+  line-height:1.08!important;
+  text-align:center!important;
+}
+#dungeonMapCard.v427-d6 .v261-sign{
+  min-height:78px!important;
+  height:78px!important;
+  padding:7px 10px!important;
+  border-radius:15px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:center!important;
+  overflow:visible!important;
+}
+#dungeonMapCard.v427-d6 .v261-sign:before,
+#dungeonMapCard.v427-d6 .v261-sign:after{
+  font-size:14px!important;
+  top:5px!important;
+}
+#dungeonMapCard.v427-d6 .v261-kicker{
+  font-size:6.4px!important;
+  letter-spacing:.13em!important;
+  line-height:1!important;
+}
+#dungeonMapCard.v427-d6 .v261-title{
+  font-size:18px!important;
+  line-height:.94!important;
+  margin-top:4px!important;
+  white-space:nowrap!important;
+  overflow:visible!important;
+  text-align:center!important;
+}
+#dungeonMapCard.v427-d6 .v261-sub{
+  margin-top:6px!important;
+  font-size:6.1px!important;
+  line-height:1.12!important;
+  white-space:nowrap!important;
+}
+
+/* große, klare Kartenfläche wie in der Vorlage */
+#dungeonMapCard.v427-d6 .v261-stage{
+  margin-top:9px!important;
+  aspect-ratio:.79 / 1!important;
+  border-radius:17px!important;
+  overflow:hidden!important;
+}
+#dungeonMapCard.v427-d6 .v261-bg{
+  inset:0!important;
+  background-size:cover!important;
+  background-position:center 52%!important;
+  filter:none!important;
+  transform:none!important;
+  opacity:1!important;
+}
+#dungeonMapCard.v427-d6 .v261-fx{
+  background:
+    linear-gradient(180deg,rgba(0,0,0,.18),rgba(0,0,0,.02) 18%,rgba(0,0,0,.015) 62%,rgba(0,0,0,.25) 100%),
+    radial-gradient(circle at 20% 15%,rgba(92,255,116,.08),transparent 20%),
+    radial-gradient(circle at 82% 81%,rgba(255,65,42,.09),transparent 19%)!important;
+}
+#dungeonMapCard.v427-d6 .v261-road .bg{
+  stroke:#24190d!important;
+  stroke-width:8.2!important;
+  opacity:.72!important;
+}
+#dungeonMapCard.v427-d6 .v261-road .dots{
+  stroke:#e4c56b!important;
+  stroke-width:5.2!important;
+  stroke-dasharray:1 10!important;
+  opacity:.96!important;
+  filter:drop-shadow(0 0 4px rgba(255,217,111,.48))!important;
+}
+
+/* Gegner etwas kompakter, damit sie nicht kollidieren */
+#dungeonMapCard.v427-d6 .v261-node{
+  width:76px!important;
+}
+#dungeonMapCard.v427-d6 .v261-ring{
+  width:50px!important;
+  height:50px!important;
+  font-size:18px!important;
+  border-width:3px!important;
+}
+#dungeonMapCard.v427-d6 .v261-num{
+  top:-9px!important;
+  width:25px!important;
+  height:25px!important;
+  font-size:14px!important;
+}
+#dungeonMapCard.v427-d6 .v261-check,
+#dungeonMapCard.v427-d6 .v261-lock{
+  width:21px!important;
+  height:21px!important;
+  font-size:11px!important;
+}
+#dungeonMapCard.v427-d6 .v261-panel{
+  width:74px!important;
+  min-height:42px!important;
+  margin-top:6px!important;
+  padding:5px 4px 4px!important;
+  border-radius:9px!important;
+  background:linear-gradient(180deg,rgba(5,10,6,.97),rgba(2,5,3,.99))!important;
+}
+#dungeonMapCard.v427-d6 .v261-name{
+  font-size:5.25px!important;
+  line-height:1.03!important;
+}
+#dungeonMapCard.v427-d6 .v261-lv{
+  margin-top:3px!important;
+  font-size:5px!important;
+}
+#dungeonMapCard.v427-d6 .v261-node.boss{
+  width:118px!important;
+}
+#dungeonMapCard.v427-d6 .v261-node.boss .v261-ring{
+  width:70px!important;
+  height:70px!important;
+}
+#dungeonMapCard.v427-d6 .v261-node.boss .v261-num{
+  width:32px!important;
+  height:32px!important;
+  font-size:18px!important;
+}
+#dungeonMapCard.v427-d6 .v261-node.boss .v261-panel{
+  width:108px!important;
+  min-height:48px!important;
+}
+#dungeonMapCard.v427-d6 .v261-node.boss .v261-name{
+  font-size:6.5px!important;
+}
+#dungeonMapCard.v427-d6 .v261-signboard{
+  left:2%!important;
+  bottom:5.5%!important;
+  max-width:90px!important;
+  padding:6px 7px!important;
+  font-size:6.2px!important;
+  line-height:1.1!important;
+}
+
+/* unteres Panel näher an der Vorlage */
+#dungeonMapCard.v427-d6 .v261-bottom{
+  margin-top:9px!important;
+  padding:10px!important;
+  gap:8px!important;
+  border-radius:14px!important;
+}
+#dungeonMapCard.v427-d6 .v261-thumb{
+  width:52px!important;
+  height:52px!important;
+  font-size:30px!important;
+}
+#dungeonMapCard.v427-d6 .v261-line1{font-size:8.6px!important}
+#dungeonMapCard.v427-d6 .v261-line2{font-size:6.2px!important}
+#dungeonMapCard.v427-d6 .v261-label{font-size:5.8px!important;margin-top:7px!important}
+#dungeonMapCard.v427-d6 .v261-rewards{gap:6px!important}
+#dungeonMapCard.v427-d6 .v261-r{padding:8px 4px!important;font-size:6.4px!important}
+#dungeonMapCard.v427-d6 .v261-r .big{font-size:10px!important}
+#dungeonMapCard.v427-d6 .v261-stat{padding:8px!important}
+#dungeonMapCard.v427-d6 .v261-stat span{font-size:5.6px!important}
+#dungeonMapCard.v427-d6 .v261-stat b{font-size:13px!important;margin-top:4px!important}
+#dungeonMapCard.v427-d6 .v261-enter{min-height:50px!important;font-size:10px!important}
+
+@media(max-width:520px){
+  #dungeonMapCard.v427-d6 .v261-top{grid-template-columns:23% 54% 23%!important;gap:5px!important}
+  #dungeonMapCard.v427-d6 .v261-back,
+  #dungeonMapCard.v427-d6 .v261-ticket,
+  #dungeonMapCard.v427-d6 .v261-sign{height:72px!important;min-height:72px!important;padding:6px!important}
+  #dungeonMapCard.v427-d6 .v261-back{font-size:6.3px!important}
+  #dungeonMapCard.v427-d6 .v261-ticket b{font-size:5.4px!important}
+  #dungeonMapCard.v427-d6 .v261-ticket #dungeonTicketText{font-size:6.2px!important}
+  #dungeonMapCard.v427-d6 .v261-kicker{font-size:5.5px!important}
+  #dungeonMapCard.v427-d6 .v261-title{font-size:14.2px!important}
+  #dungeonMapCard.v427-d6 .v261-sub{font-size:5px!important}
+  #dungeonMapCard.v427-d6 .v261-stage{aspect-ratio:.76 / 1!important}
+}

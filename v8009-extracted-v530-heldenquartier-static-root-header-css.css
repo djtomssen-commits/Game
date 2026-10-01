@@ -1,0 +1,49 @@
+
+/*
+  Samsung/Chrome still dropped the separately painted DOM header during scroll.
+  V5.30 removes that composited child completely: title + kicker are painted as
+  the ROOT background in reserved top padding. No JS scroll repair, no child
+  transform, no clip-path, no separate header paint layer.
+*/
+#character.v514-reference-hero #v510HeroRoot{
+  padding-top:58px!important;
+  background-color:#061009!important;
+  background-image:url("assets/v7195-base64/0b19bbeabef29877c5f3.svg")!important;
+  background-repeat:no-repeat!important;
+  background-position:top center!important;
+  background-size:100% 58px!important;
+  transform:none!important;
+  -webkit-transform:none!important;
+  will-change:auto!important;
+  contain:none!important;
+  content-visibility:visible!important;
+}
+/* Remove every DOM-based title owner. The root background is now the single owner. */
+#character.v514-reference-hero #v510HeroRoot > .v529-hero-header,
+#character.v514-reference-hero #v510HeroRoot > .v510-titlebar,
+#character.v514-reference-hero #v510HeroRoot > .v514-kicker{
+  display:none!important;
+  visibility:hidden!important;
+  opacity:0!important;
+  width:0!important;
+  height:0!important;
+  min-width:0!important;
+  min-height:0!important;
+  max-width:0!important;
+  max-height:0!important;
+  margin:0!important;
+  padding:0!important;
+  border:0!important;
+  position:absolute!important;
+  overflow:hidden!important;
+  pointer-events:none!important;
+}
+/* Side rails begin below the static header instead of crossing its paint area. */
+#character.v514-reference-hero #v510HeroRoot::before,
+#character.v514-reference-hero #v510HeroRoot::after{
+  top:58px!important;
+}
+/* The stage follows immediately after the 58px reserved header area. */
+#character.v514-reference-hero #v510HeroRoot > .v510-stage{
+  margin-top:0!important;
+}

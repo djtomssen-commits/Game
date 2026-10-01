@@ -1,0 +1,60 @@
+
+/*
+  V5.30 proved the header can stay painted. The remaining disappearing centre is
+  caused by old V4.02 scroll-repair code repainting/mutating the character DOM
+  while Samsung Internet is scrolling. Keep the hero centre as plain DOM/image
+  layers: no masks, filters, transforms or containment on the centre stack.
+*/
+#character.v514-reference-hero #v510HeroRoot .v510-center,
+#character.v514-reference-hero #v510HeroRoot .v510-portrait,
+#character.v514-reference-hero #v510HeroRoot .avatar-scene,
+#character.v514-reference-hero #v510HeroRoot .class-avatar-big,
+#character.v514-reference-hero #v510HeroRoot .v41-portrait{
+  visibility:visible!important;
+  opacity:1!important;
+  transform:none!important;
+  -webkit-transform:none!important;
+  filter:none!important;
+  -webkit-filter:none!important;
+  contain:none!important;
+  content-visibility:visible!important;
+  will-change:auto!important;
+  backface-visibility:visible!important;
+  -webkit-backface-visibility:visible!important;
+}
+#character.v514-reference-hero #v510HeroRoot .v510-portrait{
+  overflow:hidden!important;
+}
+#character.v514-reference-hero #v510HeroRoot .v080-class-avatar-img,
+#character.v514-reference-hero #v510HeroRoot .class-avatar-big img,
+#character.v514-reference-hero #v510HeroRoot .v41-portrait img{
+  display:block!important;
+  visibility:visible!important;
+  opacity:1!important;
+  transform:none!important;
+  -webkit-transform:none!important;
+  filter:none!important;
+  -webkit-filter:none!important;
+  -webkit-mask-image:none!important;
+  mask-image:none!important;
+  clip-path:none!important;
+  contain:none!important;
+  content-visibility:visible!important;
+  will-change:auto!important;
+  backface-visibility:visible!important;
+  -webkit-backface-visibility:visible!important;
+}
+/* Keep the dynamic text/value stack in normal document paint flow as well. */
+#character.v514-reference-hero #v510HeroRoot .center-name,
+#character.v514-reference-hero #v510HeroRoot .center-class,
+#character.v514-reference-hero #v510HeroRoot .level-shield,
+#character.v514-reference-hero #v510HeroRoot .center-xp{
+  visibility:visible!important;
+  opacity:1!important;
+  transform:none!important;
+  -webkit-transform:none!important;
+  filter:none!important;
+  contain:none!important;
+  content-visibility:visible!important;
+  will-change:auto!important;
+}

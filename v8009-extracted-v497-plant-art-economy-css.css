@@ -1,0 +1,24 @@
+
+/* V4.99 — illustrated plants + Growroom economy aligned to the main RPG loop. */
+.v492-plant{overflow:hidden;min-height:156px!important;padding-top:5px!important}
+.v497-plant-art{height:86px;display:flex;align-items:flex-end;justify-content:center;margin:-2px auto 1px;position:relative;pointer-events:none}
+.v497-plant-art img{display:block;max-width:100%;width:auto;height:100%;object-fit:contain;filter:drop-shadow(0 7px 7px #000b);border-radius:15px;-webkit-mask-image:radial-gradient(ellipse 68% 68% at 50% 52%,#000 58%,transparent 100%);mask-image:radial-gradient(ellipse 68% 68% at 50% 52%,#000 58%,transparent 100%)}
+.v497-stage-seedling{height:68px}.v497-stage-growth{height:79px}.v497-stage-flower{height:91px}.v497-stage-harvest{height:94px}
+.v497-seed-violet img,.v497-seed-critical img{filter:hue-rotate(286deg) saturate(1.2) drop-shadow(0 0 7px #c84cff88) drop-shadow(0 7px 7px #000b)}
+.v497-seed-blue img,.v497-seed-amnesia img{filter:hue-rotate(155deg) saturate(1.12) drop-shadow(0 0 6px #69cfff77) drop-shadow(0 7px 7px #000b)}
+.v497-seed-lemon img{filter:sepia(.18) saturate(1.25) hue-rotate(345deg) drop-shadow(0 0 6px #ffe36d66) drop-shadow(0 7px 7px #000b)}
+.v497-seed-gorilla img{filter:saturate(.84) contrast(1.08) drop-shadow(0 7px 7px #000b)}
+.v497-seed-greencrack img{filter:saturate(1.28) brightness(1.06) drop-shadow(0 0 6px #66ff7c66) drop-shadow(0 7px 7px #000b)}
+.v497-seed-emerald img{filter:hue-rotate(28deg) saturate(1.38) drop-shadow(0 0 8px #59ffb088) drop-shadow(0 7px 7px #000b)}
+.v497-mut-purple img{filter:hue-rotate(285deg) saturate(1.45) drop-shadow(0 0 10px #d552ff)}
+.v497-mut-frost img{filter:hue-rotate(165deg) saturate(.85) brightness(1.15) drop-shadow(0 0 10px #9deaff)}
+.v497-mut-black img{filter:saturate(.55) brightness(.72) contrast(1.24) drop-shadow(0 0 9px #ba72ff)}
+.v497-mut-golden img{filter:sepia(.78) saturate(1.7) brightness(1.12) drop-shadow(0 0 11px #ffc83d)}
+.v497-mut-emerald img{filter:hue-rotate(55deg) saturate(1.55) brightness(1.08) drop-shadow(0 0 11px #54ffad)}
+.v497-mut-prismatic img{animation:v497Prism 3.6s linear infinite;filter:saturate(1.45) drop-shadow(0 0 12px #f2a0ff)}
+@keyframes v497Prism{0%{filter:hue-rotate(0deg) saturate(1.5) drop-shadow(0 0 12px #ff7ad9)}50%{filter:hue-rotate(180deg) saturate(1.5) drop-shadow(0 0 13px #73eaff)}100%{filter:hue-rotate(360deg) saturate(1.5) drop-shadow(0 0 12px #ff7ad9)}}
+.v497-detail-head{display:grid;grid-template-columns:88px 1fr;gap:9px;align-items:center;margin-bottom:4px}.v497-plant-art.detail{height:88px;width:88px;margin:0;border:1px solid #6b4f85;border-radius:12px;background:radial-gradient(circle,#2a1734,#09110b 72%);overflow:hidden}.v497-plant-art.detail img{height:100%;max-width:112%;-webkit-mask-image:none;mask-image:none;border-radius:10px}
+.v497-yield{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+.v497-yield b{white-space:nowrap}
+@media(max-width:760px){.v492-plant{min-height:144px!important}.v497-plant-art{height:78px}.v497-stage-seedling{height:60px}.v497-stage-growth{height:70px}.v497-stage-flower{height:80px}.v497-stage-harvest{height:82px}.v497-detail-head{grid-template-columns:76px 1fr}.v497-plant-art.detail{width:76px;height:76px}.v497-yield{grid-template-columns:1fr 1fr!important}.v497-yield>div:last-child{grid-column:1/-1}}
+@media(max-width:390px){.v492-plant{min-height:136px!important}.v497-plant-art{height:72px}}

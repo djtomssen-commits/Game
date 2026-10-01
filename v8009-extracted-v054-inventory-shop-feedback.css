@@ -1,0 +1,257 @@
+
+/* ===== V4.02 compact 3x3 inventory + stronger game visuals ===== */
+
+/* ---------- Reliable purchase toast ---------- */
+.v054-toast{
+  position:fixed;
+  left:50%;
+  bottom:20px;
+  z-index:20000;
+  width:min(92vw,460px);
+  transform:translate(-50%,18px);
+  opacity:0;
+  pointer-events:none;
+  padding:12px 14px;
+  border-radius:14px;
+  border:1px solid #4d704d;
+  background:
+    radial-gradient(circle at 50% 0%,rgba(137,204,111,.10),transparent 42%),
+    linear-gradient(180deg,#1a2b1d,#101813);
+  color:#f2f6ef;
+  box-shadow:0 16px 36px rgba(0,0,0,.56);
+  font-size:12px;
+  font-weight:900;
+  text-align:center;
+  transition:opacity .18s ease,transform .18s ease;
+}
+.v054-toast.show{
+  opacity:1;
+  transform:translate(-50%,0);
+}
+.v054-toast.error{
+  border-color:#925050;
+  background:linear-gradient(180deg,#342020,#1d1212);
+}
+.v054-toast.success{
+  border-color:#568256;
+}
+.v054-toast .sub{
+  display:block;
+  margin-top:3px;
+  color:#b6c3b3;
+  font-size:9px;
+  font-weight:700;
+}
+
+/* ---------- Inventory becomes a real 3x3 grid ---------- */
+#inventory .inventory-grid{
+  display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:7px!important;
+  align-items:stretch!important;
+}
+
+#inventory .inv-item{
+  min-width:0!important;
+  min-height:150px!important;
+  padding:7px!important;
+  border-radius:13px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  overflow:hidden!important;
+}
+
+#inventory .item-name{
+  display:block!important;
+  min-height:48px!important;
+  padding:0 0 5px!important;
+  margin-bottom:4px!important;
+  text-align:center!important;
+  font-size:8px!important;
+  line-height:1.12!important;
+  overflow-wrap:anywhere!important;
+  border-bottom:1px solid rgba(93,129,91,.11)!important;
+}
+
+#inventory .v41-badge-art{
+  display:block!important;
+  width:40px!important;
+  height:40px!important;
+  margin:0 auto 4px!important;
+  padding:3px!important;
+  border-radius:10px!important;
+}
+
+#inventory .item-bonus{
+  min-height:30px!important;
+  font-size:7px!important;
+  line-height:1.2!important;
+  text-align:center!important;
+  overflow-wrap:anywhere!important;
+}
+
+#inventory .compare{
+  min-height:28px!important;
+  padding:4px!important;
+  font-size:7px!important;
+  line-height:1.15!important;
+  text-align:center!important;
+}
+
+#inventory .sell-price{
+  margin:4px auto!important;
+  font-size:7px!important;
+  padding:2px 5px!important;
+}
+
+#inventory .inv-actions{
+  display:grid!important;
+  grid-template-columns:1fr!important;
+  gap:4px!important;
+  margin-top:auto!important;
+}
+
+#inventory .inv-actions .btn{
+  min-width:0!important;
+  width:100%!important;
+  min-height:29px!important;
+  padding:6px 2px!important;
+  border-radius:8px!important;
+  font-size:8px!important;
+  line-height:1.05!important;
+  white-space:normal!important;
+}
+
+/* Compact rarity chips */
+#inventory .q-gray,
+#inventory .q-green,
+#inventory .q-blue,
+#inventory .q-purple,
+#inventory .q-orange,
+#inventory .q-cyan{
+  display:block!important;
+  width:max-content!important;
+  max-width:100%!important;
+  margin:3px auto!important;
+  padding:2px 5px!important;
+  font-size:7px!important;
+  border-radius:999px!important;
+}
+
+/* Materials also use a compact 3x3 board */
+#v030Materials .inventory-grid{
+  display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:7px!important;
+}
+#v030Materials .inv-item{
+  min-height:130px!important;
+  padding:7px!important;
+}
+#v030Materials .item-name{
+  font-size:8px!important;
+  line-height:1.15!important;
+}
+#v030Materials .item-bonus{
+  font-size:7px!important;
+}
+#v030Materials .btn{
+  font-size:8px!important;
+  padding:6px 3px!important;
+}
+
+/* ---------- RPG inventory board styling ---------- */
+#inventory{
+  position:relative;
+}
+#inventory:before{
+  content:"";
+  position:absolute;
+  inset:-7px;
+  border-radius:17px;
+  border:1px solid rgba(92,134,91,.13);
+  background:
+    linear-gradient(90deg,rgba(255,255,255,.012),transparent 15%,transparent 85%,rgba(255,255,255,.012)),
+    radial-gradient(circle at 50% 0%,rgba(105,166,91,.035),transparent 32%);
+  pointer-events:none;
+}
+#inventory .inv-item:after{
+  content:"";
+  position:absolute;
+  inset:3px;
+  border-radius:9px;
+  border:1px solid rgba(255,255,255,.018);
+  pointer-events:none;
+}
+
+/* ---------- Further graphic polish ---------- */
+#character .hero-card{
+  background:
+    radial-gradient(circle at 50% 22%,rgba(112,185,92,.10),transparent 30%),
+    linear-gradient(155deg,#152319,#0b130e 82%)!important;
+}
+#shop .shop-item .v41-shop-icon,
+#inventory .v41-badge-art{
+  background:
+    radial-gradient(circle at 50% 25%,rgba(255,255,255,.055),transparent 36%),
+    linear-gradient(180deg,#223326,#141f17)!important;
+  box-shadow:inset 0 0 14px #0005,0 5px 12px #0004!important;
+}
+#shop .shop-item,
+#inventory .inv-item{
+  border-color:#344d36!important;
+}
+#shop .shop-item:hover,
+#inventory .inv-item:hover{
+  border-color:#527153!important;
+}
+
+/* Slightly richer world markers */
+.world-map-place{
+  background:
+    radial-gradient(circle at 50% 5%,rgba(255,255,255,.065),transparent 30%),
+    linear-gradient(180deg,rgba(34,52,37,.99),rgba(14,22,16,.99))!important;
+}
+
+/* Battle reward visual */
+#loot .loot.good{
+  background:
+    radial-gradient(circle at 50% 0%,rgba(123,196,96,.08),transparent 38%),
+    linear-gradient(180deg,#18251a,#0e1610)!important;
+}
+
+/* Mobile: keep 3 columns as requested */
+@media(max-width:560px){
+  #inventory .inventory-grid,
+  #v030Materials .inventory-grid{
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+    gap:5px!important;
+  }
+  #inventory .inv-item{
+    padding:5px!important;
+    min-height:145px!important;
+  }
+  #inventory .v41-badge-art{
+    width:36px!important;height:36px!important;
+  }
+  #inventory .item-name{
+    font-size:7px!important;
+    min-height:45px!important;
+  }
+  #inventory .item-bonus,
+  #inventory .compare,
+  #inventory .sell-price{
+    font-size:6px!important;
+  }
+  #inventory .inv-actions .btn{
+    font-size:7px!important;
+    padding:5px 1px!important;
+  }
+}
+
+@media(max-width:350px){
+  #inventory .inventory-grid,
+  #v030Materials .inventory-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  }
+}

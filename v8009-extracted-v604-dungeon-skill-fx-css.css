@@ -1,0 +1,70 @@
+
+/* Restores visible class/talent procs on the V6.03 stage. No combat values or resolver logic changed. */
+#dungeonBattleCard.v599-clean .v575-proc-strip{
+  top:108px!important;
+  left:8%!important;
+  right:8%!important;
+  min-height:30px!important;
+  z-index:80!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:6px!important;
+  flex-wrap:wrap!important;
+  overflow:visible!important;
+  pointer-events:none!important;
+}
+#dungeonBattleCard.v599-clean .v575-chip.v604-skill-chip{
+  position:relative!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:4px!important;
+  max-width:92%!important;
+  padding:6px 11px!important;
+  border:2px solid #7f6339!important;
+  border-radius:999px!important;
+  background:linear-gradient(180deg,rgba(10,15,10,.97),rgba(2,5,3,.97))!important;
+  color:#f3e2ad!important;
+  font-size:6.1px!important;
+  font-weight:1000!important;
+  line-height:1!important;
+  letter-spacing:.035em!important;
+  white-space:nowrap!important;
+  text-shadow:0 2px 2px #000!important;
+  box-shadow:0 5px 14px rgba(0,0,0,.68),inset 0 0 12px rgba(255,215,127,.04)!important;
+  animation:v604SkillChip 1.55s cubic-bezier(.18,.8,.22,1) forwards!important;
+}
+#dungeonBattleCard.v599-clean .v575-chip.v604-skill-chip.crit{border-color:#d9a337!important;color:#ffe478!important;box-shadow:0 0 18px rgba(255,190,55,.26),0 5px 14px #000b!important}
+#dungeonBattleCard.v599-clean .v575-chip.v604-skill-chip.wucht{border-color:#d77d2e!important;color:#ffc36d!important;box-shadow:0 0 18px rgba(255,126,38,.22),0 5px 14px #000b!important}
+#dungeonBattleCard.v599-clean .v575-chip.v604-skill-chip.rage{border-color:#61c84e!important;color:#a7ff83!important;box-shadow:0 0 18px rgba(88,235,72,.22),0 5px 14px #000b!important}
+#dungeonBattleCard.v599-clean .v575-chip.v604-skill-chip.heal{border-color:#40d55a!important;color:#8dff9a!important;box-shadow:0 0 20px rgba(57,255,95,.24),0 5px 14px #000b!important}
+#dungeonBattleCard.v599-clean .v575-chip.v604-skill-chip.dodge{border-color:#63bde8!important;color:#b7e9ff!important;box-shadow:0 0 20px rgba(71,190,255,.25),0 5px 14px #000b!important}
+#dungeonBattleCard.v599-clean .v575-chip.v604-skill-chip.guard{border-color:#7bc9ef!important;color:#c9efff!important;box-shadow:0 0 20px rgba(96,203,255,.22),0 5px 14px #000b!important}
+#dungeonBattleCard.v599-clean .v575-chip.v604-skill-chip.magic{border-color:#b45adb!important;color:#eab7ff!important;box-shadow:0 0 20px rgba(197,81,255,.24),0 5px 14px #000b!important}
+#dungeonBattleCard.v599-clean .v575-chip.v604-skill-chip.frost{border-color:#5dd7ef!important;color:#baf5ff!important;box-shadow:0 0 20px rgba(68,224,255,.25),0 5px 14px #000b!important}
+#dungeonBattleCard.v599-clean .v575-chip.v604-skill-chip.scout{border-color:#8bdb57!important;color:#d1ff9d!important;box-shadow:0 0 20px rgba(139,229,72,.20),0 5px 14px #000b!important}
+
+@keyframes v604SkillChip{
+  0%{opacity:0;transform:translateY(8px) scale(.76)}
+  14%{opacity:1;transform:translateY(0) scale(1.07)}
+  74%{opacity:1;transform:translateY(0) scale(1)}
+  100%{opacity:0;transform:translateY(-10px) scale(.95)}
+}
+
+/* Short fighter feedback. These are visual responses only. */
+#dungeonBattleCard.v599-clean #playerFighter.v604-heal-flash{animation:v604HealFlash .60s ease!important}
+#dungeonBattleCard.v599-clean #playerFighter.v604-dodge-flash{animation:v604DodgeFlash .48s ease!important}
+#dungeonBattleCard.v599-clean #playerFighter.v604-guard-flash{animation:v604GuardFlash .62s ease!important}
+#dungeonBattleCard.v599-clean #playerFighter.v604-power-flash{animation:v604PowerFlash .48s ease!important}
+#dungeonBattleCard.v599-clean #enemyFighter.v604-hit-flash{animation:v604EnemyHit .42s ease!important}
+@keyframes v604HealFlash{0%,100%{filter:none}35%{filter:drop-shadow(0 0 20px rgba(83,255,105,.9)) brightness(1.10)}}
+@keyframes v604DodgeFlash{0%,100%{transform:translateX(0)}35%{transform:translateX(-24px) translateY(-5px)}68%{transform:translateX(8px)}}
+@keyframes v604GuardFlash{0%,100%{filter:none}35%{filter:drop-shadow(0 0 22px rgba(112,214,255,.95)) brightness(1.13)}}
+@keyframes v604PowerFlash{0%,100%{filter:none}35%{filter:drop-shadow(0 0 18px rgba(255,188,77,.85)) brightness(1.12)}}
+@keyframes v604EnemyHit{0%,100%{filter:none}30%{filter:brightness(1.45) drop-shadow(0 0 16px rgba(255,153,70,.75))}}
+
+@media(max-width:560px){
+  #dungeonBattleCard.v599-clean .v575-proc-strip{top:104px!important;left:5%!important;right:5%!important;gap:4px!important}
+  #dungeonBattleCard.v599-clean .v575-chip.v604-skill-chip{font-size:5.65px!important;padding:5px 8px!important}
+}

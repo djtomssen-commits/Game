@@ -1,0 +1,114 @@
+
+/* Phone: use the full viewport width. The old header inherited the desktop
+   max-width/centering, which wasted ~120px on the left in the screenshot. */
+@media (max-width:599px){
+  .app > header{
+    width:100vw!important;
+    max-width:none!important;
+    margin:0!important;
+    padding:0!important;
+    left:0!important;
+    right:auto!important;
+    transform:none!important;
+    overflow:visible!important;
+  }
+
+  .app > header > .v366-topbar{
+    box-sizing:border-box!important;
+    width:100vw!important;
+    max-width:none!important;
+    margin:0!important;
+    padding:5px 6px!important;
+    min-height:58px!important;
+    display:grid!important;
+    grid-template-columns:46px minmax(82px,1fr) 76px 68px 86px 32px 32px 32px!important;
+    gap:4px!important;
+    align-items:center!important;
+    border-radius:0!important;
+    border-left:0!important;
+    border-right:0!important;
+  }
+
+  .v366-menu{
+    width:44px!important;
+    height:46px!important;
+    margin:0!important;
+    justify-self:start!important;
+    font-size:27px!important;
+    line-height:1!important;
+    z-index:10004!important;
+    pointer-events:auto!important;
+  }
+
+  .v366-logo{
+    min-width:0!important;
+    overflow:visible!important;
+    justify-self:start!important;
+  }
+  .v366-logo strong{
+    font-size:17px!important;
+    line-height:.84!important;
+    white-space:nowrap!important;
+  }
+  .v366-logo span{font-size:8px!important;margin-left:4px!important}
+  .v366-ver{font-size:6px!important;margin:2px 0 0 4px!important}
+
+  .v366-res{
+    min-width:0!important;
+    height:42px!important;
+    padding:3px 3px!important;
+    grid-template-columns:15px minmax(0,1fr) 17px!important;
+    gap:2px!important;
+    border-radius:8px!important;
+  }
+  .v366-res .ico{font-size:13px!important}
+  .v366-res small{font-size:5px!important;line-height:1!important}
+  .v366-res .val{
+    font-size:9px!important;
+    line-height:1.05!important;
+    white-space:nowrap!important;
+    overflow:visible!important;
+    text-overflow:clip!important;
+  }
+  .v366-plus{
+    width:17px!important;
+    height:25px!important;
+    min-width:17px!important;
+    padding:0!important;
+    font-size:14px!important;
+  }
+  .v366-iconbtn{
+    width:30px!important;
+    height:34px!important;
+    min-width:30px!important;
+    padding:0!important;
+    font-size:16px!important;
+  }
+
+  /* Dropdown belongs to the hamburger, not to the centered desktop shell. */
+  #v032MenuPanel{
+    position:fixed!important;
+    left:4px!important;
+    right:auto!important;
+    top:58px!important;
+    width:min(280px,calc(100vw - 8px))!important;
+    max-width:calc(100vw - 8px)!important;
+    margin:0!important;
+    transform:none!important;
+    z-index:100000!important;
+  }
+}
+
+/* Very narrow phones: keep all three resources and three icons visible. */
+@media (max-width:390px){
+  .app > header > .v366-topbar{
+    grid-template-columns:44px 74px 70px 62px 78px 29px 29px 29px!important;
+    gap:2px!important;
+    padding-left:3px!important;
+    padding-right:3px!important;
+  }
+  .v366-logo strong{font-size:15px!important}
+  .v366-res{padding-left:2px!important;padding-right:2px!important}
+  .v366-res .val{font-size:8px!important}
+  .v366-iconbtn{width:27px!important;min-width:27px!important;font-size:14px!important}
+}

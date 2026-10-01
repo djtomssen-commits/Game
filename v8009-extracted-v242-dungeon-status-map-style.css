@@ -1,0 +1,129 @@
+
+/* ===== V4.02 clearer 20-dungeon progression map ===== */
+.v065-worldmap-card .v242-map-legend{
+  position:relative;z-index:8;
+  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:5px;margin:8px 0 10px;
+}
+.v065-worldmap-card .v242-legend-item{
+  display:flex;align-items:center;justify-content:center;gap:4px;
+  min-height:25px;padding:4px 5px;border:1px solid #34443a;
+  border-radius:8px;background:#07100a;color:#9aab9d;
+  font-size:5.7px;font-weight:900;text-align:center;
+}
+.v065-worldmap-card .v242-legend-item.done{border-color:#3d8244;color:#9be68c;background:#0c1b0f}
+.v065-worldmap-card .v242-legend-item.open{border-color:#a38339;color:#f0cf77;background:#1b1609}
+.v065-worldmap-card .v242-legend-item.lock{border-color:#3a4140;color:#818987;background:#0b0e0d}
+
+.v065-worldmap-card .v065-dungeon-node{
+  width:54px!important;height:54px!important;
+  border-width:2px!important;
+  overflow:visible!important;
+}
+.v065-worldmap-card .v065-dungeon-node .v065-num{
+  font-size:11px!important;font-weight:1000!important;
+}
+.v065-worldmap-card .v065-dungeon-node .v065-name{
+  width:78px!important;
+  margin-left:-12px!important;
+  margin-top:5px!important;
+  padding:3px 4px!important;
+  border-radius:6px!important;
+  background:rgba(5,9,6,.88)!important;
+  line-height:1.2!important;
+  font-size:5.2px!important;
+  color:#c6d0c8!important;
+  box-shadow:0 3px 8px #0008!important;
+}
+.v065-worldmap-card .v242-node-state{
+  position:absolute;right:-7px;top:-7px;z-index:5;
+  min-width:21px;height:21px;padding:0 4px;
+  display:grid;place-items:center;
+  border:2px solid #08100a;border-radius:999px;
+  font-size:10px;font-weight:1000;
+  box-shadow:0 3px 8px #000b;
+}
+.v065-worldmap-card .v242-node-progress{
+  position:absolute;left:50%;bottom:-13px;z-index:6;
+  transform:translateX(-50%);
+  min-width:38px;padding:2px 4px;
+  border-radius:999px;border:1px solid #4d653f;
+  background:#07100a;color:#b8c5ba;
+  font-size:5.1px;font-weight:1000;white-space:nowrap;
+}
+
+/* completed = unmistakably green */
+.v065-worldmap-card .v065-dungeon-node.completed{
+  border-color:#64d65c!important;
+  background:
+    radial-gradient(circle,rgba(105,226,91,.28),transparent 65%),
+    linear-gradient(160deg,#18351b,#0a1b0d)!important;
+  box-shadow:0 0 0 3px rgba(91,210,84,.10),0 0 18px rgba(91,210,84,.36)!important;
+  filter:none!important;opacity:1!important;
+}
+.v065-worldmap-card .v065-dungeon-node.completed .v242-node-state{
+  background:#3fae42;color:#efffec;
+}
+.v065-worldmap-card .v065-dungeon-node.completed .v242-node-progress{
+  border-color:#4f9d51;color:#91e883;background:#0d1e10;
+}
+
+/* available/current = gold and visibly playable */
+.v065-worldmap-card .v065-dungeon-node.available,
+.v065-worldmap-card .v065-dungeon-node.current{
+  border-color:#e0b84f!important;
+  background:
+    radial-gradient(circle,rgba(235,193,73,.23),transparent 65%),
+    linear-gradient(160deg,#352b11,#171207)!important;
+  box-shadow:0 0 0 3px rgba(220,177,63,.10),0 0 20px rgba(226,184,68,.32)!important;
+  filter:none!important;opacity:1!important;
+}
+.v065-worldmap-card .v065-dungeon-node.available .v242-node-state,
+.v065-worldmap-card .v065-dungeon-node.current .v242-node-state{
+  background:#c9972f;color:#1b1203;
+}
+.v065-worldmap-card .v065-dungeon-node.available .v242-node-progress,
+.v065-worldmap-card .v065-dungeon-node.current .v242-node-progress{
+  border-color:#a88437;color:#f1cf74;background:#1c1608;
+}
+.v065-worldmap-card .v065-dungeon-node.current{
+  animation:v242DungeonPulse 1.8s ease-in-out infinite;
+}
+@keyframes v242DungeonPulse{
+  0%,100%{box-shadow:0 0 0 3px rgba(220,177,63,.10),0 0 16px rgba(226,184,68,.28)}
+  50%{box-shadow:0 0 0 5px rgba(220,177,63,.15),0 0 27px rgba(226,184,68,.52)}
+}
+
+/* locked = deliberately muted */
+.v065-worldmap-card .v065-dungeon-node.locked{
+  border-color:#3b4441!important;
+  background:linear-gradient(160deg,#161b19,#090c0b)!important;
+  box-shadow:inset 0 0 15px #000a!important;
+  filter:grayscale(1)!important;opacity:.48!important;
+}
+.v065-worldmap-card .v065-dungeon-node.locked .v242-node-state{
+  background:#252b29;color:#929b97;
+}
+.v065-worldmap-card .v065-dungeon-node.locked .v242-node-progress{
+  border-color:#373e3b;color:#737b78;background:#090c0b;
+}
+.v065-worldmap-card .v242-status-panel{
+  position:relative;z-index:8;
+  margin-top:8px;padding:9px 10px;
+  border:1px solid #34483a;border-radius:11px;
+  background:linear-gradient(160deg,#0d1810,#07100a);
+}
+.v065-worldmap-card .v242-status-title{
+  display:flex;justify-content:space-between;align-items:center;gap:8px;
+  color:#edf4eb;font-size:8px;font-weight:1000;
+}
+.v065-worldmap-card .v242-status-badge{
+  flex:0 0 auto;padding:3px 6px;border-radius:999px;
+  font-size:5.4px;font-weight:1000;
+}
+.v065-worldmap-card .v242-status-badge.done{border:1px solid #4d9850;color:#9be88c;background:#102313}
+.v065-worldmap-card .v242-status-badge.open{border:1px solid #a38238;color:#f0ce74;background:#211908}
+.v065-worldmap-card .v242-status-badge.lock{border:1px solid #424947;color:#8e9693;background:#0b0e0d}
+.v065-worldmap-card .v242-status-reason{
+  margin-top:5px;color:#9aaa9c;font-size:6.2px;line-height:1.4;
+}

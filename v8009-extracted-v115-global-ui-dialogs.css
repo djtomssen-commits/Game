@@ -1,0 +1,33 @@
+
+.v115-ui-overlay{
+  position:fixed;inset:0;z-index:1000000;
+  display:none;align-items:center;justify-content:center;
+  padding:18px;background:rgba(2,6,4,.78);backdrop-filter:blur(5px);
+}
+.v115-ui-overlay.show{display:flex}
+.v115-ui-card{
+  width:min(90vw,370px);
+  border:1px solid #516748;border-radius:18px;
+  padding:18px;
+  background:
+    radial-gradient(circle at 50% 0%,rgba(129,224,91,.12),transparent 38%),
+    linear-gradient(180deg,#152016,#0b110d);
+  box-shadow:0 24px 70px #000d,0 0 28px rgba(125,220,93,.14);
+  text-align:center;
+  animation:v115Pop .22s ease-out;
+}
+.v115-ui-icon{
+  width:62px;height:62px;margin:0 auto 10px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  border:1px solid #627c51;background:#182417;font-size:30px;
+  box-shadow:0 0 18px rgba(136,226,99,.15);
+}
+.v115-ui-title{font-size:20px;font-weight:1000;color:#eef5ea}
+.v115-ui-text{margin-top:8px;font-size:10px;line-height:1.55;color:#aebbaa;white-space:pre-line}
+.v115-ui-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}
+.v115-ui-actions.single{grid-template-columns:1fr}
+.v115-ui-actions .btn{width:100%}
+.v115-ui-card.warn{border-color:#8a7136;background:radial-gradient(circle at 50% 0%,rgba(255,207,84,.13),transparent 38%),linear-gradient(180deg,#211b0f,#0d0f0b)}
+.v115-ui-card.error{border-color:#8a4747;background:radial-gradient(circle at 50% 0%,rgba(255,84,84,.12),transparent 38%),linear-gradient(180deg,#211010,#0d0b0b)}
+.v115-ui-card.success{border-color:#557d47}
+@keyframes v115Pop{from{opacity:0;transform:scale(.91)}to{opacity:1;transform:scale(1)}}

@@ -1,0 +1,104 @@
+
+#v6254TutorialOverlay{
+  position:fixed;inset:0;z-index:101500;display:none;align-items:center;justify-content:center;
+  padding:14px;background:rgba(1,5,3,.78);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)
+}
+#v6254TutorialOverlay.show{display:flex}
+#v6254TutorialCard{
+  width:min(94vw,470px);max-height:calc(100dvh - 24px);overflow:auto;box-sizing:border-box;
+  position:relative;border:2px solid #805b27;border-radius:20px;
+  background:
+    radial-gradient(circle at 50% -10%,rgba(121,225,77,.12),transparent 33%),
+    linear-gradient(160deg,#172619,#08110b 74%);
+  box-shadow:0 28px 90px #000e,inset 0 0 0 1px #2b1c0b,inset 0 0 38px #0008,0 0 28px rgba(99,190,64,.10);
+  color:#eef3e9
+}
+#v6254TutorialCard::before{
+  content:"";display:block;height:4px;
+  background:linear-gradient(90deg,transparent,#7fde56,#d0a344,#7fde56,transparent);
+  box-shadow:0 0 14px rgba(117,218,82,.38)
+}
+.v6254-tut-head{
+  position:sticky;top:0;z-index:2;display:flex;align-items:center;justify-content:space-between;gap:10px;
+  padding:12px 13px 10px;border-bottom:1px solid #694820;
+  background:linear-gradient(180deg,rgba(55,34,14,.98),rgba(29,19,10,.98))
+}
+.v6254-tut-title{
+  min-width:0;font-family:Georgia,serif;font-size:18px;font-weight:1000;color:#f0d687;
+  text-shadow:0 2px #000,0 0 8px #d2943040
+}
+.v6254-tut-close{
+  flex:0 0 36px;width:36px;height:36px;padding:0;display:grid;place-items:center;
+  border:1px solid #a06d2a;border-radius:10px;background:#1c160d;color:#f3d799;
+  font-size:17px;font-weight:1000;cursor:pointer
+}
+.v6254-tut-body{padding:14px}
+.v6254-tut-kicker{
+  display:flex;align-items:center;justify-content:center;gap:7px;margin-bottom:10px;
+  color:#89dc68;font-size:8px;font-weight:1000;letter-spacing:.10em;text-transform:uppercase
+}
+.v6254-tut-icon{
+  width:74px;height:74px;margin:0 auto 10px;display:grid;place-items:center;border:1px solid #557e49;
+  border-radius:18px;background:radial-gradient(circle at 50% 35%,#18391b,#09130c 70%);
+  box-shadow:inset 0 0 22px #0008,0 0 20px rgba(112,221,73,.10);font-size:39px
+}
+.v6254-tut-copy{
+  min-height:108px;padding:13px;border:1px solid #49623f;border-radius:14px;
+  background:rgba(4,12,7,.88);box-shadow:inset 0 0 20px #0005
+}
+.v6254-tut-copy h3{margin:0 0 7px;color:#f2f1df;font-size:15px;line-height:1.2}
+.v6254-tut-copy p{margin:0;color:#c5d0c2;font-size:10px;line-height:1.55}
+.v6254-tut-progress{display:flex;justify-content:center;gap:5px;margin:12px 0 5px}
+.v6254-tut-dot{width:8px;height:8px;border-radius:99px;border:1px solid #53644c;background:#111a12}
+.v6254-tut-dot.active{background:#82dd5f;border-color:#9dec7c;box-shadow:0 0 9px #78df58}
+.v6254-tut-count{text-align:center;color:#8b998a;font-size:7px;font-weight:900}
+.v6254-tut-actions{display:grid;grid-template-columns:1fr 1.25fr 1fr;gap:7px;padding:0 14px 14px}
+.v6254-tut-actions button{
+  min-height:42px;border-radius:11px;font-size:9px;font-weight:1000
+}
+#v6254TutNext{
+  border-color:#8edd65!important;background:linear-gradient(180deg,#7bd75a,#49a33b)!important;color:#071008!important
+}
+#v6254TutBack,#v6254TutSkip{
+  border-color:#40543f!important;background:linear-gradient(180deg,#18251a,#0b140d)!important;color:#bec9ba!important
+}
+#v6254TutBack:disabled{opacity:.38}
+#v6254HelpBtn{
+  position:fixed;right:10px;top:72px;z-index:7800;display:none;
+  width:38px;height:38px;padding:0;border:1px solid #71883c;border-radius:12px;
+  background:linear-gradient(180deg,#263419,#111a0e);color:#eed983;
+  box-shadow:0 5px 18px #000a,inset 0 0 10px rgba(110,196,71,.07);
+  font-size:22px;font-weight:1000;line-height:1;cursor:pointer
+}
+#v6254HelpBtn.show{display:grid;place-items:center}
+#v6254Welcome .v6254-welcome-title{
+  text-align:center;font-family:Georgia,serif;font-size:24px;font-weight:1000;color:#e9d078;
+  text-shadow:0 2px #000,0 0 12px #a9e76033
+}
+#v6254Welcome .v6254-welcome-title b{display:block;color:#8fe15e;font-size:29px}
+#v6254Welcome .v6254-welcome-copy{
+  margin-top:10px;padding:12px;border:1px solid #4b6543;border-radius:13px;background:#071109;
+  color:#cdd7ca;font-size:10px;line-height:1.55;text-align:center
+}
+#v6254Welcome .v6254-welcome-mascot{
+  width:82px;height:82px;margin:11px auto 2px;display:grid;place-items:center;
+  border:1px solid #557f45;border-radius:50%;background:radial-gradient(circle,#1d4321,#0a130c 72%);
+  font-size:43px;box-shadow:0 0 20px rgba(126,222,85,.13)
+}
+#v6254WelcomeStart{
+  width:100%;min-height:48px;margin-top:12px;border-color:#91df69!important;
+  background:linear-gradient(180deg,#81dd5d,#4aa23b)!important;color:#071008!important;
+  font-weight:1000!important;font-size:13px!important
+}
+.v6254-welcome-note{margin-top:8px;text-align:center;color:#829081;font-size:7px;line-height:1.4}
+@media(max-width:430px){
+ #v6254TutorialOverlay{padding:8px}
+ #v6254TutorialCard{width:100%;border-radius:16px}
+ .v6254-tut-title{font-size:16px}
+ .v6254-tut-body{padding:11px}
+ .v6254-tut-copy{min-height:96px;padding:11px}
+ .v6254-tut-copy p{font-size:9px}
+ .v6254-tut-actions{padding:0 11px 11px;gap:5px}
+ .v6254-tut-actions button{font-size:8px}
+ #v6254HelpBtn{right:8px;top:66px;width:36px;height:36px}
+}

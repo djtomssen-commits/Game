@@ -1,0 +1,30 @@
+
+:root{--glw-opacity:.44;--glw-accent:#9bcf82}
+#glWeatherLayer{position:fixed;inset:0;z-index:850;pointer-events:none;overflow:hidden;opacity:var(--glw-opacity);transition:opacity .5s ease,filter .5s ease;contain:strict}
+#glWeatherLayer::before,#glWeatherLayer::after{content:"";position:absolute;inset:-12%;pointer-events:none;will-change:transform,background-position,opacity}
+#glWeatherBadge{display:none!important}
+.glw-home-slot{margin:10px 0 12px;padding:11px 13px;border:1px solid #556944;border-radius:16px;background:linear-gradient(135deg,rgba(21,35,23,.96),rgba(8,16,10,.97));box-shadow:0 10px 22px #0007,inset 0 1px rgba(255,255,255,.05);display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:11px;align-items:center;position:relative;overflow:hidden}
+.glw-home-slot:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(111,218,92,.06),transparent 45%,rgba(223,190,105,.05));pointer-events:none}
+.glw-home-icon{font-size:31px;line-height:1;filter:drop-shadow(0 3px 4px #000)}
+.glw-home-copy{min-width:0;position:relative;z-index:1}.glw-home-copy small{display:block;font-size:7px;font-weight:1000;letter-spacing:.14em;color:#77b86a}.glw-home-copy b{display:block;margin-top:2px;font-size:13px;color:#efe3bc}.glw-home-copy span{display:block;margin-top:2px;font-size:8px;color:#9eb29b;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.glw-home-temp{position:relative;z-index:1;font-size:14px;font-weight:1000;color:#8fdb74;white-space:nowrap}
+#glWeatherMenu{margin:0 8px 8px;padding:9px 10px;border:1px solid #536749;border-radius:13px;background:linear-gradient(145deg,#132016,#09110c);box-shadow:inset 0 0 15px #0005;display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:8px;align-items:center;color:#dfe9da;position:relative;overflow:hidden}
+#glWeatherMenu .glw-menu-icon{font-size:22px;line-height:1}#glWeatherMenu .glw-menu-copy{min-width:0}#glWeatherMenu .glw-menu-copy small{display:block;font-size:6.5px;letter-spacing:.12em;color:#75ad68;font-weight:1000}#glWeatherMenu .glw-menu-copy b{display:block;font-size:9px;color:#eadfb8;margin-top:1px}#glWeatherMenu .glw-menu-copy span{display:block;font-size:6.7px;color:#91a68e;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}#glWeatherMenu .glw-menu-temp{font-size:9px;font-weight:1000;color:#8dd675;white-space:nowrap}
+body:has(#v075AuthOverlay.show) #glWeatherLayer,body:has(#v075AuthOverlay.show) #glWeatherBadge{display:none!important}
+body.glw-sun #glWeatherLayer::after{inset:-5%;background:radial-gradient(circle at 88% 5%,rgba(255,225,137,.30),rgba(255,196,92,.10) 18%,transparent 38%);filter:blur(1px)}
+body.glw-cloud #glWeatherLayer::after{background:linear-gradient(180deg,rgba(77,91,89,.12),transparent 48%),radial-gradient(ellipse at 20% 4%,rgba(190,202,201,.11),transparent 42%),radial-gradient(ellipse at 74% 1%,rgba(180,194,193,.10),transparent 38%);animation:glwCloud 26s ease-in-out infinite alternate}
+body.glw-rain #glWeatherLayer::before,body.glw-thunder #glWeatherLayer::before{background-image:repeating-linear-gradient(116deg,transparent 0 14px,rgba(184,219,236,.34) 15px 16px,transparent 17px 31px);background-size:44px 88px;animation:glwRain .72s linear infinite;filter:blur(.15px)}
+body.glw-rain #glWeatherLayer::after,body.glw-thunder #glWeatherLayer::after{background:linear-gradient(180deg,rgba(53,70,77,.12),transparent 52%)}
+body.glw-fog #glWeatherLayer::before{background:radial-gradient(ellipse at 25% 64%,rgba(210,224,218,.22),transparent 42%),radial-gradient(ellipse at 76% 38%,rgba(190,211,204,.18),transparent 46%);filter:blur(20px);animation:glwFog 19s ease-in-out infinite alternate}
+body.glw-fog #glWeatherLayer::after{background:linear-gradient(180deg,transparent 42%,rgba(205,220,214,.14) 67%,transparent 92%);filter:blur(13px);animation:glwFog2 25s ease-in-out infinite alternate}
+body.glw-snow #glWeatherLayer::before{background-image:radial-gradient(circle,rgba(245,251,255,.75) 0 1.2px,transparent 1.7px),radial-gradient(circle,rgba(232,244,250,.55) 0 1px,transparent 1.5px);background-size:42px 58px,67px 79px;background-position:0 0,23px 18px;animation:glwSnow 7s linear infinite}
+body.glw-clear-night #glWeatherLayer::after{background:radial-gradient(circle at 88% 8%,rgba(198,221,255,.15),transparent 18%),linear-gradient(180deg,rgba(20,28,46,.10),transparent 45%)}
+body.glw-thunder #glWeatherLayer{animation:glwThunder 10s linear infinite}
+@keyframes glwRain{to{background-position:-42px 95px}}
+@keyframes glwSnow{to{background-position:27px 116px,53px 158px}}
+@keyframes glwFog{from{transform:translateX(-3%)}to{transform:translateX(4%)}}
+@keyframes glwFog2{from{transform:translateX(4%)}to{transform:translateX(-5%)}}
+@keyframes glwCloud{from{transform:translateX(-1%)}to{transform:translateX(2%)}}
+@keyframes glwThunder{0%,88%,91%,94%,100%{filter:none}89%{filter:brightness(1.22)}92%{filter:brightness(1.10)}}
+.glw-grow-card{margin:8px 10px 9px;padding:9px 10px;border:1px solid #4a6046;border-radius:12px;background:linear-gradient(135deg,#102016,#0b120d);display:flex;align-items:center;gap:9px;box-shadow:inset 0 0 16px #0005}.glw-grow-card .ico{font-size:25px;line-height:1}.glw-grow-card b{display:block;color:#e7dfbd;font-size:10px}.glw-grow-card span{display:block;margin-top:2px;color:#9db598;font-size:7px;line-height:1.35}.glw-grow-card em{margin-left:auto;white-space:nowrap;color:#87d96f;font-size:7px;font-style:normal;font-weight:900}
+@media(max-width:760px){.glw-home-slot{margin:8px 0 10px;padding:9px 10px;gap:8px}.glw-home-icon{font-size:26px}.glw-home-copy b{font-size:11px}.glw-home-copy span{font-size:7px}.glw-home-temp{font-size:11px}.glw-grow-card{margin:6px 7px 8px;padding:7px 8px}.glw-grow-card .ico{font-size:21px}#glWeatherMenu{margin:0 6px 7px;padding:8px 9px}}
+@media(prefers-reduced-motion:reduce){#glWeatherLayer::before,#glWeatherLayer::after,#glWeatherLayer{animation:none!important}}

@@ -1,0 +1,96 @@
+
+/* V7.145: real PNG avatar frames, thinner presentation + clipped head/shoulder previews. */
+.v7137-frame-target{
+  position:relative!important;
+  isolation:isolate!important;
+}
+.v7137-frame-target[data-v7137-frame]{
+  overflow:visible!important;
+  outline:0!important;
+  box-shadow:none!important;
+  --v7140-frame-glow:rgba(112,232,94,.55);
+}
+.v7137-frame-target>.v7139-frame-art{
+  position:absolute!important;
+  left:-21%!important;top:-21%!important;
+  width:142%!important;height:142%!important;
+  max-width:none!important;max-height:none!important;
+  object-fit:fill!important;
+  object-position:center!important;
+  pointer-events:none!important;
+  user-select:none!important;
+  z-index:45!important;
+  opacity:.985!important;
+  transform:translateZ(0)!important;
+  -webkit-transform:translateZ(0)!important;
+  filter:drop-shadow(0 0 3px var(--v7140-frame-glow)) brightness(1)!important;
+  animation:v7140FrameGlow 2.9s ease-in-out infinite!important;
+  will-change:filter,opacity;
+}
+.v7137-frame-target[data-v7137-frame="ironwood"]{--v7140-frame-glow:rgba(118,194,86,.36)}
+.v7137-frame-target[data-v7137-frame="silver_vine"]{--v7140-frame-glow:rgba(159,255,176,.48)}
+.v7137-frame-target[data-v7137-frame="gold_crown"]{--v7140-frame-glow:rgba(255,205,82,.58)}
+.v7137-frame-target[data-v7137-frame="emerald_aura"]{--v7140-frame-glow:rgba(79,255,102,.78)}
+.v7137-frame-target[data-v7137-frame="emerald_aura"]>.v7139-frame-art{animation-duration:2.35s!important}
+.v7137-frame-target[data-v7137-frame="haze_ring"]{--v7140-frame-glow:rgba(80,255,148,.68)}
+.v7137-frame-target[data-v7137-frame="haze_ring"]>.v7139-frame-art{animation:v7140HazeGlow 3.8s ease-in-out infinite!important}
+.v7137-frame-target[data-v7137-frame="resin_flame"]{--v7140-frame-glow:rgba(116,255,66,.86)}
+.v7137-frame-target[data-v7137-frame="resin_flame"]>.v7139-frame-art{animation:v7140FlameGlow 1.65s ease-in-out infinite!important}
+.v7137-frame-target[data-v7137-frame="referral_legend"]{--v7140-frame-glow:rgba(119,255,89,.62)}
+.v7137-frame-target[data-v7137-frame="referral_legend"]>.v7139-frame-art{animation-duration:2.15s!important}
+.v7137-frame-target[data-v7137-frame="prismatic_myth"]>.v7139-frame-art{
+  animation:v7140PrismGlow 3.8s linear infinite!important;
+}
+@keyframes v7140FrameGlow{
+  0%,100%{filter:drop-shadow(0 0 2px var(--v7140-frame-glow)) brightness(.99)!important;opacity:.97}
+  50%{filter:drop-shadow(0 0 8px var(--v7140-frame-glow)) brightness(1.07)!important;opacity:1}
+}
+@keyframes v7140HazeGlow{
+  0%,100%{filter:drop-shadow(0 0 3px rgba(80,255,148,.42)) brightness(.98)!important;opacity:.95}
+  45%{filter:drop-shadow(0 0 11px rgba(106,255,177,.76)) brightness(1.07)!important;opacity:1}
+  70%{filter:drop-shadow(0 0 6px rgba(73,216,157,.58)) brightness(1.03)!important;opacity:.98}
+}
+@keyframes v7140FlameGlow{
+  0%,100%{filter:drop-shadow(0 0 3px rgba(116,255,66,.50)) brightness(1)!important}
+  32%{filter:drop-shadow(0 0 10px rgba(192,255,70,.92)) brightness(1.10)!important}
+  68%{filter:drop-shadow(0 0 6px rgba(91,255,67,.70)) brightness(1.04)!important}
+}
+@keyframes v7140PrismGlow{
+  0%{filter:hue-rotate(0deg) saturate(1.06) drop-shadow(0 0 5px rgba(255,90,219,.66)) brightness(1.01)!important}
+  33%{filter:hue-rotate(115deg) saturate(1.14) drop-shadow(0 0 10px rgba(82,231,255,.78)) brightness(1.08)!important}
+  66%{filter:hue-rotate(235deg) saturate(1.16) drop-shadow(0 0 10px rgba(255,222,80,.76)) brightness(1.07)!important}
+  100%{filter:hue-rotate(360deg) saturate(1.06) drop-shadow(0 0 5px rgba(255,90,219,.66)) brightness(1.01)!important}
+}
+/* Own character page: larger overlay = visually thinner border and more avatar visible. */
+#character #v510HeroRoot .avatar-scene.v7137-frame-target{
+  overflow:visible!important;
+  z-index:6!important;
+}
+#character #v510HeroRoot .avatar-scene.v7137-frame-target>.v7139-frame-art{
+  left:-18%!important;top:-24%!important;width:136%!important;height:148%!important;
+  object-fit:fill!important;z-index:70!important;
+}
+/* Shop/selector: avatar is clipped separately, so only head + shoulders remain inside the frame. */
+.v7137-frame-preview{overflow:visible!important;position:relative!important}
+.v7137-frame-preview>.v7140-preview-avatar-clip{
+  position:absolute!important;inset:0!important;z-index:1!important;
+  overflow:hidden!important;border-radius:inherit!important;background:#07100a!important;
+  display:block!important;
+}
+.v7137-frame-preview>.v7140-preview-avatar-clip>.v7139-preview-avatar{
+  position:absolute!important;z-index:1!important;
+  left:-30%!important;top:-10%!important;width:160%!important;height:160%!important;
+  max-width:none!important;max-height:none!important;
+  object-fit:cover!important;object-position:center 12%!important;border-radius:0!important;
+}
+.v7137-frame-preview>.v7139-frame-art{
+  left:-23%!important;top:-19%!important;width:146%!important;height:138%!important;z-index:8!important;
+}
+/* Hall of Haze + profiles: same art, slightly larger so the border reads slimmer. */
+#hall .v646-row-avatar.v7137-frame-target,#v072OwnProfile .v646-own-avatar.v7137-frame-target,#v074ProfileContent .v652-profile-avatar.v7137-frame-target{overflow:visible!important}
+#hall .v646-row-avatar.v7137-frame-target>.v7139-frame-art,#v072OwnProfile .v646-own-avatar.v7137-frame-target>.v7139-frame-art,#v074ProfileContent .v652-profile-avatar.v7137-frame-target>.v7139-frame-art{
+  left:-25%!important;top:-25%!important;width:150%!important;height:150%!important;
+}
+@media(prefers-reduced-motion:reduce){
+  .v7137-frame-target>.v7139-frame-art{animation:none!important;filter:drop-shadow(0 0 4px var(--v7140-frame-glow))!important}
+}

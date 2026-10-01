@@ -1,0 +1,148 @@
+
+/* Phase 2F: D2-D20 audited direct assets; legacy visual canvases are bypassed. */
+#dungeonMapCard.gl-dungeon-canonical-map .v261-stage{
+  isolation:isolate!important;
+}
+/* Old .v261-bg has years of dungeon-specific blur/background overrides. Retire it. */
+#dungeonMapCard.gl-dungeon-canonical-map .v261-stage>.v261-bg{
+  display:none!important;
+  background-image:none!important;
+  filter:none!important;
+  transform:none!important;
+  opacity:0!important;
+}
+#dungeonMapCard.gl-dungeon-canonical-map .v261-stage>.gl-dungeon-map-bg-img{
+  display:block!important;
+  position:absolute!important;
+  inset:0!important;
+  width:100%!important;
+  height:100%!important;
+  z-index:0!important;
+  object-fit:cover!important;
+  object-position:center center!important;
+  filter:none!important;
+  transform:none!important;
+  opacity:1!important;
+  pointer-events:none!important;
+  user-select:none!important;
+}
+#dungeonBattleCard.gl-dungeon-canonical-battle #battleStage{
+  background-color:#08120d!important;
+  background-image:none!important;
+  background-size:cover!important;
+  background-repeat:no-repeat!important;
+  background-position:center center!important;
+  isolation:isolate!important;
+}
+#dungeonBattleCard.gl-dungeon-canonical-battle #battleStage>.gl-dungeon-battle-bg-img{
+  display:block!important;
+  position:absolute!important;
+  inset:0!important;
+  width:100%!important;
+  height:100%!important;
+  z-index:0!important;
+  object-fit:cover!important;
+  object-position:center center!important;
+  filter:none!important;
+  transform:none!important;
+  opacity:1!important;
+  pointer-events:none!important;
+  user-select:none!important;
+}
+/* Retire obsolete visual layers if any old code manages to recreate them.
+   V6.02/V6.03 .v602-duel-panel was the red blurred rectangle seen over the fight. */
+#dungeonBattleCard.gl-dungeon-canonical-battle #battleStage>.v599-template-bg,
+#dungeonBattleCard.gl-dungeon-canonical-battle #battleStage>.v600-bg,
+#dungeonBattleCard.gl-dungeon-canonical-battle #battleStage>.v602-duel-panel,
+#dungeonBattleCard.gl-dungeon-canonical-battle #battleStage>.v602-side-decor{
+  display:none!important;
+  visibility:hidden!important;
+  opacity:0!important;
+  background-image:none!important;
+}
+#dungeonBattleCard.gl-dungeon-canonical-battle #enemyFighter.gl-dungeon-enemy-ready .fighter-avatar>.v253-monster,
+#dungeonBattleCard.gl-dungeon-canonical-battle #enemyFighter.gl-dungeon-enemy-ready .fighter-avatar>.v573-enemy-art,
+#dungeonBattleCard.gl-dungeon-canonical-battle #enemyFighter.gl-dungeon-enemy-ready .fighter-avatar>.v574-enemy-art,
+#dungeonBattleCard.gl-dungeon-canonical-battle #enemyFighter.gl-dungeon-enemy-ready .fighter-avatar>.v599-treant-art,
+#dungeonBattleCard.gl-dungeon-canonical-battle #enemyFighter.gl-dungeon-enemy-ready .fighter-avatar>.v600-treant-art{
+  display:none!important;
+}
+#dungeonBattleCard #enemyFighter,
+#dungeonBattleCard #enemyFighter .fighter-avatar{
+  visibility:visible!important;opacity:1!important;
+}
+/* Raw legacy emoji/text must never flash before the audited monster asset.
+   Child images are unaffected by font-size:0. */
+#dungeonBattleCard #enemyFighter .fighter-avatar{
+  font-size:0!important;
+  color:transparent!important;
+}
+#dungeonBattleCard #enemyFighter .gl-dungeon-d1-art{
+  display:block!important;width:100%!important;height:100%!important;
+  background-size:contain!important;background-position:center bottom!important;
+  background-repeat:no-repeat!important;filter:drop-shadow(0 16px 11px rgba(0,0,0,.92));
+}
+#dungeonBattleCard.gl-dungeon-canonical-battle #enemyFighter .fighter-avatar>.gl-dungeon-enemy-art{
+  display:block!important;
+  position:relative!important;
+  z-index:8!important;
+  width:100%!important;
+  height:100%!important;
+  max-width:none!important;
+  object-fit:contain!important;
+  object-position:center bottom!important;
+  pointer-events:none!important;
+  filter:drop-shadow(0 16px 11px rgba(0,0,0,.92))!important;
+}
+/* The stage may keep atmosphere/FX, but they may not carry another image source. */
+#dungeonBattleCard.gl-dungeon-canonical-battle #battleStage:before{
+  background-image:none!important;
+}
+
+/* Phase 2G: one owner for both combatants. */
+#dungeonBattleCard.gl-dungeon-canonical-battle #playerFighter,
+#dungeonBattleCard.gl-dungeon-canonical-battle #enemyFighter{
+  display:block!important;visibility:visible!important;opacity:1!important;
+}
+#dungeonBattleCard.gl-dungeon-canonical-battle #playerFighter .fighter-avatar,
+#dungeonBattleCard.gl-dungeon-canonical-battle #enemyFighter .fighter-avatar{
+  visibility:visible!important;opacity:1!important;
+}
+#dungeonBattleCard.gl-dungeon-canonical-battle #playerFighter .fighter-avatar>.v253-player-avatar-img.gl-dungeon-player-art{
+  display:block!important;visibility:visible!important;opacity:1!important;
+  position:relative!important;z-index:8!important;width:100%!important;height:100%!important;
+  max-width:100%!important;max-height:100%!important;object-fit:contain!important;object-position:center bottom!important;
+  pointer-events:none!important;
+}
+#dungeonBattleCard.gl-dungeon-canonical-battle #playerFighter .v600-barbar-art{display:none!important}
+#dungeonBattleCard.gl-dungeon-canonical-battle #playerFighter .gl-dungeon-player-fallback{
+  display:grid!important;place-items:center!important;width:100%!important;height:100%!important;
+  font-size:86px!important;line-height:1!important;filter:drop-shadow(0 12px 10px #000)!important;
+}
+
+
+/* ===== V7.160 · CANONICAL 10-ROOM MAP ART ===== */
+#dungeonMapCard.gl-dungeon-canonical-map .v261-stage>.v261-road{
+  display:none!important;visibility:hidden!important;opacity:0!important;
+}
+#dungeonMapCard.gl-dungeon-canonical-map .v261-stage>.v261-fx{
+  opacity:.34!important;pointer-events:none!important;
+}
+#dungeonMapCard.gl-dungeon-canonical-map .v261-ring{
+  font-size:0!important;background-image:none!important;background-color:rgba(3,8,4,.78)!important;
+  overflow:hidden!important;
+}
+#dungeonMapCard.gl-dungeon-canonical-map .v261-ring>.v261-bossart{display:none!important}
+#dungeonMapCard.gl-dungeon-canonical-map .v261-ring>.gl-dungeon-node-art{
+  display:block!important;position:absolute!important;inset:3px!important;
+  width:calc(100% - 6px)!important;height:calc(100% - 6px)!important;
+  max-width:none!important;max-height:none!important;object-fit:contain!important;object-position:center center!important;
+  border-radius:50%!important;z-index:1!important;pointer-events:none!important;
+  filter:drop-shadow(0 4px 5px rgba(0,0,0,.75))!important;
+}
+#dungeonMapCard.gl-dungeon-canonical-map .v261-num,
+#dungeonMapCard.gl-dungeon-canonical-map .v261-check,
+#dungeonMapCard.gl-dungeon-canonical-map .v261-lock{z-index:8!important}
+#dungeonMapCard.gl-dungeon-canonical-map .v261-stage>.gl-dungeon-map-bg-img{
+  object-fit:cover!important;object-position:center 50%!important;
+}

@@ -1,0 +1,45 @@
+
+#dungeonMapCard.gl20g-world{padding:0!important;margin-top:8px!important;overflow:hidden!important;border:2px solid #3b6337!important;border-radius:20px!important;background:linear-gradient(180deg,#06140a,#020805)!important;box-shadow:0 0 0 1px #0d2814 inset,0 12px 28px #000a!important}
+#dungeonMapCard.gl20g-world::before,#dungeonMapCard.gl20g-world::after{display:none!important}
+.gl20g-head{position:relative;display:grid;grid-template-columns:92px minmax(0,1fr) 185px;align-items:center;gap:12px;padding:16px 15px 14px;border-bottom:4px solid #82552a;background:radial-gradient(circle at 13% 44%,rgba(62,225,54,.14),transparent 24%),linear-gradient(180deg,#1c1714,#0a0d0a 78%)}
+.gl20g-head::after{content:"";position:absolute;left:0;right:0;bottom:-4px;height:3px;background:linear-gradient(90deg,#241307,#d28b37,#241307)}
+.gl20g-skull{display:grid;place-items:center;font-size:67px;line-height:1;filter:drop-shadow(0 7px 6px #000c)}
+.gl20g-kicker{font-size:10px;font-weight:1000;letter-spacing:.16em;color:#78f35e;text-transform:uppercase}
+.gl20g-title{margin-top:5px;font-family:Georgia,serif;font-size:43px;line-height:.9;font-weight:1000;color:#ffd38a;text-shadow:0 4px 0 #613013,0 0 15px #f0a62c33}
+.gl20g-sub{margin-top:9px;font-size:12px;color:#e5e8df}
+.gl20g-ticket{padding:11px;border:1px solid #4e724d;border-radius:14px;background:linear-gradient(180deg,#101d13,#07110b);text-align:center;box-shadow:inset 0 0 17px #0008}
+.gl20g-ticket b{display:block;font-size:9px;color:#f0f2ed;white-space:nowrap}.gl20g-ticket #dungeonTicketText{display:block;margin-top:6px;font-size:10px;font-weight:1000;color:#76f46b}
+.gl20g-mapframe{padding:9px;background:linear-gradient(180deg,#0a150d,#061009)}
+.gl20g-server-loading{min-height:360px;display:grid;place-items:center;padding:28px;border:3px solid #805728;border-radius:12px;background:radial-gradient(circle at 50% 35%,rgba(78,220,71,.10),transparent 34%),linear-gradient(180deg,#102117,#071009);text-align:center}
+.gl20g-server-loading b{display:block;color:#f0d88b;font:1000 22px Georgia,serif}
+.gl20g-server-loading span{display:block;margin-top:8px;color:#aeb9af;font-size:10px;line-height:1.5}
+.gl20g-server-loading i{display:block;margin:0 auto 12px;font-style:normal;font-size:36px}
+.gl20g-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:7px;padding:6px;border:3px solid #805728;border-radius:12px;background:linear-gradient(180deg,#102117,#071009);box-shadow:inset 0 0 25px #000b,0 0 0 1px #241307}
+.gl20g-card{position:relative;min-width:0;height:150px;padding:0!important;border:2px solid #685331!important;border-radius:10px!important;overflow:hidden;background:#070b08!important;color:#fff!important;cursor:pointer;appearance:none;-webkit-appearance:none;touch-action:manipulation;box-shadow:0 5px 11px #000b;isolation:isolate}
+.gl20g-card:active{transform:scale(.985)}
+.gl20g-card.completed{border-color:#3b6b3d!important}.gl20g-card.current{border-color:#61f04e!important;box-shadow:0 0 0 2px #164519,0 0 18px rgba(83,255,67,.35),0 6px 12px #000c}.gl20g-card.available{border-color:#a17e42!important}.gl20g-card.locked{border-color:#514936!important;cursor:not-allowed}
+.gl20g-art{position:absolute;inset:0 0 51px;background-size:cover;background-position:center center;background-repeat:no-repeat;filter:saturate(.92) contrast(1.03)}
+.gl20g-art::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.02) 0%,rgba(2,6,3,.05) 42%,rgba(3,7,4,.82) 82%,#060a07 100%)}
+.gl20g-card.locked .gl20g-art{filter:saturate(.38) brightness(.62) contrast(1.03)}
+.gl20g-card.completed .gl20g-art{filter:saturate(.68) brightness(.78) contrast(1.03)}
+.gl20g-card.current .gl20g-art{filter:saturate(1.12) brightness(1.06) contrast(1.05)}
+.gl20g-badge{position:absolute;z-index:3;left:50%;top:55px;transform:translate(-50%,-50%);width:42px;height:42px;border-radius:50%;display:grid;place-items:center;border:3px solid #aaa58f;background:radial-gradient(circle at 45% 35%,#343a34,#111611 59%,#040604 76%);box-shadow:0 0 0 4px rgba(5,10,6,.96),0 4px 9px #000e;font:1000 18px Georgia,serif;color:#fff;text-shadow:0 2px 2px #000}
+.gl20g-mark{position:absolute;z-index:4;left:calc(50% + 24px);top:55px;transform:translate(-50%,-50%);width:25px;height:25px;border-radius:50%;display:grid;place-items:center;border:2px solid #777;background:#0e130f;box-shadow:0 0 0 2px rgba(5,10,6,.94);font-size:13px;font-weight:1000}
+.gl20g-card.completed .gl20g-mark{background:#168b2b;border-color:#4ee05e;color:#d7ffd4}.gl20g-card.current .gl20g-badge{border-color:#6cff57;box-shadow:0 0 0 4px #0c250ddd,0 0 18px #59ff48}.gl20g-card.current .gl20g-mark{background:#0d3211;border-color:#62f454;color:#8cff78}
+.gl20g-info{position:absolute;z-index:5;left:0;right:0;bottom:0;min-height:54px;padding:7px 4px 6px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;background:linear-gradient(180deg,rgba(11,15,12,.99),rgba(3,5,3,.998));border-top:1px solid #594a31}
+.gl20g-name{font-size:9px;line-height:1.08;font-weight:950;color:#fff;text-shadow:0 2px 2px #000;overflow-wrap:normal;word-break:normal;hyphens:none;-webkit-hyphens:none}
+.gl20g-state{margin-top:4px;font-size:7.5px;line-height:1;font-weight:1000;color:#c8cbc6;white-space:nowrap}
+.gl20g-card.completed .gl20g-state{display:none}.gl20g-card.current .gl20g-info{border-top-color:#4fe244}.gl20g-card.current .gl20g-state{color:#84ff70;background:#0a350d;border:1px solid #5cf04c;border-radius:999px;padding:4px 9px}.gl20g-card.available .gl20g-state{color:#f0cf78}.gl20g-card.locked .gl20g-state{color:#c7c8c4}
+.gl20g-footer{display:grid;grid-template-columns:1.18fr 1fr;margin:0 10px 12px;border:1px solid #496342;border-radius:13px;background:linear-gradient(180deg,#0c1d11,#071009);overflow:hidden}.gl20g-foot{padding:12px 14px;min-width:0}.gl20g-foot+.gl20g-foot{border-left:1px solid #43513d}.gl20g-foot small{display:block;font-size:8px;letter-spacing:.14em;font-weight:900;color:#849188;text-transform:uppercase}.gl20g-foot b{display:block;margin-top:5px;font-size:14px;line-height:1.12;color:#f0f2eb}.gl20g-foot b.green{color:#73f268}.gl20g-foot span{display:block;margin-top:4px;font-size:9px;color:#9fa9a1}
+@media(max-width:700px){
+ #dungeonMapCard.gl20g-world{margin-left:-8px!important;margin-right:-8px!important}
+ .gl20g-head{grid-template-columns:65px minmax(0,1fr);padding:11px 10px 10px;gap:8px}.gl20g-skull{font-size:49px}.gl20g-title{font-size:31px}.gl20g-kicker{font-size:8px}.gl20g-sub{font-size:9px;margin-top:6px}.gl20g-ticket{grid-column:1/-1;padding:8px 10px;display:flex;align-items:center;justify-content:space-between;text-align:left}.gl20g-ticket b{font-size:8px}.gl20g-ticket #dungeonTicketText{margin:0;font-size:9px}
+ .gl20g-mapframe{padding:6px}.gl20g-grid{gap:4px;padding:5px;border-width:2px}
+ .gl20g-card{height:137px;border-width:1.5px!important;border-radius:8px!important}
+ .gl20g-art{bottom:50px}
+ .gl20g-badge{top:52px;width:38px;height:38px;border-width:2px;font-size:15px;box-shadow:0 0 0 3px rgba(5,10,6,.96),0 3px 7px #000e}
+ .gl20g-mark{top:52px;left:calc(50% + 21px);width:22px;height:22px;border-width:1px;font-size:11px}
+ .gl20g-info{min-height:51px;padding:6px 3px 5px}.gl20g-name{font-size:7.7px;line-height:1.07}.gl20g-state{font-size:6.5px;margin-top:4px}.gl20g-card.current .gl20g-state{padding:3px 7px}
+ .gl20g-footer{margin:0 7px 9px}.gl20g-foot{padding:10px}.gl20g-foot small{font-size:6.7px}.gl20g-foot b{font-size:11.5px}.gl20g-foot span{font-size:7.8px}
+}
+@media(max-width:390px){.gl20g-grid{gap:3px;padding:4px}.gl20g-card{height:132px}.gl20g-badge{width:36px;height:36px;top:50px;font-size:14px}.gl20g-mark{top:50px;left:calc(50% + 20px);width:20px;height:20px;font-size:10px}.gl20g-name{font-size:7.1px}.gl20g-state{font-size:6.1px}}

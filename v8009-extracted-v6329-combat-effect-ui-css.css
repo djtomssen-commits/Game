@@ -1,0 +1,41 @@
+
+/* Companion status text no longer rides on the enemy hit marker. */
+.v6303-companion-impact>small{display:none!important}
+.v6329-companion-status-lane{
+  position:absolute!important;
+  z-index:145!important;
+  left:7%!important;right:7%!important;top:96px!important;
+  display:flex!important;align-items:center!important;justify-content:center!important;
+  flex-wrap:wrap!important;gap:5px!important;
+  pointer-events:none!important;
+}
+#v636QuestBattleStage>.v6329-companion-status-lane{top:148px!important}
+#tower .v6259-battle>.v6329-companion-status-lane{top:92px!important}
+#battleStage>.v6329-companion-status-lane{top:94px!important}
+#pvp .v209-battle-stage>.v6329-companion-status-lane,
+#pvp .battle-stage>.v6329-companion-status-lane{top:94px!important}
+.v6329-companion-status{
+  display:inline-flex!important;align-items:center!important;justify-content:center!important;
+  max-width:100%!important;min-height:24px!important;padding:5px 9px!important;
+  border:2px solid #687761!important;border-radius:999px!important;
+  background:linear-gradient(180deg,rgba(8,15,9,.96),rgba(3,7,4,.96))!important;
+  color:#eef6eb!important;font-size:6.5px!important;font-weight:1000!important;line-height:1!important;
+  letter-spacing:.025em!important;white-space:nowrap!important;overflow:visible!important;text-overflow:clip!important;
+  text-shadow:0 2px 2px #000!important;box-shadow:0 5px 14px #000b,inset 0 0 11px rgba(255,255,255,.03)!important;
+  animation:v6329StatusIn 1.45s ease forwards!important;
+}
+.v6329-status-bud{border-color:#58c94d!important;color:#a9ff99!important}
+.v6329-status-bone{border-color:#c8a55a!important;color:#ffe0a0!important}
+.v6329-status-spore{border-color:#a653cf!important;color:#e7afff!important}
+.v6329-status-crow{border-color:#55bdd8!important;color:#b8f1ff!important}
+.v6329-companion-status.crit{box-shadow:0 0 17px rgba(255,193,57,.28),0 5px 14px #000b!important}
+@keyframes v6329StatusIn{
+  0%{opacity:0;transform:translateY(7px) scale(.92)}
+  16%,76%{opacity:1;transform:translateY(0) scale(1)}
+  100%{opacity:0;transform:translateY(-8px) scale(.97)}
+}
+@media(max-width:560px){
+  .v6329-companion-status-lane{left:4%!important;right:4%!important;gap:4px!important}
+  #v636QuestBattleStage>.v6329-companion-status-lane{top:140px!important}
+  .v6329-companion-status{min-height:22px!important;padding:5px 7px!important;font-size:5.8px!important}
+}

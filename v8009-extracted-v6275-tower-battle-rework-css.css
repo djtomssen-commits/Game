@@ -1,0 +1,161 @@
+
+/* Header must not collapse under the round buttons on combat screens. */
+#tower .v6259-head{
+  grid-template-columns:50px minmax(0,1fr) 50px!important;
+}
+#tower .v6259-head-copy{
+  min-width:0!important;
+  text-align:center!important;
+}
+#tower .v6259-head h2{
+  white-space:normal!important;
+  overflow:visible!important;
+  text-overflow:clip!important;
+  line-height:1.02!important;
+  font-size:clamp(18px,4.7vw,25px)!important;
+}
+#tower .v6259-head span{
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+}
+
+/* Battle stage should look like a scene, not like two cards. */
+#tower .v6259-battle{
+  height:clamp(450px,57dvh,560px)!important;
+  min-height:450px!important;
+  max-height:560px!important;
+  box-shadow:inset 0 0 38px #0009,0 8px 22px #0008!important;
+}
+#tower .v6259-battle-bg{
+  filter:brightness(.64) saturate(.95)!important;
+}
+#tower .v6275-battle-floor{
+  position:absolute!important;
+  z-index:1!important;
+  bottom:108px!important;
+  width:30%!important;
+  height:26px!important;
+  border-radius:999px!important;
+  background:radial-gradient(ellipse at center,rgba(134,216,92,.28),rgba(48,83,38,.18) 45%,transparent 72%)!important;
+  filter:blur(1px)!important;
+  pointer-events:none!important;
+}
+#tower .v6275-battle-floor.player{left:11%!important}
+#tower .v6275-battle-floor.enemy{right:11%!important}
+
+#tower .v6259-battle-progress{
+  left:20%!important;
+  right:20%!important;
+  top:12px!important;
+  z-index:7!important;
+}
+#tower .v6259-fighter{
+  z-index:3!important;
+  bottom:94px!important;
+  width:40%!important;
+  height:62%!important;
+  justify-content:flex-end!important;
+}
+#tower .v6259-fighter.player{
+  left:3%!important;
+}
+#tower .v6259-fighter.enemy{
+  right:3%!important;
+  width:34%!important;
+}
+#tower .v6259-fighter img{
+  width:100%!important;
+  height:100%!important;
+  max-width:100%!important;
+  max-height:100%!important;
+  object-fit:contain!important;
+  object-position:center center!important;
+  filter:drop-shadow(0 16px 14px #000d) saturate(1.02)!important;
+}
+#tower .v6259-fighter.player img{
+  -webkit-mask-image:radial-gradient(ellipse 82% 88% at 50% 50%,#000 58%,rgba(0,0,0,.88) 74%,transparent 100%)!important;
+  mask-image:radial-gradient(ellipse 82% 88% at 50% 50%,#000 58%,rgba(0,0,0,.88) 74%,transparent 100%)!important;
+}
+#tower .v6259-fighter.enemy img{
+  max-width:92%!important;
+  max-height:92%!important;
+  object-position:center center!important;
+  mix-blend-mode:screen!important;
+  -webkit-mask-image:radial-gradient(ellipse 78% 84% at 50% 50%,#000 57%,rgba(0,0,0,.84) 72%,transparent 100%)!important;
+  mask-image:radial-gradient(ellipse 78% 84% at 50% 50%,#000 57%,rgba(0,0,0,.84) 72%,transparent 100%)!important;
+}
+#tower .v6259-fighter .vT-fighter-name{
+  display:none!important;
+}
+
+/* HUD stays separate and readable instead of looking like cards in the middle. */
+#tower .v6259-hud{
+  z-index:6!important;
+  bottom:12px!important;
+  width:42%!important;
+  min-height:66px!important;
+  padding:8px 9px!important;
+  border:1px solid #455845!important;
+  border-radius:12px!important;
+  background:linear-gradient(180deg,rgba(5,13,8,.96),rgba(6,14,9,.86))!important;
+  box-shadow:0 6px 16px #0008!important;
+}
+#tower .v6259-hud.player{left:3%!important}
+#tower .v6259-hud.enemy{right:3%!important}
+#tower .v6259-hud .vT-hpline{
+  font-size:8px!important;
+}
+#tower .v6259-hud .vT-bar{
+  height:11px!important;
+  margin-top:5px!important;
+}
+#tower .v6259-battle .vT-damage{
+  top:148px!important;
+  font-size:26px!important;
+}
+#tower .v6259-battle-log{
+  min-height:54px!important;
+  margin:7px 0 0!important;
+  padding:10px 11px!important;
+  font-size:8px!important;
+  line-height:1.45!important;
+}
+
+@media(max-width:520px){
+  #tower .v6259-head h2{font-size:16px!important}
+  #tower .v6259-head span{font-size:7px!important}
+  #tower .v6259-battle{
+    height:430px!important;
+    min-height:430px!important;
+    max-height:430px!important;
+  }
+  #tower .v6259-battle-progress{
+    left:21%!important;
+    right:21%!important;
+  }
+  #tower .v6275-battle-floor{
+    bottom:98px!important;
+    width:31%!important;
+  }
+  #tower .v6259-fighter{
+    bottom:84px!important;
+    height:58%!important;
+    width:42%!important;
+  }
+  #tower .v6259-fighter.enemy{
+    width:35%!important;
+  }
+  #tower .v6259-fighter.player img{
+    max-width:100%!important;
+    max-height:100%!important;
+  }
+  #tower .v6259-hud{
+    width:43%!important;
+    min-height:62px!important;
+    padding:7px!important;
+  }
+  #tower .v6259-hud .vT-hpline{
+    font-size:7px!important;
+  }
+}

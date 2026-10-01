@@ -1,0 +1,234 @@
+
+
+/* ---------------------------------------------------------
+   1) Dungeon-10er-Karte: auf kleinen Handys vollständig
+      in der Displaybreite statt 440px-Zwang + Seitenscrollen.
+   --------------------------------------------------------- */
+@media (max-width:420px){
+  #dungeonMapCard.v251-detail-card .v251-route-wrap{
+    overflow-x:hidden!important;
+    padding-left:6px!important;
+    padding-right:6px!important;
+  }
+  #dungeonMapCard.v251-detail-card .v251-route{
+    width:100%!important;
+    min-width:0!important;
+    grid-template-columns:repeat(5,minmax(0,1fr))!important;
+    gap:16px 2px!important;
+  }
+  #dungeonMapCard.v251-detail-card .v251-room{
+    min-width:0!important;
+  }
+  #dungeonMapCard.v251-detail-card .v251-room-orb{
+    width:clamp(38px,11.2vw,46px)!important;
+    height:clamp(38px,11.2vw,46px)!important;
+    font-size:clamp(17px,5.2vw,21px)!important;
+  }
+  #dungeonMapCard.v251-detail-card .v251-room-name{
+    max-width:100%!important;
+    font-size:clamp(4.6px,1.45vw,5.3px)!important;
+    line-height:1.12!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+  }
+  #dungeonMapCard.v251-detail-card .v251-route:before{
+    top:34px!important;
+    left:7%!important;
+    right:7%!important;
+  }
+  #dungeonMapCard.v251-detail-card .v251-route:after{
+    bottom:34px!important;
+    left:7%!important;
+    right:7%!important;
+  }
+}
+@media (max-width:350px){
+  #dungeonMapCard.v251-detail-card .v251-route{
+    gap:14px 1px!important;
+  }
+  #dungeonMapCard.v251-detail-card .v251-room-orb{
+    width:35px!important;
+    height:35px!important;
+    font-size:16px!important;
+  }
+  #dungeonMapCard.v251-detail-card .v251-route:before{top:31px!important}
+  #dungeonMapCard.v251-detail-card .v251-route:after{bottom:31px!important}
+}
+
+/* ---------------------------------------------------------
+   2) Echtes Querformat für kurze Smartphone-Displays.
+      Nur Darstellung; Kampf-/Quest-/Timerlogik bleibt gleich.
+   --------------------------------------------------------- */
+@media (orientation:landscape) and (max-height:520px){
+
+  /* Allgemein etwas kompakter, ohne Desktop/Tablet anzufassen. */
+  main{padding-top:6px!important;padding-bottom:10px!important}
+  .card{margin-bottom:7px!important}
+
+  /* Charakter: breite Fläche nutzen, Höhe reduzieren. */
+  #character .character-stage{padding-top:4px!important}
+  #character .center-hero{
+    min-height:285px!important;
+  }
+  #character .avatar-scene{
+    height:175px!important;
+  }
+  #character .v41-portrait{
+    max-height:175px!important;
+  }
+
+  /* Dungeon-Kampf */
+  #dungeonBattleCard.v574-combat{
+    padding:7px!important;
+  }
+  #dungeonBattleCard.v574-combat .battle-stage{
+    height:clamp(250px,72dvh,330px)!important;
+  }
+  #dungeonBattleCard.v574-combat .v252-fighter-shell{
+    min-height:205px!important;
+  }
+  #dungeonBattleCard.v574-combat .fighter{
+    bottom:22px!important;
+  }
+  #dungeonBattleCard.v574-combat .fighter-avatar{
+    width:130px!important;
+    height:165px!important;
+  }
+  #dungeonBattleCard.v574-combat .v253-player-avatar-img{
+    width:126px!important;
+    height:162px!important;
+  }
+  #dungeonBattleCard.v574-combat .v253-monster{
+    width:126px!important;
+    height:158px!important;
+  }
+  #dungeonBattleCard.v574-combat .damage{
+    top:105px!important;
+    font-size:21px!important;
+  }
+  #dungeonBattleCard.v574-combat .v574-stage-title{
+    top:7px!important;
+  }
+  #dungeonBattleCard.v574-combat .v574-round{
+    top:36px!important;
+  }
+  #dungeonBattleCard.v574-combat .v574-proc-strip{
+    top:62px!important;
+  }
+
+  /* Quest-Finale */
+  #v311QuestFight.v636-dungeon-quest{
+    padding-top:4px!important;
+    padding-bottom:4px!important;
+  }
+  #v636QuestDungeonCard.v599-clean .battle-stage{
+    height:clamp(255px,74dvh,335px)!important;
+  }
+  #v636QuestDungeonCard.v599-clean .v252-fighter-shell{
+    min-height:215px!important;
+  }
+  #v636QuestDungeonCard.v599-clean .fighter{
+    bottom:18px!important;
+  }
+  #v636QuestDungeonCard.v599-clean .fighter-avatar{
+    width:135px!important;
+    height:170px!important;
+  }
+  #v636QuestDungeonCard.v599-clean .v600-barbar-art,
+  #v636QuestDungeonCard.v599-clean .v600-treant-art,
+  #v636QuestDungeonCard.v599-clean .v636-monster{
+    width:138px!important;
+    height:168px!important;
+    object-fit:contain!important;
+  }
+  #v636QuestDungeonCard.v599-clean .damage{
+    top:106px!important;
+    font-size:24px!important;
+  }
+  #v636QuestDungeonCard.v599-clean .damage.v252-crit{
+    font-size:29px!important;
+  }
+  #v636QuestDungeonCard.v599-clean .v575-stage-title{
+    top:7px!important;
+    padding:6px 12px!important;
+  }
+  #v636QuestDungeonCard.v599-clean .v575-round{
+    top:39px!important;
+    padding:5px 9px!important;
+  }
+  #v636QuestDungeonCard.v599-clean .v575-proc-strip{
+    top:69px!important;
+  }
+
+  /* PvP-Kampf */
+  #v209PvpBattleOverlay .v209-stage{
+    height:clamp(255px,74dvh,340px)!important;
+  }
+  #v209PvpBattleOverlay .v209-avatar{
+    height:165px!important;
+  }
+  #v209PvpBattleOverlay .v209-avatar img{
+    width:auto!important;
+    max-width:115%!important;
+    height:164px!important;
+    max-height:164px!important;
+  }
+  #v209PvpBattleOverlay .v610-pvp-procs{
+    top:76px!important;
+    min-height:28px!important;
+  }
+  #v209PvpBattleOverlay .v610-pvp-vs{
+    width:35px!important;
+    height:35px!important;
+    font-size:13px!important;
+  }
+
+  /* Anbau-Turm */
+  #tower .vT-battle-stage{
+    height:clamp(245px,70dvh,315px)!important;
+  }
+  #tower .vT-fighter{
+    bottom:30px!important;
+  }
+  #tower .vT-fighter.enemy img{
+    height:145px!important;
+    max-width:175px!important;
+  }
+  #tower .vT-fighter.player img{
+    height:135px!important;
+    max-width:120px!important;
+  }
+  #tower .vT-damage{
+    top:92px!important;
+    font-size:21px!important;
+  }
+
+  /* Große Hilfs-/Accountfenster bleiben komplett bedienbar. */
+  #v6252RegisterCard,
+  #v6254TutorialCard{
+    max-height:calc(100dvh - 10px)!important;
+  }
+}
+
+/* ---------------------------------------------------------
+   3) Alte Fallback-Karten: nicht länger als nötig aufblasen.
+      Die moderne V251-Dungeonkarte bleibt Haupt-Renderer.
+      Keine Positionslogik/Nodes wird verändert.
+   --------------------------------------------------------- */
+@media (max-width:560px){
+  .dungeon-map-shell .adventure-map{
+    max-height:1600px!important;
+  }
+  .v065-worldmap-card .v065-dungeon-world{
+    max-height:980px!important;
+  }
+}
+
+/* Tablet/Foldable: Inhalt darf wachsen, aber nicht endlos breit werden. */
+@media (min-width:768px) and (max-width:1200px){
+  #v074ProfileOverlay .v074-profile-modal,
+  #v6252RegisterCard,
+  #v6254TutorialCard{
+    max-width:min(720px,94vw)!important;
+  }
+}

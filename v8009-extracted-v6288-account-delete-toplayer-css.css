@@ -1,0 +1,28 @@
+
+/* The settings dropdown uses a near-max z-index in V377.
+   Account deletion must sit above it. */
+#v141DeleteOverlay{
+  z-index:2147483647!important;
+  pointer-events:auto!important;
+}
+body.v6288-delete-open > #v141SettingsMenu,
+body.v6288-delete-open #v141SettingsMenu{
+  display:none!important;
+  visibility:hidden!important;
+  opacity:0!important;
+  pointer-events:none!important;
+}
+body.v6288-delete-open #v141DeleteOverlay.show{
+  display:flex!important;
+  visibility:visible!important;
+  opacity:1!important;
+  pointer-events:auto!important;
+}
+body.v6288-delete-open #v141DeleteInput{
+  position:relative!important;
+  z-index:2!important;
+  pointer-events:auto!important;
+  touch-action:manipulation!important;
+  user-select:text!important;
+  -webkit-user-select:text!important;
+}

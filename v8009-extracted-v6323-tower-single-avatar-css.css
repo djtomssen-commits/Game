@@ -1,0 +1,32 @@
+
+/* Android/WebView can tile the large Harzruferin texture in the tower when
+   mask-image + animated parent transforms are combined. The tower player gets
+   one isolated paint layer and no CSS mask; the existing floor mist still
+   blends the figure into the scene. */
+#tower .v6294-summoner-tower #vTPlayerFighter{
+  isolation:isolate!important;
+  contain:layout paint style!important;
+  overflow:hidden!important;
+  background-image:none!important;
+  backface-visibility:hidden!important;
+  -webkit-backface-visibility:hidden!important;
+}
+#tower .v6294-summoner-tower #vTPlayerFighter>img.v6294-tower-player-img{
+  display:block!important;
+  visibility:visible!important;
+  opacity:1!important;
+  -webkit-mask-image:none!important;
+  mask-image:none!important;
+  clip-path:inset(0 0 0 0)!important;
+  -webkit-clip-path:inset(0 0 0 0)!important;
+  backface-visibility:hidden!important;
+  -webkit-backface-visibility:hidden!important;
+  transform:scale(1.00)!important;
+  transform-origin:center bottom!important;
+  will-change:auto!important;
+}
+@media(max-width:520px){
+  #tower .v6294-summoner-tower #vTPlayerFighter>img.v6294-tower-player-img{
+    transform:scale(.97)!important;
+  }
+}

@@ -1,0 +1,174 @@
+
+/*
+  V6.268
+  - vorhandene freigegebene Türgrafik bleibt unverändert
+  - beide Türen bleiben auf Android/Samsung vollständig sichtbar
+  - keine alte V6.259/V6.260 Karten-/Türdarstellung wird wieder sichtbar
+  - Raumdaten und Buttons bleiben dynamische echte UI
+*/
+#tower .v6259-door-stage,
+#tower .v6259-door-grid,
+#tower .v6259-door-choice{
+  display:none!important;
+}
+
+#tower .v6263-door-stage{
+  display:flex!important;
+  flex-direction:column!important;
+  min-height:0!important;
+  height:auto!important;
+  overflow:hidden!important;
+  padding:0 0 9px!important;
+  border:2px solid #745123!important;
+  border-radius:17px!important;
+  background:
+    radial-gradient(circle at 50% 24%,rgba(64,130,61,.11),transparent 35%),
+    linear-gradient(180deg,#071009,#030805)!important;
+}
+
+#tower .v6263-door-picture{
+  position:relative!important;
+  inset:auto!important;
+  width:100%!important;
+  height:auto!important;
+  aspect-ratio:405 / 200!important;
+  flex:0 0 auto!important;
+  background-position:center center!important;
+  background-repeat:no-repeat!important;
+  background-size:100% 100%,100% 100%!important;
+  border-bottom:1px solid rgba(116,81,35,.60)!important;
+}
+
+/* Die echten UI-Karten liegen knapp über dem unteren Bildrand.
+   Dadurch bleibt die komplette Illustration sichtbar, ohne sie auf Handy-Höhe zu strecken. */
+#tower .v6263-door-ui-layer{
+  position:relative!important;
+  inset:auto!important;
+  z-index:3!important;
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:7px!important;
+  margin-top:-15px!important;
+  padding:0 7px!important;
+  pointer-events:auto!important;
+}
+
+#tower .v6263-door-ui,
+#tower .v6263-door-ui.side-0,
+#tower .v6263-door-ui.side-1{
+  position:relative!important;
+  left:auto!important;
+  right:auto!important;
+  bottom:auto!important;
+  width:auto!important;
+  min-width:0!important;
+  transform:none!important;
+}
+
+#tower .v6263-door-ui.solo{
+  grid-column:1 / -1!important;
+  justify-self:center!important;
+  width:min(68%,270px)!important;
+  left:auto!important;
+  right:auto!important;
+  transform:none!important;
+}
+
+#tower .v6263-door-room{
+  min-height:28px!important;
+  padding:5px 8px!important;
+  border-color:#5b7351!important;
+  background:rgba(5,15,8,.96)!important;
+  color:#c8dbc0!important;
+  font-size:8.4px!important;
+  box-shadow:0 4px 12px #000b!important;
+}
+
+#tower .v6263-door-copy{
+  min-height:68px!important;
+  margin:5px 0 6px!important;
+  padding:8px 7px!important;
+  border-color:#425a47!important;
+  background:linear-gradient(180deg,rgba(5,15,8,.98),rgba(3,9,5,.98))!important;
+  box-shadow:0 7px 18px #000c!important;
+}
+
+#tower .v6263-door-copy b{
+  font-size:10px!important;
+  line-height:1.16!important;
+}
+
+#tower .v6263-door-copy span{
+  margin-top:4px!important;
+  font-size:7.3px!important;
+  line-height:1.3!important;
+}
+
+#tower .v6263-door-ui .vT-btn{
+  min-height:43px!important;
+  font-size:9px!important;
+}
+
+/* Mutationen direkt unter der Türentscheidung, kompakt wie in der Vorlage. */
+#tower .v6263-mutation-panel{
+  margin-top:7px!important;
+}
+#tower .v6263-mutation-panel .v6259-buffs{
+  grid-template-columns:repeat(6,minmax(0,1fr))!important;
+}
+#tower .v6263-mutation-panel .v6259-buff{
+  min-width:0!important;
+}
+
+/* Samsung / Android Portrait */
+@media(max-width:430px){
+  #tower .v6263-door-stage{
+    min-height:0!important;
+    max-height:none!important;
+  }
+  #tower .v6263-door-picture{
+    min-height:0!important;
+    height:auto!important;
+    aspect-ratio:405 / 200!important;
+    background-position:center center!important;
+    background-size:100% 100%,100% 100%!important;
+  }
+  #tower .v6263-door-ui-layer{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:6px!important;
+    margin-top:-12px!important;
+    padding:0 6px!important;
+  }
+  #tower .v6263-door-ui{
+    width:auto!important;
+  }
+  #tower .v6263-door-copy{
+    min-height:66px!important;
+    padding:7px 5px!important;
+  }
+  #tower .v6263-door-copy b{font-size:9.4px!important}
+  #tower .v6263-door-copy span{font-size:6.8px!important}
+  #tower .v6263-door-ui .vT-btn{
+    min-height:42px!important;
+    font-size:8.7px!important;
+  }
+  #tower .v6263-mutation-panel .v6259-buff{
+    min-height:56px!important;
+  }
+}
+
+@media(max-width:360px){
+  #tower .v6263-door-ui-layer{
+    gap:5px!important;
+    padding:0 5px!important;
+  }
+  #tower .v6263-door-copy{
+    min-height:64px!important;
+  }
+  #tower .v6263-door-copy span{
+    font-size:6.3px!important;
+  }
+  #tower .v6263-door-ui.solo{
+    width:74%!important;
+  }
+}

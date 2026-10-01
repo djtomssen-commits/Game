@@ -1,0 +1,89 @@
+
+/* Old V4.165 still forced profile to 225px and absolutely positioned the attributes.
+   That is the big empty black block visible in the screenshot. */
+#world.active .v366-profile{
+  height:auto!important;
+  min-height:0!important;
+  max-height:none!important;
+  bottom:auto!important;
+}
+#world.active .v366-attrs{
+  position:static!important;
+  left:auto!important;
+  right:auto!important;
+  top:auto!important;
+  bottom:auto!important;
+  width:100%!important;
+  margin-top:7px!important;
+}
+
+/* Keep these blocks permanently in the V6.90 flow, even after world refreshes. */
+#world.active .v488-home-link{
+  display:flex!important;
+  order:6!important;
+}
+#world.active .v366-dock{
+  order:7!important;
+}
+#world.active #v492HomeGrowStatus{
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:center!important;
+  order:8!important;
+}
+#world.active .v690-footer{
+  order:9!important;
+}
+
+/* Exactly eight dock cells. No legacy Dealer insertions may occupy a ninth cell. */
+#world.active .v366-dock{
+  grid-template-columns:repeat(8,minmax(0,1fr))!important;
+  overflow:hidden!important;
+}
+#world.active .v366-dock [data-v341-harz-menu],
+#world.active .v366-dock [data-v337-harz-dealer],
+#world.active .v366-dock [data-v353-harz-dealer]{
+  display:none!important;
+}
+#world.active .v366-dock button{
+  min-width:0!important;
+  overflow:hidden!important;
+  padding:4px 2px!important;
+}
+#world.active .v366-dock .v692-label{
+  display:block!important;
+  width:100%!important;
+  overflow:hidden!important;
+  color:inherit!important;
+  font-size:4.2px!important;
+  line-height:1.08!important;
+  font-weight:900!important;
+  text-align:center!important;
+  white-space:normal!important;
+  word-break:normal!important;
+}
+#world.active .v366-dock .ico{
+  flex:0 0 auto!important;
+}
+
+/* The profile is now compact enough that the castle remains visible. */
+#world.active .v366-welcome{
+  bottom:18px!important;
+}
+
+@media(max-width:390px){
+  #world.active .v366-profile{
+    height:auto!important;
+    max-height:none!important;
+  }
+  #world.active .v366-attrs{
+    position:static!important;
+    top:auto!important;
+    left:auto!important;
+    right:auto!important;
+    margin-top:5px!important;
+  }
+  #world.active .v366-dock .v692-label{
+    font-size:3.7px!important;
+  }
+}

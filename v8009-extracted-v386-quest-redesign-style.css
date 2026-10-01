@@ -1,0 +1,279 @@
+
+#quests{
+  --v386-bg:#071109;
+  --v386-panel:#0d1710;
+  --v386-line:#284630;
+  --v386-green:#8ef45d;
+  --v386-gold:#e6c45d;
+}
+#quests .v386-shell{
+  display:grid;
+  gap:14px;
+}
+#quests .v386-mira{
+  position:relative;
+  overflow:hidden;
+  border:1px solid #315439;
+  border-radius:18px;
+  background:
+    radial-gradient(circle at 80% 20%,rgba(102,255,78,.12),transparent 38%),
+    linear-gradient(160deg,#101b12,#091109);
+  min-height:180px;
+  padding:18px;
+  box-shadow:inset 0 0 30px rgba(85,210,68,.06);
+}
+#quests .v386-mira::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:
+    linear-gradient(90deg,rgba(7,17,9,.08),rgba(7,17,9,.72)),
+    radial-gradient(circle at 22% 70%,rgba(163,79,255,.13),transparent 30%);
+  pointer-events:none;
+}
+#quests .v386-mira-art{
+  position:absolute;
+  left:10px;
+  bottom:0;
+  width:130px;
+  height:160px;
+  border-radius:24px 24px 0 0;
+  background:
+    radial-gradient(circle at 50% 28%,#c99072 0 18%,transparent 19%),
+    radial-gradient(circle at 47% 32%,#2b1713 0 5%,transparent 6%),
+    linear-gradient(180deg,transparent 0 34%,#2a1735 35% 48%,#171c16 49% 100%);
+  filter:drop-shadow(0 10px 14px rgba(0,0,0,.55));
+  opacity:.95;
+}
+#quests .v386-mira-copy{
+  position:relative;
+  z-index:1;
+  margin-left:120px;
+}
+#quests .v386-kicker{
+  font-size:8px;
+  letter-spacing:1.4px;
+  font-weight:1000;
+  color:#8cf06c;
+  text-transform:uppercase;
+}
+#quests .v386-mira-name{
+  margin:5px 0 8px;
+  font-size:26px;
+  font-weight:1000;
+  color:#d782ff;
+  text-shadow:0 0 14px rgba(188,91,255,.25);
+}
+#quests .v386-bubble{
+  background:#eadfbd;
+  color:#171612;
+  border-radius:16px;
+  padding:12px 14px;
+  font-size:13px;
+  font-weight:800;
+  line-height:1.45;
+  box-shadow:0 10px 25px rgba(0,0,0,.25);
+}
+#quests .v386-tabs{
+  position:relative;
+  z-index:2;
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:8px;
+  margin-top:14px;
+}
+#quests .v386-tab{
+  border-radius:12px;
+  padding:9px 6px;
+  text-align:center;
+  background:#0a130c;
+  border:1px solid #2f4734;
+  font-size:9px;
+  font-weight:1000;
+}
+#quests .v386-tab.fast{color:#7ee8ff;border-color:#2b8190}
+#quests .v386-tab.normal{color:#b7f56f;border-color:#627f36}
+#quests .v386-tab.hard{color:#ff8c7e;border-color:#8d463e}
+
+#quests .v386-list{
+  display:grid;
+  gap:14px;
+}
+#quests .v386-card{
+  border:1px solid #2d4c33;
+  border-radius:18px;
+  overflow:hidden;
+  background:linear-gradient(180deg,#0d1710,#081009);
+  box-shadow:0 14px 34px rgba(0,0,0,.22);
+}
+#quests .v386-card.fast{border-color:#2e6e78}
+#quests .v386-card.normal{border-color:#526b2e}
+#quests .v386-card.hard{border-color:#6e3630}
+#quests .v386-scene{
+  position:relative;
+  min-height:170px;
+  padding:16px;
+  display:flex;
+  flex-direction:column;
+  justify-content:flex-end;
+  isolation:isolate;
+}
+#quests .v386-scene::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:-2;
+  background:
+    radial-gradient(circle at 25% 30%,rgba(119,255,104,.18),transparent 25%),
+    linear-gradient(180deg,rgba(5,10,6,.05),rgba(5,10,6,.88));
+}
+#quests .v386-scene.fast{
+  background:
+    radial-gradient(circle at 14% 50%,rgba(84,225,255,.18),transparent 20%),
+    linear-gradient(145deg,#10211b,#102a20 35%,#0d1510 70%);
+}
+#quests .v386-scene.normal{
+  background:
+    radial-gradient(circle at 15% 45%,rgba(255,178,82,.2),transparent 22%),
+    linear-gradient(145deg,#24160f,#332113 38%,#0c1510 74%);
+}
+#quests .v386-scene.hard{
+  background:
+    radial-gradient(circle at 18% 48%,rgba(255,79,58,.17),transparent 22%),
+    linear-gradient(145deg,#26100f,#2b1412 36%,#0c1210 74%);
+}
+#quests .v386-scene-art{
+  position:absolute;
+  inset:0;
+  z-index:-1;
+  opacity:.55;
+  pointer-events:none;
+}
+#quests .v386-scene.fast .v386-scene-art{
+  background:
+    radial-gradient(ellipse at 18% 58%,#141414 0 6%,transparent 7%),
+    radial-gradient(ellipse at 23% 55%,#1b1b1b 0 3%,transparent 4%),
+    radial-gradient(circle at 34% 70%,rgba(98,204,85,.22),transparent 16%),
+    repeating-linear-gradient(90deg,rgba(44,79,43,.3) 0 2px,transparent 2px 28px);
+}
+#quests .v386-scene.normal .v386-scene-art{
+  background:
+    linear-gradient(20deg,transparent 0 45%,rgba(84,50,25,.75) 46% 57%,transparent 58%),
+    radial-gradient(circle at 28% 70%,rgba(108,255,78,.12),transparent 18%),
+    repeating-linear-gradient(90deg,rgba(139,94,50,.18) 0 3px,transparent 3px 38px);
+}
+#quests .v386-scene.hard .v386-scene-art{
+  background:
+    radial-gradient(circle at 15% 72%,rgba(117,210,65,.22),transparent 8%),
+    radial-gradient(circle at 28% 78%,rgba(117,210,65,.18),transparent 7%),
+    radial-gradient(circle at 42% 70%,rgba(117,210,65,.14),transparent 6%),
+    repeating-linear-gradient(100deg,rgba(91,51,34,.2) 0 4px,transparent 4px 34px);
+}
+#quests .v386-type{
+  display:inline-flex;
+  align-self:flex-start;
+  margin-bottom:auto;
+  padding:5px 9px;
+  border-radius:999px;
+  background:rgba(5,9,6,.78);
+  border:1px solid currentColor;
+  font-size:8px;
+  font-weight:1000;
+}
+#quests .v386-card.fast .v386-type{color:#77e8ff}
+#quests .v386-card.normal .v386-type{color:#d6ef71}
+#quests .v386-card.hard .v386-type{color:#ff9284}
+#quests .v386-title{
+  margin:8px 0 5px;
+  font-size:20px;
+  line-height:1.06;
+  font-weight:1000;
+  color:#fff;
+  text-shadow:0 2px 12px rgba(0,0,0,.75);
+}
+#quests .v386-desc{
+  max-width:92%;
+  font-size:11px;
+  color:#d5ded4;
+  line-height:1.45;
+  text-shadow:0 2px 8px rgba(0,0,0,.8);
+}
+#quests .v386-card-body{
+  display:grid;
+  gap:10px;
+  padding:12px;
+}
+#quests .v386-meta,
+#quests .v386-rewards{
+  display:grid;
+  gap:8px;
+}
+#quests .v386-meta{grid-template-columns:repeat(3,1fr)}
+#quests .v386-rewards{grid-template-columns:repeat(3,1fr)}
+#quests .v386-box{
+  min-width:0;
+  border:1px solid #29432f;
+  border-radius:12px;
+  background:#09110b;
+  padding:9px 7px;
+  text-align:center;
+}
+#quests .v386-box b{
+  display:block;
+  font-size:12px;
+  color:#f5f7ef;
+  white-space:nowrap;
+}
+#quests .v386-box span{
+  display:block;
+  margin-top:2px;
+  font-size:7px;
+  color:#89978c;
+}
+#quests .v386-reward b{color:#e6cd67}
+#quests .v386-reward.xp b{color:#b9f16f}
+#quests .v386-reward.item b{color:#d8a6ff}
+#quests .v386-start{
+  width:100%;
+  min-height:54px;
+  border:none;
+  border-radius:14px;
+  background:linear-gradient(180deg,#8df66b,#63d847);
+  color:#071006;
+  font-size:17px;
+  font-weight:1000;
+  box-shadow:0 0 24px rgba(108,240,75,.2),inset 0 1px 0 rgba(255,255,255,.35);
+}
+#quests .v386-note{
+  font-size:8px;
+  color:#89a28d;
+  text-align:center;
+  padding-top:2px;
+}
+
+#quests > .v052-scene,
+#quests > .v038-location,
+#quests .v041-npc,
+#quests .scene-label,
+#quests .v386-old-hidden{
+  display:none!important;
+}
+
+@media(max-width:520px){
+  #quests .v386-mira{
+    min-height:156px;
+    padding:14px;
+  }
+  #quests .v386-mira-art{
+    width:102px;
+    height:132px;
+  }
+  #quests .v386-mira-copy{margin-left:88px}
+  #quests .v386-mira-name{font-size:22px}
+  #quests .v386-bubble{font-size:11px;padding:10px 11px}
+  #quests .v386-scene{min-height:156px}
+  #quests .v386-title{font-size:18px}
+  #quests .v386-desc{font-size:10px}
+  #quests .v386-meta,
+  #quests .v386-rewards{grid-template-columns:repeat(3,minmax(0,1fr))}
+}

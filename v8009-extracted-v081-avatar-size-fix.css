@@ -1,0 +1,25 @@
+
+/* Avatar kleiner halten, damit Level- und XP-Anzeige nicht überdeckt werden */
+#character .avatar-scene{
+  height:220px !important;
+  overflow:hidden !important;
+  align-items:center !important;
+}
+#character .v41-portrait{
+  width:min(100%,210px) !important;
+  height:210px !important;
+  margin:0 auto !important;
+}
+#character .v41-portrait .v080-class-avatar-img{
+  width:100% !important;
+  height:100% !important;
+  object-fit:cover !important;
+  object-position:center 24% !important;
+}
+@media(max-width:520px){
+  #character .avatar-scene{height:190px !important;}
+  #character .v41-portrait{
+    width:180px !important;
+    height:180px !important;
+  }
+}

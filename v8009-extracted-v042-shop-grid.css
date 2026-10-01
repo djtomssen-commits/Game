@@ -1,0 +1,120 @@
+
+/* ===== V4.02 3x3 RPG shop grid ===== */
+
+#shop .shop-grid,
+#weaponShopItems,
+#v030MagicShop .shop-grid{
+  display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:9px!important;
+  align-items:stretch!important;
+}
+
+#shop .shop-item{
+  min-width:0!important;
+  width:100%!important;
+  padding:9px!important;
+  border-radius:14px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:flex-start!important;
+}
+
+#shop .shop-item .shop-icon,
+#shop .shop-item .v41-shop-icon{
+  width:48px!important;
+  height:48px!important;
+  margin:0 auto 7px!important;
+}
+
+#shop .shop-item h3{
+  font-size:11px!important;
+  line-height:1.15!important;
+  min-height:38px!important;
+  margin:3px 0 4px!important;
+  text-align:center!important;
+  overflow-wrap:anywhere!important;
+}
+
+#shop .shop-item .tiny{
+  font-size:9px!important;
+  line-height:1.25!important;
+  text-align:center!important;
+  min-height:34px!important;
+}
+
+#shop .shop-item .price{
+  margin:7px auto!important;
+  font-size:10px!important;
+  padding:4px 6px!important;
+  white-space:nowrap!important;
+}
+
+#shop .shop-item .btn{
+  margin-top:auto!important;
+  width:100%!important;
+  padding:8px 4px!important;
+  font-size:10px!important;
+}
+
+#shop .shop-item .q-gray,
+#shop .shop-item .q-green,
+#shop .shop-item .q-blue,
+#shop .shop-item .q-purple,
+#shop .shop-item .q-orange,
+#shop .shop-item .q-cyan{
+  text-align:center!important;
+  font-size:9px!important;
+  font-weight:900!important;
+}
+
+/* Give both shops exactly 9 visible offers */
+#weaponShopItems,
+#v030MagicShop .shop-grid{
+  grid-auto-rows:1fr!important;
+}
+
+/* Phone remains 3 columns as requested, but compact */
+@media(max-width:560px){
+  #shop .shop-grid,
+  #weaponShopItems,
+  #v030MagicShop .shop-grid{
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+    gap:6px!important;
+  }
+
+  #shop .shop-item{
+    padding:7px 5px!important;
+  }
+
+  #shop .shop-item .shop-icon,
+  #shop .shop-item .v41-shop-icon{
+    width:42px!important;
+    height:42px!important;
+  }
+
+  #shop .shop-item h3{
+    font-size:9px!important;
+    min-height:34px!important;
+  }
+
+  #shop .shop-item .tiny{
+    font-size:8px!important;
+    min-height:31px!important;
+  }
+
+  #shop .shop-item .price{
+    font-size:8px!important;
+    padding:3px 5px!important;
+  }
+
+  #shop .shop-item .btn{
+    font-size:9px!important;
+    padding:7px 2px!important;
+  }
+}
+
+@media(max-width:360px){
+  #shop .shop-item h3{font-size:8px!important}
+  #shop .shop-item .tiny{font-size:7px!important}
+}

@@ -1,0 +1,46 @@
+
+/* The "half-cut" look comes from the old cinematic overlay layer sitting
+   on top of the sprites. In practice it slices characters/enemies through the
+   middle. Remove that overlay and keep only a small floor shadow under them. */
+#tower .v6259-fighter::after{
+  content:none!important;
+  display:none!important;
+  background:none!important;
+}
+#tower .v6259-fighter::before{
+  left:50%!important;
+  bottom:18px!important;
+  transform:translateX(-50%)!important;
+  width:58%!important;
+  height:16px!important;
+  border-radius:50%!important;
+  background:radial-gradient(ellipse at center,rgba(0,0,0,.62) 0 30%,rgba(0,0,0,.28) 55%,transparent 78%)!important;
+  filter:blur(6px)!important;
+  z-index:0!important;
+}
+#tower #vTPlayerFighter,
+#tower #vTEnemyFighter{
+  overflow:visible!important;
+}
+#tower .v6259-fighter img,
+#tower .v6294-summoner-tower #vTPlayerFighter>img.v6333-tower-harz-avatar,
+#tower .v6294-summoner-tower #vTPlayerFighter>img.v6294-tower-player-img,
+#tower .v6294-summoner-tower #vTEnemyFighter img{
+  position:relative!important;
+  z-index:2!important;
+  -webkit-mask-image:none!important;
+  mask-image:none!important;
+  clip-path:none!important;
+  -webkit-clip-path:none!important;
+  mix-blend-mode:normal!important;
+  background:transparent!important;
+  object-fit:contain!important;
+  object-position:center bottom!important;
+}
+#tower .v6259-fighter.player img{transform:scale(.98)!important}
+#tower .v6259-fighter.enemy img{transform:scale(.92)!important}
+@media(max-width:520px){
+  #tower .v6259-fighter::before{bottom:14px!important;width:62%!important;height:14px!important}
+  #tower .v6259-fighter.player img{transform:scale(.95)!important}
+  #tower .v6259-fighter.enemy img{transform:scale(.89)!important}
+}

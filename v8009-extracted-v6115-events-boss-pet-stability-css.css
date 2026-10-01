@@ -1,0 +1,108 @@
+
+/* ===== Pet position final authority ===== */
+#character.v514-reference-hero .v514-book-host{
+  display:flex!important;
+  flex-direction:column!important;
+}
+#character.v514-reference-hero .v514-book-host > #v106BookBtn{
+  order:1!important;
+}
+#character.v514-reference-hero .v514-book-host > #v686PetAlbumBtn{
+  order:2!important;
+}
+
+/* ===== Start page: all active events ===== */
+#world.active .v690-events-card{
+  overflow:hidden!important;
+}
+#world.active .v6115-events-list{
+  flex:1 1 auto!important;
+  min-height:0!important;
+  padding:4px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:center!important;
+  gap:3px!important;
+  background:
+    radial-gradient(circle at 70% 25%,rgba(91,225,71,.08),transparent 42%),
+    linear-gradient(180deg,#071109,#030704)!important;
+}
+#world.active .v6115-event-row{
+  min-height:25px!important;
+  display:grid!important;
+  grid-template-columns:20px minmax(0,1fr)!important;
+  align-items:center!important;
+  gap:3px!important;
+  padding:3px 4px!important;
+  border:1px solid #49612d!important;
+  border-radius:6px!important;
+  background:linear-gradient(180deg,#112015,#09110b)!important;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.025)!important;
+}
+#world.active .v6115-event-row.purple{border-color:#79469c!important}
+#world.active .v6115-event-row.cyan{border-color:#248f93!important}
+#world.active .v6115-event-row.gold{border-color:#9a7027!important}
+#world.active .v6115-event-icon{
+  font-size:15px!important;
+  line-height:1!important;
+}
+#world.active .v6115-event-row b{
+  display:block!important;
+  color:#b9ef83!important;
+  font-size:5.5px!important;
+  line-height:1.08!important;
+  text-transform:uppercase!important;
+}
+#world.active .v6115-event-row small{
+  display:block!important;
+  margin-top:1px!important;
+  color:#d5d5c8!important;
+  font-size:4.5px!important;
+  line-height:1.08!important;
+}
+#world.active .v6115-no-events{
+  display:grid!important;
+  place-items:center!important;
+  text-align:center!important;
+  gap:3px!important;
+  color:#cfc8b5!important;
+}
+#world.active .v6115-no-events span{font-size:29px!important}
+#world.active .v6115-no-events b{font-size:6px!important}
+#world.active .v6115-no-events small{font-size:4.7px!important}
+
+/* ===== Worldboss active/open state ===== */
+#world.active .v366-feature.boss.v6115-boss-open{
+  border-color:#42dc5d!important;
+  box-shadow:0 0 14px rgba(77,231,92,.22),inset 0 0 0 1px rgba(108,255,111,.12)!important;
+}
+#world.active .v366-feature.boss.v6115-boss-open>h2{
+  color:#74f684!important;
+}
+#world.active .v366-feature.boss.v6115-boss-open .v6115-boss-status{
+  color:#7df27c!important;
+  font-weight:950!important;
+  text-shadow:0 0 7px rgba(94,239,91,.45)!important;
+}
+#world.active .v366-feature.boss.v6115-boss-open .v366-go{
+  border-color:#53dd62!important;
+  background:linear-gradient(180deg,#278c35,#14591e)!important;
+  box-shadow:inset 0 1px #ffffff30,0 0 10px rgba(67,225,81,.35),0 2px 5px #000!important;
+}
+#world.active .v366-feature.boss.v6115-boss-closed{
+  filter:saturate(.62) brightness(.8)!important;
+}
+#world.active .v366-feature.boss.v6115-boss-closed .v6115-boss-status{
+  color:#a7a79e!important;
+}
+#world.active .v366-feature.boss .v366-go:disabled{
+  opacity:.5!important;
+  cursor:default!important;
+  filter:grayscale(.6)!important;
+}
+
+/* The old calendar artwork is no longer used when the list is present. */
+#world.active .v690-events-card .v690-event-art,
+#world.active .v690-events-card .v690-event-name{
+  display:none!important;
+}

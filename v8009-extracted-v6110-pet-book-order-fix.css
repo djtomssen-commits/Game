@@ -1,0 +1,15 @@
+
+/* V6.110: visual order authority inside the Heldenquartier book host.
+   An older hero rule gave #v106BookBtn order:21, while the Pet button
+   stayed at order:0. That is why Pet appeared above the book despite
+   correct DOM order. */
+#character.v514-reference-hero .v514-book-host{
+  display:grid!important;
+  grid-template-columns:1fr!important;
+}
+#character.v514-reference-hero .v514-book-host > #v106BookBtn{
+  order:1!important;
+}
+#character.v514-reference-hero .v514-book-host > #v686PetAlbumBtn{
+  order:2!important;
+}

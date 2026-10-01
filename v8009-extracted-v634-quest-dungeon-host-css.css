@@ -1,0 +1,20 @@
+
+/* Host only. The actual card/stage/fighter visuals are cloned at runtime from the
+   CURRENT dungeon CSS chain so Quest and Dungeon cannot visually drift apart. */
+#v311QuestFight.v634-dungeon-quest{
+  position:fixed!important;inset:0!important;z-index:12140!important;
+  display:none!important;align-items:flex-start!important;justify-content:center!important;
+  padding:10px 8px max(12px,env(safe-area-inset-bottom))!important;
+  overflow:auto!important;background:rgba(0,0,0,.95)!important;backdrop-filter:blur(7px)!important;
+}
+#v311QuestFight.v634-dungeon-quest.show{display:flex!important}
+#v634QuestDungeonCard{width:min(650px,100%)!important;margin:auto!important;box-sizing:border-box!important}
+#v634QuestDungeonCard .v634-quest-head-kicker{color:#83ef70!important}
+#v634QuestDungeonCard .v575-recommend{max-width:132px!important;text-align:center!important;overflow:hidden!important;text-overflow:ellipsis!important}
+#v634QuestDungeonCard .v253-monster{overflow:visible!important}
+#v634QuestDungeonCard .v634-nebel-svg{width:176px!important;height:222px!important;overflow:visible!important;filter:drop-shadow(0 15px 10px #000e) drop-shadow(0 0 14px rgba(136,79,196,.24))!important}
+#v634QuestDungeonCard.v577-victory .v634-nebel-svg{filter:grayscale(.55) brightness(.55) drop-shadow(0 15px 10px #000e)!important;opacity:.42!important;transform:translateY(16px) rotate(4deg)!important;transition:opacity .45s ease,filter .45s ease,transform .45s ease!important}
+@media(max-width:560px){
+ #v311QuestFight.v634-dungeon-quest{padding:7px 5px max(10px,env(safe-area-inset-bottom))!important}
+ #v634QuestDungeonCard .v634-nebel-svg{width:154px!important;height:202px!important}
+}

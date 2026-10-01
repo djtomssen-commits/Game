@@ -1,0 +1,109 @@
+
+/* Make the V5.10 structure visually match the approved reference much closer. */
+#v510HeroRoot .v510-stage{padding-top:6px!important;padding-bottom:6px!important}
+#v510HeroRoot .v510-layout{align-items:start!important}
+
+/* Dark item cards + rarity border instead of bright full-card fills. */
+#v510HeroRoot .slot{
+  background:
+    radial-gradient(circle at 50% 28%,rgba(91,125,86,.10),transparent 48%),
+    linear-gradient(180deg,#111a13,#050806)!important;
+  box-shadow:inset 0 0 18px #000d,0 3px 8px #000b!important;
+}
+#v510HeroRoot #slot-head{border-color:#d8953f!important}
+#v510HeroRoot #slot-weapon,#v510HeroRoot #slot-weapon2,#v510HeroRoot #slot-ring{border-color:#2d9be8!important}
+#v510HeroRoot #slot-body,#v510HeroRoot #slot-amulet{border-color:#a94fe3!important}
+#v510HeroRoot #slot-boots{border-color:#778a7c!important}
+#v510HeroRoot .slot-icon{
+  background:radial-gradient(circle,rgba(255,255,255,.045),transparent 68%)!important;
+}
+
+/* Portrait: show the complete supplied class artwork instead of zooming into the face. */
+#v510HeroRoot .v510-portrait{
+  height:232px!important;
+  margin-top:0!important;
+}
+#v510HeroRoot .avatar-scene,
+#v510HeroRoot .class-avatar-big{
+  width:218px!important;height:232px!important;min-height:232px!important;
+}
+#v510HeroRoot .class-avatar-big img,
+#v510HeroRoot .v080-class-avatar-img,
+#v510HeroRoot .v41-portrait{
+  width:218px!important;height:232px!important;
+  object-fit:contain!important;
+  object-position:center center!important;
+  transform:none!important;
+}
+
+/* Reference order: name/class -> level -> XP -> book. */
+#v510HeroRoot .center-name{margin-top:0!important}
+#v510HeroRoot .level-shield{margin-top:6px!important}
+#v510HeroRoot .center-xp{
+  order:20!important;
+  margin-top:6px!important;
+}
+#v510HeroRoot #v106BookBtn{
+  order:21!important;
+  margin-top:6px!important;
+}
+
+/* The three secondary systems no longer stretch the hero vertically. */
+#v510HeroRoot .v510-secondary{
+  grid-template-columns:1fr 1fr 1fr!important;
+  gap:4px!important;
+  margin:5px 72px 0!important;
+}
+#v510HeroRoot .v510-secondary>*{
+  min-height:25px!important;
+  height:25px!important;
+  padding:4px 3px!important;
+  white-space:nowrap!important;
+  text-overflow:ellipsis!important;
+}
+#v510HeroRoot .v510-secondary #v492CharGrowBuff .lines,
+#v510HeroRoot .v510-secondary .v492-char-buff .lines{display:none!important}
+#v510HeroRoot .v510-secondary #v492CharGrowBuff .top,
+#v510HeroRoot .v510-secondary .v492-char-buff .top{
+  display:block!important;
+  overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important;
+}
+#v510HeroRoot .v510-secondary #v4156ClassPassive{
+  overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important;
+}
+#v510HeroRoot .v510-secondary #v4156ClassPassive b{
+  display:inline!important;margin:0!important;font-size:6px!important;
+}
+#v510HeroRoot .v510-secondary #v4156ClassPassive br{display:none!important}
+
+/* Pull HP/KP much closer to the hero like the reference. */
+#v510HeroRoot .v510-footer{padding-top:6px!important}
+#v510HeroRoot .v510-stats .combat-box{min-height:54px!important}
+#v510HeroRoot #v459SetSummary{margin-top:5px!important}
+
+/* More ornamental reference-like frame without adding another layout layer. */
+#v510HeroRoot{
+  border-color:#70451f!important;
+  box-shadow:
+    inset 0 0 0 1px #d2a45d55,
+    inset 0 0 32px #0009,
+    0 10px 24px #000b!important;
+}
+#v510HeroRoot .v510-titlebar{
+  height:50px!important;
+  border-bottom-color:#a46d32!important;
+  background:
+    linear-gradient(90deg,transparent 0 8%,rgba(167,103,42,.20) 8% 9%,transparent 9% 91%,rgba(167,103,42,.20) 91% 92%,transparent 92%),
+    linear-gradient(180deg,#34200f,#160d07)!important;
+}
+
+/* Compact phone geometry */
+@media(max-width:390px){
+  #v510HeroRoot .v510-secondary{margin-left:68px!important;margin-right:68px!important}
+  #v510HeroRoot .v510-portrait{height:218px!important}
+  #v510HeroRoot .avatar-scene,
+  #v510HeroRoot .class-avatar-big{width:204px!important;height:218px!important;min-height:218px!important}
+  #v510HeroRoot .class-avatar-big img,
+  #v510HeroRoot .v080-class-avatar-img,
+  #v510HeroRoot .v41-portrait{width:204px!important;height:218px!important}
+}

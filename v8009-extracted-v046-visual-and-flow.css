@@ -1,0 +1,159 @@
+
+/* ===== V4.02 deeper RPG visuals ===== */
+
+/* Stronger scene cards */
+#character .hero-card,
+#dungeon .card,
+#shop .card,
+#quests .card,
+#grow .card{
+  border-color:rgba(92,135,91,.42)!important;
+}
+
+/* Character hero framing */
+#character .character-stage{
+  position:relative!important;
+}
+#character .character-stage:after{
+  content:"";
+  position:absolute;
+  inset:12px;
+  border-radius:18px;
+  border:1px solid rgba(112,158,107,.08);
+  pointer-events:none;
+}
+#character .center-hero{
+  position:relative;
+}
+#character .center-hero:before{
+  content:"";
+  position:absolute;
+  left:50%;top:20px;
+  width:180px;height:180px;
+  transform:translateX(-50%);
+  border-radius:50%;
+  background:radial-gradient(circle,rgba(109,185,88,.14),transparent 68%);
+  filter:blur(3px);
+  pointer-events:none;
+}
+
+/* Inventory rarity plate */
+#inventory .inv-item{
+  border-width:1px!important;
+}
+#inventory .inv-item.epic{
+  background:
+    radial-gradient(circle at 100% 0%,rgba(177,111,239,.10),transparent 36%),
+    linear-gradient(155deg,#191d1b,#0f1511)!important;
+}
+#inventory .inv-item.legendary{
+  background:
+    radial-gradient(circle at 100% 0%,rgba(233,156,54,.11),transparent 36%),
+    linear-gradient(155deg,#1c1a14,#10140f)!important;
+}
+#inventory .inv-item.mythic{
+  background:
+    radial-gradient(circle at 100% 0%,rgba(47,214,211,.11),transparent 36%),
+    linear-gradient(155deg,#151d1d,#0f1513)!important;
+}
+
+/* Battle more cinematic */
+#dungeon .battle-stage{
+  position:relative!important;
+  overflow:hidden!important;
+}
+#dungeon .battle-stage:before{
+  content:"";
+  position:absolute;
+  left:0;right:0;bottom:0;
+  height:82px;
+  background:
+    linear-gradient(180deg,transparent,rgba(5,8,6,.68)),
+    repeating-linear-gradient(90deg,rgba(255,255,255,.015) 0 2px,transparent 2px 44px);
+  pointer-events:none;
+  z-index:1;
+}
+#dungeon .fighter{
+  z-index:3!important;
+}
+#dungeon .fighter-name{
+  background:rgba(7,12,8,.7);
+  border:1px solid rgba(70,96,68,.35);
+  border-radius:999px;
+  padding:4px 7px;
+  display:inline-block;
+}
+#dungeon .hpbar{
+  box-shadow:inset 0 0 8px #0008,0 2px 8px #0005!important;
+}
+#dungeon .hpfill{
+  background:linear-gradient(90deg,#c74643,#ef7868)!important;
+  box-shadow:0 0 10px rgba(239,120,104,.22)!important;
+}
+
+/* Reward / defeat panel */
+#loot .loot{
+  border-radius:13px!important;
+  padding:10px!important;
+  background:linear-gradient(180deg,#18231a,#0e1610)!important;
+  border:1px solid #3a513b!important;
+}
+#loot .loot.good{
+  border-color:#52794f!important;
+  box-shadow:0 0 18px rgba(114,189,90,.10)!important;
+}
+.v046-return-btn{
+  margin-top:10px!important;
+  width:100%!important;
+  min-height:44px!important;
+}
+
+/* Shop sections get stronger merchant look */
+#shop .shop-item{
+  box-shadow:0 8px 18px #0005!important;
+}
+#shop .shop-item:hover{
+  box-shadow:0 12px 24px #0007!important;
+}
+
+/* Quest cards feel like contracts */
+#quests .quest{
+  border-left:3px solid #6a895e!important;
+}
+#quests .quest h3{
+  letter-spacing:-.1px!important;
+}
+
+/* Grow slots */
+#grow .grow-slot{
+  position:relative!important;
+}
+#grow .grow-slot:after{
+  content:"";
+  position:absolute;
+  inset:6px;
+  border:1px solid rgba(109,156,102,.07);
+  border-radius:10px;
+  pointer-events:none;
+}
+
+/* HUD stronger */
+header{
+  backdrop-filter:blur(14px)!important;
+}
+.stat{
+  position:relative;
+}
+.stat:after{
+  content:"";
+  position:absolute;
+  left:5px;right:5px;top:5px;
+  height:1px;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.05),transparent);
+}
+
+/* Mobile */
+@media(max-width:560px){
+  #dungeon .battle-stage{height:360px!important}
+  #character .center-hero:before{width:150px;height:150px}
+}

@@ -1,0 +1,127 @@
+
+/* ===== V4.02 unified in-game notifications/dialogs ===== */
+
+.v063-overlay{
+  position:fixed;
+  inset:0;
+  z-index:30000;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:18px;
+  background:rgba(3,7,4,.78);
+  backdrop-filter:blur(7px);
+}
+.v063-overlay.show{display:flex}
+
+.v063-modal{
+  width:min(92vw,440px);
+  border-radius:18px;
+  border:1px solid #486749;
+  background:
+    radial-gradient(circle at 50% 0%,rgba(126,188,105,.09),transparent 36%),
+    linear-gradient(180deg,#17251a,#0d1510);
+  color:#f2f6ef;
+  box-shadow:0 24px 60px rgba(0,0,0,.62),inset 0 1px rgba(255,255,255,.03);
+  overflow:hidden;
+  animation:v063ModalIn .16s ease-out;
+}
+@keyframes v063ModalIn{
+  from{opacity:0;transform:translateY(5px) scale(.985)}
+  to{opacity:1;transform:none}
+}
+
+.v063-modal-head{
+  padding:14px 15px 10px;
+  border-bottom:1px solid rgba(98,138,94,.16);
+  font-size:16px;
+  font-weight:1000;
+}
+.v063-modal-body{
+  padding:14px 15px;
+  color:#c3cec0;
+  font-size:12px;
+  line-height:1.5;
+  white-space:pre-line;
+}
+.v063-modal-actions{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+  padding:0 15px 15px;
+}
+.v063-modal-actions.single{
+  grid-template-columns:1fr;
+}
+.v063-modal .btn{
+  width:100%;
+  min-height:42px;
+}
+
+.v063-input{
+  width:100%;
+  margin-top:10px;
+  padding:11px 12px;
+  border-radius:11px;
+  border:1px solid #3d593f;
+  background:#0a110c;
+  color:#f1f5ef;
+  font-size:16px;
+  outline:none;
+}
+.v063-input:focus{
+  border-color:#6da45f;
+  box-shadow:0 0 0 2px rgba(109,164,95,.14);
+}
+
+.v063-toast-stack{
+  position:fixed;
+  left:50%;
+  bottom:18px;
+  z-index:31000;
+  transform:translateX(-50%);
+  width:min(92vw,460px);
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  pointer-events:none;
+}
+.v063-toast{
+  border-radius:13px;
+  border:1px solid #486849;
+  padding:11px 13px;
+  background:linear-gradient(180deg,#19291c,#0f1711);
+  color:#f3f7f0;
+  box-shadow:0 14px 32px rgba(0,0,0,.48);
+  font-size:12px;
+  font-weight:850;
+  animation:v063ToastIn .18s ease-out;
+}
+.v063-toast.error{
+  border-color:#8e4f4f;
+  background:linear-gradient(180deg,#352020,#1d1212);
+}
+.v063-toast.warn{
+  border-color:#8e7749;
+  background:linear-gradient(180deg,#302717,#1a160e);
+}
+.v063-toast.success{
+  border-color:#567f54;
+}
+.v063-toast .sub{
+  display:block;
+  margin-top:2px;
+  font-size:9px;
+  font-weight:700;
+  color:#b3c0b1;
+}
+@keyframes v063ToastIn{
+  from{opacity:0;transform:translateY(6px)}
+  to{opacity:1;transform:none}
+}
+
+@media(max-width:420px){
+  .v063-modal-actions{
+    grid-template-columns:1fr;
+  }
+}

@@ -1,0 +1,83 @@
+
+/* ===== V4.02 compact full dropdown ===== */
+
+#v141SettingsMenu{
+  overflow:visible!important;
+  max-height:none!important;
+}
+
+/* Compact rows so the complete menu fits without internal scrolling. */
+#v141SettingsMenu .v141-settings-head{
+  padding:9px 10px!important;
+}
+
+#v141SettingsMenu .v141-setting-row{
+  padding:8px 10px!important;
+  min-height:44px!important;
+  gap:8px!important;
+}
+
+#v141SettingsMenu .v141-setting-icon{
+  font-size:16px!important;
+}
+
+#v141SettingsMenu .v141-setting-copy b{
+  font-size:8px!important;
+}
+
+#v141SettingsMenu .v141-setting-copy span{
+  font-size:6px!important;
+  line-height:1.25!important;
+}
+
+#v141SettingsMenu .v141-account-box{
+  margin:7px 9px!important;
+  padding:7px 9px!important;
+}
+
+#v141SettingsMenu .v141-settings-actions{
+  display:grid!important;
+  grid-template-columns:1fr 1fr!important;
+  gap:7px!important;
+  margin:8px 9px!important;
+  padding:0!important;
+  border-top:0!important;
+  background:transparent!important;
+}
+
+#v141SettingsMenu #v141Logout,
+#v141SettingsMenu #v141Delete{
+  min-height:38px!important;
+  padding:7px 8px!important;
+  font-size:7px!important;
+  margin:0!important;
+}
+
+#v141SettingsMenu .v141-version-line{
+  padding:5px 9px 7px!important;
+  font-size:6px!important;
+}
+
+@media(max-width:700px){
+  #v141SettingsMenu.open{
+    position:fixed!important;
+
+    /* Dropdown under the header, not a full-screen sheet. */
+    top:78px!important;
+    right:8px!important;
+    left:auto!important;
+    bottom:auto!important;
+
+    width:min(330px,calc(100vw - 16px))!important;
+    max-width:calc(100vw - 16px)!important;
+
+    max-height:none!important;
+    height:auto!important;
+
+    overflow:visible!important;
+
+    padding-bottom:0!important;
+    border-radius:14px!important;
+    transform:none!important;
+  }
+}

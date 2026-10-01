@@ -1,0 +1,77 @@
+
+/* ===== V4.02 FIX: visible 20-dungeon map + reliable tap targets ===== */
+
+.v065-worldmap-card{
+  min-height:900px!important;
+  background:
+    linear-gradient(180deg,rgba(6,10,7,.18),rgba(5,8,6,.50) 48%,rgba(4,7,5,.82)),
+    linear-gradient(90deg,rgba(7,12,8,.50),rgba(7,12,8,.12) 45%,rgba(7,12,8,.42)),
+    url("assets/v7195-base64/68796abdcb8ea72846cb.webp") center/cover no-repeat!important;
+}
+
+.v065-worldmap-card:before{
+  pointer-events:none!important;
+  z-index:1!important;
+  background:
+    radial-gradient(circle at 20% 18%,rgba(82,132,67,.17),transparent 28%),
+    radial-gradient(circle at 82% 76%,rgba(146,66,41,.14),transparent 28%),
+    linear-gradient(180deg,transparent 0 70%,rgba(0,0,0,.18))!important;
+}
+
+.v065-worldmap-head,
+.v065-dungeon-world,
+.v065-world-info{
+  position:relative!important;
+  z-index:3!important;
+}
+
+.v065-dungeon-world{
+  height:730px!important;
+}
+
+.v065-world-path{
+  z-index:1!important;
+  height:4px!important;
+  background:repeating-linear-gradient(
+    90deg,
+    rgba(223,203,151,.86) 0 7px,
+    transparent 7px 14px
+  )!important;
+  filter:drop-shadow(0 2px 2px #000)!important;
+}
+
+.v065-dungeon-node{
+  z-index:5!important;
+  pointer-events:auto!important;
+  touch-action:manipulation!important;
+  -webkit-tap-highlight-color:transparent!important;
+}
+
+.v065-dungeon-node.current,
+.v065-dungeon-node.available{
+  cursor:pointer!important;
+}
+
+.v065-dungeon-node.current{
+  background:
+    radial-gradient(circle at 40% 30%,#436633,#15200f 68%,#090d08)!important;
+  border-color:#d8af52!important;
+}
+
+.v065-dungeon-node.locked{
+  pointer-events:auto!important;
+}
+
+.v065-dungeon-node .v065-name{
+  pointer-events:none!important;
+}
+
+@media(max-width:650px){
+  .v065-worldmap-card{
+    min-height:1000px!important;
+    background-position:center top!important;
+  }
+  .v065-dungeon-world{
+    height:865px!important;
+  }
+}

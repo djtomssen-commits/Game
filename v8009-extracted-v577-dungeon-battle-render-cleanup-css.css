@@ -1,0 +1,51 @@
+
+/* Remove the legacy equipped-weapon overlay that can remain centered over the
+   portrait after an attack animation. The actual character artwork stays. */
+#dungeonBattleCard.v575-combat .v253-equipped-weapon,
+#dungeonBattleCard.v575-combat .v253-weapon-trail,
+#dungeonBattleCard.v575-combat .v252-weapon{
+  display:none!important;
+  opacity:0!important;
+  visibility:hidden!important;
+  animation:none!important;
+}
+
+/* Long dungeon names must be readable instead of ending in an ellipsis. */
+#dungeonBattleCard.v575-combat .v575-title{
+  white-space:normal!important;
+  overflow:visible!important;
+  text-overflow:clip!important;
+  display:-webkit-box!important;
+  -webkit-box-orient:vertical!important;
+  -webkit-line-clamp:2!important;
+  line-clamp:2!important;
+  max-height:2.25em!important;
+  line-height:1.08!important;
+}
+#dungeonBattleCard.v575-combat .v575-head-main{min-width:0!important;overflow:hidden!important}
+
+/* Explicit result state: the round chip no longer looks like an active round
+   after the fight has already ended. */
+#dungeonBattleCard.v575-combat.v577-defeat .v575-round{
+  color:#ff9c98!important;
+  border-color:#8f4545!important;
+  background:#240809ee!important;
+  box-shadow:0 0 16px rgba(211,65,65,.16)!important;
+}
+#dungeonBattleCard.v575-combat.v577-victory .v575-round{
+  color:#9dff8b!important;
+  border-color:#4b8a43!important;
+  background:#071b08ee!important;
+  box-shadow:0 0 16px rgba(85,220,72,.18)!important;
+}
+#dungeonBattleCard.v575-combat.v577-defeat .battle-stage{
+  box-shadow:inset 0 0 76px #000f,0 8px 21px #000a!important;
+}
+#dungeonBattleCard.v575-combat.v577-victory .battle-stage{
+  box-shadow:inset 0 0 64px #000d,0 0 22px rgba(84,210,75,.14)!important;
+}
+
+@media(max-width:560px){
+  #dungeonBattleCard.v575-combat .v575-title{font-size:10.4px!important;max-height:2.35em!important}
+  #dungeonBattleCard.v575-combat .v575-head{align-items:start!important}
+}

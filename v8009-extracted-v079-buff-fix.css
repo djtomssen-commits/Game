@@ -1,0 +1,86 @@
+
+/* ===== V4.02 buff portrait effect ===== */
+
+#character .v079-buff-host{
+  position:relative!important;
+  overflow:visible!important;
+}
+
+#character .v079-buff-fx{
+  position:absolute;
+  inset:-10px;
+  z-index:40;
+  pointer-events:none;
+  border-radius:22px;
+  overflow:hidden;
+  mix-blend-mode:screen;
+}
+
+#character .v079-buff-fx:before,
+#character .v079-buff-fx:after{
+  content:"";
+  position:absolute;
+  inset:-18%;
+  background-image:
+    radial-gradient(circle,#fff 0 1.4px,transparent 2.2px),
+    radial-gradient(circle,#ffe17b 0 1.7px,transparent 2.6px),
+    radial-gradient(circle,#bfffa8 0 1.2px,transparent 2px);
+  background-size:34px 30px,48px 42px,59px 51px;
+  animation:v079SparkleA 1.8s linear infinite;
+  filter:drop-shadow(0 0 5px rgba(255,225,123,.9));
+  opacity:.92;
+}
+
+#character .v079-buff-fx:after{
+  animation:v079SparkleB 2.5s linear infinite;
+  opacity:.58;
+  transform:rotate(12deg);
+}
+
+@keyframes v079SparkleA{
+  0%{background-position:0 30px,15px 0,8px 22px;opacity:.2}
+  45%{opacity:1}
+  100%{background-position:34px -6px,63px -42px,67px -29px;opacity:.25}
+}
+
+@keyframes v079SparkleB{
+  0%{background-position:20px 0,0 25px,18px 4px}
+  100%{background-position:-28px 44px,48px -18px,-41px 55px}
+}
+
+#character .v079-buff-ring{
+  position:absolute;
+  inset:-4px;
+  z-index:39;
+  pointer-events:none;
+  border-radius:22px;
+  border:1px solid rgba(241,198,91,.75);
+  box-shadow:
+    0 0 14px rgba(241,198,91,.55),
+    inset 0 0 20px rgba(241,198,91,.18);
+  animation:v079Pulse 1.6s ease-in-out infinite;
+}
+
+@keyframes v079Pulse{
+  0%,100%{opacity:.5;transform:scale(.995)}
+  50%{opacity:1;transform:scale(1.015)}
+}
+
+#character .v079-buff-label{
+  position:absolute;
+  left:50%;
+  bottom:8px;
+  transform:translateX(-50%);
+  z-index:45;
+  max-width:90%;
+  white-space:nowrap;
+  padding:5px 9px;
+  border-radius:999px;
+  border:1px solid #9c7938;
+  background:rgba(18,14,7,.94);
+  color:#f1ce78;
+  font-size:7px;
+  font-weight:1000;
+  box-shadow:0 0 12px rgba(219,161,59,.4);
+  pointer-events:none;
+}

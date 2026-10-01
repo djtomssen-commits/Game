@@ -1,0 +1,52 @@
+
+/* V4.02: always above reward dialogs / overlays */
+.v102-levelup-overlay{
+  position:fixed;
+  inset:0;
+  z-index:999999;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:18px;
+  background:rgba(4,7,4,.64);
+  backdrop-filter:blur(4px);
+  pointer-events:none;
+  animation:v102Fade .25s ease forwards;
+}
+.v102-levelup-card{
+  width:min(88vw,360px);
+  padding:24px 18px 20px;
+  border-radius:20px;
+  border:1px solid #b18b37;
+  background:
+    radial-gradient(circle at 50% 0%,rgba(255,220,91,.23),transparent 43%),
+    linear-gradient(180deg,#241a09,#10120d);
+  box-shadow:0 25px 70px #000d,0 0 35px rgba(255,202,58,.32);
+  text-align:center;
+  animation:v102Pop .32s cubic-bezier(.2,.9,.3,1.25);
+}
+.v102-levelup-title{
+  font-size:30px;
+  font-weight:1000;
+  color:#ffe173;
+  text-shadow:0 0 9px #ffc83c,0 0 22px rgba(255,199,52,.75);
+}
+.v102-levelup-level{
+  margin-top:8px;
+  font-size:19px;
+  font-weight:1000;
+  color:#f6f7f1;
+}
+.v102-levelup-reward{
+  margin-top:9px;
+  font-size:11px;
+  color:#cbd4c6;
+}
+@keyframes v102Pop{
+  from{opacity:0;transform:scale(.72)}
+  to{opacity:1;transform:scale(1)}
+}
+@keyframes v102Fade{
+  from{opacity:0}
+  to{opacity:1}
+}

@@ -1,0 +1,35 @@
+
+/* Hauptattribut-Label: weg vom Plus-Button und sauber mittig über der Zeile */
+.stat-main, .main-stat, [data-main-stat="true"] {
+  position: relative;
+}
+
+/* vorhandenes HAUPTATTRIBUT-Badge gezielt nach links/mittig ziehen */
+.main-attribute-badge,
+.mainAttrBadge,
+.main-attr-badge,
+.primary-attribute-badge,
+.hauptattribut-badge {
+  position: absolute !important;
+  right: 92px !important;
+  top: 8px !important;
+  z-index: 2 !important;
+  pointer-events: none !important;
+  white-space: nowrap !important;
+}
+
+/* Falls das Badge im aktuellen Build über Klassen/Attribute anders erzeugt wird */
+.stat-row .main-badge,
+.stat-row [class*="main"][class*="badge"],
+.stat-row [class*="haupt"] {
+  right: 92px !important;
+  max-width: 120px !important;
+}
+
+/* Plus-Button bekommt seinen eigenen freien Bereich */
+.stat-row button,
+.stat-row .plus,
+.stat-row .stat-plus {
+  position: relative;
+  z-index: 3;
+}

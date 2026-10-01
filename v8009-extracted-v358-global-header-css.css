@@ -1,0 +1,178 @@
+
+/* Hide the old resource-card presentation, but keep its live elements in DOM.
+   We move the live value elements into our new compact header via JS. */
+.app > header{
+  display:block!important;
+  position:sticky!important;
+  top:0!important;
+  z-index:1800!important;
+  min-height:0!important;
+  height:auto!important;
+  margin:0!important;
+  padding:0!important;
+  background:#020704!important;
+  border:0!important;
+  box-shadow:none!important;
+}
+.app > header > :not(.v358-global-header){
+  display:none!important;
+}
+
+.v358-global-header{
+  position:relative;
+  display:grid;
+  grid-template-columns:54px minmax(105px,1.25fr) repeat(3,minmax(0,1fr));
+  gap:6px;
+  align-items:center;
+  width:100%;
+  min-height:64px;
+  padding:7px 8px;
+  box-sizing:border-box;
+  background:
+    radial-gradient(circle at 23% 0%,rgba(94,214,52,.09),transparent 28%),
+    linear-gradient(180deg,rgba(3,10,5,.99),rgba(2,7,4,.99));
+  border-bottom:1px solid rgba(121,150,42,.42);
+  box-shadow:0 8px 24px rgba(0,0,0,.56);
+  backdrop-filter:blur(10px);
+}
+.v358-menu{
+  width:50px;height:50px;
+  border:1px solid #5a782e;
+  border-radius:12px;
+  background:linear-gradient(180deg,#15231a,#081109);
+  color:#fff;
+  font-size:27px;
+  font-weight:900;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 7px 18px rgba(0,0,0,.46),inset 0 0 15px rgba(117,204,71,.05);
+}
+.v358-logo{
+  min-width:0;
+  line-height:.82;
+  text-align:left;
+}
+.v358-logo strong{
+  display:block;
+  font-family:Georgia,"Times New Roman",serif;
+  font-size:21px;
+  color:#8ee14a;
+  text-transform:uppercase;
+  text-shadow:0 2px 0 #2c4b17,0 0 13px rgba(122,218,65,.12);
+  white-space:nowrap;
+}
+.v358-logo span{
+  display:block;
+  margin-left:13px;
+  font-family:Georgia,"Times New Roman",serif;
+  font-size:11px;
+  color:#d1a44f;
+  font-weight:1000;
+  text-transform:uppercase;
+}
+.v358-res{
+  min-width:0;
+  min-height:46px;
+  padding:5px 4px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  border:1px solid #545d22;
+  border-radius:9px;
+  background:
+    radial-gradient(circle at 50% 5%,rgba(255,255,255,.04),transparent 44%),
+    linear-gradient(180deg,#11170c,#070c07);
+  box-shadow:inset 0 0 15px rgba(103,154,37,.03);
+}
+.v358-res small{
+  font-size:5.8px;
+  color:#98a091;
+  line-height:1;
+  text-transform:uppercase;
+  letter-spacing:.05em;
+}
+.v358-res b{
+  display:block;
+  width:100%;
+  margin-top:4px;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  text-align:center;
+  font-size:10px;
+  line-height:1;
+  color:#fff;
+}
+.v358-res.gold b{color:#f4d36d}
+.v358-res.harz b{color:#d184ff}
+.v358-res.dampf b{color:#8fe9ff}
+
+.v358-subbar{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+  width:100%;
+  padding:4px 10px 5px 70px;
+  box-sizing:border-box;
+  background:rgba(2,7,4,.97);
+  border-bottom:1px solid rgba(120,148,42,.22);
+}
+.v358-version{
+  padding:3px 7px;
+  border:1px solid #2f7978;
+  border-radius:999px;
+  background:rgba(5,49,50,.38);
+  color:#9deef1;
+  font-size:6.5px;
+  font-weight:1000;
+}
+.v358-power{
+  color:#aab0a6;
+  font-size:7px;
+}
+.v358-power b{
+  margin-left:4px;
+  color:#f0b342;
+  font-size:10px;
+}
+.v358-settings{
+  border:1px solid #465841;
+  border-radius:999px;
+  background:rgba(8,17,10,.82);
+  color:#d7ddd4;
+  padding:4px 8px;
+  font-size:7px;
+  font-weight:800;
+}
+
+#v032TopMenu{
+  z-index:3000!important;
+}
+#v032TopMenu > #v032MenuBtn,
+#v032MenuBtn{
+  display:none!important;
+}
+#v032MenuPanel{
+  top:70px!important;
+  left:8px!important;
+}
+
+/* Header is global across all game screens. */
+#world .v351-topbar{display:none!important}
+
+@media(max-width:599px){
+  .v358-global-header{
+    grid-template-columns:52px minmax(104px,1.18fr) repeat(3,minmax(0,1fr));
+    gap:5px;
+    min-height:61px;
+    padding:6px 6px;
+  }
+  .v358-menu{width:48px;height:48px;font-size:25px}
+  .v358-logo strong{font-size:18px}
+  .v358-logo span{font-size:9px;margin-left:10px}
+  .v358-res{min-height:42px;padding:4px 3px}
+  .v358-res small{font-size:5.2px}
+  .v358-res b{font-size:8.6px}
+  .v358-subbar{padding-left:65px}
+}

@@ -1,0 +1,256 @@
+
+/* ---------------------------------------------------------
+   GLOBAL GAME CHROME
+   The existing live header remains the data owner for Gold,
+   Dampf, Harz and combat power. We only restyle it.
+   --------------------------------------------------------- */
+
+/* V4.02 hid the real header on the World screen. Restore it everywhere. */
+body .app > header,
+body:has(#world.active) .app > header{
+  display:block!important;
+  position:sticky!important;
+  top:0!important;
+  z-index:1500!important;
+  margin:0!important;
+  padding:8px 8px 8px 68px!important;
+  min-height:0!important;
+  background:
+    radial-gradient(circle at 23% 0%,rgba(104,218,55,.09),transparent 28%),
+    linear-gradient(180deg,rgba(3,9,5,.985),rgba(2,7,4,.985))!important;
+  border:0!important;
+  border-bottom:1px solid rgba(129,157,43,.42)!important;
+  box-shadow:0 9px 26px rgba(0,0,0,.56)!important;
+  backdrop-filter:blur(10px)!important;
+}
+
+/* V4.02's world-only duplicate resource bar is no longer needed. */
+#world .v351-topbar{
+  display:none!important;
+}
+
+/* The original hamburger is now the single global menu control. */
+#v032TopMenu{
+  z-index:2600!important;
+}
+#v032TopMenu > #v032MenuBtn,
+#v032MenuBtn,
+body:has(#world.active) #v032TopMenu > #v032MenuBtn,
+body:has(#world.active) #v032MenuBtn{
+  display:flex!important;
+  position:fixed!important;
+  top:8px!important;
+  left:8px!important;
+  width:52px!important;
+  height:52px!important;
+  align-items:center!important;
+  justify-content:center!important;
+  border:1px solid #5b792e!important;
+  border-radius:13px!important;
+  background:linear-gradient(180deg,#15241a,#081109)!important;
+  color:#fff!important;
+  font-size:27px!important;
+  box-shadow:0 7px 20px rgba(0,0,0,.5),inset 0 0 17px rgba(112,207,66,.05)!important;
+}
+#v032MenuPanel{
+  top:66px!important;
+  left:8px!important;
+  max-height:calc(100vh - 78px)!important;
+  overflow:auto!important;
+  border:1px solid #41643a!important;
+  background:linear-gradient(180deg,rgba(8,18,11,.985),rgba(3,9,5,.99))!important;
+  box-shadow:0 18px 45px rgba(0,0,0,.68)!important;
+}
+
+/* Compact logo / version / power strip. */
+.app > header .brand{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) auto!important;
+  grid-template-areas:
+    "logo version"
+    "power power"!important;
+  align-items:center!important;
+  gap:2px 7px!important;
+  min-height:0!important;
+  margin:0 0 7px!important;
+  padding:0!important;
+}
+.app > header .brand h1{
+  grid-area:logo!important;
+  margin:0!important;
+  font-family:Georgia,"Times New Roman",serif!important;
+  font-size:20px!important;
+  line-height:.95!important;
+  color:#8ee24b!important;
+  text-transform:uppercase!important;
+  text-shadow:0 2px 0 #284815,0 0 14px rgba(114,215,61,.13)!important;
+}
+.app > header .brand .version{
+  grid-area:version!important;
+  align-self:start!important;
+  padding:4px 8px!important;
+  border:1px solid #2e7a77!important;
+  border-radius:999px!important;
+  background:rgba(4,45,47,.44)!important;
+  color:#9ceff1!important;
+  font-size:7px!important;
+  font-weight:1000!important;
+  white-space:nowrap!important;
+}
+.app > header .brand .power{
+  grid-area:power!important;
+  justify-self:end!important;
+  margin:0!important;
+  padding:0!important;
+  color:#aeb5aa!important;
+  font-size:7px!important;
+}
+.app > header .brand .power b{
+  display:inline!important;
+  margin-left:5px!important;
+  color:#f0b343!important;
+  font-size:12px!important;
+}
+
+/* Exactly Gold / Harz / Dampf in the new UI. Skill remains in Character, not top chrome. */
+.app > header .stats.resource-stats{
+  display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:5px!important;
+  width:100%!important;
+}
+.app > header .stats.resource-stats > .stat:nth-child(2){
+  display:none!important;
+}
+.app > header .stats.resource-stats > .stat{
+  min-width:0!important;
+  min-height:46px!important;
+  margin:0!important;
+  padding:6px 5px!important;
+  border:1px solid #545e23!important;
+  border-radius:10px!important;
+  background:
+    radial-gradient(circle at 50% 15%,rgba(255,255,255,.045),transparent 45%),
+    linear-gradient(180deg,#11170c,#070c07)!important;
+  box-shadow:inset 0 0 17px rgba(98,149,36,.03)!important;
+  color:#8f9a8b!important;
+  text-align:center!important;
+  font-size:6px!important;
+  letter-spacing:.05em!important;
+  text-transform:uppercase!important;
+}
+.app > header .stats.resource-stats > .stat b{
+  display:block!important;
+  margin-top:3px!important;
+  color:#fff!important;
+  font-size:11px!important;
+  line-height:1!important;
+  white-space:nowrap!important;
+}
+.app > header .stats.resource-stats > .stat:first-child b::before{
+  content:"🪙 ";
+}
+.app > header #energy{
+  color:#8de9ff!important;
+}
+.app > header #energy::before{
+  content:"💨 ";
+}
+.app > header .harz-stat{
+  display:flex!important;
+  min-height:46px!important;
+  flex-direction:column!important;
+  justify-content:center!important;
+  padding:6px 5px!important;
+  border:1px solid #63502d!important;
+  border-radius:10px!important;
+  background:linear-gradient(180deg,#16110b,#090806)!important;
+}
+.app > header .v280-harz-label{
+  color:#ab9bb6!important;
+  font-size:6px!important;
+  letter-spacing:.05em!important;
+}
+.app > header .v280-harz-value{
+  margin:3px 0 0!important;
+  color:#cf84ff!important;
+  font-size:11px!important;
+}
+.app > header .v280-harz-value::before{
+  content:"💎 ";
+}
+.app > header .v280-harz-sub{
+  display:none!important;
+}
+
+/* ---------------------------------------------------------
+   SHARED VISUAL LANGUAGE FOR ALL NON-WORLD GAME PAGES
+   Do not replace internal layouts or handlers.
+   --------------------------------------------------------- */
+#character,#grow,#quests,#dungeon,#shop,#pvp,#guild,#hall,#friends,#admin,#harzDealer{
+  min-height:calc(100vh - 118px)!important;
+  padding:10px 8px 22px!important;
+  background:
+    radial-gradient(circle at 86% 5%,rgba(88,183,48,.08),transparent 26%),
+    radial-gradient(circle at 12% 34%,rgba(76,151,48,.045),transparent 23%),
+    linear-gradient(180deg,#030905 0%,#061009 58%,#020704 100%)!important;
+}
+
+#character .card,#grow .card,#quests .card,#dungeon .card,#shop .card,
+#pvp .card,#guild .card,#hall .card,#friends .card,#admin .card,
+#character .hero-card,#grow .hero-card,#quests .hero-card,#dungeon .hero-card,
+#shop .hero-card,#pvp .hero-card,#guild .hero-card,#hall .hero-card,#friends .hero-card{
+  border-color:rgba(83,122,57,.48)!important;
+  background:
+    radial-gradient(circle at 88% 0%,rgba(93,188,56,.055),transparent 28%),
+    linear-gradient(155deg,rgba(13,27,17,.98),rgba(4,11,7,.99))!important;
+  box-shadow:0 13px 34px rgba(0,0,0,.48),inset 0 1px rgba(255,255,255,.025)!important;
+}
+
+#character .section-title,#grow .section-title,#quests .section-title,#dungeon .section-title,
+#shop .section-title,#pvp .section-title,#guild .section-title,#hall .section-title,
+#friends .section-title,#admin .section-title{
+  border-bottom:1px solid rgba(117,163,90,.13)!important;
+}
+#character .section-title h2,#character .section-title h3,
+#grow .section-title h2,#grow .section-title h3,
+#quests .section-title h2,#quests .section-title h3,
+#dungeon .section-title h2,#dungeon .section-title h3,
+#shop .section-title h2,#shop .section-title h3,
+#pvp .section-title h2,#pvp .section-title h3,
+#guild .section-title h2,#guild .section-title h3,
+#hall .section-title h2,#hall .section-title h3,
+#friends .section-title h2,#friends .section-title h3{
+  color:#eef5e9!important;
+  text-shadow:0 0 13px rgba(109,207,70,.09)!important;
+}
+
+#character .btn,#grow .btn,#quests .btn,#dungeon .btn,#shop .btn,#pvp .btn,
+#guild .btn,#hall .btn,#friends .btn,#admin .btn,
+#character button:not(.v032MenuBtn),#grow button:not(.v032MenuBtn),
+#quests button:not(.v032MenuBtn),#dungeon button:not(.v032MenuBtn),
+#shop button:not(.v032MenuBtn),#pvp button:not(.v032MenuBtn),
+#guild button:not(.v032MenuBtn),#hall button:not(.v032MenuBtn),
+#friends button:not(.v032MenuBtn){
+  border-radius:9px;
+}
+
+/* Harz Dealer keeps its own purple/gold premium page from V4.02. */
+#harzDealer{
+  padding-top:10px!important;
+}
+
+/* Mobile: header should stay compact instead of growing vertically. */
+@media(max-width:599px){
+  body .app > header,
+  body:has(#world.active) .app > header{
+    padding:7px 7px 7px 66px!important;
+  }
+  .app > header .brand h1{
+    font-size:18px!important;
+  }
+  .app > header .stats.resource-stats > .stat,
+  .app > header .harz-stat{
+    min-height:42px!important;
+  }
+}

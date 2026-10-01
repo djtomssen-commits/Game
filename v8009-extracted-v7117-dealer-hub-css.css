@@ -1,0 +1,32 @@
+
+#harzDealer .v7117-dealer-hub,#goldShop .v7117-dealer-hub{
+  position:relative;z-index:30;max-width:1020px;margin:12px auto 0;padding:11px 12px 10px;
+  border:1px solid #68502a;border-radius:15px;background:linear-gradient(180deg,#102016,#09110c);
+  box-shadow:0 10px 28px #0008,inset 0 0 26px rgba(118,185,67,.04)
+}
+#harzDealer .v7117-hub-title,#goldShop .v7117-hub-title{display:flex;align-items:center;gap:9px;margin-bottom:9px}
+#harzDealer .v7117-hub-emblem,#goldShop .v7117-hub-emblem{
+  width:38px;height:38px;display:grid;place-items:center;border:1px solid #6d7d38;border-radius:10px;
+  background:#0a1b10;font-size:21px;box-shadow:inset 0 0 15px rgba(86,204,70,.10)
+}
+#harzDealer .v7117-hub-copy,#goldShop .v7117-hub-copy{min-width:0}
+#harzDealer .v7117-hub-copy small,#goldShop .v7117-hub-copy small{display:block;color:#79c765;font-size:6px;font-weight:1000;letter-spacing:1.15px;text-transform:uppercase}
+#harzDealer .v7117-hub-copy b,#goldShop .v7117-hub-copy b{display:block;color:#f0d88b;font:1000 19px Georgia,serif;line-height:1.1;text-shadow:0 2px #000}
+#harzDealer .v7117-tabs,#goldShop .v7117-tabs{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+#harzDealer .v7117-tab,#goldShop .v7117-tab{
+  min-height:39px;border:1px solid #3f523a;border-radius:10px;background:linear-gradient(180deg,#132219,#0b150f);
+  color:#9aa699;font-size:9px;font-weight:1000;cursor:pointer
+}
+#harzDealer .v7117-tab.active,#goldShop .v7117-tab.active{
+  border-color:#6fba50;background:linear-gradient(180deg,#27552b,#17361d);color:#ecf6e8;box-shadow:0 0 15px rgba(87,189,74,.12)
+}
+#goldShop .v7117-tab[data-v7117-tab="gold"].active{border-color:#c49736;background:linear-gradient(180deg,#5a4318,#34270e);color:#ffe6a0;box-shadow:0 0 15px rgba(226,181,66,.12)}
+/* The shared hub owns the page title now; keep the existing Harz artwork/content below it. */
+#harzDealer .v567-titlebar{display:none!important}
+#harzDealer .v567-shell{margin-top:8px!important}
+#goldShop{padding-top:0!important}
+@media(max-width:520px){
+  #harzDealer .v7117-dealer-hub,#goldShop .v7117-dealer-hub{margin:8px 10px 0;padding:9px}
+  #harzDealer .v7117-hub-copy b,#goldShop .v7117-hub-copy b{font-size:17px}
+  #harzDealer .v7117-tab,#goldShop .v7117-tab{min-height:37px;font-size:8px}
+}

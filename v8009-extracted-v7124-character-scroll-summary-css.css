@@ -1,0 +1,49 @@
+
+/* Samsung/Android compositor stability: the old V5.31 fix was later undone by
+   visual polish that reintroduced transform/filter on the live portrait. Keep
+   the character art in the normal paint flow so scrolling cannot drop half of it. */
+#character.v514-reference-hero #v510HeroRoot .v510-center,
+#character.v514-reference-hero #v510HeroRoot .v510-portrait,
+#character.v514-reference-hero #v510HeroRoot .avatar-scene,
+#character.v514-reference-hero #v510HeroRoot .class-avatar-big,
+#character.v514-reference-hero #v510HeroRoot .v41-portrait{
+  visibility:visible!important;
+  opacity:1!important;
+  transform:none!important;
+  -webkit-transform:none!important;
+  filter:none!important;
+  -webkit-filter:none!important;
+  contain:none!important;
+  content-visibility:visible!important;
+  will-change:auto!important;
+  backface-visibility:visible!important;
+  -webkit-backface-visibility:visible!important;
+}
+#character.v514-reference-hero #v510HeroRoot .v080-class-avatar-img,
+#character.v514-reference-hero #v510HeroRoot .class-avatar-big img,
+#character.v514-reference-hero #v510HeroRoot .v41-portrait img{
+  display:block!important;
+  visibility:visible!important;
+  opacity:1!important;
+  transform:none!important;
+  -webkit-transform:none!important;
+  filter:none!important;
+  -webkit-filter:none!important;
+  -webkit-mask-image:none!important;
+  mask-image:none!important;
+  clip-path:none!important;
+  contain:none!important;
+  content-visibility:visible!important;
+  will-change:auto!important;
+  backface-visibility:visible!important;
+  -webkit-backface-visibility:visible!important;
+}
+/* The set/talent line has one stable geometry from the first visible frame. */
+#character.v514-reference-hero #v459SetSummary{
+  contain:layout style!important;
+}
+/* V7.207: lower Heldenquartier sections are not part of the first interactive
+   frame. Chromium can skip their style/paint work until they approach the
+   viewport; intrinsic sizes keep scroll geometry stable while they are skipped. */
+#character > .card{content-visibility:auto;contain-intrinsic-size:auto 360px}
+#character > .card:last-child{contain-intrinsic-size:auto 900px}

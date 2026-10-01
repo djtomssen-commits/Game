@@ -1,0 +1,20 @@
+
+/* One map visual owner: direct background image + nodes/path. Historical tint layer
+   was useful when the background lived in CSS, but now adds a second full-screen paint. */
+#dungeonMapCard.gl-dungeon-canonical-map .v261-bg,
+#dungeonMapCard.gl-dungeon-canonical-map .v261-fx{display:none!important;background:none!important}
+#dungeonMapCard.gl-dungeon-canonical-map .gl-dungeon-map-bg-img{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;object-fit:cover!important;object-position:center!important;z-index:0!important;pointer-events:none!important}
+#dungeonMapCard.gl-dungeon-canonical-map .v261-road{z-index:1!important}
+#dungeonMapCard.gl-dungeon-canonical-map .v261-node,#dungeonMapCard.gl-dungeon-canonical-map .v261-signboard{z-index:2!important}
+
+/* Current character art is rectangular source artwork. Feather its outer image
+   background into the arena so the fight no longer reads as two rectangular cards. */
+.v7141-cinematic-arena .fighter-avatar img,
+.v7141-cinematic-arena .v209-avatar img,
+.v7141-cinematic-arena .vT-fighter img{
+  border-radius:42% 42% 24% 24% / 22% 22% 18% 18%!important;
+  -webkit-mask-image:radial-gradient(ellipse 49% 56% at 50% 48%,#000 0 58%,rgba(0,0,0,.96) 70%,rgba(0,0,0,.45) 84%,transparent 100%)!important;
+  mask-image:radial-gradient(ellipse 49% 56% at 50% 48%,#000 0 58%,rgba(0,0,0,.96) 70%,rgba(0,0,0,.45) 84%,transparent 100%)!important;
+}
+.v7141-cinematic-arena>.v602-duel-panel,.v7141-cinematic-arena>.v602-side-decor,
+.v7141-cinematic-arena .v602-duel-panel,.v7141-cinematic-arena .v602-side-decor{display:none!important}

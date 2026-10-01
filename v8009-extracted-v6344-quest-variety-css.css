@@ -1,0 +1,63 @@
+
+#quests .v386-card .v386-scene-art{
+  overflow:hidden!important;
+  background-color:#08100a!important;
+}
+#quests .v386-card .v386-scene-art::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:1;
+  pointer-events:none;
+  background:
+    linear-gradient(90deg,rgba(3,8,5,.82) 0%,rgba(3,8,5,.48) 45%,rgba(3,8,5,.08) 72%),
+    linear-gradient(180deg,rgba(3,7,5,.03) 0%,rgba(3,7,5,.08) 45%,rgba(3,7,5,.92) 100%);
+}
+#quests .v386-card .v6344-card-enemy{
+  position:absolute!important;
+  right:-3%!important;
+  bottom:-10px!important;
+  z-index:1!important;
+  width:48%!important;
+  height:94%!important;
+  max-width:210px!important;
+  object-fit:contain!important;
+  object-position:center bottom!important;
+  transform:translate(var(--v7193-qx,0),var(--v7193-qy,0)) scale(var(--v7193-qs,1.08))!important;
+  transform-origin:center bottom!important;
+  filter:drop-shadow(0 14px 10px rgba(0,0,0,.92)) drop-shadow(0 0 12px rgba(108,230,86,.14))!important;
+  pointer-events:none!important;
+  -webkit-mask-image:radial-gradient(ellipse 76% 88% at 50% 54%,#000 0 60%,rgba(0,0,0,.94) 73%,rgba(0,0,0,.45) 86%,transparent 100%)!important;
+  mask-image:radial-gradient(ellipse 76% 88% at 50% 54%,#000 0 60%,rgba(0,0,0,.94) 73%,rgba(0,0,0,.45) 86%,transparent 100%)!important;
+}
+
+/* V7.193: only quest enemy art. Each enemy gets its own framing; no quest mechanics change. */
+#quests .v386-card .v6344-card-enemy[data-v7193-enemy="panzer-blattlaus"]{--v7193-qs:1.12;--v7193-qx:1%;--v7193-qy:2%;}
+#quests .v386-card .v6344-card-enemy[data-v7193-enemy="riesentrauerfliege"],
+#quests .v386-card .v6344-card-enemy[data-v7193-enemy="trauerfliegen-brut"]{--v7193-qs:1.18;--v7193-qx:-1%;--v7193-qy:-1%;}
+#quests .v386-card .v6344-card-enemy[data-v7193-enemy="labor-mutant"],
+#quests .v386-card .v6344-card-enemy[data-v7193-enemy="mutierter-laborwachter"]{--v7193-qs:1.06;--v7193-qx:0%;--v7193-qy:2%;}
+#quests .v386-card .v6344-card-enemy[data-v7193-enemy="sporenwachter"]{--v7193-qs:1.10;--v7193-qx:0%;--v7193-qy:2%;}
+#quests .v386-card .v6344-card-enemy[data-v7193-enemy="dornenbestie"]{--v7193-qs:1.09;--v7193-qx:-1%;--v7193-qy:3%;}
+#quests .v386-card .v6344-card-enemy[data-v7193-enemy="milbenjager"]{--v7193-qs:1.08;--v7193-qx:0%;--v7193-qy:2%;}
+#quests .v386-card .v6344-card-enemy[data-v7193-enemy="keller-golem"]{--v7193-qs:1.05;--v7193-qx:0%;--v7193-qy:3%;}
+#quests .v386-card .v6344-card-enemy[data-v7193-enemy="nebel-unhold"]{--v7193-qs:1.11;--v7193-qx:0%;--v7193-qy:1%;}
+#quests .v386-card .v6344-card-enemy[data-v7193-enemy="verfluchter-gartenwachter"]{--v7193-qs:1.08;--v7193-qx:-1%;--v7193-qy:2%;}
+#quests .v386-card .v6344-card-enemy[data-v7193-enemy="saurefalter"]{--v7193-qs:1.16;--v7193-qx:-1%;--v7193-qy:0%;}
+
+#quests .v386-card .v386-title,
+#quests .v386-card .v386-desc{max-width:69%!important}
+#quests .v6344-variety-tag{
+  position:absolute;right:9px;top:9px;z-index:4;
+  display:inline-flex;align-items:center;gap:4px;
+  padding:4px 7px;border-radius:999px;
+  border:1px solid rgba(146,200,118,.34);
+  background:rgba(6,14,8,.76);backdrop-filter:blur(5px);
+  color:#a8d49b;font-size:6.4px;font-weight:1000;letter-spacing:.05em;
+  pointer-events:none;
+}
+@media(max-width:520px){
+  #quests .v386-card .v6344-card-enemy{right:-7%!important;width:54%!important;height:91%!important}
+  #quests .v386-card .v386-title,#quests .v386-card .v386-desc{max-width:72%!important}
+  #quests .v6344-variety-tag{font-size:5.8px;padding:3px 6px}
+}

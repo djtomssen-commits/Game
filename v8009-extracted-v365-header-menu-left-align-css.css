@@ -1,0 +1,53 @@
+
+/* The compact header was still inheriting an old centered/max-width header geometry.
+   Force the global header to span the full viewport, so the hamburger sits at the left edge. */
+html,body{
+  width:100%!important;
+  max-width:none!important;
+}
+.app{
+  width:100%!important;
+  max-width:none!important;
+  margin-left:0!important;
+  margin-right:0!important;
+}
+.app > header{
+  width:100vw!important;
+  max-width:none!important;
+  min-width:0!important;
+  margin-left:calc(50% - 50vw)!important;
+  margin-right:0!important;
+  left:0!important;
+  right:auto!important;
+}
+.app > header .v358-global-header{
+  width:100%!important;
+  max-width:none!important;
+  margin-left:0!important;
+  margin-right:0!important;
+  padding-left:4px!important;
+  padding-right:6px!important;
+}
+.app > header .v358-global-header > #v032MenuBtn{
+  margin-left:0!important;
+  justify-self:start!important;
+}
+
+/* Open dropdown aligns directly under the now-left-aligned hamburger. */
+#v032MenuPanel{
+  left:2px!important;
+  right:auto!important;
+  margin-left:0!important;
+  transform:none!important;
+}
+
+@media(max-width:599px){
+  .app > header .v358-global-header{
+    grid-template-columns:46px 104px 1fr 1fr 1.12fr!important;
+    padding-left:3px!important;
+  }
+  .app > header .v358-global-header > #v032MenuBtn{
+    width:44px!important;
+    height:44px!important;
+  }
+}

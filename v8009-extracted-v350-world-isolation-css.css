@@ -1,0 +1,29 @@
+
+/* Legacy world/event installers are still allowed to run for compatibility,
+   but on the new home screen only the V4.02/V4.02 root is visible. */
+#world.v350-isolated > :not(.v349-home){
+  display:none!important;
+}
+#world.v350-isolated > .v349-home{
+  display:grid!important;
+  position:relative!important;
+  z-index:2!important;
+  width:100%!important;
+  margin:0!important;
+}
+#world.v350-isolated{
+  padding-top:0!important;
+}
+
+/* Keep the real game header compact on mobile, like the approved mockup. */
+@media(max-width:599px){
+  body:has(#world.active) header{
+    min-height:auto!important;
+  }
+  body:has(#world.active) header .brand{
+    margin-bottom:4px!important;
+  }
+  body:has(#world.active) header .stats{
+    margin-top:3px!important;
+  }
+}

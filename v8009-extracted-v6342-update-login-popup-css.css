@@ -1,0 +1,60 @@
+
+#v6342UpdatePopup{
+  position:fixed!important;inset:0!important;z-index:2147483000!important;
+  display:none;align-items:center;justify-content:center;
+  padding:18px;box-sizing:border-box;
+  background:rgba(2,7,4,.88);backdrop-filter:blur(8px);
+}
+#v6342UpdatePopup.show{display:flex!important}
+#v6342UpdatePopup .v6342-update-card{
+  position:relative;width:min(620px,100%);max-height:min(82vh,760px);overflow:auto;
+  border:2px solid #6d5a31;border-radius:24px;
+  background:
+    radial-gradient(circle at 85% 0,rgba(103,210,72,.16),transparent 34%),
+    linear-gradient(155deg,#142119,#08100b 72%);
+  color:#eff6ed;box-shadow:0 30px 90px #000, inset 0 0 35px rgba(90,162,70,.05);
+  padding:22px 20px 18px;
+}
+#v6342UpdatePopup .v6342-update-card::before{
+  content:"";position:absolute;inset:7px;border:1px solid rgba(207,176,93,.11);
+  border-radius:18px;pointer-events:none;
+}
+#v6342UpdatePopup .v6342-update-close{
+  position:absolute;right:12px;top:12px;width:38px;height:38px;border-radius:50%;
+  border:1px solid #59654d;background:#0b130d;color:#d8dfd5;font-size:20px;font-weight:900;
+  display:grid;place-items:center;cursor:pointer;z-index:2;
+}
+#v6342UpdatePopup .v6342-update-eyebrow{
+  display:flex;align-items:center;gap:8px;margin:0 46px 9px 0;
+  color:#8fda75;font-size:10px;font-weight:1000;letter-spacing:.13em;text-transform:uppercase;
+}
+#v6342UpdatePopup .v6342-update-version{
+  display:inline-flex;align-items:center;padding:4px 8px;border:1px solid #806b35;border-radius:999px;
+  background:#211b0d;color:#f0cf70;font-size:9px;font-weight:1000;letter-spacing:.04em;
+}
+#v6342UpdatePopup h2{
+  margin:0 46px 10px 0;font-size:clamp(24px,5vw,34px);line-height:1.04;
+  color:#f5f1de;text-shadow:0 4px 18px #000;
+}
+#v6342UpdatePopup .v6342-update-body{
+  margin-top:13px;padding:15px 14px;border:1px solid #334b35;border-radius:15px;
+  background:rgba(6,14,9,.78);color:#c8d4c6;font-size:14px;line-height:1.58;
+  white-space:pre-line;overflow-wrap:anywhere;
+}
+#v6342UpdatePopup .v6342-update-foot{
+  margin-top:16px;display:grid;gap:8px;
+}
+#v6342UpdatePopup .v6342-update-confirm{
+  width:100%;min-height:48px;border:1px solid #70a85c;border-radius:14px;
+  background:linear-gradient(180deg,#8bd967,#59ad42);color:#0c1a0a;
+  font-size:14px;font-weight:1000;cursor:pointer;box-shadow:0 8px 22px rgba(72,156,54,.18);
+}
+#v6342UpdatePopup .v6342-update-note{
+  text-align:center;color:#748274;font-size:9px;line-height:1.35;
+}
+@media(max-width:520px){
+  #v6342UpdatePopup{padding:10px}
+  #v6342UpdatePopup .v6342-update-card{padding:19px 15px 15px;border-radius:19px;max-height:88vh}
+  #v6342UpdatePopup .v6342-update-body{font-size:12px;padding:13px 12px}
+  #v6342UpdatePopup h2{font-size:25px}
+}

@@ -1,0 +1,27 @@
+
+/* V6.35: keep the Quest finale on the Dungeon renderer, but isolate the generated
+   Dungeon monster artwork from legacy .v253-monster hide-rules. */
+#v634QuestDungeonCard #v634QuestEnemyIcon{
+  position:relative!important;display:flex!important;align-items:flex-end!important;justify-content:center!important;
+  overflow:visible!important;opacity:1!important;visibility:visible!important;
+}
+#v634QuestDungeonCard #v634QuestEnemyIcon>.v253-monster{display:none!important}
+#v634QuestDungeonCard #v634QuestEnemyIcon>.v635-dungeon-monster{
+  position:relative!important;z-index:14!important;display:block!important;visibility:visible!important;opacity:1!important;
+  width:194px!important;height:238px!important;max-width:none!important;max-height:none!important;overflow:visible!important;
+  filter:drop-shadow(0 18px 13px rgba(0,0,0,.92)) drop-shadow(0 0 16px rgba(98,220,76,.20))!important;
+  transform:translateY(0)!important;pointer-events:none!important;
+}
+#v634QuestDungeonCard #v634QuestEnemyFighter{
+  display:block!important;visibility:visible!important;opacity:1!important;z-index:15!important;
+}
+#v634QuestDungeonCard #v634QuestEnemyFighter .v252-fighter-shell{
+  display:flex!important;visibility:visible!important;opacity:1!important;
+}
+#v634QuestDungeonCard #v634QuestEnemyIcon .v253-monster-core,
+#v634QuestDungeonCard #v634QuestEnemyIcon .v635-dungeon-monster>*{
+  visibility:visible!important;
+}
+@media(max-width:560px){
+ #v634QuestDungeonCard #v634QuestEnemyIcon>.v635-dungeon-monster{width:160px!important;height:202px!important}
+}

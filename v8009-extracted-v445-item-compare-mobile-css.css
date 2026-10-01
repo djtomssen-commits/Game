@@ -1,0 +1,133 @@
+
+/* The inventory uses narrow RPG cards on mobile. Keep comparison information
+   vertical and readable instead of squeezing several labels into one row. */
+#inventory .compare{
+  width:100%!important;
+  min-width:0!important;
+  min-height:0!important;
+  height:auto!important;
+  margin:7px 0 5px!important;
+  padding:0!important;
+  overflow:visible!important;
+  background:transparent!important;
+  border:0!important;
+  text-align:left!important;
+}
+#inventory .compare .v445-compare{
+  display:grid!important;
+  grid-template-columns:1fr!important;
+  gap:5px!important;
+  width:100%!important;
+  min-width:0!important;
+  padding:7px!important;
+  border:1px solid rgba(106,151,101,.38)!important;
+  border-radius:10px!important;
+  background:linear-gradient(180deg,rgba(11,24,14,.96),rgba(7,15,9,.96))!important;
+  box-sizing:border-box!important;
+  overflow:hidden!important;
+  font-size:8px!important;
+  line-height:1.25!important;
+}
+#inventory .compare .v445-title{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:5px!important;
+  min-width:0!important;
+  padding-bottom:4px!important;
+  border-bottom:1px solid rgba(106,151,101,.22)!important;
+  color:#dce8d9!important;
+  font-size:8px!important;
+  font-weight:950!important;
+  letter-spacing:.02em!important;
+}
+#inventory .compare .v445-lines{
+  display:grid!important;
+  grid-template-columns:1fr!important;
+  gap:3px!important;
+  min-width:0!important;
+}
+#inventory .compare .v445-line{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) auto!important;
+  gap:6px!important;
+  align-items:center!important;
+  min-width:0!important;
+  padding:3px 5px!important;
+  border-radius:7px!important;
+  background:rgba(255,255,255,.025)!important;
+}
+#inventory .compare .v445-line span{
+  min-width:0!important;
+  overflow-wrap:anywhere!important;
+  word-break:normal!important;
+  color:#9fb09d!important;
+  font-size:7.5px!important;
+  text-align:left!important;
+}
+#inventory .compare .v445-line b{
+  color:#f0f5ed!important;
+  font-size:8px!important;
+  font-weight:950!important;
+  white-space:nowrap!important;
+  text-align:right!important;
+}
+#inventory .compare .v445-bonus{
+  min-width:0!important;
+  padding:4px 5px!important;
+  border-radius:7px!important;
+  background:rgba(63,164,193,.07)!important;
+  color:#93dfe7!important;
+  font-size:7px!important;
+  line-height:1.3!important;
+  overflow-wrap:anywhere!important;
+}
+#inventory .compare .v445-result{
+  padding:6px 5px!important;
+  border-radius:8px!important;
+  text-align:center!important;
+  font-size:8.5px!important;
+  line-height:1.2!important;
+  font-weight:1000!important;
+  overflow-wrap:anywhere!important;
+}
+#inventory .compare .v445-result.up{
+  color:#9ff47d!important;
+  border:1px solid rgba(118,222,82,.32)!important;
+  background:rgba(79,168,56,.10)!important;
+}
+#inventory .compare .v445-result.down{
+  color:#ff8b8b!important;
+  border:1px solid rgba(225,91,91,.32)!important;
+  background:rgba(174,53,53,.10)!important;
+}
+#inventory .compare .v445-result.same{
+  color:#d1d8cf!important;
+  border:1px solid rgba(180,190,178,.22)!important;
+  background:rgba(150,160,148,.06)!important;
+}
+#inventory .compare .v445-levels{
+  color:#81917f!important;
+  font-size:6.8px!important;
+  text-align:center!important;
+  line-height:1.2!important;
+}
+#inventory .compare .v445-special{
+  color:#78d8d2!important;
+  font-size:6.8px!important;
+  line-height:1.25!important;
+  text-align:center!important;
+  overflow-wrap:anywhere!important;
+}
+/* Never inherit the old V4.32 row layout inside the new owner. */
+#inventory .compare .v445-compare .v432-row,
+#inventory .compare .v445-compare .v432-addon,
+#inventory .compare .v445-compare .v432-result{display:none!important}
+
+@media(max-width:520px){
+  #inventory .compare .v445-compare{padding:6px!important;gap:4px!important}
+  #inventory .compare .v445-line{grid-template-columns:minmax(0,1fr) auto!important;padding:3px 4px!important}
+  #inventory .compare .v445-line span{font-size:7px!important}
+  #inventory .compare .v445-line b{font-size:7.5px!important}
+  #inventory .compare .v445-result{font-size:8px!important;padding:5px 4px!important}
+}

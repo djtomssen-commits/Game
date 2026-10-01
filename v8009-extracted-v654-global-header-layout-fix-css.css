@@ -1,0 +1,36 @@
+
+/* V6.51 moved the complete app upward by 22px. That removed the visual gap on
+   the home page, but it also put the first 22px of every screen underneath the
+   sticky HUD. Restore normal document flow and remove only harmless inner top
+   spacing instead. */
+body.v650-native-safe > .app{
+  margin-top:0!important;
+}
+body.v650-native-safe > .app > main{
+  padding-top:0!important;
+}
+
+/* Fixed/portaled UI must start below the *measured* HUD edge, not below a
+   guessed 56/60px value. JS keeps --v654-hud-bottom in sync with the actual
+   Android safe area and header height. */
+body.v650-native-safe #v032MenuPanel{
+  top:calc(var(--v654-hud-bottom, 82px) + 3px)!important;
+  max-height:calc(100dvh - var(--v654-hud-bottom, 82px) - 8px)!important;
+}
+body.v650-native-safe > #v141SettingsMenu.v377-open{
+  top:calc(var(--v654-hud-bottom, 82px) + 3px)!important;
+  max-height:calc(100dvh - var(--v654-hud-bottom, 82px) - 8px)!important;
+}
+body.v650-native-safe #v074ProfileOverlay.v074-profile-overlay{
+  top:calc(var(--v654-hud-bottom, 82px) + 3px)!important;
+}
+
+/* Also keep the menu below the real HUD in the browser if the shell geometry
+   changes because of font/viewport scaling. */
+body.v654-hud-measured #v032MenuPanel{
+  top:calc(var(--v654-hud-bottom, 60px) + 3px)!important;
+  max-height:calc(100dvh - var(--v654-hud-bottom, 60px) - 8px)!important;
+}
+body.v654-hud-measured > #v141SettingsMenu.v377-open{
+  top:calc(var(--v654-hud-bottom, 60px) + 3px)!important;
+}

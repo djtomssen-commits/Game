@@ -1,0 +1,21 @@
+
+/* ===== V4.02 final Harz/Dampf cleanup ===== */
+
+/* V4.02 had already scheduled delayed callbacks before V4.02 replaced its
+   function name. Those queued callbacks can still create a second Harz number.
+   Hide/remove that obsolete display permanently. */
+header .resource-stats .v281-harz-amount{
+  display:none!important;
+}
+
+/* Only the canonical V4.02 amount is visible. */
+header .resource-stats .v282-harz-count{
+  display:block!important;
+  visibility:visible!important;
+  opacity:1!important;
+}
+
+/* Dampf event value includes the unit directly in the main value. */
+header .resource-stats .v277-dampf-card #energy{
+  white-space:nowrap;
+}

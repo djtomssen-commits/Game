@@ -1,0 +1,86 @@
+
+/* ===== V4.02 exact rarity + visual quest loot ===== */
+#v231QuestRewardExtra .v240-loot-item{
+  --v240-r:#aeb8b1;
+  --v240-rgb:174,184,177;
+  position:relative;
+  overflow:hidden;
+  padding:10px;
+  border:1px solid var(--v240-r);
+  border-radius:12px;
+  background:
+    radial-gradient(circle at 50% 0%,rgba(var(--v240-rgb),.14),transparent 42%),
+    #07110b;
+  box-shadow:inset 0 0 20px rgba(var(--v240-rgb),.06);
+}
+#v231QuestRewardExtra .v240-loot-item:before{
+  content:"";
+  position:absolute;
+  left:8px;right:8px;top:0;height:2px;
+  background:linear-gradient(90deg,transparent,var(--v240-r),transparent);
+  box-shadow:0 0 9px var(--v240-r);
+}
+#v231QuestRewardExtra .v240-loot-item.common-gray{
+  --v240-r:#aeb8b1;--v240-rgb:174,184,177
+}
+#v231QuestRewardExtra .v240-loot-item.common-green{
+  --v240-r:#72df52;--v240-rgb:114,223,82
+}
+#v231QuestRewardExtra .v240-loot-item.rare-blue{
+  --v240-r:#4ba8ff;--v240-rgb:75,168,255
+}
+#v231QuestRewardExtra .v240-loot-item.epic-purple{
+  --v240-r:#c66bff;--v240-rgb:198,107,255
+}
+#v231QuestRewardExtra .v240-loot-item.legendary-orange{
+  --v240-r:#ff9c39;--v240-rgb:255,156,57
+}
+#v231QuestRewardExtra .v240-loot-item.mystic-cyan{
+  --v240-r:#45ebe4;--v240-rgb:69,235,228
+}
+#v231QuestRewardExtra .v240-loot-main{
+  display:grid;
+  grid-template-columns:48px minmax(0,1fr);
+  gap:9px;
+  align-items:center;
+}
+#v231QuestRewardExtra .v240-loot-icon{
+  width:48px;height:48px;
+  display:grid;place-items:center;
+  border:1px solid var(--v240-r);
+  border-radius:11px;
+  background:rgba(var(--v240-rgb),.08);
+  font-size:25px;
+}
+#v231QuestRewardExtra .v240-loot-name{
+  color:#f0f5ee;
+  font-size:9px;
+  font-weight:1000;
+  line-height:1.25;
+}
+#v231QuestRewardExtra .v240-loot-rarity{
+  display:inline-flex;
+  margin-top:4px;
+  padding:2px 6px;
+  border:1px solid var(--v240-r);
+  border-radius:999px;
+  color:var(--v240-r);
+  background:rgba(var(--v240-rgb),.08);
+  font-size:5.8px;
+  font-weight:1000;
+}
+#v231QuestRewardExtra .v240-loot-stats{
+  margin-top:8px;
+  padding:6px 7px;
+  border:1px solid rgba(var(--v240-rgb),.25);
+  border-radius:8px;
+  background:#061009;
+  color:#aab8ad;
+  font-size:6.4px;
+  line-height:1.4;
+}
+#v231QuestRewardExtra .v240-loot-meta{
+  margin-top:5px;
+  color:#829286;
+  font-size:5.8px;
+}

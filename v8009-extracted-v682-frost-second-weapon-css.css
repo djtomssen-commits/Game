@@ -1,0 +1,47 @@
+
+/* Zweiter Waffenplatz ausschließlich für Bekiffter Frost-Todesritter */
+#character:not(.v4153-frost) #v510HeroRoot #slot-weapon2{
+  display:none!important;
+}
+#character.v4153-frost #v510HeroRoot #slot-weapon2{
+  display:flex!important;
+  --v514-rarity:#2d9be8;
+  border-color:var(--v514-rarity)!important;
+  box-shadow:
+    inset 0 0 15px rgba(0,0,0,.82),
+    0 0 9px rgba(55,166,235,.25),
+    0 4px 8px rgba(0,0,0,.62)!important;
+}
+
+/* Auf dem neuen Heldenlayout sind die Slot-Namen ausgeblendet.
+   I / II macht trotzdem sofort klar, welcher Waffenplatz welcher ist. */
+#character.v4153-frost #v510HeroRoot #slot-weapon::before,
+#character.v4153-frost #v510HeroRoot #slot-weapon2::before{
+  position:absolute!important;
+  z-index:8!important;
+  top:3px!important;
+  left:4px!important;
+  min-width:14px!important;
+  height:14px!important;
+  display:grid!important;
+  place-items:center!important;
+  padding:0 3px!important;
+  border:1px solid rgba(118,202,255,.72)!important;
+  border-radius:5px!important;
+  background:rgba(4,18,27,.90)!important;
+  color:#bce9ff!important;
+  font-size:6.5px!important;
+  line-height:1!important;
+  font-weight:1000!important;
+  text-shadow:0 0 5px rgba(77,188,255,.65)!important;
+  pointer-events:none!important;
+}
+#character.v4153-frost #v510HeroRoot #slot-weapon::before{content:"I"!important}
+#character.v4153-frost #v510HeroRoot #slot-weapon2::before{content:"II"!important}
+
+/* Vier linke Slots sollen auf Mobile nicht unnötig riesig auseinanderlaufen. */
+@media(max-width:430px){
+  #character.v4153-frost.v514-reference-hero #v510HeroRoot .v510-left{
+    gap:3px!important;
+  }
+}

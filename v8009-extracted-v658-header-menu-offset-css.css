@@ -1,0 +1,31 @@
+
+/* Keep the Android status-bar safe area untouched. Only make the game HUD itself
+   a little shorter so it does not consume unnecessary vertical space. */
+body.v650-native-safe .v372-topbar{
+  min-height:50px!important;
+  padding:3px 3px!important;
+}
+body.v650-native-safe .v372-menu{
+  height:40px!important;
+}
+body.v650-native-safe .v372-res{
+  height:36px!important;
+}
+body.v650-native-safe .v372-iconbtn{
+  height:28px!important;
+}
+
+/* The drawer always begins at the measured lower edge of the HUD. The first item
+   gets its own clean top spacing and may never be hidden by a restored scroll position. */
+#v032MenuPanel{
+  scroll-padding-top:0!important;
+  overflow-anchor:none!important;
+}
+#v032MenuPanel > .top-menu-item:first-of-type{
+  margin-top:0!important;
+}
+body.v654-hud-measured #v032MenuPanel,
+body.v650-native-safe #v032MenuPanel{
+  top:calc(var(--v654-hud-bottom,76px) + 2px)!important;
+  max-height:calc(100dvh - var(--v654-hud-bottom,76px) - 6px)!important;
+}

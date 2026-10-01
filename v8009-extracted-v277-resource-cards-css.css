@@ -1,0 +1,163 @@
+
+/* ===== V4.02 premium resource cards ===== */
+header .resource-stats{
+  gap:10px!important;
+  margin-top:11px!important;
+}
+header .resource-stats .stat{
+  position:relative;
+  min-height:145px;
+  padding:17px 15px 14px 82px!important;
+  border-radius:19px!important;
+  overflow:hidden;
+  display:flex!important;
+  flex-direction:column;
+  align-items:flex-start!important;
+  justify-content:center!important;
+  border:1px solid rgba(255,255,255,.12)!important;
+  background:#0b130d!important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.05),
+    inset 0 0 28px rgba(255,255,255,.015),
+    0 8px 22px rgba(0,0,0,.24)!important;
+  color:#8fa092!important;
+  font-size:9px!important;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease;
+}
+header .resource-stats .stat:before{
+  content:"";
+  position:absolute;
+  left:15px;top:50%;
+  width:52px;height:52px;
+  transform:translateY(-50%);
+  display:grid;place-items:center;
+  border-radius:50%;
+  border:1px solid currentColor;
+  box-shadow:0 0 18px currentColor,inset 0 0 18px rgba(255,255,255,.07);
+  opacity:.95;
+}
+header .resource-stats .stat:after{
+  position:absolute;
+  left:15px;top:50%;
+  width:52px;height:52px;
+  transform:translateY(-50%);
+  display:grid;place-items:center;
+  font-size:27px;
+  filter:drop-shadow(0 0 7px currentColor);
+}
+header .resource-stats .stat > b{
+  display:flex!important;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:6px;
+  margin-top:5px!important;
+  font-size:27px!important;
+  line-height:1.05!important;
+  letter-spacing:-.03em!important;
+  color:#eef6ed!important;
+  text-shadow:0 0 12px currentColor;
+}
+header .resource-stats .stat .v277-resource-sub{
+  margin-top:8px;
+  font-size:7px;
+  line-height:1.35;
+  letter-spacing:.05em;
+  text-transform:none;
+  color:#829184;
+}
+
+/* Gold */
+header .resource-stats .v277-gold-card{
+  color:#e7b63f!important;
+  border-color:#76591f!important;
+  background:
+    radial-gradient(circle at 15% 50%,rgba(226,171,43,.12),transparent 34%),
+    linear-gradient(145deg,#181407,#0a100c 70%)!important;
+}
+header .resource-stats .v277-gold-card:after{content:"💰"}
+header .resource-stats .v277-gold-card > b{color:#f6c74d!important}
+header .resource-stats .v277-gold-card.v277-event-on{
+  box-shadow:0 0 18px rgba(255,191,52,.15),inset 0 0 22px rgba(255,191,52,.06)!important
+}
+
+/* Skill */
+header .resource-stats .v277-skill-card{
+  color:#ba71ec!important;
+  border-color:#56336f!important;
+  background:
+    radial-gradient(circle at 15% 50%,rgba(171,79,229,.12),transparent 34%),
+    linear-gradient(145deg,#140c19,#0a100c 70%)!important;
+}
+header .resource-stats .v277-skill-card:after{content:"✦"}
+header .resource-stats .v277-skill-card > b{color:#ca83f3!important}
+
+/* Dampf */
+header .resource-stats .v277-dampf-card{
+  color:#62d5eb!important;
+  border-color:#276e7b!important;
+  background:
+    radial-gradient(circle at 15% 50%,rgba(72,199,224,.12),transparent 34%),
+    linear-gradient(145deg,#08171a,#09110d 70%)!important;
+}
+header .resource-stats .v277-dampf-card:after{content:"💨"}
+header .resource-stats .v277-dampf-card > b{color:#79e0f2!important}
+
+/* Harz */
+header .resource-stats .v277-harz-card{
+  color:#73db7b!important;
+  border-color:#2f7137!important;
+  background:
+    radial-gradient(circle at 15% 50%,rgba(66,203,83,.12),transparent 34%),
+    linear-gradient(145deg,#09180c,#09110d 70%)!important;
+}
+header .resource-stats .v277-harz-card:after{content:"💎"}
+header .resource-stats .v277-harz-card > b{color:#82e88c!important}
+header .resource-stats .v277-harz-card > b{font-size:0!important}
+header .resource-stats .v277-harz-card #topHarz{
+  font-size:27px!important;
+  color:#82e88c!important;
+}
+
+/* Event chips inside the cards */
+header .resource-stats .v276-gold2,
+header .resource-stats .v277-dampf-event-chip{
+  position:static!important;
+  display:inline-flex!important;
+  align-items:center;
+  justify-content:center;
+  margin:0!important;
+  padding:3px 7px!important;
+  min-height:22px;
+  border-radius:999px;
+  font-size:8px!important;
+  letter-spacing:.03em!important;
+  font-weight:1000!important;
+}
+header .resource-stats .v277-dampf-event-chip{
+  margin-top:8px!important;
+  color:#b9f4ff;
+  border:1px solid #408b98;
+  background:#102328;
+  text-shadow:0 0 7px #63d9ec;
+  box-shadow:0 0 12px rgba(81,210,234,.16);
+}
+
+@media(max-width:520px){
+  header .resource-stats{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:9px!important;
+  }
+  header .resource-stats .stat{
+    min-height:126px;
+    padding:15px 11px 13px 70px!important;
+  }
+  header .resource-stats .stat:before,
+  header .resource-stats .stat:after{
+    left:11px;width:47px;height:47px;
+  }
+  header .resource-stats .stat:after{font-size:24px}
+  header .resource-stats .stat > b{font-size:25px!important}
+  header .resource-stats .v277-harz-card #topHarz{font-size:25px!important}
+}

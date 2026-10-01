@@ -1,0 +1,105 @@
+
+/* There must be exactly one visible in-game header. */
+.app > header,
+#v371TopbarShell,
+.v366-topbar,
+.v358-global-header,
+.v358-subbar,
+.v351-topbar{
+  display:none!important;
+  visibility:hidden!important;
+  height:0!important;
+  min-height:0!important;
+  max-height:0!important;
+  margin:0!important;
+  padding:0!important;
+  overflow:hidden!important;
+}
+
+#v372TopbarShell{
+  display:block!important;
+  position:sticky!important;
+  top:0!important;
+  left:0!important;
+  z-index:60000!important;
+  width:100%!important;
+  max-width:none!important;
+  margin:0!important;
+  padding:0!important;
+  background:#020704!important;
+  border-bottom:1px solid rgba(145,151,47,.4)!important;
+  box-shadow:0 8px 24px rgba(0,0,0,.52)!important;
+}
+
+.v372-topbar{
+  display:grid!important;
+  grid-template-columns:46px 108px minmax(82px,1fr) minmax(74px,.9fr) minmax(96px,1.08fr) 36px 36px 36px!important;
+  gap:4px!important;
+  align-items:center!important;
+  box-sizing:border-box!important;
+  width:100%!important;
+  min-height:60px!important;
+  padding:6px 6px!important;
+  background:linear-gradient(180deg,#030905,#020704)!important;
+}
+.v372-menu{
+  width:44px!important;height:46px!important;padding:0!important;
+  display:grid!important;place-items:center!important;
+  border:1px solid #756e2e!important;border-radius:9px!important;
+  background:linear-gradient(180deg,#181b0e,#090d07)!important;
+  color:#f7e6b0!important;font-size:27px!important;font-weight:900!important;
+}
+.v372-logo{min-width:0!important;line-height:.8!important}
+.v372-logo strong{
+  display:block!important;font-family:Georgia,serif!important;font-size:18px!important;line-height:.85!important;
+  color:#90e249!important;white-space:nowrap!important;text-shadow:0 2px #2b4b17!important
+}
+.v372-logo span{
+  display:block!important;margin:1px 0 0 7px!important;font-family:Georgia,serif!important;
+  font-size:9px!important;color:#d5a64d!important;font-weight:900!important
+}
+.v372-logo em{
+  display:block!important;margin:3px 0 0 7px!important;color:#68d7da!important;
+  font:900 5.5px/1 system-ui,sans-serif!important;font-style:normal!important
+}
+.v372-res{
+  min-width:0!important;height:42px!important;padding:3px!important;
+  display:grid!important;grid-template-columns:16px minmax(0,1fr) 18px!important;gap:2px!important;align-items:center!important;
+  box-sizing:border-box!important;border:1px solid #625d28!important;border-radius:8px!important;
+  background:linear-gradient(180deg,#11160c,#070b06)!important
+}
+.v372-res .ico{font-size:14px!important;text-align:center!important}
+.v372-res small{display:block!important;margin-bottom:3px!important;color:#989d93!important;font-size:4.8px!important;line-height:1!important;text-transform:uppercase!important}
+.v372-res b{display:block!important;font-size:9px!important;line-height:1!important;color:#fff!important;white-space:nowrap!important;overflow:visible!important}
+.v372-plus{
+  width:18px!important;height:25px!important;min-width:18px!important;padding:0!important;
+  border:1px solid #778632!important;border-radius:5px!important;background:#11180b!important;
+  color:#a9ee58!important;font-size:16px!important;line-height:1!important
+}
+.v372-iconbtn{
+  width:34px!important;height:34px!important;min-width:34px!important;padding:0!important;
+  border:1px solid #615a29!important;border-radius:8px!important;background:linear-gradient(180deg,#11150c,#070a06)!important;
+  color:#e8d7a5!important;font-size:16px!important
+}
+
+/* Dropdown physically starts at the viewport's left edge. */
+#v032MenuPanel{
+  position:fixed!important;top:60px!important;left:2px!important;right:auto!important;
+  width:min(280px,calc(100vw - 4px))!important;max-width:calc(100vw - 4px)!important;
+  margin:0!important;transform:none!important;z-index:100000!important;pointer-events:auto!important
+}
+#v032MenuPanel *,#v032MenuPanel button,#v032MenuPanel a{pointer-events:auto!important}
+
+@media(max-width:430px){
+  .v372-topbar{
+    grid-template-columns:42px 82px 64px 58px 74px 28px 28px 28px!important;
+    gap:2px!important;padding:5px 3px!important;min-height:56px!important
+  }
+  .v372-menu{width:40px!important;height:42px!important;font-size:24px!important}
+  .v372-logo strong{font-size:15px!important}.v372-logo span{font-size:7.5px!important;margin-left:4px!important}.v372-logo em{font-size:5px!important;margin-left:4px!important}
+  .v372-res{height:38px!important;grid-template-columns:13px minmax(0,1fr) 14px!important;gap:1px!important;padding:2px!important}
+  .v372-res .ico{font-size:11px!important}.v372-res small{font-size:3.8px!important}.v372-res b{font-size:7.2px!important}
+  .v372-plus{width:14px!important;min-width:14px!important;height:22px!important;font-size:12px!important}
+  .v372-iconbtn{width:26px!important;height:30px!important;min-width:26px!important;font-size:13px!important}
+  #v032MenuPanel{top:56px!important}
+}

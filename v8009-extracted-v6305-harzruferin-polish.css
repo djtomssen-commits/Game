@@ -1,0 +1,25 @@
+
+/* V6.305: Harzruferin polish */
+#character .v41-portrait .v080-class-avatar-img{
+  object-position:center top!important;
+}
+
+/* Companion attacks stay inside the fight scene */
+.v6303-companion-impact{
+  pointer-events:none!important;
+}
+.v6303-companion-impact b{
+  animation: v6305DamagePop .7s ease-out;
+}
+@keyframes v6305DamagePop{
+  0%{opacity:0;transform:scale(.6) translateY(12px)}
+  35%{opacity:1;transform:scale(1.15) translateY(-8px)}
+  100%{opacity:0;transform:scale(1) translateY(-35px)}
+}
+/* Dungeon/quest fight should always have a visible scene layer */
+#battleStage.v6305-scene-ready,
+.battle-stage.v6305-scene-ready{
+  background:
+    radial-gradient(circle at 50% 35%,rgba(100,150,80,.22),transparent 38%),
+    linear-gradient(180deg,#293728,#121812)!important;
+}

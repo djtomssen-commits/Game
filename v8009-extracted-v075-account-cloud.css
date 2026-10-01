@@ -1,0 +1,36 @@
+
+/* ===== V4.02 account + cloud save ===== */
+.v075-auth-overlay{
+  position:fixed; inset:0; z-index:40000;
+  display:none; align-items:center; justify-content:center;
+  padding:16px; background:rgba(3,7,4,.92); backdrop-filter:blur(8px);
+}
+.v075-auth-overlay.show{display:flex}
+.v075-auth-card{
+  width:min(94vw,460px);
+  border-radius:20px; border:1px solid #49684b;
+  background:
+    radial-gradient(circle at 50% 0%,rgba(111,177,91,.11),transparent 34%),
+    linear-gradient(180deg,#18261b,#0d1510);
+  box-shadow:0 30px 80px #000b;
+  padding:17px;
+}
+.v075-auth-title{font-size:23px;font-weight:1000;color:#eef5eb}
+.v075-auth-sub{margin-top:4px;font-size:9px;color:#9cad99;line-height:1.45}
+.v075-auth-tabs{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:14px 0 10px}
+.v075-auth-tabs .btn.active{border-color:#6c9c60!important;color:#c7efb4!important}
+.v075-field{display:grid;gap:5px;margin-top:8px}
+.v075-field label{font-size:8px;font-weight:900;color:#9aae98;text-transform:uppercase;letter-spacing:.06em}
+.v075-input{
+  width:100%;padding:11px 12px;border-radius:11px;border:1px solid #3c5740;
+  background:#09110c;color:#f1f6ef;font-size:15px;outline:none;
+}
+.v075-input:focus{border-color:#6ca060;box-shadow:0 0 0 2px rgba(108,160,96,.14)}
+.v075-auth-action{width:100%;margin-top:11px;min-height:44px!important}
+.v075-divider{display:flex;align-items:center;gap:8px;margin:13px 0;color:#728070;font-size:8px}
+.v075-divider:before,.v075-divider:after{content:"";height:1px;background:#2f4030;flex:1}
+.v075-google{width:100%;min-height:44px!important;background:#f5f5f5!important;color:#202020!important;border-color:#d6d6d6!important}
+.v075-account-note{margin-top:10px;padding:8px;border-radius:9px;background:#0c140e;border:1px solid #2e432f;font-size:8px;color:#899987;line-height:1.45}
+.v075-cloud-pill{display:inline-flex;align-items:center;gap:5px;padding:4px 7px;border:1px solid #3b5c3e;border-radius:999px;font-size:7px;color:#a9cfa0}
+.v075-cloud-pill.syncing{color:#dbc682;border-color:#71643c}
+.v075-cloud-pill.error{color:#e19a8e;border-color:#78473f}

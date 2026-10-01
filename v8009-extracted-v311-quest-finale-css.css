@@ -1,0 +1,44 @@
+
+#v311QuestFight{
+ position:fixed;inset:0;z-index:10080;display:none;align-items:center;justify-content:center;
+ padding:14px;background:rgba(0,0,0,.91);backdrop-filter:blur(5px)
+}
+#v311QuestFight.show{display:flex}
+#v311QuestFight .v311-panel{
+ width:min(560px,100%);border:1px solid #456247;border-radius:18px;overflow:hidden;
+ background:linear-gradient(180deg,#101b12,#080d09);box-shadow:0 22px 70px #000c
+}
+#v311QuestFight.elite .v311-panel{border-color:#a93c3c;background:linear-gradient(180deg,#260e0e,#0c0808)}
+#v311QuestFight .v311-head{padding:12px 13px 8px;text-align:center}
+#v311QuestFight .v311-kicker{font-size:8px;font-weight:1000;letter-spacing:.12em;color:#78d663}
+#v311QuestFight.elite .v311-kicker{color:#ff756e}
+#v311QuestFight .v311-title{font-size:16px;font-weight:1000;margin-top:3px}
+#v311QuestFight .v311-arena{
+ position:relative;display:grid;grid-template-columns:1fr 62px 1fr;align-items:end;
+ min-height:235px;padding:20px 12px 12px;
+ background:radial-gradient(circle at 50% 78%,rgba(96,140,80,.18),transparent 42%),linear-gradient(180deg,#0b130d,#070a07)
+}
+#v311QuestFight.elite .v311-arena{background:radial-gradient(circle at 50% 78%,rgba(185,42,42,.20),transparent 42%),linear-gradient(180deg,#180909,#080606)}
+#v311QuestFight .v311-fighter{text-align:center;min-width:0}
+#v311QuestFight .v311-avatar{
+ height:132px;display:flex;align-items:flex-end;justify-content:center;transform-origin:50% 100%
+}
+#v311QuestFight .v311-avatar img{max-height:132px;max-width:118px;object-fit:contain;filter:drop-shadow(0 8px 8px #000)}
+#v311QuestFight .v311-boss{font-size:82px;line-height:1;filter:drop-shadow(0 8px 8px #000)}
+#v311QuestFight .v311-name{font-size:9px;font-weight:1000;margin:7px 0 5px}
+#v311QuestFight .v311-hp{height:9px;border:1px solid #405141;border-radius:99px;overflow:hidden;background:#060806}
+#v311QuestFight .v311-hp>i{display:block;height:100%;width:100%;background:#71c95a;transition:width .28s ease}
+#v311QuestFight .v311-enemy-hp>i{background:#c84c46}
+#v311QuestFight .v311-vs{align-self:center;text-align:center;font-size:19px;font-weight:1000;color:#d2b45b}
+#v311QuestFight .v311-log{min-height:42px;padding:9px 12px;text-align:center;font-size:9px;color:#cbd6ca}
+#v311QuestFight .v311-hit-player{animation:v311PlayerHit .26s ease}
+#v311QuestFight .v311-hit-enemy{animation:v311EnemyHit .26s ease}
+#v311QuestFight .v311-hurt{animation:v311Hurt .22s ease}
+#v311QuestFight .v311-defeated{animation:v311Defeat .5s ease forwards}
+@keyframes v311PlayerHit{50%{transform:translateX(24px) scale(1.06)}}
+@keyframes v311EnemyHit{50%{transform:translateX(-24px) scale(1.08)}}
+@keyframes v311Hurt{50%{filter:brightness(2)}}
+@keyframes v311Defeat{to{transform:rotate(16deg) translateY(18px);opacity:.2}}
+@media(prefers-reduced-motion:reduce){
+ #v311QuestFight *{animation:none!important;transition:none!important}
+}

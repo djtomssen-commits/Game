@@ -1,0 +1,95 @@
+
+/* Requested: remove "Empfohlen ab Stufe ..." from every quest permanently. */
+#quests .v386-note{display:none!important}
+
+/* Active mode: only the selected quest remains visible. */
+#quests.v392-active-mode .v386-mira,
+#quests.v392-active-mode .v386-list,
+#quests.v392-active-mode .v387-refresh,
+#quests.v392-active-mode #activeQuestCard,
+#quests.v392-active-mode #questList,
+#quests.v392-active-mode #refreshQuests{
+  display:none!important;
+}
+
+#quests .v392-active-view{
+  display:none;
+}
+#quests.v392-active-mode .v392-active-view{
+  display:block;
+}
+
+#quests .v392-active-view .v386-card{
+  margin:0;
+}
+#quests .v392-active-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+  margin-bottom:8px;
+}
+#quests .v392-active-label{
+  font-size:8px;
+  font-weight:1000;
+  letter-spacing:.09em;
+  color:#9fe77e;
+  text-transform:uppercase;
+}
+#quests .v392-active-timer{
+  margin:2px 0 0;
+  padding:14px 10px;
+  border:1px solid #386443;
+  border-radius:13px;
+  background:
+    radial-gradient(circle at 50% 0%,rgba(104,235,74,.10),transparent 58%),
+    linear-gradient(180deg,#0d1910,#08100a);
+  text-align:center;
+}
+#quests .v392-active-timer span{
+  display:block;
+  color:#829087;
+  font-size:7px;
+  font-weight:900;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+}
+#quests .v392-active-timer b{
+  display:block;
+  margin-top:3px;
+  color:#a8f781;
+  font-size:24px;
+  line-height:1;
+  font-variant-numeric:tabular-nums;
+  text-shadow:0 0 16px rgba(111,236,77,.20);
+}
+#quests .v392-active-timer.done{
+  border-color:#7d6827;
+  background:linear-gradient(180deg,#1c190b,#0d1008);
+}
+#quests .v392-active-timer.done b{
+  color:#f3d56d;
+  font-size:17px;
+}
+#quests .v392-claim{
+  width:100%;
+  min-height:54px;
+  border:0;
+  border-radius:14px;
+  background:linear-gradient(180deg,#f3d875,#ddb744);
+  color:#241b06;
+  font-weight:1000;
+  font-size:15px;
+  box-shadow:0 0 22px rgba(225,185,62,.16),inset 0 1px rgba(255,255,255,.35);
+}
+#quests .v392-running-note{
+  text-align:center;
+  color:#839287;
+  font-size:7px;
+  line-height:1.4;
+}
+
+@media(max-width:520px){
+  #quests .v392-active-timer b{font-size:22px}
+  #quests .v392-claim{font-size:14px}
+}

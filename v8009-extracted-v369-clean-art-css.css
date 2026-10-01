@@ -1,0 +1,52 @@
+
+/* V4.02 accidentally used crops from the full UI mockup as backgrounds.
+   Those crops contained the old name, stats, event cards and card text as pixels.
+   Use the previously verified clean artwork crops instead. */
+#world.active .v366-hero{
+  background:
+    linear-gradient(180deg,rgba(1,5,2,.04),rgba(1,5,2,.10) 48%,rgba(1,5,2,.94) 100%),
+    radial-gradient(circle at 53% 36%,rgba(93,188,31,.08),transparent 34%),
+    url("assets/v7195-base64/fb32f8c2927c762ab376.webp") center 30%/cover no-repeat!important;
+}
+
+/* Never use the dirty full-screen screenshot crop for the large character. */
+#world.active .v366-character{
+  background-image:none!important;
+  background-color:transparent!important;
+  opacity:.78!important;
+  filter:drop-shadow(9px 12px 18px rgba(0,0,0,.62))!important;
+  -webkit-mask-image:linear-gradient(90deg,#000 0 66%,transparent 100%);
+  mask-image:linear-gradient(90deg,#000 0 66%,transparent 100%);
+}
+#world.active .v366-character.v369-real-character{
+  background-position:left bottom!important;
+  background-size:contain!important;
+  background-repeat:no-repeat!important;
+}
+
+#world.active .v366-card.quest .v366-card-art{background-image:url("assets/v7195-base64/339aefdcaf6d14c723b1.webp")!important}
+#world.active .v366-card.dungeon .v366-card-art{background-image:url("assets/v7195-base64/c3026185b4833d81b5e9.webp")!important}
+#world.active .v366-card.grow .v366-card-art{background-image:url("assets/v7195-base64/1fc51cb69f42f04daecd.webp")!important}
+#world.active .v366-feature.boss .v366-feature-art{background-image:url("assets/v7195-base64/28e44aa3276038ef0872.webp")!important}
+#world.active .v366-feature.book .v366-feature-art{background-image:url("assets/v7195-base64/145298215b1b7ed53710.webp")!important}
+
+/* Make the target-style top bar actually readable on a phone. */
+@media(max-width:599px){
+  .app > header .v366-topbar{
+    grid-template-columns:38px 76px 52px 48px 60px 24px 24px 24px!important;
+    gap:2px!important;
+    min-height:54px!important;
+    padding:5px 3px!important;
+  }
+  .v366-menu{width:36px!important;height:36px!important;font-size:20px!important}
+  .v366-logo strong{font-size:14px!important}
+  .v366-logo span{font-size:7px!important;margin-left:6px!important}
+  .v366-ver{font-size:4.8px!important;margin-left:6px!important}
+  .v366-res{height:36px!important;padding:2px!important;grid-template-columns:11px 1fr 13px!important;gap:1px!important}
+  .v366-res .ico{font-size:10px!important}
+  .v366-res small{font-size:3.8px!important}
+  .v366-res .val{font-size:6.6px!important;overflow:visible!important;text-overflow:clip!important}
+  .v366-plus{width:13px!important;height:18px!important;font-size:11px!important;line-height:12px!important}
+  .v366-iconbtn{width:23px!important;height:27px!important;font-size:12px!important;padding:0!important}
+  #v032MenuPanel{top:54px!important}
+}

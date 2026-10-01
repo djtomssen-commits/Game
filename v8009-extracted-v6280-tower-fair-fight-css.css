@@ -1,0 +1,60 @@
+
+/* Player must be allowed to animate. No fixed transform on the fighter parent. */
+#tower .v6259-fighter.player{
+  transform:none!important;
+}
+/* Important declarations override animations, so explicitly define the animated states late. */
+#tower .v6259-fighter.player.attack-r{
+  animation:v6280PlayerLunge .46s cubic-bezier(.18,.78,.22,1)!important;
+}
+#tower .v6259-fighter.player.hit{
+  animation:v6280PlayerHit .34s ease!important;
+}
+#tower .v6259-fighter.player.dodge{
+  animation:v6280PlayerDodge .45s ease!important;
+}
+@keyframes v6280PlayerLunge{
+  0%{transform:translateX(0) scale(1)}
+  28%{transform:translateX(22px) scale(1.02)}
+  55%{transform:translateX(72px) scale(1.07)}
+  72%{transform:translateX(58px) scale(1.05)}
+  100%{transform:translateX(0) scale(1)}
+}
+@keyframes v6280PlayerHit{
+  0%,100%{transform:translateX(0)}
+  22%{transform:translateX(-11px);filter:brightness(1.65)}
+  48%{transform:translateX(7px)}
+  75%{transform:translateX(-4px)}
+}
+@keyframes v6280PlayerDodge{
+  0%,100%{transform:translateX(0);opacity:1}
+  50%{transform:translateX(-34px);opacity:.48}
+}
+
+/* Preparation is now deliberately minimal: chosen enemy + fight. */
+#tower .v6280-locked-choice{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  min-height:36px!important;
+  margin:8px 0!important;
+  padding:7px 10px!important;
+  border:1px solid #425343!important;
+  border-radius:10px!important;
+  background:linear-gradient(180deg,#0d1710,#071009)!important;
+  color:#a9b7a5!important;
+  font-size:7.5px!important;
+  font-weight:900!important;
+  letter-spacing:.02em!important;
+}
+#tower .v6259-fight-main{
+  margin-top:0!important;
+  min-height:56px!important;
+}
+
+/* Old elements must stay gone even if an old renderer appears during migration. */
+#tower .v6259-reward-preview,
+#tower .v6259-risk-more,
+#tower .v6259-backroute{
+  display:none!important;
+}
