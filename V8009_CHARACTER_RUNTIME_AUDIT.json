@@ -1,0 +1,2006 @@
+{
+  "build": "V8.009-CHARACTER-RUNTIME-AUDIT",
+  "rows": [],
+  "inline_hits": [
+    {
+      "line": 139,
+      "text": "/* V7.228: Server 1 identity must be created only by the atomic character bootstrap."
+    },
+    {
+      "line": 144,
+      "text": "if(!(st?.playerClass&&st?.characterNameSet&&String(st?.characterName||'').trim().length>=2))return false;"
+    },
+    {
+      "line": 173,
+      "text": "if(payload?.id&&payload?.character_name){"
+    },
+    {
+      "line": 399,
+      "text": "/* character */.character-stage{position:relative;min-height:455px;background:radial-gradient(circle at 50% 36%,#31452d 0,#182217 42%,#10160f 74%),repeating-linear-gradient(90deg,transparent 0 44px,rgba(255,255,255,.015) 45px 46px);border-bottom:1px solid var(--line);padding:14px}.char-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}.char-title{font-weight:900;font-size:20px}.level-badge{background:#10170f;border:1px solid #456342;border-radius:10px;padding:6px 9px;font-size:12px}.equipment-grid{display:grid;grid-template-columns:1fr minmax(150px,1.2fr) 1fr;gap:8px;align-items:center;min-height:360px}.equip-col{display:grid;gap:10px}.slot{min-height:83px;"
+    },
+    {
+      "line": 497,
+      "text": ".character-stage{background:radial-gradient(circle at 50% 38%,#29482b 0,#152419 35%,#0d150f 72%);padding:12px 10px 8px}"
+    },
+    {
+      "line": 554,
+      "text": "<style id=\"v081-avatar-size-fix\">"
+    },
+    {
+      "line": 556,
+      "text": "#character .avatar-scene{"
+    },
+    {
+      "line": 561,
+      "text": "#character .v41-portrait{"
+    },
+    {
+      "line": 566,
+      "text": "#character .v41-portrait .v080-class-avatar-img{"
+    },
+    {
+      "line": 573,
+      "text": "#character .avatar-scene{height:190px !important;}"
+    },
+    {
+      "line": 574,
+      "text": "#character .v41-portrait{"
+    },
+    {
+      "line": 761,
+      "text": "/* Single character creator */"
+    },
+    {
+      "line": 766,
+      "text": ".v200-character-card{"
+    },
+    {
+      "line": 771,
+      "text": ".v200-character-card h2{margin:0;color:#eff7ed;font-size:19px}"
+    },
+    {
+      "line": 772,
+      "text": ".v200-character-sub{margin-top:5px;color:#8fa095;font-size:8px;line-height:1.45}"
+    },
+    {
+      "line": 773,
+      "text": ".v200-character-name{margin:12px 0}"
+    },
+    {
+      "line": 774,
+      "text": ".v200-character-name label{display:block;margin-bottom:5px;color:#94a69a;font-size:7px;font-weight:1000;text-transform:uppercase}"
+    },
+    {
+      "line": 852,
+      "text": "html:not(.v217-ui-ready) #character .char-title,"
+    },
+    {
+      "line": 937,
+      "text": "<style id=\"v4162-character-portrait-fix\">"
+    },
+    {
+      "line": 939,
+      "text": "#character .v41-portrait .v080-class-avatar-img{"
+    },
+    {
+      "line": 946,
+      "text": "#character .v41-portrait .v080-class-avatar-img{"
+    },
+    {
+      "line": 1351,
+      "text": "#character.v514-reference-hero .v514-book-host{"
+    },
+    {
+      "line": 1355,
+      "text": "#character.v514-reference-hero .v514-book-host > #v106BookBtn{"
+    },
+    {
+      "line": 1358,
+      "text": "#character.v514-reference-hero .v514-book-host > #v686PetAlbumBtn{"
+    },
+    {
+      "line": 1365,
+      "text": "#character.v514-reference-hero .v514-book-host{"
+    },
+    {
+      "line": 1370,
+      "text": "#character.v514-reference-hero .v514-book-host > #v106BookBtn{"
+    },
+    {
+      "line": 1373,
+      "text": "#character.v514-reference-hero .v514-book-host > #v686PetAlbumBtn{"
+    },
+    {
+      "line": 1570,
+      "text": "#character.v514-reference-hero .v514-book-host{"
+    },
+    {
+      "line": 1574,
+      "text": "#character.v514-reference-hero .v514-book-host > #v106BookBtn{"
+    },
+    {
+      "line": 1577,
+      "text": "#character.v514-reference-hero .v514-book-host > #v686PetAlbumBtn{"
+    },
+    {
+      "line": 1948,
+      "text": "#character .v546-material-art{"
+    },
+    {
+      "line": 1958,
+      "text": "#character .v546-material-art>img{"
+    },
+    {
+      "line": 2010,
+      "text": "<section id=\"character\" class=\"screen\">"
+    },
+    {
+      "line": 2012,
+      "text": "<div class=\"character-stage\">"
+    },
+    {
+      "line": 2306,
+      "text": "<img id=\"v260FighterAvatar\" alt=\"\">"
+    },
+    {
+      "line": 2367,
+      "text": "<div class=\"v052-scene-banner v052-character\">"
+    },
+    {
+      "line": 2396,
+      "text": "<div class=\"v052-scene-banner v052-character\">"
+    },
+    {
+      "line": 2441,
+      "text": "<div class=\"v052-scene-banner v052-character\">"
+    },
+    {
+      "line": 3311,
+      "text": "const finish=win=>{setTimeout(()=>{battleBusy=false;btn.disabled=false;if(win){s.gold+=e.gold;addXp(e.xp);let html=`<div class=\"loot good\">🏆 Sieg! +${e.xp} XP · +${e.gold} Gold</div>`;if(e.boss||Math.random()<.22){let found;if(e.boss){if(Math.random()<0.12){const slot=setBases[Math.floor(Math.random()*setBases.length)].slot;found=makeSetItem(s.playerClass||'grower',slot)}else{found=makeClassLoot(s.playerClass||'grower','dungeon');found.quality='purple';found.rarity='epic';found.name=`Episch: ${found.name.replace(/^.*?:\\s*/,'')}`;}}else{if(Math.random()<0.8){found=makeClassLoot(s.playerClass||'grower','dungeon')}else{const other=['grower','bruiser','scout','frost','summoner'].filter(x=>x!==s."
+    },
+    {
+      "line": 3996,
+      "text": "/* --- Remove character-page class picker permanently --- */"
+    },
+    {
+      "line": 4316,
+      "text": "function v030Materials(){let p=document.querySelector('#v030Materials'),ch=document.querySelector('#character');if(!ch)return;if(!p){p=document.createElement('div');p.className='card';p.id='v030Materials';ch.appendChild(p)}p.innerHTML=`<div class=\"section-title\"><div><h2>💎 Edelsteine & Rollen</h2><div class=\"muted\">Material auswählen und auf ein angelegtes Item anwenden.</div></div><span class=\"pill\">${s.materials.length}</span></div>${s.materials.length?`<div class=\"inventory-grid\">${s.materials.map((m,i)=>`<div class=\"inv-item ${m.rarity||''}\"><div class=\"item-name\">${m.icon} ${m.name}</div><div class=\"${qualityMeta(m.quality||'gray').color}\">${qualityMeta(m.quality||'gray').label}</div><d"
+    },
+    {
+      "line": 4564,
+      "text": "function v032InstallMenu(){document.querySelector('.bottom')?.remove();if(document.querySelector('#v032TopMenu'))return;const wrap=document.createElement('div');wrap.className='top-menu-wrap';wrap.id='v032TopMenu';wrap.innerHTML=`<button class=\"top-menu-btn\" id=\"v032MenuBtn\" aria-label=\"Menü\">☰</button><div class=\"top-menu-panel\" id=\"v032MenuPanel\"><button class=\"top-menu-item active\" data-screen=\"world\"><span>🗺️</span>Welt</button><button class=\"top-menu-item\" data-screen=\"character\"><span>🧙</span>Held</button><button class=\"top-menu-item\" data-screen=\"grow\"><span>🌱</span>Growroom</button><button class=\"top-menu-item\" data-screen=\"quests\"><span>🍺</span>Quest &amp; Schicht</button><button cl"
+    },
+    {
+      "line": 4565,
+      "text": "function v032WorldMapHTML(){return `<div class=\"world-map-shell\"><div class=\"world-map\" id=\"v032WorldMap\"><div class=\"world-map-title\">🌿 GRÜNHAIN</div><svg class=\"world-path\" viewBox=\"0 0 1000 950\" preserveAspectRatio=\"none\"><polyline points=\"500,115 265,250 680,335 315,465 720,575 365,720 650,835\"/></svg><div class=\"world-map-scenery s1\">🌲🌲</div><div class=\"world-map-scenery s2\">🏔️</div><div class=\"world-map-scenery s3\">🌾</div><div class=\"world-map-scenery s4\">🌲🏚️</div><div class=\"world-map-scenery s5\">🌫️</div><div class=\"world-map-scenery s6\">🌲</div><button class=\"world-map-place hero\" style=\"left:50%;top:12%\" data-v032-go=\"character\"><div class=\"wicon\">🧙</div><div class=\"wname\">Heldenquar"
+    },
+    {
+      "line": 4889,
+      "text": ".character-stage{"
+    },
+    {
+      "line": 5308,
+      "text": ".character-stage{"
+    },
+    {
+      "line": 5789,
+      "text": ".character-stage{"
+    },
+    {
+      "line": 6186,
+      "text": "character:'barbar',"
+    },
+    {
+      "line": 6358,
+      "text": "#character .hero-card{"
+    },
+    {
+      "line": 6364,
+      "text": "#character .character-stage{"
+    },
+    {
+      "line": 6368,
+      "text": "#character .char-title{"
+    },
+    {
+      "line": 6372,
+      "text": "#character .equipment-grid{"
+    },
+    {
+      "line": 6375,
+      "text": "#character .slot{"
+    },
+    {
+      "line": 6382,
+      "text": "#character .slot-icon{"
+    },
+    {
+      "line": 6385,
+      "text": "#character .slot-icon svg{"
+    },
+    {
+      "line": 6388,
+      "text": "#character .slot-label{"
+    },
+    {
+      "line": 6392,
+      "text": "#character .slot-name{"
+    },
+    {
+      "line": 6396,
+      "text": "#character .center-name{"
+    },
+    {
+      "line": 6400,
+      "text": "#character .center-class{"
+    },
+    {
+      "line": 6405,
+      "text": "#character .level-shield{"
+    },
+    {
+      "line": 6409,
+      "text": "#character .combat-row{"
+    },
+    {
+      "line": 6412,
+      "text": "#character .combat-box{"
+    },
+    {
+      "line": 6418,
+      "text": "#character .combat-box b{"
+    },
+    {
+      "line": 6618,
+      "text": "#character .equipment-grid{"
+    },
+    {
+      "line": 6622,
+      "text": "#character .slot{"
+    },
+    {
+      "line": 6626,
+      "text": "#character .slot-name{"
+    },
+    {
+      "line": 6652,
+      "text": "#character .equipment-grid{"
+    },
+    {
+      "line": 6683,
+      "text": "The old V4.02 portrait container caused the small duplicate character. */"
+    },
+    {
+      "line": 6693,
+      "text": "['#character .hero-card','HELDENQUARTIER'],"
+    },
+    {
+      "line": 7037,
+      "text": "#character .hero-card,"
+    },
+    {
+      "line": 7046,
+      "text": "#character .character-stage{"
+    },
+    {
+      "line": 7049,
+      "text": "#character .character-stage:after{"
+    },
+    {
+      "line": 7057,
+      "text": "#character .center-hero{"
+    },
+    {
+      "line": 7060,
+      "text": "#character .center-hero:before{"
+    },
+    {
+      "line": 7190,
+      "text": "#character .center-hero:before{width:150px;height:150px}"
+    },
+    {
+      "line": 7513,
+      "text": "#character .hero-card{"
+    },
+    {
+      "line": 7516,
+      "text": "#character .character-stage{"
+    },
+    {
+      "line": 7521,
+      "text": "#character .center-hero{"
+    },
+    {
+      "line": 7524,
+      "text": "#character .v41-portrait{"
+    },
+    {
+      "line": 7528,
+      "text": "#character .slot{"
+    },
+    {
+      "line": 7531,
+      "text": "#character .slot:after{"
+    },
+    {
+      "line": 7539,
+      "text": "#character .slot-name{"
+    },
+    {
+      "line": 7544,
+      "text": "#character .char-bottom{"
+    },
+    {
+      "line": 7697,
+      "text": "#character .v41-portrait{"
+    },
+    {
+      "line": 7763,
+      "text": "#character .center-hero{"
+    },
+    {
+      "line": 7766,
+      "text": "#character .v41-portrait{"
+    },
+    {
+      "line": 7772,
+      "text": "#character .center-name{"
+    },
+    {
+      "line": 7777,
+      "text": "#character .level-shield{"
+    },
+    {
+      "line": 7782,
+      "text": "#character .slot{"
+    },
+    {
+      "line": 7785,
+      "text": "#character .slot.rarity-epic,"
+    },
+    {
+      "line": 7786,
+      "text": "#character .slot.epic{"
+    },
+    {
+      "line": 7789,
+      "text": "#character .slot.legendary{"
+    },
+    {
+      "line": 7918,
+      "text": "#character .center-name{font-size:20px!important}"
+    },
+    {
+      "line": 7954,
+      "text": "#character .char-head{"
+    },
+    {
+      "line": 7957,
+      "text": "#character .char-sub{"
+    },
+    {
+      "line": 7961,
+      "text": "#character .combat-box{"
+    },
+    {
+      "line": 7965,
+      "text": "#character .combat-box:before{"
+    },
+    {
+      "line": 8084,
+      "text": "#character .combat-box b{font-size:18px!important}"
+    },
+    {
+      "line": 8135,
+      "text": ".v052-character{"
+    },
+    {
+      "line": 8194,
+      "text": "#character .equip-col{"
+    },
+    {
+      "line": 8197,
+      "text": "#character .slot{"
+    },
+    {
+      "line": 8200,
+      "text": "#character .center-hero{"
+    },
+    {
+      "line": 8679,
+      "text": "#character .hero-card{"
+    },
+    {
+      "line": 9946,
+      "text": "/* Explicitly make the materials panel visible in the character screen. */"
+    },
+    {
+      "line": 12697,
+      "text": "<style id=\"v070-primary-attribute\">"
+    },
+    {
+      "line": 12795,
+      "text": "<style id=\"v071-character-name\">"
+    },
+    {
+      "line": 12796,
+      "text": "/* ===== V4.02 character naming ===== */"
+    },
+    {
+      "line": 12831,
+      "text": "/* ===== V4.02 stable character-name helpers ===== */"
+    },
+    {
+      "line": 12832,
+      "text": "s.characterName ??= '';"
+    },
+    {
+      "line": 12833,
+      "text": "s.characterNameSet ??= false;"
+    },
+    {
+      "line": 12848,
+      "text": "const name=v071CleanName(s.characterName);"
+    },
+    {
+      "line": 12856,
+      "text": "const center=document.querySelector('#character .center-name');"
+    },
+    {
+      "line": 12865,
+      "text": "/* Compatibility stubs. V4.02 owns character creation centrally. */"
+    },
+    {
+      "line": 12869,
+      "text": "if(v071NameValid(s.characterName))s.characterNameSet=true;"
+    },
+    {
+      "line": 13042,
+      "text": "name:v071CleanName(s.characterName)||'Unbenannt',"
+    },
+    {
+      "line": 13385,
+      "text": "character_name:v071CleanName(s.characterName)||'Unbenannt',"
+    },
+    {
+      "line": 13399,
+      "text": "if(!s.characterNameSet || !v071NameValid(s.characterName))return false;"
+    },
+    {
+      "line": 13444,
+      "text": "<div class=\"v072-player-name\">${v073Escape(p.character_name)}</div>"
+    },
+    {
+      "line": 13468,
+      "text": ".select('id,character_name,class_id,class_name,level,bosses,gear_score,dungeons')"
+    },
+    {
+      "line": 13485,
+      "text": ": `<button class=\"btn secondary\" data-v073-add=\"${p.id}\" data-name=\"${v073Escape(p.character_name)}\">Freund</button>`"
+    },
+    {
+      "line": 13510,
+      "text": ".select('id,character_name,class_id,class_name,level,bosses,gear_score,dungeons')"
+    },
+    {
+      "line": 13511,
+      "text": ".ilike('character_name',`%${safe}%`)"
+    },
+    {
+      "line": 13526,
+      "text": "`<button class=\"btn\" data-v073-add=\"${p.id}\" data-name=\"${v073Escape(p.character_name)}\">Anfrage senden</button>`"
+    },
+    {
+      "line": 13603,
+      "text": ".select('id,character_name,class_id,class_name,level,bosses,gear_score,dungeons')"
+    },
+    {
+      "line": 13654,
+      "text": "const p=profiles.get(r.sender_id)||{character_name:'Spieler',level:1,class_name:''};"
+    },
+    {
+      "line": 13789,
+      "text": "if(!s.playerClass || !s.characterNameSet || !v071NameValid(s.characterName))return;"
+    },
+    {
+      "line": 13852,
+      "text": "/* V4.46: public/online power is exactly the character-page combatPower(). */"
+    },
+    {
+      "line": 13886,
+      "text": "character_name:v071CleanName(s.characterName)||'Unbenannt',"
+    },
+    {
+      "line": 13924,
+      "text": ".select('id,character_name,class_id,class_name,level,bosses,gear_score,dungeons,combat_power,equipment,dungeon_progress')"
+    },
+    {
+      "line": 13934,
+      "text": "<div><div class=\"v074-profile-title\">${v073Escape(p.character_name)}</div>"
+    },
+    {
+      "line": 13952,
+      "text": "if(add)add.onclick=()=>v073SendFriendRequest(p.id,p.character_name);"
+    },
+    {
+      "line": 13979,
+      "text": ".select('id,character_name,class_id,class_name,level,bosses,gear_score,dungeons,combat_power')"
+    },
+    {
+      "line": 13982,
+      "text": "el.innerHTML=(data||[]).length?data.map((p,i)=>v073PlayerRow(p,i,p.id===v073User.id?'<span class=\"pill\">DU</span>':`<button class=\"btn secondary\" data-v073-add=\"${p.id}\" data-name=\"${v073Escape(p.character_name)}\">Freund</button>`)).join(''):'<div class=\"v072-empty\">Noch keine Spieler.</div>';"
+    },
+    {
+      "line": 13994,
+      "text": ".select('id,character_name,class_id,class_name,level,bosses,gear_score,dungeons,combat_power')"
+    },
+    {
+      "line": 13995,
+      "text": ".ilike('character_name',`%${safe}%`).limit(20);"
+    },
+    {
+      "line": 13998,
+      "text": "target.innerHTML=rows.length?rows.map(p=>v073PlayerRow(p,null,`<button class=\"btn\" data-v073-add=\"${p.id}\" data-name=\"${v073Escape(p.character_name)}\">Anfrage senden</button>`)).join(''):'<div class=\"v072-empty\">Keinen Spieler gefunden.</div>';"
+    },
+    {
+      "line": 14052,
+      "text": "/* V6.22: approved Grow Legends character artwork is the actual browser/webview loading screen. */"
+    },
+    {
+      "line": 14236,
+      "text": "s.characterNameSet ||"
+    },
+    {
+      "line": 14353,
+      "text": "const screen=document.querySelector('#character');if(!screen)return;"
+    },
+    {
+      "line": 14397,
+      "text": "#character .v079-buff-host{"
+    },
+    {
+      "line": 14402,
+      "text": "#character .v079-buff-fx{"
+    },
+    {
+      "line": 14412,
+      "text": "#character .v079-buff-fx:before,"
+    },
+    {
+      "line": 14413,
+      "text": "#character .v079-buff-fx:after{"
+    },
+    {
+      "line": 14427,
+      "text": "#character .v079-buff-fx:after{"
+    },
+    {
+      "line": 14444,
+      "text": "#character .v079-buff-ring{"
+    },
+    {
+      "line": 14462,
+      "text": "#character .v079-buff-label{"
+    },
+    {
+      "line": 14523,
+      "text": "/* Robustly find the actual character portrait container."
+    },
+    {
+      "line": 14526,
+      "text": "const screen=document.querySelector('#character');"
+    },
+    {
+      "line": 14532,
+      "text": "'.character-stage',"
+    },
+    {
+      "line": 14534,
+      "text": "'.character-portrait',"
+    },
+    {
+      "line": 14562,
+      "text": "'#character .v079-buff-fx,#character .v079-buff-ring,#character .v079-buff-label'"
+    },
+    {
+      "line": 14565,
+      "text": "document.querySelectorAll('#character .v079-buff-host')"
+    },
+    {
+      "line": 14604,
+      "text": "<style id=\"v080-class-avatars\">"
+    },
+    {
+      "line": 14614,
+      "text": "#character .v41-portrait{"
+    },
+    {
+      "line": 14625,
+      "text": "#character .v41-portrait .v080-class-avatar-img{"
+    },
+    {
+      "line": 14680,
+      "text": "#character .v41-portrait{"
+    },
+    {
+      "line": 14724,
+      "text": "/* Own character profile/avatar renderer. */"
+    },
+    {
+      "line": 15226,
+      "text": "return String(s.characterName||s.character_name||'Legende').trim()||'Legende';"
+    },
+    {
+      "line": 15337,
+      "text": "<button class=\"v085-quick\" data-v085-go=\"character\"><div class=\"ico\">🧙</div><b>Charakter</b><span>Werte & Ausrüstung</span></button>"
+    },
+    {
+      "line": 15643,
+      "text": "['character','🧙','Charakter'],"
+    },
+    {
+      "line": 15686,
+      "text": "return epoch===v7207CharacterRenderEpoch&&document.getElementById('character')?.classList.contains('active');"
+    },
+    {
+      "line": 15690,
+      "text": "try{fn?.()}catch(e){console.warn('V7.207 character stage',name,e)}"
+    },
+    {
+      "line": 15695,
+      "text": "/* Above-the-fold identity is the only character work allowed in the first"
+    },
+    {
+      "line": 15710,
+      "text": "try{window.__GL_RUNTIME_WATCHDOG__?.report?.('character_render_profile','info',profile,{screen:'character',incidentKey:'progressive-v7207'})}catch(_){}"
+    },
+    {
+      "line": 15726,
+      "text": "case 'character':"
+    },
+    {
+      "line": 15750,
+      "text": "v032Go=function(id){"
+    },
+    {
+      "line": 15772,
+      "text": "<style id=\"v087-main-attribute-fix\">"
+    },
+    {
+      "line": 15809,
+      "text": "<script id=\"v087-main-attribute-runtime-fix\">"
+    },
+    {
+      "line": 15832,
+      "text": "requestAnimationFrame(v087FixMainAttributeBadge);"
+    },
+    {
+      "line": 15976,
+      "text": "/* Repaint shop whenever character gear changes or page renders. */"
+    },
+    {
+      "line": 17460,
+      "text": "<b>${v093Esc(p.character_name||'Unbenannt')}</b>"
+    },
+    {
+      "line": 17488,
+      "text": "document.querySelector('#v103PlayerName').textContent=p.character_name||'Spieler';"
+    },
+    {
+      "line": 17522,
+      "text": "`Spielerwerte für ${v103SelectedPlayer.character_name} wirklich ändern?\\n\\n`+"
+    },
+    {
+      "line": 17533,
+      "text": "v063Toast('Spielerwerte gespeichert','success',`${v103SelectedPlayer.character_name} wurde aktualisiert.`);"
+    },
+    {
+      "line": 17637,
+      "text": "`Belohnung an ${v103SelectedPlayer.character_name} senden?\\n\\n`+"
+    },
+    {
+      "line": 17660,
+      "text": "`${v103SelectedPlayer.character_name} erhält die Belohnung.`"
+    },
+    {
+      "line": 17830,
+      "text": "<div class=\"v106-summary\"><div>ERLEDIGT<b id=\"v106Done\">0</b></div><div>GESAMT<b id=\"v106Total\">0</b></div><div>ATTRIBUT-BONUS<b id=\"v106Bonus\">+0</b></div></div>"
+    },
+    {
+      "line": 17837,
+      "text": "const avatar=document.querySelector('.character-avatar')||document.querySelector('.character-stage img')?.parentElement||document.querySelector('.character-stage');"
+    },
+    {
+      "line": 17887,
+      "text": "#character .center-hero{"
+    },
+    {
+      "line": 17890,
+      "text": "#character #v106BookBtn{"
+    },
+    {
+      "line": 17905,
+      "text": "#character #v106BookBtn .book{"
+    },
+    {
+      "line": 17909,
+      "text": "#character #v106BookBtn .v106-book-info{"
+    },
+    {
+      "line": 17949,
+      "text": "const level=document.querySelector('#character .level-shield');"
+    },
+    {
+      "line": 18304,
+      "text": "/* Boss reacts to actual character strength, not level alone. */"
+    },
+    {
+      "line": 19252,
+      "text": "{title:`Spielerwerte ändern – ${v103SelectedPlayer.character_name}`,type:'warn',okText:'Speichern'}"
+    },
+    {
+      "line": 19257,
+      "text": "v063Toast('Spielerwerte gespeichert','success',`${v103SelectedPlayer.character_name} wurde aktualisiert.`);"
+    },
+    {
+      "line": 19270,
+      "text": "{title:`Belohnung an ${v103SelectedPlayer.character_name}`,okText:'Belohnung senden'}"
+    },
+    {
+      "line": 19280,
+      "text": "v063Toast('🎁 Belohnung gesendet','success',`${v103SelectedPlayer.character_name} erhält die Belohnung.`);"
+    },
+    {
+      "line": 19381,
+      "text": ".select('id,character_name,class_id,class_name,level,bosses,gear_score,dungeons,combat_power,dungeon_progress,worldboss_attempts,worldboss_wins')"
+    },
+    {
+      "line": 19397,
+      "text": ": `<button class=\"btn secondary\" data-v073-add=\"${p.id}\" data-name=\"${v073Escape(p.character_name)}\">Freund</button>`"
+    },
+    {
+      "line": 19421,
+      "text": ".select('id,character_name,class_id,class_name,level,bosses,gear_score,dungeons,combat_power,dungeon_progress,worldboss_attempts,worldboss_wins')"
+    },
+    {
+      "line": 19422,
+      "text": ".ilike('character_name',`%${safe}%`)"
+    },
+    {
+      "line": 19435,
+      "text": "`<button class=\"btn\" data-v073-add=\"${p.id}\" data-name=\"${v073Escape(p.character_name)}\">Anfrage senden</button>`"
+    },
+    {
+      "line": 20952,
+      "text": "<style id=\"v123-character-equipment-redesign\">"
+    },
+    {
+      "line": 20954,
+      "text": "#character .character-stage{"
+    },
+    {
+      "line": 20965,
+      "text": "#character .equipment-grid{"
+    },
+    {
+      "line": 20970,
+      "text": "#character .equip-col{gap:9px!important}"
+    },
+    {
+      "line": 20973,
+      "text": "#character .slot{"
+    },
+    {
+      "line": 20985,
+      "text": "#character .slot:active{transform:scale(.985)}"
+    },
+    {
+      "line": 20986,
+      "text": "#character .slot-icon{"
+    },
+    {
+      "line": 20996,
+      "text": "#character .slot-label{"
+    },
+    {
+      "line": 21002,
+      "text": "#character .slot-name{"
+    },
+    {
+      "line": 21009,
+      "text": "#character .slot .tiny{"
+    },
+    {
+      "line": 21015,
+      "text": "#character .slot .set-tag{"
+    },
+    {
+      "line": 21020,
+      "text": "#character .slot-actions{"
+    },
+    {
+      "line": 21026,
+      "text": "#character .slot-actions .mini-btn{"
+    },
+    {
+      "line": 21034,
+      "text": "#character .slot.v123-gray{border-color:#59635e!important}"
+    },
+    {
+      "line": 21035,
+      "text": "#character .slot.v123-green{"
+    },
+    {
+      "line": 21039,
+      "text": "#character .slot.v123-blue{"
+    },
+    {
+      "line": 21043,
+      "text": "#character .slot.v123-purple{"
+    },
+    {
+      "line": 21047,
+      "text": "#character .slot.v123-orange{"
+    },
+    {
+      "line": 21051,
+      "text": "#character .slot.v123-cyan{"
+    },
+    {
+      "line": 21070,
+      "text": "#character .center-hero{"
+    },
+    {
+      "line": 21078,
+      "text": "#character .avatar-scene{"
+    },
+    {
+      "line": 21082,
+      "text": "#character .v41-portrait{"
+    },
+    {
+      "line": 21087,
+      "text": "#character .center-name{"
+    },
+    {
+      "line": 21092,
+      "text": "#character .center-class{"
+    },
+    {
+      "line": 21097,
+      "text": "#character .level-shield{"
+    },
+    {
+      "line": 21104,
+      "text": "#character .level-shield b{font-size:22px!important}"
+    },
+    {
+      "line": 21105,
+      "text": "#character .center-xp{max-width:260px!important}"
+    },
+    {
+      "line": 21142,
+      "text": "#character .equipment-grid{"
+    },
+    {
+      "line": 21146,
+      "text": "#character .slot{min-height:115px!important;padding:7px!important}"
+    },
+    {
+      "line": 21147,
+      "text": "#character .slot-name{font-size:8px!important}"
+    },
+    {
+      "line": 21148,
+      "text": "#character .center-hero{min-height:420px!important}"
+    },
+    {
+      "line": 21149,
+      "text": "#character .avatar-scene{height:260px!important}"
+    },
+    {
+      "line": 21153,
+      "text": "<script id=\"v123-character-equipment-redesign-script\">"
+    },
+    {
+      "line": 21195,
+      "text": "const hero=document.querySelector('#character .center-hero');"
+    },
+    {
+      "line": 21280,
+      "text": "if(document.querySelector('#character')?.classList.contains('active'))requestAnimationFrame(v123PolishEquipment);"
+    },
+    {
+      "line": 21287,
+      "text": "<style id=\"v124-character-width-fix\">"
+    },
+    {
+      "line": 21290,
+      "text": "/* Absolute safety: character page may never create horizontal scroll */"
+    },
+    {
+      "line": 21291,
+      "text": "html,body,.app,.screen,#character{"
+    },
+    {
+      "line": 21296,
+      "text": "#character *{"
+    },
+    {
+      "line": 21301,
+      "text": "#character .character-stage{"
+    },
+    {
+      "line": 21314,
+      "text": "#character .equipment-grid{"
+    },
+    {
+      "line": 21326,
+      "text": "#character .equip-col,"
+    },
+    {
+      "line": 21327,
+      "text": "#character .center-hero{"
+    },
+    {
+      "line": 21333,
+      "text": "#character .slot{"
+    },
+    {
+      "line": 21340,
+      "text": "#character .slot-name,"
+    },
+    {
+      "line": 21341,
+      "text": "#character .slot .tiny,"
+    },
+    {
+      "line": 21342,
+      "text": "#character .v123-effect,"
+    },
+    {
+      "line": 21343,
+      "text": "#character .set-tag{"
+    },
+    {
+      "line": 21350,
+      "text": "#character .slot-name{"
+    },
+    {
+      "line": 21357,
+      "text": "#character .slot .tiny{"
+    },
+    {
+      "line": 21364,
+      "text": "#character .v123-effect{"
+    },
+    {
+      "line": 21370,
+      "text": "#character .avatar-scene{"
+    },
+    {
+      "line": 21375,
+      "text": "#character .v41-portrait{"
+    },
+    {
+      "line": 21381,
+      "text": "#character .v41-portrait svg,"
+    },
+    {
+      "line": 21382,
+      "text": "#character .v41-portrait img{"
+    },
+    {
+      "line": 21388,
+      "text": "#character .slot-actions{"
+    },
+    {
+      "line": 21391,
+      "text": "#character .slot-actions .mini-btn{"
+    },
+    {
+      "line": 21398,
+      "text": "#character .center-name,"
+    },
+    {
+      "line": 21399,
+      "text": "#character .center-class,"
+    },
+    {
+      "line": 21400,
+      "text": "#character .center-xp,"
+    },
+    {
+      "line": 21401,
+      "text": "#character .level-shield,"
+    },
+    {
+      "line": 21402,
+      "text": "#character .v123-gear-summary{"
+    },
+    {
+      "line": 21408,
+      "text": "#character .character-stage{"
+    },
+    {
+      "line": 21412,
+      "text": "#character .equipment-grid{"
+    },
+    {
+      "line": 21417,
+      "text": "#character .slot{"
+    },
+    {
+      "line": 21423,
+      "text": "#character .slot-icon{"
+    },
+    {
+      "line": 21429,
+      "text": "#character .slot-label{"
+    },
+    {
+      "line": 21433,
+      "text": "#character .slot-name{"
+    },
+    {
+      "line": 21438,
+      "text": "#character .slot .tiny{"
+    },
+    {
+      "line": 21442,
+      "text": "#character .v123-effect{"
+    },
+    {
+      "line": 21447,
+      "text": "#character .slot-actions .mini-btn{"
+    },
+    {
+      "line": 21452,
+      "text": "#character .center-hero{"
+    },
+    {
+      "line": 21458,
+      "text": "#character .avatar-scene{"
+    },
+    {
+      "line": 21462,
+      "text": "#character .v41-portrait{"
+    },
+    {
+      "line": 21466,
+      "text": "#character .center-name{"
+    },
+    {
+      "line": 21470,
+      "text": "#character .center-class{"
+    },
+    {
+      "line": 21474,
+      "text": "#character .v123-gear-summary{"
+    },
+    {
+      "line": 21480,
+      "text": "#character .v123-gear-chip{"
+    },
+    {
+      "line": 21488,
+      "text": "#character .equipment-grid{"
+    },
+    {
+      "line": 21493,
+      "text": "#character .slot{"
+    },
+    {
+      "line": 21497,
+      "text": "#character .slot-name{font-size:6.8px!important}"
+    },
+    {
+      "line": 21498,
+      "text": "#character .slot .tiny{font-size:6px!important}"
+    },
+    {
+      "line": 21499,
+      "text": "#character .v123-effect{font-size:5.4px!important}"
+    },
+    {
+      "line": 21503,
+      "text": "<script id=\"v124-character-width-fix-script\">"
+    },
+    {
+      "line": 21512,
+      "text": "<style id=\"v125-attributes-skills-image1\">"
+    },
+    {
+      "line": 21516,
+      "text": "#character .char-bottom{"
+    },
+    {
+      "line": 21523,
+      "text": "#character .combat-row{"
+    },
+    {
+      "line": 21529,
+      "text": "#character .combat-box{"
+    },
+    {
+      "line": 21539,
+      "text": "#character .combat-box:before{"
+    },
+    {
+      "line": 21546,
+      "text": "#character .combat-box:first-child:before{content:\"❤️\";box-shadow:0 0 14px rgba(255,82,104,.18)}"
+    },
+    {
+      "line": 21547,
+      "text": "#character .combat-box:nth-child(2):before{content:\"⚔️\";box-shadow:0 0 14px rgba(235,190,73,.17)}"
+    },
+    {
+      "line": 21548,
+      "text": "#character .combat-box span{"
+    },
+    {
+      "line": 21554,
+      "text": "#character .combat-box b{"
+    },
+    {
+      "line": 21563,
+      "text": "#character #attrs{"
+    },
+    {
+      "line": 21568,
+      "text": "#character .v125-attr{"
+    },
+    {
+      "line": 21584,
+      "text": "#character .v125-attr-icon{"
+    },
+    {
+      "line": 21592,
+      "text": "#character .v125-attr-name{"
+    },
+    {
+      "line": 21597,
+      "text": "#character .v125-attr-value{"
+    },
+    {
+      "line": 21604,
+      "text": "#character .v125-attr-desc{"
+    },
+    {
+      "line": 21610,
+      "text": "#character .v125-attr button{"
+    },
+    {
+      "line": 21621,
+      "text": "#character .v125-attr button:disabled{"
+    },
+    {
+      "line": 21627,
+      "text": "#character .v125-attr.primary{"
+    },
+    {
+      "line": 21639,
+      "text": "#character .v125-attr.primary:before{"
+    },
+    {
+      "line": 21648,
+      "text": "#character .v125-attr.primary .v125-attr-icon{"
+    },
+    {
+      "line": 21653,
+      "text": "#character .v125-attr.primary .v125-attr-name{color:#e7a161}"
+    },
+    {
+      "line": 21654,
+      "text": "#character .v125-attr.primary .v125-attr-value{"
+    },
+    {
+      "line": 21658,
+      "text": "#character .v125-attr.primary .v125-attr-desc{color:#bd9273}"
+    },
+    {
+      "line": 21661,
+      "text": "#character .card:has(#skillTree){"
+    },
+    {
+      "line": 21668,
+      "text": "#character .card:has(#skillTree) .section-title{"
+    },
+    {
+      "line": 21673,
+      "text": "#character .card:has(#skillTree) .section-title h2{"
+    },
+    {
+      "line": 21677,
+      "text": "#character .skill-point-pill{"
+    },
+    {
+      "line": 21682,
+      "text": "#character .skill-point-pill b{"
+    },
+    {
+      "line": 21688,
+      "text": "#character .skill-tree{"
+    },
+    {
+      "line": 21693,
+      "text": "#character .v125-skill{"
+    },
+    {
+      "line": 21706,
+      "text": "#character .v125-skill.locked{"
+    },
+    {
+      "line": 21711,
+      "text": "#character .v125-skill.maxed{"
+    },
+    {
+      "line": 21718,
+      "text": "#character .v125-skill-type{"
+    },
+    {
+      "line": 21730,
+      "text": "#character .v125-skill.passive .v125-skill-type{"
+    },
+    {
+      "line": 21733,
+      "text": "#character .v125-skill.special .v125-skill-type{"
+    },
+    {
+      "line": 21736,
+      "text": "#character .v125-skill-head{"
+    },
+    {
+      "line": 21739,
+      "text": "#character .v125-skill-icon{"
+    },
+    {
+      "line": 21748,
+      "text": "#character .v125-skill-name{"
+    },
+    {
+      "line": 21751,
+      "text": "#character .v125-skill-rank{"
+    },
+    {
+      "line": 21754,
+      "text": "#character .v125-skill-desc{"
+    },
+    {
+      "line": 21761,
+      "text": "#character .v125-skill-desc b{"
+    },
+    {
+      "line": 21764,
+      "text": "#character .v125-skill-ranks{"
+    },
+    {
+      "line": 21767,
+      "text": "#character .v125-rank{"
+    },
+    {
+      "line": 21771,
+      "text": "#character .v125-rank.on{"
+    },
+    {
+      "line": 21776,
+      "text": "#character .v125-skill.maxed .v125-rank.on{"
+    },
+    {
+      "line": 21780,
+      "text": "#character .v125-skill-bottom{"
+    },
+    {
+      "line": 21784,
+      "text": "#character .v125-skill-state{"
+    },
+    {
+      "line": 21787,
+      "text": "#character .v125-skill.maxed .v125-skill-state{"
+    },
+    {
+      "line": 21790,
+      "text": "#character .v125-skill.locked .v125-skill-state{"
+    },
+    {
+      "line": 21793,
+      "text": "#character .v125-skill .btn{"
+    },
+    {
+      "line": 21797,
+      "text": "#character .v125-max-badge{"
+    },
+    {
+      "line": 21802,
+      "text": "#character .v125-lock-watermark{"
+    },
+    {
+      "line": 21822,
+      "text": "#character #attrs{"
+    },
+    {
+      "line": 21826,
+      "text": "#character .v125-attr{"
+    },
+    {
+      "line": 21832,
+      "text": "#character .v125-attr-icon{"
+    },
+    {
+      "line": 21835,
+      "text": "#character .v125-attr-name{font-size:7.5px}"
+    },
+    {
+      "line": 21836,
+      "text": "#character .v125-attr-value{font-size:16px}"
+    },
+    {
+      "line": 21837,
+      "text": "#character .v125-attr-desc{font-size:5.7px}"
+    },
+    {
+      "line": 21838,
+      "text": "#character .v125-attr button{"
+    },
+    {
+      "line": 21841,
+      "text": "#character .v125-attr.primary{"
+    },
+    {
+      "line": 21845,
+      "text": "#character .v125-attr.primary .v125-attr-icon{"
+    },
+    {
+      "line": 21848,
+      "text": "#character .v125-attr.primary .v125-attr-value{font-size:19px}"
+    },
+    {
+      "line": 21849,
+      "text": "#character .v125-attr.primary:before{right:48px;font-size:5px}"
+    },
+    {
+      "line": 21851,
+      "text": "#character .skill-tree{"
+    },
+    {
+      "line": 21854,
+      "text": "#character .v125-skill{"
+    },
+    {
+      "line": 21857,
+      "text": "#character .v125-skill-desc{min-height:auto}"
+    },
+    {
+      "line": 21861,
+      "text": "<script id=\"v125-attributes-skills-image1-script\">"
+    },
+    {
+      "line": 21952,
+      "text": "if(document.querySelector('#character')?.classList.contains('active')){"
+    },
+    {
+      "line": 21972,
+      "text": "<style id=\"v126-character-repaint-fix\">"
+    },
+    {
+      "line": 21973,
+      "text": "/* ===== V4.02 Android/mobile character repaint stability ===== */"
+    },
+    {
+      "line": 21974,
+      "text": "#character .avatar-scene,"
+    },
+    {
+      "line": 21975,
+      "text": "#character .v41-portrait,"
+    },
+    {
+      "line": 21976,
+      "text": "#character .v080-class-avatar-img,"
+    },
+    {
+      "line": 21977,
+      "text": "#character .slot,"
+    },
+    {
+      "line": 21978,
+      "text": "#character .slot-icon{"
+    },
+    {
+      "line": 21983,
+      "text": "#character .v080-class-avatar-img{"
+    },
+    {
+      "line": 21991,
+      "text": "#character .slot-icon{"
+    },
+    {
+      "line": 21996,
+      "text": "<script id=\"v126-character-repaint-fix-script\">"
+    },
+    {
+      "line": 22261,
+      "text": "#character .card:has(#skillTree){"
+    },
+    {
+      "line": 22272,
+      "text": "#character .card:has(#skillTree):before{"
+    },
+    {
+      "line": 22281,
+      "text": "#character .card:has(#skillTree) .section-title{"
+    },
+    {
+      "line": 22287,
+      "text": "#character .card:has(#skillTree) .section-title h2{"
+    },
+    {
+      "line": 22292,
+      "text": "#character .skill-point-pill{"
+    },
+    {
+      "line": 22303,
+      "text": "#character .skill-point-pill:before{"
+    },
+    {
+      "line": 22309,
+      "text": "#character .skill-point-pill b{"
+    },
+    {
+      "line": 22315,
+      "text": "#character .skill-tree{"
+    },
+    {
+      "line": 22320,
+      "text": "#character .v125-skill{"
+    },
+    {
+      "line": 22326,
+      "text": "#character .v125-skill:after{"
+    },
+    {
+      "line": 22335,
+      "text": "#character .v125-skill.active{"
+    },
+    {
+      "line": 22343,
+      "text": "#character .v125-skill.passive{"
+    },
+    {
+      "line": 22351,
+      "text": "#character .v125-skill.special{"
+    },
+    {
+      "line": 22359,
+      "text": "#character .v125-skill.maxed{"
+    },
+    {
+      "line": 22362,
+      "text": "#character .v125-skill-head{"
+    },
+    {
+      "line": 22366,
+      "text": "#character .v125-skill-icon{"
+    },
+    {
+      "line": 22372,
+      "text": "#character .active .v125-skill-icon{border-color:#b77d29!important}"
+    },
+    {
+      "line": 22373,
+      "text": "#character .passive .v125-skill-icon{border-color:#4b9f4d!important}"
+    },
+    {
+      "line": 22374,
+      "text": "#character .special .v125-skill-icon{border-color:#b45b25!important}"
+    },
+    {
+      "line": 22375,
+      "text": "#character .v125-skill-name{"
+    },
+    {
+      "line": 22379,
+      "text": "#character .v125-skill-rank{"
+    },
+    {
+      "line": 22383,
+      "text": "#character .v125-skill-desc{"
+    },
+    {
+      "line": 22391,
+      "text": "#character .active .v125-skill-desc b{color:#d3a8ef!important}"
+    },
+    {
+      "line": 22392,
+      "text": "#character .passive .v125-skill-desc b{color:#82dc70!important}"
+    },
+    {
+      "line": 22393,
+      "text": "#character .special .v125-skill-desc b{color:#f28c46!important}"
+    },
+    {
+      "line": 22396,
+      "text": "#character .v125-max-badge{"
+    },
+    {
+      "line": 22407,
+      "text": "#character .v125-skill-ranks{"
+    },
+    {
+      "line": 22411,
+      "text": "#character .v125-rank{"
+    },
+    {
+      "line": 22415,
+      "text": "#character .v125-rank.on{"
+    },
+    {
+      "line": 22420,
+      "text": "#character .v125-skill-state{"
+    },
+    {
+      "line": 22424,
+      "text": "#character .v125-skill.maxed .v125-skill-state{"
+    },
+    {
+      "line": 22427,
+      "text": "#character .v125-skill .btn{"
+    },
+    {
+      "line": 22432,
+      "text": "#character .v125-skill .btn:disabled{"
+    },
+    {
+      "line": 22440,
+      "text": "#character .v125-skill.locked{"
+    },
+    {
+      "line": 22445,
+      "text": "#character .v125-lock-watermark{"
+    },
+    {
+      "line": 22453,
+      "text": "#character .v125-skill-info{"
+    },
+    {
+      "line": 22461,
+      "text": "#character .v125-skill-info:before{"
+    },
+    {
+      "line": 22468,
+      "text": "#character .v125-skill.maxed .v125-skill-bottom:before{"
+    },
+    {
+      "line": 22475,
+      "text": "#character .v125-skill.maxed .v125-skill-state{display:none}"
+    },
+    {
+      "line": 22478,
+      "text": "#character .card:has(#skillTree){padding:12px!important}"
+    },
+    {
+      "line": 22479,
+      "text": "#character .card:has(#skillTree) .section-title{min-height:86px}"
+    },
+    {
+      "line": 22480,
+      "text": "#character .card:has(#skillTree) .section-title h2{font-size:19px!important}"
+    },
+    {
+      "line": 22481,
+      "text": "#character .skill-point-pill{min-width:105px;padding-left:39px!important}"
+    },
+    {
+      "line": 22482,
+      "text": "#character .v125-skill{min-height:210px!important;padding:12px!important}"
+    },
+    {
+      "line": 22483,
+      "text": "#character .v125-skill-icon{"
+    },
+    {
+      "line": 22486,
+      "text": "#character .v125-skill-name{font-size:14px!important}"
+    },
+    {
+      "line": 22487,
+      "text": "#character .v125-skill-desc{max-width:82%;font-size:7.8px!important}"
+    },
+    {
+      "line": 22496,
+      "text": "<style id=\"v129-shop-inventory-character-premium\">"
+    },
+    {
+      "line": 22501,
+      "text": "#character .card{"
+    },
+    {
+      "line": 22510,
+      "text": "#character .section-title{"
+    },
+    {
+      "line": 22516,
+      "text": "#character .section-title h2,"
+    },
+    {
+      "line": 22517,
+      "text": "#character .section-title h3{"
+    },
+    {
+      "line": 22664,
+      "text": "#character > .v052-scene-banner{"
+    },
+    {
+      "line": 22672,
+      "text": "#character > .v052-scene-banner .v052-title{"
+    },
+    {
+      "line": 22675,
+      "text": "#character > .v038-location{"
+    },
+    {
+      "line": 22687,
+      "text": "#character .hero-card{"
+    },
+    {
+      "line": 22697,
+      "text": "#character .hero-card:after{"
+    },
+    {
+      "line": 22705,
+      "text": "#character .hero-card > h2,"
+    },
+    {
+      "line": 22706,
+      "text": "#character .hero-card > .muted{"
+    },
+    {
+      "line": 22709,
+      "text": "#character .hero-card > h2{"
+    },
+    {
+      "line": 22714,
+      "text": "#character .hero-card > .muted{"
+    },
+    {
+      "line": 22720,
+      "text": "#character .center-name{"
+    },
+    {
+      "line": 22724,
+      "text": "#character .center-class{"
+    },
+    {
+      "line": 22728,
+      "text": "#character .center-xp{"
+    },
+    {
+      "line": 22734,
+      "text": "#character .center-xp .progress{"
+    },
+    {
+      "line": 22738,
+      "text": "#character .center-xp .bar{"
+    },
+    {
+      "line": 22744,
+      "text": "#character [onclick*=\"achievement\"],"
+    },
+    {
+      "line": 22745,
+      "text": "#character [onclick*=\"book\"],"
+    },
+    {
+      "line": 22746,
+      "text": "#character .achievement-book{"
+    },
+    {
+      "line": 22756,
+      "text": "#character .combat-box:first-child{"
+    },
+    {
+      "line": 22760,
+      "text": "#character .combat-box:nth-child(2){"
+    },
+    {
+      "line": 22766,
+      "text": "#character #inventory,"
+    },
+    {
+      "line": 22767,
+      "text": "#character #v030Materials{"
+    },
+    {
+      "line": 22770,
+      "text": "#character #inventory .inventory-grid,"
+    },
+    {
+      "line": 22771,
+      "text": "#character #v030Materials .inventory-grid{"
+    },
+    {
+      "line": 22776,
+      "text": "#character #inventory .inv-item,"
+    },
+    {
+      "line": 22777,
+      "text": "#character #v030Materials .inv-item{"
+    },
+    {
+      "line": 22789,
+      "text": "#character #inventory .inv-item .item-name,"
+    },
+    {
+      "line": 22790,
+      "text": "#character #v030Materials .inv-item .item-name{"
+    },
+    {
+      "line": 22796,
+      "text": "#character #inventory .item-bonus,"
+    },
+    {
+      "line": 22797,
+      "text": "#character #v030Materials .item-bonus{"
+    },
+    {
+      "line": 22803,
+      "text": "#character #inventory .inv-actions{"
+    },
+    {
+      "line": 22807,
+      "text": "#character #inventory .inv-actions .btn,"
+    },
+    {
+      "line": 22808,
+      "text": "#character #v030Materials .btn{"
+    },
+    {
+      "line": 22813,
+      "text": "#character #v030Materials .btn{"
+    },
+    {
+      "line": 22818,
+      "text": "#character .inv-item.common-gray{border-color:#59645e!important}"
+    },
+    {
+      "line": 22819,
+      "text": "#character .inv-item.common-green{border-color:#4f9b58!important}"
+    },
+    {
+      "line": 22820,
+      "text": "#character .inv-item.rare-blue{border-color:#4f89d5!important;box-shadow:inset 0 0 24px rgba(66,127,215,.10),0 0 13px rgba(66,127,215,.08)!important}"
+    },
+    {
+      "line": 22821,
+      "text": "#character .inv-item.epic-purple{border-color:#a066df!important;box-shadow:inset 0 0 25px rgba(155,89,225,.11),0 0 14px rgba(155,89,225,.09)!important}"
+    },
+    {
+      "line": 22822,
+      "text": "#character .inv-item.legendary-orange{border-color:#de9638!important;box-shadow:inset 0 0 26px rgba(224,141,44,.12),0 0 15px rgba(224,141,44,.10)!important}"
+    },
+    {
+      "line": 22823,
+      "text": "#character .inv-item.mystic-cyan{border-color:#42dcd7!important;box-shadow:inset 0 0 28px rgba(54,221,215,.14),0 0 18px rgba(54,221,215,.12)!important}"
+    },
+    {
+      "line": 22826,
+      "text": "#character .card .tiny{"
+    },
+    {
+      "line": 22829,
+      "text": "#character .card .tiny:first-of-type{"
+    },
+    {
+      "line": 22833,
+      "text": "/* headings inside character cards */"
+    },
+    {
+      "line": 22834,
+      "text": "#character .card .section-title{"
+    },
+    {
+      "line": 22839,
+      "text": "#character .card .section-title .pill{"
+    },
+    {
+      "line": 22848,
+      "text": "#character #inventory .inventory-grid,"
+    },
+    {
+      "line": 22849,
+      "text": "#character #v030Materials .inventory-grid{"
+    },
+    {
+      "line": 22864,
+      "text": "#character #inventory .inv-item,"
+    },
+    {
+      "line": 22865,
+      "text": "#character #v030Materials .inv-item{"
+    },
+    {
+      "line": 22869,
+      "text": "#character #inventory .inv-item .item-name,"
+    },
+    {
+      "line": 22870,
+      "text": "#character #v030Materials .inv-item .item-name{"
+    },
+    {
+      "line": 22876,
+      "text": "#character #inventory .inventory-grid,"
+    },
+    {
+      "line": 22877,
+      "text": "#character #v030Materials .inventory-grid{"
+    },
+    {
+      "line": 22884,
+      "text": "<script id=\"v129-shop-inventory-character-premium-script\">"
+    },
+    {
+      "line": 22926,
+      "text": "#character .set-card,"
+    },
+    {
+      "line": 22927,
+      "text": "#character [class*=\"set-card\"],"
+    },
+    {
+      "line": 22928,
+      "text": "#character .class-set,"
+    },
+    {
+      "line": 22929,
+      "text": "#character [class*=\"class-set\"]{"
+    },
+    {
+      "line": 22939,
+      "text": "#character .set-tag{"
+    },
+    {
+      "line": 22946,
+      "text": "#character .set-bonus,"
+    },
+    {
+      "line": 22947,
+      "text": "#character [class*=\"set-bonus\"]{"
+    },
+    {
+      "line": 22955,
+      "text": "#character .set-bonus.active,"
+    },
+    {
+      "line": 22956,
+      "text": "#character [class*=\"set-bonus\"].active{"
+    },
+    {
+      "line": 22963,
+      "text": "#character #inventory,"
+    },
+    {
+      "line": 22964,
+      "text": "#character #v030Materials{"
+    },
+    {
+      "line": 22967,
+      "text": "#character #inventory .inventory-grid,"
+    },
+    {
+      "line": 22968,
+      "text": "#character #v030Materials .inventory-grid{"
+    },
+    {
+      "line": 22972,
+      "text": "#character #inventory .inv-item,"
+    },
+    {
+      "line": 22973,
+      "text": "#character #v030Materials .inv-item{"
+    },
+    {
+      "line": 22984,
+      "text": "#character #inventory .inv-item:before,"
+    },
+    {
+      "line": 22985,
+      "text": "#character #v030Materials .inv-item:before{"
+    },
+    {
+      "line": 22992,
+      "text": "#character #inventory .item-name,"
+    },
+    {
+      "line": 22993,
+      "text": "#character #v030Materials .item-name{"
+    },
+    {
+      "line": 22997,
+      "text": "#character #inventory .inv-actions{"
+    },
+    {
+      "line": 23001,
+      "text": "#character #inventory .inv-actions .btn:first-child{"
+    },
+    {
+      "line": 23006,
+      "text": "#character #inventory .sell-btn{"
+    },
+    {
+      "line": 23011,
+      "text": "#character #v030Materials .btn{"
+    },
+    {
+      "line": 23019,
+      "text": "#character .v130-inventory-heading{"
+    },
+    {
+      "line": 23029,
+      "text": "#character .v130-inventory-heading .v130-icon{"
+    },
+    {
+      "line": 23034,
+      "text": "#character .v130-inventory-heading b{font-size:11px;color:#eef4ed}"
+    },
+    {
+      "line": 23035,
+      "text": "#character .v130-inventory-heading span{display:block;font-size:7px;color:#82968a;margin-top:2px}"
+    },
+    {
+      "line": 23038,
+      "text": "#character #inventory .inv-item,"
+    },
+    {
+      "line": 23039,
+      "text": "#character #v030Materials .inv-item{min-height:185px!important;padding:8px!important}"
+    },
+    {
+      "line": 23085,
+      "text": "#character .card:has(#setBonuses){"
+    },
+    {
+      "line": 23093,
+      "text": "#character .card:has(#setBonuses):after{"
+    },
+    {
+      "line": 23099,
+      "text": "#character .card:has(#setBonuses) .section-title h2{"
+    },
+    {
+      "line": 23102,
+      "text": "#character #setBonuses{"
+    },
+    {
+      "line": 23109,
+      "text": "#character #setBonuses > b,"
+    },
+    {
+      "line": 23110,
+      "text": "#character #setBonuses .set-name{"
+    },
+    {
+      "line": 23116,
+      "text": "#character #setBonuses .set-bonus,"
+    },
+    {
+      "line": 23117,
+      "text": "#character #setBonuses > div:not(:first-child){"
+    },
+    {
+      "line": 23127,
+      "text": "#character #setBonuses .active{"
+    },
+    {
+      "line": 23133,
+      "text": "#character .card:has(#inventory){"
+    },
+    {
+      "line": 23139,
+      "text": "#character .card:has(#inventory) .section-title h2{"
+    },
+    {
+      "line": 23142,
+      "text": "#character .card:has(#inventory) .section-title .pill{"
+    }
+  ]
+}
