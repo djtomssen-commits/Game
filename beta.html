@@ -65624,12 +65624,9 @@ html:not(.v4142-systemtech-admin) #v4102QaButton{display:none!important}
  }catch(e){}
  try{if(typeof v072ClassName==='function'){const base=v072ClassName;v072ClassName=function(){return classes?.[s.playerClass]?.name||base.apply(this,arguments)};try{window.v072ClassName=v072ClassName}catch(e){}}}catch(e){}
 
- /* Repaint after every established render/navigation without introducing polling. */
+ /* V8.009: shared character lifecycle owns repaint; no global render wrapper. */
  try{
-  if(typeof render==='function'&&!window.__v4153Render){const base=render;render=function(){const r=base.apply(this,arguments);if(document.getElementById('character')?.classList.contains('active'))requestAnimationFrame(()=>refreshAll('render-character'));return r};try{window.render=render}catch(e){}window.__v4153Render=true}
- }catch(e){}
- try{
-  window.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')==='character')refreshAll('nav-character')});window.__v4153Go='v7119-event'
+  window.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')==='character')refreshAll('nav-character')},{passive:true});window.__v4153Go='v7119-event';window.__v4153Render='retired'
  }catch(e){}
 
  function stamp(){}
@@ -66353,10 +66350,7 @@ html:not(.v4142-systemtech-admin) #v4102QaButton{display:none!important}
 
  function stamp(){}
  try{
-  if(typeof render==='function'&&!window.__v4156Render){const b=render;render=function(){const r=b.apply(this,arguments);if(document.getElementById('character')?.classList.contains('active'))requestAnimationFrame(paintPassive);stamp();return r};try{window.render=render}catch(e){}window.__v4156Render=true}
- }catch(e){}
- try{
-  window.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')==='character'){paintPassive();stamp()}});window.__v4156Go='v7119-event'
+  window.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')==='character'){paintPassive();stamp()}},{passive:true});window.__v4156Go='v7119-event';window.__v4156Render='retired'
  }catch(e){}
  stamp();requestAnimationFrame(paintPassive);
  window.addEventListener('growlegends:account-ready',()=>requestAnimationFrame(paintPassive));
@@ -75185,7 +75179,7 @@ window.v531HardenHero=harden;
   document.addEventListener('DOMContentLoaded',()=>requestAnimationFrame(apply),{once:true});
   window.addEventListener('pageshow',()=>requestAnimationFrame(apply),{passive:true});
   document.addEventListener('visibilitychange',()=>{if(!document.hidden)requestAnimationFrame(apply)});
-  [120,400,900,1800,3600].forEach(ms=>setTimeout(apply,ms));
+  /* V8.009: renderInventory/arrange/navigation/pageshow own inventory refresh. */
 })();
 </script>
 <!-- ===== /V5.33 INVENTAR REFERENCE REBUILD ===== -->
