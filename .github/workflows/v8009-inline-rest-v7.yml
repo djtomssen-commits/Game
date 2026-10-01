@@ -1,0 +1,22 @@
+name: V8.009 Inline Rest V7
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/v8009_post_extraction_coverage_v6.py'
+      - '.github/workflows/v8009-inline-rest-v7.yml'
+permissions:
+  contents: write
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 .github/scripts/v8009_post_extraction_coverage_v6.py
+      - run: |
+          git config user.name github-actions
+          git config user.email github-actions@users.noreply.github.com
+          git add V8009_POST_EXTRACTION_COVERAGE_V6.json
+          git commit -m "V8.009 FINAL: refresh inline rest coverage" || exit 0
+          git pull --rebase origin main
+          git push
