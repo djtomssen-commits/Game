@@ -3501,3 +3501,62 @@ Arbeitsmodus:
 - Früherer Post-Extraction-Stand: 774 externe Scripts.
 - Aktuell: **665 externe Scripts**.
 - Damit bislang **109 externe Runtime-Includes** aus der aktiven Beta-Kette entfernt, zusätzlich zur vollständigen Inline-JS/CSS-Extraktion.
+
+
+#### Dungeon-Key / Open-Lifecycle Konsolidierung – großer Folgebatch
+- Seit dem 665-Script-Meilenstein weitere komplette Alt-Layer entfernt:
+  - `v458-key-live-unlock.js`
+  - `v4100-dungeon-key-live-fix.js`
+  - `v497-dungeon-key-immediate-live-unlock.js`
+- `v4150-live-dungeon-key-authority.js` war bereits zuvor entfernt.
+- Damit bleibt `V467` als gemeinsame spätere Key-/Navigation-Authority.
+- Key-Change-Erkennung wurde aus Claim-Wrappern an die echten Mutationsquellen verschoben:
+  - `v243` emittiert `growlegends:dungeon-key-changed` beim lokalen D2-Unlock: `1a76dfae670b45f1d296032197b7ad65023c03c6`.
+  - `v7045` emittiert denselben Event nach serverseitiger Quest-Key-Änderung: `540a7d76e59aa87f2683fa6aff7e1cccd1514d87`.
+- Danach zwei Quest-Claim-Wrapper aus `V467` entfernt: `71ec3aca3c5a7b06405fc9cb12b7a82b86933267`.
+- Aus `v243` zusätzlich historische Wrapper um `claimQuest`, `v065RenderWorld` und `v067OpenDungeon` entfernt: `e4f71217f46308bfeda676e3d9bcddf3185cf5bf`.
+- Redundante D1-Availability-Wrapper aus `v4158` entfernt: `2a99a0e0dcc1c29202477af312874c0739654267`.
+- Redundante D1-Availability-Wrapper aus `v6291` entfernt: `fe7413555488630ffb7152cb1a1b9a33348e8e8d`.
+- Raumindex-Sync in finalen V467-Opener integriert: `3328aaeb55e52a56e0b0f7e01e031638ec57f588`.
+- Danach `v302`-Wrapper um `v067OpenDungeon` entfernt: `47d51948865167e66dc4a8a865ecbc821caa8174`.
+- `v244` kann nicht komplett entfernt werden: Runtime-Audit `0cc4be013580fc1b25e6b154c834e88d6d26114c` zeigt aktive Nutzung seiner Room-Name/Level-/Renderer-Helfer durch spätere Dungeon-Owner.
+
+#### Präziser Wrapper-Mutations-Audit
+- Erster präziser Audit-Commit: `5fb3edc7b3741c2037a750853f7898eb86d0cff9`.
+- Dieser Audit zählt nur echte globale Funktionsüberschreibungen, nicht bloße Referenzen/Kommentare.
+- Stand vor den jüngsten Folgebereinigungen:
+  - `claimQuest`: 16 mutierende Dateien
+  - `v233ClaimQuest`: 13
+  - `v065RenderWorld`: 8
+  - `v067OpenDungeon`: 4
+  - `dungeonUnlocked`: 5
+- Nach den jüngsten Änderungen wurde der Audit erneut getriggert; aktueller Rerun-Trigger: `ba6911ecf78f039b81918c8fbafc50e5c534072e`.
+
+#### Central Event Bus / Quest Completion
+- Event-Bus-Load-Order-Audit: `9bda80f29b0e474a1e67fbebe2c5050359bc6f43`.
+- Kritischer Befund: `v6140-central-event-bus-preboot.js` wird bereits als geladenes Script **#5** ausgeführt und setzt `window.GL_EVENTS` + `__V6140_EVENT_BUS__`.
+- Dadurch sind mehrere spätere Fallback-Quest-Wrapper in Beta ohnehin unerreichbar:
+  - v411 Guild-Fallback
+  - v474 Guild-Fallback
+  - v492 Grow-Fallback
+  - v688 Pet-Fallback
+- `v235` emittiert jetzt nach einem erfolgreich abgeschlossenen Local/Mirror-Quest genau einen kanonischen `questCompleted`-Event auf `GL_EVENTS`: `5d36d3874a875e44e1c3f45ea00f7d60eb295c8e`.
+- Server-Enforce bleibt getrennt in `v7045` und emittiert diesen lokalen Completion-Event nicht, damit Server-Side-Effects nicht doppelt laufen.
+- Die zwei echten Quest-Source-Wrapper aus `v6140-central-game-event-bridge.js` wurden entfernt; v6140 bleibt Distributor/Subscriber sowie Dungeon-/PvP-Eventquelle: `09aae69425f23e95ad87552cbc399e3ba51153ed`.
+- Quest-Completion-Event-QA installiert; aktueller Rerun-Trigger: `4b94674f3788a5dcd0dd3fb35ec5a1ed1872f084`.
+
+#### Quest Reward Wrapper Konsolidierung
+- In `v238-quest-loot-repair.js` den zweiten `claimQuest`-Wrapper entfernt, der nur Dungeon-Key-Repräsentationen synchronisierte.
+- Der echte seltene Set-Item-Upgrade-Wrapper bleibt erhalten.
+- Commit: `8d5f03c61b378b639659c5075ad6400de006d849`.
+- `v395-quest-reward-showcase.js` hängt nicht mehr als eigener Wrapper um `v233ClaimQuest`; es stellt nur noch Snapshot/Repaint-Helfer bereit.
+- v395-Commit: `c2d445b515a3f9a65ae0def3eba5f10ea59a70e4`.
+- `v394-time-seeds-currency.js` übernimmt jetzt den späten Local/Mirror-Reward-Abschluss und ruft nach dem Zeit-Samen-Roll direkt den v395-Showcase-Repaint auf.
+- v394-Commit: `4431523b116aa08a018a7070aed3c79c82d94d69`.
+- Dadurch ein weiterer kompletter `v233ClaimQuest`-Wrapper entfernt, ohne Zeit-Samen-/Popup-Verhalten zu verlieren.
+
+#### Aktueller Strukturstand
+- Letzte bestätigte Script-Zahl nach Entfernung von v458/v4100/v497: **662 externe Scripts**.
+- **0 Inline-JS**.
+- **0 Inline-CSS**.
+- Gegenüber dem Post-Extraction-Stand mit 774 externen Scripts sind damit **112 externe Runtime-Includes** aus der aktiven Beta-Kette entfernt.
