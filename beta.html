@@ -48688,14 +48688,8 @@ body:has(#world.active) #v032MenuBtn{
     document.querySelectorAll('.v358-version').forEach(el=>el.textContent=V358_VERSION);
   }
 
-  /* Do not wrap render(), persist(), or resource painters.
-     Refresh only after normal navigation and a few one-shot boot passes. */
-  const baseGo=v032Go;
-  v032Go=function(id){
-    const r=baseGo.apply(this,arguments);
-    requestAnimationFrame(()=>{build();update()});
-    return r;
-  };
+  /* V8.009: shared navigation owns header refresh; no v032Go wrapper. */
+  window.addEventListener('growlegends:navigation-open-v7119',()=>{build();update()},{passive:true});
 
   function version(){
     document.querySelectorAll(
@@ -48706,9 +48700,8 @@ body:has(#world.active) #v032MenuBtn{
   build();
   version();
   document.addEventListener('DOMContentLoaded',()=>{build();version()},{once:true});
-  setTimeout(()=>{build();update();version()},300);
-  setTimeout(()=>{build();update();version()},1200);
-  setTimeout(()=>{build();update();version()},2500);
+  window.addEventListener('pageshow',()=>{build();update();version()},{passive:true});
+  window.addEventListener('growlegends:account-ready',()=>{build();update();version()},{passive:true});
 })();
 </script>
 
@@ -48870,13 +48863,8 @@ html body .app > header > .stats.resource-stats{
     document.querySelectorAll('#world .v351-topbar').forEach(el=>el.remove());
   }
 
-  /* Keep this isolated from render/persist. Run only after navigation/boot. */
-  const baseGo=v032Go;
-  v032Go=function(id){
-    const r=baseGo.apply(this,arguments);
-    requestAnimationFrame(fix);
-    return r;
-  };
+  /* V8.009: shared navigation owns header fix; no v032Go wrapper. */
+  window.addEventListener('growlegends:navigation-open-v7119',fix,{passive:true});
 
   function version(){
     document.querySelectorAll(
@@ -48886,9 +48874,8 @@ html body .app > header > .stats.resource-stats{
 
   fix();version();
   document.addEventListener('DOMContentLoaded',()=>{fix();version()},{once:true});
-  setTimeout(()=>{fix();version()},250);
-  setTimeout(()=>{fix();version()},900);
-  setTimeout(()=>{fix();version()},1800);
+  window.addEventListener('pageshow',()=>{fix();version()},{passive:true});
+  window.addEventListener('growlegends:account-ready',()=>{fix();version()},{passive:true});
 })();
 </script>
 
@@ -87335,22 +87322,11 @@ function normalizeDockLight(){
    unnecessary and can feed back into world paints. */
 function bindDock(){ normalizeDockLight(); }
 
-document.addEventListener('DOMContentLoaded',()=>requestAnimationFrame(bindDock),{once:true});
-window.addEventListener('pageshow',()=>requestAnimationFrame(bindDock),{passive:true});
-window.addEventListener('growlegends:account-ready',()=>setTimeout(bindDock,100));
-
-try{
-  if(typeof v032Go==='function'&&!window.__v6100Go){
-    const base=v032Go;
-    v032Go=function(id){
-      const r=base.apply(this,arguments);
-      if(id==='world')requestAnimationFrame(bindDock);
-      return r;
-    };
-    try{window.v032Go=v032Go}catch(_){}
-    window.__v6100Go=true;
-  }
-}catch(_){}
+document.addEventListener('DOMContentLoaded',bindDock,{once:true});
+window.addEventListener('pageshow',bindDock,{passive:true});
+window.addEventListener('growlegends:account-ready',bindDock,{passive:true});
+window.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')==='world')bindDock()},{passive:true});
+window.__v6100Go='v7119-event';
 
 window.v6100PerformanceInfo=()=>({
   optimizedPets:!!window.__V699_PET_PERFORMANCE_REBUILD__,
