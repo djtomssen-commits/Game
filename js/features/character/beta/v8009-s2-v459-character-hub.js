@@ -8,12 +8,29 @@
   function activeTab(){
     try{return sessionStorage.getItem('growLegends:v459CharacterTab')||'inventory'}catch(e){return'inventory'}
   }
+  function refreshTab(name){
+    try{
+      if(name==='inventory'){
+        compactInventory();
+        window.v533ApplyInventory?.();
+        window.v480UpdateAutoBars?.('inventory');
+      }else if(name==='attributes'){
+        window.v4140PaintAttributes?.();
+      }else if(name==='talents'){
+        window.v543RenderTalentTree?.();
+      }else if(name==='materials'){
+        try{window.v030RenderMaterials?.()}catch(_){}
+        window.v480UpdateAutoBars?.('materials');
+      }
+    }catch(e){console.warn('V4.67 character tab refresh',name,e)}
+  }
   function activate(name,scroll=false){
     const shell=document.getElementById('v459CharacterShell');if(!shell)return;
     if(!['inventory','attributes','talents','materials'].includes(name))name='inventory';
     shell.querySelectorAll('#v459CharacterTabs button').forEach(b=>b.classList.toggle('active',b.dataset.tab===name));
     shell.querySelectorAll('.v459-panel').forEach(p=>p.classList.toggle('active',p.dataset.panel===name));
     try{sessionStorage.setItem('growLegends:v459CharacterTab',name)}catch(e){}
+    refreshTab(name);
     if(scroll)try{shell.scrollIntoView({behavior:'smooth',block:'start'})}catch(e){}
   }
   window.v459CharacterTab=activate;
@@ -188,16 +205,28 @@
   window.v459CompactInventory=compactInventory;
 
   /* Final UI owners only. Game mechanics and save functions are intentionally untouched. */
-  try{if(typeof renderInventory==='function'&&!window.__v459InventoryWrapped){const base=renderInventory;renderInventory=function(){const r=base.apply(this,arguments);layout();compactInventory();return r};try{window.renderInventory=renderInventory}catch(e){}window.__v459InventoryWrapped=true}}catch(e){}
-  try{if(typeof renderSkillTree==='function'&&!window.__v459TalentWrapped){const base=renderSkillTree;renderSkillTree=function(){const r=base.apply(this,arguments);layout();updateHero();return r};try{window.renderSkillTree=renderSkillTree}catch(e){}window.__v459TalentWrapped=true}}catch(e){}
-  try{if(typeof v030Materials==='function'&&!window.__v459MaterialsWrapped){const base=v030Materials;v030Materials=function(){const r=base.apply(this,arguments);layout();updateHero();return r};try{window.v030Materials=v030Materials}catch(e){}window.__v459MaterialsWrapped=true}}catch(e){}
+  try{if(typeof renderInventory==='function'&&!window.__v459InventoryWrapped){
+    const base=renderInventory;
+    renderInventory=function(){
+      const r=base.apply(this,arguments);
+      layout();
+      if(activeTab()==='inventory')refreshTab('inventory');
+      else updateHero();
+      return r;
+    };
+    try{window.renderInventory=renderInventory}catch(e){}
+    window.__v459InventoryWrapped=true;
+  }}catch(e){}
+  /* Talent/material renderers keep their mechanics; v459 owns when their visible UI is refreshed. */
   /* V8.009: global render hook retired.
      renderInventory/renderSkillTree/materials + character navigation already own this UI. */
-  window.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')==='character'){layout();compactInventory();updateHero();stamp()}});window.__v459GoWrapped='v7119-event';
+  window.addEventListener('growlegends:navigation-open-v7119',e=>{
+    if(String(e?.detail?.id||'')==='character'){layout();activate(activeTab(),false);updateHero();stamp()}
+  });window.__v459GoWrapped='v7119-event';
 
-  layout();compactInventory();stamp();
-  document.addEventListener('DOMContentLoaded',()=>{layout();compactInventory();stamp()},{once:true});
-  window.addEventListener('pageshow',()=>{layout();compactInventory();stamp()},{passive:true});
-  window.addEventListener('growlegends:account-ready',()=>{layout();compactInventory();updateHero();stamp()},{passive:true});
+  layout();activate(activeTab(),false);stamp();
+  document.addEventListener('DOMContentLoaded',()=>{layout();activate(activeTab(),false);stamp()},{once:true});
+  window.addEventListener('pageshow',()=>{if(document.getElementById('character')?.classList.contains('active')){layout();activate(activeTab(),false);stamp()}},{passive:true});
+  window.addEventListener('growlegends:account-ready',()=>{if(document.getElementById('character')?.classList.contains('active')){layout();activate(activeTab(),false);updateHero();stamp()}},{passive:true});
   /* V6.217: obsolete V4.44 polling guard retired. Existing targeted layout retries remain. */
 })();
