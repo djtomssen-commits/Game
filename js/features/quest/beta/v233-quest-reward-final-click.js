@@ -161,6 +161,7 @@ function v233ClaimQuest(){
     Only show a reward when the claim really consumed the active quest.
   */
   if(!s.quests?.active){
+    try{window.v4222AfterQuestClaim?.()}catch(e){console.warn('V4.222 post-claim hook',e)}
     v233ShowActualQuestReward(snapshot);
   }
 
