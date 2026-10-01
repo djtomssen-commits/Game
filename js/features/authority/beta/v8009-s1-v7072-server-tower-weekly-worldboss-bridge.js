@@ -297,6 +297,10 @@ async function v7085AnimateTowerFight(response,beforeRun){
   const replayVisualAttackMs=cadence.visualAttackMs;
   const replayVisualHitMs=cadence.visualHitMs;
   const replayPopMs=cadence.visualPopMs;
+  /* Audio contact is perceived slightly earlier than the damage-number paint on mobile.
+     Lead the hit SFX by a small fixed amount so swing/impact and sound feel locked. */
+  const replaySoundLeadMs=Math.min(65,Math.max(30,Math.round(replayAttackMs*.28)));
+  const replayPreSoundMs=Math.max(0,replayAttackMs-replaySoundLeadMs);
 
   if(ensure()){s.tower.run=vr;try{window.vTowerRender?.()}catch(e){console.warn('[V7099] tower battle render',e)}}
   await sleep(cadence.startDelayMs);v7085TowerPaint(vr,enemyMax,playerHp,enemyHp,lines);
@@ -311,7 +315,10 @@ async function v7085AnimateTowerFight(response,beforeRun){
     if(ev?.side==='player'){
       try{window.v7103CompanionReplay?.step?.(v7103SummonTrack,ev)}catch(_){}
       try{window.v7175CombatReplayStep?.('tower',{...ev,side:'player',label:raw,round,damage:dmg,heal,player_hp:Number.isFinite(Number(ev?.player_hp))?Number(ev.player_hp):playerHp+heal,enemy_hp:Number.isFinite(Number(ev?.enemy_hp))?Number(ev.enemy_hp):enemyHp-dmg})}catch(_){}
-      v7085Anim('#vTPlayerFighter','attack-r',replayVisualAttackMs);await sleep(replayAttackMs);
+      v7085Anim('#vTPlayerFighter','attack-r',replayVisualAttackMs);
+      await sleep(replayPreSoundMs);
+      try{window.v6111Sfx?.(ev?.crit?'crit':'hit')}catch(_){}
+      await sleep(replaySoundLeadMs);
       enemyHp=Math.max(0,Number.isFinite(Number(ev?.enemy_hp))?Number(ev.enemy_hp):enemyHp-dmg);
       playerHp=Math.max(0,Number.isFinite(Number(ev?.player_hp))?Number(ev.player_hp):playerHp+heal);
       v7085Pop('#vTDmgEnemy',`${ev?.crit?'KRIT! ':''}-${Math.round(dmg)}`,replayPopMs);v7085Anim('#vTEnemyFighter','hit',replayVisualHitMs);
@@ -323,10 +330,12 @@ async function v7085AnimateTowerFight(response,beforeRun){
       try{window.v6230TowerCombatFx?.({phase:'player',raw,damage:dmg,heal,crit:!!ev?.crit,wucht:!!ev?.wucht,round})}catch(_){}
       try{window.v6225ExtraHitVisual?.('tower',raw,{round})}catch(_){}
       try{window.v6232CombatParityFx?.('tower',{phase:'player',raw,damage:dmg,heal,crit:!!ev?.crit,wucht:!!ev?.wucht,offhand:Number(ev?.offhand)||0,round})}catch(_){}
-      try{window.v6111Sfx?.(ev?.crit?'crit':'hit')}catch(_){}
     }else{
       try{window.v7175CombatReplayStep?.('tower',{...ev,side:'enemy',label:raw,round,damage:dmg,heal,player_hp:Number.isFinite(Number(ev?.player_hp))?Number(ev.player_hp):playerHp-dmg,enemy_hp:Number.isFinite(Number(ev?.enemy_hp))?Number(ev.enemy_hp):enemyHp})}catch(_){}
-      v7085Anim('#vTEnemyFighter','attack-l',replayVisualAttackMs);await sleep(replayAttackMs);
+      v7085Anim('#vTEnemyFighter','attack-l',replayVisualAttackMs);
+      await sleep(replayPreSoundMs);
+      if(!(ev?.dodge||dmg===0))try{window.v6111Sfx?.('enemyHit')}catch(_){}
+      await sleep(replaySoundLeadMs);
       playerHp=Math.max(0,Number.isFinite(Number(ev?.player_hp))?Number(ev.player_hp):playerHp-dmg);
       enemyHp=Math.max(0,Number.isFinite(Number(ev?.enemy_hp))?Number(ev.enemy_hp):enemyHp);
       if(ev?.dodge||dmg===0){
@@ -339,7 +348,6 @@ async function v7085AnimateTowerFight(response,beforeRun){
         try{window.v6230TowerCombatFx?.({phase:'enemy',raw,damage:dmg,heal,counter:Number(ev?.counter)||0,prevent:!!ev?.prevent,round})}catch(_){}
         try{window.v6225ExtraHitVisual?.('tower',raw,{round,actor:'defender'})}catch(_){}
         try{window.v6232CombatParityFx?.('tower',{phase:'enemy',raw,damage:dmg,heal,counter:Number(ev?.counter)||0,prevent:!!ev?.prevent,round})}catch(_){}
-        try{window.v6111Sfx?.('enemyHit')}catch(_){}
       }
     }
 
