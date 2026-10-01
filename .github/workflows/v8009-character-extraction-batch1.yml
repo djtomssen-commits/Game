@@ -1,0 +1,28 @@
+name: V8.009 Character Extraction Batch 1
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/v8009_character_extraction_batch1.py'
+      - '.github/workflows/v8009-character-extraction-batch1.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 .github/scripts/v8009_character_extraction_batch1.py
+      - run: |
+          node --check js/features/character/beta/v8009-s1-v4140-attribute-display-owner.js
+          node --check js/features/character/beta/v8009-s1-v543-talents-mobile-tree.js
+          node --check js/features/character/beta/v8009-s1-v444-character-inventory-order.js
+          node --check js/features/character/beta/v8009-s1-v514-heldenquartier-reference.js
+      - run: |
+          git config user.name github-actions
+          git config user.email github-actions@users.noreply.github.com
+          git add beta.html js/features/character/beta/v8009-s1-v4140-attribute-display-owner.js js/features/character/beta/v8009-s1-v543-talents-mobile-tree.js js/features/character/beta/v8009-s1-v444-character-inventory-order.js js/features/character/beta/v8009-s1-v514-heldenquartier-reference.js V8009_CHARACTER_EXTRACTION_BATCH1_QA.json
+          git commit -m "V8.009 CHARACTER: extract four canonical owners" || exit 0
+          git pull --rebase origin main
+          git push
