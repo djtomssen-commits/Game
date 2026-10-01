@@ -3809,3 +3809,38 @@ Arbeitsmodus:
   - Audit Trigger: `f8589a72451bdfd3928f741dd79af8a3a29f3b31`
   - Guard Trigger: `2eb72d0b21dbc62166b7998d582e22bc6529d159`
   - Ergebnis-Commits waren zum Zeitpunkt dieses Status-Updates noch nicht sichtbar.
+
+
+#### Feste Page-/Tab-Audit-Matrix
+- Automatische Page-/Tab-Erfassung aus dem tatsächlich geladenen Beta-Stack abgeschlossen.
+- Discovery-Commit: `b99004fe15daccf14bba90a4366d9dfa733bc985`
+- Erkannte Hauptscreens: world, character, grow, quests, dungeon, shop, bagDealer, pvp, guild, hall, friends, mail, admin, harzDealer.
+- Erkannte Tab-Gruppen:
+  - Character: attributes / inventory / talents / materials
+  - Guild: overview / growtasks / boss / war
+  - Friends: ranking / search
+  - Mail: inbox / sent / compose / battlelog
+  - Shop: weapon / magic
+  - Growroom: grow / stock / genetics / orders
+  - Forge: dismantle / craft / nebelforge
+  - Tower: rank / meta
+  - Admin: overview / players / content
+  - Harz Dealer: harz / gold / frames
+- Neue dauerhafte Tracking-Datei: `V8009_PAGE_TAB_AUDIT_MATRIX.md`
+- Matrix-Commit: `ac37ca1db9051379934a62e324e0b6f07fd2bdf7`
+- Regel ab jetzt: nach jedem großen Cleanup-Batch werden **sowohl V8_CURRENT_STATUS.md als auch V8009_PAGE_TAB_AUDIT_MATRIX.md** aktualisiert.
+- Ziel: jede Seite/jeden Tab durch DOM-/Legacy-Audit, Lifecycle-/Render-Audit, Owner-Konsolidierung, Timer/RAF/Observer-Prüfung, Authority-Datenpfad und manuellen Meilenstein-Test führen.
+- Grobe Endreihenfolge:
+  1. Dungeon Combat + Reward
+  2. Character alle 4 Tabs
+  3. Guild alle 4 Tabs + Guildboss
+  4. Quests + Schicht
+  5. Growroom alle 4 Tabs
+  6. PvP + Hall of Haze
+  7. Tower kompletter Pass
+  8. Friends + Mail
+  9. Tütchen-Dealer + Harz Dealer
+  10. Forge
+  11. World + Worldboss
+  12. Admin
+  13. finale repo-weite QA + manueller Endtest
