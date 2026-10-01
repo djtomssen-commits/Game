@@ -4808,3 +4808,14 @@ Arbeitsmodus:
   - Server 1: `server1.html`
 - Supabase Migration: `server1_release_path_to_cloned_client_v8009`
 - Backend-Promote damit für den aktuellen Client abgeschlossen; nächster Schritt ist ein kurzer Server-1-Smoke-Test mit frischem Server-1-Charakter.
+
+
+### Server 1 Harz-Dealer Paritätsfix · 01.10.2026
+
+- Fehlerbild: Auf Server 1 wurden die 3 „Beliebten Angebote“ noch groß untereinander dargestellt, obwohl Beta sie klein nebeneinander zeigt.
+- Ursache: Nur `server1.html` hatte für die Harz-Dealer-Dateien einen festen Cache-Buster `?v=8009s1dealer2`. Dadurch konnte Server 1 weiterhin eine ältere, bereits unter genau diesem Query gecachte Dealer-Version laden, während Beta die aktuellen gemeinsamen Dateien direkt lädt.
+- Direkt repariert, kein zusätzlicher CSS-/Patch-Layer:
+  - die 6 festen `?v=8009s1dealer2`-Suffixe aus `server1.html` entfernt;
+  - Server 1 lädt jetzt exakt dieselben Harz-Dealer-JS/CSS-URLs wie Beta.
+- Die aktuelle kanonische v567-Datei enthält bereits das 3-spaltige Featured-Layout für „Beliebte Angebote“.
+- Commit: `d61588117a08315251f1e9f8c9c6b43be826e7b5`.
