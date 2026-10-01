@@ -402,12 +402,11 @@ async function claimBoss(){
       await refreshGrow();
 
       G.bossClaims++;
-      const seed=r.seed?` · 🌰 ${seedLabel(r.seed)}`:'';
-      toast(
-        r.won?'🏆 Gildenboss besiegt!':'Gildenboss-Belohnung',
-        r.won?'success':'info',
-        `+${fmt(r.xp)} EXP · +${fmt(r.gold)} Gold${Number(r.harz)>0?` · +${Number(r.harz)} Harz-Taler`:''}${seed}`
-      );
+      if(typeof window.v7136ShowServerReward==='function'){
+        window.v7136ShowServerReward('guildBoss',r,{});
+      }else{
+        try{window.v115Alert?.(`+${fmt(r.xp)} EXP · +${fmt(r.gold)} Gold${Number(r.harz)>0?` · +${Number(r.harz)} Harz-Taler`:''}${r.seed?` · 🌰 ${seedLabel(r.seed)}`:''}`,r.won?'Gildenboss besiegt!':'Gildenboss-Belohnung','success')}catch(_){}
+      }
 
       /* Weekly chest + Guild XP are database-triggered by reward_claimed.
          Only refresh local achievement checks; do not emit guildBossWon,
