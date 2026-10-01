@@ -2930,3 +2930,31 @@ Arbeitsmodus:
 - Alle ausgelagerten Dateien per `node --check` geprüft.
 - QA `V8009_ANONYMOUS_EXTRACTION_BATCH18_QA.json`: vollständig grün.
 - Stable / `index.html`: unverändert.
+
+
+#### Feature Extraction Batch 19
+- 20 weitere benannte Owner 1:1 aus `beta.html` ausgelagert:
+  - `v6289-harzruferin-beta-lock-js`
+  - `v7037-dungeon-loot-shadow-recovery`
+  - `v464-shop-reference-script`
+  - `v6342-update-login-popup-js`
+  - `v100-dungeon-xp-event-script`
+  - `v403-illegal-book-longterm`
+  - `v291-worldboss-upgrades-balance`
+  - `v230-stability-core`
+  - `v431-hall-authoritative-sync`
+  - `v7101-public-profile-coalescer`
+  - `v279-resource-root-fix`
+  - `v288-resource-event-clarity`
+  - `v510-character-hero-rebuild-js`
+  - `v477-runtime-governor-head`
+  - `v6298-character-avatar-stability-js`
+  - `v125-attributes-skills-image1-script`
+  - `v330-mythic-true-upgrade`
+  - `v652-player-profile-redesign-js`
+  - `v325-mythic-item-balance`
+  - `v495-startup-levelup-guard`
+- Zusammen 84.656 Bytes Inline-JS aus dem Monolithen entfernt.
+- Originale Script-Attribute, IDs und Reihenfolge beibehalten; nur um `src=` ergänzt.
+- QA `V8009_FEATURE_EXTRACTION_BATCH19_QA.json`: vollständig grün.
+- Stable / `index.html`: unverändert.
