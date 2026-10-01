@@ -3735,3 +3735,31 @@ Arbeitsmodus:
   - Profil-Modal Buttons: 3 Producer
   - Character-Creator Modal: 3 kontextabhängige Producer
 - Nächster Großblock: Dungeon-DOM-Producer auf einen World-Owner + einen Detail-Owner + einen Combat-Owner reduzieren.
+
+
+#### Legacy-DOM Großdurchgang – Fortsetzung
+- Alte Dungeon-Karten-DOM-Producer weiter reduziert:
+  - `v244RenderSelectedDungeonMap` DOM-Renderer retired; Helper für Room-Namen/Level bleiben.
+    - Commit `4d5bac20edb513fa7ea7d51df7bee97521346bb5`
+  - `v251RenderWorld` und `v251RenderDetail` DOM-Renderer retired/delegieren an die späteren Owner.
+    - Commit `1c16eb716a119fa952f2352838b60fae03a2ad2a`
+  - Zielstruktur: `gl20/v4218` = Dungeon-Weltkarte, `v261` = 10-Gegner-Detailkarte.
+- Auditpräzision verbessert:
+  - Selektoren wie `querySelectorAll('[id="..."]')` werden nicht mehr fälschlich als DOM-Producer gezählt.
+  - Audit-Script Fix: `78c8303354d56aecd060c366432f2335e2c7a823`
+  - Guard-Script Fix: `c1b29729173a22a0aef81a5078260db4ae46ef95`
+  - Rerun-Trigger: Audit `4cc0068730539f2673053aebf5e68b713c781892`, Guard `a0919712adefdd1267969b37b4a98652fc35b79f`.
+- Materialien:
+  - alter `v030Materials` DOM-Renderer aus Shop-Modul entfernt/delegiert an `v546`.
+  - `v546` bleibt alleiniger Character/Material-DOM-Owner.
+  - Commit `bf62e363bb019435412f063918e4a984f2521a77`.
+- Profile:
+  - Basis-`v074OpenProfile` DOM-Renderer retired; Equipment-/Ranking-/Bind-Helfer bleiben.
+    - Commit `c157c5f584a5da49ca10a9be4d9cc252edcea764`
+  - intermediärer `v326` Profilmodal-Renderer retired; Hall-/Payload-/Row-Helfer bleiben.
+    - Commit `bfd5a4eb507cb86cddeb0e72ff5b303c882287cf`
+  - `v655` bleibt kanonischer robuster Profil-Loader/-Renderer.
+- DOM Audit + Guard erneut nach Dungeon/Material/Profile-Cleanup getriggert:
+  - Audit Trigger `1e8e85709ffde8b9a9e274516d7e90b0dadf5cdf`
+  - Guard Trigger `9e879e2b95115406d871cf5b12126c297be9912a`
+- `v048ReturnMap` bewusst noch nicht blind entfernt: die doppelte ID sitzt in zwei historischen Kampf-/Reward-Implementierungen und wird zusammen mit dem Combat-Owner konsolidiert, damit Reward-/Battle-Verhalten nicht beschädigt wird.
