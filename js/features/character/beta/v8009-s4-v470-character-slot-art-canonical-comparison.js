@@ -147,6 +147,8 @@
       box.textContent=it.icon||'🎁';delete box.dataset.v470Uri;
     }
   }
+  window.v470PaintInventoryComparisons=paintInventoryComparisons;
+
   function paintEquipmentSlots(){
     if(paintingSlots)return;paintingSlots=true;
     try{['head','weapon','ring','body','boots','amulet'].forEach(paintOneSlot)}finally{paintingSlots=false}
@@ -183,20 +185,6 @@
   }catch(e){}
 
   try{
-    if(typeof renderInventory==='function'&&!window.__v470InventoryWrapped){
-      const base=renderInventory;
-      renderInventory=function(){const r=base.apply(this,arguments);paintInventoryComparisons();paintEquipmentSlots();return r};
-      window.renderInventory=renderInventory;window.__v470InventoryWrapped=true;
-    }
-  }catch(e){}
-  try{
-    if(typeof window.v459CompactInventory==='function'&&!window.__v470CompactWrapped){
-      const base=window.v459CompactInventory;
-      window.v459CompactInventory=function(){const r=base.apply(this,arguments);paintInventoryComparisons();paintEquipmentSlots();return r};
-      window.__v470CompactWrapped=true;
-    }
-  }catch(e){}
-  try{
     if(typeof window.equip==='function'&&!window.__v470EquipWrapped){
       const base=window.equip;
       window.equip=function(){const r=base.apply(this,arguments);requestAnimationFrame(()=>{paintEquipmentSlots();paintInventoryComparisons();try{renderShop()}catch(e){}});return r};
@@ -208,22 +196,10 @@
       window.__v470UnequipWrapped=true;
     }
   }catch(e){}
-  /* V8.009: global render comparison hook retired.
-     renderInventory/compact/equip/unequip/navigation/account-ready are the targeted owners. */
-  window.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')==='character'){paintEquipmentSlots();paintInventoryComparisons()}});
-  window.__v470GoWrapped='v7119-event';
-
-  /* V8.009: retired subtree MutationObservers.
-     Inventory/equipment repaint is already owned by the direct render/equip/navigation hooks above. */
-  function installObservers(){
-    window.__V470_SLOT_OBSERVER__='retired';
-    window.__V470_COMPARE_OBSERVER__='retired';
-    return false;
-  }
-  function stamp(){}
-  function settle(){
-    normalizeShopItems();paintEquipmentSlots();paintInventoryComparisons();installObservers();stamp();
-  }
+  /* v459 owns visible Character inventory repaint. Equip/unequip hooks above
+     remain targeted because they mutate equipment outside tab navigation. */
+  window.__V470_SLOT_OBSERVER__='retired';
+  window.__V470_COMPARE_OBSERVER__='retired';
 
   window.v470TestComparisonConsistency=function(it){
     const a=compare(it);if(!a)return null;
@@ -233,8 +209,4 @@
   };
 
   try{if(typeof renderShop==='function')renderShop()}catch(e){}
-  settle();
-  document.addEventListener('DOMContentLoaded',settle,{once:true});
-  window.addEventListener('pageshow',settle,{passive:true});
-  window.addEventListener('growlegends:account-ready',settle,{passive:true});
 })();
