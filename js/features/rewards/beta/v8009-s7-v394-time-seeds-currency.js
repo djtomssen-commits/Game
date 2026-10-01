@@ -26,6 +26,7 @@
     if(!q)return baseClaim.apply(this,arguments);
 
     const qid=String(q.id??q.ends??Date.now());
+    const showcaseBefore=(()=>{try{return window.v395QuestRewardSnapshot?.()||null}catch(_){return null}})();
     rewardBusy=true;
     try{
       const result=baseClaim.apply(this,arguments);
@@ -43,6 +44,7 @@
           }
         }
         window.__V394_LAST_QUEST_SEED_ROLL__={qid,won};
+        try{window.v395RepaintQuestReward?.(showcaseBefore)}catch(e){console.warn('V8.009 quest showcase repaint',e)}
       }
       return result;
     }finally{
