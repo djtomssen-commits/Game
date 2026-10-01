@@ -169,23 +169,13 @@
 
   function stamp(){}
 
-  /* Navigation may recreate/retouch PvP controls through old render chains. */
-  if(typeof v032Go==='function'&&!window.__v437PvpGoWrapped){
-    const baseGo=v032Go;
-    v032Go=function(id){
-      const r=baseGo.apply(this,arguments);
-      if(id==='pvp')setTimeout(()=>{bindFindButton();stamp()},0);
-      return r;
-    };
-    try{window.v032Go=v032Go}catch(e){}
-    window.__v437PvpGoWrapped=true;
-  }
+  /* Shared post-navigation lifecycle owns PvP rebinding. */
+  window.addEventListener('growlegends:navigation-open-v7119',e=>{
+    if(String(e?.detail?.id||'')==='pvp'){bindFindButton();stamp()}
+  },{passive:true});
 
   bindFindButton();
   stamp();
   document.addEventListener('DOMContentLoaded',()=>{bindFindButton();stamp()},{once:true});
   window.addEventListener('pageshow',()=>{bindFindButton();stamp()},{passive:true});
-  /* V8.009 PvP Sprint 1: navigation/pageshow hooks own PvP binding.
-     Keep one finite startup retry per checkpoint; duplicate 2000/5000 ms retries retired. */
-  [500,2000,5000].forEach(ms=>setTimeout(()=>{bindFindButton();stamp()},ms));
 })();
