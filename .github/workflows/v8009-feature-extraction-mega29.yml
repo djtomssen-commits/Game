@@ -1,0 +1,32 @@
+name: V8.009 Feature Extraction Mega 29
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/v8009_feature_extraction_mega29.py'
+      - '.github/workflows/v8009-feature-extraction-mega29.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 .github/scripts/v8009_feature_extraction_mega29.py
+      - name: Syntax check extracted JS
+        run: |
+          python3 - <<'PY'
+          import json, subprocess
+          q=json.load(open('V8009_FEATURE_EXTRACTION_MEGA29_QA.json',encoding='utf-8'))
+          for r in q['result']:
+              subprocess.run(['node','--check',r['path']],check=True)
+          print('checked',len(q['result']),'files')
+          PY
+      - run: |
+          git config user.name github-actions
+          git config user.email github-actions@users.noreply.github.com
+          git add beta.html js/features/legacy-extracted V8009_FEATURE_EXTRACTION_MEGA29_QA.json
+          git commit -m "V8.009 FEATURES: extract all remaining named inline owners batch29" || exit 0
+          git pull --rebase origin main
+          git push
