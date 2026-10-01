@@ -51013,8 +51013,8 @@ body > #v141SettingsMenu.v377-open{
    const body=document.querySelector('#v381Body');if(body&&!body.dataset.bound){body.dataset.bound='1';body.oninput=()=>{document.querySelector('#v381Chars').textContent=`${body.value.length} / 1000`}}
    const mail=document.querySelector('#v372TopbarShell [data-head="mail"]');if(mail&&!mail.dataset.v381Bound){mail.dataset.v381Bound='1';mail.onclick=()=>v032Go('mail')}
  }
- const baseGo=v032Go;v032Go=function(id){const r=baseGo.apply(this,arguments);requestAnimationFrame(bind);if(id==='mail')setTimeout(load,0);return r};
- bind();unread();setTimeout(()=>{bind();unread()},500);setInterval(()=>{if(!document.hidden)unread()},60000);
+ window.addEventListener('growlegends:navigation-open-v7119',e=>{const id=String(e?.detail?.id||'');bind();if(id==='mail')void load()},{passive:true});
+ bind();unread();window.addEventListener('growlegends:account-ready',()=>{bind();unread()},{passive:true});setInterval(()=>{if(!document.hidden)unread()},60000);
  document.addEventListener('visibilitychange',()=>{if(!document.hidden)unread()});
  document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version').forEach(el=>{if(el)el.textContent=VERSION});document.querySelectorAll('.v366-ver').forEach(el=>el.textContent='V4.11');
 })();
@@ -51132,20 +51132,13 @@ create index if not exists player_messages_sender_idx on public.player_messages(
     return result;
   };
 
-  /* Re-bind after navigation without creating another renderer/observer. */
-  const baseGo=v032Go;
-  v032Go=function(id){
-    const result=baseGo.apply(this,arguments);
-    if(id==='hall')setTimeout(v382DecorateHall,40);
-    if(id==='friends')setTimeout(v382DecorateFriends,40);
-    return result;
-  };
-
-  setTimeout(()=>{
-    v382DecorateHall();
-    v382DecorateFriends();
-    v382Version();
-  },650);
+  window.addEventListener('growlegends:navigation-open-v7119',e=>{
+    const id=String(e?.detail?.id||'');
+    if(id==='hall')v382DecorateHall();
+    if(id==='friends')v382DecorateFriends();
+  },{passive:true});
+  v382DecorateHall();
+  v382DecorateFriends();
 })();
 </script>
 
@@ -51212,22 +51205,13 @@ create index if not exists player_messages_sender_idx on public.player_messages(
     return result;
   };
 
-  const baseGo=v032Go;
-  v032Go=function(id){
-    const result=baseGo.apply(this,arguments);
-    if(id==='hall')setTimeout(()=>v383FixButtons('#v072HallRanking'),60);
-    if(id==='friends')setTimeout(()=>v383FixButtons('#v072FriendsList'),60);
-    return result;
-  };
-
-  setTimeout(()=>{
-    v383FixButtons('#v072HallRanking');
-    v383FixButtons('#v072FriendsList');
-    document.querySelectorAll(
-      '.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version'
-    ).forEach(el=>{if(el)el.textContent=VERSION});
-    document.querySelectorAll('.v366-ver').forEach(el=>el.textContent='V4.11');
-  },750);
+  window.addEventListener('growlegends:navigation-open-v7119',e=>{
+    const id=String(e?.detail?.id||'');
+    if(id==='hall')v383FixButtons('#v072HallRanking');
+    if(id==='friends')v383FixButtons('#v072FriendsList');
+  },{passive:true});
+  v383FixButtons('#v072HallRanking');
+  v383FixButtons('#v072FriendsList');
 })();
 </script>
 
@@ -61976,8 +61960,8 @@ body.v495-seed-open{overflow:hidden!important}
  function openQA(){ensureUi();runQA();renderOverlay();document.getElementById('v4102QaOverlay')?.classList.add('show')}
  window.v4102RunQA=(opts={})=>{const r=runQA();if(opts.open)openQA();return r};window.v4102OpenQA=openQA;window.v4102RuntimeIssues=runtimeLogs;
  document.addEventListener('click',e=>{const t=e.target instanceof Element?e.target:null;if(t?.closest('[data-v492-harvest],#harvestBtn,[data-v117-reset],#resetBtn')){allowPlantDropUntil=Date.now()+60000;lastRuntime=null;setTimeout(()=>{if(!document.hidden)lastRuntime=runtimeSnapshot()},1800)}},true);
- try{if(typeof v141BuildSettings==='function'&&!v141BuildSettings.__v4102){const base=v141BuildSettings;v141BuildSettings=function(){const r=base.apply(this,arguments);setTimeout(ensureUi,0);return r};v141BuildSettings.__v4102=true}}catch(e){}
- ensureUi();setTimeout(()=>{lastReport=runQA();ensureUi();updateBadge()},1800);[0,100,500,1500,5000,15000,30000,46000,60000].forEach(ms=>setTimeout(()=>{stamp();ensureUi()},ms));window.addEventListener('pageshow',()=>{stamp();ensureUi();setTimeout(monitorRuntime,100)},{passive:true});document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();ensureUi();monitorRuntime()}},{passive:true});
+ try{if(typeof v141BuildSettings==='function'&&!v141BuildSettings.__v4102){const base=v141BuildSettings;v141BuildSettings=function(){const r=base.apply(this,arguments);ensureUi();return r};v141BuildSettings.__v4102=true}}catch(e){}
+ ensureUi();window.addEventListener('pageshow',()=>{stamp();ensureUi();monitorRuntime()},{passive:true});document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();ensureUi();monitorRuntime()}},{passive:true});
 })();
 </script>
 
@@ -90267,14 +90251,10 @@ html body .app section#mail.v677-mail .v677-footer-sign small{font-size:4.3px!im
  function current(){return document.querySelector('#mail [data-v381-tab].active')?.dataset.v381Tab||'inbox'}
  function repair(){activate(current())}
  document.addEventListener('click',e=>{const b=e.target?.closest?.('#mail [data-v381-tab]');if(!b)return;activate(b.dataset.v381Tab)},true);
- window.addEventListener('growlegends:account-ready',()=>setTimeout(repair,80));
+ window.addEventListener('growlegends:account-ready',repair,{passive:true});
+ window.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')==='mail')repair()},{passive:true});
  document.addEventListener('DOMContentLoaded',repair,{once:true});
- setTimeout(repair,250);
- setTimeout(repair,1000);
- try{
-   const mail=document.getElementById('mail');
-   if(mail)new MutationObserver(()=>{if(mail.classList.contains('active'))requestAnimationFrame(repair)}).observe(mail,{attributes:true,attributeFilter:['class']});
- }catch(_){}
+ window.addEventListener('pageshow',()=>{if(document.getElementById('mail')?.classList.contains('active'))repair()},{passive:true});
  window.v6202MailTab=activate;
 })();
 </script>
