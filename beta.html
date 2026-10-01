@@ -41850,10 +41850,9 @@ body:has(#world.active) #v337LegalFooter{display:none!important}
    }
    const bal=shell.querySelector('#v567Balance');if(bal)bal.textContent=Math.max(0,Number(s.harzTaler)||0).toLocaleString('de-DE');
  }
- window.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')==='harzDealer')ensure()});
- const oldRender=window.render; if(typeof oldRender==='function')window.render=function(){const r=oldRender.apply(this,arguments);if(document.querySelector('#harzDealer')?.classList.contains('active'))requestAnimationFrame(ensure);return r};
- const oldDealer=window.v322RenderDealer;if(typeof oldDealer==='function')window.v322RenderDealer=function(){const r=oldDealer.apply(this,arguments);requestAnimationFrame(ensure);return r};
- setTimeout(ensure,60);setTimeout(ensure,450);setTimeout(ensure,1400);
+ window.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')==='harzDealer')ensure()},{passive:true});
+ const oldDealer=window.v322RenderDealer;if(typeof oldDealer==='function'&&!oldDealer.__v567Ensure){const wrapped=function(){const r=oldDealer.apply(this,arguments);ensure();return r};wrapped.__v567Ensure=true;window.v322RenderDealer=wrapped}
+ ensure();
 })();
 </script>
 
@@ -44284,9 +44283,9 @@ function v322InstallHarzPlus(){
 const v322BaseInstallMenu=v032InstallMenu;
 v032InstallMenu=function(){const r=v322BaseInstallMenu.apply(this,arguments);v322InstallMenuEntry();v322InstallHarzPlus();return r};
 window.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')==='harzDealer')v322RenderDealer()});
-const v322BaseRender=render;
-render=function(){const r=v322BaseRender();v322InstallMenuEntry();v322InstallHarzPlus();if(document.querySelector('#harzDealer')?.classList.contains('active'))v322RenderDealer();const line=document.querySelector('#v141VersionLine');return r};
-setTimeout(()=>{try{v322InstallMenuEntry();v322InstallHarzPlus()}catch(e){console.error('V4.02 Harz Dealer init',e)}},350);
+window.__v322GlobalRenderRetired=true;
+try{v322InstallMenuEntry();v322InstallHarzPlus()}catch(e){console.error('V4.02 Harz Dealer init',e)}
+document.addEventListener('DOMContentLoaded',()=>{try{v322InstallMenuEntry();v322InstallHarzPlus()}catch(e){}},{once:true});
 </script>
 
 
@@ -46328,21 +46327,11 @@ setTimeout(()=>{try{v322InstallMenuEntry();v322InstallHarzPlus()}catch(e){consol
      return r;
    };
  }
- const baseRender=render;
- render=function(){
-   const r=baseRender.apply(this,arguments);
-   if(document.querySelector('#harzDealer')?.classList.contains('active'))requestAnimationFrame(buildDealer);
-   return r;
- };
+ window.__v339GlobalRenderRetired=true;
  window.addEventListener('growlegends:navigation-open-v7119',e=>{
    if(String(e?.detail?.id||'')==='harzDealer')buildDealer();
- });
-
- function version(){
-   document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version]').forEach(el=>{if(el)el.textContent=V339_VERSION});
- }
- setTimeout(()=>{buildDealer();version()},250);
- setTimeout(()=>{buildDealer();version()},1200);
+ },{passive:true});
+ buildDealer();
 })();
 </script>
 
