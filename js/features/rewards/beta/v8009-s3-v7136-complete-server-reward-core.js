@@ -133,6 +133,38 @@ function showGrowOrder(b,ctx={}){
  try{window.v6111Sfx?.('reward')}catch(_){}
  ov.classList.add('show');requestAnimationFrame(()=>ov.classList.add('show'));return true;
 }
+function ensureGuildBossReward(){
+ let ov=document.getElementById('v7136GuildBossReward');if(ov)return ov;
+ ov=document.createElement('div');ov.id='v7136GuildBossReward';ov.innerHTML=`
+  <div class="v7136-grow-order-card v7136-guildboss-card" role="dialog" aria-modal="true" aria-label="Gildenboss Belohnung">
+   <div class="v7136-grow-order-icon">🏆</div>
+   <div class="v7136-grow-order-kicker">GILDENBOSS</div>
+   <h2 id="v7136GuildBossTitle">Belohnung erhalten</h2>
+   <div id="v7136GuildBossName" class="v7136-grow-order-name"></div>
+   <div id="v7136GuildBossState" class="v7136-grow-order-state">Die Belohnung wurde gutgeschrieben.</div>
+   <div id="v7136GuildBossLines" class="v7136-reward-list"></div>
+   <button type="button" class="btn" id="v7136GuildBossOk">Belohnung bestätigen</button>
+  </div>`;
+ document.body.appendChild(ov);
+ const close=()=>ov.classList.remove('show');
+ ov.addEventListener('click',e=>{if(e.target===ov)close()});
+ ov.querySelector('#v7136GuildBossOk')?.addEventListener('click',close);
+ return ov;
+}
+function showGuildBoss(b){
+ const ov=ensureGuildBossReward();
+ const title=ov.querySelector('#v7136GuildBossTitle'),name=ov.querySelector('#v7136GuildBossName'),lines=ov.querySelector('#v7136GuildBossLines');
+ if(title)title.textContent=b?.won?'Gildenboss besiegt!':'Gildenboss-Belohnung';
+ if(name)name.textContent=b?.won?'Gemeinsamer Sieg der Gilde':'Belohnung der Bossrunde';
+ const rows=[];
+ if(n(b?.xp)>0)rows.push(`<div class="v7136-reward-line">⭐ <strong>+${n(b.xp).toLocaleString('de-DE')} EXP</strong></div>`);
+ if(n(b?.gold)>0)rows.push(`<div class="v7136-reward-line">🪙 <strong>+${n(b.gold).toLocaleString('de-DE')} Gold</strong></div>`);
+ if(n(b?.harz)>0)rows.push(`<div class="v7136-reward-line">🟢 <strong>+${n(b.harz)} Harz-Taler</strong></div>`);
+ if(b?.seed)rows.push(`<div class="v7136-reward-line">🌰 <strong>+${esc(seedName(b.seed))}</strong></div>`);
+ if(lines)lines.innerHTML=rows.length?rows.join(''):'<div class="v7136-reward-line">Belohnung erfolgreich gutgeschrieben.</div>';
+ try{window.v6111Sfx?.('reward')}catch(_){}
+ ov.classList.add('show');requestAnimationFrame(()=>ov.classList.add('show'));return true;
+}
 function showHarvest(b){
  let ov=null;try{ov=v237EnsureHarvestReward?.()}catch(_){};if(!ov)return false;
  try{window.v6111Sfx?.('reward')}catch(_){}
@@ -154,7 +186,8 @@ window.v7136ShowServerReward=(kind,bundle,ctx={})=>{
  if(kind==='dungeon')return showDungeon(bundle,ctx);
  if(kind==='harvest')return showHarvest(bundle,ctx);
  if(kind==='growOrder')return showGrowOrder(bundle,ctx);
+ if(kind==='guildBoss')return showGuildBoss(bundle,ctx);
  return false;
 };
-window.v7136RewardDiagnostics=()=>({version:String(window.GROW_LEGENDS_VERSION?.short||'V7.136'),serverRewardSource:true,quest:true,dungeon:true,harvest:true,growOrder:true});
+window.v7136RewardDiagnostics=()=>({version:String(window.GROW_LEGENDS_VERSION?.short||'V7.136'),serverRewardSource:true,quest:true,dungeon:true,harvest:true,growOrder:true,guildBoss:true});
 })();
