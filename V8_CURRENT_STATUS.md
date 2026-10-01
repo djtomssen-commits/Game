@@ -3900,3 +3900,73 @@ Arbeitsmodus:
 - Quest + Schicht Full-Lifecycle-Audit gestartet:
   - Script `a21a1559734ab47aea70de2cacef9f36273eceb5`
   - Workflow `8502fd973edfeba14c9b32b72e094b6ed9bf7551`
+
+
+#### Powerblock: Quest + Schicht strukturell abgeschlossen
+- Abschluss-QA: `V8009_QUEST_SHIFT_FINAL_QA.json`
+- Ergebnis-Commit: `4b52afd65a4895c3e615401b341f72010a263ce8`
+- Alle Checks true.
+- Wesentliche Ergebnisse:
+  - globale Quest/Dampf-Renderowner von 5 auf 1 reduziert
+  - Timeouts im präzisen Quest/Shift-Scope von 50 auf 15 reduziert
+  - v294 bleibt finaler Dampf-Paint-Owner
+  - v387/v391 RenderQuests-Wrapper retired, Funktionen in v6344-Pipeline integriert
+  - v4124 Seed-Reward Claim-Wrapper retired; Seed-Showcase in v235 integriert
+  - v7045 Authority-Boot-Retrykaskade entfernt, echte RPC-Timeouts bleiben
+  - v7110 Lifecycle-Settles auf Microtasks umgestellt
+  - Schicht: keine kosmetischen setTimeout-Retries mehr; echter 1s-Ticker + Avatar-Observer bleiben
+- Matrix: Quest/Schicht auf **[x]** gesetzt
+  - Matrix-Commit `646a5d9a758f249c18901a37536a092608758fd9`
+
+#### Powerblock: Growroom – Grow / Stock / Genetik / Aufträge
+- Initialer Growroom-Audit: 31 relevante geladene Scripts.
+- Größte Altlasten bereinigt:
+  - v492:
+    - alte Quest/Dungeon/PvP-Drop-Wrapper komplett entfernt
+    - GL_EVENTS ist alleinige Cross-Feature-Rewardquelle
+    - 6-stufige Startup-Retrykaskade entfernt
+    - 2 parallele Intervalle auf einen 1s-Ticker mit 5s-Heavy-Cadence reduziert
+    - Seed-Inventar 45/90ms Repaints entfernt
+    - Commit `fdb737bb9014e408d6ce5c0e77753da14e3cb361`
+  - v4114 Care:
+    - 30ms Nachpaint + Cloud 0ms Timer entfernt
+    - Commits `1ccad37997043f749b4fc905b4dc706600659e97`, `be9249d12d51cb79d5b83984e44ff8ff4de50970`
+  - v6163 Tabs:
+    - 40/180/600/1600/4200ms Aktions-Retries entfernt
+    - 0/80/350ms Harvest-Retries entfernt
+    - doppelte RAF-Mounts entfernt
+    - MutationObserver bleibt als Root-Rebuild-Wächter
+    - Commit `ed370cdaf61c546da8588f80ddf5b9d37c0eb1a2`
+  - v430:
+    - 900/3200ms Max-Level-Repairkaskade entfernt
+    - Commit `923013493a1d7804ff1b72aa1f6acf0f6963bc92`
+  - v6160 Orders:
+    - Harvest/account-ready/Cloud Nachläufe auf Microtasks
+    - Commits `bd38bb7ad8c281be8a0c5d5cce06f0ea595ee2c8`, `90d151dc114ad7c788d0a6fb0fd32c949d019633`
+  - Genetik v6130:
+    - 0ms/30ms UI-Settles entfernt
+    - Commit `8f8f64d40e1629d7acf2e33971001c53c1e8d6d7`
+  - Stock v6282:
+    - 120ms Harvest-Refresh entfernt
+    - Commit `18dea2e6b7d855c13fb5d02f1813713e0ee5341e`
+  - Server Dealer v7071:
+    - 0/80/900/5200ms Refresh-Lanes entfernt
+    - Startup-Quiet API bleibt
+    - Commit `d1fbe79706d2142976b3797b3177ce1cf5279500`
+- Finaler Growroom-Audit:
+  - Ergebnis-Commit `020ff4d4402ecc5a79052631b871e10cd281a089`
+  - keine globalen render()-Wrapper
+  - v492: 2 Timeouts / 1 echtes Intervall
+  - v4114: 0 Timeouts
+  - v6163: 0 Timeouts / 0 RAF
+  - v6160: 0 Timeouts
+- Abschluss-QA: `V8009_GROWROOM_FOUR_TAB_FINAL_QA.json`
+  - Ergebnis-Commit `dfff713ecebb600f3539cd9c61ed5bfd27687bb6`
+  - alle 19 Checks true
+  - Tabs: grow / stock / genetics / orders
+  - Zero-Inline-JS/CSS weiterhin grün
+- Matrix Growroom auf **[x]**
+  - Matrix-Commit `1df8c0b542cc74fd328459cc86591f142a0df9a4`
+
+#### Nächster Powerblock
+- PvP + Hall of Haze + Profilinteraktion
