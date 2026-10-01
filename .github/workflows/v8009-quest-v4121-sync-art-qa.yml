@@ -1,0 +1,25 @@
+name: V8.009 Quest v4121 Sync Art QA
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'js/features/quest/beta/v4121-quest-reward-current-item.js'
+      - 'js/features/quest/beta/v7045-atomic-quest-receipt-client.js'
+      - '.github/scripts/v8009_quest_v4121_sync_art_qa.py'
+      - '.github/workflows/v8009-quest-v4121-sync-art-qa.yml'
+permissions:
+  contents: write
+jobs:
+  qa:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - run: node --check js/features/quest/beta/v4121-quest-reward-current-item.js
+      - run: python3 .github/scripts/v8009_quest_v4121_sync_art_qa.py
+      - run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add V8009_QUEST_V4121_SYNC_ART_QA.json
+          git commit -m "V8.009 QUEST: record v4121 sync-art QA" || exit 0
+          git push
