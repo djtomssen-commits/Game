@@ -2,7 +2,7 @@
 'use strict';
 if(window.__V7240_BETA_GOLD_FEATURES__)return;
 window.__V7240_BETA_GOLD_FEATURES__=true;
-if(String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()!=='beta')return;
+if(!['beta','server1'].includes(String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()))return;
 
 const VERSION='V7.273';
 const fmt=v=>Math.max(0,Math.round(Number(v)||0)).toLocaleString('de-DE');
