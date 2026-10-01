@@ -1,0 +1,23 @@
+name: V8.009 Runtime Noop Delegate Cleanup
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/v8009_runtime_noop_delegate_cleanup.py'
+      - '.github/workflows/v8009-runtime-noop-delegate-cleanup.yml'
+permissions:
+  contents: write
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 .github/scripts/v8009_runtime_noop_delegate_cleanup.py
+      - run: |
+          git config user.name github-actions
+          git config user.email github-actions@users.noreply.github.com
+          git add -A beta.html js/features js/v8 V8009_RUNTIME_NOOP_DELEGATE_CLEANUP_QA.json
+          git commit -m "V8.009 CLEANUP: remove runtime noop retired layers" || exit 0
+          git pull --rebase origin main
+          git push
