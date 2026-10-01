@@ -122,7 +122,7 @@
  }
  function visible(){const p=document.querySelector('#v7273GuildGrow');return !!p&&p.style.display!=='none'&&document.querySelector('#guild')?.classList.contains('active');}
  document.addEventListener('click',e=>{const b=e.target instanceof Element?e.target.closest('[data-v254-tab]'):null;if(!b)return;const tab=b.getAttribute('data-v254-tab');const p=document.querySelector('#v7273GuildGrow');if(p)p.style.display=tab==='growtasks'?'':'none';if(tab==='growtasks')setTimeout(()=>load(true),20);},true);
- V.timer=setInterval(()=>{if(visible()){document.querySelectorAll('[data-v7273-countdown="daily"]').forEach(el=>el.textContent=`Neue Aufträge in ${countdown(V.state?.dailyResetAt)}`);document.querySelectorAll('[data-v7273-countdown="weekly"]').forEach(el=>el.textContent=`Reset in ${countdown(V.state?.weeklyResetAt)}`);if(Date.now()-V.lastLoad>15000)load(false);}},1000);
+ V.timer=setInterval(()=>{if(visible()){document.querySelectorAll('[data-v7273-countdown="daily"]').forEach(el=>el.textContent=`Neue Aufträge in ${countdown(V.state?.dailyResetAt)}`);document.querySelectorAll('[data-v7273-countdown="weekly"]').forEach(el=>el.textContent=`Reset in ${countdown(V.state?.weeklyResetAt)}`);if(Date.now()-V.lastLoad>30000)load(false);}},30000);
  window.v7273GuildGrow=Object.freeze({refresh:()=>load(true),version:'V7.308'});
 })();
 
