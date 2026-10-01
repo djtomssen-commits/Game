@@ -33,7 +33,7 @@ function enabled(){
 function mtof(m){return 440*Math.pow(2,(m-69)/12)}
 
 function makeLoop(audioCtx){
-  const sr=22050;
+  const sr=Math.max(22050,Math.floor(Number(audioCtx.sampleRate)||44100));
   const bpm=80;
   const beat=60/bpm;          // .75 s
   const bars=8;
@@ -236,6 +236,9 @@ function setMusicVolume(v){
 window.v6109SetMusic=setMusic;
 window.v6109SetMusicVolume=setMusicVolume;
 window.v6109SyncMusic=syncMusic;
+/* Canonical shared WebAudio context for music + SFX. Android/WebView can glitch
+   when two independent AudioContexts compete for the same output device. */
+window.v6109GetAudioContext=()=>ensureAudio()?ctx:null;
 
 function ensureMusicRow(){
   const menu=document.getElementById('v141SettingsMenu');
@@ -329,6 +332,8 @@ window.v6109MusicInfo=()=>({
   playing:!!source,
   hidden:document.hidden,
   loopSeconds:24,
-  persistentIntervals:0
+  persistentIntervals:0,
+  sampleRate:ctx?.sampleRate||0,
+  sharedContext:true
 });
 })();
