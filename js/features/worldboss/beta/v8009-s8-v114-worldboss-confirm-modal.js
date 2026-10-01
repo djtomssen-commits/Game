@@ -86,11 +86,6 @@ v110Fight=async function(){
   return v114BaseFight();
 };
 
-const v114BaseRender=render;
-render=function(){
-  const result=v114BaseRender();
-  
-  return result;
-};
+/* V8.009: no-op global render wrapper retired. */
 
 setTimeout(v114EnsureConfirmModal,200);
