@@ -253,6 +253,7 @@ try{
       const r=base.apply(this,arguments);
       try{window.v309ScheduleQuestRolePaint?.()}catch(_){}
       try{window.v386RenderQuestShell?.()}catch(_){}
+      try{window.v099PaintQuestXp?.()}catch(_){}
       try{window.v392PaintActive?.()}catch(_){}
       try{window.v4172EnhanceQuestPage?.()}catch(_){}
       try{window.v4222RenderElitePanel?.()}catch(_){}
