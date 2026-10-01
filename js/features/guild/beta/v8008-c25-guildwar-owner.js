@@ -245,7 +245,7 @@ window.v8008C25InstallWarAuthority=function(){
    v6205FairTargets.clear();q('v4159WarTargets')&&(q('v4159WarTargets').innerHTML='');await loadWar({silent:true});try{await v254LoadGuild?.()}catch(e){};try{window.v4144SyncGuildChat?.()}catch(e){}
   }catch(e){let msg=String(e?.message||e);if(/GUILD_WAR_LEVEL_RANGE|außerhalb.*Kampflevel|outside.*level/i.test(msg))msg=`Unfairer Gildenkampf blockiert. Erlaubt sind nur Gegner innerhalb von ±${V6205_GUILD_WAR_LEVEL_GAP} Kampflevel.`;else if(missingSql(e))msg='V4159_GUILD_WAR_SQL.sql fehlt noch in Supabase.';try{v063Toast('Kriegserklärung fehlgeschlagen','warn',msg)}catch(_){} }
  }
- document.addEventListener('click',e=>{const b=e.target?.closest?.('[data-v4159-declare]');if(b){e.preventDefault();void declareWar(String(b.dataset.v4159Declare||''),String(b.dataset.v4159Name||'Gilde'),Number(b.dataset.v6205Level||0));return}const tab=e.target?.closest?.('[data-v254-tab="war"]');if(tab){const w=typeof v262War!=='undefined'?v262War:null;if(w?.id)markSeen(w.id);setTimeout(()=>void loadWar({silent:true}),0)}},true);
+ document.addEventListener('click',e=>{const b=e.target?.closest?.('[data-v4159-declare]');if(b){e.preventDefault();void declareWar(String(b.dataset.v4159Declare||''),String(b.dataset.v4159Name||'Gilde'),Number(b.dataset.v6205Level||0));return}const tab=e.target?.closest?.('[data-v254-tab="war"]');if(tab){const w=typeof v262War!=='undefined'?v262War:null;if(w?.id)markSeen(w.id);queueMicrotask(()=>void loadWar({silent:true}))}},true);
  async function claimReward(){
   try{
    const {data,error}=await v073Db.rpc('v4159_claim_guild_war_reward');if(error)throw error;const r=data||{};
@@ -276,10 +276,10 @@ window.v8008C25InstallWarAuthority=function(){
   const qa=window.v4107RunQA||window.v4102RunQA;if(typeof qa==='function'&&!window.__v4159Qa){const wrapped=function(){const r=qa.apply(this,arguments);if(!r||!Array.isArray(r.results))return r;const add=(name,pass,detail,severity='error')=>r.results.push({category:'Gildenkrieg V4.159',name,pass:!!pass,detail:String(detail||''),severity});add('Manuelle Kriegserklärung vorhanden',typeof window.v4159SetGuildWarSignup==='function'&&!!q('v4159WarManage'),'Gegnergilde suchen → Krieg erklären');add('Alter Aktualisieren-Button entfernt',!q('v262WarRefresh'),'Status lädt automatisch');add('Angriff und Verteidigung sind echte getrennte Meldungen',typeof v254ToggleSignup==='function'&&String(v254ToggleSignup).includes("kind==='attack'||kind==='defense'"),'beide Rollen möglich');add('Gildenkrieg lädt neue Server-RPC',typeof v262LoadWar==='function'&&String(v262LoadWar).includes('v4159_get_guild_war'),'V4159_GUILD_WAR_SQL.sql erforderlich');add('Gildenkrieg-Benachrichtigungsbadge vorhanden',typeof window.v4159PaintGuildWarBadge==='function','eingehender Krieg markiert Gilde + Krieg-Tab');add('Gildenchat-Systemmeldung serverseitig vorgesehen',true,'SQL schreibt Kriegserklärung und Ergebnis in guild_chat_messages','warn');r.total=r.results.length;r.passed=r.results.filter(x=>x.pass).length;r.failed=r.results.filter(x=>!x.pass&&x.severity!=='warn').length;r.warnings=r.results.filter(x=>!x.pass&&x.severity==='warn').length;r.ok=r.failed===0;return r};window.v4107RunQA=wrapped;if(window.v4102RunQA===qa)window.v4102RunQA=wrapped;window.__v4159Qa=true}
  }catch(e){console.warn('V4.159 guild war QA',e)}
  function stamp(){}
- install();stamp();setTimeout(()=>void loadWar({silent:true}),900);setTimeout(()=>void noticeWatch(),2500);
- window.addEventListener('growlegends:account-ready',()=>{install();stamp();setTimeout(()=>void loadWar({silent:true}),500)});
+ install();stamp();void noticeWatch();
+ window.addEventListener('growlegends:account-ready',()=>{install();stamp();queueMicrotask(()=>void loadWar({silent:true}))});
  window.addEventListener('growlegends:foreground-ready',()=>{install();stamp();void loadWar({silent:true})});
- document.addEventListener('visibilitychange',()=>{if(!document.hidden){clearTimeout(noticeTimer);noticeTimer=setTimeout(()=>void noticeWatch(),1200)}},{passive:true});
+ document.addEventListener('visibilitychange',()=>{if(!document.hidden){clearTimeout(noticeTimer);queueMicrotask(()=>void noticeWatch())}},{passive:true});
 })();
 };
 window.v8008C25InstallWarVisual=function(){
