@@ -1124,6 +1124,20 @@ function render(){
 
  try{
    const t=ensure(),r=t.run;let html;
+   const flowGuard=window.__V8009_TOWER_ROUTE_GUARD__;
+   if(flowGuard?.routeBusy){
+     const mode=String(r?.mode||'');
+     const hasBattle=!!root.querySelector('.vT-battle-stage,.v6259-battle-stage,[data-vt-battle]');
+     if(mode==='battle'){
+       if(!flowGuard.battleSeen){
+         flowGuard.battleSeen=true;
+         try{flowGuard.battleShownAt=performance.now()}catch(_){flowGuard.battleShownAt=Date.now()}
+       }
+     }else if(flowGuard.battleSeen&&hasBattle){
+       flowGuard.suppressedRenders=(Number(flowGuard.suppressedRenders)||0)+1;
+       return false;
+     }
+   }
    if(towerTab==='rank')html=rankView();
    else if(towerTab==='meta')html=metaView();
    else if(towerTab==='result'&&!r)html=resultView();
@@ -1144,7 +1158,18 @@ function render(){
 
    root.innerHTML=`<div class="vT-wrap">${html}</div>`;
    bind();
-   if(r?.mode==='reward')setTimeout(()=>{try{window.v7308PrepareReward?.('tower')}catch(_){}},0);
+   if(flowGuard?.routeBusy&&r?.mode==='battle'&&!flowGuard.arenaWarmQueued){
+     flowGuard.arenaWarmQueued=true;
+     requestAnimationFrame(()=>{
+       try{
+         if(!root.querySelector('.vT-battle-stage,.v6259-battle-stage,[data-vt-battle]'))return;
+         window.v7175CombatArenaRefresh?.();
+         root.querySelectorAll('.vT-battle-stage img').forEach(img=>{try{img.decode?.().catch(()=>{})}catch(_){}});
+         flowGuard.arenaPrewarms=(Number(flowGuard.arenaPrewarms)||0)+1;
+       }catch(_){}
+     });
+   }
+   if(r?.mode==='reward')queueMicrotask(()=>{try{window.v7308PrepareReward?.('tower')}catch(_){} });
    if(r?.mode==='route')v7191PreloadTowerRoute(r);
 
    /* V8.009-T10F: this 720 ms timer belongs to the old local Tower path.
