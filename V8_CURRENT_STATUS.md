@@ -4592,3 +4592,42 @@ Arbeitsmodus:
 #### Nächster Powerblock
 - Character Creation – Beta / Server-1 final
 - danach repo-weite finale DOM/Lifecycle/Owner-QA.
+
+
+#### Powerblock: Character Creation – Beta / Server 1 final abgeschlossen
+- Scope:
+  - Beta Creator
+  - Server-1 Creator
+  - Account-Finalizer-Handoff
+  - Supabase-Schema-Routing
+  - getrennte Server-1-Launch-Sperre
+- Konsolidierung:
+  - `v4136 -> v7275CreateCharacterServer()` ist jetzt der einzige direkte Client-Owner für `gl_create_character`.
+  - Beta und Server 1 benutzen denselben Create-Helper.
+  - Server-1-Rückgabe `initialized=true` wird im gemeinsamen Helper auf den kanonischen `ready=true`-Contract normalisiert.
+  - `v7229` besitzt weiterhin nur die Server-1-spezifische UI/Isolation, ruft aber keinen eigenen Create-RPC mehr direkt auf.
+  - zusätzlicher `v7229`-`v200FinalizeUser`-Wrapper entfernt.
+  - 5-stufige Startup-Retry-Kaskade `[0,120,400,1000,2200]` entfernt.
+  - 120-ms-Creator-Polling entfernt; Recovery nur noch über echte `account-ready` / `first-playable` Events.
+  - historischer früher `v029` Text-Creator bleibt retired.
+- Authority / DB:
+  - `public.gl_create_character` vorhanden, serverautoritativ und mit `auth.uid()`.
+  - `server1.gl_create_character` vorhanden, serverautoritativ und mit `auth.uid()`.
+  - beide Schemas erzwingen Namens-/Klassenregeln serverseitig.
+  - Server-1-DB-Client wird vor Launch weiterhin über das ausgewählte Server-Schema `server1` geroutet.
+- Server-1-Öffnung ausdrücklich unverändert:
+  - `V343_LAUNCH_AT = 2026-10-02T16:00:00+02:00`.
+  - normale Accounts bleiben bis dahin über den separaten v343-Zugangspfad gesperrt.
+  - Vorabtest-Zugang bleibt separat bestehen.
+  - Character-Creation-Cleanup öffnet Server 1 nicht vorzeitig.
+- Wichtige Commits:
+  - gemeinsamer Create-/Finalizer-Owner: `ab0f1cf4771f99024aa3d3e616ac4be2b866d769`
+  - Server1 nutzt gemeinsamen Create-Owner: `5ad2fd25929e4e19b2dc992dc6ff64834abc8e5f`
+  - Server1 Creator-Polling entfernt: `e41c35872a279a06672a7c8a47265f9bd489da49`
+  - QA: `V8009_CHARACTER_CREATION_FINAL_QA.json`, Commit `de44c78491e97c3b672b988b68b3dd8b48e019ec`
+- Matrix:
+  - Character Creation = **[x]**
+- Manueller Creator-Endtest bleibt für den gemeinsamen Test-Milestone offen.
+
+#### Nächster Powerblock
+- finale repo-weite DOM/Lifecycle/Owner-QA.
