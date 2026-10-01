@@ -70,27 +70,8 @@ function v241ShowHarvestReward(rows,goldGain,xpGain){
     xp.textContent=`⭐ +${Math.max(0,Number(xpGain)||0)} EXP`;
   }
 
+  /* V8.009: canonical reward popup is shown once; historical visibility retries retired. */
   ov.classList.add('show');
-
-  /*
-    Old render chains and mobile focus handlers can run in the same frame.
-    Reassert visibility after they finish.
-  */
-  requestAnimationFrame(()=>{
-    ov.classList.add('show');
-  });
-
-  setTimeout(()=>{
-    if(document.body.contains(ov)){
-      ov.classList.add('show');
-    }
-  },80);
-
-  setTimeout(()=>{
-    if(document.body.contains(ov)){
-      ov.classList.add('show');
-    }
-  },220);
 }
 
 
@@ -203,16 +184,5 @@ document.addEventListener('click',e=>{
 },true);
 
 
-/* Resume/update popup infrastructure and version. */
-setTimeout(()=>{
-  try{
-    if(document.querySelector('#grow')?.classList.contains('active')){
-      v239UpdateGrowLive();
-    }
-  }catch(e){}
-
-  document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V4.29 Stable');
-
-  const line=document.querySelector('#v141VersionLine');
-},460);
+/* V8.009: delayed startup/version repaint retired. */
+queueMicrotask(()=>{try{if(document.querySelector('#grow')?.classList.contains('active'))v239UpdateGrowLive()}catch(e){}});
