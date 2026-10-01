@@ -171,9 +171,9 @@ window.v7110SyncQuestAuthority=sync;
 window.v7110QuestAuthorityEnforced=enforced;
 window.__V7110_QUEST_ROUTE_WRAP_RETIRED__='v7122-shared-event';
 
-window.addEventListener('growlegends:account-ready',()=>{const run=()=>{if(Date.now()-Number(S.lastAt||0)>60000)void sync(false)};if(typeof window.v7204AfterStartupQuiet==='function')window.v7204AfterStartupQuiet(run,350);else setTimeout(run,420)},{passive:true});
-window.addEventListener('pageshow',()=>setTimeout(()=>{if(enforced()&&Date.now()-Number(S.lastAt||0)>60000)void sync(false)},700),{passive:true});
-document.addEventListener('visibilitychange',()=>{if(!document.hidden&&enforced()&&Date.now()-Number(S.lastAt||0)>60000)setTimeout(()=>void sync(false),250)},{passive:true});
+window.addEventListener('growlegends:account-ready',()=>{const run=()=>{if(Date.now()-Number(S.lastAt||0)>60000)void sync(false)};if(typeof window.v7204AfterStartupQuiet==='function')window.v7204AfterStartupQuiet(run,350);else queueMicrotask(run)},{passive:true});
+window.addEventListener('pageshow',()=>queueMicrotask(()=>{if(enforced()&&Date.now()-Number(S.lastAt||0)>60000)void sync(false)}),{passive:true});
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&enforced()&&Date.now()-Number(S.lastAt||0)>60000)queueMicrotask(()=>void sync(false))},{passive:true});
 
 window.v7110QuestDiagnostics=()=>({version:VERSION,enforced:enforced(),lastAt:S.lastAt,lastEnergy:S.lastEnergy,lastRevision:S.lastRevision,lastError:S.lastError,offers:(s?.quests?.offers||[]).map(q=>({id:q?.id||'',energy:q?.energy,server:serverOffer(q)}))});
 })();
