@@ -218,19 +218,12 @@
   window.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')==='character'){paintEquipmentSlots();paintInventoryComparisons()}});
   window.__v470GoWrapped='v7119-event';
 
+  /* V8.009: retired subtree MutationObservers.
+     Inventory/equipment repaint is already owned by the direct render/equip/navigation hooks above. */
   function installObservers(){
-    const eq=document.querySelector('#character .equipment-grid');
-    if(eq&&eq.dataset.v470Observed!=='1'){
-      eq.dataset.v470Observed='1';
-      const mo=new MutationObserver(()=>{if(!document.getElementById('character')?.classList.contains('active'))return;if(!paintingSlots)queueMicrotask(paintEquipmentSlots)});
-      mo.observe(eq,{childList:true,subtree:true});window.__V470_SLOT_OBSERVER__=mo;
-    }
-    const inv=document.querySelector('#character #inventory .inventory-grid');
-    if(inv&&inv.dataset.v470CompareObserved!=='1'){
-      inv.dataset.v470CompareObserved='1';
-      const mo=new MutationObserver(()=>{if(!document.getElementById('character')?.classList.contains('active'))return;if(!paintingCompare)queueMicrotask(paintInventoryComparisons)});
-      mo.observe(inv,{childList:true,subtree:true});window.__V470_COMPARE_OBSERVER__=mo;
-    }
+    window.__V470_SLOT_OBSERVER__='retired';
+    window.__V470_COMPARE_OBSERVER__='retired';
+    return false;
   }
   function stamp(){}
   function settle(){
