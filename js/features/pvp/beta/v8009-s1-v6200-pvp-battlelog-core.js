@@ -68,7 +68,7 @@ async function openRow(token){
  d?.querySelector('[data-v6200-replay]')?.addEventListener('click',e=>replay(String(e.currentTarget.dataset.v6200Replay)));
  d?.querySelector('[data-v6200-message]')?.addEventListener('click',e=>composeTo(String(e.currentTarget.dataset.v6200Message||'')));
 }
-function composeTo(name){const b=document.querySelector('[data-v381-tab="compose"]');b?.click();setTimeout(()=>{const i=document.getElementById('v381Recipient');if(i){i.value=name;i.focus()}},0)}
+function composeTo(name){const b=document.querySelector('[data-v381-tab="compose"]');b?.click();queueMicrotask(()=>{const i=document.getElementById('v381Recipient');if(i){i.value=name;i.focus()}})}
 async function markAll(){rows.forEach(r=>{if(!isAttacker(r))r.defender_seen=true});paintBadge();renderList();try{if(online())await v073Db.rpc('v6200_mark_all_pvp_battles_seen')}catch(e){console.warn('V6.200 mark all',e)}}
 async function load(){
  ensurePanel();if(loading)return;loading=true;
@@ -120,6 +120,6 @@ try{
 /* Mail opening and tab badge refresh. */
 document.addEventListener('click',e=>{const t=e.target?.closest?.('[data-v381-tab="battlelog"]');if(t)void load()},true);
 window.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')==='mail')void load()},{passive:true});
-setTimeout(()=>{ensurePanel();if(document.getElementById('mail')?.classList.contains('active'))load()},500);
+queueMicrotask(()=>{ensurePanel();if(document.getElementById('mail')?.classList.contains('active'))void load()});
 setInterval(()=>{if(!document.hidden&&document.getElementById('mail')?.classList.contains('active'))load()},60000);
 })();
