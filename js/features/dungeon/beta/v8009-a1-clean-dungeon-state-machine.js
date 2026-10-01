@@ -254,17 +254,8 @@ function v048InstallFight(){
   };
 }
 
-const v048BaseRender=render;
-render=function(){
-  v048BaseRender();
-  /* V6.318: retired the obsolete V4.02 fight installer and duplicate dungeon repaint.
-     V6.318 keeps only the reward return binding here; V6.2xx canonical Dungeon owns rendering
-     and v246 owns the actual fight handler. */
-  if(s.dungeon.view==='reward'){
-    const back=document.querySelector('#v048ReturnMap');
-    if(back)back.onclick=v048GoMap;
-  }
-};
+/* V8.009: obsolete global reward-button render wrapper retired.
+   The reward creation path already binds #v048ReturnMap directly. */
 
 try{
   if(document.querySelector('#dungeon')?.classList.contains('active')){
