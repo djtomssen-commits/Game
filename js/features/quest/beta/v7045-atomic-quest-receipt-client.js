@@ -461,8 +461,8 @@ async function boot(){
 }
 window.v7045QuestAuthorityDiagnostics=()=>clone({...C,version:VERSION,mode:mode()});
 window.v7045RecoverQuestReceipt=()=>recoverPending({quiet:false});
-window.addEventListener('growlegends:account-ready',()=>setTimeout(()=>void boot(),320));
-window.addEventListener('pageshow',()=>setTimeout(()=>{try{if(document.getElementById('quests')?.classList.contains('active'))void canonicalQuestState().then(()=>{persistLocal();paintAll()})}catch(_){}},950),{passive:true});
-setTimeout(()=>{try{if(typeof v073User!=='undefined'&&v073User?.id&&!v073User?.is_anonymous)void boot()}catch(_){}},3300);
+window.addEventListener('growlegends:account-ready',()=>queueMicrotask(()=>void boot()));
+window.addEventListener('pageshow',()=>queueMicrotask(()=>{try{if(document.getElementById('quests')?.classList.contains('active'))void canonicalQuestState().then(()=>{persistLocal();paintAll()})}catch(_){}}),{passive:true});
+queueMicrotask(()=>{try{if(typeof v073User!=='undefined'&&v073User?.id&&!v073User?.is_anonymous)void boot()}catch(_){}});
 })();
 
