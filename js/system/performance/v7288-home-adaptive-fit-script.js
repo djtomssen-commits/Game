@@ -1,7 +1,7 @@
 (()=>{'use strict';
 if(window.__V7288_HOME_ADAPTIVE_FIT__)return;
 window.__V7288_HOME_ADAPTIVE_FIT__=true;
-const IS_BETA=String(window.GROW_RELEASE_CHANNEL||'stable')==='beta';
+const IS_BETA=['beta','server1'].includes(String(window.GROW_RELEASE_CHANNEL||'stable').toLowerCase());
 
 let raf=0,runTimer=0,lastHero=null,lastWidth=0,baseHeight=0;
 const HOME_DIAG={scheduleCalls:0,coalesced:0,runCalls:0,baseFitCalls:0,lastReason:'',lastRunAt:0};
