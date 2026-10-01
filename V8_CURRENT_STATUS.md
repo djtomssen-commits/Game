@@ -1616,3 +1616,42 @@ Der nächste fachliche Schritt ist **nicht HOME-32**, sondern die Restinventur d
   - `v235`: finaler Local/Mirror-Claim-Transaktionsowner;
   - `v240`: finaler lokaler Reward-Presenter;
   - `v6344`: Quest-Renderer/UI-Paints.
+
+
+### v321 / v309 / v637 / v7046 Runtime-Layer weiter reduziert 01.10.2026
+
+- `v321-elite-hard-guarantee-dampf-scale.js`
+  - Commit `f032c96de74a3c02c246a639dd4e2850b6377218`: `renderQuests`- und globaler `render`-Wrapper entfernt.
+  - Dampf-Datenvorbereitung als `v321PrepareQuestRender` exportiert.
+  - Dampfkosten-Paint als `v321PaintQuestCosts` exportiert.
+  - Commit `c76a8a75ccb1c915c3bab87ab701cb10a21bfcaf`: beide Hooks direkt in den kanonischen `v6344`-Renderpfad eingebunden.
+  - Dampfkurve / Restverbrauch / Elite-Garantie unverändert.
+  - QA `V8009_QUEST_V321_RENDER_QA.json`, Bot-Commit `8aa4d7383b4800bc903c7dc01953af148fdca9b7`, grün.
+
+- `v309-distinct-quest-offers.js`
+  - Commit `a29cff01021c9fde2a5cb403460a89ab026654f5`: RAF-/250-ms-Rollenbadge-Repaints entfernt.
+  - Rollen-Painter als `v309PaintQuestRoles` exportiert.
+  - Commit `ee9c63944d6c433acb3dc9fdc7a9c5cd2a575872`: direkter Aufruf aus `v6344`.
+  - GitHub-Workflow für Bot-QA wurde nicht gestartet; Contract daher direkt gegen main geprüft:
+    - Export vorhanden;
+    - kein RAF;
+    - kein Timeout;
+    - Prepare-Hook vorhanden;
+    - v6344 ruft direkten Painter;
+    - alter Schedule-Hook weg.
+  - Alle sechs Direct-Checks grün.
+
+- `v637-quest-exact-dungeon-core.js`
+  - Commit `39c318a128388da851e6fa9f3571d25cd984cb6e`: globalen Click-Listener, pageshow-Listener, RAF und Startup-Timer entfernt; nur `v637SyncQuestDungeon` bleibt.
+  - Commit `3addfdea9c59417222ff239c316d3bd17b6d0331`: `v636` ruft den Sync direkt nach Kampf-Root-Aufbau sowie direkt nach Skill-Chip-Erzeugung.
+  - QA `V8009_QUEST_V637_DIRECT_HOOK_QA.json`, Bot-Commit `988d85fa2f8c8fc4c268baf89c926faa401398b4`, grün.
+
+- `v7046-quest-event-duplicate-reward-guard.js`
+  - Ladeaudit `V8009_QUEST_V7046_ORDER_AUDIT.json`, Bot-Commit `6bdfdabe64f798131e3e59f3c8d823cf6f2fb4b8`.
+  - bestätigte Ladefolge: `v6140 -> v7045 -> v7046`.
+  - account-ready markiert den Atomic-Owner synchron, bevor v6140 seinen 120-ms-Reinstall ausführt.
+  - Commit `1658e28840852548586bc5c1345d4a30d324ef19`: defensiven 50/180/500/1400/3200-ms-Retry-Zug entfernt.
+  - direkter Load-, account-ready-, DOMContentLoaded- und pageshow-Guard bleibt.
+  - QA `V8009_QUEST_V7046_RETRY_QA.json`: alle Checks grün.
+
+- Stable / `index.html`: unverändert.
