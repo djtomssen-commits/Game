@@ -1,0 +1,34 @@
+name: V8.009 Feature Extraction Batch 7
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/v8009_feature_extraction_batch7.py'
+      - '.github/workflows/v8009-feature-extraction-batch7.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 .github/scripts/v8009_feature_extraction_batch7.py
+      - run: |
+          node --check js/features/account/beta/v8009-s5-v4131-character-persistence.js
+          node --check js/features/items/beta/v8009-s3-v6106-real-comic-item-art.js
+          node --check js/features/account/beta/v8009-s5-v450-account-save-isolation-recovery.js
+          node --check js/features/grow/beta/v8009-s4-v232-growroom-core.js
+          node --check js/features/worldboss/beta/v8009-s2-v290-worldboss-level-equipment-balance.js
+          node --check js/features/audio/beta/v8009-s2-v6109-background-music.js
+          node --check js/features/authority/beta/v8009-s4-v7074-item-enforce-bridge.js
+          node --check js/features/combat/beta/v8009-s2-v446-global-combat-power-authority.js
+          node --check js/features/weather/beta/v8009-s1-gl-live-weather.js
+          node --check js/features/dungeon/beta/v8009-s4-v7050-dungeon-combat-parity-shadow.js
+      - run: |
+          git config user.name github-actions
+          git config user.email github-actions@users.noreply.github.com
+          git add beta.html js/features/account/beta/v8009-s5-v4131-character-persistence.js js/features/items/beta/v8009-s3-v6106-real-comic-item-art.js js/features/account/beta/v8009-s5-v450-account-save-isolation-recovery.js js/features/grow/beta/v8009-s4-v232-growroom-core.js js/features/worldboss/beta/v8009-s2-v290-worldboss-level-equipment-balance.js js/features/audio/beta/v8009-s2-v6109-background-music.js js/features/authority/beta/v8009-s4-v7074-item-enforce-bridge.js js/features/combat/beta/v8009-s2-v446-global-combat-power-authority.js js/features/weather/beta/v8009-s1-gl-live-weather.js js/features/dungeon/beta/v8009-s4-v7050-dungeon-combat-parity-shadow.js V8009_FEATURE_EXTRACTION_BATCH7_QA.json
+          git commit -m "V8.009 FEATURES: extract seventh owner batch" || exit 0
+          git pull --rebase origin main
+          git push
