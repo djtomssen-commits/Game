@@ -1,0 +1,28 @@
+name: V8.009 System UI Extraction Batch 1
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/v8009_system_ui_extraction_batch1.py'
+      - '.github/workflows/v8009-system-ui-extraction-batch1.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 .github/scripts/v8009_system_ui_extraction_batch1.py
+      - run: |
+          node --check js/features/system/beta/v8009-s2-v448-final-ui-power-account-integrity.js
+          node --check js/features/system/beta/v8009-s2-v7097-performance-ux-restore.js
+          node --check js/features/system/beta/v8009-s2-v7084-background-system-test.js
+          node --check js/features/ui/beta/v8009-s1-v6338-central-title-system.js
+      - run: |
+          git config user.name github-actions
+          git config user.email github-actions@users.noreply.github.com
+          git add beta.html js/features/system/beta/v8009-s2-v448-final-ui-power-account-integrity.js js/features/system/beta/v8009-s2-v7097-performance-ux-restore.js js/features/system/beta/v8009-s2-v7084-background-system-test.js js/features/ui/beta/v8009-s1-v6338-central-title-system.js V8009_SYSTEM_UI_EXTRACTION_BATCH1_QA.json
+          git commit -m "V8.009 SYSTEM UI: extract owner batch" || exit 0
+          git pull --rebase origin main
+          git push
