@@ -285,15 +285,18 @@ function replayButton(on){
 }
 function v7269DungeonCadence(eventCount){
  const count=Math.max(1,Number(eventCount)||1);
- const frameDelay=Math.max(140,Math.min(280,Math.floor(2600/count)));
+ /* V8.009: give each hit enough screen time to read. This changes presentation
+    only; server combat, damage and rewards are untouched. */
+ const frameDelay=Math.max(300,Math.min(430,Math.floor(4200/count)));
+ const attackDelay=Math.max(135,Math.round(frameDelay*.46));
  return {
   frameDelay,
-  attackDelay:Math.max(70,Math.round(frameDelay*.44)),
-  settleDelay:Math.max(70,frameDelay-Math.max(70,Math.round(frameDelay*.44))),
-  visualAttackMs:400,
-  visualHitMs:400,
-  visualPopMs:650,
-  startDelayMs:90
+  attackDelay,
+  settleDelay:Math.max(145,frameDelay-attackDelay),
+  visualAttackMs:520,
+  visualHitMs:500,
+  visualPopMs:780,
+  startDelayMs:120
  };
 }
 window.v7269DungeonCadence=v7269DungeonCadence;
