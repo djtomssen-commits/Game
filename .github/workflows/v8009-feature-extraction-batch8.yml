@@ -1,0 +1,34 @@
+name: V8.009 Feature Extraction Batch 8
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/v8009_feature_extraction_batch8.py'
+      - '.github/workflows/v8009-feature-extraction-batch8.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 .github/scripts/v8009_feature_extraction_batch8.py
+      - run: |
+          node --check js/features/system/beta/v8009-s6-v7165-combined-fixes-owner.js
+          node --check js/features/items/beta/v8009-s4-v4117-boots-art-fix.js
+          node --check js/features/system/beta/v8009-s6-gl20-v4218.js
+          node --check js/features/authority/beta/v8009-s5-v7080-server-achievement-authority.js
+          node --check js/features/social/beta/v8009-s3-v381-player-mail-system.js
+          node --check js/features/admin/beta/v8009-s2-v269-ticket-system.js
+          node --check js/features/account/beta/v8009-s6-v343-server-selection-v7226.js
+          node --check js/features/dungeon/beta/v8009-s5-v467-hard-live-dungeon-key-authority.js
+          node --check js/features/items/beta/v8009-s4-v6107-global-item-art-authority.js
+          node --check js/features/authority/beta/v8009-s5-v7036-item-rearrange-authority-bridge.js
+      - run: |
+          git config user.name github-actions
+          git config user.email github-actions@users.noreply.github.com
+          git add beta.html js/features/system/beta/v8009-s6-v7165-combined-fixes-owner.js js/features/items/beta/v8009-s4-v4117-boots-art-fix.js js/features/system/beta/v8009-s6-gl20-v4218.js js/features/authority/beta/v8009-s5-v7080-server-achievement-authority.js js/features/social/beta/v8009-s3-v381-player-mail-system.js js/features/admin/beta/v8009-s2-v269-ticket-system.js js/features/account/beta/v8009-s6-v343-server-selection-v7226.js js/features/dungeon/beta/v8009-s5-v467-hard-live-dungeon-key-authority.js js/features/items/beta/v8009-s4-v6107-global-item-art-authority.js js/features/authority/beta/v8009-s5-v7036-item-rearrange-authority-bridge.js V8009_FEATURE_EXTRACTION_BATCH8_QA.json
+          git commit -m "V8.009 FEATURES: extract eighth owner batch" || exit 0
+          git pull --rebase origin main
+          git push
