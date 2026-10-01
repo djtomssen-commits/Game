@@ -75,13 +75,11 @@ function lastResultHtml(d){
   </section>`;
 }
 function machineHtml(drawNums){
-  return `<div class="v8010-machine" aria-label="Roter Harz-Lotto-Kugelautomat">
-    <div class="v8010-machine-sign">HARZ LOTTO</div>
-    <div class="v8010-globe">
-      <div class="v8010-mini-balls">${Array.from({length:17},(_,i)=>`<i style="--i:${i}">${(i*7)%50+1}</i>`).join('')}</div>
-    </div>
-    <div class="v8010-machine-neck"></div>
-    <div class="v8010-machine-base"><div class="v8010-slot">${drawNums?.length?balls(drawNums):'<span>6 Kugeln · Dienstag 19:00</span>'}</div></div>
+  const hasDraw=Array.isArray(drawNums)&&drawNums.length===6;
+  return `<div class="v8010-machine" aria-label="Harz-Lotto Straßenautomat">
+    ${hasDraw
+      ? `<div class="v8010-draw-chute">${balls(drawNums)}</div>`
+      : '<div class="v8010-machine-wait">Ziehung Dienstag · 19:00</div>'}
   </div>`;
 }
 function paint(){
