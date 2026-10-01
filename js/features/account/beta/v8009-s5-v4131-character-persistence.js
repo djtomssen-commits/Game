@@ -75,45 +75,9 @@
  }
  window.v4131SaveCharacterServer=saveCharacterServer;
 
- function fixedCharacterCreator(){
-  if(!window.__V200_AUTH_READY__)return;
-  if(typeof v200DurableUser==='function'&&!v200DurableUser())return;
-  if(!uid())return;
-  try{if(String(v075CloudLoadedFor||'')!==uid())return}catch(e){return}
-  /* The creator is allowed to operate only after the current save is proven to belong
-     to this exact authenticated account. This blocks cross-account relabeling during login. */
-  if(!owned(uid())||!verified(uid()))return;
-  if(complete()){try{v200ClearCharacterModals()}catch(e){};checkpointCharacter();return}
-  if(document.querySelector('#v200CharacterModal'))return;
-  try{v200ClearCharacterModals()}catch(e){}
+ /* V8.009: superseded character-creator DOM owner retired.
+    v4136 owns Beta character creation; v4131 keeps persistence/save safeguards only. */
 
-  const modal=document.createElement('div');modal.id='v200CharacterModal';
-  modal.innerHTML=`<div class="v200-character-card"><h2>Erstelle deine Legende</h2><div class="v200-character-sub">Gib deinen Charakternamen ein und wähle deine Klasse. Dieser Schritt erscheint nur einmal.</div><div class="v200-character-name"><label>Charaktername</label><input id="v200CharacterName" maxlength="18" autocomplete="off" placeholder="Deinen Namen eingeben"><div id="v200CharacterNameStatus">2–18 Zeichen · muss einzigartig sein</div></div><div class="v200-class-grid">${Object.entries(classes).map(([id,c])=>`<button type="button" class="v200-class" data-v200-class="${id}"><img src="${v080AvatarFor(id)}" alt="${v073Escape(c.name)}"><div class="v200-class-copy"><b>${v073Escape(c.name)}</b><span>${v073Escape(c.text||'')}</span></div></button>`).join('')}</div></div>`;
-  document.body.appendChild(modal);
-  const input=modal.querySelector('#v200CharacterName'),status=modal.querySelector('#v200CharacterNameStatus');
-  modal.querySelectorAll('[data-v200-class]').forEach(btn=>{btn.onclick=async()=>{
-   const name=v071CleanName(input?.value);
-   if(!v071NameValid(name)){status.className='error';status.textContent='Bitte einen Namen mit 2–18 Zeichen eingeben.';input?.focus();return}
-   modal.querySelectorAll('[data-v200-class]').forEach(x=>x.disabled=true);status.className='';status.textContent='Name wird geprüft …';
-   if(!(await v200NameAvailable(name))){modal.querySelectorAll('[data-v200-class]').forEach(x=>x.disabled=false);status.className='error';status.textContent='Dieser Charaktername ist bereits vergeben.';input?.focus();return}
-   const classId=btn.dataset.v200Class;
-   const ok=await v115Confirm(`${classes[classId].name} als Klasse für ${name} wählen?\n\nDie Klasse kann später nicht gewechselt werden.`,{title:'Charakter erstellen',type:'warn',okText:'Charakter erstellen'});
-   if(!ok){modal.querySelectorAll('[data-v200-class]').forEach(x=>x.disabled=false);status.textContent='2–18 Zeichen · muss einzigartig sein';return}
-   s.playerClass=classId;s.classLocked=true;s.characterName=name;s.characterNameSet=true;s.social=(s.social&&typeof s.social==='object')?s.social:{};s.social.playerId=uid();s.__accountOwnerId=uid();
-   status.textContent='Charakter wird accountgebunden gespeichert …';
-   if(!checkpointCharacter()){
-    status.className='error';status.textContent='Spielstand konnte lokal nicht gesichert werden. Bitte erneut versuchen.';
-    modal.querySelectorAll('[data-v200-class]').forEach(x=>x.disabled=false);return;
-   }
-   try{v200ClearCharacterModals()}catch(e){}
-   try{v071ApplyNameToUi()}catch(e){}
-   try{v200OpenHome()}catch(e){}
-   try{v063Toast(`${name} wurde erstellt`,'success',`${classes[classId].name} · Account-Spielstand lokal gesichert`)}catch(e){}
-   void saveCharacterServer().then(ok=>{try{if(ok)v063Toast('☁️ Charakter gespeichert','success','Account- und Cloud-Spielstand wurden gesichert.');else v063Toast('☁️ Cloud-Sync ausstehend','warn','Der Charakter ist lokal accountgebunden gesichert und wird erneut synchronisiert.')}catch(e){}});
-  }});
-  setTimeout(()=>input?.focus(),60);
- }
- try{v029ShowClassChoice=fixedCharacterCreator;window.v029ShowClassChoice=fixedCharacterCreator}catch(e){window.v029ShowClassChoice=fixedCharacterCreator}
 
  /* Repair existing complete characters only after account ownership is verified.
     V4.133 called checkpointCharacter() here without verification; during a Google-account
