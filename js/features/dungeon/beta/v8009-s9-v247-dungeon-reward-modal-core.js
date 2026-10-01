@@ -86,6 +86,7 @@ function v247ReturnAfterDungeonReward(data){
 function v247ShowDungeonReward(data){
   try{window.v6111Sfx?.('reward')}catch(e){}
   const overlay=v247EnsureDungeonReward();
+  overlay.classList.remove('v587-defeat');
 
   const icon=overlay.querySelector('.v231-quest-icon');
   const title=overlay.querySelector('.v231-quest-title');
@@ -97,9 +98,8 @@ function v247ShowDungeonReward(data){
 
   if(icon)icon.textContent=data?.boss?'👑':'⚔️';
   if(title){
-    title.textContent=data?.boss
-      ?'DUNGEON ABGESCHLOSSEN'
-      :'GEGNER BESIEGT';
+    title.textContent=data?.title
+      ||(data?.boss?'DUNGEON ABGESCHLOSSEN':'GEGNER BESIEGT');
   }
 
   const dungeon=dungeons?.[Number(data?.dungeonIndex)];
@@ -124,7 +124,7 @@ function v247ShowDungeonReward(data){
   if(data?.boss){
     rows.push(`
       <div class="v247-dungeon-line v247-boss">
-        💜 Boss-Belohnung · garantiert 1 Epic
+        ${v240Esc?.(data?.bossRewardText||'🟠 Boss-Belohnung · garantiert 1 legendäres Klassenitem')||data?.bossRewardText||'🟠 Boss-Belohnung · garantiert 1 legendäres Klassenitem'}
       </div>
     `);
   }
@@ -154,6 +154,18 @@ function v247ShowDungeonReward(data){
       </div>
     `);
   }
+  if(Number(data?.fragments)>0){
+    rows.push(`<div class="v247-dungeon-line">💠 +${Number(data.fragments)} Fragmente</div>`);
+  }
+  if(data?.seedLabel){
+    rows.push(`<div class="v247-dungeon-line">🌰 Samen gefunden: ${v240Esc?.(data.seedLabel)||String(data.seedLabel)}</div>`);
+  }
+  if(data?.petLabel){
+    rows.push(`<div class="v247-dungeon-line">🐾 Pet gefunden: ${v240Esc?.(data.petLabel)||String(data.petLabel)}</div>`);
+  }
+  if(data?.guildXpHtml){
+    rows.push(String(data.guildXpHtml));
+  }
 
   if(data?.boss){
     rows.push(`
@@ -178,25 +190,9 @@ function v247ShowDungeonReward(data){
   }
 
   overlay.classList.add('show');
-  requestAnimationFrame(()=>overlay.classList.add('show'));
-
-  setTimeout(()=>{
-    if(document.body.contains(overlay)){
-      overlay.classList.add('show');
-    }
-  },80);
 
   try{
     renderInventory();
     v240RepairInventoryRarity();
   }catch(e){}
 }
-
-
-/* Final version stamp. */
-setTimeout(()=>{
-  document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V4.29 Stable');
-
-  const line=document.querySelector('#v141VersionLine');
-},580);
