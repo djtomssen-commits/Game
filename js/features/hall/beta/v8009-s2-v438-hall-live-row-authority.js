@@ -104,37 +104,8 @@
     },force?0:350);
   }
 
-  /* Outermost profile-sync owner: Hall fields are written independently of the
-     return value of older profile sync wrappers. This removes the stale-row path. */
-  if(typeof v073SyncProfile==='function'&&!window.__v438SyncWrapped){
-    const base=v073SyncProfile;
-    v073SyncProfile=async function(force=false){
-  if(window.__V200_AUTH_READY__!==true)return false;
-      let baseOk=false;
-      try{baseOk=!!(await base.apply(this,arguments))}catch(e){console.warn('V4.38 base profile sync',e)}
-      const hallOk=await writeLiveHall(!!force);
-      repaintHall();
-      return baseOk||hallOk;
-    };
-    try{window.v073SyncProfile=v073SyncProfile}catch(e){}
-    window.__v438SyncWrapped=true;
-  }
-
-  /* Ranking renderer may use a closed-over historical row function. Therefore
-     repaint the own DOM row after the complete ranking fetch/render finishes. */
-  if(typeof v073LoadRanking==='function'&&!window.__v438RankingWrapped){
-    const base=v073LoadRanking;
-    v073LoadRanking=async function(){
-      await writeLiveHall(true);
-      const r=await base.apply(this,arguments);
-      repaintHall();
-      requestAnimationFrame(repaintHall);
-      setTimeout(repaintHall,80);
-      return r;
-    };
-    try{window.v073LoadRanking=v073LoadRanking}catch(e){}
-    window.__v438RankingWrapped=true;
-  }
+  /* V8.009: old v073SyncProfile/v073LoadRanking wrappers retired.
+     v7101-final owns profile sync and v6145 owns Hall ranking. */
 
   /* Any local change that can alter power or worldboss totals immediately updates
      the visible own Hall row and schedules the server row update. */
@@ -170,10 +141,7 @@
   function stamp(){}
 
   repaintHall();
-  scheduleSync(true);
   stamp();
-  document.addEventListener('DOMContentLoaded',()=>{repaintHall();scheduleSync(true);stamp()},{once:true});
-  window.addEventListener('pageshow',()=>{repaintHall();scheduleSync(true);stamp()},{passive:true});
   window.addEventListener('growlegends:account-ready',()=>{repaintHall();scheduleSync(true);stamp()},{passive:true});
   /* V6.217: Hall render hooks own repainting; avoid 30 startup-wide full repaints. */
 })();
