@@ -8570,51 +8570,7 @@ try{
 window.__V4143_AUTH_BOOTING__=true;
 (()=>{const ov=document.getElementById('v075AuthOverlay');if(ov)ov.classList.add('show','v4143-restoring')})();
 </script>
-<script id="v660-splash-progress-controller">
-(()=>{
-  'use strict';
-  const ART_W=941, ART_H=1672;
-  const BAR={x:227,y:1421,w:474,h:39};
-  let current=0;
-
-  function layout(){
-    const track=document.getElementById('v660BootTrack');
-    if(!track)return;
-    const vw=Math.max(1,window.innerWidth||document.documentElement.clientWidth||1);
-    const vh=Math.max(1,window.innerHeight||document.documentElement.clientHeight||1);
-    const scale=Math.max(vw/ART_W,vh/ART_H);
-    const rw=ART_W*scale, rh=ART_H*scale;
-    const ox=(vw-rw)/2, oy=(vh-rh)/2;
-    track.style.left=(ox+(BAR.x+2)*scale)+'px';
-    track.style.top=(oy+(BAR.y+2)*scale)+'px';
-    track.style.width=Math.max(12,(BAR.w-4)*scale)+'px';
-    track.style.height=Math.max(8,(BAR.h-4)*scale)+'px';
-  }
-
-  function setProgress(value){
-    const n=Math.max(0,Math.min(100,Number(value)||0));
-    current=Math.max(current,n);
-    const fill=document.getElementById('v660BootFill');
-    if(fill)fill.style.width=current+'%';
-    layout();
-  }
-
-  function reset(){
-    current=0;
-    const fill=document.getElementById('v660BootFill');
-    if(fill)fill.style.width='0%';
-    layout();
-  }
-
-  window.v660LayoutBootProgress=layout;
-  window.v660SetBootProgress=setProgress;
-  window.v660ResetBootProgress=reset;
-
-  requestAnimationFrame(()=>{layout();setProgress(7)});
-  window.addEventListener('resize',layout,{passive:true});
-  if(window.visualViewport)window.visualViewport.addEventListener('resize',layout,{passive:true});
-})();
-</script>
+<script id="v660-splash-progress-controller" src="js/features/ui/beta/v8009-s15-v660-splash-progress-controller.js"></script>
 
 
 <script>
@@ -10133,56 +10089,7 @@ addXp=function(n){
 <script id="v112-worldboss-state-fix" src="js/features/worldboss/beta/v8009-s8-v112-worldboss-state-fix.js"></script>
 
 
-<script id="v113-worldboss-retry-confirm">
-/* ===== V4.02 Confirm Harz-Taler before paid worldboss retry ===== */
-const v113OldWorldBossFight=v110Fight;
-
-v110Fight=function(){
-  v112EnsureWorldBossState();
-  v110ResetDay();
-
-  if(s.v110WorldBoss.freeUsed){
-    if((s.harzTaler||0)<10){
-      if(typeof v063Toast==='function'){
-        v063Toast('Zu wenig Harz-Taler','warn','Ein weiterer Weltboss-Versuch kostet 10 Harz-Taler.');
-      }
-      return;
-    }
-
-    const ok=confirm(
-      'Weiteren Versuch starten?\n\n'+
-      'Dieser Versuch kostet 10 Harz-Taler.\n'+
-      `Aktuell: ${s.harzTaler} Harz-Taler\n\n`+
-      '10 Harz-Taler wirklich verwenden?'
-    );
-
-    if(!ok)return;
-
-    /*
-      Temporarily mark the attempt as free so the old fight function does not
-      subtract the 10 Harz-Taler a second time. We subtract exactly once here.
-    */
-    s.harzTaler-=10;
-    const oldFree=s.v110WorldBoss.freeUsed;
-    s.v110WorldBoss.freeUsed=false;
-
-    try{
-      const result=v113OldWorldBossFight();
-      s.v110WorldBoss.freeUsed=true;
-      persist(false);
-      return result;
-    }catch(e){
-      s.v110WorldBoss.freeUsed=oldFree;
-      s.harzTaler+=10;
-      throw e;
-    }
-  }
-
-  return v113OldWorldBossFight();
-};
-
-/* V7.113: retired pure pass-through render wrapper (V113). */
-</script>
+<script id="v113-worldboss-retry-confirm" src="js/features/worldboss/beta/v8009-s9-v113-worldboss-retry-confirm.js"></script>
 
 
 <style id="v114-worldboss-confirm-modal">
@@ -13766,56 +13673,7 @@ body.v141-reduced-effects .v125-skill{
 </div>
 
 <script id="v141-settings-menu-script" src="js/features/ui/beta/v8009-s3-v141-settings-menu.js"></script>
-<script id="v142-settings-position-fix-script">
-function v142PositionSettings(){
-  const btn=document.querySelector('#v141SettingsBtn');
-  const menu=document.querySelector('#v141SettingsMenu');
-  if(!btn||!menu||!menu.classList.contains('open'))return;
-
-  const b=btn.getBoundingClientRect();
-  const margin=8;
-  const w=Math.min(330,window.innerWidth-margin*2);
-
-  /* bevorzugt rechts am Zahnrad ausrichten, aber niemals aus dem Bildschirm */
-  let left=b.right-w;
-  left=Math.max(margin,Math.min(left,window.innerWidth-w-margin));
-
-  let top=b.bottom+8;
-  const estimated=Math.min(menu.scrollHeight||430,window.innerHeight-margin*2);
-  if(top+estimated>window.innerHeight-margin){
-    top=Math.max(margin,b.top-estimated-8);
-  }
-
-  menu.style.left=left+'px';
-  menu.style.top=top+'px';
-  menu.style.right='auto';
-  menu.style.maxHeight=(window.innerHeight-top-margin)+'px';
-  menu.style.overflowY='auto';
-}
-
-const v142OldBuild=v141BuildSettings;
-v141BuildSettings=function(){
-  const r=v142OldBuild();
-  const btn=document.querySelector('#v141SettingsBtn');
-  if(btn && !btn.dataset.v142bound){
-    btn.dataset.v142bound='1';
-    btn.addEventListener('click',()=>requestAnimationFrame(v142PositionSettings));
-  }
-  return r;
-};
-
-window.addEventListener('resize',v142PositionSettings,{passive:true});
-window.addEventListener('scroll',v142PositionSettings,{passive:true});
-
-const v142BaseRender=render;
-render=function(){
-  const r=v142BaseRender();
-  
-  requestAnimationFrame(v142PositionSettings);
-  return r;
-};
-setTimeout(v142PositionSettings,250);
-</script>
+<script id="v142-settings-position-fix-script" src="js/features/ui/beta/v8009-s15-v142-settings-position-fix.js"></script>
 
 
 <script id="v145-account-isolation-fix" src="js/features/account/beta/v8009-s8-v145-account-isolation-fix.js"></script>
@@ -16453,52 +16311,7 @@ body > #v141SettingsMenu #v141Delete{
 
 <script id="v274-events-gold-mystic-presets" src="js/features/admin/beta/v8009-s4-v274-events-gold-mystic-presets.js"></script>
 
-<script id="v275-character-name-source-of-truth">
-/* ===== V4.02 Character identity source of truth =====
-   Historical renderClassAvatar() writes the class title (e.g. Bong-Magier)
-   into #avatarTitle. Direct avatar redraws can happen outside render().
-   The saved characterName is now authoritative on every avatar redraw.
-*/
-function v275PaintCharacterName(){
-  const name=v071CleanName(s.characterName||'');
-  const cls=classes?.[s.playerClass];
-  const title=document.querySelector('#avatarTitle');
-  if(title)title.textContent=v071NameValid(name)?name:(cls?.name||'Klasse wählen');
-
-  const sub=document.querySelector('#avatarSubtitle');
-  if(sub && cls){
-    const flavor={
-      grower:'Der Harzbrecher',
-      scout:'Jäger des Grünpfeils',
-      bruiser:'Meister des Nebelzirkels'
-    }[s.playerClass]||'';
-    sub.textContent=flavor?`${cls.name} · ${flavor}`:cls.name;
-  }
-  try{v071ApplyNameToUi()}catch(e){}
-}
-
-const v275BaseRenderClassAvatar=renderClassAvatar;
-renderClassAvatar=function(){
-  const r=v275BaseRenderClassAvatar.apply(this,arguments);
-  v275PaintCharacterName();
-  return r;
-};
-
-const v275BaseRender=render;
-render=function(){
-  const r=v275BaseRender();
-  v275PaintCharacterName();
-  
-  const line=document.querySelector('#v141VersionLine');
-  return r;
-};
-
-setTimeout(()=>{
-  try{v275PaintCharacterName()}catch(e){}
-  
-  const line=document.querySelector('#v141VersionLine');
-},300);
-</script>
+<script id="v275-character-name-source-of-truth" src="js/features/character/beta/v8009-s16-v275-character-name-source-of-truth.js"></script>
 
 <style id="v276-event-sync-gold-fx-css">
 .v276-gold2{
@@ -17043,46 +16856,7 @@ header .resource-stats .v282-harz-card .v282-harz-sub{
   header .resource-stats .v282-harz-card .v282-harz-count{font-size:25px!important;min-height:26px!important}
 }
 </style>
-<script id="v282-harz-count-root-fix">
-/* Root cause fix: old resource CSS sets the Harz <b> wrapper to font-size:0.
-   The number is now a standalone DIV, so no inherited legacy wrapper can hide it. */
-function v282PaintHarzCard(){
-  let source=document.querySelector('#topHarz');
-  let card=source?.closest('.stat') || document.querySelector('.harz-stat');
-  if(!card)return;
-
-  const amount=Math.max(0,Number(s?.harzTaler)||0);
-  card.classList.add('v277-harz-card','v279-harz-card','v280-harz-card','v282-harz-card');
-
-  /* Rebuild this tiny display card deterministically. #topHarz stays the canonical public id. */
-  if(!card.querySelector('.v282-harz-count')){
-    card.innerHTML=`
-      <div class="v282-harz-label">HARZ-TALER</div>
-      <div id="topHarz" class="v282-harz-count">${amount}</div>
-      <div class="v282-harz-sub">Premium-Währung</div>`;
-  }else{
-    source=card.querySelector('#topHarz');
-    if(source)source.textContent=amount;
-  }
-}
-
-/* Stop older Harz painters from rebuilding the old hidden wrapper structure. */
-v279BuildHarzCard=v282PaintHarzCard;
-v281PaintHarzAmount=v282PaintHarzCard;
-
-const v282BaseRender=render;
-render=function(){
-  const r=v282BaseRender();
-  requestAnimationFrame(v282PaintHarzCard);
-  
-  const line=document.querySelector('#v141VersionLine');
-  return r;
-};
-
-setTimeout(v282PaintHarzCard,100);
-setTimeout(v282PaintHarzCard,500);
-setTimeout(v282PaintHarzCard,1500);
-</script>
+<script id="v282-harz-count-root-fix" src="js/features/ui/beta/v8009-s15-v282-harz-count-root-fix.js"></script>
 
 <style id="v283-resource-final-cleanup-css">
 /* ===== V4.02 final Harz/Dampf cleanup ===== */
@@ -18683,31 +18457,7 @@ body:has(#world.active) #v337LegalFooter{display:none!important}
   #character.v514-reference-hero #v510HeroRoot .center-name{font-size:17px!important}
 }
 </style>
-<script id="v515-heldenquartier-mobile-polish-js">
-(function(){
-  'use strict';
-  function polish(){
-    if(!document.getElementById('character')?.classList.contains('active'))return false;
-    const c=document.getElementById('character');
-    if(!c)return;
-    /* Old location label is created by an early renderer; hide it every time without removing game logic. */
-    c.querySelectorAll(':scope > .v038-location,:scope > .v052-scene-banner,:scope > .v052-character,:scope > .v459-page-kicker').forEach(el=>el.style.setProperty('display','none','important'));
-    const stats=c.querySelectorAll('#v510HeroRoot .v510-stats .combat-box');
-    stats.forEach((box,i)=>{
-      box.classList.toggle('hp',i===0);box.classList.toggle('power',i===1);
-      const label=box.querySelector('span');
-      if(label)label.textContent=i===0?'Lebenspunkte':'Kampfkraft';
-    });
-  }
-  window.v515PolishHero=polish;
-  polish();
-  document.addEventListener('DOMContentLoaded',()=>requestAnimationFrame(polish),{once:true});
-  window.addEventListener('pageshow',()=>requestAnimationFrame(polish),{passive:true});
-  document.addEventListener('visibilitychange',()=>{if(!document.hidden)requestAnimationFrame(polish)});
-  window.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')==='character')requestAnimationFrame(polish)},{passive:true});
-  window.__v515RenderWrapped='retired';
-})();
-</script>
+<script id="v515-heldenquartier-mobile-polish-js" src="js/features/character/beta/v8009-s16-v515-heldenquartier-mobile-polish.js"></script>
 <!-- ===== /V5.15 HELDENQUARTIER MOBILE REFERENCE POLISH ===== -->
 
 
@@ -18808,37 +18558,7 @@ body:has(#world.active) #v337LegalFooter{display:none!important}
   box-shadow:inset 0 0 18px rgba(114,190,53,.20),0 0 8px rgba(183,216,74,.14)!important;
 }
 </style>
-<script id="v526-heldenquartier-final-ornament-js">
-(function(){
-  'use strict';
-  function ensureDecor(){
-    const c=document.getElementById('character');
-    if(!c)return;
-    const root=c.querySelector('#v510HeroRoot');
-    if(!root)return;
-    if(!root.querySelector('.v526-vine.left')){
-      const l=document.createElement('i');l.className='v526-vine left';l.setAttribute('aria-hidden','true');root.appendChild(l);
-      const r=document.createElement('i');r.className='v526-vine right';r.setAttribute('aria-hidden','true');root.appendChild(r);
-    }
-    if(!root.querySelector('.v526-corner.tl')){
-      ['tl','tr','bl','br'].forEach(pos=>{const el=document.createElement('i');el.className='v526-corner '+pos;el.setAttribute('aria-hidden','true');root.appendChild(el)});
-    }
-    root.setAttribute('data-hero-layout','reference-v526');
-  }
-  function apply(){
-    if(!document.getElementById('character')?.classList.contains('active'))return false;
-    try{window.v525ApplyHero?.()}catch(e){}
-    ensureDecor();
-  }
-  window.v526ApplyHero=apply;
-  window.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')==='character')apply()},{passive:true});
-  apply();
-  document.addEventListener('DOMContentLoaded',apply,{once:true});
-  window.addEventListener('pageshow',apply,{passive:true});
-  document.addEventListener('visibilitychange',()=>{if(!document.hidden)apply()});
-  /* V8.009: direct lifecycle only. */
-})();
-</script>
+<script id="v526-heldenquartier-final-ornament-js" src="js/features/character/beta/v8009-s16-v526-heldenquartier-final-ornament.js"></script>
 <!-- ===== /V5.26 HELDENQUARTIER FINAL REFERENCE ORNAMENT POLISH ===== -->
 
 
@@ -19913,53 +19633,7 @@ window.v317QuestDurations=v317QuestDurations;
 <script id="v327-worldboss-confirm-attributes" src="js/features/worldboss/beta/v8009-s3-v327-worldboss-confirm-attributes.js"></script>
 
 <!-- ===== V4.29 Stable: Grow-Skill fully removed ===== -->
-<script id="v328-growskill-fully-removed">
-(function(){
-  const purge=(obj)=>{
-    if(!obj||typeof obj!=='object')return;
-    if(Object.prototype.hasOwnProperty.call(obj,'growSkill'))delete obj.growSkill;
-  };
-
-  purge(s.attrs);
-  try{
-    (s.inventory||[]).forEach(it=>{purge(it?.bonus);purge(it?.baseBonusV055)});
-    Object.values(s.equipment||{}).forEach(it=>{purge(it?.bonus);purge(it?.baseBonusV055)});
-  }catch(e){}
-
-  /* Only the five real character attributes may be requested. */
-  const allowed=new Set(['staerke','geschick','intelligenz','ausdauer','glueck']);
-  const v328TotalAttr=totalAttr;
-  totalAttr=function(k){
-    if(!allowed.has(k))return 0;
-    return Math.round(Number(v328TotalAttr(k))||0);
-  };
-
-  const v328IncAttr=incAttr;
-  incAttr=function(k){
-    if(!allowed.has(k))return;
-    return v328IncAttr(k);
-  };
-
-  /* Remove any legacy DOM fragment even if an old renderer tries to recreate it. */
-  function purgeDom(){
-    document.querySelectorAll('#attrs > *').forEach(el=>{
-      if(/grow[\s-]*skill/i.test(el.textContent||''))el.remove();
-    });
-  }
-  const v328Render=render;
-  render=function(){
-    const r=v328Render.apply(this,arguments);
-    purge(s.attrs);
-    purgeDom();
-    
-    const line=document.querySelector('#v141VersionLine');
-    return r;
-  };
-
-  try{localStorage.setItem(KEY,JSON.stringify(s))}catch(e){}
-  try{render()}catch(e){}
-})();
-</script>
+<script id="v328-growskill-fully-removed" src="js/features/character/beta/v8009-s16-v328-growskill-fully-removed.js"></script>
 
 <!-- ===== V4.29 Stable: Guild-only online status ===== -->
 <link id="v329-guild-online-css" rel="stylesheet" href="css/features/guild/legacy/v329-guild-online-css.css">
@@ -19973,55 +19647,7 @@ window.v317QuestDurations=v317QuestDurations;
 <script id="v331-item-level-scaling" src="js/features/items/beta/v8009-s10-v331-item-level-scaling.js"></script>
 
 <!-- ===== V4.29 Stable: paid dungeon fights do NOT reset free countdown ===== -->
-<script id="v332-dungeon-paid-no-timer-reset">
-(function(){
-  /* Preserve the free-fight timestamp across a paid Harz-Taler dungeon fight.
-     The existing fight code may write dungeonPass.lastFree; after a paid fight
-     we restore the exact timestamp that was running before the fight. */
-  let v332PaidFight=false;
-  let v332SavedLastFree=0;
-
-  const v332BaseDungeonFight = typeof fightDungeon==='function'?fightDungeon:null;
-  if(v332BaseDungeonFight)fightDungeon = async function(){
-    const before=Number(s.dungeonPass?.lastFree)||0;
-    const left=Math.max(0,3600000-(Date.now()-before));
-    const isPaid=left>0;
-
-    if(isPaid){
-      v332PaidFight=true;
-      v332SavedLastFree=before;
-    }
-
-    try{
-      const result=await v332BaseDungeonFight.apply(this,arguments);
-      return result;
-    }finally{
-      if(isPaid){
-        s.dungeonPass??={};
-        s.dungeonPass.lastFree=v332SavedLastFree;
-        v332PaidFight=false;
-        try{localStorage.setItem(KEY,JSON.stringify(s))}catch(e){}
-        try{if(typeof v324Paint==='function')v324Paint()}catch(e){}
-        try{renderDungeon()}catch(e){}
-      }
-    }
-  };
-
-  /* Safety net: if any nested legacy handler tries to reset the timestamp
-     during the paid fight, persist() cannot make that reset permanent. */
-  const v332BasePersist=persist;
-  persist=function(){
-    if(v332PaidFight){
-      s.dungeonPass??={};
-      s.dungeonPass.lastFree=v332SavedLastFree;
-    }
-    return v332BasePersist.apply(this,arguments);
-  };
-
-  
-  const line=document.querySelector('#v141VersionLine');
-})();
-</script>
+<script id="v332-dungeon-paid-no-timer-reset" src="js/features/dungeon/beta/v8009-s19-v332-dungeon-paid-no-timer-reset.js"></script>
 
 <!-- ===== V4.29 Stable: Nebel-Crew friend online status ===== -->
 <script id="v333-friends-online-status" src="js/features/social/beta/v8009-s4-v333-friends-online-status.js"></script>
@@ -22949,43 +22575,7 @@ html,body{
 }
 </style>
 
-<script id="v365-header-menu-left-align">
-(function(){
-  const V365_VERSION='V4.29 Stable';
-
-  function align(){
-    const header=document.querySelector('.app > header');
-    const btn=document.querySelector('#v032MenuBtn');
-    const panel=document.querySelector('#v032MenuPanel');
-
-    if(header){
-      header.style.setProperty('width','100vw','important');
-      header.style.setProperty('max-width','none','important');
-      header.style.setProperty('margin-left','calc(50% - 50vw)','important');
-      header.style.setProperty('left','0','important');
-    }
-    if(btn){
-      btn.style.setProperty('margin-left','0','important');
-      btn.style.setProperty('justify-self','start','important');
-    }
-    if(panel){
-      panel.style.setProperty('left','2px','important');
-      panel.style.setProperty('right','auto','important');
-      panel.style.setProperty('margin-left','0','important');
-      panel.style.setProperty('transform','none','important');
-    }
-  }
-
-  function version(){/* V7.113: obsolete version painter retired. */}
-
-  window.addEventListener('growlegends:navigation-open-v7119',()=>{align();version()},{passive:true});
-
-  align();version();
-  document.addEventListener('DOMContentLoaded',()=>{align();version()},{once:true});
-  window.addEventListener('pageshow',()=>{align();version()},{passive:true});
-  window.addEventListener('growlegends:account-ready',()=>{align();version()},{passive:true});
-})();
-</script>
+<script id="v365-header-menu-left-align" src="js/features/ui/beta/v8009-s15-v365-header-menu-left-align.js"></script>
 
 <style id="v366-world-reference-rebuild-css">
 /* ===== V4.29 Stable — clean rebuild of header + world to match approved reference ===== */
@@ -23447,46 +23037,7 @@ window.__V367_HOME_REPAIR_RETIRED_V7156__=true;
 }
 </style>
 
-<script id="v370-mobile-topbar-reference">
-(function(){
-  const V370_VERSION='V4.29 Stable';
-
-  function paintVersion(){
-    document.querySelectorAll(
-      '.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version'
-    ).forEach(el=>{if(el)el.textContent=V370_VERSION});
-    document.querySelectorAll('.v366-ver').forEach(el=>el.textContent='V4.11');
-  }
-
-  function hardenMenu(){
-    const btn=document.querySelector('.app > header .v366-menu');
-    const panel=document.querySelector('#v032MenuPanel');
-    if(!btn || !panel)return;
-
-    /* Keep the dropdown physically attached to the left edge on mobile. */
-    if(matchMedia('(max-width:599px)').matches){
-      panel.style.setProperty('left','4px','important');
-      panel.style.setProperty('right','auto','important');
-      panel.style.setProperty('top','58px','important');
-      panel.style.setProperty('transform','none','important');
-    }
-
-    if(btn.dataset.v370Bound==='1')return;
-    btn.dataset.v370Bound='1';
-    btn.addEventListener('click',function(e){
-      e.preventDefault();
-      e.stopPropagation();
-      panel.classList.toggle('open');
-    },true);
-  }
-
-  paintVersion();
-  hardenMenu();
-  document.addEventListener('DOMContentLoaded',()=>{paintVersion();hardenMenu()},{once:true});
-  window.addEventListener('resize',hardenMenu,{passive:true});
-  setTimeout(()=>{paintVersion();hardenMenu()},300);
-})();
-</script>
+<script id="v370-mobile-topbar-reference" src="js/features/ui/beta/v8009-s15-v370-mobile-topbar-reference.js"></script>
 
 <!-- ===== V4.29 Stable: true viewport topbar outside centered app ===== -->
 <style id="v371-true-fullwidth-topbar-css">
@@ -24016,44 +23567,7 @@ create index if not exists player_messages_sender_idx on public.player_messages(
 </script>
 
 <!-- ===== V4.29 Stable: Auth state consistency guard ===== -->
-<script id="v385-auth-consistency-guard">
-(function(){
-  const VERSION='V4.29 Stable';
-
-  async function v385VerifyLoggedOutState(){
-    if(window.__V301_LOGOUT_IN_PROGRESS__)return;
-    /* V4.159: pageshow/focus can fire before Supabase restores a persisted session. */
-    if(window.__V4143_AUTH_BOOTING__===true)return;
-    if(window.__V200_AUTH_READY__ || v073User)return;
-
-    /* If the app considers itself logged out, the login overlay must stay
-       authoritative. This prevents a stale screen from looking half logged-in. */
-    try{
-      document.documentElement.classList.remove('v224-app-ready');
-      v075SetAuthMode('login');
-      v075Overlay(true);
-      const ov=document.querySelector('#v075AuthOverlay');
-      if(ov){
-        ov.classList.add('show');
-        ov.style.pointerEvents='auto';
-        ov.style.visibility='visible';
-        ov.style.opacity='1';
-      }
-    }catch(e){}
-  }
-
-  document.addEventListener('visibilitychange',()=>{
-    if(document.visibilityState==='visible')v385VerifyLoggedOutState();
-  });
-  window.addEventListener('pageshow',v385VerifyLoggedOutState,{passive:true});
-  window.addEventListener('focus',v385VerifyLoggedOutState,{passive:true});
-
-  document.querySelectorAll(
-    '.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version'
-  ).forEach(el=>{if(el)el.textContent=VERSION});
-  document.querySelectorAll('.v366-ver').forEach(el=>el.textContent='V4.11');
-})();
-</script>
+<script id="v385-auth-consistency-guard" src="js/features/account/beta/v8009-s17-v385-auth-consistency-guard.js"></script>
 
 <!-- ===== V4.29 Stable: Quest page visual redesign (mobile-safe) ===== -->
 <style id="v386-quest-redesign-style">
@@ -25506,25 +25020,7 @@ create index if not exists player_messages_sender_idx on public.player_messages(
 
 
 <!-- ===== V4.54 Stable: recovery UI removed, account protection retained ===== -->
-<script id="v454-remove-save-rescue-ui">
-(function(){
-  const VERSION=window.GROW_LEGENDS_VERSION?.label||'V7.111 Stable',
-        SHORT=window.GROW_LEGENDS_VERSION?.short||'V7.111';
-  function cleanup(){
-    ['#v451RescueOverlay','#v451RestoreNotice','#v451RescueRow'].forEach(sel=>document.querySelectorAll(sel).forEach(el=>el.remove()));
-    document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version').forEach(el=>{if(el&&el.textContent!==VERSION)el.textContent=VERSION});
-    document.querySelectorAll('.v366-ver,.v371-logo em,.v372-logo em').forEach(el=>{if(el&&el.textContent!==SHORT)el.textContent=SHORT});
-    document.title='Grow Legends '+SHORT;
-  }
-  try{delete window.v451OpenRecovery;delete window.v451ScanRecovery;delete window.v450RestoreHighestLocal;delete window.v450RecoveryCandidates}catch(e){}
-  if(typeof v141BuildSettings==='function'&&!window.__v454SettingsCleanup){const base=v141BuildSettings;v141BuildSettings=function(){const r=base.apply(this,arguments);cleanup();return r};try{window.v141BuildSettings=v141BuildSettings}catch(e){}window.__v454SettingsCleanup=true}
-  cleanup();
-  document.addEventListener('DOMContentLoaded',cleanup,{once:true});
-  window.addEventListener('pageshow',cleanup,{passive:true});
-  window.addEventListener('growlegends:account-ready',cleanup,{passive:true});
-  /* V8.009: delayed startup cleanup train retired. */
-})();
-</script>
+<script id="v454-remove-save-rescue-ui" src="js/features/account/beta/v8009-s17-v454-remove-save-rescue-ui.js"></script>
 
 
 <!-- ===== V4.56 Stable: Level 1-300 item / loot balance contract ===== -->
@@ -27384,20 +26880,7 @@ body.v495-seed-open{overflow:hidden!important}
 .app > header .v358-logo::after{content:"V4.125"!important}
 .app > header .v366-ver::after,.app > header .v371-logo em::after,.app > header .v372-logo em::after{content:"V4.125"!important}
 </style>
-<script id="v4123-performance-cleanup">
-(()=>{
- 'use strict';
- const VERSION=window.GROW_LEGENDS_VERSION?.label||'V4.159 Stable',SHORT=window.GROW_LEGENDS_VERSION?.short||'V4.159';
- function stamp(){}
- window.v4122LiveListenerCount=()=>typeof window.__V4122_LIVE_LISTENER_COUNT__==='function'?window.__V4122_LIVE_LISTENER_COUNT__():window.__V4106_TECH__?.listeners?.size||0;
- window.v4122PerformanceCleanup={version:SHORT,liveListeners:window.v4122LiveListenerCount};
- window.v4123LiveListenerCount=window.v4122LiveListenerCount;
- window.v4123TimerDiagnostics=()=>{const t=window.__V4106_TECH__||{};const rows=[...(t.intervals?.values?.()||[]),...(t.timeouts?.values?.()||[])];const map=new Map();for(const x of rows){const key=`${x.kind||'timer'}|${x.delay}|${String(x.callback||'').slice(0,90)}`;const r=map.get(key)||{kind:x.kind||'timer',delay:x.delay,count:0,calls:0,cpu:0,max:0,nativeBypass:false,callback:String(x.callback||'').slice(0,120),site:String(x.site||'').slice(0,180)};r.count++;r.calls+=Number(x.calls)||0;r.cpu+=Number(x.cpu)||0;r.max=Math.max(r.max,Number(x.max)||0);r.nativeBypass=r.nativeBypass||!!x.nativeBypass;map.set(key,r)}return[...map.values()].sort((a,b)=>b.calls-a.calls||b.count-a.count||a.delay-b.delay).slice(0,30)};
- window.v4123SlowRenders=()=>[...((window.__V4106_TECH__?.slowRenders)||[])];
- window.v4123PerformanceCleanup={version:SHORT,liveListeners:window.v4123LiveListenerCount,timers:window.v4123TimerDiagnostics,slowRenders:window.v4123SlowRenders};
- stamp(); /* V4.123: single settle pass; pageshow/visibility own later refreshes. */
-})();
-</script>
+<script id="v4123-performance-cleanup" src="js/features/system/beta/v8009-s19-v4123-performance-cleanup.js"></script>
 
 <!-- ===== V4.124 Stable: canonical Hall/Nebel-Crew values + quest grow-seed reward ===== -->
 <style id="v4124-social-quest-fix-css">
@@ -27452,22 +26935,7 @@ body.v495-seed-open{overflow:hidden!important}
 <!-- V4.159: Startseite Quest-Karte gegen globale .quest-Abstände isoliert; margin/padding entsprechen Dungeon und Growroom. -->
 
 <!-- ===== V4.159 Stable: emergency cross-account save isolation ===== -->
-<script id="v4134-cross-account-isolation-hotfix">
-(()=>{
- 'use strict';
- const V=window.GROW_LEGENDS_VERSION||{short:'V4.159',label:'V4.159 Stable'};
- function uid(){try{return v073User&&!v073User.is_anonymous&&v073User.id?String(v073User.id):''}catch(e){return ''}}
- function stateOwner(){try{return String(s?.__accountOwnerId||'')}catch(e){return ''}}
- function socialOwner(){try{return String(s?.social?.playerId||'')}catch(e){return ''}}
- function verified(id){try{return !!id&&typeof window.v452AccountVerified==='function'&&window.v452AccountVerified(id)}catch(e){return false}}
- function status(){const id=uid(),o=stateOwner(),so=socialOwner();return{version:V.short,uid:id,stateOwner:o,socialOwner:so,owned:!!id&&o===id&&so===id,verified:verified(id),blocked:!!id&&(o!==id||so!==id||!verified(id))}}
- window.v4134AccountIsolationDiagnostics=status;
- /* Never attempt a compatibility checkpoint from this final layer. It is diagnostics-only;
-    the actual V4.159 checkpoint above now refuses any state whose ownership is not already exact. */
- try{document.title='Grow Legends '+V.short}catch(e){}
- try{document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version').forEach(x=>x&&(x.textContent=V.label));document.querySelectorAll('.v366-ver,.v371-logo em,.v372-logo em,.v4107-version').forEach(x=>x&&(x.textContent=V.short))}catch(e){}
-})();
-</script>
+<script id="v4134-cross-account-isolation-hotfix" src="js/features/account/beta/v8009-s17-v4134-cross-account-isolation-hotfix.js"></script>
 <!-- V4.159: account-scoped checkpoints can no longer relabel a foreign character; background character repair runs only after exact account verification. -->
 
 
@@ -42941,44 +42409,7 @@ window.__V6113_PET_ALBUM_PROFILE_POLISH__=true;
 }
 </style>
 
-<script id="v6114-pet-navigation-and-dungeon-live">
-(()=>{
-'use strict';
-if(window.__V6114_DUNGEON_KEY_AND_PET_NAV__)return;
-window.__V6114_DUNGEON_KEY_AND_PET_NAV__=true;
-
-function closePetForNavigation(){
-  const ov=document.getElementById('v686PetAlbumOverlay');
-  if(!ov?.classList.contains('show'))return false;
-  ov.classList.remove('show');
-  document.documentElement.style.overflow='';
-  try{window.v6104ClearPetNewFinds?.()}catch(e){}
-  return true;
-}
-window.v6114ClosePetForNavigation=closePetForNavigation;
-
-/* Shared navigation authority: choosing another page closes the Pet album. */
-window.addEventListener('growlegends:navigation-open-v7119',closePetForNavigation,{passive:true});
-window.__v6114GoWrapped='v7119-event';
-
-/* The hamburger/menu itself must also be reachable while the album is open. */
-document.addEventListener('click',e=>{
-  const item=e.target instanceof Element
-    ?e.target.closest('#v032MenuPanel .top-menu-item')
-    :null;
-  if(item)closePetForNavigation();
-},true);
-
-window.v6114DungeonLiveQA=()=>({
-  unlocked:[...(s?.dungeon?.unlocked||[])],
-  keys:{...(s?.dungeon?.keys||{})},
-  selected:Number(s?.dungeon?.selected)||0,
-  layer:s?.dungeon?.layer||'',
-  view:s?.dungeon?.view||'',
-  petOpen:document.getElementById('v686PetAlbumOverlay')?.classList.contains('show')||false
-});
-})();
-</script>
+<script id="v6114-pet-navigation-and-dungeon-live" src="js/features/social/beta/v8009-s7-v6114-pet-navigation-and-dungeon-live.js"></script>
 
 
 <script id="v6115-events-boss-pet-marker">
@@ -43501,28 +42932,7 @@ html body .app section#mail.v677-mail .v677-footer-sign small{font-size:4.3px!im
   #mail .v6200-detail-actions .btn{font-size:5px!important}
 }
 </style>
-<script id="v6202-nebel-post-compact-final-js">
-(()=>{
- 'use strict';
- function activate(which){
-   const map={inbox:'v381Inbox',sent:'v381Sent',compose:'v381Compose',battlelog:'v6200BattleLogPanel'};
-   document.querySelectorAll('#mail [data-v381-tab]').forEach(b=>b.classList.toggle('active',b.dataset.v381Tab===which));
-   Object.entries(map).forEach(([k,id])=>{
-     const el=document.getElementById(id);if(!el)return;
-     const on=k===which;el.classList.toggle('v677-active-panel',on);el.style.display=on?'':'none';
-   });
-   if(which==='battlelog')try{window.v6200LoadBattleLog?.()}catch(_){}
- }
- function current(){return document.querySelector('#mail [data-v381-tab].active')?.dataset.v381Tab||'inbox'}
- function repair(){activate(current())}
- document.addEventListener('click',e=>{const b=e.target?.closest?.('#mail [data-v381-tab]');if(!b)return;activate(b.dataset.v381Tab)},true);
- window.addEventListener('growlegends:account-ready',repair,{passive:true});
- window.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')==='mail')repair()},{passive:true});
- document.addEventListener('DOMContentLoaded',repair,{once:true});
- window.addEventListener('pageshow',()=>{if(document.getElementById('mail')?.classList.contains('active'))repair()},{passive:true});
- window.v6202MailTab=activate;
-})();
-</script>
+<script id="v6202-nebel-post-compact-final-js" src="js/features/ui/beta/v8009-s15-v6202-nebel-post-compact-final.js"></script>
 <!-- ===== /V6.202 ===== -->
 
 
@@ -44572,37 +43982,7 @@ body.glw-thunder #glWeatherLayer{animation:glwThunder 10s linear infinite}
   opacity:1!important;
 }
 </style>
-<script id="v6210-dungeon-single-player-art-js">
-(()=>{
- 'use strict';
- if(window.__V6210_DUNGEON_SINGLE_PLAYER_ART__)return;
- window.__V6210_DUNGEON_SINGLE_PLAYER_ART__=true;
- function clean(force=false){
-  if(!force&&!document.getElementById('dungeon')?.classList.contains('active'))return false;
-  const fighter=document.getElementById('playerFighter');
-  const avatar=fighter?.querySelector('.fighter-avatar');
-  if(!fighter||!avatar)return false;
-  avatar.style.setProperty('background-image','none','important');
-  avatar.style.setProperty('background-color','transparent','important');
-  let canonical=avatar.querySelector(':scope > img.gl-dungeon-player-art');
-  if(!canonical){
-   const candidate=avatar.querySelector(':scope > img.v253-player-avatar-img');
-   if(candidate){candidate.classList.add('gl-dungeon-player-art');canonical=candidate}
-  }
-  const fallback=avatar.querySelector(':scope > .gl-dungeon-player-fallback');
-  [...avatar.children].forEach(n=>{if(n!==canonical&&n!==fallback)n.remove()});
-  [...avatar.childNodes].forEach(n=>{if(n.nodeType===Node.TEXT_NODE&&String(n.nodeValue||'').trim())n.remove()});
-  if(canonical){
-   canonical.classList.remove('v600-barbar-art');
-   canonical.classList.add('v253-player-avatar-img','gl-dungeon-player-art');
-   canonical.hidden=false;
-   canonical.style.removeProperty('display');canonical.style.removeProperty('visibility');canonical.style.removeProperty('opacity');
-  }
-  return true;
- }
- window.v6210DungeonSinglePlayerArtClean=()=>clean(true);
-})();
-</script>
+<script id="v6210-dungeon-single-player-art-js" src="js/features/dungeon/beta/v8009-s19-v6210-dungeon-single-player-art.js"></script>
 <!-- ===== /V6.210 ===== -->
 
 <!-- ===== V6.211 LEVEL-UP + PET POPUP RELIABILITY ===== -->
@@ -48336,54 +47716,7 @@ body:not(.v6291-summoner-active) .v6287-summon-fx{
 
 
 <!-- ===== V6.296 HARZRUFERIN · BEGLEITER FIX ===== -->
-<script id="v6296-harzruferin-companion-fix-js">
-(()=>{
-'use strict';
-if(window.__V6296_HARZ_COMPANIONS__)return;
-window.__V6296_HARZ_COMPANIONS__=true;
-
-const state=()=>{try{return typeof s!=='undefined'?s:window.s||null}catch(_){return window.s||null}};
-const active=()=>String(state()?.playerClass||'')==='summoner';
-
-function rosterSoon(){
- if(!active())return;
- requestAnimationFrame(()=>{try{window.v6287EnsureRoster?.()}catch(_){}});
- setTimeout(()=>{try{window.v6287EnsureRoster?.()}catch(_){}},80);
-}
-
-/* Quest finale is a dynamic overlay. */
-try{
- if(typeof v311PlayFight==='function'&&!v311PlayFight.__v6296Roster){
-   const base=v311PlayFight;
-   const wrapped=async function(){
-     const p=base.apply(this,arguments);
-     rosterSoon();
-     return await p;
-   };
-   wrapped.__v6296Roster=true;
-   try{v311PlayFight=wrapped}catch(_){}
-   window.v311PlayFight=wrapped;
- }
-}catch(_){}
-
-/* Tower/dungeon/PvP buttons create or repaint their combat DOM after click. */
-document.addEventListener('click',e=>{
- if(!active())return;
- const hit=e.target instanceof Element
-   ? e.target.closest('[data-vt-fight],[data-vt-route],#fightBtn,[data-v209-fight],#v204FightBtn')
-   : null;
- if(hit)rosterSoon();
-},true);
-
-window.v6296CompanionDiagnostics=()=>({
- version:'V6.296',
- active:active(),
- rosterNodes:document.querySelectorAll('.v6287-summon-roster').length,
- summonFxNodes:document.querySelectorAll('.v6287-summon-fx').length,
- rule:'10% Grundchance · spätestens 5. eigener Angriff garantiert'
-});
-})();
-</script>
+<script id="v6296-harzruferin-companion-fix-js" src="js/features/combat/beta/v8009-s10-v6296-harzruferin-companion-fix.js"></script>
 <!-- ===== /V6.296 ===== -->
 
 
@@ -51520,29 +50853,7 @@ window.v7151QuestCleanupDiagnostics=()=>({
 /* Pending server frame state must never expose one of the historic gold home borders. */
 html.v7154-frame-pending #world .v366-avatar{border:1px solid #3d5140!important;outline:0!important;box-shadow:none!important}
 </style>
-<script id="v7156-combat-home-owner">
-(()=>{
- 'use strict';
- if(window.__V7156_COMBAT_HOME_OWNER__)return;window.__V7156_COMBAT_HOME_OWNER__=true;
- const active=id=>!!document.getElementById(id)?.classList.contains('active');
- let homeRaf=0;
- function settleHome(){
-   homeRaf=0;
-   if(!active('world'))return false;
-   try{window.v085InstallWorld?.(false)}catch(_){}
-   if(window.__V7137_FRAME_STATE__){try{window.v7137ApplyOwnFrames?.()}catch(_){}}
-   document.body?.classList.remove('v7129-referral-frame');
-   return true;
- }
- function queueHome(){if(homeRaf)return;homeRaf=requestAnimationFrame(settleHome)}
- window.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')==='world')queueHome()},{passive:true});
- window.addEventListener('growlegends:account-ready',queueHome,{passive:true});
- /* One boot settle only; no delayed repaint chain, no MutationObserver, no interval. */
- queueHome();
- window.v7156HomeDiagnostics=()=>({active:active('world'),canonicalWorld:!!document.querySelector('#world > .v366-world.v690-world'),framePending:document.documentElement.classList.contains('v7154-frame-pending'),legacyRepairRetired:!!window.__V367_HOME_REPAIR_RETIRED_V7156__,legacyLuckRefreshRetired:!!window.__V375_HOME_REFRESH_RETIRED_V7156__});
- window.v7156CombatDiagnostics=()=>window.v7141CombatArenaDiagnostics?.()||{};
-})();
-</script>
+<script id="v7156-combat-home-owner" src="js/features/combat/beta/v8009-s10-v7156-combat-home-owner.js"></script>
 <!-- ===== /V7.156 PHASE 8 ===== -->
 
 
