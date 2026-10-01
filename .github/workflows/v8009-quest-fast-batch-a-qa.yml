@@ -1,0 +1,28 @@
+name: V8.009 Quest Fast Batch A QA
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'js/features/quest/beta/v316-quest-balance-skip.js'
+      - 'js/features/quest/beta/v4127-quest-skip-stable.js'
+      - 'js/features/quest/beta/v229-live-ui-sync.js'
+      - '.github/scripts/v8009_quest_fast_batch_a_qa.py'
+      - '.github/workflows/v8009-quest-fast-batch-a-qa.yml'
+permissions:
+  contents: write
+jobs:
+  qa:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          node --check js/features/quest/beta/v316-quest-balance-skip.js
+          node --check js/features/quest/beta/v4127-quest-skip-stable.js
+          node --check js/features/quest/beta/v229-live-ui-sync.js
+      - run: python3 .github/scripts/v8009_quest_fast_batch_a_qa.py
+      - run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add V8009_QUEST_FAST_BATCH_A_QA.json
+          git commit -m "V8.009 QUEST: record fast batch A QA" || exit 0
+          git push
