@@ -2322,3 +2322,18 @@ Arbeitsmodus:
   - aktuelle Attribute-/Talent-Renderer.
 - QA `V8009_CHARACTER_ATTR_TALENT_QA.json`: grün.
 - Stable / `index.html`: unverändert.
+
+
+#### Small-Screen Coverage: bagDealer + harzDealer
+- bagDealer / v7260:
+  - 0/650/1800-ms Startup-Sync-Zug entfernt;
+  - account-ready/extras-ready/foreground-ready/pageshow/visibility laufen direkt;
+  - Admin-only-Sichtbarkeit und Redirect auf World bleiben unverändert.
+- harzDealer / v338:
+  - globalen `render()`-Wrapper entfernt;
+  - 300/1500-ms Startup-Modernize-/Version-Nachläufer entfernt;
+  - `v322RenderDealer`-Hook + Shared-v7119 bleiben;
+  - `v567-harz-dealer-final` bleibt der spätere sichtbare Dealer-Owner.
+- Billing/Google-Play-Recovery, Kaufpfade und Admin-/Access-Logik unverändert.
+- QA `V8009_DEALER_SMALL_SCREEN_QA.json`: grün.
+- Stable / `index.html`: unverändert.
