@@ -17,6 +17,7 @@ const ICON={staerke:'💪',ausdauer:'❤️',geschick:'🏹',intelligenz:'🧠',
 const V7248_BRAND_BG="assets/v8-inline/3b369bef7debb315.png";
 const S={
  forge:null,forgeItemId:'',focus:'',forgeBusy:false,lastForge:null,forgeError:'',
+ forgeRequestId:'',forgeRequestKey:'',
  caravan:null,caravanBusy:false,resolution:null,caravanError:'',
  caravanAutoTimer:0,caravanAutoToken:0,caravanRewardKey:''
 };
@@ -173,10 +174,16 @@ async function doForgeReroll(){
  if(!ok)return;
  S.forgeBusy=true;renderForgePanel();
  try{
-  const {data,error}=await v073Db.rpc('v8009_nebelforge_reroll',{p_item_id:x.id,p_focus_stat:S.focus||null,p_request_id:requestId('v8009_nebelforge')});
+  const requestKey=`${x.id}|${S.focus||''}`;
+  if(!S.forgeRequestId||S.forgeRequestKey!==requestKey){
+    S.forgeRequestId=requestId('v8009_nebelforge');
+    S.forgeRequestKey=requestKey;
+  }
+  const {data,error}=await v073Db.rpc('v8009_nebelforge_reroll',{p_item_id:x.id,p_focus_stat:S.focus||null,p_request_id:S.forgeRequestId});
   if(error)throw error;
   const r=Array.isArray(data)?data[0]:data;
   if(!r?.ok)throw new Error('Schmiedevorgang fehlgeschlagen');
+  S.forgeRequestId='';S.forgeRequestKey='';
   syncForgeItem(r);S.lastForge=r;S.forge=null;
   try{window.v6111Sfx?.('forge')}catch(_){}
   await loadForge(true);renderForgePanel();
