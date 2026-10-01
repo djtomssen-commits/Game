@@ -1,0 +1,24 @@
+name: V8.009 Quest v4178 Retire QA
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'js/features/quest/beta/v4178-quest-live-hard-fix.js'
+      - '.github/scripts/v8009_quest_v4178_retire_qa.py'
+      - '.github/workflows/v8009-quest-v4178-retire-qa.yml'
+permissions:
+  contents: write
+jobs:
+  qa:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - run: node --check js/features/quest/beta/v4178-quest-live-hard-fix.js
+      - run: python3 .github/scripts/v8009_quest_v4178_retire_qa.py
+      - run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add V8009_QUEST_V4178_RETIRE_QA.json
+          git commit -m "V8.009 QUEST: record v4178 retire QA" || exit 0
+          git push
