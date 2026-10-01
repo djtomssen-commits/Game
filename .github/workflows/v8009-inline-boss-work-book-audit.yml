@@ -1,0 +1,21 @@
+name: V8.009 Inline Boss Work Book Audit
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/v8009_inline_boss_work_book_audit.py'
+      - '.github/workflows/v8009-inline-boss-work-book-audit.yml'
+permissions:
+  contents: write
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 .github/scripts/v8009_inline_boss_work_book_audit.py
+      - run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add V8009_INLINE_BOSS_WORK_BOOK_AUDIT.json
+          git commit -m "V8.009 INLINE: record boss work book audit" || exit 0
+          git push
