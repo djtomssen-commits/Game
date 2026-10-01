@@ -3371,3 +3371,16 @@ Arbeitsmodus:
 - Cleanup für die 3 wirkungslosen Scripts:
   - Script-Commit `9389d2301fce54eb25c688f2a0a8bc7e78e37993`
   - Workflow-Commit `76f2fd692a1ef3fea1983cbba5faf07c66eb9038`
+
+
+#### Attribute-Points Owner Consolidation
+- Die drei retired Alt-Skripte `v419`, `v426`, `v671` waren beim direkten Abschluss bereits aus `beta.html` entfernt.
+- `v434-attribute-points-final-live-sync.js` hatte noch echte Persist-/Repaint-Funktion.
+- Diese Sync-Aufgabe wurde in den kanonischen `v4140-attribute-display-owner.js` integriert.
+- v4140-Commit: `d89421174a6285a46351042e5752727e2e0ff96c`.
+- `v434` aus `beta.html` entfernt: `3d0294ac7d401f350d46ea4776bff68ef1cfb044`.
+- Alte `v434`-Datei gelöscht: `32363f4a147fdcee25efb1700c2f2439407bc3b4`.
+- QA-Workflow für Single-Owner-Zustand installiert:
+  - Script `d823ccfa68ae88a3296d1d2016d2de8eba7c2fc7`
+  - Workflow `21ec746a9120385576563202e5e38c507c01a251`
+- Ergebnis: Attributanzeige/Attributpunkte laufen nun über einen kanonischen UI-Owner `v4140`; die separate v434-Sync-Schicht ist entfernt.
