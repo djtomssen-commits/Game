@@ -82,6 +82,7 @@ v236HasDungeon2Key=function(){
 
 v236UnlockDungeon2=function(){
   v243EnsureDungeonKeyState();
+  const before=!!s.dungeon.keys[1]||s.dungeon.unlocked.includes(1);
 
   s.dungeon.keys[1]=true;
 
@@ -92,6 +93,10 @@ v236UnlockDungeon2=function(){
   s.dungeon.unlocked=[
     ...new Set(s.dungeon.unlocked.map(Number))
   ].sort((a,b)=>a-b);
+
+  if(!before){
+    try{document.dispatchEvent(new CustomEvent('growlegends:dungeon-key-changed',{detail:{index:1,reason:'v243-local-unlock'}}))}catch(e){}
+  }
 };
 
 
