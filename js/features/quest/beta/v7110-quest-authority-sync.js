@@ -117,6 +117,7 @@ try{
       const hadActive=!!s?.quests?.active;
       const post=()=>{
         try{window.v443AfterQuestStart?.(beforeEnergy,hadActive)}catch(_){}
+        try{window.v4222AfterQuestStart?.()}catch(_){}
         try{window.v392PaintActive?.()}catch(_){}
         try{window.v4127EnsureQuestSkip?.()}catch(_){}
         try{window.v229QuestStartSync?.()}catch(_){}
