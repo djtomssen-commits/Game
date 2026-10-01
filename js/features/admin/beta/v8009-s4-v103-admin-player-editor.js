@@ -180,14 +180,9 @@ async function v103SavePlayer(){
   try{await v073LoadRanking()}catch(e){}
 }
 
-const v103OldAdminLoad=v093AdminLoadLists;
-v093AdminLoadLists=async function(){
-  const result=await v103OldAdminLoad();
-  v103InstallPlayerAdmin();
-  return result;
-};
+window.v103InstallPlayerAdmin=v103InstallPlayerAdmin;
 
-/* v093AdminLoadLists is the direct owner for installing the player editor. */
+/* v093AdminLoadLists in the admin core is the direct owner for installing the player editor. */
 
 try{
   if(v093IsAdmin)v103InstallPlayerAdmin();
