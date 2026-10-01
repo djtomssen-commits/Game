@@ -24,58 +24,7 @@ function v283CleanHarzAmount(){
   if(amount)amount.textContent=Math.max(0,Number(s?.harzTaler)||0);
 }
 
-/* Final Dampf painter. During Dampf event the main card explicitly says
-   "300/300 Dampf" instead of only "300/300". */
-v271PaintDampf=function(){
-  v271EnsureRefillState();
-
-  const cap=v271DampfCap();
-  const e=Math.max(0,Math.min(cap,Math.floor(Number(s.energy)||0)));
-  if(Number(s.energy)!==e)s.energy=e;
-
-  const eventActive=v271DampfEventActive();
-  const energyEl=document.querySelector('#energy');
-  if(energyEl){
-    energyEl.textContent=eventActive
-      ?`${e}/${cap} Dampf`
-      :`💨 ${e}/${cap}`;
-  }
-
-  const host=energyEl?.parentElement;
-  if(host){
-    host.querySelectorAll('.v277-dampf-event-chip').forEach(x=>x.remove());
-
-    let info=host.querySelector('#v271DampfInfo');
-    if(!info){
-      info=document.createElement('div');
-      info.id='v271DampfInfo';
-      host.appendChild(info);
-    }
-
-    const used=Number(s.v271DampfRefill?.count)||0;
-    info.replaceChildren();
-
-    const refillState=document.createElement('span');
-    refillState.innerHTML=`Auffüllen: <b>${used}/10</b>`;
-    info.appendChild(refillState);
-
-    if(eventActive){
-      const badge=document.createElement('span');
-      badge.id='v271DampfEventBadge';
-      badge.textContent='💨 EVENT 300/300';
-      info.appendChild(badge);
-    }
-  }
-
-  const refill=document.querySelector('#v026RefillBtn');
-  if(refill){
-    const used=Number(s.v271DampfRefill?.count)||0;
-    refill.textContent=`🟢 +20 💨 Dampf (${used}/10)`;
-    refill.disabled=used>=10 || e>=cap;
-  }
-};
-v026PaintDampf=v271PaintDampf;
-
+/* V8.009: Dampf DOM ownership moved fully to v284; v283 owns Harz only. */
 /* Point every later Harz repair call to the same canonical cleaner. */
 v282PaintHarzCard=v283CleanHarzAmount;
 v279BuildHarzCard=v283CleanHarzAmount;
@@ -84,10 +33,7 @@ v281PaintHarzAmount=v283CleanHarzAmount;
 const v283BaseRender=render;
 render=function(){
   const r=v283BaseRender();
-  requestAnimationFrame(()=>{
-    v283CleanHarzAmount();
-    v271PaintDampf();
-  });
+  requestAnimationFrame(v283CleanHarzAmount);
   
   const line=document.querySelector('#v141VersionLine');
   return r;
