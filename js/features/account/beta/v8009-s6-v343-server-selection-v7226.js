@@ -23,7 +23,7 @@
   window.v343CurrentServer=v343Selected();
 
   function v343TargetPath(id){return id==='beta'?'beta.html':'server1.html'}
-  function v343BuildMatches(id){return (id==='beta'&&V343_RELEASE_CHANNEL==='beta')||(id==='server1'&&V343_RELEASE_CHANNEL!=='beta')}
+  function v343BuildMatches(id){return (id==='beta'&&V343_RELEASE_CHANNEL==='beta')||(id==='server1'&&V343_RELEASE_CHANNEL==='server1')}
   function v343RouteBuild(id,replace=false){
     if(v343BuildMatches(id))return false;
     const target=v343TargetPath(id);
