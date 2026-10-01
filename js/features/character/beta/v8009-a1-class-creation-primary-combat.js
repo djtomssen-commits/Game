@@ -94,40 +94,12 @@ function v029MoveReset(){/* V4.02 obsolete new-game card disabled */}
 
 /* --- Mandatory class selection after fresh/new game --- */
 function v029ShowClassChoice(){
-  if(s.playerClass || document.querySelector('#v029ClassModal')) return;
-
-  const modal = document.createElement('div');
-  modal.id = 'v029ClassModal';
-  modal.style.cssText = 'position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.92);display:flex;align-items:center;justify-content:center;padding:18px;overflow:auto';
-  modal.innerHTML = `
-    <div style="max-width:640px;width:100%;background:#111a12;border:1px solid #41583e;border-radius:18px;padding:18px">
-      <h2 style="margin-top:0">🧙 Wähle deine Klasse</h2>
-      <div class="muted" style="margin-bottom:12px">
-        Die Wahl ist für diesen Spielstand dauerhaft.
-      </div>
-      <div class="class-grid">
-        ${Object.entries(classes).map(([id,c])=>`
-          <button class="class-card" data-v029-class="${id}">
-            <div class="class-icon">${c.icon}</div>
-            <h4>${c.name}</h4>
-            <p>${c.text}</p>
-          </button>`).join('')}
-      </div>
-    </div>`;
-  document.body.appendChild(modal);
-
-  modal.querySelectorAll('[data-v029-class]').forEach(btn=>{
-    btn.onclick = ()=>{
-      const id = btn.dataset.v029Class;
-      if(!confirm(`${classes[id].name} wirklich wählen? Die Klasse kann später nicht gewechselt werden.`)) return;
-      s.playerClass = id;
-      s.classLocked = true;
-      localStorage.setItem(KEY,JSON.stringify(s));
-      modal.remove();
-      render();
-    };
-  });
+  /* V8.009: early text-only class modal retired.
+     v080 installs the first visual creator later in the same synchronous boot;
+     account/server owners v4136/v7229 may replace it afterwards. */
+  return false;
 }
+
 
 /* --- Combat handler with class-specific damage attribute --- */
 function v029InstallFightHandler(){
