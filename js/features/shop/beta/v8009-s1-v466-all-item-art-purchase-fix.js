@@ -326,7 +326,8 @@
   try{if(typeof renderShop==='function'&&!window.__v466ShopWrapped){const base=renderShop;renderShop=function(){const r=base.apply(this,arguments);rebindShopButtons();decorateShop();return r};window.renderShop=renderShop;window.__v466ShopWrapped=true}}catch(e){}
   /* Character/Inventory cleanup Phase 2: V466 inventory/equipment render hook retired.
      V468/V470 are the final visual owners. */
-  try{if(typeof render==='function'&&!window.__v466RenderWrapped){const base=render;render=function(){const r=base.apply(this,arguments);if(document.querySelector('#shop')?.classList.contains('active'))rebindShopButtons();decorateAll();stamp();return r};window.render=render;window.__v466RenderWrapped=true}}catch(e){}
+  /* V8.009: global render shop decoration hook retired.
+     renderShop owns shop decoration; character/inventory have their later dedicated owners. */
   function stamp(){}
   function bootDecorate(){if(document.querySelector('#shop')?.classList.contains('active'))rebindShopButtons();decorateAll();stamp()}
   document.addEventListener('DOMContentLoaded',bootDecorate,{once:true});
