@@ -4098,3 +4098,55 @@ Arbeitsmodus:
   - Base Empty Pot: `25a7a24ab66624eee9182edd53f66505e415e152`
 - Finale Growroom-QA Ergebnis-Commit: `74f0a07a10459b631240080b5ecf242f72a985e2`.
 - Matrix Growroom = **[x]**; manueller Sichttest der neuen Skalierung bleibt offen.
+
+
+#### Powerblock: Tower komplett strukturell abgeschlossen
+- Scope: **Lobby / Ranking / Meta-Aufstieg / Run / Result**.
+- Kanonische Owner:
+  - Runtime/Views/Run-State: `js/features/tower/beta/v8009-t1-tower-system.js`
+  - Lobby/Ranking/Recovery-Live: `js/features/tower/beta/v8009-t2-tower-lobby.js`
+  - Server-Authority: `js/features/authority/beta/v8009-s1-v7072-server-tower-weekly-worldboss-bridge.js`
+- Direkte Owner-Konsolidierung:
+  - v6300 Gegnerbild-Reparatur aus aktiver Beta entfernt; Milbenkrieger/Trauermücke werden direkt im Tower-Core kanonisch gemappt.
+  - v6333 Harzruferin-Reparatur aus aktiver Beta entfernt; Harzruferin-Avatar wird direkt im kanonischen Battle-Markup erzeugt.
+  - v6269 Mutation-Cap-Patch aus aktiver Beta entfernt; Cap-Normalisierung liegt direkt im Tower-Core, Kompatibilitätsfunktion bleibt verfügbar.
+  - v6341 + v6345 Standalone-Recovery/Lobby-Timer aus aktiver Beta entfernt; **ein** 1-s-Live-Timer bleibt im Lobby-Owner.
+  - globaler `persist()`-Wrapper des Towers entfernt; Tower-eigenes `save()` triggert den gezielten Profil-Sync weiterhin selbst.
+  - früher `vTowerRender`-Wrapper aus dem Direct-Preempt entfernt; Replay-Render-Suppression und Arena-Prewarm liegen jetzt direkt im kanonischen `vTowerRender`.
+- Lifecycle-Cleanup:
+  - Preempt-Installationskaskade 0/500/1200 ms + 80-ms Event-Retries durch DOMContentLoaded/Microtask/Lifecycle-Hooks ersetzt.
+  - Lobby-Painter 60/100/220-ms Nachläufe entfernt.
+  - Ranking-Requeue 0-ms Timer auf Microtasks umgestellt.
+  - Rank-View 20/35/55-ms Starttrio entfernt.
+  - Reward-Prepare 0-ms Timer auf Microtask umgestellt.
+- Wichtige Commits:
+  - Core-Integration + globaler Persist-Wrapper weg: `a201e60317972c8b9e55015838b28cf2e391de02`
+  - Lobby-Lifecycle-Cleanup: `91e1d7405aa3856f2efa95d30fc5949641ae4bba`
+  - Preempt Retry-Cleanup: `a279e5bb439aa05ab151ce713c30e6372370c98b`
+  - alte Repair-/Timer-Includes retired: `5f5f06faeb46a5fa8e3eda77c95d42219831c399`
+  - Flow-Guard direkt in Canonical Renderer: `9daf001e41419be1b166729f9f4dacc50a9bb194`
+  - Preempt Render-Wrapper retired: `8f1d107dfb43a33fad84e72b32f018d5f695745e`
+  - Rank-View Delay-Trio entfernt: `61b1e255fa4ae1d0cdfcbd0332796c6375ee8db3`
+- Abschluss-QA:
+  - Manifest: `V8009_TOWER_POWER_FINAL_QA.json`
+  - Manifest-Commit: `d6f87f38695e8fa2757cdc78895ae90f4782aefc`
+  - alle Checks **true**
+  - Syntax aller aktiven Tower-/Authority-Dateien grün
+  - genau ein kanonischer `vTowerRender`-Owner
+  - keine globalen `render=function`-Wrapper im aktiven Tower-Scope
+  - kein globaler `persist=function`-Wrapper im aktiven Tower-Scope
+  - kein aktiver Tower-`MutationObserver`
+  - genau ein aktiver Lobby-Live-`setInterval`
+  - Lobby / Ranking / Meta / sämtliche Run-Modi / Result vorhanden
+  - Authority-Bridge genau einmal geladen
+  - Stable/Server 1 unverändert; `index.html` SHA weiterhin `0bc5fe3eb0e69c856070dfcb6682d3178c56a597`
+  - Gameplay-/Combat-Math-/Reward-/Serverautorität in diesem Cleanup nicht verändert.
+- Matrix:
+  - Tower = **[x]**
+  - Matrix-Commit: `fa810226208227e674e8e732f1a39924c183b9d8`
+- Manueller Tower-Endtest bleibt für den späteren gemeinsamen Test-Milestone offen.
+
+#### Nächster Powerblock
+- Friends + Mail komplett:
+  - Friends: Ranking / Suche
+  - Mail: Inbox / Sent / Compose / Battlelog
