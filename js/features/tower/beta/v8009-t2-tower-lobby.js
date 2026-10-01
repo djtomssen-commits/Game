@@ -399,14 +399,35 @@ window.v8009CreateTowerLobbyController=function(c){
   const paint=html=>{const liveBox=document.getElementById('vTRanking');if(liveBox)liveBox.innerHTML=html};
   paint('<div class="vT-empty">Rangliste wird geladen …</div>');
   try{
-   await c.syncProfile(true);
    const data=await c.fetchAllTowerProfiles(true),sid=c.seasonId();
-   const rows=(data||[]).map(p=>{const t=p.dungeon_progress?.tower||{};return{...p,t}})
-    .filter(p=>p.t?.season===sid&&(Number(p.t.best_score)||Number(p.t.active_score)||0)>0)
-    .sort((a,b)=>Math.max(Number(b.t.best_score)||0,Number(b.t.active_score)||0)-Math.max(Number(a.t.best_score)||0,Number(a.t.active_score)||0)||Math.max(Number(b.t.best_floor)||0,Number(b.t.active_floor)||0)-Math.max(Number(a.t.best_floor)||0,Number(a.t.active_floor)||0))
-    .slice(0,50);
+   const prevSid=(()=>{
+     const [y,m]=String(sid).split('-').map(Number);
+     const d=new Date(y,Math.max(0,m-2),1);
+     return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
+   })();
+   const current=(data||[]).map(p=>{const t=p.dungeon_progress?.tower||{};return{...p,t}})
+    .filter(p=>String(p.t?.season||'')===String(sid)&&(Number(p.t.best_score)||Number(p.t.active_score)||0)>0)
+    .map(p=>({...p,rankScore:Math.max(Number(p.t.best_score)||0,Number(p.t.active_score)||0),rankFloor:Math.max(Number(p.t.best_floor)||0,Number(p.t.active_floor)||0),active:Number(p.t.active_floor)>0}));
+   let rows=current,shownSid=sid,isPrevious=false;
+   if(!rows.length){
+     rows=(data||[]).map(p=>{
+       const t=p.dungeon_progress?.tower||{};
+       const h=t.season_history?.[prevSid]||{};
+       const legacy=String(t.season||'')===String(prevSid)?t:{};
+       const score=Math.max(Number(h.best_score)||0,Number(legacy.best_score)||0,Number(legacy.active_score)||0);
+       const floor=Math.max(Number(h.best_floor)||0,Number(legacy.best_floor)||0,Number(legacy.active_floor)||0);
+       return {...p,t,rankScore:score,rankFloor:floor,active:false};
+     }).filter(p=>p.rankScore>0);
+     shownSid=prevSid;
+     isPrevious=rows.length>0;
+   }
+   rows.sort((a,b)=>b.rankScore-a.rankScore||b.rankFloor-a.rankFloor).splice(50);
    const uid=c.getUserId();
-   paint(rows.length?rows.map((p,i)=>`<div class="vT-leader-row ${String(p.id)===uid?'me':''}" data-class-id="${c.esc(p.class_id||'')}"><div class="vT-rank ${i<3?'top':''}">${i+1}</div><div class="vT-player"><b>${c.esc(p.character_name||'Unbekannt')}</b><span>${c.esc(p.class_name||'')} · Lv. ${Number(p.level)||1} · KP ${c.fmt(p.combat_power||0)}${Number(p.t.active_floor)>0?' · 🟢 Lauf aktiv':''}</span></div><div class="vT-score"><b>${c.fmt(Math.max(Number(p.t.best_score)||0,Number(p.t.active_score)||0))}</b><span>Etage ${Math.max(Number(p.t.best_floor)||0,Number(p.t.active_floor)||0)}</span></div></div>`).join(''):'<div class="vT-empty">In dieser Saison gibt es noch keine Turmwertung.</div>');
+   const banner=isPrevious?`<div class="vT-empty" style="margin-bottom:8px">Neue Saison ${c.esc(sid)} gestartet · angezeigt wird die letzte Saison ${c.esc(shownSid)}.</div>`:'';
+   paint(rows.length?banner+rows.map((p,i)=>`<div class="vT-leader-row ${String(p.id)===uid?'me':''}" data-class-id="${c.esc(p.class_id||'')}"><div class="vT-rank ${i<3?'top':''}">${i+1}</div><div class="vT-player"><b>${c.esc(p.character_name||'Unbekannt')}</b><span>${c.esc(p.class_name||'')} · Lv. ${Number(p.level)||1} · KP ${c.fmt(p.combat_power||0)}${p.active?' · 🟢 Lauf aktiv':''}</span></div><div class="vT-score"><b>${c.fmt(p.rankScore)}</b><span>Etage ${p.rankFloor}</span></div></div>`).join(''):'<div class="vT-empty">Neue Saison gestartet. Noch keine aktuelle oder gespeicherte vorherige Turmwertung vorhanden.</div>');
+   /* Current profile mirror is updated only after reading the old ranking,
+      so a month rollover cannot erase the previous-season fallback before it is shown. */
+   try{void c.syncProfile(true)}catch(_){}
   }catch(e){
    paint('<div class="vT-empty">Online-Rangliste momentan nicht erreichbar. Dein eigener Rekord bleibt gespeichert.</div>');
   }finally{
