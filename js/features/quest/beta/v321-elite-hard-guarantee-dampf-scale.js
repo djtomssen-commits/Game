@@ -177,12 +177,15 @@ window.v321PrepareLocalQuestStart=function(i){
  return {ok:true,cost,base};
 };
 
-/* Final display layer: exact cost + level band on each offer. */
-const v321BaseRenderQuests=renderQuests;
-renderQuests=function(){
+/* V8.009 Quest consolidation:
+   v6344 is the canonical Quest render owner. Prepare data before its render and
+   paint the exact Dampf cost once afterwards; do not wrap renderQuests. */
+function v321PrepareQuestRender(){
  v271NormalizeQuestOffers();
- const r=v321BaseRenderQuests.apply(this,arguments);
+}
+window.v321PrepareQuestRender=v321PrepareQuestRender;
 
+function v321PaintQuestCosts(){
  const energy=Math.max(0,Math.floor(Number(s.energy)||0));
  [...document.querySelectorAll('#questList .quest')].forEach((card,i)=>{
    const q=s.quests?.offers?.[i];
@@ -210,13 +213,9 @@ renderQuests=function(){
      btn.disabled=!!s.quests?.active || energy<base;
    }else card.appendChild(info);
  });
-
- requestAnimationFrame(()=>{
-   try{v310PaintEliteQuests()}catch(e){}
- });
-
- return r;
-};
+ try{v310PaintEliteQuests()}catch(e){}
+}
+window.v321PaintQuestCosts=v321PaintQuestCosts;
 
 /* Also set the canonical base cost while V4.02 balances a quest object. */
 const v321BaseBalanceQuest=v316BalanceQuest;
@@ -242,15 +241,6 @@ v310PaintEliteQuests=function(){
      reward.innerHTML='🎁 <b>GARANTIERT:</b> 1–3 Harz-Taler + 1 Klassenitem · 72 % Rare (Blau) / 28 % Episch (Lila)';
    }
  });
- return r;
-};
-
-const v321BaseRender=render;
-render=function(){
- const r=v321BaseRender();
- try{v271NormalizeQuestOffers()}catch(e){}
- 
- const line=document.querySelector('#v141VersionLine');
  return r;
 };
 
