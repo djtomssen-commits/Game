@@ -60,31 +60,9 @@ function v026PaintDampf(){
   if(energyEl)energyEl.textContent=`${Math.floor(s.energy||0)}/${V026_MAX_DAMPF}`;
 }
 
-/* Add refill control to the top/resource area. */
-function v026AddRefill(){
-  if(document.querySelector('#v026Refill'))return;
-  const energyEl=document.querySelector('#energy');
-  if(!energyEl)return;
-  const host=energyEl.parentElement;
-  const box=document.createElement('span');
-  box.id='v026Refill';
-  box.style.marginLeft='8px';
-  box.innerHTML=`<button id="v026RefillBtn" class="small">🟢 +20 Dampf</button>`;
-  host.appendChild(box);
-  document.querySelector('#v026RefillBtn').onclick=()=>{
-    v026DailyReset(false);
-    if((s.energy||0)>=V026_MAX_DAMPF)return v115Alert('Dein Dampf ist bereits voll: 300/300.');
-    if((s.harzTaler||0)<1)return v115Alert('Du hast keinen Harz-Taler mehr.');
-    const add=Math.min(V026_REFILL,V026_MAX_DAMPF-(s.energy||0));
-    if(!confirm(`1 Harz-Taler einsetzen und +${add} Dampf erhalten?\n\nNicht verbrauchter Dampf verfällt beim täglichen Reset.`))return;
-    s.harzTaler--;
-    s.energy=Math.min(V026_MAX_DAMPF,(s.energy||0)+V026_REFILL);
-    persist(false);
-    render();
-    v026PaintDampf();
-    v026AddRefill();
-  };
-}
+/* V8.009: legacy refill DOM producer retired.
+   The final v284 Dampf-card owner creates and binds #v026RefillBtn. */
+function v026AddRefill(){try{v026PaintDampf()}catch(e){}}
 
 /* Wrap render so a date change resets before UI is painted. */
 const v026OldRender=render;
