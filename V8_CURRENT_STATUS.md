@@ -2415,3 +2415,15 @@ Arbeitsmodus:
 - Alle drei externen Dateien mit `node --check` geprüft.
 - QA `V8009_SHOP_EXTRACTION_BATCH1_QA.json`: vollständig grün.
 - Stable / `index.html`: unverändert.
+
+
+#### Character Extraction Batch 3
+- Weitere drei große Character-Owner 1:1 aus `beta.html` nach `js/features/character/beta/` ausgelagert:
+  - `v4153-frost-class-avatar-authority` → `v8009-s3-v4153-frost-class-avatar-authority.js`
+  - `v480-auto-gear-material-script` → `v8009-s3-v480-auto-gear-material.js`
+  - `v6130-genetics-classset-core` → `v8009-s3-v6130-genetics-classset-core.js`
+- Zusammen 59.307 Bytes Inline-JS aus dem Monolithen entfernt.
+- Script-IDs und Reihenfolge in `beta.html` beibehalten; nur auf `src=` umgestellt.
+- Alle drei externen Dateien mit `node --check` geprüft.
+- QA `V8009_CHARACTER_EXTRACTION_BATCH3_QA.json`: vollständig grün.
+- Stable / `index.html`: unverändert.
