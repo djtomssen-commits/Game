@@ -358,9 +358,5 @@ v204RenderOpponent=function(){
   return r;
 };
 
-const v209BaseRender=render;
-render=function(){
-  return v209BaseRender();
-};
-
-setTimeout(v209EnsureBattleUi,120);
+/* V8.009: no-op global render wrapper retired. */
+queueMicrotask(v209EnsureBattleUi);
