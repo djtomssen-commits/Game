@@ -41,45 +41,15 @@ v111OpenWorldBoss=function(){
   return v112OldOpen();
 };
 
-const v112OldRefresh=v110Refresh;
-v110Refresh=function(){
-  v112EnsureWorldBossState();
-  return v112OldRefresh();
-};
-
-const v112OldFight=v110Fight;
-v110Fight=function(){
-  v112EnsureWorldBossState();
-  return v112OldFight();
-};
-
 const v112OldMysticActive=v110MysticEventActive;
 v110MysticEventActive=function(){
   v112EnsureWorldBossState();
   return v112OldMysticActive();
 };
 
-/* Cloud loads replace the state object, so ensure again after every render. */
-const v112BaseRender=render;
-render=function(){
-  v112EnsureWorldBossState();
-
-  const result=v112BaseRender();
-
-  v112EnsureWorldBossState();
-  
-
-  return result;
-};
-
-function v112ServerOwned(){try{return !!(typeof v073User!=='undefined'&&v073User?.id&&window.v7081UseAuthority?.('worldboss'))}catch(_){return false}}
-const v112LegacyStateTimer=setInterval(()=>{
-  if(document.hidden)return;
-  if(v112ServerOwned()){clearInterval(v112LegacyStateTimer);const g=window.__V7173_LEGACY_LOCAL_GUARD__;if(g){g.v112TimerActive=false;g.retiredTimers++;g.worldbossTimerBlocks++;g.lastBlockAt=Date.now()}return;}
-  try{v112EnsureWorldBossState()}catch(e){}
-},10000);
-if(window.__V7173_LEGACY_LOCAL_GUARD__)window.__V7173_LEGACY_LOCAL_GUARD__.v112TimerActive=true;
-window.addEventListener('growlegends:account-ready',()=>setTimeout(()=>{if(v112ServerOwned()&&window.__V7173_LEGACY_LOCAL_GUARD__?.v112TimerActive){clearInterval(v112LegacyStateTimer);window.__V7173_LEGACY_LOCAL_GUARD__.v112TimerActive=false;window.__V7173_LEGACY_LOCAL_GUARD__.retiredTimers++;}},950),{passive:true});
+/* V8.009 Worldboss powerblock: global render polling is retired.
+   The state is recreated at the actual boss entry points and after account hydration. */
+window.addEventListener('growlegends:account-ready',()=>{try{v112EnsureWorldBossState()}catch(e){}},{passive:true});
 
 try{
   v112EnsureWorldBossState();
