@@ -4,7 +4,7 @@ if(window.__V7065_GROW_FAIL_CLOSED__)return;
 window.__V7065_GROW_FAIL_CLOSED__=true;
 const VERSION='V7.091';
 const D={enabled:false,ready:false,busy:false,lastError:'',checks:0,actions:0,lastAction:null};
-let chain=Promise.resolve(), gatePromise=null, refreshFlight=null, pollCount=0;
+let chain=Promise.resolve(), gatePromise=null, refreshFlight=null, pollCount=0, authorityUid='';
 const db=()=>{try{return (typeof v073Db!=='undefined'&&v073Db)||null}catch(_){return null}};
 const uid=()=>{try{return String((typeof v073User!=='undefined'&&v073User?.id)||'')}catch(_){return ''}};
 const row=d=>Array.isArray(d)?d[0]:d;
@@ -83,18 +83,23 @@ function apply(r){
  return true;
 }
 async function refresh(){
+ const requestUid=uid();
+ if(!requestUid)throw new Error('SERVER_NOT_READY');
  if(refreshFlight)return refreshFlight;
  refreshFlight=(async()=>{
   const r=await rpc('v7064_grow_state');
   if(!r?.ok)throw new Error(String(r?.reason||'GROW_STATE_FAILED'));
-  apply(r);D.enabled=true;D.ready=true;D.lastError='';window.__V7065_GROW_SERVER_MODE__=true;window.__V7064_GROW_SERVER_MODE__=true;
+  if(uid()!==requestUid)throw new Error('ACCOUNT_CHANGED_DURING_GROW_REFRESH');
+  apply(r);authorityUid=requestUid;D.enabled=true;D.ready=true;D.lastError='';window.__V7065_GROW_SERVER_MODE__=true;window.__V7064_GROW_SERVER_MODE__=true;
   return r;
  })();
  try{return await refreshFlight}finally{refreshFlight=null}
 }
 async function gate(force=false){
   if(!window.v7081UseAuthority?.('grow')){D.enabled=false;D.ready=true;window.__V7065_GROW_SERVER_MODE__=false;window.__V7064_GROW_SERVER_MODE__=false;return false;}
- if(D.enabled&&!force)return true;
+ const currentUid=uid();
+ if(D.enabled&&authorityUid&&authorityUid!==currentUid){D.enabled=false;D.ready=false;authorityUid='';window.__V7065_GROW_SERVER_MODE__=false;window.__V7064_GROW_SERVER_MODE__=false;}
+ if(D.enabled&&D.ready&&authorityUid===currentUid&&!force)return true;
  if(gatePromise)return gatePromise;
  gatePromise=(async()=>{
    D.checks++;
@@ -238,5 +243,5 @@ window.v7067ServerCare=async(plantUid,careIndex)=>{
  return true;
 };
 window.v7065GrowAuthorityRefresh=async()=>{try{return await refresh()}catch(e){D.lastError=String(e?.message||e);return null}};
-window.v7065GrowAuthorityDiagnostics=()=>clone({version:VERSION,...D,uid:!!uid(),db:!!db(),serverMode:!!window.__V7065_GROW_SERVER_MODE__});
+window.v7065GrowAuthorityDiagnostics=()=>clone({version:VERSION,...D,uid:!!uid(),uidValue:uid(),authorityUid,db:!!db(),serverMode:!!window.__V7065_GROW_SERVER_MODE__});
 })();
