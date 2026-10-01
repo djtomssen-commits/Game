@@ -2550,3 +2550,16 @@ Arbeitsmodus:
 - Alle drei externen Dateien mit `node --check` geprüft.
 - QA `V8009_AUTHORITY_EXTRACTION_BATCH2_QA.json`: vollständig grün.
 - Stable / `index.html`: unverändert.
+
+
+#### System / UI Extraction Batch 1
+- Vier große System-/UI-Owner 1:1 aus `beta.html` ausgelagert:
+  - `v448-final-ui-power-account-integrity` → `js/features/system/beta/v8009-s2-v448-final-ui-power-account-integrity.js`
+  - `v7097-performance-ux-restore` → `js/features/system/beta/v8009-s2-v7097-performance-ux-restore.js`
+  - `v7084-background-system-test` → `js/features/system/beta/v8009-s2-v7084-background-system-test.js`
+  - `v6338-central-title-system-js` → `js/features/ui/beta/v8009-s1-v6338-central-title-system.js`
+- Zusammen 64.582 Bytes Inline-JS aus dem Monolithen entfernt.
+- Script-IDs und Reihenfolge in `beta.html` beibehalten; nur auf `src=` umgestellt.
+- Alle vier externen Dateien mit `node --check` geprüft.
+- QA `V8009_SYSTEM_UI_EXTRACTION_BATCH1_QA.json`: vollständig grün.
+- Stable / `index.html`: unverändert.
