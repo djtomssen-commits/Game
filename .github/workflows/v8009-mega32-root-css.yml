@@ -1,0 +1,23 @@
+name: V8.009 Mega32 Root CSS Extraction
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/v8009_mega32_root_css.py'
+      - '.github/workflows/v8009-mega32-root-css.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 .github/scripts/v8009_mega32_root_css.py
+      - run: |
+          git config user.name github-actions
+          git config user.email github-actions@users.noreply.github.com
+          git add beta.html 'v8009-extracted-*.css' V8009_MEGA32_ROOT_CSS_QA.json
+          git commit -m "V8.009 CLEANUP: mega32 extract safe root css" || exit 0
+          git pull --rebase origin main
+          git push
