@@ -64,15 +64,8 @@ function v026PaintDampf(){
    The final v284 Dampf-card owner creates and binds #v026RefillBtn. */
 function v026AddRefill(){try{v026PaintDampf()}catch(e){}}
 
-/* Wrap render so a date change resets before UI is painted. */
-const v026OldRender=render;
-render=function(){
-  v026DailyReset(false);
-  v026OldRender();
-  v026PaintDampf();
-  v026AddRefill();
-};
-
+/* V8.009: global render wrapper retired.
+   Daily reset remains timer/lifecycle-owned; v294 is the final Dampf paint owner. */
 /* Old regen() may still be called by existing timers. Neutralize its regeneration effect. */
 regen=function(){
   if(v026ServerOwned())return false;
@@ -82,4 +75,4 @@ regen=function(){
   try{v026PaintDampf();v026AddRefill()}catch(e){}
 };
 
-try{render()}catch(e){console.error('V4.02 Dampf init',e)}
+try{v026DailyReset(false)}catch(e){}
