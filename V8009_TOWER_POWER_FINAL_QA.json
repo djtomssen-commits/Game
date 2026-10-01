@@ -1,0 +1,48 @@
+{
+  "build": "V8.009-TOWER-POWER-FINAL-QA",
+  "date": "2026-10-01",
+  "scope": "Tower Lobby / Ranking / Meta / Run / Result",
+  "checks": {
+    "allSyntax": true,
+    "canonicalTowerRenderSingleOwner": true,
+    "noGlobalRenderWrapper": true,
+    "noGlobalPersistWrapper": true,
+    "noActiveTowerMutationObserver": true,
+    "retiredRepairScriptsUnloaded": true,
+    "coreLoadedOnce": true,
+    "lobbyLoadedOnce": true,
+    "preemptLoadedOnce": true,
+    "authorityLoadedOnce": true,
+    "singleLobbyInterval": true,
+    "lobbyView": true,
+    "rankingView": true,
+    "metaView": true,
+    "runModes": true,
+    "resultView": true,
+    "canonicalEnemyArt": true,
+    "canonicalSummonerArt": true,
+    "mutationCapCanonical": true,
+    "stableRecorded": true
+  },
+  "all_checks_true": true,
+  "active_files": {
+    "direct_preempt": "eba8099f0c851335b395741782d08d4278df7130",
+    "lobby": "93e0003e06d2a92d25548be2662761d853a5ecfa",
+    "system": "732a16f33020c266f818d4c3db5d0123012e3adf",
+    "entry": "cabc8c7e367456b404fa5af259fe421313c7e7a2",
+    "fx": "e7d859081e3347711abbd6bf08c9f404327d5336",
+    "authority": "eae76f17797e9613f4311d50435ad2ed6f186a4d"
+  },
+  "beta_html_sha": "727391a74da9548a8c57c6dcd14fdd78896cf69e",
+  "stable_index_sha": "0bc5fe3eb0e69c856070dfcb6682d3178c56a597",
+  "retired_active_scripts": [],
+  "notes": [
+    "v6300 enemy-art repair wrapper retired; mapping is canonical in tower system.",
+    "v6333 Harzruferin repair retries retired; avatar is emitted directly by canonical battle markup.",
+    "v6341/v6345 standalone recovery/lobby timer scripts retired; v8009-t2 owns the single live timer.",
+    "v6269 mutation-cap patch retired; compatibility function is implemented by canonical tower system.",
+    "global persist wrapper removed; Tower save() remains the targeted sync trigger.",
+    "preempt render wrapper retired; route replay render suppression and arena prewarm now live inside canonical vTowerRender.",
+    "server authority/combat math/rewards were not changed in this cleanup."
+  ]
+}
