@@ -12,6 +12,7 @@
     try{
       if(name==='inventory'){
         compactInventory();
+        window.v268ApplyMultiSell?.();
         window.v480UpdateAutoBars?.('inventory');
         window.v533ApplyInventory?.();
       }else if(name==='attributes'){
