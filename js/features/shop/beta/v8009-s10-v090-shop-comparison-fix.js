@@ -90,11 +90,5 @@ v057OfferHtml=function(it,i,kind){
     </div>`;
 };
 
-const v090BaseRender=render;
-render=function(){
-  v090BaseRender();
-  
-  try{renderShop()}catch(e){console.error('V4.02 shop comparison',e)}
-};
-
-try{renderShop()}catch(e){}
+/* V8.009: duplicate global render -> renderShop repaint retired.
+   v057OfferHtml already contains the comparison markup at construction time. */
