@@ -506,11 +506,25 @@ function seededChoiceFloor(floor){
  const fight=combat(chance(eliteChance)?'elite':'normal'),other=special();
  return chance(.5)?[fight,other]:[other,fight];
 }
+const TOWER_SUMMONER_AVATAR='assets/v7198-base64/11e78462c9373c3e267d.webp';
+function canonicalTowerEnemyArt(name){
+ const n=String(name||'').toLowerCase().replace(/ä/g,'ae').replace(/ö/g,'oe').replace(/ü/g,'ue').replace(/ß/g,'ss');
+ if(n.includes('milbenkrieger'))return towerAsset('v474_dungeon_assets/d2_5.png');
+ if(n.includes('trauermuecke'))return towerAsset('v474_dungeon_assets/d2_9.png');
+ return '';
+}
+function towerEnemyVisual(enemy){return canonicalTowerEnemyArt(enemy?.name)||String(enemy?.art||'')}
 function makeEnemy(floor,type){
  const miniboss=type==='miniboss',elite=type==='elite'||miniboss,boss=type==='boss';
  if(boss){const b=BOSSES[(Math.floor(floor/10)-1)%BOSSES.length],real=towerAssetEnemyName(floor,'boss');return {...b,name:real?`Turmboss: ${real}`:b.name,boss:true,elite:true,art:towerEnemyArt(floor,'boss'),bg:towerFloorBackground(floor,true)}}
- const [fallback,kind]=ENEMIES[(floor*3+Math.floor(Math.random()*ENEMIES.length))%ENEMIES.length];const visual=miniboss?'miniboss':elite?'elite':'normal',real=towerAssetEnemyName(floor,visual);return{name:`${miniboss?'Miniboss: ':elite?'Elite ':''}${real||fallback}`,kind,elite,boss:false,miniboss,mechanic:elite?pick(['armor','rage','dodge','thorns']):'',desc:miniboss?'Zwischenboss – deutlich härter, aber mit starker Wertung.':elite?'Elite-Mutation aktiv.':'Turmgegner',art:towerEnemyArt(floor,visual),bg:towerFloorBackground(floor,false)};
+ const [fallback,kind]=ENEMIES[(floor*3+Math.floor(Math.random()*ENEMIES.length))%ENEMIES.length];
+ const visual=miniboss?'miniboss':elite?'elite':'normal',real=towerAssetEnemyName(floor,visual);
+ const enemy={name:`${miniboss?'Miniboss: ':elite?'Elite ':''}${real||fallback}`,kind,elite,boss:false,miniboss,mechanic:elite?pick(['armor','rage','dodge','thorns']):'',desc:miniboss?'Zwischenboss – deutlich härter, aber mit starker Wertung.':elite?'Elite-Mutation aktiv.':'Turmgegner',art:towerEnemyArt(floor,visual),bg:towerFloorBackground(floor,false)};
+ enemy.art=towerEnemyVisual(enemy);
+ return enemy;
 }
+window.v6300CanonicalTowerEnemyArt=canonicalTowerEnemyArt;
+window.V6333_HARZ_TOWER_AVATAR=TOWER_SUMMONER_AVATAR;
 /* V8.009-T3: recovery math/state has one external Beta owner.
    The public V6.250 compatibility names remain available to the rest of the tower. */
 function v8009RecoveryOwner(){
@@ -606,6 +620,29 @@ function mysteryEvent(r){const rolls=[
  ];const ev=pick(rolls),result=ev.do();r.event={title:ev.name,text:ev.text,result};r.mode='mysteryResult';saveLocal();render()}
 function completeNonCombat(extraMutation=false){const r=ensure().run;if(!r)return;r.cleared=r.floor;addRunReward(r,r.currentChoice?.type||'normal',0);updateBest(r);updateWednesdayProgress(r,'');const cleared=r.floor;try{window.v6239WeeklyChestTowerFloor?.(cleared,r.currentChoice?.type||'special',r)}catch(_){}r.floor++;r.lastRoomType='special';r.forceCombat=true;r.choices=seededChoiceFloor(r.floor);v7191PreloadTowerRoute(r);r.currentChoice=null;r.enemy=null;if(extraMutation||cleared%7===0||seasonRule().mutation&&chance(.12)||wednesdayMutationRoll()){prepareMutation(r)}else r.mode='route';save(false);syncProfile(false);render()}
 function prepareMutation(r){const owned=new Set((r.buffs||[]).filter(id=>MUTATIONS.some(m=>m.id===id)));if(owned.size>=6){r.mutationChoices=[];r.geneticsComplete=true;r.mode='route';return false}const pool=MUTATIONS.filter(m=>!owned.has(m.id));const opts=[];while(pool.length&&opts.length<3){const ix=Math.floor(Math.random()*pool.length);opts.push(pool.splice(ix,1)[0].id)}r.mutationChoices=opts;if(!opts.length){r.geneticsComplete=true;r.mode='route';return false}r.mode='mutation';return true}
+
+function normalizeTowerMutationCap(){
+ const r=ensure().run;
+ if(!r)return false;
+ const next=[...new Set(Array.isArray(r.buffs)?r.buffs:[])].slice(0,6);
+ const changed=next.length!==(Array.isArray(r.buffs)?r.buffs.length:0);
+ if(changed){
+  r.buffs=next;
+  r.mutationChoices=[];
+  r.geneticsComplete=true;
+ }
+ return changed;
+}
+window.v6269NormalizeTowerMutationCap=normalizeTowerMutationCap;
+window.v6300RepairCurrentTowerEnemy=()=>{
+ const r=ensure().run;
+ if(!r?.enemy)return false;
+ const art=canonicalTowerEnemyArt(r.enemy.name);
+ if(!art)return false;
+ const changed=String(r.enemy.art||'')!==art;
+ r.enemy.art=art;
+ return changed;
+};
 
 function applyTowerMutation(r,id){
  if(!r||!MUTATIONS.some(m=>m.id===id)||r.buffs?.includes(id)||(r.buffs?.length||0)>=6)return false;
@@ -845,7 +882,7 @@ function prepView(r){
  ${v6259RunLine(r)}
  <div class="v6259-prep ${boss?'boss':''}">
    <div class="v6259-prep-bg" style="background-image:url('${e.bg||towerFloorBackground(r.floor,e.boss)}')"></div>
-   <img class="v6259-prep-enemy" loading="eager" decoding="async" fetchpriority="high" src="${e.art}" alt="${esc(e.name)}">
+   <img class="v6259-prep-enemy" loading="eager" decoding="async" fetchpriority="high" src="${towerEnemyVisual(e)}" alt="${esc(e.name)}">
    <div class="v6259-enemy-tag"><b>${esc(e.name)}</b><span>${e.boss?'BOSS':hard?'MINIBOSS':e.elite?'ELITE':'GEGNER'} · Etage ${r.floor}</span></div>
    ${boss?'<div class="v6259-speech">„Alles wächst … und alles gehört mir!“</div>':''}
  </div>
@@ -865,11 +902,11 @@ function battleView(r){
 
    <div id="vTPlayerFighter" class="vT-fighter player v6259-fighter">
      ${s.playerClass==='summoner'
-       ?`<img class="v6333-tower-harz-avatar" loading="eager" decoding="async" fetchpriority="high" src="${window.V6333_HARZ_TOWER_AVATAR||playerAvatar()}" alt="Harzruferin">`
+       ?`<img class="v6333-tower-harz-avatar" loading="eager" decoding="async" fetchpriority="high" src="${TOWER_SUMMONER_AVATAR}" alt="Harzruferin">`
        :`<img class="v6294-tower-player-img" loading="eager" decoding="async" fetchpriority="high" src="${playerAvatar()}" alt="Spieler" onerror="window.v6294TowerImgFallback?.(this,'player')">`}<div class="vT-fighter-name">${esc(playerName())}</div>
    </div>
    <div id="vTEnemyFighter" class="vT-fighter enemy v6259-fighter" data-enemy="${esc(e.name)}">
-     <img class="v6294-tower-enemy-img" loading="eager" decoding="async" fetchpriority="high" src="${e.art}" alt="${esc(e.name)}" onerror="window.v6294TowerImgFallback?.(this,'enemy')"><div class="vT-fighter-name">${esc(e.name)}</div>
+     <img class="v6294-tower-enemy-img" loading="eager" decoding="async" fetchpriority="high" src="${towerEnemyVisual(e)}" alt="${esc(e.name)}" onerror="window.v6294TowerImgFallback?.(this,'enemy')"><div class="vT-fighter-name">${esc(e.name)}</div>
    </div>
 
    <div id="vTDmgPlayer" class="vT-damage p"></div>
@@ -1074,7 +1111,7 @@ function v6260TowerChrome(on){
 }
 
 function render(){
- try{window.v6269NormalizeTowerMutationCap?.()}catch(_){}
+ normalizeTowerMutationCap();
  const root=document.getElementById('tower');if(!root)return;
  const towerVisible=root.classList.contains('active');
 
@@ -1210,7 +1247,6 @@ function installNav(){
  const add=()=>{const p=document.getElementById('v032MenuPanel');if(!p||p.querySelector('[data-screen="tower"]'))return;const d=p.querySelector('[data-screen="dungeon"]'),b=document.createElement('button');b.type='button';b.className='top-menu-item';b.dataset.screen='tower';b.innerHTML='<span>🗼</span>Anbauturm';b.onclick=e=>{e.preventDefault();e.stopPropagation();typeof v032Go==='function'&&v032Go('tower')};if(d?.nextSibling)p.insertBefore(b,d.nextSibling);else p.appendChild(b)};add();document.addEventListener('click',e=>{if(e.target?.closest?.('#v032MenuBtn,#v032MenuToggle'))requestAnimationFrame(add)},true);window.addEventListener('growlegends:account-ready',add);window.addEventListener('pageshow',add,{passive:true});window.vTowerEnsureMenu=add
 }
 function wrapProfile(){try{if(typeof v073ProfilePayload==='function'&&!window.__vTowerProfilePayload){const base=v073ProfilePayload;v073ProfilePayload=function(){const p=base.apply(this,arguments)||{};p.dungeon_progress=(p.dungeon_progress&&typeof p.dungeon_progress==='object')?{...p.dungeon_progress}:{};p.dungeon_progress.tower=towerMirror();return p};try{window.v073ProfilePayload=v073ProfilePayload}catch(e){}window.__vTowerProfilePayload=true}}catch(e){}
- try{if(typeof persist==='function'&&!window.__vTowerPersist){const base=persist;persist=function(){const out=base.apply(this,arguments);scheduleSync(false);return out};try{window.persist=persist}catch(e){}window.__vTowerPersist=true}}catch(e){}
  try{if(typeof v649SyncDungeonProgress==='function'&&!window.__vTowerDungeonSync){const base=window.v649SyncDungeonProgress;window.v649SyncDungeonProgress=async function(){const out=await base.apply(this,arguments);await syncProfile(true);return out};window.__vTowerDungeonSync=true}}catch(e){}
 }
 installSection();ensure();installNav();wrapProfile();
