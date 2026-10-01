@@ -2841,3 +2841,26 @@ Arbeitsmodus:
 - Originale Script-Attribute, IDs und Reihenfolge beibehalten; nur um `src=` ergänzt.
 - QA `V8009_FEATURE_EXTRACTION_BATCH14_QA.json`: vollständig grün.
 - Stable / `index.html`: unverändert.
+
+
+#### Feature Extraction Batch 15
+- 15 weitere benannte Owner 1:1 aus `beta.html` ausgelagert:
+  - `v681-material-sell-core`
+  - `v339-dealer-reference-redesign`
+  - `v276-event-sync-gold-fx`
+  - `v247-dungeon-reward-modal-core`
+  - `v286-dungeon-events-gold-marker-fix`
+  - `v6230-tower-dungeon-fx-parity-core`
+  - `v4126-power-rpc-diagnostics`
+  - `v432-item-compare-clarity`
+  - `v6360-app-update-js`
+  - `v6291-harzruferin-stability-js`
+  - `v475-shop-polish-script`
+  - `v4148-complete-menu-authority`
+  - `v311-quest-finale`
+  - `v371-true-fullwidth-topbar`
+  - `v6302-harz-talent-mechanics-audit-js`
+- Zusammen 74.284 Bytes Inline-JS aus dem Monolithen entfernt.
+- Originale Script-Attribute, IDs und Reihenfolge beibehalten; nur um `src=` ergänzt.
+- QA `V8009_FEATURE_EXTRACTION_BATCH15_QA.json`: vollständig grün.
+- Stable / `index.html`: unverändert.
