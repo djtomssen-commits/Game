@@ -102,13 +102,7 @@
     const inside=active&&String(s.dungeon?.layer||'world')==='dungeon';
     /* V7.214: canonical/key synchronization is allowed to update progression while
        the 10er map is open, but it may not replace that active navigation layer. */
-    if(!inside){
-      rebuildWorld(reason+'-now');
-      try{queueMicrotask(()=>rebuildWorld(reason+'-micro'))}catch(e){}
-      try{requestAnimationFrame(()=>rebuildWorld(reason+'-raf'))}catch(e){}
-      setTimeout(()=>rebuildWorld(reason+'-80'),80);
-      setTimeout(()=>rebuildWorld(reason+'-300'),300);
-    }
+    if(!inside)rebuildWorld(reason+'-now');
     try{document.dispatchEvent(new CustomEvent('growlegends:dungeon-key-live',{detail:{reason,keepDungeonLayer:inside}}))}catch(e){}
   }
 
@@ -139,8 +133,6 @@
     s.dungeon.layer='world';
     s.dungeon.view='map';
     rebuildWorld('v7119');
-    try{requestAnimationFrame(()=>rebuildWorld('v7119-raf'))}catch(_){}
-    setTimeout(()=>rebuildWorld('v7119-100'),100);
   },{passive:true});
   window.__v467DungeonGoWrapped='v7119-event';
 
@@ -177,8 +169,7 @@
     const b=e.target?.closest?.('[data-screen="dungeon"],[data-go="dungeon"],[data-v032-go="dungeon"]');
     if(!b)return;
     ensure();s.dungeon.layer='world';s.dungeon.view='map';
-    setTimeout(()=>rebuildWorld('captured-dungeon-nav'),0);
-    setTimeout(()=>rebuildWorld('captured-dungeon-nav-120'),120);
+    rebuildWorld('captured-dungeon-nav');
   },true);
 
   document.addEventListener('growlegends:dungeon-key-changed',()=>afterKeyChange('legacy-event'));
