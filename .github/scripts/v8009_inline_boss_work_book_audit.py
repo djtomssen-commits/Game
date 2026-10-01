@@ -18,3 +18,5 @@ for key,terms in groups.items():
  out['groups'][key]=hits[:800]
 Path('V8009_INLINE_BOSS_WORK_BOOK_AUDIT.json').write_text(json.dumps(out,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
 print(json.dumps(out,ensure_ascii=False,indent=2))
+
+# trigger: boss-work-book
