@@ -49436,12 +49436,7 @@ body:has(#v032MenuPanel.open) [class*="ticket" i]{
     bindButton();
   }
 
-  const baseGo=v032Go;
-  v032Go=function(id){
-    const r=baseGo.apply(this,arguments);
-    requestAnimationFrame(fix);
-    return r;
-  };
+  window.addEventListener('growlegends:navigation-open-v7119',fix,{passive:true});
 
   function version(){
     document.querySelectorAll(
@@ -49451,8 +49446,8 @@ body:has(#v032MenuPanel.open) [class*="ticket" i]{
 
   fix();version();
   document.addEventListener('DOMContentLoaded',()=>{fix();version()},{once:true});
-  setTimeout(()=>{fix();version()},300);
-  setTimeout(()=>{fix();version()},1200);
+  window.addEventListener('pageshow',()=>{fix();version()},{passive:true});
+  window.addEventListener('growlegends:account-ready',()=>{fix();version()},{passive:true});
 })();
 </script>
 
@@ -49541,17 +49536,12 @@ html,body{
 
   function version(){/* V7.113: obsolete version painter retired. */}
 
-  const baseGo=v032Go;
-  v032Go=function(id){
-    const r=baseGo.apply(this,arguments);
-    requestAnimationFrame(()=>{align();version()});
-    return r;
-  };
+  window.addEventListener('growlegends:navigation-open-v7119',()=>{align();version()},{passive:true});
 
   align();version();
   document.addEventListener('DOMContentLoaded',()=>{align();version()},{once:true});
-  setTimeout(()=>{align();version()},300);
-  setTimeout(()=>{align();version()},1200);
+  window.addEventListener('pageshow',()=>{align();version()},{passive:true});
+  window.addEventListener('growlegends:account-ready',()=>{align();version()},{passive:true});
 })();
 </script>
 
@@ -99994,8 +99984,8 @@ document.addEventListener('click',e=>{
   if(hit)setTimeout(repairCurrentEnemy,60);
 },true);
 
-window.addEventListener('growlegends:account-ready',()=>setTimeout(repairCurrentEnemy,120));
-[0,250,900].forEach(ms=>setTimeout(repairCurrentEnemy,ms));
+window.addEventListener('growlegends:account-ready',repairCurrentEnemy,{passive:true});
+window.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')==='tower')repairCurrentEnemy()},{passive:true});
 
 window.v6300TowerEnemyDiagnostics=()=>({
   version:'V6.300',
