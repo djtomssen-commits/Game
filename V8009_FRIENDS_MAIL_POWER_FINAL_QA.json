@@ -1,0 +1,50 @@
+{
+  "build": "V8.009-FRIENDS-MAIL-POWER-FINAL-QA",
+  "date": "2026-10-01",
+  "scope": "Friends / Suche / Mail Inbox / Sent / Compose / Battlelog",
+  "checks": {
+    "allSyntax": true,
+    "noGlobalRenderWrappers": true,
+    "noActiveSocialMutationObservers": true,
+    "retiredRepairScriptsUnloaded": true,
+    "foundationUsesSharedNavigation": true,
+    "profileSyncNoRenderWrapper": true,
+    "profileDirtyCheckSingleCadence": true,
+    "v4124SocialDomRetired": true,
+    "v4124ProfileAndQuestPreserved": true,
+    "v4130FinalFriendsDefinition": true,
+    "v4130FinalSearchDefinition": true,
+    "v4130PresenceRefresh": true,
+    "v4130SingleFlight": true,
+    "mailFourTabs": true,
+    "mailCanonicalRecipientOwner": true,
+    "mailRecipientNoTimeout": true,
+    "mailUnreadCadence": true,
+    "battlelogCanonicalTabCall": true,
+    "battlelogDuplicateClickLoaderRemoved": true,
+    "battlelogReplaySleepPreserved": true,
+    "battlelogRefreshCadence": true,
+    "friendsSearchStaticBinding": true,
+    "stableRecorded": true
+  },
+  "all_checks_true": true,
+  "active_blobs": {
+    "foundation": "200fdd0ce6386897762e051f60f5e0105e873c3b",
+    "online": "12ebd453bef725dcfde9d24aa7affae03b8950b1",
+    "v4124": "61d0807d511c6b09c65ed85910bad4657240d032",
+    "v4130": "63f2300cbb14dde77568b40e24aae2207e93edc2",
+    "mail": "f6030e8b9b918e54e0c772760847122954212a77",
+    "battlelog": "5f050ffc10b7d4db94b64f82edf8581ef2bbab53"
+  },
+  "beta_html_sha": "ffd308de233b2d7f5c6ee7387a164e84ad6046e8",
+  "stable_index_sha": "0bc5fe3eb0e69c856070dfcb6682d3178c56a597",
+  "notes": [
+    "v333 Friends presence renderer retired; v4130 owns canonical friend rows and 60s presence refresh.",
+    "v382/v383 repair layers retired; v381 owns recipient routing and v4130 emits exact character names directly.",
+    "v072 social foundation no longer wraps global render and uses shared v032Go navigation.",
+    "v073 online system no longer wraps global render or v072AddMenuItems; profile dirty-check is one 60s data cadence plus lifecycle triggers.",
+    "v4124 keeps profile payload enrichment + Quest seed reward but no longer produces Hall/Friends DOM.",
+    "v6200 duplicate Battlelog tab-click loader removed; v381 is the canonical tab owner.",
+    "Replay sleeps, unread cadence and Battlelog cadence are functional timers and intentionally preserved."
+  ]
+}
