@@ -1,0 +1,32 @@
+name: V8.009 Feature Extraction Batch 5
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/v8009_feature_extraction_batch5.py'
+      - '.github/workflows/v8009-feature-extraction-batch5.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 .github/scripts/v8009_feature_extraction_batch5.py
+      - run: |
+          node --check js/features/system/beta/v8009-s5-v4147-deterministic-boot-controller.js
+          node --check js/features/quest/beta/v8009-s1-v271-dampf-system.js
+          node --check js/features/grow/beta/v8009-s3-v4114-grow-care-authority.js
+          node --check js/features/account/beta/v8009-s3-v4135-character-save-barrier.js
+          node --check js/features/social/beta/v8009-s2-v7129-referral-client.js
+          node --check js/features/book/beta/v8009-s1-v6235-illegal-book-longterm-pagination.js
+          node --check js/features/ui/beta/v8009-s4-v4162-menu-attention-badges.js
+          node --check js/features/authority/beta/v8009-s3-v7132-item-authority-lockdown.js
+      - run: |
+          git config user.name github-actions
+          git config user.email github-actions@users.noreply.github.com
+          git add beta.html js/features/system/beta/v8009-s5-v4147-deterministic-boot-controller.js js/features/quest/beta/v8009-s1-v271-dampf-system.js js/features/grow/beta/v8009-s3-v4114-grow-care-authority.js js/features/account/beta/v8009-s3-v4135-character-save-barrier.js js/features/social/beta/v8009-s2-v7129-referral-client.js js/features/book/beta/v8009-s1-v6235-illegal-book-longterm-pagination.js js/features/ui/beta/v8009-s4-v4162-menu-attention-badges.js js/features/authority/beta/v8009-s3-v7132-item-authority-lockdown.js V8009_FEATURE_EXTRACTION_BATCH5_QA.json
+          git commit -m "V8.009 FEATURES: extract fifth owner batch" || exit 0
+          git pull --rebase origin main
+          git push
