@@ -2728,3 +2728,22 @@ Arbeitsmodus:
 - Alle zehn externen Dateien mit `node --check` geprüft.
 - QA `V8009_FEATURE_EXTRACTION_BATCH9_QA.json`: vollständig grün.
 - Stable / `index.html`: unverändert.
+
+
+#### Feature Extraction Batch 10
+- Zehn weitere große Owner 1:1 aus `beta.html` ausgelagert:
+  - `v7114-gold-shop` → `js/features/shop/beta/v8009-s2-v7114-gold-shop.js`
+  - `v6163-growroom-primary-tabs-core` → `js/features/grow/beta/v8009-s6-v6163-growroom-primary-tabs-core.js`
+  - `v7092-runtime-watchdog` → `js/features/system/beta/v8009-s7-v7092-runtime-watchdog.js`
+  - `v7136-complete-server-reward-core` → `js/features/rewards/beta/v8009-s3-v7136-complete-server-reward-core.js`
+  - `v4158-dungeon1-profile-integer-fix` → `js/features/dungeon/beta/v8009-s7-v4158-dungeon1-profile-integer-fix.js`
+  - `v683-material-multisell-core` → `js/features/materials/beta/v8009-s2-v683-material-multisell-core.js`
+  - `v425-item-stats-single-authority` → `js/features/items/beta/v8009-s6-v425-item-stats-single-authority.js`
+  - `v327-worldboss-confirm-attributes` → `js/features/worldboss/beta/v8009-s3-v327-worldboss-confirm-attributes.js`
+  - `v6283-grow-guides-js` → `js/features/guide/beta/v8009-s2-v6283-grow-guides.js`
+  - `v7071-server-grow-dealer-bridge` → `js/features/authority/beta/v8009-s7-v7071-server-grow-dealer-bridge.js`
+- Zusammen 80.048 Bytes Inline-JS aus dem Monolithen entfernt.
+- Originale Script-Attribute, IDs und Reihenfolge beibehalten; nur um `src=` ergänzt.
+- Alle zehn externen Dateien mit `node --check` geprüft.
+- QA `V8009_FEATURE_EXTRACTION_BATCH10_QA.json`: vollständig grün.
+- Stable / `index.html`: unverändert.
