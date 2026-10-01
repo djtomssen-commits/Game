@@ -1,0 +1,30 @@
+name: V8.009 Feature Extraction Batch 4
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/v8009_feature_extraction_batch4.py'
+      - '.github/workflows/v8009-feature-extraction-batch4.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 .github/scripts/v8009_feature_extraction_batch4.py
+      - run: |
+          node --check js/features/character/beta/v8009-s5-v253-avatar-weapon-monsters-core.js
+          node --check js/features/dungeon/beta/v8009-s2-v468-dungeon-master.js
+          node --check js/features/account/beta/v8009-s2-v452-hard-account-isolation.js
+          node --check js/features/dungeon/beta/v8009-s2-v4165-dungeon-key-live-battle-index-fix.js
+          node --check js/features/system/beta/v8009-s4-v606-combat-qa-core.js
+          node --check js/features/ui/beta/v8009-s3-v141-settings-menu.js
+      - run: |
+          git config user.name github-actions
+          git config user.email github-actions@users.noreply.github.com
+          git add beta.html js/features/character/beta/v8009-s5-v253-avatar-weapon-monsters-core.js js/features/dungeon/beta/v8009-s2-v468-dungeon-master.js js/features/account/beta/v8009-s2-v452-hard-account-isolation.js js/features/dungeon/beta/v8009-s2-v4165-dungeon-key-live-battle-index-fix.js js/features/system/beta/v8009-s4-v606-combat-qa-core.js js/features/ui/beta/v8009-s3-v141-settings-menu.js V8009_FEATURE_EXTRACTION_BATCH4_QA.json
+          git commit -m "V8.009 FEATURES: extract fourth owner batch" || exit 0
+          git pull --rebase origin main
+          git push
