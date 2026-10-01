@@ -181,11 +181,8 @@ window.addEventListener('growlegends:navigation-open-v7119',e=>{
 });
 
 
-setTimeout(()=>{
-  try{
-    v229UpdateQuestTimer();
-    v229PaintPvpBuds();
-  }catch(e){}
-},300);
+queueMicrotask(()=>{
+  try{v229UpdateQuestTimer();v229PaintPvpBuds()}catch(e){}
+});
 
 
