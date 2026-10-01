@@ -1,0 +1,230 @@
+{
+  "build": "V8.009-PRESENTATION-RENDER-WRAPPER-AUDIT",
+  "count": 28,
+  "rows": [
+    {
+      "order": 14,
+      "src": "js/features/quest/beta/v8009-a2-daily-dampf-system.js",
+      "line": 91,
+      "bytes": 4514,
+      "risky": false,
+      "snippet": "dd} Dampf erhalten?\\n\\nNicht verbrauchter Dampf verfällt beim täglichen Reset.`))return;\n    s.harzTaler--;\n    s.energy=Math.min(V026_MAX_DAMPF,(s.energy||0)+V026_REFILL);\n    persist(false);\n    render();\n    v026PaintDampf();\n    v026AddRefill();\n  };\n}\n\n/* Wrap render so a date change resets before UI is painted. */\nconst v026OldRender=render;\nrender=function(){\n  v026DailyReset(false);\n  v026OldRender();\n  v026PaintDampf();\n  v026AddRefill();\n};\n\n/* Old regen() may still be called by existing timers. Neutralize its regeneration effect. */\nregen=function(){\n  if(v026ServerOwned())return false;\n  v026DailyReset(false);\n  s.lastEnergy=Date.now();\n  localStorage.setItem(KEY,JSON.stringify(s));\n  try{v026PaintDampf();v026AddRefill()}catch(e){}\n};\n\ntry{render()}catch(e){console.error('V4.02 Da"
+    },
+    {
+      "order": 17,
+      "src": "js/features/character/beta/v8009-a1-class-creation-primary-combat.js",
+      "line": 297,
+      "bytes": 12611,
+      "risky": true,
+      "snippet": "#playerFighter'),'hit');\n            log.textContent+=` Gegner trifft dich für ${eDmg}.`;\n\n            if(pHp<=0) return finish(false);\n            setTimeout(step,360);\n          },240);\n        },380);\n      },240);\n    };\n\n    step();\n  };\n}\n\n/* --- Wrap render: Intelligence row + UI cleanup + fight handler --- */\nconst v029BaseRender = render;\nrender = function(){\n  v029BaseRender();\n\n  const attrs = document.querySelector('#attrs');\n  if(attrs){\n    const list = [\n      ['staerke','💪 Stärke'],\n      ['geschick','🎯 Geschick'],\n      ['intelligenz','🧠 Intelligenz'],\n      ['ausdauer','❤️ Ausdauer'],\n      ['glueck','🍀 Glück'],\n\n    ];\n    attrs.innerHTML = list.map(([k,n]) =>\n      `<div class=\"attr\"><span>${n}: <b>${totalAttr(k)}</b></span><button onclick=\"incAttr('${k}')\" ${s.points<1?'disabled':''}>+</button></div>`\n    ).join('');\n  }\n\n  v029RemoveClassPicker();\n  v029MoveReset();\n  v029InstallFightHandler();\n  if(!s.playerClass && window.__V200_AUTH_READY__) v029ShowClassChoice();\n};\n\n/* --- Initial --- */\ntry{\n  v029RemoveClassPicker();\n  v029MoveReset();\n  if(!s.playerClass && window.__V200_AUTH_READY__) v029ShowClassChoice();\n  render();\n}catch(e){\n  console.error('V4.02 init',e);\n}\n"
+    },
+    {
+      "order": 56,
+      "src": "js/features/character/beta/v8009-a2-real-avatar-integration.js",
+      "line": 86,
+      "bytes": 3888,
+      "risky": true,
+      "snippet": "`${classes[id].name} wirklich wählen? Die Klasse kann später nicht gewechselt werden.`))return;\n      s.playerClass=id;\n      s.classLocked=true;\n      localStorage.setItem(KEY,JSON.stringify(s));\n      modal.remove();\n      render();\n    };\n  });\n};\n\n/* Keep portrait current after all older render wrappers execute. */\nconst v080BaseRender=render;\nrender=function(){\n  v080BaseRender();\n  \n  try{v41InstallPortrait()}catch(e){console.error('V4.02 portrait',e)}\n  /* V4.02 glitter is attached after portrait exists. */\n  setTimeout(()=>{\n    try{\n      if(typeof v079UpdateBuffFx==='function')v079UpdateBuffFx();\n      else if(typeof v077InjectCharacterFx==='function')v077InjectCharacterFx();\n    }catch(e){console.error('V4.02 buff fx',e)}\n  },0);\n};\n\ntry{\n  v41InstallPortrait();\n  render();\n}catch(e){\n  console.error('V4.02 avatar init',e);\n}\n"
+    },
+    {
+      "order": 70,
+      "src": "js/features/quest/beta/v8009-s8-v096-quest-xp-star-fix.js",
+      "line": 45,
+      "bytes": 1661,
+      "risky": true,
+      "snippet": "*/\n    const original=reward.textContent;\n    if(original.includes(String(base))){\n      reward.textContent=original.replace(String(base),String(doubled));\n    }\n\n    const badge=document.createElement('span');\n    badge.className='v096-quest-xp2';\n    badge.textContent='×2 EXP';\n    reward.appendChild(badge);\n  });\n}\n\nconst v096BaseRender=render;\nrender=function(){\n  v096BaseRender();\n  \n  requestAnimationFrame(v096DecorateQuestXp);\n};\n\ndocument.addEventListener('click',()=>setTimeout(v096DecorateQuestXp,30),true);\ntry{v096DecorateQuestXp()}catch(e){}\n"
+    },
+    {
+      "order": 83,
+      "src": "js/features/worldboss/beta/v8009-s1-v110-mystic-worldboss.js",
+      "line": 174,
+      "bytes": 10784,
+      "risky": true,
+      "snippet": "_ACH.push(a)});\n}\n\nconst v110OldActiveEvents=v085ActiveEvents;\nv085ActiveEvents=function(){\n  let out=v110OldActiveEvents();\n  if(v110MysticEventActive())out=out.replace(/(<div class=\"v085-event-status\">AKTIV<\\/div>)/,'$1<div class=\"v094-event-bonus v094-xp-active\">🔷 MYSTISCHER WELTBOSS AKTIV</div>');\n  return out;\n};\n\nconst v110BaseRender=render;\nrender=function(){\n  const result=v110BaseRender();\n  \n  if(!window.__V483_MODERN_WORLD_ONLY__)requestAnimationFrame(v110InstallEventButton);\n  return result;\n};\n/* V4.86: current V366 home owns the worldboss entry; old-home installer retired. */\n"
+    },
+    {
+      "order": 84,
+      "src": "js/features/worldboss/beta/v8009-s5-v111-worldboss-visual-fix.js",
+      "line": 151,
+      "bytes": 5891,
+      "risky": true,
+      "snippet": "ssList.toggle('phase3',phase.includes('LETZTE'));\n\n    const btn=document.querySelector('#v110Fight');\n    if(btn && !btn.disabled)clearInterval(watch);\n  },150);\n\n  return result;\n};\n\n/* Disable old fragile button installer; use dedicated card instead. */\nv110InstallEventButton=function(){v111InstallWorldBossCard()};\n\nconst v111BaseRender=render;\nrender=function(){\n  const result=v111BaseRender();\n  \n  if(!window.__V483_MODERN_WORLD_ONLY__)requestAnimationFrame(v111InstallWorldBossCard);\n  return result;\n};\n\n/* V4.86: retired old-world Smaragd-Koloss card installer. The modern V4.366\n   home already owns the boss entry; combat/overlay functions remain active. */\n"
+    },
+    {
+      "order": 85,
+      "src": "js/features/worldboss/beta/v8009-s8-v112-worldboss-state-fix.js",
+      "line": 64,
+      "bytes": 2823,
+      "risky": false,
+      "snippet": "v110Fight;\nv110Fight=function(){\n  v112EnsureWorldBossState();\n  return v112OldFight();\n};\n\nconst v112OldMysticActive=v110MysticEventActive;\nv110MysticEventActive=function(){\n  v112EnsureWorldBossState();\n  return v112OldMysticActive();\n};\n\n/* Cloud loads replace the state object, so ensure again after every render. */\nconst v112BaseRender=render;\nrender=function(){\n  v112EnsureWorldBossState();\n\n  const result=v112BaseRender();\n\n  v112EnsureWorldBossState();\n  \n\n  return result;\n};\n\nfunction v112ServerOwned(){try{return !!(typeof v073User!=='undefined'&&v073User?.id&&window.v7081UseAuthority?.('worldboss'))}catch(_){return false}}\nconst v112LegacyStateTimer=setInterval(()=>{\n  if(document.hidden)return;\n  if(v112ServerOwned()){clearInterval(v112LegacyStateTimer);const g=window.__V7173_LEGACY_LOCAL_GUARD__;if(g){g.v112TimerA"
+    },
+    {
+      "order": 87,
+      "src": "js/features/worldboss/beta/v8009-s8-v114-worldboss-confirm-modal.js",
+      "line": 90,
+      "bytes": 2625,
+      "risky": false,
+      "snippet": ".v110WorldBoss.freeUsed;\n    s.v110WorldBoss.freeUsed=false;\n\n    try{\n      const result=v114BaseFight();\n      s.v110WorldBoss.freeUsed=true;\n      persist(false);\n      return result;\n    }catch(e){\n      s.v110WorldBoss.freeUsed=oldFree;\n      s.harzTaler+=10;\n      throw e;\n    }\n  }\n\n  return v114BaseFight();\n};\n\nconst v114BaseRender=render;\nrender=function(){\n  const result=v114BaseRender();\n  \n  return result;\n};\n\nsetTimeout(v114EnsureConfirmModal,200);\n"
+    },
+    {
+      "order": 89,
+      "src": "js/features/worldboss/beta/v8009-s4-v116-worldboss-profile-stats.js",
+      "line": 155,
+      "bytes": 5493,
+      "risky": false,
+      "snippet": "ass=\"v116-wb-stat\">SIEGE<b>${Number(p.worldboss_wins)||0}</b></div>\n      </div>`;\n\n    const dungeon=document.querySelector('#v081DungeonStatus');\n    if(dungeon) dungeon.insertAdjacentElement('afterend',box);\n    else content.appendChild(box);\n  }catch(e){\n    console.error('V4.02 worldboss profile stats',e);\n  }\n};\n\nconst v116BaseRender=render;\nrender=function(){\n  const result=v116BaseRender();\n  \n  return result;\n};\n\n/* Push current stats once after upgrade. */\nsetTimeout(async()=>{\n  try{\n    if(v073Ready){\n      v112EnsureWorldBossState();\n      await v073SyncProfile(true);\n    }\n  }catch(e){}\n},1800);\n"
+    },
+    {
+      "order": 92,
+      "src": "js/features/worldboss/beta/v8009-s7-v120-worldboss-countdown.js",
+      "line": 95,
+      "bytes": 3258,
+      "risky": true,
+      "snippet": "Selector('[data-v120-countdown]');\n  if(!box){\n    const meta=hero.querySelector('.v118-boss-meta');\n    if(meta){\n      box=document.createElement('div');\n      box.className='v120-event-time';\n      box.dataset.v120Countdown='1';\n      meta.insertAdjacentElement('afterend',box);\n    }\n  }\n\n  v120UpdateCountdown();\n}\n\nconst v120BaseRender=render;\nrender=function(){\n  const result=v120BaseRender();\n  if(document.querySelector('#world')?.classList.contains('active'))requestAnimationFrame(v120InstallCountdown);\n  return result;\n};\n\n/* Live countdown: update once per second. */\nsetInterval(()=>{\n  try{\n    if(document.hidden||!document.querySelector('#world')?.classList.contains('active'))return;\n    v120InstallCountdown();\n    v120UpdateCountdown();\n  }catch(e){}\n},1000);\n\nsetTimeout(()=>{\n  try{v120InstallCountdown()}catch(e){}\n},150);\n"
+    },
+    {
+      "order": 95,
+      "src": "js/features/character/beta/v8009-s7-v123-character-equipment-redesign.js",
+      "line": 125,
+      "bytes": 6777,
+      "risky": true,
+      "snippet": "sertAdjacentHTML('beforebegin',effectsHtml);\n      el.dataset.v7126EffectsSig=effectsSig;\n      window.__V7126_CHARACTER_CHURN__.effectWrites++;\n    }\n\n    el.onclick=e=>{\n      if(e.target.closest('button'))return;\n      v123OpenItem(sl);\n    };\n    el.title='Antippen für Item-Details';\n  });\n  v123InstallSummary();\n}\nconst v123BaseRender=render;\nrender=function(){\n  const result=v123BaseRender();\n  if(document.querySelector('#character')?.classList.contains('active'))requestAnimationFrame(v123PolishEquipment);\n  return result;\n};\nsetTimeout(()=>{try{v123EnsureDetail();v123PolishEquipment()}catch(e){}},180);\n"
+    },
+    {
+      "order": 96,
+      "src": "js/features/character/beta/v8009-s10-v125-attributes-skills-image1.js",
+      "line": 89,
+      "bytes": 4161,
+      "risky": false,
+      "snippet": "ill-info\">ⓘ <b>Mehr Talentpunkte</b> bekommst du durch Levelaufstiege. Neue Klassen-Skills werden mit höheren Leveln freigeschaltet.</div>`;\n}\n\n/* Active overrides: old renderers may still run, but these repaint last. */\nconst v125OldRenderSkillTree=renderSkillTree;\nrenderSkillTree=function(){\n  v125RenderSkills();\n};\n\nconst v125BaseRender=render;\nrender=function(){\n  const result=v125BaseRender();\n  if(document.querySelector('#character')?.classList.contains('active')){\n    v125RenderAttrs();\n    v125RenderSkills();\n    const hp=document.querySelector('#charHp');\n    const cp=document.querySelector('#charPower');\n    if(hp)hp.textContent=v125Fmt(maxHp());\n    if(cp)cp.textContent=v125Fmt(combatPower());\n  }\n  return result;\n};\n\nsetTimeout(()=>{\n  try{\n    v125RenderAttrs();\n    v125RenderSkills();\n  }catch(e){console.error('V4.02 UI',e)}\n},150);\n"
+    },
+    {
+      "order": 158,
+      "src": "js/features/character/beta/v8009-s12-v267-class-attributes.js",
+      "line": 36,
+      "bytes": 3430,
+      "risky": true,
+      "snippet": "etBonusValue==='function'?Number(setBonusValue('hpPct'))||0:0)));\n};\n\n/* Preserve old helper name so Dungeon/PvP/Guild systems relying on it get the same primary stat. */\ntry{window.v029PrimaryStat=v267PrimaryStat}catch(e){}\n\n/* Attribute UI: add intelligence if an older renderer did not create it and explain roles. */\nconst v267RenderBase=render;\nrender=function(){\n  v267RenderBase();\n  const box=document.querySelector('#attrs');\n  if(box){\n    const labels={staerke:'Stärke',geschick:'Geschick',intelligenz:'Intelligenz',ausdauer:'Ausdauer',glueck:'Glück'};\n    const notes={\n      staerke:(s.playerClass==='grower'||s.playerClass==='frost')?'Hauptattribut · Schaden/Kampfkraft':'Nebenattribut',\n      geschick:s.playerClass==='scout'?'Hauptattribut · Schaden/Kampfkraft':'Nebenattribut',\n      intelligenz:(s.playerClass==='bruiser'||s.playerClass==='summoner')?'Hauptattribut · Schaden/Kampfkraft':'Nebenattribut',\n      ausdauer:'Lebenspunkte',\n      glueck:`Crit · ${v267CritChance().toFixed(1)} %`\n    };\n    if(!box.querySelector('[data-v267-int]')){\n      const current=[...box.children];\n      const tpl=current.find(x=>/geschick/i.test(x.textContent||''))||current[0];\n      if(tpl){\n        const el=tpl.cloneNode(true);el.dataset.v267Int='1';\n        const span=el.querySelector('span')||el;\n        span.childNodes[0]&&(span.childNodes[0].textContent='🧠 Intelligenz ');\n        const b=el.querySelector('b');if(b)b.textContent=String(Math.round(totalAttr('intelligenz')));\n        const btn=el.querySelector('button');if(btn){btn.onclick=()=>{if((Number(s.points)||0)<=0)return;s.points--;s.attrs.intelligenz=(Number(s.attrs.intelligenz)||0)+1;persist();render()}}\n        box.insertBefore(el,box.children[2]||null);\n      }\n    }\n    [...box.children].forEach(el=>{\n      const txt=(el.textContent||'').toLowerCase();\n      const key=Object.keys(labels).find(k=>txt.includes(labels[k].toLowerCase()));\n      if(!key)return;\n      el.classList.toggle('v267-primary',key===v267PrimaryKey());\n      let n=el.querySelector('.v267-attr-note');if(!n){n=document.createElement('small');n.className='v267-attr-note';el.appendChild(n)}\n      n.textContent=notes[key]||'';\n      const b=el.querySelector('b');if(b)b.textContent=String(Math.round(totalAttr(key)));\n    });\n  }\n};\n\n/* Update profile sync before its existing upload path reads combatPower(). */\nsetTimeout(()=>{try{render()}catch(e){}},300);\n"
+    },
+    {
+      "order": 160,
+      "src": "js/features/quest/beta/v8009-s1-v271-dampf-system.js",
+      "line": 299,
+      "bytes": 12283,
+      "risky": false,
+      "snippet": "stallAdminDampf();v271PaintAdminDampf()}\n  return r;\n};\nconst v271BaseAdminLists=v093AdminLoadLists;\nv093AdminLoadLists=async function(){\n  const r=await v271BaseAdminLists();\n  if(v093IsAdmin)v271PaintAdminDampf();\n  return r;\n};\n\n/* Final renderer owns Dampf display so historical /300 painters cannot overwrite it. */\nconst v271BaseRender=render;\nrender=function(){\n  v271EnsureRefillState();\n  v271NormalizeQuestOffers();\n  if(v271EventDataReady)v271SyncDampfEvent();\n  const r=v271BaseRender();\n  v026AddRefill();\n  v271PaintDampf();\n  try{renderQuests()}catch(e){}\n  \n  const line=document.querySelector('#v141VersionLine');\n  return r;\n};\n\n/* Migration from old 300-cap system. Do not let old surplus survive the new normal cap. */\nv271EnsureRefillState();\nv271NormalizeQuestOffers();\nif(!s.v271DampfMigration){\n  if(!s.v271DampfEventWasActive)s.energy=Math.min(100,Math.max(0,Number(s.energy)||0));\n  s.v271DampfMigration=true;\n  try{localStorage.setItem(KEY,JSON.stringify(s))}catch(e)"
+    },
+    {
+      "order": 164,
+      "src": "js/features/character/beta/v8009-s16-v275-character-name-source-of-truth.js",
+      "line": 32,
+      "bytes": 1370,
+      "risky": false,
+      "snippet": "ls'\n    }[s.playerClass]||'';\n    sub.textContent=flavor?`${cls.name} · ${flavor}`:cls.name;\n  }\n  try{v071ApplyNameToUi()}catch(e){}\n}\n\nconst v275BaseRenderClassAvatar=renderClassAvatar;\nrenderClassAvatar=function(){\n  const r=v275BaseRenderClassAvatar.apply(this,arguments);\n  v275PaintCharacterName();\n  return r;\n};\n\nconst v275BaseRender=render;\nrender=function(){\n  const r=v275BaseRender();\n  v275PaintCharacterName();\n  \n  const line=document.querySelector('#v141VersionLine');\n  return r;\n};\n\nsetTimeout(()=>{\n  try{v275PaintCharacterName()}catch(e){}\n  \n  const line=document.querySelector('#v141VersionLine');\n},300);\n"
+    },
+    {
+      "order": 173,
+      "src": "js/features/quest/beta/v8009-s6-v284-dampf-card-redesign.js",
+      "line": 85,
+      "bytes": 2828,
+      "risky": true,
+      "snippet": "\n  card.querySelectorAll(\n    '#v271DampfInfo,#v026Refill,.v277-dampf-event-chip,#v271DampfEventBadge'\n  ).forEach(el=>{\n    if(el.id!=='v026RefillBtn')el.remove();\n  });\n};\n\nv026PaintDampf=v271PaintDampf;\n\n/* Old helper must no longer create a second refill control. */\nv026AddRefill=function(){\n  v271PaintDampf();\n};\n\nconst v284BaseRender=render;\nrender=function(){\n  const r=v284BaseRender();\n  requestAnimationFrame(v271PaintDampf);\n  \n  const line=document.querySelector('#v141VersionLine');\n  return r;\n};\n\nsetTimeout(v271PaintDampf,150);\nsetTimeout(v271PaintDampf,650);\nsetTimeout(v271PaintDampf,1500);\n\n\nconst v284Line=document.querySelector('#v141VersionLine');\n"
+    },
+    {
+      "order": 178,
+      "src": "js/features/worldboss/beta/v8009-s2-v290-worldboss-level-equipment-balance.js",
+      "line": 316,
+      "bytes": 9800,
+      "risky": false,
+      "snippet": "Koloss wird nach Niederlagen schrittweise verwundbarer.'\n        );\n      }\n\n      persist();\n      v110Refresh();\n    }\n  },430);\n};\n\n/* Current 51-attempt/no-win saves receive the capped protection immediately.\n   Existing winners start at zero unless they already have a stored streak. */\nv290EnsureWorldBossState();\n\nconst v290BaseRender=render;\nrender=function(){\n  const r=v290BaseRender();\n  v290EnsureWorldBossState();\n  \n  const line=document.querySelector('#v141VersionLine');\n  return r;\n};\n\nsetTimeout(()=>{\n  try{\n    v290EnsureWorldBossState();\n    if(document.querySelector('#v110Overlay.show'))v110Refresh();\n  }catch(e){}\n},350);\n\n\nconst v290Line=document.querySelector('#v141VersionLine');\n"
+    },
+    {
+      "order": 179,
+      "src": "js/features/worldboss/beta/v8009-s5-v291-worldboss-upgrades-balance.js",
+      "line": 167,
+      "bytes": 4237,
+      "risky": false,
+      "snippet": "r>`+\n        `Der Koloss normalisiert kritische Treffer. Crit-Boni aus Skills, `+\n        `Edelsteinen oder Verzauberungen erhöhen die Koloss-Critchance nicht.`+\n        (m.pitySteps>=3\n          ?`<br><b>Der Koloss zeigt nach deinen Niederlagen erste Schwächen.</b>`\n          :'');\n    }\n  }catch(e){}\n\n  return r;\n};\n\nconst v291BaseRender=render;\nrender=function(){\n  const r=v291BaseRender();\n  \n  const line=document.querySelector('#v141VersionLine');\n  return r;\n};\n\nsetTimeout(()=>{\n  try{\n    if(document.querySelector('#v110Overlay.show'))v110Refresh();\n  }catch(e){}\n},350);\n\n\nconst v291Line=document.querySelector('#v141VersionLine');\n"
+    },
+    {
+      "order": 180,
+      "src": "js/features/quest/beta/v8009-s8-v294-dampf-canonical.js",
+      "line": 43,
+      "bytes": 1591,
+      "risky": false,
+      "snippet": "e?'none':'block';\n  }\n\n  const btn=card.querySelector('#v026RefillBtn');\n  if(btn){\n    btn.textContent='+20 Dampf kaufen · 1 Harz';\n    btn.style.display=active?'none':'inline-flex';\n    btn.disabled=active || used>=10 || current>=100;\n    btn.onclick=active?null:v271RefillDampf;\n  }\n};\nv026PaintDampf=v271PaintDampf;\n\nconst v294BaseRender=render;\nrender=function(){\n  const r=v294BaseRender.apply(this,arguments);\n  v271PaintDampf();\n  \n  const line=document.querySelector('#v141VersionLine');\n  return r;\n};\n\ntry{v271PaintDampf();}catch(e){}\n\n\nconst v294Line=document.querySelector('#v141VersionLine');\n"
+    },
+    {
+      "order": 229,
+      "src": "js/features/quest/beta/v8009-s7-v315-new-player-dampf-event-grant-fix.js",
+      "line": 62,
+      "bytes": 2409,
+      "risky": false,
+      "snippet": "\n/* Safety for a fresh character created during an already-running event:\n   profile sync above is canonical, this only reconciles display after boot. */\nsetTimeout(()=>{\n try{\n   if(s.v315NeedsInitialDampfGrant && v200CharacterComplete?.() && v271EventDataReady){\n     v073SyncProfile(true);\n   }\n }catch(e){}\n},1200);\n\nconst v315BaseRender=render;\nrender=function(){\n const r=v315BaseRender();\n \n const line=document.querySelector('#v141VersionLine');\n return r;\n};\n"
+    },
+    {
+      "order": 241,
+      "src": "js/features/worldboss/beta/v8009-s3-v327-worldboss-confirm-attributes.js",
+      "line": 181,
+      "bytes": 7866,
+      "risky": true,
+      "snippet": "reeUsed=true;\n        try{persist(false)}catch(e){}\n        return result;\n      }catch(e){\n        wb.freeUsed=oldFree;\n        s.harzTaler=(Number(s.harzTaler)||0)+10;\n        throw e;\n      }\n    }\n\n    return v327CanonicalFight.apply(this,arguments);\n  };\n\n  /* Final cleanup after every old renderer has run. */\n  const v327BaseRender=render;\n  render=function(){\n    const r=v327BaseRender.apply(this,arguments);\n    try{\n      if(s.attrs && 'growSkill' in s.attrs)delete s.attrs.growSkill;\n      v327CleanAttributeUi();\n    }catch(e){}\n    \n    const line=document.querySelector('#v141VersionLine');\n    return r;\n  };\n\n  try{\n    localStorage.setItem(KEY,JSON.stringify(s));\n    render();\n  }catch(e){console.error('V4.02 migration',e)}\n  setTimeout(v327EnsureConfirm,200);\n})();\n"
+    },
+    {
+      "order": 242,
+      "src": "js/features/character/beta/v8009-s16-v328-growskill-fully-removed.js",
+      "line": 34,
+      "bytes": 1346,
+      "risky": true,
+      "snippet": "function(k){\n    if(!allowed.has(k))return;\n    return v328IncAttr(k);\n  };\n\n  /* Remove any legacy DOM fragment even if an old renderer tries to recreate it. */\n  function purgeDom(){\n    document.querySelectorAll('#attrs > *').forEach(el=>{\n      if(/grow[\\s-]*skill/i.test(el.textContent||''))el.remove();\n    });\n  }\n  const v328Render=render;\n  render=function(){\n    const r=v328Render.apply(this,arguments);\n    purge(s.attrs);\n    purgeDom();\n    \n    const line=document.querySelector('#v141VersionLine');\n    return r;\n  };\n\n  try{localStorage.setItem(KEY,JSON.stringify(s))}catch(e){}\n  try{render()}catch(e){}\n})();\n"
+    },
+    {
+      "order": 307,
+      "src": "js/features/character/beta/v8009-s9-v442-character-layout-economy-fix.js",
+      "line": 84,
+      "bytes": 4700,
+      "risky": false,
+      "snippet": "|| /^\\s*\\/?n\\s*\\/\\s*n\\s*\\/?\\s*$/i.test(t))bad.push(node);\n    }\n    bad.forEach(node=>{node.nodeValue=''});\n  }\n  window.v442CleanArtifacts=cleanArtifacts;\n\n  function stamp(){}\n\n  /* Keep the requested order after any historical render wrapper runs. */\n  if(typeof render==='function'&&!window.__v442RenderWrapped){\n    const baseRender=render;\n    render=function(){\n      const r=baseRender.apply(this,arguments);\n      moveInventory();\n      cleanArtifacts();\n      stamp();\n      return r;\n    };\n    try{window.render=render}catch(e){}\n    window.__v442RenderWrapped=true;\n  }\n\n  function refreshVisiblePrices(){\n    try{if(typeof renderInventory==='function')renderInventory()}catch(e){console.warn('V4.42 inventory price repaint',e)}\n    /* Equipment price labels are rendered by the main render path; one safe boot pass\n       updates them t"
+    },
+    {
+      "order": 322,
+      "src": "js/features/character/beta/v8009-s2-v459-character-hub.js",
+      "line": 194,
+      "bytes": 14086,
+      "risky": false,
+      "snippet": "erials==='function'&&!window.__v459MaterialsWrapped){const base=v030Materials;v030Materials=function(){const r=base.apply(this,arguments);layout();updateHero();return r};try{window.v030Materials=v030Materials}catch(e){}window.__v459MaterialsWrapped=true}}catch(e){}\n  try{if(typeof render==='function'&&!window.__v459RenderWrapped){const base=render;render=function(){const r=base.apply(this,arguments);if(document.getElementById('character')?.classList.contains('active')){layout();compactInventory();updateHero()}stamp();return r};try{window.render=render}catch(e){}window.__v459RenderWrapped=true}}catch(e){}\n  window.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')==='character'){layout();compactInventory();updateHero();stamp()}});window.__v459GoWrapped='v7119-event';\n\n  layout();compactInventory();stamp();\n  document.addEventListener('D"
+    },
+    {
+      "order": 323,
+      "src": "js/features/character/beta/v8009-s8-v460-char-ui.js",
+      "line": 106,
+      "bytes": 5493,
+      "risky": false,
+      "snippet": " */\n    stampVersion();\n  }\n\n  /* Character/Inventory cleanup Phase 3: V460 compact-inventory comparison wrapper retired; V470 owns it. */\n  /* Character/Inventory cleanup Phase 3: V460 renderInventory comparison wrapper retired; V470 owns it. */\n  try{\n    if(typeof render==='function'&&!window.__v460RenderWrapped){\n      const base=render;\n      render=function(){const r=base.apply(this,arguments);if(document.getElementById('character')?.classList.contains('active'))apply();return r};\n      window.render=render;\n      window.__v460RenderWrapped=true;\n    }\n  }catch(e){}\n  window.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')==='character')apply()});\n  window.__v460GoWrapped='v7119-event';\n\n  document.addEventListener('DOMContentLoaded',apply,{once:true});\n  window.addEventListener('pagesh"
+    },
+    {
+      "order": 331,
+      "src": "js/features/character/beta/v8009-s4-v470-character-slot-art-canonical-comparison.js",
+      "line": 214,
+      "bytes": 13516,
+      "risky": false,
+      "snippet": ";\n      window.unequip=function(){const r=base.apply(this,arguments);requestAnimationFrame(()=>{paintEquipmentSlots();paintInventoryComparisons();try{renderShop()}catch(e){}});return r};\n      window.__v470UnequipWrapped=true;\n    }\n  }catch(e){}\n  try{\n    if(typeof render==='function'&&!window.__v470RenderWrapped){\n      const base=render;\n      render=function(){normalizeShopItems();const r=base.apply(this,arguments);if(document.getElementById('character')?.classList.contains('active')){paintEquipmentSlots();paintInventoryComparisons()}stamp();return r};\n      window.render=render;window.__v470RenderWrapped=true;\n    }\n  }catch(e){}\n  window.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')==='character'){paintEquipmentSlots();paintInventoryComparisons()}});\n  window.__v470GoWrapped='v7119-event';\n\n  /* V8.009: retired subtree MutationObservers.\n     Inventory/"
+    },
+    {
+      "order": 339,
+      "src": "js/features/world/beta/v8009-s2-v483-modern-home-power-stability.js",
+      "line": 41,
+      "bytes": 2822,
+      "risky": false,
+      "snippet": "Power()}catch(e){}\n    return true;\n  }\n  window.v483ReleaseStartupPower=release;\n  /* Account/cloud hydration normally ends in a render. Hook only until released;\n     afterwards this adds one cheap boolean check and no DOM work. */\n  try{\n    if(typeof render==='function'&&!window.__v483RenderReleaseWrapped){\n      const baseRender=render;\n      render=function(){const r=baseRender.apply(this,arguments);release(false);return r};\n      try{window.render=render}catch(e){}\n      window.__v483RenderReleaseWrapped=true;\n    }\n  }catch(e){}\n  stamp();cleanWorld();release(false);\n  document.addEventListener('DOMContentLoaded',()=>{stamp();cleanWorld();release(false)},{once:true});\n  window.addEventListener('pageshow',()=>{stamp();cleanWorld();release(false)},{passive:true});\n  "
+    },
+    {
+      "order": 397,
+      "src": "js/features/character/beta/v8009-s10-v510-character-hero-rebuild.js",
+      "line": 90,
+      "bytes": 4160,
+      "risky": false,
+      "snippet": "ibute('aria-hidden','true');\n    }catch(e){console.warn('V5.10 character rebuild',e)}\n    finally{busy=false}\n  }\n\n  window.v510BuildCharacter=build;\n\n  /* Re-apply after existing render owners update data. Moving nodes preserves handlers/IDs. */\n  try{\n    if(typeof render==='function'&&!window.__v510RenderWrapped){\n      const base=render;\n      render=function(){\n        const r=base.apply(this,arguments);\n        if(document.getElementById('character')?.classList.contains('active'))build();\n        return r;\n      };\n      try{window.render=render}catch(e){}\n      window.__v510RenderWrapped=true;\n    }\n  }catch(e){}\n  window.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')==='character')build()});\n  window.__v510GoWrapped='v7119-event';\n\n  build();\n  document.addEventListener('DOMContentLoaded',build,{once:true});\n})();\n"
+    }
+  ]
+}
