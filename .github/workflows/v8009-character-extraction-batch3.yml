@@ -1,0 +1,27 @@
+name: V8.009 Character Extraction Batch 3
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/v8009_character_extraction_batch3.py'
+      - '.github/workflows/v8009-character-extraction-batch3.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 .github/scripts/v8009_character_extraction_batch3.py
+      - run: |
+          node --check js/features/character/beta/v8009-s3-v4153-frost-class-avatar-authority.js
+          node --check js/features/character/beta/v8009-s3-v480-auto-gear-material.js
+          node --check js/features/character/beta/v8009-s3-v6130-genetics-classset-core.js
+      - run: |
+          git config user.name github-actions
+          git config user.email github-actions@users.noreply.github.com
+          git add beta.html js/features/character/beta/v8009-s3-v4153-frost-class-avatar-authority.js js/features/character/beta/v8009-s3-v480-auto-gear-material.js js/features/character/beta/v8009-s3-v6130-genetics-classset-core.js V8009_CHARACTER_EXTRACTION_BATCH3_QA.json
+          git commit -m "V8.009 CHARACTER: extract third owner batch" || exit 0
+          git pull --rebase origin main
+          git push
