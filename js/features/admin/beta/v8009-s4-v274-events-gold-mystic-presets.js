@@ -137,13 +137,8 @@ function v274InstallEventPresets(){
   }
 }
 
-/* Admin content loading is the single installation owner for presets. */
-const v274BaseAdminLists=v093AdminLoadLists;
-v093AdminLoadLists=async function(){
-  const r=await v274BaseAdminLists();
-  if(v093IsAdmin)v274InstallEventPresets();
-  return r;
-};
+/* Admin core content loading is the single installation owner for presets. */
+window.v274InstallEventPresets=v274InstallEventPresets;
 
 /* Add concise live bonuses to the world event area without changing DB rows. */
 const v274BaseActiveEvents=v085ActiveEvents;
