@@ -76,7 +76,11 @@ async function v255ClaimBossReward(){
     /* V4.92: successful guild-boss claims can also feed the Growroom seed loop. */
     try{if(!r.won&&typeof window.v492GuildBossSeedReward==='function')window.v492GuildBossSeedReward(r);else if(r.won&&!window.GL_EVENTS&&typeof window.v492GuildBossSeedReward==='function')window.v492GuildBossSeedReward(r)}catch(e){console.warn('V4.161 guild boss seed',e)}
     try{persist(false)}catch(e){} try{render()}catch(e){}
-    v063Toast(r.won?'Gildenboss besiegt!':'Teilnahmebelohnung',r.won?'success':'info',`+${v255Fmt(xp)} EXP · +${v255Fmt(gold)} Gold${harz?` · +${harz} Harz-Taler`:''}`);
+    if(typeof window.v7136ShowServerReward==='function'){
+      window.v7136ShowServerReward('guildBoss',r,{});
+    }else{
+      try{window.v115Alert?.(`+${v255Fmt(xp)} EXP · +${v255Fmt(gold)} Gold${harz?` · +${harz} Harz-Taler`:''}`,r.won?'Gildenboss besiegt!':'Gildenboss-Belohnung','success')}catch(_){}
+    }
     await v254LoadGuild();await v255LoadBoss();
   }catch(e){v063Toast('Belohnung nicht verfügbar','warn',e?.message||'');}
   finally{if(btn){btn.disabled=false;btn.textContent='🎁 Gildenboss-Belohnung abholen'}}
