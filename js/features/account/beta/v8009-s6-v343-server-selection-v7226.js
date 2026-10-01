@@ -8,7 +8,7 @@
 
   window.V343_SERVERS=Object.freeze({
     beta:{id:'beta',name:'Beta Server',status:'online',label:'BETA',path:'beta.html'},
-    server1:{id:'server1',name:'Server 1',status:launchOpen()?'online':'preview',label:'SERVER 1',path:'index.html'}
+    server1:{id:'server1',name:'Server 1',status:launchOpen()?'online':'preview',label:'SERVER 1',path:'server1.html'}
   });
 
   function v343Selected(){
@@ -22,7 +22,7 @@
   }
   window.v343CurrentServer=v343Selected();
 
-  function v343TargetPath(id){return id==='beta'?'beta.html':'index.html'}
+  function v343TargetPath(id){return id==='beta'?'beta.html':'server1.html'}
   function v343BuildMatches(id){return (id==='beta'&&V343_RELEASE_CHANNEL==='beta')||(id==='server1'&&V343_RELEASE_CHANNEL!=='beta')}
   function v343RouteBuild(id,replace=false){
     if(v343BuildMatches(id))return false;
