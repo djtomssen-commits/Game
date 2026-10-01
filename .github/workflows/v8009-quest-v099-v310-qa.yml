@@ -1,0 +1,31 @@
+name: V8.009 Quest v099 v310 Consolidation QA
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'js/features/quest/beta/v099-real-quest-xp-fix.js'
+      - 'js/features/quest/beta/v310-elite-quests.js'
+      - 'js/features/quest/beta/v235-quest-reward-stability.js'
+      - 'js/features/quest/beta/v6344-quest-variety-js.js'
+      - '.github/scripts/v8009_quest_v099_v310_qa.py'
+      - '.github/workflows/v8009-quest-v099-v310-qa.yml'
+permissions:
+  contents: write
+jobs:
+  qa:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          node --check js/features/quest/beta/v099-real-quest-xp-fix.js
+          node --check js/features/quest/beta/v310-elite-quests.js
+          node --check js/features/quest/beta/v235-quest-reward-stability.js
+          node --check js/features/quest/beta/v6344-quest-variety-js.js
+      - run: python3 .github/scripts/v8009_quest_v099_v310_qa.py
+      - run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add V8009_QUEST_V099_V310_QA.json
+          git commit -m "V8.009 QUEST: record v099 v310 consolidation QA" || exit 0
+          git push
