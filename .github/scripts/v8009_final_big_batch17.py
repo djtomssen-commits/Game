@@ -27,12 +27,17 @@ old="""  if(typeof v032Go==='function'&&!window.__v446GoWrapped){
       const r=baseGo.apply(this,arguments);
       requestAnimationFrame(paintLocalPower);
       setTimeout(paintLocalPower,80);
+      if(['hall','pvp','guild','friends','character','world'].includes(String(id||'')))scheduleSync(false);
       return r;
     };
     try{window.v032Go=v032Go}catch(e){}
     window.__v446GoWrapped=true;
   }"""
-new="""  window.addEventListener('growlegends:navigation-open-v7119',paintLocalPower,{passive:true});
+new="""  window.addEventListener('growlegends:navigation-open-v7119',e=>{
+    const id=String(e?.detail?.id||'');
+    paintLocalPower();
+    if(['hall','pvp','guild','friends','character','world'].includes(id))scheduleSync(false);
+  },{passive:true});
   window.__v446GoWrapped='v7119-event';"""
 if old not in c: raise SystemExit("v446 go wrapper missing")
 c=c.replace(old,new,1);changed["v446"]=1
