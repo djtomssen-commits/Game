@@ -42832,14 +42832,7 @@ renderSkillTree=function(){
    so migration is deterministic and nobody loses earned talent points. */
 try{s.v314Talents??={}}catch(e){}
 
-const v314BaseRender=render;
-render=function(){
- const r=v314BaseRender();
- try{renderSkillTree()}catch(e){console.error('V4.02 talent render',e)}
- 
- const line=document.querySelector('#v141VersionLine');
- return r;
-};
+/* v543 owns the live talent tree. No global render wrapper here. */
 </script>
 
 
@@ -54493,19 +54486,12 @@ create index if not exists player_messages_sender_idx on public.player_messages(
 
   function stamp(){}
 
-  /* Outermost render owner: historical V4.42 still moves inventory before attrs
-     inside its own wrapper. Reassert the requested order after that chain returns. */
-  if(typeof render==='function'&&!window.__v444RenderWrapped){
-    const baseRender=render;
-    render=function(){const r=baseRender.apply(this,arguments);if(document.getElementById('character')?.classList.contains('active'))requestAnimationFrame(arrangeCharacter);return r;};
-    try{window.render=render}catch(e){}
-    window.__v444RenderWrapped=true;
-  }
-
-  /* V6.101: old 12-second character observer/poller retired. */
+  /* Character navigation/layout owns ordering; no global render wrapper. */
+  window.__v444RenderWrapped='retired';
   arrangeCharacter();stamp();
-  document.addEventListener('DOMContentLoaded',()=>requestAnimationFrame(arrangeCharacter),{once:true});
-  window.addEventListener('pageshow',()=>{if(document.getElementById('character')?.classList.contains('active'))requestAnimationFrame(arrangeCharacter)},{passive:true});
+  document.addEventListener('DOMContentLoaded',arrangeCharacter,{once:true});
+  window.addEventListener('pageshow',()=>{if(document.getElementById('character')?.classList.contains('active'))arrangeCharacter()},{passive:true});
+  window.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')==='character')arrangeCharacter()},{passive:true});
 })();
 </script>
 
@@ -72479,23 +72465,13 @@ html.v495-level-syncing #v420LevelUpOverlay{
 
   window.v514ApplyHeroReference=apply;
 
-  try{
-    if(typeof render==='function'&&!window.__v514RenderWrapped){
-      const base=render;
-      render=function(){
-        const r=base.apply(this,arguments);
-        if(document.getElementById('character')?.classList.contains('active'))apply();
-        return r;
-      };
-      try{window.render=render}catch(e){}
-      window.__v514RenderWrapped=true;
-    }
-  }catch(e){}
+  window.__v514RenderWrapped='retired';
   window.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')==='character')apply()});
   window.__v514GoWrapped='v7119-event';
 
   apply();
   document.addEventListener('DOMContentLoaded',apply,{once:true});
+  window.addEventListener('pageshow',()=>{if(document.getElementById('character')?.classList.contains('active'))apply()},{passive:true});
 })();
 </script>
 <!-- ===== /V5.14 HELDENQUARTIER REFERENCE REBUILD ===== -->
@@ -76385,7 +76361,7 @@ window.v531HardenHero=harden;
   document.addEventListener('DOMContentLoaded',apply,{once:true});
   window.addEventListener('pageshow',apply,{passive:true});
   document.addEventListener('click',e=>{
-    if(e.target?.closest?.('#v459CharacterTabs [data-tab="talents"],#v514HeroTabs [data-tab="talents"]'))requestAnimationFrame(apply);
+    if(e.target?.closest?.('#v459CharacterTabs [data-tab="talents"],#v514HeroTabs [data-tab="talents"]'))apply();
   },true);
   /* V8.009: bounded startup retry train retired. */
 })();
