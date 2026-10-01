@@ -75,3 +75,5 @@ window.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.det
 
 p.write_text(c,encoding='utf-8')
 print('patched:', ', '.join(changes))
+
+# trigger: 2026-10-01
