@@ -4,73 +4,10 @@
    This version gives Dampf ONE owner and rebuilds Harz with explicit markup.
 */
 
-function v279BuildHarzCard(){
-  const value=document.querySelector('#topHarz');
-  const card=value?.closest('.stat');
-  if(!card)return;
+function v279BuildHarzCard(){return false}
 
-  card.classList.add('v277-harz-card','v279-harz-card');
 
-  if(!card.querySelector('.v279-resource-label')){
-    const current=String(value.textContent||'—').trim();
-
-    /* Replace the old loose "HARZ-TALER" text + emoji wrapper,
-       but preserve the public #topHarz id used by all game logic. */
-    card.innerHTML=`
-      <div class="v279-resource-label">HARZ-TALER</div>
-      <div class="v279-resource-value"><span id="topHarz">${current}</span></div>
-      <div class="v279-resource-sub">Premium-Währung</div>
-    `;
-  }
-}
-
-/* Final Dampf painter: the only event badge is #v271DampfEventBadge.
-   No extra V4.02 chip is ever created. */
-v271PaintDampf=function(){
-  v271EnsureRefillState();
-
-  const cap=v271DampfCap();
-  const e=Math.max(0,Math.min(cap,Math.floor(Number(s.energy)||0)));
-  if(Number(s.energy)!==e)s.energy=e;
-
-  const energyEl=document.querySelector('#energy');
-  if(energyEl)energyEl.textContent=`💨 ${e}/${cap}`;
-
-  const host=energyEl?.parentElement;
-  if(host){
-    /* Remove the redundant V4.02 badge permanently. */
-    host.querySelectorAll('.v277-dampf-event-chip').forEach(x=>x.remove());
-
-    let info=host.querySelector('#v271DampfInfo');
-    if(!info){
-      info=document.createElement('div');
-      info.id='v271DampfInfo';
-      host.appendChild(info);
-    }
-
-    const used=Number(s.v271DampfRefill?.count)||0;
-    info.replaceChildren();
-
-    const refillState=document.createElement('span');
-    refillState.innerHTML=`Auffüllen: <b>${used}/10</b>`;
-    info.appendChild(refillState);
-
-    if(v271DampfEventActive()){
-      const badge=document.createElement('span');
-      badge.id='v271DampfEventBadge';
-      badge.textContent='💨 EVENT 300/300';
-      info.appendChild(badge);
-    }
-  }
-
-  const refill=document.querySelector('#v026RefillBtn');
-  if(refill){
-    const used=Number(s.v271DampfRefill?.count)||0;
-    refill.textContent=`🟢 +20 💨 Dampf (${used}/10)`;
-    refill.disabled=used>=10 || e>=cap;
-  }
-};
-
+/* V8.009: v279 Dampf DOM producer retired; v271/v284 own Dampf. */
 /* Historical callers use both names. Point both at the single final painter. */
 v026PaintDampf=v271PaintDampf;
 
@@ -117,21 +54,5 @@ v278StabilizeResources=function(){
   }catch(e){}
 };
 
-const v279BaseRender=render;
-render=function(){
-  const r=v279BaseRender();
-  requestAnimationFrame(()=>{
-    v279BuildHarzCard();
-    v271PaintDampf();
-  });
-  
-  const line=document.querySelector('#v141VersionLine');
-  return r;
-};
+/* V8.009: v279 global render/timer repair retired; v283/v284 are final resource owners. */
 
-setTimeout(()=>{
-  try{
-    v279BuildHarzCard();
-    v271PaintDampf();
-  }catch(e){console.error('V4.02 resource root fix',e)}
-},250);
