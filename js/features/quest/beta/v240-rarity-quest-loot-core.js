@@ -273,13 +273,6 @@ v235ShowQuestReward=function(before){
   }
 
   overlay.classList.add('show');
-  requestAnimationFrame(()=>overlay.classList.add('show'));
-
-  setTimeout(()=>{
-    if(document.body.contains(overlay)){
-      overlay.classList.add('show');
-    }
-  },80);
 
   try{
     renderInventory();
@@ -288,14 +281,5 @@ v235ShowQuestReward=function(before){
 };
 
 
-/* Repaint current inventory and version after all historical layers. */
-setTimeout(()=>{
-  try{
-    v240RepairInventoryRarity();
-  }catch(e){}
-
-  document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V4.29 Stable');
-
-  const line=document.querySelector('#v141VersionLine');
-},440);
+/* V8.009: no delayed startup inventory/version repaint.
+   Inventory rarity is repaired directly when the reward/inventory owner renders. */
