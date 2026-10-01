@@ -3970,3 +3970,63 @@ Arbeitsmodus:
 
 #### Nächster Powerblock
 - PvP + Hall of Haze + Profilinteraktion
+
+
+#### Powerblock: PvP + Hall of Haze + Profil strukturell abgeschlossen
+- Initialer Audit: `V8009_PVP_HALL_POWER_AUDIT.json`
+  - 39 relevante geladene Scripts
+  - global render: 8
+  - timeouts: 76
+  - RAF: 15
+  - profile assignments: 9
+- Finaler Audit-Commit: `79fde08cc7664c196600175c7ca015730de8ea98`
+  - global render: **0**
+  - timeouts: **47**
+  - RAF: **11**
+  - profile assignments: **6**
+- Wesentliche Cleanup-Schritte:
+  - v204 PvP-Cooldown: kein kompletter Seitenrerender mehr jede Sekunde; nur Cooldowntext/Button aktualisiert.
+    - `3a9f4ee13d5cba72cd6c6a8d3e16cad4375fc0ff`
+  - v206/v207/v209 globale No-op-Renderwrapper entfernt.
+    - `76606f34943fe8c3f878c8b0d2fbe4f8edd0417f`
+    - `c18adb1db88417320b77690691d4997a6f88cb72`
+    - `5840b11e48a92b3fd77b4f64b455685d43116077`
+  - v083 Hall-Progress nur noch auf Hall-Navigation, globale Render-/0/1200ms-Repaints entfernt.
+    - `952446a0a0bfb76e047b4ab9e8873c468ebd56de`
+  - Base-Public-Profile globaler Row-Rebind entfernt.
+    - `1c130743b160b53a51803459f9de7982db938d6d`
+  - v210 Profile/Notifications globaler Renderhook entfernt; echter 60s PvP-Notificationcheck bleibt.
+    - `00a4143f431298231eae0f392bd845b5d18871da`
+  - v211 doppelte historische v209FinishBattle-Payout-Implementierung retired; v216 bleibt einziger Legacy-Finish-Owner.
+    - `b28666d195510562f612141b6663c44d2918a5cf`
+  - v216 Result-Init 180ms -> Microtask.
+    - `8ef6628959efbb7b47ba7a89f1fb6682498bf7f3`
+  - v7053 Atomic-PvP-Bridge: 0/160/180/420/1300/4200ms Bind-/Boot-Retries entfernt; echte RPC-/Replay-/Cloud-Timeouts bleiben.
+    - `7bb6f78bffdae4e8255199d6ef8314399dcf506c`
+  - PvP-Buds Hall Mirror: Force-Sync ohne Delay.
+    - `afc33696747dae64abc9af8b2fb4d7909812d9c4`
+  - v205 Bud-Rewards: global render + 200ms Init entfernt; nur PvP-Lifecycle.
+    - `5f7e99da9f103aa76c5a3fff78f33bb9340d32b9`
+  - v6145 Hall: Navigation ohne 0ms Delay; Chunk-RAF für große Listen bewusst erhalten.
+    - `e2e87763d2e4eb36fcad4ff924cd630978f0c0a0`
+  - v649: alter Ranking-Wrapper + 1.6/3.2/5.2s Startup-Sync-Retries entfernt; v6145.syncOwn nutzt v649SyncDungeonProgress gezielt.
+    - `eed8b077031bec89349a2674e2815eecf17e9bbe`
+  - v652: v074OpenProfile-Wrapper entfernt; nur MutationObserver für Profil-Dekoration bleibt.
+    - `9c00a887e14f929140ca4820824d8b96dbf3f576`
+  - v655 Own-Profile Background-Sync 0ms -> Microtask; Netzwerk-Deadlines bleiben.
+    - `799b064923301b29cb5c566c4cc0a02936db0aa4`
+  - Battlelog UI-Startup-Delays entfernt; Replay-Sleeps + 60s Logrefresh bleiben.
+    - `7c9272d4168d042305a97d460161022d95646a2f`
+- Abschluss-QA: `V8009_PVP_HALL_PROFILE_FINAL_QA.json`
+  - Ergebnis-Commit `debb220c646f48d34216882d3fcef8e6a69ce143`
+  - alle Checks true
+  - Zero-Inline-JS/CSS weiterhin grün
+- Matrix:
+  - PvP **[x]**
+  - Hall of Haze **[x]**
+  - Profile Modal **[x]**
+  - Matrix-Commit `7ab6624f1cb3aa413d02abfb3030956f254c5cef`
+- Manueller Endtest bleibt für den finalen Test-Milestone offen.
+
+#### Nächster Powerblock
+- Tower komplett: Lobby / Ranking / Meta-Aufstieg / Run / Result.
