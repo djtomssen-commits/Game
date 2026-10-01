@@ -124,25 +124,8 @@ document.addEventListener('click',e=>{
   }
 },true);
 
-/* Phase artwork follows combat state. */
-const v111OldFight=v110Fight;
-v110Fight=function(){
-  const result=v111OldFight();
-
-  const watch=setInterval(()=>{
-    const phase=(document.querySelector('#v110Phase')?.textContent||'');
-    const scene=document.querySelector('#v111BossScene');
-    if(!scene){clearInterval(watch);return}
-
-    scene.classList.toggle('phase2',phase.includes('RASEREI'));
-    scene.classList.toggle('phase3',phase.includes('LETZTE'));
-
-    const btn=document.querySelector('#v110Fight');
-    if(btn && !btn.disabled)clearInterval(watch);
-  },150);
-
-  return result;
-};
+/* V8.009 Worldboss powerblock: the old phase polling fight wrapper was
+   superseded by the later canonical balance fight and v6201's targeted combat FX. */
 
 /* Disable old fragile button installer; use dedicated card instead. */
 v110InstallEventButton=function(){v111InstallWorldBossCard()};
