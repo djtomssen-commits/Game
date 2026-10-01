@@ -114,10 +114,21 @@ function applyPetExact(p,source){
 function applyDungeonUnlock(u){
  if(!u||typeof u!=='object')return;
  ensureShape();
+ const beforeKeys=JSON.stringify({
+  unlocked:Array.isArray(s.dungeon.unlocked)?s.dungeon.unlocked.map(Number).sort((a,b)=>a-b):[],
+  keys:Object.keys(s.dungeon.keys||{}).filter(k=>s.dungeon.keys[k]).map(Number).filter(Number.isInteger).sort((a,b)=>a-b)
+ });
  if(Array.isArray(u.unlocked))s.dungeon.unlocked=u.unlocked.map(Number);
  if(u.keyQuestCounts&&typeof u.keyQuestCounts==='object')s.dungeon.keyQuestCounts=clone(u.keyQuestCounts);
  if(u.won&&Number.isInteger(Number(u.target))){
   const i=Number(u.target);s.dungeon.keys=(s.dungeon.keys&&typeof s.dungeon.keys==='object')?s.dungeon.keys:{};s.dungeon.keys[i]=true;
+ }
+ const afterKeys=JSON.stringify({
+  unlocked:Array.isArray(s.dungeon.unlocked)?s.dungeon.unlocked.map(Number).sort((a,b)=>a-b):[],
+  keys:Object.keys(s.dungeon.keys||{}).filter(k=>s.dungeon.keys[k]).map(Number).filter(Number.isInteger).sort((a,b)=>a-b)
+ });
+ if(afterKeys!==beforeKeys){
+  try{document.dispatchEvent(new CustomEvent('growlegends:dungeon-key-changed',{detail:{index:Number(u.target),reason:'v7045-server-unlock'}}))}catch(_){}
  }
 }
 function applyBundle(b){
