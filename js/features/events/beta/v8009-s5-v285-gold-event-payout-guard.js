@@ -66,13 +66,7 @@ if(typeof v235ShowQuestReward==='function'){
   };
 }
 
-const v285BaseRender=render;
-render=function(){
-  const r=v285BaseRender();
-  
-  const line=document.querySelector('#v141VersionLine');
-  return r;
-};
+/* V8.009: no-op global render wrapper retired. */;
 
 
 const v285Line=document.querySelector('#v141VersionLine');
