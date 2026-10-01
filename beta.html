@@ -54213,10 +54213,8 @@ create index if not exists player_messages_sender_idx on public.player_messages(
   stamp();
   document.addEventListener('DOMContentLoaded',()=>{repaintHall();scheduleSync(true);stamp()},{once:true});
   window.addEventListener('pageshow',()=>{repaintHall();scheduleSync(true);stamp()},{passive:true});
+  window.addEventListener('growlegends:account-ready',()=>{repaintHall();scheduleSync(true);stamp()},{passive:true});
   /* V6.217: Hall render hooks own repainting; avoid 30 startup-wide full repaints. */
-  [500,1800,5200].forEach(ms=>setTimeout(()=>{repaintHall();stamp()},ms));
-  setTimeout(()=>{repaintHall();scheduleSync(true);stamp()},1800);
-  setTimeout(()=>{repaintHall();scheduleSync(true);stamp()},5200);
 })();
 </script>
 
@@ -55133,10 +55131,8 @@ create index if not exists player_messages_sender_idx on public.player_messages(
   paintLocalPower();stamp();scheduleSync(true);
   document.addEventListener('DOMContentLoaded',()=>{paintLocalPower();stamp();scheduleSync(true)},{once:true});
   window.addEventListener('pageshow',()=>{paintLocalPower();stamp();scheduleSync(true)},{passive:true});
+  window.addEventListener('growlegends:account-ready',()=>{paintLocalPower();stamp();scheduleSync(true)},{passive:true});
   document.addEventListener('click',()=>{requestAnimationFrame(paintLocalPower);setTimeout(paintLocalPower,60)},true);
-  setTimeout(()=>{paintLocalPower();stamp();scheduleSync(true)},600);
-  setTimeout(()=>{paintLocalPower();stamp()},1800);
-  setTimeout(()=>{paintLocalPower();stamp();scheduleSync(true)},5200);
   /* V4.86: retired 18 s combat-power polling guard. Event/render hooks above are authoritative. */
 })();
 </script>
