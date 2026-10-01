@@ -1,0 +1,23 @@
+name: V8.009 Small Screens Coverage Audit
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/v8009_small_screens_coverage_audit.py'
+      - '.github/workflows/v8009-small-screens-coverage-audit.yml'
+permissions:
+  contents: write
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 .github/scripts/v8009_small_screens_coverage_audit.py
+      - run: |
+          git config user.name github-actions
+          git config user.email github-actions@users.noreply.github.com
+          git add V8009_SMALL_SCREENS_COVERAGE_AUDIT.json
+          git commit -m "V8.009 FINAL: record small screens coverage audit" || exit 0
+          git pull --rebase origin main
+          git push
