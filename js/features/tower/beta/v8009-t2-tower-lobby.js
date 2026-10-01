@@ -309,15 +309,14 @@ document.addEventListener('visibilitychange',()=>{
  syncTimer();
  if(!document.hidden)paintAll();
 },{passive:true});
+const syncAndPaint=()=>queueMicrotask(()=>{syncTimer();paintAll()});
 document.addEventListener('click',e=>{
  const el=e.target instanceof Element?e.target:null;
- if(el?.closest?.('[data-go="tower"],[data-screen="tower"],[data-vt-recover],[data-vt-start],[data-vt-tab]')){
-   setTimeout(()=>{syncTimer();paintAll()},60);
- }
+ if(el?.closest?.('[data-go="tower"],[data-screen="tower"],[data-vt-recover],[data-vt-start],[data-vt-tab]'))syncAndPaint();
 },true);
-window.addEventListener('pageshow',()=>setTimeout(()=>{syncTimer();paintAll()},100),{passive:true});
-window.addEventListener('growlegends:account-ready',()=>setTimeout(()=>{syncTimer();paintAll()},220),{passive:true});
-window.addEventListener('growlegends:navigation-open-v7119',()=>setTimeout(syncTimer,0),{passive:true});
+window.addEventListener('pageshow',syncAndPaint,{passive:true});
+window.addEventListener('growlegends:account-ready',syncAndPaint,{passive:true});
+window.addEventListener('growlegends:navigation-open-v7119',syncAndPaint,{passive:true});
 
 window.v8009TowerLobbyLiveDiagnostics=()=>({
  owner:true,
@@ -434,7 +433,7 @@ window.v8009CreateTowerLobbyController=function(c){
    rankBusy=false;
    if(rankReloadQueued){
     rankReloadQueued=false;
-    setTimeout(()=>{try{if(document.getElementById('vTRanking'))void loadRanking()}catch(_){}},0);
+    queueMicrotask(()=>{try{if(document.getElementById('vTRanking'))void loadRanking()}catch(_){} });
    }
   }
  }
@@ -455,7 +454,7 @@ window.v8009CreateTowerLobbyController=function(c){
    wedBusy=false;
    if(wedReloadQueued){
     wedReloadQueued=false;
-    setTimeout(()=>{try{if(document.getElementById('vTWednesdayRanking'))void loadWednesdayRanking()}catch(_){}},0);
+    queueMicrotask(()=>{try{if(document.getElementById('vTWednesdayRanking'))void loadWednesdayRanking()}catch(_){} });
    }
   }
  }
