@@ -54,51 +54,7 @@
     btn.dataset.v388Bound='1';
   }
 
-  /*
-    Wrap the final boss opener. The older opener assigned onclick before later
-    worldboss layers replaced v110Fight. Rebinding after the complete open/
-    refresh path removes that stale-handler race permanently.
-  */
-  const v388BaseOpen=v111OpenWorldBoss;
-  v111OpenWorldBoss=function(){
-    const result=v388BaseOpen.apply(this,arguments);
-    requestAnimationFrame(v388BindFightButton);
-    setTimeout(v388BindFightButton,30);
-    return result;
-  };
-
-  /*
-    Single delegated fallback. It does NOT start a second fight:
-    only buttons which somehow lost their direct binding use this path.
-  */
-  document.addEventListener('click',e=>{
-    const btn=e.target.closest?.('#v110Fight');
-    if(!btn || btn.dataset.v388Bound==='1')return;
-    e.preventDefault();
-    e.stopPropagation();
-    v110Fight();
-  },true);
-
-  /*
-    render/refresh layers can rebuild pieces of the boss overlay. Rebind only
-    when that overlay is actually open; no observer and no polling interval.
-  */
-  const v388BaseRefresh=v110Refresh;
-  v110Refresh=function(){
-    const result=v388BaseRefresh.apply(this,arguments);
-    if(document.querySelector('#v110Overlay')?.classList.contains('show')){
-      requestAnimationFrame(v388BindFightButton);
-    }
-    return result;
-  };
-
-  setTimeout(()=>{
-    if(document.querySelector('#v110Overlay')?.classList.contains('show')){
-      v388BindFightButton();
-    }
-    document.querySelectorAll(
-      '.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version'
-    ).forEach(el=>{if(el)el.textContent=VERSION});
-    document.querySelectorAll('.v366-ver').forEach(el=>el.textContent='V4.11');
-  },500);
+  /* V8.009 Worldboss powerblock: v111OpenWorldBoss binds the current
+     v110Fight directly after refresh. The later opener/refresh rebind wrappers,
+     delegated fallback and stale version timeout are therefore retired. */
 })();
