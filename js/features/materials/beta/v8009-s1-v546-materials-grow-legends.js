@@ -91,10 +91,13 @@
     if(h.parentElement!==panel||panel.firstElementChild!==h)panel.insertBefore(h,panel.firstChild);
     const bar=document.getElementById('v480MaterialAutoBar');
     const card=document.getElementById('v030Materials');
-    if(bar&&bar.parentElement===panel&&bar.previousElementSibling!==h)panel.insertBefore(bar,h.nextSibling);
-    if(card&&card.parentElement===panel){
+    if(bar){
+      if(bar.parentElement!==panel)panel.insertBefore(bar,h.nextSibling);
+      else if(bar.previousElementSibling!==h)panel.insertBefore(bar,h.nextSibling);
+    }
+    if(card){
       const anchor=bar&&bar.parentElement===panel?bar:h;
-      if(card.previousElementSibling!==anchor)panel.insertBefore(card,anchor.nextSibling);
+      if(card.parentElement!==panel||card.previousElementSibling!==anchor)panel.insertBefore(card,anchor.nextSibling);
     }
   }
   function renderMaterials(){
