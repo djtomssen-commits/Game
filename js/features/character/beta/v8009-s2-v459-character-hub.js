@@ -126,8 +126,13 @@
 
       const set=document.getElementById('setPanel');const setCard=set?.closest('.card');
       detailsWrap(attrPanel,'v459SetDetails','🧩 Set-Boni ansehen',setCard,false);
-      const classesEl=document.getElementById('classGrid');const classCard=classesEl?.closest('.card');
-      detailsWrap(attrPanel,'v459ClassDetails','🧬 Klasse & Spezialisierung',classCard,!s?.playerClass);
+
+      /* Class selection is handled by the dedicated character creator.
+         The obsolete in-character "Klasse & Spezialisierung" card must not
+         reappear in the Attribute tab. */
+      document.getElementById('v459ClassDetails')?.remove();
+      const classesEl=document.getElementById('classGrid');
+      classesEl?.closest('.card')?.remove();
 
       const materials=document.getElementById('v030Materials');
       if(materials&&materials.parentElement!==materialPanel)materialPanel.appendChild(materials);
