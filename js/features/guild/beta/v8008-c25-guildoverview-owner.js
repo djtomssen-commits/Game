@@ -289,10 +289,10 @@
 
   /* V6.120: one deterministic startup pass instead of a repaint burst. */
   installGuildLoadGate();
-  setTimeout(()=>{try{if(typeof v254RenderGuild==='function')v254RenderGuild()}catch(e){}},80);
-  document.addEventListener('DOMContentLoaded',()=>requestAnimationFrame(paint),{once:true});
+  queueMicrotask(()=>{try{if(typeof v254RenderGuild==='function')v254RenderGuild()}catch(e){}});
+  document.addEventListener('DOMContentLoaded',paint,{once:true});
   window.addEventListener('pageshow',()=>{if(document.getElementById('guild')?.classList.contains('active'))paint()},{passive:true});
-  document.addEventListener('click',e=>{if(e.target?.closest?.('[data-screen="guild"],.v254-tab,#v380RefreshGuildRequests'))setTimeout(paint,40)},true);
+  document.addEventListener('click',e=>{if(e.target?.closest?.('[data-screen="guild"],.v254-tab,#v380RefreshGuildRequests'))queueMicrotask(paint)},true);
 })();
 
 /* V8.008-C25 — deferred guild leave-lock UI/QA owner. */
@@ -306,7 +306,7 @@ if(window.__V6124_GUILD_LEAVE_LOCK__)return;
 window.__V6124_GUILD_LEAVE_LOCK__=true;
 const refresh=()=>{try{window.v6124PaintGuildLock?.()}catch(e){}};
 document.addEventListener('DOMContentLoaded',()=>requestAnimationFrame(refresh),{once:true});
-window.addEventListener('growlegends:account-ready',()=>setTimeout(refresh,120));
+window.addEventListener('growlegends:account-ready',()=>queueMicrotask(refresh));
 window.addEventListener('pageshow',refresh,{passive:true});
 window.v6124GuildLockQA=()=>({
   until:Number(s?.guildLeaveLockUntil)||0,
