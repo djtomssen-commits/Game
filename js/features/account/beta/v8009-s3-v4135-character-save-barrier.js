@@ -113,44 +113,9 @@
   try{v063Toast(`${name} wurde erstellt`,'success',`${classes?.[classId]?.name||'Klasse'} · Cloud-Spielstand bestätigt`)}catch(e){}
  }
 
- function atomicCreator(){
-  if(!window.__V200_AUTH_READY__)return;
-  if(typeof v200DurableUser==='function'&&!v200DurableUser())return;
-  const id=uid();if(!id||!verified(id)||!ownedState(s,id))return;
-  try{if(String(v075CloudLoadedFor||'')!==id)return}catch(e){return}
-  if(completeState(s)){
-   try{v200ClearCharacterModals()}catch(e){}
-   localCheckpoint();
-   return;
-  }
-  if(document.querySelector('#v200CharacterModal'))return;
-  try{v200ClearCharacterModals()}catch(e){}
+ /* V8.009: superseded character-creator DOM owner retired.
+    v4136 owns Beta creation; v4135 remains the save/logout barrier only. */
 
-  const modal=document.createElement('div');modal.id='v200CharacterModal';
-  modal.innerHTML=`<div class="v200-character-card"><h2>Erstelle deine Legende</h2><div class="v200-character-sub">Gib deinen Charakternamen ein und wähle deine Klasse. Der Charakter wird erst freigegeben, wenn sein Account-Spielstand bestätigt gespeichert wurde.</div><div class="v200-character-name"><label>Charaktername</label><input id="v200CharacterName" maxlength="18" autocomplete="off" placeholder="Deinen Namen eingeben"><div id="v200CharacterNameStatus">2–18 Zeichen · muss einzigartig sein</div></div><div class="v200-class-grid">${Object.entries(classes).map(([cid,c])=>`<button type="button" class="v200-class" data-v4135-class="${cid}"><img src="${v080AvatarFor(cid)}" alt="${v073Escape(c.name)}"><div class="v200-class-copy"><b>${v073Escape(c.name)}</b><span>${v073Escape(c.text||'')}</span></div></button>`).join('')}</div></div>`;
-  document.body.appendChild(modal);
-  const input=modal.querySelector('#v200CharacterName'),status=modal.querySelector('#v200CharacterNameStatus'),buttons=[...modal.querySelectorAll('[data-v4135-class]')];
-  buttons.forEach(btn=>{btn.onclick=async()=>{
-   const name=clean(input?.value);if(!validName(name)){status.className='error';status.textContent='Bitte einen Namen mit 2–18 Zeichen eingeben.';input?.focus();return}
-   buttons.forEach(x=>x.disabled=true);status.className='';status.textContent='Name wird geprüft …';
-   if(!(await v200NameAvailable(name))){buttons.forEach(x=>x.disabled=false);status.className='error';status.textContent='Dieser Charaktername ist bereits vergeben.';input?.focus();return}
-   const classId=String(btn.dataset.v4135Class||'');
-   const ok=await v115Confirm(`${classes[classId].name} als Klasse für ${name} wählen?\n\nDie Klasse kann später nicht gewechselt werden.`,{title:'Charakter erstellen',type:'warn',okText:'Charakter erstellen'});
-   if(!ok){buttons.forEach(x=>x.disabled=false);status.textContent='2–18 Zeichen · muss einzigartig sein';return}
-   if(uid()!==id||!verified(id)||!ownedState(s,id)){status.className='error';status.textContent='Account-Prüfung hat sich geändert. Bitte neu anmelden.';return}
-   s.playerClass=classId;s.classLocked=true;s.characterName=name;s.characterNameSet=true;s.social=(s.social&&typeof s.social==='object')?s.social:{};s.social.playerId=id;s.__accountOwnerId=id;
-   window.__V4135_NEW_CHARACTER_PENDING__={uid:id,name,classId,startedAt:Date.now()};
-   status.textContent='Charakter wird lokal und in der Cloud gespeichert …';
-   if(!localCheckpoint()){status.className='error';status.textContent='Lokale Speicherung fehlgeschlagen. Bitte Seite nicht schließen.';installRetry(modal,status,id,name,classId);return}
-   const cloudOk=await flushCharacter(id,name,classId);
-   if(!modal.isConnected)return;
-   if(!cloudOk){status.className='error';status.textContent='Cloud-Speicherung noch nicht bestätigt. Bitte erneut versuchen; bis dahin nicht ausloggen.';installRetry(modal,status,id,name,classId);return}
-   window.__V4135_NEW_CHARACTER_PENDING__=null;
-   finishCreated(name,classId);
-  }});
-  setTimeout(()=>input?.focus(),60);
- }
- try{v029ShowClassChoice=atomicCreator;window.v029ShowClassChoice=atomicCreator}catch(e){window.v029ShowClassChoice=atomicCreator}
 
  /* Pre-logout barrier. The historical logout sets __V200_AUTH_READY__=false BEFORE its
     own cloud write, so guarded profile/cloud writers can reject that final write. Save once
