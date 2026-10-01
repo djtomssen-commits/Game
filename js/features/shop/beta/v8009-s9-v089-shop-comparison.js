@@ -84,10 +84,6 @@ v030Offer=function(it,fn,i){
     </div>`;
 };
 
-/* Repaint shop whenever character gear changes or page renders. */
-const v089BaseRender=render;
-render=function(){
-  v089BaseRender();
-  
-  try{renderShop()}catch(e){console.error('V4.02 shop comparison',e)}
-};
+/* V8.009: global render -> renderShop wrapper retired.
+   Comparison is generated directly by the active offer renderer and therefore
+   does not need a second full shop rebuild after every global render. */
