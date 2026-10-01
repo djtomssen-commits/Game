@@ -1,0 +1,23 @@
+name: V8.009 Mini CSS Marker Cleanup
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/v8009_mini_css_marker_cleanup.py'
+      - '.github/workflows/v8009-mini-css-marker-cleanup.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 .github/scripts/v8009_mini_css_marker_cleanup.py
+      - run: |
+          git config user.name github-actions
+          git config user.email github-actions@users.noreply.github.com
+          git add -A beta.html V8009_MINI_CSS_MARKER_CLEANUP_QA.json v8009-extracted-v6316-version-authority-css.css v8009-extracted-v7092-version-owner-css.css v8009-extracted-v7109-final-version-css.css v8009-extracted-v7164-combat-animation-complete-css.css
+          git commit -m "V8.009 CLEANUP: remove inert mini css markers" || exit 0
+          git pull --rebase origin main
+          git push
