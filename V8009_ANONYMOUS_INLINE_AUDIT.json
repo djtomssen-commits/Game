@@ -1,0 +1,1247 @@
+[
+  {
+    "ordinal": 13,
+    "bytes": 67874,
+    "first_lines": [
+      "const KEY='growLegendsV020', OLD_KEYS=['growLegendsV016','growLegendsV015','growLegendsV014','growLegendsV013','growLegendsV0121','growLegendsV012','growLegendsV011','growLegendsV010','growLegendsV09','growLegendsV08','growLegendsV07','growLegendsV06','growLegendsV05','growLegendsV04','growLegendsV03','growLegendsV02','growLegendsV01'];",
+      "const defaultState={playerClass:null,classLocked:false,skillPoints:0,classSkills:{},harzTaler:6,shopRefreshes:0,lastShopSeed:0,dungeonPass:{lastFree:0},story:{chapter:1,bossesDefeated:0},level:1,xp:0,gold:120,points:0,energy:100,lastEnergy:Date.now(),attrs:{staerke:5,geschick:5,intelligenz:5,ausdauer:5,glueck:5,growSkill:1},equipment:{head:null,weapon:null,weapon2:null,ring:null,body:null,boots:null,amulet:null},inventory:[],grow:{planted:false,start:0,duration:60000,ready:false,roomLevel:1,plants:[],seeds:{moss:2},equipment:{lamp:0,pots:0},selectedSeed:'moss'},dungeon:{room:0,selected:0,unlocked:[0],completed:[],view:'map'},quests:{offers:[],active:null}};",
+      "let raw=localStorage.getItem(KEY);if(!raw){for(const k of OLD_KEYS){if(localStorage.getItem(k)){raw=localStorage.getItem(k);break}}}",
+      "let s=raw?JSON.parse(raw):structuredClone(defaultState);s.skillPoints??=Math.max(0,Math.floor((s.level-1)/2));s.attrs??={};s.attrs.intelligenz??=5;s.classSkills??={};s.playerClass??=null;s.classLocked??=!!s.playerClass;s.harzTaler??=6;s.shopRefreshes??=0;s.lastShopSeed??=0;s.dungeonPass??={lastFree:0};s.dungeonPass.lastFree??=0;if(s.playerClass&&!s.classLocked)s.classLocked=true;s.story??={chapter:1,bossesDefeated:0};s.story.chapter??=1;s.story.bossesDefeated??=0;s.energy??=100;s.lastEnergy??=Date.now();s.quests??={offers:[],active:null};s.quests.offers??=[];s.quests.active??=null;s.grow??={roomLevel:1,plants:[]};s.grow.roomLevel??=1;s.grow.plants??=[];s.grow.seeds??={moss:2};s.grow.equipment??={lamp:0,pots:0};s.grow.selectedSeed??='moss';if(s.grow.planted&&s.grow.plants.length===0)s.grow.plants.push({start:s.grow.start||Date.now(),duration:s.grow.duration||60000});s.dungeon??={room:0,selected:0,unlocked:[0],completed:[]};s.dungeon.room??=0;s.dungeon.selected??=0;s.dungeon.unlocked??=[0];s.dungeon.completed??=[];s.dungeon.progress??={};if(s.dungeon.progress[s.dungeon.selected]==null){",
+      "s.dungeon.progress[s.dungeon.selected]=(Number(s.dungeon.selected)===0)",
+      "?Math.max(0,Math.min(9,Number(s.dungeon.room)||0))",
+      ":0;",
+      "}if(!s.dungeon.unlocked.includes(0))s.dungeon.unlocked.push(0);s.dungeon.view??='map';if(!s.devTestHarzGranted){s.devTestHarzGranted=true;}",
+      "// V4.02 robust save-state normalization",
+      "function normalizeItem(it){",
+      "if(!it || typeof it!=='object') return null;",
+      "const out={...it};",
+      "out.id ??= `legacy_${Date.now()}_${Math.random()}`;",
+      "out.name ??= 'Unbekanntes Item';",
+      "out.slot ??= 'ring';",
+      "out.icon ??= '🎁';",
+      "out.price = Number.isFinite(+out.price)?+out.price:0;",
+      "out.bonus = (out.bonus && typeof out.bonus==='object')?out.bonus:{};"
+    ],
+    "names": [
+      "normalizeItem",
+      "normalizeState",
+      "skillRank",
+      "skillValue",
+      "renderSkillTree",
+      "upgradeSkill",
+      "sk",
+      "classLabel",
+      "makeClassLoot",
+      "v6170SetEnchant",
+      "v6170SetNativeBonus",
+      "v6170SetNativeTotal",
+      "v447NativeTotal",
+      "v6170IsMystic",
+      "v6170SetClass",
+      "v6170SetPrimary",
+      "v6170SetIcon",
+      "v6170BaseSetBonus",
+      "v6170GuaranteeSetBonus",
+      "v6170BuildSetBonus"
+    ],
+    "refs": [
+      "shop",
+      "quest",
+      "dungeon",
+      "grow",
+      "guild",
+      "item",
+      "material"
+    ]
+  },
+  {
+    "ordinal": 51,
+    "bytes": 15757,
+    "first_lines": [
+      "/* ===== V4.02 REAL SUPABASE ONLINE SYSTEM ===== */",
+      "const V073_SUPABASE_URL = 'https://egzfmnlqwaixwsyppucp.supabase.co';",
+      "const V073_SUPABASE_KEY = 'sb_publishable_OPSJDLXJUYGY2FLl73n8Jg_yhI-zUvd';",
+      "let v073Db = null;",
+      "let v073User = null;",
+      "let v073Ready = false;",
+      "let v073InitPromise = null;",
+      "let v073LastProfileJson = '';",
+      "let v073SocialLoading = false;",
+      "/* V4.02 adapter now becomes live */",
+      "V072_ONLINE.enabled = true;",
+      "V072_ONLINE.baseUrl = V073_SUPABASE_URL;",
+      "V072_ONLINE.apiKey = V073_SUPABASE_KEY;",
+      "function v073Escape(s){",
+      "return String(s??'')",
+      ".replace(/&/g,'&amp;')",
+      ".replace(/</g,'&lt;')",
+      ".replace(/>/g,'&gt;')"
+    ],
+    "names": [
+      "v073Escape",
+      "v073SetState",
+      "v073Init",
+      "GROW_RELEASE_CHANNEL",
+      "__GROW_DB_SCHEMA__",
+      "v073ProfilePayload",
+      "v073SyncProfile",
+      "v073RankClass",
+      "v073PlayerRow",
+      "v073LoadRanking",
+      "v073SearchPlayer",
+      "rows",
+      "v073SendFriendRequest",
+      "accepted",
+      "incoming",
+      "pending",
+      "v073BindAddButtons",
+      "v073ProfileMap",
+      "v073LoadFriends",
+      "v073AnswerRequest"
+    ],
+    "refs": [
+      "character",
+      "quest",
+      "dungeon",
+      "grow",
+      "hall",
+      "friends",
+      "item"
+    ]
+  },
+  {
+    "ordinal": 27,
+    "bytes": 12979,
+    "first_lines": [
+      "/* ===== V4.02 inline vector game art ===== */",
+      "function v41Svg(type){",
+      "const baseStart = `<svg class=\"v41-art\" viewBox=\"0 0 120 120\" xmlns=\"http://www.w3.org/2000/svg\">`;",
+      "const end = `</svg>`;",
+      "const arts = {",
+      "barbar: `${baseStart}",
+      "<defs><linearGradient id=\"g1\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\"><stop stop-color=\"#7dc85d\"/><stop offset=\"1\" stop-color=\"#244624\"/></linearGradient></defs>",
+      "<circle cx=\"60\" cy=\"60\" r=\"56\" fill=\"#17251a\" stroke=\"#49684b\" stroke-width=\"4\"/>",
+      "<path d=\"M28 92 Q34 66 47 60 L73 60 Q87 66 92 92\" fill=\"#263329\" stroke=\"#0b100b\" stroke-width=\"4\"/>",
+      "<circle cx=\"60\" cy=\"42\" r=\"20\" fill=\"#cf9367\"/>",
+      "<path d=\"M40 37 Q44 17 62 18 Q79 19 82 36 Q73 29 60 30 Q48 30 40 37\" fill=\"#30231d\"/>",
+      "<path d=\"M37 28 Q59 13 82 27 L79 36 Q59 25 40 36 Z\" fill=\"url(#g1)\" stroke=\"#1d2d1e\" stroke-width=\"3\"/>",
+      "<path d=\"M78 30 L100 34 L80 39 Z\" fill=\"#6eb854\"/>",
+      "<circle cx=\"53\" cy=\"42\" r=\"2.5\" fill=\"#151515\"/><circle cx=\"67\" cy=\"42\" r=\"2.5\" fill=\"#151515\"/>",
+      "<path d=\"M51 51 Q60 57 69 51\" fill=\"none\" stroke=\"#6f3f2c\" stroke-width=\"2.5\" stroke-linecap=\"round\"/>",
+      "<path d=\"M22 95 L42 58\" stroke=\"#7c5c34\" stroke-width=\"9\" stroke-linecap=\"round\"/>",
+      "<path d=\"M16 95 L34 70 L48 78 L31 103 Z\" fill=\"#9d743f\" stroke=\"#342719\" stroke-width=\"3\"/>",
+      "<path d=\"M58 68 l8 8 -8 9 -8-9z\" fill=\"#7dc85d\" opacity=\".85\"/>"
+    ],
+    "names": [
+      "v41Svg",
+      "v41ItemArt",
+      "id",
+      "v41ClassPortrait",
+      "v41InstallPortrait",
+      "v41InstallNpcBanners",
+      "v41UpgradeShopIcons",
+      "name",
+      "v41UpgradeInventoryIcons",
+      "item",
+      "v41UpgradeEnemy",
+      "v41UpgradeWorldPlaces"
+    ],
+    "refs": [
+      "character",
+      "shop",
+      "quest",
+      "dungeon",
+      "grow",
+      "item",
+      "material"
+    ]
+  },
+  {
+    "ordinal": 19,
+    "bytes": 12547,
+    "first_lines": [
+      "/* ===== V4.02 Class creation + Intelligence + primary-stat combat ===== */",
+      "/* --- State migration --- */",
+      "s.attrs ??= {};",
+      "s.attrs.intelligenz ??= 5;",
+      "if (!s.playerClass) s.classLocked = false;",
+      "localStorage.setItem(KEY, JSON.stringify(s));",
+      "/* --- Class bonuses --- */",
+      "classes.grower.bonus = {staerke:4,ausdauer:3};",
+      "classes.scout.bonus = {geschick:4,glueck:3};",
+      "classes.bruiser.bonus = {intelligenz:4,glueck:3};",
+      "/* --- Mage gear uses Intelligence --- */",
+      "classGear.bruiser = [",
+      "{id:'bm_staff',name:'Nebelstab',slot:'weapon',icon:'🪄',price:250,classId:'bruiser',bonus:{intelligenz:7}},",
+      "{id:'bm_hat',name:'Kapuze des Dunstes',slot:'head',icon:'🧙',price:220,classId:'bruiser',bonus:{intelligenz:4,glueck:2}},",
+      "{id:'bm_robe',name:'Robe des Nebelzirkels',slot:'body',icon:'🥋',price:320,classId:'bruiser',bonus:{intelligenz:4,ausdauer:3}},",
+      "{id:'bm_boots',name:'Schwebeschuhe',slot:'boots',icon:'👢',price:200,classId:'bruiser',bonus:{intelligenz:3,geschick:2}}",
+      "];",
+      "/* --- Rebuild flattened class gear cache if mutable --- */"
+    ],
+    "names": [
+      "v029PrimaryStat",
+      "v029PrimaryName",
+      "v029RemoveClassPicker",
+      "v029MoveReset",
+      "v029ShowClassChoice",
+      "v029InstallFightHandler",
+      "step",
+      "skillReduce"
+    ],
+    "refs": [
+      "character",
+      "dungeon",
+      "grow",
+      "item"
+    ]
+  },
+  {
+    "ordinal": 20,
+    "bytes": 12361,
+    "first_lines": [
+      "/* ===== V4.02 Shops, Gems, Enchants ===== */",
+      "s.materials??=[];s.weaponShop??=[];s.magicShop??=[];",
+      "const v030ExtraGear={",
+      "grower:[",
+      "{id:'bb_mace',name:'Verdichteter Harzhammer',slot:'weapon',icon:'🔨',classId:'grower',bonus:{staerke:5,ausdauer:1}},",
+      "{id:'bb_blade',name:'Klingenblatt-Axt',slot:'weapon',icon:'🪓',classId:'grower',bonus:{staerke:6}},",
+      "{id:'bb_shoulders',name:'Dornen-Schulterpanzer',slot:'body',icon:'🛡️',classId:'grower',bonus:{ausdauer:5,staerke:2}},",
+      "{id:'bb_mask',name:'Harzkrieger-Maske',slot:'head',icon:'🥷',classId:'grower',bonus:{staerke:3,ausdauer:3}},",
+      "{id:'bb_greaves',name:'Wurzelstampfer',slot:'boots',icon:'🥾',classId:'grower',bonus:{staerke:3,ausdauer:3}}],",
+      "scout:[",
+      "{id:'bs_crossbow',name:'Ranken-Armbrust',slot:'weapon',icon:'🏹',classId:'scout',bonus:{geschick:6}},",
+      "{id:'bs_knives',name:'Blattklingen',slot:'weapon',icon:'🗡️',classId:'scout',bonus:{geschick:5,glueck:1}},",
+      "{id:'bs_coat',name:'Schattenlaub-Leder',slot:'body',icon:'🥋',classId:'scout',bonus:{geschick:4,ausdauer:3}},",
+      "{id:'bs_mask',name:'Nachtblatt-Maske',slot:'head',icon:'🎭',classId:'scout',bonus:{geschick:4,glueck:2}},",
+      "{id:'bs_steps',name:'Flinkblatt-Stiefel',slot:'boots',icon:'👢',classId:'scout',bonus:{geschick:5,glueck:1}}],",
+      "bruiser:[",
+      "{id:'bm_orb',name:'Nebel-Orb',slot:'weapon',icon:'🔮',classId:'bruiser',bonus:{intelligenz:6}},",
+      "{id:'bm_book',name:'Buch der dichten Wolke',slot:'weapon',icon:'📕',classId:'bruiser',bonus:{intelligenz:5,glueck:1}},"
+    ],
+    "names": [
+      "v030Rand",
+      "v030Uid",
+      "v030StatLabel",
+      "v030EffectLabel",
+      "v030WeaponBase",
+      "p",
+      "v030MakeGear",
+      "v030MakeJewelry",
+      "v030MakeMaterial",
+      "v030Fill",
+      "v030BuyWeapon",
+      "v030BuyMagic",
+      "v030Choices",
+      "v030Pick",
+      "v030UseMaterial",
+      "v030EnchantSum",
+      "v030Offer",
+      "v030Materials"
+    ],
+    "refs": [
+      "character",
+      "shop",
+      "grow",
+      "item",
+      "material"
+    ]
+  },
+  {
+    "ordinal": 41,
+    "bytes": 11358,
+    "first_lines": [
+      "/* ===== V4.02 unified in-game notification system ===== */",
+      "function v063EnsureUi(){",
+      "if(!document.querySelector('#v063Overlay')){",
+      "const overlay=document.createElement('div');",
+      "overlay.id='v063Overlay';",
+      "overlay.className='v063-overlay';",
+      "overlay.innerHTML=`",
+      "<div class=\"v063-modal\" role=\"dialog\" aria-modal=\"true\" aria-labelledby=\"v063Title\">",
+      "<div class=\"v063-modal-head\" id=\"v063Title\">Hinweis</div>",
+      "<div class=\"v063-modal-body\" id=\"v063Body\"></div>",
+      "<div class=\"v063-modal-actions\" id=\"v063Actions\"></div>",
+      "</div>`;",
+      "document.body.appendChild(overlay);",
+      "}",
+      "if(!document.querySelector('#v063ToastStack')){",
+      "const stack=document.createElement('div');",
+      "stack.id='v063ToastStack';",
+      "stack.className='v063-toast-stack';"
+    ],
+    "names": [
+      "v063EnsureUi",
+      "v063Toast",
+      "v063ShowMessage",
+      "v063Confirm",
+      "v063Prompt",
+      "v063ChooseEquippedItem",
+      "v030UseMaterial",
+      "v063BindResetButtons",
+      "v063PatchClassChoice",
+      "v063PatchGrowFeedback",
+      "v063PlantWrapped",
+      "alert",
+      "v063AuditNativeDialogs"
+    ],
+    "refs": [
+      "shop",
+      "dungeon",
+      "grow",
+      "item",
+      "material"
+    ]
+  },
+  {
+    "ordinal": 30,
+    "bytes": 9899,
+    "first_lines": [
+      "/* ===== V4.02 CLEAN DUNGEON STATE MACHINE =====",
+      "One flow only: map -> battle -> reward -> map.",
+      "No MutationObserver. No post-battle polling. No recurring battle timers.",
+      "*/",
+      "s.dungeon ??= {};",
+      "s.dungeon.view ??= 'map';",
+      "function v048DungeonIndex(){",
+      "return Math.max(0, Math.min(dungeons.length-1, Number(s.dungeon.selected)||0));",
+      "}",
+      "function v048RoomIndex(di=v048DungeonIndex()){",
+      "return Math.max(0, Math.min(9, Number(s.dungeon.progress?.[di] ?? s.dungeon.room ?? 0)||0));",
+      "}",
+      "function v048GoMap(){",
+      "s.dungeon.view='map';",
+      "const loot=document.querySelector('#loot');",
+      "if(loot) loot.innerHTML='';",
+      "localStorage.setItem(KEY,JSON.stringify(s));",
+      "render();"
+    ],
+    "names": [
+      "v048DungeonIndex",
+      "v048RoomIndex",
+      "v048GoMap",
+      "v048GoBattle",
+      "selectDungeon",
+      "v048InstallFight",
+      "bal",
+      "showResult",
+      "step",
+      "primary",
+      "skillReduce"
+    ],
+    "refs": [
+      "quest",
+      "dungeon",
+      "grow",
+      "item"
+    ]
+  },
+  {
+    "ordinal": 38,
+    "bytes": 9140,
+    "first_lines": [
+      "/* ===== V4.02 DUNGEON PROGRESSION REBALANCE =====",
+      "Dungeon 1 is intended to occupy roughly levels 1-19.",
+      "Players may attempt every reached enemy early, but large level gaps",
+      "now create a serious combat disadvantage instead of a hard lock.",
+      "*/",
+      "const V060_D1_REC=[2,4,6,8,10,12,14,16,18,20];",
+      "v025RecommendedLevel=function(dungeonIndex,roomIndex){",
+      "roomIndex=Math.max(0,Math.min(9,Number(roomIndex)||0));",
+      "if(dungeonIndex===0)return V060_D1_REC[roomIndex];",
+      "const start=20+(dungeonIndex-1)*10;",
+      "return start+Math.round(roomIndex*(9/9));",
+      "};",
+      "v025EnemyStats=function(dungeonIndex,roomIndex,enemy){",
+      "const rec=v025RecommendedLevel(dungeonIndex,roomIndex);",
+      "const boss=roomIndex===9||enemy?.boss;",
+      "const dungeonMult=1+dungeonIndex*.14;",
+      "/* Dungeon 1 curve is deliberately much steeper than before.",
+      "At Lv.6 with weak gear, the Milbenkönigin should be far out of reach. */"
+    ],
+    "names": [
+      "v060Gap",
+      "v060PlayerDamageFactor",
+      "v060EnemyDamageFactor",
+      "v060InstallFight",
+      "showResult",
+      "step",
+      "primary"
+    ],
+    "refs": [
+      "dungeon",
+      "grow",
+      "item"
+    ]
+  },
+  {
+    "ordinal": 46,
+    "bytes": 8855,
+    "first_lines": [
+      "/* ===== V4.02 dungeon interaction fixes ===== */",
+      "/* Cleanly switch the shared card from world-map styling to 10-room styling. */",
+      "const v068BaseRenderMap = v064RenderMap;",
+      "v064RenderMap=function(){",
+      "const result = v068BaseRenderMap();",
+      "const card=document.querySelector('#dungeonMapCard');",
+      "if(card){",
+      "card.classList.remove('v065-worldmap-card');",
+      "card.classList.add('v064-detail-map');",
+      "if(!card.querySelector('.v068-detail-terrain')){",
+      "const terrain=document.createElement('div');",
+      "terrain.className='v068-detail-terrain';",
+      "card.insertBefore(terrain,card.firstChild);",
+      "}",
+      "}",
+      "return result;",
+      "};",
+      "/* And when showing the 20-dungeon world, remove the detail class again. */"
+    ],
+    "names": [
+      "v068InstallFight",
+      "showResult",
+      "step",
+      "primary"
+    ],
+    "refs": [
+      "dungeon",
+      "grow",
+      "item"
+    ]
+  },
+  {
+    "ordinal": 34,
+    "bytes": 8760,
+    "first_lines": [
+      "/* ===== V4.02 shop stat separation + duplicate prevention ===== */",
+      "const V056_TIER_INDEX = {",
+      "gray:0,",
+      "green:1,",
+      "blue:2,",
+      "purple:3,",
+      "orange:4,",
+      "cyan:5",
+      "};",
+      "function v056BaseIdentity(it){",
+      "return it?.baseId || it?.id || it?.name || 'item';",
+      "}",
+      "function v056OfferKey(it){",
+      "return `${v056BaseIdentity(it)}|${it?.quality||'gray'}`;",
+      "}",
+      "/* Final shop stat function.",
+      "This runs AFTER item generation and guarantees a visible difference",
+      "between rarity tiers even when older code rounded values to the same number. */"
+    ],
+    "names": [
+      "v056BaseIdentity",
+      "v056OfferKey",
+      "v056ForceTierStats",
+      "v056UniqueOffers",
+      "v056FreshReplacement",
+      "v030BuyWeapon",
+      "v030BuyMagic",
+      "v056AddShopHint"
+    ],
+    "refs": [
+      "shop",
+      "grow",
+      "item",
+      "material"
+    ]
+  },
+  {
+    "ordinal": 35,
+    "bytes": 8388,
+    "first_lines": [
+      "/* ===== V4.02 CLEAN SHOP CORE =====",
+      "Uses the real V4.02 generator names:",
+      "v030MakeGear / v030MakeJewelry / v030MakeMaterial.",
+      "*/",
+      "function v057ToastOk(item,destination='Inventar'){",
+      "if(typeof v054Purchased==='function'){",
+      "v054Purchased(item,destination);",
+      "}else if(typeof v054Toast==='function'){",
+      "v054Toast(`✅ ${item?.name||'Gegenstand'} gekauft`,'success',`Liegt jetzt im ${destination}.`);",
+      "}else{",
+      "v115Alert(`${item?.name||'Gegenstand'} gekauft und im ${destination} abgelegt.`);",
+      "}",
+      "}",
+      "function v057ToastNoGold(){",
+      "if(typeof v054NotEnoughGold==='function'){",
+      "v054NotEnoughGold();",
+      "}else if(typeof v054Toast==='function'){",
+      "v054Toast('❌ Nicht genug Gold','error');"
+    ],
+    "names": [
+      "v057ToastOk",
+      "v057ToastNoGold",
+      "v057Key",
+      "v057WeaponOffer",
+      "v057JewelryOffer",
+      "base",
+      "v057MaterialOffer",
+      "v057Unique",
+      "v057FillShops",
+      "v057Replacement",
+      "others",
+      "v030BuyWeapon",
+      "v030BuyMagic",
+      "v057OfferHtml"
+    ],
+    "refs": [
+      "shop",
+      "item",
+      "material"
+    ]
+  },
+  {
+    "ordinal": 15,
+    "bytes": 8376,
+    "first_lines": [
+      "/* ===== V4.02 Combat Balance =====",
+      "Gegner-Level sind Empfehlungen, keine harten Sperren.",
+      "Schwierigkeit entsteht über HP/Schaden und kontrollierte Item-Skalierung.",
+      "*/",
+      "const V025_D1_RECOMMENDED=[1,3,5,7,9,11,13,15,17,19];",
+      "function v025RecommendedLevel(dungeonIndex, roomIndex){",
+      "if(dungeonIndex===0) return V025_D1_RECOMMENDED[Math.max(0,Math.min(9,roomIndex))];",
+      "const start=20+(dungeonIndex-1)*10;",
+      "return start + Math.floor(roomIndex*9/9);",
+      "}",
+      "/* V4.02 item growth was intentionally generous.",
+      "V4.02 flattens it so one lucky item cannot skip several progression steps. */",
+      "v024Scale=function(level){",
+      "level=Math.max(1,Number(level)||1);",
+      "return 1+(level-1)*0.055;",
+      "};",
+      "v024Bonus=function(baseBonus,q,l){",
+      "const rarityMult={gray:1.00,green:1.10,blue:1.23,purple:1.40,orange:1.62,cyan:1.85};"
+    ],
+    "names": [
+      "v025RecommendedLevel",
+      "v025EnemyStats",
+      "step",
+      "skillReduce"
+    ],
+    "refs": [
+      "dungeon",
+      "grow",
+      "item"
+    ]
+  },
+  {
+    "ordinal": 52,
+    "bytes": 7530,
+    "first_lines": [
+      "/* ===== V4.02 public player profiles ===== */",
+      "function v074CombatPower(){",
+      "/* V4.46: public/online power is exactly the character-page combatPower(). */",
+      "try{return Math.max(0,Math.round(Number(combatPower())||0))}catch(e){return 0}",
+      "}",
+      "function v074SafeEquipment(){",
+      "const out={};",
+      "Object.entries(s.equipment||{}).forEach(([slot,it])=>{",
+      "if(!it)return;",
+      "out[slot]={",
+      "name:String(it.name||'Gegenstand').slice(0,80),",
+      "quality:String(it.quality||'gray').slice(0,20),",
+      "bonus:it.bonus||{},",
+      "enchant:it.enchant||null,",
+      "gem:it.gem||null,",
+      "setName:it.setName||null,",
+      "mysticSpecial:it.mysticSpecial?{",
+      "key:String(it.mysticSpecial.key||'').slice(0,40),"
+    ],
+    "names": [
+      "v074CombatPower",
+      "v074SafeEquipment",
+      "v074DungeonProgress",
+      "v074EquipmentHtml",
+      "v074OpenProfile",
+      "v074CloseProfile",
+      "v074BindProfileRows",
+      "rows"
+    ],
+    "refs": [
+      "character",
+      "quest",
+      "dungeon",
+      "hall",
+      "item"
+    ]
+  },
+  {
+    "ordinal": 50,
+    "bytes": 7302,
+    "first_lines": [
+      "/* ===== V4.02 social frontend foundation ===== */",
+      "s.social ??= {};",
+      "s.social.playerId ??= localStorage.getItem('growLegendsPlayerId') || crypto.randomUUID();",
+      "s.social.friends ??= [];",
+      "s.social.requests ??= [];",
+      "s.social.pending ??= [];",
+      "localStorage.setItem('growLegendsPlayerId',s.social.playerId);",
+      "localStorage.setItem(KEY,JSON.stringify(s));",
+      "/*",
+      "Online adapter.",
+      "In V4.02 intentionally disabled until a real backend is configured.",
+      "Frontend is complete so backend integration can be added without redesign.",
+      "*/",
+      "const V072_ONLINE = {",
+      "enabled:false,",
+      "baseUrl:'',",
+      "apiKey:''",
+      "};"
+    ],
+    "names": [
+      "v072ClassName",
+      "v072GearScore",
+      "v072Profile",
+      "v072OnlineState",
+      "v072RenderOwnProfile",
+      "v072RenderRanking",
+      "v072RenderSearchPanel",
+      "v072RenderTabs",
+      "v072SearchPlayer",
+      "v072RenderFriends",
+      "v072BindFriendSearch",
+      "v072AddMenuItems",
+      "v072RenderSocial"
+    ],
+    "refs": [
+      "character",
+      "quest",
+      "dungeon",
+      "grow",
+      "hall",
+      "friends",
+      "item"
+    ]
+  },
+  {
+    "ordinal": 43,
+    "bytes": 6126,
+    "first_lines": [
+      "/* ===== V4.02 20-Dungeon overview -> dungeon map -> battle ===== */",
+      "s.dungeon ??= {};",
+      "s.dungeon.layer ??= 'world'; // world | dungeon",
+      "const V065_WORLD_POS=[",
+      "[9,79],[20,67],[31,78],[40,60],[51,70],",
+      "[62,55],[74,66],[85,51],[91,34],[79,24],",
+      "[68,36],[57,23],[46,36],[35,24],[24,38],",
+      "[13,27],[20,12],[39,11],[61,12],[86,12]",
+      "];",
+      "function v065Line(x1,y1,x2,y2){",
+      "const dx=x2-x1,dy=y2-y1;",
+      "const len=Math.sqrt(dx*dx+dy*dy);",
+      "const ang=Math.atan2(dy,dx)*180/Math.PI;",
+      "return `<div class=\"v065-world-path\" style=\"left:${x1}%;top:${y1}%;width:${len}%;transform:rotate(${ang}deg)\"></div>`;",
+      "}",
+      "function v065NodeState(i){",
+      "if(dungeonCompleted(i))return 'completed';",
+      "if(!dungeonUnlocked(i) || s.level<dungeons[i].minLevel)return 'locked';"
+    ],
+    "names": [
+      "v065Line",
+      "v065NodeState",
+      "v065DungeonInfoText",
+      "v065ShowWorld",
+      "v065OpenDungeon",
+      "v065RenderWorld",
+      "v065InjectBackButton",
+      "v065BindRoomNodes"
+    ],
+    "refs": [
+      "quest",
+      "dungeon",
+      "item"
+    ]
+  },
+  {
+    "ordinal": 42,
+    "bytes": 5701,
+    "first_lines": [
+      "/* ===== V4.02 Dungeon 1 progression + presentation ===== */",
+      "/* Target curve: normal player should work on Dungeon 1 into roughly Lv.22-25.",
+      "Strong builds can progress earlier; weak builds will stall much sooner. */",
+      "const V064_D1_LEVELS=[3,5,7,9,11,14,16,19,22,25];",
+      "const V064_D1_NAMES=[",
+      "'Blattkriecher',",
+      "'Wurzelbeißer',",
+      "'Spinnmilben-Brut',",
+      "'Harzzehrer',",
+      "'Netzjäger',",
+      "'Giftspringer',",
+      "'Brutwächter',",
+      "'Kellerweber',",
+      "'Kokonhüter',",
+      "'Milbenkönigin'",
+      "];",
+      "v025RecommendedLevel=function(di,ri){",
+      "ri=Math.max(0,Math.min(9,Number(ri)||0));"
+    ],
+    "names": [
+      "v064NodeState",
+      "v064Line",
+      "v064RenderMap",
+      "clickable",
+      "v064UpgradeBattle"
+    ],
+    "refs": [
+      "dungeon",
+      "grow",
+      "item"
+    ]
+  },
+  {
+    "ordinal": 37,
+    "bytes": 5557,
+    "first_lines": [
+      "/* ===== V4.02 MATERIAL APPLY FIX ===== */",
+      "function v059EquippedEntries(){",
+      "return Object.entries(s.equipment||{}).filter(([slot,it])=>it && typeof it==='object');",
+      "}",
+      "function v059ChooseEquippedItem(material){",
+      "const entries=v059EquippedEntries();",
+      "if(!entries.length){",
+      "v115Alert('Du hast noch keinen Gegenstand angelegt. Lege zuerst ein Item an.');",
+      "return null;",
+      "}",
+      "const lines=entries.map(([slot,it],i)=>{",
+      "const gem=it.gem ? ` · 💎 ${it.gem.name}` : '';",
+      "const ench=it.enchant ? ` · 📜 ${it.enchant.name}` : '';",
+      "return `${i+1}: ${it.name}${gem}${ench}`;",
+      "}).join('\\n');",
+      "const input=prompt(",
+      "`${material.icon||'✨'} ${material.name} anwenden auf:\\n\\n${lines}\\n\\nNummer eingeben:`",
+      ");"
+    ],
+    "names": [
+      "v059EquippedEntries",
+      "v059ChooseEquippedItem",
+      "v059RemoveExistingGemBonus",
+      "v059RemoveExistingEnchantEffect",
+      "v030UseMaterial",
+      "v059BindMaterialButtons"
+    ],
+    "refs": [
+      "item",
+      "material"
+    ]
+  },
+  {
+    "ordinal": 56,
+    "bytes": 5540,
+    "first_lines": [
+      "/* ===== V4.02 Legendary Seed: Wundertüte OG ===== */",
+      "s.v077 ??= { seeds:0, lastPlantAt:0, planted:null, buff:null };",
+      "const V077_COOLDOWN=30*60*1000, V077_BUFF=5*60*1000, V077_COST=5;",
+      "function v077Now(){return Date.now()}",
+      "function v077Fmt(ms){ms=Math.max(0,ms);let s=Math.ceil(ms/1000),m=Math.floor(s/60);return `${m}:${String(s%60).padStart(2,'0')}`}",
+      "function v077Buff(){",
+      "if(s.v077?.buff && s.v077.buff.until>v077Now()) return s.v077.buff;",
+      "if(s.v077?.buff){s.v077.buff=null;localStorage.setItem(KEY,JSON.stringify(s))}",
+      "return null;",
+      "}",
+      "function v077MainAttr(){",
+      "return s.playerClass==='mage'?'intelligenz':s.playerClass==='ranger'?'geschick':'staerke';",
+      "}",
+      "function v077BuffLabel(type){",
+      "return ({main:'Hauptattribut +20%',gold:'Gold +25%',xp:'EXP +25%',yield:'Grow-Ertrag +30%',harvestGold:'Ernte-Gold +40%'})[type]||type;",
+      "}",
+      "function v077BuySeed(){",
+      "s.v077 ??={seeds:0,lastPlantAt:0,planted:null,buff:null};"
+    ],
+    "names": [
+      "v077Now",
+      "v077Fmt",
+      "v077Buff",
+      "v077MainAttr",
+      "v077BuffLabel",
+      "v077BuySeed",
+      "v077Plant",
+      "v077Harvest",
+      "v077ModifyGold",
+      "v077ModifyXp",
+      "v077ModifyYield",
+      "v077MainBonus",
+      "v077QuestFind",
+      "v077InjectGrow",
+      "v077InjectCharacterFx"
+    ],
+    "refs": [
+      "character",
+      "quest",
+      "grow",
+      "item"
+    ]
+  },
+  {
+    "ordinal": 36,
+    "bytes": 5438,
+    "first_lines": [
+      "/* ===== V4.02 REAL SHOP/RENDER FIX =====",
+      "Root cause: legacy render() requires #shopGold to exist and crashes if",
+      "the newer shop renderer removed it.",
+      "*/",
+      "function v058EnsureLegacyRenderAnchors(){",
+      "/* Keep legacy renderer anchors only while no real shop element exists.",
+      "Once the current shop renderer owns the ID, remove the hidden fallback so",
+      "every DOM id stays unique. */",
+      "let box=document.querySelector('#v058CompatAnchors');",
+      "if(!box){",
+      "box=document.createElement('div');",
+      "box.id='v058CompatAnchors';",
+      "box.style.display='none';",
+      "document.body.appendChild(box);",
+      "}",
+      "const required=['shopGold','shopHarz'];",
+      "required.forEach(id=>{",
+      "const matches=[...document.querySelectorAll(`[id=\"${id}\"]`)];"
+    ],
+    "names": [
+      "v058EnsureLegacyRenderAnchors",
+      "v058SafeRefreshAfterPurchase",
+      "v030BuyWeapon",
+      "v030BuyMagic",
+      "v058EnsureMaterialsPanel",
+      "v058BindShopPurchases"
+    ],
+    "refs": [
+      "character",
+      "shop",
+      "item",
+      "material"
+    ]
+  },
+  {
+    "ordinal": 33,
+    "bytes": 4777,
+    "first_lines": [
+      "/* ===== V4.02 rarity stat separation =====",
+      "Goal: same base item + same level must always become clearly stronger",
+      "as rarity increases.",
+      "*/",
+      "const V055_RARITY_POWER = {",
+      "gray:   {mult:1.00, flat:0, label:'Normal'},",
+      "green:  {mult:1.16, flat:1, label:'Gewöhnlich'},",
+      "blue:   {mult:1.34, flat:2, label:'Rare'},",
+      "purple: {mult:1.58, flat:3, label:'Episch'},",
+      "orange: {mult:1.88, flat:4, label:'Legendär'},",
+      "cyan:   {mult:2.18, flat:5, label:'Mystisch'}",
+      "};",
+      "/* Controlled level growth. Rarity does the visible separation. */",
+      "v024Scale=function(level){",
+      "level=Math.max(1,Number(level)||1);",
+      "return 1+(level-1)*0.05;",
+      "};",
+      "/* Always separate rarity tiers by both multiplier + flat bonus."
+    ],
+    "names": [
+      "v055RebuildGeneratedItem",
+      "v055AddRarityHint"
+    ],
+    "refs": [
+      "shop",
+      "dungeon",
+      "grow",
+      "item"
+    ]
+  },
+  {
+    "ordinal": 17,
+    "bytes": 4771,
+    "first_lines": [
+      "/* ===== V4.02 Rarity Economy =====",
+      "Shop: 74% grau / 22% grün / 3.5% blau / 0.5% episch",
+      "Shop: niemals legendär/mystisch",
+      "Dungeon normal: legendär 0.2%",
+      "Dungeon boss: legendär 1%",
+      "Mystisch: ausschließlich Event-Quelle",
+      "*/",
+      "function v027ShopQuality(){",
+      "const r=Math.random();",
+      "if(r<0.74)return'gray';",
+      "if(r<0.96)return'green';",
+      "if(r<0.995)return'blue';",
+      "return'purple';",
+      "}",
+      "function v027DungeonQuality(isBoss=false){",
+      "const r=Math.random();",
+      "if(isBoss){",
+      "// Boss still guarantees at least epic quality, but legendary is only 1%."
+    ],
+    "names": [
+      "v027ShopQuality",
+      "v027DungeonQuality",
+      "v027QuestQuality",
+      "v027ShopItem",
+      "v027SanitizeShop"
+    ],
+    "refs": [
+      "shop",
+      "quest",
+      "dungeon",
+      "grow",
+      "item"
+    ]
+  },
+  {
+    "ordinal": 32,
+    "bytes": 4685,
+    "first_lines": [
+      "/* ===== V4.02 reliable buying feedback ===== */",
+      "function v054Toast(message,type='success',sub=''){",
+      "let toast=document.querySelector('#v054Toast');",
+      "if(!toast){",
+      "toast=document.createElement('div');",
+      "toast.id='v054Toast';",
+      "toast.className='v054-toast';",
+      "document.body.appendChild(toast);",
+      "}",
+      "toast.className=`v054-toast ${type}`;",
+      "toast.innerHTML=`${message}${sub?`<span class=\"sub\">${sub}</span>`:''}`;",
+      "clearTimeout(window.__v054ToastTimer);",
+      "requestAnimationFrame(()=>toast.classList.add('show'));",
+      "window.__v054ToastTimer=setTimeout(()=>toast.classList.remove('show'),2600);",
+      "}",
+      "function v054NotEnoughGold(){",
+      "v054Toast('❌ Nicht genug Gold','error','Du kannst diesen Gegenstand noch nicht kaufen.');",
+      "}"
+    ],
+    "names": [
+      "v054Toast",
+      "__v054ToastTimer",
+      "v054NotEnoughGold",
+      "v054Purchased",
+      "v030BuyWeapon",
+      "v030BuyMagic",
+      "buy",
+      "buySeed",
+      "v054BindShopButtons"
+    ],
+    "refs": [
+      "shop",
+      "quest",
+      "grow",
+      "item",
+      "material"
+    ]
+  },
+  {
+    "ordinal": 16,
+    "bytes": 4505,
+    "first_lines": [
+      "/* ===== V4.02 Daily \"Dampf\" system ===== */",
+      "const V026_DAILY_DAMPF=100;",
+      "const V026_MAX_DAMPF=300;",
+      "const V026_REFILL=20;",
+      "function v026ServerOwned(){try{return !!(typeof v073User!=='undefined'&&v073User?.id&&window.v7081UseAuthority?.('quest'))}catch(_){return false}}",
+      "window.__V7173_LEGACY_LOCAL_GUARD__=window.__V7173_LEGACY_LOCAL_GUARD__||{dampfResetBlocks:0,midnightResetBlocks:0,worldbossTimerBlocks:0,retiredTimers:0,v026TimerActive:false,v127TimerActive:false,v112TimerActive:false,lastBlockAt:0};",
+      "function v7173LegacyBlock(kind){const g=window.__V7173_LEGACY_LOCAL_GUARD__;if(!g)return;g[kind]=(Number(g[kind])||0)+1;g.lastBlockAt=Date.now()}",
+      "function v026DayKey(){",
+      "const d=new Date();",
+      "return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;",
+      "}",
+      "function v026DailyReset(forceRender=false){",
+      "if(v026ServerOwned()){v7173LegacyBlock('dampfResetBlocks');return false;}",
+      "const today=v026DayKey();",
+      "if(s.v026DampfDay!==today){",
+      "s.energy=V026_DAILY_DAMPF;",
+      "s.v026DampfDay=today;",
+      "s.lastEnergy=Date.now();"
+    ],
+    "names": [
+      "v026ServerOwned",
+      "__V7173_LEGACY_LOCAL_GUARD__",
+      "v7173LegacyBlock",
+      "v026DayKey",
+      "v026DailyReset",
+      "v026PaintDampf",
+      "v026AddRefill"
+    ],
+    "refs": [
+      "quest",
+      "grow",
+      "worldboss",
+      "item"
+    ]
+  },
+  {
+    "ordinal": 59,
+    "bytes": 4399,
+    "first_lines": [
+      "/* ===== V4.02 show current dungeon / enemy in player profile ===== */",
+      "/* Store the exact current position inside the existing dungeon_progress JSON.",
+      "No database schema change is required. */",
+      "v074DungeonProgress=function(){",
+      "const selected=Math.max(0,Math.min(19,Number(s.dungeon?.selected)||0));",
+      "const rawRoom=s.dungeon?.progress?.[selected] ?? s.dungeon?.room ?? 0;",
+      "const room=Math.max(0,Math.min(9,Number(rawRoom)||0));",
+      "return {",
+      "completed:[...(s.dungeon?.completed||[])],",
+      "progress:{...(s.dungeon?.progress||{})},",
+      "selected,",
+      "room",
+      "};",
+      "};",
+      "function v081DungeonPosition(dp, fallbackCompleted=0){",
+      "dp=(dp && typeof dp==='object')?dp:{};",
+      "const completed=Array.isArray(dp.completed)?dp.completed.map(Number):[];",
+      "let dungeonIndex=Number.isFinite(Number(dp.selected))"
+    ],
+    "names": [
+      "v081DungeonPosition",
+      "v081DungeonStatusHtml",
+      "dungeonName"
+    ],
+    "refs": [
+      "dungeon"
+    ]
+  },
+  {
+    "ordinal": 45,
+    "bytes": 4125,
+    "first_lines": [
+      "/* ===== V4.02 single active dungeon flow ===== */",
+      "function v067CanOpenDungeon(i){",
+      "const d=dungeons[i];",
+      "if(!d)return {ok:false,msg:'Dungeon nicht gefunden.'};",
+      "if(dungeonCompleted(i))return {ok:false,msg:`${d.name} wurde bereits abgeschlossen.`};",
+      "if(s.level<d.minLevel)return {ok:false,msg:`Benötigt Level ${d.minLevel}.`};",
+      "if(!dungeonUnlocked(i))return {ok:false,msg:`${d.keyName} fehlt.`};",
+      "return {ok:true};",
+      "}",
+      "function v067OpenDungeon(i){",
+      "i=Number(i);",
+      "const check=v067CanOpenDungeon(i);",
+      "if(!check.ok){",
+      "if(typeof v063Toast==='function')v063Toast(check.msg,'warn');",
+      "return;",
+      "}",
+      "s.dungeon.selected=i;",
+      "s.dungeon.room=Math.max(0,Math.min(9,Number(s.dungeon.progress?.[i]??0)));"
+    ],
+    "names": [
+      "v067CanOpenDungeon",
+      "v067OpenDungeon",
+      "v067BindWorldMap",
+      "v067ShowDungeonWorld"
+    ],
+    "refs": [
+      "dungeon",
+      "item"
+    ]
+  },
+  {
+    "ordinal": 58,
+    "bytes": 3884,
+    "first_lines": [
+      "/* ===== V4.02 real avatar integration ===== */",
+      "const V080_AVATARS={\"grower\": \"assets/v7198-base64/c2ef1bb4cddd8d7fd4a7.webp\", \"bruiser\": \"assets/v7198-base64/9abf2e30103c8d4fbdbb.webp\", \"scout\": \"assets/v7198-base64/75e355872d1f5d02cca6.webp\", \"frost\": \"assets/v7198-base64/26f59a48b1d10122f12b.webp\"};",
+      "function v080AvatarFor(classId){",
+      "return V080_AVATARS[classId] || V080_AVATARS.grower;",
+      "}",
+      "function v4143RefreshBootArt(){",
+      "try{",
+      "const labels={grower:\"Bud-Barbar\",scout:\"Blatt-Schütze\",bruiser:\"Bong-Magier\",frost:\"Bekiffter Frost-Todesritter\",summoner:\"Harzruferin\"};",
+      "document.querySelectorAll(\".v4143-boot-char[data-class]\").forEach(img=>{",
+      "const cls=img.dataset.class||\"grower\";",
+      "img.src=v080AvatarFor(cls);",
+      "img.alt=labels[cls]||\"Grow Legends Charakter\";",
+      "img.loading=\"eager\";",
+      "img.decoding=\"sync\";",
+      "});",
+      "}catch(e){}",
+      "}",
+      "window.v4143RefreshBootArt=v4143RefreshBootArt;"
+    ],
+    "names": [
+      "v080AvatarFor",
+      "v4143RefreshBootArt"
+    ],
+    "refs": [
+      "character",
+      "grow",
+      "item"
+    ]
+  },
+  {
+    "ordinal": 22,
+    "bytes": 3869,
+    "first_lines": [
+      "function v032Go(id){document.querySelectorAll('.screen').forEach(x=>x.classList.remove('active'));document.querySelector('#'+id)?.classList.add('active');document.querySelectorAll('.top-menu-item').forEach(x=>x.classList.toggle('active',x.dataset.screen===id));document.querySelector('#v032MenuPanel')?.classList.remove('open');try{render()}catch(e){}window.scrollTo({top:0,behavior:'smooth'});}",
+      "function v032InstallMenu(){document.querySelector('.bottom')?.remove();if(document.querySelector('#v032TopMenu'))return;const wrap=document.createElement('div');wrap.className='top-menu-wrap';wrap.id='v032TopMenu';wrap.innerHTML=`<button class=\"top-menu-btn\" id=\"v032MenuBtn\" aria-label=\"Menü\">☰</button><div class=\"top-menu-panel\" id=\"v032MenuPanel\"><button class=\"top-menu-item active\" data-screen=\"world\"><span>🗺️</span>Welt</button><button class=\"top-menu-item\" data-screen=\"character\"><span>🧙</span>Held</button><button class=\"top-menu-item\" data-screen=\"grow\"><span>🌱</span>Growroom</button><button class=\"top-menu-item\" data-screen=\"quests\"><span>🍺</span>Quest &amp; Schicht</button><button class=\"top-menu-item\" data-screen=\"dungeon\"><span>👹</span>Dungeons</button><button class=\"top-menu-item\" data-screen=\"shop\"><span>🛒</span>Händler</button></div>`;document.body.appendChild(wrap);document.querySelector('#v032MenuBtn').onclick=()=>document.querySelector('#v032MenuPanel').classList.toggle('open');wrap.querySelectorAll('.top-menu-item').forEach(b=>b.onclick=()=>v032Go(b.dataset.screen));document.addEventListener('click',e=>{if(!wrap.contains(e.target))document.querySelector('#v032MenuPanel')?.classList.remove('open')});}",
+      "function v032WorldMapHTML(){return `<div class=\"world-map-shell\"><div class=\"world-map\" id=\"v032WorldMap\"><div class=\"world-map-title\">🌿 GRÜNHAIN</div><svg class=\"world-path\" viewBox=\"0 0 1000 950\" preserveAspectRatio=\"none\"><polyline points=\"500,115 265,250 680,335 315,465 720,575 365,720 650,835\"/></svg><div class=\"world-map-scenery s1\">🌲🌲</div><div class=\"world-map-scenery s2\">🏔️</div><div class=\"world-map-scenery s3\">🌾</div><div class=\"world-map-scenery s4\">🌲🏚️</div><div class=\"world-map-scenery s5\">🌫️</div><div class=\"world-map-scenery s6\">🌲</div><button class=\"world-map-place hero\" style=\"left:50%;top:12%\" data-v032-go=\"character\"><div class=\"wicon\">🧙</div><div class=\"wname\">Heldenquartier</div><div class=\"wsub\">Ausrüstung & Skills</div></button><button class=\"world-map-place quest\" style=\"left:26%;top:27%\" data-v032-go=\"quests\"><div class=\"wicon\">🍺</div><div class=\"wname\">Krummen Gießkanne</div><div class=\"wsub\">Quests & Gerüchte</div></button><button class=\"world-map-place shop\" style=\"left:68%;top:36%\" data-v032-go=\"shop\"><div class=\"wicon\">🏪</div><div class=\"wname\">Händler</div><div class=\"wsub\">Waffen, Schmuck & Rollen</div></button><button class=\"world-map-place grow\" style=\"left:31%;top:50%\" data-v032-go=\"grow\"><div class=\"wicon\">🌱</div><div class=\"wname\">Growroom</div><div class=\"wsub\">Samen & Ausbau</div></button><button class=\"world-map-place dungeon\" style=\"left:72%;top:61%\" data-v032-go=\"dungeon\"><div class=\"wicon\">👹</div><div class=\"wname\">Verseuchte Gebiete</div><div class=\"wsub\">20 Dungeons</div></button><button class=\"world-map-place event\" style=\"left:36%;top:76%\" data-v032-event><div class=\"wicon\">🎪</div><div class=\"wname\">Event-Platz</div><div class=\"wsub\">Mystische Beute</div></button><button class=\"world-map-place quest\" style=\"left:65%;top:88%\" data-v032-go=\"quests\"><div class=\"wicon\">📜</div><div class=\"wname\">Schwarzes Brett</div><div class=\"wsub\">Neue Aufträge</div></button></div></div>`;}",
+      "function v032InstallWorldMap(){/* V4.02 legacy world map permanently disabled */}",
+      "const v032BaseRender=render;render=function(){v032BaseRender();v032InstallMenu();v032InstallWorldMap();};try{v032InstallMenu();v032InstallWorldMap();render();}catch(e){console.error('V4.02 init',e);}"
+    ],
+    "names": [
+      "v032Go",
+      "v032InstallMenu",
+      "v032WorldMapHTML",
+      "v032InstallWorldMap"
+    ],
+    "refs": [
+      "character",
+      "shop",
+      "quest",
+      "dungeon",
+      "grow",
+      "item"
+    ]
+  },
+  {
+    "ordinal": 25,
+    "bytes": 3842,
+    "first_lines": [
+      "/* ===== V4.02 version sync + purchase feedback ===== */",
+      "function v037SyncVersion(){",
+      "document.querySelectorAll('.version').forEach(el=>{",
+      "el.textContent='V4.29 Stable';",
+      "});",
+      "}",
+      "function v037Toast(msg,type='success'){",
+      "let t=document.querySelector('#v037Toast');",
+      "if(!t){",
+      "t=document.createElement('div');",
+      "t.id='v037Toast';",
+      "t.className='v037-toast';",
+      "document.body.appendChild(t);",
+      "}",
+      "t.className=`v037-toast ${type}`;",
+      "t.textContent=msg;",
+      "clearTimeout(window._v037ToastTimer);",
+      "requestAnimationFrame(()=>t.classList.add('show'));"
+    ],
+    "names": [
+      "v037SyncVersion",
+      "v037Toast",
+      "_v037ToastTimer",
+      "v037BoughtMessage",
+      "v037NoGold",
+      "buy",
+      "v030BuyWeapon",
+      "v030BuyMagic",
+      "buySeed",
+      "c",
+      "upgradeGrowEquip"
+    ],
+    "refs": [
+      "shop",
+      "quest",
+      "grow",
+      "item",
+      "material"
+    ]
+  },
+  {
+    "ordinal": 57,
+    "bytes": 3281,
+    "first_lines": [
+      "/* ===== V4.02 legendary seed currency + portrait FX fix ===== */",
+      "/* Correct currency: Grow Legends uses s.harzTaler, not s.resin. */",
+      "v077BuySeed=function(){",
+      "s.v077 ??={seeds:0,lastPlantAt:0,planted:null,buff:null};",
+      "const balance=Number(s.harzTaler)||0;",
+      "if(balance<V077_COST){",
+      "if(typeof v063Toast==='function'){",
+      "v063Toast(",
+      "'Nicht genug Harz-Taler',",
+      "'error',",
+      "`Benötigt: ${V077_COST} · Vorhanden: ${balance}`",
+      ");",
+      "}",
+      "return;",
+      "}",
+      "s.harzTaler=balance-V077_COST;",
+      "s.v077.seeds=(Number(s.v077.seeds)||0)+1;",
+      "localStorage.setItem(KEY,JSON.stringify(s));"
+    ],
+    "names": [
+      "v079FindPortraitHost",
+      "v079RemoveBuffFx",
+      "v079UpdateBuffFx"
+    ],
+    "refs": [
+      "character",
+      "grow",
+      "item"
+    ]
+  },
+  {
+    "ordinal": 14,
+    "bytes": 3265,
+    "first_lines": [
+      "/* V4.02 loot/item balance */",
+      "const V024_RARITY={",
+      "gray:{m:1.00,s:1.00},green:{m:1.18,s:1.25},blue:{m:1.42,s:1.65},",
+      "purple:{m:1.78,s:2.25},orange:{m:2.25,s:3.20},cyan:{m:2.75,s:4.20}",
+      "};",
+      "function v024Scale(level){return 1+(Math.max(1,level)-1)*.115}",
+      "function v024Bonus(b,q,l){const o={};const m=(V024_RARITY[q]||V024_RARITY.gray).m*v024Scale(l);Object.entries(b||{}).forEach(([k,v])=>o[k]=Math.max(1,Math.round(v*m)));return o}",
+      "function v024Quality(source){",
+      "const r=Math.random();",
+      "if(source==='event')return'cyan';",
+      "if(source==='boss')return r<.08?'orange':'purple';",
+      "if(source==='dungeon'){if(r<.50)return'gray';if(r<.80)return'green';if(r<.955)return'blue';if(r<.995)return'purple';return'orange'}",
+      "if(r<.58)return'gray';if(r<.86)return'green';if(r<.975)return'blue';return'purple'",
+      "}",
+      "function v024Item(base,source='normal',forced=null){",
+      "const l=Math.max(1,s.level||1),q=forced||v024Quality(source),qm=qualityMeta(q);",
+      "const n=String(base.name||'Ausrüstung').replace(/^(Normal|Gewöhnlich|Rare|Episch|Legendär|Mystisch):\\s*/,'').replace(/\\s*\\[Lv\\.\\d+\\]\\s*$/,'');",
+      "return {...base,id:`${base.id||'loot'}_${Date.now()}_${Math.random().toString(36).slice(2,7)}`,price:0,name:`${qm.label}: ${n} [Lv.${l}]`,quality:q,rarity:qm.cls,dropLevel:l,bonus:v024Bonus(base.bonus,q,l)}"
+    ],
+    "names": [
+      "v024Scale",
+      "v024Bonus",
+      "m",
+      "v024Quality",
+      "v024Item"
+    ],
+    "refs": [
+      "dungeon",
+      "grow",
+      "item"
+    ]
+  },
+  {
+    "ordinal": 23,
+    "bytes": 3179,
+    "first_lines": [
+      "/* ===== V4.02 Global progress fix ===== */",
+      "function v034SafeNum(v,fallback=0){",
+      "const n=Number(v);",
+      "return Number.isFinite(n)?n:fallback;",
+      "}",
+      "function v034CurrentDungeonIndex(){",
+      "return Math.max(0,Math.min(dungeons.length-1,v034SafeNum(s.dungeon?.selected,0)));",
+      "}",
+      "function v034CurrentRoomIndex(di=v034CurrentDungeonIndex()){",
+      "const raw = s.dungeon?.progress?.[di] ?? s.dungeon?.room ?? 0;",
+      "return Math.max(0,Math.min(9,v034SafeNum(raw,0)));",
+      "}",
+      "function v034DungeonProgressText(){",
+      "const di=v034CurrentDungeonIndex();",
+      "if(dungeonCompleted(di)) return '10 / 10';",
+      "return `${v034CurrentRoomIndex(di)+1} / 10`;",
+      "}",
+      "function v034WorldBossProgress(){"
+    ],
+    "names": [
+      "v034SafeNum",
+      "v034CurrentDungeonIndex",
+      "v034CurrentRoomIndex",
+      "v034DungeonProgressText",
+      "v034WorldBossProgress",
+      "v034PaintAllProgress",
+      "t",
+      "v034WorldProgressFix"
+    ],
+    "refs": [
+      "dungeon",
+      "worldboss",
+      "item"
+    ]
+  }
+]
