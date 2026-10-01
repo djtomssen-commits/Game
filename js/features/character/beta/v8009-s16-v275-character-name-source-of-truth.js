@@ -28,17 +28,7 @@ renderClassAvatar=function(){
   return r;
 };
 
-const v275BaseRender=render;
-render=function(){
-  const r=v275BaseRender();
-  v275PaintCharacterName();
-  
-  const line=document.querySelector('#v141VersionLine');
-  return r;
-};
-
-setTimeout(()=>{
-  try{v275PaintCharacterName()}catch(e){}
-  
-  const line=document.querySelector('#v141VersionLine');
-},300);
+window.addEventListener('growlegends:navigation-open-v7119',e=>{
+  if(String(e?.detail?.id||'')==='character')v275PaintCharacterName();
+},{passive:true});
+window.addEventListener('growlegends:account-ready',v275PaintCharacterName,{passive:true});
