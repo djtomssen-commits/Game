@@ -362,6 +362,23 @@ v233ClaimQuest=function(){
     */
     try{persist(false)}catch(e){}
 
+    /* V8.009: one canonical Local/Mirror completion event.
+       The preboot GL_EVENTS bus is loaded before all feature owners, so Guild,
+       Grow, Pet and other post-quest systems no longer need to wrap claimQuest. */
+    try{
+      const qq=before?.q||q||{};
+      const token=String(qq.id??qq.uid??qq.name??'quest')+'|'+String(Number(qq.ends)||0);
+      window.GL_EVENTS?.emit?.('questCompleted',{
+        quest:{
+          id:qq.id??null,uid:qq.uid??null,name:String(qq.name||''),ends:Number(qq.ends)||0,
+          v310Elite:!!qq.v310Elite,v309Role:qq.v309Role||'',v310BaseRole:qq.v310BaseRole||'',
+          v392Kind:qq.v392Kind||'',gold:Number(qq.gold)||0,xp:Number(qq.xp)||0
+        },
+        elite:!!qq.v310Elite||/elite/i.test(String(qq.v309Role||qq.v310BaseRole||qq.v392Kind||'')),
+        source:'v235-local'
+      },token);
+    }catch(e){console.warn('V8.009 questCompleted event',e)}
+
     v233ClaimBusy=false;
     return;
   }
