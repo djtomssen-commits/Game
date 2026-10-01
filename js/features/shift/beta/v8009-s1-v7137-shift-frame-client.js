@@ -140,7 +140,7 @@ async function loadFrames(force=false){
  S.frameFlight=(async()=>{try{const r=await rpc('v7137_avatar_frame_state');if(r?.ok){S.frames=r;S.lastFrameLoad=Date.now();window.__V7137_FRAME_STATE__=r;applyOwnFrames();renderFrameShop();renderFrameSelector();return r}}catch(e){if(force)toast('Rahmen nicht erreichbar','error',String(e?.message||e))}return null})().finally(()=>{S.frameFlight=null});
  return S.frameFlight;
 }
-function ensureDealerFrameTab(){document.querySelectorAll('#harzDealer .v7117-tabs,#goldShop .v7117-tabs').forEach(t=>{if(!t.querySelector('[data-v7117-tab="frames"]')){const b=document.createElement('button');b.type='button';b.className='v7117-tab';b.dataset.v7117Tab='frames';b.textContent='🖼️ Avatar-Rahmen';t.appendChild(b)}const framesOpen=!!t.closest('#harzDealer.v7137-frames-open');if(framesOpen)t.querySelectorAll('[data-v7117-tab]').forEach(b=>b.classList.toggle('active',b.dataset.v7117Tab==='frames'))});}
+function ensureDealerFrameTab(){try{window.v7117DealerHubSync?.()}catch(_){}document.querySelectorAll('#harzDealer .v7117-tabs,#goldShop .v7117-tabs').forEach(t=>{const framesOpen=!!t.closest('#harzDealer.v7137-frames-open');if(framesOpen)t.querySelectorAll('[data-v7117-tab]').forEach(b=>b.classList.toggle('active',b.dataset.v7117Tab==='frames'))});}
 function frameDesc(f){if(f.source==='referral')return 'Nicht kaufbar · exklusiv aus dem 10-Freunde-Paket.';if(f.effect)return 'Animierter Prestige-Rahmen mit sichtbarem Effekt.';return 'Hochwertiger dauerhafter Prestige-Rahmen.'}
 function framePreview(f,cls=''){const src=avatarFor(ownClass()),art=f?.id?frameArtMarkup(f.id):'';return `<div class="v7137-frame-preview v7137-frame-target ${cls}" ${f?.id?`data-v7137-frame="${esc(f.id)}"`:''}><span class="v7140-preview-avatar-clip">${src?`<img class="v7139-preview-avatar" src="${esc(src)}" alt="Rahmen-Vorschau">`:'🌿'}</span>${art}</div>`}
 function ensureFrameShop(){const h=document.getElementById('harzDealer');if(!h)return null;let p=document.getElementById('v7137FrameShop');if(!p){p=document.createElement('div');p.id='v7137FrameShop';h.appendChild(p)}return p}
@@ -205,7 +205,6 @@ document.addEventListener('click',e=>{
  const hb=t.closest('[data-v7137-hours]');if(hb){S.hours=Math.max(1,Math.min(10,num(hb.dataset.v7137Hours)||1));renderShift();return}
  if(t.closest('[data-v7137-start]')){e.preventDefault();void startShift();return}
  if(t.closest('[data-v7137-claim]')){e.preventDefault();void claimShift();return}
- const tab=t.closest('[data-v7117-tab="frames"]');if(tab){e.preventDefault();e.stopPropagation();void openFrameShop();return}
  const normalTab=t.closest('[data-v7117-tab="harz"],[data-v7117-tab="gold"]');if(normalTab){closeFrameShop();queueMicrotask(()=>{ensureDealerFrameTab();moveFooterLast()})}
  const buy=t.closest('[data-v7137-buy-frame]');if(buy){e.preventDefault();void buyFrame(buy.dataset.v7137BuyFrame);return}
  const set=t.closest('[data-v7137-set-frame]');if(set){e.preventDefault();void setFrame(set.dataset.v7137SetFrame||null);return}
@@ -227,7 +226,6 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden&&logged()&
 window.addEventListener('growlegends:navigation-open-v7119',e=>{const id=String(e?.detail?.id||'');if(id==='quests'){ensureQuest();if(S.mode==='shift')void loadShift(false)}syncShiftTicker()},{passive:true});
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});else install();
 
-try{const dealerBase=window.v7117OpenDealerTab;if(typeof dealerBase==='function')window.v7117OpenDealerTab=tab=>tab==='frames'?openFrameShop():dealerBase(tab)}catch(_){}
 window.v7137OpenFrameShop=openFrameShop;
 window.v7137OpenFrameSelector=openFrameSelector;
 window.v7137ShiftRefresh=()=>loadShift(true);
