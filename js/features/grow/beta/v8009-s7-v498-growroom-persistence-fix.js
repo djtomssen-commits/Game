@@ -43,6 +43,7 @@
    };
  }
  function writeSnapshot(plants=s?.grow?.plants){
+   if(window.v7081UseAuthority?.('grow'))return;
    try{localStorage.setItem(snapKey(),JSON.stringify(snapshotObject(plants)))}catch(e){}
  }
  function readSnapshot(){
@@ -133,6 +134,7 @@
  /* If a previous render already blanked the array in this session, use the
     newest same-account snapshot only when it is at least as new as the state. */
  function repairFromSnapshot(){
+   if(window.v7081UseAuthority?.('grow'))return false;
    try{
      if(plantCount(s?.grow?.plants)>0){writeSnapshot(s.grow.plants);return false}
      const snap=readSnapshot();if(!snap||plantCount(snap.plants)===0)return false;
