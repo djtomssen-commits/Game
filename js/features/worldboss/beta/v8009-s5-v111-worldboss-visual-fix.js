@@ -147,13 +147,5 @@ v110Fight=function(){
 /* Disable old fragile button installer; use dedicated card instead. */
 v110InstallEventButton=function(){v111InstallWorldBossCard()};
 
-const v111BaseRender=render;
-render=function(){
-  const result=v111BaseRender();
-  
-  if(!window.__V483_MODERN_WORLD_ONLY__)requestAnimationFrame(v111InstallWorldBossCard);
-  return result;
-};
-
-/* V4.86: retired old-world Smaragd-Koloss card installer. The modern V4.366
-   home already owns the boss entry; combat/overlay functions remain active. */
+/* V8.009: obsolete old-world global render hook retired.
+   v111 overlay/combat visuals remain active; modern home owns the entry card. */
