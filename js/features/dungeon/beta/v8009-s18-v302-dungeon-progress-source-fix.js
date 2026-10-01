@@ -23,12 +23,7 @@ function v302RepairReportedDungeon3(){
  s.v302DungeonProgressRepaired=true;
  return false;
 }
-const v302BaseOpenDungeon=v067OpenDungeon;
-v067OpenDungeon=function(i){
- i=Number(i);v302EnsureDungeonProgress();
- s.dungeon.room=Math.max(0,Math.min(9,Number(s.dungeon.progress[i])||0));
- return v302BaseOpenDungeon(i);
-};
+/* V8.009: v067OpenDungeon wrapper retired; final V467 opener syncs room from progress. */
 const v302BaseGoBattle=v048GoBattle;
 v048GoBattle=function(i){
  i=Number(i);v302EnsureDungeonProgress();
