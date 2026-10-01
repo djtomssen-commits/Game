@@ -134,9 +134,4 @@ renderGrowEquipment=function(){
     </div>`;
 };
 
-setTimeout(()=>{
-  try{
-    if(document.querySelector('#grow')?.classList.contains('active'))renderGrow();
-  }catch(e){}
-  /* V4.123: obsolete version paint retired. */
-},380);
+/* V8.009: delayed startup Grow rerender retired; canonical page owner renders on navigation/state change. */
