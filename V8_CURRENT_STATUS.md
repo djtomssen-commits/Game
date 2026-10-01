@@ -2183,3 +2183,24 @@ Arbeitsmodus:
 - v467 Dungeon-Navigation wurde bewusst noch nicht verändert; Rebuild-/Unlock-Recovery wird separat geprüft.
 - QA `V8009_FINAL_BIG_BATCH17_QA.json`: grün.
 - Stable / `index.html`: unverändert.
+
+
+#### Big Batch 18
+- v201 Startseiten-Legacy:
+  - globalen `v032Go`-Wrapper entfernt;
+  - globalen `render()`-Wrapper entfernt;
+  - neues direktes `v201EnsureHome()` über Shared-v7119 + pageshow;
+  - Home-Dashboard/Worldboss-Karte bleiben abgesichert.
+- v087 Hauptattribut-Runtime:
+  - globalen `render()`-Wrapper entfernt;
+  - Badge-Fix läuft nur noch über DOMContentLoaded/pageshow/Character-v7119;
+  - v088 bleibt der präzise CSS-Owner für das echte HAUPTATTRIBUT-Pseudo-Label.
+- v467 Dungeon:
+  - globalen `v032Go`-Wrapper entfernt;
+  - Dungeon-Open setzt weiterhin `layer='world'` und `view='map'`;
+  - Rebuild-Sicherheiten laufen jetzt über Shared-v7119;
+  - bestehender Capture-Fallback für Dungeon-Navigation bleibt;
+  - Key-/Unlock-Recovery und Entry-Guards unverändert.
+- Kanonischer v6101-`v032Go` wurde bewusst nicht entfernt, da er der aktuelle zentrale Navigationseigentümer ist.
+- QA `V8009_FINAL_BIG_BATCH18_QA.json`: grün.
+- Stable / `index.html`: unverändert.
