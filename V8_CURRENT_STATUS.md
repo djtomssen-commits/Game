@@ -4490,3 +4490,45 @@ Arbeitsmodus:
   - Character – Attribute / Inventar / Talente / Materialien
   - Character Creation – Beta / Server-1
 - danach repo-weite finale DOM/Lifecycle/Owner-QA.
+
+
+#### Powerblock: Dungeon Combat + Reward final abgeschlossen
+- Scope:
+  - Dungeon Kampf / Replay
+  - Server-Receipt / Reward
+  - Reward-Modal
+  - Niederlage-Modal
+  - Wochen-Truhen-/Gilden-EP Feedback
+- Konsolidierung:
+  - `v7051` rendert das Reward-Fenster nicht mehr selbst.
+  - Server-Reward wird direkt an `v247ShowDungeonReward()` übergeben.
+  - `v247` ist jetzt alleiniger Reward-Modal-Owner.
+  - Run-ID bleibt im Reward-Payload erhalten, damit Wochen-Truhen-/Gilden-EP serverseitig exakt nachgeladen werden.
+  - doppelter Reward-Sound im Serverpfad entfernt.
+  - `v587` Reward-Wrapper entfernt; Niederlage bleibt eigener, klar begrenzter Result-Pfad.
+  - redundantes RAF-Re-Show im Niederlage-Overlay entfernt.
+  - Niederlage persistiert bei serverautoritativem Dungeon nicht mehr den historischen Client-Gesamtstand.
+  - alte Version-Stamp-/Re-Show-Logik im v247 Reward-Owner entfernt.
+- Combat:
+  - sichtbarer Kampf bleibt im bestehenden `v7175` Combat-Renderer.
+  - keine globalen Render-Wrapper.
+  - kein Polling-Interval.
+  - genau ein gezielter MutationObserver für aktiven Combat-HUD/HP/Log-State.
+- Authority:
+  - `v7051_run_dungeon`, State und Ack in Public + Server1 vorhanden.
+  - `v8009_dungeon_reward_feedback` ist über den produktiven RPC-Pfad erreichbar; echte Requests heute mit HTTP 200 bestätigt.
+- Wichtige Commits:
+  - v247 kanonischer Reward-Owner: `88ef22dc508a37eabfd66c9b865639f6beb01702`, `079a3c33787ace146311d05272b48a7a8dae0328`, `9bc21f2216fd7d0ac6b38e0cd6a4c262b536df24`
+  - v7051 Server-Reward -> v247: `dd237a3e7050351c7867a4312dd5a68495704b5b`, `8a9beb4d29f709d9cba9e41037724883bebf7e23`, `3056e20489f02e84a2e9e54c1cef60ad0c49748d`
+  - v587 Result-Cleanup: `b613008c2013824c9c0a4a7f8c99102716f98152`, `bdac0c16e15bf538188de4db1746850a5309d617`
+  - QA: `V8009_DUNGEON_COMBAT_REWARD_FINAL_QA.json`, Commit `8e615e179d2177ddb4a4bce57a1e36c658705610`
+- Matrix:
+  - Dungeon = **[x]**
+- Manueller Dungeon-Endtest bleibt für den gemeinsamen Test-Milestone offen.
+
+#### Nächster Powerblock
+- Character:
+  - Attribute
+  - Inventar
+  - Talente
+  - Materialien
