@@ -1,0 +1,23 @@
+name: V8.009 Character Attr Talent Cleanup
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/v8009_character_attr_talent_cleanup.py'
+      - '.github/workflows/v8009-character-attr-talent-cleanup.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 .github/scripts/v8009_character_attr_talent_cleanup.py
+      - run: |
+          git config user.name github-actions
+          git config user.email github-actions@users.noreply.github.com
+          git add beta.html V8009_CHARACTER_ATTR_TALENT_QA.json
+          git commit -m "V8.009 CHARACTER: retire duplicate attr talent render wrappers" || exit 0
+          git pull --rebase origin main
+          git push
