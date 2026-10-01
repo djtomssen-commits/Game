@@ -2229,3 +2229,26 @@ Arbeitsmodus:
   - Guide-Delays für echte Post-Navigation-/First-Visit-Reihenfolge bleiben.
 - QA `V8009_FINAL_BIG_BATCH19_QA.json`: grün.
 - Stable / `index.html`: unverändert.
+
+
+#### Character Materialien Performance-Fix
+- Meldung: Charakterseite → Tab **Materialien** fühlte sich ruckelig an.
+- Ursache:
+  - `v546` baute die komplette Materialliste beim Tab-Klick erneut über `innerHTML` auf;
+  - zusätzlich liefen `v681` nach 30 ms und `v683` nach 40 ms nochmals als separate Enhancer;
+  - beide Enhancer liefen außerdem separat auf pageshow/account-ready;
+  - der `v459ArrangeCharacter`-Wrapper löste zusätzlich einen vollständigen Material-Render aus.
+- Fix:
+  - `v546RenderMaterials()` ist jetzt der einzige Material-DOM-Render-Owner;
+  - direkt nach diesem Render werden `v681EnhanceMaterials()` und `v683MaterialMultiSell.enhance()` genau einmal synchron nachgezogen;
+  - Material-Tab-Klick baut die Liste nicht mehr erneut auf;
+  - `v459ArrangeCharacter` ordnet nur noch an und rendert Materialien nicht erneut;
+  - redundante 30/40-ms Tab-Klick-Delays sowie pageshow/account-ready-Enhancer von v681/v683 entfernt.
+- Unverändert:
+  - Material anwenden / Server-Authority;
+  - Einzelverkauf;
+  - Mehrfachverkauf;
+  - Filter-/Qualitätswechsel;
+  - direkte Repaints nach echten Material-Verkäufen.
+- QA `V8009_CHARACTER_MATERIAL_PERF_QA.json`: 10/10 grün.
+- Stable / `index.html`: unverändert.
