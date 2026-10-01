@@ -2500,3 +2500,16 @@ Arbeitsmodus:
 - Alle drei externen Dateien mit `node --check` geprüft.
 - QA `V8009_ACCOUNT_EXTRACTION_BATCH1_QA.json`: vollständig grün.
 - Stable / `index.html`: unverändert.
+
+
+#### Gameplay Extraction Batch 1
+- Vier große Gameplay-Owner 1:1 aus `beta.html` ausgelagert:
+  - `v7137-shift-frame-client` → `js/features/shift/beta/v8009-s1-v7137-shift-frame-client.js`
+  - `v6287-harzruferin-js` → `js/features/combat/beta/v8009-s1-v6287-harzruferin.js`
+  - `v319-exact-talents-dungeon-balance` → `js/features/talents/beta/v8009-s1-v319-exact-talents-dungeon-balance.js`
+  - `v318-talent-combat-complete` → `js/features/talents/beta/v8009-s1-v318-talent-combat-complete.js`
+- Zusammen 110.231 Bytes Inline-JS aus dem Monolithen entfernt.
+- Script-IDs und Reihenfolge in `beta.html` beibehalten; nur auf `src=` umgestellt.
+- Alle vier externen Dateien mit `node --check` geprüft.
+- QA `V8009_GAMEPLAY_EXTRACTION_BATCH1_QA.json`: vollständig grün.
+- Stable / `index.html`: unverändert.
