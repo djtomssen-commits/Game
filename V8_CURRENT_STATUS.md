@@ -3154,3 +3154,31 @@ Arbeitsmodus:
 - Originale Script-Attribute, IDs und Reihenfolge beibehalten; nur um `src=` ergänzt.
 - QA `V8009_FEATURE_EXTRACTION_BATCH26_QA.json`: vollständig grün.
 - Stable / `index.html`: unverändert.
+
+
+#### Feature Extraction Mega Batch 28
+- Großer Extraktionslauf statt weiterer 20er-Mikrobatches.
+- Commit `9b9b0ce2128c6c6bc3be7592b3807196da68ac96`.
+- 24 weitere große benannte klassische Inline-JS-Owner aus `beta.html` ausgelagert.
+- 27.496 Bytes Inline-JS entfernt.
+- Ziel: `js/features/legacy-extracted/beta/`.
+- QA `V8009_FEATURE_EXTRACTION_MEGA28_QA.json`: grün.
+- Stable / `index.html`: Hash unverändert.
+- Alle extrahierten Dateien per `node --check` geprüft.
+
+#### Feature Extraction Mega Batch 29
+- Commit `81bd22d54505b8440b1c5dbcf46e0c863c9f0e52`.
+- Sämtliche verbliebenen benannten klassischen Inline-JS-Blöcke aus `beta.html` ausgelagert.
+- Keine weitere Stückelung in 20er-Batches.
+- Ziel: `js/features/legacy-extracted/beta/`.
+- QA `V8009_FEATURE_EXTRACTION_MEGA29_QA.json`.
+- Ergebnisziel: `remaining_named_classic_inline_count = 0`.
+- Stable / `index.html`: unverändert.
+- Alle extrahierten Dateien per `node --check` geprüft.
+
+#### Feature Extraction Mega Batch 30
+- Nächster Großlauf vorbereitet für alle verbliebenen anonymen klassischen Inline-JS-Blöcke.
+- Script: `.github/scripts/v8009_feature_extraction_mega30.py`.
+- Workflow: `.github/workflows/v8009-feature-extraction-mega30.yml`.
+- Trigger nach schnellem Mega29-Lauf korrigiert mit Commit `1cef889c90be31c23654ede19b1a9a5161273acf`.
+- Status: Workflow angestoßen; Ergebnis-Commit/QA zum Zeitpunkt dieses Status-Updates noch nicht im main-Verlauf sichtbar.
