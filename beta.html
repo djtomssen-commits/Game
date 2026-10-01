@@ -91362,12 +91362,8 @@ setTimeout(()=>{try{document.getElementById('v110Overlay')?.remove()}catch(_){}}
     const heroThumb=document.getElementById('v6309HeroThumb');if(heroThumb && hero?.src)heroThumb.src=hero.src;
     const bossThumb=document.getElementById('v6309BossThumb');if(bossThumb)bossThumb.src=ART.boss;
   }
-  function observeClass(){
-    ensure();sync();
-    ['v260FighterName','v260FighterMeta'].forEach(id=>{const el=document.getElementById(id);if(el&&!el.dataset.v6317Observed){el.dataset.v6317Observed='1';new MutationObserver(()=>requestAnimationFrame(sync)).observe(el,{subtree:true,childList:true,characterData:true})}});
-  }
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',observeClass,{once:true});else observeClass();
-  setTimeout(observeClass,700);
+  window.v6317SyncGuildBossArt=sync;
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',sync,{once:true});else sync();
 })();
 </script>
 <!-- ===== /V6.317 ===== -->
