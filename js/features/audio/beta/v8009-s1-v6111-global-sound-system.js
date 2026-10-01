@@ -21,7 +21,8 @@ function ensure(){
  if(ctx)return true;
  const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return false;
  try{
-  ctx=new AC({latencyHint:'interactive'});
+  const shared=typeof window.v6109GetAudioContext==='function'?window.v6109GetAudioContext():null;
+  ctx=shared||new AC({latencyHint:'interactive'});
   comp=ctx.createDynamicsCompressor();comp.threshold.value=-18;comp.knee.value=16;comp.ratio.value=5;comp.attack.value=.003;comp.release.value=.13;
   gain=ctx.createGain();gain.gain.value=Math.max(0,Math.min(1,Number(cfg().sfxVolume??.72)))*.34;gain.connect(comp);comp.connect(ctx.destination);
   noiseBuf=ctx.createBuffer(1,Math.floor(ctx.sampleRate*.7),ctx.sampleRate);const d=noiseBuf.getChannelData(0);let seed=6111;
@@ -117,5 +118,5 @@ document.addEventListener('keydown',unlock,{once:true,capture:true});
 document.addEventListener('DOMContentLoaded',rows,{once:true});
 window.addEventListener('pageshow',()=>setTimeout(rows,80),{passive:true});
 window.addEventListener('growlegends:account-ready',()=>setTimeout(rows,120));
-window.v6111SoundInfo=()=>({unlocked,enabled:enabled(),sfxVolume:Number(cfg().sfxVolume??.72),musicVolume:Number(cfg().musicVolume??.70),voices:active.size,context:ctx?.state||'not-created',intervals:0});
+window.v6111SoundInfo=()=>({unlocked,enabled:enabled(),sfxVolume:Number(cfg().sfxVolume??.72),musicVolume:Number(cfg().musicVolume??.70),voices:active.size,context:ctx?.state||'not-created',sampleRate:ctx?.sampleRate||0,sharedWithMusic:!!ctx&&typeof window.v6109GetAudioContext==='function'&&ctx===window.v6109GetAudioContext(),intervals:0});
 })();
