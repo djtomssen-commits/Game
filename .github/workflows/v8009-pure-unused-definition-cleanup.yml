@@ -1,0 +1,23 @@
+name: V8.009 Pure Unused Definition Cleanup
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/v8009_pure_unused_definition_cleanup.py'
+      - '.github/workflows/v8009-pure-unused-definition-cleanup.yml'
+permissions:
+  contents: write
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 .github/scripts/v8009_pure_unused_definition_cleanup.py
+      - run: |
+          git config user.name github-actions
+          git config user.email github-actions@users.noreply.github.com
+          git add -A beta.html js/features V8009_PURE_UNUSED_DEFINITION_CLEANUP_QA.json
+          git commit -m "V8.009 CLEANUP: remove pure unused definition layers" || exit 0
+          git pull --rebase origin main
+          git push
