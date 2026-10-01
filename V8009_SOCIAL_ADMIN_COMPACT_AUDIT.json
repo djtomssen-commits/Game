@@ -1,0 +1,873 @@
+{
+  "friends": [
+    {
+      "id": "v7137-shift-frame-client",
+      "bytes": 32460,
+      "wrappers": [
+        "async function openFrameShop(){try{v032Go('harzDealer')}catch(_){}await new Promise(r=>requestAnimationFrame(r));try{window.v7117DealerHubSync?.()}catch(_){}ensureDealerFrameTab();document.getElementById('harzDealer')?.classList.add('v7137-frames-open');document.querySelectorAll('#harzDealer [data-v7117-tab]').forEach(b=>b.classList.toggle('active',b.dataset.v7117Tab==='frames'));await loadFrames(true);moveFooterLast();}",
+        "async function decorateOpenProfile(id){const sid=String(id||'');if(!sid)return;let fid='';try{if(sid===String(v073User?.id||'')){if(!S.frames)await loadFrames(false);fid=String(S.frames?.active_frame_id||'')}else{let p=S.profileCache.get(sid);if(!p){const m=await publicFrameRows([sid]);p=m.get(sid)||{};S.profileCache.set(sid,p)}fid=String(p?.avatar_frame_id||'')}}catch(_){};[0,50,180].forEach(ms=>setTimeout(()=>applyFrame(document.querySelector('#v074ProfileContent .v652-profile-avatar'),fid),ms))}",
+        "['v073SearchPlayer','v073LoadFriends'].forEach(name=>{try{const base=window[name]||globalThis[name];if(typeof base!=='function'||base.__v7137)return;const w=async function(){const r=await base.apply(this,arguments);setTimeout(()=>void decorateHallFrames(),0);return r};w.__v7137=true;window[name]=w;try{globalThis[name]=w}catch(_){}}catch(_){}});",
+        "function wrapGoldShop(){try{if(typeof window.v7114OpenGoldShop==='function'&&!window.__V7137_GOLD_WRAP__){const base=window.v7114OpenGoldShop;window.v7114OpenGoldShop=function(){const r=base.apply(this,arguments);setTimeout(()=>{ensureDealerFrameTab();moveFooterLast()},60);return r};window.__V7137_GOLD_WRAP__=true}}catch(_){}}",
+        "const normalTab=t.closest('[data-v7117-tab=\"harz\"],[data-v7117-tab=\"gold\"]');if(normalTab){closeFrameShop();setTimeout(()=>{ensureDealerFrameTab();moveFooterLast()},80)}",
+        "if(t.closest('[data-screen=\"hall\"],[data-go=\"hall\"]'))setTimeout(()=>void decorateHallFrames(),80);",
+        "if(t.closest('[data-v7117-tab=\"gold\"],#goldShop'))setTimeout(moveFooterLast,80);",
+        "function watchOwnAvatar(){try{const scene=document.querySelector('#character #v510HeroRoot .avatar-scene')||document.querySelector('#character .avatar-scene');if(!scene||scene.__v7138Watched)return;scene.__v7138Watched=true;v7138AvatarObserver?.disconnect?.();let queued=false;v7138AvatarObserver=new MutationObserver(ms=>{const meaningful=ms.some(m=>[...m.addedNodes,...m.removedNodes].some(n=>!(n instanceof Element)||!n.classList?.contains('v7139-frame-art')));if(!meaningful||queued)return;queued=true;requestAnimationFrame(()=>{queued=false;applyOwnFrames()})});v7138AvatarObserver.observe(scene,{childList:true,subtree:false})}catch(_){}}",
+        "function install(){ensureQuest();ensureDealerFrameTab();ensureFrameShop();wrapSocial();wrapGoldShop();installAchievements();renameQuestMenu();renameDealer7138();moveFooterLast();watchOwnAvatar();document.body?.classList.remove('v7129-referral-frame');if(logged()&&!window.v7204StartupQuiet?.()){void loadShift(false);void loadFrames(false)}setTimeout(()=>{applyOwnFrames();if(!window.v7204StartupQuiet?.())void decorateHallFrames()},250)}",
+        "window.addEventListener('growlegends:account-ready',()=>{install();const run=()=>{if(logged()){void loadShift(false);void loadFrames(false)}};if(typeof window.v7204AfterStartupQuiet==='function')window.v7204AfterStartupQuiet(run,1400);else setTimeout(run,350)},{passive:true});",
+        "window.addEventListener('pageshow',install,{passive:true});",
+        "window.addEventListener('growlegends:navigation-open-v7119',e=>{const id=String(e?.detail?.id||'');if(id==='quests'){ensureQuest();if(S.mode==='shift')void loadShift(false)}syncShiftTicker()},{passive:true});"
+      ]
+    },
+    {
+      "id": "v086-polish-script",
+      "bytes": 18068,
+      "wrappers": [
+        "setTimeout(()=>{if(document.getElementById('bagDealer')?.classList.contains('active'))void v7215Load(true)},650);",
+        "while(Date.now()-started<12000){await new Promise(r=>setTimeout(r,750));const st=await v7215Load(true);if(Number(st?.revision)>Number(oldRevision)){return st}}",
+        "window.addEventListener('growlegends:first-playable',()=>setTimeout(()=>void v7215Load(true),1200),{passive:true});",
+        "window.addEventListener('growlegends:account-ready',()=>{v7215Bag.state=null;v7215Bag.lastRevision=-1;window.__V7215_AD_BAG_MENU_VISIBLE__=false;setTimeout(()=>void v7215Load(true),1800)},{passive:true});",
+        "document.addEventListener('visibilitychange',()=>{if(!document.hidden&&document.getElementById('bagDealer')?.classList.contains('active'))setTimeout(()=>void v7215Load(true),350)},{passive:true});",
+        "btn.onclick=()=>v032Go(btn.dataset.screen);",
+        "const v086OldGo=v032Go;",
+        "requestAnimationFrame(()=>{",
+        "requestAnimationFrame(()=>{",
+        "else setTimeout(inventory,32);",
+        "v032Go=function(id){",
+        "requestAnimationFrame(()=>v6101RenderOpenedScreen(id));",
+        "window.addEventListener('pageshow',()=>{try{v086PolishBrand();v086BuildCompleteMenu()}catch(e){}},{passive:true});"
+      ]
+    },
+    {
+      "id": "(no-id)",
+      "bytes": 15757,
+      "wrappers": [
+        "setTimeout(()=>{",
+        "window.__v073SyncTimer=setTimeout(async()=>{",
+        "const v073BaseRender=render;",
+        "render=function(){"
+      ]
+    },
+    {
+      "id": "v4124-social-quest-fix",
+      "bytes": 15623,
+      "wrappers": [
+        "try{const fn=window[name];if(typeof fn!=='function'||fn.__v4124SeedReward)return;const wrapped=function(){const before=seedSnapshot();let r;try{r=fn.apply(this,arguments)}catch(err){setTimeout(()=>appendQuestSeedReward(before),80);throw err}const done=x=>{[0,50,160].forEach(ms=>setTimeout(()=>appendQuestSeedReward(before),ms));return x};if(r&&typeof r.then==='function')return r.then(done,err=>{done();throw err});return done(r)};wrapped.__v4124SeedReward=true;window[name]=wrapped;try{if(name==='v233ClaimQuest')v233ClaimQuest=wrapped;if(name==='claimQuest')claimQuest=wrapped}catch(e){}}",
+        "try{v072RenderOwnProfile()}catch(e){}stamp();window.addEventListener('pageshow',()=>{stamp();try{v072RenderOwnProfile()}catch(e){}},{passive:true});"
+      ]
+    },
+    {
+      "id": "v6254-grow-guide",
+      "bytes": 15262,
+      "wrappers": [
+        "setTimeout(()=>openGuide('world',false),180);",
+        "openTimer=setTimeout(()=>{",
+        "setTimeout(()=>{updateHelp();showWelcome()},520);",
+        "window.addEventListener('growlegends:navigation-open-v7119',e=>{",
+        "window.addEventListener('growlegends:account-ready',()=>{",
+        "window.addEventListener('pageshow',()=>{updateHelp()},{passive:true});",
+        "setTimeout(()=>{armForNewCharacter();updateHelp()},150);",
+        "setTimeout(()=>{armForNewCharacter();updateHelp()},900);"
+      ]
+    },
+    {
+      "id": "v4162-menu-attention-badges-script",
+      "bytes": 12026,
+      "wrappers": [
+        "requestAnimationFrame(()=>requestAnimationFrame(paint));",
+        "observer?.disconnect();observer=new MutationObserver(()=>queuePaint());",
+        "observeMenu();queuePaint();setTimeout(()=>remoteRefresh(false),0);",
+        "setTimeout(()=>remoteRefresh(true),700);",
+        "window.addEventListener('growlegends:account-ready',()=>{observeMenu();queuePaint()},{passive:true});",
+        "window.addEventListener('growlegends:first-playable',()=>setTimeout(()=>remoteRefresh(true),1400),{passive:true});",
+        "window.addEventListener('growlegends:foreground-ready',()=>{observeMenu();queuePaint();setTimeout(()=>remoteRefresh(false),150)},{passive:true});",
+        "window.addEventListener('pageshow',()=>{observeMenu();queuePaint();setTimeout(()=>remoteRefresh(false),200)},{passive:true});",
+        "document.addEventListener('visibilitychange',()=>{if(!document.hidden){observeMenu();queuePaint();setTimeout(()=>remoteRefresh(false),250)}},{passive:true});",
+        "observeMenu();queuePaint();setTimeout(()=>{if(!window.v7206StartupBusy?.())void remoteRefresh(false)},1800);"
+      ]
+    },
+    {
+      "id": "v446-global-combat-power-authority",
+      "bytes": 9549,
+      "wrappers": [
+        "syncTimer=setTimeout(async()=>{",
+        "if(own){paintLocalPower();requestAnimationFrame(paintLocalPower);setTimeout(paintLocalPower,80)}",
+        "requestAnimationFrame(paintLocalPower);",
+        "const baseRender=render;",
+        "render=function(){",
+        "requestAnimationFrame(paintLocalPower);",
+        "window.addEventListener('growlegends:navigation-open-v7119',e=>{",
+        "window.addEventListener('pageshow',()=>{paintLocalPower();stamp();scheduleSync(true)},{passive:true});",
+        "window.addEventListener('growlegends:account-ready',()=>{paintLocalPower();stamp();scheduleSync(true)},{passive:true});",
+        "document.addEventListener('click',()=>{requestAnimationFrame(paintLocalPower);setTimeout(paintLocalPower,60)},true);"
+      ]
+    },
+    {
+      "id": "v7092-runtime-watchdog",
+      "bytes": 8255,
+      "wrappers": [
+        "const slowTimer=setTimeout(()=>{",
+        "const stallTimer=setTimeout(()=>{",
+        "window.addEventListener('growlegends:account-ready',()=>setTimeout(()=>void selfCheck(),1200),{passive:true});",
+        "window.addEventListener('pageshow',()=>setTimeout(()=>void selfCheck(),2200),{passive:true});",
+        "setTimeout(()=>void selfCheck(),5500);"
+      ]
+    },
+    {
+      "id": "(no-id)",
+      "bytes": 7302,
+      "wrappers": [
+        "const v072BaseRender=render;",
+        "render=function(){"
+      ]
+    },
+    {
+      "id": "v4149-final-navigation-render-authority",
+      "bytes": 7015,
+      "wrappers": [
+        "const r=typeof v032Go==='function'?v032Go('admin'):false;",
+        "setTimeout(async()=>{try{const ok=await v093CheckAdmin?.();if(ok)await v093AdminLoadLists?.()}catch(e){}},0);return r;",
+        "if(typeof v032Go==='function')return v032Go(id);",
+        "function settle(force=false){cancelAnimationFrame(raf);raf=requestAnimationFrame(()=>{raf=0;build(force);stamp();try{window.v4142SyncAdminSystemtechnik?.()}catch(e){}})}",
+        "const finalRender=function(){const r=current.apply(this,arguments);settle(false);return r};finalRender.__v4149Final=true;",
+        "const current=(typeof v032Go==='function'?v032Go:window.v032Go);",
+        "if(id==='grow'&&window.v7081UseAuthority?.('grow')){const c=window.__V7208_GROW_ORDERS_CANONICAL__,rows=Array.isArray(c?.contracts)?c.contracts:[];if(rows.length!==6)setTimeout(()=>{Promise.resolve(window.v7065GrowAuthorityRefresh?.()).finally(()=>window.v6163GrowTabs?.refresh?.())},0)}",
+        "try{v032Go=finalGo}catch(e){}window.v032Go=finalGo;",
+        "['growlegends:account-ready','growlegends:extras-ready','growlegends:foreground-ready'].forEach(ev=>window.addEventListener(ev,()=>settle(false)));",
+        "window.addEventListener('pageshow',()=>settle(false),{passive:true});"
+      ]
+    },
+    {
+      "id": "v7272-navigation-pictogram-js",
+      "bytes": 5874,
+      "wrappers": [
+        "function schedule(force=false){if(scheduled&&!force)return;scheduled=true;requestAnimationFrame(()=>repair(force))}",
+        "observer=new MutationObserver(muts=>{if(!repairing&&muts.some(m=>m.type==='childList'))schedule(false)});",
+        "['growlegends:account-ready','growlegends:extras-ready','growlegends:foreground-ready','growlegends:first-playable'].forEach(ev=>window.addEventListener(ev,()=>schedule(false),{passive:true}));",
+        "window.addEventListener('pageshow',()=>schedule(false),{passive:true});",
+        "document.addEventListener('DOMContentLoaded',()=>requestAnimationFrame(boot),{once:true});",
+        "requestAnimationFrame(boot);"
+      ]
+    },
+    {
+      "id": "v7144-responsiveness-dungeon-core",
+      "bytes": 5720,
+      "wrappers": [
+        "if(e.target?.closest?.('[data-screen=\"dungeon\"],[data-go=\"dungeon\"],#dungeonMapCard,#v247DungeonRewardOk'))requestAnimationFrame(()=>{cleanMap();paintDungeonTimer(true)});",
+        "window.addEventListener('pageshow',()=>requestAnimationFrame(()=>paintDungeonTimer(true)),{passive:true});",
+        "document.addEventListener('visibilitychange',()=>{if(!document.hidden)requestAnimationFrame(()=>paintDungeonTimer(true))},{passive:true});",
+        "window.addEventListener('growlegends:navigation-open-v7119',e=>{",
+        "requestAnimationFrame(()=>{const f=document.getElementById('v072FriendsList'),r=document.getElementById('v072RequestsList');if(f)f.innerHTML='';if(r)r.innerHTML=''});",
+        "requestAnimationFrame(()=>{const h=document.getElementById('v072HallRanking');if(h)h.innerHTML=''});",
+        "requestAnimationFrame(()=>{cleanMap();paintDungeonTimer(true)});"
+      ]
+    },
+    {
+      "id": "v333-friends-online-status",
+      "bytes": 5452,
+      "wrappers": [
+        "setTimeout(v073LoadFriends,350);"
+      ]
+    },
+    {
+      "id": "v4148-complete-menu-authority",
+      "bytes": 4779,
+      "wrappers": [
+        "if(typeof v032Go==='function')v032Go('admin');",
+        "setTimeout(async()=>{try{const ok=await v093CheckAdmin?.();if(ok)await v093AdminLoadLists?.()}catch(e){}},0);",
+        "if(typeof v032Go==='function')return v032Go(id);",
+        "// Rebuild at deterministic lifecycle points. No polling interval or MutationObserver.",
+        "document.addEventListener('click',e=>{if(e.target?.closest?.('#v032MenuBtn,#v032MenuToggle'))requestAnimationFrame(build)},true);",
+        "window.addEventListener('growlegends:account-ready',()=>requestAnimationFrame(build));",
+        "window.addEventListener('growlegends:extras-ready',()=>requestAnimationFrame(build));",
+        "window.addEventListener('growlegends:foreground-ready',()=>requestAnimationFrame(build));",
+        "window.addEventListener('pageshow',()=>requestAnimationFrame(build),{passive:true});",
+        "document.addEventListener('DOMContentLoaded',()=>requestAnimationFrame(build),{once:true});",
+        "requestAnimationFrame(build);"
+      ]
+    },
+    {
+      "id": "v371-true-fullwidth-topbar",
+      "bytes": 4773,
+      "wrappers": [
+        "shell.querySelector('[data-v371-plus=\"gold\"]').onclick=()=>{try{v032Go('shop')}catch(e){}};",
+        "shell.querySelector('[data-v371-plus=\"harz\"]').onclick=()=>{try{v032Go('harzDealer')}catch(e){}};",
+        "shell.querySelector('[data-v371-head=\"friends\"]').onclick=()=>{try{v032Go('friends')}catch(e){}};",
+        "shell.querySelector('[data-v371-head=\"mail\"]').onclick=()=>{try{v032Go('friends')}catch(e){}};",
+        "window.addEventListener('pageshow',paint,{passive:true});",
+        "window.addEventListener('growlegends:account-ready',paint,{passive:true});",
+        "window.addEventListener('growlegends:navigation-open-v7119',paint,{passive:true});"
+      ]
+    },
+    {
+      "id": "v372-authoritative-header",
+      "bytes": 4381,
+      "wrappers": [
+        "shell.querySelector('[data-plus=\"gold\"]').onclick=()=>{try{v032Go('shop')}catch(e){}};",
+        "shell.querySelector('[data-plus=\"harz\"]').onclick=()=>{try{v032Go('harzDealer')}catch(e){}};",
+        "shell.querySelector('[data-head=\"friends\"]').onclick=()=>{try{v032Go('friends')}catch(e){}};",
+        "shell.querySelector('[data-head=\"mail\"]').onclick=()=>{try{v032Go('mail')}catch(e){}};",
+        "window.addEventListener('pageshow',paint,{passive:true});",
+        "window.addEventListener('growlegends:account-ready',paint,{passive:true});",
+        "window.addEventListener('growlegends:navigation-open-v7119',paint,{passive:true});"
+      ]
+    },
+    {
+      "id": "v382-social-mail-buttons",
+      "bytes": 2705,
+      "wrappers": [
+        "v032Go('mail');",
+        "setTimeout(()=>{",
+        "window.addEventListener('growlegends:navigation-open-v7119',e=>{"
+      ]
+    },
+    {
+      "id": "v383-friend-mail-name-fix",
+      "bytes": 2139,
+      "wrappers": [
+        "window.addEventListener('growlegends:navigation-open-v7119',e=>{"
+      ]
+    },
+    {
+      "id": "v7094-v6349-production-parity-monitor",
+      "bytes": 1725,
+      "wrappers": [
+        "window.addEventListener('growlegends:account-ready',()=>setTimeout(snapshot,5000),{passive:true});",
+        "setTimeout(snapshot,12000);"
+      ]
+    }
+  ],
+  "mail": [
+    {
+      "id": "v4107-systemtechnik",
+      "bytes": 61961,
+      "wrappers": [
+        "requestAnimationFrame(()=>pushUiReaction(target?.id||target?.getAttribute?.('data-screen')||target?.tagName||'click',performance.now()-started,currentScreenId()));",
+        "a.settleTimer=setTimeout(()=>{",
+        "requestAnimationFrame(()=>requestAnimationFrame(()=>finishAction(a,a.networkCount?'network-settled':'paint-settled')));",
+        "requestAnimationFrame(()=>requestAnimationFrame(()=>{if(!a.done)a.firstPaintMs=Math.max(0,performance.now()-a.started)}));",
+        "a.noNetTimer=setTimeout(()=>{if(!a.done&&a.networkCount===0)settleAction(a,0)},520);",
+        "a.guardTimer=setTimeout(()=>finishAction(a,'guard-timeout'),15000);",
+        "<div class=\"v4107-panel gl-code-diag-shell\" id=\"glCodeDiag\"><div class=\"gl-code-diag-intro\"><div><b>🔎 CODE-DIAGNOSE · NUR LESEN</b><span>Findet sichere Konflikte, Timer-/Observer-Hotspots und Owner-Ketten. Es wird nichts gelöscht, repariert oder am Spielstand verändert.</span></div><div class=\"gl-code-diag-actions\"><button class=\"btn\" id=\"glCodeDiagRun\">Diagnose starten</button><button class=\"btn secondary\" id=\"glCodeDiagCopy\" disabled>📋 Bericht kopieren</button></div></div><div id=\"glCodeDiagBody\" class=\"gl-code-diag-empty\">Die Prüfung startet nur auf Knopfdruck, damit im normalen Spiel kein zusätzlicher Hintergrund-Scan läuft.</div><div class=\"gl-profiler\" id=\"glRuntimeProfiler\"><div class=\"gl-profiler-head\"><div><b>⏱️ 30-SEKUNDEN LAUFZEIT-PROFILER · NUR MESSEN</b><span>Misst echte Timer-/MutationObserver-Aufrufe und zentrale Renderer. Während der Messung ruhig durch Startseite → Charakter → Quest → Dungeon → Gilde wechseln.</span></div><div class=\"gl-profiler-actions\"><button class=\"btn\" id=\"glProfilerStart\">▶ 30 s Profil starten</button><button class=\"btn secondary\" id=\"glProfilerStop\" disabled>■ Stop</button><button class=\"btn secondary\" id=\"glProfilerCopy\" disabled>📋 Profil kopieren</button></div></div><div id=\"glProfilerStatus\" class=\"gl-profiler-status\">Noch keine Messung gestartet. Es wird nichts gestoppt, gelöscht oder am Spielstand verändert.</div><div id=\"glProfilerBody\" class=\"gl-profiler-body\"></div></div></div>",
+        "try{v032Go('systemtech')}catch(e){document.querySelectorAll('section.screen').forEach(x=>x.classList.remove('active'));sec.classList.add('active')}",
+        "function scheduleRender(){if(renderTimer)return;renderTimer=setTimeout(()=>{renderTimer=0;if(document.getElementById('systemtech')?.classList.contains('active'))renderPage(last||fullReport());paintSettingsBadge(last)},250)}",
+        "retried=true;await new Promise(resolve=>setTimeout(resolve,/pvp_attacks/i.test(url)?180:350));r=await nf(...arguments);",
+        "try{if(typeof v032Go==='function'&&!window.__v4107Go){const base=v032Go;const wrap=function(id){ensureScreen();installMenu();if(id==='systemtech'&&(typeof v093IsAdmin==='undefined'||v093IsAdmin!==true))return base.call(this,'world');let p0=null,sig='';try{const pf=window.v4125StableCombatPower;p0=typeof pf==='function'?Number(pf()):(typeof combatPower==='function'?Number(combatPower()):null);sig=corePowerSignature()}catch(e){}const r=base.apply(this,arguments);if(id==='systemtech')setTimeout(runAndRender,0);else lastNav=id||lastNav;setTimeout(()=>{try{if(id!=='systemtech'&&p0!=null&&sig===corePowerSignature()){const pf=window.v4125StableCombatPower;const p1=typeof pf==='function'?Number(pf()):Number(combatPower());if(Number.isFinite(p1)&&p1!==p0)pushErr('POWER_NAVIGATION_DRIFT',`Kampfkraft änderte sich nur durch Seitenwechsel: ${p0} → ${p1}`,'warn')}}catch(e){}},180);return r};v032Go=wrap;window.v032Go=wrap;window.__v4107Go=true}}catch(e){}",
+        "setTimeout(()=>{try{const c=cachedReport();if(c){last=c;paintSettingsBadge(c);if(document.getElementById('systemtech')?.classList.contains('active'))renderPage(c)}}catch(e){pushErr('QA_CACHE_ERROR',e.message||String(e),'warn')}},2600); /* V4.159: never run ~3k QA tests during normal boot/login. */",
+        "window.addEventListener('growlegends:account-ready',()=>{stamp();installMenu()},{passive:true});",
+        "window.addEventListener('pageshow',()=>{stamp();installMenu();setTimeout(()=>{try{const c=last||cachedReport();if(c){last=c;paintSettingsBadge(c)}}catch(e){}},700)},{passive:true}); /* V4.159: no full QA on pageshow. */"
+      ]
+    },
+    {
+      "id": "v200-stable-core",
+      "bytes": 45904,
+      "wrappers": [
+        "requestAnimationFrame(()=>{try{window.v660LayoutBootProgress?.()}catch(_){}});",
+        "setTimeout(()=>{try{window.v4143RefreshBootArt?.()}catch(e){}},0);",
+        "v075SaveTimer=setTimeout(()=>{",
+        "setTimeout(()=>input?.focus(),60);",
+        "setTimeout(()=>v029ShowClassChoice(),80);",
+        "await new Promise(resolve=>setTimeout(resolve,75));",
+        "setTimeout(()=>v200FinalizeUser(user),0);",
+        "const v200BaseRender=render;",
+        "render=function(){",
+        "requestAnimationFrame(()=>{",
+        "else setTimeout(v4137StartBoot,0);"
+      ]
+    },
+    {
+      "id": "v7097-performance-ux-restore",
+      "bytes": 16282,
+      "wrappers": [
+        "const wrapped=async function(force=false){const now=Date.now();if(last&&now-last<8000){if(force&&!pending){pending=setTimeout(()=>{pending=0;void wrapped(true)},8200-(now-last))}return true}last=now;return await base.call(this,force)};",
+        "window.addEventListener('growlegends:account-ready',()=>setTimeout(()=>void showNewEvents(),1000),{passive:true});",
+        "window.addEventListener('growlegends:account-ready',()=>setTimeout(()=>void checkBlocked(),350),{passive:true});",
+        "setTimeout(()=>{if(window.__V200_AUTH_READY__===true){void showNewEvents();void checkBlocked()}},1800);"
+      ]
+    },
+    {
+      "id": "v4124-social-quest-fix",
+      "bytes": 15623,
+      "wrappers": [
+        "try{const fn=window[name];if(typeof fn!=='function'||fn.__v4124SeedReward)return;const wrapped=function(){const before=seedSnapshot();let r;try{r=fn.apply(this,arguments)}catch(err){setTimeout(()=>appendQuestSeedReward(before),80);throw err}const done=x=>{[0,50,160].forEach(ms=>setTimeout(()=>appendQuestSeedReward(before),ms));return x};if(r&&typeof r.then==='function')return r.then(done,err=>{done();throw err});return done(r)};wrapped.__v4124SeedReward=true;window[name]=wrapped;try{if(name==='v233ClaimQuest')v233ClaimQuest=wrapped;if(name==='claimQuest')claimQuest=wrapped}catch(e){}}",
+        "try{v072RenderOwnProfile()}catch(e){}stamp();window.addEventListener('pageshow',()=>{stamp();try{v072RenderOwnProfile()}catch(e){}},{passive:true});"
+      ]
+    },
+    {
+      "id": "v6254-grow-guide",
+      "bytes": 15262,
+      "wrappers": [
+        "setTimeout(()=>openGuide('world',false),180);",
+        "openTimer=setTimeout(()=>{",
+        "setTimeout(()=>{updateHelp();showWelcome()},520);",
+        "window.addEventListener('growlegends:navigation-open-v7119',e=>{",
+        "window.addEventListener('growlegends:account-ready',()=>{",
+        "window.addEventListener('pageshow',()=>{updateHelp()},{passive:true});",
+        "setTimeout(()=>{armForNewCharacter();updateHelp()},150);",
+        "setTimeout(()=>{armForNewCharacter();updateHelp()},900);"
+      ]
+    },
+    {
+      "id": "v141-settings-menu-script",
+      "bytes": 12792,
+      "wrappers": [
+        "setTimeout(()=>input?.focus(),80);",
+        "setTimeout(()=>{",
+        "const v141BaseRender=render;",
+        "render=function(){",
+        "requestAnimationFrame(()=>{",
+        "setTimeout(()=>{"
+      ]
+    },
+    {
+      "id": "v4162-menu-attention-badges-script",
+      "bytes": 12026,
+      "wrappers": [
+        "requestAnimationFrame(()=>requestAnimationFrame(paint));",
+        "observer?.disconnect();observer=new MutationObserver(()=>queuePaint());",
+        "observeMenu();queuePaint();setTimeout(()=>remoteRefresh(false),0);",
+        "setTimeout(()=>remoteRefresh(true),700);",
+        "window.addEventListener('growlegends:account-ready',()=>{observeMenu();queuePaint()},{passive:true});",
+        "window.addEventListener('growlegends:first-playable',()=>setTimeout(()=>remoteRefresh(true),1400),{passive:true});",
+        "window.addEventListener('growlegends:foreground-ready',()=>{observeMenu();queuePaint();setTimeout(()=>remoteRefresh(false),150)},{passive:true});",
+        "window.addEventListener('pageshow',()=>{observeMenu();queuePaint();setTimeout(()=>remoteRefresh(false),200)},{passive:true});",
+        "document.addEventListener('visibilitychange',()=>{if(!document.hidden){observeMenu();queuePaint();setTimeout(()=>remoteRefresh(false),250)}},{passive:true});",
+        "observeMenu();queuePaint();setTimeout(()=>{if(!window.v7206StartupBusy?.())void remoteRefresh(false)},1800);"
+      ]
+    },
+    {
+      "id": "v6111-global-sound-system",
+      "bytes": 11836,
+      "wrappers": [
+        "window.addEventListener('pageshow',()=>setTimeout(rows,80),{passive:true});",
+        "window.addEventListener('growlegends:account-ready',()=>setTimeout(rows,120));"
+      ]
+    },
+    {
+      "id": "v381-player-mail-system",
+      "bytes": 9326,
+      "wrappers": [
+        "const mail=document.querySelector('#v372TopbarShell [data-head=\"mail\"]');if(mail&&!mail.dataset.v381Bound){mail.dataset.v381Bound='1';mail.onclick=()=>v032Go('mail')}",
+        "window.addEventListener('growlegends:navigation-open-v7119',e=>{const id=String(e?.detail?.id||'');bind();if(id==='mail')void load()},{passive:true});",
+        "bind();unread();window.addEventListener('growlegends:account-ready',()=>{bind();unread()},{passive:true});setInterval(()=>{if(!document.hidden)unread()},60000);"
+      ]
+    },
+    {
+      "id": "v343-server-selection-v7226",
+      "bytes": 9306,
+      "wrappers": [
+        "setTimeout(()=>{v343RenderServerSelect(false);v343UpdateLaunchCountdown()},250);setTimeout(()=>{v343RenderServerSelect(false);v343UpdateLaunchCountdown()},900);"
+      ]
+    },
+    {
+      "id": "v6252-register-popup",
+      "bytes": 8698,
+      "wrappers": [
+        "setTimeout(()=>q('v6252RegisterEmail')?.focus(),60);",
+        "await new Promise(r=>setTimeout(r,60));",
+        "setTimeout(()=>{try{v029ShowClassChoice?.()}catch(_){ }},30);",
+        "window.addEventListener('growlegends:account-ready',paintEntry,{passive:true});"
+      ]
+    },
+    {
+      "id": "v7092-runtime-watchdog",
+      "bytes": 8255,
+      "wrappers": [
+        "const slowTimer=setTimeout(()=>{",
+        "const stallTimer=setTimeout(()=>{",
+        "window.addEventListener('growlegends:account-ready',()=>setTimeout(()=>void selfCheck(),1200),{passive:true});",
+        "window.addEventListener('pageshow',()=>setTimeout(()=>void selfCheck(),2200),{passive:true});",
+        "setTimeout(()=>void selfCheck(),5500);"
+      ]
+    },
+    {
+      "id": "v4149-final-navigation-render-authority",
+      "bytes": 7015,
+      "wrappers": [
+        "const r=typeof v032Go==='function'?v032Go('admin'):false;",
+        "setTimeout(async()=>{try{const ok=await v093CheckAdmin?.();if(ok)await v093AdminLoadLists?.()}catch(e){}},0);return r;",
+        "if(typeof v032Go==='function')return v032Go(id);",
+        "function settle(force=false){cancelAnimationFrame(raf);raf=requestAnimationFrame(()=>{raf=0;build(force);stamp();try{window.v4142SyncAdminSystemtechnik?.()}catch(e){}})}",
+        "const finalRender=function(){const r=current.apply(this,arguments);settle(false);return r};finalRender.__v4149Final=true;",
+        "const current=(typeof v032Go==='function'?v032Go:window.v032Go);",
+        "if(id==='grow'&&window.v7081UseAuthority?.('grow')){const c=window.__V7208_GROW_ORDERS_CANONICAL__,rows=Array.isArray(c?.contracts)?c.contracts:[];if(rows.length!==6)setTimeout(()=>{Promise.resolve(window.v7065GrowAuthorityRefresh?.()).finally(()=>window.v6163GrowTabs?.refresh?.())},0)}",
+        "try{v032Go=finalGo}catch(e){}window.v032Go=finalGo;",
+        "['growlegends:account-ready','growlegends:extras-ready','growlegends:foreground-ready'].forEach(ev=>window.addEventListener(ev,()=>settle(false)));",
+        "window.addEventListener('pageshow',()=>settle(false),{passive:true});"
+      ]
+    },
+    {
+      "id": "v7272-navigation-pictogram-js",
+      "bytes": 5874,
+      "wrappers": [
+        "function schedule(force=false){if(scheduled&&!force)return;scheduled=true;requestAnimationFrame(()=>repair(force))}",
+        "observer=new MutationObserver(muts=>{if(!repairing&&muts.some(m=>m.type==='childList'))schedule(false)});",
+        "['growlegends:account-ready','growlegends:extras-ready','growlegends:foreground-ready','growlegends:first-playable'].forEach(ev=>window.addEventListener(ev,()=>schedule(false),{passive:true}));",
+        "window.addEventListener('pageshow',()=>schedule(false),{passive:true});",
+        "document.addEventListener('DOMContentLoaded',()=>requestAnimationFrame(boot),{once:true});",
+        "requestAnimationFrame(boot);"
+      ]
+    },
+    {
+      "id": "v4148-complete-menu-authority",
+      "bytes": 4779,
+      "wrappers": [
+        "if(typeof v032Go==='function')v032Go('admin');",
+        "setTimeout(async()=>{try{const ok=await v093CheckAdmin?.();if(ok)await v093AdminLoadLists?.()}catch(e){}},0);",
+        "if(typeof v032Go==='function')return v032Go(id);",
+        "// Rebuild at deterministic lifecycle points. No polling interval or MutationObserver.",
+        "document.addEventListener('click',e=>{if(e.target?.closest?.('#v032MenuBtn,#v032MenuToggle'))requestAnimationFrame(build)},true);",
+        "window.addEventListener('growlegends:account-ready',()=>requestAnimationFrame(build));",
+        "window.addEventListener('growlegends:extras-ready',()=>requestAnimationFrame(build));",
+        "window.addEventListener('growlegends:foreground-ready',()=>requestAnimationFrame(build));",
+        "window.addEventListener('pageshow',()=>requestAnimationFrame(build),{passive:true});",
+        "document.addEventListener('DOMContentLoaded',()=>requestAnimationFrame(build),{once:true});",
+        "requestAnimationFrame(build);"
+      ]
+    },
+    {
+      "id": "v371-true-fullwidth-topbar",
+      "bytes": 4773,
+      "wrappers": [
+        "shell.querySelector('[data-v371-plus=\"gold\"]').onclick=()=>{try{v032Go('shop')}catch(e){}};",
+        "shell.querySelector('[data-v371-plus=\"harz\"]').onclick=()=>{try{v032Go('harzDealer')}catch(e){}};",
+        "shell.querySelector('[data-v371-head=\"friends\"]').onclick=()=>{try{v032Go('friends')}catch(e){}};",
+        "shell.querySelector('[data-v371-head=\"mail\"]').onclick=()=>{try{v032Go('friends')}catch(e){}};",
+        "window.addEventListener('pageshow',paint,{passive:true});",
+        "window.addEventListener('growlegends:account-ready',paint,{passive:true});",
+        "window.addEventListener('growlegends:navigation-open-v7119',paint,{passive:true});"
+      ]
+    },
+    {
+      "id": "v347-login-reference-design",
+      "bytes": 4381,
+      "wrappers": [
+        "setTimeout(v347EnsureLayout,250);",
+        "setTimeout(v347EnsureLayout,900);",
+        "setTimeout(v347EnsureLayout,1800);",
+        "setTimeout(version,350);",
+        "setTimeout(version,1200);"
+      ]
+    },
+    {
+      "id": "v372-authoritative-header",
+      "bytes": 4381,
+      "wrappers": [
+        "shell.querySelector('[data-plus=\"gold\"]').onclick=()=>{try{v032Go('shop')}catch(e){}};",
+        "shell.querySelector('[data-plus=\"harz\"]').onclick=()=>{try{v032Go('harzDealer')}catch(e){}};",
+        "shell.querySelector('[data-head=\"friends\"]').onclick=()=>{try{v032Go('friends')}catch(e){}};",
+        "shell.querySelector('[data-head=\"mail\"]').onclick=()=>{try{v032Go('mail')}catch(e){}};",
+        "window.addEventListener('pageshow',paint,{passive:true});",
+        "window.addEventListener('growlegends:account-ready',paint,{passive:true});",
+        "window.addEventListener('growlegends:navigation-open-v7119',paint,{passive:true});"
+      ]
+    },
+    {
+      "id": "v6289-harzruferin-beta-lock-js",
+      "bytes": 4325,
+      "wrappers": [
+        "if(hit)setTimeout(decorate,0);",
+        "window.addEventListener('growlegends:account-ready',()=>setTimeout(decorate,40));",
+        "window.addEventListener('pageshow',()=>setTimeout(decorate,40),{passive:true});"
+      ]
+    },
+    {
+      "id": "v225-settings-account-actions-fix",
+      "bytes": 2866,
+      "wrappers": [
+        "setTimeout(()=>{",
+        "setTimeout(()=>{"
+      ]
+    },
+    {
+      "id": "v7131-ui-polish",
+      "bytes": 2826,
+      "wrappers": []
+    },
+    {
+      "id": "v382-social-mail-buttons",
+      "bytes": 2705,
+      "wrappers": [
+        "v032Go('mail');",
+        "setTimeout(()=>{",
+        "window.addEventListener('growlegends:navigation-open-v7119',e=>{"
+      ]
+    },
+    {
+      "id": "v383-friend-mail-name-fix",
+      "bytes": 2139,
+      "wrappers": [
+        "window.addEventListener('growlegends:navigation-open-v7119',e=>{"
+      ]
+    },
+    {
+      "id": "gl-playstore-legal-links-js",
+      "bytes": 1820,
+      "wrappers": [
+        "setTimeout(applyLegalLinks,300); setTimeout(applyLegalLinks,1200); setTimeout(applyLegalLinks,2500);"
+      ]
+    },
+    {
+      "id": "v7094-v6349-production-parity-monitor",
+      "bytes": 1725,
+      "wrappers": [
+        "window.addEventListener('growlegends:account-ready',()=>setTimeout(snapshot,5000),{passive:true});",
+        "setTimeout(snapshot,12000);"
+      ]
+    },
+    {
+      "id": "(no-id)",
+      "bytes": 1478,
+      "wrappers": []
+    },
+    {
+      "id": "v6202-nebel-post-compact-final-js",
+      "bytes": 1290,
+      "wrappers": [
+        "window.addEventListener('growlegends:account-ready',repair,{passive:true});",
+        "window.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')==='mail')repair()},{passive:true});",
+        "window.addEventListener('pageshow',()=>{if(document.getElementById('mail')?.classList.contains('active'))repair()},{passive:true});"
+      ]
+    }
+  ],
+  "admin": [
+    {
+      "id": "v4107-systemtechnik",
+      "bytes": 61961,
+      "wrappers": [
+        "requestAnimationFrame(()=>pushUiReaction(target?.id||target?.getAttribute?.('data-screen')||target?.tagName||'click',performance.now()-started,currentScreenId()));",
+        "a.settleTimer=setTimeout(()=>{",
+        "requestAnimationFrame(()=>requestAnimationFrame(()=>finishAction(a,a.networkCount?'network-settled':'paint-settled')));",
+        "requestAnimationFrame(()=>requestAnimationFrame(()=>{if(!a.done)a.firstPaintMs=Math.max(0,performance.now()-a.started)}));",
+        "a.noNetTimer=setTimeout(()=>{if(!a.done&&a.networkCount===0)settleAction(a,0)},520);",
+        "a.guardTimer=setTimeout(()=>finishAction(a,'guard-timeout'),15000);",
+        "<div class=\"v4107-panel gl-code-diag-shell\" id=\"glCodeDiag\"><div class=\"gl-code-diag-intro\"><div><b>🔎 CODE-DIAGNOSE · NUR LESEN</b><span>Findet sichere Konflikte, Timer-/Observer-Hotspots und Owner-Ketten. Es wird nichts gelöscht, repariert oder am Spielstand verändert.</span></div><div class=\"gl-code-diag-actions\"><button class=\"btn\" id=\"glCodeDiagRun\">Diagnose starten</button><button class=\"btn secondary\" id=\"glCodeDiagCopy\" disabled>📋 Bericht kopieren</button></div></div><div id=\"glCodeDiagBody\" class=\"gl-code-diag-empty\">Die Prüfung startet nur auf Knopfdruck, damit im normalen Spiel kein zusätzlicher Hintergrund-Scan läuft.</div><div class=\"gl-profiler\" id=\"glRuntimeProfiler\"><div class=\"gl-profiler-head\"><div><b>⏱️ 30-SEKUNDEN LAUFZEIT-PROFILER · NUR MESSEN</b><span>Misst echte Timer-/MutationObserver-Aufrufe und zentrale Renderer. Während der Messung ruhig durch Startseite → Charakter → Quest → Dungeon → Gilde wechseln.</span></div><div class=\"gl-profiler-actions\"><button class=\"btn\" id=\"glProfilerStart\">▶ 30 s Profil starten</button><button class=\"btn secondary\" id=\"glProfilerStop\" disabled>■ Stop</button><button class=\"btn secondary\" id=\"glProfilerCopy\" disabled>📋 Profil kopieren</button></div></div><div id=\"glProfilerStatus\" class=\"gl-profiler-status\">Noch keine Messung gestartet. Es wird nichts gestoppt, gelöscht oder am Spielstand verändert.</div><div id=\"glProfilerBody\" class=\"gl-profiler-body\"></div></div></div>",
+        "try{v032Go('systemtech')}catch(e){document.querySelectorAll('section.screen').forEach(x=>x.classList.remove('active'));sec.classList.add('active')}",
+        "function scheduleRender(){if(renderTimer)return;renderTimer=setTimeout(()=>{renderTimer=0;if(document.getElementById('systemtech')?.classList.contains('active'))renderPage(last||fullReport());paintSettingsBadge(last)},250)}",
+        "retried=true;await new Promise(resolve=>setTimeout(resolve,/pvp_attacks/i.test(url)?180:350));r=await nf(...arguments);",
+        "try{if(typeof v032Go==='function'&&!window.__v4107Go){const base=v032Go;const wrap=function(id){ensureScreen();installMenu();if(id==='systemtech'&&(typeof v093IsAdmin==='undefined'||v093IsAdmin!==true))return base.call(this,'world');let p0=null,sig='';try{const pf=window.v4125StableCombatPower;p0=typeof pf==='function'?Number(pf()):(typeof combatPower==='function'?Number(combatPower()):null);sig=corePowerSignature()}catch(e){}const r=base.apply(this,arguments);if(id==='systemtech')setTimeout(runAndRender,0);else lastNav=id||lastNav;setTimeout(()=>{try{if(id!=='systemtech'&&p0!=null&&sig===corePowerSignature()){const pf=window.v4125StableCombatPower;const p1=typeof pf==='function'?Number(pf()):Number(combatPower());if(Number.isFinite(p1)&&p1!==p0)pushErr('POWER_NAVIGATION_DRIFT',`Kampfkraft änderte sich nur durch Seitenwechsel: ${p0} → ${p1}`,'warn')}}catch(e){}},180);return r};v032Go=wrap;window.v032Go=wrap;window.__v4107Go=true}}catch(e){}",
+        "setTimeout(()=>{try{const c=cachedReport();if(c){last=c;paintSettingsBadge(c);if(document.getElementById('systemtech')?.classList.contains('active'))renderPage(c)}}catch(e){pushErr('QA_CACHE_ERROR',e.message||String(e),'warn')}},2600); /* V4.159: never run ~3k QA tests during normal boot/login. */",
+        "window.addEventListener('growlegends:account-ready',()=>{stamp();installMenu()},{passive:true});",
+        "window.addEventListener('pageshow',()=>{stamp();installMenu();setTimeout(()=>{try{const c=last||cachedReport();if(c){last=c;paintSettingsBadge(c)}}catch(e){}},700)},{passive:true}); /* V4.159: no full QA on pageshow. */"
+      ]
+    },
+    {
+      "id": "v200-stable-core",
+      "bytes": 45904,
+      "wrappers": [
+        "requestAnimationFrame(()=>{try{window.v660LayoutBootProgress?.()}catch(_){}});",
+        "setTimeout(()=>{try{window.v4143RefreshBootArt?.()}catch(e){}},0);",
+        "v075SaveTimer=setTimeout(()=>{",
+        "setTimeout(()=>input?.focus(),60);",
+        "setTimeout(()=>v029ShowClassChoice(),80);",
+        "await new Promise(resolve=>setTimeout(resolve,75));",
+        "setTimeout(()=>v200FinalizeUser(user),0);",
+        "const v200BaseRender=render;",
+        "render=function(){",
+        "requestAnimationFrame(()=>{",
+        "else setTimeout(v4137StartBoot,0);"
+      ]
+    },
+    {
+      "id": "v4139-account-switch-authority",
+      "bytes": 32263,
+      "wrappers": [
+        "new Promise((_,rej)=>setTimeout(()=>rej(new Error('RPC_TIMEOUT:v7051_get_dungeon_state')),8000))",
+        "try{requestAnimationFrame(()=>{try{render?.()}catch(_){}try{window.v069SyncCurrencies?.()}catch(_){}try{window.v4149BuildCompleteMenu?.(false)}catch(_){}})}catch(_){}",
+        "if(wait)await new Promise(r=>setTimeout(r,wait));",
+        "setTimeout(async()=>{try{if(uid()===id&&window.__V200_AUTH_READY__===true&&typeof v073SyncProfile==='function')await v073SyncProfile(true)}catch(e){}},0);",
+        "try{v075SaveTimer=setTimeout(()=>{try{void cloudWrite(false)}catch(e){}},2600)}catch(e){}",
+        "v075SaveTimer=setTimeout(()=>{void cloudWrite(false)},1800);"
+      ]
+    },
+    {
+      "id": "v4106-qa2-performance",
+      "bytes": 22237,
+      "wrappers": [
+        "const wrapperCount=(src.match(/(?:render|persist|v032Go|claimQuest)\\s*=\\s*function/g)||[]).length;",
+        "function open(){if(typeof baseOpen==='function')baseOpen();setTimeout(()=>{const r=run();render(r);bind();paintSettings(r);document.querySelector('.v4102-qa-head small')?.replaceChildren(document.createTextNode('QA 2.0 · Flow + UI/Pixel + State + Performance/Legacy · Spielstand bleibt geschützt'))},0)}",
+        "/* V4.159: no automatic full QA during startup/pageshow. Systemtechnik is explicit/admin-only. */"
+      ]
+    },
+    {
+      "id": "v086-polish-script",
+      "bytes": 18068,
+      "wrappers": [
+        "setTimeout(()=>{if(document.getElementById('bagDealer')?.classList.contains('active'))void v7215Load(true)},650);",
+        "while(Date.now()-started<12000){await new Promise(r=>setTimeout(r,750));const st=await v7215Load(true);if(Number(st?.revision)>Number(oldRevision)){return st}}",
+        "window.addEventListener('growlegends:first-playable',()=>setTimeout(()=>void v7215Load(true),1200),{passive:true});",
+        "window.addEventListener('growlegends:account-ready',()=>{v7215Bag.state=null;v7215Bag.lastRevision=-1;window.__V7215_AD_BAG_MENU_VISIBLE__=false;setTimeout(()=>void v7215Load(true),1800)},{passive:true});",
+        "document.addEventListener('visibilitychange',()=>{if(!document.hidden&&document.getElementById('bagDealer')?.classList.contains('active'))setTimeout(()=>void v7215Load(true),350)},{passive:true});",
+        "btn.onclick=()=>v032Go(btn.dataset.screen);",
+        "const v086OldGo=v032Go;",
+        "requestAnimationFrame(()=>{",
+        "requestAnimationFrame(()=>{",
+        "else setTimeout(inventory,32);",
+        "v032Go=function(id){",
+        "requestAnimationFrame(()=>v6101RenderOpenedScreen(id));",
+        "window.addEventListener('pageshow',()=>{try{v086PolishBrand();v086BuildCompleteMenu()}catch(e){}},{passive:true});"
+      ]
+    },
+    {
+      "id": "v6144-player-safety-js",
+      "bytes": 17832,
+      "wrappers": [
+        "try{if(typeof v254RenderGuild==='function'&&!window.__v6144GuildRenderWrap){const base=v254RenderGuild;const wrapped=function(){const r=base.apply(this,arguments);requestAnimationFrame(decorateGuildMembers);return r};v254RenderGuild=wrapped;window.v254RenderGuild=wrapped;window.__v6144GuildRenderWrap=true}}catch(e){console.warn('V6.144 guild render wrapper',e)}",
+        "window.addEventListener('growlegends:account-ready',()=>{adoptUser();ensureSettingsEntry();applyUi();setTimeout(()=>void syncBlocks({silent:true}),120)});"
+      ]
+    },
+    {
+      "id": "v6346-admin-broadcast-js",
+      "bytes": 16772,
+      "wrappers": [
+        "function closeNode(id){const n=document.getElementById(id);if(!n)return;n.classList.remove('show');setTimeout(()=>n.remove(),170)}",
+        "const ov=document.createElement('div');ov.id='v6346ResultsPopup';ov.innerHTML=`<section class=\"v6346-results-card\"><button class=\"v6346-close\" aria-label=\"Schließen\">×</button><div class=\"v6346-kicker\">ADMIN · ${isPoll?'UMFRAGEERGEBNIS':'ANTWORTEN'}</div><h2>${esc(b.title)}</h2><div class=\"v6346-results-summary\"><span>Empfänger ${st.all}</span><span>Gesehen ${st.seen}</span><span>${isPoll?'Stimmen':'Antworten'} ${st.answers}</span></div>${bars}<div class=\"v6346-response-list\">${answers}</div></section>`;document.body.appendChild(ov);requestAnimationFrame(()=>ov.classList.add('show'));ov.querySelector('.v6346-close').onclick=()=>closeNode('v6346ResultsPopup');ov.addEventListener('click',e=>{if(e.target===ov)closeNode('v6346ResultsPopup')});",
+        "if(document.getElementById('v6342UpdatePopup'))return setTimeout(showNext,500);",
+        "function finishPopup(){active=null;closeNode('v6346BroadcastPopup');setTimeout(showNext,220)}",
+        "document.body.appendChild(ov);requestAnimationFrame(()=>ov.classList.add('show'));",
+        "try{queue=await fetchPending();sessionLoaded=true;if(queue.length)setTimeout(showNext,200);return queue.length>0}catch(e){console.warn('V6.347 pending broadcasts',e);return false}finally{checking=false}",
+        "function schedulePlayer(ms=1800){setTimeout(()=>{if(document.hidden)return;void checkLoginBroadcasts()},ms)}",
+        "window.addEventListener('growlegends:account-ready',()=>schedulePlayer(1900));",
+        "window.addEventListener('pageshow',()=>schedulePlayer(2600),{passive:true});",
+        "setTimeout(()=>schedulePlayer(0),4200);",
+        "document.addEventListener('click',e=>{const el=e.target instanceof Element?e.target:null;if(el?.closest?.('[data-screen=\"admin\"]'))setTimeout(()=>{ensureAdminCard();if(admin())void loadAdminBroadcasts()},180)},true);",
+        "setTimeout(()=>{ensureAdminCard();if(document.getElementById('admin')?.classList.contains('active')&&admin())void loadAdminBroadcasts()},900);"
+      ]
+    },
+    {
+      "id": "v7097-performance-ux-restore",
+      "bytes": 16282,
+      "wrappers": [
+        "const wrapped=async function(force=false){const now=Date.now();if(last&&now-last<8000){if(force&&!pending){pending=setTimeout(()=>{pending=0;void wrapped(true)},8200-(now-last))}return true}last=now;return await base.call(this,force)};",
+        "window.addEventListener('growlegends:account-ready',()=>setTimeout(()=>void showNewEvents(),1000),{passive:true});",
+        "window.addEventListener('growlegends:account-ready',()=>setTimeout(()=>void checkBlocked(),350),{passive:true});",
+        "setTimeout(()=>{if(window.__V200_AUTH_READY__===true){void showNewEvents();void checkBlocked()}},1800);"
+      ]
+    },
+    {
+      "id": "v7084-background-system-test",
+      "bytes": 14471,
+      "wrappers": [
+        "await new Promise(r=>setTimeout(r,700));",
+        "window.addEventListener('growlegends:authority-capabilities-ready',()=>setTimeout(auto,8000),{passive:true});",
+        "window.addEventListener('growlegends:account-ready',()=>setTimeout(auto,10000),{passive:true});",
+        "setTimeout(auto,15000);"
+      ]
+    },
+    {
+      "id": "v452-hard-account-isolation",
+      "bytes": 12833,
+      "wrappers": [
+        "setTimeout(async()=>{",
+        "window.addEventListener('pageshow',stamp,{passive:true});",
+        "window.addEventListener('growlegends:account-ready',stamp,{passive:true});"
+      ]
+    },
+    {
+      "id": "v4147-deterministic-boot-controller",
+      "bytes": 12680,
+      "wrappers": [
+        "function afterStartupQuiet(fn,extra=0){const run=()=>{try{fn()}catch(e){console.warn('V7.207 deferred boot task',e)}};const wait=quietRemaining()+Math.max(0,Number(extra)||0);if(wait>0)return setTimeout(run,wait);run();return 0}",
+        "await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));",
+        "try{if(root&&typeof MutationObserver!=='undefined'){mo=new MutationObserver(()=>{lastMutation=performance.now?.()||Date.now()});mo.observe(root,{subtree:true,childList:true,attributes:true,attributeFilter:['class','style']})}}catch(_){}",
+        "/* Account-ready still wakes several historical zero/short-delay painters. Let",
+        "await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));",
+        "await new Promise(r=>{if(typeof requestIdleCallback==='function')requestIdleCallback(()=>r(),{timeout:280});else setTimeout(r,60)});",
+        "await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));",
+        "await new Promise(r=>setTimeout(r,45));",
+        "['admin',async()=>{if(typeof v093CheckAdmin!=='function')return true;const ok=await v093CheckAdmin();try{window.v4142SyncAdminSystemtechnik?.()}catch(e){}if(ok&&typeof v093AdminLoadLists==='function')setTimeout(()=>{void v093AdminLoadLists()},0);return ok}],",
+        "await new Promise(r=>{if(typeof requestIdleCallback==='function')requestIdleCallback(()=>r(),{timeout:900});else setTimeout(r,120)});",
+        "for gameplay-domain listeners. Do not emit account-ready until the atomic",
+        "setPhase('account-ready',reason);emit('growlegends:account-ready',{reason});",
+        "requestAnimationFrame(()=>{if(uid()!==id||!verified(id)||!characterComplete())return;try{window.v4129ReleaseOwnedPower?.(id)}catch(e){}try{window.v4140AttributeDiagnostics?.()}catch(e){}});",
+        "foregroundTimer=setTimeout(()=>afterStartupQuiet(()=>void run(),80),80);",
+        "setTimeout(()=>{if(uid()!==id||!verified(id))return;const go=()=>void runExtras(id,'post-playable');if(typeof requestIdleCallback==='function')requestIdleCallback(go,{timeout:2200});else setTimeout(go,250)},1200);",
+        "window.addEventListener('pageshow',()=>foreground('pageshow'),{passive:true});"
+      ]
+    },
+    {
+      "id": "v271-dampf-system",
+      "bytes": 12242,
+      "wrappers": [
+        "const v271BaseRender=render;",
+        "render=function(){",
+        "setTimeout(()=>{"
+      ]
+    },
+    {
+      "id": "v269-ticket-system",
+      "bytes": 9310,
+      "wrappers": [
+        "setTimeout(()=>{if(v073User&&!v073User.is_anonymous&&document.querySelector('#v269TicketPanel')?.classList.contains('open'))v269LoadMine()},2500);"
+      ]
+    },
+    {
+      "id": "v093-admin-script",
+      "bytes": 8958,
+      "wrappers": [
+        "v032Go('admin');",
+        "const v093BaseRender=render;",
+        "render=function(){"
+      ]
+    },
+    {
+      "id": "v4149-final-navigation-render-authority",
+      "bytes": 7015,
+      "wrappers": [
+        "const r=typeof v032Go==='function'?v032Go('admin'):false;",
+        "setTimeout(async()=>{try{const ok=await v093CheckAdmin?.();if(ok)await v093AdminLoadLists?.()}catch(e){}},0);return r;",
+        "if(typeof v032Go==='function')return v032Go(id);",
+        "function settle(force=false){cancelAnimationFrame(raf);raf=requestAnimationFrame(()=>{raf=0;build(force);stamp();try{window.v4142SyncAdminSystemtechnik?.()}catch(e){}})}",
+        "const finalRender=function(){const r=current.apply(this,arguments);settle(false);return r};finalRender.__v4149Final=true;",
+        "const current=(typeof v032Go==='function'?v032Go:window.v032Go);",
+        "if(id==='grow'&&window.v7081UseAuthority?.('grow')){const c=window.__V7208_GROW_ORDERS_CANONICAL__,rows=Array.isArray(c?.contracts)?c.contracts:[];if(rows.length!==6)setTimeout(()=>{Promise.resolve(window.v7065GrowAuthorityRefresh?.()).finally(()=>window.v6163GrowTabs?.refresh?.())},0)}",
+        "try{v032Go=finalGo}catch(e){}window.v032Go=finalGo;",
+        "['growlegends:account-ready','growlegends:extras-ready','growlegends:foreground-ready'].forEach(ev=>window.addEventListener(ev,()=>settle(false)));",
+        "window.addEventListener('pageshow',()=>settle(false),{passive:true});"
+      ]
+    },
+    {
+      "id": "v103-admin-player-editor-script",
+      "bytes": 6998,
+      "wrappers": [
+        "const v103BaseRender=render;",
+        "render=function(){"
+      ]
+    },
+    {
+      "id": "v274-events-gold-mystic-presets",
+      "bytes": 6584,
+      "wrappers": [
+        "const v274BaseRender=render;",
+        "render=function(){",
+        "setTimeout(()=>{"
+      ]
+    },
+    {
+      "id": "v115-global-ui-dialogs-script",
+      "bytes": 6228,
+      "wrappers": [
+        "const v115BaseRender=render;",
+        "render=function(){",
+        "setTimeout(v115EnsureUi,150);"
+      ]
+    },
+    {
+      "id": "v7272-navigation-pictogram-js",
+      "bytes": 5874,
+      "wrappers": [
+        "function schedule(force=false){if(scheduled&&!force)return;scheduled=true;requestAnimationFrame(()=>repair(force))}",
+        "observer=new MutationObserver(muts=>{if(!repairing&&muts.some(m=>m.type==='childList'))schedule(false)});",
+        "['growlegends:account-ready','growlegends:extras-ready','growlegends:foreground-ready','growlegends:first-playable'].forEach(ev=>window.addEventListener(ev,()=>schedule(false),{passive:true}));",
+        "window.addEventListener('pageshow',()=>schedule(false),{passive:true});",
+        "document.addEventListener('DOMContentLoaded',()=>requestAnimationFrame(boot),{once:true});",
+        "requestAnimationFrame(boot);"
+      ]
+    },
+    {
+      "id": "v4126-power-rpc-diagnostics",
+      "bytes": 4992,
+      "wrappers": [
+        "const base=render;render=function(){const r=base.apply(this,arguments);repaintPower();requestAnimationFrame(repaintPower);return r};",
+        "if(typeof v032Go==='function'&&!window.__v4125GoPower){",
+        "const base=v032Go;v032Go=function(id){const r=base.apply(this,arguments);repaintPower();requestAnimationFrame(repaintPower);setTimeout(repaintPower,90);return r};",
+        "try{window.v032Go=v032Go}catch(e){}window.__v4125GoPower=true;",
+        "window.addEventListener('pageshow',()=>{repaintPower();stamp()},{passive:true});"
+      ]
+    },
+    {
+      "id": "v4148-complete-menu-authority",
+      "bytes": 4779,
+      "wrappers": [
+        "if(typeof v032Go==='function')v032Go('admin');",
+        "setTimeout(async()=>{try{const ok=await v093CheckAdmin?.();if(ok)await v093AdminLoadLists?.()}catch(e){}},0);",
+        "if(typeof v032Go==='function')return v032Go(id);",
+        "// Rebuild at deterministic lifecycle points. No polling interval or MutationObserver.",
+        "document.addEventListener('click',e=>{if(e.target?.closest?.('#v032MenuBtn,#v032MenuToggle'))requestAnimationFrame(build)},true);",
+        "window.addEventListener('growlegends:account-ready',()=>requestAnimationFrame(build));",
+        "window.addEventListener('growlegends:extras-ready',()=>requestAnimationFrame(build));",
+        "window.addEventListener('growlegends:foreground-ready',()=>requestAnimationFrame(build));",
+        "window.addEventListener('pageshow',()=>requestAnimationFrame(build),{passive:true});",
+        "document.addEventListener('DOMContentLoaded',()=>requestAnimationFrame(build),{once:true});",
+        "requestAnimationFrame(build);"
+      ]
+    },
+    {
+      "id": "v434-attribute-points-final-live-sync",
+      "bytes": 3500,
+      "wrappers": [
+        "requestAnimationFrame(paint);",
+        "setTimeout(paint,20);",
+        "setTimeout(paint,90);",
+        "requestAnimationFrame(paint);",
+        "requestAnimationFrame(paint);",
+        "setTimeout(paint,30);",
+        "setTimeout(paint,100);",
+        "window.addEventListener('pageshow',()=>{paint();stamp()},{passive:true});",
+        "setTimeout(()=>{paint();stamp()},800);",
+        "setTimeout(()=>{paint();stamp()},3500);"
+      ]
+    },
+    {
+      "id": "v105-admin-rewards-script",
+      "bytes": 3055,
+      "wrappers": [
+        "const v105BaseRender=render;",
+        "render=function(){"
+      ]
+    },
+    {
+      "id": "v273-admin-menu-login-fix",
+      "bytes": 2932,
+      "wrappers": [
+        "v032Go('admin');",
+        "requestAnimationFrame(()=>{",
+        "setTimeout(async()=>{",
+        "const v273BaseRender=render;",
+        "render=function(){"
+      ]
+    },
+    {
+      "id": "v4142-admin-systemtechnik-authority",
+      "bytes": 2611,
+      "wrappers": [
+        "try{if(typeof v032Go==='function'){v032Go('world');return}}catch(e){}",
+        "const base=v141BuildSettings;v141BuildSettings=function(){const r=base.apply(this,arguments);requestAnimationFrame(sync);return r};",
+        "document.addEventListener('click',e=>{if(e.target instanceof Element&&e.target.closest('#v032MenuToggle,#v141SettingsBtn'))requestAnimationFrame(sync)},true);",
+        "document.addEventListener('DOMContentLoaded',sync,{once:true});window.addEventListener('pageshow',sync,{passive:true});",
+        "window.addEventListener('growlegends:account-ready',sync,{passive:true});"
+      ]
+    },
+    {
+      "id": "v7098-system-qa-bridge",
+      "bytes": 2073,
+      "wrappers": [
+        "if(document.getElementById('systemtech')?.classList.contains('active'))setTimeout(()=>document.getElementById('v4107Run')?.click(),30);",
+        "document.addEventListener('click',e=>{if(e.target?.closest?.('[data-screen=\"systemtech\"]'))setTimeout(()=>void refresh(true),120)},true);",
+        "window.addEventListener('growlegends:account-ready',()=>setTimeout(maybeRefresh,500),{passive:true});",
+        "window.addEventListener('pageshow',()=>setTimeout(maybeRefresh,350),{passive:true});",
+        "setTimeout(maybeRefresh,1400);"
+      ]
+    },
+    {
+      "id": "v7068-cloud-pressure-admin-signal",
+      "bytes": 2042,
+      "wrappers": [
+        "window.addEventListener('growlegends:account-ready',()=>{lastEventId=null;setTimeout(()=>void poll(),900)},{passive:true});"
+      ]
+    },
+    {
+      "id": "v7260-bag-dealer-admin-only-script",
+      "bytes": 1057,
+      "wrappers": [
+        "try{window.v032Go?.('world')}catch(_){screen.classList.remove('active');document.getElementById('world')?.classList.add('active')}",
+        "['growlegends:account-ready','growlegends:extras-ready','growlegends:foreground-ready'].forEach(ev=>window.addEventListener(ev,sync,{passive:true}));",
+        "window.addEventListener('pageshow',sync,{passive:true});"
+      ]
+    },
+    {
+      "id": "v7109-final-client-contract",
+      "bytes": 709,
+      "wrappers": []
+    }
+  ]
+}
