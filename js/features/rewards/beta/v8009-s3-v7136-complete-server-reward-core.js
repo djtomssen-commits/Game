@@ -85,6 +85,54 @@ function harvestPlantRows(b){
  }
  return out;
 }
+function growOrderRewardRows(contract){
+ const rows=[];
+ for(const r of (Array.isArray(contract?.reward)?contract.reward:[])){
+  const amt=n(r?.amount);
+  if(r?.type==='gold'&&amt)rows.push(`<div class="v7136-reward-line">🪙 <strong>+${amt.toLocaleString('de-DE')} Gold</strong></div>`);
+  else if(r?.type==='xp'&&amt)rows.push(`<div class="v7136-reward-line">⭐ <strong>+${amt.toLocaleString('de-DE')} EXP</strong></div>`);
+  else if(r?.type==='fragments'&&amt)rows.push(`<div class="v7136-reward-line">🧩 <strong>+${amt.toLocaleString('de-DE')} Fragmente</strong></div>`);
+  else if(r?.type==='time'&&amt)rows.push(`<div class="v7136-reward-line">⏳ <strong>+${amt} Zeit-Samen</strong></div>`);
+  else if(r?.type==='harz'&&amt)rows.push(`<div class="v7136-reward-line">🟢 <strong>+${amt} Harz-Taler</strong></div>`);
+  else if(r?.type==='seed'&&amt)rows.push(`<div class="v7136-reward-line">🌰 <strong>+${amt}× ${esc(seedName(r?.seed||'Samen'))}</strong></div>`);
+ }
+ return rows;
+}
+function ensureGrowOrderReward(){
+ let ov=document.getElementById('v7136GrowOrderReward');if(ov)return ov;
+ ov=document.createElement('div');ov.id='v7136GrowOrderReward';ov.innerHTML=`
+  <div class="v7136-grow-order-card" role="dialog" aria-modal="true" aria-label="Grow-Auftrag Belohnung">
+   <div class="v7136-grow-order-icon">📋</div>
+   <div class="v7136-grow-order-kicker">GROW-AUFTRAG</div>
+   <h2 id="v7136GrowOrderTitle">Auftrag abgeschlossen</h2>
+   <div id="v7136GrowOrderName" class="v7136-grow-order-name"></div>
+   <div id="v7136GrowOrderState" class="v7136-grow-order-state"></div>
+   <div id="v7136GrowOrderLines" class="v7136-reward-list"></div>
+   <button type="button" class="btn" id="v7136GrowOrderOk">OK</button>
+  </div>`;
+ document.body.appendChild(ov);
+ const close=()=>ov.classList.remove('show');
+ ov.addEventListener('click',e=>{if(e.target===ov)close()});
+ ov.querySelector('#v7136GrowOrderOk')?.addEventListener('click',close);
+ return ov;
+}
+function showGrowOrder(b,ctx={}){
+ const contracts=Array.isArray(b?.contracts)?b.contracts:Array.isArray(b?.orders?.contracts)?b.orders.contracts:Array.isArray(s?.grow?.v6160?.contracts)?s.grow.v6160.contracts:[];
+ const id=String(ctx.contractId||'');
+ const contract=contracts.find(c=>String(c?.id||'')===id)||ctx.contract||null;
+ if(!contract)return false;
+ const claimed=ctx.claimed!==false&&!!contract.claimed;
+ const ov=ensureGrowOrderReward();
+ const title=ov.querySelector('#v7136GrowOrderTitle'),name=ov.querySelector('#v7136GrowOrderName'),state=ov.querySelector('#v7136GrowOrderState'),lines=ov.querySelector('#v7136GrowOrderLines'),ok=ov.querySelector('#v7136GrowOrderOk');
+ if(title)title.textContent=claimed?'Belohnung erhalten':'Auftrag abgeschlossen';
+ if(name)name.textContent=String(contract.title||'Grow-Auftrag');
+ if(state)state.textContent=claimed?'Die Belohnung wurde gutgeschrieben.':'Belohnung ist jetzt abholbereit.';
+ const rows=growOrderRewardRows(contract);
+ if(lines)lines.innerHTML=rows.length?rows.join(''):'<div class="v7136-reward-line">Belohnung verfügbar.</div>';
+ if(ok)ok.textContent=claimed?'Belohnung bestätigen':'OK';
+ try{window.v6111Sfx?.('reward')}catch(_){}
+ ov.classList.add('show');requestAnimationFrame(()=>ov.classList.add('show'));return true;
+}
 function showHarvest(b){
  let ov=null;try{ov=v237EnsureHarvestReward?.()}catch(_){};if(!ov)return false;
  try{window.v6111Sfx?.('reward')}catch(_){}
@@ -105,7 +153,8 @@ window.v7136ShowServerReward=(kind,bundle,ctx={})=>{
  if(kind==='quest')return showQuest(bundle,ctx);
  if(kind==='dungeon')return showDungeon(bundle,ctx);
  if(kind==='harvest')return showHarvest(bundle,ctx);
+ if(kind==='growOrder')return showGrowOrder(bundle,ctx);
  return false;
 };
-window.v7136RewardDiagnostics=()=>({version:String(window.GROW_LEGENDS_VERSION?.short||'V7.136'),serverRewardSource:true,quest:true,dungeon:true,harvest:true});
+window.v7136RewardDiagnostics=()=>({version:String(window.GROW_LEGENDS_VERSION?.short||'V7.136'),serverRewardSource:true,quest:true,dungeon:true,harvest:true,growOrder:true});
 })();
