@@ -2377,3 +2377,16 @@ Arbeitsmodus:
 - v372 aktueller Header war bereits korrekt.
 - QA `V8009_SOCIAL_SMALL_SCREEN_QA.json`: grün.
 - Stable / `index.html`: unverändert.
+
+
+#### Character Extraction Batch 1
+- Vier kanonische Character-Owner 1:1 aus `beta.html` nach `js/features/character/beta/` ausgelagert:
+  - `v4140-attribute-display-owner` → `v8009-s1-v4140-attribute-display-owner.js`
+  - `v543-talents-mobile-tree-js` → `v8009-s1-v543-talents-mobile-tree.js`
+  - `v444-character-inventory-order-fix` → `v8009-s1-v444-character-inventory-order.js`
+  - `v514-heldenquartier-reference-js` → `v8009-s1-v514-heldenquartier-reference.js`
+- Zusammen rund 22 KB Inline-JS aus dem Monolithen entfernt.
+- Script-IDs und Position/Reihenfolge in `beta.html` beibehalten; nur auf `src=` umgestellt.
+- Alle vier externen Dateien mit `node --check` geprüft.
+- QA `V8009_CHARACTER_EXTRACTION_BATCH1_QA.json`: vollständig grün.
+- Stable / `index.html`: unverändert.
