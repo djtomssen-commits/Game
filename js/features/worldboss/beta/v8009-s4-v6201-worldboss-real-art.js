@@ -6,19 +6,9 @@ window.__V6201_WORLD_BOSS_REAL_ART__=true;
 const ART="assets/v7198-base64/6dcb5b08e22d3bbdc409.webp";
 let hpObserver=null,logObserver=null,setupTimer=null,deathLockUntil=0;
 
-function bossArt(){
-  return `<div class="v111-boss-scene v6201-real-scene" id="v111BossScene" aria-label="Smaragd-Koloss">
-    <img class="v6201-boss-art" src="${ART}" alt="Smaragd-Koloss">
-    <div class="v6201-boss-dark"></div>
-    <div class="v6201-aura"></div>
-    <div class="v6201-fog"></div>
-    <div class="v6201-hitflash"></div>
-    <div class="v6201-damage-layer" id="v6201DamageLayer"></div>
-    <div class="v6201-phase-label" id="v6201ScenePhase">SMARAGD-KOLOSS</div>
-  </div>`;
-}
-window.v6201WorldBossArt=bossArt;
-try{v111BossArt=bossArt;window.v111BossArt=bossArt}catch(e){console.warn('V6.201 boss art owner',e)}
+/* V8.009: art DOM production moved into the canonical v111 overlay owner.
+   Keep this compatibility accessor without producing another #v111BossScene. */
+window.v6201WorldBossArt=()=>typeof v111BossArt==='function'?v111BossArt():'';
 
 function parseHp(text){
   const m=String(text||'').replace(/\./g,'').match(/(\d+)\s*\/\s*(\d+)/);
@@ -119,13 +109,7 @@ const baseEnsure=(typeof window.v110EnsureOverlay==='function'?window.v110Ensure
 if(typeof baseEnsure==='function'&&!baseEnsure.__v6201Art){
   const wrapped=function(){
     const r=baseEnsure.apply(this,arguments);
-    setTimeout(()=>{
-      const scene=document.getElementById('v111BossScene');
-      if(scene&&!scene.classList.contains('v6201-real-scene')){
-        const holder=document.createElement('div');holder.innerHTML=bossArt();scene.replaceWith(holder.firstElementChild);
-      }
-      install();
-    },0);
+    queueMicrotask(()=>{try{install()}catch(_){}});
     return r;
   };
   wrapped.__v6201Art=true;
