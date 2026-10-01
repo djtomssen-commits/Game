@@ -647,6 +647,7 @@ document.addEventListener('click',e=>{
  const t=e.target instanceof Element?e.target.closest('#forge [data-v667-tab]'):null;
  if(t&&t.dataset.v667Tab!=='nebelforge'){
   document.getElementById('forge')?.classList.remove('v7240-nebel-open');
+  document.getElementById('v7240Nebelforge')?.remove();
  }
  if(e.target instanceof Element&&e.target.closest('#v032MenuBtn,#v032MenuToggle')){
   requestAnimationFrame(()=>{
