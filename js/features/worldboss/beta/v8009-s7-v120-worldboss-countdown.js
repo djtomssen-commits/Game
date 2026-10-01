@@ -91,22 +91,22 @@ function v120InstallCountdown(){
   v120UpdateCountdown();
 }
 
-const v120BaseRender=render;
-render=function(){
-  const result=v120BaseRender();
-  if(document.querySelector('#world')?.classList.contains('active'))requestAnimationFrame(v120InstallCountdown);
-  return result;
-};
+/* V8.009 Worldboss powerblock: no global render wrapper. The home/world
+   lifecycle mounts the countdown directly; the 1s ticker only updates while visible. */
+const v120Mount=()=>{try{if(document.querySelector('#world')?.classList.contains('active'))v120InstallCountdown()}catch(e){}};
+document.addEventListener('DOMContentLoaded',v120Mount,{once:true});
+window.addEventListener('pageshow',v120Mount,{passive:true});
+window.addEventListener('growlegends:account-ready',v120Mount,{passive:true});
+window.addEventListener('growlegends:navigation-open-v7119',e=>{
+  if(String(e?.detail?.id||e?.detail?.screen||'')==='world')v120Mount();
+},{passive:true});
 
 /* Live countdown: update once per second. */
 setInterval(()=>{
   try{
     if(document.hidden||!document.querySelector('#world')?.classList.contains('active'))return;
     v120InstallCountdown();
-    v120UpdateCountdown();
   }catch(e){}
 },1000);
 
-setTimeout(()=>{
-  try{v120InstallCountdown()}catch(e){}
-},150);
+v120Mount();
