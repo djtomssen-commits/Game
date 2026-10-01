@@ -272,6 +272,7 @@ v233ClaimQuest=function(){
   v235EnsureAchievementState();
 
   const before=v235RewardSnapshot(q);
+  const seedRewardBefore=(()=>{try{return window.v4124QuestSeedSnapshot?.()||null}catch(_){return null}})();
   const payoutTxn=(()=>{try{return window.v496BeginQuestClaim?.(q)||{ok:true,quest:q}}catch(e){console.warn('V4.496 claim begin hook',e);return {ok:true,quest:q}}})();
   if(payoutTxn?.ok===false){
     v233ClaimBusy=false;
@@ -361,6 +362,7 @@ v233ClaimQuest=function(){
       Save again after old post-processing layers (Harz, achievements).
     */
     try{persist(false)}catch(e){}
+    try{if(seedRewardBefore)window.v4124AppendQuestSeedReward?.(seedRewardBefore)}catch(e){console.warn('V8.009 quest seed reward repaint',e)}
 
     /* V8.009: one canonical Local/Mirror completion event.
        The preboot GL_EVENTS bus is loaded before all feature owners, so Guild,
