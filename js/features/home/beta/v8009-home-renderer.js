@@ -479,13 +479,11 @@
   v085WorldHtml=worldHtml;
   v085InstallWorld=function(force){installWorld(!!force)};
 
-  const baseGo=v032Go;
-  v032Go=function(id){
-    const r=baseGo.apply(this,arguments);
+  window.addEventListener('growlegends:navigation-open-v7119',e=>{
+    const id=String(e?.detail?.id||'');
     buildHeader();
-    if(id==='world')requestAnimationFrame(()=>requestAnimationFrame(()=>installWorld(false)));
-    return r;
-  };
+    if(id==='world')installWorld(false);
+  },{passive:true});
 
   /* HOME-17: the extracted beta header owns its own build label. Historical
      document-wide V4.29 version writes are retired. */
