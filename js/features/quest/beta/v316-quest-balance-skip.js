@@ -111,11 +111,3 @@ window.v316PrepareQuestRender=v316BalanceVisibleOffers;
 window.v316ScheduleSkipPaint=()=>{}; /* V8.009 retired: v4127 owns visible skip row. */
 
 try{v316BalanceVisibleOffers()}catch(e){}
-
-const v316BaseRender=render;
-render=function(){
- const r=v316BaseRender();
- 
- const line=document.querySelector('#v141VersionLine');
- return r;
-};
