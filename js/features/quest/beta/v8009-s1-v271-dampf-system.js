@@ -281,20 +281,8 @@ v093AdminLoadLists=async function(){
   return r;
 };
 
-/* Final renderer owns Dampf display so historical /300 painters cannot overwrite it. */
-const v271BaseRender=render;
-render=function(){
-  v271EnsureRefillState();
-  v271NormalizeQuestOffers();
-  if(v271EventDataReady)v271SyncDampfEvent();
-  const r=v271BaseRender();
-  v026AddRefill();
-  v271PaintDampf();
-  try{renderQuests()}catch(e){}
-  
-  const line=document.querySelector('#v141VersionLine');
-  return r;
-};
+/* V8.009: v271 no longer owns global rendering.
+   It keeps Dampf state/refill/admin normalization; v294 owns final painting. */
 
 /* Migration from old 300-cap system. Do not let old surplus survive the new normal cap. */
 v271EnsureRefillState();
@@ -305,8 +293,4 @@ if(!s.v271DampfMigration){
   try{localStorage.setItem(KEY,JSON.stringify(s))}catch(e){}
 }
 
-setTimeout(()=>{
-  try{v026AddRefill();v271PaintDampf();renderQuests()}catch(e){}
-  
-  const line=document.querySelector('#v141VersionLine');
-},1700);
+queueMicrotask(()=>{try{v271NormalizeQuestOffers()}catch(e){}});
