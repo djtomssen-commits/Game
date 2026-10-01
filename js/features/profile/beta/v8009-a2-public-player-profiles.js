@@ -63,45 +63,11 @@ function v074EquipmentHtml(eq){
 }
 
 async function v074OpenProfile(id){
-  if(!(await v073Init()))return;
-  if(!v073User?.id)return;
-  const overlay=document.querySelector('#v074ProfileOverlay');
-  const content=document.querySelector('#v074ProfileContent');
-  if(!overlay||!content)return;
-  overlay.classList.add('show');
-  content.innerHTML='<div class="v072-empty">Spielerprofil wird geladen...</div>';
-
-  const {data:p,error}=await v073Db.from('profiles')
-    .select('id,character_name,class_id,class_name,level,bosses,gear_score,dungeons,combat_power,equipment,dungeon_progress')
-    .eq('id',id).single();
-
-  if(error||!p){
-    content.innerHTML='<button class="btn secondary v074-close" onclick="v074CloseProfile()">✕</button><div class="v072-status-offline">Profil konnte nicht geladen werden.</div>';
-    return;
-  }
-  const completed=Array.isArray(p.dungeon_progress?.completed)?p.dungeon_progress.completed.length:(Number(p.dungeons)||0);
-  content.innerHTML=`
-    <div class="v074-profile-head">
-      <div><div class="v074-profile-title">${v073Escape(p.character_name)}</div>
-      <div class="v074-profile-class">${v073Escape(p.class_name||'')} · Level ${Number(p.level)||1}</div></div>
-      <button class="btn secondary v074-close" id="v074CloseBtn">✕</button>
-    </div>
-    <div class="v074-power"><span>Kampfwert</span><b>${Number(p.combat_power)||0}</b></div>
-    <div class="v072-profile-stats">
-      <div class="v072-profile-stat"><span>Level</span><b>${Number(p.level)||1}</b></div>
-      <div class="v072-profile-stat"><span>Bosse</span><b>${Number(p.bosses)||0}</b></div>
-      <div class="v072-profile-stat"><span>Ausrüstung</span><b>${Number(p.gear_score)||0}</b></div>
-      <div class="v072-profile-stat"><span>Dungeons</span><b>${completed}</b></div>
-    </div>
-    <h3 style="margin:14px 0 6px">Angelegte Ausrüstung</h3>
-    <div class="v074-equipment">${v074EquipmentHtml(p.equipment)}</div>
-    <div class="v074-progress">Dungeon-Fortschritt: <b>${completed} abgeschlossen</b></div>
-    ${p.id!==v073User.id?`<button class="btn" id="v074AddFriend" style="width:100%;margin-top:12px">Freundschaftsanfrage senden</button>`:''}
-  `;
-  document.querySelector('#v074CloseBtn').onclick=v074CloseProfile;
-  const add=document.querySelector('#v074AddFriend');
-  if(add)add.onclick=()=>v073SendFriendRequest(p.id,p.character_name);
+  /* V8.009: legacy profile DOM renderer retired.
+     v655 installs the canonical robust profile loader later in the boot chain. */
+  return false;
 }
+
 function v074CloseProfile(){document.querySelector('#v074ProfileOverlay')?.classList.remove('show')}
 
 document.querySelector('#v074ProfileOverlay')?.addEventListener('click',e=>{
