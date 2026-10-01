@@ -2618,3 +2618,20 @@ Arbeitsmodus:
 - Alle sechs externen Dateien mit `node --check` geprüft.
 - QA `V8009_FEATURE_EXTRACTION_BATCH4_QA.json`: vollständig grün.
 - Stable / `index.html`: unverändert.
+
+
+#### Feature Extraction Batch 5
+- Acht große Owner 1:1 aus `beta.html` ausgelagert:
+  - `v4147-deterministic-boot-controller` → `js/features/system/beta/v8009-s5-v4147-deterministic-boot-controller.js`
+  - `v271-dampf-system` → `js/features/quest/beta/v8009-s1-v271-dampf-system.js`
+  - `v4114-grow-care-authority` → `js/features/grow/beta/v8009-s3-v4114-grow-care-authority.js`
+  - `v4135-character-save-barrier` → `js/features/account/beta/v8009-s3-v4135-character-save-barrier.js`
+  - `v7129-referral-client` → `js/features/social/beta/v8009-s2-v7129-referral-client.js`
+  - `v6235-illegal-book-longterm-pagination` → `js/features/book/beta/v8009-s1-v6235-illegal-book-longterm-pagination.js`
+  - `v4162-menu-attention-badges-script` → `js/features/ui/beta/v8009-s4-v4162-menu-attention-badges.js`
+  - `v7132-item-authority-lockdown` → `js/features/authority/beta/v8009-s3-v7132-item-authority-lockdown.js`
+- Zusammen 97.477 Bytes Inline-JS aus dem Monolithen entfernt.
+- Originale Script-Attribute, IDs und Reihenfolge beibehalten; nur um `src=` ergänzt.
+- Alle acht externen Dateien mit `node --check` geprüft.
+- QA `V8009_FEATURE_EXTRACTION_BATCH5_QA.json`: vollständig grün.
+- Stable / `index.html`: unverändert.
