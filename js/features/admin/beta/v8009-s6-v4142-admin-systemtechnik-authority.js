@@ -25,12 +25,6 @@
   ensureAdminUi();return true;
  }
  window.v4142SyncAdminSystemtechnik=sync;
- try{
-  if(typeof v093CheckAdmin==='function'&&!window.__v4142AdminCheckWrapped){
-   const base=v093CheckAdmin;v093CheckAdmin=async function(){const r=await base.apply(this,arguments);sync();return r};
-   try{window.v093CheckAdmin=v093CheckAdmin}catch(e){}window.__v4142AdminCheckWrapped=true;
-  }
- }catch(e){}
  document.addEventListener('click',e=>{if(e.target instanceof Element&&e.target.closest('#v032MenuToggle'))requestAnimationFrame(sync)},true);
  document.addEventListener('DOMContentLoaded',sync,{once:true});window.addEventListener('pageshow',sync,{passive:true});
  window.addEventListener('growlegends:account-ready',sync,{passive:true});
