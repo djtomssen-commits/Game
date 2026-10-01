@@ -116,22 +116,9 @@ async function v271RefillDampf(){
 }
 
 v026PaintDampf=v271PaintDampf;
-v026AddRefill=function(){
-  const energyEl=document.querySelector('#energy');
-  if(!energyEl)return;
-  const host=energyEl.parentElement;
-  let box=document.querySelector('#v026Refill');
-  if(!box){
-    box=document.createElement('span');
-    box.id='v026Refill';
-    box.style.marginLeft='8px';
-    box.innerHTML='<button id="v026RefillBtn" class="small">🟢 +20 💨 Dampf</button>';
-    host.appendChild(box);
-  }
-  const btn=document.querySelector('#v026RefillBtn');
-  if(btn)btn.onclick=v271RefillDampf;
-  v271PaintDampf();
-};
+/* V8.009: v271 no longer creates refill DOM.
+   v284 is the sole card/button producer; this compatibility entry only repaints. */
+v026AddRefill=function(){v271PaintDampf()};
 
 /* Daily reset: keep the established shared midnight reset, add refill reset. */
 const v271BaseDailyReset=typeof v127ApplyDailyReset==='function'?v127ApplyDailyReset:null;
