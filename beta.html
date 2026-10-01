@@ -95072,7 +95072,7 @@ body:has(#v6252RegisterOverlay.show) #v075AuthOverlay{pointer-events:none!import
  /* V347 "Neu hier?" nutzt den Register-Button. Dadurch landet auch dieser Weg im Popup. */
  paintEntry();
  try{v075BindAuthUi()}catch(_){}
- [120,500,1400].forEach(ms=>setTimeout(()=>{paintEntry()},ms));
+ window.addEventListener('growlegends:account-ready',paintEntry,{passive:true});
 
  window.v6252RegistrationDiagnostics=()=>({
   popupPresent:!!overlay(),
@@ -98800,7 +98800,7 @@ document.addEventListener('click',e=>{
 },true);
 window.addEventListener('growlegends:account-ready',()=>setTimeout(refresh,60));
 window.addEventListener('pageshow',()=>setTimeout(refresh,60),{passive:true});
-[0,120,700].forEach(ms=>setTimeout(refresh,ms));
+window.addEventListener('growlegends:foreground-ready',refresh,{passive:true});
 
 window.v6287HarzruferinDiagnostics=()=>({
  version:'V6.287',classDefined:typeof classes!=='undefined'&&!!classes.summoner,active:isHR(),
@@ -99104,7 +99104,7 @@ body.v6289-existing-summoner [data-v4136-class="summoner"]{
 
   window.addEventListener('growlegends:account-ready',()=>setTimeout(decorate,40));
   window.addEventListener('pageshow',()=>setTimeout(decorate,40),{passive:true});
-  [0,120,700].forEach(ms=>setTimeout(decorate,ms));
+  window.addEventListener('growlegends:foreground-ready',decorate,{passive:true});
 
   window.v6289HarzruferinLockDiagnostics=()=>({
     version:'V6.289',
@@ -99237,7 +99237,7 @@ body:not(.v6291-summoner-active) .v6287-summon-fx{
 
  window.addEventListener('growlegends:account-ready',()=>setTimeout(refresh,50));
  window.addEventListener('pageshow',()=>setTimeout(refresh,50),{passive:true});
- [0,120,650].forEach(ms=>setTimeout(refresh,ms));
+ window.addEventListener('growlegends:foreground-ready',refresh,{passive:true});
 
  window.v6291Diagnostics=()=>({
    version:'V6.291',
@@ -99271,7 +99271,7 @@ body:not(.v6291-summoner-active) .v6287-summon-fx{
    if(hit)setTimeout(fix,0);
  },true);
  window.addEventListener('growlegends:account-ready',()=>setTimeout(fix,100));
- [0,250,900].forEach(ms=>setTimeout(fix,ms));
+ window.addEventListener('growlegends:foreground-ready',fix,{passive:true});
 
  window.v6292HallAvatarDiagnostics=()=>({
    version:'V6.292',
@@ -99441,7 +99441,7 @@ body:not(.v6291-summoner-active) .v6287-summon-fx{
 
  window.addEventListener('growlegends:account-ready',()=>setTimeout(refresh,50));
  window.addEventListener('pageshow',()=>setTimeout(refresh,50),{passive:true});
- [0,120,700].forEach(ms=>setTimeout(refresh,ms));
+ window.addEventListener('growlegends:foreground-ready',refresh,{passive:true});
 
  window.v6293ClassParityDiagnostics=()=>({
    version:'V6.293',
@@ -99700,7 +99700,7 @@ document.addEventListener('click',e=>{
 },true);
 window.addEventListener('growlegends:account-ready',()=>setTimeout(repair,100));
 window.addEventListener('pageshow',()=>setTimeout(repair,80),{passive:true});
-[0,250,900].forEach(ms=>setTimeout(repair,ms));
+window.addEventListener('growlegends:foreground-ready',repair,{passive:true});
 
 window.v6297ClassDisplayDiagnostics=()=>({
  version:'V6.297',
@@ -99822,7 +99822,7 @@ document.addEventListener('click',e=>{
 window.addEventListener('growlegends:account-ready',()=>setTimeout(()=>syncCharacterAvatar('account-ready'),100));
 window.addEventListener('pageshow',()=>setTimeout(()=>syncCharacterAvatar('pageshow'),80),{passive:true});
 
-[0,180,700].forEach(ms=>setTimeout(()=>syncCharacterAvatar('startup'),ms));
+window.addEventListener('growlegends:foreground-ready',()=>syncCharacterAvatar('foreground'),{passive:true});
 
 window.v6298AvatarDiagnostics=()=>({
  version:'V6.298',
@@ -100098,7 +100098,7 @@ document.addEventListener('click',e=>{
     : null;
   if(hit)setTimeout(rerender,0);
 },true);
-[0,250,800].forEach(ms=>setTimeout(rerender,ms));
+window.addEventListener('growlegends:foreground-ready',rerender,{passive:true});
 
 window.v6301HarzTalentDiagnostics=()=>({
   version:'V6.301',
