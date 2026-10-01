@@ -1,0 +1,23 @@
+name: V8.009 Attribute Retired Cleanup
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/v8009_attribute_retired_cleanup.py'
+      - '.github/workflows/v8009-attribute-retired-cleanup.yml'
+permissions:
+  contents: write
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 .github/scripts/v8009_attribute_retired_cleanup.py
+      - run: |
+          git config user.name github-actions
+          git config user.email github-actions@users.noreply.github.com
+          git add -A beta.html js/features/legacy-extracted/beta V8009_ATTRIBUTE_RETIRED_CLEANUP_QA.json
+          git commit -m "V8.009 CLEANUP: remove retired attribute scripts" || exit 0
+          git pull --rebase origin main
+          git push
