@@ -90,17 +90,9 @@
    if(bal)bal.textContent=Math.max(0,Number(s.harzTaler)||0).toLocaleString('de-DE');
  }
 
- const baseDealer=window.v322RenderDealer;
- if(typeof baseDealer==='function'){
-   window.v322RenderDealer=function(){
-     const r=baseDealer.apply(this,arguments);
-     buildDealer();
-     return r;
-   };
- }
+ /* V8.009: v567 is the final Harz dealer presentation owner.
+    The old reference shell stays available only as dead compatibility code and
+    must not build or repaint hidden DOM. */
  window.__v339GlobalRenderRetired=true;
- window.addEventListener('growlegends:navigation-open-v7119',e=>{
-   if(String(e?.detail?.id||'')==='harzDealer')buildDealer();
- },{passive:true});
- buildDealer();
+ window.__V339_DEALER_VISUAL_OWNER__='retired-v567';
 })();
