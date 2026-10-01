@@ -1,0 +1,403 @@
+{
+  "build": "V8.009-PAGE-TAB-DISCOVERY",
+  "external_script_count": 662,
+  "screens": [
+    "world",
+    "character",
+    "grow",
+    "quests",
+    "dungeon",
+    "shop",
+    "bagDealer",
+    "pvp",
+    "guild",
+    "hall",
+    "friends",
+    "mail",
+    "admin",
+    "harzDealer"
+  ],
+  "tab_groups": {
+    "v254-tab": [
+      {
+        "value": "overview",
+        "path": "beta.html",
+        "order": -1,
+        "snippet": "/div>\n        <div class=\"v254-guild-level\">\n          <span>GILDEN-BUDS</span>\n          <b id=\"v254GuildBudsTop\">0</b>\n        </div>\n      </div>\n\n      <div class=\"v254-tabs\">\n        <button class=\"v254-tab active\" data-v254-tab=\"overview\">Übersicht</button>\n        <button class=\"v254-tab\" data-v254-tab=\"growtasks\">Grow-Aufträge</button>\n        <button class=\"v254-tab\" data-v254-tab=\"boss\">Gildenboss</button>\n        <button class=\"v254-tab\" data-v254-tab=\"war\">Gildenkrieg</button>\n      </div>\n\n      <div id=\"v254GuildOverview\" class=\"v254-panel\">\n        <div class=\"v254-upgrade-grid\">\n          <div class=\"v254-upgrade\">\n            <div class=\"v"
+      },
+      {
+        "value": "growtasks",
+        "path": "beta.html",
+        "order": -1,
+        "snippet": "n>\n          <b id=\"v254GuildBudsTop\">0</b>\n        </div>\n      </div>\n\n      <div class=\"v254-tabs\">\n        <button class=\"v254-tab active\" data-v254-tab=\"overview\">Übersicht</button>\n        <button class=\"v254-tab\" data-v254-tab=\"growtasks\">Grow-Aufträge</button>\n        <button class=\"v254-tab\" data-v254-tab=\"boss\">Gildenboss</button>\n        <button class=\"v254-tab\" data-v254-tab=\"war\">Gildenkrieg</button>\n      </div>\n\n      <div id=\"v254GuildOverview\" class=\"v254-panel\">\n        <div class=\"v254-upgrade-grid\">\n          <div class=\"v254-upgrade\">\n            <div class=\"v254-upgrade-icon\">⭐</div>\n            <div>\n              <b>EXP-Bonus</b>\n   "
+      },
+      {
+        "value": "boss",
+        "path": "beta.html",
+        "order": -1,
+        "snippet": "v class=\"v254-tabs\">\n        <button class=\"v254-tab active\" data-v254-tab=\"overview\">Übersicht</button>\n        <button class=\"v254-tab\" data-v254-tab=\"growtasks\">Grow-Aufträge</button>\n        <button class=\"v254-tab\" data-v254-tab=\"boss\">Gildenboss</button>\n        <button class=\"v254-tab\" data-v254-tab=\"war\">Gildenkrieg</button>\n      </div>\n\n      <div id=\"v254GuildOverview\" class=\"v254-panel\">\n        <div class=\"v254-upgrade-grid\">\n          <div class=\"v254-upgrade\">\n            <div class=\"v254-upgrade-icon\">⭐</div>\n            <div>\n              <b>EXP-Bonus</b>\n              <span>Alle Mitglieder erhalten dauerhaft mehr Erfahrung.</span>\n  "
+      },
+      {
+        "value": "war",
+        "path": "beta.html",
+        "order": -1,
+        "snippet": "=\"overview\">Übersicht</button>\n        <button class=\"v254-tab\" data-v254-tab=\"growtasks\">Grow-Aufträge</button>\n        <button class=\"v254-tab\" data-v254-tab=\"boss\">Gildenboss</button>\n        <button class=\"v254-tab\" data-v254-tab=\"war\">Gildenkrieg</button>\n      </div>\n\n      <div id=\"v254GuildOverview\" class=\"v254-panel\">\n        <div class=\"v254-upgrade-grid\">\n          <div class=\"v254-upgrade\">\n            <div class=\"v254-upgrade-icon\">⭐</div>\n            <div>\n              <b>EXP-Bonus</b>\n              <span>Alle Mitglieder erhalten dauerhaft mehr Erfahrung.</span>\n              <strong id=\"v254XpBonus\">Stufe 0 · +0%</strong>\n            <"
+      },
+      {
+        "value": "war",
+        "path": "js/features/guild/beta/v8008-c25-guildwar-owner.js",
+        "order": 155,
+        "snippet": "isplay!=='none'}\n function paintBadge(){\n  const w=typeof v262War!=='undefined'?v262War:null;\n  const on=!!(w?.id&&w?.incoming&&!isSeen(w.id));\n  document.querySelectorAll('#v032MenuPanel [data-screen=\"guild\"],.v254-tab[data-v254-tab=\"war\"]').forEach(el=>el.classList.toggle('v4159-war-new',on));\n }\n window.v4159PaintGuildWarBadge=paintBadge;\n function setServerError(msg=''){\n  lastServerError=String(msg||'');const box=q('v4159WarServerState');if(!box)return;\n  box.classList.toggle('on',!!lastServerError);box.textContent=lastServerError;\n }\n function ensureUi(){\n  const panel=q('v254GuildWar');if(!panel)return false;\n  q('v262WarRefresh')?.remove();q('"
+      },
+      {
+        "value": "boss",
+        "path": "js/features/guild/beta/v8008-c18-guildboss-screen-visual-owner.js",
+        "order": 291,
+        "snippet": "ame(buildBossLayout);return r};\n      try{window.v254RenderGuild=v254RenderGuild}catch(e){}\n      window.__v562BossGuildWrapped=true;\n    }\n  }catch(e){}\n\n  document.addEventListener('click',e=>{if(e.target?.closest?.('[data-v254-tab=\"boss\"]'))setTimeout(buildBossLayout,20)},true);\n  document.addEventListener('DOMContentLoaded',()=>requestAnimationFrame(buildBossLayout),{once:true});\n  window.addEventListener('pageshow',()=>requestAnimationFrame(buildBossLayout),{passive:true});\n  [60,250,800,1800].forEach(ms=>setTimeout(buildBossLayout,ms));\n};\n\n/* V8.008-C18 — deferred visual installers; execution positions stay unchanged. */\nwindow.v8008C18InstallPr"
+      },
+      {
+        "value": "war",
+        "path": "js/features/ui/beta/v8009-s4-v4162-menu-attention-badges.js",
+        "order": 395,
+        "snippet": "){\n  try{\n   const chat=!!document.getElementById('v4144GuildChatTab')?.classList.contains('v4145-unread');\n   const war=!!document.querySelector('#v254GuildWar .v4159-war-alert.on,#v254GuildWar .v4159-war-new,.v254-tab[data-v254-tab=\"war\"].v4159-war-new');\n   const c=Math.max(0,Math.floor(num(document.getElementById('v257RequestCount')?.textContent)));\n   return {on:chat||war||c>0,count:c,chat,war};\n  }catch(e){return {on:false,count:0,chat:false,war:false}}\n }\n function friendsDomCount(){\n  try{return document.querySelectorAll('#v072RequestsList [data-v073-accept]').length}catch(e){return 0}\n }\n function mailDomCount(){\n  try{\n   const b=document.ge"
+      },
+      {
+        "value": "boss",
+        "path": "js/features/guild/beta/v8008-c18-guildboss-replay-owner.js",
+        "order": 472,
+        "snippet": "ng=()=>document.scrollingElement||document.documentElement;\n\n  const bossViewSnapshot=()=>{\n    const btn=document.getElementById('v254BossSignup');\n    const root=scrolling();\n    const bossTab=document.querySelector('[data-v254-tab=\"boss\"]');\n    const bossPanel=document.getElementById('v254GuildBoss');\n    const bossActive=!!(\n      bossTab?.classList?.contains('active') ||\n      (bossPanel && getComputedStyle(bossPanel).display!=='none')\n    );\n    return {\n      scrollTop:Number(root?.scrollTop||window.scrollY||0),\n      buttonTop:btn?.getBoundingClientRect?.().top??null,\n      bossActive\n    };\n  };\n\n  const forceBossTab=()=>{\n    const bossTab=d"
+      },
+      {
+        "value": "boss",
+        "path": "js/features/legacy-extracted/beta/v6316-remove-last-legacy-test-badge-script.js",
+        "order": 474,
+        "snippet": "est-label').forEach(n=>n.remove());\n  }\n  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',clean,{once:true});else clean();\n  document.addEventListener('click',e=>{if(e.target?.closest?.('[data-v254-tab=\"boss\"]'))clean()},true);\n})();\n"
+      },
+      {
+        "value": "boss",
+        "path": "js/features/system/beta/v8009-s6-v7165-combined-fixes-owner.js",
+        "order": 630,
+        "snippet": "urn r;\n };\n bossLoad.__v7165=true;bossLoad.__base=baseBossLoad;window.v255LoadBoss=bossLoad;try{v255LoadBoss=bossLoad}catch(_){}\n}\ndocument.addEventListener('click',e=>{if(e.target instanceof Element&&e.target.closest('[data-v254-tab=\"boss\"]'))setTimeout(()=>{try{void window.v255LoadBoss?.()}catch(_){}},30)},true);\n\n/* Final release marker. */\nconst V=Object.freeze({short:VERSION,label:VERSION+' Stable',number:'7.165'});\nwindow.GROW_LEGENDS_VERSION=V;window.__GROW_LEGENDS_RELEASE__=VERSION;window.__GL_CURRENT_BUILD__=VERSION;\nconst paintVersion=()=>{try{document.querySelectorAll('.version,.v372-logo em,.v371-logo em,.v366-ver').forEach(el=>{if(el?.tagN"
+      }
+    ],
+    "v072-tab": [
+      {
+        "value": "ranking",
+        "path": "beta.html",
+        "order": -1,
+        "snippet": "iv>\n      <span class=\"pill\" id=\"v072OnlineState\">OFFLINE</span>\n    </div>\n\n    <div class=\"v072-profile-card\" id=\"v072OwnProfile\"></div>\n\n    <div class=\"v072-tabs\">\n      <button class=\"btn secondary v072-tab active\" data-v072-tab=\"ranking\">Rangliste</button>\n      <button class=\"btn secondary v072-tab\" data-v072-tab=\"search\">Spieler suchen</button>\n    </div>\n\n    <div id=\"v072HallRanking\" class=\"v072-panel\"></div>\n    <div id=\"v072HallSearch\" class=\"v072-panel\" style=\"display:none\"></div>\n    <div class=\"v646-footer-plaque\">GOOD PLAYERS GROW · GREAT LEGENDS</div>\n  </div>\n</section>\n\n<section id=\"friends\" class=\"screen v673-friends\">\n  <div class=\"v0"
+      },
+      {
+        "value": "search",
+        "path": "beta.html",
+        "order": -1,
+        "snippet": "ass=\"v072-profile-card\" id=\"v072OwnProfile\"></div>\n\n    <div class=\"v072-tabs\">\n      <button class=\"btn secondary v072-tab active\" data-v072-tab=\"ranking\">Rangliste</button>\n      <button class=\"btn secondary v072-tab\" data-v072-tab=\"search\">Spieler suchen</button>\n    </div>\n\n    <div id=\"v072HallRanking\" class=\"v072-panel\"></div>\n    <div id=\"v072HallSearch\" class=\"v072-panel\" style=\"display:none\"></div>\n    <div class=\"v646-footer-plaque\">GOOD PLAYERS GROW · GREAT LEGENDS</div>\n  </div>\n</section>\n\n<section id=\"friends\" class=\"screen v673-friends\">\n  <div class=\"v052-scene-banner v052-character\">\n    <div>\n      <div class=\"v052-title\">🤝 Nebel-Crew</"
+      }
+    ],
+    "v381-tab": [
+      {
+        "value": "inbox",
+        "path": "beta.html",
+        "order": -1,
+        "snippet": "\">Nachrichten und deine letzten PvP-Kämpfe an einem Ort.</div></div><span class=\"pill\" id=\"v381UnreadPill\">0 ungelesen</span></div>\n    <div class=\"v381-tabs v6200-has-battle\">\n      <button class=\"btn secondary active\" data-v381-tab=\"inbox\">📥 Eingang</button>\n      <button class=\"btn secondary\" data-v381-tab=\"sent\">📤 Gesendet</button>\n      <button class=\"btn secondary\" data-v381-tab=\"compose\">✍️ Neue Nachricht</button>\n      <button class=\"btn secondary v6200-battle-tab\" data-v381-tab=\"battlelog\">⚔️ Kampflog <span id=\"v6200CombatBadge\" class=\"v6200-combat-badge\" hidden>0</span></button>\n    </div>\n    <div id=\"v381Inbox\" class=\"v381-panel v677-active-"
+      },
+      {
+        "value": "sent",
+        "path": "beta.html",
+        "order": -1,
+        "snippet": "ss=\"pill\" id=\"v381UnreadPill\">0 ungelesen</span></div>\n    <div class=\"v381-tabs v6200-has-battle\">\n      <button class=\"btn secondary active\" data-v381-tab=\"inbox\">📥 Eingang</button>\n      <button class=\"btn secondary\" data-v381-tab=\"sent\">📤 Gesendet</button>\n      <button class=\"btn secondary\" data-v381-tab=\"compose\">✍️ Neue Nachricht</button>\n      <button class=\"btn secondary v6200-battle-tab\" data-v381-tab=\"battlelog\">⚔️ Kampflog <span id=\"v6200CombatBadge\" class=\"v6200-combat-badge\" hidden>0</span></button>\n    </div>\n    <div id=\"v381Inbox\" class=\"v381-panel v677-active-panel\"></div>\n    <div id=\"v381Sent\" class=\"v381-panel\" style=\"display:none\""
+      },
+      {
+        "value": "compose",
+        "path": "beta.html",
+        "order": -1,
+        "snippet": "abs v6200-has-battle\">\n      <button class=\"btn secondary active\" data-v381-tab=\"inbox\">📥 Eingang</button>\n      <button class=\"btn secondary\" data-v381-tab=\"sent\">📤 Gesendet</button>\n      <button class=\"btn secondary\" data-v381-tab=\"compose\">✍️ Neue Nachricht</button>\n      <button class=\"btn secondary v6200-battle-tab\" data-v381-tab=\"battlelog\">⚔️ Kampflog <span id=\"v6200CombatBadge\" class=\"v6200-combat-badge\" hidden>0</span></button>\n    </div>\n    <div id=\"v381Inbox\" class=\"v381-panel v677-active-panel\"></div>\n    <div id=\"v381Sent\" class=\"v381-panel\" style=\"display:none\"></div>\n    <div id=\"v6200BattleLogPanel\" class=\"v381-panel v6200-battle-panel\" "
+      },
+      {
+        "value": "battlelog",
+        "path": "beta.html",
+        "order": -1,
+        "snippet": "n>\n      <button class=\"btn secondary\" data-v381-tab=\"sent\">📤 Gesendet</button>\n      <button class=\"btn secondary\" data-v381-tab=\"compose\">✍️ Neue Nachricht</button>\n      <button class=\"btn secondary v6200-battle-tab\" data-v381-tab=\"battlelog\">⚔️ Kampflog <span id=\"v6200CombatBadge\" class=\"v6200-combat-badge\" hidden>0</span></button>\n    </div>\n    <div id=\"v381Inbox\" class=\"v381-panel v677-active-panel\"></div>\n    <div id=\"v381Sent\" class=\"v381-panel\" style=\"display:none\"></div>\n    <div id=\"v6200BattleLogPanel\" class=\"v381-panel v6200-battle-panel\" style=\"display:none\"></div>\n    <div id=\"v381Compose\" class=\"v381-panel\" style=\"display:none\">\n      <labe"
+      },
+      {
+        "value": "compose",
+        "path": "js/features/social/beta/v8009-s5-v382-social-mail-buttons.js",
+        "order": 277,
+        "snippet": "r').forEach(el=>el.textContent='V4.11');\n  }\n\n  function v382OpenMailTo(name){\n    name=String(name||'').trim();\n    if(!name)return;\n    v032Go('mail');\n    setTimeout(()=>{\n      const compose=document.querySelector('[data-v381-tab=\"compose\"]');\n      if(compose)compose.click();\n      const recipient=document.querySelector('#v381Recipient');\n      if(recipient){\n        recipient.value=name;\n        recipient.dispatchEvent(new Event('input',{bubbles:true}));\n      }\n      document.querySelector('#v381Body')?.focus();\n    },30);\n  }\n  window.v382OpenMailTo=v382OpenMailTo;\n\n  function v382DecorateRows(rootSelector){\n    const root=document.querySelector(r"
+      },
+      {
+        "value": "compose",
+        "path": "js/features/pvp/beta/v8009-s1-v6200-pvp-battlelog-core.js",
+        "order": 469,
+        "snippet": "et.dataset.v6200Replay)));\n d?.querySelector('[data-v6200-message]')?.addEventListener('click',e=>composeTo(String(e.currentTarget.dataset.v6200Message||'')));\n}\nfunction composeTo(name){const b=document.querySelector('[data-v381-tab=\"compose\"]');b?.click();setTimeout(()=>{const i=document.getElementById('v381Recipient');if(i){i.value=name;i.focus()}},0)}\nasync function markAll(){rows.forEach(r=>{if(!isAttacker(r))r.defender_seen=true});paintBadge();renderList();try{if(online())await v073Db.rpc('v6200_mark_all_pvp_battles_seen')}catch(e){console.warn('V6.200 mark all',e)}}\nasync function load(){\n ensurePanel();if(loading)return;loading=true;\n try{\n  let s"
+      },
+      {
+        "value": "battlelog",
+        "path": "js/features/pvp/beta/v8009-s1-v6200-pvp-battlelog-core.js",
+        "order": 469,
+        "snippet": "nishBattle=wrapped;try{v209FinishBattle=wrapped}catch(_){}\n }\n}catch(e){console.warn('V6.200 finish hook',e)}\n/* Mail opening and tab badge refresh. */\ndocument.addEventListener('click',e=>{const t=e.target?.closest?.('[data-v381-tab=\"battlelog\"]');if(t)void load()},true);\nwindow.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')==='mail')void load()},{passive:true});\nsetTimeout(()=>{ensurePanel();if(document.getElementById('mail')?.classList.contains('active'))load()},500);\nsetInterval(()=>{if(!document.hidden&&document.getElementById('mail')?.classList.contains('active'))load()},60000);\n})();\n"
+      }
+    ],
+    "tab": [
+      {
+        "value": "attributes",
+        "path": "js/features/character/beta/v8009-s1-v4140-attribute-display-owner.js",
+        "order": 209,
+        "snippet": "ds:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')==='character')paint()},{passive:true});window.__v4140GoWrapped='v7119-event';\n document.addEventListener('click',e=>{if(e.target?.closest?.('#v459CharacterTabs [data-tab=\"attributes\"]'))paint()},true);\n document.addEventListener('DOMContentLoaded',paint,{once:true});\n window.addEventListener('pageshow',paint,{passive:true});\n /* V8.009: startup retry train retired; direct lifecycle hooks are sufficient. */\n function stamp(){}\n stamp();paint();\n window.v4140AttributeDiagnostics=()=>{const rows=[...document.querySelectorAll('#attrs > [data-v4140-attr]')];return{version:V.short,rowCount:rows.length"
+      },
+      {
+        "value": "inventory",
+        "path": "js/features/character/beta/v8009-s2-v459-character-hub.js",
+        "order": 322,
+        "snippet": "');\n    if(shell)return shell;\n    shell=document.createElement('div');shell.id='v459CharacterShell';\n    shell.innerHTML=`\n      <nav id=\"v459CharacterTabs\" aria-label=\"Charakterbereiche\">\n        <button type=\"button\" data-tab=\"inventory\"><span>🎒</span><em>Inventar</em></button>\n        <button type=\"button\" data-tab=\"attributes\"><span>💪</span><em>Attribute</em></button>\n        <button type=\"button\" data-tab=\"talents\"><span>🌳</span><em>Talente</em></button>\n        <button type=\"button\" data-tab=\"materials\"><span>💎</span><em>Materialien</em></button>\n      </nav>\n      <div class=\"v459-panel\" id=\"v459PanelInventory\" data-panel=\"inventory\"></div>\n   "
+      },
+      {
+        "value": "attributes",
+        "path": "js/features/character/beta/v8009-s2-v459-character-hub.js",
+        "order": 322,
+        "snippet": "erShell';\n    shell.innerHTML=`\n      <nav id=\"v459CharacterTabs\" aria-label=\"Charakterbereiche\">\n        <button type=\"button\" data-tab=\"inventory\"><span>🎒</span><em>Inventar</em></button>\n        <button type=\"button\" data-tab=\"attributes\"><span>💪</span><em>Attribute</em></button>\n        <button type=\"button\" data-tab=\"talents\"><span>🌳</span><em>Talente</em></button>\n        <button type=\"button\" data-tab=\"materials\"><span>💎</span><em>Materialien</em></button>\n      </nav>\n      <div class=\"v459-panel\" id=\"v459PanelInventory\" data-panel=\"inventory\"></div>\n      <div class=\"v459-panel\" id=\"v459PanelAttributes\" data-panel=\"attributes\"></div>\n      <div"
+      },
+      {
+        "value": "talents",
+        "path": "js/features/character/beta/v8009-s2-v459-character-hub.js",
+        "order": 322,
+        "snippet": "e\">\n        <button type=\"button\" data-tab=\"inventory\"><span>🎒</span><em>Inventar</em></button>\n        <button type=\"button\" data-tab=\"attributes\"><span>💪</span><em>Attribute</em></button>\n        <button type=\"button\" data-tab=\"talents\"><span>🌳</span><em>Talente</em></button>\n        <button type=\"button\" data-tab=\"materials\"><span>💎</span><em>Materialien</em></button>\n      </nav>\n      <div class=\"v459-panel\" id=\"v459PanelInventory\" data-panel=\"inventory\"></div>\n      <div class=\"v459-panel\" id=\"v459PanelAttributes\" data-panel=\"attributes\"></div>\n      <div class=\"v459-panel\" id=\"v459PanelTalents\" data-panel=\"talents\"></div>\n      <div class=\"v45"
+      },
+      {
+        "value": "materials",
+        "path": "js/features/character/beta/v8009-s2-v459-character-hub.js",
+        "order": 322,
+        "snippet": "utton>\n        <button type=\"button\" data-tab=\"attributes\"><span>💪</span><em>Attribute</em></button>\n        <button type=\"button\" data-tab=\"talents\"><span>🌳</span><em>Talente</em></button>\n        <button type=\"button\" data-tab=\"materials\"><span>💎</span><em>Materialien</em></button>\n      </nav>\n      <div class=\"v459-panel\" id=\"v459PanelInventory\" data-panel=\"inventory\"></div>\n      <div class=\"v459-panel\" id=\"v459PanelAttributes\" data-panel=\"attributes\"></div>\n      <div class=\"v459-panel\" id=\"v459PanelTalents\" data-panel=\"talents\"></div>\n      <div class=\"v459-panel\" id=\"v459PanelMaterials\" data-panel=\"materials\"></div>`;\n    if(hero.nextSibling)ch"
+      },
+      {
+        "value": "attributes",
+        "path": "js/features/character/beta/v8009-s1-v514-heldenquartier-reference.js",
+        "order": 399,
+        "snippet": "toggle('active',b.dataset.tab===active));\n  }\n  function openSetDetails(){\n    try{window.v459CharacterTab?.('attributes',true)}catch(e){\n      const tab=document.querySelector('#v459CharacterShell > #v459CharacterTabs [data-tab=\"attributes\"]');\n      if(tab) tab.click();\n    }\n    syncTabs();\n    requestAnimationFrame(()=>{\n      const d=document.getElementById('v459SetDetails');\n      if(d){d.open=true;try{d.scrollIntoView({behavior:'smooth',block:'start'})}catch(e){}}\n    });\n  }\n  function apply(){\n    if(running)return;\n    running=true;\n    try{\n      const character=document.getElementById('character');\n      const root=document.getElementById('v"
+      },
+      {
+        "value": "inventory",
+        "path": "js/features/character/beta/v8009-s1-v514-heldenquartier-reference.js",
+        "order": 399,
+        "snippet": ".querySelector('#v514HeroTabs');\n      if(!proxy){\n        proxy=document.createElement('nav');proxy.id='v514HeroTabs';proxy.setAttribute('aria-label','Charakterbereiche');\n        proxy.innerHTML='<button type=\"button\" data-tab=\"inventory\"><span>🎒</span><em>Inventar</em></button><button type=\"button\" data-tab=\"attributes\"><span>💪</span><em>Attribute</em></button><button type=\"button\" data-tab=\"talents\"><span>🌳</span><em>Talente</em></button><button type=\"button\" data-tab=\"materials\"><span>💎</span><em>Materialien</em></button>';\n        navHost.appendChild(proxy);\n        proxy.querySelectorAll('button').forEach(btn=>btn.addEventListener('click',()=>{\n"
+      },
+      {
+        "value": "talents",
+        "path": "js/features/character/beta/v8009-s1-v514-heldenquartier-reference.js",
+        "order": 399,
+        "snippet": "e');\n        proxy.innerHTML='<button type=\"button\" data-tab=\"inventory\"><span>🎒</span><em>Inventar</em></button><button type=\"button\" data-tab=\"attributes\"><span>💪</span><em>Attribute</em></button><button type=\"button\" data-tab=\"talents\"><span>🌳</span><em>Talente</em></button><button type=\"button\" data-tab=\"materials\"><span>💎</span><em>Materialien</em></button>';\n        navHost.appendChild(proxy);\n        proxy.querySelectorAll('button').forEach(btn=>btn.addEventListener('click',()=>{\n          const name=btn.dataset.tab;\n          const real=document.querySelector('#v459CharacterShell > #v459CharacterTabs [data-tab=\"'+name+'\"]');\n          if(real"
+      },
+      {
+        "value": "materials",
+        "path": "js/features/character/beta/v8009-s1-v514-heldenquartier-reference.js",
+        "order": 399,
+        "snippet": "</span><em>Inventar</em></button><button type=\"button\" data-tab=\"attributes\"><span>💪</span><em>Attribute</em></button><button type=\"button\" data-tab=\"talents\"><span>🌳</span><em>Talente</em></button><button type=\"button\" data-tab=\"materials\"><span>💎</span><em>Materialien</em></button>';\n        navHost.appendChild(proxy);\n        proxy.querySelectorAll('button').forEach(btn=>btn.addEventListener('click',()=>{\n          const name=btn.dataset.tab;\n          const real=document.querySelector('#v459CharacterShell > #v459CharacterTabs [data-tab=\"'+name+'\"]');\n          if(real) real.click();\n          else try{window.v459CharacterTab?.(name,true)}catch(e){}"
+      },
+      {
+        "value": "attributes",
+        "path": "js/features/character/beta/v8009-s15-v537-attribute-reference.js",
+        "order": 404,
+        "snippet": "apply();\n  document.addEventListener('DOMContentLoaded',apply,{once:true});\n  window.addEventListener('pageshow',apply,{passive:true});\n  document.addEventListener('click',e=>{if(e.target?.closest?.('#v459CharacterTabs [data-tab=\"attributes\"],#v514HeroTabs [data-tab=\"attributes\"]'))requestAnimationFrame(apply)},true);\n  /* V8.009: bounded startup retry train retired. */\n})();\n"
+      },
+      {
+        "value": "talents",
+        "path": "js/features/character/beta/v8009-s1-v543-talents-mobile-tree.js",
+        "order": 405,
+        "snippet": "();\n  document.addEventListener('DOMContentLoaded',apply,{once:true});\n  window.addEventListener('pageshow',apply,{passive:true});\n  document.addEventListener('click',e=>{\n    if(e.target?.closest?.('#v459CharacterTabs [data-tab=\"talents\"],#v514HeroTabs [data-tab=\"talents\"]'))apply();\n  },true);\n  /* V8.009: bounded startup retry train retired. */\n})();\n"
+      },
+      {
+        "value": "materials",
+        "path": "js/system/performance/v7292-runtime-performance-final.js",
+        "order": 655,
+        "snippet": "AnimationFrame(()=>{\n      syncFrost();\n      syncMaterials();\n    });\n  }\n},{passive:true});\ndocument.addEventListener('click',e=>{\n  if(!(e.target instanceof Element))return;\n  if(e.target.closest('#v459CharacterTabs [data-tab=\"materials\"],#v514HeroTabs [data-tab=\"materials\"],#v546MaterialsHeader')){\n    setTimeout(syncMaterials,25);\n  }\n},true);\n\nwindow.v7292PerformanceDiagnostics=()=>({\n  version:'V7.308',\n  materialObserversRetired:true,\n  characterWideObserverRetired:true,\n  materialRenderHook:!!window.v546RenderMaterials?.__v7292PerfHook,\n  frostHeroHooks:{\n    v510:!!window.v510BuildCharacter?.__v7292PerfHook,\n    v514:!!window.v514ApplyHeroRef"
+      }
+    ],
+    "char-tab": [
+      {
+        "value": "talents",
+        "path": "js/features/home/beta/v8009-home-renderer.js",
+        "order": 266,
+        "snippet": "harakter-Checkliste\">\n            <div class=\"vHome-check-head\"><span>CHARAKTER-CHECK</span><small>Was noch zu tun ist</small></div>\n            <button type=\"button\" class=\"vHome-check-row ${hc.talentDone?'ok':'warn'}\" data-char-tab=\"talents\"><i>${hc.talentDone?'✓':'!'}</i><span>Talentpunkte</span><b>${hc.talentDone?'Alle vergeben':`${num(hc.talentFree)} zu verteilen`}</b></button>\n            <button type=\"button\" class=\"vHome-check-row ${hc.skillDone?'ok':'warn'}\" data-char-tab=\"attributes\"><i>${hc.skillDone?'✓':'!'}</i><span>Skillpunkte</span><b>${hc.skillDone?'Alle vergeben':`${num(hc.skillFree)} zu verteilen`}</b></button>\n            <button type=\""
+      },
+      {
+        "value": "attributes",
+        "path": "js/features/home/beta/v8009-home-renderer.js",
+        "order": 266,
+        "snippet": "talentDone?'✓':'!'}</i><span>Talentpunkte</span><b>${hc.talentDone?'Alle vergeben':`${num(hc.talentFree)} zu verteilen`}</b></button>\n            <button type=\"button\" class=\"vHome-check-row ${hc.skillDone?'ok':'warn'}\" data-char-tab=\"attributes\"><i>${hc.skillDone?'✓':'!'}</i><span>Skillpunkte</span><b>${hc.skillDone?'Alle vergeben':`${num(hc.skillFree)} zu verteilen`}</b></button>\n            <button type=\"button\" class=\"vHome-check-row ${hc.enchantDone?'ok':'warn'}\" data-char-tab=\"materials\"><i>${hc.enchantDone?'✓':'!'}</i><span>Ausrüstung verzaubert</span><b>${hc.enchantDone?'Komplett':`${hc.enchanted}/${hc.slotTotal}`}</b></button>\n            <button ty"
+      },
+      {
+        "value": "materials",
+        "path": "js/features/home/beta/v8009-home-renderer.js",
+        "order": 266,
+        "snippet": "c.skillDone?'✓':'!'}</i><span>Skillpunkte</span><b>${hc.skillDone?'Alle vergeben':`${num(hc.skillFree)} zu verteilen`}</b></button>\n            <button type=\"button\" class=\"vHome-check-row ${hc.enchantDone?'ok':'warn'}\" data-char-tab=\"materials\"><i>${hc.enchantDone?'✓':'!'}</i><span>Ausrüstung verzaubert</span><b>${hc.enchantDone?'Komplett':`${hc.enchanted}/${hc.slotTotal}`}</b></button>\n            <button type=\"button\" class=\"vHome-check-row ${hc.gemDone?'ok':'warn'}\" data-char-tab=\"materials\"><i>${hc.gemDone?'✓':'!'}</i><span>Mit Steinen gesockelt</span><b>${hc.gemDone?'Komplett':`${hc.gemmed}/${hc.slotTotal}`}</b></button>\n            <button type=\"butt"
+      },
+      {
+        "value": "inventory",
+        "path": "js/features/home/beta/v8009-home-renderer.js",
+        "order": 266,
+        "snippet": "ta-char-tab=\"materials\"><i>${hc.gemDone?'✓':'!'}</i><span>Mit Steinen gesockelt</span><b>${hc.gemDone?'Komplett':`${hc.gemmed}/${hc.slotTotal}`}</b></button>\n            <button type=\"button\" class=\"vHome-check-row set\" data-char-tab=\"inventory\"><i>◆</i><span>Aktive Klassenset-Boni</span><b>${hc.setActive}/${hc.setTotal} aktiv</b></button>\n          </div>\n        </div>\n        <div class=\"v366-welcome\"><small>Willkommen zurück,</small><h1>${esc(name)}!</h1><p>Die Legende wächst weiter.</p></div>\n        <div class=\"v6103-motto\" aria-hidden=\"true\"><b>GOOD</b><b>WEED</b><b>BETTER</b><b>LEGENDS.</b></div>\n        ${typeof window.v6239WeeklyChestHomeHtml==='f"
+      }
+    ],
+    "v464-tab": [
+      {
+        "value": "weapon",
+        "path": "js/features/shop/beta/v8009-s6-v464-shop-reference.js",
+        "order": 325,
+        "snippet": "hop');\n    if(!hero||!gear||!magic)return false;\n    let tabs=document.querySelector('#v464ShopTabs');\n    if(!tabs){\n      tabs=document.createElement('nav');tabs.id='v464ShopTabs';tabs.innerHTML='<button type=\"button\" data-v464-tab=\"weapon\"><b>⚔️</b>WAFFEN & RÜSTUNG</button><button type=\"button\" data-v464-tab=\"magic\"><b>💎</b>SCHMUCK & MAGIE</button>';\n      hero.insertAdjacentElement('afterend',tabs);\n      tabs.querySelectorAll('button').forEach(b=>b.onclick=()=>setTab(b.dataset.v464Tab,true));\n    }\n    gear.classList.add('v464-panel');gear.dataset.v464Panel='weapon';\n    magic.classList.add('v464-panel');magic.dataset.v464Panel='magic';\n    if(gear."
+      },
+      {
+        "value": "magic",
+        "path": "js/features/shop/beta/v8009-s6-v464-shop-reference.js",
+        "order": 325,
+        "snippet": "ector('#v464ShopTabs');\n    if(!tabs){\n      tabs=document.createElement('nav');tabs.id='v464ShopTabs';tabs.innerHTML='<button type=\"button\" data-v464-tab=\"weapon\"><b>⚔️</b>WAFFEN & RÜSTUNG</button><button type=\"button\" data-v464-tab=\"magic\"><b>💎</b>SCHMUCK & MAGIE</button>';\n      hero.insertAdjacentElement('afterend',tabs);\n      tabs.querySelectorAll('button').forEach(b=>b.onclick=()=>setTab(b.dataset.v464Tab,true));\n    }\n    gear.classList.add('v464-panel');gear.dataset.v464Panel='weapon';\n    magic.classList.add('v464-panel');magic.dataset.v464Panel='magic';\n    if(gear.parentElement!==shop)shop.appendChild(gear);\n    if(magic.parentElement!==shop"
+      }
+    ],
+    "v667-tab": [
+      {
+        "value": "dismantle",
+        "path": "js/features/forge/beta/v8009-s1-v488-harzschmiede-core.js",
+        "order": 341,
+        "snippet": ">\n      </div>\n      <div class=\"v667-forge-body\">\n        <div class=\"v667-tabs\" role=\"tablist\" aria-label=\"Harzschmiede Bereiche\">\n          <button type=\"button\" class=\"v667-tab ${forgeTab==='dismantle'?'active':''}\" data-v667-tab=\"dismantle\"><span class=\"ic\">🔨</span><span>ZERLEGEN<small>Ausrüstung in Samenfragmente</small></span></button>\n          <button type=\"button\" class=\"v667-tab ${forgeTab==='craft'?'active':''}\" data-v667-tab=\"craft\"><span class=\"ic\">⚒️</span><span>SCHMIEDEN<small>Zufälliger Slot · deine Klasse</small></span></button>\n        </div>\n        ${forgeTab==='craft'?craftView():dismantleView()}\n        <div class=\"v490-legend v667-le"
+      },
+      {
+        "value": "craft",
+        "path": "js/features/forge/beta/v8009-s1-v488-harzschmiede-core.js",
+        "order": 341,
+        "snippet": "ctive':''}\" data-v667-tab=\"dismantle\"><span class=\"ic\">🔨</span><span>ZERLEGEN<small>Ausrüstung in Samenfragmente</small></span></button>\n          <button type=\"button\" class=\"v667-tab ${forgeTab==='craft'?'active':''}\" data-v667-tab=\"craft\"><span class=\"ic\">⚒️</span><span>SCHMIEDEN<small>Zufälliger Slot · deine Klasse</small></span></button>\n        </div>\n        ${forgeTab==='craft'?craftView():dismantleView()}\n        <div class=\"v490-legend v667-legend\">\n          <div class=\"v490-legend-title\">✦ FRAGMENTE PRO SELTENHEIT ✦</div>\n          <div class=\"v488-leg\"><i style=\"--c:#9aa29e\"></i><span>Normal</span><b>+1</b></div>\n          <div class=\"v488-"
+      },
+      {
+        "value": "nebelforge",
+        "path": "js/beta/v7240-beta-gold-features.js",
+        "order": 638,
+        "snippet": "finally{S.forgeBusy=false;renderForgePanel()}\n}\nfunction ensureForgeTab(){\n const forge=document.getElementById('forge');const tabs=forge?.querySelector('.v667-tabs');if(!forge||!tabs)return;\n let b=tabs.querySelector('[data-v667-tab=\"nebelforge\"]');\n if(!b){\n  b=document.createElement('button');b.type='button';b.className='v667-tab';b.dataset.v667Tab='nebelforge';\n  b.innerHTML='<span class=\"ic\">🔥</span><span>NEBELSCHMIED<small>Gold · Werte neu verteilen</small></span>';\n  tabs.appendChild(b);\n  b.addEventListener('click',async e=>{\n   e.preventDefault();e.stopPropagation();\n   forge.classList.add('v7240-nebel-open');\n   tabs.querySelectorAll('.v667-tab').f"
+      }
+    ],
+    "v6163-tab": [
+      {
+        "value": "grow",
+        "path": "js/features/grow/beta/v8009-s6-v6163-growroom-primary-tabs-core.js",
+        "order": 453,
+        "snippet": "ing,crosses:Number(g?.totalCrosses)||0,essences:Number(g?.totalEssences)||0};\n}\nfunction tabsHtml(){return `<div class=\"v6163-tabs\" role=\"tablist\" aria-label=\"Growroom Bereiche\">\n <button type=\"button\" class=\"v6163-tab\" data-v6163-tab=\"grow\" role=\"tab\"><span class=\"v6163-ico\">🌱</span><b>Growroom</b><small>PFLANZEN · PFLEGE · ERNTE</small></button>\n <button type=\"button\" class=\"v6163-tab\" data-v6163-tab=\"stock\" role=\"tab\"><span class=\"v6163-ico\">🎒</span><b>Blütenlager</b><small>LAGER · DEALER · VEREDELN</small><i class=\"v6282-stock-badge\">0</i></button>\n <button type=\"button\" class=\"v6163-tab\" data-v6163-tab=\"genetics\" role=\"tab\"><span class=\"v6163-ico\">"
+      },
+      {
+        "value": "stock",
+        "path": "js/features/grow/beta/v8009-s6-v6163-growroom-primary-tabs-core.js",
+        "order": 453,
+        "snippet": "eiche\">\n <button type=\"button\" class=\"v6163-tab\" data-v6163-tab=\"grow\" role=\"tab\"><span class=\"v6163-ico\">🌱</span><b>Growroom</b><small>PFLANZEN · PFLEGE · ERNTE</small></button>\n <button type=\"button\" class=\"v6163-tab\" data-v6163-tab=\"stock\" role=\"tab\"><span class=\"v6163-ico\">🎒</span><b>Blütenlager</b><small>LAGER · DEALER · VEREDELN</small><i class=\"v6282-stock-badge\">0</i></button>\n <button type=\"button\" class=\"v6163-tab\" data-v6163-tab=\"genetics\" role=\"tab\"><span class=\"v6163-ico\">🧬</span><b>Genetik</b><small>KREUZUNGEN · HYBRIDE · ESSENZEN</small><i class=\"v6163-dot\" hidden></i></button>\n <button type=\"button\" class=\"v6163-tab\" data-v6163-tab=\"order"
+      },
+      {
+        "value": "genetics",
+        "path": "js/features/grow/beta/v8009-s6-v6163-growroom-primary-tabs-core.js",
+        "order": 453,
+        "snippet": "v6163-tab\" data-v6163-tab=\"stock\" role=\"tab\"><span class=\"v6163-ico\">🎒</span><b>Blütenlager</b><small>LAGER · DEALER · VEREDELN</small><i class=\"v6282-stock-badge\">0</i></button>\n <button type=\"button\" class=\"v6163-tab\" data-v6163-tab=\"genetics\" role=\"tab\"><span class=\"v6163-ico\">🧬</span><b>Genetik</b><small>KREUZUNGEN · HYBRIDE · ESSENZEN</small><i class=\"v6163-dot\" hidden></i></button>\n <button type=\"button\" class=\"v6163-tab\" data-v6163-tab=\"orders\" role=\"tab\"><span class=\"v6163-ico\">📋</span><b>Aufträge</b><small>TÄGLICHE GROW-AUFGABEN</small><i class=\"v6163-badge\">0/6</i></button>\n </div>`}\nfunction paintTabs(root=growRoot()){\n if(!root)return;const st=s"
+      },
+      {
+        "value": "orders",
+        "path": "js/features/grow/beta/v8009-s6-v6163-growroom-primary-tabs-core.js",
+        "order": 453,
+        "snippet": "63-tab\" data-v6163-tab=\"genetics\" role=\"tab\"><span class=\"v6163-ico\">🧬</span><b>Genetik</b><small>KREUZUNGEN · HYBRIDE · ESSENZEN</small><i class=\"v6163-dot\" hidden></i></button>\n <button type=\"button\" class=\"v6163-tab\" data-v6163-tab=\"orders\" role=\"tab\"><span class=\"v6163-ico\">📋</span><b>Aufträge</b><small>TÄGLICHE GROW-AUFGABEN</small><i class=\"v6163-badge\">0/6</i></button>\n </div>`}\nfunction paintTabs(root=growRoot()){\n if(!root)return;const st=stats();\n root.querySelectorAll('[data-v6163-tab]').forEach(b=>{const on=b.dataset.v6163Tab===active;b.classList.toggle('active',on);b.setAttribute('aria-selected',on?'true':'false')});\n const ob=$('[data-v6163-"
+      },
+      {
+        "value": "stock",
+        "path": "js/features/grow/beta/v8009-s2-v6282-grow-economy.js",
+        "order": 509,
+        "snippet": "a-v6282-view=\"dealer\">🕶️ Blüten-Dealer</button></div>${z.view==='stock'?renderStock():renderDealer()}</div>`}\nfunction refresh(){try{window.v6163GrowTabs?.refresh?.()}catch(_){}try{const b=document.querySelector('#grow [data-v6163-tab=\"stock\"] .v6282-stock-badge');if(b)b.textContent=String(bag().length)}catch(_){}}\nfunction startRefine(id){const z=state(),slot=z.drying.findIndex(x=>!x);if(slot<0)return toast('Trocknung belegt','warn','Beide Veredelungs-Slots sind bereits belegt.');const a=bag(),idx=a.findIndex(b=>String(b?.id)===String(id));if(idx<0)return;const b=a[idx];if(b.refined)return toast('Bereits veredelt','info');a.splice(idx,1);z.drying[slot]="
+      },
+      {
+        "value": "stock",
+        "path": "js/features/authority/beta/v8009-s7-v7071-server-grow-dealer-bridge.js",
+        "order": 568,
+        "snippet": "r('pageshow',()=>{if(window.v7204StartupQuiet?.())return;setTimeout(()=>void refresh(),900)},{passive:true});\ndocument.addEventListener('click',e=>{\n const t=e.target instanceof Element?e.target:null;\n if(t?.closest?.('[data-v6163-tab=\"stock\"]'))setTimeout(()=>void refresh(),80);\n},true);\nsetTimeout(()=>{if(!window.v7204StartupQuiet?.())void refresh()},5200);\n\nwindow.v7071GrowDealerRefresh=refresh;\nwindow.v7071GrowDealerDiagnostics=()=>clone({version:VERSION,...S});\n})();\n"
+      }
+    ],
+    "vt-tab": [
+      {
+        "value": "rank",
+        "path": "js/features/tower/beta/v8009-t2-tower-lobby.js",
+        "order": 464,
+        "snippet": "   <b>${esc(ev.name)}</b>\n     <span>${esc(ev.desc)}</span>\n     <em>🏆 Event-Rangliste läuft · Platzierungsbelohnung nach Eventende</em>\n   </div>\n   <div class=\"v6278-wed-live-actions\">\n     <button class=\"vT-btn gold\" data-vt-tab=\"rank\">🏆 Event-Rangliste</button>\n     <button class=\"vT-btn\" data-vt-wed-rewards>🎁 Belohnungen ansehen</button>\n   </div>\n </section>`:'';\n return `${head(null,'TURM-LOBBY · Jeder neue Run startet auf Etage 1.',false,'ANBAU-TURM')}\n ${wedLiveBanner}\n <div class=\"v6259-lobby\">\n   <div class=\"v6259-tower-picture\"></div>\n   <div class=\"v6259-lobby-card\">\n     <small>Start-Etage</small><strong>${startFloor}</strong>\n     <div"
+      },
+      {
+        "value": "meta",
+        "path": "js/features/tower/beta/v8009-t2-tower-lobby.js",
+        "order": 464,
+        "snippet": ">${z.bestFloor>0?'Run starten':'Ersten Run starten'}</button>\n   </div>\n </div>\n\n <div class=\"v6269-lobby-nav\">\n   <button class=\"vT-btn gold\" data-vt-tab=\"rank\">🏆 Komplette Ranglisten</button>\n   <button class=\"vT-btn\" data-vt-tab=\"meta\">🍃 Turm-Aufstieg</button>\n </div>\n\n <div class=\"v6269-lobby-rank-grid\">\n   <section class=\"v6269-lobby-rank-card\">\n     <header><div><small>SAISON</small><b>🏆 Turm-Rangliste</b></div><button data-vt-tab=\"rank\">Alle</button></header>\n     <div class=\"v6269-own-rank\"><span>Dein Rekord</span><b>Etage ${fmt(z.bestFloor||0)} · ${fmt(z.bestScore||0)} Score</b></div>\n     <div id=\"vTRanking\" class=\"vT-leader v6269-lobby-lea"
+      },
+      {
+        "value": "rank",
+        "path": "js/features/character/beta/v8009-s13-v6297-class-display-parity.js",
+        "order": 522,
+        "snippet": "ört garantiert.';\n }\n}\nfunction repair(){repairTowerRows();repairCharacter()}\n\ndocument.addEventListener('click',e=>{\n const hit=e.target instanceof Element?e.target.closest(\n   '[data-screen=\"tower\"],[data-go=\"tower\"],[data-vt-tab=\"rank\"],'+\n   '[data-screen=\"character\"],[data-go=\"character\"],'+\n   '[data-screen=\"hall\"],[data-go=\"hall\"],'+\n   '[data-screen=\"guild\"],[data-go=\"guild\"]'\n ):null;\n if(hit)setTimeout(repair,40);\n},true);\nwindow.addEventListener('growlegends:account-ready',()=>setTimeout(repair,100));\nwindow.addEventListener('pageshow',()=>setTimeout(repair,80),{passive:true});\nwindow.addEventListener('growlegends:foreground-ready',repair,"
+      }
+    ],
+    "v7097-admin-tab": [
+      {
+        "value": "overview",
+        "path": "js/features/system/beta/v8009-s2-v7097-performance-ux-restore.js",
+        "order": 584,
+        "snippet": "tById('v093AdminContent');if(!c||c.dataset.v7097)return;c.dataset.v7097='1';const old=[...c.children];const tabs=document.createElement('div');tabs.className='v7097-admin-tabs';tabs.innerHTML='<button class=\"btn active\" data-v7097-admin-tab=\"overview\">Übersicht</button><button class=\"btn secondary\" data-v7097-admin-tab=\"players\">Spieler</button><button class=\"btn secondary\" data-v7097-admin-tab=\"content\">Events & News</button>';const overview=document.createElement('div');overview.className='v7097-admin-pane active';overview.dataset.v7097AdminPane='overview';overview.innerHTML='<div class=\"v7097-admin-overview\"><div class=\"v7097-admin-stat\"><b id=\"v7097AdminEvent"
+      },
+      {
+        "value": "players",
+        "path": "js/features/system/beta/v8009-s2-v7097-performance-ux-restore.js",
+        "order": 584,
+        "snippet": "t old=[...c.children];const tabs=document.createElement('div');tabs.className='v7097-admin-tabs';tabs.innerHTML='<button class=\"btn active\" data-v7097-admin-tab=\"overview\">Übersicht</button><button class=\"btn secondary\" data-v7097-admin-tab=\"players\">Spieler</button><button class=\"btn secondary\" data-v7097-admin-tab=\"content\">Events & News</button>';const overview=document.createElement('div');overview.className='v7097-admin-pane active';overview.dataset.v7097AdminPane='overview';overview.innerHTML='<div class=\"v7097-admin-overview\"><div class=\"v7097-admin-stat\"><b id=\"v7097AdminEvents\">–</b><span>EVENTS ANGELEGT</span></div><div class=\"v7097-admin-stat\"><b id=\""
+      },
+      {
+        "value": "content",
+        "path": "js/features/system/beta/v8009-s2-v7097-performance-ux-restore.js",
+        "order": 584,
+        "snippet": "='v7097-admin-tabs';tabs.innerHTML='<button class=\"btn active\" data-v7097-admin-tab=\"overview\">Übersicht</button><button class=\"btn secondary\" data-v7097-admin-tab=\"players\">Spieler</button><button class=\"btn secondary\" data-v7097-admin-tab=\"content\">Events & News</button>';const overview=document.createElement('div');overview.className='v7097-admin-pane active';overview.dataset.v7097AdminPane='overview';overview.innerHTML='<div class=\"v7097-admin-overview\"><div class=\"v7097-admin-stat\"><b id=\"v7097AdminEvents\">–</b><span>EVENTS ANGELEGT</span></div><div class=\"v7097-admin-stat\"><b id=\"v7097AdminNews\">–</b><span>NEWS GELADEN</span></div><div class=\"v7097-admin-s"
+      }
+    ],
+    "v7117-tab": [
+      {
+        "value": "harz",
+        "path": "js/features/shop/beta/v8009-s7-v7117-dealer-hub.js",
+        "order": 600,
+        "snippet": " class=\"v7117-hub-copy\"><small>Grow Legends · Händler</small><b>Harz &amp; Gold &amp; Rahmen Dealer</b></div></div>\n   <div class=\"v7117-tabs\">\n     <button type=\"button\" class=\"v7117-tab ${active==='harz'?'active':''}\" data-v7117-tab=\"harz\">💎 Harz-Taler</button>\n     <button type=\"button\" class=\"v7117-tab ${active==='gold'?'active':''}\" data-v7117-tab=\"gold\">🪙 Gold</button>\n   </div>\n </div>`;\n}\nfunction ensureHub(screen,active){\n if(!screen)return false;\n let hub=screen.querySelector(':scope > .v7117-dealer-hub');\n if(!hub){\n   screen.insertAdjacentHTML('afterbegin',hubHtml(active));\n   hub=screen.querySelector(':scope > .v7117-dealer-hub');\n }\n hub?."
+      },
+      {
+        "value": "gold",
+        "path": "js/features/shop/beta/v8009-s7-v7117-dealer-hub.js",
+        "order": 600,
+        "snippet": "div class=\"v7117-tabs\">\n     <button type=\"button\" class=\"v7117-tab ${active==='harz'?'active':''}\" data-v7117-tab=\"harz\">💎 Harz-Taler</button>\n     <button type=\"button\" class=\"v7117-tab ${active==='gold'?'active':''}\" data-v7117-tab=\"gold\">🪙 Gold</button>\n   </div>\n </div>`;\n}\nfunction ensureHub(screen,active){\n if(!screen)return false;\n let hub=screen.querySelector(':scope > .v7117-dealer-hub');\n if(!hub){\n   screen.insertAdjacentHTML('afterbegin',hubHtml(active));\n   hub=screen.querySelector(':scope > .v7117-dealer-hub');\n }\n hub?.querySelectorAll('[data-v7117-tab]').forEach(b=>b.classList.toggle('active',b.dataset.v7117Tab===active));\n return !!hub"
+      },
+      {
+        "value": "frames",
+        "path": "js/features/shift/beta/v8009-s1-v7137-shift-frame-client.js",
+        "order": 616,
+        "snippet": "))}return null})().finally(()=>{S.frameFlight=null});\n return S.frameFlight;\n}\nfunction ensureDealerFrameTab(){document.querySelectorAll('#harzDealer .v7117-tabs,#goldShop .v7117-tabs').forEach(t=>{if(!t.querySelector('[data-v7117-tab=\"frames\"]')){const b=document.createElement('button');b.type='button';b.className='v7117-tab';b.dataset.v7117Tab='frames';b.textContent='🖼️ Avatar-Rahmen';t.appendChild(b)}const framesOpen=!!t.closest('#harzDealer.v7137-frames-open');if(framesOpen)t.querySelectorAll('[data-v7117-tab]').forEach(b=>b.classList.toggle('active',b.dataset.v7117Tab==='frames'))});}\nfunction frameDesc(f){if(f.source==='referral')return 'Nicht kaufb"
+      },
+      {
+        "value": "harz",
+        "path": "js/features/shift/beta/v8009-s1-v7137-shift-frame-client.js",
+        "order": 616,
+        "snippet": "ata-v7137-claim]')){e.preventDefault();void claimShift();return}\n const tab=t.closest('[data-v7117-tab=\"frames\"]');if(tab){e.preventDefault();e.stopPropagation();void openFrameShop();return}\n const normalTab=t.closest('[data-v7117-tab=\"harz\"],[data-v7117-tab=\"gold\"]');if(normalTab){closeFrameShop();setTimeout(()=>{ensureDealerFrameTab();moveFooterLast()},80)}\n const buy=t.closest('[data-v7137-buy-frame]');if(buy){e.preventDefault();void buyFrame(buy.dataset.v7137BuyFrame);return}\n const set=t.closest('[data-v7137-set-frame]');if(set){e.preventDefault();void setFrame(set.dataset.v7137SetFrame||null);return}\n if(t.closest('[data-v7137-open-frame-shop]')){"
+      },
+      {
+        "value": "gold",
+        "path": "js/features/shift/beta/v8009-s1-v7137-shift-frame-client.js",
+        "order": 616,
+        "snippet": "eventDefault();void claimShift();return}\n const tab=t.closest('[data-v7117-tab=\"frames\"]');if(tab){e.preventDefault();e.stopPropagation();void openFrameShop();return}\n const normalTab=t.closest('[data-v7117-tab=\"harz\"],[data-v7117-tab=\"gold\"]');if(normalTab){closeFrameShop();setTimeout(()=>{ensureDealerFrameTab();moveFooterLast()},80)}\n const buy=t.closest('[data-v7137-buy-frame]');if(buy){e.preventDefault();void buyFrame(buy.dataset.v7137BuyFrame);return}\n const set=t.closest('[data-v7137-set-frame]');if(set){e.preventDefault();void setFrame(set.dataset.v7137SetFrame||null);return}\n if(t.closest('[data-v7137-open-frame-shop]')){document.getElementById("
+      }
+    ],
+    "v7117Tab": [
+      {
+        "value": "frames",
+        "path": "js/features/shift/beta/v8009-s1-v7137-shift-frame-client.js",
+        "order": 616,
+        "snippet": "document.querySelectorAll('#harzDealer .v7117-tabs,#goldShop .v7117-tabs').forEach(t=>{if(!t.querySelector('[data-v7117-tab=\"frames\"]')){const b=document.createElement('button');b.type='button';b.className='v7117-tab';b.dataset.v7117Tab='frames';b.textContent='🖼️ Avatar-Rahmen';t.appendChild(b)}const framesOpen=!!t.closest('#harzDealer.v7137-frames-open');if(framesOpen)t.querySelectorAll('[data-v7117-tab]').forEach(b=>b.classList.toggle('active',b.dataset.v7117Tab==='frames'))});}\nfunction frameDesc(f){if(f.source==='referral')return 'Nicht kaufbar · exklusiv aus dem 10-Freunde-Paket.';if(f.effect)return 'Animierter Prestige-Rahmen mit sichtbarem Effekt.';r"
+      }
+    ],
+    "v667Tab": [
+      {
+        "value": "nebelforge",
+        "path": "js/beta/v7240-beta-gold-features.js",
+        "order": 638,
+        "snippet": "');const tabs=forge?.querySelector('.v667-tabs');if(!forge||!tabs)return;\n let b=tabs.querySelector('[data-v667-tab=\"nebelforge\"]');\n if(!b){\n  b=document.createElement('button');b.type='button';b.className='v667-tab';b.dataset.v667Tab='nebelforge';\n  b.innerHTML='<span class=\"ic\">🔥</span><span>NEBELSCHMIED<small>Gold · Werte neu verteilen</small></span>';\n  tabs.appendChild(b);\n  b.addEventListener('click',async e=>{\n   e.preventDefault();e.stopPropagation();\n   forge.classList.add('v7240-nebel-open');\n   tabs.querySelectorAll('.v667-tab').forEach(x=>x.classList.toggle('active',x===b));\n   S.forge=null;await renderForgePanel();\n  });\n }\n if(forge.classList.co"
+      }
+    ]
+  },
+  "tab_occurrence_count": 59
+}
