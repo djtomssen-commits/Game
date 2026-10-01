@@ -4921,3 +4921,76 @@ Arbeitsmodus:
   - serverseitiger Claim mit Einmal-Schutz;
   - Carry-over der nicht vergebenen Klassenanteile in die nächste Runde.
 - Offener Detailpunkt vor Implementierung: Zielwährung der Auszahlung. Empfehlung: Gewinne ebenfalls in Harz Talern auszahlen.
+
+### Harz Lotto – Beta Bau Block 1 · 01.10.2026
+
+- Umsetzung gemäß Beta-first-Regel ausschließlich auf **Beta/Public**; `server1.html` und `server1`-Schema unverändert.
+- Neuer zusätzlicher Tab direkt im bestehenden Tütchen-Dealer:
+  - **Tütchen**
+  - **Harz Lotto**
+- Neue Beta-Dateien:
+  - `js/features/shop/beta/v8010-harz-lotto.js`
+  - `v8010-harz-lotto.css`
+- `beta.html` bindet JS/CSS jeweils genau einmal ein; Server 1 enthält weder Tab noch Includes.
+- UI umgesetzt:
+  - großer roter Kaugummi-/Kugelautomat im Grow-Legends-Stil;
+  - aktueller Jackpot;
+  - Countdown/Phasenstatus;
+  - Zahlenraster 1–50;
+  - exakt 6 Zahlen auswählbar;
+  - bestätigter Schein danach unveränderlich;
+  - Anzeige der letzten 6 gezogenen Kugeln;
+  - eigene Zahlen, Treffer, Gewinn;
+  - manueller Button **„Belohnung abholen“**;
+  - Gewinnklassen 6/5/4/3 Richtige = 70/15/10/5 %.
+- Serverautoritäres Backend in Supabase Public:
+  - Tabellen:
+    - `public.harz_lotto_rounds`
+    - `public.harz_lotto_tickets`
+  - RPCs:
+    - `public.v8010_harz_lotto_state()`
+    - `public.v8010_harz_lotto_buy_ticket(integer[])`
+    - `public.v8010_harz_lotto_claim()`
+  - interne Funktionen:
+    - `private.v8010_lotto_round_id(...)`
+    - `private.v8010_lotto_ensure_round(...)`
+    - `private.v8010_lotto_draw_due_rounds()`
+- Regeln serverseitig erzwungen:
+  - 1 Schein je `user_id + round_id`;
+  - Einsatz exakt 25 Harz-Taler;
+  - 6 eindeutige Zahlen aus 1–50;
+  - Tippschluss Dienstag 18:00 Uhr Europe/Berlin;
+  - Ziehung Dienstag 19:00 Uhr Europe/Berlin;
+  - Harz-Abzug atomar direkt aus `player_progress_trusted.harz_taler`;
+  - Ziehung und Trefferermittlung nur serverseitig;
+  - Gewinne werden erst beim manuellen Claim gutgeschrieben;
+  - Claim mit Einmal-Schutz;
+  - mehrere Gewinner einer Klasse teilen den Klassenpool;
+  - nicht vergebene Klassenanteile und Rundungsreste werden als `carry_out` in die nächste Runde übernommen.
+- Automatische Ziehung:
+  - aktiver pg_cron Job `v8010_harz_lotto_draw`;
+  - läuft minütlich, zieht aber nur tatsächlich fällige offene Runden;
+  - dadurch bleibt 19:00 Uhr Europe/Berlin auch über Sommer-/Winterzeit korrekt.
+- Erste reale Runde wurde erzeugt:
+  - Round-ID: **2026-10-06**
+  - Tippschluss: **06.10.2026 18:00 Europe/Berlin**
+  - Ziehung: **06.10.2026 19:00 Europe/Berlin**
+- Security:
+  - Lotto-Tabellen haben RLS aktiv;
+  - keine direkten Spielerrechte auf Tabellen;
+  - Zugriff ausschließlich über authentifizierte RPCs;
+  - Supabase Security Advisor zeigt für die Lotto-Tabellen nur den erwarteten INFO-Hinweis „RLS enabled, no policy“, da Tabellen bewusst RPC-only sind.
+- QA:
+  - Lotto-JS Syntax: grün;
+  - Beta JS Include: 1×;
+  - Beta CSS Include: 1×;
+  - Server 1 JS/CSS/Tab: 0×;
+  - Cron aktiv;
+  - RPC EXECUTE nur für `authenticated`, `service_role`, `postgres`.
+- GitHub Commits:
+  - Client-Owner: `e9f7e8b361758e2030be4f7c67f3ed3639c3399b`
+  - CSS: `84c269cdd606b1e10b91abe612b21322394752ef`
+  - Beta-Integration: `7b973c717850dea6540b6fe270b3924a93c30287`
+- Nächster sinnvoller Schritt:
+  - manueller Beta-Test: Tab öffnen → 6 Zahlen wählen → 25-HT-Schein bestätigen → Reload prüfen;
+  - danach ggf. Feinschliff der Automatenoptik und Test eines kontrollierten Ziehungs-/Claim-Szenarios.
