@@ -308,29 +308,8 @@ function v056AddShopHint(){
   shop.insertBefore(hint,shop.querySelector('.card'));
 }
 
-const v056BaseRender=render;
-render=function(){
-  v056BaseRender();
-  
-  v056AddShopHint();
-
-  /* Rebind current shop cards after each render. */
-  document.querySelectorAll('#weaponShopItems .shop-item').forEach((card,i)=>{
-    const btn=card.querySelector('button');
-    if(btn){
-      btn.removeAttribute('onclick');
-      btn.onclick=()=>window.v030BuyWeapon(i);
-    }
-  });
-
-  document.querySelectorAll('#v030MagicShop .shop-grid .shop-item').forEach((card,i)=>{
-    const btn=card.querySelector('button');
-    if(btn){
-      btn.removeAttribute('onclick');
-      btn.onclick=()=>window.v030BuyMagic(i);
-    }
-  });
-};
+/* V8.009: obsolete global render/rebind owner retired.
+   The current shop renderer creates data-index buttons and later v058/v466 bind them. */
 
 try{
   render();
