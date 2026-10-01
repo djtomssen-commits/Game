@@ -31,12 +31,24 @@ function renameMenu(){
    });
  }catch(_){}
 }
+function ensureLegalFooter(){
+ const target=document.querySelector('main')||document.body;
+ if(!target)return;
+ let footer=document.getElementById('v337LegalFooter');
+ if(!footer){
+   footer=document.createElement('footer');
+   footer.id='v337LegalFooter';
+   footer.innerHTML=`© ${new Date().getFullYear()} Grow Legends · Alle Rechte vorbehalten.<br>Grow Legends ist ein eigenständiges Fan-/Indie-Spielprojekt. Genannte Marken, Produktnamen und sonstige Kennzeichen gehören ihren jeweiligen Inhabern.`;
+ }
+ if(footer.parentElement!==target||target.lastElementChild!==footer)target.appendChild(footer);
+}
 function sync(){
  const h=document.getElementById('harzDealer');
  const g=document.getElementById('goldShop');
  if(h)ensureHub(h,'harz');
  if(g)ensureHub(g,'gold');
  renameMenu();
+ ensureLegalFooter();
 }
 function openHarz(){try{return v032Go('harzDealer')}catch(_){sync();return true}}
 function openGold(){
@@ -50,13 +62,7 @@ document.addEventListener('click',e=>{
  if(b.dataset.v7117Tab==='gold')openGold();else openHarz();
 },true);
 
-/* No permanent DOM observer: navigation/menu hooks are enough and avoid runtime overhead. */
-try{
- if(typeof v032InstallMenu==='function'&&!window.__V7117_MENU_WRAP__){
-   const base=v032InstallMenu;v032InstallMenu=function(){const r=base.apply(this,arguments);queueMicrotask(renameMenu);return r};
-   try{window.v032InstallMenu=v032InstallMenu}catch(_){}window.__V7117_MENU_WRAP__=true;
- }
-}catch(_){}
+/* V8.009: navigation lifecycle is sufficient; no v032InstallMenu wrapper. */
 window.addEventListener('growlegends:navigation-ready',sync,{passive:true});
 window.addEventListener('growlegends:navigation-open-v7119',e=>{const id=String(e?.detail?.id||'');if(id==='harzDealer'||id==='goldShop')sync()},{passive:true});
 window.addEventListener('pageshow',sync,{passive:true});
