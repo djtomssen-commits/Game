@@ -3260,3 +3260,24 @@ Arbeitsmodus:
   - Script-Commit `1954e28508249b22f4825ec21f9a9af80be7e68e`
   - Workflow-Commit `133acaf8fcd2dcac0a31e99b0dc3eb0f55611f2a`
 - Zero-Inline-QA lief erfolgreich mit Commit `62dc5288e55030d91750bf9f57a1042994ab8fcf`.
+
+
+#### CSS Deduplizierung abgeschlossen
+- Abschluss-Commit: `b7cc2bc26d072cc3ba7f2d34c4c518182a4a6a74`.
+- Alle 12 physisch überflüssigen Dateien aus den 5 exakten Duplikatgruppen entfernt.
+- Keine hängenden `href`-Referenzen.
+- Gemeinsame kanonische Ziele für die betroffenen Link-IDs bestätigt.
+- QA: `V8009_CSS_DEDUP_FINAL_QA.json` grün.
+
+#### Mini-CSS Klassifizierung
+- Audit-Commit: `1178772f78ba79f9171201e47eea8a70af2052dc`.
+- Aktuell 81 Root-CSS-Dateien <=300 Bytes.
+- Davon 4 reine Kommentar-/Markerdateien ohne wirksame CSS-Regel:
+  - `v8009-extracted-v6316-version-authority-css.css`
+  - `v8009-extracted-v7092-version-owner-css.css`
+  - `v8009-extracted-v7109-final-version-css.css`
+  - `v8009-extracted-v7164-combat-animation-complete-css.css`
+- 77 kleine Dateien enthalten echte CSS-Regeln und werden nicht blind entfernt.
+- Cleanup für die 4 inerten Marker vorbereitet:
+  - Script-Commit `da7833f25e9ef86290f29f51c60b16bdf64b6959`
+  - Workflow-Commit `91b219c49d3ebb5eb741b1193e2206093ee5ab1a`
