@@ -1764,3 +1764,17 @@ Der nächste fachliche Schritt ist **nicht HOME-32**, sondern die Restinventur d
 
 - Stable / `index.html`: unverändert.
 - Character-Seite ist überwiegend inline im Monolithen; Audit `V8009_CHARACTER_RUNTIME_AUDIT.json` liegt vor und wird separat per Inline-Extraktor bearbeitet.
+
+
+### Events / Rewards Kurzprüfung 01.10.2026
+- `js/features/events/beta/v8009-weekend-events.js` geprüft:
+  - lifecycle-basiert;
+  - kein 30-s-Polling;
+  - keine alten Startup-Retry-Kaskaden;
+  - Boundary-Timer + Startup-Quiet-Koaleszierung sind funktional und bleiben.
+- Reward-Pfade geprüft:
+  - `js/features/rewards/v7308-reward-consolidation.js`
+  - `js/features/rewards/beta/v8009-dungeon-reward-feedback.js`
+- Reward-Retries bleiben bewusst erhalten, da sie Server-Feedback (Wochen-Truhe/Gilden-EP) in das bereits gewünschte Reward-Fenster synchronisieren.
+- Keine Änderung an Quest-/Dungeon-/PvP-/Tower-Rewarddarstellung in diesem Pass.
+- Nächster Block: Inline-Audit Growroom + Schmiede + Händler.
