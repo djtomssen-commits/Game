@@ -1,0 +1,23 @@
+name: V8.009 Feature Extraction Batch 21
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/v8009_feature_extraction_batch21.py'
+      - '.github/workflows/v8009-feature-extraction-batch21.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 .github/scripts/v8009_feature_extraction_batch21.py
+      - run: |
+          git config user.name github-actions
+          git config user.email github-actions@users.noreply.github.com
+          git add beta.html js/features V8009_FEATURE_EXTRACTION_BATCH21_QA.json
+          git commit -m "V8.009 FEATURES: extract twenty-first owner batch" || exit 0
+          git pull --rebase origin main
+          git push
