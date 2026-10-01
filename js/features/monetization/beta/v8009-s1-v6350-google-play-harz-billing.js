@@ -335,31 +335,14 @@
  window.glRecoverPlayPurchases=recoverPending;
  window.glRecoverBoundPlayPurchases=v7237RecoverBoundTokens;
 
- function v7236RecoveryBurst(){
-   [300,1200,3000,6500,12000,20000].forEach(ms=>{
-     setTimeout(()=>{try{void recoverPending()}catch(_){}},ms);
-   });
+ function v7236RecoverPending(notify=false){
+   queueMicrotask(()=>{try{void recoverPending({notify})}catch(_){}});
  }
-
- function patchDealerCopy(){
-   document.querySelectorAll('#harzDealer .v567-info div').forEach(row=>{
-     const b=row.querySelector('b');if(!b)return;
-     if(/Zahlung/i.test(b.textContent||'')){
-       const span=row.querySelector('span');if(span)span.textContent='Sichere Zahlung über Google Play. Gutschrift erst nach serverseitiger Kaufprüfung.';
-     }
-     if(/Hinweis/i.test(b.textContent||'')){
-       const span=row.querySelector('span');if(span)span.textContent='Käufe werden deinem angemeldeten Grow-Legends-Account gutgeschrieben.';
-     }
-   });
- }
- document.addEventListener('click',e=>{if(e.target instanceof Element&&e.target.closest('[data-screen="harzDealer"],#v322HarzPlus'))setTimeout(patchDealerCopy,60)},true);
- window.addEventListener('growlegends:account-ready',()=>v7236RecoveryBurst());
- window.addEventListener('pageshow',()=>v7236RecoveryBurst(),{passive:true});
- document.addEventListener('visibilitychange',()=>{if(!document.hidden)v7236RecoveryBurst()},{passive:true});
+ window.addEventListener('growlegends:account-ready',()=>v7236RecoverPending(),{passive:true});
+ window.addEventListener('growlegends:first-playable',()=>v7236RecoverPending(),{passive:true});
+ window.addEventListener('pageshow',()=>v7236RecoverPending(),{passive:true});
+ document.addEventListener('visibilitychange',()=>{if(!document.hidden)v7236RecoverPending()},{passive:true});
  document.addEventListener('click',e=>{
-   if(e.target instanceof Element&&e.target.closest('[data-screen="harzDealer"],#v322HarzPlus')){
-     setTimeout(()=>{try{void recoverPending({notify:true})}catch(_){}},500);
-   }
+   if(e.target instanceof Element&&e.target.closest('[data-screen="harzDealer"],#v322HarzPlus'))v7236RecoverPending(true);
  },true);
- setTimeout(patchDealerCopy,800);setTimeout(patchDealerCopy,2200);setTimeout(v7236RecoveryBurst,2200);
 })();
