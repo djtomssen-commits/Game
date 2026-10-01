@@ -94,50 +94,40 @@
     }catch(e){return false}
   }
 
-  try{
-    if(typeof claimQuest==='function'&&!window.__v496QuestClaimGuard){
-      const base=claimQuest;
-      const wrapped=function(){
-        const q=s?.quests?.active;
-        const ready=!!q&&Date.now()>=Number(q.ends||0);
-        if(!ready)return base.apply(this,arguments);
+  /* V8.009 Quest consolidation:
+     v235 is the Local/Mirror transaction owner. Export direct single-payout
+     lifecycle hooks instead of wrapping claimQuest. */
+  function beginClaim(q){
+    const ready=!!q&&Date.now()>=Number(q.ends||0);
+    if(!ready)return {ok:false,reason:'NOT_READY'};
 
-        const k=lockKey(q);
-        if((k&&inflight.has(k))||alreadyPaid(q)){
-          repairStalePaidQuest();
-          setClaimUiBusy(true,'Bereits abgeholt');
-          try{if(typeof renderQuests==='function')renderQuests()}catch(e){}
-          return false;
-        }
-
-        if(k)inflight.add(k);
-        setClaimUiBusy(true,'Belohnung wird abgeholt …');
-
-        let result,thrown=null;
-        try{
-          result=base.apply(this,arguments);
-        }catch(e){
-          thrown=e;
-        }
-
-        const paid=!!q&&(!s?.quests?.active||s.quests.active!==q);
-        if(paid){
-          markPaid(q);
-          setClaimUiBusy(true,'Abgeholt');
-          /* The canonical claim path already performs the successful render.
-             Do not repaint the whole Quest page again here. */
-        }else{
-          setClaimUiBusy(false);
-        }
-        if(k)inflight.delete(k);
-        if(thrown)throw thrown;
-        return result;
-      };
-      claimQuest=wrapped;
-      try{window.claimQuest=wrapped}catch(e){}
-      window.__v496QuestClaimGuard=true;
+    const k=lockKey(q);
+    if((k&&inflight.has(k))||alreadyPaid(q)){
+      repairStalePaidQuest();
+      setClaimUiBusy(true,'Bereits abgeholt');
+      try{if(typeof renderQuests==='function')renderQuests()}catch(e){}
+      return {ok:false,reason:'ALREADY_PAID',key:k||''};
     }
-  }catch(e){console.warn('V4.496 quest claim guard install',e)}
+
+    if(k)inflight.add(k);
+    setClaimUiBusy(true,'Belohnung wird abgeholt …');
+    return {ok:true,key:k||'',quest:q};
+  }
+
+  function finishClaim(txn,paid){
+    if(!txn?.ok)return;
+    const q=txn.quest,k=txn.key;
+    if(paid&&q){
+      markPaid(q);
+      setClaimUiBusy(true,'Abgeholt');
+    }else{
+      setClaimUiBusy(false);
+    }
+    if(k)inflight.delete(k);
+  }
+
+  window.v496BeginQuestClaim=beginClaim;
+  window.v496FinishQuestClaim=finishClaim;
 
   /* Direct pre-render guard used by the canonical Quest renderer. */
   window.v496RepairStalePaidQuest=repairStalePaidQuest;
