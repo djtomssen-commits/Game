@@ -1,0 +1,1 @@
+window.__V7146_PLAY_REFERRAL__=Object.freeze({playStore:true,packageId:'de.growlegends.app',installReferrer:'gl_ref'});

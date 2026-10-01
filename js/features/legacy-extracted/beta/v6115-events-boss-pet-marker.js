@@ -1,0 +1,2 @@
+
+window.__V6115_EVENTS_BOSS_PET_STABILITY__=true;

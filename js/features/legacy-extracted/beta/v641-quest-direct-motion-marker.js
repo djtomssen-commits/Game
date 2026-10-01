@@ -1,0 +1,1 @@
+window.__V641_QUEST_DIRECT_MOTION__=true;

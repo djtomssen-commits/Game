@@ -2,7 +2,7 @@
 <html lang="de" class="v7154-frame-pending">
 <head>
 <script>window.GROW_RELEASE_CHANNEL='beta';</script>
-<script id="v8008-beta-phase3c1-marker">window.GROW_BETA_TECH_BUILD='V8.009-T2';</script>
+<script id="v8008-beta-phase3c1-marker" src="js/features/legacy-extracted/beta/v8008-beta-phase3c1-marker.js"></script>
 <script id="v7233-server-scoped-storage" src="js/features/account/beta/v8009-s15-v7233-server-scoped-storage.js"></script>
 <script id="v4131-version-source" src="js/features/system/beta/v8009-s13-v4131-version-source.js"></script>
 <script id="v7101-public-profile-coalescer" src="js/features/profile/beta/v8009-s2-v7101-public-profile-coalescer.js"></script>
@@ -12,28 +12,7 @@
 <script id="v7096-tower-direct-preempt" src="js/features/tower/beta/v8009-t1-tower-direct-preempt.js"></script>
 <script id="v6140-central-event-bus-preboot" src="js/features/system/beta/v8009-s18-v6140-central-event-bus-preboot.js"></script>
 
-<script id="v4106-preboot-tech">
-(()=>{
-'use strict';
-if(window.__V4106_TECH__)return;
-window.__V4106_TECH__={
-  version:'V6.97-production-lite',
-  startedAt:Date.now(),
-  intervals:new Map(),
-  timeouts:new Map(),
-  listeners:new Map(),
-  longTasks:[],
-  renderSamples:{},
-  mutations:0,
-  maxDom:0,
-  qaActive:false,
-  qaWindows:[],
-  productionLite:true
-};
-window.__V4122_LIVE_LISTENER_COUNT__=()=>0;
-window.__V4122_IS_QA_LONG_TASK__=()=>false;
-})();
-</script>
+<script id="v4106-preboot-tech" src="js/features/legacy-extracted/beta/v4106-preboot-tech.js"></script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#10170f">
@@ -49,10 +28,7 @@ html:not(.v483-power-ready) #world.active .v366-power b::after{content:"…"!imp
 .app > header .v366-ver,.app > header .v371-logo em,.app > header .v372-logo em{font-size:0!important;color:transparent!important}
 .app > header .v366-ver::after,.app > header .v371-logo em::after,.app > header .v372-logo em::after{content:"V4.164"!important;font-size:5px!important;color:#63cdd1!important;font-style:normal!important;font-weight:900!important}
 </style>
-<script id="v483-startup-flags">
-window.__V483_MODERN_WORLD_ONLY__=true;
-window.__V483_POWER_READY__=false;
-</script>
+<script id="v483-startup-flags" src="js/features/legacy-extracted/beta/v483-startup-flags.js"></script>
 <style id="v477-runtime-governor-css">
 /* V4.77: never depend on a JS class to remove the startup splash. The retired
    home stays hidden; the modern home becomes visible as soon as it exists. */
@@ -593,9 +569,7 @@ body{
   background:#020703 !important;
 }
 </style>
-<script id="v224-atomic-boot-flag">
-document.documentElement.classList.remove('v224-app-ready');
-</script>
+<script id="v224-atomic-boot-flag" src="js/features/legacy-extracted/beta/v224-atomic-boot-flag.js"></script>
 
 
 <style id="v296-mystic-special-display">
@@ -8566,10 +8540,7 @@ try{
     <div class="v4143-boot-sr" id="v4143BootText">Account wird geprüft …</div>
   </div>
 </div>
-<script id="v4143-early-session-restore-flag">
-window.__V4143_AUTH_BOOTING__=true;
-(()=>{const ov=document.getElementById('v075AuthOverlay');if(ov)ov.classList.add('show','v4143-restoring')})();
-</script>
+<script id="v4143-early-session-restore-flag" src="js/features/legacy-extracted/beta/v4143-early-session-restore-flag.js"></script>
 <script id="v660-splash-progress-controller" src="js/features/ui/beta/v8009-s15-v660-splash-progress-controller.js"></script>
 
 
@@ -9336,31 +9307,7 @@ try{v079RemoveBuffFx()}catch(e){}
 <script id="v090-shop-comparison-fix-script" src="js/features/shop/beta/v8009-s10-v090-shop-comparison-fix.js"></script>
 
 
-<script id="v092-dampf-regen-fix">
-/* ===== V4.02 Dampf fix =====
-   The original game calls regenEnergy() from render() and every second.
-   V4.02 disabled regen(), but NOT regenEnergy(). Therefore old 1 Dampf/3 min
-   regeneration could still run, especially after reload/inactivity.
-   Dampf is now strictly daily-reset + Harz refill only.
-*/
-regenEnergy=function(){
-  /* V7.177: authenticated authoritative accounts never run legacy local Dampf logic. */
-  try{if(typeof v026ServerOwned==='function'&&v026ServerOwned())return false}catch(_){}
-  v026DailyReset(false);
-  s.lastEnergy=Date.now();
-  try{v026PaintDampf()}catch(e){}
-  return true;
-};
-regenEnergy.__v7173ServerGuard=true;
-try{window.regenEnergy=regenEnergy}catch(_){}
-
-/* Keep the timestamp current before saving, so old timestamps can never
-   accumulate regeneration if an older wrapper executes. */
-s.lastEnergy=Date.now();
-localStorage.setItem(KEY,JSON.stringify(s));
-
-/* V4.123: Dampf fix remains active; obsolete version-only render wrapper retired. */
-</script>
+<script id="v092-dampf-regen-fix" src="js/features/legacy-extracted/beta/v092-dampf-regen-fix.js"></script>
 
 
 <style id="v093-admin-style">
@@ -11126,13 +11073,7 @@ html,body,.app,.screen,#character{
 }
 </style>
 
-<script id="v124-character-width-fix-script">
-/* V7.160: RETIRED. Mobile WebView emits resize while kinetic scrolling / browser
-   chrome changes. This historical width repair wrote inline styles into every slot
-   on those resize events and could make the equipment columns disappear mid-scroll. */
-window.__V7160_V124_RESIZE_WRITER_RETIRED__=true;
-window.v124ClampCharacterWidth=window.v124ClampCharacterWidth||function(){return true};
-</script>
+<script id="v124-character-width-fix-script" src="js/features/legacy-extracted/beta/v124-character-width-fix-script.js"></script>
 
 
 <style id="v125-attributes-skills-image1">
@@ -11762,9 +11703,7 @@ window.v124ClampCharacterWidth=window.v124ClampCharacterWidth||function(){return
 }
 </style>
 
-<script id="v128-premium-skill-ui-script">
-/* V6.320: retired unused v128 skill-card render wrapper. */
-</script>
+<script id="v128-premium-skill-ui-script" src="js/features/legacy-extracted/beta/v128-premium-skill-ui-script.js"></script>
 
 
 <style id="v129-shop-inventory-character-premium">
@@ -12277,9 +12216,7 @@ window.v124ClampCharacterWidth=window.v124ClampCharacterWidth||function(){return
 }
 </style>
 
-<script id="v130-classset-inventories-script">
-/* V6.320: retired. v130 headings were immediately removed by the canonical compact inventory layer. */
-</script>
+<script id="v130-classset-inventories-script" src="js/features/legacy-extracted/beta/v130-classset-inventories-script.js"></script>
 
 
 <script id="v131-shop-cleanup" src="js/features/legacy-extracted/beta/v131-shop-cleanup.js"></script>
@@ -12524,32 +12461,7 @@ window.v124ClampCharacterWidth=window.v124ClampCharacterWidth||function(){return
 }
 </style>
 
-<script id="v132-classset-inventory-premium-script">
-function v132Polish(){
-  /* Remove "Inventar-System V4.02" / similar technical version text. */
-  document.querySelectorAll('#character .card:has(#inventory) .tiny,#character .card:has(#inventory) .muted').forEach(el=>{
-    const t=(el.textContent||'').trim();
-    if(/^Inventar-System\s+V/i.test(t)) el.classList.add('v132-hide-inventory-version');
-  });
-
-  /* Give set bonus rows semantic classes without changing mechanics. */
-  const set=document.querySelector('#setBonuses');
-  if(set){
-    Array.from(set.children).forEach((el,i)=>{
-      if(i>0)el.classList.add('set-bonus');
-    });
-  }
-
-  
-}
-const v132BaseRender=render;
-render=function(){
-  const r=v132BaseRender();
-  if(document.querySelector('#character')?.classList.contains('active'))requestAnimationFrame(v132Polish);
-  return r;
-};
-setTimeout(v132Polish,160);
-</script>
+<script id="v132-classset-inventory-premium-script" src="js/features/legacy-extracted/beta/v132-classset-inventory-premium-script.js"></script>
 
 
 <style id="v133-compact-inventory">
@@ -12734,35 +12646,7 @@ setTimeout(v132Polish,160);
 }
 </style>
 
-<script id="v133-compact-inventory-script">
-function v133Polish(){
-  /* Remove duplicate equipment sub-card completely. */
-  document.querySelector('#v130GearInvHead')?.remove();
-
-  /* Remove duplicate materials sub-heading. */
-  document.querySelector('#v130MatInvHead')?.remove();
-
-  /* Make the existing empty materials message look intentional. */
-  const mats=document.querySelector('#v030Materials');
-  if(mats){
-    Array.from(mats.querySelectorAll('*')).forEach(el=>{
-      const t=(el.textContent||'').trim();
-      if(t==='Noch keine Edelsteine oder Rollen.' && !el.classList.contains('v133-material-empty')){
-        el.classList.add('v133-material-empty');
-        if(el.children.length===0) el.innerHTML='<span>Noch keine Edelsteine oder Rollen.</span>';
-      }
-    });
-  }
-  
-}
-const v133BaseRender=render;
-render=function(){
-  const r=v133BaseRender();
-  if(document.querySelector('#character')?.classList.contains('active'))requestAnimationFrame(v133Polish);
-  return r;
-};
-setTimeout(v133Polish,150);
-</script>
+<script id="v133-compact-inventory-script" src="js/features/legacy-extracted/beta/v133-compact-inventory-script.js"></script>
 
 
 <style id="v134-rarity-inventories">
@@ -13740,39 +13624,7 @@ body.v141-reduced-effects .v125-skill{
 <script  src="js/features/pvp/beta/v8009-s1-v211-pvp-result-modal.js"></script>
 
 
-<script id="v213-save-integrity-final">
-/* Final V4.02 safety hooks */
-window.addEventListener('pagehide',()=>{
-  try{
-    if(v200DurableUser() && v075CloudLoadedFor===v073User.id){
-      v213LocalCheckpoint('pagehide');
-    }
-  }catch(e){}
-});
-
-document.addEventListener('visibilitychange',()=>{
-  try{
-    if(document.visibilityState==='hidden' &&
-       v200DurableUser() &&
-       v075CloudLoadedFor===v073User.id){
-      v213LocalCheckpoint('hidden');
-      v075WriteCloudSave(false);
-    }
-  }catch(e){}
-});
-
-/* Once auth/cloud are ready, the monitor catches direct state mutations
-   that bypass the old persist() helper. */
-setTimeout(()=>{
-  try{
-    if(v200DurableUser() && v075CloudLoadedFor===v073User.id){
-      v213StartMonitor();
-    }
-  }catch(e){}
-},1200);
-
-/* V7.113: retired render wrapper whose only job was an obsolete version paint. */
-</script>
+<script id="v213-save-integrity-final" src="js/features/legacy-extracted/beta/v213-save-integrity-final.js"></script>
 
 
 <script  src="js/features/pvp/beta/v8009-s1-v216-pvp-finish-flow-fix.js"></script>
@@ -15959,7 +15811,7 @@ body > #v141SettingsMenu #v141Delete{
 <script id="v262-guild-war-core" src="js/features/guild/beta/v8008-c25-guildwar-owner.js"></script>
 
 
-<script id="v263-guild-war-final"></script>
+<script id="v263-guild-war-final" src="js/features/legacy-extracted/beta/v263-guild-war-final.js"></script>
 
 <style id="v265-war-arena-css">
 #v265WarArena{position:fixed;inset:0;z-index:10040;background:rgba(0,7,3,.96);display:none;align-items:center;justify-content:center;padding:14px}
@@ -16588,34 +16440,7 @@ header .resource-stats .v280-harz-card:after{
 }
 </style>
 
-<script id="v280-harz-grid-root-fix">
-/* The Harz DOM is now static HTML. Do not rebuild its innerHTML at runtime. */
-v279BuildHarzCard=function(){
-  const value=document.querySelector('#topHarz');
-  const card=value?.closest('.stat');
-  if(!card)return;
-  card.classList.add('v277-harz-card','v279-harz-card','v280-harz-card');
-};
-
-/* Final resource normalization: no DOM replacement, only stable classes/state. */
-const v280BaseRender=render;
-render=function(){
-  const r=v280BaseRender();
-  requestAnimationFrame(()=>{
-    v279BuildHarzCard();
-    v271PaintDampf();
-  });
-  
-  const line=document.querySelector('#v141VersionLine');
-  return r;
-};
-
-setTimeout(()=>{
-  try{v279BuildHarzCard();v271PaintDampf()}catch(e){}
-  
-  const line=document.querySelector('#v141VersionLine');
-},300);
-</script>
+<script id="v280-harz-grid-root-fix" src="js/features/legacy-extracted/beta/v280-harz-grid-root-fix.js"></script>
 
 <style id="v281-harz-count-fix-css">
 /* V4.02: dedicated visible Harz amount. The legacy #topHarz remains for game logic. */
@@ -16638,39 +16463,7 @@ header .resource-stats .v279-harz-card .v281-harz-amount{
   header .resource-stats .v279-harz-card .v281-harz-amount{font-size:25px!important}
 }
 </style>
-<script id="v281-harz-count-fix">
-function v281PaintHarzAmount(){
-  const source=document.querySelector('#topHarz');
-  const card=source?.closest('.stat');
-  if(!card)return;
-
-  const amount=Number(s.harzTaler)||0;
-  source.textContent=amount;
-
-  let visible=card.querySelector('.v281-harz-amount');
-  if(!visible){
-    visible=document.createElement('div');
-    visible.className='v281-harz-amount';
-
-    const label=card.querySelector('.v280-harz-label,.v279-resource-label');
-    if(label)label.insertAdjacentElement('afterend',visible);
-    else card.appendChild(visible);
-  }
-  visible.textContent=amount;
-}
-
-const v281BaseRender=render;
-render=function(){
-  const r=v281BaseRender();
-  requestAnimationFrame(v281PaintHarzAmount);
-  
-  const line=document.querySelector('#v141VersionLine');
-  return r;
-};
-
-setTimeout(v281PaintHarzAmount,200);
-setTimeout(v281PaintHarzAmount,900);
-</script>
+<script id="v281-harz-count-fix" src="js/features/legacy-extracted/beta/v281-harz-count-fix.js"></script>
 
 <style id="v282-harz-count-root-css">
 /* V4.02: Harz amount is a standalone element, not inside the legacy <b> wrapper. */
@@ -16864,20 +16657,7 @@ header .resource-stats .v284-dampf-sub{
 
 <script id="v286-dungeon-events-gold-marker-fix" src="js/features/dungeon/beta/v8009-s9-v286-dungeon-events-gold-marker-fix.js"></script>
 
-<script id="v287-dampf-subtitle-cleanup">
-function v287RemoveDampfSubtitle(){
-  const card=document.querySelector('#energy')?.closest('.stat');
-  if(!card)return;
-  card.querySelectorAll('.v284-dampf-sub').forEach(el=>el.remove());
-}
-
-/* V6.320: duplicate subtitle cleanup no longer wraps the global renderer. */
-window.addEventListener('pageshow',()=>requestAnimationFrame(v287RemoveDampfSubtitle),{passive:true});
-
-setTimeout(v287RemoveDampfSubtitle,250);
-
-const v287Line=document.querySelector('#v141VersionLine');
-</script>
+<script id="v287-dampf-subtitle-cleanup" src="js/features/legacy-extracted/beta/v287-dampf-subtitle-cleanup.js"></script>
 
 <style id="v288-resource-event-clarity-css">
 /* ===== V4.02 resource event clarity ===== */
@@ -16927,24 +16707,7 @@ header .resource-stats .v284-dampf-card .v284-dampf-label::after{
 </style>
 <script id="v294-dampf-canonical" src="js/features/quest/beta/v8009-s8-v294-dampf-canonical.js"></script>
 <script  src="js/features/pvp/beta/v8009-s1-v299-hall-mystic-profile-sync-fix.js"></script>
-<script id="v300-event-expiry-dampf-fix">
-let v300LastDampfActive=null;
-function v300ReconcileTimedEvents(){
- try{
-  if(!v271EventDataReady)return;
-  const active=v271DampfEventActive();
-  if(v300LastDampfActive===null){v300LastDampfActive=active;v271SyncDampfEvent();v271PaintDampf();return}
-  if(active!==v300LastDampfActive){
-   v300LastDampfActive=active;v271SyncDampfEvent();v271PaintDampf();
-   try{renderQuests()}catch(e){} try{persist(false)}catch(e){}
-  }
- }catch(e){}
-}
-setInterval(()=>{if(!document.hidden)v300ReconcileTimedEvents()},30000);
-setTimeout(v300ReconcileTimedEvents,1000);
-
-const v300Line=document.querySelector('#v141VersionLine');
-</script>
+<script id="v300-event-expiry-dampf-fix" src="js/features/legacy-extracted/beta/v300-event-expiry-dampf-fix.js"></script>
 
 <script id="v301-auth-idle-hard-lock" src="js/features/account/beta/v8009-s13-v301-auth-idle-hard-lock.js"></script>
 <script id="v302-dungeon-progress-source-fix" src="js/features/dungeon/beta/v8009-s18-v302-dungeon-progress-source-fix.js"></script>
@@ -16955,27 +16718,7 @@ const v300Line=document.querySelector('#v141VersionLine');
  background:#0b1a0d;color:#9ee986;font-size:7px;font-weight:900
 }
 </style>
-<script id="v306-first-daily-quest-harz">
-function v306PaintFirstDailyQuestHarz(){
- try{v109ResetDaily()}catch(e){}
- const due=!s.v109HarzDaily?.firstQuest;
- const cards=document.querySelectorAll('#questList .quest');
- if(!due){
-  document.querySelectorAll('#questList .v306-first-daily-harz').forEach(el=>el.remove());
-  return;
- }
- cards.forEach(card=>{
-  if(card.querySelector('.v306-first-daily-harz'))return;
-  const line=document.createElement('div');
-  line.className='v306-first-daily-harz';
-  line.textContent='🟢 Erste Quest heute: +2 Harz-Taler garantiert';
-  card.appendChild(line);
- });
-}
-window.v306PaintFirstDailyQuestHarz=v306PaintFirstDailyQuestHarz;
-
-const v306Line=document.querySelector('#v141VersionLine');
-</script>
+<script id="v306-first-daily-quest-harz" src="js/features/legacy-extracted/beta/v306-first-daily-quest-harz.js"></script>
 
 <!-- V4.02: Quest duration balance. Only quest duration curve changed; XP, Gold and Dampf formulas remain unchanged. -->
 <script id="v400-dungeon-progression-guard" src="js/features/dungeon/beta/v8009-s15-v400-dungeon-progression-guard.js"></script>
@@ -17044,9 +16787,7 @@ const v306Line=document.querySelector('#v141VersionLine');
 #v419AttrPoints.v419-empty .v419-value{color:#8a978b}
 #v419AttrPoints .v419-dot{width:9px;height:9px;border-radius:50%;background:currentColor;box-shadow:0 0 9px currentColor}
 </style>
-<script id="v419-attribute-points-display">
-/* V6.320: retired v419-attribute-points-display; v4140 is the canonical attribute UI owner. */
-</script>
+<script id="v419-attribute-points-display" src="js/features/legacy-extracted/beta/v419-attribute-points-display.js"></script>
 
 
 <!-- ===== V4.29 Stable: authoritative real Level-Up notification ===== -->
@@ -17068,9 +16809,7 @@ const v306Line=document.querySelector('#v141VersionLine');
 
 
 <!-- ===== V4.29 Stable: live attribute-points refresh ===== -->
-<script id="v426-attribute-points-live-update">
-/* V6.320: retired v426-attribute-points-live-update; v4140 is the canonical attribute UI owner. */
-</script>
+<script id="v426-attribute-points-live-update" src="js/features/legacy-extracted/beta/v426-attribute-points-live-update.js"></script>
 <!-- ===== V4.29 Stable: Hall sync + quest rarity colors ===== -->
 <style id="v427-quest-rarity-colors">
 #v231QuestReward .v395-loot-card.item.q-gray{border-color:#5c645e;background:linear-gradient(180deg,#151915,#0b0e0c)}
@@ -17126,20 +16865,7 @@ const v306Line=document.querySelector('#v141VersionLine');
 .app > header .v358-logo::after{content:"V4.99"!important}
 .app > header .v366-ver::after,.app > header .v371-logo em::after,.app > header .v372-logo em::after{content:"V4.99"!important}
 </style>
-<script id="v499-grow-authority">
-(()=>{
- 'use strict';
- /* V7.151 PHASE 2: RETIRED.
-    V4.99 stored a second owner-scoped Grow snapshot in localStorage and restored
-    it around persist(), cloud apply/write and navigation. Server-authoritative
-    V7065 is now the sole canonical Grow state owner. Keeping V4.99 active could
-    resurrect stale plants after a server refresh. Compatibility entry points
-    remain as no-ops for old callers. */
- window.__V499_RETIRED_V7150__=true;
- window.v499ActivateForAccount=()=>false;
- window.v499RepairGrowroom=()=>false;
-})();
-</script>
+<script id="v499-grow-authority" src="js/features/legacy-extracted/beta/v499-grow-authority.js"></script>
 
 
 
@@ -17218,27 +16944,9 @@ const v306Line=document.querySelector('#v141VersionLine');
 
 <!-- ===== V4.110 Stable: Samen-Händler Live-Kauf Regression Contract ===== -->
 <!-- ===== V4.110 Stable: fail-first Systemtechnik visibility guard ===== -->
-<script id="v4110-systemtechnik-visibility-guard">
-(()=>{
- const VERSION='V4.110 Stable',SHORT='V4.110';
- function stamp(){}
- function guard(){try{stamp();const sec=document.getElementById('systemtech');if(!sec?.classList.contains('active'))return;const panels=['v4107Status','v4107Groups','v4107Tests'];for(const id of panels){const el=document.getElementById(id);if(el&&!String(el.textContent||'').trim()){el.innerHTML='<div class="v4110-loading"><b>🛡️ Anzeige wird wiederhergestellt…</b>Systemtechnik hat einen leeren Bereich erkannt und lädt den letzten Bericht neu.</div>';try{window.v4107OpenSystemtechnik?.()}catch(e){}}}}catch(e){}}
- stamp();guard();window.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')==='systemtech')guard()},{passive:true});window.addEventListener('pageshow',guard,{passive:true});document.addEventListener('visibilitychange',()=>!document.hidden&&guard(),{passive:true});
-})();
-</script>
+<script id="v4110-systemtechnik-visibility-guard" src="js/features/legacy-extracted/beta/v4110-systemtechnik-visibility-guard.js"></script>
 
-<script id="v4111-global-comic-item-art">
-(()=>{
- 'use strict';
- window.__V4111_OLD_ART_RUNTIME_RETIRED__=true;
- window.v4111ComicItemArtUri=function(it){
-   try{return window.v6107CanonicalItemArt?.(it)||window.v6106RealItemArt?.(it)||window.v466ItemArtUri?.(it)||''}catch(e){return''}
- };
- window.v4111RefreshComicItems=function(scope){
-   try{return window.v6107PaintItemSurfaces?.(scope||document.querySelector('.screen.active')||document)}catch(e){return false}
- };
-})();
-</script>
+<script id="v4111-global-comic-item-art" src="js/features/legacy-extracted/beta/v4111-global-comic-item-art.js"></script>
 
 
 
@@ -17313,15 +17021,7 @@ const v306Line=document.querySelector('#v141VersionLine');
 .app > header .v358-logo::after{content:"V4.159"!important}
 .app > header .v366-ver::after,.app > header .v371-logo em::after,.app > header .v372-logo em::after{content:"V4.159"!important}
 </style>
-<script id="v4141-login-fast-release">
-(()=>{
- 'use strict';
- const V=window.GROW_LEGENDS_VERSION||{short:'V4.159',label:'V4.159 Stable'};
- function stamp(){}
- window.v4141LoginTiming=()=>window.__V4141_LOGIN_TIMING__||null;
- stamp();
-})();
-</script>
+<script id="v4141-login-fast-release" src="js/features/legacy-extracted/beta/v4141-login-fast-release.js"></script>
 <!-- V4.159: refresh/session restore shows a neutral loading splash instead of flashing the login form. Session restoration + authoritative player_saves resolution remain account-isolated; login news/events are fetched only when login is actually needed. -->
 
 
@@ -17352,7 +17052,7 @@ const v306Line=document.querySelector('#v141VersionLine');
 
 <!-- ===== V4.159 Stable: echter Gildenkrieg – Herausforderung, Meldungen, Chat-Alarm, Kampf ===== -->
 <link id="v4159-guild-war-css" rel="stylesheet" href="css/features/guild/legacy/v4159-guild-war-css.css">
-<script id="v4159-guild-war-authority">window.v8008C25InstallWarAuthority?.();</script>
+<script id="v4159-guild-war-authority" src="js/features/legacy-extracted/beta/v4159-guild-war-authority.js"></script>
 <!-- V4.159: Gildenkrieg ist jetzt eine echte Herausforderung zwischen zwei Gilden. Anführer/Offiziere wählen die Gegnergilde, die Zielgilde erhält sofort Ingame-/Menü- und Gildenchat-Hinweise, Mitglieder melden sich bis 18:00 für Angriff/Verteidigung, ab 19:00 wird serverseitig ausgewertet. -->
 
 \n\n
@@ -18608,7 +18308,7 @@ body:has(#world.active) #v337LegalFooter{display:none!important}
 
 <!-- ===== V5.64 GILDENKRIEG REFERENCE REDESIGN ===== -->
 <link id="v564-guild-war-reference-css" rel="stylesheet" href="css/features/guild/legacy/v564-guild-war-reference-css.css">
-<script id="v564-guild-war-reference-js">window.v8008C25InstallWarVisual?.();</script>
+<script id="v564-guild-war-reference-js" src="js/features/legacy-extracted/beta/v564-guild-war-reference-js.js"></script>
 <!-- ===== /V5.64 GILDENKRIEG REFERENCE REDESIGN ===== -->
 
 <!-- ===== V5.67: Harz Dealer final Grow-Legends reference implementation ===== -->
@@ -19338,25 +19038,7 @@ html body .app section#hall.v646-hall .v646-footer-plaque{
 
 
 
-<script id="v317-quest-duration-curve">
-/* ===== V4.02 Quest duration curve =====
-   User target:
-   Heavy quest L150 = 5:00
-   Heavy quest L300 = 10:00
-   Linear rule: heavy = 2 sec * level.
-   Normal/Quick keep V4.02 ratios.
-*/
-function v317QuestDurations(level=Number(s.level)||1){
- level=Math.max(1,Math.floor(Number(level)||1));
- const heavy=Math.max(30,level*2);
- const normal=Math.max(15,Math.round(heavy/1.55));
- const quick=Math.max(15,Math.round(normal*.62));
- return {quick,normal,heavy};
-}
-window.v317QuestDurations=v317QuestDurations;
-
-/* V4.123: quest duration curve remains active; obsolete version-only render wrapper retired. */
-</script>
+<script id="v317-quest-duration-curve" src="js/features/legacy-extracted/beta/v317-quest-duration-curve.js"></script>
 
 
 
@@ -21252,7 +20934,7 @@ body:has(#world.active) #v032MenuBtn{
 }
 </style>
 
-<script id="v355-home-avatar-events-fix">/* HOME-14 beta: V366 and the current version owner replace these historical startup refreshes/version writes. */</script>
+<script id="v355-home-avatar-events-fix" src="js/features/legacy-extracted/beta/v355-home-avatar-events-fix.js"></script>
 
 <!-- ===== V4.29 Stable: exact Character-screen avatar on home ===== -->
 <style type="text/x-grow-legends-retired" id="v356-home-real-character-css">
@@ -21575,34 +21257,7 @@ body:has(#world.active) #v032MenuBtn{
 }
 </style>
 
-<script id="v357-global-game-style">
-(function(){
-  const V357_VERSION='V4.29 Stable';
-
-  function v357RemoveWorldDuplicateBar(){
-    document.querySelectorAll('#world .v351-topbar').forEach(el=>el.remove());
-  }
-
-  function v357Version(){/* V7.113: obsolete version painter retired. */}
-
-  /* Keep the existing resource IDs and existing render logic untouched.
-     Only remove the obsolete duplicate world bar after legacy world installers run. */
-  const baseInstall=v085InstallWorld;
-  v085InstallWorld=function(force){
-    const r=baseInstall.apply(this,arguments);
-    v357RemoveWorldDuplicateBar();
-    return r;
-  };
-
-  window.addEventListener('growlegends:navigation-open-v7119',()=>{
-    v357RemoveWorldDuplicateBar();
-    v357Version();
-  },{passive:true});
-
-  v357RemoveWorldDuplicateBar();
-  v357Version();
-})();
-</script>
+<script id="v357-global-game-style" src="js/features/legacy-extracted/beta/v357-global-game-style.js"></script>
 
 <!-- ===== V4.29 Stable: real compact global header replacement ===== -->
 <style id="v358-global-header-css">
@@ -22098,32 +21753,7 @@ html body .app > header > .stats.resource-stats{
 }
 </style>
 
-<script id="v362-header-exact-compact">
-(function(){
-  const V362_VERSION='V4.29 Stable';
-
-  function update(){
-    const num=v=>Math.max(0,Math.round(Number(v)||0)).toLocaleString('de-DE');
-    let cap=100;
-    try{if(typeof v271DampfCap==='function')cap=v271DampfCap()}catch(e){}
-
-    const gold=document.querySelector('#v358Gold');
-    const harz=document.querySelector('#v358Harz');
-    const dampf=document.querySelector('#v358Dampf');
-
-    if(gold)gold.textContent='🪙 '+num(s?.gold);
-    if(harz)harz.textContent='💎 '+num(s?.harzTaler);
-    if(dampf)dampf.textContent='💨 '+num(s?.energy)+'/'+num(cap);
-  }
-
-  /* Shared navigation owns passive header refreshes. */
-  update();
-  document.addEventListener('DOMContentLoaded',update,{once:true});
-  window.addEventListener('pageshow',update,{passive:true});
-  window.addEventListener('growlegends:account-ready',update,{passive:true});
-  window.addEventListener('growlegends:navigation-open-v7119',update,{passive:true});
-})();
-</script>
+<script id="v362-header-exact-compact" src="js/features/legacy-extracted/beta/v362-header-exact-compact.js"></script>
 
 <!-- ===== V4.29 Stable: header alignment polish only ===== -->
 <style id="v363-header-alignment-polish-css">
@@ -22223,25 +21853,7 @@ html body .app > header > .stats.resource-stats{
 }
 </style>
 
-<script id="v363-header-alignment-polish">
-(function(){
-  const V363_VERSION='V4.29 Stable';
-
-  function update(){
-    document.querySelectorAll(
-      '.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version'
-    ).forEach(el=>{if(el)el.textContent=V363_VERSION});
-
-    const logo=document.querySelector('.v358-logo');
-    if(logo)logo.setAttribute('data-v363','1');
-  }
-
-  update();
-  document.addEventListener('DOMContentLoaded',update,{once:true});
-  window.addEventListener('pageshow',update,{passive:true});
-  window.addEventListener('growlegends:account-ready',update,{passive:true});
-})();
-</script>
+<script id="v363-header-alignment-polish" src="js/features/legacy-extracted/beta/v363-header-alignment-polish.js"></script>
 
 <!-- ===== V4.29 Stable: dropdown position + clickability fix ===== -->
 <style id="v364-dropdown-fix-css">
@@ -22613,10 +22225,7 @@ html,body{
 }
 </style>
 
-<script id="v367-v366-visibility-fix">
-/* V7.156: retired. V366 is the canonical Startseite owner; delayed visibility repairs caused startup repaints. */
-window.__V367_HOME_REPAIR_RETIRED_V7156__=true;
-</script>
+<script id="v367-v366-visibility-fix" src="js/features/legacy-extracted/beta/v367-v366-visibility-fix.js"></script>
 
 <!-- ===== V4.29 Stable: single world DOM only ===== -->
 <style id="v368-single-world-dom-css">
@@ -23134,7 +22743,7 @@ body.v371-game-ui .app > header{
 }
 </style>
 
-<script id="v374-exp-event-visual-fix">/* HOME-14 beta: V095 already excludes legacy and current event cards. The duplicate navigation/decorator cleanup owner is retired. */</script>
+<script id="v374-exp-event-visual-fix" src="js/features/legacy-extracted/beta/v374-exp-event-visual-fix.js"></script>
 
 <!-- ===== V4.29 Stable: Glück attribute on home ===== -->
 <style id="v375-home-luck-attribute-css">
@@ -23146,16 +22755,10 @@ body.v371-game-ui .app > header{
 }
 </style>
 
-<script id="v375-home-luck-attribute">
-/* V7.156: retired runtime. V366 homeChecklist/world signature already reads live attributes. */
-window.__V375_HOME_REFRESH_RETIRED_V7156__=true;
-</script>
+<script id="v375-home-luck-attribute" src="js/features/legacy-extracted/beta/v375-home-luck-attribute.js"></script>
 
 <!-- ===== V4.29 Stable: quest destination/title appears only once ===== -->
-<script id="v376-quest-destination-dedupe">
-/* Quest Cleanup Phase 1: v376-quest-destination-dedupe runtime retired.
-   Its former visual cleanup is superseded by the later V386/V391/V4172 quest owners. */
-</script>
+<script id="v376-quest-destination-dedupe" src="js/features/legacy-extracted/beta/v376-quest-destination-dedupe.js"></script>
 
 <!-- ===== V4.29 Stable: visible settings gear + real settings dropdown ===== -->
 <style id="v377-settings-gear-css">
@@ -23224,10 +22827,7 @@ body > #v141SettingsMenu.v377-open{
 }
 </style>
 
-<script id="v378-quest-location-single-title">
-/* Quest Cleanup Phase 1: v378-quest-location-single-title runtime retired.
-   Its former visual cleanup is superseded by the later V386/V391/V4172 quest owners. */
-</script>
+<script id="v378-quest-location-single-title" src="js/features/legacy-extracted/beta/v378-quest-location-single-title.js"></script>
 
 <!-- ===== V4.29 Stable: Quest-Kampfanimation ein/aus in Einstellungen ===== -->
 <script id="v379-quest-battle-animation-setting" src="js/features/quest/beta/v8009-s5-v379-quest-battle-animation-setting.js"></script>
@@ -23799,10 +23399,7 @@ create index if not exists player_messages_sender_idx on public.player_messages(
 }
 </style>
 
-<script id="v390-quest-art-upgrade-script">
-/* Quest Cleanup Phase 1: v390-quest-art-upgrade-script runtime retired.
-   Its former visual cleanup is superseded by the later V386/V391/V4172 quest owners. */
-</script>
+<script id="v390-quest-art-upgrade-script" src="js/features/legacy-extracted/beta/v390-quest-art-upgrade-script.js"></script>
 
 <!-- ===== V4.29 Stable: Quest page finished with approved artwork ===== -->
 <style id="v391-quest-finished-style">
@@ -24029,9 +23626,7 @@ create index if not exists player_messages_sender_idx on public.player_messages(
 #quests .v393-skip:disabled{opacity:.45;cursor:default}
 </style>
 
-<script id="v393-quest-skip-restored">
-/* V8.009 retired: v4127 is the only Quest skip UI owner. */
-</script>
+<script id="v393-quest-skip-restored" src="js/features/legacy-extracted/beta/v393-quest-skip-restored.js"></script>
 <!-- ===== V4.29 Stable: Zeit-Samen currency for quest skipping ===== -->
 <style id="v394-time-seeds-style">
 #quests .v394-skip-row{
@@ -24216,30 +23811,10 @@ create index if not exists player_messages_sender_idx on public.player_messages(
 <script id="v395-quest-reward-showcase" src="js/features/quest/beta/v8009-s3-v395-quest-reward-showcase.js"></script>
 
 <!-- ===== V4.29 Stable: normal quest item loot balance ===== -->
-<script id="v396-quest-item-loot-balance">
-/* Quest Cleanup Phase 1: v396-quest-item-loot-balance runtime retired.
-   Its former visual cleanup is superseded by the later V386/V391/V4172 quest owners. */
-</script>
+<script id="v396-quest-item-loot-balance" src="js/features/legacy-extracted/beta/v396-quest-item-loot-balance.js"></script>
 
 <!-- ===== V4.29 Stable: quest gem + scroll drops ===== -->
-<script id="v397-quest-gem-scroll-drops">
-(function(){
-  const VERSION='V4.29 Stable';
-  /*
-    Normal quest extras, independent rolls:
-    - Edelstein: 5%
-    - Verzauberungsrolle: 5%
-    These chances are intentionally NOT shown on the quest card.
-    The existing 20% Zufalls-Item display remains the only item-loot chance shown there.
-  */
-  setTimeout(()=>{
-    document.querySelectorAll(
-      '.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version'
-    ).forEach(el=>{if(el)el.textContent=VERSION});
-    document.querySelectorAll('.v366-ver').forEach(el=>el.textContent='V4.11');
-  },700);
-})();
-</script>
+<script id="v397-quest-gem-scroll-drops" src="js/features/legacy-extracted/beta/v397-quest-gem-scroll-drops.js"></script>
 
 <!-- ===== V4.29 Stable: Illegales Buch visual overhaul ===== -->
 <style id="v404-illegal-book-design">
@@ -24338,7 +23913,7 @@ create index if not exists player_messages_sender_idx on public.player_messages(
 <script id="v435-illegal-book-gold-lifetime-fix" src="js/features/book/beta/v8009-s3-v435-illegal-book-gold-lifetime-fix.js"></script>
 
 <!-- ===== V4.36 Stable: reliable guild activity XP ===== -->
-<script id="v436-guild-xp-reliability"></script>
+<script id="v436-guild-xp-reliability" src="js/features/legacy-extracted/beta/v436-guild-xp-reliability.js"></script>
 
 
 <!-- ===== V4.37 Stable: canonical PvP combat-power sync ===== -->
@@ -24725,9 +24300,7 @@ create index if not exists player_messages_sender_idx on public.player_messages(
 
 
 <!-- ===== V4.49 Stable: startup hang regression fix ===== -->
-<script id="v449-startup-hang-regression-fix">
-/* V7.113: retired empty compatibility stub; active owner lives in later canonical code. */
-</script>
+<script id="v449-startup-hang-regression-fix" src="js/features/legacy-extracted/beta/v449-startup-hang-regression-fix.js"></script>
 
 <!-- ===== V4.50 Stable: account save isolation + downgrade recovery guard ===== -->
 <style id="v450-save-guard-css">
@@ -25601,24 +25174,7 @@ create index if not exists player_messages_sender_idx on public.player_messages(
 <style id="v469-shop-gold-fix-css">
 .app > header .v358-logo::after{content:"V4.69"!important}
 </style>
-<script id="v469-shop-gold-purchase-fix">
-(function(){
-  const VERSION='V4.69 Stable',SHORT='V4.69';
-  /* V4.66 had a precedence bug in its central purchase guard:
-     Number(s.gold)||0<price was truthy whenever Gold was non-zero.
-     The authoritative handler above now compares (Number(s.gold)||0) < price. */
-  window.v469ShopGoldCheck=function(price){
-    const gold=Math.max(0,Number(s?.gold)||0),cost=Math.max(0,Number(price)||0);
-    return {gold,cost,enough:gold>=cost};
-  };
-  function stamp(){}
-  function paint(){try{window.v441PaintResources?.()}catch(e){}}
-  stamp();paint();
-  document.addEventListener('DOMContentLoaded',()=>{stamp();paint()},{once:true});
-  window.addEventListener('pageshow',()=>{stamp();paint()},{passive:true});
-  window.addEventListener('growlegends:account-ready',()=>{stamp();paint()},{passive:true});
-})();
-</script>
+<script id="v469-shop-gold-purchase-fix" src="js/features/legacy-extracted/beta/v469-shop-gold-purchase-fix.js"></script>
 
 <!-- ===== V4.70 Stable: character slot artwork + one canonical item comparison ===== -->
 <style id="v470-slot-art-comparison-css">
@@ -25668,10 +25224,7 @@ create index if not exists player_messages_sender_idx on public.player_messages(
   #shop #v461ShopHero .v471-hero-fade{background:linear-gradient(90deg,rgba(5,9,6,.98) 0%,rgba(5,9,6,.93) 26%,rgba(5,9,6,.66) 46%,rgba(5,9,6,.25) 68%,rgba(5,9,6,.05) 100%)!important}
 }
 </style>
-<script id="v471-shop-hero-art-script">
-/* Shop Cleanup Phase 2: V4.71 runtime retired.
-   V4.75 already marks this hero layer as leftover and hides it; no render/navigation/delay hooks needed. */
-</script>
+<script id="v471-shop-hero-art-script" src="js/features/legacy-extracted/beta/v471-shop-hero-art-script.js"></script>
 
 <!-- ===== V4.72: separate shop hero art for Bork + Mira ===== -->
 <style id="v472-shop-dual-hero-css">
@@ -25709,10 +25262,7 @@ create index if not exists player_messages_sender_idx on public.player_messages(
   #shop #v461ShopHero.v472-dual-hero .muted{max-width:54%!important}
 }
 </style>
-<script id="v472-shop-dual-hero-script">
-/* Shop Cleanup Phase 2: V4.72 CSS/art remains the visual owner,
-   but its separate render/navigation/delay runtime is consolidated into V4.75. */
-</script>
+<script id="v472-shop-dual-hero-script" src="js/features/legacy-extracted/beta/v472-shop-dual-hero-script.js"></script>
 
 <!-- ===== V4.73: premium shop cards + canonical Dungeon -> Guild XP ===== -->
 <link id="v473-shop-cards-guildxp-css" rel="stylesheet" href="css/features/guild/legacy/v473-shop-cards-guildxp-css.css">
@@ -25799,7 +25349,7 @@ create index if not exists player_messages_sender_idx on public.player_messages(
 
 <!-- ===== V4.79: shared guild XP daily cap 625 ===== -->
 <link id="v479-guildxp-version-css" rel="stylesheet" href="css/features/guild/legacy/v479-guildxp-version-css.css">
-<script id="v479-guildxp-limit-ui-script"></script>
+<script id="v479-guildxp-limit-ui-script" src="js/features/legacy-extracted/beta/v479-guildxp-limit-ui-script.js"></script>
 
 <!-- ===== V4.80: auto-equip + auto socket/scroll quality-of-life ===== -->
 <style id="v480-auto-gear-material-css">
@@ -25838,18 +25388,7 @@ html.v481-hidden *,html.v481-hidden *::before,html.v481-hidden *::after{animatio
   #shop .shop-item,#character .inv-item{will-change:auto!important}
 }
 </style>
-<script id="v481-performance-owner">
-(function(){
-  const VERSION='V4.81',SHORT='V4.81';
-  function stamp(){}
-  function visibility(){try{document.documentElement.classList.toggle('v481-hidden',document.hidden)}catch(e){}}
-  visibility();stamp();
-  document.addEventListener('visibilitychange',()=>{visibility();if(!document.hidden){try{if(typeof v229UpdateQuestTimer==='function')v229UpdateQuestTimer()}catch(e){}try{if(typeof v239UpdateGrowLive==='function')v239UpdateGrowLive()}catch(e){}try{if(typeof v324Paint==='function')v324Paint()}catch(e){}stamp()}},{passive:true});
-  document.addEventListener('DOMContentLoaded',()=>{visibility();stamp()},{once:true});
-  window.addEventListener('pageshow',()=>{visibility();stamp()},{passive:true});
-  window.__V481_PERFORMANCE__={version:VERSION,itemArtCache:true,duplicateLiveTickRetired:true,fullGrowSecondRenderRetired:true,backgroundAnimationsPaused:true};
-})();
-</script>
+<script id="v481-performance-owner" src="js/features/legacy-extracted/beta/v481-performance-owner.js"></script>
 
 <!-- ===== V4.82: paid dungeon attempt must preserve free-timer anchor ===== -->
 <style id="v482-dungeon-paid-timer-css">
@@ -26302,14 +25841,7 @@ body.v495-seed-open{overflow:hidden!important}
 @media(max-width:760px){.v495-seed-overlay{padding:7px}.v495-seed-modal{width:98vw;max-height:92vh;border-radius:16px}.v495-seed-head{min-height:74px;padding:10px 11px 9px 14px}.v495-seed-head h2{font-size:23px}.v495-seed-head p{font-size:6.5px}.v495-seed-close{width:38px;height:38px;flex-basis:38px}.v495-seed-meta{grid-template-columns:1fr 1fr;padding:6px}.v495-seed-meta span:last-child{grid-column:1/-1}.v495-seed-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;padding:7px;max-height:calc(92vh - 155px)}.v495-seed-card{min-height:180px;padding:9px 6px}.v495-seed-icon{font-size:31px}.v495-seed-name{font-size:9px}.v495-source{font-size:5.8px}.v495-buff{font-size:5.5px}}
 @media(max-width:370px){.v495-seed-grid{grid-template-columns:1fr}.v495-seed-card{min-height:160px}}
 </style>
-<script id="v495-seed-inventory-popup-js">
-(()=>{
- const VERSION='V4.99 Stable',SHORT='V4.99';
- function stamp(){}
- document.addEventListener('click',e=>{const t=e.target instanceof Element?e.target:null;if(!t)return;const b=t.closest('[data-v493-seeds]');if(b){setTimeout(()=>{try{window.v495OpenSeedInventory?.()}catch(_){}},0)}},true);
- document.addEventListener('keydown',e=>{if(e.key==='Escape')try{window.v495CloseSeedInventory?.()}catch(_){}});
-})();
-</script>
+<script id="v495-seed-inventory-popup-js" src="js/features/legacy-extracted/beta/v495-seed-inventory-popup-js.js"></script>
 
 
 <!-- ===== V4.99 Stable: Wundertüte OG retired + Growroom fragment economy ===== -->
@@ -26512,36 +26044,17 @@ body.v495-seed-open{overflow:hidden!important}
 <script id="v4115-authoritative-comic-items" src="js/features/items/beta/v8009-s7-v4115-authoritative-comic-items.js"></script>
 
 
-<script id="v4116-systemtech-engine-fix">
-(()=>{
- 'use strict';
- const VERSION=window.GROW_LEGENDS_VERSION?.label||'V4.159 Stable',SHORT=window.GROW_LEGENDS_VERSION?.short||'V4.159';
- function stamp(){}
- function engineSelfCheck(){
-  const issues=[];
-  try{
-   if(typeof window.v4107RunQA!=='function')issues.push('v4107RunQA fehlt');
-   if(typeof window.v4107OpenSystemtechnik!=='function')issues.push('Systemtechnik-Öffner fehlt');
-   const t=window.__V4106_TECH__;
-   if(t&&!(t.listeners instanceof Map))issues.push('Listener-Registry ungültig');
-  }catch(e){issues.push(e.message||String(e))}
-  return issues;
- }
- window.v4116SystemtechnikSelfCheck=engineSelfCheck;
- stamp();
- /* V4.123: periodic version stamp retired. */
-})();
-</script>
+<script id="v4116-systemtech-engine-fix" src="js/features/legacy-extracted/beta/v4116-systemtech-engine-fix.js"></script>
 
 
 
 <!-- ===== V4.118 Stable: care flicker + guild boss signup visibility ===== -->
 <link id="v4118-care-guildboss-fix-css" rel="stylesheet" href="css/features/guild/legacy/v4118-care-guildboss-fix-css.css">
-<script id="v4118-care-guildboss-fix">window.v8008C12InstallLateBridge?.();</script>
+<script id="v4118-care-guildboss-fix" src="js/features/legacy-extracted/beta/v4118-care-guildboss-fix.js"></script>
 
 <!-- ===== V4.119 Stable: final guild orchestration + boss progress reliability ===== -->
 <link id="v4119-guild-reliability-css" rel="stylesheet" href="css/features/guild/legacy/v4119-guild-reliability-css.css">
-<script id="v4119-guild-reliability">window.v8008C25InstallReliability?.();</script>
+<script id="v4119-guild-reliability" src="js/features/legacy-extracted/beta/v4119-guild-reliability.js"></script>
 
 
 
@@ -26551,20 +26064,7 @@ body.v495-seed-open{overflow:hidden!important}
 .app > header .v366-ver::after,.app > header .v371-logo em::after,.app > header .v372-logo em::after{content:"V4.120"!important}
 #systemtech .v4107-version{color:#9af46f!important}
 </style>
-<script id="v4120-care-fingerprint-authority">
-(()=>{
- 'use strict';
- /* V7.151 PHASE 2: physically reduced retired V4.120 implementation.
-    Care/plant state is authoritative on the server; the historical local
-    fingerprint ledger must never restore plants before/after renderGrow. */
- window.__V4120_RETIRED_V7145__=true;
- window.__V4120_RETIRED_V7150__=true;
- window.v4120CareFingerprint=()=>'';
- window.v4120RestoreCare=()=>false;
- window.v4120CaptureCare=()=>false;
- window.v4120RepairCare=()=>false;
-})();
-</script>
+<script id="v4120-care-fingerprint-authority" src="js/features/legacy-extracted/beta/v4120-care-fingerprint-authority.js"></script>
 
 
 <!-- ===== V4.121 Stable: quest reward uses current comic item renderer ===== -->
@@ -26708,7 +26208,7 @@ html:not(.v4142-systemtech-admin) #v4102QaButton{display:none!important}
 
 
 <!-- ===== V4.159 Stable: eager guild-chat identity bootstrap ===== -->
-<script id="v4146-guild-chat-bootstrap-authority">window.v8008C25InstallChatBootstrap?.();</script>
+<script id="v4146-guild-chat-bootstrap-authority" src="js/features/legacy-extracted/beta/v4146-guild-chat-bootstrap-authority.js"></script>
 <!-- V4.159: Guild-chat visibility no longer depends on visiting the Guild screen. After a verified login/refresh, a lightweight membership+guild identity read primes only the chat visibility state; the full Guild/Boss/War loader remains separate. -->
 
 <!-- ===== V4.159 Stable: deterministic boot / lifecycle controller ===== -->
@@ -26777,19 +26277,7 @@ html:not(.v4142-systemtech-admin) #v4102QaButton{display:none!important}
 <!-- V4.159: Dungeon 1 is always open from Level 1 unless genuinely completed at its boss; stale early completion flags are repaired after cloud/account load. Frost auto-equip continues to choose two weapons. Public profile integer fields are rounded to prevent Supabase integer errors such as 39.2. -->
 
 <!-- GROW LEGENDS PUSH SCHEDULING V2 - final EOF hook -->
-<script id="gl-push-master-switch-prelude-v1">
-(()=>{
- 'use strict';
- function enabled(){
-  try{
-   if(typeof v141Settings==='object'&&v141Settings)return v141Settings.pushNotifications!==false;
-   const x=JSON.parse(localStorage.getItem('growLegendsSettingsV141')||'{}');
-   return x.pushNotifications!==false;
-  }catch(e){return true}
- }
- window.glPushEnabled=enabled;
-})();
-</script>
+<script id="gl-push-master-switch-prelude-v1" src="js/features/legacy-extracted/beta/gl-push-master-switch-prelude-v1.js"></script>
 
 <script id="gl-push-scheduling-v2" src="js/features/push/beta/v8009-s1-gl-push-scheduling-v2.js"></script>
 
@@ -28358,35 +27846,7 @@ body:has(#world.active){background:#010302!important}
 }
 </style>
 
-<script id="v434-d7-clean-boss-script">
-(function(){
-  const CLEAN_BOSS = `assets/v7198-base64/1a70a19b00e85b1d15ec.webp`;
-
-  function applyBoss(){
-    try{
-      if(Number(s?.dungeon?.selected||0)!==6) return;
-      const card=document.getElementById('dungeonMapCard');
-      if(!card || !card.classList.contains('v432-d7')) return;
-      const art=card.querySelector('.v261-node.boss .v261-bossart');
-      if(art) art.style.backgroundImage=`url("${CLEAN_BOSS}")`;
-    }catch(e){}
-  }
-
-  applyBoss();
-
-  const sec=document.getElementById('dungeon');
-  if(sec && !sec.__v434BossObserver){
-    const obs=new MutationObserver(()=>applyBoss());
-    obs.observe(sec,{subtree:true,childList:true});
-    sec.__v434BossObserver=obs;
-  }
-
-  window.addEventListener('pageshow',()=>setTimeout(applyBoss,30),{passive:true});
-  document.addEventListener('visibilitychange',()=>{
-    if(!document.hidden)setTimeout(applyBoss,30);
-  },{passive:true});
-})();
-</script>
+<script id="v434-d7-clean-boss-script" src="js/features/legacy-extracted/beta/v434-d7-clean-boss-script.js"></script>
 <!-- ===== /V4.234 DUNGEON 7 ===== -->
 
 
@@ -28733,32 +28193,13 @@ body:has(#world.active){background:#010302!important}
 
 <!-- ===== V4.255 DUNGEON 1 FEINSCHLIFF 2 ===== -->
 <link id="v455-d1-feinschliff-2" rel="stylesheet" href="css/features/dungeon/beta/v8009-sprint1-v455-residual.css">
-<script id="v455-d1-title-fix">
-(function(){
-  function paint(){
-    try{
-      const card=document.getElementById('dungeonMapCard');
-      if(!card?.classList.contains('v426-ref-d1'))return;
-      const title=card.querySelector('.v261-title');
-      if(title)title.innerHTML='DER<br>VERSEUCHTE<br>KELLER';
-    }catch(e){}
-  }
-  requestAnimationFrame(paint);
-  document.addEventListener('click',()=>setTimeout(paint,35),true);
-})();
-</script>
+<script id="v455-d1-title-fix" src="js/features/legacy-extracted/beta/v455-d1-title-fix.js"></script>
 <!-- ===== /V4.255 DUNGEON 1 FEINSCHLIFF 2 ===== -->
 
 
 <!-- ===== V4.256 DUNGEON 1 REFERENCE ALIGNMENT FINAL ===== -->
 <link id="v456-d1-reference-alignment-final" rel="stylesheet" href="css/features/dungeon/beta/v8009-sprint1-v456-residual.css">
-<script id="v456-d1-data-cleanup">
-(function(){
-  try{
-    if(dungeons?.[0]?.enemies?.[3]) dungeons[0].enemies[3].name='Kleeblatt-Kriecher';
-  }catch(e){}
-})();
-</script>
+<script id="v456-d1-data-cleanup" src="js/features/legacy-extracted/beta/v456-d1-data-cleanup.js"></script>
 <!-- ===== /V4.256 DUNGEON 1 REFERENCE ALIGNMENT FINAL ===== -->
 
 
@@ -28997,7 +28438,7 @@ html.v495-level-syncing #v420LevelUpOverlay{
 
 <!-- ===== V4.160: remove Systemtechnik from settings dropdown ===== -->
 <style id="v4160-hide-systemtechnik-settings">#v141SettingsMenu #v4104QaRow{display:none!important}</style>
-<script id="v4160-systemtechnik-settings-remove">(()=>{function clean(){try{document.querySelector('#v141SettingsMenu #v4104QaRow')?.remove()}catch(e){}}window.v4104InstallQaSettings=()=>{clean();return false};document.addEventListener('click',e=>{if(e.target instanceof Element&&e.target.closest('#v141SettingsBtn'))requestAnimationFrame(clean)},true);document.addEventListener('DOMContentLoaded',clean,{once:true});window.addEventListener('pageshow',clean,{passive:true});clean();})();</script>
+<script id="v4160-systemtechnik-settings-remove" src="js/features/legacy-extracted/beta/v4160-systemtechnik-settings-remove.js"></script>
 
 
 <!-- ===== V4.161: close settings dropdown on logout ===== -->
@@ -29102,27 +28543,7 @@ html.v495-level-syncing #v420LevelUpOverlay{
  #character.v504-character-final .class-avatar-big img,#character.v504-character-final .v080-class-avatar-img{width:148px!important;height:164px!important}
 }
 </style>
-<script id="v504-character-final-owner-js">
-(function(){
-  'use strict';
-  function apply(){
-    const c=document.getElementById('character'); if(!c)return;
-    /* v459 is allowed to build the panels once, then loses layout ownership. */
-    c.classList.add('v504-character-final');
-    c.classList.remove('v501-character-redesign','v502-character-redesign','v503-character-reference');
-    try{
-      const banners=[...c.children].filter(el=>el!==c.querySelector(':scope > .hero-card') && /Heldenquartier/i.test(el.textContent||'') && !el.id?.startsWith('v459'));
-      banners.forEach(el=>{ if(el.classList.contains('v052-scene-banner')||el.classList.contains('v052-character')) el.style.display='none'; });
-    }catch(e){}
-  }
-  window.__V504_CHARACTER_OWNER__=true;
-  window.v504ApplyCharacter=apply;
-  apply();
-  document.addEventListener('DOMContentLoaded',apply,{once:true});
-  window.addEventListener('pageshow',apply,{passive:true});
-  document.addEventListener('visibilitychange',()=>{if(!document.hidden)apply()});
-})();
-</script>
+<script id="v504-character-final-owner-js" src="js/features/legacy-extracted/beta/v504-character-final-owner-js.js"></script>
 
 <!-- ===== V5.08 HELDENQUARTIER TITLE POSITION FIX ===== -->
 
@@ -29545,25 +28966,7 @@ html.v495-level-syncing #v420LevelUpOverlay{
   #v510HeroRoot .v41-portrait{width:204px!important;height:218px!important}
 }
 </style>
-<script id="v511-character-reference-polish-js">
-(function(){
-  function reorder(){
-    const center=document.querySelector('#v510HeroRoot .v510-center');
-    if(!center)return;
-    const portrait=center.querySelector('.v510-portrait');
-    const name=document.getElementById('avatarTitle');
-    const sub=document.getElementById('avatarSubtitle');
-    const level=center.querySelector('.level-shield');
-    const xp=center.querySelector('.center-xp');
-    /* V6.115: don't move the Illegal Book. V5.14 owns Book + Pet. */
-    [portrait,name,sub,level,xp].forEach(n=>{if(n)center.appendChild(n)});
-  }
-  reorder();
-  document.addEventListener('DOMContentLoaded',reorder,{once:true});
-  window.addEventListener('pageshow',()=>{if(document.getElementById('character')?.classList.contains('active'))reorder()},{passive:true});
-  window.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')==='character')reorder()},{passive:true});
-})();
-</script>
+<script id="v511-character-reference-polish-js" src="js/features/legacy-extracted/beta/v511-character-reference-polish-js.js"></script>
 <!-- ===== /V5.11 CHARACTER REFERENCE POLISH ===== -->
 
 
@@ -30544,9 +29947,7 @@ html.v495-level-syncing #v420LevelUpOverlay{
   #character.v514-reference-hero #v510HeroRoot .v41-portrait{width:180px!important;height:144px!important;min-height:144px!important}
 }
 </style>
-<script id="v516-heldenquartier-exact-mobile-js">
-(()=>{'use strict';function apply(){try{window.v7154CharacterSettle?.()}catch(_){}}window.v516ApplyHero=apply;})();
-</script>
+<script id="v516-heldenquartier-exact-mobile-js" src="js/features/legacy-extracted/beta/v516-heldenquartier-exact-mobile-js.js"></script>
 <!-- ===== /V5.16 HELDENQUARTIER EXACT MOBILE COMPOSITION PASS ===== -->
 
 <!-- ===== V5.17 HELDENQUARTIER REFERENCE FINISH ===== -->
@@ -30616,9 +30017,7 @@ html.v495-level-syncing #v420LevelUpOverlay{
   #character.v514-reference-hero #v510HeroRoot .avatar-scene,#character.v514-reference-hero #v510HeroRoot .class-avatar-big,#character.v514-reference-hero #v510HeroRoot .class-avatar-big img,#character.v514-reference-hero #v510HeroRoot .v080-class-avatar-img,#character.v514-reference-hero #v510HeroRoot .v41-portrait{width:192px!important;height:148px!important;min-height:148px!important}
 }
 </style>
-<script id="v517-heldenquartier-reference-finish-js">
-(()=>{'use strict';window.v517ApplyHero=()=>{try{window.v7154CharacterSettle?.()}catch(_){}};})();
-</script>
+<script id="v517-heldenquartier-reference-finish-js" src="js/features/legacy-extracted/beta/v517-heldenquartier-reference-finish-js.js"></script>
 <!-- ===== /V5.17 HELDENQUARTIER REFERENCE FINISH ===== -->
 
 <!-- ===== V5.18 HELDENQUARTIER STAGE REBUILD ===== -->
@@ -30851,9 +30250,7 @@ html.v495-level-syncing #v420LevelUpOverlay{
   #character.v514-reference-hero #v510HeroRoot .v41-portrait{width:232px!important;height:170px!important;min-height:170px!important}
 }
 </style>
-<script id="v518-heldenquartier-stage-rebuild-js">
-(()=>{'use strict';window.v518ApplyHero=()=>{try{window.v7154CharacterSettle?.()}catch(_){}};})();
-</script>
+<script id="v518-heldenquartier-stage-rebuild-js" src="js/features/legacy-extracted/beta/v518-heldenquartier-stage-rebuild-js.js"></script>
 <!-- ===== /V5.18 HELDENQUARTIER STAGE REBUILD ===== -->
 
 
@@ -30964,9 +30361,7 @@ html.v495-level-syncing #v420LevelUpOverlay{
   #character.v514-reference-hero #v459SetSummary .v519-talent-cell{padding-left:5px!important;padding-right:5px!important;font-size:6px!important}
 }
 </style>
-<script id="v519-heldenquartier-reference-alignment-js">
-(()=>{'use strict';function apply(){try{return window.v7124PaintCharacterSummary?.()}catch(_){return false}}window.v519ApplyHero=apply;})();
-</script>
+<script id="v519-heldenquartier-reference-alignment-js" src="js/features/legacy-extracted/beta/v519-heldenquartier-reference-alignment-js.js"></script>
 <!-- ===== /V5.19 HELDENQUARTIER REFERENCE ALIGNMENT + SUMMARY FIX ===== -->
 
 <!-- ===== V5.20 HELDENQUARTIER STATE + STAT CARD HARDENING ===== -->
@@ -30986,9 +30381,7 @@ html.v495-level-syncing #v420LevelUpOverlay{
   }
 }
 </style>
-<script id="v520-heldenquartier-state-refresh-js">
-(()=>{'use strict';/* V7.156: retired duplicate character state refresh lane. */})();
-</script>
+<script id="v520-heldenquartier-state-refresh-js" src="js/features/legacy-extracted/beta/v520-heldenquartier-state-refresh-js.js"></script>
 <!-- ===== /V5.20 HELDENQUARTIER STATE + STAT CARD HARDENING ===== -->
 
 
@@ -31197,9 +30590,7 @@ html.v495-level-syncing #v420LevelUpOverlay{
   #character.v514-reference-hero #v510HeroRoot .v41-portrait{width:202px!important;height:175px!important;min-height:175px!important}
 }
 </style>
-<script id="v521-heldenquartier-reference-frame-js">
-(()=>{'use strict';window.v521ApplyHero=()=>{try{window.v7154CharacterSettle?.()}catch(_){}};})();
-</script>
+<script id="v521-heldenquartier-reference-frame-js" src="js/features/legacy-extracted/beta/v521-heldenquartier-reference-frame-js.js"></script>
 <!-- ===== /V5.21 HELDENQUARTIER REFERENCE FRAME + PROPORTIONS ===== -->
 
 <!-- ===== V5.22 HELDENQUARTIER TRUE REFERENCE OWNERSHIP ===== -->
@@ -31460,9 +30851,7 @@ html.v495-level-syncing #v420LevelUpOverlay{
 #character.v514-reference-hero #v514HeroTabs button{min-height:39px!important;border-radius:5px!important}
 #character.v514-reference-hero #v514HeroTabs button.active{box-shadow:inset 0 0 18px rgba(114,190,53,.20),0 0 8px rgba(183,216,74,.14)!important}
 </style>
-<script id="v522-heldenquartier-true-reference-js">
-(()=>{'use strict';window.v522ApplyHero=()=>{try{window.v7154CharacterSettle?.()}catch(_){}};})();
-</script>
+<script id="v522-heldenquartier-true-reference-js" src="js/features/legacy-extracted/beta/v522-heldenquartier-true-reference-js.js"></script>
 <!-- ===== /V5.22 HELDENQUARTIER TRUE REFERENCE OWNERSHIP ===== -->
 
 <!-- ===== V5.23 HELDENQUARTIER CLEAN FRAME + BOOK ALIGNMENT ===== -->
@@ -31644,9 +31033,7 @@ html.v495-level-syncing #v420LevelUpOverlay{
 #character.v514-reference-hero .v514-passive-row{margin-top:4px!important}
 #character.v514-reference-hero .v514-nav-host{margin-top:4px!important}
 </style>
-<script id="v523-heldenquartier-clean-frame-js">
-(()=>{'use strict';window.v523ApplyHero=()=>{try{window.v7154CharacterSettle?.()}catch(_){}};})();
-</script>
+<script id="v523-heldenquartier-clean-frame-js" src="js/features/legacy-extracted/beta/v523-heldenquartier-clean-frame-js.js"></script>
 <!-- ===== /V5.23 HELDENQUARTIER CLEAN FRAME + BOOK ALIGNMENT ===== -->
 
 <!-- ===== V5.24 HELDENQUARTIER LEGACY-BANNER KILL + ORNAMENT FINISH ===== -->
@@ -31753,9 +31140,7 @@ html.v495-level-syncing #v420LevelUpOverlay{
   background:linear-gradient(180deg,#5a3218 0%,#351d0e 60%,#211107 100%)!important;
 }
 </style>
-<script id="v524-heldenquartier-banner-kill-js">
-(()=>{'use strict';window.v524ApplyHero=()=>{try{window.v7154CharacterSettle?.()}catch(_){}};})();
-</script>
+<script id="v524-heldenquartier-banner-kill-js" src="js/features/legacy-extracted/beta/v524-heldenquartier-banner-kill-js.js"></script>
 <!-- ===== /V5.24 HELDENQUARTIER LEGACY-BANNER KILL + ORNAMENT FINISH ===== -->
 
 <!-- ===== V5.25 HELDENQUARTIER V043 LEGACY PILL KILL ===== -->
@@ -31783,9 +31168,7 @@ html.v495-level-syncing #v420LevelUpOverlay{
   z-index:60!important;
 }
 </style>
-<script id="v525-heldenquartier-v043-pill-kill-js">
-(()=>{'use strict';window.v525ApplyHero=()=>{try{window.v7154CharacterSettle?.()}catch(_){}};})();
-</script>
+<script id="v525-heldenquartier-v043-pill-kill-js" src="js/features/legacy-extracted/beta/v525-heldenquartier-v043-pill-kill-js.js"></script>
 <!-- ===== /V5.25 HELDENQUARTIER V043 LEGACY PILL KILL ===== -->
 
 <!-- ===== V5.27 HELDENQUARTIER CLEAN REFERENCE POLISH ===== -->
@@ -31831,9 +31214,7 @@ html.v495-level-syncing #v420LevelUpOverlay{
   margin-top:1px!important;
 }
 </style>
-<script id="v527-heldenquartier-clean-reference-js">
-(()=>{'use strict';window.v527ApplyHero=()=>{try{window.v7154CharacterSettle?.()}catch(_){}};})();
-</script>
+<script id="v527-heldenquartier-clean-reference-js" src="js/features/legacy-extracted/beta/v527-heldenquartier-clean-reference-js.js"></script>
 <!-- ===== /V5.27 HELDENQUARTIER CLEAN REFERENCE POLISH ===== -->
 
 <!-- ===== V5.28 HELDENQUARTIER TITLE STABILITY FIX ===== -->
@@ -31863,15 +31244,7 @@ html.v495-level-syncing #v420LevelUpOverlay{
   -webkit-backface-visibility:hidden!important;
 }
 </style>
-<script id="v528-heldenquartier-title-stability-js">
-(function(){
-'use strict';
-window.__V528_TITLE_STABILITY_RETIRED__=true;
-/* V6.102: retired. V5.30 paints the visible Heldenquartier header directly
-   into #v510HeroRoot, so the old scroll listener and subtree observer are no
-   longer needed. */
-})();
-</script>
+<script id="v528-heldenquartier-title-stability-js" src="js/features/legacy-extracted/beta/v528-heldenquartier-title-stability-js.js"></script>
 <!-- ===== /V5.28 HELDENQUARTIER TITLE STABILITY FIX ===== -->
 
 <!-- ===== V5.29 HELDENQUARTIER HARD STABLE HEADER ===== -->
@@ -32007,13 +31380,7 @@ window.__V528_TITLE_STABILITY_RETIRED__=true;
   #character.v514-reference-hero .v529-kicker{font-size:5px!important}
 }
 </style>
-<script id="v529-heldenquartier-hard-stable-header-js">
-(function(){
-'use strict';
-window.__V529_HEADER_RUNTIME_RETIRED__=true;
-/* V6.102: retired. V5.29 DOM header is hidden by V5.30 static root header. */
-})();
-</script>
+<script id="v529-heldenquartier-hard-stable-header-js" src="js/features/legacy-extracted/beta/v529-heldenquartier-hard-stable-header-js.js"></script>
 <!-- ===== /V5.29 HELDENQUARTIER HARD STABLE HEADER ===== -->
 
 
@@ -32132,19 +31499,7 @@ window.__V529_HEADER_RUNTIME_RETIRED__=true;
   will-change:auto!important;
 }
 </style>
-<script id="v531-heldenquartier-scroll-stability-js">
-(()=>{
-'use strict';
-function harden(){
-  try{if(typeof window.v7124HardenCharacterAvatar==='function')return window.v7124HardenCharacterAvatar()}catch(_){ }
-  const img=document.querySelector('#character #v510HeroRoot .v080-class-avatar-img');
-  if(img){img.loading='eager';img.decoding='sync';try{img.fetchPriority='high'}catch(_){}}
-  return !!img;
-}
-window.v126RepairCharacter=function(force=false){return force?harden():false};
-window.v531HardenHero=harden;
-})();
-</script>
+<script id="v531-heldenquartier-scroll-stability-js" src="js/features/legacy-extracted/beta/v531-heldenquartier-scroll-stability-js.js"></script>
 <!-- ===== /V5.31 HELDENQUARTIER SCROLL DOM-STABILITY FIX ===== -->
 
 <!-- ===== V5.32 HELDENQUARTIER FINAL VISUAL POLISH (CSS ONLY) ===== -->
@@ -34665,13 +34020,13 @@ window.v531HardenHero=harden;
 
 <!-- ===== V5.52 GILDE GROW LEGENDS REDESIGN ===== -->
 <link id="v552-guild-grow-legends-css" rel="stylesheet" href="css/features/guild/legacy/v552-guild-grow-legends-css.css">
-<script id="v552-guild-grow-legends-js"></script>
+<script id="v552-guild-grow-legends-js" src="js/features/legacy-extracted/beta/v552-guild-grow-legends-js.js"></script>
 <!-- ===== /V5.52 GILDE GROW LEGENDS REDESIGN ===== -->
 
 
 <!-- ===== V5.53 GILDE STRONG LAYOUT FIX ===== -->
 <link id="v553-guild-strong-layout-css" rel="stylesheet" href="css/features/guild/legacy/v553-guild-strong-layout-css.css">
-<script id="v553-guild-strong-layout-js"></script>
+<script id="v553-guild-strong-layout-js" src="js/features/legacy-extracted/beta/v553-guild-strong-layout-js.js"></script>
 <!-- ===== /V5.53 GILDE STRONG LAYOUT FIX ===== -->
 
 <!-- ===== V5.54 GILDE REFERENCE LAYOUT OWNER ===== -->
@@ -34683,13 +34038,13 @@ window.v531HardenHero=harden;
 <!-- ===== V5.55 GILDE HERO + ROSTER COMPACT FINAL ===== -->
 <link id="v555-guild-compact-final-css" rel="stylesheet" href="css/features/guild/legacy/v555-guild-compact-final-css.css">
 
-<script id="v555-guild-compact-final-js"></script>
+<script id="v555-guild-compact-final-js" src="js/features/legacy-extracted/beta/v555-guild-compact-final-js.js"></script>
 <!-- ===== /V5.55 GILDE HERO + ROSTER COMPACT FINAL ===== -->
 
 <!-- ===== V5.56 GILDE PROGRESS + ADMIN COMPACT FIX ===== -->
 <link id="v556-guild-progress-admin-css" rel="stylesheet" href="css/features/guild/legacy/v556-guild-progress-admin-css.css">
 
-<script id="v556-guild-progress-admin-js"></script>
+<script id="v556-guild-progress-admin-js" src="js/features/legacy-extracted/beta/v556-guild-progress-admin-js.js"></script>
 <!-- ===== /V5.56 GILDE PROGRESS + ADMIN COMPACT FIX ===== -->
 
 <!-- ===== V5.58 GILDE FINAL MICRO FIXES ===== -->
@@ -34699,7 +34054,7 @@ window.v531HardenHero=harden;
 <!-- ===== V5.59 GILDE FINAL EMPTY-REQUEST + ADMIN-TEXT FIX ===== -->
 <link id="v559-guild-final-fixes-css" rel="stylesheet" href="css/features/guild/legacy/v559-guild-final-fixes-css.css">
 
-<script id="v559-guild-final-fixes-js"></script>
+<script id="v559-guild-final-fixes-js" src="js/features/legacy-extracted/beta/v559-guild-final-fixes-js.js"></script>
 <!-- ===== /V5.59 GILDE FINAL EMPTY-REQUEST + ADMIN-TEXT FIX ===== -->
 
 
@@ -34710,13 +34065,13 @@ window.v531HardenHero=harden;
 
 <!-- ===== V5.61 GILDE FIRST-OPEN RENDER GATE ===== -->
 <link id="v561-guild-first-open-gate-css" rel="stylesheet" href="css/features/guild/legacy/v561-guild-first-open-gate-css.css">
-<script id="v561-guild-first-open-gate-js"></script>
+<script id="v561-guild-first-open-gate-js" src="js/features/legacy-extracted/beta/v561-guild-first-open-gate-js.js"></script>
 <!-- ===== /V5.61 GILDE FIRST-OPEN RENDER GATE ===== -->
 
 <!-- ===== V5.62 GILDENBOSS REFERENCE LAYOUT ===== -->
 <link id="v562-guild-boss-reference-css" rel="stylesheet" href="css/features/guild/legacy/v562-guild-boss-reference-css.css">
 
-<script id="v562-guild-boss-reference-js">window.v8008C9InstallReferenceLayout?.();</script>
+<script id="v562-guild-boss-reference-js" src="js/features/legacy-extracted/beta/v562-guild-boss-reference-js.js"></script>
 <!-- ===== /V5.62 GILDENBOSS REFERENCE LAYOUT ===== -->
 
 <!-- ===== V5.63 GILDENBOSS PARTICIPANTS CLEANUP ===== -->
@@ -34725,7 +34080,7 @@ window.v531HardenHero=harden;
 
 <!-- ===== V5.65 GILDENKRIEG LOWER BLOCK FINAL POLISH ===== -->
 <link id="v565-guild-war-lower-final-css" rel="stylesheet" href="css/features/guild/legacy/v565-guild-war-lower-final-css.css">
-<script id="v565-guild-war-lower-final-js">window.v8008C25InstallWarLower?.();</script>
+<script id="v565-guild-war-lower-final-js" src="js/features/legacy-extracted/beta/v565-guild-war-lower-final-js.js"></script>
 <!-- ===== /V5.65 GILDENKRIEG LOWER BLOCK FINAL POLISH ===== -->
 
 <!-- ===== V5.68 Harz Dealer: final mobile card polish ===== -->
@@ -36204,13 +35559,7 @@ window.v531HardenHero=harden;
   #dungeonBattleCard.v599-clean .v575-chip.v604-skill-chip{font-size:5.65px!important;padding:5px 8px!important}
 }
 </style>
-<script id="v604-dungeon-skill-fx-core">
-(()=>{
-  'use strict';
-  window.__V604_DUNGEON_SKILL_FX__=true;
-  window.v604DungeonFxDiagnostics=()=>({retired:true,owner:'V7141',reason:'duplicate dungeon combat-log observer removed in V7.156'});
-})();
-</script>
+<script id="v604-dungeon-skill-fx-core" src="js/features/legacy-extracted/beta/v604-dungeon-skill-fx-core.js"></script>
 <!-- ===== /V6.04 ===== -->
 
 <!-- ===== V6.05 DUNGEON FX DEDUPE - VISUAL ONLY ===== -->
@@ -36376,9 +35725,7 @@ window.v531HardenHero=harden;
 <!-- ===== /V6.11 ===== -->
 
 <!-- ===== V6.12 ANIMATION RACE FIX ===== -->
-<script id="v612-animation-race-fix-marker">
-window.__V612_ANIMATION_RACE_FIX__=true;
-</script>
+<script id="v612-animation-race-fix-marker" src="js/features/legacy-extracted/beta/v612-animation-race-fix-marker.js"></script>
 <!-- ===== /V6.12 ===== -->
 
 <!-- ===== V6.13 ANIMATION FINALIZER + PVP PORTRAIT INTEGRATION ===== -->
@@ -37888,22 +37235,14 @@ window.__V612_ANIMATION_RACE_FIX__=true;
  #v636QuestDungeonCard.v599-clean #v636QuestEnemyFighter.hit{animation:v252Hit .40s ease!important}
 }
 </style>
-<script id="v640-quest-attack-final-authority-js">
-(function(){
- 'use strict';
- if(window.__V640_QUEST_ATTACK_FINAL__)return;
- window.__V640_QUEST_ATTACK_FINAL__=true;
- /* No fight handlers are replaced here. The existing V6.36/Dungeon classes
-    continue to drive combat; this block only owns final CSS source order. */
-})();
-</script>
+<script id="v640-quest-attack-final-authority-js" src="js/features/legacy-extracted/beta/v640-quest-attack-final-authority-js.js"></script>
 <!-- ===== /V6.40 ===== -->
 
 <!-- ===== V6.41 QUEST DIRECT DUNGEON MOTION ===== -->
-<script id="v641-quest-direct-motion-marker">window.__V641_QUEST_DIRECT_MOTION__=true;</script>
+<script id="v641-quest-direct-motion-marker" src="js/features/legacy-extracted/beta/v641-quest-direct-motion-marker.js"></script>
 <!-- ===== /V6.41 ===== -->
 <!-- ===== V6.42 EXACT DUNGEON STRIKE DISTANCE ===== -->
-<script id="v642-exact-dungeon-strike-marker">window.__V642_EXACT_DUNGEON_STRIKE__=true;</script>
+<script id="v642-exact-dungeon-strike-marker" src="js/features/legacy-extracted/beta/v642-exact-dungeon-strike-marker.js"></script>
 <!-- ===== /V6.42 ===== -->
 <!-- ===== V6.43 QUEST SMOOTH MOBILE COMBAT ===== -->
 <style id="v643-quest-smooth-mobile-css">
@@ -37915,7 +37254,7 @@ window.__V612_ANIMATION_RACE_FIX__=true;
 #v636QuestDungeonCard .v252-screen-flash{will-change:opacity!important}
 #v636QuestDungeonCard .v252-impact,#v636QuestDungeonCard .v252-slash,#v636QuestDungeonCard .v252-projectile{will-change:transform,opacity!important}
 </style>
-<script id="v643-quest-smooth-marker">window.__V643_QUEST_SMOOTH_MOBILE__=true;</script>
+<script id="v643-quest-smooth-marker" src="js/features/legacy-extracted/beta/v643-quest-smooth-marker.js"></script>
 <!-- ===== /V6.43 ===== -->
 
 
@@ -38101,9 +37440,7 @@ html body .app section#hall.v647-hall .v646-footer-plaque{
   html body .app section#hall.v647-hall .v4124-social-line{font-size:6.2px!important}
 }
 </style>
-<script id="v647-hall-feinschliff-marker">
-window.__V647_HALL_FEINSCHLIFF__=true;
-</script>
+<script id="v647-hall-feinschliff-marker" src="js/features/legacy-extracted/beta/v647-hall-feinschliff-marker.js"></script>
 <!-- ===== /V6.47 ===== -->
 
 
@@ -38252,9 +37589,7 @@ html body .app section#hall.v648-hall .v072-player-name .v648-self-pill{
 
 <!-- ===== V6.49 HALL — DUNGEON PROGRESS MIRROR FIX ===== -->
 <script id="v649-hall-dungeon-progress-fix" src="js/features/hall/beta/v8009-s1-v649-hall-dungeon-progress-fix.js"></script>
-<script id="v6201-public-pet-profile-sync-marker">
-window.__V6201_PUBLIC_PET_PROFILE_SYNC_FIX__=true;
-</script>
+<script id="v6201-public-pet-profile-sync-marker" src="js/features/legacy-extracted/beta/v6201-public-pet-profile-sync-marker.js"></script>
 <!-- ===== /V6.49 ===== -->
 
 
@@ -38287,26 +37622,7 @@ body.v650-native-safe > #v141SettingsMenu.v377-open{
   }
 }
 </style>
-<script id="v650-native-header-safe-area-js">
-(function(){
-  function isNativeApp(){
-    try{
-      const C=window.Capacitor;
-      if(!C)return false;
-      if(typeof C.isNativePlatform==='function')return !!C.isNativePlatform();
-      if(typeof C.getPlatform==='function')return C.getPlatform()!=='web';
-      return !!C.platform && C.platform!=='web';
-    }catch(e){return false}
-  }
-  function apply(){
-    document.body?.classList.toggle('v650-native-safe',isNativeApp());
-  }
-  apply();
-  document.addEventListener('DOMContentLoaded',apply,{once:true});
-  setTimeout(apply,100);
-  setTimeout(apply,700);
-})();
-</script>
+<script id="v650-native-header-safe-area-js" src="js/features/legacy-extracted/beta/v650-native-header-safe-area-js.js"></script>
 
 <!-- ===== V6.51: native header lower-gap fine tuning ===== -->
 <style id="v651-native-header-gap-css">
@@ -38691,9 +38007,7 @@ body.v654-hud-measured > #v141SettingsMenu.v377-open{
      requestAnimationFrame -> DOM mutation -> observer loop. Both decorators are now
      idempotent: they write only when a value actually changed. Ranking/avatar updates
      stay observed, but entering Hall no longer monopolizes the main UI thread. ===== -->
-<script id="v657-hall-freeze-marker">
-window.__V657_HALL_FREEZE_FIX__=true;
-</script>
+<script id="v657-hall-freeze-marker" src="js/features/legacy-extracted/beta/v657-hall-freeze-marker.js"></script>
 
 
 
@@ -38802,9 +38116,7 @@ This keeps the app origin/URL clean for Supabase email/Google auth while still p
   overflow:hidden!important;
 }
 </style>
-<script id="v671-attribute-points-duplicate-remove-js">
-/* V6.320: retired v671-attribute-points-duplicate-remove-js; v4140 is the canonical attribute UI owner. */
-</script>
+<script id="v671-attribute-points-duplicate-remove-js" src="js/features/legacy-extracted/beta/v671-attribute-points-duplicate-remove-js.js"></script>
 <!-- ===== /V6.71 ATTRIBUTE POINTS DUPLICATE REMOVED ===== -->
 
 
@@ -40646,29 +39958,12 @@ body.v650-native-safe #endgame{
 }
 </style>
 
-<script id="v684-elite-quest-position-core">
-(()=>{
-'use strict';
-/* V7.151 PHASE 3: retired. Elite placement is now done by the canonical quest
-   decoration pass, so no MutationObserver/timeouts are needed for positioning. */
-window.__V684_ELITE_POSITION__='retired-v7151';
-window.v684ElitePositionDiagnostics=()=>({version:'V7.151',retired:true,owner:'v4172-render-pass'});
-})();
-</script>
+<script id="v684-elite-quest-position-core" src="js/features/legacy-extracted/beta/v684-elite-quest-position-core.js"></script>
 <!-- ===== /V6.84 ELITE-QUEST ÜBER ERSTER QUEST ===== -->
 
 
 <!-- ===== V6.85 QUEST DAMPF DISPLAY FIX ===== -->
-<script id="v685-quest-dampf-display-fix">
-(function(){
-'use strict';
-if(window.__V685_QUEST_DAMPF_FIX__)return;
-window.__V685_QUEST_DAMPF_FIX__=true;
-/* V6.97: actual quest renderer already uses v271DampfCap().
-   The old observer wrote innerHTML into the subtree it was observing and
-   could continuously retrigger itself. */
-})();
-</script>
+<script id="v685-quest-dampf-display-fix" src="js/features/legacy-extracted/beta/v685-quest-dampf-display-fix.js"></script>
 <!-- ===== /V6.86 QUEST DAMPF DISPLAY FIX ===== -->
 
 
@@ -40946,19 +40241,7 @@ window.__V685_QUEST_DAMPF_FIX__=true;
 
 
 <!-- ===== V6.87 PET-TITEL = ALLE 6 QUALITÄTEN ===== -->
-<script id="v687-pet-title-all-qualities">
-(function(){
-'use strict';
-if(window.__V687_PET_TITLE_ALL_QUALITIES__)return;
-window.__V687_PET_TITLE_ALL_QUALITIES__=true;
-
-/*
-  Regel:
-  - Dauerhafter Sammel-Bonus: Normal + Grün + Blau + Lila + Legendär
-  - Titel: Normal + Grün + Blau + Lila + Legendär + Mythisch
-*/
-})();
-</script>
+<script id="v687-pet-title-all-qualities" src="js/features/legacy-extracted/beta/v687-pet-title-all-qualities.js"></script>
 <!-- ===== /V6.87 PET-TITEL = ALLE 6 QUALITÄTEN ===== -->
 
 
@@ -41126,13 +40409,7 @@ window.__V687_PET_TITLE_ALL_QUALITIES__=true;
 </style>
 
 <!-- ===== V6.89 NEBELRISSE PET DROP INTEGRATION ===== -->
-<script id="v689-nebelrisse-pet-drop-marker">
-(function(){
-'use strict';
-if(window.__V689_NEBELRISSE_PET_DROPS__)return;
-window.__V689_NEBELRISSE_PET_DROPS__=true;
-})();
-</script>
+<script id="v689-nebelrisse-pet-drop-marker" src="js/features/legacy-extracted/beta/v689-nebelrisse-pet-drop-marker.js"></script>
 <!-- ===== /V6.89 NEBELRISSE PET DROP INTEGRATION ===== -->
 
 
@@ -41662,14 +40939,7 @@ body:has(#world.active){
 }
 </style>
 
-<script id="v690-world-wood-comic-runtime">
-(function(){
-'use strict';
-window.__V690_WORLD_WOOD_COMIC__=true;
-/* V6.94: runtime observer/retry layer retired.
-   V6.90 visual CSS remains active; v366 is the only world renderer. */
-})();
-</script>
+<script id="v690-world-wood-comic-runtime" src="js/features/legacy-extracted/beta/v690-world-wood-comic-runtime.js"></script>
 <!-- ===== /V6.90 WELTSEITE HOLZ-COMIC REDESIGN ===== -->
 
 
@@ -41718,14 +40988,7 @@ window.__V690_WORLD_WOOD_COMIC__=true;
 }
 </style>
 
-<script id="v691-world-cleanup-runtime">
-(function(){
-'use strict';
-window.__V691_WORLD_RENDER_CLEANUP__=true;
-/* V6.94: retired old subtree observer.
-   Clean castle artwork and CSS remain active. */
-})();
-</script>
+<script id="v691-world-cleanup-runtime" src="js/features/legacy-extracted/beta/v691-world-cleanup-runtime.js"></script>
 <!-- ===== /V6.91 WORLD RENDER CLEANUP ===== -->
 
 
@@ -41821,14 +41084,7 @@ window.__V691_WORLD_RENDER_CLEANUP__=true;
 }
 </style>
 
-<script id="v692-world-hard-cleanup-runtime">
-(function(){
-'use strict';
-window.__V692_WORLD_HARD_CLEANUP__=true;
-/* V6.94: retired old subtree observer and repeated dock rewrites.
-   V6.92 markup is now emitted directly by v366-world-reference-rebuild. */
-})();
-</script>
+<script id="v692-world-hard-cleanup-runtime" src="js/features/legacy-extracted/beta/v692-world-hard-cleanup-runtime.js"></script>
 <!-- ===== /V6.92 WELTSEITE ALT-RENDER HART BEREINIGT ===== -->
 
 
@@ -41837,33 +41093,13 @@ window.__V692_WORLD_HARD_CLEANUP__=true;
 #v686PetAlbumOverlay .v686-pet-row{contain:layout paint style}
 #v686PetAlbumOverlay .v686-qbox img,#v686PetAlbumOverlay .v686-pet-pic img{will-change:auto}
 </style>
-<script id="v699-pet-performance-marker">
-(function(){
-'use strict';
-window.__V699_PET_PERFORMANCE_REBUILD__=true;
-window.v699PetPerformanceInfo=()=>({cachedBonuses:true,petMutationObservers:false,pageRenderOnly:true,source:'uploaded Backup neu 10.9.zip'});
-})();
-</script>
+<script id="v699-pet-performance-marker" src="js/features/legacy-extracted/beta/v699-pet-performance-marker.js"></script>
 
 
 <script id="v6100-performance-consolidation" src="js/features/system/beta/v8009-s17-v6100-performance-consolidation.js"></script>
 
 
-<script id="v6101-navigation-altcode-performance">
-(function(){
-'use strict';
-if(window.__V6101_NAV_ALT_PERFORMANCE__)return;
-window.__V6101_NAV_ALT_PERFORMANCE__=true;
-window.v6101PerformanceInfo=()=>({
-  screenOnlyNavigation:true,
-  globalRenderOnNavigation:false,
-  globalItemArtObserver:false,
-  growCareNavRepair:'grow-only',
-  frostRefresh:'character-only',
-  oldCharacterBootPolling:false
-});
-})();
-</script>
+<script id="v6101-navigation-altcode-performance" src="js/features/legacy-extracted/beta/v6101-navigation-altcode-performance.js"></script>
 
 
 <style id="v6102-character-slot-scroll-stability-css">
@@ -41916,9 +41152,7 @@ window.v6101PerformanceInfo=()=>({
 <script id="v6107-global-item-art-authority" src="js/features/items/beta/v8009-s4-v6107-global-item-art-authority.js"></script>
 
 
-<script id="v6108-quality-color-marker">
-window.__V6108_ITEM_QUALITY_COLOR_FIX__=true;
-</script>
+<script id="v6108-quality-color-marker" src="js/features/legacy-extracted/beta/v6108-quality-color-marker.js"></script>
 
 
 <style id="v6109-background-music-css">
@@ -41931,9 +41165,7 @@ window.__V6108_ITEM_QUALITY_COLOR_FIX__=true;
 <script id="v6109-background-music" src="js/features/audio/beta/v8009-s2-v6109-background-music.js"></script>
 
 
-<script id="v6110-pet-order-music-marker">
-window.__V6110_PET_ORDER_AND_NEW_MUSIC__=true;
-</script>
+<script id="v6110-pet-order-music-marker" src="js/features/legacy-extracted/beta/v6110-pet-order-music-marker.js"></script>
 
 
 <style id="v6111-sound-system-css">
@@ -41945,17 +41177,13 @@ window.__V6110_PET_ORDER_AND_NEW_MUSIC__=true;
 <script id="v6111-global-sound-system" src="js/features/audio/beta/v8009-s1-v6111-global-sound-system.js"></script>
 
 
-<script id="v6112-pet-final-position-marker">
-window.__V6112_PET_FINAL_POSITION_FIX__=true;
-</script>
+<script id="v6112-pet-final-position-marker" src="js/features/legacy-extracted/beta/v6112-pet-final-position-marker.js"></script>
 
 
 <script id="v6113-public-pet-profile-stats" src="js/features/profile/beta/v8009-s5-v6113-public-pet-profile-stats.js"></script>
 
 
-<script id="v6113-pet-album-profile-marker">
-window.__V6113_PET_ALBUM_PROFILE_POLISH__=true;
-</script>
+<script id="v6113-pet-album-profile-marker" src="js/features/legacy-extracted/beta/v6113-pet-album-profile-marker.js"></script>
 
 
 <style id="v6114-pet-navigation-css">
@@ -41984,14 +41212,10 @@ window.__V6113_PET_ALBUM_PROFILE_POLISH__=true;
 <script id="v6114-pet-navigation-and-dungeon-live" src="js/features/social/beta/v8009-s7-v6114-pet-navigation-and-dungeon-live.js"></script>
 
 
-<script id="v6115-events-boss-pet-marker">
-window.__V6115_EVENTS_BOSS_PET_STABILITY__=true;
-</script>
+<script id="v6115-events-boss-pet-marker" src="js/features/legacy-extracted/beta/v6115-events-boss-pet-marker.js"></script>
 
 
-<script id="v6116-event-text-boss-pulse-marker">
-window.__V6116_EVENT_TEXT_BOSS_PULSE__=true;
-</script>
+<script id="v6116-event-text-boss-pulse-marker" src="js/features/legacy-extracted/beta/v6116-event-text-boss-pulse-marker.js"></script>
 
 
 <style id="v6117-class-passive-prismatic-css">
@@ -42012,28 +41236,19 @@ window.__V6116_EVENT_TEXT_BOSS_PULSE__=true;
 <script id="v6117-class-passive-prismatic-fix" src="js/features/character/beta/v8009-s12-v6117-class-passive-prismatic-fix.js"></script>
 
 
-<script id="v6118-event-x2-worldboss-marker">
-window.__V6118_EVENT_X2_WORLDBOSS_FIX__=true;
-</script>
+<script id="v6118-event-x2-worldboss-marker" src="js/features/legacy-extracted/beta/v6118-event-x2-worldboss-marker.js"></script>
 
 
-<script id="v6119-guild-online-marker"></script>
+<script id="v6119-guild-online-marker" src="js/features/legacy-extracted/beta/v6119-guild-online-marker.js"></script>
 
 
-<script id="v6120-guild-performance-sort-marker"></script>
+<script id="v6120-guild-performance-sort-marker" src="js/features/legacy-extracted/beta/v6120-guild-performance-sort-marker.js"></script>
 
 
 <script id="v6144-material-comic-art-marker" src="js/features/legacy-extracted/beta/v6144-material-comic-art-marker.js"></script>
 
 
-<script id="v6122-daily-login-epic-marker">
-window.__V6122_DAY7_GUARANTEED_EPIC__=true;
-window.v6122DailyLoginQA=()=>({
-  day7GuaranteedEpic:/const q='purple'/.test(
-    document.getElementById('v484-daily-login-core')?.textContent||''
-  )
-});
-</script>
+<script id="v6122-daily-login-epic-marker" src="js/features/legacy-extracted/beta/v6122-daily-login-epic-marker.js"></script>
 
 
 <style id="v6123-worldboss-slot-feinschliff-css">
@@ -42151,10 +41366,10 @@ window.v6122DailyLoginQA=()=>({
   #world.active .v6123-boss-overlay b{font-size:7.5px!important}
 }
 </style>
-<script id="v6123-worldboss-slot-feinschliff-marker">window.__V6123_WORLDBOSS_SLOT_FEINSCHLIFF__=true;</script>
+<script id="v6123-worldboss-slot-feinschliff-marker" src="js/features/legacy-extracted/beta/v6123-worldboss-slot-feinschliff-marker.js"></script>
 
 
-<script id="v6124-guild-lock-marker">window.v8008C25InstallGuildLock?.();</script>
+<script id="v6124-guild-lock-marker" src="js/features/legacy-extracted/beta/v6124-guild-lock-marker.js"></script>
 
 
 <!-- ===== V4.160 Stable: GENETIK-LABOR + KLASSENSET-SCHMIEDE ===== -->
@@ -42256,18 +41471,7 @@ window.v6122DailyLoginQA=()=>({
 .app > header .v358-logo::after{content:"V4.164"!important}
 #v372TopbarShell .v372-logo em::after,.app > header .v366-ver::after,.app > header .v371-logo em::after,.app > header .v372-logo em::after{content:"V4.165"!important}
 </style>
-<script id="v6164-stability-finalizer">
-(()=>{'use strict';
- const V=window.GROW_LEGENDS_VERSION||{short:'V4.164',label:'V4.164 Stable',number:'4.164'};
- function stamp(){}
- function retireLegacyOgDom(){try{document.querySelector('#v077SeedPanel')?.remove();document.querySelectorAll('.v077-fx,.v077-badge,.v495-og-wrap').forEach(x=>x.remove())}catch(_){}}
- stamp();retireLegacyOgDom();
- document.addEventListener('DOMContentLoaded',()=>{stamp();retireLegacyOgDom()},{once:true});
- window.addEventListener('pageshow',()=>{stamp();retireLegacyOgDom()},{passive:true});
- window.addEventListener('growlegends:account-ready',()=>{stamp();retireLegacyOgDom()});
- window.__V6164_STABILITY__={version:V.label,retiredOgIntervals:true,directGrowTabs:true,classSetCraftLock:true,rewardHistory:true};
-})();
-</script>
+<script id="v6164-stability-finalizer" src="js/features/legacy-extracted/beta/v6164-stability-finalizer.js"></script>
 <!-- ===== /V4.164 FINAL ===== -->
 
 
@@ -42731,9 +41935,9 @@ body:has(#tower.active) #v337LegalFooter{margin-top:48px!important;padding-top:1
 <!-- ===== /V6.85 STARTSEITE CHARAKTER-CHECKLISTE ===== -->
 
 <link id="vGuildChatCloseVisibilityFix" rel="stylesheet" href="css/features/guild/legacy/vGuildChatCloseVisibilityFix.css">
-<script id="vGuildChatCloseVisibilityFixJs">window.v8008C25InstallChatViewport?.();</script>
+<script id="vGuildChatCloseVisibilityFixJs" src="js/features/legacy-extracted/beta/vguildchatclosevisibilityfixjs.js"></script>
 
-<script id="v6310-guildboss-test-removal-guard"></script>
+<script id="v6310-guildboss-test-removal-guard" src="js/features/legacy-extracted/beta/v6310-guildboss-test-removal-guard.js"></script>
 <!-- ===== V4.165 FRESH DUNGEON KEY -> LIVE BATTLE INDEX AUTHORITY ===== -->
 <script id="v4165-dungeon-key-live-battle-index-fix" src="js/features/dungeon/beta/v8009-s2-v4165-dungeon-key-live-battle-index-fix.js"></script>
 <!-- ===== /V4.165 ===== -->
@@ -42884,14 +42088,14 @@ body:has(#tower.active) #v337LegalFooter{margin-top:48px!important;padding-top:1
 
 <!-- ===== V6.203: GILDENBOSS LIVE POLISH like worldboss ===== -->
 <link id="v6203-guild-boss-live-polish" rel="stylesheet" href="css/features/guild/legacy/v6203-guild-boss-live-polish.css">
-<script id="v6203-guild-boss-live-polish-script">window.v8008C18InstallPreVisual?.();</script>
+<script id="v6203-guild-boss-live-polish-script" src="js/features/legacy-extracted/beta/v6203-guild-boss-live-polish-script.js"></script>
 <!-- ===== /V6.203 ===== -->
 
 
 
 <!-- ===== V6.305: GILDENBOSS KAMPFLAYOUT UPGRADE ===== -->
 <link id="v6305-guildboss-layout-css" rel="stylesheet" href="css/features/guild/legacy/v6305-guildboss-layout-css.css">
-<script id="v6305-guildboss-layout-script"></script>
+<script id="v6305-guildboss-layout-script" src="js/features/legacy-extracted/beta/v6305-guildboss-layout-script.js"></script>
 <!-- ===== /V6.305 ===== -->
 
 
@@ -42911,7 +42115,7 @@ body:has(#tower.active) #v337LegalFooter{margin-top:48px!important;padding-top:1
 
 <!-- ===== V6.309: GILDENBOSS FINAL ARENA — PREVIEW LAYOUT ===== -->
 <link id="v6309-guildboss-final-arena-css" rel="stylesheet" href="css/features/guild/legacy/v6309-guildboss-final-arena-css.css">
-<script id="v6309-guildboss-final-arena-script">window.v8008C18InstallPostArena?.();</script>
+<script id="v6309-guildboss-final-arena-script" src="js/features/legacy-extracted/beta/v6309-guildboss-final-arena-script.js"></script>
 <!-- ===== /V6.309 ===== -->
 
 
@@ -42933,7 +42137,7 @@ body:has(#tower.active) #v337LegalFooter{margin-top:48px!important;padding-top:1
 
 <!-- ===== V6.315: GILDENBOSS LEGACY RENDER CLEANUP ===== -->
 <link id="v6315-guildboss-legacy-cleanup-css" rel="stylesheet" href="css/features/guild/legacy/v6315-guildboss-legacy-cleanup-css.css">
-<script id="v6315-guildboss-legacy-cleanup-script"></script>
+<script id="v6315-guildboss-legacy-cleanup-script" src="js/features/legacy-extracted/beta/v6315-guildboss-legacy-cleanup-script.js"></script>
 <!-- ===== /V6.315 ===== -->
 
 
@@ -42948,21 +42152,7 @@ body:has(#tower.active) #v337LegalFooter{margin-top:48px!important;padding-top:1
   pointer-events:none!important;
 }
 </style>
-<script id="v6316-remove-last-legacy-test-badge-script">
-(()=>{
-  'use strict';
-  if(window.__V6316_LAST_LEGACY_BADGE__)return;
-  window.__V6316_LAST_LEGACY_BADGE__=true;
-  function clean(){
-    const arena=document.getElementById('v260DailyBossArena');
-    if(!arena)return;
-    /* Keep test mode for logic, but remove any old injected visual badge nodes. */
-    arena.querySelectorAll('[data-v6204-test-badge],.v6204-test-badge,.v6204-test-label').forEach(n=>n.remove());
-  }
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',clean,{once:true});else clean();
-  document.addEventListener('click',e=>{if(e.target?.closest?.('[data-v254-tab="boss"]'))clean()},true);
-})();
-</script>
+<script id="v6316-remove-last-legacy-test-badge-script" src="js/features/legacy-extracted/beta/v6316-remove-last-legacy-test-badge-script.js"></script>
 <!-- ===== /V6.316 ===== -->
 
 
@@ -43053,13 +42243,13 @@ body:has(#tower.active) #v337LegalFooter{margin-top:48px!important;padding-top:1
 
 <!-- ===== V6.319: GILDENBOSS SMOOTH OWNER + SPACING ===== -->
 <link id="v6319-guildboss-smooth-owner-css" rel="stylesheet" href="css/features/guild/legacy/v6319-guildboss-smooth-owner-css.css">
-<script id="v6319-guildboss-smooth-owner-script"></script>
+<script id="v6319-guildboss-smooth-owner-script" src="js/features/legacy-extracted/beta/v6319-guildboss-smooth-owner-script.js"></script>
 <!-- ===== /V6.319 ===== -->
 
 
 <!-- ===== V6.321: GILDENBOSS COMBAT ANIMATION FINAL OWNER ===== -->
 <link id="v6321-guildboss-combat-animation-css" rel="stylesheet" href="css/features/guild/legacy/v6321-guildboss-combat-animation-css.css">
-<script id="v6321-guildboss-combat-animation-script"></script>
+<script id="v6321-guildboss-combat-animation-script" src="js/features/legacy-extracted/beta/v6321-guildboss-combat-animation-script.js"></script>
 <!-- ===== /V6.321 ===== -->
 
 
@@ -43358,9 +42548,7 @@ body.glw-thunder #glWeatherLayer{animation:glwThunder 10s linear infinite}
 <!-- ===== /PvP Buds Hall authoritative mirror fix ===== -->
 
 
-<script id="v475-shop-remove-marked-extras">
-/* Shop Cleanup Phase 2: merged into v475-shop-polish-script; separate wrapper retired. */
-</script>
+<script id="v475-shop-remove-marked-extras" src="js/features/legacy-extracted/beta/v475-shop-remove-marked-extras.js"></script>
 <!-- ===== V6.144 PLAYER SAFETY: MELDEN + BLOCKIEREN ===== -->
 <style id="v6144-player-safety-css">
 #guild #v254GuildMembers .v254-member{position:relative!important}
@@ -43465,17 +42653,17 @@ body.glw-thunder #glWeatherLayer{animation:glwThunder 10s linear infinite}
 
 <!-- ===== V6.207 GUILD SCROLL SAFE + ANDROID HEADER FLICKER FIX ===== -->
 <link id="v6207-guild-scroll-safe-css" rel="stylesheet" href="css/features/guild/legacy/v6207-guild-scroll-safe-css.css">
-<script id="v6207-guild-scroll-safe-js"></script>
+<script id="v6207-guild-scroll-safe-js" src="js/features/legacy-extracted/beta/v6207-guild-scroll-safe-js.js"></script>
 <!-- ===== /V6.207 ===== -->
 
 <!-- ===== V6.208 GUILD BOSS MOBILE PERFORMANCE ===== -->
 <link id="v6208-guild-boss-mobile-performance" rel="stylesheet" href="css/features/guild/legacy/v6208-guild-boss-mobile-performance.css">
-<script id="v6208-guild-boss-mobile-performance-js"></script>
+<script id="v6208-guild-boss-mobile-performance-js" src="js/features/legacy-extracted/beta/v6208-guild-boss-mobile-performance-js.js"></script>
 <!-- ===== /V6.208 GUILD BOSS MOBILE PERFORMANCE ===== -->
 
 <!-- ===== V6.209: GUILD BOSS REPLAY PERFORMANCE OWNER ===== -->
 <link id="v6209-guildboss-replay-performance-css" rel="stylesheet" href="css/features/guild/legacy/v6209-guildboss-replay-performance-css.css">
-<script id="v6209-guildboss-replay-performance-script"></script>
+<script id="v6209-guildboss-replay-performance-script" src="js/features/legacy-extracted/beta/v6209-guildboss-replay-performance-script.js"></script>
 <!-- ===== /V6.209 ===== -->
 
 
@@ -43566,22 +42754,7 @@ body.glw-thunder #glWeatherLayer{animation:glwThunder 10s linear infinite}
 .app > header .v372-logo em::after,
 #v372TopbarShell .v372-logo em::after{content:"V4.168"!important}
 </style>
-<script id="v6212-structure-authority">
-(()=>{
-  'use strict';
-  const VERSION=window.GROW_LEGENDS_VERSION||{short:'V4.168',label:'V4.168 Anbauturm Rework',number:'4.168'};
-  function stamp(){}
-  window.__V6212_STRUCTURE_AUTHORITY__=Object.freeze({
-    structuralCleanup:true,
-    failClosedGuildWar:true,
-    finalOwners:['V6.207 guild scroll','V6.208 guild boss mobile','V6.209 guild boss replay','V6.210 dungeon player art','V6.211 popup reliability'],
-    version:VERSION.label,
-    loadedAt:Date.now()
-  });
-  stamp();
-  window.addEventListener('growlegends:account-ready',stamp);
-})();
-</script>
+<script id="v6212-structure-authority" src="js/features/legacy-extracted/beta/v6212-structure-authority.js"></script>
 <!-- ===== /V6.212 ===== -->
 
 
@@ -43599,55 +42772,23 @@ body.glw-thunder #glWeatherLayer{animation:glwThunder 10s linear infinite}
 <!-- ===== /V6.214 ===== -->
 
 <!-- ===== V6.215 COMBAT / OBSERVER CLEANUP ===== -->
-<script id="v6215-combat-cleanup-authority">
-(()=>{
- 'use strict';
- if(window.__V6215_COMBAT_CLEANUP__)return;
- window.__V6215_COMBAT_CLEANUP__=true;
- /* V7.156: old global pageshow/visibility combat cleanup lane retired. Current
-    owners refresh themselves when their page/fight is actually opened. */
- window.__V6215_QA__=()=>({
-   pvpServerOwner:window.__V7053_ATOMIC_PVP_CLIENT__===true,
-   oldPvpObserverOwnersRetired:true,
-   lifecycleHooksRetired:true
- });
-})();
-</script>
+<script id="v6215-combat-cleanup-authority" src="js/features/legacy-extracted/beta/v6215-combat-cleanup-authority.js"></script>
 <!-- ===== /V6.215 ===== -->
 
 <!-- ===== V6.216 DUNGEON SINGLE CHARACTER FINAL ===== -->
-<script id="v6216-dungeon-single-character-final">
-(()=>{
- 'use strict';
- if(window.__V6216_DUNGEON_SINGLE_CHARACTER_FINAL__)return;
- window.__V6216_DUNGEON_SINGLE_CHARACTER_FINAL__=true;
- window.__V6216_QA__=()=>({retired:true,owner:'gl-dungeon-visual-owner-script',canonical:document.querySelectorAll('#playerFighter .fighter-avatar > img.gl-dungeon-player-art').length});
-})();
-</script>
+<script id="v6216-dungeon-single-character-final" src="js/features/legacy-extracted/beta/v6216-dungeon-single-character-final.js"></script>
 <!-- ===== /V6.216 ===== -->
 
 <!-- ===== V6.217 STARTUP GUARD CLEANUP ===== -->
-<script id="v6217-startup-guard-cleanup-marker">
-window.__V6217_STARTUP_GUARD_CLEANUP__=Object.freeze({
-  legacyStartupPollingRetired:true,
-  gameplayOwnersUnchanged:true,
-  dungeonOwner:'V6.216',
-  guildBossOwner:'V6.209',
-  popupOwner:'V6.211'
-});
-</script>
+<script id="v6217-startup-guard-cleanup-marker" src="js/features/legacy-extracted/beta/v6217-startup-guard-cleanup-marker.js"></script>
 <!-- ===== /V6.217 ===== -->
 
 <!-- ===== V6.218 CONSERVATIVE VISIBLE-TIMER GATING ===== -->
-<script id="v6218-visible-timer-gating-authority">
-window.__V6218_VISIBLE_TIMER_GATING__=Object.freeze({worldBoss:true,dungeon:true,systemtechnik:true,profileSync:true,gameplayChanged:false});
-</script>
+<script id="v6218-visible-timer-gating-authority" src="js/features/legacy-extracted/beta/v6218-visible-timer-gating-authority.js"></script>
 <!-- ===== /V6.218 ===== -->
 
 <!-- ===== V6.219 GLOBAL RENDER VISIBILITY GATING ===== -->
-<script id="v6219-global-render-visibility-marker">
-window.__V6219_GLOBAL_RENDER_GATING__=Object.freeze({character:true,shop:true,gameplayChanged:false});
-</script>
+<script id="v6219-global-render-visibility-marker" src="js/features/legacy-extracted/beta/v6219-global-render-visibility-marker.js"></script>
 <!-- ===== /V6.219 ===== -->
 
 <!-- ===== V6.220 LEGACY UI RENDER GATING =====
@@ -43668,19 +42809,11 @@ No combat, reward, persistence, item stat, shop purchase, or Supabase logic chan
 }
 #dungeonBattleCard.v599-clean .v599-impact{z-index:70!important;pointer-events:none!important}
 </style>
-<script id="v6221-dungeon-fx-restore-core">
-(()=>{
-  'use strict';
-  window.__V6221_DUNGEON_FX_RESTORE__=true;
-  window.v6221DungeonFxDiagnostics=()=>({retired:true,owner:'V7141',logBound:false,stripBound:false,chips:0});
-})();
-</script>
+<script id="v6221-dungeon-fx-restore-core" src="js/features/legacy-extracted/beta/v6221-dungeon-fx-restore-core.js"></script>
 <!-- ===== /V6.221 ===== -->
 
 <!-- ===== V6.222 QUEST UI TIMER GATING ===== -->
-<script id="v6222-quest-ui-timer-gating-marker">
-window.__V6222_QUEST_UI_TIMER_GATING__=true;
-</script>
+<script id="v6222-quest-ui-timer-gating-marker" src="js/features/legacy-extracted/beta/v6222-quest-ui-timer-gating-marker.js"></script>
 <!-- ===== /V6.222 ===== -->
 
 <!-- ===== V6.225 EXTRA-HIT VISUAL PARITY ===== -->
@@ -43830,25 +42963,7 @@ window.__V6222_QUEST_UI_TIMER_GATING__=true;
 <script id="v6235-illegal-book-longterm-pagination" src="js/features/book/beta/v8009-s1-v6235-illegal-book-longterm-pagination.js"></script>
 <!-- ===== /V6.235 ===== -->
 
-<script id="v6238-elite-quest-balance-diagnostics">
-(()=>{
- 'use strict';
- window.v6238EliteQuestDiagnostics=(level=Number(s?.level)||1)=>{
-  level=Math.max(1,Math.floor(Number(level)||1));
-  const heavy=Math.max(90,level*6);
-  const normal=Math.round(heavy/1.55);
-  const quick=Math.round(normal*.62);
-  const elite=typeof v6238EliteCurve==='function'?v6238EliteCurve(level):{duration:Math.round(heavy*1.5),xp:0,gold:0};
-  return{
-   level,
-   seconds:{quick,normal,heavy,elite:elite.duration},
-   minutes:{quick:+(quick/60).toFixed(2),normal:+(normal/60).toFixed(2),heavy:+(heavy/60).toFixed(2),elite:+(elite.duration/60).toFixed(2)},
-   eliteVsHeavy:+(elite.duration/heavy).toFixed(2),
-   activeQuestUntouched:true
-  };
- };
-})();
-</script>
+<script id="v6238-elite-quest-balance-diagnostics" src="js/features/legacy-extracted/beta/v6238-elite-quest-balance-diagnostics.js"></script>
 
 
 <!-- ===== V6.239 WOCHEN-TRUHE ===== -->
@@ -44462,26 +43577,7 @@ body:has(#v6252RegisterOverlay.show) #v075AuthOverlay{pointer-events:none!import
 <script id="v6252-register-popup" src="js/features/account/beta/v8009-s7-v6252-register-popup.js"></script>
 <!-- ===== /V6.252 ===== -->
 
-<script id="v6253-register-profile-equipment-fix">
-(()=>{
- 'use strict';
- window.__V6253_REGISTER_POPUP_Z_FIX__=true;
- window.__V6253_PUBLIC_EQUIPMENT_SYNC_FIX__=true;
- window.v6253Diagnostics=()=>({
-   registerPopup:{
-     present:!!document.getElementById('v6252RegisterOverlay'),
-     open:!!document.getElementById('v6252RegisterOverlay')?.classList.contains('show'),
-     popupZ:getComputedStyle(document.getElementById('v6252RegisterOverlay')||document.body).zIndex,
-     loginZ:getComputedStyle(document.getElementById('v075AuthOverlay')||document.body).zIndex
-   },
-   profileEquipment:{
-     safeEquipment:typeof v074SafeEquipment==='function',
-     payloadHasEquipment:(()=>{try{return !!v073ProfilePayload?.().equipment}catch(_){return false}})(),
-     syncFix:true
-   }
- });
-})();
-</script>
+<script id="v6253-register-profile-equipment-fix" src="js/features/legacy-extracted/beta/v6253-register-profile-equipment-fix.js"></script>
 
 
 <!-- ===== V6.254 Grow-Guide · First-Visit Tutorial ===== -->
@@ -44624,22 +43720,7 @@ body.v6255-energy-saver .screen:not(.active) *::after{
   transition:none!important;
 }
 </style>
-<script id="v6255-mobile-energy">
-(()=>{
- 'use strict';
- if(window.__V6255_MOBILE_ENERGY__)return;
- window.__V6255_MOBILE_ENERGY__=true;
- function activeScreen(){try{return document.querySelector('.screen.active')?.id||''}catch(_){return''}}
- window.v6255EnergyDiagnostics=()=>({
-   hidden:document.hidden,
-   activeScreen:activeScreen(),
-   energySaver:!!window.v6255EnergySaverActive?.(),
-   effectsEnabled:typeof v141Settings!=='undefined'?!!v141Settings.effects:null,
-   hiddenScreenAnimationsPaused:true,
-   saverNotificationCadenceMs:2500
- });
-})();
-</script>
+<script id="v6255-mobile-energy" src="js/features/legacy-extracted/beta/v6255-mobile-energy.js"></script>
 <!-- ===== /V6.255 ===== -->
 
 
@@ -44880,21 +43961,7 @@ body.v6255-energy-saver .screen:not(.active) *::after{
 }
 </style>
 
-<script id="v6256-display-fit-diagnostics">
-(()=>{
-  'use strict';
-  window.v6256DisplayDiagnostics=()=>({
-    width:window.innerWidth,
-    height:window.innerHeight,
-    orientation:window.matchMedia?.('(orientation: landscape)')?.matches?'landscape':'portrait',
-    narrow420:window.matchMedia?.('(max-width:420px)')?.matches||false,
-    shortLandscape:window.matchMedia?.('(orientation:landscape) and (max-height:520px)')?.matches||false,
-    dungeonRouteScrollFix:true,
-    shortLandscapeMode:true,
-    safeAreaViewportFit:document.querySelector('meta[name="viewport"]')?.content||''
-  });
-})();
-</script>
+<script id="v6256-display-fit-diagnostics" src="js/features/legacy-extracted/beta/v6256-display-fit-diagnostics.js"></script>
 <!-- ===== /V6.256 ===== -->
 
 
@@ -44932,32 +43999,12 @@ body.v6255-energy-saver .screen:not(.active) *::after{
 
 <!-- ===== V6.260 Anbauturm · Video-Abgleich zur freigegebenen Vorlage ===== -->
 <link id="v6260-tower-video-match-css" rel="stylesheet" href="css/features/tower/beta/v6260-tower-video-match-css.css">
-<script id="v6260-tower-runtime-lock">
-(()=>{
- 'use strict';
- if(window.__V6260_TOWER_RUNTIME_LOCK__)return;
- window.__V6260_TOWER_RUNTIME_LOCK__=true;
- window.v6260TowerVisualDiagnostics=()=>({
-   retiredRuntimePainter:true,
-   owner:'vTower-system',
-   towerActive:!!document.getElementById('tower')?.classList.contains('active')
- });
-})();
-</script>
+<script id="v6260-tower-runtime-lock" src="js/features/legacy-extracted/beta/v6260-tower-runtime-lock.js"></script>
 <!-- ===== /V6.260 ===== -->
 
 
 <!-- ===== V6.261 ANBAUTURM ÖFFNEN HOTFIX ===== -->
-<script id="v6261-tower-open-hotfix">
-(()=>{
- 'use strict';
- if(window.__V6261_TOWER_OPEN_HOTFIX__)return;
- window.__V6261_TOWER_OPEN_HOTFIX__=true;
- window.v6261TowerChromeState=(on)=>{
-   try{window.v6260TowerChrome?.(!!on);return true}catch(_){return false}
- };
-})();
-</script>
+<script id="v6261-tower-open-hotfix" src="js/features/legacy-extracted/beta/v6261-tower-open-hotfix.js"></script>
 <!-- ===== /V6.261 ===== -->
 
 
@@ -45450,55 +44497,21 @@ body.v6255-energy-saver .screen:not(.active) *::after{
 <!-- ===== V6.269 ANBAUTURM · KOMPLETT-REWORK ===== -->
 <link id="v6269-tower-complete-rework-css" rel="stylesheet" href="css/features/tower/beta/v6269-tower-complete-rework-css.css">
 
-<script id="v6269-tower-complete-rework-js">
-(()=>{
- 'use strict';
- if(window.__V6269_TOWER_MUTATION_CAP__)return;
- window.__V6269_TOWER_MUTATION_CAP__=true;
- const CAP=6;
- function normalizeMutationCap(){
-   try{
-     const r=window.s?.tower?.run;
-     if(!r)return false;
-     if(Array.isArray(r.buffs)&&r.buffs.length>CAP){
-       r.buffs=[...new Set(r.buffs)].slice(0,CAP);
-       r.mutationChoices=[];
-       r.geneticsComplete=true;
-       try{typeof save==='function'&&save(false)}catch(_){}
-       return true;
-     }
-   }catch(_){}
-   return false;
- }
- window.v6269NormalizeTowerMutationCap=normalizeMutationCap;
-})();
-</script>
+<script id="v6269-tower-complete-rework-js" src="js/features/legacy-extracted/beta/v6269-tower-complete-rework-js.js"></script>
 <!-- ===== /V6.269 ===== -->
 
 
 <!-- ===== V6.270 ANBAUTURM · LOBBY-FIXES ===== -->
 <link id="v6270-tower-lobby-fixes-css" rel="stylesheet" href="css/features/tower/beta/v6270-tower-lobby-fixes-css.css">
 
-<script id="v6270-tower-lobby-fixes-js">
-(()=>{
- 'use strict';
- window.__V6270_TOWER_BACK__=window.__V6270_TOWER_BACK__||{last:'world'};
- window.__V6270_GO_WRAP__=false;
- window.__V6270_BIND_WRAP__=false;
-})();
-</script>
+<script id="v6270-tower-lobby-fixes-js" src="js/features/legacy-extracted/beta/v6270-tower-lobby-fixes-js.js"></script>
 <!-- ===== /V6.270 ===== -->
 
 
 <!-- ===== V6.271 ANBAUTURM · TOPBAR + LOBBY STRUKTURFIX ===== -->
 <link id="v6271-tower-topbar-lobby-css" rel="stylesheet" href="css/features/tower/beta/v6271-tower-topbar-lobby-css.css">
 
-<script id="v6271-tower-topbar-lobby-js">
-(()=>{
- 'use strict';
- window.__V6271_TOWER_TOPBAR_CANONICAL__=true;
-})();
-</script>
+<script id="v6271-tower-topbar-lobby-js" src="js/features/legacy-extracted/beta/v6271-tower-topbar-lobby-js.js"></script>
 <!-- ===== /V6.271 ===== -->
 
 
@@ -47007,17 +46020,7 @@ body.v6255-energy-saver .screen:not(.active) *::after{
 
 
 <!-- ===== V6.285 GROWROOM · DEALER GANZE PUNKTE ===== -->
-<script id="v6285-grow-dealer-integer-points-js">
-(()=>{
- 'use strict';
- window.v6285GrowDealerDiagnostics=()=>({
-   version:'V6.285',
-   system:'C=1,B=2,A=3,S=4,S+=5,Mutation+1,Veredelt+2',
-   availabilityLabel:[...document.querySelectorAll('#grow .v6282-offer-progress-text span')]
-     .map(x=>x.textContent||'').find(x=>x.startsWith('Verfügbar:'))||''
- });
-})();
-</script>
+<script id="v6285-grow-dealer-integer-points-js" src="js/features/legacy-extracted/beta/v6285-grow-dealer-integer-points-js.js"></script>
 <!-- ===== /V6.285 ===== -->
 
 
@@ -47031,17 +46034,7 @@ body.v6255-energy-saver .screen:not(.active) *::after{
 }
 </style>
 
-<script id="v6286-grow-main-cleanup-js">
-(()=>{
- 'use strict';
- window.v6286GrowMainDiagnostics=()=>({
-   version:'V6.286',
-   activeBuffInMain:[...document.querySelectorAll('#grow .v492-bottom .v492-card h3')]
-     .some(x=>(x.textContent||'').includes('Aktive Sorte')),
-   activeBuffInStock:!!document.querySelector('#grow .v6282-summary')
- });
-})();
-</script>
+<script id="v6286-grow-main-cleanup-js" src="js/features/legacy-extracted/beta/v6286-grow-main-cleanup-js.js"></script>
 <!-- ===== /V6.286 ===== -->
 
 
@@ -47179,34 +46172,7 @@ body:not(.v6291-summoner-active) .v6287-summon-fx{
 
 
 <!-- ===== V6.292 HALL OF HAZE · KORREKTE KLASSENAVATARE ===== -->
-<script id="v6292-hall-avatar-classfix-js">
-(()=>{
- 'use strict';
- if(window.__V6292_HALL_AVATAR_FIX__)return;
- window.__V6292_HALL_AVATAR_FIX__=true;
-
- function fix(){
-   try{window.v646DecorateHall?.()}catch(_){}
- }
- document.addEventListener('click',e=>{
-   const hit=e.target instanceof Element
-     ? e.target.closest('[data-screen="hall"],[data-go="hall"],[data-v085-go="hall"]')
-     : null;
-   if(hit)setTimeout(fix,0);
- },true);
- window.addEventListener('growlegends:account-ready',()=>setTimeout(fix,100));
- window.addEventListener('growlegends:foreground-ready',fix,{passive:true});
-
- window.v6292HallAvatarDiagnostics=()=>({
-   version:'V6.292',
-   rows:[...document.querySelectorAll('#v072HallRanking .v072-player-row')].map(r=>({
-     profile:r.dataset.profileId||'',
-     classId:r.dataset.classId||'',
-     avatarClass:r.querySelector('.v646-row-avatar')?.dataset.avatarClass||''
-   }))
- });
-})();
-</script>
+<script id="v6292-hall-avatar-classfix-js" src="js/features/legacy-extracted/beta/v6292-hall-avatar-classfix-js.js"></script>
 <!-- ===== /V6.292 ===== -->
 
 
@@ -47283,21 +46249,7 @@ body:not(.v6291-summoner-active) .v6287-summon-fx{
 }
 </style>
 
-<script id="v6299-class-image-size-js">
-(()=>{
- 'use strict';
- if(window.__V6299_CLASS_IMAGE_SIZE__)return;
- window.__V6299_CLASS_IMAGE_SIZE__=true;
- window.v6299ClassImageDiagnostics=()=>({
-   version:'V6.299',
-   cards:[...document.querySelectorAll('#v200CharacterModal .v200-class')].map(c=>({
-     classId:c.dataset.v200Class||c.dataset.v4135Class||c.dataset.v4136Class||'',
-     fit:c.querySelector('img')?getComputedStyle(c.querySelector('img')).objectFit:'',
-     position:c.querySelector('img')?getComputedStyle(c.querySelector('img')).objectPosition:''
-   }))
- });
-})();
-</script>
+<script id="v6299-class-image-size-js" src="js/features/legacy-extracted/beta/v6299-class-image-size-js.js"></script>
 <!-- ===== /V6.299 ===== -->
 
 
@@ -47605,35 +46557,7 @@ body:not(.v6291-summoner-active) .v6287-summon-fx{
     linear-gradient(180deg,#293728,#121812)!important;
 }
 </style>
-<script id="v6305-harzruferin-polish-js">
-(()=>{
-'use strict';
-
-/* Remove only the extra lore text from avatar captions.
-   The class description remains available in class information. */
-function v6305AvatarClean(){
- try{
-  const sub=document.getElementById('avatarSubtitle');
-  if(sub && String(sub.textContent).includes('Herrin von Nebel')){
-    sub.textContent='Harzruferin';
-  }
- }catch(_){}
-}
-
-/* Make sure all current combat scenes get the scene fallback. */
-function v6305Scene(){
- try{
-  document.querySelectorAll('#battleStage,.battle-stage').forEach(el=>{
-    el.classList.add('v6305-scene-ready');
-  });
- }catch(_){}
-}
-window.addEventListener('pageshow',()=>{v6305AvatarClean();v6305Scene()});
-document.addEventListener('click',()=>setTimeout(()=>{
- v6305AvatarClean();v6305Scene();
-},80),true);
-})();
-</script>
+<script id="v6305-harzruferin-polish-js" src="js/features/legacy-extracted/beta/v6305-harzruferin-polish-js.js"></script>
 
 <!-- V6.306 Kampf Avatar + Dungeon1 Fix -->
 <style id="v6306-avatar-dungeon-css">
@@ -47652,26 +46576,7 @@ document.addEventListener('click',()=>setTimeout(()=>{
     linear-gradient(180deg,#273326,#101610)!important;
 }
 </style>
-<script id="v6306-avatar-dungeon-js">
-(()=>{
-'use strict';
-if(window.__V6306_FIX__)return;
-window.__V6306_FIX__=true;
-function run(){
-  const player=document.querySelector('#playerFighter');
-  const name=player?.querySelector('.fighter-name');
-  if(name){const txt=name.textContent||'';if(/Beschwörerin|Nebel|Harz und Knochen/i.test(txt)){const lvl=(txt.match(/Lv\.\s*\d+/i)||['Lv. 1'])[0];name.textContent='Du · '+lvl}}
-  try{
-    const stage=document.getElementById('battleStage');
-    const title=document.getElementById('enemyName')?.textContent||'';
-    if(stage&&/Raum 1|Dungeon 1|Trauermücken/i.test(title)&&!stage.querySelector('.dungeon-scene,.gl-dungeon-bg,[style*="background"]'))stage.classList.add('v6306-dungeon-bg');
-  }catch(_){ }
-  return true;
-}
-window.v6306DungeonVisualSync=run;
-window.v6306FixQA=()=>({eventLoopsRetired:true,dungeon1Fallback:!!document.getElementById('battleStage')?.classList.contains('v6306-dungeon-bg')});
-})();
-</script>
+<script id="v6306-avatar-dungeon-js" src="js/features/legacy-extracted/beta/v6306-avatar-dungeon-js.js"></script>
 <!-- /V6.306 -->
 
 
@@ -47881,30 +46786,7 @@ window.v6306FixQA=()=>({eventLoopsRetired:true,dungeon1Fallback:!!document.getEl
   .v6312-seed-gold b{font-size:12px!important}
 }
 </style>
-<script id="v6312-companion-damage-seed-gold-js">
-(()=>{
-'use strict';
-if(window.__V6312_COMPANION_DAMAGE_SEED_GOLD__)return;
-window.__V6312_COMPANION_DAMAGE_SEED_GOLD__=true;
-function syncSeedGold(){
- try{
-  const el=document.getElementById('v6312SeedGold');
-  if(el)el.textContent=(typeof fmt==='function'?fmt(Math.max(0,Number(s?.gold)||0)):String(Math.max(0,Number(s?.gold)||0)));
- }catch(_){ }
-}
-document.addEventListener('click',e=>{
- const t=e.target instanceof Element?e.target:null;
- if(t?.closest('[data-v493-seeds],[data-v492-buy]'))setTimeout(syncSeedGold,100);
-},true);
-window.addEventListener('growlegends:account-ready',()=>setTimeout(syncSeedGold,120));
-window.v6312SyncSeedGold=syncSeedGold;
-window.v6312Diagnostics=()=>({
- version:'V6.312',
- seedGold:document.getElementById('v6312SeedGold')?.textContent||'',
- companionImpactFont:document.querySelector('.v6303-companion-impact>b')?getComputedStyle(document.querySelector('.v6303-companion-impact>b')).fontSize:''
-});
-})();
-</script>
+<script id="v6312-companion-damage-seed-gold-js" src="js/features/legacy-extracted/beta/v6312-companion-damage-seed-gold-js.js"></script>
 <!-- ===== /V6.312 ===== -->
 
 <!-- V6.314 Punkt 2: vollständige Turm-/Mittwochs-Ranglisten via paginierter Profilabfrage -->
@@ -47914,15 +46796,7 @@ window.v6312Diagnostics=()=>({
 <style id="v6316-version-authority-css">
 /* V7.112: stale V7.109 pseudo-version owner retired. */
 </style>
-<script id="v6316-version-authority-js">
-(()=>{
-'use strict';
-/* V7.112: legacy version owner retired. Keep public diagnostics/API aliases only. */
-window.__V6316_VERSION_AUTHORITY__=true;
-window.v6316StampVersion=()=>window.v7112StampVersion?.();
-window.v6316VersionDiagnostics=()=>window.v7112VersionDiagnostics?.()||({actual:window.GROW_LEGENDS_VERSION?.short||''});
-})();
-</script>
+<script id="v6316-version-authority-js" src="js/features/legacy-extracted/beta/v6316-version-authority-js.js"></script>
 <!-- ===== /V6.317 ===== -->
 
 
@@ -48004,18 +46878,7 @@ window.v6316VersionDiagnostics=()=>window.v7112VersionDiagnostics?.()||({actual:
 
 
 <!-- ===== V6.322 ELITE-QUEST · HARZRUFERIN FAIRNESS ===== -->
-<script id="v6322-harzruferin-elite-quest-balance">
-(()=>{
- 'use strict';
- window.v6322EliteQuestHarzruferinQA=()=>({
-  version:'V6.322',
-  classId:String(s?.playerClass||''),
-  eliteHarzruferin:{enemyHpFactor:11.5,enemyAttackPct:.098},
-  genericElite:{enemyHpFactor:13,enemyAttackPct:.115},
-  normalQuest:{enemyHpFactor:10,enemyAttackPct:.085}
- });
-})();
-</script>
+<script id="v6322-harzruferin-elite-quest-balance" src="js/features/legacy-extracted/beta/v6322-harzruferin-elite-quest-balance.js"></script>
 <!-- ===== /V6.322 ===== -->
 
 <!-- ===== V6.326 ANBAU-TURM · HARZRUFERIN SINGLE-AVATAR FIX ===== -->
@@ -48052,9 +46915,7 @@ window.v6316VersionDiagnostics=()=>window.v7112VersionDiagnostics?.()||({actual:
   }
 }
 </style>
-<script id="v6323-tower-single-avatar-js">
-(()=>{'use strict';window.__V6323_TOWER_SINGLE_AVATAR__=true;/* retired by V6.334: dedicated direct tower avatar owns rendering */})();
-</script>
+<script id="v6323-tower-single-avatar-js" src="js/features/legacy-extracted/beta/v6323-tower-single-avatar-js.js"></script>
 <!-- ===== /V6.326 ===== -->
 
 <!-- ===== V6.326 DUNGEON · ENEMY POSE / CROP FIX ===== -->
@@ -48142,9 +47003,7 @@ window.v6316VersionDiagnostics=()=>window.v7112VersionDiagnostics?.()||({actual:
   background:linear-gradient(180deg,transparent 0 73%,rgba(7,15,9,.20) 84%,rgba(5,10,7,.62) 100%)!important;
 }
 </style>
-<script id="v6327-tower-harzruferin-render-fix-js">
-(()=>{'use strict';window.__V6327_TOWER_HARZ_SINGLE_RENDER__=true;/* retired by V6.334: dedicated direct tower avatar owns rendering */})();
-</script>
+<script id="v6327-tower-harzruferin-render-fix-js" src="js/features/legacy-extracted/beta/v6327-tower-harzruferin-render-fix-js.js"></script>
 <!-- ===== /V6.328 ===== -->
 
 <!-- ===== V6.328 QUEST ENEMY POSITION / POSE FIX ===== -->
@@ -48225,15 +47084,7 @@ window.v6316VersionDiagnostics=()=>window.v7112VersionDiagnostics?.()||({actual:
   #v636QuestDungeonCard #v636QuestEnemyFighter.v6328-qpose-dorn .fighter-avatar>.v645-quest-enemy-art{transform:scale(1.66)!important}
 }
 </style>
-<script id="v6328-quest-enemy-pose-fix-js">
-(()=>{
-'use strict';
-/* V7.151 PHASE 3: retired. V6.328 watched the entire document and repeatedly
-   repainted quest enemy pose classes. V6.344/V6.36x own quest art now. */
-window.__V6328_QUEST_ENEMY_POSE_FIX__='retired-v7151';
-window.v6328QuestEnemyPoseDiagnostics=()=>({version:'V7.151',retired:true,owner:'v6344/v636'});
-})();
-</script>
+<script id="v6328-quest-enemy-pose-fix-js" src="js/features/legacy-extracted/beta/v6328-quest-enemy-pose-fix-js.js"></script>
 <!-- ===== /V6.328 ===== -->
 
 
@@ -48280,17 +47131,7 @@ window.v6328QuestEnemyPoseDiagnostics=()=>({version:'V7.151',retired:true,owner:
   .v6329-companion-status{min-height:22px!important;padding:5px 7px!important;font-size:5.8px!important}
 }
 </style>
-<script id="v6329-combat-effect-ui-diagnostics">
-(()=>{
-'use strict';
-window.v6329CombatEffectDiagnostics=()=>({
-  version:'V6.332',
-  lanes:document.querySelectorAll('.v6329-companion-status-lane').length,
-  statusChips:document.querySelectorAll('.v6329-companion-status').length,
-  legacyImpactLabels:[...document.querySelectorAll('.v6303-companion-impact>small')].filter(x=>getComputedStyle(x).display!=='none').length
-});
-})();
-</script>
+<script id="v6329-combat-effect-ui-diagnostics" src="js/features/legacy-extracted/beta/v6329-combat-effect-ui-diagnostics.js"></script>
 <!-- ===== /V6.332 ===== -->
 
 <!-- ===== V6.332 ANBAU-TURM · HARZRUFERIN CROP FIX ===== -->
@@ -48312,9 +47153,7 @@ window.v6329CombatEffectDiagnostics=()=>({
   }
 }
 </style>
-<script id="v6330-tower-harz-crop-fix-js">
-(()=>{'use strict';window.__V6330_TOWER_HARZ_CROP_FIX__=true;/* retired by V6.334: dedicated direct tower avatar owns rendering */})();
-</script>
+<script id="v6330-tower-harz-crop-fix-js" src="js/features/legacy-extracted/beta/v6330-tower-harz-crop-fix-js.js"></script>
 <!-- ===== /V6.332 ===== -->
 
 <!-- ===== V6.332 QUEST ENEMY EXACT VISUAL MAPPING ===== -->
@@ -48388,15 +47227,7 @@ window.v6329CombatEffectDiagnostics=()=>({
   #v636QuestDungeonCard #v636QuestEnemyFighter.v6332-q-milbenjaeger .v645-quest-enemy-art{transform:scale(1.22)!important}
 }
 </style>
-<script id="v6332-quest-enemy-exact-mapping-js">
-(()=>{
-'use strict';
-/* V7.151 PHASE 3: retired. V6.332 also watched documentElement and rewrote the
-   same quest enemy <img>. The canonical V6.344/V6.36x path is deterministic. */
-window.__V6332_QUEST_ENEMY_EXACT_MAPPING__='retired-v7151';
-window.v6332QuestEnemyDiagnostics=()=>({version:'V7.151',retired:true,owner:'v6344/v636'});
-})();
-</script>
+<script id="v6332-quest-enemy-exact-mapping-js" src="js/features/legacy-extracted/beta/v6332-quest-enemy-exact-mapping-js.js"></script>
 <!-- ===== /V6.332 ===== -->
 
 
@@ -48539,17 +47370,7 @@ window.v6332QuestEnemyDiagnostics=()=>({version:'V7.151',retired:true,owner:'v63
   .v6335-dot-pop{font-size:13px!important}
 }
 </style>
-<script id="v6335-spore-dot-diagnostics-js">
-(()=>{
-'use strict';
-window.v6335SporeDotDiagnostics=()=>({
-  version:'V6.335',
-  enemyBadges:document.querySelectorAll('.v6335-enemy-dot').length,
-  dotPops:document.querySelectorAll('.v6335-dot-pop').length,
-  summoner:String((window.s||{}).playerClass||'')==='summoner'
-});
-})();
-</script>
+<script id="v6335-spore-dot-diagnostics-js" src="js/features/legacy-extracted/beta/v6335-spore-dot-diagnostics-js.js"></script>
 <!-- ===== /V6.335 ===== -->
 
 <!-- ===== V6.337 DOT STATUS · FLUCHNEBEL + RAUCHSCHADEN ===== -->
@@ -49211,19 +48032,7 @@ window.v6335SporeDotDiagnostics=()=>({
 
 
 <!-- ===== V7.091 LEGACY GROW RECOVERY NEUTRALIZER ===== -->
-<script id="v7075-grow-legacy-recovery-neutralizer">
-(()=>{
- 'use strict';
- /* V7.151 PHASE 2: RETIRED.
-    This was a second v7064_grow_state reconciliation lane created only to
-    counteract old local recovery. V4.99/V4.120 are now retired, so the second
-    server read/render lane is no longer needed. */
- if(window.__V7075_GROW_RECOVERY_NEUTRALIZER__)return;
- window.__V7075_GROW_RECOVERY_NEUTRALIZER__=true;
- window.__V7075_RETIRED_V7150__=true;
- window.v7075GrowRecoveryDiagnostics=()=>({version:'V7.151',retired:true,running:false,last:0,lastUid:'',lastPlants:''});
-})();
-</script>
+<script id="v7075-grow-legacy-recovery-neutralizer" src="js/features/legacy-extracted/beta/v7075-grow-legacy-recovery-neutralizer.js"></script>
 <!-- ===== /V7.091 LEGACY GROW RECOVERY NEUTRALIZER ===== -->
 
 
@@ -49233,7 +48042,7 @@ window.v6335SporeDotDiagnostics=()=>({
 
 
 <!-- ===== V7.091 SERVER GUILD REWARD CLAIMS ===== -->
-<script id="v7078-server-guild-reward-claims">window.v8008C25InstallRewards?.();</script>
+<script id="v7078-server-guild-reward-claims" src="js/features/legacy-extracted/beta/v7078-server-guild-reward-claims.js"></script>
 <!-- ===== /V7.091 SERVER GUILD REWARD CLAIMS ===== -->
 
 
@@ -49247,29 +48056,10 @@ window.v6335SporeDotDiagnostics=()=>({
 <!-- ===== /V7.091 SERVER ACHIEVEMENT AUTHORITY ===== -->
 
 
-<script id="v7081-live-hotfix-diagnostics">
-(()=>{
-window.v7081LiveHotfixDiagnostics=()=>({
-  version:'V7.091',
-  caps:window.v7081CapabilitiesDiagnostics?.()||null,
-  grow:window.v7067GrowAuthorityDiagnostics?.()||null,
-  pet:window.v7079PetAuthorityDiagnostics?.()||null,
-  achievements:window.v7080AchievementDiagnostics?.()||null
-});
-})();
-</script>
+<script id="v7081-live-hotfix-diagnostics" src="js/features/legacy-extracted/beta/v7081-live-hotfix-diagnostics.js"></script>
 
 
-<script id="v7082-shop-legacy-delegation-hotfix">
-(()=>{
-window.v7082ShopHotfixDiagnostics=()=>({
-  version:'V7.091',
-  itemsAuthority:!!window.v7081UseAuthority?.('items'),
-  capabilities:window.v7081CapabilitiesDiagnostics?.()||null,
-  shopBridge:window.v7063ItemStageDiagnostics?.()||null
-});
-})();
-</script>
+<script id="v7082-shop-legacy-delegation-hotfix" src="js/features/legacy-extracted/beta/v7082-shop-legacy-delegation-hotfix.js"></script>
 
 
 
@@ -49281,13 +48071,7 @@ window.v7082ShopHotfixDiagnostics=()=>({
 <!-- ===== /V7.094 SELF-DIAGNOSIS WATCHDOG + TELEMETRY ===== -->
 
 <!-- ===== V7.094 FINAL VERSION OWNER ===== -->
-<script id="v7092-version-owner">
-(()=>{
-'use strict';
-/* V7.112: stale delayed V7.095 painter retired. */
-window.__V7092_VERSION_OWNER_RETIRED__=true;
-})();
-</script>
+<script id="v7092-version-owner" src="js/features/legacy-extracted/beta/v7092-version-owner.js"></script>
 <style id="v7092-version-owner-css">
 /* V7.112: stale data-attribute version painter retired. */
 </style>
@@ -49309,33 +48093,12 @@ window.__V7092_VERSION_OWNER_RETIRED__=true;
 
 
 <!-- ===== V7.095 PRODUCTION RESPONSIVENESS GUARD ===== -->
-<script id="v7095-production-response-guard">
-(()=>{
-'use strict';
-if(window.__V7095_RESPONSE_GUARD__)return;window.__V7095_RESPONSE_GUARD__=true;
-const VERSION='V7.095';
-const S={nav:0,lastNavAt:0,lastScreen:''};
-document.addEventListener('click',e=>{
- try{
-  const n=e.target?.closest?.('[data-screen],[data-go],[data-v085-go]');if(!n)return;
-  const target=String(n.dataset.screen||n.dataset.go||n.dataset.v085Go||'');
-  const t=performance.now();S.nav++;S.lastNavAt=Date.now();S.lastScreen=target;
-  requestAnimationFrame(()=>requestAnimationFrame(()=>{
-   const ms=Math.round(performance.now()-t);
-   if(ms>450)window.__GL_RUNTIME_WATCHDOG__?.report?.('slow_navigation','warn',{target,ms},{screen:target||'system',incidentKey:target||'nav'});
-  }));
- }catch(_){}
-},{capture:true,passive:true});
-window.v7095ResponseDiagnostics=()=>({version:VERSION,...S});
-})();
-</script>
+<script id="v7095-production-response-guard" src="js/features/legacy-extracted/beta/v7095-production-response-guard.js"></script>
 <!-- ===== /V7.095 PRODUCTION RESPONSIVENESS GUARD ===== -->
 
 
 <!-- ===== V7.096 TOWER DIRECT-FIGHT RELEASE ===== -->
-<script id="v7096-release-marker">
-window.__V7096_RELEASE_FEATURE__=true;
-</script>
+<script id="v7096-release-marker" src="js/features/legacy-extracted/beta/v7096-release-marker.js"></script>
 \n<!-- ===== V7.097 PERFORMANCE + UX RESTORE ===== -->
 <style id="v7097-release-css">
 .v7097-bloom-buff{margin:7px 0;padding:7px 8px;border:1px solid #38583e;border-radius:9px;background:#0a150e;color:#bfe8bd;font-size:7px;line-height:1.45}
@@ -49353,60 +48116,17 @@ window.__V7096_RELEASE_FEATURE__=true;
 <script id="v7098-system-qa-bridge" src="js/features/system/beta/v8009-s17-v7098-system-qa-bridge.js"></script>
 <!-- ===== /V7.098 SYSTEM QA BRIDGE ===== -->
 
-<script id="v7099-release-marker">
-window.__V7099_COMBAT_AUTHORITY__=Object.freeze({
- version:'V7.109',
- canonicalState:true,
- goldenMaster:'V6.349',
- unifiedPve:false,
- classes:['grower','scout','bruiser','summoner','frost'],
- modeSpecificResolvers:true,
- structuredReplay:true,
- towerMutations:true,
- googlePlayHarzAuthority:true
-});
-</script>
+<script id="v7099-release-marker" src="js/features/legacy-extracted/beta/v7099-release-marker.js"></script>
 
 
-<script id="v7109-final-version-integrity">
-(()=>{
-'use strict';
-/* V7.112: superseded final owner retired; diagnostic name kept for compatibility. */
-window.v7100VersionDiagnostics=()=>window.v7112VersionDiagnostics?.()||({actual:window.GROW_LEGENDS_VERSION?.short||''});
-})();
-</script>
+<script id="v7109-final-version-integrity" src="js/features/legacy-extracted/beta/v7109-final-version-integrity.js"></script>
 <style id="v7109-final-version-css">
 /* V7.112: superseded version CSS retired. */
 </style>
 
-<script id="v7101-final-public-profile-owner">
-(()=>{
-'use strict';
-async function finalSync(force=false){
-  try{return !!(await window.v7101SyncPublicProfile?.(!!force))}catch(e){console.warn('[V7.109] profile owner',e);return false}
-}
-try{v073SyncProfile=finalSync}catch(_){}
-window.v073SyncProfile=finalSync;
+<script id="v7101-final-public-profile-owner" src="js/features/legacy-extracted/beta/v7101-final-public-profile-owner.js"></script>
 
-/* Historical mirror helpers may still be called by old render/persist wrappers.
-   They now only queue the canonical server mirror. */
-window.v446SyncCombatPower=(force=false)=>{window.v7101SchedulePublicProfileSync?.(!!force);return Promise.resolve(true)};
-window.v649SyncDungeonProgress=(force=false)=>{window.v7101SchedulePublicProfileSync?.(!!force);return Promise.resolve(true)};
-window.vTowerSync=(force=false)=>{window.v7101SchedulePublicProfileSync?.(!!force);return Promise.resolve(true)};
-window.vPvpBudsHallSync=(force=false)=>{window.v7101SchedulePublicProfileSync?.(!!force);return Promise.resolve(true)};
-})();
-</script>
-
-<script id="v7109-release-marker">
-window.__V7109_HOTFIX__=Object.freeze({
-  profileSingleWriter:true,
-  dungeonLegacyParityGate:false,
-  pvpLegacyParityGate:false,
-  growActionScreenScope:true,
-  achievementReadCoalescing:true,
-  authorityStateCoalescing:true
-});
-</script>
+<script id="v7109-release-marker" src="js/features/legacy-extracted/beta/v7109-release-marker.js"></script>
 
 <script id="v7102-quest-authority-stability" src="js/features/legacy-extracted/beta/v7102-quest-authority-stability.js"></script>
 
@@ -49415,34 +48135,9 @@ window.__V7109_HOTFIX__=Object.freeze({
 
 <script id="v7104-v6349-parity-foundation" src="js/features/system/beta/v8009-s17-v7104-v6349-parity-foundation.js"></script>
 
-<script id="v7105-golden-master-client">
-(()=>{
-'use strict';
-window.__V7105_GOLDEN_MASTER_CLIENT__=true;
-window.v7105GoldenMasterDiagnostics=()=>({
-  release:window.__GROW_LEGENDS_RELEASE__||'',
-  baseline:window.__V6349_GOLDEN_MASTER__?.baseline||'',
-  policy:window.__V6349_GOLDEN_MASTER__?.policy||'',
-  towerRuleset:s?.tower?.run?.towerCombatRuleset||null,
-  authority:window.v7081CapabilitiesDiagnostics?.()||null
-});
-})();
-</script>
+<script id="v7105-golden-master-client" src="js/features/legacy-extracted/beta/v7105-golden-master-client.js"></script>
 
-<script id="v7106-golden-master-client">
-(()=>{
-'use strict';
-window.__V7106_GOLDEN_MASTER_CLIENT__=true;
-window.v7106GoldenMasterDiagnostics=()=>({
-  release:window.__GROW_LEGENDS_RELEASE__||'',
-  baseline:window.__V6349_GOLDEN_MASTER__?.baseline||'',
-  contracts:Object.keys(window.__V6349_GOLDEN_MASTER__||{}),
-  growAuthority:String(window.v7040AuthorityDiagnostics?.()?.domains?.grow||''),
-  petAuthority:String(window.v7040AuthorityDiagnostics?.()?.domains?.pets||''),
-  shopAuthority:String(window.v7040AuthorityDiagnostics?.()?.domains?.shop||'')
-});
-})();
-</script>
+<script id="v7106-golden-master-client" src="js/features/legacy-extracted/beta/v7106-golden-master-client.js"></script>
 
 <style id="v7107-final-ui-fixes">
 .v4114-care-mini i.available,
@@ -49456,29 +48151,7 @@ window.v7106GoldenMasterDiagnostics=()=>({
 .v7107-bloom-effect{margin-top:4px!important;color:#9fe77d!important;line-height:1.3!important}
 .v7107-bloom-time{color:#d8c98a!important}
 </style>
-<script id="v7109-final-client-contract">
-(()=>{
-'use strict';
-window.__V7109_CLIENT_CONTRACT__=Object.freeze({
-  release:'V7.109',
-  goldenMaster:'V6.349',
-  bloomBuffPreview:true,
-  weatherSyncedCare:true,
-  authoritativeAutoEquip:true,
-  staleAdminSaveHydration:false,
-  serverEventInstances:true,
-  serverWednesdayRewardPayload:true
-});
-window.v7107ClientDiagnostics=()=>({
-  ...window.__V7109_CLIENT_CONTRACT__,
-  actual:window.GROW_LEGENDS_VERSION?.short||'',
-  release:window.__GROW_LEGENDS_RELEASE__||'',
-  itemAuthority:String(window.v7040AuthorityDiagnostics?.()?.domains?.items||''),
-  growAuthority:String(window.v7040AuthorityDiagnostics?.()?.domains?.grow||''),
-  qaFailed:Number(window.__V7098_SERVER_QA__?.failed_checks)||0
-});
-})();
-</script>
+<script id="v7109-final-client-contract" src="js/features/legacy-extracted/beta/v7109-final-client-contract.js"></script>
 \n<!-- ===== V7.110 QUEST AUTHORITY SYNC + QUEST UI COLLISION FIX ===== -->
 <style id="v7110-quest-ui-collision-fix">
 /* Quest header: keep the three difficulty tabs clear of the old subtitle/bubble. */
@@ -49501,33 +48174,19 @@ window.v7107ClientDiagnostics=()=>({
 <script src="js/features/quest/beta/v7110-quest-authority-sync.js"></script>
 
 <!-- Final V7.110 visible version owner. -->
-<script id="v7110-final-version-integrity">
-(()=>{
-'use strict';
-window.v7110VersionDiagnostics=()=>window.v7112VersionDiagnostics?.()||({actual:window.GROW_LEGENDS_VERSION?.short||''});
-})();
-</script>
+<script id="v7110-final-version-integrity" src="js/features/legacy-extracted/beta/v7110-final-version-integrity.js"></script>
 <style id="v7110-final-version-css">
 /* V7.112: superseded version CSS retired. */
 </style>
-<script id="v7110-release-marker">
-window.__V7110_HOTFIX__=Object.freeze({questAuthorityPreflight:true,questServerOfferCostOwner:true,questUiCollisionFix:true});
-</script>
+<script id="v7110-release-marker" src="js/features/legacy-extracted/beta/v7110-release-marker.js"></script>
 <!-- ===== /V7.110 ===== -->\n
 
 <!-- ===== V7.111 TOWER RUN-END RESULT RESTORE ===== -->
-<script id="v7111-final-version-integrity">
-(()=>{
-'use strict';
-/* V7.112: V7.111 final owner retired after successful handoff. */
-})();
-</script>
+<script id="v7111-final-version-integrity" src="js/features/legacy-extracted/beta/v7111-final-version-integrity.js"></script>
 <style id="v7111-final-version-css">
 /* V7.112: superseded version CSS retired. */
 </style>
-<script id="v7111-release-marker">
-window.__V7111_HOTFIX__=Object.freeze({towerRunEndResultRestore:true,towerResultClosureSafe:true,questV7110Preserved:true});
-</script>
+<script id="v7111-release-marker" src="js/features/legacy-extracted/beta/v7111-release-marker.js"></script>
 <!-- ===== /V7.111 ===== -->
 
 \n<!-- ===== V7.113 CLIENT CLEANUP PHASE 2 · WRAPPER PRUNING ===== -->
@@ -49545,19 +48204,7 @@ html body .app > header .v372-logo em::after,
   content:"V7.124"!important;font-size:5px!important;color:#63cdd1!important;font-style:normal!important;font-weight:900!important
 }
 </style>
-<script id="v7113-release-marker">
-window.__GROW_LEGENDS_RELEASE__='V7.118';
-window.__V7113_CLEANUP__=Object.freeze({
-  singleVisibleVersionOwner:true,
-  staleVersionIntervalsRetired:true,
-  staleReleaseWritersRetired:true,
-  purePassThroughRenderWrappersRetired:true,
-  obsoleteVersionPaintersRetired:true,
-  retiredNoOpPersistWrapper:true,
-  gameplayLogicChanged:false,
-  serverAuthorityChanged:false
-});
-</script>
+<script id="v7113-release-marker" src="js/features/legacy-extracted/beta/v7113-release-marker.js"></script>
 <!-- ===== /V7.113 ===== -->\n
 <!-- ===== V7.116 SERVER-AUTHORITATIVE GOLD SHOP · GOLD EVENT +10% ===== -->
 <style id="v7114-gold-shop-css">
@@ -49644,12 +48291,7 @@ window.__V7113_CLEANUP__=Object.freeze({
 }
 </style>
 <script id="v7114-gold-shop" src="js/features/shop/beta/v8009-s2-v7114-gold-shop.js"></script>
-<script id="v7114-release-marker">
-window.__GROW_LEGENDS_RELEASE__='V7.118';
-window.__V7114_GOLD_SHOP_RELEASE__=Object.freeze({serverAuthoritative:true,levelScaled:true,topbarGoldPlus:true,goldEventBonusPct:10,harzPrices:[10,50,100,250]});
-window.__V7116_GOLD_SHOP_REBALANCE__=Object.freeze({harzPrices:[10,50,100,250],goldAmountsUnchanged:true,eventBonusPct:10,serverChecked:true});
-window.__V7115_GOLD_EVENT_BONUS__=Object.freeze({bonusPct:10,serverChecked:true,autoWeekend:true,manualGoldEvent:true});
-</script>
+<script id="v7114-release-marker" src="js/features/legacy-extracted/beta/v7114-release-marker.js"></script>
 <!-- ===== /V7.116 ===== -->
 
 
@@ -49689,11 +48331,7 @@ window.__V7115_GOLD_EVENT_BONUS__=Object.freeze({bonusPct:10,serverChecked:true,
 }
 </style>
 <script id="v7117-dealer-hub" src="js/features/shop/beta/v8009-s7-v7117-dealer-hub.js"></script>
-<script id="v7117-release-marker">
-window.__GROW_LEGENDS_RELEASE__='V7.118';
-window.__V7117_DEALER_HUB_RELEASE__=Object.freeze({sharedDealer:true,tabs:['harz','gold'],goldPlusOpensGold:true,harzPlusOpensHarz:true});
-window.__V7117_GOLD_SHOP_PRICES__=Object.freeze({harzPrices:[10,50,100,250],eventBonusPct:10,serverAuthoritative:true});
-</script>
+<script id="v7117-release-marker" src="js/features/legacy-extracted/beta/v7117-release-marker.js"></script>
 <!-- ===== /V7.117 ===== -->
 
 <!-- ===== V7.118 CLIENT CLEANUP PHASE 3 · NAVIGATION WRAPPER PRUNING ===== -->
@@ -49775,17 +48413,7 @@ window.__V7117_GOLD_SHOP_PRICES__=Object.freeze({harzPrices:[10,50,100,250],even
 <!-- ===== V7.127 CLIENT UI STABILITY / FLICKER DETECTOR ===== -->
 <!-- ===== V7.126 CHARACTER DOM CHURN CLEANUP ===== -->
 <!-- ===== /V7.126 CHARACTER DOM CHURN CLEANUP ===== -->
-<script id="v7127-final-version-integrity">
-(()=>{
- const V=Object.freeze({short:'V7.159',label:'V7.159 Stable',number:'7.159'});
- window.GROW_LEGENDS_VERSION=V;window.__GROW_LEGENDS_RELEASE__=V.short;
- const paint=()=>{
-  try{document.querySelectorAll('.version').forEach(el=>el.textContent=V.short)}catch(_){}
-  try{document.querySelectorAll('.v372-logo em,.v371-logo em,.v366-ver').forEach(el=>{if(el.tagName!=='STYLE')el.textContent=V.short})}catch(_){}
- };
- paint();window.addEventListener('pageshow',paint,{passive:true});window.addEventListener('growlegends:account-ready',paint,{passive:true});
-})();
-</script>
+<script id="v7127-final-version-integrity" src="js/features/legacy-extracted/beta/v7127-final-version-integrity.js"></script>
 <style id="v7127-final-version-css">
 .app > header .v358-logo::after{content:"V7.159"!important}
 .app > header .v366-ver::after,.app > header .v371-logo em::after,.app > header .v372-logo em::after{content:"V7.159"!important}
@@ -49794,49 +48422,12 @@ window.__V7117_GOLD_SHOP_PRICES__=Object.freeze({harzPrices:[10,50,100,250],even
 
 
 <!-- ===== V7.127 QUEST SERVER-OFFER SINGLE OWNER ===== -->
-<script id="v7127-quest-server-offer-owner">
-(()=>{
-'use strict';
-window.__V7127_QUEST_SERVER_OFFER_OWNER__=Object.freeze({
-  localVarietyMigrationBlockedOnAuthority:true,
-  localEliteSplitBlockedOnAuthority:true,
-  localRepairOfferGenerationBlockedOnAuthority:true,
-  staleTapReconcilesBeforeStart:true,
-  gameplayBalanceChanged:false,
-  serverAuthorityChanged:false
-});
-window.v7127QuestOfferDiagnostics=()=>({
-  release:window.__GROW_LEGENDS_RELEASE__||'',
-  enforced:!!window.v7110QuestAuthorityEnforced?.(),
-  energy:Number(s?.energy)||0,
-  offers:(s?.quests?.offers||[]).map(q=>({id:String(q?.id||''),energy:Number(q?.energy)||0,server:!!q?.v7043ServerOffer})),
-  elite:s?.quests?.eliteOffer?{id:String(s.quests.eliteOffer.id||''),energy:Number(s.quests.eliteOffer.energy)||0}:null
-});
-})();
-</script>
+<script id="v7127-quest-server-offer-owner" src="js/features/legacy-extracted/beta/v7127-quest-server-offer-owner.js"></script>
 <!-- ===== /V7.127 ===== -->
 
 
 <!-- ===== V7.128 SEED POPUP SERVER-AUTHORITY FIX ===== -->
-<script id="v7128-seed-popup-authority-fix">
-(()=>{
-'use strict';
-window.__GROW_LEGENDS_RELEASE__='V7.128';
-window.__V7128_SEED_POPUP_AUTHORITY_FIX__=Object.freeze({
-  popupSeedPurchaseServerCaptured:true,
-  legacyLocalSeedPurchaseFailClosed:true,
-  buyRpc:'v6358_buy_seed',
-  plantRpc:'v6358_plant_seed'
-});
-window.v7128SeedAuthorityDiagnostics=()=>({
-  release:window.__GROW_LEGENDS_RELEASE__||'',
-  version:window.GROW_LEGENDS_VERSION?.short||'',
-  growAuthority:!!window.v7081UseAuthority?.('grow'),
-  serverMode:!!window.__V7065_GROW_SERVER_MODE__,
-  popupMountedOutsideGrow:!!document.querySelector('#v495SeedInventory')&&!document.querySelector('#grow #v495SeedInventory')
-});
-})();
-</script>
+<script id="v7128-seed-popup-authority-fix" src="js/features/legacy-extracted/beta/v7128-seed-popup-authority-fix.js"></script>
 <!-- ===== /V7.128 ===== -->
 
 
@@ -49865,18 +48456,7 @@ body.v7129-referral-frame #world .v366-avatar{box-shadow:none!important}
 
 
 <!-- ===== V7.130 QUEST CANONICAL RENDER OWNER ===== -->
-<script id="v7130-quest-canonical-render-owner">
-(()=>{
-'use strict';
-window.__GROW_LEGENDS_RELEASE__='V7.130';
-window.__V7130_QUEST_CANONICAL_RENDER__=Object.freeze({
-  serverOffersImmutableInV309:true,
-  questPreflightUsesRoleAndCostNotOpaqueId:true,
-  gameplayBalanceChanged:false,
-  serverAuthorityChanged:false
-});
-})();
-</script>
+<script id="v7130-quest-canonical-render-owner" src="js/features/legacy-extracted/beta/v7130-quest-canonical-render-owner.js"></script>
 
 
 <!-- ===== V7.131 UI POLISH · QUEST TIME / MATERIAL PICKER / REFERRAL SHARE ===== -->
@@ -50099,28 +48679,7 @@ html.v7154-frame-pending #world .v366-avatar{border:1px solid #3d5140!important;
 #world .v366-avatar.v7137-frame-target[data-v7137-frame]{border-color:transparent!important;box-shadow:none!important}
 #character .v038-location,#character .v052-scene-banner,#character .v052-character,#character .v459-page-kicker,#character .v043-scene-title{display:none!important;visibility:hidden!important}
 </style>
-<script id="v7154-character-frame-stability">
-(()=>{
-'use strict';
-function settle(){
- const c=document.getElementById('character');
- if(c){
-  c.classList.add('v514-reference-hero');
-  try{window.v510BuildCharacter?.()}catch(_){}
-  try{window.v514ApplyHeroReference?.()}catch(_){}
-  try{window.v7124PaintCharacterSummary?.()}catch(_){}
-  try{window.v7124HardenCharacterAvatar?.()}catch(_){}
- }
- try{window.v7137ApplyOwnFrames?.()}catch(_){}
- return !!c;
-}
-window.v7154CharacterSettle=settle;
-window.addEventListener('growlegends:navigation-open-v7119',e=>{const id=String(e?.detail?.id||'');if(id==='character'||id==='world')settle()},{passive:true});
-window.addEventListener('growlegends:account-ready',()=>requestAnimationFrame(settle),{passive:true});
-requestAnimationFrame(settle);
-window.__V7154_CHARACTER_CLEANUP__=Object.freeze({singleTurnEquipmentSettle:true,legacyHeroTimersRetired:true,legacyHeroObserversRetired:true,avatarFrameIdempotent:true,frameObserverSelfTriggerFixed:true,gameplayRulesChanged:false});
-})();
-</script>
+<script id="v7154-character-frame-stability" src="js/features/legacy-extracted/beta/v7154-character-frame-stability.js"></script>
 <style id="v7141-final-version-css">
 .app > header .v358-logo::after{content:"V7.159"!important}.app > header .v366-ver::after,.app > header .v371-logo em::after,.app > header .v372-logo em::after{content:"V7.159"!important}
 </style>
@@ -50165,7 +48724,7 @@ body.v7129-referral-frame #world .v366-avatar{box-shadow:none!important;outline:
 .app > header .v366-ver::after,.app > header .v371-logo em::after,.app > header .v372-logo em::after{content:"V7.159"!important}
 </style>
 <!-- ===== /V7.145 RENDER OWNER CLEANUP + ON-DEMAND AUDIT ===== -->
-<script id="v7146-play-referral-marker">window.__V7146_PLAY_REFERRAL__=Object.freeze({playStore:true,packageId:'de.growlegends.app',installReferrer:'gl_ref'});</script>
+<script id="v7146-play-referral-marker" src="js/features/legacy-extracted/beta/v7146-play-referral-marker.js"></script>
 
 <!-- ===== V7.151 STABILITY RESET ===== -->
 <!-- ===== /V7.151 STABILITY RESET ===== -->
@@ -50176,50 +48735,15 @@ body.v7129-referral-frame #world .v366-avatar{box-shadow:none!important;outline:
 <!-- ===== /V7.151 PHASE 1 LEGACY CLEANUP ===== -->
 
 <!-- ===== V7.151 PHASE 2 GROW LEGACY CLEANUP ===== -->
-<script id="v7150-grow-legacy-cleanup-marker">
-(()=>{
- 'use strict';
- window.__V7150_GROW_LEGACY_CLEANUP__=Object.freeze({
-   version:'V7.151',
-   canonicalOwner:'v7065',
-   retired:Object.freeze(['v499-grow-authority','v4120-care-fingerprint-authority','v7075-grow-legacy-recovery-neutralizer']),
-   compatibility:Object.freeze(['v7064-server-grow-genetics-classset-bridge'])
- });
-})();
-</script>
+<script id="v7150-grow-legacy-cleanup-marker" src="js/features/legacy-extracted/beta/v7150-grow-legacy-cleanup-marker.js"></script>
 <!-- ===== /V7.151 PHASE 2 GROW LEGACY CLEANUP ===== -->
 
 <!-- ===== V7.151 PHASE 3 QUEST RENDER CLEANUP ===== -->
-<script id="v7151-phase3-diagnostics">
-(()=>{'use strict';
-window.v7151QuestCleanupDiagnostics=()=>({
- version:'V7.151',
- retiredGlobalQuestObservers:['V6.328 enemy pose','V6.332 enemy exact mapping','V6.84 elite position'],
- startupFullQuestRendersRetired:3,
- canonicalArtOwner:'V6.344/V6.36x',
- canonicalElitePlacement:'V4.172 render decoration',
- questAuthority:typeof window.v7110QuestAuthorityEnforced==='function'?window.v7110QuestAuthorityEnforced():null
-});
-})();
-</script>
+<script id="v7151-phase3-diagnostics" src="js/features/legacy-extracted/beta/v7151-phase3-diagnostics.js"></script>
 <!-- ===== /V7.151 PHASE 3 QUEST RENDER CLEANUP ===== -->
 
 
-<script id="v7152-dungeon-cleanup-marker">
-(()=>{
- 'use strict';
- window.__V7152_DUNGEON_CLEANUP__=true;
- window.v7152DungeonCleanupDiagnostics=()=>({
-  version:'V7.156',
-  canonicalOwner:!!window.renderDungeon?.__glCanonicalDungeonOwner||!!window.renderDungeon?.__v7145Gate,
-  legacyFx604Retired:!!window.v604DungeonFxDiagnostics?.().retired,
-  legacyFx6221Retired:!!window.v6221DungeonFxDiagnostics?.().retired,
-  enemyGlobalObserverRetired:!!window.v6324DungeonEnemyPoseDiagnostics?.().observerRetired,
-  mapBackgrounds:document.querySelectorAll('#dungeonMapCard .gl-dungeon-map-bg-img').length,
-  oldMapLayers:document.querySelectorAll('#dungeonMapCard .v261-stage > .v261-bg,#dungeonMapCard .v261-stage > .v261-fx').length
- });
-})();
-</script>
+<script id="v7152-dungeon-cleanup-marker" src="js/features/legacy-extracted/beta/v7152-dungeon-cleanup-marker.js"></script>
 
 <!-- v7155 marker core retired from active Beta in V8.009-PVP-SPRINT-1 -->
 
@@ -50312,11 +48836,9 @@ html.v7154-frame-pending #world .v366-avatar{border:1px solid #3d5140!important;
 <!-- ===== /V7.157 CHARACTER EQUIPMENT SCROLL PAINT STABILITY ===== -->
 
 
-<script id="v7159-release-marker">window.__V7159_RELEASE__=Object.freeze({version:'V7.159',combat2D:true,singleVisibleCombatOwner:true,questSelectorFixed:true,dungeonArtFixed:true,serverRulesChanged:false});</script>
+<script id="v7159-release-marker" src="js/features/legacy-extracted/beta/v7159-release-marker.js"></script>
 
-<script id="v7160-release-marker">
-(()=>{window.__V7160_RELEASE__=Object.freeze({version:'V7.160',dungeonMapAssets:'v474_dungeon_assets',dungeonNodeImages:true,dungeonRoadOverlayRetired:true,dungeonCombatUnified:true,characterResizeWritersRetired:true,gameplayRulesChanged:false});})();
-</script>
+<script id="v7160-release-marker" src="js/features/legacy-extracted/beta/v7160-release-marker.js"></script>
 
 
 
@@ -50404,37 +48926,9 @@ html.v7154-frame-pending #world .v366-avatar{border:1px solid #3d5140!important;
   will-change:auto!important;
 }
 </style>
-<script id="v7161-inventory-scroll-compositor-marker">
-(()=>{
-  window.__V7161_INVENTORY_SCROLL_COMPOSITOR__=Object.freeze({
-    version:'V7.161',
-    nestedMomentumScrollerRetired:true,
-    perItemGpuFiltersRetired:true,
-    perItemTransformTransitionsRetired:true,
-    animatedInventoryPseudoLayersRetired:true,
-    scrollHandlersAdded:false,
-    observersAdded:false,
-    gameplayRulesChanged:false
-  });
-})();
-</script>
-<script id="v7161-final-version-owner">
-(()=>{
-  'use strict';
-  const V=Object.freeze({short:'V7.161',label:'V7.161 Stable',number:'7.161'});
-  window.GROW_LEGENDS_VERSION=V;
-  window.__GROW_LEGENDS_RELEASE__=V.short;
-  window.__GL_CURRENT_BUILD__=V.short;
-  const sel='.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version,.v366-ver,.v371-logo em,.v372-logo em';
-  const paint=()=>{try{document.querySelectorAll(sel).forEach(el=>{if(!el||el.tagName==='STYLE')return;el.textContent=el.matches('.version,#v141VersionLine,[data-version],#version,#gameVersion,#topVersion,[data-top-version],.v358-version')?V.short:V.short})}catch(_){}};
-  paint();
-  document.addEventListener('DOMContentLoaded',paint,{once:true});
-  window.addEventListener('pageshow',paint,{passive:true});
-  window.addEventListener('growlegends:account-ready',paint,{passive:true});
-  window.addEventListener('growlegends:navigation-open-v7119',paint,{passive:true});
-})();
-</script>
-<script id="v7161-release-marker">window.__V7161_RELEASE__=Object.freeze({version:'V7.161',inventoryCompositorFlattened:true,characterScrollFix:true,gameplayRulesChanged:false});</script>
+<script id="v7161-inventory-scroll-compositor-marker" src="js/features/legacy-extracted/beta/v7161-inventory-scroll-compositor-marker.js"></script>
+<script id="v7161-final-version-owner" src="js/features/legacy-extracted/beta/v7161-final-version-owner.js"></script>
+<script id="v7161-release-marker" src="js/features/legacy-extracted/beta/v7161-release-marker.js"></script>
 <!-- ===== /V7.161 ===== -->
 
 
@@ -50520,27 +49014,7 @@ html.v7154-frame-pending #world .v366-avatar{border:1px solid #3d5140!important;
   -webkit-backface-visibility:visible!important;
 }
 </style>
-<script id="v7163-character-frame-compositor-owner">
-(()=>{
- 'use strict';
- window.__V7163_CHARACTER_FRAME_COMPOSITOR_FIX__=Object.freeze({
-   characterFrameStatic:true,
-   frameAnimationsElsewherePreserved:true,
-   inventoryGpuLayersRetired:true,
-   gameplayRulesChanged:false,
-   serverAuthorityChanged:false
- });
- const V=Object.freeze({short:'V7.165',label:'V7.165 Stable',number:'7.165'});
- window.GROW_LEGENDS_VERSION=V;window.__GROW_LEGENDS_RELEASE__=V.short;
- const paint=()=>{
-   try{document.querySelectorAll('.version').forEach(el=>el.textContent=V.short)}catch(_){}
-   try{document.querySelectorAll('.v372-logo em,.v371-logo em,.v366-ver').forEach(el=>{if(el.tagName!=='STYLE')el.textContent=V.short})}catch(_){}
- };
- paint();
- window.addEventListener('growlegends:account-ready',paint,{passive:true});
- window.addEventListener('pageshow',paint,{passive:true});
-})();
-</script>
+<script id="v7163-character-frame-compositor-owner" src="js/features/legacy-extracted/beta/v7163-character-frame-compositor-owner.js"></script>
 <style id="v7163-final-version-css">
 .app > header .v358-logo::after{content:"V7.163"!important}
 .app > header .v366-ver::after,.app > header .v371-logo em::after,.app > header .v372-logo em::after{content:"V7.163"!important}
@@ -50619,12 +49093,7 @@ html body .app > header .v366-ver::after,html body .app > header .v371-logo em::
 
 
 
-<script id="v7167-quality-order-client-marker">
-(()=>{
-  window.__V7167_QUALITY_ORDER__=['gray','green','blue','purple','orange','prismatic','cyan'];
-  window.__V7167_QUALITY_SERVER_AUTHORITY__=true;
-})();
-</script>
+<script id="v7167-quality-order-client-marker" src="js/features/legacy-extracted/beta/v7167-quality-order-client-marker.js"></script>
 
 <!-- V7.221 Tütchen-Dealer visual overhaul -->
 <style id="v7221-bagdealer-override">
@@ -50921,9 +49390,7 @@ html body .app > header .v366-ver::after,html body .app > header .v371-logo em::
 html body .app > header .v358-logo::after{content:"V7.273"!important}
 html body .app > header .v366-ver::after,html body .app > header .v371-logo em::after,html body .app > header .v372-logo em::after,#v372TopbarShell .v372-logo em::after{content:"V7.273"!important}
 </style>
-<script id="v7233-isolation-audit-marker">
-(()=>{'use strict';window.__V7233_ISOLATION_AUDIT__=Object.freeze({version:'V7.280',earlyStorageIsolation:true,serverScopedCloud:true,serverScopedRecoveryCaches:true,serverPrivateRpcLayer:true});})();
-</script>
+<script id="v7233-isolation-audit-marker" src="js/features/legacy-extracted/beta/v7233-isolation-audit-marker.js"></script>
 
 <!-- ===== V7.273 CALENDAR ACHIEVEMENTS · SERVER AUTHORITY ===== -->
 <script id="v7239-calendar-achievements" src="js/features/rewards/beta/v8009-s6-v7239-calendar-achievements.js"></script>
@@ -53421,23 +51888,9 @@ html body .app section#hall.v646-hall .v646-row-avatar.v7137-frame-target > img.
 </style>
 
 
-<script id="v7269-combat-cadence-diagnostics">
-window.v7269CombatCadenceDiagnostics=()=>{
- const d=window.v7269DungeonCadence?.(10);
- return {version:'V7.283',baseline:'dungeon',dungeon:d,tower:'shared dungeon cadence',pvp:'shared dungeon cadence'};
-};
-</script>
+<script id="v7269-combat-cadence-diagnostics" src="js/features/legacy-extracted/beta/v7269-combat-cadence-diagnostics.js"></script>
 
-<script id="v7271-illegal-book-page-stability-diagnostics">
-(()=>{
- 'use strict';
- window.v7271IllegalBookPageStability=()=>({
-   version:'V8.001',
-   state:window.v6235IllegalBookViewState?.()||null,
-   serverAchievement:window.v7080AchievementDiagnostics?.()||null
- });
-})();
-</script>
+<script id="v7271-illegal-book-page-stability-diagnostics" src="js/features/legacy-extracted/beta/v7271-illegal-book-page-stability-diagnostics.js"></script>
 
 
 <!-- ===== V7.273 BETA · FINAL NAVIGATION PICTOGRAM + RENDER STABILITY ===== -->
@@ -53514,9 +51967,7 @@ window.v7269CombatCadenceDiagnostics=()=>{
 html body .app > header .v358-logo::after{content:"V7.279"!important}
 html body .app > header .v366-ver::after,html body .app > header .v371-logo em::after,html body .app > header .v372-logo em::after,#v372TopbarShell .v372-logo em::after{content:"V7.279"!important}
 </style>
-<script id="v7279-final-version-js">
-(()=>{const ch=String(window.GROW_RELEASE_CHANNEL||'stable');const beta=ch==='beta';const V=Object.freeze({short:'V7.279',label:beta?'V7.279 Beta':'V7.279 Server 1',number:'7.279'});window.GROW_LEGENDS_VERSION=V;window.__GROW_LEGENDS_RELEASE__=V.short;const p=()=>{try{document.querySelectorAll('.version,.v366-ver,.v371-logo em,.v372-logo em').forEach(el=>{if(el.tagName!=='STYLE')el.textContent=V.short})}catch(_){}};p();addEventListener('pageshow',p,{passive:true});addEventListener('growlegends:account-ready',p,{passive:true});})();
-</script>
+<script id="v7279-final-version-js" src="js/features/legacy-extracted/beta/v7279-final-version-js.js"></script>
 
 
 <script id="v7284-splash-release-safeguard" src="js/system/bootstrap/v7284-splash-release-safeguard.js"></script>
@@ -53873,7 +52324,7 @@ html:not(.v7260-bag-admin) #v032MenuPanel [data-screen="bagDealer"]{
 <link id="v7307-guildgrow-chestheader-final" rel="stylesheet" href="css/features/guild/v7307-guildgrow-chestheader-final.css">
 
 
-<script id="v7307-guildboss-signup-owner">window.v8008C18InstallSignup?.();</script>
+<script id="v7307-guildboss-signup-owner" src="js/features/legacy-extracted/beta/v7307-guildboss-signup-owner.js"></script>
 
 
 <link id="v7308-reward-consolidation-css" rel="stylesheet" href="css/features/rewards/v7308-reward-consolidation-css.css">

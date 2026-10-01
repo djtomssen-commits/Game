@@ -1,0 +1,1 @@
+window.v8008C25InstallChatViewport?.();

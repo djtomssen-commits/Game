@@ -1,0 +1,2 @@
+
+(()=>{const ch=String(window.GROW_RELEASE_CHANNEL||'stable');const beta=ch==='beta';const V=Object.freeze({short:'V7.279',label:beta?'V7.279 Beta':'V7.279 Server 1',number:'7.279'});window.GROW_LEGENDS_VERSION=V;window.__GROW_LEGENDS_RELEASE__=V.short;const p=()=>{try{document.querySelectorAll('.version,.v366-ver,.v371-logo em,.v372-logo em').forEach(el=>{if(el.tagName!=='STYLE')el.textContent=V.short})}catch(_){}};p();addEventListener('pageshow',p,{passive:true});addEventListener('growlegends:account-ready',p,{passive:true});})();
