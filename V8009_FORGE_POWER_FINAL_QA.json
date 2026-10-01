@@ -1,0 +1,59 @@
+{
+  "phase": "V8.009-FORGE-POWERBLOCK-FINAL",
+  "date": "2026-10-01",
+  "scope": [
+    "Dismantle",
+    "Craft",
+    "Nebelforge"
+  ],
+  "client": {
+    "canonicalShellOwner": "js/features/forge/beta/v8009-s1-v488-harzschmiede-core.js",
+    "authorityBridge": "js/features/shop/beta/v8009-s1-v7063-server-shop-forge-auto-bridge.js",
+    "nebelforgeOwner": "js/beta/v7240-beta-gold-features.js",
+    "threeTabsDirect": true,
+    "legacyNebelforgeTabInjectionRetired": true,
+    "legacyNebelforgeMutationObserverRetired": true,
+    "dismantleCaptureBeforeAwait": true,
+    "craftCaptureBeforeAwait": true,
+    "nebelforgeRequestIdPersistedAcrossRetries": true
+  },
+  "server": {
+    "dismantleRpc": "v7062_dismantle_items",
+    "craftRpc": "v7097_forge_prismatic",
+    "nebelforgeBaseRpc": "v7240_nebelforge_reroll",
+    "nebelforgeIdempotentRpc": "v8009_nebelforge_reroll",
+    "nebelforgeRpcAcl": [
+      "postgres",
+      "service_role",
+      "authenticated"
+    ],
+    "anonExecute": false,
+    "sqlSnapshot": "V8009_FORGE_POWERBLOCK_SQL.sql"
+  },
+  "runtime": {
+    "nebelforgeMutationObservers": 0,
+    "nebelforgeFunctionalTimers": 1,
+    "note": "Remaining Nebelforge timeout only removes the short hit animation class."
+  },
+  "checks": {
+    "modifiedJsSyntax": true,
+    "threeTabsOneShellOwner": true,
+    "dismantleServerAuthoritative": true,
+    "craftServerAuthoritative": true,
+    "synchronousLegacyMutationBlock": true,
+    "nebelforgeIdempotent": true,
+    "stableIndexUnchanged": true,
+    "stableIndexSha": "0bc5fe3eb0e69c856070dfcb6682d3178c56a597"
+  },
+  "commits": [
+    "df7317170b5a274e200aabf075ecf0aab4da4609",
+    "3c81d235551084a6948ea0e74a6e4b001ee37567",
+    "d1880e649950e5bc74a255221ca589259ad97940",
+    "1c51660b5453e1f2a8b603ce17c69f8d32b1d453",
+    "585f001127d56b2b70d4dd0166f21f449f887c5d",
+    "640f5175f4edc8fc49ce1d81638cc5687e046dee",
+    "99abf51adcf6045586d63cfc39c33b78ac776e90",
+    "013334d060aa3366afad8c39224207ccd98f0b20"
+  ],
+  "manualTestPending": true
+}
