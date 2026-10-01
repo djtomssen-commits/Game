@@ -445,8 +445,78 @@ window.v8008C18InstallSignup=function(){
 
   const previous=typeof v254ToggleSignup==='function'?v254ToggleSignup:null;
   let busy=false;
+  const rewardGate={pending:false,round:null,participants:[],checkedAt:0,checking:null};
 
   const scrolling=()=>document.scrollingElement||document.documentElement;
+
+  const paintRewardGate=()=>{
+    const btn=document.getElementById('v254BossSignup');
+    let note=document.getElementById('v7307RewardGateNote');
+    const phase=typeof v255LocalPhase==='function'?v255LocalPhase():{open:false};
+    if(rewardGate.pending&&phase.open){
+      if(btn){
+        btn.disabled=true;
+        btn.textContent='🎁 Erst Belohnung abholen';
+      }
+      if(!note){
+        note=document.createElement('div');
+        note.id='v7307RewardGateNote';
+        note.className='muted v7307-reward-gate-note';
+        const host=btn?.parentElement||document.getElementById('v254GuildBoss');
+        host?.appendChild(note);
+      }
+      if(note)note.textContent='Vor der Anmeldung zur neuen Bossrunde musst du zuerst die offene Gildenboss-Belohnung der vorherigen Runde abholen.';
+    }else{
+      note?.remove();
+      if(btn&&!busy){
+        btn.disabled=!phase.open;
+        if(phase.open)btn.textContent=v254Membership?.boss_signed?'✓ Angemeldet':'Für Gildenboss anmelden';
+      }
+    }
+  };
+
+  const showPendingReward=()=>{
+    if(!rewardGate.pending||!rewardGate.round)return;
+    try{
+      v255BossRound=rewardGate.round;
+      v255BossParticipants=Array.isArray(rewardGate.participants)?rewardGate.participants:[];
+      window.v255BossRound=v255BossRound;
+      window.v255BossParticipants=v255BossParticipants;
+      setMembersFromParticipants?.(v255BossParticipants);
+      v255RenderBoss?.();
+      v260RenderDailyControls?.();
+    }catch(_){}
+    paintRewardGate();
+  };
+
+  const refreshRewardGate=async(force=false)=>{
+    if(!force&&Date.now()-rewardGate.checkedAt<4000)return rewardGate.pending;
+    if(rewardGate.checking)return rewardGate.checking;
+    rewardGate.checking=(async()=>{
+      try{
+        const phase=typeof v255LocalPhase==='function'?v255LocalPhase():{open:false};
+        if(!phase.open||typeof v073Db==='undefined'||!v073Db){
+          rewardGate.pending=false;rewardGate.round=null;rewardGate.participants=[];
+          return false;
+        }
+        const {data,error}=await v073Db.rpc('v7165_get_last_guild_boss_result');
+        if(error)throw error;
+        const p=Array.isArray(data)?data[0]:data;
+        rewardGate.round=p?.round||null;
+        rewardGate.participants=Array.isArray(p?.participants)?p.participants:[];
+        rewardGate.pending=!!rewardGate.round?.can_claim;
+        rewardGate.checkedAt=Date.now();
+        if(rewardGate.pending)showPendingReward();else paintRewardGate();
+        return rewardGate.pending;
+      }catch(e){
+        console.warn('[V8.009] guild boss reward gate',e);
+        rewardGate.checkedAt=Date.now();
+        paintRewardGate();
+        return false;
+      }finally{rewardGate.checking=null}
+    })();
+    return rewardGate.checking;
+  };
 
   const bossViewSnapshot=()=>{
     const btn=document.getElementById('v254BossSignup');
@@ -526,6 +596,13 @@ window.v8008C18InstallSignup=function(){
 
     const wanted=!v254Membership.boss_signed;
     const btn=document.getElementById('v254BossSignup');
+
+    if(wanted && await refreshRewardGate(true)){
+      showPendingReward();
+      try{v063Toast?.('Erst Gildenboss-Belohnung abholen','warn','Bevor du dich für die neue Bossrunde anmeldest, musst du die offene Belohnung der vorherigen Runde abholen.')}catch(_){}
+      return false;
+    }
+
     busy=true;
     if(btn){
       btn.disabled=true;
@@ -594,7 +671,8 @@ window.v8008C18InstallSignup=function(){
       busy=false;
       paintStable(view);
       const liveBtn=document.getElementById('v254BossSignup');
-      if(liveBtn)liveBtn.disabled=!v255LocalPhase().open;
+      if(liveBtn)liveBtn.disabled=!v255LocalPhase().open||rewardGate.pending;
+      paintRewardGate();
     }
   };
 
@@ -607,6 +685,15 @@ window.v8008C18InstallSignup=function(){
   try{window.v254ToggleSignup=owner}catch(_){}
 
   window.v7307SetGuildBossSignup=setBossSignup;
+  window.v7307RefreshBossSignupGate=async(force=false)=>refreshRewardGate(!!force);
+  window.v7307GuildBossRewardGate=rewardGate;
+
+  document.addEventListener('click',e=>{
+    const tab=e.target instanceof Element?e.target.closest('[data-v254-tab="boss"]'):null;
+    if(tab)setTimeout(()=>void refreshRewardGate(true),0);
+  },true);
+  window.addEventListener('growlegends:account-ready',()=>setTimeout(()=>void refreshRewardGate(true),120),{passive:true});
+  setTimeout(()=>void refreshRewardGate(true),300);
 
   /* V8.005: while today's signup is open, the live participant list from
      v255_get_guild_boss is canonical. A historical completed round must not
