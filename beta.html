@@ -101997,12 +101997,11 @@ try{
 }catch(_){ }
 try{
  const old=window.v106OpenBook||v106OpenBook;
- if(typeof old==='function'&&!window.__V6338_BOOK_WRAPPED__){const wrapped=function(){const r=old.apply(this,arguments);setTimeout(()=>{ensureBook();showMain('ach');renderTitles()},120);return r};window.v106OpenBook=wrapped;try{v106OpenBook=wrapped}catch(_){ }window.__V6338_BOOK_WRAPPED__=true}
+ if(typeof old==='function'&&!window.__V6338_BOOK_WRAPPED__){const wrapped=function(){const r=old.apply(this,arguments);ensureBook();showMain('ach');renderTitles();return r};window.v106OpenBook=wrapped;try{v106OpenBook=wrapped}catch(_){ }window.__V6338_BOOK_WRAPPED__=true}
 }catch(_){ }
-document.addEventListener('click',e=>{if(e.target?.closest?.('[data-book],#v106BookBtn'))setTimeout(()=>{ensureBook();showMain('ach');renderTitles()},150);if(e.target?.closest?.('[data-screen="character"],[data-go="character"],[data-screen="hall"],[data-go="hall"]'))setTimeout(syncOwnBadges,120)},true);
-window.addEventListener('growlegends:account-ready',()=>setTimeout(()=>{migrate();syncOwnBadges();void syncServerTitles(true)},700));
-window.addEventListener('pageshow',()=>setTimeout(()=>{migrate();syncOwnBadges();void syncServerTitles(false)},400),{passive:true});
-setTimeout(()=>{migrate();syncOwnBadges();void syncServerTitles(false)},1200);
+window.addEventListener('growlegends:navigation-open-v7119',e=>{const id=String(e?.detail?.id||'');if(id==='character'||id==='hall')syncOwnBadges()},{passive:true});
+window.addEventListener('growlegends:account-ready',()=>{migrate();syncOwnBadges();void syncServerTitles(true)},{passive:true});
+window.addEventListener('pageshow',()=>{migrate();syncOwnBadges();void syncServerTitles(false)},{passive:true});
 window.v6338TitleDiagnostics=()=>({version:'V6.347',active:active(),unlocked:Object.keys(titleState().unlocked).length,serverClaims:[...serverClaims.keys()],petTitles:Object.keys(s?.v686PetAlbum?.titles||{}).length});
 })();
 </script>
@@ -102091,23 +102090,10 @@ document.addEventListener('click',e=>{
   if(el.closest('[data-screen="character"],[data-go="character"],#character'))setTimeout(syncAvatarTitle,80);
 },true);
 
-window.addEventListener('growlegends:account-ready',()=>setTimeout(syncAvatarTitle,140));
-window.addEventListener('pageshow',()=>setTimeout(syncAvatarTitle,120),{passive:true});
-window.addEventListener('growlegends:navigation-ready',()=>setTimeout(syncAvatarTitle,80),{passive:true});
-
-/* Repaint after the final render chain so older avatar identity painters cannot
-   move/overwrite the title placement. */
-try{
-  if(typeof render==='function'&&!window.__V6339_RENDER_WRAP__){
-    const base=render;
-    const wrapped=function(){const r=base.apply(this,arguments);requestAnimationFrame(syncAvatarTitle);return r};
-    window.__V6339_RENDER_WRAP__=true;
-    try{render=wrapped}catch(_){ }
-    try{window.render=wrapped}catch(_){ }
-  }
-}catch(_){ }
-
-[0,180,900].forEach(ms=>setTimeout(syncAvatarTitle,ms));
+window.addEventListener('growlegends:account-ready',syncAvatarTitle,{passive:true});
+window.addEventListener('pageshow',syncAvatarTitle,{passive:true});
+window.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')==='character')syncAvatarTitle()},{passive:true});
+window.__V6339_RENDER_WRAP__='retired';
 window.v6339CharacterTitleDiagnostics=()=>({
   version:'V6.347',
   active:activeTitle(),
@@ -111825,7 +111811,7 @@ document.addEventListener('click',e=>{
  const set=t.closest('[data-v7137-set-frame]');if(set){e.preventDefault();void setFrame(set.dataset.v7137SetFrame||null);return}
  if(t.closest('[data-v7137-open-frame-shop]')){document.getElementById('v7137FrameOverlay')?.classList.remove('show');void openFrameShop();return}
  if(t.closest('#character #v510HeroRoot .avatar-scene,#world .v366-avatar,#v072OwnProfile .v646-own-avatar')){e.preventDefault();e.stopPropagation();void openFrameSelector();return}
- if(t.closest('[data-screen="quests"],[data-go="quests"]'))setTimeout(()=>{ensureQuest();if(S.mode==='shift')void loadShift(false)},0);
+ if(t.closest('[data-screen="quests"],[data-go="quests"]'))return;
  if(t.closest('[data-screen="hall"],[data-go="hall"]'))setTimeout(()=>void decorateHallFrames(),80);
  if(t.closest('[data-v7117-tab="gold"],#goldShop'))setTimeout(moveFooterLast,80);
 },true);
@@ -111835,12 +111821,11 @@ function watchOwnAvatar(){try{const scene=document.querySelector('#character #v5
 function renameDealer7138(){try{document.querySelectorAll('#v032MenuPanel [data-screen="harzDealer"],#v032MenuPanel [data-v341-harz-menu="1"],.top-menu-panel [data-screen="harzDealer"]').forEach(el=>{const icon=el.querySelector('span');if(icon){[...el.childNodes].filter(n=>n.nodeType===3).forEach(n=>n.remove());el.append(' Harz & Gold & Rahmen Dealer')}else el.textContent='💎 Harz & Gold & Rahmen Dealer'});document.querySelectorAll('#harzDealer .v7117-hub-copy b,#goldShop .v7117-hub-copy b').forEach(el=>el.textContent='Harz & Gold & Rahmen Dealer');const h=document.querySelector('#harzDealer .v322-dealer-head h2');if(h)h.textContent='Harz & Gold & Rahmen Dealer'}catch(_){}}
 function install(){ensureQuest();ensureDealerFrameTab();ensureFrameShop();wrapSocial();wrapGoldShop();installAchievements();renameQuestMenu();renameDealer7138();moveFooterLast();watchOwnAvatar();document.body?.classList.remove('v7129-referral-frame');if(logged()&&!window.v7204StartupQuiet?.()){void loadShift(false);void loadFrames(false)}setTimeout(()=>{applyOwnFrames();if(!window.v7204StartupQuiet?.())void decorateHallFrames()},250)}
 window.addEventListener('growlegends:account-ready',()=>{install();const run=()=>{if(logged()){void loadShift(false);void loadFrames(false)}};if(typeof window.v7204AfterStartupQuiet==='function')window.v7204AfterStartupQuiet(run,1400);else setTimeout(run,350)},{passive:true});
-window.addEventListener('pageshow',()=>setTimeout(install,350),{passive:true});
-window.addEventListener('growlegends:navigation-ready',()=>setTimeout(()=>{ensureQuest();ensureDealerFrameTab();renameQuestMenu();renameDealer7138();watchOwnAvatar();applyOwnFrames();moveFooterLast()},80),{passive:true});
+window.addEventListener('pageshow',install,{passive:true});
+window.addEventListener('growlegends:navigation-ready',()=>{ensureQuest();ensureDealerFrameTab();renameQuestMenu();renameDealer7138();watchOwnAvatar();applyOwnFrames();moveFooterLast()},{passive:true});
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&logged()&&!window.v7204StartupQuiet?.()){void loadShift(false);void loadFrames(false)}syncShiftTicker()},{passive:true});
-window.addEventListener('growlegends:navigation-open-v7119',()=>setTimeout(syncShiftTicker,0),{passive:true});
+window.addEventListener('growlegends:navigation-open-v7119',e=>{const id=String(e?.detail?.id||'');if(id==='quests'){ensureQuest();if(S.mode==='shift')void loadShift(false)}syncShiftTicker()},{passive:true});
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});else install();
-[300,1000,2400].forEach(ms=>setTimeout(install,ms));
 
 try{const dealerBase=window.v7117OpenDealerTab;if(typeof dealerBase==='function')window.v7117OpenDealerTab=tab=>tab==='frames'?openFrameShop():dealerBase(tab)}catch(_){}
 window.v7137OpenFrameShop=openFrameShop;
