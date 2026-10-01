@@ -1,6 +1,6 @@
 
 (function(){
-  if(String(window.GROW_RELEASE_CHANNEL||'stable')!=='beta')return;
+  if(!['beta','server1'].includes(String(window.GROW_RELEASE_CHANNEL||'stable').toLowerCase()))return;
   const diagnostics={fullRenders:0,eventPanelPatches:0,goldDirectOpens:0,mailDirectOpens:0,versionStyleInstalls:0,ownershipFinalizes:0,cleanSignatureHits:0,dirtySignatureRepairs:0,inactiveWorldSkips:0,headerLegacyHideWrites:0,headerValueWrites:0};
   const BETA_VERSION='V8.009';
   function installBetaVersionStyle(){
