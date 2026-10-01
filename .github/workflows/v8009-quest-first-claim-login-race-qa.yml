@@ -1,0 +1,24 @@
+name: V8.009 Quest First Claim Login Race QA
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'js/features/quest/beta/v7045-atomic-quest-receipt-client.js'
+      - '.github/scripts/v8009_quest_first_claim_login_race_qa.py'
+      - '.github/workflows/v8009-quest-first-claim-login-race-qa.yml'
+permissions:
+  contents: write
+jobs:
+  qa:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - run: node --check js/features/quest/beta/v7045-atomic-quest-receipt-client.js
+      - run: python3 .github/scripts/v8009_quest_first_claim_login_race_qa.py
+      - run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add V8009_QUEST_FIRST_CLAIM_LOGIN_RACE_QA.json
+          git commit -m "V8.009 QUEST: record first-claim login race QA" || exit 0
+          git push
