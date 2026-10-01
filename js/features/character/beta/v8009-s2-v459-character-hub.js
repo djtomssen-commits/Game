@@ -191,7 +191,8 @@
   try{if(typeof renderInventory==='function'&&!window.__v459InventoryWrapped){const base=renderInventory;renderInventory=function(){const r=base.apply(this,arguments);layout();compactInventory();return r};try{window.renderInventory=renderInventory}catch(e){}window.__v459InventoryWrapped=true}}catch(e){}
   try{if(typeof renderSkillTree==='function'&&!window.__v459TalentWrapped){const base=renderSkillTree;renderSkillTree=function(){const r=base.apply(this,arguments);layout();updateHero();return r};try{window.renderSkillTree=renderSkillTree}catch(e){}window.__v459TalentWrapped=true}}catch(e){}
   try{if(typeof v030Materials==='function'&&!window.__v459MaterialsWrapped){const base=v030Materials;v030Materials=function(){const r=base.apply(this,arguments);layout();updateHero();return r};try{window.v030Materials=v030Materials}catch(e){}window.__v459MaterialsWrapped=true}}catch(e){}
-  try{if(typeof render==='function'&&!window.__v459RenderWrapped){const base=render;render=function(){const r=base.apply(this,arguments);if(document.getElementById('character')?.classList.contains('active')){layout();compactInventory();updateHero()}stamp();return r};try{window.render=render}catch(e){}window.__v459RenderWrapped=true}}catch(e){}
+  /* V8.009: global render hook retired.
+     renderInventory/renderSkillTree/materials + character navigation already own this UI. */
   window.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')==='character'){layout();compactInventory();updateHero();stamp()}});window.__v459GoWrapped='v7119-event';
 
   layout();compactInventory();stamp();
