@@ -31,7 +31,7 @@ Die Matrix wird nach jedem großen Cleanup-Batch aktualisiert.
 | Shop | Waffen & Rüstung / Schmuck & Magie | [x][T] | Repaint-Flicker, Legacy-Header, alte Shop-DOM-Producer und delayed Repaints bereinigt; Header vom Nutzer bestätigt |
 | Tütchen-Dealer | Dealer / Rundenfortschritt / Reward | [ ] | kompletter Seitenpass offen |
 | PvP | Hall-/Battle-Lifecycle | [ ] | kompletter Seitenpass offen |
-| Guild | Übersicht / Growtasks / Boss / Krieg | [ ] | kompletter 4-Tab-Pass offen |
+| Guild | Übersicht / Growtasks / Boss / Krieg | [x] | kompletter Struktur-/DOM-/Lifecycle-/Authority-Pass grün; manueller Endtest offen |
 | Hall of Haze | Ranking / Gegner / Profil-Interaktion | [~] | Profilrenderer auf v655 reduziert; kompletter Hall-Pass offen |
 | Friends | Ranking / Suche | [ ] | kompletter 2-Tab-Pass offen |
 | Mail | Inbox / Sent / Compose / Battlelog | [ ] | kompletter 4-Tab-Pass offen |
@@ -45,7 +45,7 @@ Die Matrix wird nach jedem großen Cleanup-Batch aktualisiert.
 | Tower | Lobby / Ranking / Meta-Aufstieg / Run / Result | [~] | Saisonwechsel-Ranking am 2026-10-01 gefixt; kompletter Tower-Pass offen |
 | Forge | Dismantle / Craft / Nebelforge | [ ] | kompletter 3-Tab-Pass offen |
 | Worldboss | Entry / Overlay / Combat / Reward | [~] | Overlay/Art auf einen Owner reduziert; kompletter Funktionspass offen |
-| Guildboss | Signup / Fight / Replay / Reward | [ ] | kompletter Pass offen |
+| Guildboss | Signup / Fight / Replay / Reward | [x] | Server-Gate: Vortagsbelohnung muss vor neuer Anmeldung abgeholt werden; Visual-/Replay-/Reward-Lifecycle konsolidiert; manueller Endtest offen |
 | Profile Modal | Profil / Equipment / Friend action | [~] | alte Renderer entfernt, v655 finaler Owner; manueller Endtest offen |
 | Character Creation | Beta Creator / Server-1 Creator | [~] | alte v029/v4131/v4135 Producer retired; kontextabhängige v4136/v7229 Owner bleiben |
 | Settings | Account / Cloud / Logout / Delete / Version | [x] | v141 alleiniger DOM-Builder, v225 nur Binder/Repair |
