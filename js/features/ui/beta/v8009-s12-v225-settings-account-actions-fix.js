@@ -4,48 +4,12 @@ function v225EnsureSettingsAccountActions(){
   const menu=document.querySelector('#v141SettingsMenu');
   if(!menu)return false;
 
-  let accountBox=menu.querySelector('.v141-account-box');
-
-  if(!accountBox){
-    accountBox=document.createElement('div');
-    accountBox.className='v141-account-box';
-    accountBox.innerHTML=`
-      <div class="mail" id="v141AccountMail"></div>
-      <div class="cloud" id="v141CloudState"></div>
-    `;
-
-    const version=menu.querySelector('.v141-version-line');
-    if(version)menu.insertBefore(accountBox,version);
-    else menu.appendChild(accountBox);
-  }
-
-  let actions=menu.querySelector('.v141-settings-actions');
-
-  if(!actions){
-    actions=document.createElement('div');
-    actions.className='v141-settings-actions';
-    actions.innerHTML=`
-      <button type="button" class="btn secondary" id="v141Logout">
-        🚪 Abmelden
-      </button>
-      <button type="button" class="btn" id="v141Delete">
-        🗑️ Account löschen
-      </button>
-    `;
-
-    const version=menu.querySelector('.v141-version-line');
-    if(version)menu.insertBefore(actions,version);
-    else menu.appendChild(actions);
-  }
-
-  let version=menu.querySelector('#v141VersionLine');
-
-  if(!version){
-    version=document.createElement('div');
-    version.className='v141-version-line';
-    version.id='v141VersionLine';
-    menu.appendChild(version);
-  }
+  const accountBox=menu.querySelector('.v141-account-box');
+  const actions=menu.querySelector('.v141-settings-actions');
+  const version=menu.querySelector('#v141VersionLine');
+  /* V8.009: v141 is the sole Settings DOM producer.
+     v225 only rebinds account actions if the canonical nodes exist. */
+  if(!accountBox||!actions||!version)return false;
 
   version.textContent='V4.29 Stable';
 
