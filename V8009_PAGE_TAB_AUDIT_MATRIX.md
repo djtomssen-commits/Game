@@ -45,7 +45,7 @@ Die Matrix wird nach jedem großen Cleanup-Batch aktualisiert.
 | Tower | Lobby / Ranking / Meta-Aufstieg / Run / Result | [x] | kompletter DOM-/Lifecycle-/Owner-/Timer-/Authority-Pass grün; Einzel-Repair-Skripte und Doppel-Timer retired; manueller Endtest offen |
 | Forge | Dismantle / Craft / Nebelforge | [x] | 3 Tabs aus einem Shell-Owner; Zerlegen + Prismatisch serverautoritativ/idempotent; Nebelschmied-Tab-Injection/Observer retired, Reroll mit persistenter Request-ID; manueller Endtest offen |
 | Worldboss | Entry / Overlay / Combat / Reward | [x] | Entry/State/Countdown/Balance/Authority konsolidiert; v113/v114/Home-Click-Layer retired; globale Render-/Polling-Schichten entfernt; manueller Endtest offen |
-| Guildboss | Signup / Fight / Replay / Reward | [x] | Server-Gate: Vortagsbelohnung muss vor neuer Anmeldung abgeholt werden; Visual-/Replay-/Reward-Lifecycle konsolidiert; manueller Endtest offen |
+| Guildboss | Signup / Fight / Replay / Reward | [x] | Server-Gate korrigiert: nur eigene offene Belohnung vom unmittelbaren Vortag sperrt die neue Anmeldung; ältere offene Rewards sperren nicht; Visual-/Replay-/Reward-Lifecycle konsolidiert; erneuter manueller Signup-Test offen |
 | Profile Modal | Profil / Equipment / Friend action | [x] | v655 finaler Loader/Renderer, v652 nur Decoration-Observer, Deadlines/Fallbacks erhalten; manueller Endtest offen |
 | Character Creation | Beta Creator / Server-1 Creator | [~] | alte v029/v4131/v4135 Producer retired; kontextabhängige v4136/v7229 Owner bleiben |
 | Settings | Account / Cloud / Logout / Delete / Version | [x] | v141 alleiniger DOM-Builder, v225 nur Binder/Repair |
