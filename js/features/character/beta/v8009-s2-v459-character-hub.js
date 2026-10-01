@@ -15,6 +15,7 @@
         window.v268ApplyMultiSell?.();
         window.v480UpdateAutoBars?.('inventory');
         window.v533ApplyInventory?.();
+        window.v470PaintInventoryComparisons?.();
       }else if(name==='attributes'){
         window.v4140PaintAttributes?.();
       }else if(name==='talents'){
