@@ -1,5 +1,10 @@
 name: V8.009 Feature Extraction Mega 30
 on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/v8009_feature_extraction_mega30.py'
+      - '.github/workflows/v8009-feature-extraction-mega30.yml'
   workflow_run:
     workflows: ["V8.009 Feature Extraction Mega 29"]
     types: [completed]
@@ -7,7 +12,7 @@ permissions:
   contents: write
 jobs:
   patch:
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    if: ${{ github.event_name == 'push' || github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
