@@ -525,10 +525,4 @@ setTimeout(()=>{
  }catch(e){console.error('V4.02 dungeon repaint',e)}
 },500);
 
-const v319BaseRender=render;
-render=function(){
- const r=v319BaseRender();
- 
- const line=document.querySelector('#v141VersionLine');
- return r;
-};
+/* V8.009: no-op global render wrapper retired. */;
