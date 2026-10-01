@@ -1,1 +1,25 @@
 name: V8.009 Feature Extraction Batch 13
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/v8009_feature_extraction_batch13.py'
+      - '.github/workflows/v8009-feature-extraction-batch13.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 .github/scripts/v8009_feature_extraction_batch13.py
+      - run: |
+          find js/features -type f -name 'v8009-s*.js' -mmin -5 -print0 | xargs -0 -r -n1 node --check
+      - run: |
+          git config user.name github-actions
+          git config user.email github-actions@users.noreply.github.com
+          git add beta.html js/features V8009_FEATURE_EXTRACTION_BATCH13_QA.json
+          git commit -m "V8.009 FEATURES: extract batch13" || exit 0
+          git pull --rebase origin main
+          git push
