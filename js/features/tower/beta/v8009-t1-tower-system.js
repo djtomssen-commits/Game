@@ -367,11 +367,29 @@ function ensure(){
  s.tower=(s.tower&&typeof s.tower==='object')?s.tower:{};
  s.tower.meta=(s.tower.meta&&typeof s.tower.meta==='object')?s.tower.meta:{};
  s.tower.wednesdayHistory=(s.tower.wednesdayHistory&&typeof s.tower.wednesdayHistory==='object')?s.tower.wednesdayHistory:{};
+ s.tower.seasonHistory=(s.tower.seasonHistory&&typeof s.tower.seasonHistory==='object')?s.tower.seasonHistory:{};
  s.tower.meta.tokens=Math.max(0,Number(s.tower.meta.tokens)||0);
  s.tower.meta.upgrades=(s.tower.meta.upgrades&&typeof s.tower.meta.upgrades==='object')?s.tower.meta.upgrades:{};
  Object.keys(UPGRADES).forEach(k=>s.tower.meta.upgrades[k]=clamp(s.tower.meta.upgrades[k],0,UPGRADES[k].max));
  const sid=seasonId();
- if(!s.tower.season||s.tower.season.id!==sid){s.tower.season={id:sid,bestFloor:0,bestScore:0,bestTime:0,runs:0,bossKills:0,eliteKills:0};if(s.tower.run?.active)s.tower.run=null}
+ if(!s.tower.season||s.tower.season.id!==sid){
+   const prev=s.tower.season;
+   if(prev?.id){
+     s.tower.seasonHistory[String(prev.id)]={
+       id:String(prev.id),
+       bestFloor:Math.max(0,Number(prev.bestFloor)||0),
+       bestScore:Math.max(0,Number(prev.bestScore)||0),
+       bestTime:Math.max(0,Number(prev.bestTime)||0),
+       runs:Math.max(0,Number(prev.runs)||0),
+       bossKills:Math.max(0,Number(prev.bossKills)||0),
+       eliteKills:Math.max(0,Number(prev.eliteKills)||0)
+     };
+     const keep=Object.keys(s.tower.seasonHistory).sort().slice(-6);
+     Object.keys(s.tower.seasonHistory).forEach(k=>{if(!keep.includes(k))delete s.tower.seasonHistory[k]});
+   }
+   s.tower.season={id:sid,bestFloor:0,bestScore:0,bestTime:0,runs:0,bossKills:0,eliteKills:0};
+   if(s.tower.run?.active)s.tower.run=null;
+ }
  const z=s.tower.season;z.bestFloor=Math.max(0,Number(z.bestFloor)||0);z.bestScore=Math.max(0,Number(z.bestScore)||0);z.runs=Math.max(0,Number(z.runs)||0);z.bossKills=Math.max(0,Number(z.bossKills)||0);z.eliteKills=Math.max(0,Number(z.eliteKills)||0);
  if(s.tower.run&&typeof s.tower.run==='object'){
    const r=s.tower.run;
@@ -665,7 +683,18 @@ function towerMirror(){
  const t=ensure(),r=t.run,z=t.season,w=t.wednesday||{},hist=t.wednesdayHistory||{};
  const clean=x=>x?.key?{key:String(x.key),event_id:String(x.eventId||x.event_id||''),best_floor:Number(x.bestFloor??x.best_floor)||0,best_score:Number(x.bestScore??x.best_score)||0,elite_kills:Number(x.eliteKills??x.elite_kills)||0}:null;
  const history={};Object.keys(hist).sort().slice(-8).forEach(k=>{const x=clean(hist[k]);if(x)history[k]=x});
- return{season:z.id,best_floor:z.bestFloor,best_score:z.bestScore,active_floor:r?.active?r.floor:0,active_score:r?.active?r.score:0,boss_kills:z.bossKills,elite_kills:z.eliteKills,wednesday:clean(w),wednesday_history:history}
+ const seasonHistory={};
+ Object.entries(t.seasonHistory||{}).sort(([a],[b])=>a.localeCompare(b)).slice(-6).forEach(([id,x])=>{
+   seasonHistory[id]={
+     best_floor:Math.max(0,Number(x?.bestFloor??x?.best_floor)||0),
+     best_score:Math.max(0,Number(x?.bestScore??x?.best_score)||0),
+     best_time:Math.max(0,Number(x?.bestTime??x?.best_time)||0),
+     runs:Math.max(0,Number(x?.runs)||0),
+     boss_kills:Math.max(0,Number(x?.bossKills??x?.boss_kills)||0),
+     elite_kills:Math.max(0,Number(x?.eliteKills??x?.elite_kills)||0)
+   };
+ });
+ return{season:z.id,best_floor:z.bestFloor,best_score:z.bestScore,active_floor:r?.active?r.floor:0,active_score:r?.active?r.score:0,boss_kills:z.bossKills,elite_kills:z.eliteKills,season_history:seasonHistory,wednesday:clean(w),wednesday_history:history}
 }
 function fullDungeonProgress(){let d=null;try{const fn=window.v4130LiveDungeonProgress||window.v4124LiveDungeonProgress;if(typeof fn==='function')d=fn()}catch(e){}if(!d||typeof d!=='object')d=s.dungeon||{};const out={completed:[...(d.completed||[])],progress:{...(d.progress||{})},selected:Number(d.selected)||0,room:Number(d.room)||0,lastActive:Number(d.lastActive??d.selected)||0,unlocked:[...(d.unlocked||[])],tower:towerMirror()};try{if(typeof v6113PetProfileStats==='function')out.pet_stats=v6113PetProfileStats()}catch(e){}return out}
 async function syncProfile(force=false){
