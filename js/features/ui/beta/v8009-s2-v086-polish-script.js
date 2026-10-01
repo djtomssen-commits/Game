@@ -51,12 +51,34 @@ function v7215RewardHtml(r){
 }
 function v7215RewardText(r){r=r||{};const a=[];if(Number(r.gold)>0)a.push(`${v7215Fmt(r.gold)} Gold`);if(Number(r.fragments)>0)a.push(`${v7215Fmt(r.fragments)} Fragmente`);if(Number(r.harz)>0)a.push(`${v7215Fmt(r.harz)} Harz-Taler`);if(Number(r.time)>0)a.push(`${v7215Fmt(r.time)} Zeit-Samen`);return a.join(' · ')||'Belohnung'}
 function v7219RarityClass(r){return `v7219-r-${['gray','green','blue','purple','orange'].includes(String(r))?String(r):'gray'}`}
+const V7215_BAG_ART=Object.freeze({
+ current:"assets/v8-inline/d8723279ac61b4e0.webp",
+ premium:"assets/v8-inline/8fe8c1cde9fe6262.webp"
+});
+function v7215BagArt(b,isNext){
+ b=b||{};
+ const t=Number(b.target)||0;
+ const title=String(b.title||'').toLowerCase();
+ const sub=String(b.subtitle||'').toLowerCase();
+ const rarity=String(b.rarity||'').toLowerCase();
+ if(isNext)return V7215_BAG_ART.premium;
+ if(title.includes('legend')||title.includes('edel')||title.includes('premium')||sub.includes('premium')||rarity==='orange'||rarity==='purple'||t>=10)return V7215_BAG_ART.premium;
+ return V7215_BAG_ART.current;
+}
+window.v7221BagArt=v7215BagArt;
 function v7219PackHtml(b,extra=''){
  b=b||{};
- return `<div class="v7219-pack ${v7219RarityClass(b.rarity)} ${extra}">
-   <div class="v7219-pack-brand">GROW<br>LEGENDS</div>
-   <div class="v7219-pack-leaf">🌿</div>
-   <div class="v7219-pack-label">${String(b.title||'Tütchen')}</div>
+ const isNext=String(extra||'').includes('next');
+ const art=v7215BagArt(b,isNext);
+ const caption=String(b.title||(isNext?'Nächstes Tütchen':'Tütchen'));
+ const target=Math.max(0,Number(b.target)||0);
+ const meta=isNext&&target?`${target} bestätigte Videos`:(b.subtitle?String(b.subtitle):'');
+ return `<div class="v7219-pack ${v7219RarityClass(b.rarity)} ${extra}" style="--bag-art:url('${art}')">
+   <div class="v7221-pack-art" aria-hidden="true"></div>
+   <div class="v7221-pack-footer">
+    <div class="v7221-pack-title">${caption}</div>
+    ${meta?`<div class="v7221-pack-meta">${meta}</div>`:''}
+   </div>
  </div>`;
 }
 function v7215Paint(){
@@ -194,7 +216,11 @@ async function v7215Watch(){
  }catch(e){console.warn('V7.219 rewarded ad',e);try{v063Toast?.('Werbevideo nicht gezählt','warn',String(e?.message||e))}catch(_){ }return false}
  finally{v7215Bag.busy=false;v7215Paint()}
 }
-window.v7215BagDealerOpen=()=>v7215Load(true);
+window.v7215BagDealerOpen=()=>{
+ const root=document.getElementById('v7215BagBody');
+ if(root)root.innerHTML='<div class="v7219-loading-card"><div class="v7219-loading-bag">🌿</div><b>Dealer holt dein Tütchen aus dem Regal …</b><span>Belohnung, Fortschritt und das nächste Tütchen werden geladen.</span></div>';
+ return v7215Load(true);
+};
 window.v7215BagDealerRefresh=()=>v7215Load(true);
 document.getElementById('v7219HelpBtn')?.addEventListener('click',async()=>{
  const msg='Du entscheidest selbst, ob du ein Rewarded-Video ansehen möchtest. Nur vollständig bestätigte Videos erhöhen den Tütchen-Fortschritt. Ist ein Tütchen voll, wird die vorher angezeigte Belohnung serverseitig gutgeschrieben.';
@@ -204,9 +230,9 @@ document.getElementById('v7219HelpBtn')?.addEventListener('click',async()=>{
  }catch(_){}
 });
 
-window.addEventListener('growlegends:first-playable',()=>setTimeout(()=>void v7215Load(true),1200),{passive:true});
-window.addEventListener('growlegends:account-ready',()=>{v7215Bag.state=null;v7215Bag.lastRevision=-1;window.__V7215_AD_BAG_MENU_VISIBLE__=true;setTimeout(()=>void v7215Load(true),1800)},{passive:true});
-document.addEventListener('visibilitychange',()=>{if(!document.hidden&&document.getElementById('bagDealer')?.classList.contains('active'))setTimeout(()=>void v7215Load(true),350)},{passive:true});
+window.addEventListener('growlegends:first-playable',()=>queueMicrotask(()=>void v7215Load(true)),{passive:true});
+window.addEventListener('growlegends:account-ready',()=>{v7215Bag.state=null;v7215Bag.lastRevision=-1;window.__V7215_AD_BAG_MENU_VISIBLE__=true;queueMicrotask(()=>void v7215Load(true))},{passive:true});
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&document.getElementById('bagDealer')?.classList.contains('active'))queueMicrotask(()=>void v7215Load(true))},{passive:true});
 
 /* Rebuild menu from every actual game screen, so no page can silently go missing. */
 function v086BuildCompleteMenu(){
