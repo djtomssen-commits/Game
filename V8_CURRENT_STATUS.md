@@ -2439,3 +2439,15 @@ Arbeitsmodus:
 - Alle drei externen Dateien mit `node --check` geprüft.
 - QA `V8009_GROW_FORGE_EXTRACTION_BATCH1_QA.json`: vollständig grün.
 - Stable / `index.html`: unverändert.
+
+
+#### Pet / Weekly Extraction Batch 1
+- Drei große eigenständige Owner 1:1 aus `beta.html` ausgelagert:
+  - `v688-pet-drop-system-core` → `js/features/pets/beta/v8009-s1-v688-pet-drop-system-core.js`
+  - `v686-pet-album-core` → `js/features/pets/beta/v8009-s1-v686-pet-album-core.js`
+  - `v6239-weekly-chest-system` → `js/features/rewards/beta/v8009-s1-v6239-weekly-chest-system.js`
+- Zusammen 73.764 Bytes Inline-JS aus dem Monolithen entfernt.
+- Script-IDs und Reihenfolge in `beta.html` beibehalten; nur auf `src=` umgestellt.
+- Alle drei externen Dateien mit `node --check` geprüft.
+- QA `V8009_PET_WEEKLY_EXTRACTION_BATCH1_QA.json`: vollständig grün.
+- Stable / `index.html`: unverändert.
