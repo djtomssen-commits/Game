@@ -365,26 +365,12 @@ v141BuildSettings=function(){
   return r;
 };
 
-const v210BaseRender=render;
-render=function(){
-  const r=v210BaseRender();
+/* V8.009: global render profile/settings hook retired.
+   Settings builder owns permission binding; Character owners own attribute display. */
 
-  requestAnimationFrame(()=>{
-    v210FormatCharacterAttributes();
-    v210BindNotificationPermission();
-
-    /*
-      Refreshing the public profile payload after this version will include
-      icon/rarity details automatically through v074SafeEquipment().
-    */
-  });
-
-  return r;
-};
-
-setTimeout(()=>{
+queueMicrotask(()=>{
   v210FormatCharacterAttributes();
   v210BindNotificationPermission();
   v210RunLocalNotifications();
   v210PvpCheck();
-},350);
+});
