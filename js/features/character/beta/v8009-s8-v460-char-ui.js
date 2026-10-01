@@ -100,14 +100,8 @@
 
   /* Character/Inventory cleanup Phase 3: V460 compact-inventory comparison wrapper retired; V470 owns it. */
   /* Character/Inventory cleanup Phase 3: V460 renderInventory comparison wrapper retired; V470 owns it. */
-  try{
-    if(typeof render==='function'&&!window.__v460RenderWrapped){
-      const base=render;
-      render=function(){const r=base.apply(this,arguments);if(document.getElementById('character')?.classList.contains('active'))apply();return r};
-      window.render=render;
-      window.__v460RenderWrapped=true;
-    }
-  }catch(e){}
+  /* V8.009: global render polish hook retired.
+     Character navigation/pageshow own the remaining hero-stat polish. */
   window.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')==='character')apply()});
   window.__v460GoWrapped='v7119-event';
 
