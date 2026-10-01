@@ -2958,3 +2958,31 @@ Arbeitsmodus:
 - Originale Script-Attribute, IDs und Reihenfolge beibehalten; nur um `src=` ergänzt.
 - QA `V8009_FEATURE_EXTRACTION_BATCH19_QA.json`: vollständig grün.
 - Stable / `index.html`: unverändert.
+
+
+#### Feature Extraction Batch 20
+- 20 weitere benannte Owner 1:1 aus `beta.html` ausgelagert:
+  - `v336-illegal-book-progress-fix`
+  - `v6201-mystic-special-gameplay-compare`
+  - `v416-dungeon-loot-contract`
+  - `v4131-version-source`
+  - `v599-clean-dungeon-core`
+  - `v6300-tower-enemy-image-js`
+  - `v134-rarity-inventories-script`
+  - `v6213-final-authority`
+  - `v6288-account-delete-toplayer-js`
+  - `v6301-harzruferin-talent-desc-js`
+  - `v427-hall-live-profile-sync`
+  - `v456-level300-progression-authority`
+  - `v7239-calendar-achievements`
+  - `v405-illegal-book-categories-fix-script`
+  - `v277-resource-cards-script`
+  - `v4106-comic-items`
+  - `v272-character-name-login-fix`
+  - `v268-inventory-multisell`
+  - `v242-dungeon-status-map-core`
+  - `v4129-responsive-boot-central-version`
+- Zusammen 75.930 Bytes Inline-JS aus dem Monolithen entfernt.
+- Originale Script-Attribute, IDs und Reihenfolge beibehalten; nur um `src=` ergänzt.
+- QA `V8009_FEATURE_EXTRACTION_BATCH20_QA.json`: vollständig grün.
+- Stable / `index.html`: unverändert.
