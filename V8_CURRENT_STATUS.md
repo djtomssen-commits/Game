@@ -3384,3 +3384,28 @@ Arbeitsmodus:
   - Script `d823ccfa68ae88a3296d1d2016d2de8eba7c2fc7`
   - Workflow `21ec746a9120385576563202e5e38c507c01a251`
 - Ergebnis: Attributanzeige/Attributpunkte laufen nun über einen kanonischen UI-Owner `v4140`; die separate v434-Sync-Schicht ist entfernt.
+
+
+#### Heldenquartier / Character Legacy Cleanup
+- Drei reine Delegator-Schichten geprüft und entfernt:
+  - `v517-heldenquartier-reference-finish-js.js`
+  - `v519-heldenquartier-reference-alignment-js.js`
+  - `v521-heldenquartier-reference-frame-js.js`
+- Diese Dateien delegierten nur an spätere Owner (`v7154CharacterSettle` / `v7124PaintCharacterSummary`) und wurden nirgends mehr aufgerufen.
+- `beta.html`-Cleanup-Commit: `fdc48fbd8108c1480799ddb344ecfcd14bbcd312`.
+- Dateien anschließend physisch gelöscht:
+  - `9126e10f78f6a901a83a7b22f4745580b9b08f2e`
+  - `89fe709285d92c123af074cf1108626a0abd990d`
+  - `8fb456c07440e84e78461b98e255e0df1e4a6f70`
+
+#### Character / Material Performance Audit
+- Audit-Commit: `ec87c92de5da5d16ef98748751d2a1a368113ddc`.
+- 76 geladene Character-/Material-nahe Scripts analysiert.
+- Wichtig: `v681-material-sell-core` und `v683-material-multisell-core` haben keine aktiven MutationObserver mehr; deren Treffer kamen nur aus Retirement-Kommentaren.
+- Echter aktiver Hotspot war `v470-character-slot-art-canonical-comparison.js` mit zwei MutationObservern auf Equipment- und Inventar-Subtrees.
+- Diese Observer waren auch aktiv, während andere Character-Tabs (inkl. Materialien) offen waren.
+- Beide v470-Observer entfernt; Updates bleiben über bestehende direkte Hooks auf `renderInventory`, `equip`, `unequip`, `render`, Shop und Character-Navigation erhalten.
+- v470-Fix-Commit: `6f0b2c35e9ae3d36667ddb577159c8a8d919c607`.
+- Regression-QA installiert:
+  - Script `c9aa2195f7c4017243d0ed696c1bef064ca6994e`
+  - Workflow `8b23121f44f035fde1c3af2f777d75a0c225ec98`
