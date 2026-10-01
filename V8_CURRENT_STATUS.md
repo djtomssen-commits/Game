@@ -2864,3 +2864,26 @@ Arbeitsmodus:
 - Originale Script-Attribute, IDs und Reihenfolge beibehalten; nur um `src=` ergänzt.
 - QA `V8009_FEATURE_EXTRACTION_BATCH15_QA.json`: vollständig grün.
 - Stable / `index.html`: unverändert.
+
+
+#### Feature Extraction Batch 16
+- 15 weitere benannte Owner 1:1 aus `beta.html` ausgelagert:
+  - `v422-item-stat-consistency`
+  - `v241-harvest-reward-final-core`
+  - `v442-character-layout-economy-fix`
+  - `v7145-render-owner-core`
+  - `v682-frost-second-weapon-core`
+  - `v7135-server-activity-xp-feedback`
+  - `v395-quest-reward-showcase`
+  - `v359-header-duplicate-hard-fix`
+  - `v243-dungeon-key-source-of-truth`
+  - `v7077-progress-enforce-hydration`
+  - `v6336-dot-status-ui-js`
+  - `v347-login-reference-design`
+  - `v372-authoritative-header`
+  - `v135-shop-level-scaling`
+  - `v331-item-level-scaling`
+- Zusammen 67.641 Bytes Inline-JS aus dem Monolithen entfernt.
+- Originale Script-Attribute, IDs und Reihenfolge beibehalten; nur um `src=` ergänzt.
+- QA `V8009_FEATURE_EXTRACTION_BATCH16_QA.json`: vollständig grün.
+- Stable / `index.html`: unverändert.
