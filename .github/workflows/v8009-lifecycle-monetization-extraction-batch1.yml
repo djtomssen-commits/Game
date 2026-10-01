@@ -1,0 +1,27 @@
+name: V8.009 Lifecycle Monetization Extraction Batch 1
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/v8009_lifecycle_monetization_extraction_batch1.py'
+      - '.github/workflows/v8009-lifecycle-monetization-extraction-batch1.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 .github/scripts/v8009_lifecycle_monetization_extraction_batch1.py
+      - run: |
+          node --check js/features/monetization/beta/v8009-s1-v6350-google-play-harz-billing.js
+          node --check js/features/rewards/beta/v8009-s2-v484-daily-login-core.js
+          node --check js/features/push/beta/v8009-s1-gl-push-scheduling-v2.js
+      - run: |
+          git config user.name github-actions
+          git config user.email github-actions@users.noreply.github.com
+          git add beta.html js/features/monetization/beta/v8009-s1-v6350-google-play-harz-billing.js js/features/rewards/beta/v8009-s2-v484-daily-login-core.js js/features/push/beta/v8009-s1-gl-push-scheduling-v2.js V8009_LIFECYCLE_MONETIZATION_EXTRACTION_BATCH1_QA.json
+          git commit -m "V8.009 LIFECYCLE: extract monetization reward push batch" || exit 0
+          git pull --rebase origin main
+          git push
