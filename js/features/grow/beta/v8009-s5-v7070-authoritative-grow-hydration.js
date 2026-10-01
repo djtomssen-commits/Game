@@ -169,8 +169,14 @@ try{
     const wrapped=function(){
       const id=uid();
       const d=window.v7065GrowAuthorityDiagnostics?.();
-      if(id&&!d?.enabled){showBarrier();void hydrate(false);return;}
-      if(id&&d?.enabled&&!hydrated){hydrated=true;hydratedUid=id;lastHydratedAt=Date.now();hideBarrier();}
+      const sameAccount=!!id&&d?.authorityUid===id;
+      if(id&&(!d?.enabled||!d?.ready||!sameAccount)){
+        hydrated=false;
+        showBarrier(sameAccount?'Serverstand wird geladen …':'Kontostand wird synchronisiert …');
+        void hydrate(!sameAccount);
+        return;
+      }
+      if(id&&d?.enabled&&d?.ready&&sameAccount&&!hydrated){hydrated=true;hydratedUid=id;lastHydratedAt=Date.now();hideBarrier();}
       return baseRender.apply(this,arguments);
     };
     wrapped.__v7069=true;
