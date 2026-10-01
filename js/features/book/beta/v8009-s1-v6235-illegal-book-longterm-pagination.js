@@ -193,25 +193,13 @@
  const previous=window.v106OpenBook;
  if(typeof previous==='function'){
    window.v106OpenBook=function(){
-     /* Server achievement authority can repaint the open book after a refresh.
-        That repaint must preserve the current category/page instead of jumping to page 1. */
      const wasAlreadyOpen=!!document.getElementById('v106Overlay')?.classList.contains('show');
      const r=previous.apply(this,arguments);
-     setTimeout(()=>renderView(!wasAlreadyOpen),0);
-     setTimeout(()=>renderView(false),90);
+     renderView(!wasAlreadyOpen);
      return r;
    };
    try{v106OpenBook=window.v106OpenBook}catch(_){}
  }
-
- /* World/home buttons can still invoke cached/older book owners. Reset only on a real fresh open. */
- document.addEventListener('click',e=>{
-   if(e.target?.closest?.('[data-book],#v106BookBtn')){
-     const wasAlreadyOpen=!!document.getElementById('v106Overlay')?.classList.contains('show');
-     setTimeout(()=>renderView(!wasAlreadyOpen),20);
-     setTimeout(()=>renderView(false),110);
-   }
- },true);
 
  /* Immediately recognize achievements already satisfied by persistent save data. */
  try{v106CheckAchievements(false)}catch(e){console.warn('V6.235 initial achievement check',e)}
