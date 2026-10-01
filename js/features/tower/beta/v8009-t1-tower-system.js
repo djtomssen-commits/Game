@@ -1203,9 +1203,11 @@ function render(){
       Ranking/profile work is useful in the lobby, but it must not start on the
       same frames as login restore or an immediately-started Tower run. */
    if(towerTab==='rank'){
-     setTimeout(loadRanking,20);
-     if(document.getElementById('vTWednesdayRanking'))setTimeout(loadWednesdayRanking,35);
-     if(document.getElementById('vTWednesdayReward'))setTimeout(loadWednesdayPlacementReward,55);
+     queueMicrotask(()=>{
+       void loadRanking();
+       if(document.getElementById('vTWednesdayRanking'))void loadWednesdayRanking();
+       if(document.getElementById('vTWednesdayReward'))void loadWednesdayPlacementReward();
+     });
    }else if(!r?.active&&towerTab==='run'&&!root.dataset.v8009LobbyWarmupQueued){
      root.dataset.v8009LobbyWarmupQueued='1';
      const stillIdleLobby=()=> {
