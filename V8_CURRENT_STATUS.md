@@ -2337,3 +2337,27 @@ Arbeitsmodus:
 - Billing/Google-Play-Recovery, Kaufpfade und Admin-/Access-Logik unverändert.
 - QA `V8009_DEALER_SMALL_SCREEN_QA.json`: grün.
 - Stable / `index.html`: unverändert.
+
+
+#### Small-Screen Coverage: admin
+- v093 Admin:
+  - globalen `render()`-Wrapper entfernt;
+  - `v093CheckAdmin()` / `v093BuildMenu()` bleiben direkte Owner.
+- v103 Spielereditor:
+  - globalen `render()`-Wrapper entfernt;
+  - Installation bleibt direkt an `v093AdminLoadLists()` gekoppelt.
+- v274 Event-Presets:
+  - globalen `render()`-Wrapper entfernt;
+  - 2100-ms Startup-Nachlauf entfernt;
+  - Presets bleiben über `v093CheckAdmin()` + `v093AdminLoadLists()` sowie account/pageshow erreichbar.
+- v115 Global-Dialoge:
+  - wirkungslosen globalen `render()`-Wrapper entfernt;
+  - UI-Overlay wird direkt über DOMContentLoaded/account-ready sichergestellt.
+- Unverändert:
+  - Admin-RPCs;
+  - Spielereditor-Speichern;
+  - Event-/News-Verwaltung;
+  - Moderation/Tickets;
+  - zentrale Bestätigungsdialoge.
+- QA `V8009_ADMIN_SMALL_SCREEN_QA.json`: grün.
+- Stable / `index.html`: unverändert.
