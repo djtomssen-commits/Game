@@ -312,21 +312,14 @@ v110Fight=function(){
    Existing winners start at zero unless they already have a stored streak. */
 v290EnsureWorldBossState();
 
-const v290BaseRender=render;
-render=function(){
-  const r=v290BaseRender();
-  v290EnsureWorldBossState();
-  
-  const line=document.querySelector('#v141VersionLine');
-  return r;
-};
-
-setTimeout(()=>{
+/* V8.009 Worldboss powerblock: balance/state sync is scoped to the
+   account/worldboss lifecycle instead of the global renderer/startup timer. */
+window.addEventListener('growlegends:account-ready',()=>{
   try{
     v290EnsureWorldBossState();
     if(document.querySelector('#v110Overlay.show'))v110Refresh();
   }catch(e){}
-},350);
+},{passive:true});
 
 
 const v290Line=document.querySelector('#v141VersionLine');
