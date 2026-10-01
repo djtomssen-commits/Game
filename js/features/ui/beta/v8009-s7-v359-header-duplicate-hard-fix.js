@@ -61,27 +61,8 @@
   }
 
   function fix(){
-    /* Let V4.02 create its compact header first if needed. */
-    try{
-      const header=document.querySelector('.app > header');
-      if(header && !header.querySelector('.v358-global-header')){
-        /* Re-run V4.02 boot behavior by navigation-independent DOM setup. */
-        const root=document.createElement('div');
-        root.className='v358-global-header';
-        root.innerHTML=`
-          <button type="button" class="v358-menu" aria-label="Menü">☰</button>
-          <div class="v358-logo"><strong>🌿 GROW</strong><span>LEGENDS</span></div>
-          <div class="v358-res gold"><small>Gold</small><b id="v358Gold">🪙 0</b></div>
-          <div class="v358-res harz"><small>Harz</small><b id="v358Harz">💎 0</b></div>
-          <div class="v358-res dampf"><small>Dampf</small><b id="v358Dampf">💨 0/100</b></div>`;
-        header.appendChild(root);
-
-        const sub=document.createElement('div');
-        sub.className='v358-subbar';
-        sub.innerHTML=`<span class="v358-version">V4.29 Stable</span><span class="v358-power">Kampfkraft <b id="v358Power">0</b></span><button type="button" class="v358-settings">⚙️ Einstellungen</button>`;
-        header.appendChild(sub);
-      }
-    }catch(e){console.warn('V4.02 header build',e)}
+    /* V8.009: duplicate header producer retired.
+       v358 is the only compact-header builder; v359 only fixes legacy pieces/layout. */
 
     hideLegacyHeaderPieces();
     moveRealMenuButton();
