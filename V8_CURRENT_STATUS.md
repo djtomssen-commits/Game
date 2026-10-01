@@ -2652,3 +2652,22 @@ Arbeitsmodus:
 - Alle acht externen Dateien mit `node --check` geprüft.
 - QA `V8009_FEATURE_EXTRACTION_BATCH6_QA.json`: vollständig grün.
 - Stable / `index.html`: unverändert.
+
+
+#### Feature Extraction Batch 7
+- Zehn weitere große Owner 1:1 aus `beta.html` ausgelagert:
+  - `v4131-character-persistence` → `js/features/account/beta/v8009-s5-v4131-character-persistence.js`
+  - `v6106-real-comic-item-art` → `js/features/items/beta/v8009-s3-v6106-real-comic-item-art.js`
+  - `v450-account-save-isolation-recovery` → `js/features/account/beta/v8009-s5-v450-account-save-isolation-recovery.js`
+  - `v232-growroom-core` → `js/features/grow/beta/v8009-s4-v232-growroom-core.js`
+  - `v290-worldboss-level-equipment-balance` → `js/features/worldboss/beta/v8009-s2-v290-worldboss-level-equipment-balance.js`
+  - `v6109-background-music` → `js/features/audio/beta/v8009-s2-v6109-background-music.js`
+  - `v7074-item-enforce-bridge` → `js/features/authority/beta/v8009-s4-v7074-item-enforce-bridge.js`
+  - `v446-global-combat-power-authority` → `js/features/combat/beta/v8009-s2-v446-global-combat-power-authority.js`
+  - `gl-live-weather-js` → `js/features/weather/beta/v8009-s1-gl-live-weather.js`
+  - `v7050-dungeon-combat-parity-shadow` → `js/features/dungeon/beta/v8009-s4-v7050-dungeon-combat-parity-shadow.js`
+- Zusammen 99.044 Bytes Inline-JS aus dem Monolithen entfernt.
+- Originale Script-Attribute, IDs und Reihenfolge beibehalten; nur um `src=` ergänzt.
+- Alle zehn externen Dateien mit `node --check` geprüft.
+- QA `V8009_FEATURE_EXTRACTION_BATCH7_QA.json`: vollständig grün.
+- Stable / `index.html`: unverändert.
