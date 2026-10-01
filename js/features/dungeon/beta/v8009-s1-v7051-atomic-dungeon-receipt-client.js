@@ -248,6 +248,7 @@ function showReward(b,{recovered=false}={}){
  const seed=seedLabel(b?.seed_reward),pet=petLabel(b?.pet);
  try{
   return window.v247ShowDungeonReward?.({
+   run_id:Number(b?.run_id)||0,
    dungeonIndex:di,
    roomIndex:ri,
    enemy,
