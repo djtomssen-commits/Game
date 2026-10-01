@@ -59983,7 +59983,7 @@ normalize();
   stamp();updateBars();
   document.addEventListener('DOMContentLoaded',()=>{stamp();updateBars()},{once:true});
   window.addEventListener('pageshow',()=>{stamp();updateBars()},{passive:true});
-  [150,650,1600].forEach(ms=>setTimeout(updateBars,ms));[1000,3000,7000].forEach(ms=>setTimeout(flushPending,ms));
+  window.addEventListener('growlegends:account-ready',updateBars,{passive:true});[1000,3000,7000].forEach(ms=>setTimeout(flushPending,ms));
 })();
 </script>
 
@@ -62614,7 +62614,7 @@ setInterval(()=>{try{
 function stamp(){}
 ensureScreen();installMenu();stamp();
 setTimeout(()=>{try{const c=cachedReport();if(c){last=c;paintSettingsBadge(c);if(document.getElementById('systemtech')?.classList.contains('active'))renderPage(c)}}catch(e){pushErr('QA_CACHE_ERROR',e.message||String(e),'warn')}},2600); /* V4.159: never run ~3k QA tests during normal boot/login. */
-[120,900,2600].forEach(ms=>setTimeout(()=>{stamp();installMenu()},ms)); /* V4.123: long obsolete version/menu fan-out retired. */
+window.addEventListener('growlegends:account-ready',()=>{stamp();installMenu()},{passive:true});
 window.addEventListener('pageshow',()=>{stamp();installMenu();setTimeout(()=>{try{const c=last||cachedReport();if(c){last=c;paintSettingsBadge(c)}}catch(e){}},700)},{passive:true}); /* V4.159: no full QA on pageshow. */
 document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();installMenu();scheduleRender()}},{passive:true});
 })();
@@ -99517,8 +99517,8 @@ window.V6294_CLASSES=Object.freeze({
  summoner:{name:'Harzruferin',primary:'intelligenz',style:'magic'}
 });
 document.addEventListener('click',e=>{const n=e.target instanceof Element?e.target.closest('[data-screen="tower"],[data-go="tower"],[data-v085-go="tower"],[data-vt-route],[data-vt-fight]'):null;if(n)setTimeout(repairTower,40)},true);
-window.addEventListener('growlegends:account-ready',()=>setTimeout(repairTower,100));
-[0,250,800].forEach(ms=>setTimeout(repairTower,ms));
+window.addEventListener('growlegends:account-ready',repairTower,{passive:true});
+window.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')==='tower')repairTower()},{passive:true});
 window.v6294HarzruferinParityDiagnostics=()=>({
  version:'V6.294',class:String(state()?.playerClass||''),combatPower:typeof combatPower==='function'?combatPower():null,
  gearTemplates:typeof classGear!=='undefined'?(classGear.summoner||[]).length:0,
@@ -100499,7 +100499,7 @@ document.addEventListener('click',e=>{
  ):null;
  if(hit)setTimeout(repair,40);
 },true);
-[0,180,700].forEach(ms=>setTimeout(repair,ms));
+window.addEventListener('growlegends:account-ready',repair,{passive:true});
 
 window.v6304CompanionPositionDiagnostics=()=>({
  version:'V6.304',
