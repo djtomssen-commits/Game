@@ -4532,3 +4532,63 @@ Arbeitsmodus:
   - Inventar
   - Talente
   - Materialien
+
+
+#### Powerblock: Character – alle 4 Tabs abgeschlossen
+- Scope:
+  - Inventar
+  - Attribute
+  - Talente
+  - Materialien
+  - Hero/Equipment-Layout als gemeinsamer Character-Rahmen
+- Hauptfix für die bekannte Ruckelursache:
+  - `v480UpdateAutoBars()` berechnet nicht mehr Inventar- und Materialplan gleichzeitig.
+  - Inventar-Tab: nur Auto-Equip-Plan.
+  - Material-Tab: nur Gem-/Rollen-Plan.
+  - unsichtbare Tabs lösen keine schwere Auto-Berechnung mehr aus.
+- Lifecycle-/Owner-Konsolidierung:
+  - `v459` ist jetzt alleiniger sichtbarer Character-Tab-Lifecycle-Owner.
+  - genau ein `renderInventory()`-Wrapper bleibt übrig: der kanonische v459-Owner.
+  - `v268` Mehrfachverkauf ist nur noch Decorator unter v459; eigener Inventory-Wrapper entfernt.
+  - `v533` Inventory-Reference ist nur noch Decorator unter v459; Wrapper/Navigation/Pageshow/Visibility-Repaints entfernt.
+  - `v543` bleibt Talent-Renderer; Navigation/Pageshow/Klick-Lifecycle an v459 abgegeben.
+  - `v4140` bleibt Attribute-Renderer; sichtbarer Tab-Lifecycle an v459 abgegeben.
+  - `v123` Equipment-Polish wird direkt über v459 aufgerufen; globaler `render()`-Wrapper entfernt.
+  - `v080` Avatar: globaler Render-Wrapper entfernt; `renderClassAvatar()` bleibt direkter Portrait-Owner.
+  - `v510` Hero-Rebuild: globaler Render-Wrapper entfernt; nur Character-/Stability-Lifecycle.
+  - `v275` Character-Name: globaler Render-Wrapper entfernt; direkter Avatar-/Character-Lifecycle.
+  - `v328` Grow-Skill-Cleanup: globaler Render-Wrapper entfernt; Datenbereinigung bleibt erhalten.
+  - `v267` alter verzögerter globaler Stat-Render entfernt.
+- Wichtiger Altlast-Fix:
+  - `v442` hat bei `pageshow` und über verzögerte Timer das Inventar wieder in das alte Character-Layout verschoben.
+  - dieser alte Layout-Owner ist entfernt.
+  - Verkaufswert-/Economy-Logik aus v442 bleibt erhalten.
+- Abschluss-Scan über die kritischen Character-Dateien:
+  - globale `render=function` Wrapper = **0**
+  - `renderInventory=function` Wrapper = **1** (nur v459)
+  - `renderSkillTree=function` Wrapper = **0**
+  - `v459ArrangeCharacter=function` Wrapper = **0**
+  - MutationObserver = **0**
+  - Polling-Intervalle = **0**
+- Wichtige Commits:
+  - v459 Tab-Owner + aktive-Tab-Refresh: `fa3a95aa93607c57cf8e551c51e6e69a5ca64c34`, `c557ef6f09c0a1fb0855f70b6971a7a69dcac213`, `03401ec7babba560500b97e896f2597259ff73aa`, `649ab1f0acbccb1deea6c593fdef46ae2f2f5bda`
+  - v480 aktive-Tab-Berechnung: `ae6a6b25399d6bbac6788e57a2cf2e88b92b7710`
+  - v533 Wrapperkette entfernt: `9ba04ab6f3186c60118ae564da02251954ca639b`
+  - v543 Lifecycle zentralisiert: `2691995a3e0f26f6d31da1f4e94b43daa8540349`
+  - v4140 Lifecycle zentralisiert: `381f07cd57466913278bf26167f8ff37a3e53c64`
+  - v268 Multisell unter v459: `67d066a576200651083d3daea415ea959bf26d82`
+  - v080 Avatar-Renderwrapper entfernt: `aba303869f4bc7de7dcf0ef0a07aa87d4d8490e7`
+  - v510 Hero-Renderwrapper entfernt: `1694095155059685fa48f9f24face31cba1c4e4d`
+  - v275 Name-Renderwrapper entfernt: `f79116329582904d9a4d6f5c90a790fecb70db8f`
+  - v328 GrowSkill-Rendercleanup entfernt: `1837e96443fad6951df5e4fae29c0a2b7b32787b`
+  - v267 delayed render entfernt: `56568d214e3eaf01e51ea9aa6d3b27d08b6d5d54`
+  - v123 Equipment-Wrapper entfernt: `7e64ad01e3f644dba83726bcba7d2ba814384d60`
+  - v442 alter Layout-Owner entfernt: `ff8433d8853c4cb93524db4a709d2010b770fccb`
+  - QA: `V8009_CHARACTER_FOUR_TAB_FINAL_QA.json`, Commit `4973dacda07ba3878bfba70d983eb45755fc83f9`
+- Matrix:
+  - Character = **[x]**
+- Manueller Character-Endtest bleibt für den gemeinsamen Test-Milestone offen.
+
+#### Nächster Powerblock
+- Character Creation – Beta / Server-1 final
+- danach repo-weite finale DOM/Lifecycle/Owner-QA.
