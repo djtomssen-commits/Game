@@ -49171,19 +49171,12 @@ html body .app > header > .stats.resource-stats{
     if(dampf)dampf.textContent='💨 '+num(s?.energy)+'/'+num(cap);
   }
 
-  /* No render/persist hooks, no observer, no interval.
-     The header only receives a few one-shot refreshes plus navigation refresh. */
-  const baseGo=v032Go;
-  v032Go=function(id){
-    const r=baseGo.apply(this,arguments);
-    requestAnimationFrame(update);
-    return r;
-  };
-
+  /* Shared navigation owns passive header refreshes. */
   update();
   document.addEventListener('DOMContentLoaded',update,{once:true});
   window.addEventListener('pageshow',update,{passive:true});
   window.addEventListener('growlegends:account-ready',update,{passive:true});
+  window.addEventListener('growlegends:navigation-open-v7119',update,{passive:true});
 })();
 </script>
 
@@ -50331,17 +50324,11 @@ body.v371-game-ui .app > header{
     ).forEach(el=>{if(el)el.textContent=V371_VERSION});
   }
 
-  const baseGo=v032Go;
-  v032Go=function(id){
-    const r=baseGo.apply(this,arguments);
-    requestAnimationFrame(paint);
-    return r;
-  };
-
   paint();
   document.addEventListener('DOMContentLoaded',paint,{once:true});
-  setTimeout(paint,300);
-  setTimeout(paint,1400);
+  window.addEventListener('pageshow',paint,{passive:true});
+  window.addEventListener('growlegends:account-ready',paint,{passive:true});
+  window.addEventListener('growlegends:navigation-open-v7119',paint,{passive:true});
 })();
 </script>
 
@@ -50717,14 +50704,8 @@ body > #v141SettingsMenu.v377-open{
     };
   }
 
-  /* Close settings when navigating or when clicking outside it/gear. */
-  const baseGo=v032Go;
-  v032Go=function(id){
-    closeSettings();
-    const r=baseGo.apply(this,arguments);
-    requestAnimationFrame(bindGear);
-    return r;
-  };
+  /* Close settings on shared navigation; refresh the gear from the same lifecycle. */
+  window.addEventListener('growlegends:navigation-open-v7119',()=>{closeSettings();bindGear()},{passive:true});
 
   document.addEventListener('click',function(e){
     const menu=document.querySelector('#v141SettingsMenu');
@@ -50743,8 +50724,8 @@ body > #v141SettingsMenu.v377-open{
 
   bindGear();version();
   document.addEventListener('DOMContentLoaded',()=>{bindGear();version()},{once:true});
-  setTimeout(()=>{bindGear();version()},300);
-  setTimeout(()=>{bindGear();version()},1400);
+  window.addEventListener('pageshow',()=>{bindGear();version()},{passive:true});
+  window.addEventListener('growlegends:account-ready',()=>{bindGear();version()},{passive:true});
 })();
 </script>
 
