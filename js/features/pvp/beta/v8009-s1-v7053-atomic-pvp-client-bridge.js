@@ -322,6 +322,14 @@ async function boot(){
 window.v7053PvpAuthorityDiagnostics=()=>clone({...C,version:VERSION,mode:mode()});
 window.v7053RecoverPvpReceipt=()=>recoverPending({quiet:false});
 window.v7053RunServerPvp=()=>runServerPvp();
+window.v7053SyncPvpState=async()=>{
+ if(!online())return null;
+ try{
+  const q=await canonicalState();
+  if(q?.ok){persistLocal();try{window.v204RenderPage?.()}catch(_){}}
+  return q;
+ }catch(e){C.lastError=String(e?.message||e);return null}
+};
 window.addEventListener('growlegends:account-ready',()=>{const run=()=>void boot();if(typeof window.v7204AfterStartupQuiet==='function')window.v7204AfterStartupQuiet(run,900);else queueMicrotask(run)},{passive:true});
 window.addEventListener('pageshow',()=>queueMicrotask(bindOwner),{passive:true});
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)queueMicrotask(bindOwner)},{passive:true});
