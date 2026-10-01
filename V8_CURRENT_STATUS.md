@@ -2747,3 +2747,28 @@ Arbeitsmodus:
 - Alle zehn externen Dateien mit `node --check` geprüft.
 - QA `V8009_FEATURE_EXTRACTION_BATCH10_QA.json`: vollständig grün.
 - Stable / `index.html`: unverändert.
+
+
+#### Feature Extraction Batch 11
+- Sechzehn weitere Owner 1:1 aus `beta.html` ausgelagert:
+  - `v585-dungeon-safe-owner-core` → `js/features/dungeon/beta/v8009-s8-v585-dungeon-safe-owner-core.js`
+  - `v433-dungeon-resource-consistency` → `js/features/dungeon/beta/v8009-s8-v433-dungeon-resource-consistency.js`
+  - `v320-talent-point-details` → `js/features/talents/beta/v8009-s3-v320-talent-point-details.js`
+  - `v236-dungeon-key-balance-core` → `js/features/dungeon/beta/v8009-s8-v236-dungeon-key-balance-core.js`
+  - `v4149-final-navigation-render-authority` → `js/features/system/beta/v8009-s8-v4149-final-navigation-render-authority.js`
+  - `v429-immutable-item-stats` → `js/features/items/beta/v8009-s7-v429-immutable-item-stats.js`
+  - `v127-midnight-reset-system` → `js/features/system/beta/v8009-s8-v127-midnight-reset-system.js`
+  - `v103-admin-player-editor-script` → `js/features/admin/beta/v8009-s4-v103-admin-player-editor.js`
+  - `v249-central-dungeon-balance` → `js/features/dungeon/beta/v8009-s8-v249-central-dungeon-balance.js`
+  - `v4115-authoritative-comic-items` → `js/features/items/beta/v8009-s7-v4115-authoritative-comic-items.js`
+  - `v123-character-equipment-redesign-script` → `js/features/character/beta/v8009-s7-v123-character-equipment-redesign.js`
+  - `v441-resource-live-authority` → `js/features/authority/beta/v8009-s8-v441-resource-live-authority.js`
+  - `v274-events-gold-mystic-presets` → `js/features/admin/beta/v8009-s4-v274-events-gold-mystic-presets.js`
+  - `v533-inventory-reference-js` → `js/features/character/beta/v8009-s7-v533-inventory-reference.js`
+  - `v6293-harzruferin-parity-js` → `js/features/combat/beta/v8009-s3-v6293-harzruferin-parity.js`
+  - `gl-dungeon-ready-push-v1` → `js/features/push/beta/v8009-s2-gl-dungeon-ready-push.js`
+- Zusammen 110.498 Bytes Inline-JS aus dem Monolithen entfernt.
+- Originale Script-Attribute, IDs und Reihenfolge beibehalten; nur um `src=` ergänzt.
+- Alle neuen externen Dateien per `node --check` geprüft.
+- QA `V8009_FEATURE_EXTRACTION_BATCH11_QA.json`: vollständig grün.
+- Stable / `index.html`: unverändert.
