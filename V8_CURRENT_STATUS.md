@@ -3098,3 +3098,31 @@ Arbeitsmodus:
 - Originale Script-Attribute, IDs und Reihenfolge beibehalten; nur um `src=` ergänzt.
 - QA `V8009_FEATURE_EXTRACTION_BATCH24_QA.json`: vollständig grün.
 - Stable / `index.html`: unverändert.
+
+
+#### Feature Extraction Batch 25
+- 20 weitere benannte Owner 1:1 aus `beta.html` ausgelagert:
+  - `v285-gold-event-payout-guard`
+  - `v6339-character-avatar-title-js`
+  - `v428-dungeon-rebalance`
+  - `v095-global-xp-event-fx-script`
+  - `v383-friend-mail-name-fix`
+  - `v7113-single-version-owner`
+  - `v6113-public-pet-profile-stats`
+  - `v6333-tower-harz-avatar-js`
+  - `v7098-system-qa-bridge`
+  - `v7068-cloud-pressure-admin-signal`
+  - `v324-dungeon-countdown`
+  - `v420-levelup-notification-fix`
+  - `v537-attribute-reference-js`
+  - `v401-dungeon-difficulty-balance`
+  - `v7104-v6349-parity-foundation`
+  - `v7274-auth-refresh-singleflight`
+  - `v7221-bagdealer-override-script`
+  - `v7119-character-navigation-consolidation`
+  - `v6100-performance-consolidation`
+  - `v7157-character-equipment-scroll-stability`
+- Zusammen 40.797 Bytes Inline-JS aus dem Monolithen entfernt.
+- Originale Script-Attribute, IDs und Reihenfolge beibehalten; nur um `src=` ergänzt.
+- QA `V8009_FEATURE_EXTRACTION_BATCH25_QA.json`: vollständig grün.
+- Stable / `index.html`: unverändert.
