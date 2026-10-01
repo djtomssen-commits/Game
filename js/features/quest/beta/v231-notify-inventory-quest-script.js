@@ -132,12 +132,12 @@ function v231ResumeNotifications(){
 
 document.addEventListener('visibilitychange',()=>{
   if(document.visibilityState==='visible'){
-    setTimeout(v231ResumeNotifications,100);
+    queueMicrotask(v231ResumeNotifications);
   }
 });
 
 window.addEventListener('focus',()=>{
-  setTimeout(v231ResumeNotifications,100);
+  queueMicrotask(v231ResumeNotifications);
 });
 
 
@@ -153,7 +153,7 @@ v210BindNotificationPermission=function(){
     toggle.addEventListener('change',()=>{
       if(toggle.checked){
         try{void v210AskNotificationPermission()}catch(e){}
-        setTimeout(v231ResumeNotifications,100);
+        queueMicrotask(v231ResumeNotifications);
       }
     });
   }
@@ -271,14 +271,6 @@ function v231RepairInventoryClasses(){
 
 
 /* Version */
-setTimeout(()=>{
-  try{
-    v210BindNotificationPermission();
-    v231ResumeNotifications();
-  }catch(e){}
-
-  document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V4.29 Stable');
-
-  const line=document.querySelector('#v141VersionLine');
-},300);
+queueMicrotask(()=>{
+  try{v210BindNotificationPermission();v231ResumeNotifications()}catch(e){}
+});
