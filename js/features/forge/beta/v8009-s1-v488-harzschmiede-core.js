@@ -57,6 +57,10 @@
   function isClassSet(it){return !!(it&&(it.setId||it.v6130Crafted===true))}
   function shopRefund(it){
     if(!isShopItem(it))return 0;
+    try{
+      const serverParity=Number(typeof sellValue==='function'?sellValue(it):NaN);
+      if(Number.isFinite(serverParity))return Math.max(0,Math.round(serverParity));
+    }catch(_){}
     const paid=Math.max(0,Number(it?.shopPaidPrice ?? it?.price)||0);
     return paid>0?Math.max(1,Math.round(paid*.12)):0;
   }
