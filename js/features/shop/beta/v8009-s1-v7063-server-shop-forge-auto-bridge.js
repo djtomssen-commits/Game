@@ -15,34 +15,41 @@
  const legacyAutoEquip=typeof window.v480AutoEquip==='function'?window.v480AutoEquip:null;
  const legacyAutoMaterials=typeof window.v480AutoMaterials==='function'?window.v480AutoMaterials:null;
  const rawRenderShop=typeof window.renderShop==='function'?window.renderShop:null;
- let shopPaintCalls=0,shopPaintExec=0,lastShopPaint=0,shopPaintTimer=null;
+ let shopPaintCalls=0,shopPaintExec=0,lastShopPaint=0,lastShopViewSig='';
  const offerId=x=>String(x?.id||x?.uid||'');
+ const offerViewSig=x=>JSON.stringify([
+   offerId(x),x?.name||'',x?.quality||'',x?.rarity||'',Number(x?.price)||0,
+   x?.type||'',x?.slot||'',x?.classId||'',x?.stat||'',Number(x?.value)||0,
+   x?.effect||'',x?.bonus||null,x?.gem||null,x?.enchant||null,x?.enchants||null
+ ]);
  const shopSig=()=>[
    ...(Array.isArray(s?.weaponShop)?s.weaponShop:[]).map(offerId),
    '|',
    ...(Array.isArray(s?.magicShop)?s.magicShop:[]).map(offerId)
  ].join('~');
+ const shopViewSig=()=>JSON.stringify({
+   weapon:(Array.isArray(s?.weaponShop)?s.weaponShop:[]).map(offerViewSig),
+   magic:(Array.isArray(s?.magicShop)?s.magicShop:[]).map(offerViewSig),
+   equipment:Object.fromEntries(Object.entries(s?.equipment||{}).map(([k,v])=>[k,offerViewSig(v)]))
+ });
  function stableRenderShop(force=false){
   shopPaintCalls++;
   if(typeof rawRenderShop!=='function')return false;
   if(!window.v7081UseAuthority?.('items'))return rawRenderShop.apply(this,arguments);
   const shop=document.getElementById('shop');
   if(!force&&!shop?.classList.contains('active'))return false;
-  const now=performance.now();
-  const gap=now-lastShopPaint;
-  if(!force&&gap<140){
-   clearTimeout(shopPaintTimer);
-   shopPaintTimer=setTimeout(()=>{
-    lastShopPaint=performance.now();
-    shopPaintExec++;
-    try{rawRenderShop()}catch(e){console.warn('[V7084] shop paint',e)}
-   },Math.max(25,145-gap));
-   return false;
-  }
-  clearTimeout(shopPaintTimer);
-  lastShopPaint=now;
+  const sig=shopViewSig();
+  const domReady=!!(
+    document.getElementById('v461ShopHero')&&
+    document.getElementById('v057WeaponGrid')&&
+    document.getElementById('v057MagicGrid')
+  );
+  if(!force&&domReady&&sig===lastShopViewSig)return false;
+  lastShopPaint=performance.now();
   shopPaintExec++;
-  return rawRenderShop.apply(this,arguments);
+  const r=rawRenderShop.apply(this,arguments);
+  lastShopViewSig=shopViewSig();
+  return r;
  }
  if(rawRenderShop){
   stableRenderShop.__v7084=true;
