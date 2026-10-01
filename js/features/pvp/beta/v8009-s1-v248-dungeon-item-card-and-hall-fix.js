@@ -65,37 +65,12 @@ v073LoadRanking=async function(){
 };
 
 
-/*
-  Hall screen may already be visible when this version boots.
-*/
-const v248BaseGo=v032Go;
-v032Go=function(id){
-  const result=v248BaseGo(id);
-
-  if(id==='hall'){
-    requestAnimationFrame(()=>{
-      try{
-        v248BindHallProfileDelegation();
-        const hall=document.querySelector('#v072HallRanking');
-        if(hall)v074BindProfileRows(hall);
-      }catch(e){}
-    });
-  }
-
-  return result;
-};
-
-
-setTimeout(()=>{
+/* Hall bindings follow the shared post-navigation event. */
+window.addEventListener('growlegends:navigation-open-v7119',e=>{
+  if(String(e?.detail?.id||'')!=='hall')return;
   try{
     v248BindHallProfileDelegation();
-
     const hall=document.querySelector('#v072HallRanking');
     if(hall)v074BindProfileRows(hall);
-  }catch(e){}
-
-  document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V4.29 Stable');
-
-  const line=document.querySelector('#v141VersionLine');
-},600);
+  }catch(_){}
+},{passive:true});
