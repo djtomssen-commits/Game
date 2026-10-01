@@ -112,10 +112,8 @@ document.addEventListener('click',e=>{
   if(!b)return;
   e.preventDefault();e.stopPropagation();open();
 },true);
-const host=document.getElementById('grow');
-if(host){
-  new MutationObserver(()=>requestAnimationFrame(ensureButtons)).observe(host,{childList:true,subtree:true});
-}
+/* V8.009: broad Grow subtree observer retired.
+   v6163 owns tab/view rebuilds and calls this guide refresh directly. */
 ensureButtons();
 document.addEventListener('DOMContentLoaded',ensureButtons,{once:true});
 window.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')==='grow')ensureButtons()},{passive:true});
