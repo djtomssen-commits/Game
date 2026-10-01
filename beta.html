@@ -10,37 +10,7 @@
 
 <!-- V7.096: tower combat-door clicks preempt all historical tower handlers. -->
 <script id="v7096-tower-direct-preempt" src="js/features/tower/beta/v8009-t1-tower-direct-preempt.js"></script>
-<script id="v6140-central-event-bus-preboot">
-(()=>{
-'use strict';
-if(window.GL_EVENTS)return;
-const listeners=new Map(),seen=new Map(),stats={emitted:{},deduped:{},listeners:{},last:{}};
-const MAX_SEEN=400,TTL=10*60*1000;
-function prune(now=Date.now()){
- if(seen.size<=MAX_SEEN)return;
- for(const [k,t] of seen){if(now-t>TTL)seen.delete(k);if(seen.size<=MAX_SEEN)return}
- while(seen.size>MAX_SEEN)seen.delete(seen.keys().next().value);
-}
-function on(type,fn){
- type=String(type||'');if(!type||typeof fn!=='function')return()=>{};
- let set=listeners.get(type);if(!set){set=new Set();listeners.set(type,set)}
- set.add(fn);stats.listeners[type]=set.size;
- return()=>{set.delete(fn);stats.listeners[type]=set.size};
-}
-function emit(type,detail={},token=''){
- type=String(type||'');if(!type)return false;
- const now=Date.now(),tk=String(token||detail?.token||'');
- if(tk){const key=type+'|'+tk,prev=seen.get(key);if(prev&&now-prev<TTL){stats.deduped[type]=(stats.deduped[type]||0)+1;return false}seen.set(key,now);prune(now)}
- const packet={...(detail&&typeof detail==='object'?detail:{}),type,token:tk,emittedAt:now};
- stats.emitted[type]=(stats.emitted[type]||0)+1;stats.last[type]={token:tk,at:now};
- const set=listeners.get(type);if(set)for(const fn of [...set]){try{fn(packet)}catch(e){console.error('[GL Event]',type,e)}}
- try{window.dispatchEvent(new CustomEvent('growlegends:'+type,{detail:packet}))}catch(_){}
- return true;
-}
-window.GL_EVENTS=Object.freeze({on,emit,stats:()=>JSON.parse(JSON.stringify(stats))});
-window.glOnGameEvent=on;window.glEmitGameEvent=emit;window.__V6140_EVENT_BUS__=true;
-})();
-</script>
+<script id="v6140-central-event-bus-preboot" src="js/features/system/beta/v8009-s18-v6140-central-event-bus-preboot.js"></script>
 
 <script id="v4106-preboot-tech">
 (()=>{
@@ -9161,65 +9131,7 @@ try{v079RemoveBuffFx()}catch(e){}
 <script src="js/features/profile/beta/v8009-a2-profile-dungeon-position.js"></script>
 
 
-<script id="v082-dungeon-balance">
-/* ===== V4.02 Dungeon 1 rebalance =====
-   Goal:
-   - Lv.14: normally around enemy 5-6
-   - enemies 7+ become a real wall
-   - final boss aimed around Lv.22-25
-   - NO hard per-enemy level lock
-*/
-const V082_D1_LEVELS=[2,4,7,10,12,14,17,20,22,24];
-
-v025RecommendedLevel=function(di,ri){
-  ri=Math.max(0,Math.min(9,Number(ri)||0));
-  if(di===0)return V082_D1_LEVELS[ri];
-  const start=25+(di-1)*11;
-  return start+Math.round(ri*1.15);
-};
-
-v025EnemyStats=function(di,ri,enemy){
-  ri=Math.max(0,Math.min(9,Number(ri)||0));
-  const rec=v025RecommendedLevel(di,ri);
-  const boss=ri===9||enemy?.boss;
-
-  if(di===0){
-    /* Stronger from enemy 5 onward instead of merely inflating fight duration. */
-    const hp      =[120,190,290,420,610,850,1180,1580,2050,2900][ri];
-    const attack  =[17,23,31,41,54,70,91,116,143,185][ri];
-    const defense =[ 2, 4, 7,11,16,23, 32, 43, 56, 75][ri];
-    return {rec,hp,attack,defense};
-  }
-
-  const dungeonMult=1+di*.16;
-  return {
-    rec,
-    hp:Math.round((120+rec*28+ri*18)*dungeonMult*(boss?1.48:1)),
-    attack:Math.round((12+rec*4.2+ri*1.4)*dungeonMult*(boss?1.25:1)),
-    defense:Math.round((rec*1.8+ri*1.1)*dungeonMult)
-  };
-};
-
-/* Underlevel players lose damage and receive more damage.
-   Still no hard lock: a very strong build can beat content early. */
-v060PlayerDamageFactor=function(rec){
-  const gap=Math.max(0,rec-(Number(s.level)||1));
-  if(gap<=0)return 1;
-  if(gap===1)return .94;
-  return Math.max(.18,.94-(gap-1)*.105);
-};
-
-v060EnemyDamageFactor=function(rec){
-  const gap=Math.max(0,rec-(Number(s.level)||1));
-  if(gap<=0)return 1;
-  if(gap===1)return 1.08;
-  return Math.min(2.65,1.08+(gap-1)*.12);
-};
-
-/* Make sure old enemy requiredLevel metadata is informational only.
-   The final V4.02 fight handler intentionally has no per-enemy level gate. */
-
-</script>
+<script id="v082-dungeon-balance" src="js/features/dungeon/beta/v8009-s18-v082-dungeon-balance.js"></script>
 
 
 <style id="v083-hall-progress-fix">
@@ -9659,60 +9571,7 @@ localStorage.setItem(KEY,JSON.stringify(s));
 }
 </style>
 
-<script id="v096-quest-xp-star-fix-script">
-/* V4.02: quests display XP as a star icon + number, so decorate that exact UI. */
-function v096DecorateQuestXp(){
-  document.querySelectorAll('.v096-quest-xp2').forEach(x=>x.remove());
-  if(!v094XpEventActive())return;
-
-  document.querySelectorAll('#questList .quest-card').forEach((card,i)=>{
-    const q=s.quest?.options?.[i];
-    if(!q)return;
-
-    const base=Number(q.v094BaseXp ?? q.xp ?? 0);
-    const doubled=base*2;
-
-    /* Find the leaf containing the star reward and its XP number. */
-    const leaves=[...card.querySelectorAll('*')].filter(el=>el.children.length===0);
-    let reward=leaves.find(el=>{
-      const t=(el.textContent||'').trim();
-      return (t.includes('⭐') || t.includes('★') || t.includes('☆')) &&
-             /\d/.test(t);
-    });
-
-    if(!reward){
-      /* Fallback: find text that contains the original XP number. */
-      reward=leaves.find(el=>{
-        const t=(el.textContent||'').trim();
-        return t.includes(String(base)) && !/Gold|💰/i.test(t);
-      });
-    }
-
-    if(!reward)return;
-
-    /* Replace only the displayed XP number where possible. */
-    const original=reward.textContent;
-    if(original.includes(String(base))){
-      reward.textContent=original.replace(String(base),String(doubled));
-    }
-
-    const badge=document.createElement('span');
-    badge.className='v096-quest-xp2';
-    badge.textContent='×2 EXP';
-    reward.appendChild(badge);
-  });
-}
-
-const v096BaseRender=render;
-render=function(){
-  v096BaseRender();
-  
-  requestAnimationFrame(v096DecorateQuestXp);
-};
-
-document.addEventListener('click',()=>setTimeout(v096DecorateQuestXp,30),true);
-try{v096DecorateQuestXp()}catch(e){}
-</script>
+<script id="v096-quest-xp-star-fix-script" src="js/features/quest/beta/v8009-s8-v096-quest-xp-star-fix.js"></script>
 
 
 <script id="v097-exp-labels">
@@ -10071,62 +9930,7 @@ addXp=function(n){
 }
 </style>
 
-<script id="v107-book-position-fix-script">
-/* V6.112: modern Heldenquartier owns Book/Pet position.
-   The old V4.02 mover must never pull the Illegal Book out of .v514-book-host. */
-function v107PlaceBook(){
-  const btn=document.querySelector('#v106BookBtn');
-  if(!btn)return;
-
-  const pet=document.querySelector('#v686PetAlbumBtn');
-  const root=document.querySelector('#v510HeroRoot');
-  let host=root?.querySelector('.v514-book-host');
-
-  if(root){
-    if(!host){
-      const stage=root.querySelector('.v510-stage');
-      host=document.createElement('div');
-      host.className='v514-book-host';
-      if(stage)stage.insertAdjacentElement('afterend',host);
-      else root.appendChild(host);
-    }
-
-    /* Hard DOM order: Illegal Book first, Pet Album second. */
-    if(btn.parentElement!==host || host.firstElementChild!==btn){
-      host.insertBefore(btn,host.firstElementChild||null);
-    }
-    if(pet){
-      if(pet.parentElement!==host || pet.previousElementSibling!==btn){
-        btn.insertAdjacentElement('afterend',pet);
-      }
-    }
-    return;
-  }
-
-  /* Fallback for very early boot before the modern hero root exists. */
-  const level=document.querySelector('#character .level-shield');
-  if(level && btn.previousElementSibling!==level){
-    level.insertAdjacentElement('afterend',btn);
-  }
-}
-
-/* Override installer so future renders never put the book beside the avatar again. */
-const v107OldInstallBook=v106InstallBook;
-v106InstallBook=function(){
-  v107OldInstallBook();
-  v107PlaceBook();
-};
-
-const v107BaseRender=render;
-render=function(){
-  const result=v107BaseRender();
-  
-  requestAnimationFrame(v107PlaceBook);
-  return result;
-};
-
-setTimeout(v107PlaceBook,100);
-</script>
+<script id="v107-book-position-fix-script" src="js/features/book/beta/v8009-s6-v107-book-position-fix.js"></script>
 
 
 <script id="v108-expanded-item-pool" src="js/features/items/beta/v8009-s8-v108-expanded-item-pool.js"></script>
@@ -12563,44 +12367,7 @@ v126PreloadAvatar();
 }
 </style>
 
-<script id="v129-shop-inventory-character-premium-script">
-function v129RarityClass(it){
-  const q=String(it?.quality||'').toLowerCase();
-  const r=String(it?.rarity||'').toLowerCase();
-  if(q.includes('cyan')||q.includes('myst')||r.includes('cyan')||r.includes('myst'))return 'mystic-cyan';
-  if(q.includes('orange')||q.includes('legend')||r.includes('orange')||r.includes('legend'))return 'legendary-orange';
-  if(q.includes('purple')||q.includes('epic')||q.includes('episch')||r.includes('epic'))return 'epic-purple';
-  if(q.includes('blue')||q.includes('rare')||r.includes('rare'))return 'rare-blue';
-  if(q.includes('green')||q.includes('gewöhn')||r.includes('green'))return 'common-green';
-  return 'common-gray';
-}
-function v129PolishDynamicCards(){
-  /* Add rarity classes to current shop cards from backing arrays. */
-  document.querySelectorAll('#weaponShopItems .shop-item').forEach((el,i)=>{
-    const it=s.weaponShop?.[i];
-    if(it)el.classList.add(v129RarityClass(it));
-  });
-  document.querySelectorAll('#v030MagicShop .shop-grid .shop-item').forEach((el,i)=>{
-    const it=s.magicShop?.[i];
-    if(it)el.classList.add(v129RarityClass(it));
-  });
-
-  /* Base old shop fallback */
-  document.querySelectorAll('#shopItems .shop-item').forEach((el,i)=>{
-    const it=(typeof shopStock==='function'?shopStock():[])[i];
-    if(it)el.classList.add(v129RarityClass(it));
-  });
-
-  
-}
-if(typeof renderShop==='function'&&!window.__v6320V129ShopWrapped){
-  const v6320V129BaseShop=renderShop;
-  renderShop=function(){const r=v6320V129BaseShop.apply(this,arguments);v129PolishDynamicCards();return r};
-  try{window.renderShop=renderShop}catch(e){}
-  window.__v6320V129ShopWrapped=true;
-}
-v129PolishDynamicCards();
-</script>
+<script id="v129-shop-inventory-character-premium-script" src="js/features/shop/beta/v8009-s12-v129-shop-inventory-character-premium.js"></script>
 
 
 <style id="v130-classset-inventories">
@@ -13608,55 +13375,7 @@ setTimeout(v133Polish,150);
 }
 </style>
 
-<script id="v138-shop-match-inventory-script">
-function v138ShopQualityClass(it){
-  const q=String(it?.quality||'').toLowerCase();
-  const r=String(it?.rarity||'').toLowerCase();
-  const n=String(it?.name||'').toLowerCase();
-  const t=q+' '+r+' '+n;
-
-  if(/myst|cyan|türkis|tuerkis/.test(t)) return 'mystic-cyan';
-  if(/legend|orange/.test(t)) return 'legendary-orange';
-  if(/epic|episch|purple|lila/.test(t)) return 'epic-purple';
-  if(/rare|selten|blue|blau/.test(t)) return 'rare-blue';
-  if(/gewöhn|gewoehn|green|grün|gruen/.test(t)) return 'common-green';
-  return 'common-gray';
-}
-
-function v138PaintMerchant(){
-  const allClasses=['common-gray','common-green','rare-blue','epic-purple','legendary-orange','mystic-cyan'];
-
-  const bindings=[
-    ['#weaponShopItems .shop-item', s.weaponShop||[]],
-    ['#v030MagicShop .shop-grid .shop-item', s.magicShop||[]],
-    ['#shopItems .shop-item', typeof shopStock==='function' ? (shopStock()||[]) : []]
-  ];
-
-  bindings.forEach(([sel,arr])=>{
-    document.querySelectorAll(sel).forEach((el,i)=>{
-      allClasses.forEach(c=>el.classList.remove(c));
-      const it=arr[i];
-      if(it) el.classList.add(v138ShopQualityClass(it));
-      else{
-        const txt=(el.textContent||'').toLowerCase();
-        const fake={name:txt};
-        el.classList.add(v138ShopQualityClass(fake));
-      }
-    });
-  });
-
-  
-}
-
-const v138BaseRender=render;
-render=function(){
-  const r=v138BaseRender();
-  if(document.querySelector('#shop')?.classList.contains('active'))requestAnimationFrame(v138PaintMerchant);
-  return r;
-};
-
-setTimeout(v138PaintMerchant,160);
-</script>
+<script id="v138-shop-match-inventory-script" src="js/features/shop/beta/v8009-s12-v138-shop-match-inventory.js"></script>
 
 
 <style id="v139-real-shop-rarity-fix">
@@ -17582,62 +17301,7 @@ header .resource-stats .v284-dampf-card .v284-dampf-label::after{
   display:none!important;
 }
 </style>
-<script id="v294-dampf-canonical">
-/* V4.02: one Dampf card owner, one heading, numeric value only. */
-v271PaintDampf=function(){
-  v271EnsureRefillState();
-
-  const card=v284BuildDampfCard();
-  if(!card)return;
-
-  const active=v271DampfEventActive();
-  const cap=active?300:100;
-  let current=Math.max(0,Math.floor(Number(s.energy)||0));
-  if(current>cap)current=cap;
-  if(Number(s.energy)!==current)s.energy=current;
-
-  card.classList.toggle('v288-dampf-event-active',active);
-
-  const energyEl=card.querySelector('#energy');
-  if(energyEl)energyEl.textContent=`${current}/${cap}`;
-
-  const eventEl=card.querySelector('#v284DampfEvent');
-  if(eventEl){
-    eventEl.style.display=active?'inline-flex':'none';
-    if(active)eventEl.textContent='💨 DAMPF-EVENT AKTIV';
-  }
-
-  const used=Math.max(0,Math.min(10,Number(s.v271DampfRefill?.count)||0));
-  const refillText=card.querySelector('#v284DampfRefills');
-  if(refillText){
-    refillText.textContent=`Auffüllungen: ${used}/10`;
-    refillText.style.display=active?'none':'block';
-  }
-
-  const btn=card.querySelector('#v026RefillBtn');
-  if(btn){
-    btn.textContent='+20 Dampf kaufen · 1 Harz';
-    btn.style.display=active?'none':'inline-flex';
-    btn.disabled=active || used>=10 || current>=100;
-    btn.onclick=active?null:v271RefillDampf;
-  }
-};
-v026PaintDampf=v271PaintDampf;
-
-const v294BaseRender=render;
-render=function(){
-  const r=v294BaseRender.apply(this,arguments);
-  v271PaintDampf();
-  
-  const line=document.querySelector('#v141VersionLine');
-  return r;
-};
-
-try{v271PaintDampf();}catch(e){}
-
-
-const v294Line=document.querySelector('#v141VersionLine');
-</script>
+<script id="v294-dampf-canonical" src="js/features/quest/beta/v8009-s8-v294-dampf-canonical.js"></script>
 <script  src="js/features/pvp/beta/v8009-s1-v299-hall-mystic-profile-sync-fix.js"></script>
 <script id="v300-event-expiry-dampf-fix">
 let v300LastDampfActive=null;
@@ -17659,49 +17323,7 @@ const v300Line=document.querySelector('#v141VersionLine');
 </script>
 
 <script id="v301-auth-idle-hard-lock" src="js/features/account/beta/v8009-s13-v301-auth-idle-hard-lock.js"></script>
-<script id="v302-dungeon-progress-source-fix">
-function v302EnsureDungeonProgress(){
- s.dungeon=(s.dungeon&&typeof s.dungeon==='object')?s.dungeon:{};
- s.dungeon.progress=(s.dungeon.progress&&typeof s.dungeon.progress==='object')?s.dungeon.progress:{};
- s.dungeon.completed=Array.isArray(s.dungeon.completed)?s.dungeon.completed.map(Number):[];
- s.dungeon.unlocked=Array.isArray(s.dungeon.unlocked)?s.dungeon.unlocked.map(Number):[0];
- for(let i=0;i<dungeons.length;i++){
-  s.dungeon.progress[i]=Math.max(0,Math.min(9,Number(s.dungeon.progress[i])||0));
- }
-}
-function v302RepairReportedDungeon3(){
- v302EnsureDungeonProgress();
- if(s.v302DungeonProgressRepaired)return false;
- const unlocked=!!s.dungeon.keys?.[2]||s.dungeon.unlocked.includes(2);
- const completed=s.dungeon.completed.includes(2);
- if(unlocked&&!completed&&Number(s.dungeon.progress[2])===9){
-  s.dungeon.progress[2]=0;
-  if(Number(s.dungeon.selected)===2)s.dungeon.room=0;
-  s.v302DungeonProgressRepaired=true;
-  try{persist(false)}catch(e){try{localStorage.setItem(KEY,JSON.stringify(s))}catch(_){}}
-  try{v063Toast?.('Dungeon 3 korrigiert','success','Dungeon 3 startet jetzt bei Gegner 1/10.')}catch(e){}
-  return true;
- }
- s.v302DungeonProgressRepaired=true;
- return false;
-}
-const v302BaseOpenDungeon=v067OpenDungeon;
-v067OpenDungeon=function(i){
- i=Number(i);v302EnsureDungeonProgress();
- s.dungeon.room=Math.max(0,Math.min(9,Number(s.dungeon.progress[i])||0));
- return v302BaseOpenDungeon(i);
-};
-const v302BaseGoBattle=v048GoBattle;
-v048GoBattle=function(i){
- i=Number(i);v302EnsureDungeonProgress();
- s.dungeon.room=Math.max(0,Math.min(9,Number(s.dungeon.progress[i])||0));
- return v302BaseGoBattle(i);
-};
-window.selectDungeon=v048GoBattle;
-v302RepairReportedDungeon3();
-
-const v302Line=document.querySelector('#v141VersionLine');
-</script>
+<script id="v302-dungeon-progress-source-fix" src="js/features/dungeon/beta/v8009-s18-v302-dungeon-progress-source-fix.js"></script>
 
 <style id="v306-first-daily-quest-harz-style">
 #questList .v306-first-daily-harz{
@@ -20900,64 +20522,7 @@ window.v317QuestDurations=v317QuestDurations;
 <script id="v341-harz-dealer-dropdown-fix" src="js/features/shop/beta/v8009-s7-v341-harz-dealer-dropdown-fix.js"></script>
 
 <!-- ===== V4.29 Stable: event Dampf capacity/state sync fix ===== -->
-<script id="v342-event-dampf-300-fix">
-(function(){
-  /* V4.02: minimal event-Dampf safety.
-     The canonical V4.02/V4.02 functions remain the only UI/reset owners. */
-  function v345Today(){
-    try{
-      if(typeof v271DayKey==='function')return v271DayKey();
-    }catch(e){}
-    const d=new Date();
-    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
-  }
-
-  function v345QuestDampfSpentToday(){
-    const daily=s?.v109HarzDaily;
-    if(!daily)return 0;
-    if(String(daily.day||'')!==String(v345Today()))return 0;
-    return Math.max(0,Number(daily.questEnergy)||0);
-  }
-
-  function v345RepairFreshEventDampf(){
-    try{
-      if(typeof v271DampfEventActive!=='function' || !v271DampfEventActive())return false;
-
-      /* Only repair the known stale-reset case:
-         event active + exactly 100 Dampf + no quest Dampf spent today.
-         Never refill a player who already used Dampf. */
-      if(Number(s.energy)===100 && v345QuestDampfSpentToday()===0){
-        s.energy=300;
-        try{localStorage.setItem(KEY,JSON.stringify(s))}catch(e){}
-        return true;
-      }
-    }catch(e){}
-    return false;
-  }
-
-  /* Wrap only the final Dampf painter. No render wrapper, no persist wrapper,
-     no DOM observer, no timer loop. This cannot recursively rebuild the page. */
-  if(typeof v271PaintDampf==='function'){
-    const v345BasePaintDampf=v271PaintDampf;
-    v271PaintDampf=function(){
-      v345RepairFreshEventDampf();
-      return v345BasePaintDampf.apply(this,arguments);
-    };
-    if(typeof v026PaintDampf!=='undefined')v026PaintDampf=v271PaintDampf;
-  }
-
-  function v345Run(){
-    v345RepairFreshEventDampf();
-    try{v271PaintDampf?.()}catch(e){}
-  }
-
-  setTimeout(v345Run,350);
-  setTimeout(v345Run,1400);
-  document.addEventListener('visibilitychange',()=>{
-    if(!document.hidden)setTimeout(v345Run,100);
-  });
-})();
-</script>
+<script id="v342-event-dampf-300-fix" src="js/features/events/beta/v8009-s6-v342-event-dampf-300-fix.js"></script>
 
 <!-- ===== V7.227: Beta / Server 1 routing + Google early access ===== -->
 <style id="v343-server-select-css">
@@ -24892,65 +24457,7 @@ create index if not exists player_messages_sender_idx on public.player_messages(
 }
 </style>
 
-<script id="v387-quest-page-final-script">
-(function(){
-  const VERSION='V4.29 Stable';
-
-  function v387LegacyBoard(){
-    const list=document.querySelector('#quests #questList');
-    const board=list?.closest('.card');
-    if(board)board.classList.add('v387-legacy-board');
-    return board;
-  }
-
-  function v387EnsureRefresh(){
-    const shell=document.querySelector('#quests .v386-shell');
-    if(!shell || shell.querySelector('.v387-refresh'))return;
-
-    const btn=document.createElement('button');
-    btn.type='button';
-    btn.className='v387-refresh';
-    btn.textContent='🔄 Neue Aufträge · 10 Gold';
-    btn.onclick=()=>{
-      const real=document.querySelector('#quests #refreshQuests');
-      if(real)real.click();
-    };
-    shell.appendChild(btn);
-  }
-
-  function v387Clean(){
-    const root=document.querySelector('#quests');
-    if(!root)return;
-
-    /* The original intro is obsolete in the new design. */
-    root.querySelectorAll(':scope > .hero-card').forEach(el=>el.style.display='none');
-
-    v387LegacyBoard();
-
-    /* V4.02 placeholder portrait was only a temporary graphic. */
-    root.querySelectorAll('.v386-mira-art').forEach(el=>el.remove());
-
-    v387EnsureRefresh();
-  }
-
-  const baseRenderQuests=renderQuests;
-  renderQuests=function(){
-    const result=baseRenderQuests.apply(this,arguments);
-    v387Clean();
-    return result;
-  };
-
-  /* V7.122: duplicate quest-nav cleanup retired; renderQuests owns it. */
-
-  setTimeout(()=>{
-    v387Clean();
-    document.querySelectorAll(
-      '.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version'
-    ).forEach(el=>{if(el)el.textContent=VERSION});
-    document.querySelectorAll('.v366-ver').forEach(el=>el.textContent='V4.11');
-  },650);
-})();
-</script>
+<script id="v387-quest-page-final-script" src="js/features/quest/beta/v8009-s8-v387-quest-page-final.js"></script>
 
 <!-- ===== V4.29 Stable: Worldboss attack button hard fix ===== -->
 <script id="v388-worldboss-attack-fix" src="js/features/worldboss/beta/v8009-s6-v388-worldboss-attack-fix.js"></script>
@@ -25819,31 +25326,7 @@ create index if not exists player_messages_sender_idx on public.player_messages(
 </style>
 <script id="v447-unified-item-balance" src="js/features/items/beta/v8009-s1-v447-unified-item-balance.js"></script>
 
-<script id="v6337-item-class-stat-rule">
-(()=>{
-'use strict';
-if(window.__V6337_ITEM_CLASS_STAT_RULE__)return;
-window.__V6337_ITEM_CLASS_STAT_RULE__=true;
-function clsPrimary(c){return c==='scout'?'geschick':(c==='bruiser'||c==='summoner')?'intelligenz':'staerke'}
-function native(it){try{return {...(it?.v429StatLock?.native||{})}}catch(_){return{}}}
-function check(it){
- if(!it?.slot)return null;
- try{window.v447ApplyItemCurve?.(it)}catch(_){}
- const n=native(it),c=String(it.classId||s?.playerClass||'grower'),p=clsPrimary(c),q=String(it.quality||'gray').toLowerCase();
- const high=['purple','orange','cyan','prismatic'].includes(q);
- const allowed=new Set([p,'ausdauer',...(high?['glueck']:[])]);
- const keys=Object.keys(n).filter(k=>(Number(n[k])||0)>0);
- return {name:it.name||'',classId:c,quality:q,primary:p,native:n,valid:keys.includes(p)&&keys.includes('ausdauer')&&(high?keys.includes('glueck'):!keys.includes('glueck'))&&keys.every(k=>allowed.has(k))};
-}
-function normalize(){try{const changed=window.v447NormalizeAllItems?.();if(changed){try{localStorage.setItem(KEY,JSON.stringify(s))}catch(_){}}return !!changed}catch(_){return false}}
-window.v6337NormalizeItemStats=normalize;
-window.v6337ItemStatDiagnostics=()=>{
- const items=[...(Array.isArray(s?.inventory)?s.inventory:[]),...Object.values(s?.equipment||{}),...(Array.isArray(s?.weaponShop)?s.weaponShop:[]),...(Array.isArray(s?.magicShop)?s.magicShop:[])].filter(Boolean);
- const rows=items.map(check).filter(Boolean);return{version:'V6.347',count:rows.length,invalid:rows.filter(x=>!x.valid),sample:rows.slice(0,12)};
-};
-normalize();
-})();
-</script>
+<script id="v6337-item-class-stat-rule" src="js/features/items/beta/v8009-s15-v6337-item-class-stat-rule.js"></script>
 
 <!-- ===== V4.48 Stable: readable item verdict + final power + account identity isolation ===== -->
 <style id="v448-item-verdict-account-css">
@@ -27591,19 +27074,7 @@ html.v481-hidden *,html.v481-hidden *::before,html.v481-hidden *::after{animatio
   .v492-main>.v492-scene{min-height:535px}.v492-plant{min-height:86px}.v492-sign h2{font-size:25px}.v492-yield{grid-template-columns:1fr}.v492-upgrade{grid-template-columns:1fr}.v492-upgrade .btn{grid-column:1;grid-row:auto;width:100%}
 }
 </style>
-<script id="v493-growroom-mobile-js">
-(()=>{
- const syncToggle=()=>{const root=document.querySelector('.v492-grow'),btn=document.querySelector('[data-v493-seeds]');if(!root||!btn)return;btn.textContent=root.classList.contains('v493-seeds-open')?'🌰 Samenlager schließen':'🌰 Samenlager öffnen'};
- document.addEventListener('click',e=>{const t=e.target instanceof Element?e.target:null;if(!t)return;const toggle=t.closest('[data-v493-seeds]');if(toggle){e.preventDefault();const root=document.querySelector('.v492-grow');if(root){root.classList.toggle('v493-seeds-open');syncToggle()}return}
-   const seed=t.closest('[data-v492-seed]');if(seed&&!t.closest('[data-v492-buy]')&&window.matchMedia('(max-width:760px)').matches){setTimeout(()=>{const root=document.querySelector('.v492-grow');if(root){root.classList.remove('v493-seeds-open');syncToggle();document.querySelector('.v492-scene')?.scrollIntoView({block:'start',behavior:'smooth'})}},40)}
- },true);
- const keepVersion=()=>{try{const V=window.GROW_LEGENDS_VERSION||{short:'V7.111',label:'V7.111 Stable'};document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version').forEach(el=>{if(el)el.textContent=V.label});document.querySelectorAll('.v366-ver,.v371-logo em,.v372-logo em').forEach(el=>{if(el)el.textContent=V.short})}catch(e){}};
- keepVersion();
- document.addEventListener('DOMContentLoaded',keepVersion,{once:true});
- window.addEventListener('pageshow',keepVersion,{passive:true});
- window.addEventListener('growlegends:account-ready',keepVersion,{passive:true});
-})();
-</script>
+<script id="v493-growroom-mobile-js" src="js/features/grow/beta/v8009-s11-v493-growroom-mobile.js"></script>
 
 <style id="v494-grow-balance-css">.v494-balance-note{margin-top:6px;padding:6px 7px;border:1px solid #47664a;border-radius:9px;background:#07120a;color:#a9c7ad;font-size:6.5px;line-height:1.45}</style>
 
@@ -40264,48 +39735,7 @@ body.v659-native-fullscreen #v074ProfileOverlay.v074-profile-overlay{
   top:calc(var(--v654-hud-bottom,50px) + 2px)!important;
 }
 </style>
-<script id="v659-native-fullscreen-statusbar-js">
-(()=>{
-  'use strict';
-  function fullscreenBuild(){
-    try{
-      const u=new URL(location.href);
-      if(u.searchParams.get('gl_fullscreen')==='1')return true;
-    }catch(e){}
-    try{
-      const C=window.Capacitor;
-      if(!C)return false;
-      if(typeof C.isNativePlatform==='function')return !!C.isNativePlatform();
-      if(typeof C.getPlatform==='function')return C.getPlatform()!=='web';
-      return !!C.platform && C.platform!=='web';
-    }catch(e){return false}
-  }
-  function measureHud(){
-    requestAnimationFrame(()=>{
-      const hud=document.getElementById('v372TopbarShell');
-      if(!hud)return;
-      const bottom=Math.max(0,Math.round(hud.getBoundingClientRect().bottom));
-      if(bottom>0){
-        document.documentElement.style.setProperty('--v654-hud-bottom',bottom+'px');
-        document.body?.classList.add('v654-hud-measured');
-      }
-      const panel=document.getElementById('v032MenuPanel');
-      if(panel&&(panel.classList.contains('open')||panel.classList.contains('show')))panel.scrollTop=0;
-    });
-  }
-  function apply(){
-    if(!fullscreenBuild())return;
-    document.body?.classList.add('v659-native-fullscreen');
-    document.documentElement.style.setProperty('--v650-safe-top','0px');
-    measureHud();
-  }
-  apply();
-  document.addEventListener('DOMContentLoaded',apply,{once:true});
-  window.addEventListener('pageshow',apply,{passive:true});
-  window.addEventListener('resize',measureHud,{passive:true});
-  window.addEventListener('growlegends:account-ready',()=>{apply();measureHud()},{passive:true});
-})();
-</script>
+<script id="v659-native-fullscreen-statusbar-js" src="js/features/ui/beta/v8009-s14-v659-native-fullscreen-statusbar.js"></script>
 <!-- ===== /V6.59 ===== -->
 
 
@@ -43884,34 +43314,7 @@ window.v6122DailyLoginQA=()=>({
 .gl-legal-links{margin-top:10px;text-align:center;font-size:10px;line-height:1.6;color:#8fa096}
 .gl-legal-links a,.v347-footer .links a{color:#9bdc80!important;text-decoration:underline!important;cursor:pointer!important}
 </style>
-<script id="gl-playstore-legal-links-js">
-(function(){
-  'use strict';
-  const BASE='https://gamenew.djtomssen.workers.dev';
-  const urls={privacy:BASE+'/datenschutz.html',imprint:BASE+'/impressum.html',delete:BASE+'/account-loeschen.html'};
-  const anchor=(href,label)=>'<a href="'+href+'" target="_blank" rel="noopener noreferrer">'+label+'</a>';
-  function applyLegalLinks(){
-    document.querySelectorAll('.v347-footer .links').forEach(el=>{
-      el.innerHTML=anchor(urls.privacy,'Datenschutz')+' &nbsp;|&nbsp; '+anchor(urls.imprint,'Impressum')+' &nbsp;|&nbsp; <a href="mailto:Tomssen5@gmail.com">Support</a>';
-    });
-    const menu=document.querySelector('#v141SettingsMenu');
-    if(menu && !menu.querySelector('#glLegalLinks')){
-      const box=document.createElement('div');
-      box.id='glLegalLinks'; box.className='gl-legal-links';
-      box.innerHTML=anchor(urls.privacy,'Datenschutz')+' · '+anchor(urls.imprint,'Impressum')+' · '+anchor(urls.delete,'Account-Löschung im Web');
-      const version=menu.querySelector('#v141VersionLine');
-      if(version) version.insertAdjacentElement('beforebegin',box); else menu.appendChild(box);
-    }
-  }
-  const old347=typeof window.v347EnsureLayout==='function'?window.v347EnsureLayout:null;
-  if(old347) window.v347EnsureLayout=function(){const r=old347.apply(this,arguments);applyLegalLinks();return r;};
-  const old141=typeof window.v141BuildSettings==='function'?window.v141BuildSettings:null;
-  if(old141) window.v141BuildSettings=function(){const r=old141.apply(this,arguments);applyLegalLinks();return r;};
-  window.glApplyLegalLinks=applyLegalLinks;
-  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',applyLegalLinks,{once:true}); else applyLegalLinks();
-  setTimeout(applyLegalLinks,300); setTimeout(applyLegalLinks,1200); setTimeout(applyLegalLinks,2500);
-})();
-</script>
+<script id="gl-playstore-legal-links-js" src="js/features/legal/beta/v8009-s1-gl-playstore-legal-links.js"></script>
 <!-- ===== /Play Store Step 2 ===== -->
 
 
@@ -43931,17 +43334,7 @@ window.v6122DailyLoginQA=()=>({
 <!-- ===== /V4.165 ===== -->
 
 <!-- ===== 2026-09-11 Händler-Herkunft + Schmiede-Ökonomie Guard ===== -->
-<script id="gl-shop-provenance-guard">
-(()=>{'use strict';
- if(window.__GL_SHOP_PROVENANCE_GUARD__)return;window.__GL_SHOP_PROVENANCE_GUARD__=true;
- function tag(it){if(!it||typeof it!=='object')return it;it.shopItem=true;it.source='shop';if(it.shopPaidPrice==null&&Number(it.price)>0)it.shopPaidPrice=Number(it.price);return it}
- function repair(){let changed=false;for(const it of (s?.inventory||[])){if(it?.shopItem===true&&String(it.source||'').toLowerCase()!=='shop'){it.source='shop';if(it.shopPaidPrice==null&&Number(it.price)>0)it.shopPaidPrice=Number(it.price);changed=true}}if(changed){try{persist(false)}catch(_){}}}
- function wrap(name,arrName){const base=window[name];if(typeof base!=='function'||base.__glShopSource)return;const fn=function(i){try{tag(s?.[arrName]?.[Number(i)])}catch(_){}return base.apply(this,arguments)};fn.__glShopSource=true;window[name]=fn;try{if(name==='v030BuyWeapon')v030BuyWeapon=fn;if(name==='v030BuyMagic')v030BuyMagic=fn}catch(_){}}
- function install(){try{(s?.weaponShop||[]).forEach(tag);(s?.magicShop||[]).forEach(tag);repair();wrap('v030BuyWeapon','weaponShop');wrap('v030BuyMagic','magicShop')}catch(_){}}
- install();document.addEventListener('DOMContentLoaded',install,{once:true});window.addEventListener('growlegends:account-ready',()=>setTimeout(install,60));window.addEventListener('pageshow',()=>setTimeout(install,60),{passive:true});
- window.vShopProvenanceQA=()=>({weaponTagged:(s?.weaponShop||[]).every(x=>!x||x.shopItem===true),magicTagged:(s?.magicShop||[]).every(x=>!x||x.shopItem===true),oldInventoryTagged:(s?.inventory||[]).filter(x=>x?.shopItem===true).every(x=>String(x.source||'').toLowerCase()==='shop')});
-})();
-</script>
+<script id="gl-shop-provenance-guard" src="js/features/shop/beta/v8009-s12-gl-shop-provenance-guard.js"></script>
 <!-- ===== /Händler-Herkunft Guard ===== -->
 
 
@@ -45296,38 +44689,7 @@ body.glw-thunder #glWeatherLayer{animation:glwThunder 10s linear infinite}
 <!-- ===== /V6.213 ===== -->
 
 <!-- ===== V6.214 LEGACY RENDER CLEANUP ===== -->
-<script id="v6214-legacy-cleanup-authority">
-(()=>{
- 'use strict';
- if(window.__V6214_LEGACY_CLEANUP__)return;
- window.__V6214_LEGACY_CLEANUP__=true;
- /* V7.156: ranking/profile repaint ownership now lives in V6.145 + V6.290.
-    Keep only the idempotent Hall polish helper; old ranking/pageshow/account
-    wrappers are retired. */
- function polishHall(){
-  try{window.v646DecorateHall?.()}catch(_){}
-  const hall=document.getElementById('hall');if(!hall)return;
-  hall.classList.add('v648-hall');hall.setAttribute('data-hall-build','V6.145');
-  const title=hall.querySelector('.v052-title'),sub=hall.querySelector('.v052-sub');
-  if(title&&title.textContent!=='HALL OF HAZE')title.textContent='HALL OF HAZE';
-  const wanted='Rangliste, Spielerprofile und die größten Grow-Legenden.';
-  if(sub&&sub.textContent!==wanted)sub.textContent=wanted;
-  hall.querySelectorAll('#v072HallRanking .v072-player-row').forEach(row=>{
-   const actions=row.querySelector('.v073-row-actions');if(!actions)return;
-   const pill=[...actions.querySelectorAll('.pill')].find(el=>el.textContent.trim().toUpperCase()==='DU');
-   const name=row.querySelector('.v072-player-name');if(!pill||!name)return;
-   row.classList.add('v648-self-row');pill.classList.add('v648-self-pill');if(pill.parentElement!==name)name.appendChild(pill);
-  });
- }
- window.v6214PolishHall=polishHall;
- function cleanupPreviewDom(){
-  try{document.querySelectorAll('.v435-preview-launch,.v441-preview-launch,[data-v435-preview],[data-v441-preview]').forEach(x=>x.remove())}catch(_){}
-  try{document.getElementById('glWeatherLayer')?.remove()}catch(_){}
- }
- cleanupPreviewDom();
- window.__V6214_QA__=()=>({hallPolishWrapperRetired:true,lifecycleHooksRetired:true,temporaryDungeonPreviewModulesRetired:true});
-})();
-</script>
+<script id="v6214-legacy-cleanup-authority" src="js/features/authority/beta/v8009-s12-v6214-legacy-cleanup-authority.js"></script>
 <!-- ===== /V6.214 ===== -->
 
 <!-- ===== V6.215 COMBAT / OBSERVER CLEANUP ===== -->
@@ -48969,65 +48331,7 @@ body:not(.v6291-summoner-active) .v6287-summon-fx{
 
 
 <!-- ===== V6.295 HARZRUFERIN · CORE RECURSION FIX ===== -->
-<script id="v6295-harzruferin-corefix-js">
-(()=>{
- 'use strict';
- if(window.__V6295_HARZ_CORE_FIX__)return;
- window.__V6295_HARZ_CORE_FIX__=true;
-
- const state=()=>{try{return typeof s!=='undefined'?s:window.s||null}catch(_){return window.s||null}};
- const isHR=()=>String(state()?.playerClass||'')==='summoner';
-
- function num(fn,fallback=null){
-   try{
-     const v=Number(fn());
-     return Number.isFinite(v)?v:fallback;
-   }catch(_){return fallback}
- }
-
- /* Detect regressions without polling or DOM observers. */
- window.v6295HarzruferinCoreDiagnostics=()=>({
-   version:'V6.295',
-   active:isHR(),
-   primary:num(()=>v029PrimaryStat(),null),
-   intelligenz:num(()=>totalAttr('intelligenz'),null),
-   ausdauer:num(()=>totalAttr('ausdauer'),null),
-   maxHp:num(()=>maxHp(),null),
-   combatPower:num(()=>combatPower(),null),
-   talentSummary:(()=>{
-     try{
-       const x=v314Summary();
-       return {
-         primaryPct:Number(x?.primaryPct)||0,
-         hpPct:Number(x?.hpPct)||0,
-         damagePct:Number(x?.damagePct)||0,
-         summonChance:Number(x?.summonChance)||0,
-         summonDamage:Number(x?.summonDamage)||0
-       };
-     }catch(e){return {error:String(e?.message||e)}}
-   })(),
-   exactTalentStats:(()=>{
-     try{
-       const x=v319ExactTalentStats();
-       return {
-         damagePct:Number(x?.damagePct)||0,
-         hpPct:Number(x?.hpPct)||0,
-         lifeSteal:Number(x?.lifeSteal)||0,
-         summonChance:Number(x?.v6287SummonChance)||0
-       };
-     }catch(e){return {error:String(e?.message||e)}}
-   })()
- });
-
- /* Repair the character HUD after account load so stale zero values disappear. */
- function refresh(){
-   if(!isHR())return;
-   try{render?.()}catch(_){}
-   try{window.v448PaintPower?.()}catch(_){}
- }
- window.addEventListener('growlegends:account-ready',()=>setTimeout(refresh,80));
-})();
-</script>
+<script id="v6295-harzruferin-corefix-js" src="js/features/combat/beta/v8009-s9-v6295-harzruferin-corefix.js"></script>
 <!-- ===== /V6.295 ===== -->
 
 
@@ -50722,33 +50026,7 @@ window.v6335SporeDotDiagnostics=()=>({
   #tower .v6341-recovery-live{font-size:7.2px!important;letter-spacing:.02em!important}
 }
 </style>
-<script id="v6341-tower-recovery-live-js">
-(()=>{
- 'use strict';
- if(window.__V6341_TOWER_RECOVERY_LIVE__)return;
- window.__V6341_TOWER_RECOVERY_LIVE__=true;
- const pad=n=>String(Math.max(0,Math.floor(Number(n)||0))).padStart(2,'0');
- const clock=ms=>{const sec=Math.max(0,Math.ceil((Number(ms)||0)/1000)),h=Math.floor(sec/3600),m=Math.floor(sec%3600/60),s=sec%60;return `${pad(h)}:${pad(m)}:${pad(s)}`};
- function info(){try{const d=window.v6250TowerRecoveryDiagnostics?.();return d?.current&&typeof d.current==='object'?d.current:null}catch(_){return null}}
- function paint(){
-   if(document.hidden)return false;
-   const root=document.getElementById('tower'),bar=root?.querySelector('.vT-recovery-bar');
-   if(!root||!bar)return false;
-   const x=info();if(!x)return false;
-   let live=bar.querySelector('.v6341-recovery-live');
-   if(!live){live=document.createElement('span');live.className='v6341-recovery-live';bar.appendChild(live)}
-   const pct=Math.max(0,Math.min(100,Number(x.pct)||0)),step=Math.max(0,Number(x.step)||0),next=Math.max(0,Math.min(step,100-pct)),full=pct>=100;
-   live.classList.toggle('full',full);
-   live.innerHTML=full?'💚 100 % · VOLLSTÄNDIG ERHOLT':`💚 ${Math.round(pct)} % HP · <b>+${Math.round(next)} % in ${clock(x.nextMs)}</b>`;
-   const fill=bar.querySelector(':scope > i');if(fill)fill.style.width=`${pct}%`;
-   const head=root.querySelector('.vT-recovery-head strong');if(head)head.textContent=`${Math.round(pct)} %`;
-   const meta=root.querySelector('.vT-recovery-meta');
-   if(meta){const spans=meta.querySelectorAll('span');if(spans[0])spans[0].textContent=`+${Math.round(step)} % HP pro Stunde`;if(spans[1])spans[1].textContent=full?'Vollständig erholt':`Nächste +${Math.round(next)} % in ${clock(x.nextMs)} · 100 % in ${typeof x.fullMs==='number'?clock(x.fullMs):'--:--:--'}`}
-   return true;
- }
- window.v6341PaintTowerRecoveryTimer=paint;
-})();
-</script>
+<script id="v6341-tower-recovery-live-js" src="js/features/tower/beta/v8009-s6-v6341-tower-recovery-live.js"></script>
 <!-- ===== /V6.347 ===== -->
 
 
@@ -51249,37 +50527,7 @@ window.__V7092_VERSION_OWNER_RETIRED__=true;
 <!-- ===== /V7.095 ===== -->
 
 <!-- ===== V7.095 V6.349 PRODUCTION PARITY MONITOR ===== -->
-<script id="v7094-v6349-production-parity-monitor">
-(()=>{
-'use strict';
-if(window.__V7094_PARITY_MONITOR__)return;window.__V7094_PARITY_MONITOR__=true;
-const VERSION='V7.095';
-const screens=['world','character','inventory','shop','grow','quests','dungeon','tower','endgame','pvp','guild','hall','friends','mail'];
-const funcs=['render','renderInventory','renderShop','renderGrow','renderQuests','renderDungeon','vTowerRender','v204Fight','v106OpenBook'];
-let last=null;
-function snapshot(){
- const missingScreens=screens.filter(id=>!document.getElementById(id));
- const missingFunctions=funcs.filter(n=>typeof window[n]!=='function'&&typeof globalThis[n]!=='function');
- const duplicateIds=(()=>{const m=new Map();document.querySelectorAll('[id]').forEach(e=>m.set(e.id,(m.get(e.id)||0)+1));return [...m].filter(([,n])=>n>1).map(([id,n])=>({id,n})).slice(0,20)})();
- const authority={
-  caps:window.v7081CapabilitiesDiagnostics?.()||null,
-  build:window.v7033BuildAuthorityDiagnostics?.()||null,
-  dungeon:window.v7051DungeonAuthorityDiagnostics?.()||null,
-  pvp:window.v7053PvpAuthorityDiagnostics?.()||null,
-  grow:window.v7065GrowAuthorityDiagnostics?.()||null,
-  tower:window.v7072AuthorityDiagnostics?.()||null
- };
- last={version:VERSION,baseline:'V6.349',at:Date.now(),missingScreens,missingFunctions,duplicateIds,authority};
- if(missingScreens.length||missingFunctions.length||duplicateIds.length){
-  window.__GL_RUNTIME_WATCHDOG__?.report?.('v6349_parity_surface_missing','error',{missingScreens,missingFunctions,duplicateIds},{screen:'system',incidentKey:'surface'});
- }
- return last;
-}
-window.v7094ParityDiagnostics=()=>snapshot();
-window.addEventListener('growlegends:account-ready',()=>setTimeout(snapshot,5000),{passive:true});
-setTimeout(snapshot,12000);
-})();
-</script>
+<script id="v7094-v6349-production-parity-monitor" src="js/features/system/beta/v8009-s18-v7094-v6349-production-parity-monitor.js"></script>
 <!-- ===== /V7.095 PARITY MONITOR ===== -->
 
 
@@ -51722,46 +50970,7 @@ window.__V7117_GOLD_SHOP_PRICES__=Object.freeze({harzPrices:[10,50,100,250],even
 
 
 <!-- ===== V7.123 QUEST INSTANT OPEN · NO WAITING ROOM ===== -->
-<script id="v7123-quest-instant-open">
-(()=>{
-'use strict';
-if(window.__V7123_QUEST_INSTANT_OPEN__)return;
-window.__V7123_QUEST_INSTANT_OPEN__=true;
-const EVENT='growlegends:navigation-open-v7119';
-const S=window.__V7123_QUEST_STATE__||(window.__V7123_QUEST_STATE__={opens:0,lastSyncMs:0,lastError:''});
-window.addEventListener(EVENT,e=>{
-  if(String(e?.detail?.id||'')!=='quests')return;
-  S.opens++;
-  /* V7.123: never hide or delay the quest page. The canonical renderer paints
-     immediately. Authority reconciliation is non-blocking and already repaints
-     only when the server state actually differs from the local snapshot. */
-  if(window.v7110QuestAuthorityEnforced?.()&&typeof window.v7110SyncQuestAuthority==='function'){
-    const started=performance.now();
-    Promise.resolve(window.v7110SyncQuestAuthority(false)).then(()=>{
-      S.lastSyncMs=Math.round(performance.now()-started);S.lastError='';
-    }).catch(err=>{S.lastError=String(err?.message||err)});
-  }
-},{passive:true});
-window.__GROW_LEGENDS_RELEASE__='V7.123';
-window.__V7123_CLEANUP__=Object.freeze({
-  phase:8,
-  questWaitingRoomRemoved:true,
-  questArtificialDelayRemoved:true,
-  duplicateQuestNavigationPaintersRemainRetired:true,
-  authoritySyncNonBlocking:true,
-  gameplayRulesChanged:false,
-  rewardsChanged:false,
-  serverAuthorityChanged:false
-});
-window.v7123QuestDiagnostics=()=>({
-  release:window.__GROW_LEGENDS_RELEASE__||'',
-  version:window.GROW_LEGENDS_VERSION?.short||'',
-  opens:S.opens,lastSyncMs:S.lastSyncMs,lastError:S.lastError,
-  waitingRoom:false,
-  routeWrapRetired:window.__V7110_QUEST_ROUTE_WRAP_RETIRED__||''
-});
-})();
-</script>
+<script id="v7123-quest-instant-open" src="js/features/quest/beta/v8009-s8-v7123-quest-instant-open.js"></script>
 <!-- ===== /V7.123 ===== -->
 
 
