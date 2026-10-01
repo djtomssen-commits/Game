@@ -89,26 +89,8 @@
     if(balNew)balNew.textContent=bal.toLocaleString('de-DE');
   }
 
-  const v338BaseDealerRender=window.v322RenderDealer;
-  if(typeof v338BaseDealerRender==='function'){
-    window.v322RenderDealer=function(){
-      const r=v338BaseDealerRender.apply(this,arguments);
-      v338ModernizeDealer();
-      return r;
-    };
-  }
-
-  window.addEventListener('growlegends:navigation-open-v7119',e=>{
-    if(String(e?.detail?.id||'')==='harzDealer')v338ModernizeDealer();
-  },{passive:true});
-
-  function v338ApplyVersion(){
-    document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version]').forEach(el=>{
-      if(el)el.textContent=V338_VERSION;
-    });
-  }
-
-  document.addEventListener('DOMContentLoaded',()=>{v338ModernizeDealer();v338ApplyVersion()},{once:true});
-  window.addEventListener('pageshow',()=>{if(document.getElementById('harzDealer')?.classList.contains('active'))v338ModernizeDealer();v338ApplyVersion()},{passive:true});
-  window.addEventListener('growlegends:account-ready',()=>{v338ModernizeDealer();v338ApplyVersion()},{passive:true});
+  /* V8.009: retired. v567 is the canonical Harz dealer visual owner.
+     Keep this file only for legacy function compatibility; do not rebuild hidden
+     dealer DOM or rewrite the global version from old V4.29 lifecycle hooks. */
+  window.__V338_DEALER_VISUAL_OWNER__='retired-v567';
 })();
