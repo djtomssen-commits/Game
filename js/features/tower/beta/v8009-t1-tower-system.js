@@ -1159,22 +1159,26 @@ function bind(){const root=document.getElementById('tower');if(!root)return;root
 })}
 function installSection(){if(document.getElementById('tower'))return;const sec=document.createElement('section');sec.id='tower';sec.className='screen';const host=document.querySelector('main')||document.querySelector('.content')||document.body;host.appendChild(sec);const legal=document.getElementById('v337LegalFooter');if(legal&&legal.parentElement===host)host.appendChild(legal)}
 function installNav(){
- try{if(typeof v032Go==='function'&&!window.__vTowerGo){const base=v032Go;v032Go=function(id){
- if(id!=='tower'&&ensure().run?.mode==='battle')battleToken++;
- if(id!=='tower'&&towerTab==='result'&&!ensure().run?.active){
-   const t=ensure();t.lastResult=null;towerTab='run';save(false);
- }
- const out=base.apply(this,arguments);
- const towerVisible=id==='tower'&&!!document.getElementById('tower')?.classList.contains('active');
- v6260TowerChrome(towerVisible);
- document.body?.classList.toggle('v6259-tower-focus',towerVisible);
- if(towerVisible){
-   towerTab=ensure().run?.active?'run':(towerTab==='result'?'result':'run');
-   requestAnimationFrame(()=>{try{render()}catch(e){console.error('V6.261 tower render',e);v6260TowerChrome(false)}});
- }
- return out
-};try{window.v032Go=v032Go}catch(e){}window.__vTowerGo=true}}catch(e){}
- const add=()=>{const p=document.getElementById('v032MenuPanel');if(!p||p.querySelector('[data-screen="tower"]'))return;const d=p.querySelector('[data-screen="dungeon"]'),b=document.createElement('button');b.type='button';b.className='top-menu-item';b.dataset.screen='tower';b.innerHTML='<span>🗼</span>Anbauturm';b.onclick=e=>{e.preventDefault();e.stopPropagation();typeof v032Go==='function'&&v032Go('tower')};if(d?.nextSibling)p.insertBefore(b,d.nextSibling);else p.appendChild(b)};add();document.addEventListener('click',e=>{if(e.target?.closest?.('#v032MenuBtn,#v032MenuToggle'))requestAnimationFrame(add)},true);window.addEventListener('growlegends:account-ready',()=>requestAnimationFrame(add));window.addEventListener('pageshow',()=>requestAnimationFrame(add),{passive:true});window.vTowerEnsureMenu=add
+ try{
+  if(!window.__vTowerGo){
+   window.addEventListener('growlegends:navigation-open-v7119',e=>{
+    const id=String(e?.detail?.id||'');
+    if(id!=='tower'&&ensure().run?.mode==='battle')battleToken++;
+    if(id!=='tower'&&towerTab==='result'&&!ensure().run?.active){
+      const t=ensure();t.lastResult=null;towerTab='run';save(false);
+    }
+    const towerVisible=id==='tower'&&!!document.getElementById('tower')?.classList.contains('active');
+    v6260TowerChrome(towerVisible);
+    document.body?.classList.toggle('v6259-tower-focus',towerVisible);
+    if(towerVisible){
+      towerTab=ensure().run?.active?'run':(towerTab==='result'?'result':'run');
+      try{render()}catch(err){console.error('V6.261 tower render',err);v6260TowerChrome(false)}
+    }
+   },{passive:true});
+   window.__vTowerGo=true;
+  }
+ }catch(e){}
+ const add=()=>{const p=document.getElementById('v032MenuPanel');if(!p||p.querySelector('[data-screen="tower"]'))return;const d=p.querySelector('[data-screen="dungeon"]'),b=document.createElement('button');b.type='button';b.className='top-menu-item';b.dataset.screen='tower';b.innerHTML='<span>🗼</span>Anbauturm';b.onclick=e=>{e.preventDefault();e.stopPropagation();typeof v032Go==='function'&&v032Go('tower')};if(d?.nextSibling)p.insertBefore(b,d.nextSibling);else p.appendChild(b)};add();document.addEventListener('click',e=>{if(e.target?.closest?.('#v032MenuBtn,#v032MenuToggle'))requestAnimationFrame(add)},true);window.addEventListener('growlegends:account-ready',add);window.addEventListener('pageshow',add,{passive:true});window.vTowerEnsureMenu=add
 }
 function wrapProfile(){try{if(typeof v073ProfilePayload==='function'&&!window.__vTowerProfilePayload){const base=v073ProfilePayload;v073ProfilePayload=function(){const p=base.apply(this,arguments)||{};p.dungeon_progress=(p.dungeon_progress&&typeof p.dungeon_progress==='object')?{...p.dungeon_progress}:{};p.dungeon_progress.tower=towerMirror();return p};try{window.v073ProfilePayload=v073ProfilePayload}catch(e){}window.__vTowerProfilePayload=true}}catch(e){}
  try{if(typeof persist==='function'&&!window.__vTowerPersist){const base=persist;persist=function(){const out=base.apply(this,arguments);scheduleSync(false);return out};try{window.persist=persist}catch(e){}window.__vTowerPersist=true}}catch(e){}
