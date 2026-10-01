@@ -145,21 +145,11 @@
   /* V8.009 Hall video fix: decorate the own card immediately after the final
      authoritative renderer writes it, so the first visible frame is canonical. */
   try{window.v646DecorateHall?.()}catch(e){}
-  requestAnimationFrame(()=>{try{window.v646DecorateHall?.()}catch(e){}});
  };
  try{window.v072RenderOwnProfile=v072RenderOwnProfile}catch(e){}
 
- v073LoadRanking=async function(){
-  const el=document.getElementById('v072HallRanking');if(!el)return;
-  if(!(await v073Init())||!v073User?.id){el.innerHTML='<div class="v072-empty">Melde dich an, um die Rangliste zu laden.</div>';return}
-  try{await v073SyncProfile(true)}catch(e){}
-  el.innerHTML='<div class="v072-empty">Rangliste wird geladen...</div>';
-  const {data,error}=await v073Db.from('profiles').select(PROFILE_SELECT).order('level',{ascending:false}).order('combat_power',{ascending:false}).limit(50);
-  if(error){console.error('V4.159 Hall',error);el.innerHTML='<div class="v072-status-offline">Rangliste konnte nicht geladen werden.</div>';return}
-  el.innerHTML=(data||[]).length?(data||[]).map((p,i)=>socialRow(p,i,String(p.id)===String(v073User?.id)?'<span class="pill">DU</span>':`<button class="btn secondary" data-v073-add="${esc(p.id)}" data-name="${esc(p.character_name)}">Freund</button>${mailButton(p)}`,false)).join(''):'<div class="v072-empty">Noch keine Spieler in der Hall of Haze.</div>';
-  try{v073BindAddButtons(el)}catch(e){}bindRows(el);
- };
- try{window.v073LoadRanking=v073LoadRanking}catch(e){}
+ /* V8.009: superseded Hall ranking renderer retired; v6145 is canonical. */
+
 
  v073SearchPlayer=async function(name,targetSelector){
   const target=document.querySelector(targetSelector);if(!target)return;name=String(name||'').trim();if(name.length<2){v063Toast?.('Mindestens 2 Zeichen eingeben','warn');return}if(!(await v073Init())||!v073User?.id)return;
