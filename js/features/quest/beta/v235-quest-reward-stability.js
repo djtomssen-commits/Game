@@ -272,6 +272,11 @@ v233ClaimQuest=function(){
   v235EnsureAchievementState();
 
   const before=v235RewardSnapshot(q);
+  const payoutTxn=(()=>{try{return window.v496BeginQuestClaim?.(q)||{ok:true,quest:q}}catch(e){console.warn('V4.496 claim begin hook',e);return {ok:true,quest:q}}})();
+  if(payoutTxn?.ok===false){
+    v233ClaimBusy=false;
+    return false;
+  }
   const eliteTxn=(()=>{try{return window.v310BeginQuestClaim?.()||null}catch(e){console.warn('V3.10 claim begin hook',e);return null}})();
 
   let thrown=null;
@@ -290,6 +295,7 @@ v233ClaimQuest=function(){
   */
   const paid=!s.quests?.active;
 
+  try{window.v496FinishQuestClaim?.(payoutTxn,paid)}catch(e){console.warn('V4.496 claim finish hook',e)}
   try{window.v310FinishQuestClaim?.(eliteTxn,paid)}catch(e){console.warn('V3.10 claim finish hook',e)}
 
   if(paid){
