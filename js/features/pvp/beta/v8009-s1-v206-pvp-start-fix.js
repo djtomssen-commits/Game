@@ -268,10 +268,7 @@ v204RenderOpponent=function(){
   if(find)find.onclick=v204FindOpponent;
 };
 
-const v206BaseRender=render;
-render=function(){
-  return v206BaseRender();
-};
+/* V8.009: no-op global render wrapper retired. */
 
 window.addEventListener('growlegends:navigation-open-v7119',async e=>{
   if(String(e?.detail?.id||'')!=='pvp')return;
@@ -283,7 +280,4 @@ window.addEventListener('growlegends:navigation-open-v7119',async e=>{
   }catch(err){console.warn('V4.206 PvP open sync',err)}
 },{passive:true});
 
-setTimeout(()=>{
-  const find=document.querySelector('#v204FindBtn');
-  if(find)find.onclick=v204FindOpponent;
-},150);
+queueMicrotask(()=>{const find=document.querySelector('#v204FindBtn');if(find)find.onclick=v204FindOpponent});
