@@ -50,9 +50,8 @@
    root.querySelectorAll('[data-v6145-mail]').forEach(b=>{b.onclick=e=>{e.preventDefault();e.stopPropagation();try{window.v382OpenMailTo?.(b.dataset.v6145Mail)}catch(_){}}});
    const me=ownId();root.querySelectorAll('.v072-player-row[data-profile-id]').forEach(row=>row.classList.toggle('v6145-own-row',String(row.dataset.profileId||'')===me));
  }
- function decorateHall(){
-   requestAnimationFrame(()=>{try{window.v646DecorateHall?.()}catch(_){}});
- }
+ function decorateHall(){try{window.v646DecorateHall?.()}catch(_){}}
+
  async function syncOwn(){
    try{if(typeof window.vPvpBudsHallSync==='function')await window.vPvpBudsHallSync(true)}catch(e){}
    try{if(typeof window.v649SyncDungeonProgress==='function')await window.v649SyncDungeonProgress(true)}catch(e){}
@@ -199,7 +198,7 @@
    }catch(e){console.error('V6.145 Hall near',e);el.innerHTML='<div class="v072-status-offline">Dein Rangumfeld konnte nicht geladen werden.</div>'}
  }
  function focusOwn(el){
-   if(!el)return;const id=ownId();const node=[...el.querySelectorAll('[data-profile-id],[data-v6145-profile]')].find(x=>String(x.dataset.profileId||x.dataset.v6145Profile||'')===id);if(!node)return;node.classList.add('v6145-flash');setTimeout(()=>node.classList.remove('v6145-flash'),1800);setTimeout(()=>node.scrollIntoView({behavior:'smooth',block:'center'}),80);
+   if(!el)return;const id=ownId();const node=[...el.querySelectorAll('[data-profile-id],[data-v6145-profile]')].find(x=>String(x.dataset.profileId||x.dataset.v6145Profile||'')===id);if(!node)return;node.classList.add('v6145-flash');setTimeout(()=>node.classList.remove('v6145-flash'),1800);requestAnimationFrame(()=>node.scrollIntoView({behavior:'smooth',block:'center'}));
  }
  async function loadRanking(){return state.mode==='near'?loadNear():loadPage(state.page||1,false)}
  try{v073LoadRanking=loadRanking;window.v073LoadRanking=loadRanking}catch(e){window.v073LoadRanking=loadRanking}
