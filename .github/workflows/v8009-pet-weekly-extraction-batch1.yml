@@ -1,0 +1,27 @@
+name: V8.009 Pet Weekly Extraction Batch 1
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/v8009_pet_weekly_extraction_batch1.py'
+      - '.github/workflows/v8009-pet-weekly-extraction-batch1.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 .github/scripts/v8009_pet_weekly_extraction_batch1.py
+      - run: |
+          node --check js/features/pets/beta/v8009-s1-v688-pet-drop-system-core.js
+          node --check js/features/pets/beta/v8009-s1-v686-pet-album-core.js
+          node --check js/features/rewards/beta/v8009-s1-v6239-weekly-chest-system.js
+      - run: |
+          git config user.name github-actions
+          git config user.email github-actions@users.noreply.github.com
+          git add beta.html js/features/pets/beta/v8009-s1-v688-pet-drop-system-core.js js/features/pets/beta/v8009-s1-v686-pet-album-core.js js/features/rewards/beta/v8009-s1-v6239-weekly-chest-system.js V8009_PET_WEEKLY_EXTRACTION_BATCH1_QA.json
+          git commit -m "V8.009 PET WEEKLY: extract first owner batch" || exit 0
+          git pull --rebase origin main
+          git push
