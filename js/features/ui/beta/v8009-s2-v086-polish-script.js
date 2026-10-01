@@ -30,7 +30,7 @@ function v086RemoveSlashNArtifacts(){
 }
 
 /* V7.220 Tütchen-Dealer: server-owned progression, upgraded premium layout + native Rewarded-Ad bridge. */
-window.__V7215_AD_BAG_MENU_VISIBLE__=false;
+window.__V7215_AD_BAG_MENU_VISIBLE__=true;
 const v7215Bag={state:null,busy:false,loading:null,pollTimer:0,lastRevision:-1};
 function v7215Db(){try{return (typeof v073Db!=='undefined'&&v073Db)||null}catch(_){return null}}
 function v7215Uid(){try{return String(((typeof v073User!=='undefined'&&v073User)||window.v073User||{})?.id||'')}catch(_){return ''}}
@@ -159,7 +159,7 @@ async function v7215Load(force=false){
    return null;
  }
  if(!force&&v7215Bag.state?.ok)return v7215Bag.state;
- v7215Bag.loading=(async()=>{try{const {data,error}=await db.rpc('v7215_ad_bag_state');if(error)throw error;const st=Array.isArray(data)?data[0]:data;v7215Bag.state=st||null;v7215Bag.lastRevision=Number(st?.revision??v7215Bag.lastRevision);const visible=(typeof v093IsAdmin!=='undefined'&&v093IsAdmin===true&&!!v073User&&!v073User.is_anonymous);if(window.__V7215_AD_BAG_MENU_VISIBLE__!==visible){window.__V7215_AD_BAG_MENU_VISIBLE__=visible;try{v086BuildCompleteMenu()}catch(_){}}v7215Paint();return st}catch(e){console.warn('V7.219 bag state',e);v7215Bag.state=null;v7215Paint();return null}finally{v7215Bag.loading=null}})();return v7215Bag.loading;
+ v7215Bag.loading=(async()=>{try{const {data,error}=await db.rpc('v7215_ad_bag_state');if(error)throw error;const st=Array.isArray(data)?data[0]:data;v7215Bag.state=st||null;v7215Bag.lastRevision=Number(st?.revision??v7215Bag.lastRevision);const visible=true;if(window.__V7215_AD_BAG_MENU_VISIBLE__!==visible){window.__V7215_AD_BAG_MENU_VISIBLE__=visible;try{v086BuildCompleteMenu()}catch(_){}}v7215Paint();return st}catch(e){console.warn('V7.219 bag state',e);v7215Bag.state=null;v7215Paint();return null}finally{v7215Bag.loading=null}})();return v7215Bag.loading;
 }
 async function v7215PollAfterReward(oldRevision){
  const started=Date.now();
@@ -205,7 +205,7 @@ document.getElementById('v7219HelpBtn')?.addEventListener('click',async()=>{
 });
 
 window.addEventListener('growlegends:first-playable',()=>setTimeout(()=>void v7215Load(true),1200),{passive:true});
-window.addEventListener('growlegends:account-ready',()=>{v7215Bag.state=null;v7215Bag.lastRevision=-1;window.__V7215_AD_BAG_MENU_VISIBLE__=false;setTimeout(()=>void v7215Load(true),1800)},{passive:true});
+window.addEventListener('growlegends:account-ready',()=>{v7215Bag.state=null;v7215Bag.lastRevision=-1;window.__V7215_AD_BAG_MENU_VISIBLE__=true;setTimeout(()=>void v7215Load(true),1800)},{passive:true});
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&document.getElementById('bagDealer')?.classList.contains('active'))setTimeout(()=>void v7215Load(true),350)},{passive:true});
 
 /* Rebuild menu from every actual game screen, so no page can silently go missing. */
