@@ -4213,3 +4213,73 @@ Arbeitsmodus:
 
 #### Nächster Powerblock
 - Tütchen-Dealer + Harz Dealer komplett.
+
+
+#### Powerblock: Tütchen-Dealer + Harz/Gold/Rahmen Dealer strukturell abgeschlossen
+- Tütchen-Dealer:
+  - bisherige Admin-only-Sperre vollständig aus aktiver Beta entfernt:
+    - v7260 CSS nicht mehr geladen
+    - v7260 JS nicht mehr geladen
+    - Menüflag im kanonischen v086/v7215-Owner dauerhaft player-visible
+  - Supabase-Freigabe:
+    - `public.ad_bag_settings.enabled = true`
+    - `server1.ad_bag_settings.enabled = true`
+    - Modus bleibt bewusst `test`; keine ungefragte Umschaltung auf Production Ads.
+  - v7221 Visual-Wrapper aus aktiver Beta retired:
+    - Bag-Art / Premium-Art
+    - Pack-Markup
+    - Loading-State
+    jetzt direkt im kanonischen v7215-Owner in `v8009-s2-v086-polish-script.js`.
+  - Lifecycle:
+    - 1200/1800/350-ms kosmetische Start-/Foreground-Nachläufe entfernt
+    - übrig bleiben nur 2 funktionale Timeouts:
+      - Account/DB-Verbindungsretry
+      - SSV-Bestätigungs-Poll nach Rewarded Ad
+    - 0 Intervalle / 0 MutationObserver im Tütchen-Scope.
+  - Reward-/Authority-Pfad geprüft:
+    - `v7215_ad_bag_state`
+    - `v7215_ad_bag_apply_verified`
+    - private Apply-Funktion
+    - `v7224_ad_bag_effective_spec`
+    - Tageskurve: 100 % / 75 % / 55 % / 40 % / ab Runde 5 = 30 %
+    - levelabhängige Goldskalierung bleibt serverseitig.
+- Harz / Gold / Rahmen:
+  - `v7117` ist jetzt direkter 3-Tab-Hub-Owner für:
+    - Harz-Taler
+    - Gold
+    - Avatar-Rahmen
+  - alte nachträgliche Frame-Tab-Injection aus v7137 retired.
+  - alter `v7117OpenDealerTab`-Wrapper aus v7137 retired.
+  - Harz-DOM bleibt kanonisch v567; v322 liefert Paketdaten/Menu/+ und delegiert Rendering.
+  - Gold bleibt kanonisch v7114.
+  - Rahmen-Daten/Kauf/Aktivierung bleiben serverautoritativ v7137.
+  - Google-Play-Harz:
+    - serverseitige Kaufprüfung/Consume/Recovery erhalten
+    - 6-fache Recovery-Timerkaskade entfernt
+    - kosmetische Dealer-Copy-Repaints entfernt
+    - Recovery läuft jetzt über Account-/First-Playable-/Pageshow-/Foreground-/Dealer-Lifecycle ohne setTimeout.
+- Authority-Prüfung:
+  - Harz-Kauf: Google-Play-Verifikation über `verify-google-play-purchase`
+  - Goldkauf: `v7114_buy_gold_pack`, idempotenter Purchase-ID-Pfad + Progress-Authority
+  - Rahmenkauf: `v7137_buy_avatar_frame`, serverseitiger Harz-Abzug + Duplicate-Guard
+  - Rahmenaktivierung: `v7137_set_avatar_frame`
+- Abschluss-QA:
+  - Manifest: `V8009_DEALER_POWER_FINAL_QA.json`
+  - Manifest-Commit: `4511aee6ee0395b2be72b4abeeaa17495d18d714`
+  - alle geänderten JS-Dateien syntaktisch grün
+  - v7260 Admin-Gate aktiv: **0**
+  - v7221 JS-Wrapper aktiv: **0**
+  - Dealer-Hub enthält direkt alle 3 Tabs
+  - Billing-Datei nach Cleanup: **0 setTimeout / 0 setInterval**
+  - Stable/Server-1 HTML unverändert; `index.html` SHA weiterhin `0bc5fe3eb0e69c856070dfcb6682d3178c56a597`.
+- Matrix:
+  - Tütchen-Dealer = **[x]**
+  - Harz Dealer = **[x]**
+  - Matrix-Commit: `3976003a652d73c4231c66abc63303b4f8814426`
+- Manueller Endtest für Tütchen / Harz / Gold / Rahmen bleibt für den gemeinsamen Test-Milestone offen.
+
+#### Nächster Powerblock
+- Forge komplett:
+  - Dismantle
+  - Craft
+  - Nebelforge
