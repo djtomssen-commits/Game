@@ -46,10 +46,7 @@ v093BuildMenu=function(){
   else v273RemoveAdminMenu();
 };
 
-/* Keep the complete existing V4.02/V4.02 admin-check chain,
-   but make its result account-aware and repaint the dropdown afterwards. */
-const v273BaseAdminCheck=v093CheckAdmin;
-v093CheckAdmin=async function(){
+function v273SyncAdminMenu(ok=v093IsAdmin){
   const uid=String(v073User?.id||'');
   if(!uid){
     v093IsAdmin=false;
@@ -57,15 +54,12 @@ v093CheckAdmin=async function(){
     v273RemoveAdminMenu();
     return false;
   }
-
-  const ok=await v273BaseAdminCheck();
   v273AdminCheckUserId=uid;
-
   if(ok)v273EnsureAdminMenu();
   else v273RemoveAdminMenu();
-
   return !!ok;
-};
+}
+window.v273SyncAdminMenu=v273SyncAdminMenu;
 
 /* V4.159: post-login admin hydration is owned by the central boot controller. */
 
