@@ -4657,3 +4657,13 @@ Arbeitsmodus:
 - Ergebnis:
   - V8.009 strukturelle Repo-QA = **abgeschlossen**.
   - Es bleibt nur noch der gemeinsame **manuelle End-to-End-Test-Milestone** im Beta-Build.
+
+
+#### Growroom Visual-Fix – Töpfe / Pflanzenbilder
+- Direkt im bestehenden Growroom-CSS korrigiert, **kein neuer Overlay-/Patch-Layer**.
+- Freie Töpfe im Slot deutlich größer dargestellt.
+- Pflanzenbilder pro Wachstumsphase größer und sauber im Slot zentriert (`object-fit: contain`, Boden-Ausrichtung).
+- Kartenhöhe angepasst, damit Bild, Name, Timer und Pflegebereich nicht ineinander laufen.
+- Mobile Größen separat mitgezogen.
+- Geänderte Datei: `v8009-extracted-v497-plant-art-economy-css.css`
+- Commit: `47a80e7854e1cd0f5f51101a8bf6934ca3578f9b`
