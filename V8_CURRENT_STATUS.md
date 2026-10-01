@@ -2204,3 +2204,28 @@ Arbeitsmodus:
 - Kanonischer v6101-`v032Go` wurde bewusst nicht entfernt, da er der aktuelle zentrale Navigationseigentümer ist.
 - QA `V8009_FINAL_BIG_BATCH18_QA.json`: grün.
 - Stable / `index.html`: unverändert.
+
+
+#### Big Batch 19
+- alter Header-Paint-Lifecycle:
+  - globalen `v032Go`-Wrapper entfernt;
+  - 250/1200/3200-ms Startup-Paints entfernt;
+  - DOMContentLoaded/pageshow/account-ready/shared navigation übernehmen.
+- v373 Dropdown-Autoclose:
+  - globalen `v032Go`-Wrapper entfernt;
+  - Hauptmenü schließt jetzt direkt über Shared `growlegends:navigation-open-v7119`;
+  - Klick-Sicherheitsfallback im Menü bleibt.
+- v4112 Item-Art:
+  - globalen `v032Go`-Wrapper entfernt;
+  - Item-Art-Queue läuft nur für character/shop/dungeon/hall/endgame über Shared-v7119;
+  - eigentliche RAF-Queue für DOM-Dekoration bleibt.
+- v6114 Pet-Album:
+  - globalen `v032Go`-Wrapper entfernt;
+  - Pet-Album schließt über Shared-v7119;
+  - Hamburger/Menu-Sicherheitsklick bleibt.
+- v6254 Tutorial/Help:
+  - globalen `v032Go`-Wrapper entfernt;
+  - Hilfe-/Guide-Lifecycle läuft über Shared-v7119;
+  - Guide-Delays für echte Post-Navigation-/First-Visit-Reihenfolge bleiben.
+- QA `V8009_FINAL_BIG_BATCH19_QA.json`: grün.
+- Stable / `index.html`: unverändert.
