@@ -2986,3 +2986,31 @@ Arbeitsmodus:
 - Originale Script-Attribute, IDs und Reihenfolge beibehalten; nur um `src=` ergänzt.
 - QA `V8009_FEATURE_EXTRACTION_BATCH20_QA.json`: vollständig grün.
 - Stable / `index.html`: unverändert.
+
+
+#### Feature Extraction Batch 21
+- 20 weitere benannte Owner 1:1 aus `beta.html` ausgelagert:
+  - `v224-atomic-boot-release`
+  - `v482-dungeon-paid-timer-owner`
+  - `v341-harz-dealer-dropdown-fix`
+  - `v322-harz-dealer`
+  - `v468-single-item-art-owner`
+  - `v455-item-loot-balance-contract`
+  - `v434-attribute-points-final-live-sync`
+  - `v7081-account-capability-gate`
+  - `v4108-item-placement-fix`
+  - `v083-hall-progress-fix-script`
+  - `v6343-purchase-equip-prompt-js`
+  - `v6225-extra-hit-visual-core`
+  - `v388-worldboss-attack-fix`
+  - `v267-class-attributes`
+  - `v6117-class-passive-prismatic-fix`
+  - `v238-quest-loot-repair`
+  - `v358-global-header`
+  - `v6294-harzruferin-full-parity-js`
+  - `v7117-dealer-hub`
+  - `v118-top-dashboard-redesign-script`
+- Zusammen 68.383 Bytes Inline-JS aus dem Monolithen entfernt.
+- Originale Script-Attribute, IDs und Reihenfolge beibehalten; nur um `src=` ergänzt.
+- QA `V8009_FEATURE_EXTRACTION_BATCH21_QA.json`: vollständig grün.
+- Stable / `index.html`: unverändert.
