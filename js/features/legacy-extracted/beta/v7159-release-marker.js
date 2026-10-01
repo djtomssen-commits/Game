@@ -1,1 +1,0 @@
-window.__V7159_RELEASE__=Object.freeze({version:'V7.159',combat2D:true,singleVisibleCombatOwner:true,questSelectorFixed:true,dungeonArtFixed:true,serverRulesChanged:false});

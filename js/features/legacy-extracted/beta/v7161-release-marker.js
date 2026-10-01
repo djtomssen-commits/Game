@@ -1,1 +1,0 @@
-window.__V7161_RELEASE__=Object.freeze({version:'V7.161',inventoryCompositorFlattened:true,characterScrollFix:true,gameplayRulesChanged:false});
