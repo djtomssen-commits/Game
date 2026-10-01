@@ -92,7 +92,7 @@
   if(!commit(p,idx))return false;
   persistCare();
   try{if(typeof renderGrow==='function')renderGrow()}catch(e){}
-  setTimeout(()=>{syncLedger('post-action');decorateSlots()},30);
+  queueMicrotask(()=>{syncLedger('post-action');decorateSlots()});
   
   return true;
  }
