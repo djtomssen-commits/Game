@@ -1,0 +1,23 @@
+name: V8.009 Largest Remaining Inline
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/v8009_inline_largest_remaining.py'
+      - '.github/workflows/v8009-inline-largest-remaining.yml'
+permissions:
+  contents: write
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 .github/scripts/v8009_inline_largest_remaining.py
+      - run: |
+          git config user.name github-actions
+          git config user.email github-actions@users.noreply.github.com
+          git add V8009_INLINE_LARGEST_REMAINING.json
+          git commit -m "V8.009 FINAL: record largest remaining inline" || exit 0
+          git pull --rebase origin main
+          git push
