@@ -81,11 +81,9 @@ async function v255ClaimBossReward(){
   }catch(e){v063Toast('Belohnung nicht verfügbar','warn',e?.message||'');}
   finally{if(btn){btn.disabled=false;btn.textContent='🎁 Gildenboss-Belohnung abholen'}}
 }
-/* Refresh boss after the existing signup RPC completes. */
-const v255BaseToggleSignup=v254ToggleSignup;
-v254ToggleSignup=async function(kind){const r=await v255BaseToggleSignup(kind);if(kind==='boss')await v255LoadBoss();return r};
-const v255BaseLoadGuild=v254LoadGuild;
-v254LoadGuild=async function(){const r=await v255BaseLoadGuild();if(document.querySelector('#guild')?.classList.contains('active')&&v254Membership)await v255LoadBoss();return r};
+/* V8.009: legacy signup/load wrappers retired.
+   v7307 owns boss signup; C25 owns guild -> boss/war refresh.
+   Keep only the legacy reward click fallback for non-authority mode. */
 document.querySelector('#v255ClaimBossReward')?.addEventListener('click',v255ClaimBossReward);
 /* V6.213: retired duplicate v255 30s boss repaint; v260 active-tab owner remains authoritative. */
 
