@@ -13,7 +13,7 @@
    el.style.setProperty('animation','v604SkillChip 1.55s cubic-bezier(.18,.8,.22,1) 0s 1 normal forwards running','important');
   });
  }
- /* V6.97: global quest visual observer retired. */
- document.addEventListener('click',e=>{if(e.target?.closest?.('#quests,#v636QuestDungeonCard'))requestAnimationFrame(sync)},true);
- window.addEventListener('pageshow',sync,{passive:true});setTimeout(sync,0);
+ window.v637SyncQuestDungeon=sync;
+ /* V8.009: v636 invokes this helper directly when it builds/updates the
+    Quest combat UI. No global click listener, RAF or startup timer remains. */
 })();
