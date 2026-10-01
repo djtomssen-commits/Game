@@ -55,6 +55,7 @@ function applyView(root=growRoot()){
  const inGrow=active==='grow';root.querySelectorAll(':scope > .v6163-base').forEach(el=>el.classList.toggle('v6163-hidden',!inGrow));
  panel.hidden=inGrow;if(inGrow){panel.innerHTML='';return}
  if(active==='stock')copyStock(panel);else if(active==='genetics')copyGenetics(panel);else copyOrders(panel);
+ try{window.v6283GrowGuide?.refresh?.()}catch(_){}
 }
 function mount(){mountQueued=false;const root=growRoot();if(!root)return;lastRoot=root;let tabs=$(':scope > .v6163-tabs',root);if(!tabs){const sign=$(':scope > .v492-sign',root);if(!sign)return;sign.insertAdjacentHTML('afterend',tabsHtml());tabs=$(':scope > .v6163-tabs',root)}let panel=$(':scope > #v6163Inline',root);if(!panel){panel=document.createElement('div');panel.id='v6163Inline';panel.hidden=true;tabs.insertAdjacentElement('afterend',panel)}applyView(root)}
 function queueMount(){if(mountQueued)return;mountQueued=true;queueMicrotask(mount)}
