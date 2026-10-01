@@ -1,3 +1,4 @@
+# V8.009 direct-hook contract
 from pathlib import Path
 import json,sys
 p309=Path('js/features/quest/beta/v309-distinct-quest-offers.js').read_text(encoding='utf-8')
