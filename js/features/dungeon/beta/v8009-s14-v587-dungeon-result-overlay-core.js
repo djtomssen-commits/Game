@@ -37,7 +37,8 @@
           s.dungeon.view='map';
           const loot=document.querySelector('#loot');
           if(loot)loot.innerHTML='';
-          persist(false);
+          const serverOwned=!!window.v7081UseAuthority?.('dungeon');
+          if(!serverOwned)persist(false);
           if(typeof renderDungeon==='function')renderDungeon();
           else if(typeof v244RenderSelectedDungeonMap==='function')v244RenderSelectedDungeonMap();
           window.scrollTo({top:0,behavior:'smooth'});
@@ -46,7 +47,6 @@
     }
 
     overlay.classList.add('show');
-    requestAnimationFrame(()=>overlay.classList.add('show'));
   };
 
   /* v247ShowDungeonReward directly clears defeat state; no reward wrapper needed. */
