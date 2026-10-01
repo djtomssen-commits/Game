@@ -54,11 +54,7 @@
       const base=renderShop;renderShop=function(){const r=base.apply(this,arguments);arrange();return r};window.renderShop=renderShop;window.__v464RenderShopWrapped=true;
     }
   }catch(e){}
-  try{
-    if(typeof render==='function'&&!window.__v464RenderWrapped){
-      const base=render;render=function(){const r=base.apply(this,arguments);if(document.getElementById('shop')?.classList.contains('active'))arrange();stamp();return r};window.render=render;window.__v464RenderWrapped=true;
-    }
-  }catch(e){}
+  /* V8.009: global render layout hook retired. renderShop + navigation own arrangement. */
   try{
     if(!window.__v464GoWrapped){
       window.addEventListener('growlegends:navigation-open-v7119',e=>{
