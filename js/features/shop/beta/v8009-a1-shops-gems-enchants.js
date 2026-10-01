@@ -73,5 +73,9 @@ renderShop=function(){
   return false;
 };
 
-function v030Materials(){let p=document.querySelector('#v030Materials'),ch=document.querySelector('#character');if(!ch)return;if(!p){p=document.createElement('div');p.className='card';p.id='v030Materials';ch.appendChild(p)}p.innerHTML=`<div class="section-title"><div><h2>💎 Edelsteine & Rollen</h2><div class="muted">Material auswählen und auf ein angelegtes Item anwenden.</div></div><span class="pill">${s.materials.length}</span></div>${s.materials.length?`<div class="inventory-grid">${s.materials.map((m,i)=>`<div class="inv-item ${m.rarity||''}"><div class="item-name">${m.icon} ${m.name}</div><div class="${qualityMeta(m.quality||'gray').color}">${qualityMeta(m.quality||'gray').label}</div><div class="item-bonus">${m.type==='gem'?`+${m.value} ${v030StatLabel(m.stat)}`:v030EffectLabel(m.effect,m.value)}</div><button class="btn" style="width:100%;padding:8px" onclick="v030UseMaterial(${i})">Auf Item anwenden</button></div>`).join('')}</div>`:'<div class="empty">Noch keine Edelsteine oder Rollen.</div>'}`}
+function v030Materials(){
+  /* V8.009: legacy material DOM producer retired.
+     v546 is the live Character/Material owner. */
+  return typeof window.v546RenderMaterials==='function'?window.v546RenderMaterials():false;
+}
 /* V8.009: global render shop/material fan-out retired. Shop navigation/purchase owns renderShop; character material owner owns v030Materials. */
