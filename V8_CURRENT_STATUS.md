@@ -2065,3 +2065,18 @@ Arbeitsmodus:
   - 20-ms Selection-Followup sowie Double-RAF nach echtem Render bleiben wegen DOM-Reihenfolge.
 - QA `V8009_FINAL_BIG_BATCH10_QA.json`: grün.
 - Stable / `index.html`: unverändert.
+
+
+#### Big Batch 11
+- Resource-Paint:
+  - 200/800/2200/5000-ms Startup-Paint-Zug entfernt;
+  - DOMContentLoaded/pageshow/account-ready übernehmen direkt.
+- Progression-/Projection-UI:
+  - 250/1000/3000-ms Startup-Paint-Zug entfernt;
+  - 100-ms account-ready Delay entfernt;
+  - Progressions-/Projected-Days-Berechnung unverändert.
+- Systemtechnik Settings/Admin-Sync:
+  - 0/250/1200-ms Startup-Sync-Zug entfernt;
+  - direkte Admin-Check-, Settings-Build-, DOM/pageshow/account-ready-Hooks bleiben.
+- QA `V8009_FINAL_BIG_BATCH11_QA.json`: grün.
+- Stable / `index.html`: unverändert.
