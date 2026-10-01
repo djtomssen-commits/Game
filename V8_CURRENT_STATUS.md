@@ -1435,3 +1435,33 @@ Der nächste fachliche Schritt ist **nicht HOME-32**, sondern die Restinventur d
   3. Dampf muss sofort einmal korrekt sinken;
   4. Skip-/Zeit-Samen-Zeile muss sofort korrekt erscheinen;
   5. Seite verlassen und wieder zu Quest wechseln; keine Verzögerung/kein Flackern/keine doppelte Skip-Zeile.
+
+
+### Erste Quest nach Login – Post-Claim hängt auf aktiver Questseite 01.10.2026
+
+- Nutzerbeobachtung:
+  - nur/auffällig bei der **ersten Quest nach Login**;
+  - Belohnung wird abgeholt;
+  - danach bleibt die aktive Questseite sichtbar, aber ohne laufenden Timer;
+  - nach Navigation weg von Quest und zurück erscheinen die drei Questangebote korrekt.
+- Root Cause in `v7045`:
+  - `canonicalQuestState(true)` gab trotz `force=true` einen bereits laufenden `questStateFlight` zurück;
+  - ein noch vom Login/Boot stammender State-Request konnte dadurch nach einem erfolgreichen Claim einen alten `active`-Questzustand erneut anwenden;
+  - das erklärt den First-Login-Charakter des Fehlers und warum erneute Navigation später korrekt rendert.
+- Fix Commit: `26aef6e805ec067c9a1e374f9fceef8de71aab42`
+  - `force=true` verwendet keinen alten Inflight-State-Request mehr;
+  - Quest-State-Requests tragen jetzt eine `questStateEpoch`;
+  - jede Mutation/Invalidierung erhöht die Epoch;
+  - Requests, die vor einer Mutation gestartet wurden, dürfen ihren State danach nicht mehr auf `s.quests` anwenden;
+  - `invalidateQuestState()` leert zusätzlich den gespeicherten Flight.
+- QA:
+  - `V8009_QUEST_FIRST_CLAIM_LOGIN_RACE_QA.json`
+  - Bot-Commit `36756fb8ec4ce2fad18bf5f762a6b54198e92323`
+  - alle Checks grün.
+- Stable / `index.html`: unverändert.
+- Manueller Test:
+  1. frisch einloggen;
+  2. direkt die erste Quest starten;
+  3. Quest beenden/überspringen und Belohnung abholen;
+  4. ohne Navigation müssen sofort die drei neuen Questangebote sichtbar sein;
+  5. keine leere aktive Questkarte ohne Timer.
