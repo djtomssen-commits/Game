@@ -1,0 +1,28 @@
+name: V8.009 Character Extraction Batch 2
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/v8009_character_extraction_batch2.py'
+      - '.github/workflows/v8009-character-extraction-batch2.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 .github/scripts/v8009_character_extraction_batch2.py
+      - run: |
+          node --check js/features/character/beta/v8009-s2-v459-character-hub.js
+          node --check js/features/character/beta/v8009-s2-v4155-frost-talents.js
+          node --check js/features/character/beta/v8009-s2-v4156-class-identity-balance.js
+          node --check js/features/character/beta/v8009-s2-v7124-character-scroll-summary-owner.js
+      - run: |
+          git config user.name github-actions
+          git config user.email github-actions@users.noreply.github.com
+          git add beta.html js/features/character/beta/v8009-s2-v459-character-hub.js js/features/character/beta/v8009-s2-v4155-frost-talents.js js/features/character/beta/v8009-s2-v4156-class-identity-balance.js js/features/character/beta/v8009-s2-v7124-character-scroll-summary-owner.js V8009_CHARACTER_EXTRACTION_BATCH2_QA.json
+          git commit -m "V8.009 CHARACTER: extract second owner batch" || exit 0
+          git pull --rebase origin main
+          git push
