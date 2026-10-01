@@ -40210,13 +40210,13 @@ function historicalScriptCount(){if(historicCountCache!=null)return historicCoun
   return true;
  }
  window.v4140PaintAttributes=paint;
- /* This is the final UI owner: historical renderers may run, but only this five-row output survives. */
- try{if(typeof render==='function'&&!window.__v4140RenderWrapped){const base=render;render=function(){const r=base.apply(this,arguments);paint();return r};try{window.render=render}catch(e){}window.__v4140RenderWrapped=true}}catch(e){}
- window.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')==='character')paint()});window.__v4140GoWrapped='v7119-event';
+ /* V8.009: direct character lifecycle owns the canonical five-row output. */
+ window.__v4140RenderWrapped='retired';
+ window.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')==='character')paint()},{passive:true});window.__v4140GoWrapped='v7119-event';
  document.addEventListener('click',e=>{if(e.target?.closest?.('#v459CharacterTabs [data-tab="attributes"]'))requestAnimationFrame(paint)},true);
  document.addEventListener('DOMContentLoaded',()=>requestAnimationFrame(paint),{once:true});
  window.addEventListener('pageshow',()=>requestAnimationFrame(paint),{passive:true});
- [120,500,1400].forEach(ms=>setTimeout(paint,ms));
+ /* V8.009: startup retry train retired; direct lifecycle hooks are sufficient. */
  function stamp(){}
  stamp();paint();
  window.v4140AttributeDiagnostics=()=>{const rows=[...document.querySelectorAll('#attrs > [data-v4140-attr]')];return{version:V.short,rowCount:rows.length,keys:rows.map(x=>x.dataset.v4140Attr),duplicates:rows.length-new Set(rows.map(x=>x.dataset.v4140Attr)).size,primary:primary(),points:points()}};
@@ -41416,13 +41416,8 @@ body:has(#world.active) #v337LegalFooter{display:none!important}
   document.addEventListener('DOMContentLoaded',()=>requestAnimationFrame(polish),{once:true});
   window.addEventListener('pageshow',()=>requestAnimationFrame(polish),{passive:true});
   document.addEventListener('visibilitychange',()=>{if(!document.hidden)requestAnimationFrame(polish)});
-  [80,220,600,1200,2400].forEach(ms=>setTimeout(polish,ms));
-  try{
-    if(typeof render==='function'&&!window.__v515RenderWrapped){
-      const base=render;render=function(){const r=base.apply(this,arguments);if(document.getElementById('character')?.classList.contains('active'))requestAnimationFrame(polish);return r};
-      try{window.render=render}catch(e){}window.__v515RenderWrapped=true;
-    }
-  }catch(e){}
+  window.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')==='character')requestAnimationFrame(polish)},{passive:true});
+  window.__v515RenderWrapped='retired';
 })();
 </script>
 <!-- ===== /V5.15 HELDENQUARTIER MOBILE REFERENCE POLISH ===== -->
@@ -41553,7 +41548,7 @@ body:has(#world.active) #v337LegalFooter{display:none!important}
   document.addEventListener('DOMContentLoaded',()=>requestAnimationFrame(apply),{once:true});
   window.addEventListener('pageshow',()=>requestAnimationFrame(apply),{passive:true});
   document.addEventListener('visibilitychange',()=>{if(!document.hidden)requestAnimationFrame(apply)});
-  [80,220,600,1400,3000,6000].forEach(ms=>setTimeout(apply,ms));
+  /* V8.009: bounded startup retry train retired. */
 })();
 </script>
 <!-- ===== /V5.26 HELDENQUARTIER FINAL REFERENCE ORNAMENT POLISH ===== -->
@@ -75725,7 +75720,7 @@ window.v531HardenHero=harden;
   document.addEventListener('DOMContentLoaded',()=>requestAnimationFrame(apply),{once:true});
   window.addEventListener('pageshow',()=>requestAnimationFrame(apply),{passive:true});
   document.addEventListener('click',e=>{if(e.target?.closest?.('#v459CharacterTabs [data-tab="attributes"],#v514HeroTabs [data-tab="attributes"]'))requestAnimationFrame(apply)},true);
-  [120,500,1400].forEach(ms=>setTimeout(apply,ms));
+  /* V8.009: bounded startup retry train retired. */
 })();
 </script>
 <!-- ===== /V5.37 ATTRIBUTE REFERENCE REBUILD ===== -->
@@ -76596,7 +76591,7 @@ window.v531HardenHero=harden;
   document.addEventListener('click',e=>{
     if(e.target?.closest?.('#v459CharacterTabs [data-tab="talents"],#v514HeroTabs [data-tab="talents"]'))requestAnimationFrame(apply);
   },true);
-  [150,600,1600].forEach(ms=>setTimeout(apply,ms));
+  /* V8.009: bounded startup retry train retired. */
 })();
 </script>
 <!-- ===== /V5.43 TALENTBAUM MOBILE TABS + GROW LEGENDS TREE ===== -->
@@ -77286,7 +77281,7 @@ window.v531HardenHero=harden;
   document.addEventListener('click',e=>{
     if(e.target?.closest?.('#v459CharacterTabs [data-tab="materials"],#v514HeroTabs [data-tab="materials"]'))requestAnimationFrame(apply);
   },true);
-  [180,700,1700].forEach(ms=>setTimeout(apply,ms));
+  /* V8.009: bounded startup retry train retired. */
 })();
 </script>
 <!-- ===== /V5.46 MATERIALIEN GROW LEGENDS REDESIGN ===== -->
