@@ -498,6 +498,8 @@ window.v8008C18InstallSignup=function(){
         const phase=typeof v255LocalPhase==='function'?v255LocalPhase():{open:false};
         if(!phase.open||typeof v073Db==='undefined'||!v073Db){
           rewardGate.pending=false;rewardGate.round=null;rewardGate.participants=[];
+          rewardGate.checkedAt=Date.now();
+          paintRewardGate();
           return false;
         }
         const {data,error}=await v073Db.rpc('v7165_get_last_guild_boss_result');
