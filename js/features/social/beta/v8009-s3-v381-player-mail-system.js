@@ -1,6 +1,6 @@
 (function(){
  const VERSION='V4.29 Stable';
- let inbox=[],sent=[],loading=false,unreadBusy=false;
+ let inbox=[],sent=[],loading=false,unreadBusy=false,pendingRecipient='';
  const esc=s=>typeof v073Escape==='function'?v073Escape(String(s??'')):String(s??'').replace(/[&<>\"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;'}[c]));
  const fmt=d=>{try{return new Date(d).toLocaleString('de-DE',{dateStyle:'short',timeStyle:'short'})}catch(e){return ''}};
  async function online(){return typeof v073Init==='function' && await v073Init() && v073User?.id && v073Db}
@@ -81,13 +81,31 @@
    modal.querySelector('[data-reply]')?.addEventListener('click',()=>{close();tab('compose');document.querySelector('#v381Recipient').value=other?.character_name||'';document.querySelector('#v381Body').focus()});
  }
  function tab(which){document.querySelectorAll('[data-v381-tab]').forEach(b=>b.classList.toggle('active',b.dataset.v381Tab===which));[['inbox','v381Inbox'],['sent','v381Sent'],['compose','v381Compose'],['battlelog','v6200BattleLogPanel']].forEach(([k,id])=>{const e=document.getElementById(id);if(e){const on=k===which;e.classList.toggle('v677-active-panel',on);e.style.display=on?'':'none'}});if(which==='battlelog')try{window.v6200LoadBattleLog?.()}catch(_){}}
+ function applyPendingRecipient(){
+   const name=String(pendingRecipient||'').trim();if(!name)return false;
+   pendingRecipient='';
+   tab('compose');
+   const recipient=document.querySelector('#v381Recipient');
+   if(recipient){recipient.value=name;recipient.dispatchEvent(new Event('input',{bubbles:true}))}
+   document.querySelector('#v381Body')?.focus();
+   return true;
+ }
+ function openMailTo(name){
+   name=String(name||'').trim();if(!name)return false;
+   pendingRecipient=name;
+   if(document.getElementById('mail')?.classList.contains('active'))return applyPendingRecipient();
+   try{v032Go('mail')}catch(_){}
+   return true;
+ }
+ window.v381OpenMailTo=openMailTo;
+ window.v382OpenMailTo=openMailTo;
  function bind(){
    document.querySelectorAll('[data-v381-tab]').forEach(b=>{if(b.dataset.bound)return;b.dataset.bound='1';b.onclick=()=>tab(b.dataset.v381Tab)});
    const sendBtn=document.querySelector('#v381Send');if(sendBtn&&!sendBtn.dataset.bound){sendBtn.dataset.bound='1';sendBtn.onclick=send}
    const body=document.querySelector('#v381Body');if(body&&!body.dataset.bound){body.dataset.bound='1';body.oninput=()=>{document.querySelector('#v381Chars').textContent=`${body.value.length} / 1000`}}
    const mail=document.querySelector('#v372TopbarShell [data-head="mail"]');if(mail&&!mail.dataset.v381Bound){mail.dataset.v381Bound='1';mail.onclick=()=>v032Go('mail')}
  }
- window.addEventListener('growlegends:navigation-open-v7119',e=>{const id=String(e?.detail?.id||'');bind();if(id==='mail')void load()},{passive:true});
+ window.addEventListener('growlegends:navigation-open-v7119',e=>{const id=String(e?.detail?.id||'');bind();if(id==='mail'){applyPendingRecipient();void load()}},{passive:true});
  bind();unread();window.addEventListener('growlegends:account-ready',()=>{bind();unread()},{passive:true});setInterval(()=>{if(!document.hidden)unread()},60000);
  document.addEventListener('visibilitychange',()=>{if(!document.hidden)unread()});
  document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version').forEach(el=>{if(el)el.textContent=VERSION});document.querySelectorAll('.v366-ver').forEach(el=>el.textContent='V4.11');
