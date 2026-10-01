@@ -4860,3 +4860,11 @@ Arbeitsmodus:
 - Verifiziert:
   - `index.html` vs. `beta.html`: nur 2 erwartete Unterschiede (Release-Channel, Title);
   - `server1.html` vs. `beta.html`: nur 2 erwartete Unterschiede (Release-Channel, Title).
+
+
+### Stabiler Server-1-Meilenstein · 01.10.2026
+
+- Der aktuell funktionierende Stand nach Server-1-Paritätsfixes wurde als eigener Rücksprungpunkt gesichert.
+- Branch: `stable-server1-2026-10-01`
+- Basis: aktueller `main`-Stand nach erfolgreichem Test von Server 1 inklusive Login-/Serverrouting, Startseite, Harz-Dealer und Nebelschmied.
+- Diesen Branch nicht für laufende Entwicklung verwenden; er dient ausschließlich als stabile Referenz/Rollback-Basis.
