@@ -3070,3 +3070,31 @@ Arbeitsmodus:
 - Originale Script-Attribute, IDs und Reihenfolge beibehalten; nur um `src=` ergänzt.
 - QA `V8009_FEATURE_EXTRACTION_BATCH23_QA.json`: vollständig grün.
 - Stable / `index.html`: unverändert.
+
+
+#### Feature Extraction Batch 24
+- 20 weitere benannte Owner 1:1 aus `beta.html` ausgelagert:
+  - `v323-profile-dungeon-canonical-fix`
+  - `v4142-admin-systemtechnik-authority`
+  - `v139-real-shop-rarity-fix-script`
+  - `v658-header-menu-offset-js`
+  - `v090-shop-comparison-fix-script`
+  - `v335-no-levelup-popup-login`
+  - `v496-og-retire-fragment-balance-js`
+  - `v245-dungeon2-balance-final`
+  - `v6243-weekly-chest-audit-fix`
+  - `gl-push-master-switch-controller-v1`
+  - `v102-levelup-observer`
+  - `v315-new-player-dampf-event-grant-fix`
+  - `v201-startpage-fix`
+  - `v278-resource-stability-script`
+  - `v7103-shared-combat-presentation`
+  - `v7230-server-frame-isolation`
+  - `v7135-absolute-final-version-owner`
+  - `v7233-server-scoped-storage`
+  - `v6321-companion-actor-render-fix-js`
+  - `v654-global-header-layout-fix-js`
+- Zusammen 49.842 Bytes Inline-JS aus dem Monolithen entfernt.
+- Originale Script-Attribute, IDs und Reihenfolge beibehalten; nur um `src=` ergänzt.
+- QA `V8009_FEATURE_EXTRACTION_BATCH24_QA.json`: vollständig grün.
+- Stable / `index.html`: unverändert.
