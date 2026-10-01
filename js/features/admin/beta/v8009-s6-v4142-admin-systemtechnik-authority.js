@@ -31,13 +31,7 @@
    try{window.v093CheckAdmin=v093CheckAdmin}catch(e){}window.__v4142AdminCheckWrapped=true;
   }
  }catch(e){}
- try{
-  if(typeof v141BuildSettings==='function'&&!window.__v4142SettingsWrapped){
-   const base=v141BuildSettings;v141BuildSettings=function(){const r=base.apply(this,arguments);requestAnimationFrame(sync);return r};
-   try{window.v141BuildSettings=v141BuildSettings}catch(e){}window.__v4142SettingsWrapped=true;
-  }
- }catch(e){}
- document.addEventListener('click',e=>{if(e.target instanceof Element&&e.target.closest('#v032MenuToggle,#v141SettingsBtn'))requestAnimationFrame(sync)},true);
+ document.addEventListener('click',e=>{if(e.target instanceof Element&&e.target.closest('#v032MenuToggle'))requestAnimationFrame(sync)},true);
  document.addEventListener('DOMContentLoaded',sync,{once:true});window.addEventListener('pageshow',sync,{passive:true});
  window.addEventListener('growlegends:account-ready',sync,{passive:true});
  function stamp(){}
