@@ -49,22 +49,5 @@
     requestAnimationFrame(()=>overlay.classList.add('show'));
   };
 
-  try{
-    const base=window.v247ShowDungeonReward || (typeof v247ShowDungeonReward==='function'?v247ShowDungeonReward:null);
-    if(typeof base==='function'&&!base.__v587ResultClean){
-      const wrapped=function(data){
-        const overlay=document.querySelector('#v247DungeonReward');
-        if(overlay)overlay.classList.remove('v587-defeat');
-        return base.apply(this,arguments);
-      };
-      wrapped.__v587ResultClean=true;
-      window.v247ShowDungeonReward=wrapped;
-      try{v247ShowDungeonReward=wrapped}catch(e){}
-    }
-  }catch(e){}
-
-  const stageTitle=()=>document.querySelector('#dungeonBattleCard .v575-stage-title');
-  const mark=()=>{const n=stageTitle();if(n)n.textContent='DUNGEON DUELL · E587'};
-  mark();
-  document.addEventListener('click',()=>setTimeout(mark,0),true);
+  /* v247ShowDungeonReward directly clears defeat state; no reward wrapper needed. */
 })();
