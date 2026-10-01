@@ -44252,7 +44252,7 @@ function v322RenderDealer(){
  box.innerHTML=V322_HARZ_PACKAGES.map((p,i)=>{const save=v322SavingPct(p),best=i===V322_HARZ_PACKAGES.length-1;return `<div class="v322-pack ${best?'best':''}">${best?'<div class="v322-best">BESTER WERT</div>':''}<div class="v322-pack-amount">🟢 ${p.harz} Harz-Taler</div><div class="v322-pack-price">${v322Money(p.price)}</div><div class="v322-pack-save">${p.label}${save?` · ca. ${save}% günstiger als 25er-Preis`:''}</div><div class="v322-pack-unit">${v322UnitPrice(p)}</div><button class="btn ${best?'gold':''}" type="button" data-v322-buy="${i}">Kaufen</button></div>`}).join('');
  box.querySelectorAll('[data-v322-buy]').forEach(btn=>btn.addEventListener('click',()=>{const idx=Number(btn.dataset.v322Buy);if(typeof window.glPlayBuy==='function')return window.glPlayBuy(idx);v115Alert('Google Play Billing ist in dieser App-Version noch nicht verfügbar.','🟢 Harz-Taler Dealer','warn')}));
 }
-function v322OpenDealer(){try{v032Go('harzDealer')}catch(e){}requestAnimationFrame(v322RenderDealer)}
+function v322OpenDealer(){try{return v032Go('harzDealer')}catch(e){try{v322RenderDealer()}catch(_){}}}
 window.v322OpenDealer=v322OpenDealer;
 function v322InstallMenuEntry(){
  const panel=document.querySelector('#v032MenuPanel');
