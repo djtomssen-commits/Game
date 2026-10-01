@@ -4440,3 +4440,53 @@ Arbeitsmodus:
 - Manueller Endtest offen:
   - Gildenboss heute anmelden;
   - Hintergrundmusik mehrere Minuten mit Navigation/Scroll/Kampf laufen lassen.
+
+
+#### Powerblock: Admin strukturell abgeschlossen
+- Scope:
+  - Admin-Zentrale / Content
+  - Spieler verwalten
+  - Belohnungen
+  - Spieler-Tickets
+  - Broadcasts / Umfragen
+  - Event-Vorlagen
+  - Systemtechnik
+- Wichtige Bereinigung:
+  - globale `render()`-Hooks aus Admin-Reward/Menu-Pfaden entfernt.
+  - verzögerte Admin-Menü-Reparaturen (1,9-s Startup) entfernt.
+  - doppelte Preset-/Ticket-/Broadcast-Installationspfade entfernt.
+  - `v093CheckAdmin` ist jetzt alleiniger Admin-Status-/Berechtigungs-Lifecycle-Owner.
+  - `v093AdminLoadLists` ist jetzt alleiniger Admin-Content-/Submodule-Load-Owner.
+  - Player-Editor, Rewards, Tickets, Event-Presets und Broadcasts werden von dort optional direkt installiert/geladen.
+  - Systemtechnik-Sync wird direkt aus dem Admin-Core angestoßen; Settings-Wrapper entfernt.
+- Authority:
+  - zentrale Player-Admin-RPCs existieren in `public` + `server1`.
+  - Player-Admin-RPCs prüfen `is_game_admin()`.
+  - `is_game_admin()` prüft serverseitig `game_admins.user_id = auth.uid()`.
+  - Ticket-/Broadcast-Admin-RPCs ebenfalls serverseitig admin-gesichert.
+- Abschluss-Audit:
+  - aktive Admin-JS-Dateien: globale `render=function` Wrapper = **0**
+  - `v093CheckAdmin=async function` Wrapper außerhalb des Core = **0**
+  - `v093AdminLoadLists=async function` Wrapper außerhalb des Core = **0**
+  - MutationObserver in aktiven Admin-Dateien = **0**
+  - Admin-DOM besitzt keine echten drei Tabs; die bisherige Matrix-Bezeichnung war nur Prüfgruppierung. UI bleibt bewusst als gestapelte Admin-Bereiche erhalten.
+- Wichtige Commits:
+  - v105 Render-Hook entfernt: `3a6b7091dd3db429798630bba5d7a005ee1587af`
+  - v273 Menu-Repair bereinigt: `63d0d39afe9c87fae9e4291bcc34c28333ab30a6`, `4736ffe1c2b728cef0ec4f23656d63f34817ddb3`
+  - v274 Preset-Lifecycle konsolidiert: `4059ffa91e286adcee46fd708725a2f94e15f15a`, `150552afd8c559433b3f5ea0c010da64940fe2ae`
+  - v269 Ticket-Lifecycle konsolidiert: `d223ad32d8ded17f547c15afdfe25442add206e5`, `33e3b7e3af0d3229f115072d2784f9c596dfd1aa`
+  - v6346 Admin-Reparaturtimer/Wrapper entfernt: `4417e60d3067d4769625ab3ab6c1832c55408156`, `12531aac1e2a784fbfcc5f599c489599bbc4278d`
+  - v4142 Wrapper bereinigt: `2d6ff92fda071963ed11ce9b0f47699c28f03a6d`, `890f876e64256cf8b13aad2e692fbd14423dbd57`
+  - v093 kanonischer Owner: `4ab11b87299817f68811c9c6813b09b98e492b31`
+  - v103 Load-Wrapper entfernt: `64e2bad43ee256161e8e5ee4f557abdebd31fa49`
+  - QA: `V8009_ADMIN_POWER_FINAL_QA.json`, Commit `278fcd83da076511702620baaaf2dfdeda06da3f`
+- Matrix:
+  - Admin = **[x]**
+- Manueller Admin-Endtest bleibt für den gemeinsamen Test-Milestone offen.
+
+#### Nächster Powerblock
+- verbleibende `[~]`-Bereiche aus der Matrix schließen:
+  - Dungeon Combat + Reward final
+  - Character – Attribute / Inventar / Talente / Materialien
+  - Character Creation – Beta / Server-1
+- danach repo-weite finale DOM/Lifecycle/Owner-QA.
