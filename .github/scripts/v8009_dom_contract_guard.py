@@ -7,10 +7,17 @@ static_ids=re.findall(r'\bid=["\']([^"\']+)["\']',beta,re.I)
 
 def js_ids(txt):
     out=[]
-    out+=re.findall(r'\bid=["\']([A-Za-z0-9_:\-.]+)["\']',txt)
-    out+=re.findall(r'\.id\s*=\s*["\']([A-Za-z0-9_:\-.]+)["\']',txt)
-    out+=re.findall(r'setAttribute\(\s*["\']id["\']\s*,\s*["\']([A-Za-z0-9_:\-.]+)["\']',txt)
+    # Literal id="..." inside querySelector/querySelectorAll/closest/matches is
+    # a read-only selector, not a DOM producer.
+    for m in re.finditer(r'\\bid=["\\']([A-Za-z0-9_:\\-.]+)["\\']',txt):
+        pre=txt[max(0,m.start()-140):m.start()]
+        if re.search(r'(?:querySelector(?:All)?|closest|matches)\\s*\\([^)]*$',pre,re.I):
+            continue
+        out.append(m.group(1))
+    out+=re.findall(r'\\.id\\s*=\\s*["\\']([A-Za-z0-9_:\\-.]+)["\\']',txt)
+    out+=re.findall(r'setAttribute\\(\\s*["\\']id["\\']\\s*,\\s*["\\']([A-Za-z0-9_:\\-.]+)["\\']',txt)
     return out
+
 
 producers=collections.defaultdict(list)
 for order,src in enumerate(srcs):
