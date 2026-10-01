@@ -1,0 +1,14 @@
+name: V8.009 Final Post19 Nav Summary
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/v8009_final_post19_nav_summary.py'
+      - '.github/workflows/v8009-final-post19-nav-summary.yml'
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 .github/scripts/v8009_final_post19_nav_summary.py
