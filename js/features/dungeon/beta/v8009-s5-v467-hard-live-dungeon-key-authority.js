@@ -127,27 +127,10 @@
     }
   }catch(e){console.warn('V4.68 grant wrap',e)}
 
-  function wrapClaim(name){
-    try{
-      const fn=window[name];
-      if(typeof fn!=='function'||fn.__v467KeyWrapped)return;
-      const wrapped=function(){
-        const before=signature();
-        let r;
-        try{r=fn.apply(this,arguments)}catch(err){
-          ensure();if(signature()!==before)afterKeyChange(name+'-throw');throw err;
-        }
-        const done=x=>{ensure();if(signature()!==before)afterKeyChange(name);return x};
-        if(r&&typeof r.then==='function')return r.then(done,err=>{done();throw err});
-        return done(r);
-      };
-      wrapped.__v467KeyWrapped=true;
-      window[name]=wrapped;
-      try{if(name==='claimQuest')claimQuest=wrapped;if(name==='v233ClaimQuest')v233ClaimQuest=wrapped}catch(e){}
-    }catch(e){console.warn('V4.68 claim wrap',name,e)}
-  }
-  wrapClaim('claimQuest');
-  wrapClaim('v233ClaimQuest');
+  /* V8.009: Quest-claim wrappers retired.
+     Key mutations now emit growlegends:dungeon-key-changed directly at their
+     canonical mutation sources (v243 local / v7045 server), and v250GrantKey
+     remains wrapped here for the general key progression path. */
 
   /* Final navigation authority through the shared navigation event. */
   window.addEventListener('growlegends:navigation-open-v7119',e=>{
