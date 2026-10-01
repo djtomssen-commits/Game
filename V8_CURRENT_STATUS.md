@@ -2033,3 +2033,20 @@ Arbeitsmodus:
   - echte UI-Action-Ordering-Defers.
 - Nächster Schritt: nur noch eindeutig visuelle Legacy-Blöcke anfassen; danach gemeinsame Integrations-QA und manueller App-Rundgang.
 
+
+
+#### Big Batch 9
+- Harzruferin-/Avatar-/Settings-/Registration-UI weiter bereinigt.
+- Entfernt:
+  - zwei `[0,120,700]` Refresh-Startup-Züge;
+  - `[0,120,700]` Decorate-Zug;
+  - `[0,120,650]` Refresh-Zug;
+  - `[0,250,900]` Fix-Zug;
+  - `[0,250,900]` Repair-Zug;
+  - Character-Avatar `[0,180,700]` Startup-Sync;
+  - `[0,250,800]` Rerender-Zug;
+  - Registration `[120,500,1400]` Entry-Paint-Zug.
+- Durch direkte `foreground-ready`-/`account-ready`-Hooks ersetzt.
+- Klick-/Action-Followups bewusst erhalten, z. B. Character-Avatar nach echtem Öffnen und Talent-Rerender nach Auswahl/Upgrade.
+- QA `V8009_FINAL_BIG_BATCH9_QA.json`: grün.
+- Stable / `index.html`: unverändert.
