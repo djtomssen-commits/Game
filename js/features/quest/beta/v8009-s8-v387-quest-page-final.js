@@ -38,20 +38,8 @@
     v387EnsureRefresh();
   }
 
-  const baseRenderQuests=renderQuests;
-  renderQuests=function(){
-    const result=baseRenderQuests.apply(this,arguments);
-    v387Clean();
-    return result;
-  };
-
-  /* V7.122: duplicate quest-nav cleanup retired; renderQuests owns it. */
-
-  setTimeout(()=>{
-    v387Clean();
-    document.querySelectorAll(
-      '.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version'
-    ).forEach(el=>{if(el)el.textContent=VERSION});
-    document.querySelectorAll('.v366-ver').forEach(el=>el.textContent='V4.11');
-  },650);
+  window.v387QuestClean=v387Clean;
+  /* V8.009: renderQuests wrapper and delayed version repaint retired.
+     v6344 is the canonical Quest render owner and invokes this cleanup directly. */
+  queueMicrotask(v387Clean);
 })();
