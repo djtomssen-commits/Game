@@ -118,11 +118,7 @@ function v099PaintQuestXp(){
   }
 }
 
-const v099BaseRender=render;
-render=function(){
-  v099BaseRender();
-  
-  requestAnimationFrame(v099PaintQuestXp);
-};
-
-document.addEventListener('click',()=>setTimeout(v099PaintQuestXp,40),true);
+/* V8.009 Quest consolidation:
+   v6344 is the canonical Quest render owner and calls this painter directly.
+   Do not wrap global render() or attach a document-wide click repaint here. */
+window.v099PaintQuestXp=v099PaintQuestXp;
