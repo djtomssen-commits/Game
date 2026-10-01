@@ -139,6 +139,5 @@
   try{if(document.querySelector('#grow'))renderGrow()}catch(e){console.error('V4.30 Growroom max-level repair',e)}
   stamp();
   document.addEventListener('DOMContentLoaded',()=>{clampGrow(true);stamp()},{once:true});
-  setTimeout(()=>{clampGrow(true);stamp()},900);
-  setTimeout(()=>{clampGrow(true);stamp()},3200);
+  window.addEventListener('growlegends:account-ready',()=>queueMicrotask(()=>{clampGrow(true);stamp()}),{passive:true});
 })();
