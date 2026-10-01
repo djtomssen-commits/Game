@@ -50460,14 +50460,11 @@ body.v371-game-ui .app > header{
     });
   }
 
-  const oldGo=v032Go;
-  v032Go=function(id){const r=oldGo.apply(this,arguments);requestAnimationFrame(paint);return r};
-
   paint();
   document.addEventListener('DOMContentLoaded',paint,{once:true});
-  setTimeout(paint,250);
-  setTimeout(paint,1200);
-  setTimeout(paint,3200);
+  window.addEventListener('pageshow',paint,{passive:true});
+  window.addEventListener('growlegends:account-ready',paint,{passive:true});
+  window.addEventListener('growlegends:navigation-open-v7119',paint,{passive:true});
 })();
 </script>
 
@@ -50486,12 +50483,8 @@ body.v371-game-ui .app > header{
     panel.style.removeProperty('pointer-events');
   }
 
-  /* Main navigation owner: every successful page change closes the menu. */
-  const baseGo=v032Go;
-  v032Go=function(id){
-    closeMainMenu();
-    return baseGo.apply(this,arguments);
-  };
+  /* Shared navigation owner: every successful page change closes the menu. */
+  window.addEventListener('growlegends:navigation-open-v7119',closeMainMenu,{passive:true});
 
   /* Safety for menu entries that use their own click handler instead of v032Go. */
   document.addEventListener('click',function(e){
@@ -62657,22 +62650,13 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();i
 
   /* V6.101: no full-document MutationObserver and no global render wrapper.
      Item art is refreshed only for the screen that actually opens. */
-  try{
-    const go=window.v032Go;
-    if(typeof go==='function'&&!window.__v4112ScopedGo){
-      window.v032Go=function(id){
-        const r=go.apply(this,arguments);
-        if(['character','shop','dungeon','hall','endgame'].includes(String(id||''))){
-          queue(document.getElementById(id));
-        }
-        return r;
-      };
-      try{v032Go=window.v032Go}catch(e){}
-      window.__v4112ScopedGo=true;
-    }
-  }catch(e){}
+  window.addEventListener('growlegends:navigation-open-v7119',e=>{
+    const id=String(e?.detail?.id||'');
+    if(['character','shop','dungeon','hall','endgame'].includes(id))queue(document.getElementById(id));
+  },{passive:true});
+  window.__v4112ScopedGo='v7119-event';
 
-  document.addEventListener('DOMContentLoaded',()=>setTimeout(()=>queue(document.querySelector('.screen.active')||document),80),{once:true});
+  document.addEventListener('DOMContentLoaded',()=>queue(document.querySelector('.screen.active')||document),{once:true});
   window.addEventListener('pageshow',()=>queue(document.querySelector('.screen.active')||document),{passive:true});
 })();
 </script>
@@ -88770,20 +88754,9 @@ function closePetForNavigation(){
 }
 window.v6114ClosePetForNavigation=closePetForNavigation;
 
-/* Final navigation authority: choosing another page closes the Pet album
-   automatically. No need to tap X first. */
-try{
-  if(typeof v032Go==='function'&&!window.__v6114GoWrapped){
-    const base=v032Go;
-    const wrapped=function(id){
-      closePetForNavigation();
-      return base.apply(this,arguments);
-    };
-    try{v032Go=wrapped}catch(e){}
-    window.v032Go=wrapped;
-    window.__v6114GoWrapped=true;
-  }
-}catch(e){}
+/* Shared navigation authority: choosing another page closes the Pet album. */
+window.addEventListener('growlegends:navigation-open-v7119',closePetForNavigation,{passive:true});
+window.__v6114GoWrapped='v7119-event';
 
 /* The hamburger/menu itself must also be reachable while the album is open. */
 document.addEventListener('click',e=>{
@@ -95352,17 +95325,12 @@ body:has(#v6252RegisterOverlay.show) #v075AuthOverlay{pointer-events:none!import
  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&overlay()?.classList.contains('show'))close(true)});
  q('v6254HelpBtn')?.addEventListener('click',()=>openGuide(currentPage(),true));
 
- // Final navigation owner: show the first-visit guide after the destination page rendered.
- if(typeof v032Go==='function'){
-  const baseGo=v032Go;
-  v032Go=function(id){
-   const r=baseGo.apply(this,arguments);
-   updateHelp();
-   if(GUIDES[id])maybeAuto(id,300);
-   return r;
-  };
-  try{window.v032Go=v032Go}catch(_){}
- }
+ // Shared navigation owner: update help and schedule a guide after the destination page rendered.
+ window.addEventListener('growlegends:navigation-open-v7119',e=>{
+  const id=String(e?.detail?.id||'');
+  updateHelp();
+  if(GUIDES[id])maybeAuto(id,300);
+ },{passive:true});
 
  // Forge may be opened through its own function.
  if(typeof window.v488OpenForge==='function'){
