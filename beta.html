@@ -48428,20 +48428,13 @@ body:has(#world.active) #v032MenuBtn{
     return r;
   };
 
-  const baseGo=v032Go;
-  v032Go=function(id){
-    const r=baseGo.apply(this,arguments);
-    requestAnimationFrame(()=>{
-      v357RemoveWorldDuplicateBar();
-      v357Version();
-    });
-    return r;
-  };
+  window.addEventListener('growlegends:navigation-open-v7119',()=>{
+    v357RemoveWorldDuplicateBar();
+    v357Version();
+  },{passive:true});
 
   v357RemoveWorldDuplicateBar();
   v357Version();
-  setTimeout(()=>{v357RemoveWorldDuplicateBar();v357Version()},350);
-  setTimeout(()=>{v357RemoveWorldDuplicateBar();v357Version()},1200);
 })();
 </script>
 
