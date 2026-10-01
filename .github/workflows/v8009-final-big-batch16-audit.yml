@@ -1,0 +1,23 @@
+name: V8.009 Final Big Batch 16 Audit
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/v8009_final_big_batch16_audit.py'
+      - '.github/workflows/v8009-final-big-batch16-audit.yml'
+permissions:
+  contents: write
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 .github/scripts/v8009_final_big_batch16_audit.py
+      - run: |
+          git config user.name github-actions
+          git config user.email github-actions@users.noreply.github.com
+          git add V8009_FINAL_BIG_BATCH16_AUDIT.json
+          git commit -m "V8.009 FINAL: record big batch16 audit" || exit 0
+          git pull --rebase origin main
+          git push
