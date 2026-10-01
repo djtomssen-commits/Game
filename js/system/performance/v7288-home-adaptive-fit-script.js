@@ -311,7 +311,10 @@ function installGrowWeatherObserver(){
     v8009GrowWeatherObserver=new MutationObserver(list=>{
       if(!list.some(m=>m.type==='attributes'&&m.attributeName==='data-gl-weather'))return;
       v8009HomeHeaderFix.growWeatherReschedules++;
-      requestAnimationFrame(()=>{try{patchHomeGrowStatus()}catch(_){}});
+      requestAnimationFrame(()=>{
+        try{patchHomeGrowStatus()}catch(_){}
+        try{syncPaintedWeatherSignature()}catch(_){}
+      });
     });
     v8009GrowWeatherObserver.observe(document.body,{attributes:true,attributeFilter:['data-gl-weather']});
     return true;
@@ -357,70 +360,13 @@ function patchWeeklyChest(){
 /* V8.009 HOME-16: Frost weapon2 is counted by the canonical renderer.
    The former post-render checklist DOM correction is retired. */
 if(IS_BETA)window.__V8009_HOME16_CANONICAL_CHECKLIST__=true;
-function installBetaWorldPostRender(){
-  if(!IS_BETA)return false;
+function onCanonicalHomeRendered(){
+  if(!IS_BETA)return;
   try{
-    const base=window.v085InstallWorld;
-    if(typeof base!=='function')return false;
-    if(base.__v8009Home6WorldPost)return true;
-
-    const wrapped=function(){
-      const force=arguments[0]===true;
-      const worldBefore=document.getElementById('world');
-      const active=!!worldBefore?.classList.contains('active');
-      const heroBefore=active?worldBefore.querySelector('.v366-hero'):null;
-      const t=(()=>{try{return performance.now()}catch(_){return Date.now()}})();
-
-      /* HOME-8: live weather already repaints its own mounted widget. Bring only
-         the V366 signature in sync before the canonical installer compares it. */
-      if(active&&!force&&syncPaintedWeatherSignature()){
-        v8009HomeHeaderFix.weatherCatchupRendersAvoided++;
-      }
-
-      /* V8.009 HOME-7: server activity feedback used to rebuild the complete
-         Startseite just to update Wochen-EXP. The feedback event is dispatched
-         in the same task before its queued RAF calls v085InstallWorld(false).
-         Consume that one call and repaint only the weekly-chest widget. */
-      if(!force&&active&&weeklyFeedbackUntil&&t<=weeklyFeedbackUntil&&patchWeeklyChest()){
-        weeklyFeedbackUntil=0;
-        v8009HomeHeaderFix.weeklyFullRendersAvoided++;
-        try{patchHomeGrowStatus()}catch(_){}
-        return false;
-      }
-
-      const out=base.apply(this,arguments);
-
-      /* HOME-28: HOME-27 already skips hidden non-forced Startseite renders.
-         Do not follow that no-op with Growroom snapshots or layout-fit scheduling. */
-      if(!active&&!force){
-        v8009HomeHeaderFix.inactivePostRenderSkips++;
-        return out;
-      }
-
-      requestAnimationFrame(()=>{
-        try{
-          const worldAfter=document.getElementById('world');
-          const heroAfter=worldAfter?.querySelector('.v366-hero')||null;
-          if(heroAfter&&heroAfter===heroBefore){
-            v8009HomeHeaderFix.unchangedPostRenderSkips++;
-            return;
-          }
-        }catch(_){}
-        try{
-          scheduleHomeGrowReady(homeGrowSnapshot());
-          v8009HomeHeaderFix.growPostRenderSchedules++;
-        }catch(_){}
-        try{schedule('world-render')}catch(_){}
-      });
-      return out;
-    };
-    wrapped.__v8009Home6WorldPost=true;
-    wrapped.__v8009Base=base;
-    window.v085InstallWorld=wrapped;
-    try{globalThis.v085InstallWorld=wrapped}catch(_){}
-    v8009HomeHeaderFix.worldPostRenderInstalls++;
-    return true;
-  }catch(_){return false}
+    scheduleHomeGrowReady(homeGrowSnapshot());
+    v8009HomeHeaderFix.growPostRenderSchedules++;
+  }catch(_){}
+  try{schedule('world-render')}catch(_){}
 }
 
 function installBetaMenuReplaceGuard(){
@@ -506,15 +452,15 @@ window.v8009HomeHeaderDiagnostics=()=>({
    The helper no longer rewrites or re-appends version styles on lifecycle events. */
 if(IS_BETA){
  installBetaMenuReplaceGuard();
- installBetaWorldPostRender();
  installGrowWeatherObserver();
  installXpDecoratorStartupGuard();
  try{scheduleHomeGrowReady(homeGrowSnapshot())}catch(_){}
- document.addEventListener('DOMContentLoaded',()=>requestAnimationFrame(()=>{installBetaMenuReplaceGuard();installBetaWorldPostRender();installGrowWeatherObserver();installXpDecoratorStartupGuard();try{scheduleHomeGrowReady(homeGrowSnapshot())}catch(_){}}),{once:true});
- window.addEventListener('pageshow',()=>{installBetaMenuReplaceGuard();installBetaWorldPostRender();installGrowWeatherObserver();patchHomeGrowStatus()},{passive:true});
- window.addEventListener('growlegends:account-ready',()=>setTimeout(()=>{installBetaMenuReplaceGuard();installBetaWorldPostRender();installGrowWeatherObserver();patchHomeGrowStatus()},0),{passive:true});
- window.addEventListener('growlegends:extras-ready',()=>setTimeout(()=>{installBetaMenuReplaceGuard();installBetaWorldPostRender()},0),{passive:true});
- window.addEventListener('growlegends:foreground-ready',()=>setTimeout(()=>{installBetaMenuReplaceGuard();installBetaWorldPostRender()},0),{passive:true});
+ window.addEventListener('growlegends:home-rendered-v8009',onCanonicalHomeRendered,{passive:true});
+ document.addEventListener('DOMContentLoaded',()=>requestAnimationFrame(()=>{installBetaMenuReplaceGuard();installGrowWeatherObserver();installXpDecoratorStartupGuard();try{scheduleHomeGrowReady(homeGrowSnapshot())}catch(_){}}),{once:true});
+ window.addEventListener('pageshow',()=>{installBetaMenuReplaceGuard();installGrowWeatherObserver();patchHomeGrowStatus()},{passive:true});
+ window.addEventListener('growlegends:account-ready',()=>{installBetaMenuReplaceGuard();installGrowWeatherObserver();patchHomeGrowStatus()},{passive:true});
+ window.addEventListener('growlegends:extras-ready',installBetaMenuReplaceGuard,{passive:true});
+ window.addEventListener('growlegends:foreground-ready',installBetaMenuReplaceGuard,{passive:true});
 }
 
 window.addEventListener('growlegends:guild-xp-feedback',e=>{
@@ -547,6 +493,6 @@ window.addEventListener('growlegends:navigation-open-v7119',e=>{
   if(!id||id==='world')setTimeout(()=>schedule('navigation-world'),70);
 },{passive:true});
 
-if(IS_BETA)setTimeout(()=>{installBetaMenuReplaceGuard();installBetaWorldPostRender();installGrowWeatherObserver();installXpDecoratorStartupGuard();try{scheduleHomeGrowReady(homeGrowSnapshot())}catch(_){}},0);
+if(IS_BETA){installBetaMenuReplaceGuard();installGrowWeatherObserver();installXpDecoratorStartupGuard();try{scheduleHomeGrowReady(homeGrowSnapshot())}catch(_){}}
 schedule('boot');
 })();
