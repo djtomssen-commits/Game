@@ -50,25 +50,14 @@
 
  /* Final live truth: Dungeon 1 is always unlocked from Level 1; a stale completed
     bit can no longer close a dungeon unless its boss progress is real. */
- try{
-  if(typeof dungeonUnlocked==='function'){
-   const base=dungeonUnlocked;
-   dungeonUnlocked=function(i){i=Number(i);if(i===0)return true;return base.apply(this,arguments)};
-   try{window.dungeonUnlocked=dungeonUnlocked}catch(e){}
-  }
- }catch(e){}
+ /* V8.009: dungeonUnlocked override retired; v4165 is the later live key authority. */
  try{
   if(typeof dungeonCompleted==='function'){
    dungeonCompleted=function(i){shape();return validCompletion(Number(i))};
    try{window.dungeonCompleted=dungeonCompleted}catch(e){}
   }
  }catch(e){}
- try{
-  if(typeof dungeonAvailable==='function'){
-   dungeonAvailable=function(i){shape();i=Number(i);const d=dungeons?.[i];return !!d&&Number(s.level||1)>=Number(d.minLevel||1)&&dungeonUnlocked(i)&&!dungeonCompleted(i)};
-   try{window.dungeonAvailable=dungeonAvailable}catch(e){}
-  }
- }catch(e){}
+ /* V8.009: dungeonAvailable override retired; v4165 owns final availability. */
 
  /* Repair after the authoritative account save has actually been applied. */
  try{
