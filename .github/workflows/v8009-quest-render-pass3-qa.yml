@@ -4,6 +4,7 @@ on:
     branches: [main]
     paths:
       - '.github/scripts/v8009_quest_render_pass3_qa.py'
+      - '.github/workflows/v8009-quest-render-pass3-qa.yml'
       - 'js/features/quest/beta/v309-distinct-quest-offers.js'
       - 'js/features/quest/beta/v316-quest-balance-skip.js'
       - 'js/features/quest/beta/v496-quest-claim-single-payout.js'
@@ -32,4 +33,5 @@ jobs:
           git add V8009_QUEST_RENDER_PASS3_QA.json
           if git diff --cached --quiet; then exit 0; fi
           git commit -m "V8.009 QUEST: record render pass 3 QA"
+          git pull --rebase origin main
           git push
