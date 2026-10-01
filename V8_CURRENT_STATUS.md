@@ -4749,3 +4749,15 @@ Arbeitsmodus:
   - `js/features/authority/beta/v8009-s2-v7065-fail-closed-grow-authority-hotfix.js`
   - `js/features/grow/beta/v8009-s1-v6160-grow-contracts-core.js`
 - Commits: `4f5db05a6db619b5899c15d17ca6197a07d6d079`, `6015e8f2d1b22760c04dc596e957d2c30f4223d7`, `3622511bdc58666135968834009b22b1ce37b118`, `a346ab71403a3b9c549b9b041b0bead0bb64a3d4`
+
+
+#### Dampf-Kauf – Harz-Abzug + serverseitige Persistenz
+- Fehler: Der sichtbare Dampf-Kauf konnte trotz aktiver Quest-Authority noch in den alten lokalen Refill-Pfad fallen. Dadurch wurde Dampf nur lokal erhöht und Harz nur lokal verändert; der nächste Server-Abgleich (z. B. nach Dungeon-Aktion) setzte beides wieder auf den kanonischen Serverstand zurück.
+- Ursache: `v7045` prüfte für den Refill nur den alten `v7040`-Mode, während der aktuelle Authority-Entscheider `v7081UseAuthority('quest')` bereits aktiv sein konnte. `v7110` nutzte bereits beide Signale, `v7045` noch nicht.
+- Direkt im bestehenden Quest-Authority-Client repariert, kein neuer Patch-Layer:
+  - `v7045` nutzt jetzt denselben Authority-Entscheider wie `v7110`.
+  - Dampf-Refill läuft bei aktiver Quest-Authority über das bestehende serverseitige RPC `v7044_refill_dampf`.
+  - Dieses RPC zieht 1 Harz serverseitig ab, erhöht Dampf serverseitig um bis zu 20 und speichert `refill_count`/Revision dauerhaft.
+  - Nach erfolgreichem Kauf wird der Quest-State-Cache invalidiert und Dampf/Harz direkt aus der Serverantwort gemalt, ohne einen globalen Voll-Render.
+- Datei: `js/features/quest/beta/v7045-atomic-quest-receipt-client.js`
+- Commit: `381deb6621df86974390cbee159b6611c4b33e10`
