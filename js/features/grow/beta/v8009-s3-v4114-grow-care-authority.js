@@ -76,7 +76,7 @@
   syncLedger('before-save');
   try{if(typeof persist==='function')persist(false);else localStorage.setItem(KEY,JSON.stringify(s))}catch(e){try{localStorage.setItem(KEY,JSON.stringify(s))}catch(_){} }
   syncLedger('after-save');
-  try{if(typeof v075WriteCloudSave==='function')setTimeout(()=>v075WriteCloudSave(false),0)}catch(e){}
+  try{if(typeof v075WriteCloudSave==='function')queueMicrotask(()=>v075WriteCloudSave(false))}catch(e){}
  }
  function toast(title,detail){try{if(typeof v063Toast==='function')return v063Toast(title,'success',detail)}catch(e){} }
  function doCare(uid,intended){
