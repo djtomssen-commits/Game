@@ -104,14 +104,12 @@ function showServer1Creator(){
       const ok=await v115Confirm(`${className} als Klasse für ${name} wählen?\n\nName und Klasse sind auf Server 1 danach festgelegt.`,{title:'Charakter erstellen',type:'warn',okText:'Charakter erstellen'});
       if(!ok){status.textContent='2–18 Zeichen · muss einzigartig sein';setButtons(true);return}
       if(!verified(id)||uid()!==id){status.className='error';status.textContent='Account-Prüfung hat sich geändert. Bitte neu anmelden.';return}
-      const db=(typeof v073Db!=='undefined'&&v073Db)||null;
-      if(!db){status.className='error';status.textContent='Server ist nicht bereit. Bitte erneut versuchen.';setButtons(true);return}
       status.className='';status.textContent='Charakter wird auf Server 1 angelegt …';
       try{
-        const {data,error}=await db.rpc('gl_create_character',{p_name:name,p_class:classId});
-        if(error)throw error;
-        const r=Array.isArray(data)?(data[0]||{}):(data||{});
-        if(!r.ok){status.className='error';status.textContent=statusReason(r.reason);setButtons(true);return}
+        const create=window.v7275CreateCharacterServer;
+        if(typeof create!=='function')throw new Error('SERVER_NOT_READY');
+        const r=await create(id,name,classId);
+        if(!r?.ok||r?.ready!==true){status.className='error';status.textContent=statusReason(r?.reason||r?.error);setButtons(true);return}
         if(uid()!==id)throw new Error('ACCOUNT_CHANGED');
         s.playerClass=classId;s.classLocked=true;s.characterName=name;s.characterNameSet=true;
         s.social=(s.social&&typeof s.social==='object')?s.social:{};s.social.playerId=id;s.__accountOwnerId=id;s.__serverId='server1';
@@ -150,25 +148,11 @@ window.v7229ShowServer1Creator=showServer1Creator;
 window.v029ShowClassChoice=function(){return showServer1Creator.apply(this,arguments)};
 try{v029ShowClassChoice=window.v029ShowClassChoice}catch(_){ }
 
-/* Absolute last finalizer wrapper: only after every account-isolation owner has
-   returned may the Server-1 character bootstrap be shown. */
-try{
-  const base=window.v200FinalizeUser||((typeof v200FinalizeUser==='function')?v200FinalizeUser:null);
-  if(typeof base==='function'&&!base.__v7229Onboarding){
-    const wrapped=async function(user){
-      const r=await base.apply(this,arguments);
-      if(r&&serverId()==='server1')schedule(0);
-      return r;
-    };
-    wrapped.__v7229Onboarding=true;wrapped.__v7229Base=base;
-    window.v200FinalizeUser=wrapped;try{v200FinalizeUser=wrapped}catch(_){ }
-  }
-}catch(e){console.warn('[V7.229] finalizer install',e)}
-
-window.addEventListener('growlegends:account-ready',()=>{if(serverId()==='server1')schedule(80)},{passive:true});
-window.addEventListener('growlegends:first-playable',()=>{if(serverId()==='server1')schedule(80)},{passive:true});
-window.addEventListener('pageshow',()=>{if(serverId()==='server1')schedule(140)},{passive:true});
-[0,120,400,1000,2200].forEach(ms=>setTimeout(()=>{if(serverId()==='server1')schedule(0)},ms));
+/* v4136 canonical account finalizer owns the onboarding handoff.
+   Keep account-ready/first-playable only as bounded recovery signals; no finalizer
+   wrapper, pageshow repair, or startup retry train. */
+window.addEventListener('growlegends:account-ready',()=>{if(serverId()==='server1'&&!complete())schedule(80)},{passive:true});
+window.addEventListener('growlegends:first-playable',()=>{if(serverId()==='server1'&&!complete())schedule(80)},{passive:true});
 
 window.v7229CharacterBootstrapDiagnostics=()=>({
  version:VERSION.short,server:serverId(),uid:uid(),authReady:window.__V200_AUTH_READY__===true,
