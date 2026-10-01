@@ -3322,3 +3322,33 @@ Arbeitsmodus:
 - Script-Commit: `efa2b5c8b95dd595b2659e6f27d810c6b5580a0e`.
 - Workflow-Commit: `2e272e291591789305b09c2d8c2f8cddede6027d`.
 - Noch keine semantische Owner-Entfernung ohne Audit-Beweis.
+
+
+#### Legacy Owner Overlap Audit
+- Ergebnis-Commit: `0f8022578c51ee796de5b4d09366dbb2d5be7819`.
+- 774 externe Scripts analysiert.
+- 18 potenzielle Overlap-Gruppen identifiziert.
+- Größte Gruppe: 11 Release-Marker-Skripte.
+- Weitere auffällige Gruppen u. a.: Illegal Book (8), Dungeon-Key (6), Harz-Dealer (5), Attribute Points (4), Guild War (4), Heldenquartier Reference (4), Quest Reward (4), Version/Integrity (4).
+
+#### Release-Marker Runtime Audit
+- Repo-weite Referenzanalyse war zunächst zu konservativ, weil `index.html` und Audit-Dateien als Nutzung gezählt wurden.
+- Deshalb Runtime-only-Audit auf tatsächlich von `beta.html` geladene Scripts umgestellt.
+- Runtime-Audit-Commit: `14de6af2a3db84789fd3e22e5ba2f7ad4b32673f`.
+- 772 geladene Beta-Scripts geprüft.
+- 8 von 11 Release-Markern sind in der Beta-Runtime vollständig ungenutzt:
+  - `v7096-release-marker.js`
+  - `v7099-release-marker.js`
+  - `v7109-release-marker.js`
+  - `v7110-release-marker.js`
+  - `v7111-release-marker.js`
+  - `v7159-release-marker.js`
+  - `v7160-release-marker.js`
+  - `v7161-release-marker.js`
+- 3 Marker bleiben vorerst aktiv, weil sie noch Runtime-Werte liefern:
+  - `v7113-release-marker.js`
+  - `v7114-release-marker.js`
+  - `v7117-release-marker.js`
+- Cleanup-Script: `2333506c1c0cf1a2fca2297e8566ec0805994ec3`.
+- Cleanup-Workflow: `482b26e8aa9a97c381fdd9a6c1a9d8194d951820`.
+- Ergebnis-Commit bei letzter Prüfung noch nicht sichtbar.
