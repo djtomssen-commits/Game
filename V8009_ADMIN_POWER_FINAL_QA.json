@@ -1,0 +1,44 @@
+{
+  "build": "V8.009-ADMIN-POWER-FINAL-QA",
+  "checked_at": "2026-10-01",
+  "scope": [
+    "Admin-Zentrale",
+    "Spieler verwalten",
+    "Belohnungen",
+    "Tickets",
+    "Broadcasts",
+    "Event-Vorlagen",
+    "Systemtechnik"
+  ],
+  "dom": {
+    "admin_section_present": true,
+    "real_admin_tabs": 0,
+    "note": "Admin UI uses stacked cards/sections; matrix grouping was not literal DOM tabs."
+  },
+  "lifecycle": {
+    "global_render_wrappers": 0,
+    "admin_check_wrappers": 0,
+    "admin_list_wrappers": 0,
+    "mutation_observers": 0,
+    "canonical_check_owner": "v093CheckAdmin",
+    "canonical_content_owner": "v093AdminLoadLists"
+  },
+  "authority": {
+    "player_admin_rpcs_public": true,
+    "player_admin_rpcs_server1": true,
+    "ticket_admin_rpc_guarded": true,
+    "broadcast_admin_rpcs_guarded": true,
+    "player_admin_guard_helper": "is_game_admin() -> game_admins where user_id = auth.uid()"
+  },
+  "preserved": [
+    "admin_search_players",
+    "admin_get_player_values",
+    "admin_update_player_values",
+    "admin_grant_player_reward",
+    "v269_admin_ticket_action",
+    "v6346_admin_create_broadcast",
+    "v6346_admin_set_broadcast_published",
+    "v6346_admin_delete_broadcast"
+  ],
+  "ok": true
+}
