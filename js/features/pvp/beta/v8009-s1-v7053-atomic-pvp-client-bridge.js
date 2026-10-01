@@ -290,9 +290,9 @@ function bindOwner(){
 window.v204Fight=routedFight;try{v204Fight=routedFight}catch(_){}
 document.addEventListener('click',ev=>{
  const b=ev.target?.closest?.('#v204FightBtn');if(!b||!enforced())return;
- ev.preventDefault();ev.stopPropagation();ev.stopImmediatePropagation();void runServerPvp();setTimeout(bindOwner,0);
+ ev.preventDefault();ev.stopPropagation();ev.stopImmediatePropagation();void runServerPvp();queueMicrotask(bindOwner);
 },true);
-document.addEventListener('click',ev=>{if(ev.target?.closest?.('#pvp,#v204FindBtn'))setTimeout(bindOwner,0)},false);
+document.addEventListener('click',ev=>{if(ev.target?.closest?.('#pvp,#v204FindBtn'))queueMicrotask(bindOwner)},false);
 
 async function reportReadiness(){
  if(!online())return;
@@ -322,9 +322,8 @@ async function boot(){
 window.v7053PvpAuthorityDiagnostics=()=>clone({...C,version:VERSION,mode:mode()});
 window.v7053RecoverPvpReceipt=()=>recoverPending({quiet:false});
 window.v7053RunServerPvp=()=>runServerPvp();
-window.addEventListener('growlegends:account-ready',()=>{const run=()=>void boot();if(typeof window.v7204AfterStartupQuiet==='function')window.v7204AfterStartupQuiet(run,900);else setTimeout(run,420)},{passive:true});
-window.addEventListener('pageshow',()=>setTimeout(bindOwner,180),{passive:true});
-document.addEventListener('visibilitychange',()=>{if(!document.hidden)setTimeout(bindOwner,160)},{passive:true});
-[80,420,1300].forEach(ms=>setTimeout(bindOwner,ms));
-setTimeout(()=>{try{if(typeof v073User!=='undefined'&&v073User?.id&&!v073User?.is_anonymous&&!C.fightOwned)void boot()}catch(_){}},4200);
+window.addEventListener('growlegends:account-ready',()=>{const run=()=>void boot();if(typeof window.v7204AfterStartupQuiet==='function')window.v7204AfterStartupQuiet(run,900);else queueMicrotask(run)},{passive:true});
+window.addEventListener('pageshow',()=>queueMicrotask(bindOwner),{passive:true});
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)queueMicrotask(bindOwner)},{passive:true});
+queueMicrotask(()=>{bindOwner();try{if(typeof v073User!=='undefined'&&v073User?.id&&!v073User?.is_anonymous&&!C.fightOwned)void boot()}catch(_){}});
 })();
