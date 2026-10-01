@@ -97,20 +97,8 @@ function v238SyncQuestDungeonKeys(){
 }
 
 
-/* Wrap once more so a later-dungeon key found by the old quest code becomes
-   usable immediately by the current 20-dungeon map.
-*/
-const v238LootClaimQuest=claimQuest;
-claimQuest=function(...args){
-  const result=v238LootClaimQuest.apply(this,args);
-  v238SyncQuestDungeonKeys();
-  return result;
-};
-
+/* V8.009: the second claimQuest wrapper for key synchronization is retired.
+   v243 owns representation repair, v250 owns pity/key progression and V467 reacts
+   to canonical key-change events. Keep one initial migration for old saves. */
 v238SyncQuestDungeonKeys();
 
-setTimeout(()=>{
-  try{v238SyncQuestDungeonKeys()}catch(e){}
-  
-  const line=document.querySelector('#v141VersionLine');
-},400);
