@@ -37,11 +37,6 @@ function v138PaintMerchant(){
   
 }
 
-const v138BaseRender=render;
-render=function(){
-  const r=v138BaseRender();
-  if(document.querySelector('#shop')?.classList.contains('active'))requestAnimationFrame(v138PaintMerchant);
-  return r;
-};
-
-setTimeout(v138PaintMerchant,160);
+/* V8.009: legacy post-paint rarity pass retired.
+   The later v139ActualOffer writes the final rarity class directly into each
+   offer card, so repainting an intermediate DOM frame only caused flicker. */
