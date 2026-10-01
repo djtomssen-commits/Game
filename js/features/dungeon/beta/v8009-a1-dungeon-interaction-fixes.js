@@ -246,14 +246,7 @@ function v068InstallFight(){
 
 /* Phase 2 retired: v068 renderDungeon fight wrapper. The final canonical dungeon owner replaces this render layer. */
 
-const v068BaseRender=render;
-render=function(){
-  v068BaseRender();
-  
-
-  if(document.querySelector('#dungeon')?.classList.contains('active')){
-    try{renderDungeon();}catch(e){console.error('V4.02 dungeon render',e);}
-  }
-};
+/* V8.009: obsolete global render -> renderDungeon fan-out retired.
+   Canonical Dungeon navigation/render owners update the page directly. */
 
 try{render();}catch(e){console.error('V4.02 init',e);}
