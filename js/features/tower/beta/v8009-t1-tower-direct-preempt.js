@@ -121,64 +121,6 @@ function installDoorPreviewPacing(){
  }
 }
 
-function installTowerRenderGuard(){
- try{
-   const base=window.vTowerRender;
-   if(typeof base!=='function'||base.__v8009T10JFlowGuard)return false;
-   const wrapped=function(){
-     const run=window.s?.tower?.run;
-     const mode=String(run?.mode||'');
-     const hasBattle=battleDom();
-
-     if(G.routeBusy){
-       if(mode==='battle'){
-         if(!G.battleSeen){
-           G.battleSeen=true;
-           G.battleShownAt=now();
-         }
-         const out=base.apply(this,arguments);
-
-         /* The first fight used to build the V7175 arena lazily on the first
-            replay hit. That DOM/layout work is visible as startup stutter.
-            Build it immediately after the battle DOM exists, while the replay
-            is still in its start delay. Also request image decode up front. */
-         if(!G.arenaWarmQueued){
-           G.arenaWarmQueued=true;
-           requestAnimationFrame(()=>{
-             try{
-               if(!battleDom())return;
-               window.v7175CombatArenaRefresh?.();
-               document.querySelectorAll('#tower .vT-battle-stage img').forEach(img=>{
-                 try{img.decode?.().catch(()=>{})}catch(_){}
-               });
-               G.arenaPrewarms++;
-             }catch(_){}
-           });
-         }
-         return out;
-       }
-
-       /* Server/background snapshots may already contain the post-fight state
-          while the visible replay is still running. Do not let them replace
-          the combat DOM in the middle of an attack. */
-       if(G.battleSeen&&hasBattle){
-         G.suppressedRenders++;
-         return false;
-       }
-     }
-     return base.apply(this,arguments);
-   };
-   wrapped.__v8009T10JFlowGuard=true;
-   wrapped.__v8009Base=base;
-   window.vTowerRender=wrapped;
-   G.renderInstalls++;
-   return true;
- }catch(e){
-   G.lastError=String(e?.message||e);
-   return false;
- }
-}
-
 function installTowerReplayGuard(){
  try{
    const base=window.v7175CombatReplayStep;
@@ -272,7 +214,6 @@ function installTowerSfxGuard(){
 function installPresentationGuards(){
  installTowerCadence();
  installDoorPreviewPacing();
- installTowerRenderGuard();
  installTowerReplayGuard();
  installTowerSfxGuard();
 }
@@ -358,7 +299,7 @@ window.v8009TowerRouteGuardDiagnostics=()=>({
  oneTapFight:true,
  separateFightButton:false,
  previewWrapped:!!window.v7298TowerDoorPreview?.__v8009T10J,
- renderGuard:!!window.vTowerRender?.__v8009T10JFlowGuard,
+ renderGuard:'canonical-vTowerRender',
  sfxGuard:!!window.v6111Sfx?.__v8009T10JSfxGuard,
  replayGuard:!!window.v7175CombatReplayStep?.__v8009T10JReplayGuard,
  firstFightArenaPrewarm:true,
