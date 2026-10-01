@@ -292,29 +292,23 @@ if(typeof V106_ACH!=='undefined'){
 
 /* V8.009: shared post-navigation owner refreshes PvP stats. */
 window.addEventListener('growlegends:navigation-open-v7119',e=>{
-  if(String(e?.detail?.id||'')==='pvp')void v204RefreshStats();
+  if(String(e?.detail?.id||'')!=='pvp')return;
+  try{v086BuildCompleteMenu();v204InstallAvatarBadge()}catch(_){}
+  void v204RefreshStats();
 },{passive:true});
 document.querySelector('#v204FindBtn')?.addEventListener('click',v204FindOpponent);
 
 setInterval(()=>{
   if(document.hidden)return;
   if(v204CooldownLeft>0)v204CooldownLeft=Math.max(0,v204CooldownLeft-1000);
-  if(document.querySelector('#pvp')?.classList.contains('active'))v204RenderPage();
+  if(!document.querySelector('#pvp')?.classList.contains('active'))return;
+  const cd=document.querySelector('#v204Cooldown');
+  if(cd)cd.textContent=v204CooldownLeft>0?v204Fmt(v204CooldownLeft):'Bereit';
+  const btn=document.querySelector('#v204FindBtn');
+  if(btn&&!v204BattleBusy&&!v204Opponent){
+    btn.disabled=v204CooldownLeft>0;
+    btn.textContent=v204CooldownLeft>0?`⏳ Neuer Kampf in ${v204Fmt(v204CooldownLeft)}`:'🎯 Gegner suchen';
+  }
 },1000);
 
-const v204BaseRender=render;
-render=function(){
-  const r=v204BaseRender();
-  
-  requestAnimationFrame(()=>{
-    v086BuildCompleteMenu();
-    v204InstallAvatarBadge();
-    if(document.querySelector('#pvp')?.classList.contains('active'))v204RenderPage();
-  });
-  return r;
-};
-
-setTimeout(()=>{
-  v086BuildCompleteMenu();
-  v204InstallAvatarBadge();
-},220);
+queueMicrotask(()=>{try{v086BuildCompleteMenu();v204InstallAvatarBadge()}catch(_){}});
