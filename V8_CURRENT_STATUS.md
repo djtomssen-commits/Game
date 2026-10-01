@@ -2268,3 +2268,31 @@ Arbeitsmodus:
 - v4125 Power-Repaint wurde bewusst noch nicht verändert, da es auch nach echten Gameplay-`render()`-Aufrufen aktualisiert und nicht nur Navigation nachmalt.
 - QA `V8009_FINAL_BIG_BATCH20_QA.json`: grün.
 - Stable / `index.html`: unverändert.
+
+
+### Vollständigkeits-Audit Seiten / Tabs 01.10.2026
+- Ziel: am Ende nicht nur einzelne Wrapper/Timer bereinigt haben, sondern **jede Beta-Seite und jeden Tab** inventarisieren, Owner zuordnen, QA prüfen und verbleibenden Inline-Code bewusst klassifizieren.
+- Audit: `V8009_SCREEN_TAB_COVERAGE_AUDIT.json`
+- Aktueller Bestand:
+  - 14 `.screen`-Seiten;
+  - 4 Character-Tabs (`attributes`, `inventory`, `talents`, `materials`);
+  - 13 `data-go`-Navigationsziele;
+  - 76 externe Beta-/V8.009-Includes;
+  - weiterhin ca. 280 Inline-Script-Referenzen auf Screens/Tabs im Monolithen.
+- Wichtig: damit ist **noch nicht alles aus beta.html ausgelagert**.
+- Größte Restbereiche laut Audit:
+  - `character`: sehr viele Inline-Owner/Legacy-Hooks;
+  - `shop`: sehr viele Inline-Owner/Legacy-Hooks;
+  - kleinere Restbereiche: `bagDealer`, `harzDealer`, `friends`, `mail`, `admin`.
+- Character-Tabs:
+  - `inventory`: mehrfach bereinigt und QA-abgedeckt;
+  - `materials`: eigener Performance-/Lifecycle-Pass, 10/10 grün;
+  - `attributes`: noch eigener Coverage-/Owner-Pass offen;
+  - `talents`: noch eigener Coverage-/Owner-Pass offen.
+- Nächste Reihenfolge:
+  1. Character Attribute + Talente vollständig inventarisieren/konsolidieren;
+  2. kleine Dealer/Social/Admin-Screens;
+  3. große Inline-Restblöcke Character/Shop;
+  4. danach gemeinsame Integrations-QA über alle 14 Screens + 4 Tabs;
+  5. erst dann kann „jede Seite / jeder Tab geprüft“ als abgeschlossen markiert werden.
+- Stable / `index.html`: unverändert.
