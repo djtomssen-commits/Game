@@ -343,11 +343,14 @@ window.addEventListener('click',e=>{
 },true);
 
 installPresentationGuards();
-setTimeout(installPresentationGuards,0);
-setTimeout(installPresentationGuards,500);
-setTimeout(installPresentationGuards,1200);
-window.addEventListener('growlegends:account-ready',()=>setTimeout(installPresentationGuards,80),{passive:true});
-window.addEventListener('pageshow',()=>setTimeout(installPresentationGuards,80),{passive:true});
+const reinstallPresentationGuards=()=>queueMicrotask(installPresentationGuards);
+if(document.readyState==='loading'){
+ document.addEventListener('DOMContentLoaded',reinstallPresentationGuards,{once:true});
+}else{
+ reinstallPresentationGuards();
+}
+window.addEventListener('growlegends:account-ready',reinstallPresentationGuards,{passive:true});
+window.addEventListener('pageshow',reinstallPresentationGuards,{passive:true});
 
 window.v8009TowerRouteGuardDiagnostics=()=>({
  ...G,
