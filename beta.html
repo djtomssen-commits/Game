@@ -54396,9 +54396,7 @@ create index if not exists player_messages_sender_idx on public.player_messages(
   bindShop();settle();stamp();
   document.addEventListener('DOMContentLoaded',()=>{bindShop();observe(document.querySelector('.app > header'));observe(document.querySelector('#shop'));settle();stamp()},{once:true});
   window.addEventListener('pageshow',()=>{bindShop();settle();stamp()},{passive:true}); /* V4.123: removed useless late clear of already-fired one-shot timeout. */
-  setTimeout(()=>{bindShop();settle();stamp()},1000);
-  setTimeout(()=>{bindShop();settle();stamp()},5000);
-  setTimeout(()=>{bindShop();settle();stamp()},11000);
+  window.addEventListener('growlegends:account-ready',()=>{bindShop();settle();stamp()},{passive:true});
 })();
 </script>
 
@@ -56588,7 +56586,7 @@ normalize();
   normalize();stamp();
   document.addEventListener('DOMContentLoaded',()=>{normalize();stamp()},{once:true});
   window.addEventListener('pageshow',()=>{normalize();stamp()},{passive:true});
-  [250,900,2200,5200].forEach(ms=>setTimeout(()=>{normalize();stamp()},ms)); /* V4.123: removed useless late clear of already-fired one-shot timeout. */
+  window.addEventListener('growlegends:account-ready',()=>{normalize();stamp()},{passive:true});
 })();
 </script>
 
@@ -56681,7 +56679,7 @@ normalize();
   maxLevelUi();stamp();
   document.addEventListener('DOMContentLoaded',()=>{maxLevelUi();stamp()},{once:true});
   window.addEventListener('pageshow',()=>{maxLevelUi();stamp()},{passive:true});
-  [250,900,2200,5200].forEach(ms=>setTimeout(()=>{maxLevelUi();stamp()},ms)); /* V4.123: removed useless late clear of already-fired one-shot timeout. */
+  window.addEventListener('growlegends:account-ready',()=>{maxLevelUi();stamp()},{passive:true});
 })();
 </script>
 
@@ -57410,7 +57408,7 @@ normalize();
   layout();compactInventory();stamp();
   document.addEventListener('DOMContentLoaded',()=>{layout();compactInventory();stamp()},{once:true});
   window.addEventListener('pageshow',()=>{layout();compactInventory();stamp()},{passive:true});
-  [250,700,1400,3000,6200,10500,13500].forEach(ms=>setTimeout(()=>{layout();compactInventory();stamp()},ms));
+  window.addEventListener('growlegends:account-ready',()=>{layout();compactInventory();updateHero();stamp()},{passive:true});
   /* V6.217: obsolete V4.44 polling guard retired. Existing targeted layout retries remain. */
 })();
 </script>
@@ -58711,7 +58709,7 @@ normalize();
   function bootDecorate(){if(document.querySelector('#shop')?.classList.contains('active'))rebindShopButtons();decorateAll();stamp()}
   document.addEventListener('DOMContentLoaded',bootDecorate,{once:true});
   window.addEventListener('pageshow',bootDecorate,{passive:true});
-  [250,1200,2600].forEach(ms=>setTimeout(bootDecorate,ms));
+  window.addEventListener('growlegends:account-ready',bootDecorate,{passive:true});
   bootDecorate();
 })();
 </script>
@@ -59561,7 +59559,7 @@ normalize();
   stamp();queue();
   document.addEventListener('DOMContentLoaded',()=>{stamp();queue()},{once:true});
   window.addEventListener('pageshow',()=>{stamp();queue()},{passive:true});
-  [80,500,1400].forEach(ms=>setTimeout(()=>{stamp();queue()},ms));
+  window.addEventListener('growlegends:account-ready',()=>{stamp();queue()},{passive:true});
 })();
 </script>
 
