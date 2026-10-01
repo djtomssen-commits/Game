@@ -30,6 +30,9 @@ function logged(){
  return !!(u?.id&&!u?.is_anonymous);
 }
 function toast(t,type='info',d=''){try{window.v063Toast?.(t,type,d)}catch(_){}}
+function requestId(prefix='v8009'){
+ try{return `${prefix}_${crypto.randomUUID().replaceAll('-','')}`}catch(_){return `${prefix}_${Date.now()}_${Math.random().toString(36).slice(2,12)}`}
+}
 function art(it){
  try{
   const u=window.v466ItemArtUri?.(it)||window.v4115ComicItemArtUri?.(it)||window.v4106ComicItemArtUri?.(it)||'';
@@ -170,7 +173,7 @@ async function doForgeReroll(){
  if(!ok)return;
  S.forgeBusy=true;renderForgePanel();
  try{
-  const {data,error}=await v073Db.rpc('v7240_nebelforge_reroll',{p_item_id:x.id,p_focus_stat:S.focus||null});
+  const {data,error}=await v073Db.rpc('v8009_nebelforge_reroll',{p_item_id:x.id,p_focus_stat:S.focus||null,p_request_id:requestId('v8009_nebelforge')});
   if(error)throw error;
   const r=Array.isArray(data)?data[0]:data;
   if(!r?.ok)throw new Error('Schmiedevorgang fehlgeschlagen');
@@ -178,7 +181,7 @@ async function doForgeReroll(){
   try{window.v6111Sfx?.('forge')}catch(_){}
   await loadForge(true);renderForgePanel();
   setTimeout(()=>document.getElementById('v7240Nebelforge')?.classList.remove('v7240-hit'),850);
-  toast('🔥 Neu geschmiedet','success',`${x.name} · ${fmt(r.cost)} Gold`);
+  toast(r?.duplicate?'🔥 Schmiedevorgang bereits bestätigt':'🔥 Neu geschmiedet','success',`${x.name} · ${fmt(r.cost)} Gold`);
  }catch(e){
   console.warn('[V7.273] nebelforge reroll',e);
   toast('Schmieden fehlgeschlagen','warn',String(e?.message||e));
