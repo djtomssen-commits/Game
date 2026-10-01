@@ -3589,3 +3589,46 @@ Arbeitsmodus:
 - Shop-Flicker-QA Workflow installiert:
   - Script: `6d9854c028b09a02a53ac0f714ad86af89edef6b`
   - Workflow: `232169de133458bea1570a14661adf45c9efb767`
+
+
+#### Systemweiter Lifecycle-Hotspot-Audit
+- Ergebnis-Commit: `f5e29dde7c4acda2f7aca40b6a7d6d1df25c896a`.
+- 662 geladene externe Beta-Scripts systemweit auf Render-Overrides, Feature-Render-Assignments, RAF, Timer, Observer, Navigation-Hooks und DOM-Rewrites geprüft.
+- Hotspot-Scores:
+  - Dungeon: 694
+  - Character: 650
+  - Guild: 307
+  - Quest: 287
+  - Shop: 276
+  - World/Worldboss: 271
+  - PvP: 237
+  - Grow: 219
+  - Tower: 188
+  - Pets: 55
+- Shop wurde bereits im vorherigen Batch stark konsolidiert; Fokus verschiebt sich auf Dungeon/Character/Guild/Quest/Worldboss.
+
+#### Presentation-/No-op-Render Cleanup
+- Presentation-Wrapper-Audit: `50eb817289ae2224f83fd7b70dbbf09eaa240e43`.
+- Vier reine/obsolete globale Render-Wrapper entfernt:
+  - `v114-worldboss-confirm-modal.js` → `a3933a1e8acb366b6361dce8e8ac196448cf8311`
+  - `v116-worldboss-profile-stats.js` → `b60dfc999ebdce260d16a5d01146754752a79001`
+  - `v291-worldboss-upgrades-balance.js` → `7e896ce8ece3faa3a317bcbab0b7f00229d342a4`
+  - `v315-new-player-dampf-event-grant-fix.js` → `86a73b336e48c388fb9da6427ba74a0a2792abbf`
+- Repo-weiter No-op-Render-Sweep Ergebnis: `9bffcecc4a7d7336c836f54b5725dfa0c7d331d9`.
+- Weitere drei reine pass-through Render-Wrapper entfernt:
+  - `v108-expanded-item-pool.js` → `45a67dc4841287ea0daf2a18424c43ad45dde37c`
+  - `v285-gold-event-payout-guard.js` → `434d6e95b30551109a3314e8801a1d703695ca8b`
+  - `v319-exact-talents-dungeon-balance.js` → `3a55a3984cff28c73c7edcb29b276f6fcd18f875`
+- Damit in diesem Durchgang 7 zusätzliche globale Render-Layer aus der Runtime-Kette entfernt, ohne Gameplay-Logik zu ändern.
+
+#### Aktueller Strukturstand
+- `beta.html`: **662 externe Scripts**.
+- **0 Inline-JS**.
+- **0 Inline-CSS**.
+- Script-Anzahl bleibt hier gleich, weil die jüngsten Optimierungen innerhalb weiterhin benötigter Dateien stattfanden.
+- Nächste große Blöcke:
+  1. Dungeon lifecycle/timer/RAF consolidation
+  2. Character/Inventory lifecycle consolidation
+  3. Guild/Guildboss timer/replay/runtime consolidation
+  4. Quest Dampf/render lifecycle consolidation
+  5. Worldboss global-render/timer cleanup
