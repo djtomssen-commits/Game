@@ -41,7 +41,7 @@
    const base=v255LoadBoss;v255LoadBoss=async function(){const r=await base.apply(this,arguments);await loadMeta();paint();return r};window.v255LoadBoss=v255LoadBoss;
  }
  function stamp(){}
- stamp();loadMeta();setTimeout(()=>{stamp();paint()},800);
+ stamp();Promise.resolve(loadMeta()).then(paint).catch(()=>paint());
 })();
 
 window.v8008C9InstallReferenceLayout=function(){
@@ -100,7 +100,7 @@ window.v8008C9InstallReferenceLayout=function(){
   try{
     if(typeof v255RenderBoss==='function'&&!window.__v562BossRenderWrapped){
       const base=v255RenderBoss;
-      v255RenderBoss=function(){const r=base.apply(this,arguments);requestAnimationFrame(buildBossLayout);return r};
+      v255RenderBoss=function(){const r=base.apply(this,arguments);buildBossLayout();return r};
       try{window.v255RenderBoss=v255RenderBoss}catch(e){}
       window.__v562BossRenderWrapped=true;
     }
@@ -108,16 +108,16 @@ window.v8008C9InstallReferenceLayout=function(){
   try{
     if(typeof v254RenderGuild==='function'&&!window.__v562BossGuildWrapped){
       const base=v254RenderGuild;
-      v254RenderGuild=function(){const r=base.apply(this,arguments);requestAnimationFrame(buildBossLayout);return r};
+      v254RenderGuild=function(){const r=base.apply(this,arguments);buildBossLayout();return r};
       try{window.v254RenderGuild=v254RenderGuild}catch(e){}
       window.__v562BossGuildWrapped=true;
     }
   }catch(e){}
 
-  document.addEventListener('click',e=>{if(e.target?.closest?.('[data-v254-tab="boss"]'))setTimeout(buildBossLayout,20)},true);
-  document.addEventListener('DOMContentLoaded',()=>requestAnimationFrame(buildBossLayout),{once:true});
-  window.addEventListener('pageshow',()=>requestAnimationFrame(buildBossLayout),{passive:true});
-  [60,250,800,1800].forEach(ms=>setTimeout(buildBossLayout,ms));
+  document.addEventListener('click',e=>{if(e.target?.closest?.('[data-v254-tab="boss"]'))buildBossLayout()},true);
+  document.addEventListener('DOMContentLoaded',buildBossLayout,{once:true});
+  window.addEventListener('pageshow',buildBossLayout,{passive:true});
+  buildBossLayout();
 };
 
 /* V8.008-C18 — deferred visual installers; execution positions stay unchanged. */
@@ -174,7 +174,6 @@ window.v8008C18InstallPreVisual=function(){
     if(fightText&&!document.getElementById('v260BattleLog')){const log=document.createElement('div');log.id='v260BattleLog';fightText.insertAdjacentElement('afterend',log)}
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});else boot();
-  setTimeout(boot,650);
 })();
 };
 window.v8008C18InstallPostArena=function(){
@@ -216,7 +215,6 @@ window.v8008C18InstallPostArena=function(){
     queue();
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',observe,{once:true});else observe();
-  setTimeout(observe,700);
 })();
 
 /* === V8.008-C8 merged source: v6315-guildboss-legacy-cleanup-script === */
@@ -233,6 +231,6 @@ window.v8008C18InstallPostArena=function(){
     if(vs)vs.setAttribute('aria-hidden','true');
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',clean,{once:true});else clean();
-  setTimeout(clean,300);setTimeout(clean,1200);setTimeout(clean,2600);
+  requestAnimationFrame(clean);
 })();
 };
