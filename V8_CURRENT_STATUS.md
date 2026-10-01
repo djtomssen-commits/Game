@@ -4688,3 +4688,11 @@ Arbeitsmodus:
 - Seedling/Growth/Flower/Harvest-Art jeweils größer skaliert; Mobile separat angepasst.
 - Geänderte Datei: `v8009-extracted-v497-plant-art-economy-css.css`
 - Commit: `452dec63f57914d08a2a33dc6280697a701a9f70`
+
+
+#### Verbindliche Änderungsregel für weitere Arbeiten
+- Bestehende Funktionen, Layouts, Styles und Logik **direkt an der zuständigen Stelle reparieren oder ändern**.
+- **Keine neuen Patch-Layer, Overlay-Fixes, zusätzliche CSS-Overrides oder parallelen Ersatz-Owner** über einen Fehler legen, wenn die bestehende Stelle korrigiert werden kann.
+- Bei Änderungen zuerst den aktuellen Owner/Quellcode finden und dort sauber ersetzen bzw. bereinigen.
+- Alte fehlerhafte Regeln oder Logik entfernen/ersetzen, statt neue Gegenschichten aufzubauen.
+- Diese Regel gilt dauerhaft für die weiteren Grow-Legends-Arbeiten.
