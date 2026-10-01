@@ -164,59 +164,24 @@
     }
     renderElitePanel();
   }
+  window.v4222AfterQuestClaim=afterClaim;
+
+  function afterStart(){
+    if(s?.quests?.active){
+      s.quests.eliteOffer=null;
+      try{persist(false)}catch(e){}
+    }
+    renderElitePanel();
+  }
+  window.v4222AfterQuestStart=afterStart;
 
   /* Migrate a save that was created by the old "Elite replaces one of 3" system. */
   try{separateEliteFromOffers()}catch(e){console.error('V4.222 migrate elite',e)}
 
-  /* The visible claim button currently goes through v233ClaimQuest; wrap both
-     paths safely because old screens can still call claimQuest directly. */
-  try{
-    if(typeof claimQuest==='function'&&!claimQuest.__v4222SeparateElite){
-      const base=claimQuest;
-      const wrapped=function(){
-        const r=base.apply(this,arguments);
-        if(r&&typeof r.then==='function')return r.finally(afterClaim);
-        afterClaim();
-        return r;
-      };
-      wrapped.__v4222SeparateElite=true;
-      claimQuest=wrapped;window.claimQuest=wrapped;
-    }
-  }catch(e){console.error('V4.222 claim wrap',e)}
-
-  try{
-    if(typeof v233ClaimQuest==='function'&&!v233ClaimQuest.__v4222SeparateElite){
-      const base=v233ClaimQuest;
-      const wrapped=function(){
-        const r=base.apply(this,arguments);
-        if(r&&typeof r.then==='function')return r.finally(afterClaim);
-        afterClaim();
-        return r;
-      };
-      wrapped.__v4222SeparateElite=true;
-      v233ClaimQuest=wrapped;window.v233ClaimQuest=wrapped;
-    }
-  }catch(e){console.error('V4.222 v233 claim wrap',e)}
-
-  /* Starting ANY quest consumes the current offer batch, therefore an unused
-     Elite offer disappears when the player chooses one of the three normals. */
-  try{
-    if(typeof window.startQuest==='function'&&!window.startQuest.__v4222EliteBatch){
-      const base=window.startQuest;
-      const wrapped=function(i){
-        const r=base.apply(this,arguments);
-        if(s?.quests?.active){
-          s.quests.eliteOffer=null;
-          try{persist(false)}catch(e){}
-        }
-        renderElitePanel();
-        return r;
-      };
-      wrapped.__v4222EliteBatch=true;
-      window.startQuest=wrapped;
-      try{startQuest=wrapped}catch(e){}
-    }
-  }catch(e){console.error('V4.222 start wrap',e)}
+  /* V8.009 Quest consolidation:
+     Claim/start lifecycle hooks are invoked directly by the canonical owners
+     (v233 for Local/Mirror claim, v7110 for start). Do not wrap claimQuest,
+     v233ClaimQuest or startQuest here anymore. */
 
   /* V8.009: delayed renderQuests wrapper/startup repaint retired.
      v6344 calls v4222RenderElitePanel directly in the canonical Quest paint. */
