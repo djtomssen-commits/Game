@@ -1,0 +1,33 @@
+name: V8.009 Feature Extraction Mega 30
+on:
+  workflow_run:
+    workflows: ["V8.009 Feature Extraction Mega 29"]
+    types: [completed]
+permissions:
+  contents: write
+jobs:
+  patch:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - run: python3 .github/scripts/v8009_feature_extraction_mega30.py
+      - name: Syntax check extracted JS
+        run: |
+          python3 - <<'PY'
+          import json, subprocess
+          q=json.load(open('V8009_FEATURE_EXTRACTION_MEGA30_QA.json',encoding='utf-8'))
+          for r in q['result']:
+              subprocess.run(['node','--check',r['path']],check=True)
+          print('checked',len(q['result']),'files')
+          PY
+      - run: |
+          git config user.name github-actions
+          git config user.email github-actions@users.noreply.github.com
+          git add beta.html js/features/anonymous-extracted V8009_FEATURE_EXTRACTION_MEGA30_QA.json
+          git commit -m "V8.009 FEATURES: extract all remaining anonymous inline scripts batch30" || exit 0
+          git pull --rebase origin main
+          git push
