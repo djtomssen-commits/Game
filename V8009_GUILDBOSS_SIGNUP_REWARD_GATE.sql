@@ -30,7 +30,7 @@ begin
       join public.guild_boss_rounds gr on gr.id=bp.round_id
       where bp.user_id=uid
         and gr.guild_id=gid
-        and gr.battle_date < d
+        and gr.battle_date = d - 1
         and gr.status in ('won','lost')
         and not coalesce(bp.reward_claimed,false)
     ) into pending_reward;
@@ -96,7 +96,7 @@ begin
       join server1.guild_boss_rounds gr on gr.id=bp.round_id
       where bp.user_id=uid
         and gr.guild_id=gid
-        and gr.battle_date < d
+        and gr.battle_date = d - 1
         and gr.status in ('won','lost')
         and not coalesce(bp.reward_claimed,false)
     ) into pending_reward;
