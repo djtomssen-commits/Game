@@ -114,9 +114,20 @@ function applyServer(r){
 }
 
 async function hydrate(force=false,silent=false){
-  if(!window.v7081UseAuthority?.('grow')){hydrated=false;hideBarrier();return false;}
   const id=uid();
   if(!id){if(!silent)showBarrier('Warte auf die Konto-Verbindung …');return false}
+  const caps=()=>{try{return window.v7081CapabilitiesDiagnostics?.()||null}catch(_){return null}};
+  let cap=caps();
+  if(!cap?.ready||cap?.uid!==id){
+    if(!silent)showBarrier('Kontostand wird vorbereitet …');
+    try{await window.v7081CapabilitiesRefresh?.(true)}catch(_){}
+    cap=caps();
+  }
+  if(!window.v7081UseAuthority?.('grow')){
+    hydrated=false;
+    if(cap?.ready&&cap?.uid===id)hideBarrier();
+    return false;
+  }
   const diag=()=>{try{return window.v7065GrowAuthorityDiagnostics?.()||null}catch(_){return null}};
   const d0=diag();
   if(!force&&d0?.ready&&d0?.enabled){hydrated=true;hydratedUid=id;lastHydratedAt=Date.now();hideBarrier();return true}
@@ -168,9 +179,18 @@ try{
     baseRender=renderGrow;
     const wrapped=function(){
       const id=uid();
+      if(id){
+        const cap=window.v7081CapabilitiesDiagnostics?.();
+        if(!cap?.ready||cap?.uid!==id){
+          hydrated=false;
+          showBarrier('Kontostand wird vorbereitet …');
+          void hydrate(true);
+          return;
+        }
+      }
       const d=window.v7065GrowAuthorityDiagnostics?.();
       const sameAccount=!!id&&d?.authorityUid===id;
-      if(id&&(!d?.enabled||!d?.ready||!sameAccount)){
+      if(id&&window.v7081UseAuthority?.('grow')&&(!d?.enabled||!d?.ready||!sameAccount)){
         hydrated=false;
         showBarrier(sameAccount?'Serverstand wird geladen …':'Kontostand wird synchronisiert …');
         void hydrate(!sameAccount);
