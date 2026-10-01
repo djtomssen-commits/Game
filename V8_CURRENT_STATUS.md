@@ -3632,3 +3632,44 @@ Arbeitsmodus:
   3. Guild/Guildboss timer/replay/runtime consolidation
   4. Quest Dampf/render lifecycle consolidation
   5. Worldboss global-render/timer cleanup
+
+
+#### Großbatch: Dungeon Lifecycle Cleanup
+- System-Lifecycle-Audit initial: Dungeon Score 694.
+- `V467` Key-/Navigation-Rebuild-Kaskaden von mehrfachen Rebuilds (immediate + microtask + RAF + 80/300 ms bzw. Navigation + RAF + 100 ms) auf **einen kanonischen Rebuild pro Event** reduziert.
+  - Commit: `d7eb5baefdf9d56c65282e36b6938eff9854b11c`
+- Alten globalen `render() -> renderDungeon()`-Fanout aus `v068 dungeon-interaction-fixes` entfernt.
+  - Commit: `03ef0eda1abfcdb40f4ffa28c74cf011fe9b4745`
+- Alten globalen Reward-Button-Renderwrapper aus `v048 clean-dungeon-state-machine` entfernt; Reward-Erzeugung bindet den Return-Button ohnehin direkt.
+  - Commit: `45b23763fb32fd6f593268ff5c90dc89b2e5738e`
+- `v7051 atomic-dungeon-receipt-client` Bootstrap-/ClaimButton-Retry-Kaskade bereinigt:
+  - generischer Dungeon-Klick -> delayed claimButton entfernt
+  - 100/450/1400/3600-ms Bootstrap-Retries entfernt
+  - stattdessen ein Immediate-Boot + `account-ready` + `pageshow`
+  - Commit: `f0f093c15eb902530b14c5c77f0c09e440088011`
+- Kampf-Animationstimer im finalen Combat-Renderer bleiben ausdrücklich aktiv; sie steuern echte Treffer-/FX-/Replay-Sequenzen und sind kein Cleanup-Ziel.
+- Aktueller Re-Audit:
+  - Dungeon Score **642** (vorher 694)
+  - globale Render-Overrides **5** (vorher 8)
+  - Timeouts **122** (vorher 133)
+  - RAF **50** (vorher 52)
+
+#### Großbatch: Character / Inventory Lifecycle Cleanup
+- Drei doppelte globale Renderpfade entfernt:
+  - `v459-character-hub`: globaler Render-Hook entfernt; `renderInventory`, `renderSkillTree`, Materialien und Character-Navigation bleiben Owner.
+    - Commit `cb51f8d4648fabaf5eb9d54f485632c46f6c3640`
+  - `v460-char-ui`: globaler Hero-Stat-Polish-Hook entfernt; Navigation/pageshow bleiben.
+    - Commit `d484f5fbb7fbf87e527436f6f1de96a07b197019`
+  - `v470-character-slot-art-canonical-comparison`: globaler Comparison-Hook entfernt; gezielte `renderInventory`/compact/equip/unequip/navigation/account-ready Hooks bleiben.
+    - Commit `f49cff549e974531d95173af78ddb97ab0e8dc8c`
+- Damit wird besonders der Character-/Material-Tab von globalen Repaint-Pfaden entkoppelt.
+- Aktueller Re-Audit:
+  - Character Score **626** (vorher 650)
+  - globale Render-Overrides **13** (vorher 16)
+- Re-Audit Ergebnis-Commit: `7a72bca1ae3f7b47dfe796977728fb8aa8ea1c79`.
+
+#### Aktueller Strukturstand
+- `beta.html`: **662 externe Scripts**
+- **0 Inline-JS**
+- **0 Inline-CSS**
+- Nächster Großblock: Guild/Guildboss Runtime/Timer/Replay + danach Quest Dampf/render + Worldboss.
