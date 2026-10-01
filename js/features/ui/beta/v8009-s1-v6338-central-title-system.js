@@ -44,6 +44,12 @@ function migrate(){
  for(const p of defs){if(p?.id&&p?.title&&petTitles?.[p.id])unlock('pet:'+p.id,p.title,'pet',{petId:p.id})}
  for(const a of ACH){if(s?.v106Achievements?.done?.[a.ach])unlock(a.id,a.label,'achievement',{achievement:a.ach})}
  if(!st.activeId){
+   try{
+     const saved=JSON.parse(localStorage.getItem(activeStorageKey())||'null');
+     if(saved?.id&&st.unlocked[String(saved.id)]){st.activeId=String(saved.id);st.activeLabel=String(saved.label||st.unlocked[st.activeId]?.label||'');st.activeSource=String(saved.source||st.unlocked[st.activeId]?.source||'')}
+   }catch(_){}
+ }
+ if(!st.activeId){
    const old=String(s?.v686PetAlbum?.activeTitle||'');
    if(old){const p=defs.find(x=>String(x?.title||'')===old&&petTitles?.[x.id]);if(p){st.activeId='pet:'+p.id;st.activeLabel=old;st.activeSource='pet'}}
  }
@@ -54,7 +60,11 @@ function migrate(){
 function active(){const st=migrate();return {id:st.activeId,label:st.activeLabel,source:st.activeSource}}
 function publicTitle(){const a=active();return {id:a.id||'',label:a.label||'',source:a.source||''}}
 window.v6338PublicTitle=publicTitle;
-function persistTitles(){try{if(typeof persist==='function')persist(false);else localStorage.setItem(KEY,JSON.stringify(s))}catch(_){try{localStorage.setItem(KEY,JSON.stringify(s))}catch(__){}}}
+function activeStorageKey(){let id='';try{id=String(v073User?.id||'')}catch(_){}return 'growLegends:v6338ActiveTitle:'+(id||'local')}
+function persistTitles(){
+ try{if(typeof persist==='function')persist(false);else localStorage.setItem(KEY,JSON.stringify(s))}catch(_){try{localStorage.setItem(KEY,JSON.stringify(s))}catch(__){}}
+ try{const st=titleState();localStorage.setItem(activeStorageKey(),JSON.stringify({id:st.activeId,label:st.activeLabel,source:st.activeSource}))}catch(_){}
+}
 async function publish(){
  try{if(typeof window.v649SyncDungeonProgress==='function')await window.v649SyncDungeonProgress(true)}catch(_){ }
  try{if(typeof v073SyncProfile==='function')await v073SyncProfile(true)}catch(_){ }
@@ -87,9 +97,19 @@ function ensureBook(){
  tabs.querySelectorAll('[data-v6338-main]').forEach(btn=>btn.onclick=()=>showMain(btn.dataset.v6338Main));
  return {ov,book,tabs,panel};
 }
-function showMain(which){const x=ensureBook();if(!x)return;const titles=which==='titles';x.ov.classList.toggle('v6338-titles-open',titles);x.tabs.querySelectorAll('[data-v6338-main]').forEach(b=>b.classList.toggle('active',(b.dataset.v6338Main==='titles')===titles));if(titles){renderTitles();void syncServerTitles(false)}else setTimeout(()=>{try{window.v6235IllegalBookRender?.()}catch(_){ }},0)}
-function renderTitles(){
- const x=ensureBook();if(!x)return;const st=migrate(),defs=allDefs();
+function showMain(which){
+ const x=ensureBook();if(!x)return;
+ const titles=which==='titles',scrollTop=x.ov.scrollTop;
+ x.ov.classList.toggle('v6338-titles-open',titles);
+ x.tabs.querySelectorAll('[data-v6338-main]').forEach(b=>b.classList.toggle('active',(b.dataset.v6338Main==='titles')===titles));
+ if(titles){renderTitles({preserveScroll:false});void syncServerTitles(false)}
+ else {try{window.v6235IllegalBookRender?.()}catch(_){}}
+ x.ov.scrollTop=scrollTop;
+}
+function renderTitles(opts={}){
+ const x=ensureBook();if(!x)return;
+ const keepScroll=opts.preserveScroll!==false,scrollTop=x.ov.scrollTop;
+ const st=migrate(),defs=allDefs();
  const activeBox=x.panel.querySelector('#v6338ActiveTitle');
  activeBox.innerHTML=st.activeId?`<small>AKTIVER TITEL</small><b>👑 ${esc(st.activeLabel)}</b><span>Wird öffentlich bei deinem Spieler angezeigt.</span><div class="v6338-title-actions"><button type="button" data-v6338-clear>Titel ablegen</button></div>`:`<small>AKTIVER TITEL</small><b>Kein Titel ausgewählt</b><span>Wähle unten einen deiner freigeschalteten Titel aus.</span>`;
  activeBox.querySelector('[data-v6338-clear]')?.addEventListener('click',()=>setActive(''));
@@ -106,6 +126,7 @@ function renderTitles(){
  }).join('')||'<div class="empty">Noch keine Titel in dieser Kategorie.</div>';
  x.panel.querySelectorAll('[data-v6338-select]').forEach(b=>b.onclick=()=>setActive(b.dataset.v6338Select));
  const main=x.tabs.querySelector('[data-v6338-main="titles"]');if(main)main.textContent=`👑 Titel (${Object.keys(st.unlocked).length})`;
+ if(keepScroll)x.ov.scrollTop=scrollTop;
 }
 async function syncServerTitles(force=false){
  if(syncBusy||(!force&&Date.now()-lastServerSync<15000))return false;
@@ -113,8 +134,11 @@ async function syncServerTitles(force=false){
    if(typeof v073Init==='function'&&!(await v073Init()))return false;
    if(typeof v073Db==='undefined'||!v073Db||!v073User?.id||v073User.is_anonymous)return false;
    syncBusy=true;lastServerSync=Date.now();
-   try{if(typeof v073SyncProfile==='function')await v073SyncProfile(true)}catch(_){ }
-   try{if(typeof window.v649SyncDungeonProgress==='function')await window.v649SyncDungeonProgress(true)}catch(_){ }
+   let remoteTitle=null;
+   try{
+     const ownProfile=await v073Db.from('profiles').select('dungeon_progress').eq('id',v073User.id).maybeSingle();
+     remoteTitle=ownProfile?.data?.dungeon_progress?.public_title||null;
+   }catch(_){}
    const claimsRes=await v073Db.from('server_title_claims').select('title_id,title_label,user_id,character_name,claimed_at');
    if(!claimsRes.error){serverClaims=new Map((claimsRes.data||[]).map(x=>[String(x.title_id),x]))}
    for(const def of SERVER){
@@ -125,6 +149,14 @@ async function syncServerTitles(force=false){
    }
    const ownRes=await v073Db.from('player_titles').select('title_id,title_label,source,metadata,unlocked_at').eq('user_id',v073User.id);
    if(!ownRes.error){for(const row of ownRes.data||[])unlock(String(row.title_id),String(row.title_label||''),String(row.source||'server'),{server:true,unlockedAt:row.unlocked_at})}
+   const st=titleState();
+   if(!st.activeId&&remoteTitle?.id&&st.unlocked[String(remoteTitle.id)]){
+     const rec=st.unlocked[String(remoteTitle.id)];
+     st.activeId=String(remoteTitle.id);st.activeLabel=String(remoteTitle.label||rec?.label||'');st.activeSource=String(remoteTitle.source||rec?.source||'');
+     persistTitles();
+   }
+   try{if(typeof v073SyncProfile==='function')await v073SyncProfile(true)}catch(_){ }
+   try{if(typeof window.v649SyncDungeonProgress==='function')await window.v649SyncDungeonProgress(true)}catch(_){ }
    const claims2=await v073Db.from('server_title_claims').select('title_id,title_label,user_id,character_name,claimed_at');
    if(!claims2.error)serverClaims=new Map((claims2.data||[]).map(x=>[String(x.title_id),x]));
    persistTitles();renderTitles();syncOwnBadges();return true;
