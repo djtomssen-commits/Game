@@ -49021,9 +49021,8 @@ html body .app > header > .stats.resource-stats{
   updateValues();
   version();
   document.addEventListener('DOMContentLoaded',()=>{updateValues();version()},{once:true});
-  setTimeout(()=>{updateValues();version()},350);
-  setTimeout(()=>{updateValues();version()},1500);
-  setTimeout(()=>{updateValues();version()},3000);
+  window.addEventListener('pageshow',()=>{updateValues();version()},{passive:true});
+  window.addEventListener('growlegends:account-ready',()=>{updateValues();version()},{passive:true});
 })();
 </script>
 
@@ -49196,9 +49195,8 @@ html body .app > header > .stats.resource-stats{
 
   update();
   document.addEventListener('DOMContentLoaded',update,{once:true});
-  setTimeout(update,350);
-  setTimeout(update,1400);
-  setTimeout(update,3000);
+  window.addEventListener('pageshow',update,{passive:true});
+  window.addEventListener('growlegends:account-ready',update,{passive:true});
 })();
 </script>
 
@@ -49315,9 +49313,8 @@ html body .app > header > .stats.resource-stats{
 
   update();
   document.addEventListener('DOMContentLoaded',update,{once:true});
-  setTimeout(update,350);
-  setTimeout(update,1400);
-  setTimeout(update,3000);
+  window.addEventListener('pageshow',update,{passive:true});
+  window.addEventListener('growlegends:account-ready',update,{passive:true});
 })();
 </script>
 
@@ -58010,7 +58007,8 @@ normalize();
 
   /* Keep older wrappers functional enough when they look for button ids. */
   setTimeout(()=>{try{if(document.querySelector('#shop')?.classList.contains('active'))renderShop()}catch(e){console.error('V4.67 init',e)}},80);
-  [250,1000].forEach(ms=>setTimeout(()=>{try{syncVersion()}catch(e){}},ms));
+  try{syncVersion()}catch(e){}
+  window.addEventListener('growlegends:account-ready',()=>{try{syncVersion()}catch(e){}},{passive:true});
 })();
 </script>
 
@@ -61495,7 +61493,10 @@ html.v481-hidden *,html.v481-hidden *::before,html.v481-hidden *::after{animatio
    const seed=t.closest('[data-v492-seed]');if(seed&&!t.closest('[data-v492-buy]')&&window.matchMedia('(max-width:760px)').matches){setTimeout(()=>{const root=document.querySelector('.v492-grow');if(root){root.classList.remove('v493-seeds-open');syncToggle();document.querySelector('.v492-scene')?.scrollIntoView({block:'start',behavior:'smooth'})}},40)}
  },true);
  const keepVersion=()=>{try{const V=window.GROW_LEGENDS_VERSION||{short:'V7.111',label:'V7.111 Stable'};document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version').forEach(el=>{if(el)el.textContent=V.label});document.querySelectorAll('.v366-ver,.v371-logo em,.v372-logo em').forEach(el=>{if(el)el.textContent=V.short})}catch(e){}};
- [0,500,2500,7000,17000].forEach(ms=>setTimeout(keepVersion,ms));
+ keepVersion();
+ document.addEventListener('DOMContentLoaded',keepVersion,{once:true});
+ window.addEventListener('pageshow',keepVersion,{passive:true});
+ window.addEventListener('growlegends:account-ready',keepVersion,{passive:true});
 })();
 </script>
 
@@ -62007,7 +62008,7 @@ body.v495-seed-open{overflow:hidden!important}
  document.addEventListener('DOMContentLoaded',stamp,{once:true});
  window.addEventListener('pageshow',stamp,{passive:true});
  document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();paintStatus()}},{passive:true});
- [50,250,700,1600,3500,8000,15000,30000,60000].forEach(ms=>setTimeout(()=>{stamp();paintStatus()},ms));
+ window.addEventListener('growlegends:account-ready',()=>{stamp();paintStatus()},{passive:true});
  /* V4.123: V4.104 menu/status poll retired; canonical Systemtechnik refresh owns this. */
  window.v4104InstallQaSettings=install;
 })();
