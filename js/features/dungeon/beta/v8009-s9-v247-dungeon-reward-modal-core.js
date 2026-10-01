@@ -1,4 +1,8 @@
 /* ===== V4.02 Dungeon reward presentation ===== */
+function v247Esc(v){
+  try{return typeof v240Esc==='function'?v240Esc(v):String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+  catch(_){return String(v??'')}
+}
 
 function v247EnsureDungeonReward(){
   let overlay=document.querySelector('#v247DungeonReward');
@@ -124,7 +128,7 @@ function v247ShowDungeonReward(data){
   if(data?.boss){
     rows.push(`
       <div class="v247-dungeon-line v247-boss">
-        ${v240Esc?.(data?.bossRewardText||'🟠 Boss-Belohnung · garantiert 1 legendäres Klassenitem')||data?.bossRewardText||'🟠 Boss-Belohnung · garantiert 1 legendäres Klassenitem'}
+        ${v247Esc(data?.bossRewardText||'🟠 Boss-Belohnung · garantiert 1 legendäres Klassenitem')}
       </div>
     `);
   }
@@ -158,10 +162,10 @@ function v247ShowDungeonReward(data){
     rows.push(`<div class="v247-dungeon-line">💠 +${Number(data.fragments)} Fragmente</div>`);
   }
   if(data?.seedLabel){
-    rows.push(`<div class="v247-dungeon-line">🌰 Samen gefunden: ${v240Esc?.(data.seedLabel)||String(data.seedLabel)}</div>`);
+    rows.push(`<div class="v247-dungeon-line">🌰 Samen gefunden: ${v247Esc(data.seedLabel)}</div>`);
   }
   if(data?.petLabel){
-    rows.push(`<div class="v247-dungeon-line">🐾 Pet gefunden: ${v240Esc?.(data.petLabel)||String(data.petLabel)}</div>`);
+    rows.push(`<div class="v247-dungeon-line">🐾 Pet gefunden: ${v247Esc(data.petLabel)}</div>`);
   }
   if(data?.guildXpHtml){
     rows.push(String(data.guildXpHtml));
