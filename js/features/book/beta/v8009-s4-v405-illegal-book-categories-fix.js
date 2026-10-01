@@ -49,15 +49,10 @@
   wrap.querySelectorAll('[data-v405-cat]').forEach(btn=>btn.addEventListener('click',()=>{active=btn.dataset.v405Cat;render()}));
   return true;
  }
- const previous=window.v106OpenBook;
- if(typeof previous==='function'){
-   window.v106OpenBook=function(){const r=previous.apply(this,arguments);render();setTimeout(render,0);setTimeout(render,80);return r};
- }
- // Also catch openings through older inline/cached handlers without polling.
- document.addEventListener('click',function(e){
-   const t=e.target&&e.target.closest?e.target.closest('[data-book]'):null;
-   if(t){setTimeout(render,0);setTimeout(render,80)}
- },true);
+ /* V8.009: v6235 is the canonical Illegal-Book category/paging owner.
+    Retire the old v405 open/click repaint retries; they rebuilt the same controls
+    several times and visibly made Erfolge/Titel jump. */
+ window.__V405_CATEGORY_OWNER__='retired-v6235';
  function ver(){document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version,.v366-ver').forEach(el=>{if(el)el.textContent=VERSION})}
  ver();setTimeout(ver,600);setTimeout(ver,2000);
 })();
