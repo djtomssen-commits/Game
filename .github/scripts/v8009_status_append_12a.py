@@ -14,3 +14,15 @@ if marker not in s:
 """
     p.write_text(s,encoding="utf-8")
 print("status ok")
+
+marker2="#### Feature Extraction Batch 12B"
+if marker2 not in s:
+    s += """
+
+#### Feature Extraction Batch 12B
+- 8 Owner aus `beta.html` ausgelagert: v461, v6168, v6140, v115, gl-worldboss-ready-push-v2, v435, v430, v6211.
+- 49.690 Bytes Inline-JS entfernt; Script-Reihenfolge unverändert.
+- QA `V8009_FEATURE_EXTRACTION_BATCH12B_QA.json`: grün.
+- Stable / `index.html`: unverändert.
+"""
+    p.write_text(s,encoding="utf-8")
