@@ -187,9 +187,16 @@
  };
  try{window.v073LoadFriends=v073LoadFriends;v072RenderFriends=function(){v073LoadFriends()}}catch(e){}
 
- /* Re-open refresh: own card is immediate; server row follows after the synced payload. */
+ /* Re-open refresh follows the shared post-navigation lifecycle. */
  try{
-  if(typeof v032Go==='function'&&!window.__v4130SocialGo){const base=v032Go;v032Go=function(id){const r=base.apply(this,arguments);if(id==='hall'){try{v072RenderOwnProfile()}catch(e){}setTimeout(()=>{try{v073LoadRanking()}catch(e){}},0)}if(id==='friends')setTimeout(()=>{try{v073LoadFriends()}catch(e){}},0);return r};try{window.v032Go=v032Go}catch(e){}window.__v4130SocialGo=true}
+  if(!window.__v4130SocialGo){
+   window.addEventListener('growlegends:navigation-open-v7119',e=>{
+    const id=String(e?.detail?.id||'');
+    if(id==='hall'){try{v072RenderOwnProfile()}catch(_){};try{void v073LoadRanking()}catch(_){}}
+    if(id==='friends'){try{void v073LoadFriends()}catch(_){}}
+   },{passive:true});
+   window.__v4130SocialGo=true;
+  }
  }catch(e){}
 
  function stamp(){}
