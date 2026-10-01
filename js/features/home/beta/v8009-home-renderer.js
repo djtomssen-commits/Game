@@ -151,7 +151,11 @@
     }
   }
   function bindBossButtons(root){
-    root.querySelectorAll('.v366-feature.boss.v6115-boss-open').forEach(card=>{
+    const cards=[
+      ...(root instanceof Element&&root.matches('.v366-feature.boss.v6115-boss-open')?[root]:[]),
+      ...root.querySelectorAll('.v366-feature.boss.v6115-boss-open')
+    ];
+    cards.forEach(card=>{
       card.onclick=e=>{
         if(e.target instanceof Element && e.target.closest('button[data-boss]'))return;
         openWorldBoss();
@@ -162,7 +166,11 @@
         openWorldBoss();
       };
     });
-    root.querySelectorAll('button[data-boss]').forEach(b=>{
+    const buttons=[
+      ...(root instanceof Element&&root.matches('button[data-boss]')?[root]:[]),
+      ...root.querySelectorAll('button[data-boss]')
+    ];
+    buttons.forEach(b=>{
       b.onclick=e=>{
         e.preventDefault();
         e.stopPropagation();
