@@ -133,7 +133,7 @@
 
  function bindRows(root){
   try{if(typeof v074BindProfileRows==='function')v074BindProfileRows(root)}catch(e){}
-  root?.querySelectorAll('[data-v4130-mail],[data-v4124-mail]').forEach(b=>{b.onclick=e=>{e.preventDefault();e.stopPropagation();window.v382OpenMailTo?.(b.dataset.v4130Mail||b.dataset.v4124Mail)}});
+  root?.querySelectorAll('[data-v4130-mail],[data-v4124-mail]').forEach(b=>{b.onclick=e=>{e.preventDefault();e.stopPropagation();window.v381OpenMailTo?.(b.dataset.v4130Mail||b.dataset.v4124Mail)}});
  }
  const mailButton=p=>`<button class="btn secondary v382-message-btn" data-v4130-mail="${esc(p?.character_name||'')}">✉️ Nachricht</button>`;
 
@@ -163,19 +163,42 @@
  try{window.v073SearchPlayer=v073SearchPlayer;v072SearchPlayer=v073SearchPlayer}catch(e){}
 
  async function profileMap(ids){ids=[...new Set((ids||[]).filter(Boolean))];if(!ids.length)return new Map();const {data,error}=await v073Db.from('profiles').select(PROFILE_SELECT).in('id',ids);if(error){console.error('V4.159 Nebel-Crew profile load',error);return new Map()}return new Map((data||[]).map(p=>[String(p.id),p]))}
- v073LoadFriends=async function(){
-  const friendsEl=document.getElementById('v072FriendsList'),requestsEl=document.getElementById('v072RequestsList'),countEl=document.getElementById('v072FriendCount');if(!friendsEl||!requestsEl)return;if(!(await v073Init())||!v073User?.id)return;
-  friendsEl.innerHTML='<div class="v072-empty">Lade Freunde...</div>';requestsEl.innerHTML='<div class="v072-empty">Lade Anfragen...</div>';
-  const {data,error}=await v073Db.from('friend_requests').select('id,sender_id,receiver_id,status,created_at').or(`sender_id.eq.${v073User.id},receiver_id.eq.${v073User.id}`).order('created_at',{ascending:false});
-  if(error){console.error('V4.159 Nebel-Crew',error);friendsEl.innerHTML='<div class="v072-status-offline">Freundesliste konnte nicht geladen werden.</div>';requestsEl.innerHTML='';return}
-  const rows=data||[],incoming=rows.filter(r=>r.status==='pending'&&String(r.receiver_id)===String(v073User.id)),accepted=rows.filter(r=>r.status==='accepted');
-  const ids=[...incoming.map(r=>r.sender_id),...accepted.map(r=>String(r.sender_id)===String(v073User.id)?r.receiver_id:r.sender_id)],profiles=await profileMap(ids);
-  requestsEl.innerHTML=incoming.length?incoming.map(r=>{const p=profiles.get(String(r.sender_id))||{id:r.sender_id,character_name:'Spieler',level:1};return socialRow(p,null,`<button class="btn" data-v073-accept="${r.id}">Annehmen</button><button class="btn secondary" data-v073-decline="${r.id}">Ablehnen</button>`,false)}).join(''):'<div class="v072-empty">Keine offenen Anfragen.</div>';
-  const friendProfiles=accepted.map(r=>profiles.get(String(String(r.sender_id)===String(v073User.id)?r.receiver_id:r.sender_id))).filter(Boolean);if(countEl)countEl.textContent=`${friendProfiles.length} Freunde`;
-  friendsEl.innerHTML=friendProfiles.length?friendProfiles.map(p=>socialRow(p,null,`${mailButton(p)}<button class="btn secondary" data-v073-remove="${esc(p.id)}">Entfernen</button>`,true)).join(''):'<div class="v072-empty">Noch keine Freunde.</div>';
-  requestsEl.querySelectorAll('[data-v073-accept]').forEach(b=>b.onclick=e=>{e.stopPropagation();v073AnswerRequest(Number(b.dataset.v073Accept),'accepted')});requestsEl.querySelectorAll('[data-v073-decline]').forEach(b=>b.onclick=e=>{e.stopPropagation();v073AnswerRequest(Number(b.dataset.v073Decline),'declined')});friendsEl.querySelectorAll('[data-v073-remove]').forEach(b=>b.onclick=e=>{e.stopPropagation();v073RemoveFriend(b.dataset.v073Remove)});bindRows(requestsEl);bindRows(friendsEl);
+ let v4130FriendsLoadPromise=null,v4130LastFriendsRefresh=0;
+ function friendsScreenActive(){return !document.hidden&&!!document.getElementById('friends')?.classList.contains('active')}
+ v073LoadFriends=function(){
+  if(v4130FriendsLoadPromise)return v4130FriendsLoadPromise;
+  v4130FriendsLoadPromise=(async()=>{
+   const friendsEl=document.getElementById('v072FriendsList'),requestsEl=document.getElementById('v072RequestsList'),countEl=document.getElementById('v072FriendCount');if(!friendsEl||!requestsEl)return false;if(!(await v073Init())||!v073User?.id)return false;
+   friendsEl.innerHTML='<div class="v072-empty">Lade Freunde...</div>';requestsEl.innerHTML='<div class="v072-empty">Lade Anfragen...</div>';
+   const {data,error}=await v073Db.from('friend_requests').select('id,sender_id,receiver_id,status,created_at').or(`sender_id.eq.${v073User.id},receiver_id.eq.${v073User.id}`).order('created_at',{ascending:false});
+   if(error){console.error('V4.159 Nebel-Crew',error);friendsEl.innerHTML='<div class="v072-status-offline">Freundesliste konnte nicht geladen werden.</div>';requestsEl.innerHTML='';return false}
+   const rows=data||[],incoming=rows.filter(r=>r.status==='pending'&&String(r.receiver_id)===String(v073User.id)),accepted=rows.filter(r=>r.status==='accepted');
+   const ids=[...incoming.map(r=>r.sender_id),...accepted.map(r=>String(r.sender_id)===String(v073User.id)?r.receiver_id:r.sender_id)],profiles=await profileMap(ids);
+   requestsEl.innerHTML=incoming.length?incoming.map(r=>{const p=profiles.get(String(r.sender_id))||{id:r.sender_id,character_name:'Spieler',level:1};return socialRow(p,null,`<button class="btn" data-v073-accept="${r.id}">Annehmen</button><button class="btn secondary" data-v073-decline="${r.id}">Ablehnen</button>`,false)}).join(''):'<div class="v072-empty">Keine offenen Anfragen.</div>';
+   const friendProfiles=accepted.map(r=>profiles.get(String(String(r.sender_id)===String(v073User.id)?r.receiver_id:r.sender_id))).filter(Boolean);if(countEl)countEl.textContent=`${friendProfiles.length} Freunde`;
+   friendsEl.innerHTML=friendProfiles.length?friendProfiles.map(p=>socialRow(p,null,`${mailButton(p)}<button class="btn secondary" data-v073-remove="${esc(p.id)}">Entfernen</button>`,true)).join(''):'<div class="v072-empty">Noch keine Freunde.</div>';
+   requestsEl.querySelectorAll('[data-v073-accept]').forEach(b=>b.onclick=e=>{e.stopPropagation();v073AnswerRequest(Number(b.dataset.v073Accept),'accepted')});requestsEl.querySelectorAll('[data-v073-decline]').forEach(b=>b.onclick=e=>{e.stopPropagation();v073AnswerRequest(Number(b.dataset.v073Decline),'declined')});friendsEl.querySelectorAll('[data-v073-remove]').forEach(b=>b.onclick=e=>{e.stopPropagation();v073RemoveFriend(b.dataset.v073Remove)});bindRows(requestsEl);bindRows(friendsEl);
+   v4130LastFriendsRefresh=Date.now();
+   return true;
+  })().finally(()=>{v4130FriendsLoadPromise=null});
+  return v4130FriendsLoadPromise;
  };
- try{window.v073LoadFriends=v073LoadFriends;v072RenderFriends=function(){v073LoadFriends()}}catch(e){}
+ try{window.v073LoadFriends=v073LoadFriends;v072RenderFriends=function(){return v073LoadFriends()}}catch(e){}
+
+ const v4130FriendsPresenceTimer=setInterval(()=>{
+  if(!friendsScreenActive())return;
+  if(Date.now()-v4130LastFriendsRefresh<55000)return;
+  void v073LoadFriends();
+ },60000);
+ document.addEventListener('visibilitychange',()=>{
+  if(friendsScreenActive()&&Date.now()-v4130LastFriendsRefresh>=55000)void v073LoadFriends();
+ },{passive:true});
+ window.v4130FriendsDiagnostics=()=>({
+  active:friendsScreenActive(),
+  loading:!!v4130FriendsLoadPromise,
+  lastRefresh:v4130LastFriendsRefresh,
+  presenceTimer:!!v4130FriendsPresenceTimer
+ });
 
  /* Re-open refresh follows the shared post-navigation lifecycle. */
  try{
