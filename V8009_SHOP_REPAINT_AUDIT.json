@@ -1,0 +1,404 @@
+{
+  "build": "V8.009-SHOP-REPAINT-AUDIT",
+  "shop_script_count": 32,
+  "rows": [
+    {
+      "order": 0,
+      "src": "js/features/shop/beta/v8009-a1-shops-gems-enchants.js",
+      "hits": {
+        "render_override": [
+          {
+            "line": 72,
+            "snippet": "class=\"btn\" style=\"width:100%;padding:8px\" onclick=\"v030UseMaterial(${i})\">Auf Item anwenden</button></div>`).join('')}</div>`:'<div class=\"empty\">Noch keine Edelsteine oder Rollen.</div>'}`}\nconst v030BaseRender=render;render=function(){v030BaseRender();renderShop();v030Materials()};\ntry{render()}catch(e){console.error('V4.02',e)}\n"
+          }
+        ],
+        "renderShop_override": [
+          {
+            "line": 69,
+            "snippet": "/div><div class=\"tiny\" style=\"margin-top:5px\">${info}</div><div class=\"price\" style=\"margin:7px 0\">💰 ${it.price} Gold</div><button class=\"btn\" style=\"width:100%;padding:8px\" onclick=\"${fn}(${i})\">Kaufen</button></div>`}\nrenderShop=function(){v030Fill(false);const old=document.querySelector('#shopItems');if(!old)return;const card=old.closest('.card');if(card){card.innerHTML=`<div class=\"section-title\"><div><h2>⚔️ Waffen & Rüstung</h2><div class=\"muted\">Nach jedem Kauf wird genau dieser Händlerplatz sofort durch ein neues Angebot ersetzt.</div></div><div class=\"currency-row\"><span class=\"pill\">Gold: <b id=\"shopGold\">${s.gold}</b></span><span class=\"currency-pill\">🟢 Harz-Taler: <b id=\"shopHarz\">${s.harzTaler}</b><"
+          }
+        ]
+      }
+    },
+    {
+      "order": 1,
+      "src": "js/features/shop/beta/v8009-a2-reliable-buying-feedback.js",
+      "hits": {
+        "render_override": [
+          {
+            "line": 169,
+            "snippet": "d .shop-item').forEach((card,i)=>{\n    const btn=card.querySelector('button');\n    if(btn){\n      btn.onclick=()=>window.v030BuyMagic(i);\n      btn.removeAttribute('onclick');\n    }\n  });\n}\n\nconst v054BaseRender=render;\nrender=function(){\n  v054BaseRender();\n  \n  v054BindShopButtons();\n};\n\ntry{\n  render();\n}catch(e){\n  console.error('V4.02 inventory/shop',e);\n}\n"
+          }
+        ],
+        "raf": [
+          {
+            "line": 16,
+            "snippet": "ame='v054-toast';\n    document.body.appendChild(toast);\n  }\n\n  toast.className=`v054-toast ${type}`;\n  toast.innerHTML=`${message}${sub?`<span class=\"sub\">${sub}</span>`:''}`;\n\n  clearTimeout(window.__v054ToastTimer);\n  requestAnimationFrame(()=>toast.classList.add('show'));\n  window.__v054ToastTimer=setTimeout(()=>toast.classList.remove('show'),2600);\n}\n\nfunction v054NotEnoughGold(){\n  v054Toast('❌ Nicht genug Gold','error','Du kannst diesen Gegenstand noch nicht kaufen.');\n}\n\nfunction v054Purchased(item,destination='Inventar'){\n  const name=item?.name||'Gegenstand';\n  v054Toast(`✅ ${name} gekauft`,'success',`Der Gegenstand liegt jetzt im ${destination}.`);\n}\n\n/* Override all active purchase functions at the e"
+          }
+        ],
+        "timeout": [
+          {
+            "line": 17,
+            "snippet": "54-toast ${type}`;\n  toast.innerHTML=`${message}${sub?`<span class=\"sub\">${sub}</span>`:''}`;\n\n  clearTimeout(window.__v054ToastTimer);\n  requestAnimationFrame(()=>toast.classList.add('show'));\n  window.__v054ToastTimer=setTimeout(()=>toast.classList.remove('show'),2600);\n}\n\nfunction v054NotEnoughGold(){\n  v054Toast('❌ Nicht genug Gold','error','Du kannst diesen Gegenstand noch nicht kaufen.');\n}\n\nfunction v054Purchased(item,destination='Inventar'){\n  const name=item?.name||'Gegenstand';\n  v054Toast(`✅ ${name} gekauft`,'success',`Der Gegenstand liegt jetzt im ${destination}.`);\n}\n\n/* Override all active purchase functions at the end of the file,\n   so older versions cannot silently replace the feedback. */\n\nwin"
+          }
+        ]
+      }
+    },
+    {
+      "order": 2,
+      "src": "js/features/shop/beta/v8009-a1-shop-stat-separation.js",
+      "hits": {
+        "render_override": [
+          {
+            "line": 312,
+            "snippet": " stärker als Grau, Blau stärker als Grün, Episch stärker als Blau.</b> Exakte Doppelangebote derselben Qualität werden verhindert.';\n  shop.insertBefore(hint,shop.querySelector('.card'));\n}\n\nconst v056BaseRender=render;\nrender=function(){\n  v056BaseRender();\n  \n  v056AddShopHint();\n\n  /* Rebind current shop cards after each render. */\n  document.querySelectorAll('#weaponShopItems .shop-item').forEach((card,i)=>{\n    const btn=card.querySelector('button');\n    if(btn){\n      btn.removeAttribute('onclick');\n      btn.onclick=()=>window.v030BuyWeapon(i);\n    }\n  });\n\n  document.querySelectorAll('#v030MagicShop .shop-grid .shop-item').forEach((card,i)=>{\n    const btn=card.querySelector('button');\n    if(btn){\n    "
+          }
+        ]
+      }
+    },
+    {
+      "order": 3,
+      "src": "js/features/shop/beta/v8009-a1-clean-shop-core.js",
+      "hits": {
+        "render_override": [
+          {
+            "line": 314,
+            "snippet": "\n/* Discard old broken stock once */\nif(!s.v057ShopCore){\n  s.weaponShop=[];\n  s.magicShop=[];\n  v057FillShops(true);\n  s.v057ShopCore=true;\n  localStorage.setItem(KEY,JSON.stringify(s));\n}\n\nconst v057BaseRender=render;\nrender=function(){\n  v057BaseRender();\n  \n  renderShop();\n};\n\ntry{\n  render();\n}catch(e){\n  console.error('V4.02 clean shop core',e);\n}\n"
+          }
+        ],
+        "renderShop_override": [
+          {
+            "line": 196,
+            "snippet": "v>\n      <button type=\"button\" class=\"btn v057-buy\" data-kind=\"${kind}\" data-index=\"${i}\">\n        Kaufen\n      </button>\n    </div>`;\n}\n\n/* Stable renderer: does NOT depend on #shopItems surviving an earlier render. */\nrenderShop=function(){\n  v057FillShops(false);\n\n  const shop=document.querySelector('#shop');\n  if(!shop)return;\n\n  let gearCard=document.querySelector('#v057GearShopCard');\n\n  if(!gearCard){\n    const oldItems=document.querySelector('#shopItems');\n    const oldCard=oldItems?.closest('.card');\n\n    if(oldCard){\n      gearCard=oldCard;\n      gearCard.id='v057GearShopCard';\n    }else{\n      gearCard=[...shop.children].find(el =>\n        el.classList?.contains('card') &&\n        el.id!=='v030MagicS"
+          }
+        ],
+        "timeout": [
+          {
+            "line": 132,
+            "snippet": "ventory.push(bought);\n\n  s.weaponShop[i]=v057Replacement(s.weaponShop,i,v057WeaponOffer);\n\n  localStorage.setItem(KEY,JSON.stringify(s));\n\n  /* Render first, then show toast so it cannot be overwritten. */\n  render();\n  setTimeout(()=>v057ToastOk(bought,'Inventar'),0);\n};\n\nwindow.v030BuyMagic=function(i){\n  const it=s.magicShop?.[i];\n  if(!it)return;\n\n  const price=Number(it.price)||0;\n  if(s.gold<price){\n    v057ToastNoGold();\n    return;\n  }\n\n  s.gold-=price;\n\n  if(it.type==='gem'||it.type==='scroll'){\n    const bought={...it};\n    s.materials??=[];\n    s.materials.push(bought);\n\n    s.magicShop[i]=v057Replacement(s.magicShop,i,v057MaterialOffer);\n\n    localStorage.setItem(KEY,JSON.stringify(s));\n    render()"
+          },
+          {
+            "line": 156,
+            "snippet": "'){\n    const bought={...it};\n    s.materials??=[];\n    s.materials.push(bought);\n\n    s.magicShop[i]=v057Replacement(s.magicShop,i,v057MaterialOffer);\n\n    localStorage.setItem(KEY,JSON.stringify(s));\n    render();\n    setTimeout(()=>v057ToastOk(bought,'Material-Inventar'),0);\n    return;\n  }\n\n  const bought={\n    ...it,\n    id:it.uid || `${it.baseId||it.id||'jewel'}_${Date.now()}_${Math.random().toString(36).slice(2,8)}`\n  };\n  s.inventory.push(bought);\n\n  s.magicShop[i]=v057Replacement(s.magicShop,i,v057JewelryOffer);\n\n  localStorage.setItem(KEY,JSON.stringify(s));\n  render();\n  setTimeout(()=>v057ToastOk(bought,'Inventar'),0);\n};\n\nfunction v057OfferHtml(it,i,kind){\n  const info=it.type==='gem'\n    ? `💎 +${i"
+          },
+          {
+            "line": 170,
+            "snippet": "}_${Date.now()}_${Math.random().toString(36).slice(2,8)}`\n  };\n  s.inventory.push(bought);\n\n  s.magicShop[i]=v057Replacement(s.magicShop,i,v057JewelryOffer);\n\n  localStorage.setItem(KEY,JSON.stringify(s));\n  render();\n  setTimeout(()=>v057ToastOk(bought,'Inventar'),0);\n};\n\nfunction v057OfferHtml(it,i,kind){\n  const info=it.type==='gem'\n    ? `💎 +${it.value} ${v030StatLabel(it.stat)}`\n    : it.type==='scroll'\n      ? `✨ ${v030EffectLabel(it.effect,it.value)}`\n      : itemBonus(it);\n\n  return `\n    <div class=\"shop-item ${it.rarity||''}\">\n      <div class=\"shop-icon\">${it.icon||'🎁'}</div>\n      <h3>${it.name}</h3>\n      <div class=\"${qualityMeta(it.quality||'gray').color}\">\n        ${qualityMeta(it.quality||'gray"
+          },
+          {
+            "line": 295,
+            "snippet": "      }else{\n          v115Alert('Du brauchst 1 Harz-Taler.');\n        }\n        return;\n      }\n\n      s.harzTaler--;\n      v057FillShops(true);\n      localStorage.setItem(KEY,JSON.stringify(s));\n      render();\n\n      setTimeout(()=>{\n        if(typeof v054Toast==='function'){\n          v054Toast('🔄 Händler neu gewürfelt','success','Alle Angebote wurden ersetzt.');\n        }\n      },0);\n    };\n  }\n};\n\n/* Discard old broken stock once */\nif(!s.v057ShopCore){\n  s.weaponShop=[];\n  s.magicShop=[];\n  v057FillShops(true);\n  s.v057ShopCore=true;\n  localStorage.setItem(KEY,JSON.stringify(s));\n}\n\nconst v057BaseRender=render;\nrender=function(){\n  v057BaseRender();\n  \n  renderShop();\n};\n\ntry{\n  render();\n}catch(e){\n  co"
+          }
+        ]
+      }
+    },
+    {
+      "order": 4,
+      "src": "js/features/shop/beta/v8009-a2-real-shop-render-fix.js",
+      "hits": {
+        "render_override": [
+          {
+            "line": 149,
+            "snippet": "t.name} gekauft und im Inventar abgelegt.`);\n  }\n\n  v058EnsureLegacyRenderAnchors();\n  v058SafeRefreshAfterPurchase();\n};\n\n/* Keep compatibility anchors before EVERY future global render. */\nconst v058BaseRender=render;\nrender=function(){\n  v058EnsureLegacyRenderAnchors();\n\n  try{\n    v058BaseRender();\n  }catch(e){\n    console.error('Global render abgefangen:',e);\n    /* Even if another old renderer fails, keep critical screens usable. */\n    v058SafeRefreshAfterPurchase();\n  }\n\n  \n  v058EnsureLegacyRenderAnchors();\n};\n\n/* Explicitly make the materials panel visible in the character screen. */\nfunction v058EnsureMaterialsPanel(){\n  try{v030Materials();}catch(e){console.error('v030Materials',e);}\n}\n\n/* Rebind bu"
+          }
+        ],
+        "renderShop_override": [
+          {
+            "line": 184,
+            "snippet": "v057-buy').forEach((btn,i)=>{\n    btn.removeAttribute('onclick');\n    btn.onclick=()=>window.v030BuyMagic(i);\n  });\n}\n\n/* Wrap the final shop renderer so handlers are never stale. */\nconst v058BaseRenderShop=renderShop;\nrenderShop=function(){\n  v058BaseRenderShop();\n  v058BindShopPurchases();\n};\n\ntry{\n  v058EnsureLegacyRenderAnchors();\n  v058EnsureMaterialsPanel();\n  render();\n}catch(e){\n  console.error('V4.02 init',e);\n}\n"
+          }
+        ]
+      }
+    },
+    {
+      "order": 7,
+      "src": "js/features/shop/beta/v8009-s12-v129-shop-inventory-character-premium.js",
+      "hits": {
+        "renderShop_override": [
+          {
+            "line": 32,
+            "snippet": "(typeof shopStock==='function'?shopStock():[])[i];\n    if(it)el.classList.add(v129RarityClass(it));\n  });\n\n  \n}\nif(typeof renderShop==='function'&&!window.__v6320V129ShopWrapped){\n  const v6320V129BaseShop=renderShop;\n  renderShop=function(){const r=v6320V129BaseShop.apply(this,arguments);v129PolishDynamicCards();return r};\n  try{window.renderShop=renderShop}catch(e){}\n  window.__v6320V129ShopWrapped=true;\n}\nv129PolishDynamicCards();\n"
+          }
+        ],
+        "window_renderShop_assign": [
+          {
+            "line": 33,
+            "snippet": "if(typeof renderShop==='function'&&!window.__v6320V129ShopWrapped){\n  const v6320V129BaseShop=renderShop;\n  renderShop=function(){const r=v6320V129BaseShop.apply(this,arguments);v129PolishDynamicCards();return r};\n  try{window.renderShop=renderShop}catch(e){}\n  window.__v6320V129ShopWrapped=true;\n}\nv129PolishDynamicCards();\n"
+          }
+        ]
+      }
+    },
+    {
+      "order": 8,
+      "src": "js/features/legacy-extracted/beta/v131-shop-cleanup.js",
+      "hits": {
+        "renderShop_override": [
+          {
+            "line": 26,
+            "snippet": "'tiny') || el.classList.contains('muted') || el.tagName==='P'){\n        el.remove();\n      }\n    }\n  });\n\n  \n}\nif(typeof renderShop==='function'&&!window.__v131ShopCleanWrapped){\n  const v131BaseRenderShop=renderShop;\n  renderShop=function(){const r=v131BaseRenderShop.apply(this,arguments);v131CleanShop();return r};\n  try{window.renderShop=renderShop}catch(_){}\n  window.__v131ShopCleanWrapped=true;\n}\nv131CleanShop();\nwindow.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')==='shop')v131CleanShop()},{passive:true});\n"
+          }
+        ],
+        "window_renderShop_assign": [
+          {
+            "line": 27,
+            "snippet": "\n\n  \n}\nif(typeof renderShop==='function'&&!window.__v131ShopCleanWrapped){\n  const v131BaseRenderShop=renderShop;\n  renderShop=function(){const r=v131BaseRenderShop.apply(this,arguments);v131CleanShop();return r};\n  try{window.renderShop=renderShop}catch(_){}\n  window.__v131ShopCleanWrapped=true;\n}\nv131CleanShop();\nwindow.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')==='shop')v131CleanShop()},{passive:true});\n"
+          }
+        ]
+      }
+    },
+    {
+      "order": 9,
+      "src": "js/features/shop/beta/v8009-s5-v135-shop-level-scaling.js",
+      "hits": {
+        "renderShop_override": [
+          {
+            "line": 111,
+            "snippet": "rue)}catch(e){}\n  s.v135ShopLevelScaling=true;\n  try{localStorage.setItem(KEY,JSON.stringify(s))}catch(e){}\n}\n\nif(typeof renderShop==='function'&&!window.__v135ShopPaintWrapped){\n  const v135BaseRenderShop=renderShop;\n  renderShop=function(){const r=v135BaseRenderShop.apply(this,arguments);v135PaintShop();return r};\n  try{window.renderShop=renderShop}catch(_){}\n  window.__v135ShopPaintWrapped=true;\n}\nv135PaintShop();\nwindow.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')==='shop')v135PaintShop()},{passive:true});\n"
+          }
+        ],
+        "window_renderShop_assign": [
+          {
+            "line": 112,
+            "snippet": "){}\n}\n\nif(typeof renderShop==='function'&&!window.__v135ShopPaintWrapped){\n  const v135BaseRenderShop=renderShop;\n  renderShop=function(){const r=v135BaseRenderShop.apply(this,arguments);v135PaintShop();return r};\n  try{window.renderShop=renderShop}catch(_){}\n  window.__v135ShopPaintWrapped=true;\n}\nv135PaintShop();\nwindow.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')==='shop')v135PaintShop()},{passive:true});\n"
+          }
+        ]
+      }
+    },
+    {
+      "order": 14,
+      "src": "js/features/shop/beta/v8009-s8-v337-harz-dealer-menu-copyright.js",
+      "hits": {
+        "timeout": [
+          {
+            "line": 78,
+            "snippet": "rsion],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version]').forEach(el=>{\n      if(el)el.textContent=V337_VERSION;\n    });\n  }\n\n  v337AddDealerMenuItem();\n  v337EnsureFooter();\n  v337ApplyVersion();\n  setTimeout(v337AddDealerMenuItem,500);\n  setTimeout(v337EnsureFooter,500);\n  setTimeout(v337ApplyVersion,500);\n  setTimeout(v337AddDealerMenuItem,1800);\n  setTimeout(v337EnsureFooter,1800);\n  setTimeout(v337ApplyVersion,1800);\n})();\n"
+          },
+          {
+            "line": 79,
+            "snippet": "Line,#topVersion,[data-top-version]').forEach(el=>{\n      if(el)el.textContent=V337_VERSION;\n    });\n  }\n\n  v337AddDealerMenuItem();\n  v337EnsureFooter();\n  v337ApplyVersion();\n  setTimeout(v337AddDealerMenuItem,500);\n  setTimeout(v337EnsureFooter,500);\n  setTimeout(v337ApplyVersion,500);\n  setTimeout(v337AddDealerMenuItem,1800);\n  setTimeout(v337EnsureFooter,1800);\n  setTimeout(v337ApplyVersion,1800);\n})();\n"
+          },
+          {
+            "line": 80,
+            "snippet": ").forEach(el=>{\n      if(el)el.textContent=V337_VERSION;\n    });\n  }\n\n  v337AddDealerMenuItem();\n  v337EnsureFooter();\n  v337ApplyVersion();\n  setTimeout(v337AddDealerMenuItem,500);\n  setTimeout(v337EnsureFooter,500);\n  setTimeout(v337ApplyVersion,500);\n  setTimeout(v337AddDealerMenuItem,1800);\n  setTimeout(v337EnsureFooter,1800);\n  setTimeout(v337ApplyVersion,1800);\n})();\n"
+          },
+          {
+            "line": 81,
+            "snippet": "ontent=V337_VERSION;\n    });\n  }\n\n  v337AddDealerMenuItem();\n  v337EnsureFooter();\n  v337ApplyVersion();\n  setTimeout(v337AddDealerMenuItem,500);\n  setTimeout(v337EnsureFooter,500);\n  setTimeout(v337ApplyVersion,500);\n  setTimeout(v337AddDealerMenuItem,1800);\n  setTimeout(v337EnsureFooter,1800);\n  setTimeout(v337ApplyVersion,1800);\n})();\n"
+          },
+          {
+            "line": 82,
+            "snippet": "dDealerMenuItem();\n  v337EnsureFooter();\n  v337ApplyVersion();\n  setTimeout(v337AddDealerMenuItem,500);\n  setTimeout(v337EnsureFooter,500);\n  setTimeout(v337ApplyVersion,500);\n  setTimeout(v337AddDealerMenuItem,1800);\n  setTimeout(v337EnsureFooter,1800);\n  setTimeout(v337ApplyVersion,1800);\n})();\n"
+          },
+          {
+            "line": 83,
+            "snippet": "();\n  v337ApplyVersion();\n  setTimeout(v337AddDealerMenuItem,500);\n  setTimeout(v337EnsureFooter,500);\n  setTimeout(v337ApplyVersion,500);\n  setTimeout(v337AddDealerMenuItem,1800);\n  setTimeout(v337EnsureFooter,1800);\n  setTimeout(v337ApplyVersion,1800);\n})();\n"
+          }
+        ]
+      }
+    },
+    {
+      "order": 17,
+      "src": "js/features/shop/beta/v8009-s7-v341-harz-dealer-dropdown-fix.js",
+      "hits": {
+        "timeout": [
+          {
+            "line": 105,
+            "snippet": ".97: global dealer dropdown observer retired; startup retries remain. */\n\n  function version(){\n    document.querySelectorAll('.version').forEach(el=>el.textContent=V341_VERSION);\n  }\n\n  v341EnsureMenu();\n  version();\n  setTimeout(v341EnsureMenu,250);\n  setTimeout(v341EnsureMenu,900);\n  setTimeout(v341EnsureMenu,1800);\n  setTimeout(version,250);\n  setTimeout(version,900);\n  setTimeout(version,1800);\n})();\n"
+          },
+          {
+            "line": 106,
+            "snippet": "er retired; startup retries remain. */\n\n  function version(){\n    document.querySelectorAll('.version').forEach(el=>el.textContent=V341_VERSION);\n  }\n\n  v341EnsureMenu();\n  version();\n  setTimeout(v341EnsureMenu,250);\n  setTimeout(v341EnsureMenu,900);\n  setTimeout(v341EnsureMenu,1800);\n  setTimeout(version,250);\n  setTimeout(version,900);\n  setTimeout(version,1800);\n})();\n"
+          },
+          {
+            "line": 107,
+            "snippet": ". */\n\n  function version(){\n    document.querySelectorAll('.version').forEach(el=>el.textContent=V341_VERSION);\n  }\n\n  v341EnsureMenu();\n  version();\n  setTimeout(v341EnsureMenu,250);\n  setTimeout(v341EnsureMenu,900);\n  setTimeout(v341EnsureMenu,1800);\n  setTimeout(version,250);\n  setTimeout(version,900);\n  setTimeout(version,1800);\n})();\n"
+          },
+          {
+            "line": 108,
+            "snippet": "ument.querySelectorAll('.version').forEach(el=>el.textContent=V341_VERSION);\n  }\n\n  v341EnsureMenu();\n  version();\n  setTimeout(v341EnsureMenu,250);\n  setTimeout(v341EnsureMenu,900);\n  setTimeout(v341EnsureMenu,1800);\n  setTimeout(version,250);\n  setTimeout(version,900);\n  setTimeout(version,1800);\n})();\n"
+          },
+          {
+            "line": 109,
+            "snippet": "rsion').forEach(el=>el.textContent=V341_VERSION);\n  }\n\n  v341EnsureMenu();\n  version();\n  setTimeout(v341EnsureMenu,250);\n  setTimeout(v341EnsureMenu,900);\n  setTimeout(v341EnsureMenu,1800);\n  setTimeout(version,250);\n  setTimeout(version,900);\n  setTimeout(version,1800);\n})();\n"
+          },
+          {
+            "line": 110,
+            "snippet": "Content=V341_VERSION);\n  }\n\n  v341EnsureMenu();\n  version();\n  setTimeout(v341EnsureMenu,250);\n  setTimeout(v341EnsureMenu,900);\n  setTimeout(v341EnsureMenu,1800);\n  setTimeout(version,250);\n  setTimeout(version,900);\n  setTimeout(version,1800);\n})();\n"
+          }
+        ]
+      }
+    },
+    {
+      "order": 18,
+      "src": "js/features/shop/beta/v8009-s4-v461-shop-redesign.js",
+      "hits": {
+        "renderShop_override": [
+          {
+            "line": 54,
+            "snippet": "ndow.v030BuyMagic(i);\n      };\n    });\n  }\n\n  const baseOffer=window.v057OfferHtml;\n  function upgradedOffer(it,i,kind){\n    return baseOffer?baseOffer(it,i,kind):'';\n  }\n\n  const previousRenderShop=window.renderShop;\n  renderShop=function(){\n    try{if(typeof v057FillShops==='function')v057FillShops(false)}catch(e){}\n    const shop=document.querySelector('#shop');\n    if(!shop)return;\n\n    let gearCard=document.querySelector('#v057GearShopCard');\n    if(!gearCard){\n      gearCard=document.createElement('div');\n      gearCard.className='card v461-shop-card';\n      gearCard.id='v057GearShopCard';\n      shop.appendChild(gearCard);\n    }\n    gearCard.className='card v461-shop-card';\n\n    let hero=document.querySel"
+          }
+        ],
+        "window_renderShop_assign": [
+          {
+            "line": 143,
+            "snippet": "v030Refresh,#refreshShop').forEach(el=>{\n      el.style.display='none';\n    });\n\n    syncVersion();\n    try{if(typeof window.v441PaintResources==='function')window.v441PaintResources()}catch(e){}\n    return true;\n  };\n  window.renderShop=renderShop;\n\n  /* Keep older wrappers functional enough when they look for button ids. */\n  setTimeout(()=>{try{if(document.querySelector('#shop')?.classList.contains('active'))renderShop()}catch(e){console.error('V4.67 init',e)}},80);\n  try{syncVersion()}catch(e){}\n  window.addEventListener('growlegends:account-ready',()=>{try{syncVersion()}catch(e){}},{passive:true});\n})();\n"
+          }
+        ],
+        "timeout": [
+          {
+            "line": 146,
+            "snippet": "(typeof window.v441PaintResources==='function')window.v441PaintResources()}catch(e){}\n    return true;\n  };\n  window.renderShop=renderShop;\n\n  /* Keep older wrappers functional enough when they look for button ids. */\n  setTimeout(()=>{try{if(document.querySelector('#shop')?.classList.contains('active'))renderShop()}catch(e){console.error('V4.67 init',e)}},80);\n  try{syncVersion()}catch(e){}\n  window.addEventListener('growlegends:account-ready',()=>{try{syncVersion()}catch(e){}},{passive:true});\n})();\n"
+          }
+        ]
+      }
+    },
+    {
+      "order": 19,
+      "src": "js/features/shop/beta/v8009-s6-v464-shop-reference.js",
+      "hits": {
+        "render_override": [
+          {
+            "line": 59,
+            "snippet": "y(this,arguments);arrange();return r};window.renderShop=renderShop;window.__v464RenderShopWrapped=true;\n    }\n  }catch(e){}\n  try{\n    if(typeof render==='function'&&!window.__v464RenderWrapped){\n      const base=render;render=function(){const r=base.apply(this,arguments);if(document.getElementById('shop')?.classList.contains('active'))arrange();stamp();return r};window.render=render;window.__v464RenderWrapped=true;\n    }\n  }catch(e){}\n  try{\n    if(!window.__v464GoWrapped){\n      window.addEventListener('growlegends:navigation-open-v7119',e=>{\n        if(String(e?.detail?.id||'')!=='shop')return;\n        try{renderShop();arrange()}catch(err){console.warn('V7.120 shop navigation refresh',err)}\n      });\n      w"
+          }
+        ],
+        "renderShop_override": [
+          {
+            "line": 54,
+            "snippet": "agic)gear.insertAdjacentElement('afterend',magic);\n    setTab(currentTab(),false);stamp();\n    return true;\n  }\n  try{\n    if(typeof renderShop==='function'&&!window.__v464RenderShopWrapped){\n      const base=renderShop;renderShop=function(){const r=base.apply(this,arguments);arrange();return r};window.renderShop=renderShop;window.__v464RenderShopWrapped=true;\n    }\n  }catch(e){}\n  try{\n    if(typeof render==='function'&&!window.__v464RenderWrapped){\n      const base=render;render=function(){const r=base.apply(this,arguments);if(document.getElementById('shop')?.classList.contains('active'))arrange();stamp();return r};window.render=render;window.__v464RenderWrapped=true;\n    }\n  }catch(e){}\n  try{\n    if(!window"
+          }
+        ],
+        "window_renderShop_assign": [
+          {
+            "line": 54,
+            "snippet": "lse);stamp();\n    return true;\n  }\n  try{\n    if(typeof renderShop==='function'&&!window.__v464RenderShopWrapped){\n      const base=renderShop;renderShop=function(){const r=base.apply(this,arguments);arrange();return r};window.renderShop=renderShop;window.__v464RenderShopWrapped=true;\n    }\n  }catch(e){}\n  try{\n    if(typeof render==='function'&&!window.__v464RenderWrapped){\n      const base=render;render=function(){const r=base.apply(this,arguments);if(document.getElementById('shop')?.classList.contains('active'))arrange();stamp();return r};window.render=render;window.__v464RenderWrapped=true;\n    }\n  }catch(e){}\n  try{\n    if(!window.__v464GoWrapped){\n      window.addEventListener('growlegends:navigation-open"
+          }
+        ]
+      }
+    },
+    {
+      "order": 20,
+      "src": "js/features/shop/beta/v8009-s1-v466-all-item-art-purchase-fix.js",
+      "hits": {
+        "render_override": [
+          {
+            "line": 329,
+            "snippet": "\n  /* Character/Inventory cleanup Phase 2: V466 inventory/equipment render hook retired.\n     V468/V470 are the final visual owners. */\n  try{if(typeof render==='function'&&!window.__v466RenderWrapped){const base=render;render=function(){const r=base.apply(this,arguments);if(document.querySelector('#shop')?.classList.contains('active'))rebindShopButtons();decorateAll();stamp();return r};window.render=render;window.__v466RenderWrapped=true}}catch(e){}\n  function stamp(){}\n  function bootDecorate(){if(document.querySelector('#shop')?.classList.contains('active'))rebindShopButtons();decorateAll();stamp()}\n  document.addEventListener('DOMContentLoaded',bootDecorate,{once:true});\n  window.addEventListener('pageshow'"
+          }
+        ],
+        "renderShop_override": [
+          {
+            "line": 326,
+            "snippet": "erials=function(){const r=base.apply(this,arguments);decorateMaterials();return r};window.__v466MaterialsWrapped=true}}catch(e){}\n  try{if(typeof renderShop==='function'&&!window.__v466ShopWrapped){const base=renderShop;renderShop=function(){const r=base.apply(this,arguments);rebindShopButtons();decorateShop();return r};window.renderShop=renderShop;window.__v466ShopWrapped=true}}catch(e){}\n  /* Character/Inventory cleanup Phase 2: V466 inventory/equipment render hook retired.\n     V468/V470 are the final visual owners. */\n  try{if(typeof render==='function'&&!window.__v466RenderWrapped){const base=render;render=function(){const r=base.apply(this,arguments);if(document.querySelector('#shop')?.classList.contains("
+          }
+        ],
+        "window_renderShop_assign": [
+          {
+            "line": 326,
+            "snippet": "alsWrapped=true}}catch(e){}\n  try{if(typeof renderShop==='function'&&!window.__v466ShopWrapped){const base=renderShop;renderShop=function(){const r=base.apply(this,arguments);rebindShopButtons();decorateShop();return r};window.renderShop=renderShop;window.__v466ShopWrapped=true}}catch(e){}\n  /* Character/Inventory cleanup Phase 2: V466 inventory/equipment render hook retired.\n     V468/V470 are the final visual owners. */\n  try{if(typeof render==='function'&&!window.__v466RenderWrapped){const base=render;render=function(){const r=base.apply(this,arguments);if(document.querySelector('#shop')?.classList.contains('active'))rebindShopButtons();decorateAll();stamp();return r};window.render=render;window.__v466Render"
+          }
+        ]
+      }
+    },
+    {
+      "order": 22,
+      "src": "js/features/guild/legacy/19-v473-shop-cards-guildxp-script.js",
+      "hits": {
+        "timeout": [
+          {
+            "line": 97,
+            "snippet": "\n\n  if(typeof v247ShowDungeonReward==='function'&&!window.__v473DungeonGuildXpWrapped){\n    const base=v247ShowDungeonReward;\n    v247ShowDungeonReward=function(data){\n      const r=base.apply(this,arguments);\n      try{setTimeout(()=>{void awardDungeonGuildXp(data)},0)}catch(e){}\n      return r;\n    };\n    try{window.v247ShowDungeonReward=v247ShowDungeonReward}catch(e){}\n    window.__v473DungeonGuildXpWrapped=true;\n  }\n\n  /* Shop cleanup Phase 1: retire V4.73 presentation hooks only.\n     decorateShop() only added the unused v473-premium-cards marker and stamp() wrote an\n     obsolete version. Dungeon -> guild XP authority above stays untouched. */\n})();\n\n"
+          }
+        ]
+      }
+    },
+    {
+      "order": 23,
+      "src": "js/features/shop/beta/v8009-s4-v475-shop-polish.js",
+      "hits": {
+        "renderShop_override": [
+          {
+            "line": 86,
+            "snippet": "anMarkedExtras(shop);\n    stamp();\n  }\n  function queue(){if(queued)return;queued=true;requestAnimationFrame(polishShop)}\n\n  if(typeof renderShop==='function'&&!window.__v475RenderShopWrapped){\n    const base=renderShop;renderShop=function(){const r=base.apply(this,arguments);queue();return r};window.renderShop=renderShop;window.__v475RenderShopWrapped=true;\n  }\n  /* V6.320: redundant global render hook retired; renderShop + navigation hooks remain. */\n  if(!window.__v475GoWrapped){\n    window.addEventListener('growlegends:navigation-open-v7119',e=>{\n      if(String(e?.detail?.id||'')==='shop')setTimeout(queue,20);\n    });\n    window.__v475GoWrapped='v7120-event';\n  }\n\n  /* No permanent DOM observer: shop polis"
+          }
+        ],
+        "window_renderShop_assign": [
+          {
+            "line": 86,
+            "snippet": "queued=true;requestAnimationFrame(polishShop)}\n\n  if(typeof renderShop==='function'&&!window.__v475RenderShopWrapped){\n    const base=renderShop;renderShop=function(){const r=base.apply(this,arguments);queue();return r};window.renderShop=renderShop;window.__v475RenderShopWrapped=true;\n  }\n  /* V6.320: redundant global render hook retired; renderShop + navigation hooks remain. */\n  if(!window.__v475GoWrapped){\n    window.addEventListener('growlegends:navigation-open-v7119',e=>{\n      if(String(e?.detail?.id||'')==='shop')setTimeout(queue,20);\n    });\n    window.__v475GoWrapped='v7120-event';\n  }\n\n  /* No permanent DOM observer: shop polish is driven by the canonical render/navigation hooks only. */\n  stamp();que"
+          }
+        ],
+        "raf": [
+          {
+            "line": 83,
+            "snippet": "muck & Magie';\n        if(desc)desc.textContent='Ringe, Amulette, Edelsteine und Rollen für deine Ausrüstung.';\n      }\n    }\n    cleanMarkedExtras(shop);\n    stamp();\n  }\n  function queue(){if(queued)return;queued=true;requestAnimationFrame(polishShop)}\n\n  if(typeof renderShop==='function'&&!window.__v475RenderShopWrapped){\n    const base=renderShop;renderShop=function(){const r=base.apply(this,arguments);queue();return r};window.renderShop=renderShop;window.__v475RenderShopWrapped=true;\n  }\n  /* V6.320: redundant global render hook retired; renderShop + navigation hooks remain. */\n  if(!window.__v475GoWrapped){\n    window.addEventListener('growlegends:navigation-open-v7119',e=>{\n      if(String(e?.detail?.id|"
+          }
+        ],
+        "timeout": [
+          {
+            "line": 91,
+            "snippet": "undant global render hook retired; renderShop + navigation hooks remain. */\n  if(!window.__v475GoWrapped){\n    window.addEventListener('growlegends:navigation-open-v7119',e=>{\n      if(String(e?.detail?.id||'')==='shop')setTimeout(queue,20);\n    });\n    window.__v475GoWrapped='v7120-event';\n  }\n\n  /* No permanent DOM observer: shop polish is driven by the canonical render/navigation hooks only. */\n  stamp();queue();\n  document.addEventListener('DOMContentLoaded',()=>{stamp();queue()},{once:true});\n  window.addEventListener('pageshow',()=>{stamp();queue()},{passive:true});\n  window.addEventListener('growlegends:account-ready',()=>{stamp();queue()},{passive:true});\n})();\n"
+          }
+        ]
+      }
+    },
+    {
+      "order": 25,
+      "src": "js/features/shop/beta/v8009-s12-gl-shop-provenance-guard.js",
+      "hits": {
+        "timeout": [
+          {
+            "line": 7,
+            "snippet": "pair();wrap('v030BuyWeapon','weaponShop');wrap('v030BuyMagic','magicShop')}catch(_){}}\n install();document.addEventListener('DOMContentLoaded',install,{once:true});window.addEventListener('growlegends:account-ready',()=>setTimeout(install,60));window.addEventListener('pageshow',()=>setTimeout(install,60),{passive:true});\n window.vShopProvenanceQA=()=>({weaponTagged:(s?.weaponShop||[]).every(x=>!x||x.shopItem===true),magicTagged:(s?.magicShop||[]).every(x=>!x||x.shopItem===true),oldInventoryTagged:(s?.inventory||[]).filter(x=>x?.shopItem===true).every(x=>String(x.source||'').toLowerCase()==='shop')});\n})();\n"
+          },
+          {
+            "line": 7,
+            "snippet": "magicShop')}catch(_){}}\n install();document.addEventListener('DOMContentLoaded',install,{once:true});window.addEventListener('growlegends:account-ready',()=>setTimeout(install,60));window.addEventListener('pageshow',()=>setTimeout(install,60),{passive:true});\n window.vShopProvenanceQA=()=>({weaponTagged:(s?.weaponShop||[]).every(x=>!x||x.shopItem===true),magicTagged:(s?.magicShop||[]).every(x=>!x||x.shopItem===true),oldInventoryTagged:(s?.inventory||[]).filter(x=>x?.shopItem===true).every(x=>String(x.source||'').toLowerCase()==='shop')});\n})();\n"
+          }
+        ]
+      }
+    },
+    {
+      "order": 27,
+      "src": "js/features/shop/beta/v8009-s1-v7063-server-shop-forge-auto-bridge.js",
+      "hits": {
+        "window_renderShop_assign": [
+          {
+            "line": 17,
+            "snippet": "onst legacyAutoEquip=typeof window.v480AutoEquip==='function'?window.v480AutoEquip:null;\n const legacyAutoMaterials=typeof window.v480AutoMaterials==='function'?window.v480AutoMaterials:null;\n const rawRenderShop=typeof window.renderShop==='function'?window.renderShop:null;\n let shopPaintCalls=0,shopPaintExec=0,lastShopPaint=0,shopPaintTimer=null;\n const offerId=x=>String(x?.id||x?.uid||'');\n const shopSig=()=>[\n   ...(Array.isArray(s?.weaponShop)?s.weaponShop:[]).map(offerId),\n   '|',\n   ...(Array.isArray(s?.magicShop)?s.magicShop:[]).map(offerId)\n ].join('~');\n function stableRenderShop(force=false){\n  shopPaintCalls++;\n  if(typeof rawRenderShop!=='function')return false;\n  if(!window.v7081UseAuthority?.('ite"
+          },
+          {
+            "line": 49,
+            "snippet": ".max(25,145-gap));\n   return false;\n  }\n  clearTimeout(shopPaintTimer);\n  lastShopPaint=now;\n  shopPaintExec++;\n  return rawRenderShop.apply(this,arguments);\n }\n if(rawRenderShop){\n  stableRenderShop.__v7084=true;\n  try{window.renderShop=stableRenderShop}catch(_){}\n  try{renderShop=stableRenderShop}catch(_){}\n }\n const itemId=it=>String(it?.id||it?.uid||'');\n function req(prefix){let r='';try{r=crypto.randomUUID().replaceAll('-','')}catch(_){r=Math.random().toString(36).slice(2)+Date.now().toString(36)}return `${prefix}_${Date.now()}_${r.slice(0,24)}`}\n function toast(title,type='info',detail=''){try{return window.v063Toast?.(title,type,detail)}catch(_){try{return window.v115Alert?.(detail||title,title,type)}ca"
+          }
+        ],
+        "timeout": [
+          {
+            "line": 35,
+            "snippet": "ElementById('shop');\n  if(!force&&!shop?.classList.contains('active'))return false;\n  const now=performance.now();\n  const gap=now-lastShopPaint;\n  if(!force&&gap<140){\n   clearTimeout(shopPaintTimer);\n   shopPaintTimer=setTimeout(()=>{\n    lastShopPaint=performance.now();\n    shopPaintExec++;\n    try{rawRenderShop()}catch(e){console.warn('[V7084] shop paint',e)}\n   },Math.max(25,145-gap));\n   return false;\n  }\n  clearTimeout(shopPaintTimer);\n  lastShopPaint=now;\n  shopPaintExec++;\n  return rawRenderShop.apply(this,arguments);\n }\n if(rawRenderShop){\n  stableRenderShop.__v7084=true;\n  try{window.renderShop=stableRenderShop}catch(_){}\n  try{renderShop=stableRenderShop}catch(_){}\n }\n const itemId=it=>String(it?.id"
+          },
+          {
+            "line": 270,
+            "snippet": "&&before!==after)stableRenderShop();\n    window.v069SyncCurrencies?.();\n    window.v441PaintResources?.();\n   }\n  }catch(_){}\n  return ok\n };\n function boot(){\n  if(window.v7206StartupBusy?.())return;\n  S.ready=false;\n  setTimeout(()=>void window.v7063ItemStageRefresh(),90);\n }\n window.addEventListener('growlegends:account-ready',boot,{passive:true});\n window.addEventListener('growlegends:first-playable',()=>setTimeout(()=>void window.v7063ItemStageRefresh(),1100),{passive:true});\n window.addEventListener('pageshow',()=>{if(!window.v7206StartupBusy?.())setTimeout(()=>void window.v7063ItemStageRefresh(),180)},{passive:true});\n window.addEventListener('growlegends:authority-capabilities-ready',e=>{\n  if(e?.detail"
+          },
+          {
+            "line": 273,
+            "snippet": ")return;\n  S.ready=false;\n  setTimeout(()=>void window.v7063ItemStageRefresh(),90);\n }\n window.addEventListener('growlegends:account-ready',boot,{passive:true});\n window.addEventListener('growlegends:first-playable',()=>setTimeout(()=>void window.v7063ItemStageRefresh(),1100),{passive:true});\n window.addEventListener('pageshow',()=>{if(!window.v7206StartupBusy?.())setTimeout(()=>void window.v7063ItemStageRefresh(),180)},{passive:true});\n window.addEventListener('growlegends:authority-capabilities-ready',e=>{\n  if(e?.detail?.caps?.items&&!window.v7206StartupBusy?.())setTimeout(()=>void window.v7063ItemStageRefresh(),40);\n },{passive:true});\n setTimeout(()=>{if(!window.v7206StartupBusy?.())void window.v7063ItemSt"
+          },
+          {
+            "line": 274,
+            "snippet": "assive:true});\n window.addEventListener('growlegends:first-playable',()=>setTimeout(()=>void window.v7063ItemStageRefresh(),1100),{passive:true});\n window.addEventListener('pageshow',()=>{if(!window.v7206StartupBusy?.())setTimeout(()=>void window.v7063ItemStageRefresh(),180)},{passive:true});\n window.addEventListener('growlegends:authority-capabilities-ready',e=>{\n  if(e?.detail?.caps?.items&&!window.v7206StartupBusy?.())setTimeout(()=>void window.v7063ItemStageRefresh(),40);\n },{passive:true});\n setTimeout(()=>{if(!window.v7206StartupBusy?.())void window.v7063ItemStageRefresh()},850);\n})();\n"
+          },
+          {
+            "line": 276,
+            "snippet": "tartupBusy?.())setTimeout(()=>void window.v7063ItemStageRefresh(),180)},{passive:true});\n window.addEventListener('growlegends:authority-capabilities-ready',e=>{\n  if(e?.detail?.caps?.items&&!window.v7206StartupBusy?.())setTimeout(()=>void window.v7063ItemStageRefresh(),40);\n },{passive:true});\n setTimeout(()=>{if(!window.v7206StartupBusy?.())void window.v7063ItemStageRefresh()},850);\n})();\n"
+          },
+          {
+            "line": 278,
+            "snippet": "ive:true});\n window.addEventListener('growlegends:authority-capabilities-ready',e=>{\n  if(e?.detail?.caps?.items&&!window.v7206StartupBusy?.())setTimeout(()=>void window.v7063ItemStageRefresh(),40);\n },{passive:true});\n setTimeout(()=>{if(!window.v7206StartupBusy?.())void window.v7063ItemStageRefresh()},850);\n})();\n"
+          }
+        ]
+      }
+    }
+  ]
+}
