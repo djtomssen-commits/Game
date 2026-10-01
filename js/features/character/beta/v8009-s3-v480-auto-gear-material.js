@@ -313,18 +313,23 @@
     const btn=bar.querySelector('button');if(btn){btn.textContent=buttonText;btn.onclick=onclick;btn.disabled=busy}
     return bar;
   }
-  function updateBars(){
+  function updateBars(scope=''){
     try{
       const character=document.getElementById('character');
       if(!character||!character.classList.contains('active')){stamp();return}
-      const invPanel=document.getElementById('v459PanelInventory');
-      const matPanel=document.getElementById('v459PanelMaterials');
-      const improvements=autoEquipCount();
-      const p=materialPlan(),uses=p.gemAssignments.length+p.scrollAssignments.length;
-      const ib=ensureBar(invPanel,'v480EquipAutoBar','⚡ Automatische Ausrüstung',improvements?`${improvements} echte Verbesserung${improvements===1?'':'en'} im Inventar gefunden.`:'Keine bessere Ausrüstung gefunden.',improvements?'⚡ Beste Ausrüstung anlegen':'✓ Ausrüstung optimal',autoEquip);
-      if(ib){const btn=ib.querySelector('button');if(btn)btn.disabled=busy||improvements===0}
-      const mb=ensureBar(matPanel,'v480MaterialAutoBar','💎 Auto-Sockeln & Rollen',uses?`${p.gemAssignments.length} Stein${p.gemAssignments.length===1?'':'e'} + ${p.scrollAssignments.length} Rolle${p.scrollAssignments.length===1?'':'n'} sinnvoll einsetzbar.`:'Keine bessere automatische Belegung möglich.','✨ Beste Steine & Rollen einsetzen',autoMaterials);
-      if(mb){const btn=mb.querySelector('button');if(btn)btn.disabled=busy||uses===0}
+      const shell=document.getElementById('v459CharacterShell');
+      const active=scope||shell?.querySelector('#v459CharacterTabs button.active')?.dataset?.tab||'inventory';
+      if(active==='inventory'){
+        const invPanel=document.getElementById('v459PanelInventory');
+        const improvements=autoEquipCount();
+        const ib=ensureBar(invPanel,'v480EquipAutoBar','⚡ Automatische Ausrüstung',improvements?`${improvements} echte Verbesserung${improvements===1?'':'en'} im Inventar gefunden.`:'Keine bessere Ausrüstung gefunden.',improvements?'⚡ Beste Ausrüstung anlegen':'✓ Ausrüstung optimal',autoEquip);
+        if(ib){const btn=ib.querySelector('button');if(btn)btn.disabled=busy||improvements===0}
+      }else if(active==='materials'){
+        const matPanel=document.getElementById('v459PanelMaterials');
+        const p=materialPlan(),uses=p.gemAssignments.length+p.scrollAssignments.length;
+        const mb=ensureBar(matPanel,'v480MaterialAutoBar','💎 Auto-Sockeln & Rollen',uses?`${p.gemAssignments.length} Stein${p.gemAssignments.length===1?'':'e'} + ${p.scrollAssignments.length} Rolle${p.scrollAssignments.length===1?'':'n'} sinnvoll einsetzbar.`:'Keine bessere automatische Belegung möglich.','✨ Beste Steine & Rollen einsetzen',autoMaterials);
+        if(mb){const btn=mb.querySelector('button');if(btn)btn.disabled=busy||uses===0}
+      }
     }catch(e){console.warn('V4.80 bars',e)}
     stamp();
   }
@@ -338,14 +343,6 @@
     try{window.v200FinalizeUser=v200FinalizeUser}catch(e){}window.__v486AutoFinalizeWrapped=true;
   }}catch(e){}
 
-  /* Targeted hooks only; no permanent MutationObservers or fast intervals. */
-  try{if(typeof window.v459ArrangeCharacter==='function'&&!window.__v480ArrangeWrapped){const base=window.v459ArrangeCharacter;window.v459ArrangeCharacter=function(){const x=base.apply(this,arguments);updateBars();return x};window.__v480ArrangeWrapped=true}}catch(e){}
-  try{if(typeof renderInventory==='function'&&!window.__v480InventoryWrapped){const base=renderInventory;renderInventory=function(){const x=base.apply(this,arguments);updateBars();return x};window.renderInventory=renderInventory;window.__v480InventoryWrapped=true}}catch(e){}
-  try{if(typeof v030RenderMaterials==='function'&&!window.__v480MaterialsWrapped){const base=v030RenderMaterials;v030RenderMaterials=function(){const x=base.apply(this,arguments);updateBars();return x};window.v030RenderMaterials=v030RenderMaterials;window.__v480MaterialsWrapped=true}}catch(e){}
-  window.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')==='character')updateBars()});window.__v480GoWrapped='v7119-event';
-
-  stamp();updateBars();
-  document.addEventListener('DOMContentLoaded',()=>{stamp();updateBars()},{once:true});
-  window.addEventListener('pageshow',()=>{stamp();updateBars()},{passive:true});
-  window.addEventListener('growlegends:account-ready',updateBars,{passive:true});[1000,3000,7000].forEach(ms=>setTimeout(flushPending,ms));
+  /* v459 owns visible tab refreshes. Keep only account-finalization intent replay. */
+  window.v480UpdateAutoBars=updateBars;
 })();
