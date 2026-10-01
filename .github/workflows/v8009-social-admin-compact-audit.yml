@@ -1,0 +1,23 @@
+name: V8.009 Social Admin Compact Audit
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/v8009_social_admin_compact_audit.py'
+      - '.github/workflows/v8009-social-admin-compact-audit.yml'
+permissions:
+  contents: write
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 .github/scripts/v8009_social_admin_compact_audit.py
+      - run: |
+          git config user.name github-actions
+          git config user.email github-actions@users.noreply.github.com
+          git add V8009_SOCIAL_ADMIN_COMPACT_AUDIT.json
+          git commit -m "V8.009 FINAL: record social admin compact audit" || exit 0
+          git pull --rebase origin main
+          git push
