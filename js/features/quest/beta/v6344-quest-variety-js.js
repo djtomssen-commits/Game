@@ -257,6 +257,7 @@ try{
       try{window.v387QuestClean?.()}catch(_){}
       try{window.v391QuestFinish?.()}catch(_){}
       try{window.v099PaintQuestXp?.()}catch(_){}
+      try{window.v096DecorateQuestXp?.()}catch(_){}
       try{window.v321PaintQuestCosts?.()}catch(_){}
       try{window.v306PaintFirstDailyQuestHarz?.()}catch(_){}
       try{window.v392PaintActive?.()}catch(_){}
