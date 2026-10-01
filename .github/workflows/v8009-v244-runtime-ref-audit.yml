@@ -1,0 +1,22 @@
+name: V8.009 V244 Runtime Ref Audit
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/v8009_v244_runtime_ref_audit.py'
+      - '.github/workflows/v8009-v244-runtime-ref-audit.yml'
+permissions:
+  contents: write
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 .github/scripts/v8009_v244_runtime_ref_audit.py
+      - run: |
+          git config user.name github-actions
+          git config user.email github-actions@users.noreply.github.com
+          git add V8009_V244_RUNTIME_REF_AUDIT.json
+          git commit -m "V8.009 AUDIT: v244 runtime references" || exit 0
+          git pull --rebase origin main
+          git push
