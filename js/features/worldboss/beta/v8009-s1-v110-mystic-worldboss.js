@@ -170,11 +170,5 @@ v085ActiveEvents=function(){
   return out;
 };
 
-const v110BaseRender=render;
-render=function(){
-  const result=v110BaseRender();
-  
-  if(!window.__V483_MODERN_WORLD_ONLY__)requestAnimationFrame(v110InstallEventButton);
-  return result;
-};
-/* V4.86: current V366 home owns the worldboss entry; old-home installer retired. */
+/* V8.009: obsolete global worldboss-card render hook retired.
+   Modern home owns the entry; combat/overlay functions above remain active. */
