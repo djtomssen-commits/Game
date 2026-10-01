@@ -264,7 +264,12 @@ window.v8008C25InstallWarAuthority=function(){
   if(typeof v254LoadGuild==='function'&&!window.__v4159GuildLoad){const base=v254LoadGuild;v254LoadGuild=async function(){const r=await base.apply(this,arguments);install();return r};try{window.v254LoadGuild=v254LoadGuild}catch(e){}window.__v4159GuildLoad=true}
  }catch(e){}
  try{
-  if(typeof v032Go==='function'&&!window.__v4159Go){const base=v032Go;v032Go=function(id){const r=base.apply(this,arguments);if(id==='guild')setTimeout(()=>void loadWar({silent:true}),0);return r};try{window.v032Go=v032Go}catch(e){}window.__v4159Go=true}
+  if(!window.__v4159Go){
+   window.addEventListener('growlegends:navigation-open-v7119',e=>{
+    if(String(e?.detail?.id||'')==='guild')void loadWar({silent:true});
+   },{passive:true});
+   window.__v4159Go=true;
+  }
  }catch(e){}
  window.v4159GuildWarDiagnostics=()=>({version:V.short,online:online(),guildId:guildId(),manager:manager(),warId:v262War?.id||null,incoming:!!v262War?.incoming,phase:v262War?.phase||localPhase(),attackSigned:!!v262War?.my_attack_signed,defenseSigned:!!v262War?.my_defense_signed,duels:Array.isArray(v262WarDuels)?v262WarDuels.length:0,lastServerError});
  try{
@@ -301,12 +306,11 @@ window.v8008C25InstallWarVisual=function(){
     }
   }
   polish();
-  document.addEventListener('DOMContentLoaded',()=>requestAnimationFrame(polish),{once:true});
-  document.addEventListener('click',e=>{if(e.target?.closest?.('[data-v254-tab="war"],[data-screen="guild"]'))setTimeout(polish,30)},true);
-  [100,450,1000,2200].forEach(ms=>setTimeout(polish,ms));
+  document.addEventListener('DOMContentLoaded',polish,{once:true});
+  document.addEventListener('click',e=>{if(e.target?.closest?.('[data-v254-tab="war"],[data-screen="guild"]'))polish()},true);
   if(typeof v254RenderGuild==='function'&&!window.__v564GuildWarPolish){
     const base=v254RenderGuild;
-    v254RenderGuild=function(){const r=base.apply(this,arguments);requestAnimationFrame(()=>setTimeout(polish,20));return r};
+    v254RenderGuild=function(){const r=base.apply(this,arguments);polish();return r};
     try{window.v254RenderGuild=v254RenderGuild}catch(e){}
     window.__v564GuildWarPolish=true;
   }
@@ -342,9 +346,9 @@ window.v8008C25InstallWarLower=function(){
    window.v262RenderWar=wrapped;try{v262RenderWar=wrapped}catch(_){}
   }
  }catch(_){}
- document.addEventListener('click',e=>{if(e.target?.closest?.('[data-v254-tab="war"],[data-screen="guild"]'))setTimeout(polishWarLower,0)},true);
- window.addEventListener('pageshow',()=>setTimeout(polishWarLower,0),{passive:true});
- window.addEventListener('growlegends:account-ready',()=>setTimeout(polishWarLower,80));
- setTimeout(polishWarLower,0);
+ document.addEventListener('click',e=>{if(e.target?.closest?.('[data-v254-tab="war"],[data-screen="guild"]'))polishWarLower()},true);
+ window.addEventListener('pageshow',polishWarLower,{passive:true});
+ window.addEventListener('growlegends:account-ready',polishWarLower);
+ polishWarLower();
 })();
 };
