@@ -1,0 +1,23 @@
+name: V8.009 Dungeon Quest Retired Wrapper Snippets
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/v8009_dungeon_quest_retired_wrapper_snippets.py'
+      - '.github/workflows/v8009-dungeon-quest-retired-wrapper-snippets.yml'
+permissions:
+  contents: write
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 .github/scripts/v8009_dungeon_quest_retired_wrapper_snippets.py
+      - run: |
+          git config user.name github-actions
+          git config user.email github-actions@users.noreply.github.com
+          git add V8009_DUNGEON_QUEST_RETIRED_WRAPPER_SNIPPETS.json
+          git commit -m "V8.009 AUDIT: retired dungeon quest wrapper snippets" || exit 0
+          git pull --rebase origin main
+          git push
