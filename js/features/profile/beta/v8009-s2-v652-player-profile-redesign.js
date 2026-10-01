@@ -67,31 +67,13 @@
     });
   }
 
-  try{
-    if(typeof v074OpenProfile==='function'&&!window.__v652PlayerProfileWrapped){
-      const base=v074OpenProfile;
-      const wrapped=async function(){
-        const overlay=document.querySelector('#v074ProfileOverlay');
-        const modal=overlay?.querySelector('.v074-profile-modal');
-        if(modal)modal.scrollTop=0;
-        const r=await base.apply(this,arguments);
-        queueDecorate(true);
-        setTimeout(()=>queueDecorate(false),40);
-        return r;
-      };
-      wrapped.__v652=true;
-      v074OpenProfile=wrapped;
-      try{window.v074OpenProfile=wrapped}catch(e){}
-      window.__v652PlayerProfileWrapped=true;
-    }
-  }catch(e){console.warn(VERSION+' profile wrapper',e)}
+  /* V8.009: v074OpenProfile wrapper retired; v655 owns loading/rendering.
+     MutationObserver below remains the single decoration hook. */
+
 
   const content=document.querySelector('#v074ProfileContent');
   if(content){
     const mo=new MutationObserver(()=>queueDecorate(false));
     mo.observe(content,{childList:true,subtree:true});
   }
-  document.addEventListener('click',e=>{
-    if(e.target.closest?.('.v072-player-row[data-profile-id]'))setTimeout(()=>queueDecorate(true),0);
-  },true);
 })();
