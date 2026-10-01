@@ -297,9 +297,7 @@
   let note=box.querySelector('.v4155-frost-note');if(!note){note=document.createElement('div');note.className='v4155-frost-note';box.prepend(note)}
   note.innerHTML='<b>❄️ Eigener Frost-Todesritter-Talentbaum</b><br>Frostklinge = Kältemarken/Eisbruch · Eispanzer = Barrieren/Eissplitter · Todespakt = Seelenschnitte/Lebensraub. Waffe I zählt voll. Waffe II gibt nur 10 % ihrer Werte und schaltet den Nebenhandtreffer frei; beide bleiben zusammen ein logisch begrenztes Waffenbudget.';
  }
- try{
-  if(typeof renderSkillTree==='function'&&!window.__v4155TalentRender){const base=renderSkillTree;renderSkillTree=function(){const r=base.apply(this,arguments);paintTreeNote();return r};try{window.renderSkillTree=renderSkillTree}catch(e){}window.__v4155TalentRender=true}
- }catch(e){}
+ /* v543 renders the Frost note/tree directly; no renderSkillTree wrapper here. */
 
  /* Lightweight balance audit: same class baseline/weapon budget, but unique Frost branch IDs. */
  function sumBonus(b){return ['staerke','geschick','intelligenz','ausdauer','glueck'].reduce((n,k)=>n+Math.max(0,Number(b?.[k])||0),0)}
