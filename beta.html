@@ -39701,7 +39701,12 @@ const v306Line=document.querySelector('#v141VersionLine');
  window.v4103AuditItemUi=runtimeAudit;
 
  function stamp(){}
- decorate();stamp();[50,250,900,1800,3500,7000,12000,22000,40000,60000].forEach(ms=>setTimeout(()=>{decorate();upgradeLoginReveal();stamp()},ms));window.addEventListener('pageshow',()=>{decorate();stamp()},{passive:true});document.addEventListener('visibilitychange',()=>{if(!document.hidden){decorate();runtimeAudit();stamp()}},{passive:true});
+ decorate();upgradeLoginReveal();stamp();
+ document.addEventListener('DOMContentLoaded',()=>{decorate();upgradeLoginReveal();stamp()},{once:true});
+ window.addEventListener('growlegends:account-ready',()=>{decorate();upgradeLoginReveal();stamp()},{passive:true});
+ window.addEventListener('growlegends:navigation-open-v7119',e=>{const id=String(e?.detail?.id||'');if(id==='character'||id==='shop'||id==='forge'||id==='harzForge'){decorate();upgradeLoginReveal();stamp()}},{passive:true});
+ window.addEventListener('pageshow',()=>{decorate();upgradeLoginReveal();stamp()},{passive:true});
+ document.addEventListener('visibilitychange',()=>{if(!document.hidden){decorate();runtimeAudit();upgradeLoginReveal();stamp()}},{passive:true});
 })();
 </script>
 
@@ -40114,13 +40119,12 @@ function historicalScriptCount(){if(historicCountCache!=null)return historicCoun
   }
  }catch(e){}
  function kick(){applyVersion();releaseOwnedPreview()}
- kick();requestAnimationFrame(kick);
+ kick();
  document.addEventListener('DOMContentLoaded',kick,{once:true});
  window.addEventListener('pageshow',kick,{passive:true});
+ window.addEventListener('growlegends:account-ready',kick,{passive:true});
  document.addEventListener('visibilitychange',()=>{if(!document.hidden)kick()},{passive:true});
- /* Bounded settle passes only. No MutationObserver and no permanent version repaint loop:
-    historical painters cannot create a microtask feedback storm on mobile. */
- [100,500,1800,5000].forEach(ms=>setTimeout(kick,ms));
+ /* V8.009: delayed settle passes retired; account/finalizer lifecycle owns power release. */
  window.v4129Diagnostics=()=>({version:V.short,powerReady:window.__V483_POWER_READY__===true,uid:uidOf(),stateOwned:stateOwned(uidOf()),verified:verified(uidOf()),power:stablePower(),autoQaDisabled:true});
 })();
 </script>
