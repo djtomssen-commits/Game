@@ -33,22 +33,18 @@
     return true;
   }
   window.v483ReleaseStartupPower=release;
-  /* Account/cloud hydration normally ends in a render. Hook only until released;
-     afterwards this adds one cheap boolean check and no DOM work. */
-  try{
-    if(typeof render==='function'&&!window.__v483RenderReleaseWrapped){
-      const baseRender=render;
-      render=function(){const r=baseRender.apply(this,arguments);release(false);return r};
-      try{window.render=render}catch(e){}
-      window.__v483RenderReleaseWrapped=true;
-    }
-  }catch(e){}
+  /* V8.009 World powerblock: the global render wrapper and the eight-step
+     startup retry train are retired. Canonical auth/account lifecycle events
+     release the protected home power once hydration is actually ready. */
+  const sync=()=>{stamp();cleanWorld();release(false)};
   stamp();cleanWorld();release(false);
-  document.addEventListener('DOMContentLoaded',()=>{stamp();cleanWorld();release(false)},{once:true});
-  window.addEventListener('pageshow',()=>{stamp();cleanWorld();release(false)},{passive:true});
-  document.addEventListener('visibilitychange',()=>{if(!document.hidden){cleanWorld();release(false)}});
-  [120,300,650,1100,1800,2800,4200,6500].forEach(ms=>setTimeout(()=>release(false),ms));
-  /* Guest/offline fallback only. A durable signed-in account stays on the stable
-     placeholder until V4.52 confirms that its own cloud state is fully resolved. */
+  document.addEventListener('DOMContentLoaded',sync,{once:true});
+  window.addEventListener('pageshow',sync,{passive:true});
+  window.addEventListener('growlegends:account-ready',sync,{passive:true});
+  window.addEventListener('growlegends:foreground-ready',sync,{passive:true});
+  window.addEventListener('growlegends:extras-ready',sync,{passive:true});
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden)sync()});
+  /* Guest/offline fallback only. Durable signed-in accounts never expose
+     pre-hydration power just because a timeout elapsed. */
   setTimeout(()=>release(!durableUser()),9000);
 })();
