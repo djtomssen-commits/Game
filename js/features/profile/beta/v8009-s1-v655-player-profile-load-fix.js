@@ -188,11 +188,11 @@
         const p=(typeof v073ProfilePayload==='function'?v073ProfilePayload():null);
         if(p){
           renderProfile({...p,id:(v073User?.id||p.id||s?.social?.playerId||sid)});
-          setTimeout(()=>{
+          queueMicrotask(()=>{
             try{if(typeof v073SyncProfile==='function')void deadline(v073SyncProfile(true),4500)}catch(e){}
             try{if(typeof v649SyncDungeonProgress==='function')void deadline(v649SyncDungeonProgress(true),4500)}catch(e){}
             try{if(typeof v446SyncCombatPower==='function')void deadline(v446SyncCombatPower(true),4500)}catch(e){}
-          },0);
+          });
           return;
         }
       }catch(e){console.warn(VERSION+' local own profile',e)}
