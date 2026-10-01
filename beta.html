@@ -39745,7 +39745,8 @@ const v306Line=document.querySelector('#v141VersionLine');
  function redecorate(){try{window.v4103DecorateItemSurfaces?.()}catch(e){}tag()}
  /* V6.97: body-wide comic-item observer retired; render hook remains. */
  try{if(typeof render==='function'&&!render.__v4106Items){const b=render;render=function(){const r=b.apply(this,arguments);requestAnimationFrame(redecorate);return r};render.__v4106Items=true;window.render=render}}catch(e){}
- [0,80,250,700,1600,3500,8000,15000].forEach(ms=>setTimeout(redecorate,ms));
+ document.addEventListener('DOMContentLoaded',redecorate,{once:true});
+ window.addEventListener('growlegends:navigation-open-v7119',e=>{const id=String(e?.detail?.id||'');if(id==='character'||id==='shop')redecorate()},{passive:true});
  function stamp(){}
  stamp();window.addEventListener('pageshow',()=>{stamp();redecorate()},{passive:true});
 })();
@@ -66297,9 +66298,9 @@ html:not(.v4142-systemtech-admin) #v4102QaButton{display:none!important}
  try{
   window.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')==='character'){paintPassive();stamp()}},{passive:true});window.__v4156Go='v7119-event';window.__v4156Render='retired'
  }catch(e){}
- stamp();requestAnimationFrame(paintPassive);
- window.addEventListener('growlegends:account-ready',()=>requestAnimationFrame(paintPassive));
- window.addEventListener('pageshow',()=>{stamp();requestAnimationFrame(paintPassive)},{passive:true});
+ stamp();paintPassive();
+ window.addEventListener('growlegends:account-ready',paintPassive,{passive:true});
+ window.addEventListener('pageshow',()=>{stamp();paintPassive()},{passive:true});
 })();
 </script>
 <!-- V4.159: class identities are now mechanical: Bud-Barbar +5% direct damage, Bong-Magier +5pp crit, Blatt-Schütze +5pp real dodge, Frost-Todesritter 100% main hand +10% offhand stats and an 8%/40% offhand strike. Each class keeps its own talent tree; worldboss passives are damped. -->
@@ -87546,7 +87547,7 @@ if(typeof fast==='function'&&!fast.__v6102Slots){
 
 document.addEventListener('DOMContentLoaded',paintSlots,{once:true});
 window.addEventListener('pageshow',()=>{if(document.getElementById('character')?.classList.contains('active'))paintSlots()},{passive:true});
-window.addEventListener('growlegends:account-ready',()=>setTimeout(()=>{if(document.getElementById('character')?.classList.contains('active'))paintSlots()},100));
+window.addEventListener('growlegends:account-ready',()=>{if(document.getElementById('character')?.classList.contains('active'))paintSlots()},{passive:true});
 
 window.v6102EquipmentDiagnostics=function(){
   return ['head','weapon','weapon2','ring','body','boots','amulet'].map(slot=>({
@@ -92822,9 +92823,9 @@ window.v684InventoryRarityQA=()=>({
 
  /* Keep current visual owners last after account restore/navigation. */
  function settle(){syncCurrencies();removeWeatherVisuals();try{window.v6210DungeonSinglePlayerArtClean?.()}catch(_){}}
- window.addEventListener('growlegends:account-ready',()=>setTimeout(settle,80));
- window.addEventListener('pageshow',()=>setTimeout(settle,0),{passive:true});
- setTimeout(settle,0);setTimeout(settle,600);
+ window.addEventListener('growlegends:account-ready',settle,{passive:true});
+ window.addEventListener('pageshow',settle,{passive:true});
+ settle();
  window.__V6213_QA__=()=>({gold:Number(s?.gold)||0,topGold:document.getElementById('v372Gold')?.textContent||document.getElementById('v366Gold')?.textContent||'',weatherLayer:!!document.getElementById('glWeatherLayer'),oldBossArena:!!document.getElementById('v259BossArena')});
 })();
 </script>
@@ -102058,7 +102059,7 @@ document.addEventListener('click',e=>{
   const el=e.target instanceof Element?e.target:null;
   if(!el)return;
   if(el.closest('[data-v6338-select],[data-v6338-clear]'))setTimeout(syncAvatarTitle,0);
-  if(el.closest('[data-screen="character"],[data-go="character"],#character'))setTimeout(syncAvatarTitle,80);
+  /* Character navigation is owned by growlegends:navigation-open-v7119 below. */
 },true);
 
 window.addEventListener('growlegends:account-ready',syncAvatarTitle,{passive:true});
