@@ -2475,3 +2475,16 @@ Arbeitsmodus:
 - Alle drei externen Dateien mit `node --check` geprüft.
 - QA `V8009_AUTHORITY_EXTRACTION_BATCH1_QA.json`: vollständig grün.
 - Stable / `index.html`: unverändert.
+
+
+#### System Extraction Batch 1
+- Vier große Systemtechnik-/QA-Owner 1:1 aus `beta.html` nach `js/features/system/beta/` ausgelagert:
+  - `v4107-systemtechnik` → `v8009-s1-v4107-systemtechnik.js`
+  - `v4102-qa-system` → `v8009-s1-v4102-qa-system.js`
+  - `v4106-qa2-performance` → `v8009-s1-v4106-qa2-performance.js`
+  - `gl-code-diag-script` → `v8009-s1-gl-code-diag.js`
+- Zusammen 134.125 Bytes Inline-JS aus dem Monolithen entfernt.
+- Script-IDs und Reihenfolge in `beta.html` beibehalten; nur auf `src=` umgestellt.
+- Alle vier externen Dateien mit `node --check` geprüft.
+- QA `V8009_SYSTEM_EXTRACTION_BATCH1_QA.json`: vollständig grün.
+- Stable / `index.html`: unverändert.
