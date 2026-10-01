@@ -4868,3 +4868,14 @@ Arbeitsmodus:
 - Branch: `stable-server1-2026-10-01`
 - Basis: aktueller `main`-Stand nach erfolgreichem Test von Server 1 inklusive Login-/Serverrouting, Startseite, Harz-Dealer und Nebelschmied.
 - Diesen Branch nicht für laufende Entwicklung verwenden; er dient ausschließlich als stabile Referenz/Rollback-Basis.
+
+
+### Beta-first Release-Regel aktiv · 01.10.2026
+
+- Verbindliche Release-Regel dokumentiert in `SERVER1_RELEASE_POLICY.md`.
+- Standard ab jetzt: Änderungen zuerst nur auf Beta entwickeln und testen.
+- Ohne ausdrückliche Freigabe von Thomas keine Änderungen an `server1.html`, dem Server-1-Release-Channel oder Server-1-spezifischen Release-/Datenbankpfaden.
+- Gemeinsame Dateien nur dann ändern, wenn die Änderung bewusst auch Server 1 betreffen darf; sonst Beta-spezifisch bzw. per Release-Channel begrenzen.
+- Promotion auf Server 1 erfolgt erst nach expliziter Freigabe nach dem Muster: getestet → Delta prüfen → übernehmen → Smoke-Test → neuen stabilen Meilenstein setzen.
+- Stabile Referenz bleibt `stable-server1-2026-10-01`.
+- Policy-Commit: `a07e7e5ec52aa716a02d64d2062a5038d06ccdcc`.
