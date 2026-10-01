@@ -42,7 +42,8 @@
   }
   function schedule(force=false){
     clearTimeout(writeTimer);
-    writeTimer=setTimeout(()=>void writeNow(force),force?0:180);
+    if(force){queueMicrotask(()=>void writeNow(true));return}
+    writeTimer=setTimeout(()=>void writeNow(false),180);
   }
 
   /* A public profile response may be slightly older than the just-confirmed PvP RPC.
@@ -98,5 +99,5 @@
 
   window.vPvpBudsHallSync=writeNow;
   window.vPvpBudsHallDiagnostics=()=>({local:stats(),lastMirrored:lastJson,ownId:ownId(),busy:writeBusy});
-  window.addEventListener('growlegends:account-ready',()=>setTimeout(()=>schedule(true),250));
+  window.addEventListener('growlegends:account-ready',()=>queueMicrotask(()=>schedule(true)));
 })();
