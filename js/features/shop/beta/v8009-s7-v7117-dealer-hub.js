@@ -9,6 +9,7 @@ function hubHtml(active){
    <div class="v7117-tabs">
      <button type="button" class="v7117-tab ${active==='harz'?'active':''}" data-v7117-tab="harz">💎 Harz-Taler</button>
      <button type="button" class="v7117-tab ${active==='gold'?'active':''}" data-v7117-tab="gold">🪙 Gold</button>
+     <button type="button" class="v7117-tab ${active==='frames'?'active':''}" data-v7117-tab="frames">🖼️ Avatar-Rahmen</button>
    </div>
  </div>`;
 }
@@ -50,16 +51,24 @@ function sync(){
  renameMenu();
  ensureLegalFooter();
 }
-function openHarz(){try{return v032Go('harzDealer')}catch(_){sync();return true}}
-function openGold(){
+function closeFrames(){document.getElementById('harzDealer')?.classList.remove('v7137-frames-open')}
+function openHarz(){closeFrames();try{return v032Go('harzDealer')}catch(_){sync();return true}}
+function openGold(){closeFrames();
  try{if(typeof window.v7114OpenGoldShop==='function')return window.v7114OpenGoldShop()}catch(_){}
  try{return v032Go('goldShop')}catch(_){sync();return true}
+}
+
+function openFrames(){
+ try{if(typeof window.v7137OpenFrameShop==='function')return window.v7137OpenFrameShop()}catch(_){}
+ return openHarz();
 }
 
 document.addEventListener('click',e=>{
  const b=e.target?.closest?.('[data-v7117-tab]');if(!b)return;
  e.preventDefault();e.stopPropagation();
- if(b.dataset.v7117Tab==='gold')openGold();else openHarz();
+ if(b.dataset.v7117Tab==='gold')openGold();
+ else if(b.dataset.v7117Tab==='frames')openFrames();
+ else openHarz();
 },true);
 
 /* V8.009: navigation lifecycle is sufficient; no v032InstallMenu wrapper. */
@@ -69,7 +78,7 @@ window.addEventListener('pageshow',sync,{passive:true});
 document.addEventListener('DOMContentLoaded',sync,{once:true});
 
 window.v7117DealerHubSync=sync;
-window.v7117OpenDealerTab=tab=>tab==='gold'?openGold():openHarz();
+window.v7117OpenDealerTab=tab=>tab==='gold'?openGold():tab==='frames'?openFrames():openHarz();
 window.v7117DealerDiagnostics=()=>({
   release:window.__GROW_LEGENDS_RELEASE__||'',
   harzHub:!!document.querySelector('#harzDealer > .v7117-dealer-hub'),
