@@ -1,0 +1,64 @@
+(()=>{
+ 'use strict';
+ const VERSION='V4.103 Stable',SHORT='V4.103';
+ const SLOT_LABEL={weapon:'Waffe',head:'Kopf',body:'Körper',chest:'Brust',hands:'Hände',legs:'Beine',boots:'Schuhe',feet:'Füße',ring:'Ring',amulet:'Amulett',offhand:'Nebenhand'};
+ const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+ const clean=v=>String(v||'Item').replace(/^(Normal|Gewöhnlich|Rare|Selten|Episch|Legendär|Mystisch|Prismatisch):\s*/i,'').trim();
+ function prism(it){return !!(it&&(it.v488Prismatic===true||String(it.quality||'').toLowerCase()==='prismatic'||/prismatic/i.test(String(it.rarity||''))))}
+ function qkey(it){if(prism(it))return'prismatic';try{return v240QualityKey(it)}catch(e){}const x=(String(it?.quality||'')+' '+String(it?.rarity||'')).toLowerCase();if(/cyan|myst|myth/.test(x))return'cyan';if(/orange|legend/.test(x))return'orange';if(/purple|epic/.test(x))return'purple';if(/blue|rare/.test(x))return'blue';if(/green|uncommon/.test(x))return'green';return'gray'}
+ function qlabel(it){if(prism(it))return'Prismatisch';try{return v240QualityLabel(it)}catch(e){}return{gray:'Normal',green:'Gewöhnlich',blue:'Selten',purple:'Episch',orange:'Legendär',cyan:'Mystisch'}[qkey(it)]||'Normal'}
+ function art(it){let u='';try{u=typeof window.v466ItemArtUri==='function'?window.v466ItemArtUri(it):''}catch(e){}return u?`<img class="v466-item-art" src="${u}" alt="${esc(clean(it?.name))}">`:`<span class="v4103-item-fallback">${esc(it?.icon||'🎁')}</span>`}
+ function baseStats(it){try{if(typeof v123BaseBonusText==='function')return v123BaseBonusText(it)}catch(e){}const map={staerke:'Stärke',geschick:'Geschick',intelligenz:'Intelligenz',ausdauer:'Ausdauer',glueck:'Glück'};return Object.entries(it?.bonus||{}).filter(([,v])=>Number(v)).map(([k,v])=>`${Number(v)>=0?'+':''}${Math.round(Number(v))} ${map[k]||k}`).join(' · ')||'Keine Grundwerte'}
+ function gemText(g){if(!g)return'';if(typeof g==='string')return g;let stat=g.stat||'';try{if(typeof v030StatLabel==='function')stat=v030StatLabel(stat)}catch(e){}return `${g.name||g.label||'Edelstein'}${Number(g.value)?` · +${g.value} ${stat}`:''}`}
+ function enchText(e){if(!e)return'';if(typeof e==='string')return e;let val='';try{if(typeof v030EffectLabel==='function')val=v030EffectLabel(e.effect,e.value)}catch(_){}return `${e.name||e.label||'Verzauberung'}${val?` · ${val}`:''}`}
+ function specialText(it){try{if(typeof v296MysticSpecialText==='function'&&it?.mysticSpecial)return v296MysticSpecialText(it)}catch(e){}try{if(typeof v299PublicMysticSpecial==='function')return v299PublicMysticSpecial(it)}catch(e){}const sp=it?.mysticSpecial||it?.mystic_special||it?.special;if(!sp)return'';return typeof sp==='string'?sp:String(sp.label||sp.name||'Mystischer Spezialeffekt')}
+ function renderItem(it,opt={}){
+  if(!it)return'';const q=qkey(it),slot=opt.slot||it.slot||'',lvl=Math.max(1,Math.min(300,Math.floor(Number(it.dropLevel||opt.level||0)||1))),e=it.enchant||(Array.isArray(it.enchants)?it.enchants[0]:null),sp=specialText(it),ctx=opt.context||'generic';
+  return `<div class="v4103-item-card ${prism(it)?'v4103-prismatic':''} ${opt.extraClass||''}" data-v4103-item-current="1" data-v4103-item-context="${esc(ctx)}" data-v4103-quality="${esc(q==='prismatic'?'prismatic':q)}"><div class="v4103-item-slot">${esc(SLOT_LABEL[slot]||slot||'Gegenstand')}</div><div class="v4103-item-head"><div class="v4103-item-art">${art(it)}</div><div><div class="v4103-item-name">${esc(it.name||'Gegenstand')}</div><div class="v4103-item-rarity">${esc(qlabel(it))}</div><div class="v4103-item-meta">Lv. ${lvl}${it.classId?` · ${esc(typeof classLabel==='function'?classLabel(it.classId):it.classId)}`:''}</div></div></div><div class="v4103-item-stats">${esc(baseStats(it))}</div><div class="v4103-item-upgrades">${it.gem?`<div class="v4103-item-chip gem">💎 ${esc(gemText(it.gem))}</div>`:''}${e?`<div class="v4103-item-chip enchant">📜 ${esc(enchText(e))}</div>`:''}${it.setName?`<div class="v4103-item-chip">◆ ${esc(it.setName)}-Set</div>`:''}${sp?`<div class="v4103-item-chip special">✨ ${esc(sp)}</div>`:''}${prism(it)?`<div class="v4103-item-chip prism">🌈 Prismatisch${it.v488Bound?' · gebunden':''}</div>`:''}</div></div>`;
+ }
+ window.v4103RenderItemCard=renderItem;
+ window.v4103ItemQuality=qkey;
+
+ /* Public profiles must preserve exactly the fields required by the modern renderer. */
+ v074SafeEquipment=function(){const out={};Object.entries(s.equipment||{}).forEach(([slot,it])=>{if(!it)return;out[slot]={name:String(it.name||'Gegenstand').slice(0,120),icon:String(it.icon||'🎁').slice(0,24),slot:String(it.slot||slot).slice(0,24),classId:it.classId||null,quality:String(it.quality||'gray').slice(0,30),rarity:String(it.rarity||'').slice(0,40),dropLevel:Number(it.dropLevel)||null,bonus:{...(it.bonus||{})},gem:it.gem||null,enchant:it.enchant||(Array.isArray(it.enchants)?it.enchants[0]:null),setName:it.setName||null,mysticSpecial:it.mysticSpecial||it.mystic_special||it.special||null,v488Prismatic:it.v488Prismatic===true,v488EssencePct:Number(it.v488EssencePct)||0,v488Bound:it.v488Bound===true};});return out};
+ v074EquipmentHtml=function(eq){const entries=Object.entries(eq||{}).filter(([,it])=>!!it);if(!entries.length)return'<div class="v072-empty">Keine Ausrüstung sichtbar.</div>';return `<div class="v4103-profile-equipment">${entries.map(([slot,it])=>renderItem({...it,slot:it.slot||slot},{slot,context:'player-profile'})).join('')}</div>`};
+ try{window.v074SafeEquipment=v074SafeEquipment;window.v074EquipmentHtml=v074EquipmentHtml}catch(e){}
+
+ /* Quest and dungeon item rewards share the exact same item presentation. */
+ if(typeof v240ItemRewardHtml==='function'&&!window.__v4103RewardRenderer){v240ItemRewardHtml=function(it){return renderItem(it,{slot:it?.slot,context:'reward',extraClass:'v240-loot-item'});};try{window.v240ItemRewardHtml=v240ItemRewardHtml}catch(e){}window.__v4103RewardRenderer=true}
+
+ function markCard(card,it,ctx){if(!card||!it)return;card.dataset.v4103ItemCurrent='1';card.dataset.v4103ItemContext=ctx;card.dataset.v4103Quality=qkey(it)}
+ function putArt(box,it,forge=false){if(!box||!it)return;let u='';try{u=window.v466ItemArtUri?.(it)||''}catch(e){}if(!u)return;let img=box.querySelector(':scope > img.v466-item-art');if(!img){img=document.createElement('img');img.className='v466-item-art';box.replaceChildren(img)}img.src=u;img.alt=clean(it.name);if(forge)box.classList.add('v4103-forge-art')}
+ function decorate(){
+  const relevant=!!document.querySelector('#character.active,#shop.active,#forge.active,#harzForge.active,#v488Forge.active,#v074ProfileContent:not(:empty)');if(!relevant)return;
+  try{document.querySelectorAll('#character #inventory .inventory-grid > .inv-item').forEach((c,i)=>{const it=s.inventory?.[i];if(it){markCard(c,it,'inventory');putArt(c.querySelector('.v459-inv-icon'),it)}})}catch(e){}
+  try{Object.entries(s.equipment||{}).forEach(([slot,it])=>{const c=document.getElementById('slot-'+slot);if(c&&it){markCard(c,it,'equipment');putArt(c.querySelector('.slot-icon'),it)}})}catch(e){}
+  try{document.querySelectorAll('#v057WeaponGrid .shop-item').forEach((c,i)=>{const it=s.weaponShop?.[i];if(it){markCard(c,it,'weapon-shop');putArt(c.querySelector('.shop-icon,.v41-shop-icon'),it)}});document.querySelectorAll('#v057MagicGrid .shop-item').forEach((c,i)=>{const it=s.magicShop?.[i];if(it){markCard(c,it,'magic-shop');putArt(c.querySelector('.shop-icon,.v41-shop-icon'),it)}})}catch(e){}
+  try{document.querySelectorAll('#character #v030Materials .inventory-grid > .inv-item').forEach((c,i)=>{const it=s.materials?.[i];if(it)markCard(c,it,'materials')})}catch(e){}
+  try{document.querySelectorAll('#v488ForgeInventory [data-v488-key]').forEach(c=>{const key=String(c.dataset.v488Key||''),it=(s.inventory||[]).find(x=>String(x?.id||'')===key);if(it){markCard(c,it,'forge');const box=c.querySelector('.ico');if(box)putArt(box,it,true)}})}catch(e){}
+  try{document.querySelectorAll('.v240-loot-item[data-v4103-item-current="1"],#v074ProfileContent .v4103-item-card').forEach(c=>c.dataset.v4103ItemCurrent='1')}catch(e){}
+ }
+ window.v4103DecorateItemSurfaces=decorate;
+
+ /* Day-7 login reward: once the item has been credited to inventory, replace the text-only reveal with the same current card. */
+ let loginBusy=false;
+ function upgradeLoginReveal(){if(loginBusy)return;const box=document.getElementById('v484Reveal');if(!box||!box.classList.contains('show')||box.querySelector('[data-v4103-item-current="1"]'))return;const title=String(box.querySelector('h3')?.textContent||'').trim();if(!title)return;const it=[...(s.inventory||[])].reverse().find(x=>String(x?.name||'').trim()===title);if(!it)return;loginBusy=true;try{box.innerHTML=renderItem(it,{slot:it.slot,context:'daily-login'})}finally{loginBusy=false}}
+
+ let queued=0;function queueDecorate(){if(queued)return;queued=requestAnimationFrame(()=>{queued=0;decorate();upgradeLoginReveal()})}
+ try{if(typeof render==='function'&&!window.__v4103Render){const base=render;render=function(){const r=base.apply(this,arguments);queueDecorate();return r};try{window.render=render}catch(e){}window.__v4103Render=true}}catch(e){}
+ try{if(typeof renderInventory==='function'&&!window.__v4103Inventory){const base=renderInventory;renderInventory=function(){const r=base.apply(this,arguments);queueDecorate();return r};try{window.renderInventory=renderInventory}catch(e){}window.__v4103Inventory=true}}catch(e){}
+ try{if(typeof renderShop==='function'&&!window.__v4103Shop){const base=renderShop;renderShop=function(){const r=base.apply(this,arguments);queueDecorate();return r};try{window.renderShop=renderShop}catch(e){}window.__v4103Shop=true}}catch(e){}
+ /* V6.97: body-wide item observer retired; render hooks remain. */
+
+ /* Runtime UI audit: a visible known item surface may never silently fall back to legacy art. */
+ function runtimeAudit(){decorate();const bad=[];const check=(sel,name)=>{const a=[...document.querySelectorAll(sel)].filter(x=>x.offsetParent!==null);a.forEach(x=>{if(x.dataset.v4103ItemCurrent!=='1')bad.push(name)})};check('#character #inventory .inventory-grid > .inv-item','Inventar');check('#shop .shop-item','Händler');check('#v488ForgeInventory [data-v488-key]','Harzschmiede');check('#v074ProfileContent .v4103-item-card','Spielerprofil');if(bad.length){try{const uid=String((typeof v073User!=='undefined'&&v073User?.id)||s?.__accountOwnerId||'local'),k='growLegendsQA:v4103:'+uid+':runtime',a=JSON.parse(localStorage.getItem(k)||'[]');const detail='Legacy Itemdarstellung erkannt: '+[...new Set(bad)].join(', ');if(!a.some(x=>x.code==='LEGACY_ITEM_RENDERER'&&x.detail===detail&&Date.now()-Number(x.at||0)<15000)){a.push({at:Date.now(),code:'LEGACY_ITEM_RENDERER',detail,severity:'error'});while(a.length>40)a.shift();localStorage.setItem(k,JSON.stringify(a))}}catch(e){}}return bad}
+ window.v4103AuditItemUi=runtimeAudit;
+
+ function stamp(){}
+ decorate();upgradeLoginReveal();stamp();
+ document.addEventListener('DOMContentLoaded',()=>{decorate();upgradeLoginReveal();stamp()},{once:true});
+ window.addEventListener('growlegends:account-ready',()=>{decorate();upgradeLoginReveal();stamp()},{passive:true});
+ window.addEventListener('growlegends:navigation-open-v7119',e=>{const id=String(e?.detail?.id||'');if(id==='character'||id==='shop'||id==='forge'||id==='harzForge'){decorate();upgradeLoginReveal();stamp()}},{passive:true});
+ window.addEventListener('pageshow',()=>{decorate();upgradeLoginReveal();stamp()},{passive:true});
+ document.addEventListener('visibilitychange',()=>{if(!document.hidden){decorate();runtimeAudit();upgradeLoginReveal();stamp()}},{passive:true});
+})();
