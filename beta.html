@@ -54154,16 +54154,10 @@ create index if not exists player_messages_sender_idx on public.player_messages(
     window.__v438WorldBossRefreshWrapped=true;
   }
 
-  if(typeof v032Go==='function'&&!window.__v438HallGoWrapped){
-    const base=v032Go;
-    v032Go=function(id){
-      const r=base.apply(this,arguments);
-      if(id==='hall')setTimeout(async()=>{await writeLiveHall(true);repaintHall()},0);
-      return r;
-    };
-    try{window.v032Go=v032Go}catch(e){}
-    window.__v438HallGoWrapped=true;
-  }
+  window.addEventListener('growlegends:navigation-open-v7119',e=>{
+    if(String(e?.detail?.id||'')==='hall')void (async()=>{await writeLiveHall(true);repaintHall()})();
+  },{passive:true});
+  window.__v438HallGoWrapped='v7119-event';
 
   function stamp(){}
 
@@ -55052,18 +55046,12 @@ create index if not exists player_messages_sender_idx on public.player_messages(
     window.__v446RenderWrapped=true;
   }
 
-  if(typeof v032Go==='function'&&!window.__v446GoWrapped){
-    const baseGo=v032Go;
-    v032Go=function(id){
-      const r=baseGo.apply(this,arguments);
-      requestAnimationFrame(paintLocalPower);
-      setTimeout(paintLocalPower,80);
-      if(['hall','pvp','guild','friends','character','world'].includes(String(id||'')))scheduleSync(false);
-      return r;
-    };
-    try{window.v032Go=v032Go}catch(e){}
-    window.__v446GoWrapped=true;
-  }
+  window.addEventListener('growlegends:navigation-open-v7119',e=>{
+    const id=String(e?.detail?.id||'');
+    paintLocalPower();
+    if(['hall','pvp','guild','friends','character','world'].includes(id))scheduleSync(false);
+  },{passive:true});
+  window.__v446GoWrapped='v7119-event';
 
   if(typeof v110Refresh==='function'&&!window.__v446WorldbossWrapped){
     const baseRefresh=v110Refresh;
@@ -56724,8 +56712,8 @@ normalize();
   window.v457RenderEndgame=renderEndgame;window.renderEndgame=renderEndgame;window.v457EndgameEnemy=enemy;window.v457EndgameUnlocked=unlocked;
   try{if(typeof render==='function'&&!window.__v457RenderWrapped){const base=render;render=function(){const r=base.apply(this,arguments);install();return r};window.render=render;window.__v457RenderWrapped=true}}catch(e){}
   try{if(typeof v075ApplyCloudSave==='function'&&!window.__v457CloudWrapped){const base=v075ApplyCloudSave;v075ApplyCloudSave=function(){const r=base.apply(this,arguments);if(r&&typeof r.then==='function')return r.then(x=>{install();return x});install();return r};window.v075ApplyCloudSave=v075ApplyCloudSave;window.__v457CloudWrapped=true}}catch(e){}
-  try{if(typeof v032Go==='function'&&!window.__v457GoWrapped){const base=v032Go;v032Go=function(id){const r=base.apply(this,arguments);if(id==='endgame')renderEndgame();else if(id==='world')ensureWorldLink();ensureMenu();stamp();return r};window.v032Go=v032Go;window.__v457GoWrapped=true}}catch(e){}
-  install();document.addEventListener('DOMContentLoaded',install,{once:true});window.addEventListener('pageshow',install,{passive:true});[250,900,2200,5200].forEach(ms=>setTimeout(install,ms));setTimeout(stamp,350); /* V4.123: removed useless late clear of already-fired one-shot timeout. */
+  window.addEventListener('growlegends:navigation-open-v7119',e=>{const id=String(e?.detail?.id||'');if(id==='endgame')renderEndgame();else if(id==='world')ensureWorldLink();ensureMenu();stamp()},{passive:true});window.__v457GoWrapped='v7119-event';
+  install();document.addEventListener('DOMContentLoaded',install,{once:true});window.addEventListener('pageshow',install,{passive:true});window.addEventListener('growlegends:account-ready',install,{passive:true});
 })();
 </script>
 
