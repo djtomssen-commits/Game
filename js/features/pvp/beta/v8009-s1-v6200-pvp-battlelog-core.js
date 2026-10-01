@@ -118,7 +118,8 @@ try{
  }
 }catch(e){console.warn('V6.200 finish hook',e)}
 /* Mail opening and tab badge refresh. */
-document.addEventListener('click',e=>{const t=e.target?.closest?.('[data-v381-tab="battlelog"]');if(t)void load()},true);
+/* v381 is the canonical mail-tab owner and invokes v6200LoadBattleLog when
+   the Battlelog tab is selected. Keep only mail-entry/badge refresh here. */
 window.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')==='mail')void load()},{passive:true});
 queueMicrotask(()=>{ensurePanel();if(document.getElementById('mail')?.classList.contains('active'))void load()});
 setInterval(()=>{if(!document.hidden&&document.getElementById('mail')?.classList.contains('active'))load()},60000);
