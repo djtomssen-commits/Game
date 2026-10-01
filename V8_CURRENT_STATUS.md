@@ -2164,3 +2164,22 @@ Arbeitsmodus:
 - v420 Level-Up-Owner blieb vollständig unangetastet.
 - QA `V8009_FINAL_BIG_BATCH16_QA.json`: grün.
 - Stable / `index.html`: unverändert.
+
+
+#### Big Batch 17
+- v438 Hall-Live:
+  - eigenen globalen `v032Go`-Wrapper entfernt;
+  - Hall-Open-Sync läuft jetzt über Shared `growlegends:navigation-open-v7119`;
+  - `writeLiveHall(true)` + sichtbarer Hall-Repaint bleiben erhalten.
+- v446 Local-Power:
+  - eigenen globalen `v032Go`-Wrapper entfernt;
+  - Shared-v7119 repaintet direkt;
+  - bestehende Sync-Semantik für `hall/pvp/guild/friends/character/world` bleibt vollständig erhalten.
+- v457 Endgame:
+  - eigenen globalen `v032Go`-Wrapper entfernt;
+  - 250/900/2200/5200-ms Install-Startup-Zug + 350-ms Stamp-Fallback entfernt;
+  - direkte Shared-v7119-/DOMContentLoaded/pageshow/account-ready-Hooks übernehmen;
+  - Endgame-Kampflogik und Combat-Timer unverändert.
+- v467 Dungeon-Navigation wurde bewusst noch nicht verändert; Rebuild-/Unlock-Recovery wird separat geprüft.
+- QA `V8009_FINAL_BIG_BATCH17_QA.json`: grün.
+- Stable / `index.html`: unverändert.
