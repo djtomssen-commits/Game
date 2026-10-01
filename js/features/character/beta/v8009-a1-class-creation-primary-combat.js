@@ -264,38 +264,7 @@ function v029InstallFightHandler(){
   };
 }
 
-/* --- Wrap render: Intelligence row + UI cleanup + fight handler --- */
-const v029BaseRender = render;
-render = function(){
-  v029BaseRender();
+/* V8.009: retired the historical global render wrapper and eager render.
+   Modern Character owners render attributes/class UI; canonical Dungeon owners
+   own fight-button binding. v029 primary-stat/item helpers remain available. */
 
-  const attrs = document.querySelector('#attrs');
-  if(attrs){
-    const list = [
-      ['staerke','💪 Stärke'],
-      ['geschick','🎯 Geschick'],
-      ['intelligenz','🧠 Intelligenz'],
-      ['ausdauer','❤️ Ausdauer'],
-      ['glueck','🍀 Glück'],
-
-    ];
-    attrs.innerHTML = list.map(([k,n]) =>
-      `<div class="attr"><span>${n}: <b>${totalAttr(k)}</b></span><button onclick="incAttr('${k}')" ${s.points<1?'disabled':''}>+</button></div>`
-    ).join('');
-  }
-
-  v029RemoveClassPicker();
-  v029MoveReset();
-  v029InstallFightHandler();
-  if(!s.playerClass && window.__V200_AUTH_READY__) v029ShowClassChoice();
-};
-
-/* --- Initial --- */
-try{
-  v029RemoveClassPicker();
-  v029MoveReset();
-  if(!s.playerClass && window.__V200_AUTH_READY__) v029ShowClassChoice();
-  render();
-}catch(e){
-  console.error('V4.02 init',e);
-}
