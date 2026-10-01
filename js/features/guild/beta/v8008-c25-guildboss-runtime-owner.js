@@ -75,7 +75,7 @@ const v260BossClock=setInterval(async()=>{
   else v260RenderDailyControls();
 },30000);
 
-setTimeout(()=>v260RenderDailyControls(),900);
+v260RenderDailyControls();
 
 /* V8.008-C12 — late compatibility bridge.
    Installed at the original V4.118 script position so QA/grow-care timing and
@@ -100,10 +100,10 @@ window.v8008C12InstallLateBridge=function(){
  }
  stamp();qaWrap();refreshBoss();
  /* V6.319: one settle pass is enough; later guild/grow renders have explicit hooks. */
- [650].forEach(ms=>setTimeout(()=>{stamp();qaWrap();refreshBoss();try{window.v4114DecorateCareSlots?.()}catch(e){}},ms));
+ queueMicrotask(()=>{stamp();qaWrap();refreshBoss();try{window.v4114DecorateCareSlots?.()}catch(e){}});
  /* V4.123: periodic version stamp retired. */
  document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();refreshBoss()}},{passive:true});
- window.addEventListener('pageshow',()=>{stamp();setTimeout(refreshBoss,100)},{passive:true});
+ window.addEventListener('pageshow',()=>{stamp();queueMicrotask(refreshBoss)},{passive:true});
 };
 
 /* V8.008-C25 — deferred guild boss reliability layer. */
@@ -252,7 +252,7 @@ window.v8008C25InstallReliability=function(){
      if(typeof v254Membership!=='undefined'&&v254Membership?.guild_id){
        /* V7.184: first paint of the guild must not wait for boss + war.
           They refresh just after the core guild screen is visible. */
-       const later=()=>setTimeout(()=>void refreshSubsystems('guild-load-bg'),350);
+       const later=()=>queueMicrotask(()=>void refreshSubsystems('guild-load-bg'));
        if(typeof requestAnimationFrame==='function')requestAnimationFrame(later);else later();
      }else{state.stage=null;state.stageError='';}
      return r;
@@ -263,7 +263,7 @@ window.v8008C25InstallReliability=function(){
  document.addEventListener('click',e=>{
    const b=e.target?.closest?.('[data-v254-tab]');if(!b)return;
    const tab=String(b.dataset.v254Tab||'');
-   if(tab==='boss')setTimeout(async()=>{
+   if(tab==='boss')queueMicrotask(async()=>{
      try{
        /* V6.208: Boss-Tab refreshes only the boss subsystem. Do not load/render
           guild war in the background just because the boss tab was opened. */
@@ -276,8 +276,8 @@ window.v8008C25InstallReliability=function(){
        if(Date.now()-Number(state.stageAt||0)>15000)await loadStage();
        paintBossProgress();
      }catch(err){state.issues.push('Gildenboss-Tab: '+String(err?.message||err))}
-   },0);
-   if(tab==='war')setTimeout(async()=>{try{await v262LoadWar?.();state.lastWarAt=Date.now();v262RenderWar?.()}catch(err){state.issues.push('Gildenkrieg-Tab: '+String(err?.message||err))}},0);
+   });
+   if(tab==='war')queueMicrotask(async()=>{try{await v262LoadWar?.();state.lastWarAt=Date.now();v262RenderWar?.()}catch(err){state.issues.push('Gildenkrieg-Tab: '+String(err?.message||err))});
  },true);
  /* Boss reward already calls v254LoadGuild() and v255LoadBoss(); the final loader above now refreshes the stage too. */
  function health(){
@@ -316,10 +316,10 @@ window.v8008C25InstallReliability=function(){
  }
  function stamp(){}
  installQA();stamp();
- setTimeout(()=>{installQA();stamp();if(document.getElementById('guild')?.classList.contains('active'))v254LoadGuild?.()},500);
+ queueMicrotask(()=>{installQA();stamp();if(document.getElementById('guild')?.classList.contains('active'))v254LoadGuild?.()});
  /* V6.319: QA wrapper is installed immediately; keep one delayed settle check. */
- [1800].forEach(ms=>setTimeout(()=>{installQA();stamp()},ms));
- window.addEventListener('pageshow',()=>{stamp();installQA();if(document.getElementById('guild')?.classList.contains('active'))setTimeout(()=>v254LoadGuild?.(),120)},{passive:true});
+ queueMicrotask(()=>{installQA();stamp()});
+ window.addEventListener('pageshow',()=>{stamp();installQA();if(document.getElementById('guild')?.classList.contains('active'))queueMicrotask(()=>v254LoadGuild?.())},{passive:true});
 })();
 };
 
