@@ -126,11 +126,6 @@ function v309PaintQuestRoles(){
 v309EnsureCurrentOffers();
 
 window.v309PrepareQuestRender=v309EnsureCurrentOffers;
-window.v309ScheduleQuestRolePaint=()=>requestAnimationFrame(v309PaintQuestRoles);
-
-/* Keep rerolled/new offers visibly different immediately. */
-setTimeout(()=>{
- try{v309EnsureCurrentOffers();requestAnimationFrame(v309PaintQuestRoles)}catch(e){}
- /* V7.151: no second startup full render. */
- const line=document.querySelector('#v141VersionLine');
-},250);
+window.v309PaintQuestRoles=v309PaintQuestRoles;
+/* V8.009: v6344 owns the canonical Quest render lifecycle.
+   Role badges are painted directly there; no RAF/startup repaint remains. */
