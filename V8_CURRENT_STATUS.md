@@ -1564,3 +1564,55 @@ Der nächste fachliche Schritt ist **nicht HOME-32**, sondern die Restinventur d
 - Kanonischer Quest-Kampf-Owner bleibt `v636`.
 - Stable / `index.html`: unverändert.
 - Nächster Block: `v099` + `v310` Local/Mirror-Claim-/Elite-Wrapper gezielt entkoppeln, ohne XP-Event, Elite-Chance oder Elite-Garantien zu verändern.
+
+
+### v099/v310 Local-Mirror-Kette + Reward-Art weiter konsolidiert 01.10.2026
+
+- `v310-elite-quests.js`:
+  - Commit `22a5153e6295d00081c0979fd7bfd1b547cf8b84`;
+  - `claimQuest`-Wrapper vollständig entfernt;
+  - neue direkte Hooks:
+    - `v310BeginQuestClaim()`: öffnet ausschließlich beim bereiten Local/Mirror-Claim das automatische Elite-Roll-Fenster;
+    - `v310FinishQuestClaim(active,paid)`: vergibt bei erfolgreicher Elite-Quest weiterhin garantiert 1–3 Harz-Taler + Blau/Episch-Item und schließt/resetet das Roll-Fenster.
+  - Elite-Chance bleibt exakt `0.06` (6 %);
+  - `makeQuest`-Generatorfenster / Anti-Reroll-Semantik unverändert;
+  - verzögerter 300-ms-/RAF-Startup-Paint entfernt; Painter nur noch exportiert.
+- `v235-quest-reward-stability.js`:
+  - Commit `d37da59f1d1723e9b910eb03bc9fddcdf5f8b5ca`;
+  - tatsächlicher Local/Mirror-Claim-Owner ruft v310 Begin/Finish direkt um den Claim herum auf;
+  - v310 Finish läuft vor v4222 Post-Claim.
+- QA:
+  - `V8009_QUEST_V310_DIRECT_HOOK_QA.json`
+  - Bot-Commit `5a7f247a1c22c7afa0a13b8537c597cc6ed20f3d`
+  - grün.
+
+- `v099-real-quest-xp-fix.js`:
+  - Commit `879e87c4389298214241bd7680597ce5e1fca7e6`;
+  - Local/Mirror-`claimQuest`-Basis bleibt unverändert;
+  - globaler `render`-Wrapper entfernt;
+  - documentweiter Click + 40-ms-XP-Repaint entfernt;
+  - XP-Event-Painter als `v099PaintQuestXp` exportiert.
+- `v6344-quest-variety-js.js`:
+  - Commit `3f18dae57c0774263428ed143faa56f734239b88`;
+  - kanonischer Quest-Renderer ruft `v099PaintQuestXp` direkt im Renderpfad auf.
+- Gemeinsame QA:
+  - `V8009_QUEST_V099_V310_QA.json`
+  - Bot-Commit `10a38e71bde2d41c5699b80d6bebdbc93ca70d08`
+  - grün.
+
+- `v4121-quest-reward-current-item.js`:
+  - Commit `9ee4380ec3ea64ca5eb0cffc6525b3ed2da8d594`;
+  - Reward-Art-Hook läuft jetzt synchron genau einmal;
+  - kein RAF und kein 60-ms-Retry mehr;
+  - Snapshot-/Item-Art-Auflösung unverändert;
+  - kanonischer Claim-Owner v7045 ruft den Hook weiterhin direkt.
+- QA:
+  - `V8009_QUEST_V4121_SYNC_ART_QA.json`
+  - alle Checks grün.
+- Stable / `index.html`: unverändert.
+- Aktuelle Local/Mirror-Verantwortung:
+  - `v099`: Basis-Payout (XP/Gold/Item/Angebote);
+  - `v310`: Elite-Roll-/Elite-Garantie über direkte Hooks, kein Claim-Wrapper;
+  - `v235`: finaler Local/Mirror-Claim-Transaktionsowner;
+  - `v240`: finaler lokaler Reward-Presenter;
+  - `v6344`: Quest-Renderer/UI-Paints.
