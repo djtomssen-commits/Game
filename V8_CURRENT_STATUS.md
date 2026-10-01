@@ -1528,3 +1528,39 @@ Der nächste fachliche Schritt ist **nicht HOME-32**, sondern die Restinventur d
   - Bot-Output `V8009_QUEST_V4222_HOOK_QA.json` noch ausstehend zum Zeitpunkt dieser Statusnotiz.
 - Stable / `index.html`: unverändert.
 - Nach grüner QA nächster Check: normale Quest starten/claimen; falls eine Elite-Quest angeboten wird, muss sie weiterhin separat im Elite-Panel erscheinen und normale 3er-Auswahl unverändert bleiben.
+
+
+### Local/Mirror Claim + Quest Fight-Art weiter konsolidiert 01.10.2026
+
+- Später Owner erkannt:
+  - `v235-quest-reward-stability.js` überschreibt `v233ClaimQuest` später als v233 selbst und ist damit der tatsächliche Local/Mirror-Claim-Owner.
+- Commit `05109f744f282563c31acd1da256fde4f9aa44b7`:
+  - `v235` ruft `v4222AfterQuestClaim` direkt nach erfolgreichem Local/Mirror-Claim;
+  - dadurch ist die Elite-Nacharbeit auch beim tatsächlichen letzten Local-Claim-Owner abgesichert;
+  - alten Reward-RAF + 80-ms-Overlay-Retry aus v235 entfernt;
+  - alten 350-ms-Versionswriter aus v235 entfernt.
+- Commit `aa3685ab6a1be0902f57076b177cfa51def13d41`:
+  - `v240` finaler lokaler Reward-Presenter zeigt das Reward-Overlay nur noch einmal;
+  - RAF-/80-ms-Repaint entfernt;
+  - 440-ms-Startup-Inventar-/Versionswriter entfernt.
+- QA:
+  - `V8009_QUEST_LOCAL_CLAIM_OWNER_QA.json`
+  - Bot-Commit `2613570655eff24ed599f56a205ec3acd6c42370`
+  - alle Checks grün.
+
+- Fight-Art Owner Audit:
+  - `V8009_QUEST_FIGHT_ART_OWNER_AUDIT.json`
+  - Bot-Commit `96883bc7f0dd4dd9a535a63df35923032bd14c1e`
+  - bestätigt: `v636-quest-dungeon-authority-core.js` übernimmt später vollständig `v311PlayFight`, Quest-Kampfarena, Gegnername und Gegnerbild.
+  - `v626` und `v627` waren danach nur noch historische Nachmal-/Preview-Layer.
+- Retired:
+  - `v626` Commit `3615b29b0f6fb0df2518a81cd10a508ecbd929ff`
+  - `v627` Commit `a32aae6212fc13c26f26d20d69f4782e91a4aa10`
+  - zusammen entfernt: alter v311PlayFight-Wrapper, Preview-Wrapper, 6 Timer und 4 RAF-Repaints.
+- Fight-Art QA:
+  - `V8009_QUEST_FIGHT_ART_RETIRE_QA.json`
+  - Bot-Commit `352e86d4b6a9e6b2f959900da74aca7708d07d57`
+  - alle Checks grün.
+- Kanonischer Quest-Kampf-Owner bleibt `v636`.
+- Stable / `index.html`: unverändert.
+- Nächster Block: `v099` + `v310` Local/Mirror-Claim-/Elite-Wrapper gezielt entkoppeln, ohne XP-Event, Elite-Chance oder Elite-Garantien zu verändern.
