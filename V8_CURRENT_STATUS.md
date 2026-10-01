@@ -2887,3 +2887,23 @@ Arbeitsmodus:
 - Originale Script-Attribute, IDs und Reihenfolge beibehalten; nur um `src=` ergänzt.
 - QA `V8009_FEATURE_EXTRACTION_BATCH16_QA.json`: vollständig grün.
 - Stable / `index.html`: unverändert.
+
+
+#### Anonymous Extraction Batch 17
+- 11 große anonyme Legacy-Scripts ohne ursprüngliche Script-ID 1:1 aus `beta.html` ausgelagert:
+  - Legacy State Core
+  - Supabase Online System
+  - Inline Vector Game Art
+  - Class Creation / Primary Combat
+  - Shops / Gems / Enchants
+  - Unified Notification System
+  - Clean Dungeon State Machine
+  - Dungeon Progression Rebalance
+  - Dungeon Interaction Fixes
+  - Shop Stat Separation
+  - Clean Shop Core
+- Zusammen 177.918 Bytes Inline-JS aus dem Monolithen entfernt.
+- Anonyme Scripts bleiben ohne ID; Position und vorhandene Attribute wurden beibehalten, nur `src=` ergänzt.
+- Alle ausgelagerten Dateien per `node --check` geprüft.
+- QA `V8009_ANONYMOUS_EXTRACTION_BATCH17_QA.json`: vollständig grün.
+- Stable / `index.html`: unverändert.
