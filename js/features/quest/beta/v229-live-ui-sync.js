@@ -88,11 +88,11 @@ setInterval(()=>{
 
 /* Direct hooks used by the canonical Quest start/claim owners.
    No startQuest/claimQuest wrapper is installed here anymore. */
-window.v229QuestStartSync=()=>requestAnimationFrame(v229UpdateQuestTimer);
+window.v229QuestStartSync=()=>v229UpdateQuestTimer();
 window.v229QuestClaimSync=()=>{
   v229QuestTimerLastEnds=0;
   v229QuestTimerDonePainted=false;
-  requestAnimationFrame(v229UpdateQuestTimer);
+  v229UpdateQuestTimer();
 };
 
 
