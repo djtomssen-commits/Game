@@ -1,0 +1,23 @@
+name: V8.009 Screen Tab Coverage Audit
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/v8009_screen_tab_coverage_audit.py'
+      - '.github/workflows/v8009-screen-tab-coverage-audit.yml'
+permissions:
+  contents: write
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 .github/scripts/v8009_screen_tab_coverage_audit.py
+      - run: |
+          git config user.name github-actions
+          git config user.email github-actions@users.noreply.github.com
+          git add V8009_SCREEN_TAB_COVERAGE_AUDIT.json
+          git commit -m "V8.009 FINAL: record screen tab coverage audit" || exit 0
+          git pull --rebase origin main
+          git push
