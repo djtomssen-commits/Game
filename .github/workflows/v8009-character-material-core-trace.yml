@@ -1,0 +1,14 @@
+name: V8.009 Character Material Core Trace
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/v8009_character_material_core_trace.py'
+      - '.github/workflows/v8009-character-material-core-trace.yml'
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 .github/scripts/v8009_character_material_core_trace.py
