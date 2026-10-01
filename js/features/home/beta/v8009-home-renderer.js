@@ -113,7 +113,10 @@
   }
 
   function bossCardHtml(bossActive,bossFreeReady=true){
-    return `        <article class="v366-panel v366-feature boss ${bossActive?'v6115-boss-open':'v6115-boss-closed'}">
+    const bossAttrs=bossActive
+      ? ' data-boss="1" role="button" tabindex="0" aria-label="Mystischen Weltboss Smaragd-Koloss öffnen"'
+      : '';
+    return `        <article class="v366-panel v366-feature boss ${bossActive?'v6115-boss-open':'v6115-boss-closed'}"${bossAttrs}>
           <h2>Weltboss</h2>
           <div class="v366-feature-art v6118-boss-art">
             ${bossActive?`<span class="v6118-boss-live"><i></i> EVENT AKTIV</span>
@@ -138,8 +141,34 @@
         </article>`;
   }
 
+  function openWorldBoss(){
+    try{
+      if(typeof window.v111OpenWorldBoss==='function')return window.v111OpenWorldBoss();
+      if(typeof window.v110Open==='function')return window.v110Open();
+    }catch(e){
+      console.error('Startseite Weltboss öffnen fehlgeschlagen',e);
+      try{window.v063Toast?.('Weltboss-Fehler','error','Der Weltboss konnte nicht geöffnet werden.')}catch(_){}
+    }
+  }
   function bindBossButtons(root){
-    root.querySelectorAll('[data-boss]').forEach(b=>b.onclick=()=>{if(b.disabled)return;try{if(typeof v110Open==='function')v110Open()}catch(e){}});
+    root.querySelectorAll('.v366-feature.boss.v6115-boss-open').forEach(card=>{
+      card.onclick=e=>{
+        if(e.target instanceof Element && e.target.closest('button[data-boss]'))return;
+        openWorldBoss();
+      };
+      card.onkeydown=e=>{
+        if(e.key!=='Enter'&&e.key!==' ')return;
+        e.preventDefault();
+        openWorldBoss();
+      };
+    });
+    root.querySelectorAll('button[data-boss]').forEach(b=>{
+      b.onclick=e=>{
+        e.preventDefault();
+        e.stopPropagation();
+        if(!b.disabled)openWorldBoss();
+      };
+    });
   }
 
   function patchEventPanels(world,ev,bossActive,previousBossActive){
@@ -423,6 +452,12 @@
     return true;
   }
 
+  function notifyWorldRendered(mode){
+    try{
+      window.dispatchEvent(new CustomEvent('growlegends:home-rendered-v8009',{detail:{mode:String(mode||'render')}}));
+    }catch(e){}
+  }
+
   function installWorld(force){
     const world=document.querySelector('#world');
     if(!world)return false;
@@ -450,6 +485,7 @@
       if(ownedWorldClean(world,current)){diagnostics.cleanSignatureHits++;return}
       diagnostics.dirtySignatureRepairs++;
       finalizeOwnedWorld(world);
+      notifyWorldRendered('repair');
       return;
     }
     /* HOME-14: an event-only change updates its two panels and counter without
@@ -459,6 +495,7 @@
     if(current&&previous.length===sigParts.length&&sigParts.every((value,i)=>i===17||i===18||String(value??'')===previous[i])&&patchEventPanels(world,ev,bossActive,previous[17]==='true')){
       world.dataset.v366Sig=sig;
       finalizeOwnedWorld(world);
+      notifyWorldRendered('events');
       return;
     }
     world.dataset.v366Sig=sig;
@@ -471,6 +508,7 @@
     world.querySelectorAll('[data-book]').forEach(b=>b.onclick=()=>{try{if(typeof v106OpenBook==='function')v106OpenBook()}catch(e){}});
     world.querySelectorAll('[data-weekly-chest]').forEach(b=>b.onclick=e=>{e.preventDefault();e.stopPropagation();try{window.v6239OpenWeeklyChest?.()}catch(err){console.warn('V6.239 weekly chest open',err)}});
     finalizeOwnedWorld(world);
+    notifyWorldRendered('full');
   }
 
   window.v8009HomeEventDiagnostics=()=>({version:'V8.009-HOME-31',...diagnostics,events:events().map(x=>({...x})),worldBossActive:worldBossEventActive()});
