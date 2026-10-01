@@ -81,18 +81,6 @@ v026AddRefill=function(){
   v271PaintDampf();
 };
 
-const v284BaseRender=render;
-render=function(){
-  const r=v284BaseRender();
-  requestAnimationFrame(v271PaintDampf);
-  
-  const line=document.querySelector('#v141VersionLine');
-  return r;
-};
-
-setTimeout(v271PaintDampf,150);
-setTimeout(v271PaintDampf,650);
-setTimeout(v271PaintDampf,1500);
-
-
+/* V8.009: duplicate global render + 150/650/1500 ms repaint cascade retired.
+   v284 owns the Dampf card DOM; v294 owns the final paint lifecycle. */
 const v284Line=document.querySelector('#v141VersionLine');
