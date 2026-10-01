@@ -29,7 +29,6 @@
    }
    const bal=shell.querySelector('#v567Balance');if(bal)bal.textContent=Math.max(0,Number(s.harzTaler)||0).toLocaleString('de-DE');
  }
+ window.v567EnsureDealer=ensure;
  window.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')==='harzDealer')ensure()},{passive:true});
- const oldDealer=window.v322RenderDealer;if(typeof oldDealer==='function'&&!oldDealer.__v567Ensure){const wrapped=function(){const r=oldDealer.apply(this,arguments);ensure();return r};wrapped.__v567Ensure=true;window.v322RenderDealer=wrapped}
- ensure();
 })();
