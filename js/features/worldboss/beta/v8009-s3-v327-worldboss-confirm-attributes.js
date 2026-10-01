@@ -176,22 +176,22 @@
     return v327CanonicalFight.apply(this,arguments);
   };
 
-  /* Final cleanup after every old renderer has run. */
-  const v327BaseRender=render;
-  render=function(){
-    const r=v327BaseRender.apply(this,arguments);
+  /* V8.009 Worldboss powerblock: attribute migration no longer wraps the
+     global renderer. Clean only after account hydration and Character navigation. */
+  const v327CleanLegacyGrowSkill=()=>{
     try{
       if(s.attrs && 'growSkill' in s.attrs)delete s.attrs.growSkill;
       v327CleanAttributeUi();
     }catch(e){}
-    
-    const line=document.querySelector('#v141VersionLine');
-    return r;
   };
+  window.addEventListener('growlegends:account-ready',v327CleanLegacyGrowSkill,{passive:true});
+  window.addEventListener('growlegends:navigation-open-v7119',e=>{
+    if(String(e?.detail?.id||e?.detail?.screen||'')==='character')v327CleanLegacyGrowSkill();
+  },{passive:true});
 
   try{
     localStorage.setItem(KEY,JSON.stringify(s));
-    render();
+    v327CleanLegacyGrowSkill();
   }catch(e){console.error('V4.02 migration',e)}
-  setTimeout(v327EnsureConfirm,200);
+  /* Confirmation DOM is created lazily on the first paid retry. */
 })();
