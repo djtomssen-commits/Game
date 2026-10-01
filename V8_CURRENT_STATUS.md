@@ -2588,3 +2588,18 @@ Arbeitsmodus:
 - Alle drei externen Dateien mit `node --check` geprüft.
 - QA `V8009_GROW_FORGE_EXTRACTION_BATCH1_QA.json`: vollständig grün.
 - Stable / `index.html`: unverändert.
+
+
+#### Feature Extraction Batch 3
+- Sechs große Owner 1:1 aus `beta.html` ausgelagert:
+  - `v447-unified-item-balance` → `js/features/items/beta/v8009-s1-v447-unified-item-balance.js`
+  - `v608-animation-qa-core` → `js/features/system/beta/v8009-s3-v608-animation-qa-core.js`
+  - `v6226-talent-proc-core` → `js/features/talents/beta/v8009-s2-v6226-talent-proc-core.js`
+  - `v470-character-slot-art-canonical-comparison` → `js/features/character/beta/v8009-s4-v470-character-slot-art-canonical-comparison.js`
+  - `v465-item-art-script` → `js/features/items/beta/v8009-s1-v465-item-art-script.js`
+  - `v314-talent-tree` → `js/features/talents/beta/v8009-s2-v314-talent-tree.js`
+- Zusammen 84.847 Bytes Inline-JS aus dem Monolithen entfernt.
+- Originale Script-Attribute, IDs und Reihenfolge beibehalten; nur um `src=` ergänzt.
+- Alle sechs externen Dateien mit `node --check` geprüft.
+- QA `V8009_FEATURE_EXTRACTION_BATCH3_QA.json`: vollständig grün.
+- Stable / `index.html`: unverändert.
