@@ -2709,3 +2709,22 @@ Arbeitsmodus:
 - Alle zehn externen Dateien mit `node --check` geprüft.
 - QA `V8009_FEATURE_EXTRACTION_BATCH8_QA.json`: vollständig grün.
 - Stable / `index.html`: unverändert.
+
+
+#### Feature Extraction Batch 9
+- Zehn weitere große Owner 1:1 aus `beta.html` ausgelagert:
+  - `v106-illegal-book-script` → `js/features/book/beta/v8009-s2-v106-illegal-book.js`
+  - `v250-all-dungeon-key-progression` → `js/features/dungeon/beta/v8009-s6-v250-all-dungeon-key-progression.js`
+  - `v093-admin-script` → `js/features/admin/beta/v8009-s3-v093-admin-core.js`
+  - `v122-material-dialog-fix-script` → `js/features/materials/beta/v8009-s1-v122-material-dialog-fix.js`
+  - `v7062-server-item-action-bridge` → `js/features/authority/beta/v8009-s6-v7062-server-item-action-bridge.js`
+  - `v7070-authoritative-grow-hydration` → `js/features/grow/beta/v8009-s5-v7070-authoritative-grow-hydration.js`
+  - `v649-hall-dungeon-progress-fix` → `js/features/hall/beta/v8009-s1-v649-hall-dungeon-progress-fix.js`
+  - `v6252-register-popup` → `js/features/account/beta/v8009-s7-v6252-register-popup.js`
+  - `v546-materials-grow-legends-js` → `js/features/materials/beta/v8009-s1-v546-materials-grow-legends.js`
+  - `v423-item-progression-fix` → `js/features/items/beta/v8009-s5-v423-item-progression-fix.js`
+- Zusammen 88.312 Bytes Inline-JS aus dem Monolithen entfernt.
+- Originale Script-Attribute, IDs und Reihenfolge beibehalten; nur um `src=` ergänzt.
+- Alle zehn externen Dateien mit `node --check` geprüft.
+- QA `V8009_FEATURE_EXTRACTION_BATCH9_QA.json`: vollständig grün.
+- Stable / `index.html`: unverändert.
