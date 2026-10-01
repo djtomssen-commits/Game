@@ -45,6 +45,10 @@ for idv in ["v358Gold","v358Harz","v358Dampf","v358Power"]:
 harz_owner={"js/features/ui/beta/v8009-s11-v283-resource-final-cleanup.js"}
 contracts["harz_top_dynamic_single_owner"]=only("topHarz",harz_owner,1)
 
+settings_owner={"js/features/ui/beta/v8009-s3-v141-settings-menu.js"}
+for idv in ["v141AccountMail","v141CloudState","v141Logout","v141Delete","v141VersionLine"]:
+    contracts[f"settings_{idv}_single_owner"]=only(idv,settings_owner,1)
+
 wb_owner={"js/features/worldboss/beta/v8009-s5-v111-worldboss-visual-fix.js"}
 for idv in ["v110Overlay","v110Phase","v110BossHpTxt","v110BossHp","v110PlayerHpTxt","v110PlayerHp","v110Cp","v110Attempts","v110Log","v110Fight","v110Cost","v111BossScene"]:
     contracts[f"worldboss_{idv}_single_owner"]=only(idv,wb_owner,1)
