@@ -1,0 +1,30 @@
+{
+  "v4140-attribute-display-owner": {
+    "found": true,
+    "open": "<script id=\"v4140-attribute-display-owner\">",
+    "bytes": 3541,
+    "first": "\n(()=>{\n 'use strict';\n const V=window.GROW_LEGENDS_VERSION||{short:'V4.159',label:'V4.159 Stable'};\n const DEF=[\n  ['staerke','💪','Stärke','Erhöht deinen Schaden'],\n  ['geschick','🎯','Geschick','Erhöht Präzision und Tempo'],\n  ['intelligenz','🧠','Intelligenz','Erhöht Magieschaden'],\n  ['ausdauer','❤️','Ausdauer','Erhöht deine Lebenspunkte'],\n  ['glueck','🍀','Glück','Verbessert Krit-Chance & Beute']\n ];\n function primary(){try{return s?.playerClass==='scout'?'geschick':(s?.playerClass==='bruiser'||s?.playerClass==='summoner')?'intelligenz':'staerke'}catch(e){return'staerke'}}\n function value(k",
+    "last": "rTabs [data-tab=\"attributes\"]'))paint()},true);\n document.addEventListener('DOMContentLoaded',paint,{once:true});\n window.addEventListener('pageshow',paint,{passive:true});\n /* V8.009: startup retry train retired; direct lifecycle hooks are sufficient. */\n function stamp(){}\n stamp();paint();\n window.v4140AttributeDiagnostics=()=>{const rows=[...document.querySelectorAll('#attrs > [data-v4140-attr]')];return{version:V.short,rowCount:rows.length,keys:rows.map(x=>x.dataset.v4140Attr),duplicates:rows.length-new Set(rows.map(x=>x.dataset.v4140Attr)).size,primary:primary(),points:points()}};\n})();\n"
+  },
+  "v543-talents-mobile-tree-js": {
+    "found": true,
+    "open": "<script id=\"v543-talents-mobile-tree-js\">",
+    "bytes": 8693,
+    "first": "\n(function(){\n  'use strict';\n  const selectedByClass=window.__v543TalentBranchByClass||(window.__v543TalentBranchByClass=window.__v542TalentBranchByClass||{});\n  const classLabel=()=>{try{return classes?.[s?.playerClass]?.name||({frost:'Frost-Todesritter'}[s?.playerClass])||String(s?.playerClass||'Klasse')}catch(e){return 'Klasse'}};\n  const esc=x=>String(x??'').replace(/[&<>\"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',\"'\":'&#39;'}[m]));\n  const titleParts=b=>{\n    const raw=String(b?.title||'').trim();\n    const m=raw.match(/^(\\S+)\\s+(.+)$/u);\n    return m?{icon:m[1],name:m[2]}:",
+    "last": ".classList.contains('active'))return false;\n    try{renderTree()}catch(e){console.warn('V5.43 talent render',e)}\n  }\n  window.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')==='character')apply()});\n  apply();\n  document.addEventListener('DOMContentLoaded',apply,{once:true});\n  window.addEventListener('pageshow',apply,{passive:true});\n  document.addEventListener('click',e=>{\n    if(e.target?.closest?.('#v459CharacterTabs [data-tab=\"talents\"],#v514HeroTabs [data-tab=\"talents\"]'))apply();\n  },true);\n  /* V8.009: bounded startup retry train retired. */\n})();\n"
+  },
+  "v444-character-inventory-order-fix": {
+    "found": true,
+    "open": "<script id=\"v444-character-inventory-order-fix\">",
+    "bytes": 2774,
+    "first": "\n(function(){\n  const VERSION='V4.67 Stable', SHORT='V4.67';\n  let arranging=false;\n\n  function setText(el,text){if(el&&el.textContent!==text)el.textContent=text}\n\n  /* Final character order:\n     1. normal inventory\n     2. gem/scroll inventory\n     3. HP + combat power\n     4. attributes\n     Existing nodes are moved, never recreated, so handlers/state stay intact. */\n  function arrangeCharacter(){\n    if(arranging)return false;\n    arranging=true;\n    try{\n      const character=document.querySelector('#character');\n      const bottom=character?.querySelector('.hero-card .char-bottom');\n    ",
+    "last": " }\n  window.v444ArrangeCharacter=arrangeCharacter;\n\n  function stamp(){}\n\n  /* Character navigation/layout owns ordering; no global render wrapper. */\n  window.__v444RenderWrapped='retired';\n  arrangeCharacter();stamp();\n  document.addEventListener('DOMContentLoaded',arrangeCharacter,{once:true});\n  window.addEventListener('pageshow',()=>{if(document.getElementById('character')?.classList.contains('active'))arrangeCharacter()},{passive:true});\n  window.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')==='character')arrangeCharacter()},{passive:true});\n})();\n"
+  },
+  "v514-heldenquartier-reference-js": {
+    "found": true,
+    "open": "<script id=\"v514-heldenquartier-reference-js\">",
+    "bytes": 7482,
+    "first": "\n(function(){\n  'use strict';\n  let running=false;\n\n  function move(parent,node){\n    if(parent&&node&&node.parentElement!==parent) parent.appendChild(node);\n  }\n  function rarityColor(it){\n    const q=String(it?.quality||it?.rarity||it?.grade||'').toLowerCase();\n    if(/myst|cyan|türkis|tuerkis/.test(q)) return '#31e7e2';\n    if(/legend|orange/.test(q)) return '#f0a13a';\n    if(/epic|episch|purple|lila/.test(q)) return '#b75be8';\n    if(/rare|selten|blue|blau/.test(q)) return '#36a7ef';\n    if(/gewöhn|gewoehn|green|grün|gruen/.test(q)) return '#64c969';\n    return '#8b9790';\n  }\n  function it",
+    "last": "\n      syncTabs();\n\n      decorateSlots();\n    }catch(e){console.warn('V5.14 Heldenquartier rebuild',e)}\n    finally{running=false}\n  }\n\n  window.v514ApplyHeroReference=apply;\n\n  window.__v514RenderWrapped='retired';\n  window.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')==='character')apply()});\n  window.__v514GoWrapped='v7119-event';\n\n  apply();\n  document.addEventListener('DOMContentLoaded',apply,{once:true});\n  window.addEventListener('pageshow',()=>{if(document.getElementById('character')?.classList.contains('active'))apply()},{passive:true});\n})();\n"
+  }
+}
