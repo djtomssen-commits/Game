@@ -417,10 +417,6 @@
     const current=window.v260AnimateDailyBoss;
     if(typeof current==='function' && current!==run && !window.__V6209_BASE_REPLAY__)window.__V6209_BASE_REPLAY__=current;
     window.v260AnimateDailyBoss=run;
-    const old=document.getElementById('v260WatchDailyBoss');
-    if(old && old.dataset.v6209Bound!=='1'){
-      const btn=old.cloneNode(true);btn.dataset.v6209Bound='1';old.parentNode.replaceChild(btn,old);btn.addEventListener('click',run,{passive:true});
-    }
     preloadArt();
   }
   /* If the page/tab is left, stop permanent visual GPU work immediately. */
@@ -430,8 +426,13 @@
     if(t.closest('[data-screen]') && !t.closest('[data-screen="guild"]'))settle();
     const tab=t.closest('[data-v254-tab]');if(tab && tab.getAttribute('data-v254-tab')!=='boss')settle();
   },true);
+  document.addEventListener('click',e=>{
+    const btn=e.target instanceof Element?e.target.closest('#v260WatchDailyBoss'):null;
+    if(!btn)return;
+    e.preventDefault();
+    void run();
+  },true);
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',bind,{once:true});else bind();
-  setTimeout(bind,600);setTimeout(bind,1800);
 })();
 
 /* V8.008-C18 — deferred authoritative signup owner. */
@@ -562,15 +563,6 @@ window.v8008C18InstallSignup=function(){
       const r=scrolling();
       if(r)r.scrollTop=view.scrollTop;
     });
-
-    /* Historical guild render wrappers may repaint one frame later.
-       Only pin the boss tab when the user was already on the boss page. */
-    setTimeout(()=>{
-      if(!view?.bossActive)return;
-      forceBossTab();
-      const r=scrolling();
-      if(r)r.scrollTop=view.scrollTop;
-    },90);
   };
 
   const setMembersFromParticipants=(participants)=>{
