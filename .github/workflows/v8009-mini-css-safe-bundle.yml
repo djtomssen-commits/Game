@@ -1,0 +1,23 @@
+name: V8.009 Mini CSS Safe Bundle
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/v8009_mini_css_safe_bundle.py'
+      - '.github/workflows/v8009-mini-css-safe-bundle.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 .github/scripts/v8009_mini_css_safe_bundle.py
+      - run: |
+          git config user.name github-actions
+          git config user.email github-actions@users.noreply.github.com
+          git add -A beta.html 'v8009-mini-bundle-*.css' 'v8009-extracted-*.css' V8009_MINI_CSS_SAFE_BUNDLE_QA.json
+          git commit -m "V8.009 CLEANUP: bundle safe contiguous mini css" || exit 0
+          git pull --rebase origin main
+          git push
