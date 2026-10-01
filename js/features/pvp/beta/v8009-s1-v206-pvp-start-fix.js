@@ -273,22 +273,13 @@ render=function(){
   return v206BaseRender();
 };
 
-const v206BaseGo=v032Go;
-v032Go=function(id){
-  const r=v206BaseGo(id);
-
-  if(id==='pvp'){
-    setTimeout(async()=>{
-      v204CooldownLeft=await v204LoadCooldown();
-      v204RenderPage();
-
-      const find=document.querySelector('#v204FindBtn');
-      if(find)find.onclick=v204FindOpponent;
-    },0);
-  }
-
-  return r;
-};
+window.addEventListener('growlegends:navigation-open-v7119',async e=>{
+  if(String(e?.detail?.id||'')!=='pvp')return;
+  try{
+    v204CooldownLeft=await v204LoadCooldown();
+    v204RenderPage();
+  }catch(err){console.warn('V4.206 PvP open sync',err)}
+},{passive:true});
 
 setTimeout(()=>{
   const find=document.querySelector('#v204FindBtn');
