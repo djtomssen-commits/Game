@@ -103,116 +103,8 @@ function v211ShowResult(win,enemy,gold,xp,buds){
   overlay.classList.add('show');
 }
 
-/*
-  Replace only the PvP finish presentation.
-  The battle itself and server-side PvP accounting remain unchanged.
-*/
-v209FinishBattle=async function(win,enemy,gold,xp){
-  v207EnsurePvpState();
-
-  let buds=0;
-
-  try{
-    const {data,error}=await v073Db.rpc(
-      'v205_finish_pvp',
-      {
-        p_target_user:enemy.id,
-        p_won:!!win
-      }
-    );
-
-    if(error)throw error;
-
-    const row=Array.isArray(data)?data[0]:data;
-
-    if(row){
-      v204SyncLocalStatsFromProfile(row);
-      buds=Number(row.buds_awarded)||0;
-      s.v204Pvp.lastBudReward=buds;
-    }
-
-  }catch(e){
-    console.error('V4.02 finish PvP',e);
-
-    /*
-      Still show a result to avoid trapping the player on the battle screen.
-      Bud reward is zero when server confirmation fails.
-    */
-    buds=0;
-
-    v063Toast(
-      'PvP-Ergebnis konnte nicht vollständig gespeichert werden',
-      'error',
-      e?.message||''
-    );
-  }
-
-  /*
-    Calculate the actual awarded loot first.
-  */
-  let rewardGold=Number(gold)||0;
-  let rewardXp=Number(xp)||0;
-
-  if(win){
-    s.gold+=rewardGold;
-
-    try{
-      addXp(rewardXp);
-    }catch(e){
-      s.xp=(Number(s.xp)||0)+rewardXp;
-    }
-
-  }else{
-    rewardGold=Math.round(rewardGold*.35);
-    rewardXp=Math.round(rewardXp*.45);
-
-    s.gold+=rewardGold;
-
-    try{
-      addXp(rewardXp);
-    }catch(e){
-      s.xp=(Number(s.xp)||0)+rewardXp;
-    }
-
-    buds=0;
-  }
-
-  s.v106Achievements??={done:{},stats:{}};
-  s.v106Achievements.stats??={};
-
-  s.v106Achievements.stats.pvpFights=
-    (s.v106Achievements.stats.pvpFights||0)+1;
-
-  if(win){
-    s.v106Achievements.stats.pvpWins=
-      (s.v106Achievements.stats.pvpWins||0)+1;
-  }
-
-  try{v106CheckAchievements(false)}catch(e){}
-
-  persist();
-
-  try{await v075WriteCloudSave(true)}catch(e){}
-  try{await v073SyncProfile(true)}catch(e){}
-
-  /*
-    End the active battle state, but keep the battle overlay visually open.
-    The new result modal sits above it until the user confirms.
-  */
-  v204BattleBusy=false;
-  v204CooldownLeft=await v204LoadCooldown();
-
-  /*
-    Show the requested green/red result + loot.
-  */
-  v211ShowResult(
-    !!win,
-    enemy,
-    rewardGold,
-    rewardXp,
-    buds
-  );
-};
+/* V8.009: superseded v209FinishBattle payout implementation retired.
+   v216 is the sole legacy finish-flow owner; v211 only owns result UI. */
 
 /*
   If an old result box from V4.02 exists, keep it hidden.
@@ -242,7 +134,4 @@ v209OpenBattle=function(enemy){
 
 /* V7.113: retired render wrapper whose only job was an obsolete version paint. */
 
-setTimeout(()=>{
-  v211EnsureResultUi();
-  v211HideOldBattleResult();
-},120);
+queueMicrotask(()=>{v211EnsureResultUi();v211HideOldBattleResult()});
