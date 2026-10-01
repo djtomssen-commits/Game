@@ -26,3 +26,15 @@ if marker2 not in s:
 - Stable / `index.html`: unverändert.
 """
     p.write_text(s,encoding="utf-8")
+
+marker3="#### Feature Extraction Batch 13"
+if marker3 not in s:
+    s += """
+
+#### Feature Extraction Batch 13
+- 12 Owner aus `beta.html` ausgelagert: v494, v7079, v458, v6102, v7272, v111, v4100, v085, v145, v4150, v7144, v684.
+- 70.156 Bytes Inline-JS entfernt; Script-Reihenfolge unverändert.
+- QA `V8009_FEATURE_EXTRACTION_BATCH13_QA.json`: grün.
+- Stable / `index.html`: unverändert.
+"""
+    p.write_text(s,encoding="utf-8")
