@@ -184,48 +184,18 @@ async function doForgeReroll(){
   toast('Schmieden fehlgeschlagen','warn',String(e?.message||e));
  }finally{S.forgeBusy=false;renderForgePanel()}
 }
-function ensureForgeTab(){
- const forge=document.getElementById('forge');const tabs=forge?.querySelector('.v667-tabs');if(!forge||!tabs)return;
- let b=tabs.querySelector('[data-v667-tab="nebelforge"]');
- if(!b){
-  b=document.createElement('button');b.type='button';b.className='v667-tab';b.dataset.v667Tab='nebelforge';
-  b.innerHTML='<span class="ic">🔥</span><span>NEBELSCHMIED<small>Gold · Werte neu verteilen</small></span>';
-  tabs.appendChild(b);
-  b.addEventListener('click',async e=>{
-   e.preventDefault();e.stopPropagation();
-   forge.classList.add('v7240-nebel-open');
-   tabs.querySelectorAll('.v667-tab').forEach(x=>x.classList.toggle('active',x===b));
-   S.forge=null;await renderForgePanel();
-  });
- }
- if(forge.classList.contains('v7240-nebel-open'))tabs.querySelectorAll('.v667-tab').forEach(x=>x.classList.toggle('active',x.dataset.v667Tab==='nebelforge'));
-}
-
-let v7242ForgeObserver=null,v7242ForgeObserved=null,v7242ForgeRepairRaf=0;
-function v7242RepairForge(){
- cancelAnimationFrame(v7242ForgeRepairRaf);
- v7242ForgeRepairRaf=requestAnimationFrame(async()=>{
-  v7242ForgeRepairRaf=0;
-  const forge=document.getElementById('forge');
-  if(!forge)return;
-  ensureForgeTab();
-  if(forge.classList.contains('v7240-nebel-open')&&!forge.querySelector('#v7240Nebelforge')){
-   await renderForgePanel();
-  }
- });
-}
-function v7242WatchForge(){
- const forge=document.getElementById('forge');
- if(!forge||forge===v7242ForgeObserved)return;
- try{v7242ForgeObserver?.disconnect()}catch(_){}
- v7242ForgeObserved=forge;
- v7242ForgeObserver=new MutationObserver(()=>{
-  const tab=forge.querySelector('.v667-tabs [data-v667-tab="nebelforge"]');
-  const panel=forge.querySelector('#v7240Nebelforge');
-  if(!tab||(forge.classList.contains('v7240-nebel-open')&&!panel))v7242RepairForge();
- });
- v7242ForgeObserver.observe(forge,{childList:true,subtree:false});
- v7242RepairForge();
+async function openNebelforge(){
+ const forge=document.getElementById('forge');if(!forge)return false;
+ if(!forge.classList.contains('active')){try{v032Go('forge')}catch(_){}}
+ /* V8.009: v488 owns the full three-tab shell. Build that shell once,
+    then switch only the forge body into the server-owned Nebelschmied view. */
+ forge.classList.remove('v7240-nebel-open');
+ try{window.v488ForgeRender?.()}catch(_){}
+ forge.classList.add('v7240-nebel-open');
+ forge.querySelectorAll('.v667-tabs [data-v667-tab]').forEach(x=>x.classList.toggle('active',x.dataset.v667Tab==='nebelforge'));
+ S.forge=null;S.forgeError='';
+ await renderForgePanel();
+ return true;
 }
 
 /* ------------------------- Nebelkarawane ------------------------- */
@@ -677,10 +647,6 @@ document.addEventListener('click',e=>{
  const t=e.target instanceof Element?e.target.closest('#forge [data-v667-tab]'):null;
  if(t&&t.dataset.v667Tab!=='nebelforge'){
   document.getElementById('forge')?.classList.remove('v7240-nebel-open');
-  requestAnimationFrame(()=>{
-   try{window.v488ForgeRender?.()}catch(_){}
-   ensureForgeTab();
-  });
  }
  if(e.target instanceof Element&&e.target.closest('#v032MenuBtn,#v032MenuToggle')){
   requestAnimationFrame(()=>{
@@ -692,12 +658,12 @@ document.addEventListener('click',e=>{
 
 window.addEventListener('growlegends:navigation-open-v7119',e=>{
  const id=String(e?.detail?.id||'');
- if(id==='forge')setTimeout(ensureForgeTab,50);
+ if(id==='forge'&&document.getElementById('forge')?.classList.contains('v7240-nebel-open'))queueMicrotask(()=>void renderForgePanel());
  if(id!=='caravan')document.getElementById('caravan')?.classList.remove('active');
 },{passive:true});
 window.addEventListener('growlegends:account-ready',()=>{
- setTimeout(async()=>{
-  ensureCaravanSection();ensureMenu();ensureForgeTab();v7242WatchForge();
+ queueMicrotask(async()=>{
+  ensureCaravanSection();ensureMenu();
   try{window.v4149BuildCompleteMenu?.(true)}catch(_){}
   if(document.getElementById('forge')?.classList.contains('v7240-nebel-open')){
    S.forge=null;S.forgeError='';await loadForge(true);renderForgePanel();
@@ -705,23 +671,23 @@ window.addEventListener('growlegends:account-ready',()=>{
   if(document.getElementById('caravan')?.classList.contains('active')){
    S.caravan=null;S.caravanError='';await loadCaravan(true);renderCaravan();
   }
- },150);
+ });
 },{passive:true});
 window.addEventListener('pageshow',()=>{
- ensureCaravanSection();ensureMenu();ensureForgeTab();v7242WatchForge();
+ ensureCaravanSection();ensureMenu();
  try{window.v4149BuildCompleteMenu?.(true)}catch(_){}
 },{passive:true});
 document.addEventListener('DOMContentLoaded',()=>{
- ensureCaravanSection();ensureMenu();ensureForgeTab();v7242WatchForge();
+ ensureCaravanSection();ensureMenu();
  try{window.v4149BuildCompleteMenu?.(true)}catch(_){}
 },{once:true});
 [250,900,2200].forEach(ms=>setTimeout(()=>{
- ensureCaravanSection();ensureMenu();ensureForgeTab();v7242WatchForge();
+ ensureCaravanSection();ensureMenu();
  try{window.v4149BuildCompleteMenu?.(true)}catch(_){}
 },ms));
 
 window.v7240OpenCaravan=openCaravan;
-window.v7240OpenNebelforge=async()=>{try{v032Go('forge')}catch(_){}setTimeout(async()=>{ensureForgeTab();const b=document.querySelector('#forge [data-v667-tab="nebelforge"]');b?.click()},80)};
+window.v7240OpenNebelforge=openNebelforge;
 window.v7240BetaGoldDiagnostics=()=>({
  version:VERSION,beta:true,forgeTab:!!document.querySelector('#forge [data-v667-tab="nebelforge"]'),
  caravanMenu:!!document.querySelector('#v032MenuPanel [data-screen="caravan"]'),
