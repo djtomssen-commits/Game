@@ -3217,3 +3217,29 @@ Arbeitsmodus:
 - Script-Commit: `48ca45b8c6c3c05b897e5c149862ebfd3c61ce89`.
 - Workflow-Commit: `4512be96fb3a3fd0874163832a7fea15f8718834`.
 - Status: Workflow angestoßen; Ergebnis-Commit/QA bei letzter Prüfung noch nicht im main-Verlauf sichtbar.
+
+
+#### Mega32 Root CSS Extraction
+- Ergebnis-Commit: `3b4a93ea6658c0270193638d0b710d861977aec0`.
+- 597 Inline-Styleblöcke aus `beta.html` ausgelagert.
+- 1.978.849 CSS-Bytes aus dem HTML entfernt.
+- 45 davon enthielten relative `url(...)`-Assets; diese Dateien liegen bewusst auf Repo-Root, damit `assets/...` weiterhin dieselbe Auflösung wie vorher im Inline-CSS hat.
+- Nur ein Styleblock blieb absichtlich inline: `v4114-grow-care-css`, weil dessen ID per DOM geprüft wird.
+- Stable / `index.html`: Hash unverändert.
+- QA `V8009_MEGA32_ROOT_CSS_QA.json`: grün.
+
+#### Final Inline CSS Removal
+- Analyse der einzigen Referenz zeigte: `document.getElementById('v4114-grow-care-css')` prüft nur die Existenz des Elements.
+- Deshalb konnte der Styleblock sicher durch ein `<link>` mit identischer ID ersetzt werden.
+- CSS-Datei: `v8009-extracted-v4114-grow-care-css.css`.
+- CSS-Commit: `585b8dc116230387e307d3c67d2f2c552bcfa344`.
+- Beta-Commit: `f97acc8ed04f6ac52c383d46fbfbaeb5c0d5e0da`.
+- Zielzustand: **0 klassische Inline-JS-Blöcke und 0 Inline-Styleblöcke in beta.html**.
+- Zero-Inline-QA-Workflow installiert: `ceeba19cc70def03a58f595a0b1c043c2531cfed`.
+
+#### CSS Consolidation – nächste Phase
+- Die reine Extraktion ist abgeschlossen; ab jetzt geht es um echte Konsolidierung statt weiteres Verschieben.
+- Audit für exakte CSS-Duplikate, Mini-/Marker-Dateien und Bündelung vorbereitet.
+- Script-Commit: `107ab82c43c51998cc69850768e2f85e5a1cdcae`.
+- Workflow-Commit: `67d5ca327765f500585680ae30078ace8328c2c8`.
+- Noch keine semantische CSS-Bereinigung ohne Audit-Beweis.
