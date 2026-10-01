@@ -34,43 +34,8 @@
     window.__v427ProfilePayloadWrapped=true;
   }
 
-  /* The worldboss increments attempts/wins locally at fight end. Its old path
-     only persisted the save, so other players could keep seeing stale Hall totals.
-     v110Refresh is called after the fight transaction; sync exactly when totals changed. */
-  if(typeof v110Refresh==='function'&&!window.__v427WorldbossRefreshWrapped){
-    const baseRefresh=v110Refresh;
-    let last='';
-    v110Refresh=function(){
-      const r=baseRefresh.apply(this,arguments);
-      const wb=wbState();
-      const sig=`${Math.max(0,Number(wb.attempts)||0)}:${Math.max(0,Number(wb.wins)||0)}`;
-      if(last && sig!==last)syncHall(true);
-      last=sig;
-      return r;
-    };
-    window.__v427WorldbossRefreshWrapped=true;
-  }
-
-  /* Item/equipment changes alter combat power. Sync after the canonical equip paths
-     so Hall never keeps the previous value until a later page reload. */
-  if(typeof window.equip==='function'&&!window.__v427EquipWrapped){
-    const baseEquip=window.equip;
-    window.equip=function(){
-      const r=baseEquip.apply(this,arguments);
-      Promise.resolve(r).finally(()=>setTimeout(()=>syncHall(true),0));
-      return r;
-    };
-    window.__v427EquipWrapped=true;
-  }
-  if(typeof window.unequip==='function'&&!window.__v427UnequipWrapped){
-    const baseUnequip=window.unequip;
-    window.unequip=function(){
-      const r=baseUnequip.apply(this,arguments);
-      Promise.resolve(r).finally(()=>setTimeout(()=>syncHall(true),0));
-      return r;
-    };
-    window.__v427UnequipWrapped=true;
-  }
+  /* V8.009: worldboss/equip/unequip sync wrappers retired.
+     v438 persists live Hall fields and v7101 is the final public-profile writer. */
 
   /* Own Hall row/profile is always painted from live power, not a just-fetched stale DB value. */
   if(typeof v073PlayerRow==='function'&&!window.__v427HallRowWrapped){
@@ -83,17 +48,10 @@
     window.__v427HallRowWrapped=true;
   }
 
-  if(typeof v073LoadRanking==='function'&&!window.__v427RankingWrapped){
-    const baseRanking=v073LoadRanking;
-    v073LoadRanking=async function(){
-      await syncHall(true);
-      return baseRanking.apply(this,arguments);
-    };
-    window.__v427RankingWrapped=true;
-  }
+  /* V8.009: historical Hall ranking sync wrapper retired; v6145 owns ranking. */
 
-  /* One boot sync repairs stale public data from older versions once the account is ready. */
-  setTimeout(()=>syncHall(true),1800);
+
+  /* V8.009: delayed boot sync retired; canonical account/profile owners handle this. */
 
   function stamp(){}
   stamp();
