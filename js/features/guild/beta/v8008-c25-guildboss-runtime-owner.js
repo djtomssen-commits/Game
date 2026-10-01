@@ -415,6 +415,8 @@ async function claimBoss(){
       try{window.v106CheckAchievements?.(true)}catch(_){}
       try{await window.v254LoadGuild?.()}catch(_){}
       try{await window.v255LoadBoss?.()}catch(_){}
+      /* V8.009: claiming yesterday's reward immediately unlocks today's signup gate. */
+      try{await window.v7307RefreshBossSignupGate?.(true)}catch(_){}
       return r;
     }catch(e){
       G.lastError=String(e?.message||e);
