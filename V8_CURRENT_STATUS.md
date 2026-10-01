@@ -1703,3 +1703,15 @@ Der nächste fachliche Schritt ist **nicht HOME-32**, sondern die Restinventur d
   - `v310`: direkter Elite-Hook, kein Wrapper;
   - `v4222`: direkter Elite-Panel/Lifecycle-Hook, kein Wrapper.
 - Stable / `index.html`: unverändert.
+
+
+### Quest Fast Batch A 01.10.2026
+- Batch-Modus aktiv: sichere Cleanup-Schritte bündeln, nur bei riskanten Änderungen oder sinnvollen manuellen Testpunkten stoppen.
+- `v316`: globalen No-op-`render()`-Wrapper entfernt, Commit `4992c501841ac247246f9e88d58221fd8f9f84e1`.
+- `v4127`: Skip-Reparatur synchron, kein RAF-Fallback mehr, Commit `723056b63c0859e79229ac909c5c3fa18ba024eb`.
+- `v229`: Quest-Start/Claim-Timer-Sync direkt statt RAF, 1-s-Live-Timer bleibt, Commit `b0cf35617ee323d203d409d1a6be211ec7f5e9d3`.
+- Gemeinsame QA-Dateien: `.github/scripts/v8009_quest_fast_batch_a_qa.py`, `.github/workflows/v8009-quest-fast-batch-a-qa.yml`.
+- Aktueller Audit: `V8009_QUEST_RUNTIME_LAYER_AUDIT_CURRENT.json`.
+- Bewusst verbleibend: v636 Kampfanimation, v7045/v7110 Authority/RPC, v6344 Asset-Warmup, v231 Multi-Domain-Sync, v233 Dungeon-Map-Refresh.
+- Quest-Cleanup für diesen Sprint ausreichend abgeschlossen.
+- Nächster Seitenblock: Charakterseite.
