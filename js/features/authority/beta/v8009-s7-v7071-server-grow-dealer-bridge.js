@@ -138,7 +138,7 @@ window.addEventListener('click',ev=>{
 
  /* Opening Dealer/Stock gets a silent authoritative refresh first. */
  if(t.closest('[data-v6282-open-dealer],[data-v6282-view]')){
-   setTimeout(()=>void refresh(),0);
+   queueMicrotask(()=>void refresh());
  }
 },true);
 
@@ -172,13 +172,12 @@ try{
  }
 }catch(e){console.warn('[V7071] fragment bus guard',e)}
 
-window.addEventListener('growlegends:account-ready',()=>{const run=()=>void refresh();if(typeof window.v7204AfterStartupQuiet==='function')window.v7204AfterStartupQuiet(run,900);else setTimeout(run,500)},{passive:true});
-window.addEventListener('pageshow',()=>{if(window.v7204StartupQuiet?.())return;setTimeout(()=>void refresh(),900)},{passive:true});
+window.addEventListener('growlegends:account-ready',()=>{const run=()=>void refresh();if(typeof window.v7204AfterStartupQuiet==='function')window.v7204AfterStartupQuiet(run,900);else queueMicrotask(run)},{passive:true});
+window.addEventListener('pageshow',()=>{if(window.v7204StartupQuiet?.())return;queueMicrotask(()=>void refresh())},{passive:true});
 document.addEventListener('click',e=>{
  const t=e.target instanceof Element?e.target:null;
- if(t?.closest?.('[data-v6163-tab="stock"]'))setTimeout(()=>void refresh(),80);
+ if(t?.closest?.('[data-v6163-tab="stock"]'))queueMicrotask(()=>void refresh());
 },true);
-setTimeout(()=>{if(!window.v7204StartupQuiet?.())void refresh()},5200);
 
 window.v7071GrowDealerRefresh=refresh;
 window.v7071GrowDealerDiagnostics=()=>clone({version:VERSION,...S});
