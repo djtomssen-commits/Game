@@ -84,11 +84,7 @@ async function v083FixHallList(){
   }catch(e){console.error('V4.02 hall list fix',e)}
 }
 
-const v083BaseRender=render;
-render=function(){
-  v083BaseRender();
-  
-  setTimeout(v083FixHallList,0);
-};
-
-setTimeout(v083FixHallList,1200);
+/* V8.009: global render + 0/1200 ms hall repaint retired. */
+window.addEventListener('growlegends:navigation-open-v7119',e=>{
+  if(String(e?.detail?.id||'')==='hall')queueMicrotask(v083FixHallList);
+},{passive:true});
