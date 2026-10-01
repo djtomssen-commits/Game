@@ -54015,17 +54015,10 @@ create index if not exists player_messages_sender_idx on public.player_messages(
   try{v106CheckAchievements(false)}catch(e){}
   stamp();
 
-  /* V6.217: replace the 500ms migration poll with finite reconciliation retries. */
-  [500,1800,4200,9000].forEach(ms=>setTimeout(()=>{
-    const changed=reconcile(true);
-    if(changed){try{v106CheckAchievements(true)}catch(e){} refreshOpenBook()}
-    stamp();
-  },ms));
-
+  /* V8.009: delayed migration retries retired; account-ready/lifecycle own reconciliation. */
   document.addEventListener('DOMContentLoaded',()=>{reconcile(true);stamp()},{once:true});
   window.addEventListener('pageshow',()=>{reconcile(true);stamp()},{passive:true});
-  setTimeout(()=>{reconcile(true);stamp()},1000);
-  setTimeout(()=>{reconcile(true);stamp()},4200);
+  window.addEventListener('growlegends:account-ready',()=>{const changed=reconcile(true);if(changed){try{v106CheckAchievements(true)}catch(e){} refreshOpenBook()}stamp()},{passive:true});
 })();
 </script>
 
@@ -56418,8 +56411,7 @@ normalize();
   stamp();
   document.addEventListener('DOMContentLoaded',stamp,{once:true});
   window.addEventListener('pageshow',stamp,{passive:true});
-  [250,800,1800,4200].forEach(ms=>setTimeout(stamp,ms));
-  setTimeout(stamp,250); /* V4.123: removed useless late clear of already-fired one-shot timeout. */
+  window.addEventListener('growlegends:account-ready',stamp,{passive:true});
 })();
 </script>
 
@@ -56489,7 +56481,7 @@ normalize();
   stamp();
   document.addEventListener('DOMContentLoaded',()=>{stamp();const uid=uidNow();if(uid&&gateReady(uid))void reconcile('dom')},{once:true});
   window.addEventListener('pageshow',()=>{stamp();const uid=uidNow();if(uid&&gateReady(uid))void reconcile('pageshow')},{passive:true});
-  [250,900,2200,5200].forEach(ms=>setTimeout(()=>{stamp();const uid=uidNow();if(uid&&gateReady(uid)&&reconciledUid!==uid)void reconcile('timer')},ms)); /* V4.123: removed useless late clear of already-fired one-shot timeout. */
+  window.addEventListener('growlegends:account-ready',()=>{stamp();const uid=uidNow();if(uid&&gateReady(uid))void reconcile('account-ready')},{passive:true});
 })();
 </script>
 
@@ -56510,8 +56502,8 @@ normalize();
   cleanup();
   document.addEventListener('DOMContentLoaded',cleanup,{once:true});
   window.addEventListener('pageshow',cleanup,{passive:true});
-  [250,900,2200,5200].forEach(ms=>setTimeout(cleanup,ms));
-  /* V6.97: 30-second 300ms cleanup polling retired. */
+  window.addEventListener('growlegends:account-ready',cleanup,{passive:true});
+  /* V8.009: delayed startup cleanup train retired. */
 })();
 </script>
 
