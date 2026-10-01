@@ -161,21 +161,9 @@
     }
   }catch(e){}
 
-  try{
-    if(typeof v073LoadRanking==='function'&&!window.__v649RankingWrapped){
-      const base=v073LoadRanking;
-      v073LoadRanking=async function(){
-        await write(true);
-        const r=await base.apply(this,arguments);
-        paintOwnRow();
-        requestAnimationFrame(paintOwnRow);
-        setTimeout(paintOwnRow,80);
-        return r;
-      };
-      try{window.v073LoadRanking=v073LoadRanking}catch(e){}
-      window.__v649RankingWrapped=true;
-    }
-  }catch(e){}
+  /* V8.009: ranking wrapper retired.
+     v6145 syncOwn() calls v649SyncDungeonProgress(true) before Hall ranking loads. */
+
 
   try{
     if(typeof persist==='function'&&!window.__v649PersistWrapped){
@@ -186,10 +174,8 @@
     }
   }catch(e){}
 
-  document.addEventListener('click',e=>{
-    if(e.target.closest?.('[data-screen="hall"],[data-go="hall"]'))setTimeout(()=>{schedule(true);paintOwnRow()},0);
-  },true);
-  window.addEventListener('growlegends:first-playable',()=>setTimeout(()=>schedule(true),1600),{passive:true});
-  setTimeout(()=>{if(!window.v7206StartupBusy?.())schedule(false)},3200);
-  setTimeout(()=>{paintOwnRow();if(!window.v7206StartupBusy?.())schedule(false)},5200);
+  window.addEventListener('growlegends:navigation-open-v7119',e=>{
+    if(String(e?.detail?.id||'')==='hall')queueMicrotask(()=>{void write(true);paintOwnRow()});
+  },{passive:true});
+  window.addEventListener('growlegends:account-ready',()=>queueMicrotask(()=>schedule(true)),{passive:true});
 })();
