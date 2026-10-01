@@ -107,25 +107,11 @@
     overlay.classList.add('show');
   }
 
-  /*
-    Wrap the current FINAL claim path (V4.02).
-    V4.02 awards Zeit-Samen after the old reward modal has already been built,
-    so repaint only after that complete transaction is finished.
-  */
-  const baseClaim=v233ClaimQuest;
-  v233ClaimQuest=async function(){
-    const before=snapshot();
-    const hadQuest=!!before.active;
-
-    const result=baseClaim.apply(this,arguments);
-    if(result && typeof result.then==='function')await result;
-
-    if(hadQuest && !s.quests?.active){
-      repaint(before);
-    }
-    return result;
-  };
-  window.v233ClaimQuest=v233ClaimQuest;
+  /* V8.009: claim wrapper retired.
+     v394 owns the late Local/Mirror reward step and calls these helpers directly
+     after its Zeit-Samen roll, so the popup still sees the complete reward state. */
+  window.v395QuestRewardSnapshot=snapshot;
+  window.v395RepaintQuestReward=repaint;
 
   setTimeout(()=>{
     document.querySelectorAll(
