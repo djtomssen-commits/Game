@@ -35,7 +35,7 @@ Die Matrix wird nach jedem großen Cleanup-Batch aktualisiert.
 | Hall of Haze | Ranking / Gegner / Profil-Interaktion | [x] | v6145 Ranking-Owner, v649 gezielter Progress-Sync, globale Hall-Repaints entfernt; manueller Endtest offen |
 | Friends | Ranking / Suche | [x] | v4130 finaler Friends/Search-Owner, Presence-Singleflight + 60s Refresh; v333/v382/v383 und globale Social-Renderwrapper retired; manueller Endtest offen |
 | Mail | Inbox / Sent / Compose / Battlelog | [x] | v381 finaler Mail-/Tab-/Compose-Owner, v6200 Battlelog; Recipient-Routing ohne Delay, doppelte Tab-Loader entfernt; manueller Endtest offen |
-| Admin | Overview / Players / Content | [ ] | kompletter 3-Tab-Pass offen |
+| Admin | Content / Spieler / Tools (gestapelte Bereiche, keine echten Tabs) | [x] | v093 alleiniger Admin-Status- und Content-Lifecycle-Owner; Render-/Check-/Load-Wrapperketten entfernt; Player/Reward/Ticket/Broadcast/Systemtechnik-Authority geprüft; manueller Endtest offen |
 | Harz Dealer | Harz / Gold / Frames | [x] | 3 Tabs mit einem Hub-Owner; Harz via Google-Play-Verifikation, Gold + Rahmen serverautoritativ; Frame-Tab-Injection/Wrapper retired; manueller Endtest offen |
 
 ## Zusätzliche Feature-Seiten / Submodule
