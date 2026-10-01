@@ -206,6 +206,6 @@
  window.v6145HallPage=loadPage;window.v6145HallMyRank=loadMyRank;window.v6145HallNear=loadNear;
  window.v6145HallRefresh=async()=>{state.topAt=0;state.ownRank=null;return loadPage(state.page||1,false)};
  window.v6145HallState=()=>({...state,topRows:state.topRows.map(x=>({id:x.id,name:x.character_name}))});
- document.addEventListener('click',e=>{if(e.target.closest?.('[data-screen="hall"],[data-go="hall"]')){state.mode='page';state.page=1;state.ownRank=null;state.topAt=0;setTimeout(()=>void loadPage(1),0)}},true);
+ document.addEventListener('click',e=>{if(e.target.closest?.('[data-screen="hall"],[data-go="hall"]')){state.mode='page';state.page=1;state.ownRank=null;state.topAt=0;queueMicrotask(()=>void loadPage(1))}},true);
  window.addEventListener('growlegends:account-ready',()=>{state.ownRank=null;state.topAt=0});
 })();
