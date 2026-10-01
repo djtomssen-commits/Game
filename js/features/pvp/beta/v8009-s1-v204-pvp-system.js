@@ -290,13 +290,10 @@ if(typeof V106_ACH!=='undefined'){
   pvpAchievements.forEach(a=>{if(!V106_ACH.some(x=>x[0]===a[0]))V106_ACH.push(a)});
 }
 
-/* Screen open + timers */
-const v204BaseGo=v032Go;
-v032Go=function(id){
-  const r=v204BaseGo(id);
-  if(id==='pvp')setTimeout(v204RefreshStats,0);
-  return r;
-};
+/* V8.009: shared post-navigation owner refreshes PvP stats. */
+window.addEventListener('growlegends:navigation-open-v7119',e=>{
+  if(String(e?.detail?.id||'')==='pvp')void v204RefreshStats();
+},{passive:true});
 document.querySelector('#v204FindBtn')?.addEventListener('click',v204FindOpponent);
 
 setInterval(()=>{
