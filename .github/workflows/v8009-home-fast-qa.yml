@@ -1,0 +1,23 @@
+name: V8.009 Home Fast QA
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'js/features/home/beta/v8009-home-renderer.js'
+      - '.github/scripts/v8009_home_fast_qa.py'
+      - '.github/workflows/v8009-home-fast-qa.yml'
+permissions:
+  contents: write
+jobs:
+  qa:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: node --check js/features/home/beta/v8009-home-renderer.js
+      - run: python3 .github/scripts/v8009_home_fast_qa.py
+      - run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add V8009_HOME_FAST_QA.json
+          git commit -m "V8.009 HOME: record fast QA" || exit 0
+          git push
