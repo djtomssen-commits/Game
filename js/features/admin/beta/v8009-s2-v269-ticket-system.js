@@ -141,10 +141,15 @@ function v269InstallAdminBoard(){
  card.innerHTML=`<div class="section-title"><div><h3>🎫 Spieler-Tickets</h3><div class="muted">Bugs, Vorschläge und Hinweise prüfen. Erledigte Tickets werden nach 24 Stunden automatisch gelöscht.</div></div><button class="btn secondary" id="v269AdminTicketRefresh" style="padding:7px 9px">↻</button></div><div id="v269AdminTickets"></div>`;
  root.appendChild(card);document.querySelector('#v269AdminTicketRefresh')?.addEventListener('click',v269AdminLoadTickets);
 }
-const v269OldAdminCheck=v093CheckAdmin;
-v093CheckAdmin=async function(){const r=await v269OldAdminCheck();v269InstallAdminBoard();if(r)await v269AdminLoadTickets();return r};
 const v269OldAdminLists=v093AdminLoadLists;
-v093AdminLoadLists=async function(){const r=await v269OldAdminLists();if(v093IsAdmin)await v269AdminLoadTickets();return r};
+v093AdminLoadLists=async function(){
+ const r=await v269OldAdminLists();
+ if(v093IsAdmin){
+   v269InstallAdminBoard();
+   await v269AdminLoadTickets();
+ }
+ return r;
+};
 
 document.querySelector('#v269TicketTab')?.addEventListener('click',v269OpenTicket);
 document.querySelector('#v269TicketTab')?.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' ')v269OpenTicket()});
