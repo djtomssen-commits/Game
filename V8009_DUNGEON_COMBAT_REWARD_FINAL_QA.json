@@ -1,0 +1,39 @@
+{
+  "build": "V8.009-DUNGEON-COMBAT-REWARD-FINAL-QA",
+  "checked_at": "2026-10-01",
+  "scope": [
+    "Dungeon combat renderer",
+    "server receipt flow",
+    "reward modal",
+    "defeat modal",
+    "weekly/guild reward feedback"
+  ],
+  "ownership": {
+    "combat": "v8009-d1-combat-renderer.js / v7175 visible owner",
+    "server_run": "v7051_run_dungeon via v7051 atomic receipt client",
+    "reward_modal": "v247ShowDungeonReward",
+    "defeat_modal": "v587ShowDungeonDefeat",
+    "reward_feedback": "v8009_dungeon_reward_feedback"
+  },
+  "checks": {
+    "combat_render_wrappers": 0,
+    "critical_polling_intervals": 0,
+    "active_combat_observers": 1,
+    "observer_scope": "active combat HUD/state only",
+    "duplicate_server_reward_dom": 0,
+    "duplicate_server_reward_sfx": 0,
+    "v247_reward_renderer_defs": 1,
+    "reward_feedback_http_200_observed": true,
+    "run_id_preserved_for_feedback": true
+  },
+  "authority": {
+    "public_run_rpc": true,
+    "server1_run_rpc": true,
+    "public_state_rpc": true,
+    "server1_state_rpc": true,
+    "public_ack_rpc": true,
+    "server1_ack_rpc": true,
+    "reward_feedback_rpc_reachable": true
+  },
+  "ok": true
+}
