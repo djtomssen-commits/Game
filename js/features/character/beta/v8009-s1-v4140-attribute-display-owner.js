@@ -25,6 +25,18 @@
   return true;
  }
  window.v4140PaintAttributes=paint;
+ /* V8.009: v434 live-sync duty consolidated here. Persist remains the state owner;
+    this hook only repaints the canonical attribute UI after external point changes. */
+ if(typeof persist==='function'&&!window.__v4140PersistWrapped){
+  const basePersist=persist;
+  persist=function(){
+   const r=basePersist.apply(this,arguments);
+   requestAnimationFrame(paint);
+   return r;
+  };
+  try{window.persist=persist}catch(e){}
+  window.__v4140PersistWrapped=true;
+ }
  /* V8.009: direct character lifecycle owns the canonical five-row output. */
  window.__v4140RenderWrapped='retired';
  window.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')==='character')paint()},{passive:true});window.__v4140GoWrapped='v7119-event';
