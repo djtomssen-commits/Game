@@ -72,3 +72,5 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 
 p.write_text(c,encoding='utf-8')
 print('patched:', ', '.join(changes))
+
+# trigger: book-shift
