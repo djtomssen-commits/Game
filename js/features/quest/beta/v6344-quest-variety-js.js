@@ -252,7 +252,7 @@ try{
       try{window.v309PrepareQuestRender?.()}catch(_){}
       try{window.v321PrepareQuestRender?.()}catch(_){}
       const r=base.apply(this,arguments);
-      try{window.v309ScheduleQuestRolePaint?.()}catch(_){}
+      try{window.v309PaintQuestRoles?.()}catch(_){}
       try{window.v386RenderQuestShell?.()}catch(_){}
       try{window.v099PaintQuestXp?.()}catch(_){}
       try{window.v321PaintQuestCosts?.()}catch(_){}
