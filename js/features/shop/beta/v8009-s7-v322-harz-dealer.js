@@ -16,6 +16,7 @@ function v322UnitPrice(p){return (p.price/p.harz).toLocaleString('de-DE',{minimu
 function v322BaseEquivalent(p){return (p.harz/25)*1.99}
 function v322SavingPct(p){const base=v322BaseEquivalent(p);return Math.max(0,Math.round((1-p.price/base)*100))}
 function v322RenderDealer(){
+ if(typeof window.v567EnsureDealer==='function')return window.v567EnsureDealer();
  const box=document.querySelector('#v322DealerPackages'),bal=document.querySelector('#v322DealerHarz');
  if(bal)bal.textContent=Math.max(0,Number(s.harzTaler)||0);
  if(!box)return;
@@ -34,9 +35,9 @@ function v322InstallHarzPlus(){
  if(!card||document.querySelector('#v322HarzPlus'))return;
  const b=document.createElement('button');b.type='button';b.id='v322HarzPlus';b.setAttribute('aria-label','Harz-Taler Dealer öffnen');b.textContent='+';b.onclick=e=>{e.preventDefault();e.stopPropagation();v322OpenDealer()};card.appendChild(b);
 }
-const v322BaseInstallMenu=v032InstallMenu;
-v032InstallMenu=function(){const r=v322BaseInstallMenu.apply(this,arguments);v322InstallMenuEntry();v322InstallHarzPlus();return r};
-window.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')==='harzDealer')v322RenderDealer()});
+const v322InstallChrome=()=>{try{v322InstallMenuEntry();v322InstallHarzPlus()}catch(e){console.error('V4.02 Harz Dealer init',e)}};
+window.addEventListener('growlegends:navigation-ready',v322InstallChrome,{passive:true});
+window.addEventListener('growlegends:account-ready',v322InstallChrome,{passive:true});
+v322InstallChrome();
+document.addEventListener('DOMContentLoaded',v322InstallChrome,{once:true});
 window.__v322GlobalRenderRetired=true;
-try{v322InstallMenuEntry();v322InstallHarzPlus()}catch(e){console.error('V4.02 Harz Dealer init',e)}
-document.addEventListener('DOMContentLoaded',()=>{try{v322InstallMenuEntry();v322InstallHarzPlus()}catch(e){}},{once:true});
