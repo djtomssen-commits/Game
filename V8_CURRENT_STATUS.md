@@ -2451,3 +2451,15 @@ Arbeitsmodus:
 - Alle drei externen Dateien mit `node --check` geprüft.
 - QA `V8009_PET_WEEKLY_EXTRACTION_BATCH1_QA.json`: vollständig grün.
 - Stable / `index.html`: unverändert.
+
+
+#### Dungeon Extraction Batch 1
+- Drei große Dungeon-Owner 1:1 aus `beta.html` nach `js/features/dungeon/beta/` ausgelagert:
+  - `v7051-atomic-dungeon-receipt-client` → `v8009-s1-v7051-atomic-dungeon-receipt-client.js`
+  - `v446-dungeon-runtime-root-fix` → `v8009-s1-v446-dungeon-runtime-root-fix.js`
+  - `v246-dungeon-final-fight-reward-fix` → `v8009-s1-v246-dungeon-final-fight-reward-fix.js`
+- Zusammen 74.793 Bytes Inline-JS aus dem Monolithen entfernt.
+- Script-IDs und Reihenfolge in `beta.html` beibehalten; nur auf `src=` umgestellt.
+- Alle drei externen Dateien mit `node --check` geprüft.
+- QA `V8009_DUNGEON_EXTRACTION_BATCH1_QA.json`: vollständig grün.
+- Stable / `index.html`: unverändert.
