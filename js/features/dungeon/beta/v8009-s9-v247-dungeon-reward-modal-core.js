@@ -139,7 +139,7 @@ function v247ShowDungeonReward(data){
     }catch(e){
       rows.push(`
         <div class="v247-dungeon-line">
-          🎁 ${v240Esc(data.item.name||'Item gefunden')}
+          🎁 ${v247Esc(data.item.name||'Item gefunden')}
         </div>
       `);
     }
