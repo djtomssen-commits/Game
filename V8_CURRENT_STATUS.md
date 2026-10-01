@@ -1778,3 +1778,77 @@ Der nächste fachliche Schritt ist **nicht HOME-32**, sondern die Restinventur d
 - Reward-Retries bleiben bewusst erhalten, da sie Server-Feedback (Wochen-Truhe/Gilden-EP) in das bereits gewünschte Reward-Fenster synchronisieren.
 - Keine Änderung an Quest-/Dungeon-/PvP-/Tower-Rewarddarstellung in diesem Pass.
 - Nächster Block: Inline-Audit Growroom + Schmiede + Händler.
+
+
+### Fast page sweep Fortsetzung 01.10.2026 — Character / Social / Dealer
+
+#### Growroom / Schmiede / Händler
+- `0ea9fa84a7288eb3a7fbb4ae7c2b23eafae72a05`: Inline-Lifecycle für Growroom, Schmiede und Händler konsolidiert.
+- Growroom:
+  - `v4114` eigener `v032Go`-Wrapper entfernt.
+  - Shared `growlegends:navigation-open-v7119` übernimmt Grow-Open-Sync.
+  - 250/1500-ms Startup-Retry-Zug entfernt; `account-ready` übernimmt.
+- Schmiede:
+  - `v6130` MutationObserver + RAF-Lifecycle entfernt.
+  - Direkter `refreshForge()`-Owner mit DOMContentLoaded/pageshow/account-ready/shared navigation.
+- Händler:
+  - v129 direkte Kartenpolitur statt RAF.
+  - v131/v135 von globalem `render()` auf `renderShop()` scoped.
+- QA `V8009_INLINE_GROW_FORGE_SHOP_QA.json`, Bot-Commit `69a9e9d8d287c77cdedbe99d879fd7d26765612e`: 13/13 grün.
+
+#### Charakterseite
+- Patch A `4eb65b9247b6e1afc442d52dddfb3cc2f5c0b8ca`:
+  - v4153 globalen Character-`render()`-Wrapper retired; Shared-v7119 bleibt.
+  - v4156 globalen Character-`render()`-Wrapper retired; Shared-v7119 bleibt.
+  - v533 Inventar-Startup-Retry-Zug `120/400/900/1800/3600` entfernt; direkte `renderInventory`/Arrange/Nav/Pageshow-Owner bleiben.
+- Patch B `cf1a79f24d11b164aee37d616e77e02f1f087289`:
+  - v4140 Attribute: globalen `render()`-Wrapper retired + 120/500/1400-ms Retry-Zug entfernt.
+  - v515 Mobile Hero Polish: globalen `render()`-Wrapper + 80/220/600/1200/2400-ms Retry-Zug entfernt; Shared-v7119 ergänzt.
+  - v526 Ornament: 80/220/600/1400/3000/6000-ms Retry-Zug entfernt.
+  - v537 Attribute-Layout: 120/500/1400-ms Retry-Zug entfernt.
+  - v543 Talentbaum: 150/600/1600-ms Retry-Zug entfernt.
+  - v546 Materialien: 180/700/1700-ms Retry-Zug entfernt.
+- Keine Attributwerte, Talentlogik, Itemlogik oder Avatar-/Equipment-Mechanik geändert.
+- QA `V8009_CHARACTER_FAST_QA_AB.json`, Bot-Commit `7d4ce63674c0012b81c05cc7446fe5604d7c0b80`: 16/16 grün.
+
+#### Freunde / Mail / Systemtechnik
+- `5bf5569f1f04efdcd533ad245d2e2a3bc9844d2a`: Social-/Mail-/Systemtechnik-Lifecycles konsolidiert.
+- Mail v381:
+  - eigener `v032Go`-Wrapper entfernt.
+  - Shared-v7119 lädt Mail direkt.
+  - 60-s-Unread-Poll bleibt bewusst erhalten.
+- Freunde/Hall v382/v383:
+  - beide eigenen Navigation-`v032Go`-Wrapper entfernt.
+  - direkte Ranking/Friends-Loader bleiben und dekorieren nach erfolgreichem Load.
+  - Shared-v7119 ergänzt.
+- Mail v6202:
+  - MutationObserver auf Mail-Screen-Klasse entfernt.
+  - 250/1000-ms Reparaturstarts entfernt.
+  - account-ready / shared navigation / DOMContentLoaded / pageshow übernehmen.
+- Alte V4102-Systemtechnik:
+  - automatisches `runQA()` 1,8 s nach Login entfernt.
+  - UI-Retry-Kaskade 0/100/500/1500/5000/15000/30000/46000/60000 ms entfernt.
+  - spätere V4107-Systemtechnik/Admin-Guard bleibt unverändert.
+- QA `V8009_SOCIAL_MAIL_SYSTEMTECH_QA.json`, Bot-Commit `bcec8b92b52e0e29f775cd69692bd9b931b3415d`: 12/12 grün.
+
+#### Harz-/Gold-/Rahmen-/Tütchen-Dealer
+- `4528d35e5fc1e81b37c490084e98b88c5ad3b6f1`: Harz-Dealer Render-Lifecycle konsolidiert.
+- v567:
+  - globaler `render()`-Wrapper entfernt.
+  - 60/450/1400-ms Ensure-Retry-Zug entfernt.
+  - direkter Hook an `v322RenderDealer` + Shared-v7119 bleibt.
+- v322:
+  - globaler `render()`-Wrapper retired.
+  - Menü-Owner `v032InstallMenu` + Shared-v7119 bleiben.
+  - 350-ms Initialisierung ersetzt durch direkten/DOMContentLoaded Setup.
+- v339:
+  - globaler `render()`-Wrapper retired.
+  - 250/1200-ms Dealer/Version-Retry-Zug entfernt.
+  - direkter `v322RenderDealer`-Hook + Shared-v7119 bleiben.
+- Google-Play `v7236RecoveryBurst` bleibt bewusst unverändert: Kauf-/Recovery-Sicherheitslogik.
+- Tütchen-Dealer Sichtbarkeits-/Serverreloads bleiben bewusst unverändert.
+- Gold-/Rahmen-Dealer kleine Post-Open-Syncs bleiben vorerst erhalten, da sie Layout/Daten nach asynchronem Öffnen synchronisieren.
+- QA `V8009_DEALER_FAST_QA_A.json` läuft; direkte Checks auf main sind grün.
+
+- Stable / `index.html`: weiterhin unverändert.
+- Arbeitsregel bleibt: nur Lifecycle-/Navigation-/Repaint-Altlasten entfernen; Authority-, Kauf-, Combat- und Server-Sync-Timer nur ändern, wenn deren Zweck vollständig geklärt ist.
