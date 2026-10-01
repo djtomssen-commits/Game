@@ -1,0 +1,1291 @@
+{
+  "build": "V8.009-INLINE-GROW-FORGE-SHOP-AUDIT",
+  "sections": {
+    "grow": [
+      {
+        "line": 3328,
+        "text": "document.querySelector('#plantBtn').addEventListener('click',()=>plantSelectedSeed());"
+      },
+      {
+        "line": 3329,
+        "text": "document.querySelector('#harvestBtn').addEventListener('click',harvestReadyPlants);"
+      },
+      {
+        "line": 3331,
+        "text": "ensureQuests();setInterval(()=>{if(document.hidden)return;/* V4.81: live Growroom is owned by v239; do not rebuild the full Growroom every second. */regenEnergy();document.querySelector('#energy')&&(document.querySelector('#energy').textContent=`${s.energy}/100`);document.querySelector('#dungeonTicketText')&&(document.querySelector('#dungeonTicketText').textContent=dungeonWaitText())},1000);persist();"
+      },
+      {
+        "line": 4564,
+        "text": "function v032InstallMenu(){document.querySelector('.bottom')?.remove();if(document.querySelector('#v032TopMenu'))return;const wrap=document.createElement('div');wrap.className='top-menu-wrap';wrap.id='v032TopMenu';wrap.innerHTML=`<button class=\"top-menu-btn\" id=\"v032MenuBtn\" aria-label=\"Menü\">☰</button><div class=\"top-menu-panel\" id=\"v032MenuPanel\"><button class=\"top-menu-item active\" data-screen=\"world\"><span>🗺️</span>Welt</button><button class=\"top-menu-item\" data-screen=\"character\"><span>🧙</span>Held</button><button class=\"top-menu-item\" data-screen=\"grow\"><span>🌱</span>Growroom</button><button class=\"top-menu-item\" data-screen=\"quests\"><span>🍺</span>Quest &amp; Schicht</button><button class=\"top-menu-item\" data-screen=\"dungeon\"><span>👹</span>Dungeons</button><button class=\"top-menu-item\" data-screen=\"shop\"><span>🛒</span>Händler</button></div>`;document.body.appendChild(wrap);document.querySelector('#v032MenuBtn').onclick=()=>document.querySelector('#v032MenuPanel').classList.toggle"
+      },
+      {
+        "line": 4565,
+        "text": "function v032WorldMapHTML(){return `<div class=\"world-map-shell\"><div class=\"world-map\" id=\"v032WorldMap\"><div class=\"world-map-title\">🌿 GRÜNHAIN</div><svg class=\"world-path\" viewBox=\"0 0 1000 950\" preserveAspectRatio=\"none\"><polyline points=\"500,115 265,250 680,335 315,465 720,575 365,720 650,835\"/></svg><div class=\"world-map-scenery s1\">🌲🌲</div><div class=\"world-map-scenery s2\">🏔️</div><div class=\"world-map-scenery s3\">🌾</div><div class=\"world-map-scenery s4\">🌲🏚️</div><div class=\"world-map-scenery s5\">🌫️</div><div class=\"world-map-scenery s6\">🌲</div><button class=\"world-map-place hero\" style=\"left:50%;top:12%\" data-v032-go=\"character\"><div class=\"wicon\">🧙</div><div class=\"wname\">Heldenquartier</div><div class=\"wsub\">Ausrüstung & Skills</div></button><button class=\"world-map-place quest\" style=\"left:26%;top:27%\" data-v032-go=\"quests\"><div class=\"wicon\">🍺</div><div class=\"wname\">Krummen Gießkanne</div><div class=\"wsub\">Quests & Gerüchte</div></button><button class=\"world-map-place shop"
+      },
+      {
+        "line": 14311,
+        "text": "function v077Plant(){"
+      },
+      {
+        "line": 14320,
+        "text": "function v077Harvest(){"
+      },
+      {
+        "line": 14329,
+        "text": "function v077ModifyGold(n,source='general'){const b=v077Buff();if(!b)return n;if(b.type==='gold')return Math.round(n*1.25);if(b.type==='harvestGold'&&source==='harvest')return Math.round(n*1.40);return n}"
+      },
+      {
+        "line": 27421,
+        "text": "function v210PlantCheck(now){"
+      },
+      {
+        "line": 30322,
+        "text": "function v237EnsureHarvestReward(){"
+      },
+      {
+        "line": 30340,
+        "text": "function v237ShowHarvestReward(beforePlants,beforeGold){"
+      },
+      {
+        "line": 30597,
+        "text": "function v239PlantProgress(p,now=Date.now()){"
+      },
+      {
+        "line": 30604,
+        "text": "function v239PlantStage(pct){"
+      },
+      {
+        "line": 30817,
+        "text": "function v241PlantReady(pl,now=Date.now()){"
+      },
+      {
+        "line": 30824,
+        "text": "function v241HarvestSnapshot(now=Date.now()){"
+      },
+      {
+        "line": 30832,
+        "text": "function v241ShowHarvestReward(rows,goldGain,xpGain){"
+      },
+      {
+        "line": 61327,
+        "text": "function plant(slot=null){const z=ensure(),id=z.selectedSeed,d=SEEDS[id];if(!d)return;if((s.grow.seeds[id]||0)<1)return toast('Keine Samen','warn',`${d.name} ist leer. Quelle: ${d.source}`);const cap=typeof growCapacity==='function'?growCapacity():Math.min(6,1+(s.grow.roomLevel-1)*2),plants=s.grow.plants;let idx=slot==null?plants.findIndex(x=>!x):Number(slot);if(idx<0)idx=plants.length;if(idx>=cap||plants[idx])return toast('Pflanzenplatz nicht verfügbar','warn','Wähle einen freien, freigeschalteten Topf.');while(plants.length<=idx)plants.push(null);plants[idx]={uid:`v492_${Date.now()}_${Math.random().toString(36).slice(2,7)}`,seed:id,start:Date.now(),duration:Math.round(d.growMs*(typeof lampSpeed==='function'?lampSpeed():1)),care:[false,false,false,false],mutation:null,mutationChecked:false};s.grow.seeds[id]--;z.discovered[id]=true;z.selectedPlantUid=plants[idx].uid;try{if(s.v106Achievements?.stats)s.v106Achievements.stats.plantsGrown=(Number(s.v106Achievements.stats.plantsGrown)||0)+1"
+      },
+      {
+        "line": 61357,
+        "text": "function v497PlantArt(p,detail=false){"
+      },
+      {
+        "line": 61387,
+        "text": "function paintIndicators(){const plants=ensure()&&s.grow.plants||[],ready=plants.filter(p=>p&&progress(p)>=1).length,care=plants.filter(p=>p&&careState(p).available>=0).length;document.querySelectorAll('.top-menu-item[data-screen=\"grow\"]').forEach(el=>el.classList.toggle('v492-attn',!!(ready||care)));const world=document.querySelector('#world .v366-world')||document.querySelector('#world');if(world){let box=world.querySelector('#v492HomeGrowStatus');if(!box){box=document.createElement('div');box.id='v492HomeGrowStatus';box.className='v492-home-grow';box.onclick=()=>{try{typeof v032Go==='function'?v032Go('grow'):null}catch(e){}};world.appendChild(box)}const growing=plants.filter(Boolean).length;box.innerHTML=`<b>🌱 Growroom · ${ready?`${ready} Ernte bereit`:care?`${care} Pflegeaktion${care===1?'':'en'} verfügbar`:`${growing} Pflanze${growing===1?'':'n'} wachsen`}</b><small>${ready||care?'Jetzt nachsehen lohnt sich.':'Deine Pflanzen wachsen weiter, auch wenn du offline bist.'}</small>`}}"
+      },
+      {
+        "line": 61403,
+        "text": "function installDungeonDrops(){try{if(typeof v247ShowDungeonReward!=='function'||v247ShowDungeonReward.__v492SeedDrop)return;const base=v247ShowDungeonReward;const w=function(data){if(window.__V7064_GROW_SERVER_MODE__)return base.apply(this,arguments);let drop='';try{const token=`${data?.dungeonIndex}:${data?.roomIndex}:${data?.boss?'b':'n'}`;if(ensure().lastDungeonSeedToken!==token){ensure().lastDungeonSeedToken=token;const r=Math.random(),boss=!!data?.boss;if(r<(boss?.36:.07)){const id=boss?randomSeed(['nebula','gorilla','lemon','amnesia']):randomSeed(['violet','blue','jack']);s.grow.seeds[id]=(Number(s.grow.seeds[id])||0)+1;ensure().discovered[id]=true;ensure().stats.seedsFound++;drop=id;save(false)}}}catch(e){}const res=base.apply(this,arguments);if(drop)setTimeout(()=>{const extra=document.querySelector('#v247DungeonRewardExtra');if(extra&&!extra.querySelector('.v492-dungeon-seed'))extra.insertAdjacentHTML('beforeend',`<div class=\"v247-dungeon-line v492-dungeon-seed\">🌰 Samen gefun"
+      },
+      {
+        "line": 61408,
+        "text": "window.GL_EVENTS.on('dungeonWon',ev=>{try{if(window.__V7064_GROW_SERVER_MODE__)return;const boss=!!ev.boss;if(Math.random()>=(boss?.36:.07))return;const id=boss?randomSeed(['nebula','gorilla','lemon','amnesia']):randomSeed(['violet','blue','jack']);s.grow.seeds[id]=(Number(s.grow.seeds[id])||0)+1;ensure().discovered[id]=true;ensure().stats.seedsFound++;save(false);setTimeout(()=>{const extra=document.querySelector('#v247DungeonRewardExtra');if(extra&&!extra.querySelector('.v492-dungeon-seed'))extra.insertAdjacentHTML('beforeend',`<div class=\"v247-dungeon-line v492-dungeon-seed\">🌰 Samen gefunden: ${esc(SEEDS[id].name)}</div>`)},0)}catch(e){console.warn('V4.161 dungeon seed event',e)}});"
+      },
+      {
+        "line": 61478,
+        "text": "document.addEventListener('click',e=>{const t=e.target instanceof Element?e.target:null;if(!t)return;if(t.closest('[data-v492-og]')){e.preventDefault();e.stopImmediatePropagation();const a=t.closest('[data-v492-og]').dataset.v492Og;try{if(a==='buy')return v077BuySeed();if(a==='plant')return v077Plant();if(a==='harvest')return v077Harvest()}catch(err){return toast('Wundertüte OG','warn','Spezial-Samen konnte nicht ausgeführt werden.')}}if(t.closest('[data-v492-buy]')){e.preventDefault();e.stopImmediatePropagation();return buySeed(t.closest('[data-v492-buy]').dataset.v492Buy)}if(t.closest('[data-v492-seed]')&&!t.closest('[data-v492-buy]')){e.preventDefault();return selectSeed(t.closest('[data-v492-seed]').dataset.v492Seed)}if(t.closest('[data-v492-plant]')){e.preventDefault();return plant(Number(t.closest('[data-v492-plant]').dataset.v492Plant))}if(t.closest('[data-v492-detail]')){e.preventDefault();return selectPlantDetail(t.closest('[data-v492-detail]').dataset.v492Detail)}if(t.closest"
+      },
+      {
+        "line": 61981,
+        "text": "document.addEventListener('click',e=>{const t=e.target instanceof Element?e.target:null;if(t?.closest('[data-v492-harvest],#harvestBtn,[data-v117-reset],#resetBtn')){allowPlantDropUntil=Date.now()+60000;lastRuntime=null;setTimeout(()=>{if(!document.hidden)lastRuntime=runtimeSnapshot()},1800)}},true);"
+      },
+      {
+        "line": 63017,
+        "text": "window.addEventListener('keydown',e=>{const t=e.target instanceof Element?e.target.closest('[data-v4114-care]'):null;if(!t||!['Enter',' '].includes(e.key))return;e.preventDefault();e.stopPropagation();doCare(t.dataset.v4114Care,Number(t.dataset.v4114CareIndex))},true);"
+      },
+      {
+        "line": 63023,
+        "text": "try{if(typeof v032Go==='function'&&!window.__v4114Go){const base=v032Go;v032Go=function(id){const r=base.apply(this,arguments);if(id==='grow')setTimeout(()=>{const changed=syncLedger('grow-open');if(changed)try{persist(false)}catch(e){};decorateSlots()},60);return r};try{window.v032Go=v032Go}catch(e){}window.__v4114Go=true}}catch(e){}"
+      },
+      {
+        "line": 86541,
+        "text": "window.v688PetDropConfig={groups:GROUPS,weights:WEIGHTS,chances:{grow:'2–6 % pro geernteter Pflanze (+1 Prozentpunkt je erledigter Pflege, max. 4)',quest:'4 %',elite:'12 %',dungeon:'3–6 % Gegner 1–9, abhängig von Dungeon 1–20',dungeonBoss:'12 %',endgame:'5–7 % normale Nebelriss-Gegner, abhängig von Riss 1–9',endgameBoss:'12–15 % Nebelriss-Endboss, abhängig von Riss 1–9',mythicBoss:'1 % Basis +0,15 Prozentpunkte pro sieglosem Pet-Roll; 30. Fehlversuchsschutz'},legendaryPity:'Nach 25 normalen Pet-Funden ohne Legendär ist der nächste erfolgreiche Standard-Pet-Fund Legendär, sofern in dieser Quelle noch eines fehlt.',duplicateRule:'Jede Pet-Qualität pro Tier exakt einmal.',performance:'V6.99 cache + event-driven album; no Pet MutationObserver'};"
+      },
+      {
+        "line": 89589,
+        "text": "if(BUS&&!window.__V6160_HARVEST_EVENT__){window.__V6160_HARVEST_EVENT__=true;BUS.on('growHarvested',ev=>{const rows=Array.isArray(ev.plants)?ev.plants.slice():[];setTimeout(()=>processHarvest(rows),0)})}"
+      },
+      {
+        "line": 89707,
+        "text": "try{window.GL_EVENTS?.on?.('growHarvested',()=>{[0,80,350].forEach(ms=>setTimeout(refreshActive,ms))})}catch(_){}"
+      },
+      {
+        "line": 97890,
+        "text": "try{window.GL_EVENTS?.on?.('growHarvested',()=>setTimeout(refresh,120))}catch(_){}"
+      }
+    ],
+    "forge": [
+      {
+        "line": 2774,
+        "text": "function v6170SetNativeTotal(it){try{if(typeof window.v447NativeTotal==='function')return Math.max(0,Number(window.v447NativeTotal(it))||0)}catch(_){}return Object.values(v6170SetNativeBonus(it)).reduce((n,v)=>n+(Number(v)||0),0)}"
+      },
+      {
+        "line": 3331,
+        "text": "ensureQuests();setInterval(()=>{if(document.hidden)return;/* V4.81: live Growroom is owned by v239; do not rebuild the full Growroom every second. */regenEnergy();document.querySelector('#energy')&&(document.querySelector('#energy').textContent=`${s.energy}/100`);document.querySelector('#dungeonTicketText')&&(document.querySelector('#dungeonTicketText').textContent=dungeonWaitText())},1000);persist();"
+      },
+      {
+        "line": 4006,
+        "text": "function v029MoveReset(){/* V4.02 obsolete new-game card disabled */}"
+      },
+      {
+        "line": 4566,
+        "text": "function v032InstallWorldMap(){/* V4.02 legacy world map permanently disabled */}"
+      },
+      {
+        "line": 4567,
+        "text": "const v032BaseRender=render;render=function(){v032BaseRender();v032InstallMenu();v032InstallWorldMap();};try{v032InstallMenu();v032InstallWorldMap();render();}catch(e){console.error('V4.02 init',e);}"
+      },
+      {
+        "line": 6020,
+        "text": "function v41Svg(type){"
+      },
+      {
+        "line": 6100,
+        "text": "function v41ItemArt(it){"
+      },
+      {
+        "line": 6118,
+        "text": "function v41ClassPortrait(){"
+      },
+      {
+        "line": 6126,
+        "text": "function v41InstallPortrait(){"
+      },
+      {
+        "line": 6132,
+        "text": "function v41InstallNpcBanners(){"
+      },
+      {
+        "line": 6149,
+        "text": "function v41UpgradeShopIcons(){"
+      },
+      {
+        "line": 6164,
+        "text": "function v41UpgradeInventoryIcons(){"
+      },
+      {
+        "line": 6175,
+        "text": "function v41UpgradeEnemy(){"
+      },
+      {
+        "line": 6184,
+        "text": "function v41UpgradeWorldPlaces(){"
+      },
+      {
+        "line": 14695,
+        "text": "function v4143RefreshBootArt(){"
+      },
+      {
+        "line": 18456,
+        "text": "if(!window.__V483_MODERN_WORLD_ONLY__)requestAnimationFrame(v110InstallEventButton);"
+      },
+      {
+        "line": 18787,
+        "text": "if(!window.__V483_MODERN_WORLD_ONLY__)requestAnimationFrame(v111InstallWorldBossCard);"
+      },
+      {
+        "line": 20043,
+        "text": "if(!window.__V483_MODERN_WORLD_ONLY__)requestAnimationFrame(v111InstallWorldBossCard);"
+      },
+      {
+        "line": 20050,
+        "text": "if(!window.__V483_MODERN_WORLD_ONLY__)requestAnimationFrame(v111InstallWorldBossCard);"
+      },
+      {
+        "line": 25501,
+        "text": "function v4143SetAuthBoot(active=true,text='Account wird geprüft …'){"
+      },
+      {
+        "line": 25531,
+        "text": "setTimeout(()=>{try{window.v4143RefreshBootArt?.()}catch(e){}},0);"
+      },
+      {
+        "line": 26822,
+        "text": "function v4137StartBoot(){"
+      },
+      {
+        "line": 26832,
+        "text": "if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',v4137StartBoot,{once:true});"
+      },
+      {
+        "line": 26833,
+        "text": "else setTimeout(v4137StartBoot,0);"
+      },
+      {
+        "line": 38431,
+        "text": "function v400DowngradeDungeonMythic(item){"
+      },
+      {
+        "line": 38563,
+        "text": "function v403OrangeOwned(){"
+      },
+      {
+        "line": 38614,
+        "text": "function v403Version(){"
+      },
+      {
+        "line": 38620,
+        "text": "setTimeout(v403Version,600);"
+      },
+      {
+        "line": 38621,
+        "text": "setTimeout(v403Version,2000);"
+      },
+      {
+        "line": 38686,
+        "text": "wrap.querySelectorAll('[data-v405-cat]').forEach(btn=>btn.addEventListener('click',()=>{active=btn.dataset.v405Cat;render()}));"
+      },
+      {
+        "line": 38740,
+        "text": "function v412GuildInfo(g){"
+      },
+      {
+        "line": 39708,
+        "text": "try{if(typeof render==='function'&&!window.__v4103Render){const base=render;render=function(){const r=base.apply(this,arguments);queueDecorate();return r};try{window.render=render}catch(e){}window.__v4103Render=true}}catch(e){}"
+      },
+      {
+        "line": 39761,
+        "text": "try{if(typeof render==='function'&&!render.__v4106Items){const b=render;render=function(){const r=b.apply(this,arguments);requestAnimationFrame(redecorate);return r};render.__v4106Items=true;window.render=render}}catch(e){}"
+      },
+      {
+        "line": 39889,
+        "text": "function render(report){const sum=document.getElementById('v4102QaSummary'),box=document.getElementById('v4102QaResults'),live=document.getElementById('v4102QaLive');if(sum)sum.innerHTML=`<div class=\"v4102-qa-stat\"><small>TESTS</small><b>${report.total}</b></div><div class=\"v4102-qa-stat\"><small>BESTANDEN</small><b class=\"v4102-pass\">${report.passed}</b></div><div class=\"v4102-qa-stat\"><small>FEHLER</small><b class=\"v4102-fail\">${report.failed}</b></div><div class=\"v4102-qa-stat\"><small>WARNUNGEN</small><b class=\"v4102-warn\">${report.warnings}</b></div>`;let p=document.getElementById('v4106TechPanel');if(!p&&sum){p=document.createElement('div');p.id='v4106TechPanel';sum.insertAdjacentElement('afterend',p)}if(p)p.innerHTML=techHtml();const logs=[...(typeof window.v4102RuntimeIssues==='function'?window.v4102RuntimeIssues():[]),...runtimeIssues()];if(live)live.innerHTML=logs.length?`🛡️ Laufzeitwächter: <b>${logs.length}</b> Meldung${logs.length===1?'':'en'} · letzte: ${esc(logs.at(-1)?.co"
+      },
+      {
+        "line": 39891,
+        "text": "function open(){if(typeof baseOpen==='function')baseOpen();setTimeout(()=>{const r=run();render(r);bind();paintSettings(r);document.querySelector('.v4102-qa-head small')?.replaceChildren(document.createTextNode('QA 2.0 · Flow + UI/Pixel + State + Performance/Legacy · Spielstand bleibt geschützt'))},0)}"
+      },
+      {
+        "line": 40106,
+        "text": "function verified(uid){try{return !!(uid&&typeof window.v452AccountVerified==='function'&&window.v452AccountVerified(uid))}catch(e){return false}}"
+      },
+      {
+        "line": 40134,
+        "text": "<!-- V4.159: full Systemtechnik QA no longer runs during login/startup or pageshow. It runs only when Systemtechnik is opened/restarted. Central version ownership uses bounded hooks, never a MutationObserver feedback loop. -->"
+      },
+      {
+        "line": 40205,
+        "text": "box.querySelectorAll('[data-v4140-plus]').forEach(btn=>{btn.onclick=()=>{const k=String(btn.dataset.v4140Plus||'');if(!DEF.some(x=>x[0]===k)||points()<1)return;try{if(typeof incAttr==='function')incAttr(k)}catch(e){console.warn('V4.159 attribute spend',e)};requestAnimationFrame(paint)}});"
+      },
+      {
+        "line": 40212,
+        "text": "try{if(typeof render==='function'&&!window.__v4140RenderWrapped){const base=render;render=function(){const r=base.apply(this,arguments);paint();return r};try{window.render=render}catch(e){}window.__v4140RenderWrapped=true}}catch(e){}"
+      },
+      {
+        "line": 40213,
+        "text": "window.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')==='character')paint()});window.__v4140GoWrapped='v7119-event';"
+      },
+      {
+        "line": 40214,
+        "text": "document.addEventListener('click',e=>{if(e.target?.closest?.('#v459CharacterTabs [data-tab=\"attributes\"]'))requestAnimationFrame(paint)},true);"
+      },
+      {
+        "line": 43438,
+        "text": "const timer=(window.__V477_NATIVE_SET_INTERVAL__||window.setInterval)(()=>{"
+      },
+      {
+        "line": 44292,
+        "text": "setTimeout(()=>{try{v322InstallMenuEntry();v322InstallHarzPlus()}catch(e){console.error('V4.02 Harz Dealer init',e)}},350);"
+      },
+      {
+        "line": 45262,
+        "text": "function v334ApplyVersion(){ /* V4.123: current release owns version UI. */ }"
+      },
+      {
+        "line": 52805,
+        "text": "function version(){document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version]').forEach(el=>{if(el)el.textContent=V404_VERSION})}"
+      },
+      {
+        "line": 52940,
+        "text": "function v422Quality(it){"
+      },
+      {
+        "line": 52945,
+        "text": "function v422Base(it){"
+      },
+      {
+        "line": 52958,
+        "text": "function v422Scaled(base,q,level){"
+      },
+      {
+        "line": 52967,
+        "text": "function v422Canonicalize(it){"
+      },
+      {
+        "line": 52978,
+        "text": "function v422All(){"
+      },
+      {
+        "line": 52982,
+        "text": "function v422Snapshot(){"
+      },
+      {
+        "line": 52985,
+        "text": "function v422Restore(snap){"
+      },
+      {
+        "line": 52988,
+        "text": "function v422PaintInventory(){"
+      },
+      {
+        "line": 53784,
+        "text": "if(typeof v032Go==='function'&&!window.__v433GoWrapped){"
+      },
+      {
+        "line": 54054,
+        "text": "window.__v435BookRefreshTimer=setTimeout(()=>{"
+      },
+      {
+        "line": 54265,
+        "text": "if(typeof v032Go==='function'&&!window.__v438HallGoWrapped){"
+      },
+      {
+        "line": 54466,
+        "text": "window.addEventListener('pageshow',()=>{bindShop();settle();stamp()},{passive:true}); /* V4.123: removed useless late clear of already-fired one-shot timeout. */"
+      },
+      {
+        "line": 54598,
+        "text": "setTimeout(()=>{moveInventory();cleanArtifacts();stamp()},5200); /* V4.123: removed useless late clear of already-fired one-shot timeout. */"
+      },
+      {
+        "line": 54953,
+        "text": "setTimeout(()=>{repaint();stamp()},5200); /* V4.123: removed useless late clear of already-fired one-shot timeout. */"
+      },
+      {
+        "line": 55167,
+        "text": "if(typeof v032Go==='function'&&!window.__v446GoWrapped){"
+      },
+      {
+        "line": 55477,
+        "text": "setTimeout(()=>{all();stamp()},700);setTimeout(()=>{all();stamp()},2600);setTimeout(()=>{all();stamp()},6000); /* V4.123: removed useless late clear of already-fired one-shot timeout. */"
+      },
+      {
+        "line": 56096,
+        "text": "box.querySelector('#v450DismissBtn')?.addEventListener('click',()=>box.remove());"
+      },
+      {
+        "line": 56482,
+        "text": "setTimeout(stamp,250); /* V4.123: removed useless late clear of already-fired one-shot timeout. */"
+      },
+      {
+        "line": 56552,
+        "text": "[250,900,2200,5200].forEach(ms=>setTimeout(()=>{stamp();const uid=uidNow();if(uid&&gateReady(uid)&&reconciledUid!==uid)void reconcile('timer')},ms)); /* V4.123: removed useless late clear of already-fired one-shot timeout. */"
+      },
+      {
+        "line": 56662,
+        "text": "[250,900,2200,5200].forEach(ms=>setTimeout(()=>{normalize();stamp()},ms)); /* V4.123: removed useless late clear of already-fired one-shot timeout. */"
+      },
+      {
+        "line": 56755,
+        "text": "[250,900,2200,5200].forEach(ms=>setTimeout(()=>{maxLevelUi();stamp()},ms)); /* V4.123: removed useless late clear of already-fired one-shot timeout. */"
+      },
+      {
+        "line": 56833,
+        "text": "const finish=win=>{busy=false;if(!win){try{window.v6111Sfx?.('lose')}catch(_){}if(log)log.textContent=`Niederlage gegen ${en.name}. Verbessere Ausrüstung, Attribute oder Talente und versuche es erneut.`;return setTimeout(renderEndgame,700)}try{window.v6111Sfx?.('win')}catch(_){}let xp=en.xp,gold=en.gold;try{if(typeof v408GuildGold==='function')gold=v408GuildGold(gold)}catch(_){}s.gold=(Number(s.gold)||0)+gold;try{addXp(xp)}catch(err){s.xp=(Number(s.xp)||0)+xp}st.wins++;try{window.v688PetEndgameWin?.(i+1,!!en.boss)}catch(err){console.warn('V6.89 Nebelriss Pet Drop',err)}let item=null,harz=0;if(en.boss){item=makeLegendary(en.rec);harz=1+(Math.random()<.35?1:0);s.harzTaler=(Number(s.harzTaler)||0)+harz;st.bossWins++;st.progress[i]=10;if(!st.completed.includes(i))st.completed.push(i)}else{st.progress[i]=Math.min(10,r+1);item=makeRoomLoot(en.rec)}if(item){s.inventory??=[];s.inventory.push(item)}if(en.boss&&i<TIER_COUNT-1)st.selected=i+1;safePersist();try{window.v411AwardGuildActivity?.('dun"
+      },
+      {
+        "line": 56840,
+        "text": "try{if(typeof render==='function'&&!window.__v457RenderWrapped){const base=render;render=function(){const r=base.apply(this,arguments);install();return r};window.render=render;window.__v457RenderWrapped=true}}catch(e){}"
+      },
+      {
+        "line": 56842,
+        "text": "try{if(typeof v032Go==='function'&&!window.__v457GoWrapped){const base=v032Go;v032Go=function(id){const r=base.apply(this,arguments);if(id==='endgame')renderEndgame();else if(id==='world')ensureWorldLink();ensureMenu();stamp();return r};window.v032Go=v032Go;window.__v457GoWrapped=true}}catch(e){}"
+      },
+      {
+        "line": 56843,
+        "text": "install();document.addEventListener('DOMContentLoaded',install,{once:true});window.addEventListener('pageshow',install,{passive:true});[250,900,2200,5200].forEach(ms=>setTimeout(install,ms));setTimeout(stamp,350); /* V4.123: removed useless late clear of already-fired one-shot timeout. */"
+      },
+      {
+        "line": 56988,
+        "text": "window.addEventListener('pageshow',()=>{normalizeKeys();stamp()},{passive:true}); /* V4.123: removed useless late clear of already-fired one-shot timeout. */"
+      },
+      {
+        "line": 57478,
+        "text": "try{if(typeof render==='function'&&!window.__v459RenderWrapped){const base=render;render=function(){const r=base.apply(this,arguments);if(document.getElementById('character')?.classList.contains('active')){layout();compactInventory();updateHero()}stamp();return r};try{window.render=render}catch(e){}window.__v459RenderWrapped=true}}catch(e){}"
+      },
+      {
+        "line": 57479,
+        "text": "window.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')==='character'){layout();compactInventory();updateHero();stamp()}});window.__v459GoWrapped='v7119-event';"
+      },
+      {
+        "line": 58080,
+        "text": "setTimeout(()=>{try{if(document.querySelector('#shop')?.classList.contains('active'))renderShop()}catch(e){console.error('V4.67 init',e)}},80);"
+      },
+      {
+        "line": 58242,
+        "text": "const base=render;render=function(){const r=base.apply(this,arguments);if(document.getElementById('shop')?.classList.contains('active'))arrange();stamp();return r};window.render=render;window.__v464RenderWrapped=true;"
+      },
+      {
+        "line": 58779,
+        "text": "try{if(typeof render==='function'&&!window.__v466RenderWrapped){const base=render;render=function(){const r=base.apply(this,arguments);if(document.querySelector('#shop')?.classList.contains('active'))rebindShopButtons();decorateAll();stamp();return r};window.render=render;window.__v466RenderWrapped=true}}catch(e){}"
+      },
+      {
+        "line": 58947,
+        "text": "if(typeof v032Go==='function'&&!window.__v467DungeonGoWrapped){"
+      },
+      {
+        "line": 58963,
+        "text": "window.v032Go=v032Go;window.__v467DungeonGoWrapped=true;"
+      },
+      {
+        "line": 59396,
+        "text": "[100,350,900,1800,4200,8200,12500].forEach(ms=>setTimeout(settle,ms)); /* V4.123: removed useless late clear of already-fired one-shot timeout. */"
+      },
+      {
+        "line": 60052,
+        "text": "window.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')==='character')updateBars()});window.__v480GoWrapped='v7119-event';"
+      },
+      {
+        "line": 60076,
+        "text": "function visibility(){try{document.documentElement.classList.toggle('v481-hidden',document.hidden)}catch(e){}}"
+      },
+      {
+        "line": 60434,
+        "text": "ov.addEventListener('click',e=>{if(e.target===ov&&document.getElementById('v484Close')?.classList.contains('show'))close()});"
+      },
+      {
+        "line": 60465,
+        "text": "const id=uid();setTimeout(async()=>{try{if(id&&typeof v452AccountVerified==='function'&&v452AccountVerified(id)&&typeof v075WriteCloudSave==='function')await v075WriteCloudSave(true)}catch(e){console.warn('V4.86 login reward cloud save',e)}},50);"
+      },
+      {
+        "line": 60518,
+        "text": "if(typeof v032Go==='function'&&!window.__v484GoWrapped){"
+      },
+      {
+        "line": 60520,
+        "text": "try{window.v032Go=v032Go}catch(e){}window.__v484GoWrapped=true;"
+      },
+      {
+        "line": 60936,
+        "text": "card.querySelector('[data-go=\"forge\"]')?.addEventListener('click',()=>v032Go('forge'));"
+      },
+      {
+        "line": 60969,
+        "text": "function renderForge(){"
+      },
+      {
+        "line": 61031,
+        "text": "sec.querySelectorAll('[data-v667-tab]').forEach(btn=>btn.addEventListener('click',()=>{const next=btn.dataset.v667Tab;if(next!=='dismantle'&&next!=='craft')return;if(next===forgeTab)return;forgeTab=next;renderForge()}));"
+      },
+      {
+        "line": 61032,
+        "text": "const list=sec.querySelector('#v488ForgeInventory');if(list){list.scrollTop=listScroll;list.addEventListener('scroll',()=>listScroll=list.scrollTop,{passive:true})}"
+      },
+      {
+        "line": 61033,
+        "text": "sec.querySelector('#v667SelectAll')?.addEventListener('click',()=>{if(busy)return;listScroll=list?.scrollTop||0;const rows=eligibleRows(),all=rows.length>0&&rows.every(x=>selected.has(x.key));if(all)rows.forEach(x=>selected.delete(x.key));else rows.forEach(x=>selected.add(x.key));renderForge()});"
+      },
+      {
+        "line": 61035,
+        "text": "sec.querySelector('#v488Dismantle')?.addEventListener('click',dismantle);"
+      },
+      {
+        "line": 61036,
+        "text": "sec.querySelector('#v488Craft')?.addEventListener('click',craft);"
+      },
+      {
+        "line": 61037,
+        "text": "try{if(typeof window.v4103DecorateItemSurfaces==='function')setTimeout(()=>window.v4103DecorateItemSurfaces(),0)}catch(e){}"
+      },
+      {
+        "line": 61038,
+        "text": "try{if(typeof window.v4112RefreshAllItemArt==='function')setTimeout(()=>window.v4112RefreshAllItemArt(sec),0)}catch(e){}"
+      },
+      {
+        "line": 61045,
+        "text": "const x=document.createElement('i');x.className='v488-shard';x.style.setProperty('--c',palette[i%palette.length]);x.style.setProperty('--x',`${Math.round((Math.random()-.5)*250)}px`);x.style.setProperty('--y',`${-35-Math.round(Math.random()*155)}px`);x.style.setProperty('--r',`${Math.round(Math.random()*360)}deg`);x.style.setProperty('--d',`${Math.round(Math.random()*90)}ms`);st.appendChild(x);setTimeout(()=>x.remove(),900)"
+      },
+      {
+        "line": 61047,
+        "text": "setTimeout(()=>st.classList.remove('hit','crafting'),1050);"
+      },
+      {
+        "line": 61070,
+        "text": "busy=true;z.fragments-=c.fragments;s.gold=(Number(s.gold)||0)-c.gold;const item=createPrismatic();s.inventory=Array.isArray(s.inventory)?s.inventory:[];s.inventory.push(item);z.crafted++;lastCraft=item;save(false);burst('craft','prism');busy=false;renderForge();try{if(typeof render==='function')render()}catch(e){}setTimeout(()=>{if(document.getElementById('forge')?.classList.contains('active')){renderForge();burst('craft','prism')}},30);try{if(typeof v063Toast==='function')v063Toast('🌈 Prismatisches Item geschmiedet!','success',item.name)}catch(e){}"
+      },
+      {
+        "line": 61109,
+        "text": "if(typeof v123OpenItem==='function'&&!window.__v488ItemOverlay){const base=v123OpenItem;v123OpenItem=function(slot){const r=base.apply(this,arguments);setTimeout(()=>{const it=s.equipment?.[slot];if(forged(it)){const ov=document.getElementById('v123ItemOverlay');ov?.querySelectorAll('button').forEach(b=>{if(/💰|verkauf/i.test(b.textContent||'')){b.disabled=false;b.textContent='💰 Verkaufen · 0 Gold'}})}},0);return r};window.__v488ItemOverlay=true}"
+      },
+      {
+        "line": 61116,
+        "text": "if(typeof v032Go==='function'&&!window.__v488Go){const base=v032Go;v032Go=function(id){ensureScreen();const r=base.apply(this,arguments);ensureMenu();if(id==='forge')renderForge();if(id==='world'){setTimeout(ensureHomeLink,20);setTimeout(ensureHomeLink,140)}stamp();return r};try{window.v032Go=v032Go}catch(e){}window.__v488Go=true}"
+      },
+      {
+        "line": 61119,
+        "text": "if(typeof render==='function'&&!window.__v488Render){const base=render;render=function(){const r=base.apply(this,arguments);ensureScreen();ensureMenu();ensureHomeLink();paintPrismaticInventory();if(document.getElementById('forge')?.classList.contains('active'))renderForge();stamp();return r};try{window.render=render}catch(e){}window.__v488Render=true}"
+      },
+      {
+        "line": 61236,
+        "text": "function v494Visible(el){if(!el)return false;try{return getComputedStyle(el).display!=='none'&&getComputedStyle(el).visibility!=='hidden'}catch(e){return el.style?.display!=='none'}}"
+      },
+      {
+        "line": 61237,
+        "text": "function v494GrowModeFactor(){"
+      },
+      {
+        "line": 61265,
+        "text": "function v4109ApplySeedPurchase(state,id){"
+      },
+      {
+        "line": 61279,
+        "text": "function v4109RefreshSeedPurchaseUi(){"
+      },
+      {
+        "line": 61321,
+        "text": "setTimeout(()=>{try{if(typeof v495RenderSeedInventory==='function')v495RenderSeedInventory()}catch(e){}},80);"
+      },
+      {
+        "line": 61327,
+        "text": "function plant(slot=null){const z=ensure(),id=z.selectedSeed,d=SEEDS[id];if(!d)return;if((s.grow.seeds[id]||0)<1)return toast('Keine Samen','warn',`${d.name} ist leer. Quelle: ${d.source}`);const cap=typeof growCapacity==='function'?growCapacity():Math.min(6,1+(s.grow.roomLevel-1)*2),plants=s.grow.plants;let idx=slot==null?plants.findIndex(x=>!x):Number(slot);if(idx<0)idx=plants.length;if(idx>=cap||plants[idx])return toast('Pflanzenplatz nicht verfügbar','warn','Wähle einen freien, freigeschalteten Topf.');while(plants.length<=idx)plants.push(null);plants[idx]={uid:`v492_${Date.now()}_${Math.random().toString(36).slice(2,7)}`,seed:id,start:Date.now(),duration:Math.round(d.growMs*(typeof lampSpeed==='function'?lampSpeed():1)),care:[false,false,false,false],mutation:null,mutationChecked:false};s.grow.seeds[id]--;z.discovered[id]=true;z.selectedPlantUid=plants[idx].uid;try{if(s.v106Achievements?.stats)s.v106Achievements.stats.plantsGrown=(Number(s.v106Achievements.stats.plantsGrown)||0)+1"
+      },
+      {
+        "line": 61357,
+        "text": "function v497PlantArt(p,detail=false){"
+      },
+      {
+        "line": 61385,
+        "text": "function ensureOverlay(){let ov=document.getElementById('v492GrowBook');if(ov)return ov;ov=document.createElement('div');ov.id='v492GrowBook';ov.className='v492-overlay';ov.innerHTML='<div class=\"v492-modal\"><div class=\"v492-modal-head\"><h2>📗 Sortenbuch</h2><button class=\"v492-modal-close\" data-v492-close>✕</button></div><div id=\"v492GrowBookBody\"></div></div>';document.body.appendChild(ov);ov.addEventListener('click',e=>{if(e.target===ov||e.target.closest('[data-v492-close]'))ov.classList.remove('show')});return ov}"
+      },
+      {
+        "line": 61387,
+        "text": "function paintIndicators(){const plants=ensure()&&s.grow.plants||[],ready=plants.filter(p=>p&&progress(p)>=1).length,care=plants.filter(p=>p&&careState(p).available>=0).length;document.querySelectorAll('.top-menu-item[data-screen=\"grow\"]').forEach(el=>el.classList.toggle('v492-attn',!!(ready||care)));const world=document.querySelector('#world .v366-world')||document.querySelector('#world');if(world){let box=world.querySelector('#v492HomeGrowStatus');if(!box){box=document.createElement('div');box.id='v492HomeGrowStatus';box.className='v492-home-grow';box.onclick=()=>{try{typeof v032Go==='function'?v032Go('grow'):null}catch(e){}};world.appendChild(box)}const growing=plants.filter(Boolean).length;box.innerHTML=`<b>🌱 Growroom · ${ready?`${ready} Ernte bereit`:care?`${care} Pflegeaktion${care===1?'':'en'} verfügbar`:`${growing} Pflanze${growing===1?'':'n'} wachsen`}</b><small>${ready||care?'Jetzt nachsehen lohnt sich.':'Deine Pflanzen wachsen weiter, auch wenn du offline bist.'}</small>`}}"
+      },
+      {
+        "line": 61402,
+        "text": "function installQuestDrops(){const wrapped=new WeakSet();['claimQuest','v233ClaimQuest'].forEach(name=>{try{let fn=name==='claimQuest'?(typeof claimQuest==='function'?claimQuest:null):(typeof v233ClaimQuest==='function'?v233ClaimQuest:null);if(typeof fn!=='function'||fn.__v492SeedDrop)return;const w=function(){const q=s.quests?.active,ready=q&&Date.now()>=Number(q.ends||0),token=q?`${q.name}|${q.ends}`:'';const before=q;const after=()=>{if(!ready||!before||s.quests?.active===before||ensure().lastQuestSeedToken===token)return;ensure().lastQuestSeedToken=token;const elite=String(q.v309Role||'').includes('elite'),roll=Math.random();if(roll<(elite?.42:.24)){const id=elite?randomSeed(['critical','lemon','amnesia','violet','blue']):randomSeed(['moss','lime','jack','violet','blue']);addSeed(id,1,elite?'Elite-Quest':'Quest')}};let r=fn.apply(this,arguments);if(r&&typeof r.then==='function')r.finally(after);else setTimeout(after,0);return r};w.__v492SeedDrop=true;if(name==='claimQuest'){claimQu"
+      },
+      {
+        "line": 61403,
+        "text": "function installDungeonDrops(){try{if(typeof v247ShowDungeonReward!=='function'||v247ShowDungeonReward.__v492SeedDrop)return;const base=v247ShowDungeonReward;const w=function(data){if(window.__V7064_GROW_SERVER_MODE__)return base.apply(this,arguments);let drop='';try{const token=`${data?.dungeonIndex}:${data?.roomIndex}:${data?.boss?'b':'n'}`;if(ensure().lastDungeonSeedToken!==token){ensure().lastDungeonSeedToken=token;const r=Math.random(),boss=!!data?.boss;if(r<(boss?.36:.07)){const id=boss?randomSeed(['nebula','gorilla','lemon','amnesia']):randomSeed(['violet','blue','jack']);s.grow.seeds[id]=(Number(s.grow.seeds[id])||0)+1;ensure().discovered[id]=true;ensure().stats.seedsFound++;drop=id;save(false)}}}catch(e){}const res=base.apply(this,arguments);if(drop)setTimeout(()=>{const extra=document.querySelector('#v247DungeonRewardExtra');if(extra&&!extra.querySelector('.v492-dungeon-seed'))extra.insertAdjacentHTML('beforeend',`<div class=\"v247-dungeon-line v492-dungeon-seed\">🌰 Samen gefun"
+      },
+      {
+        "line": 61408,
+        "text": "window.GL_EVENTS.on('dungeonWon',ev=>{try{if(window.__V7064_GROW_SERVER_MODE__)return;const boss=!!ev.boss;if(Math.random()>=(boss?.36:.07))return;const id=boss?randomSeed(['nebula','gorilla','lemon','amnesia']):randomSeed(['violet','blue','jack']);s.grow.seeds[id]=(Number(s.grow.seeds[id])||0)+1;ensure().discovered[id]=true;ensure().stats.seedsFound++;save(false);setTimeout(()=>{const extra=document.querySelector('#v247DungeonRewardExtra');if(extra&&!extra.querySelector('.v492-dungeon-seed'))extra.insertAdjacentHTML('beforeend',`<div class=\"v247-dungeon-line v492-dungeon-seed\">🌰 Samen gefunden: ${esc(SEEDS[id].name)}</div>`)},0)}catch(e){console.warn('V4.161 dungeon seed event',e)}});"
+      },
+      {
+        "line": 61416,
+        "text": "function v495EnsureSeedInventory(){"
+      },
+      {
+        "line": 61426,
+        "text": "if(seed&&!t.closest('[data-v492-buy]'))setTimeout(()=>v495CloseSeedInventory(),45);"
+      },
+      {
+        "line": 61427,
+        "text": "if(t.closest('[data-v492-buy],[data-v492-og]'))setTimeout(()=>v495RenderSeedInventory(),90);"
+      },
+      {
+        "line": 61431,
+        "text": "function v495SeedSourceHint(id,d){"
+      },
+      {
+        "line": 61436,
+        "text": "function v495SeedInventoryCard(id,d){"
+      },
+      {
+        "line": 61448,
+        "text": "function v495RenderSeedInventory(){"
+      },
+      {
+        "line": 61455,
+        "text": "function v495OpenSeedInventory(){"
+      },
+      {
+        "line": 61458,
+        "text": "function v495CloseSeedInventory(){const ov=document.getElementById('v495SeedInventory');if(ov)ov.classList.remove('show');document.body.classList.remove('v495-seed-open');document.querySelector('.v492-grow')?.classList.remove('v493-seeds-open');const b=document.querySelector('[data-v493-seeds]');if(b)b.textContent='🌰 Samenlager'}"
+      },
+      {
+        "line": 61478,
+        "text": "document.addEventListener('click',e=>{const t=e.target instanceof Element?e.target:null;if(!t)return;if(t.closest('[data-v492-og]')){e.preventDefault();e.stopImmediatePropagation();const a=t.closest('[data-v492-og]').dataset.v492Og;try{if(a==='buy')return v077BuySeed();if(a==='plant')return v077Plant();if(a==='harvest')return v077Harvest()}catch(err){return toast('Wundertüte OG','warn','Spezial-Samen konnte nicht ausgeführt werden.')}}if(t.closest('[data-v492-buy]')){e.preventDefault();e.stopImmediatePropagation();return buySeed(t.closest('[data-v492-buy]').dataset.v492Buy)}if(t.closest('[data-v492-seed]')&&!t.closest('[data-v492-buy]')){e.preventDefault();return selectSeed(t.closest('[data-v492-seed]').dataset.v492Seed)}if(t.closest('[data-v492-plant]')){e.preventDefault();return plant(Number(t.closest('[data-v492-plant]').dataset.v492Plant))}if(t.closest('[data-v492-detail]')){e.preventDefault();return selectPlantDetail(t.closest('[data-v492-detail]').dataset.v492Detail)}if(t.closest"
+      },
+      {
+        "line": 61557,
+        "text": "document.addEventListener('click',e=>{const t=e.target instanceof Element?e.target:null;if(!t)return;const toggle=t.closest('[data-v493-seeds]');if(toggle){e.preventDefault();const root=document.querySelector('.v492-grow');if(root){root.classList.toggle('v493-seeds-open');syncToggle()}return}"
+      },
+      {
+        "line": 61558,
+        "text": "const seed=t.closest('[data-v492-seed]');if(seed&&!t.closest('[data-v492-buy]')&&window.matchMedia('(max-width:760px)').matches){setTimeout(()=>{const root=document.querySelector('.v492-grow');if(root){root.classList.remove('v493-seeds-open');syncToggle();document.querySelector('.v492-scene')?.scrollIntoView({block:'start',behavior:'smooth'})}},40)}"
+      },
+      {
+        "line": 61595,
+        "text": "document.addEventListener('click',e=>{const t=e.target instanceof Element?e.target:null;if(!t)return;const b=t.closest('[data-v493-seeds]');if(b){setTimeout(()=>{try{window.v495OpenSeedInventory?.()}catch(_){}},0)}},true);"
+      },
+      {
+        "line": 61596,
+        "text": "document.addEventListener('keydown',e=>{if(e.key==='Escape')try{window.v495CloseSeedInventory?.()}catch(_){}});"
+      },
+      {
+        "line": 61754,
+        "text": "if(typeof v032Go==='function'&&!v032Go.__v498){"
+      },
+      {
+        "line": 61972,
+        "text": "let ov=document.getElementById('v4102QaOverlay');if(!ov){ov=document.createElement('div');ov.id='v4102QaOverlay';ov.innerHTML=`<div id=\"v4102QaPanel\"><div class=\"v4102-qa-head\"><div><h3>🧪 Grow Legends Systemtest</h3><small>Automatische Regressionstests · echter Spielstand wird nicht als Testsandbox benutzt</small></div><button class=\"btn secondary\" id=\"v4102QaClose\">✕</button></div><div class=\"v4102-qa-summary\" id=\"v4102QaSummary\"></div><div id=\"v4102QaLive\"></div><div id=\"v4102QaResults\"></div><div class=\"v4102-qa-actions\"><button class=\"btn\" id=\"v4102QaRun\">🧪 Tests erneut starten</button><button class=\"btn secondary\" id=\"v4102QaClear\">Protokoll löschen</button></div></div>`;document.body.appendChild(ov);ov.addEventListener('click',e=>{if(e.target===ov)ov.classList.remove('show')});ov.querySelector('#v4102QaClose').onclick=()=>ov.classList.remove('show');ov.querySelector('#v4102QaRun').onclick=()=>{runQA();renderOverlay()};ov.querySelector('#v4102QaClear').onclick=()=>{try{localStorag"
+      },
+      {
+        "line": 61978,
+        "text": "function renderOverlay(){ensureUi();const r=lastReport||runQA(),sum=document.getElementById('v4102QaSummary'),box=document.getElementById('v4102QaResults'),live=document.getElementById('v4102QaLive');if(sum)sum.innerHTML=`<div class=\"v4102-qa-stat\"><small>TESTS</small><b>${r.total}</b></div><div class=\"v4102-qa-stat\"><small>BESTANDEN</small><b class=\"v4102-pass\">${r.passed}</b></div><div class=\"v4102-qa-stat\"><small>FEHLER</small><b class=\"v4102-fail\">${r.failed}</b></div><div class=\"v4102-qa-stat\"><small>WARNUNGEN</small><b class=\"v4102-warn\">${r.warnings}</b></div>`;const logs=runtimeLogs();if(live)live.innerHTML=logs.length?`🛡️ Laufzeitwächter: <b>${logs.length}</b> Ereignis${logs.length===1?'':'se'} gespeichert. Letztes: ${esc(logs.at(-1)?.code||'')}`:'🛡️ Laufzeitwächter aktiv · bisher keine Zustandsregression erkannt.';if(box){const groups={};r.results.forEach(x=>(groups[x.category]??=[]).push(x));box.innerHTML=Object.entries(groups).map(([g,rows])=>`<div class=\"v4102-qa-group\"><h"
+      },
+      {
+        "line": 61981,
+        "text": "document.addEventListener('click',e=>{const t=e.target instanceof Element?e.target:null;if(t?.closest('[data-v492-harvest],#harvestBtn,[data-v117-reset],#resetBtn')){allowPlantDropUntil=Date.now()+60000;lastRuntime=null;setTimeout(()=>{if(!document.hidden)lastRuntime=runtimeSnapshot()},1800)}},true);"
+      },
+      {
+        "line": 61982,
+        "text": "try{if(typeof v141BuildSettings==='function'&&!v141BuildSettings.__v4102){const base=v141BuildSettings;v141BuildSettings=function(){const r=base.apply(this,arguments);setTimeout(ensureUi,0);return r};v141BuildSettings.__v4102=true}}catch(e){}"
+      },
+      {
+        "line": 62068,
+        "text": "/* V4.160: old settings-row MutationObserver retired; the row must not be recreated. */"
+      },
+      {
+        "line": 62513,
+        "text": "<div class=\"v4107-panel gl-code-diag-shell\" id=\"glCodeDiag\"><div class=\"gl-code-diag-intro\"><div><b>🔎 CODE-DIAGNOSE · NUR LESEN</b><span>Findet sichere Konflikte, Timer-/Observer-Hotspots und Owner-Ketten. Es wird nichts gelöscht, repariert oder am Spielstand verändert.</span></div><div class=\"gl-code-diag-actions\"><button class=\"btn\" id=\"glCodeDiagRun\">Diagnose starten</button><button class=\"btn secondary\" id=\"glCodeDiagCopy\" disabled>📋 Bericht kopieren</button></div></div><div id=\"glCodeDiagBody\" class=\"gl-code-diag-empty\">Die Prüfung startet nur auf Knopfdruck, damit im normalen Spiel kein zusätzlicher Hintergrund-Scan läuft.</div><div class=\"gl-profiler\" id=\"glRuntimeProfiler\"><div class=\"gl-profiler-head\"><div><b>⏱️ 30-SEKUNDEN LAUFZEIT-PROFILER · NUR MESSEN</b><span>Misst echte Timer-/MutationObserver-Aufrufe und zentrale Renderer. Während der Messung ruhig durch Startseite → Charakter → Quest → Dungeon → Gilde wechseln.</span></div><div class=\"gl-profiler-actions\"><button class="
+      },
+      {
+        "line": 62668,
+        "text": "try{if(typeof v032Go==='function'&&!window.__v4107Go){const base=v032Go;const wrap=function(id){ensureScreen();installMenu();if(id==='systemtech'&&(typeof v093IsAdmin==='undefined'||v093IsAdmin!==true))return base.call(this,'world');let p0=null,sig='';try{const pf=window.v4125StableCombatPower;p0=typeof pf==='function'?Number(pf()):(typeof combatPower==='function'?Number(combatPower()):null);sig=corePowerSignature()}catch(e){}const r=base.apply(this,arguments);if(id==='systemtech')setTimeout(runAndRender,0);else lastNav=id||lastNav;setTimeout(()=>{try{if(id!=='systemtech'&&p0!=null&&sig===corePowerSignature()){const pf=window.v4125StableCombatPower;const p1=typeof pf==='function'?Number(pf()):Number(combatPower());if(Number.isFinite(p1)&&p1!==p0)pushErr('POWER_NAVIGATION_DRIFT',`Kampfkraft änderte sich nur durch Seitenwechsel: ${p0} → ${p1}`,'warn')}}catch(e){}},180);return r};v032Go=wrap;window.v032Go=wrap;window.__v4107Go=true}}catch(e){}"
+      },
+      {
+        "line": 62679,
+        "text": "setTimeout(()=>{try{const c=cachedReport();if(c){last=c;paintSettingsBadge(c);if(document.getElementById('systemtech')?.classList.contains('active'))renderPage(c)}}catch(e){pushErr('QA_CACHE_ERROR',e.message||String(e),'warn')}},2600); /* V4.159: never run ~3k QA tests during normal boot/login. */"
+      },
+      {
+        "line": 62680,
+        "text": "[120,900,2600].forEach(ms=>setTimeout(()=>{stamp();installMenu()},ms)); /* V4.123: long obsolete version/menu fan-out retired. */"
+      },
+      {
+        "line": 62681,
+        "text": "window.addEventListener('pageshow',()=>{stamp();installMenu();setTimeout(()=>{try{const c=last||cachedReport();if(c){last=c;paintSettingsBadge(c)}}catch(e){}},700)},{passive:true}); /* V4.159: no full QA on pageshow. */"
+      },
+      {
+        "line": 63017,
+        "text": "window.addEventListener('keydown',e=>{const t=e.target instanceof Element?e.target.closest('[data-v4114-care]'):null;if(!t||!['Enter',' '].includes(e.key))return;e.preventDefault();e.stopPropagation();doCare(t.dataset.v4114Care,Number(t.dataset.v4114CareIndex))},true);"
+      },
+      {
+        "line": 63023,
+        "text": "try{if(typeof v032Go==='function'&&!window.__v4114Go){const base=v032Go;v032Go=function(id){const r=base.apply(this,arguments);if(id==='grow')setTimeout(()=>{const changed=syncLedger('grow-open');if(changed)try{persist(false)}catch(e){};decorateSlots()},60);return r};try{window.v032Go=v032Go}catch(e){}window.__v4114Go=true}}catch(e){}"
+      },
+      {
+        "line": 63421,
+        "text": "try{const fn=window[name];if(typeof fn!=='function'||fn.__v4124SeedReward)return;const wrapped=function(){const before=seedSnapshot();let r;try{r=fn.apply(this,arguments)}catch(err){setTimeout(()=>appendQuestSeedReward(before),80);throw err}const done=x=>{[0,50,160].forEach(ms=>setTimeout(()=>appendQuestSeedReward(before),ms));return x};if(r&&typeof r.then==='function')return r.then(done,err=>{done();throw err});return done(r)};wrapped.__v4124SeedReward=true;window[name]=wrapped;try{if(name==='v233ClaimQuest')v233ClaimQuest=wrapped;if(name==='claimQuest')claimQuest=wrapped}catch(e){}}"
+      },
+      {
+        "line": 63509,
+        "text": "if(typeof v032Go==='function'&&!window.__v4125GoPower){"
+      },
+      {
+        "line": 63511,
+        "text": "try{window.v032Go=v032Go}catch(e){}window.__v4125GoPower=true;"
+      },
+      {
+        "line": 63586,
+        "text": "function verified(id){try{return typeof window.v452AccountVerified==='function'?!!window.v452AccountVerified(id):(owned(id)&&String(v075CloudLoadedFor||'')===id)}catch(e){return false}}"
+      },
+      {
+        "line": 63721,
+        "text": "function verified(id){try{return !!id&&typeof window.v452AccountVerified==='function'&&window.v452AccountVerified(id)}catch(e){return false}}"
+      },
+      {
+        "line": 63751,
+        "text": "function verified(id){try{return !!id&&typeof window.v452AccountVerified==='function'&&window.v452AccountVerified(id)}catch(e){return false}}"
+      },
+      {
+        "line": 64533,
+        "text": "try{requestAnimationFrame(()=>{try{render?.()}catch(_){}try{window.v069SyncCurrencies?.()}catch(_){}try{window.v4149BuildCompleteMenu?.(false)}catch(_){}})}catch(_){}"
+      },
+      {
+        "line": 65007,
+        "text": "['admin',async()=>{if(typeof v093CheckAdmin!=='function')return true;const ok=await v093CheckAdmin();try{window.v4142SyncAdminSystemtechnik?.()}catch(e){}if(ok&&typeof v093AdminLoadLists==='function')setTimeout(()=>{void v093AdminLoadLists()},0);return ok}],"
+      },
+      {
+        "line": 65031,
+        "text": "requestAnimationFrame(()=>{if(uid()!==id||!verified(id)||!characterComplete())return;try{window.v4129ReleaseOwnedPower?.(id)}catch(e){}try{window.v4140AttributeDiagnostics?.()}catch(e){}});"
+      },
+      {
+        "line": 65162,
+        "text": "function settle(force=false){cancelAnimationFrame(raf);raf=requestAnimationFrame(()=>{raf=0;build(force);stamp();try{window.v4142SyncAdminSystemtechnik?.()}catch(e){}})}"
+      },
+      {
+        "line": 65302,
+        "text": "if(typeof v032Go==='function'&&!window.__v4150DungeonGoWrapped){"
+      },
+      {
+        "line": 65305,
+        "text": "try{v032Go=wrapped}catch(e){}window.v032Go=wrapped;window.__v4150DungeonGoWrapped=true;"
+      },
+      {
+        "line": 65627,
+        "text": "if(typeof render==='function'&&!window.__v4153Render){const base=render;render=function(){const r=base.apply(this,arguments);if(document.getElementById('character')?.classList.contains('active'))requestAnimationFrame(()=>refreshAll('render-character'));return r};try{window.render=render}catch(e){}window.__v4153Render=true}"
+      },
+      {
+        "line": 65630,
+        "text": "window.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')==='character')refreshAll('nav-character')});window.__v4153Go='v7119-event'"
+      },
+      {
+        "line": 66354,
+        "text": "if(typeof render==='function'&&!window.__v4156Render){const b=render;render=function(){const r=b.apply(this,arguments);if(document.getElementById('character')?.classList.contains('active'))requestAnimationFrame(paintPassive);stamp();return r};try{window.render=render}catch(e){}window.__v4156Render=true}"
+      },
+      {
+        "line": 66357,
+        "text": "window.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')==='character'){paintPassive();stamp()}});window.__v4156Go='v7119-event'"
+      },
+      {
+        "line": 70587,
+        "text": "<script id=\"v4160-systemtechnik-settings-remove\">(()=>{function clean(){try{document.querySelector('#v141SettingsMenu #v4104QaRow')?.remove()}catch(e){}}window.v4104InstallQaSettings=()=>{clean();return false};document.addEventListener('click',e=>{if(e.target instanceof Element&&e.target.closest('#v141SettingsBtn'))requestAnimationFrame(clean)},true);document.addEventListener('DOMContentLoaded',clean,{once:true});window.addEventListener('pageshow',clean,{passive:true});clean();})();</script>"
+      },
+      {
+        "line": 75071,
+        "text": "bar.querySelector('button').addEventListener('click',()=>{try{window.v480AutoEquip?.()}catch(e){console.warn('V5.33 auto equip',e)}});"
+      },
+      {
+        "line": 75176,
+        "text": "window.v459ArrangeCharacter=function(){const r=base.apply(this,arguments);requestAnimationFrame(apply);return r};"
+      },
+      {
+        "line": 75731,
+        "text": "document.addEventListener('click',e=>{if(e.target?.closest?.('#v459CharacterTabs [data-tab=\"attributes\"],#v514HeroTabs [data-tab=\"attributes\"]'))requestAnimationFrame(apply)},true);"
+      },
+      {
+        "line": 76601,
+        "text": "if(e.target?.closest?.('#v459CharacterTabs [data-tab=\"talents\"],#v514HeroTabs [data-tab=\"talents\"]'))requestAnimationFrame(apply);"
+      },
+      {
+        "line": 77291,
+        "text": "if(e.target?.closest?.('#v459CharacterTabs [data-tab=\"materials\"],#v514HeroTabs [data-tab=\"materials\"]'))requestAnimationFrame(apply);"
+      },
+      {
+        "line": 79589,
+        "text": "if(typeof base==='function'&&!base.__v606Qa){const w=function(){const r=base.apply(this,arguments);setTimeout(ensurePanel,0);return r};w.__v606Qa=true;window.v4107OpenSystemtechnik=w;window.v4102OpenQA=w}"
+      },
+      {
+        "line": 79829,
+        "text": "if(typeof base==='function'&&!base.__v608Qa){const w=function(){const r=base.apply(this,arguments);setTimeout(ensurePanel,0);return r};w.__v608Qa=true;window.v4107OpenSystemtechnik=w;window.v4102OpenQA=w}"
+      },
+      {
+        "line": 84954,
+        "text": "if(e.target?.closest?.('[data-nav=\"character\"],#character,#v514HeroTabs,#v459CharacterTabs'))setTimeout(schedule,0);"
+      },
+      {
+        "line": 88810,
+        "text": "document.addEventListener('click',e=>{const el=e.target?.closest?.('button,[role=\"button\"],.top-menu-item,.v459-tab,.v514-tab,.v686-page-btn,[data-go],[data-book],[data-pets]');if(el)play(classify(el))},true);"
+      },
+      {
+        "line": 89419,
+        "text": "item.v6130Crafted=true;item.v6130GeneticRecipe=c.recipe;s.inventory=Array.isArray(s.inventory)?s.inventory:[];s.inventory.push(item);save();try{v069SyncCurrencies?.()}catch(_){ }try{v441PaintResources?.()}catch(_){ }try{render?.()}catch(_){ }toast('🧩 Klassenset hergestellt!','success',`${item.icon||'🎁'} ${item.name} · im Inventar`);setTimeout(()=>{decorateForge();openSetPanel()},30)"
+      },
+      {
+        "line": 89425,
+        "text": "function renderSetIfOpen(){const body=document.querySelector('#forge .v667-forge-body');if(body?.classList.contains('v6130-set-mode'))openSetPanel()}"
+      },
+      {
+        "line": 89428,
+        "text": "document.addEventListener('click',e=>{const t=e.target instanceof Element?e.target:null;if(!t)return;if(t.closest('[data-v6130-open]')){e.preventDefault();return openLab()}if(t.closest('[data-v6130-cross]')){e.preventDefault();return beginCross(t.closest('[data-v6130-cross]').dataset.v6130Cross)}if(t.closest('[data-v6130-settab]')){e.preventDefault();e.stopPropagation();return openSetPanel()}if(t.closest('[data-v6130-craft]')){e.preventDefault();return void craftSet(t.closest('[data-v6130-craft]').dataset.v6130Craft)}if(t.closest('#forge [data-v667-tab]')){document.querySelector('#forge .v667-forge-body')?.classList.remove('v6130-set-mode');setTimeout(decorateForge,20)}},true);"
+      },
+      {
+        "line": 89429,
+        "text": "function attachObservers(){const el=document.getElementById('forge');if(!el||el.dataset.v6130Observed)return;el.dataset.v6130Observed='1';let queued=false;new MutationObserver(()=>{if(queued)return;queued=true;requestAnimationFrame(()=>{queued=false;try{decorateForge()}catch(_){}})}).observe(el,{childList:true,subtree:true});try{decorateForge()}catch(_){}}"
+      },
+      {
+        "line": 89431,
+        "text": "document.addEventListener('DOMContentLoaded',()=>{state();installAchievements();attachObservers();decorateForge();stamp()},{once:true});"
+      },
+      {
+        "line": 89432,
+        "text": "window.addEventListener('pageshow',()=>{attachObservers();decorateForge();stamp()},{passive:true});"
+      },
+      {
+        "line": 89433,
+        "text": "window.addEventListener('growlegends:account-ready',()=>setTimeout(()=>{state();installAchievements();decorateGrow();decorateForge();stamp()},80));"
+      },
+      {
+        "line": 89897,
+        "text": "try{persist(false)}catch(_){}try{v069SyncCurrencies?.()}catch(_){}try{v441PaintResources?.()}catch(_){}try{render?.()}catch(_){}try{v063Toast?.('⬆️ Klassenset aufgewertet','success',`${x.name} · Stein und Rolle behalten`)}catch(_){}setTimeout(inject,30)"
+      },
+      {
+        "line": 91592,
+        "text": "const nr=/\\(\\s*window\\.__V477_NATIVE_SET_INTERVAL__\\s*\\|\\|\\s*window\\.setInterval\\s*\\)\\s*\\(/g;"
+      },
+      {
+        "line": 92209,
+        "text": "document.addEventListener('click',e=>{if(e.target?.closest?.('#v459CharacterTabs [data-tab=\"materials\"],#v514HeroTabs [data-tab=\"materials\"],#v546MaterialsHeader'))setTimeout(()=>{observe();enhance()},40)},true);"
+      },
+      {
+        "line": 92484,
+        "text": "document.addEventListener('click',e=>{const g=e.target.closest?.('.v6144-player-menu-btn');if(g){e.preventDefault();e.stopPropagation();openMenu(g,{uid:String(g.dataset.v6144User||''),name:clean(g.dataset.v6144Name||'Spieler',40),source:'guild_member'});return}const c=e.target.closest?.('.v6144-chat-menu-btn');if(c){e.preventDefault();e.stopPropagation();const row=c.closest('.v4144-chat-row');openMenu(c,{uid:String(row?.dataset.v6144User||''),name:clean(row?.dataset.v6144Name||'Spieler',40),source:'guild_chat',messageId:String(row?.dataset.v6144Msg||''),messageBody:clean(row?.querySelector('.v4144-chat-text')?.textContent||'',500)});return}const ub=e.target.closest?.('[data-v6144-unblock]');if(ub){void unblockPlayer(ub.dataset.v6144Unblock);return}const st=e.target.closest?.('[data-v6144-report-status]');if(st){void adminSetStatus(st.dataset.v6144ReportId,st.dataset.v6144ReportStatus);return}if(q('v6144ActionMenu')?.classList.contains('show')&&!e.target.closest('#v6144ActionMenu'))clos"
+      },
+      {
+        "line": 97879,
+        "text": "function renderStock(){const gs=groups(),qc=qualityCounts(),z=state();return `<div class=\"v6282-summary\"><div class=\"v6282-stock-hero\"><small>BLÜTENLAGER</small><strong>${fmt(bag().length)}</strong><b>${gs.length} Stapel</b><span>Gleiche Sorte + Qualität + Mutation werden zusammen angezeigt. Keine 3-Slot-Begrenzung mehr.</span></div>${activeHtml()}</div><div class=\"v6282-grade-row\">${['C','B','A','S','S+'].map(q=>`<div class=\"v6282-grade v6282-q-${qClass(q)}\"><b>${q}</b><span>${fmt(qc[q]||0)} Blüten</span></div>`).join('')}</div>${renderDry(z)}<div class=\"v6282-section-title\"><b>🎒 Deine Blüten</b><span>C = 1 · B = 2 · A = 3 · S = 4 · S+ = 5 Punkte</span></div>${gs.length?`<div class=\"v6282-stack-grid\">${gs.map(g=>{const d=seed(g.seed),mut=g.mutation?MUT[g.mutation]:null,first=g.indices[0],val=Math.round(g.valueEach*g.count);return `<article class=\"v6282-stack ${g.refined?'refined':''}\"><div class=\"v6282-stack-count\">×${g.count}</div><div class=\"v6282-stack-icon\">${mut?.icon||d.icon||'🌿"
+      },
+      {
+        "line": 100907,
+        "text": "if(t?.closest('[data-v493-seeds],[data-v492-buy]'))setTimeout(syncSeedGold,100);"
+      },
+      {
+        "line": 107579,
+        "text": "setTimeout(()=>{try{window.v484OpenDailyLogin?.()}catch(_){}},80);"
+      },
+      {
+        "line": 109516,
+        "text": "document.addEventListener('click',e=>{const b=e.target?.closest?.('#v480EquipAutoBar button');if(!b||window.__V7097_PLAYER_BLOCKED__||!window.v7081UseAuthority?.('items'))return;e.preventDefault();e.stopPropagation();e.stopImmediatePropagation();void window.v480AutoEquip?.()},true);"
+      },
+      {
+        "line": 109579,
+        "text": "if(document.getElementById('systemtech')?.classList.contains('active'))setTimeout(()=>document.getElementById('v4107Run')?.click(),30);"
+      }
+    ],
+    "shop": [
+      {
+        "line": 3103,
+        "text": "function renderSeedShop(){"
+      },
+      {
+        "line": 3313,
+        "text": "function renderShop(){document.querySelector('#shopItems').innerHTML=shopStock().map(it=>`<div class=\"shop-item\"><div class=\"shop-icon\">${it.icon}</div><h3>${it.name}</h3><div class=\"tiny\">${itemBonus(it)}</div>${it.classId?`<div class=\"set-tag\">${classLabel(it.classId)}</div>`:''}<div class=\"price\" style=\"margin:7px 0\">💰 ${it.price} Gold</div><button class=\"btn\" style=\"width:100%;padding:8px\" onclick=\"buy('${it.id}')\">Kaufen</button></div>`).join('')}"
+      },
+      {
+        "line": 3721,
+        "text": "function v027ShopQuality(){"
+      },
+      {
+        "line": 3760,
+        "text": "function v027ShopItem(base){"
+      },
+      {
+        "line": 3805,
+        "text": "function v027SanitizeShop(){"
+      },
+      {
+        "line": 4294,
+        "text": "function v030MakeGear(base){const it=v027ShopItem(base);it.shopCategory='gear';it.uid=v030Uid(base.id||'gear');return it}"
+      },
+      {
+        "line": 4295,
+        "text": "function v030MakeJewelry(slot=null){const wanted=slot?String(slot).toLowerCase():'';let p=v030Jewelry.filter(x=>(!x.classId||x.classId===s.playerClass)&&(!wanted||String(x.slot||'').toLowerCase()===wanted));if(!p.length)p=v030Jewelry.filter(x=>!x.classId||x.classId===s.playerClass);const b=p[Math.floor(Math.random()*p.length)],it=v027ShopItem(b);it.shopCategory='jewelry';it.uid=v030Uid(b.id);return it}"
+      },
+      {
+        "line": 4299,
+        "text": "function v030Fill(force=false){if(force||s.weaponShop.length!==6)s.weaponShop=Array.from({length:6},()=>v030MakeGear(v030WeaponBase()));const shapeOk=Array.isArray(s.magicShop)&&s.magicShop.length===6&&s.magicShop[0]?.slot==='ring'&&s.magicShop[1]?.slot==='amulet';if(force||!shapeOk)s.magicShop=Array.from({length:6},(_,i)=>i===0?v030MakeJewelry('ring'):i===1?v030MakeJewelry('amulet'):v030MakeMaterial());localStorage.setItem(KEY,JSON.stringify(s))}"
+      },
+      {
+        "line": 4313,
+        "text": "function v030Offer(it,fn,i){const info=it.type==='gem'?`💎 +${it.value} ${v030StatLabel(it.stat)}`:it.type==='scroll'?`✨ ${v030EffectLabel(it.effect,it.value)}`:itemBonus(it);return`<div class=\"shop-item ${it.rarity||''}\"><div class=\"shop-icon\">${it.icon||'🎁'}</div><h3>${it.name}</h3><div class=\"${qualityMeta(it.quality||'gray').color}\">${qualityMeta(it.quality||'gray').label}</div><div class=\"tiny\" style=\"margin-top:5px\">${info}</div><div class=\"price\" style=\"margin:7px 0\">💰 ${it.price} Gold</div><button class=\"btn\" style=\"width:100%;padding:8px\" onclick=\"${fn}(${i})\">Kaufen</button></div>`}"
+      },
+      {
+        "line": 4317,
+        "text": "const v030BaseRender=render;render=function(){v030BaseRender();renderShop();v030Materials()};"
+      },
+      {
+        "line": 4564,
+        "text": "function v032InstallMenu(){document.querySelector('.bottom')?.remove();if(document.querySelector('#v032TopMenu'))return;const wrap=document.createElement('div');wrap.className='top-menu-wrap';wrap.id='v032TopMenu';wrap.innerHTML=`<button class=\"top-menu-btn\" id=\"v032MenuBtn\" aria-label=\"Menü\">☰</button><div class=\"top-menu-panel\" id=\"v032MenuPanel\"><button class=\"top-menu-item active\" data-screen=\"world\"><span>🗺️</span>Welt</button><button class=\"top-menu-item\" data-screen=\"character\"><span>🧙</span>Held</button><button class=\"top-menu-item\" data-screen=\"grow\"><span>🌱</span>Growroom</button><button class=\"top-menu-item\" data-screen=\"quests\"><span>🍺</span>Quest &amp; Schicht</button><button class=\"top-menu-item\" data-screen=\"dungeon\"><span>👹</span>Dungeons</button><button class=\"top-menu-item\" data-screen=\"shop\"><span>🛒</span>Händler</button></div>`;document.body.appendChild(wrap);document.querySelector('#v032MenuBtn').onclick=()=>document.querySelector('#v032MenuPanel').classList.toggle"
+      },
+      {
+        "line": 4565,
+        "text": "function v032WorldMapHTML(){return `<div class=\"world-map-shell\"><div class=\"world-map\" id=\"v032WorldMap\"><div class=\"world-map-title\">🌿 GRÜNHAIN</div><svg class=\"world-path\" viewBox=\"0 0 1000 950\" preserveAspectRatio=\"none\"><polyline points=\"500,115 265,250 680,335 315,465 720,575 365,720 650,835\"/></svg><div class=\"world-map-scenery s1\">🌲🌲</div><div class=\"world-map-scenery s2\">🏔️</div><div class=\"world-map-scenery s3\">🌾</div><div class=\"world-map-scenery s4\">🌲🏚️</div><div class=\"world-map-scenery s5\">🌫️</div><div class=\"world-map-scenery s6\">🌲</div><button class=\"world-map-place hero\" style=\"left:50%;top:12%\" data-v032-go=\"character\"><div class=\"wicon\">🧙</div><div class=\"wname\">Heldenquartier</div><div class=\"wsub\">Ausrüstung & Skills</div></button><button class=\"world-map-place quest\" style=\"left:26%;top:27%\" data-v032-go=\"quests\"><div class=\"wicon\">🍺</div><div class=\"wname\">Krummen Gießkanne</div><div class=\"wsub\">Quests & Gerüchte</div></button><button class=\"world-map-place shop"
+      },
+      {
+        "line": 5370,
+        "text": "function v038RerollAllShops(){"
+      },
+      {
+        "line": 6149,
+        "text": "function v41UpgradeShopIcons(){"
+      },
+      {
+        "line": 8901,
+        "text": "function v054BindShopButtons(){"
+      },
+      {
+        "line": 9316,
+        "text": "function v056FreshReplacement(currentShop, maker){"
+      },
+      {
+        "line": 9410,
+        "text": "function v056AddShopHint(){"
+      },
+      {
+        "line": 9531,
+        "text": "function v057FillShops(force=false){"
+      },
+      {
+        "line": 9549,
+        "text": "function v057Replacement(shop,index,maker){"
+      },
+      {
+        "line": 9952,
+        "text": "function v058BindShopPurchases(){"
+      },
+      {
+        "line": 10474,
+        "text": "function v062FillShops(force=false){"
+      },
+      {
+        "line": 12621,
+        "text": "function v069SyncCurrencies(){"
+      },
+      {
+        "line": 15578,
+        "text": "setTimeout(()=>{if(document.getElementById('bagDealer')?.classList.contains('active'))void v7215Load(true)},650);"
+      },
+      {
+        "line": 15629,
+        "text": "document.addEventListener('visibilitychange',()=>{if(!document.hidden&&document.getElementById('bagDealer')?.classList.contains('active'))setTimeout(()=>void v7215Load(true),350)},{passive:true});"
+      },
+      {
+        "line": 15921,
+        "text": "function v089ShopComparison(it){"
+      },
+      {
+        "line": 20577,
+        "text": "function v121PaintShopInfo(){"
+      },
+      {
+        "line": 20595,
+        "text": "if(document.querySelector('#shop')?.classList.contains('active')&&typeof v121PaintShopInfo==='function')requestAnimationFrame(v121PaintShopInfo);"
+      },
+      {
+        "line": 22060,
+        "text": "function v127FreshShop(){"
+      },
+      {
+        "line": 22089,
+        "text": "function v127ServerOwned(){try{return !!(typeof v073User!=='undefined'&&v073User?.id&&(window.v7081UseAuthority?.('quest')||window.v7081UseAuthority?.('shop')||window.v7081UseAuthority?.('worldboss')))}catch(_){return false}}"
+      },
+      {
+        "line": 22916,
+        "text": "renderShop=function(){const r=v6320V129BaseShop.apply(this,arguments);requestAnimationFrame(v129PolishDynamicCards);return r};"
+      },
+      {
+        "line": 23049,
+        "text": "function v131CleanShop(){"
+      },
+      {
+        "line": 23074,
+        "text": "if(document.querySelector('#shop')?.classList.contains('active'))requestAnimationFrame(v131CleanShop);"
+      },
+      {
+        "line": 23077,
+        "text": "setTimeout(v131CleanShop,120);"
+      },
+      {
+        "line": 23825,
+        "text": "function v135ShopLevel(){"
+      },
+      {
+        "line": 23833,
+        "text": "function v135ScaleShopStats(item,base,forcedLevel=null){"
+      },
+      {
+        "line": 23904,
+        "text": "function v135PaintShop(){"
+      },
+      {
+        "line": 23930,
+        "text": "if(document.querySelector('#shop')?.classList.contains('active'))requestAnimationFrame(v135PaintShop);"
+      },
+      {
+        "line": 23933,
+        "text": "setTimeout(v135PaintShop,150);"
+      },
+      {
+        "line": 24114,
+        "text": "function v138ShopQualityClass(it){"
+      },
+      {
+        "line": 24128,
+        "text": "function v138PaintMerchant(){"
+      },
+      {
+        "line": 24156,
+        "text": "if(document.querySelector('#shop')?.classList.contains('active'))requestAnimationFrame(v138PaintMerchant);"
+      },
+      {
+        "line": 24160,
+        "text": "setTimeout(v138PaintMerchant,160);"
+      },
+      {
+        "line": 24346,
+        "text": "function v139RepaintShop(){"
+      },
+      {
+        "line": 24354,
+        "text": "if(document.querySelector('#shop')?.classList.contains('active'))requestAnimationFrame(v139RepaintShop);"
+      },
+      {
+        "line": 24358,
+        "text": "setTimeout(v139RepaintShop,180);"
+      },
+      {
+        "line": 41856,
+        "text": "window.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')==='harzDealer')ensure()});"
+      },
+      {
+        "line": 41857,
+        "text": "const oldRender=window.render; if(typeof oldRender==='function')window.render=function(){const r=oldRender.apply(this,arguments);if(document.querySelector('#harzDealer')?.classList.contains('active'))requestAnimationFrame(ensure);return r};"
+      },
+      {
+        "line": 41858,
+        "text": "const oldDealer=window.v322RenderDealer;if(typeof oldDealer==='function')window.v322RenderDealer=function(){const r=oldDealer.apply(this,arguments);requestAnimationFrame(ensure);return r};"
+      },
+      {
+        "line": 44268,
+        "text": "function v322RenderDealer(){"
+      },
+      {
+        "line": 44273,
+        "text": "box.querySelectorAll('[data-v322-buy]').forEach(btn=>btn.addEventListener('click',()=>{const idx=Number(btn.dataset.v322Buy);if(typeof window.glPlayBuy==='function')return window.glPlayBuy(idx);v115Alert('Google Play Billing ist in dieser App-Version noch nicht verfügbar.','🟢 Harz-Taler Dealer','warn')}));"
+      },
+      {
+        "line": 44275,
+        "text": "function v322OpenDealer(){try{v032Go('harzDealer')}catch(e){}requestAnimationFrame(v322RenderDealer)}"
+      },
+      {
+        "line": 44289,
+        "text": "window.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')==='harzDealer')v322RenderDealer()});"
+      },
+      {
+        "line": 44291,
+        "text": "render=function(){const r=v322BaseRender();v322InstallMenuEntry();v322InstallHarzPlus();if(document.querySelector('#harzDealer')?.classList.contains('active'))v322RenderDealer();const line=document.querySelector('#v141VersionLine');return r};"
+      },
+      {
+        "line": 44292,
+        "text": "setTimeout(()=>{try{v322InstallMenuEntry();v322InstallHarzPlus()}catch(e){console.error('V4.02 Harz Dealer init',e)}},350);"
+      },
+      {
+        "line": 45574,
+        "text": "function v337OpenHarzDealer(){"
+      },
+      {
+        "line": 45588,
+        "text": "function v337AddDealerMenuItem(){"
+      },
+      {
+        "line": 45648,
+        "text": "setTimeout(v337AddDealerMenuItem,500);"
+      },
+      {
+        "line": 45651,
+        "text": "setTimeout(v337AddDealerMenuItem,1800);"
+      },
+      {
+        "line": 45893,
+        "text": "function v338ModernizeDealer(){"
+      },
+      {
+        "line": 45990,
+        "text": "requestAnimationFrame(v338ModernizeDealer);"
+      },
+      {
+        "line": 46005,
+        "text": "setTimeout(()=>{v338ModernizeDealer();v338ApplyVersion()},300);"
+      },
+      {
+        "line": 46006,
+        "text": "setTimeout(()=>{v338ModernizeDealer();v338ApplyVersion()},1500);"
+      },
+      {
+        "line": 46337,
+        "text": "if(document.querySelector('#harzDealer')?.classList.contains('active'))requestAnimationFrame(buildDealer);"
+      },
+      {
+        "line": 46347,
+        "text": "setTimeout(()=>{buildDealer();version()},250);"
+      },
+      {
+        "line": 46348,
+        "text": "setTimeout(()=>{buildDealer();version()},1200);"
+      },
+      {
+        "line": 46366,
+        "text": "function v341OpenDealer(){"
+      },
+      {
+        "line": 47982,
+        "text": "function v353FixDealerPlacement(){"
+      },
+      {
+        "line": 48005,
+        "text": "if(typeof v032Go==='function')v032Go('harzDealer');"
+      },
+      {
+        "line": 53782,
+        "text": "document.addEventListener('click',e=>{if(!e.target?.closest?.('#dungeon,#shop,#quests,#grow,#harzDealer,#world'))return;requestAnimationFrame(paintResources)},true);"
+      },
+      {
+        "line": 54456,
+        "text": "const mo=new MutationObserver(()=>{if(!painting)queueMicrotask(()=>{paint();bindShop()})});"
+      },
+      {
+        "line": 54465,
+        "text": "document.addEventListener('DOMContentLoaded',()=>{bindShop();observe(document.querySelector('.app > header'));observe(document.querySelector('#shop'));settle();stamp()},{once:true});"
+      },
+      {
+        "line": 54466,
+        "text": "window.addEventListener('pageshow',()=>{bindShop();settle();stamp()},{passive:true}); /* V4.123: removed useless late clear of already-fired one-shot timeout. */"
+      },
+      {
+        "line": 54467,
+        "text": "setTimeout(()=>{bindShop();settle();stamp()},1000);"
+      },
+      {
+        "line": 54468,
+        "text": "setTimeout(()=>{bindShop();settle();stamp()},5000);"
+      },
+      {
+        "line": 54469,
+        "text": "setTimeout(()=>{bindShop();settle();stamp()},11000);"
+      },
+      {
+        "line": 56833,
+        "text": "const finish=win=>{busy=false;if(!win){try{window.v6111Sfx?.('lose')}catch(_){}if(log)log.textContent=`Niederlage gegen ${en.name}. Verbessere Ausrüstung, Attribute oder Talente und versuche es erneut.`;return setTimeout(renderEndgame,700)}try{window.v6111Sfx?.('win')}catch(_){}let xp=en.xp,gold=en.gold;try{if(typeof v408GuildGold==='function')gold=v408GuildGold(gold)}catch(_){}s.gold=(Number(s.gold)||0)+gold;try{addXp(xp)}catch(err){s.xp=(Number(s.xp)||0)+xp}st.wins++;try{window.v688PetEndgameWin?.(i+1,!!en.boss)}catch(err){console.warn('V6.89 Nebelriss Pet Drop',err)}let item=null,harz=0;if(en.boss){item=makeLegendary(en.rec);harz=1+(Math.random()<.35?1:0);s.harzTaler=(Number(s.harzTaler)||0)+harz;st.bossWins++;st.progress[i]=10;if(!st.completed.includes(i))st.completed.push(i)}else{st.progress[i]=Math.min(10,r+1);item=makeRoomLoot(en.rec)}if(item){s.inventory??=[];s.inventory.push(item)}if(en.boss&&i<TIER_COUNT-1)st.selected=i+1;safePersist();try{window.v411AwardGuildActivity?.('dun"
+      },
+      {
+        "line": 58080,
+        "text": "setTimeout(()=>{try{if(document.querySelector('#shop')?.classList.contains('active'))renderShop()}catch(e){console.error('V4.67 init',e)}},80);"
+      },
+      {
+        "line": 58242,
+        "text": "const base=render;render=function(){const r=base.apply(this,arguments);if(document.getElementById('shop')?.classList.contains('active'))arrange();stamp();return r};window.render=render;window.__v464RenderWrapped=true;"
+      },
+      {
+        "line": 58255,
+        "text": "document.addEventListener('DOMContentLoaded',()=>{try{renderShop();arrange();stamp()}catch(e){}},{once:true});"
+      },
+      {
+        "line": 58779,
+        "text": "try{if(typeof render==='function'&&!window.__v466RenderWrapped){const base=render;render=function(){const r=base.apply(this,arguments);if(document.querySelector('#shop')?.classList.contains('active'))rebindShopButtons();decorateAll();stamp();return r};window.render=render;window.__v466RenderWrapped=true}}catch(e){}"
+      },
+      {
+        "line": 59310,
+        "text": "finally{shopRendering=false;requestAnimationFrame(()=>{paintInventoryComparisons();paintEquipmentSlots()})}"
+      },
+      {
+        "line": 59347,
+        "text": "window.equip=function(){const r=base.apply(this,arguments);requestAnimationFrame(()=>{paintEquipmentSlots();paintInventoryComparisons();try{renderShop()}catch(e){}});return r};"
+      },
+      {
+        "line": 59352,
+        "text": "window.unequip=function(){const r=base.apply(this,arguments);requestAnimationFrame(()=>{paintEquipmentSlots();paintInventoryComparisons();try{renderShop()}catch(e){}});return r};"
+      },
+      {
+        "line": 59359,
+        "text": "render=function(){normalizeShopItems();const r=base.apply(this,arguments);if(document.getElementById('character')?.classList.contains('active')){paintEquipmentSlots();paintInventoryComparisons()}stamp();return r};"
+      },
+      {
+        "line": 59617,
+        "text": "function queue(){if(queued)return;queued=true;requestAnimationFrame(polishShop)}"
+      },
+      {
+        "line": 59625,
+        "text": "if(String(e?.detail?.id||'')==='shop')setTimeout(queue,20);"
+      },
+      {
+        "line": 64533,
+        "text": "try{requestAnimationFrame(()=>{try{render?.()}catch(_){}try{window.v069SyncCurrencies?.()}catch(_){}try{window.v4149BuildCompleteMenu?.(false)}catch(_){}})}catch(_){}"
+      },
+      {
+        "line": 88042,
+        "text": "window.addEventListener('growlegends:navigation-open-v7119',e=>{const id=String(e?.detail?.id||'');if(id==='character')requestAnimationFrame(refreshArt);if(id==='shop')requestAnimationFrame(()=>{refreshMerchantPools(false);refreshArt()})},{passive:true});"
+      },
+      {
+        "line": 88181,
+        "text": "window.addEventListener('growlegends:navigation-open-v7119',e=>{const id=String(e?.detail?.id||'');if(id==='character'||id==='shop')requestAnimationFrame(refresh)},{passive:true});"
+      },
+      {
+        "line": 88336,
+        "text": "document.addEventListener('click',e=>{if(!e.target?.closest?.('#shop,#character,#v231QuestReward,#v247DungeonReward'))return;paint(document.querySelector('.screen.active')||document)},false);"
+      },
+      {
+        "line": 89419,
+        "text": "item.v6130Crafted=true;item.v6130GeneticRecipe=c.recipe;s.inventory=Array.isArray(s.inventory)?s.inventory:[];s.inventory.push(item);save();try{v069SyncCurrencies?.()}catch(_){ }try{v441PaintResources?.()}catch(_){ }try{render?.()}catch(_){ }toast('🧩 Klassenset hergestellt!','success',`${item.icon||'🎁'} ${item.name} · im Inventar`);setTimeout(()=>{decorateForge();openSetPanel()},30)"
+      },
+      {
+        "line": 89897,
+        "text": "try{persist(false)}catch(_){}try{v069SyncCurrencies?.()}catch(_){}try{v441PaintResources?.()}catch(_){}try{render?.()}catch(_){}try{v063Toast?.('⬆️ Klassenset aufgewertet','success',`${x.name} · Stein und Rolle behalten`)}catch(_){}setTimeout(inject,30)"
+      },
+      {
+        "line": 90022,
+        "text": "window.addEventListener('growlegends:account-ready',()=>setTimeout(()=>{try{if(Array.isArray(s?.quests?.offers))s.quests.offers.forEach(questGold);[s?.weaponShop,s?.magicShop].forEach(arr=>Array.isArray(arr)&&arr.forEach(repriceShopItem));persist(false)}catch(_){}paint()},120));"
+      },
+      {
+        "line": 97878,
+        "text": "function renderDry(z){return `<div class=\"v6282-dry-wrap\"><div class=\"v6282-dry-head\"><b>🌬️ Trocknung & Veredelung</b><span>6 Std. · +2 Dealer-Punkte · danach kein Buff mehr</span></div><div class=\"v6282-dry-grid\">${z.drying.map((x,i)=>{if(!x)return `<div class=\"v6282-dry-slot\"><b>Slot ${i+1} · Frei</b><small>Bei einem Blüten-Stapel „Veredeln“ wählen.</small></div>`;const d=seed(x.bloom?.seed),ready=Date.now()>=Number(x.readyAt);return `<div class=\"v6282-dry-slot\"><b>${esc(d.name)} · ${esc(x.bloom?.quality||'C')}</b><small>${ready?'Veredelung abgeschlossen.':`Noch ${timeLeft(Number(x.readyAt))}`}</small><button class=\"btn ${ready?'gold':'secondary'}\" data-v6282-dry-collect=\"${i}\" ${ready?'':'disabled'}>${ready?'Veredelte Blüte einsammeln':'Trocknet …'}</button></div>`}).join('')}</div></div>`}"
+      },
+      {
+        "line": 97879,
+        "text": "function renderStock(){const gs=groups(),qc=qualityCounts(),z=state();return `<div class=\"v6282-summary\"><div class=\"v6282-stock-hero\"><small>BLÜTENLAGER</small><strong>${fmt(bag().length)}</strong><b>${gs.length} Stapel</b><span>Gleiche Sorte + Qualität + Mutation werden zusammen angezeigt. Keine 3-Slot-Begrenzung mehr.</span></div>${activeHtml()}</div><div class=\"v6282-grade-row\">${['C','B','A','S','S+'].map(q=>`<div class=\"v6282-grade v6282-q-${qClass(q)}\"><b>${q}</b><span>${fmt(qc[q]||0)} Blüten</span></div>`).join('')}</div>${renderDry(z)}<div class=\"v6282-section-title\"><b>🎒 Deine Blüten</b><span>C = 1 · B = 2 · A = 3 · S = 4 · S+ = 5 Punkte</span></div>${gs.length?`<div class=\"v6282-stack-grid\">${gs.map(g=>{const d=seed(g.seed),mut=g.mutation?MUT[g.mutation]:null,first=g.indices[0],val=Math.round(g.valueEach*g.count);return `<article class=\"v6282-stack ${g.refined?'refined':''}\"><div class=\"v6282-stack-count\">×${g.count}</div><div class=\"v6282-stack-icon\">${mut?.icon||d.icon||'🌿"
+      },
+      {
+        "line": 97880,
+        "text": "function renderDealer(){const z=state();return `<div class=\"v6282-dealer-hero\"><div class=\"v6282-dealer-face\">🕶️</div><div><small>BLÜTEN-DEALER · RESET 00:00</small><b>„Gute Ware gegen gute Ware.“</b><span>Sechs wechselnde Angebote pro Tag.</span></div></div><div class=\"v6282-dealer-grid\">${z.offers.map(o=>{const have=eligibleValue(o),done=!!z.claimed[o.id],ready=!done&&have>=o.cost,pct=Math.min(100,have/o.cost*100);return `<article class=\"v6282-offer ${ready?'ready':''} ${done?'claimed':''}\"><div class=\"v6282-offer-top\"><div class=\"v6282-offer-icon\">${o.icon}</div><div><h4>${esc(o.title)}</h4><p>Benötigt ${fmt(o.cost)} Blütenwert · ${reqText(o)}</p></div></div><div class=\"v6282-offer-reward\">${rewardText(o)}</div><div class=\"v6282-offer-progress\"><i style=\"width:${pct}%\"></i></div><div class=\"v6282-offer-progress-text\"><span>Verfügbar: ${Math.round(have)}</span><span>${fmt(o.cost)} nötig</span></div><button class=\"btn ${ready?'gold':'secondary'}\" data-v6282-buy=\"${o.id}\" ${ready?'':'d"
+      },
+      {
+        "line": 97881,
+        "text": "function render(){const z=state();return `<div class=\"v6282-econ\"><div class=\"v6282-econ-head\"><div><h3>🎒 Blütenlager & Dealer</h3><small>ERNTE LAGERN · BUFFS NUTZEN · VEREDELN · TAUSCHEN</small></div><div class=\"v6282-econ-meta\">${fmt(bag().length)} Blüten · ${groups().length} Stapel</div></div><div class=\"v6282-subtabs\"><button class=\"v6282-subtab ${z.view==='stock'?'active':''}\" data-v6282-view=\"stock\">🎒 Lager & Buffs</button><button class=\"v6282-subtab ${z.view==='dealer'?'active':''}\" data-v6282-view=\"dealer\">🕶️ Blüten-Dealer</button></div>${z.view==='stock'?renderStock():renderDealer()}</div>`}"
+      },
+      {
+        "line": 97889,
+        "text": "document.addEventListener('click',e=>{const t=e.target instanceof Element?e.target:null;if(!t||!t.closest('#grow'))return;const view=t.closest('[data-v6282-view]');if(view){e.preventDefault();state().view=view.dataset.v6282View;save();return refresh()}const dealer=t.closest('[data-v6282-open-dealer]');if(dealer){e.preventDefault();state().view='dealer';save();return refresh()}const ref=t.closest('[data-v6282-refine]');if(ref){e.preventDefault();return startRefine(ref.dataset.v6282Refine)}const col=t.closest('[data-v6282-dry-collect]');if(col){e.preventDefault();return collectDry(col.dataset.v6282DryCollect)}const buyBtn=t.closest('[data-v6282-buy]');if(buyBtn){e.preventDefault();return buy(buyBtn.dataset.v6282Buy)}},true);"
+      },
+      {
+        "line": 103322,
+        "text": "document.addEventListener('click',e=>{if(e.target instanceof Element&&e.target.closest('[data-screen=\"harzDealer\"],#v322HarzPlus'))setTimeout(patchDealerCopy,60)},true);"
+      },
+      {
+        "line": 103331,
+        "text": "setTimeout(patchDealerCopy,800);setTimeout(patchDealerCopy,2200);setTimeout(v7236RecoveryBurst,2200);"
+      },
+      {
+        "line": 105656,
+        "text": "shopPaintTimer=setTimeout(()=>{"
+      },
+      {
+        "line": 110337,
+        "text": "function openHarz(){try{v032Go('harzDealer')}catch(_){}requestAnimationFrame(sync);return true}"
+      },
+      {
+        "line": 110340,
+        "text": "try{v032Go('goldShop')}catch(_){}requestAnimationFrame(sync);return true;"
+      },
+      {
+        "line": 111800,
+        "text": "function renderFrameShop(){const p=ensureFrameShop();if(!p||!S.frames)return;const fs=Array.isArray(S.frames.frames)?S.frames.frames:[];p.innerHTML=`<div class=\"v7137-frame-shop-head\"><div><small>PRESTIGE · PERMANENT</small><h2>🖼️ Avatar-Rahmen</h2></div><div class=\"v7137-frame-balance\">Dein Bestand <b>💎 ${fmt(S.frames.harz)}</b></div></div><div class=\"v7137-frame-guide\"><b>So funktioniert es:</b> Einmal gekaufte Rahmen bleiben dauerhaft auf deinem Account. Tippe anschließend auf dein eigenes Avatarbild, um zwischen deinen freigeschalteten Rahmen zu wechseln oder den Rahmen zu deaktivieren. Dein aktiver Rahmen ist auch in der <b>Hall of Haze</b> und im <b>Spielerprofil</b> sichtbar.</div><div class=\"v7137-frame-grid\">${fs.map(f=>`<div class=\"v7137-frame-card ${f.owned?'owned':''}\">${framePreview(f)}<div class=\"v7137-frame-info\"><h3>${esc(f.name)} ${f.effect?'✨':''}</h3><p>${esc(frameDesc(f))}</p><div class=\"v7137-frame-price ${f.source==='referral'?'v7137-frame-special':''}\">${f.source"
+      },
+      {
+        "line": 111801,
+        "text": "async function openFrameShop(){try{v032Go('harzDealer')}catch(_){}await new Promise(r=>requestAnimationFrame(r));try{window.v7117DealerHubSync?.()}catch(_){}ensureDealerFrameTab();document.getElementById('harzDealer')?.classList.add('v7137-frames-open');document.querySelectorAll('#harzDealer [data-v7117-tab]').forEach(b=>b.classList.toggle('active',b.dataset.v7117Tab==='frames'));await loadFrames(true);moveFooterLast();}"
+      },
+      {
+        "line": 111806,
+        "text": "function renderFrameSelector(){const body=document.getElementById('v7137FrameSelectBody');if(!body||!S.frames)return;const owned=(S.frames.frames||[]).filter(f=>f.owned);body.innerHTML=`<div class=\"v7137-frame-guide\">Hier aktivierst oder deaktivierst du deine dauerhaft freigeschalteten Rahmen. Änderungen sind sofort auch für andere Spieler sichtbar.</div><div class=\"v7137-frame-select-grid\"><button class=\"v7137-frame-choice ${!S.frames.active_frame_id?'active':''}\" data-v7137-set-frame=\"\"><div class=\"v7137-no-frame\">×</div><div><b>Kein Rahmen</b><small>Avatar ohne Prestige-Rahmen anzeigen.</small></div></button>${owned.map(f=>`<button class=\"v7137-frame-choice ${f.active?'active':''}\" data-v7137-set-frame=\"${esc(f.id)}\">${framePreview(f)}<div><b>${esc(f.name)} ${f.effect?'✨':''}</b><small>${f.active?'Aktiv':'Zum Aktivieren antippen'}</small></div></button>`).join('')}</div><button type=\"button\" class=\"btn gold\" data-v7137-open-frame-shop=\"1\" style=\"width:100%;margin-top:10px\">🛒 Zum Rah"
+      },
+      {
+        "line": 111850,
+        "text": "function wrapGoldShop(){try{if(typeof window.v7114OpenGoldShop==='function'&&!window.__V7137_GOLD_WRAP__){const base=window.v7114OpenGoldShop;window.v7114OpenGoldShop=function(){const r=base.apply(this,arguments);setTimeout(()=>{ensureDealerFrameTab();moveFooterLast()},60);return r};window.__V7137_GOLD_WRAP__=true}}catch(_){}}"
+      },
+      {
+        "line": 111862,
+        "text": "const normalTab=t.closest('[data-v7117-tab=\"harz\"],[data-v7117-tab=\"gold\"]');if(normalTab){closeFrameShop();setTimeout(()=>{ensureDealerFrameTab();moveFooterLast()},80)}"
+      },
+      {
+        "line": 111869,
+        "text": "if(t.closest('[data-v7117-tab=\"gold\"],#goldShop'))setTimeout(moveFooterLast,80);"
+      },
+      {
+        "line": 111875,
+        "text": "function install(){ensureQuest();ensureDealerFrameTab();ensureFrameShop();wrapSocial();wrapGoldShop();installAchievements();renameQuestMenu();renameDealer7138();moveFooterLast();watchOwnAvatar();document.body?.classList.remove('v7129-referral-frame');if(logged()&&!window.v7204StartupQuiet?.()){void loadShift(false);void loadFrames(false)}setTimeout(()=>{applyOwnFrames();if(!window.v7204StartupQuiet?.())void decorateHallFrames()},250)}"
+      },
+      {
+        "line": 111878,
+        "text": "window.addEventListener('growlegends:navigation-ready',()=>setTimeout(()=>{ensureQuest();ensureDealerFrameTab();renameQuestMenu();renameDealer7138();watchOwnAvatar();applyOwnFrames();moveFooterLast()},80),{passive:true});"
+      }
+    ]
+  }
+}
