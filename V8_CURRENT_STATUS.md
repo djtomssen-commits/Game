@@ -2526,3 +2526,15 @@ Arbeitsmodus:
 - Alle vier externen Dateien mit `node --check` geprüft.
 - QA `V8009_SOCIAL_ADMIN_EXTRACTION_BATCH1_QA.json`: vollständig grün.
 - Stable / `index.html`: unverändert.
+
+
+#### Lifecycle / Monetization Extraction Batch 1
+- Drei große Owner 1:1 aus `beta.html` ausgelagert:
+  - `v6350-google-play-harz-billing` → `js/features/monetization/beta/v8009-s1-v6350-google-play-harz-billing.js`
+  - `v484-daily-login-core` → `js/features/rewards/beta/v8009-s2-v484-daily-login-core.js`
+  - `gl-push-scheduling-v2` → `js/features/push/beta/v8009-s1-gl-push-scheduling-v2.js`
+- Zusammen 44.641 Bytes Inline-JS aus dem Monolithen entfernt.
+- Script-IDs und Reihenfolge in `beta.html` beibehalten; nur auf `src=` umgestellt.
+- Alle drei externen Dateien mit `node --check` geprüft.
+- QA `V8009_LIFECYCLE_MONETIZATION_EXTRACTION_BATCH1_QA.json`: vollständig grün.
+- Stable / `index.html`: unverändert.
