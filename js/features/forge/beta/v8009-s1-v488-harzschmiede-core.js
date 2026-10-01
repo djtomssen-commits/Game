@@ -216,6 +216,7 @@
         <div class="v667-tabs" role="tablist" aria-label="Harzschmiede Bereiche">
           <button type="button" class="v667-tab ${forgeTab==='dismantle'?'active':''}" data-v667-tab="dismantle"><span class="ic">🔨</span><span>ZERLEGEN<small>Ausrüstung in Samenfragmente</small></span></button>
           <button type="button" class="v667-tab ${forgeTab==='craft'?'active':''}" data-v667-tab="craft"><span class="ic">⚒️</span><span>SCHMIEDEN<small>Zufälliger Slot · deine Klasse</small></span></button>
+          <button type="button" class="v667-tab v6130-set-tab" data-v6130-settab="1"><span class="ic">🧩</span><span>KLASSENSET<small>Genetik · PvP · Fragmente</small></span></button>
           ${String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta'?'<button type="button" class="v667-tab" data-v667-tab="nebelforge"><span class="ic">🔥</span><span>NEBELSCHMIED<small>Gold · Werte neu verteilen</small></span></button>':''}
         </div>
         ${forgeTab==='craft'?craftView():dismantleView()}
