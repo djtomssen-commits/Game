@@ -4696,3 +4696,12 @@ Arbeitsmodus:
 - Bei Änderungen zuerst den aktuellen Owner/Quellcode finden und dort sauber ersetzen bzw. bereinigen.
 - Alte fehlerhafte Regeln oder Logik entfernen/ersetzen, statt neue Gegenschichten aufzubauen.
 - Diese Regel gilt dauerhaft für die weiteren Grow-Legends-Arbeiten.
+
+
+#### Growroom Pflege – erster Tap CARE_TOO_EARLY behoben
+- Fehlerbild: Pflege wurde im UI bereits als bereit angezeigt, der erste Tap konnte serverseitig noch `CARE_TOO_EARLY` liefern; direkt danach funktionierte der zweite Tap.
+- Ursache: Grenzfall direkt am Beginn des Pflegefensters zwischen Client-Anzeige und serverseitiger Zeitprüfung.
+- Direkt in der bestehenden serverautoritativen RPC `v6358_care_plant` korrigiert, **kein zusätzlicher Client-Patch-Layer**.
+- Public + Server1 erhalten 3 Sekunden sichere Starttoleranz nur am unteren Pflegefenster-Rand; das obere Fenster/Verpassen bleibt unverändert.
+- Migration: `fix_grow_care_first_tap_boundary`.
+- Verifiziert: public und server1 enthalten die neue First-Tap-Toleranz.
