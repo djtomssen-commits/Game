@@ -43,12 +43,14 @@ v106InstallBook=function(){
   v107PlaceBook();
 };
 
-const v107BaseRender=render;
-render=function(){
-  const result=v107BaseRender();
-  
-  requestAnimationFrame(v107PlaceBook);
-  return result;
-};
-
-setTimeout(v107PlaceBook,100);
+function v107CharacterBookPlace(){
+  try{v107PlaceBook()}catch(_){}
+}
+window.addEventListener('growlegends:navigation-open-v7119',e=>{
+  if(String(e?.detail?.id||'')==='character')v107CharacterBookPlace();
+},{passive:true});
+window.addEventListener('growlegends:account-ready',()=>{
+  if(document.getElementById('character')?.classList.contains('active'))v107CharacterBookPlace();
+},{passive:true});
+document.addEventListener('DOMContentLoaded',v107CharacterBookPlace,{once:true});
+if(document.readyState!=='loading')v107CharacterBookPlace();
