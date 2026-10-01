@@ -24,13 +24,9 @@ v110Refresh=function(){
  }
  return r;
 };
-/* Old V4.02 fight still writes/increments lossStreak and shows a pity message.
-   Neutralize the stored streak immediately after every persist/render cycle. */
-const v311BaseRender=render;
-render=function(){
- const r=v311BaseRender();
- try{if(s.v110WorldBoss)s.v110WorldBoss.lossStreak=0}catch(e){}
- 
- const line=document.querySelector('#v141VersionLine');
- return r;
-};
+/* V8.009 Worldboss powerblock: the global render hook is retired.
+   v290EnsureWorldBossState is already wrapped above and zeroes the legacy streak
+   whenever the worldboss state is actually accessed. */
+window.addEventListener('growlegends:account-ready',()=>{
+ try{v290EnsureWorldBossState()}catch(e){}
+},{passive:true});
