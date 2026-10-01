@@ -3305,3 +3305,20 @@ Arbeitsmodus:
 - Workflow-Commit: `efc2846b656a5c4c323a863194924070e90af703`.
 - Workflow wegen fehlendem Ergebnis-Commit erneut getriggert: `8b604f4c0d1e7836ff2c1ef98e3c553e4fc422ee`.
 - Ergebnis-Audit zum Zeitpunkt dieses Status-Updates noch nicht sichtbar.
+
+
+#### Orphan-/Include-Audit abgeschlossen
+- Ergebnis-Commit: `60b7bb7ef3309d5510a6d2d3abc040b2f8efb330`.
+- 833 ausgelagerte Kandidaten geprüft.
+- Gesamtgröße: 2.123.275 Bytes.
+- Ergebnis: **0 Orphans / 0 unreferenzierte Bytes**.
+- Keine ausgelagerte CSS-/legacy-extracted-/anonymous-extracted-JS-Datei kann aktuell allein aufgrund fehlender Referenz entfernt werden.
+- QA: `V8009_ORPHAN_INCLUDE_AUDIT.json`.
+
+#### Nächste Phase: Legacy-/Owner-Konsolidierung
+- Reine Extraktion und offensichtliche Datei-Deduplizierung sind weitgehend abgeschlossen.
+- Jetzt Fokus auf echte überlappende Owner/Patch-Schichten pro Feature.
+- Audit gruppiert externe Scripts nach bereinigten Funktions-/Namensstämmen und Reihenfolge.
+- Script-Commit: `efa2b5c8b95dd595b2659e6f27d810c6b5580a0e`.
+- Workflow-Commit: `2e272e291591789305b09c2d8c2f8cddede6027d`.
+- Noch keine semantische Owner-Entfernung ohne Audit-Beweis.
