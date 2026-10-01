@@ -151,12 +151,7 @@ v074OpenProfile=async function(id){
   }
 };
 
-const v116BaseRender=render;
-render=function(){
-  const result=v116BaseRender();
-  
-  return result;
-};
+/* V8.009: no-op global render wrapper retired. */
 
 /* Push current stats once after upgrade. */
 setTimeout(async()=>{
