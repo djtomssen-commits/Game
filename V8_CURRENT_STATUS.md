@@ -4840,3 +4840,23 @@ Arbeitsmodus:
   - Beta Commit: `3060f5a148e84a28ce511e074e33b86e02bd12b3`
   - Server-1 Commit: `47e857443102996edc0db2e72f0a6ea7b4249c1a`.
 - Verifiziert: `beta.html` und `server1.html` unterscheiden sich weiterhin nur in Release-Channel und Seitentitel; Dealer-/Forge-Includes sind identisch.
+
+
+### Root-/Login-Launcher auf aktuellen V8-Client gehoben · 01.10.2026
+
+- Ursache für die weiterhin sichtbaren Server-1-Abweichungen eingegrenzt: Der öffentliche Root-Einstieg `index.html` war bisher bewusst unverändert geblieben, während Beta und Server 1 auf den geklonten aktuellen V8-Clients liefen.
+- Dadurch konnte die Serverauswahl auf der Login-Seite aus einem älteren Root-Entry stammen, obwohl `beta.html` und `server1.html` korrekt waren.
+- Fix:
+  - neuer neutraler Release-Channel `launcher`: `js/features/account/launcher-release-channel.js`;
+  - `index.html` auf den aktuellen Beta/V8-Client geklont;
+  - einzig Release-Channel und Seitentitel unterscheiden den Launcher von `beta.html`.
+- Routing-Verhalten des bestehenden v343-Owners:
+  - vor Launch: Standard = Beta; gespeicherte Auswahl Server 1 wird nach `server1.html` geroutet;
+  - ab Launch: Standard = Server 1;
+  - Auswahl Server 1 auf der Login-Seite lädt explizit `server1.html`.
+- Commits:
+  - Launcher-Channel: `fe07d8a7c19b7b7b61c81786e471fc9cfeac3f47`
+  - Root-Launcher: `72c180d06a03f6bf3152afc5adcb1284ffd21bc9`.
+- Verifiziert:
+  - `index.html` vs. `beta.html`: nur 2 erwartete Unterschiede (Release-Channel, Title);
+  - `server1.html` vs. `beta.html`: nur 2 erwartete Unterschiede (Release-Channel, Title).
