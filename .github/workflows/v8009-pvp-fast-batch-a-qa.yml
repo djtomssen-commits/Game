@@ -1,0 +1,34 @@
+name: V8.009 PvP Fast Batch A QA
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'js/features/pvp/beta/v8009-s1-v204-pvp-system.js'
+      - 'js/features/pvp/beta/v8009-s1-v206-pvp-start-fix.js'
+      - 'js/features/pvp/beta/v8009-s1-v248-dungeon-item-card-and-hall-fix.js'
+      - 'js/features/pvp/beta/v8009-s1-v437-pvp-combat-power-canonical.js'
+      - 'js/features/pvp/beta/v8009-s1-v4130-hall-dungeon-authority.js'
+      - 'js/features/pvp/beta/v8009-s1-v6200-pvp-battlelog-core.js'
+      - '.github/scripts/v8009_pvp_fast_batch_a_qa.py'
+      - '.github/workflows/v8009-pvp-fast-batch-a-qa.yml'
+permissions:
+  contents: write
+jobs:
+  qa:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          node --check js/features/pvp/beta/v8009-s1-v204-pvp-system.js
+          node --check js/features/pvp/beta/v8009-s1-v206-pvp-start-fix.js
+          node --check js/features/pvp/beta/v8009-s1-v248-dungeon-item-card-and-hall-fix.js
+          node --check js/features/pvp/beta/v8009-s1-v437-pvp-combat-power-canonical.js
+          node --check js/features/pvp/beta/v8009-s1-v4130-hall-dungeon-authority.js
+          node --check js/features/pvp/beta/v8009-s1-v6200-pvp-battlelog-core.js
+      - run: python3 .github/scripts/v8009_pvp_fast_batch_a_qa.py
+      - run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add V8009_PVP_FAST_BATCH_A_QA.json
+          git commit -m "V8.009 PVP: record fast batch A QA" || exit 0
+          git push
