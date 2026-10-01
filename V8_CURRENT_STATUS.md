@@ -4030,3 +4030,71 @@ Arbeitsmodus:
 
 #### Nächster Powerblock
 - Tower komplett: Lobby / Ranking / Meta-Aufstieg / Run / Result.
+
+
+#### Powerblock: Quest + Schicht strukturell abgeschlossen
+- Finale QA: `V8009_QUEST_SHIFT_FINAL_QA.json` grün.
+- Globale Quest/Dampf-Renderowner: **5 -> 1**.
+- Quest/Shift-Timeouts: **50 -> 15** im präzisen Scope; verbleibende sind echte RPC-/Receipt-/Countdown-/Push-Pfade.
+- Schicht: **0 kosmetische setTimeout-Retries**, echter 1s-Fortschrittsticker bleibt.
+- Dampf:
+  - v026/v271/v284 globale Render-/Retry-Pfade retired
+  - v294 bleibt finaler Dampf-Paint-Owner.
+- Quest UI:
+  - v387/v391 Renderwrapper retired
+  - v6344 zentraler visueller Post-Render-Owner
+  - v096 XP-Dekoration in v6344 integriert.
+- Seed-Reward-Showcase:
+  - v4124 Claim-Wrapper retired
+  - Snapshot/Repaint in v235 canonical Local/Mirror payout integriert.
+- Authority:
+  - v7045 Boot-Delay-Kaskade entfernt
+  - v7110 Lifecycle-Settle-Delays auf Microtasks reduziert.
+- Matrix: Quests / Schicht = **[x]**.
+
+#### Powerblock: Growroom vier Tabs strukturell abgeschlossen
+- Grow / Blütenlager / Genetik / Aufträge vollständig als gemeinsamer Lifecycle-Block geprüft.
+- Finale QA: `V8009_GROWROOM_FINAL_QA.json` **ok=true**, alle 20 Checks true.
+- v492:
+  - alte Quest-/Dungeon-/PvP-Drop-Fallback-Wrapper retired; GL_EVENTS ist einzige Cross-Feature-Quelle
+  - 6-stufige Startup-Retry-Kaskade entfernt
+  - zwei parallele Timer auf einen gemeinsamen UI-Ticker reduziert.
+- v6163 Tabs:
+  - 40/180/600/1600/4200-ms Refresh-Kaskade entfernt
+  - Harvest 0/80/350-ms Retry entfernt
+  - RAF-Mount-Kaskade entfernt
+  - ein gezielter MutationObserver bleibt für Root-Rebuilds.
+- v4114 Care:
+  - 30ms Post-Care-Repaint retired.
+- v6160 Orders:
+  - account-ready/harvest delayed refreshes retired.
+- v430 Grow-Maxlevel:
+  - 900/3200ms Repair-Kaskade retired.
+- Harvest Reward v241:
+  - RAF + 80/220ms Sichtbarkeits-Reassert retired
+  - 460ms Startup/Version repaint retired.
+- Grow Guide v6283:
+  - breiter Grow-subtree MutationObserver + RAF retired
+  - v6163 ruft Guide-Refresh gezielt aus Tab/View-Lifecycle auf.
+- Blütenlager v6282:
+  - 60s Timer bleibt absichtlich für Trocknungs-/Dealer-Zeitstände.
+- Genetik v6130:
+  - eventbus-basiert, keine Timer-/Observer-Kaskaden.
+- Authority v7065/v7070:
+  - Server-Gate/Hydration-Guard bleiben; verhindern stale lokale Pflanzen vor Serverstand.
+
+#### Growroom Pflanzen-/Keimling-Bildgröße korrigiert
+- Screenshot 2026-10-01: Stage-Bilder und freie Topf-Icons waren sichtbar zu groß.
+- Root Cause: v497 erzwang auf Mobile 60–82px Stage-Art + mindestens 144px Slots.
+- Fix:
+  - Stage-Art max-width 78%, object-fit contain
+  - Seedling/Growth/Flower/Harvest abgestuft verkleinert
+  - Mobile Slot-Minheight 144 -> 118px
+  - freie Topf-Icons 32 -> 24px
+  - Detail-Art ebenfalls verkleinert.
+- Commits:
+  - v497 Plant Art: `8e43b3fbb248d33b15e1a5113ddbefae8db222d4`
+  - Mobile Empty Pot: `83b80d900104e96099902cd25ab582704f701f0b`
+  - Base Empty Pot: `25a7a24ab66624eee9182edd53f66505e415e152`
+- Finale Growroom-QA Ergebnis-Commit: `74f0a07a10459b631240080b5ecf242f72a985e2`.
+- Matrix Growroom = **[x]**; manueller Sichttest der neuen Skalierung bleibt offen.
