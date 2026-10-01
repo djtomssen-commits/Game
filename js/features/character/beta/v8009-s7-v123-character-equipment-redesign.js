@@ -121,10 +121,5 @@ function v123PolishEquipment(){
   });
   v123InstallSummary();
 }
-const v123BaseRender=render;
-render=function(){
-  const result=v123BaseRender();
-  if(document.querySelector('#character')?.classList.contains('active'))requestAnimationFrame(v123PolishEquipment);
-  return result;
-};
-setTimeout(()=>{try{v123EnsureDetail();v123PolishEquipment()}catch(e){}},180);
+window.v123PolishEquipment=v123PolishEquipment;
+try{v123EnsureDetail()}catch(e){}
