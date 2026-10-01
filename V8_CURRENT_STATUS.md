@@ -2538,3 +2538,15 @@ Arbeitsmodus:
 - Alle drei externen Dateien mit `node --check` geprüft.
 - QA `V8009_LIFECYCLE_MONETIZATION_EXTRACTION_BATCH1_QA.json`: vollständig grün.
 - Stable / `index.html`: unverändert.
+
+
+#### Authority Extraction Batch 2
+- Drei weitere serverautoritäre Owner 1:1 aus `beta.html` nach `js/features/authority/beta/` ausgelagert:
+  - `v7133-global-gameplay-authority-lockdown` → `v8009-s2-v7133-global-gameplay-authority-lockdown.js`
+  - `v7065-fail-closed-grow-authority-hotfix` → `v8009-s2-v7065-fail-closed-grow-authority-hotfix.js`
+  - `v7033-build-authority-bridge` → `v8009-s2-v7033-build-authority-bridge.js`
+- Zusammen 45.899 Bytes Inline-JS aus dem Monolithen entfernt.
+- Script-IDs und Reihenfolge in `beta.html` beibehalten; nur auf `src=` umgestellt.
+- Alle drei externen Dateien mit `node --check` geprüft.
+- QA `V8009_AUTHORITY_EXTRACTION_BATCH2_QA.json`: vollständig grün.
+- Stable / `index.html`: unverändert.
