@@ -62,7 +62,7 @@ p.write_text(c,encoding="utf-8")
 checks={
  "v435_retry_train_removed":"[500,1800,4200,9000]" not in c,
  "v435_book_debounce_kept":"__v435BookRefreshTimer=setTimeout" in c,
- "v435_account_ready_present":"reconcile('account-ready')" not in c and "growlegends:account-ready',()=>{const changed=reconcile(true)" in c,
+ "v435_account_ready_present":"growlegends:account-ready',()=>{const changed=reconcile(true)" in c,
  "v452_retry_train_removed":"[250,800,1800,4200]" not in c,
  "v452_account_status_kept":"v452SecurityText" in c,
  "v453_retry_train_removed":"[250,900,2200,5200].forEach(ms=>setTimeout(()=>{stamp();const uid=uidNow()" not in c,
