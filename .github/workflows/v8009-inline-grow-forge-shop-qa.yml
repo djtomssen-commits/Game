@@ -1,0 +1,22 @@
+name: V8.009 Inline Grow Forge Shop QA
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'beta.html'
+      - '.github/scripts/v8009_inline_grow_forge_shop_qa.py'
+      - '.github/workflows/v8009-inline-grow-forge-shop-qa.yml'
+permissions:
+  contents: write
+jobs:
+  qa:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 .github/scripts/v8009_inline_grow_forge_shop_qa.py
+      - run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add V8009_INLINE_GROW_FORGE_SHOP_QA.json
+          git commit -m "V8.009 INLINE: record grow forge shop QA" || exit 0
+          git push
