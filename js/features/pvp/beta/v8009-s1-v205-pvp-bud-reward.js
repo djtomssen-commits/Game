@@ -18,12 +18,8 @@ function v205InstallBudScale(){
   rules.insertAdjacentElement('afterend',box);
 }
 
-const v205BaseRender=render;
-render=function(){
-  const r=v205BaseRender();
-  
-  requestAnimationFrame(v205InstallBudScale);
-  return r;
-};
-
-setTimeout(v205InstallBudScale,200);
+/* V8.009: global render/200ms install retired. */
+window.addEventListener('growlegends:navigation-open-v7119',e=>{
+  if(String(e?.detail?.id||'')==='pvp')queueMicrotask(v205InstallBudScale);
+},{passive:true});
+queueMicrotask(v205InstallBudScale);
