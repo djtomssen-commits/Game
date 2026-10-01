@@ -1,0 +1,27 @@
+name: V8.009 Dungeon Extraction Batch 1
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/v8009_dungeon_extraction_batch1.py'
+      - '.github/workflows/v8009-dungeon-extraction-batch1.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 .github/scripts/v8009_dungeon_extraction_batch1.py
+      - run: |
+          node --check js/features/dungeon/beta/v8009-s1-v7051-atomic-dungeon-receipt-client.js
+          node --check js/features/dungeon/beta/v8009-s1-v446-dungeon-runtime-root-fix.js
+          node --check js/features/dungeon/beta/v8009-s1-v246-dungeon-final-fight-reward-fix.js
+      - run: |
+          git config user.name github-actions
+          git config user.email github-actions@users.noreply.github.com
+          git add beta.html js/features/dungeon/beta/v8009-s1-v7051-atomic-dungeon-receipt-client.js js/features/dungeon/beta/v8009-s1-v446-dungeon-runtime-root-fix.js js/features/dungeon/beta/v8009-s1-v246-dungeon-final-fight-reward-fix.js V8009_DUNGEON_EXTRACTION_BATCH1_QA.json
+          git commit -m "V8.009 DUNGEON: extract first owner batch" || exit 0
+          git pull --rebase origin main
+          git push
