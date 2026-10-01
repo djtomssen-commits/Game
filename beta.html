@@ -82483,7 +82483,7 @@ body.v654-hud-measured > #v141SettingsMenu.v377-open{
     }
     queue();
   };
-  [0,80,300,900,1800].forEach(ms=>setTimeout(boot,ms));
+  window.addEventListener('growlegends:account-ready',boot,{passive:true});
 
   document.addEventListener('click',e=>{
     if(e.target.closest?.('.v372-menu,#v032MenuBtn')) setTimeout(normalizeMenu,0);
@@ -82962,7 +82962,7 @@ body.v659-native-fullscreen #v074ProfileOverlay.v074-profile-overlay{
   document.addEventListener('DOMContentLoaded',apply,{once:true});
   window.addEventListener('pageshow',apply,{passive:true});
   window.addEventListener('resize',measureHud,{passive:true});
-  [0,80,300,900,1800].forEach(ms=>setTimeout(()=>{apply();measureHud()},ms));
+  window.addEventListener('growlegends:account-ready',()=>{apply();measureHud()},{passive:true});
 })();
 </script>
 <!-- ===== /V6.59 ===== -->
