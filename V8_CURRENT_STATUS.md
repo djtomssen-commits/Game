@@ -3690,3 +3690,48 @@ Arbeitsmodus:
 - QA installiert:
   - Script `72f6e65a019f66175b171785fa3e292749ca8a13`
   - Workflow `a1dac629ea367b0fa152f3d53b88fd8ca2d0d2d1`
+
+
+#### Großer Legacy-DOM-Contract-Durchgang
+- Repo-weiter DOM-Producer-Audit eingeführt: `V8009_LEGACY_DOM_CONTRACT_AUDIT.json`.
+- Startstand: **65 DOM-Producer-Kollisionen**.
+- Nach erstem Großbatch: **47**.
+- Nach Ressourcen-/Account-/Dungeon-/Settings-/Shop-Bereinigung: **34**.
+- Shop statisch auf leeres `#shop`-Root reduziert; sichtbares Shop-DOM wird nur noch dynamisch vom aktuellen Owner erzeugt.
+- Alte Shop-DOM-Produzenten aus `v030` und `v057` entfernt; Generator-/Kauf-/Materiallogik bleibt erhalten.
+- Dampf:
+  - `v026` und `v271` erzeugen keinen Refill-DOM mehr.
+  - `v284` ist einziger Dampf-Card/`#v026RefillBtn`-Producer.
+- Ressourcenleiste:
+  - `v283` = finaler Harz-DOM-Owner.
+  - `v284` = finaler Dampf-DOM-Owner.
+  - alte DOM-Erzeugung in `v279`/`v282` entfernt.
+- Header:
+  - `v358` ist alleiniger Header-Builder.
+  - doppelte Header-Erzeugung aus `v359` entfernt.
+- Weltboss:
+  - `v110` alter Overlay-Producer entfernt/delegiert.
+  - `v111` ist alleiniger Overlay- und Real-Art-Owner.
+  - delayed CSS-Boss -> Real-Art-Ersetzung aus `v6201` entfernt.
+- Character Creator:
+  - alte Creator-DOM-Owner aus `v4131` und `v4135` entfernt.
+  - verbleibende kontextabhängige Owner: v200 Basis, v4136 Beta Save/Create Owner, v7229 Server-1 Bootstrap.
+- Settings:
+  - `v141` ist alleiniger Settings-DOM-Builder.
+  - `v225` bindet/repariert nur noch bestehende Account-Aktionen, erzeugt sie nicht mehr.
+- Dungeon:
+  - alter retired `v064` Dungeon-1 Map-Producer entfernt; Balance-/Name-Helfer bleiben.
+- Dauerhafter QA-Guard aktiviert:
+  - Script `3b5d9e18f2e3552eb10dd854624ab6fabc5bc07a`
+  - Workflow `276803a677a069ee41aafb04f8ac1e9a7778318e`
+  - erster grüner Guard-Commit `cc1d7b8a20bfcf9ce7b4d4d1562f29e72a56b081`
+  - Settings-Contract ergänzt: `4c1b36e1862fa6c296024de65875d01c30856b53`
+  - Guard nach Erweiterung erneut grün: `5cc4e9a87009e711977d9433535458826efb4311`
+- Aktueller DOM-Audit-Commit: `a0f1bc19013c59b08bd4e0516b44485a817bb941`.
+- Aktuell größte Restkollisionen:
+  - `dungeonMapCard`: 6 Producer
+  - `dungeonTicketText`: 6 Producer
+  - `battleLevel`: 5 Producer
+  - Profil-Modal Buttons: 3 Producer
+  - Character-Creator Modal: 3 kontextabhängige Producer
+- Nächster Großblock: Dungeon-DOM-Producer auf einen World-Owner + einen Detail-Owner + einen Combat-Owner reduzieren.
