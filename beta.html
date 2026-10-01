@@ -40203,9 +40203,9 @@ function historicalScriptCount(){if(historicCountCache!=null)return historicCoun
  /* V8.009: direct character lifecycle owns the canonical five-row output. */
  window.__v4140RenderWrapped='retired';
  window.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')==='character')paint()},{passive:true});window.__v4140GoWrapped='v7119-event';
- document.addEventListener('click',e=>{if(e.target?.closest?.('#v459CharacterTabs [data-tab="attributes"]'))requestAnimationFrame(paint)},true);
- document.addEventListener('DOMContentLoaded',()=>requestAnimationFrame(paint),{once:true});
- window.addEventListener('pageshow',()=>requestAnimationFrame(paint),{passive:true});
+ document.addEventListener('click',e=>{if(e.target?.closest?.('#v459CharacterTabs [data-tab="attributes"]'))paint()},true);
+ document.addEventListener('DOMContentLoaded',paint,{once:true});
+ window.addEventListener('pageshow',paint,{passive:true});
  /* V8.009: startup retry train retired; direct lifecycle hooks are sufficient. */
  function stamp(){}
  stamp();paint();
@@ -58207,7 +58207,7 @@ normalize();
   try{renderShop();arrange()}catch(e){console.warn('V4.67 shop init',e)}
   document.addEventListener('DOMContentLoaded',()=>{try{renderShop();arrange();stamp()}catch(e){}},{once:true});
   window.addEventListener('pageshow',()=>{try{arrange();stamp()}catch(e){}},{passive:true});
-  [160,550,1300,3200,6500,10500,15000,19000].forEach(ms=>setTimeout(()=>{try{arrange();stamp()}catch(e){}},ms));
+  /* V8.009: startup arrange fan-out retired; shop navigation/render owns layout. */
 })();
 </script>
 
