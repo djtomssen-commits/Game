@@ -80,7 +80,7 @@
     cleanMarkedExtras(shop);
     stamp();
   }
-  function queue(){if(queued)return;queued=true;requestAnimationFrame(polishShop)}
+  function queue(){if(queued)return;queued=true;polishShop()}
 
   if(typeof renderShop==='function'&&!window.__v475RenderShopWrapped){
     const base=renderShop;renderShop=function(){const r=base.apply(this,arguments);queue();return r};window.renderShop=renderShop;window.__v475RenderShopWrapped=true;
@@ -88,7 +88,7 @@
   /* V6.320: redundant global render hook retired; renderShop + navigation hooks remain. */
   if(!window.__v475GoWrapped){
     window.addEventListener('growlegends:navigation-open-v7119',e=>{
-      if(String(e?.detail?.id||'')==='shop')setTimeout(queue,20);
+      if(String(e?.detail?.id||'')==='shop')queue();
     });
     window.__v475GoWrapped='v7120-event';
   }
