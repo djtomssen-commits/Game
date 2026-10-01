@@ -2671,3 +2671,22 @@ Arbeitsmodus:
 - Alle zehn externen Dateien mit `node --check` geprüft.
 - QA `V8009_FEATURE_EXTRACTION_BATCH7_QA.json`: vollständig grün.
 - Stable / `index.html`: unverändert.
+
+
+#### Feature Extraction Batch 8
+- Zehn weitere Owner 1:1 aus `beta.html` ausgelagert:
+  - `v7165-combined-fixes-owner` → `js/features/system/beta/v8009-s6-v7165-combined-fixes-owner.js`
+  - `v4117-boots-art-fix` → `js/features/items/beta/v8009-s4-v4117-boots-art-fix.js`
+  - `gl20-v4218-js` → `js/features/system/beta/v8009-s6-gl20-v4218.js`
+  - `v7080-server-achievement-authority` → `js/features/authority/beta/v8009-s5-v7080-server-achievement-authority.js`
+  - `v381-player-mail-system` → `js/features/social/beta/v8009-s3-v381-player-mail-system.js`
+  - `v269-ticket-system` → `js/features/admin/beta/v8009-s2-v269-ticket-system.js`
+  - `v343-server-selection-v7226` → `js/features/account/beta/v8009-s6-v343-server-selection-v7226.js`
+  - `v467-hard-live-dungeon-key-authority` → `js/features/dungeon/beta/v8009-s5-v467-hard-live-dungeon-key-authority.js`
+  - `v6107-global-item-art-authority` → `js/features/items/beta/v8009-s4-v6107-global-item-art-authority.js`
+  - `v7036-item-rearrange-authority-bridge` → `js/features/authority/beta/v8009-s5-v7036-item-rearrange-authority-bridge.js`
+- Zusammen 93.371 Bytes Inline-JS aus dem Monolithen entfernt.
+- Originale Script-Attribute, IDs und Reihenfolge beibehalten; nur um `src=` ergänzt.
+- Alle zehn externen Dateien mit `node --check` geprüft.
+- QA `V8009_FEATURE_EXTRACTION_BATCH8_QA.json`: vollständig grün.
+- Stable / `index.html`: unverändert.
