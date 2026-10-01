@@ -79,11 +79,11 @@ function decorateGrow(){try{window.v6163GrowTabs?.refresh?.()}catch(_){}}
 function attachObserver(){return}
 function installAchievements(){try{if(typeof V106_ACH==='undefined'||!Array.isArray(V106_ACH))return;if(!V106_ACH.some(x=>x?.[0]==='groworders10'))V106_ACH.push(['groworders10','Zuverlässiger Lieferant','Gib 10 Grow-Aufträge ab.',()=>Math.max(0,Number(s?.grow?.v6160?.claimedTotal)||0),10],['groworders100','Kellerlogistik','Gib 100 Grow-Aufträge ab.',()=>Math.max(0,Number(s?.grow?.v6160?.claimedTotal)||0),100])}catch(e){console.warn('V4.162 grow-order achievements',e)}}
 function stamp(){}
-if(BUS&&!window.__V6160_HARVEST_EVENT__){window.__V6160_HARVEST_EVENT__=true;BUS.on('growHarvested',ev=>{const rows=Array.isArray(ev.plants)?ev.plants.slice():[];setTimeout(()=>processHarvest(rows),0)})}
+if(BUS&&!window.__V6160_HARVEST_EVENT__){window.__V6160_HARVEST_EVENT__=true;BUS.on('growHarvested',ev=>{const rows=Array.isArray(ev.plants)?ev.plants.slice():[];queueMicrotask(()=>processHarvest(rows))})}
 document.addEventListener('click',e=>{const t=e.target instanceof Element?e.target:null;if(!t)return;if(t.closest('[data-v6160-open]')){e.preventDefault();return openBoard()}const c=t.closest('[data-v6160-claim]');if(c){e.preventDefault();return claim(c.dataset.v6160Claim)}const r=t.closest('[data-v6160-reroll]');if(r){e.preventDefault();return void reroll(r.dataset.v6160Reroll)}},true);
 rotateIfNeeded();installAchievements();stamp();
 document.addEventListener('DOMContentLoaded',()=>{rotateIfNeeded();installAchievements();stamp()},{once:true});
-window.addEventListener('growlegends:account-ready',()=>setTimeout(()=>{rotateIfNeeded();installAchievements();stamp();window.v6163GrowTabs?.refresh?.()},120));
+window.addEventListener('growlegends:account-ready',()=>queueMicrotask(()=>{rotateIfNeeded();installAchievements();stamp();window.v6163GrowTabs?.refresh?.()}));
 window.addEventListener('pageshow',()=>{rotateIfNeeded();stamp();window.v6163GrowTabs?.refresh?.()},{passive:true});
 window.v6160GrowContracts={open:openBoard,rotate:()=>{rotateIfNeeded(true);renderIfOpen();decorateGrow()},state:()=>JSON.parse(JSON.stringify(state()||{})),processHarvest,html:()=>boardBodyHtml()};window.v6160RenderBoardHtml=()=>boardBodyHtml();
 window.v6160QA=()=>({version:VERSION,day:state()?.dayKey,contracts:(state()?.contracts||[]).map(c=>({tier:c.tier,type:c.type,title:c.title,target:c.target,progress:c.progress,completed:c.completed,claimed:c.claimed,reward:rewardText(c.reward)})),rerollsLeft:state()?.rerollsLeft,button:!!document.querySelector('[data-v6160-open]'),eventBus:!!BUS});
