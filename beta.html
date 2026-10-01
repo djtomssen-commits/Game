@@ -53734,26 +53734,15 @@ create index if not exists player_messages_sender_idx on public.player_messages(
   /* Any spend handler that does not repaint itself is corrected on the same click. */
   document.addEventListener('click',e=>{if(!e.target?.closest?.('#dungeon,#shop,#quests,#grow,#harzDealer,#world'))return;requestAnimationFrame(paintResources)},true);
 
-  if(typeof v032Go==='function'&&!window.__v433GoWrapped){
-    const baseGo=v032Go;
-    v032Go=function(){
-      const r=baseGo.apply(this,arguments);
-      requestAnimationFrame(()=>{paintResources();stamp()});
-      setTimeout(()=>{paintResources();stamp()},80);
-      return r;
-    };
-    window.__v433GoWrapped=true;
-  }
+  window.addEventListener('growlegends:navigation-open-v7119',()=>{paintResources();stamp()},{passive:true});
+  window.__v433GoWrapped='v7119-event';
 
   function stamp(){}
 
   paintResources();stamp();
-  /* V6.217: legacy 250ms startup poll retired; targeted retries are enough. */
-  [250,1200,4200].forEach(ms=>setTimeout(()=>{paintResources();stamp()},ms));
   document.addEventListener('DOMContentLoaded',()=>{repairDungeonState(true);paintResources();stamp()},{once:true});
   window.addEventListener('pageshow',()=>{repairDungeonState(true);paintResources();stamp()},{passive:true});
-  setTimeout(()=>{repairDungeonState(true);paintResources();stamp()},1000);
-  setTimeout(()=>{repairDungeonState(true);paintResources();stamp()},4200);
+  window.addEventListener('growlegends:account-ready',()=>{repairDungeonState(true);paintResources();stamp()},{passive:true});
 })();
 </script>
 
