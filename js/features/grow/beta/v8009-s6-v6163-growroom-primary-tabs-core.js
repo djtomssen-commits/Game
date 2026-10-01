@@ -40,7 +40,7 @@ function copyOrders(panel){
  const c=contractSnapshot(),rows=Array.isArray(c?.contracts)?c.contracts:[],canonicalRows=Array.isArray(window.__V7208_GROW_ORDERS_CANONICAL__?.contracts)?window.__V7208_GROW_ORDERS_CANONICAL__.contracts:[];
  if(window.v7081UseAuthority?.('grow')&&(canonicalRows.length!==6||rows.length!==6)){
   panel.innerHTML='<div class="v6163-inline-head"><div><h3>📋 Grow-Aufträge</h3><small>TÄGLICH NEU · SERVERAUTORITATIV</small></div><div class="v6163-inline-meta">Server …</div></div><div class="v6163-inline-orders"><div class="v6160-note">Grow-Aufträge werden vom Server geladen …</div></div>';
-  const now=Date.now();if(!ordersLoadPromise&&now-lastOrdersLoadAt>900){lastOrdersLoadAt=now;ordersLoadPromise=Promise.resolve(window.v7065GrowAuthorityRefresh?.()).catch(()=>null).finally(()=>{ordersLoadPromise=null;if(active==='orders')requestAnimationFrame(()=>refreshActive())})}
+  const now=Date.now();if(!ordersLoadPromise&&now-lastOrdersLoadAt>900){lastOrdersLoadAt=now;ordersLoadPromise=Promise.resolve(window.v7065GrowAuthorityRefresh?.()).catch(()=>null).finally(()=>{ordersLoadPromise=null;if(active==='orders')queueMicrotask(refreshActive)})}
   return;
  }
  const ready=rows.filter(x=>x?.completed&&!x?.claimed).length,html=typeof window.v6160RenderBoardHtml==='function'?window.v6160RenderBoardHtml():'';
@@ -57,16 +57,16 @@ function applyView(root=growRoot()){
  if(active==='stock')copyStock(panel);else if(active==='genetics')copyGenetics(panel);else copyOrders(panel);
 }
 function mount(){mountQueued=false;const root=growRoot();if(!root)return;lastRoot=root;let tabs=$(':scope > .v6163-tabs',root);if(!tabs){const sign=$(':scope > .v492-sign',root);if(!sign)return;sign.insertAdjacentHTML('afterend',tabsHtml());tabs=$(':scope > .v6163-tabs',root)}let panel=$(':scope > #v6163Inline',root);if(!panel){panel=document.createElement('div');panel.id='v6163Inline';panel.hidden=true;tabs.insertAdjacentElement('afterend',panel)}applyView(root)}
-function queueMount(delay=0){if(delay){setTimeout(()=>queueMount(0),delay);return}if(mountQueued)return;mountQueued=true;requestAnimationFrame(mount)}
+function queueMount(){if(mountQueued)return;mountQueued=true;queueMicrotask(mount)}
 function setTab(tab){if(!['grow','stock','genetics','orders'].includes(tab))return;active=tab;try{sessionStorage.setItem(STORE,tab)}catch(_){}applyView()}
 function refreshActive(){const root=growRoot();if(!root)return;paintTabs(root);if(active!=='grow')applyView(root)}
-function attach(){const host=document.getElementById('grow');if(!host||host.dataset.v6163Observed==='1')return;host.dataset.v6163Observed='1';let pending=false;new MutationObserver(()=>{if(pending)return;pending=true;requestAnimationFrame(()=>{pending=false;queueMount()})}).observe(host,{childList:true,subtree:false});queueMount()}
+function attach(){const host=document.getElementById('grow');if(!host||host.dataset.v6163Observed==='1')return;host.dataset.v6163Observed='1';let pending=false;new MutationObserver(()=>{if(pending)return;pending=true;queueMicrotask(()=>{pending=false;queueMount()})}).observe(host,{childList:true,subtree:false});queueMount()}
 function stamp(){}
-document.addEventListener('click',e=>{const t=e.target instanceof Element?e.target:null;if(!t)return;const tab=t.closest('[data-v6163-tab]');if(tab){e.preventDefault();e.stopPropagation();return setTab(tab.dataset.v6163Tab)}if(t.closest('#v6163Inline [data-v6130-cross],#v6163Inline [data-v6160-claim],#v6163Inline [data-v6160-reroll]')){[40,180,600,1600,4200].forEach(ms=>setTimeout(refreshActive,ms))}},true);
-try{window.GL_EVENTS?.on?.('growHarvested',()=>{[0,80,350].forEach(ms=>setTimeout(refreshActive,ms))})}catch(_){}
-document.addEventListener('DOMContentLoaded',()=>{attach();queueMount(80);stamp()},{once:true});
-window.addEventListener('growlegends:account-ready',()=>{attach();queueMount(80);stamp()});
-window.addEventListener('pageshow',()=>{attach();queueMount(60);stamp()},{passive:true});
+document.addEventListener('click',e=>{const t=e.target instanceof Element?e.target:null;if(!t)return;const tab=t.closest('[data-v6163-tab]');if(tab){e.preventDefault();e.stopPropagation();return setTab(tab.dataset.v6163Tab)}if(t.closest('#v6163Inline [data-v6130-cross],#v6163Inline [data-v6160-claim],#v6163Inline [data-v6160-reroll]'))queueMicrotask(refreshActive)},true);
+try{window.GL_EVENTS?.on?.('growHarvested',()=>queueMicrotask(refreshActive))}catch(_){}
+document.addEventListener('DOMContentLoaded',()=>{attach();queueMount();stamp()},{once:true});
+window.addEventListener('growlegends:account-ready',()=>{attach();queueMount();stamp()});
+window.addEventListener('pageshow',()=>{attach();queueMount();stamp()},{passive:true});
 window.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')==='grow'){attach();queueMount();stamp()}},{passive:true});
 window.v6163GrowTabs={open:setTab,refresh:refreshActive,mountNow:mount,get active(){return active}};
 window.v6163QA=()=>({version:V.label,active,tabbar:!!document.querySelector('#grow .v6163-tabs'),inline:!!document.querySelector('#v6163Inline'),oldGeneticsButtonHidden:!!document.querySelector('#grow [data-v6130-open]'),oldOrdersButtonHidden:!!document.querySelector('#grow [data-v6160-open]'),stats:stats()});
