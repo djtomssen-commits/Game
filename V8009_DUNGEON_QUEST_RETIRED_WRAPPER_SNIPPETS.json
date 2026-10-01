@@ -1,0 +1,108 @@
+{
+  "build": "V8.009-DUNGEON-QUEST-RETIRED-WRAPPER-SNIPPETS",
+  "count": 12,
+  "rows": [
+    {
+      "src": "js/features/quest/beta/v233-quest-reward-final-click.js",
+      "line": 175,
+      "touched": [
+        "claimQuest",
+        "v233ClaimQuest"
+      ],
+      "snippet": "167: \n168:   v233ClaimBusy=false;\n169: }\n170: \n171: \n172: /* V8.009 Quest consolidation:\n173:    The canonical active-card owner v392 binds #v392ClaimQuest directly to\n174:    v233ClaimQuest. The historical document-level capture owner for #claimQuest\n175:    is retired so one click has one owner. Keep this hook as a compatibility\n176:    no-op because the canonical renderer still calls it. */\n177: window.v233BindClaimButton=()=>{};\n178: \n179: "
+    },
+    {
+      "src": "js/features/dungeon/beta/v8009-s8-v236-dungeon-key-balance-core.js",
+      "line": 257,
+      "touched": [
+        "persist"
+      ],
+      "snippet": "249:   try{persist(false)}catch(e){}\n250: }\n251: \n252: \n253: /*\n254:   Cloud state replacement can remove V4.02 fields. Repair on each dungeon\n255:   entry without adding another timer.\n256: */\n257: /* V7.121: old Dungeon navigation wrapper retired. V467 owns the world-map\n258:    transition; keep only this block's local progress/hint refresh on the shared event. */\n259: window.addEventListener('growlegends:navigation-open-v7119',e=>{\n260:   if(String(e?.detail?.id||'')!=='dungeon')return;\n261:   try{v236EnsureDungeonProgressState();v236PaintDungeon2ProgressHint()}catch(err){console.error('V7.121 dungeon hint refresh',err)}\n262: });\n263: window.__V236_GO_RETIRED__='v7121-v467';\n264: \n265: \n266: setTimeout(()=>{\n267:   try{\n268:     v236EnsureDungeonProgressState();\n269: \n270:     if("
+    },
+    {
+      "src": "js/features/dungeon/beta/v8009-s8-v236-dungeon-key-balance-core.js",
+      "line": 263,
+      "touched": [
+        "persist"
+      ],
+      "snippet": "255:   entry without adding another timer.\n256: */\n257: /* V7.121: old Dungeon navigation wrapper retired. V467 owns the world-map\n258:    transition; keep only this block's local progress/hint refresh on the shared event. */\n259: window.addEventListener('growlegends:navigation-open-v7119',e=>{\n260:   if(String(e?.detail?.id||'')!=='dungeon')return;\n261:   try{v236EnsureDungeonProgressState();v236PaintDungeon2ProgressHint()}catch(err){console.error('V7.121 dungeon hint refresh',err)}\n262: });\n263: window.__V236_GO_RETIRED__='v7121-v467';\n264: \n265: \n266: setTimeout(()=>{\n267:   try{\n268:     v236EnsureDungeonProgressState();\n269: \n270:     if(\n271:       s.dungeon.keys[1] &&\n272:       !s.dungeon.unlocked.includes(1)\n273:     ){\n274:       s.dungeon.unlocked.push(1);\n275:       persist(false);\n276:     }"
+    },
+    {
+      "src": "js/features/dungeon/beta/v8009-s9-v244-dungeon-detail-map-final.js",
+      "line": 272,
+      "touched": [
+        "v067OpenDungeon"
+      ],
+      "snippet": "264:       e.preventDefault();\n265:       e.stopPropagation();\n266:       v067OpenDungeon(i);\n267:     });\n268:   });\n269: };\n270: \n271: \n272: /* V8.009 D5: delayed 520 ms detail repaint retired.\n273:    The canonical D2/v261 owner renders the active 10er map; a later v244\n274:    repaint can replace the correct background/enemy art with legacy DOM. */"
+    },
+    {
+      "src": "js/features/dungeon/beta/v8009-d4-v251-modern-maps.js",
+      "line": 412,
+      "touched": [
+        "persist"
+      ],
+      "snippet": "404:   try{persist(false)}catch(e){}\n405: \n406:   const ok=v251RenderDetail();\n407:   if(ok)window.scrollTo({top:0,behavior:'smooth'});\n408:   return ok;\n409: };\n410: \n411: \n412: /* Phase 2 retired: v251 renderDungeon world/detail wrapper.\n413:    Current world/detail renderers are called directly by the canonical owner. */\n414: \n415: /* Navigation into Dungeon always lands on modern 20er overview. */\n416: /* V7.121: obsolete navigation wrapper retired. V467 calls v251RenderWorld()\n417:    as its preferred canonical world renderer after setting layer/view. */\n418: window.__V251_GO_RETIRED__='v7121-v467';\n419: \n420: \n421: setTimeout(()=>{\n422:   /* V8.009 D5: retired delayed Dungeon repaint.\n423:      The canonical D2 dispatcher owns visible world/detail rendering now.\n424:      Keeping a 1350 ms legacy repaint caused the correct 10er map to be\n425:      replaced after it was already painted. */"
+    },
+    {
+      "src": "js/features/legacy-extracted/beta/v499-grow-authority.js",
+      "line": 4,
+      "touched": [
+        "persist"
+      ],
+      "snippet": "1: \n2: (()=>{\n3:  'use strict';\n4:  /* V7.151 PHASE 2: RETIRED.\n5:     V4.99 stored a second owner-scoped Grow snapshot in localStorage and restored\n6:     it around persist(), cloud apply/write and navigation. Server-authoritative\n7:     V7065 is now the sole canonical Grow state owner. Keeping V4.99 active could\n8:     resurrect stale plants after a server refresh. Compatibility entry points\n9:     remain as no-ops for old callers. */\n10:  window.__V499_RETIRED_V7150__=true;\n11:  window.v499ActivateForAccount=()=>false;\n12:  window.v499RepairGrowroom=()=>false;\n13: })();"
+    },
+    {
+      "src": "js/features/legacy-extracted/beta/v499-grow-authority.js",
+      "line": 10,
+      "touched": [
+        "persist"
+      ],
+      "snippet": "2: (()=>{\n3:  'use strict';\n4:  /* V7.151 PHASE 2: RETIRED.\n5:     V4.99 stored a second owner-scoped Grow snapshot in localStorage and restored\n6:     it around persist(), cloud apply/write and navigation. Server-authoritative\n7:     V7065 is now the sole canonical Grow state owner. Keeping V4.99 active could\n8:     resurrect stale plants after a server refresh. Compatibility entry points\n9:     remain as no-ops for old callers. */\n10:  window.__V499_RETIRED_V7150__=true;\n11:  window.v499ActivateForAccount=()=>false;\n12:  window.v499RepairGrowroom=()=>false;\n13: })();"
+    },
+    {
+      "src": "js/features/dungeon/beta/v8009-s10-v4100-dungeon-key-live-fix.js",
+      "line": 118,
+      "touched": [
+        "claimQuest",
+        "v233ClaimQuest",
+        "persist"
+      ],
+      "snippet": "110:    wrapped.__v4100DungeonKeys=true;window[name]=wrapped;\n111:    try{if(name==='claimQuest')claimQuest=wrapped;if(name==='v233ClaimQuest')v233ClaimQuest=wrapped}catch(e){}\n112:   }catch(e){console.warn('V4.100 claim wrapper',name,e)}\n113:  }\n114:  wrapClaim('claimQuest');wrapClaim('v233ClaimQuest');\n115: \n116:  /* Final navigation owner: opening Dungeon always means the 20-dungeon overview.\n117:     Do this both before and after the historical wrapper chain. */\n118:  /* V7.121: V4100 navigation wrapper retired. Its grant/claim/persist hooks remain,\n119:     while the later V467 authority owns Dungeon entry before and after navigation. */\n120:  window.__V4100_GO_RETIRED__='v7121-v467';\n121: \n122:  lastKeySig=keySig();stamp();\n123:  window.v4100SyncDungeonUnlocks=()=>{normalizeKeys();lastKeySig=keySig();renderWorld('manual')};\n124:  document.addEventListener('growlegends:dungeon-key-changed',()=>{\n125:   normalizeKeys();lastKeySig=keySig();\n126:   const active=!!document.querySelector('#dungeon')?.classList.contains('active');\n127:   const inside=active&&String(s.dungeon?.layer||'world')==='dungeon';\n128:   /* V7.214: a late canonical key/state sync must never throw an active player\n129:      out of the 10-room map or battle back to the 20-dungeon world map. */\n130:   if(inside)return;\n131:   s.dungeon.layer='world';s.dungeon.view='map';renderWorld('event')"
+    },
+    {
+      "src": "js/features/dungeon/beta/v8009-s10-v4100-dungeon-key-live-fix.js",
+      "line": 120,
+      "touched": [
+        "claimQuest",
+        "v233ClaimQuest",
+        "persist"
+      ],
+      "snippet": "112:   }catch(e){console.warn('V4.100 claim wrapper',name,e)}\n113:  }\n114:  wrapClaim('claimQuest');wrapClaim('v233ClaimQuest');\n115: \n116:  /* Final navigation owner: opening Dungeon always means the 20-dungeon overview.\n117:     Do this both before and after the historical wrapper chain. */\n118:  /* V7.121: V4100 navigation wrapper retired. Its grant/claim/persist hooks remain,\n119:     while the later V467 authority owns Dungeon entry before and after navigation. */\n120:  window.__V4100_GO_RETIRED__='v7121-v467';\n121: \n122:  lastKeySig=keySig();stamp();\n123:  window.v4100SyncDungeonUnlocks=()=>{normalizeKeys();lastKeySig=keySig();renderWorld('manual')};\n124:  document.addEventListener('growlegends:dungeon-key-changed',()=>{\n125:   normalizeKeys();lastKeySig=keySig();\n126:   const active=!!document.querySelector('#dungeon')?.classList.contains('active');\n127:   const inside=active&&String(s.dungeon?.layer||'world')==='dungeon';\n128:   /* V7.214: a late canonical key/state sync must never throw an active player\n129:      out of the 10-room map or battle back to the 20-dungeon world map. */\n130:   if(inside)return;\n131:   s.dungeon.layer='world';s.dungeon.view='map';renderWorld('event')\n132: });\n133:  window.addEventListener('pageshow',()=>{normalizeKeys();lastKeySig=keySig();stamp()},{passive:true});"
+    },
+    {
+      "src": "js/features/quest/beta/v4222-separate-elite-quest-script.js",
+      "line": 186,
+      "touched": [
+        "claimQuest",
+        "v233ClaimQuest"
+      ],
+      "snippet": "178:   /* Migrate a save that was created by the old \"Elite replaces one of 3\" system. */\n179:   try{separateEliteFromOffers()}catch(e){console.error('V4.222 migrate elite',e)}\n180: \n181:   /* V8.009 Quest consolidation:\n182:      Claim/start lifecycle hooks are invoked directly by the canonical owners\n183:      (v233 for Local/Mirror claim, v7110 for start). Do not wrap claimQuest,\n184:      v233ClaimQuest or startQuest here anymore. */\n185: \n186:   /* V8.009: delayed renderQuests wrapper/startup repaint retired.\n187:      v6344 calls v4222RenderElitePanel directly in the canonical Quest paint. */\n188: })();"
+    },
+    {
+      "src": "js/features/dungeon/beta/v8009-s10-v458-key-live-unlock.js",
+      "line": 129,
+      "touched": [
+        "v233ClaimQuest"
+      ],
+      "snippet": "121:       };\n122:       try{window.v233ClaimQuest=v233ClaimQuest}catch(e){}\n123:       window.__v458QuestKeyLiveWrapped=true;\n124:     }\n125:   }catch(e){console.warn('V4.58 quest key wrapper',e)}\n126: \n127:   /* Always normalize/repaint again when Dungeon is opened. This makes navigation\n128:      independent from whichever old renderer happened to own the previous DOM. */\n129:   /* V7.121: V458 navigation wrapper retired; V467 supersedes its normalize/repaint\n130:      responsibility. Actual key-grant/claim/event hooks in this block remain active. */\n131:   window.__v458DungeonGoWrapped='retired-v7121-v467';\n132: \n133:   document.addEventListener('growlegends:dungeon-key-changed',()=>scheduleRefresh('event'));\n134:   stamp();\n135:   document.addEventListener('DOMContentLoaded',()=>{normalizeKeys();stamp()},{once:true});\n136:   window.addEventListener('pageshow',()=>{normalizeKeys();stamp()},{passive:true}); /* V4.123: removed useless late clear of already-fired one-shot timeout. */\n137: })();"
+    },
+    {
+      "src": "js/features/dungeon/beta/v8009-s10-v4150-live-dungeon-key-authority.js",
+      "line": 104,
+      "touched": [
+        "persist"
+      ],
+      "snippet": "96:  try{\n97:   if(typeof v032Go==='function'&&!window.__v4150DungeonGoWrapped){\n98:    const base=v032Go;\n99:    const wrapped=function(id){if(id==='dungeon')ensure();const r=base.apply(this,arguments);if(id==='dungeon'){requestAnimationFrame(()=>repaint('open-dungeon'));setTimeout(()=>repaint('open-dungeon-100'),100)}return r};\n100:    try{v032Go=wrapped}catch(e){}window.v032Go=wrapped;window.__v4150DungeonGoWrapped=true;\n101:   }\n102:  }catch(e){console.warn('V4.159 dungeon navigation hook',e)}\n103:  window.v4150SyncDungeonKeys=()=>{const before=sig();ensure();persistKeys();repaint('manual');return{before,after:sig()}};\n104:  window.v4150DungeonKeyDiagnostics=()=>({version:V.short,signature:sig(),unlocked:[...(s.dungeon?.unlocked||[])],keys:{...(s.dungeon?.keys||{})},lastReason,watcherRetired:!window.__V467_KEY_WATCHER__});\n105:  function stamp(){}\n106:  ensure();stamp();\n107:  window.addEventListener('growlegends:account-ready',()=>{ensure();repaint('account-ready')});\n108: })();"
+    }
+  ]
+}
