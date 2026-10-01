@@ -155,9 +155,7 @@ try{
    try{v093AdminLoadLists=wrapped}catch(_){ }try{window.v093AdminLoadLists=wrapped}catch(_){ }window.__V6346_ADMIN_LOAD_WRAP__=true;
  }
 }catch(_){ }
-document.addEventListener('click',e=>{const el=e.target instanceof Element?e.target:null;if(el?.closest?.('[data-screen="admin"]'))setTimeout(()=>{ensureAdminCard();if(admin())void loadAdminBroadcasts()},180)},true);
-setTimeout(()=>{ensureAdminCard();if(document.getElementById('admin')?.classList.contains('active')&&admin())void loadAdminBroadcasts()},900);
-
+/* v093AdminLoadLists is the sole admin-card/load owner. */
 window.v6346BroadcastDiagnostics=()=>({version:VERSION,userId:uid(),sessionLoaded,pending:queue.length,active:active?.id||'',admin:admin(),adminRows:A.rows.length});
 window.v6346AdminLoadBroadcasts=loadAdminBroadcasts;
 })();
