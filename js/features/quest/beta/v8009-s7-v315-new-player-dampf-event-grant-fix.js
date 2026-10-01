@@ -58,10 +58,4 @@ setTimeout(()=>{
  }catch(e){}
 },1200);
 
-const v315BaseRender=render;
-render=function(){
- const r=v315BaseRender();
- 
- const line=document.querySelector('#v141VersionLine');
- return r;
-};
+/* V8.009: obsolete no-op/version global render wrapper retired. */
