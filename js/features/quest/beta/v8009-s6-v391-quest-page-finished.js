@@ -50,19 +50,8 @@
     v41InstallNpcBanners=function(){const r=oldNpc.apply(this,arguments);removeLegacy();return r;};
   }
 
-  const baseRenderQuests=renderQuests;
-  renderQuests=function(){
-    const r=baseRenderQuests.apply(this,arguments);
-    finish();
-    return r;
-  };
-
-  /* V7.122: duplicate quest-nav finish pass retired; renderQuests owns it. */
-
-  setTimeout(()=>{
-    finish();
-    document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version')
-      .forEach(el=>{if(el)el.textContent=VERSION});
-    document.querySelectorAll('.v366-ver').forEach(el=>el.textContent='V4.11');
-  },650);
+  window.v391QuestFinish=finish;
+  /* V8.009: renderQuests wrapper and delayed version repaint retired.
+     v6344 invokes finish() after the canonical shell render. */
+  queueMicrotask(finish);
 })();
