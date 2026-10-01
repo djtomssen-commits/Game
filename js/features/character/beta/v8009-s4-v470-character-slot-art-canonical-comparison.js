@@ -208,13 +208,8 @@
       window.__v470UnequipWrapped=true;
     }
   }catch(e){}
-  try{
-    if(typeof render==='function'&&!window.__v470RenderWrapped){
-      const base=render;
-      render=function(){normalizeShopItems();const r=base.apply(this,arguments);if(document.getElementById('character')?.classList.contains('active')){paintEquipmentSlots();paintInventoryComparisons()}stamp();return r};
-      window.render=render;window.__v470RenderWrapped=true;
-    }
-  }catch(e){}
+  /* V8.009: global render comparison hook retired.
+     renderInventory/compact/equip/unequip/navigation/account-ready are the targeted owners. */
   window.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')==='character'){paintEquipmentSlots();paintInventoryComparisons()}});
   window.__v470GoWrapped='v7119-event';
 
