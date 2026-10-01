@@ -1,0 +1,23 @@
+name: V8.009 V470 Observer Retirement QA
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/v8009_v470_observer_retirement_qa.py'
+      - '.github/workflows/v8009-v470-observer-retirement-qa.yml'
+permissions:
+  contents: write
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 .github/scripts/v8009_v470_observer_retirement_qa.py
+      - run: |
+          git config user.name github-actions
+          git config user.email github-actions@users.noreply.github.com
+          git add V8009_V470_OBSERVER_RETIREMENT_QA.json
+          git commit -m "V8.009 QA: verify v470 observer retirement" || exit 0
+          git pull --rebase origin main
+          git push
