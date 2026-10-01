@@ -2427,3 +2427,15 @@ Arbeitsmodus:
 - Alle drei externen Dateien mit `node --check` geprüft.
 - QA `V8009_CHARACTER_EXTRACTION_BATCH3_QA.json`: vollständig grün.
 - Stable / `index.html`: unverändert.
+
+
+#### Grow / Forge Extraction Batch 1
+- Drei große eigenständige Feature-Owner 1:1 aus `beta.html` ausgelagert:
+  - `v492-growroom2-script` → `js/features/grow/beta/v8009-s1-v492-growroom2.js`
+  - `v6160-grow-contracts-core` → `js/features/grow/beta/v8009-s1-v6160-grow-contracts-core.js`
+  - `v488-harzschmiede-core` → `js/features/forge/beta/v8009-s1-v488-harzschmiede-core.js`
+- Zusammen 115.428 Bytes Inline-JS aus dem Monolithen entfernt.
+- Script-IDs und Reihenfolge in `beta.html` beibehalten; nur auf `src=` umgestellt.
+- Alle drei externen Dateien mit `node --check` geprüft.
+- QA `V8009_GROW_FORGE_EXTRACTION_BATCH1_QA.json`: vollständig grün.
+- Stable / `index.html`: unverändert.
