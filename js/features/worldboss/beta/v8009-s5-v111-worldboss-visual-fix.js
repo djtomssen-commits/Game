@@ -1,22 +1,17 @@
 function v111BossArt(){
-  return `<div class="v111-boss-scene" id="v111BossScene">
-    <div class="v111-mist"></div>
-    <div class="v111-ground-glow"></div><div class="v111-rune"></div>
-    <div class="v111-colossus">
-      <div class="v111-vine v1"></div><div class="v111-vine v2"></div>
-      <div class="v111-arm left"><div class="v111-fist"></div></div>
-      <div class="v111-arm right"><div class="v111-fist"></div></div>
-      <div class="v111-body"></div>
-      <div class="v111-head">
-        <div class="v111-eye left"></div><div class="v111-eye right"></div><div class="v111-mouth"></div>
-      </div>
-      <div class="v111-crystal c1"></div><div class="v111-crystal c2"></div><div class="v111-crystal c3"></div>
-    </div>
+  return `<div class="v111-boss-scene v6201-real-scene" id="v111BossScene" aria-label="Smaragd-Koloss">
+    <img class="v6201-boss-art" src="assets/v7198-base64/6dcb5b08e22d3bbdc409.webp" alt="Smaragd-Koloss">
+    <div class="v6201-boss-dark"></div>
+    <div class="v6201-aura"></div>
+    <div class="v6201-fog"></div>
+    <div class="v6201-hitflash"></div>
+    <div class="v6201-damage-layer" id="v6201DamageLayer"></div>
+    <div class="v6201-phase-label" id="v6201ScenePhase">SMARAGD-KOLOSS</div>
   </div>`;
 }
 
-/* Rebuild overlay with the unique artwork. */
-v110EnsureOverlay=function(){
+/* Canonical worldboss overlay producer. */
+function v111EnsureWorldBossOverlay(){
   let old=document.querySelector('#v110Overlay');
   if(old)old.remove();
 
@@ -47,7 +42,12 @@ v110EnsureOverlay=function(){
     <div class="tiny" id="v110Cost" style="text-align:center;margin-top:8px"></div>
   </div>`;
   document.body.appendChild(ov);
-};
+  return ov;
+}
+window.v111EnsureWorldBossOverlay=v111EnsureWorldBossOverlay;
+v110EnsureOverlay=v111EnsureWorldBossOverlay;
+try{window.v110EnsureOverlay=v111EnsureWorldBossOverlay}catch(_){}
+
 
 /* Strong open path: no inline function dependency. */
 function v111OpenWorldBoss(){
