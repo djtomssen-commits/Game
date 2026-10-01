@@ -227,7 +227,13 @@
    ]);
    if(error)throw error;
    const r=Array.isArray(data)?(data[0]??null):data;
-   return r&&typeof r==='object'?r:{ok:false,reason:'EMPTY_RESPONSE'};
+   if(!r||typeof r!=='object')return {ok:false,reason:'EMPTY_RESPONSE'};
+   /* Beta returns ready=true; Server1 returns initialized=true for the same
+      completed atomic creation contract. Normalize that transport detail here. */
+   if(serverId()==='server1'&&r.ok===true&&r.initialized===true&&r.ready==null){
+    return {...r,ready:true};
+   }
+   return r;
   }catch(e){
    console.warn('[V7.276] atomic character create',e);
    return {ok:false,reason:String(e?.message||e)};
@@ -316,7 +322,13 @@
    const baseFinalize=v200FinalizeUser;
    v200FinalizeUser=async function(user){
     const r=await baseFinalize.apply(this,arguments);const id=uid();
-    if(r&&id&&complete(s)&&owned(s,id,false))writeLocalCanonical(id,s);
+    if(r&&id&&complete(s)&&owned(s,id,false)){
+      writeLocalCanonical(id,s);
+    }else if(r&&id&&!complete(s)){
+      /* Account finalization is the single onboarding handoff for both Beta
+         and Server1. The current v029 creator decides the active server UI. */
+      queueMicrotask(()=>{try{window.v029ShowClassChoice?.()}catch(e){console.warn('V4.159 creator handoff',e)}});
+    }
     return r;
    };
    try{window.v200FinalizeUser=v200FinalizeUser}catch(e){}
