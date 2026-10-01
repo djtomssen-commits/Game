@@ -59323,7 +59323,7 @@ normalize();
   settle();
   document.addEventListener('DOMContentLoaded',settle,{once:true});
   window.addEventListener('pageshow',settle,{passive:true});
-  [100,350,900,1800,4200,8200,12500].forEach(ms=>setTimeout(settle,ms)); /* V4.123: removed useless late clear of already-fired one-shot timeout. */
+  window.addEventListener('growlegends:account-ready',settle,{passive:true});
 })();
 </script>
 
@@ -71643,8 +71643,9 @@ html.v495-level-syncing #v420LevelUpOverlay{
     [portrait,name,sub,level,xp].forEach(n=>{if(n)center.appendChild(n)});
   }
   reorder();
-  requestAnimationFrame(reorder);
-  [150,500,1200].forEach(ms=>setTimeout(reorder,ms));
+  document.addEventListener('DOMContentLoaded',reorder,{once:true});
+  window.addEventListener('pageshow',()=>{if(document.getElementById('character')?.classList.contains('active'))reorder()},{passive:true});
+  window.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')==='character')reorder()},{passive:true});
 })();
 </script>
 <!-- ===== /V5.11 CHARACTER REFERENCE POLISH ===== -->
@@ -92135,7 +92136,7 @@ function observe(){
 document.addEventListener('click',e=>{if(e.target?.closest?.('#v459CharacterTabs [data-tab="materials"],#v514HeroTabs [data-tab="materials"],#v546MaterialsHeader'))setTimeout(()=>{observe();enhance()},40)},true);
 document.addEventListener('DOMContentLoaded',()=>{observe();enhance()},{once:true});
 window.addEventListener('pageshow',()=>{observe();enhance()},{passive:true});
-[0,120,450,1000,1800].forEach(ms=>setTimeout(()=>{observe();enhance()},ms));
+window.addEventListener('growlegends:account-ready',()=>{observe();enhance()},{passive:true});
 window.v683MaterialMultiSell={enhance,selected,stats:selectionStats};
 })();
 </script>
@@ -98120,7 +98121,9 @@ const host=document.getElementById('grow');
 if(host){
   new MutationObserver(()=>requestAnimationFrame(ensureButtons)).observe(host,{childList:true,subtree:true});
 }
-[0,100,350,1000,2500].forEach(ms=>setTimeout(ensureButtons,ms));
+ensureButtons();
+document.addEventListener('DOMContentLoaded',ensureButtons,{once:true});
+window.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')==='grow')ensureButtons()},{passive:true});
 window.v6283GrowGuide={open,context:ctx,refresh:ensureButtons};
 window.v6283GrowGuideDiagnostics=()=>({
   version:'V6.283',
