@@ -3281,3 +3281,27 @@ Arbeitsmodus:
 - Cleanup für die 4 inerten Marker vorbereitet:
   - Script-Commit `da7833f25e9ef86290f29f51c60b16bdf64b6959`
   - Workflow-Commit `91b219c49d3ebb5eb741b1193e2206093ee5ab1a`
+
+
+#### Mini-CSS Marker Cleanup abgeschlossen
+- Ergebnis-Commit: `16e12c5dc3ae501dae6e8a9d5a6e834923703671`.
+- 4 reine Kommentar-/Marker-CSS-Dateien entfernt.
+- 6 zugehörige Link-Verweise aus `beta.html` entfernt.
+- Keine Dangling-Referenzen; QA `V8009_MINI_CSS_MARKER_CLEANUP_QA.json` grün.
+
+#### Safe Mini-CSS Bundling
+- Ergebnis-Commit: `edeabff18230d9344d54222d2753c4b3ab4acf04`.
+- 3 direkt aufeinanderfolgende, nicht per DOM referenzierte Mini-CSS-Dateien zu `v8009-mini-bundle-001.css` zusammengeführt.
+- Ursprungsdateien entfernt:
+  - `v8009-extracted-v297-equipped-mystic-detail-style.css`
+  - `v8009-extracted-v298-hall-mystic-special-style.css`
+  - `v8009-extracted-v481-first-paint-version.css`
+- CSS-Reihenfolge erhalten; Stable / `index.html` Hash unverändert.
+- QA `V8009_MINI_CSS_SAFE_BUNDLE_QA.json`: grün.
+
+#### Orphan-/Include-Audit
+- Ziel: nach der großen Extraktion/Konsolidierung nicht mehr referenzierte Root-CSS sowie legacy-/anonymous-extracted JS-Dateien finden.
+- Script-Commit: `42490362d7e105c2c51fb87611dc972ab9996690`.
+- Workflow-Commit: `efc2846b656a5c4c323a863194924070e90af703`.
+- Workflow wegen fehlendem Ergebnis-Commit erneut getriggert: `8b604f4c0d1e7836ff2c1ef98e3c553e4fc422ee`.
+- Ergebnis-Audit zum Zeitpunkt dieses Status-Updates noch nicht sichtbar.
