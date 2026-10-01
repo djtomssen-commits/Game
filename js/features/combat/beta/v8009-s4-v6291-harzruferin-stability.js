@@ -43,32 +43,8 @@
 
  /* Last authority: D1 has no key gate and is available whenever it is not
     genuinely completed. */
- try{
-   if(typeof dungeonUnlocked==='function'&&!window.__v6291DungeonUnlocked){
-     const base=dungeonUnlocked;
-     const wrapped=function(i){repairDungeonOne();if(Number(i)===0)return true;return base.apply(this,arguments)};
-     try{dungeonUnlocked=wrapped}catch(_){}
-     window.dungeonUnlocked=wrapped;
-     window.__v6291DungeonUnlocked=true;
-   }
- }catch(_){}
- try{
-   if(typeof dungeonAvailable==='function'&&!window.__v6291DungeonAvailable){
-     const base=dungeonAvailable;
-     const wrapped=function(i){
-       repairDungeonOne();
-       if(Number(i)===0){
-         const st=state();
-         let done=false;try{done=typeof dungeonCompleted==='function'&&dungeonCompleted(0)}catch(_){}
-         return !!st&&Number(st.level||1)>=1&&!done;
-       }
-       return base.apply(this,arguments);
-     };
-     try{dungeonAvailable=wrapped}catch(_){}
-     window.dungeonAvailable=wrapped;
-     window.__v6291DungeonAvailable=true;
-   }
- }catch(_){}
+ /* V8.009: final dungeonUnlocked wrapping retired; v4165 already guarantees D1/key truth. */
+ /* V8.009: final dungeonAvailable wrapping retired; repairDungeonOne stays lifecycle-driven. */
 
  /* PvP/Hall class parsing also needs to preserve the fifth class. */
  try{
