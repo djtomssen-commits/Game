@@ -2907,3 +2907,26 @@ Arbeitsmodus:
 - Alle ausgelagerten Dateien per `node --check` geprüft.
 - QA `V8009_ANONYMOUS_EXTRACTION_BATCH17_QA.json`: vollständig grün.
 - Stable / `index.html`: unverändert.
+
+
+#### Anonymous Extraction Batch 18
+- 14 weitere anonyme Legacy-Scripts ohne ursprüngliche Script-ID 1:1 aus `beta.html` ausgelagert:
+  - Public Player Profiles
+  - Real Shop/Render Fix
+  - Rarity Stat Separation
+  - Rarity Economy
+  - Reliable Buying Feedback
+  - Daily Dampf System
+  - Profile Dungeon Position
+  - Single Active Dungeon Flow
+  - Real Avatar Integration
+  - Legacy Top Navigation / `v032Go`
+  - Version Sync + Purchase Feedback
+  - Loot / Item Balance
+  - Global Progress Fix
+  - Combat Balance
+- Zusammen 68.645 Bytes Inline-JS aus dem Monolithen entfernt.
+- Anonyme Scripts bleiben ohne ID; Position und vorhandene Attribute wurden beibehalten, nur `src=` ergänzt.
+- Alle ausgelagerten Dateien per `node --check` geprüft.
+- QA `V8009_ANONYMOUS_EXTRACTION_BATCH18_QA.json`: vollständig grün.
+- Stable / `index.html`: unverändert.
