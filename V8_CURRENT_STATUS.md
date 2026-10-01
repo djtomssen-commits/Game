@@ -3409,3 +3409,48 @@ Arbeitsmodus:
 - Regression-QA installiert:
   - Script `c9aa2195f7c4017243d0ed696c1bef064ca6994e`
   - Workflow `8b23121f44f035fde1c3af2f777d75a0c225ec98`
+
+
+#### Large Runtime No-op / Retired Cleanup
+- Runtime-Sweep-Audit: `39c52b1efc398ff71b442864171d76dcbf1de38c`.
+- Vor Cleanup wurden 757 geladene Beta-Scripts geprüft.
+- 32 geladene Dateien waren komplett leer oder nur Kommentar.
+- Zusätzlich wurden zahlreiche unreferenzierte Mini-Marker/Retirement-Stubs erkannt.
+- Konservativer Cleanup-Commit: `efaf6f9c2e1d5a73a24e0460984a8de41a9d7ca8`.
+- Ergebnis: **79 tote Runtime-Layer in einem Batch entfernt**.
+- Keine Dangling-Referenzen laut `V8009_RUNTIME_NOOP_DELEGATE_CLEANUP_QA.json`.
+- Entfernt wurden u. a. alte Quest-/Guild-/Guildboss-/Tower-/World-/Shop-/Pet-/Event-/Character-Marker und No-op-Schichten.
+
+#### Heldenquartier Delegate Sweep – Rest
+- Zusätzlich 6 weitere unreferenzierte reine Delegatoren entfernt:
+  - `v516-heldenquartier-exact-mobile-js.js`
+  - `v518-heldenquartier-stage-rebuild-js.js`
+  - `v522-heldenquartier-true-reference-js.js`
+  - `v523-heldenquartier-clean-frame-js.js`
+  - `v524-heldenquartier-banner-kill-js.js`
+  - `v527-heldenquartier-clean-reference-js.js`
+- Beta-Commit: `2ad2554a3fea37b8438641a93fa9e4aadf3ad519`.
+- Dateien danach physisch gelöscht.
+- Damit wurden in diesem großen Schritt insgesamt **85 aktive Script-Includes/Layers entfernt**.
+
+#### Aktueller Beta-Strukturstand nach Groß-Cleanup
+- `beta.html`: **674 externe Script-Tags**.
+- **0 Inline-Script-Tags**.
+- **0 Inline-Style-Tags**.
+- Gegenüber dem früheren Post-Extraction-Stand mit 774 externen Scripts wurden damit inzwischen 100 externe Runtime-Includes aus der aktiven Kette entfernt.
+
+#### Dungeon / Quest Wrapper Ownership Audit
+- Audit-Commit: `3e788ea307fc5f32e52bbf0297c16947603236b6`.
+- Historische Wrapper-Tiefe aktuell sichtbar:
+  - `claimQuest`: 6 geladene Schichten
+  - `v233ClaimQuest`: 6 Schichten
+  - `persist`: 9 Schichten
+  - `v065RenderWorld`: 11 Schichten
+  - `v067OpenDungeon`: 4 Schichten
+  - `dungeonUnlocked`: 6 Schichten
+- Nächster Konsolidierungsschritt: innerhalb dieser Dateien explizit retired Wrapper entfernen, echte Balance-/Reward-/Authority-Logik jedoch behalten.
+
+#### Post Runtime Cleanup Audit
+- Script-Commit: `9d0687a9bc191268e206b5c7d70afc9ffd24c823`.
+- Workflow-Commit: `0e8707dfa194aaf65f219f9fe9cec77ce8c73e9e`.
+- Prüft neue Script-Anzahl, Inline-Zero und mögliche neue Orphans nach dem 85-Layer-Cleanup.
