@@ -75660,10 +75660,10 @@ window.v531HardenHero=harden;
     return true;
   }
   window.v537ApplyAttributes=apply;
-  window.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')==='character')requestAnimationFrame(apply)});
+  window.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')==='character')apply()});
   apply();
-  document.addEventListener('DOMContentLoaded',()=>requestAnimationFrame(apply),{once:true});
-  window.addEventListener('pageshow',()=>requestAnimationFrame(apply),{passive:true});
+  document.addEventListener('DOMContentLoaded',apply,{once:true});
+  window.addEventListener('pageshow',apply,{passive:true});
   document.addEventListener('click',e=>{if(e.target?.closest?.('#v459CharacterTabs [data-tab="attributes"],#v514HeroTabs [data-tab="attributes"]'))requestAnimationFrame(apply)},true);
   /* V8.009: bounded startup retry train retired. */
 })();
@@ -76529,10 +76529,10 @@ window.v531HardenHero=harden;
     if(!document.getElementById('character')?.classList.contains('active'))return false;
     try{renderTree()}catch(e){console.warn('V5.43 talent render',e)}
   }
-  window.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')==='character')requestAnimationFrame(apply)});
+  window.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')==='character')apply()});
   apply();
-  document.addEventListener('DOMContentLoaded',()=>requestAnimationFrame(apply),{once:true});
-  window.addEventListener('pageshow',()=>requestAnimationFrame(apply),{passive:true});
+  document.addEventListener('DOMContentLoaded',apply,{once:true});
+  window.addEventListener('pageshow',apply,{passive:true});
   document.addEventListener('click',e=>{
     if(e.target?.closest?.('#v459CharacterTabs [data-tab="talents"],#v514HeroTabs [data-tab="talents"]'))requestAnimationFrame(apply);
   },true);
@@ -77219,10 +77219,10 @@ window.v531HardenHero=harden;
     if(!document.getElementById('character')?.classList.contains('active'))return false;
     try{renderMaterials();arrange()}catch(e){console.warn('V5.46 Materialien',e)}
   }
-  window.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')==='character')requestAnimationFrame(apply)});
+  window.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')==='character')apply()});
   apply();
-  document.addEventListener('DOMContentLoaded',()=>requestAnimationFrame(apply),{once:true});
-  window.addEventListener('pageshow',()=>requestAnimationFrame(apply),{passive:true});
+  document.addEventListener('DOMContentLoaded',apply,{once:true});
+  window.addEventListener('pageshow',apply,{passive:true});
   document.addEventListener('click',e=>{
     if(e.target?.closest?.('#v459CharacterTabs [data-tab="materials"],#v514HeroTabs [data-tab="materials"]'))requestAnimationFrame(apply);
   },true);
@@ -87539,8 +87539,8 @@ if(typeof fast==='function'&&!fast.__v6102Slots){
   }catch(e){}
 });
 
-document.addEventListener('DOMContentLoaded',()=>requestAnimationFrame(paintSlots),{once:true});
-window.addEventListener('pageshow',()=>{if(document.getElementById('character')?.classList.contains('active'))requestAnimationFrame(paintSlots)},{passive:true});
+document.addEventListener('DOMContentLoaded',paintSlots,{once:true});
+window.addEventListener('pageshow',()=>{if(document.getElementById('character')?.classList.contains('active'))paintSlots()},{passive:true});
 window.addEventListener('growlegends:account-ready',()=>setTimeout(()=>{if(document.getElementById('character')?.classList.contains('active'))paintSlots()},100));
 
 window.v6102EquipmentDiagnostics=function(){
