@@ -39,7 +39,7 @@
   const visible=rows.filter(r=>{const uid=String(r?.user_id||'');return uid===me||!window.v6144IsBlocked?.(uid)});
   if(!visible.length){box.innerHTML='<div class="v4144-chat-empty">Keine sichtbaren Nachrichten. Nachrichten blockierter Spieler werden ausgeblendet.</div>';return}
   box.innerHTML=visible.map(r=>{const uid=String(r?.user_id||''),name=String(r?.character_name||'Spieler');const canAct=!!uid&&uid!==me&&(!window.v6144CanActOnChatRow||window.v6144CanActOnChatRow(uid,name)!==false);return `<div class="v4144-chat-row ${uid===me?'own':''}" data-v6144-user="${esc(uid)}" data-v6144-msg="${esc(r?.id||'')}" data-v6144-name="${esc(name)}"><div class="v4144-chat-bubble"><div class="v4144-chat-meta"><b>${esc(name)}</b><span class="v6144-chat-meta-right"><span>${esc(fmtTime(r.created_at))}</span>${canAct?`<button type="button" class="v6144-chat-menu-btn" aria-label="Aktionen für ${esc(name)}" title="Melden oder blockieren">⋮</button>`:''}</span></div><div class="v4144-chat-text">${esc(r.body||'')}</div></div></div>`}).join('');
-  requestAnimationFrame(()=>{box.scrollTop=box.scrollHeight});
+  box.scrollTop=box.scrollHeight;
  }
  function missingTable(e){return /guild_chat_messages|relation.*does not exist|schema cache/i.test(String(e?.message||e||''))}
  async function load({silent=false}={}){
@@ -105,7 +105,7 @@
   if(typeof v254RenderGuild==='function'&&!window.__v4144GuildRenderWrap){const base=v254RenderGuild;v254RenderGuild=function(){const r=base.apply(this,arguments);syncVisibility();return r};try{window.v254RenderGuild=v254RenderGuild}catch(e){}window.__v4144GuildRenderWrap=true}
  }catch(e){}
  try{
-  if(typeof v254LoadGuild==='function'&&!window.__v4144GuildLoadWrap){const base=v254LoadGuild;v254LoadGuild=async function(){const r=await base.apply(this,arguments);syncVisibility();const later=()=>setTimeout(()=>{if(open)void load({silent:true});else{void checkUnread();scheduleWatch()}},600);if(typeof requestAnimationFrame==='function')requestAnimationFrame(later);else later();return r};try{window.v254LoadGuild=v254LoadGuild}catch(e){}window.__v4144GuildLoadWrap=true}
+  if(typeof v254LoadGuild==='function'&&!window.__v4144GuildLoadWrap){const base=v254LoadGuild;v254LoadGuild=async function(){const r=await base.apply(this,arguments);syncVisibility();setTimeout(()=>{if(open)void load({silent:true});else{void checkUnread();scheduleWatch()}},600);return r};try{window.v254LoadGuild=v254LoadGuild}catch(e){}window.__v4144GuildLoadWrap=true}
  }catch(e){}
  /* V4.159: login bootstrap is owned by the central boot controller. */
  try{
