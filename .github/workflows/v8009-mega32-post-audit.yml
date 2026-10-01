@@ -1,0 +1,24 @@
+name: V8.009 Mega32 Post Audit
+on:
+  workflow_run:
+    workflows: ["V8.009 Mega32 Root CSS Extraction"]
+    types: [completed]
+permissions:
+  contents: write
+jobs:
+  audit:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - run: python3 .github/scripts/v8009_mega32_post_audit.py
+      - run: |
+          git config user.name github-actions
+          git config user.email github-actions@users.noreply.github.com
+          git add V8009_MEGA32_POST_AUDIT.json
+          git commit -m "V8.009 AUDIT: mega32 post css inventory" || exit 0
+          git pull --rebase origin main
+          git push
