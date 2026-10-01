@@ -1,0 +1,22 @@
+name: V8.009 Dealer Fast Patch A
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/v8009_dealer_fast_patch_a.py'
+      - '.github/workflows/v8009-dealer-fast-patch-a.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 .github/scripts/v8009_dealer_fast_patch_a.py
+      - run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add beta.html
+          git commit -m "V8.009 DEALER: consolidate Harz dealer render lifecycle" || exit 0
+          git push
