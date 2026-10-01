@@ -4283,3 +4283,53 @@ Arbeitsmodus:
   - Dismantle
   - Craft
   - Nebelforge
+
+
+#### Powerblock: Forge komplett strukturell abgeschlossen
+- Harzschmiede:
+  - `v488` besitzt jetzt direkt alle 3 sichtbaren Tabs:
+    - Zerlegen
+    - Schmieden
+    - Nebelschmied
+  - nachträgliche Nebelschmied-Tab-Injection entfernt.
+  - alter Forge-MutationObserver / Repair-RAF-Pfad aus `v7240` entfernt.
+  - Wechsel zurück zu Zerlegen/Schmieden entfernt den Nebelschmied-Body sauber.
+- Zerlegen:
+  - bisher sichtbarer `v488`-Pfad hatte noch lokalen Inventory-/Fragment-/Gold-Mutate.
+  - bei aktiver Item-Authority wird der Klick jetzt synchron vor jedem `await` abgefangen.
+  - serverseitige Aktion: `v7062_dismantle_items`.
+  - Request-ID + Duplicate-Guard serverseitig vorhanden.
+  - geschützte Items, Händlerware und Fragment-Yields werden serverseitig validiert.
+  - Auswahl-Snapshot / Clear-API liegt jetzt direkt beim v488-Owner.
+  - Händler-Rückerstattungs-Vorschau nutzt bevorzugt denselben `sellValue`-Pfad wie die Serverökonomie.
+- Prismatisches Schmieden:
+  - Authority-Klick wird jetzt ebenfalls synchron vor jedem `await` abgefangen; der alte lokale Handler kann nicht mehr vorher mutieren.
+  - serverseitige Aktion: `v7097_forge_prismatic`.
+  - Gold / Fragmente / Inventar + Duplicate-Guard bleiben serverautoritativ.
+- Nebelschmied:
+  - direkter Owner-Aufruf statt Tab-Reparaturkette.
+  - 0 MutationObserver im Nebelschmied-Scope.
+  - nur 1 funktionaler UI-Timer verbleibt: Entfernen der kurzen Hit-Animation.
+  - bisheriger `v7240_nebelforge_reroll` ist serverseitig, war aber nicht request-idempotent.
+  - neuer Wrapper `public.v8009_nebelforge_reroll` deployed:
+    - persistente Request-ID
+    - Atomic Pending-Marker über `player_item_events`
+    - Duplicate-Erkennung
+    - gleiche Request-ID wird nach Transport-/Antwortfehler beim Retry wiederverwendet
+    - `EXECUTE` nur für `authenticated` + `service_role`; kein `anon` / `PUBLIC`.
+  - SQL-Snapshot im Repo: `V8009_FORGE_POWERBLOCK_SQL.sql`.
+- Abschluss-QA:
+  - `V8009_FORGE_POWER_FINAL_QA.json`
+  - QA-Commit: `01743f8ee7d095cc57ac3618aeeb0c33e9be4273`
+  - alle 3 geänderten JS-Dateien syntaktisch grün.
+  - Forge-Tabs direkt vorhanden: **3/3**
+  - alte `ensureForgeTab`-Injection: **0**
+  - alter Forge-MutationObserver: **0**
+  - Zerlegen serverseitig: **ja**
+  - Craft serverseitig: **ja**
+  - Nebelschmied Request-ID-idempotent: **ja**
+  - Stable `index.html` unverändert; SHA weiterhin `0bc5fe3eb0e69c856070dfcb6682d3178c56a597`.
+- Matrix:
+  - Forge = **[x]**
+  - Matrix-Commit: `822d26d5fd21a265925dd50454927a7c0c59de76`
+- Manueller Endtest für Zerlegen / Craft / Nebelschmied bleibt für den gemeinsamen Test-Milestone offen.
