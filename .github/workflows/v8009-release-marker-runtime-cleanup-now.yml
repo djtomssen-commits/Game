@@ -1,0 +1,23 @@
+name: V8.009 Release Marker Runtime Cleanup Now
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/v8009_release_marker_runtime_cleanup_now.py'
+      - '.github/workflows/v8009-release-marker-runtime-cleanup-now.yml'
+permissions:
+  contents: write
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 .github/scripts/v8009_release_marker_runtime_cleanup_now.py
+      - run: |
+          git config user.name github-actions
+          git config user.email github-actions@users.noreply.github.com
+          git add -A beta.html js/features/legacy-extracted/beta V8009_RELEASE_MARKER_RUNTIME_CLEANUP_QA.json
+          git commit -m "V8.009 CLEANUP: remove eight unused release markers" || exit 0
+          git pull --rebase origin main
+          git push
