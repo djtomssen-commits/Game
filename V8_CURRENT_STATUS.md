@@ -2390,3 +2390,16 @@ Arbeitsmodus:
 - Alle vier externen Dateien mit `node --check` geprüft.
 - QA `V8009_CHARACTER_EXTRACTION_BATCH1_QA.json`: vollständig grün.
 - Stable / `index.html`: unverändert.
+
+
+#### Character Extraction Batch 2
+- Weitere vier große Character-Owner 1:1 aus `beta.html` nach `js/features/character/beta/` ausgelagert:
+  - `v459-character-hub` → `v8009-s2-v459-character-hub.js`
+  - `v4155-frost-talents` → `v8009-s2-v4155-frost-talents.js`
+  - `v4156-class-identity-balance` → `v8009-s2-v4156-class-identity-balance.js`
+  - `v7124-character-scroll-summary-owner` → `v8009-s2-v7124-character-scroll-summary-owner.js`
+- Zusammen rund 48 KB Inline-JS aus dem Monolithen entfernt.
+- Script-IDs und Reihenfolge in `beta.html` beibehalten; nur auf `src=` umgestellt.
+- Alle vier externen Dateien mit `node --check` geprüft.
+- QA `V8009_CHARACTER_EXTRACTION_BATCH2_QA.json`: vollständig grün.
+- Stable / `index.html`: unverändert.
