@@ -59599,7 +59599,8 @@ normalize();
   stamp();exposeModernHome();
   document.addEventListener('DOMContentLoaded',()=>{stamp();exposeModernHome()},{once:true});
   window.addEventListener('pageshow',()=>{stamp();exposeModernHome()},{passive:true});
-  [150,800,1800].forEach(ms=>setTimeout(()=>{stamp();exposeModernHome()},ms));
+  window.addEventListener('growlegends:account-ready',()=>{stamp();exposeModernHome()},{passive:true});
+  window.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')==='world'){stamp();exposeModernHome()}},{passive:true});
 })();
 </script>
 
@@ -110247,10 +110248,10 @@ function sync(){
  if(g)ensureHub(g,'gold');
  renameMenu();
 }
-function openHarz(){try{v032Go('harzDealer')}catch(_){}requestAnimationFrame(sync);return true}
+function openHarz(){try{return v032Go('harzDealer')}catch(_){sync();return true}}
 function openGold(){
  try{if(typeof window.v7114OpenGoldShop==='function')return window.v7114OpenGoldShop()}catch(_){}
- try{v032Go('goldShop')}catch(_){}requestAnimationFrame(sync);return true;
+ try{return v032Go('goldShop')}catch(_){sync();return true}
 }
 
 document.addEventListener('click',e=>{
@@ -110267,9 +110268,9 @@ try{
  }
 }catch(_){}
 window.addEventListener('growlegends:navigation-ready',sync,{passive:true});
+window.addEventListener('growlegends:navigation-open-v7119',e=>{const id=String(e?.detail?.id||'');if(id==='harzDealer'||id==='goldShop')sync()},{passive:true});
 window.addEventListener('pageshow',sync,{passive:true});
 document.addEventListener('DOMContentLoaded',sync,{once:true});
-[50,300,900].forEach(ms=>setTimeout(sync,ms));
 
 window.v7117DealerHubSync=sync;
 window.v7117OpenDealerTab=tab=>tab==='gold'?openGold():openHarz();
