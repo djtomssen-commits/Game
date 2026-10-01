@@ -3844,3 +3844,59 @@ Arbeitsmodus:
   11. World + Worldboss
   12. Admin
   13. finale repo-weite QA + manueller Endtest
+
+
+#### Powerblock: Guild + Guildboss komplett strukturell geprüft
+- Guild-Power-Audit umfasst **38 geladene Guild-Scripts**.
+- Finaler Audit-Commit nach Cleanup: `333ddd3a9084f87cb6a177266964da8e33aed6a5`.
+- Guild-Lifecycle nach Power-Cleanup:
+  - keine globalen `render()`-Wrapper mehr
+  - Boss-Visual-Owner: 0 künstliche Timeouts
+  - Runtime-Owner: nur noch echte Autoplay/Clock-Lifecycle-Pfade; Settle-Kaskaden entfernt
+  - Guildwar künstliche Startup-/Tab-/Visibility-Delays entfernt; 60s Server-Watch bleibt
+  - Grow-Aufträge DOM-Refresh 1s -> 30s
+  - Replay-Button über delegierten Click-Owner statt 600/1800ms Rebind-Retries
+  - alter v255 Signup- und Guild->Boss-Load-Wrapper retired
+- Wichtige Cleanup-Commits:
+  - Boss Visual Retries: `9b82b772f32edce2cef8b49dc6d7e670e8cdd02c`
+  - Grow Timer: `ad6db0c237845c895e8ca33b33e35fdd1b346073`
+  - Replay Owner: `cbde218977b604ed90812ea7e15fcaeae7470432`
+  - Overview Delays: `bdb1708892b36fcb96ef430009c6ed73cd767982`
+  - War Delays: `eb01275d105c61d6d628360989d85d16f50d2180`
+  - v255 Legacy Wrapper: `1c21ce8e179b5bcf8b4bf03f150c3260b7cd45ed`
+  - Runtime Settle Delays: `59f1b7202609b0ffde8828e5962334887fff1abe`
+
+#### Neue Guildboss-Regel: alte Belohnung vor neuer Anmeldung
+- Gewünschte Regel serverautoritativ umgesetzt:
+  - Neue Anmeldung (`p_value=true`) wird blockiert, solange eine ältere abgeschlossene Bossrunde derselben Gilde für den Spieler noch `reward_claimed=false` hat.
+  - Abmeldung (`false`) bleibt möglich.
+- Supabase Migration:
+  - Name: `guildboss_signup_requires_previous_reward_claim`
+  - Version: **20261001120616**
+  - aktiv in `public.v7307_set_guild_boss_signup` und `server1.v7307_set_guild_boss_signup`
+  - SQL-verifiziert: beide Funktionen enthalten Gate + Previous-Round-Check.
+- Repo-Artefakt: `V8009_GUILDBOSS_SIGNUP_REWARD_GATE.sql`
+  - Commit `a182403066c0da38ce51fdff8d5221f67c63a014`
+- Client-Gate:
+  - liest `v7165_get_last_guild_boss_result`
+  - bei offener Altbelohnung: Signup-Button gesperrt mit „🎁 Erst Belohnung abholen“
+  - zeigt alte Bossrunde/Claim-Pfad an
+  - erneute Signup-Authority-Prüfung direkt vor RPC
+  - Commit `86d6962a6c20bb4be31779c8ebc6a74d1b019a98`
+- Nach erfolgreichem Claim wird der Signup-Gate sofort neu geprüft/freigegeben:
+  - Commit `9995647a5deec5910164a77a60603810fea42ad5`
+- Abschluss-QA: `V8009_GUILD_POWER_FINAL_QA.json`
+  - Ergebnis-Commit `3fa74c43256a3c730b7d50981faaf54ecf6916cc`
+  - alle Checks **true**
+  - 4 Tabs vorhanden: overview / growtasks / boss / war
+  - Zero-Inline-JS/CSS weiterhin grün.
+- Matrix aktualisiert:
+  - Guild: **[x]**
+  - Guildboss: **[x]**
+  - Matrix-Commit `c31ae523c617ff3aee96e20c6f0ff024182e6c6a`
+- Manueller Endtest von Guild/Guildboss bleibt als späterer Test-Milestone offen.
+
+#### Nächster Powerblock
+- Quest + Schicht Full-Lifecycle-Audit gestartet:
+  - Script `a21a1559734ab47aea70de2cacef9f36273eceb5`
+  - Workflow `8502fd973edfeba14c9b32b72e094b6ed9bf7551`
