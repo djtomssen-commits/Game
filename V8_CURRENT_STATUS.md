@@ -2145,3 +2145,22 @@ Arbeitsmodus:
   - 60-ms Klick-Followup nach echter Tower-/Combat-Aktion bleibt.
 - QA `V8009_FINAL_BIG_BATCH15_QA.json`: grün.
 - Stable / `index.html`: unverändert.
+
+
+#### Big Batch 16
+- v362 Header-Resource-Refresh:
+  - eigenen `v032Go`-Wrapper entfernt;
+  - Shared `growlegends:navigation-open-v7119` übernimmt den passiven Header-Refresh.
+- v372 Header-Paint:
+  - eigenen `v032Go`-Wrapper entfernt;
+  - 300/1400-ms Startup-Paints entfernt;
+  - DOMContentLoaded/pageshow/account-ready/shared navigation übernehmen direkt.
+- v377 Settings-Gear:
+  - eigenen `v032Go`-Wrapper entfernt;
+  - Settings werden jetzt über Shared-v7119 bei Navigation geschlossen und der Gear-Bind direkt aktualisiert;
+  - 300/1400-ms Startup-Bind-Retries entfernt;
+  - Klick-außerhalb-Schließen und bestehende Settings-Portal-/Refresh-Logik bleiben erhalten.
+- v376 Quest-Destination-Runtime war bereits retired und wurde nicht erneut verändert.
+- v420 Level-Up-Owner blieb vollständig unangetastet.
+- QA `V8009_FINAL_BIG_BATCH16_QA.json`: grün.
+- Stable / `index.html`: unverändert.
