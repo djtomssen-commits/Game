@@ -135,7 +135,9 @@
       }
       if(materials)materialPanel.querySelector('.v459-material-placeholder')?.remove();
 
-      updateHero();activate(activeTab(),false);stamp();
+      updateHero();
+      try{window.v123PolishEquipment?.()}catch(_){}
+      activate(activeTab(),false);stamp();
       return true;
     }catch(e){console.warn('V4.67 character layout',e);return false}
     finally{layingOut=false}
