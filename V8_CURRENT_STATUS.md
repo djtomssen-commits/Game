@@ -4789,3 +4789,22 @@ Arbeitsmodus:
   1. verbliebene Server-1-Core-Differenzen gegen Beta prüfen;
   2. nur echte gameplay-relevante Abweichungen angleichen, globale Tabellen (News/Legal/Play/PUSH etc.) bewusst nicht blind duplizieren;
   3. danach Server-1 Smoke-Test vorbereiten.
+
+
+### Server 1 Promote – letzter Backend-Differenzcheck · 01.10.2026
+
+- Relation-Vergleich wurde mit Tabellen **und Views** wiederholt. Wichtig: viele vermeintlich fehlende Server-1-Tabellen sind bewusst als Views auf globale/public Daten vorhanden (u. a. Admins, Events, News, Wetter, Push, Tickets, Referral-Device-Guard, Serverkonfiguration).
+- Dadurch sind die gemeinsam/global geführten Bereiche auf Server 1 bereits erreichbar und müssen nicht dupliziert werden.
+- Verbleibende echte Relations-Differenzen:
+  - `player_nebel_caravan_state`
+  - `player_nebel_forge_state`
+  Diese gehören zu alten `v7240_nebel_*` RPCs. Der aktuelle Client nutzt stattdessen die bereits nach Server 1 promoteten kanonischen RPCs:
+  - `v7240_caravan_state/start/choose`
+  - `v7240_nebelforge_state`
+  - `v8009_nebelforge_reroll`
+- Verbleibende Funktionsnamen ohne Server-1-Gegenstück sind nur alte/ungenutzte `v7240_nebel_*`, `v7274_ensure_character_ready` und der public Pre-Request-Hook. Repo-Suche ergab keine Client-Referenz auf diese Alt-RPCs.
+- Die Serverkonfiguration wurde auf den neuen geklonten Entry umgestellt:
+  - Beta: `beta.html`
+  - Server 1: `server1.html`
+- Supabase Migration: `server1_release_path_to_cloned_client_v8009`
+- Backend-Promote damit für den aktuellen Client abgeschlossen; nächster Schritt ist ein kurzer Server-1-Smoke-Test mit frischem Server-1-Charakter.
