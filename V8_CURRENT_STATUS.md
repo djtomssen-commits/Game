@@ -2252,3 +2252,19 @@ Arbeitsmodus:
   - direkte Repaints nach echten Material-Verkäufen.
 - QA `V8009_CHARACTER_MATERIAL_PERF_QA.json`: 10/10 grün.
 - Stable / `index.html`: unverändert.
+
+
+#### Big Batch 20
+- v351 World-Mobile-Header:
+  - eigenen globalen `v032Go`-Wrapper entfernt;
+  - Double-RAF beim World-Open entfernt;
+  - 300/1100-ms Startup-Nachläufer entfernt;
+  - `v085InstallWorld` bleibt direkter Owner; zusätzlich DOMContentLoaded/pageshow/account-ready/shared-v7119.
+- v352 World-Header/Ghost-Cleanup:
+  - eigenen globalen `v032Go`-Wrapper entfernt;
+  - Double-RAF beim World-Open entfernt;
+  - 300/1200-ms Startup-Nachläufer entfernt;
+  - `v085InstallWorld` + direkte Lifecycle-Hooks bleiben.
+- v4125 Power-Repaint wurde bewusst noch nicht verändert, da es auch nach echten Gameplay-`render()`-Aufrufen aktualisiert und nicht nur Navigation nachmalt.
+- QA `V8009_FINAL_BIG_BATCH20_QA.json`: grün.
+- Stable / `index.html`: unverändert.
