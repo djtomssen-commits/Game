@@ -2780,3 +2780,10 @@ Arbeitsmodus:
 - 51.590 Bytes Inline-JS entfernt; Script-Reihenfolge unverändert.
 - QA `V8009_FEATURE_EXTRACTION_BATCH12A_QA.json`: grün.
 - Stable / `index.html`: unverändert.
+
+
+#### Feature Extraction Batch 12B
+- 8 Owner aus `beta.html` ausgelagert: v461, v6168, v6140, v115, gl-worldboss-ready-push-v2, v435, v430, v6211.
+- 49.690 Bytes Inline-JS entfernt; Script-Reihenfolge unverändert.
+- QA `V8009_FEATURE_EXTRACTION_BATCH12B_QA.json`: grün.
+- Stable / `index.html`: unverändert.
