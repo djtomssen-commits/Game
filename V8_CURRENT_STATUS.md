@@ -3783,3 +3783,29 @@ Arbeitsmodus:
   - unterstützt alte flache Season-Mirrors und neue `season_history`
   - Commit: `e840ec0cab85872fe811fa102a35a07ba326e6a9`
 - Mittwochsrangliste bleibt unverändert auf ihrem dedizierten serverseitigen Ledger/RPC.
+
+
+#### Großcleanup: Dungeon Combat Legacy + frühe Character-Owner
+- Dungeon:
+  - komplette historische `v048InstallFight()` Kampf-/Reward-Kopie entfernt; Funktion delegiert nur noch auf den späteren `v060InstallFight()`-Pfad.
+    - Commit: `fd33cb27ae97bf6a7f46b1a3d0cefba9c237f6d1`
+  - no-op globaler `render()`-Wrapper + eager rerender aus `v060 dungeon-progression-rebalance` entfernt.
+    - Commit: `604b73f6709d3006d63357e8e030f3ec957045e6`
+  - `v446SkipFight` bleibt bewusst in zwei kontextabhängigen Pfaden:
+    - v446 = lokaler Fallback-Kampf
+    - v7051 = serverautoritatives Replay
+    - kein blindes Zusammenlegen, solange Fallback noch benötigt wird.
+- Character / Klassenwahl:
+  - früher textbasierter `v029ClassModal`-DOM-Producer retired; `v080` ist der erste visuelle Klassenmodal-Owner.
+    - Commit: `debe89fb88a54773dcce2304612787d6cb8afdfb`
+  - alter globaler `v029` Render-Wrapper entfernt:
+    - schreibt Attribute nicht mehr bei jedem globalen Render neu
+    - installiert den historischen Dungeon-Fight-Handler nicht mehr bei jedem Render
+    - primäre Stat-/Item-/Klassen-Helfer bleiben erhalten
+    - Commit: `560e90cc65662bab7ce8f90cdde73fb0a853b7cd`
+- Tower:
+  - `vTRanking` ist absichtlich in Lobby + separater Rank-View vorhanden; diese zwei DOM-Produzenten sind kontextabhängig und keine gleichzeitige Doppelung.
+- Präzisions-Audit + Guard nach diesem Block erneut getriggert:
+  - Audit Trigger: `f8589a72451bdfd3928f741dd79af8a3a29f3b31`
+  - Guard Trigger: `2eb72d0b21dbc62166b7998d582e22bc6529d159`
+  - Ergebnis-Commits waren zum Zeitpunkt dieses Status-Updates noch nicht sichtbar.
