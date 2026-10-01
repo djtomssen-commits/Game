@@ -4879,3 +4879,45 @@ Arbeitsmodus:
 - Promotion auf Server 1 erfolgt erst nach expliziter Freigabe nach dem Muster: getestet → Delta prüfen → übernehmen → Smoke-Test → neuen stabilen Meilenstein setzen.
 - Stabile Referenz bleibt `stable-server1-2026-10-01`.
 - Policy-Commit: `a07e7e5ec52aa716a02d64d2062a5038d06ccdcc`.
+
+
+### Geplantes Beta-Update: Harz Lotto · 01.10.2026
+
+- Umsetzung zunächst **nur auf Beta** gemäß `SERVER1_RELEASE_POLICY.md`.
+- Kein Drüberpatchen: direkte Integration in die zuständigen kanonischen Dealer-/Lotto-Owner und serverautoritären Backend-Funktionen.
+- Neuer zusätzlicher Tab beim Tütchen-Dealer: **Harz Lotto**.
+- Grundregeln:
+  - 1 Schein pro Account und Woche;
+  - Einsatz: 25 Harz Taler;
+  - 6 Zahlen aus 1–50;
+  - Zahlen nach Bestätigung unveränderlich;
+  - Tippschluss: Dienstag 18:00 Uhr;
+  - Ziehung: Dienstag 19:00 Uhr;
+  - Ziehung und Auswertung serverautoritär;
+  - Gewinn wird nicht automatisch gebucht, sondern über **„Belohnung abholen“**.
+- Jackpot:
+  - gespeist aus den Einsätzen aller Spieler;
+  - nicht ausgeschüttete Gewinnanteile werden vollständig in den Jackpot der nächsten Runde übernommen.
+- Gewinnklassen:
+  - 6 Richtige = 70 % des verfügbaren Pots;
+  - 5 Richtige = 15 %;
+  - 4 Richtige = 10 %;
+  - 3 Richtige = 5 %;
+  - mehrere Gewinner derselben Klasse teilen den jeweiligen Klassenanteil gleichmäßig.
+- Geplante UI:
+  - großer roter Kaugummiautomat im Grow-Legends-Stil als Hauptmotiv;
+  - Anzeige von aktuellem Jackpot und Countdown/Phasenstatus;
+  - Zahlenraster 1–50 mit maximal 6 markierbaren Zahlen;
+  - Bestätigungsbutton für den 25-HT-Schein;
+  - nach Ziehung Darstellung der 6 gezogenen Kugeln, eigene Zahlen, Trefferzahl und Gewinn;
+  - Button **„Belohnung abholen“**;
+  - Bereich für die letzte Ziehung.
+- Geplante technische Struktur:
+  - serverseitige Wochenrunde;
+  - genau ein Ticket je `user_id + round_id`;
+  - serverseitige Harz-Taler-Abbuchung beim Bestätigen;
+  - serverseitige Ziehung von 6 eindeutigen Zahlen;
+  - serverseitige Treffer-/Gewinnberechnung;
+  - serverseitiger Claim mit Einmal-Schutz;
+  - Carry-over der nicht vergebenen Klassenanteile in die nächste Runde.
+- Offener Detailpunkt vor Implementierung: Zielwährung der Auszahlung. Empfehlung: Gewinne ebenfalls in Harz Talern auszahlen.
