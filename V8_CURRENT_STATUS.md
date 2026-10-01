@@ -2818,3 +2818,26 @@ Arbeitsmodus:
 - Originale Script-Attribute, IDs und Reihenfolge beibehalten; nur um `src=` ergänzt.
 - QA `V8009_FEATURE_EXTRACTION_BATCH11_QA.json`: vollständig grün.
 - Stable / `index.html`: unverändert.
+
+
+#### Feature Extraction Batch 14
+- 15 weitere benannte Owner 1:1 aus `beta.html` ausgelagert:
+  - `v6170-classset-upgrade-core`
+  - `v412-stability-audit`
+  - `v445-item-compare-mobile-fix`
+  - `v108-expanded-item-pool`
+  - `v338-harz-dealer-modern`
+  - `v109-harz-drops`
+  - `v116-worldboss-profile-stats-script`
+  - `v460-char-ui-script`
+  - `v333-friends-online-status`
+  - `v665-native-oauth-callback-bridge`
+  - `v567-harz-dealer-final`
+  - `v265-war-animation`
+  - `v228-settings-portal-script`
+  - `v237-grow-dungeon-fixes-core`
+  - `v7258-adaptive-mobile-fit-script`
+- Zusammen 82.111 Bytes Inline-JS aus dem Monolithen entfernt.
+- Originale Script-Attribute, IDs und Reihenfolge beibehalten; nur um `src=` ergänzt.
+- QA `V8009_FEATURE_EXTRACTION_BATCH14_QA.json`: vollständig grün.
+- Stable / `index.html`: unverändert.
