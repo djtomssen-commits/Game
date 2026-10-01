@@ -126,10 +126,6 @@ v204RenderOpponent=function(){
   return r;
 };
 
-/* On every game render, repair legacy/cloud states once. */
-const v207BaseRender=render;
-render=function(){
-  return v207BaseRender();
-};
+/* V8.009: obsolete no-op global render repair wrapper retired. */
 
 v207EnsurePvpState();
