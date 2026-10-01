@@ -208,6 +208,7 @@
       if(avatar)avatar.src=typeof v080AvatarFor==='function'?v080AvatarFor(cls):'';
       if(fighterName)fighterName.textContent=`${i+1}. ${name}`;
       if(fighterMeta)fighterMeta.textContent=`${x.class_name||clsLabel[cls]||''} · Lv. ${Number(x.level)||1} · Kampfkraft ${fmt(x.combat_power)}`;
+      try{window.v6317SyncGuildBossArt?.()}catch(_){}
       setEndurance(100,'Betritt die Arena');
       setTop(`${name} ist dran`,`Kämpfer ${i+1} / ${parts.length}`,'idle');
       if(text)text.textContent=`${name} stellt sich dem Verseuchten Titan.`;
