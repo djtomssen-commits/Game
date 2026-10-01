@@ -2093,3 +2093,22 @@ Arbeitsmodus:
 - Menü-Owner und gemeinsamer v7119-Navigation-Owner bleiben unverändert.
 - QA `V8009_FINAL_BIG_BATCH12_QA.json`: grün.
 - Stable / `index.html`: unverändert.
+
+
+#### Big Batch 13
+- Auto-Equip UI:
+  - 150/650/1600-ms `updateBars` Startup-Repaints entfernt;
+  - `flushPending`-Recovery 1000/3000/7000 ms bewusst erhalten.
+- Systemtechnik:
+  - 120/900/2600-ms `installMenu` Startup-Retries entfernt;
+  - Admin-/Power-Drift-Diagnose und Settings-Build-Hooks bleiben.
+- Harzruferin Tower-Art:
+  - 0/250/800-ms Startup-Reparaturen entfernt;
+  - direkter account-ready + Shared-v7119-Tower-Hook;
+  - 40-ms Klick-Followup nach echter Tower-Aktion bleibt.
+- Harzruferin Begleiter-Position:
+  - 0/180/700-ms Startup-Reparaturen entfernt;
+  - account-ready direkt;
+  - 40-ms Combat-Klick-Followup bleibt.
+- QA `V8009_FINAL_BIG_BATCH13_QA.json`: grün.
+- Stable / `index.html`: unverändert.
