@@ -1497,3 +1497,34 @@ Der nächste fachliche Schritt ist **nicht HOME-32**, sondern die Restinventur d
   - `v392`: aktiver Karten-/Timer-Paint;
   - `v6344`: kanonischer Quest-Renderer.
 - Stable / `index.html`: unverändert.
+
+
+### Quest Runtime-Layer Audit + v4222 Wrapper-Konsolidierung 01.10.2026
+
+- Runtime-Audit: `V8009_QUEST_RUNTIME_LAYER_AUDIT.json`, Bot-Commit `e7c900482e390d2bc29d9691e3e7e087b5388556`.
+- `v4178-quest-live-hard-fix.js` vollständig retired:
+  - Commit `d7edb9c8df6cb1f1a2ae836f054aaa379e2c1380`;
+  - kein eigener 1-s-Timer, kein `v032Go`-Wrapper, kein pageshow/visibility/startup repaint mehr;
+  - Live-Timer-Owner bleibt `v229`, aktiver Karten-/Tick-Owner `v392`.
+- `v229-live-ui-sync.js`:
+  - Commit `c749e5bc90e87760c67a5de60986e6515b657ca6`;
+  - alter 350-ms-Versionswriter entfernt.
+
+- Audit zeigt als wichtigste verbleibende Claim/Start-Layer:
+  - `v099`: Local/Mirror Basis-Claim und XP-Event-Logik -> vorerst behalten;
+  - `v310`: Local/Mirror Elite-Reward-/Generator-Logik -> vorerst behalten;
+  - `v4222`: zusätzliche Claim-/Start-Wrapper nur für Elite-UI/Nacharbeit -> konsolidiert.
+
+- `v4222` Konsolidierung:
+  - Commit `6383472f111b0ab9beaab433f72f31328f5b32b7`: beide Claim-Wrapper + Start-Wrapper aus v4222 entfernt;
+  - v4222 exportiert jetzt direkte Hooks `v4222AfterQuestClaim` und `v4222AfterQuestStart`;
+  - Commit `9bc54518376e6ab3749ff20c36fdb0ddc460b4bf`: `v233` ruft den Elite-Post-Claim-Hook direkt nach erfolgreichem Local/Mirror-Claim;
+  - Commit `8ac7416a4c63df2955d47db87c883ca4ac50003d`: `v7110` ruft den Elite-Post-Start-Hook direkt im kanonischen Start-Postflow.
+- Elite-Chance, Elite-Balance, Elite-Belohnung und Elite-Panel selbst wurden nicht geändert.
+- QA hinzugefügt:
+  - `.github/scripts/v8009_quest_v4222_hook_qa.py`
+  - `.github/workflows/v8009-quest-v4222-hook-qa.yml`
+  - Commits `c36ab241142e35f7e17b5aa8ab35ce598f729f06`, `f5280c24a9c85d70dc38ef2a3ccce9e66ce7292d`
+  - Bot-Output `V8009_QUEST_V4222_HOOK_QA.json` noch ausstehend zum Zeitpunkt dieser Statusnotiz.
+- Stable / `index.html`: unverändert.
+- Nach grüner QA nächster Check: normale Quest starten/claimen; falls eine Elite-Quest angeboten wird, muss sie weiterhin separat im Elite-Panel erscheinen und normale 3er-Auswahl unverändert bleiben.
