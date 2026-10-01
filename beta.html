@@ -61051,9 +61051,14 @@ html.v481-hidden *,html.v481-hidden *::before,html.v481-hidden *::after{animatio
   function stamp(){}
 
   ensureScreen();state();ensureMenu();ensureHomeLink();
-  try{
-    if(typeof v032Go==='function'&&!window.__v488Go){const base=v032Go;v032Go=function(id){ensureScreen();const r=base.apply(this,arguments);ensureMenu();if(id==='forge')renderForge();if(id==='world'){setTimeout(ensureHomeLink,20);setTimeout(ensureHomeLink,140)}stamp();return r};try{window.v032Go=v032Go}catch(e){}window.__v488Go=true}
-  }catch(e){}
+  window.addEventListener('growlegends:navigation-open-v7119',e=>{
+    const id=String(e?.detail?.id||'');
+    ensureScreen();ensureMenu();
+    if(id==='forge')renderForge();
+    if(id==='world')ensureHomeLink();
+    paintPrismaticInventory();stamp();
+  },{passive:true});
+  window.__v488Go='v7119-event';
   try{
     if(typeof render==='function'&&!window.__v488Render){const base=render;render=function(){const r=base.apply(this,arguments);ensureScreen();ensureMenu();ensureHomeLink();paintPrismaticInventory();if(document.getElementById('forge')?.classList.contains('active'))renderForge();stamp();return r};try{window.render=render}catch(e){}window.__v488Render=true}
   }catch(e){}
@@ -61064,7 +61069,7 @@ html.v481-hidden *,html.v481-hidden *::before,html.v481-hidden *::after{animatio
   if(document.getElementById('forge')?.classList.contains('active'))renderForge();paintPrismaticInventory();stamp();
   document.addEventListener('DOMContentLoaded',()=>{ensureScreen();ensureMenu();ensureHomeLink();paintPrismaticInventory();stamp()},{once:true});
   window.addEventListener('pageshow',()=>{ensureMenu();ensureHomeLink();paintPrismaticInventory();stamp()},{passive:true});
-  [250,900,2200,5200,10200,16200].forEach(ms=>setTimeout(()=>{ensureMenu();ensureHomeLink();paintPrismaticInventory();stamp()},ms));
+  /* V8.009: delayed startup repair train retired; direct lifecycle owns UI. */
   window.v488OpenForge=()=>v032Go('forge');window.v488ForgeState=state;window.v488ForgeRender=renderForge;
 })();
 </script>
