@@ -3560,3 +3560,32 @@ Arbeitsmodus:
 - **0 Inline-JS**.
 - **0 Inline-CSS**.
 - Gegenüber dem Post-Extraction-Stand mit 774 externen Scripts sind damit **112 externe Runtime-Includes** aus der aktiven Beta-Kette entfernt.
+
+
+#### Shop-Flackern / Händler-Render Konsolidierung
+- Nutzerhinweis: Im Shop flackern Item-Attribute / Werte sichtbar.
+- Root Cause im Audit: mehrere historische Layer bauten den kompletten Shop nach einem normalen globalen `render()` erneut auf; zusätzlich wurden Raritäts-/Polish-Klassen teils erst im nächsten `requestAnimationFrame` gesetzt.
+- Repaint-Audit: `V8009_SHOP_REPAINT_AUDIT.json`, Ergebnis-Commit nach erstem Fix-Rerun: `013efae871bea8e1e255e57e7d985307d276472e`.
+- Entfernte direkte Doppel-Repaints:
+  - `v089-shop-comparison.js`: globales render -> renderShop entfernt (`e74fe5e344b8ecfdd42deb0dfdc09403206eab4d`)
+  - `v090-shop-comparison-fix.js`: globales render -> renderShop + Init-Repaint entfernt (`d59ae2018b29ddefc4518cbebc70e841dcba31f1`)
+  - `v139-real-shop-rarity-fix.js`: RAF-Repaint + 180-ms-Repaint entfernt (`385c331ee20e583c3e214d1a8408586a4d9ec2c5`)
+  - `v138-shop-match-inventory.js`: Zwischenframe-Raritäts-Paint entfernt (`fbc947d885a8deea0452a2d5dda118037231eb4e`)
+- Weitere globale Shop-Hooks entfernt, damit normale Spiel-Updates keinen Shop-Neuaufbau mehr triggern:
+  - `v030` Shop/Gems/Enchants (`1db06111086e25aa5f4b083ba21df267a6c3687d`)
+  - `v054` Buying Feedback (`b43472b33331fabbd195ea137569ecd3f3a578a4`)
+  - `v056` Shop Stat Separation (`aff152934c8919310a8112c2006e834bfaa1de58`)
+  - `v057` Clean Shop Core (`542b86c36507301a94d0a3fe79514d15e1a25818`)
+  - `v464` Shop Reference global render layout hook (`073b42bc105a909c942aa3f0c6fbb09b2eeec906`)
+  - `v466` Item Art global render shop decoration hook (`7104fd692a7d11a17347216a2f597da57f3640d3`)
+- `v475-shop-polish` arbeitet jetzt synchron im selben Shop-Render-Turn statt einen Frame später; Navigations-Polish ebenfalls ohne 20-ms-Verzögerung: `97b0fa802b9aa5375653793131b9901706cd718b`.
+- `v7063-server-shop-forge-auto-bridge` hat jetzt eine vollständige Shop-View-Signatur (Angebots-ID, Name, Qualität, Preis, Stats/Bonus, Gem/Enchant + Equipment).
+  - Identischer bereits sichtbarer Shopzustand wird nicht erneut komplett aufgebaut.
+  - Echte serverseitige Item-/Attribut-/Equipment-Änderungen rendern weiterhin sofort.
+  - Der frühere trailing 100–150-ms-Repaint-Timer wurde entfernt.
+  - Commit: `22a1d453e589d85bda49c300dfd060b3d937a5c0`.
+- Zusätzlich den redundanten 80-ms-Startup-Vollrender in `v461-shop-redesign` entfernt; `v464` besitzt den unmittelbaren kanonischen Initial-Render: `1c4a79bc3e83a647a6c07858245965ffe1c4d3fa`.
+- Nachaudit zeigt: verbleibende Shop-`renderShop`-Wrapper sind überwiegend synchrone Decorator-/Layout-Schichten im selben JS-Turn; die auffälligen globalen/RAF/trailing Voll-Repaints sind entfernt.
+- Shop-Flicker-QA Workflow installiert:
+  - Script: `6d9854c028b09a02a53ac0f714ad86af89edef6b`
+  - Workflow: `232169de133458bea1570a14661adf45c9efb767`
