@@ -28,8 +28,8 @@ window.addEventListener('growlegends:account-ready',()=>markAtomicQuestOwners(),
 document.addEventListener('DOMContentLoaded',()=>markAtomicQuestOwners(),{once:true});
 window.addEventListener('pageshow',()=>markAtomicQuestOwners(),{passive:true});
 
-/* Defensive re-marking during startup only; no permanent interval. */
-[50,180,500,1400,3200].forEach(ms=>setTimeout(markAtomicQuestOwners,ms));
+/* V8.009: deterministic load order is v6140 -> v7045 -> v7046.
+   Direct load/account-ready/pageshow hooks are sufficient; no startup retry train. */
 
 window.v7046QuestEventGuardDiagnostics=()=>({
   version:'V7.046',
