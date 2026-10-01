@@ -2603,3 +2603,18 @@ Arbeitsmodus:
 - Alle sechs externen Dateien mit `node --check` geprüft.
 - QA `V8009_FEATURE_EXTRACTION_BATCH3_QA.json`: vollständig grün.
 - Stable / `index.html`: unverändert.
+
+
+#### Feature Extraction Batch 4
+- Sechs weitere große Owner 1:1 aus `beta.html` ausgelagert:
+  - `v253-avatar-weapon-monsters-core` → `js/features/character/beta/v8009-s5-v253-avatar-weapon-monsters-core.js`
+  - `v468-dungeon-master-script` → `js/features/dungeon/beta/v8009-s2-v468-dungeon-master.js`
+  - `v452-hard-account-isolation` → `js/features/account/beta/v8009-s2-v452-hard-account-isolation.js`
+  - `v4165-dungeon-key-live-battle-index-fix` → `js/features/dungeon/beta/v8009-s2-v4165-dungeon-key-live-battle-index-fix.js`
+  - `v606-combat-qa-core` → `js/features/system/beta/v8009-s4-v606-combat-qa-core.js`
+  - `v141-settings-menu-script` → `js/features/ui/beta/v8009-s3-v141-settings-menu.js`
+- Zusammen 78.293 Bytes Inline-JS aus dem Monolithen entfernt.
+- Originale Script-Attribute, IDs und Reihenfolge beibehalten; nur um `src=` ergänzt.
+- Alle sechs externen Dateien mit `node --check` geprüft.
+- QA `V8009_FEATURE_EXTRACTION_BATCH4_QA.json`: vollständig grün.
+- Stable / `index.html`: unverändert.
