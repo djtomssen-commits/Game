@@ -41,12 +41,7 @@ function v096DecorateQuestXp(){
   });
 }
 
-const v096BaseRender=render;
-render=function(){
-  v096BaseRender();
-  
-  requestAnimationFrame(v096DecorateQuestXp);
-};
-
-document.addEventListener('click',()=>setTimeout(v096DecorateQuestXp,30),true);
-try{v096DecorateQuestXp()}catch(e){}
+window.v096DecorateQuestXp=v096DecorateQuestXp;
+/* V8.009: global render/click-delay hooks retired.
+   v6344 calls this helper from the canonical Quest render pipeline. */
+queueMicrotask(()=>{try{v096DecorateQuestXp()}catch(e){}});
