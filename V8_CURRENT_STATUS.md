@@ -4994,3 +4994,31 @@ Arbeitsmodus:
 - Nächster sinnvoller Schritt:
   - manueller Beta-Test: Tab öffnen → 6 Zahlen wählen → 25-HT-Schein bestätigen → Reload prüfen;
   - danach ggf. Feinschliff der Automatenoptik und Test eines kontrollierten Ziehungs-/Claim-Szenarios.
+
+
+### Harz Lotto – Straßenautomaten-Hintergrund · 01.10.2026
+
+- Nutzerkorrektur umgesetzt: nicht der generierte runde CSS-Automat, sondern das zuvor erzeugte **rechteckige Straßenautomaten-Bild ohne eingebrannte Gewinnzahlen** wird als Hintergrund verwendet.
+- Das Bild ist direkt in `v8010-harz-lotto.css` als eingebettetes JPEG hinterlegt; dadurch kein externer Bildhost und kein separates Asset-Ladeproblem.
+- Alter künstlicher Automatenaufbau entfernt:
+  - kein `v8010-machine-sign`;
+  - keine `v8010-globe`;
+  - keine `v8010-mini-balls`;
+  - keine `v8010-machine-base` mehr im Renderer.
+- Neuer `machineHtml()` rendert nur noch die Hintergrundszene plus dynamische Ausgabefach-Zone.
+- Nach einer Ziehung werden die echten 6 serverseitig gezogenen Zahlen als HTML/CSS-Kugeln über dem Ausgabefach des Straßenautomaten dargestellt.
+- Vor der ersten Ziehung bleibt das Fach ohne feste Zahlen und zeigt nur den Hinweis „Ziehung Dienstag · 19:00“.
+- Mobile Positionierung des Ausgabefachs separat angepasst.
+- Cache-Revision Beta auf `?v=8010lotto2` erhöht.
+- Server 1 unverändert.
+- QA:
+  - JS Syntax grün;
+  - Hintergrund-Datenbild vorhanden;
+  - alter Automaten-DOM nicht mehr im JS;
+  - neue `v8010-draw-chute` vorhanden;
+  - Beta Cache-Revision 2× aktualisiert;
+  - Server 1 enthält weiterhin 0× Lotto-Includes.
+- Commits:
+  - Hintergrund/CSS: `3a7e930b92bcad33d8bdde469f901badd68f3879`
+  - dynamisches Ausgabefach: `9d67b057f3e8285ca15f12ae3788068e069933bf`
+  - Cache-Revision: `a4b60add71687bbe06730c98d7cd4f63783b2c86`.
