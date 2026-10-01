@@ -1852,3 +1852,184 @@ Der nächste fachliche Schritt ist **nicht HOME-32**, sondern die Restinventur d
 
 - Stable / `index.html`: weiterhin unverändert.
 - Arbeitsregel bleibt: nur Lifecycle-/Navigation-/Repaint-Altlasten entfernen; Authority-, Kauf-, Combat- und Server-Sync-Timer nur ändern, wenn deren Zweck vollständig geklärt ist.
+
+
+### Final Lifecycle Sweep 01.10.2026 — große Cleanup-Batches
+
+Arbeitsmodus:
+- große sichere UI-/Lifecycle-Batches statt Einzel-Fixes;
+- nur passive Repaint-/Retry-/Navigation-Altlasten entfernen;
+- funktionale Timer für Push, AdMob, Server-Authority, Login/Onboarding, Combat, Rewards, Cooldowns, Receipt-/Retry-Sync bleiben bewusst erhalten;
+- Stable / `index.html` bleibt unverändert.
+
+#### Boss / Gildenboss / Dealer
+- `05449d93`: Boss pageshow-Repaint direkt gemacht; 40-ms-Retry entfernt.
+- `af601048` + `26ba7620`: Quest v306 „erste Quest heute +2 Harz“ direkt in kanonischen v6344-Renderer gehängt; eigene render/reward-Wrapper, RAFs und 300-ms-Startup-Repaint entfernt.
+- Gildenboss v6317:
+  - Fighter-Cutout-Sync direkt aus `v8008-c18-guildboss-replay-owner.js`;
+  - MutationObserver + RAF + 700-ms-Retry entfernt;
+  - Guild combat browser QA grün.
+- Gildenboss v6316:
+  - 250/1200-ms Startup-Retries entfernt;
+  - direkter Initial-/Boss-Tab-Cleanup.
+- Dealer v322:
+  - `v322OpenDealer()` ohne RAF-Repaint;
+  - Shared `growlegends:navigation-open-v7119` ist Render-Lifecycle-Owner.
+
+#### Item-Art / Systemtechnik
+- v4115: 6 Startup-Paints bis 12,5 s entfernt.
+- v4108: 9 Startup-Repaints bis 30 s entfernt.
+- v4110 Systemtechnik: 8 Guard-Passes bis 60 s entfernt; direkt bei Systemtechnik-Open/pageshow/visibility.
+- v4117 Boots-Art: Startup-Repaints + DOM/pageshow-Delays entfernt.
+- v6106 Item-Art: DOM/pageshow/first-playable/220-ms-Fallback + Navigation-RAF entfernt.
+- v4103 Item-Surfaces:
+  - 10 Repaint-Pässe bis 60 s entfernt;
+  - direkte DOM/account-ready/navigation/pageshow/visibility-Hooks;
+  - Day-7-Login-Reveal bleibt über aktuellen Item-Card-Owner abgesichert.
+- v4129 Power/Version:
+  - 100/500/1800/5000-ms Settle-Pässe entfernt;
+  - Finalizer/DOMContentLoaded/pageshow/account-ready/visibility bleiben.
+
+#### Quest-QA modernisiert
+- Render Pass 3 QA an direkte Hooks angepasst:
+  - v309 direkter Paint;
+  - v316 alter Skip-Painter als retired;
+  - v4127 direkter `EnsureQuestSkip`.
+- Quest Consolidation QA entsprechend aktualisiert.
+- Render-QA Workflow gegen parallele Push-Races abgesichert (`git pull --rebase origin main` vor Push).
+- Aktuelle Quest Contract-QAs grün.
+
+#### Final Sweep Batch 1
+- Shop v464/v465: 8 Startup-Repaints bis 19 s entfernt.
+- Character v4140 passive RAFs bei DOM/pageshow/Attribute-Tab entfernt; Action-Followup nach echtem Attributkauf bleibt.
+- QA grün.
+
+#### Final Sweep Batch 2
+- v432 Itemvergleich: 1/4/7,8-s Repaints entfernt.
+- v434 Attributpunkte: 250/1200/3500-ms Startup-Paints entfernt.
+- direkte Account-/Persist-/Spend-Hooks bleiben.
+- QA grün.
+
+#### Final v433
+- globalen `v032Go`-Wrapper entfernt;
+- 250/1200/4200-ms Ressourcen-Startup-Zug + 1000/4200-ms Dungeon-State-Nachläufer entfernt;
+- Shared v7119 + account-ready übernehmen;
+- Dungeon-Integritätslogik, Versuchverbrauch und Persistenzguards unverändert.
+- QA grün.
+
+#### v6117 / Character passive lifecycle
+- v6117 Class-Passive: DOM/pageshow/account-ready RAF/Delay entfernt.
+- Equip/Unequip/Sell/Forge-Aktionshooks bleiben.
+- passive Character-Open-Paints für Talent/Material/Equipment direkt gemacht.
+- QA grün.
+
+#### v488 Harzschmiede
+- eigener Navigation-`v032Go`-Wrapper entfernt;
+- 250/900/2200/5200/10200/16200-ms Retry-Zug entfernt;
+- Shared v7119 für Forge/Menu/Home-Link/Prismatic-Inventar;
+- Crafting, Prismatisch-Stats, Kosten und Sell-Rules unverändert.
+- QA grün.
+
+#### Big Batch 1
+- v4158 Class-Passive passive RAFs entfernt.
+- v4106 altes Item-Art-Repaint-Startup-Fanout entfernt.
+- v6213 Legacy-Settle-Delays entfernt.
+- v6102 Equipment account-ready Delay entfernt.
+- v6339 Character-Title Navigation-Delay entfernt; notwendiger Selection-Deferral bleibt.
+- QA grün.
+
+#### Big Batch 2
+- v435 Gold-Lifetime/Buch:
+  - 500/1800/4200/9000-ms Reconcile-Zug + Extra-1000/4200-ms Nachläufer entfernt;
+  - account-ready übernimmt;
+  - Book-Refresh-Debounce bleibt.
+- v452 Account-Schutz-Status:
+  - 250/800/1800/4200 + doppelter 250-ms Startup-Zug entfernt.
+- v453 Profile-Floor-Reconcile:
+  - 250/900/2200/5200-ms Startup-Zug entfernt;
+  - account-ready direkter Reconcile.
+- v454 Recovery-UI-Cleanup:
+  - 250/900/2200/5200-ms Cleanup-Zug entfernt.
+- Ledger-/Account-Schutz-/Recovery-Funktionalität bleibt.
+- QA grün.
+
+#### Big Batch 3
+- v7198 Item-Art:
+  - DOM/pageshow/first-playable-Delays + Navigation-RAF entfernt;
+  - direkte Lifecycle-Refreshes.
+- v6346 Tower:
+  - passive pageshow/account-ready/navigation-Delays entfernt;
+  - 60-ms Klick-Followup bleibt absichtlich wegen Action-Ordering;
+  - 1-s Tower-Live-Timer bleibt.
+- QA grün.
+
+#### Hall / Power
+- v438 Hall-Live:
+  - 500/1800/5200-ms Startup-Repaints + 1800/5200-ms Sync-Nachläufer entfernt;
+  - account-ready direkter repaint/schedule.
+- v446 Local-Power:
+  - 600/1800/5200-ms Startup-Repaints entfernt;
+  - echter Sync-Debounce + Klick-Followup bleiben.
+- QA grün.
+
+#### Big Batch 4
+- v4103 60-s Item-Repaint-Zug entfernt.
+- v4129 5-s Version/Power-Settle-Zug entfernt.
+- aktuelle Render-/Finalize-/Reveal-Owner bleiben.
+- QA grün.
+
+#### Version / Status Cleanup
+- mehrere reine Versions-/Status-Nachmaler entfernt:
+  - updateValues/version 350/1500/3000 ms;
+  - zwei update-Blöcke 350/1400/3000 ms;
+  - Shop syncVersion 250/1000 ms;
+  - keepVersion 0/500/2500/7000/17000 ms;
+  - Systemtechnik paintStatus 50/250/700/1600/3500/8000/15000/30000/60000 ms.
+- durch DOM/pageshow/account-ready-Hooks ersetzt.
+- QA grün.
+
+#### Big Batch 5
+- v470 Equipment/Comparison: Startup-Settle-Zug bis 12,5 s entfernt; relevante DOM-Observer bleiben.
+- v511 Character-Reorder: RAF + 150/500/1200-ms Startup-Zug durch DOM/pageshow/v7119 ersetzt.
+- Materialien-Enhance: 0/120/450/1000/1800-ms Startup-Zug entfernt; Action-Followup bleibt.
+- v6283 Growroom-Guide: 0/100/350/1000/2500-ms Startup-Zug entfernt; sinnvoller Grow-DOM-Observer bleibt.
+- QA grün.
+
+#### Big Batch 6
+- v441 Shop/Resource: 1/5/11-s Nachläufer entfernt.
+- v455 Item-Normalisierung: 250/900/2200/5200-ms Retry-Zug entfernt.
+- v456 Level-300-UI: 250/900/2200/5200-ms Retry-Zug entfernt.
+- v459 Character-Layout: Retry-Serie bis 13,5 s entfernt.
+- v466 Item-/Shop-Dekoration: 250/1200/2600-ms Startup-Zug entfernt.
+- v475 Shop-Polish: 80/500/1400-ms Startup-Zug entfernt.
+- vorhandene Render-/State-/Navigation-Owner bleiben.
+- QA grün.
+
+#### Big Batch 7
+- alter Materialien-Enhancer: 0/120/400/900/1800-ms Startup-Zug entfernt.
+- Frost-Zweitwaffe: 0/80/220/600/1400-ms Startup-Schedule entfernt; Character-v7119 ergänzt.
+- Growroom Tabs v6163: 0/250/900/2200/5000-ms Mount-Zug entfernt; Action-Retries + DOM-Observer bleiben.
+- Weltboss-Homecard: 0/250/1000/3000-ms Startup-Prepare-Zug entfernt; World-DOM-Observer bleibt.
+- QA grün.
+
+#### Big Batch 8
+- Profil-/Viewport-Boot: 0/80/300/900/1800-ms Startup-Zug entfernt; resize/orientation/pageshow bleiben.
+- Native-Fullscreen-HUD: 0/80/300/900/1800-ms Startup-Zug entfernt; resize/pageshow bleiben.
+- QA grün.
+- Bot-Commit: `6969dbd8` (viewport/fullscreen cleanup).
+- vorheriger Visual-Batch Bot-Commit: `d788d8c0`.
+
+#### Post-Sweep Bewertung
+- Es existieren weiterhin viele `setTimeout`, RAFs und Observer in `beta.html`.
+- Diese Zahl allein ist kein Cleanup-Ziel mehr.
+- Die verbleibenden langen/regelmäßigen Timer sind überwiegend funktional:
+  - Grow-Push-Planung;
+  - AdMob Reward-Bestätigung;
+  - Server-/Authority-/Hydration-/Receipt-Retries;
+  - Login/Onboarding;
+  - Combat/FX/Cooldowns;
+  - Reward-/Guild-XP-Feedback;
+  - Wetter-Fetch-Timeout/Refresh;
+  - echte UI-Action-Ordering-Defers.
+- Nächster Schritt: nur noch eindeutig visuelle Legacy-Blöcke anfassen; danach gemeinsame Integrations-QA und manueller App-Rundgang.
+
