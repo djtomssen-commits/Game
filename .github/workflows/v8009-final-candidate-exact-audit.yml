@@ -1,0 +1,14 @@
+name: V8.009 Final Candidate Exact Audit
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/v8009_final_candidate_exact_audit.py'
+      - '.github/workflows/v8009-final-candidate-exact-audit.yml'
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 .github/scripts/v8009_final_candidate_exact_audit.py
