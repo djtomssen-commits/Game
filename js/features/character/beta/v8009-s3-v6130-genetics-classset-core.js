@@ -46,7 +46,7 @@ function state(){
  if(z.pending&&(!RECIPES[z.pending.recipe]||typeof z.pending!=='object'))z.pending=null;
  return z;
 }
-function save(){try{persist(false)}catch(_){ }try{if(typeof v075WriteCloudSave==='function')setTimeout(()=>v075WriteCloudSave(false),0)}catch(_){}}
+function save(){try{persist(false)}catch(_){ }try{if(typeof v075WriteCloudSave==='function')queueMicrotask(()=>v075WriteCloudSave(false))}catch(_){}}
 function toast(t,type='success',d=''){try{return v063Toast(t,type,d)}catch(_){}}
 function ownedOrGrowing(id){const stock=Math.max(0,Number(s?.grow?.seeds?.[id])||0);const growing=Array.isArray(s?.grow?.plants)&&s.grow.plants.some(p=>p&&p.seed===id);return stock>0||growing}
 function qualityByCare(p){const n=Array.isArray(p?.care)?p.care.filter(Boolean).length:0;return ['C','B','A','S','S+'][Math.min(4,n)]}
@@ -60,7 +60,7 @@ function onHarvest(ready){const z=state();if(!z||!Array.isArray(ready)||!ready.l
    else if(changed)toast('🧬 Genetikfortschritt','success',`${p.aDone?'✅':'⬜'} ${seedName(r.a)} · ${p.bDone?'✅':'⬜'} ${seedName(r.b)}`);else if(low)toast('Genetik: Qualität zu niedrig','info','Für die Kreuzung zählt nur Qualität S oder S+.');
  }
  for(const plant of ready){const entry=Object.entries(RECIPES).find(([,x])=>x.hybrid===plant?.seed);if(!entry)continue;const [id,rr]=entry;if((Array.isArray(plant.care)?plant.care.filter(Boolean).length:0)<3){toast('Hybrid nicht stabil genug','info',`${rr.name} benötigt Qualität S oder S+ für eine Essenz.`);continue}z.essences[id]=Math.max(0,Number(z.essences[id])||0)+1;z.totalEssences++;changed=true;toast('🧬 Genetik-Essenz gewonnen','success',`+1 ${rr.essence} · für die Klassenset-Schmiede.`)}
- if(changed){save();setTimeout(()=>{try{decorateGrow();renderLabIfOpen();renderSetIfOpen();window.v6163GrowTabs?.refresh?.()}catch(_){ }},0)}
+ if(changed){save();queueMicrotask(()=>{try{decorateGrow();renderLabIfOpen();renderSetIfOpen();window.v6163GrowTabs?.refresh?.()}catch(_){ }})}
 }
 window.v6130OnGrowHarvest=onHarvest;if(window.GL_EVENTS&&!window.__V6140_GENETICS_EVENT__){window.__V6140_GENETICS_EVENT__=true;window.GL_EVENTS.on('growHarvested',ev=>onHarvest(ev.plants||[]));}
 function pendingHtml(){const z=state(),p=z?.pending;if(!p)return '<div class="v6130-pending"><b>🧬 Keine Kreuzung aktiv</b><div class="v6130-stock">Wähle unten ein Rezept. Danach müssen beide Elternsorten jeweils mindestens mit Qualität S geerntet werden.</div></div>';const r=RECIPES[p.recipe];return `<div class="v6130-pending"><b>🧬 Aktive Kreuzung: ${esc(r.name)}</b><div class="v6130-progress"><div class="v6130-prog ${p.aDone?'done':''}">${p.aDone?'✅':'⬜'} ${esc(seedName(r.a))} · mindestens S</div><div class="v6130-prog ${p.bDone?'done':''}">${p.bDone?'✅':'⬜'} ${esc(seedName(r.b))} · mindestens S</div></div><div class="v6130-stock">Sind beide Eltern bestätigt, erhältst du genau 1 Hybrid-Samen. Der Hybrid muss anschließend selbst mindestens auf S gezogen werden, um seine Schmiede-Essenz zu gewinnen.</div></div>`}
@@ -106,7 +106,7 @@ async function craftSet(slot){
    }catch(e){console.warn('V4.164 makeSetItem',e)}
    finally{window.__GL_CLASSSET_FORGE_CRAFT__=false}
    if(!item){z.essences[c.recipe]=haveEss;s.v488Forge.fragments+=c.fragments;s.gold+=c.gold;return toast('Herstellung fehlgeschlagen','error','Set-Item konnte nicht erzeugt werden. Kosten wurden zurückgegeben.')}
-   item.v6130Crafted=true;item.v6130GeneticRecipe=c.recipe;s.inventory=Array.isArray(s.inventory)?s.inventory:[];s.inventory.push(item);save();try{v069SyncCurrencies?.()}catch(_){ }try{v441PaintResources?.()}catch(_){ }try{render?.()}catch(_){ }toast('🧩 Klassenset hergestellt!','success',`${item.icon||'🎁'} ${item.name} · im Inventar`);setTimeout(()=>{decorateForge();openSetPanel()},30)
+   item.v6130Crafted=true;item.v6130GeneticRecipe=c.recipe;s.inventory=Array.isArray(s.inventory)?s.inventory:[];s.inventory.push(item);save();try{v069SyncCurrencies?.()}catch(_){ }try{v441PaintResources?.()}catch(_){ }try{render?.()}catch(_){ }toast('🧩 Klassenset hergestellt!','success',`${item.icon||'🎁'} ${item.name} · im Inventar`);queueMicrotask(()=>{decorateForge();openSetPanel()})
  }finally{v6130CraftBusy=false}
 }
 function setCard(slot){const c=slotCost(slot),r=RECIPES[c.recipe],z=state(),e=Math.max(0,Number(z?.essences?.[c.recipe])||0),b=buds(),f=fragments(),g=Math.max(0,Number(s?.gold)||0),unlock=b>=c.buds,ok=unlock&&e>=c.essence&&f>=c.fragments&&g>=c.gold,slotVisual=setSlotVisual(slot);return `<div class="v6130-set-card ${unlock?'unlocked':''}"><div class="top"><div class="ico">${slotVisual}</div><div><h4>${esc(c.label)}</h4><small>${esc(r.name)}-Rezept</small></div></div><div class="recipe">🧬 ${c.essence}× ${esc(r.essence)}<br>⚔️ Freischaltung ab ${fmt(c.buds)} PvP-Buds · <b>Buds werden nicht verbraucht.</b></div><div class="v6130-costs"><div class="v6130-cost ${e>=c.essence?'ok':'bad'}">🧬 Essenz<b>${e}/${c.essence}</b></div><div class="v6130-cost ${f>=c.fragments?'ok':'bad'}">💠 Fragmente<b>${fmt(f)}/${fmt(c.fragments)}</b></div><div class="v6130-cost ${g>=c.gold?'ok':'bad'}">🪙 Gold<b>${fmt(g)}/${fmt(c.gold)}</b></div><div class="v6130-cost ${unlock?'ok':'bad'}">⚔️ PvP-Buds<b>${fmt(b)}/${fmt(c.buds)}</b></div></div><button type="button" data-v6130-craft="${slot}" ${ok?'':'disabled'}>${unlock?'Set-Teil herstellen':'PvP-Rezept gesperrt'}</button></div>`}
