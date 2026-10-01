@@ -4761,3 +4761,31 @@ Arbeitsmodus:
   - Nach erfolgreichem Kauf wird der Quest-State-Cache invalidiert und Dampf/Harz direkt aus der Serverantwort gemalt, ohne einen globalen Voll-Render.
 - Datei: `js/features/quest/beta/v7045-atomic-quest-receipt-client.js`
 - Commit: `381deb6621df86974390cbee159b6611c4b33e10`
+
+
+### Server 1 Promote – Block 1/2 · 01.10.2026
+
+- `beta.html` wurde als aktueller stabiler Client nach `server1.html` geklont.
+- Server 1 besitzt eigenen Release-Marker: `window.GROW_RELEASE_CHANNEL='server1'`.
+- Serverauswahl `v343` routet Server 1 jetzt auf `server1.html` statt auf den alten `index.html`.
+- Gemeinsame JS/CSS-Owner bleiben identisch mit Beta; keine zweite Patch-Version angelegt.
+- Supabase Core-Parität für aktuelle Beta-Features ergänzt, Migration:
+  - `server1_promote_core_beta_features_v8009`
+- In `server1` neu gespiegelt:
+  - `player_caravan_state`
+  - `player_nebelforge_state`
+  - `v7240_nebelforge_state`
+  - `v7240_nebelforge_reroll`
+  - `v8009_nebelforge_reroll`
+  - `v7240_caravan_state`
+  - `v7240_caravan_start`
+  - `v7240_caravan_choose`
+  - `v8009_dungeon_reward_feedback`
+  - `v8009_dungeon_side_rewards`
+  - Dungeon-Side-Reward-Trigger auf `server1.player_dungeon_runs`
+- Nebelschmied/Nebelkarawane-Client akzeptiert jetzt `beta` und `server1`.
+- Verifikation nach Migration: alle oben genannten Tabellen/Funktionen + Trigger in `server1` vorhanden.
+- Nächster Block:
+  1. verbliebene Server-1-Core-Differenzen gegen Beta prüfen;
+  2. nur echte gameplay-relevante Abweichungen angleichen, globale Tabellen (News/Legal/Play/PUSH etc.) bewusst nicht blind duplizieren;
+  3. danach Server-1 Smoke-Test vorbereiten.
