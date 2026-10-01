@@ -4678,3 +4678,13 @@ Arbeitsmodus:
   - v498 Local-Snapshot-Write/Repair ist unter Grow-Serverauthority deaktiviert; die historischen Delayed-Recovery-Timer können damit keinen Serverstand mehr überschreiben.
 - Erwartetes Verhalten: Beim Login kein temporäres `1/1 Töpfe`, keine verspätet auftauchende Pflanze und keine erst später freigeschalteten Slots; stattdessen kurz Sync-Barriere, dann direkt der vollständige Serverstand.
 - Commits: `08e511521892a64dc33c5e1be2c92bb957fdfa79`, `7e64f38be3b55fb0823ffca6de8614ba0274864d`, `c5c55569388539069327aead4e800f9f875b1435`
+
+
+#### Growroom Visual-Fix 2 – größere Töpfe / vollständige Pflanzenbilder
+- Bestehendes Growroom-Art-CSS erneut direkt angepasst, kein neuer Patch-Layer.
+- Freie Topf-Symbole deutlich größer skaliert.
+- Pflanzenkarten höher gemacht, damit größere Artworks Platz haben.
+- Pflanzenbilder zeigen jetzt die **vollständige Grafik**: Maskierung entfernt, `object-fit: contain`, volle Breite/Höhe innerhalb des Art-Bereichs.
+- Seedling/Growth/Flower/Harvest-Art jeweils größer skaliert; Mobile separat angepasst.
+- Geänderte Datei: `v8009-extracted-v497-plant-art-economy-css.css`
+- Commit: `452dec63f57914d08a2a33dc6280697a701a9f70`
