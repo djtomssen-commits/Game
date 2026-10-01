@@ -148,14 +148,7 @@ window.addEventListener('growlegends:account-ready',()=>schedulePlayer(1900));
 window.addEventListener('pageshow',()=>schedulePlayer(2600),{passive:true});
 setTimeout(()=>schedulePlayer(0),4200);
 
-try{
- const base=(typeof v093AdminLoadLists==='function')?v093AdminLoadLists:null;
- if(base&&!window.__V6346_ADMIN_LOAD_WRAP__){
-   const wrapped=async function(){const r=await base.apply(this,arguments);ensureAdminCard();if(admin())await loadAdminBroadcasts();return r};
-   try{v093AdminLoadLists=wrapped}catch(_){ }try{window.v093AdminLoadLists=wrapped}catch(_){ }window.__V6346_ADMIN_LOAD_WRAP__=true;
- }
-}catch(_){ }
-/* v093AdminLoadLists is the sole admin-card/load owner. */
+/* v093AdminLoadLists in the admin core is the sole admin-card/load owner. */
 window.v6346BroadcastDiagnostics=()=>({version:VERSION,userId:uid(),sessionLoaded,pending:queue.length,active:active?.id||'',admin:admin(),adminRows:A.rows.length});
 window.v6346AdminLoadBroadcasts=loadAdminBroadcasts;
 })();
