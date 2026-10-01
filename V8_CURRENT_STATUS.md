@@ -1465,3 +1465,35 @@ Der nächste fachliche Schritt ist **nicht HOME-32**, sondern die Restinventur d
   3. Quest beenden/überspringen und Belohnung abholen;
   4. ohne Navigation müssen sofort die drei neuen Questangebote sichtbar sein;
   5. keine leere aktive Questkarte ohne Timer.
+
+
+### First-Login-Quest manuell bestätigt + v4178 Live-Doppelpfad retired 01.10.2026
+
+- Nutzer bestätigt den First-Login-Claim-Fix nach Commit `26aef6e805ec067c9a1e374f9fceef8de71aab42`:
+  - erste Quest nach frischem Login abschließen/claimen funktioniert;
+  - keine leere aktive Questkarte mehr;
+  - drei neue Questangebote erscheinen direkt ohne Navigations-Workaround.
+- Damit ist der First-Login-State-Race-Fix **manuell bestätigt**.
+
+- `v4178-quest-live-hard-fix.js` war vollständig redundant:
+  - eigener 1-s-Quest-Timer;
+  - eigener `v032Go`-Wrapper;
+  - eigene visibility/pageshow-Repaints;
+  - eigener Startup-Timer;
+  - dieselben Aufgaben werden bereits von `v229`, `v392` und dem Shared-v7119-Navigationsevent übernommen.
+- Commit `d7edb9c8df6cb1f1a2ae836f054aaa379e2c1380`:
+  - v4178 komplett als aktiven Runtime-Layer retired;
+  - Datei enthält nur noch Retired-Marker;
+  - kein Intervall, kein v032Go-Wrapper, kein Timer, kein Repaint mehr.
+- QA hinzugefügt:
+  - `.github/scripts/v8009_quest_v4178_retire_qa.py`
+  - `.github/workflows/v8009-quest-v4178-retire-qa.yml`
+  - Commits `9009a3077512e2dabe329e4c7d2bc2d22d3701bd`, `ebe3877b20b49e6f0895e23ca7f01b0fc5d48626`.
+- Zusätzlich Commit `c749e5bc90e87760c67a5de60986e6515b657ca6`:
+  - alten 350-ms-`V4.29 Stable` Versionswriter aus `v229-live-ui-sync.js` entfernt;
+  - Quest/PvP-Live-Sync bleibt unverändert.
+- Aktueller Quest-Live-Timer-Owner:
+  - `v229`: einziges 1-s-Intervall;
+  - `v392`: aktiver Karten-/Timer-Paint;
+  - `v6344`: kanonischer Quest-Renderer.
+- Stable / `index.html`: unverändert.
