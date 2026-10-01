@@ -2,14 +2,12 @@
 (()=>{
  'use strict';
  const VERSION=window.GROW_LEGENDS_VERSION?.label||'V4.159 Stable',SHORT=window.GROW_LEGENDS_VERSION?.short||'V4.159';
- let scheduled=false;
 
  function seedCount(){
   try{return Math.max(0,Math.floor(Number(s?.timeSeeds)||0))}catch(e){return 0}
  }
 
  function ensureSkip(){
-  scheduled=false;
   let q=null;
   try{q=s?.quests?.active||null}catch(e){}
   const root=document.getElementById('quests');
@@ -77,17 +75,10 @@
  }
  window.v4127EnsureQuestSkip=ensureSkip;
 
- /* V392 paints the active card one frame after startQuest. Our second frame runs after it,
-    so the skip button cannot lose the race against the active-view rebuild anymore. */
+ /* V8.009: canonical owners paint the active card before invoking this hook.
+    Repair the skip row synchronously; no frame retry is required. */
  function scheduleSkip(){
-  if(scheduled)return;
-  scheduled=true;
-  try{
-   if(ensureSkip()){scheduled=false;return}
-  }catch(_){}
-  requestAnimationFrame(()=>{
-   try{ensureSkip()}finally{scheduled=false}
-  });
+  try{return ensureSkip()}catch(_){return false}
  }
  window.v4127ScheduleQuestSkip=scheduleSkip;
 
