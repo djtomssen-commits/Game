@@ -2488,3 +2488,15 @@ Arbeitsmodus:
 - Alle vier externen Dateien mit `node --check` geprüft.
 - QA `V8009_SYSTEM_EXTRACTION_BATCH1_QA.json`: vollständig grün.
 - Stable / `index.html`: unverändert.
+
+
+#### Account Extraction Batch 1
+- Drei zentrale Account-/Save-Owner 1:1 aus `beta.html` nach `js/features/account/beta/` ausgelagert:
+  - `v200-stable-core` → `v8009-s1-v200-stable-core.js`
+  - `v4139-account-switch-authority` → `v8009-s1-v4139-account-switch-authority.js`
+  - `v4136-account-save-owner` → `v8009-s1-v4136-account-save-owner.js`
+- Zusammen 100.674 Bytes Inline-JS aus dem Monolithen entfernt.
+- Script-IDs und Reihenfolge in `beta.html` beibehalten; nur auf `src=` umgestellt.
+- Alle drei externen Dateien mit `node --check` geprüft.
+- QA `V8009_ACCOUNT_EXTRACTION_BATCH1_QA.json`: vollständig grün.
+- Stable / `index.html`: unverändert.
