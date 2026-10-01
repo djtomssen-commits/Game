@@ -150,6 +150,8 @@
       const fn=window[name];if(typeof fn!=='function'||fn.__v467KeyWrapped)return;
       const wrapped=async function(i){
         const self=this,args=[...arguments];ensure();
+        const di=Math.max(0,Number(i)||0);
+        s.dungeon.room=Math.max(0,Math.min(9,Number(s.dungeon.progress?.[di])||0));
         try{
           const guard=window.v7051EnsureDungeonState;
           if(typeof guard==='function'){
