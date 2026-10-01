@@ -3042,3 +3042,31 @@ Arbeitsmodus:
 - Originale Script-Attribute, IDs und Reihenfolge beibehalten; nur um `src=` ergänzt.
 - QA `V8009_FEATURE_EXTRACTION_BATCH22_QA.json`: vollständig grün.
 - Stable / `index.html`: unverändert.
+
+
+#### Feature Extraction Batch 23
+- 20 weitere benannte Owner 1:1 aus `beta.html` ausgelagert:
+  - `v225-settings-account-actions-fix`
+  - `v377-settings-gear-dropdown-fix`
+  - `v239-grow-live-core`
+  - `v7131-ui-polish`
+  - `v112-worldboss-state-fix`
+  - `v483-modern-home-power-stability`
+  - `v334-login-name-version-fix`
+  - `v284-dampf-card-redesign`
+  - `v391-quest-page-finished-script`
+  - `v098-xp-event-payout-fix`
+  - `v7185-central-text-moderation`
+  - `v404-illegal-book-design-script`
+  - `v089-shop-comparison-script`
+  - `v382-social-mail-buttons`
+  - `v234-growroom-compact-core`
+  - `v6340-character-title-visibility-js`
+  - `gl-worldboss-home-click-fix-js`
+  - `v400-dungeon-progression-guard`
+  - `v114-worldboss-confirm-modal-script`
+  - `v6317-transparent-cutouts-script`
+- Zusammen 55.660 Bytes Inline-JS aus dem Monolithen entfernt.
+- Originale Script-Attribute, IDs und Reihenfolge beibehalten; nur um `src=` ergänzt.
+- QA `V8009_FEATURE_EXTRACTION_BATCH23_QA.json`: vollständig grün.
+- Stable / `index.html`: unverändert.
