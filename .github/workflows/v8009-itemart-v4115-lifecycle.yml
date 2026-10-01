@@ -1,0 +1,22 @@
+name: V8.009 ItemArt V4115 Lifecycle
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/v8009_itemart_v4115_lifecycle.py'
+      - '.github/workflows/v8009-itemart-v4115-lifecycle.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 .github/scripts/v8009_itemart_v4115_lifecycle.py
+      - run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add beta.html V8009_ITEMART_V4115_LIFECYCLE_QA.json
+          git commit -m "V8.009 ITEMART: retire v4115 startup fanout" || exit 0
+          git push
