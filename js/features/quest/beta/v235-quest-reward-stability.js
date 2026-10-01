@@ -253,16 +253,6 @@ function v235ShowQuestReward(before){
 
   overlay.classList.add('show');
 
-  requestAnimationFrame(()=>{
-    overlay.classList.add('show');
-  });
-
-  setTimeout(()=>{
-    if(document.body.contains(overlay)){
-      overlay.classList.add('show');
-    }
-  },80);
-
   try{renderInventory()}catch(e){}
 }
 
@@ -300,6 +290,8 @@ v233ClaimQuest=function(){
   const paid=!s.quests?.active;
 
   if(paid){
+    try{window.v4222AfterQuestClaim?.()}catch(e){console.warn('V4.222 post-claim hook',e)}
+
     /*
       V4.02 Elite hard guarantee:
       Verify the complete payout transaction before the reward popup.
@@ -409,13 +401,4 @@ if(v235BaseApplyCloudSave){
 }
 
 
-setTimeout(()=>{
-  try{
-    v235EnsureAchievementState();
-  }catch(e){}
-
-  document.querySelectorAll('.version')
-    .forEach(el=>el.textContent='V4.29 Stable');
-
-  const line=document.querySelector('#v141VersionLine');
-},350);
+try{v235EnsureAchievementState()}catch(e){}
