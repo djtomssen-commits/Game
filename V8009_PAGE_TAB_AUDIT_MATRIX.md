@@ -33,8 +33,8 @@ Die Matrix wird nach jedem großen Cleanup-Batch aktualisiert.
 | PvP | Hall-/Battle-Lifecycle | [x] | Cooldown ohne Full-Rerender, Legacy-Finish konsolidiert, v7053 Server-Authority + Fallback sauber getrennt; manueller Endtest offen |
 | Guild | Übersicht / Growtasks / Boss / Krieg | [x] | kompletter Struktur-/DOM-/Lifecycle-/Authority-Pass grün; manueller Endtest offen |
 | Hall of Haze | Ranking / Gegner / Profil-Interaktion | [x] | v6145 Ranking-Owner, v649 gezielter Progress-Sync, globale Hall-Repaints entfernt; manueller Endtest offen |
-| Friends | Ranking / Suche | [ ] | kompletter 2-Tab-Pass offen |
-| Mail | Inbox / Sent / Compose / Battlelog | [ ] | kompletter 4-Tab-Pass offen |
+| Friends | Ranking / Suche | [x] | v4130 finaler Friends/Search-Owner, Presence-Singleflight + 60s Refresh; v333/v382/v383 und globale Social-Renderwrapper retired; manueller Endtest offen |
+| Mail | Inbox / Sent / Compose / Battlelog | [x] | v381 finaler Mail-/Tab-/Compose-Owner, v6200 Battlelog; Recipient-Routing ohne Delay, doppelte Tab-Loader entfernt; manueller Endtest offen |
 | Admin | Overview / Players / Content | [ ] | kompletter 3-Tab-Pass offen |
 | Harz Dealer | Harz / Gold / Frames | [ ] | kompletter 3-Tab-Pass offen |
 
