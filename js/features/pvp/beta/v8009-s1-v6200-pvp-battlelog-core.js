@@ -118,8 +118,8 @@ try{
  }
 }catch(e){console.warn('V6.200 finish hook',e)}
 /* Mail opening and tab badge refresh. */
-document.addEventListener('click',e=>{const t=e.target?.closest?.('[data-v381-tab="battlelog"]');if(t)setTimeout(()=>load(),0)},true);
-try{const baseGo=window.v032Go||(typeof v032Go==='function'?v032Go:null);if(typeof baseGo==='function'&&!baseGo.__v6200Mail){const w=function(id){const r=baseGo.apply(this,arguments);if(id==='mail')setTimeout(()=>load(),80);return r};w.__v6200Mail=true;window.v032Go=w;try{v032Go=w}catch(_){}}}catch(e){console.warn('V6.200 mail go',e)}
+document.addEventListener('click',e=>{const t=e.target?.closest?.('[data-v381-tab="battlelog"]');if(t)void load()},true);
+window.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')==='mail')void load()},{passive:true});
 setTimeout(()=>{ensurePanel();if(document.getElementById('mail')?.classList.contains('active'))load()},500);
 setInterval(()=>{if(!document.hidden&&document.getElementById('mail')?.classList.contains('active'))load()},60000);
 })();
