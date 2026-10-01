@@ -10,7 +10,7 @@ window.__V7045_ATOMIC_QUEST_CLIENT__=true;
 
 const VERSION='V7.045';
 const C={busy:false,recovering:false,lastError:'',lastRunId:null,lastAck:null,lastRecovery:null};
-let questStateFlight=null,questStateCache=null,questStateAt=0;
+let questStateFlight=null,questStateCache=null,questStateAt=0,questStateEpoch=0;
 const clone=v=>{try{return JSON.parse(JSON.stringify(v))}catch(_){return v}};
 const db=()=>{try{return (typeof v073Db!=='undefined'&&v073Db)||null}catch(_){return null}};
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
@@ -179,18 +179,30 @@ function secondaryToasts(b){
  }catch(_){}
 }
 async function canonicalQuestState(force=false){
- if(questStateFlight)return questStateFlight;
+ if(!force&&questStateFlight)return questStateFlight;
  if(!force&&questStateCache&&Date.now()-questStateAt<900){
   const q=clone(questStateCache);if(q?.ok)applyQuestState(q);return q;
  }
- questStateFlight=(async()=>{
+ const epoch=questStateEpoch;
+ const flight=(async()=>{
   const q=await rpcTimeout('v7044_get_quest_state',{},7000);
-  if(q?.ok){questStateCache=clone(q);questStateAt=Date.now();applyQuestState(q)}
+  /* Never let a request started before a mutation/invalidation repaint stale
+     active quest state after the mutation already committed. */
+  if(q?.ok&&epoch===questStateEpoch){
+   questStateCache=clone(q);questStateAt=Date.now();applyQuestState(q);
+  }
   return q;
- })().finally(()=>{questStateFlight=null});
- return questStateFlight;
+ })();
+ if(!force)questStateFlight=flight;
+ try{return await flight}
+ finally{if(!force&&questStateFlight===flight)questStateFlight=null}
 }
-function invalidateQuestState(){questStateAt=0;questStateCache=null}
+function invalidateQuestState(){
+ questStateEpoch++;
+ questStateAt=0;
+ questStateCache=null;
+ questStateFlight=null;
+}
 window.v7045QuestCanonicalState=(force=false)=>canonicalQuestState(!!force);
 async function receipt(runId){
  if(!runId)return null;
