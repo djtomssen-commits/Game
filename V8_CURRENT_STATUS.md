@@ -1715,3 +1715,52 @@ Der nächste fachliche Schritt ist **nicht HOME-32**, sondern die Restinventur d
 - Bewusst verbleibend: v636 Kampfanimation, v7045/v7110 Authority/RPC, v6344 Asset-Warmup, v231 Multi-Domain-Sync, v233 Dungeon-Map-Refresh.
 - Quest-Cleanup für diesen Sprint ausreichend abgeschlossen.
 - Nächster Seitenblock: Charakterseite.
+
+
+### Fast page sweep: Gilde / Turm / Home / PvP / Dungeon 01.10.2026
+
+- Arbeitsmodus: sichere Lifecycle-/Navigation-/Repaint-Cleanups seitenweise gebündelt; Gameplay-/Combat-/Authority-Timer bleiben unangetastet.
+
+#### Gilde
+- Load-Audit: `V8009_GUILD_LOAD_ORDER_AUDIT.json`.
+- Nicht mehr geladen: c4/c5/c6 Overview sowie c7/c13 Replay; aktiv sind c25-Owner + c18 Replay.
+- `df5a013a8497c6b203f1b7308deee311dbe686f7`: c25 Overview — direkte Paints, Shared-v7119 statt eigenem v032Go-Gate.
+- `cc2f1e2c1f713acce5df747efea8658648760315`: Gildenkrieg — Shared-v7119, Polish-Repaint-Burst entfernt, direkte Visual-Polishes.
+- `7c8605dfb4a03b052377f5cc98aa1ce17aba0e95`: Gildenchat — direkter Scroll/Postload ohne unnötigen RAF.
+- QA `V8009_GUILD_FAST_BATCH_A_QA.json`, Bot-Commit `7b719edfb6e47e2668ae0766954ec8809db7bb4d`: 12/12 grün.
+
+#### Turm
+- Load-Audit `V8009_TOWER_LOAD_ORDER_AUDIT.json`, Bot-Commit `91a65393bfa38862f39ed8e371b7627f7b7dab43`.
+- Ladefolge: direct-preempt -> lobby -> tower-system -> tower-entry.
+- `de5caa1093963548cd27b6f9b56a3a9e43ab48d1`: späten doppelten Tower-Entry/Menu-Layer retired.
+- `9f52dac6c37df5c7fe2eecd4bd66d7e5dfee3f65`: Tower-System nutzt Shared-v7119 statt eigenem v032Go-Wrapper; Enter/Leave/Result/Battle-Abbruchsemantik bleibt.
+- Frühe direct-preempt Install-Retries bleiben bewusst, weil diese Datei lange vor Tower-System lädt.
+- Bot-QA-Ausgabe zum Zeitpunkt dieser Notiz noch nicht zurückgeschrieben; direkte Hauptchecks gegen main bestätigen Entry-Retirement, Shared Navigation und erhaltene Preempt-Retries.
+
+#### Home
+- `5324437b7c916066d428573b56a2b1178f2942a1`: eigener v032Go-Wrapper entfernt; Header/World laufen über Shared-v7119 direkt.
+- Character-Tab RAF+40ms bleibt bewusst als DOM-Verfügbarkeits-Fallback.
+- QA `V8009_HOME_FAST_QA.json`, Bot-Commit `39391f7e477b2b6cf10fe8bd9428e0f6fcc9a866`: 5/5 grün.
+
+#### PvP / Hall / Battlelog
+- Runtime-Audit: `V8009_PVP_RUNTIME_AUDIT.json`.
+- Navigation-only v032Go-Layer ersetzt durch Shared-v7119:
+  - v204: `785e2527f7b2666ce2556903d283db62592985dd`
+  - v206: `3505bff5cb8d8545c67d85e4f643f7e660a23846` + Find-Bind `7695f0a990892e20ce77d9676a4013a7035fc7c8`
+  - v248: `5caff081b8f99a8c6a079d92c2c92c7c629e0438`; 600-ms-Version/Startup-Repaint entfernt
+  - v437: `306d8a4cc9ca1765d03d83ba1f5d72f1d5d07191`; v032Go + 500/2000/5000-ms Bind-Retry-Zug entfernt
+  - v4130: `7571c0a2e0954a5141fe75250c3837879b9eeb8c`
+  - v6200: `547b22701a4f329afe3570c833a8f188135d77ba`; Battlelog-Mail-Navigation direkt, 60-s-Mail-Poll bleibt
+- QA `V8009_PVP_FAST_BATCH_A_QA.json`, Bot-Commit `d952fcc54b3738b11a531492832cca8ffd63ebe3`: 16/16 grün.
+- PvP-Kampf-/FX-/Atomic-Authority-Timer bewusst nicht verändert.
+
+#### Dungeon
+- Runtime-Audit `V8009_DUNGEON_RUNTIME_AUDIT.json`, Bot-Commit `ee044be37083a59367db109016cf31d9beff9aa9`.
+- `ae30f18e13425d2077239a4d7493553dc9effe4d`: redundanten D2 Map-Finalizer als Runtime-Lifecycle retired.
+- `5a55e619d3dc910201bcb64e6cbefacda3ce6e80`: v7166 auf direkten Canonical-Alias-/Repair-Helper reduziert; D5 Final Seal ist Lifecycle-Owner.
+- `f4708256a662a7fbbb5ddfedb27c292f1122e07e`: D5 Shared-v7119 Navigation auf detail.id/detail.screen robust gemacht.
+- Combat-Renderer/Animationen und D5 Health-Observer bleiben bewusst unangetastet.
+- Bot-QA noch ausstehend zum Zeitpunkt dieser Notiz.
+
+- Stable / `index.html`: unverändert.
+- Character-Seite ist überwiegend inline im Monolithen; Audit `V8009_CHARACTER_RUNTIME_AUDIT.json` liegt vor und wird separat per Inline-Extraktor bearbeitet.
