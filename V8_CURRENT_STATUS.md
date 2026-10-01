@@ -2130,3 +2130,18 @@ Arbeitsmodus:
 - Resource-Werte, Gameplay und Navigationssemantik unverändert.
 - QA `V8009_FINAL_BIG_BATCH14_QA.json`: grün.
 - Stable / `index.html`: unverändert.
+
+
+#### Big Batch 15
+- weitere aktive Header-/Alignment-Altlasten entfernt:
+  - späteren `fix()`-`v032Go`-Wrapper entfernt;
+  - 300/1200-ms Header-Fix-Startup-Zug entfernt;
+  - `align()`-`v032Go`-Wrapper entfernt;
+  - 300/1200-ms Alignment-Startup-Zug entfernt.
+- beide Blöcke laufen jetzt direkt über Shared `growlegends:navigation-open-v7119`, `pageshow` und `account-ready`.
+- Harzruferin aktuelles Tower-Gegnerbild:
+  - 0/250/900-ms Startup-Reparaturzug entfernt;
+  - direkter account-ready + Shared-v7119-Tower-Hook;
+  - 60-ms Klick-Followup nach echter Tower-/Combat-Aktion bleibt.
+- QA `V8009_FINAL_BIG_BATCH15_QA.json`: grün.
+- Stable / `index.html`: unverändert.
