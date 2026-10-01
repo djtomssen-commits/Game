@@ -138,12 +138,15 @@ async function act(name,args,label,success){
    if(name==='v6358_harvest_grow'&&typeof window.v7136ShowServerReward==='function'){
     try{window.v7136ShowServerReward('harvest',r,{label:'Ernte'})}catch(e){console.warn('[V7.136] harvest complete reward',e)}
    }
+   if(name==='v6358_claim_grow_order'&&typeof window.v7136ShowServerReward==='function'){
+    try{window.v7136ShowServerReward('growOrder',r,{contractId:String(args?.p_contract_id||''),claimed:true})}catch(e){console.warn('[V7.136] grow order reward',e)}
+   }
    /* Class-set actions change the item domain, so refresh that domain only. */
    if(name==='v7064_forge_classset'||name==='v7064_upgrade_classset'){
     try{await window.v7063ItemStageRefresh?.()}catch(_){}
    }
    D.actions++;D.lastAction={name,at:Date.now(),result:clone(r)};
-   if(success&&name!=='v6358_harvest_grow')toast(success,'success',label||'Server bestätigt');
+   if(success&&name!=='v6358_harvest_grow'&&name!=='v6358_claim_grow_order')toast(success,'success',label||'Server bestätigt');
    wd?.end?.({ok:true});
    return r;
   }catch(e){
