@@ -142,16 +142,5 @@
   }
   window.v543RenderTalentTree=renderTree;
   try{renderSkillTree=renderTree;window.renderSkillTree=renderTree}catch(e){console.warn('V5.43 talent owner',e)}
-  function apply(){
-    if(!document.getElementById('character')?.classList.contains('active'))return false;
-    try{renderTree()}catch(e){console.warn('V5.43 talent render',e)}
-  }
-  window.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')==='character')apply()});
-  apply();
-  document.addEventListener('DOMContentLoaded',apply,{once:true});
-  window.addEventListener('pageshow',apply,{passive:true});
-  document.addEventListener('click',e=>{
-    if(e.target?.closest?.('#v459CharacterTabs [data-tab="talents"],#v514HeroTabs [data-tab="talents"]'))apply();
-  },true);
-  /* V8.009: bounded startup retry train retired. */
+  /* v459 owns when the visible talent tab is refreshed. */
 })();
