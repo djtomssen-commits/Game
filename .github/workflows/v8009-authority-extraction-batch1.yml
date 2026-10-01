@@ -1,0 +1,27 @@
+name: V8.009 Authority Extraction Batch 1
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/v8009_authority_extraction_batch1.py'
+      - '.github/workflows/v8009-authority-extraction-batch1.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 .github/scripts/v8009_authority_extraction_batch1.py
+      - run: |
+          node --check js/features/authority/beta/v8009-s1-v7072-server-tower-weekly-worldboss-bridge.js
+          node --check js/features/authority/beta/v8009-s1-v7073-server-daily-endgame-bridge.js
+          node --check js/features/authority/beta/v8009-s1-v7042-unified-authority-bridge.js
+      - run: |
+          git config user.name github-actions
+          git config user.email github-actions@users.noreply.github.com
+          git add beta.html js/features/authority/beta/v8009-s1-v7072-server-tower-weekly-worldboss-bridge.js js/features/authority/beta/v8009-s1-v7073-server-daily-endgame-bridge.js js/features/authority/beta/v8009-s1-v7042-unified-authority-bridge.js V8009_AUTHORITY_EXTRACTION_BATCH1_QA.json
+          git commit -m "V8.009 AUTHORITY: extract first bridge batch" || exit 0
+          git pull --rebase origin main
+          git push
