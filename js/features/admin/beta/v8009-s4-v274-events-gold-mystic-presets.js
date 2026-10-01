@@ -137,13 +137,7 @@ function v274InstallEventPresets(){
   }
 }
 
-/* Keep presets installed through the repaired V4.02 admin lifecycle. */
-const v274BaseAdminCheck=v093CheckAdmin;
-v093CheckAdmin=async function(){
-  const r=await v274BaseAdminCheck();
-  if(r)v274InstallEventPresets();
-  return r;
-};
+/* Admin content loading is the single installation owner for presets. */
 const v274BaseAdminLists=v093AdminLoadLists;
 v093AdminLoadLists=async function(){
   const r=await v274BaseAdminLists();
@@ -162,6 +156,4 @@ v085ActiveEvents=function(){
   return `${html}<div>${badges.join(' ')}</div>`;
 };
 
-/* v093CheckAdmin / v093AdminLoadLists directly own preset installation. */
-window.addEventListener('growlegends:account-ready',()=>{if(v093IsAdmin)v274InstallEventPresets()},{passive:true});
-window.addEventListener('pageshow',()=>{if(v093IsAdmin&&document.getElementById('admin')?.classList.contains('active'))v274InstallEventPresets()},{passive:true});
+/* v093AdminLoadLists directly owns preset installation. */
