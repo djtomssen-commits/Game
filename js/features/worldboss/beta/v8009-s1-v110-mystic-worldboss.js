@@ -60,23 +60,10 @@ function v110MakeRareMysticSet(){
 }
 
 function v110EnsureOverlay(){
-  if(document.querySelector('#v110Overlay'))return;
-  const ov=document.createElement('div');ov.id='v110Overlay';ov.className='v110-overlay';
-  ov.innerHTML=`<div class="v110-panel">
-    <div class="v110-head"><span class="v110-phase" id="v110Phase">MYSTISCHES EVENT</span><h2>☠️ Der Smaragd-Koloss</h2>
-    <p>Der Koloss passt sich deinem Level, deinen Attributen, deiner Kampfkraft und deiner Ausrüstung an. Ein Sieg ist absichtlich sehr schwer.</p></div>
-    <div class="v110-boss">🗿</div>
-    <div class="v110-bars">
-      <div><div class="tiny">Smaragd-Koloss <span id="v110BossHpTxt"></span></div><div class="v110-bar v110-bossbar"><i id="v110BossHp"></i></div></div>
-      <div><div class="tiny">Dein Held <span id="v110PlayerHpTxt"></span></div><div class="v110-bar v110-playerbar"><i id="v110PlayerHp"></i></div></div>
-    </div>
-    <div class="v110-stats"><div class="v110-stat">DEINE KAMPFKRAFT<b id="v110Cp">0</b></div><div class="v110-stat">BOSS-STÄRKE<b id="v110Strength">EXTREM</b></div><div class="v110-stat">VERSUCHE<b id="v110Attempts">0</b></div></div>
-    <div class="v110-log" id="v110Log">Der Koloss wartet...</div>
-    <div class="v110-actions"><button class="btn gold" id="v110Fight">⚔️ Weltboss angreifen</button><button class="btn secondary" onclick="v110Close()">Zurück</button></div>
-    <div class="tiny" id="v110Cost" style="text-align:center;margin-top:8px"></div>
-  </div>`;
-  document.body.appendChild(ov);
-  document.querySelector('#v110Fight').onclick=v110Fight;
+  const owner=window.v111EnsureWorldBossOverlay;
+  if(typeof owner==='function')return owner();
+  console.warn('V8.009 worldboss overlay owner not ready');
+  return false;
 }
 function v110Open(){
   if(!v110MysticEventActive())return v063Toast('Kein mystisches Event aktiv','warn','Der Weltboss ist derzeit versiegelt.');
