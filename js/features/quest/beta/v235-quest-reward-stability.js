@@ -272,6 +272,7 @@ v233ClaimQuest=function(){
   v235EnsureAchievementState();
 
   const before=v235RewardSnapshot(q);
+  const eliteTxn=(()=>{try{return window.v310BeginQuestClaim?.()||null}catch(e){console.warn('V3.10 claim begin hook',e);return null}})();
 
   let thrown=null;
 
@@ -288,6 +289,8 @@ v233ClaimQuest=function(){
     A later legacy wrapper error must NOT hide the reward modal.
   */
   const paid=!s.quests?.active;
+
+  try{window.v310FinishQuestClaim?.(eliteTxn,paid)}catch(e){console.warn('V3.10 claim finish hook',e)}
 
   if(paid){
     try{window.v4222AfterQuestClaim?.()}catch(e){console.warn('V4.222 post-claim hook',e)}
