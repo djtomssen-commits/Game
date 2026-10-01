@@ -117,10 +117,6 @@ v073SearchPlayer=async function(name,targetSelector){
 };
 v072SearchPlayer=v073SearchPlayer;
 
-const v074BaseRender=render;
-render=function(){
-  v074BaseRender();
-  
-  setTimeout(()=>v074BindProfileRows(),0);
-};
+/* V8.009: global profile-row rebind wrapper retired.
+   Search/Hall owners bind rows when they create them; profile modal is v655-owned. */
 /* V4.52: removed unsafe pre-auth profile sync. Account resolver owns first sync. */
