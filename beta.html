@@ -9263,30 +9263,7 @@ try{v079RemoveBuffFx()}catch(e){}
 }
 </style>
 
-<script id="v087-main-attribute-runtime-fix">
-function v087FixMainAttributeBadge(){
-  const candidates=[...document.querySelectorAll('*')].filter(el =>
-    el.children.length===0 &&
-    (el.textContent||'').trim().toUpperCase()==='HAUPTATTRIBUT'
-  );
-  candidates.forEach(badge=>{
-    badge.style.position='absolute';
-    badge.style.right='92px';
-    badge.style.top='8px';
-    badge.style.zIndex='2';
-    badge.style.whiteSpace='nowrap';
-    badge.style.pointerEvents='none';
-
-    const row=badge.closest('.stat-row') || badge.parentElement;
-    if(row && getComputedStyle(row).position==='static') row.style.position='relative';
-  });
-}
-
-document.addEventListener('DOMContentLoaded',v087FixMainAttributeBadge,{once:true});
-window.addEventListener('pageshow',()=>{if(document.getElementById('character')?.classList.contains('active'))v087FixMainAttributeBadge()},{passive:true});
-window.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')==='character')v087FixMainAttributeBadge()},{passive:true});
-try{v087FixMainAttributeBadge()}catch(e){console.error('V4.02 main attribute fix',e);}
-</script>
+<script id="v087-main-attribute-runtime-fix" src="js/features/legacy-extracted/beta/v087-main-attribute-runtime-fix.js"></script>
 
 
 <style id="v088-primary-label-center-fix">
@@ -9530,42 +9507,7 @@ localStorage.setItem(KEY,JSON.stringify(s));
 <script id="v096-quest-xp-star-fix-script" src="js/features/quest/beta/v8009-s8-v096-quest-xp-star-fix.js"></script>
 
 
-<script id="v097-exp-labels">
-/* V4.02: replace quest XP star icon with clear EXP label everywhere in quest UI. */
-function v097ReplaceQuestStars(){
-  const root=document.querySelector('#questList');
-  if(!root)return;
-
-  const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);
-  const nodes=[];
-  while(walker.nextNode()) nodes.push(walker.currentNode);
-
-  nodes.forEach(node=>{
-    if(node.parentElement?.closest('.v096-quest-xp2'))return;
-    if(/[⭐★☆]/.test(node.nodeValue||'')){
-      node.nodeValue=node.nodeValue.replace(/[⭐★☆]\s*/g,'EXP ');
-    }
-  });
-
-  /* Also make the active/running quest reward clearer if it uses the star. */
-  document.querySelectorAll('#quests *').forEach(el=>{
-    if(el.children.length!==0 || el.closest('.v096-quest-xp2'))return;
-    if(/[⭐★☆]/.test(el.textContent||'')){
-      el.textContent=el.textContent.replace(/[⭐★☆]\s*/g,'EXP ');
-    }
-  });
-}
-
-const v097BaseRender=render;
-render=function(){
-  v097BaseRender();
-  
-  requestAnimationFrame(v097ReplaceQuestStars);
-};
-
-document.addEventListener('click',()=>setTimeout(v097ReplaceQuestStars,40),true);
-try{v097ReplaceQuestStars()}catch(e){}
-</script>
+<script id="v097-exp-labels" src="js/features/legacy-extracted/beta/v097-exp-labels.js"></script>
 
 
 <script id="v098-xp-event-payout-fix" src="js/features/events/beta/v8009-s4-v098-xp-event-payout-fix.js"></script>
@@ -9641,46 +9583,7 @@ try{v097ReplaceQuestStars()}catch(e){}
 }
 </style>
 
-<script id="v101-levelup-notification">
-function v101ShowLevelUp(oldLevel,newLevel,skillGain){
-  document.querySelectorAll('.v101-levelup').forEach(x=>x.remove());
-
-  const box=document.createElement('div');
-  box.className='v101-levelup';
-  box.innerHTML=`
-    <div class="v101-levelup-title">LEVEL UP!</div>
-    <div class="v101-levelup-level">Level ${oldLevel} → ${newLevel}</div>
-    <div class="v101-levelup-sub">+${skillGain} Skillpunkt${skillGain===1?'':'e'}</div>
-  `;
-  document.body.appendChild(box);
-  setTimeout(()=>box.remove(),3400);
-}
-
-/* Wrap the central XP function so every source can trigger the notification. */
-const v101OriginalAddXp=addXp;
-addXp=function(n){
-  const oldLevel=Number(s.level)||1;
-  const oldSkills=Number(s.skillPoints ?? s.skill ?? 0)||0;
-
-  const result=v101OriginalAddXp(n);
-
-  const newLevel=Number(s.level)||1;
-  const newSkills=Number(s.skillPoints ?? s.skill ?? 0)||0;
-
-  if(newLevel>oldLevel){
-    const gain=Math.max(1,newSkills-oldSkills || (newLevel-oldLevel));
-    v101ShowLevelUp(oldLevel,newLevel,gain);
-
-    if(typeof v063Toast==='function'){
-      v063Toast('🎉 Level Up!','success',`Du bist jetzt Level ${newLevel}.`);
-    }
-  }
-
-  return result;
-};
-
-/* V7.113: retired pure pass-through render wrapper (V101). */
-</script>
+<script id="v101-levelup-notification" src="js/features/legacy-extracted/beta/v101-levelup-notification.js"></script>
 
 
 <style id="v102-levelup-robust">
@@ -11608,29 +11511,7 @@ window.v124ClampCharacterWidth=window.v124ClampCharacterWidth||function(){return
   -webkit-transform:translateZ(0)!important;
 }
 </style>
-<script id="v126-character-repaint-fix-script">
-/* V7.160: stable compatibility only — NO resize/visibility DOM rebuilds. */
-function v126PreloadAvatar(){
-  try{
-    const src=(typeof v080AvatarFor==='function')?v080AvatarFor(s.playerClass):'';
-    if(!src)return;
-    window.__v126AvatarPreload??={};
-    if(window.__v126AvatarPreload[src])return;
-    const img=new Image();img.loading='eager';img.decoding='sync';img.src=src;window.__v126AvatarPreload[src]=img;
-  }catch(_){ }
-}
-function v126RepairAvatar(){return true}
-function v126RepairEquipment(){return true}
-function v126RepairCharacter(){return true}
-window.v126RepairCharacter=window.v126RepairCharacter||v126RepairCharacter;
-window.__V7126_V126_AUTOREPAIR_RETIRED__=true;
-window.__V7160_V126_RESIZE_REBUILD_RETIRED__=true;
-if(typeof V125_ATTRS!=='undefined'){
-  const exact={staerke:'Hauptschaden beim Bud-Barbar',geschick:'Hauptschaden beim Blatt-Schützen · erhöht Ausweichen',intelligenz:'Hauptschaden beim Bong-Magier',ausdauer:'Erhöht Lebenspunkte und Verteidigung',glueck:'Erhöht Krit-Chance und beeinflusst Beute'};
-  V125_ATTRS.forEach(row=>{if(exact[row[0]])row[3]=exact[row[0]]});
-}
-v126PreloadAvatar();
-</script>
+<script id="v126-character-repaint-fix-script" src="js/features/legacy-extracted/beta/v126-character-repaint-fix-script.js"></script>
 
 
 <style id="v127-midnight-reset-ui">
@@ -12401,38 +12282,7 @@ v126PreloadAvatar();
 </script>
 
 
-<script id="v131-shop-cleanup">
-function v131CleanShop(){
-  const shop=document.querySelector('#shop');
-  if(!shop)return;
-
-  /* Remove the complete top Händlergasse scene/banner. */
-  shop.querySelectorAll('.v052-scene-banner').forEach(el=>{
-    const t=(el.textContent||'').toLowerCase();
-    if(t.includes('händlergasse') || t.includes('haendlergasse')) el.remove();
-  });
-
-  /* Remove the explanatory rarity-value sentence wherever it is rendered. */
-  shop.querySelectorAll('*').forEach(el=>{
-    const t=(el.textContent||'').trim().toLowerCase();
-    if(t.startsWith('werte steigen jetzt klar mit')){
-      if(el.children.length===0 || el.classList.contains('tiny') || el.classList.contains('muted') || el.tagName==='P'){
-        el.remove();
-      }
-    }
-  });
-
-  
-}
-if(typeof renderShop==='function'&&!window.__v131ShopCleanWrapped){
-  const v131BaseRenderShop=renderShop;
-  renderShop=function(){const r=v131BaseRenderShop.apply(this,arguments);v131CleanShop();return r};
-  try{window.renderShop=renderShop}catch(_){}
-  window.__v131ShopCleanWrapped=true;
-}
-v131CleanShop();
-window.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')==='shop')v131CleanShop()},{passive:true});
-</script>
+<script id="v131-shop-cleanup" src="js/features/legacy-extracted/beta/v131-shop-cleanup.js"></script>
 
 
 <style id="v132-classset-inventory-premium">
@@ -19438,43 +19288,7 @@ html body .app section#hall.v646-hall .v646-footer-plaque{
 </style>
 <script id="v311-quest-finale" src="js/features/quest/beta/v8009-s2-v311-quest-finale.js"></script>
 
-<script id="v311-worldboss-no-pity">
-/* ===== V4.02 Smaragd-Koloss: pity protection removed =====
-   Gear/readiness balance remains. Losses no longer make the boss weaker. */
-const v311BaseWorldBossModel=v290WorldBossModel;
-v290WorldBossModel=function(){
- const m=v311BaseWorldBossModel();
- m.pitySteps=0;
- m.pityDamage=1;
- return m;
-};
-const v311BaseBossState=v290EnsureWorldBossState;
-v290EnsureWorldBossState=function(){
- const wb=v311BaseBossState();
- if(wb)wb.lossStreak=0;
- return wb;
-};
-const v311BaseBossRefresh=v110Refresh;
-v110Refresh=function(){
- const r=v311BaseBossRefresh();
- const box=document.querySelector('#v290BossBalance');
- if(box){
-   box.innerHTML=box.innerHTML
-    .replace(/<br><b>Der Koloss zeigt nach deinen Niederlagen erste Schwächen\.<\/b>/g,'');
- }
- return r;
-};
-/* Old V4.02 fight still writes/increments lossStreak and shows a pity message.
-   Neutralize the stored streak immediately after every persist/render cycle. */
-const v311BaseRender=render;
-render=function(){
- const r=v311BaseRender();
- try{if(s.v110WorldBoss)s.v110WorldBoss.lossStreak=0}catch(e){}
- 
- const line=document.querySelector('#v141VersionLine');
- return r;
-};
-</script>
+<script id="v311-worldboss-no-pity" src="js/features/legacy-extracted/beta/v311-worldboss-no-pity.js"></script>
 
 
 
@@ -22142,37 +21956,7 @@ html body .app > header > .stats.resource-stats{
 }
 </style>
 
-<script id="v361-header-mobile-fit">
-(function(){
-  const V361_VERSION='V4.29 Stable';
-
-  function updateValues(){
-    const num=v=>Math.max(0,Math.round(Number(v)||0)).toLocaleString('de-DE');
-    let cap=100;
-    try{if(typeof v271DampfCap==='function')cap=v271DampfCap()}catch(e){}
-
-    const gold=document.querySelector('#v358Gold');
-    const harz=document.querySelector('#v358Harz');
-    const dampf=document.querySelector('#v358Dampf');
-
-    if(gold)gold.textContent='🪙 '+num(s?.gold);
-    if(harz)harz.textContent='💎 '+num(s?.harzTaler);
-    if(dampf)dampf.textContent='💨 '+num(s?.energy)+' / '+num(cap);
-  }
-
-  function version(){
-    document.querySelectorAll(
-      '.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version'
-    ).forEach(el=>{if(el)el.textContent=V361_VERSION});
-  }
-
-  updateValues();
-  version();
-  document.addEventListener('DOMContentLoaded',()=>{updateValues();version()},{once:true});
-  window.addEventListener('pageshow',()=>{updateValues();version()},{passive:true});
-  window.addEventListener('growlegends:account-ready',()=>{updateValues();version()},{passive:true});
-})();
-</script>
+<script id="v361-header-mobile-fit" src="js/features/legacy-extracted/beta/v361-header-mobile-fit.js"></script>
 
 <!-- ===== V4.29 Stable: exact compact one-row mobile header ===== -->
 <style id="v362-header-exact-compact-css">
@@ -23335,36 +23119,7 @@ body.v371-game-ui .app > header{
 <script id="v372-authoritative-header" src="js/features/ui/beta/v8009-s7-v372-authoritative-header.js"></script>
 
 <!-- ===== V4.29 Stable: dropdown closes after navigation ===== -->
-<script id="v373-dropdown-autoclose">
-(function(){
-  const VERSION='V4.29 Stable';
-
-  function closeMainMenu(){
-    const panel=document.querySelector('#v032MenuPanel');
-    if(!panel)return;
-    panel.classList.remove('open','show','active');
-    panel.style.removeProperty('display');
-    panel.style.removeProperty('visibility');
-    panel.style.removeProperty('opacity');
-    panel.style.removeProperty('pointer-events');
-  }
-
-  /* Shared navigation owner: every successful page change closes the menu. */
-  window.addEventListener('growlegends:navigation-open-v7119',closeMainMenu,{passive:true});
-
-  /* Safety for menu entries that use their own click handler instead of v032Go. */
-  document.addEventListener('click',function(e){
-    const panel=document.querySelector('#v032MenuPanel');
-    if(!panel || !panel.contains(e.target))return;
-    const nav=e.target.closest('button,a,[data-screen],[data-go],[data-target]');
-    if(nav) requestAnimationFrame(closeMainMenu);
-  },true);
-
-  document.querySelectorAll(
-    '.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version'
-  ).forEach(el=>{if(el)el.textContent=VERSION});
-})();
-</script>
+<script id="v373-dropdown-autoclose" src="js/features/legacy-extracted/beta/v373-dropdown-autoclose.js"></script>
 
 <!-- ===== V4.29 Stable: EXP event card visual stays stable ===== -->
 <style id="v374-exp-event-visual-fix-css">
@@ -23536,35 +23291,7 @@ create index if not exists player_messages_sender_idx on public.player_messages(
 <script id="v383-friend-mail-name-fix" src="js/features/social/beta/v8009-s6-v383-friend-mail-name-fix.js"></script>
 
 <!-- ===== V4.29 Stable: Stability diagnostics + safe error boundary ===== -->
-<script id="v384-stability-security">
-(function(){
-  const VERSION='V4.29 Stable';
-  let lastErrorAt=0;
-  function report(kind,detail){
-    const now=Date.now();
-    if(now-lastErrorAt<1500)return;
-    lastErrorAt=now;
-    try{console.error(`[V4.02 ${kind}]`,detail)}catch(e){}
-  }
-  window.addEventListener('error',e=>report('runtime',e?.error||e?.message||'Unbekannter Laufzeitfehler'));
-  window.addEventListener('unhandledrejection',e=>report('promise',e?.reason||'Unbehandelter Promise-Fehler'));
-
-  /* Never expose raw auth/session tokens through accidental DOM rendering. */
-  window.v384SafeDebug=function(value){
-    try{
-      const s=String(value??'');
-      return s
-        .replace(/(access_token|refresh_token|authorization)\s*[:=]\s*["']?[^"'\\s,}]+/ig,'$1=[REDACTED]')
-        .replace(/Bearer\\s+[A-Za-z0-9._~+\\/-]+/ig,'Bearer [REDACTED]');
-    }catch(e){return '[unavailable]'}
-  };
-
-  document.querySelectorAll(
-    '.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version'
-  ).forEach(el=>{if(el)el.textContent=VERSION});
-  document.querySelectorAll('.v366-ver').forEach(el=>el.textContent='V4.11');
-})();
-</script>
+<script id="v384-stability-security" src="js/features/legacy-extracted/beta/v384-stability-security.js"></script>
 
 <!-- ===== V4.29 Stable: Auth state consistency guard ===== -->
 <script id="v385-auth-consistency-guard" src="js/features/account/beta/v8009-s17-v385-auth-consistency-guard.js"></script>
@@ -26067,30 +25794,7 @@ create index if not exists player_messages_sender_idx on public.player_messages(
 .app > header .v366-ver::after,.app > header .v371-logo em::after,.app > header .v372-logo em::after{content:"V4.77"!important;font-size:5px!important;color:#63cdd1!important;font-style:normal!important;font-weight:900!important}
 #world.active:not(.v474-home-ready)::before{display:none!important}
 </style>
-<script id="v477-final-runtime-script">
-(function(){
-  const VERSION='V4.77',SHORT='V4.77';
-  function stamp(){}
-  function exposeModernHome(){
-    try{
-      const world=document.querySelector('#world');if(!world)return;
-      const modern=world.querySelector(':scope > .v366-world')||world.querySelector('.v366-world');
-      if(modern){
-        if(modern.parentElement!==world)world.insertBefore(modern,world.firstChild);
-        modern.style.setProperty('display','grid','important');
-        modern.style.setProperty('visibility','visible','important');
-        modern.style.setProperty('opacity','1','important');
-        world.classList.add('v474-home-ready');
-      }
-    }catch(e){}
-  }
-  stamp();exposeModernHome();
-  document.addEventListener('DOMContentLoaded',()=>{stamp();exposeModernHome()},{once:true});
-  window.addEventListener('pageshow',()=>{stamp();exposeModernHome()},{passive:true});
-  window.addEventListener('growlegends:account-ready',()=>{stamp();exposeModernHome()},{passive:true});
-  window.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')==='world'){stamp();exposeModernHome()}},{passive:true});
-})();
-</script>
+<script id="v477-final-runtime-script" src="js/features/legacy-extracted/beta/v477-final-runtime-script.js"></script>
 
 
 <!-- ===== V4.79: shared guild XP daily cap 625 ===== -->
@@ -29297,47 +29001,7 @@ html.v495-level-syncing #v420LevelUpOverlay{
 
 
 <!-- ===== V4.161: close settings dropdown on logout ===== -->
-<script id="v4161-close-settings-on-logout">
-(function(){
-  function closeSettingsDropdown(){
-    try{
-      const menu=document.querySelector('#v141SettingsMenu');
-      if(!menu)return;
-      menu.classList.remove('open','v377-open','v228-ultra-compact');
-      menu.setAttribute('aria-hidden','true');
-    }catch(e){}
-  }
-
-  /* Close immediately on the logout tap, before cloud-save/sign-out starts. */
-  document.addEventListener('click',function(e){
-    try{
-      if(e.target instanceof Element && e.target.closest('#v141Logout')){
-        closeSettingsDropdown();
-      }
-    }catch(err){}
-  },true);
-
-  /* Wrap the final logout chain: close before it starts and again after all
-     legacy rebuilds/portal code have completed. */
-  try{
-    if(typeof v136Logout==='function' && !window.__v4161LogoutSettingsWrap){
-      const base=v136Logout;
-      v136Logout=async function(){
-        closeSettingsDropdown();
-        try{
-          return await base.apply(this,arguments);
-        }finally{
-          closeSettingsDropdown();
-          requestAnimationFrame(closeSettingsDropdown);
-          setTimeout(closeSettingsDropdown,0);
-        }
-      };
-      try{window.v136Logout=v136Logout}catch(e){}
-      window.__v4161LogoutSettingsWrap=true;
-    }
-  }catch(e){}
-})();
-</script>
+<script id="v4161-close-settings-on-logout" src="js/features/legacy-extracted/beta/v4161-close-settings-on-logout.js"></script>
 <!-- ===== /V4.161 close settings dropdown on logout ===== -->
 
 <!-- ===== V4.497 DUNGEON KEY IMMEDIATE LIVE-UNLOCK FIX ===== -->
@@ -35627,44 +35291,7 @@ window.v531HardenHero=harden;
 #dungeonBattleCard.v575-combat .damage{will-change:transform,opacity}
 #dungeonBattleCard.v575-combat .hpfill{will-change:width;transition:width .30s linear!important}
 </style>
-<script id="v586-dungeon-smooth-core">
-(function(){
-  'use strict';
-  if(window.__V586_DUNGEON_SMOOTH__)return;
-  window.__V586_DUNGEON_SMOOTH__=true;
-
-  const legacyAnim=window.animClass;
-  const legacyPop=window.popDamage;
-  const inDungeon=el=>!!el?.closest?.('#dungeonBattleCard,#v209PvpBattleOverlay,#tower,#v111BossScene');
-
-  function lightAnim(el,cl,ms=400){
-    if(!el)return;
-    el.classList.remove(cl);
-    requestAnimationFrame(()=>{
-      if(!el.isConnected)return;
-      el.classList.add(cl);
-      setTimeout(()=>{try{el.classList.remove(cl)}catch(_){ }},ms);
-    });
-  }
-
-  window.animClass=function(el,cl,ms=400){
-    if(inDungeon(el))return lightAnim(el,cl,ms);
-    return typeof legacyAnim==='function'?legacyAnim.apply(this,arguments):undefined;
-  };
-  try{animClass=window.animClass}catch(_){ }
-
-  window.popDamage=function(el,text){
-    if(!inDungeon(el))return typeof legacyPop==='function'?legacyPop.apply(this,arguments):undefined;
-    if(!el)return;
-    el.textContent=text;
-    const crit=/!$/.test(String(text||''));
-    if(crit)el.classList.add('v252-crit');
-    lightAnim(el,'pop',650);
-    if(crit)setTimeout(()=>{try{el.classList.remove('v252-crit')}catch(_){ }},700);
-  };
-  try{popDamage=window.popDamage}catch(_){ }
-})();
-</script>
+<script id="v586-dungeon-smooth-core" src="js/features/legacy-extracted/beta/v586-dungeon-smooth-core.js"></script>
 <!-- ===== /V5.86 ===== -->
 
 
@@ -36005,32 +35632,7 @@ window.v531HardenHero=harden;
   #dungeonBattleCard.v599-clean .hpbar{width:97%!important}
 }
 </style>
-<script id="v600-clean-template-stage-core">
-(function(){
-  'use strict';
-  if(window.__V600_CLEAN_TEMPLATE_STAGE__)return;
-  window.__V600_CLEAN_TEMPLATE_STAGE__=true;
-
-  function sync(){
-    const card=document.getElementById('dungeonBattleCard');
-    const stage=document.getElementById('battleStage');
-    if(!card||!stage)return;
-    card.classList.add('v575-combat','v599-clean');
-    /* Phase 2G cleanup: V6.00 no longer owns either fighter artwork. */
-    stage.querySelectorAll(':scope > .v600-bg').forEach(n=>n.remove());
-    const pf=document.getElementById('playerFighter');
-    if(pf)pf.classList.remove('v600-barbar');
-    pf?.querySelectorAll('.v600-barbar-art').forEach(n=>n.remove());
-    const title=stage.querySelector('.v575-stage-title');
-    if(title&&title.textContent!=='DUNGEON DUELL')title.textContent='DUNGEON DUELL';
-  }
-
-  document.addEventListener('click',e=>{if(e.target?.closest?.('#dungeon,#dungeonBattleCard,#fightBtn'))setTimeout(sync,0)},true);
-  window.addEventListener('pageshow',sync,{passive:true});
-  document.addEventListener('visibilitychange',()=>{if(!document.hidden)sync()},{passive:true});
-  setTimeout(sync,0);
-})();
-</script>
+<script id="v600-clean-template-stage-core" src="js/features/legacy-extracted/beta/v600-clean-template-stage-core.js"></script>
 <!-- ===== /V6.00 ===== -->
 
 <!-- ===== V6.01 FINAL TEMPLATE POLISH - CSS ONLY ===== -->
@@ -39002,37 +38604,7 @@ body.v653-profile-open #v4144GuildChatTab{
   #v074ProfileContent.v652-profile .v4103-profile-equipment .v4103-item-name{font-size:6.85px!important}
 }
 </style>
-<script id="v653-player-profile-polish-js">
-(()=>{
-  'use strict';
-  const overlay=document.querySelector('#v074ProfileOverlay');
-  if(!overlay)return;
-
-  function syncOpenState(){
-    const open=overlay.classList.contains('show');
-    document.body?.classList.toggle('v653-profile-open',open);
-
-    /* Shorten only the visible label, never the underlying dungeon value. */
-    if(open){
-      const content=document.querySelector('#v074ProfileContent');
-      const topGrid=content?.querySelector(':scope > .v326-profile-grid');
-      if(topGrid){
-        [...topGrid.querySelectorAll(':scope > .v326-profile-stat span')].forEach(span=>{
-          const current=(span.textContent||'').trim();
-          if(/Abgeschlossen/i.test(current) && current!=='🏁 Abgeschlossen'){
-            span.textContent='🏁 Abgeschlossen';
-          }
-        });
-      }
-    }
-  }
-
-  new MutationObserver(syncOpenState).observe(overlay,{attributes:true,attributeFilter:['class']});
-  const content=document.querySelector('#v074ProfileContent');
-  if(content)new MutationObserver(syncOpenState).observe(content,{childList:true,subtree:true});
-  syncOpenState();
-})();
-</script>
+<script id="v653-player-profile-polish-js" src="js/features/legacy-extracted/beta/v653-player-profile-polish-js.js"></script>
 <!-- ===== /V6.53 ===== -->
 
 
@@ -42451,32 +42023,7 @@ window.__V6118_EVENT_X2_WORLDBOSS_FIX__=true;
 <script id="v6120-guild-performance-sort-marker"></script>
 
 
-<script id="v6144-material-comic-art-marker">
-(()=>{
-'use strict';
-if(window.__V6144_MATERIAL_COMIC_ART__)return;
-window.__V6144_MATERIAL_COMIC_ART__=true;
-
-function refresh(){
-  try{window.v6107PaintItemSurfaces?.(document)}catch(e){}
-  try{window.v546RenderMaterials?.()}catch(e){}
-  try{if(document.getElementById('shop')?.classList.contains('active'))window.renderShop?.()}catch(e){}
-}
-document.addEventListener('DOMContentLoaded',()=>requestAnimationFrame(refresh),{once:true});
-window.addEventListener('growlegends:account-ready',()=>setTimeout(refresh,120));
-
-window.v6144MaterialArtQA=()=>({
-  gems:[
-    'gem_whitewidow','gem_harzkern','gem_gruenpfeil','gem_wurzel','gem_lucky'
-  ].every(id=>/^(?:data:image\/webp;base64,|assets\/v71(?:95|98)-base64\/)/.test(String(window.v6144MaterialArt?.({type:'gem',baseId:id})||''))),
-  scrolls:[
-    'scroll_crit','scroll_power','scroll_guard','scroll_luck'
-  ].every(id=>/^(?:data:image\/webp;base64,|assets\/v71(?:95|98)-base64\/)/.test(String(window.v6144MaterialArt?.({type:'scroll',baseId:id})||''))),
-  oldGemFallback:!!window.v6144MaterialArt?.({type:'gem',stat:'staerke'}),
-  oldScrollFallback:!!window.v6144MaterialArt?.({type:'scroll',effect:'crit'})
-});
-})();
-</script>
+<script id="v6144-material-comic-art-marker" src="js/features/legacy-extracted/beta/v6144-material-comic-art-marker.js"></script>
 
 
 <script id="v6122-daily-login-epic-marker">
@@ -43138,28 +42685,7 @@ body:has(#tower.active) #v337LegalFooter{margin-top:48px!important;padding-top:1
 </style>
 <!-- ===== /STARTSEITE · Harzschmiede kompakte Karte ===== -->
 
-<script id="v6210-pet-find-ui-reliability">
-(()=>{
- 'use strict';
- window.v6210PetDiagnostics=()=>{
-   const a=s?.v686PetAlbum||{};
-   return {
-     button:!!document.getElementById('v686PetAlbumBtn'),
-     popup:document.getElementById('v688PetPopup')?.classList.contains('show')||false,
-     unseen:Number(a.unseen)||0,
-     newFinds:Array.isArray(a.newFinds)?a.newFinds.length:0,
-     pendingPopups:Array.isArray(a.pendingFindPopups)?a.pendingFindPopups.length:0,
-     found:Object.values(a.found||{}).reduce((n,row)=>n+Object.keys(row||{}).length,0),
-     grantWrapped:typeof window.v686GrantPet==='function'&&!!window.__v688BaseGrant,
-     eventBus:!!window.GL_EVENTS
-   };
- };
- function sync(){try{window.v6104UpdatePetIndicators?.()}catch(_){}}
- window.addEventListener('growlegends:account-ready',()=>setTimeout(sync,220));
- window.addEventListener('pageshow',()=>setTimeout(sync,80),{passive:true});
- document.addEventListener('click',e=>{if(e.target?.closest?.('[data-screen="character"],[data-go="character"],[data-nav="character"]'))setTimeout(sync,80)},true);
-})();
-</script>
+<script id="v6210-pet-find-ui-reliability" src="js/features/legacy-extracted/beta/v6210-pet-find-ui-reliability.js"></script>
 
 
 <!-- ===== V6.85 STARTSEITE CHARAKTER-CHECKLISTE ===== -->
@@ -48049,40 +47575,7 @@ body:not(.v6291-summoner-active) .v6287-summon-fx{
   }
 }
 </style>
-<script id="v6304-companion-position-fix-js">
-(()=>{
-'use strict';
-if(window.__V6304_COMPANION_POSITION_FIX__)return;
-window.__V6304_COMPANION_POSITION_FIX__=true;
-
-function repair(){
- try{
-   if(String(s?.playerClass||'')!=='summoner')return;
-   window.v6287EnsureRoster?.();
- }catch(_){}
-}
-document.addEventListener('click',e=>{
- const hit=e.target instanceof Element?e.target.closest(
-   '#fightBtn,[data-vt-fight],[data-screen="dungeon"],[data-go="dungeon"],'+
-   '[data-screen="tower"],[data-go="tower"],[data-screen="pvp"],[data-go="pvp"]'
- ):null;
- if(hit)setTimeout(repair,40);
-},true);
-window.addEventListener('growlegends:account-ready',repair,{passive:true});
-
-window.v6304CompanionPositionDiagnostics=()=>({
- version:'V6.304',
- roster:document.querySelector('.v6287-summon-roster')?{
-   position:getComputedStyle(document.querySelector('.v6287-summon-roster')).position,
-   parent:document.querySelector('.v6287-summon-roster').parentElement?.id||document.querySelector('.v6287-summon-roster').parentElement?.className||''
- }:null,
- actor:document.querySelector('.v6287-summon-fx')?{
-   left:getComputedStyle(document.querySelector('.v6287-summon-fx')).left,
-   top:getComputedStyle(document.querySelector('.v6287-summon-fx')).top
- }:null
-});
-})();
-</script>
+<script id="v6304-companion-position-fix-js" src="js/features/legacy-extracted/beta/v6304-companion-position-fix-js.js"></script>
 <!-- ===== /V6.304 ===== -->
 
 
@@ -48595,29 +48088,7 @@ window.v6316VersionDiagnostics=()=>window.v7112VersionDiagnostics?.()||({actual:
   }
 }
 </style>
-<script id="v6324-dungeon-enemy-pose-fix-js">
-(()=>{
-'use strict';
-if(window.__V6324_DUNGEON_ENEMY_POSE_FIX__)return;
-window.__V6324_DUNGEON_ENEMY_POSE_FIX__=true;
-const CLASS_MAP={'säurefalter':'gl-dungeon-pose-saeurefalter'};
-const ALL=[...new Set(Object.values(CLASS_MAP))];
-const slug=s=>String(s||'').toLowerCase().replace(/ä/g,'ae').replace(/ö/g,'oe').replace(/ü/g,'ue').replace(/ß/g,'ss').trim();
-function apply(){
-  const fighter=document.getElementById('enemyFighter');
-  const avatar=fighter?.querySelector('.fighter-avatar');
-  if(!fighter||!avatar)return false;
-  fighter.classList.remove(...ALL);
-  const name=(document.getElementById('enemyBattleName')?.textContent||document.getElementById('enemyName')?.textContent||'').trim();
-  const cls=CLASS_MAP[slug(name)];if(cls)fighter.classList.add(cls);
-  avatar.style.setProperty('background-image','none','important');
-  avatar.style.setProperty('background','transparent','important');
-  return true;
-}
-window.v6324DungeonEnemyPoseSync=apply;
-window.v6324DungeonEnemyPoseDiagnostics=()=>({version:'V7.156',observerRetired:true,enemyName:(document.getElementById('enemyBattleName')?.textContent||'').trim(),fighterClasses:document.getElementById('enemyFighter')?.className||''});
-})();
-</script>
+<script id="v6324-dungeon-enemy-pose-fix-js" src="js/features/legacy-extracted/beta/v6324-dungeon-enemy-pose-fix-js.js"></script>
 <!-- ===== /V6.326 ===== -->
 
 
@@ -49686,34 +49157,7 @@ window.v6335SporeDotDiagnostics=()=>({
 
 
 <!-- ===== V7.091 SERVER GROW / GENETICS / CLASSSET BRIDGE ===== -->
-<script id="v7064-server-grow-genetics-classset-bridge">
-(()=>{
- 'use strict';
- /* V7.151 PHASE 2: compatibility facade only.
-    V7065 owns Grow state + Grow actions. The former V7064 bridge had its own
-    boot interval, local full-state writes, broad render()/renderGrow() fanout
-    and a second action lane. External callers still using the historical
-    v7064GrowAuthorityRefresh API are delegated to V7065. */
- if(window.__V7064_SERVER_GROW_STAGE__)return;
- window.__V7064_SERVER_GROW_STAGE__=true;
- window.__V7064_COMPAT_ONLY_V7150__=true;
- const clone=v=>{try{return JSON.parse(JSON.stringify(v))}catch(_){return v}};
- function diag(){
-   let d=null;try{d=window.v7065GrowAuthorityDiagnostics?.()||null}catch(_){}
-   const enabled=!!(d?.enabled||window.__V7065_GROW_SERVER_MODE__);
-   window.__V7064_GROW_SERVER_MODE__=enabled;
-   return clone({version:'V7.151',ready:!!d?.ready,enabled,busy:!!d?.busy,lastError:String(d?.lastError||''),compat:true,serverMode:enabled});
- }
- window.v7064GrowAuthorityDiagnostics=diag;
- window.v7064GrowAuthorityRefresh=async()=>{
-   try{
-     const r=await window.v7065GrowAuthorityRefresh?.(true);
-     diag();
-     return r||null;
-   }catch(e){diag();return null}
- };
-})();
-</script>
+<script id="v7064-server-grow-genetics-classset-bridge" src="js/features/legacy-extracted/beta/v7064-server-grow-genetics-classset-bridge.js"></script>
 <!-- ===== /V7.091 SERVER GROW / GENETICS / CLASSSET BRIDGE ===== -->
 
 
@@ -49964,42 +49408,7 @@ window.__V7109_HOTFIX__=Object.freeze({
 });
 </script>
 
-<script id="v7102-quest-authority-stability">
-(()=>{
-'use strict';
-if(window.__V7102_QUEST_STABILITY__)return;
-window.__V7102_QUEST_STABILITY__=true;
-
-const questEnforced=()=>{
- try{return String(window.v7040AuthorityDiagnostics?.()?.domains?.quest||'')==='enforce'}catch(_){return false}
-};
-
-try{
- const base=(typeof ensureQuests==='function')?ensureQuests:null;
- if(base&&!base.__v7102ServerOnly){
-   const wrapped=function(){
-     if(questEnforced()){
-       try{
-         s.quests=(s?.quests&&typeof s.quests==='object')?s.quests:{offers:[],active:null,eliteOffer:null};
-         if(!Array.isArray(s.quests.offers))s.quests.offers=[];
-       }catch(_){}
-       return s?.quests;
-     }
-     return base.apply(this,arguments);
-   };
-   wrapped.__v7102ServerOnly=true;
-   ensureQuests=wrapped;window.ensureQuests=wrapped;
- }
-}catch(e){console.warn('[V7.109] ensureQuests authority owner',e)}
-
-window.v7102QuestDiagnostics=()=>({
-  enforced:questEnforced(),
-  activeRun:Number(s?.quests?.active?.serverRunId)||null,
-  offers:Array.isArray(s?.quests?.offers)?s.quests.offers.map(x=>String(x?.id||'')):[],
-  release:window.__GROW_LEGENDS_RELEASE__||''
-});
-})();
-</script>
+<script id="v7102-quest-authority-stability" src="js/features/legacy-extracted/beta/v7102-quest-authority-stability.js"></script>
 
 <script id="v7103-shared-combat-presentation" src="js/features/combat/beta/v8009-s8-v7103-shared-combat-presentation.js"></script>
 <link id="v7103-pvp-dungeon-parity-css" rel="stylesheet" href="css/features/pvp/beta/v8009-s1-v7103-pvp-dungeon-parity-css.css">
@@ -50763,33 +50172,7 @@ body.v7129-referral-frame #world .v366-avatar{box-shadow:none!important;outline:
 
 
 <!-- ===== V7.151 PHASE 1 LEGACY CLEANUP ===== -->
-<script id="v7149-phase1-legacy-cleanup">
-(()=>{
- 'use strict';
- const emptyProfiler=Object.freeze({
-   start:()=>({ok:false,disabled:true,reason:'production_cleanup_v7149'}),
-   stop:()=>({ok:false,disabled:true,reason:'production_cleanup_v7149'}),
-   snapshot:()=>({active:false,disabled:true,version:'V7.151',intervals:[],observers:[],registeredIntervals:0,registeredObservers:0}),
-   isActive:()=>false,
-   state:Object.freeze({active:false,disabled:true})
- });
- if(!window.__GL_RUNTIME_PROFILER__)window.__GL_RUNTIME_PROFILER__=emptyProfiler;
- window.__GL_RUNTIME_PROFILER_UI__='retired-v7149';
- window.__V7125_UI_STABILITY_MONITOR__='retired-v7149';
- window.v7125RunUiStabilityCheck=()=>null;
- window.v7125ClearUiStability=()=>true;
- window.v7125UiStabilityDiagnostics=()=>({version:'V7.151',disabled:true,active:null,results:[],opens:{},warnings:0,errors:0});
- window.__V7149_PHASE1_CLEANUP__=Object.freeze({
-   base:'V7.148',
-   runtimeProfilerRetired:true,
-   runtimeProfilerUiRetired:true,
-   uiStabilityMonitorRetired:true,
-   historicalCleanupDiagnosticsPruned:true,
-   gameplayLogicChanged:false,
-   serverAuthorityChanged:false
- });
-})();
-</script>
+<script id="v7149-phase1-legacy-cleanup" src="js/features/legacy-extracted/beta/v7149-phase1-legacy-cleanup.js"></script>
 <!-- ===== /V7.151 PHASE 1 LEGACY CLEANUP ===== -->
 
 <!-- ===== V7.151 PHASE 2 GROW LEGACY CLEANUP ===== -->
@@ -51168,15 +50551,7 @@ html.v7154-frame-pending #world .v366-avatar{border:1px solid #3d5140!important;
 <style id="v7164-combat-animation-complete-css">
 /* V7.170: retired. Companion/class combat CSS is consolidated in #v7169-2d-combat-css. */
 </style>
-<script id="v7175-combat-release-owner">
-(()=>{'use strict';
- window.__V7169_COMBAT_COMPLETE__=window.__V7175_COMBAT_COMPLETE__=Object.freeze({version:'V7.193',singleVisibleArena:true,singleRendererFor:['dungeon','quest','tower','pvp'],classSpecificMotion:true,allClassTalentProcFx:true,statusAndDotHud:true,summonerPersistentCompanions:true,summonerRosterHud:true,summonGuaranteeCounter:true,summonerAttackFlight:true,companionReturnFlight:true,enemyFocusCrop:true,exactDungeonEnemyAsset:true,currentQuestStage:true,activeObserverOnly:true,serverCombatUnchanged:true,rewardsUnchanged:true});
- const V=Object.freeze({short:'V7.216',label:'V7.216 Stable',number:'7.216'});window.GROW_LEGENDS_VERSION=V;window.__GROW_LEGENDS_RELEASE__=V.short;window.__GL_CURRENT_BUILD__=V.short;
- document.documentElement.dataset.glBuild=V.short;
- window.glClientParityDiagnostics=()=>({build:V.short,combatOwner:'v7175',seedCatalog:'v492-static',href:location.href,native:!!window.Capacitor?.isNativePlatform?.(),userAgent:navigator.userAgent});
- const paint=()=>{try{document.querySelectorAll('.version,.v372-logo em,.v371-logo em,.v366-ver').forEach(el=>{if(el?.tagName!=='STYLE')el.textContent=V.short})}catch(_){}};paint();window.addEventListener('growlegends:account-ready',paint,{passive:true});
-})();
-</script>
+<script id="v7175-combat-release-owner" src="js/features/legacy-extracted/beta/v7175-combat-release-owner.js"></script>
 <style id="v7164-final-version-css">.app > header .v358-logo::after{content:"V7.165"!important}.app > header .v366-ver::after,.app > header .v371-logo em::after,.app > header .v372-logo em::after{content:"V7.165"!important}</style>
 <!-- ===== /V7.165 COMBAT ANIMATION COMPLETE ===== -->
 
@@ -54402,30 +53777,7 @@ html,body,.app,main{max-width:100%;overflow-x:hidden}
 }
 </style>
 
-<script id="v7259-responsive-diagnostics-script">
-(function(){
-'use strict';
-if(window.__V7259_RESPONSIVE_DIAGNOSTICS__)return;
-window.__V7259_RESPONSIVE_DIAGNOSTICS__=true;
-window.v7259ResponsiveDiagnostics=function(){
- const active=[...document.querySelectorAll('.screen.active')];
- const vw=document.documentElement.clientWidth||window.innerWidth||0;
- const issues=[];
- active.forEach(screen=>{
-  const sr=screen.getBoundingClientRect();
-  [...screen.querySelectorAll('*')].forEach(el=>{
-   const cs=getComputedStyle(el);
-   if(cs.position==='fixed'||cs.display==='none'||cs.visibility==='hidden')return;
-   const r=el.getBoundingClientRect();
-   if(r.width>vw+4||r.right>vw+4||r.left<-4){
-    issues.push({screen:screen.id||screen.className,tag:el.tagName,id:el.id||'',className:String(el.className||'').slice(0,120),left:Math.round(r.left),right:Math.round(r.right),width:Math.round(r.width),viewport:vw});
-   }
-  });
- });
- return {version:'V7.276',viewport:vw,activeScreens:active.map(x=>x.id),issues:issues.slice(0,80),count:issues.length};
-};
-})();
-</script>
+<script id="v7259-responsive-diagnostics-script" src="js/features/legacy-extracted/beta/v7259-responsive-diagnostics-script.js"></script>
 
 
 <style id="v7260-bag-dealer-admin-only-css">
@@ -54434,32 +53786,7 @@ html:not(.v7260-bag-admin) #v032MenuPanel [data-screen="bagDealer"]{
   display:none!important;
 }
 </style>
-<script id="v7260-bag-dealer-admin-only-script">
-(function(){
-'use strict';
-if(window.__V7260_BAG_ADMIN_ONLY__)return;
-window.__V7260_BAG_ADMIN_ONLY__=true;
-function isAdmin(){
- try{return typeof v093IsAdmin!=='undefined'&&v093IsAdmin===true&&!!v073User&&!v073User.is_anonymous}catch(_){return false}
-}
-function sync(){
- const ok=isAdmin();
- document.documentElement.classList.toggle('v7260-bag-admin',ok);
- window.__V7215_AD_BAG_MENU_VISIBLE__=ok;
- try{window.v086BuildCompleteMenu?.(true)}catch(_){}
- const screen=document.getElementById('bagDealer');
- if(!ok&&screen?.classList.contains('active')){
-  try{window.v032Go?.('world')}catch(_){screen.classList.remove('active');document.getElementById('world')?.classList.add('active')}
- }
- return ok;
-}
-window.v7260BagDealerAdminSync=sync;
-['growlegends:account-ready','growlegends:extras-ready','growlegends:foreground-ready'].forEach(ev=>window.addEventListener(ev,sync,{passive:true}));
-window.addEventListener('pageshow',sync,{passive:true});
-document.addEventListener('visibilitychange',()=>{if(!document.hidden)sync()},{passive:true});
-sync();
-})();
-</script>
+<script id="v7260-bag-dealer-admin-only-script" src="js/features/legacy-extracted/beta/v7260-bag-dealer-admin-only-script.js"></script>
 
 <script id="v7274-auth-refresh-singleflight" src="js/features/account/beta/v8009-s16-v7274-auth-refresh-singleflight.js"></script>
 
