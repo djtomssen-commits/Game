@@ -77059,6 +77059,8 @@ window.v531HardenHero=harden;
     });
     try{window.v480UpdateAutoBars?.()}catch(e){}
     arrange();
+    try{window.v681EnhanceMaterials?.()}catch(e){}
+    try{window.v683MaterialMultiSell?.enhance?.()}catch(e){}
     return p;
   }
   window.v546RenderMaterials=renderMaterials;
@@ -77070,7 +77072,7 @@ window.v531HardenHero=harden;
   try{
     if(typeof window.v459ArrangeCharacter==='function'&&!window.__v546ArrangeWrapped){
       const base=window.v459ArrangeCharacter;
-      window.v459ArrangeCharacter=function(){const r=base.apply(this,arguments);renderMaterials();arrange();return r};
+      window.v459ArrangeCharacter=function(){const r=base.apply(this,arguments);arrange();return r};
       window.__v546ArrangeWrapped=true;
     }
   }catch(e){}
@@ -77090,9 +77092,8 @@ window.v531HardenHero=harden;
   apply();
   document.addEventListener('DOMContentLoaded',apply,{once:true});
   window.addEventListener('pageshow',apply,{passive:true});
-  document.addEventListener('click',e=>{
-    if(e.target?.closest?.('#v459CharacterTabs [data-tab="materials"],#v514HeroTabs [data-tab="materials"]'))requestAnimationFrame(apply);
-  },true);
+  /* Material tab switching only changes visibility. The material DOM is already
+     rendered on character open; do not rebuild the full grid on every tab tap. */
   /* V8.009: bounded startup retry train retired. */
 })();
 </script>
@@ -84584,15 +84585,9 @@ function observe(){
 }
 window.v681EnhanceMaterials=enhance;
 
-document.addEventListener('click',e=>{
-  if(e.target?.closest?.('#v459CharacterTabs [data-tab="materials"],#v514HeroTabs [data-tab="materials"],#v546MaterialsHeader')){
-    setTimeout(()=>{observe();enhance()},30);
-  }
-},true);
-
-document.addEventListener('DOMContentLoaded',()=>{observe();enhance()},{once:true});
-window.addEventListener('pageshow',()=>{observe();enhance()},{passive:true});
-window.addEventListener('growlegends:account-ready',()=>{observe();enhance()},{passive:true});
+/* v546RenderMaterials is the single post-render owner for sell controls.
+   Keep one initial attach for already-present DOM only. */
+document.addEventListener('DOMContentLoaded',observe,{once:true});
 })();
 </script>
 <!-- ===== /V6.81 EDELSTEINE + ROLLEN VERKAUFEN ===== -->
@@ -91978,10 +91973,8 @@ function observe(){
  /* V7.308: retired subtree MutationObserver. One post-render hook is authoritative. */
  enhance();return true;
 }
-document.addEventListener('click',e=>{if(e.target?.closest?.('#v459CharacterTabs [data-tab="materials"],#v514HeroTabs [data-tab="materials"],#v546MaterialsHeader'))setTimeout(()=>{observe();enhance()},40)},true);
-document.addEventListener('DOMContentLoaded',()=>{observe();enhance()},{once:true});
-window.addEventListener('pageshow',()=>{observe();enhance()},{passive:true});
-window.addEventListener('growlegends:account-ready',()=>{observe();enhance()},{passive:true});
+/* v546RenderMaterials is the single post-render owner for multisell controls. */
+document.addEventListener('DOMContentLoaded',observe,{once:true});
 window.v683MaterialMultiSell={enhance,selected,stats:selectionStats};
 })();
 </script>
