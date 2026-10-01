@@ -2050,3 +2050,18 @@ Arbeitsmodus:
 - Klick-/Action-Followups bewusst erhalten, z. B. Character-Avatar nach echtem Öffnen und Talent-Rerender nach Auswahl/Upgrade.
 - QA `V8009_FINAL_BIG_BATCH9_QA.json`: grün.
 - Stable / `index.html`: unverändert.
+
+
+#### Big Batch 10
+- Growroom Legacy-DOM:
+  - 250/1200/5000/15000-ms Cleanup-Zug entfernt;
+  - direkte DOM/pageshow/visibility/account-ready Hooks bleiben.
+- Tower-Focus:
+  - 0/80/300/900-ms bind/reset Startup-Zug entfernt;
+  - Menü-MutationObserver sowie resize/orientation-Followups bleiben.
+- Character-Title:
+  - 0/220/1100/2400-ms Startup-Sync entfernt;
+  - account-ready/pageshow/navigation-ready laufen direkt;
+  - 20-ms Selection-Followup sowie Double-RAF nach echtem Render bleiben wegen DOM-Reihenfolge.
+- QA `V8009_FINAL_BIG_BATCH10_QA.json`: grün.
+- Stable / `index.html`: unverändert.
