@@ -27,7 +27,7 @@ Die Matrix wird nach jedem großen Cleanup-Batch aktualisiert.
 | Character | Attribute / Inventar / Talente / Materialien | [~] | mehrere globale Render-Hooks entfernt; Material-DOM auf v546 reduziert; kompletter Tab-für-Tab-Pass noch offen |
 | Growroom | Grow / Stock / Genetics / Orders | [x] | Event-Bus/Tab/Care/Hydration/Genetik/Stock/Orders-Lifecycle konsolidiert; manueller Endtest offen |
 | Quests | Quest / Schicht-Arbeiten-Chillen | [x] | Dampf-/Quest-Renderowner konsolidiert, Claim/Event/Reward-Kette vereinheitlicht, Schicht-Timer bereinigt; manueller Endtest offen |
-| Dungeon | Weltkarte / 10er-Detailkarte / Kampf / Reward | [~] | Karten-Owner reduziert, v048 Combat retired, Lifecycle deutlich bereinigt; Combat/Reward-Finalpass offen |
+| Dungeon | Weltkarte / 10er-Detailkarte / Kampf / Reward | [x] | Combat bleibt beim v7175 Renderer; v7051 serverautoritativ; v247 alleiniger Reward-Modal-Owner; doppelter Reward-DOM/Sound entfernt; Feedback-Run-ID erhalten; manueller Endtest offen |
 | Shop | Waffen & Rüstung / Schmuck & Magie | [x][T] | Repaint-Flicker, Legacy-Header, alte Shop-DOM-Producer und delayed Repaints bereinigt; Header vom Nutzer bestätigt |
 | Tütchen-Dealer | Dealer / Rundenfortschritt / Reward | [x] | Admin-only Gate retired; öffentlicher Menü-/Serverzugang, v7215 Reward-/SSV-Authority + v7224 Tageskurve geprüft; manueller Endtest offen |
 | PvP | Hall-/Battle-Lifecycle | [x] | Cooldown ohne Full-Rerender, Legacy-Finish konsolidiert, v7053 Server-Authority + Fallback sauber getrennt; manueller Endtest offen |
