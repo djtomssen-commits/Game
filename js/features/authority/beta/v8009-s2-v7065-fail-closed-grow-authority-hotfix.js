@@ -230,6 +230,17 @@ const poll=setInterval(async()=>{
  if(D.enabled||(!window.v7081UseAuthority?.('grow')&&window.v7081CapabilitiesDiagnostics?.()?.ready)||pollCount>=4)clearInterval(poll);
 },5000);
 window.addEventListener('growlegends:account-ready',()=>{if(!window.v7206StartupBusy?.())void gate(true)},{passive:true});
+window.addEventListener('growlegends:authority-capabilities-ready',e=>{
+ const id=uid(),eventUid=String(e?.detail?.uid||''),growEnabled=!!e?.detail?.caps?.grow;
+ if(!id||eventUid!==id||!growEnabled)return;
+ void gate(true);
+},{passive:true});
+window.addEventListener('growlegends:navigation-open-v7119',e=>{
+ if(String(e?.detail?.id||'')!=='grow'||!uid())return;
+ const caps=window.v7081CapabilitiesDiagnostics?.();
+ if(!caps?.ready||caps?.uid!==uid())void window.v7081CapabilitiesRefresh?.(true);
+ else if(caps?.caps?.grow)void gate(false);
+},{passive:true});
 window.addEventListener('pageshow',()=>setTimeout(()=>void gate(false),250),{passive:true});
 setTimeout(()=>{if(!window.v7206StartupBusy?.())void gate(false)},150);
 window.v7067ServerCare=async(plantUid,careIndex)=>{
