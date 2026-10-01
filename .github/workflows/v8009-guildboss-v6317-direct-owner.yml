@@ -1,0 +1,29 @@
+name: V8.009 Guildboss V6317 Direct Owner
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/v8009_guildboss_v6317_direct_owner.py'
+      - '.github/workflows/v8009-guildboss-v6317-direct-owner.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 .github/scripts/v8009_guildboss_v6317_direct_owner.py
+      - run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          s=Path('js/features/guild/beta/v8008-c18-guildboss-replay-owner.js').read_text(encoding='utf-8')
+          assert "window.v6317SyncGuildBossArt?.()" in s
+          print("replay owner direct cutout hook present")
+          PY
+      - run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add beta.html V8009_GUILDBOSS_V6317_DIRECT_OWNER_QA.json
+          git commit -m "V8.009 GUILD: retire v6317 mutation observer" || exit 0
+          git push
