@@ -128,7 +128,8 @@ document.addEventListener('click',e=>{
   if(el?.closest?.('#dungeon,[data-screen="dungeon"],[data-go="dungeon"],#dungeonMapCard'))schedule('click');
 },true);
 window.addEventListener('growlegends:navigation-open-v7119',e=>{
-  if(String(e?.detail?.screen||e?.detail||'')==='dungeon')schedule('navigation');
+  const id=String(e?.detail?.id||e?.detail?.screen||'');
+  if(id==='dungeon')schedule('navigation');
 },{passive:true});
 window.addEventListener('growlegends:foreground-ready',()=>schedule('foreground'),{passive:true});
 window.addEventListener('pageshow',()=>schedule('pageshow'),{passive:true});
