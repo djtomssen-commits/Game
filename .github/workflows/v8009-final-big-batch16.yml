@@ -1,0 +1,23 @@
+name: V8.009 Final Big Batch 16
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/v8009_final_big_batch16.py'
+      - '.github/workflows/v8009-final-big-batch16.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 .github/scripts/v8009_final_big_batch16.py
+      - run: |
+          git config user.name github-actions
+          git config user.email github-actions@users.noreply.github.com
+          git add beta.html V8009_FINAL_BIG_BATCH16_QA.json
+          git commit -m "V8.009 FINAL: retire legacy header settings nav wrappers" || exit 0
+          git pull --rebase origin main
+          git push
