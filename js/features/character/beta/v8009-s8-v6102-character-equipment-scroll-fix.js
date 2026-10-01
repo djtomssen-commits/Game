@@ -67,7 +67,7 @@ function paintSlots(){
       setName:it?.setName||'',mysticSpecial:it?.mysticSpecial||null,
       sell:it&&typeof sellValue==='function'?sellValue(it):0
     });
-    if(el.dataset.v6102Sig!==sig||!el.querySelector('.slot-icon')){
+    if(el.dataset.v6102Sig!==sig||!el.querySelector('.slot-icon')||(it&&!el.querySelector('.v514-slot-level'))){
       el.innerHTML=
         `<div class="slot-icon">${artHtml(it,fallback)}</div>`+
         `<div class="slot-label">${esc(slot==='weapon2'?'Waffe II · 10 % Attribute':label)}</div>`+
