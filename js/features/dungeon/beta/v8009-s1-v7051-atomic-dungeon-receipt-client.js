@@ -538,7 +538,9 @@ window.addEventListener('click',ev=>{
  ev.preventDefault();ev.stopPropagation();ev.stopImmediatePropagation();void runServerDungeon();
 },true);
 
-document.addEventListener('click',ev=>{if(ev.target?.closest?.('#dungeon,[data-screen="dungeon"]'))setTimeout(claimButton,0)},false);
+/* V8.009: generic dungeon click -> delayed claimButton retry retired.
+   Navigation authority calls syncDungeonOnOpen(), while canonical dungeon renderers
+   call v7051ClaimButtonSync directly when the fight button is rebuilt. */
 
 async function syncDungeonOnOpen(reason='navigation'){
  try{
@@ -585,9 +587,10 @@ async function boot(){
 window.v7051DungeonAuthorityDiagnostics=()=>clone({...C,version:VERSION,mode:mode()});
 window.v7051RecoverDungeonReceipt=()=>recoverPending({quiet:false});
 window.v7051RunServerDungeon=()=>runServerDungeon();
-window.addEventListener('growlegends:account-ready',()=>{resetAccountScope('account-ready');setTimeout(()=>void boot(),360)},{passive:true});
-window.addEventListener('pageshow',()=>setTimeout(claimButton,150),{passive:true});
-document.addEventListener('visibilitychange',()=>{if(!document.hidden)setTimeout(claimButton,120)},{passive:true});
-[100,450,1400].forEach(ms=>setTimeout(claimButton,ms));
-setTimeout(()=>{try{if(typeof v073User!=='undefined'&&v073User?.id&&!v073User?.is_anonymous&&!C.buttonOwned)void boot()}catch(_){}},3600);
+window.addEventListener('growlegends:account-ready',()=>{resetAccountScope('account-ready');void boot()},{passive:true});
+window.addEventListener('pageshow',()=>{if(!C.buttonOwned||!C.stateReady)void boot();else claimButton()},{passive:true});
+/* V8.009: retired 100/450/1400/3600 ms bootstrap retry cascade.
+   One immediate boot plus account-ready/pageshow ownership is sufficient and avoids
+   repainting/rebinding the Dungeon UI several times after startup. */
+queueMicrotask(()=>{try{void boot()}catch(_){}});
 })();
