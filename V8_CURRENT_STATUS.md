@@ -3454,3 +3454,50 @@ Arbeitsmodus:
 - Script-Commit: `9d0687a9bc191268e206b5c7d70afc9ffd24c823`.
 - Workflow-Commit: `0e8707dfa194aaf65f219f9fe9cec77ce8c73e9e`.
 - Prüft neue Script-Anzahl, Inline-Zero und mögliche neue Orphans nach dem 85-Layer-Cleanup.
+
+
+#### Dungeon-Key Authority Consolidation
+- `v4150-live-dungeon-key-authority.js` vollständig gegen `V467` geprüft.
+- V467 deckt Key-Normalisierung, `dungeonUnlocked`, Key-Grant, Quest-Claim-Key-Sync, Persistenz/Rebuild sowie moderne Dungeon-Navigation über `growlegends:navigation-open-v7119`, Opener-Guards und Click-Capture ab.
+- `v4150SyncDungeonKeys` / `v4150DungeonKeyDiagnostics` wurden nirgends aktiv referenziert.
+- Deshalb komplette v4150-Schicht entfernt:
+  - Include entfernt: `de6376de518bcfb1442b9414c53207a7aed8c4b0`
+  - Datei gelöscht: `7ec52f9ace515282952836aefbaaea89c457335f`
+- Effekt: ein weiterer Grant-Wrapper, zwei Claim-Wrapper, ein `v032Go`-Wrapper und eine doppelte Key-Repaint-Lane entfernt.
+
+#### Dungeon / Quest Retired-Wrapper Scan
+- Audit-Commit: `9ef91d41ae042f91550eb405b6a9c88079da685c`.
+- 12 relevante retired/superseded Stellen identifiziert.
+- Wichtiger Befund: viele historische Navigation-Wrapper sind bereits sauber retired und durch Shared Events ersetzt.
+- Noch aktive Wrapperketten werden nicht blind gelöscht, wenn dieselbe Datei zusätzlich Balance-/Reward-/Authority-Logik besitzt.
+- Besonders tiefe Ketten bleiben:
+  - `claimQuest`: 6 Schichten
+  - `v233ClaimQuest`: 6 Schichten
+  - `persist`: 9 Schichten
+  - `v065RenderWorld`: 11 Schichten
+- Nächste semantische Konsolidierung muss Logik in kanonische Owner verschieben, bevor weitere komplette Dateien entfernt werden.
+
+#### Pure Unused Definition Cleanup
+- Audit-Commit: `f6cc5c5daab1863e6040eca6ec3fe49ef67ac496`.
+- 8 kleine geladene Dateien ohne Runtime-Referenzen, Listener, Timer, State-Mutation, Storage oder Netzwerk gefunden.
+- Cleanup-Commit: `c2f385c9714e7d6484ec4c954ad571529e9a9d51`.
+- Entfernt:
+  - `v685-quest-dampf-display-fix.js`
+  - `v687-pet-title-all-qualities.js`
+  - `v6101-navigation-altcode-performance.js`
+  - `v6261-tower-open-hotfix.js`
+  - `v6270-tower-lobby-fixes-js.js`
+  - `v6271-tower-topbar-lobby-js.js`
+  - `v6322-harzruferin-elite-quest-balance.js`
+  - `v7271-illegal-book-page-stability-diagnostics.js`
+- QA bestätigt:
+  - `V467` geladen
+  - `v4150` vollständig abwesend
+  - **665 externe Script-Tags**
+  - **0 Inline-Script-Tags**
+  - **0 Inline-Style-Tags**
+
+#### Gesamtfortschritt Runtime-Includes
+- Früherer Post-Extraction-Stand: 774 externe Scripts.
+- Aktuell: **665 externe Scripts**.
+- Damit bislang **109 externe Runtime-Includes** aus der aktiven Beta-Kette entfernt, zusätzlich zur vollständigen Inline-JS/CSS-Extraktion.
