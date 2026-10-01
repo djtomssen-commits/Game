@@ -1,0 +1,22 @@
+name: V8.009 Guildboss V6316 Direct Clean
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/v8009_guildboss_v6316_direct_clean.py'
+      - '.github/workflows/v8009-guildboss-v6316-direct-clean.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 .github/scripts/v8009_guildboss_v6316_direct_clean.py
+      - run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add beta.html V8009_GUILDBOSS_V6316_DIRECT_CLEAN_QA.json
+          git commit -m "V8.009 GUILD: retire v6316 startup retries" || exit 0
+          git push
