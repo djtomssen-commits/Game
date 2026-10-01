@@ -24,24 +24,29 @@ async function v268SellSelected(){
  persist();
  try{if(typeof v115Alert==='function')v115Alert(`${rows.length} Items verkauft.\n+${total} Gold`,'Verkauf abgeschlossen','success')}catch(e){}
 }
-const v268BaseRenderInventory=renderInventory;
-renderInventory=function(){
- const r=v268BaseRenderInventory();
- const box=document.querySelector('#inventory'),grid=box?.querySelector('.inventory-grid');if(!grid)return r;
+function v268ApplyMultiSell(){
+ const box=document.querySelector('#inventory'),grid=box?.querySelector('.inventory-grid');if(!grid)return false;
  // Remove keys that no longer exist.
  const live=new Set((s.inventory||[]).map((it,i)=>v268ItemKey(it,i)));[...v268SelectedItems].forEach(k=>{if(!live.has(k))v268SelectedItems.delete(k)});
- const bar=document.createElement('div');bar.className='v268-sellbar';bar.innerHTML=`<b class="v268-info">0 ausgewählt · 💰 0 Gold</b><div class="v268-sellbar-actions"><button class="btn secondary v268-all">Alle wählen</button><button class="btn secondary v268-clear">Auswahl löschen</button><button class="btn gold v268-sell-selected">💰 Auswahl verkaufen</button></div>`;
- grid.insertBefore(bar,grid.firstChild);
- bar.querySelector('.v268-all').onclick=()=>{(s.inventory||[]).forEach((it,i)=>v268SelectedItems.add(v268ItemKey(it,i)));renderInventory()};
- bar.querySelector('.v268-clear').onclick=v268ClearSelection;
- bar.querySelector('.v268-sell-selected').onclick=v268SellSelected;
+ let bar=grid.querySelector(':scope > .v268-sellbar');
+ if(!bar){
+   bar=document.createElement('div');bar.className='v268-sellbar';bar.innerHTML=`<b class="v268-info">0 ausgewählt · 💰 0 Gold</b><div class="v268-sellbar-actions"><button class="btn secondary v268-all">Alle wählen</button><button class="btn secondary v268-clear">Auswahl löschen</button><button class="btn gold v268-sell-selected">💰 Auswahl verkaufen</button></div>`;
+   grid.insertBefore(bar,grid.firstChild);
+   bar.querySelector('.v268-all').onclick=()=>{(s.inventory||[]).forEach((it,i)=>v268SelectedItems.add(v268ItemKey(it,i)));renderInventory()};
+   bar.querySelector('.v268-clear').onclick=v268ClearSelection;
+   bar.querySelector('.v268-sell-selected').onclick=v268SellSelected;
+ }
  [...grid.querySelectorAll('.inv-item')].forEach((card,i)=>{
    const it=s.inventory?.[i];if(!it)return;const key=v268ItemKey(it,i);
-   const pick=document.createElement('label');pick.className='v268-pick';pick.title='Zum Mehrfachverkauf auswählen';
-   const cb=document.createElement('input');cb.type='checkbox';cb.checked=v268SelectedItems.has(key);pick.appendChild(cb);card.appendChild(pick);
-   card.classList.toggle('v268-selected',cb.checked);
-   cb.onchange=()=>{cb.checked?v268SelectedItems.add(key):v268SelectedItems.delete(key);card.classList.toggle('v268-selected',cb.checked);v268PaintSellbar()};
+   let pick=card.querySelector(':scope > .v268-pick');
+   if(!pick){
+     pick=document.createElement('label');pick.className='v268-pick';pick.title='Zum Mehrfachverkauf auswählen';
+     const cb=document.createElement('input');cb.type='checkbox';pick.appendChild(cb);card.appendChild(pick);
+     cb.onchange=()=>{cb.checked?v268SelectedItems.add(key):v268SelectedItems.delete(key);card.classList.toggle('v268-selected',cb.checked);v268PaintSellbar()};
+   }
+   const cb=pick.querySelector('input');if(cb)cb.checked=v268SelectedItems.has(key);
+   card.classList.toggle('v268-selected',!!cb?.checked);
  });
- v268PaintSellbar();return r;
-};
-setTimeout(()=>{const x=document.querySelector('#v141VersionLine');try{renderInventory()}catch(e){}},350);
+ v268PaintSellbar();return true;
+}
+window.v268ApplyMultiSell=v268ApplyMultiSell;
