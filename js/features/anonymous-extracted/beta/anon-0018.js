@@ -204,13 +204,11 @@ function v072AddMenuItems(){
   }
 
   panel.querySelectorAll('[data-screen="hall"],[data-screen="friends"]').forEach(btn=>{
-    btn.onclick=()=>{
-      const id=btn.dataset.screen;
-      document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
-      document.querySelector('#'+id)?.classList.add('active');
-      document.querySelector('.top-menu-panel')?.classList.remove('open');
-      render();
-      window.scrollTo({top:0,behavior:'smooth'});
+    btn.onclick=e=>{
+      e?.preventDefault?.();
+      e?.stopPropagation?.();
+      const id=String(btn.dataset.screen||'');
+      if(id&&typeof v032Go==='function')v032Go(id);
     };
   });
 }
@@ -226,15 +224,10 @@ function v072RenderSocial(){
   v072AddMenuItems();
 }
 
-const v072BaseRender=render;
-render=function(){
-  v072BaseRender();
-  v072RenderSocial();
-  
-};
-
+/* V8.009 Friends/Mail: the Social foundation is static bootstrap only.
+   Dynamic Hall/Friends data is owned by v4130 and shared v032Go navigation. */
 try{
-  render();
+  v072RenderSocial();
 }catch(e){
   console.error('V4.02 social system',e);
 }
