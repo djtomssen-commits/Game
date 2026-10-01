@@ -61,16 +61,6 @@ v030Offer=function(it,fn,i){
     </div>`;
 };
 
-function v139RepaintShop(){
-  try{renderShop()}catch(e){console.error('V4.02 shop repaint',e)}
-  
-}
-
-const v139BaseRender=render;
-render=function(){
-  const r=v139BaseRender();
-  if(document.querySelector('#shop')?.classList.contains('active'))requestAnimationFrame(v139RepaintShop);
-  return r;
-};
-
-setTimeout(v139RepaintShop,180);
+/* V8.009: delayed/global shop repaint retired.
+   v139ActualOffer is already the active offer renderer, so rarity/comparison
+   classes are present in the first DOM build instead of appearing a frame later. */
