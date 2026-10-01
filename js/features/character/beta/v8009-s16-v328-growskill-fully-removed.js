@@ -30,16 +30,14 @@
       if(/grow[\s-]*skill/i.test(el.textContent||''))el.remove();
     });
   }
-  const v328Render=render;
-  render=function(){
-    const r=v328Render.apply(this,arguments);
-    purge(s.attrs);
-    purgeDom();
-    
-    const line=document.querySelector('#v141VersionLine');
-    return r;
-  };
-
   try{localStorage.setItem(KEY,JSON.stringify(s))}catch(e){}
-  try{render()}catch(e){}
+  purgeDom();
+  window.addEventListener('growlegends:account-ready',()=>{
+    purge(s.attrs);
+    try{
+      (s.inventory||[]).forEach(it=>{purge(it?.bonus);purge(it?.baseBonusV055)});
+      Object.values(s.equipment||{}).forEach(it=>{purge(it?.bonus);purge(it?.baseBonusV055)});
+    }catch(e){}
+    purgeDom();
+  },{passive:true});
 })();
