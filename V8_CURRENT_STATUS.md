@@ -4728,3 +4728,12 @@ Arbeitsmodus:
   - `js/features/authority/beta/v8009-s2-v7065-fail-closed-grow-authority-hotfix.js`
   - `js/features/grow/beta/v8009-s5-v7070-authoritative-grow-hydration.js`
 - Commits: `258937542d462eeb80a1aa3bbc0293cb7e636275`, `0ac2d1494980243a1c3a352a9db8129e1bc1466b`
+
+
+#### Kampf-Timing – Anbau-Turm Sound + Dungeon langsamer
+- Anbau-Turm: Schlag-SFX im serverautoritativen Replay leicht vorgezogen, damit Sound und sichtbarer Treffer auf Mobile synchroner wirken. Kein zusätzlicher Audio-Patch; direkt im bestehenden `v7072` Tower-Replay-Owner geändert.
+- Dungeon: kanonische Replay-Cadence im bestehenden `v7051` Dungeon-Owner moderat verlangsamt. Nur Präsentation/Animation; Server-Kampfwerte, Schaden und Rewards unverändert.
+- Dateien:
+  - `js/features/authority/beta/v8009-s1-v7072-server-tower-weekly-worldboss-bridge.js`
+  - `js/features/dungeon/beta/v8009-s1-v7051-atomic-dungeon-receipt-client.js`
+- Commits: `1c5845552a341f394d8fc8940eeee97f895b7371`, `70a6203eca77f3a4fa8201a7a3b15440800b7d30`
