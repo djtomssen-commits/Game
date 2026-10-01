@@ -3673,3 +3673,20 @@ Arbeitsmodus:
 - **0 Inline-JS**
 - **0 Inline-CSS**
 - Nächster Großblock: Guild/Guildboss Runtime/Timer/Replay + danach Quest Dampf/render + Worldboss.
+
+
+#### Shop Legacy-Header Cleanup (Screenshot 2026-10-01)
+- Nutzerhinweis per Screenshot: oberhalb des kanonischen Bork-Kampfladen-Hero standen noch zwei falsche Legacy-Blöcke:
+  - alter Bork/NPC-Header („Bork · Händler von Grünhain“)
+  - Seltenheits-Hinweis („Werte steigen jetzt klar mit der Seltenheit …“)
+- Root Cause: Legacy-Shop-DOM konnte vor dem kanonischen `#v461ShopHero` bestehen bleiben bzw. wieder eingefügt werden.
+- Finaler Shop-Owner `v7063-server-shop-forge-auto-bridge.js` erzwingt jetzt:
+  - `#v461ShopHero` ist der erste sichtbare Shop-Block
+  - sämtliche Legacy-Elemente davor werden entfernt
+  - Seltenheits-Hinweis wird textbasiert unabhängig von alter Klasse/Markup entfernt
+  - alter „Händler von Grünhain“-Header wird ebenfalls unabhängig von alter Klasse entfernt
+  - Cleanup läuft sowohl vor als auch nach einem `rawRenderShop()`
+- Fix-Commit: `e8932ccdc5fddc0b2bba11febc8d353b6201813f`.
+- QA installiert:
+  - Script `72f6e65a019f66175b171785fa3e292749ca8a13`
+  - Workflow `a1dac629ea367b0fa152f3d53b88fd8ca2d0d2d1`
