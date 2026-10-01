@@ -114,43 +114,9 @@ function v243RepairAndSaveDungeonKeys(){
 }
 
 
-/*
-  Quest payout can write either representation through historical layers.
-  Normalize immediately after the complete quest payout chain.
-*/
-const v243BaseClaimQuest=claimQuest;
-claimQuest=function(...args){
-  const result=v243BaseClaimQuest.apply(this,args);
-  v243RepairAndSaveDungeonKeys();
-  return result;
-};
-
-
-/*
-  Before drawing/opening the dungeon screen, repair the active state.
-  Existing users who ALREADY found Schlüsselstein 2 are fixed immediately
-  without needing to find it again.
-*/
-const v243BaseRenderWorld=v065RenderWorld;
-v065RenderWorld=function(){
-  v243RepairAndSaveDungeonKeys();
-  const result=v243BaseRenderWorld();
-  try{v242PaintDungeonWorldStatus()}catch(e){}
-  try{v067BindWorldMap()}catch(e){}
-  return result;
-};
-
-const v243BaseOpenDungeon=v067OpenDungeon;
-v067OpenDungeon=function(i){
-  v243RepairAndSaveDungeonKeys();
-  return v243BaseOpenDungeon(Number(i));
-};
-
-
-/*
-  Navigation repair also covers a cloud-loaded state that arrived after
-  initial page boot.
-*/
+/* V8.009: claim/render/open wrappers retired.
+   Shared Dungeon navigation plus the final V467 owner perform the live repair;
+   keep this event as the migration/persistence boundary for cloud-loaded saves. */
 /* V7.121: navigation wrapper retired; V467 owns pre/post Dungeon navigation.
    Keep V243's state repair/status pass without another v032Go layer. */
 window.addEventListener('growlegends:navigation-open-v7119',e=>{
