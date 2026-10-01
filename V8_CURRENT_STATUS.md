@@ -4415,3 +4415,28 @@ Arbeitsmodus:
   - Players
   - Content
 
+
+
+#### Runtime-Fix: Gildenboss-Anmeldung + Hintergrundmusik
+- Nutzer-Repro 2026-10-01:
+  - Gildenboss-Anmeldung vor 19:00 schlug mit „offene Gildenboss-Belohnung der vorherigen Runde“ fehl.
+  - Hintergrundmusik stotterte im Android/WebView-Build.
+- Gildenboss Root Cause:
+  - produktiver `v7307_set_guild_boss_signup`-Gate prüfte jede ältere nicht abgeholte Teilnahmebelohnung (`battle_date < heute`);
+  - gewünschte Regel ist ausschließlich eine offene eigene Belohnung **vom Vortag**.
+- Gildenboss Fix direkt in bestehender Serverfunktion:
+  - `public.v7307_set_guild_boss_signup`: `gr.battle_date = d - 1`;
+  - `server1.v7307_set_guild_boss_signup`: identisch;
+  - keine zusätzliche Client-/Server-Patchschicht.
+  - produktive DB aktualisiert und verifiziert: beide Schemas `previous_day_only=true`, alter History-Gate `false`.
+  - Repo-SQL Commit: `686debe2f6f1669c6d9dbf6a2f51a417b87d2ff4`.
+- Musik Root Cause/Fix direkt in bestehenden Audio-Ownern:
+  - Musik und SFX verwendeten zwei getrennte `AudioContext`-Instanzen;
+  - Musikpuffer war fest auf 22.050 Hz gebaut und musste auf Android/WebView laufend zur Geräte-Samplerate resampelt werden.
+  - `v8009-s2-v6109-background-music.js` erzeugt den Loop jetzt mit `audioCtx.sampleRate` und stellt denselben kanonischen Context für SFX bereit.
+  - `v8009-s1-v6111-global-sound-system.js` verwendet diesen vorhandenen Context statt einen zweiten anzulegen.
+  - Music Commit: `841322c36f9d9c806a83850f482fd7b3a10258f3`.
+  - SFX Commit: `5c7f4ee47d3ab90abb0d132718d79fc6d7437793`.
+- Manueller Endtest offen:
+  - Gildenboss heute anmelden;
+  - Hintergrundmusik mehrere Minuten mit Navigation/Scroll/Kampf laufen lassen.
