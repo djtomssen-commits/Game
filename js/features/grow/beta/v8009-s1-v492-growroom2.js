@@ -164,7 +164,6 @@
   save(false);
   v4109RefreshSeedPurchaseUi();
   try{queueMicrotask(()=>{try{if(typeof v495RenderSeedInventory==='function')v495RenderSeedInventory()}catch(e){}})}catch(e){}
-  setTimeout(()=>{try{if(typeof v495RenderSeedInventory==='function')v495RenderSeedInventory()}catch(e){}},80);
   toast(`🌰 ${d.name} gekauft`,'success',`Vorrat: ${r.stock}`)
  }
  window.v4109ApplySeedPurchase=v4109ApplySeedPurchase;window.v4109RefreshSeedPurchaseUi=v4109RefreshSeedPurchaseUi;
@@ -232,8 +231,8 @@
  function openBook(){const z=ensure(),ov=ensureOverlay(),body=ov.querySelector('#v492GrowBookBody');body.innerHTML=`<div class="v492-book-grid">${Object.entries(SEEDS).map(([id,d])=>{const known=!!z.discovered[id],ms=Object.entries(MUT).filter(([mid])=>z.mutations[`${id}:${mid}`]).map(([,m])=>m.icon+' '+m.name);return `<div class="v492-book-item ${known?'':'unknown'}"><div class="ico">${known?d.icon:'❔'}</div><b>${known?esc(d.name):'Unbekannte Sorte'}</b><small>${RARITY_LABEL[d.rarity]} · ${esc(d.source)}</small><small>${known?`${affinityStars(d)} ${d.affinity==='all'?'Alle Klassen':className(d.affinity)}`:'Noch nicht entdeckt'}</small><div class="v492-mut-list">${ms.length?ms.join('<br>'):'Keine Mutation entdeckt'}</div></div>`}).join('')}</div>`;ov.classList.add('show')}
  function paintIndicators(){const plants=ensure()&&s.grow.plants||[],ready=plants.filter(p=>p&&progress(p)>=1).length,care=plants.filter(p=>p&&careState(p).available>=0).length;document.querySelectorAll('.top-menu-item[data-screen="grow"]').forEach(el=>el.classList.toggle('v492-attn',!!(ready||care)));const world=document.querySelector('#world .v366-world')||document.querySelector('#world');if(world){let box=world.querySelector('#v492HomeGrowStatus');if(!box){box=document.createElement('div');box.id='v492HomeGrowStatus';box.className='v492-home-grow';box.onclick=()=>{try{typeof v032Go==='function'?v032Go('grow'):null}catch(e){}};world.appendChild(box)}const growing=plants.filter(Boolean).length;box.innerHTML=`<b>🌱 Growroom · ${ready?`${ready} Ernte bereit`:care?`${care} Pflegeaktion${care===1?'':'en'} verfügbar`:`${growing} Pflanze${growing===1?'':'n'} wachsen`}</b><small>${ready||care?'Jetzt nachsehen lohnt sich.':'Deine Pflanzen wachsen weiter, auch wenn du offline bist.'}</small>`}}
  function paintCharacter(){const root=document.querySelector('#character');if(!root)return;let card=root.querySelector('#v492CharGrowBuff');const anchor=root.querySelector('#v106BookBtn')||root.querySelector('.center-hero')||root.firstElementChild;if(!anchor)return;if(!card){card=document.createElement('div');card.id='v492CharGrowBuff';card.className='v492-char-buff';anchor.insertAdjacentElement('afterend',card)}const z=ensure(),a=z.active;if(!a){card.innerHTML='<div class="top"><b>🌿 Aktive Sorte</b><small>Kein Grow-Buff</small></div><div class="lines">Im Growroom eine geerntete Blüte aktivieren.</div>';return}const d=SEEDS[a.seed],m=a.mutation?MUT[a.mutation]:null;card.innerHTML=`<div class="top"><b>${m?.icon||'🌿'} ${esc(d.name)} · ${a.quality}</b><small>${buffLeft()}</small></div><div class="lines">${esc(statsText(bloomStats(a)))}</div>`}
- function upgrade(k){try{if(typeof v232UpgradeGrow==='function')v232UpgradeGrow(k);else if(typeof upgradeGrowAction==='function')upgradeGrowAction(k)}catch(e){}setTimeout(renderGrow2,30)}
- function roomUpgrade(){try{if(typeof v232UpgradeRoom==='function')v232UpgradeRoom();else if(typeof upgradeRoomAction==='function')upgradeRoomAction()}catch(e){}setTimeout(renderGrow2,30)}
+ function upgrade(k){try{if(typeof v232UpgradeGrow==='function')v232UpgradeGrow(k);else if(typeof upgradeGrowAction==='function')upgradeGrowAction(k)}catch(e){}queueMicrotask(renderGrow2)}
+ function roomUpgrade(){try{if(typeof v232UpgradeRoom==='function')v232UpgradeRoom();else if(typeof upgradeRoomAction==='function')upgradeRoomAction()}catch(e){}queueMicrotask(renderGrow2)}
  function installAchievements(){try{if(typeof V106_ACH==='undefined'||!Array.isArray(V106_ACH)||V106_ACH.some(x=>x?.[0]==='grow492_first'))return;V106_ACH.push(
    ['grow492_first','Grüner Daumen','Ernte deine erste Pflanze im Growroom 2.0.',()=>ensure().stats.harvested,1],
    ['grow492_25','Großzüchter','Ernte 25 Pflanzen.',()=>ensure().stats.harvested,25],
@@ -245,9 +244,8 @@
    ['grow492_prism','Regenbogen im Keller','Entdecke eine prismatische Mutation.',()=>ensure().stats.prismatic,1]
   )}catch(e){console.warn('V4.92 achievements',e)}}
  function installBuffBridge(){try{if(typeof v319ExactTalentStats==='function'&&!v319ExactTalentStats.__v494){const base=v319ExactTalentStats;const wrapped=function(){const o=base.apply(this,arguments)||{};const b=currentBuffStats();if(b)Object.entries(b).forEach(([k,v])=>o[k]=(Number(o[k])||0)+Number(v||0));Object.entries(V494_TOTAL_CAPS).forEach(([k,cap])=>{if(Number.isFinite(Number(o[k])))o[k]=Math.min(Number(cap),Math.max(0,Number(o[k])||0))});return o};wrapped.__v494=true;wrapped.__v492=true;v319ExactTalentStats=wrapped;try{window.v319ExactTalentStats=wrapped}catch(e){}}}catch(e){console.warn('V4.96 buff bridge',e)}}
- function installQuestDrops(){const wrapped=new WeakSet();['claimQuest','v233ClaimQuest'].forEach(name=>{try{let fn=name==='claimQuest'?(typeof claimQuest==='function'?claimQuest:null):(typeof v233ClaimQuest==='function'?v233ClaimQuest:null);if(typeof fn!=='function'||fn.__v492SeedDrop)return;const w=function(){const q=s.quests?.active,ready=q&&Date.now()>=Number(q.ends||0),token=q?`${q.name}|${q.ends}`:'';const before=q;const after=()=>{if(!ready||!before||s.quests?.active===before||ensure().lastQuestSeedToken===token)return;ensure().lastQuestSeedToken=token;const elite=String(q.v309Role||'').includes('elite'),roll=Math.random();if(roll<(elite?.42:.24)){const id=elite?randomSeed(['critical','lemon','amnesia','violet','blue']):randomSeed(['moss','lime','jack','violet','blue']);addSeed(id,1,elite?'Elite-Quest':'Quest')}};let r=fn.apply(this,arguments);if(r&&typeof r.then==='function')r.finally(after);else setTimeout(after,0);return r};w.__v492SeedDrop=true;if(name==='claimQuest'){claimQuest=w;window.claimQuest=w}else{v233ClaimQuest=w;window.v233ClaimQuest=w}}catch(e){}})}
- function installDungeonDrops(){try{if(typeof v247ShowDungeonReward!=='function'||v247ShowDungeonReward.__v492SeedDrop)return;const base=v247ShowDungeonReward;const w=function(data){if(window.__V7064_GROW_SERVER_MODE__)return base.apply(this,arguments);let drop='';try{const token=`${data?.dungeonIndex}:${data?.roomIndex}:${data?.boss?'b':'n'}`;if(ensure().lastDungeonSeedToken!==token){ensure().lastDungeonSeedToken=token;const r=Math.random(),boss=!!data?.boss;if(r<(boss?.36:.07)){const id=boss?randomSeed(['nebula','gorilla','lemon','amnesia']):randomSeed(['violet','blue','jack']);s.grow.seeds[id]=(Number(s.grow.seeds[id])||0)+1;ensure().discovered[id]=true;ensure().stats.seedsFound++;drop=id;save(false)}}}catch(e){}const res=base.apply(this,arguments);if(drop)setTimeout(()=>{const extra=document.querySelector('#v247DungeonRewardExtra');if(extra&&!extra.querySelector('.v492-dungeon-seed'))extra.insertAdjacentHTML('beforeend',`<div class="v247-dungeon-line v492-dungeon-seed">🌰 Samen gefunden: ${esc(SEEDS[drop].name)}</div>`)},0);return res};w.__v492SeedDrop=true;v247ShowDungeonReward=w;window.v247ShowDungeonReward=w}catch(e){}}
- function installPvpDrops(){try{if(typeof v209FinishBattle!=='function'||v209FinishBattle.__v492SeedDrop)return;const base=v209FinishBattle;const w=async function(win){const r=await base.apply(this,arguments);if(win&&Math.random()<.20)addSeed('greencrack',1,'PvP-Sieg');return r};w.__v492SeedDrop=true;v209FinishBattle=w;window.v209FinishBattle=w}catch(e){}}
+ /* V8.009: legacy Quest/Dungeon/PvP reward wrappers retired.
+    GL_EVENTS is prebooted before Growroom and is the sole cross-feature reward source. */
  function installEventDrops(){
   if(!window.GL_EVENTS||window.__V6140_GROW_SEED_EVENTS__)return;window.__V6140_GROW_SEED_EVENTS__=true;
   window.GL_EVENTS.on('questCompleted',ev=>{try{if(window.__V7064_GROW_SERVER_MODE__)return;const q=ev.quest||{},elite=!!ev.elite||!!q.v310Elite||/elite/i.test(String(q.v309Role||q.v310BaseRole||q.v392Kind||''));if(Math.random()<(elite?.42:.24)){const id=elite?randomSeed(['critical','lemon','amnesia','violet','blue']):randomSeed(['moss','lime','jack','violet','blue']);addSeed(id,1,elite?'Elite-Quest':'Quest')}}catch(e){console.warn('V4.161 quest seed event',e)}});
@@ -269,8 +267,8 @@
    const t=e.target instanceof Element?e.target:null;if(!t)return;
    if(t===ov||t.closest('[data-v495-seed-close]')){e.preventDefault();v495CloseSeedInventory();return}
    const seed=t.closest('[data-v492-seed]');
-   if(seed&&!t.closest('[data-v492-buy]'))setTimeout(()=>v495CloseSeedInventory(),45);
-   if(t.closest('[data-v492-buy],[data-v492-og]'))setTimeout(()=>v495RenderSeedInventory(),90);
+   if(seed&&!t.closest('[data-v492-buy]'))v495CloseSeedInventory();
+   if(t.closest('[data-v492-buy],[data-v492-og]'))queueMicrotask(v495RenderSeedInventory);
   });
   return ov;
  }
@@ -322,7 +320,7 @@
  function livePaint(){try{s.grow.plants.forEach(p=>{if(!p)return;const st=stage(p),pct=Math.round(progress(p)*100);document.querySelectorAll(`[data-v492-time="${CSS.escape(p.uid)}"]`).forEach(el=>el.textContent=`${st[0]} · ${st[1]}`);document.querySelectorAll(`[data-v492-pbar="${CSS.escape(p.uid)}"]`).forEach(el=>el.style.width=pct+'%');document.querySelectorAll(`[data-v492-detail-time="${CSS.escape(p.uid)}"]`).forEach(el=>el.textContent=`${st[0]} · ${st[1]}`);document.querySelectorAll(`[data-v492-detail-bar="${CSS.escape(p.uid)}"]`).forEach(el=>el.style.width=pct+'%')});const a=ensure().active;if(a){const c=document.querySelector('#v492CharGrowBuff .top small');if(c)c.textContent=buffLeft()}}catch(e){}}
  function stamp(){}
  document.addEventListener('click',e=>{const t=e.target instanceof Element?e.target:null;if(!t)return;if(t.closest('[data-v492-og]')){e.preventDefault();e.stopImmediatePropagation();const a=t.closest('[data-v492-og]').dataset.v492Og;try{if(a==='buy')return v077BuySeed();if(a==='plant')return v077Plant();if(a==='harvest')return v077Harvest()}catch(err){return toast('Wundertüte OG','warn','Spezial-Samen konnte nicht ausgeführt werden.')}}if(t.closest('[data-v492-buy]')){e.preventDefault();e.stopImmediatePropagation();return buySeed(t.closest('[data-v492-buy]').dataset.v492Buy)}if(t.closest('[data-v492-seed]')&&!t.closest('[data-v492-buy]')){e.preventDefault();return selectSeed(t.closest('[data-v492-seed]').dataset.v492Seed)}if(t.closest('[data-v492-plant]')){e.preventDefault();return plant(Number(t.closest('[data-v492-plant]').dataset.v492Plant))}if(t.closest('[data-v492-detail]')){e.preventDefault();return selectPlantDetail(t.closest('[data-v492-detail]').dataset.v492Detail)}if(t.closest('[data-v492-care]')){const b=t.closest('[data-v492-care]');return carePlant(b.dataset.v492Care,Number(b.dataset.v492CareIndex))};if(t.closest('[data-v492-harvest]'))return harvest();if(t.closest('[data-v492-activate]'))return activateBloom(t.closest('[data-v492-activate]').dataset.v492Activate);if(t.closest('[data-v492-donate]'))return void donate(t.closest('[data-v492-donate]').dataset.v492Donate);if(t.closest('[data-v492-book]'))return openBook();if(t.closest('[data-v492-week]'))return claimWeek();if(t.closest('[data-v492-upgrade]'))return upgrade(t.closest('[data-v492-upgrade]').dataset.v492Upgrade);if(t.closest('[data-v492-room]'))return roomUpgrade()},true);
- ensure();try{if(typeof v077InjectGrow==='function')v077InjectGrow=function(){}}catch(e){}installAchievements();installBuffBridge();if(window.GL_EVENTS)installEventDrops();else{installQuestDrops();installDungeonDrops();installPvpDrops();}
+ ensure();try{if(typeof v077InjectGrow==='function')v077InjectGrow=function(){}}catch(e){}installAchievements();installBuffBridge();installEventDrops();
  renderGrow=renderGrow2;window.renderGrow=renderGrow2;
  function syncGrowUi(){try{
   const grow=document.querySelector('#grow');if(!grow||!grow.classList.contains('active'))return;
@@ -345,9 +343,14 @@
   ensure();let changed=false;s.grow.plants.forEach(p=>{if(p&&rollMutation(p))changed=true});if(changed)save(false);syncGrowUi();
   if(!growActive){paintIndicators();if(charActive)paintCharacter()}stamp();
  }
- setInterval(tick,5000);
- setInterval(()=>{if(document.hidden)return;try{if(document.querySelector('#grow')?.classList.contains('active'))syncGrowUi()}catch(e){}},1000);
+ let tickSeconds=0;
+ setInterval(()=>{
+  if(document.hidden)return;
+  tickSeconds=(tickSeconds+1)%5;
+  try{if(document.querySelector('#grow')?.classList.contains('active'))syncGrowUi()}catch(e){}
+  if(tickSeconds===0)tick();
+ },1000);
  document.addEventListener('visibilitychange',()=>{if(!document.hidden){syncGrowUi();paintIndicators();paintCharacter();stamp()}},{passive:true});
  window.addEventListener('pageshow',()=>{syncGrowUi();paintIndicators();paintCharacter();stamp()},{passive:true});
- [0,120,700,2200,6500,20000].forEach(ms=>setTimeout(()=>{installAchievements();installBuffBridge();if(window.GL_EVENTS)installEventDrops();else{installQuestDrops();installDungeonDrops();installPvpDrops();}syncGrowUi();paintIndicators();paintCharacter();stamp()},ms));
+ installAchievements();installBuffBridge();installEventDrops();syncGrowUi();paintIndicators();paintCharacter();stamp();
 })();
