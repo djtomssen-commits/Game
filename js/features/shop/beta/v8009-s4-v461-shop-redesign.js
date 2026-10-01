@@ -50,7 +50,6 @@
     return baseOffer?baseOffer(it,i,kind):'';
   }
 
-  const previousRenderShop=window.renderShop;
   renderShop=function(){
     try{if(typeof v057FillShops==='function')v057FillShops(false)}catch(e){}
     const shop=document.querySelector('#shop');
@@ -142,8 +141,7 @@
   };
   window.renderShop=renderShop;
 
-  /* Keep older wrappers functional enough when they look for button ids. */
-  setTimeout(()=>{try{if(document.querySelector('#shop')?.classList.contains('active'))renderShop()}catch(e){console.error('V4.67 init',e)}},80);
+  /* V8.009: delayed 80 ms startup repaint retired; v464 performs the immediate canonical shop render. */
   try{syncVersion()}catch(e){}
   window.addEventListener('growlegends:account-ready',()=>{try{syncVersion()}catch(e){}},{passive:true});
 })();
