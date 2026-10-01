@@ -1,0 +1,23 @@
+name: V8.009 Page Tab Discovery
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/v8009_page_tab_discovery.py'
+      - '.github/workflows/v8009-page-tab-discovery.yml'
+permissions:
+  contents: write
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 .github/scripts/v8009_page_tab_discovery.py
+      - run: |
+          git config user.name github-actions
+          git config user.email github-actions@users.noreply.github.com
+          git add V8009_PAGE_TAB_DISCOVERY.json
+          git commit -m "V8.009 AUDIT: discover every page and tab" || exit 0
+          git pull --rebase origin main
+          git push
