@@ -180,11 +180,7 @@ v211ShowResult=function(win,enemy,gold,xp,buds){
   return r;
 };
 
-setTimeout(()=>{
-  try{
-    v211EnsureResultUi();
-    v216BindResultConfirm();
-  }catch(e){
-    console.warn('V4.02 result init',e);
-  }
-},180);
+queueMicrotask(()=>{
+  try{v211EnsureResultUi();v216BindResultConfirm()}
+  catch(e){console.warn('V4.02 result init',e)}
+});
