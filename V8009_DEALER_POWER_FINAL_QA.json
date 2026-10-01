@@ -1,0 +1,80 @@
+{
+  "phase": "V8.009-DEALER-POWERBLOCK-FINAL",
+  "date": "2026-10-01",
+  "scope": {
+    "bagDealer": [
+      "dealer",
+      "round_progress",
+      "reward",
+      "public_access"
+    ],
+    "dealerHub": [
+      "harz",
+      "gold",
+      "frames"
+    ]
+  },
+  "changes": {
+    "bagDealerAdminGateRetired": true,
+    "bagDealerServerEnabled": [
+      "public",
+      "server1"
+    ],
+    "bagDealerMode": "test",
+    "v7221VisualWrapperRetired": true,
+    "bagArtIntegratedIntoCanonicalOwner": true,
+    "bagLifecycleCosmeticDelaysRetired": true,
+    "dealerHubOwnsThreeTabs": true,
+    "frameTabInjectionRetired": true,
+    "frameOpenWrapperRetired": true,
+    "billingCosmeticRepaintRetriesRetired": true,
+    "billingRecoveryUsesLifecycleEvents": true
+  },
+  "authority": {
+    "bagStateRpc": "v7215_ad_bag_state",
+    "bagRewardApply": "v7215_ad_bag_apply_verified / private apply_for",
+    "bagRewardCurve": "v7224_ad_bag_effective_spec",
+    "goldState": "v7114_gold_shop_state",
+    "goldPurchase": "v7114_buy_gold_pack",
+    "frameState": "v7137_avatar_frame_state",
+    "framePurchase": "v7137_buy_avatar_frame",
+    "frameActivate": "v7137_set_avatar_frame",
+    "harzPurchaseVerification": "verify-google-play-purchase Edge Function"
+  },
+  "runtime": {
+    "bagScopeSetTimeouts": 2,
+    "bagScopeSetIntervals": 0,
+    "bagScopeMutationObservers": 0,
+    "dealerHubSetTimeouts": 0,
+    "dealerHubSetIntervals": 0,
+    "billingSetTimeouts": 0,
+    "billingSetIntervals": 0,
+    "note": "Remaining bag timeouts are functional account-connect retry and SSV confirmation poll."
+  },
+  "checks": {
+    "modifiedJsSyntax": true,
+    "activeV7260AdminOnlyJs": false,
+    "activeV7260AdminOnlyCss": false,
+    "activeV7221JsWrapper": false,
+    "v7221CssRetained": true,
+    "bagMenuVisibleForPlayers": true,
+    "serverPublicEnabled": true,
+    "server1Enabled": true,
+    "dealerHubHasHarzGoldFrames": true,
+    "frameTabHasSingleProducer": true,
+    "stableIndexUnchanged": true,
+    "stableIndexSha": "0bc5fe3eb0e69c856070dfcb6682d3178c56a597"
+  },
+  "commits": [
+    "8aaba89603b15cb697ba3224a395ba6946590168",
+    "78a2ce4507ca2d62fc2b198428a3b281172722e3",
+    "4ce297671c412bd2b5c410950ae6aa1490e800d4",
+    "aa4a2b331287ec2aadead3d79e64b750b4f4945d",
+    "ccf51905ba9531375ec803ece7bfde8ae0c01e4f",
+    "918611a7c6c614c5be2d6f2ae8d0b62eab8e0577",
+    "1c89447837d5b0f0b906dfb01db4c941c8c63bf7",
+    "3a12906c05ba43165f8be739ad21e2454363a589"
+  ],
+  "manualTestPending": true,
+  "nextPowerblock": "Forge"
+}
