@@ -703,7 +703,10 @@ async function openWeekly(){
   void refresh({quiet:true,paint:true});
 }
 async function openWorldboss(){
-  try{v110Open?.()}catch(e){console.warn('[V7072] open worldboss',e)}
+  try{
+    if(typeof window.v111OpenWorldBoss==='function')window.v111OpenWorldBoss();
+    else window.v110Open?.();
+  }catch(e){console.warn('[V7072] open worldboss',e)}
   void refresh({quiet:true,paint:true});
 }
 
