@@ -28,6 +28,8 @@ async function v093CheckAdmin(){
   if(denied)denied.style.display=v093IsAdmin?'none':'block';
 
   v093BuildMenu();
+  try{window.v273SyncAdminMenu?.(v093IsAdmin)}catch(_){}
+  try{window.v4142SyncAdminSystemtechnik?.()}catch(_){}
   return v093IsAdmin;
 }
 
@@ -147,6 +149,16 @@ async function v093AdminLoadLists(){
         </div>
       </div>`).join('') || '<div class="empty">Noch keine News.</div>';
   }
+
+  /* Canonical admin submodule lifecycle: all optional admin surfaces install/load
+     from this one content refresh instead of wrapping this function repeatedly. */
+  try{window.v103InstallPlayerAdmin?.()}catch(e){console.warn('Admin player editor install',e)}
+  try{
+    window.v269InstallAdminBoard?.();
+    await window.v269AdminLoadTickets?.();
+  }catch(e){console.warn('Admin tickets load',e)}
+  try{window.v274InstallEventPresets?.()}catch(e){console.warn('Admin event presets install',e)}
+  try{await window.v6346AdminLoadBroadcasts?.()}catch(e){console.warn('Admin broadcasts load',e)}
 }
 
 async function v093SaveEvent(){
