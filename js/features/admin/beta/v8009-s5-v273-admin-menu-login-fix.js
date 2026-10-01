@@ -79,27 +79,11 @@ if(v273MenuToggle){
   });
 }
 
-/* Existing restored session: one account-aware retry after boot. */
-setTimeout(async()=>{
-  try{
-    const uid=String(v073User?.id||'');
-    if(uid && uid!==v273AdminCheckUserId){
-      await v093CheckAdmin();
-      if(v093IsAdmin)await v093AdminLoadLists();
-    }else if(v093IsAdmin){
-      v273EnsureAdminMenu();
-    }
-  }catch(e){
-    console.error('V4.02 admin boot repair',e);
-  }
-},1900);
-
-/* Final render only preserves a confirmed admin menu; no database call per render. */
-const v273BaseRender=render;
-render=function(){
-  const r=v273BaseRender();
+/* Account/admin hydration is owned by the central boot controller.
+   Menu rebuilding only reuses already-confirmed admin state. */
+window.addEventListener('growlegends:account-ready',()=>{
   if(v093IsAdmin)v273EnsureAdminMenu();
-  
-  const line=document.querySelector('#v141VersionLine');
-  return r;
-};
+},{passive:true});
+window.addEventListener('pageshow',()=>{
+  if(v093IsAdmin)v273EnsureAdminMenu();
+},{passive:true});
