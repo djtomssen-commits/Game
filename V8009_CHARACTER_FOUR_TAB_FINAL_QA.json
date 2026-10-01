@@ -1,0 +1,38 @@
+{
+  "build": "V8.009-CHARACTER-FOUR-TAB-FINAL-QA",
+  "checked_at": "2026-10-01",
+  "tabs": [
+    "Inventar",
+    "Attribute",
+    "Talente",
+    "Materialien"
+  ],
+  "ownership": {
+    "tab_lifecycle": "v459",
+    "inventory_render_wrapper": "v459 only",
+    "attributes": "v4140",
+    "talents": "v543",
+    "materials": "v030 renderer + v480 active-tab auto bar",
+    "multisell": "v268 decorator called by v459",
+    "inventory_reference": "v533 decorator called by v459",
+    "equipment_polish": "v123 decorator called by v459"
+  },
+  "performance_fixes": [
+    "v480 computes auto-equip only on inventory tab and material plan only on materials tab",
+    "v442 obsolete old-layout mover retired",
+    "v533 delayed syncAuto repaint removed",
+    "duplicate renderInventory wrappers retired",
+    "global render wrappers for avatar/hero/name/growskill/equipment/stat cleanup retired"
+  ],
+  "scan": {
+    "critical_changed_files": 13,
+    "global_render_wrappers": 0,
+    "render_inventory_wrappers": 1,
+    "render_skill_tree_wrappers": 0,
+    "v459_arrange_wrappers": 0,
+    "mutation_observers": 0,
+    "polling_intervals": 0
+  },
+  "note": "The remaining renderInventory wrapper is the canonical v459 tab owner. v480 has four functional deferred save/account callbacks, not character repaint polling.",
+  "ok": true
+}
