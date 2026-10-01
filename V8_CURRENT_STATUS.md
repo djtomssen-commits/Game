@@ -3014,3 +3014,31 @@ Arbeitsmodus:
 - Originale Script-Attribute, IDs und Reihenfolge beibehalten; nur um `src=` ergänzt.
 - QA `V8009_FEATURE_EXTRACTION_BATCH21_QA.json`: vollständig grün.
 - Stable / `index.html`: unverändert.
+
+
+#### Feature Extraction Batch 22
+- 20 weitere benannte Owner 1:1 aus `beta.html` ausgelagert:
+  - `v453-profile-floor-reconcile`
+  - `v120-worldboss-countdown-script`
+  - `v394-time-seeds-currency`
+  - `v364-dropdown-position-click-fix`
+  - `v6167-longterm-xp-balance`
+  - `v094-xp-event-script`
+  - `gl-native-fcm-account-sync-v1`
+  - `v379-quest-battle-animation-setting`
+  - `v283-resource-final-cleanup`
+  - `v6345-tower-lobby-hp-timer-js`
+  - `v6165-classset-forge-only`
+  - `v7093-ux-parity-authority-invisible`
+  - `v105-admin-rewards-script`
+  - `v4104-qa-settings-visible`
+  - `v337-harz-dealer-menu-copyright`
+  - `v587-dungeon-result-overlay-core`
+  - `v301-auth-idle-hard-lock`
+  - `v6297-class-display-parity-js`
+  - `v273-admin-menu-login-fix`
+  - `v266-war-real-avatars`
+- Zusammen 61.636 Bytes Inline-JS aus dem Monolithen entfernt.
+- Originale Script-Attribute, IDs und Reihenfolge beibehalten; nur um `src=` ergänzt.
+- QA `V8009_FEATURE_EXTRACTION_BATCH22_QA.json`: vollständig grün.
+- Stable / `index.html`: unverändert.
