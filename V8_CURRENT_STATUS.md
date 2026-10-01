@@ -2403,3 +2403,15 @@ Arbeitsmodus:
 - Alle vier externen Dateien mit `node --check` geprüft.
 - QA `V8009_CHARACTER_EXTRACTION_BATCH2_QA.json`: vollständig grün.
 - Stable / `index.html`: unverändert.
+
+
+#### Shop Extraction Batch 1
+- Drei große Shop-/Item-Owner 1:1 aus `beta.html` nach `js/features/shop/beta/` ausgelagert:
+  - `v466-all-item-art-purchase-fix` → `v8009-s1-v466-all-item-art-purchase-fix.js`
+  - `v6105-item-variety-and-art-rework` → `v8009-s1-v6105-item-variety-and-art-rework.js`
+  - `v7063-server-shop-forge-auto-bridge` → `v8009-s1-v7063-server-shop-forge-auto-bridge.js`
+- Zusammen 78.366 Bytes Inline-JS aus dem Monolithen entfernt.
+- Script-IDs und Reihenfolge in `beta.html` beibehalten; nur auf `src=` umgestellt.
+- Alle drei externen Dateien mit `node --check` geprüft.
+- QA `V8009_SHOP_EXTRACTION_BATCH1_QA.json`: vollständig grün.
+- Stable / `index.html`: unverändert.
