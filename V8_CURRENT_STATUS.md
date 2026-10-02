@@ -5788,3 +5788,18 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
 - Commits:
   - Last-Writer-Fix: `b5d0bf22edeac4e83606010f6fc8c945cd01c9f0`
   - Beta Cache: `8cca970786ad22d14d400ad9a05b549901e943dc`
+
+
+### Beta – Startseiten-Hintergrund auf Braun/Holz umgestellt · 02.10.2026
+- Nur Beta geändert; Server 1 bleibt unverändert.
+- Bestehenden Startseiten-Background-Owner direkt angepasst: `v8009-extracted-v690-world-wood-comic-css.css`.
+- Geändert wurden ausschließlich die großen Hintergrundflächen:
+  - `body:has(#world.active)`
+  - `#world.active`
+- Dunkelgrün/schwarz auf warmes Braun/Holz umgestellt.
+- Bestehende Karten, Hero, Buttons und Feature-Flächen nicht verändert.
+- Keine neue Patch-Datei, kein zusätzlicher Owner.
+- Beta Cache-Bust: `8024worldbrown1`.
+- Commits:
+  - Background-Owner: `aa65ec94d49af540647a71451ae7420f17544faa`
+  - Beta Cache: `551f106bc541b6b773d89f3648921f99ce832d83`
