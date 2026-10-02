@@ -3,7 +3,7 @@
 if(window.__V8010_HARZ_LOTTO__)return;
 window.__V8010_HARZ_LOTTO__=true;
 
-const S={active:false,busy:false,data:null,picks:new Set(),timer:0,lastError:''};
+const S={active:false,busy:false,data:null,picks:new Set(),timer:0,lastError:'',infoPopup:''};
 const one=d=>Array.isArray(d)?d[0]:d;
 const db=()=>{try{return (typeof v073Db!=='undefined'&&v073Db)||null}catch(_){return null}};
 const uid=()=>{try{return String((typeof v073User!=='undefined'&&v073User?.id)||'')}catch(_){return ''}};
@@ -114,23 +114,41 @@ function paint(){
   const phase=now<close?'open':now<draw?'locked':'draw';
   const phaseText=phase==='open'? `Tippschluss in ${remaining(r.close_at)}` : phase==='locked'? `Ziehung in ${remaining(r.draw_at)}` : 'Ziehung läuft';
   const fixed=Array.isArray(t?.numbers);
+
+  const ticketHtml=`<div class="v8010-row"><div><small>Runde</small><h3>Ziehung ${esc(r.round_id)}</h3></div><span class="v8010-status ${phase}">${phase==='open'?'Tippen offen':phase==='locked'?'Tipps geschlossen':'Ziehung'}</span></div>
+    ${fixed?`<div class="v8010-fixed-note">✓ Dein Schein ist bestätigt und kann nicht mehr geändert werden.</div>`:`<p class="v8010-muted">Markiere genau 6 Zahlen. Nach der Bestätigung sind sie fest.</p>`}
+    ${numberGrid(t)}
+    <div class="v8010-pickbar"><span>Ausgewählt: <b>${fixed?6:S.picks.size}/6</b></span><span>Einsatz: <b>25 Harz-Taler</b></span></div>
+    ${!fixed?`<button type="button" class="btn v8010-submit" data-v8010-submit ${S.busy||phase!=='open'||S.picks.size!==6?'disabled':''}>Schein für 25 Harz-Taler bestätigen</button>`:''}`;
+
+  const classesHtml=`<div class="v8010-classes">
+    <div><span>6 Richtige</span><b>70 %</b></div>
+    <div><span>5 Richtige</span><b>15 %</b></div>
+    <div><span>4 Richtige</span><b>10 %</b></div>
+    <div><span>3 Richtige</span><b>5 %</b></div>
+    <p>Mehrere Gewinner einer Klasse teilen deren Anteil. Nicht vergebene Anteile und Rundungsreste wandern in den nächsten Jackpot.</p>
+  </div>`;
+
+  const popupTitle=S.infoPopup==='ticket'?'Schein':S.infoPopup==='classes'?'Gewinnklassen':S.infoPopup==='last'?'Letzte Ziehung':'';
+  const popupBody=S.infoPopup==='ticket'?ticketHtml:S.infoPopup==='classes'?classesHtml:S.infoPopup==='last'?lastResultHtml(d):'';
+
   root.innerHTML=`<div class="v8010-wrap">
     <section class="v8010-head">
       <div class="v8010-head-copy"><small>Grow Legends · Wochenziehung</small><h2>Harz Lotto</h2><p>1 Schein pro Woche · 6 aus 50 · Einsatz 25 Harz-Taler</p></div>
     </section>
     ${machineHtml(d.last_draw?.numbers,r.jackpot,phaseText)}
-    <section class="v8010-card">
-      <div class="v8010-row"><div><small>Runde</small><h3>Ziehung ${esc(r.round_id)}</h3></div><span class="v8010-status ${phase}">${phase==='open'?'Tippen offen':phase==='locked'?'Tipps geschlossen':'Ziehung'}</span></div>
-      ${fixed?`<div class="v8010-fixed-note">✓ Dein Schein ist bestätigt und kann nicht mehr geändert werden.</div>`:`<p class="v8010-muted">Markiere genau 6 Zahlen. Nach der Bestätigung sind sie fest.</p>`}
-      ${numberGrid(t)}
-      <div class="v8010-pickbar"><span>Ausgewählt: <b>${fixed?6:S.picks.size}/6</b></span><span>Einsatz: <b>25 HT</b></span></div>
-      ${!fixed?`<button type="button" class="btn v8010-submit" data-v8010-submit ${S.busy||phase!=='open'||S.picks.size!==6?'disabled':''}>Schein für 25 HT bestätigen</button>`:''}
-    </section>
-    <section class="v8010-card v8010-classes"><h3>Gewinnklassen</h3>
-      <div><span>6 Richtige</span><b>70 %</b></div><div><span>5 Richtige</span><b>15 %</b></div><div><span>4 Richtige</span><b>10 %</b></div><div><span>3 Richtige</span><b>5 %</b></div>
-      <p>Mehrere Gewinner einer Klasse teilen deren Anteil. Nicht vergebene Anteile und Rundungsreste wandern in den nächsten Jackpot.</p>
-    </section>
-    ${lastResultHtml(d)}
+    <div class="v8010-info-tabs" role="group" aria-label="Harz Lotto Informationen">
+      <button type="button" data-v8010-info="ticket">Schein</button>
+      <button type="button" data-v8010-info="classes">Gewinnklassen</button>
+      <button type="button" data-v8010-info="last">Letzte Ziehung</button>
+    </div>
+    ${S.infoPopup?`<div class="v8010-popup-backdrop" data-v8010-popup-close>
+      <section class="v8010-popup" role="dialog" aria-modal="true" aria-label="${esc(popupTitle)}" data-v8010-popup-card>
+        <button type="button" class="v8010-popup-close" data-v8010-popup-close aria-label="Schließen">×</button>
+        <div class="v8010-popup-title"><small>Grow Legends · Harz Lotto</small><h3>${esc(popupTitle)}</h3></div>
+        <div class="v8010-popup-body">${popupBody}</div>
+      </section>
+    </div>`:''}
   </div>`;
 }
 async function load(repaint=true){
@@ -190,6 +208,17 @@ async function claim(){
 document.addEventListener('click',e=>{
   const tab=e.target?.closest?.('#bagDealer [data-v8010-tab]');
   if(tab){e.preventDefault();setTab(tab.dataset.v8010Tab);return}
+
+  const info=e.target?.closest?.('#v8010LottoPanel [data-v8010-info]');
+  if(info){e.preventDefault();S.infoPopup=String(info.dataset.v8010Info||'');paint();return}
+
+  const popupClose=e.target?.closest?.('[data-v8010-popup-close]');
+  if(popupClose&&!e.target?.closest?.('[data-v8010-popup-card]')){
+    e.preventDefault();S.infoPopup='';paint();return;
+  }
+  const closeButton=e.target?.closest?.('.v8010-popup-close');
+  if(closeButton){e.preventDefault();S.infoPopup='';paint();return}
+
   if(!e.target?.closest?.('#v8010LottoPanel'))return;
   const n=e.target.closest('[data-v8010-number]');
   if(n){
@@ -204,6 +233,7 @@ document.addEventListener('click',e=>{
   if(e.target.closest('[data-v8010-claim]')){e.preventDefault();void claim();return}
 },true);
 
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&S.infoPopup){S.infoPopup='';paint()}},true);
 window.addEventListener('growlegends:navigation-ready',renameDealerNavigation,{passive:true});
 window.addEventListener('pageshow',renameDealerNavigation,{passive:true});
 window.addEventListener('growlegends:navigation-open-v7119',e=>{
