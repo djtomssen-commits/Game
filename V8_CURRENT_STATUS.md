@@ -5608,3 +5608,13 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
   - v533: `8013brown1`
   - v6108: `8013quality2`
 - CSS-Klammerprüfung: grün.
+
+
+### Beta – Character oben wieder braun · 02.10.2026
+- Ursache: der spätere Owner `v530-heldenquartier-static-root-header-css.css` überschrieb den oberen Avatar-/Slot-Bereich wieder dunkel.
+- Direkt im finalen Beta-Owner korrigiert.
+- `#v510HeroRoot` und `.v510-stage` nutzen auf Beta wieder den braunen Holz-/Header-Farbton.
+- Server 1 bleibt unverändert, da die Änderung ausschließlich unter `body.v8011-beta-unified-headers` greift.
+- Qualitätsfarben der Item-Slots bleiben separat erhalten und werden nicht durch den braunen Flächenhintergrund ersetzt.
+- CSS-Struktur geprüft: Tiefe 0.
+- Cache: `8011charbrown2`.
