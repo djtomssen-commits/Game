@@ -6086,3 +6086,36 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
 - Commits:
   - aktueller 20er-World-Owner: `8a5921811d796267cb78ec2f1e723cbd09efd568`
   - Beta Cache: `0cf2b5cfd386049ec5055c1ea1f91776631beb2e`
+
+
+### Beta – Anbau-Turm Braunpalette + Ranglisten-Loader stabilisiert · 02.10.2026
+- Nur Beta geändert; Server 1 bleibt unverändert.
+- Anbau-Turm-Flächen im bestehenden finalen Visual-Owner direkt auf Braun/Holz gezogen:
+  - `css/features/tower/beta/v6269-tower-complete-rework-css.css`
+- Umgestellt wurden u. a.:
+  - Run-HP-Leiste;
+  - Lobby-Karte;
+  - Ranglisten-Karten;
+  - eigene Rangzeile/Infoflächen;
+  - Prep-/Szenen-Chrome;
+  - Event-/Spezialraum-Tags;
+  - Result-/Checkpoint-Panels.
+- Funktionale Farben (HP, Event, Boss, Kampfstatus, Mutationen etc.) bleiben erhalten.
+- Ranglistenproblem im aktuellen Lobby-Controller direkt bearbeitet:
+  - `js/features/tower/beta/v8009-t2-tower-lobby.js`
+- Ursache/Schwachstelle:
+  - Saison-Rangliste wartete vollständig auf den seitenweisen `profiles`-Scan;
+  - bei langsamer/hängender Abfrage blieb sichtbar nur „Rangliste wird geladen …“.
+- Neuer Ablauf im bestehenden Loader:
+  - eigener Turmrekord wird sofort sichtbar dargestellt;
+  - vollständige Server-Rangliste lädt parallel;
+  - Server-Scan erhält 6,5-s-Zeitlimit;
+  - bei Fehler/Timeout bleibt eigener Rekord sichtbar statt endlosem Ladezustand;
+  - Fehler wird mit `[V8.035] Turm-Rangliste` geloggt.
+- Keine neue Owner-Datei / kein neuer Ranking-Renderer.
+- Beta Cache-Bust: `8035towerbrownrank1`.
+- Commits:
+  - Turm Braun: `2ac16c7b55445ced2f0d79a6c457734e26a57f13`
+  - Ranglisten-Loader: `26a65ed91fce26a52162f5cd09d8bc6aa7c9880c`
+  - Beta Cache: `3e5f082a49f685e7d80133c64964a4cf7d3bbc8a`
+- QA: CSS und JS Klammer-/Klammerpaar-Tiefen jeweils 0.
