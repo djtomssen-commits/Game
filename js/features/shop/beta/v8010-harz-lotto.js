@@ -22,6 +22,19 @@ async function confirmBox(msg){
   try{if(typeof v063Confirm==='function')return !!(await v063Confirm(msg,'Harz Lotto','25 Harz-Taler einsetzen'))}catch(_){}
   try{return !!window.confirm(msg)}catch(_){return false}
 }
+function renameDealerNavigation(){
+  try{
+    document.querySelectorAll('#v032MenuPanel [data-screen="bagDealer"],#v032MenuPanel [data-target="bagDealer"],[data-screen="bagDealer"]').forEach(el=>{
+      const icon=el.querySelector('span');
+      if(icon){
+        [...el.childNodes].filter(n=>n.nodeType===3).forEach(n=>n.remove());
+        el.append(' Hinterhof-Dealer');
+      }else{
+        el.textContent='🏪 Hinterhof-Dealer';
+      }
+    });
+  }catch(_){}
+}
 function panel(){return document.getElementById('v8010LottoPanel')}
 function body(){return document.getElementById('v8010LottoBody')}
 function bagBody(){return document.getElementById('v7215BagBody')}
@@ -193,10 +206,13 @@ document.addEventListener('click',e=>{
   if(e.target.closest('[data-v8010-claim]')){e.preventDefault();void claim();return}
 },true);
 
+window.addEventListener('growlegends:navigation-ready',renameDealerNavigation,{passive:true});
+window.addEventListener('pageshow',renameDealerNavigation,{passive:true});
 window.addEventListener('growlegends:navigation-open-v7119',e=>{
   if(String(e?.detail?.id||'')==='bagDealer'&&S.active)void load();
 },{passive:true});
 window.addEventListener('pagehide',stopTimer,{passive:true});
 window.v8010HarzLotto={open:()=>setTab('lotto'),load,preview:(on=true)=>{S.previewDraw=!!on;paint();},diagnostics:()=>({active:S.active,busy:S.busy,previewDraw:S.previewDraw,round:S.data?.round?.round_id||null,picks:[...S.picks]})};
+renameDealerNavigation();
 paint();
 })();
