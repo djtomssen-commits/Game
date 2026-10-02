@@ -5917,3 +5917,32 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
   - Mobile Growroom-Höhe: `6cd398588924fd1d07a86fd6d112433175a3d1d1`
   - Pflanzen-Art-Höhe: `46cb4e49d7f8dd33e4db161a49357dac334bba1b`
   - Beta Cache: `c4143c3e87175488ef2d516f50c7b78aa147bb3a`
+
+
+### Beta – Growroom komplett auf Braun/Holz wie Startseite + Charakter gezogen · 02.10.2026
+- Nur Beta geändert; Server 1 bleibt unverändert.
+- Bestehende Growroom-Owner direkt bearbeitet, keine neue Patch-Datei:
+  - `v8009-extracted-v492-growroom2-css.css`
+  - `v8009-extracted-v6163-growroom-primary-tabs-css.css`
+- Growroom-Grundfläche und nicht-funktionale grün/schwarze UI-Flächen auf dieselbe Braun-/Holzpalette wie Startseite und Charakter gezogen:
+  - Screen-/Growroom-Hintergrund;
+  - Topstats;
+  - Panels und Panel-Header;
+  - Samen-Karten;
+  - Pflanzenkarten;
+  - Stage/Details/Yield/Care/Perfect;
+  - untere Karten/Upgrades;
+  - Modal/Sortenbuch;
+  - Home-Grow-/Buff-Karten;
+  - primäre Growroom-Tabs und Inline-Container.
+- Funktionale Statusfarben bleiben erhalten:
+  - Pflege-/Ready-Zustände;
+  - Qualitäts-/Raritätsfarben;
+  - Fortschrittsbalken;
+  - Warn-/Badge-Farben.
+- Pflanzenraum-Bild selbst bleibt als Szene erhalten, nur die Abdunklung wurde warm-braun angepasst.
+- Beta Cache-Bust: `8029growbrown1`.
+- Commits:
+  - Growroom Hauptpalette: `72f8d1212659d886c0216edcb4da817693e5faae`
+  - Growroom Tabs: `729e197a3d1c957af68ee0ab865fd8cbc1c08c10`
+  - Beta Cache: `3355745c7531bee4fcec0aeae3a751ae6124ace4`
