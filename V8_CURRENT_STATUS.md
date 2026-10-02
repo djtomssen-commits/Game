@@ -5072,3 +5072,11 @@ Arbeitsmodus:
 - `.v8010-draw-chute`: `left 26% → 27.2%`, `top 69.6% → 70.8%`.
 - Wartehinweis entsprechend auf `left 27.2%`, `top 73%` verschoben.
 - Cache-Version auf `8010lotto8` erhöht.
+
+
+### Harz Lotto – Kugeln ins Ausgabefach · 02.10.2026
+- Screenshot zeigte: horizontale Position nahezu korrekt, vertikal noch deutlich zu hoch.
+- Ziehungskugeln deshalb gezielt ins schwarze Ausgabefach verschoben.
+- `.v8010-draw-chute`: `left 27.2% → 27.6%`, `top 70.8% → 74.1%`.
+- Wartehinweis entsprechend auf `left 27.6%`, `top 76.2%` gesetzt.
+- Cache-Version auf `8010lotto9` erhöht.
