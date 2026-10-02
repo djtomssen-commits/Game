@@ -5266,3 +5266,12 @@ Arbeitsmodus:
 - `GROW_RELEASE_CHANNEL='server1'` und Server-1-Release-Channel-Datei nicht verändert.
 - Keine Datenbankmigration im Zuge dieser UI/Feature-Promotion durchgeführt.
 - Stabiler Rücksprungpunkt `stable-server1-2026-10-01` bleibt unverändert.
+
+
+### Server 1 – Harz Lotto Ladefehler behoben · 02.10.2026
+- Supabase geprüft: `v8010_harz_lotto_state()` liefert für die authentifizierte Session korrekt `ok: true`.
+- Ursache im Client-Owner: `load()` verlangte zusätzlich das globale `v073User`; auf Server 1 kann diese Client-Referenz beim Öffnen des Tabs noch nicht verfügbar sein.
+- Unnötigen `uid()`-Client-Guard direkt aus `v8010-harz-lotto.js` entfernt.
+- Authentifizierung bleibt serverautoritativ im RPC über `auth.uid()`.
+- Beta und Server 1 auf JS-Cache `8010lotto25` erhöht.
+- JS-Syntax geprüft: OK.
