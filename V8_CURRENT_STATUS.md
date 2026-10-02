@@ -6026,3 +6026,39 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
   - Quest RPG Polish: `abbe3485537777022ec8582990c259ac433b5b19`
   - Schicht: `77713e0ed9407faeefb2cb069a75d1a0423a6153`
   - Beta Cache: `b8757a4f47ccef1cc623386e3648de909c80606e`
+
+
+### Beta – Dungeons auf einheitliche Braun-/Holzpalette umgestellt · 02.10.2026
+- Nur Beta geändert; Server 1 bleibt unverändert.
+- Bestehende Dungeon-Owner direkt bearbeitet:
+  - `css/features/dungeon/beta/v8009-d4-v251-modern-maps.css`
+  - `css/features/dungeon/beta/v8009-d4-v261-detail.css`
+  - `v8009-extracted-v599-clean-dungeon-css.css`
+- Braun/Holz umgestellt:
+  - Dungeon-Kartenrahmen;
+  - Kartenkopf;
+  - Ticket-/Infoflächen;
+  - Dungeon-Auswahlkarten;
+  - Footer;
+  - aktueller Gegner/Reward-Flächen;
+  - Detailkarten-Chrome;
+  - Kampfkarte außen;
+  - Kampfkopf;
+  - Kampfempfehlung;
+  - Kampflog;
+  - Countdown-Fläche.
+- Dungeon-Hintergrundbilder und Gegnerbilder bleiben unverändert.
+- Funktionale Farben bleiben erhalten, darunter:
+  - aktuelle/verfügbare/abgeschlossene Dungeon-Zustände;
+  - Boss-/Raritätsfarben;
+  - HP;
+  - Kampf-FX und Schadensfarben.
+- Änderungen sind mit `body.v8011-beta-unified-headers` auf Beta begrenzt.
+- Keine neue Owner-Datei.
+- Beta Cache-Bust: `8033dungeonbrown1`.
+- Commits:
+  - Map-Chrome: `84381ad15e3dfad0a5aca92a1e356157d9594e23`
+  - Detail-Chrome: `c56fb552d86b89278c19e56b2114836af2b91aa1`
+  - Kampf-Chrome: `597d39057d2256994e20dbeab636a79f42a28a14`
+  - Beta Cache: `c7b74f52d5fe8c4989ebb79358d783ca6b5b0746`
+- QA: alle drei geänderten CSS-Dateien Klammer-Tiefe 0.
