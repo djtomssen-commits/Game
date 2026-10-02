@@ -79,6 +79,7 @@ function machineHtml(drawNums){
   const sourceNums=S.previewDraw?previewNums:drawNums;
   const hasDraw=Array.isArray(sourceNums)&&sourceNums.length===6;
   return `<div class="v8010-machine" aria-label="Harz-Lotto Straßenautomat">
+    <img class="v8010-machine-image" src="assets/file_00000000e27c8210b37148cc50f5d1af.png?v=8010orig6" alt="" draggable="false">
     ${hasDraw
       ? `<div class="v8010-draw-chute ${S.previewDraw?'preview':''}">${balls(sourceNums)}</div>`
       : '<div class="v8010-machine-wait">Ziehung Dienstag · 19:00</div>'}
