@@ -6367,3 +6367,31 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
   - Dealer-Hub Header/Tabs: `f91858e083f4d9d34b8d7584a578f60b31045de3`
   - Rahmen-Tab Active: `08f4317ea537974f9072a8beb109eb2af0e28bfe`
   - Beta Cache: `abff215534620db18e2ee2d4c877d658694de36c`
+
+
+### Beta – PvP-Arena auf Braun-/Holzpalette umgestellt · 02.10.2026
+- Nur Beta geändert; Server 1 bleibt unverändert.
+- Aktuelle PvP-Owner direkt bearbeitet:
+  - `css/features/pvp/beta/v8009-s1-v549-pvp-grow-legends-css.css`
+  - `css/features/pvp/beta/v8009-s1-v550-pvp-hero-cleanup-css.css`
+  - `css/features/pvp/beta/v8009-s1-v551-pvp-header-final-css.css`
+- Braun/Holz umgestellt:
+  - kompletter PvP-Screen;
+  - Arena-Shell;
+  - Bud-/Ressourcenbox;
+  - Liga-Karte;
+  - Statuskarten;
+  - Gegner-/Match-Chrome;
+  - Regelbox;
+  - Bud-Skala;
+  - Hero-Abdunklung;
+  - Header-Seitenembleme.
+- Arena-/Hero-Bild bleibt erhalten.
+- Liga-, Kampf-, HP-, Bud- und sonstige funktionale Statusfarben bleiben erhalten.
+- Kein neuer Owner, keine Patch-Datei.
+- Beta Cache-Bust: `8046pvpbrown1`.
+- Commits:
+  - PvP Basis: `d4ac566724c7c679bcbeb81f3d612d153f6daf01`
+  - Hero Last-Writer: `82056879c9ec3de9fdd197a268cc6c69b24b49a9`
+  - Header Last-Writer: `e08c20c70f85dc077943a78a4ee25065d0a2b60e`
+  - Beta Cache: `2d9a9191d605b6e4705fe74cb1c2cf314c0b0cd9`
