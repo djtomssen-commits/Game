@@ -5130,3 +5130,11 @@ Arbeitsmodus:
 - JS-Syntax nach Fix erfolgreich geprüft.
 - Tab-Handler `data-v8010-tab` ist wieder aktiv.
 - Cache-Version auf `8010lotto13` erhöht.
+
+
+### Harz Lotto – Test-Ziehung entfernt · 02.10.2026
+- Temporäre Test-Ziehung vollständig aus dem V8.010 Lotto-Owner entfernt.
+- Entfernt: Preview-State, feste Testzahlen, Test-Button, Preview-Klickhandler, Preview-API und Preview-Animation.
+- Automat zeigt nur noch echte Server-Ziehungszahlen; vor einer Ziehung bleibt der Wartehinweis sichtbar.
+- JS-Syntax nach Cleanup geprüft: OK.
+- Cache-Version auf `8010lotto14` erhöht.
