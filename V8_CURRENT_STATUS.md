@@ -5171,3 +5171,17 @@ Arbeitsmodus:
 - Alte spätere Lotto-Override-Regeln für Tabs/Header aus dem aktiven CSS-Owner entfernt, damit nur der direkte Owner gilt.
 - JS-Syntax geprüft: OK; CSS-Klammerprüfung: Tiefe 0.
 - Cache-Version auf `8010lotto17` erhöht.
+
+
+### Harz Lotto – kompakter Header + 3 Popup-Tabs · 02.10.2026
+- Direkt in den echten Lotto-Ownern umgesetzt.
+- Harz-Lotto-Titelblock nochmals flacher gemacht und Abstand Richtung obere Händler-Tabs reduziert.
+- Die bisherigen großen Bereiche unter dem Automaten wurden aus dem normalen Seitenfluss entfernt.
+- Direkt unter dem Automaten jetzt drei Tabs: **Schein**, **Gewinnklassen**, **Letzte Ziehung**.
+- Jeder Tab öffnet ein Grow-Legends-Popup mit dem vollständigen bisherigen Inhalt.
+- Schein-Popup: Runde, Status, Zahlenauswahl/Bestätigung und Einsatz.
+- Gewinnklassen-Popup: 6/5/4/3 Richtige und Ausschüttungsanteile.
+- Letzte-Ziehung-Popup: gezogene Zahlen, eigene Treffer, Gewinn, Carry und ggf. Abholbutton.
+- Popup schließt über X, Hintergrund oder Escape.
+- JS-Syntax geprüft: OK; CSS-Klammerprüfung: Tiefe 0.
+- Cache-Version auf `8010lotto18` erhöht.
