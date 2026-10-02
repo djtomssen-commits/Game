@@ -418,9 +418,11 @@
           <div class="v690-mini-status">Händler · Ausrüstung · tägliche Angebote</div>
           <button class="v366-go" data-go="shop">Zum Shop</button>
         </article>
-      </section>
 
-      ${(()=>{const w=window.GL_WEATHER||{icon:'🌤️',label:'Server-Wetter',temp:null,bonus:{text:'Wetter wird geladen …'}};const temp=Number.isFinite(Number(w.temp))?`${Math.round(Number(w.temp))} °C`:'';return `<section class="glw-home-slot vHome-weather-bottom" aria-label="Live-Wetter"><div class="glw-home-icon">${w.icon||'🌤️'}</div><div class="glw-home-copy"><small>LIVE-SERVER-WETTER</small><b>${esc(w.label||'Server-Wetter')}</b><span>${esc(w?.bonus?.text||'Kein Wetterbonus')}</span></div><div class="glw-home-temp">${temp}</div></section>`})()}
+        <article class="v366-panel v366-feature vHome-weather-card" aria-label="Live-Wetter">
+          ${(()=>{const w=window.GL_WEATHER||{icon:'🌤️',label:'Server-Wetter',temp:null,bonus:{text:'Wetter wird geladen …'}};const temp=Number.isFinite(Number(w.temp))?`${Math.round(Number(w.temp))} °C`:'';return `<h2>Live-Wetter</h2><div class="vHome-weather-card-art"><span class="vHome-weather-card-icon">${w.icon||'🌤️'}</span><b>${esc(w.label||'Server-Wetter')}</b><strong>${temp}</strong></div><div class="v690-mini-status">${esc(w?.bonus?.text||'Kein Wetterbonus')}</div><button class="v366-go" data-go="grow">Zum Growroom</button>`})()}
+        </article>
+      </section>
 
       <div id="v492HomeGrowStatus" class="v492-home-grow" data-go="grow">
         <b>${grow.active?`🌱 Growroom · ${grow.active} Pflanze${grow.active===1?'':'n'} aktiv${grow.ready?` · ${grow.ready} erntereif`:''}`:'🌱 Growroom · Keine Pflanzen aktiv'}</b>
