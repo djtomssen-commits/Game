@@ -112,15 +112,41 @@ html body #v372TopbarShell > .v372-topbar{
 #v032MenuPanel *,#v032MenuPanel button,#v032MenuPanel a{pointer-events:auto!important}
 
 @media(max-width:430px){
-  .v372-topbar{
-    grid-template-columns:42px 82px 64px 58px 74px 28px 28px 28px!important;
-    gap:2px!important;padding:5px 3px!important;min-height:56px!important
+  html body #v372TopbarShell > .v372-topbar{
+    grid-template-columns:38px 66px minmax(0,55px) minmax(0,50px) minmax(0,60px) 24px 24px 24px!important;
+    gap:1px!important;
+    padding:4px 2px!important;
+    min-height:54px!important;
+    overflow:hidden!important;
   }
-  .v372-menu{width:40px!important;height:42px!important;font-size:24px!important}
-  .v372-logo strong{font-size:15px!important}.v372-logo span{font-size:7.5px!important;margin-left:4px!important}.v372-logo em{font-size:5px!important;margin-left:4px!important}
-  .v372-res{height:38px!important;grid-template-columns:13px minmax(0,1fr) 14px!important;gap:1px!important;padding:2px!important}
-  .v372-res .ico{font-size:11px!important}.v372-res small{font-size:3.8px!important}.v372-res b{font-size:7.2px!important}
-  .v372-plus{width:14px!important;min-width:14px!important;height:22px!important;font-size:12px!important}
-  .v372-iconbtn{width:26px!important;height:30px!important;min-width:26px!important;font-size:13px!important}
-  #v032MenuPanel{top:56px!important}
+  #v372TopbarShell .v372-menu{width:36px!important;height:40px!important;font-size:22px!important}
+  #v372TopbarShell .v372-logo{overflow:hidden!important}
+  #v372TopbarShell .v372-logo strong{font-size:13px!important}
+  #v372TopbarShell .v372-logo span{font-size:6.5px!important;margin-left:3px!important}
+  #v372TopbarShell .v372-logo em{font-size:4.5px!important;margin-left:3px!important}
+  #v372TopbarShell .v372-res{
+    height:36px!important;
+    grid-template-columns:11px minmax(0,1fr) 12px!important;
+    gap:0!important;
+    padding:1px!important;
+  }
+  #v372TopbarShell .v372-res .ico{font-size:9px!important}
+  #v372TopbarShell .v372-res small{font-size:3.3px!important;margin-bottom:2px!important}
+  #v372TopbarShell .v372-res b{font-size:6.5px!important;letter-spacing:-.15px!important}
+  #v372TopbarShell .v372-plus{width:12px!important;min-width:12px!important;height:20px!important;font-size:11px!important}
+  #v372TopbarShell .v372-iconbtn{width:22px!important;height:28px!important;min-width:22px!important;font-size:12px!important}
+  #v032MenuPanel{top:54px!important}
+}
+@media(max-width:350px){
+  html body #v372TopbarShell > .v372-topbar{
+    grid-template-columns:36px 56px minmax(0,48px) minmax(0,44px) minmax(0,54px) 21px 21px 21px!important;
+    gap:1px!important;
+    padding-left:2px!important;
+    padding-right:2px!important;
+  }
+  #v372TopbarShell .v372-menu{width:34px!important;height:38px!important;font-size:20px!important}
+  #v372TopbarShell .v372-logo strong{font-size:12px!important}
+  #v372TopbarShell .v372-logo span{font-size:6px!important}
+  #v372TopbarShell .v372-res b{font-size:6px!important}
+  #v372TopbarShell .v372-iconbtn{width:20px!important;min-width:20px!important;height:27px!important;font-size:11px!important}
 }
