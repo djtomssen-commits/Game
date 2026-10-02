@@ -5704,3 +5704,23 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
   - Slots größer: `fb121a06a4a809157408efcf2b6c0b3462d69131`
   - Avatar größer: `4f6c6dbe24f3d2daf2bc5ebfd1d9cce43980f216`
   - Beta Cache: `6fd1fd48eb961e42c3dadff774cef171958f1c64`
+
+
+### Beta – Heldenquartier obere Komposition an Referenzbild angepasst · 02.10.2026
+- Nur Beta geändert; Server 1 bleibt unverändert.
+- Referenz: vom Nutzer bereitgestelltes Heldenquartier-Bild mit deutlich größerem Avatar-Rahmen und größeren Slot-Rahmen.
+- Nicht nur die Bilder skaliert, sondern die bestehende Layout-Geometrie im echten Owner angepasst:
+  - Slot-Spalten Desktop: 68 px → 76 px;
+  - Slot-Höhe Desktop: 82 px → 94 px;
+  - Item-Art Desktop: 60 px → 70 px;
+  - Avatar-Rahmen Desktop: 221 px → 252 px Höhe;
+  - Avatar-Art Desktop: ca. 248×224 px → 280×255 px;
+  - Mobile-Werte proportional ebenfalls vergrößert.
+- Ziel: Avatar und sechs Ausrüstungsslots füllen den oberen Heldenquartier-Rahmen ähnlich der Referenz aus, bleiben aber innerhalb der vorhandenen Rahmen.
+- Bestehender Owner direkt geändert:
+  - `v8009-extracted-v514-heldenquartier-reference-css.css`
+- Keine neue Patch-Datei oder zusätzlicher Runtime-Owner.
+- Beta Cache-Bust: `8019referencefit1`.
+- Commits:
+  - Layout/Frame-Größen: `9e2d13733bdd6957e4a65882df6041e4bb4fc428`
+  - Beta Cache: `96babbc02335e90e91c67c91059d1ec4a5d004d8`
