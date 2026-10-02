@@ -6343,3 +6343,27 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
   - Goldlager: `dba02815bb96f646ac0a347e912a8a1a5e8bb8aa`
   - Rahmen-Shop: `5f794b17a5a2ad7b4cde53c0f44a0e9d15fa3d9e`
   - Beta Cache: `4cc5abb5d98c34a1e9a9154835bad77646c11c4b`
+
+
+### Beta – Dealer-Header + Tabs an einheitlichen Header-Stil angepasst · 02.10.2026
+- Nur Beta geändert; Server 1 bleibt unverändert.
+- Gemeinsamen Dealer-Header direkt im bestehenden Owner angepasst:
+  - `v8009-extracted-v7117-dealer-hub-css.css`
+- Header jetzt im selben Stil wie die übrigen vereinheitlichten Bereiche:
+  - flacheres braunes Panel;
+  - gleiche Braun-/Goldpalette;
+  - Emblem-Rahmen braun statt grün;
+  - Kicker beige/gold statt grün;
+  - Titel größer/ruhiger mit Georgia und ohne schwarzen Textschatten;
+  - kompaktere Abstände.
+- Dealer-Tabs ebenfalls vereinheitlicht:
+  - braune Grundfläche;
+  - gold/beige Schrift;
+  - identischer aktiver Braun-/Goldzustand für Harz, Gold und Rahmen.
+- Rahmen-Tab-Active-State im bestehenden `v8009-extracted-v7137-shift-frame-css.css` an dieselbe Tab-Optik angepasst.
+- Kein neuer Owner / keine Patch-Datei.
+- Beta Cache-Bust: `8045dealerheader1`.
+- Commits:
+  - Dealer-Hub Header/Tabs: `f91858e083f4d9d34b8d7584a578f60b31045de3`
+  - Rahmen-Tab Active: `08f4317ea537974f9072a8beb109eb2af0e28bfe`
+  - Beta Cache: `abff215534620db18e2ee2d4c877d658694de36c`
