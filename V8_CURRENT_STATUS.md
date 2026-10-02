@@ -5243,3 +5243,14 @@ Arbeitsmodus:
 - Schrift proportional leicht vergrößert.
 - CSS-Struktur geprüft: Tiefe 0.
 - Cache-Version auf `8010lotto23` erhöht.
+
+
+### Harz Lotto – Schein + Kugeln etwas größer · 02.10.2026
+- Direkt im aktiven Lotto-CSS-Owner angepasst.
+- Schein-Popup leicht vergrößert: max. Breite 600 px.
+- Popup-Titel etwas größer.
+- Desktop-Kugeln von 32×32 px auf **35×35 px** erhöht.
+- Mobile Kugeln von 29×29 px auf **32×32 px** erhöht.
+- Rasterabstände leicht vergrößert, damit die Kugeln nicht gequetscht wirken.
+- CSS-Struktur geprüft: Tiefe 0.
+- Cache-Version auf `8010lotto24` erhöht.
