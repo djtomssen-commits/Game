@@ -6260,3 +6260,30 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
 - Commits:
   - Endgame Style: `e40562cdd2af09c2ac787779efadae768b551c95`
   - Beta Cache: `40801dd740114223879afa55438c92353949b092`
+
+
+### Beta – Shop auf Braun-/Holzpalette umgestellt · 02.10.2026
+- Nur Beta geändert; Server 1 bleibt unverändert.
+- Aktuelle Shop-Owner direkt bearbeitet:
+  - `v8009-extracted-v464-shop-reference-css.css`
+  - `v8009-extracted-v475-shop-polish-css.css`
+- Braun/Holz umgestellt:
+  - kompletter Shop-Screen;
+  - Hero-Grundfläche;
+  - Ressourcen-Chips;
+  - Händler-Tabs;
+  - Shop-Karten;
+  - Shop-Header;
+  - Count-/Infoflächen;
+  - Itemkarten-Grundfläche;
+  - Vergleichs-/Same-Flächen;
+  - Reroll-/Action-Bereich;
+  - Hero-Shade im späteren v475-Last-Writer.
+- Item-Raritätsfarben bleiben erhalten.
+- Kauf-/Statusfarben bleiben erhalten.
+- Kein neuer Owner, keine Patch-Datei.
+- Beta Cache-Bust: `8042shopbrown1`.
+- Commits:
+  - Shop Basis: `4bed8b2506fba6f874e52a4d588e3bb662632b94`
+  - Hero Last-Writer: `2603ca08f8f521188e2c501ac2f3624b9f0fe50f`
+  - Beta Cache: `c30d24f905a10c0eedecf9a8202d3ab98ba39cbb`
