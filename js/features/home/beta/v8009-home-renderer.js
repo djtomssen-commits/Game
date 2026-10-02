@@ -462,6 +462,38 @@
     return true;
   }
 
+  function repairHomeTitles(){
+    const world=document.querySelector('#world');
+    if(!world||!world.classList.contains('active'))return false;
+    const fixes=[
+      ['.v690-adventure-title span','Deine Abenteuer'],
+      ['.v690-current-title span','Aktuelles'],
+      ['.v366-card.quest>h2','Quests'],
+      ['.v366-card.dungeon>h2','Dungeon'],
+      ['.v366-card.tower>h2','Anbauturm'],
+      ['.v366-card.grow>h2','Growroom'],
+      ['.v690-goals-panel .v366-goals-title','Tagesziele'],
+      ['.v366-feature.boss>h2','Weltboss'],
+      ['.v366-feature.book>h2','Illegales Buch'],
+      ['.vForge-home-card>h2','Harzschmiede'],
+      ['.v7129-referral-home-card>h2','Freund werben'],
+      ['.v6103-shop-card>h2','Shop']
+    ];
+    let writes=0;
+    for(const [selector,label] of fixes){
+      const el=world.querySelector(selector);
+      if(!el)continue;
+      if(!String(el.textContent||'').trim()){
+        el.textContent=label;
+        writes++;
+      }
+      el.style.setProperty('visibility','visible','important');
+      el.style.setProperty('opacity','1','important');
+      el.style.setProperty('display',selector.includes('v690-')?'flex':'grid','important');
+    }
+    return writes>0;
+  }
+
   function notifyWorldRendered(mode){
     try{
       window.dispatchEvent(new CustomEvent('growlegends:home-rendered-v8009',{detail:{mode:String(mode||'render')}}));
@@ -518,6 +550,7 @@
     world.querySelectorAll('[data-book]').forEach(b=>b.onclick=()=>{try{if(typeof v106OpenBook==='function')v106OpenBook()}catch(e){}});
     world.querySelectorAll('[data-weekly-chest]').forEach(b=>b.onclick=e=>{e.preventDefault();e.stopPropagation();try{window.v6239OpenWeeklyChest?.()}catch(err){console.warn('V6.239 weekly chest open',err)}});
     finalizeOwnedWorld(world);
+    repairHomeTitles();
     notifyWorldRendered('full');
   }
 
@@ -538,6 +571,16 @@
   installBetaVersionStyle();
   buildHeader();
   installWorld(false);
-  document.addEventListener('DOMContentLoaded',()=>{installBetaVersionStyle();buildHeader();installWorld(false)},{once:true});
-  /* V7.156: delayed 400ms full home repaint retired; initial/DOMContentLoaded owner is sufficient. */
+  document.addEventListener('DOMContentLoaded',()=>{
+    installBetaVersionStyle();
+    buildHeader();
+    installWorld(false);
+    repairHomeTitles();
+    setTimeout(()=>repairHomeTitles(),120);
+    setTimeout(()=>repairHomeTitles(),450);
+  },{once:true});
+  /* Startup title integrity: some Android WebViews repaint the home shell after
+     the first synchronous render. Re-assert only the canonical title nodes,
+     never the full page, so boot stays stable without reviving legacy renderers. */
+  setTimeout(()=>repairHomeTitles(),450);
 })();
