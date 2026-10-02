@@ -5185,3 +5185,15 @@ Arbeitsmodus:
 - Popup schließt über X, Hintergrund oder Escape.
 - JS-Syntax geprüft: OK; CSS-Klammerprüfung: Tiefe 0.
 - Cache-Version auf `8010lotto18` erhöht.
+
+
+### Harz Lotto – gesamter Block höher an Händler-Tabs · 02.10.2026
+- Direkt im aktiven CSS-Owner umgesetzt.
+- Abstand unter den Haupttabs **Tütchen / Harz Lotto** deutlich reduziert.
+- Kompletter `#v8010LottoPanel` nach oben an die Haupttabs gezogen.
+- Desktop: `margin-top: -38px`.
+- Mobil: `margin-top: -32px`.
+- Interne Abstände Header → Automat → Info-Tabs von 16/9 px auf 7 px vereinheitlicht.
+- Unterer Panel-Padding ebenfalls reduziert.
+- CSS-Struktur geprüft: Tiefe 0.
+- Cache-Version auf `8010lotto19` erhöht.
