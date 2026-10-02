@@ -6238,3 +6238,25 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
   - Chat-Basis: `5868cd5c23d857a68ab73f5a7d68f11aca005227`
   - Viewport-/Close-Owner: `0c6aec1cd73e8e53aeb4df8a0017ac96b4220eda`
   - Beta Cache: `eeba19a39276ae91716b51d91eb5e3810493ec32`
+
+
+### Beta – Endgame-Hintergrund auf Braun/Holz umgestellt · 02.10.2026
+- Nur Beta geändert; Server 1 bleibt unverändert.
+- Bestehenden Endgame-Owner direkt bearbeitet:
+  - `v8009-extracted-v457-endgame-style.css`
+- Auf Braun/Holz umgestellt:
+  - kompletter Endgame-Screen;
+  - Hero-Grundfläche;
+  - Summary-Karten;
+  - Lock-Hinweise;
+  - Riss-Karten;
+  - Kampfkarte;
+  - Log-/Reward-Flächen;
+  - Welt-Link-Karte.
+- Violette Nebelriss-/Endgame-Akzente bleiben als thematische Funktionsfarbe erhalten.
+- Kampf-/HP-Farben bleiben unverändert.
+- Kein neuer Owner, keine Patch-Datei.
+- Beta Cache-Bust: `8041endgamebrown1`.
+- Commits:
+  - Endgame Style: `e40562cdd2af09c2ac787779efadae768b551c95`
+  - Beta Cache: `40801dd740114223879afa55438c92353949b092`
