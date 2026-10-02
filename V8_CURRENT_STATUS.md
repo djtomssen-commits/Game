@@ -6449,3 +6449,16 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
   - Rangliste/Pagination: `9532ada1168c888b79f089f8ebc60d583a268b75`
   - Profilflächen: `2064272df90f9eec1575f8b6350c9080b17d6158`
   - Beta Cache: `790eb5f0e86bf6543abdd047d53c9de6cb4f2492`
+
+
+### Beta – Hall of Haze erste Listenzeile nicht mehr fälschlich hervorgehoben · 02.10.2026
+- Ursache: alter Selektor `#v072HallRanking .v072-player-row:nth-child(1)` behandelte die erste sichtbare Zeile jeder Pagination-Seite wie einen Spitzenrang.
+- Dadurch waren z. B. Rang 4 auf Seite 1 und Rang 24 auf Seite 2 grün/dunkelgrün hervorgehoben.
+- Die drei alten seitenlokalen `nth-child(1..3)`-Rangfarben wurden aus dem bestehenden Hall-Owner entfernt.
+- Podium/Rang 1–3 oben bleibt unverändert; normale Listenzeilen sind jetzt einheitlich braun.
+- Eigene Spielerzeile/DU-Markierung bleibt als echter Sonderzustand erhalten.
+- Kein neuer Patch/Owner.
+- Beta Cache-Bust: `8049hallrowfix1`.
+- Commits:
+  - Hall Owner: `e20cc1c4575583f3b19bf505fc5c62c7a20a92e1`
+  - Beta Cache: `97659f45c42883c89abaf0ac82cd81512ab315f2`
