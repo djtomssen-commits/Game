@@ -5223,3 +5223,14 @@ Arbeitsmodus:
 - Mobile Zahlen ebenfalls kleiner.
 - CSS-Struktur geprüft: Tiefe 0.
 - Cache-Version auf `8010lotto21` erhöht.
+
+
+### Harz Lotto – Schein-Kugeln kleiner · 02.10.2026
+- Direkt im aktiven Lotto-CSS-Owner geändert.
+- Nur die Zahlenkugeln im Schein-Popup verkleinert.
+- Desktop: feste Kugelgröße 28×28 px.
+- Mobil: feste Kugelgröße 25×25 px.
+- Schrift entsprechend kleiner gesetzt.
+- Kugeln werden innerhalb der Rasterzellen zentriert; Abstand leicht erhöht.
+- CSS-Struktur geprüft: Tiefe 0.
+- Cache-Version auf `8010lotto22` erhöht.
