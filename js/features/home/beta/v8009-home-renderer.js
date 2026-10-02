@@ -130,16 +130,17 @@
 
   function eventCardHtml(ev){
     const ev0=ev[0]||null;
-    const visible=ev.slice(0,4);
+    const visible=ev.slice(0,2);
+    const more=Math.max(0,ev.length-visible.length);
     return `        <article class="v366-panel v366-feature v690-events-card ${ev0?esc(ev0.c):''}">
           <h2><span>Events</span><i class="vHome-event-count">${ev.length}</i></h2>
-          <div class="vHome-event-kicker">${ev.length?'JETZT AKTIV':'EVENT-ZENTRALE'}</div>
-          <div class="vHome-event-art" aria-hidden="true"><span>${ev.length?`${ev.length} AKTIV`:'EVENTS'}</span></div>
+          <div class="vHome-event-art" aria-hidden="true"><span>${ev.length?'${ev.length} AKTIV':'EVENTS'}</span></div>
           <div class="v6115-events-list">
             ${visible.length
-              ? visible.map(x=>`<div class="v6115-event-row ${esc(x.c||'')}"><span class="v6115-event-icon">${eventIcon(x)}</span><div><b>${esc(x.t.replace(/^[^\s]+\s*/,''))}</b><small>${esc(x.s)}</small></div></div>`).join('')
+              ? visible.map(x=>`<div class="v6115-event-row ${esc(x.c||'')}"><span class="v6115-event-icon">${eventIcon(x)}</span><div><b>${esc(x.t.replace(/^[^\\s]+\\s*/,''))}</b><small>${esc(x.s)}</small></div></div>`).join('')
               : `<div class="v6115-no-events"><span>📅</span><b>Keine Events aktiv</b><small>Neue Events erscheinen hier automatisch.</small></div>`
             }
+            ${more?`<div class="vHome-event-more">+${more} weitere aktiv</div>`:''}
           </div>
         </article>`;
   }
