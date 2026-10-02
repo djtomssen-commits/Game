@@ -5684,3 +5684,23 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
 - Commits:
   - Inventar Braun: `bedf083d72a05026dabc5248308ce7e7788413b1`
   - Beta Cache: `660946e7723cf933199e82bc90b579273e58f6ef`
+
+
+### Beta – Avatar und Ausrüstung füllen ihre Rahmen besser · 02.10.2026
+- Nur Beta geändert; Server 1 bleibt unverändert.
+- Ziel: Avatar und ausgerüstete Itembilder sollen ihre vorhandenen Rahmen stärker ausfüllen, ohne über die Rahmen hinauszulaufen.
+- Bestehende Owner direkt geändert:
+  - `v8009-extracted-v514-heldenquartier-reference-css.css`
+  - `v8009-extracted-v532-heldenquartier-final-polish-css.css`
+- Ausgerüstete Item-Art vergrößert:
+  - Desktop 55 → 60 px;
+  - Mobile <=390 px 51 → 57 px;
+  - sehr schmal <=350 px 47 → 53 px.
+- Avatar-Endscale im finalen Polish-Owner von `0.955` auf `1.025` erhöht und leicht höher ausgerichtet (`object-position:center 27%`).
+- Portrait-Frame bleibt `overflow:hidden`, dadurch bleibt der Avatar sauber innerhalb seines Rahmens.
+- Keine neue Patch-Datei, kein zusätzlicher Runtime-Owner.
+- Beta Cache-Bust: `8018framefill1`.
+- Commits:
+  - Slots größer: `fb121a06a4a809157408efcf2b6c0b3462d69131`
+  - Avatar größer: `4f6c6dbe24f3d2daf2bc5ebfd1d9cce43980f216`
+  - Beta Cache: `6fd1fd48eb961e42c3dadff774cef171958f1c64`
