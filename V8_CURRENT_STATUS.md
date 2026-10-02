@@ -5064,3 +5064,11 @@ Arbeitsmodus:
 - `.v8010-draw-chute`: `left 25.2% → 26%`, `top 68.9% → 69.6%`.
 - Wartehinweis entsprechend angepasst: `left 26%`, `top 71.8%`.
 - Cache-Version auf `8010lotto7` erhöht.
+
+
+### Harz Lotto – Kugelposition Feinschliff 2 · 02.10.2026
+- Vorherige Verschiebung war visuell zu gering.
+- Ziehungszahlen jetzt deutlicher nach rechts/unten gesetzt.
+- `.v8010-draw-chute`: `left 26% → 27.2%`, `top 69.6% → 70.8%`.
+- Wartehinweis entsprechend auf `left 27.2%`, `top 73%` verschoben.
+- Cache-Version auf `8010lotto8` erhöht.
