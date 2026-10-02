@@ -130,12 +130,14 @@
 
   function eventCardHtml(ev){
     const ev0=ev[0]||null;
+    const visible=ev.slice(0,4);
     return `        <article class="v366-panel v366-feature v690-events-card ${ev0?esc(ev0.c):''}">
-          <h2>Events</h2>
+          <h2><span>Events</span><i class="vHome-event-count">${ev.length}</i></h2>
+          <div class="vHome-event-kicker">${ev.length?'JETZT AKTIV':'EVENT-ZENTRALE'}</div>
           <div class="v6115-events-list">
-            ${ev.length
-              ? ev.map(x=>`<div class="v6115-event-row ${esc(x.c||'')}"><span class="v6115-event-icon">${eventIcon(x)}</span><div><b>${esc(x.t.replace(/^[^\s]+\s*/,''))}</b><small>${esc(x.s)}</small></div></div>`).join('')
-              : `<div class="v6115-no-events"><span>📅</span><b>Keine Events</b><small>Aktuell kein Event aktiv</small></div>`
+            ${visible.length
+              ? visible.map(x=>`<div class="v6115-event-row ${esc(x.c||'')}"><span class="v6115-event-icon">${eventIcon(x)}</span><div><b>${esc(x.t.replace(/^[^\s]+\s*/,''))}</b><small>${esc(x.s)}</small></div></div>`).join('')
+              : `<div class="v6115-no-events"><span>📅</span><b>Keine Events aktiv</b><small>Neue Events erscheinen hier automatisch.</small></div>`
             }
           </div>
         </article>`;
@@ -380,7 +382,7 @@
 
         <article class="v366-panel v366-feature book"><h2>Illegales Buch</h2><div class="v366-feature-art"></div><div class="v690-mini-status">⭐ ${ac.done}/${ac.total||'—'} Erfolge</div><button class="v366-go" data-book="1">Öffnen</button></article>
 
-        <article class="v366-panel v366-feature forge vForge-home-card"><h2>Harzschmiede</h2><div class="v366-feature-art vForge-home-art"><span class="vForge-home-icon">🔨🌿</span></div><div class="v690-mini-status">Ausrüstung zerlegen · prismatisch schmieden</div><button class="v366-go" data-go="forge">Öffnen</button></article>
+        <article class="v366-panel v366-feature forge vForge-home-card"><h2>Harzschmiede</h2><div class="v366-feature-art vForge-home-art" aria-hidden="true"><span class="vForge-home-anvil">◆</span><span class="vForge-home-icon">🔨</span><span class="vForge-home-spark">✦</span></div><div class="v690-mini-status">Zerlegen · Sets bauen · Prismatisch schmieden</div><button class="v366-go" data-go="forge">Zur Schmiede</button></article>
 
         ${eventCardHtml(ev)}
 
@@ -393,9 +395,9 @@
 
         <article class="v366-panel v366-feature v6103-shop-card">
           <h2>Shop</h2>
-          <div class="v6103-shop-art"><span>🧰</span></div>
-          <div class="v690-mini-status">Händler & Ausrüstung</div>
-          <button class="v366-go" data-go="shop">Öffnen</button>
+          <div class="v6103-shop-art" aria-hidden="true"><span class="v6103-shop-bag">🛍️</span><i>✦</i></div>
+          <div class="v690-mini-status">Händler · Ausrüstung · tägliche Angebote</div>
+          <button class="v366-go" data-go="shop">Zum Shop</button>
         </article>
       </section>
 
