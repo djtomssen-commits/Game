@@ -5970,3 +5970,23 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
   - Mobile Topf-Rahmen: `8d1a83ea7ea43eb8258174e3043cc609ed32a1be`
   - Basis-Szene: `d3cbd3dad1456fa8932227766f4c3d61052c0670`
   - Beta Cache: `2cb15d948f2c9872e0f963d9d498c8b0563bcaa7`
+
+
+### Beta – Growroom Slot-Rahmen deutlich höher gegen abgeschnittene erste Pflanzenreihe · 02.10.2026
+- Nur Beta geändert; Server 1 bleibt unverändert.
+- Screenshot zeigte: nicht die einzelne Pflanzenkarte, sondern der gesamte Rahmen mit den 6 Pflanzen-Slots war zu niedrig; dadurch wurde die oberste Reihe oben beschnitten und der Pflegestatus der ersten Pflanze war nicht vollständig sichtbar.
+- Bestehende Owner direkt angepasst:
+  - `v8009-extracted-v493-growroom-mobile-css.css`
+  - `v8009-extracted-v492-growroom2-css.css`
+- Großen Pflanzen-/Topf-Rahmen deutlich erhöht:
+  - Mobile 620 → 720 px;
+  - <=390 px 595 → 700 px;
+  - Basis-Szene 770 → 850 px.
+- Einzelne Pflanzenkarten diesmal bewusst nicht weiter vergrößert.
+- Ziel: alle 3 Pflanzenreihen vollständig im Rahmen, inklusive Pflegeanzeige oben.
+- Kein neuer Owner, keine Patch-Datei.
+- Beta Cache-Bust: `8031growframe3`.
+- Commits:
+  - Mobile Slot-Rahmen: `602b147d468bd120e6efe19c829aab8fbf7bd551`
+  - Basis-Szene: `75a00dffd43e55a7383ed69606b3bdff42cf273a`
+  - Beta Cache: `36f8477152acd4231ce9be365898f26e2e9305f7`
