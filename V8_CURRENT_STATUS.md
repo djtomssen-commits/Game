@@ -5461,3 +5461,16 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
 - Server 1 bleibt durch den Beta-Scope unverändert.
 - Beta-Cache: `v530headerfix1`.
 - CSS-Struktur geprüft: Tiefe 0.
+
+
+### Beta – Charakterseite Braun/Holz wie Header · 02.10.2026
+- Nur Beta geändert; Server 1 bleibt unverändert.
+- Bestehende finale Charakter-CSS-Owner direkt erweitert, Beta-scoped über `body.v8011-beta-unified-headers`.
+- Schwarze/dunkelgrüne Flächen um Avatar und Equipment-Slots auf warmes Braun/Holz im Header-/Harzschmiede-Farbraum umgestellt.
+- Equipment-Slot-Innenflächen bleiben bewusst dunkel, damit Item-Art und Raritätsfarben klar lesbar bleiben.
+- Footer/Stats, Set-Zusammenfassung und Charakter-Tabs ebenfalls in Braun integriert.
+- Inventar-Container, Inventar-Header, Auto-Ausrüstung, Sellbar und Filter optisch in denselben Braunton gezogen.
+- Avatar, Items, Texte, Funktionen und Layout nicht verändert.
+- Beta Cache:
+  - `v532 ... ?v=8012brown1`
+  - `v533 ... ?v=8012brown1`
