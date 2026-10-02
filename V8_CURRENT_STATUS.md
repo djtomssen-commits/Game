@@ -5048,3 +5048,12 @@ Arbeitsmodus:
 - Ausgabefach-Koordinaten auf das Originalbild neu gesetzt: ca. 25,2 % links / 68,9 % oben / 43,6 % Breite / 9,4 % Höhe.
 - Veraltete mobile Sonderpositionen entfernt, damit Desktop und Mobil dieselben bildrelativen Koordinaten verwenden.
 - Cache-Version auf `8010lotto5` erhöht.
+
+
+### Harz Lotto – native Originalbild-Darstellung · 02.10.2026
+- Wegen weiterhin sichtbarer Unschärfe und grauer Fläche CSS-Background-Technik entfernt.
+- Automatenbild wird jetzt als echtes `<img>` mit natürlichem Seitenverhältnis gerendert.
+- `width:100%`, `height:auto`, kein Filter/Transform, `image-rendering:auto`.
+- Bild-URL erhält eigenen Cache-Buster `?v=8010orig6`.
+- Dynamische Ziehungszahlen bleiben als absolute Overlay-Ebene über dem Bild.
+- Cache für Lotto JS/CSS auf `8010lotto6` erhöht.
