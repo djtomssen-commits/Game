@@ -5549,3 +5549,22 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
 - Nur Beta geändert; `server1.html` unangetastet.
 - JS-Syntax geprüft: OK.
 - Beta-Cache: `v459-character-hub.js?v=459attrfinal1`.
+
+
+### Beta – Charakter braun + Qualitätsfarben kräftiger · 02.10.2026
+- Nur Beta angepasst über `body.v8011-beta-unified-headers`; Server 1 bleibt optisch unverändert.
+- Charakter-/Ausrüstungsflächen wieder warm braun gesetzt:
+  - Hero-/Slot-Umgebung,
+  - Footer/Stats,
+  - Set-/Passive-Bereich,
+  - Charakter-Tabs.
+- Item-/Slot-Qualitätsfarben auf der Charakterseite deutlich verstärkt:
+  - stärkere 2px Qualitätskante,
+  - kräftigerer Glow je Seltenheit,
+  - Prismatisch mit zusätzlichem Cyan/Pink-Glow.
+- Echte Owner geändert:
+  - `v8009-extracted-v532-heldenquartier-final-polish-css.css`
+  - `v8009-extracted-v6108-item-quality-color-authority.css`
+- Beta Cache:
+  - `8012brown1`
+  - `8012quality1`
