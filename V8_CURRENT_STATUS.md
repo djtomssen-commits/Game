@@ -5774,3 +5774,17 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
 - Commits:
   - finaler Braunabgleich: `98406c84b92b5600769da278ff7dcacdb18169ad`
   - Beta Cache: `5c0cb8e7d6807ca308868565135e2c9b05912f69`
+
+
+### Beta – markierter Reststreifen unter Avatar/Slots final korrigiert · 02.10.2026
+- Nur Beta geändert; Server 1 bleibt unverändert.
+- Nutzer-Screenshot markierte konkret den unteren Stage-Streifen links/rechts neben Level/XP.
+- Ursache exakt gefunden: Im selben finalen Owner `v8009-extracted-v532-heldenquartier-final-polish-css.css` existierte weiter unten noch ein späterer Beta-Block für `#v510HeroRoot > .v510-stage`.
+- Dieser spätere Block überschieb die zuvor angepasste Stage wieder mit dem dunkleren Verlauf `#5a3217 → #40220f → #2d180c → #241208`.
+- Direkt diesen tatsächlichen Last-Writer geändert auf die warme Braun-Familie der unteren Charakterkarten:
+  - `#6b3b19 → #5d3216 → #4b2812 → #3b200e`.
+- Kein neuer Owner, keine Patch-Datei, keine zusätzliche Render-Schicht.
+- Beta Cache-Bust: `8023stagebrown4`.
+- Commits:
+  - Last-Writer-Fix: `b5d0bf22edeac4e83606010f6fc8c945cd01c9f0`
+  - Beta Cache: `8cca970786ad22d14d400ad9a05b549901e943dc`
