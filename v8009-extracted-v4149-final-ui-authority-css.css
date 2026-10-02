@@ -3,3 +3,147 @@
 .app > header .v366-ver::after,.app > header .v371-logo em::after,.app > header .v372-logo em::after{content:"V4.159"!important}
 #v032MenuPanel{max-height:calc(100vh - 76px)!important;overflow-y:auto!important;overscroll-behavior:contain;scrollbar-width:thin}
 #v032MenuPanel .v4149-menu-separator{height:1px;margin:7px 5px;background:linear-gradient(90deg,transparent,#405c42,transparent);opacity:.9}
+
+/* V8.011 BETA unified Harzschmiede header authority */
+body.v8011-beta-unified-headers{
+  --gl-head-wood-1:#8b5317;
+  --gl-head-wood-2:#754313;
+  --gl-head-wood-3:#9b5d1d;
+  --gl-head-edge:#4d2d0c;
+  --gl-head-gold:#ce8c2c;
+  --gl-head-text:#fff3ca;
+  --gl-head-sub:#ead59b;
+}
+
+/* Shared Harzschmiede titlebar language for top-level page headers only. */
+body.v8011-beta-unified-headers #pvp .v549-pvp-title,
+body.v8011-beta-unified-headers #tower .v6259-head,
+body.v8011-beta-unified-headers #harzDealer .v567-titlebar,
+body.v8011-beta-unified-headers #bagDealer .v7219-hero,
+body.v8011-beta-unified-headers #bagDealer .v8010-head,
+body.v8011-beta-unified-headers #endgame .v457-hero,
+body.v8011-beta-unified-headers #guild .v554-guild-hero,
+body.v8011-beta-unified-headers #hall.v648-hall > .v052-scene-banner > div,
+body.v8011-beta-unified-headers #friends.v673-friends > .v052-scene-banner,
+body.v8011-beta-unified-headers #mail.v677-mail > .v052-scene-banner,
+body.v8011-beta-unified-headers .v7254-route-select .v7250-hero{
+  border:4px solid var(--gl-head-edge)!important;
+  border-radius:17px!important;
+  background:
+    linear-gradient(90deg,transparent 0 3%,#ffffff12 4% 5%,transparent 6% 94%,#0004 95%),
+    repeating-linear-gradient(4deg,var(--gl-head-wood-1) 0 12px,var(--gl-head-wood-2) 13px 23px,var(--gl-head-wood-3) 24px 28px)!important;
+  box-shadow:
+    inset 0 0 0 2px var(--gl-head-gold),
+    inset 0 -8px 0 #4c2909,
+    0 6px 0 #1c1207,
+    0 10px 20px #000a!important;
+  color:var(--gl-head-text)!important;
+}
+
+/* Same title typography across all page headers. */
+body.v8011-beta-unified-headers #pvp .v549-pvp-title,
+body.v8011-beta-unified-headers #tower .v6259-head h2,
+body.v8011-beta-unified-headers #harzDealer .v567-titlebar h1,
+body.v8011-beta-unified-headers #bagDealer .v7219-hero h2,
+body.v8011-beta-unified-headers #bagDealer .v8010-head h2,
+body.v8011-beta-unified-headers #endgame .v457-hero h2,
+body.v8011-beta-unified-headers #guild .v554-hero-copy h2,
+body.v8011-beta-unified-headers #hall.v648-hall > .v052-scene-banner .v052-title,
+body.v8011-beta-unified-headers #friends.v673-friends .v052-title,
+body.v8011-beta-unified-headers #mail.v677-mail .v052-title,
+body.v8011-beta-unified-headers .v7254-route-select .v7250-hero h1{
+  color:var(--gl-head-text)!important;
+  font-family:Georgia,"Times New Roman",serif!important;
+  font-weight:1000!important;
+  letter-spacing:-.025em!important;
+  text-shadow:0 3px 0 #271504,2px 0 #271504,-2px 0 #271504,0 0 14px #f1bf4b55!important;
+}
+
+/* Unified kicker/subline tone. */
+body.v8011-beta-unified-headers #tower .v6259-head span,
+body.v8011-beta-unified-headers #harzDealer .v567-kicker,
+body.v8011-beta-unified-headers #bagDealer .v7219-sign-small,
+body.v8011-beta-unified-headers #bagDealer .v8010-head small,
+body.v8011-beta-unified-headers #bagDealer .v8010-head p,
+body.v8011-beta-unified-headers #endgame .v457-kicker,
+body.v8011-beta-unified-headers #endgame .v457-hero p,
+body.v8011-beta-unified-headers #guild .v554-kicker,
+body.v8011-beta-unified-headers #guild .v554-hero-copy p,
+body.v8011-beta-unified-headers #hall.v648-hall > .v052-scene-banner .v052-sub,
+body.v8011-beta-unified-headers #friends.v673-friends .v052-sub,
+body.v8011-beta-unified-headers #mail.v677-mail .v052-sub,
+body.v8011-beta-unified-headers .v7254-route-select .v7250-hero .kicker,
+body.v8011-beta-unified-headers .v7254-route-select .v7250-hero p{
+  color:var(--gl-head-sub)!important;
+}
+
+/* Compact shared proportions so headers feel like one system. */
+body.v8011-beta-unified-headers #tower .v6259-head{
+  min-height:76px!important;
+  padding:9px 11px!important;
+}
+body.v8011-beta-unified-headers #endgame .v457-hero{
+  padding:12px 14px!important;
+}
+body.v8011-beta-unified-headers #bagDealer .v7219-hero{
+  padding:10px!important;
+}
+body.v8011-beta-unified-headers #guild .v554-guild-hero{
+  padding:10px 11px 9px!important;
+}
+body.v8011-beta-unified-headers #friends.v673-friends > .v052-scene-banner,
+body.v8011-beta-unified-headers #mail.v677-mail > .v052-scene-banner{
+  min-height:92px!important;
+}
+
+/* Static Character root header: preserve its stable single-paint owner but make the reserved strip match Harzschmiede. */
+body.v8011-beta-unified-headers #character.v514-reference-hero #v510HeroRoot{
+  background-color:#061009!important;
+  background-image:
+    linear-gradient(90deg,transparent 0 3%,#ffffff12 4% 5%,transparent 6% 94%,#0004 95%),
+    repeating-linear-gradient(4deg,var(--gl-head-wood-1) 0 12px,var(--gl-head-wood-2) 13px 23px,var(--gl-head-wood-3) 24px 28px)!important;
+  background-repeat:no-repeat!important;
+  background-position:top center!important;
+  background-size:100% 58px!important;
+  box-shadow:inset 0 2px 0 var(--gl-head-gold)!important;
+}
+
+/* Static top-level card headers used by Growroom, Quests, Dungeon and Admin. */
+body.v8011-beta-unified-headers #grow > .card:first-child > .section-title:first-child,
+body.v8011-beta-unified-headers #quests > .hero-card:first-child .char-bottom,
+body.v8011-beta-unified-headers #dungeon > #dungeonMapCard > .section-title:first-child,
+body.v8011-beta-unified-headers #admin > .card:first-child > .section-title:first-child{
+  margin:0 0 10px!important;
+  padding:10px 12px!important;
+  border:3px solid var(--gl-head-edge)!important;
+  border-radius:15px!important;
+  background:
+    linear-gradient(90deg,transparent 0 3%,#ffffff12 4% 5%,transparent 6% 94%,#0004 95%),
+    repeating-linear-gradient(4deg,var(--gl-head-wood-1) 0 12px,var(--gl-head-wood-2) 13px 23px,var(--gl-head-wood-3) 24px 28px)!important;
+  box-shadow:inset 0 0 0 2px var(--gl-head-gold),inset 0 -6px 0 #4c2909,0 5px 0 #1c1207,0 9px 18px #0009!important;
+}
+body.v8011-beta-unified-headers #grow > .card:first-child > .section-title:first-child h2,
+body.v8011-beta-unified-headers #quests > .hero-card:first-child .char-bottom h2,
+body.v8011-beta-unified-headers #dungeon > #dungeonMapCard > .section-title:first-child h2,
+body.v8011-beta-unified-headers #admin > .card:first-child > .section-title:first-child h2{
+  color:var(--gl-head-text)!important;
+  font-family:Georgia,"Times New Roman",serif!important;
+  font-weight:1000!important;
+  text-shadow:0 3px 0 #271504,0 0 12px #f1bf4b44!important;
+}
+
+@media(max-width:600px){
+  body.v8011-beta-unified-headers #pvp .v549-pvp-title,
+  body.v8011-beta-unified-headers #tower .v6259-head,
+  body.v8011-beta-unified-headers #harzDealer .v567-titlebar,
+  body.v8011-beta-unified-headers #bagDealer .v7219-hero,
+  body.v8011-beta-unified-headers #bagDealer .v8010-head,
+  body.v8011-beta-unified-headers #endgame .v457-hero,
+  body.v8011-beta-unified-headers #guild .v554-guild-hero,
+  body.v8011-beta-unified-headers #hall.v648-hall > .v052-scene-banner > div,
+  body.v8011-beta-unified-headers #friends.v673-friends > .v052-scene-banner,
+  body.v8011-beta-unified-headers #mail.v677-mail > .v052-scene-banner{
+    border-width:3px!important;
+    border-radius:14px!important;
+  }
+}
