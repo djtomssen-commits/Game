@@ -134,6 +134,7 @@
     return `        <article class="v366-panel v366-feature v690-events-card ${ev0?esc(ev0.c):''}">
           <h2><span>Events</span><i class="vHome-event-count">${ev.length}</i></h2>
           <div class="vHome-event-kicker">${ev.length?'JETZT AKTIV':'EVENT-ZENTRALE'}</div>
+          <div class="vHome-event-art" aria-hidden="true"><span>${ev.length?`${ev.length} AKTIV`:'EVENTS'}</span></div>
           <div class="v6115-events-list">
             ${visible.length
               ? visible.map(x=>`<div class="v6115-event-row ${esc(x.c||'')}"><span class="v6115-event-icon">${eventIcon(x)}</span><div><b>${esc(x.t.replace(/^[^\s]+\s*/,''))}</b><small>${esc(x.s)}</small></div></div>`).join('')
@@ -395,7 +396,7 @@
 
         <article class="v366-panel v366-feature v6103-shop-card">
           <h2>Shop</h2>
-          <div class="v6103-shop-art" aria-hidden="true"><span class="v6103-shop-bag">🛍️</span><i>✦</i></div>
+          <div class="v6103-shop-art" aria-hidden="true"></div>
           <div class="v690-mini-status">Händler · Ausrüstung · tägliche Angebote</div>
           <button class="v366-go" data-go="shop">Zum Shop</button>
         </article>
