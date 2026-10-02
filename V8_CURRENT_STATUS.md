@@ -5521,3 +5521,19 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
 - Nur Beta betroffen; `server1.html` wurde nicht geändert.
 - Cache-Bust: `v=8014dark1`.
 - CSS-Struktur geprüft: Tiefe 0.
+
+### Beta – Character-Hintergründe auf vorherigen Dark-Look zurückgesetzt · 02.10.2026
+- Nur Beta betroffen; Server 1 unverändert.
+- Im echten Owner `v8009-extracted-v504-character-final-owner-css.css` den später angehängten Block
+  `V8.013 BETA character full warm-brown owner` vollständig entfernt.
+- Damit greifen wieder die vorherigen dunklen Character-Owner:
+  - Character-Hintergrund dunkelgrün/schwarz;
+  - Character-Stage dunkel;
+  - Equipment-Slots dunkel;
+  - HP/Kampfkraft dunkel;
+  - Set-/Passive-Bereich dunkel;
+  - Character-Tabs wieder dunkel.
+- Keine Gegen-Overrides ergänzt; alter Override wurde direkt entfernt.
+- Inventar-Owner nicht verändert, da dieser bereits den dunklen Look besitzt.
+- CSS-Struktur geprüft: Tiefe 0.
+- Beta-Cache für Character-Owner: `8013darkrestore1`.
