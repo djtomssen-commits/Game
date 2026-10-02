@@ -151,11 +151,32 @@ function applyWorldboss(st){
     freeUsed:!!st.free_used
   };
 }
+function v8036TowerPaintSignature(){
+  try{
+    const t=s?.tower||{};
+    return JSON.stringify({
+      meta:{
+        tokens:Number(t.meta?.tokens)||0,
+        upgrades:t.meta?.upgrades||{},
+        recoveryPct:Number(t.meta?.recoveryPct)||0,
+        recoveryAt:Number(t.meta?.recoveryAt)||0,
+        pendingWednesdayRecovery:Number(t.meta?.pendingWednesdayRecovery)||0
+      },
+      season:t.season||{},
+      run:t.run||null,
+      lastResult:t.lastResult||null,
+      wednesday:t.wednesday||{},
+      wednesdayHistory:t.wednesdayHistory||{}
+    });
+  }catch(_){return ''}
+}
 function applySnapshot(snapshot,{paint=true}={}){
   if(!snapshot||snapshot.ok!==true||!ensure())return false;
+  const towerBefore=v8036TowerPaintSignature();
   const tw=snapshot.tower?.state;
   const wc=snapshot.weekly?.state;
   applyTower(tw);
+  const towerChanged=towerBefore!==v8036TowerPaintSignature();
   applyWeekly(wc);
   applyWorldboss(snapshot.worldboss);
 
@@ -187,7 +208,13 @@ function applySnapshot(snapshot,{paint=true}={}){
     try{window.v488ForgeRender?.()}catch(_){}
     try{window.v6104UpdatePetIndicators?.()}catch(_){}
     try{
-      if(document.getElementById('tower')?.classList.contains('active'))window.vTowerRender?.();
+      const towerVisible=!!document.getElementById('tower')?.classList.contains('active');
+      if(towerVisible&&towerChanged)window.vTowerRender?.();
+      else if(towerVisible){
+        /* V8.036: background authority refreshes must not rebuild the lobby.
+           Recovery countdown/HP are painted in-place by the live lobby owner. */
+        window.v6345PaintTowerTimers?.();
+      }
     }catch(_){}
     try{
       if(document.getElementById('v110Overlay')?.classList.contains('show'))v110Refresh?.();
