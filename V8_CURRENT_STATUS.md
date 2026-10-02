@@ -5537,3 +5537,15 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
 - Inventar-Owner nicht verändert, da dieser bereits den dunklen Look besitzt.
 - CSS-Struktur geprüft: Tiefe 0.
 - Beta-Cache für Character-Owner: `8013darkrestore1`.
+
+
+### Beta – Attribute springt nicht mehr auf altes Design · 02.10.2026
+- Ursache: Der Attribut-Tab-Owner `v459` rief beim Aktivieren nur `v4140PaintAttributes()` auf.
+- Dadurch wurde zunächst der ältere Attribut-Render sichtbar; der finale `v537`-Referenzlook kam erst separat über einen späteren Klick-/Frame-Hook.
+- Direkt im echten Tab-Refresh-Owner repariert:
+  - nach `v4140PaintAttributes()` wird nun sofort `v537ApplyAttributes()` ausgeführt;
+  - auch beim Wiederherstellen des gespeicherten aktiven Attribute-Tabs wird der finale Owner unmittelbar angewendet.
+- Kein zusätzlicher Runtime-Patch angelegt.
+- Nur Beta geändert; `server1.html` unangetastet.
+- JS-Syntax geprüft: OK.
+- Beta-Cache: `v459-character-hub.js?v=459attrfinal1`.
