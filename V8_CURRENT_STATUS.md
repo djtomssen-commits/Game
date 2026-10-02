@@ -6217,3 +6217,24 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
 - Commits:
   - Header kleiner: `8a8707bef9afcf49622b545b3d13e3b5819b748a`
   - Beta Cache: `7ce62b0de5b91232fce1f86f09760a8ebf4a7746`
+
+
+### Beta – Gildenchat-Fenster nochmals etwas kleiner · 02.10.2026
+- Nur Beta geändert; Server 1 bleibt unverändert.
+- Bestehende Gildenchat-Owner direkt bearbeitet:
+  - `css/features/guild/legacy/v4144-guild-chat-css.css`
+  - `css/features/guild/legacy/vGuildChatCloseVisibilityFix.css`
+- Fenster nochmals leicht verkleinert:
+  - maximale Breite 390 → 370 px;
+  - Mobile jetzt 94vw statt 100vw;
+  - etwas weniger Außenpadding;
+  - Header niedriger;
+  - Close-Button kleiner;
+  - Eingabefeld etwas niedriger;
+  - Senden-Button etwas kompakter.
+- Kein neuer Owner, keine Patch-Datei.
+- Beta Cache-Bust: `8040guildchatsmaller2`.
+- Commits:
+  - Chat-Basis: `5868cd5c23d857a68ab73f5a7d68f11aca005227`
+  - Viewport-/Close-Owner: `0c6aec1cd73e8e53aeb4df8a0017ac96b4220eda`
+  - Beta Cache: `eeba19a39276ae91716b51d91eb5e3810493ec32`
