@@ -6062,3 +6062,27 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
   - Kampf-Chrome: `597d39057d2256994e20dbeab636a79f42a28a14`
   - Beta Cache: `c7b74f52d5fe8c4989ebb79358d783ca6b5b0746`
 - QA: alle drei geänderten CSS-Dateien Klammer-Tiefe 0.
+
+
+### Beta – 20er-Dungeonübersicht im echten aktuellen Owner auf Braun umgestellt · 02.10.2026
+- Screenshot zeigte, dass die 20er-Dungeonübersicht trotz vorheriger Dungeon-Farbumstellung noch grün/schwarz war.
+- Ursache: Die 20er-Weltübersicht wird nicht mehr vom alten `v251`-Renderer/Style gerendert, sondern vom aktuellen `gl20/v4218`-Owner.
+- Bestehenden aktuellen Owner direkt geändert:
+  - `v8009-extracted-gl20-v4218-style.css`
+- Auf Braun/Holz umgestellt:
+  - kompletter Dungeon-World-Container;
+  - Kopfbereich;
+  - Versuch/Ticket-Fläche;
+  - Mapframe;
+  - 20er-Grid-Hintergrund;
+  - Karten-Grundflächen;
+  - Badge-Grundflächen;
+  - Info-Bereich unter den Dungeon-Bildern;
+  - Footer / Nächster Dungeon / Schlüsselstein.
+- Dungeon-Bilder und funktionale Zustandsfarben (aktuell, abgeschlossen, verfügbar, gesperrt) bleiben erhalten.
+- Kein neuer Owner, keine zusätzliche Patch-Datei; tatsächlichen aktuellen Owner direkt repariert.
+- Nur Beta; Server 1 unverändert.
+- Beta Cache-Bust: `8034dungeonworldbrown1`.
+- Commits:
+  - aktueller 20er-World-Owner: `8a5921811d796267cb78ec2f1e723cbd09efd568`
+  - Beta Cache: `0cf2b5cfd386049ec5055c1ea1f91776631beb2e`
