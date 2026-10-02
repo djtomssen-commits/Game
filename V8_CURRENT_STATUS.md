@@ -5234,3 +5234,12 @@ Arbeitsmodus:
 - Kugeln werden innerhalb der Rasterzellen zentriert; Abstand leicht erhöht.
 - CSS-Struktur geprüft: Tiefe 0.
 - Cache-Version auf `8010lotto22` erhöht.
+
+
+### Harz Lotto – Schein-Kugeln wieder etwas größer · 02.10.2026
+- Direkt im aktiven Lotto-CSS-Owner angepasst.
+- Desktop-Kugeln von 28×28 px auf **32×32 px** erhöht.
+- Mobile Kugeln von 25×25 px auf **29×29 px** erhöht.
+- Schrift proportional leicht vergrößert.
+- CSS-Struktur geprüft: Tiefe 0.
+- Cache-Version auf `8010lotto23` erhöht.
