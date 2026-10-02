@@ -6567,3 +6567,22 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
   - Home-Canvas: `aa13a54ff2b6347de05b2b78c320f8a2aacd63ab`
   - Header-Ghost: `a22427d1118bc3fd229790fccd14cd3cba9e2149`
   - Beta Cache: `79d076ef49c8fd6c7312d51fcc554402cf5ee59c`
+
+
+### Beta – echter Alt-Header-Rest entfernt + Topbar klar braun + Charakter-Check ausgeschrieben · 02.10.2026
+- Neuer Screenshot bestätigte: über dem Wetter war weiterhin ein Stück des historischen `.app > header` sichtbar.
+- Root Cause: alter globaler Header-Owner verwendete einen spezifischeren `body .app > header { display:block!important }`; der bisherige v372-Hide-Selektor war trotz späterer Ladereihenfolge zu schwach.
+- Direkter Fix im autoritativen Owner `v8009-extracted-v372-authoritative-header-css.css`:
+  - Legacy-`.app > header` jetzt mit höherer Spezifität vollständig auf 0 gesetzt;
+  - Border/Shadow/Opacity/Pointer ebenfalls neutralisiert;
+  - autoritativer `#v372TopbarShell` und `.v372-topbar` sichtbar wärmer/brauner gesetzt.
+- Charakter-Check direkt im bestehenden Owner `v8009-extracted-v685-home-character-checklist-css.css` korrigiert:
+  - keine Ellipsis mehr bei Aufgabenbezeichnungen;
+  - `Talentpunkte`, `Skillpunkte`, `Ausrüstung verzaubert`, `Mit Steinen gesockelt`, `Aktive Klassenset-Boni` dürfen vollständig umbrechen;
+  - rechte Statuswerte bleiben rechts lesbar.
+- Keine neue Patch-Schicht. Server 1 unverändert.
+- Beta Cache: `8055headerghost2` / `8055checkfull1`.
+- Commits:
+  - Header: `eb4e1e44eb73e460b7cf92d1ac37d2baa3e57807`
+  - Charakter-Check: `90166dfeb5cf7400f72b377a6a0ec43dfb3e7926`
+  - Beta Cache: `aaa0884883e091326b1eadcc1240a196f9a2c181`
