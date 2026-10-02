@@ -5396,3 +5396,24 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
   - `server1.html` nicht ändern,
   - Server-1-DB-Owner nicht ändern,
   - Server-1-Release-Channel nicht ändern.
+
+
+### Server 1 – automatische Öffnung entfernt / manuell geschlossen · 02.10.2026
+- Automatische Zeitfreischaltung vollständig entfernt.
+- Client-Owner `js/features/account/beta/v8009-s6-v343-server-selection-v7226.js`:
+  - festen Startzeitpunkt `02.10.2026 16:00` entfernt;
+  - Countdown entfernt;
+  - automatische Umschaltung auf Server 1 entfernt;
+  - Anzeige lautet jetzt **GESCHLOSSEN · Start nur manuell**;
+  - Server 1 bleibt clientseitig geschlossen, bis bewusst neu freigegeben wird;
+  - bestehender Vorabzugang für freigeschaltete Testkonten bleibt erhalten.
+- Server-Owner:
+  - `public.game_servers.opens_at` darf jetzt `NULL` sein;
+  - `server1.opens_at = NULL` bedeutet ausdrücklich **manuell geschlossen / keine automatische Öffnung**;
+  - `server1.harzruferin_opens_at = NULL`;
+  - `public.gl_server_access_pre_request()` berücksichtigt diesen manuellen Closed-State.
+- Normale Accounts erhalten bei geschlossenem Server `SERVER1_CLOSED`.
+- Service-Role und bestehende Early-Access-Tester bleiben zugelassen.
+- Cache-Bust für den Server-Auswahl-Owner in Beta und Server 1:
+  - `v=7226manualclosed1`.
+- Zukünftige Öffnung von Server 1 darf nur noch bewusst/manuell erfolgen; kein Datum allein öffnet den Server.
