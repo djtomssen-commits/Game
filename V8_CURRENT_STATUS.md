@@ -6506,3 +6506,24 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
   - Bestätigungsdialog: `362510eed2c4480a90467029a4f86f5e6f7bbe98`
   - Home-Slot: `92809ff4ec1799531264489eac61b36779432d1c`
   - Beta Cache: `a9c1a69abcf494aa4050aa7c620073a0b66649be`
+
+
+### Beta – Nebel Crew + Nebel Post auf Braun-/Holzpalette umgestellt · 02.10.2026
+- Nur Beta geändert; Server 1 bleibt unverändert.
+- Nebel Crew:
+  - bestehenden Hauptowner `v8009-extracted-v673-nebel-crew-redesign.css` direkt bearbeitet;
+  - Seitenhintergrund, Crew-Panel, Freundeskarten, Suche, Count-/Statusflächen und normale Aktionsflächen auf Braun/Holz gezogen;
+  - Online-/Accept-/Remove- und sonstige Funktionsfarben bleiben erhalten.
+- Nebel Post:
+  - aktive Owner direkt bearbeitet:
+    - `v8009-extracted-v6202-nebel-post-compact-final.css`
+    - `v8009-extracted-v677-nebel-post-redesign.css`
+  - Seitenhintergrund, Mail-Card, Listen-/Detailflächen, Formulare, Modal und Battlelog-Chrome auf Braun/Holz gezogen;
+  - aktive Tabs, Senden-/Statusfarben und Kampfresultate bleiben funktional hervorgehoben.
+- Kein neuer Owner, keine zusätzliche Patch-Datei.
+- Beta Cache-Bust: `8052nebelcrewpostbrown1`.
+- Commits:
+  - Nebel Crew: `e16b76c6d71cd93d372ebeee0a786a33ce907d12`
+  - Nebel Post finaler Owner: `cb903909b9f84de19847f402259537fd49bc42f9`
+  - Nebel Post Basis: `f3614892402cc7c973bf1570de3494474086bd52`
+  - Beta Cache: `68adcc6097b034e0a00863f779302e2cea4a4840`
