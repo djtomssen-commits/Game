@@ -5089,3 +5089,19 @@ Arbeitsmodus:
 - Ziehungskugeln: `left 27.6%`, `top 74.1%`, `width 43.6%`, `height 9.4%`.
 - Wartehinweis: `left 27.6%`, `top 76.2%`, `width 43.6%`.
 - Cache-Version auf `8010lotto10` erhöht.
+
+
+### Harz Lotto – Hinterhof-Dealer + Grow-Legends-Style · 02.10.2026
+- Gemeinsame Seite von **Tütchen-Dealer** auf **Hinterhof-Dealer** umbenannt.
+- Statischer Seitentitel, Beschreibung und Tab-ARIA entsprechend angepasst.
+- Navigation wird über den V8.010-Owner bei Navigation-Ready/Pageshow dynamisch auf **🏪 Hinterhof-Dealer** korrigiert, unabhängig davon welcher ältere Menu-Builder vorher gerendert hat.
+- Harz-Lotto-UI optisch näher an Grow Legends gebracht:
+  - dunkles Waldgrün statt generischem Schwarz/Rot;
+  - Gold-/Messingkanten und dezente Händler-/RPG-Rahmen;
+  - Jackpot als braun-goldene Händlerkarte;
+  - Buttons grün-gold statt generischem Rot;
+  - Zahlenfeld als gerahmte RPG-Fläche;
+  - Karten/Status/Ergebnisflächen mit konsistenter Grow-Legends-Tiefe;
+  - roter Lottoautomat bleibt bewusster Fokus.
+- Aktiver CSS-Owner bleibt `v8010-harz-lotto-v2.css`.
+- Cache-Version auf `8010lotto11` erhöht.
