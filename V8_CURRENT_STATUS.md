@@ -5039,3 +5039,12 @@ Arbeitsmodus:
 - Gleiches vom Nutzer gelieferte Automatenmotiv neu als schärferes WebP-Asset eingebunden: `assets/v8010-harz-lotto-machine-hq.webp`.
 - CSS verweist jetzt auf das HQ-Asset; Lotto-Logik/Test-Ziehung unverändert.
 - Cache-Version auf `8010lotto4` erhöht.
+
+
+### Harz Lotto – Originalbild + Ausgabefach · 02.10.2026
+- Nutzer-Original aus `assets/file_00000000e27c8210b37148cc50f5d1af.png` eingebunden (~2,1 MB), statt der bisherigen 15-KB-Vorschau.
+- Bild bleibt unverändert; keine neue Bildgenerierung.
+- Dynamische Ziehungszahlen werden weiterhin per HTML/CSS gerendert.
+- Ausgabefach-Koordinaten auf das Originalbild neu gesetzt: ca. 25,2 % links / 68,9 % oben / 43,6 % Breite / 9,4 % Höhe.
+- Veraltete mobile Sonderpositionen entfernt, damit Desktop und Mobil dieselben bildrelativen Koordinaten verwenden.
+- Cache-Version auf `8010lotto5` erhöht.
