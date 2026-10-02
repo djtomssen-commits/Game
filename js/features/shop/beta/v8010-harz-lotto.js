@@ -94,7 +94,7 @@ function machineHtml(drawNums,jackpot,phaseText){
     <img class="v8010-machine-image" src="assets/file_00000000e27c8210b37148cc50f5d1af.png?v=8010orig6" alt="" draggable="false">
     <div class="v8010-machine-topinfo">
       <small>Aktueller Jackpot</small>
-      <b>${fmt(jackpot)} HT</b>
+      <b>${fmt(jackpot)} Harz-Taler</b>
       <span>${esc(phaseText)}</span>
     </div>
     ${hasDraw
@@ -116,7 +116,7 @@ function paint(){
   const fixed=Array.isArray(t?.numbers);
   root.innerHTML=`<div class="v8010-wrap">
     <section class="v8010-head">
-      <div><small>Grow Legends · Wochenziehung</small><h2>🔴 Harz Lotto</h2><p>1 Schein pro Woche · 6 aus 50 · Einsatz 25 Harz-Taler</p></div>
+      <div class="v8010-head-copy"><small>Grow Legends · Wochenziehung</small><h2>Harz Lotto</h2><p>1 Schein pro Woche · 6 aus 50 · Einsatz 25 Harz-Taler</p></div>
     </section>
     ${machineHtml(d.last_draw?.numbers,r.jackpot,phaseText)}
     <section class="v8010-card">
