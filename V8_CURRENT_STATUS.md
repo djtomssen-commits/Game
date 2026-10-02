@@ -6462,3 +6462,22 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
 - Commits:
   - Hall Owner: `e20cc1c4575583f3b19bf505fc5c62c7a20a92e1`
   - Beta Cache: `97659f45c42883c89abaf0ac82cd81512ab315f2`
+
+
+### Beta – Topbar auf Braun-/Holzpalette umgestellt · 02.10.2026
+- Nur Beta geändert; Server 1 bleibt unverändert.
+- Aktuellen autoritativen Topbar-Owner direkt bearbeitet:
+  - `v8009-extracted-v372-authoritative-header-css.css`
+- Braun/Holz umgestellt:
+  - gesamter Topbar-Hintergrund;
+  - Hamburger-Menü;
+  - Gold-/Harz-/Dampf-Ressourcenkarten;
+  - Plus-Buttons;
+  - Mail/Freunde/Einstellungen-Buttons.
+- Ressourcen-Icons und Wertefarben bleiben zur schnellen Unterscheidung erhalten.
+- Logo-/Versionsfarben bleiben unverändert.
+- Kein neuer Owner, keine Patch-Datei.
+- Beta Cache-Bust: `8050topbarbrown1`.
+- Commits:
+  - Topbar Owner: `5c097238f3501f6a23e277a566cc2a930c25968a`
+  - Beta Cache: `06679e15587e3f624569e2680c759c48872ffafc`
