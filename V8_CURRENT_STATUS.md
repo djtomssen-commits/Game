@@ -5032,3 +5032,10 @@ Arbeitsmodus:
 - Zweiter Klick blendet den Test wieder aus.
 - Kleine Einlaufanimation ergänzt, damit die spätere echte Ziehung räumlich beurteilt werden kann.
 - Asset-Cache auf `8010lotto3` erhöht.
+
+
+### Harz Lotto – Hintergrundschärfe · 02.10.2026
+- Verschwommenes Automatenbild auf Beta korrigiert.
+- Gleiches vom Nutzer gelieferte Automatenmotiv neu als schärferes WebP-Asset eingebunden: `assets/v8010-harz-lotto-machine-hq.webp`.
+- CSS verweist jetzt auf das HQ-Asset; Lotto-Logik/Test-Ziehung unverändert.
+- Cache-Version auf `8010lotto4` erhöht.
