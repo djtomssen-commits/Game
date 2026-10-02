@@ -5760,3 +5760,17 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
 - Commits:
   - finaler Owner: `238b73c7d07805e5ec6982775ca2b57d18234f92`
   - Beta Cache: `7e486f39cdd2f0066420a6d33e9110ee268cfdfb`
+
+
+### Beta – Stage-Braun exakt an untere Charakterkarten angeglichen · 02.10.2026
+- Nur Beta geändert; Server 1 bleibt unverändert.
+- Nach kompletter Prüfung der CSS-Kaskade bestätigt: Nach `v532-heldenquartier-final-polish` übernimmt kein späterer Heldenquartier-Owner mehr die Stage-Fläche.
+- Ursache war daher kein weiterer verdeckter Grün-Override mehr, sondern ein zu dunkler/kalter Braunton im finalen Owner selbst.
+- Direkt in `v8009-extracted-v532-heldenquartier-final-polish-css.css` korrigiert:
+  - Stage-Verlauf auf dieselbe warme Braun-Familie wie Buch/Stats darunter gezogen;
+  - Portrait-Randabdunklung deutlich wärmer und schwächer gemacht;
+  - keine neue CSS-Datei, kein zusätzlicher Owner.
+- Beta Cache-Bust: `8022stagebrown3`.
+- Commits:
+  - finaler Braunabgleich: `98406c84b92b5600769da278ff7dcacdb18169ad`
+  - Beta Cache: `5c0cb8e7d6807ca308868565135e2c9b05912f69`
