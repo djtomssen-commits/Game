@@ -5275,3 +5275,19 @@ Arbeitsmodus:
 - Authentifizierung bleibt serverautoritativ im RPC über `auth.uid()`.
 - Beta und Server 1 auf JS-Cache `8010lotto25` erhöht.
 - JS-Syntax geprüft: OK.
+
+
+### Server 1 – Harz Lotto nativ im server1-Schema · 02.10.2026
+- Root Cause für „Lotto konnte nicht geladen werden“ gefunden: Server 1 erstellt den Supabase-Client mit `db.schema='server1'`, die Lotto-RPCs/Tables existierten aber nur in `public`.
+- Server-1-Lotto deshalb nativ und servergetrennt im Schema `server1` angelegt:
+  - `server1.harz_lotto_rounds`
+  - `server1.harz_lotto_tickets`
+  - `server1.v8010_harz_lotto_state()`
+  - `server1.v8010_harz_lotto_buy_ticket(integer[])`
+  - `server1.v8010_harz_lotto_claim()`
+  - interne `server1.v8010_lotto_*`-Owner.
+- Harz-Abbuchung und Gewinn-Claims laufen ausschließlich über `server1.player_progress_trusted` und `server1.player_harz_events`.
+- Beta/Public bleibt vollständig getrennt und unverändert.
+- RLS auf Server-1-Lotto-Tabellen aktiviert; direkter Tabellenzugriff für anon/authenticated entzogen; Zugriff nur über RPC.
+- Separater Cron `v8010_server1_harz_lotto_draw` läuft minütlich und zieht nur Server-1-Runden.
+- Direkter Test mit authentifizierter Server-1-Session: `server1.v8010_harz_lotto_state()` liefert `ok: true`.
