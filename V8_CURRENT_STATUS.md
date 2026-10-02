@@ -5990,3 +5990,39 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
   - Mobile Slot-Rahmen: `602b147d468bd120e6efe19c829aab8fbf7bd551`
   - Basis-Szene: `75a00dffd43e55a7383ed69606b3bdff42cf273a`
   - Beta Cache: `36f8477152acd4231ce9be365898f26e2e9305f7`
+
+
+### Beta – Quest & Schicht auf einheitliche Braun-/Holzpalette umgestellt · 02.10.2026
+- Nur Beta geändert; Server 1 bleibt unverändert.
+- Bestehende Owner direkt bearbeitet:
+  - `v8009-extracted-v386-quest-redesign-style.css`
+  - `v8009-extracted-v4172-quest-rpg-style.css`
+  - `v8009-extracted-v7137-shift-frame-css.css`
+- Quest:
+  - Seitenhintergrund;
+  - Questgeber-/Panel-Hintergründe;
+  - Tabs;
+  - Quest-Karten;
+  - Meta-/Reward-Boxen;
+  - Elite-Info;
+  - Refresh-Bereich
+  auf Braun/Holz gezogen.
+- Schicht:
+  - Seitenkopf;
+  - Quest/Schicht-Tabs;
+  - Schicht-Hero;
+  - Karten;
+  - Stundenwahl;
+  - Wirtschafts-/Statusboxen;
+  - aktive Schicht;
+  - Aufgabenbox;
+  - Reward-Modal
+  auf dieselbe Braunpalette gezogen.
+- Funktionale Farben bleiben erhalten, z. B. Quest-Schwierigkeit, Belohnungen, Fortschritt, aktive/Ready-Status.
+- Kein neuer Owner, keine Patch-Datei.
+- Beta Cache-Bust: `8032questshiftbrown1`.
+- Commits:
+  - Quest Basis: `b1f03c52ed1d57f3e952cf9132913a176f586f6c`
+  - Quest RPG Polish: `abbe3485537777022ec8582990c259ac433b5b19`
+  - Schicht: `77713e0ed9407faeefb2cb069a75d1a0423a6153`
+  - Beta Cache: `b8757a4f47ccef1cc623386e3648de909c80606e`
