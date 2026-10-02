@@ -18,6 +18,7 @@
         window.v470PaintInventoryComparisons?.();
       }else if(name==='attributes'){
         window.v4140PaintAttributes?.();
+        window.v537ApplyAttributes?.();
       }else if(name==='talents'){
         window.v543RenderTalentTree?.();
       }else if(name==='materials'){
@@ -143,7 +144,9 @@
 
       updateHero();
       try{window.v123PolishEquipment?.()}catch(_){}
-      activate(activeTab(),false);stamp();
+      activate(activeTab(),false);
+      if(activeTab()==='attributes')window.v537ApplyAttributes?.();
+      stamp();
       return true;
     }catch(e){console.warn('V4.67 character layout',e);return false}
     finally{layingOut=false}
