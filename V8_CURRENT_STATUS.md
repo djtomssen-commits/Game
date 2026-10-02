@@ -5148,3 +5148,12 @@ Arbeitsmodus:
 - Neues Overlay ist bildrelativ positioniert und Teil des aktiven CSS-Owners `v8010-harz-lotto-v2.css`.
 - JS-Syntax geprüft: OK.
 - Cache-Version auf `8010lotto15` erhöht.
+
+
+### Harz Lotto – Automaten-Jackpot sichtbar gemacht · 02.10.2026
+- Ursache für unsichtbares Jackpot-Overlay gefunden: aktiver CSS-Owner `v8010-harz-lotto-v2.css` war nach Preview-Cleanup strukturell beschädigt.
+- Übrig gebliebener Keyframe-Rest `0%...100%...` samt überzähliger schließender Klammer direkt im Owner entfernt.
+- Veraltete mobile `.v8010-jackpot`-Regel entfernt.
+- Vollständige CSS-Klammerprüfung danach: Tiefe 0, keine negative Verschachtelung.
+- Jackpot-Overlay bleibt direkt im oberen Automaten-Display.
+- Cache-Version auf `8010lotto16` erhöht.
