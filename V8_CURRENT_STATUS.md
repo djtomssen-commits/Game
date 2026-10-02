@@ -6287,3 +6287,28 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
   - Shop Basis: `4bed8b2506fba6f874e52a4d588e3bb662632b94`
   - Hero Last-Writer: `2603ca08f8f521188e2c501ac2f3624b9f0fe50f`
   - Beta Cache: `c30d24f905a10c0eedecf9a8202d3ab98ba39cbb`
+
+
+### Beta – Harzschmiede auf Braun-/Holzpalette umgestellt · 02.10.2026
+- Nur Beta geändert; Server 1 bleibt unverändert.
+- Aktive Harzschmiede-Owner direkt bearbeitet:
+  - `v8009-extracted-v667-harzschmiede-tab-redesign.css`
+  - `v8009-extracted-v490-harzschmiede-comic-ui.css`
+- Braun/Holz umgestellt:
+  - kompletter Forge-Screen;
+  - Shell/Grundfläche;
+  - Werkstatt-Hintergrund;
+  - Tabs;
+  - Panel-/View-Flächen;
+  - Inventar-Karten-Grundfläche;
+  - Auswahl-/Summary-Flächen;
+  - Kosten-/Result-Flächen;
+  - Regel-/Legenden-Flächen.
+- Holz-Header bleibt erhalten und passt nun zum restlichen Braun-Look.
+- Qualitäts-/Raritätsfarben sowie Prismatisch-/Craft-Effekte bleiben erhalten.
+- Kein neuer Owner, keine Patch-Datei.
+- Beta Cache-Bust: `8043forgebrown1`.
+- Commits:
+  - aktiver Forge-Owner: `454b43a97826b0e1c6ab383b3f4651aa125e2cca`
+  - Workshop-Unterbau: `74728adcb4e03a8f2be8fc0376743bea7b4be9e7`
+  - Beta Cache: `0ec6e237e46f00f7b9e34035c4e08368e30917f1`
