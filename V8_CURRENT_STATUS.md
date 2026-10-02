@@ -6395,3 +6395,34 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
   - Hero Last-Writer: `82056879c9ec3de9fdd197a268cc6c69b24b49a9`
   - Header Last-Writer: `e08c20c70f85dc077943a78a4ee25065d0a2b60e`
   - Beta Cache: `2d9a9191d605b6e4705fe74cb1c2cf314c0b0cd9`
+
+
+### Beta – Gilde auf Braun-/Holzpalette umgestellt · 02.10.2026
+- Nur Beta geändert; Server 1 bleibt unverändert.
+- Bestehende aktuelle Gilden-Owner direkt bearbeitet:
+  - `css/features/guild/legacy/v554-guild-reference-owner-css.css`
+  - `css/features/guild/v7307-guildgrow-chestheader-final.css`
+- Braun/Holz umgestellt:
+  - kompletter Gilden-Screen;
+  - Gilden-Hero;
+  - Wappen-/Harzflächen;
+  - Gildenfortschritt;
+  - Tabs;
+  - Upgrade-Karten;
+  - Mitgliederkarten;
+  - Admin-/Management-Flächen;
+  - Gilden-Grow-/Wochentruhe-Boards;
+  - Aufgaben- und Beitragskarten.
+- Gildenbild/Wochentruhe-Artwork bleibt erhalten.
+- Funktionale Farben bleiben erhalten:
+  - Gildenlevel-Fortschritt;
+  - Online/Offline;
+  - Rollen;
+  - Boss-/Krieg-/Statusfarben;
+  - erledigte Aufgaben und Belohnungsstatus.
+- Kein neuer Owner, keine Patch-Datei.
+- Beta Cache-Bust: `8047guildbrown1`.
+- Commits:
+  - Gildenübersicht: `15bd9353a7575a16bcd43638e2496ac0ead10317`
+  - Gilden-Grow/Wochentruhe: `729c8bad356315e198a8a66b4ad857218c9fbfc3`
+  - Beta Cache: `99098738c5d5d3ca6f662ed992cb7d5b139c56e6`
