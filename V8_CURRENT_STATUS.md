@@ -5211,3 +5211,15 @@ Arbeitsmodus:
 - Mobile Raster bleibt 5-spaltig und wurde ebenfalls kompakter abgestimmt.
 - CSS-Struktur geprüft: Tiefe 0.
 - Cache-Version auf `8010lotto20` erhöht.
+
+
+### Harz Lotto – Schein nochmals kleiner · 02.10.2026
+- Direkt im aktiven Lotto-CSS-Owner weiter verkleinert.
+- Popup-Breite reduziert.
+- Zahlenraster enger und mit weniger Padding.
+- Zahlen-Schrift kleiner.
+- Runden-/Statusbereich, Hinweis, Auswahlleiste und Button nochmals kompakter.
+- Popup-Titel und Innenabstände reduziert.
+- Mobile Zahlen ebenfalls kleiner.
+- CSS-Struktur geprüft: Tiefe 0.
+- Cache-Version auf `8010lotto21` erhöht.
