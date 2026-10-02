@@ -5667,3 +5667,20 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
   - Book-Host Braun: `9d0cfbd49e4b734eef780dd0511cae7a56013d20`
   - Pet-Tab Braun: `5edacc2a52420cf232e8d8793cc4b4f4fa47e0ca`
   - Beta Cache: `0ccad653fac389d2c98b596df9f8af212b196a3f`
+
+
+### Beta – Inventarflächen auf Braun/Holz umgestellt · 02.10.2026
+- Nur Beta geändert; Server 1 bleibt unverändert.
+- Bestehenden finalen Inventar-Owner direkt angepasst: `v8009-extracted-v533-inventory-reference-css.css`.
+- Grüne/dunkelgrüne Inventarflächen auf denselben Braun-/Holz-Farbraum wie Heldenquartier und Buchbereich gezogen:
+  - Inventar-Card/Hintergrund;
+  - Auto-Ausrüstung;
+  - Verkaufsleiste;
+  - Filter;
+  - Inventar-Hinweis.
+- Itemkarten selbst bleiben bewusst dunkel, damit Seltenheits-/Qualitätsfarben weiterhin klar lesbar sind.
+- Keine neue Patch-Datei oder zusätzlicher Runtime-Owner.
+- Beta Cache-Bust: `8017invbrown1`.
+- Commits:
+  - Inventar Braun: `bedf083d72a05026dabc5248308ce7e7788413b1`
+  - Beta Cache: `660946e7723cf933199e82bc90b579273e58f6ef`
