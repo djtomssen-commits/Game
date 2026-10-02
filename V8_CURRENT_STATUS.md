@@ -5568,3 +5568,17 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
 - Beta Cache:
   - `8012brown1`
   - `8012quality1`
+
+
+### Beta – Charakter/Inventar braun + Slot-Qualitäten kräftiger · 02.10.2026
+- Nur Beta.
+- Braunen Grow-Legends/Harzschmiede-Hintergrund im Inventar wiederhergestellt.
+- Character-Hero bleibt auf dem bereits aktiven braunen V8.012-Stand.
+- Inventar-Card, Inventar-Header, Auto-Ausrüstung, Auswahlbereich, Filter und Hinweisflächen wieder braun abgestimmt.
+- Itemkarten selbst bleiben dunkler, damit die Qualitätsfarben klar herausstechen.
+- Qualitätsfarben der ausgerüsteten Slots deutlich verstärkt:
+  - kräftigere Rahmenfarben,
+  - stärkerer Glow je Qualität,
+  - Slot-Rahmen übernimmt zusätzlich die tatsächliche Itemqualität.
+- Server 1 unverändert, da alle neuen Regeln über `body.v8011-beta-unified-headers` auf Beta begrenzt sind.
+- Cache: Inventory `8015brown2`, Quality `8015quality2`.
