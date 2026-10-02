@@ -170,8 +170,10 @@
   }
 }
 
-/* HOME events slot: compact image + active event rows. */
+/* HOME events slot: pictorial event board with active glow. */
 #world.active .v690-events-card{
+  height:232px!important;
+  min-height:232px!important;
   border-color:#8b6630!important;
   background:linear-gradient(180deg,#3a220f,#1d1008)!important;
   overflow:hidden!important;
@@ -192,23 +194,90 @@
   background:#28180c!important;color:#ffd98b!important;
   font:900 6px/1 system-ui,sans-serif!important;font-style:normal!important;
 }
-#world.active .vHome-event-art{
-  position:relative!important;
-  flex:0 0 58px!important;
-  min-height:58px!important;
-  overflow:hidden!important;
+#world.active .vHome-events-collage{
+  display:grid!important;
+  grid-template-columns:repeat(5,minmax(0,1fr))!important;
+  gap:3px!important;
+  padding:4px!important;
+  min-height:92px!important;
   border-bottom:1px solid rgba(151,108,47,.34)!important;
-  background:
-    linear-gradient(180deg,rgba(10,5,2,.02),rgba(10,5,2,.58)),
-    url("assets/world_hero_castle_v691.png") center 42%/cover no-repeat!important;
-  box-shadow:inset 0 -14px 18px rgba(8,4,2,.48)!important;
+  background:linear-gradient(180deg,#2a190d,#140b06)!important;
 }
-#world.active .vHome-event-art>span{
-  position:absolute!important;left:6px!important;bottom:5px!important;
-  padding:3px 6px!important;border:1px solid rgba(218,167,83,.65)!important;
-  border-radius:999px!important;background:rgba(34,19,9,.86)!important;
-  color:#f5d88b!important;font:950 5px/1 system-ui,sans-serif!important;
-  letter-spacing:.08em!important;box-shadow:0 2px 7px rgba(0,0,0,.46)!important;
+#world.active .vHome-event-tile{
+  position:relative!important;
+  min-width:0!important;
+  overflow:hidden!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  justify-content:flex-end!important;
+  gap:2px!important;
+  padding:5px 2px 4px!important;
+  border:1px solid #5c4528!important;
+  border-radius:7px!important;
+  background-position:center!important;
+  background-size:cover!important;
+  background-repeat:no-repeat!important;
+  filter:grayscale(.52) brightness(.52) saturate(.72)!important;
+  box-shadow:inset 0 -22px 26px rgba(5,3,2,.78)!important;
+}
+#world.active .vHome-event-tile::after{
+  content:""!important;
+  position:absolute!important;
+  inset:0!important;
+  pointer-events:none!important;
+  background:linear-gradient(180deg,rgba(0,0,0,.04),rgba(0,0,0,.10) 45%,rgba(0,0,0,.82) 100%)!important;
+}
+#world.active .vHome-event-tile.tower{background-image:url("assets/v8-inline/v4166-anbauturm-home.webp")!important}
+#world.active .vHome-event-tile.xp{background-image:url("assets/v7195-base64/8764f4ec0e55690e78a9.webp")!important}
+#world.active .vHome-event-tile.gold{background-image:url("assets/v7195-base64/3571764823579e314f8d.webp")!important}
+#world.active .vHome-event-tile.dampf{background-image:url("assets/v7195-base64/264b80b3204ceafccdd4.webp")!important}
+#world.active .vHome-event-tile.boss{background-image:url("assets/v7195-base64/39d748bb35fb04aa909c.webp")!important}
+#world.active .vHome-event-tile.active{
+  filter:grayscale(0) brightness(1.08) saturate(1.25)!important;
+  border-color:#e0b55f!important;
+  box-shadow:
+    inset 0 -22px 26px rgba(5,3,2,.58),
+    0 0 10px rgba(244,194,80,.42),
+    0 0 18px rgba(103,220,78,.22)!important;
+}
+#world.active .vHome-event-tile.active::before{
+  content:""!important;
+  position:absolute!important;
+  inset:0!important;
+  border:1px solid rgba(181,255,136,.38)!important;
+  border-radius:6px!important;
+  box-shadow:inset 0 0 16px rgba(112,238,82,.16)!important;
+  pointer-events:none!important;
+  z-index:1!important;
+}
+#world.active .vHome-event-tile-icon,
+#world.active .vHome-event-tile>b,
+#world.active .vHome-event-tile>i{
+  position:relative!important;
+  z-index:2!important;
+}
+#world.active .vHome-event-tile-icon{
+  font-size:13px!important;
+  filter:drop-shadow(0 2px 3px #000)!important;
+}
+#world.active .vHome-event-tile>b{
+  max-width:100%!important;
+  overflow:hidden!important;
+  color:#efe2bf!important;
+  font-size:4.2px!important;
+  line-height:1!important;
+  white-space:nowrap!important;
+  text-overflow:ellipsis!important;
+}
+#world.active .vHome-event-tile>i{
+  padding:2px 3px!important;
+  border-radius:999px!important;
+  background:#1c3b17d9!important;
+  color:#b9ff9f!important;
+  font:950 3.5px/1 system-ui,sans-serif!important;
+  font-style:normal!important;
+  letter-spacing:.04em!important;
 }
 #world.active .v6115-events-list{
   flex:1 1 auto!important;
@@ -258,11 +327,23 @@
   font:900 4.8px/1 system-ui,sans-serif!important;
 }
 #world.active .v6115-no-events{
-  flex:1!important;display:flex!important;flex-direction:column!important;
-  align-items:center!important;justify-content:center!important;
-  gap:2px!important;color:#c9b98e!important;text-align:center!important;
+  flex:1!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:2px!important;
+  color:#c9b98e!important;
+  text-align:center!important;
 }
-#world.active .v6115-no-events>span{font-size:20px!important}
 #world.active .v6115-no-events>b{font-size:6px!important;color:#e2c57c!important}
 #world.active .v6115-no-events>small{font-size:4.8px!important;color:#9f9686!important}
+
+@media(max-width:390px){
+  #world.active .v690-events-card{height:220px!important;min-height:220px!important}
+  #world.active .vHome-events-collage{min-height:84px!important;gap:2px!important;padding:3px!important}
+  #world.active .vHome-event-tile{padding:4px 1px 3px!important}
+  #world.active .vHome-event-tile-icon{font-size:11px!important}
+  #world.active .vHome-event-tile>b{font-size:3.8px!important}
+}
 
