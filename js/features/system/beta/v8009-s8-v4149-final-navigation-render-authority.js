@@ -4,7 +4,7 @@
  const PUBLIC=Object.freeze([
   ['world','⌂','Startseite'],['character','🧙','Charakter'],['grow','🌱','Growroom'],['quests','📜','Quest & Schicht'],
   ['dungeon','⚔️','Dungeons'],['tower','🗼','Anbauturm'],['caravan','🚚','Nebelkarawane'],['endgame','🌌','Endgame'],['shop','🛒','Händler'],['forge','🔨','Harzschmiede'],
-  ['harzDealer','🟢','Harz & Gold & Rahmen Dealer'],['bagDealer','📦','Tütchen-Dealer'],['pvp','⚔️','PvP-Arena'],['guild','🏰','Gilde'],['hall','🏆','Hall of Haze'],
+  ['harzDealer','🟢','Harz & Gold & Rahmen Dealer'],['bagDealer','🏪','Hinterhof-Dealer'],['pvp','⚔️','PvP-Arena'],['guild','🏰','Gilde'],['hall','🏆','Hall of Haze'],
   ['friends','🤝','Nebel-Crew'],['mail','✉️','Nebel-Post']
  ]);
  let raf=0,lastBuildAt=0;
