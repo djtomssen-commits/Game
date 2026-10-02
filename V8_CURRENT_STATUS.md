@@ -5803,3 +5803,47 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
 - Commits:
   - Background-Owner: `aa65ec94d49af540647a71451ae7420f17544faa`
   - Beta Cache: `551f106bc541b6b773d89f3648921f99ce832d83`
+
+
+### Beta – Startseite + Charakter komplett auf einheitliche Braunpalette gezogen · 02.10.2026
+- Nur Beta geändert; Server 1 bleibt unverändert.
+- Ziel: Startseite und kompletter Charakterbereich sollen wie aus einem Guss wirken und nicht mehr zwischen Grün/Schwarz/Braun wechseln.
+- Keine neuen Owner und keine Patch-Dateien angelegt; bestehende CSS-Owner direkt bearbeitet.
+- Gemeinsame Palette:
+  - dunkles Braun für Tiefen/Innenflächen;
+  - Mittelbraun für Karten und Panels;
+  - Holzbraun für Header/Rahmen;
+  - Gold/Beige für Konturen und Texte.
+- Funktionale Farben bewusst erhalten:
+  - Item-/Material-Raritäten;
+  - XP-/Fortschrittsfüllungen;
+  - Talent-Verbindungen/Status;
+  - Event-/Statusfarben, wo sie Information tragen.
+- Startseite direkt angepasst in:
+  - `v8009-extracted-v690-world-wood-comic-css.css`
+  - `v8009-extracted-v6103-world-final-polish.css`
+  - `v8009-extracted-v4170-lower-cards-polish.css`
+- Charakter direkt angepasst in:
+  - `v8009-extracted-v514-heldenquartier-reference-css.css`
+  - `v8009-extracted-v530-heldenquartier-static-root-header-css.css`
+  - `v8009-extracted-v532-heldenquartier-final-polish-css.css`
+  - `v8009-extracted-v533-inventory-reference-css.css`
+  - `v8009-extracted-v537-attribute-reference-css.css`
+  - `v8009-extracted-v543-talents-mobile-tree-css.css`
+  - `v8009-extracted-v546-materials-grow-legends-css.css`
+  - `v8009-extracted-v548-materials-final-atmosphere-css.css`
+- Damit wurden insbesondere grün/schwarze Karten-, Panel-, Tab-, Attribut-, Talent- und Material-Hintergründe auf Braun/Holz umgestellt.
+- Gemeinsamer Beta Cache-Bust für alle betroffenen Dateien: `8025unibrown1`.
+- Relevante Commits:
+  - World Basis: `3ba2d6b464803feb089523cae5e16e5ae6e37f69`
+  - World Final Polish: `4076b1d13e16267a27ca4c11eb6939d878bb659e`
+  - World Lower Cards: `be9699b733e6384e51693bb13557be8739a5de38`
+  - Character Basis: `59161c2c6aeb60625fb684a86b6ce953b4f068cc`
+  - Character Header: `083a7fd7c720384d28e3707465c5a5f5365af233`
+  - Character Final Polish: `f845b7f3eca3c7ca8ac0874cbed6f1ed20b52751`
+  - Inventory: `9a48a5955f79e1b834e656d7f3eac32747a4c211`
+  - Attributes: `566a519c19f452f181eebceda8e1bd17d2b6fb2c`
+  - Talents: `2a6fe42c7e8e7aec7f7f2896468af6873051b6f9`
+  - Materials Basis: `238643df0a92b5ac8b6279f7b166ef109eef5a54`
+  - Materials Atmosphere: `03164801da19158684bf727aeee91918a8bb5064`
+  - Beta Cache: `7e8e6405bf939760758ab88181815303921b2013`
