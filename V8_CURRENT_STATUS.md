@@ -6553,3 +6553,17 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
   - Pet-Popup: `913b2f1930d74b3d6fe7f68d8a2c5c833a20cb75`
   - Ticket-Reward: `aa9dc57ff7c9de9d3035cd54ed703f9fab53f1c4`
   - Beta Cache: `b6f720a1a4572166a16f9399baad6628dd512832`
+
+
+### Beta – dunkler Streifen unter Topbar + Header-Geist entfernt · 02.10.2026
+- Screenshot zeigte zwischen autoritativer Topbar und brauner Startseite noch einen dunklen horizontalen Streifen.
+- Zusätzlich war links im Streifen eine schmale alte UI-Geometrie sichtbar.
+- Direkte Owner-Reparatur, keine neue Patch-Schicht:
+  - `v8009-extracted-v690-world-wood-comic-css.css`: Braun-/Holzhintergrund jetzt auch auf `body > .app > main`/App-Canvas durchgezogen; Home-Margins oben auf 0 fixiert.
+  - `v8009-extracted-v372-authoritative-header-css.css`: geschlossener `#v032MenuPanel` hat nun keinerlei sichtbare Geometrie mehr; beim Öffnen greifen weiterhin die bestehenden `.open/.show`-Zustände.
+- Nur Beta-Cache aktualisiert: `8054homegapbrown1`.
+- Server 1 unverändert.
+- Commits:
+  - Home-Canvas: `aa13a54ff2b6347de05b2b78c320f8a2aacd63ab`
+  - Header-Ghost: `a22427d1118bc3fd229790fccd14cd3cba9e2149`
+  - Beta Cache: `79d076ef49c8fd6c7312d51fcc554402cf5ee59c`
