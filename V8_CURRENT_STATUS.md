@@ -5057,3 +5057,10 @@ Arbeitsmodus:
 - Bild-URL erhält eigenen Cache-Buster `?v=8010orig6`.
 - Dynamische Ziehungszahlen bleiben als absolute Overlay-Ebene über dem Bild.
 - Cache für Lotto JS/CSS auf `8010lotto6` erhöht.
+
+
+### Harz Lotto – Kugelposition Feinschliff · 02.10.2026
+- Ziehungszahlen im Ausgabefach minimal nach rechts/unten verschoben.
+- `.v8010-draw-chute`: `left 25.2% → 26%`, `top 68.9% → 69.6%`.
+- Wartehinweis entsprechend angepasst: `left 26%`, `top 71.8%`.
+- Cache-Version auf `8010lotto7` erhöht.
