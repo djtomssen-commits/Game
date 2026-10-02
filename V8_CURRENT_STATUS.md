@@ -5742,3 +5742,21 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
 - Commits:
   - CSS-Owner: `1dcd418ef92ca8a3d4c5517301258058ad19bea2`
   - Beta Cache: `e12508bb15faf70255f1bff4d4bb0a219c52af0a`
+
+
+### Beta – Letzten Grün-Stich unter Avatar/Slots im finalen Owner entfernt · 02.10.2026
+- Nur Beta geändert; Server 1 bleibt unverändert.
+- Ursache des verbliebenen Farbbruchs gefunden: der später geladene finale Owner `v8009-extracted-v532-heldenquartier-final-polish-css.css` überschrieb frühere Braun-Regeln wieder mit grün/dunkelgrünen Stage-/Portrait-Layern.
+- Direkt im tatsächlichen letzten Owner korrigiert:
+  - Stage-Verlauf auf Braun/Holz;
+  - grünen Avatar-Glow auf warmen Braun-/Bernsteinton;
+  - grünliche Randabdunklung des Portraits auf warmes Braun;
+  - grünlichen Root-Inset-Schatten auf Braun;
+  - Stage-Blattdeko deutlich zurückgenommen/entsättigt;
+  - XP-Kasten von dunkelgrün auf dunkelbraun.
+- Item-Raritätsfarben bleiben unverändert.
+- Keine neue Patch-Datei, keine zusätzliche Render-Schicht.
+- Beta Cache-Bust: `8021stagebrown2`.
+- Commits:
+  - finaler Owner: `238b73c7d07805e5ec6982775ca2b57d18234f92`
+  - Beta Cache: `7e486f39cdd2f0066420a6d33e9110ee268cfdfb`
