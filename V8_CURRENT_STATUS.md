@@ -6119,3 +6119,23 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
   - Ranglisten-Loader: `26a65ed91fce26a52162f5cd09d8bc6aa7c9880c`
   - Beta Cache: `3e5f082a49f685e7d80133c64964a4cf7d3bbc8a`
 - QA: CSS und JS Klammer-/Klammerpaar-Tiefen jeweils 0.
+
+
+### Beta – Anbau-Turm Lobby-Flackern durch unnötige Authority-Re-Renders behoben · 02.10.2026
+- Nur Beta geändert; Server 1 bleibt unverändert.
+- Beobachtung: Anbau-Turm-Lobby flackerte periodisch, ungefähr alle 10 Sekunden.
+- Ursache im bestehenden Authority-Bridge:
+  - jeder Server-Snapshot rief bei sichtbarem Turm pauschal `window.vTowerRender()` auf;
+  - dadurch wurde die komplette Lobby neu aufgebaut, selbst wenn sich am Turmzustand nichts geändert hatte.
+- Direkt repariert in:
+  - `js/features/authority/beta/v8009-s1-v7072-server-tower-weekly-worldboss-bridge.js`
+- Neuer Ablauf:
+  - vor/nach `applyTower()` wird eine sichtbare Turm-State-Signatur verglichen;
+  - kompletter `vTowerRender()` nur noch bei echter Turm-State-Änderung;
+  - bei unverändertem Snapshot werden nur die vorhandenen Live-Painter (`v6345PaintTowerTimers`) aktualisiert;
+  - HP-/Recovery-Countdown bleibt live, ohne kompletten DOM-Neuaufbau.
+- Kein neuer Owner, kein zusätzlicher Renderer.
+- Beta Cache-Bust: `8036towerflicker1`.
+- Commits:
+  - Authority-Fix: `c45b4760170c25bf28d7e83eb8b5b33ee1d38e0b`
+  - Beta Cache: `8af70a53df7337325550213092da576b45fef175`
