@@ -5582,3 +5582,29 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
   - Slot-Rahmen übernimmt zusätzlich die tatsächliche Itemqualität.
 - Server 1 unverändert, da alle neuen Regeln über `body.v8011-beta-unified-headers` auf Beta begrenzt sind.
 - Cache: Inventory `8015brown2`, Quality `8015quality2`.
+
+
+### Beta – Charakter braun + Qualitätsfarben kräftiger · 02.10.2026
+- Nur Beta geändert; Server 1 bleibt unverändert.
+- Braune Charakter-/Heldenquartier-Flächen entsprechend dem bestätigten Screenshot wiederhergestellt:
+  - Bühne um Avatar und Slots;
+  - unterer Charakterbereich;
+  - Lebenspunkte/Kampfkraft;
+  - Set-/Talentzeile;
+  - Klassenpassive;
+  - Charakter-Tabs.
+- Inventar-Oberfläche ebenfalls wieder in die bestätigte Braun-/Holzpalette gesetzt:
+  - Inventarrahmen/-kopf;
+  - Auto-Ausrüstung;
+  - Verkaufsleiste;
+  - Filter.
+- Ausgerüstete Item-Slots behalten dunkle Itemfläche, aber Qualitätsfarbe ist jetzt deutlich kräftiger:
+  - 3px Qualitätsrahmen;
+  - stärkerer farbiger Außenglow;
+  - innerer Qualitätsakzent.
+- Bestehenden Qualitäts-Owner direkt verstärkt; kein zusätzlicher Runtime-Painter.
+- Beta Cache:
+  - v514: `8013brown1`
+  - v533: `8013brown1`
+  - v6108: `8013quality2`
+- CSS-Klammerprüfung: grün.
