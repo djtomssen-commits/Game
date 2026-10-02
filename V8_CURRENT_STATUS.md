@@ -6527,3 +6527,29 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
   - Nebel Post finaler Owner: `cb903909b9f84de19847f402259537fd49bc42f9`
   - Nebel Post Basis: `f3614892402cc7c973bf1570de3494474086bd52`
   - Beta Cache: `68adcc6097b034e0a00863f779302e2cea4a4840`
+
+
+### Beta – großer Rest-Grün-Audit: Belohnungsfenster/Popups auf Braun/Holz · 02.10.2026
+- Nur Beta geändert; Server 1 bleibt unverändert.
+- Direkte Owner-Anpassungen ohne neue Patch-Schicht.
+- Umgestellt wurden:
+  - allgemeine Server-/Grow-Auftrag-Belohnungsfenster und Reward-Zeilen;
+  - Quest-Belohnungsfenster inkl. XP/Gold-/Loot-Karten;
+  - täglicher Login inkl. Tageskarten und Reveal-Fläche;
+  - Samen-Inventar-Popup inkl. Meta-Leiste, Karten und Source-Flächen;
+  - Pet-Fund-/Belohnungs-Popup inkl. Drop-Guide, Karte und Reward-Fläche;
+  - Ticket-Belohnungsbox.
+- Funktionale Farben bleiben erhalten:
+  - Raritäten;
+  - Ready/Claim/Current;
+  - positive Status-/Erfolgsfarben;
+  - Gold/Harz/Gem/Scroll/Key-spezifische Akzente.
+- Beta Cache-Bust: `8053rewardbrown1`.
+- Commits:
+  - Server Rewards: `56566ab316f7cd31d55c0e23401afbcf22deb74b`
+  - Quest Reward: `49d8d72c31b1477f5f1abcbd38a0b314e0eaa4bd`
+  - Daily Login: `ca2aef6cc651d07b0942aa9583210507d197e046`
+  - Samen-Popup: `c76388050c475c4ddce515d8c17512032c4397c8`
+  - Pet-Popup: `913b2f1930d74b3d6fe7f68d8a2c5c833a20cb75`
+  - Ticket-Reward: `aa9dc57ff7c9de9d3035cd54ed703f9fab53f1c4`
+  - Beta Cache: `b6f720a1a4572166a16f9399baad6628dd512832`
