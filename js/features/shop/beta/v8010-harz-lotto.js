@@ -3,7 +3,7 @@
 if(window.__V8010_HARZ_LOTTO__)return;
 window.__V8010_HARZ_LOTTO__=true;
 
-const S={active:false,busy:false,data:null,picks:new Set(),timer:0,lastError:'',previewDraw:false};
+const S={active:false,busy:false,data:null,picks:new Set(),timer:0,lastError:''};
 const one=d=>Array.isArray(d)?d[0]:d;
 const db=()=>{try{return (typeof v073Db!=='undefined'&&v073Db)||null}catch(_){return null}};
 const uid=()=>{try{return String((typeof v073User!=='undefined'&&v073User?.id)||'')}catch(_){return ''}};
@@ -89,13 +89,11 @@ function lastResultHtml(d){
   </section>`;
 }
 function machineHtml(drawNums){
-  const previewNums=[7,12,18,24,29,33];
-  const sourceNums=S.previewDraw?previewNums:drawNums;
-  const hasDraw=Array.isArray(sourceNums)&&sourceNums.length===6;
+  const hasDraw=Array.isArray(drawNums)&&drawNums.length===6;
   return `<div class="v8010-machine" aria-label="Harz-Lotto Straßenautomat">
     <img class="v8010-machine-image" src="assets/file_00000000e27c8210b37148cc50f5d1af.png?v=8010orig6" alt="" draggable="false">
     ${hasDraw
-      ? `<div class="v8010-draw-chute ${S.previewDraw?'preview':''}">${balls(sourceNums)}</div>`
+      ? `<div class="v8010-draw-chute">${balls(drawNums)}</div>`
       : '<div class="v8010-machine-wait">Ziehung Dienstag · 19:00</div>'}
   </div>`;
 }
@@ -117,10 +115,6 @@ function paint(){
       <div class="v8010-jackpot"><small>Aktueller Jackpot</small><b>${fmt(r.jackpot)} HT</b><span>${esc(phaseText)}</span></div>
     </section>
     ${machineHtml(d.last_draw?.numbers)}
-    <div class="v8010-preview-controls">
-      <button type="button" class="btn secondary" data-v8010-preview>${S.previewDraw?'Test-Ziehung ausblenden':'🎯 Test-Ziehung anzeigen'}</button>
-      ${S.previewDraw?'<span>Nur Anzeige-Test · keine echte Ziehung · keine Serveränderung</span>':''}
-    </div>
     <section class="v8010-card">
       <div class="v8010-row"><div><small>Runde</small><h3>Ziehung ${esc(r.round_id)}</h3></div><span class="v8010-status ${phase}">${phase==='open'?'Tippen offen':phase==='locked'?'Tipps geschlossen':'Ziehung'}</span></div>
       ${fixed?`<div class="v8010-fixed-note">✓ Dein Schein ist bestätigt und kann nicht mehr geändert werden.</div>`:`<p class="v8010-muted">Markiere genau 6 Zahlen. Nach der Bestätigung sind sie fest.</p>`}
@@ -202,7 +196,6 @@ document.addEventListener('click',e=>{
     else if(S.picks.size<6)S.picks.add(value);
     paint();return;
   }
-  if(e.target.closest('[data-v8010-preview]')){e.preventDefault();S.previewDraw=!S.previewDraw;paint();return}
   if(e.target.closest('[data-v8010-submit]')){e.preventDefault();void buy();return}
   if(e.target.closest('[data-v8010-claim]')){e.preventDefault();void claim();return}
 },true);
@@ -213,7 +206,7 @@ window.addEventListener('growlegends:navigation-open-v7119',e=>{
   if(String(e?.detail?.id||'')==='bagDealer'&&S.active)void load();
 },{passive:true});
 window.addEventListener('pagehide',stopTimer,{passive:true});
-window.v8010HarzLotto={open:()=>setTab('lotto'),load,preview:(on=true)=>{S.previewDraw=!!on;paint();},diagnostics:()=>({active:S.active,busy:S.busy,previewDraw:S.previewDraw,round:S.data?.round?.round_id||null,picks:[...S.picks]})};
+window.v8010HarzLotto={open:()=>setTab('lotto'),load,diagnostics:()=>({active:S.active,busy:S.busy,round:S.data?.round?.round_id||null,picks:[...S.picks]})};
 renameDealerNavigation();
 paint();
 })();
