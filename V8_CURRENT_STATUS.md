@@ -5847,3 +5847,28 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
   - Materials Basis: `238643df0a92b5ac8b6279f7b166ef109eef5a54`
   - Materials Atmosphere: `03164801da19158684bf727aeee91918a8bb5064`
   - Beta Cache: `7e8e6405bf939760758ab88181815303921b2013`
+
+
+### Beta – Pet-Sammelalbum komplett auf Braunpalette umgestellt · 02.10.2026
+- Nur Beta geändert; Server 1 bleibt unverändert.
+- Bestehende Pet-Album-Owner direkt bearbeitet, keine neue Patch-Datei:
+  - `v8009-extracted-v686-pet-album-css.css`
+  - `v8009-extracted-v6113-pet-album-header-and-profile-css.css`
+- Komplettes Pet-Sammelalbum auf die gemeinsame Braun-/Holzpalette von Startseite und Charakter gezogen:
+  - Overlay-Hintergrund;
+  - Summary-Karten;
+  - Pet-Zeilen;
+  - Pet-Bildrahmen;
+  - Qualitäts-Slot-Innenflächen;
+  - Reward-Boxen;
+  - Info-Box;
+  - Pager;
+  - Footer;
+  - öffentliche Pet-Profilkarte.
+- Funktionale Qualitätsfarben der 6 Pet-Qualitäten bleiben erhalten.
+- Header bleibt im bestehenden Holzstil.
+- Beta Cache-Bust: `8026petbrown1`.
+- Commits:
+  - Pet-Album Braun: `80a322f9f29088d8029a3320f3ade0cd934d82ee`
+  - Pet-Profil Braun: `83c51214bbe6549d9b644a52e1b2895467750c01`
+  - Beta Cache: `bfb98a825b3b3b082a1d347a78117bd05443edf4`
