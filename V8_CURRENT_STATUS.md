@@ -5022,3 +5022,13 @@ Arbeitsmodus:
   - Hintergrund/CSS: `3a7e930b92bcad33d8bdde469f901badd68f3879`
   - dynamisches Ausgabefach: `9d67b057f3e8285ca15f12ae3788068e069933bf`
   - Cache-Revision: `a4b60add71687bbe06730c98d7cd4f63783b2c86`.
+
+
+### Harz Lotto – visueller Ziehungs-Test · 02.10.2026
+- Beta-only Anzeige-Test ergänzt.
+- Im Harz-Lotto-Tab gibt es temporär den Button **„🎯 Test-Ziehung anzeigen“**.
+- Rendert ausschließlich clientseitig die sechs Beispielzahlen **7, 12, 18, 24, 29, 33** im echten Ausgabefach-Overlay.
+- Keine DB-/Harz-/Jackpot-/Ticket-/Ziehungsdaten werden verändert.
+- Zweiter Klick blendet den Test wieder aus.
+- Kleine Einlaufanimation ergänzt, damit die spätere echte Ziehung räumlich beurteilt werden kann.
+- Asset-Cache auf `8010lotto3` erhöht.
