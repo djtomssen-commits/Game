@@ -22,6 +22,119 @@ async function confirmBox(msg){
   try{if(typeof v063Confirm==='function')return !!(await v063Confirm(msg,'Harz Lotto','25 Harz-Taler einsetzen'))}catch(_){}
   try{return !!window.confirm(msg)}catch(_){return false}
 }
+
+function installFinalGrowTheme(){
+  let st=document.getElementById('v8010FinalGrowTheme');
+  if(st)return;
+  st=document.createElement('style');
+  st.id='v8010FinalGrowTheme';
+  st.textContent=\`
+#bagDealer #v8010LottoPanel{
+  padding:14px 8px 24px!important;
+  border-radius:20px!important;
+  background:
+    radial-gradient(circle at 50% 0,rgba(132,116,48,.18),transparent 28%),
+    linear-gradient(180deg,#122418 0%,#09140d 52%,#061008 100%)!important;
+  box-shadow:inset 0 0 0 1px rgba(184,163,73,.18)!important;
+}
+#bagDealer #v8010LottoPanel .v8010-wrap{gap:16px!important}
+#bagDealer #v8010LottoPanel .v8010-head,
+#bagDealer #v8010LottoPanel .v8010-card{
+  border:1px solid #817137!important;
+  border-radius:18px!important;
+  background:
+    radial-gradient(circle at 86% 0,rgba(122,143,60,.17),transparent 30%),
+    linear-gradient(180deg,#1b3020 0%,#0c1b11 72%,#08130d 100%)!important;
+  box-shadow:
+    inset 0 0 0 1px rgba(255,236,150,.05),
+    0 9px 24px rgba(0,0,0,.38)!important;
+}
+#bagDealer #v8010LottoPanel .v8010-head{
+  border-top:3px solid #ab9846!important;
+}
+#bagDealer #v8010LottoPanel .v8010-head small,
+#bagDealer #v8010LottoPanel .v8010-card small{
+  color:#c5b66b!important;
+  font-weight:900!important;
+}
+#bagDealer #v8010LottoPanel .v8010-head h2{
+  color:#fff1ae!important;
+  text-shadow:0 2px 2px #000,0 0 14px rgba(213,190,83,.16)!important;
+}
+#bagDealer #v8010LottoPanel .v8010-head p,
+#bagDealer #v8010LottoPanel .v8010-muted{
+  color:#c0cbbd!important;
+}
+#bagDealer #v8010LottoPanel .v8010-jackpot{
+  border:1px solid #b49a45!important;
+  border-radius:15px!important;
+  background:
+    radial-gradient(circle at 50% 0,rgba(224,190,72,.18),transparent 48%),
+    linear-gradient(180deg,#4a351c,#27190e)!important;
+  box-shadow:inset 0 0 0 1px rgba(255,231,139,.08),0 5px 16px rgba(0,0,0,.35)!important;
+}
+#bagDealer #v8010LottoPanel .v8010-jackpot b{
+  color:#ffe477!important;
+  text-shadow:0 2px 3px #000!important;
+}
+#bagDealer #v8010LottoPanel .v8010-machine{
+  border:2px solid #95813b!important;
+  box-shadow:0 0 0 3px #132518,0 13px 30px rgba(0,0,0,.48)!important;
+}
+#bagDealer #v8010LottoPanel .v8010-preview-controls button,
+#bagDealer #v8010LottoPanel .v8010-submit,
+#bagDealer #v8010LottoPanel .v8010-claim{
+  border:1px solid #aa9443!important;
+  color:#fff4bd!important;
+  background:linear-gradient(180deg,#3d6536,#214529 58%,#15331e)!important;
+  box-shadow:inset 0 0 0 1px rgba(255,236,156,.08),0 5px 14px rgba(0,0,0,.34)!important;
+  text-shadow:0 2px 2px #000!important;
+}
+#bagDealer #v8010LottoPanel .v8010-number-grid{
+  padding:12px!important;
+  border:1px solid rgba(181,159,66,.28)!important;
+  border-radius:16px!important;
+  background:linear-gradient(180deg,rgba(5,15,9,.7),rgba(3,10,6,.82))!important;
+  box-shadow:inset 0 0 18px rgba(0,0,0,.32)!important;
+}
+#bagDealer #v8010LottoPanel .v8010-number-grid button{
+  border-color:rgba(182,168,101,.34)!important;
+  background:radial-gradient(circle at 35% 25%,#29392d,#101b14 68%)!important;
+  color:#dce4d8!important;
+}
+#bagDealer #v8010LottoPanel .v8010-number-grid button.selected{
+  border-color:#f0d36b!important;
+  background:radial-gradient(circle at 33% 25%,#ffe99c,#db303a 55%,#75070d)!important;
+  box-shadow:0 0 0 2px rgba(219,188,69,.22),0 4px 10px rgba(0,0,0,.35)!important;
+}
+#bagDealer #v8010LottoPanel .v8010-pickbar{
+  padding:9px 11px!important;
+  border:1px solid rgba(175,154,67,.18)!important;
+  border-radius:11px!important;
+  background:rgba(107,93,39,.1)!important;
+}
+#bagDealer #v8010LottoPanel .v8010-classes>div{
+  border-bottom-color:rgba(193,171,78,.16)!important;
+}
+#bagDealer #v8010LottoPanel .v8010-classes>div b{color:#efd474!important}
+#bagDealer #v8010LottoPanel .v8010-ticket-result{
+  border:1px solid rgba(186,164,72,.2)!important;
+  background:#08120c!important;
+}
+#bagDealer .v8010-dealer-tabs{
+  border:1px solid #796b32!important;
+  background:linear-gradient(180deg,#26351f,#101d13)!important;
+  box-shadow:inset 0 0 0 1px rgba(255,238,158,.04),0 7px 18px rgba(0,0,0,.3)!important;
+}
+#bagDealer .v8010-dealer-tab.active{
+  border-color:#b39f4b!important;
+  color:#fff0ae!important;
+  background:linear-gradient(180deg,#3a6032,#1c3d24 62%,#112b19)!important;
+}
+\`;
+  document.head.appendChild(st);
+}
+
 function renameDealerNavigation(){
   try{
     document.querySelectorAll('#v032MenuPanel [data-screen="bagDealer"],#v032MenuPanel [data-target="bagDealer"],[data-screen="bagDealer"]').forEach(el=>{
@@ -207,12 +320,13 @@ document.addEventListener('click',e=>{
 },true);
 
 window.addEventListener('growlegends:navigation-ready',renameDealerNavigation,{passive:true});
-window.addEventListener('pageshow',renameDealerNavigation,{passive:true});
+window.addEventListener('pageshow',()=>{installFinalGrowTheme();renameDealerNavigation()},{passive:true});
 window.addEventListener('growlegends:navigation-open-v7119',e=>{
   if(String(e?.detail?.id||'')==='bagDealer'&&S.active)void load();
 },{passive:true});
 window.addEventListener('pagehide',stopTimer,{passive:true});
 window.v8010HarzLotto={open:()=>setTab('lotto'),load,preview:(on=true)=>{S.previewDraw=!!on;paint();},diagnostics:()=>({active:S.active,busy:S.busy,previewDraw:S.previewDraw,round:S.data?.round?.round_id||null,picks:[...S.picks]})};
+installFinalGrowTheme();
 renameDealerNavigation();
 paint();
 })();
