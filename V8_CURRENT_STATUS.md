@@ -5474,3 +5474,29 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
 - Beta Cache:
   - `v532 ... ?v=8012brown1`
   - `v533 ... ?v=8012brown1`
+
+
+### Beta – Charakterseite komplett in Header-Braun · 02.10.2026
+- Nur Beta angepasst; Server 1 bleibt optisch unverändert.
+- Bestehende Beta-Klasse `v8011-beta-unified-headers` als Scope verwendet.
+- Direkte finale Owner geändert:
+  - `v8009-extracted-v504-character-final-owner-css.css`
+  - `v8009-extracted-v533-inventory-reference-css.css`
+- Restliche dunkle Flächen der Charakterseite auf warmes Header-/Harzschmiede-Braun umgestellt:
+  - Seiten-/Hero-Hintergrund
+  - Equipment-Slots
+  - unterer Charakterbereich
+  - Lebenspunkte/Kampfkraft
+  - Set-Zusammenfassung
+  - Charakter-Tabs
+  - kompletter Inventar-Container
+  - Auto-Ausrüstung
+  - Auswahl-/Verkaufsbereich
+  - Filter
+  - Item-Karten
+  - Raritäts-/Level-Flächen
+  - leere Slots
+  - Inventar-Hinweis.
+- Seltenheitsfarben, Itembilder und Funktionslogik bleiben unverändert.
+- Cache Beta: `8013brown2`.
+- CSS-Klammerprüfung für beide Owner: OK.
