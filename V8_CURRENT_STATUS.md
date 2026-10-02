@@ -5080,3 +5080,12 @@ Arbeitsmodus:
 - `.v8010-draw-chute`: `left 27.2% → 27.6%`, `top 70.8% → 74.1%`.
 - Wartehinweis entsprechend auf `left 27.6%`, `top 76.2%` gesetzt.
 - Cache-Version auf `8010lotto9` erhöht.
+
+
+### Harz Lotto – aktiven CSS-Owner korrigiert · 02.10.2026
+- Ursache gefunden: `beta.html` lädt `v8010-harz-lotto-v2.css`, während vorher versehentlich `v8010-harz-lotto.css` geändert wurde.
+- Deshalb waren die letzten Positionsänderungen im Client nicht sichtbar.
+- Tatsächlich aktive Desktop- und Mobile-Regeln jetzt korrigiert.
+- Ziehungskugeln: `left 27.6%`, `top 74.1%`, `width 43.6%`, `height 9.4%`.
+- Wartehinweis: `left 27.6%`, `top 76.2%`, `width 43.6%`.
+- Cache-Version auf `8010lotto10` erhöht.
