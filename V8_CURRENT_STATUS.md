@@ -5197,3 +5197,17 @@ Arbeitsmodus:
 - Unterer Panel-Padding ebenfalls reduziert.
 - CSS-Struktur geprüft: Tiefe 0.
 - Cache-Version auf `8010lotto19` erhöht.
+
+
+### Harz Lotto – Schein kompakter · 02.10.2026
+- Direkt im aktiven Lotto-CSS-Owner angepasst.
+- Schein-Popup kompakter gemacht:
+  - Zahlenraster weniger Padding und kleinere Abstände;
+  - Zahlen etwas kleiner;
+  - Runden-/Statusbereich kleiner;
+  - Bestätigungs-Hinweis kompakter;
+  - Auswahl-/Einsatzleiste enger;
+  - Bestätigungsbutton niedriger.
+- Mobile Raster bleibt 5-spaltig und wurde ebenfalls kompakter abgestimmt.
+- CSS-Struktur geprüft: Tiefe 0.
+- Cache-Version auf `8010lotto20` erhöht.
