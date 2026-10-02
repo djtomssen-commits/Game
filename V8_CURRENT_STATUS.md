@@ -6481,3 +6481,28 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
 - Commits:
   - Topbar Owner: `5c097238f3501f6a23e277a566cc2a930c25968a`
   - Beta Cache: `06679e15587e3f624569e2680c759c48872ffafc`
+
+
+### Beta – Wochentruhe + Smaragd-Koloss auf Braun-/Holzpalette umgestellt · 02.10.2026
+- Nur Beta geändert; Server 1 bleibt unverändert.
+- Wochentruhe:
+  - bestehenden Owner `v8009-extracted-v6239-weekly-chest-css.css` direkt bearbeitet;
+  - Modal, Hero, Stats, Reward-Slots, Preview-/Aktivitätsflächen und Level-Guide auf Braun/Holz gezogen;
+  - Truhen-Artwork, Fortschrittsbalken, Ready-Leuchten und Reward-/Raritätsfarben bleiben funktional erhalten.
+- Smaragd-Koloss:
+  - bestehende Owner direkt bearbeitet:
+    - `v8009-extracted-v110-mystic-worldboss.css`
+    - `v8009-extracted-v290-worldboss-balance-css.css`
+    - `v8009-extracted-v327-worldboss-confirm-css.css`
+    - `v8009-extracted-v6123-worldboss-slot-feinschliff-css.css`
+  - Overlay-/Panel-Chrome, Stats, Log, Balancebox, Bestätigungsdialog und Home-Slot auf Braun/Holz gezogen;
+  - Boss-Artwork, Smaragd-/Phasenfarben, HP, Treffer-/Kampf-FX und Live-/Ready-Zustände bleiben erhalten.
+- Kein neuer Owner und keine zusätzliche Patch-Datei.
+- Beta Cache-Bust: `8051chestkolossbrown1`.
+- Commits:
+  - Wochentruhe: `457d2cf63fdc4b16bb49711c69519b744ed47ac6`
+  - Koloss Hauptscreen: `b499be38b48db54840717b9893f44d26899bc5a6`
+  - Balancebox: `68055dcea7aad95959938bcd2650f759c1b218cc`
+  - Bestätigungsdialog: `362510eed2c4480a90467029a4f86f5e6f7bbe98`
+  - Home-Slot: `92809ff4ec1799531264489eac61b36779432d1c`
+  - Beta Cache: `a9c1a69abcf494aa4050aa7c620073a0b66649be`
