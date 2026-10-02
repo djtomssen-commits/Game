@@ -5618,3 +5618,14 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
 - Qualitätsfarben der Item-Slots bleiben separat erhalten und werden nicht durch den braunen Flächenhintergrund ersetzt.
 - CSS-Struktur geprüft: Tiefe 0.
 - Cache: `8011charbrown2`.
+
+
+### Beta – Heldenquartier/Inventar Referenz wiederhergestellt · 02.10.2026
+- Referenz: Screenshot mit braunem/holzfarbenem Heldenquartier und braunem Inventar.
+- Nur Beta geändert; Server 1 unverändert.
+- `v532-heldenquartier-final-polish`: braune Character-/Stats-/Tab-Flächen direkt im bestehenden finalen Owner auf Referenzton abgestimmt.
+- `v533-inventory-reference`: zwei konkurrierende Beta-Braun-Blöcke zu **einem finalen Owner** konsolidiert.
+- Inventarheader, Auto-Ausrüstung, Auswahlbereich, Filter und Rahmen wieder im braunen Holz-/Bronze-Look.
+- `v6108-item-quality-color-authority`: bestehende Qualitätsfarben der ausgerüsteten Slots verstärkt; keine feste Einheitsfarbe, sondern weiterhin echte Raritätsfarbe.
+- Cache Beta: `8015brown2` / `8015quality2`.
+- CSS-Struktur aller drei Owner geprüft.
