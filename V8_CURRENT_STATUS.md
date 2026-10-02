@@ -6312,3 +6312,34 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
   - aktiver Forge-Owner: `454b43a97826b0e1c6ab383b3f4651aa125e2cca`
   - Workshop-Unterbau: `74728adcb4e03a8f2be8fc0376743bea7b4be9e7`
   - Beta Cache: `0ec6e237e46f00f7b9e34035c4e08368e30917f1`
+
+
+### Beta – Harz-, Gold- und Rahmen-Dealer auf Braun-/Holzpalette umgestellt · 02.10.2026
+- Nur Beta geändert; Server 1 bleibt unverändert.
+- Bestehende Dealer-Owner direkt bearbeitet:
+  - `v8009-extracted-v567-harz-dealer-final-css.css`
+  - `v8009-extracted-v569-harz-dealer-header-clean.css`
+  - `v8009-extracted-v570-harz-dealer-npc-framing.css`
+  - `v8009-extracted-v571-harz-dealer-hero-layout.css`
+  - `v8009-extracted-v7117-dealer-hub-css.css`
+  - `v8009-extracted-v7114-gold-shop-css.css`
+  - `v8009-extracted-v7137-shift-frame-css.css`
+- Gemeinsamer Dealer-Hub, Harz-Dealer, Goldlager und Avatar-Rahmen-Shop auf die bestehende Braun-/Holzpalette gezogen.
+- Geändert wurden u. a.:
+  - Seitenhintergründe;
+  - Hub/Tab-Chrome;
+  - Harz-Hero und Angebotskarten;
+  - Goldlager-Header/Balances/Loading-Flächen;
+  - Rahmen-Shop-Grundfläche, Guide, Karten und Preview-Untergrund.
+- Rahmen-Effekte, Paket-/Preisfarben, Gold-Event und funktionale Aktiv-/Statusfarben bleiben erhalten.
+- Kein neuer Owner, keine Patch-Datei.
+- Beta Cache-Bust: `8044dealersbrown1`.
+- Relevante Commits:
+  - Harz-Dealer Basis: `b7489aea75784d05ad427926d782c755555580d7`
+  - Harz Header: `26258dc05993e8a0e5c215ceae51483670edaab3`
+  - Harz NPC: `0d7621fe6d027e04c52afa72a1d7262894866622`
+  - Harz Hero: `46b0484f21891313ed4a9aa94ce627893d7e9302`
+  - Dealer-Hub: `d22331f55374e690978fc7b2b6eccb8747657f26`
+  - Goldlager: `dba02815bb96f646ac0a347e912a8a1a5e8bb8aa`
+  - Rahmen-Shop: `5f794b17a5a2ad7b4cde53c0f44a0e9d15fa3d9e`
+  - Beta Cache: `4cc5abb5d98c34a1e9a9154835bad77646c11c4b`
