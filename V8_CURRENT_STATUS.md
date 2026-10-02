@@ -5121,3 +5121,12 @@ Arbeitsmodus:
   - gerahmtes Zahlenfeld;
   - Grow-Legends Händler-/RPG-Tiefe.
 - Cache-Version auf `8010lotto12` erhöht.
+
+
+### Harz Lotto – Tab-Klick repariert · 02.10.2026
+- Ursache: Syntaxfehler im echten Lotto-Owner `js/features/shop/beta/v8010-harz-lotto.js`.
+- Fehler entstand durch den zuvor eingebauten Runtime-Theme-Block mit fehlerhaft escaped Backticks; dadurch wurde der komplette Owner nicht ausgeführt und der Tab-Klickhandler war tot.
+- Runtime-Theme-Schicht vollständig entfernt; Styling bleibt ausschließlich im direkten CSS-Owner `v8010-harz-lotto-v2.css`.
+- JS-Syntax nach Fix erfolgreich geprüft.
+- Tab-Handler `data-v8010-tab` ist wieder aktiv.
+- Cache-Version auf `8010lotto13` erhöht.
