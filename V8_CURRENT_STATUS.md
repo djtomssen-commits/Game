@@ -5629,3 +5629,22 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
 - `v6108-item-quality-color-authority`: bestehende Qualitätsfarben der ausgerüsteten Slots verstärkt; keine feste Einheitsfarbe, sondern weiterhin echte Raritätsfarbe.
 - Cache Beta: `8015brown2` / `8015quality2`.
 - CSS-Struktur aller drei Owner geprüft.
+
+
+### Beta – Character-Hintergrund exakt auf braune Referenz zurück · 02.10.2026
+- Nur Beta geändert; Server 1 unverändert.
+- Root Cause: der später geladene `v530-heldenquartier-static-root-header-css.css` setzte `#v510HeroRoot` trotz braunem v514-Owner wieder auf dunkel.
+- Direkt im finalen v530-Owner korrigiert:
+  - kompletter Character-/Avatar-/Slot-Rahmen wieder braun/holz wie in der bestätigten Referenz.
+  - Stage bleibt braun.
+- Inventory-Owner v533 konsolidiert:
+  - doppelten V8.013/V8.015-Beta-Farbblock entfernt;
+  - Inventar-Kopf bleibt Holz/Braun;
+  - Inventar-Arbeitsfläche, Auto-Equip, Sellbar und Filter wieder dunkelgrün/schwarz wie in der Referenz.
+- Equipment-Slots bleiben innen dunkel für Lesbarkeit.
+- Bereits verstärkte Qualitätsfarben bleiben unverändert aktiv über v6108.
+- Cache:
+  - v530 `8016brown3`
+  - v533 `8016brown3`
+  - v6108 `8016quality3`
+- CSS-Klammerprüfung: OK.
