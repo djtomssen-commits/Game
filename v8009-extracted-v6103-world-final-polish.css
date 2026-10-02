@@ -218,3 +218,74 @@
   #world.active .v366-card-art{height:112px!important;min-height:112px!important}
   #world.active .v366-lower>.v366-panel{height:155px!important;min-height:155px!important}
 }
+
+/* HOME: navigation must stay wood-brown, never legacy green. */
+html body #world.active nav.v6103-quickbar{
+  border-color:#7a5327!important;
+  background:
+    repeating-linear-gradient(6deg,rgba(255,255,255,.016) 0 2px,rgba(0,0,0,.025) 2px 6px),
+    linear-gradient(180deg,#5b3518,#2b170b)!important;
+}
+html body #world.active nav.v6103-quickbar > button,
+html body #world.active nav.v6103-quickbar > button.active,
+html body #world.active nav.v6103-quickbar > button:focus,
+html body #world.active nav.v6103-quickbar > button:hover{
+  border-color:#79582e!important;
+  background:
+    radial-gradient(circle at 50% 16%,rgba(214,147,65,.08),transparent 48%),
+    linear-gradient(180deg,#512e15,#2a160b)!important;
+  color:#f2dfb0!important;
+  box-shadow:inset 0 1px rgba(255,255,255,.035),0 2px 7px #0006!important;
+}
+html body #world.active nav.v6103-quickbar > button:active{
+  background:linear-gradient(180deg,#60391b,#321a0c)!important;
+}
+
+/* HOME: richer Shop slot, still light enough for the compact grid. */
+#world.active .v6103-shop-card{
+  border-color:#8a642d!important;
+  background:linear-gradient(180deg,#3c230f,#1d1008)!important;
+}
+#world.active .v6103-shop-card>h2{color:#f1ce7a!important}
+#world.active .v6103-shop-art{
+  position:relative!important;
+  overflow:hidden!important;
+  min-height:78px!important;
+  border-bottom:1px solid #5d4221!important;
+  background:
+    linear-gradient(90deg,transparent 31%,rgba(166,108,49,.14) 31% 33%,transparent 33% 66%,rgba(166,108,49,.14) 66% 68%,transparent 68%),
+    linear-gradient(180deg,rgba(109,65,26,.22) 0 10%,transparent 10% 73%,rgba(17,9,5,.62) 73%),
+    radial-gradient(circle at 50% 45%,rgba(224,158,73,.15),transparent 45%),
+    linear-gradient(180deg,#493019,#25170d)!important;
+  display:grid!important;
+  place-items:center!important;
+}
+#world.active .v6103-shop-art:before{
+  content:"";
+  position:absolute;
+  left:10%;right:10%;top:17%;
+  height:4px;
+  border-radius:5px;
+  background:#8a6738;
+  box-shadow:0 29px #6e4f2c,0 58px #4f351e;
+  opacity:.82;
+}
+#world.active .v6103-shop-bag{
+  position:relative;z-index:2;
+  font-size:38px!important;
+  filter:drop-shadow(0 4px 5px #000)!important;
+}
+#world.active .v6103-shop-art>i{
+  position:absolute;z-index:3;
+  right:22%;top:18%;
+  color:#ffd576;
+  font-style:normal;
+  font-size:18px;
+  text-shadow:0 0 8px #e79b33;
+}
+#world.active .v6103-shop-card .v690-mini-status{color:#dbc58c!important}
+#world.active .v6103-shop-card .v366-go{
+  border-color:#a9792f!important;
+  background:linear-gradient(180deg,#825622,#4d3013)!important;
+  color:#fff0bd!important;
+}
