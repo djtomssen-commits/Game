@@ -152,7 +152,7 @@ function paint(){
   </div>`;
 }
 async function load(repaint=true){
-  const x=db();if(!x||!uid()){S.lastError='Nicht angemeldet';paint();return null}
+  const x=db();if(!x){S.lastError='Datenbank nicht bereit';paint();return null}
   if(repaint&&!S.data)paint();
   try{
     const {data,error}=await x.rpc('v8010_harz_lotto_state');
@@ -162,7 +162,7 @@ async function load(repaint=true){
     if(r.ticket?.numbers)S.picks=new Set(r.ticket.numbers.map(Number));
     paint();return r;
   }catch(e){
-    S.lastError=String(e?.message||e);console.warn('[V8.010] lotto state',e);paint();return null;
+    S.lastError=String(e?.message||e||'LOTTO_STATE_FAILED');console.warn('[V8.010] lotto state',e);paint();return null;
   }
 }
 async function buy(){
