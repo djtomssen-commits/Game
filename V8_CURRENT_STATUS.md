@@ -5254,3 +5254,15 @@ Arbeitsmodus:
 - Rasterabstände leicht vergrößert, damit die Kugeln nicht gequetscht wirken.
 - CSS-Struktur geprüft: Tiefe 0.
 - Cache-Version auf `8010lotto24` erhöht.
+
+
+### Server 1 – Harz Lotto/Hinterhof-Dealer Promotion · 02.10.2026
+- Ausdrückliche Server-1-Freigabe erhalten.
+- Getesteten Beta-Stand des Hinterhof-Dealers nach `server1.html` übernommen.
+- Server-1-Seite enthält jetzt die Tabs **Tütchen** / **Harz Lotto**.
+- Harz-Lotto-Panel und aktueller UI-Stand mit Schein-/Gewinnklassen-/Letzte-Ziehung-Popups übernommen.
+- Aktiver Lotto-CSS-Owner auf Server 1 eingebunden: `v8010-harz-lotto-v2.css?v=8010lotto24`.
+- Aktueller Lotto-JS-Owner auf Server 1 eingebunden: `js/features/shop/beta/v8010-harz-lotto.js?v=8010lotto18`.
+- `GROW_RELEASE_CHANNEL='server1'` und Server-1-Release-Channel-Datei nicht verändert.
+- Keine Datenbankmigration im Zuge dieser UI/Feature-Promotion durchgeführt.
+- Stabiler Rücksprungpunkt `stable-server1-2026-10-01` bleibt unverändert.
