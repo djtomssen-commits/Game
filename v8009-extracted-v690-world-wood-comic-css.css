@@ -1,8 +1,15 @@
 
-body:has(#world.active){
+body:has(#world.active),
+body:has(#world.active) > .app,
+body:has(#world.active) > .app > main{
   background:
     radial-gradient(circle at 50% 4%,rgba(211,145,63,.10),transparent 22%),
     linear-gradient(180deg,#3d210f 0%,#2c170b 58%,#1c0f08 100%)!important;
+}
+body:has(#world.active) > .app,
+body:has(#world.active) > .app > main,
+#world.active{
+  margin-top:0!important;
 }
 #world.active{
   padding:8px 7px calc(120px + env(safe-area-inset-bottom,0px))!important;
