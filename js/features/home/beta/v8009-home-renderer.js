@@ -132,6 +132,7 @@
     const activeText=ev.map(x=>String(x?.t||'').toLowerCase()).join(' | ');
     const on=key=>{
       if(key==='tower')return activeText.includes('turm')||activeText.includes('anomalie');
+      if(key==='wedrank')return activeText.includes('turm')||activeText.includes('anomalie');
       if(key==='xp')return activeText.includes('exp');
       if(key==='gold')return activeText.includes('gold');
       if(key==='dampf')return activeText.includes('dampf');
@@ -142,6 +143,7 @@
     const more=Math.max(0,ev.length-visible.length);
     const tiles=[
       ['tower','TURM','🗼'],
+      ['wedrank','RANGLISTE','🏆'],
       ['xp','EXP','⚡'],
       ['gold','GOLD','💰'],
       ['dampf','DAMPF','🔥'],
