@@ -5449,3 +5449,15 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
 - Charakter behält seinen stabilen Single-Paint-Header-Owner; nur dessen reservierter Headerstreifen wurde auf Holz/Gold umgestellt.
 - CSS-Klammerprüfung: Tiefe 0.
 - Beta-Cache für Final-UI-Owner: `v=8011headers1`.
+
+
+### Beta – Charakter-Header leer / Heldenquartier-Titel wieder sichtbar · 02.10.2026
+- Screenshot zeigte auf der Charakterseite einen leeren Holz-Header unter der Haupt-Topbar.
+- Ursache: finaler Owner `v530-heldenquartier-static-root-header-css.css` blendete alle DOM-Titel aus und verließ sich auf SVG-`<text>`; Android WebView malte den Rahmen/Hintergrund, aber der Text konnte fehlen.
+- Direkt im finalen `v530`-Owner behoben.
+- Nur Beta bekommt den neuen sichtbaren Header über Body-Scope `v8011-beta-unified-headers`.
+- Titel `HELDENQUARTIER` und Unterzeile werden wieder als echte DOM-Texte angezeigt.
+- Optik auf Harzschmiede-Holz/Gold-Stil umgestellt.
+- Server 1 bleibt durch den Beta-Scope unverändert.
+- Beta-Cache: `v530headerfix1`.
+- CSS-Struktur geprüft: Tiefe 0.
