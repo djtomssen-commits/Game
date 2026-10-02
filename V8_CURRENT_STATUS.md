@@ -5946,3 +5946,27 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
   - Growroom Hauptpalette: `72f8d1212659d886c0216edcb4da817693e5faae`
   - Growroom Tabs: `729e197a3d1c957af68ee0ab865fd8cbc1c08c10`
   - Beta Cache: `3355745c7531bee4fcec0aeae3a751ae6124ace4`
+
+
+### Beta – Growroom Topf-Rahmen und Pflanzenkarten nochmals höher · 02.10.2026
+- Nur Beta geändert; Server 1 bleibt unverändert.
+- Bestehende Growroom-Owner direkt angepasst:
+  - `v8009-extracted-v497-plant-art-economy-css.css`
+  - `v8009-extracted-v493-growroom-mobile-css.css`
+  - `v8009-extracted-v492-growroom2-css.css`
+- Pflanzenkarten nochmals leicht erhöht:
+  - Desktop 192 → 202 px;
+  - <=760 px 176 → 186 px;
+  - <=390 px 168 → 178 px.
+- Gesamter Rahmen mit allen Töpfen/Pflanzen nochmals verlängert:
+  - Mobile 590 → 620 px;
+  - <=390 px 565 → 595 px;
+  - Basis-Szene 740 → 770 px.
+- Ziel: mehr Luft über den Pflanzen und keine abgeschnittenen oberen Pflanzenteile.
+- Kein neuer Owner, keine Patch-Datei.
+- Beta Cache-Bust: `8030growheight2`.
+- Commits:
+  - Pflanzenkarten: `11da16089c50812541f3c1f9f92af01c79414e71`
+  - Mobile Topf-Rahmen: `8d1a83ea7ea43eb8258174e3043cc609ed32a1be`
+  - Basis-Szene: `d3cbd3dad1456fa8932227766f4c3d61052c0670`
+  - Beta Cache: `2cb15d948f2c9872e0f963d9d498c8b0563bcaa7`
