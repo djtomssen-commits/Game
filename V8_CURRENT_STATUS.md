@@ -5872,3 +5872,26 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
   - Pet-Album Braun: `80a322f9f29088d8029a3320f3ade0cd934d82ee`
   - Pet-Profil Braun: `83c51214bbe6549d9b644a52e1b2895467750c01`
   - Beta Cache: `bfb98a825b3b3b082a1d347a78117bd05443edf4`
+
+
+### Beta – Gildenchat leicht kompakter gemacht · 02.10.2026
+- Nur Beta geändert; Server 1 bleibt unverändert.
+- Bestehende Gildenchat-Owner direkt bearbeitet:
+  - `css/features/guild/legacy/v4144-guild-chat-css.css`
+  - `css/features/guild/legacy/vGuildChatCloseVisibilityFix.css`
+- Gildenchat nur leicht verkleinert, nicht neu aufgebaut:
+  - maximale Breite ca. 410 → 390 px;
+  - Außenpadding leicht reduziert;
+  - Header etwas flacher;
+  - Close-Button leicht kleiner;
+  - Chat-Bubbles kompakter;
+  - Nachrichtenabstände reduziert;
+  - Chattext minimal kleiner;
+  - Eingabefeld und Senden-Button etwas kompakter.
+- Mobile Viewport-/Close-Fix bleibt vollständig aktiv; dessen bestehende Werte wurden passend mitgezogen.
+- Keine neue Patch-Datei, kein neuer Owner.
+- Beta Cache-Bust: `8027guildchatcompact1`.
+- Commits:
+  - Chat-Basis: `42e443e7560fc492b0ad60feed889f015e3eb53d`
+  - Viewport-/Close-Owner: `16629b07f0da5e28b3bd43b86297dffecd6e07d9`
+  - Beta Cache: `2b6320cc5a6619f194ce98f1ad484fcc1c7002e6`
