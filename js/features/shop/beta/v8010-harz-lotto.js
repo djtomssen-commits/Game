@@ -88,10 +88,15 @@ function lastResultHtml(d){
     <p class="v8010-carry">Nicht ausgeschüttet: <b>${fmt(draw.carry_out)} HT</b> → nächste Runde</p>
   </section>`;
 }
-function machineHtml(drawNums){
+function machineHtml(drawNums,jackpot,phaseText){
   const hasDraw=Array.isArray(drawNums)&&drawNums.length===6;
   return `<div class="v8010-machine" aria-label="Harz-Lotto Straßenautomat">
     <img class="v8010-machine-image" src="assets/file_00000000e27c8210b37148cc50f5d1af.png?v=8010orig6" alt="" draggable="false">
+    <div class="v8010-machine-topinfo">
+      <small>Aktueller Jackpot</small>
+      <b>${fmt(jackpot)} HT</b>
+      <span>${esc(phaseText)}</span>
+    </div>
     ${hasDraw
       ? `<div class="v8010-draw-chute">${balls(drawNums)}</div>`
       : '<div class="v8010-machine-wait">Ziehung Dienstag · 19:00</div>'}
@@ -112,9 +117,8 @@ function paint(){
   root.innerHTML=`<div class="v8010-wrap">
     <section class="v8010-head">
       <div><small>Grow Legends · Wochenziehung</small><h2>🔴 Harz Lotto</h2><p>1 Schein pro Woche · 6 aus 50 · Einsatz 25 Harz-Taler</p></div>
-      <div class="v8010-jackpot"><small>Aktueller Jackpot</small><b>${fmt(r.jackpot)} HT</b><span>${esc(phaseText)}</span></div>
     </section>
-    ${machineHtml(d.last_draw?.numbers)}
+    ${machineHtml(d.last_draw?.numbers,r.jackpot,phaseText)}
     <section class="v8010-card">
       <div class="v8010-row"><div><small>Runde</small><h3>Ziehung ${esc(r.round_id)}</h3></div><span class="v8010-status ${phase}">${phase==='open'?'Tippen offen':phase==='locked'?'Tipps geschlossen':'Ziehung'}</span></div>
       ${fixed?`<div class="v8010-fixed-note">✓ Dein Schein ist bestätigt und kann nicht mehr geändert werden.</div>`:`<p class="v8010-muted">Markiere genau 6 Zahlen. Nach der Bestätigung sind sie fest.</p>`}
