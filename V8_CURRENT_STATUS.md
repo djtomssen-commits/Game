@@ -5500,3 +5500,24 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
 - Seltenheitsfarben, Itembilder und Funktionslogik bleiben unverändert.
 - Cache Beta: `8013brown2`.
 - CSS-Klammerprüfung für beide Owner: OK.
+
+
+### Beta – Charakter/Inventar Hintergründe wieder dunkel · 02.10.2026
+- Auf Wunsch die zuvor ergänzten warm-braunen Beta-Hintergründe wieder entfernt.
+- Direkt aus den finalen Ownern entfernt:
+  - `v8009-extracted-v532-heldenquartier-final-polish-css.css`
+  - `v8009-extracted-v533-inventory-reference-css.css`
+- Wieder aktiv ist damit der vorherige dunkle Schwarz-/Grün-Look für:
+  - Avatar-/Slot-Umgebung,
+  - Charakter-Footer,
+  - Lebenspunkte/Kampfkraft,
+  - Set-/Passive-Bereiche,
+  - Charakter-Tabs,
+  - Inventar-Flächen,
+  - Auto-Ausrüstung,
+  - Auswahl-/Verkaufsbereich,
+  - Filter und Item-Karten.
+- Der neue Harzschmiede-/Holz-Header bleibt bestehen.
+- Nur Beta betroffen; `server1.html` wurde nicht geändert.
+- Cache-Bust: `v=8014dark1`.
+- CSS-Struktur geprüft: Tiefe 0.
