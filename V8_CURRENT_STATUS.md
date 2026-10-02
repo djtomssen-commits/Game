@@ -5895,3 +5895,25 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
   - Chat-Basis: `42e443e7560fc492b0ad60feed889f015e3eb53d`
   - Viewport-/Close-Owner: `16629b07f0da5e28b3bd43b86297dffecd6e07d9`
   - Beta Cache: `2b6320cc5a6619f194ce98f1ad484fcc1c7002e6`
+
+
+### Beta – Growroom Pflanzenbereich höher, Pflanzen oben nicht mehr abgeschnitten · 02.10.2026
+- Nur Beta geändert; Server 1 bleibt unverändert.
+- Nutzer-Screenshot zeigte abgeschnittene Pflanzengrafik am oberen Rand der Pflanzenkarten.
+- Bestehende Growroom-Owner direkt angepasst:
+  - `v8009-extracted-v493-growroom-mobile-css.css`
+  - `v8009-extracted-v497-plant-art-economy-css.css`
+- Gesamte Pflanzenfläche auf Mobile um ca. 30 px verlängert:
+  - 560 → 590 px;
+  - schmalere Mobile-Regel 535 → 565 px.
+- Pflanzenkarten selbst ebenfalls leicht höher gemacht und mit mehr oberem Innenraum versehen:
+  - Desktop 182 → 192 px;
+  - <=760 px 166 → 176 px;
+  - <=390 px 158 → 168 px.
+- Pflanzen-Art-Bereich jeweils um 8 px erhöht, damit die Grafik oben vollständig sichtbar bleibt.
+- Kein neuer Owner, keine Patch-Datei.
+- Beta Cache-Bust: `8028growheight1`.
+- Commits:
+  - Mobile Growroom-Höhe: `6cd398588924fd1d07a86fd6d112433175a3d1d1`
+  - Pflanzen-Art-Höhe: `46cb4e49d7f8dd33e4db161a49357dac334bba1b`
+  - Beta Cache: `c4143c3e87175488ef2d516f50c7b78aa147bb3a`
