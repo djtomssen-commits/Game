@@ -6426,3 +6426,26 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
   - Gildenübersicht: `15bd9353a7575a16bcd43638e2496ac0ead10317`
   - Gilden-Grow/Wochentruhe: `729c8bad356315e198a8a66b4ad857218c9fbfc3`
   - Beta Cache: `99098738c5d5d3ca6f662ed992cb7d5b139c56e6`
+
+
+### Beta – Hall of Haze auf Braun-/Holzpalette umgestellt · 02.10.2026
+- Nur Beta geändert; Server 1 bleibt unverändert.
+- Bestehende aktuelle Hall-Owner direkt bearbeitet:
+  - `v8009-extracted-v646-hall-template-css.css`
+  - `v8009-extracted-v6145-hall-pagination-css.css`
+  - `css/features/pvp/beta/v8009-s1-v326-hall-profile-css.css`
+- Auf Braun/Holz umgestellt:
+  - kompletter Hall-Hintergrund;
+  - Hauptkarten und eigenes Profil;
+  - Ranglistenzeilen;
+  - Podium- und Pagination-Chrome;
+  - Profil-Detailflächen.
+- Hall-Artwork bleibt erhalten.
+- Funktionale Farben bleiben erhalten, darunter Online-Status, aktive Tabs/Modi und DU-/Own-Markierungen.
+- Kein neuer Owner, keine Patch-Datei; bestehende Owner direkt angepasst.
+- Beta Cache-Bust: `8048hallbrown1`.
+- Commits:
+  - Hall Basis: `894a1b04fe5e06636ff8c18f0383a00b87b62472`
+  - Rangliste/Pagination: `9532ada1168c888b79f089f8ebc60d583a268b75`
+  - Profilflächen: `2064272df90f9eec1575f8b6350c9080b17d6158`
+  - Beta Cache: `790eb5f0e86bf6543abdd047d53c9de6cb4f2492`
