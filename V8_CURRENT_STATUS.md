@@ -5138,3 +5138,13 @@ Arbeitsmodus:
 - Automat zeigt nur noch echte Server-Ziehungszahlen; vor einer Ziehung bleibt der Wartehinweis sichtbar.
 - JS-Syntax nach Cleanup geprüft: OK.
 - Cache-Version auf `8010lotto14` erhöht.
+
+
+### Harz Lotto – Jackpot in Automaten-Display · 02.10.2026
+- Direkt im echten Lotto-Owner geändert, kein zusätzlicher Patch-Layer.
+- Großen Jackpot-Block aus dem Header entfernt.
+- Header kompakter gemacht.
+- `Aktueller Jackpot`, HT-Wert und Tippschluss/Ziehungsstatus werden jetzt direkt im oberen Display des Automaten gerendert.
+- Neues Overlay ist bildrelativ positioniert und Teil des aktiven CSS-Owners `v8010-harz-lotto-v2.css`.
+- JS-Syntax geprüft: OK.
+- Cache-Version auf `8010lotto15` erhöht.
