@@ -5157,3 +5157,17 @@ Arbeitsmodus:
 - Vollständige CSS-Klammerprüfung danach: Tiefe 0, keine negative Verschachtelung.
 - Jackpot-Overlay bleibt direkt im oberen Automaten-Display.
 - Cache-Version auf `8010lotto16` erhöht.
+
+
+### Harz Lotto – Harzschmiede-Style + Jackpot Feinschliff · 02.10.2026
+- Direkt in den aktiven Ownern geändert; kein zusätzlicher Patch-Layer.
+- Automaten-Jackpot: `HT` durch ausgeschriebenes **Harz-Taler** ersetzt.
+- Jackpot-Overlay kleiner und sauberer im oberen Automaten-Display ausgerichtet.
+- Hinterhof-Dealer Tabs ohne Emoji-Icons; klare Texttabs **Tütchen** / **Harz Lotto**.
+- Tab-Design an Harzschmiede V6.67 angelehnt: dunkler Sockel, kräftiger grüner Active-State, gold/grüne Konturen, uppercase.
+- Harz-Lotto-Header kompakter und direkt an Harzschmiede-Titelbar angelehnt: Holzstruktur, Goldkante, beige/goldene Typografie.
+- Rote Kugel aus dem Harz-Lotto-Titel entfernt.
+- Unterzeile `1 Schein pro Woche · 6 aus 50 · Einsatz 25 Harz-Taler` verkleinert.
+- Alte spätere Lotto-Override-Regeln für Tabs/Header aus dem aktiven CSS-Owner entfernt, damit nur der direkte Owner gilt.
+- JS-Syntax geprüft: OK; CSS-Klammerprüfung: Tiefe 0.
+- Cache-Version auf `8010lotto17` erhöht.
