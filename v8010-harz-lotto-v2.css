@@ -6,3 +6,152 @@
 .v8010-machine-wait{position:absolute;left:27.6%;top:76.2%;width:43.6%;z-index:3;text-align:center;color:#ffe4a0;font-size:clamp(9px,1.8vw,13px);font-weight:850;text-shadow:0 2px 5px #000}
 .v8010-card{padding:15px}.v8010-row{display:flex;justify-content:space-between;align-items:center;gap:12px}.v8010-status{font-size:12px;font-weight:900;padding:6px 9px;border-radius:999px}.v8010-status.open{background:#153b25;color:#8bf0ac}.v8010-status.locked,.v8010-status.draw{background:#4a171a;color:#ffabb0}.v8010-fixed-note{margin:10px 0;color:#96e9af;font-weight:700}.v8010-number-grid{display:grid;grid-template-columns:repeat(10,1fr);gap:6px;margin-top:12px}.v8010-number-grid button{aspect-ratio:1;border-radius:50%;border:1px solid rgba(255,255,255,.16);background:#111918;color:#c8d4ce;font-size:12px;font-weight:850}.v8010-number-grid button.selected{background:radial-gradient(circle at 35% 28%,#ffdc7b,#d22631 58%,#76070d);border-color:#ff8c93;color:white;box-shadow:0 0 0 2px rgba(255,72,82,.18)}.v8010-pickbar{display:flex;justify-content:space-between;margin:12px 0 10px;color:#b9c7c0}.v8010-submit,.v8010-claim{width:100%;background:linear-gradient(#c8212b,#7c0910)!important;border-color:#ee5660!important}.v8010-classes>div{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.07)}.v8010-classes>div b{color:#ffd36d}.v8010-classes p,.v8010-carry{font-size:12px;color:#9eaea6}.v8010-balls{display:flex;justify-content:center;gap:7px;flex-wrap:wrap}.v8010-ball{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle at 32% 25%,#fff5af,#d92732 55%,#71060d);border:2px solid #ff7d84;color:#fff;font-weight:1000;box-shadow:0 4px 10px rgba(0,0,0,.28)}.v8010-ball.hit{outline:3px solid #70e49a;box-shadow:0 0 18px rgba(112,228,154,.55)}.v8010-ticket-result{display:grid;gap:6px;margin:12px 0;padding:10px;border-radius:12px;background:rgba(255,255,255,.04)}.v8010-claimed{margin-top:10px;color:#91e6aa;font-weight:800}.v8010-no-win{margin-top:10px;color:#aeb8b2}.v8010-loading{padding:28px;text-align:center;color:#b9c7c0}.v8010-preview-controls{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;margin:-5px 0 0}.v8010-preview-controls button{min-width:210px}.v8010-preview-controls span{font-size:11px;color:#9fb3a8}.v8010-draw-chute.preview .v8010-ball{animation:v8010TestBall .36s cubic-bezier(.2,.9,.3,1.15) both}.v8010-draw-chute.preview .v8010-ball:nth-child(2){animation-delay:.06s}.v8010-draw-chute.preview .v8010-ball:nth-child(3){animation-delay:.12s}.v8010-draw-chute.preview .v8010-ball:nth-child(4){animation-delay:.18s}.v8010-draw-chute.preview .v8010-ball:nth-child(5){animation-delay:.24s}.v8010-draw-chute.preview .v8010-ball:nth-child(6){animation-delay:.30s}@keyframes v8010TestBall{0%{opacity:0;transform:translateY(-16px) scale(.55)}70%{opacity:1;transform:translateY(3px) scale(1.08)}100%{opacity:1;transform:translateY(0) scale(1)}}
 @media(max-width:600px){.v8010-head{align-items:stretch;flex-direction:column}.v8010-jackpot{text-align:left}.v8010-number-grid{grid-template-columns:repeat(5,1fr);gap:7px}.v8010-number-grid button{font-size:13px}.v8010-machine{width:100%;min-height:0}.v8010-draw-chute{left:27.6%;top:74.1%;width:43.6%;height:9.4%}.v8010-draw-chute .v8010-ball{width:clamp(18px,5vw,26px);height:clamp(18px,5vw,26px);font-size:clamp(7px,2.3vw,10px)}.v8010-machine-wait{left:27.6%;top:76.2%;width:43.6%}.v8010-dealer-tabs{position:sticky;top:0;z-index:4;background:rgba(7,11,10,.92);padding:6px 0}}
+/* V8010 Grow Legends visual pass */
+#bagDealer .v7219-dealer-shell{
+  background:
+    radial-gradient(circle at 50% 0,rgba(128,110,37,.16),transparent 28%),
+    linear-gradient(180deg,rgba(10,25,15,.97),rgba(4,12,8,.99));
+}
+#bagDealer .v8010-dealer-tabs{
+  padding:7px;
+  border:1px solid rgba(195,168,72,.38);
+  border-radius:17px;
+  background:linear-gradient(180deg,rgba(37,48,23,.96),rgba(12,22,14,.98));
+  box-shadow:inset 0 0 0 1px rgba(255,226,128,.05),0 8px 22px rgba(0,0,0,.34);
+}
+#bagDealer .v8010-dealer-tab{
+  min-height:54px;
+  border:1px solid rgba(177,160,92,.26);
+  color:#d7dccb;
+  background:
+    linear-gradient(180deg,rgba(23,38,27,.98),rgba(8,17,12,.98));
+  text-shadow:0 2px 3px #000;
+}
+#bagDealer .v8010-dealer-tab.active{
+  border-color:#bba64f;
+  color:#fff4c2;
+  background:
+    radial-gradient(circle at 50% 0,rgba(187,166,79,.19),transparent 48%),
+    linear-gradient(180deg,#314f29,#17321e 58%,#0c2113);
+  box-shadow:inset 0 0 0 1px rgba(255,238,157,.12),0 5px 14px rgba(0,0,0,.36);
+}
+#bagDealer .v8010-wrap{gap:16px}
+#bagDealer .v8010-head,
+#bagDealer .v8010-card{
+  position:relative;
+  overflow:hidden;
+  border:1px solid rgba(188,166,76,.48);
+  background:
+    radial-gradient(circle at 85% 8%,rgba(117,137,58,.13),transparent 30%),
+    linear-gradient(180deg,rgba(25,39,27,.98),rgba(8,18,12,.99));
+  box-shadow:
+    inset 0 0 0 1px rgba(255,239,169,.045),
+    inset 0 -16px 30px rgba(0,0,0,.17),
+    0 10px 26px rgba(0,0,0,.33);
+}
+#bagDealer .v8010-head::before,
+#bagDealer .v8010-card::before{
+  content:"";
+  position:absolute;
+  left:14px;right:14px;top:0;height:2px;
+  background:linear-gradient(90deg,transparent,#bba64f,transparent);
+  opacity:.58;
+}
+#bagDealer .v8010-head small,
+#bagDealer .v8010-card small{
+  color:#b6a966;
+  font-weight:800;
+  letter-spacing:.12em;
+}
+#bagDealer .v8010-head h2{
+  color:#f5edc5;
+  text-shadow:0 2px 0 #000,0 0 18px rgba(167,181,84,.12);
+}
+#bagDealer .v8010-head p,
+#bagDealer .v8010-muted{
+  color:#bcc9b6;
+}
+#bagDealer .v8010-jackpot{
+  border:1px solid #8e7937;
+  background:
+    radial-gradient(circle at 50% 0,rgba(185,154,50,.17),transparent 55%),
+    linear-gradient(180deg,#40271b,#25150f);
+  box-shadow:inset 0 0 0 1px rgba(255,224,122,.08),0 6px 16px rgba(0,0,0,.28);
+}
+#bagDealer .v8010-jackpot small{color:#c9b66a}
+#bagDealer .v8010-jackpot b{color:#ffe078;text-shadow:0 2px 4px #000}
+#bagDealer .v8010-jackpot span{color:#ded3a2}
+#bagDealer .v8010-machine{
+  border:2px solid #75662f;
+  box-shadow:
+    0 0 0 3px rgba(18,32,19,.86),
+    0 12px 30px rgba(0,0,0,.45);
+}
+#bagDealer .v8010-preview-controls button,
+#bagDealer .v8010-submit,
+#bagDealer .v8010-claim{
+  border:1px solid #9b873b!important;
+  color:#fff4c7!important;
+  background:
+    linear-gradient(180deg,#36582f,#17351f 60%,#102819)!important;
+  box-shadow:inset 0 0 0 1px rgba(255,236,152,.08),0 5px 14px rgba(0,0,0,.34)!important;
+  text-shadow:0 2px 3px #000;
+}
+#bagDealer .v8010-preview-controls button:active,
+#bagDealer .v8010-submit:active,
+#bagDealer .v8010-claim:active{transform:translateY(1px)}
+#bagDealer .v8010-status{
+  border:1px solid rgba(191,174,91,.32);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.035);
+}
+#bagDealer .v8010-status.open{
+  background:linear-gradient(180deg,#1c5b30,#10391e);
+  color:#b9f0c5;
+}
+#bagDealer .v8010-number-grid{
+  padding:12px;
+  border:1px solid rgba(169,150,69,.18);
+  border-radius:16px;
+  background:rgba(4,12,8,.38);
+}
+#bagDealer .v8010-number-grid button{
+  border-color:rgba(172,163,105,.28);
+  background:radial-gradient(circle at 40% 25%,#26352b,#101a13 68%);
+  color:#d7ddcf;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.025),0 3px 7px rgba(0,0,0,.22);
+}
+#bagDealer .v8010-number-grid button.selected{
+  border-color:#e6c85d;
+  background:radial-gradient(circle at 33% 25%,#ffe79a,#d92f39 54%,#75080d);
+  box-shadow:0 0 0 2px rgba(211,179,67,.22),0 4px 10px rgba(0,0,0,.35);
+}
+#bagDealer .v8010-pickbar{
+  padding:9px 11px;
+  border-radius:11px;
+  background:rgba(105,92,38,.09);
+  border:1px solid rgba(164,145,62,.14);
+  color:#c8cfbd;
+}
+#bagDealer .v8010-classes>div{
+  border-bottom-color:rgba(183,163,75,.13);
+}
+#bagDealer .v8010-classes>div b{color:#ecd274}
+#bagDealer .v8010-fixed-note{
+  padding:9px 10px;
+  border-radius:10px;
+  background:rgba(35,91,49,.17);
+  border:1px solid rgba(98,170,111,.18);
+  color:#9fe2ad;
+}
+#bagDealer .v8010-result .v8010-balls{
+  padding:10px 0;
+}
+#bagDealer .v8010-ticket-result{
+  border:1px solid rgba(176,158,70,.18);
+  background:rgba(7,15,10,.55);
+}
+@media(max-width:600px){
+  #bagDealer .v8010-head{padding:15px}
+  #bagDealer .v8010-card{padding:14px}
+  #bagDealer .v8010-number-grid{padding:10px}
+}
