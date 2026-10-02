@@ -5417,3 +5417,35 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
 - Cache-Bust für den Server-Auswahl-Owner in Beta und Server 1:
   - `v=7226manualclosed1`.
 - Zukünftige Öffnung von Server 1 darf nur noch bewusst/manuell erfolgen; kein Datum allein öffnet den Server.
+
+
+### Beta – einheitliche Header im Harzschmiede-Stil · 02.10.2026
+- Nur Beta aktiviert; Server 1 bleibt unverändert.
+- `beta.html` trägt dafür `body.v8011-beta-unified-headers`.
+- Globaler finaler UI-Owner: `v8009-extracted-v4149-final-ui-authority-css.css`.
+- Einheitlicher Stil basiert direkt auf der Harzschmiede:
+  - Holzplanken-Hintergrund;
+  - dunkler Holzrahmen;
+  - goldene Innenkante;
+  - beige/goldene Titeltypografie;
+  - einheitliche Schatten und Radien.
+- Beta-scoped Header-Autorität erfasst aktuell:
+  - Charakter;
+  - Growroom;
+  - Quest & Schicht;
+  - Dungeons;
+  - Anbauturm;
+  - Nebelkarawane;
+  - Endgame;
+  - Harz & Gold & Rahmen Dealer;
+  - Hinterhof-Dealer / Harz Lotto;
+  - PvP-Arena;
+  - Gilde;
+  - Hall of Haze;
+  - Nebel-Crew;
+  - Nebel-Post;
+  - Admin.
+- Bestehende Inhalte/Buttons/Stats der einzelnen Header bleiben erhalten; nur das gemeinsame visuelle Header-System wird vereinheitlicht.
+- Charakter behält seinen stabilen Single-Paint-Header-Owner; nur dessen reservierter Headerstreifen wurde auf Holz/Gold umgestellt.
+- CSS-Klammerprüfung: Tiefe 0.
+- Beta-Cache für Final-UI-Owner: `v=8011headers1`.
