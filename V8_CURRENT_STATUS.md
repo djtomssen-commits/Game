@@ -5291,3 +5291,108 @@ Arbeitsmodus:
 - RLS auf Server-1-Lotto-Tabellen aktiviert; direkter Tabellenzugriff für anon/authenticated entzogen; Zugriff nur über RPC.
 - Separater Cron `v8010_server1_harz_lotto_draw` läuft minütlich und zieht nur Server-1-Runden.
 - Direkter Test mit authentifizierter Server-1-Session: `server1.v8010_harz_lotto_state()` liefert `ok: true`.
+
+## FESTE ARCHITEKTUR-REGEL: Beta / Server 1 Trennung · Stand 02.10.2026
+
+### Release-Channels
+- **Beta** läuft mit `window.GROW_RELEASE_CHANNEL='beta'` bzw. dem Beta-Channel.
+- **Server 1** läuft mit `window.GROW_RELEASE_CHANNEL='server1'`.
+- `js/features/account/server1-release-channel.js` setzt Server 1 explizit auf `server1`.
+- Diese Release-Channel-Trennung bei Promotionen niemals entfernen oder überschreiben.
+
+### Supabase-Schema-Trennung
+- Der zentrale Supabase-Client wählt das Schema abhängig vom aktiven Server:
+  - **Beta → `public`**
+  - **Server 1 → `server1`**
+- Owner: `js/features/social/beta/v8009-a1-supabase-online-system.js`
+- Dort gilt:
+  - `v073SelectedServer==='server1' ? 'server1' : 'public'`
+  - der Supabase-Client wird mit `db:{schema:v073DbSchema}` erstellt.
+- Konsequenz: Ein `v073Db.rpc('xyz')` auf Server 1 sucht `server1.xyz`, auf Beta `public.xyz`.
+
+### WICHTIG für neue serverautoritative Features
+Wenn ein Feature serverautoritative Tabellen/RPCs benutzt, reicht es **nicht**, nur Beta-Code nach `server1.html` zu übernehmen.
+
+Vor jeder Server-1-Promotion prüfen:
+
+1. Gibt es die benötigten Tabellen im Schema `server1`?
+2. Gibt es die benötigten RPCs/Funktionen im Schema `server1`?
+3. Greifen Server-1-RPCs ausschließlich auf `server1.*`-Tabellen zu?
+4. Greifen Beta-RPCs ausschließlich auf `public.*`-Tabellen zu?
+5. Sind RLS/Rechte für beide Schemas korrekt?
+6. Gibt es Cronjobs/Hintergrundjobs getrennt für beide Server, falls das Feature zeitgesteuert ist?
+7. Gibt es irgendwo hart codierte `public.*`-Referenzen, obwohl Server 1 getrennt sein muss?
+8. Erst danach UI/JS in `server1.html` aktivieren.
+
+### Harz-/Progress-Trennung
+- Beta:
+  - `public.player_progress_trusted`
+  - `public.player_harz_events`
+- Server 1:
+  - `server1.player_progress_trusted`
+  - `server1.player_harz_events`
+- Harz-Taler, Gold, XP und andere servergebundene Progress-Daten niemals zwischen beiden Schemas vermischen.
+
+### Harz Lotto – Referenzbeispiel
+Beta/Public:
+- `public.harz_lotto_rounds`
+- `public.harz_lotto_tickets`
+- `public.v8010_harz_lotto_state()`
+- `public.v8010_harz_lotto_buy_ticket(integer[])`
+- `public.v8010_harz_lotto_claim()`
+- interne Owner: `private.v8010_lotto_*`
+- Cron: `v8010_harz_lotto_draw`
+
+Server 1:
+- `server1.harz_lotto_rounds`
+- `server1.harz_lotto_tickets`
+- `server1.v8010_harz_lotto_state()`
+- `server1.v8010_harz_lotto_buy_ticket(integer[])`
+- `server1.v8010_harz_lotto_claim()`
+- interne Owner: `server1.v8010_lotto_*`
+- Cron: `v8010_server1_harz_lotto_draw`
+
+### Fehlerbild vom 02.10.2026 – Merken
+Problem:
+- Lotto-UI wurde von Beta nach Server 1 übernommen.
+- Client war korrekt geladen.
+- Server 1 zeigte trotzdem **„Lotto konnte nicht geladen werden“**.
+
+Ursache:
+- Server-1-Supabase-Client arbeitet im Schema `server1`.
+- Lotto-RPCs und Tabellen existierten zunächst nur in `public`.
+- Deshalb konnte derselbe RPC-Aufruf auf Server 1 nicht auf den Beta/Public-Owner zugreifen.
+
+Lösung:
+- Lotto vollständig nativ im `server1`-Schema angelegt.
+- Keine Umleitung des Server-1-Clients auf `public`.
+- Damit bleiben Daten, Währungen, Tickets und Ziehungen vollständig getrennt.
+
+### Beta → Server 1 Promotion – feste Checkliste
+Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
+
+1. aktuellen Beta-Stand bestimmen;
+2. UI-/JS-Differenz zu `server1.html` prüfen;
+3. alle serverautoritativen RPCs/Tabellen des Features identifizieren;
+4. prüfen, ob `server1`-Entsprechungen existieren;
+5. fehlende Server-1-Owner nativ in `server1` anlegen;
+6. Server-1-RPCs auf `server1.*` prüfen;
+7. Cronjobs/Trigger getrennt prüfen;
+8. erst dann `server1.html` aktualisieren;
+9. JS-Syntax/CSS-Struktur prüfen;
+10. Server-1-Smoke-Test durchführen;
+11. `V8_CURRENT_STATUS.md` aktualisieren.
+
+### Owner-Prinzip gilt auch bei Server-Trennung
+- Immer den **echten finalen Owner** ändern.
+- Keine zusätzlichen Runtime-Patches, wenn der Owner direkt editierbar ist.
+- Beta-spezifische und Server-1-spezifische Datenowner sauber getrennt halten.
+- Gemeinsame UI-Dateien dürfen geteilt werden, solange deren Datenzugriff schemaabhängig korrekt bleibt.
+
+### Rücksprung / Schutz
+- Stabiler Server-1-Rücksprungpunkt bleibt:
+  - `stable-server1-2026-10-01`
+- Ohne ausdrückliche Freigabe:
+  - `server1.html` nicht ändern,
+  - Server-1-DB-Owner nicht ändern,
+  - Server-1-Release-Channel nicht ändern.
