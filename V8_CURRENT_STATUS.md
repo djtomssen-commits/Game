@@ -5648,3 +5648,22 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
   - v533 `8016brown3`
   - v6108 `8016quality3`
 - CSS-Klammerprüfung: OK.
+
+
+### Beta – Illegales Buch / Pet-Sammelalbum Braun angepasst · 02.10.2026
+- Nur Beta geändert; Server 1 bleibt unverändert.
+- Grünen Hintergrund hinter den beiden Character-Karten **Illegales Buch** und **Pet-Sammelalbum** im bestehenden Heldenquartier-Owner auf warmes Braun/Holz umgestellt.
+- Pet-Sammelalbum-Tab im bestehenden Pet-Album-Owner optisch an den braunen Illegales-Buch-Tab angeglichen:
+  - brauner Verlauf;
+  - goldbrauner Rahmen;
+  - gleicher Radius/Schattencharakter;
+  - Pfeil statt Grün jetzt gold/beige.
+- Keine neue Patch-Datei angelegt; bestehende Owner direkt erweitert und Beta-scoped über `body.v8011-beta-unified-headers`.
+- Geänderte Owner:
+  - `v8009-extracted-v514-heldenquartier-reference-css.css`
+  - `v8009-extracted-v686-pet-album-css.css`
+- Beta Cache-Bust für beide: `8017bookbrown1`.
+- Commits:
+  - Book-Host Braun: `9d0cfbd49e4b734eef780dd0511cae7a56013d20`
+  - Pet-Tab Braun: `5edacc2a52420cf232e8d8793cc4b4f4fa47e0ca`
+  - Beta Cache: `0ccad653fac389d2c98b596df9f8af212b196a3f`
