@@ -13,7 +13,7 @@
   ['shop','🛒','Händler'],
   ['forge','🔨','Harzschmiede'],
   ['harzDealer','🟢','Harz & Gold & Rahmen Dealer'],
-  ['bagDealer','📦','Tütchen-Dealer'],
+  ['bagDealer','🏪','Hinterhof-Dealer'],
   ['pvp','⚔️','PvP-Arena'],
   ['guild','🏰','Gilde'],
   ['hall','🏆','Hall of Haze'],
