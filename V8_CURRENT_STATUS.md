@@ -5105,3 +5105,19 @@ Arbeitsmodus:
   - roter Lottoautomat bleibt bewusster Fokus.
 - Aktiver CSS-Owner bleibt `v8010-harz-lotto-v2.css`.
 - Cache-Version auf `8010lotto11` erhöht.
+
+
+### Harz Lotto – finaler Navigation-/Style-Owner Fix · 02.10.2026
+- Ursache für nicht sichtbare Umbenennung gefunden:
+  - `v4148 complete-menu-authority` setzte `bagDealer` weiterhin auf **Tütchen-Dealer**.
+  - `v4149 final-navigation-render-authority` setzte ihn ebenfalls weiterhin auf **Tütchen-Dealer**.
+- Beide echten finalen Navigation-Owner direkt auf **🏪 Hinterhof-Dealer** geändert.
+- Lotto-CSS war syntaktisch korrekt; zur Absicherung gegen spätere Legacy-CSS-Overrides jetzt zusätzlicher finaler Runtime-Theme-Owner im V8.010 Lotto-JS.
+- Runtime-Theme nutzt hochspezifische `#bagDealer #v8010LottoPanel ... !important` Regeln für:
+  - Waldgrün/Gold Karten;
+  - Goldrahmen;
+  - braun-goldenen Jackpot;
+  - grün-goldene Buttons;
+  - gerahmtes Zahlenfeld;
+  - Grow-Legends Händler-/RPG-Tiefe.
+- Cache-Version auf `8010lotto12` erhöht.
