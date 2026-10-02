@@ -396,9 +396,14 @@ window.v8009CreateTowerLobbyController=function(c){
   if(rankBusy){rankReloadQueued=true;return}
   rankBusy=true;
   const paint=html=>{const liveBox=document.getElementById('vTRanking');if(liveBox)liveBox.innerHTML=html};
-  paint('<div class="vT-empty">Rangliste wird geladen …</div>');
+  const own=c.ensure()?.season||{},uid=c.getUserId(),ownScore=Math.max(0,Number(own.bestScore)||0),ownFloor=Math.max(0,Number(own.bestFloor)||0);
+  const ownFallback=ownScore>0||ownFloor>0
+   ?`<div class="vT-empty" style="margin-bottom:6px">Server-Rangliste wird geladen …</div><div class="vT-leader-row me"><div class="vT-rank">–</div><div class="vT-player"><b>Dein Rekord</b><span>Lokaler Turmwert</span></div><div class="vT-score"><b>${c.fmt(ownScore)}</b><span>Etage ${ownFloor}</span></div></div>`
+   :'<div class="vT-empty">Server-Rangliste wird geladen …</div>';
+  paint(ownFallback);
   try{
-   const data=await c.fetchAllTowerProfiles(true),sid=c.seasonId();
+   const timeout=new Promise((_,reject)=>setTimeout(()=>reject(new Error('TOWER_RANKING_TIMEOUT')),6500));
+   const data=await Promise.race([c.fetchAllTowerProfiles(true),timeout]),sid=c.seasonId();
    const prevSid=(()=>{
      const [y,m]=String(sid).split('-').map(Number);
      const d=new Date(y,Math.max(0,m-2),1);
@@ -428,7 +433,11 @@ window.v8009CreateTowerLobbyController=function(c){
       so a month rollover cannot erase the previous-season fallback before it is shown. */
    try{void c.syncProfile(true)}catch(_){}
   }catch(e){
-   paint('<div class="vT-empty">Online-Rangliste momentan nicht erreichbar. Dein eigener Rekord bleibt gespeichert.</div>');
+   console.warn('[V8.035] Turm-Rangliste',e);
+   const own=c.ensure()?.season||{},score=Math.max(0,Number(own.bestScore)||0),floor=Math.max(0,Number(own.bestFloor)||0);
+   paint((score>0||floor>0)
+    ?`<div class="vT-empty" style="margin-bottom:6px">Online-Rangliste momentan nicht erreichbar. Dein Rekord bleibt sichtbar.</div><div class="vT-leader-row me"><div class="vT-rank">–</div><div class="vT-player"><b>Dein Rekord</b><span>Lokaler Turmwert</span></div><div class="vT-score"><b>${c.fmt(score)}</b><span>Etage ${floor}</span></div></div>`
+    :'<div class="vT-empty">Online-Rangliste momentan nicht erreichbar. Noch kein eigener Turmrekord vorhanden.</div>');
   }finally{
    rankBusy=false;
    if(rankReloadQueued){
