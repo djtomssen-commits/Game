@@ -6197,3 +6197,23 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
 - Commits:
   - aktiver Nebelkarawane-Owner: `adb15612a2036ccd1e9b973d28f9c3f90cbe3e18`
   - Beta Cache: `456f3d019709fbdc306ae33b6a818b23b0e3b4e2`
+
+
+### Beta – Nebelkarawane Header nochmals kleiner · 02.10.2026
+- Nur Beta geändert; Server 1 bleibt unverändert.
+- Aktiven Last-Writer direkt angepasst:
+  - `v8009-extracted-v7253-karawane-layout-fix.css`
+- Header/Hero nochmals kompakter:
+  - Route-Select Gesamthöhe Desktop 820 → 790 px;
+  - Mobile 780 → 750 px;
+  - Hero weiter nach oben;
+  - Hero-Padding reduziert;
+  - Titel Desktop kleiner;
+  - Mobile Titel 24 → 21 px;
+  - Beschreibung und Stats nochmals kleiner;
+  - Routen entsprechend etwas weiter nach oben gezogen.
+- Kein neuer Owner / keine Patch-Datei.
+- Beta Cache-Bust: `8039caravanheader2`.
+- Commits:
+  - Header kleiner: `8a8707bef9afcf49622b545b3d13e3b5819b748a`
+  - Beta Cache: `7ce62b0de5b91232fce1f86f09760a8ebf4a7746`
