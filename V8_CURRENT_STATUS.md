@@ -6139,3 +6139,34 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
 - Commits:
   - Authority-Fix: `c45b4760170c25bf28d7e83eb8b5b33ee1d38e0b`
   - Beta Cache: `8af70a53df7337325550213092da576b45fef175`
+
+
+### Beta – Nebelkarawane Braun/Holz + Header kompakter · 02.10.2026
+- Nur Beta geändert; Server 1 bleibt unverändert.
+- Aktuellen Nebelkarawane-Owner direkt bearbeitet:
+  - `v8009-extracted-v7248-nebelkarawane-redesign-css.css`
+- Hintergrund und nicht-funktionale UI-Flächen auf die gemeinsame Braun-/Holzpalette gezogen:
+  - kompletter Caravan-Screen;
+  - Hero-Grundfläche und Overlay;
+  - Wallet/Help;
+  - Routen-Badges;
+  - Stations-/Infoflächen;
+  - Route-Karten;
+  - Reward-Flächen;
+  - Result-/Finish-Flächen;
+  - Regeln/History.
+- Großen Nebelkarawane-Header/Hero deutlich kompakter gemacht:
+  - Desktop min-height 420 → 330 px;
+  - Mobile min-height 440 → 350 px;
+  - Toprow-Padding reduziert;
+  - Title-Chip kleiner;
+  - Titelgröße reduziert;
+  - Untertitel kleiner;
+  - Wallet/Help kleiner;
+  - Route-Copy und Progress vertikal kompakter.
+- Szenen-/Routenbilder sowie Risiko-/Reward-Farben bleiben erhalten.
+- Kein neuer Owner, keine zusätzliche Patch-Datei.
+- Beta Cache-Bust: `8037caravanbrowncompact1`.
+- Commits:
+  - Nebelkarawane Owner: `89c70577a958b62436832a541a4630605f81819a`
+  - Beta Cache: `a294d4b27b7475ed55aec18e4c16915d98d7f8a0`
