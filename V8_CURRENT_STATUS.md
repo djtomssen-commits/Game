@@ -5724,3 +5724,21 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
 - Commits:
   - Layout/Frame-Größen: `9e2d13733bdd6957e4a65882df6041e4bb4fc428`
   - Beta Cache: `96babbc02335e90e91c67c91059d1ec4a5d004d8`
+
+
+### Beta – Avatar-/Slot-Hintergrund an Braun/Holz angepasst · 02.10.2026
+- Nur Beta geändert; Server 1 bleibt unverändert.
+- Oberen Heldenquartier-Bereich hinter Avatar und ausgerüsteten Items farblich an den restlichen Braun-/Holz-Look angepasst.
+- Bestehenden Owner direkt geändert: `v8009-extracted-v514-heldenquartier-reference-css.css`.
+- Änderungen:
+  - Stage-Hintergrund von grün/dunkelgrün auf warmes Braun/Holz;
+  - Avatar-Glow von grün auf warmen Bernstein-/Braunton;
+  - Slot-Innenflächen auf dunkles Braun;
+  - innere Slot-Kontur warm/goldbraun;
+  - dekorative Blattstempel deutlich zurückgenommen und entsättigt.
+- Qualitäts-/Raritätsfarben der Items bleiben unverändert aktiv.
+- Keine neue Patch-Datei, kein zusätzlicher Runtime-Owner.
+- Beta Cache-Bust: `8020stagebrown1`.
+- Commits:
+  - CSS-Owner: `1dcd418ef92ca8a3d4c5517301258058ad19bea2`
+  - Beta Cache: `e12508bb15faf70255f1bff4d4bb0a219c52af0a`
