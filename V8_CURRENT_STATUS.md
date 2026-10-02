@@ -6170,3 +6170,30 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
 - Commits:
   - Nebelkarawane Owner: `89c70577a958b62436832a541a4630605f81819a`
   - Beta Cache: `a294d4b27b7475ed55aec18e4c16915d98d7f8a0`
+
+
+### Beta – Nebelkarawane echten aktiven v7253/v7254-Owner korrigiert · 02.10.2026
+- Nutzer-Screenshot zeigte, dass die vorherige Änderung am `v7248`-Owner sichtbar nichts bewirkte.
+- Ursache: Die aktuell sichtbare Route-Select-Ansicht wird durch den späteren `v7253-karawane-layout-fix.css` / `.v7254-route-select`-Block überschrieben.
+- Genau diesen aktuellen Last-Writer direkt geändert:
+  - `v8009-extracted-v7253-karawane-layout-fix.css`
+- Sichtbare Route-Select-Ansicht jetzt auf Braun/Holz gezogen:
+  - Route-Select-Hintergrund;
+  - Hero-Fläche;
+  - Hero-Stats;
+  - Routen-Karten;
+  - Preis-/Side-Chips.
+- Header/Hero jetzt wirklich kompakter:
+  - Desktop Route-Select 888 → 820 px;
+  - Mobile 840 → 780 px;
+  - Hero weiter nach oben;
+  - Hero-Padding reduziert;
+  - Titel 28 → 24 px auf Mobile;
+  - Beschreibung/Stats kleiner;
+  - Routen entsprechend weiter nach oben gezogen.
+- Kein neuer Owner, tatsächlichen aktuellen Last-Writer direkt bearbeitet.
+- Nur Beta; Server 1 unverändert.
+- Beta Cache-Bust: `8038caravanactive1`.
+- Commits:
+  - aktiver Nebelkarawane-Owner: `adb15612a2036ccd1e9b973d28f9c3f90cbe3e18`
+  - Beta Cache: `456f3d019709fbdc306ae33b6a818b23b0e3b4e2`
