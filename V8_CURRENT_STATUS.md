@@ -8203,3 +8203,51 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
 - Report-Commit: `f385ee9a7c32d13e84a7dc627c6f5c099b1fb6a0`
 - Server 1 unverändert.
 
+### V8.097 – Beta Kampftelemetrie + vollständiger Talent-Wirkungs-/Sichtbarkeits-Audit · 03.10.2026
+- Bestehenden Combat-QA-Owner erweitert; keine zweite parallele Telemetrie gebaut.
+- Live-Kampftelemetrie:
+  - speichert bis zu 300 abgeschlossene Beta-Kämpfe lokal,
+  - erfasst Klasse, Level, Attribute, Talentverteilung, Modus, Runden,
+    verursachten/erlittenen Schaden, Heilung, Konterschaden, Crits, Dodges,
+    ausgelöste Proc-Tags und bis zu 80 Kampfereignisse je Kampf.
+  - QA-Sandboxkämpfe sind explizit ausgeschlossen.
+  - Exporte:
+    - `v606CombatTelemetry()`
+    - `v606CombatTelemetrySummary()`
+    - `v606ClearCombatTelemetry()`
+- Load-Order korrigiert:
+  - Combat-QA/Telemetry lädt jetzt nach Frost UND Harzruferin,
+    damit der finale Resolver aller fünf Klassen gemessen wird.
+- Talent-Audit:
+  - 105/105 normale Talentknoten mechanisch zugeordnet.
+  - 105/105 Schlüsseltalente mechanisch zugeordnet.
+  - Passive Talente bleiben ohne Kampftext-Spam.
+  - Aktive/ausgelöste Mechaniken werden im Kampf sichtbar getaggt.
+- Neu sichtbar gemacht:
+  - Grower: VOLLTREFFER, REGENERATION
+  - Scout: PRÄZISER TREFFER, KONTERSCHUSS+, AKROBAT, MEISTERREFLEX+
+  - Bruiser: ÜBERLADUNG+, GRENZENLOSE MACHT+
+- Harzruferin neu im zentralen Combat-QA:
+  - Ruf aus dem Dunst
+  - Fluchnebel
+  - Seelenraub
+  - Zweiter Ruf / Geisterchor
+  - NICHT GANZ TOT
+- Bestehende aktive QA bleibt für Barbar, Scout, Bruiser und Frost erhalten;
+  neue Tests prüfen jetzt explizit auch Sichtbarkeit der Talent-Procs.
+- Verifikation:
+  - QA-Owner lädt nach Harzruferin: ja
+  - Summoner QA vorhanden: ja
+  - Telemetrie-Exports vorhanden: ja
+  - QA-Sandbox von Live-Telemetrie getrennt: ja
+  - 105/105 Coverage-Marker vorhanden: ja
+  - neue aktive Labels im kanonischen Resolver vorhanden: ja
+- Commits:
+  - `1af8371f039c9631669b0cb2ee8e9fa20f54cfff` Telemetrie + Summoner QA
+  - `e5a640c0b3e0be8c1dd54a8e9be17e7e8ca48cde` Sandbox-Trennung + QA UI
+  - `4213701f762568baa96291b0e5fd44e8f1bb8044` Load-Order hinter Klassen-Resolver
+  - `7517e2ffb376ded8890657752901ff82d36d4d7e` stille Talent-Procs sichtbar
+  - `150682d8f6a9e569fc345a154e2951ddc574670b` Scout/Grower Proc-Sichtbarkeit
+  - `f8d536105f7e06a84a6790ad90ea69e3dda820b6` aktive Sichtbarkeits-QA
+- Server 1 unverändert; Beta zuerst beobachten.
+
