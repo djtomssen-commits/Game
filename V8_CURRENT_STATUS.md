@@ -7085,3 +7085,16 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
 - Zentraler Item-UI-Owner v4103 übernimmt dieselbe Palette für alle markierten aktuellen Itemflächen.
 - Cache-Key: 8071qualitystrong1.
 - Commits: globale Quality-Art-Farben 9a9caf7c2fdfa3b7ddadb1a79f0c454af3f43207; zentrale Item-/Compare-Farben 795374726d8c2fc4770eba6a6fb187c3f8d87059; Beta Cache ec5c39cd7f45bfa6bc68de029871d62cff979f85; index Cache 65fecd055a808ef78e9ac9325fb6e9e5d2eef7e4; Server1 Cache 7a505ef57176a2e684ae0905480ab2f395cf060f.
+
+
+### Itemvergleich V8.072 – Inventar/Shop/Popup auf einen einzigen Score vereinheitlicht · 03.10.2026
+- Nutzerfehlerbild: Inventarkarte zeigte z. B. -20,3, während das Vergleichspopup +20,6 besser zeigte; Shop vermutlich ebenfalls betroffen.
+- Root Cause: `v8009-s4-v470-character-slot-art-canonical-comparison.js` wird nach `v4103` geladen und war weiterhin der Last-Writer für Inventar-Badge sowie `v090ComparisonHtml`/`v089ShopComparison`. Dadurch liefen Karten-Badge und Popup über unterschiedliche Scores.
+- Fix: `v470` berechnet keine eigene Itemwertung mehr, sondern verwendet `window.v4103TotalCompareScore()` für Inventar und Shop.
+- Zentraler Endwert enthält jetzt: native Grundwerte + Stein + VZ-Rolle + mystischen Spezialeffekt.
+- Popup-Label geändert auf `Gesamt inkl. Stein + VZ + Spezial`.
+- Erwartung: Inventar-Badge, Shop-Badge und Popup liefern für dasselbe Item gegen dasselbe angelegte Item exakt dasselbe Vorzeichen und denselben Vergleichswert.
+- Cache-Key: `8072compareunified1`.
+- Commits: zentraler Score `057ffa681c1ecfa44162170e03a48f7a7ed456c8`; v470 Last-Writer-Fix `f1db13684f5e31cf9bafac56d7ebc21147fb50c5`; Beta Cache `5ec689887efe58aa70f1b88103880d968344490f`; index Cache `13796ca5a585e7aee7b4b241888e1fce50ce4540`; Server1 Cache `680560a667022694760b930f68f46236e8ad73cb`.
+- Code-QA nach Commit: `v4103` enthält finalen Gesamt-Score; `v470` nutzt `window.v4103TotalCompareScore`; Beta/index/Server1 tragen den Cache-Key `8072compareunified1`.
+- Account-State-Diagnostik konnte in diesem Schritt wegen Tool-Sicherheitsblock nicht vollständig erneut ausgelesen werden; die Code-Root-Cause war direkt reproduzierbar über die Script-Reihenfolge/Last-Writer-Struktur.
