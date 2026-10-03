@@ -45,12 +45,14 @@
   let q=Array.isArray(randoms)?randoms.slice():[.99];
   const fakeRank=function(branch,kind,i){const v=ranks?.[key(branch,kind,i)];return v==null?0:Number(v)||0};
   try{
+   window.__V606_QA_SANDBOX__=true;
    s.playerClass=cls;
    try{v314Rank=fakeRank}catch(_){}
    try{window.v314Rank=fakeRank}catch(_){}
    Math.random=()=>q.length?Number(q.shift()):.99;
    return fn();
   }finally{
+   window.__V606_QA_SANDBOX__=false;
    Math.random=oldRandom;
    s.playerClass=oldClass;
    try{v314Rank=oldRank}catch(_){}
@@ -173,7 +175,7 @@
    v318ResolvePlayerAttack=function(st,ctx){
     const r=baseAttack.apply(this,arguments)||{};
     try{
-     if(st&&String(st.mode||'')!=='qa'){
+     if(st&&!window.__V606_QA_SANDBOX__){
       const x=v606TelFight(st);x.player_attacks++;x.rounds=Math.max(x.rounds,Number(st.attackCount)||x.player_attacks);
       x.damage_done+=Math.max(0,Number(r.damage)||0);x.healing+=Math.max(0,Number(r.heal)||0);if(r.crit)x.crits++;
       v606TelProc(x,r.text);
@@ -192,7 +194,7 @@
    v318ResolveEnemyAttack=function(st,ctx){
     const r=baseDefense.apply(this,arguments)||{};
     try{
-     if(st&&String(st.mode||'')!=='qa'){
+     if(st&&!window.__V606_QA_SANDBOX__){
       const x=v606TelFight(st);x.enemy_attacks++;x.damage_taken+=Math.max(0,Number(r.damage)||0);x.healing+=Math.max(0,Number(r.heal)||0);x.counter_damage+=Math.max(0,Number(r.counterDamage)||0);
       if(/AUSGEWICHEN/i.test(String(r.text||'')))x.dodges++;
       v606TelProc(x,r.text);
@@ -223,7 +225,7 @@
   const root=document.getElementById('v606CombatQa');if(!root)return;
   const by=cls=>tests.filter(t=>t.cls===cls);
   const done=[...results.values()],pass=done.filter(r=>r.pass&&r.visual).length,warn=done.filter(r=>r.pass&&!r.visual).length,fail=done.filter(r=>!r.pass).length;
-  root.innerHTML=`<div class="v606-head"><div><h3>⚔️ KAMPF-QA · KLASSEN & TALENTE</h3><div class="v606-note">Deterministische Tests der echten Kampf-Resolver. Kein Dungeon-Versuch, kein Gold, kein Harz-Taler, kein Fortschritt und kein Save werden verändert.</div></div><div class="v606-actions"><button class="primary" data-v606-all>ALLE TESTEN</button><button data-v606-clear>ERGEBNISSE LÖSCHEN</button></div></div><div class="v606-grid">${Object.entries(CLASS_INFO).map(([cls,ci])=>`<div class="v606-class"><h4>${ci.icon} ${ci.name}</h4>${by(cls).map(t=>{const r=results.get(t.id),[c,l]=status(r);return `<div class="v606-row ${c}" data-v606-row="${t.id}"><span>${r?(r.pass?'✅':'❌'):'•'}</span><div><b>${esc(t.name)}</b><small>${esc(r?.detail||'Noch nicht getestet.')}</small></div><button class="v606-status" data-v606-test="${t.id}">${l}</button></div>`}).join('')}</div>`).join('')}</div><div class="v606-summary"><b>Ergebnis:</b> ${done.length}/${tests.length} getestet · ✅ ${pass} vollständig · ⚠️ ${warn} Mechanik ohne bestätigte Anzeige · ❌ ${fail} Fehler${window.__V446_FIGHTING__?'<br><b>Hinweis:</b> Ein echter Dungeon-Kampf läuft. QA erst danach starten.':''}</div>`;
+  const tel=window.v606CombatTelemetrySummary?.()||{stored_fights:0};root.innerHTML=`<div class="v606-head"><div><h3>⚔️ KAMPF-QA · KLASSEN & TALENTE</h3><div class="v606-note">Deterministische Tests der echten Kampf-Resolver. Kein Dungeon-Versuch, kein Gold, kein Harz-Taler, kein Fortschritt und kein Save werden verändert.</div></div><div class="v606-actions"><button class="primary" data-v606-all>ALLE TESTEN</button><button data-v606-clear>ERGEBNISSE LÖSCHEN</button></div></div><div class="v606-grid">${Object.entries(CLASS_INFO).map(([cls,ci])=>`<div class="v606-class"><h4>${ci.icon} ${ci.name}</h4>${by(cls).map(t=>{const r=results.get(t.id),[c,l]=status(r);return `<div class="v606-row ${c}" data-v606-row="${t.id}"><span>${r?(r.pass?'✅':'❌'):'•'}</span><div><b>${esc(t.name)}</b><small>${esc(r?.detail||'Noch nicht getestet.')}</small></div><button class="v606-status" data-v606-test="${t.id}">${l}</button></div>`}).join('')}</div>`).join('')}</div><div class="v606-summary"><b>Talent-Abdeckung:</b> ${V606_TALENT_COVERAGE.normal_nodes.mapped}/${V606_TALENT_COVERAGE.normal_nodes.total} normale Knoten · ${V606_TALENT_COVERAGE.milestone_nodes.mapped}/${V606_TALENT_COVERAGE.milestone_nodes.total} Schlüsseltalente mechanisch zugeordnet.<br><b>QA:</b> ${done.length}/${tests.length} getestet · ✅ ${pass} vollständig · ⚠️ ${warn} Mechanik ohne bestätigte Anzeige · ❌ ${fail} Fehler<br><b>Live-Telemetrie:</b> ${Number(tel.stored_fights)||0}/300 abgeschlossene Kämpfe lokal gespeichert.${window.__V446_FIGHTING__?'<br><b>Hinweis:</b> Ein echter Dungeon-Kampf läuft. QA erst danach starten.':''}</div>`;
  }
  function runOne(id){
   const t=tests.find(x=>x.id===id);if(!t)return;
