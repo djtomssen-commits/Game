@@ -84,6 +84,9 @@
   else if(e?.effect==='crit')score+=v*1.7;
   else if(e?.effect==='damageReduce')score+=v*2.2;
   else if(e?.effect==='luck')score+=v;
+  try{
+   if(typeof window.v6201MysticCompareValue==='function')score+=Math.max(0,Number(window.v6201MysticCompareValue(it))||0);
+  }catch(e){}
   return Math.round(score*10)/10;
  }
  window.v4103TotalCompareScore=totalCompareScore;
@@ -117,7 +120,7 @@
   const cs=totalCompareScore(clicked),es=totalCompareScore(equipped),d=Math.round((cs-es)*10)/10;
   const cls=d>0?'better':d<0?'worse':'same',arrow=d>0?'↑':d<0?'↓':'=',label=d>0?'Insgesamt besser':d<0?'Insgesamt schlechter':'Insgesamt gleichwertig';
   const detail=d===0?'':` · ${d>0?'+':''}${d} Vergleichswert`;
-  return `<div class="v4103-total-verdict ${cls}"><span>Gesamt inkl. Stein + VZ</span><b>${arrow} ${label}${detail}</b></div>`;
+  return `<div class="v4103-total-verdict ${cls}"><span>Gesamt inkl. Stein + VZ + Spezial</span><b>${arrow} ${label}${detail}</b></div>`;
  }
  function extraHtml(it){
   const rows=[];
