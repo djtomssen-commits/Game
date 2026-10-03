@@ -7744,3 +7744,23 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
   - Summoner liegt im direkten Schaden niedriger und trägt Begleiter/DoT/Sustain.
   - Frost Waffe II ist weiterhin kein auffälliger Balance-Ausreißer.
 
+### 5-Klassen-Balance-Audit V8.097 – Fixture-Gate gehärtet · 03.10.2026
+- Der erste synthetische Neutralgegner-Harness wurde bewusst NICHT als kanonische Winrate verwendet.
+- Grund: ein vereinfachtes Modell ohne vollständige Klassenmechaniken erzeugte unrealistische Extrem-Matchups und wäre als Balancebeweis ungeeignet.
+- `.github/scripts/v8097_five_class_balance_fixture.py` wurde deshalb in einen harten QA-Gate-Harness umgebaut.
+- Der Gate-Harness verlangt vor jeder veröffentlichten synthetischen Winrate:
+  - alle fünf Klassen;
+  - identisches Stat-/Itembudget;
+  - beide Matchup-Richtungen;
+  - deterministisches gemeinsames RNG-Tape;
+  - vollständige Kernmechaniken je Klasse.
+- Pflichtmechaniken:
+  - Grower: Schaden, Crit, Wucht, Raserei/Mehrfachtreffer, Lifesteal, Tank-Reduktion, Regeneration, Reflekt, Lethal-Save;
+  - Scout: Schaden, Crit, Doppel-/Dreifachtreffer, Dodge, Counter, Execute, Salvo-Chain;
+  - Bruiser: Schaden, Crit, Crit-Chain, Explosion, DoT, Shield, Damage-Reduce, DoT-Heal;
+  - Frost: Schaden, Crit, Kältemarken, Shatter, Nebenhand, Lifesteal, Barriere, Reflekt, Seelenernte;
+  - Summoner: Schaden, Crit, Fluch-DoT, Beschwörung, Zweitbeschwörung, Bud-Heilung, Sporen-DoT, Lethal-Save.
+- Aktueller Status des Harness: `GATE_ONLY`; `canonical_winrate_ready=false`.
+- Commit des gehärteten QA-Harness: `f703347c825ea937e51da99b0f8f7297d2cc8e11`.
+- Damit ist abgesichert, dass künftig keine unvollständige synthetische Simulation als echte Klassenbalance ausgegeben wird.
+
