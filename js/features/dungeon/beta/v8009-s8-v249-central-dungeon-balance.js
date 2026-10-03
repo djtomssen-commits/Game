@@ -30,7 +30,9 @@ const V249_DUNGEON_BALANCE=[[[2,745,33],[4,963,40],[6,1139,52],[8,1516,64],[10,1
 v025RecommendedLevel=function(dungeonIndex,roomIndex){
   const di=Math.max(0,Math.min(V249_DUNGEON_BALANCE.length-1,Number(dungeonIndex)||0));
   const ri=Math.max(0,Math.min(9,Number(roomIndex)||0));
-  return V249_DUNGEON_BALANCE[di][ri][0];
+  const raw=V249_DUNGEON_BALANCE[di][ri][0];
+  if(ri===9)return di===0?18:Math.max(1,raw-2);
+  return raw;
 };
 
 v025EnemyStats=function(dungeonIndex,roomIndex,enemy){
