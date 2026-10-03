@@ -8289,3 +8289,10 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
   - `7f9f678e0cf88e6fd14ace7b5a4c5a91b5f72d28` Harzruferin Beta/Server-1 Balance getrennt
   - `cb4cb63c98e595122d64eb22d8c56d6bc094b1ef` Server-1 Telemetry-Ladereihenfolge
 
+
+
+### 2026-10-04 – Beta Item-Popup: Ablegen wiederhergestellt
+- Ursache: Der zentrale `v4103`-Vergleichspopup übernahm auch ausgerüstete Items, hatte aber nur Aktionen für `context='inventory'`. Dadurch fehlte beim Öffnen eines ausgerüsteten Gegenstands die Aktion zum Ablegen.
+- Fix direkt im kanonischen Owner `js/features/items/beta/v8009-s2-v4103-item-ui-consistency.js`: Für `context='equipment'` wird der aktuelle Equipment-Slot eindeutig ermittelt und die Aktion **„Gegenstand ablegen“** eingeblendet; Klick ruft den bestehenden `unequip(slot)`-Pfad auf.
+- Release-Schutz: Änderung ist auf Beta aktiviert; bei `GROW_RELEASE_CHANNEL='server1'` bleibt sie vorerst deaktiviert.
+- Commit: `42db9928c2a3b819962d59981f16b688b3fdd7a6`.
