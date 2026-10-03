@@ -1,5 +1,6 @@
 window.__V7126_CHARACTER_CHURN__=window.__V7126_CHARACTER_CHURN__||{slotWrites:0,effectWrites:0,summaryWrites:0};
 /* ===== V4.02 Equipment presentation ===== */
+const V123_SLOT_META={head:['','Kopf'],weapon:['','Waffe'],weapon2:['','Waffe II'],ring:['','Ring'],body:['','Rüstung'],boots:['','Schuhe'],amulet:['','Amulett']};
 function v123QualityKey(it){
   const q=String(it?.quality||'').toLowerCase();
   const r=String(it?.rarity||'').toLowerCase();
@@ -69,7 +70,7 @@ function v123OpenItem(slot){
     <div class="v123-detail-head">
       <div class="v123-detail-icon">${window.v6107ItemImgHtml?.(it,'v123-detail-art')||it.icon||'🎁'}</div>
       <div class="v123-detail-name">${it.name}</div>
-      <div class="v123-detail-rarity">${v123RarityLabel(it)} · ${slotLabels[slot]?.[1]||slot}</div>
+      <div class="v123-detail-rarity">${v123RarityLabel(it)} · ${V123_SLOT_META[slot]?.[1]||slot}</div>
     </div>
     <div class="v123-detail-section"><b>Attribute</b><div>${v123BaseBonusText(it)}</div></div>
     ${it.gem?`<div class="v123-detail-section"><b>💎 Sockelstein</b><div>${it.gem.name} · +${it.gem.value} ${v030StatLabel(it.gem.stat)}</div></div>`:''}
@@ -102,7 +103,7 @@ function v123InstallDelegatedSlotDetails(){
 }
 
 function v123PolishEquipment(){
-  Object.keys(slotLabels||{}).forEach(sl=>{
+  Object.keys(V123_SLOT_META).forEach(sl=>{
     const el=document.querySelector('#slot-'+sl);
     const it=s.equipment?.[sl];
     if(!el)return;
