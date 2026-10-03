@@ -147,6 +147,31 @@
   document.body.appendChild(ov);return ov;
  }
  function equippedFor(it){const slot=String(it?.slot||'');return slot?(s?.equipment?.[slot]||null):null}
+ function inventoryIndexOf(it){
+  const arr=Array.isArray(s?.inventory)?s.inventory:[];
+  const key=itemKey(it);
+  let idx=arr.findIndex(x=>x===it);
+  if(idx<0)idx=arr.findIndex(x=>itemKey(x)===key);
+  return idx;
+ }
+ function inventoryActionsHtml(it,context){
+  if(String(context)!=='inventory')return '';
+  const idx=inventoryIndexOf(it);
+  if(idx<0)return '';
+  let sell=0;try{sell=typeof sellValue==='function'?Number(sellValue(it))||0:0}catch(e){}
+  return `<div class="v4103-compare-actions" data-index="${idx}">
+    <button type="button" class="btn v4103-equip-item">Anlegen</button>
+    <button type="button" class="btn gold v4103-sell-item">💰 ${Math.round(sell)}</button>
+  </div>`;
+ }
+ function bindCompareActions(ov,it,context){
+  if(String(context)!=='inventory')return;
+  const idx=inventoryIndexOf(it);if(idx<0)return;
+  const equip=ov.querySelector('.v4103-equip-item');
+  const sell=ov.querySelector('.v4103-sell-item');
+  if(equip)equip.onclick=()=>{ov.classList.remove('show');try{window.equip?.(idx)}catch(e){}};
+  if(sell)sell.onclick=()=>{ov.classList.remove('show');try{window.sellItem?.(idx)}catch(e){}};
+ }
  function openCompare(it,context='generic'){
   if(!it)return false;
   try{window.v447ApplyItemCurve?.(it)}catch(e){}
@@ -158,8 +183,9 @@
    ${compareItemPanel(equipped,null,same?'Angelegt · dieses Item':'Angelegt',false)}
    <div class="v4103-compare-divider"><span>VERGLEICH</span></div>
    ${compareItemPanel(it,equipped,same?'Angeklickt · identisch':'Angeklickt',true)}
+   ${inventoryActionsHtml(it,context)}
    <div class="v4103-compare-legend"><span class="better">↑ besser</span><span class="worse">↓ schlechter</span><span class="same">= gleich</span><small>Stein und VZ-Rolle werden separat gezeigt und nicht in die Grundwert-Pfeile eingerechnet.</small></div>`;
-  ov.dataset.context=String(context||'generic');ov.classList.add('show');return true;
+  ov.dataset.context=String(context||'generic');bindCompareActions(ov,it,context);ov.classList.add('show');return true;
  }
  window.v4103OpenItemCompare=openCompare;
  window.v4103CloseItemCompare=()=>document.getElementById('v4103CompareOverlay')?.classList.remove('show');
