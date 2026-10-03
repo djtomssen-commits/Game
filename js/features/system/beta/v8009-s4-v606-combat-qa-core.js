@@ -73,6 +73,8 @@
 /* Barbar */
  add('barbar_life','grower','Lebensraub',()=>ptest('grower',S('rage',1,10),[.99,.99,.99,.99],null,{playerHp:500},r=>ok(r.heal>0,`Heilung ${r.heal} LP · ${r.text}`,r.heal>0)));
  add('barbar_wucht','grower','Wucht',()=>ptest('grower',{},[.99,0,.99,.99],null,{baseWucht:1},r=>ok(r.wucht&&/WUCHT/i.test(r.text),`${r.text} · ${r.damage} Schaden`,/WUCHT/i.test(r.text))));
+ add('barbar_fullhit','grower','Volltreffer',()=>ptest('grower',M('wucht',0),[.99,.99,.99,.99],st=>{st.attackCount=5},{},r=>ok(/VOLLTREFFER/i.test(r.text),`${r.text} · 6. Angriff sichtbar`,/VOLLTREFFER/i.test(r.text))));
+ add('barbar_regen','grower','Regeneration',()=>etest('grower',S('tank',3,14),[.99],st=>{st.enemyAttackCount=2},{damage:80,playerHp:500,playerMax:1000},r=>ok(r.heal>0&&/REGENERATION/i.test(r.text),`${r.text} · +${r.heal} LP`,/REGENERATION/i.test(r.text))));
  add('barbar_rage','grower','Raserei',()=>ptest('grower',S('rage',0,10),[.99,.99,0,.99],null,{},r=>ok(r.multi&&/RASEREI/i.test(r.text),`${r.text} · Mehrfachtreffer ${r.multi?'ja':'nein'}`,/RASEREI/i.test(r.text))));
  add('barbar_block','grower','Block / Schadensreduktion',()=>etest('grower',S('tank',1,10),[.99],null,{damage:100},r=>ok(r.damage<100&&/BLOCK/i.test(r.text),`${100-r.damage} Schaden geblockt · ${r.text}`,/BLOCK/i.test(r.text))));
  add('barbar_second','grower','Zweite Luft',()=>etest('grower',M('tank',2),[.99],null,{damage:120,playerHp:200,playerMax:1000},r=>ok(r.heal>0&&/ZWEITE LUFT/i.test(r.text),`+${r.heal} LP · ${r.text}`,/ZWEITE LUFT/i.test(r.text))));
@@ -80,7 +82,10 @@
 
  /* Scout */
  add('scout_dodge','scout','Ausweichen',()=>etest('scout',{},[.99],st=>{st.guaranteedDodge=true},{damage:150},r=>ok(r.damage===0&&/AUSGEWICHEN/i.test(r.text),`${r.text} · 0 Schaden`,/AUSGEWICHEN/i.test(r.text))));
- add('scout_counter','scout','Konter',()=>etest('scout',M('dodge',1),[0],st=>{st.guaranteedDodge=true;st.lastBaseDamage=120},{damage:150},r=>ok(r.damage===0&&r.counterDamage>0,`AUSGEWICHEN · Konter ${r.counterDamage}`,r.counterDamage>0)));
+ add('scout_counter','scout','Konter',()=>etest('scout',M('dodge',1),[0],st=>{st.guaranteedDodge=true;st.lastBaseDamage=120},{damage:150},r=>ok(r.damage===0&&r.counterDamage>0&&/KONTERSCHUSS\+/i.test(r.text),`${r.text} · Konter ${r.counterDamage}`,/KONTERSCHUSS\+/i.test(r.text))));
+ add('scout_precise','scout','Präziser Treffer',()=>ptest('scout',M('precision',0),[.99,.99,.99],st=>{st.attackCount=5},{},r=>ok(/PRÄZISER TREFFER/i.test(r.text),`${r.text} · 6. Angriff`,/PRÄZISER TREFFER/i.test(r.text))));
+ add('scout_akrobat','scout','Akrobat',()=>etest('scout',M('dodge',3),[.99],st=>{st.guaranteedDodge=true},{damage:150},r=>ok(r.heal>0&&/AKROBAT/i.test(r.text),`${r.text} · +${r.heal} LP`,/AKROBAT/i.test(r.text))));
+ add('scout_reflex_save','scout','Meisterreflex+',()=>etest('scout',M('dodge',5),[.99],null,{damage:200,playerHp:80,playerMax:1000},r=>ok(r.damage===0&&/MEISTERREFLEX\+/i.test(r.text),`${r.text} · tödlicher Treffer ausgewichen`,/MEISTERREFLEX\+/i.test(r.text))));
  add('scout_salvo','scout','Salve',()=>ptest('scout',M('salvo',0),[.99,0,.99,.99,.99],st=>{st.attackCount=9},{},r=>ok(r.multi&&/SALVE/i.test(r.text),`${r.text} · ${r.damage} Schaden`,/SALVE/i.test(r.text))));
  /* V7.111 QA: dungeon crit chance is capped at 40%; use a deterministic low roll so this test validates the +10pp aimed-shot crit multiplier instead of accidentally testing the cap. */
  add('scout_aimed','scout','Gezielter Schuss',()=>ptest('scout',M('precision',1),[0,.99,.99,.99],null,{baseCrit:1},r=>ok(r.crit&&r.damage===185,`Garantierter Crit: ${r.damage} Schaden · erwartet 185`,true)));
@@ -90,6 +95,8 @@
  /* Mage */
  add('mage_crit','bruiser','Kritischer Treffer',()=>ptest('bruiser',{},[0,.99,.99,.99,.99],null,{baseCrit:1},r=>ok(r.crit&&/KRIT/i.test(r.text),`${r.text} · ${r.damage} Schaden`,/KRIT/i.test(r.text))));
  add('mage_detonation','bruiser','Detonation',()=>ptest('bruiser',M('magic',1),[.99,.99,0,.99],null,{},r=>ok(/DETONATION/i.test(r.text),`${r.text} · ${r.damage} Schaden`,/DETONATION/i.test(r.text))));
+ add('mage_overload','bruiser','Überladung+',()=>ptest('bruiser',M('magic',0),[.99,.99,.99,.99],st=>{st.attackCount=5},{},r=>ok(/ÜBERLADUNG\+/i.test(r.text),`${r.text} · 6. Zauber`,/ÜBERLADUNG\+/i.test(r.text))));
+ add('mage_limitless','bruiser','Grenzenlose Macht+',()=>ptest('bruiser',M('magic',5),[.99,.99,.99,.99],st=>{st.attackCount=4},{},r=>ok(/GRENZENLOSE MACHT\+/i.test(r.text),`${r.text} · 5. Zauber`,/GRENZENLOSE MACHT\+/i.test(r.text))));
  add('mage_barrier','bruiser','Rauchbarriere',()=>etest('bruiser',M('smoke',3),[.99],null,{damage:220,playerHp:300,playerMax:1000},r=>ok(/RAUCHBARRIERE/i.test(r.text)&&r.damage<220,`${r.text} · Restschaden ${r.damage}`,/RAUCHBARRIERE/i.test(r.text))));
  add('mage_fog','bruiser','Todesnebel',()=>ptest('bruiser',M('smoke',6),[.99,.99,.99,.99],null,{},r=>ok(/TODESNEBEL/i.test(r.text),`${r.text} · ${r.damage} Schaden`,/TODESNEBEL/i.test(r.text))));
  add('mage_supernova','bruiser','Supernova',()=>ptest('bruiser',M('magic',6),[.99,.99,.99,.99],null,{},r=>ok(/SUPERNOVA/i.test(r.text),`${r.text} · ${r.damage} Schaden`,/SUPERNOVA/i.test(r.text))));
@@ -119,9 +126,9 @@
   normal_nodes:{grower:21,scout:21,bruiser:21,frost:21,summoner:21,total:105,mapped:105},
   milestone_nodes:{grower:21,scout:21,bruiser:21,frost:21,summoner:21,total:105,mapped:105},
   active_visual_tests:{
-   grower:['Lebensraub','Wucht','Raserei','Block / Schadensreduktion','Zweite Luft','Unkraut vergeht nicht'],
-   scout:['Ausweichen','Konter','Salve','Gezielter Schuss','Perfekter Schuss','Hinrichtung'],
-   bruiser:['Kritischer Treffer','Detonation','Rauchbarriere','Todesnebel','Supernova','Kettenreaktion'],
+   grower:['Lebensraub','Wucht','Volltreffer','Regeneration','Raserei','Block / Schadensreduktion','Zweite Luft','Unkraut vergeht nicht'],
+   scout:['Ausweichen','Konter','Präziser Treffer','Akrobat','Meisterreflex+','Salve','Gezielter Schuss','Perfekter Schuss','Hinrichtung'],
+   bruiser:['Kritischer Treffer','Detonation','Überladung+','Grenzenlose Macht+','Rauchbarriere','Todesnebel','Supernova','Kettenreaktion'],
    frost:['Kältemarke','Eisbruch','Reifbarriere','Ewiges Eis','Absoluter Nullpunkt','Zwillingsschnitt'],
    summoner:['Ruf aus dem Dunst','Fluchnebel','Seelenraub','Zweiter Ruf / Geisterchor','Nicht ganz tot']
   }
