@@ -128,8 +128,17 @@
   document.addEventListener('click',e=>{
    const t=e.target instanceof Element?e.target:null;if(!t)return;
    if(t.closest('button,a,input,select,textarea,label'))return;
-   const card=t.closest('[data-v4103-item-current="1"][data-v4103-item-key]');if(!card)return;
-   const it=itemFromKey(card.dataset.v4103ItemKey);if(!it)return;
+   const card=t.closest('[data-v4103-item-current="1"][data-v4103-item-key],.v4103-item-card,.v240-loot-item,.v395-loot-card.item,#character #inventory .inv-item,#shop .shop-item');if(!card)return;
+   let it=itemFromKey(card.dataset.v4103ItemKey);
+   if(!it){
+    const title=String(card.querySelector('.v4103-item-name,.v240-loot-name,.slot-name,.shop-name,b')?.textContent||'').trim();
+    if(title){
+     const pool=[...(s?.inventory||[]),...Object.values(s?.equipment||{}).filter(Boolean),...(s?.weaponShop||[]),...(s?.magicShop||[])];
+     it=[...pool].reverse().find(x=>String(x?.name||'').trim()===title)||null;
+     if(it){card.dataset.v4103ItemKey=registerItem(it);card.dataset.v4103ItemCurrent='1'}
+    }
+   }
+   if(!it)return;
    e.preventDefault();e.stopPropagation();e.stopImmediatePropagation();openCompare(it,card.dataset.v4103ItemContext||'generic');
   },true);
  }
