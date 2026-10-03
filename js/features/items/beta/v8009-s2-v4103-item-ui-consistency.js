@@ -58,14 +58,35 @@
   dodge:'Ausweichen',ausweichen:'Ausweichen',block:'Block',tempo:'Tempo'
  };
  function statLabel(k){try{if(typeof window.v030StatLabel==='function')return window.v030StatLabel(k)}catch(e){}return STAT_LABEL[k]||String(k||'Wert').replace(/_/g,' ')}
+ function enchantOf(it){return it?.enchant||(Array.isArray(it?.enchants)&&it.enchants.length?it.enchants[0]:null)||null}
  function baseMap(it){
-  const out={};
-  Object.entries(it?.bonus||{}).forEach(([k,v])=>{
-   if(['gem','enchant'].includes(k))return;
-   const n=Number(v);if(Number.isFinite(n)&&n!==0)out[k]=n;
-  });
+  const lock=it?.v429StatLock?.native;
+  if(lock&&typeof lock==='object'){
+   const out={};Object.entries(lock).forEach(([k,v])=>{const n=Number(v);if(Number.isFinite(n)&&n!==0)out[k]=n});return out;
+  }
+  const out={};Object.entries(it?.bonus||{}).forEach(([k,v])=>{const n=Number(v);if(Number.isFinite(n)&&n!==0)out[k]=n});
+  const g=it?.gem;if(g?.stat&&Number(g.value)){out[g.stat]=(Number(out[g.stat])||0)-Number(g.value);if(!out[g.stat])delete out[g.stat]}
+  const e=enchantOf(it);if(e?.effect==='luck'&&Number(e.value)){out.glueck=(Number(out.glueck)||0)-Number(e.value);if(!out.glueck)delete out.glueck}
   return out;
  }
+ function totalCompareScore(it){
+  if(!it)return 0;
+  try{window.v447ApplyItemCurve?.(it)}catch(e){}
+  const base=baseMap(it),cls=String(s?.playerClass||it?.classId||'grower');
+  const primary=cls==='scout'?'geschick':(cls==='bruiser'||cls==='summoner')?'intelligenz':'staerke';
+  const weights={staerke:.35,geschick:.35,intelligenz:.35,ausdauer:2,glueck:1,ruestung:1.2,armor:1.2};
+  weights[primary]=6;
+  let score=Object.entries(base).reduce((sum,[k,v])=>sum+(Number(v)||0)*(weights[k]??1),0);
+  const g=it?.gem;
+  if(g?.stat&&Number(g.value))score+=Number(g.value)*(weights[g.stat]??1);
+  const e=enchantOf(it),v=Number(e?.value)||0;
+  if(e?.effect==='primaryPct')score+=v*3.2;
+  else if(e?.effect==='crit')score+=v*1.7;
+  else if(e?.effect==='damageReduce')score+=v*2.2;
+  else if(e?.effect==='luck')score+=v;
+  return Math.round(score*10)/10;
+ }
+ window.v4103TotalCompareScore=totalCompareScore;
  function fmtNum(n){const x=Number(n)||0;return `${x>0?'+':''}${Math.round(x*100)/100}`}
  function comparisonRows(clicked,equipped,isClicked){
   const a=baseMap(clicked),b=baseMap(equipped),keys=[...new Set([...Object.keys(a),...Object.keys(b)])];
@@ -92,6 +113,12 @@
   if(!e)return '<div class="v4103-compare-none">Keine VZ-Rolle eingesetzt</div>';
   return `<div class="v4103-compare-attach enchant">📜 ${esc(enchText(e))}</div>`;
  }
+ function totalVerdictHtml(clicked,equipped){
+  const cs=totalCompareScore(clicked),es=totalCompareScore(equipped),d=Math.round((cs-es)*10)/10;
+  const cls=d>0?'better':d<0?'worse':'same',arrow=d>0?'↑':d<0?'↓':'=',label=d>0?'Insgesamt besser':d<0?'Insgesamt schlechter':'Insgesamt gleichwertig';
+  const detail=d===0?'':` · ${d>0?'+':''}${d} Vergleichswert`;
+  return `<div class="v4103-total-verdict ${cls}"><span>Gesamt inkl. Stein + VZ</span><b>${arrow} ${label}${detail}</b></div>`;
+ }
  function extraHtml(it){
   const rows=[];
   if(it?.setName)rows.push(`◆ ${esc(it.setName)}-Set`);
@@ -108,6 +135,7 @@
    <div class="v4103-compare-block"><strong>Grundwerte</strong>${comparisonRows(it,equipped,isClicked)}</div>
    <div class="v4103-compare-block"><strong>Stein</strong>${attachmentHtml(it,'gem')}</div>
    <div class="v4103-compare-block"><strong>VZ-Rolle</strong>${attachmentHtml(it,'enchant')}</div>
+   ${isClicked?totalVerdictHtml(it,equipped):''}
    ${extraHtml(it)}
   </section>`;
  }
@@ -120,8 +148,12 @@
  }
  function equippedFor(it){const slot=String(it?.slot||'');return slot?(s?.equipment?.[slot]||null):null}
  function openCompare(it,context='generic'){
-  if(!it)return false;registerItem(it);
-  const ov=ensureCompareOverlay(),body=ov.querySelector('#v4103CompareBody'),equipped=equippedFor(it),same=equipped&&itemKey(equipped)===itemKey(it);
+  if(!it)return false;
+  try{window.v447ApplyItemCurve?.(it)}catch(e){}
+  const equipped=equippedFor(it);
+  try{if(equipped)window.v447ApplyItemCurve?.(equipped)}catch(e){}
+  registerItem(it);if(equipped)registerItem(equipped);
+  const ov=ensureCompareOverlay(),body=ov.querySelector('#v4103CompareBody'),same=equipped&&itemKey(equipped)===itemKey(it);
   body.innerHTML=`<div class="v4103-compare-title">Item vergleichen</div>
    ${compareItemPanel(equipped,null,same?'Angelegt · dieses Item':'Angelegt',false)}
    <div class="v4103-compare-divider"><span>VERGLEICH</span></div>
