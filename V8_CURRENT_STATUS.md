@@ -7820,3 +7820,20 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
 - `canonical_winrate_ready=false` bleibt korrekt.
 - Harness-Commit: `aabd396c7a2d03e726b42c2e4e53c59ad464fcab`.
 
+### V8.097 – Kanonische Source-Trace-Parity für alle 5 Klassen bestätigt · 03.10.2026
+- Bestehende Dungeon-Shadow-Parity-Suites ausgewertet:
+  - Grower: V7.061 -> 114/118 grün
+  - Scout: V7.061 -> 32/44 grün
+  - Bruiser: V7.061 -> 3/6 grün
+  - Frost: V7.061 -> 18/44 grün
+  - Summoner: V7.050 -> 8/9 grün
+- V7.050 ist der Harzruferin-spezifische Dungeon-Shadow-Test; die zuvor klassenlosen Reports gehören damit zur Summoner-Referenz.
+- Für alle fünf kanonischen Source-Resolver existiert jetzt mindestens ein echter grüner Client↔Server-Trace-Beleg.
+- Wichtige Trennung im QA-Harness:
+  - `canonical_source_trace_green=true` für alle fünf Klassen;
+  - `synthetic_module_trace_green=false` bleibt bestehen.
+- Neuer nächster Blocker:
+  - `EXTRACT_CANONICAL_CLASS_MODULES_INTO_PARAMETERISED_ENGINE`
+- `canonical_winrate_ready=false` bleibt korrekt, bis die extrahierten synthetischen Module selbst gegen die grünen Source-Traces bestehen.
+- Harness-Commit: `d4aa98268ad10026552a09560862b993857a86ab`.
+
