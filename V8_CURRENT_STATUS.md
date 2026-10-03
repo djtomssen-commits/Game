@@ -8105,3 +8105,22 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
   - `219a4dfc6a091833784bac461cec49bc42774648`
 - Kein Server-1-Transfer in diesem Schritt.
 
+### V8.097 – Balance Schritt 2 auf Beta umgesetzt · 03.10.2026
+- Nur Harzruferin angepasst; Grower/Barbar, Scout, Bruiser und Frost unverändert.
+- Ruf aus dem Dunst:
+  - Grundchance 10 % -> 12 %
+  - Hard-Pity nach 4 Fehlversuchen bleibt unverändert.
+- Begleiterschaden:
+  - global +5 % relativ auf den bestehenden Begleiter-Multiplikator.
+  - Talent-/Set-Boni bleiben unverändert.
+- Sichtbare Klassen-/Roster-Texte auf 12 % aktualisiert.
+- Keine Änderung an:
+  - Fluch-/Spore-DOT
+  - Bud-Heal
+  - Krähen-Crit-Buff
+  - Zweitbeschwörung
+  - Soul-Lethal-Save
+- Beta-Code-Commit:
+  - `a4f314f9f773aa8a8b8fcc88e0e7826ebf0e7e48`
+- Kein Server-1-Transfer in diesem Schritt.
+
