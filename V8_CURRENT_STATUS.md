@@ -7837,3 +7837,30 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
 - `canonical_winrate_ready=false` bleibt korrekt, bis die extrahierten synthetischen Module selbst gegen die grünen Source-Traces bestehen.
 - Harness-Commit: `d4aa98268ad10026552a09560862b993857a86ab`.
 
+### V8.097 – erste parameterisierte 5×5-Balance-Matrix · 03.10.2026
+- Read-only QA-Modell auf Basis der kanonischen Klassenformeln ausgeführt.
+- Pro gerichteter Kombination 2.500 Läufe, beide Richtungen gegengerechnet.
+- Getestet auf Level 100 / 200 / 300 mit identischem Pre-Talent-Budget.
+- Für jede Klasse wurde vorher über alle Haupt-/Zweitast-Kombinationen ein Generalisten-Build gesucht.
+- Beste Generalisten-Builds im Modell:
+  - L100: Grower Tank; Scout Precision; Bruiser Magic; Frost Iceguard; Summoner Soul.
+  - L200: Grower Tank+Wucht; Scout Precision+Dodge; Bruiser Magic+Smoke; Frost Iceguard+Frostblade; Summoner Soul+Summon.
+  - L300: Grower Tank+Rage; Scout Dodge+Precision; Bruiser Magic+Smoke; Frost Iceguard+Frostblade; Summoner Soul+Curse.
+- Sehr deutlicher Ausreißer: Grower/Barbar Tank.
+  - L100 Gesamtmodell ~98,9 %;
+  - L200 ~99,6 %;
+  - L300 ~99,6 %.
+- Sensitivitätscheck Level 300 mit drei verschiedenen HP/Schaden-Skalierungen bestätigt denselben Trend:
+  - gegen Scout ca. 98,9–99,7 %;
+  - gegen Bruiser ~100 %;
+  - gegen Frost ca. 99,3–99,9 %;
+  - gegen Summoner ~100 %.
+- Frost ist im Mehrbuild-Test NICHT der dominante Ausreißer.
+- Harzruferin bleibt im Parameter-Modell insgesamt zu schwach, selbst mit defensivem Soul-Generalisten-Build.
+- WICHTIG:
+  - dies ist die erste parameterisierte QA-Matrix, noch nicht als finale Live-PvP-Wahrheit freigegeben;
+  - kanonische Source-Resolver sind trace-grün, aber die extrahierten synthetischen Module selbst sind noch nicht vollständig Trace-Parity-zertifiziert;
+  - deshalb bleibt `canonical_winrate_ready=false`.
+- Report: `V8097_FIVE_CLASS_PROVISIONAL_MATRIX.json`
+- Report-Commit: `49906f6b1b6be07325e30699cb2215d72fc5dfd4`
+
