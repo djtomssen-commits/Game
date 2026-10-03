@@ -266,3 +266,37 @@ def source_trace_gate():
         "canonical_winrate_ready":False,
     }
 
+BALANCE_SCENARIOS={
+    "baseline":{
+        "grower_tank":{
+            "hp_milestones":[0.10,0.15],
+            "full_branch_permanent_dr":0.087,
+            "second_wind":0.15,
+            "lethal_save":True,
+        }
+    },
+    "tank_minimal_nerf_v1":{
+        "grower_tank":{
+            "hp_milestones":[0.05,0.05],
+            "full_branch_permanent_dr":0.05,
+            "second_wind":0.15,
+            "lethal_save":True,
+        }
+    },
+}
+
+def scenario_manifest(name):
+    if name not in BALANCE_SCENARIOS:
+        raise KeyError(name)
+    return {
+        "version":VERSION,
+        "scenario":name,
+        "config":BALANCE_SCENARIOS[name],
+        "live_values_changed":False,
+        "matrix_ready":False,
+        "reason":"The previous provisional matrix artifact stores results only; "
+                 "no reproducible full-class combat generator is committed yet. "
+                 "Do not derive new win rates by rescaling old percentages.",
+        "required_next_step":"wire parameterised class resolvers into executable matchup loop",
+    }
+
