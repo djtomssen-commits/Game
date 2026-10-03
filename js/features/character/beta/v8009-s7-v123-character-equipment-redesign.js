@@ -25,9 +25,9 @@ function v123BaseBonusText(it){
 }
 function v123EffectHtml(it){
   let h='<div class="v123-item-effects">';
-  if(it?.gem)h+=`<div class="v123-effect v123-gem">💎 ${it.gem.name}: +${it.gem.value} ${v030StatLabel(it.gem.stat)}</div>`;
+  if(it?.gem)h+=`<div class="v123-effect v123-gem">💎 ${it.gem.name}: +${it.gem.value} ${String(it.gem.stat||'')}</div>`;
   const e=it?.enchant || (Array.isArray(it?.enchants)?it.enchants[0]:null);
-  if(e)h+=`<div class="v123-effect v123-enchant">📜 ${e.name}: ${v030EffectLabel(e.effect,e.value)}</div>`;
+  if(e)h+=`<div class="v123-effect v123-enchant">📜 ${e.name}: ${String(e.effect||'')}</div>`;
   if(it?.setName)h+=`<div class="v123-effect v123-set">◆ ${it.setName}-Set</div>`;
   h+='</div>';
   return h;
@@ -73,8 +73,8 @@ function v123OpenItem(slot){
       <div class="v123-detail-rarity">${v123RarityLabel(it)} · ${V123_SLOT_META[slot]?.[1]||slot}</div>
     </div>
     <div class="v123-detail-section"><b>Attribute</b><div>${v123BaseBonusText(it)}</div></div>
-    ${it.gem?`<div class="v123-detail-section"><b>💎 Sockelstein</b><div>${it.gem.name} · +${it.gem.value} ${v030StatLabel(it.gem.stat)}</div></div>`:''}
-    ${e?`<div class="v123-detail-section"><b>📜 Verzauberung</b><div>${e.name} · ${v030EffectLabel(e.effect,e.value)}</div></div>`:''} ${it.mysticSpecial?`<div class="v123-detail-section v297-mystic-detail"><b>✨ Mystischer Spezialeffekt</b><div>${v296MysticSpecialText(it)}</div></div>`:''}
+    ${it.gem?`<div class="v123-detail-section"><b>💎 Sockelstein</b><div>${it.gem.name} · +${it.gem.value} ${String(it.gem.stat||'')}</div></div>`:''}
+    ${e?`<div class="v123-detail-section"><b>📜 Verzauberung</b><div>${e.name} · ${String(e.effect||'')}</div></div>`:''} ${it.mysticSpecial?`<div class="v123-detail-section v297-mystic-detail"><b>✨ Mystischer Spezialeffekt</b><div>${String(it.mysticSpecial?.label||'Spezialeffekt')}</div></div>`:''}
     ${it.setName?`<div class="v123-detail-section"><b>◆ Set</b><div>${it.setName}-Set</div></div>`:''}
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:11px">
       <button class="btn secondary" onclick="document.querySelector('#v123ItemOverlay').classList.remove('show');unequip('${slot}')">Ablegen</button>
