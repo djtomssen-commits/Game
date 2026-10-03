@@ -20,7 +20,7 @@ const V319_SEG_DESC={
   'Pro Rang +0,7 % maximale Lebenspunkte durch Ausdauertraining.',
   'Alle 3 gegnerischen Angriffe regenerierst du pro Rang 0,2 % deiner maximalen LP.',
   'Wirft pro Rang 0,4 % des erlittenen Schadens auf den Gegner zurück.',
-  'Pro Rang 0,3 % weniger erlittener Schaden.',
+  'Pro Rang 0,18 % weniger erlittener Schaden.',
   'Pro Rang +0,6 % maximale Lebenspunkte.'
  ],
  rage:[
@@ -139,7 +139,7 @@ function v319ExactTalentStats(){
   a('wucht',0,'damagePct',.006);a('wucht',1,'primaryPct',.006);a('wucht',2,'wuchtDamage',.02);
   a('wucht',3,'afterWucht',.006);a('wucht',4,'executeDamage',.01);a('wucht',5,'primaryPct',.005);a('wucht',6,'armorPen',.0055);
   a('tank',0,'hpPct',.01);a('tank',1,'damageReduce',.005);a('tank',2,'hpPct',.007);
-  a('tank',3,'regenEvery3',.002);a('tank',4,'reflectPct',.004);a('tank',5,'damageReduce',.003);a('tank',6,'hpPct',.006);
+  a('tank',3,'regenEvery3',.002);a('tank',4,'reflectPct',.004);a('tank',5,'damageReduce',.0018);a('tank',6,'hpPct',.006);
   a('rage',0,'doubleChance',.005);a('rage',1,'lifeSteal',.003);a('rage',2,'rampPerAttack',.0015);
   a('rage',3,'executeDamage',.004);a('rage',4,'lowHpLife',.002);a('rage',5,'followChance',.003);a('rage',6,'healEvery5',.0015);
  }else if(s.playerClass==='scout'){
@@ -163,8 +163,8 @@ function v319ExactTalentStats(){
  if(s.playerClass==='bruiser'&&v318Has('magic',2))o.damagePct+=.10;
  if(s.playerClass==='bruiser'&&v318Has('magic',4))o.primaryPct+=.08;
  if((s.playerClass==='grower'||s.playerClass==='frost')&&v318Has('rage',0))o.doubleChance+=.03;
- if((s.playerClass==='grower'||s.playerClass==='frost')&&v318Has('tank',1))o.hpPct+=.10;
- if((s.playerClass==='grower'||s.playerClass==='frost')&&v318Has('tank',5))o.hpPct+=.15;
+ if((s.playerClass==='grower'||s.playerClass==='frost')&&v318Has('tank',1))o.hpPct+=.07;
+ if((s.playerClass==='grower'||s.playerClass==='frost')&&v318Has('tank',5))o.hpPct+=.10;
 
  o.critChance=v318Clamp(o.critChance,0,.40);
  o.doubleChance=v318Clamp(o.doubleChance,0,.25);
