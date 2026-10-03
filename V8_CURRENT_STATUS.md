@@ -7132,3 +7132,44 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
   - Startseiten-Empfehlung vorhanden;
   - Quest-Einstieg vorhanden;
   - neuer Beta-Cache aktiv.
+
+
+### Server 1 Promotion – kompletter aktueller Beta-Frontendstand übernommen · 03.10.2026
+- Nutzerfreigabe: **alle aktuellen Beta-Änderungen auf Server 1 übernehmen**.
+- Vor Promotion Backup angelegt:
+  - Branch `backup/pre-server1-promotion-2026-10-03`
+  - Ausgangscommit `c702ced7c492fb48a61c7385b643953634732fcf`.
+- Release-Regel `SERVER1_RELEASE_POLICY.md` geprüft und eingehalten.
+- Delta `beta.html` ↔ `server1.html` vor Promotion:
+  - identische Feature-Struktur;
+  - absichtlicher Kanalunterschied:
+    - Beta: `js/features/anonymous-extracted/beta/anon-0001.js`
+    - Server 1: `js/features/account/server1-release-channel.js`;
+  - 75 abweichende/veraltete Cache-Keys auf Server 1;
+  - Server-1-Titel separat.
+- Promotion:
+  - `server1.html` auf den vollständigen aktuellen Beta-Include-/Cache-Stand gebracht;
+  - Server-1-spezifischen Einstieg beibehalten;
+  - Titel bleibt `Grow Legends V7.308 Server 1`;
+  - `window.GROW_RELEASE_CHANNEL='server1'` bleibt aktiv;
+  - Beta-anonymer Preboot wird auf Server 1 nicht geladen.
+- Dadurch sind die zuletzt nur über Beta-Cache-Bust sichtbaren Änderungen jetzt auch sicher auf Server 1 aktiv, darunter u. a.:
+  - Braun-/Holz-UI-Überarbeitungen;
+  - Header/Navigation;
+  - Growroom/Quest/Dungeon/Turm;
+  - Händler/Schmiede/Dealer;
+  - PvP/Gilde/Hall/Nebelbereiche;
+  - Reward-/Popup-/Item-UI;
+  - aktueller Guide-/Onboarding-Stand `8086onboarding1`.
+- Gemeinsame JS-/CSS-Owner waren bereits auf aktuellem `main`; die Promotion synchronisiert Server 1 auf dieselben Cache-/Include-Versionen.
+- Promotion-Commit:
+  - `62165f56d49ac3548cd2f91557a30eb22e2381e9`
+- Smoke-Abgleich nach Promotion:
+  - Server-1-Release-Channel vorhanden: **ja**;
+  - Beta-`anon-0001.js` auf Server 1: **nein**;
+  - `GROW_RELEASE_CHANNEL='server1'`: **ja**;
+  - Cache-Differenzen Beta ↔ Server1 bei gemeinsamen Includes: **0**;
+  - einzige strukturelle Include-Differenz ist der beabsichtigte Release-Channel-Preboot.
+- Neuer stabiler Meilenstein:
+  - Branch `stable-server1-2026-10-03`
+  - Basis `62165f56d49ac3548cd2f91557a30eb22e2381e9`.
