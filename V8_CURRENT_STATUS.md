@@ -7764,3 +7764,25 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
 - Commit des gehärteten QA-Harness: `f703347c825ea937e51da99b0f8f7297d2cc8e11`.
 - Damit ist abgesichert, dass künftig keine unvollständige synthetische Simulation als echte Klassenbalance ausgegeben wird.
 
+### V8.097 – 5-Klassen Trace-/RNG-Parity-Gate · 03.10.2026
+- GitHub-Schreibzugriff wieder verfügbar.
+- `.github/scripts/v8097_five_class_balance_fixture.py` um technische Parity-Baseline und Trace-Vertrag erweitert.
+- Referenzbasis aus den letzten 30 Tagen:
+  - Grower 136/145 grün
+  - Scout 31/40 grün
+  - Bruiser 24/32 grün
+  - Frost 25/57 grün
+  - Summoner 5/5 grün
+- Pflichtfelder pro Trace-Event:
+  - round, actor, damage, heal, crit, dodge, offhand, counter, attackerHp, defenderHp, rng_used.
+- RNG-Vertrag:
+  - deterministisches gemeinsames Tape;
+  - strikt gleiche Verbrauchsreihenfolge;
+  - `rng_consumed` muss exakt dem kanonischen Shadow-Trace entsprechen;
+  - max. 30 Runden;
+  - bei Timeout entscheidet der höhere verbleibende HP-Anteil.
+- Status des gemeinsamen 5-Klassen-Fixtures: `MODEL_PARITY_PENDING`.
+- `canonical_winrate_ready=false` bleibt bestehen, bis Eventfolge + RNG-Verbrauch gegen kanonische Shadow-Traces bestehen.
+- Frost erhält wegen der historisch niedrigsten Green-Parity-Rate die strengste Validierung.
+- Harness-Commit: `5cc0f05a7d101d222c32d5f98834a05bb4085146`.
+
