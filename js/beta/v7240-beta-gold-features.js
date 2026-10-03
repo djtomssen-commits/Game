@@ -72,8 +72,8 @@ function syncForgeItem(r){
 async function loadForge(force=false){
  if(S.forge&&!force)return S.forge;
  S.forgeError='';
- if(!logged()){S.forgeError='Dein Beta-Account ist noch nicht vollständig geladen.';return null}
- if(typeof v073Db==='undefined'||!v073Db){S.forgeError='Keine Verbindung zur Beta-Datenbank.';return null}
+ if(!logged()){S.forgeError='Dein Account ist noch nicht vollständig geladen.';return null}
+ if(typeof v073Db==='undefined'||!v073Db){S.forgeError='Keine Verbindung zur Spieldatenbank.';return null}
  try{
   const {data,error}=await v073Db.rpc('v7240_nebelforge_state');
   if(error)throw error;
@@ -226,8 +226,8 @@ const META={
 async function loadCaravan(force=false){
  if(S.caravan&&!force)return S.caravan;
  S.caravanError='';
- if(!logged()){S.caravanError='Dein Beta-Account ist noch nicht vollständig geladen.';return null}
- if(typeof v073Db==='undefined'||!v073Db){S.caravanError='Keine Verbindung zur Beta-Datenbank.';return null}
+ if(!logged()){S.caravanError='Dein Account ist noch nicht vollständig geladen.';return null}
+ if(typeof v073Db==='undefined'||!v073Db){S.caravanError='Keine Verbindung zur Spieldatenbank.';return null}
  try{
   const {data,error}=await v073Db.rpc('v7240_caravan_state');
   if(error)throw error;
@@ -636,7 +636,7 @@ function ensureMenu(){
  }
 }
 
-/* Integration with canonical navigation/menu without changing stable Server 1. */
+/* Integration with the canonical navigation/menu shared by Beta and Server 1. */
 try{
  const base=window.v032Go;
  if(typeof base==='function'&&!base.__v7240Caravan){
