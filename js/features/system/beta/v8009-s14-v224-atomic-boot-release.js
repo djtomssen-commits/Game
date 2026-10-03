@@ -80,7 +80,8 @@ function v224TryRelease(){
       v200DurableUser() &&
       v075CloudLoadedFor===v073User.id &&
       typeof v200CharacterComplete==='function' &&
-      v200CharacterComplete()
+      v200CharacterComplete() &&
+      window.__V8088_CRITICAL_BOOT_READY__===true
     ){
       v224Release();
       return true;
@@ -104,7 +105,8 @@ if(typeof v200FinalizeUser==='function'){
       v200DurableUser() &&
       v075CloudLoadedFor===v073User.id &&
       typeof v200CharacterComplete==='function' &&
-      v200CharacterComplete()
+      v200CharacterComplete() &&
+      window.__V8088_CRITICAL_BOOT_READY__===true
     ){
       v224Release();
     }
