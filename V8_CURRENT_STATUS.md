@@ -8296,3 +8296,5 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
 - Fix direkt im kanonischen Owner `js/features/items/beta/v8009-s2-v4103-item-ui-consistency.js`: Für `context='equipment'` wird der aktuelle Equipment-Slot eindeutig ermittelt und die Aktion **„Gegenstand ablegen“** eingeblendet; Klick ruft den bestehenden `unequip(slot)`-Pfad auf.
 - Release-Schutz: Änderung ist auf Beta aktiviert; bei `GROW_RELEASE_CHANNEL='server1'` bleibt sie vorerst deaktiviert.
 - Commit: `42db9928c2a3b819962d59981f16b688b3fdd7a6`.
+
+- Nach Freigabe durch Thomas gilt derselbe Fix auch für **Server 1**, da `server1.html` denselben zentralen `v4103`-Item-Owner lädt. **Keine Änderung an Server-1-Sperre/Öffnungslogik oder Serverkonfiguration.**
