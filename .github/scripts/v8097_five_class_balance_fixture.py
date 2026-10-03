@@ -432,3 +432,94 @@ def cli():
 if __name__=="__main__":
     cli()
 
+# ---------------------------------------------------------------------------
+# Symmetric parameterised engine v1
+# ---------------------------------------------------------------------------
+
+def _clamp(v, lo, hi):
+    return max(lo,min(hi,float(v)))
+
+def new_fighter_state(class_id, level, max_hp, base_damage, stats=None, talents=None):
+    if class_id not in CLASSES:
+        raise ValueError("unsupported class")
+    return {
+        "class_id":class_id,
+        "level":int(level),
+        "max_hp":float(max_hp),
+        "hp":float(max_hp),
+        "base_damage":float(base_damage),
+        "stats":dict(stats or {}),
+        "talents":dict(talents or {}),
+        "attack_count":0,
+        "enemy_attack_count":0,
+        "crits":0,
+        "dodges":0,
+        "first_wucht":True,
+        "master_used":False,
+        "lethal_save_used":False,
+        "second_wind_used":False,
+        "shield_used":False,
+        "salvo_chain_used":False,
+        "precision_execute_used":False,
+        "chaos_crit":0.0,
+        "next_damage_pct":0.0,
+        "next_dodge":0.0,
+        "guaranteed_dodge":False,
+        "next_guaranteed_counter":False,
+        "last_base_damage":1.0,
+        "dot":[],
+        "smoke_master_applied":False,
+        "frost_marks":0,
+        "frost_low_shield_used":False,
+        "frost_master_guard_used":False,
+        "frost_barrier_absorbed":0,
+        "frost_shatter_used":False,
+        "frost_soul_harvest_used":False,
+        "summon_pity":0,
+        "curse_hits":0,
+        "curse_dot":None,
+        "spore_dot":None,
+        "crit_buff":0.0,
+        "summoner_soul_save":False,
+    }
+
+def symmetric_engine_contract():
+    return {
+        "version":VERSION,
+        "status":"SYMMETRIC_ENGINE_STATE_READY",
+        "same_state_machine_for_both_sides":True,
+        "fighter_state_fields":sorted(new_fighter_state("grower",100,1000,100).keys()),
+        "attack_hooks":{
+            "grower":"v319 canonical attack rules",
+            "scout":"v319 canonical attack rules",
+            "bruiser":"v319 canonical attack rules",
+            "frost":"v4155 dedicated Frost attack rules",
+            "summoner":"v319 base + v6287/v6302 Summoner wrapper rules",
+        },
+        "defense_hooks":{
+            "grower":"v319 canonical enemy-attack rules",
+            "scout":"v319 canonical enemy-attack rules",
+            "bruiser":"v319 canonical enemy-attack rules",
+            "frost":"v4155 dedicated Frost defense rules",
+            "summoner":"v319 base + Summoner prevent-lethal wrapper",
+        },
+        "initiative":"paired mirrored fights required",
+        "rng":"single shared deterministic tape per fight",
+        "canonical_winrate_ready":False,
+        "next_gate":"IMPLEMENT_PARAMETERISED_ATTACK_AND_DEFENSE_HOOKS",
+    }
+
+def validate_symmetric_state(a,b):
+    errors=[]
+    for label,x in (("a",a),("b",b)):
+        if x.get("class_id") not in CLASSES:
+            errors.append(f"{label}: invalid class")
+        if float(x.get("max_hp",0))<=0:
+            errors.append(f"{label}: invalid max_hp")
+        if float(x.get("base_damage",0))<=0:
+            errors.append(f"{label}: invalid base_damage")
+        missing=[k for k in new_fighter_state("grower",1,1,1) if k not in x]
+        if missing:
+            errors.append(f"{label}: missing state fields: {', '.join(missing)}")
+    return errors
+
