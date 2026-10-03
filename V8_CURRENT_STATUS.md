@@ -7685,3 +7685,43 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
   - PvE/Turm/Worldboss separat;
   - erst danach konkrete Balanceänderungen.
 
+### 5-Klassen-Balance-Audit V8.097 – synthetischer Offensiv-Fixture · 03.10.2026
+- Kontrollierter read-only Formeltest mit identischen Basiswerten und identischer Talentpunktzahl.
+- Build-Regel:
+  - Level 100: 50 Punkte offensiver Hauptast;
+  - Level 200: 80 Punkte Hauptast + 20 Punkte offensiver Zweitast;
+  - Level 300: 100 Punkte Hauptast + 50 Punkte offensiver Zweitast.
+- Verwendete offensive Identitäts-Builds:
+  - Grower: Wucht -> Raserei;
+  - Scout: Präzision -> Salve;
+  - Bruiser: Zaubermacht -> Kritische Magie;
+  - Frost: Frostklinge -> Todespakt;
+  - Summoner: Beschwörung -> Fluchnebel.
+- Der Fixture spiegelt die aktuellen kanonischen Talentkoeffizienten/Proc-Regeln und misst langfristigen relativen Schaden pro Eigenangriff gegen ein neutrales Ziel. Er ist absichtlich KEIN vollständiges PvP-Endergebnis; defensive Builds, Gegnerkontrolle und situative Überlebensmechaniken werden separat geprüft.
+- Relativer Sustained-Offense-Faktor:
+  - Level 100:
+    - Bruiser ~1,474
+    - Grower ~1,423
+    - Scout ~1,314
+    - Frost ~1,298
+    - Summoner ~1,185
+  - Level 200:
+    - Bruiser ~1,818
+    - Grower ~1,586
+    - Scout ~1,560
+    - Frost ~1,518
+    - Summoner ~1,249
+  - Level 300:
+    - Bruiser ~1,949
+    - Grower ~1,792
+    - Frost ~1,649
+    - Scout ~1,645
+    - Summoner ~1,373
+- Beobachtung:
+  - Bruiser skaliert offensiv am stärksten, besonders ab Level 200;
+  - Grower bleibt zweitstark;
+  - Scout/Frost liegen im Endgame offensiv dicht zusammen;
+  - Summoner hat den niedrigsten direkten Sustained-Offense-Wert, besitzt dafür Begleiter-, DoT- und Heil-/Utility-Anteile.
+- Noch KEINE Balanceänderung:
+  - vor Nerf/Buff müssen Defense/Healing, Tower/Worldboss-Dämpfung und vollständige Fight-Winrate mitbewertet werden.
+
