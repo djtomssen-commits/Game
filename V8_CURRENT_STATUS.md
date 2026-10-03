@@ -8144,3 +8144,36 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
 - Report-Commit: `2113413d3ad901d6a2fe4b7344fdc4e44649a097`
 - Server 1 weiterhin unverändert.
 
+### V8.097 – direkter 5-Klassen Balance-Index nach Beta-Anpassungen · 03.10.2026
+- Direkter Vergleich jetzt als relativer Balance-Index dokumentiert.
+- Definition: 100 = Durchschnitt aller fünf Klassen.
+- Kein Winrate-Wert; basiert auf den bereits auditierten Offense-Faktoren plus symmetrischem defensivem EHP-Anteil der ausgewählten Level-Builds.
+- Aktuelle Beta-Anpassungen berücksichtigt:
+  - Grower Tank-Nerf
+  - Summoner Beschwörung 12 % + 5 % Begleiterschaden
+- Level 100:
+  - Grower 123,9
+  - Bruiser 96,6
+  - Frost 95,3
+  - Summoner 93,5
+  - Scout 90,7
+- Level 200:
+  - Grower 113,4
+  - Bruiser 103,9
+  - Frost 97,1
+  - Summoner 95,5
+  - Scout 90,0
+- Level 300:
+  - Grower 128,5
+  - Bruiser 103,9
+  - Frost 90,9
+  - Summoner 90,5
+  - Scout 86,2
+- Interpretation:
+  - Grower Tank ist trotz Schritt 1 noch klar oberhalb des Feldes, besonders L100/L300.
+  - Bruiser liegt am ehesten um den Durchschnitt.
+  - Frost und Summoner liegen darunter, aber nah beieinander.
+  - Scout liegt in dieser Build-Auswahl am niedrigsten.
+- Report: `V8097_FIVE_CLASS_POST_BALANCE_INDEX.json`
+- Report-Commit: `865e28140d0c514eb2ad0387a615b77cbfc62210`
+
