@@ -84,3 +84,38 @@ def audit_manifest():
 
 if __name__=="__main__":
     print(json.dumps(audit_manifest(),indent=2,sort_keys=True))
+
+PARITY_BASELINE={
+    "grower":{"green":136,"reports":145},
+    "scout":{"green":31,"reports":40},
+    "bruiser":{"green":24,"reports":32},
+    "frost":{"green":25,"reports":57},
+    "summoner":{"green":5,"reports":5},
+}
+
+TRACE_EVENT_FIELDS=(
+    "round","actor","damage","heal","crit","dodge",
+    "offhand","counter","attackerHp","defenderHp","rng_used"
+)
+
+RNG_CONTRACT={
+    "tape":"deterministic shared sequence",
+    "consumption":"strict order, no hidden random calls",
+    "comparison":"rng_consumed must match canonical shadow trace exactly",
+    "round_limit":30,
+    "timeout_winner":"higher remaining HP ratio",
+}
+
+def trace_gate():
+    ratios={k:round(v["green"]/max(1,v["reports"]),4) for k,v in PARITY_BASELINE.items()}
+    return {
+        "all_classes_have_green_reference":all(v["green"]>0 for v in PARITY_BASELINE.values()),
+        "parity_baseline":PARITY_BASELINE,
+        "green_ratio":ratios,
+        "event_fields":TRACE_EVENT_FIELDS,
+        "rng_contract":RNG_CONTRACT,
+        "strictest_review_class":"frost",
+        "canonical_winrate_ready":False,
+        "status":"MODEL_PARITY_PENDING",
+    }
+
