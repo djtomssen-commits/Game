@@ -232,7 +232,7 @@ v318ResolvePlayerAttack=function(st,ctx){
  if(er<.30)damagePct+=Math.min(.16,x.executeDamage)*damp;
  damagePct+=x.armorPen*.50*damp;
 
- if((s.playerClass==='grower'||s.playerClass==='frost')&&v318Has('wucht',0)&&st.attackCount%6===0)damagePct+=.35*damp;
+ if((s.playerClass==='grower'||s.playerClass==='frost')&&v318Has('wucht',0)&&st.attackCount%6===0){damagePct+=.35*damp;}
  if((s.playerClass==='grower'||s.playerClass==='frost')&&v318Has('wucht',2)&&pr<.35)damagePct+=.15*damp;
  if((s.playerClass==='grower'||s.playerClass==='frost')&&v318Has('wucht',4))damagePct+=Math.min(.14,(1-pr)*.20)*damp;
  if((s.playerClass==='grower'||s.playerClass==='frost')&&v318Has('rage',6)&&pr<.30)damagePct+=.20*damp;
@@ -261,6 +261,10 @@ v318ResolvePlayerAttack=function(st,ctx){
 
  let damage=base;
  let tags=[];
+ if(s.playerClass==='grower'&&v318Has('wucht',0)&&st.attackCount%6===0)tags.push('VOLLTREFFER');
+ if(s.playerClass==='bruiser'&&v318Has('magic',0)&&st.attackCount%6===0)tags.push('ÜBERLADUNG+');
+ if(s.playerClass==='bruiser'&&v318Has('magic',5)&&st.attackCount%5===0)tags.push('GRENZENLOSE MACHT+');
+ if(s.playerClass==='scout'&&v318Has('precision',0)&&st.attackCount%6===0)tags.push('PRÄZISER TREFFER');
  if(crit){
   /* V6.224: Schütze · Präzision Lv50 "Gezielter Schuss" = +10 Prozentpunkte Crit-Multiplikator.
      This restores the exact behavior of the earlier resolver without changing any other talent. */
@@ -398,7 +402,7 @@ v318ResolvePlayerAttack=function(st,ctx){
  let heal=Math.round(damage*life*(st.mode==='worldboss'?.60:1));
  if((s.playerClass==='grower'||s.playerClass==='frost')&&st.attackCount%5===0){
   heal+=Math.round(st.maxHp*Math.min(.04,x.healEvery5)*(st.mode==='worldboss'?.65:1));
-  if(v318Has('rage',5))heal+=Math.round(st.maxHp*.05*(st.mode==='worldboss'?.65:1));
+  if(v318Has('rage',5)){heal+=Math.round(st.maxHp*.05*(st.mode==='worldboss'?.65:1));tags.push('EWIGER KAMPF+')}
  }
  if(dotDamage&&s.playerClass==='bruiser'){
   let dotHeal=x.dotHealPct+(v318Has('smoke',4)?.25:0);
@@ -425,7 +429,7 @@ v318ResolveEnemyAttack=function(st,ctx){
 
   const lethal=damage>=Number(ctx.playerHp||0);
   if(v318Has('dodge',5)&&lethal&&!st.lethalSaveUsed){
-   st.guaranteedDodge=true;st.lethalSaveUsed=true;
+   st.guaranteedDodge=true;st.lethalSaveUsed=true;text+=' · MEISTERREFLEX+';
   }
 
   if(st.guaranteedDodge||Math.random()<dodge){
