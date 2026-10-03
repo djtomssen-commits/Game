@@ -34,6 +34,125 @@
   y.__accountOwnerId=id;y.social=(y.social&&typeof y.social==='object')?y.social:{};y.social.playerId=id;
   return y;
  }
+
+ const ACCOUNT_STATE_SCHEMA=1;
+ let lastHealth={ok:true,at:0,uid:'',server:'',issues:[],repairs:[],schema:ACCOUNT_STATE_SCHEMA};
+
+ function accountStateHealthCheck({repair=true,reason='manual'}={}){
+  const id=uid(),issues=[],repairs=[];
+  const issue=(code,detail='')=>issues.push({code,detail:String(detail||'')});
+  const fix=(code,fn)=>{
+   if(!repair)return;
+   try{fn();repairs.push(code)}catch(e){issue('REPAIR_FAILED:'+code,e?.message||e)}
+  };
+  if(!s||typeof s!=='object'){
+   issue('STATE_NOT_OBJECT');
+   lastHealth={ok:false,at:Date.now(),uid:id,server:serverId(),reason,issues,repairs,schema:ACCOUNT_STATE_SCHEMA};
+   return lastHealth;
+  }
+
+  if(id){
+   if(owner(s)!==id)issue('OWNER_MISMATCH',owner(s));
+   if(socialOwner(s)!==id)issue('SOCIAL_OWNER_MISMATCH',socialOwner(s));
+  }
+
+  const classId=String(s.playerClass||'');
+  if(classId&&!VALID_CLASSES.has(classId))issue('INVALID_CLASS',classId);
+  if(s.characterNameSet&&!validName(s.characterName))issue('INVALID_CHARACTER_NAME',s.characterName);
+
+  const ensureObj=(key)=>{
+   if(!s[key]||typeof s[key]!=='object'||Array.isArray(s[key])){
+    issue('INVALID_OBJECT:'+key,typeof s[key]);
+    fix('NORMALIZE_OBJECT:'+key,()=>{s[key]={}});
+   }
+  };
+  const ensureArr=(key)=>{
+   if(!Array.isArray(s[key])){
+    issue('INVALID_ARRAY:'+key,typeof s[key]);
+    fix('NORMALIZE_ARRAY:'+key,()=>{s[key]=[]});
+   }
+  };
+  const ensureNum=(key,min=0)=>{
+   const n=Number(s[key]);
+   if(!Number.isFinite(n)||n<min){
+    issue('INVALID_NUMBER:'+key,String(s[key]));
+    fix('NORMALIZE_NUMBER:'+key,()=>{s[key]=Math.max(min,Number.isFinite(n)?n:min)});
+   }
+  };
+
+  ensureObj('social');
+  ensureObj('equipment');
+  ensureArr('inventory');
+  ensureArr('materials');
+  ensureObj('grow');
+  ensureObj('dungeon');
+  ensureNum('level',1);
+  ensureNum('xp',0);
+  ensureNum('gold',0);
+  ensureNum('harzTaler',0);
+  ensureNum('timeSeeds',0);
+
+  if(!Array.isArray(s.dungeon?.completed)){
+   issue('INVALID_DUNGEON_COMPLETED',typeof s.dungeon?.completed);
+   fix('NORMALIZE_DUNGEON_COMPLETED',()=>{s.dungeon.completed=[]});
+  }
+  if(!s.dungeon?.progress||typeof s.dungeon.progress!=='object'||Array.isArray(s.dungeon.progress)){
+   issue('INVALID_DUNGEON_PROGRESS',typeof s.dungeon?.progress);
+   fix('NORMALIZE_DUNGEON_PROGRESS',()=>{s.dungeon.progress={}});
+  }
+
+  if(!Array.isArray(s.grow?.plants)){
+   issue('INVALID_GROW_PLANTS',typeof s.grow?.plants);
+   fix('NORMALIZE_GROW_PLANTS',()=>{s.grow.plants=[]});
+  }
+
+  const eq=s.equipment||{};
+  const aliases={
+   head:['helmet'],
+   body:['armor','chest'],
+   boots:['shoes'],
+   amulet:['necklace'],
+   weapon2:['offhand','secondaryWeapon','weaponSecondary']
+  };
+  for(const [slot,alts] of Object.entries(aliases)){
+   if(eq[slot])continue;
+   const alt=alts.find(k=>eq[k]&&typeof eq[k]==='object');
+   if(alt){
+    issue('LEGACY_EQUIPMENT_KEY:'+alt,slot);
+    fix('MIGRATE_EQUIPMENT:'+alt+'>'+slot,()=>{eq[slot]=eq[alt]});
+   }
+  }
+
+  const validSlots=new Set(['head','weapon','weapon2','ring','body','boots','amulet']);
+  for(const [slot,it] of Object.entries(eq)){
+   if(!it||typeof it!=='object')continue;
+   if(validSlots.has(slot)&&it.slot&&String(it.slot)!==slot){
+    issue('ITEM_SLOT_MISMATCH:'+slot,String(it.slot));
+   }
+  }
+
+  if(id&&repair){
+   if(owner(s)!==id&&containerAllowed(s,id))fix('RESTORE_ACCOUNT_OWNER',()=>{s.__accountOwnerId=id});
+   if(socialOwner(s)!==id&&containerAllowed(s,id))fix('RESTORE_SOCIAL_OWNER',()=>{s.social=(s.social&&typeof s.social==='object')?s.social:{};s.social.playerId=id});
+  }
+
+  if(Number(s.__accountStateSchema)!==ACCOUNT_STATE_SCHEMA){
+   issue('SCHEMA_VERSION',String(s.__accountStateSchema||0));
+   fix('STAMP_SCHEMA_VERSION',()=>{s.__accountStateSchema=ACCOUNT_STATE_SCHEMA});
+  }
+
+  lastHealth={
+   ok:!issues.some(x=>/MISMATCH|INVALID_CLASS|INVALID_CHARACTER_NAME|STATE_NOT_OBJECT|REPAIR_FAILED/.test(x.code)),
+   at:Date.now(),uid:id,server:serverId(),reason,issues,repairs,schema:ACCOUNT_STATE_SCHEMA,
+   equipmentSlots:Object.fromEntries(['head','weapon','weapon2','ring','body','boots','amulet'].map(k=>[k,!!s.equipment?.[k]])),
+   inventoryCount:Array.isArray(s.inventory)?s.inventory.length:0,
+   materialsCount:Array.isArray(s.materials)?s.materials.length:0
+  };
+  try{window.__V4139_ACCOUNT_HEALTH__=clone(lastHealth)}catch(_){}
+  return lastHealth;
+ }
+ window.v4139AccountStateHealthCheck=accountStateHealthCheck;
+ window.v4139AccountHealthDiagnostics=()=>clone(lastHealth);
  function fresh(id=''){
   const f=clone(defaultState)||{};
   f.playerClass=null;f.classLocked=false;f.characterName='';f.characterNameSet=false;
@@ -253,6 +372,8 @@
   if(!canonicalClass&&VALID_CLASSES.has(profileClass))s.playerClass=profileClass;
   if(s.playerClass)s.classLocked=true;
   s.__accountOwnerId=id;s.social=(s.social&&typeof s.social==='object')?s.social:{};s.social.playerId=id;
+  const health=accountStateHealthCheck({repair:true,reason:'server-login'});
+  if(!health.ok)console.warn('[V4139] account state health',health);
   v075CloudLoadedFor=id;v200LastCloudStamp=null;
   try{v213Dirty=false;v213LastComparable=typeof v213Comparable==='function'?v213Comparable(s):''}catch(_){}
   writeMirrors(id,s,{stamp:false,allowIncomplete:true});if(complete(s))writeLock(id,s);
@@ -288,6 +409,8 @@
   let loaded=y;try{if(typeof v075SanitizeSave==='function'){const z=v075SanitizeSave(y);if(z)loaded=ownedCopy(z,id)||y}}catch(e){}
   if(uid()!==id)return false;
   replaceState(loaded);s.__accountOwnerId=id;s.social=(s.social&&typeof s.social==='object')?s.social:{};s.social.playerId=id;
+  const health=accountStateHealthCheck({repair:true,reason:'legacy-login'});
+  if(!health.ok)console.warn('[V4139] account state health',health);
   try{v213SaveRevision=Math.max(Number(v213SaveRevision)||0,rev(s));v213Dirty=false;v213LastComparable=typeof v213Comparable==='function'?v213Comparable(s):''}catch(e){}
   writeMirrors(id,s,{stamp:false,allowIncomplete:true});resetRuntime(true);
   try{render()}catch(e){}
@@ -330,7 +453,7 @@
  resolve.__v7194ServerOnlyLogin=true;
  v075ResolveCloudAfterLogin=resolve;try{window.v075ResolveCloudAfterLogin=resolve}catch(e){}
  window.__V4139_LOGIN_AUTHORITY__=Object.freeze({version:'V7.199',mode:'server-first-fail-closed',playerSavesGameplayRestore:false,localGameplayRestore:false,identitySource:'profiles-server-identity-only',canonicalHydration:'v7133HydrateAllCore'});
- window.v4139LoginAuthorityDiagnostics=()=>({...LOGIN,policy:window.__V4139_LOGIN_AUTHORITY__,allAuthorityEnforced:allAuthorityEnforced(),resolverGuarded:!!window.v075ResolveCloudAfterLogin?.__v7194ServerOnlyLogin});
+ window.v4139LoginAuthorityDiagnostics=()=>({...LOGIN,policy:window.__V4139_LOGIN_AUTHORITY__,allAuthorityEnforced:allAuthorityEnforced(),resolverGuarded:!!window.v075ResolveCloudAfterLogin?.__v7194ServerOnlyLogin,accountHealth:clone(lastHealth)});
 
  v075ApplyCloudSave=async function(data){const id=uid();if(!id)return false;return await apply(data,id)};
  try{window.v075ApplyCloudSave=v075ApplyCloudSave}catch(e){}
