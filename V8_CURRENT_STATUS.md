@@ -7454,3 +7454,62 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
   - v249 besitzt die finale Scale-Formel;
   - v401/v428 schreiben keine Stats mehr;
   - Beta lädt den neuen Cache-Key.
+
+
+### Late-/Endgame Power-Block V8.095 – Dungeon 6–20 / Nebel / Endgame / Bosse / Turm / Langzeit-Rewards · 03.10.2026
+- Geprüft:
+  - Dungeon 6–20;
+  - Nebelkarawane;
+  - Nebelschmied;
+  - Nebelrisse / Endgame;
+  - Smaragd-Koloss / Weltboss;
+  - Gildenboss;
+  - Turm-Lategame;
+  - Weekly Chest / Daily Login / Langzeit-Belohnungen.
+- Dungeon 6–20:
+  - profitieren jetzt ebenfalls von der V8.094-Konsolidierung;
+  - v249 ist alleiniger HP/Attack-Owner;
+  - v401/v428 bleiben retired und schreiben keine Kampfwerte mehr;
+  - Schlüsselsteine bleiben geordnet: vorherigen Dungeon abschließen + erforderliches Level + Quest-Pity 10/18/45/70/100 %.
+- Nebelrisse:
+  - Freischaltung erst nach Dungeon 20 und ab Level 211;
+  - 9 Risse bis Level 300;
+  - Client-Fight wird bei aktiver Authority fail-closed von v7073 abgefangen;
+  - Progress, Rewards und Kampf werden serverautoritativ über v7073_endgame_state / v7073_run_endgame abgeglichen.
+- Weltboss:
+  - erster Versuch pro Tag kostenlos;
+  - weitere Versuche 10 Harz-Taler;
+  - mutierende Kampfaktion wird bei aktiver Authority durch v7072 serverseitig übernommen;
+  - Client bestätigt 10-HT-Einsatz vor weiterem Versuch.
+- Gildenboss:
+  - aktueller v7307 Signup-Owner bleibt maßgeblich;
+  - aktuelle Teilnehmerliste wird während offener Anmeldung direkt serverseitig zurückgelesen;
+  - historische Vorabend-/Vorround-Layer dürfen die aktuelle Liste nicht überschreiben.
+- Turm:
+  - serverautoritatives v7072-Gate bleibt für alle mutierenden Aktionen aktiv;
+  - levelabhängige Recovery-Regel aus V8.093 bleibt unverändert.
+- Langzeit-Rewards:
+  - Weekly Chest läuft serverautoritativ über v7072;
+  - Daily Login / Endgame werden serverautoritativ über v7073 verarbeitet;
+  - Tag 7 bleibt garantiert episches Item für aktuelles Level;
+  - Reward Consolidation v7308 bleibt für Quest/Dungeon/PvP/Tower-Anzeige aktiv.
+- Klassenset-Schutz im Endgame geprüft:
+  - alte Endgame-Pfade können makeSetItem() aufrufen;
+  - v6165 guardet makeSetItem außerhalb des Forge-Craft-Kontexts und ersetzt den Drop durch ein episches Nicht-Set-Item;
+  - fertige Klassensets bleiben somit exklusiv über Genetik + Harzschmiede.
+- Beta/Server1 RPC-Parität geprüft:
+  - Endgame: 2/2 aktuelle RPCs je Schema;
+  - Nebelkarawane/Nebelschmied: 5/5 aktuelle RPCs je Schema;
+  - Weltboss-Authority: 2/2 aktuelle RPCs je Schema.
+- Alte public-only v7240_nebel_* RPC-Namen sind Legacy-Aliase und werden vom aktuellen Client nicht mehr verwendet; keine unnötige Server1-Kopie angelegt.
+- Gefundener sichtbarer Server1-Fehler:
+  - gemeinsamer Nebel-Owner meldete noch "Beta-Account" / "Beta-Datenbank";
+  - auf Server1 dadurch falscher Fehlertext trotz funktionierender Server1-RPCs.
+- Fix:
+  - neutralisiert auf "Account" / "Spieldatenbank";
+  - gemeinsamer Owner bleibt identisch für Beta + Server1.
+- Core-Commit: b15fe501ab2e7722901e485c040dac7655e302d7
+- Cache-Key: 8095late1
+- Beta Cache: 34ad7094cc340a13efe7e250be83fef3fbda56f4
+- Server1 Cache: 824f3be06ad149a0edb9e0f036ed7f21bb329e0a
+- Index Cache: 597a29e2dc8acb6baba12b7f3afcf3d2f86d20a8
