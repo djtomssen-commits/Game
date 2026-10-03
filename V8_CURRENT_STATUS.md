@@ -7336,3 +7336,36 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
 - Keine Quest-/Händler-/Dungeon-Kampfbalance verändert; nur Startzustands- und Anzeige-Inkonsistenzen korrigiert.
 - Supabase-Changelog/Docs vor DB-Änderung geprüft; kein relevanter aktueller Breaking Change für diese bestehende Funktion.
 - Supabase Advisors nach Änderung geprüft; bestehende projektweite RLS-/Policy-Hinweise bleiben separat und wurden hier nicht verändert.
+
+
+### Early-Game Power-Block 6–9 V8.092 – Materialien → Buch → PvP → Pets · 03.10.2026
+- Geprüft: Edelsteine/Verzauberungen, Illegales Buch/Erfolge, PvP, Pet Sammelalbum.
+- Edelsteine + Verzauberungen:
+  - bestehender Material-Owner verwendet 1 Stein + 1 Rollen-Verzauberung pro Item;
+  - Ersatz vorhandener Materialien wird vor Anwendung bestätigt;
+  - Material-UI erklärt Fundquellen Quests/Dungeons/Bosse;
+  - kein künstlicher Level-Lock und kein Early-Game-Blocker gefunden.
+- Illegales Buch:
+  - erste Langzeitziele beginnen sinnvoll bei Lv10 / Dungeon 1 / 10 Quests usw.;
+  - jeder abgeschlossene Erfolg gibt +1 Hauptattribut;
+  - Server-Achievement-Authority überschreibt die Getter mit kanonischen Servermetriken;
+  - kein Startblocker gefunden.
+- Pets:
+  - Album ist direkt einsehbar;
+  - normale Pet-Funde können aus Growroom, Quests und Dungeons kommen;
+  - bestehende Drop-Raten: normale Quest 4 %, Elite 12 %, Grow abhängig von Pflege 2–6 %, Dungeon normal 3–6 %, Dungeon-Boss 12 %;
+  - serverautoritativer Pet-State bleibt maßgeblich; kein Start-Lock nötig.
+- PvP:
+  - Matchmaking sucht zuerst Level ±2 / Kampfkraft 80–120 %, danach Level ±4 / Kampfkraft 65–135 %;
+  - serverseitig beginnt der 30-Minuten-Cooldown ausdrücklich erst bei einem tatsächlich gestarteten Kampf;
+  - Client-Inkonsistenz gefunden: v204FindOpponent() setzte lokal bereits beim bloßen Finden eines Gegners v204CooldownLeft auf 30 Minuten.
+  - Folge: Gegner nur ansehen/finden und nicht kämpfen konnte bis zum nächsten Server-Refresh wie eine verbrauchte PvP-Sperre wirken.
+- Fix direkt im bestehenden PvP-Owner:
+  - beim Match-Fund kein lokaler Cooldown mehr;
+  - Cooldown kommt erst aus dem tatsächlichen serverseitigen Kampf/Attack-Record.
+  - Core-Commit: eec51eda2f1cd9fe52b466eed7551ccc3cf49c2c
+  - Cache-Key: 8092earlygamepvp1
+  - Beta Cache: f5275d1321c0925d98cf0f980df81b12115fce3f
+  - Server1 Cache: 3f9afc7f8017bd6d417801df47eaf775008b3ac3
+  - Index Cache: 33de884ec8c8dbcd0f5e97f410479795a9a56eb2
+- Keine Drop-/Reward-Balance in diesem Block verändert.
