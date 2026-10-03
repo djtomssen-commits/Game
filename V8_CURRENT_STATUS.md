@@ -7864,3 +7864,37 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
 - Report: `V8097_FIVE_CLASS_PROVISIONAL_MATRIX.json`
 - Report-Commit: `49906f6b1b6be07325e30699cb2215d72fc5dfd4`
 
+### V8.097 – Barbar-Tank Root-Cause-Audit · 03.10.2026
+- Kein doppelter HP-Bonus-Bug gefunden.
+- Server `recovery_private.v7056_shadow_max_hp` berechnet Tank-HP einmal aus den kanonischen Talent-Rängen.
+- Voller Tank-Ast:
+  - normale HP-Knoten: +30,6 %;
+  - Meilensteine: +10 % und +15 % HP;
+  - serverseitig daraus ca. +55,6 % Talent-HP vor Mystic-Cap;
+  - 4er-Set gibt zusätzlich +10 % HP multiplicativ;
+  - mit Mystic-HP kann der serverseitige Talent-/Mystic-Anteil bis 62 % steigen.
+- Ohne Pet ergibt das bei vollem Tank grob:
+  - ohne 4er-Set ca. 1,556× Basis-HP;
+  - mit 4er-Set ca. 1,71× Basis-HP;
+  - bei 62-%-Cap + 4er-Set bis ca. 1,78× Basis-HP.
+- Zusätzliche volle Tank-Defensive:
+  - 8,7 % permanente Talent-Schadensreduktion;
+  - unter 50 % LP weitere 5 %;
+  - sehr schwere Treffer weitere 15 %;
+  - erste zwei Gegnerangriffe weitere 10 %;
+  - Regeneration bis 2,8 % Max-HP alle 3 Gegnerangriffe;
+  - Reflekt bis 5 %;
+  - einmalig 15 % Max-HP Zweite Luft unter 25 %;
+  - einmalig tödlichen Treffer mit 1 LP überleben.
+- Vergleich volle defensive Hauptäste, nur passive Grund-EHP vor situativen Procs:
+  - Grower Tank ca. 1,70× Basis-EHP bereits vor Zweite Luft/Lethal-Save/Regeneration;
+  - Summoner Soul grob ca. 1,43× vor Lifesteal/Lethal-Save;
+  - Frost Iceguard grob ca. 1,22× vor Barrieren/Heilung;
+  - Bruiser Smoke grob ca. 1,18× nach aktivem Smoke-Master-Reduce, zusätzlich situativer Schild;
+  - Scout Dodge ist avoidance-basiert und deshalb nicht 1:1 als HP-EHP vergleichbar.
+- Root Cause:
+  - kein einzelner fehlerhafter Multiplikator;
+  - der Tank-Ast ist defensiv überbudgetiert, weil hoher HP-Pool + DR + Regeneration + Reflekt + Second Wind + Lethal-Save in einem Ast gestapelt werden.
+- Noch keine Balancewerte geändert.
+- Nächster sinnvoller Schritt: Minimal-Nerf-Szenarien gegen denselben Fixture testen, statt den Ast komplett umzubauen.
+
