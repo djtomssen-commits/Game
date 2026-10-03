@@ -183,7 +183,7 @@
     materialsCount:Math.max(0,Number(report.materialsCount)||0),
     clientVersion:String(window.GROW_LEGENDS_VERSION?.short||window.__GL_CURRENT_BUILD__||'')
    };
-   const {data,error}=await v073Db.rpc('v8080_report_account_state_health',{p_report:payload});
+   const {data,error}=await v073Db.schema('public').rpc('v8080_report_account_state_health',{p_report:payload});
    if(error)throw error;
    return Array.isArray(data)?(data[0]||null):data;
   }catch(e){
@@ -223,7 +223,7 @@
    if(RUNTIME_ERROR_LOG.sent.has(sig)||RUNTIME_ERROR_LOG.count>=RUNTIME_ERROR_LOG.max)return null;
    RUNTIME_ERROR_LOG.sent.add(sig);RUNTIME_ERROR_LOG.count++;
    if(!(await db()))return null;
-   const {data,error}=await v073Db.rpc('v8082_report_runtime_error',{p_report:payload});
+   const {data,error}=await v073Db.schema('public').rpc('v8082_report_runtime_error',{p_report:payload});
    if(error)throw error;
    return Array.isArray(data)?(data[0]||null):data;
   }catch(e){
@@ -277,7 +277,9 @@
    equipmentSlots:Object.fromEntries(slots.map(k=>[k,!!eq[k]])),
    growObject:!!s?.grow&&typeof s.grow==='object'&&!Array.isArray(s.grow),
    dungeonObject:!!s?.dungeon&&typeof s.dungeon==='object'&&!Array.isArray(s.dungeon),
-   runtimeErrorsThisSession:RUNTIME_ERROR_LOG.count
+   runtimeErrorsThisSession:RUNTIME_ERROR_LOG.count,
+   bootCriticalReady:window.__V8088_CRITICAL_BOOT_READY__===true,
+   bootTiming:clone(BOOT_TIMING)
   };
  }
  function qaScreenChecks(screen){
@@ -321,7 +323,7 @@
    PLAYER_QA.reported.add(key);
    PLAYER_QA.last=clone(payload);
    if(!(await db()))return null;
-   const {data,error}=await v073Db.rpc('v8083_report_player_qa',{p_report:payload});
+   const {data,error}=await v073Db.schema('public').rpc('v8083_report_player_qa',{p_report:payload});
    if(error)throw error;
    return Array.isArray(data)?(data[0]||null):data;
   }catch(e){
