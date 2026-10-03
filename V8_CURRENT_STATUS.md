@@ -7535,3 +7535,49 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
   - Server1 Cache: cf5f027713dc0dfb606a1d98529c754809dca0cc
   - Index Cache: 89fcddaf39d9dd8324f053a738b3acd15c16872a
 - Nächster manueller QA-Schritt: frischer Login, Growroom einmal öffnen, danach neuen QA-Snapshot prüfen und anschließend Seiten-/Tab-Smoke-Test fortsetzen.
+
+
+### Gesamt-QA / Stabilitätsblock V8.096 – laufender Stand · 03.10.2026
+- Nach Early-, Mid- und Late-/Endgame-Audit läuft jetzt der repo-weite Gesamt-QA-/Stabilitätsblock.
+- Ziel:
+  - Login/Hydration;
+  - Navigation;
+  - alle Seiten/Tabs;
+  - Popups/Rewards;
+  - Account Health / Player QA / Runtime Errors;
+  - Beta/Server1-Parität;
+  - doppelte Renderer / Last Writer / alte Wrapper / Timer / Observer.
+- Live-QA der letzten Stunden geprüft:
+  - World, Character, Dungeon, Tower, Guild, PvP, Shop, Quests, Forge, Endgame überwiegend status=ok;
+  - keine Runtime-Client-Errors in den letzten 6 Stunden gefunden;
+  - Critical Boot weiterhin ready=true.
+- Wiederkehrender QA-Warn ausschließlich beim Growroom:
+  - screenExists=true;
+  - screenActive=true;
+  - growObject=true;
+  - runtimeErrorsThisSession=0;
+  - aber rendered=false.
+- Ursache:
+  - QA prüfte veralteten Selector #grow #growShelf;
+  - aktueller kanonischer Growroom-Owner v492 rendert .v492-grow.
+- Fix direkt im bestehenden Account-/QA-Owner:
+  - Growroom-rendered-Check von #grow #growShelf auf #grow .v492-grow umgestellt.
+- Core-Commit Growroom-QA-Fix:
+  - 3d607d9db870c647c464ef4d08731fb24c5a5e77
+- Noch offen in diesem QA-Block:
+  - Cache-Bust für den v4139-Owner auf Beta + Server1;
+  - erneuter Growroom-QA-Test;
+  - weitere Last-Writer-/Timer-/Observer-Prüfung.
+
+### Aktueller Balance-Prüfschritt – Frost-Todesritter Waffe II + Schadensspanne
+- Nutzerfrage: Hat der Frost-Todesritter durch zwei Waffen plus neue Waffen-Schadensspanne einen unfairen Vorteil?
+- Bisher bestätigt:
+  - Frost besitzt Waffe II;
+  - sichtbarer Owner kennzeichnet Waffe I mit 100 %;
+  - Waffe II mit 10 % Attribute.
+- Aktuell wird geprüft:
+  - wie totalAttr()/Combat-Power die Zweitwaffe gewichtet;
+  - ob weaponDamageMin/Max/Avg der zweiten Waffe ebenfalls nur anteilig eingeht;
+  - ob Dungeon/PvP/Turm/Quest-Kampf dieselbe Normalisierung verwenden.
+- Noch keine Balanceänderung vorgenommen.
+- Keine Aussage "balanced/unbalanced" festgeschrieben, bevor der vollständige Schadenspfad geprüft ist.
