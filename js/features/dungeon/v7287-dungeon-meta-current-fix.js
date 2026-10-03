@@ -11,7 +11,11 @@ const roomIndex=(di)=>{try{
   if(typeof v048RoomIndex==='function')return v048RoomIndex(di);
   return Math.max(0,Math.min(9,Number(window.s?.dungeon?.progress?.[di]??window.s?.dungeon?.room??0)||0));
 }catch(_){return 0}};
-const roomLevel=(di,ri)=>{try{return typeof v244DungeonRoomLevel==='function'?v244DungeonRoomLevel(di,ri):Math.max(1,(di+1)*10+(ri+1)-1)}catch(_){return Math.max(1,(di+1)*10+(ri+1)-1)}};
+const roomLevel=(di,ri)=>{try{
+  if(typeof v025RecommendedLevel==='function')return Math.max(1,Number(v025RecommendedLevel(di,ri))||1);
+  if(typeof v244DungeonRoomLevel==='function')return Math.max(1,Number(v244DungeonRoomLevel(di,ri))||1);
+  return Math.max(1,(di+1)*10+(ri+1)-1);
+}catch(_){return Math.max(1,(di+1)*10+(ri+1)-1)}};
 const enemyHp=(di,ri)=>{try{
   const d=window.dungeons?.[di],e=d?.enemies?.[ri];
   if(typeof v025EnemyStats==='function'&&e){return Math.max(0,Number(v025EnemyStats(di,ri,e)?.hp)||0)}
