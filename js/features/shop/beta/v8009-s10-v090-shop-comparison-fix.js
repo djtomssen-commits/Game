@@ -2,34 +2,30 @@
 
 function v090Score(it){
   if(!it)return 0;
+  try{window.v447ApplyItemCurve?.(it)}catch(e){}
+  if(typeof window.v4103TotalCompareScore==='function')return window.v4103TotalCompareScore(it);
 
-  const weights={
-    staerke:1,
-    geschick:1,
-    intelligenz:1,
-    ausdauer:1,
-    glueck:.8,
+  const lock=it?.v429StatLock?.native;
+  const base=lock&&typeof lock==='object'?{...lock}:{...(it?.bonus||{})};
+  const gem=it?.gem;
+  const ench=it?.enchant||(Array.isArray(it?.enchants)&&it.enchants.length?it.enchants[0]:null);
+  if(!lock){
+    if(gem?.stat&&Number(gem.value))base[gem.stat]=(Number(base[gem.stat])||0)-Number(gem.value);
+    if(ench?.effect==='luck'&&Number(ench.value))base.glueck=(Number(base.glueck)||0)-Number(ench.value);
+  }
 
-  };
+  const cls=String(s?.playerClass||it?.classId||'grower');
+  const primary=cls==='scout'?'geschick':(cls==='bruiser'||cls==='summoner')?'intelligenz':'staerke';
+  const weights={staerke:.35,geschick:.35,intelligenz:.35,ausdauer:2,glueck:1,ruestung:1.2,armor:1.2};
+  weights[primary]=6;
+  let total=Object.entries(base).reduce((sum,[k,v])=>sum+(Number(v)||0)*(weights[k]??1),0);
 
-  let total=0;
-  Object.entries(it.bonus||{}).forEach(([k,v])=>{
-    total+=(Number(v)||0)*(weights[k]??1);
-  });
-
-  if(it.gem?.value)total+=(Number(it.gem.value)||0);
-
-  const enchants=Array.isArray(it.enchants)
-    ? it.enchants
-    : it.enchant ? [it.enchant] : [];
-
-  enchants.forEach(e=>{
-    const v=Number(e?.value)||0;
-    if(e?.effect==='primaryPct')total+=v*1.4;
-    else if(e?.effect==='crit')total+=v;
-    else if(e?.effect==='damageReduce')total+=v*1.1;
-    else total+=v*.8;
-  });
+  if(gem?.stat&&Number(gem.value))total+=Number(gem.value)*(weights[gem.stat]??1);
+  const v=Number(ench?.value)||0;
+  if(ench?.effect==='primaryPct')total+=v*3.2;
+  else if(ench?.effect==='crit')total+=v*1.7;
+  else if(ench?.effect==='damageReduce')total+=v*2.2;
+  else if(ench?.effect==='luck')total+=v;
 
   return Math.round(total*10)/10;
 }
@@ -47,6 +43,7 @@ function v090ComparisonHtml(it){
     return `<div class="v090-shop-compare empty">▲ Slot leer · Verbesserung</div>`;
   }
 
+  try{window.v447ApplyItemCurve?.(it);window.v447ApplyItemCurve?.(old)}catch(e){}
   const neu=v090Score(it);
   const alt=v090Score(old);
   const diff=Math.round((neu-alt)*10)/10;
