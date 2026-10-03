@@ -28,6 +28,8 @@ function v318NewCombatState(mode='dungeon',maxHpValue=1){
 }
 
 /* Exact player-facing descriptions for milestone talents. */
+const V318_BETA_BALANCE=String(window.GROW_RELEASE_CHANNEL||'beta')!=='server1';
+
 const V318_MILESTONE_DESC={
  wucht:[
   'Jeder 6. eigene Angriff verursacht +35 % Schaden.',
@@ -40,11 +42,11 @@ const V318_MILESTONE_DESC={
  ],
  tank:[
   'Unter 50 % Leben erhältst du 5 % weniger Schaden.',
-  '+5 % maximale Lebenspunkte.',
+  V318_BETA_BALANCE?'+5 % maximale Lebenspunkte.':'+10 % maximale Lebenspunkte.',
   'Einmal pro Kampf: unter 25 % Leben heilst du 15 % deiner maximalen LP.',
   'Sehr schwere Treffer werden zusätzlich um 15 % reduziert.',
   'Die ersten 2 gegnerischen Angriffe verursachen 10 % weniger Schaden.',
-  '+8 % maximale Lebenspunkte.',
+  V318_BETA_BALANCE?'+8 % maximale Lebenspunkte.':'+15 % maximale Lebenspunkte.',
   'Einmal pro Kampf überlebst du einen tödlichen Treffer mit 1 LP.'
  ],
  rage:[
