@@ -101,6 +101,121 @@
  add('frost_zero','frost','Absoluter Nullpunkt',()=>ptest('frost',merge(M('frostblade',2),M('frostblade',6)),[.99,.99],st=>{st.frostMarks=3},{},r=>ok(/ABSOLUTER NULLPUNKT/i.test(r.text),`${r.text} · ${r.damage} Schaden`,/ABSOLUTER NULLPUNKT/i.test(r.text))));
  add('frost_twin','frost','Zwillingsschnitt',()=>ptest('frost',M('deathpact',0),[.99,.99],st=>{st.attackCount=4},{},r=>ok(/ZWILLINGSSCHNITT/i.test(r.text),`${r.text} · ${r.damage} Schaden`,/ZWILLINGSSCHNITT/i.test(r.text))));
 
+
+
+ /* Harzruferin */
+ add('summoner_call','summoner','Ruf aus dem Dunst',()=>ptest('summoner',{},[.99,.30,.99],st=>{st.v6287NoSummon=4},{},r=>ok(!!r.v6287Summon&&/BUD-GEIST|KNOCHENKNECHT|PILZSPORE|NEBELKRÄHE/i.test(r.text),`${r.text} · Begleiter ${r.v6287Summon?.name||'-'}`,!!r.v6287Summon)));
+ add('summoner_curse','summoner','Fluchnebel',()=>ptest('summoner',S('curse',0,10),[.99,0,.99],null,{},r=>ok(/FLUCHNEBEL/i.test(r.text)&&!!r.v6302CurseApplied,`${r.text} · DOT ${r.v6302CurseApplied?.damage||0}`,/FLUCHNEBEL/i.test(r.text))));
+ add('summoner_soul','summoner','Seelenraub',()=>ptest('summoner',S('soul',0,10),[.99,.99],null,{playerHp:400},r=>ok(r.heal>0&&/SEELENRAUB/i.test(r.text),`${r.text} · +${r.heal} LP`,/SEELENRAUB/i.test(r.text))));
+ add('summoner_second','summoner','Zweiter Ruf / Geisterchor',()=>ptest('summoner',M('summon',6),[.99,.05,.99,0,.35],st=>{st.v6287NoSummon=4},{},r=>ok(!!r.v6287SecondSummon,/DIE TOTEN GÄRTNERN MIT|ZWEITER RUF|GEISTERCHOR/i.test(r.text)?`${r.text} · ${r.v6287SecondSummon?.name||''}`:'Zweitbeschwörung ohne sichtbaren Talent-Tag',/DIE TOTEN GÄRTNERN MIT|ZWEITER RUF|GEISTERCHOR/i.test(r.text))));
+ add('summoner_save','summoner','Nicht ganz tot',()=>etest('summoner',M('soul',6),[.99],null,{damage:300,playerHp:80,playerMax:1000},r=>ok(r.preventLethal&&/NICHT GANZ TOT/i.test(r.text),`${r.text} · tödlicher Treffer verhindert`,/NICHT GANZ TOT/i.test(r.text))));
+
+ /* Talent coverage contract: every normal node contributes to the combat/stat
+    resolver. Milestones are either passive/conditional modifiers or named
+    active procs. Named active procs are covered by deterministic QA rows. */
+ const V606_TALENT_COVERAGE={
+  normal_nodes:{grower:21,scout:21,bruiser:21,frost:21,summoner:21,total:105,mapped:105},
+  milestone_nodes:{grower:21,scout:21,bruiser:21,frost:21,summoner:21,total:105,mapped:105},
+  active_visual_tests:{
+   grower:['Lebensraub','Wucht','Raserei','Block / Schadensreduktion','Zweite Luft','Unkraut vergeht nicht'],
+   scout:['Ausweichen','Konter','Salve','Gezielter Schuss','Perfekter Schuss','Hinrichtung'],
+   bruiser:['Kritischer Treffer','Detonation','Rauchbarriere','Todesnebel','Supernova','Kettenreaktion'],
+   frost:['Kältemarke','Eisbruch','Reifbarriere','Ewiges Eis','Absoluter Nullpunkt','Zwillingsschnitt'],
+   summoner:['Ruf aus dem Dunst','Fluchnebel','Seelenraub','Zweiter Ruf / Geisterchor','Nicht ganz tot']
+  }
+ };
+ window.v606TalentCoverage=()=>JSON.parse(JSON.stringify(V606_TALENT_COVERAGE));
+
+ /* Read-only live fight telemetry. It wraps the existing canonical resolver
+    once and only records its returned values. No combat value is changed. */
+ const V606_TEL_KEY='v8097_beta_combat_telemetry';
+ const v606TelState=new WeakMap();
+ const v606TelLoad=()=>{try{const a=JSON.parse(localStorage.getItem(V606_TEL_KEY)||'[]');return Array.isArray(a)?a:[]}catch(_){return[]}};
+ const v606TelSave=rows=>{try{localStorage.setItem(V606_TEL_KEY,JSON.stringify(rows.slice(-300)))}catch(_){}};
+ const v606TelAttrs=()=>{const o={};for(const k of ['staerke','geschick','intelligenz','ausdauer','glueck','ruestung']){try{o[k]=Number(totalAttr?.(k))||0}catch(_){o[k]=0}}return o};
+ const v606TelTalents=()=>{try{return JSON.parse(JSON.stringify(s?.v314Talents?.[s?.playerClass]||{}))}catch(_){return{}}};
+ function v606TelFight(st){
+  let x=v606TelState.get(st);
+  if(x)return x;
+  x={
+   id:`${Date.now()}-${Math.random().toString(36).slice(2,8)}`,
+   started_at:new Date().toISOString(),
+   mode:String(st?.mode||'unknown'),
+   class_id:String(s?.playerClass||'unknown'),
+   level:Number(s?.level)||0,
+   max_hp:Number(st?.maxHp)||0,
+   attrs:v606TelAttrs(),
+   talents:v606TelTalents(),
+   rounds:0,player_attacks:0,enemy_attacks:0,
+   damage_done:0,damage_taken:0,healing:0,counter_damage:0,
+   crits:0,dodges:0,procs:{},events:[]
+  };
+  v606TelState.set(st,x);return x;
+ }
+ function v606TelTags(text){
+  return String(text||'').split(/\s*\+\s*|\s*·\s*/).map(x=>x.trim()).filter(Boolean);
+ }
+ function v606TelProc(x,text){
+  for(const tag of v606TelTags(text)){
+   if(/^(TREFFER|Gegner trifft)$/i.test(tag))continue;
+   x.procs[tag]=(Number(x.procs[tag])||0)+1;
+  }
+ }
+ function v606TelFinish(st,x,won,reason){
+  if(x.finished_at)return;
+  x.finished_at=new Date().toISOString();x.won=!!won;x.finish_reason=String(reason||'');
+  const rows=v606TelLoad();rows.push(x);v606TelSave(rows);
+  try{window.dispatchEvent(new CustomEvent('growlegends:combat-telemetry',{detail:{...x,events:x.events.slice(-20)}}))}catch(_){}
+ }
+ try{
+  if(typeof v318ResolvePlayerAttack==='function'&&!window.__v606LiveTelemetryAttack){
+   const baseAttack=v318ResolvePlayerAttack;
+   v318ResolvePlayerAttack=function(st,ctx){
+    const r=baseAttack.apply(this,arguments)||{};
+    try{
+     if(st&&String(st.mode||'')!=='qa'){
+      const x=v606TelFight(st);x.player_attacks++;x.rounds=Math.max(x.rounds,Number(st.attackCount)||x.player_attacks);
+      x.damage_done+=Math.max(0,Number(r.damage)||0);x.healing+=Math.max(0,Number(r.heal)||0);if(r.crit)x.crits++;
+      v606TelProc(x,r.text);
+      x.events.push({round:Number(st.attackCount)||x.player_attacks,side:'player',damage:Math.max(0,Number(r.damage)||0),heal:Math.max(0,Number(r.heal)||0),text:String(r.text||'TREFFER')});
+      if(x.events.length>80)x.events=x.events.slice(-80);
+      if((Number(r.damage)||0)>=Math.max(0,Number(ctx?.enemyHp)||0))v606TelFinish(st,x,true,'enemy_hp_zero');
+     }
+    }catch(e){console.warn('[V606] telemetry attack',e)}
+    return r;
+   };
+   try{window.v318ResolvePlayerAttack=v318ResolvePlayerAttack}catch(_){}
+   window.__v606LiveTelemetryAttack=true;
+  }
+  if(typeof v318ResolveEnemyAttack==='function'&&!window.__v606LiveTelemetryDefense){
+   const baseDefense=v318ResolveEnemyAttack;
+   v318ResolveEnemyAttack=function(st,ctx){
+    const r=baseDefense.apply(this,arguments)||{};
+    try{
+     if(st&&String(st.mode||'')!=='qa'){
+      const x=v606TelFight(st);x.enemy_attacks++;x.damage_taken+=Math.max(0,Number(r.damage)||0);x.healing+=Math.max(0,Number(r.heal)||0);x.counter_damage+=Math.max(0,Number(r.counterDamage)||0);
+      if(/AUSGEWICHEN/i.test(String(r.text||'')))x.dodges++;
+      v606TelProc(x,r.text);
+      x.events.push({round:Number(st.enemyAttackCount)||x.enemy_attacks,side:'enemy',damage:Math.max(0,Number(r.damage)||0),heal:Math.max(0,Number(r.heal)||0),counter:Math.max(0,Number(r.counterDamage)||0),text:String(r.text||'Gegner trifft')});
+      if(x.events.length>80)x.events=x.events.slice(-80);
+      const hpAfter=Math.max(0,(Number(ctx?.playerHp)||0)+(Number(r.heal)||0)-(Number(r.damage)||0));
+      if(hpAfter<=0&&!r.preventLethal)v606TelFinish(st,x,false,'player_hp_zero');
+     }
+    }catch(e){console.warn('[V606] telemetry defense',e)}
+    return r;
+   };
+   try{window.v318ResolveEnemyAttack=v318ResolveEnemyAttack}catch(_){}
+   window.__v606LiveTelemetryDefense=true;
+  }
+ }catch(e){console.error('[V606] live telemetry install',e)}
+ window.v606CombatTelemetry=()=>v606TelLoad();
+ window.v606CombatTelemetrySummary=()=>{
+  const rows=v606TelLoad(),by={};
+  for(const r of rows){const k=String(r.class_id||'unknown');const b=by[k]||(by[k]={fights:0,wins:0,rounds:0,damage_done:0,damage_taken:0,healing:0});b.fights++;b.wins+=r.won?1:0;b.rounds+=Number(r.rounds)||0;b.damage_done+=Number(r.damage_done)||0;b.damage_taken+=Number(r.damage_taken)||0;b.healing+=Number(r.healing)||0}
+  for(const b of Object.values(by)){b.win_rate=b.fights?b.wins/b.fights:0;b.avg_rounds=b.fights?b.rounds/b.fights:0}
+  return {version:'V8.097',stored_fights:rows.length,max_fights:300,by_class:by};
+ };
+ window.v606ClearCombatTelemetry=()=>{try{localStorage.removeItem(V606_TEL_KEY)}catch(_){}return true};
  const results=new Map();
  function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
  function status(r){if(!r)return['idle','NICHT GETESTET'];if(r.pass&&r.visual)return['pass','PASS'];if(r.pass)return['warn','MECHANIK OK'];return['fail','FEHLER']}
