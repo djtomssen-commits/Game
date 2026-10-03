@@ -8124,3 +8124,23 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
   - `a4f314f9f773aa8a8b8fcc88e0e7826ebf0e7e48`
 - Kein Server-1-Transfer in diesem Schritt.
 
+### V8.097 – Nachtest der beiden Beta-Balance-Schritte · 03.10.2026
+- Direkter Regression-/Sanity-Test der tatsächlich geänderten Mechaniken durchgeführt.
+- Barbar-Tank:
+  - vorher passiver EHP-Faktor ca. 1,704×
+  - nachher ca. 1,587×
+  - Änderung ca. -6,9 %
+  - Zweite Luft 15 % und Lethal-Save unverändert.
+- Harzruferin:
+  - Basis-Rufchance 10 % -> 12 %
+  - mit Hard-Pity auf Versuch 5 steigt die effektive Basis-Rufrate ohne Talentboni von ca. 24,4 % auf ca. 25,4 % pro Angriff.
+  - zusammen mit +5 % relativem Begleiterschaden steigt der erwartete Begleiter-Beitrag ohne Talent-/Set-Boni grob um ca. 9,3 %.
+- Interpretation:
+  - beide Änderungen sind moderat;
+  - Barbar wird spürbar entschärft, aber nicht entkernt;
+  - Harzruferin wird spürbar zuverlässiger, ohne pauschalen Direkt-Damage-Buff.
+- Das ist bewusst KEINE kanonische 5×5-Live-Winrate-Matrix.
+- Report: `V8097_POST_BALANCE_STEP_SANITY_TEST.json`
+- Report-Commit: `2113413d3ad901d6a2fe4b7344fdc4e44649a097`
+- Server 1 weiterhin unverändert.
+
