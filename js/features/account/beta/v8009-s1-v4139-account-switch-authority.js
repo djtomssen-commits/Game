@@ -136,10 +136,13 @@
   }
 
   const validSlots=new Set(['head','weapon','weapon2','ring','body','boots','amulet']);
+  const compatibleItemSlots={weapon2:new Set(['weapon','weapon2'])};
   for(const [slot,it] of Object.entries(eq)){
    if(!it||typeof it!=='object')continue;
-   if(validSlots.has(slot)&&it.slot&&String(it.slot)!==slot){
-    issue('ITEM_SLOT_MISMATCH:'+slot,String(it.slot));
+   const itemSlot=String(it.slot||'');
+   const compatible=compatibleItemSlots[slot];
+   if(validSlots.has(slot)&&itemSlot&&!(compatible?compatible.has(itemSlot):itemSlot===slot)){
+    issue('ITEM_SLOT_MISMATCH:'+slot,itemSlot);
    }
   }
 
@@ -161,7 +164,11 @@
    materialsCount:Array.isArray(s.materials)?s.materials.length:0
   };
   try{window.__V4139_ACCOUNT_HEALTH__=clone(lastHealth)}catch(_){}
-  if(issues.length||repairs.length)queueMicrotask(()=>void reportAccountHealth(clone(lastHealth)));
+  const reportableIssues=issues.filter(x=>x.code!=='SCHEMA_VERSION');
+  const reportableRepairs=repairs.filter(x=>x!=='STAMP_SCHEMA_VERSION');
+  if(reportableIssues.length||reportableRepairs.length){
+   queueMicrotask(()=>void reportAccountHealth({...clone(lastHealth),issues:reportableIssues,repairs:reportableRepairs}));
+  }
   return lastHealth;
  }
  window.v4139AccountStateHealthCheck=accountStateHealthCheck;
