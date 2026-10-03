@@ -7,6 +7,52 @@
 - Neue Hilfsfunktionen sind nur erlaubt, wenn sie reine gemeinsame Daten-/Utility-Logik sind und **keinen zweiten Render-Lifecycle** erzeugen.
 - Ziel: pro Feature genau eine nachvollziehbare kanonische Render-/Lifecycle-Kette statt wieder hunderter übereinanderliegender Render-Fixes.
 
+## 0.1 VERBINDLICHER DEBUG-/ACCOUNT-DIAGNOSE-ABLAUF
+
+- Ab **03.10.2026** gilt bei jedem gemeldeten Spieler-/Account-Fehler: **Health- und Runtime-Diagnose direkt mit auslesen**, bevor nur nach Sichtbild oder am eigenen Account gefixt wird.
+- Reihenfolge bei accountabhängigen Fehlern:
+  1. aktuellen `main`-Stand prüfen;
+  2. **Account-State-Health-Logs** des betroffenen Accounts/Servers prüfen;
+  3. **Runtime-JavaScript-Fehlerlogs** des betroffenen Accounts/Servers prüfen;
+  4. erst danach kanonischen Owner/Renderer bzw. Server-RPC untersuchen und direkt dort reparieren.
+- Ziel: Unterschiede wie **„bei Tomssen funktioniert es, bei einem anderen Spieler nicht“** reproduzierbar über Accountzustand + Runtimefehler erklären.
+- Account-State-Health-Check ist direkt in `js/features/account/beta/v8009-s1-v4139-account-switch-authority.js` integriert.
+- Client-Funktionen:
+  - `v4139AccountStateHealthCheck()`
+  - `v4139AccountHealthDiagnostics()`
+  - `v4139ReportAccountHealth()`
+- Serverlogging Health:
+  - RPC: `public.v8080_report_account_state_health(jsonb)`
+  - Tabelle: `recovery_private.account_state_health_events`
+  - speichert nur Diagnose-/Strukturdaten, **keinen kompletten Spielstand**;
+  - identische Meldungen desselben Accounts werden innerhalb von 30 Minuten dedupliziert.
+- Runtime-Error-Logger ist ebenfalls direkt in der bestehenden Account-Authority integriert.
+- Erfasst authentifizierte `window.error`- und `unhandledrejection`-Fehler mit Seite, Datei, Zeile/Spalte, Server und Build.
+- Serverlogging Runtime:
+  - RPC: `public.v8082_report_runtime_error(jsonb)`
+  - Tabelle: `recovery_private.runtime_client_errors`
+  - kein kompletter Spielstand;
+  - clientseitiges Sendelimit + serverseitige 30-Minuten-Deduplizierung.
+- Bei einem neuen Fehlerbericht eines anderen Spielers soll der Diagnosepfad **nicht erst auf Nachfrage** erfolgen, sondern standardmäßig mitlaufen.
+- Wenn Logs technisch nicht lesbar sind, das ausdrücklich sagen und danach direkt den kanonischen Codepfad prüfen; **keine Annahme als bestätigte Ursache darstellen**.
+- Architekturregel bleibt bestehen: Diagnose darf keine neue Render-/Patch-Schicht erzeugen.
+
+### Aktuelle accountabhängige Fehler/Fixes vom 03.10.2026
+
+- Equipment-Item-Popup funktionierte auf einem Beta-Account, bei einem Freund jedoch nicht zuverlässig.
+- Direkter kanonischer Equipment-Fix:
+  - `js/features/character/beta/v8009-s8-v6102-character-equipment-scroll-fix.js`
+  - alle gerenderten Equipment-Slots erhalten denselben Item-Detail-Klickpfad.
+- Zusätzliche Ursache im bestehenden Popup-Owner gefunden:
+  - `js/features/character/beta/v8009-s7-v123-character-equipment-redesign.js`
+  - Popup hing noch von der alten globalen Variable `slotLabels` ab;
+  - behoben: eigene feste Slot-Metadaten im v123-Owner, unabhängig von Legacy-Initialisierungsreihenfolge.
+- Letzter Popup-Core-Commit: `7efe123dde8d0a0043aea134f3727a69c187adc5`.
+- Blüten-Dealer: Unique-Constraint-Fehler bei Gold-Belohnungen war account-/historienabhängig.
+- Bestehende RPC `v7071_buy_grow_dealer` direkt repariert:
+  - `source_ref` enthält jetzt zusätzlich die eindeutige Request-ID;
+  - dadurch kollidieren spätere legitime Dealer-Aktionen nicht mehr mit älteren Events.
+
 # Grow Legends – V8 Arbeitsstand
 
 > **Diese Datei ist die zentrale Übergabe für neue Chats.**
