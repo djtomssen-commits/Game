@@ -35,16 +35,35 @@ v025RecommendedLevel=function(dungeonIndex,roomIndex){
   return raw;
 };
 
+const V249_FINAL_SCALE=[1,1.0276,.9872,.951,.9413,.8914,.8399,.7849,.75,.6944,.6614,.6268,.5901,.559,.5345,.5089,.491,.4629,.4432,.4226];
+
 v025EnemyStats=function(dungeonIndex,roomIndex,enemy){
   const di=Math.max(0,Math.min(V249_DUNGEON_BALANCE.length-1,Number(dungeonIndex)||0));
   const ri=Math.max(0,Math.min(9,Number(roomIndex)||0));
-  const row=V249_DUNGEON_BALANCE[di][ri];
+  const rec=v025RecommendedLevel(di,ri);
+  const boss=ri===9||!!enemy?.boss;
+
+  /* Canonical final combat curve. This is mathematically identical to the
+     formerly stacked V401 + V428 writers, now owned here in one place. */
+  const hpDungeonMult=1+di*.07;
+  const hpBase=65+rec*17+ri*12;
+  const baseHp=Math.round(hpBase*hpDungeonMult*(boss?1.42:1));
+
+  const attackDungeonMult=1+di*.025;
+  const attackBase=12+rec*1.75+ri*.70;
+  const baseAttack=Math.round(attackBase*attackDungeonMult*(boss?1.16:1));
+
+  const referenceScale=V249_FINAL_SCALE[di]||1;
+  const hpScale=(boss?(3.00+di*.08):(2.60+di*.12+ri*.08))*referenceScale;
+  const attackScale=(boss?(1.22+di*.018):(1.35+di*.025+ri*.025))*referenceScale;
+
   return {
-    rec:row[0],
-    hp:row[1],
-    attack:row[2]
+    rec,
+    hp:Math.max(1,Math.round(baseHp*hpScale)),
+    attack:Math.max(1,Math.round(baseAttack*attackScale))
   };
 };
+window.v025EnemyStats=v025EnemyStats;
 
 
 /* ---------- Make advertised combat modifiers actually count ---------- */
