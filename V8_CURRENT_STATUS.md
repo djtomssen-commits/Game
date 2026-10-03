@@ -36,6 +36,29 @@
 - Bei einem neuen Fehlerbericht eines anderen Spielers soll der Diagnosepfad **nicht erst auf Nachfrage** erfolgen, sondern standardmäßig mitlaufen.
 - Wenn Logs technisch nicht lesbar sind, das ausdrücklich sagen und danach direkt den kanonischen Codepfad prüfen; **keine Annahme als bestätigte Ursache darstellen**.
 - Architekturregel bleibt bestehen: Diagnose darf keine neue Render-/Patch-Schicht erzeugen.
+- Ab 03.10.2026 zusätzlich aktiv: **stiller Player-QA-Smoke-Check + Feature-Health-Marker**.
+- Kein Toast, kein Popup, keine sichtbare Spieleranzeige; reine Hintergrunddiagnose.
+- Read-only: der QA-Check verändert keine Gameplaywerte und führt keine Käufe/Kämpfe/Rewards aus.
+- Serverseitige QA-Tabelle: `recovery_private.player_qa_snapshots`.
+- Reporting-RPC: `public.v8083_report_player_qa(jsonb)`.
+- Automatisch protokolliert:
+  - Login-Smoke-Snapshot;
+  - erster Seitenaufruf pro Session über `growlegends:navigation-open-v7119`;
+  - Account-Owner/Social-Owner;
+  - Charakter-/Klassenstatus;
+  - Level;
+  - Inventar/Material-Struktur;
+  - Equipment-Struktur + belegte Slots;
+  - Grow-/Dungeon-Struktur;
+  - Runtime-Fehleranzahl der Session;
+  - Screen vorhanden/aktiv/gerendert + Child-Count.
+- Statuswerte: `ok`, `warn`, `fail`.
+- Gleicher Trigger/Screen wird clientseitig nur einmal pro Session gemeldet; identische Server-Snapshots werden 30 Minuten dedupliziert.
+- Client-Diagnose:
+  - `v4139ReportPlayerQa(trigger, screen)`
+  - `v4139PlayerQaDiagnostics()`
+- Bei zukünftigen Spielerproblemen standardmäßig **Health + Runtime + Player-QA-Snapshot gemeinsam prüfen**.
+
 
 ### Aktuelle accountabhängige Fehler/Fixes vom 03.10.2026
 
