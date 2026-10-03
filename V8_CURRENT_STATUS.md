@@ -7012,3 +7012,40 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
   - statische Progressionsinhalte wie Dungeon gegen feste V4-Referenzbuilds prüfen;
   - dynamische Modi wie Turm an aktuelle Spielerwerte koppeln;
   - Sonderbosse separat über ihre eigene Zielzeit/Teilnahme- bzw. Readiness-Kurve balancieren.
+
+
+### Itemvergleich V8.069 – stabile Direktanzeige + Gesamtwertung mit Stein/VZ · 03.10.2026
+- Balance-Hinweis:
+  - die Dungeon-Referenzbalance V8.068 wurde bewusst auf **native Item-Grundwerte ohne verpflichtende Steine/VZ** kalibriert;
+  - Stein/VZ sind damit Progressionsbonus und keine Voraussetzung, um den vorgesehenen Dungeon-Levelpfad zu schaffen.
+- Nutzerfehlerbild: direkte Shop-Vergleichsanzeige sprang nach kurzer Zeit von `+` auf `-`.
+- Root Cause:
+  - aktiver Shop-Owner `v8009-s10-v090-shop-comparison-fix.js` bewertete `item.bonus` inklusive bereits eingerechnetem Stein und addierte den Stein danach erneut;
+  - außerdem konnte ein noch nicht normalisiertes lokales Item vor der finalen V4-Kurvennormalisierung bewertet werden.
+- Fix:
+  - Kandidat + angelegtes Item werden vor dem Vergleich über `v447ApplyItemCurve` auf den kanonischen V4-Zustand gebracht;
+  - native Grundwerte kommen primär aus `v429StatLock.native`;
+  - Stein wird genau einmal bewertet;
+  - VZ-Rolle wird genau einmal bewertet;
+  - kein Gem-/VZ-Doppelzählen mehr.
+- Universelles Vergleichspopup:
+  - Bereich **Grundwerte** zeigt jetzt wirklich nur native Itemwerte;
+  - Stein und VZ bleiben separat sichtbar;
+  - neuer Block **Gesamt inkl. Stein + VZ** zeigt `↑ Insgesamt besser`, `↓ Insgesamt schlechter` oder `= Insgesamt gleichwertig`;
+  - Differenz wird als stabiler Vergleichswert angezeigt.
+- Diagnostik vor Fix:
+  - `runtime_client_errors`: aktuell leer;
+  - aktuelle Shop-/Character-QA-Snapshots: `ok`, 0 Runtimefehler;
+  - Account-State-Health zeigt bei einem Frost-Account weiterhin den bereits bekannten `ITEM_SLOT_MISMATCH:weapon2 -> weapon`; dieser Befund ist separat und nicht Root Cause des Vergleichssprungs.
+- Dateien:
+  - `js/features/items/beta/v8009-s2-v4103-item-ui-consistency.js`
+  - `js/features/shop/beta/v8009-s10-v090-shop-comparison-fix.js`
+  - `v8009-extracted-v4103-item-ui-css.css`
+- Cache-Key: `8069itemcompare2`.
+- Commits:
+  - Popup/Core: `c959a0bbc2e3c5eb98ace08b8ceee7922030f93b`
+  - Shop-Vergleich: `54d4a20b2837e57a1d5b43f5c262f99646b063c1`
+  - CSS: `c7ae961b6f674b11d0f933c75639831e954af41b`
+  - Beta Cache: `e08778a6378f54c852653ff08eae04325fe77eb0`
+  - index Cache: `cfff5b6c646b76e261cf8057fe090649b2bf96df`
+  - Server1 Cache: `2b3ae11f9fbec8a164bb1143a1d31e57838e1d31`
