@@ -175,6 +175,15 @@
     it.bonus={...full,...keep};
     it.v429StatLock={version:2,native:{...native}};
     const total=COMBAT.reduce((n,k)=>n+(Number(native[k])||0),0);
+    if(rawSlot==='weapon'||rawSlot==='weapon2'){
+      const avg=Math.max(4,Math.round(total*.78+lvl*.18));
+      it.weaponDamageAvg=avg;
+      it.weaponDamageMin=Math.max(1,Math.floor(avg*.90));
+      it.weaponDamageMax=Math.max(it.weaponDamageMin+1,Math.ceil(avg*1.10));
+      it.weaponDamageModel='v8067-neutral-spread';
+    }else{
+      delete it.weaponDamageAvg;delete it.weaponDamageMin;delete it.weaponDamageMax;delete it.weaponDamageModel;
+    }
     it.v447Curve={version:CURVE_VERSION,quality,level:lvl,nativeTotal:total,order:'gray<green<blue<purple<orange<prismatic<cyan',model:'flat-rarity-budget'};
     it.baseBonusV055=luckRate>0?{[primary]:3,ausdauer:2,glueck:1}:{[primary]:3,ausdauer:2};
     it.v7167QualityCurve=true;
