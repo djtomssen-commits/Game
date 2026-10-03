@@ -290,7 +290,7 @@
    character:'#character #v510HeroRoot',
    quests:'#quests',
    dungeon:'#dungeon #dungeonMapCard',
-   grow:'#grow #growShelf',
+   grow:'#grow .v492-grow',
    guild:'#guild',
    pvp:'#pvp',
    tower:'#tower'
