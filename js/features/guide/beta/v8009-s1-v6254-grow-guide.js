@@ -6,8 +6,10 @@
  const GUIDES={
   world:{label:'Startseite',icon:'🏠',steps:[
    ['Übersicht','Die Startseite bündelt aktive Events, Live-Wetter, deine wichtigsten Abenteuer und die unteren Schnellzugriffe.'],
+   ['Dein erster Weg','Wenn du neu bist, starte am besten mit einer Quest. Schau dir danach deine Beute am Charakter an, besuche den Growroom und teste deine Stärke anschließend in Dungeon 1. Nichts davon ist gesperrt – der Weg ist nur eine Empfehlung.'],
+   ['Tagesziele & Charakter-Check','Die vorhandenen Tagesziele zeigen dir, was heute noch sinnvoll ist. Der Charakter-Check erinnert dich an freie Punkte, Edelsteine, Verzauberungen und Set-Boni.'],
    ['Aktuelle Events','Im Bereich „Aktuelles“ siehst du laufende Boni wie Gold-, EXP-, Dampf-, Turm- oder Koloss-Events.'],
-   ['Schnell weiter','Von hier springst du direkt zu Quests, Dungeons, Anbauturm, Growroom, Weltboss, Buch, Schmiede, Freund werben, Shop und Wetter.']
+   ['Schnell weiter','Du kannst jederzeit frei zu Quests, Dungeons, Anbauturm, Growroom, Weltboss, Buch, Schmiede, Freunden, Shop und den übrigen Bereichen wechseln.']
   ]},
   character:{label:'Charakter',icon:'🧙',steps:[
    ['Ausrüstung','Tippe ein angelegtes Item an, um Details zu öffnen. Waffen, Rüstung und Schmuck können Edelsteine und Verzauberungen tragen.'],
@@ -23,9 +25,10 @@
    ['Weitere Tabs','Grow-Aufträge, Genetik und Blüten-Dealer besitzen eigene Bereiche. Das ? im jeweiligen Growroom-Bereich erklärt die Details passend zum aktiven Tab.']
   ]},
   quests:{label:'Quest & Schicht',icon:'📜',steps:[
+   ['Dein erster Auftrag','Als neuer Spieler ist eine Quest der beste Einstieg: Wähle eines der drei Angebote und starte es. Danach kannst du während des Timers jederzeit andere Bereiche erkunden.'],
    ['Quest-Auswahl','Du erhältst drei normale Questangebote; Elite-Quests werden separat hervorgehoben. Dauer, Schwierigkeit und Dampfkosten unterscheiden sich.'],
    ['Dampf & Zeit-Samen','Quests verbrauchen Dampf. Mit Zeit-Samen kannst du eine laufende Quest verkürzen bzw. überspringen.'],
-   ['Belohnungen','Quests geben Gold und EXP und können Items, Edelsteine, Rollen sowie weitere Fortschritte auslösen. Die erste Tagesquest bringt zusätzlich Harz-Taler.'],
+   ['Belohnungen','Quests geben Gold und EXP und können Items, Edelsteine, Rollen sowie weitere Fortschritte auslösen. Die erste Tagesquest bringt zusätzlich Harz-Taler. Neue Ausrüstung kannst du danach direkt mit deinem angelegten Item vergleichen.'],
    ['Schicht','Im Schicht-Tab kannst du deinen Charakter bis zu mehrere Stunden arbeiten oder chillen lassen und später die angesammelte Belohnung abholen.']
   ]},
   dungeon:{label:'Dungeons',icon:'👹',steps:[
@@ -242,7 +245,8 @@
     <div class="v6254-welcome-title">Willkommen bei <b>GROW LEGENDS</b></div>
     <div class="v6254-welcome-copy">
      Schön, dass du da bist! Du musst nicht alles sofort verstehen.<br><br>
-     Jede wichtige Seite erklärt sich beim ersten Besuch kurz selbst.
+     Für den Einstieg empfehlen wir: <b>Quest starten → Beute prüfen → Charakter verbessern → Growroom ansehen → Dungeon 1 testen.</b><br><br>
+     Das ist keine Sperre und keine Pflicht. Du kannst Grow Legends jederzeit frei erkunden. Jede wichtige Seite erklärt sich beim ersten Besuch kurz selbst.
     </div>
     <button type="button" class="btn" id="v6254WelcomeStart">Los geht's! ➜</button>
     <div class="v6254-welcome-note">Mit dem ?-Symbol kannst du die Anleitung jeder Seite später erneut öffnen.</div>
