@@ -8057,3 +8057,30 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
 - Live-Spielwerte weiterhin unverändert.
 - Commit: `bfe902ef6309e85e1f9341d4af545458c7ce2c8f`.
 
+### V8.097 – Abschluss 5-Klassen-Balance-Audit · 03.10.2026
+- Audit abgeschlossen; keine weitere Test-Infrastruktur bauen.
+- Belastbare Aussagen:
+  - Alle fünf Klassen haben kanonische Source-Resolver mit grünen Client↔Server-Trace-Belegen.
+  - Frost Waffe II ist nicht als versteckter Vollwert-Buff bestätigt; Attribute/Enchant werden mit 10 % gewichtet, die Waffenrange ist midpoint-neutral.
+  - Grower/Barbar Tank hat das mit Abstand größte gestapelte defensive Budget:
+    - hoher HP-Multiplikator,
+    - permanente und situative DR,
+    - Regeneration,
+    - Reflect,
+    - Second Wind,
+    - Lethal-Save.
+  - Kein Doppel-HP-Bug gefunden; das Problem ist Budget-Stacking, nicht ein einzelner fehlerhafter Multiplikator.
+  - Harzruferin hat in den bisherigen synthetischen Offense-/Utility-Audits die schwächste direkte Druckkurve und ist eher Kandidat für Unterperformance als für Übermacht.
+  - Frost liegt mechanisch näher an der Mitte; sein Dual-Wield ist nicht der Hauptausreißer.
+- NICHT belastbar genug für Live-Entscheidung:
+  - exakte 5×5-Winrates der synthetischen Engine;
+  - konkrete Nerf-/Buff-Prozentwerte.
+- Grund:
+  - die neuen parameterisierten Hooks sind vollständig verdrahtet, aber noch nicht selbst gegen gespeicherte kanonische Event-/RNG-Traces zertifiziert;
+  - vereinfachte Sensitivitätsrunner wurden wegen Modellfehlern ausdrücklich verworfen.
+- Entscheidung für jetzt:
+  - KEINE Live-Balanceänderung.
+  - Bei nächster Balance-Runde zuerst echte Match-/Telemetry-Daten nach Klasse/Level/Build sammeln oder die parameterisierte Engine einmalig trace-zertifizieren.
+  - Danach nur gezielte Werte ändern; keine pauschalen Klassen-Nerfs.
+- Audit damit fachlich geschlossen.
+
