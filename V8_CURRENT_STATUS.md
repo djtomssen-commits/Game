@@ -7934,3 +7934,18 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
 - Live-Spielwerte weiterhin unverändert.
 - Harness-Commit: `969df2740e254cf469cdb8b9ff5be4d6fb14f4c0`.
 
+### V8.097 – Barbar-Tank Sensitivitätslauf · 03.10.2026
+- Reproduzierbare relative Szenario-Engine im QA-Harness ergänzt.
+- WICHTIG: Dieser Runner ist bewusst als `RELATIVE_ONLY_NOT_CANONICAL` markiert; er dient nur dazu, Tank-Nerf-Richtungen unter identischen Seeds/Annahmen zu vergleichen.
+- Ergebnis:
+  - `minimal_v1` (+40,6 % HP, 5 % DR, Zweite Luft + Lethal-Save behalten) ist klar zu schwach als Nerf; Barbar bleibt in fast allen getesteten Matchups dominant.
+  - Nur Zweite Luft entfernen reicht ebenfalls nicht.
+  - Nur Lethal-Save entfernen reicht ebenfalls nicht.
+  - Selbst beide Notfall-Effekte entfernen reicht mit +40,6 % HP / 5 % DR noch nicht zuverlässig.
+  - Erst ein deutlich kleinerer passiver Tank-Pool (ca. +25,6 % HP / 3 % DR) plus Wegfall beider Notfall-Effekte bringt einzelne Matchups in diesem Sensitivitätsmodell wieder in grob 50–85-%-Bereiche statt nahezu 100 %.
+- Interpretation:
+  - Der Tank-Ast ist nicht durch einen Einzelwert kaputt, sondern durch gestapeltes Gesamtbudget.
+  - Kein Live-Nerf vorgenommen.
+  - Vor einer echten Änderung muss die vollständige parameterisierte Kampfengine weiter vervollständigt/kalibriert werden.
+- Harness-Commit: `32a8a40613d6a7f9acc79adcc134b6b0896e1fce`.
+
