@@ -7049,3 +7049,28 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
   - Beta Cache: `e08778a6378f54c852653ff08eae04325fe77eb0`
   - index Cache: `cfff5b6c646b76e261cf8057fe090649b2bf96df`
   - Server1 Cache: `2b3ae11f9fbec8a164bb1143a1d31e57838e1d31`
+
+
+### Inventar-Vergleich V8.070 – vollständig auf zentralen Owner umgestellt · 03.10.2026
+- Nutzerfrage: Ist die Vergleichsanzeige im Inventar dieselbe wie im Shop?
+- Vorher: Klicks wurden zwar bereits vom zentralen `v4103`-Delegate abgefangen, `v459-character-hub.js` enthielt aber weiterhin einen zweiten lokalen Inventar-Vergleich über `comparison(it)`.
+- Fix:
+  - `v459OpenInventoryItem` routet jetzt direkt auf `window.v4103OpenItemCompare(it,'inventory')`;
+  - der alte lokale `comparison(it)`-Pfad im Inventar ist damit retired;
+  - Shop, Inventar, Quest-/Dungeon-Fund und Equipment nutzen denselben zentralen Vergleichs-Owner.
+- Der zentrale Inventar-Dialog behält die Aktionen:
+  - `Anlegen`
+  - `Verkaufen`
+- Damit gilt im Inventar exakt dieselbe Bewertung wie im Shop:
+  - native Grundwerte aus `v429StatLock.native`;
+  - Stein genau einmal;
+  - VZ genau einmal;
+  - Gesamtblock `inkl. Stein + VZ`.
+- Cache-Key: `8070inventorycompare1`.
+- Commits:
+  - zentraler Popup-Owner + Inventaraktionen: `74a2b4665039d542f5c6a4e6d30c7adb26851e3e`
+  - alter v459-Inventarvergleich retired: `23c5851c9c9c0edba83c77bb92f41016823b1919`
+  - CSS: `d5e8a62d99c81c79ab99cefac270b6a5b816ac12`
+  - Beta Cache: `055e528e94af972f9c73a51fc42c84e88cd213df`
+  - index Cache: `d9196b02eebcbb3d61ec2c58705b1532fdba8d3b`
+  - Server1 Cache: `db2b1264872ebadcf1e43b6c51dfd776bb9c15b1`
