@@ -7921,3 +7921,16 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
 - Szenario-Report: `V8097_BARBARIAN_TANK_NERF_SCENARIOS.json`
 - Report-Commit: `8329c86124834076ca6e58968a8fa5aa5dbae50b`
 
+### V8.097 – Tank-Nerf-Szenario reproduzierbar im QA-Harness hinterlegt · 03.10.2026
+- `tank_minimal_nerf_v1` im Harness angelegt:
+  - Tank-HP-Meilensteine +5 % / +5 %
+  - volle permanente Tank-DR 5 %
+  - Zweite Luft 15 % unverändert
+  - Lethal-Save unverändert
+- Wichtige QA-Korrektur:
+  - `V8097_FIVE_CLASS_PROVISIONAL_MATRIX.json` enthält nur Resultate, aber keinen committeten ausführbaren Full-Class-Generator.
+  - Deshalb werden neue Winrates NICHT aus den alten Prozentwerten hochgerechnet oder geschätzt.
+  - Der Harness markiert das Szenario mit `matrix_ready=false`, bis die parameterisierten Klassenresolver in eine ausführbare Matchup-Schleife verdrahtet sind.
+- Live-Spielwerte weiterhin unverändert.
+- Harness-Commit: `969df2740e254cf469cdb8b9ff5be4d6fb14f4c0`.
+
