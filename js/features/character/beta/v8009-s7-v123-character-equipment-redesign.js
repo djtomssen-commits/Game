@@ -62,6 +62,7 @@ function v123EnsureDetail(){
 }
 function v123OpenItem(slot){
   const it=s.equipment?.[slot];if(!it)return;
+  if(typeof window.v4103OpenItemCompare==='function')return window.v4103OpenItemCompare(it,'equipment');
   v123EnsureDetail();
   const ov=document.querySelector('#v123ItemOverlay');
   const box=document.querySelector('#v123ItemDetail');
