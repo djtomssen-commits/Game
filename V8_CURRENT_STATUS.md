@@ -7805,3 +7805,18 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
   - Blocker bleibt `MODEL_PARITY_PENDING`.
 - Harness-Commit: `e57f458919ddc404a1be3561aa97c48cff89647b`.
 
+### V8.097 – 5-Klassen Source-Module vollständig gemappt · 03.10.2026
+- Alle fünf Klassen sind im QA-Harness jetzt auf ihre kanonischen Source-Owner gemappt:
+  - Grower / Scout / Bruiser -> `v8009-s1-v319-exact-talents-dungeon-balance.js`
+  - Frost -> `v8009-s2-v4155-frost-talents.js`
+  - Summoner -> `v8009-s1-v6287-harzruferin.js`
+- Für jede Klasse ist die vollständige Pflichtmechanik-Liste im Harness hinterlegt.
+- Ergebnis des Source-Gates:
+  - alle fünf Source-Module vollständig;
+  - keine Pflichtmechanik fehlt im Mapping;
+  - Status je Klasse: `SOURCE_COMPLETE_PARITY_PENDING`.
+- Noch nicht freigegeben:
+  - `trace_parity_green=false` bleibt für alle synthetischen Module, bis Eventfolge und RNG-Verbrauch gegen kanonische Shadow-Traces geprüft sind.
+- `canonical_winrate_ready=false` bleibt korrekt.
+- Harness-Commit: `aabd396c7a2d03e726b42c2e4e53c59ad464fcab`.
+
