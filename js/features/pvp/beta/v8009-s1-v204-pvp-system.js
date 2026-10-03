@@ -88,7 +88,8 @@ async function v204FindOpponent(){
       level:Number(row.level)||1,combat_power:Number(row.combat_power)||1,pvp_buds:Number(row.pvp_buds)||0
     };
     s.v204Pvp.lastOpponent=v204Opponent.id;
-    v204CooldownLeft=V204_COOLDOWN;
+    /* Cooldown starts only when a fight is actually started/recorded server-side.
+       Finding or previewing an opponent must not consume the 30-minute window. */
     v204RenderOpponent();
     v204RenderPage();
   }catch(e){
