@@ -7074,3 +7074,14 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
   - Beta Cache: `055e528e94af972f9c73a51fc42c84e88cd213df`
   - index Cache: `d9196b02eebcbb3d61ec2c58705b1532fdba8d3b`
   - Server1 Cache: `db2b1264872ebadcf1e43b6c51dfd776bb9c15b1`
+
+
+### Qualitätsfarben V8.071 – überall kräftiger wie im Charakterfenster · 03.10.2026
+- Nutzerwunsch: Qualitätsfarben sollen nicht nur im Charakterfenster kräftig sichtbar sein, sondern auf allen Itemflächen.
+- Kanonische Qualitätsfarben global verstärkt: Grau #d0d4d8, Grün #72ff88, Blau #55c7ff, Episch #ed72ff, Legendär #ffc052, Mystisch #66ffff; Prismatisch mit kräftigem Regenbogenrand/Mehrfachglow.
+- Betroffene Flächen: Charakter-Equipment, Inventar, Shop, Quest-/Dungeon-Fund, Spielerprofil/zentrale Itemkarten und universelles Item-Vergleichspopup.
+- Vergleichspopup: komplette Itemkarte bekommt Qualitätsrahmen + dezenten Farbglow; Itembild-Rahmen, Name und Qualitäts-Meta übernehmen dieselbe Farbe; Prismatisch erhält einen klaren Regenbogenrand statt nur neutralem Braun.
+- Zentraler Quality-Art-Owner v6108 wurde von charakter-only auf globale starke Qualitätsfarben umgestellt.
+- Zentraler Item-UI-Owner v4103 übernimmt dieselbe Palette für alle markierten aktuellen Itemflächen.
+- Cache-Key: 8071qualitystrong1.
+- Commits: globale Quality-Art-Farben 9a9caf7c2fdfa3b7ddadb1a79f0c454af3f43207; zentrale Item-/Compare-Farben 795374726d8c2fc4770eba6a6fb187c3f8d87059; Beta Cache ec5c39cd7f45bfa6bc68de029871d62cff979f85; index Cache 65fecd055a808ef78e9ac9325fb6e9e5d2eef7e4; Server1 Cache 7a505ef57176a2e684ae0905480ab2f395cf060f.
