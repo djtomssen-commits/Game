@@ -7786,3 +7786,22 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
 - Frost erhält wegen der historisch niedrigsten Green-Parity-Rate die strengste Validierung.
 - Harness-Commit: `5cc0f05a7d101d222c32d5f98834a05bb4085146`.
 
+### V8.097 – 5×5-Matchup-Engine Scaffold · 03.10.2026
+- Gemeinsame read-only QA-Matchup-Engine in `.github/scripts/v8097_five_class_balance_fixture.py` vorbereitet.
+- Testmatrix:
+  - Level 100 / 200 / 300;
+  - 5 Klassen;
+  - 20 gerichtete Matchups pro Level;
+  - 60 gerichtete Matchups gesamt.
+- Standardplan: 1.000 Läufe je Richtung = 60.000 deterministische Testkämpfe nach Freigabe.
+- RNG:
+  - eigener deterministischer Tape-Generator;
+  - kein globaler Zufallszustand;
+  - reproduzierbare Seeds pro Level/Attacker/Defender.
+- Klassenmodule verweisen weiterhin auf die kanonischen Server-Owner und deren Pflichtmechaniken.
+- Harter Publish-Guard:
+  - Matchup-Ergebnisse dürfen erst als kanonisch markiert werden, wenn `all_class_modules_parity_green=true`;
+  - bis dahin `canonical_winrate_ready=false`;
+  - Blocker bleibt `MODEL_PARITY_PENDING`.
+- Harness-Commit: `e57f458919ddc404a1be3561aa97c48cff89647b`.
+
