@@ -6843,3 +6843,53 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
   - Beta Cache: `b8f340269bd1018ea17b979a9410bc8d64591c50`
   - index Cache: `8e96d34bc894726b4d58d7e5d8c28c7480a59d66`
   - Server1 Cache: `5bc6325ba976f1a17b84ecc6eb857a8a11046ddc`
+
+
+### Itemkurve V4 – komplette Raritätskurve abgeflacht · 03.10.2026
+- Nutzerfeedback: Mystische Items blieben zu viele Level lang stärker als neuere Legendär-/Prismatisch-Drops.
+- Vollständige Prüfung der Raritätskurve durchgeführt: Grau → Grün → Blau → Episch → Legendär → Prismatisch → Mystisch.
+- Root Cause serverseitig:
+  - `v7167_core_total` nutzte bereits eine additive Levelkurve, aber mit zu großen festen Seltenheitsboni:
+    - alt: `0 / 3 / 6 / 10 / 15 / 21 / 28`;
+  - ab Episch wurde Glück in `v7167_curve_native` zusätzlich **oben auf** das Core-Budget gerechnet;
+  - dadurch wuchs der reale Abstand stärker als beabsichtigt.
+- Neue kanonische Kurve V4:
+  - Level-Gain unverändert: `+0.72` Gesamtbudget pro Itemlevel;
+  - Seltenheitsbonus jetzt:
+    - Grau `+0`
+    - Grün `+1.5`
+    - Blau `+3`
+    - Episch `+4.5`
+    - Legendär `+6`
+    - Prismatisch `+8.5`
+    - Mystisch `+10.5`
+  - Glück ab Episch bleibt als Charakteristik bestehen, wird aber **innerhalb desselben Gesamtbudgets** verteilt statt zusätzlich erzeugt.
+- Beispiel Grower-Waffe / natives Gesamtbudget:
+  - Lv10: `17 / 19 / 20 / 22 / 23 / 26 / 28`
+  - Lv50: `46 / 48 / 49 / 51 / 52 / 55 / 57`
+  - Lv100: `82 / 84 / 85 / 87 / 88 / 91 / 93`
+  - Lv300: `226 / 228 / 229 / 231 / 232 / 235 / 237`
+- Ergebnis:
+  - jede Rarität bleibt bei gleichem Level stärker;
+  - der Abstand wächst nicht mehr mit dem Level mit;
+  - höherleveliger Loot niedrigerer Rarität kann hochwertige ältere Items wieder einholen;
+  - Mystisch bleibt wegen höherem Grundbudget + Spezialeffekt wertvoll, blockiert aber nicht mehr dauerhaft die Progression.
+- Serverautorität:
+  - Beta/`public` und Server1/`server1` wurden identisch geändert.
+  - Supabase-Migrationen:
+    - `v8066_flat_item_rarity_curve`
+    - `v8066_item_curve_v4_normalizer`
+- Bestehende Items:
+  - `player_item_state`, `player_saves` und Profil-Equipment serverseitig neu normalisiert;
+  - alte V3-Items werden auf V4 neu berechnet, also auch alte überstarke Mystics tatsächlich abgesenkt;
+  - Beta-QA nach Migration: `254/254` gefundene Gear-Items in Inventar/Equipment auf `v447Curve.version = 4`, `0` Altitems.
+- Client-Fallback ebenfalls auf dieselbe V4-Kurve umgestellt:
+  - `js/features/items/beta/v8009-s1-v447-unified-item-balance.js`
+  - bestehende serverautoritative V4-Items werden nicht erneut überschrieben;
+  - alte V3-Markierungen werden einmal auf V4 migriert.
+- Cache-Key: `8066itemcurve4`.
+- GitHub-Commits:
+  - Client-Kurve: `8675367c352740fc539819cba7d2472fc11c2af0`
+  - Beta Cache: `ac8cc77a7517b8dc69b3d5a4fd3f95816ba2894e`
+  - index Cache: `7c7d9c84a02052076d0102d4564a2126197194b7`
+  - Server1 Cache: `0c21f8b9b63011e7e61bf702772269b687251180`
