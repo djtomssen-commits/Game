@@ -8007,3 +8007,22 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
 - Noch keine Winrates freigegeben, Live unverändert.
 - Commit: `beab18e33c95dbadcb17204b9b4a5d61c3e758fa`.
 
+### V8.097 – parameterisierte Standardklassen-Hooks umgesetzt · 03.10.2026
+- Symmetrische Engine um echte parameterisierte v319-Hooks erweitert.
+- Fertig:
+  - Grower Attack + Defense
+  - Scout Attack + Defense
+  - Bruiser Attack + Defense
+- Übertragen wurden u. a.:
+  - Crit-/Headshot-/Execute-/Mastery-Regeln
+  - Grower Wucht/Rage/Folgetreffer/Lifesteal
+  - Scout Salve/Dritt-/Kettentreffer/Dodge/Counter/Lethal-Dodge
+  - Bruiser Crit-Chain/Explosion/Detonation/Smoke-DOT/Schild/DOT-Heal
+  - defensive DR-/Regen-/Reflect-/Second-Wind-/Lethal-Save-Regeln der Standardklassen
+- Status: `STANDARD_HOOKS_READY_FROST_SUMMONER_PENDING`
+- Noch keine Winrates freigegeben.
+- Nächste Schritte:
+  - Frost Attack + Defense aus v4155
+  - Summoner Wrapper + Defense aus v6287/v6302
+- Harness-Commit: `63bff9a9a7402aa052f8f3f0667385da32d1cebf`.
+
