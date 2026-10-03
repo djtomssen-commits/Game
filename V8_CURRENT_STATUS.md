@@ -7173,3 +7173,32 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
 - Neuer stabiler Meilenstein:
   - Branch `stable-server1-2026-10-03`
   - Basis `62165f56d49ac3548cd2f91557a30eb22e2381e9`.
+
+
+### Dampf-Event V8.087 – Post-Hydration-Sync auf Beta + Server 1 · 03.10.2026
+- Fehlerbild auf Server 1: Gold-Event war sofort sichtbar, Dampf-Event erschien erst später.
+- Datenbank geprüft:
+  - aktuelles `Gold-Event` aktiv;
+  - aktuelles `Dampf-Event` ebenfalls aktiv;
+  - beide mit identischem aktiven Wochenend-Zeitraum.
+- Damit war die Event-Konfiguration korrekt.
+- Root Cause / Timing:
+  - öffentliche Events werden asynchron über `v093LoadPublicContent()` geladen;
+  - Dampf benötigt zusätzlich `v271SyncDampfEvent()` und den Ressourcen-Paint;
+  - die kanonische Account-/Server-Hydration konnte danach noch den gespeicherten Dampfwert übernehmen, bevor der Event-Sync final nachgezogen wurde.
+- Fix direkt im bestehenden kanonischen Owner:
+  - `js/features/account/beta/v8009-s1-v4139-account-switch-authority.js`;
+  - neue interne Funktion `syncDampfEventAfterHydration(id)`;
+  - nach erfolgreicher `hydrateCanonicalLogin()`:
+    - Eventdaten nur bei Bedarf laden;
+    - `v271SyncDampfEvent()` ausführen;
+    - `v271PaintDampf()` ausführen;
+    - zentralen Ressourcen-Painter `v441PaintResources()` aktualisieren;
+    - danach erst final rendern.
+- Kein neuer Timer, kein Retry-Zug, kein separater Patch-Owner.
+- Account-Wechsel während async Laden wird weiterhin abgefangen.
+- Cache-Key Beta + Server1: `8087dampfsync1`.
+- Commits:
+  - Core-Fix: `ef8cac1d4e5d4770f7f92f0a2abb02df2861464d`
+  - Beta Cache: `92e6a13c9ce456962abd09dfb5cd2c69f5e5d2c0`
+  - Server1 Cache: `73ae50687333788edac6a69774e171a97c5b6c1d`.
