@@ -8026,3 +8026,34 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
   - Summoner Wrapper + Defense aus v6287/v6302
 - Harness-Commit: `63bff9a9a7402aa052f8f3f0667385da32d1cebf`.
 
+### V8.097 – alle 5 Klassen in symmetrischer QA-Engine verdrahtet · 03.10.2026
+- Parameterisierte Attack-/Defense-Hooks jetzt für alle fünf Klassen vorhanden:
+  - Grower
+  - Scout
+  - Bruiser
+  - Frost
+  - Summoner
+- Frost separat aus v4155 portiert:
+  - Kältemarken
+  - Doppelreif
+  - Eisbruch / Absoluter Nullpunkt
+  - Seelenschnitt / Zwillingsschnitt
+  - Lifesteal / Seelenernte
+  - Reifbarriere / Totenstarre / Ewiges Eis
+  - Reflect / Heilung
+- Summoner separat aus v6287/v6302 portiert:
+  - Fluchnebel + Curse-Boost
+  - Ruf aus dem Dunst mit Pity
+  - 4 Begleiter
+  - Begleiter-Crit
+  - Bud-Heal
+  - Sporen-DOT
+  - Krähen-Crit-Buff
+  - Zweitbeschwörung
+  - Soul-Lethal-Save
+- Gemeinsamer Dispatcher für Attack und Defense beider Seiten vorhanden.
+- Status: `ALL_FIVE_PARAMETERISED_HOOKS_READY`
+- Nächster/letzter technischer Gate wäre nur noch Trace-Parity gegen die bereits grünen Referenzen und danach Matrix.
+- Live-Spielwerte weiterhin unverändert.
+- Commit: `bfe902ef6309e85e1f9341d4af545458c7ce2c8f`.
+
