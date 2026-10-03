@@ -8177,3 +8177,29 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
 - Report: `V8097_FIVE_CLASS_POST_BALANCE_INDEX.json`
 - Report-Commit: `865e28140d0c514eb2ad0387a615b77cbfc62210`
 
+### V8.097 – Balance Schritt 3 auf Beta · 03.10.2026
+- Nur Grower/Barbar und Scout angepasst.
+- Grower Tank:
+  - HP-Meilensteine 7 % / 10 % -> 5 % / 8 %
+  - Tank s5 permanente DR pro Rang 0,18 % -> 0,12 %
+  - passiver Tank-EHP gegenüber Schritt 2 nochmals ca. -3,6 %
+- Scout:
+  - Präzision s0 Geschick pro Rang 0,6 % -> 0,7 %
+  - Dodge s0 Ausweichen pro Rang 0,5 % -> 0,6 %
+  - Dodge s6 dauerhaftes Ausweichen pro Rang 0,2 % -> 0,25 %
+- Magier, Frost und Harzruferin unverändert.
+- Talenttexte synchronisiert.
+- Projektierter relativer Balance-Index nach Schritt 3 (100 = 5-Klassen-Mittel, KEINE Winrate):
+  - L100: Grower 120,3 / Scout 92,3 / Bruiser 97,3 / Frost 96,0 / Summoner 94,2
+  - L200: Grower 109,8 / Scout 92,3 / Bruiser 104,4 / Frost 97,5 / Summoner 95,9
+  - L300: Grower 124,4 / Scout 89,2 / Bruiser 104,3 / Frost 91,2 / Summoner 90,8
+- Interpretation:
+  - Richtung stimmt, aber Index bleibt beim Grower-Tank hoch und Scout niedrig.
+  - KEINE weitere starke Anpassung nur anhand dieses Index; ab hier braucht es echte Kampf-/Telemetry-Daten oder trace-zertifizierten Matrix-Lauf.
+- Code-Commits:
+  - `9cbd7ecb691b8fab16f6a5b24e2b6928379252f2`
+  - `5f1f1309157a137189c0bfd2c35eeb3781ec728f`
+- Report: `V8097_POST_BALANCE_STEP3_INDEX.json`
+- Report-Commit: `f385ee9a7c32d13e84a7dc627c6f5c099b1fb6a0`
+- Server 1 unverändert.
+
