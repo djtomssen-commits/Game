@@ -81,12 +81,12 @@ function paintSlots(){
       window.__V7126_CHARACTER_CHURN__.slotWrites++;
     }
 
-    if(slot==='weapon2'){
-      el.onclick=e=>{
-        if(e.target.closest('button'))return;
-        try{v123OpenItem('weapon2')}catch(_){}
-      };
-    }
+    el.onclick=e=>{
+      if(e.target.closest('button,a,input,select,textarea'))return;
+      if(!s?.equipment?.[slot])return;
+      try{window.v123OpenItem?.(slot)}catch(_){}
+    };
+    el.title=it?'Antippen für Item-Details':'';
   });
 
   try{window.v470PaintEquipmentSlots?.()}catch(e){}
