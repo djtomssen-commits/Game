@@ -7970,3 +7970,18 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
 - Für diesen Commit ist kein GitHub-Workflow automatisch angesprungen; daher noch keine CI-Verifikation.
 - Live-Balance weiterhin unverändert.
 
+### V8.097 – Korrektur: vereinfachten Tank-Sensitivitätsrunner verworfen · 03.10.2026
+- Beim echten lokalen Lauf wurde ein Modellfehler im vereinfachten Tank-Sensitivitätsrunner gefunden:
+  - zu niedriger Grundschaden relativ zum HP-Pool;
+  - Barbar hatte zunächst immer Initiative;
+  - vor allem: gegnerische Klassenmechaniken/Defensiven wurden nicht vollständig symmetrisch modelliert.
+- Dadurch waren die relativen Szenario-Winrates NICHT belastbar.
+- Frühere Aussagen aus diesem Runner wie „strong_v2 bringt einzelne Matchups grob in 50–85 %“ werden ausdrücklich verworfen.
+- Der Harness blockiert `run_relative_tank_scenario` und `compare_relative_tank_scenarios` jetzt mit `INVALID_MODEL`.
+- Der Root-Cause-Codebefund bleibt davon unberührt:
+  - voller Grower-Tank stapelt hohen HP-Bonus, permanente DR, Regeneration, Reflekt, Second Wind und Lethal-Save;
+  - daraus folgt aber noch KEIN belastbarer konkreter Nerfwert ohne vollständige symmetrische Matchup-Engine.
+- Gültiger nächster Weg:
+  - vollständige parameterisierte 5-Klassen-Engine, die Attacke UND Defensive beider Seiten mit kanonischen Klassenmechaniken abbildet.
+- Commit der Korrektur: `597ec8e9aeea24293a160d506a0d4e4eb3335cd1`.
+
