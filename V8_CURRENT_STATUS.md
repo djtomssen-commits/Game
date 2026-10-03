@@ -7629,3 +7629,37 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
   - Worldboss/Turm-Sonderdämpfung;
   - danach erst konkrete Anpassungsvorschläge.
 
+### 5-Klassen-Balance-Audit V8.097 – Talent-/Endgame-Struktur · 03.10.2026
+- Zweiter Read-only-Prüfblock nach dem Baseline-Audit; weiterhin keine Balancewerte oder Spielerstände verändert.
+- Talentökonomie verifiziert:
+  - 1 Talentpunkt je 2 Level;
+  - Level 100 = 50 Punkte;
+  - Level 200 = 100 Punkte;
+  - Level 300 = 150 Punkte.
+- Ein einzelner Talentast kann aufgrund der Level-Gates nicht immer sofort voll befüllt werden:
+  - Level 100: maximal 50 Punkte sinnvoll im Hauptast;
+  - Level 200: Hauptast ist durch das Level-250-Gate bei 80 Punkten gedeckelt, die restlichen 20 Punkte müssen in einen zweiten Ast;
+  - Level 300: 100 Punkte Hauptast + 50 Punkte Zweitast möglich.
+- PvE:
+  - zentraler Serverresolver `v7099_pve_fight` enthält für alle fünf Klassen eigene Talent-/Proc-Pfade;
+  - Bud-Barbar: Wucht/Raserei/Überleben;
+  - Blatt-Schütze: Präzision/Ausweichen/Salve;
+  - Bong-Magier: Zaubermacht/Kritische Magie/Rauchmagie;
+  - Frost-Todesritter: eigener Frostklinge/Eispanzer/Todespakt-Pfad;
+  - Harzruferin: Beschwörung/Seelenraub/Fluchnebel mit eigenem Begleiter-/DoT-Modell.
+- Dungeon-Balance berücksichtigt Talentfortschritt über den empfohlenen Level:
+  - `expectedPoints = min(150, floor(recLevel/2))`;
+  - Gegner-HP und Angriff skalieren anteilig mit erwartetem Talentfortschritt.
+- PvP-Strukturproblem:
+  - aktueller `v6350_resolve_pvp_core` nutzt keine vollständige `v319ExactTalentStats`-/Talentbaum-Auflösung;
+  - dadurch bleiben die Klassen im PvP primär auf ihren festen Klassenpassiven/Grundprocs;
+  - ein Level-300-Spieler mit ausgearbeitetem Talentbuild erhält dort nicht dieselbe Klassenidentität wie im PvE.
+- Folge für Balance-QA:
+  - PvP-Baseline und PvE-Talentbalance müssen getrennt bewertet werden;
+  - PvP-Siegquoten aus dem ersten Audit sind deshalb nicht durch Level-100/200/300-Talentverteilungen korrigiert;
+  - bevor Zahlen an einzelnen Klassen geändert werden, sollte entschieden werden, ob PvP die vollständigen Talentmechaniken übernehmen soll oder absichtlich ein reduziertes PvP-Modell bleibt.
+- Frost-Waffe-II:
+  - weiterhin kein Hinweis auf einen übermäßigen Vorteil durch die neue Waffenspanne;
+  - 10-%-Attributgewichtung ist im serverseitigen Shadow-Attr-Pfad korrekt;
+  - offene V8.067-Inkonsistenz bleibt: eigener Waffe-II-Range-Faktor ist im PvP vorhanden, im zentralen PvE-Nebenhandtreffer noch nicht.
+
