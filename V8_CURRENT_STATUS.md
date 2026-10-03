@@ -6993,3 +6993,22 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
   - v428 Cache: Beta `92e5440b9bd32f076d1446a275c42753929b24a5`, index `9a80aae75dc50ccf6906721eda19b4b7ed6aceef`, Server1 `5811931080d8808043ff68359764863e1c17d3db`
   - v249 Cache: Beta `70ccbc549781f8e1a95b590739d4b2cd4862b1fc`, index `b7d4e8e2a35233d4ec4f9daeadee37e30c5e7b7b`, Server1 `5eb90099d21d3283d4a105ec47941b3c367f2a51`
 - Korrektur zur V8.067-Doku: Die Waffenrange war bereits im zentralen `v7099_pve_fight`, aber der produktive Dungeon-Run lief separat über `v7049_run_dungeon_core`. Mit V8.068 ist die Range nun auch dort wirklich aktiv.
+
+
+### PvE-Gegner-Audit nach Itemkurve V4 / Waffenrange · 03.10.2026
+- **Dungeon 1–20:** neu kalibriert in V8.068; siehe Abschnitt oben.
+- **Turm:** kein statischer Dungeon-artiger Fehlskalierungsfall gefunden.
+  - Gegner werden beim Lauf aus den **aktuellen Spielerwerten** abgeleitet (`primary`, `maxHp`, Floor/Depth, Normal/Elite/Miniboss/Boss);
+  - Kampf läuft über `v7099_pve_fight`;
+  - dadurch folgt der Turm der neuen Itemkurve automatisch und die V8.067-Waffenrange greift im zentralen Resolver.
+- **Quest:** der aktuelle serverautoritative Quest-Flow ist Timer/Angebot/Claim/Belohnung; es gibt aktuell **keinen serverseitigen Quest-Win/Loss-Kampfresolver**. Die sichtbare Quest-Kampfdarstellung entscheidet daher nicht über Erfolg oder Belohnung. Itemkurve/Waffenrange erzeugen hier keinen Progressions-Wall.
+- **Endgame / Nebelrisse:** gesondert gegen V4-Referenzbuilds geprüft.
+  - Normaler Build: Boss-Margins über Riss 1–9 ca. `1.86 → 1.23`;
+  - starker Build: ca. `2.51 → 1.64`;
+  - damit nach Item-V4 **nicht zu schwer**, eher mit komfortabler Reserve; aktuell kein Notfall-Nerf nötig.
+- **Weltboss:** besitzt eigenen readiness-/ideal-stat-basierten Combat-Owner und ist nicht dieselbe statische Gegnerkurve wie Dungeon.
+- **Gildenboss:** eigener beitrags-/Combat-Power-basierter Modus; ebenfalls nicht direkt von der alten Dungeon-Tabelle abhängig.
+- Folgeprinzip für künftige Balance:
+  - statische Progressionsinhalte wie Dungeon gegen feste V4-Referenzbuilds prüfen;
+  - dynamische Modi wie Turm an aktuelle Spielerwerte koppeln;
+  - Sonderbosse separat über ihre eigene Zielzeit/Teilnahme- bzw. Readiness-Kurve balancieren.
