@@ -20,7 +20,7 @@ const V319_SEG_DESC={
   'Pro Rang +0,7 % maximale Lebenspunkte durch Ausdauertraining.',
   'Alle 3 gegnerischen Angriffe regenerierst du pro Rang 0,2 % deiner maximalen LP.',
   'Wirft pro Rang 0,4 % des erlittenen Schadens auf den Gegner zurück.',
-  'Pro Rang 0,18 % weniger erlittener Schaden.',
+  'Pro Rang 0,12 % weniger erlittener Schaden.',
   'Pro Rang +0,6 % maximale Lebenspunkte.'
  ],
  rage:[
@@ -33,7 +33,7 @@ const V319_SEG_DESC={
   'Jeder 5. Angriff heilt pro Rang 0,15 % deiner maximalen LP.'
  ],
  precision:[
-  'Pro Rang +0,6 % Geschick.',
+  'Pro Rang +0,7 % Geschick.',
   'Pro Rang +0,5 % Crit-Chance.',
   'Pro Rang +2 % Crit-Schaden.',
   'Pro Rang 0,6 % Verteidigungsdurchdringung.',
@@ -42,13 +42,13 @@ const V319_SEG_DESC={
   'Gegner unter 30 % Leben erleiden pro Rang +0,4 % Schaden.'
  ],
  dodge:[
-  'Pro Rang +0,5 % Ausweichchance.',
+  'Pro Rang +0,6 % Ausweichchance.',
   'Nach Ausweichen erhält der nächste Angriff pro Rang +0,4 % Schaden.',
   'Der erste gegnerische Angriff erhält pro Rang +0,3 % zusätzliche Ausweichchance.',
   'Nach Ausweichen pro Rang +0,3 % Chance auf einen Konter.',
   'Nach mehreren Ausweichmanövern erhältst du pro Rang +0,3 % Schaden für den nächsten Angriff.',
   'Nach einem Crit erhältst du für den nächsten Gegnerangriff pro Rang +0,3 % Ausweichchance.',
-  'Pro Rang +0,2 % dauerhafte Ausweichchance.'
+  'Pro Rang +0,25 % dauerhafte Ausweichchance.'
  ],
  salvo:[
   'Pro Rang +0,5 % Doppeltreffer-Chance.',
@@ -139,14 +139,14 @@ function v319ExactTalentStats(){
   a('wucht',0,'damagePct',.006);a('wucht',1,'primaryPct',.006);a('wucht',2,'wuchtDamage',.02);
   a('wucht',3,'afterWucht',.006);a('wucht',4,'executeDamage',.01);a('wucht',5,'primaryPct',.005);a('wucht',6,'armorPen',.0055);
   a('tank',0,'hpPct',.01);a('tank',1,'damageReduce',.005);a('tank',2,'hpPct',.007);
-  a('tank',3,'regenEvery3',.002);a('tank',4,'reflectPct',.004);a('tank',5,'damageReduce',.0018);a('tank',6,'hpPct',.006);
+  a('tank',3,'regenEvery3',.002);a('tank',4,'reflectPct',.004);a('tank',5,'damageReduce',.0012);a('tank',6,'hpPct',.006);
   a('rage',0,'doubleChance',.005);a('rage',1,'lifeSteal',.003);a('rage',2,'rampPerAttack',.0015);
   a('rage',3,'executeDamage',.004);a('rage',4,'lowHpLife',.002);a('rage',5,'followChance',.003);a('rage',6,'healEvery5',.0015);
  }else if(s.playerClass==='scout'){
-  a('precision',0,'primaryPct',.006);a('precision',1,'critChance',.005);a('precision',2,'critDamage',.02);
+  a('precision',0,'primaryPct',.007);a('precision',1,'critChance',.005);a('precision',2,'critDamage',.02);
   a('precision',3,'armorPen',.006);a('precision',4,'precisionCritExtraChance',.004);a('precision',5,'critChance',.003);a('precision',6,'executeDamage',.004);
-  a('dodge',0,'dodgeChance',.005);a('dodge',1,'postDodgeDamage',.004);a('dodge',2,'firstDodge',.003);
-  a('dodge',3,'counterChance',.003);a('dodge',4,'dodgeStreakDamage',.003);a('dodge',5,'postCritDodge',.003);a('dodge',6,'dodgeChance',.002);
+  a('dodge',0,'dodgeChance',.006);a('dodge',1,'postDodgeDamage',.004);a('dodge',2,'firstDodge',.003);
+  a('dodge',3,'counterChance',.003);a('dodge',4,'dodgeStreakDamage',.003);a('dodge',5,'postCritDodge',.003);a('dodge',6,'dodgeChance',.0025);
   a('salvo',0,'doubleChance',.005);a('salvo',1,'secondHitDamage',.02);a('salvo',2,'multiCritChance',.004);
   a('salvo',3,'tripleChance',.004);a('salvo',4,'multiRamp',.003);a('salvo',5,'salvoCritExtraChance',.003);a('salvo',6,'chainChance',.002);
  }else if(s.playerClass==='bruiser'){
@@ -163,8 +163,8 @@ function v319ExactTalentStats(){
  if(s.playerClass==='bruiser'&&v318Has('magic',2))o.damagePct+=.10;
  if(s.playerClass==='bruiser'&&v318Has('magic',4))o.primaryPct+=.08;
  if((s.playerClass==='grower'||s.playerClass==='frost')&&v318Has('rage',0))o.doubleChance+=.03;
- if((s.playerClass==='grower'||s.playerClass==='frost')&&v318Has('tank',1))o.hpPct+=.07;
- if((s.playerClass==='grower'||s.playerClass==='frost')&&v318Has('tank',5))o.hpPct+=.10;
+ if((s.playerClass==='grower'||s.playerClass==='frost')&&v318Has('tank',1))o.hpPct+=.05;
+ if((s.playerClass==='grower'||s.playerClass==='frost')&&v318Has('tank',5))o.hpPct+=.08;
 
  o.critChance=v318Clamp(o.critChance,0,.40);
  o.doubleChance=v318Clamp(o.doubleChance,0,.25);
