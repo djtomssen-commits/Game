@@ -176,7 +176,6 @@
  }
  function equipmentActionsHtml(it,context){
   if(String(context)!=='equipment')return '';
-  if(String(window.GROW_RELEASE_CHANNEL||'beta').toLowerCase()==='server1')return '';
   const slot=equipmentSlotOf(it);
   if(!slot)return '';
   return `<div class="v4103-compare-actions" data-slot="${esc(slot)}">
@@ -193,7 +192,6 @@
    return;
   }
   if(String(context)==='equipment'){
-   if(String(window.GROW_RELEASE_CHANNEL||'beta').toLowerCase()==='server1')return;
    const slot=equipmentSlotOf(it);if(!slot)return;
    const unequipBtn=ov.querySelector('.v4103-unequip-item');
    if(unequipBtn)unequipBtn.onclick=()=>{ov.classList.remove('show');try{window.unequip?.(slot)}catch(e){}};
