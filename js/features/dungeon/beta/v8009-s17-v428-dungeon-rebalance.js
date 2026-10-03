@@ -1,46 +1,7 @@
-/* V4.28 Dungeon rebalance
-   Final authority over dungeon battle HP/attack only.
-   Keeps progression, keys, attempts, rewards, loot contract and combat flow intact.
-   Calibration anchor from live play: Lv.40 / Dungeon 3 / Boss 10 was dying in ~2 player hits.
-*/
+/* V8.094: retired dungeon balance writer.
+   The exact previously effective V401 + V428 formula was moved into
+   v249-central-dungeon-balance.js so there is one canonical combat owner. */
 (function(){
-  const baseStats=v025EnemyStats;
-  const V8068_DUNGEON_SCALE=[1,1.0276,.9872,.951,.9413,.8914,.8399,.7849,.75,.6944,.6614,.6268,.5901,.559,.5345,.5089,.491,.4629,.4432,.4226];
-  window.v428DungeonScale=function(di,ri){
-    di=Math.max(0,Math.min(19,Number(di)||0));
-    ri=Math.max(0,Math.min(9,Number(ri)||0));
-    const boss=ri===9;
-    // Normal rooms keep the proven V4.28 curve. Bosses are a wall, but must remain beatable with normal
-    // blue/purple/orange level-appropriate gear; mystic equipment is NEVER a requirement for normal dungeons.
-    const referenceScale=V8068_DUNGEON_SCALE[di]||1;
-    const hp=(boss ? (3.00 + di*0.08) : (2.60 + di*0.12 + ri*0.08))*referenceScale;
-    // Boss damage is capped to a saner progression so a player above the recommendation can actually
-    // benefit from normal progression instead of needing worldboss-only mystic equipment.
-    const attack=(boss ? (1.22 + di*0.018) : (1.35 + di*0.025 + ri*0.025))*referenceScale;
-    return {hp,attack,referenceScale};
-  };
-  v025EnemyStats=function(dungeonIndex,roomIndex,enemy){
-    const old=baseStats(dungeonIndex,roomIndex,enemy)||{};
-    const sc=window.v428DungeonScale(dungeonIndex,roomIndex);
-    return {
-      rec:Number(old.rec)||1,
-      hp:Math.max(1,Math.round((Number(old.hp)||1)*sc.hp)),
-      attack:Math.max(1,Math.round((Number(old.attack)||1)*sc.attack))
-    };
-  };
-  window.v025EnemyStats=v025EnemyStats;
-
-  // Refresh any open dungeon so map/card and battle use the same final values immediately.
-  setTimeout(()=>{
-    try{
-      if(document.querySelector('#dungeon')?.classList.contains('active')){
-        if(s.dungeon?.layer==='world' && typeof v230ShowDungeonWorld==='function')v230ShowDungeonWorld();
-        else if(s.dungeon?.view==='map' && typeof v244RenderSelectedDungeonMap==='function')v244RenderSelectedDungeonMap();
-        else if(s.dungeon?.view==='battle' && typeof renderDungeon==='function')renderDungeon();
-      }
-    }catch(e){console.error('V4.28 dungeon rebalance repaint',e)}
-    
-    const line=document.querySelector('#v141VersionLine');
-    document.title='Grow Legends V4.29';
-  },900);
+  'use strict';
+  window.__V428_DUNGEON_BALANCE_RETIRED__='v8094-v249-owner';
 })();
