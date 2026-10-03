@@ -7245,3 +7245,27 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
   - beide Splash-Release-Owner prüfen das Gate;
   - Beta + Server1 laden `8088criticalboot1`;
   - Server1-Release-Channel bleibt unverändert.
+
+
+### Server-1 Identität V8.089 – Release-Channel jetzt autoritativ · 03.10.2026
+- Beim Auslesen nach einem frischen Server-1-Login erschienen weiterhin keine Health-/QA-Einträge unter `server1`.
+- Ursache im bestehenden Server-Selection-Owner gefunden:
+  - `server1.html` lädt korrekt `window.GROW_RELEASE_CHANNEL='server1'`;
+  - `v343Selected()` erzwang den geladenen Build aber nur für `beta`;
+  - auf Server 1 konnte deshalb ein älterer `growLegendsSelectedServer`-LocalStorage-Wert weiterhin `beta` liefern.
+- Auswirkung:
+  - QA/Health konnte Server-1-Sessions fälschlich als Beta beschriften;
+  - auch servergescopte lokale Keys konnten dadurch vorübergehend mit falscher Server-ID arbeiten.
+- Fix direkt in:
+  - `js/features/account/beta/v8009-s6-v343-server-selection-v7226.js`
+- Neue Regel:
+  - Release-Channel `beta` → aktive Server-ID zwingend `beta`;
+  - Release-Channel `server1` → aktive Server-ID zwingend `server1`;
+  - nur neutrale/sonstige Builds verwenden den gespeicherten Selector.
+- Serverwechsel bleibt unverändert: Auswahl eines anderen Servers navigiert auf dessen Build.
+- Cache-Key Beta + Server1: `8089server1identity1`.
+- Commits:
+  - Core: `8b8c5a146bcb6d664e85ec2e81c8172e52d41de9`
+  - Beta Cache: `282907f49b70a04e30f9a0e5be121817e436e0fb`
+  - Server1 Cache: `23bc38ab5cc0cde5ea123b00a7de861aa4c0203b`.
+- Hinweis: Der Login unmittelbar vor diesem Fix kann nicht als verlässlicher Server-1-Timingdatensatz verwendet werden. Nach einem erneuten Server-1-Login sollten QA/Health unter `server1` erscheinen.
