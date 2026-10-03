@@ -7581,3 +7581,51 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
   - ob Dungeon/PvP/Turm/Quest-Kampf dieselbe Normalisierung verwenden.
 - Noch keine Balanceänderung vorgenommen.
 - Keine Aussage "balanced/unbalanced" festgeschrieben, bevor der vollständige Schadenspfad geprüft ist.
+
+### 5-Klassen-Balance-Audit V8.097 – Read-only Baseline · 03.10.2026
+- Anlass: Prüfung, ob Bud-Barbar, Blatt-Schütze, Bong-Magier, Frost-Todesritter und Harzruferin unter identischen Bedingungen gleichwertig sind.
+- Audit bewusst read-only; keine Spielerstände und keine Balancewerte verändert.
+- Aktueller serverseitiger PvP-Core `v6350_resolve_pvp_core` wurde als maßgebliche Klassenbasis verwendet.
+- Monte-Carlo-Test: 560.000 Kämpfe, Level 20/50/100/150/200/250/300, identische Kampfkraft je Matchup, beide Matchup-Richtungen.
+- Gemittelte PvP-Siegquoten gegen die vier anderen Klassen:
+  - Blatt-Schütze: ca. 65,5 %
+  - Bud-Barbar: ca. 59,8 %
+  - Frost-Todesritter: ca. 51,3 %
+  - Harzruferin: ca. 43,8 %
+  - Bong-Magier: ca. 30,1 %
+- Paarweise Grundtendenz:
+  - Schütze schlägt im Mittel alle anderen Klassen;
+  - Barbar liegt ebenfalls klar über 50 %;
+  - Frost liegt nahe der Mitte;
+  - Harzruferin liegt darunter;
+  - Magier ist im aktuellen PvP-Core deutlich zu schwach.
+- Ursache ist nicht die neue Waffen-Schadensspanne:
+  - Range bleibt um Faktor 1.0 zentriert und verändert den Erwartungswert nicht.
+  - Frost Waffe II Attribute werden serverseitig in `v7056_shadow_attr` korrekt nur mit 10 % gewichtet.
+- Reine PvP-Klassenmechaniken im aktuellen Core:
+  - Barbar: +5 % direkter Schaden plus 13-%-Wuchtpfad;
+  - Schütze: 15 % Doppeltreffer + 5 % echtes Ausweichen;
+  - Magier: hauptsächlich +5 Prozentpunkte Crit;
+  - Frost: 8 % Nebenhandchance × 40 % plus Wuchtfamilie im PvP-Core;
+  - Harzruferin: 12 % Seelenruf mit 35 % Zusatzschaden und kleiner Heilung.
+- PvE-Baseline ohne Talentboni, identische Grundwerte, aktueller `v7099_pve_fight`-Mechanikfamilie:
+  - erwarteter relativer Schadensfaktor ungefähr:
+    - Bud-Barbar 1,19
+    - Harzruferin 1,15
+    - Blatt-Schütze 1,12
+    - Bong-Magier 1,10
+    - Frost-Todesritter 1,09
+  - PvE-Baseline ist deutlich enger als PvP, aber nicht identisch.
+- Zusätzlich bestätigte Inkonsistenz V8.067:
+  - PvP-Nebenhandtreffer nutzt den eigenen Waffe-II-Range-Faktor;
+  - zentraler PvE-Resolver verwendet für den Frost-Nebenhandtreffer aktuell nur `base0 * 0.40` ohne eigenen Waffe-II-Range-Faktor;
+  - dies ist kein aktueller DPS-Buff, sondern eine fehlende neutrale Range-Anwendung.
+- Fazit des ersten Baseline-Audits:
+  - fünf Klassen sind aktuell im PvP nicht gleichwertig;
+  - größte Abweichung liegt zwischen Schütze/Barbar oben und Magier/Harzruferin unten;
+  - Frost liegt im PvP-Grundtest nahe der Mitte und ist durch Waffe II nicht der Ausreißer.
+- Noch offen vor Balanceänderungen:
+  - PvE-Talent-/Endgame-Test mit repräsentativen Buildpunkten;
+  - Worldboss/Turm-Sonderdämpfung;
+  - danach erst konkrete Anpassungsvorschläge.
+
