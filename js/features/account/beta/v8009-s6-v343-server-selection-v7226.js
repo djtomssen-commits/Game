@@ -12,6 +12,7 @@
 
   function v343Selected(){
     if(V343_RELEASE_CHANNEL==='beta')return 'beta';
+    if(V343_RELEASE_CHANNEL==='server1')return 'server1';
     const raw=localStorage.getItem(V343_SERVER_KEY)||defaultServer();
     return window.V343_SERVERS[raw]?raw:defaultServer();
   }
