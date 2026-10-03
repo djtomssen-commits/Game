@@ -58,6 +58,12 @@
   - `v4139ReportPlayerQa(trigger, screen)`
   - `v4139PlayerQaDiagnostics()`
 - Bei zukünftigen Spielerproblemen standardmäßig **Health + Runtime + Player-QA-Snapshot gemeinsam prüfen**.
+- **Verbindlich ab 03.10.2026:** Bei *jedem* gemeldeten Funktionsfehler werden diese drei Diagnosequellen direkt mit ausgelesen und mit dem aktuellen `main` abgeglichen:
+  1. `recovery_private.account_state_health_events`
+  2. `recovery_private.runtime_client_errors`
+  3. `recovery_private.player_qa_snapshots`
+- Leere Tabellen bedeuten nur „noch kein Eintrag vorhanden“ und dürfen **nicht** als Beweis gewertet werden, dass kein Fehler existiert.
+- Falls ein Diagnosezugriff technisch fehlschlägt, wird das ausdrücklich als unvollständige Diagnose behandelt und nicht als Entwarnung.
 
 
 ### Aktuelle accountabhängige Fehler/Fixes vom 03.10.2026
@@ -6655,3 +6661,26 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
   - Header: `eb4e1e44eb73e460b7cf92d1ac37d2baa3e57807`
   - Charakter-Check: `90166dfeb5cf7400f72b377a6a0ec43dfb3e7926`
   - Beta Cache: `aaa0884883e091326b1eadcc1240a196f9a2c181`
+
+
+### Item-Popup Folgefix 03.10.2026
+
+- Vor dem Fix wurden alle drei Diagnosequellen gelesen:
+  - Runtime-Errors: keine Einträge;
+  - Account-State-Health: keine Einträge;
+  - Player-QA-Snapshots: keine Einträge.
+- Das wurde ausdrücklich **nicht** als Fehlerfreiheit interpretiert.
+- Direkter Source-Audit im bestehenden Popup-Owner `js/features/character/beta/v8009-s7-v123-character-equipment-redesign.js` zeigte noch harte Abhängigkeiten von optionalen Helpern:
+  - `v030StatLabel`
+  - `v030EffectLabel`
+  - `v296MysticSpecialText`
+- Diese Abhängigkeiten konnten den Popup-Aufbau bei bestimmten Laufzeit-/Load-Zuständen abbrechen.
+- Direkter Owner-Fix ohne neue Patch-Schicht:
+  - Gem-Stat fällt bei fehlendem Helper auf den vorhandenen Stat-Key zurück;
+  - Enchant-Effekt fällt auf den vorhandenen Effekt-Key zurück;
+  - mystischer Effekt fällt auf das vorhandene Label bzw. „Spezialeffekt“ zurück.
+- Core-Fix Commit: `4fe31453d5a5cf1a649fb3f8cc6ce3e5734812c8`
+- Cache-Reload:
+  - Beta: `45c18e07ad69ab5f49a27af16e79cc0169884fbc`
+  - Server 1: `1fa8805a4e8cb7258c1191d2016a19d10e7c2b09`
+  - index: `1536f56e8eac72ad2250206789f0f48ca64c567f`
