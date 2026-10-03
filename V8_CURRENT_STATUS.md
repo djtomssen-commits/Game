@@ -6948,3 +6948,48 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
 - Supabase-Migrationen:
   - `v8067_weapon_damage_range_model_fix`
   - `v8067_weapon_range_combat_integration`
+
+
+### Dungeon-Referenzbalance V8.068 – alle 20 Dungeons neu kalibriert · 03.10.2026
+- Anlass: Nach Itemkurve V4 waren spätere Dungeons nicht mehr mit der vorgesehenen Levelprogression synchron; ab etwa Dungeon 6 wurden Bosse für normale Builds zunehmend zu hart, ab Dungeon 9+ konnte man vom Level her bereits den nächsten Dungeon erreichen, obwohl der vorherige noch deutlich zu schwer war.
+- Vollprüfung: **20 Dungeons / 200 Gegner** gegen zwei Referenzprofile simuliert:
+  - `normal`: leicht veraltete, realistische Ausrüstung;
+  - `strong`: levelnahe hochwertige Ausrüstung.
+- Neue Zielprogression:
+  - normale Gegner am empfohlenen Level klar machbar;
+  - spätere Räume enger;
+  - Boss am vorgesehenen Abschlusslevel knapp, aber zugunsten eines normalen Builds;
+  - hochwertige Ausrüstung schafft spürbare Reserve, Mystisch ist **keine Voraussetzung**.
+- Serverseitige Balance-Tabelle `v7048_dungeon_balance` in Beta + Server1 für **alle 20 Dungeons** skaliert.
+- Ergebnis der Referenz-QA nach Rebalance:
+  - normaler Build: kein erwarteter Pflicht-Stopp in einem der 20 Dungeons;
+  - Boss-Margen über Dungeon 2–20 liegen ungefähr bei `1.05–1.11`;
+  - starker Build: Boss-Margen ungefähr `1.48–1.73`.
+- Progressionspuffer:
+  - Dungeon-Bosse sind nun auf etwa **2 Level vor Freischaltung des nächsten Dungeons** kalibriert;
+  - D1 Boss empfohlen Lv18, D2 Boss Lv28, D3 Boss Lv38, …, D20 Boss Lv208.
+  - Dadurch soll ein Spieler den vorherigen Dungeon normalerweise abschließen können, bevor der nächste Level-Unlock erreicht wird.
+- Konkreter D2/Lv28-Test mit normalem Blue-/Level-25-Referenzgear:
+  - Gegner 9: Margin ca. `1.51`
+  - Boss: Margin ca. `1.10`
+  - damit Boss auf Lv28 realistisch machbar, aber deutlich schwerer als die normalen Räume.
+- Waffenspanne im **echten serverautoritativen Dungeon-Run** ergänzt:
+  - aktiver Owner `v7049_run_dungeon_core` in Beta + Server1;
+  - alter `random()*7` Schaden ersetzt durch sichtbare Waffen-Min/Max-Spanne;
+  - Mittelwert bleibt auf dem bisherigen `+3.5`-Schadensmittel, also kein systematischer DPS-Buff/Nerf.
+- Client-Parität:
+  - bestehender Dungeon-Balance-Owner `v8009-s17-v428-dungeon-rebalance.js` direkt auf dieselben 20 Skalierungsfaktoren gestellt;
+  - `v8009-s8-v249-central-dungeon-balance.js` liefert Boss-Empfehlungslevel mit dem neuen 2-Level-Puffer.
+- Cache:
+  - v428: `8068dungeonref1`
+  - v249: `8068bossbuffer1`
+- Supabase-Migrationen:
+  - `v8068_dungeon_weapon_range_runtime`
+  - `v8068_rebalance_all_20_dungeons_for_item_v4`
+  - `v8068_dungeon_boss_progression_buffer`
+- GitHub:
+  - v428 Balance: `3d090f664842b12079e5816c25c32200437bf1b7`
+  - v249 Boss-Level-Puffer: `1c1adffe08f0202707f91ae4193e624847b22f77`
+  - v428 Cache: Beta `92e5440b9bd32f076d1446a275c42753929b24a5`, index `9a80aae75dc50ccf6906721eda19b4b7ed6aceef`, Server1 `5811931080d8808043ff68359764863e1c17d3db`
+  - v249 Cache: Beta `70ccbc549781f8e1a95b590739d4b2cd4862b1fc`, index `b7d4e8e2a35233d4ec4f9daeadee37e30c5e7b7b`, Server1 `5eb90099d21d3283d4a105ec47941b3c367f2a51`
+- Korrektur zur V8.067-Doku: Die Waffenrange war bereits im zentralen `v7099_pve_fight`, aber der produktive Dungeon-Run lief separat über `v7049_run_dungeon_core`. Mit V8.068 ist die Range nun auch dort wirklich aktiv.
