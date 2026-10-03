@@ -1,100 +1,86 @@
 #!/usr/bin/env python3
-import json, random
+"""
+V8.097 five-class balance fixture gate.
 
-LEVELS=(100,200,300)
+Purpose:
+- keep synthetic class QA read-only;
+- prevent incomplete neutral-target approximations from being reported as
+  canonical PvP win rates;
+- define the required contract for a future parameterised resolver.
+
+This file intentionally does NOT mutate live player/profile data.
+"""
+import json
+
+VERSION="V8.097"
 CLASSES=("grower","scout","bruiser","frost","summoner")
+LEVELS=(100,200,300)
 
-# Canonical offensive fixture values from the V8.097 audit.
-OFFENSE={
-  100:{"grower":1.423,"scout":1.314,"bruiser":1.474,"frost":1.298,"summoner":1.185},
-  200:{"grower":1.586,"scout":1.560,"bruiser":1.818,"frost":1.518,"summoner":1.249},
-  300:{"grower":1.792,"scout":1.645,"bruiser":1.949,"frost":1.649,"summoner":1.373},
+# Canonical server owners discovered during the audit.
+SERVER_OWNERS={
+    "grower":"recovery_private.v7056_standard_pvp_shadow_simulate",
+    "scout":"recovery_private.v7056_standard_pvp_shadow_simulate",
+    "frost":"recovery_private.v7056_standard_pvp_shadow_simulate",
+    "bruiser":"recovery_private.v7055_bruiser_shadow_simulate",
+    "summoner":"recovery_private.v7052_pvp_shadow_simulate",
 }
 
-# Offensive-build defensive/utility terms that remain active in the canonical
-# class resolvers. This harness is intentionally a neutral-target benchmark,
-# not a replacement for the server Shadow RPCs.
-UTILITY={
-  100:{
-    "grower":{"dodge":0,"lifesteal":0},
-    "scout":{"dodge":.05,"lifesteal":0},
-    "bruiser":{"dodge":0,"lifesteal":0},
-    "frost":{"dodge":0,"lifesteal":0},
-    "summoner":{"dodge":0,"lifesteal":0,"summon":.142,"summon_damage":.187},
-  },
-  200:{
-    "grower":{"dodge":0,"lifesteal":.027},
-    "scout":{"dodge":.05,"lifesteal":0},
-    "bruiser":{"dodge":0,"lifesteal":0},
-    "frost":{"dodge":0,"lifesteal":.018},
-    "summoner":{"dodge":0,"lifesteal":0,"summon":.185,"summon_damage":.217},
-  },
-  300:{
-    "grower":{"dodge":0,"lifesteal":.027},
-    "scout":{"dodge":.05,"lifesteal":0},
-    "bruiser":{"dodge":0,"lifesteal":0},
-    "frost":{"dodge":0,"lifesteal":.018,"low_hp_lifesteal":.021},
-    "summoner":{"dodge":0,"lifesteal":0,"summon":.214,"summon_damage":.422},
-  }
+# Minimum mechanics that must be present before a synthetic matchup can be
+# labelled canonical-equivalent.
+REQUIRED_MECHANICS={
+    "grower":{"damage","crit","wucht","rage_multi","lifesteal","tank_reduce","regen","reflect","lethal_save"},
+    "scout":{"damage","crit","double_hit","triple_hit","dodge","counter","execute","salvo_chain"},
+    "bruiser":{"damage","crit","crit_chain","explosion","dot","shield","damage_reduce","dot_heal"},
+    "frost":{"damage","crit","frost_marks","shatter","offhand","lifesteal","barrier","reflect","soul_harvest"},
+    "summoner":{"damage","crit","curse_dot","summon","second_summon","bud_heal","spore_dot","prevent_lethal"},
 }
 
-def fight(level, cls, rng):
-    hp=maxhp=2000.0
-    enemy_hp=2000.0
-    base_hit=100.0
-    enemy_hit=100.0
-    u=UTILITY[level][cls]
-    no_summon=0
-    rounds=0
-    dealt=healed=taken=0.0
-    while hp>0 and enemy_hp>0 and rounds<60:
-        rounds += 1
-        hit=base_hit*OFFENSE[level][cls]*rng.uniform(.90,1.10)
-        if cls=="summoner":
-            summon_chance=u["summon"]
-            summoned=no_summon>=4 or rng.random()<summon_chance
-            if summoned:
-                no_summon=0
-                comp=rng.choice((.30,.48,.24,.30))
-                comp_damage=base_hit*comp*(1+u["summon_damage"])
-                hit+=comp_damage
-                if comp==.30 and rng.random()<.5:  # only one of the two .30 companions is Bud
-                    heal=comp_damage*.20
-                    hp=min(maxhp,hp+heal); healed+=heal
-            else:
-                no_summon+=1
-        ls=u.get("lifesteal",0)
-        if cls=="frost" and hp/maxhp<.5:
-            ls+=u.get("low_hp_lifesteal",0)
-        heal=hit*min(.10,ls)
-        hp=min(maxhp,hp+heal); healed+=heal
-        enemy_hp-=hit; dealt+=hit
-        if enemy_hp<=0: break
-        if rng.random()<u.get("dodge",0):
-            continue
-        dmg=enemy_hit*rng.uniform(.90,1.10)
-        hp-=dmg; taken+=dmg
-    return enemy_hp<=0, rounds, dealt, healed, taken, max(0,hp)
+PARAMETER_CONTRACT={
+    "level":"1..300",
+    "combat_power":">0",
+    "max_hp":">0",
+    "base_crit":"0..1",
+    "equipment_budget":"normalised numeric budget",
+    "weapon_range":"min/avg/max, midpoint must equal neutral factor 1.0",
+    "talents":"canonical rank map",
+    "set_bonuses":"canonical resolver input",
+    "pet_bonuses":"canonical resolver input",
+    "rng":"deterministic tape shared by both sides",
+}
 
-def run(samples=50000):
-    out={"version":"V8.097","mode":"synthetic-neutral-fight-fixture","samples_per_class_level":samples,"results":{}}
-    for level in LEVELS:
-        out["results"][str(level)]={}
-        for cls in CLASSES:
-            wins=rounds=dealt=healed=taken=hp=0.0
-            for i in range(samples):
-                r=random.Random(level*1000000 + CLASSES.index(cls)*100000 + i)
-                w,rd,d,h,t,left=fight(level,cls,r)
-                wins+=int(w); rounds+=rd; dealt+=d; healed+=h; taken+=t; hp+=left
-            out["results"][str(level)][cls]={
-                "win_rate":round(wins/samples,4),
-                "avg_rounds":round(rounds/samples,3),
-                "avg_damage":round(dealt/samples,2),
-                "avg_healing":round(healed/samples,2),
-                "avg_damage_taken":round(taken/samples,2),
-                "avg_hp_left":round(hp/samples,2)
-            }
-    return out
+def validate_model(model):
+    errors=[]
+    if set(model.get("classes",()))!=set(CLASSES):
+        errors.append("all five classes are required")
+    mechanics=model.get("mechanics",{})
+    for cls in CLASSES:
+        have=set(mechanics.get(cls,()))
+        missing=sorted(REQUIRED_MECHANICS[cls]-have)
+        if missing:
+            errors.append(f"{cls}: missing mechanics: {', '.join(missing)}")
+    if not model.get("deterministic_rng",False):
+        errors.append("deterministic shared RNG tape required")
+    if not model.get("equal_budget",False):
+        errors.append("equal item/stat budget required")
+    if not model.get("both_directions",False):
+        errors.append("both matchup directions required")
+    return errors
+
+def audit_manifest():
+    return {
+        "version":VERSION,
+        "read_only":True,
+        "levels":LEVELS,
+        "classes":CLASSES,
+        "owners":SERVER_OWNERS,
+        "parameter_contract":PARAMETER_CONTRACT,
+        "required_mechanics":{k:sorted(v) for k,v in REQUIRED_MECHANICS.items()},
+        "status":"GATE_ONLY",
+        "canonical_winrate_ready":False,
+        "reason":"Existing server Shadow RPCs depend on persisted profile/build/item state. "
+                 "A synthetic resolver may only publish win rates after it implements every "
+                 "required class mechanic with a deterministic shared RNG tape.",
+    }
 
 if __name__=="__main__":
-    print(json.dumps(run(),indent=2,sort_keys=True))
+    print(json.dumps(audit_manifest(),indent=2,sort_keys=True))
