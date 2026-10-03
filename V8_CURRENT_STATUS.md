@@ -6684,3 +6684,46 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
   - Beta: `45c18e07ad69ab5f49a27af16e79cc0169884fbc`
   - Server 1: `1fa8805a4e8cb7258c1191d2016a19d10e7c2b09`
   - index: `1536f56e8eac72ad2250206789f0f48ca64c567f`
+
+
+### Guide-System Komplettüberarbeitung 03.10.2026
+
+- Nutzerwunsch: das globale `?`-Guide-System auf **allen Spielerseiten** aktualisieren; alte Texte an neue Features anpassen.
+- Zusätzlich behoben: auf Seiten ohne eigenen Guide wurde bisher fälschlich der **Startseite-Guide** geöffnet.
+- Kanonischer Guide-Owner direkt bearbeitet:
+  - `js/features/guide/beta/v8009-s1-v6254-grow-guide.js`
+- Kein neuer Patch-/Renderer-Layer angelegt.
+- Alle öffentlichen Navigationsseiten besitzen jetzt einen eigenen aktuellen Guide:
+  - Startseite
+  - Charakter
+  - Growroom
+  - Quest & Schicht
+  - Dungeons
+  - Anbauturm
+  - Nebelkarawane
+  - Endgame / Nebelrisse
+  - Händler
+  - Harzschmiede
+  - Harz, Gold & Rahmen
+  - Hinterhof-Dealer
+  - PvP-Arena
+  - Gilde
+  - Hall of Haze
+  - Nebel-Crew
+  - Nebel-Post
+- Zusätzliche Kontexte mit eigenem Guide:
+  - Goldlager
+  - Illegales Buch
+  - Pet Sammelalbum
+  - Freund werben
+  - Smaragd-Koloss
+- Growroom behält zusätzlich seinen bestehenden **kontextsensitiven Tab-Guide** für Growroom, Blütenlager, Blüten-Dealer, Genetik und Grow-Aufträge.
+- `currentPage()` fällt bei unbekannten/administrativen Seiten **nicht mehr auf `world` zurück**.
+- Das globale `?` wird nur angezeigt, wenn der aktuell sichtbare Kontext tatsächlich einen Guide besitzt.
+- Klick auf das globale `?` öffnet nur noch den Guide des aktuellen Kontexts; kein stiller Startseite-Fallback mehr.
+- Guide-Coverage gegen die öffentliche Navigation geprüft: **17/17 öffentliche Seiten abgedeckt, 0 fehlend**.
+- Core-Commit: `c025f8b95c106e5897f68229d510b93cf15c8ae4`
+- Cache-Reload:
+  - Beta: `c881d5feb926c238916dc5eb45469bca1f87a5a8`
+  - Server 1: `78a96d923cba2c1cc4b7c38781b2309bde347ec9`
+  - index: `1ca8ddef4912d42312b8fee96bcd750b002181e4`
