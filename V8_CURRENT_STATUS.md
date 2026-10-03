@@ -8084,3 +8084,24 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
   - Danach nur gezielte Werte ändern; keine pauschalen Klassen-Nerfs.
 - Audit damit fachlich geschlossen.
 
+### V8.097 – Balance Schritt 1 auf Beta umgesetzt · 03.10.2026
+- Nur Grower/Barbar Tank angepasst; Scout, Bruiser, Frost und Summoner unverändert.
+- Tank Normalnode s5:
+  - vorher 0,30 % Schadensreduktion pro Rang
+  - jetzt 0,18 % pro Rang
+  - voller permanenter Tank-DR-Anteil sinkt dadurch von ca. 8,7 % auf ca. 7,0 %.
+- Tank HP-Meilensteine:
+  - +10 % -> +7 %
+  - +15 % -> +10 %
+- Unverändert:
+  - Zweite Luft 15 %
+  - Lethal-Save bei 1 LP
+  - Regen
+  - Reflect
+  - situative Tank-DR
+- Texte im Talentbaum entsprechend aktualisiert.
+- Beta-Code-Commits:
+  - `f64a46ade17c0c1e32d804223ad07115ddbf5fa0`
+  - `219a4dfc6a091833784bac461cec49bc42774648`
+- Kein Server-1-Transfer in diesem Schritt.
+
