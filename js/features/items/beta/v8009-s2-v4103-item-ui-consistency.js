@@ -167,13 +167,37 @@
     <button type="button" class="btn gold v4103-sell-item">💰 ${Math.round(sell)}</button>
   </div>`;
  }
+ function equipmentSlotOf(it){
+  const key=itemKey(it);
+  const entries=Object.entries(s?.equipment||{});
+  let hit=entries.find(([,x])=>x===it);
+  if(!hit)hit=entries.find(([,x])=>x&&itemKey(x)===key);
+  return hit?.[0]||'';
+ }
+ function equipmentActionsHtml(it,context){
+  if(String(context)!=='equipment')return '';
+  if(String(window.GROW_RELEASE_CHANNEL||'beta').toLowerCase()==='server1')return '';
+  const slot=equipmentSlotOf(it);
+  if(!slot)return '';
+  return `<div class="v4103-compare-actions" data-slot="${esc(slot)}">
+    <button type="button" class="btn secondary v4103-unequip-item">Gegenstand ablegen</button>
+  </div>`;
+ }
  function bindCompareActions(ov,it,context){
-  if(String(context)!=='inventory')return;
-  const idx=inventoryIndexOf(it);if(idx<0)return;
-  const equip=ov.querySelector('.v4103-equip-item');
-  const sell=ov.querySelector('.v4103-sell-item');
-  if(equip)equip.onclick=()=>{ov.classList.remove('show');try{window.equip?.(idx)}catch(e){}};
-  if(sell)sell.onclick=()=>{ov.classList.remove('show');try{window.sellItem?.(idx)}catch(e){}};
+  if(String(context)==='inventory'){
+   const idx=inventoryIndexOf(it);if(idx<0)return;
+   const equip=ov.querySelector('.v4103-equip-item');
+   const sell=ov.querySelector('.v4103-sell-item');
+   if(equip)equip.onclick=()=>{ov.classList.remove('show');try{window.equip?.(idx)}catch(e){}};
+   if(sell)sell.onclick=()=>{ov.classList.remove('show');try{window.sellItem?.(idx)}catch(e){}};
+   return;
+  }
+  if(String(context)==='equipment'){
+   if(String(window.GROW_RELEASE_CHANNEL||'beta').toLowerCase()==='server1')return;
+   const slot=equipmentSlotOf(it);if(!slot)return;
+   const unequipBtn=ov.querySelector('.v4103-unequip-item');
+   if(unequipBtn)unequipBtn.onclick=()=>{ov.classList.remove('show');try{window.unequip?.(slot)}catch(e){}};
+  }
  }
  function openCompare(it,context='generic'){
   if(!it)return false;
@@ -187,6 +211,7 @@
    <div class="v4103-compare-divider"><span>VERGLEICH</span></div>
    ${compareItemPanel(it,equipped,same?'Angeklickt · identisch':'Angeklickt',true)}
    ${inventoryActionsHtml(it,context)}
+   ${equipmentActionsHtml(it,context)}
    <div class="v4103-compare-legend"><span class="better">↑ besser</span><span class="worse">↓ schlechter</span><span class="same">= gleich</span><small>Stein und VZ-Rolle werden separat gezeigt und nicht in die Grundwert-Pfeile eingerechnet.</small></div>`;
   ov.dataset.context=String(context||'generic');bindCompareActions(ov,it,context);ov.classList.add('show');return true;
  }
