@@ -7202,3 +7202,46 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
   - Core-Fix: `ef8cac1d4e5d4770f7f92f0a2abb02df2861464d`
   - Beta Cache: `92e6a13c9ce456962abd09dfb5cd2c69f5e5d2c0`
   - Server1 Cache: `73ae50687333788edac6a69774e171a97c5b6c1d`.
+
+
+### Critical Boot Gate V8.088 – wichtige Spieldaten bleiben hinter Ladebildschirm · 03.10.2026
+- Nutzerwunsch: wichtige Serverdaten sollen vollständig während des Ladebildschirms geladen werden, damit nach dem Reveal keine kurzzeitig falschen Zustände sichtbar sind.
+- Bestehenden Boot-/Splash-Lifecycle geprüft:
+  - `v200-stable-core` steuert Auth-/Loading-Overlay;
+  - `v224-atomic-boot-release` steuert den eigentlichen App-Reveal;
+  - `v7284-splash-release-safeguard` ist der Release-Failsafe;
+  - kein zweiter Ladebildschirm gebaut.
+- Neuer zentraler Critical-Boot-Status im bestehenden Account-Owner:
+  - `window.__V8088_CRITICAL_BOOT_READY__`.
+- Für bestehende Charaktere wird der App-Reveal erst erlaubt, wenn der kanonische Server-Login vollständig abgeschlossen ist:
+  - Account/Identität;
+  - Authority-Gates;
+  - zentrale Hydration;
+  - Progress/Build/Items;
+  - Quest;
+  - Dungeon;
+  - Ressourcen-/Dampf-Event-Sync;
+  - aktive Eventdaten, falls sie noch nicht vorlagen.
+- Neue Accounts ohne fertigen Charakter werden nicht blockiert; Charaktererstellung bleibt direkt erreichbar.
+- `v224Release()` und `v7284ReleaseSplash()` verlangen bei fertigem Charakter jetzt den Critical-Boot-Status.
+- Ladefortschritt nutzt die vorhandene Progressbar weiter und zeigt während der kritischen Phase u. a.:
+  - Account/Serverstand wird geprüft;
+  - wichtige Spieldaten werden synchronisiert.
+- Startup-Timing-Messung direkt im bestehenden Account-Owner ergänzt:
+  - `v4139BootTimingDiagnostics()`;
+  - misst `profileMs`, `authorityMs`, `hydrateMs`, `eventMs`, `totalMs`, Server und Charakterstatus.
+- Keine zusätzlichen Retry-Timer und kein neuer Boot-Owner.
+- Aktiv auf Beta + Server 1.
+- Cache-Key: `8088criticalboot1`.
+- Commits:
+  - Account/Critical Boot + Timing: `cc0d7ef268139e1a1a28eae7a3efc09a80732819`
+  - Atomic Boot Gate: `07aaa560c9044e03e4abc8ca796b93dfe8464bc6`
+  - Splash Safeguard: `97f18c8958d611d721ea63773a70ba61cc3bb8f9`
+  - Beta Cache: `add7992e0a7f090c9262c6baf3ad1814ebefd9d5`
+  - Server1 Cache: `98d0c6a546e70fdaac19c870ad6cf70bb4b6d9b4`.
+- Code-QA:
+  - Critical-Boot-Flag vorhanden;
+  - Timing-Diagnose vorhanden;
+  - beide Splash-Release-Owner prüfen das Gate;
+  - Beta + Server1 laden `8088criticalboot1`;
+  - Server1-Release-Channel bleibt unverändert.
