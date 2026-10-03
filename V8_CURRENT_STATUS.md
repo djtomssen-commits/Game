@@ -7898,3 +7898,26 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
 - Noch keine Balancewerte geändert.
 - Nächster sinnvoller Schritt: Minimal-Nerf-Szenarien gegen denselben Fixture testen, statt den Ast komplett umzubauen.
 
+### V8.097 – Barbar-Tank Minimal-Nerf-Szenarien · 03.10.2026
+- Nur read-only QA; Live-Balance unverändert.
+- Baseline voller Tank-Ast:
+  - +55,6 % HP
+  - 8,7 % permanente Schadensreduktion
+  - passiver EHP-Faktor ca. 1,704× vor situativen Procs.
+- Einzelne kleine Nerfs reichen nicht:
+  - HP-Meilensteine 10/15 -> 5/10: ca. 1,595× EHP
+  - HP-Meilensteine 10/15 -> 5/5: ca. 1,540× EHP
+  - nur permanente DR 8,7 -> 6 %: ca. 1,655× EHP
+  - nur permanente DR 8,7 -> 5 %: ca. 1,638× EHP
+- Kombinierte Kandidaten:
+  - +40,6 % HP + 6 % DR -> ca. 1,496× EHP
+  - +40,6 % HP + 5 % DR -> ca. 1,480× EHP
+  - +35,6 % HP + 5 % DR -> ca. 1,427× EHP
+- Der sinnvollste nächste Testkandidat ist daher:
+  - HP-Meilensteine +10/+15 % -> +5/+5 %
+  - volle permanente Tank-DR auf ungefähr 5 % senken
+  - Zweite Luft 15 % und Lethal-Save zunächst unverändert lassen, damit die Tank-Identität erhalten bleibt.
+- Noch NICHT live ändern; zuerst denselben 5×5-Fixture mit diesem Kandidaten erneut laufen lassen.
+- Szenario-Report: `V8097_BARBARIAN_TANK_NERF_SCENARIOS.json`
+- Report-Commit: `8329c86124834076ca6e58968a8fa5aa5dbae50b`
+
