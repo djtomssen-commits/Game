@@ -6746,3 +6746,35 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
   - Dungeon-Button: `efb8956ea220720f74a10abed055f4815d236c74`
   - Harzschmiede-Slot: `f4a72c340953c98e635caef4b99630342753a5c9`
   - Beta Cache: `74d3e972179ce152c2befd7adf430639e7bca854`
+
+
+### Startseite Folgefix – Dungeon-Last-Writer + Harzschmiede echtes Bild · 03.10.2026
+- Nutzer-Screenshot zeigte nach dem ersten Versuch: Dungeon-Button weiterhin orange und Harzschmiede-Slot weiterhin mit alter Platzhaltergrafik.
+- Diagnosequellen vor dem Folgefix geprüft:
+  - `recovery_private.account_state_health_events`: aktuelle Beta-Login-Einträge vorhanden; kein Hinweis auf diesen visuellen Fehler.
+  - `recovery_private.runtime_client_errors`: keine aktuellen Einträge.
+  - `recovery_private.player_qa_snapshots`: Startseite/World für aktuelle Beta-Sessions `ok`, keine Runtimefehler; der Fehler war damit ein CSS-/Asset-Owner-Thema und kein Account-State-Fehler.
+- Root Cause Dungeon:
+  - der zuvor geänderte v523-Owner war **nicht** der letzte Gewinner;
+  - `v8009-extracted-v524-approved-home-strong-css.css` setzte danach mit höherer Spezifität `#world.active .v366-card.dungeon .v366-go` wieder orange.
+- Direkter Fix:
+  - v524-Regel selbst auf dieselbe grüne Palette wie die übrigen Home-Aktionsbuttons geändert;
+  - keine neue Override-/Patch-Schicht angelegt.
+- Root Cause Harzschmiede:
+  - Home-Slot wurde im kanonischen Home-Renderer weiterhin mit CSS-/Emoji-Platzhaltern aufgebaut;
+  - zusätzlich wurden manche Einstiege mit alten, ungeversionierten Asset-URLs geladen.
+- Direkter Fix im kanonischen Owner:
+  - `js/features/home/beta/v8009-home-renderer.js` rendert im Harzschmiede-Slot jetzt ein echtes `<img>` mit dem bereits vorhandenen Spiel-Asset
+    `assets/v7195-base64/f43016c6d1fa99c290aa.webp`;
+  - `v8009-extracted-vforge-home-card-css.css` passt dieses Bild per `object-fit: cover` in den Slot ein;
+  - keine neue Bilddatei erzeugt.
+- Cache-Refresh auf allen drei aktiven HTML-Einstiegen durchgeführt, damit Android/WebView/Browser nicht weiter die alte Home-CSS bzw. den alten Renderer verwenden:
+  - v524: `8063dungeongreen2`
+  - Forge/Home-Renderer: `8063forgeimg2`
+- Commits:
+  - echter Dungeon-Last-Writer: `bb6eadd430aa5b04891c8aaf6793c07bc44af9ae`
+  - kanonischer Home-Renderer: `624beb0c7fe2d36f4e26bfe95c1e55346aa28761`
+  - Forge-Slot-CSS: `ff98fcdfb4c91953705260d6df367a796d35631f`
+  - Beta Cache: `8d53d1a8989ceae79092a6f164d05e2db2f5e2cd`
+  - index Cache: `410574e4a16447711f745473b306434d3777b995`
+  - Server1 Cache: `21e8b0dc32c056e5ad6854d214e344329f8aaa65`
