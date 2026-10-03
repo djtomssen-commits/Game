@@ -40,11 +40,11 @@ const V318_MILESTONE_DESC={
  ],
  tank:[
   'Unter 50 % Leben erhältst du 5 % weniger Schaden.',
-  '+10 % maximale Lebenspunkte.',
+  '+7 % maximale Lebenspunkte.',
   'Einmal pro Kampf: unter 25 % Leben heilst du 15 % deiner maximalen LP.',
   'Sehr schwere Treffer werden zusätzlich um 15 % reduziert.',
   'Die ersten 2 gegnerischen Angriffe verursachen 10 % weniger Schaden.',
-  '+15 % maximale Lebenspunkte.',
+  '+10 % maximale Lebenspunkte.',
   'Einmal pro Kampf überlebst du einen tödlichen Treffer mit 1 LP.'
  ],
  rage:[
