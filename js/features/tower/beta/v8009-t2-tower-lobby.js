@@ -10,6 +10,11 @@ const clamp=(v,min,max)=>Math.max(min,Math.min(max,v));
 
 function step(level){
  level=Math.max(1,Math.floor(Number(level)||1));
+ if(level<10)return 25;
+ if(level<20)return 20;
+ if(level<30)return 15;
+ if(level<40)return 10;
+ if(level<50)return 7;
  return 5;
 }
 
