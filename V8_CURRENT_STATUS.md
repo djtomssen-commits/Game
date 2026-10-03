@@ -7985,3 +7985,25 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
   - vollständige parameterisierte 5-Klassen-Engine, die Attacke UND Defensive beider Seiten mit kanonischen Klassenmechaniken abbildet.
 - Commit der Korrektur: `597ec8e9aeea24293a160d506a0d4e4eb3335cd1`.
 
+### V8.097 – symmetrischer 5-Klassen Fighter-State gebaut · 03.10.2026
+- Neuer gemeinsamer parameterisierter Fighter-State im QA-Harness.
+- Beide Kampfseiten verwenden künftig denselben Zustandsautomaten.
+- State enthält u. a.:
+  - Attack-/Enemy-Attack-Counter
+  - Crit-/Dodge-Zustand
+  - Next-Damage / Next-Dodge
+  - DoT-/Smoke-State
+  - Frostmarken, Frostbarrieren, Seelenernte
+  - Summoner-Pity, Curse-/Spore-DOT, Crit-Buff
+  - Second Wind / Lethal-Save / Soul-Save
+- Klassen-Hook-Mapping:
+  - Grower/Scout/Bruiser -> v319 Attack + Defense
+  - Frost -> v4155 eigener Attack + Defense
+  - Summoner -> v319 Basis + v6287/v6302 Wrapper
+- Initiative muss gespiegelt getestet werden; kein dauerhafter First-Strike-Vorteil.
+- Gemeinsames deterministisches RNG-Tape pro Kampf bleibt Pflicht.
+- Status: `SYMMETRIC_ENGINE_STATE_READY`
+- Nächster Gate: `IMPLEMENT_PARAMETERISED_ATTACK_AND_DEFENSE_HOOKS`
+- Noch keine Winrates freigegeben, Live unverändert.
+- Commit: `beab18e33c95dbadcb17204b9b4a5d61c3e758fa`.
+
