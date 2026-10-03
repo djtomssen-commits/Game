@@ -5,6 +5,7 @@ const A={"avatar":"assets/v7198-base64/f6cfb669e5225b6e0a9c.webp","weapon_harz":
 const getState=()=>{try{return typeof s!=='undefined'?s:null}catch(_){return null}};
 const isHR=()=>String(getState()?.playerClass||'')==='summoner';
 const clamp=(n,a,b)=>Math.max(a,Math.min(b,Number(n)||0));
+const V6287_BETA_BALANCE=String(window.GROW_RELEASE_CHANNEL||'beta')!=='server1';
 const sb=k=>{try{return typeof setBonusValue==='function'?Number(setBonusValue(k))||0:0}catch(_){return 0}};
 
 /* Approved existing artwork only. */
@@ -146,7 +147,7 @@ function ensureRoster(){
    r.innerHTML=`
      <div class="v6303-roster-head">
        <b>👻 BEGLEITER</b>
-       <span data-v6303-ruf>Ruf 12 % · Garantie in 5</span>
+       <span data-v6303-ruf>Ruf ${V6287_BETA_BALANCE?'12':'10'} % · Garantie in 5</span>
      </div>
      <div class="v6303-roster-grid">
        ${compKeys.map(k=>`<span class="v6303-comp-card v6303-${k}" data-v6287-comp="${k}">
@@ -472,10 +473,10 @@ if(oldAttack){
   }
 
   /* Ruf aus dem Dunst:
-     12% base chance, talent/set bonuses, and hard pity on the 5th own attack.
+     Beta 12% / Server 1 10% base chance, talent/set bonuses, and hard pity on the 5th own attack.
      This counter is independent of every old class mechanic. */
   const pity=Math.max(0,Number(st.v6287NoSummon)||0);
-  let chance=.12+(Number(t.summonChance)||0)+sb('summonChance');
+  let chance=(V6287_BETA_BALANCE?.12:.10)+(Number(t.summonChance)||0)+sb('summonChance');
   if(wb)chance*=.72;
   const forced=pity>=4;
   const summoned=forced||Math.random()<clamp(chance,0,wb?.24:.34);
@@ -491,7 +492,7 @@ if(oldAttack){
   st.v6287NoSummon=0;
   const key=compKeys[Math.floor(Math.random()*compKeys.length)]||'bud';
   const cp=COMP[key];
-  let mult=cp.mult*1.05*(1+(Number(t.summonDamage)||0)+sb('summonDamage'));
+  let mult=cp.mult*(V6287_BETA_BALANCE?1.05:1)*(1+(Number(t.summonDamage)||0)+sb('summonDamage'));
   if(wb)mult*=.62;
 
   let extra=Math.max(1,Math.round(base*mult));
@@ -579,7 +580,7 @@ if(oldEnemy){
 }
 
 const oldPassive=typeof window.v4156ClassPassive==='function'?window.v4156ClassPassive:null;
-window.v4156ClassPassive=id=>String(id||getState()?.playerClass)==='summoner'?{name:'Ruf aus dem Dunst',text:'12 % Grundchance auf einen Begleiter. Nach 4 Angriffen ohne Ruf ist der nächste garantiert.'}:(oldPassive?oldPassive(id):null);
+window.v4156ClassPassive=id=>String(id||getState()?.playerClass)==='summoner'?{name:'Ruf aus dem Dunst',text:`${V6287_BETA_BALANCE?'12':'10'} % Grundchance auf einen Begleiter. Nach 4 Angriffen ohne Ruf ist der nächste garantiert.`}:(oldPassive?oldPassive(id):null);
 
 function refresh(){
  try{
