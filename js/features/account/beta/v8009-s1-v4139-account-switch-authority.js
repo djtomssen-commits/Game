@@ -9,6 +9,18 @@
  const AUTH_DOMAINS=Object.freeze(['achievements','billing','build','daily','dungeon','endgame','grow_dealer','grow_orders','guild','items','liveops','pets','profile','progress','pvp','quest','seeds','shop','social','tower','weekly','worldboss']);
  const VALID_CLASSES=new Set(['grower','scout','bruiser','summoner','frost']);
  const LOGIN={serverFirstLogins:0,profileIdentityReads:0,canonicalHydrates:0,canonicalHydrateFailures:0,legacyWholeSaveBlocks:0,legacyResolverRuns:0,lastMode:'',lastHydrateOk:false,lastError:''};
+ const BOOT_TIMING={startedAt:0,totalMs:0,profileMs:0,authorityMs:0,hydrateMs:0,eventMs:0,readyAt:0,server:'',hasCharacter:false};
+ const bootNow=()=>{try{return performance.now()}catch(_){return Date.now()}};
+ function bootReset(){
+  BOOT_TIMING.startedAt=bootNow();BOOT_TIMING.totalMs=0;BOOT_TIMING.profileMs=0;BOOT_TIMING.authorityMs=0;BOOT_TIMING.hydrateMs=0;BOOT_TIMING.eventMs=0;BOOT_TIMING.readyAt=0;BOOT_TIMING.server=serverId();BOOT_TIMING.hasCharacter=false;
+  window.__V8088_CRITICAL_BOOT_READY__=false;
+ }
+ function bootReady(hasCharacter=true){
+  BOOT_TIMING.hasCharacter=!!hasCharacter;BOOT_TIMING.totalMs=Math.max(0,Math.round(bootNow()-BOOT_TIMING.startedAt));BOOT_TIMING.readyAt=Date.now();
+  window.__V8088_CRITICAL_BOOT_READY__=true;
+  try{window.v660SetBootProgress?.(96)}catch(_){}
+ }
+ window.v4139BootTimingDiagnostics=()=>clone(BOOT_TIMING);
 
  function uid(){try{return v073User&&!v073User.is_anonymous&&v073User.id?String(v073User.id):''}catch(e){return''}}
  function clone(x){try{return typeof structuredClone==='function'?structuredClone(x):JSON.parse(JSON.stringify(x))}catch(e){try{return JSON.parse(JSON.stringify(x||{}))}catch(_){return null}}}
@@ -477,6 +489,7 @@
  }
  async function syncDampfEventAfterHydration(id){
   if(!id||uid()!==id)return false;
+  const started=bootNow();
   try{
    /* Event data may arrive before or after canonical gameplay hydration.
       Reconcile Dampf only after hydration so a server-loaded 100 value cannot
@@ -488,6 +501,7 @@
    if(typeof v271SyncDampfEvent==='function')v271SyncDampfEvent();
    if(typeof v271PaintDampf==='function')v271PaintDampf();
    try{window.v441PaintResources?.()}catch(_){}
+   BOOT_TIMING.eventMs=Math.max(0,Math.round(bootNow()-started));
    return true;
   }catch(e){
    console.warn('[V4139] Dampf event post-hydration sync',e);
@@ -498,6 +512,8 @@
  async function hydrateCanonicalLogin(id){
   if(!id||uid()!==id)throw new Error('ACCOUNT_CHANGED_DURING_HYDRATION');
   LOGIN.canonicalHydrates++;
+  const hydrateStarted=bootNow();
+  try{window.v4143SetAuthBoot?.(true,'Wichtige Spieldaten werden synchronisiert …');window.v660SetBootProgress?.(82)}catch(_){}
   let r=null;
   if(typeof window.v7133HydrateAllCore==='function')r=await window.v7133HydrateAllCore();
   else{
@@ -528,6 +544,7 @@
   window.__V7204_CANONICAL_LOGIN_AT__=v7204Now;
   window.__V7204_STARTUP_QUIET_UNTIL__=Math.max(Number(window.__V7204_STARTUP_QUIET_UNTIL__||0),v7204Now+4200);
   LOGIN.lastHydrateOk=true;
+  BOOT_TIMING.hydrateMs=Math.max(0,Math.round(bootNow()-hydrateStarted));
   await syncDampfEventAfterHydration(id);
   if(uid()!==id)return false;
   try{requestAnimationFrame(()=>{try{render?.()}catch(_){}try{window.v069SyncCurrencies?.()}catch(_){}try{window.v441PaintResources?.()}catch(_){}try{window.v4149BuildCompleteMenu?.(false)}catch(_){}})}catch(_){}
@@ -535,10 +552,14 @@
  }
  async function resolveServerFirst(id){
   LOGIN.serverFirstLogins++;LOGIN.lastMode='server-first';LOGIN.lastHydrateOk=false;
+  bootReset();
+  try{window.v4143SetAuthBoot?.(true,'Account und Serverstand werden geprüft …');window.v660SetBootProgress?.(68)}catch(_){}
   /* V7.276: identity is resolved first. A genuinely new account must not fire every
      gameplay-authority RPC before a character exists. Broken Beta save-only characters
      are repaired once here, then continue through the same canonical login path. */
+  const profileStarted=bootNow();
   let p=await profileIdentity(id);if(uid()!==id)return false;
+  BOOT_TIMING.profileMs=Math.max(0,Math.round(bootNow()-profileStarted));
   let profileName=clean(p?.character_name),profileClass=String(p?.class_id||'');
   let hasIdentity=!!p&&validName(profileName)&&VALID_CLASSES.has(profileClass);
   if(!hasIdentity&&serverId()==='beta'){
@@ -553,9 +574,13 @@
       Historical render wrappers would otherwise fire authority reads (quest/daily/
       achievements/etc.) against states that correctly do not exist yet. */
    LOGIN.lastMode='new-account-shell';LOGIN.lastHydrateOk=true;
+   bootReady(false);
    return true;
   }
+  const authorityStarted=bootNow();
   await warmAuthority();
+  BOOT_TIMING.authorityMs=Math.max(0,Math.round(bootNow()-authorityStarted));
+  try{window.v660SetBootProgress?.(74)}catch(_){}
   if(serverId()==='beta'&&!(await v7274EnsureCharacterReady(id)))throw new Error('BETA_CHARACTER_BOOTSTRAP_INCOMPLETE');
   try{await hydrateCanonicalLogin(id)}catch(e){
    if(serverId()!=='beta')throw e;
@@ -575,6 +600,7 @@
   v075CloudLoadedFor=id;v200LastCloudStamp=null;
   try{v213Dirty=false;v213LastComparable=typeof v213Comparable==='function'?v213Comparable(s):''}catch(_){}
   writeMirrors(id,s,{stamp:false,allowIncomplete:true});if(complete(s))writeLock(id,s);
+  bootReady(true);
   try{render()}catch(_){}
   queueMicrotask(()=>void reportPlayerQa('login','world'));
   return true;
