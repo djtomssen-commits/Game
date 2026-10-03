@@ -186,3 +186,57 @@ def publishable_result(result):
         }
     return result
 
+SOURCE_MODULES={
+    "grower":{
+        "source":"js/features/talents/beta/v8009-s1-v319-exact-talents-dungeon-balance.js",
+        "implemented_mechanics":sorted(REQUIRED_MECHANICS["grower"]),
+    },
+    "scout":{
+        "source":"js/features/talents/beta/v8009-s1-v319-exact-talents-dungeon-balance.js",
+        "implemented_mechanics":sorted(REQUIRED_MECHANICS["scout"]),
+    },
+    "bruiser":{
+        "source":"js/features/talents/beta/v8009-s1-v319-exact-talents-dungeon-balance.js",
+        "implemented_mechanics":sorted(REQUIRED_MECHANICS["bruiser"]),
+    },
+    "frost":{
+        "source":"js/features/character/beta/v8009-s2-v4155-frost-talents.js",
+        "implemented_mechanics":sorted(REQUIRED_MECHANICS["frost"]),
+    },
+    "summoner":{
+        "source":"js/features/combat/beta/v8009-s1-v6287-harzruferin.js",
+        "implemented_mechanics":sorted(REQUIRED_MECHANICS["summoner"]),
+    },
+}
+
+def module_gate_status():
+    out={}
+    for cls in CLASSES:
+        implemented=set(SOURCE_MODULES[cls]["implemented_mechanics"])
+        missing=sorted(REQUIRED_MECHANICS[cls]-implemented)
+        out[cls]={
+            "source":SOURCE_MODULES[cls]["source"],
+            "mechanics_complete":not missing,
+            "missing_mechanics":missing,
+            "trace_parity_green":False,
+            "status":"SOURCE_COMPLETE_PARITY_PENDING" if not missing else "SOURCE_INCOMPLETE",
+        }
+    return out
+
+def blocker_report():
+    modules=module_gate_status()
+    blockers=[]
+    for cls,v in modules.items():
+        if not v["mechanics_complete"]:
+            blockers.append(f"{cls}: missing mechanics")
+        if not v["trace_parity_green"]:
+            blockers.append(f"{cls}: trace parity pending")
+    return {
+        "version":VERSION,
+        "modules":modules,
+        "blockers":blockers,
+        "all_source_modules_complete":all(v["mechanics_complete"] for v in modules.values()),
+        "all_class_modules_parity_green":all(v["trace_parity_green"] for v in modules.values()),
+        "canonical_winrate_ready":False,
+    }
+
