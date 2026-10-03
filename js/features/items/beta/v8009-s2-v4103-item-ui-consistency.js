@@ -18,12 +18,13 @@
  function qlabel(it){if(prism(it))return'Prismatisch';try{return v240QualityLabel(it)}catch(e){}return{gray:'Normal',green:'Gewöhnlich',blue:'Selten',purple:'Episch',orange:'Legendär',cyan:'Mystisch'}[qkey(it)]||'Normal'}
  function art(it){let u='';try{u=typeof window.v466ItemArtUri==='function'?window.v466ItemArtUri(it):''}catch(e){}return u?`<img class="v466-item-art" src="${u}" alt="${esc(clean(it?.name))}">`:`<span class="v4103-item-fallback">${esc(it?.icon||'🎁')}</span>`}
  function baseStats(it){try{if(typeof v123BaseBonusText==='function')return v123BaseBonusText(it)}catch(e){}const map={staerke:'Stärke',geschick:'Geschick',intelligenz:'Intelligenz',ausdauer:'Ausdauer',glueck:'Glück'};return Object.entries(it?.bonus||{}).filter(([,v])=>Number(v)).map(([k,v])=>`${Number(v)>=0?'+':''}${Math.round(Number(v))} ${map[k]||k}`).join(' · ')||'Keine Grundwerte'}
+ function weaponDamageText(it){const mn=Number(it?.weaponDamageMin)||0,mx=Number(it?.weaponDamageMax)||0;return mn>0&&mx>=mn?`${Math.round(mn)}–${Math.round(mx)} Schaden`:''}
  function gemText(g){if(!g)return'';if(typeof g==='string')return g;let stat=g.stat||'';try{if(typeof v030StatLabel==='function')stat=v030StatLabel(stat)}catch(e){}return `${g.name||g.label||'Edelstein'}${Number(g.value)?` · +${g.value} ${stat}`:''}`}
  function enchText(e){if(!e)return'';if(typeof e==='string')return e;let val='';try{if(typeof v030EffectLabel==='function')val=v030EffectLabel(e.effect,e.value)}catch(_){}return `${e.name||e.label||'Verzauberung'}${val?` · ${val}`:''}`}
  function specialText(it){try{if(typeof v296MysticSpecialText==='function'&&it?.mysticSpecial)return v296MysticSpecialText(it)}catch(e){}try{if(typeof v299PublicMysticSpecial==='function')return v299PublicMysticSpecial(it)}catch(e){}const sp=it?.mysticSpecial||it?.mystic_special||it?.special;if(!sp)return'';return typeof sp==='string'?sp:String(sp.label||sp.name||'Mystischer Spezialeffekt')}
  function renderItem(it,opt={}){
   if(!it)return'';const q=qkey(it),slot=opt.slot||it.slot||'',lvl=Math.max(1,Math.min(300,Math.floor(Number(it.dropLevel||opt.level||0)||1))),e=it.enchant||(Array.isArray(it.enchants)?it.enchants[0]:null),sp=specialText(it),ctx=opt.context||'generic',ik=registerItem(it);
-  return `<div class="v4103-item-card ${prism(it)?'v4103-prismatic':''} ${opt.extraClass||''}" data-v4103-item-current="1" data-v4103-item-key="${esc(ik)}" data-v4103-item-context="${esc(ctx)}" data-v4103-quality="${esc(q==='prismatic'?'prismatic':q)}"><div class="v4103-item-slot">${esc(SLOT_LABEL[slot]||slot||'Gegenstand')}</div><div class="v4103-item-head"><div class="v4103-item-art">${art(it)}</div><div><div class="v4103-item-name">${esc(it.name||'Gegenstand')}</div><div class="v4103-item-rarity">${esc(qlabel(it))}</div><div class="v4103-item-meta">Lv. ${lvl}${it.classId?` · ${esc(typeof classLabel==='function'?classLabel(it.classId):it.classId)}`:''}</div></div></div><div class="v4103-item-stats">${esc(baseStats(it))}</div><div class="v4103-item-upgrades">${it.gem?`<div class="v4103-item-chip gem">💎 ${esc(gemText(it.gem))}</div>`:''}${e?`<div class="v4103-item-chip enchant">📜 ${esc(enchText(e))}</div>`:''}${it.setName?`<div class="v4103-item-chip">◆ ${esc(it.setName)}-Set</div>`:''}${sp?`<div class="v4103-item-chip special">✨ ${esc(sp)}</div>`:''}${prism(it)?`<div class="v4103-item-chip prism">🌈 Prismatisch${it.v488Bound?' · gebunden':''}</div>`:''}</div></div>`;
+  return `<div class="v4103-item-card ${prism(it)?'v4103-prismatic':''} ${opt.extraClass||''}" data-v4103-item-current="1" data-v4103-item-key="${esc(ik)}" data-v4103-item-context="${esc(ctx)}" data-v4103-quality="${esc(q==='prismatic'?'prismatic':q)}"><div class="v4103-item-slot">${esc(SLOT_LABEL[slot]||slot||'Gegenstand')}</div><div class="v4103-item-head"><div class="v4103-item-art">${art(it)}</div><div><div class="v4103-item-name">${esc(it.name||'Gegenstand')}</div><div class="v4103-item-rarity">${esc(qlabel(it))}</div><div class="v4103-item-meta">Lv. ${lvl}${it.classId?` · ${esc(typeof classLabel==='function'?classLabel(it.classId):it.classId)}`:''}</div></div></div><div class="v4103-item-stats">${weaponDamageText(it)?`<div class="v4103-weapon-range">⚔️ ${esc(weaponDamageText(it))}</div>`:''}<div>${esc(baseStats(it))}</div></div><div class="v4103-item-upgrades">${it.gem?`<div class="v4103-item-chip gem">💎 ${esc(gemText(it.gem))}</div>`:''}${e?`<div class="v4103-item-chip enchant">📜 ${esc(enchText(e))}</div>`:''}${it.setName?`<div class="v4103-item-chip">◆ ${esc(it.setName)}-Set</div>`:''}${sp?`<div class="v4103-item-chip special">✨ ${esc(sp)}</div>`:''}${prism(it)?`<div class="v4103-item-chip prism">🌈 Prismatisch${it.v488Bound?' · gebunden':''}</div>`:''}</div></div>`;
  }
  window.v4103RenderItemCard=renderItem;
  window.v4103ItemQuality=qkey;
@@ -68,12 +69,19 @@
  function fmtNum(n){const x=Number(n)||0;return `${x>0?'+':''}${Math.round(x*100)/100}`}
  function comparisonRows(clicked,equipped,isClicked){
   const a=baseMap(clicked),b=baseMap(equipped),keys=[...new Set([...Object.keys(a),...Object.keys(b)])];
-  if(!keys.length)return '<div class="v4103-compare-empty">Keine Grundwerte</div>';
-  return keys.map(k=>{
+  const rows=[];
+  const cmn=Number(clicked?.weaponDamageMin)||0,cmx=Number(clicked?.weaponDamageMax)||0,emn=Number(equipped?.weaponDamageMin)||0,emx=Number(equipped?.weaponDamageMax)||0;
+  if(cmn>0&&cmx>=cmn){
+   const ca=(cmn+cmx)/2,ea=emn>0&&emx>=emn?(emn+emx)/2:0,d=ca-ea,cls=d>0?'better':d<0?'worse':'same',arrow=d>0?'↑':d<0?'↓':'=',delta=d===0?'':` ${d>0?'+':''}${Math.round(d*10)/10} Ø`;
+   rows.push(`<div class="v4103-compare-stat weapon"><span>Waffenschaden</span><b>${Math.round(cmn)}–${Math.round(cmx)}</b>${isClicked?`<em class="${cls}">${arrow}${delta}</em>`:''}</div>`);
+  }
+  if(!keys.length&&!rows.length)return '<div class="v4103-compare-empty">Keine Grundwerte</div>';
+  rows.push(...keys.map(k=>{
    const cv=Number(a[k])||0,ev=Number(b[k])||0,d=cv-ev;
    const cls=d>0?'better':d<0?'worse':'same',arrow=d>0?'↑':d<0?'↓':'=',delta=d===0?'':` ${d>0?'+':''}${Math.round(d*100)/100}`;
    return `<div class="v4103-compare-stat"><span>${esc(statLabel(k))}</span><b>${fmtNum(cv)}</b>${isClicked?`<em class="${cls}">${arrow}${delta}</em>`:''}</div>`;
-  }).join('');
+  }));
+  return rows.join('');
  }
  function attachmentHtml(it,type){
   if(type==='gem'){
