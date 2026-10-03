@@ -6727,3 +6727,22 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
   - Beta: `c881d5feb926c238916dc5eb45469bca1f87a5a8`
   - Server 1: `78a96d923cba2c1cc4b7c38781b2309bde347ec9`
   - index: `1ca8ddef4912d42312b8fee96bcd750b002181e4`
+
+
+### Beta – Dungeon-Button grün + echtes Harzschmiede-Bild im Startseiten-Slot · 03.10.2026
+- Nutzerwunsch auf der Startseite direkt im bestehenden UI umgesetzt; **kein neues Bild generiert** und keine neue Patch-/Renderer-Schicht angelegt.
+- Dungeon:
+  - bestehende Sonderregel im aktiven Home-Comic-Owner `v8009-extracted-v523-approved-home-comic-css.css` geändert;
+  - `Zum Dungeon` verwendet jetzt dieselbe grüne Button-Palette wie die übrigen Hauptaktionen.
+- Harzschmiede:
+  - bestehender Home-Slot-Owner `v8009-extracted-vforge-home-card-css.css` direkt bearbeitet;
+  - statt der bisherigen CSS-/Emoji-Platzhaltergrafik wird das bereits im Spiel vorhandene echte Schmiede-Artwork `assets/v7195-base64/f43016c6d1fa99c290aa.webp` verwendet;
+  - künstliche Amboss/Hammer/Spark-Overlays im Slot sind ausgeblendet.
+- Nur Beta-Cache aktualisiert:
+  - Home-Comic: `8062dungeongreen1`
+  - Forge-Slot: `8062forgeart1`
+- Server 1 unverändert.
+- Commits:
+  - Dungeon-Button: `efb8956ea220720f74a10abed055f4815d236c74`
+  - Harzschmiede-Slot: `f4a72c340953c98e635caef4b99630342753a5c9`
+  - Beta Cache: `74d3e972179ce152c2befd7adf430639e7bca854`
