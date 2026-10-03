@@ -246,6 +246,89 @@
  window.v4139ReportRuntimeError=reportRuntimeError;
  window.v4139RuntimeErrorDiagnostics=()=>({installed:!!window.__V4139_RUNTIME_ERROR_LOGGER__,sent:RUNTIME_ERROR_LOG.count,max:RUNTIME_ERROR_LOG.max});
  installRuntimeErrorLogger();
+
+ const PLAYER_QA={reported:new Set(),last:null};
+ function qaClientVersion(){return String(window.GROW_LEGENDS_VERSION?.short||window.__GL_CURRENT_BUILD__||'')}
+ function qaCoreChecks(){
+  const id=uid(),eq=(s?.equipment&&typeof s.equipment==='object'&&!Array.isArray(s.equipment))?s.equipment:{};
+  const slots=['head','weapon','weapon2','ring','body','boots','amulet'];
+  return {
+   auth:!!id,
+   accountOwner:!!id&&owner(s)===id,
+   socialOwner:!!id&&socialOwner(s)===id,
+   characterComplete:complete(s),
+   validClass:!s?.playerClass||VALID_CLASSES.has(String(s.playerClass)),
+   levelValid:Number.isFinite(Number(s?.level))&&Number(s?.level)>=1,
+   inventoryArray:Array.isArray(s?.inventory),
+   materialsArray:Array.isArray(s?.materials),
+   equipmentObject:!!s?.equipment&&typeof s.equipment==='object'&&!Array.isArray(s.equipment),
+   equipmentSlots:Object.fromEntries(slots.map(k=>[k,!!eq[k]])),
+   growObject:!!s?.grow&&typeof s.grow==='object'&&!Array.isArray(s.grow),
+   dungeonObject:!!s?.dungeon&&typeof s.dungeon==='object'&&!Array.isArray(s.dungeon),
+   runtimeErrorsThisSession:RUNTIME_ERROR_LOG.count
+  };
+ }
+ function qaScreenChecks(screen){
+  const id=String(screen||'');
+  const root=document.getElementById(id);
+  const known={
+   world:'#world .v366-world',
+   character:'#character #v510HeroRoot',
+   quests:'#quests',
+   dungeon:'#dungeon #dungeonMapCard',
+   grow:'#grow #growShelf',
+   guild:'#guild',
+   pvp:'#pvp',
+   tower:'#tower'
+  };
+  const sel=known[id]||('#'+id);
+  let rendered=false;
+  try{rendered=!!document.querySelector(sel)}catch(_){rendered=!!root}
+  return {
+   screenExists:!!root,
+   screenActive:!!root?.classList.contains('active'),
+   rendered,
+   childCount:root?.childElementCount||0
+  };
+ }
+ function qaStatus(checks){
+  if(checks.auth===false||checks.accountOwner===false||checks.socialOwner===false||checks.validClass===false)return'fail';
+  if(checks.inventoryArray===false||checks.materialsArray===false||checks.equipmentObject===false||checks.growObject===false||checks.dungeonObject===false)return'warn';
+  if(checks.screenExists===false||checks.screenActive===false||checks.rendered===false)return'warn';
+  return'ok';
+ }
+ async function reportPlayerQa(trigger='login',screen=''){
+  try{
+   const id=uid();
+   if(!id||v073User?.is_anonymous)return null;
+   const key=String(trigger)+'|'+String(screen||'');
+   if(PLAYER_QA.reported.has(key))return null;
+   const checks={...qaCoreChecks(),...(screen?qaScreenChecks(screen):{})};
+   const status=qaStatus(checks);
+   const payload={server:serverId(),trigger:String(trigger),screen:String(screen||''),status,checks,clientVersion:qaClientVersion()};
+   PLAYER_QA.reported.add(key);
+   PLAYER_QA.last=clone(payload);
+   if(!(await db()))return null;
+   const {data,error}=await v073Db.rpc('v8083_report_player_qa',{p_report:payload});
+   if(error)throw error;
+   return Array.isArray(data)?(data[0]||null):data;
+  }catch(e){
+   console.warn('[V4139] player QA report failed',e);
+   return null;
+  }
+ }
+ function installPlayerQaMarkers(){
+  if(window.__V4139_PLAYER_QA_MARKERS__)return;
+  window.__V4139_PLAYER_QA_MARKERS__=true;
+  window.addEventListener('growlegends:navigation-open-v7119',ev=>{
+   const screen=String(ev?.detail?.id||'');
+   if(!screen)return;
+   queueMicrotask(()=>void reportPlayerQa('screen-open',screen));
+  },{passive:true});
+ }
+ window.v4139ReportPlayerQa=reportPlayerQa;
+ window.v4139PlayerQaDiagnostics=()=>({reported:[...PLAYER_QA.reported],last:clone(PLAYER_QA.last)});
+ installPlayerQaMarkers();
  function fresh(id=''){
   const f=clone(defaultState)||{};
   f.playerClass=null;f.classLocked=false;f.characterName='';f.characterNameSet=false;
@@ -471,6 +554,7 @@
   try{v213Dirty=false;v213LastComparable=typeof v213Comparable==='function'?v213Comparable(s):''}catch(_){}
   writeMirrors(id,s,{stamp:false,allowIncomplete:true});if(complete(s))writeLock(id,s);
   try{render()}catch(_){}
+  queueMicrotask(()=>void reportPlayerQa('login','world'));
   return true;
  }
 
@@ -507,6 +591,7 @@
   try{v213SaveRevision=Math.max(Number(v213SaveRevision)||0,rev(s));v213Dirty=false;v213LastComparable=typeof v213Comparable==='function'?v213Comparable(s):''}catch(e){}
   writeMirrors(id,s,{stamp:false,allowIncomplete:true});resetRuntime(true);
   try{render()}catch(e){}
+  queueMicrotask(()=>void reportPlayerQa('login','world'));
   return true;
  }
 
@@ -546,7 +631,7 @@
  resolve.__v7194ServerOnlyLogin=true;
  v075ResolveCloudAfterLogin=resolve;try{window.v075ResolveCloudAfterLogin=resolve}catch(e){}
  window.__V4139_LOGIN_AUTHORITY__=Object.freeze({version:'V7.199',mode:'server-first-fail-closed',playerSavesGameplayRestore:false,localGameplayRestore:false,identitySource:'profiles-server-identity-only',canonicalHydration:'v7133HydrateAllCore'});
- window.v4139LoginAuthorityDiagnostics=()=>({...LOGIN,policy:window.__V4139_LOGIN_AUTHORITY__,allAuthorityEnforced:allAuthorityEnforced(),resolverGuarded:!!window.v075ResolveCloudAfterLogin?.__v7194ServerOnlyLogin,accountHealth:clone(lastHealth)});
+ window.v4139LoginAuthorityDiagnostics=()=>({...LOGIN,policy:window.__V4139_LOGIN_AUTHORITY__,allAuthorityEnforced:allAuthorityEnforced(),resolverGuarded:!!window.v075ResolveCloudAfterLogin?.__v7194ServerOnlyLogin,accountHealth:clone(lastHealth),playerQa:window.v4139PlayerQaDiagnostics?.()||null});
 
  v075ApplyCloudSave=async function(data){const id=uid();if(!id)return false;return await apply(data,id)};
  try{window.v075ApplyCloudSave=v075ApplyCloudSave}catch(e){}
