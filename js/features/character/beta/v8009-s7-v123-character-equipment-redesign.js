@@ -82,6 +82,25 @@ function v123OpenItem(slot){
     <button class="btn secondary" style="width:100%;margin-top:7px" onclick="document.querySelector('#v123ItemOverlay').classList.remove('show')">Schließen</button>`;
   ov.classList.add('show');
 }
+window.v123OpenItem=v123OpenItem;
+
+function v123InstallDelegatedSlotDetails(){
+  if(window.__V123_SLOT_DETAIL_DELEGATE__)return;
+  window.__V123_SLOT_DETAIL_DELEGATE__=true;
+  const slots=new Set(['head','weapon','weapon2','ring','body','boots','amulet']);
+  document.addEventListener('click',e=>{
+    const target=e.target instanceof Element?e.target.closest('#character [id^="slot-"]'):null;
+    if(!target)return;
+    if(e.target instanceof Element&&e.target.closest('button,a,input,select,textarea'))return;
+    const slot=String(target.id||'').replace(/^slot-/,'');
+    if(!slots.has(slot))return;
+    if(!s?.equipment?.[slot])return;
+    e.preventDefault();
+    e.stopPropagation();
+    v123OpenItem(slot);
+  },true);
+}
+
 function v123PolishEquipment(){
   Object.keys(slotLabels||{}).forEach(sl=>{
     const el=document.querySelector('#slot-'+sl);
@@ -122,4 +141,5 @@ function v123PolishEquipment(){
   v123InstallSummary();
 }
 window.v123PolishEquipment=v123PolishEquipment;
+try{v123InstallDelegatedSlotDetails()}catch(e){}
 try{v123EnsureDetail()}catch(e){}
