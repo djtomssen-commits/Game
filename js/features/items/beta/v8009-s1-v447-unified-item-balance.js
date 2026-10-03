@@ -1,11 +1,10 @@
 (function(){
-  const VERSION='V4.67 Stable', SHORT='V4.67', CURVE_VERSION=3;
+  const VERSION='V4.67 Stable', SHORT='V4.67', CURVE_VERSION=4;
   const COMBAT=['staerke','geschick','intelligenz','ausdauer','glueck'];
   /* V7.168 canonical order: gray < green < blue < purple < orange < prismatic < cyan(mythisch). */
   const RARITY_BONUS={gray:0,green:1.5,blue:3,purple:4.5,orange:6,prismatic:8.5,cyan:10.5};
   const LEVEL_GAIN=0.72;
-  const V7167_MULT={gray:1,green:1.06,blue:1.13,purple:1.22,orange:1.33,prismatic:1.46,cyan:1.61};
-  const V7167_LUCK={gray:0,green:0,blue:0,purple:.05,orange:.08,prismatic:.11,cyan:.15};
+    const V7167_LUCK={gray:0,green:0,blue:0,purple:.05,orange:.08,prismatic:.11,cyan:.15};
   const V7167_BASE={
     grower:{weapon:11,head:8,body:11,boots:7,ring:7,amulet:8},
     frost:{weapon:11,head:8,body:11,boots:7,ring:7,amulet:8},
@@ -151,20 +150,22 @@
     if(!isGear(it))return false;
     /* Server-authoritative V7.168 items already carry the canonical native map.
        Never let this historical V4.47 client normalizer overwrite it. */
-    if(it?.v7167QualityCurve===true)return false;
+    if(it?.v7167QualityCurve===true&&Number(it?.v447Curve?.version||0)>=CURVE_VERSION)return false;
 
     const quality=q(it), c=cls(it);
     const rawSlot=String(it?.slot||'').toLowerCase();
     const slot=rawSlot==='weapon2'?'weapon':rawSlot;
     const lvl=Math.max(1,Math.min(300,Math.floor(Number(it?.dropLevel)||Number(s?.level)||1)));
     const base=Math.max(1,Number(V7167_BASE[c]?.[slot])||Number(V7167_BASE.grower?.[slot])||1);
-    const core=Math.max(1,Math.round((base+(lvl-1)*LEVEL_GAIN)*(V7167_MULT[quality]||1)));
+    const core=Math.max(1,Math.round(base+(lvl-1)*LEVEL_GAIN+(RARITY_BONUS[quality]||0)));
     const primary=primaryForClass(c);
-    const pri=Math.max(1,Math.round(core*.60));
-    const sta=Math.max(1,core-pri);
-    const native={[primary]:pri,ausdauer:sta};
     const luckRate=V7167_LUCK[quality]||0;
-    if(luckRate>0)native.glueck=Math.max(1,Math.round(core*luckRate));
+    const luck=luckRate>0?Math.max(1,Math.round(core*luckRate)):0;
+    const remaining=Math.max(2,core-luck);
+    const pri=Math.max(1,Math.round(remaining*.60));
+    const sta=Math.max(1,remaining-pri);
+    const native={[primary]:pri,ausdauer:sta};
+    if(luck>0)native.glueck=luck;
 
     const add=addonMap(it), keep={};
     Object.entries(it.bonus||{}).forEach(([k,v])=>{if(!COMBAT.includes(k)&&k!=='growSkill')keep[k]=v});
@@ -172,9 +173,9 @@
     Object.entries(add).forEach(([k,v])=>full[k]=(Number(full[k])||0)+(Number(v)||0));
     const before=JSON.stringify({bonus:it.bonus||{},lock:it.v429StatLock||null,curve:it.v447Curve||null,mark:it.v7167QualityCurve||false});
     it.bonus={...full,...keep};
-    it.v429StatLock={version:1,native:{...native}};
+    it.v429StatLock={version:2,native:{...native}};
     const total=COMBAT.reduce((n,k)=>n+(Number(native[k])||0),0);
-    it.v447Curve={version:CURVE_VERSION,quality,level:lvl,nativeTotal:total,order:'gray<green<blue<purple<orange<prismatic<cyan'};
+    it.v447Curve={version:CURVE_VERSION,quality,level:lvl,nativeTotal:total,order:'gray<green<blue<purple<orange<prismatic<cyan',model:'flat-rarity-budget'};
     it.baseBonusV055=luckRate>0?{[primary]:3,ausdauer:2,glueck:1}:{[primary]:3,ausdauer:2};
     it.v7167QualityCurve=true;
     return before!==JSON.stringify({bonus:it.bonus||{},lock:it.v429StatLock||null,curve:it.v447Curve||null,mark:true});
@@ -193,7 +194,7 @@
   window.v447ApplyItemCurve=apply;
   window.v447NormalizeAllItems=all;
   window.v447NativeTotal=nativeTotal;
-  window.v447ItemCurve={levelGain:LEVEL_GAIN,rarityBonus:{...RARITY_BONUS}};
+  window.v447ItemCurve={version:CURVE_VERSION,model:'flat-rarity-budget',levelGain:LEVEL_GAIN,rarityBonus:{...RARITY_BONUS},luckShare:{...V7167_LUCK}};
 
   /* Normalize at creation time so reward overlays already show final values. */
   function wrapGlobal(name){
