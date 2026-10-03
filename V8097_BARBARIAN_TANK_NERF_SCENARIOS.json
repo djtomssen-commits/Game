@@ -1,0 +1,62 @@
+{
+  "version": "V8.097",
+  "status": "PROVISIONAL_TANK_NERF_SCENARIO_AUDIT",
+  "live_values_changed": false,
+  "baseline": {
+    "hp_pct": 0.556,
+    "permanent_damage_reduce": 0.087,
+    "passive_ehp_multiplier": 1.704
+  },
+  "scenarios": [
+    {
+      "name": "HP milestones 10/15 -> 5/10",
+      "hp_pct": 0.456,
+      "damage_reduce": 0.087,
+      "passive_ehp": 1.595
+    },
+    {
+      "name": "HP milestones 10/15 -> 5/5",
+      "hp_pct": 0.406,
+      "damage_reduce": 0.087,
+      "passive_ehp": 1.54
+    },
+    {
+      "name": "Permanent DR 8.7 -> 6",
+      "hp_pct": 0.556,
+      "damage_reduce": 0.06,
+      "passive_ehp": 1.655
+    },
+    {
+      "name": "Permanent DR 8.7 -> 5",
+      "hp_pct": 0.556,
+      "damage_reduce": 0.05,
+      "passive_ehp": 1.638
+    },
+    {
+      "name": "HP 40.6 + DR 6",
+      "hp_pct": 0.406,
+      "damage_reduce": 0.06,
+      "passive_ehp": 1.496
+    },
+    {
+      "name": "HP 40.6 + DR 5",
+      "hp_pct": 0.406,
+      "damage_reduce": 0.05,
+      "passive_ehp": 1.48
+    },
+    {
+      "name": "HP 35.6 + DR 5",
+      "hp_pct": 0.356,
+      "damage_reduce": 0.05,
+      "passive_ehp": 1.427
+    }
+  ],
+  "interpretation": "Single-axis nerfs leave the Tank branch substantially above the passive EHP budget of the other defensive branches. Combined HP+DR reduction is required; Second Wind/Lethal Save can remain initially to preserve class identity.",
+  "recommended_test_candidate": {
+    "hp_milestones": "+5% and +5%",
+    "permanent_damage_reduce_cap_for_full_branch": "~5%",
+    "keep_second_wind": "15% initially",
+    "keep_lethal_save": true,
+    "reason": "Moves passive EHP near 1.43x while preserving active defensive identity."
+  }
+}
