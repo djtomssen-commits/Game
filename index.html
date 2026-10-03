@@ -3293,7 +3293,7 @@ create index if not exists player_messages_sender_idx on public.player_messages(
 
 <!-- ===== V6.06 CLASS COMBAT QA + DEFENSE EVENT LABELS ===== -->
 <link rel="stylesheet" id="v606-combat-qa-css" href="v8009-extracted-v606-combat-qa-css.css">
-<script id="v606-combat-qa-core" src="js/features/system/beta/v8009-s4-v606-combat-qa-core.js"></script>
+<!-- V6.06 core loads after class combat owners (see V6.287) -->
 <!-- ===== /V6.06 ===== -->
 
 <!-- ===== V6.08 ANIMATION QA - ACTUAL V6.04 RENDERER PROBE ===== -->
@@ -4309,6 +4309,8 @@ No combat, reward, persistence, item stat, shop purchase, or Supabase logic chan
 <link rel="stylesheet" id="v6287-harzruferin-css" href="v8009-extracted-v6287-harzruferin-css.css">
 
 <script id="v6287-harzruferin-js" src="js/features/combat/beta/v8009-s1-v6287-harzruferin.js"></script>
+<!-- V8.097: Combat QA/telemetry must wrap the final five-class resolvers. -->
+<script id="v606-combat-qa-core" src="js/features/system/beta/v8009-s4-v606-combat-qa-core.js"></script>
 <!-- ===== /V6.287 ===== -->
 
 <!-- ===== V6.288 SETTINGS · ACCOUNT DELETE TOP-LAYER FIX ===== -->
