@@ -300,3 +300,31 @@ def scenario_manifest(name):
         "required_next_step":"wire parameterised class resolvers into executable matchup loop",
     }
 
+# Reproducible relative scenario sensitivity runner.
+# This is deliberately NOT canonical PvP: it is only used to compare tank
+# configurations under identical seeds and opponent assumptions.
+RELATIVE_OFFENSE={
+    100:{"grower":1.423,"scout":1.314,"bruiser":1.474,"frost":1.298,"summoner":1.185},
+    200:{"grower":1.586,"scout":1.560,"bruiser":1.818,"frost":1.518,"summoner":1.249},
+    300:{"grower":1.792,"scout":1.645,"bruiser":1.949,"frost":1.649,"summoner":1.373},
+}
+
+TANK_SENSITIVITY_SCENARIOS={
+    "baseline":{"hp":1.556,"dr":.087,"second_wind":.15,"lethal_save":True},
+    "minimal_v1":{"hp":1.406,"dr":.05,"second_wind":.15,"lethal_save":True},
+    "minimal_v1_no_second_wind":{"hp":1.406,"dr":.05,"second_wind":0.0,"lethal_save":True},
+    "minimal_v1_no_lethal":{"hp":1.406,"dr":.05,"second_wind":.15,"lethal_save":False},
+    "minimal_v1_no_emergency":{"hp":1.406,"dr":.05,"second_wind":0.0,"lethal_save":False},
+    "strong_v2_no_emergency":{"hp":1.256,"dr":.03,"second_wind":0.0,"lethal_save":False},
+}
+
+def sensitivity_manifest():
+    return {
+        "version":VERSION,
+        "status":"RELATIVE_ONLY_NOT_CANONICAL",
+        "scenarios":TANK_SENSITIVITY_SCENARIOS,
+        "offense_reference":RELATIVE_OFFENSE,
+        "purpose":"compare tank nerf directions under identical assumptions",
+        "canonical_winrate_ready":False,
+    }
+
