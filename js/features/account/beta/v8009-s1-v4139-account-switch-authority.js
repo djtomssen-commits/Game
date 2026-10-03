@@ -149,10 +149,37 @@
    materialsCount:Array.isArray(s.materials)?s.materials.length:0
   };
   try{window.__V4139_ACCOUNT_HEALTH__=clone(lastHealth)}catch(_){}
+  if(issues.length||repairs.length)queueMicrotask(()=>void reportAccountHealth(clone(lastHealth)));
   return lastHealth;
  }
  window.v4139AccountStateHealthCheck=accountStateHealthCheck;
  window.v4139AccountHealthDiagnostics=()=>clone(lastHealth);
+
+ async function reportAccountHealth(report){
+  try{
+   if(!report||(!report.issues?.length&&!report.repairs?.length))return {ok:true,stored:false,reason:'CLEAN'};
+   if(!(await db()))return {ok:false,stored:false,reason:'DB_UNAVAILABLE'};
+   const payload={
+    server:String(report.server||serverId()),
+    reason:String(report.reason||'login'),
+    schema:Number(report.schema)||ACCOUNT_STATE_SCHEMA,
+    ok:!!report.ok,
+    issues:Array.isArray(report.issues)?report.issues.slice(0,50):[],
+    repairs:Array.isArray(report.repairs)?report.repairs.slice(0,50):[],
+    equipmentSlots:report.equipmentSlots&&typeof report.equipmentSlots==='object'?report.equipmentSlots:{},
+    inventoryCount:Math.max(0,Number(report.inventoryCount)||0),
+    materialsCount:Math.max(0,Number(report.materialsCount)||0),
+    clientVersion:String(window.GROW_LEGENDS_VERSION?.short||window.__GL_CURRENT_BUILD__||'')
+   };
+   const {data,error}=await v073Db.rpc('v8080_report_account_state_health',{p_report:payload});
+   if(error)throw error;
+   return Array.isArray(data)?(data[0]||null):data;
+  }catch(e){
+   console.warn('[V4139] account health report failed',e);
+   return {ok:false,stored:false,reason:String(e?.message||e)};
+  }
+ }
+ window.v4139ReportAccountHealth=reportAccountHealth;
  function fresh(id=''){
   const f=clone(defaultState)||{};
   f.playerClass=null;f.classLocked=false;f.characterName='';f.characterNameSet=false;
