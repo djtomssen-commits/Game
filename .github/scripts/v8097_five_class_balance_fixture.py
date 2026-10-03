@@ -11,6 +11,7 @@ Purpose:
 This file intentionally does NOT mutate live player/profile data.
 """
 import json
+import argparse
 
 VERSION="V8.097"
 CLASSES=("grower","scout","bruiser","frost","summoner")
@@ -82,8 +83,6 @@ def audit_manifest():
                  "required class mechanic with a deterministic shared RNG tape.",
     }
 
-if __name__=="__main__":
-    print(json.dumps(audit_manifest(),indent=2,sort_keys=True))
 
 PARITY_BASELINE={
     "grower":{"green":136,"reports":145},
@@ -327,4 +326,108 @@ def sensitivity_manifest():
         "purpose":"compare tank nerf directions under identical assumptions",
         "canonical_winrate_ready":False,
     }
+
+def _draw(tape, idx):
+    if idx>=len(tape):
+        raise RuntimeError("RNG_TAPE_EXHAUSTED")
+    return tape[idx],idx+1
+
+def relative_tank_duel(level, opponent, scenario_name, seed):
+    cfg=TANK_SENSITIVITY_SCENARIOS[scenario_name]
+    tape=deterministic_tape(seed,4096);idx=0
+    base_hp=2400.0
+    tank_max=base_hp*cfg["hp"]
+    opp_max=base_hp
+    tank_hp=tank_max;opp_hp=opp_max
+    tank_off=RELATIVE_OFFENSE[level]["grower"]
+    opp_off=RELATIVE_OFFENSE[level][opponent]
+    second_used=False;lethal_used=False
+    rounds=0
+    while tank_hp>0 and opp_hp>0 and rounds<30:
+        rounds+=1
+        rv,idx=_draw(tape,idx)
+        tank_hit=100.0*tank_off*(.90+.20*rv)
+        if rounds%5==0:
+            tank_hit*=1.10
+        opp_hp=max(0.0,opp_hp-tank_hit)
+        if opp_hp<=0:
+            break
+
+        rv,idx=_draw(tape,idx)
+        opp_hit=100.0*opp_off*(.90+.20*rv)
+        incoming=opp_hit*(1.0-cfg["dr"])
+        before=tank_hp
+        tank_hp-=incoming
+
+        if tank_hp>0 and tank_hp/tank_max<.25 and cfg["second_wind"]>0 and not second_used:
+            tank_hp=min(tank_max,tank_hp+tank_max*cfg["second_wind"])
+            second_used=True
+        if tank_hp<=0 and cfg["lethal_save"] and not lethal_used:
+            tank_hp=1.0
+            lethal_used=True
+
+    if tank_hp<=0 and opp_hp<=0:
+        won=False
+    elif opp_hp<=0:
+        won=True
+    elif tank_hp<=0:
+        won=False
+    else:
+        won=(tank_hp/tank_max)>=(opp_hp/opp_max)
+    return won,rounds,idx
+
+def run_relative_tank_scenario(scenario_name,samples=2500):
+    if scenario_name not in TANK_SENSITIVITY_SCENARIOS:
+        raise KeyError(scenario_name)
+    matrix={}
+    for level in LEVELS:
+        matrix[str(level)]={}
+        for opponent in ("scout","bruiser","frost","summoner"):
+            wins=0;rounds=0;rng_used=0
+            for i in range(samples):
+                seed=level*100000+CLASSES.index(opponent)*1000+i
+                w,r,u=relative_tank_duel(level,opponent,scenario_name,seed)
+                wins+=int(w);rounds+=r;rng_used+=u
+            matrix[str(level)][opponent]={
+                "win_rate":round(wins/samples,4),
+                "avg_rounds":round(rounds/samples,3),
+                "avg_rng_used":round(rng_used/samples,3),
+            }
+    return {
+        "version":VERSION,
+        "status":"RELATIVE_ONLY_NOT_CANONICAL",
+        "scenario":scenario_name,
+        "samples_per_matchup":samples,
+        "matrix":matrix,
+        "canonical_winrate_ready":False,
+    }
+
+def compare_relative_tank_scenarios(a="baseline",b="minimal_v1",samples=2500):
+    ra=run_relative_tank_scenario(a,samples)
+    rb=run_relative_tank_scenario(b,samples)
+    delta={}
+    for level in map(str,LEVELS):
+        delta[level]={}
+        for opponent in ("scout","bruiser","frost","summoner"):
+            av=ra["matrix"][level][opponent]["win_rate"]
+            bv=rb["matrix"][level][opponent]["win_rate"]
+            delta[level][opponent]=round(bv-av,4)
+    return {"baseline":ra,"candidate":rb,"candidate_minus_baseline":delta}
+
+def cli():
+    p=argparse.ArgumentParser()
+    p.add_argument("--mode",choices=("manifest","gate","engine","scenario","compare"),default="manifest")
+    p.add_argument("--scenario",default="minimal_v1")
+    p.add_argument("--baseline",default="baseline")
+    p.add_argument("--samples",type=int,default=2500)
+    a=p.parse_args()
+    if a.mode=="manifest": out=audit_manifest()
+    elif a.mode=="gate": out=blocker_report()
+    elif a.mode=="engine": out=engine_manifest(a.samples)
+    elif a.mode=="scenario": out=run_relative_tank_scenario(a.scenario,a.samples)
+    else: out=compare_relative_tank_scenarios(a.baseline,a.scenario,a.samples)
+    print(json.dumps(out,indent=2,sort_keys=True))
+
+if __name__=="__main__":
+    cli()
 
