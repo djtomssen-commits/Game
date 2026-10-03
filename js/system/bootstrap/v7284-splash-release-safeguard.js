@@ -5,7 +5,12 @@
  function accountReady(){
   try{
    const id=String(v073User?.id||'');
-   return !!id && window.__V200_AUTH_READY__===true && String(v075CloudLoadedFor||'')===id;
+   if(!(!!id && window.__V200_AUTH_READY__===true && String(v075CloudLoadedFor||'')===id))return false;
+   try{
+    const hasCharacter=typeof v200CharacterComplete==='function'&&v200CharacterComplete();
+    if(hasCharacter&&window.__V8088_CRITICAL_BOOT_READY__!==true)return false;
+   }catch(_){}
+   return true;
   }catch(_){return false}
  }
  function release(){
