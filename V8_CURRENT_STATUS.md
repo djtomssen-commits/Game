@@ -6803,3 +6803,43 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
   - Beta: `0a58924f85e73f4ecdf30adbbd992466e45286d9`
   - index: `d20a31c280ee91bf5c7f090ceaeb20103b5c973b`
   - Server1: `60a81ac7b4c23a7e447a88d7f553a199f45eef7c`
+
+
+### Universelles Item-Vergleichs-Popup · 03.10.2026
+- Nutzerwunsch: beim Antippen eines Items überall einen direkten Vergleich mit dem aktuell ausgerüsteten Item desselben Slots anzeigen.
+- Kanonischer Owner:
+  - `js/features/items/beta/v8009-s2-v4103-item-ui-consistency.js`
+  - bestehender Character-Detail-Owner routet ausgerüstete Slots in denselben Vergleich:
+    `js/features/character/beta/v8009-s7-v123-character-equipment-redesign.js`
+- Aufbau des Popups auf Mobile bewusst **untereinander**:
+  1. aktuell angelegtes Item;
+  2. angeklicktes Item.
+- Grundwerte werden separat verglichen:
+  - grünes `↑` + Differenz = besser;
+  - rotes `↓` + Differenz = schlechter;
+  - graues `=` = gleich.
+- Edelstein und VZ-Rolle werden **nicht in die Grundwert-Pfeile eingerechnet**, sondern jeweils als eigene Blöcke unter den Grundwerten angezeigt.
+- Set-/Spezial-/Prismatisch-Informationen bleiben als eigener Zusatzblock sichtbar.
+- Wenn kein Item im passenden Slot angelegt ist, zeigt der obere Bereich `Kein Item ausgerüstet`; das angeklickte Item wird gegen 0 verglichen.
+- Zentrale Item-Registry ergänzt, damit gerenderte/dekorierte Item-Flächen ihr echtes Itemobjekt an das Vergleichs-Popup übergeben.
+- Klick-Abdeckung:
+  - Inventar;
+  - Händler/Shop;
+  - ausgerüstete Items;
+  - Quest-Fund;
+  - Dungeon-Fund;
+  - aktuelle V4103-Itemkarten;
+  - ältere Reward-Karten werden zusätzlich über Titel gegen Inventar/Equipment/Shop aufgelöst.
+- Aktionsbuttons innerhalb der Itemkarte bleiben unangetastet; der Vergleich öffnet nur beim normalen Item-Antippen.
+- CSS direkt im bestehenden Item-UI-Owner erweitert:
+  - `v8009-extracted-v4103-item-ui-css.css`
+- Cache-Refresh in Beta, index und Server1:
+  - `8065itemcompare1`
+- Commits:
+  - Vergleichs-Core: `9d8b398b165ee4d39ccb456f447ebaecd2044837`
+  - Legacy-Reward-Auflösung: `9839e915e97db0f807c912a3133961bad6a68660`
+  - Popup-CSS: `5b20553b5b59a305a37b9f6f57cfb93f79640b78`
+  - Equipment-Routing: `af1e0bd25c02493a5de78346cc894f1b4bfce78c`
+  - Beta Cache: `b8f340269bd1018ea17b979a9410bc8d64591c50`
+  - index Cache: `8e96d34bc894726b4d58d7e5d8c28c7480a59d66`
+  - Server1 Cache: `5bc6325ba976f1a17b84ecc6eb857a8a11046ddc`
