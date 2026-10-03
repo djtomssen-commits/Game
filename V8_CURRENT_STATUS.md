@@ -6893,3 +6893,58 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
   - Beta Cache: `ac8cc77a7517b8dc69b3d5a4fd3f95816ba2894e`
   - index Cache: `7c7d9c84a02052076d0102d4564a2126197194b7`
   - Server1 Cache: `0c21f8b9b63011e7e61bf702772269b687251180`
+
+
+### Waffen-Schadensspanne V8.067 – balance-neutral integriert · 03.10.2026
+- Nutzerwunsch: Waffen sollen eine echte Min–Max-Schadensspanne besitzen, die im Kampf greift, ohne Dungeon/PvP/Turm/Boss-Balance durch zusätzlichen Schaden zu verschieben.
+- Designentscheidung:
+  - Waffenspanne ersetzt bestehende generische Schadensschwankung;
+  - sie wird **nicht zusätzlich** auf den bisherigen Schaden addiert;
+  - der Mittelpunkt der Spanne entspricht Faktor `1.0`, daher bleibt der erwartete Durchschnittsschaden erhalten.
+- Itemdaten für Waffen/`weapon2`:
+  - `weaponDamageMin`
+  - `weaponDamageMax`
+  - `weaponDamageAvg`
+  - `weaponDamageModel = v8067-neutral-spread`
+- Range wird aus der aktuellen V4-Itemkurve abgeleitet; ca. ±10 % um den Waffenmittelwert.
+- Server-Funktionen:
+  - `public.v8067_weapon_factor`
+  - `server1.v8067_weapon_factor`
+  - `recovery_private.v8067_weapon_factor_for`
+  - `server1_private.v8067_weapon_factor_for`
+- PvE:
+  - zentraler `v7099_pve_fight` in Beta + Server1 nutzt die Waffenspanne;
+  - alter anonymer Base-Damage-Jitter wurde durch die Waffenrange ersetzt;
+  - vorhandener Erwartungswert bleibt erhalten:
+    - fixed-base: alter Mittelwert `1.0`;
+    - Endgame: alter `rand*9`-Mittelwert `+4.5`;
+    - Standard-PvE: alter `rand*10`-Mittelwert `+5`.
+  - Damit greift die Range in den Modi, die den zentralen PvE-Resolver nutzen (u. a. Dungeon/Turm/Endgame und entsprechende gemeinsame Combat-Pfade).
+- PvP:
+  - `v6350_resolve_pvp_core` in Beta + Server1 nutzt die Waffenrange statt des alten `.84 + random()*.32`-Jitters;
+  - Erwartungswert bleibt `1.0`;
+  - Frost-`weapon2` erhält beim Nebenhandtreffer zusätzlich seinen eigenen neutralen Range-Faktor.
+- Bestehende Waffen serverseitig normalisiert; QA:
+  - Beta `player_item_state`: `23/23` gefundene Waffen besitzen gültige Min/Max-Spanne;
+  - Stichprobe Range-Faktoren:
+    - Minimum ca. `0.89–0.90`
+    - Mittelpunkt exakt `1.0`
+    - Maximum ca. `1.10–1.11`
+  - Rundungsabweichungen der Endpunkte sind symmetrisch um exakt `1.0`; dadurch kein systematischer DPS-Buff/Nerf.
+- UI:
+  - aktuelle Itemkarte zeigt `⚔️ min–max Schaden`;
+  - Vergleichspopup zeigt `Waffenschaden` als eigene Grundwert-Zeile;
+  - grüner/roter Pfeil vergleicht den Mittelwert der beiden Spannen.
+- Client-Fallback:
+  - `v8009-s1-v447-unified-item-balance.js` erzeugt dieselben Range-Felder auch clientseitig.
+- Cache-Key: `8067weaponrange1`.
+- GitHub-Commits:
+  - Itemkurven-/Range-Felder: `fe4c66ca738f3ca7d54371d63f9a47e1bc82734b`
+  - Item-UI/Comparison: `431716a9ab67a0170baf8b7712a895023f14b951`
+  - CSS: `80fd52f6410e4cb57e3d421a5d1e8744f9b1fd73`
+  - Beta Cache: `3bc5d33cd9eb68b789fa29a76a6b128a728f6e1a`
+  - index Cache: `81f236196aa37000baeba1b2940207ffb4fb1c88`
+  - Server1 Cache: `637d133e16aa203d76d441900390b67f97617721`
+- Supabase-Migrationen:
+  - `v8067_weapon_damage_range_model_fix`
+  - `v8067_weapon_range_combat_integration`
