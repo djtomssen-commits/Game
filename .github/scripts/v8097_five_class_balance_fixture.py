@@ -320,10 +320,11 @@ TANK_SENSITIVITY_SCENARIOS={
 def sensitivity_manifest():
     return {
         "version":VERSION,
-        "status":"RELATIVE_ONLY_NOT_CANONICAL",
+        "status":"INVALID_FOR_BALANCE_DECISIONS",
         "scenarios":TANK_SENSITIVITY_SCENARIOS,
         "offense_reference":RELATIVE_OFFENSE,
-        "purpose":"compare tank nerf directions under identical assumptions",
+        "purpose":"historical diagnostic only",
+        "reason":"This simplified runner does not model the opponent's full defensive class mechanics and therefore overstates first-strike/offense effects.",
         "canonical_winrate_ready":False,
     }
 
@@ -377,8 +378,7 @@ def relative_tank_duel(level, opponent, scenario_name, seed):
     return won,rounds,idx
 
 def run_relative_tank_scenario(scenario_name,samples=2500):
-    if scenario_name not in TANK_SENSITIVITY_SCENARIOS:
-        raise KeyError(scenario_name)
+    raise RuntimeError("INVALID_MODEL: use the full parameterised five-class resolver; simplified tank runner is retired")
     matrix={}
     for level in LEVELS:
         matrix[str(level)]={}
@@ -403,6 +403,7 @@ def run_relative_tank_scenario(scenario_name,samples=2500):
     }
 
 def compare_relative_tank_scenarios(a="baseline",b="minimal_v1",samples=2500):
+    raise RuntimeError("INVALID_MODEL: simplified tank comparison is retired")
     ra=run_relative_tank_scenario(a,samples)
     rb=run_relative_tank_scenario(b,samples)
     delta={}
