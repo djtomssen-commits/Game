@@ -329,3 +329,63 @@ html body #world.active nav.v6103-quickbar > button:active{
     font-size:7px!important;
   }
 }
+
+/* HOME button alignment fix 2026-10-03: Weltboss, Shop, Live-Wetter. */
+#world.active .v690-current-title small{
+  display:none!important;
+}
+#world.active .v366-feature.boss,
+#world.active .v6103-shop-card,
+#world.active .vHome-weather-card{
+  display:flex!important;
+  flex-direction:column!important;
+  height:166px!important;
+  min-height:166px!important;
+  overflow:hidden!important;
+}
+#world.active .v366-feature.boss .v6118-boss-name{
+  display:none!important;
+}
+#world.active .v366-feature.boss .v6118-boss-art,
+#world.active .v6103-shop-card .v6103-shop-art,
+#world.active .vHome-weather-card .vHome-weather-card-art{
+  flex:0 0 72px!important;
+  height:72px!important;
+  min-height:72px!important;
+  max-height:72px!important;
+}
+#world.active .v366-feature.boss .v6115-boss-status,
+#world.active .v6103-shop-card .v690-mini-status,
+#world.active .vHome-weather-card .v690-mini-status{
+  flex:0 0 27px!important;
+  min-height:27px!important;
+  height:27px!important;
+  max-height:27px!important;
+  display:grid!important;
+  place-items:center!important;
+  padding:3px 4px!important;
+  margin:0!important;
+  text-align:center!important;
+  line-height:1.08!important;
+  overflow:hidden!important;
+}
+#world.active .v366-feature.boss .v366-go,
+#world.active .v6103-shop-card .v366-go,
+#world.active .vHome-weather-card .v366-go{
+  flex:0 0 31px!important;
+  min-height:31px!important;
+  height:31px!important;
+  max-height:31px!important;
+  width:calc(100% - 8px)!important;
+  margin:3px 4px 4px!important;
+  align-self:stretch!important;
+  padding:0 4px!important;
+}
+@media(max-width:430px){
+  #world.active .v366-feature.boss,
+  #world.active .v6103-shop-card,
+  #world.active .vHome-weather-card{
+    height:166px!important;
+    min-height:166px!important;
+  }
+}
