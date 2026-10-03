@@ -7725,3 +7725,22 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
 - Noch KEINE Balanceänderung:
   - vor Nerf/Buff müssen Defense/Healing, Tower/Worldboss-Dämpfung und vollständige Fight-Winrate mitbewertet werden.
 
+### 5-Klassen-Balance-Audit V8.097 – Defense/Healing · 03.10.2026
+- QA-Harness angelegt: `.github/scripts/v8097_five_class_balance_fixture.py`.
+- Der Harness ist ein synthetischer Neutralziel-Benchmark und keine finale PvP-Winrate.
+- Defensive/Heilungsanteile der offensiven Vergleichs-Builds:
+  - Grower: Level 200/300 mit Raserei-Zweitast 2,7 % Talent-Lifesteal.
+  - Scout: Präzision/Salve bringt keine zusätzlichen Dodge-Talentpunkte; der separate 5-%-Klassen-Dodge bleibt bestehen.
+  - Bruiser: Zaubermacht/Kritische Magie enthält praktisch keine defensive Talentinvestition.
+  - Frost: Level 200/300 Todespakt-Zweitast 1,8 % Talent-Lifesteal; Level 300 zusätzlich 2,1 % Low-HP-Lifesteal unter 50 % LP.
+  - Summoner: Sustain im Beschwörung/Fluchnebel-Build kommt situativ über den Bud-Geist; der Begleiter-Pity nach vier eigenen Angriffen ohne Ruf bleibt aktiv.
+- Ein finales synthetisches 5-Klassen-PvP-Winrate-Ergebnis ist mit den aktuellen Shadow-RPCs noch nicht kanonisch möglich, da diese Profil-/Build-/Itemzustände aus der Datenbank lesen.
+- Deshalb wurde aus Dummy-Gegnerwerten bewusst kein Balanceurteil abgeleitet.
+- Nächster sauberer QA-Schritt: gemeinsamer parameterisierter read-only 5-Klassen-Fixture-Resolver mit Stats/Talenten als Input und denselben internen Kampfregeln wie die Shadow-RPCs.
+- Belastbare Zwischenstände bleiben:
+  - Live-PvP-Baseline ist unausgeglichen.
+  - Bruiser hat die höchste offensive Endgame-Skalierung im Offensiv-Fixture.
+  - Scout und Frost liegen offensiv dicht zusammen.
+  - Summoner liegt im direkten Schaden niedriger und trägt Begleiter/DoT/Sustain.
+  - Frost Waffe II ist weiterhin kein auffälliger Balance-Ausreißer.
+
