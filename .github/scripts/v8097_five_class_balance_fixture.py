@@ -523,3 +523,276 @@ def validate_symmetric_state(a,b):
             errors.append(f"{label}: missing state fields: {', '.join(missing)}")
     return errors
 
+def _rng(tape, cursor):
+    v,c=_draw(tape,cursor)
+    if not (0.0<=v<1.0):
+        raise RuntimeError("RNG_VALUE_OUT_OF_RANGE")
+    return v,c
+
+def _tal(f,key,default=0.0):
+    return float(f.get("talents",{}).get(key,default) or 0.0)
+
+def _has(f,key):
+    return bool(f.get("talents",{}).get(key,False))
+
+def _stat(f,key,default=0.0):
+    return float(f.get("stats",{}).get(key,default) or 0.0)
+
+def v319_standard_attack(attacker, defender, tape, cursor):
+    cls=attacker["class_id"]
+    if cls not in ("grower","scout","bruiser"):
+        raise ValueError("v319_standard_attack only supports grower/scout/bruiser")
+    attacker["attack_count"]+=1
+    attacker["last_base_damage"]=max(1.0,float(attacker["base_damage"]))
+    pr=_clamp(attacker["hp"]/attacker["max_hp"],0,1)
+    er=_clamp(defender["hp"]/defender["max_hp"],0,1)
+    base=attacker["last_base_damage"]
+
+    damage_pct=_tal(attacker,"damagePct")+attacker["next_damage_pct"]
+    attacker["next_damage_pct"]=0.0
+    damage_pct+=min(.15,attacker["attack_count"]*_tal(attacker,"rampPerAttack"))
+    if er<.30:
+        damage_pct+=min(.16,_tal(attacker,"executeDamage"))
+    damage_pct+=_tal(attacker,"armorPen")*.50
+
+    if cls=="grower":
+        if _has(attacker,"wucht.m0") and attacker["attack_count"]%6==0: damage_pct+=.35
+        if _has(attacker,"wucht.m2") and pr<.35: damage_pct+=.15
+        if _has(attacker,"wucht.m4"): damage_pct+=min(.14,(1-pr)*.20)
+        if _has(attacker,"rage.m6") and pr<.30: damage_pct+=.20
+    elif cls=="scout":
+        if _has(attacker,"precision.m2") and er<.30: damage_pct+=.12
+    elif cls=="bruiser":
+        if _has(attacker,"magic.m3") and er>.70: damage_pct+=.12
+        if _has(attacker,"magic.m0") and attacker["attack_count"]%6==0: damage_pct+=.30
+        if attacker["attack_count"]%6==0: damage_pct+=_tal(attacker,"overloadEvery6")
+        if _has(attacker,"magic.m5") and attacker["attack_count"]%5==0: damage_pct+=.12
+
+    base*=1+_clamp(damage_pct,0,.62)
+
+    crit_chance=_stat(attacker,"baseCrit") + _stat(attacker,"setCrit") + _tal(attacker,"critChance") + attacker["chaos_crit"]
+    if cls=="scout" and _has(attacker,"precision.m0") and attacker["attack_count"]%6==0:
+        crit_chance=1.0
+    crit_chance=_clamp(crit_chance,0,.40)
+    rv,cursor=_rng(tape,cursor)
+    crit=rv<crit_chance
+
+    if crit:
+        attacker["crits"]+=1
+        attacker["chaos_crit"]=0.0
+        if cls=="scout":
+            attacker["next_dodge"]+=_tal(attacker,"postCritDodge")
+            if _has(attacker,"dodge.m4"): attacker["next_dodge"]+=.05
+    elif cls=="bruiser" and (_tal(attacker,"chaosStep")>0 or _has(attacker,"critmagic.m4")):
+        attacker["chaos_crit"]=_clamp(attacker["chaos_crit"]+max(.01,_tal(attacker,"chaosStep")),0,.10)
+
+    damage=base
+    tags=[]
+    if crit:
+        aimed=.10 if cls=="scout" and _has(attacker,"precision.m1") else 0.0
+        damage*=1.75+_tal(attacker,"critDamage")+aimed
+        tags.append("KRIT")
+        headshot=_tal(attacker,"precisionCritExtraChance") + (.10 if _has(attacker,"precision.m3") else 0)
+        rv,cursor=_rng(tape,cursor)
+        if rv<_clamp(headshot,0,.25):
+            damage+=base*.50;tags.append("KOPFSCHUSS")
+        if cls=="bruiser":
+            attacker["next_damage_pct"]+=_tal(attacker,"postCritDamage")
+            if _has(attacker,"critmagic.m0"): attacker["next_damage_pct"]+=.08
+            if _has(attacker,"critmagic.m2") and attacker["crits"]%2==0: attacker["next_damage_pct"]+=.10
+            for chance,extra,label in (
+                (_tal(attacker,"critChainChance"),.40,"KETTENFUNKE"),
+                (.15 if _has(attacker,"critmagic.m1") else 0,.40,"KETTENFUNKE"),
+                (_tal(attacker,"explosionChance"),.50,"EXPLOSION"),
+                (.10 if _has(attacker,"critmagic.m3") else 0,.50,"EXPLOSION"),
+            ):
+                if chance>0:
+                    rv,cursor=_rng(tape,cursor)
+                    if rv<chance:
+                        damage+=base*extra;tags.append(label)
+
+    multi=False
+    if cls=="grower":
+        wc=_clamp(_stat(attacker,"baseWucht") + _tal(attacker,"wuchtChance"),0,.40)
+        rv,cursor=_rng(tape,cursor)
+        wucht=rv<wc
+        if wucht:
+            damage*=1.55+_tal(attacker,"wuchtDamage")
+            if _has(attacker,"wucht.m1"): damage*=1.10
+            if _has(attacker,"wucht.m5") and attacker["first_wucht"]:
+                damage*=1.50;attacker["first_wucht"]=False;tags.append("UNAUFHALTSAM")
+            if _has(attacker,"wucht.m3"):
+                rv,cursor=_rng(tape,cursor)
+                if rv<.15: damage+=base*.50;tags.append("BLUTBAD")
+            attacker["next_damage_pct"]+=_tal(attacker,"afterWucht")
+            tags.append("WUCHT")
+        if crit or wucht:
+            for chance in (_tal(attacker,"followChance"), .12 if _has(attacker,"rage.m4") else 0):
+                if chance>0:
+                    rv,cursor=_rng(tape,cursor)
+                    if rv<chance: damage+=base*.40;tags.append("FOLGETREFFER")
+        if _has(attacker,"rage.m2") and attacker["attack_count"]%5==0:
+            damage+=base*.50;tags.append("ZUSATZTREFFER")
+        mc=_tal(attacker,"doubleChance")+(.08 if _has(attacker,"rage.m6") and pr<.30 else 0)
+        rv,cursor=_rng(tape,cursor)
+        multi=rv<_clamp(mc,0,.25)
+        if multi:
+            damage+=base*.55;tags.append("RASEREI")
+    elif cls=="scout":
+        mc=_clamp(_stat(attacker,"baseDouble")+_tal(attacker,"doubleChance"),0,.40)
+        if _has(attacker,"salvo.m0") and attacker["attack_count"]%10==0: mc=1.0
+        rv,cursor=_rng(tape,cursor);multi=rv<mc
+        if multi:
+            second=base*(.42+_stat(attacker,"setDoubleDamage")+_tal(attacker,"secondHitDamage"))
+            if _has(attacker,"salvo.m3"): second*=1.05
+            if _has(attacker,"salvo.m1"):
+                rv,cursor=_rng(tape,cursor)
+                if rv<_clamp(crit_chance+_tal(attacker,"multiCritChance"),0,.40):
+                    second*=1.75+_tal(attacker,"critDamage");tags.append("SCHNELLFEUER+")
+            second*=1+_tal(attacker,"multiRamp")
+            damage+=second;tags.append("SALVE")
+            rv,cursor=_rng(tape,cursor)
+            triple=rv<_tal(attacker,"tripleChance")
+            if not triple and _has(attacker,"salvo.m2"):
+                rv,cursor=_rng(tape,cursor);triple=rv<.12
+            if triple:
+                damage+=base*.45*(1+_tal(attacker,"multiRamp")*2+(.05 if _has(attacker,"salvo.m3") else 0));tags.append("DRITTTREFFER")
+            if not attacker["salvo_chain_used"]:
+                rv,cursor=_rng(tape,cursor)
+                chain=rv<_tal(attacker,"chainChance")
+                if not chain and _has(attacker,"salvo.m5"):
+                    rv,cursor=_rng(tape,cursor);chain=rv<.35
+                if chain:
+                    damage+=base*.35;attacker["salvo_chain_used"]=True;tags.append("KETTENTREFFER")
+        if crit:
+            rv,cursor=_rng(tape,cursor)
+            extra=rv<_tal(attacker,"salvoCritExtraChance")
+            if not extra and _has(attacker,"salvo.m4"):
+                rv,cursor=_rng(tape,cursor);extra=rv<.15
+            if extra: damage+=base*.40;tags.append("FOLGETREFFER")
+    else:
+        rv,cursor=_rng(tape,cursor)
+        det=rv<_tal(attacker,"detonationChance")
+        if not det and _has(attacker,"magic.m1"):
+            rv,cursor=_rng(tape,cursor);det=rv<.12
+        if det: damage+=base*.35;tags.append("DETONATION")
+
+    if not attacker["master_used"]:
+        if cls=="grower" and _has(attacker,"wucht.m6"):
+            damage*=3;attacker["master_used"]=True;tags.append("BRUTALE ERNTE")
+        elif cls=="scout" and _has(attacker,"precision.m6"):
+            damage=max(damage,base*2.5);attacker["master_used"]=True;crit=True;tags.append("PERFEKTER SCHUSS")
+        elif cls=="scout" and _has(attacker,"salvo.m6"):
+            damage=max(damage,base*2.75);attacker["master_used"]=True;tags.append("GRÜNER HAGEL")
+        elif cls=="bruiser" and _has(attacker,"magic.m6"):
+            damage*=3;attacker["master_used"]=True;tags.append("SUPERNOVA")
+
+    if cls=="scout" and _has(attacker,"precision.m5") and er<.20 and not attacker["precision_execute_used"]:
+        damage*=1.50;attacker["precision_execute_used"]=True;tags.append("HINRICHTUNG")
+
+    dot_damage=0.0
+    if cls=="bruiser":
+        dot_proc=_clamp(_tal(attacker,"dotChance")+(.20 if _has(attacker,"smoke.m1") else 0)+(.06 if _has(attacker,"smoke.m2") else 0),0,.55)
+        rv,cursor=_rng(tape,cursor)
+        if rv<dot_proc:
+            max_stacks=2 if _has(attacker,"smoke.m2") else 1
+            rounds=3 if _has(attacker,"smoke.m5") else 2
+            dot_pct=.05+_tal(attacker,"dotDamagePct")+(.02 if _has(attacker,"smoke.m2") else 0)
+            if len(attacker["dot"])<max_stacks:
+                attacker["dot"].append({"rounds":rounds,"damage":max(1,round(base*dot_pct))})
+        if _has(attacker,"smoke.m6") and not attacker["smoke_master_applied"]:
+            attacker["dot"]=[{"rounds":3,"damage":max(1,round(base*.12))}]
+            attacker["smoke_master_applied"]=True;tags.append("TODESNEBEL")
+        for d in attacker["dot"]:
+            dot_damage+=d["damage"];d["rounds"]-=1
+        attacker["dot"]=[d for d in attacker["dot"] if d["rounds"]>0]
+        damage+=dot_damage
+
+    damage=max(1,round(damage))
+    life=_tal(attacker,"lifeSteal")
+    if cls=="grower":
+        if multi and _has(attacker,"rage.m1"): life+=.01
+        if pr<.50: life+=_tal(attacker,"lowHpLife")
+        if _has(attacker,"rage.m3") and pr<.50: life+=.03
+        if _has(attacker,"rage.m6") and pr<.30: life+=.05
+    life=_clamp(life,0,.10)
+    heal=round(damage*life)
+    if cls=="grower" and attacker["attack_count"]%5==0:
+        heal+=round(attacker["max_hp"]*min(.04,_tal(attacker,"healEvery5")))
+        if _has(attacker,"rage.m5"): heal+=round(attacker["max_hp"]*.05)
+    if cls=="bruiser" and dot_damage:
+        heal+=round(dot_damage*_clamp(_tal(attacker,"dotHealPct")+(.25 if _has(attacker,"smoke.m4") else 0),0,.35))
+    return {"damage":damage,"heal":heal,"crit":crit,"tags":tags},cursor
+
+def v319_standard_defense(defender, incoming, attacker_base, tape, cursor):
+    cls=defender["class_id"]
+    if cls not in ("grower","scout","bruiser"):
+        raise ValueError("v319_standard_defense only supports grower/scout/bruiser")
+    defender["enemy_attack_count"]+=1
+    damage=max(0,float(incoming))
+    ratio=_clamp(defender["hp"]/defender["max_hp"],0,1)
+    heal=0.0;counter=0.0;prevent=False;dodged=False
+
+    if cls=="scout":
+        dodge=_tal(defender,"dodgeChance")+(_tal(defender,"firstDodge") if defender["enemy_attack_count"]==1 else 0)+defender["next_dodge"]
+        if _has(defender,"dodge.m0") and defender["enemy_attack_count"]==1: dodge+=.10
+        defender["next_dodge"]=0.0
+        lethal=damage>=defender["hp"]
+        if _has(defender,"dodge.m5") and lethal and not defender["lethal_save_used"]:
+            defender["guaranteed_dodge"]=True;defender["lethal_save_used"]=True
+        rv,cursor=_rng(tape,cursor)
+        if defender["guaranteed_dodge"] or rv<_clamp(dodge,0,.35):
+            dodged=True;damage=0.0;defender["dodges"]+=1
+            defender["next_damage_pct"]+=_tal(defender,"postDodgeDamage")
+            if defender["dodges"]>=2:
+                defender["next_damage_pct"]+=_tal(defender,"dodgeStreakDamage")
+                if _has(defender,"dodge.m2"): defender["next_damage_pct"]+=.15
+            cc=_tal(defender,"counterChance")+(.30 if _has(defender,"dodge.m1") else 0)
+            if defender["next_guaranteed_counter"]:
+                cc=1.0;defender["next_guaranteed_counter"]=False
+            rv,cursor=_rng(tape,cursor)
+            if rv<_clamp(cc,0,.55): counter=round(defender["last_base_damage"]*.60)
+            if _has(defender,"dodge.m3"): heal+=round(defender["max_hp"]*.02)
+            if _has(defender,"dodge.m6") and defender["dodges"]>=3:
+                defender["guaranteed_dodge"]=True;defender["next_guaranteed_counter"]=True;defender["dodges"]=0
+            else:
+                defender["guaranteed_dodge"]=False
+            return {"damage":0,"heal":heal,"counter":counter,"prevent":False,"dodged":True},cursor
+
+    reduce=_tal(defender,"damageReduce")
+    if cls=="grower":
+        if _has(defender,"tank.m0") and ratio<.50: reduce+=.05
+        if _has(defender,"tank.m4") and defender["enemy_attack_count"]<=2: reduce+=.10
+        if _has(defender,"tank.m3") and damage>defender["max_hp"]*.20: reduce+=.15
+    elif cls=="bruiser":
+        if defender["enemy_attack_count"]==1: reduce+=_tal(defender,"firstHitReduce")
+        if _has(defender,"smoke.m0") and defender["enemy_attack_count"]==1: reduce+=.15
+        if _has(defender,"smoke.m6") and defender["smoke_master_applied"]: reduce+=.10
+    damage=round(damage*(1-_clamp(reduce,0,.35)))
+
+    if cls=="grower":
+        if defender["enemy_attack_count"]%3==0 and _tal(defender,"regenEvery3")>0:
+            heal+=round(defender["max_hp"]*min(.04,_tal(defender,"regenEvery3")))
+        if _tal(defender,"reflectPct")>0:
+            counter+=round(damage*_tal(defender,"reflectPct"))
+        if _has(defender,"tank.m2") and ratio<.25 and not defender["second_wind_used"]:
+            heal+=round(defender["max_hp"]*.15);defender["second_wind_used"]=True
+    elif cls=="bruiser" and ratio<.35 and not defender["shield_used"] and (_tal(defender,"shieldPct")>0 or _has(defender,"smoke.m3")):
+        pct=min(.20,_tal(defender,"shieldPct")+(.15 if _has(defender,"smoke.m3") else 0))
+        damage=max(0,damage-round(defender["max_hp"]*pct));defender["shield_used"]=True
+
+    if cls=="grower" and _has(defender,"tank.m6") and damage>=defender["hp"]+heal and not defender["lethal_save_used"]:
+        prevent=True;defender["lethal_save_used"]=True
+
+    return {"damage":max(0,round(damage)),"heal":max(0,round(heal)),"counter":max(0,round(counter)),"prevent":prevent,"dodged":dodged},cursor
+
+def standard_hooks_contract():
+    return {
+        "implemented":["grower","scout","bruiser"],
+        "attack":"parameterised v319 standard resolver",
+        "defense":"parameterised v319 standard enemy resolver",
+        "remaining":["frost","summoner"],
+        "status":"STANDARD_HOOKS_READY_FROST_SUMMONER_PENDING",
+        "canonical_winrate_ready":False,
+    }
+
