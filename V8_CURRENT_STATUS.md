@@ -7269,3 +7269,29 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
   - Beta Cache: `282907f49b70a04e30f9a0e5be121817e436e0fb`
   - Server1 Cache: `23bc38ab5cc0cde5ea123b00a7de861aa4c0203b`.
 - Hinweis: Der Login unmittelbar vor diesem Fix kann nicht als verlässlicher Server-1-Timingdatensatz verwendet werden. Nach einem erneuten Server-1-Login sollten QA/Health unter `server1` erscheinen.
+
+
+### Diagnose-RPC Routing V8.090 – Server 1 nutzt gemeinsame Public-Diagnosefunktionen · 03.10.2026
+- Nach V8.089 konnte ein frischer Server-1-Login im Supabase-Edge-Log gesehen werden, aber:
+  - `v8080_report_account_state_health` → 404;
+  - `v8083_report_player_qa` → 404;
+  - `v8082_report_runtime_error` wäre aus demselben Grund ebenfalls betroffen.
+- Ursache:
+  - Beta-Supabase-Client arbeitet im Schema `public`;
+  - Server-1-Supabase-Client arbeitet absichtlich im Schema `server1`;
+  - die drei Diagnose-RPCs liegen gemeinsam im Schema `public`;
+  - ein nacktes `v073Db.rpc(...)` sucht deshalb auf Server 1 im Schema `server1` und findet die Public-Diagnosefunktion nicht.
+- Fix direkt im bestehenden Account-/Diagnose-Owner:
+  - `v073Db.schema('public').rpc(...)` für:
+    - `v8080_report_account_state_health`;
+    - `v8082_report_runtime_error`;
+    - `v8083_report_player_qa`.
+- Gameplay-/Serverdaten bleiben unverändert servergetrennt; nur technisches Shared-Diagnose-Logging wird explizit über `public` geroutet.
+- QA-Payload erweitert:
+  - `bootCriticalReady`;
+  - `bootTiming` mit `profileMs`, `authorityMs`, `hydrateMs`, `eventMs`, `totalMs`, Server und Charakterstatus.
+- Core-Commit: `8c4dfd94da2b11c638fee9c903ac066734b15e5e`.
+- Cache-Key Beta + Server1: `8090diagpublic1`.
+- Beta Cache Commit: `fdaf732069581ede0187634429b58c4a1713019e`.
+- Server1 Cache Commit: `ee608d4a64954f66233530c5f4d173b820d141f6`.
+- Nächster Server-1-Login kann nun die echten Critical-Boot-Zeiten in den bestehenden QA-Snapshot schreiben.
