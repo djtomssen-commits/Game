@@ -6778,3 +6778,28 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
   - Beta Cache: `8d53d1a8989ceae79092a6f164d05e2db2f5e2cd`
   - index Cache: `410574e4a16447711f745473b306434d3777b995`
   - Server1 Cache: `21e8b0dc32c056e5ad6854d214e344329f8aaa65`
+
+
+### Gildenchat – Topbar-Offset / Zurück-Pfeil wieder sichtbar · 03.10.2026
+- Nutzer-Screenshot zeigte: Gildenchat begann unter der globalen Topbar, oberer Bereich war abgeschnitten; der Zurück-/Schließen-Pfeil war dadurch nicht sichtbar.
+- Vor dem Fix Diagnosequellen geprüft:
+  - Account-State-Health: aktueller Beta-Login `ok`;
+  - Player-QA: aktuelle `world`-/`character`-Snapshots `ok`, keine Session-Runtimefehler;
+  - Runtime-Error-Tabelle aktuell leer.
+- Root Cause:
+  - der aktive Viewport-Stabilisierer im kanonischen Gildenchat-Owner `js/features/guild/beta/v8008-c25-guildchat-owner.js` berechnete den oberen Offset nur aus `.app > header`;
+  - dieser Legacy-Header ist nach der Topbar-Bereinigung absichtlich auf 0 gesetzt;
+  - die tatsächlich sichtbare autoritative Topbar ist `#v372TopbarShell` / `.v372-topbar`;
+  - dadurch wurde der Chat praktisch bei `top: 6px` gestartet und lag hinter der sichtbaren Topbar.
+- Direkter Owner-Fix, keine neue Patch-Schicht:
+  - Viewport-Berechnung verwendet jetzt zuerst `#v372TopbarShell`, danach `.v372-topbar`, und nur als Fallback den alten `.app > header`;
+  - Chat beginnt damit unterhalb der echten Topbar;
+  - vorhandener Chat-Header und Zurück-/Schließen-Pfeil bleiben innerhalb des sichtbaren Viewports.
+- Cache-Refresh:
+  - `v8008-c25-guildchat-owner.js?v=8064chatviewport1`
+  - in Beta, index und Server1 aktualisiert.
+- Commits:
+  - Core: `b5c5d15e02f43ca2b740aea5df52282f76afa27f`
+  - Beta: `0a58924f85e73f4ecdf30adbbd992466e45286d9`
+  - index: `d20a31c280ee91bf5c7f090ceaeb20103b5c973b`
+  - Server1: `60a81ac7b4c23a7e447a88d7f553a199f45eef7c`
