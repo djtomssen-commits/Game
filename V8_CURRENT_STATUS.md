@@ -7663,3 +7663,25 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
   - 10-%-Attributgewichtung ist im serverseitigen Shadow-Attr-Pfad korrekt;
   - offene V8.067-Inkonsistenz bleibt: eigener Waffe-II-Range-Faktor ist im PvP vorhanden, im zentralen PvE-Nebenhandtreffer noch nicht.
 
+### 5-Klassen-Balance-Audit V8.097 – PvP-Shadow-Testpfade verifiziert · 03.10.2026
+- Read-only Prüfung fortgesetzt; keine Balancewerte geändert.
+- Vorhandene serverseitige Talent-Shadow-Pfade bestätigt:
+  - `v7056_standard_pvp_shadow_simulate`: Bud-Barbar, Blatt-Schütze, Frost-Todesritter;
+  - `v7055_bruiser_shadow_simulate`: Bong-Magier;
+  - `v7052_pvp_shadow_simulate`: Harzruferin.
+- Diese Shadow-Pfade enthalten die vollständigen jeweiligen Talent-/Proc-Mechaniken und sind damit geeigneter für einen echten Klassenvergleich als der vereinfachte Live-PvP-Core `v6350_resolve_pvp_core`.
+- Live-Profilbestand reicht aktuell NICHT für einen fairen 5-Klassen-Levelvergleich:
+  - Beta/Public: Bruiser 7 Profile, alle Level 1;
+  - Summoner 1 Profil, Level 46;
+  - Frost 6 Profile, Level 2–86;
+  - Grower 4 Profile, Level 1–112;
+  - Scout 7 Profile, Level 1–140.
+  - Server1: nur 1 Scout Level 1 und 1 Summoner Level 2.
+- Deshalb dürfen Level-100/200/300-Balancewerte nicht aus vorhandenen Accounts hochgerechnet werden.
+- Nächster korrekter QA-Schritt:
+  - synthetischer, read-only Fixture-Harness mit identischem Level, Combat-Power, HP/Itembudget und definierten Talentverteilungen;
+  - Level 100 / 200 / 300;
+  - alle 20 Klassen-Matchups in beiden Richtungen;
+  - PvE/Turm/Worldboss separat;
+  - erst danach konkrete Balanceänderungen.
+
