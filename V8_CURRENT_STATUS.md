@@ -7513,3 +7513,25 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
 - Beta Cache: 34ad7094cc340a13efe7e250be83fef3fbda56f4
 - Server1 Cache: 824f3be06ad149a0edb9e0f036ed7f21bb329e0a
 - Index Cache: 597a29e2dc8acb6baba12b7f3afcf3d2f86d20a8
+
+### Gesamt-QA / Stabilität V8.096 – Live-Diagnose + Health-Bereinigung · 03.10.2026
+- Gesamt-QA gestartet nach vollständigem Early-/Mid-/Late-/Endgame-Pass.
+- Bestehende Matrix geprüft: 22/22 strukturelle Bereiche abgeschlossen; finale repo-weite DOM/Lifecycle/Owner-QA grün; manueller End-to-End-Milestone offen.
+- Live-QA der letzten Stunden: World, Character, Quests, Dungeon, Shop, Forge, Guild, PvP, Tower, Hall und Endgame überwiegend ok; keine Runtime-Client-Errors in den letzten 6 Stunden; Beta und Server1 Critical Boot jeweils bootCriticalReady=true.
+- Wiederkehrender Growroom-QA-Warn: screenActive=true, screenExists=true, Grow-State gültig, Runtime-Errors 0, aber rendered=false.
+- Root Cause: QA prüfte noch den alten DOM-Selektor #grow #growShelf; der aktuelle kanonische Growroom-Owner V492 rendert #grow .v492-grow.
+- Fix: QA-Selektor auf #grow .v492-grow umgestellt.
+- Account-Health-Audit: wiederkehrend ITEM_SLOT_MISMATCH:weapon2 mit Item-Slot weapon.
+- Das ist für eine Zweitwaffe legitim: equipment.weapon2 enthält ein normales Waffen-Item mit item.slot=weapon.
+- Fix: weapon2 akzeptiert im Health-Validator weapon und weapon2; echte falsche Slot-Zuordnungen werden weiter gemeldet.
+- Health-Noise: SCHEMA_VERSION -> STAMP_SCHEMA_VERSION wurde bei jeder Server-Hydration erneut protokolliert, obwohl es nur ein lokaler Schema-Stempel ist.
+- Fix: Schema-Stempel wird weiter lokal repariert; reine Schema-Version-/Stamp-Ereignisse werden nicht mehr als Server-Health-Event gesendet; echte Issues/Repairs bleiben reportbar.
+- Beta/Server1 Parität nach Fix: 1.351 Referenzen je Build; einzige absichtliche Differenz bleibt Beta anon-0001.js vs. Server1 server1-release-channel.js.
+- Account-Owner Cache auf Beta + Server1: 8096qahealth1.
+- Commits:
+  - Growroom-QA-Selektor: 3d607d9db870c647c464ef4d08731fb24c5a5e77
+  - Health offhand + schema-noise: 1e7a4b2a8cbbf6abd19f75c8021bb73664568288
+  - Beta Cache: a8e60dcf6c995a1b53c8570010521d397d5ad2d3
+  - Server1 Cache: cf5f027713dc0dfb606a1d98529c754809dca0cc
+  - Index Cache: 89fcddaf39d9dd8324f053a738b3acd15c16872a
+- Nächster manueller QA-Schritt: frischer Login, Growroom einmal öffnen, danach neuen QA-Snapshot prüfen und anschließend Seiten-/Tab-Smoke-Test fortsetzen.
