@@ -7098,3 +7098,37 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
 - Commits: zentraler Score `057ffa681c1ecfa44162170e03a48f7a7ed456c8`; v470 Last-Writer-Fix `f1db13684f5e31cf9bafac56d7ebc21147fb50c5`; Beta Cache `5ec689887efe58aa70f1b88103880d968344490f`; index Cache `13796ca5a585e7aee7b4b241888e1fce50ce4540`; Server1 Cache `680560a667022694760b930f68f46236e8ad73cb`.
 - Code-QA nach Commit: `v4103` enthält finalen Gesamt-Score; `v470` nutzt `window.v4103TotalCompareScore`; Beta/index/Server1 tragen den Cache-Key `8072compareunified1`.
 - Account-State-Diagnostik konnte in diesem Schritt wegen Tool-Sicherheitsblock nicht vollständig erneut ausgelesen werden; die Code-Root-Cause war direkt reproduzierbar über die Script-Reihenfolge/Last-Writer-Struktur.
+
+
+### New-Player-Guide V8.086 – vorhandenes System erweitert, keine Level-Sperren · 03.10.2026
+- Nutzerwunsch nach Spielbewertung/Onboarding: ausdrücklich **keine neuen Level-Sperren** für bestehende Inhalte.
+- Vor jeder Änderung repo-weit geprüft, ob bereits passende Systeme vorhanden sind.
+- Vorhandene Bausteine:
+  - globaler Erstbesuch-/Seiten-Guide: `js/features/guide/beta/v8009-s1-v6254-grow-guide.js`;
+  - kontextsensitiver Growroom-Guide: `js/features/guide/beta/v8009-s2-v6283-grow-guides.js`;
+  - bestehender Startseiten-`CHARAKTER-CHECK` im kanonischen Home-Renderer;
+  - bestehende Startseiten-`Tagesziele` mit erster Quest, Dungeon usw.
+- Ergebnis des Audits: Es gab bereits Guide-, Checklist- und Tagesziel-Mechaniken. Es fehlte nur ein klarer empfohlener Startpfad für neue Spieler.
+- Deshalb **kein zweiter Tutorial-Owner, keine neue Checkliste und keine neue Render-Schicht** gebaut.
+- Bestehenden `v6254`-Owner direkt erweitert:
+  - Welcome erklärt jetzt den empfohlenen Startpfad:
+    `Quest starten → Beute prüfen → Charakter verbessern → Growroom ansehen → Dungeon 1 testen`;
+  - ausdrücklich als Empfehlung formuliert, nicht als Sperre/Pflicht;
+  - Startseiten-Guide verweist jetzt auf vorhandene Tagesziele und Charakter-Check;
+  - Quest-Guide beginnt für neue Spieler mit `Dein erster Auftrag` und erklärt, dass während des Quest-Timers andere Bereiche frei erkundet werden können;
+  - Beute-Hinweis verweist auf den bestehenden Itemvergleich.
+- Alle Bereiche bleiben weiterhin frei erreichbar.
+- Änderung zunächst **nur Beta**; Server1/Stable unverändert.
+- Backup vor dem Umbau vorhanden:
+  - Branch `backup/pre-earlygame-rework-2026-10-03`
+  - Ausgangscommit `b369b0a2fcb23c3176cc70265abf4d6b0bf380d7`.
+- Cache-Key Beta: `8086onboarding1`.
+- Commits:
+  - Guide-Core: `7b0a3e97755b2c52d34e7242a7d650a1ad36bf3d`
+  - Beta Cache: `1583e3a11dbc65ad0370658d0d1468ded18a5837`
+- Code-QA:
+  - neuer Startpfad vorhanden;
+  - explizit keine Sperre/Pflicht;
+  - Startseiten-Empfehlung vorhanden;
+  - Quest-Einstieg vorhanden;
+  - neuer Beta-Cache aktiv.
