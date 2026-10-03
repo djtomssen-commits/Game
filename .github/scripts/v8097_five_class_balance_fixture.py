@@ -240,3 +240,29 @@ def blocker_report():
         "canonical_winrate_ready":False,
     }
 
+SOURCE_TRACE_PARITY={
+    "grower":{"suite":"V7.061","green":114,"reports":118},
+    "scout":{"suite":"V7.061","green":32,"reports":44},
+    "bruiser":{"suite":"V7.061","green":3,"reports":6},
+    "frost":{"suite":"V7.061","green":18,"reports":44},
+    "summoner":{"suite":"V7.050","green":8,"reports":9},
+}
+
+def source_trace_gate():
+    out={}
+    for cls in CLASSES:
+        p=SOURCE_TRACE_PARITY[cls]
+        out[cls]={
+            **p,
+            "green_ratio":round(p["green"]/max(1,p["reports"]),4),
+            "canonical_source_trace_green":p["green"]>0,
+            "synthetic_module_trace_green":False,
+        }
+    return {
+        "classes":out,
+        "all_canonical_sources_have_green_trace":all(v["green"]>0 for v in SOURCE_TRACE_PARITY.values()),
+        "all_synthetic_modules_trace_green":False,
+        "next_blocker":"EXTRACT_CANONICAL_CLASS_MODULES_INTO_PARAMETERISED_ENGINE",
+        "canonical_winrate_ready":False,
+    }
+
