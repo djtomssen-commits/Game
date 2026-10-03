@@ -115,3 +115,76 @@
 .v4103-compare-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0 2px}
 .v4103-compare-actions .btn{width:100%;margin:0}
 @media(max-width:430px){.v4103-compare-actions{grid-template-columns:1fr}}
+
+
+/* V8.071: strong quality identity on every current item surface. */
+[data-v4103-item-current="1"]{--v8071q:#d0d4d8;--v8071rgb:208,212,216}
+[data-v4103-item-current="1"][data-v4103-quality="green"]{--v8071q:#72ff88;--v8071rgb:114,255,136}
+[data-v4103-item-current="1"][data-v4103-quality="blue"]{--v8071q:#55c7ff;--v8071rgb:85,199,255}
+[data-v4103-item-current="1"][data-v4103-quality="purple"]{--v8071q:#ed72ff;--v8071rgb:237,114,255}
+[data-v4103-item-current="1"][data-v4103-quality="orange"]{--v8071q:#ffc052;--v8071rgb:255,192,82}
+[data-v4103-item-current="1"][data-v4103-quality="cyan"]{--v8071q:#66ffff;--v8071rgb:102,255,255}
+[data-v4103-item-current="1"][data-v4103-quality="prismatic"]{--v8071q:#ff79e2;--v8071rgb:255,121,226}
+.v4103-item-card[data-v4103-item-current="1"]{
+ border-color:var(--v8071q)!important;
+ background:
+  radial-gradient(circle at 50% 3%,rgba(var(--v8071rgb),.24),transparent 42%),
+  linear-gradient(180deg,#172019,#090e0b)!important;
+ box-shadow:inset 0 0 28px rgba(var(--v8071rgb),.13),0 0 20px rgba(var(--v8071rgb),.34)!important
+}
+.v4103-item-card[data-v4103-item-current="1"] .v4103-item-art{
+ border-color:var(--v8071q)!important;
+ box-shadow:inset 0 0 0 2px rgba(var(--v8071rgb),.38),0 0 16px rgba(var(--v8071rgb),.48)!important
+}
+.v4103-item-card[data-v4103-item-current="1"] .v4103-item-rarity{color:var(--v8071q)!important;text-shadow:0 0 9px rgba(var(--v8071rgb),.60)}
+.v4103-item-card[data-v4103-quality="prismatic"]{
+ border-color:transparent!important;
+ background:
+  linear-gradient(#151b16,#090e0b) padding-box,
+  linear-gradient(115deg,#ff70d9,#976fff,#45c7ff,#65ff91,#ffe45e,#ff8b58) border-box!important;
+ box-shadow:0 0 24px #ff5ed266,0 0 32px #35cfff55,inset 0 0 24px #ffffff0d!important
+}
+
+/* The universal comparison panel uses the same strong quality palette. */
+.v4103-compare-item{--v8071q:#d0d4d8;--v8071rgb:208,212,216}
+.v4103-compare-item[data-quality="green"]{--v8071q:#72ff88;--v8071rgb:114,255,136}
+.v4103-compare-item[data-quality="blue"]{--v8071q:#55c7ff;--v8071rgb:85,199,255}
+.v4103-compare-item[data-quality="purple"]{--v8071q:#ed72ff;--v8071rgb:237,114,255}
+.v4103-compare-item[data-quality="orange"]{--v8071q:#ffc052;--v8071rgb:255,192,82}
+.v4103-compare-item[data-quality="cyan"]{--v8071q:#66ffff;--v8071rgb:102,255,255}
+.v4103-compare-item[data-quality="prismatic"]{--v8071q:#ff79e2;--v8071rgb:255,121,226}
+.v4103-compare-item:not(.empty){
+ border:2px solid var(--v8071q)!important;
+ background:
+  radial-gradient(circle at 50% 0%,rgba(var(--v8071rgb),.19),transparent 38%),
+  linear-gradient(180deg,#29180d,#140e09)!important;
+ box-shadow:inset 0 0 26px rgba(var(--v8071rgb),.10),0 0 18px rgba(var(--v8071rgb),.30)!important
+}
+.v4103-compare-item:not(.empty) .v4103-compare-art{
+ border:2px solid var(--v8071q)!important;
+ box-shadow:inset 0 0 0 1px rgba(var(--v8071rgb),.35),0 0 17px rgba(var(--v8071rgb),.45)!important
+}
+.v4103-compare-item:not(.empty) .v4103-compare-name{color:var(--v8071q)!important;text-shadow:0 0 10px rgba(var(--v8071rgb),.42)}
+.v4103-compare-item:not(.empty) .v4103-compare-meta{color:var(--v8071q)!important;opacity:.92}
+.v4103-compare-item[data-quality="prismatic"]:not(.empty){
+ border-color:transparent!important;
+ background:
+  linear-gradient(#28180e,#140e09) padding-box,
+  linear-gradient(115deg,#ff70d9,#976fff,#45c7ff,#65ff91,#ffe45e,#ff8b58) border-box!important;
+ box-shadow:0 0 24px #ff5ed266,0 0 31px #35cfff55,inset 0 0 26px #ffffff0c!important
+}
+
+/* Legacy/current cards marked by the central decorator inherit the same stronger frame. */
+#character #inventory .inv-item[data-v4103-item-current="1"],
+#shop .shop-item[data-v4103-item-current="1"],
+.v240-loot-item[data-v4103-item-current="1"],
+.v395-loot-card.item[data-v4103-item-current="1"]{
+ border-color:var(--v8071q)!important;
+ box-shadow:inset 0 0 28px rgba(var(--v8071rgb),.12),0 0 19px rgba(var(--v8071rgb),.31)!important
+}
+#character #inventory .inv-item[data-v4103-item-current="1"] .v459-inv-icon,
+#shop .shop-item[data-v4103-item-current="1"] .shop-icon,
+.v240-loot-item[data-v4103-item-current="1"] .v240-loot-icon{
+ border-color:var(--v8071q)!important;
+ box-shadow:inset 0 0 0 2px rgba(var(--v8071rgb),.30),0 0 17px rgba(var(--v8071rgb),.42)!important
+}
