@@ -7369,3 +7369,41 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
   - Server1 Cache: 3f9afc7f8017bd6d417801df47eaf775008b3ac3
   - Index Cache: 33de884ec8c8dbcd0f5e97f410479795a9a56eb2
 - Keine Drop-/Reward-Balance in diesem Block verändert.
+
+
+### Early-Game Power-Block 10–13 V8.093 – Gilde → Harzschmiede → Anbau-Turm → Schlüsselstein 2 / Dungeon 2 · 03.10.2026
+- Geprüft: Gilde, Harzschmiede, Anbau-Turm und Schlüsselstein-Fortschritt bis Dungeon 2.
+- Gilde:
+  - keine künstliche Level-Sperre im bestehenden Gilden-Owner;
+  - Kern-RPCs für Erstellen, Anmeldung, Upgrade und Bewerbung sind in public und server1 vorhanden;
+  - 24h-Sperre nach freiwilligem Austritt bleibt bestehen;
+  - kein Early-Game-Blocker gefunden.
+- Harzschmiede:
+  - direkt erreichbar, aber bewusst kein Sofort-Crafting-System;
+  - Zerlegen normaler Beute liefert Fragmente;
+  - Händlerware liefert keine Fragmente und verhindert Gold→Fragment-Ausnutzung;
+  - prismatisches Schmieden startet bei 150 Fragmenten + 1.000 Gold im ersten Levelband;
+  - Edelsteine/Rollen, Klassensets, mystische und prismatische Items sind geschützt;
+  - kein technischer Startblocker gefunden.
+- Anbau-Turm:
+  - vorhandene levelabhängige HP-Regeneration ist korrekt und bleibt unverändert:
+    - Lv <10: 25 %/h
+    - Lv <20: 20 %/h
+    - Lv <30: 15 %/h
+    - Lv <40: 10 %/h
+    - Lv <50: 7 %/h
+    - ab Lv50: 5 %/h
+  - Heilung bleibt +20 % für 1 Harz-Taler.
+  - Eine kurzzeitig vorgenommene Vereinheitlichung auf 5 %/h wurde sofort vollständig zurückgenommen; finaler Stand ist wieder die Staffelung.
+  - Restore-Core-Commit: c29d997a024855608876ee3bceb38e8ca6e0dab6
+  - Restore-Cache: Beta 616cd578b246ced2b977ff9cc99ec3dc086c6af5 / Server1 dcdb8d88f3839c66f16d4ddb9334f339cde89c80 / Index e0db827fa4f55ad503d100e9c373b8fe8c9bc313
+- Schlüsselstein 2 / Dungeon 2:
+  - Dungeon 1 muss abgeschlossen sein;
+  - ab Level 20 zählen passende abgeschlossene Quests;
+  - Pity-Chancen: 10 %, 18 %, 45 %, 70 %, 100 %;
+  - spätestens die 5. passende Quest garantiert Schlüsselstein 2;
+  - Weltkarte zeigt Fortschritt und nächste Chance;
+  - v243 hält keys[] und unlocked[] als gemeinsame Source of Truth synchron;
+  - v249 ist die finale zentrale Dungeon-Balance und überschreibt ältere D2-Balance-Layer;
+  - aktueller kanonischer D2-Boss-Hinweis bleibt Lv28 gemäß V8.068/V8.069-Balance.
+- In diesem Block nach Audit keine weitere Gameplayänderung nötig.
