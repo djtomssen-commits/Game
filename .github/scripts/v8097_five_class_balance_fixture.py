@@ -796,3 +796,204 @@ def standard_hooks_contract():
         "canonical_winrate_ready":False,
     }
 
+def frost_attack(attacker, defender, tape, cursor):
+    attacker["attack_count"]+=1
+    attacker["last_base_damage"]=max(1.0,float(attacker["base_damage"]))
+    pr=_clamp(attacker["hp"]/attacker["max_hp"],0,1)
+    er=_clamp(defender["hp"]/defender["max_hp"],0,1)
+    base=attacker["last_base_damage"]
+    damage_pct=_tal(attacker,"damagePct")+attacker["next_damage_pct"]
+    attacker["next_damage_pct"]=0.0
+    if attacker["attack_count"]%2==0: damage_pct+=_tal(attacker,"soulAltDamage")
+    if er<.30: damage_pct+=min(.16,_tal(attacker,"executeDamage"))
+    if er<.25 and _has(attacker,"deathpact.m4"): damage_pct+=.12
+    damage_pct+=_tal(attacker,"armorPen")*.50
+    if attacker["frost_marks"]>=2 and _has(attacker,"frostblade.m3"): damage_pct+=.08
+    if _has(attacker,"deathpact.m2") and attacker["attack_count"]%4==0: damage_pct+=.12
+    base*=1+_clamp(damage_pct,0,.62)
+
+    rv,cursor=_rng(tape,cursor)
+    crit=rv<_clamp(_stat(attacker,"baseCrit")+_stat(attacker,"setCrit")+_tal(attacker,"critChance"),0,.40)
+    damage=base*(1.75+_tal(attacker,"critDamage") if crit else 1)
+    tags=["KRIT"] if crit else []
+
+    mark_chance=.05+_tal(attacker,"frostMarkChance")+_stat(attacker,"frostMarkChance")
+    marked=_has(attacker,"frostblade.m0") and attacker["attack_count"]%6==0
+    if not marked:
+        rv,cursor=_rng(tape,cursor);marked=rv<_clamp(mark_chance,0,.30)
+    if marked:
+        gain=1
+        if _has(attacker,"frostblade.m1"):
+            rv,cursor=_rng(tape,cursor)
+            if rv<.20: gain=2
+        attacker["frost_marks"]=min(3,attacker["frost_marks"]+gain)
+        tags.append("DOPPELREIF" if gain>1 else "KÄLTEMARKE")
+    if attacker["frost_marks"]>0:
+        damage*=1+min(.14,attacker["frost_marks"]*_tal(attacker,"frostMarkDamage"))
+
+    if _has(attacker,"frostblade.m4") and attacker["attack_count"]%5==0:
+        damage+=base*.30;tags.append("FROSTSCHNITT")
+
+    soul_follow=False
+    if _has(attacker,"deathpact.m0") and attacker["attack_count"]%5==0:
+        damage+=base*.40;soul_follow=True;tags.append("ZWILLINGSSCHNITT")
+    rv,cursor=_rng(tape,cursor)
+    if rv<_clamp(_tal(attacker,"soulFollowChance"),0,.12):
+        damage+=base*.40;soul_follow=True;tags.append("SEELENSCHNITT")
+
+    if attacker["frost_marks"]>=3 and _has(attacker,"frostblade.m2"):
+        damage+=base*.35
+        if _has(attacker,"frostblade.m5"): damage+=base*.10
+        if _has(attacker,"frostblade.m6") and not attacker["master_used"]:
+            damage+=base*1.10;attacker["master_used"]=True;attacker["frost_shatter_used"]=True;tags.append("ABSOLUTER NULLPUNKT")
+        else: tags.append("EISBRUCH")
+        attacker["frost_marks"]=0
+
+    damage=max(1,round(damage))
+    life=_tal(attacker,"lifeSteal")
+    if pr<.50: life+=_tal(attacker,"soulLowLife")
+    if pr<.40 and _has(attacker,"deathpact.m3"): life+=.03
+    if soul_follow and _has(attacker,"deathpact.m1"): life+=.01
+    heal=round(damage*_clamp(life,0,.10))
+    if attacker["attack_count"]%6==0:
+        heal+=round(attacker["max_hp"]*min(.025,_tal(attacker,"soulHealEvery6")))
+        if _has(attacker,"deathpact.m5"): heal+=round(attacker["max_hp"]*.04)
+    if _has(attacker,"deathpact.m6") and er<.35 and not attacker["master_used"] and not attacker["frost_soul_harvest_used"]:
+        damage+=round(base);heal+=round(attacker["max_hp"]*.08)
+        attacker["master_used"]=True;attacker["frost_soul_harvest_used"]=True;tags.append("SEELENERNTE")
+    return {"damage":damage,"heal":heal,"crit":crit,"tags":tags},cursor
+
+def frost_defense(defender, incoming, attacker_base, tape, cursor):
+    defender["enemy_attack_count"]+=1
+    damage=max(0,float(incoming));heal=0;counter=0
+    ratio=_clamp(defender["hp"]/defender["max_hp"],0,1)
+    reduce=_tal(defender,"damageReduce")
+    if ratio<.40: reduce+=_tal(defender,"iceLowReduce")
+    if _has(defender,"iceguard.m1") and defender["enemy_attack_count"]%4==0: reduce+=.18
+    damage=round(damage*(1-_clamp(reduce,0,.35)))
+    barrier=0.0
+    if _has(defender,"iceguard.m0") and defender["enemy_attack_count"]==1: barrier+=defender["max_hp"]*.08
+    if defender["enemy_attack_count"]%4==0: barrier+=defender["max_hp"]*min(.04,_tal(defender,"iceBarrierPct"))
+    if ratio<.30 and _has(defender,"iceguard.m3") and not defender["frost_low_shield_used"]:
+        barrier+=defender["max_hp"]*.12;defender["frost_low_shield_used"]=True
+    if ratio<.25 and _has(defender,"iceguard.m6") and not defender["master_used"] and not defender["frost_master_guard_used"]:
+        barrier+=defender["max_hp"]*.20;heal+=round(defender["max_hp"]*.08)
+        defender["master_used"]=True;defender["frost_master_guard_used"]=True
+    absorbed=0
+    if barrier>0:
+        absorbed=min(damage,round(barrier));damage=max(0,damage-absorbed)
+        defender["frost_barrier_absorbed"]+=absorbed
+        if _has(defender,"iceguard.m4"): defender["next_damage_pct"]+=.10
+    if defender["enemy_attack_count"]%4==0:
+        heal+=round(defender["max_hp"]*min(.03,_tal(defender,"iceHealEvery4")))
+    if _has(defender,"iceguard.m5") and defender["enemy_attack_count"]%6==0:
+        heal+=round(defender["max_hp"]*.06)
+    if _tal(defender,"reflectPct")>0: counter+=round(damage*_clamp(_tal(defender,"reflectPct"),0,.05))
+    if absorbed>0 and _has(defender,"iceguard.m2"): counter+=round(absorbed*.25)
+    return {"damage":max(0,round(damage)),"heal":max(0,round(heal)),"counter":max(0,round(counter)),"prevent":False,"dodged":False},cursor
+
+SUMMONER_COMPANIONS=(("bud",.30),("bone",.48),("spore",.24),("crow",.30))
+
+def summoner_attack(attacker, defender, tape, cursor):
+    attacker["attack_count"]+=1
+    base=max(1.0,float(attacker["base_damage"]))
+    if attacker["crit_buff"]>0:
+        attacker["stats"]["baseCrit"]=_stat(attacker,"baseCrit")+attacker["crit_buff"]
+        attacker["crit_buff"]=0.0
+    curse_boosted=attacker["curse_hits"]>0
+    if curse_boosted:
+        base*=1+.05+_tal(attacker,"curseAmp")
+        attacker["curse_hits"]=max(0,attacker["curse_hits"]-1)
+
+    rv,cursor=_rng(tape,cursor)
+    crit=rv<_clamp(_stat(attacker,"baseCrit")+_tal(attacker,"critChance"),0,.40)
+    damage=base*(1.75+_tal(attacker,"critDamage") if crit else 1)
+    damage*=1+_clamp(_tal(attacker,"damagePct")+_tal(attacker,"armorPen")*.50,0,.62)
+    damage=max(1,round(damage))
+    heal=round(damage*_clamp(_tal(attacker,"lifeSteal"),0,.09))
+    tags=["KRIT"] if crit else []
+
+    chance=_clamp(_tal(attacker,"dotChance"),0,.28)
+    if chance>0:
+        rv,cursor=_rng(tape,cursor)
+        if rv<chance:
+            tick=max(1,round(base*_clamp(.035+_tal(attacker,"dotDamagePct")*.65,.035,.24)))
+            attacker["curse_dot"]={"rounds":2,"damage":tick};attacker["curse_hits"]=max(attacker["curse_hits"],2);tags.append("FLUCHNEBEL")
+    if attacker["curse_dot"] and attacker["curse_dot"]["rounds"]>0:
+        damage+=attacker["curse_dot"]["damage"];attacker["curse_dot"]["rounds"]-=1;tags.append("FLUCHSCHADEN")
+        if attacker["curse_dot"]["rounds"]<=0: attacker["curse_dot"]=None
+    if attacker["spore_dot"] and attacker["spore_dot"]["rounds"]>0:
+        damage+=attacker["spore_dot"]["damage"];attacker["spore_dot"]["rounds"]-=1;tags.append("SPORENFÄULE")
+        if attacker["spore_dot"]["rounds"]<=0: attacker["spore_dot"]=None
+
+    pity=attacker["summon_pity"]
+    summon_chance=_clamp(.10+_tal(attacker,"summonChance")+_stat(attacker,"summonChance"),0,.34)
+    forced=pity>=4
+    rv,cursor=_rng(tape,cursor)
+    summoned=forced or rv<summon_chance
+    if not summoned:
+        attacker["summon_pity"]=pity+1
+        return {"damage":damage,"heal":heal,"crit":crit,"tags":tags},cursor
+
+    attacker["summon_pity"]=0
+    rv,cursor=_rng(tape,cursor)
+    idx=min(len(SUMMONER_COMPANIONS)-1,int(rv*len(SUMMONER_COMPANIONS)))
+    key,mult=SUMMONER_COMPANIONS[idx]
+    extra=max(1,round(base*mult*(1+_tal(attacker,"summonDamage")+_stat(attacker,"summonDamage"))))
+    rv,cursor=_rng(tape,cursor)
+    if rv<_clamp(_tal(attacker,"companionCrit"),0,.20):
+        extra=round(extra*1.5);tags.append("KNOCHENPAKT")
+    damage+=extra;tags.append(key.upper())
+    if key=="bud": heal+=max(1,round(extra*.20))
+    elif key=="spore":
+        attacker["curse_hits"]=2
+        tick=max(1,round(base*_clamp(.04+_tal(attacker,"dotDamagePct")*.12,.04,.08)))
+        attacker["spore_dot"]={"rounds":3,"damage":tick}
+    elif key=="crow":
+        attacker["crit_buff"]=.06
+
+    second=_clamp(_tal(attacker,"secondSummonChance"),0,.22)
+    if second>0:
+        rv,cursor=_rng(tape,cursor)
+        if rv<second:
+            rv,cursor=_rng(tape,cursor)
+            i2=min(len(SUMMONER_COMPANIONS)-1,int(rv*len(SUMMONER_COMPANIONS)))
+            if i2==idx: i2=(i2+1)%len(SUMMONER_COMPANIONS)
+            k2,m2=SUMMONER_COMPANIONS[i2]
+            e2=max(1,round(base*m2*.50*(1+_tal(attacker,"summonDamage"))));damage+=e2
+            if k2=="spore":
+                attacker["curse_hits"]=max(attacker["curse_hits"],2)
+                tick=max(1,round(base*_clamp(.04+_tal(attacker,"dotDamagePct")*.12,.04,.08)))
+                attacker["spore_dot"]={"rounds":3,"damage":tick}
+    return {"damage":max(1,round(damage)),"heal":max(0,round(heal)),"crit":crit,"tags":tags},cursor
+
+def summoner_defense(defender, incoming, attacker_base, tape, cursor):
+    defender["enemy_attack_count"]+=1
+    damage=round(max(0,float(incoming))*(1-_clamp(_tal(defender,"damageReduce"),0,.25)))
+    prevent=False
+    if _tal(defender,"preventLethal")>0 and damage>=defender["hp"] and not defender["summoner_soul_save"]:
+        defender["summoner_soul_save"]=True;prevent=True
+    return {"damage":damage,"heal":0,"counter":0,"prevent":prevent,"dodged":False},cursor
+
+def resolve_attack(attacker, defender, tape, cursor):
+    cls=attacker["class_id"]
+    if cls in ("grower","scout","bruiser"): return v319_standard_attack(attacker,defender,tape,cursor)
+    if cls=="frost": return frost_attack(attacker,defender,tape,cursor)
+    return summoner_attack(attacker,defender,tape,cursor)
+
+def resolve_defense(defender, incoming, attacker_base, tape, cursor):
+    cls=defender["class_id"]
+    if cls in ("grower","scout","bruiser"): return v319_standard_defense(defender,incoming,attacker_base,tape,cursor)
+    if cls=="frost": return frost_defense(defender,incoming,attacker_base,tape,cursor)
+    return summoner_defense(defender,incoming,attacker_base,tape,cursor)
+
+def full_hooks_contract():
+    return {
+        "implemented":list(CLASSES),
+        "attack_and_defense":True,
+        "symmetric_dispatch":True,
+        "status":"ALL_FIVE_PARAMETERISED_HOOKS_READY",
+        "canonical_winrate_ready":False,
+        "next_gate":"TRACE_PARITY_THEN_MATRIX",
+    }
+
