@@ -8251,3 +8251,41 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
   - `f8d536105f7e06a84a6790ad90ea69e3dda820b6` aktive Sichtbarkeits-QA
 - Server 1 unverändert; Beta zuerst beobachten.
 
+### V8.097 – Server 1: Talent-Fixes + Kampftelemetrie übernommen, Beta-Balance getrennt · 03.10.2026
+- Server-1-Freigabe durch Thomas erfolgt.
+- Auf Server 1 übernommen:
+  - Combat-QA / Kampftelemetrie
+  - aktive Talent-Proc-Anzeigen
+  - Harzruferin im zentralen Kampf-QA
+  - finale QA-/Telemetry-Ladereihenfolge nach allen fünf Klassen-Resolvern
+- Wichtig: Die aktuellen Beta-Balanceänderungen wurden NICHT auf Server 1 übernommen.
+- Release-Channel-Trennung eingebaut:
+  - `GROW_RELEASE_CHANNEL='server1'` hält auf Server 1 die bisherigen Live-Balancewerte.
+  - Beta/Standard-Channel behält die neuen Beta-Werte.
+- Server-1-Werte bleiben:
+  - Grower Tank s5 DR: 0,30 % pro Rang
+  - Grower HP-Meilensteine: +10 % / +15 %
+  - Scout Präzision s0: +0,6 % Geschick pro Rang
+  - Scout Dodge s0: +0,5 % pro Rang
+  - Scout Dodge s6: +0,2 % pro Rang
+  - Harzruferin Basis-Rufchance: 10 %
+  - Harzruferin kein zusätzlicher +5-%-Begleiterschaden aus dem Beta-Balance-Schritt
+- Beta bleibt:
+  - Grower Tank s5 DR: 0,12 % pro Rang
+  - Grower HP-Meilensteine: +5 % / +8 %
+  - Scout Präzision s0: +0,7 % Geschick pro Rang
+  - Scout Dodge s0: +0,6 % pro Rang
+  - Scout Dodge s6: +0,25 % pro Rang
+  - Harzruferin Basis-Rufchance: 12 %
+  - Harzruferin +5 % relativer Begleiterschaden
+- Verifikation:
+  - Channel-Guards vorhanden: ja
+  - Server-1 alte Barbar-/Scout-Werte vorhanden: ja
+  - Server-1 alte Harzruferin-Werte vorhanden: ja
+  - Server-1 QA/Telemetry lädt nach Harzruferin: ja
+- Commits:
+  - `6f4b8d0c70a84d1fef5af685a157d0cd5065dcda` Balance-Channel-Trennung v319
+  - `074b669ba5ec94f638cbd3fbd035057e7ba08f00` Server-1 Talenttexte auf Live-Werten
+  - `7f9f678e0cf88e6fd14ace7b5a4c5a91b5f72d28` Harzruferin Beta/Server-1 Balance getrennt
+  - `cb4cb63c98e595122d64eb22d8c56d6bc094b1ef` Server-1 Telemetry-Ladereihenfolge
+
