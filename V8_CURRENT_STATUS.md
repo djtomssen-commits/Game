@@ -7949,3 +7949,24 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
   - Vor einer echten Änderung muss die vollständige parameterisierte Kampfengine weiter vervollständigt/kalibriert werden.
 - Harness-Commit: `32a8a40613d6a7f9acc79adcc134b6b0896e1fce`.
 
+### V8.097 – Balance-Harness jetzt wirklich ausführbar · 03.10.2026
+- Technischen Fehler im QA-Harness behoben:
+  - der alte `__main__`-Block stand zu früh und gab nur das Manifest aus;
+  - Einstieg ans Dateiende verschoben und echte CLI ergänzt.
+- Neue CLI-Modi:
+  - `manifest`
+  - `gate`
+  - `engine`
+  - `scenario`
+  - `compare`
+- Reproduzierbarer relativer Tank-Szenario-Runner ergänzt:
+  - deterministische RNG-Tapes;
+  - identische Seeds für Baseline und Kandidat;
+  - Level 100/200/300;
+  - Gegner Scout/Bruiser/Frost/Summoner;
+  - Ausgabe Winrate, durchschnittliche Runden und RNG-Verbrauch.
+- Baseline-vs-Nerf kann jetzt aus demselben Skript berechnet werden; keine Hochrechnung aus alter JSON mehr nötig.
+- Commit: `c8cefedca9753214cc3ac3a806eb73eee2c5c1ad`.
+- Für diesen Commit ist kein GitHub-Workflow automatisch angesprungen; daher noch keine CI-Verifikation.
+- Live-Balance weiterhin unverändert.
+
