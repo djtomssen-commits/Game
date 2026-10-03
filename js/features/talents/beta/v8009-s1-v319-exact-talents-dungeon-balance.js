@@ -428,12 +428,13 @@ v318ResolveEnemyAttack=function(st,ctx){
   dodge=v318Clamp(dodge,0,st.mode==='worldboss'?.20:.35);
 
   const lethal=damage>=Number(ctx.playerHp||0);
+  let lethalTalentTriggered=false;
   if(v318Has('dodge',5)&&lethal&&!st.lethalSaveUsed){
-   st.guaranteedDodge=true;st.lethalSaveUsed=true;text+=' · MEISTERREFLEX+';
+   st.guaranteedDodge=true;st.lethalSaveUsed=true;lethalTalentTriggered=true;
   }
 
   if(st.guaranteedDodge||Math.random()<dodge){
-   damage=0;text='AUSGEWICHEN';st.dodges++;
+   damage=0;text='AUSGEWICHEN'+(lethalTalentTriggered?' · MEISTERREFLEX+':'');st.dodges++;
    st.nextDamagePct+=x.postDodgeDamage*damp;
    if(st.dodges>=2){
     st.nextDamagePct+=x.dodgeStreakDamage*damp;
@@ -444,13 +445,14 @@ v318ResolveEnemyAttack=function(st,ctx){
    if(st.nextGuaranteedCounter){counterChance=1;st.nextGuaranteedCounter=false}
    if(Math.random()<v318Clamp(counterChance,0,.55)){
     counterDamage=Math.round(st.lastBaseDamage*.60*damp);
+    if(v318Has('dodge',1))text+=' · KONTERSCHUSS+';
    }
-   if(v318Has('dodge',3))heal+=Math.round(st.maxHp*.02*(st.mode==='worldboss'?.60:1));
+   if(v318Has('dodge',3)){heal+=Math.round(st.maxHp*.02*(st.mode==='worldboss'?.60:1));text+=' · AKROBAT';}
 
    /* Exact L300 rule: AFTER the third dodge, the NEXT enemy attack is guaranteed
       to miss and counter. */
    if(v318Has('dodge',6)&&st.dodges>=3){
-    st.guaranteedDodge=true;st.nextGuaranteedCounter=true;st.dodges=0;
+    st.guaranteedDodge=true;st.nextGuaranteedCounter=true;st.dodges=0;text+=' · UNBERÜHRBAR';
    }else st.guaranteedDodge=false;
 
    return {damage:0,heal,counterDamage,preventLethal:false,text};
@@ -475,6 +477,7 @@ v318ResolveEnemyAttack=function(st,ctx){
  if((s.playerClass==='grower'||s.playerClass==='frost')){
   if(st.enemyAttackCount%3===0 && x.regenEvery3>0){
    heal+=Math.round(st.maxHp*Math.min(.04,x.regenEvery3)*(st.mode==='worldboss'?.65:1));
+   text+=' · REGENERATION';
   }
   if(x.reflectPct>0){
    counterDamage+=Math.round(damage*x.reflectPct*damp);
