@@ -401,7 +401,7 @@
 
         <article class="v366-panel v366-feature book"><h2>Illegales Buch</h2><div class="v366-feature-art"></div><div class="v690-mini-status">⭐ ${ac.done}/${ac.total||'—'} Erfolge</div><button class="v366-go" data-book="1">Öffnen</button></article>
 
-        <article class="v366-panel v366-feature forge vForge-home-card"><h2>Harzschmiede</h2><div class="v366-feature-art vForge-home-art" aria-hidden="true"><span class="vForge-home-anvil">◆</span><span class="vForge-home-icon">🔨</span><span class="vForge-home-spark">✦</span></div><div class="v690-mini-status">Zerlegen · Sets bauen · Prismatisch schmieden</div><button class="v366-go" data-go="forge">Zur Schmiede</button></article>
+        <article class="v366-panel v366-feature forge vForge-home-card"><h2>Harzschmiede</h2><div class="v366-feature-art vForge-home-art" aria-hidden="true"><img class="vForge-home-image" src="assets/v7195-base64/f43016c6d1fa99c290aa.webp" alt=""></div><div class="v690-mini-status">Zerlegen · Sets bauen · Prismatisch schmieden</div><button class="v366-go" data-go="forge">Zur Schmiede</button></article>
 
         <article class="v366-panel v366-feature v7129-referral-home-card">
           <h2>Freund werben</h2>
