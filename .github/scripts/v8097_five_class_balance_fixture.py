@@ -119,3 +119,70 @@ def trace_gate():
         "status":"MODEL_PARITY_PENDING",
     }
 
+def deterministic_tape(seed, size=1024):
+    # Same intent as the existing PvP parity tape: deterministic, reproducible,
+    # and independent from Python's global random state.
+    x=(int(seed)&0x7fffffff) or 1
+    out=[]
+    for _ in range(size):
+        x=(1103515245*x+12345)&0x7fffffff
+        out.append(x/2147483648.0)
+    return out
+
+def matchup_plan(samples_per_direction=1000):
+    rows=[]
+    for level in LEVELS:
+        for attacker in CLASSES:
+            for defender in CLASSES:
+                if attacker==defender:
+                    continue
+                rows.append({
+                    "level":level,
+                    "attacker":attacker,
+                    "defender":defender,
+                    "samples":samples_per_direction,
+                    "seed_base":level*100000 + CLASSES.index(attacker)*10000 + CLASSES.index(defender)*1000,
+                })
+    return rows
+
+CLASS_MODULES={
+    cls:{
+        "owner":SERVER_OWNERS[cls],
+        "required_mechanics":sorted(REQUIRED_MECHANICS[cls]),
+        "parity_reference_green":PARITY_BASELINE[cls]["green"],
+        "parity_reference_reports":PARITY_BASELINE[cls]["reports"],
+    }
+    for cls in CLASSES
+}
+
+def engine_manifest(samples_per_direction=1000):
+    plan=matchup_plan(samples_per_direction)
+    return {
+        "version":VERSION,
+        "status":"MATCHUP_ENGINE_SCAFFOLD_READY",
+        "read_only":True,
+        "levels":list(LEVELS),
+        "classes":list(CLASSES),
+        "ordered_matchups_per_level":len(CLASSES)*(len(CLASSES)-1),
+        "total_ordered_matchups":len(plan),
+        "samples_per_direction":samples_per_direction,
+        "total_fights_when_unlocked":len(plan)*samples_per_direction,
+        "both_directions":True,
+        "deterministic_rng":True,
+        "equal_budget":True,
+        "class_modules":CLASS_MODULES,
+        "canonical_winrate_ready":False,
+        "publish_blocker":"MODEL_PARITY_PENDING",
+    }
+
+def publishable_result(result):
+    # Hard guard: no synthetic win rate can be marked canonical until every
+    # class module has passed trace parity against canonical server references.
+    if not result.get("all_class_modules_parity_green",False):
+        return {
+            "status":"BLOCKED",
+            "canonical_winrate_ready":False,
+            "reason":"all five class modules must pass trace/RNG parity first",
+        }
+    return result
+
