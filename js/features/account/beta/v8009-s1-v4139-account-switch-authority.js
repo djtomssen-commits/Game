@@ -180,6 +180,72 @@
   }
  }
  window.v4139ReportAccountHealth=reportAccountHealth;
+
+ const RUNTIME_ERROR_LOG={sent:new Set(),count:0,max:12};
+ function runtimeScreen(){
+  try{return document.querySelector('main > .screen.active,.screen.active')?.id||''}catch(_){return''}
+ }
+ function cleanRuntimeSource(x){
+  try{
+   const u=new URL(String(x||''),location.href);
+   return String(u.pathname||'').slice(-240);
+  }catch(_){
+   return String(x||'').split('?')[0].slice(-240);
+  }
+ }
+ async function reportRuntimeError({type='error',message='',source='',line=0,column=0}={}){
+  try{
+   const id=uid();
+   if(!id||v073User?.is_anonymous||!message)return null;
+   const payload={
+    server:serverId(),
+    screen:runtimeScreen(),
+    type:String(type||'error').slice(0,32),
+    message:String(message||'').slice(0,600),
+    source:cleanRuntimeSource(source),
+    line:Math.max(0,Number(line)||0),
+    column:Math.max(0,Number(column)||0),
+    clientVersion:String(window.GROW_LEGENDS_VERSION?.short||window.__GL_CURRENT_BUILD__||'')
+   };
+   const sig=[payload.server,payload.screen,payload.type,payload.message,payload.source,payload.line,payload.column,payload.clientVersion].join('|');
+   if(RUNTIME_ERROR_LOG.sent.has(sig)||RUNTIME_ERROR_LOG.count>=RUNTIME_ERROR_LOG.max)return null;
+   RUNTIME_ERROR_LOG.sent.add(sig);RUNTIME_ERROR_LOG.count++;
+   if(!(await db()))return null;
+   const {data,error}=await v073Db.rpc('v8082_report_runtime_error',{p_report:payload});
+   if(error)throw error;
+   return Array.isArray(data)?(data[0]||null):data;
+  }catch(e){
+   console.warn('[V4139] runtime error report failed',e);
+   return null;
+  }
+ }
+ function installRuntimeErrorLogger(){
+  if(window.__V4139_RUNTIME_ERROR_LOGGER__)return;
+  window.__V4139_RUNTIME_ERROR_LOGGER__=true;
+  window.addEventListener('error',ev=>{
+   try{
+    void reportRuntimeError({
+     type:'error',
+     message:String(ev?.message||ev?.error?.message||'Unknown runtime error'),
+     source:String(ev?.filename||''),
+     line:Number(ev?.lineno)||0,
+     column:Number(ev?.colno)||0
+    });
+   }catch(_){}
+  });
+  window.addEventListener('unhandledrejection',ev=>{
+   try{
+    const r=ev?.reason;
+    const msg=typeof r==='string'?r:String(r?.message||r||'Unhandled promise rejection');
+    const stack=String(r?.stack||'');
+    const first=stack.split('\n').find(x=>/\.js(?::\d+)?(?::\d+)?/.test(x))||'';
+    void reportRuntimeError({type:'unhandledrejection',message:msg,source:first,line:0,column:0});
+   }catch(_){}
+  });
+ }
+ window.v4139ReportRuntimeError=reportRuntimeError;
+ window.v4139RuntimeErrorDiagnostics=()=>({installed:!!window.__V4139_RUNTIME_ERROR_LOGGER__,sent:RUNTIME_ERROR_LOG.count,max:RUNTIME_ERROR_LOG.max});
+ installRuntimeErrorLogger();
  function fresh(id=''){
   const f=clone(defaultState)||{};
   f.playerClass=null;f.classLocked=false;f.characterName='';f.characterNameSet=false;
