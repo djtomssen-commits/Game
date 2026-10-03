@@ -475,6 +475,26 @@
   window.__V7203_LOGIN_DUNGEON_READY__=true;
   return q;
  }
+ async function syncDampfEventAfterHydration(id){
+  if(!id||uid()!==id)return false;
+  try{
+   /* Event data may arrive before or after canonical gameplay hydration.
+      Reconcile Dampf only after hydration so a server-loaded 100 value cannot
+      overwrite an already-active 300-cap event. No timer/retry owner needed. */
+   if(typeof v093LoadPublicContent==='function' && (typeof v271EventDataReady==='undefined' || !v271EventDataReady)){
+    await v093LoadPublicContent();
+    if(uid()!==id)return false;
+   }
+   if(typeof v271SyncDampfEvent==='function')v271SyncDampfEvent();
+   if(typeof v271PaintDampf==='function')v271PaintDampf();
+   try{window.v441PaintResources?.()}catch(_){}
+   return true;
+  }catch(e){
+   console.warn('[V4139] Dampf event post-hydration sync',e);
+   return false;
+  }
+ }
+
  async function hydrateCanonicalLogin(id){
   if(!id||uid()!==id)throw new Error('ACCOUNT_CHANGED_DURING_HYDRATION');
   LOGIN.canonicalHydrates++;
@@ -508,7 +528,9 @@
   window.__V7204_CANONICAL_LOGIN_AT__=v7204Now;
   window.__V7204_STARTUP_QUIET_UNTIL__=Math.max(Number(window.__V7204_STARTUP_QUIET_UNTIL__||0),v7204Now+4200);
   LOGIN.lastHydrateOk=true;
-  try{requestAnimationFrame(()=>{try{render?.()}catch(_){}try{window.v069SyncCurrencies?.()}catch(_){}try{window.v4149BuildCompleteMenu?.(false)}catch(_){}})}catch(_){}
+  await syncDampfEventAfterHydration(id);
+  if(uid()!==id)return false;
+  try{requestAnimationFrame(()=>{try{render?.()}catch(_){}try{window.v069SyncCurrencies?.()}catch(_){}try{window.v441PaintResources?.()}catch(_){}try{window.v4149BuildCompleteMenu?.(false)}catch(_){}})}catch(_){}
   return true;
  }
  async function resolveServerFirst(id){
