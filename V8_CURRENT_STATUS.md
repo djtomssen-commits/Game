@@ -7295,3 +7295,44 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
 - Beta Cache Commit: `fdaf732069581ede0187634429b58c4a1713019e`.
 - Server1 Cache Commit: `ee608d4a64954f66233530c5f4d173b820d141f6`.
 - Nächster Server-1-Login kann nun die echten Critical-Boot-Zeiten in den bestehenden QA-Snapshot schreiben.
+
+
+### Early-Game Power-Block 1–5 V8.091 – Quest → Händler/Charakter → Growroom → Dungeon 1 · 03.10.2026
+- Ziel: tatsächlichen Anfängerweg technisch prüfen, ohne neue Tutorial-/Lock-Systeme.
+- Geprüft: neuer Charakter / erste Quest / Händler / Attribute / Growroom / Dungeon 1.
+- Erste Quest:
+  - Beta + Server1 starten mit 100 Dampf.
+  - Level-1-Questkosten identisch: Schnell 5, Normal 6, Schwer 7 Dampf.
+  - Kein Startblocker.
+- Attribute:
+  - Startwerte je Attribut 5.
+  - Keine künstliche Level-Sperre.
+  - Freie Punkte zu Beginn 0; frühe Verbesserung zunächst über Quest-Beute/Ausrüstung.
+- Dungeon 1:
+  - von Anfang an freigeschaltet.
+  - Balance V8.068 unverändert.
+  - UI-Inkonsistenz gefunden: v7287 nutzte für sichtbare Levelangaben noch v244DungeonRoomLevel() und konnte den D1-Boss als Lv20 anzeigen, obwohl der kanonische V8.068-Wert Lv18 ist.
+  - Fix: sichtbare Dungeon-Level verwenden jetzt zuerst v025RecommendedLevel().
+  - Core-Commit: c0aa1435714a5d9c90d0bde1870b17f33ee92f25
+  - Cache-Key: 8091earlygame1
+  - Beta Cache: d9b62abdd9ba4ea6868dc3d84f0ff73abfb2fcb2
+  - Server1 Cache: bea503c228f0a2e1d6314b813f6d93c086fab7f2
+  - Index Cache: 8a3e0d732b382cd90e7a19fdf64c51eb4c63b347
+- Growroom / Startzustand:
+  - Beta gl_create_character() gibt 2× moss (White Widow).
+  - Server1 gl_ensure_fresh_character_state() hatte die Grow-Startdaten nicht im Basis-Save.
+  - Dadurch initialisierte v6356_enable_seed_guard() bei frischen Server1-Charakteren alle Samen mit 0.
+  - Startgold 120, White Widow kostet 180 Gold → Growroom war für frische Server1-Spieler direkt blockiert.
+- Server1-Fix direkt im kanonischen Fresh-Character-State:
+  - materials: []
+  - timeSeeds: 0
+  - Growroom Level 1 / Lampe 0 / Töpfe 0
+  - 2× White Widow (moss)
+  - restliche Start-Samen 0
+- Bestehende Auswirkung:
+  - genau 1 Level-1-Server1-Charakter mit komplett leerem Samenbestand gefunden;
+  - einmalig auf 2× White Widow repariert;
+  - Verifikation danach: still_blocked = 0.
+- Keine Quest-/Händler-/Dungeon-Kampfbalance verändert; nur Startzustands- und Anzeige-Inkonsistenzen korrigiert.
+- Supabase-Changelog/Docs vor DB-Änderung geprüft; kein relevanter aktueller Breaking Change für diese bestehende Funktion.
+- Supabase Advisors nach Änderung geprüft; bestehende projektweite RLS-/Policy-Hinweise bleiben separat und wurden hier nicht verändert.
