@@ -7407,3 +7407,50 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
   - v249 ist die finale zentrale Dungeon-Balance und überschreibt ältere D2-Balance-Layer;
   - aktueller kanonischer D2-Boss-Hinweis bleibt Lv28 gemäß V8.068/V8.069-Balance.
 - In diesem Block nach Audit keine weitere Gameplayänderung nötig.
+
+
+### Midgame Power-Block V8.094 – Dungeon 2–5 / Talente / Klassensets / Turm / PvP / Gilde · 03.10.2026
+- Midgame-Systeme geprüft: Dungeon 2–5, Talentbaum, Klassensets/Genetik/Harzschmiede, Anbau-Turm, PvP und Gilde.
+- Talente:
+  - 1 Talentpunkt alle 2 Level.
+  - erste Schlüsseltalente ab Lv25 bei 10 Punkten im Ast; danach Lv50/100/150/200/250/300.
+  - Punktkurve und Voraussetzungen greifen logisch ineinander; kein Midgame-Blocker gefunden.
+- Klassensets:
+  - gezieltes Crafting nur über Genetik + PvP-Buds + Samenfragmente + Gold;
+  - erstes Set-Rezept ab 100 PvP-Buds;
+  - Buds sind reine Freischaltbedingung und werden nicht verbraucht;
+  - keine zufälligen fertigen Klassenset-Drops mehr; bestehender langfristiger Progressionspfad bleibt.
+- PvP:
+  - Bud-Rewards bei Sieg bleiben abhängig von Gegnerstärke (+1 bis +5);
+  - der V8.092-Fix bleibt aktiv: Gegner suchen verbraucht keinen 30-Minuten-Cooldown.
+- Gilde:
+  - relevante Kern-RPCs in public und server1 vorhanden; keine Midgame-Freischaltinkonsistenz gefunden.
+- Anbau-Turm:
+  - levelabhängige HP-Regeneration bleibt unverändert und wurde als korrekter Designstand bestätigt.
+- Dungeon 2–5 / Architektur:
+  - wichtiger Last-Writer-Konflikt gefunden:
+    - v249 war als zentrale Dungeon-Balance dokumentiert;
+    - später geladene v401 und v428 überschrieben v025EnemyStats erneut.
+  - Dadurch gab es technisch drei Balance-Writer, obwohl nur ein kanonischer Owner vorgesehen ist.
+- Fix ohne Balanceänderung:
+  - die bisher tatsächlich wirksame Endformel aus v401 + v428 wurde mathematisch identisch direkt in v249 übernommen;
+  - v401 und v428 sind jetzt reine Retirement-Marker und schreiben keine Kampfwerte mehr;
+  - sichtbare Empfehlungen bleiben aus v249.
+- Aktuelle Midgame-Boss-Empfehlungen bleiben:
+  - Dungeon 2: Lv28
+  - Dungeon 3: Lv38
+  - Dungeon 4: Lv48
+  - Dungeon 5: Lv58
+- Ergebnis: eine kanonische Dungeon-Kampfwertquelle statt gestapelter Last Writer.
+- Core-Commits:
+  - v249 konsolidiert: 5e78f698c9ad9d7f788307678f3fec370130fa42
+  - v401 retired: 35a6c79ddaacb123d2bc0f3e23ad9be4be82ce3c
+  - v428 retired: 127262a3d96d6a3b935e4997fdb59ac7f78f2599
+- Cache-Key: 8094dungeonowner1
+- Beta Cache: 485111062c5836a4eead9613782df7271cee78dd
+- Server1 Cache: 694c86ee423d444e60a1d0f399b4effd2c5be4a5
+- Index Cache: 566eb455d88e09a73d06a9b2ffe2df2a40d0f0e7
+- QA:
+  - v249 besitzt die finale Scale-Formel;
+  - v401/v428 schreiben keine Stats mehr;
+  - Beta lädt den neuen Cache-Key.
