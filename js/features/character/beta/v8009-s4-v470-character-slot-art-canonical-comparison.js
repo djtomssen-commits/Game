@@ -63,22 +63,21 @@
     if(!it?.slot||it.type==='material'||it.type==='gem'||it.type==='scroll')return null;
     normalize(it);
     if(it.classId&&s?.playerClass&&it.classId!==s.playerClass){
-      return {state:'worse',mark:'⛔',label:'FALSCHE KLASSE',diff:null,reason:'Nicht für deine Klasse',newTotal:pointTotal(it),oldTotal:0,baseDiff:0};
+      return {state:'worse',mark:'⛔',label:'FALSCHE KLASSE',diff:null,reason:'Nicht für deine Klasse',newTotal:0,oldTotal:0};
     }
     const old=s?.equipment?.[it.slot]||null;
-    const nativeNew=nativeTotal(it),mysticNew=mysticCompareValue(it),nt=nativeNew+mysticNew;
     if(!old){
-      const reason=mysticNew>0?'Grundwerte + mystischer Spezialeffekt · Stein/Rolle separat':'Grundwerte ohne Stein/Rolle';
-      return {state:'free',mark:'▲',label:'FREIER SLOT',diff:null,reason,newTotal:nt,oldTotal:0,baseDiff:nativeNew,mysticNew,mysticOld:0,nativeNew,nativeOld:0};
+      return {state:'free',mark:'▲',label:'FREIER SLOT',diff:null,reason:'Freier Slot · direkte Verbesserung',newTotal:Number(window.v4103TotalCompareScore?.(it))||0,oldTotal:0};
     }
     normalize(old);
-    const nativeOld=nativeTotal(old),mysticOld=mysticCompareValue(old),ot=nativeOld+mysticOld;
-    const diff=Math.round((nt-ot)*100)/100,baseDiff=Math.round((nativeNew-nativeOld)*100)/100;
-    let state='same',mark='◆',label='GLEICH',reason='Gleicher Effektivwert · Stein/Rolle separat';
-    if(diff>0){state='better';mark='▲';label='BESSER';reason=(mysticNew||mysticOld)?'Grundwerte + mystischer Spezialeffekt · Stein/Rolle separat':'Bessere Grundwerte · Stein/Rolle nicht eingerechnet'}
-    else if(diff<0){state='worse';mark='▼';label='SCHLECHTER';reason=(mysticNew||mysticOld)?'Grundwerte + mystischer Spezialeffekt · Stein/Rolle separat':'Schlechtere Grundwerte · Stein/Rolle nicht eingerechnet'}
-    else if(specialCount(it)||specialCount(old)){reason='Effektivwert gleich · mystischer Effekt berücksichtigt · Stein/Rolle separat'}
-    return {state,mark,label,diff,reason,newTotal:nt,oldTotal:ot,baseDiff,mysticNew,mysticOld,nativeNew,nativeOld};
+    const nt=typeof window.v4103TotalCompareScore==='function'?Number(window.v4103TotalCompareScore(it))||0:effectiveTotal(it);
+    const ot=typeof window.v4103TotalCompareScore==='function'?Number(window.v4103TotalCompareScore(old))||0:effectiveTotal(old);
+    const diff=Math.round((nt-ot)*10)/10;
+    const state=diff>0?'better':diff<0?'worse':'same';
+    const mark=diff>0?'▲':diff<0?'▼':'◆';
+    const label=diff>0?'BESSER':diff<0?'SCHLECHTER':'GLEICH';
+    const reason='Gesamt inkl. Stein + VZ + Spezial';
+    return {state,mark,label,diff,reason,newTotal:nt,oldTotal:ot};
   }
   window.v470CompareItem=compare;
 
@@ -88,8 +87,7 @@
     const css=c.state==='free'?'empty':c.state;
     if(c.state==='free')return `<div class="${cls} ${css}">▲ FREIER SLOT · Verbesserung</div>`;
     if(c.diff==null)return `<div class="${cls} ${css}">${esc(c.label)} · ${esc(c.reason)}</div>`;
-    const metric=(Number(c.mysticNew||0)>0||Number(c.mysticOld||0)>0)?'Effektivwert':'Grundwerte';
-    return `<div class="${cls} ${css}">${c.mark} ${c.label} · ${signed(c.diff)} ${metric}</div>`;
+    return `<div class="${cls} ${css}">${c.mark} ${c.label} · ${signed(c.diff)} Gesamtwert</div>`;
   }
   try{v090ComparisonHtml=function(it){return compactComparisonHtml(it,'v090-shop-compare')};window.v090ComparisonHtml=v090ComparisonHtml}catch(e){}
   try{v089ShopComparison=function(it){return compactComparisonHtml(it,'v089-shop-compare')};window.v089ShopComparison=v089ShopComparison}catch(e){}
@@ -99,8 +97,7 @@
     if(c.state==='free')return '<span class="better">▲ Freier Slot · direkte Verbesserung</span>';
     if(c.diff==null)return `<span class="worse">⛔ ${esc(c.reason)}</span>`;
     const css=c.state==='better'?'better':c.state==='worse'?'worse':'same';
-    const metric=(Number(c.mysticNew||0)>0||Number(c.mysticOld||0)>0)?'Effektivwert':'Grundwerte';
-    return `<span class="${css}">${c.mark} ${esc(c.label)} · ${signed(c.diff)} ${metric} · ${esc(c.reason)}</span>`;
+    return `<span class="${css}">${c.mark} ${esc(c.label)} · ${signed(c.diff)} Gesamtwert · ${esc(c.reason)}</span>`;
   };
   try{comparison=detailedComparison;window.comparison=detailedComparison}catch(e){}
 
