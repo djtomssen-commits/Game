@@ -162,30 +162,13 @@
   window.v459CloseInventory=closeInventory;
 
   function openInventory(i){
-    const it=s?.inventory?.[i];if(!it)return;
-    const ov=ensureInventoryOverlay(),box=document.getElementById('v459InventorySheet');if(!box)return;
-    let rarity=String(it.quality||it.rarity||'Normal');try{rarity=qualityMeta(it.quality||'gray')?.label||rarity}catch(e){}
-    let bonus='Keine Werte';try{bonus=typeof v123BaseBonusText==='function'?(v123BaseBonusText(it)||bonus):(itemBonus(it)||bonus)}catch(e){}
-    let cmp='';try{cmp=typeof comparison==='function'?comparison(it):''}catch(e){}
-    let sv=0;try{sv=sellValue(it)}catch(e){}
-    const ench=it.enchant||(Array.isArray(it.enchants)?it.enchants[0]:null);
-    const extra=[
-      it.gem?`<div class="v459-sheet-section"><b>💎 Edelstein</b>${esc(it.gem.name||'Edelstein')} · +${Number(it.gem.value)||0} ${esc(typeof v030StatLabel==='function'?v030StatLabel(it.gem.stat):it.gem.stat)}</div>`:'',
-      ench?`<div class="v459-sheet-section"><b>📜 Verzauberung</b>${esc(ench.name||'Rolle')} · ${esc(typeof v030EffectLabel==='function'?v030EffectLabel(ench.effect,ench.value):ench.effect)}</div>`:'',
-      it.setName?`<div class="v459-sheet-section"><b>🧩 Set</b>${esc(it.setName)}-Set</div>`:'',
-      it.mysticSpecial?`<div class="v459-sheet-section"><b>✨ Mystischer Spezialeffekt</b>${esc(typeof v296MysticSpecialText==='function'?v296MysticSpecialText(it):it.mysticSpecial.label||'Spezialeffekt')}</div>`:''
-    ].join('');
-    box.innerHTML=`
-      <div class="v459-sheet-head"><div class="v459-sheet-icon">${window.v6107ItemImgHtml?.(it,'v459-sheet-art')||esc(it.icon||'🎁')}</div><div class="v459-sheet-name">${esc(it.name||'Unbekanntes Item')}</div><div class="v459-sheet-rarity">${esc(rarity)} · Level ${Math.max(1,Number(it.dropLevel)||Number(s.level)||1)}</div></div>
-      <div class="v459-sheet-section"><b>Attribute & Effekte</b>${esc(bonus)}</div>
-      ${extra}
-      ${cmp?`<div class="v459-sheet-section"><b>⚖️ Vergleich mit angelegt</b>${cmp}</div>`:''}
-      <div class="v459-sheet-actions"><button class="btn" id="v459EquipItem">Anlegen</button><button class="btn gold" id="v459SellItem">💰 ${sv}</button></div>
-      <button class="btn secondary" id="v459CloseItem" style="width:100%;margin-top:7px">Schließen</button>`;
-    box.querySelector('#v459EquipItem').onclick=()=>{closeInventory();window.equip?.(i)};
-    box.querySelector('#v459SellItem').onclick=()=>{closeInventory();window.sellItem?.(i)};
-    box.querySelector('#v459CloseItem').onclick=closeInventory;
-    ov.classList.add('show');
+    const it=s?.inventory?.[i];if(!it)return false;
+    /* V8.070: inventory uses the same canonical item comparison owner as shop/rewards.
+       The historical local comparison() path is retired to prevent divergent scores. */
+    if(typeof window.v4103OpenItemCompare==='function'){
+      return window.v4103OpenItemCompare(it,'inventory');
+    }
+    return false;
   }
   window.v459OpenInventoryItem=openInventory;
 
