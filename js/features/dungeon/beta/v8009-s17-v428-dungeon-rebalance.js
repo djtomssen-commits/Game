@@ -5,17 +5,19 @@
 */
 (function(){
   const baseStats=v025EnemyStats;
+  const V8068_DUNGEON_SCALE=[1,1.0276,.9872,.951,.9413,.8914,.8399,.7849,.75,.6944,.6614,.6268,.5901,.559,.5345,.5089,.491,.4629,.4432,.4226];
   window.v428DungeonScale=function(di,ri){
     di=Math.max(0,Math.min(19,Number(di)||0));
     ri=Math.max(0,Math.min(9,Number(ri)||0));
     const boss=ri===9;
     // Normal rooms keep the proven V4.28 curve. Bosses are a wall, but must remain beatable with normal
     // blue/purple/orange level-appropriate gear; mystic equipment is NEVER a requirement for normal dungeons.
-    const hp=boss ? (3.00 + di*0.08) : (2.60 + di*0.12 + ri*0.08);
+    const referenceScale=V8068_DUNGEON_SCALE[di]||1;
+    const hp=(boss ? (3.00 + di*0.08) : (2.60 + di*0.12 + ri*0.08))*referenceScale;
     // Boss damage is capped to a saner progression so a player above the recommendation can actually
     // benefit from normal progression instead of needing worldboss-only mystic equipment.
-    const attack=boss ? (1.22 + di*0.018) : (1.35 + di*0.025 + ri*0.025);
-    return {hp,attack};
+    const attack=(boss ? (1.22 + di*0.018) : (1.35 + di*0.025 + ri*0.025))*referenceScale;
+    return {hp,attack,referenceScale};
   };
   v025EnemyStats=function(dungeonIndex,roomIndex,enemy){
     const old=baseStats(dungeonIndex,roomIndex,enemy)||{};
