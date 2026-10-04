@@ -113,24 +113,8 @@
     }
     const ids=['nebula','lemon','gorilla','greencrack','amnesia'],id=ids[Math.floor(Math.random()*ids.length)],seed=typeof seedTypes!=='undefined'?seedTypes[id]:null;return {type:'seed',icon:seed?.icon||'🌰',title:`+1 ${seed?.name||'epischer Grow-Samen'}`,detail:'Epischer Samen für deinen Growroom.',amount:1,seedId:id};
   }
-  function applyReward(r){
-    if(!r)return false;
-    if(r.type==='gold')s.gold=(Number(s.gold)||0)+r.amount;
-    else if(r.type==='xp'){if(typeof addXp==='function')addXp(r.amount);else s.xp=(Number(s.xp)||0)+r.amount}
-    else if(r.type==='harz')s.harzTaler=(Number(s.harzTaler)||0)+r.amount;
-    else if(r.type==='time')s.timeSeeds=Math.max(0,Number(s.timeSeeds)||0)+r.amount;
-    else if(r.type==='seed'){
-      s.grow=(s.grow&&typeof s.grow==='object')?s.grow:{};s.grow.seeds=(s.grow.seeds&&typeof s.grow.seeds==='object')?s.grow.seeds:{};
-      s.grow.seeds[r.seedId]=(Number(s.grow.seeds[r.seedId])||0)+r.amount;
-    }else if(r.type==='og'){
-      const ids=['nebula','lemon','gorilla','greencrack','amnesia'],id=ids[Math.floor(Math.random()*ids.length)];
-      s.grow=(s.grow&&typeof s.grow==='object')?s.grow:{};s.grow.seeds=(s.grow.seeds&&typeof s.grow.seeds==='object')?s.grow.seeds:{};s.grow.seeds[id]=(Number(s.grow.seeds[id])||0)+1;
-      r.type='seed';r.seedId=id;r.icon='🌰';r.title='+1 epischer Grow-Samen';r.detail='Ersatz für die entfernte Wundertüte OG.';
-    }else if(r.type==='item'){
-      s.inventory=Array.isArray(s.inventory)?s.inventory:[];s.inventory.push(r.item);
-    }else return false;
-    return true;
-  }
+  /* Retired: rewards are granted only by v7073_claim_daily_login. */
+  function applyReward(){return false}
   function iconForSummary(x){return x?.icon||'✅'}
   function ensureOverlay(){
     let ov=document.getElementById('v484DailyLogin');if(ov)return ov;
@@ -163,13 +147,8 @@
       reveal.innerHTML=`<div class="ico">${esc(reward.icon)}</div><h3>${esc(reward.title)}</h3><p>${esc(reward.detail)}</p>`;reveal.classList.add('show');closeBtn.classList.add('show');
     }else{reveal.classList.remove('show');closeBtn.classList.remove('show')}
   }
-  function saveClaim(){
-    try{if(typeof persist==='function')persist(false);else localStorage.setItem(KEY,JSON.stringify(s))}catch(e){try{localStorage.setItem(KEY,JSON.stringify(s))}catch(_){}}
-    try{if(typeof v441PaintResources==='function')v441PaintResources()}catch(e){}
-    try{if(typeof v446PaintCombatPower==='function')v446PaintCombatPower()}catch(e){}
-    try{if(typeof render==='function')render()}catch(e){}
-    const id=uid();setTimeout(async()=>{try{if(id&&typeof v452AccountVerified==='function'&&v452AccountVerified(id)&&typeof v075WriteCloudSave==='function')await v075WriteCloudSave(true)}catch(e){console.warn('V4.86 login reward cloud save',e)}},50);
-  }
+  /* Retired: canonical server response owns persistence and balances. */
+  function saveClaim(){return false}
   async function claim(day){
     if(claimBusy||!accountReady()||!due()||day!==nextDay())return;
     claimBusy=true;
