@@ -37,6 +37,9 @@ const v109OldClaimQuest=claimQuest;
 claimQuest=function(){
   v109ResetDaily();
 
+  /* Server Quest receipt owns Harz rewards under authority. */
+  if(window.v7081UseAuthority?.('quest'))return v109OldClaimQuest.apply(this,arguments);
+
   const q=s.quests?.active;
   if(!q||Date.now()<q.ends)return v109OldClaimQuest.apply(this,arguments);
 
@@ -121,6 +124,8 @@ claimQuest=function(){
    a small boss bonus chance without touching combat progression. */
 let v109DungeonHarzBefore=null;
 document.addEventListener('click',e=>{
+  /* Server Dungeon receipt owns all Harz drops under authority. */
+  if(window.v7081UseAuthority?.('dungeon'))return;
   const btn=e.target.closest('#dungeonFightBtn,[data-dungeon-fight],.dungeon-fight-btn');
   if(!btn)return;
 
