@@ -93,7 +93,7 @@
     try{const tw=window.vTowerWednesdayEventInfo?.();if(tw?.active)a.push({c:'green',t:'🗼 TURM-ANOMALIE',s:`${tw.icon||'🗼'} ${tw.name} aktiv`})}catch(e){}
     try{if(typeof v094XpEventActive==='function'&&v094XpEventActive())a.push({c:'purple',t:'⚡ EXP EVENT',s:'2× Erfahrung aktiv'})}catch(e){}
     try{if(typeof v274GoldEventActive==='function'&&v274GoldEventActive())a.push({c:'gold',t:'💰 GOLD EVENT',s:'2× Gold-Belohnungen aktiv'})}catch(e){}
-    try{if(typeof v271DampfEventActive==='function'&&v271DampfEventActive())a.push({c:'',t:'🔥 300 DAMPF EVENT',s:'300 Dampf Maximum aktiv'})}catch(e){}
+    try{if(typeof v271DampfEventActive==='function'&&v271DampfEventActive())a.push({c:'',t:'🔥 DAMPF EVENT',s:'200 Dampf gratis · mit Harz bis 300'})}catch(e){}
     if(bossActive)a.push({c:'cyan',t:'💠 SMARAGD KOLOSS',s:'Weltboss aktiv!'});
     return a.slice(0,5);
   }
