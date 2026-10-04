@@ -36,6 +36,7 @@
   try{window.v470PaintEquipmentSlots?.()}catch(_){}
   try{window.v448PaintPower?.()}catch(_){}
   try{window.v069SyncCurrencies?.()}catch(_){}
+  try{window.v441PaintResources?.()}catch(_){}
   try{window.v488ForgeRender?.()}catch(_){}
   S.actions++;S.last={at:Date.now(),revision:Number(r.revision)||0};
   return true;
