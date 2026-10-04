@@ -8367,3 +8367,13 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
 - Lokaler Legacy-Fallback bleibt nur für Accounts ohne Item-Authority erhalten.
 - Supabase-Migration: `v8100_server_authoritative_material_sales`.
 - Commits: `94d014b764d1f8fde53630be128a9e629f345ad5`, `274aa7dc52b2c9ddf19da38b51702d33b20aff4b`, `96be08ad052f7ffa7d6adcc6fe4a16adc41c9b2a`.
+
+### 2026-10-04 – Local-vs-Server Authority Audit
+- Anlass: Materialverkauf entfernte Edelsteine/Schriftrollen lokal, während Gold serverautoritativ war. Daraufhin gezielter Audit aller wertvollen Client-Mutationen.
+- **Echte Lecks gefunden und behoben:**
+  - `v394-time-seeds-currency.js`: Quest-Zeit-Samen-Drop und Quest-Skip-Verbrauch liefen noch lokal. Unter Quest-Authority wird der lokale 50%-Roll jetzt nicht mehr ausgeführt; der Server-Receipt besitzt den Drop. Quest-Skip nutzt jetzt den vorhandenen `v7044_skip_quest`-RPC und übernimmt `time_seeds` + aktive Quest aus der Serverantwort. Commit `680919f39e6ab88d81d1134fa447d3f264431c43`.
+  - `v109-harz-drops.js`: alte Quest-/Dungeon-Harz-Zusatzdrops konnten nach serverseitigem Reward noch lokal minten. Unter Quest-/Dungeon-Authority werden diese lokalen Rewardpfade jetzt vollständig übersprungen; Legacy-Fallback bleibt nur außerhalb ENFORCE. Commit `12c5afe3c4113f6e2f041a3fea0009b1347477a9`.
+- **Verifiziert serverautoritativ / lokaler Altcode wird vor Mutation abgefangen:** Daily Login (`v7073`), Wochenkiste/Turm/Weltboss (`v7072`), PvP (`v7053`), Growroom/Blüten-Dealer (`v7065`/`v7071`), Händler/Shop-Reroll/Harzschmiede (`v7063`), Materialverkauf (`v8100_sell_materials`), Lotto (`v8010`), Schicht (`v7137`), Referral (`v7129`).
+- Supabase Authority-Check: alle vorhandenen Beta-Spieler in den geprüften Kern-Domains `daily/items/progress/pvp/quest/seeds/shop/tower/weekly/worldboss` stehen auf `enforce`; dasselbe gilt für die vorhandenen Server-1-Spieler.
+- Wichtig: `localStorage` bleibt an vielen Stellen bewusst als **Cache/Render-Mirror** bestehen. Es darf unter ENFORCE aber keine kanonische Währung/Belohnung mehr erzeugen oder verbrauchen.
+- Nächster Cleanup-Schritt empfohlen: historische lokale Reward-/Economy-Implementierungen physisch reduzieren/retiren, statt sie nur hinter Authority-Guards zu belassen.
