@@ -867,6 +867,9 @@ document.addEventListener('visibilitychange',()=>{
 setTimeout(()=>void refresh({quiet:true}),2600);
 
 window.v7072WorldbossRun=worldbossRun;
+window.v7072TowerAction=(action,arg=null)=>towerAction(action,arg);
+window.v7072WeeklyAction=(action,rewardId=null)=>weeklyAction(action,rewardId);
+
 window.v7072AuthorityRefresh=()=>refresh({quiet:false});
 window.v7072AuthorityDiagnostics=()=>clone({
   version:VERSION,...bridge,
