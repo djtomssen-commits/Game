@@ -105,6 +105,21 @@ async function sellSelected(panel){
  if(!ok)return;
  const keys=new Set(selected);const rows=materialRows().filter(x=>keys.has(x.key));
  if(!rows.length){selected.clear();enhance();return}
+ try{
+  if(typeof window.v8100SellMaterials==='function'&&window.v7081UseAuthority?.('items')){
+   const r=await window.v8100SellMaterials(rows.map(x=>x.m));
+   if(r?.ok){
+    selected.clear();mode=false;
+    try{v063Toast?.('💰 Mehrfachverkauf','success',`${Number(r.removed)||rows.length} Materialien · +${Number(r.sale_value)||st.gold} Gold`)}catch(_){}
+    requestAnimationFrame(()=>{try{window.v546RenderMaterials?.()}catch(_){};setTimeout(enhance,0)});
+    return true;
+   }
+   return false;
+  }
+ }catch(e){
+  try{v063Toast?.('Mehrfachverkauf fehlgeschlagen','error',String(e?.message||e))}catch(_){}
+  return false;
+ }
  let gold=0;rows.forEach(({m})=>gold+=sellValue(m));
  rows.map(x=>x.index).sort((a,b)=>b-a).forEach(i=>{if(s.materials?.[i])s.materials.splice(i,1)});
  s.gold=(Number(s.gold)||0)+gold;
