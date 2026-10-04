@@ -21,10 +21,10 @@
       if(typeof v271DampfEventActive!=='function' || !v271DampfEventActive())return false;
 
       /* Only repair the known stale-reset case:
-         event active + exactly 100 Dampf + no quest Dampf spent today.
+         event active + exactly 100 Dampf + no quest Dampf spent today; repair to the 200 event grant.
          Never refill a player who already used Dampf. */
       if(Number(s.energy)===100 && v345QuestDampfSpentToday()===0){
-        s.energy=300;
+        s.energy=200;
         try{localStorage.setItem(KEY,JSON.stringify(s))}catch(e){}
         return true;
       }
