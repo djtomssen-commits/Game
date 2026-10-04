@@ -8359,3 +8359,11 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
 - Regel: Event kostenlos 200 Dampf, Harz-Refill +20 bis max. 300; normal max. 100; 10 Refills/Tag bleiben bestehen.
 - Gilt für Beta und Server 1 über denselben Client-Owner; Backend-RPCs sind auf beiden Servern bereits entsprechend angepasst.
 - Commit: `7790d621d14605d1078109d8b9ae19cb8d561e12`.
+
+### 2026-10-04 – Edelstein-/Schriftrollenverkauf serverautoritativ repariert
+- Ursache: Materialverkauf (`v681` Einzelverkauf und `v683` Mehrfachverkauf) entfernte Materialien und erhöhte Gold nur lokal. Bei serverautoritativen Accounts wurde der lokale Goldwert anschließend vom kanonischen Serverstand überschrieben.
+- Neuer RPC auf **Beta und Server 1**: `v8100_sell_materials(jsonb,text)`. Verkauf entfernt die ausgewählten Edelsteine/Schriftrollen und schreibt Gold atomar in `player_progress_trusted`; zusätzlich Gold- und Item-Ledger mit Request-ID/Dedupe.
+- Client-Brücke im bestehenden `v7062`-Item-Authority-Owner ergänzt; Einzel- und Mehrfachverkauf benutzen bei Item-Authority jetzt denselben Serverpfad und übernehmen danach Materialien + Gold direkt aus der Serverantwort.
+- Lokaler Legacy-Fallback bleibt nur für Accounts ohne Item-Authority erhalten.
+- Supabase-Migration: `v8100_server_authoritative_material_sales`.
+- Commits: `94d014b764d1f8fde53630be128a9e629f345ad5`, `274aa7dc52b2c9ddf19da38b51702d33b20aff4b`, `96be08ad052f7ffa7d6adcc6fe4a16adc41c9b2a`.
