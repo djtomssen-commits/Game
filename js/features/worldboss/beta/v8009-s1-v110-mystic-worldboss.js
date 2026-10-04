@@ -78,57 +78,12 @@ function v110Refresh(){
   document.querySelector('#v110BossHp').style.width='100%';document.querySelector('#v110PlayerHp').style.width='100%';
   document.querySelector('#v110BossHpTxt').textContent=`${b.bossHp}/${b.bossHp}`;document.querySelector('#v110PlayerHpTxt').textContent=`${b.hp}/${b.hp}`;
 }
-function v110Fight(){
+async function v110Fight(){
   if(!v110MysticEventActive())return v110Close();
-  v110ResetDay();
-  if(s.v110WorldBoss.freeUsed){
-    if((s.harzTaler||0)<10)return v063Toast('Zu wenig Harz-Taler','warn','Ein weiterer Weltboss-Versuch kostet 10 Harz-Taler.');
-    s.harzTaler-=10;
-  }else s.v110WorldBoss.freeUsed=true;
-  s.v110WorldBoss.attempts=(s.v110WorldBoss.attempts||0)+1;
-
-  const b=v110BossScale();let p=b.hp,e=b.bossHp,round=0,log=[];
-  const btn=document.querySelector('#v110Fight');btn.disabled=true;
-  const timer=setInterval(()=>{
-    round++;
-    const phase=e/b.bossHp<=.25?3:e/b.bossHp<=.60?2:1;
-    const phaseMult=phase===3?1.48:phase===2?1.25:1;
-    document.querySelector('#v110Phase').textContent=phase===3?'☠️ LETZTE BLÜTE':phase===2?'💚 SMARAGD-RASEREI':'MYSTISCHES EVENT';
-
-    let pDmg=Math.max(5,Math.round((v110MainStat()*2.15+s.level*4+combatPower()*.055)*(0.82+Math.random()*.36)));
-    if(Math.random()<Math.min(.25,.05+totalAttr('glueck')*.002)){pDmg=Math.round(pDmg*1.65);log.push(`💥 Kritischer Treffer: ${pDmg}`);try{window.v6111Sfx?.('crit')}catch(e){}}
-    else {log.push(`⚔️ Du triffst für ${pDmg}.`);try{window.v6111Sfx?.('hit')}catch(e){}}
-    e=Math.max(0,e-pDmg);
-
-    if(e>0){
-      let eDmg=Math.max(5,Math.round(b.bossAtk*phaseMult*(.82+Math.random()*.38)));
-      p=Math.max(0,p-eDmg);log.push(`${phase===3?'☠️':phase===2?'💚':'🗿'} Koloss trifft für ${eDmg}.`);try{window.v6111Sfx?.('enemyHit')}catch(e){}
-    }
-    document.querySelector('#v110BossHp').style.width=`${e/b.bossHp*100}%`;
-    document.querySelector('#v110PlayerHp').style.width=`${p/b.hp*100}%`;
-    document.querySelector('#v110BossHpTxt').textContent=`${e}/${b.bossHp}`;
-    document.querySelector('#v110PlayerHpTxt').textContent=`${p}/${b.hp}`;
-    document.querySelector('#v110Log').textContent=log.slice(-8).join('\n');
-
-    if(e<=0||p<=0||round>=60){
-      clearInterval(timer);btn.disabled=false;
-      if(e<=0){
-        try{window.v6111Sfx?.('win')}catch(e){}
-        s.v110WorldBoss.wins=(s.v110WorldBoss.wins||0)+1;
-        try{window.v6239WeeklyChestActivity?.('worldboss',{wins:Number(s.v110WorldBoss.wins)||0},`worldboss:${Number(s.v110WorldBoss.wins)||0}`)}catch(_){}
-        let item;
-        if(Math.random()<.06)item=v110MakeRareMysticSet(); else item=v110MakeMysticItem();
-        s.inventory.push(item);
-        document.querySelector('#v110Log').textContent=`🏆 DER SMARAGD-KOLOSS IST GEFALLEN!\n\n🔷 Garantierte mystische Beute:\n${item.name}\n${itemBonus(item)}\n✨ ${item.mysticSpecial?.label||''}`;
-        v063Toast('🔷 MYSTISCHER SIEG!','success',`${item.name} erhalten!`);
-      }else{
-        try{window.v6111Sfx?.('lose')}catch(e){}
-        document.querySelector('#v110Log').textContent=`☠️ Der Smaragd-Koloss hat dich besiegt.\nDu hast ihn auf ${Math.round(e/b.bossHp*100)} % Leben gebracht.\nVerbessere Ausrüstung, Sockel, Verzauberungen und Set-Boni.`;
-        v063Toast('Weltboss nicht bezwungen','warn','Der Smaragd-Koloss war diesmal stärker.');
-      }
-      persist();v110Refresh();
-    }
-  },430);
+  if(typeof window.v7072WorldbossRun==='function')return window.v7072WorldbossRun();
+  /* Fail closed: attempts, Harz cost and loot are server-owned. */
+  try{window.v063Toast?.('Weltboss noch nicht bereit','warn','Server-Verbindung wird noch aufgebaut.')}catch(_){}
+  return false;
 }
 function v110InstallEventButton(){
   if(!v110MysticEventActive())return;
