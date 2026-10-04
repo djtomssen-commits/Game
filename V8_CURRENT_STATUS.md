@@ -8337,3 +8337,11 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
 - Kanonische Dampf-Karte `v294`: Harz-Refill bleibt im Event sichtbar und aktiv bis zum Event-Cap 300; Auffüllungszähler bleibt sichtbar.
 - Gilt für Beta und Server 1, da beide dieselben Client-Owner laden.
 - Commits: `09cead70856e6b205e2599b6c1aa408b2fc87c50`, `e1eb72eccaaab45fee373b015f6e2b1346d04421`, `ee57b83263c88113705893de3c4a7bc84d31a406`.
+
+### 2026-10-04 – Accountwechsel: leerer Header-/Brown-Screen gehärtet
+- Fehlerbild bei einem Spieler nach Accountwechsel: Ladebildschirm endet, Top-Bar erscheint, Hauptinhalt bleibt leer/braun; davor zwei Fehlermeldungen im Video.
+- Trigger passt zum Accountwechselpfad: alter Runtime-/UI-Zustand konnte während des Wechsels teilweise sichtbar/aktiv bleiben, obwohl der neue Account bereits finalisiert wurde.
+- Fix direkt im kanonischen Account-Switch-Owner `v4139-account-switch-authority.js`: Beim Accountwechsel werden jetzt zusätzlich Boot-Gate/critical-ready zurückgesetzt, alle aktiven Screens bereinigt, Startseite als einziger aktiver Screen gesetzt, Menü-/Popup-Reste geschlossen und ein dediziertes `growlegends:account-transition-reset`-Event ausgelöst.
+- Nach erfolgreicher Server-Hydration wird die Startseite erneut eindeutig aktiviert, das Menü synchronisiert und erst dann der Atomic-Boot-Gate freigegeben.
+- Commit: `d5bc34e5f4a471c79c176b11c8d95bbe0c7c4091`.
+- Nächster Reprotest: Account A -> Abmelden/Accountwechsel -> Account B -> prüfen, ob Startseite direkt sichtbar ist und keine leere braune Fläche bleibt.
