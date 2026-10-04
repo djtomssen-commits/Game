@@ -8305,3 +8305,11 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
 - Gilt für **Beta und Server 1**, weil beide denselben v4103-Owner/CSS laden.
 - Server-1-Sperre/Öffnungslogik unverändert.
 - Commit: `d860f90432cc7d9b72b3296bdafeb4632de4f3e0`.
+
+### 2026-10-04 – Set-Item Kernwerte angehoben (Beta + Server 1)
+- Ursache bestätigt: Die aktuelle flache Qualitätskurve verteilt bei Lila einen Teil des Budgets auf Glück. Beispiel Grower-Stiefel Lv.112: Grün = 53 Stärke / 35 Ausdauer, Blau = 54 / 36, Lila = 52 / 34 / 5 Glück. Dadurch konnte ein episches Set-Item bei den sichtbaren Kernwerten schwächer wirken als Grün/Blau.
+- Fix zentral im bestehenden Gear-Normalizer beider Server (`recovery_private.v7167_normalize_gear_item` und `server1_private.v7167_normalize_gear_item`): Set-Items ab Lila bekommen für Hauptattribut und Ausdauer mindestens **Blau derselben Klasse/Slot/Stufe + 1**; Zusatzwerte wie Glück bleiben zusätzlich erhalten.
+- Validierung Lv.112 Grower/Boots: Blau = 54 Stärke / 36 Ausdauer; Set = **55 Stärke / 37 Ausdauer / 5 Glück** auf Beta und Server 1.
+- Bestehende Set-Items wurden einmal durch denselben Normalizer gezogen; neue Quest-/Dungeon-/Endgame-/Schmiede-Set-Items verwenden die Regel automatisch.
+- Supabase-Migration: `v8098_set_item_core_stat_floor_both_servers`.
+- Server-1-Sperre/Öffnungslogik unverändert.
