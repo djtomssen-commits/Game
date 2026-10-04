@@ -8377,3 +8377,12 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
 - Supabase Authority-Check: alle vorhandenen Beta-Spieler in den geprüften Kern-Domains `daily/items/progress/pvp/quest/seeds/shop/tower/weekly/worldboss` stehen auf `enforce`; dasselbe gilt für die vorhandenen Server-1-Spieler.
 - Wichtig: `localStorage` bleibt an vielen Stellen bewusst als **Cache/Render-Mirror** bestehen. Es darf unter ENFORCE aber keine kanonische Währung/Belohnung mehr erzeugen oder verbrauchen.
 - Nächster Cleanup-Schritt empfohlen: historische lokale Reward-/Economy-Implementierungen physisch reduzieren/retiren, statt sie nur hinter Authority-Guards zu belassen.
+
+### 2026-10-04 – Legacy-Local Economy Cleanup Block 1
+- Ziel: lokale Economy-/Reward-Mutationen nicht nur per Authority-Guard blockieren, sondern aus den aktiven Altpfaden entfernen bzw. auf kanonische Server-Owner delegieren.
+- `v109-harz-drops.js`: alter lokaler Quest-/Dungeon-Harz-Mint vollständig retired; Datei ist nur noch ein Retired-Marker ohne Currency-Mutation. Commit `68ced1618c6407d084893971c7bbf1f4e8734108`.
+- `v394-time-seeds-currency.js`: lokaler 50%-Quest-Zeit-Samen-Roll entfernt; Quest-Skip nutzt den vorhandenen Server-RPC `v7044_skip_quest`; lokaler Burn-Fallback entfernt/fail-closed. Commit `073a2034ea8f86db6bd609b9d06261750aa2f4c7`.
+- Daily Login: `v7073` exportiert jetzt den kanonischen Server-Claim `v7073ClaimDailyLogin`; der alte `v484`-Claim delegiert ausschließlich dorthin und mintet lokal nichts mehr. Tote lokale Reward-/Persist-Mutatoren in `v484` zusätzlich neutralisiert. Commits `aa7647a7ee127930d387889bad9e2442caf36d11`, `bda2dc473f708f7af4e0acf64aec529a0a6f335d`, `0b38b13742d723b1ea93ead15bbe976b5fec36a7`.
+- Weltboss: `v7072` exportiert den kanonischen Server-Run `v7072WorldbossRun`; der alte `v110Fight` delegiert ausschließlich dorthin. Lokaler 10-HT-Abzug, lokaler Attempt/Wins-Mutator und lokales Item-Minting wurden aus dem alten Fight-Owner entfernt. Commits `ffb8012b4cbb23c14e4e96c078d91a3d574e4065`, `708fb64f0865a8c21d5b4445abcd0bffdf671469`.
+- Ergebnis: In diesen vier kritischen Altpfaden kann ein versehentlich ausgelöster Legacy-Handler keine kanonische Währung/Belohnung mehr lokal erzeugen oder verbrauchen; bei fehlendem Server-Owner fail-closed statt Local-Fallback.
+- Gilt über die gemeinsamen Client-Owner für Beta und Server 1; Server-1-Sperre unverändert.
