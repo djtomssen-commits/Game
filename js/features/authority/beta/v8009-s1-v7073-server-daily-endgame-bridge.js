@@ -393,6 +393,7 @@ document.addEventListener('visibilitychange',()=>{
 },{passive:true});
 setTimeout(()=>{try{if(typeof v073User!=='undefined'&&v073User?.id&&!window.v7204StartupQuiet?.())void boot()}catch(_){}},5600);
 
+window.v7073ClaimDailyLogin=claimDaily;
 window.v7073DailyRefresh=()=>refreshDaily(false);
 window.v7073EndgameRefresh=()=>refreshEndgame(true);
 window.v7073AuthorityDiagnostics=()=>clone({version:VERSION,...D,uid:uid()});
