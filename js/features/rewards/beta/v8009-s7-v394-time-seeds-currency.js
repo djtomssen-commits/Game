@@ -32,18 +32,24 @@
       const result=baseClaim.apply(this,arguments);
       if(result && typeof result.then==='function')await result;
 
-      /* Only roll after the quest was really consumed by the canonical reward path. */
+      /* Server-authoritative Quest receipts already own the Zeit-Samen roll.
+         Never mint a second local seed while Quest authority is enforced. */
+      const serverQuest=!!window.v7081UseAuthority?.('quest');
       if(!s.quests?.active){
-        const won=Math.random()<0.50;
-        if(won){
-          ensureTimeSeeds();
-          s.timeSeeds+=1;
-          saveQuiet();
-          if(typeof v063Toast==='function'){
-            v063Toast('🌱 Zeit-Samen gefunden!','success',`+1 Zeit-Samen · Bestand: ${s.timeSeeds}`);
+        if(!serverQuest){
+          const won=Math.random()<0.50;
+          if(won){
+            ensureTimeSeeds();
+            s.timeSeeds+=1;
+            saveQuiet();
+            if(typeof v063Toast==='function'){
+              v063Toast('🌱 Zeit-Samen gefunden!','success',`+1 Zeit-Samen · Bestand: ${s.timeSeeds}`);
+            }
           }
+          window.__V394_LAST_QUEST_SEED_ROLL__={qid,won,source:'legacy-local'};
+        }else{
+          window.__V394_LAST_QUEST_SEED_ROLL__={qid,won:null,source:'server-receipt'};
         }
-        window.__V394_LAST_QUEST_SEED_ROLL__={qid,won};
         try{window.v395RepaintQuestReward?.(showcaseBefore)}catch(e){console.warn('V8.009 quest showcase repaint',e)}
       }
       return result;
@@ -100,12 +106,41 @@
 
     skipBusy=true;
     try{
+      if(window.v7081UseAuthority?.('quest')){
+        if(typeof v073Db==='undefined'||!v073Db)throw new Error('SERVER_NOT_READY');
+        const {data,error}=await v073Db.rpc('v7044_skip_quest');
+        if(error)throw error;
+        const r=Array.isArray(data)?(data[0]||null):data;
+        if(!r?.ok){
+          const reason=String(r?.reason||'QUEST_SKIP_REJECTED');
+          if(reason==='NO_TIME_SEED'){
+            if(Number.isFinite(Number(r.time_seeds)))s.timeSeeds=Math.max(0,Number(r.time_seeds));
+            return v115Alert('Du hast keinen Zeit-Samen mehr.','Keine Zeit-Samen','warn');
+          }
+          if(reason==='QUEST_RECEIPT_PENDING')return v115Alert('Bitte zuerst die offene Quest-Belohnung abholen.','Belohnung offen','warn');
+          throw new Error(reason);
+        }
+        if(Number.isFinite(Number(r.time_seeds)))s.timeSeeds=Math.max(0,Number(r.time_seeds));
+        if(r.active&&typeof r.active==='object'){
+          s.quests=(s.quests&&typeof s.quests==='object')?s.quests:{};
+          s.quests.active=JSON.parse(JSON.stringify(r.active));
+        }
+        try{localStorage.setItem(KEY,JSON.stringify(s))}catch(_){}
+        try{renderQuests()}catch(_){}
+        try{window.v441PaintResources?.()}catch(_){}
+        return await v233ClaimQuest();
+      }
+
+      /* Legacy-only fallback for non-authoritative accounts. */
       s.timeSeeds-=1;
       live.ends=Date.now()-1;
       live.v394SkippedWithTimeSeed=true;
       saveQuiet();
       try{renderQuests()}catch(e){}
       return await v233ClaimQuest();
+    }catch(err){
+      try{v063Toast?.('Quest-Skip fehlgeschlagen','error',String(err?.message||err))}catch(_){}
+      return false;
     }finally{
       skipBusy=false;
     }
