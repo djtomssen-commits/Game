@@ -41,6 +41,22 @@
   return true;
  }
  function q(fn){const task=()=>Promise.resolve().then(fn);chain=chain.then(task,task);return chain}
+ async function sellMaterials(materials){
+  if(!(await gate()))return null;
+  const list=(Array.isArray(materials)?materials:[materials]).filter(Boolean);
+  const ids=list.map(itemId).filter(Boolean);
+  if(!ids.length)throw new Error('MATERIAL_ID_MISSING');
+  const x=db();if(!x)throw new Error('SERVER_NOT_READY');
+  const {data,error}=await x.rpc('v8100_sell_materials',{p_material_ids:ids,p_request_id:req('v8100_material_sell')});
+  if(error)throw error;
+  const r=row(data);if(!r?.ok)throw new Error(String(r?.reason||'SERVER_REJECTED'));
+  apply(r);
+  return r;
+ }
+ window.v8100SellMaterials=async function(materials){
+  return q(async()=>{try{return await sellMaterials(materials)}catch(e){S.lastError=String(e?.message||e);toast('Materialverkauf abgelehnt','error',S.lastError);return false}});
+ };
+
  async function sellByItem(it){
   const id=itemId(it);if(!id)throw new Error('ITEM_ID_MISSING');
   const x=db();if(!x)throw new Error('SERVER_NOT_READY');
