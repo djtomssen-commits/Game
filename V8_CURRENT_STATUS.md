@@ -8320,3 +8320,12 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
 - Inventar-, Shop- und Belohnungsitems behalten weiterhin den vollständigen Vergleich zum aktuell angelegten Item.
 - Gilt für **Beta und Server 1**, da beide denselben zentralen Item-Owner laden.
 - Commit: `2b47240c28495d49b11f9650487b640dc9bebe9f`.
+
+### 2026-10-04 – Dampf-Event auf 200 reduziert, Harz-Refill bis 300 erlaubt
+- Dampf-Event startet/füllt den kostenlosen Tagesstand jetzt auf **200 Dampf statt 300**.
+- Während eines aktiven Dampf-Events bleibt das technische Maximum bei **300 Dampf**.
+- Harz-Refill ist während des Events nicht mehr gesperrt: pro Refill weiterhin **+20 Dampf für 1 Harz Taler**, bis maximal 300.
+- Außerhalb des Events bleibt der normale Tagesstand/Refill-Cap bei 100 unverändert.
+- Aktive Event-Spielstände ohne heutigen Harz-Refill wurden, sofern sie noch über 200 lagen, auf 200 begrenzt; bereits durch Refill gekaufte Energie wird nicht rückwirkend entfernt.
+- Gilt für **Beta und Server 1**. Server-1-Sperre unverändert.
+- Supabase-Migration: `v8099_dampf_event_200_refill_to_300`.
