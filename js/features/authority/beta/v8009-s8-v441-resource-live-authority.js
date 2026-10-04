@@ -19,6 +19,13 @@
       const h=n(s?.harzTaler), d=Math.min(cap(),n(s?.energy)), c=cap(), g=n(s?.gold);
       const hs=h.toLocaleString('de-DE'), ds=d.toLocaleString('de-DE'), cs=c.toLocaleString('de-DE'), gs=g.toLocaleString('de-DE');
 
+      /* Current authoritative topbar (v372) + legacy/shared header mirrors.
+         This is intentionally synchronous so confirmed economy mutations are
+         visible in the topbar in the same task, without waiting for navigation. */
+      setText(document.querySelector('#v372Gold'),gs);
+      setText(document.querySelector('#v372Harz'),hs);
+      setText(document.querySelector('#v372Dampf'),ds+'/'+cs);
+
       setText(document.querySelector('#v358Harz'),'💎 '+hs);
       setText(document.querySelector('#v358Dampf'),'💨 '+ds+'/'+cs);
       setText(document.querySelector('#v358Gold'),'🪙 '+gs);
@@ -38,6 +45,8 @@
     }finally{painting=false}
   }
   window.v441PaintResources=paint;
+  window.v441SettleResources=settle;
+  window.addEventListener('growlegends:resources-changed',paint,{passive:true});
 
   function saveNow(){
     try{localStorage.setItem(KEY,JSON.stringify(s))}catch(e){}
