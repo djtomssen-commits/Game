@@ -50,7 +50,7 @@ function eventRows(ms=Date.now()){
  const common={is_active:true,starts_at:new Date(sc.startMs).toISOString(),ends_at:new Date(sc.endMs).toISOString(),created_at:new Date(sc.startMs).toISOString(),v6251Auto:true};
  if(sc.cycle===0)return[
   {...common,id:`${AUTO_PREFIX}gold:${sc.mondayOrd}`,name:'Gold-Event',description:'Wochenend-Event: Quests, Dungeons und Pflanzen-Ernten geben 2× Gold.'},
-  {...common,id:`${AUTO_PREFIX}dampf:${sc.mondayOrd}`,name:'Dampf-Event',description:'Wochenend-Event: Alle Spieler erhalten 300/300 Dampf.'}
+  {...common,id:`${AUTO_PREFIX}dampf:${sc.mondayOrd}`,name:'Dampf-Event',description:'Wochenend-Event: Alle Spieler erhalten 200 Dampf gratis und können mit Harz bis 300 auffüllen.'}
  ];
  return[
   {...common,id:`${AUTO_PREFIX}xp:${sc.mondayOrd}`,name:'Erfahrungs-Event',description:'Wochenend-Event: Quests geben 2× Erfahrung.'},
