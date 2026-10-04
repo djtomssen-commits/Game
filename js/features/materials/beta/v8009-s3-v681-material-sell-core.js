@@ -65,6 +65,21 @@ window.v681SellMaterial=async function(index){
 
   if(!ok)return;
 
+  try{
+    if(typeof window.v8100SellMaterials==='function'&&window.v7081UseAuthority?.('items')){
+      const r=await window.v8100SellMaterials([m]);
+      if(r?.ok){
+        try{v063Toast?.('💰 Material verkauft','success',`${m.name} · +${Number(r.sale_value)||sell} Gold`)}catch(_){}
+        requestAnimationFrame(()=>{try{window.v546RenderMaterials?.()}catch(_){};try{window.v546ArrangeMaterials?.()}catch(_){}});
+        return true;
+      }
+      return false;
+    }
+  }catch(e){
+    try{v063Toast?.('Materialverkauf fehlgeschlagen','error',String(e?.message||e))}catch(_){}
+    return false;
+  }
+
   const current=s?.materials?.[index];
   if(!current)return;
 
