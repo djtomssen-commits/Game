@@ -8405,3 +8405,13 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
 - Bereits verifiziert direkte Refresh-Aufrufe nach Dampf-Refill, Shop/Forge, Tower/Weekly/Worldboss, Grow-Dealer, Daily Login und PvP.
 - Commits: `205c860fbce5f90f17375cf61a30ff7a326d2446`, `39b9e8b35152fbfe183a829b0aa3295126c24612`.
 - Gilt über gemeinsame Client-Owner für Beta und Server 1; Server-1-Sperre unverändert.
+
+### 2026-10-04 – Server 1 auf aktuellen Nicht-Balance-Stand aktualisiert
+- Nutzerfreigabe: aktuelle Beta-Fixes auf Server 1 übernehmen, **Klassenbalance ausdrücklich ausnehmen**.
+- `server1.html` lädt bereits dieselben gemeinsamen Feature-/Authority-Owner wie Beta; Server-1-spezifischer Release-Channel bleibt `GROW_RELEASE_CHANNEL='server1'`.
+- 22 heute geänderte **Nicht-Balance-Owner** in `server1.html` mit neuem Cache-Bust `v=8100s1sync1` versehen, damit Server-1-Clients garantiert den aktuellen Stand laden.
+- Enthalten u. a.: Item-Vergleich/Popup, Dampf 200/300 + Refill, Accountwechsel-Härtung, Materialverkauf, Local-vs-Server-Authority-Cleanup, Daily/Weekly/Worldboss/Grow/Tower/Forge/PvP-Cleanup und sofortiger Top-Bar-Ressourcenrefresh.
+- **Nicht angefasst:** `v319-exact-talents-dungeon-balance`, `v318-talent-combat-complete`, `v6287-harzruferin`, `v4156-class-identity-balance` sowie alle Beta-spezifischen Klassenbalancewerte.
+- Balance-Trennung verifiziert: `V319_BETA_BALANCE`, `V318_BETA_BALANCE` und `V6287_BETA_BALANCE` schalten auf Server 1 weiterhin auf die alten Release-Werte.
+- Server-1-Freigabe unverändert: `opens_at=NULL`, `harzruferin_opens_at=NULL`, Release-Pfad `server1.html`; keine automatische Öffnung aktiviert.
+- Commit: `3fc6e7e03ca63c72689abdd074e1c3c6256568fc`.
