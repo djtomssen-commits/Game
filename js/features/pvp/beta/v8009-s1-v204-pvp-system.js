@@ -161,6 +161,7 @@ async function v204Fight(){
   }).then(win=>v204Finish(win));
 }
 async function v204Finish(win){
+  if(String(window.v7040AuthorityDiagnostics?.()?.domains?.pvp||'off')==='enforce')return false;
   const enemy=v204Opponent;
   const gold=Math.max(25,Math.round(typeof window.v6168PvpGold==='function'?window.v6168PvpGold(Number(s?.level)||1,!!win):(35+s.level*7+(win?combatPower()*.035:combatPower()*.01))));
   const xp=Math.max(10,Math.round(18+s.level*4+(win?s.level*2:s.level)));
