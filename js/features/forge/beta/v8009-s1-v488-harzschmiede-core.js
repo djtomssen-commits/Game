@@ -258,6 +258,7 @@
     setTimeout(()=>st.classList.remove('hit','crafting'),1050);
   }
   async function dismantle(){
+    if(window.v7081UseAuthority?.('items'))return false;
     if(busy)return;const rows=selectedRows();if(!rows.length)return;
     const total=rows.reduce((n,x)=>n+yieldOf(x.it),0),refund=rows.reduce((n,x)=>n+shopRefund(x.it),0),valuable=rows.filter(x=>['purple','orange'].includes(q(x.it)));
     const warning=valuable.length?`\n\n⚠️ ${valuable.length} epische/legendäre Gegenstände sind ausgewählt.`:'';
@@ -276,6 +277,7 @@
     return item;
   }
   async function craft(){
+    if(window.v7081UseAuthority?.('items'))return false;
     if(busy)return;const z=state(),c=cost();if(z.fragments<c.fragments)return alertBox(`Dir fehlen ${fmt(c.fragments-z.fragments)} Samenfragmente.`,'Zu wenig Fragmente','warn');if((Number(s.gold)||0)<c.gold)return alertBox(`Dir fehlen ${fmt(c.gold-(Number(s.gold)||0))} Gold.`,'Zu wenig Gold','warn');
     const ok=await confirmBox(`Prismatisches Item schmieden?\n\nKosten:\n${fmt(c.fragments)} Samenfragmente\n${fmt(c.gold)} Gold\n\nDer Slot wird zufällig bestimmt. Das Item gehört immer zu deiner aktuellen Klasse.`,{title:'🌈 Prismatisches Item schmieden',type:'confirm',okText:'Jetzt schmieden'});if(!ok)return;
     busy=true;z.fragments-=c.fragments;s.gold=(Number(s.gold)||0)-c.gold;const item=createPrismatic();s.inventory=Array.isArray(s.inventory)?s.inventory:[];s.inventory.push(item);z.crafted++;lastCraft=item;save(false);burst('craft','prism');busy=false;renderForge();try{if(typeof render==='function')render()}catch(e){}setTimeout(()=>{if(document.getElementById('forge')?.classList.contains('active')){renderForge();burst('craft','prism')}},30);try{if(typeof v063Toast==='function')v063Toast('🌈 Prismatisches Item geschmiedet!','success',item.name)}catch(e){}
