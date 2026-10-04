@@ -179,6 +179,9 @@ document.addEventListener('click',e=>{
  if(t?.closest?.('[data-v6163-tab="stock"]'))queueMicrotask(()=>void refresh());
 },true);
 
+window.v7071StartRefine=id=>act('v7071_start_refine',{p_bloom_id:String(id||'')},'Veredelung','🌬️ Veredelung serverseitig gestartet');
+window.v7071CollectRefine=i=>act('v7071_collect_refine',{p_slot:Number(i)},'Veredelung','✨ Veredelte Blüte serverseitig eingesammelt');
+window.v7071BuyGrowDealer=id=>act('v7071_buy_grow_dealer',{p_offer_id:String(id||''),p_request_id:req('v7071_dealer')},'Blüten-Dealer','🕶️ Dealer-Tausch serverseitig abgeschlossen');
 window.v7071GrowDealerRefresh=refresh;
 window.v7071GrowDealerDiagnostics=()=>clone({version:VERSION,...S});
 })();
