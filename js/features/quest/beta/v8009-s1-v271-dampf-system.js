@@ -1,6 +1,6 @@
 /* ===== V4.02 canonical Dampf system =====
    Normal: 100/100
-   Dampf event: 300/300 once when event becomes active
+   Dampf event: 200 free daily, refillable with Harz up to 300
    Quest costs: 7-8 Dampf, last quest consumes the remainder
    Refill: +20 for 1 Harz, maximum 10 refills/day, never above current cap
 */
@@ -54,9 +54,9 @@ function v271SyncDampfEvent(){
  const grantKey=active?`${owner}|${eventKey}`:'';
  if(active){
   if(String(s.v271DampfEventGrantKey||'')!==grantKey){
-   s.energy=300;s.v271DampfEventGrantKey=grantKey;s.v271DampfEventWasActive=true;
+   s.energy=Math.max(Number(s.energy)||0,200);s.v271DampfEventGrantKey=grantKey;s.v271DampfEventWasActive=true;
    try{persist(false)}catch(e){try{localStorage.setItem(KEY,JSON.stringify(s))}catch(_){}}
-   try{v063Toast?.('💨 Dampf-Event aktiv!','success','Dein Dampf wurde für das Event auf 300/300 gesetzt.')}catch(e){}
+   try{v063Toast?.('💨 Dampf-Event aktiv!','success','Du erhältst heute 200 Dampf. Mit Harz kannst du bis 300 auffüllen.')}catch(e){}
    return true;
   }
   s.v271DampfEventWasActive=true;return false;
@@ -83,7 +83,7 @@ function v271PaintDampf(){
       host.appendChild(info);
     }
     const used=Number(s.v271DampfRefill?.count)||0;
-    info.innerHTML=`<span>Auffüllen: <b>${used}/10</b></span>${v271DampfEventActive()?'<span id="v271DampfEventBadge">💨 EVENT 300/300</span>':''}`;
+    info.innerHTML=`<span>Auffüllen: <b>${used}/10</b></span>${v271DampfEventActive()?'<span id="v271DampfEventBadge">💨 EVENT 200 GRATIS · MAX 300</span>':''}`;
   }
 
   const refill=document.querySelector('#v026RefillBtn');
@@ -137,7 +137,7 @@ if(v271BaseDailyReset){
     if(before!==today){
       s.v271DampfRefill={day:today,count:0};
  if(v271EventDataReady&&v271DampfEventActive()){
-  s.energy=300;
+  s.energy=200;
   const ev=v271ActiveDampfEvent();
   const owner=String(v073User?.id||s.social?.playerId||s.characterName||'local');
   s.v271DampfEventGrantKey=ev?`${owner}|${ev.id||ev.name}|${ev.starts_at||''}`:'';
@@ -238,7 +238,7 @@ function v271InstallAdminDampf(){
   card.style.margin='0 0 12px';
   card.innerHTML=`
     <div class="section-title">
-      <div><h3>💨 Dampf-Event</h3><div class="muted">Während eines aktiven Dampf-Events haben alle Spieler 300/300 Dampf.</div></div>
+      <div><h3>💨 Dampf-Event</h3><div class="muted">Während eines aktiven Dampf-Events erhalten alle Spieler 200 Dampf und können mit Harz bis 300 auffüllen.</div></div>
       <span class="pill" id="v271AdminDampfState">AUS</span>
     </div>
     <div class="v271-admin-dampf-state">
@@ -255,7 +255,7 @@ function v271InstallAdminDampf(){
     const now=new Date(),later=new Date(Date.now()+24*3600000);
     const localInput=d=>new Date(d.getTime()-d.getTimezoneOffset()*60000).toISOString().slice(0,16);
     if(name)name.value='Dampf-Event';
-    if(desc)desc.value='Alle Spieler erhalten während des Events 300/300 Dampf.';
+    if(desc)desc.value='Alle Spieler erhalten während des Events 200 Dampf und können mit Harz bis 300 auffüllen.';
     if(start)start.value=localInput(now);
     if(end)end.value=localInput(later);
     if(active)active.checked=true;
