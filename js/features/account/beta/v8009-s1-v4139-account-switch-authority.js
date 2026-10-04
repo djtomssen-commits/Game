@@ -417,7 +417,25 @@
  function neutralize(reason='transition'){
   try{replaceState(fresh(''));localStorage.removeItem(KEY);localStorage.removeItem('growLegendsPlayerId')}catch(e){}
   try{v075CloudLoadedFor=null;v200LastCloudStamp=null;v213Dirty=false;v213LastComparable='';v200CloudPromise=null;v200CloudPromiseUser=null}catch(e){}
-  try{v224Released=false;document.documentElement.classList.remove('v224-app-ready')}catch(e){}
+  try{
+   v224Released=false;
+   document.documentElement.classList.remove('v224-app-ready');
+   window.__V8088_CRITICAL_BOOT_READY__=false;
+   window.__V7210_BOOT_PENDING__=true;
+  }catch(e){}
+  try{
+   document.querySelectorAll('.screen.active,section.screen.active').forEach(el=>el.classList.remove('active'));
+   document.getElementById('world')?.classList.add('active');
+   document.querySelectorAll('.top-menu-item.active').forEach(el=>el.classList.remove('active'));
+   document.querySelector('#v032MenuPanel [data-screen="world"]')?.classList.add('active');
+   document.querySelector('#v032MenuPanel')?.classList.remove('open','show');
+   document.querySelectorAll(
+    '#v4103CompareOverlay,.v115-modal-overlay,.v6211-popup-overlay,[data-account-transient="1"]'
+   ).forEach(el=>{try{el.classList.remove('show','open','active')}catch(_){}});
+  }catch(e){}
+  try{
+   window.dispatchEvent(new CustomEvent('growlegends:account-transition-reset',{detail:{reason:String(reason||'transition')}}));
+  }catch(e){}
   resetRuntime(false);
   return true;
  }
@@ -828,7 +846,13 @@
       const r=await base.apply(ctx,args);
       const gateOk=typeof window.v452AccountVerified==='function'?window.v452AccountVerified(next):true;
       if(r&&gateOk&&uid()===next&&exactOwned(s,next)&&String(v075CloudLoadedFor||'')===next){
-        resetRuntime(true);try{v224Released=false;v224Release?.()}catch(e){}
+        resetRuntime(true);
+        try{
+          document.querySelectorAll('.screen.active,section.screen.active').forEach(el=>el.classList.remove('active'));
+          document.getElementById('world')?.classList.add('active');
+          window.v4149BuildCompleteMenu?.(false);
+        }catch(e){}
+        try{v224Released=false;v224Release?.()}catch(e){}
       }
       try{
         const now=(typeof performance!=='undefined'&&performance.now)?performance.now():Date.now();
