@@ -8352,3 +8352,10 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
 - Automatische Wochenend-Eventbeschreibung ebenfalls auf **200 gratis / Harz bis 300** geändert.
 - Gilt für Beta und Server 1 über den gemeinsamen Home-Renderer; Server-1-Sperre unverändert.
 - Commits: `beeaee4f5b9940a2c46964ed2dbb81e58b1876a4`, `e535854669b7108e2c55c8037b28a966d4822223`.
+
+### 2026-10-04 – Dampf-Refill im Event repariert
+- Ursache: Der neue Event-Button war sichtbar, aber `v294` setzte bei aktivem Event weiterhin `onclick=null`; zusätzlich blieb der ältere `v288`-Eventblocker im Funktionspfad aktiv.
+- Fix im kanonischen `v294-dampf-canonical.js`: eigener serverautoritärer Refill-Handler nutzt `v7044_refill_dampf`, aktualisiert danach Dampf/Harz/Refill-Zähler und repaintet Top-Bar, Dampfkarte und Startseite.
+- Regel: Event kostenlos 200 Dampf, Harz-Refill +20 bis max. 300; normal max. 100; 10 Refills/Tag bleiben bestehen.
+- Gilt für Beta und Server 1 über denselben Client-Owner; Backend-RPCs sind auf beiden Servern bereits entsprechend angepasst.
+- Commit: `7790d621d14605d1078109d8b9ae19cb8d561e12`.
