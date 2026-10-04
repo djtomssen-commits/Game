@@ -200,18 +200,25 @@
  function openCompare(it,context='generic'){
   if(!it)return false;
   try{window.v447ApplyItemCurve?.(it)}catch(e){}
+  const ctx=String(context||'generic');
   const equipped=equippedFor(it);
   try{if(equipped)window.v447ApplyItemCurve?.(equipped)}catch(e){}
   registerItem(it);if(equipped)registerItem(equipped);
   const ov=ensureCompareOverlay(),body=ov.querySelector('#v4103CompareBody'),same=equipped&&itemKey(equipped)===itemKey(it);
-  body.innerHTML=`<div class="v4103-compare-title">Item vergleichen</div>
-   ${compareItemPanel(equipped,null,same?'Angelegt · dieses Item':'Angelegt',false)}
-   <div class="v4103-compare-divider"><span>VERGLEICH</span></div>
-   ${compareItemPanel(it,equipped,same?'Angeklickt · identisch':'Angeklickt',true)}
-   ${inventoryActionsHtml(it,context)}
-   ${equipmentActionsHtml(it,context)}
-   <div class="v4103-compare-legend"><span class="better">↑ besser</span><span class="worse">↓ schlechter</span><span class="same">= gleich</span><small>Stein und VZ-Rolle werden separat gezeigt und nicht in die Grundwert-Pfeile eingerechnet.</small></div>`;
-  ov.dataset.context=String(context||'generic');bindCompareActions(ov,it,context);ov.classList.add('show');return true;
+  if(ctx==='equipment'){
+   body.innerHTML=`<div class="v4103-compare-title">Angelegter Gegenstand</div>
+    ${compareItemPanel(it,null,'Angelegt',false)}
+    ${equipmentActionsHtml(it,ctx)}`;
+  }else{
+   body.innerHTML=`<div class="v4103-compare-title">Item vergleichen</div>
+    ${compareItemPanel(equipped,null,same?'Angelegt · dieses Item':'Angelegt',false)}
+    <div class="v4103-compare-divider"><span>VERGLEICH</span></div>
+    ${compareItemPanel(it,equipped,same?'Angeklickt · identisch':'Angeklickt',true)}
+    ${inventoryActionsHtml(it,ctx)}
+    ${equipmentActionsHtml(it,ctx)}
+    <div class="v4103-compare-legend"><span class="better">↑ besser</span><span class="worse">↓ schlechter</span><span class="same">= gleich</span><small>Stein und VZ-Rolle werden separat gezeigt und nicht in die Grundwert-Pfeile eingerechnet.</small></div>`;
+  }
+  ov.dataset.context=ctx;bindCompareActions(ov,it,ctx);ov.classList.add('show');return true;
  }
  window.v4103OpenItemCompare=openCompare;
  window.v4103CloseItemCompare=()=>document.getElementById('v4103CompareOverlay')?.classList.remove('show');
