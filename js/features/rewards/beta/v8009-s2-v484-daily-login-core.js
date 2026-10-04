@@ -173,32 +173,16 @@
   async function claim(day){
     if(claimBusy||!accountReady()||!due()||day!==nextDay())return;
     claimBusy=true;
-    let lockedToday='',rewardApplied=false;
     try{
-      const before=normalizeCycle(),today=before.today;
-      if(before.z.lastClaimKey===today.key||hasLocalClaimLock(today.key))return;
-      lockedToday=today.key;
-      if(!setLocalClaimLock(today.key)){
-        console.warn('V4.86 daily reward: local claim lock unavailable');
-        lockedToday='';
+      if(typeof window.v7073ClaimDailyLogin==='function'){
+        return await window.v7073ClaimDailyLogin();
       }
-      /* The lock is written BEFORE any reward is granted. A reload or stale cloud save
-         therefore cannot expose today's gift a second time on this device/account. */
-      const r=makeReward(day);
-      if(!applyReward(r)){if(lockedToday)clearLocalClaimLock(lockedToday);return}
-      rewardApplied=true;
-      const {z}=normalizeCycle();
-      z.streak=day;
-       z.totalClaims=Math.max(0,Math.floor(Number(z.totalClaims)||0))+1;
-       z.lastClaimKey=today.key;z.lastClaimOrd=today.ord;z.cycleRewards[day]={icon:r.icon,title:r.type==='item'?cleanItemName(r.title):r.title,type:r.type};
-       try{v106CheckAchievements?.(true)}catch(_){}
-      saveClaim();renderPopup(r);
-      try{if(typeof v063Toast==='function')v063Toast('🎁 Login-Bonus erhalten','success',r.title)}catch(e){}
+      /* Fail closed: Daily rewards are server-owned. Never mint a local fallback. */
+      try{window.v063Toast?.('Login-Bonus noch nicht bereit','warn','Server-Verbindung wird noch aufgebaut.')}catch(_){}
+      return false;
     }catch(e){
-      /* Release the pre-lock only if nothing was granted. Once the reward changed the
-         account, keeping the lock is safer than risking a duplicate after a reload. */
-      if(!rewardApplied&&lockedToday)clearLocalClaimLock(lockedToday);
-      console.warn('V4.86 daily reward claim failed',e);
+      console.warn('V4.86 retired local daily claim',e);
+      return false;
     }finally{claimBusy=false}
   }
   function open(){
