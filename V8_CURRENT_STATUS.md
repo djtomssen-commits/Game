@@ -8386,3 +8386,12 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
 - Weltboss: `v7072` exportiert den kanonischen Server-Run `v7072WorldbossRun`; der alte `v110Fight` delegiert ausschließlich dorthin. Lokaler 10-HT-Abzug, lokaler Attempt/Wins-Mutator und lokales Item-Minting wurden aus dem alten Fight-Owner entfernt. Commits `ffb8012b4cbb23c14e4e96c078d91a3d574e4065`, `708fb64f0865a8c21d5b4445abcd0bffdf671469`.
 - Ergebnis: In diesen vier kritischen Altpfaden kann ein versehentlich ausgelöster Legacy-Handler keine kanonische Währung/Belohnung mehr lokal erzeugen oder verbrauchen; bei fehlendem Server-Owner fail-closed statt Local-Fallback.
 - Gilt über die gemeinsamen Client-Owner für Beta und Server 1; Server-1-Sperre unverändert.
+
+### 2026-10-04 – Legacy-Local Economy Cleanup Block 2
+- Wochen-Truhe: `v7072` exportiert jetzt `v7072WeeklyAction`; alter `v6239`-Owner mintet keine Rewards mehr lokal. Öffnen/Claim/Claim-All delegieren an den Server-Owner, sonst fail-closed. Commits `e64c8385f0486bbc63a691373638748b1b11fda3`, `ce230cdb15a0d9139d6c6fba1c0abbbb962f1b5f`.
+- Growroom/Blüten-Dealer: `v7071` exportiert Serveraktionen für Veredeln, Einsammeln und Dealer-Kauf. Alter `v6282`-Owner verbraucht keine Blüten und mintet keine Gold/Fragmente/Zeit-Samen/Materialien/Items mehr lokal; Mutationen delegieren nur noch serverseitig. Commits `73d1a921dc3aa7edf1cf24496ad37dafb5efee7d`, `be489e97826342714f4afe66e3cbcb0ee57b60fc`.
+- Turm: alte lokale Economy-Mutatoren `finishRun`, Händlerkauf, Upgrade-Kauf und Mittwochs-Claims fail-closed sobald Tower-Authority aktiv ist. Der kanonische `v7072`-RPC-Pfad bleibt Owner. Commit `539ff91d6cf5d7ab0bfabf17d66c4892439516b6`.
+- Harzschmiede: alte lokale `dismantle`/`craft`-Mutatoren fail-closed unter Item-Authority; der vorhandene `v7063`-Serverpfad bleibt Owner. Commit `4ac9aee2853644d576e0a06d6348b2df0a46f545`.
+- PvP: alter `v204Finish` kann unter `pvp=enforce` keine lokalen Gold/EXP-Rewards mehr schreiben. Commit `52a8263eac59db38a19e0aabe86efdd87a6492dc`.
+- Ergebnis: Auch direkte/programmgesteuerte Legacy-Aufrufe können in diesen Systemen unter ENFORCE keine kanonischen Economy-Werte mehr lokal erzeugen oder verbrauchen.
+- Gilt über gemeinsame Client-Owner für Beta und Server 1; Server-1-Sperre unverändert.
