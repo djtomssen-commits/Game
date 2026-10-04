@@ -8395,3 +8395,13 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
 - PvP: alter `v204Finish` kann unter `pvp=enforce` keine lokalen Gold/EXP-Rewards mehr schreiben. Commit `52a8263eac59db38a19e0aabe86efdd87a6492dc`.
 - Ergebnis: Auch direkte/programmgesteuerte Legacy-Aufrufe können in diesen Systemen unter ENFORCE keine kanonischen Economy-Werte mehr lokal erzeugen oder verbrauchen.
 - Gilt über gemeinsame Client-Owner für Beta und Server 1; Server-1-Sperre unverändert.
+
+### 2026-10-04 – Top-Bar Ressourcen sofort aktualisieren
+- Ziel: Gold, Harz-Taler und Dampf sollen nach jeder bestätigten Änderung sofort in der Top-Bar sichtbar sein.
+- Ursache: Der zentrale Live-Painter `v441PaintResources()` aktualisierte noch die alten Header-IDs (`v358*`), aber nicht den aktuellen autoritativen `v372`-Header.
+- Fix: `v441` schreibt jetzt synchron in `#v372Gold`, `#v372Harz` und `#v372Dampf` inklusive aktuellem Dampf-Cap; alte Header-/Shop-Mirrors bleiben weiterhin synchron.
+- Zusätzlich `growlegends:resources-changed` als zentraler Paint-Trigger und `v441SettleResources` exportiert.
+- Item-/Material-Authority-Bridge `v7062` ruft nach Verkäufen jetzt ebenfalls direkt `v441PaintResources()` auf.
+- Bereits verifiziert direkte Refresh-Aufrufe nach Dampf-Refill, Shop/Forge, Tower/Weekly/Worldboss, Grow-Dealer, Daily Login und PvP.
+- Commits: `205c860fbce5f90f17375cf61a30ff7a326d2446`, `39b9e8b35152fbfe183a829b0aa3295126c24612`.
+- Gilt über gemeinsame Client-Owner für Beta und Server 1; Server-1-Sperre unverändert.
