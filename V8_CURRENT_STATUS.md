@@ -8298,3 +8298,10 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
 - Commit: `42db9928c2a3b819962d59981f16b688b3fdd7a6`.
 
 - Nach Freigabe durch Thomas gilt derselbe Fix auch für **Server 1**, da `server1.html` denselben zentralen `v4103`-Item-Owner lädt. **Keine Änderung an Server-1-Sperre/Öffnungslogik oder Serverkonfiguration.**
+
+### 2026-10-04 – Itemvergleich über Belohnungsfenstern
+- Ursache: Der zentrale `#v4103CompareOverlay` lag mit `z-index:1000015` unter Dungeon-/Reward-/Popup-Overlays, die bis `2147483647` gehen. Dadurch öffnete sich der Vergleich korrekt, wurde aber vom Belohnungsfenster verdeckt.
+- Fix direkt im bestehenden zentralen Item-UI-CSS `v8009-extracted-v4103-item-ui-css.css`: Vergleichs-Overlay auf die oberste Popup-Ebene gesetzt (`z-index:2147483647!important`).
+- Gilt für **Beta und Server 1**, weil beide denselben v4103-Owner/CSS laden.
+- Server-1-Sperre/Öffnungslogik unverändert.
+- Commit: `d860f90432cc7d9b72b3296bdafeb4632de4f3e0`.
