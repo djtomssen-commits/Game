@@ -8345,3 +8345,10 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
 - Nach erfolgreicher Server-Hydration wird die Startseite erneut eindeutig aktiviert, das Menü synchronisiert und erst dann der Atomic-Boot-Gate freigegeben.
 - Commit: `d5bc34e5f4a471c79c176b11c8d95bbe0c7c4091`.
 - Nächster Reprotest: Account A -> Abmelden/Accountwechsel -> Account B -> prüfen, ob Startseite direkt sichtbar ist und keine leere braune Fläche bleibt.
+
+### 2026-10-04 – Startseiten-Dampf-Eventanzeige korrigiert
+- Die Startseite hatte noch hart codiert **„300 DAMPF EVENT / 300 Dampf Maximum aktiv“**.
+- Shared Home-Renderer zeigt jetzt **„DAMPF EVENT – 200 Dampf gratis · mit Harz bis 300“**.
+- Automatische Wochenend-Eventbeschreibung ebenfalls auf **200 gratis / Harz bis 300** geändert.
+- Gilt für Beta und Server 1 über den gemeinsamen Home-Renderer; Server-1-Sperre unverändert.
+- Commits: `beeaee4f5b9940a2c46964ed2dbb81e58b1876a4`, `e535854669b7108e2c55c8037b28a966d4822223`.
