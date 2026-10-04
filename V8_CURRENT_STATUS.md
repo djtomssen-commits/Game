@@ -8313,3 +8313,10 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
 - Bestehende Set-Items wurden einmal durch denselben Normalizer gezogen; neue Quest-/Dungeon-/Endgame-/Schmiede-Set-Items verwenden die Regel automatisch.
 - Supabase-Migration: `v8098_set_item_core_stat_floor_both_servers`.
 - Server-1-Sperre/Öffnungslogik unverändert.
+
+### 2026-10-04 – Angelegte Items ohne Selbstvergleich
+- Wenn ein bereits ausgerüsteter Slot geöffnet wird (`context='equipment'`), zeigt der zentrale `v4103`-Popup jetzt nur noch den angelegten Gegenstand mit Details und **„Gegenstand ablegen“**.
+- Der bisherige doppelte Selbstvergleich „Angelegt“ vs. „Angeklickt · identisch“ wurde für Equipment-Slots entfernt.
+- Inventar-, Shop- und Belohnungsitems behalten weiterhin den vollständigen Vergleich zum aktuell angelegten Item.
+- Gilt für **Beta und Server 1**, da beide denselben zentralen Item-Owner laden.
+- Commit: `2b47240c28495d49b11f9650487b640dc9bebe9f`.
