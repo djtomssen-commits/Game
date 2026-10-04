@@ -26,14 +26,14 @@ v271PaintDampf=function(){
   const refillText=card.querySelector('#v284DampfRefills');
   if(refillText){
     refillText.textContent=`Auffüllungen: ${used}/10`;
-    refillText.style.display=active?'none':'block';
+    refillText.style.display='block';
   }
 
   const btn=card.querySelector('#v026RefillBtn');
   if(btn){
     btn.textContent='+20 Dampf kaufen · 1 Harz';
-    btn.style.display=active?'none':'inline-flex';
-    btn.disabled=active || used>=10 || current>=100;
+    btn.style.display='inline-flex';
+    btn.disabled=used>=10 || current>=cap;
     btn.onclick=active?null:v271RefillDampf;
   }
 };
