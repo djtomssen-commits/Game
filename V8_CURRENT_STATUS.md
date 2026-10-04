@@ -8329,3 +8329,11 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
 - Aktive Event-Spielstände ohne heutigen Harz-Refill wurden, sofern sie noch über 200 lagen, auf 200 begrenzt; bereits durch Refill gekaufte Energie wird nicht rückwirkend entfernt.
 - Gilt für **Beta und Server 1**. Server-1-Sperre unverändert.
 - Supabase-Migration: `v8099_dampf_event_200_refill_to_300`.
+
+### 2026-10-04 – Dampf-Anzeige an 200/300-Regel angepasst
+- Top-Bar nutzt weiterhin den dynamischen Event-Cap 300 und zeigt damit nach Tagesgrant korrekt **200/300**.
+- Alter Client-Eventgrant in `v271` von 300 auf 200 geändert; Event-Toast/Badge/Admintext angepasst.
+- Alter stale-event repair `v342` setzt jetzt 200 statt 300.
+- Kanonische Dampf-Karte `v294`: Harz-Refill bleibt im Event sichtbar und aktiv bis zum Event-Cap 300; Auffüllungszähler bleibt sichtbar.
+- Gilt für Beta und Server 1, da beide dieselben Client-Owner laden.
+- Commits: `09cead70856e6b205e2599b6c1aa408b2fc87c50`, `e1eb72eccaaab45fee373b015f6e2b1346d04421`, `ee57b83263c88113705893de3c4a7bc84d31a406`.
