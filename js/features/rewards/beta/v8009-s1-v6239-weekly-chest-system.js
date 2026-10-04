@@ -293,19 +293,8 @@ function rewardSub(r){
  if(r.type==='gear')return `${qualityMeta?.(r.item?.quality||'blue')?.label||'Ausrüstung'} · Lv.${Number(r.item?.dropLevel)||Number(s?.level)||1}`;
  return''
 }
-function grantReward(r){
- if(!r||r.claimed)return false;
- if(r.type==='gold')s.gold=(Number(s.gold)||0)+(Number(r.amount)||0);
- else if(r.type==='fragments'){s.v488Forge=(s.v488Forge&&typeof s.v488Forge==='object')?s.v488Forge:{};s.v488Forge.fragments=Math.max(0,Number(s.v488Forge.fragments)||0)+(Number(r.amount)||0)}
- else if(r.type==='harz')s.harzTaler=(Number(s.harzTaler)||0)+(Number(r.amount)||0);
- else if(r.type==='time')s.timeSeeds=Math.max(0,Number(s.timeSeeds)||0)+(Number(r.amount)||0);
- else if(r.type==='seed'){s.grow=(s.grow&&typeof s.grow==='object')?s.grow:{};s.grow.seeds=(s.grow.seeds&&typeof s.grow.seeds==='object')?s.grow.seeds:{};s.grow.seeds[r.seed]=Math.max(0,Number(s.grow.seeds[r.seed])||0)+(Number(r.amount)||1);try{if(s.grow.v492?.discovered)s.grow.v492.discovered[r.seed]=true}catch(_){}}
- else if(r.type==='material'){s.materials=Array.isArray(s.materials)?s.materials:[];s.materials.push(clone(r.item))}
- else if(r.type==='gear'){s.inventory=Array.isArray(s.inventory)?s.inventory:[];s.inventory.push(clone(r.item))}
- else return false;
- r.claimed=true;r.claimedAt=Date.now();
- return true
-}
+/* Retired: weekly rewards are granted only by the server owner. */
+function grantReward(){return false}
 function finishIfEmpty(){
  const z=state(),p=z.pending;if(!p)return false;
  if(p.rewards.some(r=>!r.claimed))return false;
@@ -316,25 +305,14 @@ function finishIfEmpty(){
  return true
 }
 function claimReward(id){
- const z=state(),p=z.pending;if(!p||!p.openedAt)return;
- const r=p.rewards.find(x=>x.id===id);if(!r||r.claimed)return;
- if(grantReward(r)){
-  persistChest(false);
-  try{v069SyncCurrencies?.()}catch(_){}
-  try{v441PaintResources?.()}catch(_){}
-  finishIfEmpty();
-  renderOverlay();refreshHome()
- }
+ if(typeof window.v7072WeeklyAction==='function')return window.v7072WeeklyAction('claim',String(id||''));
+ try{v063Toast?.('Wochen-Truhe noch nicht bereit','warn','Server-Verbindung wird noch aufgebaut.')}catch(_){}
+ return false
 }
 function claimAll(){
- const z=state(),p=z.pending;if(!p||!p.openedAt)return;
- let n=0;for(const r of p.rewards)if(grantReward(r))n++;
- if(!n)return;
- persistChest(false);
- try{v069SyncCurrencies?.()}catch(_){}
- try{v441PaintResources?.()}catch(_){}
- finishIfEmpty();
- renderOverlay();refreshHome()
+ if(typeof window.v7072WeeklyAction==='function')return window.v7072WeeklyAction('claim_all',null);
+ try{v063Toast?.('Wochen-Truhe noch nicht bereit','warn','Server-Verbindung wird noch aufgebaut.')}catch(_){}
+ return false
 }
 function ensureOverlay(){
  let ov=document.getElementById('v6239WeeklyChestOverlay');if(ov)return ov;
@@ -343,7 +321,11 @@ function ensureOverlay(){
  document.body.appendChild(ov);
  ov.addEventListener('click',e=>{
   if(e.target===ov||e.target.closest('[data-v6239-close]')){ov.classList.remove('show');return}
-  const open=e.target.closest('[data-v6239-open]');if(open){const p=state().pending;if(p&&!p.openedAt){p.openedAt=Date.now();persistChest(false);try{window.v6111Sfx?.('reward')}catch(_){}renderOverlay();refreshHome()}return}
+  const open=e.target.closest('[data-v6239-open]');if(open){
+   if(typeof window.v7072WeeklyAction==='function')void window.v7072WeeklyAction('open',null);
+   else try{v063Toast?.('Wochen-Truhe noch nicht bereit','warn','Server-Verbindung wird noch aufgebaut.')}catch(_){}
+   return
+  }
   const one=e.target.closest('[data-v6239-claim]');if(one){claimReward(one.dataset.v6239Claim);return}
   if(e.target.closest('[data-v6239-claim-all]')){claimAll();return}
  });
