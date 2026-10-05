@@ -1,0 +1,26 @@
+name: V8.140 Synthetic Player Smoke
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+    paths:
+      - 'index.html'
+      - 'js/**'
+      - 'css/**'
+      - 'v8009-*.css'
+      - 'v8010-*.css'
+      - 'qa/v8140-synthetic-player-smoke.mjs'
+      - '.github/workflows/v8140-synthetic-player-smoke.yml'
+
+jobs:
+  synthetic-player-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Run no-account synthetic player smoke
+        run: node qa/v8140-synthetic-player-smoke.mjs
