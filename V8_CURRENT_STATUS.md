@@ -8959,3 +8959,26 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
   - einen echten Testaccount einmal Ende-zu-Ende löschen und danach auf Restdaten prüfen;
   - Supabase Security Advisor separat bereinigen/klassifizieren (u. a. anonyme Rollenwarnungen und Leak-Password-Protection);
   - Ads/Datenschutz wie separat dokumentiert erst beim Produktions-AdMob-Go-Live finalisieren.
+
+
+### 2026-10-05 – Finaler App-Inhaltsabgleich: sichtbare Alttexte + Beta-Parität bereinigt
+- Finalen Inhaltsabgleich gegen aktuellen Repo-Stand durchgeführt.
+- Gefundene sichtbare Altlasten:
+  - Beta-Hinterhof-Dealer zeigte noch den alten Text `Tütchen-Dealer` / `Schau freiwillige Werbevideos ...`, obwohl Tütchen bis zum AdMob-Go-Live auf Coming Soon bleiben sollen.
+  - Coming-Soon-Guard meldete noch `Harz Lotto ist bereits verfügbar`.
+- Behoben:
+  - Beta `index.html` auf aktuellen Hinterhof-Dealer-Text umgestellt:
+    - `Hinterhof-Dealer`
+    - `Harz-Automat ist geöffnet. Tütchen & Werbe-Belohnungen folgen später.`
+    - Tütchen-Tab disabled / Coming Soon
+    - Harz-Automat als aktiver Tab.
+  - Alte sichtbare `Harz Lotto`-Toast-Meldung durch `Harz-Automat` ersetzt.
+- Beim Paritätscheck zusätzlich entdeckt:
+  - Beta hatte den Harz-Automat-Panelbereich, lud aber die aktuelle `v8010-harz-lotto-v2.css` und `v8010-harz-lotto.js` nicht direkt wie Server 1.
+  - Asset-Loading in Beta auf Server-1-Parität gebracht.
+- Interne historische IDs/Funktionsnamen wie `v8010LottoPanel` bleiben bewusst bestehen, solange sie nicht nutzersichtbar sind und funktional noch verwendet werden; kein unnötiges Rename/Rewrite.
+- Aktueller sichtbarer Stand:
+  - kein aktiver alter Lotto-/6-aus-50-/Dienstag-19-/Gewinnklassen-Flow;
+  - Harz-Automat ist die aktuelle Zufallsmechanik;
+  - Tütchen bleibt Coming Soon;
+  - Datenschutz für echte AdMob-Werbung bleibt bis zum Produktions-Go-Live vorgemerkt.
