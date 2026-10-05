@@ -8500,3 +8500,22 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
 - Commit: `06572543ee8dd101230a22e36aa36122853c0ff1`
 - Cache-Bust Beta: `4adc35e109ce202173fd105f72e8f3eb3de422fd`
 - Cache-Bust Server1: `195af38189c20764e9e1041ca04f3b9f11f15c95`.
+
+
+### 2026-10-05 – Zweiter Shop-Umsprung-Fix: sichtbare lokale Erstangebote blockiert
+- Neues Nutzer-Video zeigt weiterhin sichtbaren Wechsel:
+  - zuerst lokale alte Angebotsnamen wie `Moosläufer`, `Knospenhorn-Helm`, `Grimmtritt-Boots`;
+  - wenige Sekunden später serverseitige Angebote wie `Händlerwaffe`, `Händler-Kopfschutz`, `Händlerstiefel`.
+- Ursache:
+  - der vorherige Fix verhindert lokale Neugenerierung **nach** erkannter Item-Authority;
+  - beim allerersten Shop-Öffnen kann die Authority/Händler-Hydration aber noch nicht fertig sein;
+  - `v461-shop-redesign` renderte in diesem Zeitfenster noch den im lokalen State vorhandenen Altbestand sichtbar.
+- Fix direkt im sichtbaren Shop-Owner `v461-shop-redesign.js`:
+  - bei authentifiziertem Spieler wird der Shop erst dann mit Itemkarten gerendert, wenn `v7063ItemStageDiagnostics()` `ready && enabled` meldet;
+  - vorher nur neutraler Ladezustand `Händlerangebote werden geladen …`;
+  - der Owner stößt einmalig `v7063ItemStageRefresh(true)` an;
+  - nach bestätigter Server-Hydration wird der Shop genau mit dem autoritativen Bestand gerendert.
+- Dadurch darf kein lokaler/alter Angebotssatz mehr kurz sichtbar sein und danach auf Serverangebote springen.
+- Commit: `a49c93a6bb633b5f80dbd56c20747a3303382313`
+- Cache-Bust Beta: `b401f8011eacf1348e8952b5d929359a94587ad1`
+- Cache-Bust Server1: `c28471c06d5d33150ed949199ab200454b021115`.
