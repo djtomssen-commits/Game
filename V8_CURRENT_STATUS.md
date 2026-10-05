@@ -8636,3 +8636,29 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
 - Cache-Bust:
   - Beta: `29e215a38154b85f56cb3237d7b56e05938b1a2a`
   - Server1: `8d346940899d67146d5509521f3c6ff2098f09b0`.
+
+
+### 2026-10-05 – Letzte sichtbare Shop-Legacy-Overlays aus Video entfernt
+- Nutzer-Video `1000099614.mp4` frameweise geprüft.
+- Shop-Angebote selbst blieben stabil; nachträglich erschienen noch zwei alte UI-Elemente:
+  - `🌙 Händler: tägliche automatische Aktualisierung um 00:00 Uhr.`
+  - Scene-Title `BORKS AUSRÜSTUNG`.
+- Producer 1 gefunden:
+  - `js/features/system/beta/v8009-s8-v127-midnight-reset-system.js`
+  - `v127AddResetInfo()` setzte bei globalen Rendern `#v127ShopResetInfo` vor die erste Shop-Card.
+  - Zusätzlich prüfte der alte Server-Guard noch primär `shop` statt der heutigen Item-Authority.
+- Fix:
+  - Shop-Reset-Hinweis vollständig retired und vorhandener `#v127ShopResetInfo` wird entfernt;
+  - `v127ServerOwned()` berücksichtigt jetzt ausdrücklich `v7081UseAuthority('items')`, damit die alte lokale Shop-Tagesresetlogik bei serverautoritativen Items blockiert bleibt.
+  - Commit: `9df3c29208fc1fcc43569240aad61cf7f2fd6404`.
+- Producer 2 gefunden:
+  - `js/features/anonymous-extracted/beta/anon-0006.js`
+  - `v043SceneLabels()` setzte bei jedem globalen Render historische Shop-Titel `BORKS AUSRÜSTUNG` / `SCHMUCK & VERZAUBERUNG`.
+- Fix:
+  - beide Shop-Einträge aus dem v043-Scene-Label-Owner entfernt;
+  - vorhandene `#shop .v043-scene-title` werden bereinigt;
+  - v461/v464 bleiben alleinige Shop-Heading-Owner.
+  - Commit: `bdefd90cc6ec4cc68816bcf8d8a4234811491757`.
+- Cache-Bust:
+  - Beta: `bebac935ce65a2fe440b0f5ed6767ffc8ad1a2a9`
+  - Server1: `5ec4282e85c789cb15b3e69f0881c1bfc433324b`.
