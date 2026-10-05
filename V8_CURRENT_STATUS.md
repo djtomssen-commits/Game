@@ -8585,3 +8585,30 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
   - v4136 Canonical-Snapshot-Schutz: `d1fbb220a414365c0c8d9de2f02786e9511d2a94`
   - Cache-Bust Beta: `98fcbde5f944d040485aa28153b6031807bc6d7c`
   - Cache-Bust Server1: `d123c6e0bd78cce9272507cda793aebb87ee9b64`.
+
+
+### 2026-10-05 – Shop-Stock Authority bereinigt: alte automatische Generatoren entfernt
+- Nach weiterem Nutzerhinweis alle aktiven Shop-Writer und globale Render-Hooks erneut geprüft.
+- Kritischer automatischer Alt-Writer gefunden:
+  - `js/features/anonymous-extracted/beta/anon-0011.js`
+  - historische V4.02-`v062FillShops()`-Logik erzwang bei jedem globalen `render()` wieder lokalen 6+6-Händlerbestand, sobald Arrays leer/nicht in der alten Form waren;
+  - während moderner Server-Hydration führte das zu: leer/neu → lokale Fantasy-Items → anschließend `v7063` Serveritems → sichtbarer Shop-Sprung.
+- Fix:
+  - `v062FillShops()` vollständig als Shop-Writer retired;
+  - der globale `render()`-Wrapper darf Shoparrays nicht mehr verändern;
+  - historischer One-Time-Refresh entfernt.
+  - Commit: `8c688df8cd514a54eb602a84a91c4bf0221529f5`
+  - Cache-Bust Beta/Server1: `a2399b847548da55de52ecd49be9c217e7aabd9b`, `20616506d18ab432a2c9b179df4914d31b863b7c`.
+- Rest-Audit zeigte weitere lokale Bestands-Writer:
+  - `v030Fill()` in `v8009-a1-shops-gems-enchants.js`;
+  - `v030FillShops()` + One-Time-Refresh in `v8009-a1-shop-stat-separation.js`;
+  - One-Time-Refresh in `v8009-s5-v135-shop-level-scaling.js`.
+- Diese drei wurden ebenfalls als Shop-Bestands-Owner retired:
+  - Generator-/Stat-Helfer bleiben erhalten;
+  - sie dürfen `weaponShop` / `magicShop` nicht mehr automatisch erzeugen/leeren/ersetzen.
+  - Commits:
+    - v030: `49d7d88d2652d727d91e6beaae128d0421dcb84f`
+    - v056: `dded001c461a6315f3e2a0ff4fcb59e021d43b67`
+    - v135: `dae8ec05eea75e756769879c897d35bb072b3f13`
+  - Cache-Bust Beta/Server1: `3811dc0e010accf00d25c2d9452ee6a60de277a2`, `19fed4e6e5debee9d917d57cfb6ba312c68964ee`.
+- Zielzustand: Live-Shopbestand wird ausschließlich durch `v7063/v7097` gesetzt; historische Renderer/Generatoren sind nur noch Darstellung/Kompatibilität und besitzen keinen Shop-State mehr.
