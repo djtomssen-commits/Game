@@ -174,32 +174,9 @@ function v056UniqueOffers(count, maker, maxTries=250){
 
 /* Regenerate both shops with uniqueness rules. */
 v030FillShops=function(force=false){
-  if(force || !Array.isArray(s.weaponShop) || s.weaponShop.length!==9){
-    s.weaponShop=v056UniqueOffers(9,()=>v030MakeGear(v030WeaponBase()));
-  }
-
-  if(force || !Array.isArray(s.magicShop) || s.magicShop.length!==9){
-    const jewelry=v056UniqueOffers(3,()=>v030MakeJewelryOffer());
-
-    const mats=[];
-    const seenMat=new Set();
-    let tries=0;
-
-    while(mats.length<6 && tries<200){
-      tries++;
-      const it=v030MakeMaterial();
-      if(!it)continue;
-      const key=`${it.baseId||it.name}|${it.quality||'gray'}|${it.type||''}`;
-      if(seenMat.has(key))continue;
-      seenMat.add(key);
-      mats.push(it);
-    }
-
-    s.magicShop=[...jewelry,...mats].slice(0,9);
-  }
-
-  localStorage.setItem(KEY,JSON.stringify(s));
-};
+  /* V8.102 RETIRED: server owns merchant stock. */
+  s.weaponShop??=[];s.magicShop??=[];return false;
+}
 
 /* Replacement after purchase must also avoid exact duplicate already visible. */
 function v056FreshReplacement(currentShop, maker){
@@ -287,14 +264,8 @@ window.v030BuyMagic=function(i){
   render();
 };
 
-/* One-time force refresh so old equal-stat offers disappear immediately. */
-if(!s.v056ShopFixed){
-  s.weaponShop=[];
-  s.magicShop=[];
-  v030FillShops(true);
-  s.v056ShopFixed=true;
-  localStorage.setItem(KEY,JSON.stringify(s));
-}
+/* V8.102: one-time local merchant refresh retired. */
+if(!s.v056ShopFixed)s.v056ShopFixed=true;
 
 function v056AddShopHint(){
   const shop=document.querySelector('#shop');
