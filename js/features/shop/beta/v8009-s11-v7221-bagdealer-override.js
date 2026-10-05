@@ -31,7 +31,7 @@
   /* V8.101: Tütchen is intentionally not released yet.
      Keep every old direct/open entry point fail-closed so no ad/reward flow can run. */
   window.v7215BagDealerOpen = function(){
-    try{window.v063Toast?.('Tütchen · Coming Soon','info','Harz Lotto ist bereits verfügbar. Tütchen folgen später.')}catch(_){}
+    try{window.v063Toast?.('Tütchen · Coming Soon','info','Der Harz-Automat ist bereits verfügbar. Tütchen folgen später.')}catch(_){}
     try{window.v8010HarzLotto?.open?.()}catch(_){}
     return false;
   };
