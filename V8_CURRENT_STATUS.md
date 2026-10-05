@@ -8982,3 +8982,38 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
   - Harz-Automat ist die aktuelle Zufallsmechanik;
   - Tütchen bleibt Coming Soon;
   - Datenschutz für echte AdMob-Werbung bleibt bis zum Produktions-Go-Live vorgemerkt.
+
+
+### 2026-10-05 – Offene Restpunkte vor/bei öffentlichem Release
+Erledigt und nicht erneut als offen behandeln:
+- finaler App-Inhaltsabgleich durchgeführt;
+- alte sichtbare Lotto-/Tütchen-Alttexte bereinigt;
+- Beta-Harz-Automat auf Server-1-Asset-Parität gebracht;
+- Account-Löschpfad gehärtet;
+- ein Beta-Testaccount wurde erfolgreich gelöscht; Auth-User und Auth-Identity waren danach nicht mehr vorhanden;
+- Melden/Blockieren/Moderation im Gildenchat vorhanden und geprüft;
+- Play-Console-Grundeinstellungen wurden bereits gemeinsam durchgegangen.
+
+Noch offen:
+1. **AdMob-/Rewarded-Ads-Go-Live erst nach öffentlicher Play-Store-Freigabe**
+   - Google-Testanzeigen in der nativen `GrowLegendsAds`-Bridge durch echte Rewarded-Ad-Units ersetzen.
+   - Produktions-Reward/SSV bzw. serverseitige Reward-Bestätigung testen.
+   - `ad_bag_settings.mode` von `test` auf Produktion umstellen.
+   - Tütchen-Dealer `Coming Soon` entfernen.
+2. **Datenschutz/Consent beim echten Ads-Go-Live finalisieren**
+   - `datenschutz.html` an den realen Produktions-AdMob-Build anpassen.
+   - tatsächliche Datenflüsse, Geräte-/Werbe-/technische Daten, personalisierte/nicht personalisierte Werbung, Consent/UMP, Empfänger/Drittlandtransfer und Widerrufsmöglichkeiten korrekt dokumentieren.
+   - Google-Play-Data-Safety-/Ads-Angaben gegen den finalen Produktions-Build erneut abgleichen.
+3. **Optionaler zweiter Account-Lösch-End-to-End-Nachweis**
+   - vor dem Löschen UID notieren;
+   - Testaccount löschen;
+   - danach sämtliche relevanten Beta-Tabellen gezielt nach dieser UID prüfen.
+   - Der erste praktische Löschtest war erfolgreich, aber ohne vorher notierte UID war kein vollständiger tabellenweiser Restdaten-Nachweis mehr möglich.
+4. **Separater Supabase-Security-Audit kann noch durchgeführt werden**
+   - Advisor-Warnungen klassifizieren;
+   - insbesondere Anonymous-Sign-In/RLS-Warnungen und Leaked-Password-Protection prüfen;
+   - nichts blind ändern, sondern nur echte Release-Risiken beheben.
+
+Aktueller Release-Status:
+- Für die Frage `Haben wir in der App die nötigen rechtlichen/policy-relevanten Bausteine?` sind die wesentlichen App-Funktionen und Rechtstexte vorhanden.
+- Der einzige bewusst verschobene Pflichtblock ist der echte AdMob-/Datenschutz-Go-Live, weil die App derzeit noch nicht öffentlich mit Produktionswerbung läuft.
