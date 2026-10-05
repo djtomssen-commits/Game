@@ -8820,3 +8820,13 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
 - Nicht wieder auf das alte Lotto-Modell zurückfallen.
 - Kein Patch über den alten Lotto-Code legen; aktive Owner direkt auf Harz-Automat umstellen.
 - Beta testen, dann Server1.
+
+
+### 2026-10-05 – Harz-Automat wieder scharf
+- Nutzer meldete: Automatenmotiv im neuen Harz-Automat sichtbar verschwommen, obwohl es im früheren Harz-Lotto scharf war.
+- Ursache bestätigt: Beim Umbau auf `v8010-harz-lotto-v2.css` war der Hintergrund wieder auf das alte kleinere JPEG `assets/v8010-harz-lotto-machine.jpg` zurückgefallen.
+- Fix direkt im bestehenden Automaten-CSS, keine neue Patch-Schicht:
+  - Hintergrund wieder auf das bereits vorhandene HQ-Asset `assets/v8010-harz-lotto-machine-hq.webp` gestellt.
+  - Commit: `93b4547f2047f125340be7336621f4f12958ffa1`.
+- Cache-Bust für Beta und Server1 auf `8011machine2` erhöht.
+- Automatenlogik, Rewards und Serverautorität unverändert.
