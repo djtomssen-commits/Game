@@ -45,10 +45,10 @@ function setTab(tab){
 }
 
 function tierInfo(stake){
-  if(stake===5)return {count:1,headline:'1 Belohnung',sub:'60 % Gold · 25 % Material · 15 % Ausrüstung'};
-  if(stake===10)return {count:2,headline:'2 Belohnungen',sub:'45 % Gold · 30 % Material · 25 % Ausrüstung je Ziehung'};
-  if(stake===25)return {count:3,headline:'3 Belohnungen',sub:'1× Ausrüstung Blau+ garantiert · danach bessere Chancen'};
-  return {count:5,headline:'5 Belohnungen',sub:'1× Ausrüstung Episch+ garantiert · höchste Chancen'};
+  if(stake===5)return {count:1,headline:'1 Belohnung',sub:'Gold · Material · Zeit-Samen · Fragmente · Samen · Ausrüstung · selten Harz'};
+  if(stake===10)return {count:2,headline:'2 Belohnungen',sub:'2 normale Ziehungen mit verbessertem Mengenwert'};
+  if(stake===25)return {count:4,headline:'4 Belohnungen',sub:'3 normal + 1 seltene Garantie'};
+  return {count:7,headline:'7 Belohnungen',sub:'5 normal + 1 seltene + 1 Premium-Garantie'};
 }
 function qualityLabel(q){
   return ({gray:'Normal',green:'Grün',blue:'Blau',purple:'Episch',orange:'Legendär',cyan:'Mythisch',gold:'Gold'})[q]||q||'Belohnung';
@@ -56,10 +56,11 @@ function qualityLabel(q){
 function chancesHtml(){
   return `<div class="v8011-chances">
     <h3>Chancen &amp; Garantien</h3>
-    <div><b>5 Harz-Taler</b><span>1 Belohnung · 60 % Gold · 25 % Material · 15 % Ausrüstung</span><small>Ausrüstung: 55 % Grau · 35 % Grün · 10 % Blau. Material: 70 % Grün · 30 % Blau.</small></div>
-    <div><b>10 Harz-Taler</b><span>2 Belohnungen · je 45 % Gold · 30 % Material · 25 % Ausrüstung</span><small>Ausrüstung: 30 % Grau · 45 % Grün · 22 % Blau · 3 % Episch. Material: 25 % Grün · 60 % Blau · 15 % Episch.</small></div>
-    <div><b>25 Harz-Taler</b><span>3 Belohnungen · erste Belohnung garantiert Ausrüstung Blau oder besser</span><small>Garantie: 78 % Blau · 20 % Episch · 2 % Legendär. Weitere Ziehungen: 35 % Gold · 30 % Material · 35 % Ausrüstung.</small></div>
-    <div><b>50 Harz-Taler</b><span>5 Belohnungen · erste Belohnung garantiert Ausrüstung Episch oder besser</span><small>Garantie: 82 % Episch · 16 % Legendär · 2 % Mythisch. Weitere Ziehungen: 25 % Gold · 25 % Material · 50 % Ausrüstung.</small></div>
+    <div><b>Normale Ziehung</b><span>30 % Gold · 18 % Edelstein/Rolle · 16 % Zeit-Samen · 12 % Fragmente · 5 % Samen · 17 % Ausrüstung · 2 % Harz-Taler</span><small>Harz-Taler können höchstens einmal pro Päckchen gezogen werden. Mythische Ausrüstung ist im Automaten ausgeschlossen.</small></div>
+    <div><b>5 Harz-Taler</b><span>1 normale Belohnung</span><small>Kleine Mengen; Harz-Rückgabe maximal 1 HT.</small></div>
+    <div><b>10 Harz-Taler</b><span>2 normale Belohnungen</span><small>Größere Mengen bei Zeit-Samen, Fragmenten und Samen.</small></div>
+    <div><b>25 Harz-Taler</b><span>4 Belohnungen · 3 normal + 1 seltene Garantie</span><small>Garantie-Pool: 35 % Blau+-Ausrüstung · 30 % 3–5 Zeit-Samen · 25 % 30–60 Fragmente · 10 % 2–3 bessere Samen.</small></div>
+    <div><b>50 Harz-Taler</b><span>7 Belohnungen · 5 normal + 1 seltene + 1 Premium-Garantie</span><small>Premium-Pool: 35 % Episch/Legendär · 30 % 6–10 Zeit-Samen · 25 % 80–120 Fragmente · 10 % 4–6 bessere Samen.</small></div>
     <p>Alle Belohnungen sind ausschließlich virtuelle Spielinhalte. Kein Echtgeldgewinn, keine Auszahlung und kein Spieler-Jackpot.</p>
   </div>`;
 }
@@ -67,8 +68,11 @@ function rewardHtml(r){
   const q=esc(r?.quality||'');
   const label=esc(r?.label||'Belohnung');
   const icon=esc(r?.icon||'🎁');
-  const amount=r?.kind==='gold'?'<strong>'+fmt(r.amount)+' Gold</strong>':'<strong>'+label+'</strong>';
-  return `<div class="v8011-reward q-${q}"><div class="v8011-reward-icon">${icon}</div><div>${amount}<small>${esc(qualityLabel(r?.quality))}</small></div></div>`;
+  const n=Math.max(0,Number(r?.amount)||0);
+  let main='<strong>'+label+'</strong>';
+  if(r?.kind==='gold')main='<strong>'+fmt(n)+' Gold</strong>';
+  else if(['time_seed','fragment','seed','harz'].includes(String(r?.kind||'')))main='<strong>'+fmt(n)+'× '+label+'</strong>';
+  return `<div class="v8011-reward q-${q}"><div class="v8011-reward-icon">${icon}</div><div>${main}<small>${esc(qualityLabel(r?.quality))}</small></div></div>`;
 }
 function rewardsPopup(){
   if(!Array.isArray(S.rewards))return '';
