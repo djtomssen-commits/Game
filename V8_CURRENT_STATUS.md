@@ -9119,3 +9119,15 @@ Aktueller Release-Status:
 - Nächster manueller Check:
   - auf Beta erneut 50 HT ziehen;
   - erwartet: Paket wird erfolgreich erzeugt, 7 Belohnungen werden gespeichert und anschließend normal revealbar.
+
+
+### 2026-10-05 – Startseite: WhatsApp Community durch Kanal ersetzt
+- Aktueller Startseiten-Owner: `js/features/home/beta/v8009-home-renderer.js`.
+- Alten WhatsApp-Community-Link ersetzt durch:
+  - `https://whatsapp.com/channel/0029Vb91tC62f3EGkwjeQb2T`
+- Sichtbarer Text geändert:
+  - `Community beitreten` → `Kanal folgen`
+  - aria-label → `Grow Legends WhatsApp-Kanal öffnen`
+- Keine neue UI-Schicht eingebaut; bestehender Renderer direkt angepasst.
+- Änderung gilt über denselben Home-Renderer konsistent für Beta und Server 1.
+- Commit: `9192fd4612f3186f61f7383606c50e5b5415e82c`.
