@@ -52,7 +52,7 @@ function v127FreshShop(){
   return false;
 }
 
-function v127ServerOwned(){try{return !!(typeof v073User!=='undefined'&&v073User?.id&&(window.v7081UseAuthority?.('quest')||window.v7081UseAuthority?.('shop')||window.v7081UseAuthority?.('worldboss')))}catch(_){return false}}
+function v127ServerOwned(){try{return !!(typeof v073User!=='undefined'&&v073User?.id&&(window.v7081UseAuthority?.('quest')||window.v7081UseAuthority?.('items')||window.v7081UseAuthority?.('shop')||window.v7081UseAuthority?.('worldboss')))}catch(_){return false}}
 function v127ApplyDailyReset(options={}){
   if(v127ServerOwned()){v7173LegacyBlock('midnightResetBlocks');return false;}
   const today=v127LocalDayKey();
@@ -140,17 +140,9 @@ v110ResetDay=function(){
 v110ResetDay.__v7173ServerGuard=true;
 
 function v127AddResetInfo(){
-  /* Shop note */
-  const shop=document.querySelector('#shop');
-  if(shop && !document.querySelector('#v127ShopResetInfo')){
-    const note=document.createElement('div');
-    note.id='v127ShopResetInfo';
-    note.className='v127-daily-reset-note';
-    note.textContent='🌙 Händler: tägliche automatische Aktualisierung um 00:00 Uhr.';
-    const firstCard=shop.querySelector('.card');
-    if(firstCard)firstCard.insertAdjacentElement('beforebegin',note);
-    else shop.prepend(note);
-  }
+  /* V8.102: Shop reset note retired. The merchant is server-authoritative and
+     its reset/refresh policy must not be injected by this legacy local reset layer. */
+  document.getElementById('v127ShopResetInfo')?.remove();
 
   /* Worldboss meta note is intentionally compact. */
   const hero=document.querySelector('#v118WorldBossHero');
