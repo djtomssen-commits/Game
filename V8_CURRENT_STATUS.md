@@ -8483,3 +8483,20 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
   - Item-Authority Frühpfad + Shop-Repaint: `734904520b204d0b00066bf4472432caf5e027d8`
   - Equipment-Änderung → Shopvergleich aktualisieren: `275426c91e7849eff09585ec73a5d3358f09d2ff`
   - Beta/Server1 Cache-Busts: `2410316d897a4d04a2bad64827fd1386efa6fae0`, `937023d21fd393dc269a3631635433f662eb14ea`.
+
+
+### 2026-10-05 – Shop-Umsprung im Video behoben
+- Nutzer-Video zeigt: Shop öffnet zunächst mit einem Angebotssatz und springt wenige Sekunden später sichtbar auf andere Items.
+- Ursache direkt im aktiven Shop-Core gefunden:
+  - `v057FillShops()` erwartete historisch **9 lokale Angebote**;
+  - der aktuelle serverautoritative Shop liefert **6 Angebote**;
+  - jeder `renderShop()`-Aufruf interpretierte die korrekten 6 Serverangebote als „unvollständig“ und generierte lokal wieder 9 neue Items;
+  - der nächste Server-Hydrate setzte danach erneut die echten 6 Angebote ein → sichtbarer Umsprung.
+- Fix:
+  - `js/features/shop/beta/v8009-a1-clean-shop-core.js`
+  - unter aktiver Item-Authority erzeugt `v057FillShops()` **keine lokalen Shopangebote mehr**;
+  - die alte 9-Slot-Logik bleibt nur als nicht-autoritativer Fallback;
+  - serverseitige 6-Slot-Angebote bleiben stabil und werden nicht mehr durch Render-Aufrufe ersetzt.
+- Commit: `06572543ee8dd101230a22e36aa36122853c0ff1`
+- Cache-Bust Beta: `4adc35e109ce202173fd105f72e8f3eb3de422fd`
+- Cache-Bust Server1: `195af38189c20764e9e1041ca04f3b9f11f15c95`.
