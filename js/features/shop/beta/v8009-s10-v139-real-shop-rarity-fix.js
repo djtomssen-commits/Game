@@ -10,6 +10,27 @@ function v139QualityClass(q){
   }[q]||'v139-gray';
 }
 
+function v139ComparisonHtml(it){
+  if(it?.type==='gem'||it?.type==='scroll')return '';
+  /* V8.010: Never show a comparison from a pre-hydration/local equipment snapshot.
+     V470 is the single canonical comparison owner; until its server-backed item
+     authority has hydrated, show a neutral loading state instead of stale +/- values. */
+  try{
+    if(typeof window.v470CompareItem!=='function'){
+      return '<div class="v090-shop-compare same">⏳ Vergleich wird geladen …</div>';
+    }
+    if(window.v7081UseAuthority?.('items')){
+      const d=window.v7074ItemAuthorityDiagnostics?.();
+      if(!d?.ready||!d?.lastSync){
+        return '<div class="v090-shop-compare same">⏳ Vergleich wird geladen …</div>';
+      }
+    }
+  }catch(_){
+    return '<div class="v090-shop-compare same">⏳ Vergleich wird geladen …</div>';
+  }
+  return typeof v090ComparisonHtml==='function'?v090ComparisonHtml(it):'';
+}
+
 function v139ActualOffer(it,i,kind){
   const q=it?.quality||'gray';
   const info=it.type==='gem'
@@ -18,10 +39,7 @@ function v139ActualOffer(it,i,kind){
       ? `✨ ${v030EffectLabel(it.effect,it.value)}`
       : itemBonus(it);
 
-  const comparison=(it.type==='gem'||it.type==='scroll')
-    ? ''
-    : (typeof v090ComparisonHtml==='function' ? v090ComparisonHtml(it) :
-       typeof v089ShopComparison==='function' ? v089ShopComparison(it) : '');
+  const comparison=v139ComparisonHtml(it);
 
   const qm=qualityMeta(q);
 
@@ -48,7 +66,7 @@ v030Offer=function(it,fn,i){
     : it.type==='scroll'
       ? `✨ ${v030EffectLabel(it.effect,it.value)}`
       : itemBonus(it);
-  const comparison=(it.type==='gem'||it.type==='scroll')?'':(typeof v090ComparisonHtml==='function'?v090ComparisonHtml(it):'');
+  const comparison=v139ComparisonHtml(it);
   return `
     <div class="shop-item ${it.rarity||''} ${v139QualityClass(q)}">
       <div class="shop-icon">${it.icon||'🎁'}</div>
