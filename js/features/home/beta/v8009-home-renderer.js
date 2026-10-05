@@ -340,9 +340,9 @@
     return `
     <div class="v366-world v690-world">
       <section class="v366-hero v690-hero">
-        <a class="v7187-wa-ticket" href="https://chat.whatsapp.com/BTOJbKtozNVEBNQL5ZFoce" target="_blank" rel="noopener noreferrer" aria-label="Grow Legends WhatsApp Community öffnen">
+        <a class="v7187-wa-ticket" href="https://whatsapp.com/channel/0029Vb91tC62f3EGkwjeQb2T" target="_blank" rel="noopener noreferrer" aria-label="Grow Legends WhatsApp-Kanal öffnen">
           <span class="v7187-wa-icon" aria-hidden="true">💬</span>
-          <span class="v7187-wa-copy"><small>GROW LEGENDS</small><b>WHATSAPP</b><span>Community beitreten</span></span>
+          <span class="v7187-wa-copy"><small>GROW LEGENDS</small><b>WHATSAPP</b><span>Kanal folgen</span></span>
         </a>
         <div class="v366-character" aria-hidden="true"></div>
         <div class="v366-profile">
