@@ -8856,3 +8856,38 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
   - Overlays (Bestand, Päckchen, Einsatzhinweis) bleiben absolut über demselben Automatencontainer.
 - Keine neue Patch-/Render-Schicht.
 - Cache-Bust Beta + Server1 auf `8011machine4`.
+
+
+### 2026-10-05 – Harz-Automat Reward-Pool V8.012 erweitert
+- Nutzerfreigabe für breiteren Belohnungspool umgesetzt.
+- Serverautoritative Migration: `expand_harz_machine_reward_pool_v8012`.
+- Neue Anzahl:
+  - 5 HT → 1 Belohnung
+  - 10 HT → 2 Belohnungen
+  - 25 HT → 4 Belohnungen (3 normal + 1 seltene Garantie)
+  - 50 HT → 7 Belohnungen (5 normal + 1 seltene + 1 Premium-Garantie)
+- Normaler Pool:
+  - 30 % Gold
+  - 18 % Edelstein/Verzauberungsrolle
+  - 16 % Zeit-Samen
+  - 12 % Fragmente
+  - 5 % Samen
+  - 17 % Ausrüstung
+  - 2 % kleine Harz-Taler-Rückgabe
+- Harz-Rückgabe ist auf maximal einen Treffer pro Päckchen begrenzt; Höhe 1–3 HT abhängig vom Einsatz.
+- 25-HT-Garantie:
+  - 35 % Ausrüstung Blau+
+  - 30 % 3–5 Zeit-Samen
+  - 25 % 30–60 Fragmente
+  - 10 % 2–3 bessere Samen
+- 50-HT-Premium-Garantie:
+  - 35 % Ausrüstung Episch/Legendär
+  - 30 % 6–10 Zeit-Samen
+  - 25 % 80–120 Fragmente
+  - 10 % 4–6 bessere Samen
+- Mythische Ausrüstung aus dem Harz-Automaten vollständig entfernt.
+- Samen, Zeit-Samen und Fragmente werden direkt in den bestehenden serverautoritativen Zuständen gebucht und in den vorhandenen Eventtabellen protokolliert.
+- Client-Chancenanzeige und Reward-Popup an neue Reward-Arten/Mengen angepasst.
+- `zufallschancen.html` an die tatsächlichen neuen Wahrscheinlichkeiten/Garantien angepasst.
+- Client-Code-Commit: `d792170833a0cea6e96ce0e23444dc789c6703ec`.
+- Cache-Bust Beta/Server1: `8012rewards1`.
