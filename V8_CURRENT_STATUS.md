@@ -8556,3 +8556,32 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
 - Commit: `23b1998ceacd0845fb2b2a856a3b56385de5162c`
 - Cache-Bust Beta: `483a22f527677ead901b62b26902400eb0298a57`
 - Cache-Bust Server1: `d2f06abb51a66e84106a9636974412b4ca46eb5a`.
+
+
+### 2026-10-05 – Root Cause Shop-Sprung: Whole-Save-Hydration schrieb alten Shop zurück
+- Neues Nutzer-Video (~50 s) frameweise geprüft:
+  - ca. 10 s: korrekter Server-Shop (`Händlerwaffe`, `Händler-Kopfschutz`, ...)
+  - ca. 15–20 s: Wechsel auf alte lokale Fantasy-Angebote (`Wurzelbeißer`, `Kettendorn-Axt`, `Knospenhorn-Helm`, ...)
+  - ca. 25 s: Rücksprung auf Server-Shop; gleichzeitig erscheinen alte Händler-DOM-Blöcke oberhalb.
+- Tatsächliche Root Cause:
+  - der Account-/Cloud-Resolver `v075ApplyCloudSave()` ersetzte den gesamten Live-State mit `player_saves.save_data`;
+  - alte Account-Snapshots enthalten weiterhin `weaponShop` und `magicShop`;
+  - dadurch konnte eine **späte Whole-Save-Hydration** einen bereits korrekt server-hydrierten Shop wieder mit altem lokalem Händlerbestand überschreiben;
+  - direkt danach korrigiert `v7063` erneut auf den Serverbestand → sichtbares Hin-und-her;
+  - der Whole-Save-Pfad ruft zusätzlich den historischen globalen `render()` auf, wodurch alte Shop-DOM-Strukturen kurzfristig wieder erzeugt werden konnten.
+- Root-Fix im Save-Vertrag:
+  - neue zentrale Funktion `v8102StripServerOwnedShopState()`;
+  - `weaponShop` und `magicShop` werden aus Whole-Account-Snapshots entfernt;
+  - Cloud-Load: alte Shopfelder aus `save_data` werden ignoriert;
+  - wenn der Server-Shop bereits hydriert ist, bleibt der aktuelle autoritative Shop beim Account-Hydrate erhalten;
+  - sonst werden Shoparrays leer gehalten, bis `v7063` den echten Server-Shop liefert;
+  - Cloud-Write speichert `weaponShop`/`magicShop` nicht mehr;
+  - v200/v145 lokale Account-Snapshots speichern diese Felder ebenfalls nicht mehr;
+  - v4136 kanonische Account-Snapshots entfernen die Felder ebenfalls;
+  - nach Whole-Save-Hydration übernimmt bei aktivem Shop wieder der kanonische Shop-Owner.
+- Betroffene Commits:
+  - v200 Save/Hydration-Vertrag: `acc4d01615cd45576ffd938d716d753022797b03`
+  - v145 Scoped-Snapshot-Schutz: `776c2241fe817eab1a37a3dbd82f2f6b2eee7b68`
+  - v4136 Canonical-Snapshot-Schutz: `d1fbb220a414365c0c8d9de2f02786e9511d2a94`
+  - Cache-Bust Beta: `98fcbde5f944d040485aa28153b6031807bc6d7c`
+  - Cache-Bust Server1: `d123c6e0bd78cce9272507cda793aebb87ee9b64`.
