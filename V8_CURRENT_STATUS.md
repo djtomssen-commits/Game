@@ -8929,3 +8929,33 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
      - Widerrufs-/Datenschutzoptionen.
   6. Google-Play-Data-Safety-, Ads- und ggf. Zielgruppen-/Content-Rating-Angaben gegen den finalen Produktions-Build abgleichen.
 - Wichtig: Datenschutztext nicht auf Verdacht vorziehen; Grundlage ist der reale native Produktions-AdMob-Build.
+
+
+### 2026-10-05 – Legal/Release Audit: Account-Löschung + UGC geprüft
+- Rechtstexte gegen aktuellen Code geprüft:
+  - `nutzungsbedingungen.html`, `kauf-und-erstattung.html`, `widerruf.html`, `datenschutz.html`, `zufallschancen.html`, `account-loeschen.html`.
+  - Kein alter aktiver Lotto-/Jackpot-Mechanismus mehr in den aktuellen Rechtstexten; Harz-Automat ist als aktuelle Zufallsmechanik beschrieben.
+  - `zufallschancen.html` entspricht dem aktuellen Harz-Automaten V8.012.
+- Google-Play-UGC-Anforderung mit aktuellem Code abgeglichen:
+  - Gildenchat hat Melden + Blockieren über `v8009-s1-v6144-player-safety.js`.
+  - Meldungen landen serverseitig in `player_reports`; Blockierungen in `player_blocks`.
+  - RLS/Policies begrenzen normale Nutzer auf eigene Meldungen/Blockierungen; Admins können Meldungen prüfen.
+- Kritischer Account-Deletion-Befund gefunden und behoben:
+  - vorher löschte `delete_my_account()` nur einige Alt-Tabellen direkt;
+  - viele neuere serverautoritative Tabellen ohne FK-Cascade konnten personenbezogene/spielbezogene `user_id`-Daten behalten;
+  - `guild_war_duels` hatte zwei `NO ACTION`-FKs und konnte die Account-Löschung blockieren.
+- Migration angewendet: `harden_account_deletion_full_player_cleanup_v8013`.
+- Neuer kanonischer Löschpfad für `public` und `server1`:
+  - entfernt zuerst Guild-War-Duelle des Nutzers;
+  - löscht anschließend dynamisch alle accountbezogenen Base-Table-Zeilen mit `user_id`;
+  - `withdrawal_requests` bleiben als möglicher rechtlicher/verbraucherrechtlicher Nachweis bewusst ausgenommen;
+  - löscht das Profil;
+  - löscht zuletzt `auth.users`, sodass verbleibende CASCADE/SET-NULL-Beziehungen greifen.
+- RPC-Sicherheit nach Fix:
+  - `anon`: kein EXECUTE;
+  - `authenticated`: EXECUTE erlaubt.
+- Technische Verifikation Beta/public + Server1: neuer Cleanup, Duel-Cleanup und Retention-Ausnahme vorhanden.
+- Noch offen vor finalem Store-Go-Live:
+  - einen echten Testaccount einmal Ende-zu-Ende löschen und danach auf Restdaten prüfen;
+  - Supabase Security Advisor separat bereinigen/klassifizieren (u. a. anonyme Rollenwarnungen und Leak-Password-Protection);
+  - Ads/Datenschutz wie separat dokumentiert erst beim Produktions-AdMob-Go-Live finalisieren.
