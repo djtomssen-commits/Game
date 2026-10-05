@@ -35,8 +35,11 @@ function v145FreshState(){
 function v145ReplaceState(next){
   if(!next || typeof next!=='object')return false;
 
+  const safe=JSON.parse(JSON.stringify(next));
+  try{window.v8102StripServerOwnedShopState?.(safe)}catch(_){}
   Object.keys(s).forEach(k=>delete s[k]);
-  Object.assign(s,JSON.parse(JSON.stringify(next)));
+  Object.assign(s,safe);
+  s.weaponShop=[];s.magicShop=[];
 
   try{localStorage.setItem(KEY,JSON.stringify(s))}catch(e){}
   return true;
@@ -46,6 +49,7 @@ function v145SaveScopedLocal(){
   if(!v073User || v073User.is_anonymous)return;
   try{
     const copy=JSON.parse(JSON.stringify(s));
+    try{window.v8102StripServerOwnedShopState?.(copy)}catch(_){}
     copy.__accountOwnerId=v073User.id;
     localStorage.setItem(v145ScopedKey(v073User.id),JSON.stringify(copy));
   }catch(e){
