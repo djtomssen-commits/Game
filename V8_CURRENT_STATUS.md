@@ -8452,3 +8452,34 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
 - **Anbau-Turm:** `v6271-tower-topbar-lobby-css.css` überschrieb den früheren Sticky-Fix mit `position:relative!important; top:auto!important`. Finaler Fix sitzt jetzt dort: `.v6259-head` ist sticky und startet bei `calc(var(--v654-hud-bottom, 60px) + 3px)`, also unter der tatsächlich gemessenen globalen Topbar.
 - Beta und Server 1 erhielten Cache-Busts für beide finalen Dateien, damit alte Assets nicht weiter aus Cache/Cloudflare verwendet werden.
 - Commits: `724e97a85ef7ab1389d9f657a6c3e8c43fbb7769`, `bd9ced277c042c7b79a5f162dc5777aa930db8fc`, `398071d36a7a5e80ec62af7d8e851dcd9cb1075c`, `bc5c77c5ea50ff31e7bc85a8adcae8b7ddfd5446`.
+
+
+### 2026-10-05 – Shop-Kauf gegen veraltete Angebote abgesichert + Erstvergleich korrigiert
+- Spielerfall **Over_Killer3** analysiert:
+  - 05.10.2026 08:52:24 CEST: bestätigter Shopkauf, -1.800 Gold;
+  - 05.10.2026 08:52:36 CEST: bestätigter Shopkauf, -9.000 Gold;
+  - beide Käufe erzeugten serverseitig Händlerstiefel; einer aktuell ausgerüstet, einer im Inventar;
+  - kein zu diesen Käufen gehörender Händler-Helm im Serverbestand.
+- Ursache Kauf-Mismatch:
+  - Client übergab bisher nur Händlerbereich + Slotindex;
+  - bei veralteter sichtbarer Shopkarte konnte der Server bereits ein anderes Angebot im selben Slot besitzen.
+- Schutz V8.102:
+  - Client sendet zusätzlich `p_expected_item_id`;
+  - Beta + Server1 RPC `v7097_buy_shop_item(..., p_expected_item_id)` prüfen die sichtbare Item-ID gegen das aktuell serverseitige Angebot **vor** Goldabzug/Inventaränderung;
+  - bei Abweichung: `SHOP_OFFER_CHANGED`, kein Goldabzug, Shop wird frisch geladen;
+  - alte 3-Parameter-RPC bleibt fail-closed und verlangt die erwartete Item-ID.
+- Shop ersetzt nach einem Kauf weiterhin **nur den gekauften Slot**; übrige Angebote bleiben unverändert.
+- Erstöffnungs-/Vergleichsfehler:
+  - Shopkarten konnten vor abgeschlossenem serverautoritativem Equipment-Hydrate Vergleichswerte aus einem älteren lokalen `s.equipment` berechnen;
+  - zusätzlich war in `v7074-item-enforce-bridge.js` im frühen Authority-Pfad irrtümlich `P.ready/P.enforce` statt `A.ready/A.enforce` verwendet.
+- Vergleichsfix:
+  - `v139ActualOffer` zeigt keine historischen v089/v090-Vergleiche mehr vor dem finalen v470-Owner;
+  - solange der serverseitige Item-State noch nicht bestätigt ist: neutral `Vergleich wird geladen …`;
+  - nach Authority-Hydration wird ein aktiver Shop gezielt neu gerendert;
+  - nach autoritativen Equipment-Änderungen wird der aktive Shop ebenfalls neu gerendert, damit Plus/Minus sofort zum aktuell getragenen Item passt.
+- Betroffene Commits:
+  - Client Kauf-ID-Guard: `b05a82e291b53921fd262218a734c5ec6edb13b7`
+  - Erstvergleich Owner: `e3aec1f9e08e2517a105c35753dd409214026113`
+  - Item-Authority Frühpfad + Shop-Repaint: `734904520b204d0b00066bf4472432caf5e027d8`
+  - Equipment-Änderung → Shopvergleich aktualisieren: `275426c91e7849eff09585ec73a5d3358f09d2ff`
+  - Beta/Server1 Cache-Busts: `2410316d897a4d04a2bad64827fd1386efa6fae0`, `937023d21fd393dc269a3631635433f662eb14ea`.
