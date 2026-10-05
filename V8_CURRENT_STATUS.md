@@ -8662,3 +8662,63 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
 - Cache-Bust:
   - Beta: `bebac935ce65a2fe440b0f5ed6767ffc8ad1a2a9`
   - Server1: `5ec4282e85c789cb15b3e69f0881c1bfc433324b`.
+
+
+### 2026-10-05 – Harz Lotto vollständig durch serverautoritären Harz-Automaten ersetzt
+- Anlass: rechtlich/Play-Policy riskante Lotto-/Jackpot-Struktur mit käuflichen Harz-Talern entfernt.
+- Neues Modell:
+  - 5 Harz-Taler → 1 Belohnung
+  - 10 Harz-Taler → 2 Belohnungen
+  - 25 Harz-Taler → 3 Belohnungen, erste Belohnung garantiert Ausrüstung Blau+
+  - 50 Harz-Taler → 5 Belohnungen, erste Belohnung garantiert Ausrüstung Episch+
+  - mögliche Rewards: Gold, Edelstein/Rolle, Ausrüstung;
+  - kein Spieler-Jackpot, keine Echtgeld-Auszahlung, keine Harz-Rückgewinn-Lotterie.
+- UX:
+  - vorhandener roter Automat bleibt;
+  - Einsatzstufe wählen;
+  - serverseitige Ziehung beim Einwurf;
+  - Päckchen erscheint im Ausgabefach;
+  - Klick auf Päckchen öffnet Belohnungsfenster;
+  - nicht geöffnetes Päckchen bleibt serverseitig als Pending-Paket erhalten.
+- Backend-Migration:
+  - Migration `replace_harz_lotto_with_reward_machine_v8011` erfolgreich angewendet.
+  - neue Tabellen `public.harz_machine_draws` und `server1.harz_machine_draws`.
+  - neue RPCs je Schema:
+    - `v8011_harz_machine_state()`
+    - `v8011_harz_machine_play(integer)`
+    - `v8011_harz_machine_reveal(uuid)`
+  - alte `v8010_harz_lotto_*` Kauf-/Claim-RPCs fail-closed mit `LOTTO_RETIRED`;
+  - alte Lotto-State-RPCs melden `retired=true`.
+  - beide pg_cron Lotto-Jobs `v8010_harz_lotto_draw` und `v8010_server1_harz_lotto_draw` entfernt.
+- Übergang:
+  - 2 offene Beta-Lottoscheine automatisch erstattet;
+  - insgesamt 50 Harz-Taler zurückgebucht;
+  - Server1 hatte keine offenen Scheine.
+- Reward-Kurven:
+  - 5 HT: 60 % Gold / 25 % Material / 15 % Gear; Gear 55 % Grau / 35 % Grün / 10 % Blau.
+  - 10 HT: 45 % Gold / 30 % Material / 25 % Gear; Gear 30 % Grau / 45 % Grün / 22 % Blau / 3 % Episch.
+  - 25 HT: erste Belohnung Gear 78 % Blau / 20 % Episch / 2 % Legendär; weitere Ziehungen 35 % Gold / 30 % Material / 35 % Gear.
+  - 50 HT: erste Belohnung Gear 82 % Episch / 16 % Legendär / 2 % Mythisch; weitere Ziehungen 25 % Gold / 25 % Material / 50 % Gear.
+- Client:
+  - `js/features/shop/beta/v8010-harz-lotto.js` in-place auf neuen V8.011 Harz-Automat umgebaut.
+  - Commit: `c86fb52e7c3a6a4244d8bb4d92b42f09ace6438e`.
+  - Automaten-/Päckchen-/Reward-CSS in `v8010-harz-lotto-v2.css`.
+  - Commit: `8678898eb5d4fa8b39fbc80834a4b4193d4df311`.
+  - Beta/Server1 UI-Texte von Harz Lotto → Harz-Automat und neue Cache-Versionen:
+    - Beta HTML: `48b1b38d4ce44e954d2639ad474e87523e32621a`
+    - Server1 HTML: `05e355180107de74c97f4a4a5fd89cfb9eba08e6`
+- Rechts-/Chancenseiten:
+  - `zufallschancen.html` auf echten aktuellen Server-Shopstand korrigiert:
+    - Waffen/Rüstung 6 Angebote;
+    - Schmuckbereich 2 Schmuck + 4 Materialien;
+    - 74 % Grau / 22 % Grün / 3,5 % Blau / 0,5 % Episch;
+    - Material 58 % Edelstein / 42 % Rolle.
+  - Harz-Automat Chancen und Garantien vollständig offengelegt.
+  - Commits:
+    - Zufallschancen: `453a5b74bd6f9a5525237112d85df2bce10339c0`
+    - Nutzungsbedingungen: `1077170c5b6ba732be8d0b65cbe8fdad25d5b5ee`
+    - Kauf/Erstattung: `f71d1c519df0510f8c0a6987f81e5f442fb76844`
+- QA:
+  - neue RPCs je Beta/Server1 vollständig vorhanden (3/3);
+  - keine Lotto-Cronjobs mehr vorhanden;
+  - transaktionaler Beta-Test `play(5) → reveal` auf Testaccount erfolgreich und vollständig zurückgerollt.
