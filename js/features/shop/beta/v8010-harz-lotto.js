@@ -112,6 +112,7 @@ function paint(){
     </section>
 
     <div class="v8010-machine v8011-machine">
+      <img class="v8010-machine-image" src="assets/file_00000000e27c8210b37148cc50f5d1af.png?v=8011machine4" alt="" draggable="false">
       <div class="v8010-machine-topinfo"><small>Dein Bestand</small><b>${fmt(harz)} Harz-Taler</b><span>${S.pending?'Päckchen liegt bereit':t.headline}</span></div>
       ${packageHtml()}
     </div>
