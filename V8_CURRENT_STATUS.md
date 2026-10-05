@@ -9076,3 +9076,23 @@ Aktueller Release-Status:
   - er prüft Struktur, Ladekette, Syntax, Owner und Server-Verfügbarkeit;
   - für echte transaktionale Gameplay-Fehler bleibt ein authentifizierter Testaccount nötig.
 - Künftig nach größeren Beta-Änderungen diesen synthetischen Smoke als ersten automatischen Gate verwenden, bevor Server 1 aktualisiert wird.
+
+
+### 2026-10-05 – Synthetischer No-Character-Smoke erstmals real ausgeführt
+- Workflow: `V8.140 Synthetic Player Smoke`.
+- Erster echter Lauf: **FAIL**, dadurch direkt zwei Treffer sichtbar:
+  1. `screen:tower` war ein zu strenger Testvertrag, weil der Turm über seine Runtime-Owner-Kette installiert/angesprochen wird und nicht zwingend als statischer Basis-HTML-Screen vorliegen muss.
+  2. Echter Syntaxfehler in `js/features/guild/beta/v8008-c25-guildboss-runtime-owner.js`.
+- Smoke-Diagnose verbessert:
+  - Node-Syntaxfehler geben jetzt Datei + genaue Fehlermeldung/Zeile aus.
+  - Turm wird über geladenen kanonischen Tower-Owner + `#tower`-Target-Vertrag geprüft statt nur über statisches HTML.
+  - Commit: `85208865a96e71e18bdd006ec2057f51ca12e985`.
+- Exakte echte Syntaxursache:
+  - Gildenkrieg-Tab-`queueMicrotask` hatte im `catch`-Block eine fehlende schließende `}`.
+  - Node meldete `SyntaxError: Unexpected token ')' ` bei Zeile 280.
+- Direkt im bestehenden Gildenboss-Runtime-Owner korrigiert, keine neue Patch-Schicht:
+  - Commit: `7b8451ce0f10474917508eecfa3296d4f42c36b7`.
+- Danach automatischer Workflow-Lauf:
+  - Run-ID `37348945608`
+  - Ergebnis: **SUCCESS / GRÜN**
+- Damit hat der neue No-Character-Smoke bereits beim ersten echten Einsatz einen realen geladenen JS-Fehler gefunden und abgesichert.
