@@ -372,14 +372,18 @@
   }
 
   function refreshMerchantPools(force){
-    if(!s||window.__V200_AUTH_READY__!==true)return;
-    if(!force&&Number(s.v6105ItemRefresh||0)===1)return;
+    /* V8.102: RETIRED.
+       V6.105 owns item templates/artwork only. Shop stock is server-authoritative
+       (v7063/v7097) and must never be cleared/regenerated from a navigation hook.
+       Keep the marker for compatibility, but do not mutate weaponShop/magicShop. */
+    if(!s)return false;
     try{
-      s.weaponShop=[];s.magicShop=[];
-      if(typeof v057FillShops==='function')v057FillShops(true); else if(typeof v030Fill==='function')v030Fill(true);
-      s.v6105ItemRefresh=1;
-      persist(false);
-    }catch(e){console.warn('V6.105 item refresh',e)}
+      if(Number(s.v6105ItemRefresh||0)!==1){
+        s.v6105ItemRefresh=1;
+        if(typeof persist==='function')persist(false);
+      }
+    }catch(e){console.warn('V6.105 shop pool retirement marker',e)}
+    return false;
   }
 
   function qa(){
