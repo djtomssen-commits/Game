@@ -9205,3 +9205,17 @@ Aktueller Release-Status:
 - Cache-Key: `8016towerheaderflow1`
 - index Cache: `bebcbdd32957f428eebdb9e228efce18bd62fa7f`
 - Server1 Cache: `1e7176dad53b4537ad7c2605b4f2b38bd25168a6`
+
+
+### 2026-10-05 – Anbau-Turm: globaler HUD-Safe-Bereich ergänzt
+- Nach dem ersten Header-Fix zeigten neue Screenshots: der orange Turm-Header überdeckt seine eigenen Inhalte nicht mehr, aber der gesamte Turm kann beim Öffnen/Scrollen noch unter die feste globale Gold/Harz/Dampf-Leiste geraten.
+- Zweiter zentraler Fix im selben Owner `css/features/tower/beta/v6271-tower-topbar-lobby-css.css`:
+  - `#tower.active` erhält oben einen Safe-Bereich auf Basis des bereits gemessenen globalen HUD-Werts:
+    - `padding-top: calc(var(--v654-hud-bottom, 82px) + 8px)`
+    - zusätzlich passendes `scroll-padding-top`
+- Dadurch startet der komplette Turm unterhalb der echten globalen HUD-Kante statt unter der Topbar.
+- Gilt zentral für alle Turm-Zustände; keine Einzel-Offsets pro Route/Kampf/Reward.
+- Commit CSS: `7c1015e4eaa3a59d92de9568bb6669162e4df037`
+- Cache-Key: `8017towerhudsafe1`
+- index Cache: `423a941000bef3e6a442f1debcee1b08a69ecccd`
+- Server1 Cache: `0575049cd64ecbf42156157a8ca6ee55feb91fbf`
