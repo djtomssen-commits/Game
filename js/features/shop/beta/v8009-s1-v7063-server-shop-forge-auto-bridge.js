@@ -155,7 +155,7 @@
     const x=db();if(!x||!uid()){S.ready=true;S.enabled=false;return false}
     const {data,error}=await x.rpc('v7063_shop_state');if(error)throw error;
     const r=row(data);if(!r?.ok)throw new Error(String(r?.reason||'ITEM_STAGE_NOT_READY'));
-    S.ready=true;S.enabled=true;S.lastError='';apply(r,{paint:false});return true;
+    S.ready=true;S.enabled=true;S.lastError='';apply(r,{paint:true});return true;
    }catch(e){
     S.ready=true;S.enabled=false;S.lastError=String(e?.message||e||'');
     if(!/ITEM_STAGE_NOT_ENABLED/i.test(S.lastError))console.warn('[V7063] stage gate',e);
@@ -167,14 +167,48 @@
 
  /* Server-owned Händler offers + purchases. */
  async function buy(kind,i,argsLike=null,ctx=null){
+  const idx=Number(i);
+  const visibleOffer=kind==='weapon'?s?.weaponShop?.[idx]:s?.magicShop?.[idx];
+  const expectedItemId=offerId(visibleOffer);
   const active=await itemAuthorityActive();
   if(!active){
    const base=kind==='weapon'?legacyBuyWeapon:legacyBuyMagic;
    if(typeof base==='function')return base.apply(ctx,argsLike||[i]);
    return false;
   }
+  if(!expectedItemId){
+   toast('Kauf gestoppt','info','Das sichtbare Händlerangebot ist noch nicht vollständig geladen.');
+   await loadStage(true);
+   stableRenderShop(true);
+   return false;
+  }
   if(!(await loadStage()))return false;
-  return q(async()=>{try{const r=await rpc('v7097_buy_shop_item',{p_kind:kind,p_index:Number(i),p_request_id:req('v7097_buy')});toast('🛒 Server-Kauf bestätigt','success',`-${Number(r.price)||0} Gold`);if(r?.bought&& !['gem','scroll','material'].includes(String(r.bought?.type||'')))void window.v7097ShowItemResult?.(r.bought,'🛒 Händlerkauf');return true}catch(e){S.lastError=String(e?.message||e);toast('Kauf abgelehnt','error',S.lastError);return false}})
+  const currentOffer=kind==='weapon'?s?.weaponShop?.[idx]:s?.magicShop?.[idx];
+  if(offerId(currentOffer)!==expectedItemId){
+   stableRenderShop(true);
+   toast('Händler aktualisiert','info','Das Angebot hat sich geändert. Bitte das jetzt sichtbare Item erneut kaufen.');
+   return false;
+  }
+  return q(async()=>{try{
+   const r=await rpc('v7097_buy_shop_item',{
+    p_kind:kind,
+    p_index:idx,
+    p_request_id:req('v7097_buy'),
+    p_expected_item_id:expectedItemId
+   });
+   toast('🛒 Server-Kauf bestätigt','success',`-${Number(r.price)||0} Gold`);
+   if(r?.bought&&!['gem','scroll','material'].includes(String(r.bought?.type||'')))void window.v7097ShowItemResult?.(r.bought,'🛒 Händlerkauf');
+   return true;
+  }catch(e){
+   S.lastError=String(e?.message||e);
+   if(/SHOP_OFFER_CHANGED|EXPECTED_ITEM_ID_REQUIRED/i.test(S.lastError)){
+    await loadStage(true);
+    stableRenderShop(true);
+    toast('Händler aktualisiert','info','Das Angebot war nicht mehr aktuell. Es wurde kein Gold abgezogen. Bitte erneut kaufen.');
+    return false;
+   }
+   toast('Kauf abgelehnt','error',S.lastError);return false
+  }})
  }
  try{
   const w=async function(i){return buy('weapon',i,arguments,this)};
