@@ -33,6 +33,16 @@ function v200ScopedKey(uid){
   return V200_ACCOUNT_SAVE_PREFIX+String(uid||'');
 }
 
+/* V8.102: shop stock is server-authoritative and must never travel inside
+   whole-account snapshots. Old saves may still contain these fields; strip
+   them on every read/write boundary so they cannot overwrite the live shop. */
+function v8102StripServerOwnedShopState(obj){
+  if(!obj||typeof obj!=='object')return obj;
+  try{delete obj.weaponShop;delete obj.magicShop}catch(_){}
+  return obj;
+}
+try{window.v8102StripServerOwnedShopState=v8102StripServerOwnedShopState}catch(_){}
+
 function v200FreshState(uid){
   const fresh=structuredClone(defaultState);
   fresh.playerClass=null;
@@ -52,7 +62,7 @@ function v200FreshState(uid){
 function v200SaveScopedLocal(){
   if(!v200DurableUser())return;
   try{
-    const copy=JSON.parse(JSON.stringify(s));
+    const copy=v8102StripServerOwnedShopState(JSON.parse(JSON.stringify(s)));
     copy.__accountOwnerId=v073User.id;
     localStorage.setItem(v200ScopedKey(v073User.id),JSON.stringify(copy));
   }catch(e){}
@@ -485,12 +495,25 @@ async function v075ApplyCloudSave(data){
 
   const loaded=v075SanitizeSave(data);
   if(!loaded)return false;
+  v8102StripServerOwnedShopState(loaded);
+
+  let liveWeaponShop=null,liveMagicShop=null,shopHydrated=false;
+  try{
+    const d=window.v7063ItemStageDiagnostics?.();
+    shopHydrated=!!(d?.ready&&d?.enabled);
+    if(shopHydrated){
+      liveWeaponShop=Array.isArray(s?.weaponShop)?JSON.parse(JSON.stringify(s.weaponShop)):[];
+      liveMagicShop=Array.isArray(s?.magicShop)?JSON.parse(JSON.stringify(s.magicShop)):[];
+    }
+  }catch(_){}
 
   v075ApplyingCloud=true;
 
   try{
     Object.keys(s).forEach(k=>delete s[k]);
     Object.assign(s,loaded);
+    s.weaponShop=shopHydrated?liveWeaponShop:[];
+    s.magicShop=shopHydrated?liveMagicShop:[];
 
     s.social??={};
     s.social.playerId=v073User.id;
@@ -511,6 +534,12 @@ async function v075ApplyCloudSave(data){
     v213LastComparable=v213Comparable(s);
 
     try{render()}catch(e){}
+    try{
+      if(document.getElementById('shop')?.classList.contains('active')){
+        if(shopHydrated)window.renderShop?.();
+        else void window.v7063ItemStageRefresh?.(true);
+      }
+    }catch(_){}
 
     return true;
 
@@ -638,7 +667,7 @@ async function v075WriteCloudSave(force=false){
     v213StampState();
   }
 
-  const snapshot=JSON.parse(JSON.stringify(s));
+  const snapshot=v8102StripServerOwnedShopState(JSON.parse(JSON.stringify(s)));
   snapshot.__accountOwnerId=uid;
   snapshot.social??={};
   snapshot.social.playerId=uid;
