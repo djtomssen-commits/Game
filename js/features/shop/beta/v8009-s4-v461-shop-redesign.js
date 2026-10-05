@@ -35,6 +35,41 @@
   }
   window.v461RerollShopSection=refillOne;
 
+  let v461ServerShopRefreshPending=false;
+  function v461ServerShopReady(){
+    try{
+      const uid=String((typeof v073User!=='undefined'&&v073User?.id)||'');
+      if(!uid)return true;
+      if(typeof window.v7063ItemStageDiagnostics!=='function')return false;
+      const d=window.v7063ItemStageDiagnostics();
+      return !!(d?.ready&&d?.enabled);
+    }catch(_){return false}
+  }
+  function v461RequestServerShop(){
+    if(v461ServerShopRefreshPending)return;
+    if(typeof window.v7063ItemStageRefresh!=='function')return;
+    v461ServerShopRefreshPending=true;
+    Promise.resolve(window.v7063ItemStageRefresh(true))
+      .catch(()=>false)
+      .finally(()=>{
+        v461ServerShopRefreshPending=false;
+        try{
+          if(document.getElementById('shop')?.classList.contains('active'))window.renderShop?.();
+        }catch(_){}
+      });
+  }
+  function v461LoadingHtml(){
+    return `
+      <div class="v461-shop-head">
+        <div>
+          <h2>⚔️ Waffen & Rüstung</h2>
+          <div class="muted">Händlerbestand wird mit dem Server abgeglichen …</div>
+        </div>
+        <div class="v461-shop-count">…</div>
+      </div>
+      <div class="empty" style="padding:22px 12px;text-align:center">⏳ Händlerangebote werden geladen …</div>`;
+  }
+
   function bindBuys(scope){
     (scope||document).querySelectorAll('.v057-buy').forEach(btn=>{
       const i=Number(btn.dataset.index);
@@ -79,6 +114,31 @@
         <div class="v461-shop-resource">🪙 Gold <b id="shopGold">${fmt(s.gold)}</b></div>
         <div class="v461-shop-resource">🟢 Harz-Taler <b id="shopHarz">${fmt(s.harzTaler)}</b></div>
       </div>`;
+
+    if(!v461ServerShopReady()){
+      gearCard.innerHTML=v461LoadingHtml();
+      let magic=document.querySelector('#v030MagicShop');
+      if(!magic){
+        magic=document.createElement('div');
+        magic.className='card v461-shop-card';
+        magic.id='v030MagicShop';
+        shop.appendChild(magic);
+      }
+      magic.className='card v461-shop-card';
+      magic.innerHTML=`
+        <div class="v461-shop-head">
+          <div>
+            <h2>💎 Schmuck, Edelsteine & Rollen</h2>
+            <div class="muted">Händlerbestand wird mit dem Server abgeglichen …</div>
+          </div>
+          <div class="v461-shop-count">…</div>
+        </div>
+        <div class="empty" style="padding:22px 12px;text-align:center">⏳ Händlerangebote werden geladen …</div>`;
+      v461RequestServerShop();
+      syncVersion();
+      try{if(typeof window.v441PaintResources==='function')window.v441PaintResources()}catch(e){}
+      return true;
+    }
 
     gearCard.innerHTML=`
       <div class="v461-shop-head">
