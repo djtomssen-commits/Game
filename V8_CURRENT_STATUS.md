@@ -8722,3 +8722,101 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
   - neue RPCs je Beta/Server1 vollständig vorhanden (3/3);
   - keine Lotto-Cronjobs mehr vorhanden;
   - transaktionaler Beta-Test `play(5) → reveal` auf Testaccount erfolgreich und vollständig zurückgerollt.
+
+
+### 2026-10-05 – Harz Lotto → Harz-Automat: Umbau gestartet (laufender Block)
+**Ziel**
+- Das bisherige Harz Lotto mit Schein, 6-aus-50, Dienstag-Ziehung, Spieler-Jackpot und 25-HT-Einsatz wird vollständig aus dem aktiven Produktpfad entfernt.
+- Der vorhandene rote Automat bleibt als visuelle Basis.
+- Neuer Ablauf:
+  - Spieler wählt festen Einsatz: 5 / 10 / 25 / 50 Harz-Taler.
+  - Server zieht die Harz-Taler ab und legt die komplette Belohnung bereits serverseitig fest.
+  - Im Ausgabefach erscheint anschließend ein Päckchen.
+  - Erst beim Klick auf das Päckchen öffnet sich das Belohnungsfenster.
+  - App-Abbruch nach dem Einwurf darf die Belohnung nicht verlieren; unrevealed Päckchen bleibt serverseitig offen.
+- Höherer Einsatz = mehr Belohnungen und bessere Qualitätschancen.
+- Kein Spieler-Jackpot, keine Echtgeld-Auszahlung, keine Rückgewinn-Logik des alten Lottos.
+
+**Backend bereits erledigt**
+- Supabase-Migration `replace_harz_lotto_with_reward_machine_v8011` erfolgreich angewendet.
+- Neue Tabellen:
+  - `public.harz_machine_draws`
+  - `server1.harz_machine_draws`
+- Neue serverautoritative RPCs in Beta und Server1:
+  - `v8011_harz_machine_state()`
+  - `v8011_harz_machine_play(p_stake integer)`
+  - `v8011_harz_machine_reveal(p_draw_id uuid)`
+- Erlaubte Einsätze: 5 / 10 / 25 / 50 HT.
+- Reward-Anzahl:
+  - 5 HT → 1 Reward
+  - 10 HT → 2 Rewards
+  - 25 HT → 3 Rewards
+  - 50 HT → 5 Rewards
+- 25 HT: erste Belohnung garantiert Gear Blau+.
+- 50 HT: erste Belohnung garantiert Gear Episch+.
+- Aktuelle Reward-Kategorien im ersten Produktionsstand:
+  - Gold
+  - Edelstein / Verzauberungsrolle
+  - Ausrüstung
+- Rewards nutzen bestehende serverautoritative Systeme:
+  - Gold über `v6358_server_award_gold`
+  - Materialien über `v6359_add_weekly_material_for`
+  - Gear über `v6359_make_item_for`
+- Harz-Abzug wird serverseitig in `player_progress_trusted` gebucht und in `player_harz_events` geloggt.
+- Ungeöffnete Päckchen werden über `revealed_at is null` dauerhaft wiedergefunden.
+- Altes Lotto serverseitig stillgelegt:
+  - `v8010_harz_lotto_buy_ticket` → `LOTTO_RETIRED`
+  - `v8010_harz_lotto_claim` → `LOTTO_RETIRED`
+  - `v8010_harz_lotto_state` meldet retired/replacement.
+- Alte Lotto-Cronjobs entfernt:
+  - `v8010_harz_lotto_draw`
+  - `v8010_server1_harz_lotto_draw`
+- Offene Lotto-Scheine der laufenden Beta-Runde wurden beim Übergang automatisch mit ihrem Einsatz erstattet; Erstattung wird idempotent als `lotto_retirement_refund:<round>` in `player_harz_events` geloggt.
+
+**Client bereits erledigt**
+- `js/features/shop/beta/v8010-harz-lotto.js` vollständig vom Lotto-Client zum Harz-Automaten-Client umgebaut.
+- Commit: `c86fb52e7c3a6a4244d8bb4d92b42f09ace6438e`.
+- Neuer Client:
+  - nennt das Feature `Harz-Automat`;
+  - zeigt HT-Bestand;
+  - feste Einsatzbuttons 5/10/25/50;
+  - Einwurf über `v8011_harz_machine_play`;
+  - Päckchen erscheint im Automatenfach;
+  - Päckchen öffnet über `v8011_harz_machine_reveal`;
+  - Reward-Popup zeigt Gold / Material / Item inkl. Qualität;
+  - Chancen-/Garantie-Popup direkt im Feature;
+  - Tütchen-Tab bleibt Coming Soon;
+  - alter Zahlen-/Schein-/Jackpot-/Dienstag-Code ist aus dem aktiven Client entfernt.
+
+**Noch offen / nächster Schritt**
+1. Beta- und Server1-HTML final prüfen und ggf. committen:
+   - Hero-Text `Harz Lotto ist geöffnet` → `Harz-Automat ist geöffnet`.
+   - Tab `Harz Lotto` → `Harz-Automat`.
+   - `data-v8010-tab="lotto"` → `machine`.
+   - Loading-Text anpassen.
+   - Script-Cache-Bust auf `?v=8011machine1`.
+   - Der letzte HTML-Schreibschritt wurde durch den Chatwechsel unterbrochen; NICHT davon ausgehen, dass er bereits committed ist.
+2. Automaten-CSS auf Päckchen/Einsatzbuttons/Reward-Popup anpassen; vorhandenes Automatenbild beibehalten.
+3. Beta zuerst testen:
+   - 5/10/25/50 HT;
+   - korrekter Harz-Abzug;
+   - Päckchen bleibt nach Reload offen;
+   - Reveal nur einmal;
+   - Gold/Items/Materialien erscheinen serverseitig korrekt;
+   - Topbar aktualisiert sofort.
+4. Danach Server1-Funktionstest.
+5. Rechtsseiten nach tatsächlichem finalen Mechanismus aktualisieren:
+   - `nutzungsbedingungen.html`
+   - `kauf-und-erstattung.html`
+   - `zufallschancen.html`
+   - alte Lotto-/Jackpot-/6-aus-50-Texte vollständig entfernen.
+6. `zufallschancen.html` zusätzlich an den aktuellen Shopbestand anpassen (alte 9-Slot-Angaben sind veraltet).
+7. Danach nächster Legal-Audit-Block:
+   - Werbung/AdMob + `werbung.html` + Datenschutz/Data Safety
+   - DSA-Meldeweg für rechtswidrige UGC-Inhalte
+   - Play-Console Target Audience / Content Rating / Data Safety / Ads / Account Deletion gegen echten Build prüfen.
+
+**Wichtig**
+- Nicht wieder auf das alte Lotto-Modell zurückfallen.
+- Kein Patch über den alten Lotto-Code legen; aktive Owner direkt auf Harz-Automat umstellen.
+- Beta testen, dann Server1.
