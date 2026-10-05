@@ -8415,3 +8415,13 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
 - Balance-Trennung verifiziert: `V319_BETA_BALANCE`, `V318_BETA_BALANCE` und `V6287_BETA_BALANCE` schalten auf Server 1 weiterhin auf die alten Release-Werte.
 - Server-1-Freigabe unverändert: `opens_at=NULL`, `harzruferin_opens_at=NULL`, Release-Pfad `server1.html`; keine automatische Öffnung aktiviert.
 - Commit: `3fc6e7e03ca63c72689abdd074e1c3c6256568fc`.
+
+### 2026-10-05 – Hinterhof-Dealer geöffnet, nur Harz Lotto verfügbar
+- Hinterhof-Dealer ist player-sichtbar; beim Öffnen ist **Harz Lotto** der aktive/default Tab.
+- **Tütchen** bleibt sichtbar, aber deaktiviert und mit **COMING SOON** gekennzeichnet.
+- Tütchen-Inhalt ist initial verborgen; Lotto-Panel sofort sichtbar. Kein kurzer aktiver Tütchen-Zustand beim Laden.
+- Hero-Text angepasst: Harz Lotto geöffnet, Tütchen/Werbe-Belohnungen folgen später.
+- `v8010` erzwingt bei jedem Dealer-Open den Lotto-Tab; ein Versuch, `bags` zu öffnen, fällt auf Lotto zurück.
+- CSS für gesperrten Coming-Soon-Tab ergänzt.
+- Beta und Server 1 aktualisiert; Server 1 bleibt geschlossen.
+- Commits: `a4bffe3c54989275aa875c2ba83be6b01a3aa9c7`, `8593b079def294680c952c787ad2f82635c4926e`, `ff00b94ac08f1ff94097080266fcef20bfce1b89`, `58275a810d16588bd516c3bc9148819043a88ae5`.
