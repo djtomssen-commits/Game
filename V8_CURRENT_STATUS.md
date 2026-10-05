@@ -8840,3 +8840,19 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
   - gleiche Größe/Position, keine neue Render-Schicht.
 - Commit: `249f4914e07c08def600a744adaa3184c51983f2`.
 - Cache-Bust Beta + Server1 auf `8011machine3`.
+
+
+### 2026-10-05 – Harz-Automat: echte scharfe Lotto-Originaldatei wiederhergestellt
+- Neuer Screenshot zeigte weiterhin starke Unschärfe plus Bildartefakte.
+- Repo-/Historienaudit ergab die tatsächliche frühere scharfe Lotto-Lösung:
+  - Originaldatei liegt weiterhin im Repo: `assets/file_00000000e27c8210b37148cc50f5d1af.png`;
+  - Originalgröße ca. 1198×1313, Datei ca. 2,1 MB;
+  - beim früheren Lotto wurde sie ab Commit `58eff407bfb0dc26634eda6b8bdaa216f8745282` als natives `<img>` gerendert;
+  - der spätere CSS-Hintergrund mit 640×702/ca. 15–17 KB war die Quelle der sichtbaren Unschärfe/Artefakte.
+- Fix direkt im bestehenden V8.011 Automaten-Owner:
+  - natives `.v8010-machine-image` wieder in `v8010-harz-lotto.js` integriert;
+  - CSS-Hintergrundbild aus `.v8010-machine` entfernt;
+  - Original-PNG wird unverzerrt mit `width:100%; height:auto; filter:none; transform:none` gerendert;
+  - Overlays (Bestand, Päckchen, Einsatzhinweis) bleiben absolut über demselben Automatencontainer.
+- Keine neue Patch-/Render-Schicht.
+- Cache-Bust Beta + Server1 auf `8011machine4`.
