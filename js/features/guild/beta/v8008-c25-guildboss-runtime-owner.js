@@ -277,7 +277,7 @@ window.v8008C25InstallReliability=function(){
        paintBossProgress();
      }catch(err){state.issues.push('Gildenboss-Tab: '+String(err?.message||err))}
    });
-   if(tab==='war')queueMicrotask(async()=>{try{await v262LoadWar?.();state.lastWarAt=Date.now();v262RenderWar?.()}catch(err){state.issues.push('Gildenkrieg-Tab: '+String(err?.message||err))});
+   if(tab==='war')queueMicrotask(async()=>{try{await v262LoadWar?.();state.lastWarAt=Date.now();v262RenderWar?.()}catch(err){state.issues.push('Gildenkrieg-Tab: '+String(err?.message||err))}});
  },true);
  /* Boss reward already calls v254LoadGuild() and v255LoadBoss(); the final loader above now refreshes the stage too. */
  function health(){
