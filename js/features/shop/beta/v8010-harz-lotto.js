@@ -47,8 +47,8 @@ function setTab(tab){
 function tierInfo(stake){
   if(stake===5)return {count:1,headline:'1 Belohnung',sub:'Gold · Material · Zeit-Samen · Fragmente · Samen · Ausrüstung · selten Harz'};
   if(stake===10)return {count:2,headline:'2 Belohnungen',sub:'2 normale Ziehungen mit verbessertem Mengenwert'};
-  if(stake===25)return {count:4,headline:'4 Belohnungen',sub:'3 normal + 1 seltene Garantie'};
-  return {count:7,headline:'7 Belohnungen',sub:'5 normal + 1 seltene + 1 Premium-Garantie'};
+  if(stake===25)return {count:3,headline:'3 Belohnungen',sub:'2 normal + 1 seltene Garantie'};
+  return {count:5,headline:'5 Belohnungen',sub:'3 normal + 1 seltene + 1 Premium-Garantie'};
 }
 function qualityLabel(q){
   return ({gray:'Normal',green:'Grün',blue:'Blau',purple:'Episch',orange:'Legendär',cyan:'Mythisch',gold:'Gold'})[q]||q||'Belohnung';
@@ -59,8 +59,8 @@ function chancesHtml(){
     <div><b>Normale Ziehung</b><span>30 % Gold · 18 % Edelstein/Rolle · 16 % Zeit-Samen · 12 % Fragmente · 5 % Samen · 17 % Ausrüstung · 2 % Harz-Taler</span><small>Harz-Taler können höchstens einmal pro Päckchen gezogen werden. Mythische Ausrüstung ist im Automaten ausgeschlossen.</small></div>
     <div><b>5 Harz-Taler</b><span>1 normale Belohnung</span><small>Kleine Mengen; Harz-Rückgabe maximal 1 HT.</small></div>
     <div><b>10 Harz-Taler</b><span>2 normale Belohnungen</span><small>Größere Mengen bei Zeit-Samen, Fragmenten und Samen.</small></div>
-    <div><b>25 Harz-Taler</b><span>4 Belohnungen · 3 normal + 1 seltene Garantie</span><small>Garantie-Pool: 35 % Blau+-Ausrüstung · 30 % 3–5 Zeit-Samen · 25 % 30–60 Fragmente · 10 % 2–3 bessere Samen.</small></div>
-    <div><b>50 Harz-Taler</b><span>7 Belohnungen · 5 normal + 1 seltene + 1 Premium-Garantie</span><small>Premium-Pool: 35 % Episch/Legendär · 30 % 6–10 Zeit-Samen · 25 % 80–120 Fragmente · 10 % 4–6 bessere Samen.</small></div>
+    <div><b>25 Harz-Taler</b><span>3 Belohnungen · 2 normal + 1 seltene Garantie</span><small>Garantie-Pool: 35 % Blau+-Ausrüstung · 30 % 3–5 Zeit-Samen · 25 % 30–60 Fragmente · 10 % 2–3 bessere Samen.</small></div>
+    <div><b>50 Harz-Taler</b><span>5 Belohnungen · 3 normal + 1 seltene + 1 Premium-Garantie</span><small>Premium-Pool: 35 % Episch/Legendär · 30 % 6–10 Zeit-Samen · 25 % 80–120 Fragmente · 10 % 4–6 bessere Samen.</small></div>
     <p>Alle Belohnungen sind ausschließlich virtuelle Spielinhalte. Kein Echtgeldgewinn, keine Auszahlung und kein Spieler-Jackpot.</p>
   </div>`;
 }
