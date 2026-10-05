@@ -51,8 +51,12 @@ function v030MakeJewelry(slot=null){const wanted=slot?String(slot).toLowerCase()
 function v030MakeMaterial(){
  if(Math.random()<.58){const g=v030Gems[Math.floor(Math.random()*v030Gems.length)],q=v027ShopQuality(),boost={gray:0,green:1,blue:2,purple:3}[q]||0,v=v030Rand(g.min,g.max)+boost;return{uid:v030Uid(g.id),baseId:g.id,type:'gem',name:g.name,icon:g.icon,quality:q,rarity:qualityMeta(q).cls,stat:g.stat,value:v,price:Math.round((80+v*35)*({gray:1,green:1.3,blue:2,purple:3.6}[q]||1))}}
  const r=v030Scrolls[Math.floor(Math.random()*v030Scrolls.length)],q=v027ShopQuality(),boost={gray:0,green:0,blue:1,purple:2}[q]||0,v=v030Rand(r.min,r.max)+boost;return{uid:v030Uid(r.id),baseId:r.id,type:'scroll',name:r.name,icon:r.icon,quality:q,rarity:qualityMeta(q).cls,effect:r.effect,value:v,price:Math.round((100+v*45)*({gray:1,green:1.35,blue:2.2,purple:4}[q]||1))}}
-function v030Fill(force=false){if(force||s.weaponShop.length!==6)s.weaponShop=Array.from({length:6},()=>v030MakeGear(v030WeaponBase()));const shapeOk=Array.isArray(s.magicShop)&&s.magicShop.length===6&&s.magicShop[0]?.slot==='ring'&&s.magicShop[1]?.slot==='amulet';if(force||!shapeOk)s.magicShop=Array.from({length:6},(_,i)=>i===0?v030MakeJewelry('ring'):i===1?v030MakeJewelry('amulet'):v030MakeMaterial());localStorage.setItem(KEY,JSON.stringify(s))}
-if(!s.v030Init){s.weaponShop=[];s.magicShop=[];v030Fill(true);s.v030Init=true;localStorage.setItem(KEY,JSON.stringify(s))}else v030Fill(false);
+function v030Fill(force=false){
+  /* V8.102 RETIRED: merchant stock is server-authoritative (v7063/v7097).
+     Keep this symbol only for legacy compatibility; never mutate live shop arrays. */
+  s.weaponShop??=[];s.magicShop??=[];return false;
+}
+if(!s.v030Init){s.v030Init=true;}
 window.v030BuyWeapon=i=>{const it=s.weaponShop[i];if(!it)return;if(s.gold<it.price)return v115Alert('Zu wenig Gold.');s.gold-=it.price;s.inventory.push({...it,id:it.uid});s.weaponShop[i]=v030MakeGear(v030WeaponBase());persist()};
 window.v030BuyMagic=i=>{const it=s.magicShop[i];if(!it)return;if(s.gold<it.price)return v115Alert('Zu wenig Gold.');s.gold-=it.price;if(it.type==='gem'||it.type==='scroll')s.materials.push({...it});else s.inventory.push({...it,id:it.uid});s.magicShop[i]=i===0?v030MakeJewelry('ring'):i===1?v030MakeJewelry('amulet'):v030MakeMaterial();persist()};
 function v030Choices(){return Object.entries(s.equipment||{}).filter(([,it])=>!!it)}
