@@ -22,7 +22,7 @@
  ];
  function admin(){try{return typeof v093IsAdmin!=='undefined'&&v093IsAdmin===true&&!!v073User&&!v073User.is_anonymous}catch(e){return false}}
  function available(id){
-  if(id==='bagDealer')return admin()&&!!document.getElementById('bagDealer');
+  if(id==='bagDealer')return !!document.getElementById('bagDealer');
   if(document.getElementById(id))return true;
   if(id==='endgame')return typeof window.v457RenderEndgame==='function'||typeof window.renderEndgame==='function';
   if(id==='forge')return typeof window.v488OpenForge==='function'||typeof window.v488ForgeRender==='function';
