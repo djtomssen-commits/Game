@@ -158,3 +158,66 @@
   line-height:1;
   letter-spacing:.08em;
 }
+
+
+/* ===== V8.011 Harz-Automat ===== */
+#bagDealer .v8011-wrap{gap:8px}
+#bagDealer .v8011-machine .v8010-machine-topinfo{top:8.8%}
+#bagDealer .v8011-controls{
+  display:grid;gap:10px;padding:13px;border:2px solid #4f3a16;border-radius:16px;
+  background:linear-gradient(180deg,#18231a,#0b120d);box-shadow:inset 0 0 0 1px #9d722922,0 8px 20px #0008;
+}
+#bagDealer .v8011-stakes{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px}
+#bagDealer .v8011-stakes button{
+  min-height:62px;border:2px solid #4b5136;border-radius:12px;background:linear-gradient(#242d22,#111711);
+  color:#ddd9bd;font-weight:1000;font-size:18px;box-shadow:inset 0 1px #ffffff12,0 4px 9px #0007;
+}
+#bagDealer .v8011-stakes button small{display:block;margin-top:2px;color:#aaa98d;font-size:8px;text-transform:uppercase;letter-spacing:.06em}
+#bagDealer .v8011-stakes button.active{
+  border-color:#d7b84b;background:linear-gradient(#79591b,#3e2c0d);color:#fff0a8;
+  box-shadow:inset 0 0 0 1px #ffe08255,0 0 14px #d4b14144,0 4px 9px #0009;
+}
+#bagDealer .v8011-stakes button:disabled{opacity:.5}
+#bagDealer .v8011-tier-copy{display:grid;gap:2px;text-align:center}
+#bagDealer .v8011-tier-copy b{color:#ffe17a;font-size:15px}
+#bagDealer .v8011-tier-copy span{color:#bec8b8;font-size:10px}
+#bagDealer .v8011-play{
+  min-height:48px;border:2px solid #9f7d2b!important;background:linear-gradient(#7f5c1a,#432e0c)!important;
+  color:#fff1ad!important;font-size:14px!important;font-weight:1000!important;
+}
+#bagDealer .v8011-info-btn{
+  border:1px solid #5d6646;border-radius:10px;padding:9px;background:#131b14;color:#cbd5c6;font-size:10px;font-weight:900;
+}
+#bagDealer .v8011-note{margin:0;color:#89978a;font-size:9px;line-height:1.35;text-align:center}
+#bagDealer .v8011-package{
+  position:absolute;left:31.5%;top:72.7%;width:37%;height:12.5%;z-index:8;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  border:0;background:transparent;color:#fff0b4;text-shadow:0 2px 4px #000;cursor:pointer;
+  animation:v8011PackageDrop .55s cubic-bezier(.2,.85,.25,1.15) both;
+}
+#bagDealer .v8011-package span{font-size:clamp(31px,8vw,58px);line-height:.85;filter:drop-shadow(0 5px 5px #000a)}
+#bagDealer .v8011-package b{margin-top:4px;font-size:clamp(8px,2vw,12px);font-weight:1000}
+#bagDealer .v8011-package small{font-size:clamp(6px,1.6vw,9px);color:#e8d69e;font-weight:800}
+#bagDealer .v8011-package:active{transform:translateY(2px) scale(.98)}
+@keyframes v8011PackageDrop{0%{opacity:0;transform:translateY(-28px) scale(.7)}70%{opacity:1;transform:translateY(3px) scale(1.08)}100%{opacity:1;transform:none}}
+.v8011-reward-popup{max-width:560px}
+.v8011-reward-list{display:grid;gap:8px;clear:both;margin-top:8px}
+.v8011-reward{
+  display:flex;align-items:center;gap:11px;padding:11px;border:2px solid #3e4939;border-radius:13px;
+  background:linear-gradient(180deg,#172019,#0d130f);
+}
+.v8011-reward-icon{width:46px;height:46px;display:grid;place-items:center;border-radius:11px;background:#0a0f0b;border:1px solid #4a5945;font-size:25px}
+.v8011-reward strong{display:block;color:#f0f2e8;font-size:13px}
+.v8011-reward small{display:block;margin-top:3px;color:#9ca99c;font-size:9px;text-transform:uppercase;font-weight:900}
+.v8011-reward.q-green{border-color:#4f9d58}.v8011-reward.q-blue{border-color:#4380c6}.v8011-reward.q-purple{border-color:#9d56d1}
+.v8011-reward.q-orange{border-color:#dc8b31}.v8011-reward.q-cyan{border-color:#4acaca}.v8011-reward.q-gold{border-color:#d1b34c}
+.v8011-ok{width:100%;margin-top:12px}
+.v8011-chances{display:grid;gap:9px;clear:both}
+.v8011-chances h3{margin:2px 0 4px;color:#ffe094}
+.v8011-chances>div{display:grid;gap:3px;padding:10px;border:1px solid #4b543d;border-radius:11px;background:#101711}
+.v8011-chances>div b{color:#f1d879}.v8011-chances>div span{color:#d6ddd2;font-size:11px}.v8011-chances>div small{color:#98a597;font-size:9px;line-height:1.35}
+.v8011-chances p{margin:4px 1px;color:#9daa9c;font-size:9px;line-height:1.4}
+@media(max-width:600px){
+  #bagDealer .v8011-stakes{grid-template-columns:repeat(2,1fr)}
+  #bagDealer .v8011-stakes button{min-height:52px;font-size:16px}
+}
