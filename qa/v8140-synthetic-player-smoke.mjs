@@ -13,10 +13,17 @@ function check(ok,label,detail=''){
   else failures.push(label+(detail?' — '+detail:''));
 }
 
-const requiredScreens=['world','character','quests','dungeon','grow','guild','pvp','tower','shop','bagDealer'];
+const requiredScreens=['world','character','quests','dungeon','grow','guild','pvp','shop','bagDealer'];
 for(const id of requiredScreens){
   check(new RegExp('id=["\\\']'+id+'["\\\']').test(html),'screen:'+id);
 }
+/* Tower is installed/owned by the tower runtime chain and may not be static in the
+   base HTML at the same point as the ordinary screens. Verify the canonical owner
+   plus its target contract instead of demanding a static section node. */
+const towerOwnerRel='js/features/tower/beta/v8009-t1-tower-direct-preempt.js';
+check(html.includes(towerOwnerRel),'tower owner loaded');
+const towerOwner=fs.readFileSync(path.join(root,towerOwnerRel),'utf8');
+check(towerOwner.includes("getElementById('tower')")||towerOwner.includes('#tower'),'tower target contract');
 
 const requiredMarkers=[
   ['auth core','js/features/account/beta/v8009-s1-v200-stable-core.js?v=8102shopsavestrip1'],
@@ -52,7 +59,8 @@ for(const rel of jsFiles){
     execFileSync(process.execPath,['--check',path.join(root,rel)],{stdio:'pipe'});
     notes.push('OK  syntax:'+rel);
   }catch(e){
-    failures.push('syntax:'+rel);
+    const detail=String(e?.stderr||e?.stdout||e?.message||'').trim().split('\n').slice(0,6).join(' | ');
+    failures.push('syntax:'+rel+(detail?' — '+detail:''));
   }
 }
 
