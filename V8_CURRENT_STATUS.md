@@ -8612,3 +8612,27 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
     - v135: `dae8ec05eea75e756769879c897d35bb072b3f13`
   - Cache-Bust Beta/Server1: `3811dc0e010accf00d25c2d9452ee6a60de277a2`, `19fed4e6e5debee9d917d57cfb6ba312c68964ee`.
 - Zielzustand: Live-Shopbestand wird ausschließlich durch `v7063/v7097` gesetzt; historische Renderer/Generatoren sind nur noch Darstellung/Kompatibilität und besitzen keinen Shop-State mehr.
+
+
+### 2026-10-05 – Shop Restfehler aus neuem Video: 0-Angebote + Legacy-Render final abgefangen
+- Neues Nutzer-Video zeigte nach den vorherigen Shop-Writer-Fixes:
+  - zunächst korrekte 6 Serverangebote;
+  - danach Umsprung auf **0 Angebote**;
+  - anschließend tauchte wieder alter Shop-DOM wie `Bork · Händler von Grünhain` / Seltenheits-Hinweis auf.
+- Ursache 1:
+  - `v461-shop-redesign.js` betrachtete den Server-Shop bereits als bereit, sobald die Item-Stage `ready && enabled` war;
+  - wenn `weaponShop`/`magicShop` in einem späteren Whole-State-/Render-Timing kurz leer waren, wurde deshalb ein echter `0 Angebote`-Zustand gerendert.
+- Fix:
+  - v461 verlangt jetzt zusätzlich tatsächlich vorhandenen Shopbestand in beiden Bereichen;
+  - solange einer der beiden Bereiche leer ist, bleibt der Shop im neutralen Ladezustand und stößt den Server-Refresh an.
+  - Commit: `0aa3569db7543e0ad9b8d484097a2bbefe4d725c`.
+- Ursache 2:
+  - ein historischer globaler `render()` kann nach dem kanonischen Shop-Render noch Legacy-Shop-DOM erzeugen;
+  - der finale v4149-Render-Owner hatte bisher nur Navigation finalisiert, nicht den offenen Shop.
+- Fix:
+  - v4149 ruft nach jedem globalen Render bei aktivem `#shop` einmal den kanonischen `window.renderShop()` auf;
+  - dadurch übernimmt der finale Shop-Owner wieder unmittelbar und entfernt seine bekannten Legacy-Blöcke.
+  - Commit: `d3b9cd6330927f503f769d39f17eec53cc030a0e`.
+- Cache-Bust:
+  - Beta: `29e215a38154b85f56cb3237d7b56e05938b1a2a`
+  - Server1: `8d346940899d67146d5509521f3c6ff2098f09b0`.
