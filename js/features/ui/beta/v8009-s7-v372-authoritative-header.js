@@ -2,9 +2,13 @@
   const VERSION='V4.29 Stable';
   const SHORT='V4.29';
   const num=v=>Math.max(0,Math.round(Number(v)||0)).toLocaleString('de-DE');
+  let navigationScreen='';
   function cap(){try{return typeof v271DampfCap==='function'?v271DampfCap():100}catch(e){return 100}}
 
   function gameIsVisible(){
+    /* Tower owns several internal render states and can momentarily rebuild its
+       active screen markup. Navigation remains the stronger visibility signal. */
+    if(navigationScreen==='tower')return true;
     const world=document.querySelector('#world');
     if(world?.classList.contains('active'))return true;
     const active=document.querySelector('.screen.active');
@@ -72,6 +76,15 @@
   paint();
   document.addEventListener('DOMContentLoaded',paint,{once:true});
   window.addEventListener('pageshow',paint,{passive:true});
-  window.addEventListener('growlegends:account-ready',paint,{passive:true});
-  window.addEventListener('growlegends:navigation-open-v7119',paint,{passive:true});
+  window.addEventListener('growlegends:account-ready',()=>{navigationScreen='';paint()},{passive:true});
+  window.addEventListener('growlegends:account-transition-reset',()=>{navigationScreen='';paint()},{passive:true});
+  window.addEventListener('growlegends:navigation-open-v7119',e=>{
+    navigationScreen=String(e?.detail?.id||'');
+    paint();
+    if(navigationScreen==='tower'){
+      queueMicrotask(paint);
+      try{requestAnimationFrame(paint)}catch(_){}
+    }
+  },{passive:true});
+  window.v372PaintTopbar=paint;
 })();
