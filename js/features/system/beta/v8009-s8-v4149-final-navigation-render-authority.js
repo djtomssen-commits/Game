@@ -82,7 +82,7 @@
  try{
   const current=(typeof render==='function'?render:window.render);
   if(typeof current==='function'&&!current.__v4149Final){
-   const finalRender=function(){const r=current.apply(this,arguments);settle(false);return r};finalRender.__v4149Final=true;
+   const finalRender=function(){const r=current.apply(this,arguments);try{if(document.getElementById('shop')?.classList.contains('active'))window.renderShop?.()}catch(e){}settle(false);return r};finalRender.__v4149Final=true;
    try{render=finalRender}catch(e){}window.render=finalRender;
   }
  }catch(e){console.warn('V4.159 final render authority',e)}
