@@ -73,7 +73,7 @@ async function rpc(name,args={}){
   return one(data);
 }
 async function refresh(force=false,paint=true){
-  if(!window.v7081UseAuthority?.('items')){P.ready=true;P.enforce=false;return null;}
+  if(!window.v7081UseAuthority?.('items')){A.ready=false;A.enforce=false;return null;}
   const id=userId();
   if(!id||!db())return null;
   if(A.uid&&A.uid!==id){A.ready=false;A.enforce=false;A.revision=0;A.lastSync=0}
