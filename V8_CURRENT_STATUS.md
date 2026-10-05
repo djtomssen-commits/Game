@@ -8540,3 +8540,19 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
 - Commit: `bb39ed0ce8ab7f98139c53a265428a24447ff042`
 - Cache-Bust Beta: `8d6448413e61c05bef1a334ff4fa3f6a7db2912f`
 - Cache-Bust Server1: `0d274b9e1a4be5030da08ad4c92d02a5cb7f2e0b`.
+
+
+### 2026-10-05 – Tatsächlichen späten Shop-Writer v6105 stillgelegt
+- Nach erneutem Nutzerhinweis komplette Shop-Lade-/Eventreihenfolge geprüft.
+- Später aktiver Writer gefunden:
+  - `js/features/shop/beta/v8009-s1-v6105-item-variety-and-art-rework.js`
+  - Navigation auf `shop` rief noch `refreshMerchantPools(false)` auf;
+  - diese Funktion leerte `s.weaponShop` und `s.magicShop`, generierte anschließend lokalen Händlerbestand neu und persistierte ihn.
+- Das konnte nach früheren Shop-Fixes weiterhin einen sichtbaren Bestandswechsel auslösen.
+- Fix:
+  - `refreshMerchantPools()` ist als Bestands-Writer vollständig retired;
+  - V6105 bleibt nur noch Owner für Item-Templates/Artwork;
+  - kein Leeren, kein lokales Neuwürfeln, kein Schreiben von `weaponShop`/`magicShop` mehr aus V6105.
+- Commit: `23b1998ceacd0845fb2b2a856a3b56385de5162c`
+- Cache-Bust Beta: `483a22f527677ead901b62b26902400eb0298a57`
+- Cache-Bust Server1: `d2f06abb51a66e84106a9636974412b4ca46eb5a`.
