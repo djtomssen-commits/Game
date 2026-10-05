@@ -32,12 +32,12 @@ function v043BattlePlayerArt(){
 
 /* Add scene title bars to key content cards */
 function v043SceneLabels(){
+  /* V8.102: shop scene-title pills are retired; v461/v464 own all shop headings. */
+  document.querySelectorAll('#shop .v043-scene-title').forEach(el=>el.remove());
   const labels=[
     ['#character .hero-card','HELDENQUARTIER'],
     ['#grow .hero-card','DEIN GROWROOM'],
-    ['#dungeon .card:first-child','VERSEUCHTE GEBIETE'],
-    ['#shop .card:not(#v030MagicShop)','BORKS AUSRÜSTUNG'],
-    ['#v030MagicShop','SCHMUCK & VERZAUBERUNG']
+    ['#dungeon .card:first-child','VERSEUCHTE GEBIETE']
   ];
   labels.forEach(([sel,title])=>{
     const el=document.querySelector(sel);
