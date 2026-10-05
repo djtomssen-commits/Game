@@ -34,6 +34,7 @@
 
  function stampOwnedSnapshot(x,id){
   const y=clone(x);if(!y||!id)return null;
+  try{window.v8102StripServerOwnedShopState?.(y)}catch(_){}
   y.__accountOwnerId=id;y.social=(y.social&&typeof y.social==='object')?y.social:{};y.social.playerId=id;
   return y;
  }
