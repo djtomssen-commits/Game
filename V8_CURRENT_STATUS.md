@@ -9131,3 +9131,29 @@ Aktueller Release-Status:
 - Keine neue UI-Schicht eingebaut; bestehender Renderer direkt angepasst.
 - Änderung gilt über denselben Home-Renderer konsistent für Beta und Server 1.
 - Commit: `9192fd4612f3186f61f7383606c50e5b5415e82c`.
+
+
+### 2026-10-05 – Harz-Automat: Belohnungen im Päckchen anklickbar
+- Nutzerwunsch: Im Belohnungsfenster des Harz-Automaten sollen Items anklickbar sein:
+  - Rüstung/Waffen → Vergleich + Anlegen;
+  - Edelsteine/Rollen/sonstige Drops → Detailansicht, damit klar ist, was der Fund macht.
+- Umsetzung direkt im bestehenden Automaten-Owner `js/features/shop/beta/v8010-harz-lotto.js`, keine zusätzliche Render-Schicht.
+- Gear-Rewards:
+  - werden nach Reveal gegen das tatsächlich gutgeschriebene Inventar-Item aufgelöst (ID/UID, sonst Name+Slot);
+  - Klick öffnet den kanonischen `window.v4103OpenItemCompare(item,'inventory')`;
+  - dadurch stehen der vorhandene Vergleich, Gesamtwertung sowie `Anlegen`/`Verkaufen` zur Verfügung.
+- Material-/Spezial-Rewards:
+  - Klick öffnet eine Automaten-Detailansicht;
+  - Edelstein: Name, Qualität, Stat + Wert und Hinweis auf Sockelung / 1 Stein pro Item;
+  - Verzauberungsrolle: Effekt + Wert und Hinweis auf 1 Rollen-Verzauberung pro Item;
+  - Zeit-Samen, Fragmente, Grow-Samen und Harz-Taler erhalten kurze Funktionsbeschreibung.
+- Gold bleibt reine nicht-interaktive Mengenbelohnung.
+- Reward-Zeilen zeigen bei anklickbaren Belohnungen `Antippen`.
+- CSS direkt in `v8010-harz-lotto-v2.css` ergänzt.
+- Commits:
+  - JS: `94a7f374b4aaeebaff1deeede2a3d280892d9cc7`
+  - CSS: `aca8a958fb80395eacc627ce816c0557c21cde88`
+  - index Cache: `ec1ad69f5c9b3000476d4c9448230a8089ebc558`
+  - Server1 Cache: `707054df961682701cd547dfb65708d4952c95db`
+- Cache-Key: `8014rewarddetail1`.
+- Synthetischer No-Character-Smoke wurde durch die Änderung automatisch angestoßen; zum Zeitpunkt der Status-Aktualisierung noch queued.
