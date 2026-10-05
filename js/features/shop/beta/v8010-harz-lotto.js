@@ -42,12 +42,30 @@ function bagBody(){return document.getElementById('v7215BagBody')}
 function tabs(){return document.querySelectorAll('#bagDealer [data-v8010-tab]')}
 
 function setTab(tab){
-  S.active=tab==='lotto';
-  tabs().forEach(b=>b.classList.toggle('active',b.dataset.v8010Tab===tab));
+  /* V8.101: only Harz Lotto is released. Tütchen stays visible as Coming Soon. */
+  if(tab!=='lotto'){
+    try{toast('Tütchen · Coming Soon','info','Harz Lotto ist bereits verfügbar. Tütchen folgen später.')}catch(_){}
+    tab='lotto';
+  }
+  S.active=true;
+  tabs().forEach(b=>{
+    const isBags=b.dataset.v8010Tab==='bags';
+    b.classList.toggle('active',b.dataset.v8010Tab==='lotto');
+    b.classList.toggle('coming-soon',isBags);
+    b.disabled=isBags;
+    b.setAttribute('aria-disabled',isBags?'true':'false');
+    if(isBags){
+      b.innerHTML='<span>Tütchen</span><small>COMING SOON</small>';
+      b.title='Coming Soon';
+    }else{
+      b.textContent='Harz Lotto';
+    }
+  });
   const bb=bagBody(), lp=panel();
-  if(bb)bb.hidden=S.active;
-  if(lp)lp.hidden=!S.active;
-  if(S.active){void load();startTimer()} else stopTimer();
+  if(bb)bb.hidden=true;
+  if(lp)lp.hidden=false;
+  void load();
+  startTimer();
 }
 function startTimer(){
   stopTimer();
@@ -237,10 +255,10 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&S.infoPopup){S.info
 window.addEventListener('growlegends:navigation-ready',renameDealerNavigation,{passive:true});
 window.addEventListener('pageshow',renameDealerNavigation,{passive:true});
 window.addEventListener('growlegends:navigation-open-v7119',e=>{
-  if(String(e?.detail?.id||'')==='bagDealer'&&S.active)void load();
+  if(String(e?.detail?.id||'')==='bagDealer')setTab('lotto');
 },{passive:true});
 window.addEventListener('pagehide',stopTimer,{passive:true});
-window.v8010HarzLotto={open:()=>setTab('lotto'),load,diagnostics:()=>({active:S.active,busy:S.busy,round:S.data?.round?.round_id||null,picks:[...S.picks]})};
+window.v8010HarzLotto={open:()=>setTab('lotto'),load,diagnostics:()=>({active:S.active,busy:S.busy,round:S.data?.round?.round_id||null,picks:[...S.picks],bagsReleased:false})};
 renameDealerNavigation();
-paint();
+setTab('lotto');
 })();
