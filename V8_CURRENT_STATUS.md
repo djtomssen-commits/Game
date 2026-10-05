@@ -9017,3 +9017,31 @@ Noch offen:
 Aktueller Release-Status:
 - Für die Frage `Haben wir in der App die nötigen rechtlichen/policy-relevanten Bausteine?` sind die wesentlichen App-Funktionen und Rechtstexte vorhanden.
 - Der einzige bewusst verschobene Pflichtblock ist der echte AdMob-/Datenschutz-Go-Live, weil die App derzeit noch nicht öffentlich mit Produktionswerbung läuft.
+
+
+### 2026-10-05 – Beta: Leerbild nach 10-Minuten-Auto-Logout / Re-Login erneut reproduziert
+- Nutzer meldete auf Beta mit `Tomssen5@gmail.com`: nach automatischem Logout und erneutem Login nur brauner Leerbereich mit Topbar; zusätzlich zwei Fehlercodes im Client.
+- Diagnose gemäß Account-Fehlerregel:
+  - Account-State-Health für Tomssen: ältere Einträge unauffällig; kein neuer Health-Report zum Fehlerzeitpunkt.
+  - Runtime-Client-Errors: keine neuen Einträge; der Fehler passiert offenbar vor/außerhalb des normalen Runtime-Reporters.
+  - Player-QA: keine neue Tomssen-Login-Snapshot-Serie zum Fehlerzeitpunkt; ebenfalls Hinweis auf sehr frühen Boot-/Auth-Abbruch.
+  - Auth selbst war erfolgreich: `auth.users.last_sign_in_at` für Tomssen aktualisierte sich unmittelbar zum gemeldeten Zeitpunkt.
+- Historie bestätigt: gleicher Fehlerbereich war am 30.09. bereits als 10-Minuten-Idle-Logout/Login-Race dokumentiert; damaliger manueller Endtest blieb offen.
+- Aktuelle Root-Cause-Hypothese nach Repo-Abgleich:
+  - `index.html` lud mehrere kritische Account-/Boot-Owner ohne Cache-Bust,
+  - `beta.html` lud dieselben bereits mit Versions-Query,
+  - dadurch konnte Android/WebView beim Re-Login ältere Auth-/Save-Owner weiterverwenden.
+- Direkter Fix, kein Patch:
+  - `index.html` lädt jetzt folgende bestehenden Owner mit den bereits in Beta verwendeten Versions-Queries:
+    - `v145-account-isolation-fix.js?v=8102shopsavestrip1`
+    - `v200-stable-core.js?v=8102shopsavestrip1`
+    - `v224-atomic-boot-release.js?v=8088criticalboot1`
+    - `v4136-account-save-owner.js?v=8102shopsavestrip1`
+- Commit: `8fbd7974efa79a39f710699c2cce72ef6fcba375`.
+- Nächster manueller Test:
+  1. Beta einmal komplett neu laden / App neu öffnen, damit die neuen Script-URLs gezogen werden.
+  2. Normal anmelden.
+  3. Auto-Logout nach 10 Minuten auslösen lassen.
+  4. Erneut mit demselben Account anmelden.
+  5. Erwartet: Startseite rendert normal; kein leerer brauner Screen; keine alten Bootstrap-/Account-Fehler.
+- Falls der Fehler erneut kommt: die beiden sichtbaren Fehlercodes exakt notieren/screenshotten; dann direkt gegen `v200` / `v301` / `v4136` weiterdiagnostizieren, ohne neue Auth-Schicht einzubauen.
