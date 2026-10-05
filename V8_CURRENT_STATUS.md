@@ -9045,3 +9045,34 @@ Aktueller Release-Status:
   4. Erneut mit demselben Account anmelden.
   5. Erwartet: Startseite rendert normal; kein leerer brauner Screen; keine alten Bootstrap-/Account-Fehler.
 - Falls der Fehler erneut kommt: die beiden sichtbaren Fehlercodes exakt notieren/screenshotten; dann direkt gegen `v200` / `v301` / `v4136` weiterdiagnostizieren, ohne neue Auth-Schicht einzubauen.
+
+
+### 2026-10-05 – Synthetischer Testspieler-Smoke ohne echten Charakter
+- Ziel: einen dauerhaften Spieler-Lauf-Smoke ermöglichen, ohne einen normalen Charakter anzulegen und ohne Ranglisten/Rewards/Economy zu verändern.
+- Neuer Repo-/CI-Test:
+  - `qa/v8140-synthetic-player-smoke.mjs`
+  - Workflow: `.github/workflows/v8140-synthetic-player-smoke.yml`
+- Der Test benötigt **keinen Login, keinen Auth-User und keinen Charakter**.
+- Read-only-Prüfungen:
+  - Hauptscreens vorhanden: World, Character, Quest, Dungeon, Growroom, Gilde, PvP, Turm, Shop, Hinterhof-Dealer;
+  - kritische Auth-/Boot-/Save-Owner werden geladen;
+  - Idle-Logout-/Re-Login-Guards vorhanden;
+  - Harz-Automat-JS/CSS vorhanden;
+  - Tütchen bleibt Coming Soon;
+  - alte sichtbare Lotto-/6-aus-50-/Dienstag-19-Texte fehlen;
+  - alle lokalen JS/CSS/Asset-Referenzen aus `index.html` müssen als Datei existieren;
+  - alle lokal geladenen JS-Dateien werden mit `node --check` syntaxgeprüft;
+  - Player-QA-, Runtime-Error- und Account-Health-Diagnosefunktionen müssen vorhanden sein.
+- Commits:
+  - Testscript: `277cfc7eff489958e0b01a94e73aeb33582369d6`
+  - Workflow: `227ababf1a3624df5e3d1a0aa139e27a2f81543c`
+- Zusätzlich serverseitiger synthetischer Smoke direkt gegen Supabase Beta ausgeführt, ohne Datenänderung.
+- Ergebnis Server-Smoke: **PASS**.
+- Bestätigt vorhanden:
+  - RPCs: `delete_my_account`, `gl_create_character`, `v8011_harz_machine_state`, `v8011_harz_machine_play`, `v8011_harz_machine_reveal`, `v8080_report_account_state_health`, `v8082_report_runtime_error`, `v8083_report_player_qa`;
+  - Tabellen: `profiles`, `player_saves`, `player_progress_trusted`, `player_harz_events`, `harz_machine_draws`, `guild_chat_messages`, `player_reports`, `player_blocks`.
+- Grenzen des No-Character-Smokes:
+  - er führt absichtlich keine echten Quest-/Dungeon-/PvP-/Shop-/Harz-Automat-Aktionen aus;
+  - er prüft Struktur, Ladekette, Syntax, Owner und Server-Verfügbarkeit;
+  - für echte transaktionale Gameplay-Fehler bleibt ein authentifizierter Testaccount nötig.
+- Künftig nach größeren Beta-Änderungen diesen synthetischen Smoke als ersten automatischen Gate verwenden, bevor Server 1 aktualisiert wird.
