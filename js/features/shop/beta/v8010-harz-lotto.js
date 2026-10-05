@@ -1,264 +1,210 @@
 (()=>{
 'use strict';
-if(window.__V8010_HARZ_LOTTO__)return;
-window.__V8010_HARZ_LOTTO__=true;
+if(window.__V8011_HARZ_MACHINE__)return;
+window.__V8011_HARZ_MACHINE__=true;
 
-const S={active:false,busy:false,data:null,picks:new Set(),timer:0,lastError:'',infoPopup:''};
+const S={active:false,busy:false,data:null,selected:5,pending:null,rewards:null,info:false,lastError:''};
 const one=d=>Array.isArray(d)?d[0]:d;
 const db=()=>{try{return (typeof v073Db!=='undefined'&&v073Db)||null}catch(_){return null}};
-const uid=()=>{try{return String((typeof v073User!=='undefined'&&v073User?.id)||'')}catch(_){return ''}};
 const fmt=n=>Math.max(0,Math.round(Number(n)||0)).toLocaleString('de-DE');
 const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 
 function toast(title,type='info',detail=''){
-  try{if(typeof v063Toast==='function')return v063Toast(title,type,detail)}catch(_){}
-  try{if(typeof window.v063Toast==='function')return window.v063Toast(title,type,detail)}catch(_){}
-}
-function alertBox(msg){
-  try{if(typeof v115Alert==='function')return v115Alert(msg)}catch(_){}
-  try{window.alert(msg)}catch(_){}
-}
-async function confirmBox(msg){
-  try{if(typeof v063Confirm==='function')return !!(await v063Confirm(msg,'Harz Lotto','25 Harz-Taler einsetzen'))}catch(_){}
-  try{return !!window.confirm(msg)}catch(_){return false}
-}
-
-function renameDealerNavigation(){
-  try{
-    document.querySelectorAll('#v032MenuPanel [data-screen="bagDealer"],#v032MenuPanel [data-target="bagDealer"],[data-screen="bagDealer"]').forEach(el=>{
-      const icon=el.querySelector('span');
-      if(icon){
-        [...el.childNodes].filter(n=>n.nodeType===3).forEach(n=>n.remove());
-        el.append(' Hinterhof-Dealer');
-      }else{
-        el.textContent='🏪 Hinterhof-Dealer';
-      }
-    });
-  }catch(_){}
+  try{return window.v063Toast?.(title,type,detail)}catch(_){}
 }
 function panel(){return document.getElementById('v8010LottoPanel')}
 function body(){return document.getElementById('v8010LottoBody')}
 function bagBody(){return document.getElementById('v7215BagBody')}
 function tabs(){return document.querySelectorAll('#bagDealer [data-v8010-tab]')}
 
+function renameDealer(){
+  try{
+    document.querySelectorAll('#bagDealer .v7219-hero-copy p').forEach(el=>el.textContent='Harz-Automat ist geöffnet. Tütchen & Werbe-Belohnungen folgen später.');
+    document.querySelectorAll('#bagDealer [data-v8010-tab="lotto"]').forEach(el=>{el.textContent='Harz-Automat';el.dataset.v8010Tab='machine'});
+  }catch(_){}
+}
 function setTab(tab){
-  /* V8.101: only Harz Lotto is released. Tütchen stays visible as Coming Soon. */
-  if(tab!=='lotto'){
-    try{toast('Tütchen · Coming Soon','info','Harz Lotto ist bereits verfügbar. Tütchen folgen später.')}catch(_){}
-    tab='lotto';
+  if(tab!=='machine'){
+    toast('Tütchen · Coming Soon','info','Der Harz-Automat ist bereits verfügbar.');
+    tab='machine';
   }
   S.active=true;
   tabs().forEach(b=>{
-    const isBags=b.dataset.v8010Tab==='bags';
-    b.classList.toggle('active',b.dataset.v8010Tab==='lotto');
-    b.classList.toggle('coming-soon',isBags);
-    b.disabled=isBags;
-    b.setAttribute('aria-disabled',isBags?'true':'false');
-    if(isBags){
-      b.innerHTML='<span>Tütchen</span><small>COMING SOON</small>';
-      b.title='Coming Soon';
-    }else{
-      b.textContent='Harz Lotto';
-    }
+    const bags=b.dataset.v8010Tab==='bags';
+    const machine=b.dataset.v8010Tab==='machine';
+    b.classList.toggle('active',machine);
+    b.classList.toggle('coming-soon',bags);
+    b.disabled=bags;
+    b.setAttribute('aria-disabled',bags?'true':'false');
+    if(bags)b.innerHTML='<span>Tütchen</span><small>COMING SOON</small>';
+    else b.textContent='Harz-Automat';
   });
-  const bb=bagBody(), lp=panel();
-  if(bb)bb.hidden=true;
-  if(lp)lp.hidden=false;
+  if(bagBody())bagBody().hidden=true;
+  if(panel())panel().hidden=false;
   void load();
-  startTimer();
 }
-function startTimer(){
-  stopTimer();
-  S.timer=window.setInterval(()=>{if(S.active)void load(false)},30000);
-}
-function stopTimer(){if(S.timer){clearInterval(S.timer);S.timer=0}}
 
-function remaining(iso){
-  const ms=new Date(iso).getTime()-Date.now();
-  if(!Number.isFinite(ms)||ms<=0)return 'jetzt';
-  const total=Math.floor(ms/1000),d=Math.floor(total/86400),h=Math.floor((total%86400)/3600),m=Math.floor((total%3600)/60);
-  if(d>0)return `${d} T ${h} Std`;
-  if(h>0)return `${h} Std ${m} Min`;
-  return `${Math.max(0,m)} Min`;
+function tierInfo(stake){
+  if(stake===5)return {count:1,headline:'1 Belohnung',sub:'60 % Gold · 25 % Material · 15 % Ausrüstung'};
+  if(stake===10)return {count:2,headline:'2 Belohnungen',sub:'45 % Gold · 30 % Material · 25 % Ausrüstung je Ziehung'};
+  if(stake===25)return {count:3,headline:'3 Belohnungen',sub:'1× Ausrüstung Blau+ garantiert · danach bessere Chancen'};
+  return {count:5,headline:'5 Belohnungen',sub:'1× Ausrüstung Episch+ garantiert · höchste Chancen'};
 }
-function balls(nums,own=[]){
-  const ownSet=new Set((own||[]).map(Number));
-  return `<div class="v8010-balls">${(nums||[]).map(n=>`<span class="v8010-ball ${ownSet.has(Number(n))?'hit':''}">${Number(n)}</span>`).join('')}</div>`;
+function qualityLabel(q){
+  return ({gray:'Normal',green:'Grün',blue:'Blau',purple:'Episch',orange:'Legendär',cyan:'Mythisch',gold:'Gold'})[q]||q||'Belohnung';
 }
-function numberGrid(ticket){
-  const fixed=Array.isArray(ticket?.numbers)?ticket.numbers.map(Number):null;
-  const chosen=fixed?new Set(fixed):S.picks;
-  return `<div class="v8010-number-grid">${Array.from({length:50},(_,i)=>i+1).map(n=>
-    `<button type="button" data-v8010-number="${n}" class="${chosen.has(n)?'selected':''}" ${fixed||S.busy?'disabled':''}>${n}</button>`
-  ).join('')}</div>`;
-}
-function lastResultHtml(d){
-  const draw=d?.last_draw, t=d?.last_ticket;
-  if(!draw)return `<section class="v8010-card"><h3>Letzte Ziehung</h3><p class="v8010-muted">Noch keine Ziehung vorhanden.</p></section>`;
-  const own=t?.numbers||[];
-  const prize=Number(t?.prize||0);
-  return `<section class="v8010-card v8010-result">
-    <div class="v8010-row"><div><small>Letzte Ziehung</small><h3>${esc(draw.round_id)}</h3></div><b>Pot ${fmt(draw.total_pot)} HT</b></div>
-    ${balls(draw.numbers,own)}
-    ${t?`<div class="v8010-ticket-result"><span>Deine Zahlen: <b>${own.join(' · ')}</b></span><span>Treffer: <b>${fmt(t.hits)}</b></span><span>Gewinn: <b>${fmt(prize)} HT</b></span></div>
-      ${prize>0&&!t.claimed?`<button type="button" class="btn v8010-claim" data-v8010-claim ${S.busy?'disabled':''}>🎁 Belohnung abholen · ${fmt(prize)} HT</button>`:prize>0?'<div class="v8010-claimed">✓ Belohnung abgeholt</div>':'<div class="v8010-no-win">Diesmal kein Gewinn.</div>'}`
-      :'<p class="v8010-muted">Du hattest in dieser Runde keinen Schein.</p>'}
-    <p class="v8010-carry">Nicht ausgeschüttet: <b>${fmt(draw.carry_out)} HT</b> → nächste Runde</p>
-  </section>`;
-}
-function machineHtml(drawNums,jackpot,phaseText){
-  const hasDraw=Array.isArray(drawNums)&&drawNums.length===6;
-  return `<div class="v8010-machine" aria-label="Harz-Lotto Straßenautomat">
-    <img class="v8010-machine-image" src="assets/file_00000000e27c8210b37148cc50f5d1af.png?v=8010orig6" alt="" draggable="false">
-    <div class="v8010-machine-topinfo">
-      <small>Aktueller Jackpot</small>
-      <b>${fmt(jackpot)} Harz-Taler</b>
-      <span>${esc(phaseText)}</span>
-    </div>
-    ${hasDraw
-      ? `<div class="v8010-draw-chute">${balls(drawNums)}</div>`
-      : '<div class="v8010-machine-wait">Ziehung Dienstag · 19:00</div>'}
+function chancesHtml(){
+  return `<div class="v8011-chances">
+    <h3>Chancen &amp; Garantien</h3>
+    <div><b>5 Harz-Taler</b><span>1 Belohnung · 60 % Gold · 25 % Material · 15 % Ausrüstung</span><small>Ausrüstung: 55 % Grau · 35 % Grün · 10 % Blau. Material: 70 % Grün · 30 % Blau.</small></div>
+    <div><b>10 Harz-Taler</b><span>2 Belohnungen · je 45 % Gold · 30 % Material · 25 % Ausrüstung</span><small>Ausrüstung: 30 % Grau · 45 % Grün · 22 % Blau · 3 % Episch. Material: 25 % Grün · 60 % Blau · 15 % Episch.</small></div>
+    <div><b>25 Harz-Taler</b><span>3 Belohnungen · erste Belohnung garantiert Ausrüstung Blau oder besser</span><small>Garantie: 78 % Blau · 20 % Episch · 2 % Legendär. Weitere Ziehungen: 35 % Gold · 30 % Material · 35 % Ausrüstung.</small></div>
+    <div><b>50 Harz-Taler</b><span>5 Belohnungen · erste Belohnung garantiert Ausrüstung Episch oder besser</span><small>Garantie: 82 % Episch · 16 % Legendär · 2 % Mythisch. Weitere Ziehungen: 25 % Gold · 25 % Material · 50 % Ausrüstung.</small></div>
+    <p>Alle Belohnungen sind ausschließlich virtuelle Spielinhalte. Kein Echtgeldgewinn, keine Auszahlung und kein Spieler-Jackpot.</p>
   </div>`;
+}
+function rewardHtml(r){
+  const q=esc(r?.quality||'');
+  const label=esc(r?.label||'Belohnung');
+  const icon=esc(r?.icon||'🎁');
+  const amount=r?.kind==='gold'?'<strong>'+fmt(r.amount)+' Gold</strong>':'<strong>'+label+'</strong>';
+  return `<div class="v8011-reward q-${q}"><div class="v8011-reward-icon">${icon}</div><div>${amount}<small>${esc(qualityLabel(r?.quality))}</small></div></div>`;
+}
+function rewardsPopup(){
+  if(!Array.isArray(S.rewards))return '';
+  return `<div class="v8010-popup-backdrop" data-v8011-close>
+    <section class="v8010-popup v8011-reward-popup" role="dialog" aria-modal="true">
+      <button type="button" class="v8010-popup-close" data-v8011-close>×</button>
+      <div class="v8010-popup-title"><small>Grow Legends · Harz-Automat</small><h3>Dein Päckchen</h3></div>
+      <div class="v8011-reward-list">${S.rewards.map(rewardHtml).join('')}</div>
+      <button type="button" class="btn v8011-ok" data-v8011-close>Belohnungen ansehen ✓</button>
+    </section>
+  </div>`;
+}
+function infoPopup(){
+  if(!S.info)return '';
+  return `<div class="v8010-popup-backdrop" data-v8011-info-close>
+    <section class="v8010-popup" role="dialog" aria-modal="true">
+      <button type="button" class="v8010-popup-close" data-v8011-info-close>×</button>
+      <div class="v8010-popup-title"><small>Grow Legends · Harz-Automat</small><h3>Chancen &amp; Belohnungen</h3></div>
+      ${chancesHtml()}
+    </section>
+  </div>`;
+}
+function packageHtml(){
+  if(!S.pending)return '<div class="v8010-machine-wait">Wähle deinen Einsatz</div>';
+  return `<button type="button" class="v8011-package" data-v8011-reveal aria-label="Päckchen öffnen">
+    <span>📦</span><b>Päckchen öffnen</b><small>${fmt(S.pending.reward_count)} Belohnung${Number(S.pending.reward_count)===1?'':'en'}</small>
+  </button>`;
 }
 function paint(){
   const root=body();if(!root)return;
-  const d=S.data;
-  if(!d?.ok){
-    root.innerHTML=`<div class="v8010-loading">🎟️ ${S.lastError?'Lotto konnte nicht geladen werden.':'Harz Lotto wird geladen …'}</div>`;
+  if(!S.data){
+    root.innerHTML='<div class="v8010-loading">🎁 Harz-Automat wird geladen …</div>';
     return;
   }
-  const r=d.round||{},t=d.ticket;
-  const now=Date.now(),close=new Date(r.close_at).getTime(),draw=new Date(r.draw_at).getTime();
-  const phase=now<close?'open':now<draw?'locked':'draw';
-  const phaseText=phase==='open'? `Tippschluss in ${remaining(r.close_at)}` : phase==='locked'? `Ziehung in ${remaining(r.draw_at)}` : 'Ziehung läuft';
-  const fixed=Array.isArray(t?.numbers);
-
-  const ticketHtml=`<div class="v8010-row"><div><small>Runde</small><h3>Ziehung ${esc(r.round_id)}</h3></div><span class="v8010-status ${phase}">${phase==='open'?'Tippen offen':phase==='locked'?'Tipps geschlossen':'Ziehung'}</span></div>
-    ${fixed?`<div class="v8010-fixed-note">✓ Dein Schein ist bestätigt und kann nicht mehr geändert werden.</div>`:`<p class="v8010-muted">Markiere genau 6 Zahlen. Nach der Bestätigung sind sie fest.</p>`}
-    ${numberGrid(t)}
-    <div class="v8010-pickbar"><span>Ausgewählt: <b>${fixed?6:S.picks.size}/6</b></span><span>Einsatz: <b>25 Harz-Taler</b></span></div>
-    ${!fixed?`<button type="button" class="btn v8010-submit" data-v8010-submit ${S.busy||phase!=='open'||S.picks.size!==6?'disabled':''}>Schein für 25 Harz-Taler bestätigen</button>`:''}`;
-
-  const classesHtml=`<div class="v8010-classes">
-    <div><span>6 Richtige</span><b>70 %</b></div>
-    <div><span>5 Richtige</span><b>15 %</b></div>
-    <div><span>4 Richtige</span><b>10 %</b></div>
-    <div><span>3 Richtige</span><b>5 %</b></div>
-    <p>Mehrere Gewinner einer Klasse teilen deren Anteil. Nicht vergebene Anteile und Rundungsreste wandern in den nächsten Jackpot.</p>
-  </div>`;
-
-  const popupTitle=S.infoPopup==='ticket'?'Schein':S.infoPopup==='classes'?'Gewinnklassen':S.infoPopup==='last'?'Letzte Ziehung':'';
-  const popupBody=S.infoPopup==='ticket'?ticketHtml:S.infoPopup==='classes'?classesHtml:S.infoPopup==='last'?lastResultHtml(d):'';
-
-  root.innerHTML=`<div class="v8010-wrap">
+  const harz=Number(S.data.harz)||0;
+  const t=tierInfo(S.selected);
+  const stakes=[5,10,25,50];
+  root.innerHTML=`<div class="v8010-wrap v8011-wrap">
     <section class="v8010-head">
-      <div class="v8010-head-copy"><small>Grow Legends · Wochenziehung</small><h2>Harz Lotto</h2><p>1 Schein pro Woche · 6 aus 50 · Einsatz 25 Harz-Taler</p></div>
+      <div class="v8010-head-copy"><small>Grow Legends · Hinterhof</small><h2>Harz-Automat</h2><p>Harz-Taler einwerfen · Päckchen ziehen · Belohnungen öffnen</p></div>
     </section>
-    ${machineHtml(d.last_draw?.numbers,r.jackpot,phaseText)}
-    <div class="v8010-info-tabs" role="group" aria-label="Harz Lotto Informationen">
-      <button type="button" data-v8010-info="ticket">Schein</button>
-      <button type="button" data-v8010-info="classes">Gewinnklassen</button>
-      <button type="button" data-v8010-info="last">Letzte Ziehung</button>
+
+    <div class="v8010-machine v8011-machine">
+      <div class="v8010-machine-topinfo"><small>Dein Bestand</small><b>${fmt(harz)} Harz-Taler</b><span>${S.pending?'Päckchen liegt bereit':t.headline}</span></div>
+      ${packageHtml()}
     </div>
-    ${S.infoPopup?`<div class="v8010-popup-backdrop" data-v8010-popup-close>
-      <section class="v8010-popup" role="dialog" aria-modal="true" aria-label="${esc(popupTitle)}" data-v8010-popup-card>
-        <button type="button" class="v8010-popup-close" data-v8010-popup-close aria-label="Schließen">×</button>
-        <div class="v8010-popup-title"><small>Grow Legends · Harz Lotto</small><h3>${esc(popupTitle)}</h3></div>
-        <div class="v8010-popup-body">${popupBody}</div>
-      </section>
-    </div>`:''}
+
+    <section class="v8011-controls">
+      <div class="v8011-stakes">
+        ${stakes.map(x=>`<button type="button" data-v8011-stake="${x}" class="${S.selected===x?'active':''}" ${S.pending||S.busy?'disabled':''}>${x}<small>Harz-Taler</small></button>`).join('')}
+      </div>
+      <div class="v8011-tier-copy"><b>${esc(t.headline)}</b><span>${esc(t.sub)}</span></div>
+      <button type="button" class="btn v8011-play" data-v8011-play ${S.pending||S.busy||harz<S.selected?'disabled':''}>
+        ${S.pending?'Öffne zuerst dein Päckchen':S.busy?'Automat läuft …':S.selected+' Harz-Taler einwerfen'}
+      </button>
+      <button type="button" class="v8011-info-btn" data-v8011-info>Chancen &amp; mögliche Belohnungen</button>
+      <p class="v8011-note">Je höher der Einsatz, desto mehr Belohnungen und desto bessere Qualitätschancen. Alle Ziehungen werden serverseitig festgelegt.</p>
+    </section>
+    ${rewardsPopup()}
+    ${infoPopup()}
   </div>`;
 }
-async function load(repaint=true){
-  const x=db();if(!x){S.lastError='Datenbank nicht bereit';paint();return null}
-  if(repaint&&!S.data)paint();
+
+async function load(){
+  const x=db();if(!x)return;
   try{
-    const {data,error}=await x.rpc('v8010_harz_lotto_state');
+    const {data,error}=await x.rpc('v8011_harz_machine_state');
     if(error)throw error;
-    const r=one(data);if(!r?.ok)throw new Error('LOTTO_STATE_FAILED');
-    S.data=r;S.lastError='';
-    if(r.ticket?.numbers)S.picks=new Set(r.ticket.numbers.map(Number));
-    paint();return r;
+    const r=one(data);if(!r?.ok)throw new Error('MACHINE_STATE_FAILED');
+    S.data=r;S.pending=r.pending||null;S.lastError='';
+    paint();
   }catch(e){
-    S.lastError=String(e?.message||e||'LOTTO_STATE_FAILED');console.warn('[V8.010] lotto state',e);paint();return null;
+    S.lastError=String(e?.message||e);
+    const root=body();if(root)root.innerHTML='<div class="v8010-loading">Harz-Automat konnte nicht geladen werden.</div>';
   }
 }
-async function buy(){
-  if(S.busy||S.picks.size!==6)return;
-  const picks=[...S.picks].sort((a,b)=>a-b);
-  if(!(await confirmBox(`Deine Zahlen: ${picks.join(' · ')}\n\nDer Schein kostet 25 Harz-Taler. Nach Bestätigung können die Zahlen nicht mehr geändert werden.`)))return;
+async function play(){
+  if(S.busy||S.pending)return;
   const x=db();if(!x)return;
   S.busy=true;paint();
   try{
-    const {data,error}=await x.rpc('v8010_harz_lotto_buy_ticket',{p_numbers:picks});
+    const {data,error}=await x.rpc('v8011_harz_machine_play',{p_stake:S.selected});
     if(error)throw error;
-    const r=one(data);if(!r?.ok)throw new Error('LOTTO_BUY_FAILED');
+    const r=one(data);if(!r?.ok)throw new Error('MACHINE_PLAY_FAILED');
     if(typeof s!=='undefined'&&s)s.harzTaler=Math.max(0,Number(r.harz)||0);
-    try{window.v069SyncCurrencies?.();window.v6213SyncCurrencies?.();await window.v7077ProgressRefresh?.()}catch(_){}
-    toast('Lottoschein bestätigt','success',`${picks.join(' · ')} · 25 Harz-Taler Einsatz`);
-    await load(false);
+    S.pending={draw_id:r.draw_id,stake:r.stake,reward_count:r.reward_count};
+    S.data={...(S.data||{}),harz:r.harz,pending:S.pending};
+    try{window.v069SyncCurrencies?.();window.v6213SyncCurrencies?.()}catch(_){}
+    try{window.v6111Sfx?.('reward')}catch(_){}
+    toast('📦 Päckchen ausgegeben','success','Tippe auf das Päckchen im Ausgabefach.');
   }catch(e){
     const m=String(e?.message||e);
-    if(m.includes('INSUFFICIENT_HARZ'))alertBox('Du hast nicht genug Harz-Taler für den Lottoschein.');
-    else if(m.includes('LOTTO_TICKET_ALREADY_EXISTS'))alertBox('Du hast für diese Woche bereits einen Lottoschein.');
-    else if(m.includes('LOTTO_CLOSED'))alertBox('Der Tippschluss für diese Runde ist bereits vorbei.');
-    else alertBox('Der Lottoschein konnte nicht bestätigt werden.');
-    await load(false);
+    if(m.includes('INSUFFICIENT_HARZ'))toast('Nicht genug Harz-Taler','warn','Wähle einen kleineren Einsatz.');
+    else if(m.includes('MACHINE_PACKAGE_PENDING'))toast('Päckchen wartet','info','Öffne zuerst das Päckchen im Ausgabefach.');
+    else toast('Automat nicht verfügbar','error','Die Ziehung konnte nicht abgeschlossen werden.');
+    await load();
   }finally{S.busy=false;paint()}
 }
-async function claim(){
-  if(S.busy)return;
+async function reveal(){
+  if(S.busy||!S.pending?.draw_id)return;
   const x=db();if(!x)return;
-  S.busy=true;paint();
+  S.busy=true;
   try{
-    const {data,error}=await x.rpc('v8010_harz_lotto_claim');
+    const {data,error}=await x.rpc('v8011_harz_machine_reveal',{p_draw_id:S.pending.draw_id});
     if(error)throw error;
-    const r=one(data);if(!r?.ok)throw new Error('LOTTO_CLAIM_FAILED');
-    if(typeof s!=='undefined'&&s)s.harzTaler=Math.max(0,Number(r.harz)||0);
-    try{window.v069SyncCurrencies?.();window.v6213SyncCurrencies?.();await window.v7077ProgressRefresh?.()}catch(_){}
-    try{window.v6111Sfx?.('reward')}catch(_){}
-    toast(`+${fmt(r.prize)} Harz-Taler`,'success','Harz-Lotto-Gewinn abgeholt.');
-    await load(false);
-  }catch(e){console.warn('[V8.010] lotto claim',e);alertBox('Die Lotto-Belohnung konnte nicht abgeholt werden.');await load(false)}
-  finally{S.busy=false;paint()}
+    const r=one(data);if(!r?.ok)throw new Error('MACHINE_REVEAL_FAILED');
+    S.rewards=Array.isArray(r.rewards)?r.rewards:[];
+    S.pending=null;
+    S.data={...(S.data||{}),pending:null};
+    try{await window.v7063ItemStageRefresh?.(true)}catch(_){}
+    try{await window.v7077ProgressRefresh?.()}catch(_){}
+    try{window.v069SyncCurrencies?.();window.v6213SyncCurrencies?.()}catch(_){}
+  }catch(e){
+    toast('Päckchen konnte nicht geöffnet werden','error','Bitte versuche es erneut.');
+  }finally{S.busy=false;paint()}
 }
 
 document.addEventListener('click',e=>{
   const tab=e.target?.closest?.('#bagDealer [data-v8010-tab]');
   if(tab){e.preventDefault();setTab(tab.dataset.v8010Tab);return}
-
-  const info=e.target?.closest?.('#v8010LottoPanel [data-v8010-info]');
-  if(info){e.preventDefault();S.infoPopup=String(info.dataset.v8010Info||'');paint();return}
-
-  const popupClose=e.target?.closest?.('[data-v8010-popup-close]');
-  if(popupClose&&!e.target?.closest?.('[data-v8010-popup-card]')){
-    e.preventDefault();S.infoPopup='';paint();return;
-  }
-  const closeButton=e.target?.closest?.('.v8010-popup-close');
-  if(closeButton){e.preventDefault();S.infoPopup='';paint();return}
-
-  if(!e.target?.closest?.('#v8010LottoPanel'))return;
-  const n=e.target.closest('[data-v8010-number]');
-  if(n){
-    e.preventDefault();
-    if(S.data?.ticket?.numbers)return;
-    const value=Number(n.dataset.v8010Number);
-    if(S.picks.has(value))S.picks.delete(value);
-    else if(S.picks.size<6)S.picks.add(value);
-    paint();return;
-  }
-  if(e.target.closest('[data-v8010-submit]')){e.preventDefault();void buy();return}
-  if(e.target.closest('[data-v8010-claim]')){e.preventDefault();void claim();return}
+  const stake=e.target?.closest?.('[data-v8011-stake]');
+  if(stake){S.selected=Number(stake.dataset.v8011Stake)||5;paint();return}
+  if(e.target?.closest?.('[data-v8011-play]')){e.preventDefault();void play();return}
+  if(e.target?.closest?.('[data-v8011-reveal]')){e.preventDefault();void reveal();return}
+  if(e.target?.closest?.('[data-v8011-info]')){S.info=true;paint();return}
+  if(e.target?.closest?.('[data-v8011-info-close]')){S.info=false;paint();return}
+  if(e.target?.closest?.('[data-v8011-close]')){S.rewards=null;paint();return}
 },true);
 
-document.addEventListener('keydown',e=>{if(e.key==='Escape'&&S.infoPopup){S.infoPopup='';paint()}},true);
-window.addEventListener('growlegends:navigation-ready',renameDealerNavigation,{passive:true});
-window.addEventListener('pageshow',renameDealerNavigation,{passive:true});
+window.addEventListener('growlegends:navigation-ready',renameDealer,{passive:true});
+window.addEventListener('pageshow',renameDealer,{passive:true});
 window.addEventListener('growlegends:navigation-open-v7119',e=>{
-  if(String(e?.detail?.id||'')==='bagDealer')setTab('lotto');
+  if(String(e?.detail?.id||'')==='bagDealer'){renameDealer();setTab('machine')}
 },{passive:true});
-window.addEventListener('pagehide',stopTimer,{passive:true});
-window.v8010HarzLotto={open:()=>setTab('lotto'),load,diagnostics:()=>({active:S.active,busy:S.busy,round:S.data?.round?.round_id||null,picks:[...S.picks],bagsReleased:false})};
-renameDealerNavigation();
-setTab('lotto');
+
+window.v8011HarzMachine={open:()=>setTab('machine'),load,diagnostics:()=>({active:S.active,busy:S.busy,selected:S.selected,pending:!!S.pending})};
+renameDealer();
+setTab('machine');
 })();
