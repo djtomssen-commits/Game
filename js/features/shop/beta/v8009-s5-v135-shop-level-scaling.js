@@ -97,14 +97,9 @@ function v135PaintShop(){
   
 }
 
-/* Existing V4.02 stock may be based on old weak scaling: refresh once for free. */
-if(!s.v135ShopLevelScaling){
-  s.weaponShop=[];
-  s.magicShop=[];
-  try{v030FillShops(true)}catch(e){}
-  s.v135ShopLevelScaling=true;
-  try{localStorage.setItem(KEY,JSON.stringify(s))}catch(e){}
-}
+/* V8.102: historical one-time local shop refresh retired.
+   V135 still supplies scaling helpers for legacy item generation, but never stock. */
+if(!s.v135ShopLevelScaling)s.v135ShopLevelScaling=true;
 
 if(typeof renderShop==='function'&&!window.__v135ShopPaintWrapped){
   const v135BaseRenderShop=renderShop;
