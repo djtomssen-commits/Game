@@ -124,7 +124,8 @@
         <div class="v461-shop-resource">🟢 Harz-Taler <b id="shopHarz">${fmt(s.harzTaler)}</b></div>
       </div>`;
 
-    if(!v461ServerShopReady()){
+    const v461StockReady=Array.isArray(s?.weaponShop)&&s.weaponShop.length>0&&Array.isArray(s?.magicShop)&&s.magicShop.length>0;
+    if(!v461ServerShopReady()||!v461StockReady){
       gearCard.innerHTML=v461LoadingHtml();
       let magic=document.querySelector('#v030MagicShop');
       if(!magic){
