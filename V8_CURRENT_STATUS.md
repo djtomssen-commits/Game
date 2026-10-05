@@ -8425,3 +8425,13 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
 - CSS für gesperrten Coming-Soon-Tab ergänzt.
 - Beta und Server 1 aktualisiert; Server 1 bleibt geschlossen.
 - Commits: `a4bffe3c54989275aa875c2ba83be6b01a3aa9c7`, `8593b079def294680c952c787ad2f82635c4926e`, `ff00b94ac08f1ff94097080266fcef20bfce1b89`, `58275a810d16588bd516c3bc9148819043a88ae5`.
+
+### 2026-10-05 – Anbau-Turm: globale Top-Bar bleibt sichtbar
+- Fehler: Im Anbau-Turm fehlte die globale Top-Bar.
+- Ursache: Der zentrale `v372`-Header-Owner entschied die Sichtbarkeit nur anhand von `.screen.active`. Der Tower baut intern mehrere Renderzustände neu auf; dabei kann dieser Active-State kurz fehlen und der Header auf `display:none!important` gesetzt werden.
+- Fix direkt im kanonischen Header-Owner: Navigation auf `tower` gilt jetzt als starke Sichtbarkeitsquelle. Die Top-Bar bleibt während Lobby/Run/Ranking/interner Tower-Repaints sichtbar.
+- Nach Tower-Navigation erfolgt zusätzlich ein synchroner Paint + Microtask/RAF-Nachpaint, damit ein nachlaufender Tower-Render den Header nicht wieder verschwinden lässt.
+- `v372PaintTopbar` als zentraler Refresh exportiert; Accountwechsel setzt den Navigation-Marker sauber zurück.
+- Cache-Bust auf Beta und Server 1: `v=8101towertopbar1`.
+- Commits: `b0b57206e2e95318b827170d52ff7146533b81e5`, `b991ae53462170df93dc4c47a60099b6de160372`, `d9bf53dc596b2afe2e2f85980f515ee128da8e0b`.
+- Server 1 bleibt geschlossen; Klassenbalance unverändert.
