@@ -9096,3 +9096,26 @@ Aktueller Release-Status:
   - Run-ID `37348945608`
   - Ergebnis: **SUCCESS / GRÜN**
 - Damit hat der neue No-Character-Smoke bereits beim ersten echten Einsatz einen realen geladenen JS-Fehler gefunden und abgesichert.
+
+
+### 2026-10-05 – Harz-Automat 50 HT: Ziehung durch DB-Constraint blockiert
+- Nutzer meldete: 50-Harz-Taler-Ziehung auf Beta funktioniert nicht.
+- Live-Log-Diagnose bestätigte den Fehler eindeutig:
+  - RPC `v8011_harz_machine_play(50)` erzeugte korrekt `reward_count = 7`.
+  - Insert in `harz_machine_draws` scheiterte mit SQL-State `23514`.
+  - Ursache: `harz_machine_draws_reward_count_check` erlaubte die 7er-Belohnungsmenge nicht.
+- Beta-Fix:
+  - `public.harz_machine_draws_reward_count_check` ersetzt.
+  - Erlaubt jetzt exakt `reward_count in (1,2,4,7)`.
+  - Migration: `allow_harz_machine_reward_count_7_beta`.
+- Server-1-Parität ebenfalls korrigiert:
+  - alter Check erlaubte nur `reward_count <= 5`.
+  - jetzt `reward_count <= 7`.
+  - Migration: `server1_harz_machine_reward_count_7`.
+- Verifiziert:
+  - public: `reward_count = ANY (ARRAY[1,2,4,7])`
+  - server1: `reward_count >= 1 AND reward_count <= 7`
+- Die fehlgeschlagenen 50-HT-Versuche liefen innerhalb des RPC-Statements in einen DB-Fehler und wurden dadurch transaktional zurückgerollt; es sollte dabei kein dauerhafter HT-Abzug verbleiben.
+- Nächster manueller Check:
+  - auf Beta erneut 50 HT ziehen;
+  - erwartet: Paket wird erfolgreich erzeugt, 7 Belohnungen werden gespeichert und anschließend normal revealbar.
