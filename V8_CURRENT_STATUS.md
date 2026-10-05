@@ -8444,3 +8444,11 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
 - Fix im kanonischen Menü-Owner: `bagDealer` ist für normale Spieler sichtbar, sobald die Seite existiert. Tütchen bleibt deaktiviert/COMING SOON; Harz Lotto bleibt verfügbar.
 - Beide Änderungen wirken auf Beta und Server 1 über die gemeinsamen Owner; Server-1-Sperre und Klassenbalance unverändert.
 - Commits: `ad088b9820180f4be68e3b537dfe854cef92defc`, `ae9a41066873acce44bd95a644cf80a9a03d882a`.
+
+
+### 2026-10-05 – Korrektur: tatsächliche finale Owner für Tower-Header + Hinterhof-Navigation
+- Der erste Fix griff zu früh in der Kaskade und wurde später wieder überschrieben.
+- **Hinterhof-Dealer:** tatsächlicher finaler Owner war `v4149-final-navigation-render-authority.js`. Dort existierten noch drei Admin-Gates: Availability, direkte Navigation und finaler `v032Go`-Wrapper. Alle drei entfernt. `bagDealer` ist jetzt öffentlich, sofern die Seite existiert. Tütchen bleibt unabhängig davon Coming Soon.
+- **Anbau-Turm:** `v6271-tower-topbar-lobby-css.css` überschrieb den früheren Sticky-Fix mit `position:relative!important; top:auto!important`. Finaler Fix sitzt jetzt dort: `.v6259-head` ist sticky und startet bei `calc(var(--v654-hud-bottom, 60px) + 3px)`, also unter der tatsächlich gemessenen globalen Topbar.
+- Beta und Server 1 erhielten Cache-Busts für beide finalen Dateien, damit alte Assets nicht weiter aus Cache/Cloudflare verwendet werden.
+- Commits: `724e97a85ef7ab1389d9f657a6c3e8c43fbb7769`, `bd9ced277c042c7b79a5f162dc5777aa930db8fc`, `398071d36a7a5e80ec62af7d8e851dcd9cb1075c`, `bc5c77c5ea50ff31e7bc85a8adcae8b7ddfd5446`.
