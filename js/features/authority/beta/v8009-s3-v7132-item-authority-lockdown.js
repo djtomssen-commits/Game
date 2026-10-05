@@ -24,6 +24,7 @@ function repaint(){
  try{window.v441PaintResources?.()}catch(_){}
  try{window.v546RenderMaterials?.()}catch(_){}
  try{window.v480UpdateAutoBars?.()}catch(_){}
+ try{if(document.getElementById('shop')?.classList.contains('active'))renderShop?.()}catch(_){}
 }
 function applyServer(r,{paint=true}={}){
  if(!r||r.ok!==true)return false;
