@@ -9157,3 +9157,31 @@ Aktueller Release-Status:
   - Server1 Cache: `707054df961682701cd547dfb65708d4952c95db`
 - Cache-Key: `8014rewarddetail1`.
 - Synthetischer No-Character-Smoke wurde durch die Änderung automatisch angestoßen; zum Zeitpunkt der Status-Aktualisierung noch queued.
+
+
+### 2026-10-05 – Harz-Automat Reward-Anzahl auf 1 / 2 / 3 / 5 zurückgestellt
+- Nutzer hat die gewünschte Staffelung klargestellt:
+  - 5 HT → 1 Belohnung
+  - 10 HT → 2 Belohnungen
+  - 25 HT → 3 Belohnungen
+  - 50 HT → 5 Belohnungen
+- Vor Fix war der aktive Server-RPC fälschlich auf 1 / 2 / 4 / 7 gestellt.
+- Serverautoritative Korrektur direkt in den bestehenden Funktionen:
+  - `public.v8011_harz_machine_play`
+  - `server1.v8011_harz_machine_play`
+  - aktive Count-Zeile jetzt: 5→1, 10→2, 25→3, 50→5.
+- Garantiestruktur passend reduziert:
+  - 25 HT: 2 normal + 1 seltene Garantie
+  - 50 HT: 3 normal + 1 seltene + 1 Premium-Garantie
+- Historische Draws mit 4/7 Rewards existieren bereits. Deshalb bleibt der Tabellen-Check bewusst historienkompatibel bei `reward_count between 1 and 7`; neue Draws werden ausschließlich über den aktiven RPC mit 1/2/3/5 erzeugt.
+- Client `js/features/shop/beta/v8010-harz-lotto.js` auf 1/2/3/5 und passende Texte korrigiert.
+- Öffentliche Chancen-Seite `zufallschancen.html` auf denselben aktuellen Stand gebracht.
+- Verifikation DB:
+  - public: aktive Funktion enthält 25→3 / sonst 5;
+  - server1: aktive Funktion enthält 25→3 / sonst 5.
+- Commits:
+  - Client: `ca9d89ba1961ba78044b26592896017e5bfbbb78`
+  - Zufallschancen: `7b2a92419b93294ba77a20e5ef772333d811ebdf`
+  - index Cache: `a5d6668a1c26bfa3ee19ad7e1b44b8229be319fc`
+  - Server1 Cache: `8c908179e990f93424a017b4df98f4ac3316c12e`
+- Cache-Key: `8015count12535`.
