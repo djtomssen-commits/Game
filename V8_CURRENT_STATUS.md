@@ -8830,3 +8830,13 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
   - Commit: `93b4547f2047f125340be7336621f4f12958ffa1`.
 - Cache-Bust für Beta und Server1 auf `8011machine2` erhöht.
 - Automatenlogik, Rewards und Serverautorität unverändert.
+
+
+### 2026-10-05 – Harz-Automat Bild-Fallback nach leerem Hintergrund
+- Nach Umstellung auf das HQ-WebP wurde der Automatenbereich auf dem Gerät leer/schwarz dargestellt.
+- Fix direkt im bestehenden Automaten-CSS:
+  - primär weiterhin `assets/v8010-harz-lotto-machine-hq.webp`;
+  - darunter `assets/v8010-harz-lotto-machine.jpg` als sichtbarer Fallback;
+  - gleiche Größe/Position, keine neue Render-Schicht.
+- Commit: `249f4914e07c08def600a744adaa3184c51983f2`.
+- Cache-Bust Beta + Server1 auf `8011machine3`.
