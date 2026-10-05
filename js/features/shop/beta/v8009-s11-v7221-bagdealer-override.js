@@ -28,12 +28,15 @@
       </div>
     </div>`;
   };
-  const _origOpen = window.v7215BagDealerOpen;
+  /* V8.101: Tütchen is intentionally not released yet.
+     Keep every old direct/open entry point fail-closed so no ad/reward flow can run. */
   window.v7215BagDealerOpen = function(){
-    const root = document.getElementById('v7215BagBody');
-    if(root){
-      root.innerHTML = '<div class="v7219-loading-card"><div class="v7219-loading-bag">🌿</div><b>Dealer holt dein Tütchen aus dem Regal …</b><span>Belohnung, Fortschritt und das nächste Tütchen werden geladen.</span></div>';
-    }
-    return _origOpen ? _origOpen() : window.v7215Load?.(true);
+    try{window.v063Toast?.('Tütchen · Coming Soon','info','Harz Lotto ist bereits verfügbar. Tütchen folgen später.')}catch(_){}
+    try{window.v8010HarzLotto?.open?.()}catch(_){}
+    return false;
+  };
+  window.v7215Load = function(){
+    try{window.v8010HarzLotto?.open?.()}catch(_){}
+    return false;
   };
 })();
