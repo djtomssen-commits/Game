@@ -78,6 +78,13 @@ function v057FillShops(force=false){
   s.weaponShop??=[];
   s.magicShop??=[];
 
+  /* V8.102: Once server item authority is active, the shop stock belongs
+     exclusively to v7063/v7097. Never regenerate local 9-slot stock from a
+     render call just because the authoritative server shop has 6 slots. */
+  let serverOwned=false;
+  try{serverOwned=!!window.v7081UseAuthority?.('items')}catch(_){}
+  if(serverOwned)return false;
+
   if(force || s.weaponShop.length!==9){
     s.weaponShop=v057Unique(9,v057WeaponOffer);
   }
@@ -89,6 +96,7 @@ function v057FillShops(force=false){
   }
 
   localStorage.setItem(KEY,JSON.stringify(s));
+  return true;
 }
 
 /* Replace one slot with a fresh non-duplicate item. */
@@ -196,11 +204,17 @@ function v057OfferHtml(it,i,kind){
    V057 remains the stock/generator/replacement helper; V461 is the sole live shop DOM owner. */
 renderShop=function(){v057FillShops(false);return false};
 
-/* Discard old broken stock once */
+/* Historical local-stock bootstrap is only for non-authoritative fallback.
+   Authenticated server-owned shops are hydrated by v7063 and must never be
+   replaced merely because their canonical slot count differs from the old 9. */
 if(!s.v057ShopCore){
-  s.weaponShop=[];
-  s.magicShop=[];
-  v057FillShops(true);
+  let serverOwned=false;
+  try{serverOwned=!!window.v7081UseAuthority?.('items')}catch(_){}
+  if(!serverOwned){
+    s.weaponShop=[];
+    s.magicShop=[];
+    v057FillShops(true);
+  }
   s.v057ShopCore=true;
   localStorage.setItem(KEY,JSON.stringify(s));
 }
