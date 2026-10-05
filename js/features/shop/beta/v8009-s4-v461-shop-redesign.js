@@ -90,6 +90,15 @@
     const shop=document.querySelector('#shop');
     if(!shop)return;
 
+    /* V8.102 canonical shop ownership:
+       #shop is an empty shell in beta/server1 HTML. Only the current v461/v464
+       structures may exist as direct children. Any other direct child is a
+       legacy producer and must not survive a canonical render. */
+    const allowedDirectIds=new Set(['v461ShopHero','v464ShopTabs','v057GearShopCard','v030MagicShop']);
+    [...shop.children].forEach(el=>{
+      if(!allowedDirectIds.has(String(el.id||'')))el.remove();
+    });
+
     let gearCard=document.querySelector('#v057GearShopCard');
     if(!gearCard){
       gearCard=document.createElement('div');
