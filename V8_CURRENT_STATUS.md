@@ -9185,3 +9185,23 @@ Aktueller Release-Status:
   - index Cache: `a5d6668a1c26bfa3ee19ad7e1b44b8229be319fc`
   - Server1 Cache: `8c908179e990f93424a017b4df98f4ac3316c12e`
 - Cache-Key: `8015count12535`.
+
+
+### 2026-10-05 – Anbau-Turm Header überdeckt Inhalte
+- Nutzer-Screenshots zeigten in mehreren Turm-Zuständen, dass der orange `ANBAU-TURM`-Header nachfolgende Inhalte überdeckt, besonders im Kampf wurden die oberen Statusfelder abgeschnitten.
+- Ursache im gemeinsamen Turm-CSS-Owner:
+  - `css/features/tower/beta/v6271-tower-topbar-lobby-css.css`
+  - `#tower .v6259-head` war `position: sticky` mit festem `top` unter der globalen HUD-Topbar.
+  - Dadurch scrollten Route/Kampf/Reward/Mutation usw. unter den Turm-Header.
+- Fix direkt im bestehenden Owner:
+  - `position: sticky` → `position: relative`
+  - `top: calc(...)` → `top: auto`
+- Wirkung:
+  - Turm-Header bleibt normal im Seitenfluss;
+  - keine Überlagerung der jeweiligen Turm-Inhalte mehr;
+  - gilt zentral für Lobby, Türen, Kampf, Rewards, Mutationen, Händler und weitere Turm-Ansichten.
+- Kein zusätzlicher Offset-/Patch-Layer eingebaut.
+- Commit CSS: `874db8d7faa4e21803064c203607a95cf9fdc44c`
+- Cache-Key: `8016towerheaderflow1`
+- index Cache: `bebcbdd32957f428eebdb9e228efce18bd62fa7f`
+- Server1 Cache: `1e7176dad53b4537ad7c2605b4f2b38bd25168a6`
