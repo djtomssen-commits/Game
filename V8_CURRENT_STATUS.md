@@ -8435,3 +8435,12 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
 - Cache-Bust auf Beta und Server 1: `v=8101towertopbar1`.
 - Commits: `b0b57206e2e95318b827170d52ff7146533b81e5`, `b991ae53462170df93dc4c47a60099b6de160372`, `d9bf53dc596b2afe2e2f85980f515ee128da8e0b`.
 - Server 1 bleibt geschlossen; Klassenbalance unverändert.
+
+
+### 2026-10-05 – Anbau-Turm Header-Offset + Hinterhof-Navigation korrigiert
+- Anbau-Turm: Ursache für den überlagerten Header war der interne `.v6259-head` mit `position: sticky; top: 0`; beim Scrollen lief er unter die globale `v372`-Topbar.
+- Fix im bestehenden Tower-CSS: Sticky-Offset auf 60 px gesetzt, auf kleinen Displays auf 54 px. Die globale Topbar bleibt im Turm bewusst sichtbar.
+- Hinterhof-Dealer: Seite und Lotto waren bereits vorhanden, aber `v4148` ließ `bagDealer` weiterhin nur für Admins in die Navigation.
+- Fix im kanonischen Menü-Owner: `bagDealer` ist für normale Spieler sichtbar, sobald die Seite existiert. Tütchen bleibt deaktiviert/COMING SOON; Harz Lotto bleibt verfügbar.
+- Beide Änderungen wirken auf Beta und Server 1 über die gemeinsamen Owner; Server-1-Sperre und Klassenbalance unverändert.
+- Commits: `ad088b9820180f4be68e3b537dfe854cef92defc`, `ae9a41066873acce44bd95a644cf80a9a03d882a`.
