@@ -3,7 +3,7 @@
 if(window.__V8011_HARZ_MACHINE__)return;
 window.__V8011_HARZ_MACHINE__=true;
 
-const S={active:false,busy:false,data:null,selected:5,pending:null,rewards:null,info:false,lastError:''};
+const S={active:false,busy:false,data:null,selected:5,pending:null,rewards:null,detail:null,info:false,lastError:''};
 const one=d=>Array.isArray(d)?d[0]:d;
 const db=()=>{try{return (typeof v073Db!=='undefined'&&v073Db)||null}catch(_){return null}};
 const fmt=n=>Math.max(0,Math.round(Number(n)||0)).toLocaleString('de-DE');
@@ -64,15 +64,85 @@ function chancesHtml(){
     <p>Alle Belohnungen sind ausschließlich virtuelle Spielinhalte. Kein Echtgeldgewinn, keine Auszahlung und kein Spieler-Jackpot.</p>
   </div>`;
 }
-function rewardHtml(r){
-  const q=esc(r?.quality||'');
-  const label=esc(r?.label||'Belohnung');
-  const icon=esc(r?.icon||'🎁');
+function rewardHtml(r,index){
+  const q=esc(r?.quality||r?.item?.quality||'');
+  const label=esc(r?.label||r?.item?.name||'Belohnung');
+  const icon=esc(r?.icon||r?.item?.icon||'🎁');
   const n=Math.max(0,Number(r?.amount)||0);
   let main='<strong>'+label+'</strong>';
   if(r?.kind==='gold')main='<strong>'+fmt(n)+' Gold</strong>';
   else if(['time_seed','fragment','seed','harz'].includes(String(r?.kind||'')))main='<strong>'+fmt(n)+'× '+label+'</strong>';
-  return `<div class="v8011-reward q-${q}"><div class="v8011-reward-icon">${icon}</div><div>${main}<small>${esc(qualityLabel(r?.quality))}</small></div></div>`;
+  const interactive=String(r?.kind||'')!=='gold';
+  return `<button type="button" class="v8011-reward q-${q} ${interactive?'is-clickable':''}" ${interactive?`data-v8011-reward-index="${index}" aria-label="${label} Details öffnen"`:'disabled'}><div class="v8011-reward-icon">${icon}</div><div>${main}<small>${esc(qualityLabel(r?.quality||r?.item?.quality))}${interactive?' · Antippen':''}</small></div></button>`;
+}
+
+function rewardItem(r){
+  const raw=(r?.item&&typeof r.item==='object')?r.item:null;
+  if(!raw)return null;
+  const inv=Array.isArray(s?.inventory)?s.inventory:[];
+  const mats=Array.isArray(s?.materials)?s.materials:[];
+  const id=String(raw.id||raw.uid||'');
+  if(id){
+    const byId=[...inv,...mats].find(x=>String(x?.id||x?.uid||'')===id);
+    if(byId)return byId;
+  }
+  const name=String(raw.name||r?.label||'').trim(),slot=String(raw.slot||'');
+  if(name){
+    const byName=[...inv,...mats].reverse().find(x=>String(x?.name||'').trim()===name&&(!slot||String(x?.slot||'')===slot));
+    if(byName)return byName;
+  }
+  return raw;
+}
+function statLabel(k){
+  try{return typeof window.v030StatLabel==='function'?window.v030StatLabel(k):String(k||'Wert').replace(/_/g,' ')}catch(_){return String(k||'Wert')}
+}
+function effectLabel(k,v){
+  try{return typeof window.v030EffectLabel==='function'?window.v030EffectLabel(k,v):String(k||'Effekt').replace(/_/g,' ')+' +'+fmt(v)}catch(_){return String(k||'Effekt')}
+}
+function rewardDetailText(r,it){
+  const kind=String(r?.kind||'');
+  const type=String(it?.type||r?.type||'');
+  if(type==='gem'||kind==='gem'){
+    const val=Math.max(0,Number(it?.value||r?.value)||0);
+    return `Edelstein · +${fmt(val)} ${esc(statLabel(it?.stat||r?.stat||''))}. Kann in einen Ausrüstungsgegenstand gesockelt werden. Pro Item ist 1 Edelstein möglich.`;
+  }
+  if(type==='scroll'||kind==='scroll'){
+    const val=Math.max(0,Number(it?.value||r?.value)||0);
+    return `Verzauberungsrolle · ${esc(effectLabel(it?.effect||r?.effect||'',val))}. Kann auf einen Ausrüstungsgegenstand angewendet werden. Pro Item ist 1 Rollen-Verzauberung möglich.`;
+  }
+  if(kind==='time_seed')return 'Zeit-Samen verkürzen bzw. überspringen dafür vorgesehene Wartezeiten im Spiel.';
+  if(kind==='fragment')return 'Fragmente sind ein Schmiede-Material und werden unter anderem für hochwertige Herstellungs- und Upgrade-Systeme verwendet.';
+  if(kind==='seed')return 'Grow-Samen können im Growroom eingepflanzt und angebaut werden.';
+  if(kind==='harz')return 'Harz-Taler sind die Premiumwährung von Grow Legends.';
+  return esc(r?.description||it?.description||'Virtuelle Belohnung aus dem Harz-Automaten.');
+}
+function rewardDetailPopup(){
+  if(S.detail==null||!Array.isArray(S.rewards))return '';
+  const r=S.rewards[S.detail];if(!r)return '';
+  const it=rewardItem(r);
+  const name=esc(it?.name||r?.label||'Belohnung');
+  const icon=esc(it?.icon||r?.icon||'🎁');
+  const q=esc(qualityLabel(it?.quality||r?.quality));
+  return `<div class="v8010-popup-backdrop v8011-detail-backdrop" data-v8011-detail-close>
+    <section class="v8010-popup v8011-detail-popup" role="dialog" aria-modal="true">
+      <button type="button" class="v8010-popup-close" data-v8011-detail-close>×</button>
+      <div class="v8010-popup-title"><small>Belohnungsdetails</small><h3>${name}</h3></div>
+      <div class="v8011-detail-card"><div class="v8011-detail-icon">${icon}</div><b>${name}</b><small>${q}</small><p>${rewardDetailText(r,it)}</p></div>
+      <button type="button" class="btn secondary" data-v8011-detail-close>Zurück zum Päckchen</button>
+    </section>
+  </div>`;
+}
+function openRewardDetail(index){
+  const r=Array.isArray(S.rewards)?S.rewards[index]:null;if(!r)return;
+  const it=rewardItem(r);
+  const isGear=!!it&&!!String(it?.slot||r?.item?.slot||'')&&!['gem','scroll'].includes(String(it?.type||''));
+  if(isGear&&typeof window.v4103OpenItemCompare==='function'){
+    /* Reveal already credited the item; use the real inventory object so the
+       canonical compare owner can offer Anlegen/Verkaufen and exact comparison. */
+    window.v4103OpenItemCompare(it,'inventory');
+    return;
+  }
+  S.detail=index;paint();
 }
 function rewardsPopup(){
   if(!Array.isArray(S.rewards))return '';
@@ -80,7 +150,7 @@ function rewardsPopup(){
     <section class="v8010-popup v8011-reward-popup" role="dialog" aria-modal="true">
       <button type="button" class="v8010-popup-close" data-v8011-close>×</button>
       <div class="v8010-popup-title"><small>Grow Legends · Harz-Automat</small><h3>Dein Päckchen</h3></div>
-      <div class="v8011-reward-list">${S.rewards.map(rewardHtml).join('')}</div>
+      <div class="v8011-reward-list">${S.rewards.map((r,i)=>rewardHtml(r,i)).join('')}</div>
       <button type="button" class="btn v8011-ok" data-v8011-close>Belohnungen ansehen ✓</button>
     </section>
   </div>`;
@@ -133,6 +203,7 @@ function paint(){
       <p class="v8011-note">Je höher der Einsatz, desto mehr Belohnungen und desto bessere Qualitätschancen. Alle Ziehungen werden serverseitig festgelegt.</p>
     </section>
     ${rewardsPopup()}
+    ${rewardDetailPopup()}
     ${infoPopup()}
   </div>`;
 }
@@ -198,9 +269,12 @@ document.addEventListener('click',e=>{
   if(stake){S.selected=Number(stake.dataset.v8011Stake)||5;paint();return}
   if(e.target?.closest?.('[data-v8011-play]')){e.preventDefault();void play();return}
   if(e.target?.closest?.('[data-v8011-reveal]')){e.preventDefault();void reveal();return}
+  const reward=e.target?.closest?.('[data-v8011-reward-index]');
+  if(reward){e.preventDefault();openRewardDetail(Number(reward.dataset.v8011RewardIndex));return}
+  if(e.target?.closest?.('[data-v8011-detail-close]')){S.detail=null;paint();return}
   if(e.target?.closest?.('[data-v8011-info]')){S.info=true;paint();return}
   if(e.target?.closest?.('[data-v8011-info-close]')){S.info=false;paint();return}
-  if(e.target?.closest?.('[data-v8011-close]')){S.rewards=null;paint();return}
+  if(e.target?.closest?.('[data-v8011-close]')){S.rewards=null;S.detail=null;paint();return}
 },true);
 
 window.addEventListener('growlegends:navigation-ready',renameDealer,{passive:true});
