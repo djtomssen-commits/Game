@@ -8891,3 +8891,23 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
 - `zufallschancen.html` an die tatsächlichen neuen Wahrscheinlichkeiten/Garantien angepasst.
 - Client-Code-Commit: `d792170833a0cea6e96ce0e23444dc789c6703ec`.
 - Cache-Bust Beta/Server1: `8012rewards1`.
+
+
+### 2026-10-05 – Tütchen-Dealer / Rewarded Ads: Freigabestrategie bis Play Store
+- Der aktuelle `Coming Soon`-Lock des Tütchen-Dealers ist **absichtlich** gesetzt und soll vorerst bestehen bleiben.
+- Grund: Die App ist noch nicht final im Play Store freigeschaltet. Bis dahin sollen ausschließlich Google-Testanzeigen verwendet werden.
+- Aktueller technischer Stand:
+  - native Rewarded-Ad-Bridge im Webcode über `window.Capacitor?.Plugins?.GrowLegendsAds`;
+  - Reward-Aufruf über `showRewarded(...)`;
+  - serverseitiger Tütchen-Fortschritt und Reward-State vorhanden;
+  - Beta und Server1: `ad_bag_settings.enabled = true`, `mode = 'test'`;
+  - produktiver Reward-RPC `v7215_ad_bag_apply_verified(...)` ist nicht für normale Clients freigegeben, sondern nur für `service_role`;
+  - Testbetrieb kann über `v7215_ad_bag_admin_test_watch()` simuliert werden.
+- Geplanter Ablauf **erst nach Play-Store-Freigabe**:
+  1. native Google-Test-Ad-Unit in `GrowLegendsAds` gegen die echte Rewarded-Ad-Unit ersetzen;
+  2. Server-Side-Verification / verifizierte Reward-Bestätigung im Produktionspfad testen;
+  3. Consent/UMP, Datenschutz und Google-Play-Data-Safety gegen den tatsächlichen Produktions-AdMob-Build prüfen;
+  4. `ad_bag_settings.mode` von `test` auf Produktion umstellen;
+  5. erst danach den `Coming Soon`-Lock des Tütchen-Dealers entfernen;
+  6. final testen: vollständig angesehenes Video = genau 1 Fortschritt, vorzeitig geschlossen = 0 Fortschritt, keine Doppelbelohnung.
+- Bis zur Store-Freigabe **keine Produktiv-Ads aktivieren und den Coming-Soon-Lock nicht entfernen**.
