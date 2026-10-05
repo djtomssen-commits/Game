@@ -8911,3 +8911,21 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
   5. erst danach den `Coming Soon`-Lock des Tütchen-Dealers entfernen;
   6. final testen: vollständig angesehenes Video = genau 1 Fortschritt, vorzeitig geschlossen = 0 Fortschritt, keine Doppelbelohnung.
 - Bis zur Store-Freigabe **keine Produktiv-Ads aktivieren und den Coming-Soon-Lock nicht entfernen**.
+
+
+### 2026-10-05 – Go-Live-Checkpoint: Rewarded Ads + Datenschutz nach Play-Store-Freigabe
+- Bis zur finalen Play-Store-Freigabe bleibt der Tütchen-Dealer auf `Coming Soon` und der Ads-Pfad im `test`-Modus.
+- **Erst nach Freigabe**:
+  1. Google-Testanzeigen in der nativen `GrowLegendsAds`-Bridge durch echte Rewarded-Ad-Units ersetzen.
+  2. Produktionspfad inkl. Server-Side-Verification / Reward-Bestätigung testen.
+  3. `ad_bag_settings.mode` von `test` auf Produktion umstellen.
+  4. Tütchen-Dealer `Coming Soon` entfernen.
+  5. `datenschutz.html` an den tatsächlichen Produktionszustand anpassen:
+     - Google AdMob / Werbedienst,
+     - tatsächlich verarbeitete Geräte-/Werbe-/technische Daten,
+     - personalisierte bzw. nicht personalisierte Anzeigen,
+     - Consent/UMP bzw. tatsächlich eingesetzte Einwilligungslogik,
+     - Empfänger/Drittlandübermittlungen,
+     - Widerrufs-/Datenschutzoptionen.
+  6. Google-Play-Data-Safety-, Ads- und ggf. Zielgruppen-/Content-Rating-Angaben gegen den finalen Produktions-Build abgleichen.
+- Wichtig: Datenschutztext nicht auf Verdacht vorziehen; Grundlage ist der reale native Produktions-AdMob-Build.
