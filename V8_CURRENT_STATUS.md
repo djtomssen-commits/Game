@@ -8519,3 +8519,24 @@ Bei jeder ausdrücklichen Freigabe „auf Server 1 übernehmen“:
 - Commit: `a49c93a6bb633b5f80dbd56c20747a3303382313`
 - Cache-Bust Beta: `b401f8011eacf1348e8952b5d929359a94587ad1`
 - Cache-Bust Server1: `c28471c06d5d33150ed949199ab200454b021115`.
+
+
+### 2026-10-05 – Alter Shop-Header/Legacy-DOM entfernt
+- Nutzer-Screenshot zeigte oberhalb des aktuellen Shops noch einen alten Block:
+  - `Bork · Händler von Grünhain`;
+  - alter Seltenheits-Hinweis;
+  - zusätzlich darunter bereits der neue v461/v464-Shop.
+- HTML-Vertrag geprüft: `<section id="shop" class="screen"></section>` ist in Beta und Server1 leer. Sämtliche Shop-DOM-Struktur wird dynamisch erzeugt.
+- Daraus folgt: direkte Kinder von `#shop`, die nicht zum aktuellen v461/v464-Vertrag gehören, sind Legacy-DOM.
+- Fix direkt im kanonischen `v461-shop-redesign.js`:
+  - v461 übernimmt exklusiven Root-Besitz von `#shop`;
+  - zulässige direkte Kinder:
+    - `#v461ShopHero`
+    - `#v464ShopTabs`
+    - `#v057GearShopCard`
+    - `#v030MagicShop`
+  - alle anderen direkten Shop-Blöcke werden beim kanonischen Render entfernt.
+- Damit verschwinden der alte `Bork · Händler von Grünhain`-Header und der alte Seltenheits-Hinweis zusammen mit sonstigen fremden Shop-Root-Blöcken.
+- Commit: `bb39ed0ce8ab7f98139c53a265428a24447ff042`
+- Cache-Bust Beta: `8d6448413e61c05bef1a334ff4fa3f6a7db2912f`
+- Cache-Bust Server1: `0d274b9e1a4be5030da08ad4c92d02a5cb7f2e0b`.
