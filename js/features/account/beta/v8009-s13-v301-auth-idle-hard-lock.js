@@ -17,7 +17,7 @@ function v301LoadLastActivity(){
 
 function v301HasDurableUser(){
   try{
-    if(typeof v200DurableUser==='function')return !!v200DurableUser();
+    if(typeof window.v200DurableUser==='function')return !!window.v200DurableUser();
   }catch(_){}
   try{
     const u=window.v073User;
@@ -34,7 +34,7 @@ function v301TouchActivity(){
   /* Critical mobile fix: if the page sat in the background for >=10 min,
      the very first tap must log out, not reset the timer and allow gameplay. */
   if(now-last>=V200_IDLE_MS){
-    v136Logout('idle');
+    window.v136Logout?.('idle');
     return false;
   }
 
@@ -50,7 +50,7 @@ function v301CheckIdle(){
   const last=Number(v200LastActivity)||v301LoadLastActivity();
 
   if(now-last>=V200_IDLE_MS){
-    v136Logout('idle');
+    window.v136Logout?.('idle');
     return true;
   }
   return false;
