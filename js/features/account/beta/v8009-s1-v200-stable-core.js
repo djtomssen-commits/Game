@@ -24,6 +24,7 @@ let v200Booted=false;
 function v200DurableUser(){
   return !!(v073User && !v073User.is_anonymous);
 }
+window.v200DurableUser=v200DurableUser;
 
 function v200CharacterComplete(){
   return !!(s.playerClass && s.characterNameSet && v071NameValid(s.characterName));
@@ -67,6 +68,7 @@ function v200SaveScopedLocal(){
     localStorage.setItem(v200ScopedKey(v073User.id),JSON.stringify(copy));
   }catch(e){}
 }
+window.v200SaveScopedLocal=v200SaveScopedLocal;
 
 function v200LoadScopedLocal(uid){
   try{
