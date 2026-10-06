@@ -9425,3 +9425,51 @@ Aktueller Release-Status:
   - index.html Cache-Bust: `a1bb18dd74b8c2fabe6f0fb182eec71a46d0a6a8`
   - server1.html Cache-Bust: `f3b0d6540bddb6963a79b188beaf407c52d3ea03`
 - DB nach Migration verifiziert: Server 1 enabled=true, opens_at=2026-10-06 14:00:00+00.
+
+
+### 2026-10-06 – Mehrsprachigkeit Power-Block 1
+- Ziel: echtes zentrales Sprachsystem statt rein optischer DE-Anzeige im Login.
+- Standard/Fallback bleibt **Deutsch**.
+- Neu: zentraler Owner `js/features/i18n/v8143-i18n-core.js`.
+- Unterstützte Sprachen im ersten Block:
+  - 🇩🇪 Deutsch
+  - 🇬🇧 English
+  - 🇪🇸 Español
+  - 🇫🇷 Français
+  - 🇵🇱 Polski
+  - 🇹🇷 Türkçe
+- Sprachwahl:
+  - Login-Topbar `🌐 DE` ist jetzt ein echtes Dropdown.
+  - Auswahl wird in `localStorage:growthLegendsLanguage`-ähnlichem zentralem Schlüssel `growLegendsLanguage` gespeichert.
+  - noch nie gewählte Sprache => Deutsch.
+  - `<html lang>` wird dynamisch gesetzt.
+  - fehlende Übersetzungen fallen automatisch auf Deutsch zurück.
+  - Sprachwechsel feuert `growlegends:language-changed`.
+- Bereits über den zentralen Owner lokalisiert:
+  - Login-Grundoberfläche / Login-Aktionslabels
+  - Serverauswahl inkl. Server-1-Countdown und Öffnungstexte
+  - Hauptnavigation
+  - Topbar-Ressourcen Gold / Harz / Dampf
+  - Login-Featuretexte / Footer
+- Server-/Spielstände werden NICHT übersetzt oder umgeschrieben; nur Darstellung.
+- Beta und Server 1 laden denselben I18N-Owner.
+- Cache-Bust für die betroffenen Owner: `8143i18n1`.
+- Wichtige Commits:
+  - I18N Core: `6f29f7e4692955459656acc541d386a8d09f5b28`
+  - Login Selector: `c93528a2a3b6c4f812b5d0c421e03da1dad54dc6`
+  - Serverauswahl: `131f1ee4021ce86ec37c9cbfd81dc16acfbaa12d`
+  - Navigation: `77df322420f6c018bc8c368d0d06e7516777b133`
+  - Topbar: `409833e8b18465b02297d3363e4272dee82e8c34`
+  - Login Core: `cb5dca1829e826308abbd0309dcc820cde7e5556`
+  - index/server1 Wiring: `774cc30a9121006b31a4fdb85fcc4229db83288a` / `c90bdf80d5964d1b4ccbbad094b75ce13c110732`
+  - Smoke-Marker Update: `adfddcdf1fb24fa3c325e17a76ada5fe51461a9f`
+- QA:
+  - DOM Contract Guard blieb während der Umbauten grün.
+  - Synthetic Smoke musste wegen des absichtlich geänderten Auth-Core-Cachemarkers auf `8143i18n1` aktualisiert werden; Run #36 ist nach Marker-Fix ausgelöst.
+- Nächster Power-Block:
+  - Startseite
+  - Charakter
+  - Growroom
+  - Quest & Schicht
+  - Dungeons / Turm
+  - danach Shop/Schmiede/Dealer/PvP/Gilde/Hall/Freunde/Post und alle Popups/Toasts/Guides.
