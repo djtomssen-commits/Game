@@ -9963,3 +9963,22 @@ Aktueller Release-Status:
 - Commits:
   - v4140 Value-Source-Fix: `6c64e479cf044f0c29d63098ecbed694c50836c3`
   - index/beta/server1: `fd72afce48f32c4d5854349cfd3db305cd389901` / `a47c9a3ab5ba85edf299d425f31d86bc37d94017` / `2d9faeb036c9a587ca3006ae2bd3fd0e69192430`
+
+
+### 2026-10-06 – Attributzahlen springen: serverautoritative Ausrüstung vor First Paint
+- Nutzer meldete nach stabilem Layout weiterhin wechselnde Attributzahlen.
+- Root Cause jetzt auf Datenfluss eingegrenzt:
+  - `v459` öffnete den Attribute-Tab sofort und malte mit lokalem `s.equipment`.
+  - `v7074-item-enforce-bridge` hydrierte 550–2700 ms später die serverautoritative Ausrüstung und ersetzte `s.equipment`.
+  - `totalAttr()` berücksichtigt Ausrüstung; deshalb wechselten die Zahlen sichtbar von lokal/stale auf serverkanonisch.
+- Direkt im kanonischen Character-Hub `v8009-s2-v459-character-hub.js` behoben:
+  - vor dem ersten Attribute-Paint wird `v7074ItemAuthorityRefresh(false,false)` abgewartet, falls der Item-Authority-Stand nicht frisch ist;
+  - währenddessen zeigt der Tab nur `Attribute werden synchronisiert …`, keine falschen Zwischenwerte;
+  - danach genau ein finaler Paint über `v4140PaintAttributes` + `v537ApplyAttributes`;
+  - redundanter unmittelbarer v537-Paint nach `activate()` entfernt;
+  - parallele Refreshes werden über eine gemeinsame Promise zusammengeführt.
+- Syntaxcheck v459: grün.
+- Cache-Bust index/beta/server1: `8165attrhydrate1`.
+- Commits:
+  - v459 authoritative first-paint: `80d6181d861deb1cffd14ca522eddc4b22dc615a`
+  - index/beta/server1: `ac36f67aa93fae13c58e4282969d6038160aaab8` / `1bb1cb3508e578bcfe5ef969a68cf44b59cee1cf` / `3763ac280562f75dbdeb7a299c00e7dbd45e8022`
