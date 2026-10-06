@@ -35,7 +35,10 @@ function apply(r,{paint=true}={}){
     try{window.v441PaintResources?.()}catch(_){}
     try{window.v446PaintCombatPower?.()}catch(_){}
     try{
-      if(document.getElementById('character')?.classList.contains('active'))render?.();
+      if(document.getElementById('character')?.classList.contains('active')){
+        window.v446PaintCombatPower?.();
+        window.v7124PaintCharacterSummary?.();
+      }
     }catch(_){}
   }
   return true;
