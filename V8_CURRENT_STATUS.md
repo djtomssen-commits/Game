@@ -9649,3 +9649,22 @@ Aktueller Release-Status:
   - index Cache: `9bb96d051505008c06f936be8bf94119890c17c5`
   - server1 Cache: `8ee78cf2b319fa7f71f7c745aebb0a1c68d19069`
 - Keine Gameplay-/Reward-/Save-/RPC-/Balance-Logik verändert.
+
+
+### 2026-10-06 – Sprachumschaltung Selector-Binding Fix
+- Nutzer-Screenshot bestätigt: selbst sichtbare Login-/Servertexte bleiben nach Sprachwahl auf Deutsch.
+- Übersetzungsschlüssel/Renderer waren vorhanden; Ursache lag im eigentlichen Selector-Binding:
+  - der Login-Topbar-Selector kann im Login-Lifecycle als DOM neu aufgebaut/ersetzt werden;
+  - bisher wurde der `change`-Listener nur beim initialen Rebuild gesetzt;
+  - ein später ersetzter, optisch identischer Selector konnte daher ohne aktiven Handler bleiben.
+- Direkt im kanonischen v347 Login-Owner repariert:
+  - `onchange` und `oninput` werden bei jedem `v347EnsureLayout()` neu gesetzt;
+  - zusätzlicher delegierter `change`-Handler auf Dokumentebene fängt spätere DOM-Ersetzungen desselben Selectors ab;
+  - Sprachwert wird weiterhin ausschließlich über den bestehenden `GrowI18n.setLanguage()` gesetzt.
+- Kein neuer Renderer/Patch-Lifecycle eingeführt.
+- Cache-Bust Beta/Stable + Server 1: `8152langbind1`.
+- Commits:
+  - Selector-Binding: `9bd0a0c264e1915b0dbca4636199e2ca88f53683`
+  - index Cache: `e27cd3515a1daac198f49e54bfbac38ec619daf2`
+  - server1 Cache: `29fce48ad6aa3ec988f548f2f5eef2f0c2524a35`
+- Syntaxcheck v347 / v8143 / v8144: grün.
