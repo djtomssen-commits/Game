@@ -115,7 +115,8 @@
       stack.appendChild(footer);
     }
 
-    try{window.GrowI18n?.apply?.()}catch(_){}
+    /* Core applyDocument() already calls this canonical layout owner.
+       Do not call GrowI18n.apply() from here or both owners recurse into each other. */
     try{v347PaintLoginLanguage()}catch(_){}
     return true;
   }
