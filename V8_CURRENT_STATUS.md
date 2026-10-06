@@ -10221,3 +10221,27 @@ Aktueller Release-Status:
 - Erwartung:
   - `#attrs` hat jetzt nur noch v4140 als Zahlen-Owner.
   - kein einmaliger Überschreib-Paint mehr bei account-ready/Character-Navigation.
+
+
+### 2026-10-06 – Einmaliger Attribut-Sprung: Cross-Account Authority Race behoben
+- Nutzer meldete weiterhin genau einen sichtbaren Umsprung der Attributzahlen.
+- Vollständigerer Authority-Audit zeigte eine echte Race-Condition beim Account-/Session-Wechsel:
+  - `v7074-item-enforce-bridge` hielt `refreshP` global fest.
+  - Wenn während einer laufenden Item-Authority-RPC die User-ID wechselte, konnte der neue Account dieselbe alte Promise übernehmen.
+  - Die alte Serverantwort konnte danach noch `s.equipment` anwenden, obwohl bereits ein anderer Account aktiv war.
+  - `v7033-build-authority-bridge` hatte analog eine nicht UID-gebundene laufende Gate-RPC, deren alte Antwort nach Accountwechsel noch Build-State anwenden konnte.
+  - `v459.authorityFresh()` prüfte bisher nur ready + Alter, nicht ob Item-/Build-Authority tatsächlich zur aktuellen UID gehörten.
+- Direkter Root-Fix:
+  - `v7074` bindet jede Refresh-Promise an `requestUid`; bei UID-Wechsel wird ein alter Inflight-Refresh nicht wiederverwendet; Antworten werden verworfen, wenn die aktuelle UID nicht mehr der Request-UID entspricht.
+  - `v7033` bindet jede Gate-Promise an `requestUid`; alte Build-Antworten werden nach Accountwechsel verworfen.
+  - `v459.authorityFresh()` akzeptiert Build + Item nur noch, wenn beide Diagnostics-UIDs exakt der aktuellen `v073User.id` entsprechen.
+- Dadurch kann kein alter Account-Snapshot mehr einmal sichtbar werden und anschließend vom neuen Account überschrieben werden.
+- Syntaxcheck v7074/v7033/v459: grün.
+- Cache-Bust index/beta/server1: `8173uidrace1`.
+- Commits:
+  - v7074: `2ecf4933a0f416b44ae4e644c7ee654060fccc5b`
+  - v7033: `3b7499e6352e53e8bf765643d14a70a1e7206962`
+  - v459: `207990ea30dade16253433ad8845f61109b932d1`
+  - index: `21005fa8bc4ce11d615a8289557d03d9dde32564`
+  - beta: `fff7679176c25692fddc0c8a3a54a28cd37498f9`
+  - server1: `8e44f694ab8b9406d639cad8a0dae7506c958da0`
