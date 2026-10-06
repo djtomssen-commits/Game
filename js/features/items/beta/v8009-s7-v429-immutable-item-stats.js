@@ -31,13 +31,18 @@
     });
     return native;
   }
+  function authenticatedServerItems(){
+    try{return !!((typeof v073User!=='undefined'&&v073User?.id)||window.v073User?.id)}catch(_){return false}
+  }
   function lock(it){
+    if(authenticatedServerItems())return false;
     if(!isGear(it))return false;
     if(it.v429StatLock && it.v429StatLock.version===LOCK_VERSION && it.v429StatLock.native && typeof it.v429StatLock.native==='object')return false;
     it.v429StatLock={version:LOCK_VERSION,native:nativeFromCurrent(it)};
     return true;
   }
   function restore(it){
+    if(authenticatedServerItems())return false;
     if(!isGear(it))return false;
     lock(it);
     const before=JSON.stringify(it.bonus||{});
@@ -56,12 +61,14 @@
     (s.magicShop||[]).forEach(fn);
   }
   function lockAndRestoreAll(){
+    if(authenticatedServerItems())return false;
     let changed=false;
     eachGear(it=>{if(lock(it))changed=true;if(restore(it))changed=true});
     return changed;
   }
   function saveStable(){
-    try{localStorage.setItem(KEY,JSON.stringify(s))}catch(e){}
+    if(authenticatedServerItems())return false;
+    try{localStorage.setItem(KEY,JSON.stringify(s));return true}catch(e){return false}
   }
   function stableTotal(it){
     restore(it);
