@@ -9315,3 +9315,52 @@ Aktueller Release-Status:
   - damit werden die Beta-Balancewerte nicht auf Server 1 übernommen.
 - Server-1-Release-Channel/Supabase-Schema-Trennung unverändert.
 - Commit: `6246a150403d9e625188f95fef70eb1c32ce8807`.
+
+
+### 2026-10-06 – Release-Readiness Vollaudit + Hardening
+- Anlass: finaler technischer Gegencheck vor öffentlicher Veröffentlichung.
+- GitHub/CI:
+  - V8.140 Synthetic Player Smoke nach Aktualisierung der Release-Marker wieder **GRÜN**; Run #21 erfolgreich.
+  - Smoke prüft >2000 Verträge, alle lokal geladenen Assets sowie Node-Syntax der geladenen JS-Dateien.
+  - historischer DOM-Contract-Guard hatte einen Fehler in seinem eigenen Python-RegEx-Parser; QA-Script direkt repariert.
+  - DOM Contract Guard Run #554 danach **GRÜN**.
+- Android 1.0.8:
+  - Play-Store-AAB-Workflow hatte nach der Umstellung auf echte AdMob-Werbung noch irrtümlich die alte Google-Test-Ad-Unit validiert.
+  - Workflow direkt auf die echte Rewarded-Unit umgestellt.
+  - Commit Android: `359c704986d77395b8fa1ddb148302079fc1320d`.
+  - Play-Store-AAB + APK Run #59: **SUCCESS**.
+  - normaler APK Run #28: **SUCCESS**.
+- Runtime-Telemetrie der letzten 24 Stunden ausgewertet:
+  - echte aktuelle JS-Fehler gefunden:
+    1. `v301-auth-idle-hard-lock.js`: `v200DurableUser is not defined` bei Load-Order/Cache-Skew;
+    2. `v6102-character-equipment-scroll-fix.js`: fehlendes `__V7126_CHARACTER_CHURN__` bei Slot-Write-Telemetrie;
+    3. älterer Frost-Offhand-`insertBefore`-Race.
+  - alle drei direkt in den bestehenden Ownern gehärtet, keine neue Patch-Schicht:
+    - Auth-Fallback: `7af18fcba6478259cda8d01af7816b5273a6169b`
+    - Slot-Telemetrie self-init: `410fa08ee0f3042b2fb3ca5b5272c3279ec7b7f3`
+    - Frost-DOM-Insertion parent-safe: `6f6f5adad6ddbb52e5601aab5e38d898de7b6215`
+  - Cache-Bust für diese drei Owner auf Beta/Stable und Server 1: `8141releasehardening1`.
+- Supabase Release-Hardening:
+  - Projektzustand: ACTIVE_HEALTHY.
+  - unnötige anonyme EXECUTE-Rechte von spielverändernden SECURITY-DEFINER-RPCs auf **public und server1** entfernt.
+  - Harz-Automat bleibt für `authenticated` + `service_role` verfügbar.
+  - Gildenboss-Anmeldung bleibt für `authenticated` + `service_role`.
+  - Dungeon-Side-Reward-Trigger ist nicht mehr direkt durch normale/anon Clients ausführbar; service_role bleibt.
+  - `gl_server_access_pre_request()` bewusst nicht verändert, da es als Pre-Request-Gate funktionieren muss.
+  - Migrationen:
+    - `release_hardening_revoke_anon_gameplay_rpc_execute`
+    - `release_hardening_revoke_public_anon_gameplay_execute`
+  - Direkt verifiziert: die geprüften Gameplay-RPCs haben für `anon` jetzt `EXECUTE=false`.
+- Nicht als Release-Blocker eingestuft:
+  - RLS-enabled/no-policy INFOs auf RPC-only/fail-closed Tabellen;
+  - ungenutzte Indizes / fehlende PKs auf historischen Backup-Tabellen;
+  - wiederholte Tower/Dungeon-`stalled_action`-Telemetry bei ~6,5 s Replay-Phasen wirkt überwiegend wie Schwellenwert gegen absichtlich längere Animationen, nicht wie bestätigter Funktionsausfall.
+- Noch bewusst offen / Release-Gate:
+  1. **10-Minuten Idle-Logout → gleicher Account erneut einloggen** einmal manuell mit dem neuen Cache-Bust bestätigen; kein brauner Leerbildschirm.
+  2. 1.0.7 kann als erster öffentlicher Stand ohne Tütchen-Ads live gehen; Tütchen bleibt Coming Soon.
+  3. Nach öffentlichem Store-Eintrag AdMob mit Google Play verknüpfen.
+  4. Danach 1.0.8 Rewarded-Endtest: volles Video = exakt +1 Fortschritt; Abbruch = 0; SSV keine Doppelgutschrift.
+  5. Supabase Leaked-Password-Protection ist noch deaktiviert und sollte als Account-Hardening aktiviert werden; kein Gameplay-Code-Blocker.
+- Release-Einschätzung nach Audit:
+  - Kernspiel/Serverautorität/Build-Pipeline sind technisch nahe release-ready.
+  - Vor endgültigem GO bleibt der manuelle Re-Login-Test als wichtigster unmittelbarer Funktionscheck.
