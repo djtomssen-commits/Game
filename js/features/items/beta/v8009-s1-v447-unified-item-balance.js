@@ -146,7 +146,13 @@
     for(let i=0;used>total&&i<parts.length*30;i++){const x=parts[i%parts.length];if(x.val>1){x.val--;used--}}
     return Object.fromEntries(parts.map(x=>[x.k,x.val]));
   }
+  function authenticatedServerItems(){
+    try{return !!((typeof v073User!=='undefined'&&v073User?.id)||window.v073User?.id)}catch(_){return false}
+  }
   function apply(it){
+    /* V8.169: authenticated item stats are server-owned. Historical client
+       normalization must never rewrite inventory/equipment bonuses after login. */
+    if(authenticatedServerItems())return false;
     if(!isGear(it))return false;
     /* Server-authoritative V7.168 items already carry the canonical native map.
        Never let this historical V4.47 client normalizer overwrite it. */
@@ -190,6 +196,7 @@
     return before!==JSON.stringify({bonus:it.bonus||{},lock:it.v429StatLock||null,curve:it.v447Curve||null,mark:true});
   }
   function all(){
+    if(authenticatedServerItems())return false;
     let changed=false;
     const lists=[s?.inventory,s?.weaponShop,s?.magicShop];
     lists.forEach(list=>{if(Array.isArray(list))list.forEach(it=>{if(apply(it))changed=true})});
@@ -268,5 +275,6 @@
   /* V4.86: canonical item-balance migration is intentionally silent at login/refresh. */
   document.addEventListener('DOMContentLoaded',()=>{all();stamp()},{once:true});
   window.addEventListener('pageshow',()=>{all();stamp()},{passive:true});
-  setTimeout(()=>{all();stamp()},700);setTimeout(()=>{all();stamp()},2600);setTimeout(()=>{all();stamp()},6000); /* V4.123: removed useless late clear of already-fired one-shot timeout. */
+  /* V8.169: retired 700/2600/6000 ms item-stat rewrite train.
+     Server-authoritative accounts must never be mutated by delayed client passes. */
 })();
