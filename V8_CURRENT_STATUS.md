@@ -9402,3 +9402,26 @@ Aktueller Release-Status:
 - Bewertung:
   - normale optische/UI-Bugs sind kein Release-Rechtsblocker;
   - Spielstandverlust, Account-Lifecycle-Fehler, verlorene Premiumwährung und nicht wiederherstellbare Käufe bleiben Release-Blocker bis grün getestet.
+
+
+### 2026-10-06 – Server 1 öffnet heute automatisch um 16:00 Uhr
+- Nutzerfreigabe: Server 1 heute für alle Spieler öffnen.
+- Öffnungszeit fest gesetzt auf **2026-10-06 16:00 Uhr Europe/Berlin** = **14:00 UTC**.
+- Supabase:
+  - `public.game_servers.id='server1'`
+  - `enabled=true`
+  - `opens_at='2026-10-06 14:00:00+00'`
+  - bestehender Pre-Request-Gate öffnet damit ab exakt 16:00 Uhr automatisch für alle.
+  - Early-Access-Testkonten behalten bis dahin Zugriff.
+- Login-/Serverauswahl direkt im bestehenden `v343`-Owner angepasst:
+  - Server 1 zeigt bis 16:00 einen live laufenden Countdown `HH:MM:SS`.
+  - Text: Start heute 16:00 Uhr.
+  - Countdown aktualisiert sich sekündlich.
+  - ab 16:00 schaltet die Anzeige automatisch von geschlossen/Countdown auf **ONLINE · Live-Server**.
+  - ab 16:00 blockiert der Client normale Accounts nicht mehr.
+- Cache-Bust Beta/Stable + Server 1: `8142server1launch1600`.
+- Commits:
+  - Countdown-/Launch-Owner: `f66d8d5d77baab2ce471e81f6178403cdc3a885b`
+  - index.html Cache-Bust: `a1bb18dd74b8c2fabe6f0fb182eec71a46d0a6a8`
+  - server1.html Cache-Bust: `f3b0d6540bddb6963a79b188beaf407c52d3ea03`
+- DB nach Migration verifiziert: Server 1 enabled=true, opens_at=2026-10-06 14:00:00+00.
