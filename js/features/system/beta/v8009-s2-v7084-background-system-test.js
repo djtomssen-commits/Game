@@ -24,6 +24,28 @@ const stableJson=v=>{
 };
 const eq=(a,b)=>stableJson(a)===stableJson(b);
 const trimErr=e=>String(e?.message||e||'').slice(0,500);
+const itemCombatDiff=(localEq,serverEq)=>{
+ const out=[],stats=['staerke','geschick','intelligenz','ausdauer','glueck'];
+ const slots=[...new Set([...Object.keys(localEq||{}),...Object.keys(serverEq||{})])].sort();
+ for(const slot of slots){
+  const a=localEq?.[slot]||null,b=serverEq?.[slot]||null;
+  const aid=String(a?.id||a?.uid||''),bid=String(b?.id||b?.uid||'');
+  if(aid!==bid)out.push({slot,field:'id',local:aid||null,server:bid||null});
+  for(const k of stats){
+   const av=Number(a?.bonus?.[k]||0),bv=Number(b?.bonus?.[k]||0);
+   if(av!==bv)out.push({slot,field:'bonus.'+k,local:av,server:bv});
+  }
+  const ag=String(a?.gem?.stat||''),bg=String(b?.gem?.stat||'');
+  const agv=Number(a?.gem?.value||0),bgv=Number(b?.gem?.value||0);
+  if(ag!==bg)out.push({slot,field:'gem.stat',local:ag||null,server:bg||null});
+  if(agv!==bgv)out.push({slot,field:'gem.value',local:agv,server:bgv});
+  const ae=(Array.isArray(a?.enchants)&&a.enchants.length?a.enchants[0]:a?.enchant)||null;
+  const be=(Array.isArray(b?.enchants)&&b.enchants.length?b.enchants[0]:b?.enchant)||null;
+  if(String(ae?.effect||'')!==String(be?.effect||''))out.push({slot,field:'enchant.effect',local:ae?.effect||null,server:be?.effect||null});
+  if(Number(ae?.value||0)!==Number(be?.value||0))out.push({slot,field:'enchant.value',local:Number(ae?.value||0),server:Number(be?.value||0)});
+ }
+ return out.slice(0,40);
+};
 
 window.addEventListener('error',e=>{
  caught.push({type:'error',message:String(e?.message||''),file:String(e?.filename||''),line:Number(e?.lineno)||0,at:Date.now()});
@@ -148,6 +170,8 @@ async function run(showToast=false){
       eq(s?.inventory||[],x.data?.inventory||[])
       &&eq(s?.equipment||{},x.data?.equipment||{})
       &&eq(s?.materials||[],x.data?.materials||[]);
+    checks.itemCombatDiff=itemCombatDiff(s?.equipment||{},x.data?.equipment||{});
+    checks.itemCombatStatsMatch=checks.itemCombatDiff.length===0;
     checks.enchantRepresentationClean=Object.values(x.data?.equipment||{}).filter(Boolean).every(it=>{
       const a=Array.isArray(it?.enchants)&&it.enchants.length?it.enchants[0]:null;
       const b=it?.enchant||null;
