@@ -548,6 +548,7 @@
       if(ownedWorldClean(world,current)){diagnostics.cleanSignatureHits++;return}
       diagnostics.dirtySignatureRepairs++;
       finalizeOwnedWorld(world);
+      try{window.v8144GameplayI18n?.apply?.('world')}catch(_){}
       notifyWorldRendered('repair');
       return;
     }
@@ -558,6 +559,7 @@
     if(current&&previous.length===sigParts.length&&sigParts.every((value,i)=>i===17||i===18||String(value??'')===previous[i])&&patchEventPanels(world,ev,bossActive,previous[17]==='true')){
       world.dataset.v366Sig=sig;
       finalizeOwnedWorld(world);
+      try{window.v8144GameplayI18n?.apply?.('world')}catch(_){}
       notifyWorldRendered('events');
       return;
     }
@@ -572,6 +574,7 @@
     world.querySelectorAll('[data-weekly-chest]').forEach(b=>b.onclick=e=>{e.preventDefault();e.stopPropagation();try{window.v6239OpenWeeklyChest?.()}catch(err){console.warn('V6.239 weekly chest open',err)}});
     finalizeOwnedWorld(world);
     repairHomeTitles();
+    try{window.v8144GameplayI18n?.apply?.('world')}catch(_){}
     notifyWorldRendered('full');
   }
 
