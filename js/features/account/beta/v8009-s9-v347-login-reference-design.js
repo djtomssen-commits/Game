@@ -1,6 +1,25 @@
 (function(){
   const V347_VERSION='V4.29 Stable';
 
+  function v347PaintLoginLanguage(){
+    const T=(key,fallback)=>window.GrowI18n?.t?.(key)||fallback;
+    const overlay=document.querySelector('#v075AuthOverlay');if(!overlay)return false;
+    const card=overlay.querySelector('.v075-auth-card');if(!card)return false;
+    const title=card.querySelector('.v075-auth-title');if(title)title.textContent=T('login.title','Grow Legends Account');
+    const sub=card.querySelector('#v075AuthSub');if(sub)sub.textContent=T('login.subtitle','Sichere deinen Charakter dauerhaft und spiele auf jedem Gerät weiter.');
+    const login=card.querySelector('#v075LoginTab');if(login)login.textContent=T('login.tabSignIn','Anmelden');
+    const reg=card.querySelector('#v075RegisterTab');if(reg)reg.textContent=T('login.tabRegister','Registrieren');
+    const labels=card.querySelectorAll('.v075-field label');
+    if(labels[0])labels[0].textContent=T('login.email','E-Mail');
+    if(labels[1])labels[1].textContent=T('login.passwordLabel','Passwort');
+    const email=card.querySelector('#v075Email');if(email)email.setAttribute('placeholder','name@email.de');
+    const pass=card.querySelector('#v075Password');if(pass)pass.setAttribute('placeholder',T('login.passwordPlaceholder','Mindestens 6 Zeichen'));
+    const divider=card.querySelector('.v075-divider');if(divider)divider.textContent=T('login.or','oder');
+    const note=card.querySelector('#v075AccountNote');if(note&&!note.dataset.v347ModeManaged)note.textContent=T('login.anonNote','Bestehende anonyme Charaktere können beim Registrieren direkt übernommen werden.');
+    try{window.v075SetAuthMode?.(window.v075AuthMode||'login')}catch(_){}
+    return true;
+  }
+
   function v347EnsureLayout(){
     const overlay=document.querySelector('#v075AuthOverlay');
     const stack=overlay?.querySelector('.v200-login-stack');
@@ -97,6 +116,7 @@
     }
 
     try{window.GrowI18n?.apply?.()}catch(_){}
+    try{v347PaintLoginLanguage()}catch(_){}
     return true;
   }
 
@@ -117,7 +137,8 @@
   setTimeout(v347EnsureLayout,900);
   setTimeout(v347EnsureLayout,1800);
   window.v347EnsureLayout=v347EnsureLayout;
-  window.addEventListener('growlegends:language-changed',()=>v347EnsureLayout(),{passive:true});
+  window.v347PaintLoginLanguage=v347PaintLoginLanguage;
+  window.addEventListener('growlegends:language-changed',()=>{v347EnsureLayout();v347PaintLoginLanguage()},{passive:true});
 
   function version(){
     document.querySelectorAll('.version').forEach(el=>el.textContent=V347_VERSION);
