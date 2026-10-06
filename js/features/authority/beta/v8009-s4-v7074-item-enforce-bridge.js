@@ -254,7 +254,7 @@ async function boot(){
   if(A.ready&&Date.now()-Number(A.lastSync||0)<5000)return;
   await refresh(true,true);
 }
-window.addEventListener('growlegends:account-ready',()=>setTimeout(()=>{if(!window.v7206StartupBusy?.())void boot()},550),{passive:true});
+window.addEventListener('growlegends:account-ready',()=>{void boot()},{passive:true});
 window.addEventListener('pageshow',()=>setTimeout(boot,950),{passive:true});
 document.addEventListener('visibilitychange',()=>{
   if(!document.hidden&&Date.now()-A.lastSync>45000)setTimeout(()=>void refresh(true,true),250);
