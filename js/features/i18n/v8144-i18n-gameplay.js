@@ -151,19 +151,32 @@ function applyOverlays(){
  const seen=new Set();
  OVERLAY_SELECTORS.forEach(sel=>document.querySelectorAll(sel).forEach(el=>{if(!seen.has(el)){seen.add(el);applyRoot(el)}}));
 }
+function resolveRoot(id){
+ if(id){
+  const direct=document.getElementById(String(id));
+  if(direct&&direct.classList.contains('screen'))return direct;
+ }
+ return document.querySelector('.screen.active')||ROOTS.map(x=>document.getElementById(x)).find(x=>x&&x.classList.contains('active'))||null;
+}
 function apply(id){
- const root=id&&ROOTS.includes(id)?document.getElementById(id):ROOTS.map(x=>document.getElementById(x)).find(x=>x&&x.classList.contains('active'));
+ const root=resolveRoot(id);
  const ok=applyRoot(root);applyOverlays();return ok;
+}
+function applyAllScreens(){
+ let ok=false;
+ document.querySelectorAll('.screen').forEach(root=>{ok=applyRoot(root)||ok});
+ applyOverlays();
+ return ok;
 }
 function schedule(id){
  queueMicrotask(()=>apply(id));
  try{requestAnimationFrame(()=>apply(id))}catch(_){}
  setTimeout(()=>apply(id),80);setTimeout(()=>apply(id),260);setTimeout(()=>apply(id),900);
 }
-window.v8144GameplayI18n={apply,schedule,roots:ROOTS.slice()};
-window.addEventListener('growlegends:language-changed',()=>schedule(),{passive:true});
+window.v8144GameplayI18n={apply,applyAllScreens,schedule,roots:ROOTS.slice()};
+window.addEventListener('growlegends:language-changed',()=>{applyAllScreens();schedule()},{passive:true});
 window.addEventListener('growlegends:account-ready',()=>schedule(),{passive:true});
-window.addEventListener('growlegends:navigation-open-v7119',e=>{const id=String((e&&e.detail&&e.detail.id)||'');if(ROOTS.includes(id))schedule(id)},{passive:true});
+window.addEventListener('growlegends:navigation-open-v7119',e=>{const id=String((e&&e.detail&&e.detail.id)||'');schedule(id)},{passive:true});
 window.addEventListener('pageshow',()=>schedule(),{passive:true});
 document.addEventListener('click',()=>{setTimeout(()=>applyOverlays(),0);setTimeout(()=>applyOverlays(),80);setTimeout(()=>applyOverlays(),260)},true);
 document.addEventListener('DOMContentLoaded',()=>schedule(),{once:true});
