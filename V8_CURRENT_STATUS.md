@@ -9628,3 +9628,24 @@ Aktueller Release-Status:
   - Login, Navigation, Kernseiten, Shops, Social, Gilde, PvP, Guides, Popups und wichtige dynamische Dialoge sind eingebunden;
   - keine Save-/Reward-/RPC-/Balance-Logik durch die Sprachschicht verändert.
 - Rest nur noch visuelles Geräte-QA: lange FR/PL-Texte auf kleinen Displays prüfen; das ist kein Architektur-/Gameplay-Blocker.
+
+
+### 2026-10-06 – Sprachumschaltung Live-Fix: Login + Gameplay
+- Nutzer-Repro: Trotz ausgewählter Fremdsprache blieben Login und Spiel sichtbar auf Deutsch.
+- Zwei konkrete Ursachen im aktuellen Code gefunden und direkt in den bestehenden Ownern behoben:
+  1. `v8143-i18n-core.js` löste die Login-Schlüssel aus `META` nicht über `t()` auf. Dadurch waren Teile des neuen Login-Sprachsatzes für den Translator faktisch nicht erreichbar.
+  2. `v347-login-reference-design.js` rief aus dem Login-Layout erneut `GrowI18n.apply()` auf, während der I18N-Core seinerseits `v347EnsureLayout()` aufruft. Das erzeugte eine rekursive Core↔Login-Kette.
+- Fixes:
+  - `t()` verwendet jetzt `D` + `META` als kanonische Lookup-Quellen.
+  - rekursiver `GrowI18n.apply()`-Rückruf aus v347 entfernt; v347 bleibt der kanonische Login-Layout-Owner.
+  - Gameplay-I18N folgt jetzt dem tatsächlich aktiven `.screen` statt nur einer festen historischen Screen-ID-Liste.
+  - Navigation triggert Sprach-Anwendung auch für dynamische/neue Screen-IDs.
+  - Sprachwechsel wendet die Übersetzung zusätzlich auf alle bereits existierenden Screens an.
+- Cache-Bust auf Beta/Stable + Server 1: `8151langlive1`.
+- Commits:
+  - Core Lookup: `98c9eb91135ad6a721ccad1c0aa4a205ed583ca1`
+  - Login Rekursion: `b02c2daeb1b183fa762d38f030caea08facfa5f9`
+  - Gameplay Active-Screen: `1b40ab2102d731a0632e0a5f6aa64fa66b3ba01b`
+  - index Cache: `9bb96d051505008c06f936be8bf94119890c17c5`
+  - server1 Cache: `8ee78cf2b319fa7f71f7c745aebb0a1c68d19069`
+- Keine Gameplay-/Reward-/Save-/RPC-/Balance-Logik verändert.
