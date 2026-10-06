@@ -10394,3 +10394,34 @@ Aktueller Release-Status:
   - index: `186f3adc4bbee176004baf8438d6b13133bfda94`
   - beta: `1ac56b50aa29c8dd6adfa7eff7526490854985cf`
   - server1: `5a5dca83f1b183f0090af217ef820b1fde6fd1b7`
+
+
+### 2026-10-06 – Root-Cause bestätigt und gefixt: Mystic-Boot-Migration veränderte bestehende Server-Items
+- Instrumentierter `v4140`-Trace hat den Wertewechsel exakt belegt:
+  - Basisattribute und Klassenbonus blieben unverändert.
+  - Die Bonuswerte bereits ausgerüsteter Items wechselten während des Boots.
+  - Beispiele aus dem Trace:
+    - Waffe Stärke 92 → 47
+    - Amulett Stärke 70 → 51
+    - gleichzeitig erschienen auf diesen Items Ausdauer-Werte 27 / 30
+- Ursache:
+  - `v325-mythic-item-balance.js` reparierte beim Script-Start bereits vorhandene Inventory- und Equipment-Mystic-Items lokal via `v325FixMystic()`.
+  - `v330-mythic-true-upgrade.js` reparierte beim Start ebenfalls bereits vorhandenes Mystic-Inventar.
+  - Danach setzte Item-Authority die echten Serverwerte wieder ein → sichtbarer Attribut-/Item-Stat-Sprung.
+- Fix V8.179:
+  - v325 Boot-Migration bestehender Inventory-/Equipment-Items vollständig retired.
+  - v325 bleibt nur noch für neu generierte Mystic-Drops aktiv.
+  - v330 Boot-Reparatur bestehenden Mystic-Inventars entfernt.
+  - v330 bleibt nur noch für neu erzeugte Drops/Vergleichslogik aktiv.
+  - unnötige Startup-`render()`-Aufrufe aus beiden Pfaden entfernt.
+- Syntaxcheck v325/v330: grün.
+- Cache-Bust index/beta/server1: `8179mysticboot1`.
+- Commits:
+  - v325: `d6926f1169208d47af850566b75ccee8686d8588`
+  - v330: `22baa1e3ae0fae5e35d36a8207dda856f8791975`
+  - index: `7a4967828866ca84c3a13b92c7b4ebe2a01e9ccd`
+  - beta: `2ca4d03af42e968a0394cf9c7e62afa1a9e068ec`
+  - server1: `303d19c57a6fbb18d9fb92c61d92086acf24d77e`
+- Erwartung:
+  - Bereits gespeicherte serverautoritative Mystic-Items behalten vom ersten sichtbaren Frame an exakt ihre Serverwerte.
+  - Kein lokaler Boot-Rebalance mehr, der Stärke/Ausdauer/Glück einmal umverteilt.
