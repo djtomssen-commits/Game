@@ -140,8 +140,15 @@ function setLanguage(lang){
 function languageOptions(){
  return SUPPORTED.map(id=>({id,...META[id]}));
 }
+function register(locale,dict){
+ const id=normalize(locale);
+ if(!dict||typeof dict!=='object')return false;
+ D[id]??={};
+ Object.assign(D[id],dict);
+ return true;
+}
 window.GrowI18n=Object.freeze({
- t,setLanguage,getLanguage:()=>current,languages:languageOptions,meta:META,
+ t,setLanguage,getLanguage:()=>current,languages:languageOptions,meta:META,register,
  has:key=>Object.prototype.hasOwnProperty.call(D[current]||{},key)||Object.prototype.hasOwnProperty.call(D.de,key),
  apply:applyDocument
 });
