@@ -9921,3 +9921,27 @@ Aktueller Release-Status:
 - Nächster Schritt:
   - Beta auf EN einmal komplett durchklicken; Runtime-Audit zeigt nur noch echte sichtbare Resttexte.
   - verbleibende Restmenge danach schließen.
+
+
+### 2026-10-06 – Charakter Attribute springen auf alten Render: Root Cause + Fix
+- Nutzer-Video geprüft: Am Ende springt der Attribute-Tab sichtbar auf den alten Renderer; `Grow-Skill: 0` taucht wieder auf.
+- Root Cause eindeutig im kanonischen Basiszustand gefunden:
+  - `js/features/core/beta/v8009-a1-legacy-state-core.js`
+  - dessen globales `render()` schrieb spät erneut direkt nach `#attrs.innerHTML`
+  - alte Map enthielt `growSkill / Grow-Skill`
+  - damit überschreibt der Legacy-Basisrenderer nachträglich den modernen `v4140`-Attribute-Owner.
+- Direkt an der Ursache repariert:
+  - Legacy-`#attrs.innerHTML`-Writer vollständig retired.
+  - Basis-`render()` delegiert Attribute nur noch an `window.v4140PaintAttributes?.()`.
+  - `growSkill` aus `defaultState.attrs` entfernt.
+  - `growSkill` aus den zwei alten Basisitems entfernt.
+  - alte `itemBonus`-Darstellung übersetzt den entfernten Stat nicht mehr.
+- Keine zusätzliche Patch-/Observer-Schicht eingeführt.
+- Syntaxcheck:
+  - legacy-state-core: grün
+  - v4140 attribute owner: grün
+  - v459 character hub: grün
+- Cache-Bust index/beta/server1: `8163attrowner1`.
+- Commits:
+  - Root-Fix: `62b765c1425b610a28a5b576f6429b9193af39f0`
+  - index/beta/server1: `192d2259c5e5084b139ec73b23bb1e7091554b7b` / `b5e467424f17d6f480c52236d8d4d7b4811cef62` / `9b97b64d00a56b45dcca153c6d204d9de58e952e`
