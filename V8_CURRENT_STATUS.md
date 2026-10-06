@@ -9705,3 +9705,43 @@ Aktueller Release-Status:
   - beta: `f6d07a490b41c11ce33eef3716b59215450fa386`
   - server1: `8ffd43338c32a20b3617e2f51b7588272bcc8248`
 - Syntaxcheck v4149 + v8144: grün.
+
+
+### 2026-10-06 – Ingame-I18N Power-Block: kanonische Kernseiten direkt angebunden
+- Nutzer bestätigt nach Login-/Navigationsfix: Navigation übersetzt, eigentliche Spielseiten weiterhin Deutsch.
+- Ursache:
+  - Navigation/Login verwenden echte I18N-Schlüssel.
+  - Die aktuellen Gameplay-Owner schreiben große Teile ihrer Oberfläche weiterhin direkt auf Deutsch in ihre Templates.
+  - Die bisherige globale Textbrücke lief zeitlich zu früh bzw. traf viele aktuelle Texte nicht.
+- Direkte Owner-Integration umgesetzt:
+  - Startseite: `v8009-home-renderer.js`
+  - Charakter: `v8009-s2-v459-character-hub.js`
+  - Quest: `v6344-quest-variety-js.js`
+  - Dungeon: `v8009-d4-v261-detail.js`
+  - Growroom: `v8009-s1-v492-growroom2.js`
+  - Anbau-Turm: `v8009-t1-tower-system.js`
+- Jeder dieser kanonischen Owner wendet die I18N-Darstellung unmittelbar nach seinem eigenen finalen Render an; kein zusätzlicher Polling-/Observer-Renderer.
+- `v8144-i18n-gameplay.js` um aktuelles Vokabular der realen Renderer erweitert, inkl. Startseite, Growroom, Charakter, Dungeon und Turm in EN/ES/FR/PL/TR.
+- Growroom-Einbau hatte im ersten Commit eine fehlende Abschlussklammer; durch Syntaxcheck erkannt und direkt korrigiert, bevor Testfreigabe.
+- Alle betroffenen JS-Dateien danach Syntaxcheck: **grün**.
+- Cache-Bust auf index/beta/server1: `8156corepages2`.
+- Wichtige Commits:
+  - Home: `173ff9e2109bb206f68aadd519a86d49e6df8440`
+  - Quest: `b06e30e3eb3091ffe02e6307bd56085f8d7a74ad`
+  - Character: `6f914dd947cb2c922fecb59a4fdd33ea86a80ab0`
+  - Dungeon: `7565d70b546a7a833107dd0a75d5dd19d691de5e`
+  - Growroom: `0353cfda6525aa35eba84af30a71d1e6191def8b`, Brace-Fix `aefeddd22813e70bf22b7d93989904d1f082bcaa`
+  - Tower: `0a15b29d1393c6cdd9a294b58e12937ed6e029bf`
+  - I18N Vokabular: `cdba162a331996314f6d222f210665be61a94885`
+  - Cache index/beta/server1: `131020c29ca8836b5375bf9e6ca72cb03827b777` / `6ffba40644c026fe434f4dd3ee39c2adb163d62a` / `41a2c6bb1d0160c5793f571dc9a9142173e51be6`
+- Nächster I18N-Block nach Geräte-Repro:
+  - Händler
+  - Harzschmiede
+  - Harz/Gold/Rahmen-Dealer
+  - Hinterhof-Dealer
+  - PvP
+  - Gilde
+  - Hall of Haze
+  - Nebel-Crew
+  - Nebel-Post
+  - Endgame/Nebelkarawane
