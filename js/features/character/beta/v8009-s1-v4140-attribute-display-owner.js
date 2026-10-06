@@ -22,18 +22,49 @@
  function points(){try{return Math.max(0,Math.floor(Number(s?.points)||0))}catch(e){return 0}}
  function role(k){if(k===primary())return 'Hauptattribut · Schaden/Kampfkraft';if(k==='ausdauer')return 'Lebenspunkte';if(k==='glueck'){const c=Math.min(60,5+(Number(value('glueck'))||0)*0.35);return `Krit-Chance & Beute · Crit ${c.toFixed(1)} %`}return 'Nebenattribut'}
  function esc(x){return String(x??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+ let v8178LastBreakdown=null,v8178FirstPaintAt=0;
+ function v8178Breakdown(){
+  const cls=String(s?.playerClass||''),rows={};
+  DEF.forEach(([k])=>{
+   const equipment=[];let equipmentTotal=0;
+   try{Object.entries(s?.equipment||{}).forEach(([slot,it])=>{const n=Number(it?.bonus?.[k])||0;if(n){equipment.push({slot,id:String(it?.id||it?.uid||''),value:n,setId:it?.setId||null});equipmentTotal+=n}})}catch(_){}
+   rows[k]={
+    shown:value(k),
+    base:Number(s?.attrs?.[k])||0,
+    classBonus:Number(classes?.[cls]?.bonus?.[k])||0,
+    equipmentTotal,
+    equipment,
+    setBonus:typeof setBonusValue==='function'?(Number(setBonusValue(k))||0):0
+   };
+  });
+  return{uid:String((typeof v073User!=='undefined'&&v073User?.id)||window.v073User?.id||''),classId:cls,setCount:(()=>{try{return Object.values(s?.equipment||{}).filter(it=>it?.setId===cls).length}catch(_){return 0}})(),rows};
+ }
+ function v8178Report(before,after){
+  try{
+   if(!before||!after||Date.now()-v8178FirstPaintAt<250)return;
+   const changed={};
+   DEF.forEach(([k])=>{const a=before.rows?.[k],b=after.rows?.[k];if(Number(a?.shown)!==Number(b?.shown))changed[k]={before:a,after:b}});
+   if(!Object.keys(changed).length)return;
+   void window.__GL_RUNTIME_WATCHDOG__?.report?.('attribute_value_changed','warn',{changed,beforeMeta:{uid:before.uid,classId:before.classId,setCount:before.setCount},afterMeta:{uid:after.uid,classId:after.classId,setCount:after.setCount}},{screen:'character',incidentKey:Object.keys(changed).join(',')});
+  }catch(_){}
+ }
  function paint(){
     if(!document.getElementById('character')?.classList.contains('active'))return false;
   const box=document.getElementById('attrs');if(!box)return false;
   const p=primary(),pts=points();
   const ordered=[...DEF.filter(x=>x[0]===p),...DEF.filter(x=>x[0]!==p)];
-  const snapshot=ordered.map(([k])=>[k,value(k)]);
+  const currentBreakdown=v8178Breakdown();
+  const snapshot=ordered.map(([k])=>[k,currentBreakdown.rows[k].shown]);
   const sig=JSON.stringify([p,pts,snapshot]);
   if(box.dataset.v4140Sig===sig){
+    v8178LastBreakdown=currentBreakdown;
     const ap=document.getElementById('v459AttrPoints');if(ap)ap.textContent=`${pts} Punkte`;
     document.getElementById('v419AttrPoints')?.remove();
     return true;
   }
+  if(box.dataset.v4140Sig&&v8178LastBreakdown)v8178Report(v8178LastBreakdown,currentBreakdown);
+  if(!v8178FirstPaintAt)v8178FirstPaintAt=Date.now();
+  v8178LastBreakdown=currentBreakdown;
   box.dataset.v4140Sig=sig;
   box.innerHTML=ordered.map(([k,icon,name,desc])=>`<div class="v4140-attr ${k===p?'v4140-primary':''}" data-v4140-attr="${k}"><div class="v4140-attr-icon">${icon}</div><div class="v4140-attr-copy"><div class="v4140-attr-name">${esc(name)}</div><div class="v4140-attr-value">${value(k)}</div><div class="v4140-attr-desc">${esc(desc)}</div><div class="v4140-attr-role">${esc(role(k))}</div></div><button type="button" data-v4140-plus="${k}" ${pts<1?'disabled':''} aria-label="${esc(name)} erhöhen">+</button></div>`).join('');
   box.querySelectorAll('[data-v4140-plus]').forEach(btn=>{btn.onclick=()=>{const k=String(btn.dataset.v4140Plus||'');if(!DEF.some(x=>x[0]===k)||points()<1)return;try{if(typeof incAttr==='function')incAttr(k)}catch(e){console.warn('V4.159 attribute spend',e)};requestAnimationFrame(paint)}});
