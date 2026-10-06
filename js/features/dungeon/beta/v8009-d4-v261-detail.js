@@ -69,6 +69,7 @@
     card.querySelectorAll('[data-v261-room]').forEach(btn=>btn.addEventListener('click',ev=>{ev.preventDefault();ev.stopPropagation(); if(completed)return; const r=Number(btn.dataset.v261Room); if(r!==current)return; if(typeof v251StartCurrentDungeonFight==='function')return v251StartCurrentDungeonFight(di); s.dungeon.selected=di; s.dungeon.room=current; s.dungeon.layer='dungeon'; s.dungeon.view='battle'; try{persist(false)}catch(_ ){} renderDungeon?.(); }));
     card.querySelector('#v261EnterCurrent')?.addEventListener('click',ev=>{ev.preventDefault(); if(completed)return; if(typeof v251StartCurrentDungeonFight==='function')return v251StartCurrentDungeonFight(di); s.dungeon.selected=di; s.dungeon.room=current; s.dungeon.layer='dungeon'; s.dungeon.view='battle'; try{persist(false)}catch(_ ){} renderDungeon?.(); });
     try{ if(typeof renderDungeonTicket==='function')renderDungeonTicket(); if(typeof updateDungeonTicket==='function')updateDungeonTicket(); }catch(_ ){}
+    try{window.v8144GameplayI18n?.apply?.('dungeon')}catch(_){}
     return true;
   };
   window.v251RenderDetail=window.v261RenderDetail;
