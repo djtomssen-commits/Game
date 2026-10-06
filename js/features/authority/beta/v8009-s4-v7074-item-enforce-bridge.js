@@ -40,7 +40,7 @@ function saveLocal(){
     else localStorage.setItem('grow_idle_save_v1',JSON.stringify(s));
   }catch(_){}
 }
-function repaint(){
+function repaint({attributesChanged=true}={}){
   try{renderInventory?.()}catch(_){}
   try{window.v470PaintEquipmentSlots?.()}catch(_){}
   try{window.v459CompactInventory?.()}catch(_){}
@@ -48,28 +48,48 @@ function repaint(){
   try{window.v446PaintCombatPower?.()}catch(_){}
   try{window.v069SyncCurrencies?.()}catch(_){}
   try{window.v441PaintResources?.()}catch(_){}
-  /* V8.166: never rebuild the whole Character screen after item hydration.
-     If the Attribute tab is visible, update only its canonical owner. */
+  /* Attribute numbers repaint only when the server actually changed equipment. */
+  if(attributesChanged){
+    try{
+      const panel=document.getElementById('v459PanelAttributes');
+      if(document.getElementById('character')?.classList.contains('active')&&panel?.classList.contains('active')){
+        window.v4140PaintAttributes?.();
+        window.v537ApplyAttributes?.();
+        try{window.v8144GameplayI18n?.apply?.('character')}catch(__){}
+      }
+    }catch(_){}
+  }
+}
+function equipmentFingerprint(eq){
   try{
-    const panel=document.getElementById('v459PanelAttributes');
-    if(document.getElementById('character')?.classList.contains('active')&&panel?.classList.contains('active')){
-      window.v4140PaintAttributes?.();
-      window.v537ApplyAttributes?.();
-      try{window.v8144GameplayI18n?.apply?.('character')}catch(__){}
-    }
-  }catch(_){}
+    const out={};
+    Object.keys(eq||{}).sort().forEach(slot=>{
+      const it=eq?.[slot];
+      out[slot]=it?{
+        id:String(it.id||it.uid||''),
+        bonus:it.bonus||{},
+        gem:it.gem||null,
+        enchants:Array.isArray(it.enchants)?it.enchants:(it.enchant?[it.enchant]:[]),
+        special:it.mysticSpecial||it.mystic_special||it.special||null,
+        setId:it.setId||null
+      }:null;
+    });
+    return JSON.stringify(out);
+  }catch(_){return ''}
 }
 function applyServer(row,{paint=true}={}){
   if(!row||!ensure())return false;
+  const beforeEquipment=equipmentFingerprint(s.equipment);
   if(Array.isArray(row.inventory))s.inventory=clone(row.inventory);
   if(row.equipment&&typeof row.equipment==='object')s.equipment=clone(row.equipment);
   if(Array.isArray(row.materials))s.materials=clone(row.materials);
   if(Number.isFinite(Number(row.fragments)))s.v488Forge.fragments=Math.max(0,Number(row.fragments));
+  const attributesChanged=beforeEquipment!==equipmentFingerprint(s.equipment);
   A.revision=Math.max(0,Number(row.revision)||0);
   A.lastSync=Date.now();
   A.hydrations++;
   saveLocal();
-  if(paint)repaint();
+  if(paint)repaint({attributesChanged});
   return true;
 }
 async function rpc(name,args={}){
@@ -270,11 +290,12 @@ async function boot(){
 window.addEventListener('growlegends:account-ready',()=>{void boot()},{passive:true});
 window.addEventListener('pageshow',()=>setTimeout(boot,950),{passive:true});
 document.addEventListener('visibilitychange',()=>{
-  if(!document.hidden&&Date.now()-A.lastSync>45000)setTimeout(()=>void refresh(true,true),250);
+  if(!document.hidden&&Date.now()-A.lastSync>45000)setTimeout(()=>void refresh(true,false),250);
 },{passive:true});
 setInterval(()=>{
   if(document.hidden||!A.enforce||!userId())return;
-  void refresh(true,true);
+  /* Background verification must not repaint Character/Attributes by timer alone. */
+  void refresh(true,false);
 },60000);
 setTimeout(()=>{if(!window.v7206StartupBusy?.())void boot()},2700);
 
