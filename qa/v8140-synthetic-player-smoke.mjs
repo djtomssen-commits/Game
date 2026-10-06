@@ -32,13 +32,13 @@ const requiredMarkers=[
   ['save owner','js/features/account/beta/v8009-s1-v4136-account-save-owner.js?v=8102shopsavestrip1'],
   ['account authority','js/features/account/beta/v8009-s1-v4139-account-switch-authority.js'],
   ['idle logout','js/features/account/beta/v8009-s13-v301-auth-idle-hard-lock.js'],
-  ['harz machine JS','js/features/shop/beta/v8010-harz-lotto.js?v=8012rewards1'],
-  ['harz machine CSS','v8010-harz-lotto-v2.css?v=8011machine4']
+  ['harz machine JS','js/features/shop/beta/v8010-harz-lotto.js?v=8016rewardedhold1'],
+  ['harz machine CSS','v8010-harz-lotto-v2.css?v=8014rewarddetail1']
 ];
 for(const [label,needle] of requiredMarkers)check(html.includes(needle),label);
 
 check(html.includes('<h2>Hinterhof-Dealer</h2>'),'dealer current title');
-check(html.includes('Harz-Automat ist geöffnet. Tütchen &amp; Werbe-Belohnungen folgen später.'),'dealer current copy');
+check(html.includes('Harz-Automat ist geöffnet. Tütchen &amp; Werbe-Belohnungen folgen mit App-Version 1.0.8.'),'dealer current copy');
 check(html.includes('data-v8010-tab="bags"')&&html.includes('COMING SOON'),'bags remain coming-soon');
 check(!html.includes('Schau freiwillige Werbevideos, fülle besondere Tütchen'),'old visible bag-ad copy absent');
 check(!html.includes('6 aus 50'),'old lotto 6/50 absent');
