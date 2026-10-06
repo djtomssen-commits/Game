@@ -10425,3 +10425,36 @@ Aktueller Release-Status:
 - Erwartung:
   - Bereits gespeicherte serverautoritative Mystic-Items behalten vom ersten sichtbaren Frame an exakt ihre Serverwerte.
   - Kein lokaler Boot-Rebalance mehr, der Stärke/Ausdauer/Glück einmal umverteilt.
+
+
+### 2026-10-06 – Belegter Root Cause: Pre-Auth Item-Normalisierer erzeugten falsche erste Itemwerte
+- Neuer `attribute_value_changed` Trace nach Test ausgewertet.
+- Beweis:
+  - Basisattribute und Klassenbonus blieben unverändert.
+  - Mehrere Equipment-Boni wechselten gleichzeitig.
+  - Beispiel:
+    - Waffe Stärke lokal vor Server: 92 → Server 47
+    - Amulett Stärke lokal vor Server: 70 → Server 51
+    - Ausdauer derselben Items wurde beim Serverzustand 27/30 statt lokaler anderer Verteilung
+  - Damit ist die Ursache eindeutig ein clientseitiger Item-Stat-Writer vor finaler Authority.
+- `v325` und `v330` waren bereits als Boot-Mutatoren bereinigt, aber der Drift blieb.
+- Weitere konkrete Root-Cause gefunden:
+  - `v422-item-stat-consistency.js` canonicalisierte beim Script-Start bestehendes Inventory + Equipment via `v422All()`, speicherte und renderte.
+  - `v447-unified-item-balance.js` rief beim Script-Start `all()` auf, außerdem bei DOMContentLoaded/pageshow. Sein Auth-Guard konnte zu diesem Zeitpunkt noch nicht greifen, weil Auth noch nicht resolved war.
+  - `v6337-item-class-stat-rule.js` rief ebenfalls sofort `v447NormalizeAllItems()` auf.
+- Fix V8.180:
+  - v422: Pre-Auth fail-closed; keine Boot-Canonicalization, kein Boot-Save/Render.
+  - v447: keine Boot/DOMContentLoaded/pageshow-Normalisierung bestehender Items mehr; nur Generator-Wrappers bleiben automatisch aktiv. Anonymous/offline kann erst nach account-ready normalisieren.
+  - v6337: keine sofortige Normalisierung mehr; Anonymous/offline erst nach account-ready.
+- Syntaxchecks v422/v447/v6337: grün.
+- Cache-Bust index/beta/server1: `8180preauthitems1`.
+- Commits:
+  - v422: `621c65064448967087f2b019f174c749bf60b46e`
+  - v447: `48d062bdacdba562cced9dba293f17bfcc667ec8`
+  - v6337: `3a7958fcd81a2987c1ef047dfb63c1e35a5144d4`
+  - index: `cdffb69064e221467c29498e415d22af2e230b90`
+  - beta: `f5362343a19fdf5fe2477615c0561ab1ca31d901`
+  - server1: `d39ec8874091fc5af56652a59a73d5f1ea95bd2b`
+- Erwartung:
+  - erster sichtbarer Item-/Attribute-State kommt nicht mehr aus lokal vor Auth umgerechneten Bonuswerten.
+  - kein späterer Sprung auf den Serverzustand mehr.
