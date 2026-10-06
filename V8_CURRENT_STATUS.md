@@ -9239,3 +9239,19 @@ Aktueller Release-Status:
   - die bereits in Google Play hochgeladene 1.0.7 enthält weiterhin den alten Test-Ad-Build;
   - echte Werbung kommt erst mit dem neu gebauten 1.0.8-AAB in die installierte App.
   - Tütchen-Tab im Webclient ist noch Coming Soon und wird im nächsten Block an den produktiven Rewarded-Pfad angebunden und freigeschaltet.
+
+
+### 2026-10-06 – Datenschutzerklärung für produktive Rewarded Ads aktualisiert
+- `datenschutz.html` auf Stand 06.10.2026 aktualisiert.
+- Neu aufgenommen:
+  - freiwillige Rewarded Ads / Google AdMob;
+  - mögliche Verarbeitung von IP-, Geräte-/App-, Werbe-/Gerätekennungen, Diagnose- und Interaktionsdaten;
+  - Google UMP für Einwilligungs-/Datenschutzoptionen;
+  - personalisierte oder nicht personalisierte Anzeigen abhängig von Einwilligung/Region/Google-Konfiguration;
+  - Server-Side-Verification für Reward-Gutschriften;
+  - Widerruf/Änderung der Einwilligung über Datenschutzoptionen;
+  - passende Rechtsgrundlagen sowie Google/AdMob als Empfänger/Dienst.
+- Aussage `keine personalisierte Werbung` entfernt und durch den tatsächlichen Produktionszustand ersetzt.
+- Repo-Commit Game: `841bfd89165f25a9022986aeb91212259a0e3927`.
+- Android-Kopie `www/datenschutz.html` synchronisiert.
+- Android-Commit: `ecb4fb9e1e55338d3d42b8eaf26247a2363eb047`.
