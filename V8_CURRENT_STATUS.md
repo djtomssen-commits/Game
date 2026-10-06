@@ -9298,3 +9298,20 @@ Aktueller Release-Status:
   1. 1.0.8 öffentlich verfügbar,
   2. AdMob-Shop-Verknüpfung gesetzt,
   3. Rewarded-Endtest inkl. SSV erfolgreich.
+
+
+### 2026-10-06 – Server 1 auf aktuellen Nicht-Balance-Stand aktualisiert
+- Nutzerfreigabe: **Server 1 aktualisieren, Charakter-/Klassenbalance ausdrücklich ausnehmen.**
+- Delta seit dem letzten Server-1-HTML-Update geprüft:
+  - aktuelle Änderungen betrafen Rewarded-/Tütchen-Hold, Datenschutz und Status;
+  - keine neue Klassenbalance wurde in diesem Delta freigegeben.
+- `server1.html` direkt auf den aktuellen freigegebenen Nicht-Balance-Stand gebracht:
+  - Hinterhof-Text wie aktueller Release-Stand: Tütchen/Rewarded folgen mit App-Version 1.0.8.
+  - Harz-/Tütchen-Owner Cache-Key auf `8016rewardedhold1`, damit Server 1 den aktuellen **Coming-Soon-Lock** zuverlässig lädt.
+  - Tütchen bleibt auch auf Server 1 bis 1.0.8 + AdMob-Verknüpfung + SSV-Endtest gesperrt.
+- **Charakter-/Klassenbalance bleibt unverändert auf Server 1.**
+  - bestehende Release-Channel-Trennung bleibt aktiv: `GROW_RELEASE_CHANNEL='server1'`;
+  - `v319` bestätigt weiterhin `V319_BETA_BALANCE = ... !== 'server1'`;
+  - damit werden die Beta-Balancewerte nicht auf Server 1 übernommen.
+- Server-1-Release-Channel/Supabase-Schema-Trennung unverändert.
+- Commit: `6246a150403d9e625188f95fef70eb1c32ce8807`.
