@@ -9879,3 +9879,45 @@ Aktueller Release-Status:
 - Nächster Schritt:
   - Runtime-Audit auf Beta nutzen, um nur noch dynamisch gerenderte deutsche Resttexte zu schließen.
   - Statische `beta.html`-Grundoberfläche ist jetzt vollständig zentral abgedeckt.
+
+
+### 2026-10-06 – I18N Power-Block 3: dynamische Laufzeittexte
+- Nach statisch 137/137 nun aktive Runtime-Owner auf dynamische deutsche Texte geprüft.
+- Große dynamische Blöcke für EN/ES/FR/PL/TR ergänzt:
+  - Quest-Belohnungen / zusätzliche Beute / Zeit-Samen
+  - Dungeon-Belohnungsmodal
+  - Shop-Kauf-/Reroll-Feedback
+  - Item-Vergleich / Spezialeffekt-Hinweise
+  - Weltboss / mystische Status- und Achievement-Texte
+  - Einstellungen / Account-Löschung
+  - Growroom Live-Zustände, Pflege, Gilden-Gewächshaus, Offline-Wachstum, Grow-Achievements
+  - Mail-Fehler / Versandstatus
+  - Harzschmiede / Schutzstatus / Zerlegen
+  - Ressourcen-Events
+  - Profil-/Ranglistenstatus
+  - Gildenboss / Gildenkrieg Live-Zustände
+  - Turm Mittwoch-/Run-/Shop-/Türstatus
+- Zusätzlich neue dynamische Regex-Patterns für Live-Werte:
+  - +N Zeit-Samen
+  - Neuer Bestand
+  - Item-Zielinventar
+  - Samen-Vorrat / Samenfund / Samenkauf
+  - PvP-Sieger
+  - Auffüllungen X/Y
+  - episch/legendär ausgewählte Items
+  - Bossstufe / HP
+  - Mittwochs-Rangplatz
+  - Turmblätter
+  - Grow-Kaufpreis / gesperrter Topf / Pflege X/4
+- Reine Entwickler-/SQL-Diagnose bewusst nicht als Spieler-I18N übernommen.
+- Syntaxcheck v8144: grün.
+- Cache-Bust index/beta/server1: `8162runtimei18n1`.
+- Commits:
+  - Runtime A: `57af03f28f1da15b678298db87c1251859763053`
+  - Runtime B: `0176d5de7083e80d8aaae2f62091c368438fb733`
+  - Runtime Patterns: `fac5cc8a68c7e1fce63384cac4bd1662452e1587`
+  - Runtime C (Tower/Guild): `fc500ebe02a16de1a77f36e7ab3cdd84ef052b63`
+  - index/beta/server1 cache: `2394bd5e99385c4da31cd8e6974c358e82e17399` / `0edec42153ebb4076add52f98c0f28ef358b7b31` / `c6e112b0f703e39e92b4086ae5dff0c6f691c65f`
+- Nächster Schritt:
+  - Beta auf EN einmal komplett durchklicken; Runtime-Audit zeigt nur noch echte sichtbare Resttexte.
+  - verbleibende Restmenge danach schließen.
