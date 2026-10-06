@@ -1,11 +1,12 @@
 (()=>{
  'use strict';
  const V=window.GROW_LEGENDS_VERSION||{short:'V4.159',label:'V4.159 Stable'};
+ const T=(key,fallback)=>window.GrowI18n?.t?.(key)||fallback||key;
  const PUBLIC=Object.freeze([
-  ['world','⌂','Startseite'],['character','🧙','Charakter'],['grow','🌱','Growroom'],['quests','📜','Quest & Schicht'],
-  ['dungeon','⚔️','Dungeons'],['tower','🗼','Anbauturm'],['caravan','🚚','Nebelkarawane'],['endgame','🌌','Endgame'],['shop','🛒','Händler'],['forge','🔨','Harzschmiede'],
-  ['harzDealer','🟢','Harz & Gold & Rahmen Dealer'],['bagDealer','🏪','Hinterhof-Dealer'],['pvp','⚔️','PvP-Arena'],['guild','🏰','Gilde'],['hall','🏆','Hall of Haze'],
-  ['friends','🤝','Nebel-Crew'],['mail','✉️','Nebel-Post']
+  ['world','⌂','nav.world','Startseite'],['character','🧙','nav.character','Charakter'],['grow','🌱','nav.grow','Growroom'],['quests','📜','nav.quests','Quest & Schicht'],
+  ['dungeon','⚔️','nav.dungeon','Dungeons'],['tower','🗼','nav.tower','Anbauturm'],['caravan','🚚','nav.caravan','Nebelkarawane'],['endgame','🌌','nav.endgame','Endgame'],['shop','🛒','nav.shop','Händler'],['forge','🔨','nav.forge','Harzschmiede'],
+  ['harzDealer','🟢','nav.harzDealer','Harz & Gold & Rahmen Dealer'],['bagDealer','🏪','nav.bagDealer','Hinterhof-Dealer'],['pvp','⚔️','nav.pvp','PvP-Arena'],['guild','🏰','nav.guild','Gilde'],['hall','🏆','nav.hall','Hall of Haze'],
+  ['friends','🤝','nav.friends','Nebel-Crew'],['mail','✉️','nav.mail','Nebel-Post']
  ]);
  let raf=0,lastBuildAt=0;
  function admin(){try{return typeof v093IsAdmin!=='undefined'&&v093IsAdmin===true&&!!v073User&&!v073User.is_anonymous}catch(e){return false}}
@@ -58,15 +59,15 @@
    const weather=panel.querySelector(':scope > #glWeatherMenu');
    const frag=document.createDocumentFragment();let publicAdded=0;
    if(weather)frag.appendChild(weather);
-   for(const [id,icon,label] of PUBLIC){
+   for(const [id,icon,key,fallback] of PUBLIC){
     if(!available(id))continue;
     if(id==='pvp'&&publicAdded)frag.appendChild(sep());
-    frag.appendChild(item(id,icon,label));publicAdded++;
+    frag.appendChild(item(id,icon,T(key,fallback)));publicAdded++;
    }
    if(admin()){
     frag.appendChild(sep());
-    if(document.getElementById('admin'))frag.appendChild(item('admin','🛡️','Admin'));
-    if(document.getElementById('systemtech')||typeof window.v4107OpenSystemtechnik==='function')frag.appendChild(item('systemtech','⚙️','Systemtechnik'));
+    if(document.getElementById('admin'))frag.appendChild(item('admin','🛡️',T('nav.admin','Admin')));
+    if(document.getElementById('systemtech')||typeof window.v4107OpenSystemtechnik==='function')frag.appendChild(item('systemtech','⚙️',T('nav.systemtech','Systemtechnik')));
    }
    panel.replaceChildren(frag);
    if(open)panel.scrollTop=oldScroll;
@@ -82,7 +83,16 @@
  try{
   const current=(typeof render==='function'?render:window.render);
   if(typeof current==='function'&&!current.__v4149Final){
-   const finalRender=function(){const r=current.apply(this,arguments);try{if(document.getElementById('shop')?.classList.contains('active'))window.renderShop?.()}catch(e){}settle(false);return r};finalRender.__v4149Final=true;
+   const finalRender=function(){
+    const r=current.apply(this,arguments);
+    try{if(document.getElementById('shop')?.classList.contains('active'))window.renderShop?.()}catch(e){}
+    settle(false);
+    try{
+      const active=document.querySelector('section.screen.active,.screen.active')?.id||'';
+      window.v8144GameplayI18n?.schedule?.(active);
+    }catch(e){}
+    return r;
+   };finalRender.__v4149Final=true;
    try{render=finalRender}catch(e){}window.render=finalRender;
   }
  }catch(e){console.warn('V4.159 final render authority',e)}
@@ -94,7 +104,12 @@
     if(id==='systemtech'&&!admin())id='world';
     const r=current.call(this,id);
     if(id==='grow'&&window.v7081UseAuthority?.('grow')){const c=window.__V7208_GROW_ORDERS_CANONICAL__,rows=Array.isArray(c?.contracts)?c.contracts:[];if(rows.length!==6)setTimeout(()=>{Promise.resolve(window.v7065GrowAuthorityRefresh?.()).finally(()=>window.v6163GrowTabs?.refresh?.())},0)}
-    settle(false);return r;
+    settle(false);
+    try{
+      window.dispatchEvent(new CustomEvent('growlegends:navigation-open-v7119',{detail:{id:String(id||'')}}));
+      window.v8144GameplayI18n?.schedule?.(String(id||''));
+    }catch(e){}
+    return r;
    };finalGo.__v4149Final=true;
    try{v032Go=finalGo}catch(e){}window.v032Go=finalGo;
   }
@@ -107,6 +122,10 @@
  window.v4149NavigationDiagnostics=diagnostics;
  document.addEventListener('click',e=>{if(e.target?.closest?.('#v032MenuBtn,#v032MenuToggle'))settle(false)},true);
  ['growlegends:account-ready','growlegends:extras-ready','growlegends:foreground-ready'].forEach(ev=>window.addEventListener(ev,()=>settle(false)));
+ window.addEventListener('growlegends:language-changed',()=>{
+  settle(true);
+  try{window.v8144GameplayI18n?.applyAllScreens?.()}catch(e){}
+ },{passive:true});
  window.addEventListener('pageshow',()=>settle(false),{passive:true});
  document.addEventListener('visibilitychange',()=>{if(!document.hidden)settle(false)},{passive:true});
  settle(true);stamp();
