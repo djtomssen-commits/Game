@@ -15,8 +15,18 @@ function v301LoadLastActivity(){
   return v200LastActivity;
 }
 
+function v301HasDurableUser(){
+  try{
+    if(typeof v200DurableUser==='function')return !!v200DurableUser();
+  }catch(_){}
+  try{
+    const u=window.v073User;
+    return !!(u&&u.id&&!u.is_anonymous);
+  }catch(_){return false}
+}
+
 function v301TouchActivity(){
-  if(!v200DurableUser() || window.__V301_LOGOUT_IN_PROGRESS__)return false;
+  if(!v301HasDurableUser() || window.__V301_LOGOUT_IN_PROGRESS__)return false;
 
   const now=Date.now();
   const last=Number(v200LastActivity)||v301LoadLastActivity();
@@ -34,7 +44,7 @@ function v301TouchActivity(){
 }
 
 function v301CheckIdle(){
-  if(!v200DurableUser() || window.__V301_LOGOUT_IN_PROGRESS__)return false;
+  if(!v301HasDurableUser() || window.__V301_LOGOUT_IN_PROGRESS__)return false;
 
   const now=Date.now();
   const last=Number(v200LastActivity)||v301LoadLastActivity();
@@ -82,7 +92,7 @@ if(typeof v200FinalizeUser==='function'){
   v200FinalizeUser=async function(){
     if(window.__V301_LOGOUT_IN_PROGRESS__)return false;
     const r=await v301BaseFinalizeUser.apply(this,arguments);
-    if(!window.__V301_LOGOUT_IN_PROGRESS__ && v200DurableUser()){
+    if(!window.__V301_LOGOUT_IN_PROGRESS__ && v301HasDurableUser()){
       v200LastActivity=Date.now();
       sessionStorage.setItem(V301_ACTIVITY_KEY,String(v200LastActivity));
     }
