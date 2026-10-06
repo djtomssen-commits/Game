@@ -9255,3 +9255,27 @@ Aktueller Release-Status:
 - Repo-Commit Game: `841bfd89165f25a9022986aeb91212259a0e3927`.
 - Android-Kopie `www/datenschutz.html` synchronisiert.
 - Android-Commit: `ecb4fb9e1e55338d3d42b8eaf26247a2363eb047`.
+
+
+### 2026-10-06 – Beta Tütchen-Dealer freigeschaltet
+- Nach Produktions-AdMob-/Datenschutz-Umstellung wurde der vorhandene kanonische Tütchen-Flow auf **Beta** sichtbar freigeschaltet.
+- Kein neuer Overlay-/Patch-Owner:
+  - bestehender `v7215`-Owner in `v8009-s2-v086-polish-script.js` bleibt zuständig für State, Rewarded-Aufruf, SSV-Poll und Reward-Popup.
+  - bestehender Hinterhof-Tab-Owner `v8010-harz-lotto.js` wurde direkt angepasst.
+- Beta:
+  - Tütchen-Tab nicht mehr disabled / Coming Soon.
+  - Umschalten Tütchen ↔ Harz-Automat funktioniert über denselben Tab-Owner.
+  - Tütchen öffnet `v7215BagDealerOpen()`.
+  - Hero-Text auf produktiven Rewarded-Betrieb angepasst.
+- Server 1 bleibt vorerst geschützt:
+  - der gemeinsame JS-Owner blockiert den Tütchen-Tab weiterhin, wenn `server1` aktiv ist.
+  - Freigabe erst nach Beta-Endtest.
+- Commits:
+  - Tab-/Owner-Fix: `e8d432dc1f30d84bde16cab86336d47f42d8fcaa`
+  - Beta-Markup + Cache-Bust: `12e8321c24b4555469a085bdf24f6385e9a222f1`
+- Nächster manueller Endtest in der Android-App mit dem neuen Produktions-Ad-Build:
+  1. Tütchen öffnen.
+  2. Rewarded Ad vollständig ansehen.
+  3. Erwartet: genau +1 serverseitiger Fortschritt nach AdMob-SSV.
+  4. Anzeige vor Reward schließen: 0 Fortschritt.
+  5. denselben SSV-Event nicht doppelt gutschreiben.
