@@ -147,13 +147,14 @@ function v075SetAuthMode(mode){
   login?.classList.toggle('active',v075AuthMode==='login');
   reg?.classList.toggle('active',v075AuthMode==='register');
 
-  if(action)action.textContent=v075AuthMode==='login'?'Anmelden':'Registrieren';
-  if(google)google.textContent=v075AuthMode==='login'?'Mit Google anmelden':'Mit Google registrieren';
+  const T=(key,fallback)=>window.GrowI18n?.t?.(key)||fallback;
+  if(action)action.textContent=v075AuthMode==='login'?T('login.signIn','Anmelden'):T('login.register','Registrieren');
+  if(google)google.textContent=v075AuthMode==='login'?T('login.google','Mit Google anmelden'):T('login.googleRegister','Mit Google registrieren');
 
   if(note){
     note.textContent=v075AuthMode==='login'
-      ?'Melde dich an und lade deinen persönlichen Cloud-Spielstand.'
-      :'Erstelle deinen Account. Charaktername und Klasse wählst du danach genau einmal.';
+      ?T('login.accountNote','Melde dich an und lade deinen persönlichen Cloud-Spielstand.')
+      :T('login.registerNote','Erstelle deinen Account. Charaktername und Klasse wählst du danach genau einmal.');
   }
 
   if(pass)pass.autocomplete=v075AuthMode==='login'?'current-password':'new-password';
@@ -1078,7 +1079,7 @@ async function v200EmailAuth(){
     v200AuthBusy=false;
     if(btn){
       btn.disabled=false;
-      btn.textContent=v075AuthMode==='register'?'Registrieren':'Anmelden';
+      btn.textContent=v075AuthMode==='register'?(window.GrowI18n?.t?.('login.register')||'Registrieren'):(window.GrowI18n?.t?.('login.signIn')||'Anmelden');
     }
   }
 }
