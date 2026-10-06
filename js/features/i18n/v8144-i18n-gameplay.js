@@ -245,6 +245,110 @@ const FINAL_VISIBLE={
 };
 for(const lang of Object.keys(FINAL_VISIBLE))Object.assign(M[lang]||(M[lang]={}),FINAL_VISIBLE[lang]);
 
+const STATIC_UI_A={
+ en:{
+  'Premium-Währung':'Premium currency','Der Harzbrecher':'The Resin Breaker',
+  'Fähigkeiten werden mit deinem Level freigeschaltet und mit Talentpunkten verbessert.':'Abilities unlock with your level and improve with talent points.',
+  'Set-Teile geben zusätzliche Boni, wenn du mehrere gleichzeitig trägst.':'Set pieces grant extra bonuses when you equip several matching pieces.',
+  'Wähle deine Spezialisierung. Die Boni werden direkt auf deine Werte gerechnet.':'Choose your specialization. Its bonuses are applied directly to your stats.',
+  '🌰 Samen-Shop':'🌰 Seed Shop','Fiktive Sorten mit unterschiedlichen Wachstumszeiten und Erträgen.':'Fictional strains with different growth times and yields.',
+  'Dauerhafte Spiel-Upgrades für Wachstum und Ertrag.':'Permanent upgrades for growth and yield.','Leerer Topf':'Empty pot','🏗️ Raum verbessern':'🏗️ Upgrade room',
+  'Erhöht Ertrag und schaltet optisch weitere Plätze frei.':'Increases yield and visually unlocks more slots.',
+  '🍺 Zur krummen Gießkanne':'🍺 The Crooked Watering Can','Wähle einen Auftrag. Schwierige Aufträge kosten mehr Dampf, bringen aber mehr Beute.':'Choose a mission. Harder missions cost more Steam but give better loot.',
+  '⏳ Aktiver Auftrag':'⏳ Active mission','🔄 Neue Aufträge – 10 Gold':'🔄 New missions – 10 Gold',
+  '🎟️ Dungeon-Versuch':'🎟️ Dungeon attempt','1 Versuch pro Stunde gratis. Weitere Versuche kosten 1 🟢 Harz-Taler.':'1 free attempt per hour. Additional attempts cost 1 🟢 Resin Token.',
+  'Gratisversuch bereit':'Free attempt ready','Trauermücken-Schwarm':'Fungus Gnat Swarm','Raum 1':'Room 1','Trauermücken':'Fungus Gnats','Der Gegner wartet auf dich.':'The enemy is waiting for you.','⚔️ Kampf starten':'⚔️ Start battle',
+  'Alle 30 Minuten wird dir ein zufälliger Gegner aus deinem Stärke-Bereich zugeteilt.':'Every 30 minutes you are matched with a random opponent near your power level.',
+  'NÄCHSTER KAMPF':'NEXT BATTLE','Bereit':'Ready','KÄMPFE':'BATTLES','Noch kein Gegner ausgewählt':'No opponent selected yet',
+  'Das Matchmaking sucht nach ähnlichem Level und ähnlicher Kampfkraft.':'Matchmaking searches for a similar level and combat power.',
+  '🎯 Gegner suchen':'🎯 Find opponent',
+  'Matchmaking: bevorzugt ±2 Level und etwa ±20 % Kampfkraft. Falls kein Spieler passt, wird der Bereich vorsichtig erweitert.':'Matchmaking prefers ±2 levels and about ±20% combat power. If nobody fits, the range is expanded gradually.',
+  'Sieg: Gold + Erfahrung + PvP-Buds. Je stärker der besiegte Gegner im Vergleich zu dir war, desto mehr Buds erhältst du. Niederlage: kleine Teilnahmebelohnung, niemals Bud-Abzug.':'Victory: Gold + XP + PvP Buds. Stronger defeated opponents grant more Buds. Defeat gives a small participation reward and never removes Buds.',
+  'Nach einem Kampf beginnt ein serverseitiger Cooldown von 30 Minuten.':'After a battle, a 30-minute server cooldown begins.'
+ },
+ es:{
+  'Premium-Währung':'Moneda prémium','Der Harzbrecher':'El Romperresina',
+  'Fähigkeiten werden mit deinem Level freigeschaltet und mit Talentpunkten verbessert.':'Las habilidades se desbloquean con tu nivel y mejoran con puntos de talento.',
+  'Set-Teile geben zusätzliche Boni, wenn du mehrere gleichzeitig trägst.':'Las piezas de set dan bonificaciones extra al equipar varias compatibles.',
+  'Wähle deine Spezialisierung. Die Boni werden direkt auf deine Werte gerechnet.':'Elige tu especialización. Sus bonificaciones se aplican directamente a tus atributos.',
+  '🌰 Samen-Shop':'🌰 Tienda de semillas','Fiktive Sorten mit unterschiedlichen Wachstumszeiten und Erträgen.':'Variedades ficticias con distintos tiempos de crecimiento y rendimientos.',
+  'Dauerhafte Spiel-Upgrades für Wachstum und Ertrag.':'Mejoras permanentes para crecimiento y rendimiento.','Leerer Topf':'Maceta vacía','🏗️ Raum verbessern':'🏗️ Mejorar sala',
+  'Erhöht Ertrag und schaltet optisch weitere Plätze frei.':'Aumenta el rendimiento y desbloquea visualmente más espacios.',
+  '🍺 Zur krummen Gießkanne':'🍺 La Regadera Torcida','Wähle einen Auftrag. Schwierige Aufträge kosten mehr Dampf, bringen aber mehr Beute.':'Elige una misión. Las difíciles cuestan más Vapor, pero dan más botín.',
+  '⏳ Aktiver Auftrag':'⏳ Misión activa','🔄 Neue Aufträge – 10 Gold':'🔄 Nuevas misiones – 10 Oro',
+  '🎟️ Dungeon-Versuch':'🎟️ Intento de mazmorra','1 Versuch pro Stunde gratis. Weitere Versuche kosten 1 🟢 Harz-Taler.':'1 intento gratis por hora. Los adicionales cuestan 1 🟢 ficha de resina.',
+  'Gratisversuch bereit':'Intento gratis listo','Trauermücken-Schwarm':'Enjambre de mosquitos del hongo','Raum 1':'Sala 1','Trauermücken':'Mosquitos del hongo','Der Gegner wartet auf dich.':'El enemigo te espera.','⚔️ Kampf starten':'⚔️ Iniciar combate',
+  'Alle 30 Minuten wird dir ein zufälliger Gegner aus deinem Stärke-Bereich zugeteilt.':'Cada 30 minutos se te asigna un rival aleatorio de un nivel de fuerza similar.',
+  'NÄCHSTER KAMPF':'PRÓXIMO COMBATE','Bereit':'Listo','KÄMPFE':'COMBATES','Noch kein Gegner ausgewählt':'Aún no hay rival seleccionado',
+  'Das Matchmaking sucht nach ähnlichem Level und ähnlicher Kampfkraft.':'El emparejamiento busca nivel y poder de combate similares.',
+  '🎯 Gegner suchen':'🎯 Buscar rival',
+  'Matchmaking: bevorzugt ±2 Level und etwa ±20 % Kampfkraft. Falls kein Spieler passt, wird der Bereich vorsichtig erweitert.':'El emparejamiento prioriza ±2 niveles y aprox. ±20 % de poder. Si nadie encaja, el rango se amplía gradualmente.',
+  'Sieg: Gold + Erfahrung + PvP-Buds. Je stärker der besiegte Gegner im Vergleich zu dir war, desto mehr Buds erhältst du. Niederlage: kleine Teilnahmebelohnung, niemals Bud-Abzug.':'Victoria: Oro + EXP + Brotes PvP. Cuanto más fuerte sea el rival derrotado, más brotes obtienes. La derrota da una pequeña recompensa y nunca resta brotes.',
+  'Nach einem Kampf beginnt ein serverseitiger Cooldown von 30 Minuten.':'Tras un combate comienza un enfriamiento de servidor de 30 minutos.'
+ },
+ fr:{
+  'Premium-Währung':'Monnaie premium','Der Harzbrecher':'Le Briseur de résine',
+  'Fähigkeiten werden mit deinem Level freigeschaltet und mit Talentpunkten verbessert.':'Les compétences se débloquent avec ton niveau et s’améliorent avec des points de talent.',
+  'Set-Teile geben zusätzliche Boni, wenn du mehrere gleichzeitig trägst.':'Les pièces de set donnent des bonus supplémentaires quand plusieurs pièces compatibles sont équipées.',
+  'Wähle deine Spezialisierung. Die Boni werden direkt auf deine Werte gerechnet.':'Choisis ta spécialisation. Ses bonus sont appliqués directement à tes stats.',
+  '🌰 Samen-Shop':'🌰 Boutique de graines','Fiktive Sorten mit unterschiedlichen Wachstumszeiten und Erträgen.':'Variétés fictives avec différents temps de croissance et rendements.',
+  'Dauerhafte Spiel-Upgrades für Wachstum und Ertrag.':'Améliorations permanentes pour la croissance et le rendement.','Leerer Topf':'Pot vide','🏗️ Raum verbessern':'🏗️ Améliorer la salle',
+  'Erhöht Ertrag und schaltet optisch weitere Plätze frei.':'Augmente le rendement et débloque visuellement plus d’emplacements.',
+  '🍺 Zur krummen Gießkanne':'🍺 L’Arrosoir Tordu','Wähle einen Auftrag. Schwierige Aufträge kosten mehr Dampf, bringen aber mehr Beute.':'Choisis une quête. Les quêtes difficiles coûtent plus de Vapeur mais donnent plus de butin.',
+  '⏳ Aktiver Auftrag':'⏳ Quête active','🔄 Neue Aufträge – 10 Gold':'🔄 Nouvelles quêtes – 10 Or',
+  '🎟️ Dungeon-Versuch':'🎟️ Essai de donjon','1 Versuch pro Stunde gratis. Weitere Versuche kosten 1 🟢 Harz-Taler.':'1 essai gratuit par heure. Les essais supplémentaires coûtent 1 🟢 jeton de résine.',
+  'Gratisversuch bereit':'Essai gratuit prêt','Trauermücken-Schwarm':'Essaim de moucherons','Raum 1':'Salle 1','Trauermücken':'Moucherons','Der Gegner wartet auf dich.':'L’ennemi t’attend.','⚔️ Kampf starten':'⚔️ Lancer le combat',
+  'Alle 30 Minuten wird dir ein zufälliger Gegner aus deinem Stärke-Bereich zugeteilt.':'Toutes les 30 minutes, un adversaire aléatoire proche de ta puissance t’est attribué.',
+  'NÄCHSTER KAMPF':'PROCHAIN COMBAT','Bereit':'Prêt','KÄMPFE':'COMBATS','Noch kein Gegner ausgewählt':'Aucun adversaire sélectionné',
+  'Das Matchmaking sucht nach ähnlichem Level und ähnlicher Kampfkraft.':'Le matchmaking cherche un niveau et une puissance similaires.',
+  '🎯 Gegner suchen':'🎯 Chercher un adversaire',
+  'Matchmaking: bevorzugt ±2 Level und etwa ±20 % Kampfkraft. Falls kein Spieler passt, wird der Bereich vorsichtig erweitert.':'Le matchmaking privilégie ±2 niveaux et environ ±20 % de puissance. Si personne ne correspond, la plage est élargie progressivement.',
+  'Sieg: Gold + Erfahrung + PvP-Buds. Je stärker der besiegte Gegner im Vergleich zu dir war, desto mehr Buds erhältst du. Niederlage: kleine Teilnahmebelohnung, niemals Bud-Abzug.':'Victoire : Or + EXP + Buds PvP. Plus l’adversaire vaincu était fort, plus tu gagnes de Buds. Une défaite donne une petite récompense sans jamais retirer de Buds.',
+  'Nach einem Kampf beginnt ein serverseitiger Cooldown von 30 Minuten.':'Après un combat, un délai serveur de 30 minutes commence.'
+ },
+ pl:{
+  'Premium-Währung':'Waluta premium','Der Harzbrecher':'Łamacz Żywicy',
+  'Fähigkeiten werden mit deinem Level freigeschaltet und mit Talentpunkten verbessert.':'Umiejętności odblokowują się wraz z poziomem i są ulepszane punktami talentów.',
+  'Set-Teile geben zusätzliche Boni, wenn du mehrere gleichzeitig trägst.':'Elementy zestawu dają dodatkowe bonusy, gdy nosisz kilka pasujących części.',
+  'Wähle deine Spezialisierung. Die Boni werden direkt auf deine Werte gerechnet.':'Wybierz specjalizację. Jej bonusy są bezpośrednio doliczane do statystyk.',
+  '🌰 Samen-Shop':'🌰 Sklep z nasionami','Fiktive Sorten mit unterschiedlichen Wachstumszeiten und Erträgen.':'Fikcyjne odmiany z różnym czasem wzrostu i plonem.',
+  'Dauerhafte Spiel-Upgrades für Wachstum und Ertrag.':'Stałe ulepszenia wzrostu i plonu.','Leerer Topf':'Pusta doniczka','🏗️ Raum verbessern':'🏗️ Ulepsz pomieszczenie',
+  'Erhöht Ertrag und schaltet optisch weitere Plätze frei.':'Zwiększa plon i wizualnie odblokowuje kolejne miejsca.',
+  '🍺 Zur krummen Gießkanne':'🍺 Krzywa Konewka','Wähle einen Auftrag. Schwierige Aufträge kosten mehr Dampf, bringen aber mehr Beute.':'Wybierz misję. Trudniejsze kosztują więcej Pary, ale dają więcej łupów.',
+  '⏳ Aktiver Auftrag':'⏳ Aktywna misja','🔄 Neue Aufträge – 10 Gold':'🔄 Nowe misje – 10 złota',
+  '🎟️ Dungeon-Versuch':'🎟️ Próba lochu','1 Versuch pro Stunde gratis. Weitere Versuche kosten 1 🟢 Harz-Taler.':'1 darmowa próba na godzinę. Kolejne kosztują 1 🟢 żeton żywicy.',
+  'Gratisversuch bereit':'Darmowa próba gotowa','Trauermücken-Schwarm':'Rój ziemiórek','Raum 1':'Sala 1','Trauermücken':'Ziemiórki','Der Gegner wartet auf dich.':'Przeciwnik czeka na ciebie.','⚔️ Kampf starten':'⚔️ Rozpocznij walkę',
+  'Alle 30 Minuten wird dir ein zufälliger Gegner aus deinem Stärke-Bereich zugeteilt.':'Co 30 minut przydzielany jest losowy przeciwnik o podobnej sile.',
+  'NÄCHSTER KAMPF':'NASTĘPNA WALKA','Bereit':'Gotowe','KÄMPFE':'WALKI','Noch kein Gegner ausgewählt':'Nie wybrano jeszcze przeciwnika',
+  'Das Matchmaking sucht nach ähnlichem Level und ähnlicher Kampfkraft.':'Dobieranie szuka podobnego poziomu i siły bojowej.',
+  '🎯 Gegner suchen':'🎯 Szukaj przeciwnika',
+  'Matchmaking: bevorzugt ±2 Level und etwa ±20 % Kampfkraft. Falls kein Spieler passt, wird der Bereich vorsichtig erweitert.':'Dobieranie preferuje ±2 poziomy i ok. ±20% siły bojowej. Gdy nikt nie pasuje, zakres jest stopniowo rozszerzany.',
+  'Sieg: Gold + Erfahrung + PvP-Buds. Je stärker der besiegte Gegner im Vergleich zu dir war, desto mehr Buds erhältst du. Niederlage: kleine Teilnahmebelohnung, niemals Bud-Abzug.':'Zwycięstwo: złoto + EXP + Budsy PvP. Im silniejszy pokonany przeciwnik, tym więcej Budsów. Porażka daje małą nagrodę i nigdy nie zabiera Budsów.',
+  'Nach einem Kampf beginnt ein serverseitiger Cooldown von 30 Minuten.':'Po walce rozpoczyna się 30-minutowy czas odnowienia serwera.'
+ },
+ tr:{
+  'Premium-Währung':'Premium para birimi','Der Harzbrecher':'Reçine Kıran',
+  'Fähigkeiten werden mit deinem Level freigeschaltet und mit Talentpunkten verbessert.':'Yetenekler seviyenle açılır ve yetenek puanlarıyla geliştirilir.',
+  'Set-Teile geben zusätzliche Boni, wenn du mehrere gleichzeitig trägst.':'Birden fazla uyumlu set parçası kuşandığında ek bonuslar kazanırsın.',
+  'Wähle deine Spezialisierung. Die Boni werden direkt auf deine Werte gerechnet.':'Uzmanlığını seç. Bonusları doğrudan özelliklerine uygulanır.',
+  '🌰 Samen-Shop':'🌰 Tohum Mağazası','Fiktive Sorten mit unterschiedlichen Wachstumszeiten und Erträgen.':'Farklı büyüme süreleri ve verimlere sahip kurgusal türler.',
+  'Dauerhafte Spiel-Upgrades für Wachstum und Ertrag.':'Büyüme ve verim için kalıcı yükseltmeler.','Leerer Topf':'Boş saksı','🏗️ Raum verbessern':'🏗️ Odayı geliştir',
+  'Erhöht Ertrag und schaltet optisch weitere Plätze frei.':'Verimi artırır ve görsel olarak daha fazla alan açar.',
+  '🍺 Zur krummen Gießkanne':'🍺 Eğri Sulama Kabı','Wähle einen Auftrag. Schwierige Aufträge kosten mehr Dampf, bringen aber mehr Beute.':'Bir görev seç. Zor görevler daha fazla Buhar harcar ama daha çok ganimet verir.',
+  '⏳ Aktiver Auftrag':'⏳ Aktif görev','🔄 Neue Aufträge – 10 Gold':'🔄 Yeni görevler – 10 Altın',
+  '🎟️ Dungeon-Versuch':'🎟️ Zindan denemesi','1 Versuch pro Stunde gratis. Weitere Versuche kosten 1 🟢 Harz-Taler.':'Saatte 1 ücretsiz deneme. Ek denemeler 1 🟢 Reçine Jetonu tutar.',
+  'Gratisversuch bereit':'Ücretsiz deneme hazır','Trauermücken-Schwarm':'Mantar Sivrisineği Sürüsü','Raum 1':'Oda 1','Trauermücken':'Mantar Sivrisinekleri','Der Gegner wartet auf dich.':'Düşman seni bekliyor.','⚔️ Kampf starten':'⚔️ Savaşı başlat',
+  'Alle 30 Minuten wird dir ein zufälliger Gegner aus deinem Stärke-Bereich zugeteilt.':'Her 30 dakikada gücüne yakın rastgele bir rakip atanır.',
+  'NÄCHSTER KAMPF':'SONRAKİ SAVAŞ','Bereit':'Hazır','KÄMPFE':'SAVAŞLAR','Noch kein Gegner ausgewählt':'Henüz rakip seçilmedi',
+  'Das Matchmaking sucht nach ähnlichem Level und ähnlicher Kampfkraft.':'Eşleştirme benzer seviye ve savaş gücü arar.',
+  '🎯 Gegner suchen':'🎯 Rakip ara',
+  'Matchmaking: bevorzugt ±2 Level und etwa ±20 % Kampfkraft. Falls kein Spieler passt, wird der Bereich vorsichtig erweitert.':'Eşleştirme ±2 seviye ve yaklaşık ±%20 savaş gücünü tercih eder. Kimse uymazsa aralık kademeli genişletilir.',
+  'Sieg: Gold + Erfahrung + PvP-Buds. Je stärker der besiegte Gegner im Vergleich zu dir war, desto mehr Buds erhältst du. Niederlage: kleine Teilnahmebelohnung, niemals Bud-Abzug.':'Zafer: Altın + EXP + PvP Buds. Yendiğin rakip ne kadar güçlüyse o kadar çok Bud kazanırsın. Yenilgi küçük bir katılım ödülü verir ve Bud azaltmaz.',
+  'Nach einem Kampf beginnt ein serverseitiger Cooldown von 30 Minuten.':'Bir savaştan sonra 30 dakikalık sunucu bekleme süresi başlar.'
+ }
+};
+for(const lang of Object.keys(STATIC_UI_A))Object.assign(M[lang]||(M[lang]={}),STATIC_UI_A[lang]);
+
 /* Dynamic text patterns. Exact dictionaries cannot cover values embedded into
    labels; these preserve numbers/names while translating the surrounding UI. */
 const P={
