@@ -26,7 +26,8 @@ const towerOwner=fs.readFileSync(path.join(root,towerOwnerRel),'utf8');
 check(towerOwner.includes("getElementById('tower')")||towerOwner.includes('#tower'),'tower target contract');
 
 const requiredMarkers=[
-  ['auth core','js/features/account/beta/v8009-s1-v200-stable-core.js?v=8102shopsavestrip1'],
+  ['i18n core','js/features/i18n/v8143-i18n-core.js?v=8143i18n1'],
+  ['auth core','js/features/account/beta/v8009-s1-v200-stable-core.js?v=8143i18n1'],
   ['account isolation','js/features/account/beta/v8009-s8-v145-account-isolation-fix.js?v=8102shopsavestrip1'],
   ['atomic boot','js/features/system/beta/v8009-s14-v224-atomic-boot-release.js?v=8088criticalboot1'],
   ['save owner','js/features/account/beta/v8009-s1-v4136-account-save-owner.js?v=8102shopsavestrip1'],
