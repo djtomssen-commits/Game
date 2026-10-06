@@ -36,7 +36,17 @@
     });
     return out;
   }
+  function v422MayTouchPersisted(){
+    /* V8.180: persisted item state is server-owned. Before auth resolves, fail closed.
+       True offline/anonymous paths may opt in only after auth has resolved. */
+    if(window.__V200_AUTH_READY__!==true)return false;
+    try{
+      const u=(typeof v073User!=='undefined'&&v073User)||window.v073User||null;
+      return !u?.id||!!u?.is_anonymous;
+    }catch(_){return false}
+  }
   function v422Canonicalize(it){
+    if(!v422MayTouchPersisted())return it;
     if(!it||it.type==='material'||!it.slot)return it;
     const base=v422Base(it);if(!base||!Object.keys(base).length)return it;
     const q=v422Quality(it), lvl=Math.max(1,Number(it.dropLevel)||Number(s.level)||1);
@@ -48,8 +58,10 @@
     return it;
   }
   function v422All(){
+    if(!v422MayTouchPersisted())return false;
     (s.inventory||[]).forEach(v422Canonicalize);
     Object.values(s.equipment||{}).forEach(v422Canonicalize);
+    return true;
   }
   function v422Snapshot(){
     return (s.inventory||[]).map(it=>it?{bonus:{...(it.bonus||{})},baseBonusV055:it.baseBonusV055?{...it.baseBonusV055}:null,dropLevel:it.dropLevel}:null);
@@ -91,9 +103,7 @@
     return r;
   };
 
-  v422All();
-  try{localStorage.setItem(KEY,JSON.stringify(s));render()}catch(e){console.error('V4.22 item consistency',e)}
-  
+  /* V8.180: no boot-time canonicalization/save/render of persisted item state. */
   const line=document.querySelector('#v141VersionLine');
   document.title='Grow Legends V4.29';
 })();
