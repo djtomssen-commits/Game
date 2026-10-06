@@ -68,7 +68,12 @@
     const lvl=Math.max(1,Number(it?.dropLevel)||Number(s.level)||1);
     return Math.max(1,Math.round(slotBaseBudget(it,base)*meta.mult+(lvl-1)*0.72+meta.flat));
   }
+  function authenticatedServerItems(){
+    try{return !!((typeof v073User!=='undefined'&&v073User?.id)||window.v073User?.id)}catch(_){return false}
+  }
   function canonical(it){
+    /* V8.169: server owns authenticated item combat stats. */
+    if(authenticatedServerItems())return false;
     if(!it||it.type==='material'||!it.slot||it.setId)return false;
     const base=baseBonus(it); if(!base)return false;
     const before=JSON.stringify(it.bonus||{});
@@ -83,6 +88,7 @@
     return before!==JSON.stringify(it.bonus);
   }
   function all(){
+    if(authenticatedServerItems())return false;
     let changed=false;
     (s.inventory||[]).forEach(it=>{if(canonical(it))changed=true});
     Object.values(s.equipment||{}).forEach(it=>{if(canonical(it))changed=true});
