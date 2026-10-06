@@ -48,7 +48,18 @@
     window.__v455ItemSourceGuard=true;
   }
 
+  function mayNormalizeLegacyState(){
+    /* V8.175: fail closed until auth identity is resolved. Existing state for
+       authenticated accounts belongs to server item authority, not this legacy migrator. */
+    if(window.__V200_AUTH_READY__!==true)return false;
+    try{
+      const u=(typeof v073User!=='undefined'&&v073User)||window.v073User||null;
+      if(u?.id && !u?.is_anonymous)return false;
+    }catch(_){return false}
+    return true;
+  }
   function normalize(){
+    if(!mayNormalizeLegacyState())return false;
     try{
       if(typeof window.v447NormalizeAllItems==='function')window.v447NormalizeAllItems();
       else if(typeof window.v447ApplyItemCurve==='function'){
@@ -58,7 +69,8 @@
       }
       s.v455ItemLootBalance=1;
       try{localStorage.setItem(KEY,JSON.stringify(s))}catch(e){}
-    }catch(e){console.warn('V4.56 item normalization',e)}
+      return true;
+    }catch(e){console.warn('V4.56 item normalization',e);return false}
   }
   window.v455NormalizeItemLootBalance=normalize;
 
@@ -73,8 +85,7 @@
     window.__v455CloudItemNormalize=true;
   }
 
-  normalize();stamp();
-  document.addEventListener('DOMContentLoaded',()=>{normalize();stamp()},{once:true});
-  window.addEventListener('pageshow',()=>{normalize();stamp()},{passive:true});
+  /* V8.175: no pre-auth or pageshow mutation of persisted item state. */
+  stamp();
   window.addEventListener('growlegends:account-ready',()=>{normalize();stamp()},{passive:true});
 })();
