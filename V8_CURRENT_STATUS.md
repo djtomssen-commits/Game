@@ -9684,3 +9684,24 @@ Aktueller Release-Status:
   - v200/v343/v347 Cache-Key auf `8153betai18n1` aktualisiert.
 - Commit: `9e9276dc8a3f56a715c583e3e803705f4d914636`.
 - Keine Gameplay-/Save-/Reward-/RPC-/Balance-Logik verändert.
+
+
+### 2026-10-06 – Ingame-Sprachumschaltung: finaler Render-/Navigations-Owner korrigiert
+- Nutzer bestätigt: Login übersetzt nach beta.html-Wiring, Ingame blieb vollständig Deutsch.
+- Ursache im tatsächlichen Last-Writer gefunden:
+  - `v8009-s8-v4149-final-navigation-render-authority.js` baute das finale Menü mit fest verdrahteten deutschen Labels.
+  - derselbe finale Navigations-Owner rief nach `v032Go(...)` keinen I18N-Nachlauf auf und dispatchte keinen `growlegends:navigation-open-v7119`-Event.
+  - dadurch konnten dynamisch neu gerenderte Seiten nach Login/Navigation wieder Deutsch bleiben; v8144 lief am finalen Renderzeitpunkt vorbei.
+- Direkt im kanonischen v4149-Owner behoben:
+  - finale Menülabels werden über `GrowI18n.t('nav.*')` erzeugt;
+  - nach dem finalen globalen `render()` wird die aktuell aktive Seite über `v8144GameplayI18n.schedule(activeId)` lokalisiert;
+  - nach `v032Go(id)` wird der bestehende Navigation-Event ausgelöst und die Zielseite lokalisiert;
+  - bei `growlegends:language-changed` wird das finale Menü erzwungen neu gebaut und alle vorhandenen Screens erneut lokalisiert.
+- Keine neue Render-Schicht; Änderung direkt im bereits bestehenden finalen UI-Owner.
+- Cache-Bust: `8154ingamei18n1` auf index.html, beta.html und server1.html.
+- Commits:
+  - v4149 final owner: `6c557cddd6897ee0d2bbda83cf10d4e4d1ebeac6`
+  - index: `074443b15ab625dc020733831192a7fef33bc5da`
+  - beta: `f6d07a490b41c11ce33eef3716b59215450fa386`
+  - server1: `8ffd43338c32a20b3617e2f51b7588272bcc8248`
+- Syntaxcheck v4149 + v8144: grün.
