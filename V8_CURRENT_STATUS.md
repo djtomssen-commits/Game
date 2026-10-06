@@ -10148,3 +10148,27 @@ Aktueller Release-Status:
   - serverseitig geladene Item-Boni bleiben unverändert;
   - `totalAttr()` bekommt nach dem ersten finalen Sync keine 0.7/2.6/6.0-s Client-Umschreibungen mehr;
   - Attributzahlen dürfen damit nicht mehr zwischen lokal normalisierten und serverautoritativen Werten wechseln.
+
+
+### 2026-10-06 – Letzter einmaliger Attribut-Umsprung: Auth-Startfenster geschlossen
+- Nutzer meldete nach V8.169 nur noch genau einen Umsprung der Attributzahlen.
+- Root Cause:
+  - `v459` behandelte den kurzen Boot-Zustand „`v073User` noch nicht vorhanden“ wie einen echten anonymen Nutzer.
+  - Wenn der zuletzt gespeicherte Character-Tab „Attribute“ war, konnte dadurch einmal der lokale/stale Attributsatz gerendert werden, bevor `growlegends:account-ready` kam.
+  - Danach wurden Build- und Item-Authority korrekt geladen und die Zahlen wechselten genau einmal auf den Serverstand.
+- Fix in `v8009-s2-v459-character-hub.js`:
+  - solange `window.__V200_AUTH_READY__ !== true`, dürfen Attribute überhaupt nicht freigegeben werden;
+  - „noch kein User während Boot“ wird nicht mehr als Anonymous interpretiert;
+  - wenn der Character-Hub während Auth-Resolve mit gespeichertem Attribute-Tab öffnet, bleibt/öffnet vorübergehend Inventory statt lokale Attribute zu rendern;
+  - nach `account-ready` wird der gespeicherte Attribute-Tab erneut versucht und erst nach Build+Item-Authority freigegeben.
+- Kein Sync-Text, kein lokaler First Paint, keine neue Patch-Schicht.
+- Syntaxcheck v459: grün.
+- Cache-Bust index/beta/server1: `8170attrauthgate1`.
+- Commits:
+  - v459: `cf161859c88261b92a0f48e420270cc6aed4608b`
+  - index: `531c382d311ba8572024fba034196558fbc0102d`
+  - beta: `a53a327a4f037470554c7d08484bc84f20b85137`
+  - server1: `a0e4d27ce475ea2fe4a5ee09e5e037da1717f95d`
+- Erwartung:
+  - kein einziger sichtbarer lokaler Attributsatz mehr während Login/Boot;
+  - erster sichtbarer Attribut-Paint = finaler Server-Build + finale Server-Items.
