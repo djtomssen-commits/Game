@@ -177,8 +177,15 @@ async function hydrateActive(){
  const screen=activeScreen();
  try{await window.v7077ProgressRefresh?.()}catch(_){ }
  try{
-   if(screen==='character'){await window.v7033BuildAuthorityRefresh?.();await (window.v7074ItemAuthorityRefresh?.()||window.v7063ItemStageRefresh?.());}
-   else if(screen==='shop'||screen==='forge'||screen==='harzForge')await (window.v7074ItemAuthorityRefresh?.()||window.v7063ItemStageRefresh?.());
+   if(screen==='character'){
+     /* V8.177: Character has direct build/item owners. Generic persist() must not
+        trigger a second visible/corrective hydration wave. */
+     return;
+   }
+   else if(screen==='shop'||screen==='forge'||screen==='harzForge'){
+     /* Server item actions apply their own RPC response directly. */
+     return;
+   }
    else if(screen==='quests')await window.v7110SyncQuestAuthority?.(true);
    else if(screen==='dungeon'){await window.v7040AuthorityRefresh?.();const di=Math.max(0,Math.min(19,Number(s?.dungeon?.selected??s?.dungeon?.lastActive??0)||0));await window.v7051EnsureDungeonState?.(di,{force:false,paint:false,reason:'active-hydrate'});}
    else if(screen==='grow'){await window.v7065GrowAuthorityRefresh?.(true);await window.v7070GrowHydrationRefresh?.();}
@@ -227,6 +234,12 @@ function scheduleHydrate(){
     Generic persist() calls (seed selection, UI state, old decorators) must not fan
     out into two extra Grow state RPCs. */
  if(screen==='grow'&&window.__V7065_GROW_FAIL_CLOSED__)return;
+ /* V8.177: Build/items already have fail-closed server owners. A generic UI
+    persist is not an authority event and must not rehydrate Character/Shop. */
+ if(screen==='character'||screen==='shop'||screen==='forge'||screen==='harzForge'){
+   D.suppressedHydrates++;
+   return;
+ }
  clearTimeout(hydrateTimer);hydrateTimer=setTimeout(()=>void hydrateActive(),80)
 }
 try{
