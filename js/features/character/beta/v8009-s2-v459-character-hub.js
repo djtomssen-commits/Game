@@ -146,6 +146,7 @@
       try{window.v123PolishEquipment?.()}catch(_){}
       activate(activeTab(),false);
       if(activeTab()==='attributes')window.v537ApplyAttributes?.();
+      try{window.v8144GameplayI18n?.apply?.('character')}catch(_){}
       stamp();
       return true;
     }catch(e){console.warn('V4.67 character layout',e);return false}
