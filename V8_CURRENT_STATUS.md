@@ -10104,3 +10104,47 @@ Aktueller Release-Status:
   - kein lokaler Attributsatz sichtbar;
   - kein späteres Umschalten durch Build-Hydration;
   - direkt finale Werte aus Server-Build + Server-Equipment.
+
+
+### 2026-10-06 – Attribute schwanken weiter: Legacy-Item-Stat-Rewriter als Root Cause entfernt
+- Nutzer meldete trotz Build+Item-Authority-Gating weiterhin schwankende Attributzahlen.
+- Tiefer Audit der tatsächlichen Rechenkette ergab:
+  - `v4140` wurde bereits deutlich vor mehreren späteren Item-/Stat-Schichten geladen.
+  - Entscheidend: `v447-unified-item-balance.js` normalisierte ausgerüstete Items nicht nur bei Render/Persist, sondern zusätzlich per festen Timern nach **700 ms / 2600 ms / 6000 ms**.
+  - Diese Altlogik schrieb direkt auf `it.bonus` in `s.equipment`.
+  - `v4154-class-balance-item-variety.js` rief dieselbe Normalisierung nochmals bei `account-ready`/pageshow auf.
+  - `v425-item-stats-single-authority.js` und `v429-immutable-item-stats.js` besaßen ebenfalls clientseitige Stat-Mutationspfade für Equipment.
+- Das erklärt den beobachteten Verlauf:
+  - serverautoritative Items werden geladen;
+  - alte Client-Normalisierer rechnen die Item-Boni später erneut um;
+  - spätere Server-Hydration setzt sie wieder zurück;
+  - `totalAttr()` schwankt dadurch sichtbar.
+- Architekturfix:
+  - Für echte eingeloggte Accounts sind alte Client-Item-Stat-Normalisierer jetzt **read-only/no-op**.
+  - Der Server ist für Item-Kampfwerte die einzige Source of Truth.
+- Direkt geändert:
+  - `v8009-s1-v447-unified-item-balance.js`
+    - keine Item-Bonus-Mutation mehr bei authentifiziertem Account;
+    - `all()` ist dort no-op;
+    - 700/2600/6000-ms Rewrite-Train vollständig retired.
+  - `v8009-s6-v425-item-stats-single-authority.js`
+    - `canonical()`/`all()` mutieren bei eingeloggtem Account keine Itemwerte mehr.
+  - `v8009-s7-v429-immutable-item-stats.js`
+    - `lock()`, `restore()`, `lockAndRestoreAll()` und lokales Save der Statlocks sind bei eingeloggtem Account no-op.
+  - `v8009-s4-v4154-class-balance-item-variety.js`
+    - ruft die alte v447-Normalisierung für eingeloggte Accounts nicht mehr auf.
+- Anonyme/offline Legacy-Pfade bleiben erhalten.
+- Syntaxcheck aller vier Dateien: grün.
+- Cache-Bust index/beta/server1: `8169serveritemstats1`.
+- Commits:
+  - v447: `bcf1340705ea93740640c110ce719b28d214e08e`
+  - v425: `e839347c0211373d2e31b767c097bb72b296b3fb`
+  - v429: `b1d087f88505d90384b1adc4a4f34a9e97eae9e6`
+  - v4154: `c394515caf51c28a16a82d1085fcd0f596f16d16`
+  - index: `5db8d163e1a9ac5a9163cfcda76e4fa3959ec9f9`
+  - beta: `6ed7dd0342bb0e7d195884e39b2c217d7b72a150`
+  - server1: `f8fbaaae30b3c5b3a6ab88f2461b5398852edae1`
+- Erwartetes Verhalten:
+  - serverseitig geladene Item-Boni bleiben unverändert;
+  - `totalAttr()` bekommt nach dem ersten finalen Sync keine 0.7/2.6/6.0-s Client-Umschreibungen mehr;
+  - Attributzahlen dürfen damit nicht mehr zwischen lokal normalisierten und serverautoritativen Werten wechseln.
