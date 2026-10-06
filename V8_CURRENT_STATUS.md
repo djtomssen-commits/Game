@@ -9563,3 +9563,45 @@ Aktueller Release-Status:
 - Nächster Block:
   - verbleibende Popups, Toasts, Guides, Spezialdialoge, Detailtexte und dynamische Result-/Belohnungsfenster komplett durchgehen;
   - danach Sprach-QA pro Sprache auf Mobile, insbesondere lange französische/polnische Texte und kleine Buttons.
+
+### 2026-10-06 – Mehrsprachigkeit Power-Block 4
+- Sprachsystem erweitert auf Popups, Bestätigungen, Guides und Belohnungsfenster.
+- Abgedeckte Overlay-/Dialogbereiche u. a.:
+  - Dungeon-Belohnungsfenster
+  - PvP-Ergebnis/Belohnung
+  - Quest-Belohnungsfenster
+  - Level-Up Popup
+  - Pet-Fund Popup
+  - Täglicher Login-Bonus
+  - Wochen-Truhe
+  - Harz-Automat Detail-/Belohnungsfenster
+  - Nebel-Post Nachrichtenmodal
+  - Growroom Guide
+  - Anbau-Turm Guide
+  - allgemeine `[role="dialog"]`-Fenster
+- Neue Kernübersetzungen in EN / ES / FR / PL / TR für:
+  - Bestätigen / Abbrechen / Ja / Nein
+  - Belohnung bestätigen
+  - Sieg / Niederlage
+  - Schließen / Zurück / Weiter / Überspringen / Fertig
+  - Level-Up / Attributpunkte / Talentpunkte
+  - täglicher Login-Bonus
+  - Wochen-Truhe / Truhen-Status / Alles abholen
+  - Guide-/Hilfetexte und Buttons.
+- Umsetzung bleibt presentation-only:
+  - kein Gameplay-State verändert
+  - keine Reward-/RPC-Logik verändert
+  - keine Save-Struktur verändert.
+- Dialoge werden nach Klick/Öffnung in kurzen sicheren Nachläufen übersetzt, damit dynamisch erzeugte Modals ebenfalls erfasst werden.
+- Cache-Bust: `8146dialogs1` auf Beta/Stable und Server 1.
+- Commits:
+  - Dialog-/Overlay-I18N: `07c8353aa2e7b035195612a52b1fc69b094a644b`
+  - index Cache: `608e4b5ac86c484f17edd21da0b48712f248e933`
+  - server1 Cache: `a90204993529a440162ddc628f61fcc87437a836`
+- QA:
+  - DOM Contract Guard Run #569: **SUCCESS**
+  - Synthetic Player Smoke Run #44: **SUCCESS**
+- Verbleibend für den Sprachabschluss:
+  - lange Guide-Fließtexte und sehr spezielle Detailtexte vollständig migrieren;
+  - dynamische Toast-Inhalte mit Variablen vollständig über Schlüssel führen;
+  - Mobile-Layout-QA für lange französische/polnische Texte.
