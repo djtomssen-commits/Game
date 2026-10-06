@@ -4,12 +4,60 @@
 const KEY='growLegendsLanguage';
 const SUPPORTED=['de','en','es','fr','pl','tr'];
 const META={
- de:{label:'Deutsch',short:'DE',flag:'🇩🇪'},
- en:{label:'English',short:'EN',flag:'🇬🇧'},
- es:{label:'Español',short:'ES',flag:'🇪🇸'},
- fr:{label:'Français',short:'FR',flag:'🇫🇷'},
- pl:{label:'Polski',short:'PL',flag:'🇵🇱'},
- tr:{label:'Türkçe',short:'TR',flag:'🇹🇷'}
+ de:{
+  'login.title':"Grow Legends Account",
+  'login.subtitle':"Sichere deinen Charakter dauerhaft und spiele auf jedem Gerät weiter.",
+  'login.tabSignIn':"Anmelden",
+  'login.tabRegister':"Registrieren",
+  'login.passwordLabel':"Passwort",
+  'login.passwordPlaceholder':"Mindestens 6 Zeichen",
+  'login.or':"oder",
+  'login.anonNote':"Bestehende anonyme Charaktere können beim Registrieren direkt übernommen werden.",label:'Deutsch',short:'DE',flag:'🇩🇪'},
+ en:{
+  'login.title':"Grow Legends Account",
+  'login.subtitle':"Secure your character permanently and continue playing on any device.",
+  'login.tabSignIn':"Sign in",
+  'login.tabRegister':"Register",
+  'login.passwordLabel':"Password",
+  'login.passwordPlaceholder':"At least 6 characters",
+  'login.or':"or",
+  'login.anonNote':"Existing anonymous characters can be transferred directly when registering.",label:'English',short:'EN',flag:'🇬🇧'},
+ es:{
+  'login.title':"Cuenta de Grow Legends",
+  'login.subtitle':"Guarda tu personaje de forma permanente y continúa jugando en cualquier dispositivo.",
+  'login.tabSignIn':"Iniciar sesión",
+  'login.tabRegister':"Registrarse",
+  'login.passwordLabel':"Contraseña",
+  'login.passwordPlaceholder':"Al menos 6 caracteres",
+  'login.or':"o",
+  'login.anonNote':"Los personajes anónimos existentes pueden transferirse directamente al registrarse.",label:'Español',short:'ES',flag:'🇪🇸'},
+ fr:{
+  'login.title':"Compte Grow Legends",
+  'login.subtitle':"Sauvegarde ton personnage définitivement et continue sur n’importe quel appareil.",
+  'login.tabSignIn':"Se connecter",
+  'login.tabRegister':"Créer un compte",
+  'login.passwordLabel':"Mot de passe",
+  'login.passwordPlaceholder':"Au moins 6 caractères",
+  'login.or':"ou",
+  'login.anonNote':"Les personnages anonymes existants peuvent être transférés directement lors de l’inscription.",label:'Français',short:'FR',flag:'🇫🇷'},
+ pl:{
+  'login.title':"Konto Grow Legends",
+  'login.subtitle':"Zabezpiecz swoją postać na stałe i graj dalej na dowolnym urządzeniu.",
+  'login.tabSignIn':"Zaloguj się",
+  'login.tabRegister':"Rejestracja",
+  'login.passwordLabel':"Hasło",
+  'login.passwordPlaceholder':"Co najmniej 6 znaków",
+  'login.or':"lub",
+  'login.anonNote':"Istniejące anonimowe postacie można przenieść bezpośrednio podczas rejestracji.",label:'Polski',short:'PL',flag:'🇵🇱'},
+ tr:{
+  'login.title':"Grow Legends Hesabı",
+  'login.subtitle':"Karakterini kalıcı olarak güvenceye al ve istediğin cihazda oynamaya devam et.",
+  'login.tabSignIn':"Giriş yap",
+  'login.tabRegister':"Kayıt ol",
+  'login.passwordLabel':"Şifre",
+  'login.passwordPlaceholder':"En az 6 karakter",
+  'login.or':"veya",
+  'login.anonNote':"Mevcut anonim karakterler kayıt sırasında doğrudan aktarılabilir.",label:'Türkçe',short:'TR',flag:'🇹🇷'}
 };
 
 const D={
