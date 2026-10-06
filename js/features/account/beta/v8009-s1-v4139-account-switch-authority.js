@@ -711,11 +711,10 @@
  v075ApplyCloudSave=async function(data){const id=uid();if(!id)return false;return await apply(data,id)};
  try{window.v075ApplyCloudSave=v075ApplyCloudSave}catch(e){}
 
- v200SaveScopedLocal=function(){
+ window.v200SaveScopedLocal=function(){
   const id=uid();if(!id||!exactOwned(s,id))return false;
   return writeMirrors(id,s,{stamp:false,allowIncomplete:true});
  };
- try{window.v200SaveScopedLocal=v200SaveScopedLocal}catch(e){}
 
  v200FreshState=function(id=uid()){
   id=String(id||'');const f=fresh(id);replaceState(f);
