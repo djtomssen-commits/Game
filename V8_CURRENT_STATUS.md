@@ -9804,3 +9804,31 @@ Aktueller Release-Status:
   - Composite-Phrasen-Fallback: `0486950360b7020f781147c422bd78dca0a6b720`
   - Restübersetzungen: `f4df5a70f081f83a651a658ffb85067af1619ce8`
   - index/beta/server1: `27089b08fb3f08eb68723f62981b7364515a23a8` / `65d13cf859e6b04343fb4075e48ba210e227435a` / `02d60242fc92ef3351a507aeb8e573b2d5f432b0`
+
+
+### 2026-10-06 – I18N Power-Block 1: Inventarisierung + Runtime-Audit
+- Ziel: Sprachmigration nicht weiter per Sichtprüfung/Einzelstring, sondern mit belastbarer Source-of-Truth.
+- Statische Inventur des tatsächlich geladenen `beta.html` erstellt:
+  - 293 sichtbare statische Texte im DOM gefunden.
+  - 137 davon als deutschsprachige UI-Kandidaten erkannt.
+  - davon waren erst 11 als exakte Literale bereits zentral in `v8144-i18n-gameplay.js` abgedeckt.
+  - 126 statische deutsche Kandidaten fehlen damit noch als direkte zentrale Übersetzung bzw. müssen in kanonische Keys migriert werden.
+- Inventar im Repo:
+  - `V8159_UI_INVENTORY.json`
+  - enthält deutschen Source-Text + aktuellen Literal-Abdeckungsstatus.
+- Neuer **diagnostischer** Beta-Scanner:
+  - `js/features/i18n/v8159-i18n-audit.js`
+  - scannt gerenderte Screens, Login/Dialogs/Overlays auf sichtbare deutsche Textknoten sowie aria-label/title/placeholder;
+  - speichert letzten Bericht in `window.__V8159_I18N_AUDIT_LAST__` und `localStorage.growLegendsI18nAudit`;
+  - API: `window.v8159I18nAudit()` / `window.v8159I18nAuditGet()`;
+  - reagiert auf Sprachwechsel, Navigation und Account-Ready.
+- Der Audit ist reine Diagnose: kein Renderer, kein State-/Reward-/RPC-/Balance-Eingriff.
+- Audit vorerst **nur in beta.html** eingebunden.
+- Commits:
+  - statische Inventur: `9da47b51a1115e66c2044d150b1c2a22a14d5c19`
+  - Runtime-Audit: `87fc5ec2716e21e2c381137bf4179c16f154d569`
+  - Beta-Wiring: `a806a62bc0a0563bc60c9d46ffa998d96ee1c408`
+- Nächster Power-Block:
+  - 126 statische Kandidaten in saubere I18N-Keys + EN/ES/FR/PL/TR überführen;
+  - danach aktive dynamische Resttexte anhand Runtime-Audit schließen;
+  - erst danach die Übergangs-Textbrücke reduzieren.
