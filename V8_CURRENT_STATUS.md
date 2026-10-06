@@ -10307,3 +10307,29 @@ Aktueller Release-Status:
 - Erwartung:
   - Item-Bonuswerte selbst bleiben nach dem Laden stabil.
   - dadurch dürfen Stärke/Ausdauer nicht mehr zwischen lokal umgerechneten und serverautoritativen Summen springen.
+
+
+### 2026-10-06 – Item-Drift weiter sichtbar: finaler v7132-Delayed-Rehydrate entfernt
+- Nutzer meldete trotz v331/v455-Bereinigung weiterhin einen einmaligen Wertewechsel.
+- Serververgleich direkt geprüft:
+  - `public.player_saves.save_data.equipment` und `public.player_item_state.equipment` sind für den betroffenen Account slotweise identisch (Item-ID, bonus, Gem, Enchant, Mystic-Special).
+  - Damit ist ausgeschlossen, dass zwei verschiedene Serverstände gegeneinander wechseln.
+- Bestehende QA-Historie zeigt `itemLocalMatch=false` bei gleichzeitig `itemServerOnlyOwner=true` und vollständig enforce-ten Authority-Domains:
+  - der Drift entsteht lokal im Client nach/zwischen Hydrationen.
+- In `v8009-s3-v7132-item-authority-lockdown.js` bestand noch ein sichtbarer Korrekturpfad:
+  - `growlegends:account-ready` plante `ensureAuthority({paint:true})` erst via Startup-Quiet +350 ms bzw. Fallback +500 ms.
+  - Dadurch konnte erst lokaler/zwischenzeitlicher Item-State sichtbar werden und danach der finale Serverzustand erneut Equipment/Character repainten.
+- Fix:
+  - finaler Item-Authority-Hydrate startet bei `account-ready` sofort und **silent** (`paint:false`).
+  - keine verzögerte 350/500-ms sichtbare Korrektur mehr.
+  - Character-Navigation erzwingt keinen zweiten Hydrate mehr, wenn v7074 bereits ready ist.
+  - Character/Inventory-Owner entscheiden selbst über den ersten sichtbaren Paint.
+- Syntaxcheck v7132: grün.
+- Cache-Bust index/beta/server1: `8176itembootstrap1`.
+- Commits:
+  - v7132: `e2fc56a9dde13dab6317114b5a51a3b12b21a681`
+  - index: `cae8b4a01f49f0f9aca8498257d92d5ef3a0891f`
+  - beta: `4785d29691af8041f8a2bdaf149224721f5a8161`
+  - server1: `9c035e5be3271b2a0bd88c7c51ffb6d230df7a5c`
+- Relevanter Befund:
+  - Falls danach weiterhin ein Wechsel sichtbar ist, muss der lokale Item-Drift selbst detailliert diffbar gemacht werden (welcher Slot/welches Feld), da beide Serverquellen nachweislich identisch sind.
