@@ -10172,3 +10172,26 @@ Aktueller Release-Status:
 - Erwartung:
   - kein einziger sichtbarer lokaler Attributsatz mehr während Login/Boot;
   - erster sichtbarer Attribut-Paint = finaler Server-Build + finale Server-Items.
+
+
+### 2026-10-06 – Server 1 wieder geschlossen, neuer Countdown bis 07.10.2026 16:00
+- Nutzerwunsch: Server 1 jetzt wieder schließen und Countdown auf morgen 16:00 Uhr setzen.
+- Kanonischer Gate-Zeitpunkt geändert:
+  - vorher: 2026-10-06 20:00 Europe/Berlin = 18:00 UTC
+  - neu: **2026-10-07 16:00 Europe/Berlin = 14:00 UTC**
+  - `V343_SERVER1_OPENS_AT = Date.parse('2026-10-07T14:00:00Z')`
+- Wirkung:
+  - Server 1 ist bis zum neuen Zeitpunkt wieder `preview/geschlossen`.
+  - öffentliche Auswahl zeigt Countdown bis morgen 16:00.
+  - nicht freigeschaltete Accounts werden bis dahin blockiert.
+  - freigeschaltete Test-/Vorabkonten behalten den bestehenden Vorabzugang.
+- Sichtbare Fallback-Texte auf „Morgen · 16:00 Uhr“ / „öffnet morgen um 16:00 Uhr“ geändert.
+- I18N `v8143-i18n-core.js` für DE/EN/ES/FR/PL/TR aktualisiert; nur Server-1-Launch-Texte geändert, andere 20:00-Zeiten (z. B. Gildenboss) unverändert.
+- Syntaxcheck Gate + I18N: grün.
+- Cache-Bust index/beta/server1: `8171server1oct7`.
+- Commits:
+  - Gate: `18b2cc80b9a70155938cb1ff2fb2ce69b7576120`
+  - I18N: `d3975802b15314bd5efadd8e228cafc992c9ddaa`
+  - index: `e3aaca4120edc691e031f88bc8ce20674e7bceb4`
+  - beta: `07d77fbd2bdef1410e6d437f8e59615669ac3fc1`
+  - server1: `cc990d21031cc17a0f79996c4a011f7919b9fb6d`
