@@ -19,29 +19,36 @@ function tabs(){return document.querySelectorAll('#bagDealer [data-v8010-tab]')}
 
 function renameDealer(){
   try{
-    document.querySelectorAll('#bagDealer .v7219-hero-copy p').forEach(el=>el.textContent='Harz-Automat ist geöffnet. Tütchen & Werbe-Belohnungen folgen später.');
+    document.querySelectorAll('#bagDealer .v7219-hero-copy p').forEach(el=>el.textContent='Harz-Automat und freiwillige Rewarded-Tütchen an einem Ort.');
     document.querySelectorAll('#bagDealer [data-v8010-tab="lotto"]').forEach(el=>{el.textContent='Harz-Automat';el.dataset.v8010Tab='machine'});
   }catch(_){}
 }
 function setTab(tab){
-  if(tab!=='machine'){
-    toast('Tütchen · Coming Soon','info','Der Harz-Automat ist bereits verfügbar.');
+  const server=String(window.v343CurrentServer||window.s?.__serverId||'beta');
+  const bagsAllowed=server!=='server1';
+  if(tab==='bags'&&!bagsAllowed){
+    toast('Tütchen','info','Der Tütchen-Dealer wird auf Server 1 nach dem Beta-Endtest freigeschaltet.');
     tab='machine';
   }
+  if(tab!=='bags'&&tab!=='machine')tab='machine';
   S.active=true;
   tabs().forEach(b=>{
     const bags=b.dataset.v8010Tab==='bags';
-    const machine=b.dataset.v8010Tab==='machine';
-    b.classList.toggle('active',machine);
-    b.classList.toggle('coming-soon',bags);
-    b.disabled=bags;
-    b.setAttribute('aria-disabled',bags?'true':'false');
-    if(bags)b.innerHTML='<span>Tütchen</span><small>COMING SOON</small>';
+    const active=(bags&&tab==='bags')||(!bags&&tab==='machine');
+    b.classList.toggle('active',active);
+    b.classList.toggle('coming-soon',bags&&!bagsAllowed);
+    b.disabled=bags&&!bagsAllowed;
+    b.setAttribute('aria-disabled',bags&&!bagsAllowed?'true':'false');
+    if(bags)b.innerHTML=bagsAllowed?'<span>Tütchen</span>':'<span>Tütchen</span><small>COMING SOON</small>';
     else b.textContent='Harz-Automat';
   });
-  if(bagBody())bagBody().hidden=true;
-  if(panel())panel().hidden=false;
-  void load();
+  if(bagBody())bagBody().hidden=tab!=='bags';
+  if(panel())panel().hidden=tab!=='machine';
+  if(tab==='bags'){
+    try{window.v7215BagDealerOpen?.()}catch(_){}
+  }else{
+    void load();
+  }
 }
 
 function tierInfo(stake){
@@ -283,7 +290,7 @@ window.addEventListener('growlegends:navigation-open-v7119',e=>{
   if(String(e?.detail?.id||'')==='bagDealer'){renameDealer();setTab('machine')}
 },{passive:true});
 
-window.v8011HarzMachine={open:()=>setTab('machine'),load,diagnostics:()=>({active:S.active,busy:S.busy,selected:S.selected,pending:!!S.pending})};
+window.v8011HarzMachine={open:()=>setTab('machine'),openBags:()=>setTab('bags'),load,diagnostics:()=>({active:S.active,busy:S.busy,selected:S.selected,pending:!!S.pending})};
 renameDealer();
 setTab('machine');
 })();
