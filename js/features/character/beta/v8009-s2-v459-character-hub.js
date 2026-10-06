@@ -26,7 +26,7 @@
     const d=window.v7074ItemAuthorityDiagnostics?.();
     const fresh=!!d?.ready && (Date.now()-Number(d.lastSync||0)<5000);
 
-    if(fresh || typeof window.v7074ItemAuthorityRefresh!=='function'){
+    if(fresh){
       paintAttributesFinal();
       return;
     }
@@ -35,8 +35,18 @@
       box.innerHTML='<div class="empty v459-attr-sync">Attribute werden synchronisiert …</div>';
     }
 
+    /* Logged-in characters must never paint local equipment-derived attributes
+       before the authoritative item bridge is available. account-ready will call
+       this path again after all runtime owners are parsed. */
+    if(typeof window.v7074ItemAuthorityRefresh!=='function'){
+      let hasAccount=false;
+      try{hasAccount=!!((typeof v073User!=='undefined'&&v073User?.id)||window.v073User?.id)}catch(_){}
+      if(!hasAccount)paintAttributesFinal();
+      return;
+    }
+
     if(!attributeSyncPromise){
-      attributeSyncPromise=Promise.resolve(window.v7074ItemAuthorityRefresh(false,false))
+      attributeSyncPromise=Promise.resolve(window.v7074ItemAuthorityRefresh(true,false))
         .catch(e=>{console.warn('V4.67 attribute authority sync',e);return null})
         .finally(()=>{attributeSyncPromise=null});
     }
