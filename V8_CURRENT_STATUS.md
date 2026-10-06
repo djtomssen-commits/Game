@@ -9847,3 +9847,35 @@ Aktueller Release-Status:
   - v343 Countdown/Gate: `d53f7a4a0b7e8f7facf172267442bad66d795836`
   - I18N Launchtexte: `ee03d9838bac5103a0a6c7aa480c2eb1c23fa3b0`
   - index/beta/server1: `7779cc049567fee10c2698998ae45d5415c91033` / `b141ed82f3f1145a807918f0f4264f121aa4b00b` / `f33b6af5d1739c2bb76e3ae5236f7eb0579d703f`
+
+
+### 2026-10-06 – I18N Power-Block 2: statische Beta-UI vollständig zentral abgedeckt
+- Inventur wurde korrigiert, weil der erste Abgleich nur `v8144` berücksichtigt hatte.
+- Neuer zentraler Abgleich über:
+  - `v8143-i18n-core.js`
+  - `v8144-i18n-gameplay.js`
+  - `v8147-i18n-final-polish.js`
+- Korrigierter Ausgangsstand:
+  - 137 deutsche statische UI-Kandidaten in `beta.html`
+  - 16 bereits zentral vorhanden
+  - 121 tatsächlich fehlend
+- Drei große Übersetzungsblöcke in `v8144-i18n-gameplay.js` ergänzt, jeweils für EN / ES / FR / PL / TR:
+  1. Charakter-Grundlayout, Grow-Fallbacks, Quest, Dungeon, PvP
+  2. Gilde, Gildenboss, Gildenkrieg, Hall of Haze, Nebel-Crew, Nebel-Post
+  3. Hinterhof-/Dealertexte, Admin, Account-Löschung, Support, Gildenchat, Moderation
+- Ergebnis der statischen Source-of-Truth-Inventur:
+  - **137 / 137 zentral abgedeckt**
+  - **0 statische deutsche Kandidaten offen**
+- `V8159_UI_INVENTORY.json` auf neuen Stand aktualisiert.
+- Syntaxcheck `v8144-i18n-gameplay.js`: grün.
+- Cache-Bust index/beta/server1: `8161staticcomplete1`.
+- Commits:
+  - Inventur-Abgleich korrigiert: `fe148e0308b748bcd59fd7eb97325ebc4997c628`
+  - Static UI A: `dd6428f09fda9169cc13b2abe6ebf474e323ce61`
+  - Static UI B: `0db646d2a0011de95813cf3f1d8bd765004447c6`
+  - Static UI C: `5701030ed7dd243eee48f7b8d4daafa2652ca011`
+  - Inventur 137/137: `4dce6024b3ee61b95746574e17fef03609f023ee`
+  - index/beta/server1 Cache: `1a92a5ca4e0d591ba8d06873d03837a827f28777` / `ce3e4c2c497129ddbd226526b0cffa33eec2de56` / `4af006acae602f0994a95434c084ff6844322e3a`
+- Nächster Schritt:
+  - Runtime-Audit auf Beta nutzen, um nur noch dynamisch gerenderte deutsche Resttexte zu schließen.
+  - Statische `beta.html`-Grundoberfläche ist jetzt vollständig zentral abgedeckt.
