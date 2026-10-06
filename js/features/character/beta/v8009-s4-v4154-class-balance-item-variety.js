@@ -177,7 +177,13 @@
  }catch(e){console.warn('V4.159 loot variety',e)}
 
  /* Run the established item curve again after the larger Frost pool exists. */
- function normalizeItems(){try{window.v447NormalizeAllItems?.()}catch(e){console.warn('V4.159 item normalize',e)}}
+ function normalizeItems(){
+  try{
+   const authenticated=!!((typeof v073User!=='undefined'&&v073User?.id)||window.v073User?.id);
+   if(authenticated)return false;
+   return window.v447NormalizeAllItems?.()||false;
+  }catch(e){console.warn('V4.159 item normalize',e);return false}
+ }
 
  /* One account-safe refresh of merchant stock so V4.159 variety is visible now,
     instead of waiting for the next daily refresh. */
