@@ -9473,3 +9473,54 @@ Aktueller Release-Status:
   - Quest & Schicht
   - Dungeons / Turm
   - danach Shop/Schmiede/Dealer/PvP/Gilde/Hall/Freunde/Post und alle Popups/Toasts/Guides.
+
+### 2026-10-06 – Mehrsprachigkeit Power-Block 2
+- Zentralen I18N-Core erweitert:
+  - `GrowI18n.register(locale, dict)` ergänzt, damit weitere Sprachpakete sauber nachgeladen werden können.
+  - Commit: `8c6c8ada9c1eb1de056d6df78d77e032ac7eb518`.
+- Neuer presentation-only Gameplay-I18N-Owner:
+  - `js/features/i18n/v8144-i18n-gameplay.js`
+  - keine Gameplay-/State-/RPC-Logik wird verändert;
+  - übersetzt ausschließlich sichtbare Texte innerhalb der sechs Kernseiten dieses Blocks.
+- Erste Kernseiten sprachfähig gemacht:
+  - Startseite
+  - Charakter
+  - Growroom
+  - Quest & Schicht
+  - Dungeons
+  - Anbau-Turm
+- Unterstützte Sprachen weiterhin:
+  - Deutsch (Default + Fallback)
+  - English
+  - Español
+  - Français
+  - Polski
+  - Türkçe
+- Abgedeckte sichtbare Bereiche u. a.:
+  - Startseiten-Begrüßungen / Events / Schnellzugriff
+  - Charakter-Tabs / Ausrüstungstitel / Slot-Grundtexte
+  - Growroom Tabs / Genetik / Aufträge
+  - Quest-Grundaktionen / Belohnung / Elite / Zeit-Samen
+  - Dungeon-Grundaktionen / Versuche / Belohnungen
+  - Turm-Hauptlabels / Recovery / Run / Rangliste / Guide-Grundtexte
+- Sprachwechsel ist reversibel:
+  - Original-DE-Texte werden pro DOM-Knoten/Attribut gespeichert;
+  - DE → andere Sprache → andere Sprache → DE funktioniert ohne Reload.
+  - Commit: `b72837630c3c39e5e5bcc1895c844643ab6d6c0c`.
+- Wiring:
+  - Beta/Stable `index.html` Commit `387c6ded60d204e8dfed4e38f12e8d7ed47809b2`
+  - `server1.html` Commit `1bcdae12c9267c1bf8672355b831d516e3190660`
+- QA nach Block:
+  - DOM Contract Guard Run #567: **SUCCESS**
+  - Synthetic Player Smoke Run #40: **SUCCESS**
+- Nächster Power-Block:
+  - Händler
+  - Harzschmiede
+  - Harz-/Gold-/Rahmen-Dealer
+  - Hinterhof-Dealer
+  - PvP
+  - Gilde
+  - Hall of Haze
+  - Nebel-Crew
+  - Nebel-Post
+  - danach verbleibende Popups / Toasts / Guides / Spezialdialoge.
