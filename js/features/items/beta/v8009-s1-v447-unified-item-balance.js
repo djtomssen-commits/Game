@@ -267,14 +267,16 @@
 
   function stamp(){}
 
-  const changed=all();
-  s.v447ItemCurveMigrated=CURVE_VERSION;
-  try{localStorage.setItem(KEY,JSON.stringify(s))}catch(e){}
-  try{if(typeof render==='function')render()}catch(e){console.error('V4.47 initial item balance render',e)}
+  /* V8.180: persisted inventory/equipment is never normalized during boot,
+     DOMContentLoaded or pageshow. At those moments auth may not be resolved yet,
+     so an authenticated server save must fail closed rather than be treated as offline.
+     Generator wrappers above remain the only automatic curve application. */
   stamp();
-  /* V4.86: canonical item-balance migration is intentionally silent at login/refresh. */
-  document.addEventListener('DOMContentLoaded',()=>{all();stamp()},{once:true});
-  window.addEventListener('pageshow',()=>{all();stamp()},{passive:true});
-  /* V8.169: retired 700/2600/6000 ms item-stat rewrite train.
-     Server-authoritative accounts must never be mutated by delayed client passes. */
+  window.addEventListener('growlegends:account-ready',()=>{
+    try{
+      const u=(typeof v073User!=='undefined'&&v073User)||window.v073User||null;
+      if(!u?.id||u?.is_anonymous)all();
+    }catch(_){}
+    stamp();
+  },{passive:true});
 })();
