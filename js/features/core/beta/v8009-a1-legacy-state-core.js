@@ -1,5 +1,5 @@
 const KEY='growLegendsV020', OLD_KEYS=['growLegendsV016','growLegendsV015','growLegendsV014','growLegendsV013','growLegendsV0121','growLegendsV012','growLegendsV011','growLegendsV010','growLegendsV09','growLegendsV08','growLegendsV07','growLegendsV06','growLegendsV05','growLegendsV04','growLegendsV03','growLegendsV02','growLegendsV01'];
-const defaultState={playerClass:null,classLocked:false,skillPoints:0,classSkills:{},harzTaler:6,shopRefreshes:0,lastShopSeed:0,dungeonPass:{lastFree:0},story:{chapter:1,bossesDefeated:0},level:1,xp:0,gold:120,points:0,energy:100,lastEnergy:Date.now(),attrs:{staerke:5,geschick:5,intelligenz:5,ausdauer:5,glueck:5,growSkill:1},equipment:{head:null,weapon:null,weapon2:null,ring:null,body:null,boots:null,amulet:null},inventory:[],grow:{planted:false,start:0,duration:60000,ready:false,roomLevel:1,plants:[],seeds:{moss:2},equipment:{lamp:0,pots:0},selectedSeed:'moss'},dungeon:{room:0,selected:0,unlocked:[0],completed:[],view:'map'},quests:{offers:[],active:null}};
+const defaultState={playerClass:null,classLocked:false,skillPoints:0,classSkills:{},harzTaler:6,shopRefreshes:0,lastShopSeed:0,dungeonPass:{lastFree:0},story:{chapter:1,bossesDefeated:0},level:1,xp:0,gold:120,points:0,energy:100,lastEnergy:Date.now(),attrs:{staerke:5,geschick:5,intelligenz:5,ausdauer:5,glueck:5},equipment:{head:null,weapon:null,weapon2:null,ring:null,body:null,boots:null,amulet:null},inventory:[],grow:{planted:false,start:0,duration:60000,ready:false,roomLevel:1,plants:[],seeds:{moss:2},equipment:{lamp:0,pots:0},selectedSeed:'moss'},dungeon:{room:0,selected:0,unlocked:[0],completed:[],view:'map'},quests:{offers:[],active:null}};
 let raw=localStorage.getItem(KEY);if(!raw){for(const k of OLD_KEYS){if(localStorage.getItem(k)){raw=localStorage.getItem(k);break}}}
 let s=raw?JSON.parse(raw):structuredClone(defaultState);s.skillPoints??=Math.max(0,Math.floor((s.level-1)/2));s.attrs??={};s.attrs.intelligenz??=5;s.classSkills??={};s.playerClass??=null;s.classLocked??=!!s.playerClass;s.harzTaler??=6;s.shopRefreshes??=0;s.lastShopSeed??=0;s.dungeonPass??={lastFree:0};s.dungeonPass.lastFree??=0;if(s.playerClass&&!s.classLocked)s.classLocked=true;s.story??={chapter:1,bossesDefeated:0};s.story.chapter??=1;s.story.bossesDefeated??=0;s.energy??=100;s.lastEnergy??=Date.now();s.quests??={offers:[],active:null};s.quests.offers??=[];s.quests.active??=null;s.grow??={roomLevel:1,plants:[]};s.grow.roomLevel??=1;s.grow.plants??=[];s.grow.seeds??={moss:2};s.grow.equipment??={lamp:0,pots:0};s.grow.selectedSeed??='moss';if(s.grow.planted&&s.grow.plants.length===0)s.grow.plants.push({start:s.grow.start||Date.now(),duration:s.grow.duration||60000});s.dungeon??={room:0,selected:0,unlocked:[0],completed:[]};s.dungeon.room??=0;s.dungeon.selected??=0;s.dungeon.unlocked??=[0];s.dungeon.completed??=[];s.dungeon.progress??={};if(s.dungeon.progress[s.dungeon.selected]==null){
  s.dungeon.progress[s.dungeon.selected]=(Number(s.dungeon.selected)===0)
@@ -300,13 +300,13 @@ const items=[
 {id:'hoodie',name:'Keller-Hoodie',slot:'body',icon:'🥼',price:110,bonus:{ausdauer:3}},
 {id:'boots',name:'Gummistiefel +1',slot:'boots',icon:'🥾',price:80,bonus:{ausdauer:2}},
 {id:'amulet',name:'Blatt-Amulett',slot:'amulet',icon:'📿',price:140,bonus:{glueck:3}},
-{id:'ring',name:'Ring des grünen Daumens',slot:'ring',icon:'💍',price:160,bonus:{growSkill:2,glueck:1}},
+{id:'ring',name:'Ring des grünen Daumens',slot:'ring',icon:'💍',price:160,bonus:{glueck:1}},
 {id:'mask',name:'Sporenmaske',slot:'head',icon:'🥽',price:220,bonus:{ausdauer:3,geschick:2}},
 {id:'shears',name:'Titan-Schere',slot:'weapon',icon:'✂️',price:260,bonus:{staerke:5,geschick:1}},
 {id:'vest',name:'Labor-Weste',slot:'body',icon:'🦺',price:290,bonus:{ausdauer:5,staerke:1}},
 {id:'sneakers',name:'Hydro-Sneaker',slot:'boots',icon:'👟',price:240,bonus:{geschick:5}},
 {id:'lucky',name:'Harz-Talisman',slot:'amulet',icon:'🧿',price:330,bonus:{glueck:6}},
-{id:'masterring',name:'Ring des Meistergrowers',slot:'ring',icon:'💠',price:380,bonus:{growSkill:4,glueck:3}}
+{id:'masterring',name:'Ring des Meistergrowers',slot:'ring',icon:'💠',price:380,bonus:{glueck:3}}
 ];
 const slotLabels={head:['🧢','Kopf'],weapon:['⚔️','Waffe'],ring:['💍','Ring'],body:['🥼','Körper'],boots:['🥾','Schuhe'],amulet:['📿','Amulett']};
 let battleBusy=false;
@@ -370,7 +370,7 @@ function makeLoot(base,source='normal'){
  const bonus=Object.fromEntries(Object.entries(base.bonus).map(([k,v])=>[k,v+m.mult+levelBoost]));
  return {...base,price:0,name:`${m.label}: ${base.name} [Lv.${s.level}]`,quality:q,rarity:m.cls,dropLevel:s.level,bonus};
 }
-function itemBonus(it){return Object.entries(it?.bonus||{}).map(([k,v])=>`+${v} ${k.replace('staerke','Stärke').replace('geschick','Geschick').replace('ausdauer','Ausdauer').replace('glueck','Glück').replace('growSkill','Grow')}`).join(' · ')}
+function itemBonus(it){return Object.entries(it?.bonus||{}).map(([k,v])=>`+${v} ${k.replace('staerke','Stärke').replace('geschick','Geschick').replace('ausdauer','Ausdauer').replace('glueck','Glück')}`).join(' · ')}
 
 function sellValue(it){
  const rarityMult={common:.35,rare:.55,epic:.8,legendary:1.15};
@@ -443,7 +443,7 @@ function comparison(it){
  if(!old)return '<span class="better">↑ Slot ist leer</span>';
  const keys=new Set([...Object.keys(it.bonus||{}),...Object.keys(old.bonus||{})]);
  let score=0,parts=[];
- keys.forEach(k=>{const d=(it.bonus?.[k]||0)-(old.bonus?.[k]||0);score+=d;if(d)parts.push(`${d>0?'+':''}${d} ${k.replace('staerke','Stärke').replace('geschick','Geschick').replace('ausdauer','Ausdauer').replace('glueck','Glück').replace('growSkill','Grow')}`)});
+ keys.forEach(k=>{const d=(it.bonus?.[k]||0)-(old.bonus?.[k]||0);score+=d;if(d)parts.push(`${d>0?'+':''}${d} ${k.replace('staerke','Stärke').replace('geschick','Geschick').replace('ausdauer','Ausdauer').replace('glueck','Glück')}`)});
  if(!parts.length)return '<span class="same">= Gleiche Werte</span>';
  return `<span class="${score>0?'better':score<0?'worse':'same'}">${parts.join(' · ')}</span>`;
 }
@@ -499,7 +499,9 @@ function renderInventory(){
 
 function render(){regenEnergy();ensureQuests();renderClasses();renderSetPanel();renderClassAvatar();renderSkillTree();document.querySelector('#className')&&(document.querySelector('#className').textContent=classes[s.playerClass]?.name||'Noch nicht gewählt');
  document.querySelector('#level')&&(document.querySelector('#level').textContent=s.level);document.querySelector('#charLevel')&&(document.querySelector('#charLevel').textContent=s.level);document.querySelector('#battleLevel').textContent=s.level;document.querySelector('#xp')&&(document.querySelector('#xp').textContent=`${s.xp}/${xpNeed()}`);document.querySelector('#gold')&&(document.querySelector('#gold').textContent=s.gold);document.querySelector('#shopGold').textContent=s.gold;document.querySelector('#shopHarz')&&(document.querySelector('#shopHarz').textContent=s.harzTaler);document.querySelector('#points')&&(document.querySelector('#points').textContent=s.points);document.querySelector('#energy')&&(document.querySelector('#energy').textContent=`${s.energy}/100`);document.querySelector('#dungeonTicketText')&&(document.querySelector('#dungeonTicketText').textContent=dungeonWaitText());document.querySelector('#power')&&(document.querySelector('#power').textContent=combatPower());document.querySelector('#charPower').textContent=combatPower();document.querySelector('#charHp').textContent=maxHp();document.querySelector('#storyChapter')&&(document.querySelector('#storyChapter').textContent=s.story.chapter);const bp=Math.min(100,(s.story.bossesDefeated/6)*100);document.querySelector('#bossProgressBar')&&(document.querySelector('#bossProgressBar').style.width=bp+'%');document.querySelector('#bossProgressText')&&(document.querySelector('#bossProgressText').textContent=s.story.bossesDefeated?`${s.story.bossesDefeated} Boss${s.story.bossesDefeated===1?'':'e'} besiegt · Kapitel ${s.story.chapter}`:'Noch kein Dungeonboss besiegt.');
- const map=[['staerke','💪 Stärke'],['geschick','🎯 Geschick'],['ausdauer','❤️ Ausdauer'],['glueck','🍀 Glück'],['growSkill','🌱 Grow-Skill']];document.querySelector('#attrs').innerHTML=map.map(([k,n])=>`<div class="attr"><span>${n}: <b>${totalAttr(k)}</b></span><button onclick="incAttr('${k}')" ${s.points<1?'disabled':''}>+</button></div>`).join('');
+ /* V8.163: #attrs is owned exclusively by v4140. The legacy base render
+    must never repaint the retired attribute DOM or resurrect Grow-Skill. */
+ try{window.v4140PaintAttributes?.()}catch(_){};
  Object.keys(slotLabels).forEach(sl=>{const el=document.querySelector('#slot-'+sl),it=s.equipment[sl],[ic,la]=slotLabels[sl];if(!el)return;el.className='slot'+(it?.rarity?(' '+it.rarity):'');const il=it?Math.max(1,Math.round(Number(it.level??it.dropLevel??it.itemLevel??it.reqLevel??it.sourceLevel??s.level)||1)):0;el.innerHTML=`<div class="slot-icon">${it?.icon||ic}</div><div class="slot-label">${la}</div><div class="slot-name">${it?it.name:'Leer'}</div>${it?`<div class="tiny">${itemBonus(it)}</div>${it.mysticSpecial?`<div class="v296-mystic-special">✨ Spezialeffekt: ${v296MysticSpecialText(it)}</div>`:''}${it.setName?`<div class="set-tag">${it.setName}-Set</div>`:''}<div class="slot-actions"><button class="mini-btn" onclick="unequip('${sl}')">Ablegen</button><button class="mini-btn" onclick="sellEquipped('${sl}')">💰 ${sellValue(it)}</button></div><div class="v514-slot-level">Lv.${il}</div>`:''}`});
  renderInventory();
  renderGrow();renderQuests();renderDungeon();renderShop();}
