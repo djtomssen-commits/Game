@@ -807,6 +807,70 @@ const P={
  ]
 };
 
+const RUNTIME_PATTERNS={
+ en:[
+  [/^\+(\d+) Zeit-Samen$/i,(_,n)=>`+${n} Time Seeds`],
+  [/^Neuer Bestand: (.+)$/i,(_,x)=>`New balance: ${x}`],
+  [/^Der Gegenstand liegt jetzt im (.+)\.$/i,(_,x)=>`The item is now in ${x}.`],
+  [/^Samen-Vorrat: (.+)$/i,(_,x)=>`Seed stock: ${x}`],
+  [/^(.+): 1 Samen gekauft\.$/i,(_,x)=>`${x}: 1 seed purchased.`],
+  [/^🌰 Samen gefunden: (.+)$/i,(_,x)=>`🌰 Seed found: ${x}`],
+  [/^(.+) hat den Kampf gewonnen\.$/i,(_,x)=>`${x} won the battle.`],
+  [/^Auffüllungen: (\d+)\/(\d+)$/i,(_,a,b)=>`Refills: ${a}/${b}`],
+  [/^⚠️ (\d+) epische\/legendäre Gegenstände sind ausgewählt\.$/i,(_,n)=>`⚠️ ${n} epic/legendary items selected.`],
+  [/^(\d+) Gold Händler-Rückgewinnung$/i,(_,n)=>`${n} Gold shop recovery`],
+  [/^Stufe (\d+) besiegt · nächste Herausforderung: Stufe (\d+) mit ca\. (.+) HP\.$/i,(_,a,b,hp)=>`Stage ${a} defeated · next challenge: stage ${b} with approx. ${hp} HP.`],
+  [/^Mittwochs-Rangliste · Platz (\d+)$/i,(_,n)=>`Wednesday ranking · Rank ${n}`],
+  [/^Platz (\d+) liegt außerhalb der Top 50\.$/i,(_,n)=>`Rank ${n} is outside the Top 50.`],
+  [/^\+(\d+) Turmblätter\.$/i,(_,n)=>`+${n} Tower Leaves.`],
+  [/^Kaufen · (\d+) G$/i,(_,n)=>`Buy · ${n} G`],
+  [/^🔒 Topf (\d+) Raum-Upgrade nötig$/i,(_,n)=>`🔒 Pot ${n} · room upgrade required`],
+  [/^🌿 Pflege (\d+)\/4$/i,(_,n)=>`🌿 Care ${n}/4`],
+  [/^(.+) Pflegeaktion verfügbar$/i,(_,x)=>`${x} care action available`]
+ ],
+ es:[
+  [/^\+(\d+) Zeit-Samen$/i,(_,n)=>`+${n} Semillas de Tiempo`],[/^Neuer Bestand: (.+)$/i,(_,x)=>`Nuevo saldo: ${x}`],
+  [/^Der Gegenstand liegt jetzt im (.+)\.$/i,(_,x)=>`El objeto está ahora en ${x}.`],[/^Samen-Vorrat: (.+)$/i,(_,x)=>`Stock de semillas: ${x}`],
+  [/^(.+): 1 Samen gekauft\.$/i,(_,x)=>`${x}: 1 semilla comprada.`],[/^🌰 Samen gefunden: (.+)$/i,(_,x)=>`🌰 Semilla encontrada: ${x}`],
+  [/^(.+) hat den Kampf gewonnen\.$/i,(_,x)=>`${x} ganó el combate.`],[/^Auffüllungen: (\d+)\/(\d+)$/i,(_,a,b)=>`Recargas: ${a}/${b}`],
+  [/^⚠️ (\d+) epische\/legendäre Gegenstände sind ausgewählt\.$/i,(_,n)=>`⚠️ ${n} objetos épicos/legendarios seleccionados.`],
+  [/^Stufe (\d+) besiegt · nächste Herausforderung: Stufe (\d+) mit ca\. (.+) HP\.$/i,(_,a,b,hp)=>`Etapa ${a} derrotada · siguiente: etapa ${b} con aprox. ${hp} PV.`],
+  [/^Mittwochs-Rangliste · Platz (\d+)$/i,(_,n)=>`Clasificación del miércoles · Puesto ${n}`],[/^\+(\d+) Turmblätter\.$/i,(_,n)=>`+${n} Hojas de Torre.`],
+  [/^Kaufen · (\d+) G$/i,(_,n)=>`Comprar · ${n} G`],[/^🔒 Topf (\d+) Raum-Upgrade nötig$/i,(_,n)=>`🔒 Maceta ${n} · mejora de sala requerida`],[/^🌿 Pflege (\d+)\/4$/i,(_,n)=>`🌿 Cuidado ${n}/4`]
+ ],
+ fr:[
+  [/^\+(\d+) Zeit-Samen$/i,(_,n)=>`+${n} Graines temporelles`],[/^Neuer Bestand: (.+)$/i,(_,x)=>`Nouveau solde : ${x}`],
+  [/^Der Gegenstand liegt jetzt im (.+)\.$/i,(_,x)=>`L’objet est maintenant dans ${x}.`],[/^Samen-Vorrat: (.+)$/i,(_,x)=>`Stock de graines : ${x}`],
+  [/^(.+): 1 Samen gekauft\.$/i,(_,x)=>`${x} : 1 graine achetée.`],[/^🌰 Samen gefunden: (.+)$/i,(_,x)=>`🌰 Graine trouvée : ${x}`],
+  [/^(.+) hat den Kampf gewonnen\.$/i,(_,x)=>`${x} a gagné le combat.`],[/^Auffüllungen: (\d+)\/(\d+)$/i,(_,a,b)=>`Recharges : ${a}/${b}`],
+  [/^⚠️ (\d+) epische\/legendäre Gegenstände sind ausgewählt\.$/i,(_,n)=>`⚠️ ${n} objets épiques/légendaires sélectionnés.`],
+  [/^Stufe (\d+) besiegt · nächste Herausforderung: Stufe (\d+) mit ca\. (.+) HP\.$/i,(_,a,b,hp)=>`Étape ${a} vaincue · prochaine : étape ${b} avec env. ${hp} PV.`],
+  [/^Mittwochs-Rangliste · Platz (\d+)$/i,(_,n)=>`Classement du mercredi · Rang ${n}`],[/^\+(\d+) Turmblätter\.$/i,(_,n)=>`+${n} Feuilles de Tour.`],
+  [/^Kaufen · (\d+) G$/i,(_,n)=>`Acheter · ${n} G`],[/^🔒 Topf (\d+) Raum-Upgrade nötig$/i,(_,n)=>`🔒 Pot ${n} · amélioration de salle requise`],[/^🌿 Pflege (\d+)\/4$/i,(_,n)=>`🌿 Soin ${n}/4`]
+ ],
+ pl:[
+  [/^\+(\d+) Zeit-Samen$/i,(_,n)=>`+${n} Nasion Czasu`],[/^Neuer Bestand: (.+)$/i,(_,x)=>`Nowy stan: ${x}`],
+  [/^Der Gegenstand liegt jetzt im (.+)\.$/i,(_,x)=>`Przedmiot jest teraz w ${x}.`],[/^Samen-Vorrat: (.+)$/i,(_,x)=>`Stan nasion: ${x}`],
+  [/^(.+): 1 Samen gekauft\.$/i,(_,x)=>`${x}: kupiono 1 nasiono.`],[/^🌰 Samen gefunden: (.+)$/i,(_,x)=>`🌰 Znaleziono nasiono: ${x}`],
+  [/^(.+) hat den Kampf gewonnen\.$/i,(_,x)=>`${x} wygrał walkę.`],[/^Auffüllungen: (\d+)\/(\d+)$/i,(_,a,b)=>`Uzupełnienia: ${a}/${b}`],
+  [/^⚠️ (\d+) epische\/legendäre Gegenstände sind ausgewählt\.$/i,(_,n)=>`⚠️ Wybrano ${n} epickich/legendarnych przedmiotów.`],
+  [/^Stufe (\d+) besiegt · nächste Herausforderung: Stufe (\d+) mit ca\. (.+) HP\.$/i,(_,a,b,hp)=>`Etap ${a} pokonany · następny: etap ${b} z ok. ${hp} HP.`],
+  [/^Mittwochs-Rangliste · Platz (\d+)$/i,(_,n)=>`Ranking środowy · Miejsce ${n}`],[/^\+(\d+) Turmblätter\.$/i,(_,n)=>`+${n} Liści Wieży.`],
+  [/^Kaufen · (\d+) G$/i,(_,n)=>`Kup · ${n} G`],[/^🔒 Topf (\d+) Raum-Upgrade nötig$/i,(_,n)=>`🔒 Doniczka ${n} · wymagane ulepszenie pomieszczenia`],[/^🌿 Pflege (\d+)\/4$/i,(_,n)=>`🌿 Pielęgnacja ${n}/4`]
+ ],
+ tr:[
+  [/^\+(\d+) Zeit-Samen$/i,(_,n)=>`+${n} Zaman Tohumu`],[/^Neuer Bestand: (.+)$/i,(_,x)=>`Yeni bakiye: ${x}`],
+  [/^Der Gegenstand liegt jetzt im (.+)\.$/i,(_,x)=>`Eşya artık ${x} içinde.`],[/^Samen-Vorrat: (.+)$/i,(_,x)=>`Tohum stoku: ${x}`],
+  [/^(.+): 1 Samen gekauft\.$/i,(_,x)=>`${x}: 1 tohum satın alındı.`],[/^🌰 Samen gefunden: (.+)$/i,(_,x)=>`🌰 Tohum bulundu: ${x}`],
+  [/^(.+) hat den Kampf gewonnen\.$/i,(_,x)=>`${x} savaşı kazandı.`],[/^Auffüllungen: (\d+)\/(\d+)$/i,(_,a,b)=>`Dolumlar: ${a}/${b}`],
+  [/^⚠️ (\d+) epische\/legendäre Gegenstände sind ausgewählt\.$/i,(_,n)=>`⚠️ ${n} epik/efsanevi eşya seçildi.`],
+  [/^Stufe (\d+) besiegt · nächste Herausforderung: Stufe (\d+) mit ca\. (.+) HP\.$/i,(_,a,b,hp)=>`Aşama ${a} yenildi · sonraki: yaklaşık ${hp} HP ile aşama ${b}.`],
+  [/^Mittwochs-Rangliste · Platz (\d+)$/i,(_,n)=>`Çarşamba sıralaması · Sıra ${n}`],[/^\+(\d+) Turmblätter\.$/i,(_,n)=>`+${n} Kule Yaprağı.`],
+  [/^Kaufen · (\d+) G$/i,(_,n)=>`Satın al · ${n} G`],[/^🔒 Topf (\d+) Raum-Upgrade nötig$/i,(_,n)=>`🔒 Saksı ${n} · oda yükseltmesi gerekli`],[/^🌿 Pflege (\d+)\/4$/i,(_,n)=>`🌿 Bakım ${n}/4`]
+ ]
+};
+for(const lang of Object.keys(RUNTIME_PATTERNS))P[lang]?.push(...RUNTIME_PATTERNS[lang]);
+
 const OVERLAY_SELECTORS=[
  '#v247DungeonReward','#v211PvpResultCard','#v231QuestReward',
  '.v6211-level-overlay','.v6211-pet-overlay','.v381-modal',
