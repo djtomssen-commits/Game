@@ -9219,3 +9219,23 @@ Aktueller Release-Status:
 - Cache-Key: `8017towerhudsafe1`
 - index Cache: `423a941000bef3e6a442f1debcee1b08a69ecccd`
 - Server1 Cache: `0575049cd64ecbf42156157a8ca6ee55feb91fbf`
+
+
+### 2026-10-06 – Rewarded Ads auf Produktion umgestellt
+- Nutzerfreigabe: Tütchen-Dealer soll ab jetzt echte Werbung statt Google-Testanzeigen verwenden.
+- Android-Repo `djtomssen-commits/Grow-Legends-Android`:
+  - `.github/workflows/build-apk.yml` auf echte Grow-Legends Rewarded-Ad-Unit umgestellt.
+  - Produktions-AdMob-App-ID bleibt `ca-app-pub-8173685824080775~1559500342`.
+  - Rewarded-Ad-Unit jetzt `ca-app-pub-8173685824080775/5115601970`.
+  - native Bridge meldet `testAds=false` / `testAd=false`.
+  - VersionName auf `1.0.8` angehoben; versionCode kommt weiterhin aus dem GitHub-Run.
+  - Commit: `7e33246f05c92a67d7704f79cafcec58bedf12cd`.
+  - Build-Run 57 wurde automatisch gestartet.
+- Supabase:
+  - `public.ad_bag_settings.enabled=true`.
+  - `mode` von `test` auf `production` umgestellt.
+  - SSV-Edge-Function `admob-rewarded-ssv` ist aktiv und prüft Google-Signatur, Ad-Unit, Reward-Item, User-ID, Custom-Data und Transaction-ID, bevor der serverautoritative Reward-RPC ausgeführt wird.
+- Wichtig:
+  - die bereits in Google Play hochgeladene 1.0.7 enthält weiterhin den alten Test-Ad-Build;
+  - echte Werbung kommt erst mit dem neu gebauten 1.0.8-AAB in die installierte App.
+  - Tütchen-Tab im Webclient ist noch Coming Soon und wird im nächsten Block an den produktiven Rewarded-Pfad angebunden und freigeschaltet.
