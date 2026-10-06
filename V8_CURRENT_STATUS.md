@@ -10035,3 +10035,34 @@ Aktueller Release-Status:
   - 10–15 Sekunden beobachten;
   - einmal Inventar öffnen/zurück zu Attribute;
   - wenn Zahlen weiterhin springen, als Nächstes die tatsächlichen Werte-Snapshots von `v4140AttributeDiagnostics()` vor/nach dem Sprung mit Equipment-Revision aus `v7074ItemAuthorityDiagnostics()` vergleichen.
+
+
+### 2026-10-06 – Attribute direkt korrekt: kein lokaler First Paint mehr
+- Nutzer meldete nach V8.166 weiterhin folgenden Ablauf:
+  - zuerst falsche/lokale Attributwerte sichtbar;
+  - danach „Attribute werden synchronisiert …“;
+  - danach andere/korrekte Werte.
+- Ziel: Attribute dürfen ausschließlich mit finalen serverautoritativen Equipment-Werten sichtbar werden.
+- Direkt im kanonischen Character-Hub `v8009-s2-v459-character-hub.js` geändert:
+  - Attribute-Tab wird nicht mehr sichtbar aktiviert, solange Item-Authority nicht frisch ist;
+  - der bisherige sichtbare Text „Attribute werden synchronisiert …“ entfällt;
+  - während eines ausstehenden Syncs bleibt der aktuell sichtbare Tab unverändert;
+  - erst nach erfolgreichem `v7074ItemAuthorityRefresh(true,false)` wird der Attribute-Tab aktiviert und genau einmal final über v4140/v537 gemalt;
+  - bei bereits frischer Authority öffnet Attribute sofort.
+- Zusätzlich Item-Authority vorgezogen:
+  - `v8009-s4-v7074-item-enforce-bridge.js` startet den Boot-Sync bei `growlegends:account-ready` jetzt sofort statt mit 550-ms-Verzögerung;
+  - v459 stößt auf account-ready zusätzlich einen stillen Prewarm an.
+- Ergebnisziel:
+  - keine lokalen/falschen Attributwerte;
+  - kein sichtbarer Synchronisierungs-Zwischenzustand;
+  - beim Öffnen direkt finale Serverwerte.
+- Syntaxcheck:
+  - v459: grün
+  - v7074: grün
+- Cache-Bust index/beta/server1: `8167attrdirect1`.
+- Commits:
+  - v459: `895c8f46b2f80e577d0b0dd639ef85a7278b5bca`
+  - v7074: `94d2771654c4d79cda39a028807d4a612fd19812`
+  - index: `05aa37c3de5b2b12eba492f3e92377a102553ad2`
+  - beta: `29de96dd00cb5b4913237309443f3932a811e3aa`
+  - server1: `bd7b70e8670aa73c0ddca756ddc7c873b5bc0ab6`
