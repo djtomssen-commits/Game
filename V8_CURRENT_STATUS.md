@@ -10245,3 +10245,35 @@ Aktueller Release-Status:
   - index: `21005fa8bc4ce11d615a8289557d03d9dde32564`
   - beta: `fff7679176c25692fddc0c8a3a54a28cd37498f9`
   - server1: `8e44f694ab8b9406d639cad8a0dae7506c958da0`
+
+
+### 2026-10-06 – Videoanalyse: nur Hauptattribut springt 494 → 555; periodischer Item-Refresh als sichtbarer Trigger entfernt
+- Neues Video `1000099808.mp4` frameweise geprüft:
+  - Stärke bleibt zunächst stabil bei **494**.
+  - Nach ~50 s springt Stärke einmal auf **555**.
+  - Geschick **5**, Intelligenz **5**, Ausdauer **192**, Glück **87** bleiben unverändert.
+  - Damit ist der Rest der Attribut-State-Kette stabil; betroffen ist ausschließlich das Hauptattribut.
+- Serverzustand des betroffenen Beta-Accounts geprüft:
+  - mehrere ausgerüstete Mystik-Items besitzen `mainPct: +5 % Hauptattribut`;
+  - zusätzlich existieren `primaryPct`-Verzauberungen (+3 % / +7 %).
+  - Der Unterschied ist deshalb eindeutig im Bereich Hauptattribut-Prozentlogik einzuordnen, nicht als allgemeiner Build-/Equipment-Wechsel.
+- Sichtbarer Trigger im Client:
+  - `v7074-item-enforce-bridge` führte alle 60 Sekunden `refresh(true,true)` aus.
+  - Dadurch wurde bei jedem Hintergrundabgleich der Character-/Attribute-Owner erneut gepaintet, selbst wenn das Equipment identisch war.
+- Direkter Authority-Fix in `v8009-s4-v7074-item-enforce-bridge.js`:
+  - Equipment-Fingerprint eingeführt (Slot + Item-ID + Bonus + Gem + Enchant + Mystic-Special + Set-ID).
+  - `applyServer()` vergleicht Equipment vor/nach Serverantwort.
+  - Attribute werden nur noch neu gepaintet, wenn sich der Equipment-Fingerprint wirklich geändert hat.
+  - 60-s-Hintergrundrefresh jetzt `refresh(true,false)` statt sichtbarem Paint.
+  - Foreground-Refresh nach >45 s ebenfalls silent.
+  - echte Itemaktionen bleiben weiterhin sofort sichtbar.
+- Kein Maskieren eines Werts und kein zusätzlicher Observer/Renderlayer.
+- Syntaxcheck v7074: grün.
+- Cache-Bust index/beta/server1: `8174attrtimer1`.
+- Commits:
+  - v7074: `d9c2b5724afb08841b81e04619ad06d9ad890926`
+  - index: `c17c935275fe494d6cb0dffa390039182cd33010`
+  - beta: `e130ad186491eafabe9dcfded6088af9ce4d0808`
+  - server1: `f1218cf5fa7d59a9e0677d20221d7877bb3597ec`
+- Nächster Prüfpunkt falls weiterhin ein Hauptattribut-Sprung sichtbar ist:
+  - zwei konkurrierende Hauptattribut-Semantiken zusammenführen: rohes `totalAttr(primary)` vs effektive `primaryPct/mainPct`-Berechnung.
