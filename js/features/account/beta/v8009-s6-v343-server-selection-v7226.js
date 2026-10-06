@@ -2,8 +2,8 @@
   const V343_SERVER_KEY='growLegendsSelectedServer';
   const V343_RELEASE_CHANNEL=String(window.GROW_RELEASE_CHANNEL||'stable');
   const V343_EARLY_EMAIL='tomssen5@gmail.com';
-  /* Server 1 public launch: 2026-10-06 20:00 Europe/Berlin = 18:00 UTC. */
-  const V343_SERVER1_OPENS_AT=Date.parse('2026-10-06T18:00:00Z');
+  /* Server 1 public launch: 2026-10-07 16:00 Europe/Berlin = 14:00 UTC. */
+  const V343_SERVER1_OPENS_AT=Date.parse('2026-10-07T14:00:00Z');
   const server1Open=()=>Date.now()>=V343_SERVER1_OPENS_AT;
   const defaultServer=()=>server1Open()?'server1':'beta';
 
@@ -86,10 +86,10 @@
         </button>
         <button type="button" class="v343-server ${selected==='server1'?'active':''} ${live?'recommended':'preview'}" data-v343-server="server1">
           <div class="v343-server-name">${live?'🌍':'🔒'} Server 1</div>
-          <div class="v343-server-meta">${live?`<span class="v343-online">● ${T('server.online',null,'ONLINE')}</span><span>${T('server.live',null,'Live-Server')}</span>`:`<span class="v343-preview">${T('server.startIn',{time},'START IN '+time)}</span><span>${T('server.opensToday',null,'Heute · 20:00 Uhr')}</span>`}</div>
+          <div class="v343-server-meta">${live?`<span class="v343-online">● ${T('server.online',null,'ONLINE')}</span><span>${T('server.live',null,'Live-Server')}</span>`:`<span class="v343-preview">${T('server.startIn',{time},'START IN '+time)}</span><span>${T('server.opensToday',null,'Morgen · 16:00 Uhr')}</span>`}</div>
         </button>
       </div>
-      <div class="v343-server-note">${live?T('server.noteOpen',null,'Server 1 ist jetzt für alle Spieler geöffnet. Beta erhält neue Updates weiterhin zuerst.'):T('server.noteCountdown',{time},`Server 1 öffnet heute automatisch um 20:00 Uhr für alle. Countdown: ${time}.`)}</div>`;
+      <div class="v343-server-note">${live?T('server.noteOpen',null,'Server 1 ist jetzt für alle Spieler geöffnet. Beta erhält neue Updates weiterhin zuerst.'):T('server.noteCountdown',{time},`Server 1 öffnet morgen automatisch um 16:00 Uhr für alle. Countdown: ${time}.`)}</div>`;
   }
 
   function v343RenderServerSelect(force){
@@ -112,7 +112,7 @@
       const selected=v343Selected();
       if(selected==='server1'&&!server1Open()){
         const mail=String(document.querySelector('#v075Email')?.value||'').trim().toLowerCase();
-        if(mail!==V343_EARLY_EMAIL){const time=v343Countdown();try{v063Toast?.(T('server.closedTitle',null,'Server 1 noch geschlossen'),'warn',T('server.closedText',{time},`Server 1 öffnet heute um 20:00 Uhr. Noch ${time}.`))}catch(_){};return false}
+        if(mail!==V343_EARLY_EMAIL){const time=v343Countdown();try{v063Toast?.(T('server.closedTitle',null,'Server 1 noch geschlossen'),'warn',T('server.closedText',{time},`Server 1 öffnet morgen um 16:00 Uhr. Noch ${time}.`))}catch(_){};return false}
       }
       window.v343CurrentServer=selected;v343StampState();v343ResetDb();
       return await baseEmail.apply(this,arguments);
@@ -125,7 +125,7 @@
     v200GoogleAuth=async function(){
       const selected=v343Selected();
       if(selected==='server1'&&!server1Open()){
-        const time=v343Countdown();try{v063Toast?.(T('server.earlyTitle',null,'Server 1 · Vorabzugang'),'info',T('server.earlyText',{time},`Server 1 öffnet heute um 20:00 Uhr für alle. Noch ${time}.`))}catch(_){}
+        const time=v343Countdown();try{v063Toast?.(T('server.earlyTitle',null,'Server 1 · Vorabzugang'),'info',T('server.earlyText',{time},`Server 1 öffnet morgen um 16:00 Uhr für alle. Noch ${time}.`))}catch(_){}
       }
       window.v343CurrentServer=selected;
       sessionStorage.setItem('v343OAuthServer',selected);
