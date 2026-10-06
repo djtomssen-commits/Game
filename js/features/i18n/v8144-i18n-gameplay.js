@@ -453,6 +453,110 @@ const STATIC_UI_B={
 };
 for(const lang of Object.keys(STATIC_UI_B))Object.assign(M[lang]||(M[lang]={}),STATIC_UI_B[lang]);
 
+const STATIC_UI_C={
+ en:{
+  'Harz-Automat ist geöffnet. Tütchen & Werbe-Belohnungen folgen später.':'The Resin Machine is open. Pouches & ad rewards will follow later.',
+  'Dealer bereitet dein Tütchen vor …':'Dealer is preparing your pouch …','Fortschritt und mögliche Belohnungen werden vom Server geladen.':'Progress and possible rewards are loaded from the server.',
+  'Events, Update-News und Live-Inhalte verwalten.':'Manage events, update news and live content.','PRÜFUNG':'CHECK','Kein Admin-Zugriff.':'No admin access.',
+  'Aktivieren, deaktivieren und Zeiträume festlegen.':'Enable, disable and set time ranges.','Event speichern':'Save event','Neuigkeiten auf der Welt-Startseite veröffentlichen.':'Publish news on the world home screen.','News veröffentlichen':'Publish news',
+  '🟢 PREMIUM-WÄHRUNG':'🟢 PREMIUM CURRENCY','Größere Pakete enthalten einen besseren Preis pro Harz-Taler.':'Larger packages offer a better price per Resin Token.',
+  'Käufe werden erst nach bestätigter Google-Play-Zahlung und serverseitiger Prüfung gutgeschrieben.':'Purchases are credited only after confirmed Google Play payment and server verification.',
+  'Account wird geprüft …':'Checking account …','Kampf wird vorbereitet...':'Preparing battle...',
+  '🗑️ Account endgültig löschen':'🗑️ Permanently delete account','Dein Grow-Legends-Account, Cloud-Spielstand, öffentliches Profil und zugehörige Online-Daten werden dauerhaft gelöscht.':'Your Grow Legends account, cloud save, public profile and related online data will be permanently deleted.',
+  'Diese Aktion kann nicht rückgängig gemacht werden. Gib zum Bestätigen exakt':'This action cannot be undone. To confirm, enter exactly','ein.':'to confirm.',
+  'Account endgültig löschen':'Permanently delete account','Animation überspringen':'Skip animation',
+  'Bug, Idee oder sonstiger Hinweis':'Bug, idea or other feedback','Meldest du einen echten Bug oder einen hilfreichen Verbesserungsvorschlag, kannst du als Dankeschön':'If you report a real bug or a helpful improvement suggestion, you may receive',
+  'erhalten. Spam wird nicht belohnt.':'as a thank-you. Spam is not rewarded.','Noch nicht geladen.':'Not loaded yet.','Nur für Mitglieder deiner Gilde':'Guild members only',
+  'SPIELER-AKTIONEN':'PLAYER ACTIONS','🚩 Spieler melden':'🚩 Report player','🚫 Spieler blockieren':'🚫 Block player','Meldung an die Grow-Legends-Moderation senden.':'Send a report to Grow Legends moderation.',
+  'Belästigung':'Harassment','Zusätzliche Information (optional)':'Additional information (optional)','🚫 Blockierte Spieler':'🚫 Blocked players',
+  'Nachrichten blockierter Spieler werden im Gildenchat nicht angezeigt.':'Messages from blocked players are hidden in guild chat.',
+  'Erstelle zuerst deinen Account. Danach geht es direkt weiter zu Charaktername und Klasse.':'Create your account first. Then continue directly to character name and class.',
+  'Account erstellen & Charakter wählen':'Create account & choose character','Schon registriert? Zurück zur Anmeldung':'Already registered? Back to sign in',
+  'Dein Charakter wird erst nach erfolgreicher Account-Anmeldung erstellt und anschließend accountgebunden gespeichert.':'Your character is created only after successful account sign-in and is then saved to that account.'
+ },
+ es:{
+  'Harz-Automat ist geöffnet. Tütchen & Werbe-Belohnungen folgen später.':'La Máquina de Resina está abierta. Los paquetes y recompensas publicitarias llegarán después.',
+  'Dealer bereitet dein Tütchen vor …':'El dealer prepara tu paquete …','Fortschritt und mögliche Belohnungen werden vom Server geladen.':'El progreso y las posibles recompensas se cargan desde el servidor.',
+  'Events, Update-News und Live-Inhalte verwalten.':'Gestionar eventos, noticias de actualización y contenido en vivo.','PRÜFUNG':'COMPROBACIÓN','Kein Admin-Zugriff.':'Sin acceso de administrador.',
+  'Aktivieren, deaktivieren und Zeiträume festlegen.':'Activar, desactivar y definir periodos.','Event speichern':'Guardar evento','Neuigkeiten auf der Welt-Startseite veröffentlichen.':'Publicar noticias en la página principal del mundo.','News veröffentlichen':'Publicar noticia',
+  '🟢 PREMIUM-WÄHRUNG':'🟢 MONEDA PRÉMIUM','Größere Pakete enthalten einen besseren Preis pro Harz-Taler.':'Los paquetes grandes ofrecen mejor precio por ficha de resina.',
+  'Käufe werden erst nach bestätigter Google-Play-Zahlung und serverseitiger Prüfung gutgeschrieben.':'Las compras se acreditan solo tras confirmar el pago de Google Play y verificarlo en el servidor.',
+  'Account wird geprüft …':'Comprobando cuenta …','Kampf wird vorbereitet...':'Preparando combate...',
+  '🗑️ Account endgültig löschen':'🗑️ Eliminar cuenta permanentemente','Dein Grow-Legends-Account, Cloud-Spielstand, öffentliches Profil und zugehörige Online-Daten werden dauerhaft gelöscht.':'Tu cuenta de Grow Legends, partida en la nube, perfil público y datos online asociados se eliminarán permanentemente.',
+  'Diese Aktion kann nicht rückgängig gemacht werden. Gib zum Bestätigen exakt':'Esta acción no se puede deshacer. Para confirmar, escribe exactamente','ein.':'para confirmar.',
+  'Account endgültig löschen':'Eliminar cuenta permanentemente','Animation überspringen':'Saltar animación',
+  'Bug, Idee oder sonstiger Hinweis':'Bug, idea u otro comentario','Meldest du einen echten Bug oder einen hilfreichen Verbesserungsvorschlag, kannst du als Dankeschön':'Si informas de un bug real o una mejora útil, puedes recibir',
+  'erhalten. Spam wird nicht belohnt.':'como agradecimiento. El spam no se recompensa.','Noch nicht geladen.':'Aún no cargado.','Nur für Mitglieder deiner Gilde':'Solo para miembros del gremio',
+  'SPIELER-AKTIONEN':'ACCIONES DE JUGADOR','🚩 Spieler melden':'🚩 Reportar jugador','🚫 Spieler blockieren':'🚫 Bloquear jugador','Meldung an die Grow-Legends-Moderation senden.':'Enviar un reporte a la moderación de Grow Legends.',
+  'Belästigung':'Acoso','Zusätzliche Information (optional)':'Información adicional (opcional)','🚫 Blockierte Spieler':'🚫 Jugadores bloqueados',
+  'Nachrichten blockierter Spieler werden im Gildenchat nicht angezeigt.':'Los mensajes de jugadores bloqueados no se muestran en el chat del gremio.',
+  'Erstelle zuerst deinen Account. Danach geht es direkt weiter zu Charaktername und Klasse.':'Primero crea tu cuenta. Después irás directamente al nombre y la clase del personaje.',
+  'Account erstellen & Charakter wählen':'Crear cuenta y elegir personaje','Schon registriert? Zurück zur Anmeldung':'¿Ya estás registrado? Volver al inicio de sesión',
+  'Dein Charakter wird erst nach erfolgreicher Account-Anmeldung erstellt und anschließend accountgebunden gespeichert.':'Tu personaje se crea solo tras iniciar sesión correctamente y luego queda guardado en esa cuenta.'
+ },
+ fr:{
+  'Harz-Automat ist geöffnet. Tütchen & Werbe-Belohnungen folgen später.':'La Machine à résine est ouverte. Les sachets et récompenses publicitaires arriveront plus tard.',
+  'Dealer bereitet dein Tütchen vor …':'Le dealer prépare ton sachet …','Fortschritt und mögliche Belohnungen werden vom Server geladen.':'La progression et les récompenses possibles sont chargées depuis le serveur.',
+  'Events, Update-News und Live-Inhalte verwalten.':'Gérer les événements, actualités de mise à jour et contenus en direct.','PRÜFUNG':'VÉRIFICATION','Kein Admin-Zugriff.':'Aucun accès administrateur.',
+  'Aktivieren, deaktivieren und Zeiträume festlegen.':'Activer, désactiver et définir les périodes.','Event speichern':'Enregistrer l’événement','Neuigkeiten auf der Welt-Startseite veröffentlichen.':'Publier des actualités sur l’accueil du monde.','News veröffentlichen':'Publier l’actualité',
+  '🟢 PREMIUM-WÄHRUNG':'🟢 MONNAIE PREMIUM','Größere Pakete enthalten einen besseren Preis pro Harz-Taler.':'Les grands packs offrent un meilleur prix par jeton de résine.',
+  'Käufe werden erst nach bestätigter Google-Play-Zahlung und serverseitiger Prüfung gutgeschrieben.':'Les achats ne sont crédités qu’après confirmation du paiement Google Play et vérification serveur.',
+  'Account wird geprüft …':'Vérification du compte …','Kampf wird vorbereitet...':'Préparation du combat...',
+  '🗑️ Account endgültig löschen':'🗑️ Supprimer définitivement le compte','Dein Grow-Legends-Account, Cloud-Spielstand, öffentliches Profil und zugehörige Online-Daten werden dauerhaft gelöscht.':'Ton compte Grow Legends, sauvegarde cloud, profil public et données en ligne associées seront supprimés définitivement.',
+  'Diese Aktion kann nicht rückgängig gemacht werden. Gib zum Bestätigen exakt':'Cette action est irréversible. Pour confirmer, saisis exactement','ein.':'pour confirmer.',
+  'Account endgültig löschen':'Supprimer définitivement le compte','Animation überspringen':'Passer l’animation',
+  'Bug, Idee oder sonstiger Hinweis':'Bug, idée ou autre remarque','Meldest du einen echten Bug oder einen hilfreichen Verbesserungsvorschlag, kannst du als Dankeschön':'Si tu signales un vrai bug ou une amélioration utile, tu peux recevoir',
+  'erhalten. Spam wird nicht belohnt.':'en remerciement. Le spam n’est pas récompensé.','Noch nicht geladen.':'Pas encore chargé.','Nur für Mitglieder deiner Gilde':'Réservé aux membres de ta guilde',
+  'SPIELER-AKTIONEN':'ACTIONS JOUEUR','🚩 Spieler melden':'🚩 Signaler le joueur','🚫 Spieler blockieren':'🚫 Bloquer le joueur','Meldung an die Grow-Legends-Moderation senden.':'Envoyer un signalement à la modération Grow Legends.',
+  'Belästigung':'Harcèlement','Zusätzliche Information (optional)':'Informations supplémentaires (facultatif)','🚫 Blockierte Spieler':'🚫 Joueurs bloqués',
+  'Nachrichten blockierter Spieler werden im Gildenchat nicht angezeigt.':'Les messages des joueurs bloqués ne sont pas affichés dans le chat de guilde.',
+  'Erstelle zuerst deinen Account. Danach geht es direkt weiter zu Charaktername und Klasse.':'Crée d’abord ton compte. Ensuite, tu passes directement au nom et à la classe du personnage.',
+  'Account erstellen & Charakter wählen':'Créer le compte et choisir le personnage','Schon registriert? Zurück zur Anmeldung':'Déjà inscrit ? Retour à la connexion',
+  'Dein Charakter wird erst nach erfolgreicher Account-Anmeldung erstellt und anschließend accountgebunden gespeichert.':'Ton personnage n’est créé qu’après une connexion réussie puis est sauvegardé sur ce compte.'
+ },
+ pl:{
+  'Harz-Automat ist geöffnet. Tütchen & Werbe-Belohnungen folgen später.':'Automat żywicy jest otwarty. Saszetki i nagrody reklamowe pojawią się później.',
+  'Dealer bereitet dein Tütchen vor …':'Dealer przygotowuje twoją saszetkę …','Fortschritt und mögliche Belohnungen werden vom Server geladen.':'Postęp i możliwe nagrody są ładowane z serwera.',
+  'Events, Update-News und Live-Inhalte verwalten.':'Zarządzaj wydarzeniami, aktualnościami i treścią na żywo.','PRÜFUNG':'KONTROLA','Kein Admin-Zugriff.':'Brak dostępu administratora.',
+  'Aktivieren, deaktivieren und Zeiträume festlegen.':'Włączaj, wyłączaj i ustawiaj okresy.','Event speichern':'Zapisz wydarzenie','Neuigkeiten auf der Welt-Startseite veröffentlichen.':'Publikuj wiadomości na stronie głównej świata.','News veröffentlichen':'Opublikuj wiadomość',
+  '🟢 PREMIUM-WÄHRUNG':'🟢 WALUTA PREMIUM','Größere Pakete enthalten einen besseren Preis pro Harz-Taler.':'Większe pakiety mają lepszą cenę za żeton żywicy.',
+  'Käufe werden erst nach bestätigter Google-Play-Zahlung und serverseitiger Prüfung gutgeschrieben.':'Zakupy są przyznawane dopiero po potwierdzeniu płatności Google Play i weryfikacji serwera.',
+  'Account wird geprüft …':'Sprawdzanie konta …','Kampf wird vorbereitet...':'Przygotowanie walki...',
+  '🗑️ Account endgültig löschen':'🗑️ Usuń konto na stałe','Dein Grow-Legends-Account, Cloud-Spielstand, öffentliches Profil und zugehörige Online-Daten werden dauerhaft gelöscht.':'Twoje konto Grow Legends, zapis w chmurze, profil publiczny i powiązane dane online zostaną trwale usunięte.',
+  'Diese Aktion kann nicht rückgängig gemacht werden. Gib zum Bestätigen exakt':'Tej operacji nie można cofnąć. Aby potwierdzić, wpisz dokładnie','ein.':'aby potwierdzić.',
+  'Account endgültig löschen':'Usuń konto na stałe','Animation überspringen':'Pomiń animację',
+  'Bug, Idee oder sonstiger Hinweis':'Błąd, pomysł lub inna uwaga','Meldest du einen echten Bug oder einen hilfreichen Verbesserungsvorschlag, kannst du als Dankeschön':'Jeśli zgłosisz prawdziwy błąd lub pomocną sugestię, możesz otrzymać',
+  'erhalten. Spam wird nicht belohnt.':'w podziękowaniu. Spam nie jest nagradzany.','Noch nicht geladen.':'Jeszcze nie załadowano.','Nur für Mitglieder deiner Gilde':'Tylko dla członków gildii',
+  'SPIELER-AKTIONEN':'AKCJE GRACZA','🚩 Spieler melden':'🚩 Zgłoś gracza','🚫 Spieler blockieren':'🚫 Zablokuj gracza','Meldung an die Grow-Legends-Moderation senden.':'Wyślij zgłoszenie do moderacji Grow Legends.',
+  'Belästigung':'Nękanie','Zusätzliche Information (optional)':'Dodatkowe informacje (opcjonalnie)','🚫 Blockierte Spieler':'🚫 Zablokowani gracze',
+  'Nachrichten blockierter Spieler werden im Gildenchat nicht angezeigt.':'Wiadomości zablokowanych graczy nie są wyświetlane na czacie gildii.',
+  'Erstelle zuerst deinen Account. Danach geht es direkt weiter zu Charaktername und Klasse.':'Najpierw utwórz konto. Potem przejdziesz bezpośrednio do nazwy i klasy postaci.',
+  'Account erstellen & Charakter wählen':'Utwórz konto i wybierz postać','Schon registriert? Zurück zur Anmeldung':'Masz już konto? Wróć do logowania',
+  'Dein Charakter wird erst nach erfolgreicher Account-Anmeldung erstellt und anschließend accountgebunden gespeichert.':'Postać zostanie utworzona dopiero po poprawnym zalogowaniu i będzie zapisana na tym koncie.'
+ },
+ tr:{
+  'Harz-Automat ist geöffnet. Tütchen & Werbe-Belohnungen folgen später.':'Reçine Makinesi açık. Paketler ve reklam ödülleri daha sonra gelecek.',
+  'Dealer bereitet dein Tütchen vor …':'Satıcı paketini hazırlıyor …','Fortschritt und mögliche Belohnungen werden vom Server geladen.':'İlerleme ve olası ödüller sunucudan yükleniyor.',
+  'Events, Update-News und Live-Inhalte verwalten.':'Etkinlikleri, güncelleme haberlerini ve canlı içeriği yönet.','PRÜFUNG':'KONTROL','Kein Admin-Zugriff.':'Yönetici erişimi yok.',
+  'Aktivieren, deaktivieren und Zeiträume festlegen.':'Etkinleştir, devre dışı bırak ve zaman aralıklarını belirle.','Event speichern':'Etkinliği kaydet','Neuigkeiten auf der Welt-Startseite veröffentlichen.':'Dünya ana sayfasında haber yayınla.','News veröffentlichen':'Haberi yayınla',
+  '🟢 PREMIUM-WÄHRUNG':'🟢 PREMIUM PARA BİRİMİ','Größere Pakete enthalten einen besseren Preis pro Harz-Taler.':'Daha büyük paketler Reçine Jetonu başına daha iyi fiyat sunar.',
+  'Käufe werden erst nach bestätigter Google-Play-Zahlung und serverseitiger Prüfung gutgeschrieben.':'Satın alımlar yalnızca Google Play ödemesi onaylandıktan ve sunucuda doğrulandıktan sonra hesaba geçer.',
+  'Account wird geprüft …':'Hesap kontrol ediliyor …','Kampf wird vorbereitet...':'Savaş hazırlanıyor...',
+  '🗑️ Account endgültig löschen':'🗑️ Hesabı kalıcı olarak sil','Dein Grow-Legends-Account, Cloud-Spielstand, öffentliches Profil und zugehörige Online-Daten werden dauerhaft gelöscht.':'Grow Legends hesabın, bulut kaydın, herkese açık profilin ve ilişkili çevrimiçi verilerin kalıcı olarak silinecek.',
+  'Diese Aktion kann nicht rückgängig gemacht werden. Gib zum Bestätigen exakt':'Bu işlem geri alınamaz. Onaylamak için tam olarak şunu yaz','ein.':'ve onayla.',
+  'Account endgültig löschen':'Hesabı kalıcı olarak sil','Animation überspringen':'Animasyonu atla',
+  'Bug, Idee oder sonstiger Hinweis':'Hata, fikir veya başka geri bildirim','Meldest du einen echten Bug oder einen hilfreichen Verbesserungsvorschlag, kannst du als Dankeschön':'Gerçek bir hata veya yararlı geliştirme önerisi bildirirsen teşekkür olarak',
+  'erhalten. Spam wird nicht belohnt.':'alabilirsin. Spam ödüllendirilmez.','Noch nicht geladen.':'Henüz yüklenmedi.','Nur für Mitglieder deiner Gilde':'Yalnızca lonca üyeleri için',
+  'SPIELER-AKTIONEN':'OYUNCU İŞLEMLERİ','🚩 Spieler melden':'🚩 Oyuncuyu bildir','🚫 Spieler blockieren':'🚫 Oyuncuyu engelle','Meldung an die Grow-Legends-Moderation senden.':'Grow Legends moderasyonuna rapor gönder.',
+  'Belästigung':'Taciz','Zusätzliche Information (optional)':'Ek bilgi (isteğe bağlı)','🚫 Blockierte Spieler':'🚫 Engellenen oyuncular',
+  'Nachrichten blockierter Spieler werden im Gildenchat nicht angezeigt.':'Engellenen oyuncuların mesajları lonca sohbetinde gösterilmez.',
+  'Erstelle zuerst deinen Account. Danach geht es direkt weiter zu Charaktername und Klasse.':'Önce hesabını oluştur. Ardından doğrudan karakter adı ve sınıf seçimine geçersin.',
+  'Account erstellen & Charakter wählen':'Hesap oluştur ve karakter seç','Schon registriert? Zurück zur Anmeldung':'Zaten kayıtlı mısın? Girişe dön',
+  'Dein Charakter wird erst nach erfolgreicher Account-Anmeldung erstellt und anschließend accountgebunden gespeichert.':'Karakterin yalnızca başarılı girişten sonra oluşturulur ve hesaba bağlı olarak kaydedilir.'
+ }
+};
+for(const lang of Object.keys(STATIC_UI_C))Object.assign(M[lang]||(M[lang]={}),STATIC_UI_C[lang]);
+
 /* Dynamic text patterns. Exact dictionaries cannot cover values embedded into
    labels; these preserve numbers/names while translating the surrounding UI. */
 const P={
