@@ -23,14 +23,30 @@
       overlay.appendChild(bar);
     }
     {
-      const langs=window.GrowI18n?.languages?.()||[{id:'de',short:'DE',flag:'🇩🇪',label:'Deutsch'}];
-      const active=window.GrowI18n?.getLanguage?.()||'de';
+      const fallbackLangs=[
+        {id:'de',short:'DE',flag:'🇩🇪',label:'Deutsch'},
+        {id:'en',short:'EN',flag:'🇬🇧',label:'English'},
+        {id:'es',short:'ES',flag:'🇪🇸',label:'Español'},
+        {id:'fr',short:'FR',flag:'🇫🇷',label:'Français'},
+        {id:'pl',short:'PL',flag:'🇵🇱',label:'Polski'},
+        {id:'tr',short:'TR',flag:'🇹🇷',label:'Türkçe'}
+      ];
+      const fromCore=window.GrowI18n?.languages?.();
+      const langs=Array.isArray(fromCore)&&fromCore.length===6?fromCore:fallbackLangs;
+      let active=window.GrowI18n?.getLanguage?.()||'de';
+      try{if(!window.GrowI18n)active=localStorage.getItem('growLegendsLanguage')||'de'}catch(_){}
+      if(!langs.some(x=>x.id===active))active='de';
       let sel=bar.querySelector('#v8143LanguageSelect');
       const needsRebuild=!sel||sel.options.length!==langs.length||langs.some((x,i)=>sel.options[i]?.value!==x.id);
       if(needsRebuild){
         bar.innerHTML='<label class="v347-lang" for="v8143LanguageSelect">🌐 <span class="v347-lang-current">'+String((langs.find(x=>x.id===active)||langs[0])?.short||'DE')+'</span><select id="v8143LanguageSelect" aria-label="Sprache">'+langs.map(x=>'<option value="'+x.id+'" '+(x.id===active?'selected':'')+'>'+x.flag+' '+x.label+'</option>').join('')+'</select></label><div class="v347-version">V4.02 STABLE</div>';
         sel=bar.querySelector('#v8143LanguageSelect');
-        sel?.addEventListener('change',e=>window.GrowI18n?.setLanguage?.(e.target.value));
+        sel?.addEventListener('change',e=>{
+          const value=String(e.target.value||'de');
+          if(window.GrowI18n?.setLanguage){window.GrowI18n.setLanguage(value);return}
+          try{localStorage.setItem('growLegendsLanguage',value)}catch(_){}
+          try{location.reload()}catch(_){}
+        });
       }else{
         sel.value=active;
         const short=bar.querySelector('.v347-lang-current');
