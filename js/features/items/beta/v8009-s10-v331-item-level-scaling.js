@@ -59,10 +59,9 @@
     return old!==JSON.stringify(it.bonus);
   }
 
-  /* Rebalance existing inventory + equipped items, not only future drops. */
-  let changed=false;
-  (s.inventory||[]).forEach(it=>{if(v331Rescale(it))changed=true});
-  Object.values(s.equipment||{}).forEach(it=>{if(v331Rescale(it))changed=true});
+  /* V8.175: historical migration of already persisted items retired.
+     Existing inventory/equipment is server-owned and must never be rescaled at boot.
+     v331 remains only as a generator curve for newly created legacy/offline items. */
 
   /* Make the central bonus generator use the same new curve for future items. */
   if(typeof v024Bonus==='function'){
@@ -90,12 +89,6 @@
      but no longer recalculates every item during every inventory paint. New items already use
      v024Bonus/the wrapped mystic generators; V429 locks their persisted stats on first save/render. */
 
-  try{
-    localStorage.setItem(KEY,JSON.stringify(s));
-    render();
-    if(changed && typeof v063Toast==='function')setTimeout(()=>v063Toast('⚖️ Item-Skalierung aktualisiert','success','Höhere Item-Level haben jetzt deutlich mehr Gewicht.'),300);
-  }catch(e){console.error('V4.02 item scaling migration',e)}
-
-  
+  /* V8.175: no startup save/render side effect from this legacy migration owner. */
   const line=document.querySelector('#v141VersionLine');
 })();
