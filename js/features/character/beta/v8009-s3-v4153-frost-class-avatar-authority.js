@@ -101,7 +101,11 @@
   if(!slot){
    slot=document.createElement('div');slot.className='slot';slot.id='slot-weapon2';
    const first=grid.querySelector('.equip-col');const w=document.getElementById('slot-weapon');
-   if(first){if(w?.nextSibling)first.insertBefore(slot,w.nextSibling);else first.appendChild(slot)}
+   if(first){
+    const anchor=(w?.parentElement===first)?w.nextSibling:null;
+    if(anchor&&anchor.parentElement===first)first.insertBefore(slot,anchor);
+    else first.appendChild(slot);
+   }
   }
   let note=grid.querySelector('.v4153-dual-note');
   if(!note){note=document.createElement('div');note.className='v4153-dual-note';note.textContent='❄️ Zweiklingen-Balance: Waffe I zählt zu 100 %. Waffe II gibt 10 % ihrer Attribute/Verzauberungen und schaltet Nebenhandtreffer frei. Sie zählt weiterhin nicht als zweiter Set-Platz.';const center=grid.querySelector('.center-hero');center?.appendChild(note)}
