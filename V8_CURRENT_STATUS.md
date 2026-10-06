@@ -10195,3 +10195,29 @@ Aktueller Release-Status:
   - index: `e3aaca4120edc691e031f88bc8ce20674e7bceb4`
   - beta: `07d77fbd2bdef1410e6d437f8e59615669ac3fc1`
   - server1: `cc990d21031cc17a0f79996c4a011f7919b9fb6d`
+
+
+### 2026-10-06 – Letzter einmaliger Attribut-Sprung: v327-DOM-Writer retired
+- Nutzer meldete weiterhin genau einen Sprung der Attributzahlen.
+- Tiefer DOM-Audit ergab:
+  - `v8009-s3-v327-worldboss-confirm-attributes.js` war trotz moderner v4140-Ownership weiterhin ein direkter Writer auf `#attrs`.
+  - `v327CleanAttributeUi()` lief bei `growlegends:account-ready` und bei Character-Navigation.
+  - Es suchte pro Attributzeile das erste `<b>` und schrieb dort erneut `totalAttr(key)` hinein.
+  - Zusätzlich ersetzte v327 noch `v125RenderAttrs()` und wrapte global `totalAttr()`.
+- Dadurch konnten die modernen v4140-Werte einmal nachträglich durch die alte v327-Rechenkette überschrieben werden.
+- Direkter Owner-Fix:
+  - v327 schreibt keine Attributzahlen mehr ins DOM.
+  - v327 darf nur noch alte Grow-Skill-Fragmente entfernen.
+  - alter v125-Attributrenderer-Override aus v327 retired.
+  - globaler `totalAttr`-Wrapper aus v327 retired.
+  - Worldboss-Logik/Bestätigungsdialoge unverändert.
+- Syntaxcheck v327: grün.
+- Cache-Bust explizit auf Script-Tag gesetzt: `8172attrsingleowner2` in index/beta/server1.
+- Commits:
+  - v327: `31b2daa301c4dca142a61cc974c5b581907b6218`
+  - index: `d1179805e6d32088b4599a6010cb8be8d2c746a4`
+  - beta: `2cfedf35f70e4e8075b56af7b67a0d81daffc498`
+  - server1: `1c99ed2251b831314756db68118dab82e415737b`
+- Erwartung:
+  - `#attrs` hat jetzt nur noch v4140 als Zahlen-Owner.
+  - kein einmaliger Überschreib-Paint mehr bei account-ready/Character-Navigation.
