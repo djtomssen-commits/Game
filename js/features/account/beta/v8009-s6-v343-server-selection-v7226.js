@@ -2,8 +2,20 @@
   const V343_SERVER_KEY='growLegendsSelectedServer';
   const V343_RELEASE_CHANNEL=String(window.GROW_RELEASE_CHANNEL||'stable');
   const V343_EARLY_EMAIL='tomssen5@gmail.com';
-  const server1Open=()=>false;
+  /* Server 1 public launch: 2026-10-06 16:00 Europe/Berlin = 14:00 UTC. */
+  const V343_SERVER1_OPENS_AT=Date.parse('2026-10-06T14:00:00Z');
+  const server1Open=()=>Date.now()>=V343_SERVER1_OPENS_AT;
   const defaultServer=()=> 'beta';
+
+  function v343Countdown(){
+    const ms=Math.max(0,V343_SERVER1_OPENS_AT-Date.now());
+    if(ms<=0)return 'JETZT GEÖFFNET';
+    const total=Math.floor(ms/1000);
+    const h=Math.floor(total/3600);
+    const m=Math.floor((total%3600)/60);
+    const s=total%60;
+    return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  }
 
   window.V343_SERVERS=Object.freeze({
     beta:{id:'beta',name:'Beta Server',status:'online',label:'BETA',path:'beta.html'},
@@ -72,18 +84,18 @@
         </button>
         <button type="button" class="v343-server ${selected==='server1'?'active':''} ${live?'recommended':'preview'}" data-v343-server="server1">
           <div class="v343-server-name">${live?'🌍':'🔒'} Server 1</div>
-          <div class="v343-server-meta">${live?'<span class="v343-online">● ONLINE</span><span>Live-Server</span>':'<span class="v343-preview">GESCHLOSSEN</span><span>Start nur manuell</span>'}</div>
+          <div class="v343-server-meta">${live?'<span class="v343-online">● ONLINE</span><span>Live-Server</span>':`<span class="v343-preview">START IN ${v343Countdown()}</span><span>Heute · 16:00 Uhr</span>`}</div>
           
         </button>
       </div>
-      <div class="v343-server-note">Beta erhält neue Updates zuerst. Server 1 bleibt geschlossen, bis er manuell freigegeben wird. Freigeschaltete Testkonten können den Vorabstand weiterhin prüfen.</div>`;
+      <div class="v343-server-note">${live?'Server 1 ist jetzt für alle Spieler geöffnet. Beta erhält neue Updates weiterhin zuerst.':`Server 1 öffnet heute automatisch um 16:00 Uhr für alle. Countdown: ${v343Countdown()}. Freigeschaltete Testkonten behalten bis dahin ihren Vorabzugang.`}</div>`;
   }
 
   function v343RenderServerSelect(force){
     const card=document.querySelector('#v075AuthOverlay .v075-auth-card');if(!card)return false;
     let box=card.querySelector('.v343-server-select');
     if(!box){box=document.createElement('div');box.className='v343-server-select';const tabs=card.querySelector('.v075-auth-tabs');if(tabs)tabs.insertAdjacentElement('beforebegin',box);else{const brand=card.querySelector('.v200-auth-brand');if(brand)brand.insertAdjacentElement('afterend',box);else card.insertBefore(box,card.firstChild)}}
-    const selected=v343Selected(),signature='servers-v7226:'+selected+':'+(server1Open()?'live':'preview')+':'+V343_RELEASE_CHANNEL;
+    const selected=v343Selected(),signature='servers-v7226:'+selected+':'+(server1Open()?'live':v343Countdown())+':'+V343_RELEASE_CHANNEL;
     if(force||box.dataset.v343Signature!==signature){box.dataset.v343Signature=signature;box.innerHTML=v343Markup(selected);box.querySelectorAll('[data-v343-server]').forEach(b=>b.onclick=()=>v343SetServer(String(b.dataset.v343Server||'beta')))}
     return true;
   }
@@ -99,7 +111,7 @@
       const selected=v343Selected();
       if(selected==='server1'&&!server1Open()){
         const mail=String(document.querySelector('#v075Email')?.value||'').trim().toLowerCase();
-        if(mail!==V343_EARLY_EMAIL){try{v063Toast?.('Server 1 noch geschlossen','warn','Server 1 ist noch geschlossen und wird später manuell freigegeben.')}catch(_){};return false}
+        if(mail!==V343_EARLY_EMAIL){try{v063Toast?.('Server 1 noch geschlossen','warn',`Server 1 öffnet heute um 16:00 Uhr. Noch ${v343Countdown()}.`)}catch(_){};return false}
       }
       window.v343CurrentServer=selected;v343StampState();v343ResetDb();
       return await baseEmail.apply(this,arguments);
@@ -112,7 +124,7 @@
     v200GoogleAuth=async function(){
       const selected=v343Selected();
       if(selected==='server1'&&!server1Open()){
-        try{v063Toast?.('Server 1 · Vorabzugang','info','Wähle dein freigeschaltetes Testkonto. Andere Konten bleiben bis zur manuellen Freigabe gesperrt.')}catch(_){}
+        try{v063Toast?.('Server 1 · Vorabzugang','info',`Server 1 öffnet heute um 16:00 Uhr für alle. Noch ${v343Countdown()}.`)}catch(_){}
       }
       window.v343CurrentServer=selected;
       sessionStorage.setItem('v343OAuthServer',selected);
@@ -139,5 +151,10 @@
   
   document.addEventListener('DOMContentLoaded',()=>{v343RenderServerSelect(false)},{once:true});
   setTimeout(()=>{v343RenderServerSelect(false)},250);setTimeout(()=>{v343RenderServerSelect(false)},900);
+  /* Keep the login countdown live and switch to ONLINE automatically at launch. */
+  const v343CountdownTimer=setInterval(()=>{
+    try{v343RenderServerSelect(true)}catch(_){}
+    if(server1Open())clearInterval(v343CountdownTimer);
+  },1000);
   
 })();
