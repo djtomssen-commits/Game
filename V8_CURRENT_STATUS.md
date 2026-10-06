@@ -9945,3 +9945,21 @@ Aktueller Release-Status:
 - Commits:
   - Root-Fix: `62b765c1425b610a28a5b576f6429b9193af39f0`
   - index/beta/server1: `192d2259c5e5084b139ec73b23bb1e7091554b7b` / `b5e467424f17d6f480c52236d8d4d7b4811cef62` / `9b97b64d00a56b45dcca153c6d204d9de58e952e`
+
+
+### 2026-10-06 – Attributwerte wechseln trotz stabilem Layout
+- Nach dem Root-Fix bleibt das moderne Attributlayout stabil, Nutzer meldet aber weiterhin wechselnde Zahlen.
+- Ursache eingegrenzt:
+  - `v4140` las bei jedem Repaint die globale `totalAttr()` neu.
+  - `totalAttr` wird im Altbestand noch von mehreren Kompatibilitäts-/Migrationsschichten gewrappt (u. a. v327/v328).
+  - damit konnte derselbe moderne Renderer je nach später Boot-/Hydration-Reihenfolge unterschiedliche Funktionsidentitäten lesen.
+- Fix direkt im kanonischen Attribute-Owner `v8009-s1-v4140-attribute-display-owner.js`:
+  - beim Laden wird die aktuelle kanonische `totalAttr`-Funktion genau einmal als `canonicalTotalAttr` eingefroren;
+  - der State bleibt live, nur die Funktionsquelle kann danach nicht mehr wechseln;
+  - alle sichtbaren Attributwerte lesen ausschließlich aus dieser eingefrorenen Berechnung;
+  - Diagnostik erweitert um Werte-Snapshot + `calculatorFrozen:true`.
+- Syntaxcheck: grün.
+- Cache-Bust index/beta/server1: `8164attrvalues1`.
+- Commits:
+  - v4140 Value-Source-Fix: `6c64e479cf044f0c29d63098ecbed694c50836c3`
+  - index/beta/server1: `fd72afce48f32c4d5854349cfd3db305cd389901` / `a47c9a3ab5ba85edf299d425f31d86bc37d94017` / `2d9faeb036c9a587ca3006ae2bd3fd0e69192430`
