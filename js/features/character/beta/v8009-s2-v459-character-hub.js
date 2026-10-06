@@ -8,6 +8,46 @@
   function activeTab(){
     try{return sessionStorage.getItem('growLegends:v459CharacterTab')||'inventory'}catch(e){return'inventory'}
   }
+  let attributeSyncPromise=null;
+  let attributePaintToken=0;
+
+  function paintAttributesFinal(){
+    try{
+      window.v4140PaintAttributes?.();
+      window.v537ApplyAttributes?.();
+      try{window.v8144GameplayI18n?.apply?.('character')}catch(_){}
+    }catch(e){console.warn('V4.67 attribute final paint',e)}
+  }
+
+  function refreshAttributesAuthoritative(){
+    const token=++attributePaintToken;
+    const panel=document.getElementById('v459PanelAttributes');
+    const box=document.getElementById('attrs');
+    const d=window.v7074ItemAuthorityDiagnostics?.();
+    const fresh=!!d?.ready && (Date.now()-Number(d.lastSync||0)<5000);
+
+    if(fresh || typeof window.v7074ItemAuthorityRefresh!=='function'){
+      paintAttributesFinal();
+      return;
+    }
+
+    if(box){
+      box.innerHTML='<div class="empty v459-attr-sync">Attribute werden synchronisiert …</div>';
+    }
+
+    if(!attributeSyncPromise){
+      attributeSyncPromise=Promise.resolve(window.v7074ItemAuthorityRefresh(false,false))
+        .catch(e=>{console.warn('V4.67 attribute authority sync',e);return null})
+        .finally(()=>{attributeSyncPromise=null});
+    }
+
+    attributeSyncPromise.then(()=>{
+      if(token!==attributePaintToken)return;
+      if(!panel?.classList.contains('active'))return;
+      paintAttributesFinal();
+    });
+  }
+
   function refreshTab(name){
     try{
       if(name==='inventory'){
@@ -17,8 +57,7 @@
         window.v533ApplyInventory?.();
         window.v470PaintInventoryComparisons?.();
       }else if(name==='attributes'){
-        window.v4140PaintAttributes?.();
-        window.v537ApplyAttributes?.();
+        refreshAttributesAuthoritative();
       }else if(name==='talents'){
         window.v543RenderTalentTree?.();
       }else if(name==='materials'){
@@ -145,7 +184,6 @@
       updateHero();
       try{window.v123PolishEquipment?.()}catch(_){}
       activate(activeTab(),false);
-      if(activeTab()==='attributes')window.v537ApplyAttributes?.();
       try{window.v8144GameplayI18n?.apply?.('character')}catch(_){}
       stamp();
       return true;
