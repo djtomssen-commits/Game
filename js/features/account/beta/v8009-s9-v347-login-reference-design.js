@@ -60,16 +60,27 @@
       if(needsRebuild){
         bar.innerHTML='<label class="v347-lang" for="v8143LanguageSelect">🌐 <span class="v347-lang-current">'+String((langs.find(x=>x.id===active)||langs[0])?.short||'DE')+'</span><select id="v8143LanguageSelect" aria-label="Sprache">'+langs.map(x=>'<option value="'+x.id+'" '+(x.id===active?'selected':'')+'>'+x.flag+' '+x.label+'</option>').join('')+'</select></label><div class="v347-version">V4.02 STABLE</div>';
         sel=bar.querySelector('#v8143LanguageSelect');
-        sel?.addEventListener('change',e=>{
-          const value=String(e.target.value||'de');
-          if(window.GrowI18n?.setLanguage){window.GrowI18n.setLanguage(value);return}
-          try{localStorage.setItem('growLegendsLanguage',value)}catch(_){}
-          try{location.reload()}catch(_){}
-        });
       }else{
         sel.value=active;
         const short=bar.querySelector('.v347-lang-current');
         if(short)short.textContent=String((langs.find(x=>x.id===active)||langs[0])?.short||'DE');
+      }
+
+      /* The topbar can be rebuilt by the login lifecycle. Re-bind the canonical
+         language handler every time so a visually intact replacement <select>
+         can never lose its change listener. */
+      if(sel){
+        const applySelectedLanguage=e=>{
+          const value=String(e?.target?.value||sel.value||'de').toLowerCase();
+          if(window.GrowI18n?.setLanguage){
+            window.GrowI18n.setLanguage(value);
+          }else{
+            try{localStorage.setItem('growLegendsLanguage',value)}catch(_){}
+            try{location.reload()}catch(_){}
+          }
+        };
+        sel.onchange=applySelectedLanguage;
+        sel.oninput=applySelectedLanguage;
       }
     }
 
@@ -139,6 +150,18 @@
   setTimeout(v347EnsureLayout,1800);
   window.v347EnsureLayout=v347EnsureLayout;
   window.v347PaintLoginLanguage=v347PaintLoginLanguage;
+
+  /* Delegated fallback survives any later DOM replacement of the select. */
+  document.addEventListener('change',e=>{
+    if(e?.target?.id!=='v8143LanguageSelect')return;
+    const value=String(e.target.value||'de').toLowerCase();
+    if(window.GrowI18n?.setLanguage)window.GrowI18n.setLanguage(value);
+    else{
+      try{localStorage.setItem('growLegendsLanguage',value)}catch(_){}
+      try{location.reload()}catch(_){}
+    }
+  },true);
+
   window.addEventListener('growlegends:language-changed',()=>{v347EnsureLayout();v347PaintLoginLanguage()},{passive:true});
 
   function version(){
