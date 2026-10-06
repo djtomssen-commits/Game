@@ -1159,6 +1159,7 @@ function render(){
 
    root.innerHTML=`<div class="vT-wrap">${html}</div>`;
    bind();
+   try{window.v8144GameplayI18n?.apply?.('tower')}catch(_){};
    if(flowGuard?.routeBusy&&r?.mode==='battle'&&!flowGuard.arenaWarmQueued){
      flowGuard.arenaWarmQueued=true;
      requestAnimationFrame(()=>{
@@ -1241,6 +1242,7 @@ function render(){
      <button class="btn" id="v6262TowerBack" style="margin-top:8px">Zur Startseite</button>
    </div>`;
    document.getElementById('v6262TowerBack')?.addEventListener('click',()=>typeof v032Go==='function'&&v032Go('world'));
+   try{window.v8144GameplayI18n?.apply?.('tower')}catch(_){}
  }
 }
 function bind(){const root=document.getElementById('tower');if(!root)return;root.querySelectorAll('[data-vt-guide]').forEach(b=>b.onclick=v6279OpenGuide);v8009LobbyController.bindLobby(root);const authorityTower=!!window.v7081UseAuthority?.('tower');root.querySelectorAll('[data-vt-route]').forEach(b=>b.onclick=authorityTower?null:()=>chooseRoute(Number(b.dataset.vtRoute)));root.querySelectorAll('[data-vt-fight]').forEach(b=>b.onclick=authorityTower?null:()=>startFight(Number(b.dataset.vtFight)));root.querySelectorAll('[data-vt-mut]').forEach(b=>b.onclick=()=>selectMutation(b.dataset.vtMut));root.querySelector('[data-vt-reroll]')?.addEventListener('click',rerollMutation);root.querySelector('[data-vt-next]')?.addEventListener('click',nextAfterReward);root.querySelector('[data-vt-bank]')?.addEventListener('click',bankAndFinish);root.querySelector('[data-vt-continue]')?.addEventListener('click',checkpointContinue);root.querySelectorAll('[data-vt-grow]').forEach(b=>b.onclick=()=>growOption(b.dataset.vtGrow));root.querySelectorAll('[data-vt-lab]').forEach(b=>b.onclick=()=>labOption(b.dataset.vtLab));root.querySelectorAll('[data-vt-buy]').forEach(b=>b.onclick=()=>merchantBuy(b.dataset.vtBuy));root.querySelector('[data-vt-shop-leave]')?.addEventListener('click',leaveMerchant);root.querySelector('[data-vt-event-next]')?.addEventListener('click',()=>completeNonCombat(false));root.querySelectorAll('[data-vt-secret]').forEach(b=>b.onclick=()=>secretOption(b.dataset.vtSecret));root.querySelectorAll('[data-vt-up]').forEach(b=>b.onclick=()=>buyUpgrade(b.dataset.vtUp));root.querySelectorAll('[data-vt-wed-claim]').forEach(b=>b.onclick=()=>claimWednesdayTask(b.dataset.vtWedClaim));root.querySelectorAll('[data-vt-wed-place-claim]').forEach(b=>b.onclick=()=>void claimWednesdayPlacement());root.querySelector('[data-vt-abort]')?.addEventListener('click',confirmAbort);root.querySelectorAll('[data-vt-exit]').forEach(b=>b.onclick=()=>{
