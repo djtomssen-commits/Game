@@ -101,19 +101,10 @@
     };
   }
 
-  /* Repair already-owned/equipped mystic items once, without touching
-     legendary/epic/normal items or reducing any existing stat. */
-  let changed=false;
-  (s.inventory||[]).forEach(it=>{ if(v325FixMystic(it))changed=true; });
-  Object.values(s.equipment||{}).forEach(it=>{ if(v325FixMystic(it))changed=true; });
-
+  /* V8.179: persisted inventory/equipment is server-owned.
+     Do not rebalance already-owned or equipped mystic items during boot.
+     v325 remains only as a rule for newly generated mystic drops. */
   s.v325MysticBalanceMigrated=true;
-  try{
-    localStorage.setItem(KEY,JSON.stringify(s));
-    /* V4.86: obsolete mythic migration notice retired; correction stays silent. */
-  }catch(e){console.error('V4.02 mythic migration',e)}
 
-  
   const line=document.querySelector('#v141VersionLine');
-  try{render()}catch(e){}
 })();
