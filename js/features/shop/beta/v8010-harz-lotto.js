@@ -25,9 +25,12 @@ function renameDealer(){
 }
 function setTab(tab){
   const server=String(window.v343CurrentServer||window.s?.__serverId||'beta');
-  const bagsAllowed=server!=='server1';
+  /* Keep Tütchen locked until the production Android 1.0.8 build is actually published.
+     This prevents the currently live 1.0.7 client from exposing a flow that depends on
+     the new production Rewarded-Ad bridge. */
+  const bagsAllowed=false;
   if(tab==='bags'&&!bagsAllowed){
-    toast('Tütchen','info','Der Tütchen-Dealer wird auf Server 1 nach dem Beta-Endtest freigeschaltet.');
+    toast('Tütchen · Coming Soon','info','Der Tütchen-Dealer wird mit App-Version 1.0.8 freigeschaltet.');
     tab='machine';
   }
   if(tab!=='bags'&&tab!=='machine')tab='machine';
