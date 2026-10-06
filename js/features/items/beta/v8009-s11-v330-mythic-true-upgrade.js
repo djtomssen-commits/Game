@@ -61,8 +61,7 @@
     return changed;
   }
 
-  /* Repair existing mythic inventory immediately. */
-  v330RepairAll();
+  /* V8.179: persisted inventory is server-owned; no boot-time repair. */
 
   /* Future mythic drops are guaranteed before the player sees them. */
   if(typeof v110MakeMysticItem==='function'){
@@ -96,7 +95,6 @@
      Existing items are repaired once above; future mystic generators remain wrapped. Stable item
      stats are owned later by V429, so render-time stat mutation must not run anymore. */
 
-  try{render()}catch(e){}
-  
+  /* No startup render: this module no longer mutates persisted state. */
   const line=document.querySelector('#v141VersionLine');
 })();
