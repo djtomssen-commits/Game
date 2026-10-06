@@ -8,8 +8,17 @@
   ['ausdauer','❤️','Ausdauer','Erhöht deine Lebenspunkte'],
   ['glueck','🍀','Glück','Verbessert Krit-Chance & Beute']
  ];
+
+ /* V8.164: freeze the canonical calculator once. Several retired/compatibility
+    layers still wrap the global totalAttr symbol later in boot. The attribute
+    UI must not change its numeric source just because that global function
+    identity changes. The captured calculator still reads the live state. */
+ const canonicalTotalAttr=(typeof totalAttr==='function')
+  ? totalAttr
+  : (k=>Number(s?.attrs?.[k])||0);
+
  function primary(){try{return s?.playerClass==='scout'?'geschick':(s?.playerClass==='bruiser'||s?.playerClass==='summoner')?'intelligenz':'staerke'}catch(e){return'staerke'}}
- function value(k){try{return Math.round(Number(typeof totalAttr==='function'?totalAttr(k):s?.attrs?.[k])||0)}catch(e){return Math.round(Number(s?.attrs?.[k])||0)}}
+ function value(k){try{return Math.round(Number(canonicalTotalAttr(k))||0)}catch(e){return Math.round(Number(s?.attrs?.[k])||0)}}
  function points(){try{return Math.max(0,Math.floor(Number(s?.points)||0))}catch(e){return 0}}
  function role(k){if(k===primary())return 'Hauptattribut · Schaden/Kampfkraft';if(k==='ausdauer')return 'Lebenspunkte';if(k==='glueck'){let c='';try{if(typeof v267CritChance==='function')c=` · Crit ${Number(v267CritChance()).toFixed(1)} %`}catch(e){}return 'Krit-Chance & Beute'+c}return 'Nebenattribut'}
  function esc(x){return String(x??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
@@ -40,5 +49,5 @@
  /* v459 owns visible attribute-tab lifecycle; persist repaint remains for actual point changes. */
  window.__v4140RenderWrapped='retired';
  window.__v4140GoWrapped='v459-tab-owner';
- window.v4140AttributeDiagnostics=()=>{const rows=[...document.querySelectorAll('#attrs > [data-v4140-attr]')];return{version:V.short,rowCount:rows.length,keys:rows.map(x=>x.dataset.v4140Attr),duplicates:rows.length-new Set(rows.map(x=>x.dataset.v4140Attr)).size,primary:primary(),points:points()}};
+ window.v4140AttributeDiagnostics=()=>{const rows=[...document.querySelectorAll('#attrs > [data-v4140-attr]')];return{version:V.short,rowCount:rows.length,keys:rows.map(x=>x.dataset.v4140Attr),duplicates:rows.length-new Set(rows.map(x=>x.dataset.v4140Attr)).size,primary:primary(),points:points(),values:Object.fromEntries(DEF.map(([k])=>[k,value(k)])),calculatorFrozen:true}};
 })();
