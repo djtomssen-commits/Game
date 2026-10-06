@@ -10066,3 +10066,41 @@ Aktueller Release-Status:
   - index: `05aa37c3de5b2b12eba492f3e92377a102553ad2`
   - beta: `29de96dd00cb5b4913237309443f3932a811e3aa`
   - server1: `bd7b70e8670aa73c0ddca756ddc7c873b5bc0ab6`
+
+
+### 2026-10-06 – Attribute switchen weiter: Build-Authority als zweite Wertquelle identifiziert
+- Nutzer korrigiert: Nicht nur Flackern, sondern die Attributzahlen wechseln weiterhin zwischen zwei Wertesätzen.
+- Root Cause:
+  - Attributanzeige wurde bisher nur auf frische Item-/Equipment-Authority gesperrt.
+  - `v7033-build-authority-bridge` hydratisiert zusätzlich serverautoritative Basisattribute `s.attrs` und `s.points` und konnte diese nach dem ersten sichtbaren Paint ersetzen.
+  - `totalAttr()` = Basisattribute + Equipment + Set-Boni; deshalb reicht Item-Authority allein nicht.
+- Fix im kanonischen Character-Hub `v8009-s2-v459-character-hub.js`:
+  - Freigabe für Attribute verlangt jetzt gleichzeitig frische Build-Authority und frische Item-Authority.
+  - Vor dem ersten sichtbaren Attribut-Paint werden parallel erzwungen:
+    - `v7033BuildAuthorityRefresh(true)`
+    - `v7074ItemAuthorityRefresh(true,false)`
+  - erst wenn beide Quellen frisch sind, wird der Attribut-Tab sichtbar aktiviert.
+  - account-ready prewarmt ebenfalls beide Quellen.
+- Zusätzliche Repaint-Bereinigung:
+  - `v7033-build-authority-bridge.js`:
+    - Build-Hydration führt keinen globalen `render()`-Pfad mehr aus;
+    - nur bei tatsächlich geändertem Build-State gezielter `hydrate`-Repaint über v4140/Skilltree/Punkte/Kampfkraft;
+    - account-ready startet sofort statt 150 ms verzögert;
+    - Charakter-Navigation erzwingt keinen zweiten Force-Refresh mehr, sondern nutzt den vorhandenen frischen Gate-State.
+  - `v7077-progress-enforce-hydration.js`:
+    - globales Character-`render()` nach Progress-Hydration entfernt;
+    - nur Kampfkraft + Character-Summary werden gezielt aktualisiert.
+- Keine neue Patch-/Observer-Schicht.
+- Syntaxcheck v459/v7033/v7077: grün.
+- Cache-Bust index/beta/server1: `8168attrdual1`.
+- Commits:
+  - v459: `8903aef8c43c5e748c0c24823132975c6d972ba2`
+  - v7033: `4d8dfcbb725e7ea117bc183ae04c10a1ae054c29`
+  - v7077: `72f669b9c7b5992869d496ba20f6900e8acc4192`
+  - index: `ff9a4245f1588a038e3d2ca1f605916ac5290733`
+  - beta: `ce2f2825fe508f4f02634b4928e70e876469ea4b`
+  - server1: `7c261fb23b933b80fb52d7c9803ce8b43393675a`
+- Erwartetes Verhalten:
+  - kein lokaler Attributsatz sichtbar;
+  - kein späteres Umschalten durch Build-Hydration;
+  - direkt finale Werte aus Server-Build + Server-Equipment.
