@@ -10277,3 +10277,33 @@ Aktueller Release-Status:
   - server1: `f1218cf5fa7d59a9e0677d20221d7877bb3597ec`
 - Nächster Prüfpunkt falls weiterhin ein Hauptattribut-Sprung sichtbar ist:
   - zwei konkurrierende Hauptattribut-Semantiken zusammenführen: rohes `totalAttr(primary)` vs effektive `primaryPct/mainPct`-Berechnung.
+
+
+### 2026-10-06 – Item-Quelle gefixt: alte Startup-Normalisierer dürfen Server-Stats nicht mehr verändern
+- Nutzerhinweis: Nicht nur Attribute, sondern vermutlich auch Item-Stats selbst haben sichtbar geschwankt.
+- Audit bestätigte zwei alte Bestands-Mutatoren:
+  - `v331-item-level-scaling.js` hat beim Script-Start bestehendes Inventar + Equipment einmal komplett neu skaliert und danach `render()` ausgeführt.
+  - `v455-item-loot-balance-contract.js` hat bestehende Items bei Start, DOMContentLoaded, pageshow, account-ready und nach Cloud-Save erneut normalisiert.
+- Das konnte für eingeloggte Accounts folgenden Ablauf erzeugen:
+  1. lokaler/cache-basierter Itemzustand wird clientseitig umgerechnet,
+  2. Attribute werden aus diesen lokalen Itemwerten berechnet,
+  3. spätere Item-Authority setzt die serverautoritativen Boni wieder ein,
+  4. Stärke/Ausdauer springen gemeinsam.
+- Direkter Fix:
+  - `v331`: Boot-Migration bestehender Inventory-/Equipment-Items vollständig retired; kein Startup-`render()` und kein Startup-Save mehr.
+  - `v331` bleibt nur Generator-Kurve für neu erzeugte Legacy-/Offline-Items.
+  - `v455`: Bestandsnormalisierung fail-closed bis Auth geklärt ist.
+  - `v455`: bei echtem eingeloggtem Account keine Normalisierung bestehender Items mehr.
+  - `v455`: Start-/DOMContentLoaded-/pageshow-Normalisierung entfernt; account-ready normalisiert nur noch Legacy/Anonymous-State.
+- Damit sind bestehende Item-Kampfwerte bei eingeloggten Accounts ausschließlich serverautoritative Source of Truth.
+- Syntaxcheck v331/v455: grün.
+- Cache-Bust index/beta/server1: `8175itemsource1`.
+- Commits:
+  - v331: `e0309a6cdeafe88015745d0e89d4ddf54d9f19a4`
+  - v455: `ed87a063f3ee76bcbffa2fc851951bb5caa335fb`
+  - index: `c921a3365cb4b17bf6bad5e794cce7f06048fc9e`
+  - beta: `892159837444ac1d299e8cc35350d03caf7ca863`
+  - server1: `0fed185a96c72af3dfc6a223e4af9e2b5a2aae27`
+- Erwartung:
+  - Item-Bonuswerte selbst bleiben nach dem Laden stabil.
+  - dadurch dürfen Stärke/Ausdauer nicht mehr zwischen lokal umgerechneten und serverautoritativen Summen springen.
