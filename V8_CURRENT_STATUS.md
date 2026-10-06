@@ -9775,3 +9775,32 @@ Aktueller Release-Status:
   - Screen registry: `d7dd52d6d261adc873df6d207d9b9456192a2865`
   - index/beta/server1 cache: `bd5b9c1ab8178b6e981accc72a6a051301613470` / `dcb693f22aa23d19a2cf9de2e3495ef0c973882d` / `ddc46bc27a394d0b1d0a006b58be58440dd6a469`
 - Prinzip bleibt: keine neue Patch-Schicht; bestehende zentrale I18N-Bridge wird als ein Wörterbuch-/Pattern-Owner ausgebaut.
+
+
+### 2026-10-06 – I18N Abschlussblock: Composite-Phrasen + bestätigte Resttexte
+- Nutzer meldete nach Whole-Game-I18N weiterhin deutsche Resttexte.
+- Vollständiger automatischer Scan aller 642 Beta-Skripte wurde vom GitHub-Connector wegen Tool-Call-Limit nicht in einem Durchgang zugelassen; deshalb Abschluss robust im zentralen I18N-Owner umgesetzt.
+- `v8144-i18n-gameplay.js` erweitert:
+  - kontrollierter Phrasen-Fallback nach Exact-Match + Dynamic-Pattern;
+  - lange bekannte Wörterbuchphrasen werden innerhalb zusammengesetzter Live-Texte übersetzt, Zahlen/Namen bleiben erhalten;
+  - kurze/generische Tokens werden bewusst ausgeschlossen, um Itemnamen/Spielwerte nicht versehentlich zu verändern.
+- Bestätigte Growroom-Resttexte vollständig in EN/ES/FR/PL/TR ergänzt:
+  - Topf-Hinweis / Detailhinweis
+  - kompletter Pflege-Erklärungstext
+  - Wachstumszeit-/Ertrags-Upgrades
+  - Kein Buff aktiv
+  - Keine Samen
+  - Pflanzenplatz nicht verfügbar
+  - freier/freigeschalteter Topf
+  - nicht käuflicher Samen / Loot-Hinweis
+  - Mutation entdeckt
+  - Ernte abgeschlossen
+  - Samen-Händler
+  - Diese Woche
+  - Mutationen / Ertrag / Wachstumszeit / Licht
+- Syntaxcheck `v8144-i18n-gameplay.js`: grün.
+- Cache-Bust index/beta/server1: `8158fullscan1`.
+- Commits:
+  - Composite-Phrasen-Fallback: `0486950360b7020f781147c422bd78dca0a6b720`
+  - Restübersetzungen: `f4df5a70f081f83a651a658ffb85067af1619ce8`
+  - index/beta/server1: `27089b08fb3f08eb68723f62981b7364515a23a8` / `65d13cf859e6b04343fb4075e48ba210e227435a` / `02d60242fc92ef3351a507aeb8e573b2d5f432b0`
