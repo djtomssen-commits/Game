@@ -9745,3 +9745,33 @@ Aktueller Release-Status:
   - Nebel-Crew
   - Nebel-Post
   - Endgame/Nebelkarawane
+
+
+### 2026-10-06 – Whole-Game-I18N Wörterbuch zentralisiert + dynamische Texte
+- Nutzerwunsch: nicht nur einzelne Seiten, sondern das **gesamte Spiel** in das zentrale Wörterbuch aufnehmen; alle vorhandenen Sprachen vollständig mitziehen.
+- Zentrale Gameplay-I18N in `v8144-i18n-gameplay.js` erweitert:
+  - große Whole-Game-Vokabularschicht für EN / ES / FR / PL / TR;
+  - Growroom vollständig erweitert, u. a. Freie Töpfe, Raum-Upgrade, Pflege, Licht einstellen, Gießen, Beschneiden, Nährstoffe, Samenlager, Pflanzenstatus, Qualitäts-/Ernte-/Bufftexte;
+  - gemeinsame Gameplay-Begriffe für Charakter, Shop, PvP, Gilde, Social, Mail, Hall/Endgame/Nebelbereiche ergänzt.
+- Zusätzlich dynamische Pattern-Übersetzungen eingebaut, damit Texte mit Live-Werten nicht deutsch bleiben:
+  - `Freier Topf N`
+  - `Topf N`
+  - `Pflege X von Y`
+  - `X/Y Töpfe`
+  - `N Sorten`
+  - `<Sorte> pflanzen`
+  - `N× ernten`
+  - `Aktiv: ...`
+  - `N Min. aktiv`
+  - `Vorrat: N`
+  - `Ausgewählt: ...`
+  - weitere dynamische Level-/Rang-/Pflegeformulierungen.
+- Zentraler Screen-Registry erweitert um aktuelle Bereiche:
+  - world, character, grow, quests, dungeon, tower, caravan, endgame, shop, forge, harzDealer, goldShop, bagDealer, pvp, guild, hall, friends, mail, admin, systemtech.
+- Syntaxcheck I18N + Growroom: grün.
+- Cache-Bust auf index/beta/server1: `8157wholei18n1`.
+- Commits:
+  - Whole-game Wörterbuch + Patterns: `442aa32a8c1a1aa892a2e078ccf89c9fcb616604`
+  - Screen registry: `d7dd52d6d261adc873df6d207d9b9456192a2865`
+  - index/beta/server1 cache: `bd5b9c1ab8178b6e981accc72a6a051301613470` / `dcb693f22aa23d19a2cf9de2e3495ef0c973882d` / `ddc46bc27a394d0b1d0a006b58be58440dd6a469`
+- Prinzip bleibt: keine neue Patch-Schicht; bestehende zentrale I18N-Bridge wird als ein Wörterbuch-/Pattern-Owner ausgebaut.
