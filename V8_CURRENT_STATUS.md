@@ -9982,3 +9982,23 @@ Aktueller Release-Status:
 - Commits:
   - v459 authoritative first-paint: `80d6181d861deb1cffd14ca522eddc4b22dc615a`
   - index/beta/server1: `ac36f67aa93fae13c58e4282969d6038160aaab8` / `1bb1cb3508e578bcfe5ef969a68cf44b59cee1cf` / `3763ac280562f75dbdeb7a299c00e7dbd45e8022`
+
+
+### 2026-10-06 – Attribute-Zahlen springen: server-first Equipment Sync
+- Nutzer meldete nach Layout-/Calculator-Fixes weiterhin wechselnde Attributzahlen.
+- Root Cause im tatsächlichen Ablauf bestätigt:
+  - Attribute werden aus Basiswerten + `s.equipment` berechnet.
+  - `v459` malte den Attribute-Tab sofort mit lokalem/stalem Equipment.
+  - `v7074-item-enforce-bridge` hydratisiert serverautoritative Ausrüstung erst später und ersetzt `s.equipment`.
+  - dadurch waren zuerst lokale Zwischenwerte sichtbar und danach die echten Serverwerte.
+- Fix direkt im Character-Hub `v8009-s2-v459-character-hub.js`:
+  - Attribut-Tab zeigt bei fehlender/frischer Authority zunächst nur „Attribute werden synchronisiert …“;
+  - für eingeloggte Accounts wird nicht mehr mit lokaler Ausrüstung vorgerendert;
+  - `v7074ItemAuthorityRefresh(true,false)` erzwingt vor dem ersten Attribut-Paint einen frischen serverautoritativen Item-Sync;
+  - danach genau ein finaler Paint über `v4140`.
+- Kein zusätzlicher Polling-/Observer-Owner.
+- Syntaxcheck v459 + v4140: grün.
+- Cache-Bust index/beta/server1: `8165attrserverfirst1`.
+- Commits:
+  - Character server-first sync: `1189a7d84506aad69577f5353a2c6fef6be6d921`
+  - index/beta/server1: `a31b1eff7b528103da5e3eb435f61466321876ea` / `8e1cb1d6e26970ad7fe34a23b541f21304c16d45` / `ede45dfcc1d2d7d6d7b5c0d4b6f41c4b7fdc07fc`
