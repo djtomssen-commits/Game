@@ -19,42 +19,37 @@
     }catch(e){console.warn('V4.67 attribute final paint',e)}
   }
 
-  function refreshAttributesAuthoritative(){
-    const token=++attributePaintToken;
-    const panel=document.getElementById('v459PanelAttributes');
-    const box=document.getElementById('attrs');
+  function authorityFresh(){
     const d=window.v7074ItemAuthorityDiagnostics?.();
-    const fresh=!!d?.ready && (Date.now()-Number(d.lastSync||0)<5000);
+    return !!d?.ready && (Date.now()-Number(d.lastSync||0)<30000);
+  }
 
-    if(fresh){
-      paintAttributesFinal();
-      return;
-    }
+  function ensureAttributesAuthoritative(){
+    if(authorityFresh())return Promise.resolve(true);
 
-    if(box){
-      box.innerHTML='<div class="empty v459-attr-sync">Attribute werden synchronisiert …</div>';
-    }
+    let hasAccount=false;
+    try{hasAccount=!!((typeof v073User!=='undefined'&&v073User?.id)||window.v073User?.id)}catch(_){}
+    if(!hasAccount)return Promise.resolve(true);
 
-    /* Logged-in characters must never paint local equipment-derived attributes
-       before the authoritative item bridge is available. account-ready will call
-       this path again after all runtime owners are parsed. */
-    if(typeof window.v7074ItemAuthorityRefresh!=='function'){
-      let hasAccount=false;
-      try{hasAccount=!!((typeof v073User!=='undefined'&&v073User?.id)||window.v073User?.id)}catch(_){}
-      if(!hasAccount)paintAttributesFinal();
-      return;
-    }
+    if(typeof window.v7074ItemAuthorityRefresh!=='function')return Promise.resolve(false);
 
     if(!attributeSyncPromise){
       attributeSyncPromise=Promise.resolve(window.v7074ItemAuthorityRefresh(true,false))
-        .catch(e=>{console.warn('V4.67 attribute authority sync',e);return null})
+        .then(()=>authorityFresh())
+        .catch(e=>{console.warn('V4.67 attribute authority sync',e);return false})
         .finally(()=>{attributeSyncPromise=null});
     }
+    return attributeSyncPromise;
+  }
 
-    attributeSyncPromise.then(()=>{
-      if(token!==attributePaintToken)return;
-      if(!panel?.classList.contains('active'))return;
+  function refreshAttributesAuthoritative(){
+    const token=++attributePaintToken;
+    return ensureAttributesAuthoritative().then(ok=>{
+      if(!ok||token!==attributePaintToken)return false;
+      const panel=document.getElementById('v459PanelAttributes');
+      if(!panel?.classList.contains('active'))return false;
       paintAttributesFinal();
+      return true;
     });
   }
 
@@ -67,7 +62,7 @@
         window.v533ApplyInventory?.();
         window.v470PaintInventoryComparisons?.();
       }else if(name==='attributes'){
-        refreshAttributesAuthoritative();
+        if(authorityFresh())paintAttributesFinal();
       }else if(name==='talents'){
         window.v543RenderTalentTree?.();
       }else if(name==='materials'){
@@ -76,14 +71,35 @@
       }
     }catch(e){console.warn('V4.67 character tab refresh',name,e)}
   }
-  function activate(name,scroll=false){
-    const shell=document.getElementById('v459CharacterShell');if(!shell)return;
-    if(!['inventory','attributes','talents','materials'].includes(name))name='inventory';
+  function activateNow(name,scroll=false){
+    const shell=document.getElementById('v459CharacterShell');if(!shell)return false;
     shell.querySelectorAll('#v459CharacterTabs button').forEach(b=>b.classList.toggle('active',b.dataset.tab===name));
     shell.querySelectorAll('.v459-panel').forEach(p=>p.classList.toggle('active',p.dataset.panel===name));
     try{sessionStorage.setItem('growLegends:v459CharacterTab',name)}catch(e){}
     refreshTab(name);
     if(scroll)try{shell.scrollIntoView({behavior:'smooth',block:'start'})}catch(e){}
+    return true;
+  }
+
+  function activate(name,scroll=false){
+    const shell=document.getElementById('v459CharacterShell');if(!shell)return;
+    if(!['inventory','attributes','talents','materials'].includes(name))name='inventory';
+
+    if(name!=='attributes'){
+      attributePaintToken++;
+      return activateNow(name,scroll);
+    }
+
+    if(authorityFresh())return activateNow('attributes',scroll);
+
+    /* V8.167: never expose stale/local attribute values.
+       Keep the currently visible tab unchanged until server equipment is ready.
+       No intermediate "syncing" panel and no local first paint. */
+    const token=++attributePaintToken;
+    ensureAttributesAuthoritative().then(ok=>{
+      if(!ok||token!==attributePaintToken)return;
+      activateNow('attributes',scroll);
+    });
   }
   window.v459CharacterTab=activate;
 
@@ -271,6 +287,10 @@
   layout();activate(activeTab(),false);stamp();
   document.addEventListener('DOMContentLoaded',()=>{layout();activate(activeTab(),false);stamp()},{once:true});
   window.addEventListener('pageshow',()=>{if(document.getElementById('character')?.classList.contains('active')){layout();activate(activeTab(),false);stamp()}},{passive:true});
-  window.addEventListener('growlegends:account-ready',()=>{if(document.getElementById('character')?.classList.contains('active')){layout();activate(activeTab(),false);updateHero();stamp()}},{passive:true});
+  window.addEventListener('growlegends:account-ready',()=>{
+    /* Prewarm authoritative equipment immediately so Attribute opens with final values. */
+    try{window.v7074ItemAuthorityRefresh?.(true,false)}catch(_){}
+    if(document.getElementById('character')?.classList.contains('active')){layout();activate(activeTab(),false);updateHero();stamp()}
+  },{passive:true});
   /* V6.217: obsolete V4.44 polling guard retired. Existing targeted layout retries remain. */
 })();
