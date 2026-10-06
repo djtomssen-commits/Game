@@ -2,24 +2,13 @@
  'use strict';
  const V=window.GROW_LEGENDS_VERSION||{short:'V4.159',label:'V4.159 Stable'};
  const PUBLIC=[
-  ['world','⌂','Startseite'],
-  ['character','🧙','Charakter'],
-  ['grow','🌱','Growroom'],
-  ['quests','📜','Quest & Schicht'],
-  ['dungeon','⚔️','Dungeons'],
-  ['tower','🗼','Anbauturm'],
-  ['caravan','🚚','Nebelkarawane'],
-  ['endgame','🌌','Endgame'],
-  ['shop','🛒','Händler'],
-  ['forge','🔨','Harzschmiede'],
-  ['harzDealer','🟢','Harz & Gold & Rahmen Dealer'],
-  ['bagDealer','🏪','Hinterhof-Dealer'],
-  ['pvp','⚔️','PvP-Arena'],
-  ['guild','🏰','Gilde'],
-  ['hall','🏆','Hall of Haze'],
-  ['friends','🤝','Nebel-Crew'],
-  ['mail','✉️','Nebel-Post']
+  ['world','⌂'],['character','🧙'],['grow','🌱'],['quests','📜'],['dungeon','⚔️'],
+  ['tower','🗼'],['caravan','🚚'],['endgame','🌌'],['shop','🛒'],['forge','🔨'],
+  ['harzDealer','🟢'],['bagDealer','🏪'],['pvp','⚔️'],['guild','🏰'],['hall','🏆'],
+  ['friends','🤝'],['mail','✉️']
  ];
+ const T=(key,fallback)=>window.GrowI18n?.t?.(key)||fallback||key;
+ const FALLBACK={world:'Startseite',character:'Charakter',grow:'Growroom',quests:'Quest & Schicht',dungeon:'Dungeons',tower:'Anbauturm',caravan:'Nebelkarawane',endgame:'Endgame',shop:'Händler',forge:'Harzschmiede',harzDealer:'Harz & Gold & Rahmen Dealer',bagDealer:'Hinterhof-Dealer',pvp:'PvP-Arena',guild:'Gilde',hall:'Hall of Haze',friends:'Nebel-Crew',mail:'Nebel-Post'};
  function admin(){try{return typeof v093IsAdmin!=='undefined'&&v093IsAdmin===true&&!!v073User&&!v073User.is_anonymous}catch(e){return false}}
  function available(id){
   if(id==='bagDealer')return !!document.getElementById('bagDealer');
@@ -60,14 +49,14 @@
   const frag=document.createDocumentFragment();
   let added=0;
   PUBLIC.forEach((row,i)=>{
-   const [id,icon,label]=row;if(!available(id))return;
+   const [id,icon]=row,label=T('nav.'+id,FALLBACK[id]||id);if(!available(id))return;
    if(id==='pvp'&&added)frag.appendChild(sep());
    frag.appendChild(item(id,icon,label));added++;
   });
   if(admin()){
    frag.appendChild(sep());
-   if(document.getElementById('admin'))frag.appendChild(item('admin','🛡️','Admin'));
-   if(document.getElementById('systemtech')||typeof window.v4107OpenSystemtechnik==='function')frag.appendChild(item('systemtech','⚙️','Systemtechnik'));
+   if(document.getElementById('admin'))frag.appendChild(item('admin','🛡️',T('nav.admin','Admin')));
+   if(document.getElementById('systemtech')||typeof window.v4107OpenSystemtechnik==='function')frag.appendChild(item('systemtech','⚙️',T('nav.systemtech','Systemtechnik')));
   }
   panel.replaceChildren(frag);
   panel.querySelectorAll('.top-menu-item').forEach(b=>b.classList.toggle('active',document.getElementById(b.dataset.screen)?.classList.contains('active')));
@@ -87,6 +76,7 @@
  window.addEventListener('growlegends:account-ready',()=>requestAnimationFrame(build));
  window.addEventListener('growlegends:extras-ready',()=>requestAnimationFrame(build));
  window.addEventListener('growlegends:foreground-ready',()=>requestAnimationFrame(build));
+ window.addEventListener('growlegends:language-changed',()=>requestAnimationFrame(build));
  window.addEventListener('pageshow',()=>requestAnimationFrame(build),{passive:true});
  document.addEventListener('DOMContentLoaded',()=>requestAnimationFrame(build),{once:true});
  requestAnimationFrame(build);
