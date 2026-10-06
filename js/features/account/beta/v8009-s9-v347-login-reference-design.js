@@ -19,19 +19,22 @@
     if(!overlay.querySelector('.v347-topbar')){
       const bar=document.createElement('div');
       bar.className='v347-topbar';
-      bar.innerHTML='<div class="v347-lang">🌐 <span>DE</span>⌄</div><div class="v347-version">V4.02 STABLE</div>';
+      const langs=window.GrowI18n?.languages?.()||[{id:'de',short:'DE',flag:'🇩🇪',label:'Deutsch'}];
+      const active=window.GrowI18n?.getLanguage?.()||'de';
+      bar.innerHTML='<label class="v347-lang" for="v8143LanguageSelect">🌐 <span class="v347-lang-current">'+String((langs.find(x=>x.id===active)||langs[0])?.short||'DE')+'</span><select id="v8143LanguageSelect" aria-label="Sprache">'+langs.map(x=>'<option value="'+x.id+'" '+(x.id===active?'selected':'')+'>'+x.flag+' '+x.label+'</option>').join('')+'</select></label><div class="v347-version">V4.02 STABLE</div>';
+      bar.querySelector('#v8143LanguageSelect')?.addEventListener('change',e=>window.GrowI18n?.setLanguage?.(e.target.value));
       overlay.appendChild(bar);
     }
 
     const title=card.querySelector('.v075-auth-title');
-    if(title) title.textContent='Wähle deinen Server';
+    if(title) title.textContent=window.GrowI18n?.t?.('login.chooseServer')||'Wähle deinen Server';
 
     /* Helpful login row matching the reference. Visual only; password reset is not
        advertised as functional because no reset handler exists in the current game. */
     if(!card.querySelector('.v347-login-tools')){
       const tools=document.createElement('div');
       tools.className='v347-login-tools';
-      tools.innerHTML='<span class="v347-remember"><i class="v347-check"></i> Angemeldet bleiben</span><span class="v347-forgot">Passwort vergessen?</span>';
+      tools.innerHTML='<span class="v347-remember"><i class="v347-check"></i> <span data-i18n="login.remember">'+(window.GrowI18n?.t?.('login.remember')||'Angemeldet bleiben')+'</span></span><span class="v347-forgot" data-i18n="login.forgot">'+(window.GrowI18n?.t?.('login.forgot')||'Passwort vergessen?')+'</span>';
       const action=card.querySelector('#v075EmailAction');
       action?.insertAdjacentElement('beforebegin',tools);
     }
@@ -39,7 +42,7 @@
     if(!card.querySelector('.v347-register-banner')){
       const banner=document.createElement('div');
       banner.className='v347-register-banner';
-      banner.innerHTML='<div class="v347-register-copy"><div class="v347-chest">🧰</div><div><b>Neu hier?</b><span>Erstelle einen neuen Account und werde zur Legende!</span></div></div><button type="button" class="v347-register-btn">👤+ Registrieren</button>';
+      banner.innerHTML='<div class="v347-register-copy"><div class="v347-chest">🧰</div><div><b data-i18n="login.newHere">'+(window.GrowI18n?.t?.('login.newHere')||'Neu hier?')+'</b><span data-i18n="login.newHereText">'+(window.GrowI18n?.t?.('login.newHereText')||'Erstelle einen neuen Account und werde zur Legende!')+'</span></div></div><button type="button" class="v347-register-btn">👤+ <span data-i18n="login.register">'+(window.GrowI18n?.t?.('login.register')||'Registrieren')+'</span></button>';
       const google=card.querySelector('#v075GoogleAction');
       google?.insertAdjacentElement('afterend',banner);
       banner.querySelector('.v347-register-btn')?.addEventListener('click',()=>{
@@ -51,20 +54,21 @@
       const features=document.createElement('div');
       features.className='v347-features';
       features.innerHTML=`
-        <div class="v347-feature"><i>🌿</i><div><b>Grow.</b><span>Baue die stärksten Pflanzen an.</span></div></div>
-        <div class="v347-feature"><i>⚔️</i><div><b>Fight.</b><span>Bezwinge Monster in epischen Dungeons.</span></div></div>
-        <div class="v347-feature"><i>🏅</i><div><b>Become.</b><span>Werde zur Legende in der Ehrenhalle.</span></div></div>
-        <div class="v347-feature"><i>💎</i><div><b>Legend.</b><span>Schreibe deine eigene Geschichte.</span></div></div>`;
+        <div class="v347-feature"><i>🌿</i><div><b data-i18n="login.featureGrowTitle">${window.GrowI18n?.t?.('login.featureGrowTitle')||'Grow.'}</b><span data-i18n="login.featureGrowText">${window.GrowI18n?.t?.('login.featureGrowText')||'Baue die stärksten Pflanzen an.'}</span></div></div>
+        <div class="v347-feature"><i>⚔️</i><div><b data-i18n="login.featureFightTitle">${window.GrowI18n?.t?.('login.featureFightTitle')||'Fight.'}</b><span data-i18n="login.featureFightText">${window.GrowI18n?.t?.('login.featureFightText')||'Bezwinge Monster in epischen Dungeons.'}</span></div></div>
+        <div class="v347-feature"><i>🏅</i><div><b data-i18n="login.featureBecomeTitle">${window.GrowI18n?.t?.('login.featureBecomeTitle')||'Become.'}</b><span data-i18n="login.featureBecomeText">${window.GrowI18n?.t?.('login.featureBecomeText')||'Werde zur Legende in der Ehrenhalle.'}</span></div></div>
+        <div class="v347-feature"><i>💎</i><div><b data-i18n="login.featureLegendTitle">${window.GrowI18n?.t?.('login.featureLegendTitle')||'Legend.'}</b><span data-i18n="login.featureLegendText">${window.GrowI18n?.t?.('login.featureLegendText')||'Schreibe deine eigene Geschichte.'}</span></div></div>`;
       stack.appendChild(features);
     }
 
     if(!stack.querySelector('.v347-footer')){
       const footer=document.createElement('div');
       footer.className='v347-footer';
-      footer.innerHTML='© 2026 Grow Legends &nbsp;|&nbsp; Alle Rechte vorbehalten<br><span class="links">Datenschutz &nbsp; | &nbsp; Impressum &nbsp; | &nbsp; Support</span>';
+      footer.innerHTML='© 2026 Grow Legends &nbsp;|&nbsp; <span data-i18n="login.rights">'+(window.GrowI18n?.t?.('login.rights')||'Alle Rechte vorbehalten')+'</span><br><span class="links"><span data-i18n="login.privacy">'+(window.GrowI18n?.t?.('login.privacy')||'Datenschutz')+'</span> &nbsp; | &nbsp; <span data-i18n="login.imprint">'+(window.GrowI18n?.t?.('login.imprint')||'Impressum')+'</span> &nbsp; | &nbsp; <span data-i18n="login.support">'+(window.GrowI18n?.t?.('login.support')||'Support')+'</span></span>';
       stack.appendChild(footer);
     }
 
+    try{window.GrowI18n?.apply?.()}catch(_){}
     return true;
   }
 
@@ -84,6 +88,8 @@
   setTimeout(v347EnsureLayout,250);
   setTimeout(v347EnsureLayout,900);
   setTimeout(v347EnsureLayout,1800);
+  window.v347EnsureLayout=v347EnsureLayout;
+  window.addEventListener('growlegends:language-changed',()=>v347EnsureLayout(),{passive:true});
 
   function version(){
     document.querySelectorAll('.version').forEach(el=>el.textContent=V347_VERSION);
