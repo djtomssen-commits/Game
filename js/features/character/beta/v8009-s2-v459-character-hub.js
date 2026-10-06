@@ -30,9 +30,17 @@
   function ensureAttributesAuthoritative(){
     if(authorityFresh())return Promise.resolve(true);
 
-    let hasAccount=false;
-    try{hasAccount=!!((typeof v073User!=='undefined'&&v073User?.id)||window.v073User?.id)}catch(_){}
-    if(!hasAccount)return Promise.resolve(true);
+    /* V8.170: "no user yet" during boot is NOT the same as an anonymous player.
+       Never expose local/stale attributes before the auth resolver has finished. */
+    if(window.__V200_AUTH_READY__!==true)return Promise.resolve(false);
+
+    let hasAccount=false,anonymous=false;
+    try{
+      const u=(typeof v073User!=='undefined'&&v073User)||window.v073User||null;
+      hasAccount=!!u?.id;
+      anonymous=!!u?.is_anonymous;
+    }catch(_){}
+    if(!hasAccount||anonymous)return Promise.resolve(true);
 
     if(typeof window.v7074ItemAuthorityRefresh!=='function'||typeof window.v7033BuildAuthorityRefresh!=='function'){
       return Promise.resolve(false);
@@ -100,9 +108,15 @@
 
     if(authorityFresh())return activateNow('attributes',scroll);
 
-    /* V8.167: never expose stale/local attribute values.
-       Keep the currently visible tab unchanged until server equipment is ready.
-       No intermediate "syncing" panel and no local first paint. */
+    /* V8.170: if Character opens while auth is still resolving and Attribute was
+       remembered from the previous visit, keep/show Inventory instead of ever
+       painting stale local attribute values. account-ready will retry Attribute. */
+    if(window.__V200_AUTH_READY__!==true){
+      const current=shell.querySelector('.v459-panel.active')?.dataset?.panel||'';
+      if(!current)activateNow('inventory',false);
+      return;
+    }
+
     const token=++attributePaintToken;
     ensureAttributesAuthoritative().then(ok=>{
       if(!ok||token!==attributePaintToken)return;
