@@ -180,8 +180,22 @@ function clearLegacyPending(){
 clearLegacyPending();
 window.v486FlushPendingAuto=function(){clearLegacyPending();return false};
 
-window.addEventListener('growlegends:account-ready',()=>{clearLegacyPending();const run=()=>void ensureAuthority({paint:true}).catch(e=>{D.lastError=String(e?.message||e)});if(typeof window.v7204AfterStartupQuiet==='function')window.v7204AfterStartupQuiet(run,350);else setTimeout(run,500)},{passive:true});
-window.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')==='character'){bindFinalAutoButtons();void ensureAuthority({paint:false}).catch(()=>{})}});
+window.addEventListener('growlegends:account-ready',()=>{
+ clearLegacyPending();
+ /* V8.176: item authority is part of account bootstrap, not a delayed visual
+    correction. Hydrate immediately and silently; Character/Inventory owners
+    decide when to paint after authority is ready. */
+ void ensureAuthority({paint:false}).catch(e=>{D.lastError=String(e?.message||e)});
+},{passive:true});
+window.addEventListener('growlegends:navigation-open-v7119',e=>{
+ if(String(e?.detail?.id||'')==='character'){
+  bindFinalAutoButtons();
+  /* No forced second hydrate/repaint on Character navigation. The account
+     bootstrap already owns initial item hydration. */
+  const d=window.v7074ItemAuthorityDiagnostics?.();
+  if(!d?.ready)void ensureAuthority({paint:false}).catch(()=>{});
+ }
+});
 setTimeout(()=>{bindFinalAutoButtons();clearLegacyPending()},300);
 
 window.v7132ItemAuthorityDiagnostics=()=>clone({version:VERSION,...D,uid:!!uid(),equipOwner:typeof window.equip==='function',materialOwner:typeof window.v030UseMaterial==='function'});
