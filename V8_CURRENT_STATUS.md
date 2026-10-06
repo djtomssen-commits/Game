@@ -9668,3 +9668,19 @@ Aktueller Release-Status:
   - index Cache: `e27cd3515a1daac198f49e54bfbac38ec619daf2`
   - server1 Cache: `29fce48ad6aa3ec988f548f2f5eef2f0c2524a35`
 - Syntaxcheck v347 / v8143 / v8144: grün.
+
+
+### 2026-10-06 – Ursache Sprachsystem endgültig gefunden: beta.html ohne I18N-Wiring
+- Nutzer-Repro blieb trotz vorheriger Core-/Selector-Fixes unverändert: Login und Spiel auf Beta vollständig Deutsch.
+- Entry-Point-Audit ergab die eigentliche Ursache:
+  - `index.html` und `server1.html` luden die neuen Sprach-Owner;
+  - `beta.html` lud **keinen** der drei I18N-Owner.
+- Dadurch war auf dem tatsächlichen Beta-Build keine Sprachengine aktiv; die Auswahl konnte optisch vorhanden sein, aber Übersetzungen konnten nicht greifen.
+- Direkt in `beta.html` behoben:
+  - `v8143-i18n-core.js` eingebunden;
+  - `v8144-i18n-gameplay.js` eingebunden;
+  - `v8147-i18n-final-polish.js` eingebunden;
+  - Reihenfolge wie im kanonischen aktuellen Entry-Point vor `v200-stable-core`;
+  - v200/v343/v347 Cache-Key auf `8153betai18n1` aktualisiert.
+- Commit: `9e9276dc8a3f56a715c583e3e803705f4d914636`.
+- Keine Gameplay-/Save-/Reward-/RPC-/Balance-Logik verändert.
