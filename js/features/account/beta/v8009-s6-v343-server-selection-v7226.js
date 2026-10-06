@@ -5,7 +5,7 @@
   /* Server 1 public launch: 2026-10-06 16:00 Europe/Berlin = 14:00 UTC. */
   const V343_SERVER1_OPENS_AT=Date.parse('2026-10-06T14:00:00Z');
   const server1Open=()=>Date.now()>=V343_SERVER1_OPENS_AT;
-  const defaultServer=()=> 'beta';
+  const defaultServer=()=>server1Open()?'server1':'beta';
 
   const T=(key,vars,fallback)=>window.GrowI18n?.t?.(key,vars)||fallback||key;
 
