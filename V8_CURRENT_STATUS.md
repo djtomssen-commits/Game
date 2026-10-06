@@ -10333,3 +10333,40 @@ Aktueller Release-Status:
   - server1: `9c035e5be3271b2a0bd88c7c51ffb6d230df7a5c`
 - Relevanter Befund:
   - Falls danach weiterhin ein Wechsel sichtbar ist, muss der lokale Item-Drift selbst detailliert diffbar gemacht werden (welcher Slot/welches Feld), da beide Serverquellen nachweislich identisch sind.
+
+
+### 2026-10-06 – Persist-Safety-Net aus Character/Item-Pfad entfernt + QA auf exakten Stat-Diff erweitert
+- Nutzer meldete weiterhin sichtbaren Wechsel.
+- Belastbarer Befund aus vorhandener QA-Historie:
+  - `itemLocalMatch=false`
+  - gleichzeitig `itemServerOnlyOwner=true`
+  - alle Authority-Domains enforce
+  - Serverquellen `player_saves.equipment` und `player_item_state.equipment` sind für den Account identisch.
+- Neue gefundene Lücke:
+  - `v7133-global-gameplay-authority-lockdown` wrappt global `persist()`.
+  - Jeder persist-Aufruf konnte nach 80 ms `hydrateActive()` starten.
+  - Auf Character wurden dabei Build + Items erneut serverseitig geladen; v7074 wurde dabei mit Default-Paint aufgerufen.
+  - Shop/Forge analog.
+  - Damit existierte trotz direkter Item-/Build-Owner weiterhin ein zweiter generischer Rehydrate-Lifecycle.
+- Fix:
+  - Character/Shop/Forge/HarzForge sind aus dem generischen persist-getriebenen Rehydrate-Safety-Net entfernt.
+  - `hydrateActive()` führt für diese Screens keinen zweiten Korrektur-Hydrate mehr aus.
+  - Direkte serverautoritative Action-Owner bleiben unverändert zuständig.
+- QA-Erweiterung in `v7084-background-system-test.js`:
+  - `itemCombatDiff` vergleicht pro Slot:
+    - Item-ID
+    - bonus.staerke/geschick/intelligenz/ausdauer/glueck
+    - Gem stat/value
+    - Enchant effect/value
+  - neue Checks:
+    - `itemCombatDiff`
+    - `itemCombatStatsMatch`
+  - Damit ist bei erneutem Drift exakt sichtbar, welcher Slot und welches Feld lokal vom Serverwert abweicht.
+- Syntaxcheck v7133/v7084: grün.
+- Cache-Bust index/beta/server1: `8177itemdrift1`.
+- Commits:
+  - v7133: `301dfb8f0519d9d3c7d989fe5dfb508e042a15c7`
+  - v7084: `3577af414a46b076ce877e06de9727c8239702eb`
+  - index: `c030d8fa7c0984d9fd4dc60e57219e9c353eb8b8`
+  - beta: `7c064b69a03bbce167d24c774e6d94d401b74a06`
+  - server1: `cf0d02f15bc351695f76dec20f1c041d4bdb670f`
