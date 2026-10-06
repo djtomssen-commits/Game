@@ -266,6 +266,7 @@ try{
       try{window.v233BindClaimButton?.()}catch(_){}
       try{window.v4127EnsureQuestSkip?.()}catch(_){}
       schedule();
+      try{window.v8144GameplayI18n?.apply?.('quests')}catch(_){}
       return r;
     };
     window.renderQuests=renderQuests;window.__V6344_RENDER_QUESTS_WRAP__=true;
