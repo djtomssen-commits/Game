@@ -1,7 +1,9 @@
 (function(){
   const VERSION='V4.29 Stable';
   const SHORT='V4.29';
-  const num=v=>Math.max(0,Math.round(Number(v)||0)).toLocaleString('de-DE');
+  const T=(key,fallback)=>window.GrowI18n?.t?.(key)||fallback||key;
+  const locale=()=>({de:'de-DE',en:'en-GB',es:'es-ES',fr:'fr-FR',pl:'pl-PL',tr:'tr-TR'}[window.GrowI18n?.getLanguage?.()||'de']||'de-DE');
+  const num=v=>Math.max(0,Math.round(Number(v)||0)).toLocaleString(locale());
   let navigationScreen='';
   function cap(){try{return typeof v271DampfCap==='function'?v271DampfCap():100}catch(e){return 100}}
 
@@ -23,11 +25,11 @@
       shell.id='v372TopbarShell';
       shell.innerHTML=`
         <div class="v372-topbar">
-          <button type="button" class="v372-menu" aria-label="Menü">☰</button>
+          <button type="button" class="v372-menu" aria-label="${T('top.menu','Menü')}">☰</button>
           <div class="v372-logo"><strong>🌿 GROW</strong><span>LEGENDS</span><em>${SHORT}</em></div>
-          <div class="v372-res"><span class="ico">🪙</span><div><small>Gold</small><b id="v372Gold">0</b></div><button class="v372-plus" data-plus="gold">+</button></div>
-          <div class="v372-res"><span class="ico">💎</span><div><small>Harz</small><b id="v372Harz">0</b></div><button class="v372-plus" data-plus="harz">+</button></div>
-          <div class="v372-res"><span class="ico">💨</span><div><small>Dampf</small><b id="v372Dampf">0/100</b></div><button class="v372-plus" data-plus="dampf">+</button></div>
+          <div class="v372-res"><span class="ico">🪙</span><div><small data-v372-label="gold">${T('top.gold','Gold')}</small><b id="v372Gold">0</b></div><button class="v372-plus" data-plus="gold">+</button></div>
+          <div class="v372-res"><span class="ico">💎</span><div><small data-v372-label="harz">${T('top.harz','Harz')}</small><b id="v372Harz">0</b></div><button class="v372-plus" data-plus="harz">+</button></div>
+          <div class="v372-res"><span class="ico">💨</span><div><small data-v372-label="dampf">${T('top.dampf','Dampf')}</small><b id="v372Dampf">0/100</b></div><button class="v372-plus" data-plus="dampf">+</button></div>
           <button type="button" class="v372-iconbtn" data-head="mail">✉️</button>
           <button type="button" class="v372-iconbtn" data-head="friends">👥</button>
           <button type="button" class="v372-iconbtn" data-head="settings">⚙️</button>
@@ -67,6 +69,9 @@
     shell.style.setProperty('display',gameIsVisible()?'block':'none','important');
     const g=shell.querySelector('#v372Gold'),h=shell.querySelector('#v372Harz'),d=shell.querySelector('#v372Dampf');
     if(g)g.textContent=num(s?.gold); if(h)h.textContent=num(s?.harzTaler); if(d)d.textContent=num(s?.energy)+'/'+num(cap());
+    const labels={gold:['top.gold','Gold'],harz:['top.harz','Harz'],dampf:['top.dampf','Dampf']};
+    shell.querySelectorAll('[data-v372-label]').forEach(el=>{const x=labels[el.dataset.v372Label];if(x)el.textContent=T(x[0],x[1])});
+    const menu=shell.querySelector('.v372-menu');if(menu)menu.setAttribute('aria-label',T('top.menu','Menü'));
     shell.querySelectorAll('.v372-logo em').forEach(el=>el.textContent=SHORT);
     document.querySelectorAll('.version,[data-version],#version,#gameVersion,#v141VersionLine,#topVersion,[data-top-version],.v358-version,.v366-ver').forEach(el=>{
       if(el)el.textContent=el.classList?.contains('v366-ver')?SHORT:VERSION;
@@ -78,6 +83,7 @@
   window.addEventListener('pageshow',paint,{passive:true});
   window.addEventListener('growlegends:account-ready',()=>{navigationScreen='';paint()},{passive:true});
   window.addEventListener('growlegends:account-transition-reset',()=>{navigationScreen='';paint()},{passive:true});
+  window.addEventListener('growlegends:language-changed',paint,{passive:true});
   window.addEventListener('growlegends:navigation-open-v7119',e=>{
     navigationScreen=String(e?.detail?.id||'');
     paint();
