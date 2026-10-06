@@ -20,7 +20,7 @@
   hydratedAt:0,
   actionCount:0
  };
- let gatePromise=null;
+ let gatePromise=null,gateUid='';
  let actionChain=Promise.resolve();
 
  function currentUid(){
@@ -132,20 +132,26 @@
   bridge.gate=null;
   bridge.lastError='';
   gatePromise=null;
+  gateUid='';
  }
  async function loadGate(force=false){
   const id=currentUid(),client=db();
   if(!id||!client)return null;
   if(bridge.uid!==id)resetGate();
-  if(!force&&bridge.ready&&bridge.gate)return bridge.gate;
-  if(gatePromise)return gatePromise;
-  gatePromise=(async()=>{
+  if(!force&&bridge.ready&&bridge.uid===id&&bridge.gate)return bridge.gate;
+  if(gatePromise&&gateUid===id)return gatePromise;
+
+  const requestUid=id;
+  gateUid=requestUid;
+  const p=(async()=>{
    try{
     const {data,error}=await client.rpc('v7033_client_authority_state');
     if(error)throw error;
+    /* Account changed while this RPC was in flight: never apply the old build. */
+    if(currentUid()!==requestUid)return null;
     const row=Array.isArray(data)?data[0]:data;
     if(!row?.ok)throw new Error('Authority state unavailable');
-    bridge.uid=id;
+    bridge.uid=requestUid;
     bridge.ready=true;
     bridge.gate=row;
     bridge.enabled=!!row.build_bridge_enabled;
@@ -154,12 +160,16 @@
     if(bridge.enabled)applyAuthorityState(row,{persist:true,includeGold:false});
     return row;
    }catch(e){
+    if(currentUid()!==requestUid)return null;
     bridge.lastError=String(e?.message||e||'');
     console.warn('[V7033] authority gate',e);
     return bridge.confirmedEnabled?bridge.gate:null;
-   }finally{gatePromise=null}
+   }finally{
+    if(gatePromise===p){gatePromise=null;gateUid=''}
+   }
   })();
-  return gatePromise;
+  gatePromise=p;
+  return p;
  }
  function enqueue(fn){
   const task=()=>Promise.resolve().then(fn);
