@@ -20,12 +20,8 @@
     if(typeof shopItems!=='undefined' && Array.isArray(shopItems))shopItems.forEach(v327StripGrowBonus);
   }catch(e){}
 
-  /* ---------- 2. Canonical integer attribute owner ---------- */
-  const v327BaseTotalAttr=totalAttr;
-  totalAttr=function(k){
-    if(k==='growSkill')return 0;
-    return Math.round(Number(v327BaseTotalAttr(k))||0);
-  };
+  /* ---------- 2. Legacy Grow-Skill migration ---------- */
+  /* V8.172: global totalAttr wrapper retired. Attribute math must have one owner. */
 
   /* Attribute investment can never recreate the retired Grow-Skill. */
   const v327BaseIncAttr=typeof incAttr==='function'?incAttr:null;
@@ -35,58 +31,18 @@
   };
 
   function v327CleanAttributeUi(){
+    /* V8.172: retired attribute DOM writer.
+       v4140 is the sole Attribute renderer/number owner.
+       This migration helper may only remove the retired Grow-Skill fragment. */
     const box=document.querySelector('#attrs');
     if(!box)return;
-
     [...box.children].forEach(el=>{
       if(/grow[\s-]*skill|🌱\s*grow/i.test(el.textContent||''))el.remove();
     });
-
-    const labels={
-      staerke:'Stärke',
-      geschick:'Geschick',
-      intelligenz:'Intelligenz',
-      ausdauer:'Ausdauer',
-      glueck:'Glück'
-    };
-    [...box.children].forEach(el=>{
-      const txt=(el.textContent||'').toLowerCase();
-      const key=Object.keys(labels).find(k=>txt.includes(labels[k].toLowerCase()));
-      if(!key)return;
-      const value=String(Math.round(Number(totalAttr(key))||0));
-      const valueNode=el.querySelector('.v125-attr-value');
-      if(valueNode)valueNode.textContent=value;
-      const b=el.querySelector('b');
-      if(b)b.textContent=value;
-    });
   }
 
-  /* Final attribute renderer: only the five combat attributes. */
-  if(typeof v125RenderAttrs==='function'){
-    v125RenderAttrs=function(){
-      const box=document.querySelector('#attrs');if(!box)return;
-      const primary=typeof v125PrimaryKey==='function'?v125PrimaryKey():
-        (s.playerClass==='scout'?'geschick':(s.playerClass==='bruiser'||s.playerClass==='summoner')?'intelligenz':'staerke');
-      const attrs=[
-        ['staerke','💪','Stärke','Erhöht deinen Schaden'],
-        ['geschick','🎯','Geschick','Erhöht Präzision und Tempo'],
-        ['intelligenz','🧠','Intelligenz','Erhöht Magieschaden'],
-        ['ausdauer','❤️','Ausdauer','Erhöht deine Lebenspunkte'],
-        ['glueck','🍀','Glück','Verbessert Krit-Chance & Beute']
-      ];
-      const ordered=[...attrs.filter(x=>x[0]===primary),...attrs.filter(x=>x[0]!==primary)];
-      box.innerHTML=ordered.map(([k,icon,name,desc])=>`
-        <div class="v125-attr ${k===primary?'primary':''}">
-          <div class="v125-attr-icon">${icon}</div>
-          <div>
-            <div class="v125-attr-name">${name}</div>
-            <div class="v125-attr-value">${Math.round(Number(totalAttr(k))||0)}</div>
-            <div class="v125-attr-desc">${desc}</div>
-          </div>
-          <button type="button" onclick="incAttr('${k}')" ${(Number(s.points)||0)<1?'disabled':''} aria-label="${name} erhöhen">+</button>
-        </div>`).join('');
-    };
-  }
+  /* V8.172: legacy v125 attribute renderer override retired.
+     v4140 owns #attrs exclusively. */
 
   /* Item text must no longer advertise the retired attribute. */
   const v327BaseItemBonus=typeof itemBonus==='function'?itemBonus:null;
