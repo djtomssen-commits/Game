@@ -9279,3 +9279,22 @@ Aktueller Release-Status:
   3. Erwartet: genau +1 serverseitiger Fortschritt nach AdMob-SSV.
   4. Anzeige vor Reward schließen: 0 Fortschritt.
   5. denselben SSV-Event nicht doppelt gutschreiben.
+
+
+### 2026-10-06 – Tütchen bis Veröffentlichung von 1.0.8 wieder auf Coming Soon
+- Entscheidung: Solange Android **1.0.8** mit dem produktiven Rewarded-Ad-Bridge-Build noch nicht veröffentlicht ist, bleibt der Tütchen-Dealer sichtbar gesperrt.
+- Grund:
+  - aktuell live/ausstehend ist noch 1.0.7;
+  - Tütchen hängt funktional vom neuen Produktions-AdMob-Build 1.0.8 ab;
+  - verhindert, dass Spieler bereits eine UI sehen, deren nativer Produktionspfad noch nicht öffentlich verfügbar ist.
+- Direkt im bestehenden Owner umgesetzt, keine neue Patch-Schicht:
+  - `v8010-harz-lotto.js`: Tütchen-Tab global wieder gesperrt, Coming-Soon-Toast verweist auf 1.0.8.
+  - `index.html`: Tütchen-Tab wieder disabled / COMING SOON; Hero-Text entsprechend angepasst.
+  - Cache-Bust auf `8016rewardedhold1`.
+- Commits:
+  - Owner-Lock: `0d0c921526250b09fb90d9d9987f0b284703d2b8`
+  - Markup/Cache-Bust: `e043fb087acf0cec26a2076e6ddc052624a75979`
+- Freigabe erst nach:
+  1. 1.0.8 öffentlich verfügbar,
+  2. AdMob-Shop-Verknüpfung gesetzt,
+  3. Rewarded-Endtest inkl. SSV erfolgreich.
