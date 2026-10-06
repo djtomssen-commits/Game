@@ -20,8 +20,11 @@
   }
 
   function authorityFresh(){
-    const d=window.v7074ItemAuthorityDiagnostics?.();
-    return !!d?.ready && (Date.now()-Number(d.lastSync||0)<30000);
+    const item=window.v7074ItemAuthorityDiagnostics?.();
+    const build=window.v7033BuildAuthorityDiagnostics?.();
+    const itemFresh=!!item?.ready && (Date.now()-Number(item.lastSync||0)<30000);
+    const buildFresh=!!build?.ready && !!build?.buildGuard && (Date.now()-Number(build.hydratedAt||0)<30000);
+    return itemFresh&&buildFresh;
   }
 
   function ensureAttributesAuthoritative(){
@@ -31,10 +34,15 @@
     try{hasAccount=!!((typeof v073User!=='undefined'&&v073User?.id)||window.v073User?.id)}catch(_){}
     if(!hasAccount)return Promise.resolve(true);
 
-    if(typeof window.v7074ItemAuthorityRefresh!=='function')return Promise.resolve(false);
+    if(typeof window.v7074ItemAuthorityRefresh!=='function'||typeof window.v7033BuildAuthorityRefresh!=='function'){
+      return Promise.resolve(false);
+    }
 
     if(!attributeSyncPromise){
-      attributeSyncPromise=Promise.resolve(window.v7074ItemAuthorityRefresh(true,false))
+      attributeSyncPromise=Promise.all([
+        Promise.resolve(window.v7033BuildAuthorityRefresh(true)),
+        Promise.resolve(window.v7074ItemAuthorityRefresh(true,false))
+      ])
         .then(()=>authorityFresh())
         .catch(e=>{console.warn('V4.67 attribute authority sync',e);return false})
         .finally(()=>{attributeSyncPromise=null});
@@ -288,7 +296,8 @@
   document.addEventListener('DOMContentLoaded',()=>{layout();activate(activeTab(),false);stamp()},{once:true});
   window.addEventListener('pageshow',()=>{if(document.getElementById('character')?.classList.contains('active')){layout();activate(activeTab(),false);stamp()}},{passive:true});
   window.addEventListener('growlegends:account-ready',()=>{
-    /* Prewarm authoritative equipment immediately so Attribute opens with final values. */
+    /* Prewarm BOTH server build + equipment. Total attributes depend on both. */
+    try{window.v7033BuildAuthorityRefresh?.(true)}catch(_){}
     try{window.v7074ItemAuthorityRefresh?.(true,false)}catch(_){}
     if(document.getElementById('character')?.classList.contains('active')){layout();activate(activeTab(),false);updateHero();stamp()}
   },{passive:true});
