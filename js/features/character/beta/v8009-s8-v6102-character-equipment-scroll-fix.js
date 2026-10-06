@@ -78,7 +78,8 @@ function paintSlots(){
         (it?`<div class="slot-actions"><button class="mini-btn" onclick="unequip('${slot}')">Ablegen</button><button class="mini-btn" onclick="sellEquipped('${slot}')">💰 ${typeof sellValue==='function'?sellValue(it):0}</button></div>`:'')+
         (it?`<div class="v514-slot-level">Lv.${itemLevel(it)}</div>`:'');
       el.dataset.v6102Sig=sig;
-      window.__V7126_CHARACTER_CHURN__.slotWrites++;
+      const churn=window.__V7126_CHARACTER_CHURN__||(window.__V7126_CHARACTER_CHURN__={slotWrites:0});
+      churn.slotWrites=(Number(churn.slotWrites)||0)+1;
     }
 
     el.onclick=e=>{
