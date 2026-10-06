@@ -9832,3 +9832,18 @@ Aktueller Release-Status:
   - 126 statische Kandidaten in saubere I18N-Keys + EN/ES/FR/PL/TR überführen;
   - danach aktive dynamische Resttexte anhand Runtime-Audit schließen;
   - erst danach die Übergangs-Textbrücke reduzieren.
+
+
+### 2026-10-06 – Server 1 Countdown auf 20:00 Uhr verschoben
+- Auf ausdrücklichen Wunsch die öffentliche Server-1-Öffnung heute von 16:00 auf **20:00 Uhr Europe/Berlin** verschoben.
+- Kanonischer Gate-/Countdown-Owner:
+  - `V343_SERVER1_OPENS_AT` von `2026-10-06T14:00:00Z` auf `2026-10-06T18:00:00Z` geändert.
+  - Fallback-/Hinweistexte von 16:00 auf 20:00 aktualisiert.
+- I18N-Core:
+  - alle Server-1-Launchtexte für DE/EN/ES/FR/PL/TR auf 20:00 aktualisiert.
+- Cache-Bust auf index/beta/server1: `8160server12000`.
+- Syntaxcheck v343 + v8143: grün.
+- Commits:
+  - v343 Countdown/Gate: `d53f7a4a0b7e8f7facf172267442bad66d795836`
+  - I18N Launchtexte: `ee03d9838bac5103a0a6c7aa480c2eb1c23fa3b0`
+  - index/beta/server1: `7779cc049567fee10c2698998ae45d5415c91033` / `b141ed82f3f1145a807918f0f4264f121aa4b00b` / `f33b6af5d1739c2bb76e3ae5236f7eb0579d703f`
