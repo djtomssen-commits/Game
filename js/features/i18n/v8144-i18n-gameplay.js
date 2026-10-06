@@ -88,6 +88,35 @@ const EXT={
 };
 for(const lang of Object.keys(EXT))Object.assign(M[lang]||(M[lang]={}),EXT[lang]);
 const ROOTS=['world','character','grow','quests','dungeon','tower','shop','forge','harzDealer','bagDealer','pvp','guild','hall','friends','mail'];
+const MODAL={
+ en:{
+  'Belohnung bestätigen':'Confirm reward','Belohnung bestätigen · Zur Dungeon-Karte':'Confirm reward · Back to dungeon map','Belohnung bestätigen · Zur 10er-Karte':'Confirm reward · Back to 10-stage map',
+  'BELOHNUNG':'REWARD','SIEG':'VICTORY','NIEDERLAGE':'DEFEAT','Schließen':'Close','Zum Album':'Go to album','NEUES PET GEFUNDEN':'NEW PET FOUND','Quelle':'Source','Neue Qualitätsstufe für dein Sammelalbum wurde dauerhaft freigeschaltet.':'A new quality tier has been permanently unlocked for your collection album.',
+  'LEVEL UP!':'LEVEL UP!','Attributpunkte':'Attribute points','Talentpunkt':'Talent point','Talentpunkte':'Talent points',
+  'Täglicher Login-Bonus':'Daily Login Bonus','Weiter spielen':'Continue playing','Tägliche Belohnung':'Daily reward','7-Tage Login-Bonus':'7-Day Login Bonus','GESCHENK ÖFFNEN':'OPEN GIFT','Abgeholt':'Claimed','Überraschung':'Surprise','Wochen-Truhe':'Weekly Chest','Truhen-Level':'Chest level','WOCHEN-EXP':'WEEKLY XP','STATUS':'STATUS','ÖFFNEN':'OPEN','SAMMELT':'COLLECTING','Truhen-Inventar':'Chest inventory','Belohnungen übrig':'rewards remaining','Nehmen':'Claim','ALLES ABHOLEN':'CLAIM ALL','Belohnungen · Level 1–10':'Rewards · Level 1–10',
+  'Bestätigen':'Confirm','Abbrechen':'Cancel','Ja':'Yes','Nein':'No','1 Harz-Taler nutzen':'Use 1 Resin Token','Dampf auffüllen?':'Refill Steam?','Überspringen':'Skip','Fertig':'Done','Los geht\'s! ➜':'Let\'s go! ➜','ERSTER BESUCH':'FIRST VISIT','HILFE':'HELP'
+ },
+ es:{
+  'Belohnung bestätigen':'Confirmar recompensa','Belohnung bestätigen · Zur Dungeon-Karte':'Confirmar recompensa · Volver al mapa','Belohnung bestätigen · Zur 10er-Karte':'Confirmar recompensa · Volver al mapa de 10','BELOHNUNG':'RECOMPENSA','SIEG':'VICTORIA','NIEDERLAGE':'DERROTA','Schließen':'Cerrar','Zum Album':'Ir al álbum','NEUES PET GEFUNDEN':'NUEVA MASCOTA ENCONTRADA','Quelle':'Fuente','LEVEL UP!':'¡SUBES DE NIVEL!','Attributpunkte':'Puntos de atributo','Talentpunkt':'Punto de talento','Talentpunkte':'Puntos de talento','Täglicher Login-Bonus':'Bono de inicio diario','Weiter spielen':'Seguir jugando','Tägliche Belohnung':'Recompensa diaria','7-Tage Login-Bonus':'Bono de inicio de 7 días','GESCHENK ÖFFNEN':'ABRIR REGALO','Abgeholt':'Recogido','Überraschung':'Sorpresa','Wochen-Truhe':'Cofre semanal','Truhen-Level':'Nivel del cofre','WOCHEN-EXP':'EXP SEMANAL','STATUS':'ESTADO','ÖFFNEN':'ABRIR','SAMMELT':'ACUMULANDO','Truhen-Inventar':'Inventario del cofre','Nehmen':'Recoger','ALLES ABHOLEN':'RECOGER TODO','Bestätigen':'Confirmar','Abbrechen':'Cancelar','Ja':'Sí','Nein':'No','Überspringen':'Saltar','Fertig':'Listo','ERSTER BESUCH':'PRIMERA VISITA','HILFE':'AYUDA'
+ },
+ fr:{
+  'Belohnung bestätigen':'Confirmer la récompense','Belohnung bestätigen · Zur Dungeon-Karte':'Confirmer · Retour à la carte','Belohnung bestätigen · Zur 10er-Karte':'Confirmer · Retour à la carte 10','BELOHNUNG':'RÉCOMPENSE','SIEG':'VICTOIRE','NIEDERLAGE':'DÉFAITE','Schließen':'Fermer','Zum Album':'Voir l’album','NEUES PET GEFUNDEN':'NOUVEAU PET TROUVÉ','Quelle':'Source','LEVEL UP!':'NIVEAU SUPÉRIEUR !','Attributpunkte':'Points d’attribut','Talentpunkt':'Point de talent','Talentpunkte':'Points de talent','Täglicher Login-Bonus':'Bonus de connexion quotidien','Weiter spielen':'Continuer','Tägliche Belohnung':'Récompense quotidienne','7-Tage Login-Bonus':'Bonus de connexion 7 jours','GESCHENK ÖFFNEN':'OUVRIR LE CADEAU','Abgeholt':'Récupéré','Überraschung':'Surprise','Wochen-Truhe':'Coffre hebdomadaire','Truhen-Level':'Niveau du coffre','WOCHEN-EXP':'EXP HEBDO','STATUS':'STATUT','ÖFFNEN':'OUVRIR','SAMMELT':'COLLECTE','Truhen-Inventar':'Inventaire du coffre','Nehmen':'Prendre','ALLES ABHOLEN':'TOUT RÉCUPÉRER','Bestätigen':'Confirmer','Abbrechen':'Annuler','Ja':'Oui','Nein':'Non','Überspringen':'Passer','Fertig':'Terminé','ERSTER BESUCH':'PREMIÈRE VISITE','HILFE':'AIDE'
+ },
+ pl:{
+  'Belohnung bestätigen':'Potwierdź nagrodę','Belohnung bestätigen · Zur Dungeon-Karte':'Potwierdź · Wróć do mapy','Belohnung bestätigen · Zur 10er-Karte':'Potwierdź · Wróć do mapy 10','BELOHNUNG':'NAGRODA','SIEG':'ZWYCIĘSTWO','NIEDERLAGE':'PORAŻKA','Schließen':'Zamknij','Zum Album':'Do albumu','NEUES PET GEFUNDEN':'NOWY PET ZNALEZIONY','Quelle':'Źródło','LEVEL UP!':'AWANS!','Attributpunkte':'Punkty atrybutów','Talentpunkt':'Punkt talentu','Talentpunkte':'Punkty talentów','Täglicher Login-Bonus':'Dzienny bonus logowania','Weiter spielen':'Graj dalej','Tägliche Belohnung':'Dzienna nagroda','7-Tage Login-Bonus':'7-dniowy bonus logowania','GESCHENK ÖFFNEN':'OTWÓRZ PREZENT','Abgeholt':'Odebrane','Überraschung':'Niespodzianka','Wochen-Truhe':'Tygodniowa skrzynia','Truhen-Level':'Poziom skrzyni','WOCHEN-EXP':'TYGODNIOWE EXP','STATUS':'STATUS','ÖFFNEN':'OTWÓRZ','SAMMELT':'ZBIERA','Truhen-Inventar':'Ekwipunek skrzyni','Nehmen':'Odbierz','ALLES ABHOLEN':'ODBIERZ WSZYSTKO','Bestätigen':'Potwierdź','Abbrechen':'Anuluj','Ja':'Tak','Nein':'Nie','Überspringen':'Pomiń','Fertig':'Gotowe','ERSTER BESUCH':'PIERWSZA WIZYTA','HILFE':'POMOC'
+ },
+ tr:{
+  'Belohnung bestätigen':'Ödülü onayla','Belohnung bestätigen · Zur Dungeon-Karte':'Ödülü onayla · Haritaya dön','Belohnung bestätigen · Zur 10er-Karte':'Ödülü onayla · 10 aşamalı haritaya dön','BELOHNUNG':'ÖDÜL','SIEG':'ZAFER','NIEDERLAGE':'YENİLGİ','Schließen':'Kapat','Zum Album':'Albüme git','NEUES PET GEFUNDEN':'YENİ PET BULUNDU','Quelle':'Kaynak','LEVEL UP!':'SEVİYE ATLADI!','Attributpunkte':'Özellik puanları','Talentpunkt':'Yetenek puanı','Talentpunkte':'Yetenek puanları','Täglicher Login-Bonus':'Günlük giriş bonusu','Weiter spielen':'Oynamaya devam et','Tägliche Belohnung':'Günlük ödül','7-Tage Login-Bonus':'7 Günlük Giriş Bonusu','GESCHENK ÖFFNEN':'HEDİYEYİ AÇ','Abgeholt':'Alındı','Überraschung':'Sürpriz','Wochen-Truhe':'Haftalık Sandık','Truhen-Level':'Sandık seviyesi','WOCHEN-EXP':'HAFTALIK XP','STATUS':'DURUM','ÖFFNEN':'AÇ','SAMMELT':'TOPLUYOR','Truhen-Inventar':'Sandık envanteri','Nehmen':'Al','ALLES ABHOLEN':'TÜMÜNÜ AL','Bestätigen':'Onayla','Abbrechen':'İptal','Ja':'Evet','Nein':'Hayır','Überspringen':'Atla','Fertig':'Bitti','ERSTER BESUCH':'İLK ZİYARET','HILFE':'YARDIM'
+ }
+};
+for(const lang of Object.keys(MODAL))Object.assign(M[lang]||(M[lang]={}),MODAL[lang]);
+
+const OVERLAY_SELECTORS=[
+ '#v247DungeonReward','#v211PvpResultCard','#v231QuestReward',
+ '.v6211-level-overlay','.v6211-pet-overlay','.v381-modal',
+ '.v8010-popup-backdrop','.v6283-guide-overlay','.v6279-guide-overlay',
+ '#v484DailyPopup','.v6239-wc-overlay','[role="dialog"]'
+];
 const ORIGINAL_TEXT=new WeakMap();
 const ORIGINAL_ATTR=new WeakMap();
 function translateText(raw,lang){
@@ -118,9 +147,13 @@ function applyRoot(root){
  });
  return true;
 }
+function applyOverlays(){
+ const seen=new Set();
+ OVERLAY_SELECTORS.forEach(sel=>document.querySelectorAll(sel).forEach(el=>{if(!seen.has(el)){seen.add(el);applyRoot(el)}}));
+}
 function apply(id){
  const root=id&&ROOTS.includes(id)?document.getElementById(id):ROOTS.map(x=>document.getElementById(x)).find(x=>x&&x.classList.contains('active'));
- return applyRoot(root);
+ const ok=applyRoot(root);applyOverlays();return ok;
 }
 function schedule(id){
  queueMicrotask(()=>apply(id));
@@ -132,5 +165,6 @@ window.addEventListener('growlegends:language-changed',()=>schedule(),{passive:t
 window.addEventListener('growlegends:account-ready',()=>schedule(),{passive:true});
 window.addEventListener('growlegends:navigation-open-v7119',e=>{const id=String((e&&e.detail&&e.detail.id)||'');if(ROOTS.includes(id))schedule(id)},{passive:true});
 window.addEventListener('pageshow',()=>schedule(),{passive:true});
+document.addEventListener('click',()=>{setTimeout(()=>applyOverlays(),0);setTimeout(()=>applyOverlays(),80);setTimeout(()=>applyOverlays(),260)},true);
 document.addEventListener('DOMContentLoaded',()=>schedule(),{once:true});
 })();
