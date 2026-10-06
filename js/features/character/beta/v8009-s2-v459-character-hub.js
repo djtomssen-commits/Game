@@ -22,8 +22,11 @@
   function authorityFresh(){
     const item=window.v7074ItemAuthorityDiagnostics?.();
     const build=window.v7033BuildAuthorityDiagnostics?.();
-    const itemFresh=!!item?.ready && (Date.now()-Number(item.lastSync||0)<30000);
-    const buildFresh=!!build?.ready && !!build?.buildGuard && (Date.now()-Number(build.hydratedAt||0)<30000);
+    let uid='';
+    try{uid=String((typeof v073User!=='undefined'&&v073User?.id)||window.v073User?.id||'')}catch(_){}
+    if(!uid)return false;
+    const itemFresh=!!item?.ready && String(item?.uid||'')===uid && (Date.now()-Number(item.lastSync||0)<30000);
+    const buildFresh=!!build?.ready && String(build?.uid||'')===uid && !!build?.buildGuard && (Date.now()-Number(build.hydratedAt||0)<30000);
     return itemFresh&&buildFresh;
   }
 
