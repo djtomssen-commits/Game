@@ -196,6 +196,55 @@ const WHOLE_GAME={
 };
 for(const lang of Object.keys(WHOLE_GAME))Object.assign(M[lang]||(M[lang]={}),WHOLE_GAME[lang]);
 
+const FINAL_VISIBLE={
+ en:{
+  'Tippe einen Topf an → Details erscheinen darunter':'Tap a pot → details appear below',
+  'Freien Topf in der Mitte antippen. Pflege ist optional: Die Pflanze verdorrt niemals, aber gute Pflege verbessert Qualität und Belohnung.':'Tap a free pot in the middle. Care is optional: the plant never withers, but good care improves quality and rewards.',
+  '−8 % Wachstumszeit je Level.':'−8% growth time per level.','+10 % Ertrag je Level.':'+10% yield per level.',
+  'Kein Buff aktiv':'No buff active','Keine Samen':'No seeds','Pflanzenplatz nicht verfügbar':'Plant slot unavailable',
+  'Wähle einen freien, freigeschalteten Topf.':'Choose a free, unlocked pot.','Dieser Samen ist nicht käuflich':'This seed cannot be purchased',
+  'Nur als Beute erhältlich.':'Only available as loot.','Mutation entdeckt!':'Mutation discovered!','Ernte abgeschlossen':'Harvest complete',
+  'Samen-Händler':'Seed dealer','Diese Woche:':'This week:','Mutationen':'Mutations','Ertrag':'Yield','Wachstumszeit':'Growth time','Licht':'Light'
+ },
+ es:{
+  'Tippe einen Topf an → Details erscheinen darunter':'Toca una maceta → los detalles aparecen abajo',
+  'Freien Topf in der Mitte antippen. Pflege ist optional: Die Pflanze verdorrt niemals, aber gute Pflege verbessert Qualität und Belohnung.':'Toca una maceta libre en el centro. El cuidado es opcional: la planta nunca se marchita, pero un buen cuidado mejora la calidad y las recompensas.',
+  '−8 % Wachstumszeit je Level.':'−8 % de tiempo de crecimiento por nivel.','+10 % Ertrag je Level.':'+10 % de rendimiento por nivel.',
+  'Kein Buff aktiv':'Sin bono activo','Keine Samen':'Sin semillas','Pflanzenplatz nicht verfügbar':'Espacio de planta no disponible',
+  'Wähle einen freien, freigeschalteten Topf.':'Elige una maceta libre y desbloqueada.','Dieser Samen ist nicht käuflich':'Esta semilla no se puede comprar',
+  'Nur als Beute erhältlich.':'Solo disponible como botín.','Mutation entdeckt!':'¡Mutación descubierta!','Ernte abgeschlossen':'Cosecha completada',
+  'Samen-Händler':'Vendedor de semillas','Diese Woche:':'Esta semana:','Mutationen':'Mutaciones','Ertrag':'Rendimiento','Wachstumszeit':'Tiempo de crecimiento','Licht':'Luz'
+ },
+ fr:{
+  'Tippe einen Topf an → Details erscheinen darunter':'Touchez un pot → les détails apparaissent dessous',
+  'Freien Topf in der Mitte antippen. Pflege ist optional: Die Pflanze verdorrt niemals, aber gute Pflege verbessert Qualität und Belohnung.':'Touchez un pot libre au centre. Les soins sont facultatifs : la plante ne se fane jamais, mais de bons soins améliorent la qualité et les récompenses.',
+  '−8 % Wachstumszeit je Level.':'−8 % de temps de croissance par niveau.','+10 % Ertrag je Level.':'+10 % de rendement par niveau.',
+  'Kein Buff aktiv':'Aucun bonus actif','Keine Samen':'Aucune graine','Pflanzenplatz nicht verfügbar':'Emplacement de plante indisponible',
+  'Wähle einen freien, freigeschalteten Topf.':'Choisissez un pot libre et déverrouillé.','Dieser Samen ist nicht käuflich':'Cette graine ne peut pas être achetée',
+  'Nur als Beute erhältlich.':'Disponible uniquement comme butin.','Mutation entdeckt!':'Mutation découverte !','Ernte abgeschlossen':'Récolte terminée',
+  'Samen-Händler':'Marchand de graines','Diese Woche:':'Cette semaine :','Mutationen':'Mutations','Ertrag':'Rendement','Wachstumszeit':'Temps de croissance','Licht':'Lumière'
+ },
+ pl:{
+  'Tippe einen Topf an → Details erscheinen darunter':'Dotknij doniczki → szczegóły pojawią się poniżej',
+  'Freien Topf in der Mitte antippen. Pflege ist optional: Die Pflanze verdorrt niemals, aber gute Pflege verbessert Qualität und Belohnung.':'Dotknij wolnej doniczki pośrodku. Pielęgnacja jest opcjonalna: roślina nigdy nie usycha, ale dobra pielęgnacja poprawia jakość i nagrody.',
+  '−8 % Wachstumszeit je Level.':'−8% czasu wzrostu na poziom.','+10 % Ertrag je Level.':'+10% plonu na poziom.',
+  'Kein Buff aktiv':'Brak aktywnego bonusu','Keine Samen':'Brak nasion','Pflanzenplatz nicht verfügbar':'Miejsce na roślinę niedostępne',
+  'Wähle einen freien, freigeschalteten Topf.':'Wybierz wolną, odblokowaną doniczkę.','Dieser Samen ist nicht käuflich':'Tego nasiona nie można kupić',
+  'Nur als Beute erhältlich.':'Dostępne tylko jako łup.','Mutation entdeckt!':'Odkryto mutację!','Ernte abgeschlossen':'Zbiór zakończony',
+  'Samen-Händler':'Sprzedawca nasion','Diese Woche:':'W tym tygodniu:','Mutationen':'Mutacje','Ertrag':'Plon','Wachstumszeit':'Czas wzrostu','Licht':'Światło'
+ },
+ tr:{
+  'Tippe einen Topf an → Details erscheinen darunter':'Bir saksıya dokun → ayrıntılar aşağıda görünür',
+  'Freien Topf in der Mitte antippen. Pflege ist optional: Die Pflanze verdorrt niemals, aber gute Pflege verbessert Qualität und Belohnung.':'Ortadaki boş bir saksıya dokun. Bakım isteğe bağlıdır: bitki asla solmaz, ancak iyi bakım kaliteyi ve ödülleri artırır.',
+  '−8 % Wachstumszeit je Level.':'Seviye başına −%8 büyüme süresi.','+10 % Ertrag je Level.':'Seviye başına +%10 verim.',
+  'Kein Buff aktiv':'Aktif bonus yok','Keine Samen':'Tohum yok','Pflanzenplatz nicht verfügbar':'Bitki alanı kullanılamıyor',
+  'Wähle einen freien, freigeschalteten Topf.':'Boş ve kilidi açık bir saksı seç.','Dieser Samen ist nicht käuflich':'Bu tohum satın alınamaz',
+  'Nur als Beute erhältlich.':'Yalnızca ganimet olarak bulunur.','Mutation entdeckt!':'Mutasyon keşfedildi!','Ernte abgeschlossen':'Hasat tamamlandı',
+  'Samen-Händler':'Tohum satıcısı','Diese Woche:':'Bu hafta:','Mutationen':'Mutasyonlar','Ertrag':'Verim','Wachstumszeit':'Büyüme süresi','Licht':'Işık'
+ }
+};
+for(const lang of Object.keys(FINAL_VISIBLE))Object.assign(M[lang]||(M[lang]={}),FINAL_VISIBLE[lang]);
+
 /* Dynamic text patterns. Exact dictionaries cannot cover values embedded into
    labels; these preserve numbers/names while translating the surrounding UI. */
 const P={
