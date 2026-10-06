@@ -48,22 +48,33 @@ const M={
  }
 };
 const ROOTS=['world','character','grow','quests','dungeon','tower'];
+const ORIGINAL_TEXT=new WeakMap();
+const ORIGINAL_ATTR=new WeakMap();
 function translateText(raw,lang){
  const s=String(raw||'').trim();if(!s||lang==='de')return null;
  return M[lang]&&M[lang][s]!==undefined?M[lang][s]:null;
 }
 function applyRoot(root){
  if(!root)return false;
- const lang=G.getLanguage();if(lang==='de')return true;
+ const lang=G.getLanguage();
  const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);const nodes=[];
  while(walker.nextNode())nodes.push(walker.currentNode);
  nodes.forEach(node=>{
   if(node.parentElement&&node.parentElement.closest('script,style,input,textarea'))return;
-  const raw=node.nodeValue||'',v=translateText(raw,lang);if(v===null)return;
-  const a=(raw.match(/^\s*/)||[''])[0],b=(raw.match(/\s*$/)||[''])[0];node.nodeValue=a+v+b;
+  if(!ORIGINAL_TEXT.has(node))ORIGINAL_TEXT.set(node,node.nodeValue||'');
+  const original=ORIGINAL_TEXT.get(node)||'';
+  if(lang==='de'){if(node.nodeValue!==original)node.nodeValue=original;return}
+  const v=translateText(original,lang);if(v===null){if(node.nodeValue!==original)node.nodeValue=original;return}
+  const a=(original.match(/^\s*/)||[''])[0],b=(original.match(/\s*$/)||[''])[0];node.nodeValue=a+v+b;
  });
  root.querySelectorAll('[aria-label],[title],[placeholder]').forEach(el=>{
-  ['aria-label','title','placeholder'].forEach(a=>{const raw=el.getAttribute(a),v=translateText(raw,lang);if(v!==null)el.setAttribute(a,v)});
+  let originals=ORIGINAL_ATTR.get(el);if(!originals){originals={};ORIGINAL_ATTR.set(el,originals)}
+  ['aria-label','title','placeholder'].forEach(a=>{
+   if(!(a in originals))originals[a]=el.getAttribute(a);
+   const original=originals[a];if(original==null)return;
+   if(lang==='de'){el.setAttribute(a,original);return}
+   const v=translateText(original,lang);el.setAttribute(a,v===null?original:v);
+  });
  });
  return true;
 }
