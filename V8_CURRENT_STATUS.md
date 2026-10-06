@@ -9524,3 +9524,42 @@ Aktueller Release-Status:
   - Nebel-Crew
   - Nebel-Post
   - danach verbleibende Popups / Toasts / Guides / Spezialdialoge.
+
+### 2026-10-06 – Mehrsprachigkeit Power-Block 3
+- I18N-Abdeckung erweitert auf:
+  - Händler
+  - Harzschmiede
+  - Harz-/Gold-/Rahmen-Dealer
+  - Hinterhof-Dealer / Harz-Automat
+  - PvP
+  - Gilde
+  - Hall of Haze
+  - Nebel-Crew
+  - Nebel-Post
+- Der bestehende presentation-only Owner `v8144-i18n-gameplay.js` wurde erweitert; keine Gameplay-, Reward-, Save- oder RPC-Logik verändert.
+- Neue übersetzte Kerntexte u. a.:
+  - Händler-Kategorien / Reroll-Texte
+  - Harzschmiede Tabs, Auswahl, Prismatisch-Schmieden, Samenfragmente
+  - Dealer-Tabs Harz / Gold / Avatar-Rahmen
+  - Harz-Automat Grundtexte / Päckchen / Chancen / Belohnungsdialoge
+  - Gildenübersicht / Rollen / Fortschritt
+  - Freunde / Anfragen
+  - Nebel-Post Grundzustände / Antworten / Löschen / ungelesen
+- Nebel-Post Datum/Zeit formatiert jetzt passend zur gewählten Sprache/Locale.
+- Neue Root-Abdeckung im I18N-Bridge:
+  - `shop`, `forge`, `harzDealer`, `bagDealer`, `pvp`, `guild`, `hall`, `friends`, `mail`
+- Dynamisch gerenderte Inhalte werden nach Navigation zusätzlich verzögert nachgezogen, damit asynchron geladene Oberflächen mitübersetzt werden.
+- Cache-Bust Power-Block 3:
+  - Gameplay I18N: `8145gameplay2`
+  - Mail Owner: `8145i18nmail1`
+- Commits:
+  - I18N-Erweiterung: `ac0c7ced3247c1778175716f53b66dcede99aab2`
+  - Mail Locale: `40f4ce09ff5be90cfa36b0f75b28b21acf57283c`
+  - index Wiring/Cache: `15b7a4776722f1d5a21619f00d29a114c85574ad`
+  - server1 Wiring/Cache: `37239689b9d7ce664b5d33343770b314f1bfb3eb`
+- QA:
+  - DOM Contract Guard Run #568: **SUCCESS**
+  - Synthetic Player Smoke Run #42: **SUCCESS**
+- Nächster Block:
+  - verbleibende Popups, Toasts, Guides, Spezialdialoge, Detailtexte und dynamische Result-/Belohnungsfenster komplett durchgehen;
+  - danach Sprach-QA pro Sprache auf Mobile, insbesondere lange französische/polnische Texte und kleine Buttons.
