@@ -10370,3 +10370,27 @@ Aktueller Release-Status:
   - index: `c030d8fa7c0984d9fd4dc60e57219e9c353eb8b8`
   - beta: `7c064b69a03bbce167d24c774e6d94d401b74a06`
   - server1: `cf0d02f15bc351695f76dec20f1c041d4bdb670f`
+
+
+### 2026-10-06 – Attribut-Sprung jetzt direkt instrumentiert (kein weiterer Blindfix)
+- Nutzer meldete nach den letzten Bereinigungen nur noch einen kleinen einmaligen Sprung im Hauptattribut.
+- Der aktuelle kanonische Attribut-Owner `v4140` wurde deshalb direkt mit Source-Breakdown instrumentiert.
+- Bei jeder echten Wertänderung nach dem ersten Paint wird automatisch ein Runtime-Incident `attribute_value_changed` geschrieben.
+- Pro geändertem Attribut werden Vorher/Nachher protokolliert:
+  - angezeigter Wert
+  - Basiswert `s.attrs`
+  - Klassenbonus
+  - Equipment-Summe
+  - einzelne Equipment-Beiträge inkl. Slot/Item-ID/Set-ID
+  - `setBonusValue`
+  - Set-Anzahl
+  - aktuelle UID/Klasse
+- Dadurch ist beim nächsten sichtbaren Sprung exakt nachvollziehbar, welcher Summand sich geändert hat.
+- Keine Änderung an Gameplay-Werten; reine Diagnose im kanonischen Owner.
+- Syntaxcheck v4140: grün.
+- Cache-Bust index/beta/server1: `8178attrtrace1`.
+- Commits:
+  - v4140: `8574c81746b112d476d28b533ed88277194edb1e`
+  - index: `186f3adc4bbee176004baf8438d6b13133bfda94`
+  - beta: `1ac56b50aa29c8dd6adfa7eff7526490854985cf`
+  - server1: `5a5dca83f1b183f0090af217ef820b1fde6fd1b7`
