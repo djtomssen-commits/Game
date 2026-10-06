@@ -780,6 +780,110 @@ const RUNTIME_UI_B={
 };
 for(const lang of Object.keys(RUNTIME_UI_B))Object.assign(M[lang]||(M[lang]={}),RUNTIME_UI_B[lang]);
 
+const RUNTIME_UI_C={
+ en:{
+  'Gildenboss-Belohnung':'Guild boss reward','Gildenboss-Belohnung nicht verfügbar':'Guild boss reward unavailable','🎁 Gildenkrieg-Belohnung':'🎁 Guild war reward','Gildenkrieg-Belohnung fehlgeschlagen':'Guild war reward failed',
+  'KAMPF':'BATTLE','Deine Gilde':'Your guild','Melde Mitglieder bis 18:00 Uhr für Angriff und/oder Verteidigung an.':'Register members for attack and/or defense by 18:00.',
+  'Matchmaking läuft. Ab 19:00 Uhr steht das Ergebnis bereit.':'Matchmaking is running. The result will be ready from 19:00.','Für heute wurde noch kein passender Gildenkrieg gefunden.':'No suitable guild war was found for today.',
+  '💀 Niederlage. +10 Gilden-Buds.':'💀 Defeat. +10 Guild Buds.','Belohnung fehlgeschlagen':'Reward failed','Nur Anführer/Offizier':'Leader/officer only','Heute geschlossen':'Closed today',
+  'Der Anführer oder ein Offizier kann eine Gegnergilde auswählen und den Krieg erklären.':'The leader or an officer can choose an enemy guild and declare war.',
+  'Neue Kriegserklärungen sind heute geschlossen. Morgen wieder bis 18:00 Uhr.':'New war declarations are closed today. Available again tomorrow until 18:00.',
+  'Kein Krieg':'No war','Die Anmeldung ist heute seit 18:00 Uhr geschlossen.':'Registration has been closed since 18:00 today.','Anmeldung zurückgenommen.':'Registration withdrawn.',
+  '⚔️ Gildenkrieg erklären':'⚔️ Declare guild war','Krieg erklären':'Declare war','⚔️ Krieg erklärt!':'⚔️ War declared!','Kriegserklärung fehlgeschlagen':'War declaration failed',
+  'Keine Platzierungsbelohnung':'No ranking reward','Für den letzten Mittwoch ist auf diesem Account kein Turm-Ergebnis gespeichert.':'No Tower result from last Wednesday is saved on this account.',
+  'Diese Mittwochs-Belohnung wurde bereits abgeholt.':'This Wednesday reward has already been claimed.','Du bist in dieser Mittwochs-Rangliste nicht platziert.':'You are not ranked in this Wednesday ranking.',
+  'Die finale Mittwochs-Rangliste konnte gerade nicht geprüft werden.':'The final Wednesday ranking could not be checked right now.','Letzte Mittwochs-Platzierung wird geprüft …':'Checking last Wednesday ranking …',
+  'Letzte Mittwochs-Platzierung momentan nicht erreichbar.':'Last Wednesday ranking is currently unavailable.','Das Mittwochs-Event ist nicht aktiv.':'The Wednesday event is not active.','Aufgabe noch nicht abgeschlossen.':'Task not completed yet.',
+  'Lauf wirklich abbrechen? 25 % der ungesicherten Beute gehen verloren.':'Really abort the run? 25% of unsecured loot will be lost.','Lauf wirklich abbrechen?':'Really abort the run?',
+  'Dein Turm-Leben ist bereits voll.':'Your Tower health is already full.','Dein Mutationslimit ist erreicht.':'Your mutation limit has been reached.','Wurzelnetz für diesen Lauf erhalten.':'Root Network obtained for this run.',
+  'Keine weitere Genetik verfügbar.':'No further genetics available.','Dein Mutationslimit ist erreicht. Kauf nicht möglich.':'Mutation limit reached. Purchase unavailable.','Nicht genug ungesichertes Turm-Gold.':'Not enough unsecured Tower Gold.',
+  'Kauf konnte nicht angewendet werden. Es wurde kein Gold abgezogen.':'Purchase could not be applied. No Gold was deducted.','Schwarzmarkt leergekauft – er erscheint in diesem Run nicht mehr.':'Black market sold out – it will not appear again in this run.',
+  'Nicht genug Turmblätter.':'Not enough Tower Leaves.','Kein Ausweg – der Boss muss fallen.':'No escape – the boss must fall.','Ein besonders harter Wächter wartet dahinter.':'An especially tough guardian waits behind it.',
+  'Boss-Tor öffnen':'Open boss gate','Tür wählen':'Choose door','Wähle eine Tür …':'Choose a door …','Nach diesem Spezialraum folgt zwingend wieder ein Kampf.':'A battle must follow this special room.'
+ },
+ es:{
+  'Gildenboss-Belohnung':'Recompensa del jefe del gremio','Gildenboss-Belohnung nicht verfügbar':'Recompensa del jefe no disponible','🎁 Gildenkrieg-Belohnung':'🎁 Recompensa de guerra','Gildenkrieg-Belohnung fehlgeschlagen':'Falló la recompensa de guerra',
+  'KAMPF':'COMBATE','Deine Gilde':'Tu gremio','Melde Mitglieder bis 18:00 Uhr für Angriff und/oder Verteidigung an.':'Inscribe miembros para ataque y/o defensa hasta las 18:00.',
+  'Matchmaking läuft. Ab 19:00 Uhr steht das Ergebnis bereit.':'El emparejamiento está en curso. El resultado estará disponible desde las 19:00.','Für heute wurde noch kein passender Gildenkrieg gefunden.':'Aún no se encontró una guerra adecuada para hoy.',
+  '💀 Niederlage. +10 Gilden-Buds.':'💀 Derrota. +10 Brotes de gremio.','Belohnung fehlgeschlagen':'Falló la recompensa','Nur Anführer/Offizier':'Solo líder/oficial','Heute geschlossen':'Cerrado hoy',
+  'Der Anführer oder ein Offizier kann eine Gegnergilde auswählen und den Krieg erklären.':'El líder o un oficial puede elegir un gremio rival y declarar la guerra.',
+  'Neue Kriegserklärungen sind heute geschlossen. Morgen wieder bis 18:00 Uhr.':'Las nuevas declaraciones están cerradas hoy. Mañana vuelven hasta las 18:00.',
+  'Kein Krieg':'Sin guerra','Die Anmeldung ist heute seit 18:00 Uhr geschlossen.':'La inscripción está cerrada desde las 18:00 de hoy.','Anmeldung zurückgenommen.':'Inscripción retirada.',
+  '⚔️ Gildenkrieg erklären':'⚔️ Declarar guerra','Krieg erklären':'Declarar guerra','⚔️ Krieg erklärt!':'⚔️ ¡Guerra declarada!','Kriegserklärung fehlgeschlagen':'Falló la declaración de guerra',
+  'Keine Platzierungsbelohnung':'Sin recompensa de clasificación','Für den letzten Mittwoch ist auf diesem Account kein Turm-Ergebnis gespeichert.':'No hay resultado de Torre del último miércoles guardado en esta cuenta.',
+  'Diese Mittwochs-Belohnung wurde bereits abgeholt.':'La recompensa del miércoles ya fue recogida.','Du bist in dieser Mittwochs-Rangliste nicht platziert.':'No estás clasificado en este ranking del miércoles.',
+  'Die finale Mittwochs-Rangliste konnte gerade nicht geprüft werden.':'No se pudo comprobar ahora la clasificación final del miércoles.','Letzte Mittwochs-Platzierung wird geprüft …':'Comprobando la última clasificación del miércoles …',
+  'Letzte Mittwochs-Platzierung momentan nicht erreichbar.':'La última clasificación del miércoles no está disponible.','Das Mittwochs-Event ist nicht aktiv.':'El evento del miércoles no está activo.','Aufgabe noch nicht abgeschlossen.':'Tarea aún no completada.',
+  'Lauf wirklich abbrechen? 25 % der ungesicherten Beute gehen verloren.':'¿Abortar la run? Se perderá el 25 % del botín no asegurado.','Lauf wirklich abbrechen?':'¿Abortar la run?',
+  'Dein Turm-Leben ist bereits voll.':'La vida de la Torre ya está llena.','Dein Mutationslimit ist erreicht.':'Has alcanzado el límite de mutaciones.','Wurzelnetz für diesen Lauf erhalten.':'Red de Raíces obtenida para esta run.',
+  'Keine weitere Genetik verfügbar.':'No hay más genética disponible.','Dein Mutationslimit ist erreicht. Kauf nicht möglich.':'Límite de mutaciones alcanzado. Compra no disponible.','Nicht genug ungesichertes Turm-Gold.':'No hay suficiente Oro de Torre no asegurado.',
+  'Kauf konnte nicht angewendet werden. Es wurde kein Gold abgezogen.':'No se pudo aplicar la compra. No se descontó Oro.','Schwarzmarkt leergekauft – er erscheint in diesem Run nicht mehr.':'Mercado negro agotado; no volverá a aparecer en esta run.',
+  'Nicht genug Turmblätter.':'No hay suficientes Hojas de Torre.','Kein Ausweg – der Boss muss fallen.':'Sin salida: el jefe debe caer.','Ein besonders harter Wächter wartet dahinter.':'Un guardián especialmente duro espera detrás.',
+  'Boss-Tor öffnen':'Abrir puerta del jefe','Tür wählen':'Elegir puerta','Wähle eine Tür …':'Elige una puerta …','Nach diesem Spezialraum folgt zwingend wieder ein Kampf.':'Después de esta sala especial debe seguir un combate.'
+ },
+ fr:{
+  'Gildenboss-Belohnung':'Récompense du boss de guilde','Gildenboss-Belohnung nicht verfügbar':'Récompense du boss indisponible','🎁 Gildenkrieg-Belohnung':'🎁 Récompense de guerre','Gildenkrieg-Belohnung fehlgeschlagen':'Échec de la récompense de guerre',
+  'KAMPF':'COMBAT','Deine Gilde':'Ta guilde','Melde Mitglieder bis 18:00 Uhr für Angriff und/oder Verteidigung an.':'Inscris des membres en attaque et/ou défense avant 18:00.',
+  'Matchmaking läuft. Ab 19:00 Uhr steht das Ergebnis bereit.':'Le matchmaking est en cours. Le résultat sera disponible dès 19:00.','Für heute wurde noch kein passender Gildenkrieg gefunden.':'Aucune guerre de guilde adaptée trouvée pour aujourd’hui.',
+  '💀 Niederlage. +10 Gilden-Buds.':'💀 Défaite. +10 Buds de guilde.','Belohnung fehlgeschlagen':'Échec de la récompense','Nur Anführer/Offizier':'Chef/officier uniquement','Heute geschlossen':'Fermé aujourd’hui',
+  'Der Anführer oder ein Offizier kann eine Gegnergilde auswählen und den Krieg erklären.':'Le chef ou un officier peut choisir une guilde adverse et déclarer la guerre.',
+  'Neue Kriegserklärungen sind heute geschlossen. Morgen wieder bis 18:00 Uhr.':'Les nouvelles déclarations sont fermées aujourd’hui. Retour demain jusqu’à 18:00.',
+  'Kein Krieg':'Aucune guerre','Die Anmeldung ist heute seit 18:00 Uhr geschlossen.':'Les inscriptions sont fermées depuis 18:00 aujourd’hui.','Anmeldung zurückgenommen.':'Inscription retirée.',
+  '⚔️ Gildenkrieg erklären':'⚔️ Déclarer la guerre','Krieg erklären':'Déclarer la guerre','⚔️ Krieg erklärt!':'⚔️ Guerre déclarée !','Kriegserklärung fehlgeschlagen':'Échec de la déclaration de guerre',
+  'Keine Platzierungsbelohnung':'Aucune récompense de classement','Für den letzten Mittwoch ist auf diesem Account kein Turm-Ergebnis gespeichert.':'Aucun résultat de Tour du mercredi précédent n’est enregistré sur ce compte.',
+  'Diese Mittwochs-Belohnung wurde bereits abgeholt.':'Cette récompense du mercredi a déjà été récupérée.','Du bist in dieser Mittwochs-Rangliste nicht platziert.':'Tu n’es pas classé dans ce classement du mercredi.',
+  'Die finale Mittwochs-Rangliste konnte gerade nicht geprüft werden.':'Impossible de vérifier le classement final du mercredi pour le moment.','Letzte Mittwochs-Platzierung wird geprüft …':'Vérification du dernier classement du mercredi …',
+  'Letzte Mittwochs-Platzierung momentan nicht erreichbar.':'Dernier classement du mercredi indisponible.','Das Mittwochs-Event ist nicht aktiv.':'L’événement du mercredi n’est pas actif.','Aufgabe noch nicht abgeschlossen.':'Tâche pas encore terminée.',
+  'Lauf wirklich abbrechen? 25 % der ungesicherten Beute gehen verloren.':'Abandonner le run ? 25 % du butin non sécurisé sera perdu.','Lauf wirklich abbrechen?':'Abandonner le run ?',
+  'Dein Turm-Leben ist bereits voll.':'La vie de la Tour est déjà pleine.','Dein Mutationslimit ist erreicht.':'Limite de mutations atteinte.','Wurzelnetz für diesen Lauf erhalten.':'Réseau Racinaire obtenu pour ce run.',
+  'Keine weitere Genetik verfügbar.':'Aucune autre génétique disponible.','Dein Mutationslimit ist erreicht. Kauf nicht möglich.':'Limite de mutations atteinte. Achat impossible.','Nicht genug ungesichertes Turm-Gold.':'Pas assez d’Or de Tour non sécurisé.',
+  'Kauf konnte nicht angewendet werden. Es wurde kein Gold abgezogen.':'L’achat n’a pas pu être appliqué. Aucun Or n’a été retiré.','Schwarzmarkt leergekauft – er erscheint in diesem Run nicht mehr.':'Marché noir épuisé — il ne réapparaîtra plus dans ce run.',
+  'Nicht genug Turmblätter.':'Pas assez de Feuilles de Tour.','Kein Ausweg – der Boss muss fallen.':'Aucune issue — le boss doit tomber.','Ein besonders harter Wächter wartet dahinter.':'Un gardien particulièrement coriace attend derrière.',
+  'Boss-Tor öffnen':'Ouvrir la porte du boss','Tür wählen':'Choisir une porte','Wähle eine Tür …':'Choisis une porte …','Nach diesem Spezialraum folgt zwingend wieder ein Kampf.':'Un combat doit obligatoirement suivre cette salle spéciale.'
+ },
+ pl:{
+  'Gildenboss-Belohnung':'Nagroda bossa gildii','Gildenboss-Belohnung nicht verfügbar':'Nagroda bossa niedostępna','🎁 Gildenkrieg-Belohnung':'🎁 Nagroda wojny gildii','Gildenkrieg-Belohnung fehlgeschlagen':'Błąd nagrody wojny gildii',
+  'KAMPF':'WALKA','Deine Gilde':'Twoja gildia','Melde Mitglieder bis 18:00 Uhr für Angriff und/oder Verteidigung an.':'Zapisz członków do ataku i/lub obrony do 18:00.',
+  'Matchmaking läuft. Ab 19:00 Uhr steht das Ergebnis bereit.':'Dobieranie trwa. Wynik będzie dostępny od 19:00.','Für heute wurde noch kein passender Gildenkrieg gefunden.':'Nie znaleziono jeszcze odpowiedniej wojny gildii na dziś.',
+  '💀 Niederlage. +10 Gilden-Buds.':'💀 Porażka. +10 Budsów gildii.','Belohnung fehlgeschlagen':'Błąd nagrody','Nur Anführer/Offizier':'Tylko lider/oficer','Heute geschlossen':'Dziś zamknięte',
+  'Der Anführer oder ein Offizier kann eine Gegnergilde auswählen und den Krieg erklären.':'Lider lub oficer może wybrać wrogą gildię i wypowiedzieć wojnę.',
+  'Neue Kriegserklärungen sind heute geschlossen. Morgen wieder bis 18:00 Uhr.':'Nowe wypowiedzenia wojny są dziś zamknięte. Jutro ponownie do 18:00.',
+  'Kein Krieg':'Brak wojny','Die Anmeldung ist heute seit 18:00 Uhr geschlossen.':'Zapisy są dziś zamknięte od 18:00.','Anmeldung zurückgenommen.':'Wycofano zapis.',
+  '⚔️ Gildenkrieg erklären':'⚔️ Wypowiedz wojnę','Krieg erklären':'Wypowiedz wojnę','⚔️ Krieg erklärt!':'⚔️ Wojna wypowiedziana!','Kriegserklärung fehlgeschlagen':'Nie udało się wypowiedzieć wojny',
+  'Keine Platzierungsbelohnung':'Brak nagrody rankingowej','Für den letzten Mittwoch ist auf diesem Account kein Turm-Ergebnis gespeichert.':'Na tym koncie nie ma zapisanego wyniku Wieży z ostatniej środy.',
+  'Diese Mittwochs-Belohnung wurde bereits abgeholt.':'Ta środowa nagroda została już odebrana.','Du bist in dieser Mittwochs-Rangliste nicht platziert.':'Nie masz miejsca w tym środowym rankingu.',
+  'Die finale Mittwochs-Rangliste konnte gerade nicht geprüft werden.':'Nie można teraz sprawdzić końcowego rankingu środowego.','Letzte Mittwochs-Platzierung wird geprüft …':'Sprawdzanie ostatniego rankingu środowego …',
+  'Letzte Mittwochs-Platzierung momentan nicht erreichbar.':'Ostatni ranking środowy jest obecnie niedostępny.','Das Mittwochs-Event ist nicht aktiv.':'Środowe wydarzenie nie jest aktywne.','Aufgabe noch nicht abgeschlossen.':'Zadanie nieukończone.',
+  'Lauf wirklich abbrechen? 25 % der ungesicherten Beute gehen verloren.':'Przerwać run? Stracisz 25% niezabezpieczonego łupu.','Lauf wirklich abbrechen?':'Przerwać run?',
+  'Dein Turm-Leben ist bereits voll.':'Życie Wieży jest już pełne.','Dein Mutationslimit ist erreicht.':'Osiągnięto limit mutacji.','Wurzelnetz für diesen Lauf erhalten.':'Otrzymano Sieć Korzeni na ten run.',
+  'Keine weitere Genetik verfügbar.':'Brak dalszej genetyki.','Dein Mutationslimit ist erreicht. Kauf nicht möglich.':'Limit mutacji osiągnięty. Zakup niemożliwy.','Nicht genug ungesichertes Turm-Gold.':'Za mało niezabezpieczonego Złota Wieży.',
+  'Kauf konnte nicht angewendet werden. Es wurde kein Gold abgezogen.':'Nie udało się zastosować zakupu. Złoto nie zostało pobrane.','Schwarzmarkt leergekauft – er erscheint in diesem Run nicht mehr.':'Czarny rynek wykupiony — nie pojawi się ponownie w tym runie.',
+  'Nicht genug Turmblätter.':'Za mało Liści Wieży.','Kein Ausweg – der Boss muss fallen.':'Brak wyjścia — boss musi paść.','Ein besonders harter Wächter wartet dahinter.':'Za drzwiami czeka wyjątkowo silny strażnik.',
+  'Boss-Tor öffnen':'Otwórz bramę bossa','Tür wählen':'Wybierz drzwi','Wähle eine Tür …':'Wybierz drzwi …','Nach diesem Spezialraum folgt zwingend wieder ein Kampf.':'Po tej specjalnej sali musi nastąpić walka.'
+ },
+ tr:{
+  'Gildenboss-Belohnung':'Lonca bossu ödülü','Gildenboss-Belohnung nicht verfügbar':'Lonca bossu ödülü kullanılamıyor','🎁 Gildenkrieg-Belohnung':'🎁 Lonca savaşı ödülü','Gildenkrieg-Belohnung fehlgeschlagen':'Lonca savaşı ödülü başarısız',
+  'KAMPF':'SAVAŞ','Deine Gilde':'Loncan','Melde Mitglieder bis 18:00 Uhr für Angriff und/oder Verteidigung an.':'Üyeleri 18:00’e kadar saldırı ve/veya savunma için kaydet.',
+  'Matchmaking läuft. Ab 19:00 Uhr steht das Ergebnis bereit.':'Eşleştirme sürüyor. Sonuç 19:00’dan itibaren hazır olacak.','Für heute wurde noch kein passender Gildenkrieg gefunden.':'Bugün için uygun lonca savaşı bulunamadı.',
+  '💀 Niederlage. +10 Gilden-Buds.':'💀 Yenilgi. +10 Lonca Budu.','Belohnung fehlgeschlagen':'Ödül başarısız','Nur Anführer/Offizier':'Yalnızca lider/subay','Heute geschlossen':'Bugün kapalı',
+  'Der Anführer oder ein Offizier kann eine Gegnergilde auswählen und den Krieg erklären.':'Lider veya subay rakip lonca seçip savaş ilan edebilir.',
+  'Neue Kriegserklärungen sind heute geschlossen. Morgen wieder bis 18:00 Uhr.':'Yeni savaş ilanları bugün kapalı. Yarın 18:00’e kadar yeniden açık.',
+  'Kein Krieg':'Savaş yok','Die Anmeldung ist heute seit 18:00 Uhr geschlossen.':'Kayıt bugün 18:00’den beri kapalı.','Anmeldung zurückgenommen.':'Kayıt geri çekildi.',
+  '⚔️ Gildenkrieg erklären':'⚔️ Lonca savaşı ilan et','Krieg erklären':'Savaş ilan et','⚔️ Krieg erklärt!':'⚔️ Savaş ilan edildi!','Kriegserklärung fehlgeschlagen':'Savaş ilanı başarısız',
+  'Keine Platzierungsbelohnung':'Sıralama ödülü yok','Für den letzten Mittwoch ist auf diesem Account kein Turm-Ergebnis gespeichert.':'Bu hesapta geçen çarşambaya ait Kule sonucu kayıtlı değil.',
+  'Diese Mittwochs-Belohnung wurde bereits abgeholt.':'Bu çarşamba ödülü zaten alındı.','Du bist in dieser Mittwochs-Rangliste nicht platziert.':'Bu çarşamba sıralamasında yer almıyorsun.',
+  'Die finale Mittwochs-Rangliste konnte gerade nicht geprüft werden.':'Son çarşamba sıralaması şu anda kontrol edilemedi.','Letzte Mittwochs-Platzierung wird geprüft …':'Son çarşamba sıralaması kontrol ediliyor …',
+  'Letzte Mittwochs-Platzierung momentan nicht erreichbar.':'Son çarşamba sıralamasına şu anda ulaşılamıyor.','Das Mittwochs-Event ist nicht aktiv.':'Çarşamba etkinliği aktif değil.','Aufgabe noch nicht abgeschlossen.':'Görev henüz tamamlanmadı.',
+  'Lauf wirklich abbrechen? 25 % der ungesicherten Beute gehen verloren.':'Koşuyu gerçekten iptal et? Güvenceye alınmamış ganimetin %25’i kaybolur.','Lauf wirklich abbrechen?':'Koşuyu gerçekten iptal et?',
+  'Dein Turm-Leben ist bereits voll.':'Kule canın zaten dolu.','Dein Mutationslimit ist erreicht.':'Mutasyon limitine ulaştın.','Wurzelnetz für diesen Lauf erhalten.':'Bu koşu için Kök Ağı alındı.',
+  'Keine weitere Genetik verfügbar.':'Başka genetik yok.','Dein Mutationslimit ist erreicht. Kauf nicht möglich.':'Mutasyon limiti dolu. Satın alma mümkün değil.','Nicht genug ungesichertes Turm-Gold.':'Yeterli güvencesiz Kule Altını yok.',
+  'Kauf konnte nicht angewendet werden. Es wurde kein Gold abgezogen.':'Satın alma uygulanamadı. Altın düşülmedi.','Schwarzmarkt leergekauft – er erscheint in diesem Run nicht mehr.':'Kara pazar tükendi — bu koşuda tekrar görünmeyecek.',
+  'Nicht genug Turmblätter.':'Yeterli Kule Yaprağı yok.','Kein Ausweg – der Boss muss fallen.':'Kaçış yok — boss düşmeli.','Ein besonders harter Wächter wartet dahinter.':'Arkasında özellikle güçlü bir muhafız bekliyor.',
+  'Boss-Tor öffnen':'Boss kapısını aç','Tür wählen':'Kapı seç','Wähle eine Tür …':'Bir kapı seç …','Nach diesem Spezialraum folgt zwingend wieder ein Kampf.':'Bu özel odadan sonra mutlaka bir savaş gelir.'
+ }
+};
+for(const lang of Object.keys(RUNTIME_UI_C))Object.assign(M[lang]||(M[lang]={}),RUNTIME_UI_C[lang]);
+
 /* Dynamic text patterns. Exact dictionaries cannot cover values embedded into
    labels; these preserve numbers/names while translating the surrounding UI. */
 const P={
