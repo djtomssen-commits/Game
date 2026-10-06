@@ -87,7 +87,7 @@ const EXT={
  }
 };
 for(const lang of Object.keys(EXT))Object.assign(M[lang]||(M[lang]={}),EXT[lang]);
-const ROOTS=['world','character','grow','quests','dungeon','tower','shop','forge','harzDealer','bagDealer','pvp','guild','hall','friends','mail'];
+const ROOTS=['world','character','grow','quests','dungeon','tower','caravan','endgame','shop','forge','harzDealer','goldShop','bagDealer','pvp','guild','hall','friends','mail','admin','systemtech'];
 const MODAL={
  en:{
   'Belohnung bestätigen':'Confirm reward','Belohnung bestätigen · Zur Dungeon-Karte':'Confirm reward · Back to dungeon map','Belohnung bestätigen · Zur 10er-Karte':'Confirm reward · Back to 10-stage map',
