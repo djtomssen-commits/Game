@@ -98,7 +98,8 @@ const D={
 };
 
 function normalize(v){return SUPPORTED.includes(String(v||'').toLowerCase())?String(v).toLowerCase():'de'}
-let current=normalize(localStorage.getItem(KEY)||'de');
+let current='de';
+try{current=normalize(localStorage.getItem(KEY)||'de')}catch(_){current='de'}
 
 function fmt(str,vars){return String(str||'').replace(/\{(\w+)\}/g,(_,k)=>vars&&vars[k]!==undefined?String(vars[k]):'')}
 function t(key,vars){
@@ -132,7 +133,7 @@ function setLanguage(lang){
  const next=normalize(lang);
  if(next===current){applyDocument();return current}
  current=next;
- localStorage.setItem(KEY,current);
+ try{localStorage.setItem(KEY,current)}catch(_){}
  applyDocument();
  window.dispatchEvent(new CustomEvent('growlegends:language-changed',{detail:{language:current}}));
  return current;
