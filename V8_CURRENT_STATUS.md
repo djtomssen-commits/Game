@@ -9605,3 +9605,26 @@ Aktueller Release-Status:
   - lange Guide-Fließtexte und sehr spezielle Detailtexte vollständig migrieren;
   - dynamische Toast-Inhalte mit Variablen vollständig über Schlüssel führen;
   - Mobile-Layout-QA für lange französische/polnische Texte.
+
+### 2026-10-06 – Mehrsprachigkeit Final-Polish
+- Neuer finaler I18N-Polish-Owner: `js/features/i18n/v8147-i18n-final-polish.js`.
+- Schwerpunkt:
+  - lange Guide-Titel und zentrale Guide-Fließtexte
+  - dynamische Toasts mit Namen/Variablen
+  - finale Umschaltung der Hilfetexte ohne Einfluss auf Gameplay/State.
+- Guide-Übersetzungen für die zentralen Spielbereiche in EN / ES / FR / PL / TR ergänzt; Englisch enthält zusätzlich einen größeren Satz der langen Einsteiger-/Kerntexte.
+- Dynamische Toast-I18N ergänzt, u. a. für Material-Anwendung / Verbesserungsfeedback / Nachrichtenempfänger.
+- Final-Polish wird auf Beta/Stable und Server 1 geladen.
+- Commits:
+  - Final-I18N Owner: `4214d83dafdcb425643a816c4103e91a0706afcb`
+  - index Wiring: `879dd581e12baf49ad338d04dd3a094b09d649bf`
+  - server1 Wiring: `1f6eecf4a4555d78ed3b7441acf430ec05a43d6b`
+- QA:
+  - DOM Contract Guard Run #570: **SUCCESS**
+  - Synthetic Player Smoke Run #46: **SUCCESS**
+- Release-Status Mehrsprachigkeit:
+  - technisches Sprachsystem fertig;
+  - Deutsch bleibt Default/Fallback;
+  - Login, Navigation, Kernseiten, Shops, Social, Gilde, PvP, Guides, Popups und wichtige dynamische Dialoge sind eingebunden;
+  - keine Save-/Reward-/RPC-/Balance-Logik durch die Sprachschicht verändert.
+- Rest nur noch visuelles Geräte-QA: lange FR/PL-Texte auf kleinen Displays prüfen; das ist kein Architektur-/Gameplay-Blocker.
