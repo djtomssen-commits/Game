@@ -16,14 +16,26 @@
     if(!overlay.querySelector('.v347-side-art.right')){
       const r=document.createElement('div'); r.className='v347-side-art right'; overlay.appendChild(r);
     }
-    if(!overlay.querySelector('.v347-topbar')){
-      const bar=document.createElement('div');
+    let bar=overlay.querySelector('.v347-topbar');
+    if(!bar){
+      bar=document.createElement('div');
       bar.className='v347-topbar';
+      overlay.appendChild(bar);
+    }
+    {
       const langs=window.GrowI18n?.languages?.()||[{id:'de',short:'DE',flag:'🇩🇪',label:'Deutsch'}];
       const active=window.GrowI18n?.getLanguage?.()||'de';
-      bar.innerHTML='<label class="v347-lang" for="v8143LanguageSelect">🌐 <span class="v347-lang-current">'+String((langs.find(x=>x.id===active)||langs[0])?.short||'DE')+'</span><select id="v8143LanguageSelect" aria-label="Sprache">'+langs.map(x=>'<option value="'+x.id+'" '+(x.id===active?'selected':'')+'>'+x.flag+' '+x.label+'</option>').join('')+'</select></label><div class="v347-version">V4.02 STABLE</div>';
-      bar.querySelector('#v8143LanguageSelect')?.addEventListener('change',e=>window.GrowI18n?.setLanguage?.(e.target.value));
-      overlay.appendChild(bar);
+      let sel=bar.querySelector('#v8143LanguageSelect');
+      const needsRebuild=!sel||sel.options.length!==langs.length||langs.some((x,i)=>sel.options[i]?.value!==x.id);
+      if(needsRebuild){
+        bar.innerHTML='<label class="v347-lang" for="v8143LanguageSelect">🌐 <span class="v347-lang-current">'+String((langs.find(x=>x.id===active)||langs[0])?.short||'DE')+'</span><select id="v8143LanguageSelect" aria-label="Sprache">'+langs.map(x=>'<option value="'+x.id+'" '+(x.id===active?'selected':'')+'>'+x.flag+' '+x.label+'</option>').join('')+'</select></label><div class="v347-version">V4.02 STABLE</div>';
+        sel=bar.querySelector('#v8143LanguageSelect');
+        sel?.addEventListener('change',e=>window.GrowI18n?.setLanguage?.(e.target.value));
+      }else{
+        sel.value=active;
+        const short=bar.querySelector('.v347-lang-current');
+        if(short)short.textContent=String((langs.find(x=>x.id===active)||langs[0])?.short||'DE');
+      }
     }
 
     const title=card.querySelector('.v075-auth-title');
