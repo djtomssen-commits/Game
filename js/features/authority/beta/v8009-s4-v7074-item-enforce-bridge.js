@@ -48,8 +48,15 @@ function repaint(){
   try{window.v446PaintCombatPower?.()}catch(_){}
   try{window.v069SyncCurrencies?.()}catch(_){}
   try{window.v441PaintResources?.()}catch(_){}
+  /* V8.166: never rebuild the whole Character screen after item hydration.
+     If the Attribute tab is visible, update only its canonical owner. */
   try{
-    if(document.getElementById('character')?.classList.contains('active'))render?.();
+    const panel=document.getElementById('v459PanelAttributes');
+    if(document.getElementById('character')?.classList.contains('active')&&panel?.classList.contains('active')){
+      window.v4140PaintAttributes?.();
+      window.v537ApplyAttributes?.();
+      try{window.v8144GameplayI18n?.apply?.('character')}catch(__){}
+    }
   }catch(_){}
 }
 function applyServer(row,{paint=true}={}){
