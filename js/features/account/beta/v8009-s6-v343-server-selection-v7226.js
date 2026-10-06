@@ -7,9 +7,11 @@
   const server1Open=()=>Date.now()>=V343_SERVER1_OPENS_AT;
   const defaultServer=()=> 'beta';
 
+  const T=(key,vars,fallback)=>window.GrowI18n?.t?.(key,vars)||fallback||key;
+
   function v343Countdown(){
     const ms=Math.max(0,V343_SERVER1_OPENS_AT-Date.now());
-    if(ms<=0)return 'JETZT GEÖFFNET';
+    if(ms<=0)return T('server.openNow',null,'JETZT GEÖFFNET');
     const total=Math.floor(ms/1000);
     const h=Math.floor(total/3600);
     const m=Math.floor((total%3600)/60);
@@ -49,7 +51,7 @@
     localStorage.setItem(V343_SERVER_KEY,id);
     v343ResetDb();
     if(id==='server1'&&!server1Open()){
-      try{v063Toast?.('Server 1 · Vorabtest','info','Server 1 ist noch geschlossen. Nur freigeschaltete Testkonten haben Zugang.')}catch(_){}
+      try{v063Toast?.(T('server.previewTitle',null,'Server 1 · Vorabtest'),'info',T('server.previewText',null,'Server 1 ist noch geschlossen. Nur freigeschaltete Testkonten haben Zugang.'))}catch(_){}
     }
     if(v343RouteBuild(id,false))return true;
     v343RenderServerSelect(true);return true;
@@ -75,20 +77,19 @@
   if(baseFresh)v200FreshState=function(uid){const r=baseFresh.apply(this,arguments);v343StampState();try{localStorage.setItem(KEY,JSON.stringify(s))}catch(_){}return r};
 
   function v343Markup(selected){
-    const live=server1Open();
-    return `<div class="v343-server-title"><span>🌐 Server wählen</span><small>Charaktere & Gilden sind getrennt</small></div>
+    const live=server1Open(),time=v343Countdown();
+    return `<div class="v343-server-title"><span>🌐 ${T('server.select',null,'Server wählen')}</span><small>${T('server.separate',null,'Charaktere & Gilden sind getrennt')}</small></div>
       <div class="v343-server-grid">
         <button type="button" class="v343-server ${selected==='beta'?'active':''} ${live?'':'recommended'}" data-v343-server="beta">
-          <div class="v343-server-name">🧪 Beta Server</div>
-          <div class="v343-server-meta"><span class="v343-online">● ONLINE</span><span>Test-Build</span></div>
+          <div class="v343-server-name">🧪 ${T('server.beta',null,'Beta Server')}</div>
+          <div class="v343-server-meta"><span class="v343-online">● ${T('server.online',null,'ONLINE')}</span><span>${T('server.testBuild',null,'Test-Build')}</span></div>
         </button>
         <button type="button" class="v343-server ${selected==='server1'?'active':''} ${live?'recommended':'preview'}" data-v343-server="server1">
           <div class="v343-server-name">${live?'🌍':'🔒'} Server 1</div>
-          <div class="v343-server-meta">${live?'<span class="v343-online">● ONLINE</span><span>Live-Server</span>':`<span class="v343-preview">START IN ${v343Countdown()}</span><span>Heute · 16:00 Uhr</span>`}</div>
-          
+          <div class="v343-server-meta">${live?`<span class="v343-online">● ${T('server.online',null,'ONLINE')}</span><span>${T('server.live',null,'Live-Server')}</span>`:`<span class="v343-preview">${T('server.startIn',{time},'START IN '+time)}</span><span>${T('server.opensToday',null,'Heute · 16:00 Uhr')}</span>`}</div>
         </button>
       </div>
-      <div class="v343-server-note">${live?'Server 1 ist jetzt für alle Spieler geöffnet. Beta erhält neue Updates weiterhin zuerst.':`Server 1 öffnet heute automatisch um 16:00 Uhr für alle. Countdown: ${v343Countdown()}. Freigeschaltete Testkonten behalten bis dahin ihren Vorabzugang.`}</div>`;
+      <div class="v343-server-note">${live?T('server.noteOpen',null,'Server 1 ist jetzt für alle Spieler geöffnet. Beta erhält neue Updates weiterhin zuerst.'):T('server.noteCountdown',{time},`Server 1 öffnet heute automatisch um 16:00 Uhr für alle. Countdown: ${time}.`)}</div>`;
   }
 
   function v343RenderServerSelect(force){
@@ -111,7 +112,7 @@
       const selected=v343Selected();
       if(selected==='server1'&&!server1Open()){
         const mail=String(document.querySelector('#v075Email')?.value||'').trim().toLowerCase();
-        if(mail!==V343_EARLY_EMAIL){try{v063Toast?.('Server 1 noch geschlossen','warn',`Server 1 öffnet heute um 16:00 Uhr. Noch ${v343Countdown()}.`)}catch(_){};return false}
+        if(mail!==V343_EARLY_EMAIL){const time=v343Countdown();try{v063Toast?.(T('server.closedTitle',null,'Server 1 noch geschlossen'),'warn',T('server.closedText',{time},`Server 1 öffnet heute um 16:00 Uhr. Noch ${time}.`))}catch(_){};return false}
       }
       window.v343CurrentServer=selected;v343StampState();v343ResetDb();
       return await baseEmail.apply(this,arguments);
@@ -124,7 +125,7 @@
     v200GoogleAuth=async function(){
       const selected=v343Selected();
       if(selected==='server1'&&!server1Open()){
-        try{v063Toast?.('Server 1 · Vorabzugang','info',`Server 1 öffnet heute um 16:00 Uhr für alle. Noch ${v343Countdown()}.`)}catch(_){}
+        const time=v343Countdown();try{v063Toast?.(T('server.earlyTitle',null,'Server 1 · Vorabzugang'),'info',T('server.earlyText',{time},`Server 1 öffnet heute um 16:00 Uhr für alle. Noch ${time}.`))}catch(_){}
       }
       window.v343CurrentServer=selected;
       sessionStorage.setItem('v343OAuthServer',selected);
@@ -150,6 +151,7 @@
   v343RenderServerSelect(false);
   
   document.addEventListener('DOMContentLoaded',()=>{v343RenderServerSelect(false)},{once:true});
+  window.addEventListener('growlegends:language-changed',()=>v343RenderServerSelect(true),{passive:true});
   setTimeout(()=>{v343RenderServerSelect(false)},250);setTimeout(()=>{v343RenderServerSelect(false)},900);
   /* Keep the login countdown live and switch to ONLINE automatically at launch. */
   const v343CountdownTimer=setInterval(()=>{
