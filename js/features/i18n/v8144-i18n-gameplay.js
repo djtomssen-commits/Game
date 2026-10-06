@@ -557,6 +557,105 @@ const STATIC_UI_C={
 };
 for(const lang of Object.keys(STATIC_UI_C))Object.assign(M[lang]||(M[lang]={}),STATIC_UI_C[lang]);
 
+const RUNTIME_UI_A={
+ en:{
+  'Zusätzliche Beute':'Additional loot','Schlüsselstein':'Keystone','🎁 Deine Beute':'🎁 Your loot','Keine zusätzliche Beute bei dieser Quest.':'No additional loot for this quest.',
+  'GEGNER BESIEGT':'ENEMY DEFEATED','🟠 Boss-Belohnung · garantiert 1 legendäres Klassenitem':'🟠 Boss reward · guaranteed 1 legendary class item',
+  '❌ Nicht genug Gold':'❌ Not enough Gold','Du kannst diesen Gegenstand noch nicht kaufen.':'You cannot buy this item yet.',
+  '⚔️ Waffenhändler neu gewürfelt':'⚔️ Weapon dealer rerolled','💎 Schmuckhändler neu gewürfelt':'💎 Jewelry dealer rerolled',
+  '1 Harz-Taler verwendet. Waffen & Rüstung wurden ersetzt.':'1 Resin Token used. Weapons & Armor were replaced.',
+  '1 Harz-Taler verwendet. Schmuck, Edelsteine und Rollen wurden ersetzt.':'1 Resin Token used. Jewelry, Gems and Scrolls were replaced.',
+  '✨ Spezialeffekte werden separat bewertet und sind nicht in diesen Attributpunkten enthalten.':'✨ Special effects are evaluated separately and are not included in these attribute points.',
+  '✨ Spezialeffekte wie Wuchtschlag/Krit sind nicht in den Attributpunkten eingerechnet.':'✨ Special effects such as Smash/Crit are not included in attribute points.',
+  'Grüne Verdammnis':'Green Damnation','Kein mystisches Event aktiv':'No mystic event active','Der Weltboss ist derzeit versiegelt.':'The world boss is currently sealed.',
+  'Weiterer Versuch heute: 10 Harz-Taler':'Another attempt today: 10 Resin Tokens','Erster Versuch heute: KOSTENLOS':'First attempt today: FREE',
+  'Weltboss noch nicht bereit':'World boss not ready yet','Der Koloss fällt':'The Colossus Falls','Smaragd-Schlächter':'Emerald Slayer','Türkise Beute':'Turquoise Loot',
+  'Besitze dein erstes mystisches Item.':'Own your first mystic item.','In Mystik gehüllt':'Shrouded in Mysticism','Besitze 6 mystische Gegenstände.':'Own 6 mystic items.',
+  '☁️ Kein dauerhafter Account':'☁️ No permanent account','Nur in der Android-App verfügbar.':'Only available in the Android app.','Deine Werbe-Datenschutzeinstellungen wurden aktualisiert.':'Your ad privacy settings were updated.',
+  'Konnte nicht geöffnet werden.':'Could not be opened.','Account-Löschung nicht möglich':'Account deletion unavailable','Kein angemeldeter Account gefunden.':'No signed-in account found.',
+  'Wird gelöscht…':'Deleting…','Die sichere Account-Löschfunktion ist in Supabase noch nicht installiert.':'Secure account deletion is not yet installed in Supabase.',
+  'Account gelöscht':'Account deleted','Account und Grow-Legends-Spielstand wurden dauerhaft entfernt.':'Account and Grow Legends save data were permanently removed.',
+  'Account konnte nicht gelöscht werden':'Account could not be deleted'
+ },
+ es:{
+  'Zusätzliche Beute':'Botín adicional','Schlüsselstein':'Piedra clave','🎁 Deine Beute':'🎁 Tu botín','Keine zusätzliche Beute bei dieser Quest.':'Sin botín adicional en esta misión.',
+  'GEGNER BESIEGT':'ENEMIGO DERROTADO','🟠 Boss-Belohnung · garantiert 1 legendäres Klassenitem':'🟠 Recompensa de jefe · 1 objeto legendario de clase garantizado',
+  '❌ Nicht genug Gold':'❌ Oro insuficiente','Du kannst diesen Gegenstand noch nicht kaufen.':'Aún no puedes comprar este objeto.',
+  '⚔️ Waffenhändler neu gewürfelt':'⚔️ Comerciante de armas renovado','💎 Schmuckhändler neu gewürfelt':'💎 Comerciante de joyas renovado',
+  '1 Harz-Taler verwendet. Waffen & Rüstung wurden ersetzt.':'1 ficha de resina usada. Armas y armaduras fueron reemplazadas.',
+  '1 Harz-Taler verwendet. Schmuck, Edelsteine und Rollen wurden ersetzt.':'1 ficha de resina usada. Joyas, gemas y pergaminos fueron reemplazados.',
+  '✨ Spezialeffekte werden separat bewertet und sind nicht in diesen Attributpunkten enthalten.':'✨ Los efectos especiales se valoran por separado y no están incluidos en estos puntos de atributo.',
+  '✨ Spezialeffekte wie Wuchtschlag/Krit sind nicht in den Attributpunkten eingerechnet.':'✨ Efectos como Golpe fuerte/Crítico no están incluidos en los puntos de atributo.',
+  'Grüne Verdammnis':'Condena Verde','Kein mystisches Event aktiv':'No hay evento místico activo','Der Weltboss ist derzeit versiegelt.':'El jefe mundial está sellado actualmente.',
+  'Weiterer Versuch heute: 10 Harz-Taler':'Otro intento hoy: 10 fichas de resina','Erster Versuch heute: KOSTENLOS':'Primer intento hoy: GRATIS',
+  'Weltboss noch nicht bereit':'El jefe mundial aún no está listo','Der Koloss fällt':'Cae el Coloso','Smaragd-Schlächter':'Matador Esmeralda','Türkise Beute':'Botín Turquesa',
+  'Besitze dein erstes mystisches Item.':'Consigue tu primer objeto místico.','In Mystik gehüllt':'Envuelto en Misticismo','Besitze 6 mystische Gegenstände.':'Consigue 6 objetos místicos.',
+  '☁️ Kein dauerhafter Account':'☁️ Sin cuenta permanente','Nur in der Android-App verfügbar.':'Solo disponible en la app Android.','Deine Werbe-Datenschutzeinstellungen wurden aktualisiert.':'Se actualizaron tus ajustes de privacidad publicitaria.',
+  'Konnte nicht geöffnet werden.':'No se pudo abrir.','Account-Löschung nicht möglich':'No se puede eliminar la cuenta','Kein angemeldeter Account gefunden.':'No se encontró una cuenta iniciada.',
+  'Wird gelöscht…':'Eliminando…','Die sichere Account-Löschfunktion ist in Supabase noch nicht installiert.':'La eliminación segura de cuenta aún no está instalada en Supabase.',
+  'Account gelöscht':'Cuenta eliminada','Account und Grow-Legends-Spielstand wurden dauerhaft entfernt.':'La cuenta y la partida de Grow Legends se eliminaron permanentemente.',
+  'Account konnte nicht gelöscht werden':'No se pudo eliminar la cuenta'
+ },
+ fr:{
+  'Zusätzliche Beute':'Butin supplémentaire','Schlüsselstein':'Pierre-clé','🎁 Deine Beute':'🎁 Ton butin','Keine zusätzliche Beute bei dieser Quest.':'Aucun butin supplémentaire pour cette quête.',
+  'GEGNER BESIEGT':'ENNEMI VAINCU','🟠 Boss-Belohnung · garantiert 1 legendäres Klassenitem':'🟠 Récompense de boss · 1 objet de classe légendaire garanti',
+  '❌ Nicht genug Gold':'❌ Pas assez d’Or','Du kannst diesen Gegenstand noch nicht kaufen.':'Tu ne peux pas encore acheter cet objet.',
+  '⚔️ Waffenhändler neu gewürfelt':'⚔️ Marchand d’armes renouvelé','💎 Schmuckhändler neu gewürfelt':'💎 Marchand de bijoux renouvelé',
+  '1 Harz-Taler verwendet. Waffen & Rüstung wurden ersetzt.':'1 jeton de résine utilisé. Armes et armures ont été remplacées.',
+  '1 Harz-Taler verwendet. Schmuck, Edelsteine und Rollen wurden ersetzt.':'1 jeton de résine utilisé. Bijoux, gemmes et parchemins ont été remplacés.',
+  '✨ Spezialeffekte werden separat bewertet und sind nicht in diesen Attributpunkten enthalten.':'✨ Les effets spéciaux sont évalués séparément et ne sont pas inclus dans ces points d’attribut.',
+  '✨ Spezialeffekte wie Wuchtschlag/Krit sind nicht in den Attributpunkten eingerechnet.':'✨ Les effets comme Frappe puissante/Critique ne sont pas inclus dans les points d’attribut.',
+  'Grüne Verdammnis':'Damnation Verte','Kein mystisches Event aktiv':'Aucun événement mystique actif','Der Weltboss ist derzeit versiegelt.':'Le boss mondial est actuellement scellé.',
+  'Weiterer Versuch heute: 10 Harz-Taler':'Nouvel essai aujourd’hui : 10 jetons de résine','Erster Versuch heute: KOSTENLOS':'Premier essai aujourd’hui : GRATUIT',
+  'Weltboss noch nicht bereit':'Boss mondial pas encore prêt','Der Koloss fällt':'Le Colosse tombe','Smaragd-Schlächter':'Tueur d’Émeraude','Türkise Beute':'Butin Turquoise',
+  'Besitze dein erstes mystisches Item.':'Possède ton premier objet mystique.','In Mystik gehüllt':'Enveloppé de Mystique','Besitze 6 mystische Gegenstände.':'Possède 6 objets mystiques.',
+  '☁️ Kein dauerhafter Account':'☁️ Aucun compte permanent','Nur in der Android-App verfügbar.':'Disponible uniquement dans l’application Android.','Deine Werbe-Datenschutzeinstellungen wurden aktualisiert.':'Tes paramètres de confidentialité publicitaire ont été mis à jour.',
+  'Konnte nicht geöffnet werden.':'Impossible d’ouvrir.','Account-Löschung nicht möglich':'Suppression du compte impossible','Kein angemeldeter Account gefunden.':'Aucun compte connecté trouvé.',
+  'Wird gelöscht…':'Suppression…','Die sichere Account-Löschfunktion ist in Supabase noch nicht installiert.':'La suppression sécurisée du compte n’est pas encore installée dans Supabase.',
+  'Account gelöscht':'Compte supprimé','Account und Grow-Legends-Spielstand wurden dauerhaft entfernt.':'Le compte et la sauvegarde Grow Legends ont été supprimés définitivement.',
+  'Account konnte nicht gelöscht werden':'Impossible de supprimer le compte'
+ },
+ pl:{
+  'Zusätzliche Beute':'Dodatkowy łup','Schlüsselstein':'Kamień klucza','🎁 Deine Beute':'🎁 Twój łup','Keine zusätzliche Beute bei dieser Quest.':'Brak dodatkowego łupu w tej misji.',
+  'GEGNER BESIEGT':'PRZECIWNIK POKONANY','🟠 Boss-Belohnung · garantiert 1 legendäres Klassenitem':'🟠 Nagroda bossa · gwarantowany 1 legendarny przedmiot klasowy',
+  '❌ Nicht genug Gold':'❌ Za mało złota','Du kannst diesen Gegenstand noch nicht kaufen.':'Nie możesz jeszcze kupić tego przedmiotu.',
+  '⚔️ Waffenhändler neu gewürfelt':'⚔️ Odświeżono handlarza bronią','💎 Schmuckhändler neu gewürfelt':'💎 Odświeżono handlarza biżuterią',
+  '1 Harz-Taler verwendet. Waffen & Rüstung wurden ersetzt.':'Użyto 1 żetonu żywicy. Broń i pancerze zostały wymienione.',
+  '1 Harz-Taler verwendet. Schmuck, Edelsteine und Rollen wurden ersetzt.':'Użyto 1 żetonu żywicy. Biżuteria, klejnoty i zwoje zostały wymienione.',
+  '✨ Spezialeffekte werden separat bewertet und sind nicht in diesen Attributpunkten enthalten.':'✨ Efekty specjalne są oceniane osobno i nie są wliczone do punktów atrybutów.',
+  '✨ Spezialeffekte wie Wuchtschlag/Krit sind nicht in den Attributpunkten eingerechnet.':'✨ Efekty takie jak Mocne Uderzenie/Kryt nie są wliczone do punktów atrybutów.',
+  'Grüne Verdammnis':'Zielone Potępienie','Kein mystisches Event aktiv':'Brak aktywnego wydarzenia mistycznego','Der Weltboss ist derzeit versiegelt.':'Boss świata jest obecnie zapieczętowany.',
+  'Weiterer Versuch heute: 10 Harz-Taler':'Kolejna próba dziś: 10 żetonów żywicy','Erster Versuch heute: KOSTENLOS':'Pierwsza próba dziś: ZA DARMO',
+  'Weltboss noch nicht bereit':'Boss świata nie jest jeszcze gotowy','Der Koloss fällt':'Koloss upada','Smaragd-Schlächter':'Szmaragdowy Zabójca','Türkise Beute':'Turkusowy Łup',
+  'Besitze dein erstes mystisches Item.':'Zdobądź pierwszy mistyczny przedmiot.','In Mystik gehüllt':'Otulony Mistyką','Besitze 6 mystische Gegenstände.':'Posiadaj 6 mistycznych przedmiotów.',
+  '☁️ Kein dauerhafter Account':'☁️ Brak stałego konta','Nur in der Android-App verfügbar.':'Dostępne tylko w aplikacji Android.','Deine Werbe-Datenschutzeinstellungen wurden aktualisiert.':'Ustawienia prywatności reklam zostały zaktualizowane.',
+  'Konnte nicht geöffnet werden.':'Nie udało się otworzyć.','Account-Löschung nicht möglich':'Nie można usunąć konta','Kein angemeldeter Account gefunden.':'Nie znaleziono zalogowanego konta.',
+  'Wird gelöscht…':'Usuwanie…','Die sichere Account-Löschfunktion ist in Supabase noch nicht installiert.':'Bezpieczne usuwanie konta nie jest jeszcze zainstalowane w Supabase.',
+  'Account gelöscht':'Konto usunięte','Account und Grow-Legends-Spielstand wurden dauerhaft entfernt.':'Konto i zapis Grow Legends zostały trwale usunięte.',
+  'Account konnte nicht gelöscht werden':'Nie udało się usunąć konta'
+ },
+ tr:{
+  'Zusätzliche Beute':'Ek ganimet','Schlüsselstein':'Anahtar Taşı','🎁 Deine Beute':'🎁 Ganimetin','Keine zusätzliche Beute bei dieser Quest.':'Bu görevde ek ganimet yok.',
+  'GEGNER BESIEGT':'DÜŞMAN YENİLDİ','🟠 Boss-Belohnung · garantiert 1 legendäres Klassenitem':'🟠 Boss ödülü · garantili 1 efsanevi sınıf eşyası',
+  '❌ Nicht genug Gold':'❌ Yeterli Altın yok','Du kannst diesen Gegenstand noch nicht kaufen.':'Bu eşyayı henüz satın alamazsın.',
+  '⚔️ Waffenhändler neu gewürfelt':'⚔️ Silah satıcısı yenilendi','💎 Schmuckhändler neu gewürfelt':'💎 Takı satıcısı yenilendi',
+  '1 Harz-Taler verwendet. Waffen & Rüstung wurden ersetzt.':'1 Reçine Jetonu kullanıldı. Silahlar ve zırhlar yenilendi.',
+  '1 Harz-Taler verwendet. Schmuck, Edelsteine und Rollen wurden ersetzt.':'1 Reçine Jetonu kullanıldı. Takılar, taşlar ve parşömenler yenilendi.',
+  '✨ Spezialeffekte werden separat bewertet und sind nicht in diesen Attributpunkten enthalten.':'✨ Özel etkiler ayrı değerlendirilir ve bu özellik puanlarına dahil değildir.',
+  '✨ Spezialeffekte wie Wuchtschlag/Krit sind nicht in den Attributpunkten eingerechnet.':'✨ Güçlü Vuruş/Kritik gibi etkiler özellik puanlarına dahil değildir.',
+  'Grüne Verdammnis':'Yeşil Lanet','Kein mystisches Event aktiv':'Aktif mistik etkinlik yok','Der Weltboss ist derzeit versiegelt.':'Dünya bossu şu anda mühürlü.',
+  'Weiterer Versuch heute: 10 Harz-Taler':'Bugün ek deneme: 10 Reçine Jetonu','Erster Versuch heute: KOSTENLOS':'Bugünkü ilk deneme: ÜCRETSİZ',
+  'Weltboss noch nicht bereit':'Dünya bossu henüz hazır değil','Der Koloss fällt':'Dev Düşüyor','Smaragd-Schlächter':'Zümrüt Katili','Türkise Beute':'Turkuaz Ganimet',
+  'Besitze dein erstes mystisches Item.':'İlk mistik eşyanı edin.','In Mystik gehüllt':'Mistikle Sarılı','Besitze 6 mystische Gegenstände.':'6 mistik eşya edin.',
+  '☁️ Kein dauerhafter Account':'☁️ Kalıcı hesap yok','Nur in der Android-App verfügbar.':'Yalnızca Android uygulamasında kullanılabilir.','Deine Werbe-Datenschutzeinstellungen wurden aktualisiert.':'Reklam gizlilik ayarların güncellendi.',
+  'Konnte nicht geöffnet werden.':'Açılamadı.','Account-Löschung nicht möglich':'Hesap silinemiyor','Kein angemeldeter Account gefunden.':'Giriş yapılmış hesap bulunamadı.',
+  'Wird gelöscht…':'Siliniyor…','Die sichere Account-Löschfunktion ist in Supabase noch nicht installiert.':'Güvenli hesap silme özelliği Supabase üzerinde henüz kurulu değil.',
+  'Account gelöscht':'Hesap silindi','Account und Grow-Legends-Spielstand wurden dauerhaft entfernt.':'Hesap ve Grow Legends kayıtları kalıcı olarak silindi.',
+  'Account konnte nicht gelöscht werden':'Hesap silinemedi'
+ }
+};
+for(const lang of Object.keys(RUNTIME_UI_A))Object.assign(M[lang]||(M[lang]={}),RUNTIME_UI_A[lang]);
+
 /* Dynamic text patterns. Exact dictionaries cannot cover values embedded into
    labels; these preserve numbers/names while translating the surrounding UI. */
 const P={
