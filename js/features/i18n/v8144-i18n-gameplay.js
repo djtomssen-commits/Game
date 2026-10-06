@@ -233,13 +233,23 @@ const ORIGINAL_TEXT=new WeakMap();
 const ORIGINAL_ATTR=new WeakMap();
 function translateText(raw,lang){
  const s=String(raw||'').trim();if(!s||lang==='de')return null;
- if(M[lang]&&M[lang][s]!==undefined)return M[lang][s];
+ const dict=M[lang]||{};
+ if(dict[s]!==undefined)return dict[s];
  const patterns=P[lang]||[];
  for(const [re,fn] of patterns){
   const m=s.match(re);
   if(m){try{return fn(...m)}catch(_){}}
  }
- return null;
+ const entries=Object.entries(dict)
+  .filter(([de,tr])=>de&&tr&&de.length>=4&&!/^[A-Z0-9 .:+%/-]+$/.test(de))
+  .sort((a,b)=>b[0].length-a[0].length);
+ let out=s,changed=false;
+ for(const [de,tr] of entries){
+  if(!out.includes(de))continue;
+  out=out.split(de).join(tr);
+  changed=true;
+ }
+ return changed?out:null;
 }
 function applyRoot(root){
  if(!root)return false;
