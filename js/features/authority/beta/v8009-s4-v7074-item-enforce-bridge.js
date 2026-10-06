@@ -8,7 +8,7 @@ const A={
   ready:false,enforce:false,busy:false,uid:'',revision:0,lastSync:0,lastError:'',
   hydrations:0,equips:0,unequips:0
 };
-let refreshP=null,chain=Promise.resolve();
+let refreshP=null,refreshUid='',chain=Promise.resolve();
 
 const db=()=>{try{return (typeof v073Db!=='undefined'&&v073Db)||null}catch(_){return null}};
 const userId=()=>{try{return String((typeof v073User!=='undefined'&&v073User?.id)||'')}catch(_){return ''}};
@@ -83,13 +83,22 @@ async function refresh(force=false,paint=true){
   if(!window.v7081UseAuthority?.('items')){A.ready=false;A.enforce=false;return null;}
   const id=userId();
   if(!id||!db())return null;
-  if(A.uid&&A.uid!==id){A.ready=false;A.enforce=false;A.revision=0;A.lastSync=0}
+  if(A.uid&&A.uid!==id){
+    A.ready=false;A.enforce=false;A.revision=0;A.lastSync=0;A._gate=null;
+    /* Never reuse an in-flight request that belongs to another account. */
+    refreshP=null;refreshUid='';
+  }
   A.uid=id;
-  if(!force&&A.ready&&Date.now()-A.lastSync<30000)return A._gate||null;
-  if(refreshP)return refreshP;
-  refreshP=(async()=>{
+  if(!force&&A.ready&&A.uid===id&&Date.now()-A.lastSync<30000)return A._gate||null;
+  if(refreshP&&refreshUid===id)return refreshP;
+
+  const requestUid=id;
+  refreshUid=requestUid;
+  const p=(async()=>{
     try{
       const row=await rpc('v7034_client_item_authority_state');
+      /* Account changed while this RPC was in flight: discard the response. */
+      if(userId()!==requestUid||A.uid!==requestUid)return null;
       if(!row?.ok)throw new Error('ITEM_AUTHORITY_STATE_FAILED');
       A.ready=true;
       A.enforce=String(row.item_mode||'')==='enforce';
@@ -99,13 +108,17 @@ async function refresh(force=false,paint=true){
       else A.lastSync=Date.now();
       return row;
     }catch(e){
+      if(userId()!==requestUid||A.uid!==requestUid)return null;
       A.ready=false;
       A.lastError=String(e?.message||e);
       console.warn('[V7074] item authority refresh',e);
       return null;
-    }finally{refreshP=null}
+    }finally{
+      if(refreshP===p){refreshP=null;refreshUid=''}
+    }
   })();
-  return refreshP;
+  refreshP=p;
+  return p;
 }
 function classOk(it){
   const cls=String(s?.playerClass||'');
