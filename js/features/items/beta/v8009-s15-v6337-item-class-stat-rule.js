@@ -19,5 +19,11 @@ window.v6337ItemStatDiagnostics=()=>{
  const items=[...(Array.isArray(s?.inventory)?s.inventory:[]),...Object.values(s?.equipment||{}),...(Array.isArray(s?.weaponShop)?s.weaponShop:[]),...(Array.isArray(s?.magicShop)?s.magicShop:[])].filter(Boolean);
  const rows=items.map(check).filter(Boolean);return{version:'V6.347',count:rows.length,invalid:rows.filter(x=>!x.valid),sample:rows.slice(0,12)};
 };
-normalize();
+/* V8.180: no pre-auth normalization of persisted item state. */
+window.addEventListener('growlegends:account-ready',()=>{
+ try{
+  const u=(typeof v073User!=='undefined'&&v073User)||window.v073User||null;
+  if(!u?.id||u?.is_anonymous)normalize();
+ }catch(_){}
+},{passive:true});
 })();
