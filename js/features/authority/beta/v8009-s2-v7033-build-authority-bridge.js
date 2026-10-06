@@ -87,11 +87,14 @@
    try{window.v4162PaintMenuAttentionLocal?.()}catch(_){}
    return;
   }
-  try{if(typeof render==='function')render()}catch(_){ }
-  try{if(typeof renderSkillTree==='function')renderSkillTree()}catch(_){ }
-  try{if(typeof window.v434PaintAttributePoints==='function')window.v434PaintAttributePoints()}catch(_){ }
-  try{if(typeof window.v459RenderCharacter==='function')window.v459RenderCharacter()}catch(_){ }
-  try{window.v4162PaintMenuAttentionLocal?.()}catch(_){}
+  if(kind==='hydrate'){
+   try{window.v4140PaintAttributes?.()}catch(_){}
+   try{renderSkillTree?.()}catch(_){}
+   try{window.v434PaintAttributePoints?.()}catch(_){}
+   try{window.v446PaintCombatPower?.()}catch(_){}
+   try{window.v4162PaintMenuAttentionLocal?.()}catch(_){}
+   return;
+  }
  }
  function selectedBuildSnapshot(){
   try{return JSON.stringify({
@@ -117,7 +120,7 @@
   }catch(e){console.warn('[V7033] apply state',e);return false}
   const changed=before!==selectedBuildSnapshot();
   bridge.hydratedAt=Date.now();
-  repaint();
+  if(changed)repaint('hydrate');
   if(changed&&persist)persistServerBuild();
   return changed;
  }
@@ -331,9 +334,9 @@
   if(bridge.uid&&bridge.uid!==id)resetGate();
   if(id&&db()&&!window.v7206StartupBusy?.())void loadGate(false);
  }
- window.addEventListener('growlegends:account-ready',()=>setTimeout(boot,150));
+ window.addEventListener('growlegends:account-ready',()=>boot());
  window.addEventListener('growlegends:foreground-ready',()=>setTimeout(()=>void loadGate(true),120),{passive:true});
- window.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')==='character')setTimeout(()=>void loadGate(true),60)},{passive:true});
+ window.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')==='character')void loadGate(false)},{passive:true});
  window.addEventListener('pageshow',()=>setTimeout(boot,350),{passive:true});
  document.addEventListener('visibilitychange',()=>{if(!document.hidden)setTimeout(boot,350)},{passive:true});
  setTimeout(boot,1800);
