@@ -10002,3 +10002,36 @@ Aktueller Release-Status:
 - Commits:
   - Character server-first sync: `1189a7d84506aad69577f5353a2c6fef6be6d921`
   - index/beta/server1: `a31b1eff7b528103da5e3eb435f61466321876ea` / `8e1cb1d6e26970ad7fe34a23b541f21304c16d45` / `ede45dfcc1d2d7d6d7b5c0d4b6f41c4b7fdc07fc`
+
+
+### 2026-10-06 – Attribute springen/flackern: globale Repaint-Wege entfernt
+- Nutzer bestätigt nach Server-first-Fix: Attributzahlen springen weiterhin; zusätzlich einmal sichtbares Flackern.
+- Neue Root-Cause-Analyse:
+  - `v4140` hing weiterhin global an `persist()` und repaintete den kompletten Attributbereich bei beliebigen Persist-/Hydration-Vorgängen.
+  - `v7074-item-enforce-bridge` rief nach Item-Hydration auf aktiver Charakterseite weiterhin das globale `render()` auf.
+  - dadurch existierten trotz kanonischem Attribut-Owner weiterhin mehrere Repaint-Auslöser auf denselben sichtbaren DOM-Bereich.
+- Direkt an den bestehenden Ownern behoben:
+  - `v8009-s1-v4140-attribute-display-owner.js`:
+    - globaler `persist()`-Wrapper vollständig retired;
+    - Attribute repainten nur noch über Tab-Lifecycle, explizites Punkteverteilen und autoritativen Equipment-Sync;
+    - Snapshot-Signatur eingebaut: bei identischen Hauptattribut-/Punkte-/Werten wird der DOM nicht erneut aufgebaut;
+    - Crit-Anzeige wird aus derselben eingefrorenen Attributquelle berechnet.
+  - `v8009-s4-v7074-item-enforce-bridge.js`:
+    - globales `render()` nach Item-Hydration entfernt;
+    - bei sichtbarem Attribute-Tab nur noch gezielter Aufruf von `v4140PaintAttributes()` + `v537ApplyAttributes()`.
+- Keine neue Patch-/Observer-Schicht.
+- Syntaxcheck:
+  - v4140: grün
+  - v7074: grün
+- Cache-Bust index/beta/server1: `8166attrsingleowner1`.
+- Commits:
+  - v4140: `ce8fededccdc37634d9704f238f40ca9e7bef64b`
+  - v7074: `eec658f4b16c9111358f616776fe988b92aed436`
+  - index: `013ece57f9a0c383179a62c066cb360bebd6f48a`
+  - beta: `53638d6206b0a605920e02cad37128920c61bc9d`
+  - server1: `f1b9738b910344c7c5aca87f4d49ffa930a68e93`
+- Nächster Test:
+  - Charakter → Attribute öffnen;
+  - 10–15 Sekunden beobachten;
+  - einmal Inventar öffnen/zurück zu Attribute;
+  - wenn Zahlen weiterhin springen, als Nächstes die tatsächlichen Werte-Snapshots von `v4140AttributeDiagnostics()` vor/nach dem Sprung mit Equipment-Revision aus `v7074ItemAuthorityDiagnostics()` vergleichen.
