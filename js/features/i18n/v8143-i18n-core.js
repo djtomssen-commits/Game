@@ -152,8 +152,8 @@ try{current=normalize(localStorage.getItem(KEY)||'de')}catch(_){current='de'}
 
 function fmt(str,vars){return String(str||'').replace(/\{(\w+)\}/g,(_,k)=>vars&&vars[k]!==undefined?String(vars[k]):'')}
 function t(key,vars){
- const base=D.de[key]??key;
- const value=D[current]?.[key]??base;
+ const base=D.de[key]??META.de[key]??key;
+ const value=D[current]?.[key]??META[current]?.[key]??base;
  return fmt(value,vars);
 }
 function applyDocument(){
