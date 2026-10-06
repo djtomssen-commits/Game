@@ -9364,3 +9364,41 @@ Aktueller Release-Status:
 - Release-Einschätzung nach Audit:
   - Kernspiel/Serverautorität/Build-Pipeline sind technisch nahe release-ready.
   - Vor endgültigem GO bleibt der manuelle Re-Login-Test als wichtigster unmittelbarer Funktionscheck.
+
+
+### 2026-10-06 – Release-Risiko-Check: Geld / Spielstand / Account
+- Ziel: nicht kosmetische Bugs, sondern nur Fehlerklassen prüfen, die bei echten Spielern finanziell oder rechtlich relevant werden können.
+- Google-Play-Harz-Kaufpfad geprüft:
+  - Client-Owner: `js/features/monetization/beta/v8009-s1-v6350-google-play-harz-billing.js`
+  - Edge Function: `verify-google-play-purchase` (ACTIVE, verify_jwt=true)
+  - Kauf wird serverseitig über Google Android Publisher API bestätigt.
+  - Accountbindung über `obfuscatedExternalAccountId`/SHA-256 des Grow-Legends-Users.
+  - Zielserver Beta/Server1 wird explizit mitgeführt.
+  - Server-Gutschrift läuft ausschließlich über `gl_credit_google_play_purchase`.
+  - Kauf-Token wird in `google_play_purchases` protokolliert.
+  - Gutschrift ist idempotent über Purchase-Token + `player_harz_events` Event-ID; doppeltes Credit bei Retry wird verhindert.
+  - Pending-/Recovery-Pfad ist vorhanden; offene Käufe werden bei Account-ready/pageshow/foreground und Dealer-Aufruf erneut geprüft.
+- Aktuelle Runtime-Diagnose der letzten 24h zeigte 5 Fehler; release-relevant waren insbesondere:
+  - `v200DurableUser is not defined` aus `v301-auth-idle-hard-lock.js`;
+  - `v200SaveScopedLocal is not defined` aus `v4139-account-switch-authority.js`.
+- Direktfix ohne neue Patch-Schicht:
+  - `v200DurableUser` und `v200SaveScopedLocal` im kanonischen v200-Core explizit auf `window` exportiert.
+  - v301 verwendet nur noch `window.v200DurableUser` und `window.v136Logout?.('idle')`.
+  - v4139 schreibt seinen Save-Override direkt auf `window.v200SaveScopedLocal`, keine fragile Bare-Global-Zuweisung mehr.
+- Commits:
+  - v200: `d411054ee85e0416c09b901d8d776994e102a451`
+  - v301: `aa15411c85f64683b181a2ea63c728de02d3c517`
+  - v4139: `5d2759e4ea28936d670f954e0c6c3afe2c2ff9b2`
+- Zwei Character-Runtime-Fehler (`slotWrites`, `insertBefore`) stammen aus zuvor geladenen/cached Versionen; aktueller Code enthält die Schutzlogik bereits. Deshalb kritische Character-Owner ebenfalls mit neuem Cache-Key ausgeliefert.
+- Cache-Key: `8142releaseguard1`
+  - index: `384bfdd191b837c004afef125efba5928b87d639`
+  - server1: `111ded1ca78d63673c3d13d46fb7324ee4c89a0f`
+- Synthetischer Smoke wurde durch die Commits automatisch gestartet; zum Zeitpunkt dieser Statusnotiz noch in_progress.
+- Vor endgültiger Release-Freigabe noch manuell:
+  1. App komplett neu starten, damit Cache-Key 8142 geladen wird.
+  2. Auto-Logout nach 10 Min → Re-Login testen.
+  3. Accountwechsel Beta ↔ anderer Account testen.
+  4. Einen echten Google-Play-Testkauf mit dem finalen 1.0.8-Build durchlaufen: Kauf → Server-Credit → App-Neustart → Balance weiterhin korrekt.
+- Bewertung:
+  - normale optische/UI-Bugs sind kein Release-Rechtsblocker;
+  - Spielstandverlust, Account-Lifecycle-Fehler, verlorene Premiumwährung und nicht wiederherstellbare Käufe bleiben Release-Blocker bis grün getestet.
