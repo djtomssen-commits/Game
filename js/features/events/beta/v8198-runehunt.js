@@ -82,7 +82,15 @@ async function refresh({paintNow=true}={}){
  if(!uid()||!db())return null;
  try{
   const r=await rpc('v8198_runehunt_state');
-  if(r?.ok){S.state=r;S.lastError='';S.refreshes++;if(paintNow&&document.getElementById('v8198RuneOverlay')?.classList.contains('show'))paint();window.dispatchEvent(new CustomEvent('growlegends:runehunt-state',{detail:{...r}}));}
+  if(r?.ok){
+   const wasActive=S.state?.active===true;
+   S.state=r;S.lastError='';S.refreshes++;
+   if(paintNow&&document.getElementById('v8198RuneOverlay')?.classList.contains('show'))paint();
+   window.dispatchEvent(new CustomEvent('growlegends:runehunt-state',{detail:{...r}}));
+   if(wasActive!==!!r.active&&document.getElementById('world')?.classList.contains('active')){
+    try{window.v085InstallWorld?.(true)}catch(_){}
+   }
+  }
   return r;
  }catch(e){S.lastError=String(e?.message||e);console.warn('[V8198] runehunt state',e);return null}
 }
