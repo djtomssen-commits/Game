@@ -77,13 +77,29 @@
     const st=readState();
     const box=document.getElementById('v257GuildManagement');
     if(!box||!st.guild||!st.membership)return;
-    box.querySelector('.v8184-description-editor')?.remove();
     const isLeader=String(st.membership?.role||'')==='leader';
-    if(!isLeader)return;
+    let wrap=box.querySelector('.v8184-description-editor');
+    if(!isLeader){
+      wrap?.remove();
+      return;
+    }
 
-    const wrap=document.createElement('div');
-    wrap.className='v8184-description-editor';
     const current=String(st.guild?.description||'').slice(0,300);
+    if(wrap){
+      const input=wrap.querySelector('.v8184-description-input');
+      const count=wrap.querySelector('.v8184-description-count');
+      /* Preserve active typing and avoid a visible remove/reinsert cycle. */
+      if(document.activeElement!==input && String(input?.value||'')!==current){
+        if(input)input.value=current;
+        if(count)count.textContent=String(current.length);
+      }
+      wrap.dataset.v8186Value=current;
+      return;
+    }
+
+    wrap=document.createElement('div');
+    wrap.className='v8184-description-editor';
+    wrap.dataset.v8186Value=current;
     wrap.innerHTML=`<div class="v554-member-admin-title">📝 Gildenbeschreibung</div>
       <textarea class="v8184-description-input" maxlength="300" rows="4" placeholder="Beschreibe eure Gilde, Spielstil oder Anforderungen.">${esc(current)}</textarea>
       <div class="v8184-description-actions"><small><span class="v8184-description-count">${current.length}</span>/300 Zeichen</small><button type="button" class="v8184-description-save">Speichern</button></div>`;
@@ -103,7 +119,11 @@
       try{
         const {data,error}=await v073Db.rpc('v8184_set_guild_description',{p_description:value});
         if(error)throw error;
-        if(st.guild)st.guild.description=String(data?.description??value);
+        const saved=String(data?.description??value);
+        if(st.guild)st.guild.description=saved;
+        wrap.dataset.v8186Value=saved;
+        if(input&&document.activeElement!==input)input.value=saved;
+        if(count)count.textContent=String(saved.length);
         window.v063Toast?.('Gildenbeschreibung gespeichert','success','Die Beschreibung ist jetzt im öffentlichen Gildenprofil sichtbar.');
       }catch(e){
         console.error('V8.184 guild description save',e);
@@ -117,10 +137,11 @@
   function installManagementPicker(){
     const st=readState();
     const box=document.getElementById('v257GuildManagement');if(!box||!st.guild||!st.membership)return;
-    box.querySelector('.v554-member-admin')?.remove();
     let can=false,isLeader=false;
     try{can=typeof v257CanManage==='function'&&v257CanManage();isLeader=typeof v257IsLeader==='function'&&v257IsLeader()}catch(e){}
-    if(!can)return;
+    let wrap=box.querySelector('.v554-member-admin');
+    if(!can){wrap?.remove();return}
+
     const me=String(typeof v073User!=='undefined'&&v073User?.id||'');
     const rank={leader:0,officer:1,member:2};
     const others=st.members
@@ -132,10 +153,21 @@
         if(la!==lb)return lb-la;
         return String(a?.profile?.character_name||'').localeCompare(String(b?.profile?.character_name||''),'de');
       });
-    if(!others.length)return;
-    const wrap=document.createElement('div');wrap.className='v554-member-admin';
+    if(!others.length){wrap?.remove();return}
+
+    const sig=[isLeader?'leader':'manager',...others.map(m=>{
+      const p=m?.profile||(Array.isArray(m?.profiles)?m.profiles[0]:m?.profiles)||{};
+      return [m?.user_id||'',m?.role||'',p?.character_name||'',Number(p?.level)||1].join(':');
+    })].join('|');
+    if(wrap?.dataset.v8186Sig===sig)return;
+
+    if(!wrap){
+      wrap=document.createElement('div');
+      wrap.className='v554-member-admin';
+      box.prepend(wrap);
+    }
+    wrap.dataset.v8186Sig=sig;
     wrap.innerHTML=`<div class="v554-member-admin-title">👥 Mitglied verwalten</div><div class="v554-member-admin-row"><select class="v554-admin-target">${others.map(m=>{const p=m?.profile||(Array.isArray(m?.profiles)?m.profiles[0]:m?.profiles)||{};return `<option value="${esc(m.user_id||'')}">${esc(p.character_name||'Spieler')} · Lv. ${Number(p.level)||1} · ${m.role==='leader'?'Anführer':m.role==='officer'?'Offizier':'Mitglied'}</option>`}).join('')}</select>${isLeader?'<button type="button" class="v554-admin-role">Rolle wechseln</button>':''}<button type="button" class="v554-admin-kick bad">Entfernen</button></div>`;
-    box.prepend(wrap);
     const sel=wrap.querySelector('.v554-admin-target');
     wrap.querySelector('.v554-admin-role')?.addEventListener('click',()=>{
       const uid=sel?.value;if(!uid)return;const m=others.find(x=>String(x.user_id)===String(uid));
