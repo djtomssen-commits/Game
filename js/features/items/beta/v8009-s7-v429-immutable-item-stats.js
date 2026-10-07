@@ -34,15 +34,19 @@
   function authenticatedServerItems(){
     try{return !!((typeof v073User!=='undefined'&&v073User?.id)||window.v073User?.id)}catch(_){return false}
   }
+  function legacyLocalItemStateWritable(){
+    /* V8.181: existing item state is immutable while auth ownership is unresolved. */
+    return window.__V200_AUTH_READY__===true && !authenticatedServerItems();
+  }
   function lock(it){
-    if(authenticatedServerItems())return false;
+    if(!legacyLocalItemStateWritable())return false;
     if(!isGear(it))return false;
     if(it.v429StatLock && it.v429StatLock.version===LOCK_VERSION && it.v429StatLock.native && typeof it.v429StatLock.native==='object')return false;
     it.v429StatLock={version:LOCK_VERSION,native:nativeFromCurrent(it)};
     return true;
   }
   function restore(it){
-    if(authenticatedServerItems())return false;
+    if(!legacyLocalItemStateWritable())return false;
     if(!isGear(it))return false;
     lock(it);
     const before=JSON.stringify(it.bonus||{});
@@ -61,13 +65,13 @@
     (s.magicShop||[]).forEach(fn);
   }
   function lockAndRestoreAll(){
-    if(authenticatedServerItems())return false;
+    if(!legacyLocalItemStateWritable())return false;
     let changed=false;
     eachGear(it=>{if(lock(it))changed=true;if(restore(it))changed=true});
     return changed;
   }
   function saveStable(){
-    if(authenticatedServerItems())return false;
+    if(!legacyLocalItemStateWritable())return false;
     try{localStorage.setItem(KEY,JSON.stringify(s));return true}catch(e){return false}
   }
   function stableTotal(it){
@@ -186,9 +190,12 @@
 
   /* Existing saves are locked once from the final V4.28 canonical values that
      are already in memory at this point. Future items are locked before their first render/save. */
-  lockAndRestoreAll();
-  saveStable();
-  try{render()}catch(e){console.error('V4.29 immutable item stats',e)}
+  /* V8.181: no pre-auth lock/restore/render of existing server items. */
+  if(legacyLocalItemStateWritable()){
+    lockAndRestoreAll();
+    saveStable();
+    try{render()}catch(e){console.error('V4.29 immutable item stats',e)}
+  }
 
   function stamp(){}
   stamp();
