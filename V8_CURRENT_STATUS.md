@@ -12104,3 +12104,29 @@ Aktueller Release-Status:
   4. Sprache wechseln und erneut prüfen.
   5. Server 1 ohne VIP darf weiterhin keinen VIP-Punkt vortäuschen.
 
+### 2026-10-07 – V8.209 Verzauberungs-FX +2 bis +4 sichtbar gemacht (Beta)
+- Nutzerhinweis: +5 Items zeigen kleine Blitze, bei +4 war optisch praktisch kein Verzauberungseffekt sichtbar.
+- Ursache:
+  - +2/+3/+4 nutzten hauptsächlich `box-shadow` direkt auf der Item-Karte;
+  - spätere Qualitätsfarben überschreiben diesen `box-shadow` mit `!important`;
+  - ab +5 blieb der Effekt trotzdem sichtbar, weil die Blitz-FX auf der separaten `.v8198-item-fx`-Ebene liegt.
+- Fix direkt im bestehenden Verzauberungs-CSS-Owner:
+  - Datei: `css/features/forge/beta/v8198-rune-enchant.css`;
+  - +2: dezenter türkisfarbener Inset-Ring + innerer Glow;
+  - +3: stärkerer Inset-Glow + leichte diagonale Lichtfläche;
+  - +4: klarer 2px-Inset-Ring, stärkerer innerer Glow und langsamer Licht-Sweep;
+  - +5+ behält zusätzlich die bestehenden Blitz-Effekte;
+  - Qualitätsfarbe des Items bleibt sichtbar und wird nicht ersetzt.
+- Keine neue Render-/Patch-Schicht; bestehende `v8198-item-fx`-Ebene wurde erweitert.
+- Beta Cache-Bust:
+  - `v8198-rune-enchant.css?v=8209enchantfx1`.
+- Relevante Commits:
+  - FX-CSS: `6cf82725544a94a11113a910f301e55285ad4e4d`;
+  - Beta Cache: `982b3bcbe9a3801aeb23139ddd21a351c490af7c`;
+  - Matrix: `35a5be531ad583ee03f8bba2ae106bcd73f6ce31`.
+- Manueller Test:
+  1. Beta/App komplett neu laden.
+  2. Ein +2-, +3- und +4-Item im Inventar bzw. angelegt prüfen.
+  3. +2 muss leicht, +3 deutlicher und +4 klar sichtbar leuchten.
+  4. +5 muss zusätzlich weiterhin die kleinen Blitze zeigen.
+
