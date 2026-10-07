@@ -10739,3 +10739,61 @@ Aktueller Release-Status:
   - damit bleiben die bisherigen Server-1-Klassenwerte aktiv.
 - Backend: V8.184 Hall/Gilden-RPCs und Gildenbeschreibung waren bereits getrennt für `public` und `server1` ausgerollt; kein zusätzlicher Backend-Promotion-Schritt nötig.
 - Server-1-Promotion-Commit: `66a443d3a67eb97a89cbb625407a69464206ebf7`.
+
+
+### 2026-10-07 – V8.188 Beta: Rewarded Video überspringt 25 % Questzeit
+- Nutzerwunsch: Unter dem bestehenden Zeit-Samen-Skip einer laufenden Quest einen Video-Button anbieten.
+- Umgesetzt als freiwilliges **Rewarded Video**, Beta-first.
+- Regel für den ersten sauberen Stand:
+  - **1 Video-Bonus pro aktiver Quest**;
+  - vollständig angesehenes Video = **25 % der ursprünglichen Questdauer** werden abgezogen;
+  - Abbruch/Fehler = **0 Zeitgutschrift**;
+  - Zeit-Samen-Skip bleibt unverändert und separat verfügbar.
+- Sichtbarer Owner bleibt `js/features/quest/beta/v4127-quest-skip-stable.js`; kein neuer Quest-Render-Wrapper.
+- Der neue Button wird direkt unter der bestehenden Zeit-Samen-Zeile erzeugt.
+- Buttonzustände: verfügbar / AdMob-Bestätigung läuft / Bonus bereits genutzt / Android-App erforderlich.
+- Native Android-Bridge musste nicht geändert werden:
+  - bestehendes `GrowLegendsAds.showRewarded()` akzeptiert bereits `userId` und frei gesetztes `customData`;
+  - Quest verwendet `customData=growlegends_quest25_v1`;
+  - Server1-Variante ist `growlegends_quest25_v1:server1`.
+- Serverautorität / Anti-Cheat:
+  - neue Felder auf `player_quest_runs` in `public` und `server1`: `rewarded_skip_applied_at`, `rewarded_skip_event_id`;
+  - einmalige Provider-Event-ID per Unique-Index abgesichert;
+  - neuer verifizierter RPC je Schema: `v8188_quest_rewarded_apply_verified(uuid,text,text)`;
+  - RPC ist **nicht** für `PUBLIC`, `anon` oder `authenticated` ausführbar;
+  - ausschließlich `service_role` besitzt EXECUTE;
+  - der Client kann deshalb keine 25-%-Zeitgutschrift direkt auslösen.
+- Serverberechnung:
+  - Originaldauer kommt primär aus dem beim Queststart gespeicherten `offer.duration`;
+  - Zeitbonus = `ceil(original_duration * 0.25)`;
+  - `player_quest_runs.ready_at` und `player_quest_state.active.ends` werden atomar auf den verkürzten Zeitpunkt gesetzt;
+  - Marker `v8188RewardedSkipApplied` + `v8188RewardedSkipSeconds` werden in den aktiven Quest-State geschrieben;
+  - zweite Rewarded-Anzeige für dieselbe Quest kann serverseitig keine zweite Gutschrift erzeugen.
+- AdMob SSV:
+  - bestehende Edge Function `admob-rewarded-ssv` von Version 3 auf **Version 4** erweitert;
+  - Google-Signatur-/Ad-Unit-/Reward-Item-/User-/Transaction-Prüfung bleibt erhalten;
+  - bestehender Tütchen-Pfad `v7215_ad_bag_apply_verified` bleibt unverändert;
+  - neues Quest-Custom-Data routet ausschließlich auf `v8188_quest_rewarded_apply_verified`.
+- Client wartet nach dem nativen `status=rewarded` auf den serverseitigen SSV-State; erst der Servermarker aktualisiert den sichtbaren Timer.
+- Bei verzögertem SSV bleibt die Quest für 60 s gegen einen zweiten Video-Start derselben Quest lokal gesperrt; endgültige Einmaligkeit liegt trotzdem serverseitig.
+- Mehrsprachigkeit DE/EN/ES/FR/PL/TR ergänzt.
+- CSS direkt im bestehenden `v8009-extracted-v4127-quest-skip-stable-css.css` ergänzt.
+- Verifikation:
+  - Quest-Owner JS Syntax: OK;
+  - Gameplay-i18n Syntax: OK;
+  - V8188-RPC kompiliert und liefert für einen nicht existierenden Testspieler sauber `QUEST_GUARD_NOT_ENABLED` statt SQL-Fehler;
+  - RPC-Rechte Beta + Server1: anon=false, authenticated=false, service_role=true;
+  - AdMob-Einstellungen Beta + Server1: enabled=true, mode=production, echte Rewarded-Ad-Unit aktiv;
+  - Edge Function v4 enthält sowohl bisherigen Ad-Bag-RPC als auch neuen Quest-RPC.
+- Beta-Auslieferung:
+  - `index.html` + `beta.html` Cache-Key `8188questvideo1` für Quest-Skip JS/CSS + Gameplay-i18n;
+  - Server1-HTML wurde für V8.188 **nicht** promoted;
+  - zusätzlicher Code-Guard `GROW_RELEASE_CHANNEL==='server1'` blendet den Video-Button auf Server1 aus.
+- Manueller Beta-Test offen:
+  1. laufende Quest starten und Restzeit notieren;
+  2. Video-Button unter Zeit-Samen-Skip antippen;
+  3. Video vollständig ansehen;
+  4. nach SSV muss die Questzeit um 25 % der ursprünglichen Questdauer sinken;
+  5. Button muss danach als genutzt deaktiviert bleiben;
+  6. bei einer neuen Quest Video abbrechen -> keine Zeitgutschrift;
+  7. Zeit-Samen-Skip weiterhin separat prüfen.
