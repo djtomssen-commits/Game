@@ -94,12 +94,16 @@
     try{if(typeof v094XpEventActive==='function'&&v094XpEventActive())a.push({c:'purple',t:'⚡ EXP EVENT',s:'2× Erfahrung aktiv'})}catch(e){}
     try{if(typeof v274GoldEventActive==='function'&&v274GoldEventActive())a.push({c:'gold',t:'💰 GOLD EVENT',s:'2× Gold-Belohnungen aktiv'})}catch(e){}
     try{if(typeof v271DampfEventActive==='function'&&v271DampfEventActive())a.push({c:'',t:'🔥 DAMPF EVENT',s:'200 Dampf gratis · mit Harz bis 300'})}catch(e){}
-    if(bossActive)a.push({c:'cyan',t:'💠 SMARAGD KOLOSS',s:'Weltboss aktiv!'});
-    return a.slice(0,5);
+    if(bossActive)a.push({c:'cyan',t:'💠 SMARAGD KOLOSS',s:'Donnerstags-Weltboss aktiv!'});
+    if(runeHuntEventActive())a.push({c:'green',t:'ᚱ RUNENJAGD',s:'Runentor offen · 5 Expeditionen'});
+    return a.slice(0,6);
   }
 
   function worldBossEventActive(){
     try{return typeof v110MysticEventActive==='function'&&v110MysticEventActive()}catch(e){return false}
+  }
+  function runeHuntEventActive(){
+    try{return typeof window.v8198RuneHuntEventActive==='function'&&window.v8198RuneHuntEventActive()}catch(e){return false}
   }
 
   function eventIcon(ev){
@@ -108,6 +112,7 @@
     if(t.includes('gold'))return '💰';
     if(t.includes('dampf'))return '🔥';
     if(t.includes('smaragd')||t.includes('koloss')||t.includes('weltboss'))return '💠';
+    if(t.includes('rune'))return 'ᚱ';
     if(t.includes('turm')||t.includes('anomalie'))return '🗼';
     return '✨';
   }
@@ -128,6 +133,19 @@
         </article>`;
   }
 
+  function runeCardHtml(){
+    return `        <article class="v366-panel v366-feature v8198-rune-home-card" data-runehunt="1" role="button" tabindex="0" aria-label="Runenjagd öffnen">
+          <h2>Runenjagd</h2>
+          <div class="v8198-home-portal" aria-hidden="true"><span class="v8198-home-live">EVENT AKTIV</span><i>ᚱ</i></div>
+          <div class="v6118-boss-name">Das Runentor ist offen</div>
+          <div class="v690-mini-status">5 Expeditionen · seltene Verzauberungsrunen</div>
+          <button class="v366-go" data-runehunt="1">Runenjagd öffnen</button>
+        </article>`;
+  }
+  function specialEventCardHtml(bossActive,runeActive,bossFreeReady=true){
+    return runeActive?runeCardHtml():bossCardHtml(bossActive,bossFreeReady);
+  }
+
   function eventCardHtml(ev){
     const activeText=ev.map(x=>String(x?.t||'').toLowerCase()).join(' | ');
     const on=key=>{
@@ -136,6 +154,7 @@
       if(key==='gold')return activeText.includes('gold');
       if(key==='dampf')return activeText.includes('dampf');
       if(key==='boss')return activeText.includes('smaragd')||activeText.includes('koloss')||activeText.includes('weltboss');
+      if(key==='rune')return activeText.includes('rune');
       return false;
     };
     const visible=ev.slice(0,2);
@@ -145,7 +164,8 @@
       ['xp','EXP','⚡'],
       ['gold','GOLD','💰'],
       ['dampf','DAMPF','🔥'],
-      ['boss','KOLOSS','💠']
+      ['boss','KOLOSS','💠'],
+      ['rune','RUNEN','ᚱ']
     ];
     return `        <article class="v366-panel v366-feature v690-events-card">
           <h2><span>Events</span><i class="vHome-event-count">${ev.length}</i></h2>
@@ -200,23 +220,52 @@
     });
   }
 
+  function openRuneHunt(){
+    try{
+      if(typeof window.v8198OpenRuneHunt==='function')return window.v8198OpenRuneHunt();
+      window.v063Toast?.('Runenjagd','info','Das Runentor wird noch geladen.');
+    }catch(e){console.error('Startseite Runenjagd öffnen fehlgeschlagen',e)}
+  }
+  function bindSpecialEventButtons(root){
+    bindBossButtons(root);
+    const cards=[
+      ...(root instanceof Element&&root.matches('.v8198-rune-home-card')?[root]:[]),
+      ...root.querySelectorAll('.v8198-rune-home-card')
+    ];
+    cards.forEach(card=>{
+      card.onclick=e=>{if(e.target instanceof Element&&e.target.closest('button[data-runehunt]'))return;openRuneHunt()};
+      card.onkeydown=e=>{if(e.key!=='Enter'&&e.key!==' ')return;e.preventDefault();openRuneHunt()};
+    });
+    const buttons=[
+      ...(root instanceof Element&&root.matches('button[data-runehunt]')?[root]:[]),
+      ...root.querySelectorAll('button[data-runehunt]')
+    ];
+    buttons.forEach(b=>b.onclick=e=>{e.preventDefault();e.stopPropagation();openRuneHunt()});
+  }
+
   function patchEventPanels(world,ev,bossActive,previousBossActive){
     const card=world.querySelector('.v690-events-card');
-    const boss=world.querySelector('.v366-feature.boss');
+    const special=world.querySelector('.v366-feature.boss,.v8198-rune-home-card');
     const count=world.querySelector('.v690-current-title small');
-    const goal=world.querySelector('.v366-goals .v366-goal:nth-child(3) span');
-    if(!card||!boss||!count||!goal)return false;
+    const goal=world.querySelector('.v366-goals .v366-goal:nth-child(3)');
+    if(!card||!special||!count||!goal)return false;
+    const runeActive=runeHuntEventActive();
+    const bossFreeReady=bossActive?bossFree():true;
     const template=document.createElement('template');
     template.innerHTML=eventCardHtml(ev);
     card.replaceWith(template.content.firstElementChild);
     count.textContent=ev.length?`${ev.length} aktiv`:'Alles ruhig';
-    if(bossActive!==previousBossActive){
-      const bossFreeReady=bossActive?bossFree():true;
-      template.innerHTML=bossCardHtml(bossActive,bossFreeReady);
-      const next=template.content.firstElementChild;
-      boss.replaceWith(next);
-      bindBossButtons(next);
-      goal.textContent=bossActive?(bossFreeReady?'Offen · Gratis':'Offen · 10 Harz'):'Geschlossen';
+
+    template.innerHTML=specialEventCardHtml(bossActive,runeActive,bossFreeReady);
+    const next=template.content.firstElementChild;
+    special.replaceWith(next);
+    bindSpecialEventButtons(next);
+
+    const gi=goal.querySelector('i'),gb=goal.querySelector('b'),gs=goal.querySelector('span');
+    if(runeActive){
+      if(gi)gi.textContent='ᚱ';if(gb)gb.textContent='Runenjagd';if(gs)gs.textContent='Offen · 5 Expeditionen';
+    }else{
+      if(gi)gi.textContent='💎';if(gb)gb.textContent='Koloss';if(gs)gs.textContent=bossActive?(bossFreeReady?'Offen · Gratis':'Offen · 10 Harz'):'Donnerstags';
     }
     diagnostics.eventPanelPatches++;
     return true;
@@ -314,6 +363,7 @@
 
   function homeViewSnapshot(){
     const bossActive=worldBossEventActive();
+    const runeActive=runeHuntEventActive();
     return {
       name:playerName(),
       power:cp(),
@@ -323,12 +373,13 @@
       ev:events(bossActive),
       hc:homeChecklist(),
       pets:petUnseen(),
-      bossActive
+      bossActive,
+      runeActive
     };
   }
 
   function worldHtml(view=homeViewSnapshot()){
-    const {name,power,dg,grow,ac,ev,hc,pets,bossActive}=view;
+    const {name,power,dg,grow,ac,ev,hc,pets,bossActive,runeActive}=view;
     const avatar=avatarSrc();
     const firstQuestReady=firstQuest();
     const dungeonFreeReady=dungeonFree();
@@ -393,11 +444,11 @@
         <article class="v366-panel v690-goals-panel"><div class="v366-goals-title">Tagesziele</div><div class="v366-goals">
           <div class="v366-goal"><i>📜</i><div><b>Erste Quest</b><span>${firstQuestReady?'+2 Harz':'Erledigt ✓'}</span></div></div>
           <div class="v366-goal"><i>⚔️</i><div><b>Dungeon</b><span>${dungeonFreeReady?'Bereit':'Cooldown'}</span></div></div>
-          <div class="v366-goal"><i>💎</i><div><b>Koloss</b><span>${bossActive?(bossFreeReady?'Offen · Gratis':'Offen · 10 Harz'):'Geschlossen'}</span></div></div>
+          <div class="v366-goal"><i>${runeActive?'ᚱ':'💎'}</i><div><b>${runeActive?'Runenjagd':'Koloss'}</b><span>${runeActive?'Offen · 5 Expeditionen':(bossActive?(bossFreeReady?'Offen · Gratis':'Offen · 10 Harz'):'Donnerstags')}</span></div></div>
           <div class="v366-goal"><i>⭐</i><div><b>Erfolge</b><span>${ac.done}/${ac.total||'—'}</span></div></div>
         </div></article>
 
-        ${bossCardHtml(bossActive,bossFreeReady)}
+        ${specialEventCardHtml(bossActive,runeActive,bossFreeReady)}
 
         <article class="v366-panel v366-feature book"><h2>Illegales Buch</h2><div class="v366-feature-art"></div><div class="v690-mini-status">⭐ ${ac.done}/${ac.total||'—'} Erfolge</div><button class="v366-go" data-book="1">Öffnen</button></article>
 
@@ -495,6 +546,7 @@
       ['.v366-card.grow>h2','Growroom'],
       ['.v690-goals-panel .v366-goals-title','Tagesziele'],
       ['.v366-feature.boss>h2','Weltboss'],
+      ['.v8198-rune-home-card>h2','Runenjagd'],
       ['.v366-feature.book>h2','Illegales Buch'],
       ['.vForge-home-card>h2','Harzschmiede'],
       ['.v7129-referral-home-card>h2','Freund werben'],
@@ -569,7 +621,7 @@
     world.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>{const id=b.dataset.go;if(id!=='world')try{v032Go(id)}catch(e){}});
     world.querySelectorAll('[data-char-tab]').forEach(b=>b.onclick=()=>openCharacterTab(b.dataset.charTab));
     world.querySelectorAll('[data-pets]').forEach(b=>b.onclick=()=>{try{window.v686OpenPetAlbum?.()}catch(e){}});
-    bindBossButtons(world);
+    bindSpecialEventButtons(world);
     world.querySelectorAll('[data-book]').forEach(b=>b.onclick=()=>{try{if(typeof v106OpenBook==='function')v106OpenBook()}catch(e){}});
     world.querySelectorAll('[data-weekly-chest]').forEach(b=>b.onclick=e=>{e.preventDefault();e.stopPropagation();try{window.v6239OpenWeeklyChest?.()}catch(err){console.warn('V6.239 weekly chest open',err)}});
     finalizeOwnedWorld(world);
@@ -578,7 +630,7 @@
     notifyWorldRendered('full');
   }
 
-  window.v8009HomeEventDiagnostics=()=>({version:'V8.009-HOME-31',...diagnostics,events:events().map(x=>({...x})),worldBossActive:worldBossEventActive()});
+  window.v8009HomeEventDiagnostics=()=>({version:'V8.198-HOME-RUNES',...diagnostics,events:events().map(x=>({...x})),worldBossActive:worldBossEventActive(),runeHuntActive:runeHuntEventActive()});
 
   /* Re-own only the world installer; do not touch core game render/persist. */
   v085WorldHtml=worldHtml;
