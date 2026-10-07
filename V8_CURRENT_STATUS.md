@@ -10797,3 +10797,18 @@ Aktueller Release-Status:
   5. Button muss danach als genutzt deaktiviert bleiben;
   6. bei einer neuen Quest Video abbrechen -> keine Zeitgutschrift;
   7. Zeit-Samen-Skip weiterhin separat prüfen.
+
+
+### 2026-10-07 – V8.188 Quest-Rewarded-Video manuell bestätigt
+- Nutzer hat mit Android-App **1.0.8** erfolgreich getestet.
+- Ergebnis:
+  - Rewarded Video vollständig angesehen;
+  - serverseitige Bestätigung abgeschlossen;
+  - 25 % Questzeit korrekt abgezogen;
+  - Button danach korrekt als **✓ Video-Bonus genutzt** deaktiviert.
+- Ursache des vorherigen scheinbaren Fehlers:
+  - auf dem Gerät war noch eine ältere App-Version installiert;
+  - mit App 1.0.8 funktioniert der bestehende Native-/SSV-Pfad korrekt.
+- Voraussetzung damit dokumentiert:
+  - Quest-Rewarded-Zeitbonus benötigt Android-App **>= 1.0.8** mit aktuellem GrowLegendsAds-Bridge-Stand.
+- V8.188 damit auf echtem Gerät **manuell bestätigt**.
