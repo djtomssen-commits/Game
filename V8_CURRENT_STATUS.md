@@ -11670,3 +11670,30 @@ Aktueller Release-Status:
   3. Legenden-Bund muss den neuen grün/türkisen V4-Rahmen zeigen.
   4. VIP-Kronenrahmen muss den neuen rot/goldenen V4-Rahmen zeigen.
 
+### 2026-10-07 – V8.202 Server 1 Öffnung auf 20:00 Uhr
+- Server-1-Öffnung für heute auf **07.10.2026 20:00 Europe/Berlin** verschoben.
+- Client-/Login-Gate:
+  - `V343_SERVER1_OPENS_AT = 2026-10-07T18:00:00Z` (= 20:00 Europe/Berlin);
+  - Countdown, Login-Hinweis, Closed-Toast und Early-Access-Hinweis auf „heute 20:00 Uhr“ korrigiert;
+  - keine veralteten „16:00“-/„morgen“-Texte mehr im v343-Owner.
+- Echtes Server-Gate ebenfalls korrigiert:
+  - `public.game_servers.id='server1'`;
+  - `enabled=true`;
+  - `opens_at=2026-10-07 18:00:00+00` (= 20:00 Europe/Berlin);
+  - damit ist Server 1 für normale Spieler bis 20:00 serverseitig geschlossen, nicht nur im UI;
+  - bestehende Early-Access-Tester bleiben durch `gl_server_access_pre_request()` weiterhin erlaubt.
+- Cache-Bust `8202server1open20` gesetzt in:
+  - `index.html`;
+  - `beta.html`;
+  - `server1.html`.
+- QA:
+  - v343 JS Syntax: OK;
+  - keine verbleibenden 16:00-/morgen-Texte im Owner;
+  - DB-Prüfung bestätigt `opens_at_berlin = 2026-10-07 20:00:00`;
+  - DB-Prüfung vor dem Termin: `currently_before_open=true`.
+- Commits:
+  - v343 Launchzeit: `7c5e31e780a270913f7bd919615c98a4757d5d29`;
+  - Beta Cache: `2e9f5622983ae37037f4e048668f040a7cf60815`;
+  - Server1 Cache: `68617ac7d25c2d3738ca67a422477c9223b0fdab`;
+  - Index/Login Cache: `189ceb9845846c344035cd91e1c6903c970e64a4`.
+
