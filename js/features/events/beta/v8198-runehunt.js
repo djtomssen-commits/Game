@@ -4,8 +4,8 @@ if(String(window.GROW_RELEASE_CHANNEL||'stable').toLowerCase()!=='beta')return;
 if(window.__V8198_RUNEHUNT__)return;
 window.__V8198_RUNEHUNT__=true;
 
-const VERSION='V8.202';
-const S={state:null,busy:false,opened:false,lastError:'',refreshes:0,starts:0,doors:0,actions:0,timer:null};
+const VERSION='V8.203';
+const S={state:null,busy:false,opened:false,lastError:'',refreshes:0,starts:0,doors:0,actions:0,timer:null,walking:''};
 const db=()=>{try{return (typeof v073Db!=='undefined'&&v073Db)||null}catch(_){return null}};
 const uid=()=>{try{return String((typeof v073User!=='undefined'&&v073User?.id)||'')}catch(_){return ''}};
 const one=v=>Array.isArray(v)?v[0]:v;
@@ -24,6 +24,8 @@ function overlay(){
  document.body.appendChild(el);return el;
 }
 function clearTimer(){if(S.timer){clearTimeout(S.timer);S.timer=null}}
+function sleep(ms){return new Promise(resolve=>setTimeout(resolve,ms))}
+function motionMs(){try{return matchMedia('(prefers-reduced-motion: reduce)').matches?80:760}catch(_){return 760}}
 function close(){clearTimer();overlay().classList.remove('show');S.opened=false}
 function wallet(){
  const st=S.state||{};
@@ -58,15 +60,26 @@ function lobby(){
  if(r?.status==='completed')return completed(r);
  return '<section class="v8202-scene v8202-lobby '+(active?'active':'closed')+'"><div class="v8202-lobby-portal"><div class="ring r1"></div><div class="ring r2"></div><div class="ring r3"></div><i>ᚱ</i></div><div class="v8202-lobby-copy"><small>ALLE 2 WOCHEN · NUR SONNTAGS</small><h1>100 RÄUME.<br>EINE RUNE.</h1><p>Hinter jeder Pforte kann etwas anderes warten: Monster, Truhen, Segen, Flüche, Schlüssel oder eine seltene goldene Kammer. Jeder 25. Raum gehört einem Wächter.</p><div class="v8202-lobby-rules"><span><b>100</b><small>Räume</small></span><span><b>3</b><small>Zwischenbosse</small></span><span><b>1</b><small>Endboss</small></span><span><b>1ᚱ</b><small>garantiert bei Sieg</small></span></div><button data-start '+(!active||S.busy?'disabled':'')+'>'+(S.busy?'DAS TOR ÖFFNET SICH …':r?'RUN FORTSETZEN':'RUNENJAGD BETRETEN')+'</button><em>'+(active?'Das Runentor ist geöffnet.':'Nächste Runenjagd: '+esc(fmtDate(st.next_event)))+'</em></div></section>';
 }
-function doorCard(d,r){
+function caveEntrance(d,r,index,total){
  const status=String(d?.status||'open'),locked=status==='locked',blocked=status==='blocked',canKey=(Number(r?.keys)||0)>=Math.max(1,Number(d?.key_cost)||1);
- const dis=blocked||(locked&&!canKey)||S.busy;
- const state=blocked?'ZUGEMAUERT':locked?(canKey?'1 SCHLÜSSEL VERWENDEN':'SCHLÜSSEL FEHLT'):'ÖFFNEN';
- return '<button class="v8202-door '+esc(d?.style||'stone')+' '+status+'" data-door="'+esc(d?.id||'')+'" '+(dis?'disabled':'')+'><div class="v8202-door-art"><span class="runes">ᚠ ᛏ ᛉ ᚱ ᚾ</span><i>'+(d?.style==='gold'?'✦':d?.style==='ember'?'ᛏ':d?.style==='root'?'ᚠ':d?.style==='mist'?'ᛉ':'ᚱ')+'</i><div class="seal"></div>'+(locked?'<b class="lock">⚿</b>':'')+(blocked?'<b class="wall">✕</b>':'')+'</div><div class="v8202-door-copy"><small>'+esc(status==='open'?'UNVERSIEGELTE PFORTE':status==='locked'?'VERSIEGELTE PFORTE':'VERSCHÜTTETER WEG')+'</small><b>'+esc(d?.label||'Runenpforte')+'</b><p>'+esc(d?.hint||'')+'</p><em>'+state+'</em></div></button>';
+ const dis=blocked||(locked&&!canKey)||S.busy||!!S.walking;
+ const state=blocked?'VERSCHÜTTET':locked?(canKey?'⚿ 1 SCHLÜSSEL':'⚿ SCHLÜSSEL FEHLT'):'BETRETEN';
+ const side=total===1?'boss':index===0?'left':'right';
+ const mark=d?.style==='gold'?'✦':d?.style==='ember'?'ᛏ':d?.style==='root'?'ᚠ':d?.style==='mist'?'ᛉ':'ᚱ';
+ return '<button class="v8203-cave '+esc(d?.style||'stone')+' '+status+' '+side+'" data-door="'+esc(d?.id||'')+'" '+(dis?'disabled':'')+'>'+
+   '<div class="v8203-cave-rock"><span class="v8203-cave-runes">ᚠ ᛏ ᛉ ᚱ ᚾ</span><div class="v8203-cave-mouth"><i>'+mark+'</i><span class="v8203-cave-depth"></span></div>'+(locked?'<b class="v8203-cave-lock">⚿</b>':'')+(blocked?'<b class="v8203-cave-block">✕</b>':'')+'</div>'+
+   '<div class="v8203-cave-label"><small>'+esc(status==='open'?'HÖHLENEINGANG':status==='locked'?'VERSIEGELTER EINGANG':'VERSCHÜTTETER EINGANG')+'</small><b>'+esc(d?.label||'Runenhöhle')+'</b><p>'+esc(d?.hint||'')+'</p><em>'+state+'</em></div>'+
+ '</button>';
 }
 function corridor(r){
  const doors=Array.isArray(r?.doors)?r.doors:[];
- return '<section class="v8202-scene v8202-run zone'+zone(r?.room_no)+'">'+hud(r)+'<div class="v8202-room-head"><small>RAUM '+r.room_no+' VON 100</small><h2>'+(doors.length===1?'DAS WÄCHTERTOR':'WELCHE PFORTE?')+'</h2><p>'+(doors.length===1?'Dieser Raum lässt dir keine Wahl. Hinter dem Tor wartet ein Wächter.':'Du kennst nur die Spuren vor den Türen. Was dahinter liegt, erfährst du erst nach dem Öffnen.')+'</p></div><div class="v8202-doors '+(doors.length===1?'single':'')+'">'+doors.map(d=>doorCard(d,r)).join('')+'</div></section>';
+ const walkClass=S.walking?' walking walk-'+esc(S.walking):'';
+ return '<section class="v8202-scene v8202-run zone'+zone(r?.room_no)+' v8203-cave-scene'+walkClass+'">'+
+   hud(r)+
+   '<div class="v8202-room-head"><small>RAUM '+r.room_no+' VON 100</small><h2>'+(doors.length===1?'DER WÄCHTER WARTET':'WÄHLE DEINEN WEG')+'</h2><p>'+(doors.length===1?'Vor dir liegt nur ein einziger gewaltiger Höhleneingang. Dahinter wartet der Wächter.':'Du stehst direkt vor zwei Höhleneingängen. Wähle einen Weg – dann geht die Kamera hinein.')+'</p></div>'+
+   '<div class="v8203-camera-stage"><div class="v8203-camera-world"><div class="v8203-ceiling"></div><div class="v8203-ground"><span></span></div><div class="v8203-mist m1"></div><div class="v8203-mist m2"></div><div class="v8203-caves '+(doors.length===1?'single':'')+'">'+doors.map((d,i)=>caveEntrance(d,r,i,doors.length)).join('')+'</div><div class="v8203-camera-vignette"></div></div></div>'+
+   (S.walking?'<div class="v8203-walk-label">Du gehst in die gewählte Höhle …</div>':'')+
+ '</section>';
 }
 function encounterActions(e,r){
  const t=String(e?.type||'');
@@ -128,10 +141,22 @@ async function start(){
  finally{S.busy=false;paint()}
 }
 async function choose(id){
- if(S.busy||!id)return;S.busy=true;paint();
- try{const r=await rpc('v8202_runehunt_choose',{p_door_id:id,p_request_id:rid('v8202_door')});if(r?.ok===false)throw new Error(String(r.reason||'DOOR_REJECTED'));applyState(r);S.doors++}
- catch(e){S.lastError=String(e?.message||e);toast('Pforte','error',S.lastError)}
- finally{S.busy=false;paint()}
+ if(S.busy||S.walking||!id)return;
+ const run=S.state?.run,doors=Array.isArray(run?.doors)?run.doors:[],picked=doors.find(d=>String(d?.id||'')===id);
+ if(!picked)return;
+ S.busy=true;
+ S.walking=doors.length===1?'boss':(doors.indexOf(picked)===0?'left':'right');
+ paint();
+ try{
+  await sleep(motionMs());
+  const r=await rpc('v8202_runehunt_choose',{p_door_id:id,p_request_id:rid('v8202_door')});
+  if(r?.ok===false)throw new Error(String(r.reason||'DOOR_REJECTED'));
+  applyState(r);S.doors++;
+ }catch(e){
+  S.lastError=String(e?.message||e);toast('Höhleneingang','error',S.lastError);
+ }finally{
+  S.walking='';S.busy=false;paint();
+ }
 }
 async function act(id){
  if(S.busy||!id)return;S.busy=true;paint();
@@ -144,7 +169,7 @@ window.v8198OpenRuneHunt=open;
 window.v8198RuneHuntRefresh=refresh;
 window.v8198RuneHuntSnapshot=()=>S.state?JSON.parse(JSON.stringify(S.state)):null;
 window.v8198RuneHuntClose=close;
-window.v8198RuneHuntDiagnostics=()=>({version:VERSION,busy:S.busy,opened:S.opened,refreshes:S.refreshes,starts:S.starts,doors:S.doors,actions:S.actions,lastError:S.lastError,state:S.state});
+window.v8198RuneHuntDiagnostics=()=>({version:VERSION,busy:S.busy,walking:S.walking,opened:S.opened,refreshes:S.refreshes,starts:S.starts,doors:S.doors,actions:S.actions,lastError:S.lastError,state:S.state});
 window.addEventListener('keydown',key);
 window.addEventListener('growlegends:account-ready',()=>{S.state=null;void refresh({paintNow:false})},{passive:true});
 window.addEventListener('pageshow',()=>setTimeout(()=>void refresh({paintNow:false}),500),{passive:true});
