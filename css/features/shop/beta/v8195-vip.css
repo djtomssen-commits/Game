@@ -19,3 +19,14 @@
 .v8195-vip-name{color:#f0c95f!important;text-shadow:0 0 8px rgba(231,180,61,.28)}.v8195-vip-badge{display:inline-flex;align-items:center;margin-left:4px;padding:1px 4px;border:1px solid #b98a35;border-radius:999px;background:#49300d;color:#ffe49b;font-size:6px;font-weight:1000;vertical-align:middle}
 .v7137-frame-target[data-v7137-frame="vip_crown"]>.v7139-frame-art{filter:drop-shadow(0 0 7px rgba(255,204,73,.75)) saturate(1.18)}.v7137-frame-card:has([data-v7137-frame="vip_crown"]){border-color:#b98a35!important}
 @media(max-width:620px){#harzDealer .v7117-tabs,#goldShop .v7117-tabs{grid-template-columns:repeat(2,1fr)!important}.v8195-pack-grid{grid-template-columns:1fr}.v8195-benefits,.v8195-actions{grid-template-columns:1fr}.v8195-status{grid-template-columns:1fr}.v8195-daily{align-items:flex-start;flex-direction:column}.v8195-daily button{width:100%}}
+
+/* Public VIP identity: only applied when the server-backed profile says VIP is active and visible. */
+#hall .v072-player-row.v8195-vip-public [class*="name"],
+#v074ProfileContent.v8195-vip-public [class*="name"]{color:#f0c95f!important;text-shadow:0 0 8px rgba(231,180,61,.28)}
+#hall .v072-player-row.v8195-vip-public .v646-row-avatar,
+#v074ProfileContent.v8195-vip-public .v652-profile-avatar{position:relative!important;overflow:visible!important}
+#hall .v072-player-row.v8195-vip-public .v646-row-avatar::after,
+#v074ProfileContent.v8195-vip-public .v652-profile-avatar::after{
+ content:"VIP";position:absolute;right:-5px;top:-5px;z-index:12;padding:2px 5px;border:1px solid #c59237;border-radius:999px;
+ background:#4a300e;color:#ffe7a1;font:1000 6px/1.2 system-ui,sans-serif;letter-spacing:.35px;box-shadow:0 0 9px rgba(230,181,64,.30)
+}
