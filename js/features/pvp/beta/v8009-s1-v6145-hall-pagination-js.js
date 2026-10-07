@@ -6,7 +6,7 @@
  window.__V6145_HALL_PAGINATION__=true;
  const PAGE=20,TOP=3;
  const SELECT='id,character_name,class_id,class_name,level,bosses,gear_score,dungeons,combat_power,equipment,dungeon_progress,worldboss_attempts,worldboss_wins,pvp_buds,pvp_wins,pvp_losses,pvp_fights,avatar_frame_id,updated_at';
- const state={page:1,mode:'page',total:0,pages:1,ownRank:null,seq:0,topRows:[],topAt:0};
+ const state={page:1,mode:'page',hallTab:'players',total:0,pages:1,ownRank:null,seq:0,topRows:[],topAt:0,guildRows:[],guildTotal:0};
  const FRAME_ASSETS=Object.freeze({
    ironwood:'assets/avatar_frames/ironwood.png',
    silver_vine:'assets/avatar_frames/silver_vine.png',
@@ -51,6 +51,112 @@
    const me=ownId();root.querySelectorAll('.v072-player-row[data-profile-id]').forEach(row=>row.classList.toggle('v6145-own-row',String(row.dataset.profileId||'')===me));
  }
  function decorateHall(){try{window.v646DecorateHall?.()}catch(_){}}
+
+ function ensureHallTabs(){
+   const ranking=q('v072HallRanking');if(!ranking)return null;
+   let tabs=q('v8184HallTabs');
+   if(!tabs){
+     tabs=document.createElement('div');
+     tabs.id='v8184HallTabs';
+     tabs.className='v8184-hall-tabs';
+     tabs.innerHTML='<button type="button" data-v8184-hall-tab="players">⚔️ Spieler</button><button type="button" data-v8184-hall-tab="guilds">🛡️ Gilden</button>';
+     ranking.insertAdjacentElement('beforebegin',tabs);
+     tabs.querySelector('[data-v8184-hall-tab="players"]')?.addEventListener('click',()=>setHallTab('players'));
+     tabs.querySelector('[data-v8184-hall-tab="guilds"]')?.addEventListener('click',()=>setHallTab('guilds'));
+   }
+   tabs.querySelectorAll('[data-v8184-hall-tab]').forEach(btn=>btn.classList.toggle('active',String(btn.dataset.v8184HallTab)===state.hallTab));
+   return tabs;
+ }
+ function guildMedal(rank){return rank===1?'🥇':rank===2?'🥈':rank===3?'🥉':String(rank)}
+ function guildRow(g){
+   const rank=num(g?.rank_no)||1,tag=String(g?.tag||'GL').replace(/[\[\]]/g,'').slice(0,5);
+   return `<button type="button" class="v8184-guild-row rank-${Math.min(rank,4)}" data-v8184-guild="${esc(g?.id||'')}">
+     <span class="v8184-guild-rank">${guildMedal(rank)}${rank>3?`<small>#${rank}</small>`:''}</span>
+     <span class="v8184-guild-crest">[${esc(tag)}]</span>
+     <span class="v8184-guild-main"><b>${esc(g?.name||'Gilde')}</b><small>Gildenlevel ${num(g?.guild_level)||1} · ${num(g?.member_count)}/${num(g?.max_members)||20} Mitglieder</small></span>
+     <span class="v8184-guild-buds"><b>🌿 ${num(g?.guild_buds).toLocaleString('de-DE')}</b><small>Gilden-Buds</small></span>
+     <span class="v8184-guild-open">›</span>
+   </button>`;
+ }
+ function guildShell(rows,total){
+   return `<div class="v8184-guild-shell">
+     <div class="v6145-hall-head"><div class="v6145-hall-head-copy"><b>HALL OF HAZE · GILDEN</b><small>Die erfolgreichsten Gilden des Servers.</small></div><span class="v6145-rank-hint">${num(total)} Gilden</span></div>
+     <div class="v8184-guild-rule"><b>Rangfolge</b><span>Gildenlevel → Gilden-Buds → Gilden-EP</span></div>
+     <div class="v8184-guild-list">${rows.length?rows.map(guildRow).join(''):'<div class="v6145-empty">Noch keine Gilden in der Rangliste.</div>'}</div>
+   </div>`;
+ }
+ function ensureGuildProfile(){
+   let ov=q('v8184GuildProfile');
+   if(ov)return ov;
+   ov=document.createElement('div');
+   ov.id='v8184GuildProfile';
+   ov.className='v8184-guild-profile-overlay';
+   ov.innerHTML='<div class="v8184-guild-profile-card" role="dialog" aria-modal="true"><button type="button" class="v8184-guild-profile-close" aria-label="Schließen">✕</button><div class="v8184-guild-profile-body"></div></div>';
+   ov.addEventListener('click',e=>{if(e.target===ov)ov.classList.remove('show')});
+   ov.querySelector('.v8184-guild-profile-close')?.addEventListener('click',()=>ov.classList.remove('show'));
+   document.body.appendChild(ov);
+   return ov;
+ }
+ function closeGuildProfile(){q('v8184GuildProfile')?.classList.remove('show')}
+ async function openGuildProfile(id){
+   id=String(id||'');if(!id)return false;
+   const ov=ensureGuildProfile(),body=ov.querySelector('.v8184-guild-profile-body');
+   if(!body)return false;
+   ov.classList.add('show');
+   body.innerHTML='<div class="v6145-loading">🛡️ Gildenprofil wird geladen …</div>';
+   try{
+     if(typeof v073Init==='function'&&!(await v073Init()))throw new Error('offline');
+     const {data,error}=await v073Db.rpc('v8184_hall_guild_profile',{p_guild:id});if(error)throw error;
+     const g=data?.guild||{},members=Array.isArray(data?.top_members)?data.top_members:[];
+     const tag=String(g.tag||'GL').replace(/[\[\]]/g,'').slice(0,5);
+     const description=String(g.description||'').trim();
+     body.innerHTML=`<div class="v8184-profile-hero">
+       <div class="v8184-profile-crest">[${esc(tag)}]</div>
+       <div><small>HALL OF HAZE · GILDENRANG #${num(g.rank_no)||'—'}</small><h2>${esc(g.name||'Gilde')}</h2><p>👑 ${esc(g.leader_name||'Unbekannt')}</p></div>
+     </div>
+     <div class="v8184-profile-stats">
+       <div><span>Gildenlevel</span><b>${num(g.guild_level)||1}</b></div>
+       <div><span>Gilden-Buds</span><b>🌿 ${num(g.guild_buds).toLocaleString('de-DE')}</b></div>
+       <div><span>Mitglieder</span><b>${num(g.member_count)}/${num(g.max_members)||20}</b></div>
+       <div><span>Gilden-EP</span><b>${num(g.guild_xp).toLocaleString('de-DE')}</b></div>
+     </div>
+     <section class="v8184-profile-about"><h3>Über diese Gilde</h3><p>${description?esc(description):'Diese Gilde hat noch keine Beschreibung hinterlegt.'}</p></section>
+     <section class="v8184-profile-members"><h3>Stärkste Mitglieder</h3>
+       <div>${members.length?members.map((m,i)=>`<button type="button" data-v8184-member="${esc(m.id||'')}"><span>#${i+1}</span><b>${esc(m.character_name||'Spieler')}</b><small>${esc(m.class_name||'')} · Lv. ${num(m.level)||1} · ⚔ ${num(m.combat_power)}</small></button>`).join(''):'<p>Noch keine Mitgliederprofile verfügbar.</p>'}</div>
+     </section>`;
+     body.querySelectorAll('[data-v8184-member]').forEach(btn=>btn.addEventListener('click',()=>{const uid=btn.dataset.v8184Member;if(uid)try{void v074OpenProfile(uid)}catch(_){}}));
+     return true;
+   }catch(e){
+     console.error('V8.184 guild profile',e);
+     body.innerHTML='<div class="v072-status-offline">Gildenprofil konnte nicht geladen werden.</div>';
+     return false;
+   }
+ }
+ function bindGuildRows(el){
+   el?.querySelectorAll('[data-v8184-guild]').forEach(row=>row.addEventListener('click',()=>void openGuildProfile(row.dataset.v8184Guild)));
+ }
+ async function loadGuildRanking(){
+   const el=q('v072HallRanking');if(!el)return false;
+   const seq=++state.seq;state.hallTab='guilds';ensureHallTabs();
+   el.innerHTML='<div class="v6145-loading">🛡️ Gildenrangliste wird geladen …</div>';
+   try{
+     if(typeof v073Init==='function'&&!(await v073Init()))throw new Error('offline');
+     const {data,error}=await v073Db.rpc('v8184_hall_guild_ranking',{p_offset:0,p_limit:100});if(error)throw error;if(seq!==state.seq)return false;
+     const rows=Array.isArray(data?.rows)?data.rows:[];
+     state.guildRows=rows;state.guildTotal=num(data?.total);
+     el.innerHTML=guildShell(rows,state.guildTotal);
+     bindGuildRows(el);decorateHall();return true;
+   }catch(e){
+     console.error('V8.184 guild ranking',e);
+     el.innerHTML='<div class="v072-status-offline">Gildenrangliste konnte nicht geladen werden.</div>';
+     return false;
+   }
+ }
+ function setHallTab(tab){
+   state.hallTab=tab==='guilds'?'guilds':'players';
+   ensureHallTabs();
+   return state.hallTab==='guilds'?loadGuildRanking():loadRanking();
+ }
 
  async function syncOwn(){
    try{if(typeof window.vPvpBudsHallSync==='function')await window.vPvpBudsHallSync(true)}catch(e){}
@@ -136,7 +242,7 @@
    return null;
  }
  async function loadPage(page=1,focus=false){
-   const el=q('v072HallRanking');if(!el)return false;const seq=++state.seq;state.mode='page';state.page=Math.max(1,Math.floor(Number(page)||1));
+   const el=q('v072HallRanking');if(!el)return false;state.hallTab='players';ensureHallTabs();const seq=++state.seq;state.mode='page';state.page=Math.max(1,Math.floor(Number(page)||1));
    el.innerHTML='<div class="v6145-loading">🌫️ Hall of Haze wird geladen …</div>';
    try{
      if(typeof v073Init==='function'&&!(await v073Init()))throw new Error('offline');
@@ -185,7 +291,7 @@
    }catch(e){console.error('V6.145 my rank',e);v063Toast?.('Hall of Haze','warn','Dein Rang konnte nicht geladen werden.')}
  }
  async function loadNear(){
-   const el=q('v072HallRanking');if(!el)return;const seq=++state.seq;state.mode='near';el.innerHTML='<div class="v6145-loading">🎯 Dein Rang wird gesucht …</div>';
+   const el=q('v072HallRanking');if(!el)return;state.hallTab='players';ensureHallTabs();const seq=++state.seq;state.mode='near';el.innerHTML='<div class="v6145-loading">🎯 Dein Rang wird gesucht …</div>';
    try{
      if(typeof v073Init==='function'&&!(await v073Init()))throw new Error('offline');await syncOwn();const rank=await ownRank(true);if(!rank)throw new Error('Rang nicht gefunden');const tops=await top3(false);
      const idx=rank-1,start=Math.max(0,idx-5),end=start+10;
@@ -200,11 +306,14 @@
  function focusOwn(el){
    if(!el)return;const id=ownId();const node=[...el.querySelectorAll('[data-profile-id],[data-v6145-profile]')].find(x=>String(x.dataset.profileId||x.dataset.v6145Profile||'')===id);if(!node)return;node.classList.add('v6145-flash');setTimeout(()=>node.classList.remove('v6145-flash'),1800);requestAnimationFrame(()=>node.scrollIntoView({behavior:'smooth',block:'center'}));
  }
- async function loadRanking(){return state.mode==='near'?loadNear():loadPage(state.page||1,false)}
+ async function loadRanking(){state.hallTab='players';ensureHallTabs();return state.mode==='near'?loadNear():loadPage(state.page||1,false)}
  try{v073LoadRanking=loadRanking;window.v073LoadRanking=loadRanking}catch(e){window.v073LoadRanking=loadRanking}
  window.v6145HallPage=loadPage;window.v6145HallMyRank=loadMyRank;window.v6145HallNear=loadNear;
- window.v6145HallRefresh=async()=>{state.topAt=0;state.ownRank=null;return loadPage(state.page||1,false)};
- window.v6145HallState=()=>({...state,topRows:state.topRows.map(x=>({id:x.id,name:x.character_name}))});
- document.addEventListener('click',e=>{if(e.target.closest?.('[data-screen="hall"],[data-go="hall"]')){state.mode='page';state.page=1;state.ownRank=null;state.topAt=0;queueMicrotask(()=>void loadPage(1))}},true);
- window.addEventListener('growlegends:account-ready',()=>{state.ownRank=null;state.topAt=0});
+ window.v8184HallGuildRanking=loadGuildRanking;window.v8184OpenGuildProfile=openGuildProfile;window.v8184CloseGuildProfile=closeGuildProfile;window.v8184HallTab=setHallTab;
+ window.v6145HallRefresh=async()=>{state.topAt=0;state.ownRank=null;return state.hallTab==='guilds'?loadGuildRanking():loadPage(state.page||1,false)};
+ window.v6145HallState=()=>({...state,topRows:state.topRows.map(x=>({id:x.id,name:x.character_name})),guildRows:state.guildRows.map(x=>({id:x.id,name:x.name,rank:x.rank_no}))});
+ document.addEventListener('keydown',e=>{if(e.key==='Escape')closeGuildProfile()});
+ document.addEventListener('click',e=>{if(e.target.closest?.('[data-screen="hall"],[data-go="hall"]')){state.hallTab='players';state.mode='page';state.page=1;state.ownRank=null;state.topAt=0;queueMicrotask(()=>{ensureHallTabs();void loadPage(1)})}},true);
+ window.addEventListener('growlegends:account-ready',()=>{state.ownRank=null;state.topAt=0;state.guildRows=[];state.guildTotal=0});
+ ensureHallTabs();
 })();
