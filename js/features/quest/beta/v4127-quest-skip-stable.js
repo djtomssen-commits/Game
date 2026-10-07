@@ -10,7 +10,7 @@
  const v8188PendingRuns=new Map();
  const v8188Sleep=ms=>new Promise(r=>setTimeout(r,ms));
  const v8188RunId=q=>String(q?.serverRunId||'');
- const v8188Enabled=()=>String(window.GROW_RELEASE_CHANNEL||'beta')!=='server1';
+ const v8188Enabled=()=>true; /* V8.189: Rewarded Quest-Zeitbonus für Beta + Server 1 freigegeben. */
  const v8188Ads=()=>{try{return window.Capacitor?.Plugins?.GrowLegendsAds||null}catch(_){return null}};
  const v8188UserId=()=>{try{return (!v073User?.is_anonymous&&v073User?.id)?String(v073User.id):''}catch(_){return''}};
  const v8188CustomData=()=>String(window.GROW_RELEASE_CHANNEL||'beta')==='server1'
