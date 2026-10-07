@@ -125,6 +125,7 @@
        <div>${members.length?members.map((m,i)=>`<button type="button" data-v8184-member="${esc(m.id||'')}"><span>#${i+1}</span><b>${esc(m.character_name||'Spieler')}</b><small>${esc(m.class_name||'')} · Lv. ${num(m.level)||1} · ⚔ ${num(m.combat_power)}</small></button>`).join(''):'<p>Noch keine Mitgliederprofile verfügbar.</p>'}</div>
      </section>`;
      body.querySelectorAll('[data-v8184-member]').forEach(btn=>btn.addEventListener('click',()=>{const uid=btn.dataset.v8184Member;if(uid)try{void v074OpenProfile(uid)}catch(_){}}));
+     try{window.v8144GameplayI18n?.apply?.('hall')}catch(_){}
      return true;
    }catch(e){
      console.error('V8.184 guild profile',e);
@@ -145,7 +146,7 @@
      const rows=Array.isArray(data?.rows)?data.rows:[];
      state.guildRows=rows;state.guildTotal=num(data?.total);
      el.innerHTML=guildShell(rows,state.guildTotal);
-     bindGuildRows(el);decorateHall();return true;
+     bindGuildRows(el);decorateHall();try{window.v8144GameplayI18n?.apply?.('hall')}catch(_){};return true;
    }catch(e){
      console.error('V8.184 guild ranking',e);
      el.innerHTML='<div class="v072-status-offline">Gildenrangliste konnte nicht geladen werden.</div>';
