@@ -140,6 +140,7 @@ function completed(run){
    '<div class="v8210-final-copy"><small>6-STUNDEN-CUP ABGESCHLOSSEN · '+esc(run.cup_seed||'')+'</small><h1>'+t[0]+' '+t[1]+'</h1><p>Sechs Stunden Pflege wurden in Qualität, Ertrag, Harz, Genetik und Gesundheit zusammengeführt.</p>'+metrics(run)+
    (run.personal_reward_awarded?'<div class="v8210-personal-reward"><i>👑</i><div><b>Grow Champion erreicht</b><span>+1 Verzauberungsrune · +10 Runenfragmente</span></div></div>':'<div class="v8210-personal-note">Ab <b>92,00 Punkten</b> gibt es zusätzlich 1 Verzauberungsrune + 10 Fragmente.</div>')+
    '<div class="v8210-rank-now"><small>AKTUELLER SERVER-RANG</small><b>'+(rank?'#'+rank:'wird geladen …')+'</b><span>Rangbelohnungen werden erst final, wenn alle gestarteten 6-Stunden-Runs beendet sind.</span></div>'+
+   (S.ranking?.final===true&&!run.rank_reward_claimed?'<button class="v8210-claim" data-cup-claim>Rangbelohnung abholen</button>':'')+
    '<button class="v8210-secondary" data-cup-ranking>Rangliste ansehen</button></div></div>'+
  '</section>';
 }
@@ -188,6 +189,7 @@ function paint(){
  box.querySelector('[data-cup-tune]')?.addEventListener('click',tune);
  box.querySelector('[data-cup-ranking]')?.addEventListener('click',()=>{S.view='ranking';paint();void loadRanking()});
  box.querySelector('[data-cup-refresh]')?.addEventListener('click',()=>void loadRanking(true));
+ box.querySelector('[data-cup-claim]')?.addEventListener('click',()=>void claimRank());
  bindRanges(box);
  if(S.opened)startClock();
 }
@@ -210,7 +212,7 @@ async function refresh({paintNow=true}={}){
 }
 async function loadRanking(force=false){
  if(S.busy&&!force)return null;
- try{const r=await rpc('v8210_growcup_leaderboard',{p_limit:100});if(r?.ok){S.ranking=r;if(S.opened&&S.view==='ranking')paint()}return r}
+ try{const r=await rpc('v8210_growcup_leaderboard',{p_limit:100});if(r?.ok){S.ranking=r;if(S.opened)paint()}return r}
  catch(e){S.lastError=String(e?.message||e);console.warn('[V8.211 Grow Cup] ranking',e);return null}
 }
 async function open(){S.opened=true;S.view='cup';overlay().classList.add('show');paint();await refresh({paintNow:true});void loadRanking()}
