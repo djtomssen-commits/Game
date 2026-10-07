@@ -71,14 +71,11 @@
   return {version:V.short,expected,actual,missing:expected.filter(x=>!actual.includes(x)),duplicates:actual.filter((x,i)=>actual.indexOf(x)!==i),admin:admin()};
  }
  window.v4148MenuDiagnostics=diagnostics;
- // Rebuild at deterministic lifecycle points. No polling interval or MutationObserver.
- document.addEventListener('click',e=>{if(e.target?.closest?.('#v032MenuBtn,#v032MenuToggle'))requestAnimationFrame(build)},true);
- window.addEventListener('growlegends:account-ready',()=>requestAnimationFrame(build));
- window.addEventListener('growlegends:extras-ready',()=>requestAnimationFrame(build));
- window.addEventListener('growlegends:foreground-ready',()=>requestAnimationFrame(build));
- window.addEventListener('growlegends:language-changed',()=>requestAnimationFrame(build));
- window.addEventListener('pageshow',()=>requestAnimationFrame(build),{passive:true});
- document.addEventListener('DOMContentLoaded',()=>requestAnimationFrame(build),{once:true});
+ /* V8.189: v4149 is the final navigation lifecycle owner. Keep one initial
+    structural build here for boot compatibility, but do not rebuild the entire
+    menu again on hamburger/account/pageshow/language events. Those duplicate
+    replaceChildren() calls temporarily erased v4162 attention badges. */
+ window.__V4148_LIFECYCLE_RETIRED__=true;
  requestAnimationFrame(build);
  function stamp(){}
  stamp();
