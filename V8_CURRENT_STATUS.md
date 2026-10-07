@@ -10909,3 +10909,25 @@ Aktueller Release-Status:
   3. zweites Video vollständig ansehen -> weitere 25 % abziehen, UI `2/2`;
   4. drittes Video darf nicht mehr startbar sein;
   5. dieselbe Prüfung auf Server 1 wiederholen.
+
+
+### 2026-10-07 – V8.189 Navigation-Badges reagieren ohne Verzögerung
+- Nutzer meldete, dass die grünen Punkte in der Navigation (u. a. Quest, Dungeon, PvP) sichtbar nachhängen.
+- Root Cause im zentralen Menü-/Badge-Pfad:
+  - `v4162-menu-attention-badges` aktualisierte zeitabhängige Gameplay-Badges bei offenem Menü nur über einen 15-Sekunden-Fallback;
+  - `v4148-complete-menu-authority` baute beim Öffnen des Hamburgermenüs die komplette Navigation per `replaceChildren()` neu auf;
+  - dadurch wurden vorhandene Badge-DOM-Zustände kurz entfernt und erst durch `v4162` wieder gesetzt;
+  - `v4149-final-navigation-render-authority` ist bereits der finale Lifecycle-Owner und macht diesen zusätzlichen v4148-Rebuild unnötig.
+- Direkter Fix:
+  - Lifecycle-Rebuilds in v4148 für Hamburger/account-ready/extras/foreground/language/pageshow retired;
+  - v4148 macht nur noch den initialen Boot-Strukturaufbau;
+  - v4149 bleibt alleiniger finaler Navigation-Lifecycle-Owner;
+  - v4162 ersetzt den 15-Sekunden-Gameplay-Fallback durch deadline-gesteuerten Refresh;
+  - nächste Quest-Fertigzeit, Dungeon-Gratisversuch, PvP-Cooldown und Grow-Pflege/Ernte werden exakt auf ihren nächsten Fälligkeitszeitpunkt geplant;
+  - `growlegends:navigation-open-v7119` triggert zusätzlich sofort einen lokalen Badge-Refresh.
+- Ergebnis erwartet:
+  - beim Öffnen des Menüs keine kurz verschwindenden/spät auftauchenden grünen Punkte mehr;
+  - Quest/Dungeon/PvP-Punkte wechseln praktisch sofort beim Erreichen der Bereitschaft statt bis zu 15 s später.
+- Syntaxcheck v4148/v4162: OK.
+- Beta/Standard Cache-Key: `8189navbadge1`.
+- Server 1 für diesen neuen Fix noch nicht cache-gebustet; Beta-Test zuerst.
