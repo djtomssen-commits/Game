@@ -189,7 +189,49 @@
   live.active={...b,expiresAt:Date.now()+mins*60000};live.bag.splice(liveIndex,1);
   save(false);renderGrow();paintCharacter();toast(`🌿 ${liveD.name} aktiviert`,'success',`${b.quality}${b.mutation?` · ${MUT[b.mutation].name}`:''} · ${mins} Min.`)
  }
- async function donate(i){const z=ensure(),b=z.bag[Number(i)];if(!b)return;const today=new Date().toISOString().slice(0,10);if(z.lastGuildDonation===today)return toast('Gilden-Gewächshaus','info','Heute hast du bereits eine Blüte gespendet. Morgen kannst du erneut Gilden-EP beitragen.');try{if((typeof v254Membership==='undefined'||!v254Membership)&&typeof window.v4105EnsureGuildState==='function')await window.v4105EnsureGuildState();if(typeof v254Membership==='undefined'||!v254Membership)return toast('Keine aktive Gilde','warn','Deine Gildenmitgliedschaft konnte nicht geladen werden. Bitte Verbindung prüfen.');if(typeof v073Db==='undefined'||!v073Db)return toast('Gilde nicht verbunden','warn','Für echte Gilden-EP ist eine Online-Verbindung nötig.');const rpc=typeof v073Db.__v474GuildRawRpc==='function'?v073Db.__v474GuildRawRpc:v073Db.rpc.bind(v073Db);const {data,error}=await rpc('v411_add_guild_activity',{p_kind:'quest'});if(error)throw error;const row=Array.isArray(data)?data[0]:data,aw=Math.max(0,Number(row?.awarded)||0);if(aw<=0)return toast('Gilden-EP nicht vergeben','info','Tageslimit erreicht oder keine aktive Gildenmitgliedschaft. Deine Blüte bleibt erhalten.');z.bag.splice(Number(i),1);z.lastGuildDonation=today;z.stats.guildDonations++;if(typeof v254Guild!=='undefined'&&v254Guild&&Number.isFinite(Number(row?.guild_xp)))v254Guild.guild_xp=Number(row.guild_xp);save(false);renderGrow();toast('🏰 Gilden-Gewächshaus','success',`${SEEDS[b.seed].name} gespendet · +${aw} Gilden-EP`) }catch(e){toast('Gilden-Gewächshaus','warn',String(e?.message||'Gilden-EP konnten nicht gebucht werden.'))}}
+ async function donate(i){
+  const z=ensure(),idx=Number(i),b=z.bag[idx];
+  if(!b)return;
+  const bid=String(b.id||'').trim();
+  if(!bid)return toast('Gilden-Gewächshaus','warn','Diese Blüte besitzt keine gültige Server-ID.');
+  try{
+   let row=null;
+   if(typeof window.v8194DonateGuildBloom==='function'){
+    row=await window.v8194DonateGuildBloom(bid);
+   }else{
+    if(typeof v073Db==='undefined'||!v073Db)return toast('Gilde nicht verbunden','warn','Für die Gildenspende ist eine Online-Verbindung nötig.');
+    const {data,error}=await v073Db.rpc('v8194_donate_guild_bloom',{p_bloom_id:bid});
+    if(error)throw error;
+    row=Array.isArray(data)?data[0]:data;
+    const gs=row?.grow_state;
+    if(gs&&typeof gs==='object'){
+     z.bag=Array.isArray(gs.bag)?gs.bag:[];
+     z.active=gs.active&&typeof gs.active==='object'?gs.active:null;
+    }
+   }
+   if(!row)return;
+   if(row.ok!==true)throw new Error(String(row.reason||'GUILD_DONATION_FAILED'));
+   if(!row.donated){
+    const reason=String(row.reason||'');
+    if(reason==='DAILY_LIMIT')return toast('Gilden-Gewächshaus','info','Heute hast du bereits eine Blüte gespendet. Morgen kannst du wieder spenden.');
+    if(reason==='NO_GUILD')return toast('Keine aktive Gilde','warn','Du bist aktuell in keiner Gilde.');
+    if(reason==='BLOOM_NOT_FOUND'){
+     try{await window.v7065GrowAuthorityRefresh?.()}catch(_){}
+     return toast('Gilden-Gewächshaus','warn','Die Blüte war serverseitig nicht mehr vorhanden. Dein Growroom wurde aktualisiert.');
+    }
+    return toast('Gilden-Gewächshaus','warn',reason==='INVALID_BLOOM'?'Ungültige Blüte.':'Die Blüte konnte nicht gespendet werden.');
+   }
+   z.lastGuildDonation=String(row.donation_day||'');
+   z.stats=(z.stats&&typeof z.stats==='object')?z.stats:{};
+   z.stats.guildDonations=Math.max(0,Number(z.stats.guildDonations)||0)+1;
+   if(typeof v254Guild!=='undefined'&&v254Guild&&Number.isFinite(Number(row.guild_xp)))v254Guild.guild_xp=Number(row.guild_xp);
+   try{renderGrow()}catch(_){}
+   const aw=Math.max(0,Number(row.awarded)||0);
+   toast('🏰 Gilden-Gewächshaus','success',(SEEDS[b.seed]?.name||'Blüte')+' gespendet · +'+aw+' Gilden-EP');
+  }catch(e){
+   toast('Gilden-Gewächshaus','warn',String(e?.message||'Gilden-EP konnten nicht gebucht werden.'));
+  }
+ }
  function claimWeek(){const z=ensure(),w=z.week;if(w.claimed)return;const ok=w.harvested>=20&&w.perfect>=5&&w.mutations>=1;if(!ok)return toast('Wochenbeitrag noch offen','info','Ziel: 20 Ernten · 5 Perfect Grows · 1 Mutation.');w.claimed=true;s.harzTaler=(Number(s.harzTaler)||0)+2;forge().fragments+=25;addSeed(randomSeed(['violet','blue','critical']),1,'Wochenbeitrag');save(false);renderGrow();toast('🏰 Wochenbeitrag erfüllt','success','+2 Harz-Taler · +25 Samenfragmente · +1 seltener Samen')}
  function detailPlant(){const z=ensure();return s.grow.plants.find(p=>p&&p.uid===z.selectedPlantUid)||s.grow.plants.find(Boolean)||null}
  function ogCard(){return''}
