@@ -11019,3 +11019,38 @@ Aktueller Release-Status:
   3. PvP Cooldown 0 -> Punkt an; Kampf starten -> sofort aus.
   4. Turm unter 100 % -> kein Punkt; exakt bei 100 % -> Punkt an.
   5. Turm bei 100 % starten -> Punkt wieder aus.
+
+
+### 2026-10-07 – V8.193 Server 1 auf aktuellen Navigation-/Grow-Stand gebracht, Klassenbalance unverändert
+- Nutzerfreigabe: Server 1 auf den aktuellen Nicht-Balance-Stand aktualisieren; Klassenbalance ausdrücklich ausnehmen.
+- Übernommen auf Server 1:
+  - V8.189 Navigation-Lifecycle-Fix für sofortige Badge-Reaktion;
+  - V8.191 Grow-Badge Sofortrefresh nach Pflege/Grow-State-Mutation;
+  - V8.192 direkte Badge-Synchronisierung für Quest, Dungeon, PvP und Turm;
+  - Turm-Badge bei vollständig regenerierten 100 % HP inklusive bestehendem `fullMs`-Deadline-Pfad.
+- Server-1-Auslieferung cache-gebustet mit `8192s1nav1` für:
+  - `v4148-complete-menu-authority.js`;
+  - `v233-quest-reward-final-click.js`;
+  - `v4114-grow-care-authority.js`;
+  - `v4162-menu-attention-badges.js`;
+  - `v7051-atomic-dungeon-receipt-client.js`;
+  - `v7053-atomic-pvp-client-bridge.js`;
+  - `v7065-fail-closed-grow-authority-hotfix.js`;
+  - `v7072-server-tower-weekly-worldboss-bridge.js`;
+  - `v7110-quest-authority-sync.js`.
+- Klassenbalance bewusst nicht angefasst:
+  - `v318-talent-combat-complete.js`: unverändert;
+  - `v319-exact-talents-dungeon-balance.js`: unverändert;
+  - `v6287-harzruferin.js`: unverändert;
+  - `v4156-class-identity-balance.js`: unverändert;
+  - keiner dieser Owner besitzt den neuen Server-1-Sync-Key.
+- Release-Channel verifiziert:
+  - `server1-release-channel.js` weiterhin direkt am Anfang von `server1.html`;
+  - Release-Channel lädt vor allen Klassenbalance-Ownern;
+  - Klassenbalance-Override/Abgrenzung bleibt damit erhalten.
+- Verifikation:
+  - 9/9 gewünschte Nicht-Balance-Referenzen tragen `?v=8192s1nav1`;
+  - 4/4 Balance-Owner unverändert ohne diesen Cache-Key;
+  - keine neuen Balance-Dateien oder Balance-Cache-Busts vorgenommen.
+- Server-1-Wiring Commit:
+  - `ab86a7b61743a771baa33ac33ebe149f27572f4e`.
