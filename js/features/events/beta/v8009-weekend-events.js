@@ -45,8 +45,8 @@ function schedule(ms=Date.now()){
  const sundayStartMs=berlinMidnightMs(sunday.y,sunday.m,sunday.d);
  const weekend=p.dow===5||p.dow===6||p.dow===0;
  const thursdayActive=p.dow===4;
- const growCupActive=cycle===1&&p.dow===0;
- const pair=cycle===0?'gold-dampf':'xp-growcup';
+ const growCupActive=p.dow===0;
+ const pair=cycle===0?'gold-dampf':'xp';
  return{...p,mondayOrd,weekIndex,cycle,pair,weekend,thursdayActive,growCupActive,startMs,endMs,thursdayStartMs,thursdayEndMs,sundayStartMs};
 }
 function eventRows(ms=Date.now()){
@@ -72,18 +72,18 @@ function eventRows(ms=Date.now()){
    );
   }else{
    rows.push({...common,id:`${AUTO_PREFIX}xp:${sc.mondayOrd}`,name:'Erfahrungs-Event',description:'Wochenend-Event: Quests geben 2× Erfahrung.'});
-   if(sc.growCupActive){
-    rows.push({
-     is_active:true,
-     starts_at:new Date(sc.sundayStartMs).toISOString(),
-     ends_at:new Date(sc.endMs).toISOString(),
-     created_at:new Date(sc.sundayStartMs).toISOString(),
-     v6251Auto:true,
-     id:`${AUTO_PREFIX}growcup:${sc.mondayOrd}`,
-     name:'Grow Cup',
-     description:'Sonntags-Event im EXP-Wochenende: Ein fairer 6-Phasen-Grow mit Jury-Wertung, Rangliste und Verzauberungsrunen.'
-    });
-   }
+  }
+  if(sc.growCupActive){
+   rows.push({
+    is_active:true,
+    starts_at:new Date(sc.sundayStartMs).toISOString(),
+    ends_at:new Date(sc.endMs).toISOString(),
+    created_at:new Date(sc.sundayStartMs).toISOString(),
+    v6251Auto:true,
+    id:`${AUTO_PREFIX}growcup:${sc.mondayOrd}`,
+    name:'Grow Cup',
+    description:'Wöchentliches Sonntags-Event: neue Pflanze, neue versteckte Sweet Spots, 6 Aktionen und serverweite Rangliste.'
+   });
   }
  }
  return rows;
@@ -199,7 +199,7 @@ window.v6251AutomaticWeekendSchedule=schedule;
 window.v6251AutomaticWeekendEvents=eventRows;
 window.v6251ApplyAutomaticWeekendEvents=apply;
 window.v6251AutomaticWeekendDiagnostics=()=>{
- const sc=schedule(),nextPair=sc.cycle===0?'Gold + Dampf':'Erfahrung + Grow Cup (Sonntag)';
+ const sc=schedule(),nextPair=sc.cycle===0?'Gold + Dampf + Grow Cup (Sonntag)':'Erfahrung + Grow Cup (Sonntag)';
  return{timezone:TZ,activeWeekend:sc.weekend,pair:nextPair,weekIndex:sc.weekIndex,start:new Date(sc.startMs).toISOString(),end:new Date(sc.endMs).toISOString(),events:eventRows().map(x=>({id:x.id,name:x.name,starts_at:x.starts_at,ends_at:x.ends_at}))};
 };
 window.v8009HomeEventSchedulerDiagnostics=()=>({
