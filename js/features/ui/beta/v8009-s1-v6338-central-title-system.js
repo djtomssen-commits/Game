@@ -33,6 +33,9 @@ function titleState(){
  s.v6338Titles.activeSource=String(s.v6338Titles.activeSource||'');
  return s.v6338Titles;
 }
+function vipState(){return window.v8195VipState||null}
+function vipActive(){const v=vipState();return !!(v?.active&&v?.vip_until&&new Date(v.vip_until).getTime()>Date.now())}
+function vipPublic(){const v=vipState();return vipActive()&&v?.public_visible!==false}
 function petFound(){const f=s?.v686PetAlbum?.found||{};return Object.values(f).reduce((n,row)=>n+Object.values(row&&typeof row==='object'?row:{}).filter(Boolean).length,0)}
 function towerFloor(){return Math.max(0,Number(s?.tower?.season?.bestFloor)||0)}
 function worldBossWins(){try{return Math.max(0,Number((typeof v112EnsureWorldBossState==='function'?v112EnsureWorldBossState():s?.v110WorldBoss)?.wins)||0)}catch(_){return Math.max(0,Number(s?.v110WorldBoss?.wins)||0)}}
@@ -43,6 +46,11 @@ function migrate(){
  const petTitles=s?.v686PetAlbum?.titles||{};
  for(const p of defs){if(p?.id&&p?.title&&petTitles?.[p.id])unlock('pet:'+p.id,p.title,'pet',{petId:p.id})}
  for(const a of ACH){if(s?.v106Achievements?.done?.[a.ach])unlock(a.id,a.label,'achievement',{achievement:a.ach})}
+ if(vipActive())unlock('vip_member','Grow VIP','vip',{temporary:true});
+ else{
+  delete st.unlocked.vip_member;
+  if(st.activeId==='vip_member'){st.activeId='';st.activeLabel='';st.activeSource=''}
+ }
  if(!st.activeId){
    try{
      const saved=JSON.parse(localStorage.getItem(activeStorageKey())||'null');
@@ -58,7 +66,7 @@ function migrate(){
  return st;
 }
 function active(){const st=migrate();return {id:st.activeId,label:st.activeLabel,source:st.activeSource}}
-function publicTitle(){const a=active();return {id:a.id||'',label:a.label||'',source:a.source||''}}
+function publicTitle(){const a=active();if(a.id==='vip_member'&&!vipPublic())return {id:'',label:'',source:''};return {id:a.id||'',label:a.label||'',source:a.source||''}}
 window.v6338PublicTitle=publicTitle;
 function activeStorageKey(){let id='';try{id=String(v073User?.id||'')}catch(_){}return 'growLegends:v6338ActiveTitle:'+(id||'local')}
 function persistTitles(){
@@ -87,9 +95,10 @@ function allDefs(){
  const st=migrate();
  const ach=ACH.map(a=>({...a,category:'achievement',unlocked:!!s?.v106Achievements?.done?.[a.ach]}));
  const server=SERVER.map(a=>{const claim=serverClaims.get(a.id)||null;return {...a,category:'server',desc:a.req,unlocked:!!st.unlocked[a.id],claim}});
- return [...petDefs(),...ach,...server];
+ const vip=vipActive()?[{id:'vip_member',label:'Grow VIP',icon:'👑',category:'vip',desc:'Exklusiver Titel während dein VIP-Pass aktiv ist.',unlocked:true}]:[];
+ return [...vip,...petDefs(),...ach,...server];
 }
-function sourceLabel(d){return d.category==='pet'?'🐾 PET':d.category==='achievement'?'🏆 ERFOLG':'🌐 SERVER-FIRST'}
+function sourceLabel(d){return d.category==='vip'?'👑 VIP':d.category==='pet'?'🐾 PET':d.category==='achievement'?'🏆 ERFOLG':'🌐 SERVER-FIRST'}
 function ensureBook(){
  const ov=document.getElementById('v106Overlay'),book=ov?.querySelector('.v106-book');if(!ov||!book)return null;
  let tabs=book.querySelector('.v6338-main-tabs');if(!tabs){tabs=document.createElement('div');tabs.className='v6338-main-tabs';tabs.innerHTML='<button type="button" class="v6338-main-tab active" data-v6338-main="ach">🏆 Erfolge</button><button type="button" class="v6338-main-tab" data-v6338-main="titles">👑 Titel</button>';book.querySelector('.v106-head')?.insertAdjacentElement('afterend',tabs)}
@@ -113,7 +122,7 @@ function renderTitles(opts={}){
  const activeBox=x.panel.querySelector('#v6338ActiveTitle');
  activeBox.innerHTML=st.activeId?`<small>AKTIVER TITEL</small><b>👑 ${esc(st.activeLabel)}</b><span>Wird öffentlich bei deinem Spieler angezeigt.</span><div class="v6338-title-actions"><button type="button" data-v6338-clear>Titel ablegen</button></div>`:`<small>AKTIVER TITEL</small><b>Kein Titel ausgewählt</b><span>Wähle unten einen deiner freigeschalteten Titel aus.</span>`;
  activeBox.querySelector('[data-v6338-clear]')?.addEventListener('click',()=>setActive(''));
- const filters=[['all','📚 Alle'],['pet','🐾 Pets'],['achievement','🏆 Erfolge'],['server','🌐 Server']];
+ const filters=[['all','📚 Alle'],...(vipActive()?[['vip','👑 VIP']]:[]),['pet','🐾 Pets'],['achievement','🏆 Erfolge'],['server','🌐 Server']];
  x.panel.querySelector('#v6338TitleFilters').innerHTML=filters.map(([id,l])=>`<button type="button" class="v6338-title-filter ${filter===id?'active':''}" data-v6338-filter="${id}">${l}</button>`).join('');
  x.panel.querySelectorAll('[data-v6338-filter]').forEach(b=>b.onclick=()=>{filter=b.dataset.v6338Filter;renderTitles()});
  const visible=defs.filter(d=>filter==='all'||d.category===filter);
@@ -187,6 +196,8 @@ try{
 }catch(_){ }
 window.addEventListener('growlegends:navigation-open-v7119',e=>{const id=String(e?.detail?.id||'');if(id==='character'||id==='hall')syncOwnBadges()},{passive:true});
 window.addEventListener('growlegends:account-ready',()=>{migrate();syncOwnBadges();void syncServerTitles(true)},{passive:true});
+window.addEventListener('growlegends:vip-state',()=>{migrate();syncOwnBadges();renderTitles();void publish()},{passive:true});
+window.v6338VipRefresh=()=>{migrate();syncOwnBadges();renderTitles();void publish();return publicTitle()};
 window.addEventListener('pageshow',()=>{migrate();syncOwnBadges();void syncServerTitles(false)},{passive:true});
 window.v6338TitleDiagnostics=()=>({version:'V6.347',active:active(),unlocked:Object.keys(titleState().unlocked).length,serverClaims:[...serverClaims.keys()],petTitles:Object.keys(s?.v686PetAlbum?.titles||{}).length});
 })();
