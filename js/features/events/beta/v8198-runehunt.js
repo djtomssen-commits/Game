@@ -140,7 +140,9 @@ function completed(run){
    '<div class="v8210-final-grid"><div class="v8210-stage-panel final">'+plantStage(6,'completed')+
    '<div class="v8210-final-medal"><i>🧪</i><small>BETA-TEST ABGESCHLOSSEN</small><b>'+score+'</b><strong>'+t[1]+'</strong></div></div>'+
    '<div class="v8210-final-copy"><small>6-MINUTEN-TESTLAUF · '+esc(run.cup_seed||'')+'</small><h1>🧪 Testlauf beendet</h1><p>Dieser Lauf testet exakt dieselben sechs Phasen, nur 60× schneller. Er zählt nicht für Rangliste oder Belohnungen.</p>'+metrics(run)+
-   '<div class="v8210-personal-note"><b>Keine Runen · keine Fragmente · kein Ranglistenplatz</b><br>Starte danach den echten 6-Stunden-Cup, sobald du den Ablauf geprüft hast.</div>'+
+   '<div class="v8210-personal-note"><b>Keine Runen · keine Fragmente · kein Ranglistenplatz</b><br>Der Testlauf verändert keine echten Cup-Belohnungen.</div>'+
+   '<button class="v8213-test-start" data-cup-test-start>🧪 TESTLAUF ERNEUT STARTEN</button>'+
+   (S.state?.active?'<button class="v8210-claim" data-cup-start>ECHTEN 6-STUNDEN-CUP STARTEN</button>':'')+
    '<button class="v8210-secondary" data-cup-ranking>Rangliste ansehen</button></div></div></section>';
  }
  return '<section class="v8210-scene v8210-finale">'+phaseRail(run)+
