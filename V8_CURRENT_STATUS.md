@@ -10969,3 +10969,53 @@ Aktueller Release-Status:
   3. Pflege durchführen;
   4. grüner Grow-Punkt muss ohne Seitenwechsel sofort verschwinden, sofern keine weitere Pflanze/Pflege/Ernte fällig ist;
   5. falls eine zweite Pflanze noch Aufmerksamkeit benötigt, muss der Punkt korrekt bestehen bleiben.
+
+
+### 2026-10-07 – V8.192 Navigation-Badges für Quest, Dungeon, PvP und Turm vereinheitlicht
+- Nutzerwunsch:
+  - Quest/Dungeon/PvP sollen nach erledigter Aktion sofort wieder aus der Navigation verschwinden;
+  - Turm soll zusätzlich einen grünen Punkt bekommen, sobald die Turm-HP wieder **100 %** erreicht haben.
+- Umsetzung ohne neue Polling-/Render-Schicht:
+  - bestehender zentraler Badge-Owner `v4162-menu-attention-badges` bleibt alleiniger sichtbarer Owner;
+  - kanonische Action-/Authority-Owner stoßen nur den bereits vorhandenen lokalen Paint `v4162PaintMenuAttentionLocal()` an.
+- Quest:
+  - kanonischer Quest-State `v7110-quest-authority-sync.js` triggert Badge-Paint nach State-Apply;
+  - lokaler/mirror Claim-Pfad `v233-quest-reward-final-click.js` entfernt den Punkt direkt nach erfolgreichem Claim;
+  - Fälligwerden bleibt weiterhin deadline-gesteuert.
+- Dungeon:
+  - sobald der Server den Gratisversuch verbindlich verbraucht und `lastFree` setzt, wird der Badge direkt neu berechnet;
+  - kein Warten bis Kampfende oder Seitenwechsel;
+  - das erneute Freiwerden bleibt über den bestehenden 1h-Deadline-Pfad gesteuert.
+- PvP:
+  - `setCooldown()` ist jetzt zugleich der direkte Badge-Sync-Punkt;
+  - Kampfstart/Cooldown > 0 -> grüner Punkt sofort aus;
+  - Cooldown-Ende -> bestehender Deadline-Pfad schaltet ihn wieder ein.
+- Turm:
+  - neue Badge-Regel liest ausschließlich die bestehende Recovery-Authority über `v6250TowerRecoveryDiagnostics().current`;
+  - kein eigener HP-Timer / keine zweite Regenerationsrechnung;
+  - Badge ist nur aktiv, wenn kein Run läuft und Recovery `pct >= 100`;
+  - `fullMs` der bestehenden Recovery-Authority wird in den zentralen Deadline-Scheduler aufgenommen;
+  - dadurch schaltet der Turm-Punkt exakt beim Erreichen von 100 % ein;
+  - Server-Snapshot-Apply `v7072-server-tower-weekly-worldboss-bridge.js` triggert nach Start/Heilung/Run-/Recovery-State sofort einen Badge-Paint.
+- Beta/Standard Cache-Key für alle beteiligten Dateien:
+  - `8192navbadge2`.
+- Verifikation:
+  - 6/6 geänderte JS-Dateien syntaktisch grün;
+  - Beta + Standard referenzieren alle beteiligten Dateien mit genau einem `?v=8192navbadge2`;
+  - zwischenzeitlich erkannte doppelte Cache-Query bei bereits versionierten Dateien wurde vor Abschluss bereinigt;
+  - Server 1 wurde nicht cache-gebustet.
+- Relevante Commits:
+  - zentraler Turm-Badge/Deadline: `fa23169eb866d3f43cf05081a63d4eeccf4feec8`;
+  - Dungeon Sofort-Aus: `cc4a9d0cb6af5e472a36f816253811ab3a97fc40`;
+  - PvP Cooldown-Sync: `9cea69c169e32f8347759677d5779db98ba17601`;
+  - Quest Authority-Sync: `ac67731c4ea0e39cf6003ffa468068b550aa7b00`;
+  - Quest Claim-Fallback: `16f1572cdc5259d577988c2e1256ccf87297e32d`;
+  - Turm Authority-Sync: `088038829c6ae283a2c28f7a77640a154ee786e0`;
+  - Standard Cache-Normalisierung: `4a639a29a7a9f1f5921cc6571d05963a65598800`;
+  - Beta Cache-Normalisierung: `dfa75f4d6c625d3835951cafe4bebbb7283e0fcf`.
+- Manueller Beta-Test:
+  1. Quest fertig -> Punkt an; Belohnung abholen -> sofort aus.
+  2. Dungeon Gratisversuch bereit -> Punkt an; Gratisversuch starten -> sofort aus.
+  3. PvP Cooldown 0 -> Punkt an; Kampf starten -> sofort aus.
+  4. Turm unter 100 % -> kein Punkt; exakt bei 100 % -> Punkt an.
+  5. Turm bei 100 % starten -> Punkt wieder aus.
