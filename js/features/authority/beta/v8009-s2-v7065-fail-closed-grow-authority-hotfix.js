@@ -260,6 +260,13 @@ window.v7067ServerCare=async(plantUid,careIndex)=>{
  try{window.v4114DecorateCareSlots?.()}catch(_){}
  return true;
 };
-/* V8.194: guild bloom donation is its own server-authoritative Grow mutation.\n   The retired v411_add_guild_activity compatibility RPC must never consume a bloom. */\nwindow.v8194DonateGuildBloom=async bloomId=>{\n const bid=String(bloomId||'').trim();\n if(!bid)return {ok:true,donated:false,reason:'INVALID_BLOOM'};\n return act('v8194_donate_guild_bloom',{p_bloom_id:bid},'Gilden-Gewächshaus','');\n};\nwindow.v7065GrowAuthorityRefresh=async()=>{try{return await refresh()}catch(e){D.lastError=String(e?.message||e);return null}};
+/* V8.194: guild bloom donation is its own server-authoritative Grow mutation.
+   The retired v411_add_guild_activity compatibility RPC must never consume a bloom. */
+window.v8194DonateGuildBloom=async bloomId=>{
+ const bid=String(bloomId||'').trim();
+ if(!bid)return {ok:true,donated:false,reason:'INVALID_BLOOM'};
+ return act('v8194_donate_guild_bloom',{p_bloom_id:bid},'Gilden-Gewächshaus','');
+};
+window.v7065GrowAuthorityRefresh=async()=>{try{return await refresh()}catch(e){D.lastError=String(e?.message||e);return null}};
 window.v7065GrowAuthorityDiagnostics=()=>clone({version:VERSION,...D,uid:!!uid(),uidValue:uid(),authorityUid,db:!!db(),serverMode:!!window.__V7065_GROW_SERVER_MODE__});
 })();
