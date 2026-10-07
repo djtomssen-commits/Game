@@ -39,23 +39,54 @@ function positiveMod(n,m){return((n%m)+m)%m}
 function schedule(ms=Date.now()){
  const p=berlinParts(ms),backToMonday=(p.dow+6)%7,mondayOrd=p.ord-backToMonday;
  const weekIndex=Math.floor((mondayOrd-ANCHOR_MONDAY_ORD)/7),cycle=positiveMod(weekIndex,2);
- const friday=ymdFromOrd(mondayOrd+4),nextMonday=ymdFromOrd(mondayOrd+7);
+ const friday=ymdFromOrd(mondayOrd+4),sunday=ymdFromOrd(mondayOrd+6),nextMonday=ymdFromOrd(mondayOrd+7),thursday=ymdFromOrd(mondayOrd+3);
  const startMs=berlinMidnightMs(friday.y,friday.m,friday.d),endMs=berlinMidnightMs(nextMonday.y,nextMonday.m,nextMonday.d);
+ const thursdayStartMs=berlinMidnightMs(thursday.y,thursday.m,thursday.d),thursdayEndMs=startMs;
+ const sundayStartMs=berlinMidnightMs(sunday.y,sunday.m,sunday.d);
  const weekend=p.dow===5||p.dow===6||p.dow===0;
- const pair=cycle===0?'gold-dampf':'xp-koloss';
- return{...p,mondayOrd,weekIndex,cycle,pair,weekend,startMs,endMs};
+ const thursdayActive=p.dow===4;
+ const runehuntActive=cycle===1&&p.dow===0;
+ const pair=cycle===0?'gold-dampf':'xp-runehunt';
+ return{...p,mondayOrd,weekIndex,cycle,pair,weekend,thursdayActive,runehuntActive,startMs,endMs,thursdayStartMs,thursdayEndMs,sundayStartMs};
 }
 function eventRows(ms=Date.now()){
- const sc=schedule(ms);if(!sc.weekend)return[];
- const common={is_active:true,starts_at:new Date(sc.startMs).toISOString(),ends_at:new Date(sc.endMs).toISOString(),created_at:new Date(sc.startMs).toISOString(),v6251Auto:true};
- if(sc.cycle===0)return[
-  {...common,id:`${AUTO_PREFIX}gold:${sc.mondayOrd}`,name:'Gold-Event',description:'Wochenend-Event: Quests, Dungeons und Pflanzen-Ernten geben 2× Gold.'},
-  {...common,id:`${AUTO_PREFIX}dampf:${sc.mondayOrd}`,name:'Dampf-Event',description:'Wochenend-Event: Alle Spieler erhalten 200 Dampf gratis und können mit Harz bis 300 auffüllen.'}
- ];
- return[
-  {...common,id:`${AUTO_PREFIX}xp:${sc.mondayOrd}`,name:'Erfahrungs-Event',description:'Wochenend-Event: Quests geben 2× Erfahrung.'},
-  {...common,id:`${AUTO_PREFIX}koloss:${sc.mondayOrd}`,name:'Smaragd-Koloss-Event',description:'Wochenend-Event: Der Smaragd-Koloss ist bis Sonntag aktiv.'}
- ];
+ const sc=schedule(ms),rows=[];
+ if(sc.thursdayActive){
+  rows.push({
+   is_active:true,
+   starts_at:new Date(sc.thursdayStartMs).toISOString(),
+   ends_at:new Date(sc.thursdayEndMs).toISOString(),
+   created_at:new Date(sc.thursdayStartMs).toISOString(),
+   v6251Auto:true,
+   id:`${AUTO_PREFIX}koloss:${sc.mondayOrd}`,
+   name:'Smaragd-Koloss-Event',
+   description:'Donnerstags-Event: Der Smaragd-Koloss ist den ganzen Tag aktiv.'
+  });
+ }
+ if(sc.weekend){
+  const common={is_active:true,starts_at:new Date(sc.startMs).toISOString(),ends_at:new Date(sc.endMs).toISOString(),created_at:new Date(sc.startMs).toISOString(),v6251Auto:true};
+  if(sc.cycle===0){
+   rows.push(
+    {...common,id:`${AUTO_PREFIX}gold:${sc.mondayOrd}`,name:'Gold-Event',description:'Wochenend-Event: Quests, Dungeons und Pflanzen-Ernten geben 2× Gold.'},
+    {...common,id:`${AUTO_PREFIX}dampf:${sc.mondayOrd}`,name:'Dampf-Event',description:'Wochenend-Event: Alle Spieler erhalten 200 Dampf gratis und können mit Harz bis 300 auffüllen.'}
+   );
+  }else{
+   rows.push({...common,id:`${AUTO_PREFIX}xp:${sc.mondayOrd}`,name:'Erfahrungs-Event',description:'Wochenend-Event: Quests geben 2× Erfahrung.'});
+   if(sc.runehuntActive){
+    rows.push({
+     is_active:true,
+     starts_at:new Date(sc.sundayStartMs).toISOString(),
+     ends_at:new Date(sc.endMs).toISOString(),
+     created_at:new Date(sc.sundayStartMs).toISOString(),
+     v6251Auto:true,
+     id:`${AUTO_PREFIX}runehunt:${sc.mondayOrd}`,
+     name:'Runenjagd',
+     description:'Sonntags-Event im EXP-Wochenende: 5 Expeditionen für seltene Runensplitter und Verzauberungsrunen.'
+    });
+   }
+  }
+ }
+ return rows;
 }
 function managedType(name){
  const n=String(name||'').toLowerCase();
@@ -63,6 +94,7 @@ function managedType(name){
  if(n.includes('gold'))return'gold';
  if(n.includes('erfahrung')||/(^|[^a-z])exp([^a-z]|$)/i.test(n))return'xp';
  if(n.includes('koloss')||n.includes('smaragd')||n.includes('weltboss')||n.includes('mystisch')||n.includes('mystic'))return'koloss';
+ if(n.includes('runenjagd')||n.includes('runehunt')||n.includes('runen'))return'runehunt';
  return'';
 }
 function currentAuto(type){return eventRows().find(x=>managedType(x.name)===type)||null}
@@ -103,7 +135,7 @@ function nextBoundary(ms=Date.now()){
  const sc=schedule(ms),candidates=[];
  /* Wednesday start/end, Friday start, Monday end; convert Berlin wall time
     for each candidate separately so DST weekends retain their exact boundary. */
- for(const offset of [2,3,4,7,9,10,11,14]){
+ for(const offset of [2,3,4,6,7,9,10,11,13,14]){
   const d=ymdFromOrd(sc.mondayOrd+offset);
   const at=berlinMidnightMs(d.y,d.m,d.d);
   if(at>ms)candidates.push(at);
@@ -146,6 +178,8 @@ try{v271DampfEventActive=function(){return autoActive('dampf')};window.v271Dampf
 try{v271ActiveDampfEvent=function(){return currentAuto('dampf')};window.v271ActiveDampfEvent=v271ActiveDampfEvent}catch(_){ }
 try{v110MysticEventActive=function(){return autoActive('koloss')};window.v110MysticEventActive=v110MysticEventActive}catch(_){ }
 try{v120ActiveWorldBossEvent=function(){return currentAuto('koloss')};window.v120ActiveWorldBossEvent=v120ActiveWorldBossEvent}catch(_){ }
+try{window.v8198RuneHuntEventActive=function(){return autoActive('runehunt')}}catch(_){ }
+try{window.v8198ActiveRuneHuntEvent=function(){return currentAuto('runehunt')}}catch(_){ }
 
 /* Re-merge after every server content refresh. */
 try{
@@ -161,7 +195,7 @@ window.v6251AutomaticWeekendSchedule=schedule;
 window.v6251AutomaticWeekendEvents=eventRows;
 window.v6251ApplyAutomaticWeekendEvents=apply;
 window.v6251AutomaticWeekendDiagnostics=()=>{
- const sc=schedule(),nextPair=sc.cycle===0?'Gold + Dampf':'Erfahrung + Smaragd-Koloss';
+ const sc=schedule(),nextPair=sc.cycle===0?'Gold + Dampf':'Erfahrung + Runenjagd (Sonntag)';
  return{timezone:TZ,activeWeekend:sc.weekend,pair:nextPair,weekIndex:sc.weekIndex,start:new Date(sc.startMs).toISOString(),end:new Date(sc.endMs).toISOString(),events:eventRows().map(x=>({id:x.id,name:x.name,starts_at:x.starts_at,ends_at:x.ends_at}))};
 };
 window.v8009HomeEventSchedulerDiagnostics=()=>({
