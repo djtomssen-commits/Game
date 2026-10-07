@@ -8,6 +8,13 @@ const G=window.GrowI18n;if(!G)return;
    Exact, scoped text replacement only; no gameplay/state/RPC changes. */
 const M={
  en:{
+   "VIP-Truhe geöffnet!":"VIP chest opened!",
+   "Das war heute in deiner VIP-Truhe:":"Today's VIP chest contained:",
+   "Belohnung einsammeln":"Collect rewards",
+   "👑 VIP · Waffen & Rüstung kostenlos neu würfeln":"👑 VIP · Reroll weapons & armor for free",
+   "👑 VIP · Schmuck & Materialien kostenlos neu würfeln":"👑 VIP · Reroll jewelry & materials for free",
+   "🔄 Waffen & Rüstung neu würfeln · 1 Harz-Taler":"🔄 Reroll weapons & armor · 1 Resin Token",
+   "🔄 Schmuck & Materialien neu würfeln · 1 Harz-Taler":"🔄 Reroll jewelry & materials · 1 Resin Token",
    "Harz & Gold & Rahmen & VIP Dealer":"Resin, Gold, Frames & VIP Dealer",
    "VIP-Pakete":"VIP Packages",
    "Deine VIP-Vorteile":"Your VIP Benefits",
@@ -49,6 +56,13 @@ const M={
   'ANBAU-TURM':'GROW TOWER','Turm-Erholung':'Tower recovery','Vollständig erholt':'Fully recovered','Turm-Leben vollständig regeneriert':'Tower health fully regenerated','Run starten':'Start run','Ersten Run starten':'Start first run','Komplette Ranglisten':'Full rankings','Turm-Aufstieg':'Tower progression','SAISON':'SEASON','Turm-Rangliste':'Tower ranking','Alle':'All','MITTWOCH':'WEDNESDAY','INFORMATIONEN':'INFORMATION','Anbau-Turm Guide':'Grow Tower guide','Guide schließen':'Close guide','Ranglisten ansehen':'View rankings','Rangliste':'Ranking','Turm verlassen':'Leave tower','Je höher du steigst, desto stärker werden die Mutationen.':'The higher you climb, the stronger the mutations become.'
  },
  es:{
+   "VIP-Truhe geöffnet!":"¡Cofre VIP abierto!",
+   "Das war heute in deiner VIP-Truhe:":"Tu cofre VIP de hoy contenía:",
+   "Belohnung einsammeln":"Recoger recompensas",
+   "👑 VIP · Waffen & Rüstung kostenlos neu würfeln":"👑 VIP · Renovar armas y armadura gratis",
+   "👑 VIP · Schmuck & Materialien kostenlos neu würfeln":"👑 VIP · Renovar joyas y materiales gratis",
+   "🔄 Waffen & Rüstung neu würfeln · 1 Harz-Taler":"🔄 Renovar armas y armadura · 1 ficha de resina",
+   "🔄 Schmuck & Materialien neu würfeln · 1 Harz-Taler":"🔄 Renovar joyas y materiales · 1 ficha de resina",
    "Harz & Gold & Rahmen & VIP Dealer":"Tienda de Resina, Oro, Marcos y VIP",
    "VIP-Pakete":"Paquetes VIP",
    "Deine VIP-Vorteile":"Tus ventajas VIP",
@@ -86,6 +100,13 @@ const M={
   'ANBAU-TURM':'TORRE DE CULTIVO','Turm-Erholung':'Recuperación de torre','Vollständig erholt':'Recuperado por completo','Run starten':'Iniciar run','Ersten Run starten':'Iniciar primer run','Komplette Ranglisten':'Clasificación completa','Turm-Aufstieg':'Progreso de torre','SAISON':'TEMPORADA','Turm-Rangliste':'Clasificación de torre','Alle':'Todos','MITTWOCH':'MIÉRCOLES','INFORMATIONEN':'INFORMACIÓN','Anbau-Turm Guide':'Guía de la Torre','Guide schließen':'Cerrar guía','Ranglisten ansehen':'Ver clasificaciones','Rangliste':'Clasificación','Turm verlassen':'Salir de la torre'
  },
  fr:{
+   "VIP-Truhe geöffnet!":"Coffre VIP ouvert !",
+   "Das war heute in deiner VIP-Truhe:":"Votre coffre VIP du jour contenait :",
+   "Belohnung einsammeln":"Récupérer les récompenses",
+   "👑 VIP · Waffen & Rüstung kostenlos neu würfeln":"👑 VIP · Relancer armes et armure gratuitement",
+   "👑 VIP · Schmuck & Materialien kostenlos neu würfeln":"👑 VIP · Relancer bijoux et matériaux gratuitement",
+   "🔄 Waffen & Rüstung neu würfeln · 1 Harz-Taler":"🔄 Relancer armes et armure · 1 jeton de résine",
+   "🔄 Schmuck & Materialien neu würfeln · 1 Harz-Taler":"🔄 Relancer bijoux et matériaux · 1 jeton de résine",
    "Harz & Gold & Rahmen & VIP Dealer":"Marchand Résine, Or, Cadres & VIP",
    "VIP-Pakete":"Packs VIP",
    "Deine VIP-Vorteile":"Vos avantages VIP",
@@ -123,6 +144,13 @@ const M={
   'ANBAU-TURM':'TOUR DE CULTURE','Turm-Erholung':'Récupération de la tour','Vollständig erholt':'Entièrement rétabli','Run starten':'Lancer le run','Ersten Run starten':'Lancer le premier run','Komplette Ranglisten':'Classements complets','Turm-Aufstieg':'Progression de la tour','SAISON':'SAISON','Turm-Rangliste':'Classement de la tour','Alle':'Tous','MITTWOCH':'MERCREDI','INFORMATIONEN':'INFORMATIONS','Anbau-Turm Guide':'Guide de la Tour','Guide schließen':'Fermer le guide','Ranglisten ansehen':'Voir les classements','Rangliste':'Classement','Turm verlassen':'Quitter la tour'
  },
  pl:{
+   "VIP-Truhe geöffnet!":"Skrzynia VIP otwarta!",
+   "Das war heute in deiner VIP-Truhe:":"Dzisiejsza skrzynia VIP zawierała:",
+   "Belohnung einsammeln":"Odbierz nagrody",
+   "👑 VIP · Waffen & Rüstung kostenlos neu würfeln":"👑 VIP · Darmowe odświeżenie broni i pancerza",
+   "👑 VIP · Schmuck & Materialien kostenlos neu würfeln":"👑 VIP · Darmowe odświeżenie biżuterii i materiałów",
+   "🔄 Waffen & Rüstung neu würfeln · 1 Harz-Taler":"🔄 Odśwież broń i pancerz · 1 żeton żywicy",
+   "🔄 Schmuck & Materialien neu würfeln · 1 Harz-Taler":"🔄 Odśwież biżuterię i materiały · 1 żeton żywicy",
    "Harz & Gold & Rahmen & VIP Dealer":"Sklep Żywicy, Złota, Ramek i VIP",
    "VIP-Pakete":"Pakiety VIP",
    "Deine VIP-Vorteile":"Twoje korzyści VIP",
@@ -160,6 +188,13 @@ const M={
   'ANBAU-TURM':'WIEŻA UPRAWY','Turm-Erholung':'Regeneracja wieży','Vollständig erholt':'W pełni zregenerowano','Run starten':'Rozpocznij run','Ersten Run starten':'Rozpocznij pierwszy run','Komplette Ranglisten':'Pełne rankingi','Turm-Aufstieg':'Rozwój wieży','SAISON':'SEZON','Turm-Rangliste':'Ranking wieży','Alle':'Wszyscy','MITTWOCH':'ŚRODA','INFORMATIONEN':'INFORMACJE','Anbau-Turm Guide':'Poradnik Wieży','Guide schließen':'Zamknij poradnik','Ranglisten ansehen':'Zobacz rankingi','Rangliste':'Ranking','Turm verlassen':'Opuść wieżę'
  },
  tr:{
+   "VIP-Truhe geöffnet!":"VIP sandığı açıldı!",
+   "Das war heute in deiner VIP-Truhe:":"Bugünkü VIP sandığında şunlar vardı:",
+   "Belohnung einsammeln":"Ödülleri al",
+   "👑 VIP · Waffen & Rüstung kostenlos neu würfeln":"👑 VIP · Silah ve zırhı ücretsiz yenile",
+   "👑 VIP · Schmuck & Materialien kostenlos neu würfeln":"👑 VIP · Takı ve malzemeleri ücretsiz yenile",
+   "🔄 Waffen & Rüstung neu würfeln · 1 Harz-Taler":"🔄 Silah ve zırhı yenile · 1 Reçine Jetonu",
+   "🔄 Schmuck & Materialien neu würfeln · 1 Harz-Taler":"🔄 Takı ve malzemeleri yenile · 1 Reçine Jetonu",
    "Harz & Gold & Rahmen & VIP Dealer":"Reçine, Altın, Çerçeve ve VIP Mağazası",
    "VIP-Pakete":"VIP Paketleri",
    "Deine VIP-Vorteile":"VIP Avantajların",
