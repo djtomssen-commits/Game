@@ -4,7 +4,7 @@ if(String(window.GROW_RELEASE_CHANNEL||'stable').toLowerCase()!=='beta')return;
 if(window.__V8210_GROW_CUP__)return;
 window.__V8210_GROW_CUP__=true;
 
-const VERSION='V8.213';
+const VERSION='V8.214';
 const PLANTS={
  seedling:'assets/v7198-base64/49aed1d1c8035f5d2123.webp',
  growth:'assets/v7198-base64/c9ec3c217b81f805555c.webp',
@@ -25,7 +25,7 @@ const METRICS=[
 const TIER={
  bronze:['🥉','BRONZE'],silver:['🥈','SILBER'],gold:['🥇','GOLD'],master:['💎','MEISTER'],champion:['👑','GROW CHAMPION']
 };
-const S={state:null,ranking:null,busy:false,opened:false,view:'cup',lastError:'',refreshes:0,starts:0,tunes:0,timer:null,clockOffset:0,boundaryKey:'',draftKey:'',draft:null};
+const S={state:null,ranking:null,busy:false,opened:false,view:'cup',lastError:'',refreshes:0,starts:0,submits:0,timer:null,clockOffset:0,boundaryKey:'',draftKey:'',draft:null};
 const db=()=>{try{return (typeof v073Db!=='undefined'&&v073Db)||null}catch(_){return null}};
 const uid=()=>{try{return String((typeof v073User!=='undefined'&&v073User?.id)||'')}catch(_){return ''}};
 const one=v=>Array.isArray(v)?v[0]:v;
@@ -51,7 +51,7 @@ function wallet(){
  return '<div class="v8210-wallet"><span><i>ᚱ</i><b>'+Math.max(0,Number(st.runes)||0)+'</b><small>Runen</small></span><span><i>✦</i><b>'+Math.max(0,Number(st.rune_shards)||0)+'</b><small>Fragmente</small></span></div>';
 }
 function header(){
- return '<header class="v8210-head"><button type="button" data-cup-close class="v8210-back">←</button><div class="v8210-title"><small>6-STUNDEN-CUP · ALLE 2 WOCHEN</small><b>GROW CUP</b><span>6 Stunden · 6 Pflegefenster · versteckte Pflanzenbedürfnisse</span></div>'+wallet()+'<button type="button" data-cup-close class="v8210-close">×</button></header>'+
+ return '<header class="v8210-head"><button type="button" data-cup-close class="v8210-back">←</button><div class="v8210-title"><small>6-STUNDEN-CUP · ALLE 2 WOCHEN</small><b>GROW CUP</b><span>6 Aktionen · 6 versteckte Sweet Spots · maximal 600 Punkte</span></div>'+wallet()+'<button type="button" data-cup-close class="v8210-close">×</button></header>'+
  '<nav class="v8210-tabs"><button data-cup-view="cup" class="'+(S.view==='cup'?'active':'')+'">🌿 CUP</button><button data-cup-view="ranking" class="'+(S.view==='ranking'?'active':'')+'">🏆 RANGLISTE</button></nav>';
 }
 function plantStage(phase=1,status='active'){
@@ -76,59 +76,57 @@ function lastCareResult(run){
 function lobby(){
  const st=S.state||{},active=st.active===true;
  return '<section class="v8210-scene v8210-lobby">'+
-   '<div class="v8210-stage-panel">'+plantStage(1,'preview')+'<div class="v8210-stage-badge">🏆 OFFIZIELLE CUP-BÜHNE</div></div>'+
-   '<div class="v8210-lobby-copy"><small>GROW LEGENDS · LIVE GROW CUP</small><h1>6 STUNDEN.<br>DEINE PFLANZE.</h1>'+
-   '<p>Ein Cup-Run läuft sechs echte Stunden. In jeder Stunde öffnet sich ab Minute 45 ein 15-Minuten-Pflegefenster. Du regelst Licht, Wasser und Dünger selbst. Die Pflanze verrät dir Hinweise – niemals die perfekte Zahl.</p>'+
-   '<div class="v8210-lobby-rules"><span><b>6 h</b><small>Laufzeit</small></span><span><b>6</b><small>Pflegefenster</small></span><span><b>15 m</b><small>je Fenster</small></span><span><b>👑</b><small>ab 92 Punkten</small></span></div>'+
-   '<div class="v8210-seed-card"><i>🌱</i><div><small>DIESE CUP-SORTE</small><b>'+esc(st.cup_seed||'Cup-Sorte')+'</b><span>Gleiche Sorte für alle · individuelle Phänotyp-Reaktion</span></div></div>'+
-   '<button data-cup-start '+(!active||S.busy?'disabled':'')+'>'+(S.busy?'CUP WIRD VORBEREITET …':'6-STUNDEN-CUP STARTEN')+'</button>'+
-   (st.test_eligible?'<button class="v8213-test-start" data-cup-test-start '+(S.busy?'disabled':'')+'>🧪 BETA-TESTLAUF · 6 MINUTEN</button>':'')+
-   '<em>'+(active?'Der Grow Cup ist geöffnet. Dein persönlicher 6-Stunden-Timer beginnt erst beim Start.':'Nächster Grow Cup: '+esc(fmtDate(st.next_event)))+'</em></div>'+
+  '<div class="v8210-stage-panel">'+plantStage(1,'preview')+'<div class="v8210-stage-badge">🏆 OFFIZIELLE CUP-BÜHNE</div></div>'+
+  '<div class="v8210-lobby-copy"><small>GROW LEGENDS · LIVE GROW CUP</small><h1>6 AKTIONEN.<br>600 PUNKTE.</h1>'+
+  '<p>Jede Stunde hat genau eine Aufgabe und einen Regler. Für jede Aktion existiert ein versteckter Sweet Spot. Je näher du ihn triffst, desto mehr von 100 Punkten erhältst du. Die Einzelpunkte siehst du erst ganz am Ende.</p>'+
+  '<div class="v8210-lobby-rules"><span><b>6 h</b><small>Laufzeit</small></span><span><b>6</b><small>Aktionen</small></span><span><b>100</b><small>Punkte je Aktion</small></span><span><b>600</b><small>Maximum</small></span></div>'+
+  '<div class="v8210-seed-card"><i>🌱</i><div><small>DIESE CUP-SORTE</small><b>'+esc(st.cup_seed||'Cup-Sorte')+'</b><span>Der Sweet Spot wechselt mit jedem neuen Grow Cup</span></div></div>'+
+  '<button data-cup-start '+(!active||S.busy?'disabled':'')+'>'+(S.busy?'CUP WIRD VORBEREITET …':'6-STUNDEN-CUP STARTEN')+'</button>'+
+  (st.test_eligible?'<button class="v8213-test-start" data-cup-test-start '+(S.busy?'disabled':'')+'>🧪 BETA-TESTLAUF · 6 MINUTEN</button>':'')+
+  '<em>'+(active?'Dein persönlicher Timer beginnt erst beim Start. Pro Phase gibt es genau eine Einstellung.':'Nächster Grow Cup: '+esc(fmtDate(st.next_event)))+'</em></div>'+
  '</section>';
+}
+function decimals(step){return Number(step)%1===0?0:1}
+function formatValue(v,action){
+ const d=decimals(action?.step||1);
+ return Number(v).toFixed(d)+' '+esc(action?.unit||'');
 }
 function ensureDraft(run){
  const key=String(run?.run_id||'')+':'+String(run?.phase||1);
- if(S.draftKey===key&&S.draft)return S.draft;
- const src=run?.phase_record?.status==='submitted'?run.phase_record:(run?.last_settings||{});
- S.draft={
-  light:Math.max(0,Math.min(60,Number(src.light_minutes??30))),
-  water:Math.max(0,Math.min(400,Number(src.water_ml??120))),
-  nutrient:Math.max(0,Math.min(10,Number(src.nutrient_ml??1)))
- };
- S.draftKey=key;
- return S.draft;
+ if(S.draftKey===key&&S.draft!==null)return S.draft;
+ const a=run?.action||{},rec=run?.phase_record;
+ let v=rec?.status==='submitted'?Number(rec.value):((Number(a.min)||0)+(Number(a.max)||0))/2;
+ const step=Number(a.step)||1,min=Number(a.min)||0,max=Number(a.max)||100;
+ v=min+Math.round((v-min)/step)*step;
+ S.draft=Math.max(min,Math.min(max,v));S.draftKey=key;return S.draft;
 }
 function timingCard(run){
- const state=String(run?.window_state||'waiting');let title='Pflanze entwickelt sich',sub='Pflegefenster öffnet in',target=run?.decision_opens_at,cls='waiting',ico='⏳';
- if(state==='open'){title='Pflege jetzt nötig';sub='Fenster schließt in';target=run?.phase_ends_at;cls='open';ico='⚠️'}
- if(state==='submitted'){title='Pflege gespeichert';sub='Auswertung in';target=run?.phase_ends_at;cls='submitted';ico='✓'}
- if(state==='processing'){title='Phase wird ausgewertet';sub='Nächste Phase in';target=run?.phase_ends_at;cls='processing';ico='🌿'}
+ const state=String(run?.window_state||'waiting');let title='Pflanze entwickelt sich',sub='Aktion öffnet in',target=run?.decision_opens_at,cls='waiting',ico='⏳';
+ if(state==='open'){title='Aktion jetzt einstellen';sub='Fenster schließt in';target=run?.phase_ends_at;cls='open';ico='⚠️'}
+ if(state==='submitted'){title='Einstellung gespeichert';sub='Nächste Phase in';target=run?.phase_ends_at;cls='submitted';ico='✓'}
+ if(state==='processing'){title='Phase wird verarbeitet';sub='Nächste Phase in';target=run?.phase_ends_at;cls='processing';ico='🌿'}
  return '<div class="v8210-timing '+cls+' '+(run?.test_mode?'test':'')+'"><i>'+ico+'</i><div><small>'+(run?.test_mode?'BETA-TEST · PHASE ':'STUNDE ')+Number(run?.phase||1)+' / 6</small><b>'+title+'</b><span>'+sub+' <strong data-cup-countdown data-target="'+esc(target||'')+'">'+fmtDuration(leftMs(target))+'</strong></span></div><em>'+(run?.test_mode?'Testlauf':'Gesamtlaufzeit')+' <b data-cup-run-time data-target="'+esc(run?.run_ends_at||'')+'">'+fmtDuration(leftMs(run?.run_ends_at))+'</b></em></div>';
 }
-function clues(run){
- const a=Array.isArray(run?.clues)?run.clues:[];
- return '<div class="v8210-clues"><div class="v8210-clue-head"><span>🌿</span><div><small>PFLANZENBEOBACHTUNG</small><b>Lies die Pflanze, nicht eine Formel.</b></div></div>'+a.map(x=>'<p>'+esc(x)+'</p>').join('')+'</div>';
-}
-function rangeRow(type,label,ico,min,max,step,value,unit,disabled){
- return '<label class="v8210-range"><div><span><i>'+ico+'</i><b>'+label+'</b></span><strong data-cup-value="'+type+'">'+(type==='nutrient'?Number(value).toFixed(1):Math.round(value))+' '+unit+'</strong></div><input type="range" min="'+min+'" max="'+max+'" step="'+step+'" value="'+value+'" data-cup-range="'+type+'" '+(disabled?'disabled':'')+'><footer><small>'+min+' '+unit+'</small><small>'+max+' '+unit+'</small></footer></label>';
-}
-function controls(run){
- const d=ensureDraft(run),state=String(run?.window_state||'waiting'),locked=state!=='open'||S.busy,submitted=state==='submitted';
- return '<div class="v8210-grow-controls '+state+'"><div class="v8210-grow-control-head"><div><small>DEINE EINSTELLUNGEN</small><b>'+(submitted?'Für diese Stunde festgelegt':'Pflege selbst einstellen')+'</b></div><span>'+({waiting:'Noch gesperrt',open:'15-Minuten-Fenster',submitted:'Gespeichert',processing:'Auswertung'}[state]||state)+'</span></div>'+
- rangeRow('light','Lichtzeit','💡',0,60,5,d.light,'Min.',locked)+
- rangeRow('water','Wassermenge','💧',0,400,10,d.water,'ml',locked)+
- rangeRow('nutrient','Düngermenge','🧪',0,10,.5,d.nutrient,'ml',locked)+
- '<div class="v8210-control-note">'+(state==='waiting'?'Die Regler werden ab Minute 45 freigeschaltet. Beobachte bis dahin die Pflanze.':submitted?'Die Werte sind fix. Am Ende der Stunde siehst du die Reaktion.':state==='open'?'Du kannst die drei Werte frei kombinieren. Es gibt keine sichtbare Idealzone.':'Die Stunde ist beendet und wird serverseitig verarbeitet.')+'</div>'+
- '<button class="v8210-submit-care" data-cup-tune '+(locked?'disabled':'')+'>'+(S.busy?'SPEICHERT …':submitted?'PFLEGE FESTGELEGT':'PFLEGE FÜR DIESE STUNDE FESTLEGEN')+'</button></div>';
+function actionControl(run){
+ const action=run?.action||{},state=String(run?.window_state||'waiting'),locked=state!=='open'||S.busy;
+ const value=ensureDraft(run),submitted=state==='submitted';
+ return '<div class="v8210-grow-controls '+state+'">'+
+  '<div class="v8210-grow-control-head"><div><small>AKTION '+Number(run?.phase||1)+' / 6</small><b>'+esc(action.icon||'🌿')+' '+esc(action.title||'Aktion')+'</b></div><span>Sweet Spot unbekannt</span></div>'+
+  '<p class="v8214-action-desc">'+esc(action.description||'Stelle deinen Wert ein.')+'</p>'+
+  '<div class="v8214-single-value"><small>DEINE EINSTELLUNG</small><strong data-cup-single-value>'+formatValue(value,action)+'</strong></div>'+
+  '<label class="v8210-range v8214-single-range"><input type="range" min="'+Number(action.min||0)+'" max="'+Number(action.max||100)+'" step="'+Number(action.step||1)+'" value="'+value+'" data-cup-single-range '+(locked?'disabled':'')+'><footer><small>'+formatValue(action.min||0,action)+'</small><small>'+formatValue(action.max||100,action)+'</small></footer></label>'+
+  '<div class="v8210-control-note">'+(state==='waiting'?'Der Regler wird ab Minute 45 freigeschaltet.':submitted?'Dein Wert ist für diese Phase fix. Wie viele Punkte er bringt, erfährst du erst im Finale.':state==='open'?'Je näher dein Wert am versteckten Sweet Spot liegt, desto mehr von 100 Punkten bekommst du.':'Die Phase wird verarbeitet.')+'</div>'+
+  '<button class="v8210-submit-care" data-cup-submit '+(locked?'disabled':'')+'>'+(S.busy?'SPEICHERT …':submitted?'WERT FESTGELEGT':'WERT FESTLEGEN')+'</button>'+
+ '</div>';
 }
 function activeRun(run){
  const phase=Math.max(1,Math.min(6,Number(run.phase)||1)),ph=PHASES[phase-1]||PHASES[0];
  return '<section class="v8210-scene v8210-run">'+phaseRail(run)+
- '<div class="v8210-run-grid"><div class="v8210-stage-panel live">'+plantStage(phase,'active')+
- '<div class="v8210-stage-meta"><small>'+esc(run.cup_seed||'Cup-Sorte')+(run.test_mode?' · BETA-TEST':'')+'</small><b>'+(run.test_mode?'TESTPHASE ':'STUNDE ')+phase+' / 6</b><span>'+esc(ph[0])+'</span></div></div>'+
- '<div class="v8210-control">'+timingCard(run)+lastCareResult(run)+
- '<div class="v8210-phase-copy"><small>PHASE '+phase+' · '+esc(ph[0]).toUpperCase()+'</small><h2>'+esc(ph[1])+'</h2><p>Die versteckte Zielzone verändert sich mit Phänotyp, Phase und Mikroklima. Nutze die Hinweise und entscheide selbst.</p></div>'+
- metrics(run)+clues(run)+controls(run)+'</div></div></section>';
+  '<div class="v8210-run-grid"><div class="v8210-stage-panel live">'+plantStage(phase,'active')+
+  '<div class="v8210-stage-meta"><small>'+esc(run.cup_seed||'Cup-Sorte')+(run.test_mode?' · BETA-TEST':'')+'</small><b>'+(run.test_mode?'TESTPHASE ':'STUNDE ')+phase+' / 6</b><span>'+esc(ph[0])+'</span></div></div>'+
+  '<div class="v8210-control">'+timingCard(run)+
+  '<div class="v8210-phase-copy"><small>AKTION '+phase+' · '+esc(ph[0]).toUpperCase()+'</small><h2>'+esc(ph[1])+'</h2><p>Nur diese eine Einstellung zählt in dieser Phase. Der Sweet Spot bleibt verborgen.</p></div>'+
+  metrics(run)+actionControl(run)+'</div></div></section>';
 }
 function rewardTable(){
  return '<div class="v8210-reward-table"><div><b>🥇 Platz 1</b><span>3 Runen · 30 Frag.</span></div><div><b>🥈 Platz 2</b><span>2 Runen · 25 Frag.</span></div><div><b>🥉 Platz 3</b><span>2 Runen · 20 Frag.</span></div><div><b>4–10</b><span>1 Rune · 15 Frag.</span></div><div><b>11–25</b><span>12 Frag.</span></div><div><b>26–50</b><span>8 Frag.</span></div><div><b>51–100</b><span>5 Frag.</span></div></div>';
