@@ -11252,3 +11252,14 @@ Aktueller Release-Status:
   - v7137 Mapping: b2197d0a67d60bef06911d9fd22a2e7affbb2b44
   - v6145 Mapping: ab54af4acfd4d86d840f91c0f3de1850e31462df
   - Beta Cache: 22a5ceca01d10e0a1953a794393bd3b6dc4a4fb0
+
+### 2026-10-07 – V8.197 VIP Google-Play-ID Korrektur
+- Google Play Console wurde für den 7-Tage-Pass mit Produkt-ID `vip_7day` angelegt (nicht `vip_7d`).
+- Billing-Client sendet für 7 Tage jetzt kanonisch `vip_7day`; 14/30 Tage bleiben `vip_14d` / `vip_30d`.
+- `vip_7d` bleibt ausschließlich als Legacy-Alias in Backend/Recovery erhalten, damit alte Testreferenzen nicht brechen.
+- Edge Function `verify-google-play-purchase` auf Version 8: `vip_7day`, `vip_7d`, `vip_14d`, `vip_30d` werden erkannt.
+- Server-Credit-RPC + privater Purchase-Ledger akzeptieren `vip_7day`; Rollback-Test bestätigt exakt +7 Tage und keine persistente Testbuchung.
+- Billing-JS Syntax grün.
+- Beta Billing Cache-Key: `8197vipid1`.
+- SQL-Artefakt: `V8197_VIP_7DAY_PRODUCT_ID.sql`.
+- Commits: Billing `149511c3b60c91683261b5d84c30ce79b35f0cb6`, Beta-Wiring `774a9038306852cacc2e2214c527865cd6aaf7e8`, SQL `aa73e935b489c834dda4b529ec7a53536b23e098`.
