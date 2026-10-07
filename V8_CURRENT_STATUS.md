@@ -11287,3 +11287,126 @@ Aktueller Release-Status:
 - Wichtig für Test:
   - mit App 1.0.8 keinen weiteren VIP-Testkauf durchführen;
   - erst App 1.0.9 installieren, danach 7/14/30-Tage-Kauf erneut testen.
+
+### 2026-10-07 – V8.198 Runenjagd + Verzaubern (Beta)
+- Neuer Event-/Item-Progressionsblock zunächst Beta-first. Server 1 wurde für Runenjagd/Verzaubern bewusst noch nicht promoviert.
+- Eventkalender Beta neu geordnet:
+  - Gold + Dampf bleiben gemeinsam am bisherigen Wechsel-Wochenende Freitag–Sonntag;
+  - EXP bleibt am jeweils anderen Wochenende Freitag–Sonntag;
+  - Runenjagd läuft ausschließlich am Sonntag des EXP-Wochenendes und damit alle 2 Wochen;
+  - Smaragd-Koloss wurde aus dem EXP-Wochenende entfernt und läuft auf Beta jetzt jeden Donnerstag 00:00–24:00 Europe/Berlin;
+  - bestehendes Mittwoch-Anbau-Turm-Event bleibt unverändert.
+- Server-Gate:
+  - public.v7102_auto_weekend_event_active(...) besitzt die neue Beta-Rotation;
+  - public.v6359_run_worldboss() verwendet diesen Helper bereits als Authority, daher ist der Koloss serverseitig am Donnerstag und nicht nur optisch verschoben;
+  - historische manuelle Koloss-Events wurden geprüft; keine aktuell laufende Altzeile überstimmt das neue Gate.
+- Runenjagd:
+  - eigener hochauflösender/high-end Runentor-Look auf dem bestehenden Spezialslot der Startseite;
+  - Donnerstag zeigt derselbe Slot den Smaragd-Koloss, Runenjagd-Sonntag das Runentor, sonst den geschlossenen Weltboss-Slot;
+  - kein zweiter Turm, keine Etagen und kein „stärkerer Gegner = mehr Loot“-Regler;
+  - pro Runenjagd maximal 5 Expeditionen;
+  - drei optisch unterschiedliche Siegel/Pfade (Smaragd, Glut, Nebel) haben absichtlich dieselben Loot-Chancen und sind eine Weg-/Präsentationswahl;
+  - pro Expedition serverseitig 1–2 Runensplitter (60 % / 40 %);
+  - selten 6 % Chance auf eine direkte Verzauberungsrune;
+  - beim fünften Run einmalig +3 Runensplitter Abschlussbonus;
+  - 10 Runensplitter können serverseitig zu 1 Verzauberungsrune verschmolzen werden;
+  - Erwartungswert liegt damit bewusst grob bei ~1–2 nutzbaren Runen pro Event, nicht bei einer schnellen Massenverteilung.
+- Neue private Beta-Authority:
+  - recovery_private.v8198_enchant_wallet;
+  - recovery_private.v8198_runehunt_progress;
+  - recovery_private.v8198_rune_ledger;
+  - alle drei Tabellen RLS-enabled und ohne direkten anon/authenticated Tabellenzugriff.
+- Neue Spieler-RPCs:
+  - public.v8198_runehunt_state();
+  - public.v8198_runehunt_run(text,text);
+  - public.v8198_fuse_rune(text);
+  - public.v8198_enchant_state();
+  - public.v8198_enchant_item(text,text).
+- Idempotenz:
+  - Runenjagd, Runenverschmelzung und Verzaubern verwenden Request-IDs + privaten Ledger;
+  - Wiederholung derselben Request-ID kann weder Loot noch Itemstufe doppelt buchen.
+- Harzschmiede:
+  - im bestehenden v488-Shell-Owner neuer Beta-Tab „VERZAUBERN“;
+  - Items aus Inventar und angelegten Character-Slots sind direkt auswählbar;
+  - Rune-/Splitter-Bestand, aktuelle +Stufe, nächste Chance und Statbonus werden angezeigt;
+  - 10 Splitter -> 1 Rune kann auch direkt in der Runenkammer ausgelöst werden.
+- Verzauberungsstufen:
+  - Maximum zunächst +10;
+  - +1 = 100 %;
+  - +2 = 70 %;
+  - +3 = 50 %;
+  - +4 = 30 %;
+  - +5 = 15 %;
+  - +6 = 5 %;
+  - +7 bis +10 = jeweils 6 % gemäß finaler Vorgabe;
+  - Fehlschlag verbraucht genau 1 Rune, zerstört das Item nicht und senkt die +Stufe nicht.
+- Statmodell:
+  - je erfolgreicher +Stufe +1,5 % auf die ursprünglichen nativen Item-Grundstats;
+  - Edelstein- und vorhandene Rollenboni werden nicht mitmultipliziert;
+  - ursprüngliche Native-Werte werden einmalig in v8198Enchant.baseNative gesichert;
+  - v429StatLock.native wird auf den bestätigten verzauberten Native-Wert gesetzt, damit alte lokale Normalisierer die Serverwerte nicht zurückdrehen;
+  - Combat Power wird nach erfolgreicher Itemmutation serverseitig neu berechnet.
+- Itemdarstellung:
+  - ab +1 sichtbare +Stufen-Plakette;
+  - ab +2 zunehmender Glow;
+  - +3/+4 sichtbar stärker;
+  - ab +5 zusätzlich kontrollierte Blitz-/Lichtimpulse;
+  - +7 bis +10 nochmals stärkere Aura;
+  - FX liegen direkt in den kanonischen Character-Inventory-/Equipment-Ownern, kein permanenter MutationObserver/Polling-Renderer;
+  - prefers-reduced-motion wird berücksichtigt.
+- High-End UI:
+  - Runentor mit mehreren rotierenden Runenringen, Tiefenportal, Glyphen, Partikel-/Glow-Eindruck und drei Siegelkarten;
+  - Verzaubern-Tab als dunkle Runenkammer mit Runenaltar, kreisender Glyphenfassung, Item-Fokus, Erfolgs-/Fehlermeldung und Rune-Wallet;
+  - keine provisorische Emoji-Kartenoptik als Hauptdarstellung.
+- Startseiten-Eventleiste:
+  - sechster Eventtile „RUNEN“ ergänzt;
+  - Layout explizit auf 6 Tiles angepasst;
+  - aktiver Runenjagd-Tile besitzt eigenen Runen-/Portal-Look.
+- Beta-Wiring:
+  - css/features/forge/beta/v8198-rune-enchant.css?v=8198runes1;
+  - js/features/forge/beta/v8198-enchanting.js?v=8198runes1;
+  - js/features/events/beta/v8198-runehunt.js?v=8198runes1;
+  - geänderte Weekend/Home/Forge/Character-Owner ebenfalls auf 8198runes1 cache-busted;
+  - jede neue/geänderte Referenz in beta.html exakt 1× vorhanden.
+- SQL-Artefakt: V8198_RUNEHUNT_ENCHANTING.sql.
+- Supabase-Migrationen:
+  - 20261007105612 v8198_runehunt_enchant_beta;
+  - 20261007105637 v8198_runehunt_state_fix.
+- Server-QA:
+  - Kalenderprobe: Donnerstag 08.10. Koloss=true; Sonntag 11.10. Koloss=false; EXP-Wochenende 09.–11.10. aktiv; Runenjagd Sonntag 11.10.=true; Sonntag 18.10.=false; Gold/Dampf-Wochenende 16.–18.10. korrekt;
+  - v8198_runehunt_state am 07.10.: active=false, runs_left=5, next_event=11.10.2026;
+  - Verzaubern-Rollbacktest auf einem echten serverautoritativen Inventaritem: +1 / 100 % erfolgreich, Rune 1 -> 0, kompletter kanonischer Inventarstand zurückgegeben; Test danach vollständig zurückgerollt;
+  - kein Testitem und keine Testrune persistiert.
+- Security:
+  - private V8.198-Tabellen besitzen keinen direkten anon/authenticated Zugriff;
+  - öffentliche Spieler-RPCs nur authenticated/service_role;
+  - private Helper nicht für anon/authenticated ausführbar;
+  - Supabase Advisor zeigt für die neuen privaten Tabellen nur das erwartete RLS-enabled/no-policy INFO, weil direkter Tabellenzugriff absichtlich vollständig gesperrt ist.
+- JS-QA:
+  - Weekend-Event-Owner: Syntax OK;
+  - Runenjagd-Client: Syntax OK;
+  - Verzaubern-Client: Syntax OK;
+  - Harzschmiede v488: Syntax OK;
+  - Home-Renderer: Syntax OK;
+  - Character v459: Syntax OK;
+  - Slot-Owner v470: Syntax OK.
+- Relevante Commits:
+  - Eventrotation: 37c1b0d99f722bf9c66bcaa5e9deefe6543f4567;
+  - Runenjagd-Client: 304126d03d6e2392bbab394fa1deedefd30e4e15;
+  - Verzaubern-Client: 25f812ec90b1bd92f51bbd2c92ca096547a12d2c;
+  - High-End Rune/Enchant CSS: 1595b3a59fcf0586873f4218633b195c79307431;
+  - 6-Tile-Eventpolish: 5b3eb98f072520c0de2758867da518bac6ee465c;
+  - Harzschmiede-Integration: 86db63adb049d40a7a16499eb6e2f2b89cf18eea;
+  - Home-Spezialslot: 038dd56700515cd86669bd40b8191c23fa6119a0;
+  - Inventory-FX: 0e2aeb6ea4ed9c7eb95275f17a5d75dcb1b887a9;
+  - Equipment-FX: 5f1b1f862fefd745011fb134289a1c40133da099;
+  - Beta-Wiring: d0b724d873b3a3df05e017ffb45c70701f5bd788;
+  - SQL-Snapshot: 149f70f34c556788e3e480fc6a60d11cc4a16eb4;
+  - Matrix: 5b813e1fccca69821b0eece533b7cbbd7951ac43.
+- Manueller Beta-Endtest offen:
+  1. Startseite heute: Runentor darf geschlossen sein; am Donnerstag muss derselbe Slot den aktiven Koloss zeigen.
+  2. Sonntag 11.10. im EXP-Wochenende: EXP bleibt aktiv, Eventtile RUNEN leuchtet und der Startseiten-Slot zeigt das aktive Runentor.
+  3. Runentor öffnen: 5 Expeditionen, Runenwallet, Splitter und Abschlussbonus prüfen.
+  4. Harzschmiede -> Verzaubern: Item wählen, +1 mit Rune ausführen, Werte/Combat Power und Itemanzeige kontrollieren.
+  5. Inventar + Character-Slots prüfen: +Stufen sichtbar; Test-FX ab +2/+5 später mit kontrolliertem Testbestand prüfen.
+
