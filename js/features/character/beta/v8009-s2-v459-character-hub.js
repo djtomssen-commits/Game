@@ -268,6 +268,8 @@
 
       updateHero();
       try{window.v123PolishEquipment?.()}catch(_){}
+      try{window.v470PaintEquipmentSlots?.()}catch(_){}
+      try{window.v8198DecorateCharacterItems?.()}catch(_){}
       activate(activeTab(),false);
       try{window.v8144GameplayI18n?.apply?.('character')}catch(_){}
       stamp();
