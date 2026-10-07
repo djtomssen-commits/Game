@@ -44,23 +44,23 @@ function schedule(ms=Date.now()){
  const thursdayStartMs=berlinMidnightMs(thursday.y,thursday.m,thursday.d),thursdayEndMs=startMs;
  const sundayStartMs=berlinMidnightMs(sunday.y,sunday.m,sunday.d);
  const weekend=p.dow===5||p.dow===6||p.dow===0;
- const thursdayActive=p.dow===4;
- const growCupActive=p.dow===0;
- const pair=cycle===0?'gold-dampf':'xp';
- return{...p,mondayOrd,weekIndex,cycle,pair,weekend,thursdayActive,growCupActive,startMs,endMs,thursdayStartMs,thursdayEndMs,sundayStartMs};
+ const growCupActive=p.dow===4;
+ const kolossActive=weekend&&cycle===1;
+ const pair=cycle===0?'gold-dampf':'xp-koloss';
+ return{...p,mondayOrd,weekIndex,cycle,pair,weekend,growCupActive,kolossActive,startMs,endMs,thursdayStartMs,thursdayEndMs,sundayStartMs};
 }
 function eventRows(ms=Date.now()){
  const sc=schedule(ms),rows=[];
- if(sc.thursdayActive){
+ if(sc.growCupActive){
   rows.push({
    is_active:true,
    starts_at:new Date(sc.thursdayStartMs).toISOString(),
    ends_at:new Date(sc.thursdayEndMs).toISOString(),
    created_at:new Date(sc.thursdayStartMs).toISOString(),
    v6251Auto:true,
-   id:`${AUTO_PREFIX}koloss:${sc.mondayOrd}`,
-   name:'Smaragd-Koloss-Event',
-   description:'Donnerstags-Event: Der Smaragd-Koloss ist den ganzen Tag aktiv.'
+   id:`${AUTO_PREFIX}growcup:${sc.mondayOrd}`,
+   name:'Grow Cup',
+   description:'Wöchentliches Donnerstags-Event: neue Pflanze, neue versteckte Sweet Spots, 6 Aktionen und serverweite Rangliste.'
   });
  }
  if(sc.weekend){
@@ -71,19 +71,10 @@ function eventRows(ms=Date.now()){
     {...common,id:`${AUTO_PREFIX}dampf:${sc.mondayOrd}`,name:'Dampf-Event',description:'Wochenend-Event: Alle Spieler erhalten 200 Dampf gratis und können mit Harz bis 300 auffüllen.'}
    );
   }else{
-   rows.push({...common,id:`${AUTO_PREFIX}xp:${sc.mondayOrd}`,name:'Erfahrungs-Event',description:'Wochenend-Event: Quests geben 2× Erfahrung.'});
-  }
-  if(sc.growCupActive){
-   rows.push({
-    is_active:true,
-    starts_at:new Date(sc.sundayStartMs).toISOString(),
-    ends_at:new Date(sc.endMs).toISOString(),
-    created_at:new Date(sc.sundayStartMs).toISOString(),
-    v6251Auto:true,
-    id:`${AUTO_PREFIX}growcup:${sc.mondayOrd}`,
-    name:'Grow Cup',
-    description:'Wöchentliches Sonntags-Event: neue Pflanze, neue versteckte Sweet Spots, 6 Aktionen und serverweite Rangliste.'
-   });
+   rows.push(
+    {...common,id:`${AUTO_PREFIX}xp:${sc.mondayOrd}`,name:'Erfahrungs-Event',description:'Wochenend-Event: Quests geben 2× Erfahrung.'},
+    {...common,id:`${AUTO_PREFIX}koloss:${sc.mondayOrd}`,name:'Smaragd-Koloss-Event',description:'EXP-Wochenende: Der Smaragd-Koloss ist von Freitag bis Sonntag aktiv.'}
+   );
   }
  }
  return rows;
@@ -199,8 +190,8 @@ window.v6251AutomaticWeekendSchedule=schedule;
 window.v6251AutomaticWeekendEvents=eventRows;
 window.v6251ApplyAutomaticWeekendEvents=apply;
 window.v6251AutomaticWeekendDiagnostics=()=>{
- const sc=schedule(),nextPair=sc.cycle===0?'Gold + Dampf + Grow Cup (Sonntag)':'Erfahrung + Grow Cup (Sonntag)';
- return{timezone:TZ,activeWeekend:sc.weekend,pair:nextPair,weekIndex:sc.weekIndex,start:new Date(sc.startMs).toISOString(),end:new Date(sc.endMs).toISOString(),events:eventRows().map(x=>({id:x.id,name:x.name,starts_at:x.starts_at,ends_at:x.ends_at}))};
+ const sc=schedule(),nextPair=sc.cycle===0?'Gold + Dampf':'Erfahrung + Smaragd-Koloss';
+ return{timezone:TZ,activeWeekend:sc.weekend,growCupThursday:sc.growCupActive,pair:nextPair,weekIndex:sc.weekIndex,start:new Date(sc.startMs).toISOString(),end:new Date(sc.endMs).toISOString(),events:eventRows().map(x=>({id:x.id,name:x.name,starts_at:x.starts_at,ends_at:x.ends_at}))};
 };
 window.v8009HomeEventSchedulerDiagnostics=()=>({
  version:'V8.009-HOME-14',...diagnostics,uiPending,pendingUiTimer:!!uiTimer,
