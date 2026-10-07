@@ -2,7 +2,12 @@
   const VERSION='V4.67 Stable',SHORT='V4.67';
   function n(v){return Number(v)||0}
   function fmt(v){return n(v).toLocaleString('de-DE')}
-  function rerollLabel(normal){const vip=window.v8195VipState;return vip?.active&&vip?.free_reroll_available?'👑 VIP · Heute gratis neu würfeln':normal}
+  function rerollLabel(section){
+    const vip=window.v8195VipState;
+    return vip?.active&&vip?.free_reroll_available
+      ? `👑 VIP · ${section} kostenlos neu würfeln`
+      : `🔄 ${section} neu würfeln · 1 Harz-Taler`;
+  }
   function syncVersion(){
     try{document.querySelectorAll('.version').forEach(el=>el.textContent=VERSION)}catch(e){}
     try{document.title=document.title.replace(/V4\.(59|60|61)/g,'V4.67')}catch(e){}
@@ -165,7 +170,7 @@
         </div>
       </div>
       <div class="v461-shop-actions">
-        <button type="button" class="btn secondary v461-reroll-gear" id="v461RerollGear">${rerollLabel('🔄 Waffen & Rüstung neu würfeln · 1 🟢')}</button>
+        <button type="button" class="btn secondary v461-reroll-gear" id="v461RerollGear">${rerollLabel('Waffen & Rüstung')}</button>
         <div class="v461-shop-note">Nur dieser Bereich wird neu gewürfelt.</div>
       </div>`;
 
@@ -191,7 +196,7 @@
         </div>
       </div>
       <div class="v461-shop-actions">
-        <button type="button" class="btn secondary v461-reroll-magic" id="v461RerollMagic">${rerollLabel('🔄 Schmuck & Materialien neu würfeln · 1 🟢')}</button>
+        <button type="button" class="btn secondary v461-reroll-magic" id="v461RerollMagic">${rerollLabel('Schmuck & Materialien')}</button>
         <div class="v461-shop-note">Nur dieser Bereich wird neu gewürfelt.</div>
       </div>`;
 
