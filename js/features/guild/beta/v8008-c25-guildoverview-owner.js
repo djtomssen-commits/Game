@@ -92,6 +92,7 @@
     const input=wrap.querySelector('.v8184-description-input');
     const count=wrap.querySelector('.v8184-description-count');
     input?.addEventListener('input',()=>{if(count)count.textContent=String(Math.min(300,String(input.value||'').length))});
+    try{window.v8144GameplayI18n?.apply?.('guild')}catch(_){}
     wrap.querySelector('.v8184-description-save')?.addEventListener('click',async()=>{
       const btn=wrap.querySelector('.v8184-description-save');
       const value=String(input?.value||'').trim().slice(0,300);
