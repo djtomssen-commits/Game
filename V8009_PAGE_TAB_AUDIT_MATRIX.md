@@ -36,7 +36,7 @@ Die Matrix wird nach jedem großen Cleanup-Batch aktualisiert.
 | Friends | Ranking / Suche | [x] | v4130 finaler Friends/Search-Owner, Presence-Singleflight + 60s Refresh; v333/v382/v383 und globale Social-Renderwrapper retired; manueller Endtest offen |
 | Mail | Inbox / Sent / Compose / Battlelog | [x] | v381 finaler Mail-/Tab-/Compose-Owner, v6200 Battlelog; Recipient-Routing ohne Delay, doppelte Tab-Loader entfernt; manueller Endtest offen |
 | Admin | Content / Spieler / Tools (gestapelte Bereiche, keine echten Tabs) | [x] | v093 alleiniger Admin-Status- und Content-Lifecycle-Owner; Render-/Check-/Load-Wrapperketten entfernt; Player/Reward/Ticket/Broadcast/Systemtechnik-Authority geprüft; manueller Endtest offen |
-| Harz Dealer | Harz / Gold / Frames / VIP (Beta) | [x] | v7117 bleibt Hub-Owner; V8.195/196 Beta: 7/14/30-Tage-VIP, tägliche serverautoritative Truhe jetzt mit eigenem Reward-Dialog + Replay des heutigen Claims, +10 % Wochentruhen-EP, 1 gemeinsamen Gratis-Shopwurf/Tag, temporärer Titel/Rahmen, optionale öffentliche VIP-Identität; VIP- und Referral-Rahmen haben getrennte IDs + eigene V2-Artworks; Server 1 noch ohne VIP; manueller Endtest offen |
+| Harz Dealer | Harz / Gold / Frames / VIP (Beta) | [x] | v7117 bleibt Hub-Owner; V8.195/196 Beta: 7/14/30-Tage-VIP, tägliche serverautoritative Truhe jetzt mit eigenem Reward-Dialog + Replay des heutigen Claims, +10 % Wochentruhen-EP, 1 gemeinsamen Gratis-Shopwurf/Tag, temporärer Titel/Rahmen, optionale öffentliche VIP-Identität; VIP- und Referral-Rahmen haben getrennte IDs + finale generierte V3-WebP-Artworks; Server 1 noch ohne VIP; manueller Endtest offen |
 
 ## Zusätzliche Feature-Seiten / Submodule
 
