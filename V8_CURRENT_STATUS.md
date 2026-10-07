@@ -10693,3 +10693,28 @@ Aktueller Release-Status:
   2. **Beitritt anfragen** muss sichtbar sein;
   3. antippen -> **✓ Anfrage gesendet**;
   4. Leader/Offizier muss die Bewerbung wie bisher in den Gildenanfragen sehen.
+
+
+### 2026-10-07 – V8.186 Gilden-Overview Flicker stabilisiert
+- Nutzer meldete sichtbares Flackern auf der Gilden-Übersichtsseite.
+- Root Cause im bestehenden Renderpfad:
+  - finaler Membership-Loader `v380` rief `v254RenderGuild()` auf und direkt danach nochmals `v257RenderManagement()`;
+  - `v254RenderGuild()` ruft `v257RenderManagement()` bereits selbst als kanonischen Owner auf -> Doppelrender;
+  - `v8008-c25-guildoverview-owner` entfernte bei jedem Paint den Gildenbeschreibung-Editor und den Mitgliederverwaltungs-Picker und erzeugte beide sofort neu;
+  - `v254RenderGuild()` schrieb die komplette Mitgliederliste bei jedem Render per `innerHTML` neu, auch bei unverändertem Zustand.
+- Fix direkt in den bestehenden Ownern, keine zusätzliche Patch-Schicht:
+  - doppelten `v257RenderManagement()`-Aufruf aus `v380` entfernt;
+  - finaler `v380` Guild-Select lädt nun auch `description`;
+  - Mitgliederliste in `v254RenderGuild()` ist jetzt signaturbasiert und wird nur bei tatsächlicher Änderung neu aufgebaut;
+  - `v257RenderManagement()` ist signaturbasiert und zerstört unveränderte Management-DOMs nicht mehr;
+  - Gildenbeschreibung-Editor ist idempotent, bleibt beim Paint bestehen und bewahrt aktives Tippen;
+  - Mitgliederverwaltungs-Picker ist idempotent und wird nur bei Rollen-/Mitgliederänderung neu gerendert.
+- Syntaxchecks aller vier betroffenen JS-Owner: OK.
+- Cache-Key auf index/beta/server1:
+  - `8186guildstable1`.
+- Manueller Test offen:
+  - App komplett schließen/neustarten;
+  - Gilde -> Übersicht öffnen;
+  - 20–30 Sekunden beobachten;
+  - zwischen Overview/Boss/Krieg und zurück wechseln;
+  - keine sichtbaren Rebuilds/Flashes mehr erwartet.
