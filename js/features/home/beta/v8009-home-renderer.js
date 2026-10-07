@@ -95,18 +95,18 @@
     try{if(typeof v274GoldEventActive==='function'&&v274GoldEventActive())a.push({c:'gold',t:'💰 GOLD EVENT',s:'2× Gold-Belohnungen aktiv'})}catch(e){}
     try{if(typeof v271DampfEventActive==='function'&&v271DampfEventActive())a.push({c:'',t:'🔥 DAMPF EVENT',s:'200 Dampf gratis · mit Harz bis 300'})}catch(e){}
     if(bossActive)a.push({c:'cyan',t:'💠 SMARAGD KOLOSS',s:'Donnerstags-Weltboss aktiv!'});
-    if(runeHuntEventActive())a.push({c:'green',t:'ᚱ RUNENJAGD',s:'Runentor offen · 100-Raum-Run'});
+    if(growCupEventActive())a.push({c:'gold',t:'🏆 GROW CUP',s:'Cup-Bühne offen · 6 Phasen · Rangliste'});
     return a.slice(0,6);
   }
 
   function worldBossEventActive(){
     try{return typeof v110MysticEventActive==='function'&&v110MysticEventActive()}catch(e){return false}
   }
-  function runeHuntEventActive(){
+  function growCupEventActive(){
     try{
-      const serverState=window.v8198RuneHuntSnapshot?.();
+      const serverState=window.v8210GrowCupSnapshot?.();
       if(serverState&&serverState.active===true)return true;
-      return typeof window.v8198RuneHuntEventActive==='function'&&window.v8198RuneHuntEventActive();
+      return typeof window.v8210GrowCupEventActive==='function'&&window.v8210GrowCupEventActive();
     }catch(e){return false}
   }
 
@@ -116,7 +116,7 @@
     if(t.includes('gold'))return '💰';
     if(t.includes('dampf'))return '🔥';
     if(t.includes('smaragd')||t.includes('koloss')||t.includes('weltboss'))return '💠';
-    if(t.includes('rune'))return 'ᚱ';
+    if(t.includes('grow cup')||t.includes('cup'))return '🏆';
     if(t.includes('turm')||t.includes('anomalie'))return '🗼';
     return '✨';
   }
@@ -137,17 +137,17 @@
         </article>`;
   }
 
-  function runeCardHtml(){
-    return `        <article class="v366-panel v366-feature v8198-rune-home-card" data-runehunt="1" role="button" tabindex="0" aria-label="Runenjagd öffnen">
-          <h2>Runenjagd</h2>
-          <div class="v8198-home-portal" aria-hidden="true"><span class="v8198-home-live">EVENT AKTIV</span><i>ᚱ</i></div>
-          <div class="v6118-boss-name">Das Runentor ist offen</div>
-          <div class="v690-mini-status">100 Räume · Endboss gibt 1 Verzauberungsrune</div>
-          <button class="v366-go" data-runehunt="1">Runenjagd öffnen</button>
+  function growCupCardHtml(){
+    return `        <article class="v366-panel v366-feature v8210-cup-home-card" data-growcup="1" role="button" tabindex="0" aria-label="Grow Cup öffnen">
+          <h2>Grow Cup</h2>
+          <div class="v8210-home-cup-art" aria-hidden="true"><span class="v8210-home-live">EVENT AKTIV</span></div>
+          <div class="v6118-boss-name">Die Cup-Bühne ist geöffnet</div>
+          <div class="v690-mini-status">6 Phasen · faire Jury-Wertung · Verzauberungsrunen</div>
+          <button class="v366-go" data-growcup="1">Grow Cup öffnen</button>
         </article>`;
   }
-  function specialEventCardHtml(bossActive,runeActive,bossFreeReady=true){
-    return runeActive?runeCardHtml():bossCardHtml(bossActive,bossFreeReady);
+  function specialEventCardHtml(bossActive,cupActive,bossFreeReady=true){
+    return cupActive?growCupCardHtml():bossCardHtml(bossActive,bossFreeReady);
   }
 
   function eventCardHtml(ev){
@@ -158,7 +158,7 @@
       if(key==='gold')return activeText.includes('gold');
       if(key==='dampf')return activeText.includes('dampf');
       if(key==='boss')return activeText.includes('smaragd')||activeText.includes('koloss')||activeText.includes('weltboss');
-      if(key==='rune')return activeText.includes('rune');
+      if(key==='cup')return activeText.includes('grow cup')||activeText.includes('cup');
       return false;
     };
     const visible=ev.slice(0,2);
@@ -169,7 +169,7 @@
       ['gold','GOLD','💰'],
       ['dampf','DAMPF','🔥'],
       ['boss','KOLOSS','💠'],
-      ['rune','RUNEN','ᚱ']
+      ['cup','CUP','🏆']
     ];
     return `        <article class="v366-panel v366-feature v690-events-card">
           <h2><span>Events</span><i class="vHome-event-count">${ev.length}</i></h2>
@@ -224,50 +224,50 @@
     });
   }
 
-  function openRuneHunt(){
+  function openGrowCup(){
     try{
-      if(typeof window.v8198OpenRuneHunt==='function')return window.v8198OpenRuneHunt();
-      window.v063Toast?.('Runenjagd','info','Das Runentor wird noch geladen.');
-    }catch(e){console.error('Startseite Runenjagd öffnen fehlgeschlagen',e)}
+      if(typeof window.v8210OpenGrowCup==='function')return window.v8210OpenGrowCup();
+      window.v063Toast?.('Grow Cup','info','Die Cup-Bühne wird noch geladen.');
+    }catch(e){console.error('Startseite Grow Cup öffnen fehlgeschlagen',e)}
   }
   function bindSpecialEventButtons(root){
     bindBossButtons(root);
     const cards=[
-      ...(root instanceof Element&&root.matches('.v8198-rune-home-card')?[root]:[]),
-      ...root.querySelectorAll('.v8198-rune-home-card')
+      ...(root instanceof Element&&root.matches('.v8210-cup-home-card')?[root]:[]),
+      ...root.querySelectorAll('.v8210-cup-home-card')
     ];
     cards.forEach(card=>{
-      card.onclick=e=>{if(e.target instanceof Element&&e.target.closest('button[data-runehunt]'))return;openRuneHunt()};
-      card.onkeydown=e=>{if(e.key!=='Enter'&&e.key!==' ')return;e.preventDefault();openRuneHunt()};
+      card.onclick=e=>{if(e.target instanceof Element&&e.target.closest('button[data-growcup]'))return;openGrowCup()};
+      card.onkeydown=e=>{if(e.key!=='Enter'&&e.key!==' ')return;e.preventDefault();openGrowCup()};
     });
     const buttons=[
-      ...(root instanceof Element&&root.matches('button[data-runehunt]')?[root]:[]),
-      ...root.querySelectorAll('button[data-runehunt]')
+      ...(root instanceof Element&&root.matches('button[data-growcup]')?[root]:[]),
+      ...root.querySelectorAll('button[data-growcup]')
     ];
-    buttons.forEach(b=>b.onclick=e=>{e.preventDefault();e.stopPropagation();openRuneHunt()});
+    buttons.forEach(b=>b.onclick=e=>{e.preventDefault();e.stopPropagation();openGrowCup()});
   }
 
   function patchEventPanels(world,ev,bossActive,previousBossActive){
     const card=world.querySelector('.v690-events-card');
-    const special=world.querySelector('.v366-feature.boss,.v8198-rune-home-card');
+    const special=world.querySelector('.v366-feature.boss,.v8210-cup-home-card');
     const count=world.querySelector('.v690-current-title small');
     const goal=world.querySelector('.v366-goals .v366-goal:nth-child(3)');
     if(!card||!special||!count||!goal)return false;
-    const runeActive=runeHuntEventActive();
+    const cupActive=growCupEventActive();
     const bossFreeReady=bossActive?bossFree():true;
     const template=document.createElement('template');
     template.innerHTML=eventCardHtml(ev);
     card.replaceWith(template.content.firstElementChild);
     count.textContent=ev.length?`${ev.length} aktiv`:'Alles ruhig';
 
-    template.innerHTML=specialEventCardHtml(bossActive,runeActive,bossFreeReady);
+    template.innerHTML=specialEventCardHtml(bossActive,cupActive,bossFreeReady);
     const next=template.content.firstElementChild;
     special.replaceWith(next);
     bindSpecialEventButtons(next);
 
     const gi=goal.querySelector('i'),gb=goal.querySelector('b'),gs=goal.querySelector('span');
-    if(runeActive){
-      if(gi)gi.textContent='ᚱ';if(gb)gb.textContent='Runenjagd';if(gs)gs.textContent='Offen · 100 Räume';
+    if(cupActive){
+      if(gi)gi.textContent='🏆';if(gb)gb.textContent='Grow Cup';if(gs)gs.textContent='Offen · 6 Phasen';
     }else{
       if(gi)gi.textContent='💎';if(gb)gb.textContent='Koloss';if(gs)gs.textContent=bossActive?(bossFreeReady?'Offen · Gratis':'Offen · 10 Harz'):'Donnerstags';
     }
@@ -367,7 +367,7 @@
 
   function homeViewSnapshot(){
     const bossActive=worldBossEventActive();
-    const runeActive=runeHuntEventActive();
+    const cupActive=growCupEventActive();
     return {
       name:playerName(),
       power:cp(),
@@ -378,12 +378,12 @@
       hc:homeChecklist(),
       pets:petUnseen(),
       bossActive,
-      runeActive
+      cupActive
     };
   }
 
   function worldHtml(view=homeViewSnapshot()){
-    const {name,power,dg,grow,ac,ev,hc,pets,bossActive,runeActive}=view;
+    const {name,power,dg,grow,ac,ev,hc,pets,bossActive,cupActive}=view;
     const avatar=avatarSrc();
     const firstQuestReady=firstQuest();
     const dungeonFreeReady=dungeonFree();
@@ -448,11 +448,11 @@
         <article class="v366-panel v690-goals-panel"><div class="v366-goals-title">Tagesziele</div><div class="v366-goals">
           <div class="v366-goal"><i>📜</i><div><b>Erste Quest</b><span>${firstQuestReady?'+2 Harz':'Erledigt ✓'}</span></div></div>
           <div class="v366-goal"><i>⚔️</i><div><b>Dungeon</b><span>${dungeonFreeReady?'Bereit':'Cooldown'}</span></div></div>
-          <div class="v366-goal"><i>${runeActive?'ᚱ':'💎'}</i><div><b>${runeActive?'Runenjagd':'Koloss'}</b><span>${runeActive?'Offen · 100 Räume':(bossActive?(bossFreeReady?'Offen · Gratis':'Offen · 10 Harz'):'Donnerstags')}</span></div></div>
+          <div class="v366-goal"><i>${cupActive?'🏆':'💎'}</i><div><b>${cupActive?'Grow Cup':'Koloss'}</b><span>${cupActive?'Offen · 6 Phasen':(bossActive?(bossFreeReady?'Offen · Gratis':'Offen · 10 Harz'):'Donnerstags')}</span></div></div>
           <div class="v366-goal"><i>⭐</i><div><b>Erfolge</b><span>${ac.done}/${ac.total||'—'}</span></div></div>
         </div></article>
 
-        ${specialEventCardHtml(bossActive,runeActive,bossFreeReady)}
+        ${specialEventCardHtml(bossActive,cupActive,bossFreeReady)}
 
         <article class="v366-panel v366-feature book"><h2>Illegales Buch</h2><div class="v366-feature-art"></div><div class="v690-mini-status">⭐ ${ac.done}/${ac.total||'—'} Erfolge</div><button class="v366-go" data-book="1">Öffnen</button></article>
 
@@ -550,7 +550,7 @@
       ['.v366-card.grow>h2','Growroom'],
       ['.v690-goals-panel .v366-goals-title','Tagesziele'],
       ['.v366-feature.boss>h2','Weltboss'],
-      ['.v8198-rune-home-card>h2','Runenjagd'],
+      ['.v8210-cup-home-card>h2','Grow Cup'],
       ['.v366-feature.book>h2','Illegales Buch'],
       ['.vForge-home-card>h2','Harzschmiede'],
       ['.v7129-referral-home-card>h2','Freund werben'],
@@ -634,7 +634,7 @@
     notifyWorldRendered('full');
   }
 
-  window.v8009HomeEventDiagnostics=()=>({version:'V8.202-HOME-RUNES',...diagnostics,events:events().map(x=>({...x})),worldBossActive:worldBossEventActive(),runeHuntActive:runeHuntEventActive()});
+  window.v8009HomeEventDiagnostics=()=>({version:'V8.210-HOME-GROWCUP',...diagnostics,events:events().map(x=>({...x})),worldBossActive:worldBossEventActive(),growCupActive:growCupEventActive()});
 
   /* Re-own only the world installer; do not touch core game render/persist. */
   v085WorldHtml=worldHtml;
