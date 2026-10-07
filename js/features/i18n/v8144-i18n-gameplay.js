@@ -196,6 +196,70 @@ const WHOLE_GAME={
 };
 for(const lang of Object.keys(WHOLE_GAME))Object.assign(M[lang]||(M[lang]={}),WHOLE_GAME[lang]);
 
+/* V8.184 Hall of Haze guild ranking/profile */
+const V8184_TEXT={
+ en:{
+  'Gilden':'Guilds','HALL OF HAZE · GILDEN':'HALL OF HAZE · GUILDS','Die erfolgreichsten Gilden des Servers.':'The most successful guilds on this server.','Rangfolge':'Ranking order','Gildenlevel → Gilden-Buds → Gilden-EP':'Guild level → Guild Buds → Guild XP',
+  'Gildenprofil wird geladen …':'Loading guild profile …','Über diese Gilde':'About this guild','Diese Gilde hat noch keine Beschreibung hinterlegt.':'This guild has not added a description yet.','Stärkste Mitglieder':'Strongest members','Noch keine Mitgliederprofile verfügbar.':'No member profiles available yet.','Gildenrangliste konnte nicht geladen werden.':'Guild ranking could not be loaded.',
+  'Gildenbeschreibung':'Guild description','Beschreibe eure Gilde, Spielstil oder Anforderungen.':'Describe your guild, play style or requirements.','Beschreibung nicht zulässig':'Description not allowed','Gildenbeschreibung gespeichert':'Guild description saved','Die Beschreibung ist jetzt im öffentlichen Gildenprofil sichtbar.':'The description is now visible in the public guild profile.','Speichern fehlgeschlagen':'Save failed','Online-Verbindung nicht verfügbar.':'Online connection unavailable.','Zeichen':'characters','Gilden-EP':'Guild XP'
+ },
+ es:{
+  'Gilden':'Gremios','HALL OF HAZE · GILDEN':'HALL OF HAZE · GREMIOS','Die erfolgreichsten Gilden des Servers.':'Los gremios más exitosos del servidor.','Rangfolge':'Orden de clasificación','Gildenlevel → Gilden-Buds → Gilden-EP':'Nivel de gremio → Brotes → EXP de gremio',
+  'Gildenprofil wird geladen …':'Cargando perfil del gremio …','Über diese Gilde':'Sobre este gremio','Diese Gilde hat noch keine Beschreibung hinterlegt.':'Este gremio aún no tiene descripción.','Stärkste Mitglieder':'Miembros más fuertes','Noch keine Mitgliederprofile verfügbar.':'Aún no hay perfiles de miembros disponibles.','Gildenrangliste konnte nicht geladen werden.':'No se pudo cargar la clasificación de gremios.',
+  'Gildenbeschreibung':'Descripción del gremio','Beschreibe eure Gilde, Spielstil oder Anforderungen.':'Describe tu gremio, estilo de juego o requisitos.','Beschreibung nicht zulässig':'Descripción no permitida','Gildenbeschreibung gespeichert':'Descripción del gremio guardada','Die Beschreibung ist jetzt im öffentlichen Gildenprofil sichtbar.':'La descripción ya es visible en el perfil público del gremio.','Speichern fehlgeschlagen':'Error al guardar','Online-Verbindung nicht verfügbar.':'Conexión en línea no disponible.','Zeichen':'caracteres','Gilden-EP':'EXP del gremio'
+ },
+ fr:{
+  'Gilden':'Guildes','HALL OF HAZE · GILDEN':'HALL OF HAZE · GUILDES','Die erfolgreichsten Gilden des Servers.':'Les guildes les plus performantes du serveur.','Rangfolge':'Ordre du classement','Gildenlevel → Gilden-Buds → Gilden-EP':'Niveau de guilde → Buds → EXP de guilde',
+  'Gildenprofil wird geladen …':'Chargement du profil de guilde …','Über diese Gilde':'À propos de cette guilde','Diese Gilde hat noch keine Beschreibung hinterlegt.':'Cette guilde n’a pas encore ajouté de description.','Stärkste Mitglieder':'Membres les plus forts','Noch keine Mitgliederprofile verfügbar.':'Aucun profil de membre disponible.','Gildenrangliste konnte nicht geladen werden.':'Impossible de charger le classement des guildes.',
+  'Gildenbeschreibung':'Description de guilde','Beschreibe eure Gilde, Spielstil oder Anforderungen.':'Décris ta guilde, son style de jeu ou ses exigences.','Beschreibung nicht zulässig':'Description non autorisée','Gildenbeschreibung gespeichert':'Description de guilde enregistrée','Die Beschreibung ist jetzt im öffentlichen Gildenprofil sichtbar.':'La description est maintenant visible dans le profil public de la guilde.','Speichern fehlgeschlagen':'Échec de l’enregistrement','Online-Verbindung nicht verfügbar.':'Connexion en ligne indisponible.','Zeichen':'caractères','Gilden-EP':'EXP de guilde'
+ },
+ pl:{
+  'Gilden':'Gildie','HALL OF HAZE · GILDEN':'HALL OF HAZE · GILDIE','Die erfolgreichsten Gilden des Servers.':'Najlepsze gildie na serwerze.','Rangfolge':'Kolejność rankingu','Gildenlevel → Gilden-Buds → Gilden-EP':'Poziom gildii → Pąki gildii → EXP gildii',
+  'Gildenprofil wird geladen …':'Ładowanie profilu gildii …','Über diese Gilde':'O tej gildii','Diese Gilde hat noch keine Beschreibung hinterlegt.':'Ta gildia nie dodała jeszcze opisu.','Stärkste Mitglieder':'Najsilniejsi członkowie','Noch keine Mitgliederprofile verfügbar.':'Brak dostępnych profili członków.','Gildenrangliste konnte nicht geladen werden.':'Nie udało się wczytać rankingu gildii.',
+  'Gildenbeschreibung':'Opis gildii','Beschreibe eure Gilde, Spielstil oder Anforderungen.':'Opisz gildię, styl gry lub wymagania.','Beschreibung nicht zulässig':'Opis niedozwolony','Gildenbeschreibung gespeichert':'Opis gildii zapisany','Die Beschreibung ist jetzt im öffentlichen Gildenprofil sichtbar.':'Opis jest teraz widoczny w publicznym profilu gildii.','Speichern fehlgeschlagen':'Nie udało się zapisać','Online-Verbindung nicht verfügbar.':'Brak połączenia online.','Zeichen':'znaków','Gilden-EP':'EXP gildii'
+ },
+ tr:{
+  'Gilden':'Loncalar','HALL OF HAZE · GILDEN':'HALL OF HAZE · LONCALAR','Die erfolgreichsten Gilden des Servers.':'Sunucunun en başarılı loncaları.','Rangfolge':'Sıralama düzeni','Gildenlevel → Gilden-Buds → Gilden-EP':'Lonca seviyesi → Lonca Tomurcukları → Lonca EXP',
+  'Gildenprofil wird geladen …':'Lonca profili yükleniyor …','Über diese Gilde':'Bu lonca hakkında','Diese Gilde hat noch keine Beschreibung hinterlegt.':'Bu lonca henüz açıklama eklemedi.','Stärkste Mitglieder':'En güçlü üyeler','Noch keine Mitgliederprofile verfügbar.':'Henüz üye profili yok.','Gildenrangliste konnte nicht geladen werden.':'Lonca sıralaması yüklenemedi.',
+  'Gildenbeschreibung':'Lonca açıklaması','Beschreibe eure Gilde, Spielstil oder Anforderungen.':'Loncanızı, oyun tarzınızı veya gereksinimleri açıklayın.','Beschreibung nicht zulässig':'Açıklamaya izin verilmiyor','Gildenbeschreibung gespeichert':'Lonca açıklaması kaydedildi','Die Beschreibung ist jetzt im öffentlichen Gildenprofil sichtbar.':'Açıklama artık herkese açık lonca profilinde görünüyor.','Speichern fehlgeschlagen':'Kaydetme başarısız','Online-Verbindung nicht verfügbar.':'Çevrimiçi bağlantı kullanılamıyor.','Zeichen':'karakter','Gilden-EP':'Lonca EXP'
+ }
+};
+for(const lang of Object.keys(V8184_TEXT))Object.assign(M[lang]||(M[lang]={}),V8184_TEXT[lang]);
+
+const V8184_PATTERNS={
+ en:[
+  [/^(\d+) Gilden$/i,(_,n)=>`${n} guilds`],
+  [/^Gildenlevel (\d+) · (\d+)\/(\d+) Mitglieder$/i,(_,l,a,b)=>`Guild level ${l} · ${a}/${b} members`],
+  [/^HALL OF HAZE · GILDENRANG #(\d+)$/i,(_,n)=>`HALL OF HAZE · GUILD RANK #${n}`],
+  [/^(\d+)\/300 Zeichen$/i,(_,n)=>`${n}/300 characters`]
+ ],
+ es:[
+  [/^(\d+) Gilden$/i,(_,n)=>`${n} gremios`],
+  [/^Gildenlevel (\d+) · (\d+)\/(\d+) Mitglieder$/i,(_,l,a,b)=>`Nivel de gremio ${l} · ${a}/${b} miembros`],
+  [/^HALL OF HAZE · GILDENRANG #(\d+)$/i,(_,n)=>`HALL OF HAZE · RANGO DE GREMIO #${n}`],
+  [/^(\d+)\/300 Zeichen$/i,(_,n)=>`${n}/300 caracteres`]
+ ],
+ fr:[
+  [/^(\d+) Gilden$/i,(_,n)=>`${n} guildes`],
+  [/^Gildenlevel (\d+) · (\d+)\/(\d+) Mitglieder$/i,(_,l,a,b)=>`Niveau de guilde ${l} · ${a}/${b} membres`],
+  [/^HALL OF HAZE · GILDENRANG #(\d+)$/i,(_,n)=>`HALL OF HAZE · RANG DE GUILDE #${n}`],
+  [/^(\d+)\/300 Zeichen$/i,(_,n)=>`${n}/300 caractères`]
+ ],
+ pl:[
+  [/^(\d+) Gilden$/i,(_,n)=>`${n} gildii`],
+  [/^Gildenlevel (\d+) · (\d+)\/(\d+) Mitglieder$/i,(_,l,a,b)=>`Poziom gildii ${l} · ${a}/${b} członków`],
+  [/^HALL OF HAZE · GILDENRANG #(\d+)$/i,(_,n)=>`HALL OF HAZE · RANGA GILDII #${n}`],
+  [/^(\d+)\/300 Zeichen$/i,(_,n)=>`${n}/300 znaków`]
+ ],
+ tr:[
+  [/^(\d+) Gilden$/i,(_,n)=>`${n} lonca`],
+  [/^Gildenlevel (\d+) · (\d+)\/(\d+) Mitglieder$/i,(_,l,a,b)=>`Lonca seviyesi ${l} · ${a}/${b} üye`],
+  [/^HALL OF HAZE · GILDENRANG #(\d+)$/i,(_,n)=>`HALL OF HAZE · LONCA SIRASI #${n}`],
+  [/^(\d+)\/300 Zeichen$/i,(_,n)=>`${n}/300 karakter`]
+ ]
+};
+for(const lang of Object.keys(V8184_PATTERNS))P[lang]?.push(...V8184_PATTERNS[lang]);
+
 const FINAL_VISIBLE={
  en:{
   'Tippe einen Topf an → Details erscheinen darunter':'Tap a pot → details appear below',
