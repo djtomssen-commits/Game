@@ -11166,7 +11166,7 @@ Aktueller Release-Status:
 - Security: private V8.195-Tabellen haben kein SELECT für anon/authenticated. State/Visibility/Daily-Claim nur authenticated + service_role; Google-Play-Credit nur service_role; private Helper kein anon/authenticated EXECUTE.
 - Security Advisor zeigt für die privaten Tabellen erwartete RLS-enabled/no-policy INFO, weil direkter Clientzugriff bewusst komplett gesperrt ist.
 - JS-Endcheck: Billing, Dealer-Hub, VIP-Client, Shop, Shop-Authority, Title, Frame und I18N syntaktisch grün; letzter Frame-/Badge-Owner nach finalem Edit erneut geprüft.
-- Beta-Wiring final: Cache-Key 8195vip2; 1× VIP-CSS + 1× VIP-Client; 9 V8.195-Cache-Referenzen; 0 veraltete 8195vip1-Referenzen; Server 1 = 0 VIP-Referenzen.
+- Beta-Wiring final: Cache-Key 8195vip3; 1× VIP-CSS + 1× VIP-Client; 9 V8.195-Cache-Referenzen; 0 veraltete 8195vip1-Referenzen; Server 1 = 0 VIP-Referenzen.
 - Repo-SQL: V8195_VIP_SYSTEM.sql.
 - Relevante Commits:
   - Google-Play Client: 3a3b771e1cf05a24be52af96a2fdee13d4f21761
