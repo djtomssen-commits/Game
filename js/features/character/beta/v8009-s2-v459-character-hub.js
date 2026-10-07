@@ -299,6 +299,7 @@
     const cards=[...document.querySelectorAll('#character #inventory .inventory-grid > .inv-item')];
     cards.forEach((card,i)=>{
       const it=s?.inventory?.[i];if(!it)return;
+      try{window.v8198ApplyItemFx?.(card,it)}catch(_){}
       card.dataset.v459Index=String(i);card.setAttribute('role','button');card.setAttribute('tabindex','0');
       const name=card.querySelector('.item-name');
       if(name){
