@@ -3,7 +3,10 @@
  'use strict';
  const V=window.GROW_LEGENDS_VERSION||{short:'V4.159',label:'V4.159 Stable'};
  const VERSION=V.label,SHORT=V.short;
- const PROFILE_SELECT='id,character_name,class_id,class_name,level,bosses,gear_score,dungeons,combat_power,equipment,dungeon_progress,worldboss_attempts,worldboss_wins,pvp_buds,pvp_wins,pvp_losses,pvp_fights,updated_at';
+ const PROFILE_SELECT_BASE='id,character_name,class_id,class_name,level,bosses,gear_score,dungeons,combat_power,equipment,dungeon_progress,worldboss_attempts,worldboss_wins,pvp_buds,pvp_wins,pvp_losses,pvp_fights,updated_at';
+ const vipFieldsEnabled=()=>window.__V8195_VIP_CLIENT__===true||!!document.getElementById('v8195-vip-client');
+ const profileSelect=()=>PROFILE_SELECT_BASE+(vipFieldsEnabled()?',vip_until,vip_visible':'');
+ const publicVipActive=p=>!!(vipFieldsEnabled()&&p?.vip_visible!==false&&p?.vip_until&&new Date(p.vip_until).getTime()>Date.now());
  const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
  const clampDungeon=v=>Math.max(0,Math.min(19,Math.floor(Number(v)||0)));
  const clampRoom=v=>Math.max(0,Math.min(9,Math.floor(Number(v)||0)));
@@ -103,7 +106,7 @@
    v073ProfilePayload=function(){
     const p=base.apply(this,arguments)||{},dp=liveDp();
     p.dungeons=dp.completed.length;
-    p.dungeon_progress={completed:dp.completed,progress:dp.progress,selected:dp.selected,room:dp.room,lastActive:dp.lastActive,unlocked:dp.unlocked,public_title:(()=>{const t=s?.v6338Titles||{};return{id:String(t.activeId||''),label:String(t.activeLabel||''),source:String(t.activeSource||'')}})()};
+    p.dungeon_progress={completed:dp.completed,progress:dp.progress,selected:dp.selected,room:dp.room,lastActive:dp.lastActive,unlocked:dp.unlocked,public_title:(()=>{try{if(typeof window.v6338PublicTitle==='function')return window.v6338PublicTitle()}catch(_){}const t=s?.v6338Titles||{};return{id:String(t.activeId||''),label:String(t.activeLabel||''),source:String(t.activeSource||'')}})()};
     return p;
    };
    try{window.v073ProfilePayload=v073ProfilePayload}catch(e){}
@@ -118,9 +121,10 @@
   const pos=posOf(p),isBoss=pos.enemyNumber>=10,name=dungeonName(pos),fights=Math.max(0,Number(p?.pvp_fights)||((Number(p?.pvp_wins)||0)+(Number(p?.pvp_losses)||0)));
   const rank=i===null?'<div class="v072-rank">P</div>':`<div class="v072-rank ${typeof v073RankClass==='function'?v073RankClass(i):''}">${i+1}</div>`;
   const presenceHtml=presence?` <span class="v329-presence ${online(p)?'online':'offline'}">${online(p)?'Online':'Offline'}</span>`:'';
+  const vip=publicVipActive(p),vipBadge=vip?'<span class="v8195-vip-badge">VIP</span>':'';
   const done=Array.isArray(p?.dungeon_progress?.completed)?p.dungeon_progress.completed.length:Math.max(0,Number(p?.dungeons)||0);
-  return `<div class="v072-player-row" data-profile-id="${esc(p?.id||'')}" data-class-id="${esc(p?.class_id||'')}">
-   ${rank}<div><div class="v072-player-name">${esc(p?.character_name||'Spieler')}${presenceHtml}</div>
+  return `<div class="v072-player-row ${vip?'v8195-vip-public':''}" data-profile-id="${esc(p?.id||'')}" data-class-id="${esc(p?.class_id||'')}">
+   ${rank}<div><div class="v072-player-name ${vip?'v8195-vip-name':''}">${esc(p?.character_name||'Spieler')}${vipBadge}${presenceHtml}</div>
     <div class="v4124-social-lines">
      <div class="v4124-social-line">${esc(p?.class_name||'')} · Lv. <strong>${Math.max(1,Number(p?.level)||1)}</strong> · Kampfkraft <strong>${Math.max(0,Number(p?.combat_power)||0)}</strong> · Ausrüstung <strong>${Math.max(0,Number(p?.gear_score)||0)}</strong></div>
      <div class="v4124-social-line">🗺️ Dungeon <strong>${pos.dungeonNumber}</strong> · ${esc(name)} · ${isBoss?'👑 Boss':'👹 Gegner'} <strong>${pos.enemyNumber}/10</strong>${pos.completed?' · <span class="good">abgeschlossen</span>':''} · 🏁 Gesamt <strong>${done}</strong></div>
@@ -154,7 +158,7 @@
  v073SearchPlayer=async function(name,targetSelector){
   const target=document.querySelector(targetSelector);if(!target)return;name=String(name||'').trim();if(name.length<2){v063Toast?.('Mindestens 2 Zeichen eingeben','warn');return}if(!(await v073Init())||!v073User?.id)return;
   target.innerHTML='<div class="v072-empty">Suche...</div>';const safe=name.replace(/[%_,]/g,'');
-  const {data,error}=await v073Db.from('profiles').select(PROFILE_SELECT).ilike('character_name',`%${safe}%`).limit(20);
+  const {data,error}=await v073Db.from('profiles').select(profileSelect()).ilike('character_name',`%${safe}%`).limit(20);
   if(error){console.error('V4.159 Hall search',error);target.innerHTML='<div class="v072-status-offline">Suche fehlgeschlagen.</div>';return}
   const rows=(data||[]).filter(p=>String(p.id)!==String(v073User?.id));
   target.innerHTML=rows.length?rows.map(p=>socialRow(p,null,`<button class="btn" data-v073-add="${esc(p.id)}" data-name="${esc(p.character_name)}">Anfrage senden</button>${mailButton(p)}`,false)).join(''):'<div class="v072-empty">Keinen Spieler gefunden.</div>';
@@ -162,7 +166,7 @@
  };
  try{window.v073SearchPlayer=v073SearchPlayer;v072SearchPlayer=v073SearchPlayer}catch(e){}
 
- async function profileMap(ids){ids=[...new Set((ids||[]).filter(Boolean))];if(!ids.length)return new Map();const {data,error}=await v073Db.from('profiles').select(PROFILE_SELECT).in('id',ids);if(error){console.error('V4.159 Nebel-Crew profile load',error);return new Map()}return new Map((data||[]).map(p=>[String(p.id),p]))}
+ async function profileMap(ids){ids=[...new Set((ids||[]).filter(Boolean))];if(!ids.length)return new Map();const {data,error}=await v073Db.from('profiles').select(profileSelect()).in('id',ids);if(error){console.error('V4.159 Nebel-Crew profile load',error);return new Map()}return new Map((data||[]).map(p=>[String(p.id),p]))}
  let v4130FriendsLoadPromise=null,v4130LastFriendsRefresh=0;
  function friendsScreenActive(){return !document.hidden&&!!document.getElementById('friends')?.classList.contains('active')}
  v073LoadFriends=function(){
