@@ -234,7 +234,17 @@ function v254RenderGuild(){
     if(la!==lb)return lb-la;
     return String(a?.profile?.character_name||'').localeCompare(String(b?.profile?.character_name||''),'de');
   });
-  document.querySelector('#v254GuildMembers').innerHTML=v6120Members.length?v6120Members.map(v254MemberHtml).join(''):'<div class="empty">Noch keine Mitglieder.</div>';
+  const memberBox=document.querySelector('#v254GuildMembers');
+  if(memberBox){
+    const memberSig=v6120Members.map(m=>{
+      const p=m?.profile||{};
+      return [m?.user_id||'',m?.role||'',m?.attack_signed?1:0,m?.defense_signed?1:0,m?.boss_signed?1:0,p?.character_name||'',p?.class_id||'',p?.class_name||'',Number(p?.level)||1,Number(p?.combat_power)||0].join(':');
+    }).join('|');
+    if(memberBox.dataset.v8186Sig!==memberSig){
+      memberBox.innerHTML=v6120Members.length?v6120Members.map(v254MemberHtml).join(''):'<div class="empty">Noch keine Mitglieder.</div>';
+      memberBox.dataset.v8186Sig=memberSig;
+    }
+  }
 
   const attack=!!v254Membership.attack_signed;
   const defense=!!v254Membership.defense_signed;
