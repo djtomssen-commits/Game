@@ -10525,3 +10525,28 @@ Aktueller Release-Status:
   - direkt **489** beim ersten sichtbaren Attribute-Paint.
 - Commit Character-Hub: `111de12959841cc074b13e25d4de6d03f18c1d5c`.
 - Cache-Bust index/beta/server1: `8182achievementgate1`.
+
+
+### 2026-10-07 – V8.183: 428 stabil, aber Erfolgsbonus fehlte wegen zu früher Capability-Abfrage
+- Nach V8.182 meldete Nutzer: kein sichtbares Springen mehr, Hauptattribut bleibt aber bei **428** statt korrekt **489**.
+- Vorher bereits serverseitig bestätigt:
+  - 61 abgeschlossene Erfolge;
+  - jeder Erfolg = +1 Hauptattribut;
+  - korrekter Endwert daher **428 + 61 = 489**.
+- Root Cause V8.183:
+  - `v459-character-hub` fragte `v7081UseAuthority('achievements')` ab, bevor die Account-Capabilities garantiert fertig geladen waren;
+  - `v7081UseAuthority()` liefert bei noch unbekannter Capability absichtlich `false`;
+  - dadurch wurde Achievement-Authority beim ersten finalen Paint fälschlich als „nicht erforderlich“ behandelt;
+  - Ergebnis: kein Springen mehr, aber stabiler nackter Wert **428** ohne +61 Erfolgsbonus.
+- Direkter Fix im kanonischen `v8009-s2-v459-character-hub.js`:
+  - unbekannte/ungeklärte Capabilities gelten für den Attribute-First-Paint jetzt als **nicht frisch**;
+  - `ensureAttributesAuthoritative()` lädt zuerst explizit `v7081CapabilitiesRefresh(true)` für die aktuelle UID;
+  - erst danach wird entschieden, ob `achievements` serverautoritativ ist;
+  - bei aktivem Achievement-Enforce werden danach Build + Items + Achievement-State gemeinsam geladen;
+  - Attribute werden erst freigegeben, wenn alle für `totalAttr()` nötigen Quellen frisch sind.
+- Erwartung:
+  - direkt **489** anzeigen;
+  - kein vorheriges 428;
+  - kein späteres Umspringen.
+- Commit Character-Hub: `71f34e12c736000238e80dcaa6112560fad0d100`.
+- Cache-Bust index/beta/server1: `8183achievementcap1`.
