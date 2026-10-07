@@ -41,6 +41,7 @@
   try{if(typeof window.glRegisterNativePushDevice==='function')await window.glRegisterNativePushDevice()}catch(e){}
   try{if(typeof window.glSyncGrowPushJob==='function')await window.glSyncGrowPushJob()}catch(e){}
   try{if(typeof window.glSyncGrowCarePushJob==='function')await window.glSyncGrowCarePushJob()}catch(e){}
+  try{if(typeof window.glSyncGrowCupCarePushJobs==='function')await window.glSyncGrowCupCarePushJobs()}catch(e){}
   try{if(typeof window.glSyncQuestPushJob==='function')await window.glSyncQuestPushJob()}catch(e){}
   try{if(typeof window.glSyncDungeonPushJob==='function')await window.glSyncDungeonPushJob()}catch(e){}
   try{if(typeof window.glSyncWorldBossPushJob==='function')await window.glSyncWorldBossPushJob()}catch(e){}
