@@ -55,7 +55,7 @@
        not the sum of both network round-trips. */
     const [guildRes,membersRes]=await Promise.all([
       v073Db.from('guilds')
-        .select('id,name,tag,leader_id,guild_buds,xp_level,gold_level,guild_xp,created_at')
+        .select('id,name,tag,leader_id,description,guild_buds,xp_level,gold_level,guild_xp,created_at')
         .eq('id',membership.guild_id)
         .limit(1),
       v073Db.from('guild_members')
@@ -88,8 +88,9 @@
     const profileMap=new Map(profiles.map(p=>[p.id,p]));
     v254Members=guildMembers.map(m=>({...m,profile:profileMap.get(m.user_id)||null}));
 
+    /* V8.186: v254RenderGuild is the canonical owner and already invokes
+       v257RenderManagement. Do not immediately render management a second time. */
     v254RenderGuild();
-    try{v257RenderManagement()}catch(e){}
     /* V7.184: join requests are management metadata, not first-paint data.
        Render the guild immediately and refresh requests after the stable paint. */
     const later=()=>setTimeout(()=>void v380LoadRequests(false),100);
