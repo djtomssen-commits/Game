@@ -12002,3 +12002,27 @@ Aktueller Release-Status:
   - Standardgröße: `91d6cf4c2c591347eefe922ec3d3129ecee472ed`;
   - Cache-Bust: `1dcf72b9102a9abb598a3545e0b3382662998046`.
 
+### 2026-10-07 – V8.205 Rahmen-Asset korrigiert (Beta)
+- Nutzerhinweis bestätigt: Größenproblem lag nicht nur an CSS, sondern am aktiven V5-Asset/Export.
+- Aktive Spezialrahmen wieder auf die vollständigen V4-Dateien gestellt:
+  - `vip_crown -> assets/avatar_frames/vip_crown_v4.webp`;
+  - `referral_legend -> assets/avatar_frames/referral_legend_v4.webp`.
+- Die V5-Dateien waren nur ca. 12–14 KB groß; V4 liegt bei ca. 211–277 KB und enthält den vollständigen Detailstand.
+- V8.204-Sondergeometrie für VIP/Referral auf der Heldenseite wieder entfernt.
+- Beide Spezialrahmen verwenden damit wieder exakt dieselbe Character-Rahmengeometrie wie die übrigen Prestige-Rahmen.
+- Resolver für Character/Shop und Hall/Public-Profil beide auf V4.
+- QA:
+  - beide JS-Owner Syntax OK;
+  - Frame-CSS balanced 46/46;
+  - keine V8.204-Sondergrößenregel mehr aktiv;
+  - alle drei neuen Beta-Cache-Refs exakt 1x.
+- Beta Cache:
+  - v7137 -> `8205asset1`;
+  - v6145 -> `8205asset1`;
+  - v7140 CSS -> `8205asset1`.
+- Commits:
+  - Character/Shop Resolver: `e399eb3fa70359d0e57aa0d04712b81ce2df132b`;
+  - Hall/Public Resolver: `5366964b9063e3590346688a813ba4b3577198c4`;
+  - Sondergröße entfernt: `b18359f95e48c9dfe4c9bd5d7b35d74dd619b348`;
+  - Beta Cache: `ffb250e97731f0ec75837af72b8c4471b52b8af0`.
+
