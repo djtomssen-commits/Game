@@ -111,3 +111,32 @@
   position:relative!important;
   z-index:6!important;
 }
+
+
+/* V8.206: normalize visible inner opening of the approved v4 artworks.
+   The VIP artwork has a much smaller inner cutout than the regular/referral frames,
+   so identical outer CSS geometry can never look equally sized. */
+#character #v510HeroRoot .avatar-scene.v7137-frame-target[data-v7137-frame="vip_crown"]>.v7139-frame-art{
+  left:-21.5%!important;
+  top:-34%!important;
+  width:143%!important;
+  height:168%!important;
+  object-fit:fill!important;
+  object-position:center!important;
+}
+#character #v510HeroRoot .avatar-scene.v7137-frame-target[data-v7137-frame="referral_legend"]>.v7139-frame-art{
+  left:-18%!important;
+  top:-24%!important;
+  width:136%!important;
+  height:148%!important;
+  object-fit:fill!important;
+  object-position:center!important;
+}
+@media(max-width:390px){
+  #character #v510HeroRoot .avatar-scene.v7137-frame-target[data-v7137-frame="vip_crown"]>.v7139-frame-art{
+    left:-20.5%!important;
+    top:-32%!important;
+    width:141%!important;
+    height:164%!important;
+  }
+}
