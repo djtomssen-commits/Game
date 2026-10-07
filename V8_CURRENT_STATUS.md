@@ -11054,3 +11054,79 @@ Aktueller Release-Status:
   - keine neuen Balance-Dateien oder Balance-Cache-Busts vorgenommen.
 - Server-1-Wiring Commit:
   - `ab86a7b61743a771baa33ac33ebe149f27572f4e`.
+
+
+### 2026-10-07 – V8.194 Gilden-Blütenspende serverautoritativ repariert
+- Nutzerfehler: Spenden aus dem Grow-Beutel meldete immer „Tageslimit erreicht oder keine Gilde“.
+- Pflichtdiagnose:
+  - aktuelle Account-State-/Runtime-Logs ohne Fehler;
+  - Player-QA für Grow/Gilde grün;
+  - betroffener Account besitzt serverseitig eine gültige Gildenmitgliedschaft auf Beta und Server 1;
+  - „keine Gilde“ war daher kein echter Membership-Fehler.
+- Root Cause im kanonischen Growroom-Owner `v8009-s1-v492-growroom2.js`:
+  - `donate(i)` verwendete noch `v411_add_guild_activity({p_kind:'quest'})`;
+  - dieser Legacy-RPC ist inzwischen absichtlich ein No-op-Kompatibilitätspfad und liefert auf Beta + Server 1 immer `awarded=0`;
+  - dadurch konnte keine Blüte mehr erfolgreich gespendet werden;
+  - zusätzlich koppelte der alte Client die Grow-Spende fälschlich an den Quest-/Gilden-XP-Tagespfad und an ein lokales UTC-Datum.
+- Neuer direkter Authority-Pfad:
+  - RPC Beta: `public.v8194_donate_guild_bloom(text)`;
+  - RPC Server 1: `server1.v8194_donate_guild_bloom(text)`;
+  - private atomare Owner:
+    - `recovery_private.v8194_donate_guild_bloom_for(uuid,text)`;
+    - `server1_private.v8194_donate_guild_bloom_for(uuid,text)`.
+- Finale Regel:
+  - maximal **1 geerntete Blüte pro Spieler und Berliner Kalendertag**;
+  - jede erfolgreiche Spende gibt **+5 Gilden-EP**;
+  - die Spende ist bewusst unabhängig vom normalen Quest/Dungeon/PvP/Gildenboss-Tageslimit;
+  - Gildenmitgliedschaft wird immer serverseitig aus `guild_members` geprüft;
+  - Tageslimit wird serverseitig in einem privaten Ledger erzwungen;
+  - Client-`lastGuildDonation` ist nicht mehr Autorität und kann die Spende nicht vorzeitig sperren.
+- Atomarität:
+  - Gilden-EP +5, Entfernen exakt der gewählten Bloom-ID und Tages-Ledger laufen in **einer DB-Transaktion**;
+  - bei `NO_GUILD`, `DAILY_LIMIT`, `BLOOM_NOT_FOUND` oder Serverfehler bleibt die Blüte erhalten;
+  - Grow-`revision` wird nur bei erfolgreicher Spende erhöht.
+- Private Ledger:
+  - `recovery_private.v8194_guild_bloom_donations`;
+  - `server1_private.v8194_guild_bloom_donations`;
+  - Primary Key `(user_id, donation_day)`;
+  - keine SELECT-Rechte für anon/authenticated.
+- Client:
+  - `v7065-fail-closed-grow-authority-hotfix.js` stellt `v8194DonateGuildBloom()` als kanonische Authority-Bridge bereit;
+  - `v492-growroom2.js::donate()` nutzt ausschließlich den neuen RPC;
+  - konkrete Meldungen für `DAILY_LIMIT`, `NO_GUILD`, `BLOOM_NOT_FOUND`;
+  - der alte `v411_add_guild_activity('quest')`-Pfad ist aus der Spendenfunktion entfernt.
+- Verifikation ohne Nutzerdaten-Verlust:
+  - Beta Erfolgsweg in einer Rollback-Subtransaktion: `DONATED`, +5 Gilden-EP, exakt eine Blüte aus Response-Bag entfernt;
+  - Server 1 Erfolgsweg identisch bestätigt;
+  - zweiter Versuch am selben Tag auf beiden Servern: `DAILY_LIMIT`;
+  - Test vollständig zurückgerollt;
+  - nach Test unverändert: Beta-Beutel 14 Blüten / 0 echte V8.194-Spenden heute; Server1-Beutel 1 Blüte / 0 echte V8.194-Spenden heute;
+  - echte Gilden-EP nach Rollback ebenfalls unverändert.
+- Security:
+  - öffentlicher RPC: anon EXECUTE=false, authenticated=true;
+  - private Helper: anon/authenticated EXECUTE=false;
+  - private Ledger: anon/authenticated SELECT=false;
+  - Security Advisor meldet für die privaten Ledger nur das erwartete `RLS enabled/no policy` INFO, da bewusst keinerlei direkter Clientzugriff existiert;
+  - der authentifizierte SECURITY-DEFINER-Wrapper wird erwartungsgemäß als WARN markiert; er ist absichtlich der eng begrenzte per-user RPC, nutzt ausschließlich `auth.uid()` und akzeptiert keine fremde User-ID.
+- Repo-SQL: `V8194_GUILD_BLOOM_DONATION.sql`.
+- JS-Syntax:
+  - Growroom Owner: OK;
+  - Grow Authority Owner: OK.
+- Auslieferung Beta + Standard + Server 1:
+  - `v492-growroom2.js?v=8194guilddonate1`;
+  - `v7065-fail-closed-grow-authority-hotfix.js?v=8194guilddonate1`.
+- Klassenbalance:
+  - nicht verändert.
+- Relevante Commits:
+  - Authority-Bridge: `9566fb7680788c7c9a76f4698ab1662b92941b38`;
+  - Syntaxkorrektur Bridge: `44069b2e3990d47d9b3e51756051856cf809ada7`;
+  - Growroom-Spendenpfad: `b9aaa3aa23189bf1ff02bfe2b4cf226ab9cbfe41`;
+  - Standard Wiring: `dd9332772f03b8e81b63b6b07bd8c3514e3e45d9`;
+  - Beta Wiring: `6da41b94055d2af08c4ad9c296677b1791805fd3`;
+  - Server1 Wiring: `5ca5ae2e442bea36c30d9268b6bc6b478623c3b5`;
+  - SQL im Repo: `0f2fd83941b0216f720e1ef21fd23c039d4295c5`.
+- Manueller Endtest:
+  1. im Grow-Beutel eine Blüte auf **Spenden** drücken;
+  2. Erfolg muss +5 Gilden-EP melden und genau diese Blüte sofort entfernen;
+  3. zweite Blüte am selben Berliner Tag darf nicht entfernt werden und muss „Heute bereits gespendet“ melden;
+  4. am nächsten Berliner Kalendertag ist wieder genau eine Spende möglich.
