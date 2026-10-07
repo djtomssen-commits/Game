@@ -53,7 +53,7 @@ create table if not exists recovery_private.v8195_vip_reroll_events (
 create table if not exists recovery_private.v8195_google_play_vip_purchases (
   purchase_token text primary key,
   user_id uuid not null,
-  product_id text not null check(product_id in ('vip_7d','vip_14d','vip_30d')),
+  product_id text not null check(product_id in ('vip_7day','vip_7d','vip_14d','vip_30d')),
   order_id text,
   google_payload jsonb not null default '{}'::jsonb,
   days_added integer not null check(days_added in (7,14,30)),
@@ -424,7 +424,7 @@ declare
 begin
   if p_user_id is null then raise exception 'user_id fehlt'; end if;
   if coalesce(length(trim(p_purchase_token)),0)<8 then raise exception 'purchase_token ungültig'; end if;
-  days_add:=case p_product_id when 'vip_7d' then 7 when 'vip_14d' then 14 when 'vip_30d' then 30 else null end;
+  days_add:=case p_product_id when 'vip_7day' then 7 when 'vip_7d' then 7 when 'vip_14d' then 14 when 'vip_30d' then 30 else null end;
   if days_add is null then raise exception 'Unbekannte VIP Produkt-ID: %',p_product_id; end if;
 
   perform pg_advisory_xact_lock(hashtextextended(p_purchase_token,0));
