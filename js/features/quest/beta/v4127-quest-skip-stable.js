@@ -10,7 +10,8 @@
  const v8188PendingRuns=new Map();
  const v8188Sleep=ms=>new Promise(r=>setTimeout(r,ms));
  const v8188RunId=q=>String(q?.serverRunId||'');
- const v8188Enabled=()=>true; /* V8.189: Rewarded Quest-Zeitbonus für Beta + Server 1 freigegeben. */
+ const v8188UseCount=q=>Math.max(0,Math.min(2,Math.floor(Number(q?.v8188RewardedSkipCount ?? (q?.v8188RewardedSkipApplied?1:0))||0)));
+ const v8188Enabled=()=>true; /* V8.190: bis zu 2 Rewarded-Zeitboni pro Quest auf Beta + Server 1. */
  const v8188Ads=()=>{try{return window.Capacitor?.Plugins?.GrowLegendsAds||null}catch(_){return null}};
  const v8188UserId=()=>{try{return (!v073User?.is_anonymous&&v073User?.id)?String(v073User.id):''}catch(_){return''}};
  const v8188CustomData=()=>String(window.GROW_RELEASE_CHANNEL||'beta')==='server1'
@@ -50,11 +51,11 @@
   }catch(_){return null}
  }
 
- async function v8188WaitForVerified(runId){
+ async function v8188WaitForVerified(runId,expectedCount){
   for(let i=0;i<24;i++){
    const st=await v8188QuestState();
    const active=st?.active||s?.quests?.active||null;
-   if(active&&v8188RunId(active)===String(runId)&&active.v8188RewardedSkipApplied){
+   if(active&&v8188RunId(active)===String(runId)&&v8188UseCount(active)>=Number(expectedCount||1)){
     v8188ApplyActive(active);
     return active;
    }
@@ -69,7 +70,8 @@
   if(!v8188Enabled()||!runId||v8188PendingRuns.has(runId))return false;
   const live=s?.quests?.active;
   if(!live||v8188RunId(live)!==runId||Date.now()>=Number(live.ends||0))return false;
-  if(live.v8188RewardedSkipApplied)return false;
+  const beforeCount=v8188UseCount(live);
+  if(beforeCount>=2)return false;
 
   const ads=v8188Ads();
   if(!ads?.showRewarded){
@@ -84,6 +86,7 @@
 
   v8188PendingRuns.set(runId,Date.now());
   let rewardedFinished=false;
+  let verifiedApplied=false;
   ensureSkip();
   try{
    const result=await ads.showRewarded({
@@ -101,8 +104,9 @@
    rewardedFinished=true;
    v8188PendingRuns.set(runId,Date.now());
 
-   const active=await v8188WaitForVerified(runId);
-   if(active?.v8188RewardedSkipApplied){
+   const active=await v8188WaitForVerified(runId,beforeCount+1);
+   if(active&&v8188UseCount(active)>=beforeCount+1){
+    verifiedApplied=true;
     const sec=Math.max(1,Number(active.v8188RewardedSkipSeconds)||0);
     v8188Toast('25 % Questzeit übersprungen','success',`${sec} Sekunden wurden serverseitig von der Questzeit abgezogen.`);
     return true;
@@ -120,9 +124,9 @@
    }
    return false;
   }finally{
-   /* After a completed ad keep this run guarded while Google's SSV may still
-      be in flight. Server authority remains the final one-use protection. */
-   if(rewardedFinished){
+   /* Only keep the local guard when Google's SSV is still pending. Once the
+      server confirms use 1/2, immediately allow the second video. */
+   if(rewardedFinished&&!verifiedApplied){
     v8188PendingRuns.set(runId,Date.now());
     setTimeout(()=>{v8188PendingRuns.delete(runId);try{ensureSkip()}catch(_){}},60000);
    }else{
@@ -153,21 +157,24 @@
    row.appendChild(btn);
   }
 
-  const used=!!q?.v8188RewardedSkipApplied;
+  const usedCount=v8188UseCount(q);
   const pending=!!runId&&v8188PendingRuns.has(runId);
   const native=!!v8188Ads()?.showRewarded;
-  if(used){
+  if(usedCount>=2){
    btn.disabled=true;
-   btn.innerHTML='✓ Video-Bonus genutzt<small>25 % der Questzeit wurden bereits übersprungen.</small>';
+   btn.innerHTML='✓ Video-Bonus ausgeschöpft<small>2/2 Videos genutzt · 50 % der Questzeit wurden bereits übersprungen.</small>';
   }else if(pending){
    btn.disabled=true;
    btn.innerHTML='🎬 Video wird bestätigt …<small>Serverseitige AdMob-Bestätigung läuft.</small>';
   }else if(!native){
    btn.disabled=true;
    btn.innerHTML='🎬 Video · 25 % Questzeit<small>Nur in der Android-App verfügbar.</small>';
+  }else if(usedCount===1){
+   btn.disabled=false;
+   btn.innerHTML='🎬 Zweites Video ansehen · weitere 25 % Questzeit überspringen<small>1/2 Videos genutzt · danach sind 50 % der ursprünglichen Questzeit übersprungen.</small>';
   }else{
    btn.disabled=false;
-   btn.innerHTML='🎬 Video ansehen · 25 % Questzeit überspringen<small>1× pro Quest · nur bei vollständig angesehenem Video.</small>';
+   btn.innerHTML='🎬 Video ansehen · 25 % Questzeit überspringen<small>0/2 Videos genutzt · nur vollständig angesehene Videos zählen.</small>';
   }
   btn.onclick=e=>{e.preventDefault();e.stopPropagation();void v8188WatchQuestVideo(s?.quests?.active||q)};
   try{window.v8144GameplayI18n?.apply?.('quests')}catch(_){}
