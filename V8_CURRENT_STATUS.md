@@ -12042,3 +12042,26 @@ Aktueller Release-Status:
   - Geometrie: `597c1baedfca1c20559e20a9cc78ea9aee24ca40`;
   - Cache: `330d4f31f1aea2e7ffee1d7805dec5b0eb38b7e0`.
 
+### 2026-10-07 – V8.207 Hall of Haze Top-3 Rahmen ausgerichtet (Beta + Server 1)
+- Nutzer-Screenshot: Rahmen in den drei Podium-Karten der Hall of Haze wirkten weiterhin zu dick/zu eng um das Portrait.
+- Ursache direkt im kanonischen Hall-CSS gefunden:
+  - `#hall .v6145-podium-avatar>.v7139-frame-art` überschrieb die normale Frame-Geometrie auf `inset:0; width:100%; height:100%`;
+  - dadurch wurde das komplette Rahmen-Artwork in das Avatar-Quadrat gedrückt und die sichtbare Portraitöffnung kleiner als in den übrigen Hall-/Profilansichten.
+- Fix direkt in `v8009-extracted-v6145-hall-pagination-css.css`:
+  - allgemeine Top-3-Rahmen jetzt `142% × 142%`, zentriert mit `left/top:-21%`;
+  - `referral_legend` verwendet dieselbe 142%-Geometrie;
+  - `vip_crown` wegen seiner kleineren inneren Artwork-Öffnung separat auf `150% × 158%`, `left:-25%`, `top:-29%` normalisiert;
+  - keine neue Render-/Patch-Schicht, kein Observer, kein nachträglicher Painter.
+- Beide HTML-Einstiege nutzen denselben kanonischen Hall-CSS-Owner; Cache-Bust deshalb aktualisiert:
+  - Beta: `v6145-hall-pagination-css.css?v=8207hallframe1`;
+  - Server 1: `v6145-hall-pagination-css.css?v=8207hallframe1`.
+- Relevante Commits:
+  - Hall-CSS: `ccfa130365aaa9d9ffc6e8ee11a7a3e8f6453a2c`;
+  - Beta Cache: `a156f3db9a9308c583a1aef2472addac3355b5fa`;
+  - Server1 Cache: `b1517089a6fa6aec9fc9966e17cdfef7aed42a50`;
+  - Matrix: `d4ddbe47ea8ba5b9c6c040432f9e7d79a10b601d`.
+- Manueller Test:
+  1. Hall of Haze komplett neu öffnen bzw. App neu laden.
+  2. Top-3-Karten prüfen.
+  3. Referral-/VIP-Rahmen müssen jetzt sichtbar dünner wirken und sauberer um den Portraitausschnitt sitzen.
+
