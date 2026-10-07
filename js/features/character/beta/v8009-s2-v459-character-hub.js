@@ -113,6 +113,7 @@
         window.v480UpdateAutoBars?.('inventory');
         window.v533ApplyInventory?.();
         window.v470PaintInventoryComparisons?.();
+        window.v8198DecorateCharacterItems?.();
       }else if(name==='attributes'){
         if(authorityFresh())paintAttributesFinal();
       }else if(name==='talents'){
