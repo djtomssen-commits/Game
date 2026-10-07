@@ -12340,3 +12340,26 @@ Aktueller Release-Status:
   3. Cup starten: Stunde 1 muss zunächst `Noch gesperrt` zeigen und ca. 45:00 bis zum Pflegefenster zählen.
   4. Für schnellen UI-Test kann der Server-Testzustand später separat beschleunigt werden; reguläre Spielerzeit bleibt 6 Stunden.
 
+### 2026-10-07 – V8.212 Grow Cup Rangliste vereinfacht (Beta)
+- Nutzerwunsch: **nur eine Rangliste**, keine getrennte vorläufige/finale Ranglistenansicht und kein Punktgleichstand-/Tie-Breaker-Hinweis im UI.
+- Umsetzung direkt im bestehenden Grow-Cup-Owner:
+  - Tab bleibt einfach **Rangliste**;
+  - Kopf zeigt nur noch **SERVERWEITE RANGLISTE**;
+  - Text: `Eine Rangliste für alle abgeschlossenen Grow-Cup-Runs.`;
+  - kein `VORLÄUFIGE SERVERWERTUNG`;
+  - kein `FINALE SERVERWERTUNG`;
+  - kein Hinweis zu Punktgleichstand oder Reihenfolge bei Gleichstand;
+  - kein zusätzlicher Pending-/Final-Hinweisblock unter der Liste.
+- Technisch bleibt die interne Serversortierung deterministisch, damit Plätze stabil bleiben; diese Tie-Break-Details werden nicht als Spielmechanik kommuniziert.
+- Rangbelohnungen bleiben weiterhin erst freigegeben, wenn das Event und alle gültigen 6-Stunden-Runs abgeschlossen sind; dafür wird derselbe Ranglistenbestand verwendet.
+- Obsolete CSS-Klasse `.v8210-ranking-pending` entfernt.
+- Beta Cache:
+  - Grow-Cup-Client: `?v=8212rank1`;
+  - Grow-Cup-CSS: `?v=8212rank1`.
+- Relevante Commits:
+  - Client: `e1ce900ecaf8441e8d5456f96084a817d2b66fbb`;
+  - CSS-Cleanup: `51ecdaeb2196f877461943bca030c5e1970a0e31`;
+  - Beta Cache: `8defb3ad5ae5136c1b9c86041f4c9988add00514`;
+  - Matrix: `71a3c5e40b6efef9210ba98f2330e8581dceb14e`.
+- Server 1 nicht geändert.
+
