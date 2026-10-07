@@ -11263,3 +11263,27 @@ Aktueller Release-Status:
 - Beta Billing Cache-Key: `8197vipid1`.
 - SQL-Artefakt: `V8197_VIP_7DAY_PRODUCT_ID.sql`.
 - Commits: Billing `149511c3b60c91683261b5d84c30ce79b35f0cb6`, Beta-Wiring `774a9038306852cacc2e2214c527865cd6aaf7e8`, SQL `aa73e935b489c834dda4b529ec7a53536b23e098`.
+
+### 2026-10-07 – V8.197 VIP Google-Play Produkt-ID + Android Billing Fix
+- Play Console Produkt-IDs final:
+  - 7 Tage: vip_7day
+  - 14 Tage: vip_14d
+  - 30 Tage: vip_30d
+- Beta-Webclient bereits auf diese IDs ausgerichtet; 7 Tage nutzt vip_7day, alte vip_7d-Alias bleibt nur kompatibel im Backend.
+- Supabase Edge Function verify-google-play-purchase auf Version 8 erweitert: vip_7day/vip_14d/vip_30d werden erkannt und serverseitig auf den VIP-Credit-Pfad geroutet.
+- public.v8195_credit_google_play_vip_purchase sowie VIP-Purchase-Ledger akzeptieren vip_7day; SQL-Artefakt V8195_VIP_SYSTEM.sql entsprechend aktualisiert.
+- Manueller Test mit Android 1.0.8 zeigte bei allen VIP-Laufzeiten denselben Dialog „Kaufprüfung läuft weiter“.
+- Root Cause eindeutig im nativen Android-Billing-Plugin gefunden:
+  - GrowLegendsBillingPlugin.ALLOWED_PRODUCTS enthielt bisher ausschließlich Harz-SKUs;
+  - dadurch wurden vip_7day, vip_14d und vip_30d bereits nativ mit „Unbekannte Produkt-ID“ verworfen, bevor Google Play das Produkt laden konnte.
+- Android-Repo djtomssen-commits/Grow-Legends-Android direkt im Build-Owner korrigiert:
+  - ALLOWED_PRODUCTS um vip_7day, vip_14d, vip_30d erweitert;
+  - Build-Verifikation prüft alle drei VIP-SKUs;
+  - versionName auf 1.0.9 angehoben.
+- Android Commit: 9ebe5787b4cb3c216a53685090a8ebf1de123b38.
+- GitHub Actions automatisch gestartet:
+  - Play Store AAB + APK Run #60: derzeit in_progress;
+  - APK Run #29: derzeit in_progress.
+- Wichtig für Test:
+  - mit App 1.0.8 keinen weiteren VIP-Testkauf durchführen;
+  - erst App 1.0.9 installieren, danach 7/14/30-Tage-Kauf erneut testen.
