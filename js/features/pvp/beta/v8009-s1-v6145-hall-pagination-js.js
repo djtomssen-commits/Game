@@ -15,12 +15,12 @@
    ironwood:'assets/avatar_frames/ironwood.png',
    silver_vine:'assets/avatar_frames/silver_vine.png',
    gold_crown:'assets/avatar_frames/gold_crown.png',
-   vip_crown:'assets/avatar_frames/gold_crown.png',
+   vip_crown:'assets/avatar_frames/vip_crown_v2.svg',
    emerald_aura:'assets/avatar_frames/emerald_aura.png',
    haze_ring:'assets/avatar_frames/haze_ring.png',
    resin_flame:'assets/avatar_frames/resin_flame.png',
    prismatic_myth:'assets/avatar_frames/prismatic_myth.png',
-   referral_legend:'assets/avatar_frames/referral_legend.png'
+   referral_legend:'assets/avatar_frames/referral_legend_v2.svg'
  });
  const q=id=>document.getElementById(id);
  const esc=v=>String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
