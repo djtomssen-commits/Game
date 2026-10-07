@@ -12237,3 +12237,106 @@ Aktueller Release-Status:
   4. Cup starten und Phase 1 prüfen: Sorte, fünf Werte und genau drei Entscheidungen.
   5. Danach Phase für Phase Grafik/Wachstum/Abstände auf Mobile prüfen.
 
+### 2026-10-07 – V8.211 Grow Cup als echter 6-Stunden-Live-Grow (Beta · Power-Block 2)
+- Nutzerwunsch umgesetzt: Der Cup ist kein schneller 6-Klick-Run mehr, sondern ein **persönlicher 6-Stunden-Run**.
+- Zeitmodell:
+  - exakt 6 Stunden ab individuellem Start;
+  - 6 Phasen/Stunden;
+  - pro Stunde öffnet sich das Pflegefenster bei **Minute 45:00**;
+  - Fenster bleibt bis **59:59** offen;
+  - Auswertung erfolgt erst an der Stundenkante, nicht direkt beim Einstellen;
+  - nach Stunde 6 wird die Jurywertung automatisch finalisiert.
+- Die App muss nicht offen bleiben:
+  - sämtliche Zeiten sind serverautoritativ;
+  - nach erneutem Öffnen wird aus `started_at` die korrekte Stunde/Phase berechnet;
+  - ein gestarteter 6-Stunden-Run darf über das offizielle Sonntagsevent hinaus weiterlaufen.
+- Laufender Run bleibt deshalb auf der Startseite sichtbar, auch wenn das reguläre Eventgate inzwischen geschlossen ist.
+- Pflege statt fester Antwortkarten:
+  - **Lichtzeit:** 0–60 Minuten, 5-Minuten-Schritte;
+  - **Wasser:** 0–400 ml, 10-ml-Schritte;
+  - **Dünger:** 0–10 ml, 0,5-ml-Schritte;
+  - Werte können nur im offenen 15-Minuten-Fenster festgelegt werden;
+  - nach Bestätigung sind sie für diese Stunde fix.
+- Verpasstes Pflegefenster:
+  - der Run wird nicht zerstört;
+  - die Pflanze läuft mit den zuletzt verwendeten Einstellungen weiter;
+  - in Stunde 1 wird bei Verpassen eine neutrale Grundpflege verwendet;
+  - diese automatische Weiterführung wird getrennt als `source=carry` gewertet.
+- Keine perfekte statische Formel:
+  - jeder neue Regeln-v2-Run erhält einen privaten serverseitigen Phänotyp;
+  - versteckte Licht-/Wasser-/Dünger-Biases plus kleine phasenabhängige Mikroklima-Jitter;
+  - diese Zielwerte werden **nicht** an den Client geschickt;
+  - Toleranzen bleiben gleich, damit die zufällige Zielverschiebung die Aufgabe verändert, aber nicht absichtlich leichter/schwerer macht.
+- Spieler bekommt statt Zielzahlen nur Pflanzenbeobachtungen, z. B.:
+  - Pflanze streckt sich zum Licht / wirkt lichtempfindlich;
+  - Substrat trocknet schnell / hält Feuchtigkeit;
+  - Wuchs wirkt hungrig / Blattspitzen bereits gut versorgt.
+- Bewertung:
+  - jede Stundenpflege erhält intern einen 0–100-Pflegewert;
+  - Abstand zur versteckten Zielzone plus Wechselwirkungen bestimmen die fünf Jurywerte;
+  - Überlicht + zu wenig Wasser, Überwässerung oder aggressive Düngung können zusätzlichen Stress verursachen;
+  - sehr gute Pflege verbessert je nach Phase unterschiedliche Schwerpunkte (Qualität, Ertrag, Harz, Genetik, Gesundheit).
+- UI:
+  - bestehender Grow-Cup-Owner `js/features/events/beta/v8198-runehunt.js` direkt weiterentwickelt;
+  - kein zweiter Renderer/kein Patch-Owner;
+  - Live-Gesamtcountdown;
+  - Countdown bis Pflegefenster bzw. Stundenende;
+  - Pflanzenhinweise;
+  - drei echte Slider;
+  - gespeicherter Zustand wird sofort verriegelt;
+  - vorige Phasenauswertung mit Pflegewert/Feedback;
+  - Rangliste kennzeichnet **vorläufig** vs. **final**.
+- Ranglisten-Fairness:
+  - Rangbelohnungen werden erst final, wenn das offizielle Event beendet ist **und** kein gültiger 6-Stunden-Run mehr läuft;
+  - dadurch kann ein spät gestarteter Run nach Mitternacht nicht aus der Endwertung fallen.
+- Backend:
+  - `v8210_growcup_runs` erweitert um `rules_version`, privaten `phenotype` und `phase_records`;
+  - bestehende V8.210-Runs bleiben historisch als `rules_version=1`;
+  - neue Runs sind `rules_version=2`;
+  - alter RPC `public.v8210_growcup_choose(text,text)` entfernt;
+  - alte `recovery_private.v8210_phase_choices(integer)` entfernt;
+  - neuer RPC `public.v8210_growcup_tune(integer,integer,numeric,text)`;
+  - neue private Ziel-/Hinweis-/Scoring-/Sync-Funktionen unter `v8211_*`.
+- SQL-Snapshot:
+  - `V8211_GROW_CUP_LIVE_CARE.sql`.
+- Startseite:
+  - Text auf **6 Stunden** statt **6 Phasen** umgestellt;
+  - laufender persönlicher Cup hält den Spezialslot offen.
+- Beta Cache-Bust final:
+  - Home: `?v=8211care2`;
+  - Grow-Cup-Client: `?v=8211care2`;
+  - Event-CSS: `?v=8211care2`.
+- QA:
+  - kompletter 6-Stunden-Ablauf beschleunigt in DB-Transaktion durchgespielt;
+  - Ergebnis des Testlaufs: `completed`, 6 History-Einträge, Testscore 86,60 = Gold;
+  - Transaktion danach `ROLLBACK`;
+  - zusätzliche Assertions erfolgreich: Startzustand `waiting`, frühe Eingabe = `CARE_TOO_EARLY`, Minute 46 = `open`, nach Submit = `submitted`, Doppelpflege = `CARE_ALREADY_SET`, Stundenkante wertet Phase, verpasstes Fenster = `carry`;
+  - privater `phenotype` ist im öffentlichen Run-State nicht vorhanden;
+  - Tomssen hat nach QA **0 persistierte rules_version=2 Test-Runs**;
+  - alter Choose-RPC nicht mehr vorhanden;
+  - alter feste-Auswahl-Helper nicht mehr vorhanden;
+  - Grow-Cup-Client Syntax OK;
+  - Home-Owner Syntax OK;
+  - Weekend-Owner Syntax OK;
+  - Event-CSS Klammern 322/322;
+  - alte `.v8210-choices`-CSS-Regeln vollständig entfernt;
+  - Beta-Cache-Refs Home/CSS/Cup jeweils exakt 1×.
+- Relevante Commits:
+  - 6h Client-Shell: `1934eeb5e54eee212e3d7619e8168ea7c61ca208`;
+  - Slider-/Pflege-UI: `2983c8eb7a75f874804dea11ed991fb85d18710a`;
+  - Timer/RPC-Wiring: `28cb06f9424dad556160569e8b4e4cf9957b61d1`;
+  - Rangbelohnungs-Claim: `a7be156d9469ef4bbd064d1457967bda06c99293`;
+  - Live-Care CSS: `152960ac76e412c6d0eef0af47450db25ad1544c`;
+  - Mobile CSS: `e3b27f19a00c8e3efbc0b358079432087d3787e8`;
+  - Home 6h Copy: `6d96f0ff08d3a5cd9720c7e3c34a6a646d6ccc1f`;
+  - laufender Run bleibt sichtbar: `17c7631f9f2280cb781f5991c03428baddf67b56`;
+  - SQL-Snapshot: `ac52c321c0382cb3bb87994a67a98aff6220ec34`;
+  - Matrix: `f4a6254dc55ffad51910967f49bb9bf5f9957acd`;
+  - finaler Beta Cache: `984caca5027b651e79d778eb042cae4a10d0adff`.
+- Server 1 wurde in diesem Power-Block **nicht** geändert.
+- Manueller Beta-Endtest:
+  1. App/Beta komplett neu laden.
+  2. Grow Cup öffnen und Startscreen auf 6 Stunden / 6 Pflegefenster prüfen.
+  3. Cup starten: Stunde 1 muss zunächst `Noch gesperrt` zeigen und ca. 45:00 bis zum Pflegefenster zählen.
+  4. Für schnellen UI-Test kann der Server-Testzustand später separat beschleunigt werden; reguläre Spielerzeit bleibt 6 Stunden.
+
