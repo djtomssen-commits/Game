@@ -12491,3 +12491,41 @@ Aktueller Release-Status:
   - Matrix: `e07fab45dde451e5d557e4862ac9a1f2e527c7df`.
 - Server 1 nicht geändert.
 
+### 2026-10-07 – V8.215 Server 1 wieder geschlossen, Öffnung 08.10.2026 16:00
+- Nutzerwunsch: **Server 1 jetzt schließen** und öffentliche Öffnung auf **morgen, 08.10.2026 um 16:00 Uhr Europe/Berlin** setzen.
+- Client-/Login-Gate:
+  - kanonischer Owner: `js/features/account/beta/v8009-s6-v343-server-selection-v7226.js`;
+  - `V343_SERVER1_OPENS_AT = 2026-10-08T14:00:00Z` (= 16:00 Europe/Berlin);
+  - alte Öffnung `2026-10-07T18:00:00Z` entfernt;
+  - Countdown läuft bis zum neuen Termin und schaltet danach automatisch auf ONLINE;
+  - Fallback-Texte auf festes Datum **08.10.2026 · 16:00 Uhr** geändert, damit die Anzeige morgen Vormittag nicht fälschlich weiter „morgen“ sagt.
+- Echtes Server-Gate:
+  - `public.game_servers.id='server1'`;
+  - `enabled=true`;
+  - `opens_at=2026-10-08 14:00:00+00`;
+  - DB-Verifikation: `opens_at_berlin=2026-10-08 16:00:00`;
+  - DB-Verifikation zum Änderungszeitpunkt: `currently_closed=true`;
+  - bestehende Early-Access-Testkonten bleiben über `gl_server_access_pre_request()` zugelassen.
+- I18N:
+  - Server-1-Launchtexte DE/EN/ES/FR/PL/TR auf das feste Datum 08.10.2026 16:00 aktualisiert;
+  - keine anderen Uhrzeiten/Events verändert.
+- Cache-Bust `8215server1oct8` für Serverauswahl + I18N in:
+  - `index.html`;
+  - `beta.html`;
+  - `server1.html`.
+- QA:
+  - v343 Owner Syntax OK;
+  - I18N Owner Syntax OK;
+  - alter Launch-Timestamp nicht mehr im v343 Owner;
+  - neue Öffnungszeit vorhanden;
+  - Cache-Refs in Index/Beta/Server1 jeweils exakt 1× für v343 + I18N.
+- SQL-Snapshot:
+  - `V8215_SERVER1_OPEN_20261008_1600.sql`.
+- Relevante Commits:
+  - Server-1-Gate/Countdown: `8a7e6236960eff41230fcc0cb9bfba4182dfe303`;
+  - I18N: `444b4dea603191580a37b65bea6e0c43ffeaf8ca`;
+  - Index Cache: `6cc71d8904231e663832817baf4df8e893e58588`;
+  - Beta Cache: `9dfed924894fd2323974068334a327c0855d530e`;
+  - Server1 Cache: `abdf6bb6b4c368b3dbeb599a416dc1b595298a44`;
+  - SQL-Snapshot: `bd3a59b9a486ba61e5c5dbd51379f818c3b24962`.
+
