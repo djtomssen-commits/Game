@@ -298,7 +298,12 @@ const V8188_TEXT={
   'Video · 25 % Questzeit':'Video · 25% quest time',
   'Nur in der Android-App verfügbar.':'Only available in the Android app.',
   'Video ansehen · 25 % Questzeit überspringen':'Watch video · skip 25% quest time',
-  '1× pro Quest · nur bei vollständig angesehenem Video.':'Once per quest · only after a fully watched video.'
+  '1× pro Quest · nur bei vollständig angesehenem Video.':'Once per quest · only after a fully watched video.',
+  'Video-Bonus ausgeschöpft':'Video bonus fully used',
+  '2/2 Videos genutzt · 50 % der Questzeit wurden bereits übersprungen.':'2/2 videos used · 50% of the quest time has already been skipped.',
+  'Zweites Video ansehen · weitere 25 % Questzeit überspringen':'Watch second video · skip another 25% quest time',
+  '1/2 Videos genutzt · danach sind 50 % der ursprünglichen Questzeit übersprungen.':'1/2 videos used · after this, 50% of the original quest time will be skipped.',
+  '0/2 Videos genutzt · nur vollständig angesehene Videos zählen.':'0/2 videos used · only fully watched videos count.'
  },
  es:{
   'Video nicht verfügbar':'Video no disponible',
@@ -318,7 +323,12 @@ const V8188_TEXT={
   'Video · 25 % Questzeit':'Video · 25 % tiempo de misión',
   'Nur in der Android-App verfügbar.':'Solo disponible en la app de Android.',
   'Video ansehen · 25 % Questzeit überspringen':'Ver video · omitir 25 % del tiempo de misión',
-  '1× pro Quest · nur bei vollständig angesehenem Video.':'1 vez por misión · solo con el video visto por completo.'
+  '1× pro Quest · nur bei vollständig angesehenem Video.':'1 vez por misión · solo con el video visto por completo.',
+  'Video-Bonus ausgeschöpft':'Bono de video agotado',
+  '2/2 Videos genutzt · 50 % der Questzeit wurden bereits übersprungen.':'2/2 videos usados · ya se omitió el 50 % del tiempo de la misión.',
+  'Zweites Video ansehen · weitere 25 % Questzeit überspringen':'Ver segundo video · omitir otro 25 % del tiempo de misión',
+  '1/2 Videos genutzt · danach sind 50 % der ursprünglichen Questzeit übersprungen.':'1/2 videos usados · después se habrá omitido el 50 % del tiempo original.',
+  '0/2 Videos genutzt · nur vollständig angesehene Videos zählen.':'0/2 videos usados · solo cuentan los videos vistos por completo.'
  },
  fr:{
   'Video nicht verfügbar':'Vidéo indisponible',
@@ -338,7 +348,12 @@ const V8188_TEXT={
   'Video · 25 % Questzeit':'Vidéo · 25 % du temps de quête',
   'Nur in der Android-App verfügbar.':'Disponible uniquement dans l’app Android.',
   'Video ansehen · 25 % Questzeit überspringen':'Regarder une vidéo · réduire 25 % du temps',
-  '1× pro Quest · nur bei vollständig angesehenem Video.':'1 fois par quête · uniquement après une vidéo complète.'
+  '1× pro Quest · nur bei vollständig angesehenem Video.':'1 fois par quête · uniquement après une vidéo complète.',
+  'Video-Bonus ausgeschöpft':'Bonus vidéo épuisé',
+  '2/2 Videos genutzt · 50 % der Questzeit wurden bereits übersprungen.':'2/2 vidéos utilisées · 50 % du temps de quête a déjà été réduit.',
+  'Zweites Video ansehen · weitere 25 % Questzeit überspringen':'Regarder une deuxième vidéo · réduire encore 25 % du temps',
+  '1/2 Videos genutzt · danach sind 50 % der ursprünglichen Questzeit übersprungen.':'1/2 vidéos utilisées · après cela, 50 % du temps initial sera réduit.',
+  '0/2 Videos genutzt · nur vollständig angesehene Videos zählen.':'0/2 vidéos utilisées · seules les vidéos regardées jusqu’au bout comptent.'
  },
  pl:{
   'Video nicht verfügbar':'Wideo niedostępne',
@@ -358,7 +373,12 @@ const V8188_TEXT={
   'Video · 25 % Questzeit':'Wideo · 25% czasu misji',
   'Nur in der Android-App verfügbar.':'Dostępne tylko w aplikacji Android.',
   'Video ansehen · 25 % Questzeit überspringen':'Obejrzyj wideo · skróć czas misji o 25%',
-  '1× pro Quest · nur bei vollständig angesehenem Video.':'1× na misję · tylko po obejrzeniu całego filmu.'
+  '1× pro Quest · nur bei vollständig angesehenem Video.':'1× na misję · tylko po obejrzeniu całego filmu.',
+  'Video-Bonus ausgeschöpft':'Bonus wideo wykorzystany w całości',
+  '2/2 Videos genutzt · 50 % der Questzeit wurden bereits übersprungen.':'Wykorzystano 2/2 filmy · czas misji skrócono już o 50%.',
+  'Zweites Video ansehen · weitere 25 % Questzeit überspringen':'Obejrzyj drugi film · skróć czas misji o kolejne 25%',
+  '1/2 Videos genutzt · danach sind 50 % der ursprünglichen Questzeit übersprungen.':'Wykorzystano 1/2 filmy · potem czas początkowy będzie skrócony o 50%.',
+  '0/2 Videos genutzt · nur vollständig angesehene Videos zählen.':'Wykorzystano 0/2 filmy · liczą się tylko filmy obejrzane do końca.'
  },
  tr:{
   'Video nicht verfügbar':'Video kullanılamıyor',
@@ -378,7 +398,12 @@ const V8188_TEXT={
   'Video · 25 % Questzeit':'Video · görev süresinin %25’i',
   'Nur in der Android-App verfügbar.':'Yalnızca Android uygulamasında kullanılabilir.',
   'Video ansehen · 25 % Questzeit überspringen':'Video izle · görev süresinin %25’ini atla',
-  '1× pro Quest · nur bei vollständig angesehenem Video.':'Görev başına 1× · yalnızca video tamamen izlenirse.'
+  '1× pro Quest · nur bei vollständig angesehenem Video.':'Görev başına 1× · yalnızca video tamamen izlenirse.',
+  'Video-Bonus ausgeschöpft':'Video bonusu tamamen kullanıldı',
+  '2/2 Videos genutzt · 50 % der Questzeit wurden bereits übersprungen.':'2/2 video kullanıldı · görev süresinin %50’si zaten atlandı.',
+  'Zweites Video ansehen · weitere 25 % Questzeit überspringen':'İkinci videoyu izle · görev süresinin %25’ini daha atla',
+  '1/2 Videos genutzt · danach sind 50 % der ursprünglichen Questzeit übersprungen.':'1/2 video kullanıldı · bundan sonra ilk görev süresinin %50’si atlanmış olacak.',
+  '0/2 Videos genutzt · nur vollständig angesehene Videos zählen.':'0/2 video kullanıldı · yalnızca tamamen izlenen videolar sayılır.'
  }
 };
 for(const lang of Object.keys(V8188_TEXT))Object.assign(M[lang]||(M[lang]={}),V8188_TEXT[lang]);
