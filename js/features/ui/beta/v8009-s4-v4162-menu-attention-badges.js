@@ -104,6 +104,17 @@
   }catch(e){}
   return false;
  }
+ function towerAttention(){
+  try{
+   if(s?.tower?.run?.active)return {on:false,pct:0,fullMs:0};
+   const d=window.v6250TowerRecoveryDiagnostics?.();
+   const x=d?.current;
+   if(!x||typeof x!=='object')return {on:false,pct:0,fullMs:0};
+   const pct=Math.max(0,Math.min(100,num(x.pct)));
+   const fullMs=Math.max(0,num(x.fullMs));
+   return {on:pct>=100,pct,fullMs};
+  }catch(e){return {on:false,pct:0,fullMs:0}}
+ }
  function guildDomAttention(){
   try{
    const chat=!!document.getElementById('v4144GuildChatTab')?.classList.contains('v4145-unread');
@@ -161,6 +172,10 @@
     }
    }
   }catch(e){}
+  try{
+   const tower=towerAttention();
+   if(!tower.on&&tower.fullMs>0)times.push(now+tower.fullMs);
+  }catch(e){}
   return times.length?Math.min(...times):0;
  }
  function scheduleDeadlinePaint(){
@@ -189,6 +204,8 @@
   setBadge('quests',questReady(),'Quest abgeschlossen – Belohnung abholen',false);
   setBadge('dungeon',dungeonReady(),'Kostenloser Dungeon-Versuch bereit',false);
   setBadge('pvp',pvpReady(),'PvP-Kampf wieder bereit',false);
+  const tower=towerAttention();
+  setBadge('tower',tower.on,'Anbau-Turm: HP vollständig regeneriert',false);
   setBadge('friends',friendCount,friendCount?`${friendCount} neue Freundschaftsanfrage${friendCount===1?'':'n'}`:'',true);
   setBadge('mail',mailCount,mailCount?`${mailCount} ungelesene Nachricht${mailCount===1?'':'en'}`:'',true);
   setBadge('guild',guildCount||gd.on,guildCount?`${guildCount} offene Gildenanfrage${guildCount===1?'':'n'}`:gd.chat?'Neue Gildenchat-Nachricht':gd.war?'Neue Gildenkrieg-Aktion':'',true);
