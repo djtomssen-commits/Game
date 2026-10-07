@@ -1,10 +1,10 @@
 (()=>{
 'use strict';
-if(String(window.GROW_RELEASE_CHANNEL||'stable').toLowerCase()!=='beta')return;
+if(!['beta','server1'].includes(String(window.GROW_RELEASE_CHANNEL||'stable').toLowerCase()))return;
 if(window.__V8210_GROW_CUP__)return;
 window.__V8210_GROW_CUP__=true;
 
-const VERSION='V8.219';
+const VERSION='V8.220';
 const PLANTS={
  seedling:'assets/v7198-base64/49aed1d1c8035f5d2123.webp',
  growth:'assets/v7198-base64/c9ec3c217b81f805555c.webp',
