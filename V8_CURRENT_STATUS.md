@@ -12026,3 +12026,19 @@ Aktueller Release-Status:
   - Sondergröße entfernt: `b18359f95e48c9dfe4c9bd5d7b35d74dd619b348`;
   - Beta Cache: `ffb250e97731f0ec75837af72b8c4471b52b8af0`.
 
+### 2026-10-07 – V8.206 VIP-Rahmen sichtbare Öffnung normalisiert (Beta)
+- Diagnose nach Vergleich der freigegebenen V4-Assets:
+  - beide aktiven Resolver verwenden bereits die hochauflösenden V4-WebPs (768×768);
+  - damit war die verbleibende Abweichung kein Cache-/Datei-ID-Problem mehr;
+  - VIP-Artwork besitzt deutlich kleinere innere freie Fläche als der grüne Referral-Rahmen, deshalb wirkt derselbe äußere CSS-Rahmen optisch anders.
+- Fix ohne neue Bildgenerierung:
+  - vorhandenes VIP-Artwork wird auf der Character-Seite mit eigener Geometrie gerendert;
+  - Desktop: 143 % Breite / 168 % Höhe, links -21,5 %, oben -34 %;
+  - <=390 px: 141 % / 164 %, links -20,5 %, oben -32 %;
+  - Referral bleibt auf normaler Character-Geometrie 136 % / 148 %.
+- Ziel: sichtbare Portraitöffnung des VIP-Rahmens näher an die normalen Rahmen bringen, statt nur pauschal beide Assets zu skalieren.
+- Beta Cache: `v8009-extracted-v7140-avatar-frame-assets-css.css?v=8206frame1`.
+- Commits:
+  - Geometrie: `597c1baedfca1c20559e20a9cc78ea9aee24ca40`;
+  - Cache: `330d4f31f1aea2e7ffee1d7805dec5b0eb38b7e0`.
+
