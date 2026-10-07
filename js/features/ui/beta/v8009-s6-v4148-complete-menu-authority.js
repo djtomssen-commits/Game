@@ -8,7 +8,8 @@
   ['friends','🤝'],['mail','✉️']
  ];
  const T=(key,fallback)=>window.GrowI18n?.t?.(key)||fallback||key;
- const FALLBACK={world:'Startseite',character:'Charakter',grow:'Growroom',quests:'Quest & Schicht',dungeon:'Dungeons',tower:'Anbauturm',caravan:'Nebelkarawane',endgame:'Endgame',shop:'Händler',forge:'Harzschmiede',harzDealer:'Harz & Gold & Rahmen Dealer',bagDealer:'Hinterhof-Dealer',pvp:'PvP-Arena',guild:'Gilde',hall:'Hall of Haze',friends:'Nebel-Crew',mail:'Nebel-Post'};
+ const dealerVipAvailable=()=>window.__V8195_VIP_CLIENT__===true;
+ const FALLBACK={world:'Startseite',character:'Charakter',grow:'Growroom',quests:'Quest & Schicht',dungeon:'Dungeons',tower:'Anbauturm',caravan:'Nebelkarawane',endgame:'Endgame',shop:'Händler',forge:'Harzschmiede',harzDealer:'Harz · Gold · Rahmen',bagDealer:'Hinterhof-Dealer',pvp:'PvP-Arena',guild:'Gilde',hall:'Hall of Haze',friends:'Nebel-Crew',mail:'Nebel-Post'};
  function admin(){try{return typeof v093IsAdmin!=='undefined'&&v093IsAdmin===true&&!!v073User&&!v073User.is_anonymous}catch(e){return false}}
  function available(id){
   if(id==='bagDealer')return !!document.getElementById('bagDealer');
@@ -49,7 +50,11 @@
   const frag=document.createDocumentFragment();
   let added=0;
   PUBLIC.forEach((row,i)=>{
-   const [id,icon]=row,label=T('nav.'+id,FALLBACK[id]||id);if(!available(id))return;
+   const [id,icon]=row;
+   const label=id==='harzDealer'
+     ?T(dealerVipAvailable()?'nav.harzDealer':'nav.harzDealerNoVip',dealerVipAvailable()?'Harz · Gold · Rahmen · VIP':'Harz · Gold · Rahmen')
+     :T('nav.'+id,FALLBACK[id]||id);
+   if(!available(id))return;
    if(id==='pvp'&&added)frag.appendChild(sep());
    frag.appendChild(item(id,icon,label));added++;
   });
