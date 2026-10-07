@@ -238,6 +238,12 @@
       p_request_id:req('v7083_refresh')
     });
     if(r?.vip_free_reroll_used){
+      try{
+        if(window.v8195VipState&&typeof window.v8195VipState==='object'){
+          window.v8195VipState={...window.v8195VipState,free_reroll_available:false};
+          window.dispatchEvent(new CustomEvent('growlegends:vip-state',{detail:{state:window.v8195VipState}}));
+        }else{window.renderShop?.()}
+      }catch(_){}
       toast('👑 VIP-Freiwurf','success',kind==='weapon'?'Waffen & Rüstung gratis neu gewürfelt.':'Schmuck & Materialien gratis neu gewürfelt.');
     }else{
       toast(
