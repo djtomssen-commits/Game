@@ -11645,3 +11645,28 @@ Aktueller Release-Status:
   3. Charakter -> Inventar: +2 und insbesondere +4 müssen +Badge + zunehmenden Glow zeigen.
   4. Verzaubertes Item anlegen und Character-Slot prüfen; derselbe +Level-/Glow-State muss dort sichtbar bleiben.
 
+### 2026-10-07 – V8.201 finale neue VIP-/Referral-Rahmen (Beta)
+- Die vom Nutzer bestätigten neuen Rahmen sind jetzt als finale V4-Assets im Repo:
+  - `assets/avatar_frames/referral_legend_v4.webp`
+  - `assets/avatar_frames/vip_crown_v4.webp`
+- Datei-Integrität geprüft:
+  - Referral V4: 276.812 Bytes, Git-Blob SHA `8b87f6a94750eb059c6c34ac009b72c275dd8d0d`
+  - VIP V4: 211.266 Bytes, Git-Blob SHA `ffe01d5e2e61d35093a3e52e3db2333762730819`
+  - beide Repo-Blobs stimmen exakt mit den hochgeladenen lokalen Dateien überein.
+- Zuordnung:
+  - grün/türkis/gold = Legenden-Bund / `referral_legend`
+  - rot/gold mit Krone = VIP-Kronenrahmen / `vip_crown`
+- Aktive Resolver verwenden ausschließlich V4:
+  - `js/features/shift/beta/v8009-s1-v7137-shift-frame-client.js`
+  - `js/features/pvp/beta/v8009-s1-v6145-hall-pagination-js.js`
+- Beide Resolver Syntax: OK.
+- Beta-Wiring:
+  - v7137 -> `?v=8201frames1`
+  - v6145 -> `?v=8201frames1`
+- Die V2-Fallbacks sind damit nicht mehr aktiv für VIP/Referral; die beschädigten V3-WebPs bleiben retired.
+- Manueller Test:
+  1. Beta vollständig neu laden.
+  2. Rahmen-Shop öffnen.
+  3. Legenden-Bund muss den neuen grün/türkisen V4-Rahmen zeigen.
+  4. VIP-Kronenrahmen muss den neuen rot/goldenen V4-Rahmen zeigen.
+
