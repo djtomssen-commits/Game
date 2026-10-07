@@ -7,7 +7,8 @@
    harz_25:25,harz_50:50,harz_100:100,harz_150:150,harz_250:250,
    harz_400:400,harz_600:600,harz_900:900,harz_1300:1300,harz_2000:2000
  };
- const VIP_PRODUCT_DAYS={vip_7d:7,vip_14d:14,vip_30d:30};
+ const VIP_PRODUCT_DAYS={vip_7day:7,vip_7d:7,vip_14d:14,vip_30d:30};
+ const VIP_PRODUCT_BY_DAYS={7:'vip_7day',14:'vip_14d',30:'vip_30d'};
  let busy=false,recoveryBusy=false,healthCache={at:0,ok:false};
 
  const alertMsg=(msg,title='Harz Dealer',type='info')=>{
@@ -31,7 +32,7 @@
    return PRODUCT_MAP[productId]?{...p,productId}:null;
  };
  const productForVipDays=days=>{
-   const d=Math.max(0,Number(days)||0),productId='vip_'+d+'d';
+   const d=Math.max(0,Number(days)||0),productId=VIP_PRODUCT_BY_DAYS[d]||'';
    return VIP_PRODUCT_DAYS[productId]?{productId,days:d}:null;
  };
 
