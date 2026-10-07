@@ -10489,3 +10489,39 @@ Aktueller Release-Status:
   4. mindestens 60–90 Sekunden beobachten;
   5. zusätzlich Inventar öffnen/zurück zu Attribute;
   6. falls weiter ein Sprung sichtbar ist, den vorhandenen `attribute_value_changed`-Trace + `itemCombatDiff` als nächste harte Quelle auswerten.
+
+
+### 2026-10-07 – Attributsprung 428 → 489 endgültig zugeordnet: 61 Erfolgsboni wurden zu spät geladen
+- Nutzer meldete nach V8.181 weiterhin einen einmaligen Sprung des Hauptattributs von **428 auf 489**.
+- Neuer `attribute_value_changed`-Trace ausgewertet:
+  - Basis-Stärke bleibt **109**;
+  - Klassenbonus bleibt **4**;
+  - Equipment-Summe bleibt exakt **315**;
+  - dieselben sechs Equipment-Items und dieselben Bonuswerte vor/nach dem Sprung;
+  - `109 + 4 + 315 = 428`.
+- Differenz zum finalen Wert: **489 - 428 = 61**.
+- Erfolgslogik verifiziert:
+  - `v8009-s2-v106-illegal-book.js` erweitert `totalAttr(primary)` um `v106CompletedCount()`;
+  - jeder abgeschlossene Erfolg gibt dauerhaft **+1 Hauptattribut**.
+- Serverzustand des betroffenen Beta-Accounts verifiziert:
+  - `public.player_achievement_state.done` enthält exakt **61 abgeschlossene Erfolge**;
+  - damit ist der fehlende Summand mathematisch und serverseitig eindeutig bestätigt.
+- Root Cause:
+  - `v459-character-hub` sperrte den ersten sichtbaren Attribute-Paint bisher nur auf frische Build- und Item-Authority;
+  - Achievement-Authority `v7080` hydriert bewusst on-demand;
+  - deshalb konnte zuerst der nackte Wert **428** sichtbar werden;
+  - nach Achievement-Hydration wurde derselbe unveränderte Build mit +61 Erfolgsbonus zu **489**.
+- Direkter Fix V8.182 im kanonischen Character-Hub:
+  - Datei: `js/features/character/beta/v8009-s2-v459-character-hub.js`;
+  - `authorityFresh()` verlangt jetzt bei aktivem Achievement-Enforce zusätzlich frische `v7080AchievementDiagnostics()` für dieselbe UID;
+  - `ensureAttributesAuthoritative()` lädt jetzt vor dem ersten sichtbaren Attribute-Paint gemeinsam:
+    1. Build-Authority,
+    2. Item-Authority,
+    3. Achievement-Authority;
+  - bei `account-ready` werden dieselben drei Quellen vorgewärmt;
+  - Attribute werden erst danach sichtbar aktiviert.
+- Erwartetes Verhalten:
+  - kein sichtbares **428 → 489** mehr;
+  - direkt **489** beim ersten sichtbaren Attribute-Paint.
+- Commit Character-Hub: `111de12959841cc074b13e25d4de6d03f18c1d5c`.
+- Cache-Bust index/beta/server1: `8182achievementgate1`.
