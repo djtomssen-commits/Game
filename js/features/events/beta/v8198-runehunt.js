@@ -51,7 +51,7 @@ function wallet(){
  return '<div class="v8210-wallet"><span><i>ᚱ</i><b>'+Math.max(0,Number(st.runes)||0)+'</b><small>Runen</small></span><span><i>✦</i><b>'+Math.max(0,Number(st.rune_shards)||0)+'</b><small>Fragmente</small></span></div>';
 }
 function header(){
- return '<header class="v8210-head"><button type="button" data-cup-close class="v8210-back">←</button><div class="v8210-title"><small>6-STUNDEN-CUP · JEDEN SONNTAG</small><b>GROW CUP</b><span>Jede Woche neue Pflanze · 6 neue Sweet Spots · maximal 600 Punkte</span></div>'+wallet()+'<button type="button" data-cup-close class="v8210-close">×</button></header>'+
+ return '<header class="v8210-head"><button type="button" data-cup-close class="v8210-back">←</button><div class="v8210-title"><small>6-STUNDEN-CUP · JEDEN DONNERSTAG</small><b>GROW CUP</b><span>Jede Woche neue Pflanze · 6 neue Sweet Spots · maximal 600 Punkte</span></div>'+wallet()+'<button type="button" data-cup-close class="v8210-close">×</button></header>'+
  '<nav class="v8210-tabs"><button data-cup-view="cup" class="'+(S.view==='cup'?'active':'')+'">🌿 CUP</button><button data-cup-view="ranking" class="'+(S.view==='ranking'?'active':'')+'">🏆 RANGLISTE</button></nav>';
 }
 function plantStage(phase=1,status='active'){
