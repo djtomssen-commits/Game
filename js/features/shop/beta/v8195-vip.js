@@ -49,6 +49,24 @@ function packageCard(days,label,best=false){
  const price=PRICES[days]||0;
  return `<article class="v8195-pack ${best?'best':''}">${best?'<div class="v8195-best">BELIEBT</div>':''}<div class="v8195-pack-days"><b>${days}</b><span>Tage VIP</span></div><h3>${label}</h3><div class="v8195-pack-price">${money(price)}</div><button type="button" class="btn gold" data-v8195-buy-vip="${days}">VIP kaufen</button></article>`;
 }
+function ensureRewardModal(){
+ let ov=document.getElementById('v8195VipRewardOverlay');
+ if(ov)return ov;
+ ov=document.createElement('div');
+ ov.id='v8195VipRewardOverlay';
+ ov.innerHTML='<div class="v8195-reward-modal" role="dialog" aria-modal="true" aria-labelledby="v8195VipRewardTitle"><button type="button" class="v8195-reward-close" data-v8195-reward-close aria-label="Schließen">×</button><div class="v8195-reward-glow">👑</div><small>VIP-TAGESBONUS</small><h2 id="v8195VipRewardTitle">VIP-Truhe geöffnet!</h2><p>Das war heute in deiner VIP-Truhe:</p><div class="v8195-reward-grid" id="v8195VipRewardGrid"></div><button type="button" class="btn gold v8195-reward-ok" data-v8195-reward-close>Belohnung einsammeln</button></div>';
+ document.body.appendChild(ov);
+ ov.addEventListener('click',e=>{if(e.target===ov||e.target.closest?.('[data-v8195-reward-close]'))ov.classList.remove('show')});
+ return ov;
+}
+function showDailyReward(r){
+ const ov=ensureRewardModal(),grid=ov.querySelector('#v8195VipRewardGrid');
+ if(grid)grid.innerHTML=`
+  <div class="v8195-reward-card"><i>🟢</i><b>+${fmt(r.harz_awarded)}</b><span>Harz-Taler</span></div>
+  <div class="v8195-reward-card"><i>🪙</i><b>+${fmt(r.gold_awarded)}</b><span>Gold</span></div>
+  <div class="v8195-reward-card"><i>🧩</i><b>+${fmt(r.fragments_awarded)}</b><span>Samenfragmente</span></div>`;
+ ov.classList.add('show');
+}
 function render(){
  const p=ensurePanel();if(!p)return;
  const st=S.state,yes=active(st);
@@ -108,7 +126,7 @@ async function claimDaily(){
   }catch(_){}
   if(r.state)applyState(r.state);else await load(true);
   try{window.v069SyncCurrencies?.();window.v441PaintResources?.();window.v488ForgeRender?.()}catch(_){}
-  toast('👑 VIP-Truhe abgeholt','success',`+${fmt(r.harz_awarded)} Harz-Taler · +${fmt(r.gold_awarded)} Gold · +${fmt(r.fragments_awarded)} Samenfragmente`);
+  showDailyReward(r);
  }catch(e){
   const msg=String(e?.message||e);toast('VIP-Truhe nicht abgeholt','error',msg==='ALREADY_CLAIMED'?'Heute bereits abgeholt.':msg);
  }finally{S.busy=false;render()}
@@ -144,6 +162,7 @@ document.addEventListener('click',e=>{
  const t=e.target instanceof Element?e.target:null;if(!t)return;
  const buy=t.closest('[data-v8195-buy-vip]');if(buy){e.preventDefault();void buyVip(Number(buy.dataset.v8195BuyVip));return}
  if(t.closest('[data-v8195-claim]')){e.preventDefault();void claimDaily();return}
+ if(t.closest('[data-v8195-reward-close]')){e.preventDefault();document.getElementById('v8195VipRewardOverlay')?.classList.remove('show');return}
 },true);
 document.addEventListener('change',e=>{const t=e.target;if(t instanceof HTMLInputElement&&t.matches('[data-v8195-visible]'))void setVisible(t.checked)},true);
 window.addEventListener('growlegends:account-ready',()=>void load(true),{passive:true});
