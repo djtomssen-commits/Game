@@ -12130,3 +12130,110 @@ Aktueller Release-Status:
   3. +2 muss leicht, +3 deutlicher und +4 klar sichtbar leuchten.
   4. +5 muss zusätzlich weiterhin die kleinen Blitze zeigen.
 
+### 2026-10-07 – V8.210 Grow Cup ersetzt Runenjagd (Beta · Power-Block 1)
+- Entscheidung: Die Runenjagd wird als aktives Zwei-Wochen-Event vollständig durch den **Grow Cup** ersetzt.
+- Rhythmus:
+  - Grow Cup läuft am Sonntag des EXP-Wochenendes und damit alle 2 Wochen;
+  - Gold/Dampf-Wochenende, EXP-Wochenende, Mittwoch-Turm-Event und Donnerstags-Smaragd-Koloss bleiben unverändert;
+  - `public.v7102_auto_weekend_event_active('runehunt',...)` liefert jetzt bewusst `false`;
+  - für den Beta-Endtest besitzt Tomssen vorübergehend Grow-Cup-Testzugang bis 08.10.2026 14:00 Uhr Europe/Berlin.
+- Fairness / Grundregel:
+  - genau 1 offizieller Cup-Run pro Spieler und Event;
+  - alle Spieler erhalten dieselbe, vom Eventdatum bestimmte Cup-Sorte;
+  - Charakterlevel, normale Ausrüstung, Klassenwerte, VIP und Harz-Taler beeinflussen die Cup-Wertung nicht.
+- Ablauf:
+  1. Keimung;
+  2. Wachstum;
+  3. Formung;
+  4. Blüte;
+  5. Reifung;
+  6. Finish.
+- Jede Phase besitzt 3 endgültige Entscheidungen mit unterschiedlichen Schwerpunkten.
+- Fünf Jury-Wertungen:
+  - Qualität;
+  - Ertrag;
+  - Harz;
+  - Genetik;
+  - Gesundheit.
+- Kleine serverseitige Zufallsereignisse sorgen für unterschiedliche Runs, ohne Charakter- oder Premiumvorteil:
+  - Perfekte Entwicklung;
+  - Starker Phänotyp;
+  - Leichter Stress;
+  - Trichom-Schub.
+- Abschluss:
+  - Endscore = Mittelwert der fünf auf 0–100 begrenzten Jury-Wertungen;
+  - Bronze < 74;
+  - Silber ab 74;
+  - Gold ab 82;
+  - Meister ab 88;
+  - Grow Champion ab 92.
+- Persönliche Champion-Belohnung:
+  - ab 92 Punkten einmalig **+1 Verzauberungsrune +10 Runenfragmente**;
+  - sie ist unabhängig von der Serverrangliste und addiert sich zur späteren Rangbelohnung.
+- Rangbelohnungen nach Eventende:
+  - Platz 1: **3 Runen +30 Fragmente**;
+  - Platz 2: **2 Runen +25 Fragmente**;
+  - Platz 3: **2 Runen +20 Fragmente**;
+  - Platz 4–10: **1 Rune +15 Fragmente**;
+  - Platz 11–25: **12 Fragmente**;
+  - Platz 26–50: **8 Fragmente**;
+  - Platz 51–100: **5 Fragmente**.
+- Backend neu und getrennt vom alten v8202-Runenjagd-State:
+  - `recovery_private.v8210_growcup_runs`;
+  - `recovery_private.v8210_growcup_ledger`;
+  - `public.v8210_growcup_state()`;
+  - `public.v8210_growcup_start(text)`;
+  - `public.v8210_growcup_choose(text,text)`;
+  - `public.v8210_growcup_leaderboard(integer)`;
+  - `public.v8210_growcup_claim_rank_reward(text)`.
+- Alte v8202-Runenjagd-Daten wurden nicht gelöscht; sie bleiben als historische/rollback-fähige Daten bestehen, werden vom Eventkalender aber nicht mehr aktiviert.
+- Frontend:
+  - bestehender Event-Dateipfad `js/features/events/beta/v8198-runehunt.js` wurde direkt zum Grow-Cup-Owner umgebaut; kein paralleler Runenjagd-Renderer;
+  - neue öffentliche Owner-APIs sind `v8210OpenGrowCup`, `v8210GrowCupRefresh`, `v8210GrowCupSnapshot`, `v8210GrowCupLeaderboard`;
+  - Oberfläche besitzt die Tabs **Cup** und **Rangliste**;
+  - sechs Phasen, fünf Live-Wertungen, drei Entscheidungs-Karten, Abschlussjury und Rangbelohnungsansicht.
+- Grafik:
+  - das vom Nutzer freigegebene gold/grüne Grow-Cup-Bühnenbild **ohne zentrale Pflanze** wird als Hintergrund verwendet;
+  - wegen der Binärgrenze des GitHub-Connectors wurde dieselbe freigegebene Bühne als komprimiertes WebP direkt im bestehenden Event-CSS-Owner eingebettet, nicht durch ein anderes Bild ersetzt;
+  - darüber liegt separat die animierte Cup-Pflanze;
+  - dafür werden vorhandene Grow-Legends-Pflanzenassets für Keimling/Wachstum/Blüte/Ernte benutzt und pro Phase größer dargestellt;
+  - kein weiteres Bild wurde generiert.
+- Startseite:
+  - sechster Eventtile heißt jetzt **CUP** statt **RUNEN**;
+  - aktiver Spezialslot zeigt Grow Cup;
+  - Tagesziel zeigt **Grow Cup · Offen · 6 Phasen**;
+  - Startseiten-Owner liest zuerst den serverseitigen `v8210GrowCupSnapshot().active`-Status, damit der Beta-Testzugang sofort sichtbar ist.
+- Weekend-Owner:
+  - Rotation heißt jetzt `xp-growcup`;
+  - alte Runenjagd-Hooks geben bewusst `false/null` zurück.
+- SQL-Snapshot:
+  - `V8210_GROW_CUP.sql`.
+- Beta Cache-Bust:
+  - Home, Weekend, Grow-Cup-Client und Event-CSS: `?v=8210growcup1`.
+- Relevante Commits:
+  - Grow-Cup-Client: `7ebbd7f8ba84f1cc1d7a0e1cd98788d504eaceb0`;
+  - Grow-Cup-CSS/Bühne: `b19524f892a5da9406c776bcc9364e33c3df2945`;
+  - Weekend-Rotation: `3bb11cc4fc3b9effeb426b21c9c461ffe8f5505d`;
+  - Startseite: `ddfdda3835d45a54b673caca382ddee5cab98e99`;
+  - Beta Cache: `fd32ca8d50b9daed70289e290b89b06e4dce5259`;
+  - SQL-Snapshot: `7cd19083a7fc3e29ab9f7753e0b3a48c7c454b7e`;
+  - Matrix: `43843c08022060ed8d7f5927c55a73c568f34ec7`;
+  - Matrix-Wortlaut: `6594502db25e810d506bcd99e1cc0045f9dccba9`.
+- QA:
+  - DB-Gate im Testkontext: Grow Cup `active=true`, Runenjagd `active=false`;
+  - Phase 1 und Phase 6 liefern jeweils exakt 3 Entscheidungen;
+  - Reward-Mapping geprüft: Platz 1 = 3/30, Platz 2 = 2/25, Platz 3 = 2/20, Platz 10 = 1/15;
+  - kompletter 6-Phasen-Backend-Test in einer Transaktion erfolgreich: `completed`, 6 History-Schritte, Testscore 94,80 = Champion; danach `ROLLBACK`, daher kein Testfortschritt im Spielerzustand hinterlassen;
+  - Grow-Cup-Client Syntax OK;
+  - Weekend-Owner Syntax OK;
+  - Home-Owner Syntax OK;
+  - Event-CSS Klammern 285/285;
+  - alter Runenjagd-CSS-Block entfernt;
+  - Beta-Cache-Referenzen jeweils exakt 1× vorhanden.
+- Manueller Beta-Test offen:
+  1. App/Beta komplett neu laden.
+  2. Startseite: Eventtile **CUP** und aktiven Grow-Cup-Spezialslot prüfen.
+  3. Grow Cup öffnen: freigegebene leere Cup-Bühne muss als Hintergrund erscheinen; die Pflanze muss separat darüber stehen.
+  4. Cup starten und Phase 1 prüfen: Sorte, fünf Werte und genau drei Entscheidungen.
+  5. Danach Phase für Phase Grafik/Wachstum/Abstände auf Mobile prüfen.
+
