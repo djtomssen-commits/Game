@@ -11735,3 +11735,160 @@ Aktueller Release-Status:
   4. VIP-Kronenrahmen muss den neuen rot/goldenen Kronenrahmen zeigen;
   5. aktivierten VIP-Rahmen zusätzlich auf Charakteransicht und öffentlichem Profil prüfen.
 
+### 2026-10-07 – V8.202 Runenjagd komplett neu: Legendary-Dungeon-artiger 100-Raum-Run (Beta)
+- Anlass:
+  - V8.199 entsprach ausdrücklich nicht dem gewünschten Spielgefühl.
+  - Der 10-Raum-/Aktionskarten-Ansatz wurde vollständig verworfen.
+  - Ziel ist jetzt das Grundgefühl eines fortlaufenden Tür-/Raum-Labyrinths wie beim Legendary Dungeon von Shakes & Fidget, aber mit eigenständigen Grow-Legends-Inhalten, Namen, Regeln und Assets.
+- Grundstruktur:
+  - genau 1 großer Run pro Runenjagd-Event;
+  - 100 Räume pro Run;
+  - regulär zwei Pforten pro Raum;
+  - Türen können offen, versiegelt (Schlüssel nötig) oder zugemauert sein;
+  - Server stellt immer mindestens einen gangbaren Weg sicher;
+  - Raum 25, 50 und 75 sind feste Zwischenboss-Räume;
+  - Raum 100 ist fester Endboss / Hüter des Runenkerns.
+- Eigene Run-Systeme:
+  - 100 Runenleben;
+  - Runenschlüssel;
+  - Runenstaub als reine Run-Ressource;
+  - bis zu 3 aktive Segen;
+  - bis zu 3 aktive Flüche;
+  - bis zu 3 dauerhafte Runenpakte aus Zwischenbossen.
+- Monster/Kampf:
+  - Character-Klasse, normale Ausrüstung und normale Kampffähigkeiten bestimmen diesen Eventkampf nicht direkt;
+  - Monsterbegegnung bietet Kampf oder Flucht;
+  - Kampf kostet serverberechnet Runenleben und gibt Runenstaub, mit Chance auf Schlüssel;
+  - Flucht gibt keine Beute, kann aber schadlos gelingen;
+  - Zwischen- und Endbosse können nicht umgangen werden.
+- Tod/Wiederbelebung:
+  - bei 0 Runenleben geht der Run auf `downed`;
+  - Raum/Encounter bleiben serverseitig gespeichert;
+  - Wiederherstellung nach 60 Minuten;
+  - danach 100 Runenleben und Fortsetzung an exakt derselben Stelle;
+  - keine Harz-Taler-/Premium-Heilung im V8.202-System.
+- Raumtypen:
+  - Monster;
+  - Runentruhe;
+  - Segen der Runen;
+  - Fluchzeichen;
+  - Runenbrunnen;
+  - Runenfalle;
+  - Schlüsselkammer;
+  - seltene Goldene Runenkammer;
+  - stiller Raum;
+  - Zwischenboss;
+  - Endboss;
+  - nach jedem Zwischenboss Auswahl aus drei Runenpakten.
+- Segen:
+  - Steinhaut: reduziert erlittenen Schaden;
+  - Runenspürsinn: erhöht Runenstaub-Ausbeute;
+  - Nebelschritt: erhöht Chance auf schadlose Flucht;
+  - identischer Segen kann auf Stufe II aufgewertet werden;
+  - Effekte besitzen Ladungen und laufen durch weitere Räume aus.
+- Flüche:
+  - Rissige Aura: erhöht erlittenen Schaden;
+  - Verzehrender Durst: reduziert Heilwirkung;
+  - Blindflug: verschleiert Türhinweise;
+  - identischer Fluch kann auf Stufe II steigen;
+  - Fluch kann alternativ mit 1 Runenschlüssel versiegelt werden;
+  - Effekte besitzen Ladungen.
+- Runenpakte nach Raum 25/50/75:
+  - Pakt der Gier: mehr Runenstaub, dafür mehr Schaden;
+  - Pakt des Wächters: weniger Schaden, dafür weniger Runenstaub;
+  - Pakt des Schlüssels: bessere Schlüsselchance, dafür schwächere Heilung;
+  - Pakte halten bis zum Ende des Runs.
+- Belohnungsökonomie:
+  - unterwegs keine vollständigen Verzauberungsrunen mehr;
+  - Runenstaub bleibt innerhalb des Runs;
+  - erst Endboss in Raum 100 vergibt garantiert genau 1 Verzauberungsrune;
+  - zusätzlich 2–6 Runensplitter abhängig vom gesammelten Runenstaub;
+  - dadurch maximal 1 garantierte Rune pro zweiwöchentlichem Runenjagd-Event und keine schnelle Massenverteilung.
+- Neue private Authority:
+  - `recovery_private.v8202_runehunt_runs`;
+  - `recovery_private.v8202_runehunt_ledger`.
+- Neue Helper:
+  - `v8202_tick_effects`;
+  - `v8202_has_effect`;
+  - `v8202_effect_tier`;
+  - `v8202_add_effect`;
+  - `v8202_make_doors`;
+  - `v8202_make_encounter`;
+  - `v8202_mask_doors`;
+  - `v8202_advance`;
+  - `v8202_public_state`.
+- Neue Spieler-RPCs:
+  - `public.v8202_runehunt_state()`;
+  - `public.v8202_runehunt_start(text)`;
+  - `public.v8202_runehunt_choose(text,text)`;
+  - `public.v8202_runehunt_action(text,text)`.
+- Idempotenz:
+  - Start, Türwahl und Raumaktion besitzen jeweils Request-ID-Ledger;
+  - Wiederholung einer Request-ID kann weder Schlüssel, Staub, HP noch Belohnungen doppelt buchen.
+- Client/UI komplett neu:
+  - V8.199 Client im bestehenden `js/features/events/beta/v8198-runehunt.js` ersetzt, kein Parallel-Owner;
+  - Header unter der globalen Topbar mit Zurück/X;
+  - globale Spiel-Topbar bleibt sichtbar;
+  - große 100-Raum-Fortschrittslogik mit sichtbaren Meilensteinen 25/50/75/100;
+  - eigenes HUD für Runenleben, Schlüssel, Staub und Raum;
+  - aktive Segen/Flüche/Pakte als Statuschips;
+  - zwei massive Pforten pro Normalraum;
+  - spezielle Wächtertore in Bossräumen;
+  - versiegelte/zugemauerte Zustände direkt sichtbar;
+  - unterschiedliche visuelle Türtypen (Wurzel, Glut, Nebel, Stein, Gold, Boss);
+  - Encounter-Screen getrennt vom Tür-Screen;
+  - Monster zeigen vorhandene Dungeon-Enemy-Assets;
+  - vier Abschnittshintergründe aus bestehenden Grow-Legends-Dungeon-Assets;
+  - eigener Downed-/Timer-Screen;
+  - eigener Endboss-/Runenkern-Abschluss mit Belohnung.
+- Alte V8.199-Texte entfernt:
+  - keine „5 Expeditionen“ mehr;
+  - Startseite zeigt jetzt `100-Raum-Run`;
+  - Eventbeschreibung nennt einen legendären 100-Raum-Run;
+  - Home-Ziel zeigt `Offen · 100 Räume`.
+- Beta-Wiring:
+  - Runenjagd JS `?v=8202legend1`;
+  - Rune/Enchant CSS `?v=8202legend1`;
+  - Home Renderer `?v=8202legend1`;
+  - Weekend Events `?v=8202legend1`.
+- SQL-Artefakt:
+  - `V8202_RUNEHUNT_LEGENDARY_REBUILD.sql`.
+- Supabase-Migration:
+  - `v8202_runehunt_legendary_style_rebuild`.
+- Vollständiger Server-QA:
+  - kompletter 100-Raum-Run in Rollback-Transaktion automatisiert durchlaufen;
+  - Ergebnis: `status=completed`, `room_no=100`, Endboss besiegt;
+  - QA-Endstand: 57 HP, 10 Schlüssel, 347 Runenstaub, 3 Pakte;
+  - finale Belohnung: +1 Verzauberungsrune, +6 Runensplitter;
+  - Test vollständig zurückgerollt.
+- Security-QA:
+  - direkte anon/authenticated Grants auf V8.202 private Tabellen: 0;
+  - anon EXECUTE auf V8.202 Spieler-RPCs: 0;
+  - authenticated EXECUTE: 4/4.
+- Client-QA:
+  - Runenjagd V8.202 JS Syntax OK;
+  - Weekend Event JS Syntax OK;
+  - Home Renderer JS Syntax OK;
+  - Rune/Enchant CSS balanced 327/327.
+- Tomssen Beta-Test:
+  - alter V8.199-Testlauf und V8.199-Ledger für Tomssen gelöscht;
+  - kein V8.202-Lauf vorinitialisiert: erster Klick startet wirklich Raum 1 des neuen Systems;
+  - temporärer Runenjagd-Testzugang bleibt wie zuvor aktiv;
+  - vorhandener Testbestand: 25 Verzauberungsrunen, 33 Runensplitter.
+- Relevante Commits:
+  - neuer 100-Raum-Client: `01dd466df9789426b9d81bf3fee1dd7656c4976e`;
+  - neue High-End-CSS: `7ad857ae6f8456e8fd99ba47f9c694dd88cb246e`;
+  - Weekend-Event-Copy: `acf881e49e02d7110ba84c61bba990a22e6d7410`;
+  - Home-Copy: `612ad7ddaa9209e5c45b138e29c0edddbe2ff3a5`;
+  - Beta-Wiring: `3c6ad3c19c972e64def0d739552a0efd9da4dfe3`;
+  - SQL-Snapshot: `dc78e398c63cfe91500bc242759deac791770776`;
+  - Matrix: `1009cecfe5711a31677022b957bb075e9062136a`.
+- Manueller Beta-Test offen:
+  1. Beta vollständig neu laden.
+  2. Startseite -> Runenjagd -> prüfen, dass keine alte 5-Expedition-/10-Raum-Ansicht mehr erscheint.
+  3. Run starten -> Raum 1, zwei Pforten.
+  4. Mehrere Räume spielen und Monster/Flucht/Truhe/Schlüssel/Segen/Fluch testen.
+  5. Run schließen und wieder öffnen -> exakt gleicher Raum/Encounter muss fortgesetzt werden.
+  6. Wenn HP 0 erreicht wird, 60-Minuten-Timer/Resume prüfen.
+  7. später Raum 25/50/75 Paktauswahl und Raum 100 Endboss/Belohnung prüfen.
+
