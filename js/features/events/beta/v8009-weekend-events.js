@@ -81,7 +81,7 @@ function eventRows(ms=Date.now()){
      v6251Auto:true,
      id:`${AUTO_PREFIX}runehunt:${sc.mondayOrd}`,
      name:'Runenjagd',
-     description:'Sonntags-Event im EXP-Wochenende: 5 Expeditionen für seltene Runensplitter und Verzauberungsrunen.'
+     description:'Sonntags-Event im EXP-Wochenende: Ein legendärer 100-Raum-Run mit garantierter Verzauberungsrune beim Endboss.'
     });
    }
   }
