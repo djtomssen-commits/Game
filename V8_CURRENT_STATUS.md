@@ -11423,3 +11423,31 @@ Aktueller Release-Status:
   - Tab-Fix: 8d2a31553d6ad8648f65ab5a0c65c45460506d06
   - Beta Cache-Bust: a2c74c33999f4e1fc9c6c1572f478c4cb4166955
 
+### 2026-10-07 – V8.198 temporärer Runenjagd-Testzugang Tomssen
+- Beta-Testbestand gutgeschrieben:
+  - +10 Verzauberungsrunen;
+  - +20 Runensplitter.
+- Temporärer Test-Override im bestehenden `public.v7102_auto_weekend_event_active`:
+  - ausschließlich Runenjagd;
+  - ausschließlich Charakter Tomssen / dessen authentifizierter Account;
+  - automatisch befristet bis 08.10.2026 14:00 Europe/Berlin;
+  - danach greift wieder ausschließlich der reguläre Zwei-Wochen-Sonntagskalender.
+- Serverprüfung mit authentifiziertem Tomssen-Kontext:
+  - `active=true`;
+  - `runs_used=0`;
+  - `runs_left=5`;
+  - `runes=10`;
+  - `rune_shards=20`;
+  - regulärer nächster Eventtermin bleibt 11.10.2026.
+- Startseite für Test-Overrides korrigiert:
+  - Home liest bei Runenjagd zuerst den serverseitigen `v8198RuneHuntSnapshot().active`-Status;
+  - Runenjagd-State-Refresh triggert bei Aktivitätswechsel einen gezielten Home-Neurender;
+  - dadurch erscheint das Runentor bei serverseitig freigeschaltetem Testzugang heute tatsächlich offen.
+- JS-Syntaxprüfung Home + Runenjagd: OK.
+- Beta Cache-Bust Home/Runenjagd auf `?v=8198runes3`.
+- Commits:
+  - Home server-state gate: a70ddfa4e51940bf3976aae07251bb4524a7dffb;
+  - Runenjagd Home refresh: 2c9f78f6497cc8f0dfe59a8f7cbc88fd8bdd7b12;
+  - Cache-Bust: 644e0672c84adb3449bbef00c62af361c6e2140f.
+- Supabase Migration: `v8198_tomssen_runehunt_test_window`.
+
