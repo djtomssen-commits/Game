@@ -11166,7 +11166,7 @@ Aktueller Release-Status:
 - Security: private V8.195-Tabellen haben kein SELECT für anon/authenticated. State/Visibility/Daily-Claim nur authenticated + service_role; Google-Play-Credit nur service_role; private Helper kein anon/authenticated EXECUTE.
 - Security Advisor zeigt für die privaten Tabellen erwartete RLS-enabled/no-policy INFO, weil direkter Clientzugriff bewusst komplett gesperrt ist.
 - JS-Endcheck: Billing, Dealer-Hub, VIP-Client, Shop, Shop-Authority, Title, Frame und I18N syntaktisch grün; letzter Frame-/Badge-Owner nach finalem Edit erneut geprüft.
-- Beta-Wiring final: Cache-Key 8195vip3; 1× VIP-CSS + 1× VIP-Client; 9 V8.195-Cache-Referenzen; 0 veraltete 8195vip1-Referenzen; Server 1 = 0 VIP-Referenzen.
+- Beta-Wiring final: Cache-Key 8195vip3; 1× VIP-CSS + 1× VIP-Client; 11 V8.195-Cache-Referenzen; 0 veraltete 8195vip1/8195vip2-Referenzen; Server 1 = 0 VIP-Referenzen.
 - Repo-SQL: V8195_VIP_SYSTEM.sql.
 - Relevante Commits:
   - Google-Play Client: 3a3b771e1cf05a24be52af96a2fdee13d4f21761
@@ -11180,7 +11180,10 @@ Aktueller Release-Status:
   - direkter Name/Badge: 17ca23599cd96bdff6698d92bc37f763e70bf6f1
   - VIP-I18N: f8b7ac731831d830c9baaa62eea6c11c42060a49
   - SQL-Artefakt: 49e551f78c9b2036894c18a17c954a8ccee47767
-  - finales Beta-Cache-Wiring: e6019aef4af5052a0675d0be47836575ccc7e259
+  - finales Beta-Cache-Wiring: 10c34c4d8618891b970e35b001731e780b32b7e9
+  - Friends/Search VIP-Ablauf: 0612c83ac38150ea4f655d38cb21573226274ad3
+  - Hall VIP-Ablauf: cfc8f1b163b7b3ec35249084a575b2e4405985a4
+  - Public-VIP-Titel Ablaufguard: 4009f93fe720a05edd2b79326d64f056f05d1cfe
 - Manueller Beta-Endtest:
   1. Harz-/Gold-/Rahmen-Dealer öffnen -> vierter Tab VIP sichtbar.
   2. VIP-Tab öffnen -> 7/14/30-Tage-Pakete, Vorteile, tägliche Truhe und Sichtbarkeitsschalter prüfen.
