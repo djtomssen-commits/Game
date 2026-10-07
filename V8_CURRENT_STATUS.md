@@ -12529,3 +12529,75 @@ Aktueller Release-Status:
   - Server1 Cache: `abdf6bb6b4c368b3dbeb599a416dc1b595298a44`;
   - SQL-Snapshot: `bd3a59b9a486ba61e5c5dbd51379f818c3b24962`.
 
+### 2026-10-07 – V8.217 Grow Cup wöchentlich + indirekter Pflanzenstatus + Timer-Fix (Beta)
+- Nutzerwunsch:
+  - jede Woche eine neue Pflanze;
+  - jede Woche neue Sweet Spots;
+  - pro Aktion nur grobe biologische Hinweise statt direkter „mehr/weniger“-Anweisung;
+  - Timer darf an Pflegefenster-/Phasengrenzen nicht mehr hängenbleiben.
+- Eventrhythmus:
+  - Grow Cup ist jetzt **jeden Sonntag** aktiv;
+  - Gold/Dampf- und XP-Wochenendrotation bleibt unverändert;
+  - Donnerstag Smaragd-Koloss bleibt unverändert.
+- Wöchentliche Pflanze:
+  - Rotation nutzt reale Growroom-Sorten:
+    White Widow, Northern Lights, Jack Herer, Purple Haze, Blue Dream, Critical+, OG Kush, Lemon Haze, Gorilla Glue, Green Crack, Amnesia Haze, Smaragd OG;
+  - Kalenderwoche bestimmt die Cup-Pflanze;
+  - Beispiel-QA: 11.10. Purple Haze, 18.10. Blue Dream, 25.10. Critical+.
+- Sweet Spots:
+  - weiterhin 6 serverseitig versteckte Aktionsziele;
+  - Seed basiert jetzt auf Kalenderwoche + Aktion;
+  - zusätzlicher Guard stellt sicher, dass derselbe Aktions-Sweet-Spot **nicht in zwei direkt aufeinanderfolgenden Wochen identisch** sein kann;
+  - öffentliche State-Daten enthalten weiterhin niemals `target`.
+- Pflanzenstatus:
+  - neuer serverseitiger `plant_status.message`;
+  - absichtlich **keine** Felder `direction`, `direction_text`, Zielzahl oder Abstand;
+  - Hinweise sind nur indirekte Symptome:
+    - Licht: klein/kompakt, streckt sich, stabiler Wuchs;
+    - Wasser: trockene/leichte Erde, schwere/feuchte Erde, ausgeglichen;
+    - Dünger: blasses Wachstum, verfärbte Blattspitzen, satte Blattfarbe;
+    - Beschneiden: dichte Schattenkrone, dünne/offene Krone, gleichmäßige Triebe;
+    - Temperatur: langsamer Stoffwechsel/steife Blätter, gerollte Blattränder/Wärmestress, ruhige Blattstellung;
+    - Ernte: klare Trichome, dunkle/reife Trichome, gemischtes Reifestadium.
+  - Client zeigt nur **PFLANZENSTATUS** + Symptomtext + Hinweis, dass der Sweet Spot verborgen bleibt.
+- Timer-Fix:
+  - Ursache: beim Erreichen einer Grenze wurde nur ein einzelner Serverrefresh ausgelöst; schlug genau dieser fehl oder kam zu früh, blieb derselbe Grenz-Key gesperrt, bis Seitenwechsel einen neuen Refresh erzwang;
+  - Fix: solange die lokale Grenze überschritten ist und der Server noch nicht weitergeschaltet hat, wird alle **2,5 Sekunden** erneut serverseitig synchronisiert;
+  - `refreshInFlight` verhindert parallele RPC-Duplikate;
+  - bei Phasenwechsel wird der Boundary-Retry sauber zurückgesetzt;
+  - zusätzlicher sofortiger Resync bei:
+    - `window.focus`;
+    - `document.visibilitychange` → sichtbar;
+    - `pageshow`;
+  - der sichtbare Countdown tickt weiterhin jede Sekunde lokal auf Basis der zuletzt bestätigten Serverzeit.
+- Beta-Testmodus:
+  - bleibt 6 Minuten;
+  - nutzt dieselben wöchentlichen Pflanzen/Sweet Spots und indirekten Pflanzenstatus-Hinweise;
+  - weiterhin ohne echte Belohnungen/Ranglisteneintrag.
+- Backend-QA:
+  - Grow Cup aktiv an 11.10., 18.10., 25.10. jeweils Sonntag;
+  - Montag 12.10. inaktiv;
+  - fünf aufeinanderfolgende Wochen geprüft: Pflanze wechselt jede Woche;
+  - alle sechs Sweet Spots ändern sich in den geprüften Folgewochen;
+  - öffentlicher Test-State enthält `plant_status.message`, aber weder `direction` noch `direction_text`;
+  - öffentlicher Action-State enthält weiterhin keinen `target`;
+  - QA-Testlauf vollständig mit `ROLLBACK`.
+- Frontend-QA:
+  - Grow-Cup-Client Syntax OK;
+  - Weekend-Owner Syntax OK;
+  - keine direkte „Tendenz / eher erhöhen / eher reduzieren“-Formulierung im Client;
+  - Boundary-Retry 2500 ms vorhanden;
+  - Focus/Visibility/pageshow-Resync vorhanden;
+  - CSS Klammern 331/331;
+  - Beta Cache-Refs Client/Weekend/CSS jeweils exakt 1×.
+- SQL-Snapshot:
+  - `V8217_GROW_CUP_WEEKLY_HINTS.sql`.
+- Relevante Commits:
+  - Weekend jeden Sonntag: `3b8865a9f6abdfc6b286575dc2599b2974be1198`;
+  - Client Pflanzenstatus + Timer-Fix: `d8d3024f1d54debc440cd794efbaee69468f64f7`;
+  - Pflanzenstatus CSS: `8a9031d0c11e43d381f7cddf8a176652ce1e7033`;
+  - Beta Cache: `46b8f75b3987ab89e4041bac1562fc2d30cdbebb`;
+  - SQL-Snapshot: `fa24051c91ba23027abaa8aaf7f171aa24919a8f`;
+  - Matrix: `8821f34f67eddd134b0babd0e052ae1a9fbbdaa9`.
+- Server 1 in diesem Block nicht geändert.
+
