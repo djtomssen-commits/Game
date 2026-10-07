@@ -5,12 +5,17 @@
  if(window.__V6145_HALL_PAGINATION__)return;
  window.__V6145_HALL_PAGINATION__=true;
  const PAGE=20,TOP=3;
- const SELECT='id,character_name,class_id,class_name,level,bosses,gear_score,dungeons,combat_power,equipment,dungeon_progress,worldboss_attempts,worldboss_wins,pvp_buds,pvp_wins,pvp_losses,pvp_fights,avatar_frame_id,updated_at';
+ const SELECT_BASE='id,character_name,class_id,class_name,level,bosses,gear_score,dungeons,combat_power,equipment,dungeon_progress,worldboss_attempts,worldboss_wins,pvp_buds,pvp_wins,pvp_losses,pvp_fights,avatar_frame_id,updated_at';
+ const vipFieldsEnabled=()=>window.__V8195_VIP_CLIENT__===true||!!document.getElementById('v8195-vip-client');
+ const selectProfile=()=>SELECT_BASE+(vipFieldsEnabled()?',vip_until,vip_visible':'');
+ const publicVipActive=p=>!!(vipFieldsEnabled()&&p?.vip_visible!==false&&p?.vip_until&&new Date(p.vip_until).getTime()>Date.now());
+ const publicFrameId=p=>{const id=String(p?.avatar_frame_id||'');return id==='vip_crown'&&!publicVipActive(p)?'':id};
  const state={page:1,mode:'page',hallTab:'players',total:0,pages:1,ownRank:null,seq:0,topRows:[],topAt:0,guildRows:[],guildTotal:0};
  const FRAME_ASSETS=Object.freeze({
    ironwood:'assets/avatar_frames/ironwood.png',
    silver_vine:'assets/avatar_frames/silver_vine.png',
    gold_crown:'assets/avatar_frames/gold_crown.png',
+   vip_crown:'assets/avatar_frames/gold_crown.png',
    emerald_aura:'assets/avatar_frames/emerald_aura.png',
    haze_ring:'assets/avatar_frames/haze_ring.png',
    resin_flame:'assets/avatar_frames/resin_flame.png',
@@ -28,9 +33,11 @@
    const friend=me?'<span class="pill">DU</span>':`<button class="btn secondary" data-v073-add="${esc(p?.id||'') }" data-name="${esc(p?.character_name||'Spieler')}">Freund</button><button class="btn secondary" data-v6145-mail="${esc(p?.character_name||'Spieler')}">✉️ Nachricht</button>`;
    const classId=String(p?.class_id||'grower').toLowerCase();
    const art=framedAvatar(p,'v646-row-avatar');
+   const vip=publicVipActive(p);
    const enhance=html=>{
      let out=String(html||'');
-     out=out.replace('class="v072-player-row"','class="v072-player-row v646-row-decorated"');
+     out=out.replace('class="v072-player-row"',`class="v072-player-row v646-row-decorated ${vip?'v8195-vip-public':''}"`);
+     if(vip&&!out.includes('v8195-vip-badge'))out=out.replace(/(<div class="v072-player-name[^"]*">[\s\S]*?)(<\/div>)/,`$1<span class="v8195-vip-badge">VIP</span>$2`);
      if(!/data-class-id=/.test(out))out=out.replace('data-profile-id="','data-class-id="'+esc(classId)+'" data-profile-id="');
      if(!out.includes('v646-row-avatar'))out=out.replace(/(<div class="v072-rank[^>]*>[\s\S]*?<\/div>)/,`$1${art}`);
      return out;
@@ -223,7 +230,7 @@
  }
  async function top3(force=false){
    if(!force&&state.topRows.length&&Date.now()-state.topAt<15000)return state.topRows;
-   const {data,error}=await ordered(v073Db.from('profiles').select(SELECT)).limit(TOP);
+   const {data,error}=await ordered(v073Db.from('profiles').select(selectProfile())).limit(TOP);
    if(error)throw error;state.topRows=Array.isArray(data)?data:[];state.topAt=Date.now();return state.topRows;
  }
  function medal(rank){return rank===1?'🥇':rank===2?'🥈':'🥉'}
@@ -235,19 +242,19 @@
    return src?`<img src="${esc(src)}" alt="">`:'<span>🌿</span>';
  }
  function frameArt(p){
-   const id=String(p?.avatar_frame_id||'');
+   const id=publicFrameId(p);
    const src=FRAME_ASSETS[id]||'';
    return src?`<img class="v7139-frame-art" src="${esc(src)}" alt="" aria-hidden="true" decoding="async">`:'';
  }
  function framedAvatar(p,cls){
-   const id=String(p?.avatar_frame_id||'');
+   const id=publicFrameId(p);
    const frame=frameArt(p);
    const target=frame?' v7137-frame-target':'';
    const data=frame?` data-v7137-frame="${esc(id)}"`:'';
    return `<div class="${cls}${target}" data-avatar-class="${esc(String(p?.class_id||'grower').toLowerCase())}"${data}>${avatar(p)}${frame}</div>`;
  }
  function podiumAvatar(p){
-   const id=String(p?.avatar_frame_id||'');
+   const id=publicFrameId(p);
    const src=avatarSrc(p);
    const frame=frameArt(p);
    const target=frame?' v7137-frame-target':'';
@@ -259,7 +266,7 @@
  }
  function podiumHtml(rows){
    const me=ownId();
-   return `<div class="v6145-podium">${(rows||[]).map((p,i)=>{const r=i+1;return `<article class="v6145-podium-card rank-${r} ${String(p?.id||'')===me?'v6145-own':''}" data-v6145-profile="${esc(p?.id||'')}"><div class="v6145-podium-top"><span class="v6145-medal">${medal(r)}</span><span class="v6145-pos">#${r}</span></div><div class="v6145-podium-body">${podiumAvatar(p)}<div class="v6145-podium-name">${esc(p?.character_name||'Spieler')}</div><div class="v6145-podium-meta">${esc(p?.class_name||'')} · Lv. ${Math.max(1,num(p?.level))}</div><div class="v6145-podium-power">⚔ ${num(p?.combat_power)} · 🌿 ${num(p?.pvp_buds)}</div></div></article>`}).join('')}</div>`;
+   return `<div class="v6145-podium">${(rows||[]).map((p,i)=>{const r=i+1,vip=publicVipActive(p);return `<article class="v6145-podium-card rank-${r} ${String(p?.id||'')===me?'v6145-own':''} ${vip?'v8195-vip-public':''}" data-v6145-profile="${esc(p?.id||'')}"><div class="v6145-podium-top"><span class="v6145-medal">${medal(r)}</span><span class="v6145-pos">#${r}</span></div><div class="v6145-podium-body">${podiumAvatar(p)}<div class="v6145-podium-name ${vip?'v8195-vip-name':''}">${esc(p?.character_name||'Spieler')}${vip?'<span class="v8195-vip-badge">VIP</span>':''}</div><div class="v6145-podium-meta">${esc(p?.class_name||'')} · Lv. ${Math.max(1,num(p?.level))}</div><div class="v6145-podium-power">⚔ ${num(p?.combat_power)} · 🌿 ${num(p?.pvp_buds)}</div></div></article>`}).join('')}</div>`;
  }
  function modeBar(){return `<div class="v6145-modebar"><button type="button" class="v6145-mode-btn ${state.mode==='page'?'active':''}" data-v6145-mode="page">🏆 Rangliste</button><button type="button" class="v6145-mode-btn" data-v6145-mode="mine">🎯 Mein Rang</button><button type="button" class="v6145-mode-btn ${state.mode==='near'?'active':''}" data-v6145-mode="near">👥 Mein Umfeld</button></div>`}
  function rankHint(){return state.ownRank?`Dein Rang #${state.ownRank} · ${state.total} Spieler`:`${state.total} Spieler`}
@@ -280,7 +287,7 @@
  }
  async function getOwnProfile(){
    const id=ownId();if(!id)return null;
-   const {data,error}=await v073Db.from('profiles').select(SELECT).eq('id',id).maybeSingle();if(error)throw error;return data||null;
+   const {data,error}=await v073Db.from('profiles').select(selectProfile()).eq('id',id).maybeSingle();if(error)throw error;return data||null;
  }
  async function ownRank(force=false){
    if(state.ownRank&&!force)return state.ownRank;
@@ -324,7 +331,7 @@
        return true;
      }
      const start=TOP+(state.page-1)*PAGE;
-     const {data,count,error}=await ordered(v073Db.from('profiles').select(SELECT,{count:'exact'})).range(start,start+PAGE-1);if(error)throw error;if(seq!==state.seq)return false;
+     const {data,count,error}=await ordered(v073Db.from('profiles').select(selectProfile(),{count:'exact'})).range(start,start+PAGE-1);if(error)throw error;if(seq!==state.seq)return false;
      state.total=Math.max(0,Number(count)||0);state.pages=Math.max(1,Math.ceil(Math.max(0,state.total-TOP)/PAGE));if(state.page>state.pages)return loadPage(state.pages,focus);
      const rows=Array.isArray(data)?data:[];
      const empty='<div class="v6145-empty">Auf dieser Seite sind keine weiteren Spieler.</div>';
@@ -353,7 +360,7 @@
    try{
      if(typeof v073Init==='function'&&!(await v073Init()))throw new Error('offline');await syncOwn();const rank=await ownRank(true);if(!rank)throw new Error('Rang nicht gefunden');const tops=await top3(false);
      const idx=rank-1,start=Math.max(0,idx-5),end=start+10;
-     const {data,count,error}=await ordered(v073Db.from('profiles').select(SELECT,{count:'exact'})).range(start,end);if(error)throw error;if(seq!==state.seq)return;
+     const {data,count,error}=await ordered(v073Db.from('profiles').select(selectProfile(),{count:'exact'})).range(start,end);if(error)throw error;if(seq!==state.seq)return;
      state.total=Math.max(0,Number(count)||0);state.pages=Math.max(1,Math.ceil(Math.max(0,state.total-TOP)/PAGE));const rows=Array.isArray(data)?data:[];
      el.innerHTML=shell(tops,rows.length?'':'<div class="v6145-empty">Kein Rangumfeld gefunden.</div>','',`Dein Umfeld · Rang #${rank}`);
      const list=el.querySelector('.v6145-list');
