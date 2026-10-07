@@ -83,6 +83,7 @@
   }
 
   v8188PendingRuns.set(runId,Date.now());
+  let rewardedFinished=false;
   ensureSkip();
   try{
    const result=await ads.showRewarded({
@@ -97,6 +98,8 @@
     v8188Toast('Keine Zeit übersprungen','info','Nur ein vollständig angesehenes Video gibt den 25-%-Zeitbonus.');
     return false;
    }
+   rewardedFinished=true;
+   v8188PendingRuns.set(runId,Date.now());
 
    const active=await v8188WaitForVerified(runId);
    if(active?.v8188RewardedSkipApplied){
@@ -117,11 +120,14 @@
    }
    return false;
   }finally{
-   /* Keep a short in-memory guard after a rewarded callback so a delayed SSV
-      cannot make the player watch a second ad for the same one-use quest bonus. */
-   const at=Number(v8188PendingRuns.get(runId)||0);
-   if(Date.now()-at>=12000)v8188PendingRuns.delete(runId);
-   else setTimeout(()=>{v8188PendingRuns.delete(runId);try{ensureSkip()}catch(_){}},Math.max(0,12000-(Date.now()-at)));
+   /* After a completed ad keep this run guarded while Google's SSV may still
+      be in flight. Server authority remains the final one-use protection. */
+   if(rewardedFinished){
+    v8188PendingRuns.set(runId,Date.now());
+    setTimeout(()=>{v8188PendingRuns.delete(runId);try{ensureSkip()}catch(_){}},60000);
+   }else{
+    v8188PendingRuns.delete(runId);
+   }
    try{ensureSkip()}catch(_){}
   }
  }
