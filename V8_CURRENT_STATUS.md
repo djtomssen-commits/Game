@@ -11410,3 +11410,16 @@ Aktueller Release-Status:
   4. Harzschmiede -> Verzaubern: Item wählen, +1 mit Rune ausführen, Werte/Combat Power und Itemanzeige kontrollieren.
   5. Inventar + Character-Slots prüfen: +Stufen sichtbar; Test-FX ab +2/+5 später mit kontrolliertem Testbestand prüfen.
 
+### 2026-10-07 – V8.198 Hotfix Verzaubern-Tab
+- Fehler: „Verzaubern“ wurde gerendert, ließ sich aber nicht öffnen.
+- Ursache im kanonischen Harzschmiede-Tab-Owner: Click-Whitelist akzeptierte nur `dismantle` und `craft`; `enchant` wurde verworfen.
+- Fix direkt im Owner:
+  - `enchant` in erlaubte Tabs aufgenommen;
+  - kein Overlay-/Click-Patch;
+  - Nebelschmied-Sonderweg unverändert.
+- Forge-Core Syntaxprüfung: OK.
+- Beta Cache-Bust des Forge-Core auf `?v=8198runes2`.
+- Commits:
+  - Tab-Fix: 8d2a31553d6ad8648f65ab5a0c65c45460506d06
+  - Beta Cache-Bust: a2c74c33999f4e1fc9c6c1572f478c4cb4166955
+
