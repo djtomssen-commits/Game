@@ -10840,3 +10840,72 @@ Aktueller Release-Status:
 - Commits:
   - Quest-Owner Freigabe: `b0f9560517bc92b632e6314095513b54332004c4`;
   - Server1 Wiring/Cache: `9916c041cabc6c271d3e0fceaa40f55abcfb6d64`.
+
+### 2026-10-07 – V8.190 Rewarded Quest-Video jetzt 2× pro Quest auf Beta + Server 1
+- Nutzerwunsch: pro laufender Quest nicht mehr nur 1, sondern **2 Rewarded-Videos** erlauben.
+- Finale Regel:
+  - maximal **2 Videos pro Quest**;
+  - jedes vollständig angesehene und serverseitig von AdMob bestätigte Video zieht **25 % der ursprünglichen Questdauer** ab;
+  - maximal also **50 % der ursprünglichen Questzeit** pro Quest;
+  - Abbruch/Fehler/ungültige SSV-Bestätigung = keine Zeitgutschrift;
+  - Zeit-Samen-Skip bleibt unverändert separat verfügbar.
+- Client:
+  - kanonischer Owner bleibt `js/features/quest/beta/v4127-quest-skip-stable.js`;
+  - keine neue Render-/Patch-Schicht;
+  - Zustand wird über `v8188RewardedSkipCount` als 0/1/2 gelesen;
+  - nach erster bestätigter Nutzung wird der Button sofort wieder für das zweite Video freigegeben;
+  - nach 2/2 wird er dauerhaft für diese Quest deaktiviert;
+  - bei noch ausstehendem Google-SSV bleibt der lokale Pending-Guard aktiv;
+  - neue UI-Zustände: 0/2, 1/2, 2/2;
+  - 2/2 zeigt insgesamt 50 % übersprungene Questzeit.
+- Serverautorität Beta + Server 1:
+  - `player_quest_runs.rewarded_skip_count integer not null default 0` ergänzt;
+  - CHECK begrenzt den Wert hart auf 0..2;
+  - bestehende bereits genutzte V8.188-Runs wurden auf **1/2** migriert;
+  - private Event-Ledger:
+    - `recovery_private.v8190_quest_rewarded_events`;
+    - `server1_private.v8190_quest_rewarded_events`;
+  - jeder signierte AdMob-Provider-Event ist dort eindeutig;
+  - zusätzlich ist `(user_id, run_id, slot)` eindeutig, Slot nur 1 oder 2;
+  - dadurch können weder derselbe SSV-Event doppelt noch mehr als zwei Slots pro Quest zählen.
+- RPC `v8188_quest_rewarded_apply_verified(uuid,text,text)` auf beiden Schemas direkt ersetzt:
+  - zählt 0 -> 1 -> 2;
+  - bei 2/2 serverseitig `QUEST_REWARDED_LIMIT_REACHED`;
+  - Originaldauer weiterhin aus `offer.duration`;
+  - je Nutzung `ceil(original_duration * 0.25)`;
+  - `ready_at` + `active.ends` atomar verkürzt;
+  - aktive Quest schreibt jetzt zusätzlich:
+    - `v8188RewardedSkipCount`;
+    - `v8188RewardedSkipMax=2`;
+    - `v8188RewardedSkipTotalSeconds`.
+- Berechtigungen weiterhin hart:
+  - anon EXECUTE=false;
+  - authenticated EXECUTE=false;
+  - service_role EXECUTE=true;
+  - Client kann keine Zeitgutschrift direkt erzeugen.
+- AdMob Edge Function `admob-rewarded-ssv` musste nicht geändert werden:
+  - Version 4 bleibt aktiv;
+  - sie routet weiterhin signierte Quest-SSV-Events auf denselben verifizierten RPC;
+  - die neue 2×-Logik liegt vollständig serverseitig im RPC/Event-Ledger.
+- Datenmigration verifiziert:
+  - Beta: 1 bestehende V8.188-Nutzung wurde korrekt zu `1/2` migriert;
+  - Server 1: aktuell 0 alte Nutzungen;
+  - Beta aktive Quest zeigt serverseitig aktuell `1/2` und kann damit noch das zweite Video nutzen.
+- RPC-Compile-Test mit nicht existierendem Nutzer auf Beta + Server1: sauber `QUEST_GUARD_NOT_ENABLED` statt SQL-Fehler.
+- JS-Syntaxchecks:
+  - Quest-Skip Owner: OK;
+  - Gameplay-i18n: OK.
+- Mehrsprachigkeit DE/EN/ES/FR/PL/TR um 0/2-, 1/2- und 2/2-Texte erweitert.
+- Auslieferung Beta + Standard + Server 1:
+  - Quest JS/CSS + Gameplay-i18n Cache-Key `8190questvideo2x1`.
+- Klassenbalance Server 1:
+  - nicht verändert;
+  - `server1-release-channel.js` lädt weiterhin vor `v318/v319/v6287/v4156`;
+  - keine der Klassenbalance-Dateien wurde für V8.190 geändert.
+- Supabase Security Advisor nach Änderung ausgeführt; nur bestehende projektweite Alt-Warnungen, kein neuer V8.190-spezifischer öffentlicher Zugriff eingeführt.
+- Manueller Endtest:
+  1. neue Quest starten;
+  2. erstes Video vollständig ansehen -> 25 % abziehen, UI `1/2`;
+  3. zweites Video vollständig ansehen -> weitere 25 % abziehen, UI `2/2`;
+  4. drittes Video darf nicht mehr startbar sein;
+  5. dieselbe Prüfung auf Server 1 wiederholen.
