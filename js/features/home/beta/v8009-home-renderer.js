@@ -103,7 +103,11 @@
     try{return typeof v110MysticEventActive==='function'&&v110MysticEventActive()}catch(e){return false}
   }
   function runeHuntEventActive(){
-    try{return typeof window.v8198RuneHuntEventActive==='function'&&window.v8198RuneHuntEventActive()}catch(e){return false}
+    try{
+      const serverState=window.v8198RuneHuntSnapshot?.();
+      if(serverState&&serverState.active===true)return true;
+      return typeof window.v8198RuneHuntEventActive==='function'&&window.v8198RuneHuntEventActive();
+    }catch(e){return false}
   }
 
   function eventIcon(ev){
