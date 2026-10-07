@@ -96,3 +96,37 @@
 @media(prefers-reduced-motion:reduce){
   .v7137-frame-target>.v7139-frame-art{animation:none!important;filter:drop-shadow(0 0 4px var(--v7140-frame-glow))!important}
 }
+
+
+/* V8.204: v5 VIP/referral frames are square artwork.
+   Keep their aspect ratio on the rectangular character portrait and stop
+   clipping the crown / outer ornaments at the v510 portrait boundary. */
+#character #v510HeroRoot .v510-portrait{
+  overflow:visible!important;
+}
+#character #v510HeroRoot .avatar-scene.v7137-frame-target[data-v7137-frame="vip_crown"]>.v7139-frame-art,
+#character #v510HeroRoot .avatar-scene.v7137-frame-target[data-v7137-frame="referral_legend"]>.v7139-frame-art{
+  left:-8%!important;
+  top:-8%!important;
+  width:116%!important;
+  height:116%!important;
+  object-fit:contain!important;
+  object-position:center!important;
+}
+#character #v510HeroRoot .v510-col{
+  position:relative!important;
+  z-index:8!important;
+}
+#character #v510HeroRoot .v510-center{
+  position:relative!important;
+  z-index:6!important;
+}
+@media(max-width:390px){
+  #character #v510HeroRoot .avatar-scene.v7137-frame-target[data-v7137-frame="vip_crown"]>.v7139-frame-art,
+  #character #v510HeroRoot .avatar-scene.v7137-frame-target[data-v7137-frame="referral_legend"]>.v7139-frame-art{
+    left:-7%!important;
+    top:-7%!important;
+    width:114%!important;
+    height:114%!important;
+  }
+}
