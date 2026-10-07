@@ -22,12 +22,19 @@
   function authorityFresh(){
     const item=window.v7074ItemAuthorityDiagnostics?.();
     const build=window.v7033BuildAuthorityDiagnostics?.();
+    const achievement=window.v7080AchievementDiagnostics?.();
     let uid='';
     try{uid=String((typeof v073User!=='undefined'&&v073User?.id)||window.v073User?.id||'')}catch(_){}
     if(!uid)return false;
     const itemFresh=!!item?.ready && String(item?.uid||'')===uid && (Date.now()-Number(item.lastSync||0)<30000);
     const buildFresh=!!build?.ready && String(build?.uid||'')===uid && !!build?.buildGuard && (Date.now()-Number(build.hydratedAt||0)<30000);
-    return itemFresh&&buildFresh;
+    const achievementRequired=!!window.v7081UseAuthority?.('achievements');
+    const achievementFresh=!achievementRequired || (
+      !!achievement?.ready &&
+      String(achievement?.serverUid||achievement?.uid||'')===uid &&
+      (Date.now()-Number(achievement.lastSync||0)<30000)
+    );
+    return itemFresh&&buildFresh&&achievementFresh;
   }
 
   function ensureAttributesAuthoritative(){
@@ -45,15 +52,22 @@
     }catch(_){}
     if(!hasAccount||anonymous)return Promise.resolve(true);
 
-    if(typeof window.v7074ItemAuthorityRefresh!=='function'||typeof window.v7033BuildAuthorityRefresh!=='function'){
+    const achievementRequired=!!window.v7081UseAuthority?.('achievements');
+    if(
+      typeof window.v7074ItemAuthorityRefresh!=='function'||
+      typeof window.v7033BuildAuthorityRefresh!=='function'||
+      (achievementRequired&&typeof window.v7080AchievementRefresh!=='function')
+    ){
       return Promise.resolve(false);
     }
 
     if(!attributeSyncPromise){
-      attributeSyncPromise=Promise.all([
+      const jobs=[
         Promise.resolve(window.v7033BuildAuthorityRefresh(true)),
         Promise.resolve(window.v7074ItemAuthorityRefresh(true,false))
-      ])
+      ];
+      if(achievementRequired)jobs.push(Promise.resolve(window.v7080AchievementRefresh(false)));
+      attributeSyncPromise=Promise.all(jobs)
         .then(()=>authorityFresh())
         .catch(e=>{console.warn('V4.67 attribute authority sync',e);return false})
         .finally(()=>{attributeSyncPromise=null});
