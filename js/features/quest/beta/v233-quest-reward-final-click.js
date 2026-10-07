@@ -162,6 +162,7 @@ function v233ClaimQuest(){
   */
   if(!s.quests?.active){
     try{window.v4222AfterQuestClaim?.()}catch(e){console.warn('V4.222 post-claim hook',e)}
+    try{window.v4162PaintMenuAttentionLocal?.()}catch(_){}
     v233ShowActualQuestReward(snapshot);
   }
 
