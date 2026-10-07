@@ -205,6 +205,105 @@
   }
   window.glSyncGrowCarePushJob=glSyncGrowCarePushJob;
 
+
+  /* Grow Cup: schedule all six care-window pushes when a real Cup run starts.
+     Jobs use their own type per phase, so they can coexist and still be
+     individually idempotent. */
+  const GL_CUP_ACTIONS=['Licht','Gießen','Dünger','Beschneiden','Temperatur','Erntezeitpunkt'];
+  let glCupPushSyncPromise=null;
+
+  async function glSyncGrowCupCarePushJobs(forcedState=null){
+    if(typeof window.glPushEnabled==='function'&&!window.glPushEnabled())return false;
+    if(glCupPushSyncPromise)return glCupPushSyncPromise;
+    glCupPushSyncPromise=(async()=>{
+      try{
+        const user=await glPushUser();
+        if(!user?.id||typeof v073Db==='undefined')return false;
+        const db=v073Db,now=Date.now(),nowIso=new Date(now).toISOString();
+        const state=forcedState||window.v8210GrowCupSnapshot?.()||null;
+        const run=state?.run||null;
+
+        const {data:active,error:activeError}=await db.from('push_jobs')
+          .select('id,type,send_at')
+          .eq('user_id',user.id)
+          .like('type','growcup_care_%')
+          .is('sent_at',null)
+          .is('cancelled_at',null);
+        if(activeError)throw activeError;
+        const existing=Array.isArray(active)?active:[];
+
+        if(!run||run.status!=='active'||!run.started_at){
+          if(existing.length){
+            const {error}=await db.from('push_jobs')
+              .update({cancelled_at:nowIso,updated_at:nowIso})
+              .eq('user_id',user.id)
+              .like('type','growcup_care_%')
+              .is('sent_at',null).is('cancelled_at',null);
+            if(error)throw error;
+          }
+          return true;
+        }
+
+        const start=Date.parse(run.started_at);
+        if(!Number.isFinite(start))return false;
+        const desired=[];
+        for(let phase=1;phase<=6;phase++){
+          const sendMs=start+((phase-1)*60*60*1000)+(45*60*1000);
+          /* Keep a small grace window around "now" so an already-due job is
+             never cancelled by an app-side resync before the push worker sends it. */
+          if(sendMs<now-(2*60*1000))continue;
+          desired.push({
+            type:'growcup_care_'+phase,
+            sendMs,
+            send_at:new Date(sendMs).toISOString(),
+            title:'Grow Cup',
+            body:'🌿 Pflegefenster offen: '+GL_CUP_ACTIONS[phase-1]+'. Du hast 15 Minuten für deine Einstellung.'
+          });
+        }
+
+        const wantedTypes=new Set(desired.map(x=>x.type));
+        const obsolete=existing.filter(x=>!wantedTypes.has(String(x.type||'')));
+        for(const job of obsolete){
+          const {error}=await db.from('push_jobs').update({cancelled_at:nowIso,updated_at:nowIso})
+            .eq('id',job.id).eq('user_id',user.id).is('sent_at',null).is('cancelled_at',null);
+          if(error)throw error;
+        }
+
+        const inserts=[];
+        for(const want of desired){
+          const same=existing.find(x=>String(x.type||'')===want.type);
+          const sameAt=Date.parse(same?.send_at||'');
+          if(same&&Number.isFinite(sameAt)&&Math.abs(sameAt-want.sendMs)<1000)continue;
+          if(same){
+            const {error}=await db.from('push_jobs').update({cancelled_at:nowIso,updated_at:nowIso})
+              .eq('id',same.id).eq('user_id',user.id).is('sent_at',null).is('cancelled_at',null);
+            if(error)throw error;
+          }
+          inserts.push({
+            user_id:user.id,type:want.type,title:want.title,body:want.body,
+            send_at:want.send_at
+          });
+        }
+        if(inserts.length){
+          const {error}=await db.from('push_jobs').insert(inserts);
+          if(error)throw error;
+        }
+        console.info('[GL Push] Grow-Cup-Pflegefenster synchronisiert',desired.map(x=>x.send_at));
+        return true;
+      }catch(e){
+        console.warn('[Grow Legends] Grow-Cup-Push konnte nicht geplant werden:',e);
+        return false;
+      }
+    })();
+    try{return await glCupPushSyncPromise}
+    finally{glCupPushSyncPromise=null}
+  }
+  window.glSyncGrowCupCarePushJobs=glSyncGrowCupCarePushJobs;
+
+  window.addEventListener('growlegends:growcup-state',e=>{
+    setTimeout(()=>void glSyncGrowCupCarePushJobs(e?.detail||null),0);
+  },{passive:true});
+
   function installHooks(){
     try{
       /* Wrap the FINAL planting function at EOF. Several older game patches wrap
@@ -259,7 +358,7 @@
   setTimeout(installHooks,2000);
   window.addEventListener('growlegends:account-ready',()=>{
     installHooks();
-    setTimeout(()=>{void glSyncGrowPushJob();void glSyncGrowCarePushJob();},1000);
+    setTimeout(()=>{void glSyncGrowPushJob();void glSyncGrowCarePushJob();void glSyncGrowCupCarePushJobs();},1000);
   });
 
   /* Reopen/resume the APK: force a fresh Supabase token before the next plant. */
@@ -275,9 +374,9 @@
       }
     }catch(e){console.warn('[GL Push] resume refresh exception',e);}
   }
-  window.addEventListener('pageshow',()=>setTimeout(()=>{void glRefreshPushSessionOnResume();void glSyncGrowCarePushJob();},250),{passive:true});
+  window.addEventListener('pageshow',()=>setTimeout(()=>{void glRefreshPushSessionOnResume();void glSyncGrowCarePushJob();void glSyncGrowCupCarePushJobs();},250),{passive:true});
   document.addEventListener('visibilitychange',()=>{
-    if(document.visibilityState==='visible')setTimeout(()=>{void glRefreshPushSessionOnResume();void glSyncGrowCarePushJob();},250);
+    if(document.visibilityState==='visible')setTimeout(()=>{void glRefreshPushSessionOnResume();void glSyncGrowCarePushJob();void glSyncGrowCupCarePushJobs();},250);
   },{passive:true});
 
   /* V3: observe planting from WINDOW capture, before Growroom's document-capture
