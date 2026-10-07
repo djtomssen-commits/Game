@@ -12363,3 +12363,50 @@ Aktueller Release-Status:
   - Matrix: `71a3c5e40b6efef9210ba98f2330e8581dceb14e`.
 - Server 1 nicht geändert.
 
+### 2026-10-07 – V8.213 Beschleunigter Grow-Cup-Beta-Test
+- Für den autorisierten Beta-Testaccount existiert jetzt ein eigener **6-Minuten-Testlauf**.
+- Skalierung:
+  - echter Cup: 6 Stunden = 6 × 60 Minuten;
+  - Beta-Test: 6 Minuten = 6 × 60 Sekunden;
+  - Pflegefenster im Test: Sekunde 45–59 jeder Phase;
+  - damit wird exakt derselbe Rhythmus 60× schneller geprüft.
+- Sicherheit/Fairness:
+  - Testmodus serverseitig nur für den autorisierten Beta-Testaccount;
+  - Testlauf besitzt `test_mode=true`;
+  - Testläufe erscheinen niemals in der Grow-Cup-Rangliste;
+  - Testläufe vergeben keine Verzauberungsrunen, keine Runenfragmente und keine Champion-Belohnung;
+  - ein echter Cup-Start ersetzt einen vorhandenen Testlauf sauber und setzt `test_mode=false`.
+- UI:
+  - auf dem Grow-Cup-Startscreen erscheint für den Tester **BETA-TESTLAUF · 6 MINUTEN**;
+  - laufender Test ist deutlich als Beta-Test markiert;
+  - nach Abschluss stehen **Testlauf erneut starten** und – bei offenem Event – **echten 6-Stunden-Cup starten** zur Verfügung.
+- Backend:
+  - `recovery_private.v8210_growcup_runs.test_mode`;
+  - `recovery_private.v8213_is_beta_tester(uuid)`;
+  - `recovery_private.v8213_phase_seconds(boolean)`;
+  - `recovery_private.v8213_care_open_seconds(boolean)`;
+  - `public.v8213_growcup_test_start(text)`;
+  - Sync/Public-State/Tune/Rangliste/Reward-Claim berücksichtigen Testmodus.
+- SQL-Snapshot:
+  - `V8213_GROW_CUP_BETA_TEST.sql`.
+- QA in Transaktion mit ROLLBACK:
+  - Teststart erfolgreich;
+  - `test_mode=true`;
+  - Gesamtdauer exakt 360 Sekunden;
+  - zu frühe Pflege wird blockiert;
+  - Pflegefenster bei Sekunde 46 offen;
+  - nach 6:01 Minuten automatisch `completed`;
+  - Rang bleibt `null`;
+  - Wallet vor/nach Test identisch;
+  - Testlauf nicht in Rangliste;
+  - Test-Neustart funktioniert;
+  - Übergang Testlauf → echter Cup setzt `test_mode=false`.
+- Relevante Commits:
+  - Test-Client: `c30973113982a6099897909ff84330d83134db45`;
+  - Test-Neustart/Real-Handoff: `006ee7b43753fdc2475892e047a7eb69bf1a9e1f`;
+  - Test-CSS: `fdf9cd8ea33c2635b6348204610b3f2a29cd6900`;
+  - Beta Cache: `8350de0dd91e35d40caadf4a414b8e33392b2ea8`;
+  - SQL-Snapshot: `bf8701765337248496e0e7ff2ec05ab8be199201`;
+  - Matrix: `91c8e827871d7d02fa1829fc8f69b1cbbaceffa7`.
+- Server 1 nicht geändert.
+
