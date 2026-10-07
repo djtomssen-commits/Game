@@ -131,33 +131,43 @@ function activeRun(run){
 function rewardTable(){
  return '<div class="v8210-reward-table"><div><b>🥇 Platz 1</b><span>3 Runen · 30 Frag.</span></div><div><b>🥈 Platz 2</b><span>2 Runen · 25 Frag.</span></div><div><b>🥉 Platz 3</b><span>2 Runen · 20 Frag.</span></div><div><b>4–10</b><span>1 Rune · 15 Frag.</span></div><div><b>11–25</b><span>12 Frag.</span></div><div><b>26–50</b><span>8 Frag.</span></div><div><b>51–100</b><span>5 Frag.</span></div></div>';
 }
+function resultBreakdown(run){
+ const rows=Array.isArray(run?.results)?run.results:[];
+ return '<div class="v8214-result-list">'+rows.map(r=>{
+  const a=r.action||{},score=Math.max(0,Math.min(100,Number(r.score)||0));
+  const missed=String(r.status||'')==='missed';
+  return '<div class="v8214-result-row '+(missed?'missed':'')+'"><i>'+esc(a.icon||'🌿')+'</i><div><b>'+esc(a.title||('Aktion '+r.phase))+'</b><small>'+(missed?'Verpasst':formatValue(r.value,a))+'</small><em><span style="width:'+score+'%"></span></em></div><strong>'+Math.round(score)+'/100</strong></div>';
+ }).join('')+'</div>';
+}
 function completed(run){
- const t=TIER[String(run.tier||'bronze')]||TIER.bronze,score=Number(run.final_score||0).toFixed(2),rank=Number(run.rank)||0;
+ const t=TIER[String(run.tier||'bronze')]||TIER.bronze,score=Math.round(Number(run.final_score)||0),rank=Number(run.rank)||0;
  if(run.test_mode){
   return '<section class="v8210-scene v8210-finale">'+phaseRail(run)+
    '<div class="v8210-final-grid"><div class="v8210-stage-panel final">'+plantStage(6,'completed')+
-   '<div class="v8210-final-medal"><i>🧪</i><small>BETA-TEST ABGESCHLOSSEN</small><b>'+score+'</b><strong>'+t[1]+'</strong></div></div>'+
-   '<div class="v8210-final-copy"><small>6-MINUTEN-TESTLAUF · '+esc(run.cup_seed||'')+'</small><h1>🧪 Testlauf beendet</h1><p>Dieser Lauf testet exakt dieselben sechs Phasen, nur 60× schneller. Er zählt nicht für Rangliste oder Belohnungen.</p>'+metrics(run)+
-   '<div class="v8210-personal-note"><b>Keine Runen · keine Fragmente · kein Ranglistenplatz</b><br>Der Testlauf verändert keine echten Cup-Belohnungen.</div>'+
+   '<div class="v8210-final-medal"><i>🧪</i><small>BETA-TEST ABGESCHLOSSEN</small><b>'+score+' / 600</b><strong>'+t[1]+'</strong></div></div>'+
+   '<div class="v8210-final-copy"><small>6-MINUTEN-TESTLAUF · '+esc(run.cup_seed||'')+'</small><h1>🧪 Ergebnis deiner Pflanze</h1><p>Jetzt werden alle sechs versteckten Sweet Spots aufgelöst – je näher du lagst, desto mehr Punkte.</p>'+
+   resultBreakdown(run)+metrics(run)+
+   '<div class="v8210-personal-note"><b>'+score+' von 600 Punkten</b><br>Testlauf: keine Runen, keine Fragmente und kein Ranglistenplatz.</div>'+
    '<button class="v8213-test-start" data-cup-test-start>🧪 TESTLAUF ERNEUT STARTEN</button>'+
    (S.state?.active?'<button class="v8210-claim" data-cup-start>ECHTEN 6-STUNDEN-CUP STARTEN</button>':'')+
    '<button class="v8210-secondary" data-cup-ranking>Rangliste ansehen</button></div></div></section>';
  }
  return '<section class="v8210-scene v8210-finale">'+phaseRail(run)+
-   '<div class="v8210-final-grid"><div class="v8210-stage-panel final">'+plantStage(6,'completed')+
-     '<div class="v8210-final-medal"><i>'+t[0]+'</i><small>GESAMTWERTUNG</small><b>'+score+'</b><strong>'+t[1]+'</strong></div></div>'+
-   '<div class="v8210-final-copy"><small>6-STUNDEN-CUP ABGESCHLOSSEN · '+esc(run.cup_seed||'')+'</small><h1>'+t[0]+' '+t[1]+'</h1><p>Sechs Stunden Pflege wurden in Qualität, Ertrag, Harz, Genetik und Gesundheit zusammengeführt.</p>'+metrics(run)+
-   (run.personal_reward_awarded?'<div class="v8210-personal-reward"><i>👑</i><div><b>Grow Champion erreicht</b><span>+1 Verzauberungsrune · +10 Runenfragmente</span></div></div>':'<div class="v8210-personal-note">Ab <b>92,00 Punkten</b> gibt es zusätzlich 1 Verzauberungsrune + 10 Fragmente.</div>')+
-   '<div class="v8210-rank-now"><small>AKTUELLER SERVER-RANG</small><b>'+(rank?'#'+rank:'wird geladen …')+'</b><span>Rangbelohnungen werden erst final, wenn alle gestarteten 6-Stunden-Runs beendet sind.</span></div>'+
-   (S.ranking?.final===true&&!run.rank_reward_claimed?'<button class="v8210-claim" data-cup-claim>Rangbelohnung abholen</button>':'')+
-   '<button class="v8210-secondary" data-cup-ranking>Rangliste ansehen</button></div></div>'+
+  '<div class="v8210-final-grid"><div class="v8210-stage-panel final">'+plantStage(6,'completed')+
+  '<div class="v8210-final-medal"><i>'+t[0]+'</i><small>GESAMTPUNKTE</small><b>'+score+' / 600</b><strong>'+t[1]+'</strong></div></div>'+
+  '<div class="v8210-final-copy"><small>6-STUNDEN-CUP ABGESCHLOSSEN · '+esc(run.cup_seed||'')+'</small><h1>'+t[0]+' Ergebnis deiner Pflanze</h1><p>Jede der sechs Aktionen wurde mit maximal 100 Punkten bewertet. Je näher am versteckten Sweet Spot, desto höher die Punktzahl.</p>'+
+  resultBreakdown(run)+metrics(run)+
+  (run.personal_reward_awarded?'<div class="v8210-personal-reward"><i>👑</i><div><b>Grow Champion erreicht</b><span>552+ Punkte · +1 Verzauberungsrune · +10 Runenfragmente</span></div></div>':'<div class="v8210-personal-note">Ab <b>552 / 600 Punkten</b> gibt es zusätzlich 1 Verzauberungsrune + 10 Fragmente.</div>')+
+  '<div class="v8210-rank-now"><small>SERVER-RANGLISTE</small><b>'+(rank?'#'+rank:'wird geladen …')+'</b><span>Dein Rang richtet sich nach deinen Gesamtpunkten.</span></div>'+
+  (S.ranking?.final===true&&!run.rank_reward_claimed?'<button class="v8210-claim" data-cup-claim>Rangbelohnung abholen</button>':'')+
+  '<button class="v8210-secondary" data-cup-ranking>Rangliste ansehen</button></div></div>'+
  '</section>';
 }
 function ranking(){
  const d=S.ranking||{},rows=Array.isArray(d.rows)?d.rows:[];
- return '<section class="v8210-scene v8210-ranking"><div class="v8210-ranking-head"><div><small>SERVERWEITE RANGLISTE</small><h2>🏆 GROW CUP RANGLISTE</h2><p>Eine Rangliste für alle abgeschlossenen Grow-Cup-Runs.</p></div><button data-cup-refresh '+(S.busy?'disabled':'')+'>↻ Aktualisieren</button></div>'+
+ return '<section class="v8210-scene v8210-ranking"><div class="v8210-ranking-head"><div><small>SERVERWEITE RANGLISTE</small><h2>🏆 GROW CUP RANGLISTE</h2><p>Maximal 600 Punkte. Je näher die sechs Einstellungen an ihren Sweet Spots lagen, desto höher der Rang.</p></div><button data-cup-refresh '+(S.busy?'disabled':'')+'>↻ Aktualisieren</button></div>'+
  rewardTable()+
- '<div class="v8210-ranking-list">'+(rows.length?rows.map(x=>{const t=TIER[String(x.tier||'bronze')]||TIER.bronze;return '<div class="v8210-rank-row rank-'+Number(x.rank||0)+'"><strong>#'+Number(x.rank||0)+'</strong><i>'+t[0]+'</i><div><b>'+esc(x.player||'Legende')+'</b><small>'+esc(x.cup_seed||'')+' · '+esc(t[1])+'</small></div><em>'+Number(x.final_score||0).toFixed(2)+'</em></div>'}).join(''):'<div class="v8210-empty">Noch keine abgeschlossenen 6-Stunden-Runs.</div>')+'</div>'+
+ '<div class="v8210-ranking-list">'+(rows.length?rows.map(x=>{const t=TIER[String(x.tier||'bronze')]||TIER.bronze;return '<div class="v8210-rank-row rank-'+Number(x.rank||0)+'"><strong>#'+Number(x.rank||0)+'</strong><i>'+t[0]+'</i><div><b>'+esc(x.player||'Legende')+'</b><small>'+esc(x.cup_seed||'')+' · '+esc(t[1])+'</small></div><em>'+Math.round(Number(x.final_score)||0)+' P</em></div>'}).join(''):'<div class="v8210-empty">Noch keine abgeschlossenen 6-Stunden-Runs.</div>')+'</div>'+
  '</section>';
 }
 function cupBody(){
@@ -178,15 +188,13 @@ function updateClockText(){
  if(leftMs(target)<=0&&S.boundaryKey!==key){S.boundaryKey=key;void refresh({paintNow:true})}
 }
 function startClock(){stopClock();updateClockText();S.timer=setInterval(updateClockText,1000)}
-function bindRanges(box){
- box.querySelectorAll('[data-cup-range]').forEach(input=>{
-  input.oninput=()=>{
-   const k=String(input.dataset.cupRange||''),v=Number(input.value);if(!S.draft)return;
-   if(k==='light')S.draft.light=v;if(k==='water')S.draft.water=v;if(k==='nutrient')S.draft.nutrient=v;
-   const out=box.querySelector('[data-cup-value="'+k+'"]');
-   if(out)out.textContent=(k==='nutrient'?v.toFixed(1):Math.round(v))+' '+(k==='light'?'Min.':'ml');
-  };
- });
+function bindSingleRange(box){
+ const input=box.querySelector('[data-cup-single-range]');if(!input)return;
+ input.oninput=()=>{
+  S.draft=Number(input.value);
+  const out=box.querySelector('[data-cup-single-value]');
+  if(out)out.textContent=formatValue(S.draft,S.state?.run?.action||{});
+ };
 }
 function paint(){
  const box=overlay().querySelector('.v8210-growcup-content');if(!box)return;
@@ -195,11 +203,11 @@ function paint(){
  box.querySelectorAll('[data-cup-view]').forEach(b=>b.onclick=()=>{S.view=String(b.dataset.cupView||'cup');if(S.view==='ranking'&&!S.ranking)void loadRanking();paint()});
  box.querySelector('[data-cup-start]')?.addEventListener('click',start);
  box.querySelector('[data-cup-test-start]')?.addEventListener('click',testStart);
- box.querySelector('[data-cup-tune]')?.addEventListener('click',tune);
+ box.querySelector('[data-cup-submit]')?.addEventListener('click',submitAction);
  box.querySelector('[data-cup-ranking]')?.addEventListener('click',()=>{S.view='ranking';paint();void loadRanking()});
  box.querySelector('[data-cup-refresh]')?.addEventListener('click',()=>void loadRanking(true));
  box.querySelector('[data-cup-claim]')?.addEventListener('click',()=>void claimRank());
- bindRanges(box);
+ bindSingleRange(box);
  if(S.opened)startClock();
 }
 function applyState(r){
@@ -217,55 +225,53 @@ function applyState(r){
 async function refresh({paintNow=true}={}){
  if(!uid()||!db())return null;
  try{const r=await rpc('v8210_growcup_state');applyState(r);if(paintNow&&S.opened)paint();return r}
- catch(e){S.lastError=String(e?.message||e);console.warn('[V8.211 Grow Cup] state',e);return null}
+ catch(e){S.lastError=String(e?.message||e);console.warn('[V8.214 Grow Cup] state',e);return null}
 }
 async function loadRanking(force=false){
  if(S.busy&&!force)return null;
  try{const r=await rpc('v8210_growcup_leaderboard',{p_limit:100});if(r?.ok){S.ranking=r;if(S.opened)paint()}return r}
- catch(e){S.lastError=String(e?.message||e);console.warn('[V8.211 Grow Cup] ranking',e);return null}
+ catch(e){S.lastError=String(e?.message||e);console.warn('[V8.214 Grow Cup] ranking',e);return null}
 }
 async function open(){S.opened=true;S.view='cup';overlay().classList.add('show');paint();await refresh({paintNow:true});void loadRanking()}
 async function start(){
  if(S.busy)return;S.busy=true;paint();
  try{
-  const r=await rpc('v8210_growcup_start',{p_request_id:rid('v8211_start')});
+  const r=await rpc('v8210_growcup_start',{p_request_id:rid('v8214_start')});
   if(r?.ok===false)throw new Error(String(r.reason||'START_REJECTED'));
-  applyState(r);S.starts++;toast('6-Stunden-Cup gestartet','success','Erstes Pflegefenster öffnet in 45 Minuten.');
+  applyState(r);S.starts++;toast('6-Stunden-Cup gestartet','success','Aktion 1: Licht · Regler öffnet in 45 Minuten.');
  }catch(e){S.lastError=String(e?.message||e);toast('Grow Cup','error',S.lastError)}
  finally{S.busy=false;paint()}
 }
 async function testStart(){
  if(S.busy)return;S.busy=true;paint();
  try{
-  const r=await rpc('v8213_growcup_test_start',{p_request_id:rid('v8213_test')});
+  const r=await rpc('v8213_growcup_test_start',{p_request_id:rid('v8214_test')});
   if(r?.ok===false)throw new Error(String(r.reason||'TEST_START_REJECTED'));
-  applyState(r);S.starts++;toast('Beta-Test gestartet','success','6 Minuten · Pflegefenster jeweils nach 45 Sekunden.');
+  applyState(r);S.starts++;toast('Beta-Test gestartet','success','6 Minuten · pro Phase genau ein Regler.');
  }catch(e){S.lastError=String(e?.message||e);toast('Grow Cup Test','error',S.lastError)}
  finally{S.busy=false;paint()}
 }
-async function tune(){
- const run=S.state?.run,d=ensureDraft(run);if(S.busy||!run||run.window_state!=='open')return;
+async function submitAction(){
+ const run=S.state?.run,value=ensureDraft(run);if(S.busy||!run||run.window_state!=='open')return;
  S.busy=true;paint();
  try{
-  const r=await rpc('v8210_growcup_tune',{
-   p_light_minutes:Math.round(d.light),p_water_ml:Math.round(d.water),
-   p_nutrient_ml:Number(d.nutrient.toFixed(1)),p_request_id:rid('v8211_tune')
-  });
+  const r=await rpc('v8214_growcup_submit',{p_value:Number(value),p_request_id:rid('v8214_submit')});
   if(r?.ok===false){
-   const reason=String(r.reason||'TUNE_REJECTED');
-   if(reason==='CARE_TOO_EARLY')throw new Error('Das Pflegefenster ist noch nicht geöffnet.');
-   if(reason==='CARE_WINDOW_CLOSED')throw new Error('Dieses Pflegefenster ist bereits geschlossen.');
-   if(reason==='CARE_ALREADY_SET')throw new Error('Die Pflege für diese Stunde wurde bereits festgelegt.');
+   const reason=String(r.reason||'SUBMIT_REJECTED');
+   if(reason==='CARE_TOO_EARLY')throw new Error('Das Aktionsfenster ist noch nicht geöffnet.');
+   if(reason==='CARE_WINDOW_CLOSED')throw new Error('Dieses Aktionsfenster ist bereits geschlossen.');
+   if(reason==='CARE_ALREADY_SET')throw new Error('Der Wert für diese Phase wurde bereits festgelegt.');
+   if(reason==='VALUE_RANGE'||reason==='VALUE_STEP')throw new Error('Ungültiger Reglerwert.');
    throw new Error(reason);
   }
-  applyState(r);S.tunes++;toast('Pflege festgelegt','success','Die Wirkung wird am Ende der Stunde ausgewertet.');
+  applyState(r);S.submits++;toast('Wert festgelegt','success','Punkte werden erst im Finale aufgedeckt.');
  }catch(e){S.lastError=String(e?.message||e);toast('Grow Cup','error',S.lastError)}
  finally{S.busy=false;paint()}
 }
 async function claimRank(){
  if(S.busy)return;S.busy=true;paint();
  try{
-  const r=await rpc('v8210_growcup_claim_rank_reward',{p_request_id:rid('v8211_rank')});
+  const r=await rpc('v8210_growcup_claim_rank_reward',{p_request_id:rid('v8214_rank')});
   if(r?.ok===false)throw new Error(String(r.reason||'CLAIM_REJECTED'));
   toast('Cup-Rangbelohnung','success','Platz '+Number(r.rank||0)+' · +'+Number(r.runes_awarded||0)+' Runen · +'+Number(r.shards_awarded||0)+' Fragmente');
   await refresh({paintNow:false});await loadRanking(true);
@@ -279,7 +285,7 @@ window.v8210GrowCupRefresh=refresh;
 window.v8210GrowCupSnapshot=()=>S.state?JSON.parse(JSON.stringify(S.state)):null;
 window.v8210GrowCupClose=close;
 window.v8210GrowCupLeaderboard=loadRanking;
-window.v8210GrowCupDiagnostics=()=>({version:VERSION,busy:S.busy,opened:S.opened,view:S.view,refreshes:S.refreshes,starts:S.starts,tunes:S.tunes,lastError:S.lastError,state:S.state,ranking:S.ranking});
+window.v8210GrowCupDiagnostics=()=>({version:VERSION,busy:S.busy,opened:S.opened,view:S.view,refreshes:S.refreshes,starts:S.starts,submits:S.submits,lastError:S.lastError,state:S.state,ranking:S.ranking});
 window.addEventListener('keydown',key);
 window.addEventListener('growlegends:account-ready',()=>{stopClock();S.state=null;S.ranking=null;S.draft=null;S.draftKey='';void refresh({paintNow:false})},{passive:true});
 window.addEventListener('pageshow',()=>setTimeout(()=>void refresh({paintNow:false}),500),{passive:true});
