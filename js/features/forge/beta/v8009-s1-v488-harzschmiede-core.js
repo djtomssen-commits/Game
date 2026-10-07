@@ -235,7 +235,7 @@
     sec.querySelectorAll('[data-v667-tab]').forEach(btn=>btn.addEventListener('click',()=>{
       const next=btn.dataset.v667Tab;
       if(next==='nebelforge'){void window.v7240OpenNebelforge?.();return}
-      if(next!=='dismantle'&&next!=='craft')return;
+      if(next!=='dismantle'&&next!=='craft'&&next!=='enchant')return;
       document.getElementById('forge')?.classList.remove('v7240-nebel-open');
       if(next===forgeTab)return;
       forgeTab=next;renderForge();
