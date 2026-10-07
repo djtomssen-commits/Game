@@ -475,6 +475,7 @@ async function runServerDungeon(){
    ensureShape();s.dungeonPass.lastFree=Math.max(0,Number(b.last_free_ms));persistLocal();
    try{window.v7144PaintDungeonTimer?.(true)}catch(_){}
    try{window.v324Paint?.()}catch(_){}
+   try{window.v4162PaintMenuAttentionLocal?.()}catch(_){}
   }
   lastState=null;lastStateAt=0;
 
