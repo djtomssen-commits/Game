@@ -172,7 +172,7 @@ async function syncServerTitles(force=false){
  }catch(e){console.warn('V6.342 server titles',e);return false}finally{syncBusy=false}
 }
 window.v6338SyncServerTitles=syncServerTitles;
-function titleLabelFromProfile(p){return String(p?.dungeon_progress?.public_title?.label||'')}
+function titleLabelFromProfile(p){const t=p?.dungeon_progress?.public_title||{};if((String(t.id||'')==='vip_member'||String(t.source||'')==='vip')&&!(p?.vip_visible!==false&&p?.vip_until&&Date.parse(p.vip_until)>Date.now()))return '';return String(t.label||'')}
 function injectSocial(html,p){const label=titleLabelFromProfile(p);if(!label)return html;const needle='<div class="v4124-social-lines">';return String(html).replace(needle,`<div class="v6338-public-title">👑 ${esc(label)}</div>${needle}`)}
 try{
  const base=window.v4130SocialRow||window.v073PlayerRow;
