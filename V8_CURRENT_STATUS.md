@@ -12065,3 +12065,42 @@ Aktueller Release-Status:
   2. Top-3-Karten prüfen.
   3. Referral-/VIP-Rahmen müssen jetzt sichtbar dünner wirken und sauberer um den Portraitausschnitt sitzen.
 
+### 2026-10-07 – V8.208 Dealer-Navigation vollständig + kompakt
+- Wunsch: Im Navigationseintrag des Harz-/Gold-/Rahmen-Dealers fehlte VIP; der Eintrag sollte vollständig, aber kompakt sein.
+- Gewählter Beta-Text:
+  - `Harz · Gold · Rahmen · VIP`.
+- Wichtig: Seitentitel und Navigation wurden bewusst getrennt:
+  - der Dealer-Hub darf weiterhin den ausführlichen Seitentitel verwenden;
+  - nur der Hauptnavigationseintrag verwendet die kompakte Punkt-Schreibweise.
+- Kanonischer Fix:
+  - `js/features/shop/beta/v8009-s7-v7117-dealer-hub.js`
+    - neue `navName()`-Logik;
+    - Navigation nutzt nicht mehr `dealerName()`;
+    - bei verfügbarer VIP-Funktion: `nav.harzDealer`;
+    - ohne VIP-Funktion: `nav.harzDealerNoVip`.
+  - `js/features/ui/beta/v8009-s6-v4148-complete-menu-authority.js`
+    - baut den Harz-Dealer-Eintrag direkt VIP-verfügbarkeitsabhängig;
+    - Beta mit VIP zeigt den vollständigen VIP-Text;
+    - Server 1 ohne VIP zeigt weiterhin nur `Harz · Gold · Rahmen`.
+  - `js/features/i18n/v8143-i18n-core.js`
+    - beide Navigationsvarianten für DE/EN/ES/FR/PL/TR ergänzt;
+    - damit überschreibt ein Sprachwechsel den VIP-Text nicht wieder mit dem alten Dealer-Namen.
+- Deutsche Labels:
+  - mit VIP: `Harz · Gold · Rahmen · VIP`;
+  - ohne VIP: `Harz · Gold · Rahmen`.
+- Cache-Bust für v8143, v4148 und v7117 auf Beta + Server 1:
+  - `8208dealernav1`.
+- Relevante Commits:
+  - v7117 Navigation: `8f445065fc7947ba09f03cb1d22d6aed0e5c9444`;
+  - v4148 Menü-Owner: `e79ba5b4fbba01f15a084ba53628111a0fe4c2fb`;
+  - i18n: `57a551b840c12aeeb042d8b295da0af525692f7f`;
+  - Beta Cache: `92ae6a041516e0b7450b2392bc8a627245bb9523`;
+  - Server1 Cache: `b26a9930e8f69731932ad5f5e924c6815b83a6a0`;
+  - Matrix: `33a8836547c3d8698c11414122c284b3f89ae89b`.
+- Manueller Test:
+  1. Beta/App komplett neu laden.
+  2. Hauptnavigation öffnen.
+  3. Eintrag muss `Harz · Gold · Rahmen · VIP` anzeigen.
+  4. Sprache wechseln und erneut prüfen.
+  5. Server 1 ohne VIP darf weiterhin keinen VIP-Punkt vortäuschen.
+
