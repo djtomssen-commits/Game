@@ -80,3 +80,59 @@
   transition:none!important;
   will-change:auto!important;
 }
+
+
+/* V8.200 enchant FX exceptions
+   The generic compositor rules above intentionally remove per-item GPU glows.
+   Enchanted items are rare, so preserve their static aura and only animate the
+   dedicated lightweight overlay from +5 upward. */
+#character #inventory .inv-item.v8198-e2,
+#character .slot.v8198-e2{
+  outline:1px solid rgba(109,236,203,.34)!important;
+  outline-offset:-2px!important;
+  box-shadow:inset 0 0 13px rgba(104,255,221,.14),0 0 7px rgba(93,230,201,.38),0 3px 7px rgba(0,0,0,.34)!important;
+}
+#character #inventory .inv-item.v8198-e3,
+#character .slot.v8198-e3{
+  outline:1px solid rgba(122,245,216,.52)!important;
+  outline-offset:-2px!important;
+  box-shadow:inset 0 0 15px rgba(117,255,227,.18),0 0 10px rgba(91,238,204,.52),0 0 17px rgba(126,102,255,.18),0 3px 7px rgba(0,0,0,.34)!important;
+}
+#character #inventory .inv-item.v8198-e4,
+#character .slot.v8198-e4{
+  outline:1px solid rgba(151,255,229,.72)!important;
+  outline-offset:-2px!important;
+  box-shadow:inset 0 0 17px rgba(134,255,231,.24),0 0 13px rgba(94,244,210,.68),0 0 24px rgba(130,108,255,.28),0 3px 7px rgba(0,0,0,.34)!important;
+}
+#character #inventory .inv-item.v8198-e5,
+#character #inventory .inv-item.v8198-e6,
+#character .slot.v8198-e5,
+#character .slot.v8198-e6{
+  outline:1px solid rgba(178,255,237,.88)!important;
+  outline-offset:-2px!important;
+  box-shadow:inset 0 0 18px rgba(151,255,235,.30),0 0 17px rgba(99,255,222,.82),0 0 31px rgba(133,111,255,.40),0 3px 7px rgba(0,0,0,.34)!important;
+}
+#character #inventory .inv-item.v8198-e7,
+#character #inventory .inv-item.v8198-e8,
+#character #inventory .inv-item.v8198-e9,
+#character #inventory .inv-item.v8198-e10,
+#character .slot.v8198-e7,
+#character .slot.v8198-e8,
+#character .slot.v8198-e9,
+#character .slot.v8198-e10{
+  outline:1px solid rgba(211,255,245,.98)!important;
+  outline-offset:-2px!important;
+  box-shadow:inset 0 0 21px rgba(179,255,242,.36),0 0 20px rgba(112,255,228,.92),0 0 39px rgba(157,125,255,.56),0 3px 7px rgba(0,0,0,.34)!important;
+}
+#character #inventory .inv-item[data-v8198-enchant] > .v8198-item-fx,
+#character .slot[data-v8198-enchant] > .v8198-item-fx{
+  display:block!important;
+  visibility:visible!important;
+  pointer-events:none!important;
+}
+#character #inventory .inv-item[data-v8198-enchant] > .v8198-plus-badge,
+#character .slot[data-v8198-enchant] > .v8198-plus-badge{
+  display:block!important;
+  visibility:visible!important;
+  z-index:25!important;
+}
