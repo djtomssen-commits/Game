@@ -1,0 +1,33 @@
+-- Grow Legends V8.220 — Server 1 Grow Cup + Enchant promotion
+-- Applied on 2026-10-07.
+-- Server 1 remains schema-isolated from Beta/public.
+-- Canonical runtime objects created/updated:
+--   server1_private.v8198_enchant_wallet
+--   server1_private.v8198_rune_ledger
+--   server1_private.v8210_growcup_runs
+--   server1_private.v8210_growcup_ledger
+--   server1.v7102_auto_weekend_event_active(...)
+--   server1.v8198_enchant_state()
+--   server1.v8198_fuse_rune(text)
+--   server1.v8198_enchant_item(text,text)
+--   server1.v8210_growcup_state()
+--   server1.v8210_growcup_start(text)
+--   server1.v8214_growcup_submit(numeric,text)
+--   server1.v8210_growcup_leaderboard(integer)
+--   server1.v8210_growcup_claim_rank_reward(text)
+-- plus the matching server1_private v8210/v8211/v8213/v8214/v8216 helper set.
+--
+-- Event cadence:
+--   Grow Cup: every Thursday.
+--   EXP + Smaragd-Koloss: Friday-Sunday every second weekend.
+--   Gold + Dampf: alternating weekend.
+--
+-- Security:
+--   private tables RLS enabled, no anon/authenticated direct table access.
+--   player RPCs execute for authenticated/service_role.
+--   server1 function definitions contain no public.* or recovery_private.* references.
+--
+-- The executable migration was applied through Supabase migration
+--   v8220_server1_growcup_enchant_promotion
+-- and cloned the tested Beta function bodies into server1/server1_private while
+-- replacing schema references. This file is the release snapshot/manifest.
