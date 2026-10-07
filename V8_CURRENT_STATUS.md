@@ -12730,3 +12730,109 @@ Aktueller Release-Status:
   - Matrix: `b625c9bccc357531a5c7ca9c370a2a399fe89dd2`.
 - Server 1 wurde in diesem Block nicht auf den neuen Grow-Cup-Client umgestellt.
 
+### 2026-10-07 – V8.220 Server 1 auf aktuellen Nicht-Klassenbalance-Stand aktualisiert
+- Nutzerfreigabe: **Server 1 aktualisieren, Klassenbalance ausdrücklich ausnehmen.**
+- Server 1 bleibt weiterhin bis **08.10.2026 16:00 Europe/Berlin** für normale Spieler geschlossen; diese Promotion verändert das Launch-Gate nicht.
+- Übernommen:
+  - V8.209 sichtbare Verzauberungs-FX +2/+3/+4;
+  - kompletter aktueller Grow Cup bis V8.219;
+  - Grow Cup jeden Donnerstag;
+  - EXP + Smaragd-Koloss gemeinsam Freitag–Sonntag alle 2 Wochen;
+  - Gegenwochenende Gold + Dampf;
+  - wöchentlich neue Growroom-Sorte und neue Sweet Spots;
+  - 6-Stunden-Cup / 6 Aktionen / je 1 Regler / max. 600 Punkte;
+  - indirekter Pflanzenstatus ohne direkte Mehr-/Weniger-Hinweise;
+  - Timer-Resync an Phasengrenzen;
+  - Push bei offenem Pflegefenster über bestehende FCM/`push_jobs`-Kette;
+  - Cup-Navigation oben links;
+  - kleine Vor-Run-Anleitung;
+  - CUP-Pflanzenbild auf der Startseite;
+  - 6-Minuten-Testmodus vollständig entfernt;
+  - aktuelle Nicht-Balance-Frame-/Home-/Navigation-/Authority-/Item-/Grow-/Quest-/Dungeon-/Tower-/Shop-Owner über neuen Server-1-Cache geladen.
+- Server-1-Verzaubern:
+  - `v8198-enchanting.js` jetzt für Release-Channels `beta` + `server1` freigegeben;
+  - eigener Server-1-Runenwallet;
+  - eigener `server1.v8198_enchant_state()`;
+  - eigener `server1.v8198_fuse_rune(text)`;
+  - eigener `server1.v8198_enchant_item(text,text)`;
+  - Itemmutation greift ausschließlich auf `server1.player_item_state` / Server-1-Item-Authority zu.
+- Server-1-Grow-Cup-Authority neu und strikt getrennt:
+  - `server1_private.v8210_growcup_runs`;
+  - `server1_private.v8210_growcup_ledger`;
+  - `server1_private.v8198_enchant_wallet`;
+  - `server1_private.v8198_rune_ledger`;
+  - komplette aktuelle private Helper-Familie `v8210/v8211/v8213/v8214/v8216` nach `server1_private` promotet;
+  - Spieler-RPCs in `server1`:
+    - `v8210_growcup_state()`;
+    - `v8210_growcup_start(text)`;
+    - `v8214_growcup_submit(numeric,text)`;
+    - `v8210_growcup_leaderboard(integer)`;
+    - `v8210_growcup_claim_rank_reward(text)`.
+- Server-1-Event-Gate:
+  - `server1.v7102_auto_weekend_event_active(...)` auf V8.218-Rhythmus gesetzt;
+  - Grow Cup Donnerstag;
+  - EXP + Koloss Freitag–Sonntag im EXP-Zyklus;
+  - Gold + Dampf im Gegenzyklus;
+  - kein Runenjagd-Gate mehr.
+- Schema-Isolation geprüft:
+  - 33 relevante neue/aktualisierte Server-1-Funktionen geprüft;
+  - **0** Referenzen auf `public.*`;
+  - **0** Referenzen auf `recovery_private.*`;
+  - stattdessen ausschließlich `server1.*` / `server1_private.*`.
+- Server-1-Funktions-Smoke:
+  - authentifizierter `v8198_enchant_state()` erfolgreich;
+  - authentifizierter `v8210_growcup_state()` erfolgreich;
+  - Grow-Cup-Ranglisten-RPC erfolgreich;
+  - Test-State enthält kein `test_eligible`.
+- Server-1-Grow-Cup-Flow zusätzlich in DB-Transaktion getestet:
+  - temporärer echter `rules_version=3`-Run angelegt;
+  - Pflegefenster bei Minute 46 = `open`;
+  - Sweet-Spot-Ziel wird nicht öffentlich ausgeliefert;
+  - serverseitiger Aktionswert erfolgreich über `server1.v8214_growcup_submit(...)` gespeichert;
+  - öffentlicher `phase_record` enthält vor Phasenende keinen Score;
+  - danach vollständiges `ROLLBACK`, daher keine QA-Cup-Daten persistiert.
+- Server-1-HTML:
+  - 77 gemeinsame Nicht-Balance-Referenzen/aktuelle Assets mit Cache-Key `8220s1sync1` aktualisiert;
+  - neu eingebunden:
+    - `v8198-rune-enchant-css`;
+    - `v8198-enchanting`;
+    - `v8210-growcup`;
+  - Home, Weekend, Push Scheduler, Push Master, Cup-/Enchant-CSS und Forge-Core explizit auf `8220s1sync1`.
+- Klassenbalance bewusst **nicht** promoted:
+  - `v318-talent-combat-complete.js`;
+  - `v319-exact-talents-dungeon-balance.js`;
+  - `v4154-class-balance-item-variety.js`;
+  - `v4156-class-identity-balance.js`;
+  - `v6287-harzruferin.js`;
+  - keiner dieser Owner trägt den V8.220-Sync-Key.
+- Release-Channel:
+  - `js/features/account/server1-release-channel.js` unverändert;
+  - lädt weiterhin vor allen Balance-Ownern;
+  - `window.GROW_RELEASE_CHANNEL='server1'` bleibt erhalten.
+- VIP:
+  - bleibt weiterhin bewusst Beta-only und wurde nicht in Server 1 aktiviert;
+  - Grund: separater VIP-Kauf-/Authority-Pfad ist weiterhin als Beta-Monetization-Block geführt; Server 1 zeigt wie bisher `Harz · Gold · Rahmen` ohne VIP.
+- QA HTML/Client:
+  - Grow-Cup-Client Syntax OK;
+  - Enchanting-Client Syntax OK;
+  - beide Clients erlauben jetzt `beta` + `server1`;
+  - Grow Cup, Enchant CSS/JS, Home, Weekend und Push-Owner in Server1 jeweils exakt 1× geladen;
+  - VIP-Client/CSS in Server1 = 0;
+  - Release-Channel vor Balance-Ownern bestätigt.
+- Server-1-Cache-Key:
+  - `8220s1sync1`.
+- SQL-Snapshot:
+  - `V8220_SERVER1_GROWCUP_ENCHANT_PROMOTION.sql`.
+- Relevante Commits:
+  - Grow-Cup Server1-Guard: `c91e0107a02e1c5ff6b47efa714b89048933b112`;
+  - Verzaubern Server1-Guard: `26df909f51abf1500a6e6f3798c8ecf7d777fa33`;
+  - Server1 HTML Promotion: `e3f60d8de5fa474c916bdc2bf75db811061d0ba2`;
+  - SQL-Snapshot: `c6067692f147a18199a4c2d4ccffa41c22fe1aa7`;
+  - Matrix: `0b5e0556cd7aae0956fbb25bef91159b26a7ec64`.
+- Manueller Server-1-Test nach Öffnung/mit Vorabzugang:
+  1. Startseite: CUP-Bild/Eventanzeige prüfen.
+  2. Grow Cup öffnen: Anleitung nur vor Start, Menü ☰ funktionsfähig.
+  3. Cup starten: Timer/Pflanzenstatus prüfen; Push-Termin muss für das Pflegefenster angelegt werden.
+  4. Harzschmiede -> Verzaubern öffnen und Runenwallet prüfen.
+  5. Klassenkampf/-werte gegen bisherigen Server-1-Stand prüfen; sie dürfen sich durch V8.220 nicht verändert haben.
+
