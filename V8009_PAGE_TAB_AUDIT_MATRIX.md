@@ -32,7 +32,7 @@ Die Matrix wird nach jedem großen Cleanup-Batch aktualisiert.
 | Hinterhof-Dealer | Harz Lotto / Tütchen (Coming Soon) | [x] | Player-sichtbarer Menüeintrag über v4148; Harz Lotto offen, Tütchen deaktiviert/COMING SOON; manueller Endtest offen |
 | PvP | Hall-/Battle-Lifecycle | [x] | Cooldown ohne Full-Rerender, Legacy-Finish konsolidiert, v7053 Server-Authority + Fallback sauber getrennt; manueller Endtest offen |
 | Guild | Übersicht / Growtasks / Boss / Krieg | [x] | kompletter Struktur-/DOM-/Lifecycle-/Authority-Pass grün; manueller Endtest offen |
-| Hall of Haze | Ranking / Gegner / Profil-Interaktion | [x] | v6145 Ranking-Owner, v649 gezielter Progress-Sync, globale Hall-Repaints entfernt; manueller Endtest offen |
+| Hall of Haze | Spieler-Ranking / Gilden-Ranking / Profile | [x] | V8.184: v6145 bleibt kanonischer Hall-Owner; neue Haupttabs Spieler/Gilden, Gildenranking nach Gildenlevel → Gilden-Buds → Gilden-EP, anklickbares Gildenprofil mit Beschreibung/Leiter/Mitgliedern; Beta/Server1 getrennte RPCs; manueller UI-Endtest offen |
 | Friends | Ranking / Suche | [x] | v4130 finaler Friends/Search-Owner, Presence-Singleflight + 60s Refresh; v333/v382/v383 und globale Social-Renderwrapper retired; manueller Endtest offen |
 | Mail | Inbox / Sent / Compose / Battlelog | [x] | v381 finaler Mail-/Tab-/Compose-Owner, v6200 Battlelog; Recipient-Routing ohne Delay, doppelte Tab-Loader entfernt; manueller Endtest offen |
 | Admin | Content / Spieler / Tools (gestapelte Bereiche, keine echten Tabs) | [x] | v093 alleiniger Admin-Status- und Content-Lifecycle-Owner; Render-/Check-/Load-Wrapperketten entfernt; Player/Reward/Ticket/Broadcast/Systemtechnik-Authority geprüft; manueller Endtest offen |
