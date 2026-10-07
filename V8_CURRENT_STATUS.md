@@ -10458,3 +10458,34 @@ Aktueller Release-Status:
 - Erwartung:
   - erster sichtbarer Item-/Attribute-State kommt nicht mehr aus lokal vor Auth umgerechneten Bonuswerten.
   - kein späterer Sprung auf den Serverzustand mehr.
+
+
+### 2026-10-07 – Attribute springen weiter: verbleibende Pre-Auth Item-Normalisierer v423/v425/v429 fail-closed gemacht
+- Nutzer bestätigt nach V8.180: Attributwerte springen weiterhin sichtbar zwischen zwei Wertesätzen.
+- Erneuter Audit der aktiven Item-Kette ergab noch drei Legacy-Owner, die bestehende Itemwerte vor vollständig aufgelöster Auth anfassen konnten:
+  - `v8009-s5-v423-item-progression-fix.js`
+  - `v8009-s6-v425-item-stats-single-authority.js`
+  - `v8009-s7-v429-immutable-item-stats.js`
+- Root Cause:
+  - der bisherige Schutz prüfte im Wesentlichen nur, ob bereits `v073User.id` vorhanden ist;
+  - während des frühen Boots ist Auth aber noch nicht final aufgelöst;
+  - dadurch wurde der Zustand kurz als lokaler/Legacy-State behandelt und vorhandene Inventory-/Equipment-Stats konnten normalisiert/kanonisiert/gelockt werden;
+  - danach setzt `v7074` den echten serverautoritativen Equipment-State zurück;
+  - sichtbares Resultat: Attribute/Itemwerte springen einmal auf einen anderen Wertesatz und später wieder zurück.
+- Direkter Fix ohne neue Patch-Schicht:
+  - alle drei Legacy-Owner besitzen jetzt `legacyLocalItemStateWritable()`;
+  - bestehende Itemwerte dürfen nur noch verändert werden, wenn `window.__V200_AUTH_READY__ === true` **und** kein authentifizierter Server-Account aktiv ist;
+  - unresolved/pre-auth ist damit ausdrücklich fail-closed;
+  - bestehende eingeloggte Inventory-/Equipment-Items werden von diesen Legacy-Dateien nie mehr rebalanced;
+  - Boot-Normalisierung + Boot-Render in v423/v425/v429 für unresolved/serverautoritative Zustände entfernt;
+  - Generator-/Legacy-Offline-Logik bleibt für echte lokale Zustände erhalten.
+- Cache-Bust auf index/beta/server1:
+  - `8181itempreauth2`
+- Beta Cache-Key wurde nach Prüfung auf genau einen Query-Parameter normalisiert.
+- Nächster manueller Test:
+  1. App vollständig schließen;
+  2. neu starten und einloggen;
+  3. Charakter → Attribute öffnen;
+  4. mindestens 60–90 Sekunden beobachten;
+  5. zusätzlich Inventar öffnen/zurück zu Attribute;
+  6. falls weiter ein Sprung sichtbar ist, den vorhandenen `attribute_value_changed`-Trace + `itemCombatDiff` als nächste harte Quelle auswerten.
