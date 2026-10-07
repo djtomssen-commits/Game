@@ -133,7 +133,7 @@ async function v254LoadGuild(){
 
     const {data:guild,error:ge}=await v073Db
       .from('guilds')
-      .select('id,name,tag,leader_id,guild_buds,xp_level,gold_level,guild_xp,created_at')
+      .select('id,name,tag,leader_id,description,guild_buds,xp_level,gold_level,guild_xp,created_at')
       .eq('id',membership.guild_id)
       .maybeSingle();
     if(ge)throw ge;
