@@ -40,6 +40,7 @@ function applyQuestState(q){
     s.v109HarzDaily={day,firstQuest:!!d.firstQuest,questEnergy:Math.max(0,Number(d.questEnergy)||0),energyHarz:Math.max(0,Number(d.energyHarz)||0)};
   }
   S.lastRevision=Number(q.revision)||null;S.lastAt=Date.now();S.lastError='';
+  try{window.v4162PaintMenuAttentionLocal?.()}catch(_){}
   return true;
 }
 function paint(){
