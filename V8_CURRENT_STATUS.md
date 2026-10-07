@@ -11192,3 +11192,39 @@ Aktueller Release-Status:
   5. Grow-VIP-Titel und VIP-Rahmen auswählen.
   6. Öffentliche Sichtbarkeit AUS/AN testen und Hall/Profil kontrollieren.
   7. Echte Google-Play-Käufe erst nach Anlegen der drei VIP-Product-IDs in Play Console testen.
+
+### 2026-10-07 – V8.196 VIP UI / Rahmen-Nachbesserung (Beta)
+- Nutzer-Beta-Test bestätigt: VIP-Truhe claimt, VIP-Shop-Freiwurf funktioniert und danach kostet der nächste Wurf wieder 1 HT; VIP-Rahmen und Grow-VIP-Titel funktionieren.
+- VIP-Truhe:
+  - Erfolgs-Toast durch eigenes Belohnungsfenster ersetzt;
+  - Fenster zeigt exakt die vom Server gebuchten Mengen für Harz-Taler, Gold und Samenfragmente;
+  - public.v8195_vip_state() liefert zusätzlich today_claim aus dem privaten Tagesclaim-Ledger;
+  - nach bereits erfolgtem Tagesclaim zeigt der Button jetzt „Heutige Belohnung ansehen“ und öffnet denselben Reward-Dialog ohne erneute Gutschrift;
+  - Tomssen-Testclaim 07.10.2026 verifiziert: +1 HT, +5.900 Gold, +10 Samenfragmente.
+- Shop-Reroll-UI:
+  - bei verfügbarem VIP-Freiwurf steht direkt im jeweiligen Button „VIP · … kostenlos neu würfeln“;
+  - nach Verbrauch wird der lokale VIP-State sofort auf free_reroll_available=false gesetzt und der Shop sofort neu gerendert;
+  - danach steht im Button wieder „… neu würfeln · 1 Harz-Taler“;
+  - Server bleibt unverändert Authority: erster gemeinsamer VIP-Wurf/Tag kostenlos, weitere -1 HT.
+- Rahmen:
+  - Server-Audit bestätigt referral_legend und vip_crown sind getrennte IDs/Karten; nichts wurde serverseitig überschrieben;
+  - Tomssen: referral_legend aktuell nicht freigeschaltet (frame_unlocked=false), VIP-Krone aktiv;
+  - VIP-Krone war optisch bisher auf das normale gold_crown-Bild gemappt; jetzt eigenes Artwork assets/avatar_frames/vip_crown_v2.svg;
+  - Freund-Werben-ID referral_legend bleibt unverändert, bekommt aber neues eigenes Artwork assets/avatar_frames/referral_legend_v2.svg;
+  - dadurch bleiben bestehende Referral-Unlocks kompatibel.
+- Mehrsprachigkeit für Reward-Dialog, Reward-Replay und neue Reroll-Buttontexte in EN/ES/FR/PL/TR ergänzt.
+- Syntax: VIP-Client, Shop v461, Shop-Authority v7063, Frame v7137, Hall v6145 und Gameplay-I18N grün; beide neuen SVGs strukturell grün.
+- Beta-Cache final: 8196vipui1 (11 bisherige VIP-Owner-Referenzen cache-gebustet). Server1 nicht geändert.
+- SQL-Artefakt: V8196_VIP_UI_REFINEMENTS.sql.
+- Commits:
+  - Reward-Modal: 073b1c9543ba6293e34b1758b074b3de6a0ad868
+  - Reroll-Labels: 437bf058f3d478b20b2bbdda7f7c0c495e2e97f9
+  - Reward-Modal CSS: 443b947becb275da526cd7ae1817381a6ed24912
+  - VIP-Frame Artwork: 15961582e8fb8700c84626d3406a2fb086951b7f
+  - Referral-Frame V2 Artwork: c470af38698d713935b5b4d4ec0a89108aca5261
+  - Frame-Mappings v7137/v6145: c99c6eb1bdb8c8ef925a1f742b0bf1331b3c4c06 / db742fc2baf9642923827eb2c0546b81e676b627
+  - sofortiger Reroll-UI-State: b19cbe8eacc282bd34b026e8c5cc12701718c1ba
+  - today_claim Client: 8652d8ae56b0b0e1a2e327c81f70e0e835375e9c
+  - I18N: 5ec3811749a399969c29794cbb7598e8b7a71a21 / 39fc30ddf7207495794e1f814c249d5bb0cd6c52
+  - Beta cache: 42601e7305fc9bda4658f7a928b5dea7a76ba83a
+  - SQL snapshot: 2f4e4730d09441ed99957ee14add8b66560fcc31
