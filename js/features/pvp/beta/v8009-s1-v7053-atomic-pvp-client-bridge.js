@@ -81,7 +81,7 @@ function paintAll(){
  try{render?.()}catch(_){}
 }
 function setBattleBusy(v){C.busy=!!v;try{v204BattleBusy=!!v}catch(_){}try{window.v204BattleBusy=!!v}catch(_){}}
-function setCooldown(seconds,{paint=true}={}){const ms=Math.max(0,Math.ceil(num(seconds))*1000);try{v204CooldownLeft=ms}catch(_){}try{window.v204CooldownLeft=ms}catch(_){}if(paint)try{v204RenderPage?.()}catch(_){}}
+function setCooldown(seconds,{paint=true}={}){const ms=Math.max(0,Math.ceil(num(seconds))*1000);try{v204CooldownLeft=ms}catch(_){}try{window.v204CooldownLeft=ms}catch(_){}if(paint)try{v204RenderPage?.()}catch(_){}try{window.v4162PaintMenuAttentionLocal?.()}catch(_){}}
 
 function enemyFromBundle(b,fallback=null){
  const d=b?.replay?.defender||{};
