@@ -23,12 +23,18 @@
     const item=window.v7074ItemAuthorityDiagnostics?.();
     const build=window.v7033BuildAuthorityDiagnostics?.();
     const achievement=window.v7080AchievementDiagnostics?.();
+    const caps=window.v7081CapabilitiesDiagnostics?.();
     let uid='';
     try{uid=String((typeof v073User!=='undefined'&&v073User?.id)||window.v073User?.id||'')}catch(_){}
     if(!uid)return false;
+    /* V8.183: unknown capabilities are NOT equivalent to "achievements off".
+       Attribute first-paint must wait until the current account capability set
+       is resolved, otherwise the +1-per-achievement source can be skipped. */
+    const capsFresh=!!caps?.ready && String(caps?.uid||'')===uid && (Date.now()-Number(caps.lastSync||0)<30000);
+    if(!capsFresh)return false;
     const itemFresh=!!item?.ready && String(item?.uid||'')===uid && (Date.now()-Number(item.lastSync||0)<30000);
     const buildFresh=!!build?.ready && String(build?.uid||'')===uid && !!build?.buildGuard && (Date.now()-Number(build.hydratedAt||0)<30000);
-    const achievementRequired=!!window.v7081UseAuthority?.('achievements');
+    const achievementRequired=!!caps?.caps?.achievements;
     const achievementFresh=!achievementRequired || (
       !!achievement?.ready &&
       String(achievement?.serverUid||achievement?.uid||'')===uid &&
@@ -52,23 +58,36 @@
     }catch(_){}
     if(!hasAccount||anonymous)return Promise.resolve(true);
 
-    const achievementRequired=!!window.v7081UseAuthority?.('achievements');
-    if(
-      typeof window.v7074ItemAuthorityRefresh!=='function'||
-      typeof window.v7033BuildAuthorityRefresh!=='function'||
-      (achievementRequired&&typeof window.v7080AchievementRefresh!=='function')
-    ){
-      return Promise.resolve(false);
-    }
-
     if(!attributeSyncPromise){
-      const jobs=[
-        Promise.resolve(window.v7033BuildAuthorityRefresh(true)),
-        Promise.resolve(window.v7074ItemAuthorityRefresh(true,false))
-      ];
-      if(achievementRequired)jobs.push(Promise.resolve(window.v7080AchievementRefresh(false)));
-      attributeSyncPromise=Promise.all(jobs)
-        .then(()=>authorityFresh())
+      attributeSyncPromise=(async()=>{
+        /* V8.183: resolve capabilities FIRST. v7081UseAuthority() intentionally
+           returns false while unknown; treating that as "not required" caused
+           the stable-but-wrong 428 first paint without 61 achievement points. */
+        const uid=String((typeof v073User!=='undefined'&&v073User?.id)||window.v073User?.id||'');
+        let caps=window.v7081CapabilitiesDiagnostics?.();
+        const capsFresh=!!caps?.ready&&String(caps?.uid||'')===uid&&(Date.now()-Number(caps.lastSync||0)<30000);
+        if(!capsFresh){
+          if(typeof window.v7081CapabilitiesRefresh!=='function')return false;
+          await Promise.resolve(window.v7081CapabilitiesRefresh(true));
+          caps=window.v7081CapabilitiesDiagnostics?.();
+        }
+        if(!caps?.ready||String(caps?.uid||'')!==uid)return false;
+
+        const achievementRequired=!!caps?.caps?.achievements;
+        if(
+          typeof window.v7074ItemAuthorityRefresh!=='function'||
+          typeof window.v7033BuildAuthorityRefresh!=='function'||
+          (achievementRequired&&typeof window.v7080AchievementRefresh!=='function')
+        )return false;
+
+        const jobs=[
+          Promise.resolve(window.v7033BuildAuthorityRefresh(true)),
+          Promise.resolve(window.v7074ItemAuthorityRefresh(true,false))
+        ];
+        if(achievementRequired)jobs.push(Promise.resolve(window.v7080AchievementRefresh(false)));
+        await Promise.all(jobs);
+        return authorityFresh();
+      })()
         .catch(e=>{console.warn('V4.67 attribute authority sync',e);return false})
         .finally(()=>{attributeSyncPromise=null});
     }
