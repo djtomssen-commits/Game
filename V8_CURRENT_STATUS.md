@@ -10931,3 +10931,41 @@ Aktueller Release-Status:
 - Syntaxcheck v4148/v4162: OK.
 - Beta/Standard Cache-Key: `8189navbadge1`.
 - Server 1 für diesen neuen Fix noch nicht cache-gebustet; Beta-Test zuerst.
+
+
+### 2026-10-07 – V8.191 Grow-Navigationspunkt verschwindet direkt nach Pflege
+- Nutzer-Repro nach V8.189:
+  - Grow-Punkt wird beim Fälligwerden der Pflege sofort angezeigt;
+  - nach erfolgreich ausgeführter Pflege blieb der grüne Navigationspunkt jedoch stehen;
+  - erst ein Seitenwechsel ließ ihn verschwinden.
+- Pflichtdiagnose geprüft:
+  - aktuelle Beta Player-QA für `grow`: `ok`;
+  - `runtime_client_errors` im relevanten Zeitraum: keine Einträge;
+  - `account_state_health_events` im relevanten Zeitraum: keine Einträge;
+  - damit kein bestätigter Account-/Runtimefehler, sondern Lifecycle-Lücke im lokalen Badge-Refresh.
+- Root Cause:
+  - `v4162-menu-attention-badges` berechnet den Grow-Punkt korrekt aus `s.grow.plants[].care`;
+  - V8.189 aktualisierte zeitbasierte Fälligkeiten deadline-gesteuert;
+  - nach einer manuellen Grow-Mutation (Pflege/Ernte/Pflanzen) wurde der Badge-Owner aber nicht erneut aufgerufen;
+  - der nächste Navigation-/Seiten-Lifecycle führte erst später zum korrekten Paint.
+- Direkter Fix ohne neue Render-/Patch-Schicht:
+  - kanonischer Server-Grow-Action-Owner `v7065-fail-closed-grow-authority-hotfix.js` ruft direkt nach `apply(r)` den bestehenden lokalen Badge-Paint `v4162PaintMenuAttentionLocal()` auf;
+  - dadurch werden Pflege, Ernte, Pflanzen und andere bestätigte Grow-State-Mutationen unmittelbar gegen den neuen autoritativen Zustand neu bewertet;
+  - lokaler/offline Pflegepfad `v4114-grow-care-authority.js` ruft denselben bestehenden Badge-Paint direkt nach dem Care-Commit auf.
+- Beta/Standard-Auslieferung:
+  - `v4114-grow-care-authority.js?v=8191growbadge1`;
+  - `v7065-fail-closed-grow-authority-hotfix.js?v=8191growbadge1`.
+- Server 1:
+  - HTML-Cache-Keys wurden in diesem Schritt bewusst noch nicht verändert;
+  - Beta-Test zuerst.
+- Commits:
+  - Server-Grow Sofortrefresh: `75b516051a73d5c1d7f25d8512bc49927d1febcc`;
+  - lokaler Pflegepfad: `dc4a084af1ab565b224c92bba6419ae1a9eafe4d`;
+  - Standard Cache-Key: `94286974d7bf753f1e0fd721f01bbcc5988b84bf`;
+  - Beta Cache-Key: `953a359b925a831f897ab5740bd2d30e5cbfefda`.
+- Manueller Test:
+  1. Grow-Pflegepunkt abwarten;
+  2. Navigation öffnen -> grüner Punkt muss sichtbar sein;
+  3. Pflege durchführen;
+  4. grüner Grow-Punkt muss ohne Seitenwechsel sofort verschwinden, sofern keine weitere Pflanze/Pflege/Ernte fällig ist;
+  5. falls eine zweite Pflanze noch Aufmerksamkeit benötigt, muss der Punkt korrekt bestehen bleiben.
