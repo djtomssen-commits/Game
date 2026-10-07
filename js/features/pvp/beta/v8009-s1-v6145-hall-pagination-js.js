@@ -106,10 +106,43 @@
    body.innerHTML='<div class="v6145-loading">🛡️ Gildenprofil wird geladen …</div>';
    try{
      if(typeof v073Init==='function'&&!(await v073Init()))throw new Error('offline');
-     const {data,error}=await v073Db.rpc('v8184_hall_guild_profile',{p_guild:id});if(error)throw error;
+     const profilePromise=v073Db.rpc('v8184_hall_guild_profile',{p_guild:id});
+     const uid=ownId();
+     const membershipPromise=uid
+       ? v073Db.from('guild_members').select('guild_id').eq('user_id',uid).maybeSingle()
+       : Promise.resolve({data:null,error:null});
+     const pendingPromise=uid
+       ? v073Db.from('guild_join_requests').select('id,guild_id,status').eq('user_id',uid).eq('status','pending').limit(1).maybeSingle()
+       : Promise.resolve({data:null,error:null});
+     const [profileResult,membershipResult,pendingResult]=await Promise.all([profilePromise,membershipPromise,pendingPromise]);
+     if(profileResult.error)throw profileResult.error;
+     if(membershipResult.error)throw membershipResult.error;
+     if(pendingResult.error)throw pendingResult.error;
+     const data=profileResult.data;
      const g=data?.guild||{},members=Array.isArray(data?.top_members)?data.top_members:[];
+     const viewerGuildId=String(membershipResult.data?.guild_id||'');
+     const pendingGuildId=String(pendingResult.data?.guild_id||'');
      const tag=String(g.tag||'GL').replace(/[\[\]]/g,'').slice(0,5);
      const description=String(g.description||'').trim();
+     const full=num(g.member_count)>=Math.max(1,num(g.max_members)||20);
+     const locked=typeof window.v6124GuildLockActive==='function'&&window.v6124GuildLockActive();
+     let joinAction='';
+     if(viewerGuildId){
+       joinAction=viewerGuildId===String(g.id||'')
+         ? '<div class="v8185-guild-join-note own">✓ Du bist Mitglied dieser Gilde.</div>'
+         : '<div class="v8185-guild-join-note">Du bist bereits Mitglied einer Gilde.</div>';
+     }else if(pendingGuildId){
+       joinAction=pendingGuildId===String(g.id||'')
+         ? '<button type="button" class="v8185-guild-join-btn" disabled>✓ Anfrage gesendet</button>'
+         : '<button type="button" class="v8185-guild-join-btn" disabled>⏳ Du hast bereits eine offene Beitrittsanfrage</button>';
+     }else if(full){
+       joinAction='<button type="button" class="v8185-guild-join-btn" disabled>Gilde voll</button>';
+     }else if(locked){
+       const lockText=typeof window.v6124GuildLockText==='function'?window.v6124GuildLockText():'';
+       joinAction=`<button type="button" class="v8185-guild-join-btn" disabled>⏳ Gildensperre aktiv${lockText?` · ${esc(lockText)}`:''}</button>`;
+     }else{
+       joinAction=`<button type="button" class="v8185-guild-join-btn" data-v8185-apply="${esc(g.id||'')}">Beitritt anfragen</button>`;
+     }
      body.innerHTML=`<div class="v8184-profile-hero">
        <div class="v8184-profile-crest">[${esc(tag)}]</div>
        <div><small>HALL OF HAZE · GILDENRANG #${num(g.rank_no)||'—'}</small><h2>${esc(g.name||'Gilde')}</h2><p>👑 ${esc(g.leader_name||'Unbekannt')}</p></div>
@@ -121,10 +154,34 @@
        <div><span>Gilden-EP</span><b>${num(g.guild_xp).toLocaleString('de-DE')}</b></div>
      </div>
      <section class="v8184-profile-about"><h3>Über diese Gilde</h3><p>${description?esc(description):'Diese Gilde hat noch keine Beschreibung hinterlegt.'}</p></section>
+     <div class="v8185-guild-join-action">${joinAction}</div>
      <section class="v8184-profile-members"><h3>Stärkste Mitglieder</h3>
        <div>${members.length?members.map((m,i)=>`<button type="button" data-v8184-member="${esc(m.id||'')}"><span>#${i+1}</span><b>${esc(m.character_name||'Spieler')}</b><small>${esc(m.class_name||'')} · Lv. ${num(m.level)||1} · ⚔ ${num(m.combat_power)}</small></button>`).join(''):'<p>Noch keine Mitgliederprofile verfügbar.</p>'}</div>
      </section>`;
      body.querySelectorAll('[data-v8184-member]').forEach(btn=>btn.addEventListener('click',()=>{const uid=btn.dataset.v8184Member;if(uid)try{void v074OpenProfile(uid)}catch(_){}}));
+     body.querySelector('[data-v8185-apply]')?.addEventListener('click',async e=>{
+       const btn=e.currentTarget;
+       const guildId=String(btn?.dataset?.v8185Apply||'');
+       if(!guildId||btn.disabled)return;
+       if(typeof window.v6124GuildLockActive==='function'&&window.v6124GuildLockActive()){
+         window.v6124PaintGuildLock?.();
+         return window.v063Toast?.('24h Gildensperre aktiv','warn',`Beitritt wieder in ${window.v6124GuildLockText?.()||''} möglich.`);
+       }
+       btn.disabled=true;
+       btn.textContent='Anfrage wird gesendet …';
+       try{
+         const {error}=await v073Db.rpc('v257_apply_to_guild',{p_guild:guildId});
+         if(error)throw error;
+         btn.textContent='✓ Anfrage gesendet';
+         window.v063Toast?.('Anfrage gesendet','success','Die Gildenleitung kann deine Bewerbung jetzt annehmen.');
+       }catch(e){
+         console.error('V8.185 Hall guild apply',e);
+         btn.disabled=false;
+         btn.textContent='Beitritt anfragen';
+         window.v063Toast?.('Beitrittsanfrage fehlgeschlagen','warn',String(e?.message||''));
+       }
+       try{window.v8144GameplayI18n?.apply?.('hall')}catch(_){}
+     });
      try{window.v8144GameplayI18n?.apply?.('hall')}catch(_){}
      return true;
    }catch(e){
