@@ -71,9 +71,13 @@
   function authenticatedServerItems(){
     try{return !!((typeof v073User!=='undefined'&&v073User?.id)||window.v073User?.id)}catch(_){return false}
   }
+  function legacyLocalItemStateWritable(){
+    /* V8.181: unresolved auth is not permission to mutate existing item stats. */
+    return window.__V200_AUTH_READY__===true && !authenticatedServerItems();
+  }
   function canonical(it){
-    /* V8.169: server owns authenticated item combat stats. */
-    if(authenticatedServerItems())return false;
+    /* Server-authoritative and pre-auth item combat stats are immutable here. */
+    if(!legacyLocalItemStateWritable())return false;
     if(!it||it.type==='material'||!it.slot||it.setId)return false;
     const base=baseBonus(it); if(!base)return false;
     const before=JSON.stringify(it.bonus||{});
@@ -88,7 +92,7 @@
     return before!==JSON.stringify(it.bonus);
   }
   function all(){
-    if(authenticatedServerItems())return false;
+    if(!legacyLocalItemStateWritable())return false;
     let changed=false;
     (s.inventory||[]).forEach(it=>{if(canonical(it))changed=true});
     Object.values(s.equipment||{}).forEach(it=>{if(canonical(it))changed=true});
@@ -163,9 +167,12 @@
     return r;
   };
 
-  all();
-  try{localStorage.setItem(KEY,JSON.stringify(s))}catch(e){}
-  try{finalRender()}catch(e){console.error('V4.25 item stat authority',e)}
+  /* V8.181: retire the pre-auth boot canonicalization/render. */
+  if(legacyLocalItemStateWritable()){
+    all();
+    try{localStorage.setItem(KEY,JSON.stringify(s))}catch(e){}
+    try{finalRender()}catch(e){console.error('V4.25 item stat authority',e)}
+  }
 
   function stamp(){}
   stamp();
