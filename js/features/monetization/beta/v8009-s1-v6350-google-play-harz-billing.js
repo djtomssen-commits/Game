@@ -7,6 +7,7 @@
    harz_25:25,harz_50:50,harz_100:100,harz_150:150,harz_250:250,
    harz_400:400,harz_600:600,harz_900:900,harz_1300:1300,harz_2000:2000
  };
+ const VIP_PRODUCT_DAYS={vip_7d:7,vip_14d:14,vip_30d:30};
  let busy=false,recoveryBusy=false,healthCache={at:0,ok:false};
 
  const alertMsg=(msg,title='Harz Dealer',type='info')=>{
@@ -29,10 +30,14 @@
    const productId='harz_'+String(Number(p.harz)||0);
    return PRODUCT_MAP[productId]?{...p,productId}:null;
  };
+ const productForVipDays=days=>{
+   const d=Math.max(0,Number(days)||0),productId='vip_'+d+'d';
+   return VIP_PRODUCT_DAYS[productId]?{productId,days:d}:null;
+ };
 
  function setBusy(on){
    busy=!!on;
-   document.querySelectorAll('[data-v322-buy],[data-v567-buy],[data-v338-buy],[data-v339-buy]').forEach(btn=>{
+   document.querySelectorAll('[data-v322-buy],[data-v567-buy],[data-v338-buy],[data-v339-buy],[data-v8195-buy-vip]').forEach(btn=>{
      if('disabled' in btn)btn.disabled=busy;
      btn.classList.toggle('gl-billing-busy',busy);
    });
@@ -115,7 +120,8 @@
    const native=plugin();
    if(!native||!purchase?.purchaseToken)return false;
    const productId=String(purchase.requestedProductId||purchase.products?.[0]||'');
-   if(!PRODUCT_MAP[productId])throw new Error('Unbekanntes Google-Play-Produkt.');
+   const vipPurchase=!!VIP_PRODUCT_DAYS[productId];
+   if(!PRODUCT_MAP[productId]&&!vipPurchase)throw new Error('Unbekanntes Google-Play-Produkt.');
    const serverId=v7235ServerForPurchase(purchase);
 
    if(typeof v073Db==='undefined'||!v073Db)throw new Error('Serververbindung nicht verfügbar.');
@@ -133,7 +139,11 @@
    if(!data?.ok)throw new Error(data?.error||'Kauf konnte serverseitig nicht bestätigt werden.');
    if(String(data.server||'')!==serverId)throw new Error('Kauf wurde vom Server falsch zugeordnet.');
 
-   await refreshAuthoritativeSave(data.balance);
+   if(vipPurchase){
+     try{await window.v8195VipRefresh?.(true)}catch(_){}
+   }else{
+     await refreshAuthoritativeSave(data.balance);
+   }
 
    try{v7235ClearTokenServer(String(purchase.purchaseToken))}catch(_){}
    try{v7235ClearPendingServer()}catch(_){}
@@ -150,8 +160,13 @@
    try{if(typeof v322RenderDealer==='function')v322RenderDealer()}catch(_){ }
    try{document.querySelector('#v567Balance')?.replaceChildren(document.createTextNode(Math.max(0,Number(s.harzTaler)||0).toLocaleString('de-DE')))}catch(_){ }
    if(!quiet){
-     const added=Number(data.harzAdded)||PRODUCT_MAP[productId]||0;
-     toast('💎 Kauf erfolgreich','success',`+${added} Harz-Taler wurden auf ${serverId==='server1'?'Server 1':'Beta'} gutgeschrieben.`);
+     if(vipPurchase){
+       const until=data?.vipUntil?new Date(data.vipUntil).toLocaleString('de-DE'):'';
+       toast('👑 VIP aktiviert','success',until?`VIP aktiv bis ${until}.`:`+${Number(data?.vipDaysAdded)||VIP_PRODUCT_DAYS[productId]} VIP-Tage.`);
+     }else{
+       const added=Number(data.harzAdded)||PRODUCT_MAP[productId]||0;
+       toast('💎 Kauf erfolgreich','success',`+${added} Harz-Taler wurden auf ${serverId==='server1'?'Server 1':'Beta'} gutgeschrieben.`);
+     }
    }
    return true;
  }
@@ -230,6 +245,80 @@
    }finally{setBusy(false)}
  }
  window.glPlayBuy=buy;
+ async function buyVip(days){
+   if(busy)return false;
+   const pkg=productForVipDays(days);
+   if(!pkg)return alertMsg('Dieses VIP-Paket ist nicht korrekt mit Google Play verknüpft.','Kauf nicht möglich','error');
+   if(!(await ensureAccount()))return false;
+   const native=plugin();
+   if(!native){
+     alertMsg('Echtgeld-Käufe sind nur in der Android-App über Google Play verfügbar.','Google Play erforderlich','info');
+     return false;
+   }
+   if(!(await billingServerReady(true))){
+     alertMsg('Die sichere Kaufprüfung ist noch nicht freigeschaltet. Es wird kein Kauf gestartet und kein Geld abgebucht.','Zahlungssystem noch nicht bereit','warn');
+     return false;
+   }
+
+   setBusy(true);
+   try{
+     await syncBeforePurchase();
+
+     let purchase=null;
+     const purchaseServer=v7235RememberPendingServer(v7235CurrentPurchaseServer());
+     try{
+       purchase=await native.purchase({productId:pkg.productId,accountId:String(v073User.id)});
+     }catch(e){
+       console.warn('V7.273 Google Play purchase returned an error; checking open purchases first',e);
+       try{
+         const restored=await recoverPending({notify:true,serverHint:purchaseServer,allowBusy:true});
+         if(restored>0)return true;
+       }catch(re){console.warn('V7.273 immediate purchase recovery failed',re)}
+       alertMsg(
+         'Google Play hat den Kaufdialog nicht normal abgeschlossen. Offene Käufe wurden geprüft. Falls Google den Kauf bereits bestätigt hat, bleibt er gespeichert und wird automatisch erneut geprüft.',
+         'Kaufprüfung läuft weiter',
+         'info'
+       );
+       return false;
+     }
+
+     if(purchase?.status==='canceled'){
+       v7235ClearPendingServer();
+       alertMsg(
+         'Der Kauf wurde abgebrochen. Es wurde nichts berechnet und keine Harz-Taler wurden gutgeschrieben.',
+         'Kauf abgebrochen',
+         'info'
+       );
+       return false;
+     }
+     if(purchase?.status==='pending'){
+       alertMsg('Google Play verarbeitet die Zahlung noch. Harz-Taler werden erst nach bestätigter Zahlung gutgeschrieben.','Zahlung ausstehend','info');
+       return false;
+     }
+     if(purchase?.status!=='purchased'){
+       v7235ClearPendingServer();
+       alertMsg(
+         'Der Kauf wurde nicht abgeschlossen. Es wurde nichts berechnet und keine Harz-Taler wurden gutgeschrieben.',
+         'Kauf nicht abgeschlossen',
+         'info'
+       );
+       return false;
+     }
+
+     try{
+       return await verifyAndConsume(purchase);
+     }catch(e){
+       console.error('V6.352 Google Play verification',e);
+       alertMsg(
+         'Google Play hat den Kauf gemeldet, aber die sichere Kaufprüfung konnte noch nicht abgeschlossen werden. Falls die Zahlung bestätigt wurde, bleibt der Kauf offen und wird beim nächsten App-Start erneut geprüft.\n\n'+String(e?.message||e),
+         'Kaufprüfung fehlgeschlagen',
+         'error'
+       );
+       return false;
+     }
+   }finally{setBusy(false)}
+ }
+ window.glPlayBuyVip=buyVip;
 
 
  async function v7237RecoverBoundTokens({notify=false}={}){
@@ -265,7 +354,11 @@
        if(!data?.ok)throw new Error(data?.error||'Gespeicherter Kauf konnte nicht wiederhergestellt werden.');
        if(String(data.server||'')!==item.server)throw new Error('Wiederhergestellter Kauf wurde dem falschen Server zugeordnet.');
 
-       await refreshAuthoritativeSave(data.balance);
+       if(VIP_PRODUCT_DAYS[String(data?.productId||'')]){
+         try{await window.v8195VipRefresh?.(true)}catch(_){}
+       }else{
+         await refreshAuthoritativeSave(data.balance);
+       }
 
        try{localStorage.removeItem(item.key)}catch(_){}
        try{
@@ -284,8 +377,14 @@
 
        recovered++;
        if(notify){
-         const added=Number(data.harzAdded)||PRODUCT_MAP[String(data.productId||'')]||0;
-         toast('💎 Kauf wiederhergestellt','success',`+${added} Harz-Taler wurden auf ${item.server==='server1'?'Server 1':'Beta'} gutgeschrieben.`);
+         const pid=String(data.productId||'');
+         if(VIP_PRODUCT_DAYS[pid]){
+           const until=data?.vipUntil?new Date(data.vipUntil).toLocaleString('de-DE'):'';
+           toast('👑 VIP wiederhergestellt','success',until?`VIP aktiv bis ${until}.`:`+${Number(data?.vipDaysAdded)||VIP_PRODUCT_DAYS[pid]} VIP-Tage.`);
+         }else{
+           const added=Number(data.harzAdded)||PRODUCT_MAP[pid]||0;
+           toast('💎 Kauf wiederhergestellt','success',`+${added} Harz-Taler wurden auf ${item.server==='server1'?'Server 1':'Beta'} gutgeschrieben.`);
+         }
        }
      }catch(e){
        console.warn('V7.273 bound purchase recovery',e);
