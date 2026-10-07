@@ -137,18 +137,19 @@ function completed(run){
  return '<section class="v8210-scene v8210-finale">'+phaseRail(run)+
    '<div class="v8210-final-grid"><div class="v8210-stage-panel final">'+plantStage(6,'completed')+
      '<div class="v8210-final-medal"><i>'+t[0]+'</i><small>GESAMTWERTUNG</small><b>'+score+'</b><strong>'+t[1]+'</strong></div></div>'+
-   '<div class="v8210-final-copy"><small>CUP ABGESCHLOSSEN · '+esc(run.cup_seed||'')+'</small><h1>'+t[0]+' '+t[1]+'</h1><p>Deine Pflanze wurde in Qualität, Ertrag, Harz, Genetik und Gesundheit bewertet.</p>'+metrics(run)+
+   '<div class="v8210-final-copy"><small>6-STUNDEN-CUP ABGESCHLOSSEN · '+esc(run.cup_seed||'')+'</small><h1>'+t[0]+' '+t[1]+'</h1><p>Sechs Stunden Pflege wurden in Qualität, Ertrag, Harz, Genetik und Gesundheit zusammengeführt.</p>'+metrics(run)+
    (run.personal_reward_awarded?'<div class="v8210-personal-reward"><i>👑</i><div><b>Grow Champion erreicht</b><span>+1 Verzauberungsrune · +10 Runenfragmente</span></div></div>':'<div class="v8210-personal-note">Ab <b>92,00 Punkten</b> gibt es zusätzlich 1 Verzauberungsrune + 10 Fragmente.</div>')+
-   '<div class="v8210-rank-now"><small>AKTUELLER SERVER-RANG</small><b>'+(rank?'#'+rank:'wird geladen …')+'</b><span>Die Rangbelohnung wird nach Ende des Cups final.</span></div>'+
-   (!S.state?.active&&!run.rank_reward_claimed?'<button class="v8210-claim" data-cup-claim>Rangbelohnung abholen</button>':'')+
+   '<div class="v8210-rank-now"><small>AKTUELLER SERVER-RANG</small><b>'+(rank?'#'+rank:'wird geladen …')+'</b><span>Rangbelohnungen werden erst final, wenn alle gestarteten 6-Stunden-Runs beendet sind.</span></div>'+
    '<button class="v8210-secondary" data-cup-ranking>Rangliste ansehen</button></div></div>'+
  '</section>';
 }
 function ranking(){
- const d=S.ranking||{},rows=Array.isArray(d.rows)?d.rows:[];
- return '<section class="v8210-scene v8210-ranking"><div class="v8210-ranking-head"><div><small>SERVERWEITE WERTUNG</small><h2>🏆 GROW CUP RANGLISTE</h2><p>Bei Punktgleichheit zählt, wer seinen Cup zuerst beendet hat.</p></div><button data-cup-refresh '+(S.busy?'disabled':'')+'>↻ Aktualisieren</button></div>'+
+ const d=S.ranking||{},rows=Array.isArray(d.rows)?d.rows:[],final=d.final===true;
+ return '<section class="v8210-scene v8210-ranking"><div class="v8210-ranking-head"><div><small>'+(final?'FINALE SERVERWERTUNG':'VORLÄUFIGE SERVERWERTUNG')+'</small><h2>🏆 GROW CUP RANGLISTE</h2><p>'+(final?'Der Cup ist abgeschlossen und die Rangbelohnungen sind freigegeben.':'Laufende 6-Stunden-Runs können die Reihenfolge noch verändern.')+'</p></div><button data-cup-refresh '+(S.busy?'disabled':'')+'>↻ Aktualisieren</button></div>'+
  rewardTable()+
- '<div class="v8210-ranking-list">'+(rows.length?rows.map(x=>{const t=TIER[String(x.tier||'bronze')]||TIER.bronze;return '<div class="v8210-rank-row rank-'+Number(x.rank||0)+'"><strong>#'+Number(x.rank||0)+'</strong><i>'+t[0]+'</i><div><b>'+esc(x.player||'Legende')+'</b><small>'+esc(x.cup_seed||'')+' · '+esc(t[1])+'</small></div><em>'+Number(x.final_score||0).toFixed(2)+'</em></div>'}).join(''):'<div class="v8210-empty">Noch keine abgeschlossenen Cup-Runs.</div>')+'</div></section>';
+ '<div class="v8210-ranking-list">'+(rows.length?rows.map(x=>{const t=TIER[String(x.tier||'bronze')]||TIER.bronze;return '<div class="v8210-rank-row rank-'+Number(x.rank||0)+'"><strong>#'+Number(x.rank||0)+'</strong><i>'+t[0]+'</i><div><b>'+esc(x.player||'Legende')+'</b><small>'+esc(x.cup_seed||'')+' · '+esc(t[1])+'</small></div><em>'+Number(x.final_score||0).toFixed(2)+'</em></div>'}).join(''):'<div class="v8210-empty">Noch keine abgeschlossenen 6-Stunden-Runs.</div>')+'</div>'+
+ (!final?'<div class="v8210-ranking-pending">⏳ Rangbelohnungen bleiben bis zum Ende des letzten gültigen Cup-Runs gesperrt.</div>':'')+
+ '</section>';
 }
 function cupBody(){
  const r=S.state?.run;
@@ -156,20 +157,48 @@ function cupBody(){
  if(r.status==='completed')return completed(r);
  return activeRun(r);
 }
+function updateClockText(){
+ if(!S.opened)return;
+ overlay().querySelectorAll('[data-cup-countdown],[data-cup-run-time]').forEach(el=>{el.textContent=fmtDuration(leftMs(el.dataset.target))});
+ const r=S.state?.run;if(!r||r.status!=='active')return;
+ let target='',kind='';
+ if(r.window_state==='waiting'){target=r.decision_opens_at;kind='open'}
+ else if(r.window_state==='open'||r.window_state==='submitted'||r.window_state==='processing'){target=r.phase_ends_at;kind='end'}
+ if(!target)return;
+ const key=String(r.run_id)+':'+String(r.phase)+':'+kind+':'+target;
+ if(leftMs(target)<=0&&S.boundaryKey!==key){S.boundaryKey=key;void refresh({paintNow:true})}
+}
+function startClock(){stopClock();updateClockText();S.timer=setInterval(updateClockText,1000)}
+function bindRanges(box){
+ box.querySelectorAll('[data-cup-range]').forEach(input=>{
+  input.oninput=()=>{
+   const k=String(input.dataset.cupRange||''),v=Number(input.value);if(!S.draft)return;
+   if(k==='light')S.draft.light=v;if(k==='water')S.draft.water=v;if(k==='nutrient')S.draft.nutrient=v;
+   const out=box.querySelector('[data-cup-value="'+k+'"]');
+   if(out)out.textContent=(k==='nutrient'?v.toFixed(1):Math.round(v))+' '+(k==='light'?'Min.':'ml');
+  };
+ });
+}
 function paint(){
  const box=overlay().querySelector('.v8210-growcup-content');if(!box)return;
  box.innerHTML=header()+'<main class="v8210-main">'+(S.view==='ranking'?ranking():cupBody())+'</main>';
  box.querySelectorAll('[data-cup-close]').forEach(b=>b.onclick=close);
  box.querySelectorAll('[data-cup-view]').forEach(b=>b.onclick=()=>{S.view=String(b.dataset.cupView||'cup');if(S.view==='ranking'&&!S.ranking)void loadRanking();paint()});
  box.querySelector('[data-cup-start]')?.addEventListener('click',start);
- box.querySelectorAll('[data-cup-choice]').forEach(b=>b.onclick=()=>choose(String(b.dataset.cupChoice||'')));
+ box.querySelector('[data-cup-tune]')?.addEventListener('click',tune);
  box.querySelector('[data-cup-ranking]')?.addEventListener('click',()=>{S.view='ranking';paint();void loadRanking()});
  box.querySelector('[data-cup-refresh]')?.addEventListener('click',()=>void loadRanking(true));
- box.querySelector('[data-cup-claim]')?.addEventListener('click',()=>void claimRank());
+ bindRanges(box);
+ if(S.opened)startClock();
 }
 function applyState(r){
  const next=r?.state&&r.ok===false?r.state:r;if(!next?.ok)return false;
- const changed=S.state?.active!==next.active;S.state=next;S.lastError='';S.refreshes++;
+ const changed=S.state?.active!==next.active;
+ const prevKey=String(S.state?.run?.run_id||'')+':'+String(S.state?.run?.phase||'');
+ const nextKey=String(next?.run?.run_id||'')+':'+String(next?.run?.phase||'');
+ S.state=next;S.lastError='';S.refreshes++;S.boundaryKey='';
+ const serverNow=next?.server_now||next?.run?.server_now;if(serverNow)S.clockOffset=new Date(serverNow).getTime()-Date.now();
+ if(prevKey!==nextKey){S.draftKey='';S.draft=null}
  window.dispatchEvent(new CustomEvent('growlegends:growcup-state',{detail:{...next}}));
  if(changed&&document.getElementById('world')?.classList.contains('active')){try{window.v085InstallWorld?.(true)}catch(_){}}
  return true;
@@ -177,42 +206,51 @@ function applyState(r){
 async function refresh({paintNow=true}={}){
  if(!uid()||!db())return null;
  try{const r=await rpc('v8210_growcup_state');applyState(r);if(paintNow&&S.opened)paint();return r}
- catch(e){S.lastError=String(e?.message||e);console.warn('[V8.210 Grow Cup] state',e);return null}
+ catch(e){S.lastError=String(e?.message||e);console.warn('[V8.211 Grow Cup] state',e);return null}
 }
 async function loadRanking(force=false){
  if(S.busy&&!force)return null;
  try{const r=await rpc('v8210_growcup_leaderboard',{p_limit:100});if(r?.ok){S.ranking=r;if(S.opened&&S.view==='ranking')paint()}return r}
- catch(e){S.lastError=String(e?.message||e);console.warn('[V8.210 Grow Cup] ranking',e);return null}
+ catch(e){S.lastError=String(e?.message||e);console.warn('[V8.211 Grow Cup] ranking',e);return null}
 }
 async function open(){S.opened=true;S.view='cup';overlay().classList.add('show');paint();await refresh({paintNow:true});void loadRanking()}
 async function start(){
  if(S.busy)return;S.busy=true;paint();
- try{const r=await rpc('v8210_growcup_start',{p_request_id:rid('v8210_start')});if(r?.ok===false)throw new Error(String(r.reason||'START_REJECTED'));applyState(r);S.starts++;toast('Grow Cup gestartet','success',String(r?.run?.cup_seed||r?.cup_seed||'Cup-Pflanze'))}
- catch(e){S.lastError=String(e?.message||e);toast('Grow Cup','error',S.lastError)}
+ try{
+  const r=await rpc('v8210_growcup_start',{p_request_id:rid('v8211_start')});
+  if(r?.ok===false)throw new Error(String(r.reason||'START_REJECTED'));
+  applyState(r);S.starts++;toast('6-Stunden-Cup gestartet','success','Erstes Pflegefenster öffnet in 45 Minuten.');
+ }catch(e){S.lastError=String(e?.message||e);toast('Grow Cup','error',S.lastError)}
  finally{S.busy=false;paint()}
 }
-async function choose(id){
- if(S.busy||!id)return;S.busy=true;paint();
+async function tune(){
+ const run=S.state?.run,d=ensureDraft(run);if(S.busy||!run||run.window_state!=='open')return;
+ S.busy=true;paint();
  try{
-   const r=await rpc('v8210_growcup_choose',{p_choice_id:id,p_request_id:rid('v8210_choice')});
-   if(r?.ok===false)throw new Error(String(r.reason||'CHOICE_REJECTED'));
-   const before=S.state?.run?.status;applyState(r);S.choices++;
-   if(before!=='completed'&&r?.run?.status==='completed'){
-     toast('Grow Cup abgeschlossen','success','Jury-Wertung: '+Number(r.run.final_score||0).toFixed(2));
-     void loadRanking(true);
-   }
+  const r=await rpc('v8210_growcup_tune',{
+   p_light_minutes:Math.round(d.light),p_water_ml:Math.round(d.water),
+   p_nutrient_ml:Number(d.nutrient.toFixed(1)),p_request_id:rid('v8211_tune')
+  });
+  if(r?.ok===false){
+   const reason=String(r.reason||'TUNE_REJECTED');
+   if(reason==='CARE_TOO_EARLY')throw new Error('Das Pflegefenster ist noch nicht geöffnet.');
+   if(reason==='CARE_WINDOW_CLOSED')throw new Error('Dieses Pflegefenster ist bereits geschlossen.');
+   if(reason==='CARE_ALREADY_SET')throw new Error('Die Pflege für diese Stunde wurde bereits festgelegt.');
+   throw new Error(reason);
+  }
+  applyState(r);S.tunes++;toast('Pflege festgelegt','success','Die Wirkung wird am Ende der Stunde ausgewertet.');
  }catch(e){S.lastError=String(e?.message||e);toast('Grow Cup','error',S.lastError)}
  finally{S.busy=false;paint()}
 }
 async function claimRank(){
  if(S.busy)return;S.busy=true;paint();
  try{
-   const r=await rpc('v8210_growcup_claim_rank_reward',{p_request_id:rid('v8210_rank')});
-   if(r?.ok===false)throw new Error(String(r.reason||'CLAIM_REJECTED'));
-   toast('Cup-Rangbelohnung','success','Platz '+Number(r.rank||0)+' · +'+Number(r.runes_awarded||0)+' Runen · +'+Number(r.shards_awarded||0)+' Fragmente');
-   await refresh({paintNow:false});await loadRanking(true);
+  const r=await rpc('v8210_growcup_claim_rank_reward',{p_request_id:rid('v8211_rank')});
+  if(r?.ok===false)throw new Error(String(r.reason||'CLAIM_REJECTED'));
+  toast('Cup-Rangbelohnung','success','Platz '+Number(r.rank||0)+' · +'+Number(r.runes_awarded||0)+' Runen · +'+Number(r.shards_awarded||0)+' Fragmente');
+  await refresh({paintNow:false});await loadRanking(true);
  }catch(e){
-   const m=String(e?.message||e);toast('Rangbelohnung','info',m.includes('RANKING_NOT_FINAL')?'Die Rangliste ist erst nach Ende des Cups final.':m);
+  const m=String(e?.message||e);toast('Rangbelohnung','info',m.includes('RANKING_NOT_FINAL')?'Noch laufende 6-Stunden-Runs – die Rangliste ist noch nicht final.':m);
  }finally{S.busy=false;paint()}
 }
 function key(e){if(e.key==='Escape'&&S.opened){e.preventDefault();close()}}
@@ -221,9 +259,9 @@ window.v8210GrowCupRefresh=refresh;
 window.v8210GrowCupSnapshot=()=>S.state?JSON.parse(JSON.stringify(S.state)):null;
 window.v8210GrowCupClose=close;
 window.v8210GrowCupLeaderboard=loadRanking;
-window.v8210GrowCupDiagnostics=()=>({version:VERSION,busy:S.busy,opened:S.opened,view:S.view,refreshes:S.refreshes,starts:S.starts,choices:S.choices,lastError:S.lastError,state:S.state,ranking:S.ranking});
+window.v8210GrowCupDiagnostics=()=>({version:VERSION,busy:S.busy,opened:S.opened,view:S.view,refreshes:S.refreshes,starts:S.starts,tunes:S.tunes,lastError:S.lastError,state:S.state,ranking:S.ranking});
 window.addEventListener('keydown',key);
-window.addEventListener('growlegends:account-ready',()=>{S.state=null;S.ranking=null;void refresh({paintNow:false})},{passive:true});
+window.addEventListener('growlegends:account-ready',()=>{stopClock();S.state=null;S.ranking=null;S.draft=null;S.draftKey='';void refresh({paintNow:false})},{passive:true});
 window.addEventListener('pageshow',()=>setTimeout(()=>void refresh({paintNow:false}),500),{passive:true});
 window.addEventListener('growlegends:navigation-open-v7119',()=>{if(S.opened)close()},{passive:true});
 })();
