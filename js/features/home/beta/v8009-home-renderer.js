@@ -169,7 +169,7 @@
       ['gold','GOLD','💰'],
       ['dampf','DAMPF','🔥'],
       ['boss','KOLOSS','💠'],
-      ['cup','CUP','🏆']
+      ['cup','CUP','<img class="v8219-cup-event-img" src="assets/v7198-base64/9880ab938246ad3b3dec.webp" alt="">']
     ];
     return `        <article class="v366-panel v366-feature v690-events-card">
           <h2><span>Events</span><i class="vHome-event-count">${ev.length}</i></h2>
@@ -634,7 +634,7 @@
     notifyWorldRendered('full');
   }
 
-  window.v8009HomeEventDiagnostics=()=>({version:'V8.210-HOME-GROWCUP',...diagnostics,events:events().map(x=>({...x})),worldBossActive:worldBossEventActive(),growCupActive:growCupEventActive()});
+  window.v8009HomeEventDiagnostics=()=>({version:'V8.219-HOME-GROWCUP',...diagnostics,events:events().map(x=>({...x})),worldBossActive:worldBossEventActive(),growCupActive:growCupEventActive()});
 
   /* Re-own only the world installer; do not touch core game render/persist. */
   v085WorldHtml=worldHtml;
