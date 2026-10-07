@@ -210,7 +210,7 @@
     </div>`;
     sec.innerHTML=`<div class="v488-shell v490-shell">
       <div class="v490-titlebar">
-        <div><h2>Harzschmiede</h2><p>ZERLEGEN · VERWANDELN · PRISMATISCH SCHMIEDEN</p></div>
+        <div><h2>Harzschmiede</h2><p>ZERLEGEN · SCHMIEDEN · VERZAUBERN · NEBELSCHMIED</p></div>
         <div class="v490-frag-pill"><span class="v488-frag-gem">💠</span><span><small>Samenfragmente</small><b>${fmt(z.fragments)}</b></span></div>
       </div>
       <div class="v667-forge-body">
@@ -218,9 +218,10 @@
           <button type="button" class="v667-tab ${forgeTab==='dismantle'?'active':''}" data-v667-tab="dismantle"><span class="ic">🔨</span><span>ZERLEGEN<small>Ausrüstung in Samenfragmente</small></span></button>
           <button type="button" class="v667-tab ${forgeTab==='craft'?'active':''}" data-v667-tab="craft"><span class="ic">⚒️</span><span>SCHMIEDEN<small>Zufälliger Slot · deine Klasse</small></span></button>
           <button type="button" class="v667-tab v6130-set-tab" data-v6130-settab="1"><span class="ic">🧩</span><span>KLASSENSET<small>Genetik · PvP · Fragmente</small></span></button>
+          ${String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta'?'<button type="button" class="v667-tab '+(forgeTab==='enchant'?'active':'')+'" data-v667-tab="enchant"><span class="ic">ᚱ</span><span>VERZAUBERN<small>Runen · +Stufen · Item-FX</small></span></button>':''}
           ${['beta','server1'].includes(String(window.GROW_RELEASE_CHANNEL||'').toLowerCase())?'<button type="button" class="v667-tab" data-v667-tab="nebelforge"><span class="ic">🔥</span><span>NEBELSCHMIED<small>Gold · Werte neu verteilen</small></span></button>':''}
         </div>
-        ${forgeTab==='craft'?craftView():dismantleView()}
+        ${forgeTab==='enchant'?(window.v8198EnchantForgeHtml?.()||'<div class="v8198-enchant-empty focus">Runenkammer wird geladen …</div>'):(forgeTab==='craft'?craftView():dismantleView())}
         <div class="v490-legend v667-legend">
           <div class="v490-legend-title">✦ FRAGMENTE PRO SELTENHEIT ✦</div>
           <div class="v488-leg"><i style="--c:#9aa29e"></i><span>Normal</span><b>+1</b></div>
@@ -244,6 +245,7 @@
     sec.querySelectorAll('[data-v488-key]').forEach(card=>card.onclick=()=>{const k=card.dataset.v488Key;if(!k)return;listScroll=list?.scrollTop||0;selected.has(k)?selected.delete(k):selected.add(k);renderForge()});
     sec.querySelector('#v488Dismantle')?.addEventListener('click',dismantle);
     sec.querySelector('#v488Craft')?.addEventListener('click',craft);
+    if(forgeTab==='enchant')try{window.v8198BindEnchantForge?.(sec)}catch(e){console.warn('V8.198 enchant bind',e)}
     try{if(typeof window.v4103DecorateItemSurfaces==='function')queueMicrotask(()=>window.v4103DecorateItemSurfaces())}catch(e){}
     try{if(typeof window.v4112RefreshAllItemArt==='function')queueMicrotask(()=>window.v4112RefreshAllItemArt(sec))}catch(e){}
     if(keepClassSet)queueMicrotask(()=>{try{window.v6130OpenSetPanel?.({refreshPvp:false})}catch(_){}});
