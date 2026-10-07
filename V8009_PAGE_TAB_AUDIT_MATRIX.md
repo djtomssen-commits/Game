@@ -23,7 +23,7 @@ Die Matrix wird nach jedem großen Cleanup-Batch aktualisiert.
 
 | Seite | Tabs / Unteransichten | Status | Notiz |
 |---|---|---|---|
-| World / Startseite | Home / Navigation / World-Module | [x] | kanonischer Home-Renderer besitzt Weltboss-Slot/Navigation; v483/v7288 Lifecycle konsolidiert; globaler Render-/Postrender-Wrapper entfernt; manueller Endtest offen |
+| World / Startseite | Home / Navigation / World-Module | [x] | kanonischer Home-Renderer besitzt dynamischen Spezialslot: Donnerstag Smaragd-Koloss, am Sonntag des EXP-Wochenendes Runenjagd/Runentor; v483/v7288 Lifecycle konsolidiert; globaler Render-/Postrender-Wrapper entfernt; manueller V8.198-Endtest offen |
 | Character | Attribute / Inventar / Talente / Materialien | [x] | v459 alleiniger sichtbarer Tab-Lifecycle-Owner; Material-/Inventar-Autoberechnung getrennt; alte v442 Layout-Rückverschiebung entfernt; globale Render-/Inventory-Wrapperketten konsolidiert; manueller Endtest offen |
 | Growroom | Grow / Stock / Genetics / Orders | [x] | Event-Bus/Tab/Care/Hydration/Genetik/Stock/Orders-Lifecycle konsolidiert; V8.194 Gilden-Blütenspende eigener atomarer Server-RPC, 1/Tag Berlin, +5 Gilden-EP; manueller Endtest offen |
 | Quests | Quest / Schicht-Arbeiten-Chillen | [x] | Dampf-/Quest-Renderowner konsolidiert; V8.190: Rewarded-Video direkt unter Zeit-Samen-Skip auf Beta + Server1, bis zu 2× je Quest, je 25 % der ursprünglichen Dauer, maximal 50 %, nur nach signiertem AdMob-SSV; 0/1/2 serverautoritativ; manueller 2×-Endtest offen |
@@ -43,7 +43,7 @@ Die Matrix wird nach jedem großen Cleanup-Batch aktualisiert.
 | Modul | Tabs / Unteransichten | Status | Notiz |
 |---|---|---|---|
 | Tower | Lobby / Ranking / Meta-Aufstieg / Run / Result | [x] | kompletter DOM-/Lifecycle-/Owner-/Timer-/Authority-Pass grün; globaler v372-Header bleibt sichtbar, interner Sticky-Header startet darunter (60/54 px); manueller Endtest offen |
-| Forge | Dismantle / Craft / Nebelforge | [x] | 3 Tabs aus einem Shell-Owner; Zerlegen + Prismatisch serverautoritativ/idempotent; Nebelschmied-Tab-Injection/Observer retired, Reroll mit persistenter Request-ID; manueller Endtest offen |
+| Forge | Dismantle / Craft / Verzaubern / Nebelforge | [x] | V8.198 Beta: neuer direkter Verzaubern-Tab im v488-Shell-Owner; Runenwallet, +1 bis +10 und Item-Mutation serverautoritativ/idempotent; ab +2 Glow, ab +5 Blitz-FX direkt über Character-Owner; Nebelschmied bleibt getrennt; manueller Endtest offen |
 | Worldboss | Entry / Overlay / Combat / Reward | [x] | Entry/State/Countdown/Balance/Authority konsolidiert; v113/v114/Home-Click-Layer retired; globale Render-/Polling-Schichten entfernt; manueller Endtest offen |
 | Guildboss | Signup / Fight / Replay / Reward | [x] | Server-Gate korrigiert: nur eigene offene Belohnung vom unmittelbaren Vortag sperrt die neue Anmeldung; ältere offene Rewards sperren nicht; Visual-/Replay-/Reward-Lifecycle konsolidiert; erneuter manueller Signup-Test offen |
 | Profile Modal | Profil / Equipment / Friend action | [x] | v655 finaler Loader/Renderer, v652 nur Decoration-Observer; V8.195 Beta: öffentliche VIP-Markierung/Rahmen nur bei unexpired vip_until + vip_visible, Sichtbarkeit serverseitig gegen Spoofing geschützt; manueller Endtest offen |
@@ -58,7 +58,7 @@ Die Matrix wird nach jedem großen Cleanup-Batch aktualisiert.
 - Mail: inbox, sent, compose, battlelog
 - Shop: weapon, magic
 - Growroom: grow, stock, genetics, orders
-- Forge: dismantle, craft, nebelforge
+- Forge: dismantle, craft, enchant, nebelforge
 - Tower: rank, meta
 - Admin: overview, players, content
 - Harz Dealer: harz, gold, frames, vip (Beta)
