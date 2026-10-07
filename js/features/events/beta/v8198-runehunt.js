@@ -145,11 +145,10 @@ function completed(run){
  '</section>';
 }
 function ranking(){
- const d=S.ranking||{},rows=Array.isArray(d.rows)?d.rows:[],final=d.final===true;
- return '<section class="v8210-scene v8210-ranking"><div class="v8210-ranking-head"><div><small>'+(final?'FINALE SERVERWERTUNG':'VORLÄUFIGE SERVERWERTUNG')+'</small><h2>🏆 GROW CUP RANGLISTE</h2><p>'+(final?'Der Cup ist abgeschlossen und die Rangbelohnungen sind freigegeben.':'Laufende 6-Stunden-Runs können die Reihenfolge noch verändern.')+'</p></div><button data-cup-refresh '+(S.busy?'disabled':'')+'>↻ Aktualisieren</button></div>'+
+ const d=S.ranking||{},rows=Array.isArray(d.rows)?d.rows:[];
+ return '<section class="v8210-scene v8210-ranking"><div class="v8210-ranking-head"><div><small>SERVERWEITE RANGLISTE</small><h2>🏆 GROW CUP RANGLISTE</h2><p>Eine Rangliste für alle abgeschlossenen Grow-Cup-Runs.</p></div><button data-cup-refresh '+(S.busy?'disabled':'')+'>↻ Aktualisieren</button></div>'+
  rewardTable()+
  '<div class="v8210-ranking-list">'+(rows.length?rows.map(x=>{const t=TIER[String(x.tier||'bronze')]||TIER.bronze;return '<div class="v8210-rank-row rank-'+Number(x.rank||0)+'"><strong>#'+Number(x.rank||0)+'</strong><i>'+t[0]+'</i><div><b>'+esc(x.player||'Legende')+'</b><small>'+esc(x.cup_seed||'')+' · '+esc(t[1])+'</small></div><em>'+Number(x.final_score||0).toFixed(2)+'</em></div>'}).join(''):'<div class="v8210-empty">Noch keine abgeschlossenen 6-Stunden-Runs.</div>')+'</div>'+
- (!final?'<div class="v8210-ranking-pending">⏳ Rangbelohnungen bleiben bis zum Ende des letzten gültigen Cup-Runs gesperrt.</div>':'')+
  '</section>';
 }
 function cupBody(){
