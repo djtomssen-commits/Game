@@ -133,6 +133,7 @@
     const box=root.querySelector('.slot-icon');if(!box)return;
     const it=s?.equipment?.[slot]||null;
     root.classList.toggle('v470-equipped',!!it);
+    try{window.v8198ApplyItemFx?.(root,it)}catch(_){}
     if(!it)return;
     const uri=artUri(it);
     if(uri){
