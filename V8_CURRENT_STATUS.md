@@ -10558,3 +10558,76 @@ Aktueller Release-Status:
 - Kein sichtbarer Zwischenwert mehr.
 - Kein nachträgliches Umspringen mehr.
 - V8.183 damit auf dem Testgerät **manuell bestätigt**.
+
+
+### 2026-10-07 – V8.184 Hall of Haze: Spieler/Gilden-Tabs + Gildenranking + öffentliches Gildenprofil
+- Wunsch umgesetzt:
+  - Hall of Haze besitzt jetzt zwei Haupttabs:
+    - **Spieler** = bestehende aktuelle Spieler-Rangliste unverändert;
+    - **Gilden** = neue serverautoritative Gilden-Rangliste.
+- Gilden-Rangfolge final nach Nutzerwunsch:
+  1. **Gildenlevel** absteigend,
+  2. bei Gleichstand **Gilden-Buds** absteigend,
+  3. danach **Gilden-EP** absteigend.
+- Kein künstlicher neuer Ruhm-/PvP-Gildenwert.
+- Backend V8.184 auf beiden Server-Schemas:
+  - `public.v8184_hall_guild_ranking(offset,limit)`;
+  - `server1.v8184_hall_guild_ranking(offset,limit)`;
+  - `v8184_hall_guild_profile(guild_id)` je Schema;
+  - `v8184_set_guild_description(text)` je Schema.
+- Servertrennung bestätigt:
+  - Beta liest ausschließlich `public.guilds/guild_members/profiles`;
+  - Server 1 liest ausschließlich `server1.guilds/guild_members/profiles`.
+- Gildenbeschreibung:
+  - neue persistente Spalte `guilds.description` auf Beta + Server 1;
+  - max. 300 Zeichen;
+  - nur Gildenleiter darf per serverseitig geprüftem RPC speichern;
+  - `anon` hat keinen EXECUTE-Zugriff auf die neuen RPCs;
+  - Ranking/Profile laufen SECURITY INVOKER, Beschreibung-Write SECURITY DEFINER mit `auth.uid() === leader_id`-Prüfung.
+- Gildenprofil beim Anklicken zeigt:
+  - Gildenrang;
+  - Name/Tag;
+  - Gildenlevel;
+  - Gilden-Buds;
+  - Gilden-EP;
+  - Mitgliederzahl;
+  - Gildenleiter;
+  - Gildenbeschreibung;
+  - Top 3 Mitglieder nach Level/Kampfkraft, anklickbar zum Spielerprofil.
+- Eigene Gildenverwaltung:
+  - Gildenleiter erhält im Management einen Editor für die öffentliche Beschreibung;
+  - 300-Zeichen-Zähler + Moderationsprüfung + serverseitiges Speichern.
+- UI-Owner:
+  - `js/features/pvp/beta/v8009-s1-v6145-hall-pagination-js.js` direkt erweitert, keine zusätzliche Patch-Schicht;
+  - bestehender Spieler-Ranking-Pfad bleibt erhalten;
+  - `v8008-c25-guildoverview-owner.js` besitzt den Description-Editor.
+- Styling direkt in bestehenden Owner-CSS:
+  - `v8009-extracted-v6145-hall-pagination-css.css`;
+  - `css/features/guild/legacy/v554-guild-reference-owner-css.css`.
+- Mehrsprachigkeit:
+  - neue Hall-/Gilden-Texte und dynamische Rang-/Mitgliedertexte in DE/EN/ES/FR/PL/TR ergänzt;
+  - dynamische Hall-Render lösen direkten i18n-Apply aus.
+- Backend-Verifikation:
+  - Beta-Ranking aktuell erfolgreich geladen: Buds Krieger Rang 1, Nachtkrieger Rang 2;
+  - Beta-Gildenprofil-RPC erfolgreich inklusive Leiter und Top-3-Mitglieder;
+  - Server-1-Ranking erfolgreich und strikt aus Server-1-Schema;
+  - neue Funktionen: authenticated EXECUTE=true, anon EXECUTE=false.
+- JS Syntaxchecks:
+  - v6145 Hall Owner: OK;
+  - v254 Guild Core: OK;
+  - v8008-c25 Guild Overview: OK;
+  - v8144 Gameplay i18n: OK.
+- SQL-Vertrag im Repo:
+  - `V8184_HALL_GUILD_RANKING.sql`.
+- finale Cache-Keys:
+  - Hall JS/CSS: `8184guildhall2`;
+  - Guild JS/CSS/Core: `8184guilddesc2`;
+  - Gameplay i18n: `8184guildi18n1`.
+- Nächster Test:
+  1. App vollständig schließen/neustarten;
+  2. Hall of Haze öffnen;
+  3. Tabs Spieler/Gilden prüfen;
+  4. Gilden-Ranking öffnen;
+  5. Gilde anklicken → Profil/Stats/Beschreibung prüfen;
+  6. als Gildenleiter auf Gildenseite Beschreibung speichern;
+  7. Hall erneut öffnen und kontrollieren, ob Beschreibung im öffentlichen Gildenprofil erscheint.
