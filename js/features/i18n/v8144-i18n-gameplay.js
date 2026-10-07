@@ -8,6 +8,7 @@ const G=window.GrowI18n;if(!G)return;
    Exact, scoped text replacement only; no gameplay/state/RPC changes. */
 const M={
  en:{
+   "Heutige Belohnung ansehen":"View today's reward",
    "VIP-Truhe geöffnet!":"VIP chest opened!",
    "Das war heute in deiner VIP-Truhe:":"Today's VIP chest contained:",
    "Belohnung einsammeln":"Collect rewards",
@@ -56,6 +57,7 @@ const M={
   'ANBAU-TURM':'GROW TOWER','Turm-Erholung':'Tower recovery','Vollständig erholt':'Fully recovered','Turm-Leben vollständig regeneriert':'Tower health fully regenerated','Run starten':'Start run','Ersten Run starten':'Start first run','Komplette Ranglisten':'Full rankings','Turm-Aufstieg':'Tower progression','SAISON':'SEASON','Turm-Rangliste':'Tower ranking','Alle':'All','MITTWOCH':'WEDNESDAY','INFORMATIONEN':'INFORMATION','Anbau-Turm Guide':'Grow Tower guide','Guide schließen':'Close guide','Ranglisten ansehen':'View rankings','Rangliste':'Ranking','Turm verlassen':'Leave tower','Je höher du steigst, desto stärker werden die Mutationen.':'The higher you climb, the stronger the mutations become.'
  },
  es:{
+   "Heutige Belohnung ansehen":"Ver la recompensa de hoy",
    "VIP-Truhe geöffnet!":"¡Cofre VIP abierto!",
    "Das war heute in deiner VIP-Truhe:":"Tu cofre VIP de hoy contenía:",
    "Belohnung einsammeln":"Recoger recompensas",
@@ -100,6 +102,7 @@ const M={
   'ANBAU-TURM':'TORRE DE CULTIVO','Turm-Erholung':'Recuperación de torre','Vollständig erholt':'Recuperado por completo','Run starten':'Iniciar run','Ersten Run starten':'Iniciar primer run','Komplette Ranglisten':'Clasificación completa','Turm-Aufstieg':'Progreso de torre','SAISON':'TEMPORADA','Turm-Rangliste':'Clasificación de torre','Alle':'Todos','MITTWOCH':'MIÉRCOLES','INFORMATIONEN':'INFORMACIÓN','Anbau-Turm Guide':'Guía de la Torre','Guide schließen':'Cerrar guía','Ranglisten ansehen':'Ver clasificaciones','Rangliste':'Clasificación','Turm verlassen':'Salir de la torre'
  },
  fr:{
+   "Heutige Belohnung ansehen":"Voir la récompense du jour",
    "VIP-Truhe geöffnet!":"Coffre VIP ouvert !",
    "Das war heute in deiner VIP-Truhe:":"Votre coffre VIP du jour contenait :",
    "Belohnung einsammeln":"Récupérer les récompenses",
@@ -144,6 +147,7 @@ const M={
   'ANBAU-TURM':'TOUR DE CULTURE','Turm-Erholung':'Récupération de la tour','Vollständig erholt':'Entièrement rétabli','Run starten':'Lancer le run','Ersten Run starten':'Lancer le premier run','Komplette Ranglisten':'Classements complets','Turm-Aufstieg':'Progression de la tour','SAISON':'SAISON','Turm-Rangliste':'Classement de la tour','Alle':'Tous','MITTWOCH':'MERCREDI','INFORMATIONEN':'INFORMATIONS','Anbau-Turm Guide':'Guide de la Tour','Guide schließen':'Fermer le guide','Ranglisten ansehen':'Voir les classements','Rangliste':'Classement','Turm verlassen':'Quitter la tour'
  },
  pl:{
+   "Heutige Belohnung ansehen":"Zobacz dzisiejszą nagrodę",
    "VIP-Truhe geöffnet!":"Skrzynia VIP otwarta!",
    "Das war heute in deiner VIP-Truhe:":"Dzisiejsza skrzynia VIP zawierała:",
    "Belohnung einsammeln":"Odbierz nagrody",
@@ -188,6 +192,7 @@ const M={
   'ANBAU-TURM':'WIEŻA UPRAWY','Turm-Erholung':'Regeneracja wieży','Vollständig erholt':'W pełni zregenerowano','Run starten':'Rozpocznij run','Ersten Run starten':'Rozpocznij pierwszy run','Komplette Ranglisten':'Pełne rankingi','Turm-Aufstieg':'Rozwój wieży','SAISON':'SEZON','Turm-Rangliste':'Ranking wieży','Alle':'Wszyscy','MITTWOCH':'ŚRODA','INFORMATIONEN':'INFORMACJE','Anbau-Turm Guide':'Poradnik Wieży','Guide schließen':'Zamknij poradnik','Ranglisten ansehen':'Zobacz rankingi','Rangliste':'Ranking','Turm verlassen':'Opuść wieżę'
  },
  tr:{
+   "Heutige Belohnung ansehen":"Bugünkü ödülü görüntüle",
    "VIP-Truhe geöffnet!":"VIP sandığı açıldı!",
    "Das war heute in deiner VIP-Truhe:":"Bugünkü VIP sandığında şunlar vardı:",
    "Belohnung einsammeln":"Ödülleri al",
