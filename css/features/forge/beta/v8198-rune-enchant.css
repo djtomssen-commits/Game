@@ -1,0 +1,110 @@
+/* Grow Legends V8.198 — Runenjagd + Verzaubern, high-end runic presentation. */
+:root{--v8198-ink:#060909;--v8198-panel:#0c1211;--v8198-panel2:#111b18;--v8198-rune:#70ffd2;--v8198-rune2:#8c72ff;--v8198-gold:#f0c76a;--v8198-line:#31584b}
+
+/* ---------- shared item enchant FX ---------- */
+.v8198-plus-badge{position:absolute!important;z-index:18!important;right:5px!important;top:5px!important;min-width:25px;padding:3px 6px;border:1px solid #bfffe9;border-radius:999px;background:linear-gradient(180deg,#153f35,#071b17);color:#e8fff8!important;font-size:8px!important;font-weight:1000!important;line-height:1!important;letter-spacing:.04em;text-align:center;box-shadow:0 0 10px #59ffd064,inset 0 1px #ffffff40;pointer-events:none}
+.v8198-item-fx{position:absolute;z-index:3;inset:-2px;border-radius:inherit;pointer-events:none;opacity:0;overflow:hidden}
+.v8198-e-glow{position:relative!important;isolation:isolate}
+.v8198-e2{box-shadow:0 0 8px #59d9bd55,inset 0 0 9px #6fffd51c!important}
+.v8198-e3{box-shadow:0 0 11px #5ee6c977,0 0 20px #7366ff22,inset 0 0 12px #7affdd22!important}
+.v8198-e4{box-shadow:0 0 14px #65f0d397,0 0 25px #8170ff35,inset 0 0 14px #7affdf2b!important}
+.v8198-e5,.v8198-e6{box-shadow:0 0 17px #69ffe1b0,0 0 32px #806cff55,inset 0 0 17px #a9ffee32!important}
+.v8198-e7,.v8198-e8{box-shadow:0 0 20px #76ffe6cc,0 0 38px #9a75ff77,0 0 54px #4fd8ff2d,inset 0 0 20px #c5fff43e!important}
+.v8198-e9,.v8198-e10{box-shadow:0 0 24px #8dffebed,0 0 45px #ad7fff99,0 0 66px #53dcff4d,inset 0 0 23px #e3fff850!important}
+.v8198-e2>.v8198-item-fx,.v8198-e3>.v8198-item-fx,.v8198-e4>.v8198-item-fx{opacity:.52;background:radial-gradient(circle at 50% 120%,#75ffe931,transparent 57%)}
+.v8198-e5>.v8198-item-fx,.v8198-e6>.v8198-item-fx,.v8198-e7>.v8198-item-fx,.v8198-e8>.v8198-item-fx,.v8198-e9>.v8198-item-fx,.v8198-e10>.v8198-item-fx{opacity:.85;background:radial-gradient(circle at 50% 115%,#85ffe43c,transparent 51%),linear-gradient(118deg,transparent 0 39%,#dbfff0b0 46%,transparent 54% 100%);background-size:auto,240% 100%;animation:v8198EnchantSweep 3.8s ease-in-out infinite}
+.v8198-e-flash>.v8198-item-fx:before,.v8198-e-flash>.v8198-item-fx:after{content:"";position:absolute;width:2px;height:68%;left:29%;top:8%;background:#efffff;box-shadow:0 0 5px #fff,0 0 13px #62fff0;clip-path:polygon(40% 0,100% 0,62% 39%,100% 38%,0 100%,31% 51%,0 51%);opacity:0;transform:rotate(12deg) scale(.65);animation:v8198EnchantBolt 4.6s steps(1,end) infinite}
+.v8198-e-flash>.v8198-item-fx:after{left:auto;right:25%;top:20%;height:48%;transform:rotate(-19deg) scale(.55);animation-delay:2.15s}
+.v8198-e8>.v8198-item-fx:before,.v8198-e9>.v8198-item-fx:before,.v8198-e10>.v8198-item-fx:before{animation-duration:3.4s}
+.v8198-e10>.v8198-item-fx{filter:brightness(1.24)}
+@keyframes v8198EnchantSweep{0%,42%{background-position:0 0,-70% 0}68%,100%{background-position:0 0,170% 0}}
+@keyframes v8198EnchantBolt{0%,88%,94%,100%{opacity:0}89%,91%{opacity:.95}92%{opacity:.35}}
+
+/* ---------- Harzschmiede: Verzaubern ---------- */
+.v8198-enchant-shell{position:relative;overflow:hidden;border:1px solid #31594c;border-radius:17px;background:radial-gradient(circle at 72% 8%,#35255c55,transparent 28%),radial-gradient(circle at 24% 0,#16483966,transparent 32%),linear-gradient(155deg,#111b18,#070b0a 70%);box-shadow:inset 0 0 42px #000b,0 14px 28px #0008;color:#e9f6f0}
+.v8198-enchant-shell:before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.2;background-image:linear-gradient(30deg,#ffffff09 1px,transparent 1px),linear-gradient(150deg,#72ffe20b 1px,transparent 1px);background-size:27px 27px}
+.v8198-enchant-head{position:relative;z-index:2;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 15px 13px;border-bottom:1px solid #31584b;background:linear-gradient(180deg,#182b25e8,#0b1512e8)}
+.v8198-enchant-head small{display:block;color:#74d7bc;font-size:7px;font-weight:1000;letter-spacing:.16em}
+.v8198-enchant-head h3{margin:3px 0 2px;font-size:23px;line-height:1;color:#f2e6bd;text-shadow:0 0 17px #78ffd94b}
+.v8198-enchant-head p{margin:0;color:#9cb0a9;font-size:8px}
+.v8198-enchant-wallet{display:flex;gap:6px;flex:0 0 auto}
+.v8198-enchant-wallet>span{min-width:60px;padding:7px 8px;border:1px solid #365b50;border-radius:12px;background:#07110eaa;text-align:center;box-shadow:inset 0 0 14px #0009}
+.v8198-enchant-wallet i{display:block;color:#8bffe2;font-size:17px;font-style:normal;text-shadow:0 0 10px #4cffd8}
+.v8198-enchant-wallet b{display:block;color:#fff;font-size:13px}.v8198-enchant-wallet small{font-size:6px;letter-spacing:.08em;color:#839a92}
+.v8198-enchant-result{position:relative;z-index:2;margin:9px 9px 0;padding:8px 10px;display:flex;align-items:center;gap:9px;border:1px solid #39544b;border-radius:11px;background:#0b1512}
+.v8198-enchant-result>i{font-size:20px;font-style:normal}.v8198-enchant-result b,.v8198-enchant-result small{display:block}.v8198-enchant-result b{font-size:10px}.v8198-enchant-result small{margin-top:2px;font-size:7px;color:#a3b5af}
+.v8198-enchant-result.success{border-color:#54c9a8;box-shadow:0 0 17px #43e9bb27}.v8198-enchant-result.success>i{color:#8affe0;text-shadow:0 0 13px #5affdc}
+.v8198-enchant-result.fail{border-color:#86504d}.v8198-enchant-result.fail>i{color:#ff8b83}
+.v8198-enchant-grid{position:relative;z-index:2;display:grid;grid-template-columns:minmax(0,.95fr) minmax(0,1.05fr);gap:9px;padding:9px}
+.v8198-enchant-list,.v8198-enchant-focus{min-width:0;border:1px solid #29443b;border-radius:13px;background:linear-gradient(160deg,#101a17dd,#080d0bdd);box-shadow:inset 0 0 18px #0007}
+.v8198-enchant-list{padding:8px}.v8198-enchant-list-head{display:flex;align-items:center;justify-content:space-between;margin:0 1px 7px}
+.v8198-enchant-list-head b{font-size:11px;color:#ead9a9}.v8198-enchant-list-head small{font-size:7px;color:#71847e}
+.v8198-enchant-items{display:grid;gap:5px;max-height:394px;overflow:auto;padding-right:2px;scrollbar-width:thin}
+.v8198-enchant-item{position:relative;display:grid;grid-template-columns:45px minmax(0,1fr) 36px;align-items:center;gap:7px;min-height:58px;padding:6px 7px;border:1px solid #33443f;border-radius:10px;background:linear-gradient(110deg,#111917,#0b100f);color:#e9f1ee;text-align:left;cursor:pointer;overflow:hidden}
+.v8198-enchant-item:hover,.v8198-enchant-item.selected{border-color:#6ce2c2;box-shadow:0 0 14px #53e8c22f,inset 0 0 12px #68ffd714}
+.v8198-enchant-item.selected{outline:1px solid #b1ffe8;outline-offset:-3px}
+.v8198-enchant-item-art{display:grid;place-items:center;width:42px;height:44px;border:1px solid #2d4b42;border-radius:9px;background:#070c0a;overflow:hidden}
+.v8198-enchant-art{max-width:100%;max-height:100%;object-fit:contain;filter:drop-shadow(0 3px 5px #000)}
+.v8198-enchant-fallback{font-size:25px;color:#91ffe1}.v8198-enchant-item-copy{min-width:0}.v8198-enchant-item-copy b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:8px}.v8198-enchant-item-copy small{display:block;margin-top:3px;color:#7f948d;font-size:6px}
+.v8198-enchant-item>em{justify-self:end;color:#9bffe4;font-style:normal;font-size:12px;font-weight:1000;text-shadow:0 0 9px #5dffdc}
+.v8198-enchant-item>.v8198-plus-badge{display:none!important}
+.v8198-enchant-focus{padding:9px;text-align:center}
+.v8198-enchant-altar{position:relative;isolation:isolate;display:grid;place-items:center;min-height:190px;overflow:hidden;border:1px solid #31564b;border-radius:13px;background:radial-gradient(circle at 50% 56%,#42f7c936,transparent 24%),radial-gradient(circle at 50% 58%,#6d55d92b,transparent 45%),linear-gradient(180deg,#0d1915,#060a09)}
+.v8198-enchant-altar:before{content:"";position:absolute;left:50%;bottom:11px;width:66%;height:23px;transform:translateX(-50%);border:1px solid #63e1bf66;border-radius:50%;box-shadow:0 0 18px #50ffd275,inset 0 0 14px #4fffc54a}
+.v8198-enchant-rune-ring{position:absolute;width:145px;height:145px;border:1px solid #72ffe299;border-radius:50%;box-shadow:0 0 22px #5affda42,inset 0 0 18px #8b6cff42;animation:v8198RuneSpin 13s linear infinite}
+.v8198-enchant-rune-ring:before,.v8198-enchant-rune-ring:after{content:"ᚠ ᚱ ᛏ ᛉ ᚾ ᚨ";position:absolute;inset:-11px;color:#83ffe1;font-size:10px;letter-spacing:10px;word-spacing:10px;opacity:.65;transform:rotate(31deg)}
+.v8198-enchant-rune-ring:after{inset:14px;opacity:.3;transform:rotate(-67deg)}
+.v8198-enchant-rune-ring>i{position:absolute;inset:0;display:grid;place-items:center;color:#78ffe1;font-style:normal;font-size:64px;opacity:.13;text-shadow:0 0 20px #7fffe9}
+.v8198-enchant-main-art{position:relative;z-index:5;display:grid;place-items:center;width:102px;height:106px;filter:drop-shadow(0 12px 8px #000b)}
+.v8198-enchant-main-art img{max-width:100%;max-height:100%;object-fit:contain}
+.v8198-enchant-altar>strong{position:absolute;z-index:8;right:9px;bottom:8px;padding:5px 7px;border:1px solid #6ce1c1;border-radius:8px;background:#07130fdb;color:#b9ffe9;font-size:9px;letter-spacing:.08em}
+.v8198-enchant-title{padding:8px 2px 5px}.v8198-enchant-title b{display:block;font-size:12px;color:#f3e4bb}.v8198-enchant-title small{display:block;margin-top:2px;color:#83978f;font-size:7px}
+.v8198-enchant-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px;margin-top:5px}.v8198-enchant-stats span,.v8198-enchant-next>div{padding:6px 3px;border:1px solid #29433a;border-radius:8px;background:#08100e}.v8198-enchant-stats small,.v8198-enchant-next small{display:block;font-size:6px;color:#789087}.v8198-enchant-stats b{display:block;margin-top:2px;font-size:9px}
+.v8198-enchant-next{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-top:7px}.v8198-enchant-next b{display:block;margin-top:3px;color:#9affe3;font-size:11px}
+.v8198-enchant-button{width:100%;margin-top:8px;padding:10px 8px;border:1px solid #8df5d4;border-radius:10px;background:linear-gradient(100deg,#225949,#3c3279,#246051);color:#f6fff9;font-size:9px;font-weight:1000;letter-spacing:.04em;box-shadow:0 0 17px #5fffd73b,inset 0 1px #ffffff47;cursor:pointer}
+.v8198-enchant-button:not(:disabled):active{transform:translateY(2px)}.v8198-enchant-button:disabled{opacity:.42;filter:grayscale(.7);cursor:not-allowed}
+.v8198-enchant-rule{display:block;margin-top:6px;color:#73867f;font-size:6.5px;line-height:1.35}
+.v8198-enchant-fuse{position:relative;z-index:2;display:flex;align-items:center;justify-content:space-between;gap:9px;margin:0 9px 9px;padding:8px 9px;border:1px solid #3a5048;border-radius:11px;background:#09110f}.v8198-enchant-fuse>div{display:flex;align-items:center;gap:8px}.v8198-enchant-fuse i{font-size:22px;color:#b69cff;font-style:normal;text-shadow:0 0 12px #8d6fff}.v8198-enchant-fuse b,.v8198-enchant-fuse small{display:block}.v8198-enchant-fuse b{font-size:9px}.v8198-enchant-fuse small{margin-top:2px;font-size:6px;color:#82948e}.v8198-enchant-fuse button{padding:7px 9px;border:1px solid #6fcbb1;border-radius:8px;background:#153d33;color:#dffff5;font-size:8px;font-weight:1000}.v8198-enchant-fuse button:disabled{opacity:.35}
+.v8198-enchant-empty{padding:30px 12px;color:#71827d;font-size:8px;text-align:center}.v8198-enchant-empty.focus{display:grid;place-items:center;min-height:330px}
+
+/* ---------- Runenjagd overlay ---------- */
+.v8198-rune-overlay{position:fixed;z-index:100000;inset:0;display:none;align-items:center;justify-content:center;padding:12px;background:radial-gradient(circle at 50% 45%,#172f2c8a,#020505ee 68%);backdrop-filter:blur(7px)}
+.v8198-rune-overlay.show{display:flex}
+.v8198-rune-shell{position:relative;width:min(760px,96vw);max-height:94vh;overflow:auto;border:1px solid #477d6d;border-radius:21px;background:radial-gradient(circle at 50% 13%,#3024638a,transparent 31%),radial-gradient(circle at 50% 39%,#153e3577,transparent 48%),linear-gradient(180deg,#0b1412,#050807 75%);box-shadow:0 0 0 1px #000,0 30px 75px #000d,0 0 55px #6d5dff26,inset 0 0 55px #000a;color:#eef8f4;overflow-x:hidden}
+.v8198-rune-shell:before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.23;background-image:radial-gradient(#8effe7 1px,transparent 1px);background-size:31px 31px;mask-image:linear-gradient(#000,transparent 72%)}
+.v8198-rune-close{position:sticky;z-index:20;float:right;top:8px;margin:8px 8px -42px 0;width:32px;height:32px;border:1px solid #55756c;border-radius:50%;background:#07100ed9;color:#cceee4;font-size:20px;line-height:1;cursor:pointer}
+.v8198-rune-head{position:relative;z-index:3;display:flex;justify-content:space-between;align-items:flex-start;gap:15px;padding:17px 54px 9px 17px}.v8198-rune-head small{display:block;color:#73e5c7;font-size:7px;font-weight:1000;letter-spacing:.18em}.v8198-rune-head h2{margin:4px 0 3px;color:#efe0b0;font-size:29px;line-height:1;letter-spacing:.04em;text-shadow:0 0 22px #62ffd03e}.v8198-rune-head p{margin:0;max-width:390px;color:#91a9a1;font-size:8px;line-height:1.4}
+.v8198-rune-wallet{display:flex;gap:6px}.v8198-rune-wallet>span{min-width:60px;padding:7px;border:1px solid #3e6c5f;border-radius:11px;background:#06100dda;text-align:center}.v8198-rune-wallet i{display:block;color:#82ffe3;font-size:18px;font-style:normal;text-shadow:0 0 11px #5bffdc}.v8198-rune-wallet b{display:block;font-size:13px}.v8198-rune-wallet small{font-size:6px;letter-spacing:.08em;color:#789087}
+.v8198-portal-stage{position:relative;z-index:2;min-height:330px;display:grid;grid-template-columns:1fr .7fr;align-items:center;padding:5px 45px 5px 60px;overflow:hidden}
+.v8198-portal-stage:before{content:"";position:absolute;left:8%;right:8%;bottom:18px;height:28px;border-radius:50%;background:#70ffe51b;filter:blur(8px);box-shadow:0 0 60px #6f61ff42}
+.v8198-portal{position:relative;width:255px;height:255px;display:grid;place-items:center;margin:auto;filter:drop-shadow(0 17px 12px #000a)}
+.v8198-portal-ring{position:absolute;border-radius:50%;border:2px solid #6cf3d1aa;box-shadow:0 0 20px #5affe16b,inset 0 0 17px #755eff42}
+.v8198-portal-ring.r1{inset:0;border-width:5px;border-style:double;animation:v8198RuneSpin 15s linear infinite}.v8198-portal-ring.r2{inset:23px;border-color:#9b86ff99;animation:v8198RuneSpinReverse 11s linear infinite}.v8198-portal-ring.r3{inset:47px;border-style:dashed;border-color:#88ffe0aa;animation:v8198RuneSpin 8s linear infinite}
+.v8198-portal-ring.r1:before,.v8198-portal-ring.r2:before{content:"ᚠ ᚱ ᚾ ᛏ ᛉ ᚨ ᛇ ᚲ";position:absolute;inset:-16px;color:#89ffe1;font-size:11px;letter-spacing:9px;word-spacing:3px;opacity:.75;transform:rotate(19deg)}
+.v8198-portal-core{width:137px;height:137px;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle,#dffdf3 0 3%,#6effdf 5%,#6b62eaa8 24%,#164d42aa 51%,#020706 72%);box-shadow:0 0 28px #63ffe4b0,0 0 65px #7967ff6b,inset 0 0 35px #000}.v8198-portal-core span{color:#e9fff9;font-size:77px;opacity:.76;text-shadow:0 0 10px #fff,0 0 27px #6affe5;animation:v8198PortalBreath 2.5s ease-in-out infinite}
+.v8198-portal-stage.closed .v8198-portal{filter:grayscale(.7) brightness(.48) drop-shadow(0 14px 10px #000)}.v8198-portal-stage.closed .v8198-portal-ring,.v8198-portal-stage.closed .v8198-portal-core span{animation-play-state:paused}
+.v8198-rune-status{position:relative;padding:14px;border-left:1px solid #315148}.v8198-rune-status>b{display:block;color:#e8d9ae;font-size:13px;letter-spacing:.08em}.v8198-rune-status>span{display:block;margin-top:5px;color:#93aba4;font-size:8px;line-height:1.4}.v8198-run-pips{display:flex;gap:5px;margin-top:12px}.v8198-run-pips i{width:24px;height:7px;border:1px solid #36564d;border-radius:99px;background:#07100d}.v8198-run-pips i.done{background:linear-gradient(90deg,#58cba8,#9277ff);border-color:#8bffe0;box-shadow:0 0 9px #67ffe05c}
+.v8198-rune-reward{position:relative;z-index:3;margin:-4px 13px 9px;padding:9px 12px;border:1px solid #4d7066;border-radius:12px;background:#0b1512;box-shadow:0 0 18px #50e1b222}.v8198-rune-reward>small{display:block;color:#75e0c3;font-size:6px;letter-spacing:.16em}.v8198-rune-reward>b{display:block;margin-top:2px;color:#efe2ba;font-size:11px}.v8198-rune-reward>div{display:flex;gap:10px;margin-top:5px;color:#9fffe5;font-size:7px;font-weight:900}.v8198-rune-reward.legendary{border-color:#a88aff;box-shadow:0 0 30px #8066ff44}
+.v8198-sigil-grid{position:relative;z-index:3;display:grid;grid-template-columns:repeat(3,1fr);gap:7px;padding:0 13px 10px}.v8198-sigil{position:relative;min-height:125px;padding:11px 8px;border:1px solid #365a50;border-radius:13px;background:radial-gradient(circle at 50% 25%,#3d6e5f33,transparent 42%),linear-gradient(160deg,#111c19,#080e0c);color:#eaf5f1;text-align:center;overflow:hidden;cursor:pointer}.v8198-sigil:before{content:"";position:absolute;inset:-80% -30%;background:conic-gradient(transparent,#84ffe21c,transparent 23%);animation:v8198RuneSpin 9s linear infinite}.v8198-sigil>*{position:relative;z-index:2}.v8198-sigil>i{display:block;color:#87ffe2;font-size:34px;font-style:normal;text-shadow:0 0 17px #55ffd5}.v8198-sigil>b{display:block;margin-top:4px;color:#e8dbb7;font-size:10px}.v8198-sigil>small{display:block;min-height:28px;margin:4px auto 7px;max-width:150px;color:#82988f;font-size:6.5px;line-height:1.35}.v8198-sigil>span{display:inline-block;padding:5px 7px;border:1px solid #4e776b;border-radius:8px;background:#0b1713;color:#a8ffea;font-size:6.5px;font-weight:1000}.v8198-sigil:not(:disabled):hover{border-color:#83efd2;box-shadow:0 0 19px #5dffd738}.v8198-sigil:disabled{opacity:.42;cursor:not-allowed}
+.v8198-rune-foot{position:relative;z-index:3;display:flex;align-items:center;justify-content:space-between;gap:10px;margin:0 13px 13px;padding:9px 10px;border:1px solid #344d46;border-radius:11px;background:#07100e}.v8198-rune-foot b,.v8198-rune-foot span{display:block}.v8198-rune-foot b{font-size:8px}.v8198-rune-foot span{margin-top:2px;color:#798e87;font-size:6.5px}.v8198-rune-foot button{padding:7px 10px;border:1px solid #74cdb5;border-radius:8px;background:#153d33;color:#e2fff7;font-size:7px;font-weight:1000}.v8198-rune-foot button:disabled{opacity:.32}
+
+/* ---------- Startseite dynamic Rune slot ---------- */
+.v366-feature.v8198-rune-home-card{position:relative;overflow:hidden;border-color:#477a6c!important;background:radial-gradient(circle at 50% 38%,#345a524f,transparent 47%),linear-gradient(160deg,#101916,#07100e)!important;box-shadow:0 0 22px #55e7c52b,inset 0 0 27px #0008!important}
+.v8198-home-portal{position:relative;height:142px;display:grid;place-items:center;overflow:hidden;border-radius:12px;background:radial-gradient(circle,#7affe052 0 5%,#735ff044 24%,#122b25 43%,#040706 68%)}
+.v8198-home-portal:before,.v8198-home-portal:after{content:"";position:absolute;width:99px;height:99px;border:2px solid #76ffe0;border-radius:50%;box-shadow:0 0 19px #60ffda66,inset 0 0 14px #735eff55;animation:v8198RuneSpin 9s linear infinite}.v8198-home-portal:after{width:73px;height:73px;border-style:dashed;border-color:#a08bff;animation:v8198RuneSpinReverse 6.5s linear infinite}
+.v8198-home-portal>i{position:relative;z-index:3;color:#dbfff6;font-size:53px;font-style:normal;text-shadow:0 0 10px #fff,0 0 24px #6affe2;animation:v8198PortalBreath 2.6s ease-in-out infinite}
+.v8198-home-live{position:absolute;z-index:5;top:7px;left:7px;padding:4px 6px;border:1px solid #81f6d6;border-radius:99px;background:#07120eea;color:#a8ffe8;font-size:6px;font-weight:1000;letter-spacing:.08em;box-shadow:0 0 11px #5effd04d}
+.v8198-rune-home-card .v366-go{background:linear-gradient(90deg,#215b4a,#493b86)!important;border-color:#82edd0!important;box-shadow:0 0 13px #66fbd83e!important}
+
+@keyframes v8198RuneSpin{to{transform:rotate(360deg)}}@keyframes v8198RuneSpinReverse{to{transform:rotate(-360deg)}}@keyframes v8198PortalBreath{50%{transform:scale(1.08);filter:brightness(1.25)}}
+
+@media(max-width:680px){
+ .v8198-enchant-head,.v8198-rune-head{align-items:flex-start}.v8198-enchant-grid{grid-template-columns:1fr}.v8198-enchant-items{max-height:250px}.v8198-enchant-empty.focus{min-height:230px}
+ .v8198-portal-stage{grid-template-columns:1fr;min-height:390px;padding:2px 20px 12px}.v8198-portal{width:215px;height:215px}.v8198-portal-core{width:116px;height:116px}.v8198-rune-status{border-left:0;border-top:1px solid #315148;text-align:center}.v8198-run-pips{justify-content:center}
+}
+@media(max-width:480px){
+ .v8198-enchant-head,.v8198-rune-head{display:block}.v8198-enchant-wallet,.v8198-rune-wallet{margin-top:8px}.v8198-enchant-wallet>span,.v8198-rune-wallet>span{min-width:54px}.v8198-sigil-grid{grid-template-columns:1fr}.v8198-sigil{min-height:105px}.v8198-rune-foot,.v8198-enchant-fuse{align-items:flex-start;flex-direction:column}.v8198-rune-foot button,.v8198-enchant-fuse button{width:100%}.v8198-enchant-stats{grid-template-columns:repeat(2,1fr)}.v8198-enchant-next{grid-template-columns:1fr}
+}
+@media(prefers-reduced-motion:reduce){
+ .v8198-item-fx,.v8198-item-fx:before,.v8198-item-fx:after,.v8198-enchant-rune-ring,.v8198-portal-ring,.v8198-portal-core span,.v8198-sigil:before,.v8198-home-portal:before,.v8198-home-portal:after,.v8198-home-portal>i{animation:none!important}
+}
