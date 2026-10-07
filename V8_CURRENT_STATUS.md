@@ -11697,3 +11697,41 @@ Aktueller Release-Status:
   - Server1 Cache: `68617ac7d25c2d3738ca67a422477c9223b0fdab`;
   - Index/Login Cache: `189ceb9845846c344035cd91e1c6903c970e64a4`.
 
+### 2026-10-07 – V8.201 finale Rahmenkorrektur: neue VIP-/Legenden-Bund-Assets
+- Nutzer hat die tatsächlich gewünschten neuen Rahmen erneut als Bild geliefert:
+  - Legenden-Bund: grün/türkis/goldener, stark ornamentierter Rahmen;
+  - VIP-Kronenrahmen: rot/goldener Kronenrahmen.
+- Die zwischenzeitlich eingesetzten V2-SVGs waren nur ein Funktions-Fallback und entsprechen nicht dem gewünschten neuen Design.
+- Frühere V3/V4-Binärversuche waren beschädigt bzw. trunkiert und werden nicht mehr referenziert.
+- Die zwei gelieferten Designs wurden transparent und spielgerecht als WebP übernommen und unter neuen cache-sicheren Pfaden installiert:
+  - `assets/avatar_frames/referral_legend_v5.webp` – 14.398 Bytes – Git blob `9ad54b5d43567c1a268f6149a2baa878cfc0232f`;
+  - `assets/avatar_frames/vip_crown_v5.webp` – 12.216 Bytes – Git blob `666d320956f7a894f8c02fbcbc6daba8e0553938`.
+- Beide Dateien wurden nach dem Binärupload über die GitHub Contents-Metadaten mit exakt den erwarteten Dateigrößen verifiziert.
+- Kanonische Resolver umgestellt:
+  - `js/features/shift/beta/v8009-s1-v7137-shift-frame-client.js`;
+  - `js/features/pvp/beta/v8009-s1-v6145-hall-pagination-js.js`;
+  - beide referenzieren jetzt ausschließlich `*_v5.webp`;
+  - keine V4-Referenz mehr in diesen Ownern.
+- Beta Cache-Bust:
+  - v7137 -> `?v=8201frames2`;
+  - v6145 -> `?v=8201frames2`.
+- QA:
+  - v7137 Syntax OK;
+  - v6145 Syntax OK;
+  - je Owner exakt 1 VIP-V5- und 1 Referral-V5-Referenz;
+  - V4-Referenzen in den Ownern = 0;
+  - beide Beta-Cache-Refs exakt 1x vorhanden.
+- Temporäre Base64-Hilfsdatei `tmp/v8201/ref0.txt` wurde wieder entfernt.
+- Relevante Commits:
+  - verifizierte V5 Assets: `f7c11eb96428da48ca5a52b69c7e4d01bc9e8add`;
+  - Shift/Frame Resolver: `06a303b5c0079eb54ac67665b872af89db473136`;
+  - Hall/Public Resolver: `5a402203e3cb65833fcf12b8a2ecca7443230e00`;
+  - Beta Cache-Bust: `6f4debf639416ec510c30f833cfef71ec9e5260d`;
+  - Temp-Cleanup: `f85e5464d8b69e3b1f589d4015c95f8a63b6011f`.
+- Manueller Beta-Test:
+  1. App/Beta komplett neu laden;
+  2. Rahmen-Shop öffnen;
+  3. Legenden-Bund muss den neuen grün/türkisen Ornamentrahmen zeigen;
+  4. VIP-Kronenrahmen muss den neuen rot/goldenen Kronenrahmen zeigen;
+  5. aktivierten VIP-Rahmen zusätzlich auf Charakteransicht und öffentlichem Profil prüfen.
+
