@@ -5,6 +5,7 @@ window.__V7117_DEALER_HUB__=true;
 
 function vipAvailable(){return window.__V8195_VIP_CLIENT__===true&&typeof window.v8195OpenVip==='function'}
 function dealerName(){return vipAvailable()?'Harz & Gold & Rahmen & VIP Dealer':'Harz & Gold & Rahmen Dealer'}
+function navName(){const vip=vipAvailable(),key=vip?'nav.harzDealer':'nav.harzDealerNoVip',fallback=vip?'Harz · Gold · Rahmen · VIP':'Harz · Gold · Rahmen';return window.GrowI18n?.t?.(key)||fallback}
 function hubHtml(active){
  return `<div class="v7117-dealer-hub" data-v7117-hub="1">
    <div class="v7117-hub-title"><div class="v7117-hub-emblem">🌿</div><div class="v7117-hub-copy"><small>Grow Legends · Händler</small><b>${dealerName()}</b></div></div>
@@ -34,8 +35,8 @@ function renameMenu(){
  try{
    document.querySelectorAll('#v032MenuPanel [data-screen="harzDealer"],#v032MenuPanel [data-v341-harz-menu="1"]').forEach(el=>{
      const icon=el.querySelector('span');
-     if(icon){[...el.childNodes].filter(n=>n.nodeType===3).forEach(n=>n.remove());el.append(' '+dealerName())}
-     else el.textContent='💎 '+dealerName();
+     if(icon){[...el.childNodes].filter(n=>n.nodeType===3).forEach(n=>n.remove());el.append(' '+navName())}
+     else el.textContent='💎 '+navName();
    });
  }catch(_){}
 }
