@@ -4,7 +4,7 @@ if(String(window.GROW_RELEASE_CHANNEL||'stable').toLowerCase()!=='beta')return;
 if(window.__V8210_GROW_CUP__)return;
 window.__V8210_GROW_CUP__=true;
 
-const VERSION='V8.214';
+const VERSION='V8.217';
 const PLANTS={
  seedling:'assets/v7198-base64/49aed1d1c8035f5d2123.webp',
  growth:'assets/v7198-base64/c9ec3c217b81f805555c.webp',
@@ -12,12 +12,12 @@ const PLANTS={
  harvest:'assets/v7198-base64/31d47d1bdc5a6c5800cb.webp'
 };
 const PHASES=[
- ['Keimung','Start · Feuchte · Temperatur'],
- ['Wachstum','Licht · Wurzeln · Tempo'],
- ['Formung','Training · Krone · Stabilität'],
- ['Blüte','Nährstoffe · Blütenansatz'],
- ['Reifung','Harz · Gewicht · Gesundheit'],
- ['Finish','Spülen · Reife · Ernte']
+ ['Licht','Lichtzeit einstellen'],
+ ['Gießen','Wassermenge bestimmen'],
+ ['Dünger','Düngermenge dosieren'],
+ ['Beschneiden','Schnittstärke festlegen'],
+ ['Temperatur','Temperatur einstellen'],
+ ['Ernte','Erntezeitpunkt bestimmen']
 ];
 const METRICS=[
  ['quality','Qualität','★'],['yield','Ertrag','⚖'],['resin','Harz','✨'],['genetics','Genetik','🧬'],['health','Gesundheit','♥']
@@ -25,7 +25,7 @@ const METRICS=[
 const TIER={
  bronze:['🥉','BRONZE'],silver:['🥈','SILBER'],gold:['🥇','GOLD'],master:['💎','MEISTER'],champion:['👑','GROW CHAMPION']
 };
-const S={state:null,ranking:null,busy:false,opened:false,view:'cup',lastError:'',refreshes:0,starts:0,submits:0,timer:null,clockOffset:0,boundaryKey:'',draftKey:'',draft:null};
+const S={state:null,ranking:null,busy:false,opened:false,view:'cup',lastError:'',refreshes:0,starts:0,submits:0,timer:null,clockOffset:0,boundaryKey:'',boundaryRetryAt:0,refreshInFlight:null,draftKey:'',draft:null};
 const db=()=>{try{return (typeof v073Db!=='undefined'&&v073Db)||null}catch(_){return null}};
 const uid=()=>{try{return String((typeof v073User!=='undefined'&&v073User?.id)||'')}catch(_){return ''}};
 const one=v=>Array.isArray(v)?v[0]:v;
@@ -51,7 +51,7 @@ function wallet(){
  return '<div class="v8210-wallet"><span><i>ᚱ</i><b>'+Math.max(0,Number(st.runes)||0)+'</b><small>Runen</small></span><span><i>✦</i><b>'+Math.max(0,Number(st.rune_shards)||0)+'</b><small>Fragmente</small></span></div>';
 }
 function header(){
- return '<header class="v8210-head"><button type="button" data-cup-close class="v8210-back">←</button><div class="v8210-title"><small>6-STUNDEN-CUP · ALLE 2 WOCHEN</small><b>GROW CUP</b><span>6 Aktionen · 6 versteckte Sweet Spots · maximal 600 Punkte</span></div>'+wallet()+'<button type="button" data-cup-close class="v8210-close">×</button></header>'+
+ return '<header class="v8210-head"><button type="button" data-cup-close class="v8210-back">←</button><div class="v8210-title"><small>6-STUNDEN-CUP · JEDEN SONNTAG</small><b>GROW CUP</b><span>Jede Woche neue Pflanze · 6 neue Sweet Spots · maximal 600 Punkte</span></div>'+wallet()+'<button type="button" data-cup-close class="v8210-close">×</button></header>'+
  '<nav class="v8210-tabs"><button data-cup-view="cup" class="'+(S.view==='cup'?'active':'')+'">🌿 CUP</button><button data-cup-view="ranking" class="'+(S.view==='ranking'?'active':'')+'">🏆 RANGLISTE</button></nav>';
 }
 function plantStage(phase=1,status='active'){
@@ -80,7 +80,7 @@ function lobby(){
   '<div class="v8210-lobby-copy"><small>GROW LEGENDS · LIVE GROW CUP</small><h1>6 AKTIONEN.<br>600 PUNKTE.</h1>'+
   '<p>Jede Stunde hat genau eine Aufgabe und einen Regler. Für jede Aktion existiert ein versteckter Sweet Spot. Je näher du ihn triffst, desto mehr von 100 Punkten erhältst du. Die Einzelpunkte siehst du erst ganz am Ende.</p>'+
   '<div class="v8210-lobby-rules"><span><b>6 h</b><small>Laufzeit</small></span><span><b>6</b><small>Aktionen</small></span><span><b>100</b><small>Punkte je Aktion</small></span><span><b>600</b><small>Maximum</small></span></div>'+
-  '<div class="v8210-seed-card"><i>🌱</i><div><small>DIESE CUP-SORTE</small><b>'+esc(st.cup_seed||'Cup-Sorte')+'</b><span>Der Sweet Spot wechselt mit jedem neuen Grow Cup</span></div></div>'+
+  '<div class="v8210-seed-card"><i>🌱</i><div><small>DIESE CUP-SORTE</small><b>'+esc(st.cup_seed||'Cup-Sorte')+'</b><span>Jede Woche eine neue Pflanze mit sechs neuen Sweet Spots</span></div></div>'+
   '<button data-cup-start '+(!active||S.busy?'disabled':'')+'>'+(S.busy?'CUP WIRD VORBEREITET …':'6-STUNDEN-CUP STARTEN')+'</button>'+
   (st.test_eligible?'<button class="v8213-test-start" data-cup-test-start '+(S.busy?'disabled':'')+'>🧪 BETA-TESTLAUF · 6 MINUTEN</button>':'')+
   '<em>'+(active?'Dein persönlicher Timer beginnt erst beim Start. Pro Phase gibt es genau eine Einstellung.':'Nächster Grow Cup: '+esc(fmtDate(st.next_event)))+'</em></div>'+
@@ -107,6 +107,11 @@ function timingCard(run){
  if(state==='processing'){title='Phase wird verarbeitet';sub='Nächste Phase in';target=run?.phase_ends_at;cls='processing';ico='🌿'}
  return '<div class="v8210-timing '+cls+' '+(run?.test_mode?'test':'')+'"><i>'+ico+'</i><div><small>'+(run?.test_mode?'BETA-TEST · PHASE ':'STUNDE ')+Number(run?.phase||1)+' / 6</small><b>'+title+'</b><span>'+sub+' <strong data-cup-countdown data-target="'+esc(target||'')+'">'+fmtDuration(leftMs(target))+'</strong></span></div><em>'+(run?.test_mode?'Testlauf':'Gesamtlaufzeit')+' <b data-cup-run-time data-target="'+esc(run?.run_ends_at||'')+'">'+fmtDuration(leftMs(run?.run_ends_at))+'</b></em></div>';
 }
+function plantStatus(run){
+ const s=run?.plant_status||{};
+ if(!s.message)return'';
+ return '<div class="v8216-plant-status"><i>🌿</i><div><small>PFLANZENSTATUS</small><b>'+esc(s.message)+'</b><span>Nur ein grober Hinweis – der Sweet Spot bleibt verborgen.</span></div></div>';
+}
 function actionControl(run){
  const action=run?.action||{},state=String(run?.window_state||'waiting'),locked=state!=='open'||S.busy;
  const value=ensureDraft(run),submitted=state==='submitted';
@@ -126,6 +131,7 @@ function activeRun(run){
   '<div class="v8210-stage-meta"><small>'+esc(run.cup_seed||'Cup-Sorte')+(run.test_mode?' · BETA-TEST':'')+'</small><b>'+(run.test_mode?'TESTPHASE ':'STUNDE ')+phase+' / 6</b><span>'+esc(ph[0])+'</span></div></div>'+
   '<div class="v8210-control">'+timingCard(run)+
   '<div class="v8210-phase-copy"><small>AKTION '+phase+' · '+esc(ph[0]).toUpperCase()+'</small><h2>'+esc(ph[1])+'</h2><p>Nur diese eine Einstellung zählt in dieser Phase. Sweet Spot und Punkte bleiben bis zum Finale verborgen.</p></div>'+
+  plantStatus(run)+
   '<div class="v8214-hidden-score"><i>?</i><div><b>Punkte verborgen</b><span>Die komplette Pflanzen- und Punkteauswertung erscheint erst nach Aktion 6.</span></div></div>'+
   actionControl(run)+'</div></div></section>';
 }
@@ -186,9 +192,21 @@ function updateClockText(){
  else if(r.window_state==='open'||r.window_state==='submitted'||r.window_state==='processing'){target=r.phase_ends_at;kind='end'}
  if(!target)return;
  const key=String(r.run_id)+':'+String(r.phase)+':'+kind+':'+target;
- if(leftMs(target)<=0&&S.boundaryKey!==key){S.boundaryKey=key;void refresh({paintNow:true})}
+ if(leftMs(target)<=0){
+  const now=Date.now();
+  if(S.boundaryKey!==key||now>=S.boundaryRetryAt){
+   S.boundaryKey=key;
+   S.boundaryRetryAt=now+2500;
+   void refresh({paintNow:true});
+  }
+ }
 }
 function startClock(){stopClock();updateClockText();S.timer=setInterval(updateClockText,1000)}
+function resyncClock(){
+ if(!S.opened)return;
+ startClock();
+ void refresh({paintNow:true});
+}
 function bindSingleRange(box){
  const input=box.querySelector('[data-cup-single-range]');if(!input)return;
  input.oninput=()=>{
@@ -216,22 +234,27 @@ function applyState(r){
  const changed=S.state?.active!==next.active;
  const prevKey=String(S.state?.run?.run_id||'')+':'+String(S.state?.run?.phase||'');
  const nextKey=String(next?.run?.run_id||'')+':'+String(next?.run?.phase||'');
- S.state=next;S.lastError='';S.refreshes++;S.boundaryKey='';
+ S.state=next;S.lastError='';S.refreshes++;
  const serverNow=next?.server_now||next?.run?.server_now;if(serverNow)S.clockOffset=new Date(serverNow).getTime()-Date.now();
- if(prevKey!==nextKey){S.draftKey='';S.draft=null}
+ if(prevKey!==nextKey){S.boundaryKey='';S.boundaryRetryAt=0;S.draftKey='';S.draft=null}
  window.dispatchEvent(new CustomEvent('growlegends:growcup-state',{detail:{...next}}));
  if(changed&&document.getElementById('world')?.classList.contains('active')){try{window.v085InstallWorld?.(true)}catch(_){}}
  return true;
 }
 async function refresh({paintNow=true}={}){
  if(!uid()||!db())return null;
- try{const r=await rpc('v8210_growcup_state');applyState(r);if(paintNow&&S.opened)paint();return r}
- catch(e){S.lastError=String(e?.message||e);console.warn('[V8.214 Grow Cup] state',e);return null}
+ if(S.refreshInFlight)return S.refreshInFlight;
+ S.refreshInFlight=(async()=>{
+  try{const r=await rpc('v8210_growcup_state');applyState(r);if(paintNow&&S.opened)paint();return r}
+  catch(e){S.lastError=String(e?.message||e);console.warn('[V8.217 Grow Cup] state',e);return null}
+  finally{S.refreshInFlight=null}
+ })();
+ return S.refreshInFlight;
 }
 async function loadRanking(force=false){
  if(S.busy&&!force)return null;
  try{const r=await rpc('v8210_growcup_leaderboard',{p_limit:100});if(r?.ok){S.ranking=r;if(S.opened)paint()}return r}
- catch(e){S.lastError=String(e?.message||e);console.warn('[V8.214 Grow Cup] ranking',e);return null}
+ catch(e){S.lastError=String(e?.message||e);console.warn('[V8.217 Grow Cup] ranking',e);return null}
 }
 async function open(){S.opened=true;S.view='cup';overlay().classList.add('show');paint();await refresh({paintNow:true});void loadRanking()}
 async function start(){
@@ -288,7 +311,9 @@ window.v8210GrowCupClose=close;
 window.v8210GrowCupLeaderboard=loadRanking;
 window.v8210GrowCupDiagnostics=()=>({version:VERSION,busy:S.busy,opened:S.opened,view:S.view,refreshes:S.refreshes,starts:S.starts,submits:S.submits,lastError:S.lastError,state:S.state,ranking:S.ranking});
 window.addEventListener('keydown',key);
-window.addEventListener('growlegends:account-ready',()=>{stopClock();S.state=null;S.ranking=null;S.draft=null;S.draftKey='';void refresh({paintNow:false})},{passive:true});
-window.addEventListener('pageshow',()=>setTimeout(()=>void refresh({paintNow:false}),500),{passive:true});
+window.addEventListener('growlegends:account-ready',()=>{stopClock();S.state=null;S.ranking=null;S.draft=null;S.draftKey='';S.boundaryKey='';S.boundaryRetryAt=0;void refresh({paintNow:false})},{passive:true});
+window.addEventListener('pageshow',()=>{if(S.opened)resyncClock();else void refresh({paintNow:false})},{passive:true});
+window.addEventListener('focus',()=>{if(S.opened)resyncClock()},{passive:true});
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&S.opened)resyncClock()},{passive:true});
 window.addEventListener('growlegends:navigation-open-v7119',()=>{if(S.opened)close()},{passive:true});
 })();
