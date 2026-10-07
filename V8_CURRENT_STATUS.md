@@ -12410,3 +12410,84 @@ Aktueller Release-Status:
   - Matrix: `91c8e827871d7d02fa1829fc8f69b1cbbaceffa7`.
 - Server 1 nicht geändert.
 
+### 2026-10-07 – V8.214 Grow Cup: 1 Aktion = 1 Regler = 1 Sweet Spot
+- Nutzerwunsch umgesetzt: nicht mehr drei Regler gleichzeitig.
+- Die 6 Phasen/Aktionen sind:
+  1. **Licht** – 0–60 Min., 5-Min.-Schritte;
+  2. **Gießen** – 0–500 ml, 10-ml-Schritte;
+  3. **Dünger** – 0–10 ml, 0,5-ml-Schritte;
+  4. **Beschneiden** – 0–50 %, 5-%-Schritte;
+  5. **Temperatur** – 18–32 °C, 0,5-°C-Schritte;
+  6. **Erntezeitpunkt** – 0–60 Min., 5-Min.-Schritte.
+- Jede Phase zeigt exakt **einen** Regler.
+- Jede Aktion besitzt genau **einen richtigen Sweet Spot**.
+- Wertung:
+  - exakt getroffen = **100/100**;
+  - je weiter der eingestellte Wert vom Sweet Spot entfernt ist, desto weniger Punkte;
+  - verpasste Aktion = 0 Punkte;
+  - maximal **600 Punkte**;
+  - Rangliste sortiert nach Gesamtpunkten.
+- Sweet-Spot-Fairness:
+  - Sweet Spot wird serverseitig deterministisch aus Eventdatum + Aktion erzeugt;
+  - für alle Spieler desselben Cups ist er identisch;
+  - beim nächsten Zwei-Wochen-Cup wird ein neuer Sweet Spot erzeugt;
+  - Sweet Spot wird niemals an den Client ausgeliefert.
+- Informationsdesign:
+  - während des Runs sind auch die bereits erzielten Einzelpunkte verborgen;
+  - laufende Pflanzen-Stats wurden aus der aktiven Cup-Ansicht entfernt, damit Punktwerte nicht indirekt zurückgerechnet werden;
+  - erst nach Aktion 6 erscheint die vollständige Auswertung mit gesetztem Wert und 0–100 Punkten für jede Aktion;
+  - Finale zeigt **Gesamtpunkte / 600** sowie das Pflanzenergebnis.
+- Tier-Schwellen auf 600-Punkte-Skala umgestellt:
+  - Silber ab 444;
+  - Gold ab 492;
+  - Meister ab 528;
+  - Grow Champion ab 552.
+- Persönliche Champion-Belohnung bleibt:
+  - ab **552/600**: +1 Verzauberungsrune +10 Runenfragmente.
+- Rangbelohnungen bleiben unverändert:
+  - Platz 1 = 3 Runen +30 Fragmente;
+  - Platz 2 = 2 +25;
+  - Platz 3 = 2 +20;
+  - Platz 4–10 = 1 +15;
+  - weitere Fragmentstaffel wie V8.210.
+- Backend:
+  - neue Regeln laufen als `rules_version=3`;
+  - alter 3-Regler-RPC `v8210_growcup_tune(...)` entfernt;
+  - neuer RPC `public.v8214_growcup_submit(numeric,text)`;
+  - private Sweet-Spot-/Scoring-Funktionen `v8214_action_full`, `v8214_action_public`, `v8214_score_action`;
+  - `phase_records` speichern gesetzten Wert und nach Phasenende den internen Score;
+  - öffentliche Run-Daten entfernen Score während des aktiven Runs;
+  - finale `results` werden erst bei `completed` ausgegeben.
+- Beta-Test:
+  - 6-Minuten-Testmodus bleibt erhalten;
+  - 45 Sekunden bis Regleröffnung, 15 Sekunden Eingabefenster;
+  - keine Runen, Fragmente oder Ranglistenplätze.
+- QA:
+  - exakter Sweet Spot = 100 Punkte;
+  - sechs exakte Treffer = **600/600**;
+  - öffentlicher aktiver State enthält keinen `target`;
+  - öffentlicher aktiver `phase_record` enthält keinen `score`;
+  - vor Abschluss ist `results=[]`;
+  - nach Abschluss genau 6 Resultate;
+  - Testlauf bleibt ohne Rang.
+  - QA vollständig in Transaktion + `ROLLBACK`, daher kein Testfortschritt persistiert.
+- UI:
+  - Startseite beschreibt Grow Cup jetzt als **6 Aktionen · 600 Punkte**;
+  - aktiver Cup zeigt nur die aktuelle Aktion und einen großen Regler;
+  - Hinweis **Sweet Spot unbekannt**;
+  - Punkte-Placeholder erklärt, dass die Auswertung erst im Finale erscheint;
+  - finale Aktionsliste zeigt Wert, Balken und Punkte je Phase.
+- SQL-Snapshot:
+  - `V8214_GROW_CUP_SWEET_SPOT.sql`.
+- Relevante Commits:
+  - One-Action-UI: `e6afa63dc26d52b1fca191f8a145d22fbee99ce2`;
+  - Finale/600-Punkte-Wertung: `05de63c57f23a2608d9a95dcae60fff1602e9a70`;
+  - Live-Scores verborgen: `723884965a6b79077e6fa6b0765b1d936a525d34`;
+  - Single-Action-CSS: `675db911d3cb3fba596cefbb6ad141e4641037db`;
+  - Startseite: `6aebc62c42df1939b19a9428416e5b2dd83b879d`;
+  - Hidden-Score-CSS: `290082c31a4f2588a3322097cdd897c297fb567b`;
+  - Beta Cache: `ae6046d1cbc410f24e6145b6bcc85f1f941eafaa`;
+  - SQL-Snapshot: `c2fa498b7b3c5666db879806debe92957e014766`;
+  - Matrix: `e07fab45dde451e5d557e4862ac9a1f2e527c7df`.
+- Server 1 nicht geändert.
+
