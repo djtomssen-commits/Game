@@ -11130,3 +11130,62 @@ Aktueller Release-Status:
   2. Erfolg muss +5 Gilden-EP melden und genau diese Blüte sofort entfernen;
   3. zweite Blüte am selben Berliner Tag darf nicht entfernt werden und muss „Heute bereits gespendet“ melden;
   4. am nächsten Berliner Kalendertag ist wieder genau eine Spende möglich.
+
+### 2026-10-07 – V8.195 VIP-Pässe auf Beta
+- Neuer VIP-Tab im bestehenden Harz-/Gold-/Rahmen-Dealer; gemäß Beta-first zunächst nur Beta. Server 1 enthält keine V8.195-VIP-Referenz.
+- Laufzeiten / vorgesehene Google-Play-Pakete: 7 Tage 3,99 € (vip_7d), 14 Tage 6,99 € (vip_14d), 30 Tage 11,99 € (vip_30d).
+- Neue VIP-Zeit wird an noch laufende Restzeit angehängt; bei abgelaufenem VIP startet sie ab Kaufzeitpunkt.
+- Tägliche VIP-Truhe nach Europe/Berlin, serverautoritativ: aktuell konfiguriert auf 1 Harz-Taler, 10 Samenfragmente/Fragmente und levelabhängiges Gold (250 + Level × 50). Werte liegen zentral in recovery_private.v8195_vip_config und sind später ohne Umbau balancierbar.
+- Pro Berliner Kalendertag maximal ein VIP-Truhen-Claim.
+- Solange VIP aktiv ist: +10 % Wochentruhen-EP auf alle Aktivitäten, die Wochentruhen-EP vergeben. Kein allgemeiner Charakter-EXP-Bonus und kein Bonus erst beim Öffnen der Wochentruhe.
+- Die +10 % sind direkt in public.v6359_weekly_chest_activity_for integriert. Ein Fraction-Remainder pro Wochenzyklus sorgt dafür, dass kleine Ganzzahl-Rewards in Summe exakt +10 % ergeben.
+- Shop-Vorteil: 1 gemeinsamer kostenloser Neu-Wurf pro Berliner Tag – entweder Waffen/Rüstung oder Schmuck/Magie. Danach kosten weitere Neu-Würfe wieder unverändert 1 Harz-Taler.
+- Der Freiwurf ist direkt im bestehenden public.v7083_refresh_shop_section integriert; keine zweite Shop-/Reroll-Authority.
+- Prestige: temporärer Titel „Grow VIP“, VIP-Namensfarbe, VIP-Abzeichen und temporärer VIP-Kronenrahmen.
+- Eigener Schalter „VIP öffentlich anzeigen“. Bei AUS werden VIP-Titel, VIP-Namensmarkierung/Badge und VIP-Rahmen für andere nicht öffentlich dargestellt.
+- public.profiles besitzt jetzt vip_until + vip_visible; Trigger trg_v8195_guard_profile_vip überschreibt diese Felder aus der privaten VIP-Authority, damit ein Client VIP nicht selbst fälschen kann.
+- VIP-Rahmen vip_crown ist nur bei aktivem VIP auswählbar. Nach Ablauf wird er aus der aktiven Auswahl entfernt; der permanente Rahmenbestand/frame_count wird nicht erhöht.
+- Keine Pay-to-Win-Kampfboni: keine Attribute, kein Schaden, kein PvP-Power-Bonus.
+- Neue private Beta-Authority: recovery_private.v8195_vip_config, v8195_vip_state, v8195_vip_daily_claims, v8195_vip_reroll_events und v8195_google_play_vip_purchases.
+- Spieler-RPCs: public.v8195_vip_state(), public.v8195_vip_set_visible(boolean), public.v8195_vip_claim_daily().
+- Google-Play-Credit: public.v8195_credit_google_play_vip_purchase(...) ist ausschließlich service_role. Eigener VIP-Purchase-Ledger verhindert doppelte Laufzeit durch denselben Purchase-Token.
+- Google-Play Edge Function verify-google-play-purchase auf Version 7 erweitert. Harz-Produkte bleiben auf ihrem bisherigen Credit-Pfad; vip_7d/vip_14d/vip_30d laufen über den VIP-Credit-RPC.
+- VIP-Käufe sind in der Edge Function aktuell ausdrücklich auf Beta begrenzt.
+- Echte Käufe setzen noch voraus, dass vip_7d, vip_14d und vip_30d mit den vorgesehenen Preisen in Google Play Console angelegt werden.
+- Dealer-/Client-Integration: kanonischer v7117-Hub besitzt auf Beta jetzt den 4. Tab VIP; neuer Beta-Client js/features/shop/beta/v8195-vip.js; Styling css/features/shop/beta/v8195-vip.css.
+- Bestehende Owner direkt erweitert: Shop v461, Shop-Authority v7063, Title v6338 und Frame/Social v7137. Keine zusätzliche Render-Patchkette.
+- Mehrsprachigkeit der VIP-Kernoberfläche in den bestehenden Gameplay-i18n-Owner aufgenommen: DE/EN/ES/FR/PL/TR.
+- Rollback-Integrationstest vollständig grün:
+  - erster VIP-Shopwurf gratis und Harz unverändert;
+  - zweiter Wurf am selben Tag normal -1 HT;
+  - tägliche VIP-Truhe erster Claim erfolgreich, zweiter = ALREADY_CLAIMED;
+  - fünf normale 8-EP-Wochentruhen-Aktivitäten = 44 statt 40 EP;
+  - vip_crown während VIP aktiv, nach simuliertem Ablauf automatisch null;
+  - 7-Tage-Kauftoken verlängert beim ersten Mal +7 Tage, Duplicate +0;
+  - nach Rollback Harz, Gold, Fragmente, Wochentruhen-EP und Shop-Revision unverändert; kein Test-Purchase verbleibt.
+- Security: private V8.195-Tabellen haben kein SELECT für anon/authenticated. State/Visibility/Daily-Claim nur authenticated + service_role; Google-Play-Credit nur service_role; private Helper kein anon/authenticated EXECUTE.
+- Security Advisor zeigt für die privaten Tabellen erwartete RLS-enabled/no-policy INFO, weil direkter Clientzugriff bewusst komplett gesperrt ist.
+- JS-Endcheck: Billing, Dealer-Hub, VIP-Client, Shop, Shop-Authority, Title, Frame und I18N syntaktisch grün; letzter Frame-/Badge-Owner nach finalem Edit erneut geprüft.
+- Beta-Wiring final: Cache-Key 8195vip2; 1× VIP-CSS + 1× VIP-Client; 9 V8.195-Cache-Referenzen; 0 veraltete 8195vip1-Referenzen; Server 1 = 0 VIP-Referenzen.
+- Repo-SQL: V8195_VIP_SYSTEM.sql.
+- Relevante Commits:
+  - Google-Play Client: 3a3b771e1cf05a24be52af96a2fdee13d4f21761
+  - Dealer-Hub: 56c0ce814535ef54b6a6ad2c7b98958e91dca7eb
+  - VIP-Client: 17ba1760fad7c2b54f0d00cba37928b3462293ed
+  - VIP-CSS: 8013c9577d85287e25eb44a0597dcb1eb0e4c312
+  - Shop-Anzeige: 618a2dc7531d0c28dffe4967b7bf1cd4863589f8
+  - Shop-Authority-Feedback: 55a92a70a15c994efd81ff16f303378ea87ece0c
+  - VIP-Titel: 6897d6fc9d0230805712e77b767efb1ba4ada8d2
+  - Frame/Public-VIP: a7b3045419278be3e3f31f77cb614773defed06f
+  - direkter Name/Badge: 17ca23599cd96bdff6698d92bc37f763e70bf6f1
+  - VIP-I18N: f8b7ac731831d830c9baaa62eea6c11c42060a49
+  - SQL-Artefakt: 49e551f78c9b2036894c18a17c954a8ccee47767
+  - finales Beta-Cache-Wiring: e6019aef4af5052a0675d0be47836575ccc7e259
+- Manueller Beta-Endtest:
+  1. Harz-/Gold-/Rahmen-Dealer öffnen -> vierter Tab VIP sichtbar.
+  2. VIP-Tab öffnen -> 7/14/30-Tage-Pakete, Vorteile, tägliche Truhe und Sichtbarkeitsschalter prüfen.
+  3. Mit aktivem Test-VIP Shop öffnen -> genau ein gemeinsamer Gratiswurf pro Berliner Tag; erster ohne HT-Abzug, zweiter -1 HT.
+  4. Tägliche VIP-Truhe einmal claimen -> Ressourcen sofort aktualisieren; zweiter Claim blockiert.
+  5. Grow-VIP-Titel und VIP-Rahmen auswählen.
+  6. Öffentliche Sichtbarkeit AUS/AN testen und Hall/Profil kontrollieren.
+  7. Echte Google-Play-Käufe erst nach Anlegen der drei VIP-Product-IDs in Play Console testen.
