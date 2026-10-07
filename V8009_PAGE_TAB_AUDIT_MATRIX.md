@@ -23,7 +23,7 @@ Die Matrix wird nach jedem großen Cleanup-Batch aktualisiert.
 
 | Seite | Tabs / Unteransichten | Status | Notiz |
 |---|---|---|---|
-| World / Startseite | Home / Navigation / World-Module | [x] | dynamischer Spezialslot: Donnerstag Smaragd-Koloss, Sonntag des EXP-Wochenendes Runenjagd; V8.199 Runenjagd jetzt als 10-Raum-Expedition mit zwei Pforten, Runenleben/Schlüsseln/Essenz, Raumaktionen und sichtbarer globaler Topbar; manueller V8.199-Endtest offen |
+| World / Startseite | Home / Navigation / World-Module | [x] | dynamischer Spezialslot: Donnerstag Smaragd-Koloss, Sonntag des EXP-Wochenendes Runenjagd; V8.202 kompletter Rebuild: 1 großer 100-Raum-Run pro Event, linke/rechte Pforten, verschlossene/zugemauerte Türen, eigenes Runenleben, Schlüssel, Runenstaub, Monster+Flucht, Truhen, Segen/Flüche, Zwischenbosse 25/50/75 und Endboss 100; globale Topbar bleibt sichtbar; manueller V8.202-Endtest offen |
 | Character | Attribute / Inventar / Talente / Materialien | [x] | v459 alleiniger sichtbarer Tab-Lifecycle-Owner; Material-/Inventar-Autoberechnung getrennt; alte v442 Layout-Rückverschiebung entfernt; globale Render-/Inventory-Wrapperketten konsolidiert; manueller Endtest offen |
 | Growroom | Grow / Stock / Genetics / Orders | [x] | Event-Bus/Tab/Care/Hydration/Genetik/Stock/Orders-Lifecycle konsolidiert; V8.194 Gilden-Blütenspende eigener atomarer Server-RPC, 1/Tag Berlin, +5 Gilden-EP; manueller Endtest offen |
 | Quests | Quest / Schicht-Arbeiten-Chillen | [x] | Dampf-/Quest-Renderowner konsolidiert; V8.190: Rewarded-Video direkt unter Zeit-Samen-Skip auf Beta + Server1, bis zu 2× je Quest, je 25 % der ursprünglichen Dauer, maximal 50 %, nur nach signiertem AdMob-SSV; 0/1/2 serverautoritativ; manueller 2×-Endtest offen |
