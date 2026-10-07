@@ -12647,3 +12647,86 @@ Aktueller Release-Status:
   - Matrix: `7a5e536048e2f767df7cd74a0db9cf836ca01702`.
 - Der neue Grow-Cup-Client bleibt Beta-seitig; Server-1-HTML wurde in diesem Block nicht mit dem neuen Grow-Cup-Client bestückt.
 
+### 2026-10-07 – V8.219 Grow Cup Push / Navigation / Home-Bild / Anleitung / Test entfernt (Beta)
+- Nutzerwunsch:
+  - Push-Benachrichtigung sobald ein Grow-Cup-Pflegefenster öffnet;
+  - Navigation oben links muss auch in der Grow-Cup-Lobby funktionieren;
+  - kleines Bild beim CUP-Eventtile auf der Startseite;
+  - kleine Anleitung nur vor dem Run;
+  - 6-Minuten-Test entfernen.
+- Push-Benachrichtigungen:
+  - bestehende Grow-Legends-FCM/`push_jobs`-Kette wiederverwendet;
+  - keine neue Push-Infrastruktur / keine neue Edge Function;
+  - `js/features/push/beta/v8009-s1-gl-push-scheduling-v2.js` plant bei einem aktiven Grow-Cup-Run die sechs Pflegefenster vor;
+  - Typen `growcup_care_1` bis `growcup_care_6`;
+  - pro Phase wird der Job auf `started_at + (phase-1)*60min + 45min` gesetzt;
+  - Pushtext nennt die aktuelle Aktion und das 15-Minuten-Fenster;
+  - Jobs werden accountbezogen idempotent synchronisiert;
+  - bei abgeschlossenem/fehlendem Run werden noch offene Grow-Cup-Jobs storniert;
+  - 2-Minuten-Grace verhindert, dass ein gerade fälliger Push bei App-Resync unmittelbar vor Zustellung storniert wird;
+  - Account-Ready, pageshow, Sichtbarwerden und `growlegends:growcup-state` triggern Resync;
+  - Push-Master-Switch resynchronisiert jetzt auch Grow-Cup-Jobs.
+- Push-Backend verifiziert:
+  - `public.push_jobs.type` ist freier Text ohne Typ-Constraint;
+  - RLS erlaubt authentifizierten Spielern SELECT/INSERT/UPDATE/DELETE nur auf eigene Jobs;
+  - bestehende Edge Function `process-push-jobs` liest fällige Jobs typunabhängig und sendet deren `title`/`body` per FCM;
+  - damit benötigen die neuen `growcup_care_*`-Typen keinen Edge-Function-Patch.
+- Navigation in der Grow-Cup-Lobby:
+  - linker Cup-Headerbutton ist jetzt **☰ Navigation** statt Zurück-Pfeil;
+  - baut/öffnet den bestehenden `#v032MenuPanel`;
+  - `body.v8210-growcup-open #v032MenuPanel.open` liegt mit `z-index:60080` bewusst über dem Cup-Overlay (`59000`);
+  - beim echten Navigieren schließt der bestehende `growlegends:navigation-open-v7119`-Listener den Cup;
+  - Fix bleibt Cup-spezifisch und verändert die globale Menü-Geometrie nicht.
+- Kleine Anleitung:
+  - nur in `lobby()`, also ausschließlich vor dem Start sichtbar;
+  - drei kurze Schritte: Run starten → ab Minute 45 Regler öffnen → Pflanzenstatus lesen/Wert setzen → Finale nach Aktion 6;
+  - nach Start wird die Lobby nicht mehr gerendert und die Anleitung verschwindet automatisch.
+- Startseite:
+  - CUP-Kachel im Events-Collage nutzt jetzt ein vorhandenes Grow-Legends-Pflanzenasset
+    `assets/v7198-base64/9880ab938246ad3b3dec.webp`;
+  - kein neues Bild erzeugt;
+  - eigenes kleines 30×30-Rendering im bestehenden Eventtile.
+- Testmodus entfernt:
+  - Testbutton und Test-Neustart vollständig aus dem Grow-Cup-Client entfernt;
+  - keine `test_mode`-/`test_eligible`-/`v8213_growcup_test_start`-Referenzen mehr im Client;
+  - alle eventuell vorhandenen `test_mode=true`-Runs serverseitig gelöscht;
+  - Test-Ledgerzeilen entfernt;
+  - öffentlicher RPC `public.v8213_growcup_test_start(text)` entfernt;
+  - `public.v8210_growcup_state()` liefert kein `test_eligible` mehr;
+  - alter privater Tester-Helper entfernt.
+- V8.218 Rhythmus bleibt aktiv:
+  - Grow Cup jeden Donnerstag;
+  - EXP + Smaragd-Koloss Freitag–Sonntag alle 2 Wochen;
+  - Gegenwochenende Gold + Dampf.
+- QA:
+  - Grow-Cup-Client Syntax OK;
+  - Push-Scheduling-Owner Syntax OK;
+  - Push-Master-Switch Syntax OK;
+  - Home-Owner Syntax OK;
+  - Client-Testreferenzen = 0;
+  - öffentlicher Test-RPC = nicht vorhanden;
+  - persistierte Test-Runs = 0;
+  - Grow-Cup-State enthält kein `test_eligible`;
+  - Grow Cup Donnerstag aktiv;
+  - EXP + Koloss am EXP-Freitag beide aktiv;
+  - Menü-Layerregel vorhanden;
+  - Anleitung vorhanden;
+  - Pflanzenasset vorhanden;
+  - Cup-CSS 334/334 Klammern;
+  - Beta-Cache-Refs für Home, Home-CSS, Cup-CSS, Weekend, Cup-Client, Push-Scheduler und Push-Master jeweils exakt 1×.
+- Beta Cache-Bust:
+  - `8219cupfix1`.
+- SQL-Snapshot:
+  - `V8219_GROW_CUP_POLISH.sql`.
+- Relevante Commits:
+  - Grow-Cup Client / Menü / Test raus: `a3bfd6349399fdf4d2615f5d6a0f1fe62188d1d3`;
+  - Cup-CSS Anleitung/Menu-Layer: `81eba5249e9e26581581ffcdd7382713f8241898`;
+  - Push-Scheduler: `ca5840aacbc984700b9345704f72897c03e5f6cc`;
+  - Push-Master-Switch: `9d96dcfccc5b74659ee1be0746f1f72b888219f2`;
+  - Home-CUP-Bild: `0ec56bd9621fc5ed336e103ec73a5ef18c97b6b9`;
+  - Home-CUP-Bild-CSS: `2382ede661dfcdddae386b156fc3f20803ab4602`;
+  - Beta Cache: `661dcc36cfb4b53cc44e79c1951454604541a8e0`;
+  - SQL-Snapshot: `58c7e35f3c89b71edb8082a3915354d8fe5a8b03`;
+  - Matrix: `b625c9bccc357531a5c7ca9c370a2a399fe89dd2`.
+- Server 1 wurde in diesem Block nicht auf den neuen Grow-Cup-Client umgestellt.
+
