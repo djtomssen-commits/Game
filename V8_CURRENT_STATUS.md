@@ -11958,3 +11958,25 @@ Aktueller Release-Status:
   4. Eingang wählen -> Szene muss sichtbar zur gewählten Höhle fahren/zoomen.
   5. Erst nach der Kamerafahrt darf der Encounter erscheinen.
 
+### 2026-10-07 – V8.204 Charakter-Rahmen Ausrichtung (Beta)
+- Gemeldet: VIP-/Spezialrahmen sitzt auf der Heldenseite nicht sauber um das zentrale Portrait.
+- Ursache:
+  - neue v5-Rahmen sind quadratische Artwork-Overlays;
+  - Character-Sondergeometrie streckte den Rahmen asymmetrisch auf 136 % Breite / 148 % Höhe;
+  - zusätzlich schnitt `.v510-portrait{overflow:hidden}` Krone und äußere Ornamente ab.
+- Fix direkt im Frame-CSS-Owner:
+  - `.v510-portrait` lässt aktive Rahmen außen sichtbar;
+  - nur `vip_crown` und `referral_legend` bekommen auf der Character-Seite proportionalere Geometrie;
+  - Desktop: 116 % / 116 %, zentriert mit -8 % Offset;
+  - <=390 px: 114 % / 114 %, -7 % Offset;
+  - `object-fit:contain`, keine weitere Verzerrung;
+  - Equipment-Spalten liegen weiterhin über auskragenden Rahmendetails, damit der Rahmen die Slots nicht übermalt.
+- QA:
+  - CSS balanced 49/49;
+  - Beta-Cache-Ref exakt 1x.
+- Beta Cache:
+  - `v8009-extracted-v7140-avatar-frame-assets-css.css?v=8204framealign1`.
+- Commits:
+  - Frame alignment: `5e84d9e3cbe016bb93dbb0647c6a53a235ead0df`;
+  - Cache bust: `17147bdf3e900d4d42f1ef89c40f873d35ff8bcd`.
+
