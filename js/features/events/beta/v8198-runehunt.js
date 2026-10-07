@@ -4,7 +4,7 @@ if(String(window.GROW_RELEASE_CHANNEL||'stable').toLowerCase()!=='beta')return;
 if(window.__V8210_GROW_CUP__)return;
 window.__V8210_GROW_CUP__=true;
 
-const VERSION='V8.217';
+const VERSION='V8.219';
 const PLANTS={
  seedling:'assets/v7198-base64/49aed1d1c8035f5d2123.webp',
  growth:'assets/v7198-base64/c9ec3c217b81f805555c.webp',
@@ -45,13 +45,13 @@ function overlay(){
  document.body.appendChild(el);return el;
 }
 function stopClock(){if(S.timer){clearInterval(S.timer);S.timer=null}}
-function close(){stopClock();overlay().classList.remove('show');S.opened=false}
+function close(){stopClock();overlay().classList.remove('show');document.body.classList.remove('v8210-growcup-open');document.querySelector('#v032MenuPanel')?.classList.remove('open');S.opened=false}
 function wallet(){
  const st=S.state||{};
  return '<div class="v8210-wallet"><span><i>ᚱ</i><b>'+Math.max(0,Number(st.runes)||0)+'</b><small>Runen</small></span><span><i>✦</i><b>'+Math.max(0,Number(st.rune_shards)||0)+'</b><small>Fragmente</small></span></div>';
 }
 function header(){
- return '<header class="v8210-head"><button type="button" data-cup-close class="v8210-back">←</button><div class="v8210-title"><small>6-STUNDEN-CUP · JEDEN DONNERSTAG</small><b>GROW CUP</b><span>Jede Woche neue Pflanze · 6 neue Sweet Spots · maximal 600 Punkte</span></div>'+wallet()+'<button type="button" data-cup-close class="v8210-close">×</button></header>'+
+ return '<header class="v8210-head"><button type="button" data-cup-menu class="v8210-back" aria-label="Navigation öffnen">☰</button><div class="v8210-title"><small>6-STUNDEN-CUP · JEDEN DONNERSTAG</small><b>GROW CUP</b><span>Jede Woche neue Pflanze · 6 neue Sweet Spots · maximal 600 Punkte</span></div>'+wallet()+'<button type="button" data-cup-close class="v8210-close">×</button></header>'+
  '<nav class="v8210-tabs"><button data-cup-view="cup" class="'+(S.view==='cup'?'active':'')+'">🌿 CUP</button><button data-cup-view="ranking" class="'+(S.view==='ranking'?'active':'')+'">🏆 RANGLISTE</button></nav>';
 }
 function plantStage(phase=1,status='active'){
@@ -81,8 +81,8 @@ function lobby(){
   '<p>Jede Stunde hat genau eine Aufgabe und einen Regler. Für jede Aktion existiert ein versteckter Sweet Spot. Je näher du ihn triffst, desto mehr von 100 Punkten erhältst du. Die Einzelpunkte siehst du erst ganz am Ende.</p>'+
   '<div class="v8210-lobby-rules"><span><b>6 h</b><small>Laufzeit</small></span><span><b>6</b><small>Aktionen</small></span><span><b>100</b><small>Punkte je Aktion</small></span><span><b>600</b><small>Maximum</small></span></div>'+
   '<div class="v8210-seed-card"><i>🌱</i><div><small>DIESE CUP-SORTE</small><b>'+esc(st.cup_seed||'Cup-Sorte')+'</b><span>Jede Woche eine neue Pflanze mit sechs neuen Sweet Spots</span></div></div>'+
+  '<div class="v8219-guide"><small>KURZE ANLEITUNG</small><b>So läuft dein Grow Cup</b><div><span><i>1</i>Starte den 6-Stunden-Run.</span><span><i>2</i>Pro Stunde öffnet ab Minute 45 genau ein Pflege-Regler.</span><span><i>3</i>Lies den Pflanzenstatus, entscheide deinen Wert und erhalte nach Aktion 6 deine 600-Punkte-Auswertung.</span></div></div>'+
   '<button data-cup-start '+(!active||S.busy?'disabled':'')+'>'+(S.busy?'CUP WIRD VORBEREITET …':'6-STUNDEN-CUP STARTEN')+'</button>'+
-  (st.test_eligible?'<button class="v8213-test-start" data-cup-test-start '+(S.busy?'disabled':'')+'>🧪 BETA-TESTLAUF · 6 MINUTEN</button>':'')+
   '<em>'+(active?'Dein persönlicher Timer beginnt erst beim Start. Pro Phase gibt es genau eine Einstellung.':'Nächster Grow Cup: '+esc(fmtDate(st.next_event)))+'</em></div>'+
  '</section>';
 }
@@ -105,7 +105,7 @@ function timingCard(run){
  if(state==='open'){title='Aktion jetzt einstellen';sub='Fenster schließt in';target=run?.phase_ends_at;cls='open';ico='⚠️'}
  if(state==='submitted'){title='Einstellung gespeichert';sub='Nächste Phase in';target=run?.phase_ends_at;cls='submitted';ico='✓'}
  if(state==='processing'){title='Phase wird verarbeitet';sub='Nächste Phase in';target=run?.phase_ends_at;cls='processing';ico='🌿'}
- return '<div class="v8210-timing '+cls+' '+(run?.test_mode?'test':'')+'"><i>'+ico+'</i><div><small>'+(run?.test_mode?'BETA-TEST · PHASE ':'STUNDE ')+Number(run?.phase||1)+' / 6</small><b>'+title+'</b><span>'+sub+' <strong data-cup-countdown data-target="'+esc(target||'')+'">'+fmtDuration(leftMs(target))+'</strong></span></div><em>'+(run?.test_mode?'Testlauf':'Gesamtlaufzeit')+' <b data-cup-run-time data-target="'+esc(run?.run_ends_at||'')+'">'+fmtDuration(leftMs(run?.run_ends_at))+'</b></em></div>';
+ return '<div class="v8210-timing '+cls+'"><i>'+ico+'</i><div><small>STUNDE '+Number(run?.phase||1)+' / 6</small><b>'+title+'</b><span>'+sub+' <strong data-cup-countdown data-target="'+esc(target||'')+'">'+fmtDuration(leftMs(target))+'</strong></span></div><em>Gesamtlaufzeit <b data-cup-run-time data-target="'+esc(run?.run_ends_at||'')+'">'+fmtDuration(leftMs(run?.run_ends_at))+'</b></em></div>';
 }
 function plantStatus(run){
  const s=run?.plant_status||{};
@@ -128,7 +128,7 @@ function activeRun(run){
  const phase=Math.max(1,Math.min(6,Number(run.phase)||1)),ph=PHASES[phase-1]||PHASES[0];
  return '<section class="v8210-scene v8210-run">'+phaseRail(run)+
   '<div class="v8210-run-grid"><div class="v8210-stage-panel live">'+plantStage(phase,'active')+
-  '<div class="v8210-stage-meta"><small>'+esc(run.cup_seed||'Cup-Sorte')+(run.test_mode?' · BETA-TEST':'')+'</small><b>'+(run.test_mode?'TESTPHASE ':'STUNDE ')+phase+' / 6</b><span>'+esc(ph[0])+'</span></div></div>'+
+  '<div class="v8210-stage-meta"><small>'+esc(run.cup_seed||'Cup-Sorte')+'</small><b>STUNDE '+phase+' / 6</b><span>'+esc(ph[0])+'</span></div></div>'+
   '<div class="v8210-control">'+timingCard(run)+
   '<div class="v8210-phase-copy"><small>AKTION '+phase+' · '+esc(ph[0]).toUpperCase()+'</small><h2>'+esc(ph[1])+'</h2><p>Nur diese eine Einstellung zählt in dieser Phase. Sweet Spot und Punkte bleiben bis zum Finale verborgen.</p></div>'+
   plantStatus(run)+
@@ -148,17 +148,6 @@ function resultBreakdown(run){
 }
 function completed(run){
  const t=TIER[String(run.tier||'bronze')]||TIER.bronze,score=Math.round(Number(run.final_score)||0),rank=Number(run.rank)||0;
- if(run.test_mode){
-  return '<section class="v8210-scene v8210-finale">'+phaseRail(run)+
-   '<div class="v8210-final-grid"><div class="v8210-stage-panel final">'+plantStage(6,'completed')+
-   '<div class="v8210-final-medal"><i>🧪</i><small>BETA-TEST ABGESCHLOSSEN</small><b>'+score+' / 600</b><strong>'+t[1]+'</strong></div></div>'+
-   '<div class="v8210-final-copy"><small>6-MINUTEN-TESTLAUF · '+esc(run.cup_seed||'')+'</small><h1>🧪 Ergebnis deiner Pflanze</h1><p>Jetzt werden alle sechs versteckten Sweet Spots aufgelöst – je näher du lagst, desto mehr Punkte.</p>'+
-   resultBreakdown(run)+metrics(run)+
-   '<div class="v8210-personal-note"><b>'+score+' von 600 Punkten</b><br>Testlauf: keine Runen, keine Fragmente und kein Ranglistenplatz.</div>'+
-   '<button class="v8213-test-start" data-cup-test-start>🧪 TESTLAUF ERNEUT STARTEN</button>'+
-   (S.state?.active?'<button class="v8210-claim" data-cup-start>ECHTEN 6-STUNDEN-CUP STARTEN</button>':'')+
-   '<button class="v8210-secondary" data-cup-ranking>Rangliste ansehen</button></div></div></section>';
- }
  return '<section class="v8210-scene v8210-finale">'+phaseRail(run)+
   '<div class="v8210-final-grid"><div class="v8210-stage-panel final">'+plantStage(6,'completed')+
   '<div class="v8210-final-medal"><i>'+t[0]+'</i><small>GESAMTPUNKTE</small><b>'+score+' / 600</b><strong>'+t[1]+'</strong></div></div>'+
@@ -219,9 +208,9 @@ function paint(){
  const box=overlay().querySelector('.v8210-growcup-content');if(!box)return;
  box.innerHTML=header()+'<main class="v8210-main">'+(S.view==='ranking'?ranking():cupBody())+'</main>';
  box.querySelectorAll('[data-cup-close]').forEach(b=>b.onclick=close);
+ box.querySelector('[data-cup-menu]')?.addEventListener('click',openMenu);
  box.querySelectorAll('[data-cup-view]').forEach(b=>b.onclick=()=>{S.view=String(b.dataset.cupView||'cup');if(S.view==='ranking'&&!S.ranking)void loadRanking();paint()});
  box.querySelector('[data-cup-start]')?.addEventListener('click',start);
- box.querySelector('[data-cup-test-start]')?.addEventListener('click',testStart);
  box.querySelector('[data-cup-submit]')?.addEventListener('click',submitAction);
  box.querySelector('[data-cup-ranking]')?.addEventListener('click',()=>{S.view='ranking';paint();void loadRanking()});
  box.querySelector('[data-cup-refresh]')?.addEventListener('click',()=>void loadRanking(true));
@@ -246,7 +235,7 @@ async function refresh({paintNow=true}={}){
  if(S.refreshInFlight)return S.refreshInFlight;
  S.refreshInFlight=(async()=>{
   try{const r=await rpc('v8210_growcup_state');applyState(r);if(paintNow&&S.opened)paint();return r}
-  catch(e){S.lastError=String(e?.message||e);console.warn('[V8.217 Grow Cup] state',e);return null}
+  catch(e){S.lastError=String(e?.message||e);console.warn('[V8.219 Grow Cup] state',e);return null}
   finally{S.refreshInFlight=null}
  })();
  return S.refreshInFlight;
@@ -254,9 +243,17 @@ async function refresh({paintNow=true}={}){
 async function loadRanking(force=false){
  if(S.busy&&!force)return null;
  try{const r=await rpc('v8210_growcup_leaderboard',{p_limit:100});if(r?.ok){S.ranking=r;if(S.opened)paint()}return r}
- catch(e){S.lastError=String(e?.message||e);console.warn('[V8.217 Grow Cup] ranking',e);return null}
+ catch(e){S.lastError=String(e?.message||e);console.warn('[V8.219 Grow Cup] ranking',e);return null}
 }
-async function open(){S.opened=true;S.view='cup';overlay().classList.add('show');paint();await refresh({paintNow:true});void loadRanking()}
+function openMenu(e){
+ try{
+  e?.preventDefault?.();e?.stopPropagation?.();
+  window.v4148BuildCompleteMenu?.();
+  const panel=document.querySelector('#v032MenuPanel');
+  if(panel)panel.classList.toggle('open');
+ }catch(err){console.warn('[V8.219 Grow Cup] menu',err)}
+}
+async function open(){S.opened=true;S.view='cup';document.body.classList.add('v8210-growcup-open');overlay().classList.add('show');paint();await refresh({paintNow:true});void loadRanking()}
 async function start(){
  if(S.busy)return;S.busy=true;paint();
  try{
@@ -264,15 +261,6 @@ async function start(){
   if(r?.ok===false)throw new Error(String(r.reason||'START_REJECTED'));
   applyState(r);S.starts++;toast('6-Stunden-Cup gestartet','success','Aktion 1: Licht · Regler öffnet in 45 Minuten.');
  }catch(e){S.lastError=String(e?.message||e);toast('Grow Cup','error',S.lastError)}
- finally{S.busy=false;paint()}
-}
-async function testStart(){
- if(S.busy)return;S.busy=true;paint();
- try{
-  const r=await rpc('v8213_growcup_test_start',{p_request_id:rid('v8214_test')});
-  if(r?.ok===false)throw new Error(String(r.reason||'TEST_START_REJECTED'));
-  applyState(r);S.starts++;toast('Beta-Test gestartet','success','6 Minuten · pro Phase genau ein Regler.');
- }catch(e){S.lastError=String(e?.message||e);toast('Grow Cup Test','error',S.lastError)}
  finally{S.busy=false;paint()}
 }
 async function submitAction(){
