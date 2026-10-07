@@ -10658,3 +10658,38 @@ Aktueller Release-Status:
   - keine Erweiterung der Rechte auf `v7273_guild_level_for_xp()`.
 - Repo-Vertrag `V8184_HALL_GUILD_RANKING.sql` auf denselben Stand gebracht.
 - Kein Frontend-Patch nötig; Fehler lag ausschließlich in der RPC-Abhängigkeit.
+
+
+### 2026-10-07 – V8.185 Hall-Gildenprofil: direkte Beitrittsanfrage
+- Nutzerwunsch umgesetzt: Spieler ohne Gilde können direkt aus dem öffentlichen Gildenprofil in Hall of Haze eine Beitrittsanfrage senden.
+- Bestehende autoritative Join-Mechanik wiederverwendet:
+  - RPC `v257_apply_to_guild(p_guild)`;
+  - verhindert bereits:
+    - Beitritt bei bestehender Gildenmitgliedschaft;
+    - mehrere offene Beitrittsanfragen;
+    - Beitritt in volle Gilde;
+  - bestehende Push-Benachrichtigung an Gildenleiter/Offiziere bleibt erhalten.
+- Hall-Gildenprofil prüft vor dem Rendern:
+  - eigene `guild_members`-Mitgliedschaft;
+  - eigene offene `guild_join_requests`;
+  - Gildenfüllstand;
+  - aktive 24h-Gildensperre.
+- Button-/Statuslogik:
+  - keine Gilde + keine offene Anfrage + Platz frei + keine Sperre -> **Beitritt anfragen**;
+  - Anfrage an diese Gilde bereits offen -> **✓ Anfrage gesendet**;
+  - offene Anfrage an andere Gilde -> deaktivierter Hinweis;
+  - volle Gilde -> **Gilde voll**;
+  - aktive Leave-Lock -> **Gildensperre aktiv**;
+  - bereits Mitglied -> Hinweis statt Join-Button.
+- Nach erfolgreichem Request wird der Button direkt zu **✓ Anfrage gesendet** und bestehender Success-Toast angezeigt.
+- Kein zweiter Join-Backendpfad eingeführt; nur direkte UI-Anbindung an den bestehenden kanonischen RPC.
+- Mehrsprachigkeit für DE/EN/ES/FR/PL/TR ergänzt.
+- JS Syntaxchecks:
+  - Hall Owner: OK;
+  - Gameplay-i18n: OK.
+- Cache-Key Hall JS/CSS + i18n: `8185guildjoin1`.
+- Manueller Test offen:
+  1. mit Account ohne Gilde Hall -> Gilden -> Gilde öffnen;
+  2. **Beitritt anfragen** muss sichtbar sein;
+  3. antippen -> **✓ Anfrage gesendet**;
+  4. Leader/Offizier muss die Bewerbung wie bisher in den Gildenanfragen sehen.
