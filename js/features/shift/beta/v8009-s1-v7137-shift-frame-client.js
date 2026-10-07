@@ -105,12 +105,12 @@ const V7139_FRAME_ASSETS=Object.freeze({
  ironwood:'assets/avatar_frames/ironwood.png',
  silver_vine:'assets/avatar_frames/silver_vine.png',
  gold_crown:'assets/avatar_frames/gold_crown.png',
- vip_crown:'assets/avatar_frames/vip_crown_v3.webp',
+ vip_crown:'assets/avatar_frames/vip_crown_v2.svg',
  emerald_aura:'assets/avatar_frames/emerald_aura.png',
  haze_ring:'assets/avatar_frames/haze_ring.png',
  resin_flame:'assets/avatar_frames/resin_flame.png',
  prismatic_myth:'assets/avatar_frames/prismatic_myth.png',
- referral_legend:'assets/avatar_frames/referral_legend_v3.webp'
+ referral_legend:'assets/avatar_frames/referral_legend_v2.svg'
 });
 function frameAssetUrl(id){return V7139_FRAME_ASSETS[String(id||'')]||''}
 function frameArtMarkup(id){const src=frameAssetUrl(id);return src?`<img class="v7139-frame-art" src="${esc(src)}" alt="" aria-hidden="true" decoding="async">`:''}
