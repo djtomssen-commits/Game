@@ -4,7 +4,7 @@ if(String(window.GROW_RELEASE_CHANNEL||'stable').toLowerCase()!=='beta')return;
 if(window.__V8210_GROW_CUP__)return;
 window.__V8210_GROW_CUP__=true;
 
-const VERSION='V8.210';
+const VERSION='V8.211';
 const PLANTS={
  seedling:'assets/v7198-base64/49aed1d1c8035f5d2123.webp',
  growth:'assets/v7198-base64/c9ec3c217b81f805555c.webp',
@@ -25,7 +25,7 @@ const METRICS=[
 const TIER={
  bronze:['🥉','BRONZE'],silver:['🥈','SILBER'],gold:['🥇','GOLD'],master:['💎','MEISTER'],champion:['👑','GROW CHAMPION']
 };
-const S={state:null,ranking:null,busy:false,opened:false,view:'cup',lastError:'',refreshes:0,starts:0,choices:0};
+const S={state:null,ranking:null,busy:false,opened:false,view:'cup',lastError:'',refreshes:0,starts:0,tunes:0,timer:null,clockOffset:0,boundaryKey:'',draftKey:'',draft:null};
 const db=()=>{try{return (typeof v073Db!=='undefined'&&v073Db)||null}catch(_){return null}};
 const uid=()=>{try{return String((typeof v073User!=='undefined'&&v073User?.id)||'')}catch(_){return ''}};
 const one=v=>Array.isArray(v)?v[0]:v;
@@ -34,6 +34,9 @@ function rid(prefix){let r='';try{r=crypto.randomUUID().replaceAll('-','')}catch
 async function rpc(name,args={}){const x=db();if(!x||!uid())throw new Error('SERVER_NOT_READY');const{data,error}=await x.rpc(name,args);if(error)throw error;return one(data)}
 function toast(t,type='info',b=''){try{window.v063Toast?.(t,type,b)}catch(_){}}
 function fmtDate(v){if(!v)return'—';try{return new Intl.DateTimeFormat('de-DE',{timeZone:'Europe/Berlin',weekday:'long',day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}).format(new Date(v))}catch(_){return String(v)}}
+function nowMs(){return Date.now()+S.clockOffset}
+function leftMs(v){return Math.max(0,new Date(v||0).getTime()-nowMs())}
+function fmtDuration(ms){const t=Math.max(0,Math.ceil(ms/1000)),h=Math.floor(t/3600),m=Math.floor((t%3600)/60),s=t%60;return h>0?String(h).padStart(2,'0')+':'+String(m).padStart(2,'0')+':'+String(s).padStart(2,'0'):String(m).padStart(2,'0')+':'+String(s).padStart(2,'0')}
 function overlay(){
  let el=document.getElementById('v8210GrowCupOverlay');
  if(el)return el;
@@ -41,13 +44,14 @@ function overlay(){
  el.innerHTML='<div class="v8210-growcup-shell" role="dialog" aria-modal="true" aria-label="Grow Cup"><div class="v8210-growcup-content"></div></div>';
  document.body.appendChild(el);return el;
 }
-function close(){overlay().classList.remove('show');S.opened=false}
+function stopClock(){if(S.timer){clearInterval(S.timer);S.timer=null}}
+function close(){stopClock();overlay().classList.remove('show');S.opened=false}
 function wallet(){
  const st=S.state||{};
  return '<div class="v8210-wallet"><span><i>ᚱ</i><b>'+Math.max(0,Number(st.runes)||0)+'</b><small>Runen</small></span><span><i>✦</i><b>'+Math.max(0,Number(st.rune_shards)||0)+'</b><small>Fragmente</small></span></div>';
 }
 function header(){
- return '<header class="v8210-head"><button type="button" data-cup-close class="v8210-back">←</button><div class="v8210-title"><small>ALLE 2 WOCHEN · SONNTAGS</small><b>GROW CUP</b><span>6 Phasen · eine Pflanze · serverweite Wertung</span></div>'+wallet()+'<button type="button" data-cup-close class="v8210-close">×</button></header>'+
+ return '<header class="v8210-head"><button type="button" data-cup-close class="v8210-back">←</button><div class="v8210-title"><small>6-STUNDEN-CUP · ALLE 2 WOCHEN</small><b>GROW CUP</b><span>6 Stunden · 6 Pflegefenster · versteckte Pflanzenbedürfnisse</span></div>'+wallet()+'<button type="button" data-cup-close class="v8210-close">×</button></header>'+
  '<nav class="v8210-tabs"><button data-cup-view="cup" class="'+(S.view==='cup'?'active':'')+'">🌿 CUP</button><button data-cup-view="ranking" class="'+(S.view==='ranking'?'active':'')+'">🏆 RANGLISTE</button></nav>';
 }
 function plantStage(phase=1,status='active'){
@@ -76,12 +80,12 @@ function lobby(){
  const st=S.state||{},active=st.active===true;
  return '<section class="v8210-scene v8210-lobby">'+
    '<div class="v8210-stage-panel">'+plantStage(1,'preview')+'<div class="v8210-stage-badge">🏆 OFFIZIELLE CUP-BÜHNE</div></div>'+
-   '<div class="v8210-lobby-copy"><small>GROW LEGENDS · GROW CUP</small><h1>ZIEH DEINE<br>CHAMPION-PFLANZE.</h1>'+
-   '<p>Alle starten mit derselben Cup-Sorte. Level, Ausrüstung, VIP und Harz-Taler geben keinen Vorteil. Sechs Entscheidungen formen deine Pflanze für die Jury.</p>'+
-   '<div class="v8210-lobby-rules"><span><b>6</b><small>Phasen</small></span><span><b>5</b><small>Wertungen</small></span><span><b>1</b><small>Cup-Run</small></span><span><b>👑</b><small>ab 92 Punkten</small></span></div>'+
-   '<div class="v8210-seed-card"><i>🌱</i><div><small>DIESE CUP-SORTE</small><b>'+esc(st.cup_seed||'Cup-Sorte')+'</b><span>Für alle Teilnehmer identisch</span></div></div>'+
-   '<button data-cup-start '+(!active||S.busy?'disabled':'')+'>'+(S.busy?'CUP WIRD VORBEREITET …':'GROW CUP STARTEN')+'</button>'+
-   '<em>'+(active?'Der Grow Cup ist jetzt geöffnet.':'Nächster Grow Cup: '+esc(fmtDate(st.next_event)))+'</em></div>'+
+   '<div class="v8210-lobby-copy"><small>GROW LEGENDS · LIVE GROW CUP</small><h1>6 STUNDEN.<br>DEINE PFLANZE.</h1>'+
+   '<p>Ein Cup-Run läuft sechs echte Stunden. In jeder Stunde öffnet sich ab Minute 45 ein 15-Minuten-Pflegefenster. Du regelst Licht, Wasser und Dünger selbst. Die Pflanze verrät dir Hinweise – niemals die perfekte Zahl.</p>'+
+   '<div class="v8210-lobby-rules"><span><b>6 h</b><small>Laufzeit</small></span><span><b>6</b><small>Pflegefenster</small></span><span><b>15 m</b><small>je Fenster</small></span><span><b>👑</b><small>ab 92 Punkten</small></span></div>'+
+   '<div class="v8210-seed-card"><i>🌱</i><div><small>DIESE CUP-SORTE</small><b>'+esc(st.cup_seed||'Cup-Sorte')+'</b><span>Gleiche Sorte für alle · individuelle Phänotyp-Reaktion</span></div></div>'+
+   '<button data-cup-start '+(!active||S.busy?'disabled':'')+'>'+(S.busy?'CUP WIRD VORBEREITET …':'6-STUNDEN-CUP STARTEN')+'</button>'+
+   '<em>'+(active?'Der Grow Cup ist geöffnet. Dein persönlicher 6-Stunden-Timer beginnt erst beim Start.':'Nächster Grow Cup: '+esc(fmtDate(st.next_event)))+'</em></div>'+
  '</section>';
 }
 function activeRun(run){
