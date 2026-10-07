@@ -45,9 +45,9 @@ function schedule(ms=Date.now()){
  const sundayStartMs=berlinMidnightMs(sunday.y,sunday.m,sunday.d);
  const weekend=p.dow===5||p.dow===6||p.dow===0;
  const thursdayActive=p.dow===4;
- const runehuntActive=cycle===1&&p.dow===0;
- const pair=cycle===0?'gold-dampf':'xp-runehunt';
- return{...p,mondayOrd,weekIndex,cycle,pair,weekend,thursdayActive,runehuntActive,startMs,endMs,thursdayStartMs,thursdayEndMs,sundayStartMs};
+ const growCupActive=cycle===1&&p.dow===0;
+ const pair=cycle===0?'gold-dampf':'xp-growcup';
+ return{...p,mondayOrd,weekIndex,cycle,pair,weekend,thursdayActive,growCupActive,startMs,endMs,thursdayStartMs,thursdayEndMs,sundayStartMs};
 }
 function eventRows(ms=Date.now()){
  const sc=schedule(ms),rows=[];
@@ -72,16 +72,16 @@ function eventRows(ms=Date.now()){
    );
   }else{
    rows.push({...common,id:`${AUTO_PREFIX}xp:${sc.mondayOrd}`,name:'Erfahrungs-Event',description:'Wochenend-Event: Quests geben 2× Erfahrung.'});
-   if(sc.runehuntActive){
+   if(sc.growCupActive){
     rows.push({
      is_active:true,
      starts_at:new Date(sc.sundayStartMs).toISOString(),
      ends_at:new Date(sc.endMs).toISOString(),
      created_at:new Date(sc.sundayStartMs).toISOString(),
      v6251Auto:true,
-     id:`${AUTO_PREFIX}runehunt:${sc.mondayOrd}`,
-     name:'Runenjagd',
-     description:'Sonntags-Event im EXP-Wochenende: Ein legendärer 100-Raum-Run mit garantierter Verzauberungsrune beim Endboss.'
+     id:`${AUTO_PREFIX}growcup:${sc.mondayOrd}`,
+     name:'Grow Cup',
+     description:'Sonntags-Event im EXP-Wochenende: Ein fairer 6-Phasen-Grow mit Jury-Wertung, Rangliste und Verzauberungsrunen.'
     });
    }
   }
@@ -94,7 +94,8 @@ function managedType(name){
  if(n.includes('gold'))return'gold';
  if(n.includes('erfahrung')||/(^|[^a-z])exp([^a-z]|$)/i.test(n))return'xp';
  if(n.includes('koloss')||n.includes('smaragd')||n.includes('weltboss')||n.includes('mystisch')||n.includes('mystic'))return'koloss';
- if(n.includes('runenjagd')||n.includes('runehunt')||n.includes('runen'))return'runehunt';
+ if(n.includes('grow cup')||n.includes('growcup'))return'growcup';
+ if(n.includes('runenjagd')||n.includes('runehunt'))return'runehunt';
  return'';
 }
 function currentAuto(type){return eventRows().find(x=>managedType(x.name)===type)||null}
@@ -178,8 +179,11 @@ try{v271DampfEventActive=function(){return autoActive('dampf')};window.v271Dampf
 try{v271ActiveDampfEvent=function(){return currentAuto('dampf')};window.v271ActiveDampfEvent=v271ActiveDampfEvent}catch(_){ }
 try{v110MysticEventActive=function(){return autoActive('koloss')};window.v110MysticEventActive=v110MysticEventActive}catch(_){ }
 try{v120ActiveWorldBossEvent=function(){return currentAuto('koloss')};window.v120ActiveWorldBossEvent=v120ActiveWorldBossEvent}catch(_){ }
-try{window.v8198RuneHuntEventActive=function(){return autoActive('runehunt')}}catch(_){ }
-try{window.v8198ActiveRuneHuntEvent=function(){return currentAuto('runehunt')}}catch(_){ }
+try{window.v8210GrowCupEventActive=function(){return autoActive('growcup')}}catch(_){ }
+try{window.v8210ActiveGrowCupEvent=function(){return currentAuto('growcup')}}catch(_){ }
+/* V8.210: legacy Runenjagd schedule hooks are intentionally retired. */
+try{window.v8198RuneHuntEventActive=function(){return false}}catch(_){ }
+try{window.v8198ActiveRuneHuntEvent=function(){return null}}catch(_){ }
 
 /* Re-merge after every server content refresh. */
 try{
@@ -195,7 +199,7 @@ window.v6251AutomaticWeekendSchedule=schedule;
 window.v6251AutomaticWeekendEvents=eventRows;
 window.v6251ApplyAutomaticWeekendEvents=apply;
 window.v6251AutomaticWeekendDiagnostics=()=>{
- const sc=schedule(),nextPair=sc.cycle===0?'Gold + Dampf':'Erfahrung + Runenjagd (Sonntag)';
+ const sc=schedule(),nextPair=sc.cycle===0?'Gold + Dampf':'Erfahrung + Grow Cup (Sonntag)';
  return{timezone:TZ,activeWeekend:sc.weekend,pair:nextPair,weekIndex:sc.weekIndex,start:new Date(sc.startMs).toISOString(),end:new Date(sc.endMs).toISOString(),events:eventRows().map(x=>({id:x.id,name:x.name,starts_at:x.starts_at,ends_at:x.ends_at}))};
 };
 window.v8009HomeEventSchedulerDiagnostics=()=>({
