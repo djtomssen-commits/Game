@@ -83,7 +83,17 @@
     /* ONE level gain for the whole item, never once per stat. */
     return Math.max(1,Math.round(slotBase*meta.mult + (lvl-1)*0.72 + meta.flat));
   }
+  function authenticatedServerItems(){
+    try{return !!((typeof v073User!=='undefined'&&v073User?.id)||window.v073User?.id)}catch(_){return false}
+  }
+  function legacyLocalItemStateWritable(){
+    /* V8.181: fail closed during boot. Until auth is explicitly resolved, an
+       existing item may belong to a server-authoritative account and must not
+       be rebalanced by this legacy curve. */
+    return window.__V200_AUTH_READY__===true && !authenticatedServerItems();
+  }
   function normalize(it){
+    if(!legacyLocalItemStateWritable())return false;
     if(!it||it.type==='material'||!it.slot||it.setId)return false;
     const base=baseBonus(it);if(!base||!Object.keys(base).length)return false;
     const lvl=Math.max(1,Number(it.dropLevel)||Number(s.level)||1);
@@ -179,9 +189,12 @@
     return r;
   };
 
-  const changed=normalizeAll();
-  try{localStorage.setItem(KEY,JSON.stringify(s))}catch(e){}
-  try{render()}catch(e){console.error('V4.23 item progression',e)}
+  /* V8.181: no boot migration/render of existing items. Generator wrappers
+     above remain available for explicit legacy-local item creation. */
+  const changed=legacyLocalItemStateWritable()?normalizeAll():false;
+  if(changed){
+    try{localStorage.setItem(KEY,JSON.stringify(s))}catch(e){}
+  }
   if(changed&&!s.v423ItemCurveNotice){
     s.v423ItemCurveNotice=true;
     try{localStorage.setItem(KEY,JSON.stringify(s))}catch(e){}
