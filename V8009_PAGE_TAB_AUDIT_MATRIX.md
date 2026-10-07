@@ -1,6 +1,6 @@
 # V8.009 – Page / Tab Audit Matrix
 
-Stand: 2026-10-01
+Stand: 2026-10-07
 
 Legende:
 - [ ] offen
@@ -28,7 +28,7 @@ Die Matrix wird nach jedem großen Cleanup-Batch aktualisiert.
 | Growroom | Grow / Stock / Genetics / Orders | [x] | Event-Bus/Tab/Care/Hydration/Genetik/Stock/Orders-Lifecycle konsolidiert; V8.194 Gilden-Blütenspende eigener atomarer Server-RPC, 1/Tag Berlin, +5 Gilden-EP; manueller Endtest offen |
 | Quests | Quest / Schicht-Arbeiten-Chillen | [x] | Dampf-/Quest-Renderowner konsolidiert; V8.190: Rewarded-Video direkt unter Zeit-Samen-Skip auf Beta + Server1, bis zu 2× je Quest, je 25 % der ursprünglichen Dauer, maximal 50 %, nur nach signiertem AdMob-SSV; 0/1/2 serverautoritativ; manueller 2×-Endtest offen |
 | Dungeon | Weltkarte / 10er-Detailkarte / Kampf / Reward | [x] | Combat bleibt beim v7175 Renderer; v7051 serverautoritativ; v247 alleiniger Reward-Modal-Owner; doppelter Reward-DOM/Sound entfernt; Feedback-Run-ID erhalten; manueller Endtest offen |
-| Shop | Waffen & Rüstung / Schmuck & Magie | [x][T] | Repaint-Flicker, Legacy-Header und delayed Repaints bereinigt; Kauf ersetzt nur den gekauften Slot; Kauf-RPC prüft sichtbare Item-ID gegen Serverangebot; Vergleich wartet auf autoritativ hydriertes Equipment und rendert danach über v470 neu; Header vom Nutzer bestätigt |
+| Shop | Waffen & Rüstung / Schmuck & Magie | [x][T] | Repaint-Flicker/Legacy-Header bereinigt; Kauf serverautoritativ; V8.195 Beta: aktiver VIP erhält genau 1 gemeinsamen kostenlosen Neu-Wurf pro Berliner Tag für Waffen oder Magie/Schmuck, danach wieder 1 HT; Freiwurf direkt in v7083-Authority |
 | Hinterhof-Dealer | Harz Lotto / Tütchen (Coming Soon) | [x] | Player-sichtbarer Menüeintrag über v4148; Harz Lotto offen, Tütchen deaktiviert/COMING SOON; manueller Endtest offen |
 | PvP | Hall-/Battle-Lifecycle | [x] | Cooldown ohne Full-Rerender, Legacy-Finish konsolidiert, v7053 Server-Authority + Fallback sauber getrennt; manueller Endtest offen |
 | Guild | Übersicht / Growtasks / Boss / Krieg | [x] | kompletter Struktur-/DOM-/Lifecycle-/Authority-Pass grün; V8.194 Grow-Beutel-Spende prüft Membership serverseitig und ist vom normalen Gilden-XP-Tagescap getrennt; manueller Endtest offen |
@@ -36,7 +36,7 @@ Die Matrix wird nach jedem großen Cleanup-Batch aktualisiert.
 | Friends | Ranking / Suche | [x] | v4130 finaler Friends/Search-Owner, Presence-Singleflight + 60s Refresh; v333/v382/v383 und globale Social-Renderwrapper retired; manueller Endtest offen |
 | Mail | Inbox / Sent / Compose / Battlelog | [x] | v381 finaler Mail-/Tab-/Compose-Owner, v6200 Battlelog; Recipient-Routing ohne Delay, doppelte Tab-Loader entfernt; manueller Endtest offen |
 | Admin | Content / Spieler / Tools (gestapelte Bereiche, keine echten Tabs) | [x] | v093 alleiniger Admin-Status- und Content-Lifecycle-Owner; Render-/Check-/Load-Wrapperketten entfernt; Player/Reward/Ticket/Broadcast/Systemtechnik-Authority geprüft; manueller Endtest offen |
-| Harz Dealer | Harz / Gold / Frames | [x] | 3 Tabs mit einem Hub-Owner; Harz via Google-Play-Verifikation, Gold + Rahmen serverautoritativ; Frame-Tab-Injection/Wrapper retired; manueller Endtest offen |
+| Harz Dealer | Harz / Gold / Frames / VIP (Beta) | [x] | v7117 bleibt Hub-Owner; V8.195 Beta ergänzt zeitgebundene 7/14/30-Tage-VIP-Pässe, tägliche serverautoritative VIP-Truhe, +10 % Wochentruhen-EP, 1 gemeinsamen Gratis-Shopwurf/Tag, temporären Titel/Rahmen sowie optionale öffentliche Namensfarbe/Badge; Server 1 noch ohne VIP; manueller VIP-Endtest offen |
 
 ## Zusätzliche Feature-Seiten / Submodule
 
@@ -46,7 +46,7 @@ Die Matrix wird nach jedem großen Cleanup-Batch aktualisiert.
 | Forge | Dismantle / Craft / Nebelforge | [x] | 3 Tabs aus einem Shell-Owner; Zerlegen + Prismatisch serverautoritativ/idempotent; Nebelschmied-Tab-Injection/Observer retired, Reroll mit persistenter Request-ID; manueller Endtest offen |
 | Worldboss | Entry / Overlay / Combat / Reward | [x] | Entry/State/Countdown/Balance/Authority konsolidiert; v113/v114/Home-Click-Layer retired; globale Render-/Polling-Schichten entfernt; manueller Endtest offen |
 | Guildboss | Signup / Fight / Replay / Reward | [x] | Server-Gate korrigiert: nur eigene offene Belohnung vom unmittelbaren Vortag sperrt die neue Anmeldung; ältere offene Rewards sperren nicht; Visual-/Replay-/Reward-Lifecycle konsolidiert; erneuter manueller Signup-Test offen |
-| Profile Modal | Profil / Equipment / Friend action | [x] | v655 finaler Loader/Renderer, v652 nur Decoration-Observer, Deadlines/Fallbacks erhalten; manueller Endtest offen |
+| Profile Modal | Profil / Equipment / Friend action | [x] | v655 finaler Loader/Renderer, v652 nur Decoration-Observer; V8.195 Beta: öffentliche VIP-Markierung/Rahmen nur bei unexpired vip_until + vip_visible, Sichtbarkeit serverseitig gegen Spoofing geschützt; manueller Endtest offen |
 | Character Creation | Beta Creator / Server-1 Creator | [x] | v4136 einziger direkter gl_create_character-Owner; Server1 nutzt denselben Create-Helper, eigene UI/Isolation bleibt; Finalizer-/Retry-Doppelpfade entfernt; Launch-Gate unverändert; manueller Endtest offen |
 | Settings | Account / Cloud / Logout / Delete / Version | [x] | v141 alleiniger DOM-Builder, v225 nur Binder/Repair |
 | Global Header | Gold / Harz / Dampf / Navigation | [x] | v372 ist autoritativer Header; Ressourcen werden live synchronisiert; Tower-Offset berücksichtigt; DOM-Contracts aktiv |
@@ -61,7 +61,7 @@ Die Matrix wird nach jedem großen Cleanup-Batch aktualisiert.
 - Forge: dismantle, craft, nebelforge
 - Tower: rank, meta
 - Admin: overview, players, content
-- Harz Dealer: harz, gold, frames
+- Harz Dealer: harz, gold, frames, vip (Beta)
 
 ## Reihenfolge für den großen Enddurchgang
 1. Dungeon Combat + Reward final
