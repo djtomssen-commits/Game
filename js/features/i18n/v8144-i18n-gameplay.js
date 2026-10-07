@@ -260,6 +260,25 @@ const V8184_PATTERNS={
 };
 for(const lang of Object.keys(V8184_PATTERNS))P[lang]?.push(...V8184_PATTERNS[lang]);
 
+const V8185_TEXT={
+ en:{
+  'Beitritt anfragen':'Request to join','Anfrage gesendet':'Request sent','Anfrage wird gesendet …':'Sending request …','Du bist Mitglied dieser Gilde.':'You are a member of this guild.','Du bist bereits Mitglied einer Gilde.':'You are already a member of a guild.','Du hast bereits eine offene Beitrittsanfrage':'You already have a pending join request','Gilde voll':'Guild full','Gildensperre aktiv':'Guild lock active','Beitrittsanfrage fehlgeschlagen':'Join request failed','Die Gildenleitung kann deine Bewerbung jetzt annehmen.':'The guild leadership can now accept your application.'
+ },
+ es:{
+  'Beitritt anfragen':'Solicitar ingreso','Anfrage gesendet':'Solicitud enviada','Anfrage wird gesendet …':'Enviando solicitud …','Du bist Mitglied dieser Gilde.':'Eres miembro de este gremio.','Du bist bereits Mitglied einer Gilde.':'Ya eres miembro de un gremio.','Du hast bereits eine offene Beitrittsanfrage':'Ya tienes una solicitud de ingreso pendiente','Gilde voll':'Gremio completo','Gildensperre aktiv':'Bloqueo de gremio activo','Beitrittsanfrage fehlgeschlagen':'Error en la solicitud de ingreso','Die Gildenleitung kann deine Bewerbung jetzt annehmen.':'La dirección del gremio ya puede aceptar tu solicitud.'
+ },
+ fr:{
+  'Beitritt anfragen':'Demander à rejoindre','Anfrage gesendet':'Demande envoyée','Anfrage wird gesendet …':'Envoi de la demande …','Du bist Mitglied dieser Gilde.':'Tu es membre de cette guilde.','Du bist bereits Mitglied einer Gilde.':'Tu es déjà membre d’une guilde.','Du hast bereits eine offene Beitrittsanfrage':'Tu as déjà une demande d’adhésion en attente','Gilde voll':'Guilde complète','Gildensperre aktiv':'Verrouillage de guilde actif','Beitrittsanfrage fehlgeschlagen':'Échec de la demande d’adhésion','Die Gildenleitung kann deine Bewerbung jetzt annehmen.':'La direction de la guilde peut maintenant accepter ta candidature.'
+ },
+ pl:{
+  'Beitritt anfragen':'Poproś o dołączenie','Anfrage gesendet':'Prośba wysłana','Anfrage wird gesendet …':'Wysyłanie prośby …','Du bist Mitglied dieser Gilde.':'Jesteś członkiem tej gildii.','Du bist bereits Mitglied einer Gilde.':'Jesteś już członkiem gildii.','Du hast bereits eine offene Beitrittsanfrage':'Masz już otwartą prośbę o dołączenie','Gilde voll':'Gildia pełna','Gildensperre aktiv':'Blokada gildii aktywna','Beitrittsanfrage fehlgeschlagen':'Nie udało się wysłać prośby o dołączenie','Die Gildenleitung kann deine Bewerbung jetzt annehmen.':'Kierownictwo gildii może teraz zaakceptować twoje zgłoszenie.'
+ },
+ tr:{
+  'Beitritt anfragen':'Katılma isteği gönder','Anfrage gesendet':'İstek gönderildi','Anfrage wird gesendet …':'İstek gönderiliyor …','Du bist Mitglied dieser Gilde.':'Bu loncanın üyesisin.','Du bist bereits Mitglied einer Gilde.':'Zaten bir loncanın üyesisin.','Du hast bereits eine offene Beitrittsanfrage':'Zaten bekleyen bir katılma isteğin var','Gilde voll':'Lonca dolu','Gildensperre aktiv':'Lonca kilidi aktif','Beitrittsanfrage fehlgeschlagen':'Katılma isteği başarısız','Die Gildenleitung kann deine Bewerbung jetzt annehmen.':'Lonca yönetimi artık başvurunu kabul edebilir.'
+ }
+};
+for(const lang of Object.keys(V8185_TEXT))Object.assign(M[lang]||(M[lang]={}),V8185_TEXT[lang]);
+
 const FINAL_VISIBLE={
  en:{
   'Tippe einen Topf an → Details erscheinen darunter':'Tap a pot → details appear below',
