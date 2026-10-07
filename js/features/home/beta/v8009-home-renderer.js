@@ -95,7 +95,7 @@
     try{if(typeof v274GoldEventActive==='function'&&v274GoldEventActive())a.push({c:'gold',t:'💰 GOLD EVENT',s:'2× Gold-Belohnungen aktiv'})}catch(e){}
     try{if(typeof v271DampfEventActive==='function'&&v271DampfEventActive())a.push({c:'',t:'🔥 DAMPF EVENT',s:'200 Dampf gratis · mit Harz bis 300'})}catch(e){}
     if(bossActive)a.push({c:'cyan',t:'💠 SMARAGD KOLOSS',s:'Donnerstags-Weltboss aktiv!'});
-    if(growCupEventActive())a.push({c:'gold',t:'🏆 GROW CUP',s:'Cup-Bühne offen · 6 Phasen · Rangliste'});
+    if(growCupEventActive())a.push({c:'gold',t:'🏆 GROW CUP',s:'Cup-Bühne offen · 6 Stunden · Pflegefenster'});
     return a.slice(0,6);
   }
 
@@ -142,7 +142,7 @@
           <h2>Grow Cup</h2>
           <div class="v8210-home-cup-art" aria-hidden="true"><span class="v8210-home-live">EVENT AKTIV</span></div>
           <div class="v6118-boss-name">Die Cup-Bühne ist geöffnet</div>
-          <div class="v690-mini-status">6 Phasen · faire Jury-Wertung · Verzauberungsrunen</div>
+          <div class="v690-mini-status">6 Stunden · 6 Pflegefenster · Verzauberungsrunen</div>
           <button class="v366-go" data-growcup="1">Grow Cup öffnen</button>
         </article>`;
   }
@@ -267,7 +267,7 @@
 
     const gi=goal.querySelector('i'),gb=goal.querySelector('b'),gs=goal.querySelector('span');
     if(cupActive){
-      if(gi)gi.textContent='🏆';if(gb)gb.textContent='Grow Cup';if(gs)gs.textContent='Offen · 6 Phasen';
+      if(gi)gi.textContent='🏆';if(gb)gb.textContent='Grow Cup';if(gs)gs.textContent='Offen · 6 Stunden';
     }else{
       if(gi)gi.textContent='💎';if(gb)gb.textContent='Koloss';if(gs)gs.textContent=bossActive?(bossFreeReady?'Offen · Gratis':'Offen · 10 Harz'):'Donnerstags';
     }
@@ -448,7 +448,7 @@
         <article class="v366-panel v690-goals-panel"><div class="v366-goals-title">Tagesziele</div><div class="v366-goals">
           <div class="v366-goal"><i>📜</i><div><b>Erste Quest</b><span>${firstQuestReady?'+2 Harz':'Erledigt ✓'}</span></div></div>
           <div class="v366-goal"><i>⚔️</i><div><b>Dungeon</b><span>${dungeonFreeReady?'Bereit':'Cooldown'}</span></div></div>
-          <div class="v366-goal"><i>${cupActive?'🏆':'💎'}</i><div><b>${cupActive?'Grow Cup':'Koloss'}</b><span>${cupActive?'Offen · 6 Phasen':(bossActive?(bossFreeReady?'Offen · Gratis':'Offen · 10 Harz'):'Donnerstags')}</span></div></div>
+          <div class="v366-goal"><i>${cupActive?'🏆':'💎'}</i><div><b>${cupActive?'Grow Cup':'Koloss'}</b><span>${cupActive?'Offen · 6 Stunden':(bossActive?(bossFreeReady?'Offen · Gratis':'Offen · 10 Harz'):'Donnerstags')}</span></div></div>
           <div class="v366-goal"><i>⭐</i><div><b>Erfolge</b><span>${ac.done}/${ac.total||'—'}</span></div></div>
         </div></article>
 
