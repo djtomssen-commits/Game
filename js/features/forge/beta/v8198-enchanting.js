@@ -1,10 +1,10 @@
 (()=>{
 'use strict';
-if(String(window.GROW_RELEASE_CHANNEL||'stable').toLowerCase()!=='beta')return;
+if(!['beta','server1'].includes(String(window.GROW_RELEASE_CHANNEL||'stable').toLowerCase()))return;
 if(window.__V8198_ENCHANTING__)return;
 window.__V8198_ENCHANTING__=true;
 
-const VERSION='V8.198';
+const VERSION='V8.220';
 const COMBAT=['staerke','geschick','intelligenz','ausdauer','glueck'];
 const LABEL={staerke:'Stärke',geschick:'Geschick',intelligenz:'Intelligenz',ausdauer:'Ausdauer',glueck:'Glück'};
 const S={state:null,selected:'',busy:false,last:null,lastError:'',refreshes:0,attempts:0};
