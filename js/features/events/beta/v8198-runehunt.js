@@ -4,7 +4,7 @@ if(String(window.GROW_RELEASE_CHANNEL||'stable').toLowerCase()!=='beta')return;
 if(window.__V8210_GROW_CUP__)return;
 window.__V8210_GROW_CUP__=true;
 
-const VERSION='V8.211';
+const VERSION='V8.213';
 const PLANTS={
  seedling:'assets/v7198-base64/49aed1d1c8035f5d2123.webp',
  growth:'assets/v7198-base64/c9ec3c217b81f805555c.webp',
@@ -82,6 +82,7 @@ function lobby(){
    '<div class="v8210-lobby-rules"><span><b>6 h</b><small>Laufzeit</small></span><span><b>6</b><small>Pflegefenster</small></span><span><b>15 m</b><small>je Fenster</small></span><span><b>👑</b><small>ab 92 Punkten</small></span></div>'+
    '<div class="v8210-seed-card"><i>🌱</i><div><small>DIESE CUP-SORTE</small><b>'+esc(st.cup_seed||'Cup-Sorte')+'</b><span>Gleiche Sorte für alle · individuelle Phänotyp-Reaktion</span></div></div>'+
    '<button data-cup-start '+(!active||S.busy?'disabled':'')+'>'+(S.busy?'CUP WIRD VORBEREITET …':'6-STUNDEN-CUP STARTEN')+'</button>'+
+   (st.test_eligible?'<button class="v8213-test-start" data-cup-test-start '+(S.busy?'disabled':'')+'>🧪 BETA-TESTLAUF · 6 MINUTEN</button>':'')+
    '<em>'+(active?'Der Grow Cup ist geöffnet. Dein persönlicher 6-Stunden-Timer beginnt erst beim Start.':'Nächster Grow Cup: '+esc(fmtDate(st.next_event)))+'</em></div>'+
  '</section>';
 }
@@ -102,7 +103,7 @@ function timingCard(run){
  if(state==='open'){title='Pflege jetzt nötig';sub='Fenster schließt in';target=run?.phase_ends_at;cls='open';ico='⚠️'}
  if(state==='submitted'){title='Pflege gespeichert';sub='Auswertung in';target=run?.phase_ends_at;cls='submitted';ico='✓'}
  if(state==='processing'){title='Phase wird ausgewertet';sub='Nächste Phase in';target=run?.phase_ends_at;cls='processing';ico='🌿'}
- return '<div class="v8210-timing '+cls+'"><i>'+ico+'</i><div><small>STUNDE '+Number(run?.phase||1)+' / 6</small><b>'+title+'</b><span>'+sub+' <strong data-cup-countdown data-target="'+esc(target||'')+'">'+fmtDuration(leftMs(target))+'</strong></span></div><em>Gesamtlaufzeit <b data-cup-run-time data-target="'+esc(run?.run_ends_at||'')+'">'+fmtDuration(leftMs(run?.run_ends_at))+'</b></em></div>';
+ return '<div class="v8210-timing '+cls+' '+(run?.test_mode?'test':'')+'"><i>'+ico+'</i><div><small>'+(run?.test_mode?'BETA-TEST · PHASE ':'STUNDE ')+Number(run?.phase||1)+' / 6</small><b>'+title+'</b><span>'+sub+' <strong data-cup-countdown data-target="'+esc(target||'')+'">'+fmtDuration(leftMs(target))+'</strong></span></div><em>'+(run?.test_mode?'Testlauf':'Gesamtlaufzeit')+' <b data-cup-run-time data-target="'+esc(run?.run_ends_at||'')+'">'+fmtDuration(leftMs(run?.run_ends_at))+'</b></em></div>';
 }
 function clues(run){
  const a=Array.isArray(run?.clues)?run.clues:[];
@@ -124,7 +125,7 @@ function activeRun(run){
  const phase=Math.max(1,Math.min(6,Number(run.phase)||1)),ph=PHASES[phase-1]||PHASES[0];
  return '<section class="v8210-scene v8210-run">'+phaseRail(run)+
  '<div class="v8210-run-grid"><div class="v8210-stage-panel live">'+plantStage(phase,'active')+
- '<div class="v8210-stage-meta"><small>'+esc(run.cup_seed||'Cup-Sorte')+'</small><b>STUNDE '+phase+' / 6</b><span>'+esc(ph[0])+'</span></div></div>'+
+ '<div class="v8210-stage-meta"><small>'+esc(run.cup_seed||'Cup-Sorte')+(run.test_mode?' · BETA-TEST':'')+'</small><b>'+(run.test_mode?'TESTPHASE ':'STUNDE ')+phase+' / 6</b><span>'+esc(ph[0])+'</span></div></div>'+
  '<div class="v8210-control">'+timingCard(run)+lastCareResult(run)+
  '<div class="v8210-phase-copy"><small>PHASE '+phase+' · '+esc(ph[0]).toUpperCase()+'</small><h2>'+esc(ph[1])+'</h2><p>Die versteckte Zielzone verändert sich mit Phänotyp, Phase und Mikroklima. Nutze die Hinweise und entscheide selbst.</p></div>'+
  metrics(run)+clues(run)+controls(run)+'</div></div></section>';
@@ -134,6 +135,14 @@ function rewardTable(){
 }
 function completed(run){
  const t=TIER[String(run.tier||'bronze')]||TIER.bronze,score=Number(run.final_score||0).toFixed(2),rank=Number(run.rank)||0;
+ if(run.test_mode){
+  return '<section class="v8210-scene v8210-finale">'+phaseRail(run)+
+   '<div class="v8210-final-grid"><div class="v8210-stage-panel final">'+plantStage(6,'completed')+
+   '<div class="v8210-final-medal"><i>🧪</i><small>BETA-TEST ABGESCHLOSSEN</small><b>'+score+'</b><strong>'+t[1]+'</strong></div></div>'+
+   '<div class="v8210-final-copy"><small>6-MINUTEN-TESTLAUF · '+esc(run.cup_seed||'')+'</small><h1>🧪 Testlauf beendet</h1><p>Dieser Lauf testet exakt dieselben sechs Phasen, nur 60× schneller. Er zählt nicht für Rangliste oder Belohnungen.</p>'+metrics(run)+
+   '<div class="v8210-personal-note"><b>Keine Runen · keine Fragmente · kein Ranglistenplatz</b><br>Starte danach den echten 6-Stunden-Cup, sobald du den Ablauf geprüft hast.</div>'+
+   '<button class="v8210-secondary" data-cup-ranking>Rangliste ansehen</button></div></div></section>';
+ }
  return '<section class="v8210-scene v8210-finale">'+phaseRail(run)+
    '<div class="v8210-final-grid"><div class="v8210-stage-panel final">'+plantStage(6,'completed')+
      '<div class="v8210-final-medal"><i>'+t[0]+'</i><small>GESAMTWERTUNG</small><b>'+score+'</b><strong>'+t[1]+'</strong></div></div>'+
@@ -185,6 +194,7 @@ function paint(){
  box.querySelectorAll('[data-cup-close]').forEach(b=>b.onclick=close);
  box.querySelectorAll('[data-cup-view]').forEach(b=>b.onclick=()=>{S.view=String(b.dataset.cupView||'cup');if(S.view==='ranking'&&!S.ranking)void loadRanking();paint()});
  box.querySelector('[data-cup-start]')?.addEventListener('click',start);
+ box.querySelector('[data-cup-test-start]')?.addEventListener('click',testStart);
  box.querySelector('[data-cup-tune]')?.addEventListener('click',tune);
  box.querySelector('[data-cup-ranking]')?.addEventListener('click',()=>{S.view='ranking';paint();void loadRanking()});
  box.querySelector('[data-cup-refresh]')?.addEventListener('click',()=>void loadRanking(true));
@@ -222,6 +232,15 @@ async function start(){
   if(r?.ok===false)throw new Error(String(r.reason||'START_REJECTED'));
   applyState(r);S.starts++;toast('6-Stunden-Cup gestartet','success','Erstes Pflegefenster öffnet in 45 Minuten.');
  }catch(e){S.lastError=String(e?.message||e);toast('Grow Cup','error',S.lastError)}
+ finally{S.busy=false;paint()}
+}
+async function testStart(){
+ if(S.busy)return;S.busy=true;paint();
+ try{
+  const r=await rpc('v8213_growcup_test_start',{p_request_id:rid('v8213_test')});
+  if(r?.ok===false)throw new Error(String(r.reason||'TEST_START_REJECTED'));
+  applyState(r);S.starts++;toast('Beta-Test gestartet','success','6 Minuten · Pflegefenster jeweils nach 45 Sekunden.');
+ }catch(e){S.lastError=String(e?.message||e);toast('Grow Cup Test','error',S.lastError)}
  finally{S.busy=false;paint()}
 }
 async function tune(){
