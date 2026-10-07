@@ -28,7 +28,27 @@ begin
     select g.id,g.name,g.tag,g.leader_id,g.description,
       greatest(0,coalesce(g.guild_buds,0))::bigint guild_buds,
       greatest(0,coalesce(g.guild_xp,0))::bigint guild_xp,
-      public.v7273_guild_level_for_xp(greatest(0,coalesce(g.guild_xp,0)))::integer guild_level,
+      (case
+      when greatest(0,coalesce(g.guild_xp,0))>=1800000 then 20
+      when greatest(0,coalesce(g.guild_xp,0))>=900000 then 19
+      when greatest(0,coalesce(g.guild_xp,0))>=600000 then 18
+      when greatest(0,coalesce(g.guild_xp,0))>=460000 then 17
+      when greatest(0,coalesce(g.guild_xp,0))>=355000 then 16
+      when greatest(0,coalesce(g.guild_xp,0))>=275000 then 15
+      when greatest(0,coalesce(g.guild_xp,0))>=212000 then 14
+      when greatest(0,coalesce(g.guild_xp,0))>=162000 then 13
+      when greatest(0,coalesce(g.guild_xp,0))>=122000 then 12
+      when greatest(0,coalesce(g.guild_xp,0))>=90000 then 11
+      when greatest(0,coalesce(g.guild_xp,0))>=65000 then 10
+      when greatest(0,coalesce(g.guild_xp,0))>=46000 then 9
+      when greatest(0,coalesce(g.guild_xp,0))>=31500 then 8
+      when greatest(0,coalesce(g.guild_xp,0))>=20500 then 7
+      when greatest(0,coalesce(g.guild_xp,0))>=12500 then 6
+      when greatest(0,coalesce(g.guild_xp,0))>=7000 then 5
+      when greatest(0,coalesce(g.guild_xp,0))>=3500 then 4
+      when greatest(0,coalesce(g.guild_xp,0))>=1500 then 3
+      when greatest(0,coalesce(g.guild_xp,0))>=500 then 2
+      else 1 end)::integer guild_level,
       coalesce(g.max_members,20)::integer max_members,
       (select count(*)::integer from public.guild_members gm where gm.guild_id=g.id) member_count
     from public.guilds g
@@ -60,7 +80,27 @@ begin
     select g.id,g.name,g.tag,g.leader_id,g.description,
       greatest(0,coalesce(g.guild_buds,0))::bigint guild_buds,
       greatest(0,coalesce(g.guild_xp,0))::bigint guild_xp,
-      server1.v7273_guild_level_for_xp(greatest(0,coalesce(g.guild_xp,0)))::integer guild_level,
+      (case
+      when greatest(0,coalesce(g.guild_xp,0))>=1800000 then 20
+      when greatest(0,coalesce(g.guild_xp,0))>=900000 then 19
+      when greatest(0,coalesce(g.guild_xp,0))>=600000 then 18
+      when greatest(0,coalesce(g.guild_xp,0))>=460000 then 17
+      when greatest(0,coalesce(g.guild_xp,0))>=355000 then 16
+      when greatest(0,coalesce(g.guild_xp,0))>=275000 then 15
+      when greatest(0,coalesce(g.guild_xp,0))>=212000 then 14
+      when greatest(0,coalesce(g.guild_xp,0))>=162000 then 13
+      when greatest(0,coalesce(g.guild_xp,0))>=122000 then 12
+      when greatest(0,coalesce(g.guild_xp,0))>=90000 then 11
+      when greatest(0,coalesce(g.guild_xp,0))>=65000 then 10
+      when greatest(0,coalesce(g.guild_xp,0))>=46000 then 9
+      when greatest(0,coalesce(g.guild_xp,0))>=31500 then 8
+      when greatest(0,coalesce(g.guild_xp,0))>=20500 then 7
+      when greatest(0,coalesce(g.guild_xp,0))>=12500 then 6
+      when greatest(0,coalesce(g.guild_xp,0))>=7000 then 5
+      when greatest(0,coalesce(g.guild_xp,0))>=3500 then 4
+      when greatest(0,coalesce(g.guild_xp,0))>=1500 then 3
+      when greatest(0,coalesce(g.guild_xp,0))>=500 then 2
+      else 1 end)::integer guild_level,
       coalesce(g.max_members,20)::integer max_members,
       (select count(*)::integer from server1.guild_members gm where gm.guild_id=g.id) member_count
     from server1.guilds g
@@ -93,7 +133,27 @@ begin
   select count(*)::integer into v_members from public.guild_members where guild_id=p_guild;
   select coalesce(character_name,'') into v_leader_name from public.profiles where id=v_g.leader_id;
   with base as (
-    select g.id,public.v7273_guild_level_for_xp(greatest(0,coalesce(g.guild_xp,0)))::integer guild_level,
+    select g.id,(case
+      when greatest(0,coalesce(g.guild_xp,0))>=1800000 then 20
+      when greatest(0,coalesce(g.guild_xp,0))>=900000 then 19
+      when greatest(0,coalesce(g.guild_xp,0))>=600000 then 18
+      when greatest(0,coalesce(g.guild_xp,0))>=460000 then 17
+      when greatest(0,coalesce(g.guild_xp,0))>=355000 then 16
+      when greatest(0,coalesce(g.guild_xp,0))>=275000 then 15
+      when greatest(0,coalesce(g.guild_xp,0))>=212000 then 14
+      when greatest(0,coalesce(g.guild_xp,0))>=162000 then 13
+      when greatest(0,coalesce(g.guild_xp,0))>=122000 then 12
+      when greatest(0,coalesce(g.guild_xp,0))>=90000 then 11
+      when greatest(0,coalesce(g.guild_xp,0))>=65000 then 10
+      when greatest(0,coalesce(g.guild_xp,0))>=46000 then 9
+      when greatest(0,coalesce(g.guild_xp,0))>=31500 then 8
+      when greatest(0,coalesce(g.guild_xp,0))>=20500 then 7
+      when greatest(0,coalesce(g.guild_xp,0))>=12500 then 6
+      when greatest(0,coalesce(g.guild_xp,0))>=7000 then 5
+      when greatest(0,coalesce(g.guild_xp,0))>=3500 then 4
+      when greatest(0,coalesce(g.guild_xp,0))>=1500 then 3
+      when greatest(0,coalesce(g.guild_xp,0))>=500 then 2
+      else 1 end)::integer guild_level,
            greatest(0,coalesce(g.guild_buds,0))::bigint guild_buds,greatest(0,coalesce(g.guild_xp,0))::bigint guild_xp,g.name
     from public.guilds g
   ), ranked as (
@@ -112,7 +172,27 @@ begin
     'id',v_g.id,'name',v_g.name,'tag',v_g.tag,'leader_id',v_g.leader_id,'leader_name',v_leader_name,
     'description',coalesce(v_g.description,''),'guild_buds',greatest(0,coalesce(v_g.guild_buds,0)),
     'guild_xp',greatest(0,coalesce(v_g.guild_xp,0)),
-    'guild_level',public.v7273_guild_level_for_xp(greatest(0,coalesce(v_g.guild_xp,0))),
+    'guild_level',(case
+      when greatest(0,coalesce(v_g.guild_xp,0))>=1800000 then 20
+      when greatest(0,coalesce(v_g.guild_xp,0))>=900000 then 19
+      when greatest(0,coalesce(v_g.guild_xp,0))>=600000 then 18
+      when greatest(0,coalesce(v_g.guild_xp,0))>=460000 then 17
+      when greatest(0,coalesce(v_g.guild_xp,0))>=355000 then 16
+      when greatest(0,coalesce(v_g.guild_xp,0))>=275000 then 15
+      when greatest(0,coalesce(v_g.guild_xp,0))>=212000 then 14
+      when greatest(0,coalesce(v_g.guild_xp,0))>=162000 then 13
+      when greatest(0,coalesce(v_g.guild_xp,0))>=122000 then 12
+      when greatest(0,coalesce(v_g.guild_xp,0))>=90000 then 11
+      when greatest(0,coalesce(v_g.guild_xp,0))>=65000 then 10
+      when greatest(0,coalesce(v_g.guild_xp,0))>=46000 then 9
+      when greatest(0,coalesce(v_g.guild_xp,0))>=31500 then 8
+      when greatest(0,coalesce(v_g.guild_xp,0))>=20500 then 7
+      when greatest(0,coalesce(v_g.guild_xp,0))>=12500 then 6
+      when greatest(0,coalesce(v_g.guild_xp,0))>=7000 then 5
+      when greatest(0,coalesce(v_g.guild_xp,0))>=3500 then 4
+      when greatest(0,coalesce(v_g.guild_xp,0))>=1500 then 3
+      when greatest(0,coalesce(v_g.guild_xp,0))>=500 then 2
+      else 1 end),
     'member_count',v_members,'max_members',coalesce(v_g.max_members,20),'rank_no',v_rank),'top_members',v_top);
 end;
 $$;
@@ -136,7 +216,27 @@ begin
   select count(*)::integer into v_members from server1.guild_members where guild_id=p_guild;
   select coalesce(character_name,'') into v_leader_name from server1.profiles where id=v_g.leader_id;
   with base as (
-    select g.id,server1.v7273_guild_level_for_xp(greatest(0,coalesce(g.guild_xp,0)))::integer guild_level,
+    select g.id,(case
+      when greatest(0,coalesce(g.guild_xp,0))>=1800000 then 20
+      when greatest(0,coalesce(g.guild_xp,0))>=900000 then 19
+      when greatest(0,coalesce(g.guild_xp,0))>=600000 then 18
+      when greatest(0,coalesce(g.guild_xp,0))>=460000 then 17
+      when greatest(0,coalesce(g.guild_xp,0))>=355000 then 16
+      when greatest(0,coalesce(g.guild_xp,0))>=275000 then 15
+      when greatest(0,coalesce(g.guild_xp,0))>=212000 then 14
+      when greatest(0,coalesce(g.guild_xp,0))>=162000 then 13
+      when greatest(0,coalesce(g.guild_xp,0))>=122000 then 12
+      when greatest(0,coalesce(g.guild_xp,0))>=90000 then 11
+      when greatest(0,coalesce(g.guild_xp,0))>=65000 then 10
+      when greatest(0,coalesce(g.guild_xp,0))>=46000 then 9
+      when greatest(0,coalesce(g.guild_xp,0))>=31500 then 8
+      when greatest(0,coalesce(g.guild_xp,0))>=20500 then 7
+      when greatest(0,coalesce(g.guild_xp,0))>=12500 then 6
+      when greatest(0,coalesce(g.guild_xp,0))>=7000 then 5
+      when greatest(0,coalesce(g.guild_xp,0))>=3500 then 4
+      when greatest(0,coalesce(g.guild_xp,0))>=1500 then 3
+      when greatest(0,coalesce(g.guild_xp,0))>=500 then 2
+      else 1 end)::integer guild_level,
            greatest(0,coalesce(g.guild_buds,0))::bigint guild_buds,greatest(0,coalesce(g.guild_xp,0))::bigint guild_xp,g.name
     from server1.guilds g
   ), ranked as (
@@ -155,7 +255,27 @@ begin
     'id',v_g.id,'name',v_g.name,'tag',v_g.tag,'leader_id',v_g.leader_id,'leader_name',v_leader_name,
     'description',coalesce(v_g.description,''),'guild_buds',greatest(0,coalesce(v_g.guild_buds,0)),
     'guild_xp',greatest(0,coalesce(v_g.guild_xp,0)),
-    'guild_level',server1.v7273_guild_level_for_xp(greatest(0,coalesce(v_g.guild_xp,0))),
+    'guild_level',(case
+      when greatest(0,coalesce(v_g.guild_xp,0))>=1800000 then 20
+      when greatest(0,coalesce(v_g.guild_xp,0))>=900000 then 19
+      when greatest(0,coalesce(v_g.guild_xp,0))>=600000 then 18
+      when greatest(0,coalesce(v_g.guild_xp,0))>=460000 then 17
+      when greatest(0,coalesce(v_g.guild_xp,0))>=355000 then 16
+      when greatest(0,coalesce(v_g.guild_xp,0))>=275000 then 15
+      when greatest(0,coalesce(v_g.guild_xp,0))>=212000 then 14
+      when greatest(0,coalesce(v_g.guild_xp,0))>=162000 then 13
+      when greatest(0,coalesce(v_g.guild_xp,0))>=122000 then 12
+      when greatest(0,coalesce(v_g.guild_xp,0))>=90000 then 11
+      when greatest(0,coalesce(v_g.guild_xp,0))>=65000 then 10
+      when greatest(0,coalesce(v_g.guild_xp,0))>=46000 then 9
+      when greatest(0,coalesce(v_g.guild_xp,0))>=31500 then 8
+      when greatest(0,coalesce(v_g.guild_xp,0))>=20500 then 7
+      when greatest(0,coalesce(v_g.guild_xp,0))>=12500 then 6
+      when greatest(0,coalesce(v_g.guild_xp,0))>=7000 then 5
+      when greatest(0,coalesce(v_g.guild_xp,0))>=3500 then 4
+      when greatest(0,coalesce(v_g.guild_xp,0))>=1500 then 3
+      when greatest(0,coalesce(v_g.guild_xp,0))>=500 then 2
+      else 1 end),
     'member_count',v_members,'max_members',coalesce(v_g.max_members,20),'rank_no',v_rank),'top_members',v_top);
 end;
 $$;
