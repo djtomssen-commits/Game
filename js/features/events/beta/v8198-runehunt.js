@@ -67,14 +67,11 @@ function metrics(run){
  const m=run?.metrics||{};
  return '<div class="v8210-metrics">'+METRICS.map(([k,label,ico])=>{const v=Math.max(0,Math.min(100,Number(m[k])||0));return '<div><span><i>'+ico+'</i><small>'+label+'</small><b>'+v+'</b></span><em><i style="width:'+v+'%"></i></em></div>'}).join('')+'</div>';
 }
-function effectText(c){
- const names={quality:'Qualität',yield:'Ertrag',resin:'Harz',genetics:'Genetik',health:'Gesundheit'};
- return Object.keys(names).map(k=>{const v=Number(c?.[k])||0;return v?'<span>+'+v+' '+names[k]+'</span>':''}).join('');
-}
-function lastEvent(run){
- const a=Array.isArray(run?.history)?run.history:[],x=a[a.length-1];
- if(!x?.event)return'';
- return '<div class="v8210-random-event"><i>⚡</i><div><small>ZUFALLSEREIGNIS</small><b>'+esc(x.event)+'</b><span>'+esc(x.event_text||'')+'</span></div></div>';
+function lastCareResult(run){
+ const a=Array.isArray(run?.history)?run.history:[],x=[...a].reverse().find(v=>v?.kind==='care_result');
+ if(!x)return'';
+ const perf=Math.max(0,Math.min(100,Number(x.performance)||0)),feedback=Array.isArray(x.feedback)?x.feedback:[];
+ return '<div class="v8210-care-result '+(perf>=80?'great':perf>=60?'ok':'stress')+'"><div class="v8210-care-score"><small>LETZTE PHASE</small><b>'+Math.round(perf)+'</b><span>Pflegewert</span></div><div><b>'+(x.source==='carry'?'Automatisch weitergelaufen':'Pflege ausgewertet')+'</b><p>'+esc(feedback[0]||'Die Pflanze hat sich weiterentwickelt.')+'</p></div></div>';
 }
 function lobby(){
  const st=S.state||{},active=st.active===true;
@@ -88,15 +85,49 @@ function lobby(){
    '<em>'+(active?'Der Grow Cup ist geöffnet. Dein persönlicher 6-Stunden-Timer beginnt erst beim Start.':'Nächster Grow Cup: '+esc(fmtDate(st.next_event)))+'</em></div>'+
  '</section>';
 }
+function ensureDraft(run){
+ const key=String(run?.run_id||'')+':'+String(run?.phase||1);
+ if(S.draftKey===key&&S.draft)return S.draft;
+ const src=run?.phase_record?.status==='submitted'?run.phase_record:(run?.last_settings||{});
+ S.draft={
+  light:Math.max(0,Math.min(60,Number(src.light_minutes??30))),
+  water:Math.max(0,Math.min(400,Number(src.water_ml??120))),
+  nutrient:Math.max(0,Math.min(10,Number(src.nutrient_ml??1)))
+ };
+ S.draftKey=key;
+ return S.draft;
+}
+function timingCard(run){
+ const state=String(run?.window_state||'waiting');let title='Pflanze entwickelt sich',sub='Pflegefenster öffnet in',target=run?.decision_opens_at,cls='waiting',ico='⏳';
+ if(state==='open'){title='Pflege jetzt nötig';sub='Fenster schließt in';target=run?.phase_ends_at;cls='open';ico='⚠️'}
+ if(state==='submitted'){title='Pflege gespeichert';sub='Auswertung in';target=run?.phase_ends_at;cls='submitted';ico='✓'}
+ if(state==='processing'){title='Phase wird ausgewertet';sub='Nächste Phase in';target=run?.phase_ends_at;cls='processing';ico='🌿'}
+ return '<div class="v8210-timing '+cls+'"><i>'+ico+'</i><div><small>STUNDE '+Number(run?.phase||1)+' / 6</small><b>'+title+'</b><span>'+sub+' <strong data-cup-countdown data-target="'+esc(target||'')+'">'+fmtDuration(leftMs(target))+'</strong></span></div><em>Gesamtlaufzeit <b data-cup-run-time data-target="'+esc(run?.run_ends_at||'')+'">'+fmtDuration(leftMs(run?.run_ends_at))+'</b></em></div>';
+}
+function clues(run){
+ const a=Array.isArray(run?.clues)?run.clues:[];
+ return '<div class="v8210-clues"><div class="v8210-clue-head"><span>🌿</span><div><small>PFLANZENBEOBACHTUNG</small><b>Lies die Pflanze, nicht eine Formel.</b></div></div>'+a.map(x=>'<p>'+esc(x)+'</p>').join('')+'</div>';
+}
+function rangeRow(type,label,ico,min,max,step,value,unit,disabled){
+ return '<label class="v8210-range"><div><span><i>'+ico+'</i><b>'+label+'</b></span><strong data-cup-value="'+type+'">'+(type==='nutrient'?Number(value).toFixed(1):Math.round(value))+' '+unit+'</strong></div><input type="range" min="'+min+'" max="'+max+'" step="'+step+'" value="'+value+'" data-cup-range="'+type+'" '+(disabled?'disabled':'')+'><footer><small>'+min+' '+unit+'</small><small>'+max+' '+unit+'</small></footer></label>';
+}
+function controls(run){
+ const d=ensureDraft(run),state=String(run?.window_state||'waiting'),locked=state!=='open'||S.busy,submitted=state==='submitted';
+ return '<div class="v8210-grow-controls '+state+'"><div class="v8210-grow-control-head"><div><small>DEINE EINSTELLUNGEN</small><b>'+(submitted?'Für diese Stunde festgelegt':'Pflege selbst einstellen')+'</b></div><span>'+({waiting:'Noch gesperrt',open:'15-Minuten-Fenster',submitted:'Gespeichert',processing:'Auswertung'}[state]||state)+'</span></div>'+
+ rangeRow('light','Lichtzeit','💡',0,60,5,d.light,'Min.',locked)+
+ rangeRow('water','Wassermenge','💧',0,400,10,d.water,'ml',locked)+
+ rangeRow('nutrient','Düngermenge','🧪',0,10,.5,d.nutrient,'ml',locked)+
+ '<div class="v8210-control-note">'+(state==='waiting'?'Die Regler werden ab Minute 45 freigeschaltet. Beobachte bis dahin die Pflanze.':submitted?'Die Werte sind fix. Am Ende der Stunde siehst du die Reaktion.':state==='open'?'Du kannst die drei Werte frei kombinieren. Es gibt keine sichtbare Idealzone.':'Die Stunde ist beendet und wird serverseitig verarbeitet.')+'</div>'+
+ '<button class="v8210-submit-care" data-cup-tune '+(locked?'disabled':'')+'>'+(S.busy?'SPEICHERT …':submitted?'PFLEGE FESTGELEGT':'PFLEGE FÜR DIESE STUNDE FESTLEGEN')+'</button></div>';
+}
 function activeRun(run){
- const phase=Math.max(1,Math.min(6,Number(run.phase)||1)),ph=PHASES[phase-1]||PHASES[0],choices=Array.isArray(run.choices)?run.choices:[];
+ const phase=Math.max(1,Math.min(6,Number(run.phase)||1)),ph=PHASES[phase-1]||PHASES[0];
  return '<section class="v8210-scene v8210-run">'+phaseRail(run)+
-   '<div class="v8210-run-grid"><div class="v8210-stage-panel live">'+plantStage(phase,'active')+
-     '<div class="v8210-stage-meta"><small>'+esc(run.cup_seed||'Cup-Sorte')+'</small><b>PHASE '+phase+' / 6</b><span>'+esc(ph[0])+'</span></div></div>'+
-   '<div class="v8210-control">'+lastEvent(run)+'<div class="v8210-phase-copy"><small>PHASE '+phase+' · '+esc(ph[0]).toUpperCase()+'</small><h2>'+esc(ph[1])+'</h2><p>Wähle eine Maßnahme. Die Entscheidung ist endgültig und verändert die Cup-Wertung deiner Pflanze.</p></div>'+
-   metrics(run)+
-   '<div class="v8210-choices">'+choices.map(c=>'<button data-cup-choice="'+esc(c.id||'')+'" '+(S.busy?'disabled':'')+'><i>'+esc(c.icon||'🌿')+'</i><div><b>'+esc(c.title||'Entscheidung')+'</b><p>'+esc(c.text||'')+'</p><span class="v8210-effects">'+effectText(c)+'</span></div><em>›</em></button>').join('')+'</div></div></div>'+
- '</section>';
+ '<div class="v8210-run-grid"><div class="v8210-stage-panel live">'+plantStage(phase,'active')+
+ '<div class="v8210-stage-meta"><small>'+esc(run.cup_seed||'Cup-Sorte')+'</small><b>STUNDE '+phase+' / 6</b><span>'+esc(ph[0])+'</span></div></div>'+
+ '<div class="v8210-control">'+timingCard(run)+lastCareResult(run)+
+ '<div class="v8210-phase-copy"><small>PHASE '+phase+' · '+esc(ph[0]).toUpperCase()+'</small><h2>'+esc(ph[1])+'</h2><p>Die versteckte Zielzone verändert sich mit Phänotyp, Phase und Mikroklima. Nutze die Hinweise und entscheide selbst.</p></div>'+
+ metrics(run)+clues(run)+controls(run)+'</div></div></section>';
 }
 function rewardTable(){
  return '<div class="v8210-reward-table"><div><b>🥇 Platz 1</b><span>3 Runen · 30 Frag.</span></div><div><b>🥈 Platz 2</b><span>2 Runen · 25 Frag.</span></div><div><b>🥉 Platz 3</b><span>2 Runen · 20 Frag.</span></div><div><b>4–10</b><span>1 Rune · 15 Frag.</span></div><div><b>11–25</b><span>12 Frag.</span></div><div><b>26–50</b><span>8 Frag.</span></div><div><b>51–100</b><span>5 Frag.</span></div></div>';
