@@ -98,20 +98,10 @@
 }
 
 
-/* V8.204: v5 VIP/referral frames are square artwork.
-   Keep their aspect ratio on the rectangular character portrait and stop
-   clipping the crown / outer ornaments at the v510 portrait boundary. */
+/* V8.205: VIP/referral use the exact same character-frame geometry as all other frames.
+   Only keep the portrait overflow fix so outer ornaments are not clipped. */
 #character #v510HeroRoot .v510-portrait{
   overflow:visible!important;
-}
-#character #v510HeroRoot .avatar-scene.v7137-frame-target[data-v7137-frame="vip_crown"]>.v7139-frame-art,
-#character #v510HeroRoot .avatar-scene.v7137-frame-target[data-v7137-frame="referral_legend"]>.v7139-frame-art{
-  left:-11%!important;
-  top:-11%!important;
-  width:122%!important;
-  height:122%!important;
-  object-fit:contain!important;
-  object-position:center!important;
 }
 #character #v510HeroRoot .v510-col{
   position:relative!important;
@@ -120,13 +110,4 @@
 #character #v510HeroRoot .v510-center{
   position:relative!important;
   z-index:6!important;
-}
-@media(max-width:390px){
-  #character #v510HeroRoot .avatar-scene.v7137-frame-target[data-v7137-frame="vip_crown"]>.v7139-frame-art,
-  #character #v510HeroRoot .avatar-scene.v7137-frame-target[data-v7137-frame="referral_legend"]>.v7139-frame-art{
-    left:-10%!important;
-    top:-10%!important;
-    width:120%!important;
-    height:120%!important;
-  }
 }
