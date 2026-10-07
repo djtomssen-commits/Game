@@ -135,6 +135,10 @@ async function act(name,args,label,success){
    if(!r?.ok)throw new Error(String(r?.reason||r?.decision||'SERVER_REJECTED'));
    /* Authoritative action responses already contain the changed Grow state. */
    apply(r);
+   /* V8.191: Grow mutations change the local truth used by the navigation
+      attention badge. Repaint it immediately after the authoritative state
+      is applied instead of waiting for a page/navigation lifecycle. */
+   try{window.v4162PaintMenuAttentionLocal?.()}catch(_){}
    if(name==='v6358_harvest_grow'&&typeof window.v7136ShowServerReward==='function'){
     try{window.v7136ShowServerReward('harvest',r,{label:'Ernte'})}catch(e){console.warn('[V7.136] harvest complete reward',e)}
    }
