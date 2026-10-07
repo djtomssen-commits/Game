@@ -12601,3 +12601,49 @@ Aktueller Release-Status:
   - Matrix: `8821f34f67eddd134b0babd0e052ae1a9fbbdaa9`.
 - Server 1 in diesem Block nicht geändert.
 
+### 2026-10-07 – V8.218 Eventrhythmus: Grow Cup Donnerstag / Koloss im EXP-Wochenende
+- Nutzerwunsch:
+  - **Grow Cup jeden Donnerstag**;
+  - **Smaragd-Koloss wieder zusammen mit EXP das ganze Wochenende**;
+  - EXP + Koloss weiterhin **alle 2 Wochen**;
+  - im Gegenwochenende bleiben Gold + Dampf.
+- Neuer kanonischer Rhythmus:
+  - Donnerstag 00:00–24:00 Europe/Berlin: Grow Cup;
+  - EXP-Wochenende Freitag 00:00 bis Montag 00:00: EXP + Smaragd-Koloss;
+  - Gegenwochenende Freitag–Sonntag: Gold + Dampf, kein Koloss.
+- Grow-Cup-Wochenpflanze und Sweet Spots bleiben kalenderwochenbasiert; dadurch gibt es weiterhin jede Woche eine neue Pflanze/neue Sweet Spots, obwohl der Spieltag jetzt Donnerstag ist.
+- `recovery_private.v8210_event_key()` verwendet bereits das tatsächliche Startdatum und musste nicht umgebaut werden.
+- `recovery_private.v8210_next_growcup()` wurde von alter Sonntags-/2-Wochen-Logik auf den nächsten Donnerstag umgestellt.
+- Backend-Gate `public.v7102_auto_weekend_event_active()`:
+  - Grow Cup: ISO-Wochentag 4;
+  - Koloss: Freitag/Samstag/Sonntag nur im EXP-Zyklus;
+  - EXP: Freitag/Samstag/Sonntag im EXP-Zyklus;
+  - Gold + Dampf: Freitag/Samstag/Sonntag im Gegenzyklus.
+- Weekend-Owner:
+  - Donnerstag erzeugt jetzt den Grow-Cup-Eventrow;
+  - EXP-Wochenende erzeugt EXP + Koloss mit identischem Freitag–Montag-Zeitfenster;
+  - alter Donnerstag-Koloss-Eventrow entfernt;
+  - alter Sonntag-Grow-Cup-Eventrow entfernt.
+- Home:
+  - aktive Kolossmeldung heißt jetzt **EXP-Wochenende · Weltboss aktiv!**;
+  - inaktive Kolossanzeige verweist auf **EXP-Wochenende** statt Donnerstag.
+- Konkrete QA:
+  - Do 08.10.2026: Grow Cup=true, Koloss=false;
+  - Fr 09.10.2026: EXP=true, Koloss=true, Gold=false;
+  - So 11.10.2026: EXP=true, Koloss=true;
+  - Do 15.10.2026: Grow Cup=true;
+  - Fr 16.10.2026: Gold=true, Dampf=true, EXP=false, Koloss=false;
+  - nächster Grow Cup von Mi 07.10.2026 aus: Do 08.10.2026 00:00 Europe/Berlin.
+- Beta-Cache:
+  - Home / Weekend / Grow-Cup-Client: `?v=8218schedule1`.
+- SQL-Snapshot:
+  - `V8218_EVENT_SCHEDULE.sql`.
+- Relevante Commits:
+  - Weekend-Owner: `ca5b918a02cd6cffe3454ee420695dded60cff8a`;
+  - Home: `a1674f49af59d2eadc3be09b4f287459442deb73`;
+  - Grow-Cup-Header: `68a440c0880c311c7e0355d53f2cb9f63791fdcc`;
+  - Beta Cache: `e03ed3be252f76cede1c1edaa8cd353823bf4320`;
+  - SQL-Snapshot: `a9f77b63b224bd02a61d65d7c48b0c3f746b3406`;
+  - Matrix: `7a5e536048e2f767df7cd74a0db9cf836ca01702`.
+- Der neue Grow-Cup-Client bleibt Beta-seitig; Server-1-HTML wurde in diesem Block nicht mit dem neuen Grow-Cup-Client bestückt.
+
