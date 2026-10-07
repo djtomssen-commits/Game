@@ -200,6 +200,7 @@ function applySnapshot(snapshot,{paint=true}={}){
   bridge.ready=true;
   bridge.lastSync=Date.now();
   bridge.lastError='';
+  try{window.v4162PaintMenuAttentionLocal?.()}catch(_){}
 
   if(paint){
     try{window.v069SyncCurrencies?.()}catch(_){}
