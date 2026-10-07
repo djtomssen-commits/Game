@@ -11228,3 +11228,27 @@ Aktueller Release-Status:
   - I18N: 5ec3811749a399969c29794cbb7598e8b7a71a21 / 39fc30ddf7207495794e1f814c249d5bb0cd6c52
   - Beta cache: 42601e7305fc9bda4658f7a928b5dea7a76ba83a
   - SQL snapshot: 2f4e4730d09441ed99957ee14add8b66560fcc31
+
+### 2026-10-07 – V8.197 finale VIP-/Referral-Rahmen (Beta)
+- Nutzer hat die zwei neu generierten Rahmen freigegeben; beide wurden jetzt als echte Game-Assets ins Repo übernommen.
+- Neue optimierte Assets:
+  - assets/avatar_frames/vip_crown_v3.webp = gold/rot königlicher VIP-Rahmen mit Krone und Rubinen;
+  - assets/avatar_frames/referral_legend_v3.webp = smaragd/teal legendärer Freund-Werben-Rahmen mit Ranken/Kristallen.
+- Bestehende IDs bleiben unverändert:
+  - vip_crown -> neuer VIP-V3-Frame;
+  - referral_legend -> neuer Referral-V3-Frame.
+- Dadurch bleiben alle vorhandenen VIP-/Referral-Unlocks kompatibel; nur die Darstellung wurde ersetzt.
+- Direkte Owner angepasst:
+  - js/features/shift/beta/v8009-s1-v7137-shift-frame-client.js;
+  - js/features/pvp/beta/v8009-s1-v6145-hall-pagination-js.js.
+- Beta cache-busted auf 8197frames1 (11 Referenzen).
+- Server 1 bleibt unverändert und enthält 0 Referenzen auf die V3-Assets / 8197frames1.
+- Verifikation:
+  - beide Assets im Repo vorhanden;
+  - v7137 Syntax grün;
+  - v6145 Syntax grün.
+- Commits:
+  - Asset-Commit: 54d9b14f3aa013dbb31f293b0147630f0702ce7b
+  - v7137 Mapping: b2197d0a67d60bef06911d9fd22a2e7affbb2b44
+  - v6145 Mapping: ab54af4acfd4d86d840f91c0f3de1850e31462df
+  - Beta Cache: 22a5ceca01d10e0a1953a794393bd3b6dc4a4fb0
