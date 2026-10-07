@@ -65,6 +65,7 @@ function showDailyReward(r){
   <div class="v8195-reward-card"><i>🟢</i><b>+${fmt(r.harz_awarded)}</b><span>Harz-Taler</span></div>
   <div class="v8195-reward-card"><i>🪙</i><b>+${fmt(r.gold_awarded)}</b><span>Gold</span></div>
   <div class="v8195-reward-card"><i>🧩</i><b>+${fmt(r.fragments_awarded)}</b><span>Samenfragmente</span></div>`;
+ try{window.v8144GameplayI18n?.apply?.('v8195VipRewardOverlay')}catch(_){}
  ov.classList.add('show');
 }
 function render(){
@@ -75,6 +76,7 @@ function render(){
  const dg=Math.max(0,(Number(st?.daily_gold_base)||0)+lvl*(Number(st?.daily_gold_per_level)||0));
  const weekly=Math.max(0,Number(st?.weekly_xp_bonus_pct)||10);
  const claimed=st&&!st.daily_claim_available;
+ const todayClaim=st?.today_claim||null;
  const publicVisible=st?.public_visible!==false;
  p.innerHTML=`
    <div class="v8195-hero">
@@ -104,7 +106,7 @@ function render(){
    <div class="v8195-actions">
      <div class="v8195-daily">
        <div><small>TÄGLICHER BONUS</small><b>🎁 VIP-Truhe</b><span>Reset täglich nach Europe/Berlin.</span></div>
-       <button type="button" class="btn gold" data-v8195-claim ${!yes||claimed||S.busy?'disabled':''}>${!yes?'VIP erforderlich':claimed?'Heute abgeholt':'VIP-Truhe abholen'}</button>
+       <button type="button" class="btn gold" data-v8195-claim ${!yes||S.busy||(claimed&&!todayClaim)?'disabled':''}>${!yes?'VIP erforderlich':claimed&&todayClaim?'Heutige Belohnung ansehen':claimed?'Heute abgeholt':'VIP-Truhe abholen'}</button>
      </div>
      <label class="v8195-privacy ${yes?'':'disabled'}"><span><b>VIP öffentlich anzeigen</b><small>Name, VIP-Abzeichen, VIP-Titel und VIP-Rahmen für andere sichtbar.</small></span><input type="checkbox" data-v8195-visible ${publicVisible?'checked':''} ${!yes||S.busy?'disabled':''}></label>
    </div>
@@ -113,7 +115,9 @@ function render(){
  try{window.v8144GameplayI18n?.apply?.('harzDealer')}catch(_){}
 }
 async function claimDaily(){
- if(S.busy||!active())return;S.busy=true;render();
+ if(S.busy||!active())return;
+ if(S.state?.daily_claim_available===false&&S.state?.today_claim){showDailyReward(S.state.today_claim);return}
+ S.busy=true;render();
  try{
   const r=await rpc('v8195_vip_claim_daily');
   if(!r?.ok)throw new Error(String(r?.reason||'VIP_CLAIM_FAILED'));
