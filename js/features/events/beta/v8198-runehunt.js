@@ -1,177 +1,194 @@
 (()=>{
 'use strict';
 if(String(window.GROW_RELEASE_CHANNEL||'stable').toLowerCase()!=='beta')return;
-if(window.__V8198_RUNEHUNT__)return;
-window.__V8198_RUNEHUNT__=true;
+if(window.__V8210_GROW_CUP__)return;
+window.__V8210_GROW_CUP__=true;
 
-const VERSION='V8.203';
-const S={state:null,busy:false,opened:false,lastError:'',refreshes:0,starts:0,doors:0,actions:0,timer:null,walking:''};
+const VERSION='V8.210';
+const PLANTS={
+ seedling:'assets/v7198-base64/49aed1d1c8035f5d2123.webp',
+ growth:'assets/v7198-base64/c9ec3c217b81f805555c.webp',
+ flower:'assets/v7198-base64/9880ab938246ad3b3dec.webp',
+ harvest:'assets/v7198-base64/31d47d1bdc5a6c5800cb.webp'
+};
+const PHASES=[
+ ['Keimung','Start · Feuchte · Temperatur'],
+ ['Wachstum','Licht · Wurzeln · Tempo'],
+ ['Formung','Training · Krone · Stabilität'],
+ ['Blüte','Nährstoffe · Blütenansatz'],
+ ['Reifung','Harz · Gewicht · Gesundheit'],
+ ['Finish','Spülen · Reife · Ernte']
+];
+const METRICS=[
+ ['quality','Qualität','★'],['yield','Ertrag','⚖'],['resin','Harz','✨'],['genetics','Genetik','🧬'],['health','Gesundheit','♥']
+];
+const TIER={
+ bronze:['🥉','BRONZE'],silver:['🥈','SILBER'],gold:['🥇','GOLD'],master:['💎','MEISTER'],champion:['👑','GROW CHAMPION']
+};
+const S={state:null,ranking:null,busy:false,opened:false,view:'cup',lastError:'',refreshes:0,starts:0,choices:0};
 const db=()=>{try{return (typeof v073Db!=='undefined'&&v073Db)||null}catch(_){return null}};
 const uid=()=>{try{return String((typeof v073User!=='undefined'&&v073User?.id)||'')}catch(_){return ''}};
 const one=v=>Array.isArray(v)?v[0]:v;
-const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const esc=v=>String(v??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
 function rid(prefix){let r='';try{r=crypto.randomUUID().replaceAll('-','')}catch(_){r=Math.random().toString(36).slice(2)+Date.now().toString(36)}return prefix+'_'+Date.now()+'_'+r.slice(0,24)}
 async function rpc(name,args={}){const x=db();if(!x||!uid())throw new Error('SERVER_NOT_READY');const{data,error}=await x.rpc(name,args);if(error)throw error;return one(data)}
 function toast(t,type='info',b=''){try{window.v063Toast?.(t,type,b)}catch(_){}}
-function fmtDate(v){if(!v)return'—';try{return new Intl.DateTimeFormat('de-DE',{timeZone:'Europe/Berlin',weekday:'long',day:'2-digit',month:'2-digit'}).format(new Date(String(v)+'T12:00:00+02:00'))}catch(_){return String(v)}}
-function fmtWait(v){if(!v)return'00:00';const ms=Math.max(0,new Date(v).getTime()-Date.now());const m=Math.floor(ms/60000),s=Math.floor((ms%60000)/1000);return String(m).padStart(2,'0')+':'+String(s).padStart(2,'0')}
-function zone(room){return Math.max(1,Math.min(4,Math.ceil((Number(room)||1)/25)))}
+function fmtDate(v){if(!v)return'—';try{return new Intl.DateTimeFormat('de-DE',{timeZone:'Europe/Berlin',weekday:'long',day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}).format(new Date(v))}catch(_){return String(v)}}
 function overlay(){
- let el=document.getElementById('v8198RuneOverlay');
+ let el=document.getElementById('v8210GrowCupOverlay');
  if(el)return el;
- el=document.createElement('div');el.id='v8198RuneOverlay';el.className='v8198-rune-overlay';
- el.innerHTML='<div class="v8198-rune-shell" role="dialog" aria-modal="true" aria-label="Runenjagd"><div class="v8198-rune-content"></div></div>';
+ el=document.createElement('div');el.id='v8210GrowCupOverlay';el.className='v8210-growcup-overlay';
+ el.innerHTML='<div class="v8210-growcup-shell" role="dialog" aria-modal="true" aria-label="Grow Cup"><div class="v8210-growcup-content"></div></div>';
  document.body.appendChild(el);return el;
 }
-function clearTimer(){if(S.timer){clearTimeout(S.timer);S.timer=null}}
-function sleep(ms){return new Promise(resolve=>setTimeout(resolve,ms))}
-function motionMs(){try{return matchMedia('(prefers-reduced-motion: reduce)').matches?80:760}catch(_){return 760}}
-function close(){clearTimer();overlay().classList.remove('show');S.opened=false}
+function close(){overlay().classList.remove('show');S.opened=false}
 function wallet(){
  const st=S.state||{};
- return '<div class="v8202-wallet"><span><i>ᚱ</i><b>'+Math.max(0,Number(st.runes)||0)+'</b><small>Runen</small></span><span><i>✦</i><b>'+Math.max(0,Number(st.rune_shards)||0)+'</b><small>Splitter</small></span></div>';
+ return '<div class="v8210-wallet"><span><i>ᚱ</i><b>'+Math.max(0,Number(st.runes)||0)+'</b><small>Runen</small></span><span><i>✦</i><b>'+Math.max(0,Number(st.rune_shards)||0)+'</b><small>Fragmente</small></span></div>';
 }
 function header(){
- const r=S.state?.run;
- return '<header class="v8202-head"><button type="button" data-close class="v8202-back">←</button><div class="v8202-title"><small>RUNENJAGD · LEGENDÄRER RUN</small><b>DER VERGESSENE PFAD</b><span>'+(r?'Raum '+r.room_no+' von 100':'Ein Run · 100 Räume · eine Verzauberungsrune')+'</span></div>'+wallet()+'<button type="button" data-close class="v8202-close">×</button></header>';
+ return '<header class="v8210-head"><button type="button" data-cup-close class="v8210-back">←</button><div class="v8210-title"><small>ALLE 2 WOCHEN · SONNTAGS</small><b>GROW CUP</b><span>6 Phasen · eine Pflanze · serverweite Wertung</span></div>'+wallet()+'<button type="button" data-cup-close class="v8210-close">×</button></header>'+
+ '<nav class="v8210-tabs"><button data-cup-view="cup" class="'+(S.view==='cup'?'active':'')+'">🌿 CUP</button><button data-cup-view="ranking" class="'+(S.view==='ranking'?'active':'')+'">🏆 RANGLISTE</button></nav>';
 }
-function milestones(r){
- const room=Math.max(1,Number(r?.room_no)||1);
- return '<div class="v8202-milestones">'+[25,50,75,100].map(n=>'<div class="'+(room>n?'done':room===n?'current':'')+'"><i>'+n+'</i><span>'+(n===100?'Endboss':'Wächter')+'</span></div>').join('')+'</div>';
+function plantStage(phase=1,status='active'){
+ const p=Math.max(1,Math.min(6,Number(phase)||1));
+ const key=status==='completed'||p>=6?'harvest':p>=4?'flower':p>=2?'growth':'seedling';
+ return '<div class="v8210-plant-wrap stage-'+p+' '+(status==='completed'?'complete':'')+'"><div class="v8210-plant-glow"></div><img src="'+PLANTS[key]+'" alt="Cup-Pflanze"><div class="v8210-plant-shadow"></div></div>';
 }
-function hpBar(r){
- const hp=Math.max(0,Math.min(100,Number(r?.hp)||0));
- return '<div class="v8202-hp"><div><small>RUNENLEBEN</small><b>'+hp+' / 100</b></div><span><i style="width:'+hp+'%"></i></span></div>';
+function phaseRail(run){
+ const phase=Math.max(1,Number(run?.phase)||1),done=run?.status==='completed';
+ return '<div class="v8210-phase-rail">'+PHASES.map((x,i)=>{const n=i+1,cls=done||n<phase?'done':n===phase?'current':'';return '<div class="'+cls+'"><i>'+(done||n<phase?'✓':n)+'</i><span>'+esc(x[0])+'</span></div>'}).join('')+'</div>';
 }
-function effects(r){
- const blocks=[];
- const add=(arr,cls)=>{(Array.isArray(arr)?arr:[]).forEach(e=>blocks.push('<span class="'+cls+'"><i>'+(cls==='blessing'?'✦':cls==='curse'?'☠':'◆')+'</i><b>'+esc(e.label||e.id)+'</b>'+(e.tier?'<em>II'.slice(0,Math.max(1,Number(e.tier)))+'</em>':'')+(e.charges?'<small>'+e.charges+'</small>':'')+'</span>'))};
- add(r?.blessings,'blessing');add(r?.curses,'curse');add(r?.pacts,'pact');
- return '<div class="v8202-effects">'+(blocks.length?blocks.join(''):'<span class="empty">Noch keine Segen, Flüche oder Pakte.</span>')+'</div>';
+function metrics(run){
+ const m=run?.metrics||{};
+ return '<div class="v8210-metrics">'+METRICS.map(([k,label,ico])=>{const v=Math.max(0,Math.min(100,Number(m[k])||0));return '<div><span><i>'+ico+'</i><small>'+label+'</small><b>'+v+'</b></span><em><i style="width:'+v+'%"></i></em></div>'}).join('')+'</div>';
 }
-function lastResult(r){
- const x=r?.last_result;if(!x||x.kind==='start'||x.kind==='door')return'';
- const bits=[];if(Number(x.damage))bits.push('-'+x.damage+' HP');if(Number(x.heal))bits.push('+'+x.heal+' HP');if(Number(x.dust_gain))bits.push('+'+x.dust_gain+' Staub');if(Number(x.keys_gain))bits.push('+'+x.keys_gain+' Schlüssel');
- return '<div class="v8202-result '+(x.success===false?'bad':'good')+'"><i>'+(x.success===false?'⚠':'✦')+'</i><div><b>'+esc(x.title||'Ereignis')+'</b><small>'+esc(x.text||'')+'</small>'+(bits.length?'<span>'+esc(bits.join(' · '))+'</span>':'')+'</div></div>';
+function effectText(c){
+ const names={quality:'Qualität',yield:'Ertrag',resin:'Harz',genetics:'Genetik',health:'Gesundheit'};
+ return Object.keys(names).map(k=>{const v=Number(c?.[k])||0;return v?'<span>+'+v+' '+names[k]+'</span>':''}).join('');
 }
-function hud(r){return '<div class="v8202-hud">'+hpBar(r)+'<div><small>SCHLÜSSEL</small><b>⚿ '+Math.max(0,Number(r?.keys)||0)+'</b></div><div><small>RUNENSTAUB</small><b>✦ '+Math.max(0,Number(r?.dust)||0)+'</b></div><div><small>RAUM</small><b>'+Math.max(1,Number(r?.room_no)||1)+' / 100</b></div></div>'+milestones(r)+effects(r)+lastResult(r)}
+function lastEvent(run){
+ const a=Array.isArray(run?.history)?run.history:[],x=a[a.length-1];
+ if(!x?.event)return'';
+ return '<div class="v8210-random-event"><i>⚡</i><div><small>ZUFALLSEREIGNIS</small><b>'+esc(x.event)+'</b><span>'+esc(x.event_text||'')+'</span></div></div>';
+}
 function lobby(){
- const st=S.state||{},active=st.active===true,r=st.run;
- if(r?.status==='completed')return completed(r);
- return '<section class="v8202-scene v8202-lobby '+(active?'active':'closed')+'"><div class="v8202-lobby-portal"><div class="ring r1"></div><div class="ring r2"></div><div class="ring r3"></div><i>ᚱ</i></div><div class="v8202-lobby-copy"><small>ALLE 2 WOCHEN · NUR SONNTAGS</small><h1>100 RÄUME.<br>EINE RUNE.</h1><p>Hinter jeder Pforte kann etwas anderes warten: Monster, Truhen, Segen, Flüche, Schlüssel oder eine seltene goldene Kammer. Jeder 25. Raum gehört einem Wächter.</p><div class="v8202-lobby-rules"><span><b>100</b><small>Räume</small></span><span><b>3</b><small>Zwischenbosse</small></span><span><b>1</b><small>Endboss</small></span><span><b>1ᚱ</b><small>garantiert bei Sieg</small></span></div><button data-start '+(!active||S.busy?'disabled':'')+'>'+(S.busy?'DAS TOR ÖFFNET SICH …':r?'RUN FORTSETZEN':'RUNENJAGD BETRETEN')+'</button><em>'+(active?'Das Runentor ist geöffnet.':'Nächste Runenjagd: '+esc(fmtDate(st.next_event)))+'</em></div></section>';
-}
-function caveEntrance(d,r,index,total){
- const status=String(d?.status||'open'),locked=status==='locked',blocked=status==='blocked',canKey=(Number(r?.keys)||0)>=Math.max(1,Number(d?.key_cost)||1);
- const dis=blocked||(locked&&!canKey)||S.busy||!!S.walking;
- const state=blocked?'VERSCHÜTTET':locked?(canKey?'⚿ 1 SCHLÜSSEL':'⚿ SCHLÜSSEL FEHLT'):'BETRETEN';
- const side=total===1?'boss':index===0?'left':'right';
- const mark=d?.style==='gold'?'✦':d?.style==='ember'?'ᛏ':d?.style==='root'?'ᚠ':d?.style==='mist'?'ᛉ':'ᚱ';
- return '<button class="v8203-cave '+esc(d?.style||'stone')+' '+status+' '+side+'" data-door="'+esc(d?.id||'')+'" '+(dis?'disabled':'')+'>'+
-   '<div class="v8203-cave-rock"><span class="v8203-cave-runes">ᚠ ᛏ ᛉ ᚱ ᚾ</span><div class="v8203-cave-mouth"><i>'+mark+'</i><span class="v8203-cave-depth"></span></div>'+(locked?'<b class="v8203-cave-lock">⚿</b>':'')+(blocked?'<b class="v8203-cave-block">✕</b>':'')+'</div>'+
-   '<div class="v8203-cave-label"><small>'+esc(status==='open'?'HÖHLENEINGANG':status==='locked'?'VERSIEGELTER EINGANG':'VERSCHÜTTETER EINGANG')+'</small><b>'+esc(d?.label||'Runenhöhle')+'</b><p>'+esc(d?.hint||'')+'</p><em>'+state+'</em></div>'+
- '</button>';
-}
-function corridor(r){
- const doors=Array.isArray(r?.doors)?r.doors:[];
- const walkClass=S.walking?' walking walk-'+esc(S.walking):'';
- return '<section class="v8202-scene v8202-run zone'+zone(r?.room_no)+' v8203-cave-scene'+walkClass+'">'+
-   hud(r)+
-   '<div class="v8202-room-head"><small>RAUM '+r.room_no+' VON 100</small><h2>'+(doors.length===1?'DER WÄCHTER WARTET':'WÄHLE DEINEN WEG')+'</h2><p>'+(doors.length===1?'Vor dir liegt nur ein einziger gewaltiger Höhleneingang. Dahinter wartet der Wächter.':'Du stehst direkt vor zwei Höhleneingängen. Wähle einen Weg – dann geht die Kamera hinein.')+'</p></div>'+
-   '<div class="v8203-camera-stage"><div class="v8203-camera-world"><div class="v8203-ceiling"></div><div class="v8203-ground"><span></span></div><div class="v8203-mist m1"></div><div class="v8203-mist m2"></div><div class="v8203-caves '+(doors.length===1?'single':'')+'">'+doors.map((d,i)=>caveEntrance(d,r,i,doors.length)).join('')+'</div><div class="v8203-camera-vignette"></div></div></div>'+
-   (S.walking?'<div class="v8203-walk-label">Du gehst in die gewählte Höhle …</div>':'')+
+ const st=S.state||{},active=st.active===true;
+ return '<section class="v8210-scene v8210-lobby">'+
+   '<div class="v8210-stage-panel">'+plantStage(1,'preview')+'<div class="v8210-stage-badge">🏆 OFFIZIELLE CUP-BÜHNE</div></div>'+
+   '<div class="v8210-lobby-copy"><small>GROW LEGENDS · GROW CUP</small><h1>ZIEH DEINE<br>CHAMPION-PFLANZE.</h1>'+
+   '<p>Alle starten mit derselben Cup-Sorte. Level, Ausrüstung, VIP und Harz-Taler geben keinen Vorteil. Sechs Entscheidungen formen deine Pflanze für die Jury.</p>'+
+   '<div class="v8210-lobby-rules"><span><b>6</b><small>Phasen</small></span><span><b>5</b><small>Wertungen</small></span><span><b>1</b><small>Cup-Run</small></span><span><b>👑</b><small>ab 92 Punkten</small></span></div>'+
+   '<div class="v8210-seed-card"><i>🌱</i><div><small>DIESE CUP-SORTE</small><b>'+esc(st.cup_seed||'Cup-Sorte')+'</b><span>Für alle Teilnehmer identisch</span></div></div>'+
+   '<button data-cup-start '+(!active||S.busy?'disabled':'')+'>'+(S.busy?'CUP WIRD VORBEREITET …':'GROW CUP STARTEN')+'</button>'+
+   '<em>'+(active?'Der Grow Cup ist jetzt geöffnet.':'Nächster Grow Cup: '+esc(fmtDate(st.next_event)))+'</em></div>'+
  '</section>';
 }
-function encounterActions(e,r){
- const t=String(e?.type||'');
- if(t==='monster')return [['fight','⚔','Kämpfen','Du gewinnst Staub und eventuell einen Schlüssel, verlierst aber Runenleben.'],['flee','➤','Fliehen','Du entkommst möglicherweise ohne Schaden, bekommst aber keine Beute.']];
- if(t==='miniboss'||t==='finalboss')return [['fight','⚔',t==='finalboss'?'Endboss angreifen':'Wächter angreifen','Kein Rückzug. Der Weg führt nur durch diesen Kampf.']];
- if(t==='chest'||t==='golden')return [['open','▣','Truhe öffnen',t==='golden'?'Große Menge Runenstaub und erhöhte Schlüsselchance.':'Runenstaub und vielleicht ein Schlüssel.']];
- if(t==='key')return [['take','⚿','Runenschlüssel nehmen','Öffnet später eine versiegelte Pforte.']];
- if(t==='heal')return [['drink','✚','Runenwasser trinken','Stellt Runenleben wieder her.'],['leave','→','Weitergehen','Brunnen unberührt lassen.']];
- if(t==='blessing')return [['take','✦','Segen annehmen',e.text||'Temporärer Vorteil.'],['leave','→','Zurücklassen','Ohne diesen Effekt weitergehen.']];
- if(t==='curse')return [['endure','☠','Fluch ertragen',e.text||'Temporärer Nachteil.'],['seal','⚿','Mit Schlüssel versiegeln','Verbraucht 1 Runenschlüssel und verhindert den Fluch.']];
- if(t==='trap')return [['brace','⬡','Schutzrune setzen','Versuche, den Runenstoß abzufangen.'],['dash','➤','Durchbrechen','Versuche, zwischen den Pulsen hindurchzukommen.']];
- if(t==='pact')return (Array.isArray(e.options)?e.options:[]).map(o=>[o.id,'◆',o.label,o.text]);
- return [['continue','→','Weiter','Der Raum bleibt still.']];
+function activeRun(run){
+ const phase=Math.max(1,Math.min(6,Number(run.phase)||1)),ph=PHASES[phase-1]||PHASES[0],choices=Array.isArray(run.choices)?run.choices:[];
+ return '<section class="v8210-scene v8210-run">'+phaseRail(run)+
+   '<div class="v8210-run-grid"><div class="v8210-stage-panel live">'+plantStage(phase,'active')+
+     '<div class="v8210-stage-meta"><small>'+esc(run.cup_seed||'Cup-Sorte')+'</small><b>PHASE '+phase+' / 6</b><span>'+esc(ph[0])+'</span></div></div>'+
+   '<div class="v8210-control">'+lastEvent(run)+'<div class="v8210-phase-copy"><small>PHASE '+phase+' · '+esc(ph[0]).toUpperCase()+'</small><h2>'+esc(ph[1])+'</h2><p>Wähle eine Maßnahme. Die Entscheidung ist endgültig und verändert die Cup-Wertung deiner Pflanze.</p></div>'+
+   metrics(run)+
+   '<div class="v8210-choices">'+choices.map(c=>'<button data-cup-choice="'+esc(c.id||'')+'" '+(S.busy?'disabled':'')+'><i>'+esc(c.icon||'🌿')+'</i><div><b>'+esc(c.title||'Entscheidung')+'</b><p>'+esc(c.text||'')+'</p><span class="v8210-effects">'+effectText(c)+'</span></div><em>›</em></button>').join('')+'</div></div></div>'+
+ '</section>';
 }
-function encounter(r){
- const e=r?.encounter||{},t=String(e.type||'empty'),art=e.art?'<img src="'+esc(e.art)+'" alt="">':'<i>'+(t==='chest'?'▣':t==='golden'?'✦':t==='blessing'?'✥':t==='curse'?'☠':t==='heal'?'✚':t==='trap'?'⚠':t==='key'?'⚿':t==='pact'?'◆':'ᚱ')+'</i>';
- return '<section class="v8202-scene v8202-run zone'+zone(r?.room_no)+' encounter-'+esc(t)+'">'+hud(r)+'<div class="v8202-encounter"><div class="v8202-encounter-art"><div class="orbit o1"></div><div class="orbit o2"></div>'+art+'</div><div class="v8202-encounter-panel"><small>RAUM '+r.room_no+' · '+esc(t.toUpperCase())+'</small><h2>'+esc(e.title||'Unbekannter Raum')+'</h2><p>'+esc(e.text||'')+'</p><div class="v8202-actions">'+encounterActions(e,r).map(a=>'<button data-action="'+esc(a[0])+'" '+(S.busy?'disabled':'')+'><i>'+esc(a[1])+'</i><span><b>'+esc(a[2])+'</b><small>'+esc(a[3])+'</small></span><em>›</em></button>').join('')+'</div></div></div></section>';
+function rewardTable(){
+ return '<div class="v8210-reward-table"><div><b>🥇 Platz 1</b><span>3 Runen · 30 Frag.</span></div><div><b>🥈 Platz 2</b><span>2 Runen · 25 Frag.</span></div><div><b>🥉 Platz 3</b><span>2 Runen · 20 Frag.</span></div><div><b>4–10</b><span>1 Rune · 15 Frag.</span></div><div><b>11–25</b><span>12 Frag.</span></div><div><b>26–50</b><span>8 Frag.</span></div><div><b>51–100</b><span>5 Frag.</span></div></div>';
 }
-function downed(r){
- clearTimer();S.timer=setTimeout(()=>{if(S.opened){void refresh({paintNow:true})}},1000);
- return '<section class="v8202-scene v8202-downed zone'+zone(r?.room_no)+'">'+hud(r)+'<div class="v8202-downed-core"><i>ᚾ</i><small>RUNENLEBEN ERLOSCHEN</small><h2>Die Runen stellen dich wieder her.</h2><b>'+fmtWait(r.revive_at)+'</b><p>Dein Run bleibt exakt in Raum '+r.room_no+' gespeichert. Nach Ablauf des Timers stehst du mit vollem Runenleben wieder auf.</p><button data-close>Run verlassen</button></div></section>';
+function completed(run){
+ const t=TIER[String(run.tier||'bronze')]||TIER.bronze,score=Number(run.final_score||0).toFixed(2),rank=Number(run.rank)||0;
+ return '<section class="v8210-scene v8210-finale">'+phaseRail(run)+
+   '<div class="v8210-final-grid"><div class="v8210-stage-panel final">'+plantStage(6,'completed')+
+     '<div class="v8210-final-medal"><i>'+t[0]+'</i><small>GESAMTWERTUNG</small><b>'+score+'</b><strong>'+t[1]+'</strong></div></div>'+
+   '<div class="v8210-final-copy"><small>CUP ABGESCHLOSSEN · '+esc(run.cup_seed||'')+'</small><h1>'+t[0]+' '+t[1]+'</h1><p>Deine Pflanze wurde in Qualität, Ertrag, Harz, Genetik und Gesundheit bewertet.</p>'+metrics(run)+
+   (run.personal_reward_awarded?'<div class="v8210-personal-reward"><i>👑</i><div><b>Grow Champion erreicht</b><span>+1 Verzauberungsrune · +10 Runenfragmente</span></div></div>':'<div class="v8210-personal-note">Ab <b>92,00 Punkten</b> gibt es zusätzlich 1 Verzauberungsrune + 10 Fragmente.</div>')+
+   '<div class="v8210-rank-now"><small>AKTUELLER SERVER-RANG</small><b>'+(rank?'#'+rank:'wird geladen …')+'</b><span>Die Rangbelohnung wird nach Ende des Cups final.</span></div>'+
+   (!S.state?.active&&!run.rank_reward_claimed?'<button class="v8210-claim" data-cup-claim>Rangbelohnung abholen</button>':'')+
+   '<button class="v8210-secondary" data-cup-ranking>Rangliste ansehen</button></div></div>'+
+ '</section>';
 }
-function completed(r){
- const x=r?.last_result||{};
- return '<section class="v8202-scene v8202-complete"><div class="v8202-complete-core"><div class="v8202-final-rune"><div class="ring a"></div><div class="ring b"></div><i>ᚱ</i></div><small>RAUM 100 GESCHAFFT</small><h1>DER RUNENKERN GEHÖRT DIR</h1><p>Du hast alle hundert Räume durchquert und den Hüter des Runenkerns besiegt.</p><div class="v8202-final-loot"><span><i>ᚱ</i><b>+1</b><small>Verzauberungsrune</small></span><span><i>✦</i><b>+'+Math.max(0,Number(x.shards_awarded)||0)+'</b><small>Runensplitter</small></span><span><i>✧</i><b>'+Math.max(0,Number(r.dust)||0)+'</b><small>Staub gesammelt</small></span></div><button data-close>Runenjagd verlassen</button><em>Der nächste Run beginnt erst beim nächsten Runenjagd-Event.</em></div></section>';
+function ranking(){
+ const d=S.ranking||{},rows=Array.isArray(d.rows)?d.rows:[];
+ return '<section class="v8210-scene v8210-ranking"><div class="v8210-ranking-head"><div><small>SERVERWEITE WERTUNG</small><h2>🏆 GROW CUP RANGLISTE</h2><p>Bei Punktgleichheit zählt, wer seinen Cup zuerst beendet hat.</p></div><button data-cup-refresh '+(S.busy?'disabled':'')+'>↻ Aktualisieren</button></div>'+
+ rewardTable()+
+ '<div class="v8210-ranking-list">'+(rows.length?rows.map(x=>{const t=TIER[String(x.tier||'bronze')]||TIER.bronze;return '<div class="v8210-rank-row rank-'+Number(x.rank||0)+'"><strong>#'+Number(x.rank||0)+'</strong><i>'+t[0]+'</i><div><b>'+esc(x.player||'Legende')+'</b><small>'+esc(x.cup_seed||'')+' · '+esc(t[1])+'</small></div><em>'+Number(x.final_score||0).toFixed(2)+'</em></div>'}).join(''):'<div class="v8210-empty">Noch keine abgeschlossenen Cup-Runs.</div>')+'</div></section>';
 }
-function body(){
- const st=S.state||{},r=st.run;
+function cupBody(){
+ const r=S.state?.run;
  if(!r)return lobby();
  if(r.status==='completed')return completed(r);
- if(r.status==='downed')return downed(r);
- if(r.encounter)return encounter(r);
- return corridor(r);
+ return activeRun(r);
 }
 function paint(){
- clearTimer();const box=overlay().querySelector('.v8198-rune-content');if(!box)return;
- box.innerHTML=header()+'<main class="v8202-main">'+body()+'</main>';
- box.querySelectorAll('[data-close]').forEach(b=>b.onclick=close);
- box.querySelector('[data-start]')?.addEventListener('click',start);
- box.querySelectorAll('[data-door]').forEach(b=>b.onclick=()=>choose(String(b.dataset.door||'')));
- box.querySelectorAll('[data-action]').forEach(b=>b.onclick=()=>act(String(b.dataset.action||'')));
+ const box=overlay().querySelector('.v8210-growcup-content');if(!box)return;
+ box.innerHTML=header()+'<main class="v8210-main">'+(S.view==='ranking'?ranking():cupBody())+'</main>';
+ box.querySelectorAll('[data-cup-close]').forEach(b=>b.onclick=close);
+ box.querySelectorAll('[data-cup-view]').forEach(b=>b.onclick=()=>{S.view=String(b.dataset.cupView||'cup');if(S.view==='ranking'&&!S.ranking)void loadRanking();paint()});
+ box.querySelector('[data-cup-start]')?.addEventListener('click',start);
+ box.querySelectorAll('[data-cup-choice]').forEach(b=>b.onclick=()=>choose(String(b.dataset.cupChoice||'')));
+ box.querySelector('[data-cup-ranking]')?.addEventListener('click',()=>{S.view='ranking';paint();void loadRanking()});
+ box.querySelector('[data-cup-refresh]')?.addEventListener('click',()=>void loadRanking(true));
+ box.querySelector('[data-cup-claim]')?.addEventListener('click',()=>void claimRank());
 }
 function applyState(r){
  const next=r?.state&&r.ok===false?r.state:r;if(!next?.ok)return false;
  const changed=S.state?.active!==next.active;S.state=next;S.lastError='';S.refreshes++;
- window.dispatchEvent(new CustomEvent('growlegends:runehunt-state',{detail:{...next}}));
+ window.dispatchEvent(new CustomEvent('growlegends:growcup-state',{detail:{...next}}));
  if(changed&&document.getElementById('world')?.classList.contains('active')){try{window.v085InstallWorld?.(true)}catch(_){}}
  return true;
 }
 async function refresh({paintNow=true}={}){
  if(!uid()||!db())return null;
- try{const r=await rpc('v8202_runehunt_state');applyState(r);if(paintNow&&S.opened)paint();return r}catch(e){S.lastError=String(e?.message||e);console.warn('[V8202] state',e);return null}
+ try{const r=await rpc('v8210_growcup_state');applyState(r);if(paintNow&&S.opened)paint();return r}
+ catch(e){S.lastError=String(e?.message||e);console.warn('[V8.210 Grow Cup] state',e);return null}
 }
-async function open(){S.opened=true;overlay().classList.add('show');paint();await refresh({paintNow:true})}
+async function loadRanking(force=false){
+ if(S.busy&&!force)return null;
+ try{const r=await rpc('v8210_growcup_leaderboard',{p_limit:100});if(r?.ok){S.ranking=r;if(S.opened&&S.view==='ranking')paint()}return r}
+ catch(e){S.lastError=String(e?.message||e);console.warn('[V8.210 Grow Cup] ranking',e);return null}
+}
+async function open(){S.opened=true;S.view='cup';overlay().classList.add('show');paint();await refresh({paintNow:true});void loadRanking()}
 async function start(){
  if(S.busy)return;S.busy=true;paint();
- try{const r=await rpc('v8202_runehunt_start',{p_request_id:rid('v8202_start')});if(r?.ok===false)throw new Error(String(r.reason||'START_REJECTED'));applyState(r);S.starts++}
- catch(e){S.lastError=String(e?.message||e);toast('Runenjagd','error',S.lastError)}
+ try{const r=await rpc('v8210_growcup_start',{p_request_id:rid('v8210_start')});if(r?.ok===false)throw new Error(String(r.reason||'START_REJECTED'));applyState(r);S.starts++;toast('Grow Cup gestartet','success',String(r?.run?.cup_seed||r?.cup_seed||'Cup-Pflanze'))}
+ catch(e){S.lastError=String(e?.message||e);toast('Grow Cup','error',S.lastError)}
  finally{S.busy=false;paint()}
 }
 async function choose(id){
- if(S.busy||S.walking||!id)return;
- const run=S.state?.run,doors=Array.isArray(run?.doors)?run.doors:[],picked=doors.find(d=>String(d?.id||'')===id);
- if(!picked)return;
- S.busy=true;
- S.walking=doors.length===1?'boss':(doors.indexOf(picked)===0?'left':'right');
- paint();
- try{
-  await sleep(motionMs());
-  const r=await rpc('v8202_runehunt_choose',{p_door_id:id,p_request_id:rid('v8202_door')});
-  if(r?.ok===false)throw new Error(String(r.reason||'DOOR_REJECTED'));
-  applyState(r);S.doors++;
- }catch(e){
-  S.lastError=String(e?.message||e);toast('Höhleneingang','error',S.lastError);
- }finally{
-  S.walking='';S.busy=false;paint();
- }
-}
-async function act(id){
  if(S.busy||!id)return;S.busy=true;paint();
- try{const r=await rpc('v8202_runehunt_action',{p_action:id,p_request_id:rid('v8202_action')});if(r?.ok===false)throw new Error(String(r.reason||'ACTION_REJECTED'));applyState(r);S.actions++;if(r?.run?.status==='completed')toast('Runenjagd abgeschlossen','success','Verzauberungsrune erhalten.');else if(r?.run?.status==='downed')toast('Runenleben aufgebraucht','warn','Der Run bleibt gespeichert.')}
- catch(e){S.lastError=String(e?.message||e);toast('Runenjagd','error',S.lastError)}
+ try{
+   const r=await rpc('v8210_growcup_choose',{p_choice_id:id,p_request_id:rid('v8210_choice')});
+   if(r?.ok===false)throw new Error(String(r.reason||'CHOICE_REJECTED'));
+   const before=S.state?.run?.status;applyState(r);S.choices++;
+   if(before!=='completed'&&r?.run?.status==='completed'){
+     toast('Grow Cup abgeschlossen','success','Jury-Wertung: '+Number(r.run.final_score||0).toFixed(2));
+     void loadRanking(true);
+   }
+ }catch(e){S.lastError=String(e?.message||e);toast('Grow Cup','error',S.lastError)}
  finally{S.busy=false;paint()}
 }
+async function claimRank(){
+ if(S.busy)return;S.busy=true;paint();
+ try{
+   const r=await rpc('v8210_growcup_claim_rank_reward',{p_request_id:rid('v8210_rank')});
+   if(r?.ok===false)throw new Error(String(r.reason||'CLAIM_REJECTED'));
+   toast('Cup-Rangbelohnung','success','Platz '+Number(r.rank||0)+' · +'+Number(r.runes_awarded||0)+' Runen · +'+Number(r.shards_awarded||0)+' Fragmente');
+   await refresh({paintNow:false});await loadRanking(true);
+ }catch(e){
+   const m=String(e?.message||e);toast('Rangbelohnung','info',m.includes('RANKING_NOT_FINAL')?'Die Rangliste ist erst nach Ende des Cups final.':m);
+ }finally{S.busy=false;paint()}
+}
 function key(e){if(e.key==='Escape'&&S.opened){e.preventDefault();close()}}
-window.v8198OpenRuneHunt=open;
-window.v8198RuneHuntRefresh=refresh;
-window.v8198RuneHuntSnapshot=()=>S.state?JSON.parse(JSON.stringify(S.state)):null;
-window.v8198RuneHuntClose=close;
-window.v8198RuneHuntDiagnostics=()=>({version:VERSION,busy:S.busy,walking:S.walking,opened:S.opened,refreshes:S.refreshes,starts:S.starts,doors:S.doors,actions:S.actions,lastError:S.lastError,state:S.state});
+window.v8210OpenGrowCup=open;
+window.v8210GrowCupRefresh=refresh;
+window.v8210GrowCupSnapshot=()=>S.state?JSON.parse(JSON.stringify(S.state)):null;
+window.v8210GrowCupClose=close;
+window.v8210GrowCupLeaderboard=loadRanking;
+window.v8210GrowCupDiagnostics=()=>({version:VERSION,busy:S.busy,opened:S.opened,view:S.view,refreshes:S.refreshes,starts:S.starts,choices:S.choices,lastError:S.lastError,state:S.state,ranking:S.ranking});
 window.addEventListener('keydown',key);
-window.addEventListener('growlegends:account-ready',()=>{S.state=null;void refresh({paintNow:false})},{passive:true});
+window.addEventListener('growlegends:account-ready',()=>{S.state=null;S.ranking=null;void refresh({paintNow:false})},{passive:true});
 window.addEventListener('pageshow',()=>setTimeout(()=>void refresh({paintNow:false}),500),{passive:true});
 window.addEventListener('growlegends:navigation-open-v7119',()=>{if(S.opened)close()},{passive:true});
 })();
