@@ -187,6 +187,12 @@ function markPublicVip(host,p){
  if(!host)return;
  const on=publicVipActive(p);
  host.classList.toggle('v8195-vip-public',on);
+ const name=host.querySelector?.('.v072-profile-name,.v646-row-name,.v652-profile-name,[class*="name"]');
+ if(name){
+  name.classList.toggle('v8195-vip-name',on);
+  name.querySelectorAll?.(':scope > .v8195-vip-badge')?.forEach?.(n=>n.remove());
+  if(on){const badge=document.createElement('span');badge.className='v8195-vip-badge';badge.textContent='VIP';name.appendChild(badge)}
+ }
 }
 async function decorateHallFrames(){
  applyOwnFrames();
