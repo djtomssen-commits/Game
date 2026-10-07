@@ -11892,3 +11892,69 @@ Aktueller Release-Status:
   6. Wenn HP 0 erreicht wird, 60-Minuten-Timer/Resume prüfen.
   7. später Raum 25/50/75 Paktauswahl und Raum 100 Endboss/Belohnung prüfen.
 
+### 2026-10-07 – V8.203 Runenjagd: Höhleneingänge + Kameragang (Beta)
+- Wegwahl der V8.202-Runenjagd visuell komplett umgestellt:
+  - keine Tür-Karten mehr;
+  - zwei echte Höhleneingänge nebeneinander in einer gemeinsamen Szene;
+  - Kamera steht frontal vor beiden Höhlen;
+  - auf Mobile bleiben beide Eingänge bewusst nebeneinander;
+  - Bossräume zeigen einen einzelnen großen Höhleneingang.
+- Höhlenvarianten:
+  - Wurzel;
+  - Glut;
+  - Nebel;
+  - Stein;
+  - Gold;
+  - Boss/Final.
+- Statusdarstellung bleibt erhalten:
+  - offen;
+  - versiegelt / Schlüssel nötig;
+  - verschüttet / nicht begehbar.
+- Kamerabewegung:
+  - Auswahl startet zuerst eine lokale Kameraanimation;
+  - gesamter Szenen-Layer fährt/zoomt zur gewählten Höhle;
+  - nicht gewählter Eingang dunkelt dabei deutlich ab;
+  - danach erst wird `public.v8202_runehunt_choose(...)` ausgeführt;
+  - dadurch springt der Encounter nicht sofort auf, sondern wirkt wie ein tatsächlicher Gang in die Höhle;
+  - prefers-reduced-motion reduziert die Übergangszeit stark.
+- Scene-Art:
+  - gemeinsame Höhlendecke;
+  - perspektivischer Boden/Fluchtpunkt;
+  - animierter Nebel;
+  - dunkle Höhlenmünder mit Tiefenlayer;
+  - Runenglyphen und unterschiedliche Lichtfarben je Höhlentyp;
+  - Kamera-Vignette verstärkt die Bewegung in den Eingang.
+- Owner-Prinzip:
+  - direkt im bestehenden Runenjagd-Client und Rune/Enchant-CSS geändert;
+  - alte `v8202-door*`-Kartendarstellung vollständig aus dem aktiven CSS entfernt;
+  - kein zusätzlicher Overlay-/MutationObserver-Patch.
+- Aktueller Tomssen-Testlauf bewusst nicht zurückgesetzt:
+  - status=active;
+  - Raum 4;
+  - HP 100;
+  - 0 Schlüssel;
+  - 3 Runenstaub;
+  - kein aktiver Encounter;
+  - 2 Höhleneingänge vorhanden.
+- QA:
+  - Runenjagd V8.203 JS Syntax: OK;
+  - CSS balanced 363/363;
+  - alte `v8202-door` CSS-Refs: 0;
+  - neue Cave-Refs aktiv;
+  - Beta-Refs jeweils exakt 1x.
+- Beta Cache:
+  - `js/features/events/beta/v8198-runehunt.js?v=8203caves2`;
+  - `css/features/forge/beta/v8198-rune-enchant.css?v=8203caves2`.
+- Commits:
+  - Cave Client: `5a702b40316d2230ac66944ea1cf2297b1256218`;
+  - Cave CSS: `f2dd2aadcd3b964d83b6c8ca655870260ca51ed0`;
+  - Camera Focus Polish: `96d8661fe3a687dec602bbb9e2e56a10e7c4f325`;
+  - finaler Cache-Bust: `3948d2f6ca6f839a3af6eba5f54812ae4e1fc5f6`;
+  - Matrix: `06c47c67c409144454c9cd939eabd57a4fa8b3ba`.
+- Manueller Test:
+  1. Beta komplett neu laden.
+  2. Runenjagd öffnen -> aktueller Raum 4.
+  3. Beide Höhleneingänge müssen nebeneinander sichtbar sein.
+  4. Eingang wählen -> Szene muss sichtbar zur gewählten Höhle fahren/zoomen.
+  5. Erst nach der Kamerafahrt darf der Encounter erscheinen.
+
