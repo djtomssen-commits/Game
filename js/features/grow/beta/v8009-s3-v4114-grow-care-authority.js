@@ -93,6 +93,9 @@
   persistCare();
   try{if(typeof renderGrow==='function')renderGrow()}catch(e){}
   queueMicrotask(()=>{syncLedger('post-action');decorateSlots()});
+  /* V8.191: local/offline care clears the Grow navigation badge immediately.
+     Server-authority care is covered centrally by the v7065 action owner. */
+  try{window.v4162PaintMenuAttentionLocal?.()}catch(e){}
   
   return true;
  }
