@@ -11451,3 +11451,123 @@ Aktueller Release-Status:
   - Cache-Bust: 644e0672c84adb3449bbef00c62af361c6e2140f.
 - Supabase Migration: `v8198_tomssen_runehunt_test_window`.
 
+### 2026-10-07 – V8.199 Runenjagd als High-End Raum-Expedition (Beta)
+- Die V8.198 Drei-Siegel-/Ein-Klick-Runenjagd wurde vollständig verworfen und direkt im bestehenden Runenjagd-Owner ersetzt.
+- Zielbild jetzt bewusst näher am Gefühl eines fortlaufenden Legendary-Dungeon-Runs, aber mit eigenständigen Grow-Legends-Regeln/Optik:
+  - 1 Expedition = 10 Räume;
+  - pro Raum zwei sichtbare Pforten;
+  - erst nach Öffnen der Pforte wird das eigentliche Raumereignis sichtbar;
+  - der Spieler muss das jeweilige Raumereignis aktiv abschließen, bevor es weitergeht;
+  - 5 Expeditionen pro Runenjagd-Event bleiben bestehen.
+- Keine zweite Turmstruktur:
+  - keine Etagen-/Tower-Lobby;
+  - kein frei wählbarer Schwierigkeitsgrad;
+  - kein „Gegner schwerer = mehr Beute“-System.
+- Neue Run-Ressourcen:
+  - Runenleben: 3;
+  - Runenschlüssel;
+  - Runenessenz;
+  - Raumfortschritt 1/10 bis 10/10.
+- Raumtypen serverseitig:
+  - Versiegelte Runentruhe;
+  - Schrein der Alten;
+  - Runenfalle;
+  - Flüsternde Glyphen / Runenrätsel;
+  - Schlüsselkammer;
+  - Echo des Nebels;
+  - seltene verschlossene Runenkammer;
+  - Raum 10 immer Runenheiligtum.
+- Beispielinteraktionen:
+  - Truhe: eines von drei Siegeln wählen;
+  - Schrein: Leben heilen oder Essenz binden;
+  - Falle: Schutzrune oder Durchbrechen;
+  - Glyphenraum: eine von drei Runen wählen;
+  - Schlüsselkammer: Schlüssel sichern oder Kern für Essenz brechen;
+  - Runenkammer: Schlüssel verbrauchen oder umgehen;
+  - Abschlussheiligtum: finalen Runenkern binden/freisetzen.
+- Serverseitige Zustandsmaschine:
+  - `recovery_private.v8199_runehunt_runs`;
+  - `recovery_private.v8199_runehunt_ledger`;
+  - private Helper `v8199_make_doors` + `v8199_public_state`;
+  - öffentliche authenticated RPCs:
+    - `public.v8199_runehunt_state()`;
+    - `public.v8199_runehunt_start(text)`;
+    - `public.v8199_runehunt_choose(text,text)`;
+    - `public.v8199_runehunt_action(text,text)`.
+- Authority / Anti-Dupe:
+  - Start/Tür/Aktion jeweils mit Request-ID idempotent;
+  - Runstatus, Leben, Schlüssel, Essenz und Raum werden ausschließlich serverseitig fortgeschrieben;
+  - geheime richtige Rune / sichere Fallenoption wird nicht an den Client ausgegeben;
+  - Start eines Runs verbraucht genau 1 der 5 Expeditionen;
+  - Türwahl und Raumaktionen verbrauchen keinen weiteren Run;
+  - laufender Run wird beim Schließen nicht verworfen und kann später fortgesetzt werden.
+- Run-Ende:
+  - bei 0 Runenleben endet die Expedition früh;
+  - bereits gesicherte kleine Splitterbelohnung bleibt erhalten;
+  - nach Raum 10 Abschlussbelohnung auf Basis der gesammelten Essenz;
+  - direkte komplette Verzauberungsrune bleibt selten (6 %);
+  - der bisherige +3-Splitter-Abschlussbonus des fünften Runs bleibt erhalten.
+- High-End Client/UI:
+  - bisheriges Overlay deckt die globale Topbar nicht mehr ab;
+  - globale v372-Topbar bleibt sichtbar;
+  - zusätzlich eigener Expeditionsheader mit Zurück- und X-Button;
+  - Navigation über die globale Topbar schließt die Runenjagd sauber;
+  - Escape schließt ebenfalls;
+  - Vollbild-Expedition beginnt unterhalb der Topbar.
+- High-End Raumdarstellung:
+  - Smaragd-/Wurzelpforte, Glutportal und Nebelbogen mit unterschiedlichen Farbräumen;
+  - massive animierte Pforten statt einfacher Buttons;
+  - rotierende Runensiegel, Tiefennebel, Lichtkegel/Glow, Raumfortschrittsleiste;
+  - eigener HUD für Leben, Schlüssel, Essenz und Raum;
+  - Raumereignisse besitzen eigene große Fokusdarstellung + eigenständige Aktionskarten;
+  - Abschlussraum mit eigener Runenheiligtum-Inszenierung und Belohnungsansicht;
+  - responsive Mobile-Ansicht und prefers-reduced-motion berücksichtigt.
+- Legacy-Aufräumen:
+  - alte Drei-Siegel-Runenjagd-UI aus `js/features/events/beta/v8198-runehunt.js` entfernt;
+  - alte Drei-Siegel-CSS direkt aus dem aktiven Rune/Enchant-CSS-Owner entfernt;
+  - keine zusätzliche Overlay-/Renderer-Patchschicht.
+- Beta Cache:
+  - `js/features/events/beta/v8198-runehunt.js?v=8199exp1`;
+  - `css/features/forge/beta/v8198-rune-enchant.css?v=8199exp1`.
+- SQL-Artefakt:
+  - `V8199_RUNEHUNT_EXPEDITIONS.sql`;
+  - vollständiger Transaktions-Parse gegen Beta-DB: OK.
+- Supabase Migration:
+  - `v8199_runehunt_room_expeditions`.
+- Server-QA:
+  - kompletter 10-Raum-Run in Rollback-Transaktion durchgespielt;
+  - Start -> Tür -> Raumaktion über alle 10 Räume erfolgreich;
+  - Ergebnis QA: status=completed, room_no=10, Runenleben noch aktiv, runs_used=1, runs_left=4;
+  - damit bestätigt: ein kompletter 10-Raum-Run verbraucht nur 1 Expedition.
+- Security-QA:
+  - direkte anon/authenticated Grants auf den neuen privaten Tabellen: 0;
+  - anon EXECUTE auf den vier V8.199 Spieler-RPCs: 0;
+  - authenticated EXECUTE auf allen vier RPCs: 4/4;
+  - Advisor zeigt bei den neuen privaten Tabellen nur das erwartete RLS-enabled/no-policy INFO, weil direkter Tabellenzugriff absichtlich gesperrt ist;
+  - kein neuer V8.199 Performance-Advisor.
+- Client-QA:
+  - Runenjagd-JS Syntax: OK;
+  - Rune/Enchant-CSS Klammern: 329/329, balanced;
+  - beide V8.199 Beta-Refs exakt 1x in beta.html.
+- Tomssen Beta-Testaccount nach dem Umbau frisch gesetzt:
+  - Runenjagd active=true über den bestehenden zeitlich begrenzten Testzugang;
+  - 5/5 Expeditionen frei;
+  - kein laufender V8.199-Run;
+  - 25 Verzauberungsrunen;
+  - 30 Runensplitter.
+- Relevante Commits:
+  - High-End Runenjagd-Client: f152b1006e914252f0e573b3fa92afc39c9a1123;
+  - High-End Expeditions-CSS: e15fd8a252b27b38332260ed1bb136c50ec3e216;
+  - Legacy Drei-Siegel-CSS entfernt: 945ac1abe8368503900590832897963cb5f0d341;
+  - Beta Cache-Wiring: a74804d0f361d440f9ea642bd5e37f429303da25;
+  - SQL-Snapshot: 0be02d16a80dcc9595bef311932607321f65e3c1;
+  - Matrix: fefd70034f1cde6cfae68bffa79bccca8ff93462.
+- Manueller Beta-Test jetzt:
+  1. Beta komplett neu laden.
+  2. Startseite -> aktives Runentor öffnen.
+  3. Prüfen, dass die globale Topbar sichtbar bleibt und Zurück/X funktionieren.
+  4. Expedition starten: 1/5 wird verbraucht.
+  5. Durch mehrere Räume gehen, unterschiedliche Pforten/Ereignisse testen.
+  6. Run schließen und erneut öffnen: derselbe Raum/Run muss fortgesetzt werden.
+  7. Einen vollständigen 10-Raum-Run abschließen und Belohnungsfenster prüfen.
+
