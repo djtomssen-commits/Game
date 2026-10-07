@@ -95,7 +95,7 @@
     try{if(typeof v274GoldEventActive==='function'&&v274GoldEventActive())a.push({c:'gold',t:'💰 GOLD EVENT',s:'2× Gold-Belohnungen aktiv'})}catch(e){}
     try{if(typeof v271DampfEventActive==='function'&&v271DampfEventActive())a.push({c:'',t:'🔥 DAMPF EVENT',s:'200 Dampf gratis · mit Harz bis 300'})}catch(e){}
     if(bossActive)a.push({c:'cyan',t:'💠 SMARAGD KOLOSS',s:'Donnerstags-Weltboss aktiv!'});
-    if(growCupEventActive())a.push({c:'gold',t:'🏆 GROW CUP',s:'Cup-Bühne offen · 6 Stunden · Pflegefenster'});
+    if(growCupEventActive())a.push({c:'gold',t:'🏆 GROW CUP',s:'Cup-Bühne offen · 6 Aktionen · 600 Punkte'});
     return a.slice(0,6);
   }
 
@@ -142,7 +142,7 @@
           <h2>Grow Cup</h2>
           <div class="v8210-home-cup-art" aria-hidden="true"><span class="v8210-home-live">EVENT AKTIV</span></div>
           <div class="v6118-boss-name">Die Cup-Bühne ist geöffnet</div>
-          <div class="v690-mini-status">6 Stunden · 6 Pflegefenster · Verzauberungsrunen</div>
+          <div class="v690-mini-status">6 Aktionen · 600 Punkte · Verzauberungsrunen</div>
           <button class="v366-go" data-growcup="1">Grow Cup öffnen</button>
         </article>`;
   }
