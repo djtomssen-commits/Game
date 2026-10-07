@@ -95,7 +95,7 @@
     try{if(typeof v274GoldEventActive==='function'&&v274GoldEventActive())a.push({c:'gold',t:'💰 GOLD EVENT',s:'2× Gold-Belohnungen aktiv'})}catch(e){}
     try{if(typeof v271DampfEventActive==='function'&&v271DampfEventActive())a.push({c:'',t:'🔥 DAMPF EVENT',s:'200 Dampf gratis · mit Harz bis 300'})}catch(e){}
     if(bossActive)a.push({c:'cyan',t:'💠 SMARAGD KOLOSS',s:'Donnerstags-Weltboss aktiv!'});
-    if(runeHuntEventActive())a.push({c:'green',t:'ᚱ RUNENJAGD',s:'Runentor offen · 5 Expeditionen'});
+    if(runeHuntEventActive())a.push({c:'green',t:'ᚱ RUNENJAGD',s:'Runentor offen · 100-Raum-Run'});
     return a.slice(0,6);
   }
 
@@ -142,7 +142,7 @@
           <h2>Runenjagd</h2>
           <div class="v8198-home-portal" aria-hidden="true"><span class="v8198-home-live">EVENT AKTIV</span><i>ᚱ</i></div>
           <div class="v6118-boss-name">Das Runentor ist offen</div>
-          <div class="v690-mini-status">5 Expeditionen · seltene Verzauberungsrunen</div>
+          <div class="v690-mini-status">100 Räume · Endboss gibt 1 Verzauberungsrune</div>
           <button class="v366-go" data-runehunt="1">Runenjagd öffnen</button>
         </article>`;
   }
@@ -267,7 +267,7 @@
 
     const gi=goal.querySelector('i'),gb=goal.querySelector('b'),gs=goal.querySelector('span');
     if(runeActive){
-      if(gi)gi.textContent='ᚱ';if(gb)gb.textContent='Runenjagd';if(gs)gs.textContent='Offen · 5 Expeditionen';
+      if(gi)gi.textContent='ᚱ';if(gb)gb.textContent='Runenjagd';if(gs)gs.textContent='Offen · 100 Räume';
     }else{
       if(gi)gi.textContent='💎';if(gb)gb.textContent='Koloss';if(gs)gs.textContent=bossActive?(bossFreeReady?'Offen · Gratis':'Offen · 10 Harz'):'Donnerstags';
     }
@@ -448,7 +448,7 @@
         <article class="v366-panel v690-goals-panel"><div class="v366-goals-title">Tagesziele</div><div class="v366-goals">
           <div class="v366-goal"><i>📜</i><div><b>Erste Quest</b><span>${firstQuestReady?'+2 Harz':'Erledigt ✓'}</span></div></div>
           <div class="v366-goal"><i>⚔️</i><div><b>Dungeon</b><span>${dungeonFreeReady?'Bereit':'Cooldown'}</span></div></div>
-          <div class="v366-goal"><i>${runeActive?'ᚱ':'💎'}</i><div><b>${runeActive?'Runenjagd':'Koloss'}</b><span>${runeActive?'Offen · 5 Expeditionen':(bossActive?(bossFreeReady?'Offen · Gratis':'Offen · 10 Harz'):'Donnerstags')}</span></div></div>
+          <div class="v366-goal"><i>${runeActive?'ᚱ':'💎'}</i><div><b>${runeActive?'Runenjagd':'Koloss'}</b><span>${runeActive?'Offen · 100 Räume':(bossActive?(bossFreeReady?'Offen · Gratis':'Offen · 10 Harz'):'Donnerstags')}</span></div></div>
           <div class="v366-goal"><i>⭐</i><div><b>Erfolge</b><span>${ac.done}/${ac.total||'—'}</span></div></div>
         </div></article>
 
@@ -634,7 +634,7 @@
     notifyWorldRendered('full');
   }
 
-  window.v8009HomeEventDiagnostics=()=>({version:'V8.198-HOME-RUNES',...diagnostics,events:events().map(x=>({...x})),worldBossActive:worldBossEventActive(),runeHuntActive:runeHuntEventActive()});
+  window.v8009HomeEventDiagnostics=()=>({version:'V8.202-HOME-RUNES',...diagnostics,events:events().map(x=>({...x})),worldBossActive:worldBossEventActive(),runeHuntActive:runeHuntEventActive()});
 
   /* Re-own only the world installer; do not touch core game render/persist. */
   v085WorldHtml=worldHtml;
