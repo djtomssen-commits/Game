@@ -10718,3 +10718,24 @@ Aktueller Release-Status:
   - 20–30 Sekunden beobachten;
   - zwischen Overview/Boss/Krieg und zurück wechseln;
   - keine sichtbaren Rebuilds/Flashes mehr erwartet.
+
+
+### 2026-10-07 – V8.187 Server 1 auf aktuellen Nicht-Balance-Stand aktualisiert
+- Nutzerfreigabe: **Server 1 aktualisieren, Klassenbalance ausdrücklich ausnehmen.**
+- Ausgangspunkt für die Promotion war der letzte große Nicht-Balance-Sync vom 06.10.2026 (`6246a150403d9e625188f95fef70eb1c32ce8807`).
+- Seit diesem Stand wurden 59 Repo-Dateien verändert; davon sind 47 aktuelle JS/CSS-Assets direkt in `server1.html` geladen und gehören zum Nicht-Balance-Delta.
+- Diese 47 Nicht-Balance-Assets wurden in `server1.html` auf den einheitlichen Cache-Key `8187s1sync1` gesetzt, damit Server-1-Clients garantiert den aktuellen Stand laden.
+- Enthalten sind u. a.: Attribut-/Item-Authority-Stabilisierung bis V8.183; aktuelle i18n-Fixes; Hall of Haze Gildenranking/Gildenprofil/Beitrittsanfrage V8.184–V8.185; Gilden-Overview Flicker-Fix V8.186; aktuelle Account-/Navigation-/Grow-/Dungeon-/Tower-/Quest-/Authority-Fixes.
+- Klassenbalance wurde **nicht promoted**:
+  - `v8009-s1-v319-exact-talents-dungeon-balance.js`
+  - `v8009-s1-v318-talent-combat-complete.js`
+  - `v8009-s1-v6287-harzruferin.js`
+  - `v8009-s2-v4156-class-identity-balance.js`
+- Verifikation:
+  - 47/47 gewünschte Nicht-Balance-Referenzen besitzen `?v=8187s1sync1`;
+  - keiner der vier Klassenbalance-Owner besitzt diesen Sync-Key;
+  - `js/features/account/server1-release-channel.js` lädt weiterhin vor den Balance-Ownern;
+  - Release-Channel bestätigt: `window.GROW_RELEASE_CHANNEL='server1'`;
+  - damit bleiben die bisherigen Server-1-Klassenwerte aktiv.
+- Backend: V8.184 Hall/Gilden-RPCs und Gildenbeschreibung waren bereits getrennt für `public` und `server1` ausgerollt; kein zusätzlicher Backend-Promotion-Schritt nötig.
+- Server-1-Promotion-Commit: `66a443d3a67eb97a89cbb625407a69464206ebf7`.
