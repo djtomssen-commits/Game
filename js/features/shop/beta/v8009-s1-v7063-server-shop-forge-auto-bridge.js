@@ -237,11 +237,16 @@
       p_kind:kind,
       p_request_id:req('v7083_refresh')
     });
-    toast(
-      kind==='weapon'?'⚔️ Waffenhändler neu gewürfelt':'💎 Schmuckhändler neu gewürfelt',
-      'success',
-      `Harz-Taler: ${Number(r.harz)||0}`
-    );
+    if(r?.vip_free_reroll_used){
+      toast('👑 VIP-Freiwurf','success',kind==='weapon'?'Waffen & Rüstung gratis neu gewürfelt.':'Schmuck & Materialien gratis neu gewürfelt.');
+    }else{
+      toast(
+        kind==='weapon'?'⚔️ Waffenhändler neu gewürfelt':'💎 Schmuckhändler neu gewürfelt',
+        'success',
+        `Harz-Taler: ${Number(r.harz)||0}`
+      );
+    }
+    try{void window.v8195VipRefresh?.(true)}catch(_){}
     return true;
    }catch(e){
     S.lastError=String(e?.message||e);
