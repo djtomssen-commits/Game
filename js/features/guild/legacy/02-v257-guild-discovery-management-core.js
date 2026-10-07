@@ -112,7 +112,25 @@ async function v257HandleRequest(requestId,accept){
 function v257RenderManagement(){
   const box=document.querySelector('#v257GuildManagement');
   if(!box)return;
-  if(!v254Guild||!v254Membership){box.innerHTML='';return}
+  if(!v254Guild||!v254Membership){
+    if(box.innerHTML)box.innerHTML='';
+    box.dataset.v8186Sig='';
+    return;
+  }
+
+  /* V8.186: do not destroy/recreate the management subtree when the
+     authoritative guild state is unchanged. The V8 owner mounts stable
+     controls (description/member picker) inside this box. */
+  const v8186MgmtSig=[
+    v254Guild?.id||'',
+    v254Membership?.role||'',
+    ...(Array.isArray(v254Members)?v254Members:[]).map(m=>{
+      const p=m?.profile||{};
+      return [m?.user_id||'',m?.role||'',p?.character_name||'',Number(p?.level)||1].join(':');
+    })
+  ].join('|');
+  if(box.dataset.v8186Sig===v8186MgmtSig)return;
+  box.dataset.v8186Sig=v8186MgmtSig;
 
   if(v257IsLeader()){
     const others=v254Members.filter(m=>m.user_id!==v073User?.id);
