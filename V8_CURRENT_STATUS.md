@@ -10812,3 +10812,31 @@ Aktueller Release-Status:
 - Voraussetzung damit dokumentiert:
   - Quest-Rewarded-Zeitbonus benötigt Android-App **>= 1.0.8** mit aktuellem GrowLegendsAds-Bridge-Stand.
 - V8.188 damit auf echtem Gerät **manuell bestätigt**.
+
+
+### 2026-10-07 – V8.189 Server 1: Rewarded Quest-Video freigegeben, Klassenbalance unverändert
+- Nutzerfreigabe: aktuellen Nicht-Balance-Stand auf Server 1 übernehmen, Klassenbalance ausdrücklich ausnehmen.
+- Seit V8.187 bestand als neues funktionales Delta im Wesentlichen V8.188: Rewarded Video für 25 % Questzeit.
+- Server-1-Voraussetzungen vor Freigabe verifiziert:
+  - `server1.v8188_quest_rewarded_apply_verified` vorhanden;
+  - EXECUTE: service_role=true, authenticated=false, anon=false;
+  - `server1.ad_bag_settings`: enabled=true, mode=production, gleiche aktive Rewarded-Ad-Unit wie Beta;
+  - Edge Function `admob-rewarded-ssv` Version 4 aktiv;
+  - SSV routet `growlegends_quest25_v1:server1` in das `server1`-Schema und auf `v8188_quest_rewarded_apply_verified`.
+- Client-Freigabe:
+  - bisherigen V8.188 Server-1-Guard im kanonischen `v4127-quest-skip-stable.js` entfernt;
+  - Rewarded Quest-Zeitbonus ist damit auf Beta und Server 1 aktiv;
+  - Server 1 verwendet weiterhin eigenes Custom Data `growlegends_quest25_v1:server1`.
+- `server1.html` lädt aktuellen Stand mit Cache-Key `8189s1questvideo1` für:
+  - `v4127-quest-skip-stable.js`;
+  - `v8009-extracted-v4127-quest-skip-stable-css.css`;
+  - `v8144-i18n-gameplay.js`.
+- Verifikation:
+  - Quest-Owner Syntax: OK;
+  - 3/3 Server-1 Quest-/i18n-Referenzen besitzen den neuen Cache-Key;
+  - `server1-release-channel.js` lädt weiterhin vor der Klassenbalance;
+  - Balance-Owner `v319`, `v318`, `v6287`, `v4156` wurden nicht angefasst und besitzen keinen V8.189-Sync-Key;
+  - Server-1-Klassenbalance bleibt damit unverändert.
+- Commits:
+  - Quest-Owner Freigabe: `b0f9560517bc92b632e6314095513b54332004c4`;
+  - Server1 Wiring/Cache: `9916c041cabc6c271d3e0fceaa40f55abcfb6d64`.
