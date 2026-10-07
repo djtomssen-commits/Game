@@ -10631,3 +10631,30 @@ Aktueller Release-Status:
   5. Gilde anklicken → Profil/Stats/Beschreibung prüfen;
   6. als Gildenleiter auf Gildenseite Beschreibung speichern;
   7. Hall erneut öffnen und kontrollieren, ob Beschreibung im öffentlichen Gildenprofil erscheint.
+
+
+### 2026-10-07 – V8.184 Hotfix: Gildenrangliste 403 behoben
+- Nutzer meldete nach V8.184: **„Gildenrangliste konnte nicht geladen werden“**.
+- Supabase Edge-Log bestätigte den echten Client-Aufruf:
+  - `POST /rest/v1/rpc/v8184_hall_guild_ranking`
+  - HTTP **403**.
+- PostgreSQL-Log lieferte Root Cause:
+  - `permission denied for function v7273_guild_level_for_xp`
+  - SQLSTATE `42501`.
+- Ursache:
+  - V8.184 Ranking/Profile-RPCs laufen absichtlich als `SECURITY INVOKER`;
+  - sie riefen intern den bestehenden Helper `v7273_guild_level_for_xp()` auf;
+  - normale `authenticated`-Spieler besitzen dafür kein EXECUTE-Recht;
+  - deshalb scheiterte der neue Hall-RPC trotz korrekter eigener RPC-Berechtigung.
+- Sauberer Fix ohne zusätzliche Rechte auf Legacy-Helper:
+  - Abhängigkeit von `v7273_guild_level_for_xp()` vollständig aus den V8.184 Ranking/Profile-RPCs entfernt;
+  - Gildenlevel-Berechnung mit derselben bestehenden XP-Schwellenlogik direkt in V8.184 gekapselt;
+  - Beta und Server 1 entsprechend aktualisiert;
+  - PostgREST Schema-Reload ausgelöst.
+- Verifikation:
+  - `public.v8184_hall_guild_ranking(0,10)` mit simuliertem `authenticated`-Kontext: **OK**;
+  - `public.v8184_hall_guild_profile(...)`: **OK**;
+  - Ranking liefert weiterhin Buds Krieger Rang 1 / Nachtkrieger Rang 2;
+  - keine Erweiterung der Rechte auf `v7273_guild_level_for_xp()`.
+- Repo-Vertrag `V8184_HALL_GUILD_RANKING.sql` auf denselben Stand gebracht.
+- Kein Frontend-Patch nötig; Fehler lag ausschließlich in der RPC-Abhängigkeit.
