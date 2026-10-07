@@ -108,3 +108,24 @@
 @media(prefers-reduced-motion:reduce){
  .v8198-item-fx,.v8198-item-fx:before,.v8198-item-fx:after,.v8198-enchant-rune-ring,.v8198-portal-ring,.v8198-portal-core span,.v8198-sigil:before,.v8198-home-portal:before,.v8198-home-portal:after,.v8198-home-portal>i{animation:none!important}
 }
+
+
+/* V8.198: event strip now has six canonical tiles. */
+#world.active > .v366-world > .v690-events-card .vHome-events-collage{
+  grid-template-columns:repeat(6,minmax(0,1fr))!important;
+}
+#world.active .vHome-event-tile.rune{
+  background:
+    radial-gradient(circle at 50% 34%,rgba(117,255,225,.50),transparent 18%),
+    radial-gradient(circle at 50% 42%,rgba(124,93,255,.45),transparent 45%),
+    linear-gradient(160deg,#18372f,#080d0c)!important;
+}
+#world.active .vHome-event-tile.rune .vHome-event-tile-icon{
+  color:#caffef!important;
+  text-shadow:0 0 7px #fff,0 0 14px #65ffda!important;
+}
+@media(max-width:430px){
+ #world.active > .v366-world > .v690-events-card .vHome-events-collage{
+   grid-template-columns:repeat(6,minmax(0,1fr))!important;
+ }
+}
