@@ -105,7 +105,7 @@
   function growCupEventActive(){
     try{
       const serverState=window.v8210GrowCupSnapshot?.();
-      if(serverState&&serverState.active===true)return true;
+      if(serverState&&(serverState.active===true||serverState.run?.status==='active'))return true;
       return typeof window.v8210GrowCupEventActive==='function'&&window.v8210GrowCupEventActive();
     }catch(e){return false}
   }
