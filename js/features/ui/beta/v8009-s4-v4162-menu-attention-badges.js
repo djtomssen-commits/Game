@@ -4,7 +4,7 @@
  window.__v4162MenuAttentionInstalled=true;
 
  const remote={friends:0,mail:0,guild:0,pvpMs:null,pvpKnown:false,lastAt:0,busy:false};
- let observer=null,paintQueued=false;
+ let observer=null,paintQueued=false,deadlineTimer=0;
 
  function num(v){v=Number(v);return Number.isFinite(v)?v:0}
  function menu(){return document.getElementById('v032MenuPanel')}
@@ -123,6 +123,57 @@
   }catch(e){return 0}
  }
 
+ function menuOpen(){
+  const panel=menu();
+  return !!panel&&(panel.classList.contains('open')||panel.classList.contains('show'));
+ }
+ function nextLocalDeadline(){
+  const now=Date.now(),times=[];
+  try{
+   const q=s?.quests?.active,ends=num(q?.ends);
+   if(ends>now)times.push(ends);
+  }catch(e){}
+  try{
+   const last=num(s?.dungeonPass?.lastFree);
+   const at=last>0?last+3600000:0;
+   if(at>now)times.push(at);
+  }catch(e){}
+  try{
+   let ms=0;
+   if(typeof v204CooldownLeft!=='undefined'&&num(v204CooldownLeft)>0)ms=num(v204CooldownLeft);
+   else if(remote.pvpKnown&&num(remote.pvpMs)>0)ms=num(remote.pvpMs);
+   else if(typeof v210NotifyState!=='undefined'&&v210NotifyState?.pvpKnown){
+    const base=Math.max(0,num(v210NotifyState.pvpRemaining));
+    const at=num(v210NotifyState.pvpLocalAt)||now;
+    ms=Math.max(0,base-(now-at));
+   }
+   if(ms>0)times.push(now+ms);
+  }catch(e){}
+  try{
+   const plants=Array.isArray(s?.grow?.plants)?s.grow.plants.filter(Boolean):[];
+   const marks=[.20,.45,.70,.88,1];
+   for(const p of plants){
+    const start=num(p?.start),duration=Math.max(0,num(p?.duration));
+    if(!start||!duration)continue;
+    for(const m of marks){
+     const at=start+duration*m;
+     if(at>now){times.push(at);break}
+    }
+   }
+  }catch(e){}
+  return times.length?Math.min(...times):0;
+ }
+ function scheduleDeadlinePaint(){
+  clearTimeout(deadlineTimer);deadlineTimer=0;
+  if(!menuOpen())return;
+  const at=nextLocalDeadline();if(!at)return;
+  const delay=Math.max(20,Math.min(2147483000,at-Date.now()+35));
+  deadlineTimer=setTimeout(()=>{
+   deadlineTimer=0;
+   if(!document.hidden&&menuOpen())paint();
+  },delay);
+ }
+
  function paint(){
   paintQueued=false;
   const panel=menu();if(!panel)return;
@@ -142,6 +193,7 @@
   setBadge('mail',mailCount,mailCount?`${mailCount} ungelesene Nachricht${mailCount===1?'':'en'}`:'',true);
   setBadge('guild',guildCount||gd.on,guildCount?`${guildCount} offene Gildenanfrage${guildCount===1?'':'n'}`:gd.chat?'Neue Gildenchat-Nachricht':gd.war?'Neue Gildenkrieg-Aktion':'',true);
   setBadge('world',dailyDue()||worldBossReady(),dailyDue()?'Tagesbelohnung verfügbar':worldBossReady()?'Kostenloser Eventboss-Versuch bereit':'',false);
+  scheduleDeadlinePaint();
  }
  function queuePaint(){
   if(paintQueued)return;paintQueued=true;
@@ -238,17 +290,13 @@
  window.addEventListener('pageshow',()=>{observeMenu();queuePaint();setTimeout(()=>remoteRefresh(false),200)},{passive:true});
  document.addEventListener('visibilitychange',()=>{if(!document.hidden){observeMenu();queuePaint();setTimeout(()=>remoteRefresh(false),250)}},{passive:true});
 
- /* One cheap fallback while the hamburger is actually open. Opening the menu
-    already paints immediately, so closed menus need no 5 s repaint loop. */
- setInterval(()=>{
-  if(document.hidden)return;
-  const panel=menu();
-  if(!panel?.classList.contains('open'))return;
-  observeMenu();paint();void remoteRefresh(false);
- },15000);
+ /* V8.189: time-based gameplay badges are deadline-driven instead of waiting
+    up to 15 seconds. Remote/social data still refreshes on explicit lifecycle
+    events and menu open; no gameplay polling loop is needed here. */
+ window.addEventListener('growlegends:navigation-open-v7119',()=>{observeMenu();queuePaint()},{passive:true});
 
  observeMenu();queuePaint();setTimeout(()=>{if(!window.v7206StartupBusy?.())void remoteRefresh(false)},1800);
  window.v4162PaintMenuAttentionLocal=()=>{observeMenu();paint();return true};
  window.v4162RefreshMenuAttention=()=>{observeMenu();paint();return remoteRefresh(true)};
- window.__V7192_UI_LATENCY__=Object.freeze({menuRemoteFanout:'scoped',menuFallbackMs:15000,pvpCooldownSource:'shared-v210-cache',combatQaOwner:'v7175',growLegacyTick:'ui-only-on-authority',shiftTicker:'visible-only',towerTicker:'active-only',guildFirstPaint:'core-first',guildMetaRefresh:'deferred-parallel',persistWholeSave:'single-checkpoint-write'});
+ window.__V7192_UI_LATENCY__=Object.freeze({menuRemoteFanout:'scoped',menuFallbackMs:0,menuGameplayBadges:'deadline-driven',pvpCooldownSource:'shared-v210-cache',combatQaOwner:'v7175',growLegacyTick:'ui-only-on-authority',shiftTicker:'visible-only',towerTicker:'active-only',guildFirstPaint:'core-first',guildMetaRefresh:'deferred-parallel',persistWholeSave:'single-checkpoint-write'});
 })();
