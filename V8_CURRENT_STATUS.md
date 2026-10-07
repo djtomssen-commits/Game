@@ -11980,3 +11980,25 @@ Aktueller Release-Status:
   - Frame alignment: `5e84d9e3cbe016bb93dbb0647c6a53a235ead0df`;
   - Cache bust: `17147bdf3e900d4d42f1ef89c40f873d35ff8bcd`.
 
+### 2026-10-07 – V8.205 VIP-/Legenden-Bund Rahmen auf Standardgröße (Beta)
+- Wunsch: VIP-Kronenrahmen und Legenden-Bund auf exakt dieselbe Größe wie die übrigen Character-Rahmen setzen.
+- Vorherige Sondergeometrie (122 % bzw. Mobile 120 %) entfernt.
+- Beide Rahmen verwenden jetzt wieder die kanonische Character-Rahmen-Geometrie aller anderen Rahmen:
+  - left -18 %;
+  - top -24 %;
+  - width 136 %;
+  - height 148 %;
+  - object-fit fill.
+- `.v510-portrait{overflow:visible}` bleibt erhalten, damit Krone/Außendetails nicht abgeschnitten werden.
+- Keine eigene VIP-/Referral-Größenregel mehr aktiv.
+- QA:
+  - CSS balanced;
+  - Standard-Geometrie vorhanden;
+  - keine alte 120/122/114/116-% Sondergröße mehr;
+  - Beta-Cache-Ref exakt 1x.
+- Beta Cache:
+  - `v8009-extracted-v7140-avatar-frame-assets-css.css?v=8205framesize1`.
+- Commits:
+  - Standardgröße: `91d6cf4c2c591347eefe922ec3d3129ecee472ed`;
+  - Cache-Bust: `1dcf72b9102a9abb598a3545e0b3382662998046`.
+
