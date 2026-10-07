@@ -73,6 +73,46 @@
     if(management.parentElement!==grid)grid.appendChild(management);
   }
 
+  function installGuildDescriptionEditor(){
+    const st=readState();
+    const box=document.getElementById('v257GuildManagement');
+    if(!box||!st.guild||!st.membership)return;
+    box.querySelector('.v8184-description-editor')?.remove();
+    const isLeader=String(st.membership?.role||'')==='leader';
+    if(!isLeader)return;
+
+    const wrap=document.createElement('div');
+    wrap.className='v8184-description-editor';
+    const current=String(st.guild?.description||'').slice(0,300);
+    wrap.innerHTML=`<div class="v554-member-admin-title">📝 Gildenbeschreibung</div>
+      <textarea class="v8184-description-input" maxlength="300" rows="4" placeholder="Beschreibe eure Gilde, Spielstil oder Anforderungen.">${esc(current)}</textarea>
+      <div class="v8184-description-actions"><small><span class="v8184-description-count">${current.length}</span>/300 Zeichen</small><button type="button" class="v8184-description-save">Speichern</button></div>`;
+    box.prepend(wrap);
+
+    const input=wrap.querySelector('.v8184-description-input');
+    const count=wrap.querySelector('.v8184-description-count');
+    input?.addEventListener('input',()=>{if(count)count.textContent=String(Math.min(300,String(input.value||'').length))});
+    wrap.querySelector('.v8184-description-save')?.addEventListener('click',async()=>{
+      const btn=wrap.querySelector('.v8184-description-save');
+      const value=String(input?.value||'').trim().slice(0,300);
+      const mod=window.v7185Moderation?.check?.(value,'guild_description');
+      if(mod?.blocked)return window.v063Toast?.('Beschreibung nicht zulässig','warn',mod.message||'Bitte formuliere die Beschreibung anders.');
+      if(!v073Db||!v073User?.id)return window.v063Toast?.('Gildenbeschreibung','warn','Online-Verbindung nicht verfügbar.');
+      if(btn)btn.disabled=true;
+      try{
+        const {data,error}=await v073Db.rpc('v8184_set_guild_description',{p_description:value});
+        if(error)throw error;
+        if(st.guild)st.guild.description=String(data?.description??value);
+        window.v063Toast?.('Gildenbeschreibung gespeichert','success','Die Beschreibung ist jetzt im öffentlichen Gildenprofil sichtbar.');
+      }catch(e){
+        console.error('V8.184 guild description save',e);
+        window.v063Toast?.('Speichern fehlgeschlagen','error',String(e?.message||'Gildenbeschreibung konnte nicht gespeichert werden.'));
+      }finally{
+        if(btn)btn.disabled=false;
+      }
+    });
+  }
+
   function installManagementPicker(){
     const st=readState();
     const box=document.getElementById('v257GuildManagement');if(!box||!st.guild||!st.membership)return;
@@ -157,7 +197,7 @@
     document.querySelectorAll('#guild .v257-member-actions').forEach(x=>x.style.display='none');
   }
 
-  function paint(){renderTop();pairAdmin();installManagementPicker();ensureGuildProgress();syncEmptyRequests();cleanLegacy();document.querySelectorAll('#guild #v257RequestsCard .v380-request-note').forEach(x=>x.style.display='none')}
+  function paint(){renderTop();pairAdmin();installGuildDescriptionEditor();installManagementPicker();ensureGuildProgress();syncEmptyRequests();cleanLegacy();document.querySelectorAll('#guild #v257RequestsCard .v380-request-note').forEach(x=>x.style.display='none')}
   installMemberRenderer();
 
   if(typeof v254RenderGuild==='function'&&!window.__v554GuildWrapped){
@@ -176,7 +216,7 @@
   }
   if(typeof v257RenderManagement==='function'&&!window.__v554GuildMgmtWrapped){
     const base=v257RenderManagement;
-    v257RenderManagement=function(){const r=base.apply(this,arguments);installManagementPicker();cleanLegacy();return r};
+    v257RenderManagement=function(){const r=base.apply(this,arguments);installGuildDescriptionEditor();installManagementPicker();cleanLegacy();return r};
     try{window.v257RenderManagement=v257RenderManagement}catch(e){}
     window.__v554GuildMgmtWrapped=true;
   }
