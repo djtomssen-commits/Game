@@ -105,6 +105,7 @@ const V7139_FRAME_ASSETS=Object.freeze({
  ironwood:'assets/avatar_frames/ironwood.png',
  silver_vine:'assets/avatar_frames/silver_vine.png',
  gold_crown:'assets/avatar_frames/gold_crown.png',
+ vip_crown:'assets/avatar_frames/gold_crown.png',
  emerald_aura:'assets/avatar_frames/emerald_aura.png',
  haze_ring:'assets/avatar_frames/haze_ring.png',
  resin_flame:'assets/avatar_frames/resin_flame.png',
@@ -141,10 +142,10 @@ async function loadFrames(force=false){
  return S.frameFlight;
 }
 function ensureDealerFrameTab(){try{window.v7117DealerHubSync?.()}catch(_){}document.querySelectorAll('#harzDealer .v7117-tabs,#goldShop .v7117-tabs').forEach(t=>{const framesOpen=!!t.closest('#harzDealer.v7137-frames-open');if(framesOpen)t.querySelectorAll('[data-v7117-tab]').forEach(b=>b.classList.toggle('active',b.dataset.v7117Tab==='frames'))});}
-function frameDesc(f){if(f.source==='referral')return 'Nicht kaufbar · exklusiv aus dem 10-Freunde-Paket.';if(f.effect)return 'Animierter Prestige-Rahmen mit sichtbarem Effekt.';return 'Hochwertiger dauerhafter Prestige-Rahmen.'}
+function frameDesc(f){if(f.source==='vip')return 'VIP-exklusiv · nur solange dein VIP-Pass aktiv ist.';if(f.source==='referral')return 'Nicht kaufbar · exklusiv aus dem 10-Freunde-Paket.';if(f.effect)return 'Animierter Prestige-Rahmen mit sichtbarem Effekt.';return 'Hochwertiger dauerhafter Prestige-Rahmen.'}
 function framePreview(f,cls=''){const src=avatarFor(ownClass()),art=f?.id?frameArtMarkup(f.id):'';return `<div class="v7137-frame-preview v7137-frame-target ${cls}" ${f?.id?`data-v7137-frame="${esc(f.id)}"`:''}><span class="v7140-preview-avatar-clip">${src?`<img class="v7139-preview-avatar" src="${esc(src)}" alt="Rahmen-Vorschau">`:'🌿'}</span>${art}</div>`}
 function ensureFrameShop(){const h=document.getElementById('harzDealer');if(!h)return null;let p=document.getElementById('v7137FrameShop');if(!p){p=document.createElement('div');p.id='v7137FrameShop';h.appendChild(p)}return p}
-function renderFrameShop(){const p=ensureFrameShop();if(!p||!S.frames)return;const fs=Array.isArray(S.frames.frames)?S.frames.frames:[];p.innerHTML=`<div class="v7137-frame-shop-head"><div><small>PRESTIGE · PERMANENT</small><h2>🖼️ Avatar-Rahmen</h2></div><div class="v7137-frame-balance">Dein Bestand <b>💎 ${fmt(S.frames.harz)}</b></div></div><div class="v7137-frame-guide"><b>So funktioniert es:</b> Einmal gekaufte Rahmen bleiben dauerhaft auf deinem Account. Tippe anschließend auf dein eigenes Avatarbild, um zwischen deinen freigeschalteten Rahmen zu wechseln oder den Rahmen zu deaktivieren. Dein aktiver Rahmen ist auch in der <b>Hall of Haze</b> und im <b>Spielerprofil</b> sichtbar.</div><div class="v7137-frame-grid">${fs.map(f=>`<div class="v7137-frame-card ${f.owned?'owned':''}">${framePreview(f)}<div class="v7137-frame-info"><h3>${esc(f.name)} ${f.effect?'✨':''}</h3><p>${esc(frameDesc(f))}</p><div class="v7137-frame-price ${f.source==='referral'?'v7137-frame-special':''}">${f.source==='referral'?'🤝 Exklusiv':`💎 ${fmt(f.price)} Harz-Taler`}</div>${f.owned?`<button type="button" class="btn ${f.active?'gold':'secondary'}" data-v7137-set-frame="${esc(f.id)}">${f.active?'Aktiv ✓':'Aktivieren'}</button>`:f.source==='shop'?`<button type="button" class="btn gold" data-v7137-buy-frame="${esc(f.id)}">Kaufen · ${fmt(f.price)} 💎</button>`:`<button type="button" class="btn secondary" disabled>Freund werben</button>`}</div></div>`).join('')}</div>`}
+function renderFrameShop(){const p=ensureFrameShop();if(!p||!S.frames)return;const fs=Array.isArray(S.frames.frames)?S.frames.frames:[];p.innerHTML=`<div class="v7137-frame-shop-head"><div><small>PRESTIGE · PERMANENT</small><h2>🖼️ Avatar-Rahmen</h2></div><div class="v7137-frame-balance">Dein Bestand <b>💎 ${fmt(S.frames.harz)}</b></div></div><div class="v7137-frame-guide"><b>So funktioniert es:</b> Einmal gekaufte Rahmen bleiben dauerhaft auf deinem Account. Tippe anschließend auf dein eigenes Avatarbild, um zwischen deinen freigeschalteten Rahmen zu wechseln oder den Rahmen zu deaktivieren. Dein aktiver Rahmen ist auch in der <b>Hall of Haze</b> und im <b>Spielerprofil</b> sichtbar.</div><div class="v7137-frame-grid">${fs.map(f=>`<div class="v7137-frame-card ${f.owned?'owned':''}">${framePreview(f)}<div class="v7137-frame-info"><h3>${esc(f.name)} ${f.effect?'✨':''}</h3><p>${esc(frameDesc(f))}</p><div class="v7137-frame-price ${f.source==='referral'||f.source==='vip'?'v7137-frame-special':''}">${f.source==='vip'?'👑 VIP exklusiv':f.source==='referral'?'🤝 Exklusiv':`💎 ${fmt(f.price)} Harz-Taler`}</div>${f.owned?`<button type="button" class="btn ${f.active?'gold':'secondary'}" data-v7137-set-frame="${esc(f.id)}">${f.active?'Aktiv ✓':'Aktivieren'}</button>`:f.source==='shop'?`<button type="button" class="btn gold" data-v7137-buy-frame="${esc(f.id)}">Kaufen · ${fmt(f.price)} 💎</button>`:`<button type="button" class="btn secondary" disabled>Freund werben</button>`}</div></div>`).join('')}</div>`}
 async function openFrameShop(){try{v032Go('harzDealer')}catch(_){}try{window.v7117DealerHubSync?.()}catch(_){}ensureDealerFrameTab();document.getElementById('harzDealer')?.classList.add('v7137-frames-open');document.querySelectorAll('#harzDealer [data-v7117-tab]').forEach(b=>b.classList.toggle('active',b.dataset.v7117Tab==='frames'));await loadFrames(true);moveFooterLast();}
 function closeFrameShop(){document.getElementById('harzDealer')?.classList.remove('v7137-frames-open')}
 async function buyFrame(id){if(S.busy)return;const f=S.frames?.frames?.find(x=>x.id===id);if(!f||f.owned)return;if(!confirm(`${f.name} für ${fmt(f.price)} Harz-Taler kaufen?\n\nDer Rahmen bleibt dauerhaft auf deinem Account.`))return;S.busy=true;try{const pid=(crypto.randomUUID?.()||`${Date.now()}_${Math.random()}`).replaceAll('-','');const r=await rpc('v7137_buy_avatar_frame',{p_frame_id:id,p_purchase_id:pid});if(!r?.ok){if(r?.reason==='NOT_ENOUGH_HARZ')throw new Error(`Nicht genug Harz-Taler. Benötigt: ${fmt(r.required)}`);throw new Error(String(r?.reason||'PURCHASE_FAILED'))}S.frames=r;toast('🖼️ Rahmen freigeschaltet','success',f.name);try{await window.v7077ProgressRefresh?.()}catch(_){}try{await window.v7080AchievementRefresh?.(true)}catch(_){}renderFrameShop();renderFrameSelector()}catch(e){toast('Kauf fehlgeschlagen','error',String(e?.message||e))}finally{S.busy=false}}
@@ -168,7 +169,8 @@ async function publicFrameRows(ids){
  if(!flight){
   flight=(async()=>{
    try{
-    const {data,error}=await x.from('profiles').select('id,class_id,avatar_frame_id').in('id',missing);
+    const fields=window.__V8195_VIP_CLIENT__===true?'id,class_id,avatar_frame_id,vip_until,vip_visible':'id,class_id,avatar_frame_id';
+    const {data,error}=await x.from('profiles').select(fields).in('id',missing);
     if(error)throw error;
     const m=new Map();(data||[]).forEach(p=>{const id=String(p.id);m.set(id,p);S.profileCache.set(id,p);S.profileFrameAt.set(id,Date.now())});
     return m;
@@ -179,14 +181,31 @@ async function publicFrameRows(ids){
  }
  const fresh=await flight;fresh.forEach((p,id)=>out.set(id,p));return out;
 }
+function publicVipActive(p){return !!(window.__V8195_VIP_CLIENT__===true&&p?.vip_visible!==false&&p?.vip_until&&new Date(p.vip_until).getTime()>Date.now())}
+function publicFrameId(p){const fid=String(p?.avatar_frame_id||'');return fid==='vip_crown'&&!publicVipActive(p)?'':fid}
+function markPublicVip(host,p){
+ if(!host)return;
+ const on=publicVipActive(p);
+ host.classList.toggle('v8195-vip-public',on);
+}
 async function decorateHallFrames(){
  applyOwnFrames();
  if(!document.getElementById('hall')?.classList.contains('active'))return;
  const rows=[...document.querySelectorAll('#hall .v072-player-row[data-profile-id]')];if(!rows.length)return;
  const map=await publicFrameRows(rows.map(r=>r.dataset.profileId));
- rows.forEach(r=>{const p=map.get(String(r.dataset.profileId||''));const av=r.querySelector('.v646-row-avatar');if(av)applyFrame(av,p?.avatar_frame_id||'')});
+ rows.forEach(r=>{const p=map.get(String(r.dataset.profileId||''));const av=r.querySelector('.v646-row-avatar');if(av)applyFrame(av,publicFrameId(p));markPublicVip(r,p)});
 }
-async function decorateOpenProfile(id){const sid=String(id||'');if(!sid)return;let fid='';try{if(sid===String(v073User?.id||'')){if(!S.frames)await loadFrames(false);fid=String(S.frames?.active_frame_id||'')}else{let p=S.profileCache.get(sid);if(!p){const m=await publicFrameRows([sid]);p=m.get(sid)||{};S.profileCache.set(sid,p)}fid=String(p?.avatar_frame_id||'')}}catch(_){};applyFrame(document.querySelector('#v074ProfileContent .v652-profile-avatar'),fid);requestAnimationFrame(()=>applyFrame(document.querySelector('#v074ProfileContent .v652-profile-avatar'),fid))}
+async function decorateOpenProfile(id){
+ const sid=String(id||'');if(!sid)return;
+ let fid='',profile=null,own=sid===String(v073User?.id||'');
+ try{
+  if(own){if(!S.frames)await loadFrames(false);fid=String(S.frames?.active_frame_id||'')}
+  else{profile=S.profileCache.get(sid);if(!profile){const m=await publicFrameRows([sid]);profile=m.get(sid)||{};S.profileCache.set(sid,profile)}fid=publicFrameId(profile)}
+ }catch(_){}
+ const root=document.querySelector('#v074ProfileContent');markPublicVip(root,own?(window.v8195VipState||null):profile);
+ applyFrame(root?.querySelector('.v652-profile-avatar'),fid);
+ requestAnimationFrame(()=>applyFrame(root?.querySelector('.v652-profile-avatar'),fid));
+}
 function wrapSocial(){
  try{if(typeof window.v074OpenProfile==='function'&&!window.__V7137_PROFILE_WRAP__){const base=window.v074OpenProfile;const w=async function(id){const r=await base.apply(this,arguments);void decorateOpenProfile(id);return r};window.v074OpenProfile=w;try{v074OpenProfile=w}catch(_){}window.__V7137_PROFILE_WRAP__=true}}catch(_){}
  ['v073SearchPlayer','v073LoadFriends'].forEach(name=>{try{const base=window[name]||globalThis[name];if(typeof base!=='function'||base.__v7137)return;const w=async function(){const r=await base.apply(this,arguments);queueMicrotask(()=>void decorateHallFrames());return r};w.__v7137=true;window[name]=w;try{globalThis[name]=w}catch(_){}}catch(_){}});
@@ -217,9 +236,10 @@ document.addEventListener('click',e=>{
 
 let v7138AvatarObserver=null;
 function watchOwnAvatar(){try{const scene=document.querySelector('#character #v510HeroRoot .avatar-scene')||document.querySelector('#character .avatar-scene');if(!scene||scene.__v7138Watched)return;scene.__v7138Watched=true;v7138AvatarObserver?.disconnect?.();let queued=false;v7138AvatarObserver=new MutationObserver(ms=>{const meaningful=ms.some(m=>[...m.addedNodes,...m.removedNodes].some(n=>!(n instanceof Element)||!n.classList?.contains('v7139-frame-art')));if(!meaningful||queued)return;queued=true;requestAnimationFrame(()=>{queued=false;applyOwnFrames()})});v7138AvatarObserver.observe(scene,{childList:true,subtree:false})}catch(_){}}
-function renameDealer7138(){try{document.querySelectorAll('#v032MenuPanel [data-screen="harzDealer"],#v032MenuPanel [data-v341-harz-menu="1"],.top-menu-panel [data-screen="harzDealer"]').forEach(el=>{const icon=el.querySelector('span');if(icon){[...el.childNodes].filter(n=>n.nodeType===3).forEach(n=>n.remove());el.append(' Harz & Gold & Rahmen Dealer')}else el.textContent='💎 Harz & Gold & Rahmen Dealer'});document.querySelectorAll('#harzDealer .v7117-hub-copy b,#goldShop .v7117-hub-copy b').forEach(el=>el.textContent='Harz & Gold & Rahmen Dealer');const h=document.querySelector('#harzDealer .v322-dealer-head h2');if(h)h.textContent='Harz & Gold & Rahmen Dealer'}catch(_){}}
+function renameDealer7138(){try{const name=window.__V8195_VIP_CLIENT__===true?'Harz & Gold & Rahmen & VIP Dealer':'Harz & Gold & Rahmen Dealer';document.querySelectorAll('#v032MenuPanel [data-screen="harzDealer"],#v032MenuPanel [data-v341-harz-menu="1"],.top-menu-panel [data-screen="harzDealer"]').forEach(el=>{const icon=el.querySelector('span');if(icon){[...el.childNodes].filter(n=>n.nodeType===3).forEach(n=>n.remove());el.append(' '+name)}else el.textContent='💎 '+name});document.querySelectorAll('#harzDealer .v7117-hub-copy b,#goldShop .v7117-hub-copy b').forEach(el=>el.textContent=name);const h=document.querySelector('#harzDealer .v322-dealer-head h2');if(h)h.textContent=name}catch(_){}}
 function install(){ensureQuest();ensureDealerFrameTab();ensureFrameShop();wrapSocial();wrapGoldShop();installAchievements();renameQuestMenu();renameDealer7138();moveFooterLast();watchOwnAvatar();document.body?.classList.remove('v7129-referral-frame');if(logged()&&!window.v7204StartupQuiet?.()){void loadShift(false);void loadFrames(false)}queueMicrotask(()=>{applyOwnFrames();if(!window.v7204StartupQuiet?.())void decorateHallFrames()})}
 window.addEventListener('growlegends:account-ready',()=>{install();const run=()=>{if(logged()){void loadShift(false);void loadFrames(false)}};if(typeof window.v7204AfterStartupQuiet==='function')window.v7204AfterStartupQuiet(run,1400);else queueMicrotask(run)},{passive:true});
+window.addEventListener('growlegends:vip-state',()=>{void loadFrames(true);void decorateHallFrames();renameDealer7138()},{passive:true});
 window.addEventListener('pageshow',install,{passive:true});
 window.addEventListener('growlegends:navigation-ready',()=>{ensureQuest();ensureDealerFrameTab();renameQuestMenu();renameDealer7138();watchOwnAvatar();applyOwnFrames();moveFooterLast()},{passive:true});
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&logged()&&!window.v7204StartupQuiet?.()){void loadShift(false);void loadFrames(false)}syncShiftTicker()},{passive:true});
