@@ -125,8 +125,9 @@ function activeRun(run){
   '<div class="v8210-run-grid"><div class="v8210-stage-panel live">'+plantStage(phase,'active')+
   '<div class="v8210-stage-meta"><small>'+esc(run.cup_seed||'Cup-Sorte')+(run.test_mode?' · BETA-TEST':'')+'</small><b>'+(run.test_mode?'TESTPHASE ':'STUNDE ')+phase+' / 6</b><span>'+esc(ph[0])+'</span></div></div>'+
   '<div class="v8210-control">'+timingCard(run)+
-  '<div class="v8210-phase-copy"><small>AKTION '+phase+' · '+esc(ph[0]).toUpperCase()+'</small><h2>'+esc(ph[1])+'</h2><p>Nur diese eine Einstellung zählt in dieser Phase. Der Sweet Spot bleibt verborgen.</p></div>'+
-  metrics(run)+actionControl(run)+'</div></div></section>';
+  '<div class="v8210-phase-copy"><small>AKTION '+phase+' · '+esc(ph[0]).toUpperCase()+'</small><h2>'+esc(ph[1])+'</h2><p>Nur diese eine Einstellung zählt in dieser Phase. Sweet Spot und Punkte bleiben bis zum Finale verborgen.</p></div>'+
+  '<div class="v8214-hidden-score"><i>?</i><div><b>Punkte verborgen</b><span>Die komplette Pflanzen- und Punkteauswertung erscheint erst nach Aktion 6.</span></div></div>'+
+  actionControl(run)+'</div></div></section>';
 }
 function rewardTable(){
  return '<div class="v8210-reward-table"><div><b>🥇 Platz 1</b><span>3 Runen · 30 Frag.</span></div><div><b>🥈 Platz 2</b><span>2 Runen · 25 Frag.</span></div><div><b>🥉 Platz 3</b><span>2 Runen · 20 Frag.</span></div><div><b>4–10</b><span>1 Rune · 15 Frag.</span></div><div><b>11–25</b><span>12 Frag.</span></div><div><b>26–50</b><span>8 Frag.</span></div><div><b>51–100</b><span>5 Frag.</span></div></div>';
