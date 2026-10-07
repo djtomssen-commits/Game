@@ -11571,3 +11571,77 @@ Aktueller Release-Status:
   6. Run schließen und erneut öffnen: derselbe Raum/Run muss fortgesetzt werden.
   7. Einen vollständigen 10-Raum-Run abschließen und Belohnungsfenster prüfen.
 
+### 2026-10-07 – V8.200 VIP-Rahmen + Verzauberungs-FX Hotfix (Beta)
+- Gemeldet:
+  - VIP-Kronenrahmen wird im Rahmen-Shop als aktiv angezeigt, aber visuell nicht dargestellt.
+  - verzauberte Items, konkret ein +4 Item, zeigen auf der Charakter-/Inventarseite keinen sichtbaren Effekt.
+- Diagnosepfad Tomssen/Beta:
+  - Account-State-Health: keine aktuelle strukturelle Beschädigung;
+  - Runtime-Error-Log: keine aktuellen JavaScript-Fehler;
+  - Player-QA für World/Forge/Character/HarzDealer: status=ok, Screens gerendert und Item-/Equipment-Struktur vorhanden.
+- Serverzustand bestätigt:
+  - Profil `avatar_frame_id = vip_crown`;
+  - VIP aktuell aktiv und öffentlich sichtbar;
+  - daher kein Aktivierungs-/VIP-State-Fehler.
+- Ursache VIP-/Referral-Rahmen:
+  - `assets/avatar_frames/vip_crown_v3.webp` ist nur 7.506 Bytes groß, der WebP-RIFF-Header deklariert jedoch rund 31 KB;
+  - `assets/avatar_frames/referral_legend_v3.webp` ist ebenfalls nur 7.506 Bytes groß, der Header deklariert rund 76 KB;
+  - beide V3-Dateien sind damit trunkiert/beschädigt und konnten nicht zuverlässig gerendert werden.
+- Rahmenfix direkt in den beiden kanonischen Resolvern:
+  - `js/features/shift/beta/v8009-s1-v7137-shift-frame-client.js`;
+  - `js/features/pvp/beta/v8009-s1-v6145-hall-pagination-js.js`;
+  - `vip_crown` verwendet wieder das gültige `assets/avatar_frames/vip_crown_v2.svg`;
+  - `referral_legend` verwendet wieder das gültige `assets/avatar_frames/referral_legend_v2.svg`;
+  - die defekten V3-Dateien bleiben unreferenziert/retired.
+- Rahmen-CSS:
+  - VIP bekommt eigenes goldenes Glow-Profil;
+  - Referral-Legend bekommt eigenes türkis/grünes Glow-Profil;
+  - bestehende PNG-/SVG-Overlay-Geometrie unverändert.
+- Verzauberungs-State bestätigt:
+  - Händlerwaffe +2 = +3,0 %;
+  - Mystisch: Rindenpanzer +4 = +6,0 %;
+  - beide Werte liegen korrekt serverautoritativ im `player_item_state`.
+- Ursache fehlender Item-FX:
+  - der spätere Android/Samsung Inventory-Compositor `v7161` überschreibt absichtlich alle per-card Filter/Outer-Glows mit `!important`;
+  - dadurch wurden die zuvor in V8.198 gesetzten `v8198-e2...e10`-Glows auf der Charakterseite visuell neutralisiert.
+- FX-Fix direkt im bestehenden Compositor-Owner:
+  - `v8009-extracted-v7161-inventory-scroll-compositor-css.css`;
+  - +2 leichter statischer Glow;
+  - +3 stärker;
+  - +4 jetzt deutlich sichtbarer Cyan/Violett-Glow;
+  - +5/+6 stärker;
+  - +7 bis +10 stärkste Aura;
+  - bestehendes dediziertes Blitz-/Light-Overlay ab +5 bleibt erhalten;
+  - keine Rückkehr zu generellen Hover-/Filter-GPU-Layern für alle Inventaritems.
+- Character-Lifecycle:
+  - `v459` ruft den Verzauberungs-Decorator nun nach dem finalen Inventory-/Comparison-Paint auf;
+  - Equipment-Slots werden nach dem kanonischen Slot-Polish erneut über den bestehenden v470-Owner synchronisiert;
+  - danach wird der Verzauberungs-Decorator gezielt angewendet;
+  - kein MutationObserver/Polling-Fix hinzugefügt.
+- QA:
+  - v7137 JS Syntax: OK;
+  - v6145 JS Syntax: OK;
+  - v459 JS Syntax: OK;
+  - v7140 CSS balanced 43/43;
+  - v7161 CSS balanced 14/14;
+  - alle fünf V8.200 Beta-Cache-Refs exakt 1x vorhanden.
+- Beta Cache-Bust:
+  - v459 -> `8200framefx1`;
+  - v6145 -> `8200framefx1`;
+  - v7137 -> `8200framefx1`;
+  - v7140 CSS -> `8200framefx1`;
+  - v7161 CSS -> `8200framefx1`.
+- Commits:
+  - Frame resolver owner: 065bb478d0ae3e4c65303a5ad17c7f178855ec2e;
+  - Hall/public frame resolver: 13d34f70df4555bcec4284cf860022827e335ca2;
+  - Frame glow profiles: 73cb0256cf75fcff348c84c9534e700db9eb901c;
+  - Inventory FX lifecycle: f52d20405d894639f98e2e3a65f23787f9307401;
+  - Equipment FX lifecycle: b5873f592d007e2a2e56d54ad0f8e72dadfbf6c0;
+  - Compositor FX exceptions: 44d48522a482d4fd5fade7139de572d0235c18e1;
+  - Beta cache: 0931304fe9b4d7f6928787161ad919686c64c979.
+- Manueller Beta-Test:
+  1. App/Beta vollständig neu laden.
+  2. Rahmen-Shop: VIP-Kronenrahmen muss wieder um den Avatar sichtbar sein; Legenden-Bund ebenfalls prüfen.
+  3. Charakter -> Inventar: +2 und insbesondere +4 müssen +Badge + zunehmenden Glow zeigen.
+  4. Verzaubertes Item anlegen und Character-Slot prüfen; derselbe +Level-/Glow-State muss dort sichtbar bleiben.
+
