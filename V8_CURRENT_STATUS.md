@@ -10550,3 +10550,11 @@ Aktueller Release-Status:
   - kein späteres Umspringen.
 - Commit Character-Hub: `71f34e12c736000238e80dcaa6112560fad0d100`.
 - Cache-Bust index/beta/server1: `8183achievementcap1`.
+
+
+### 2026-10-07 – V8.183 manuell bestätigt
+- Nutzer hat nach vollständigem App-Neustart bestätigt: **Attribute funktionieren jetzt korrekt**.
+- Hauptattribut wird direkt mit dem vollständigen serverautoritativen Wert angezeigt.
+- Kein sichtbarer Zwischenwert mehr.
+- Kein nachträgliches Umspringen mehr.
+- V8.183 damit auf dem Testgerät **manuell bestätigt**.
