@@ -13354,3 +13354,15 @@ Aktueller Release-Status:
 - Keine Änderung an Quest-Gold, EXP, Harz, Items, Grow-Samen (24 % normal / 42 % Elite), Elite-Boni, Quest-Timern, Dampf oder klassenspezifischer Balance.
 - Nachkontrolle direkt über `pg_get_functiondef`: Beide produktiven Serverfunktionen enthalten jeweils exakt einen 35-%-Zeit-Samen-Wurf; 50-%-Zeit-Samen-Wurf ist in beiden nicht mehr enthalten. Keine simulierten Spieler-Belohnungen/RPC-Auszahlungen ausgeführt.
 - Statistischer Erwartungswert: 3,5 Zeit-Samen pro 10 abgeschlossenen Quests statt 5 (ausschließlich dieser Quell-Drop).
+
+
+### 2026-10-08 – V8.243 Server-1 Bot-Verwaltung als sichere Vorstufe
+- Nutzerwunsch: 50 autonome Charaktere auf **Server 1**, unterschiedliche Spielaktivität, Quests, Leveln, Dungeons, Turm, Growroom und Gilden; Admin-Ein/Aus und später vollständiger, sicherer Rückbau ohne Auswirkungen auf echte Spieler. Keine Änderungen an der Klassenbalance oder Beta-Botpopulation.
+- In Supabase wurde die Migration `v8243_server1_bot_registry_admin_control_safe_pending` erfolgreich angewandt.
+- Neue reine Verwaltungsdaten unter `server1_private.v8243_bot_control` und `server1_private.v8243_bot_agents`, **50 vorbereitete Bot-Slots**, je eigener Name, Klassen-ID, Spielstil, Intensität, Aktivitätsterminen; alle Slots im Status `pending`, **alle user_id NULL**.
+- Neue serverseitig admin-geschützte RPC `server1.v8243_bot_admin(text,integer,numeric)`, erlaubt nur Server-1-Admins aus `server1.game_admins`: Status lesen, global enable/disable, einzelnen provisionierten Bot pausieren/fortsetzen, Intensität ändern. Nicht-Admins erhalten ADMIN_REQUIRED. Private Tabellen haben keine normalen Spieler-Privilegien.
+- Neue dedizierte Admin-Subkomponente `js/features/admin/beta/v8243-admin-bot-management.js`. Keine Wrapper-/Monkey-Patches. Direkter Aufruf aus dem existierenden kanonischen `v093AdminLoadLists()`; in `server1.html` als einmaliges Script registriert und der Cache für den Core erneuert. Beta-HTML nicht verändert.
+- Admin-UI zeigt Gesamtstatus und alle 50 vorbereiteten Profile sowie den späteren globalen Autopiloten; **Ein-Schalter ist bei 0 provisionierten Accounts deaktiviert**.
+- Frontend-JavaScript wurde syntaktisch kompiliert, Script genau einmal im Server-1-Entry und Aufruf im kanonischen Admin-Lifecycle überprüft.
+- Wichtig: **Es wurden noch keine echten Auth-Accounts/Charaktere erstellt, keine Quests oder Kämpfe ausgeführt und kein Scheduler aktiviert.** Der Worker-Versuch wurde vom Tool-Sicherheitssystem blockiert. Nicht als durchgeführte Migration aufführen.
+- **Offen, bevor 50 Bots live gehen dürfen**: Auth-basierter, zulässiger Worker/Provisionierung ohne Session-Impersonation; End-to-End-Spieltest auf separaten Bot-Accounts; Gildenbeitritte, Turm-Runs und echte Itemverwaltung; rückbausichere Behandlung von PvP- und Gildenreferenzen; Admin-Rückbauaktion, die ausschließlich registrierte Bot-IDs entfernt oder zunächst sicher ausblendet; reguläre Prüfung der Spieltransparenz. Kein Test auf bestehenden echten Spieleraccounts.
