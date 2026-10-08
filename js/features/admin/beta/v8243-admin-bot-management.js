@@ -10,6 +10,7 @@
  let lastDungeon=null;
  let buildBySlot={};
  let worldBySlot={};
+ let growBySlot={};
  const esc=x=>String(x==null?'':x).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
  const labels={pending:'Vorbereitet',active:'Aktiv',paused:'Pausiert',retired:'Stillgelegt'};
  const profiles={casual:'Gelegenheit',balanced:'Ausgeglichen',active:'Vielspieler',explorer:'Entdecker',social:'Gilden'};
@@ -25,6 +26,7 @@
    <div class="muted">50 individuelle Spielprofile · ausschließlich Server 1</div></div></div>
    <div id="${P}Summary" class="muted" style="margin:10px 0">Lade Status …</div>
    <div id="${P}WorldSummary" class="muted" style="font-size:12px;margin:7px 0">Gilden und Kämpfe werden geladen …</div>
+   <div id="${P}GrowSummary" class="muted" style="font-size:12px;margin:7px 0">Bot-Growroom wird geladen …</div>
    <div class="v093-admin-actions" style="display:flex;flex-direction:column;align-items:stretch;gap:7px;margin-bottom:10px">
     <style>
      #v8243BotAdmin .v093-admin-actions > .btn {
@@ -88,6 +90,7 @@
     ${a.last_action?'<div class="muted" style="font-size:11px">Letzte Aktion: '+esc(a.last_action)+'</div>':''}
     ${buildBySlot[a.slot]?'<div class="muted" style="font-size:11px">Level '+Number(buildBySlot[a.slot].level||0)+' · Attribute: '+Number(buildBySlot[a.slot].attribute_actions||0)+' · Talente: '+Number(buildBySlot[a.slot].talent_actions||0)+' · Items ausgerüstet: '+Number(buildBySlot[a.slot].equip_actions||0)+' · Freie Punkte: '+Number(buildBySlot[a.slot].available_attributes||0)+' / '+Number(buildBySlot[a.slot].available_talents||0)+'</div>':''}
     ${worldBySlot[a.slot]?'<div class="muted" style="font-size:11px">Gilde: '+esc(worldBySlot[a.slot].guild||'keine')+' · Quests: '+Number(worldBySlot[a.slot].quests_finished||0)+'/'+Number(worldBySlot[a.slot].quests_started||0)+' · PvP: '+Number(worldBySlot[a.slot].pvp_fights||0)+' · Turm: '+Number(worldBySlot[a.slot].tower_actions||0)+' Aktionen · Boss: '+(worldBySlot[a.slot].boss_signed?'angemeldet':'nicht angemeldet')+'</div>':''}
+    ${growBySlot[a.slot]?'<div class="muted" style="font-size:11px">Growroom: '+Number(growBySlot[a.slot].planted||0)+' gepflanzt · '+Number(growBySlot[a.slot].care||0)+' gepflegt · '+Number(growBySlot[a.slot].harvests||0)+' geerntet · '+Number(growBySlot[a.slot].plants_active||0)+' aktiv</div>':''}
     ${action?'<button class="btn secondary" style="margin-top:6px" data-bot-action="'+action+'" data-bot-slot="'+Number(a.slot)+'">'+(canPause?'Pausieren':'Fortsetzen')+'</button>':''}
     ${canArchive?'<button class="btn secondary" style="margin:6px 0 0 6px" data-bot-action="archive" data-bot-slot="'+Number(a.slot)+'">Stilllegen</button>':''}
     ${canRestore?'<button class="btn secondary" style="margin-top:6px" data-bot-action="restore" data-bot-slot="'+Number(a.slot)+'">Wiederherstellen</button>':''}
@@ -216,6 +219,18 @@
       +' · Bot-Mitglieder: '+Number(overall.bot_guild_members||0)
       +' · PvP-Kämpfe: '+Number(overall.bot_only_pvp_fights||0)
       +' · Bot-Gildenkriege: '+Number(overall.bot_guild_wars||0);
+    render(data);
+   }
+   const gro=await api().rpc('v8276_bot_grow_status');
+   if(!gro.error&&gro.data?.ok){
+    growBySlot={};
+    (gro.data.agents||[]).forEach(x=>{growBySlot[Number(x.slot)]=x;});
+    const counts=gro.data.summary||{};
+    const target=$('#'+P+'GrowSummary');
+    if(target)target.textContent='Growroom: '+Number(counts.planted||0)
+      +' gepflanzt · '+Number(counts.care||0)
+      +' gepflegt · '+Number(counts.harvests||0)
+      +' geerntet'+(Number(counts.errors||0)?' · Fehler: '+Number(counts.errors):'');
     render(data);
    }
   }
