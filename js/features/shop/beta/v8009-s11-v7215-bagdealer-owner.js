@@ -160,7 +160,22 @@ async function load(){
     const {data,error}=await x.rpc('v7215_ad_bag_state');
     if(error)throw error;
     const r=one(data);if(!r?.ok)throw new Error('AD_BAG_STATE_FAILED');
-    S.data=r;S.lastError='';paint();
+    const prev=S.data;
+    S.data=r;S.lastError='';
+    const srv=String(window.v343CurrentServer||window.s?.__serverId||window.GROW_RELEASE_CHANNEL||'beta').toLowerCase();
+    if(Number(r.totalClaims)>0&&srv!=='server1'){
+      try{
+        const receipt=await x.rpc('v8238_ad_bag_latest_claim');
+        if(receipt.error)throw receipt.error;
+        const e=one(receipt.data);
+        if(e?.id)offerClaim(e.id,e.reward,e.stage,false);
+      }catch(err){S.receiptError=String(err?.message||err)}
+    }
+    if(!S.claim&&prev&&Number(r.totalClaims)>Number(prev.totalClaims)){
+      const b=prev.bag||{};
+      if(Object.values(b.reward||{}).some(v=>Number(v)>0))offerClaim('transition-'+r.totalClaims,b.reward,b.stage,true);
+    }
+    paint();
   }catch(e){
     S.lastError=String(e?.message||e);
     const root=body();if(root)root.innerHTML='<div class="v7219-loading-card"><b>Tütchen konnten nicht geladen werden.</b><span>Bitte später erneut versuchen.</span></div>';
