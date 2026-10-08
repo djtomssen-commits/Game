@@ -10,7 +10,7 @@
  const esc=x=>String(x==null?'':x).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
  const labels={pending:'Vorbereitet',active:'Aktiv',paused:'Pausiert',retired:'Stillgelegt'};
  const profiles={casual:'Gelegenheit',balanced:'Ausgeglichen',active:'Vielspieler',explorer:'Entdecker',social:'Gilden'};
- function authorized(){return typeof v093IsAdmin!=='undefined'&&v093IsAdmin===true&&!!window.v073Db&&!!window.v073User;}
+ function authorized(){return typeof v093IsAdmin!=='undefined'&&v093IsAdmin===true&&typeof v073Db!=='undefined'&&!!v073Db&&typeof v073User!=='undefined'&&!!v073User;}
  function api(){return typeof v073Db.schema==='function'?v073Db.schema('server1'):v073Db;}
  function notice(s,good=false){const el=$('#'+P+'Feedback');if(el){el.textContent=s;el.style.color=good?'#addb89':'#f1a49f';}}
  function install(){
