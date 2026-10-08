@@ -12973,3 +12973,18 @@ Aktueller Release-Status:
   - dualer Shopvergleich: `fbdb3a0c6cc169c0c93874f9448a2c9c331358c4`;
   - Shop-CSS: `81c265a33d7566b3c921b61f69bccd8d78f91b65`;
   - Beta Cache: `d388918fb66d78ab37a1eb055cdd875146800fdf`.
+
+### 2026-10-08 – V8.225 Shop-Dualvergleich mobil kompakter (Beta)
+- Nutzer-Screenshot zeigte V8.224-Vergleich in 2-Spalten-Shopkarten stark gequetscht/umgebrochen.
+- Shopvergleich auf zwei kompakte Vollzeilen reduziert:
+  - `▲/▼ GRUNDWERTE · BESSER/SCHLECHTER ±X`
+  - `▲/▼ MIT STEIN + VZ · BESSER/SCHLECHTER ±X`
+- Zusatz-Infotext und getrennte Label-/Wert-Spalten aus der Karte entfernt; Aussage bleibt direkt in den beiden Zeilen enthalten.
+- Vergleichsbox auf Mobile wieder niedriger; Zeilen erzwingen No-Wrap und kleinere Schrift/Letter-Spacing.
+- Detail-Popup bleibt unverändert.
+- Beta Cache-Key für V470 + Shop-CSS: `8225shopcompare2`.
+- Server 1 weiterhin unverändert.
+- Relevante Commits:
+  - Vergleichsmarkup: `b791d6d6e352432c2aaea4f4e6dd47fa64305e03`;
+  - Shop-CSS: `4fd912f01c2ce507a4ef449631686ba9d44e2e6c`;
+  - Beta Cache: `e91b7da4309e87ae24fc598d21be921d785c65b2`.
