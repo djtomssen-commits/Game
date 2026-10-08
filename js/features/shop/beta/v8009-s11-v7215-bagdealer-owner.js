@@ -85,12 +85,12 @@ function claimHtml(){
   if(!S.claim)return '';
   const r=S.claim.reward;
   const lines=[['Gold',r.gold],['Fragmente',r.fragments],['Harz-Taler',r.harz],['Zeit-Samen',r.time]].filter(x=>Number(x[1])>0);
-  return `<div class="v7215-help-backdrop v7215-claim-backdrop"><section class="v7215-help-modal v7215-claim-modal" role="dialog" aria-modal="true">
-    <h3>🎁 Tütchen abgeschlossen!</h3><p>Die Belohnung wurde serverseitig gutgeschrieben.</p>
+  return `<dialog class="v7215-claim-dialog v7215-claim-modal" aria-modal="true" aria-labelledby="v7215-claim-title">
+    <h3 id="v7215-claim-title">🎁 Tütchen abgeschlossen!</h3><p>Die Belohnung wurde serverseitig gutgeschrieben.</p>
     <div class="v7215-claim-list">${lines.map(x=>`<div><span>${x[0]}</span><b>+${fmt(x[1])}</b></div>`).join('')}</div>
     ${S.claim.estimated?'<small>Werte der vorherigen Tütchen-Vorschau.</small>':'<small>Bestätigter Server-Beleg.</small>'}
     <button type="button" class="btn" data-v7215-claim-ok>Weiter zum nächsten Tütchen</button>
-  </section></div>`;
+  </dialog>`;
 }
 function helpHtml(){
   if(!S.help)return '';
@@ -153,6 +153,11 @@ function paint(){
     </div>
   </section>
   ${S.claim?'':helpHtml()}${claimHtml()}`;
+  // Native modal top layer prevents the dealer tabs/header from covering the reward dialog.
+  const claimDialog=root.querySelector('dialog.v7215-claim-dialog');
+  if(claimDialog&&!claimDialog.open){
+    try{claimDialog.showModal()}catch(e){claimDialog.setAttribute('open','')}
+  }
 }
 async function load(){
   const x=db();if(!x)return;
