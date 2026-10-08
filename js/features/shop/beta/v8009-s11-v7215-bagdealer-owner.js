@@ -7,7 +7,7 @@ const BAG_ART={
   normal:'assets/v8-inline/d8723279ac61b4e0.webp',
   premium:'assets/v8-inline/8fe8c1cde9fe6262.webp'
 };
-const S={active:false,busy:false,data:null,lastError:'',help:false,claim:null,receiptError:''};
+const S={active:false,busy:false,data:null,lastError:'',help:false,claim:null,receiptError:'',ownerKey:''};
 const one=d=>Array.isArray(d)?d[0]:d;
 const db=()=>{try{return (typeof v073Db!=='undefined'&&v073Db)||null}catch(_){return null}};
 const fmt=n=>Math.max(0,Math.round(Number(n)||0).toLocaleString('de-DE'));
@@ -156,6 +156,8 @@ function paint(){
 }
 async function load(){
   const x=db();if(!x)return;
+  const owner=claimId('owner');
+  if(S.ownerKey!==owner){S.data=null;S.claim=null;S.ownerKey=owner}
   try{
     const {data,error}=await x.rpc('v7215_ad_bag_state');
     if(error)throw error;
