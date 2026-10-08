@@ -13026,3 +13026,19 @@ Aktueller Release-Status:
   - Markup: `ae873310fa969db1f11e606ab02f899d20d87bac`;
   - Shop-CSS: `b8efa88e7fe26e6a7e013c02c708e148b8bb8f1a`;
   - Beta Cache: `e36e78863c40767aed892fe4c7a264b5d32c50ab`.
+
+### 2026-10-08 – V8.228 VIP-Freiwurf Buttonanzeige vereinfacht (Beta)
+- Shop-Neuwürfeln:
+  - solange VIP-Freiwurf verfügbar ist, zeigt der Button nur noch `👑 VIP FREIWÜRFELN`;
+  - keine Bereichsbezeichnung, kein `1 Harz-Taler` im Buttontext;
+  - die zusätzliche CSS-Kostenzeile `:after { content:'1 Harz-Taler' }` wird für den VIP-Freiwurf vollständig ausgeblendet.
+- Nach Nutzung des Freiwurfs setzt der bestehende serverautoritative Reroll-Flow `free_reroll_available=false` und feuert `growlegends:vip-state`;
+  - dadurch rendert der Shop neu;
+  - danach erscheint wieder der normale Button mit `1 Harz-Taler`.
+- Kostenlogik/Serverauthorität unverändert; nur Darstellung angepasst.
+- Beta Cache-Key: `8228vipreroll1`.
+- Server 1 unverändert.
+- Relevante Commits:
+  - Shop-JS: `23424c168add4fa06b51b92ca9d26c758d5cf147`;
+  - Shop-CSS: `a8ee7e9697743437a9ee9833ec01364a15ba69fe`;
+  - Beta Cache: `aaa6bb9750e6d1ae657c1258d175c1746ebce178`.
