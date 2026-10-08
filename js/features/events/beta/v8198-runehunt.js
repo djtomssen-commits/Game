@@ -45,7 +45,13 @@ function overlay(){
  document.body.appendChild(el);return el;
 }
 function stopClock(){if(S.timer){clearInterval(S.timer);S.timer=null}}
-function close(){stopClock();overlay().classList.remove('show');document.body.classList.remove('v8210-growcup-open');document.querySelector('#v032MenuPanel')?.classList.remove('open');S.opened=false}
+function v8230RestoreMenuHost(){
+ try{
+  const panel=document.getElementById('v032MenuPanel'),host=document.getElementById('v032TopMenu');
+  if(panel&&host&&panel.parentElement!==host)host.appendChild(panel);
+ }catch(_){}
+}
+function close(){stopClock();overlay().classList.remove('show');document.body.classList.remove('v8210-growcup-open');document.querySelector('#v032MenuPanel')?.classList.remove('open','show');v8230RestoreMenuHost();S.opened=false}
 function wallet(){
  const st=S.state||{};
  return '<div class="v8210-wallet"><span><i>ᚱ</i><b>'+Math.max(0,Number(st.runes)||0)+'</b><small>Runen</small></span><span><i>✦</i><b>'+Math.max(0,Number(st.rune_shards)||0)+'</b><small>Fragmente</small></span></div>';
@@ -248,7 +254,11 @@ function v8229ToggleGlobalMenu(){
  try{
   window.v4148BuildCompleteMenu?.();
   const panel=document.getElementById('v032MenuPanel');
+  const topbar=document.getElementById('v372TopbarShell');
   if(!panel)return false;
+  if(document.body.classList.contains('v8210-growcup-open')&&topbar&&panel.parentElement!==topbar){
+   topbar.appendChild(panel);
+  }
   const opening=!(panel.classList.contains('open')||panel.classList.contains('show'));
   panel.classList.toggle('open',opening);
   panel.classList.toggle('show',opening);
@@ -281,7 +291,13 @@ if(!window.__V8229_GROWCUP_GLOBAL_MENU_GUARD__){
   v8229ToggleGlobalMenu();
  },true);
 }
-async function open(){S.opened=true;S.view='cup';document.body.classList.add('v8210-growcup-open');overlay().classList.add('show');paint();await refresh({paintNow:true});void loadRanking()}
+async function open(){
+ S.opened=true;S.view='cup';
+ document.body.classList.add('v8210-growcup-open');
+ const panel=document.getElementById('v032MenuPanel'),topbar=document.getElementById('v372TopbarShell');
+ if(panel&&topbar&&panel.parentElement!==topbar)topbar.appendChild(panel);
+ overlay().classList.add('show');paint();await refresh({paintNow:true});void loadRanking()
+}
 async function start(){
  if(S.busy)return;S.busy=true;paint();
  try{
