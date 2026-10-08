@@ -25,7 +25,7 @@
     <button id="${P}Toggle" class="btn secondary" disabled>Autopilot laden …</button>
     <button id="${P}Refresh" class="btn secondary">Aktualisieren</button>
    </div>
-   <div class="muted" style="font-size:12px;margin-bottom:10px">Pausieren stoppt neue Aktionen. Angelegte Charaktere bleiben zunächst erhalten. Vollständiges Entfernen benötigt einen geprüften Rückbau einschließlich Gilden und PvP.</div>
+   <div class="muted" style="font-size:12px;margin-bottom:10px">Pausieren stoppt neue Aktionen. Angelegte Charaktere bleiben zunächst erhalten. Stilllegen ist vollständig umkehrbar und stoppt spätere Bot-Aktionen. Das dauerhafte Löschen des Spielaccounts wird erst nach vollständiger Prüfung von Gilden, PvP, Nachrichten und Käufen freigegeben.</div>
    <div id="${P}Feedback" role="status" style="font-size:12px;margin:8px 0"></div>
    <div id="${P}Trial" class="muted" style="font-size:12px;margin:8px 0">Nebelwolf-Quest-Test wird geladen …</div>
    <div id="${P}List" style="max-height:440px;overflow:auto"><div class="muted">Bot-Profile werden geladen …</div></div>`;
@@ -37,6 +37,7 @@
    const slot=Number(btn.dataset.botSlot);const action=btn.dataset.botAction;
    if(!Number.isInteger(slot)||slot<1||slot>50)return;
    if(action==='pause'||action==='resume')control(action,slot);
+   else if(action==='archive'||action==='restore')archive(slot,action==='restore');
   });
  }
  async function rpc(payload){const {data,error}=await api().rpc('v8243_bot_admin',payload);if(error)throw error;if(!data?.ok)throw Error(data?.reason||'Unbekannter Fehler');return data;}
@@ -50,15 +51,33 @@
   const list=$('#'+P+'List');if(!list)return;
   list.innerHTML=(data.agents||[]).map(a=>{
    const canPause=a.lifecycle==='active';
-   const canResume=a.lifecycle==='paused';
+   const canResume=a.lifecycle==='paused'&&!!data.worker_ready;
+   const canArchive=a.lifecycle!=='retired';
+   const canRestore=a.lifecycle==='retired';
    const action=canPause?'pause':canResume?'resume':'';
    return `<div class="v093-admin-item" style="padding:9px 0;border-bottom:1px solid #72543850">
     <div class="v093-admin-item-top"><b>#${a.slot} ${esc(a.name)}</b><span class="pill">${esc(labels[a.lifecycle]||a.lifecycle)}</span></div>
     <div class="muted" style="font-size:12px">${esc(a.class)} · ${esc(profiles[a.playstyle]||a.playstyle)} · Aktivität ${Math.round(Number(a.intensity||0)*100)} % · ${Number(a.total_actions)||0} Aktionen</div>
     ${a.last_action?'<div class="muted" style="font-size:11px">Letzte Aktion: '+esc(a.last_action)+'</div>':''}
     ${action?'<button class="btn secondary" style="margin-top:6px" data-bot-action="'+action+'" data-bot-slot="'+Number(a.slot)+'">'+(canPause?'Pausieren':'Fortsetzen')+'</button>':''}
+    ${canArchive?'<button class="btn secondary" style="margin:6px 0 0 6px" data-bot-action="archive" data-bot-slot="'+Number(a.slot)+'">Stilllegen</button>':''}
+    ${canRestore?'<button class="btn secondary" style="margin-top:6px" data-bot-action="restore" data-bot-slot="'+Number(a.slot)+'">Wiederherstellen</button>':''}
    </div>`;
   }).join('')||'<div class="muted">Keine Bot-Profile vorhanden.</div>';
+ }
+ async function archive(slot,restore){
+  if(!authorized()||busy)return;
+  const message=restore
+    ?'Bot-Platz '+slot+' wiederherstellen? Der Charakter bleibt erhalten und der Bot wird pausiert.'
+    :'Bot-Platz '+slot+' stilllegen? Es werden keine Accounts oder Spielstände gelöscht. Die Aktion ist umkehrbar.';
+  if(!confirm(message))return;
+  busy=true;
+  try{
+   const result=await api().rpc('v8250_bot_archive',{p_slot:slot,p_restore:restore});
+   if(result.error||!result.data?.ok)throw Error(result.error?.message||'Aktion abgelehnt');
+   notice(restore?'Bot wiederhergestellt.':'Bot stillgelegt. Charakterdaten bleiben erhalten.',true);
+  }catch(e){notice('Bot-Aktion fehlgeschlagen: '+(e?.message||String(e)));}
+  finally{busy=false;last=null;load();}
  }
  async function load(){
   if(!authorized()||busy)return;
