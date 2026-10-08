@@ -245,14 +245,49 @@ async function loadRanking(force=false){
  try{const r=await rpc('v8210_growcup_leaderboard',{p_limit:100});if(r?.ok){S.ranking=r;if(S.opened)paint()}return r}
  catch(e){S.lastError=String(e?.message||e);console.warn('[V8.219 Grow Cup] ranking',e);return null}
 }
+function setMainMenuOpen(open){
+ try{
+  window.v4148BuildCompleteMenu?.();
+  const panel=document.querySelector('#v032MenuPanel');
+  if(!panel)return false;
+  panel.classList.toggle('open',!!open);
+  panel.classList.toggle('show',!!open);
+  panel.setAttribute('aria-hidden',open?'false':'true');
+  if(open){
+   panel.style.setProperty('display','block','important');
+   panel.style.setProperty('visibility','visible','important');
+   panel.style.setProperty('opacity','1','important');
+   panel.style.setProperty('pointer-events','auto','important');
+   panel.style.setProperty('z-index','100000','important');
+  }else{
+   panel.style.removeProperty('display');
+   panel.style.removeProperty('visibility');
+   panel.style.removeProperty('opacity');
+   panel.style.removeProperty('pointer-events');
+   panel.style.removeProperty('z-index');
+  }
+  return true;
+ }catch(err){console.warn('[V8.223 Grow Cup] main menu state',err);return false}
+}
 function openMenu(e){
  try{
   e?.preventDefault?.();e?.stopPropagation?.();
-  window.v4148BuildCompleteMenu?.();
   const panel=document.querySelector('#v032MenuPanel');
-  if(panel)panel.classList.toggle('open');
- }catch(err){console.warn('[V8.219 Grow Cup] menu',err)}
+  const open=!(panel?.classList.contains('open')||panel?.classList.contains('show'));
+  setMainMenuOpen(open);
+ }catch(err){console.warn('[V8.223 Grow Cup] menu',err)}
 }
+document.addEventListener('click',e=>{
+ if(!document.body.classList.contains('v8210-growcup-open'))return;
+ const btn=e.target?.closest?.('#v372TopbarShell .v372-menu');
+ if(!btn)return;
+ e.preventDefault();
+ e.stopPropagation();
+ e.stopImmediatePropagation?.();
+ const panel=document.querySelector('#v032MenuPanel');
+ const open=!(panel?.classList.contains('open')||panel?.classList.contains('show'));
+ setMainMenuOpen(open);
+},true);
 async function open(){S.opened=true;S.view='cup';document.body.classList.add('v8210-growcup-open');overlay().classList.add('show');paint();await refresh({paintNow:true});void loadRanking()}
 async function start(){
  if(S.busy)return;S.busy=true;paint();
