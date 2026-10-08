@@ -1,6 +1,6 @@
 # V8.009 – Page / Tab Audit Matrix
 
-Stand: 2026-10-07
+Stand: 2026-10-08
 
 Legende:
 - [ ] offen
@@ -29,7 +29,7 @@ Die Matrix wird nach jedem großen Cleanup-Batch aktualisiert.
 | Quests | Quest / Schicht-Arbeiten-Chillen | [x] | Dampf-/Quest-Renderowner konsolidiert; V8.190: Rewarded-Video direkt unter Zeit-Samen-Skip auf Beta + Server1, bis zu 2× je Quest, je 25 % der ursprünglichen Dauer, maximal 50 %, nur nach signiertem AdMob-SSV; 0/1/2 serverautoritativ; manueller 2×-Endtest offen |
 | Dungeon | Weltkarte / 10er-Detailkarte / Kampf / Reward | [x] | Combat bleibt beim v7175 Renderer; v7051 serverautoritativ; v247 alleiniger Reward-Modal-Owner; doppelter Reward-DOM/Sound entfernt; Feedback-Run-ID erhalten; manueller Endtest offen |
 | Shop | Waffen & Rüstung / Schmuck & Magie | [x][T] | Repaint-Flicker/Legacy-Header bereinigt; Kauf serverautoritativ; V8.195/196 Beta: aktiver VIP erhält genau 1 gemeinsamen kostenlosen Neu-Wurf pro Berliner Tag für Waffen oder Magie/Schmuck; Button zeigt vorher explizit kostenlos und springt nach Verbrauch sofort wieder auf 1 Harz-Taler; Authority direkt in v7083 |
-| Hinterhof-Dealer | Harz Lotto / Tütchen (Coming Soon) | [x] | Player-sichtbarer Menüeintrag über v4148; Harz Lotto offen, Tütchen deaktiviert/COMING SOON; manueller Endtest offen |
+| Hinterhof-Dealer | Tütchen / Harz-Automat | [x] | V8.234–236: Rewarded-Tütchen produktiv auf Beta + Server 1 aktiviert, inklusive signiertem AdMob-SSV und servergetrenntem Fortschritt; V8.237: beim Seitenaufruf ist Tütchen direkt der aktive und sichtbare Tab (kanonischer Owner + HTML-Startzustand beider Entrypoints), Harz-Automat bleibt manuell erreichbar; Manueller Endtest auf Geräten offen |
 | PvP | Hall-/Battle-Lifecycle | [x] | Cooldown ohne Full-Rerender, Legacy-Finish konsolidiert, v7053 Server-Authority + Fallback sauber getrennt; manueller Endtest offen |
 | Guild | Übersicht / Growtasks / Boss / Krieg | [x] | kompletter Struktur-/DOM-/Lifecycle-/Authority-Pass grün; V8.194 Grow-Beutel-Spende prüft Membership serverseitig und ist vom normalen Gilden-XP-Tagescap getrennt; manueller Endtest offen |
 | Hall of Haze | Spieler-Ranking / Gilden-Ranking / Profile | [x] | V8.184: v6145 bleibt kanonischer Hall-Owner; neue Haupttabs Spieler/Gilden, Gildenranking nach Gildenlevel → Gilden-Buds → Gilden-EP, anklickbares Gildenprofil mit Beschreibung/Leiter/Mitgliedern; V8.207: Top-3-Podium nutzt keine 100%-Rahmenstauchung mehr, sondern kanonisch vergrößerte Overlay-Geometrie; VIP wegen kleinerer Artwork-Öffnung separat normalisiert; Beta/Server1 Cache aktualisiert; manueller UI-Endtest offen |
