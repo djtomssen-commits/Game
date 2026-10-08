@@ -162,7 +162,7 @@ async function nativeWatch(){
     'beta'
   ).toLowerCase();
   const customData=currentServer==='server1'
-    ?'growlegends_adbag_v1:server1'
+    ?'growlegends_adbag_v1_server1'
     :'growlegends_adbag_v1';
   const result=await ads.showRewarded({
     placement:'ad_bag',
