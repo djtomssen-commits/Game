@@ -12908,3 +12908,23 @@ Aktueller Release-Status:
   - CSS-Reparatur: `b073c77ff4bad061c95545c9571c164f8beb2cb8`;
   - Beta Cache: `be5cc8f944bf10ccfc59d1fe66e45775cbb55f22`.
 - Server 1 weiterhin nicht auf V8.221 geändert.
+
+### 2026-10-08 – V8.222 Grow Cup Bühnenbild auf HD-Asset umgestellt (Beta)
+- Nutzer hat das hochauflösende Bühnenbild als echtes Repo-Asset hochgeladen:
+  - `assets/growcup/growcup-stage.png`;
+  - Dateigröße ca. 2,1 MB.
+- Grow-Cup-CSS direkt im bestehenden Owner `css/features/forge/beta/v8198-rune-enchant.css` geändert:
+  - die alte eingebettete **180×320-WebP-Data-URI** wurde für die große Cup-Bühne entfernt;
+  - die Bühne lädt jetzt das echte Asset über `../../../../assets/growcup/growcup-stage.png`;
+  - vorhandene Pflanzenintegration aus V8.221 bleibt unverändert erhalten.
+- Kein neuer Renderer und keine Patch-Schicht.
+- QA:
+  - externe Bühnenasset-Referenz exakt 1× im Grow-Cup-CSS;
+  - CSS Klammern **335/335**;
+  - Stage-Rule weiterhin mit `background-size:cover` und `background-position:center`;
+  - Beta lädt neuen CSS-Key exakt 1×.
+- Beta Cache-Key: `8222cuphd1`.
+- Server 1 noch nicht geändert; zuerst Mobile-Beta-Test.
+- Relevante Commits:
+  - HD-Bühnenasset im CSS: `828891b9c061fcb16676900b7aabe47fd2994224`;
+  - Beta Cache: `1898606a79d86c23b8ec68d5e93f7248a714e3ca`.
