@@ -2,9 +2,10 @@
   const V343_SERVER_KEY='growLegendsSelectedServer';
   const V343_RELEASE_CHANNEL=String(window.GROW_RELEASE_CHANNEL||'stable');
   const V343_EARLY_EMAIL='tomssen5@gmail.com';
-  /* Server 1 public launch: 2026-10-08 16:00 Europe/Berlin = 14:00 UTC. */
-  const V343_SERVER1_OPENS_AT=Date.parse('2026-10-08T14:00:00Z');
-  const server1Open=()=>Date.now()>=V343_SERVER1_OPENS_AT;
+  /* Server 1 public launch opened manually on 2026-10-08. */
+  const V343_SERVER1_OPENS_AT=Date.parse('2026-10-08T06:03:08Z');
+  const V343_SERVER1_FORCE_OPEN=true;
+  const server1Open=()=>V343_SERVER1_FORCE_OPEN||Date.now()>=V343_SERVER1_OPENS_AT;
   const defaultServer=()=>server1Open()?'server1':'beta';
 
   const T=(key,vars,fallback)=>window.GrowI18n?.t?.(key,vars)||fallback||key;
