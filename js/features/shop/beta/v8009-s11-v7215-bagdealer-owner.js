@@ -155,7 +155,13 @@ async function nativeWatch(){
   if(!ads?.showRewarded)throw new Error('NATIVE_REWARDED_UNAVAILABLE');
   const userId=(()=>{try{return (!v073User?.is_anonymous&&v073User?.id)?String(v073User.id):''}catch(_){return''}})();
   if(!userId)throw new Error('AUTH_REQUIRED');
-  const customData=String(window.GROW_RELEASE_CHANNEL||'beta')==='server1'
+  const currentServer=String(
+    window.v343CurrentServer||
+    window.s?.__serverId||
+    window.GROW_RELEASE_CHANNEL||
+    'beta'
+  ).toLowerCase();
+  const customData=currentServer==='server1'
     ?'growlegends_adbag_v1:server1'
     :'growlegends_adbag_v1';
   const result=await ads.showRewarded({
