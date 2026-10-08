@@ -38,19 +38,30 @@
 
       shell.querySelector('.v372-menu').onclick=e=>{
         e.preventDefault();e.stopPropagation();
-        const panel=document.querySelector('#v032MenuPanel'); if(!panel)return;
-        const open=!panel.classList.contains('open');
-        panel.classList.toggle('open',open);
-        panel.classList.toggle('show',open);
-        if(open){
-          panel.style.setProperty('display','block','important');
-          panel.style.setProperty('visibility','visible','important');
-          panel.style.setProperty('opacity','1','important');
-          panel.style.setProperty('pointer-events','auto','important');
-        }else{
-          panel.style.removeProperty('display');panel.style.removeProperty('visibility');
-          panel.style.removeProperty('opacity');panel.style.removeProperty('pointer-events');
-        }
+        const toggle=()=>{
+          const panel=document.querySelector('#v032MenuPanel'); if(!panel)return;
+          try{window.v4148BuildCompleteMenu?.()}catch(_){}
+          const open=!(panel.classList.contains('open')||panel.classList.contains('show'));
+          panel.classList.toggle('open',open);
+          panel.classList.toggle('show',open);
+          panel.setAttribute('aria-hidden',open?'false':'true');
+          if(open){
+            panel.style.setProperty('display','block','important');
+            panel.style.setProperty('visibility','visible','important');
+            panel.style.setProperty('opacity','1','important');
+            panel.style.setProperty('pointer-events','auto','important');
+            panel.style.setProperty('z-index','120001','important');
+          }else{
+            panel.style.removeProperty('display');panel.style.removeProperty('visibility');
+            panel.style.removeProperty('opacity');panel.style.removeProperty('pointer-events');
+            panel.style.removeProperty('z-index');
+          }
+        };
+        /* v032TopMenu has a document-level outside-click closer. The authoritative
+           topbar sits outside that wrapper; in the Grow Cup defer opening until
+           that legacy listener has completed the current click. */
+        if(document.body.classList.contains('v8210-growcup-open'))requestAnimationFrame(toggle);
+        else toggle();
       };
       shell.querySelector('[data-plus="gold"]').onclick=()=>{try{v032Go('shop')}catch(e){}};
       shell.querySelector('[data-plus="harz"]').onclick=()=>{try{v032Go('harzDealer')}catch(e){}};
