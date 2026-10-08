@@ -244,6 +244,43 @@ async function loadRanking(force=false){
  try{const r=await rpc('v8210_growcup_leaderboard',{p_limit:100});if(r?.ok){S.ranking=r;if(S.opened)paint()}return r}
  catch(e){S.lastError=String(e?.message||e);console.warn('[V8.219 Grow Cup] ranking',e);return null}
 }
+function v8229ToggleGlobalMenu(){
+ try{
+  window.v4148BuildCompleteMenu?.();
+  const panel=document.getElementById('v032MenuPanel');
+  if(!panel)return false;
+  const opening=!(panel.classList.contains('open')||panel.classList.contains('show'));
+  panel.classList.toggle('open',opening);
+  panel.classList.toggle('show',opening);
+  panel.setAttribute('aria-hidden',opening?'false':'true');
+  if(opening){
+   panel.style.setProperty('display','block','important');
+   panel.style.setProperty('visibility','visible','important');
+   panel.style.setProperty('opacity','1','important');
+   panel.style.setProperty('pointer-events','auto','important');
+   panel.style.setProperty('z-index','120001','important');
+  }else{
+   panel.style.removeProperty('display');
+   panel.style.removeProperty('visibility');
+   panel.style.removeProperty('opacity');
+   panel.style.removeProperty('pointer-events');
+   panel.style.removeProperty('z-index');
+  }
+  return true;
+ }catch(err){console.warn('[V8.229 Grow Cup] global menu',err);return false}
+}
+if(!window.__V8229_GROWCUP_GLOBAL_MENU_GUARD__){
+ window.__V8229_GROWCUP_GLOBAL_MENU_GUARD__=true;
+ document.addEventListener('click',e=>{
+  if(!document.body.classList.contains('v8210-growcup-open'))return;
+  const btn=e.target?.closest?.('#v372TopbarShell .v372-menu');
+  if(!btn)return;
+  e.preventDefault();
+  e.stopPropagation();
+  e.stopImmediatePropagation?.();
+  v8229ToggleGlobalMenu();
+ },true);
+}
 async function open(){S.opened=true;S.view='cup';document.body.classList.add('v8210-growcup-open');overlay().classList.add('show');paint();await refresh({paintNow:true});void loadRanking()}
 async function start(){
  if(S.busy)return;S.busy=true;paint();
