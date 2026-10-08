@@ -454,7 +454,11 @@ window.v8009CreateTowerLobbyController=function(c){
   const paint=html=>{const liveBox=document.getElementById('vTWednesdayRanking');if(liveBox)liveBox.innerHTML=html};
   paint(`<div class="vT-empty">${live.active?'Mittwochs-Rangliste wird geladen …':'Finale Mittwochs-Rangliste wird geladen …'}</div>`);
   try{
-   const rows=(await c.fetchWednesdayRows(target)).slice(0,50),uid=c.getUserId();
+   /* V8.288: avoid an indefinite "Mittwochs-Rangliste wird geladen" on a stalled profile sync. */
+   const rows=(await Promise.race([
+     c.fetchWednesdayRows(target),
+     new Promise((_,reject)=>setTimeout(()=>reject(new Error('TOWER_WEDNESDAY_RANKING_TIMEOUT')),7000))
+   ])).slice(0,50),uid=c.getUserId();
    paint(rows.length?rows.map((p,i)=>`<div class="vT-leader-row ${String(p.id)===uid?'me':''}" data-class-id="${c.esc(p.class_id||'')}"><div class="vT-rank ${i<3?'top':''}">${i+1}</div><div class="vT-player"><b>${c.esc(p.character_name||'Unbekannt')}</b><span>${c.esc(p.class_name||'')} · Lv. ${Number(p.level)||1} · ${target.icon} ${c.esc(target.name)}</span></div><div class="vT-score"><b>${c.fmt(p.w.best_score||0)}</b><span>Etage ${Number(p.w.best_floor)||0}</span></div></div>`).join(''):`<div class="vT-empty">${live.active?'Heute hat noch niemand einen Mittwochs-Turmwert gespeichert.':'Für den letzten Mittwoch ist noch keine finale Wertung verfügbar.'}</div>`);
    if(!live.active)c.paintWednesdayPlacementReward(rows,target,uid);
   }catch(e){
