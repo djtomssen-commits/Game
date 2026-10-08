@@ -13321,3 +13321,19 @@ Aktueller Release-Status:
 - Server-1-Ereignis für den Screenshot überprüft: `server1.player_ad_bag_events` id 13, 2026-10-08 08:54:57 UTC, `completed=true`, 3/3, **503 Gold + 3 Fragmente**. Die im Screenshot als Vorschau gezeigten Beträge stimmen hier exakt mit dem serverseitig protokollierten Reward überein; keine fehlende Auszahlung.
 - Einschränkung: Die separate server1-RPC für historische exakte Reward-Belege ist nicht verfügbar (Migrationszugriff blockiert). Daher verwendet der Server-1-Client bei neuen Claims weiterhin die vorherige Tütchen-Reward-Vorschau. Nicht als generelle Bestätigung künftiger Summen darstellen.
 - Beides auf Gerät manuell noch prüfen: Modal über den Tabs, danach Weiter-Button, Anzeige bei neuem Reward.
+
+### 2026-10-08 – V8.240 Server 1 Erst-Tutorial nach Charaktererstellung
+- Nutzer-Repro: Neu auf Server 1 erstellter Charakter startet **ohne Willkommen-/Erstbesuchstutorial**.
+- Repo-Diagnose:
+  - Beide Entrypoints `beta.html` und `server1.html` enthalten bereits den kanonischen `v6254`-Guide und Overlay (Cache alt `8086onboarding1`).
+  - Kanonischer Tutorial-Owner `js/features/guide/beta/v8009-s1-v6254-grow-guide.js` aktiviert den Erstbesuch nur bei `enabled=true` und `welcomeSeen=false`; vorhandene Accounts dürfen nicht automatisch zurückgesetzt werden.
+  - Server1-Charakterersteller `js/features/account/beta/v8009-s4-v7229-server1-character-bootstrap.js` hatte nach erfolgreich abgeschlossener `gl_create_character`-RPC + Hydration + `v200OpenHome` **keinen direkten Tutorial-Handoff**. Die frühere `v073SyncProfile`/Account-Ready-Heuristik garantiert für diesen Kanal keinen Welcome-Aufruf.
+  - Health-Log-Einträge (letzte 3 h) 0, Runtime-Fehlerlogs 0 (beides **keine** Entwarnung); Player-QA-Snapshots gesamt 90; konkrete Server1-World/Hall/Quest-Snapshots zur Nutzerzeit mit `auth=true`, `characterComplete=true`, `runtimeErrorsThisSession=0`.
+- Kanonische Quellcodekorrektur:
+  - `v6254OnCharacterCreated(id,server)` direkt im bestehenden Guide-Owner ergänzt; prüft Auth, Account-ID, Server und tatsächlich vollständigen Charakter, aktiviert nur für den **bestätigten neu erstellten Charakter** `v6254Tutorial` und ruft den vorhandenen `afterCharacterSync()`-Willkommensablauf auf.
+  - Der Server1-Creator ruft den Handoff nach dem serverautoritativen Create/Hydrate und nach Schließen des Charakterfensters / Öffnen der Welt auf. **Kein zweiter Tutorial-Renderer, kein unabhängiger Observer, keine globalen Tutorial-Resets.**
+  - Bereits erstellte Spieler (einschließlich des unmittelbar vor dem Fix erstellten) können auf der **Startseite über `?` → `Einführung von Anfang an starten`** ausdrücklich per Opt-in Willkommen + Seiten-Tutorials erneut beginnen; bestehende Spieler werden nicht automatisch überfallen.
+  - CSS für Replay-Schaltfläche direkt im existierenden `v8009-extracted-v6254-grow-guide-css.css` ergänzt.
+- Beta und Server1 Guide-CSS/JS mit Cache-Key `8240newplayerguide1`; Server1 Creator ebenfalls cache-versioniert.
+- QA (Simulationsprüfung): JavaScript-Parse beider Owner grün, Post-Create Handoff + Welcome grün, bestehender Charakter unverändert, manueller Replay grün, fremde Account-ID abgelehnt. Manueller Android-Neucharakter-Test steht aus.
+- Klassenbalance, Serverautorität, Charakterdaten und bestehende Tutorials nicht global geändert.
