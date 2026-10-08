@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow,noarchive">
+<meta name="referrer" content="no-referrer">
+<title>Grow Legends · Admin Control Center</title>
+<link rel="stylesheet" href="css/admin-control-center.css?v=8290b1">
+<script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.57.0/dist/umd/supabase.min.js"></script>
+<script defer src="js/admin-control-center.js?v=8290b1"></script>
+</head>
+<body>
+<div class="ambient"></div>
+<div id="notice" class="notice" role="status" aria-live="polite"></div>
+<section id="login-screen" class="login-screen">
+ <div class="login-art" aria-hidden="true"><div class="crest">🌿</div><div class="monogram">GL</div></div>
+ <div class="login-card">
+   <p class="eyebrow">GROW LEGENDS / DEVELOPMENT</p>
+   <h1>Control <span>Center</span></h1>
+   <p class="muted">Privates Dashboard für berechtigte Administratoren. Kein Spielerzugang.</p>
+   <form id="login-form">
+     <label for="login-email">E-Mail</label><input id="login-email" type="email" autocomplete="username" required placeholder="admin@beispiel.de">
+     <label for="login-password">Passwort</label><input id="login-password" type="password" autocomplete="current-password" required placeholder="••••••••">
+     <button class="primary full" type="submit" id="login-button">Sicher anmelden →</button>
+   </form>
+   <p class="muted small">Das Konto muss bereits als Grow-Legends-Admin freigeschaltet sein. Der Server prüft die Berechtigung bei jedem Aufruf.</p>
+   <p class="hint">🔒 Serverautorisierung · Keine geheimen API-Schlüssel im Browser · Änderungen protokolliert</p>
+ </div>
+</section>
+<div id="app" class="shell hidden">
+  <aside class="sidebar">
+    <div class="brand"><div class="brand-icon">🌿</div><div><strong>GROW LEGENDS</strong><span>ADMIN / DEV CONSOLE</span></div></div>
+    <div class="side-section">WORKSPACE</div>
+    <nav id="sidebar-nav" aria-label="Adminbereiche">
+      <button class="nav-item active" data-page="overview"><span>◈</span> Übersicht</button>
+      <button class="nav-item" data-page="players"><span>♟</span> Spieler & Charaktere</button>
+      <button class="nav-item" data-page="economy"><span>◉</span> Ökonomie</button>
+      <button class="nav-item" data-page="settings"><span>⚙</span> Einstellungen</button>
+      <button class="nav-item" data-page="security"><span>⛨</span> Sicherheit & Audit</button>
+      <button class="nav-item" data-page="events"><span>✦</span> Events</button>
+      <button class="nav-item" data-page="communications"><span>✉</span> Mitteilungen</button>
+      <button class="nav-item" data-page="bots"><span>♜</span> Bot-Steuerung</button>
+      <button class="nav-item" data-page="system"><span>⌘</span> Systemstatus</button>
+    </nav>
+    <div class="side-bottom">
+      <div class="permission"><span class="online-dot"></span> Administrator-Zugriff</div>
+      <small>V8.290 · Rollenbasiert · Serverseitig geprüft</small>
+    </div>
+  </aside>
+  <main class="main">
+    <header class="topbar">
+      <div class="top-title"><p class="eyebrow">ADMINISTRATION / <span id="breadcrumb">ÜBERSICHT</span></p><h1 id="page-title">Übersicht</h1></div>
+      <div class="top-actions">
+        <div class="server-picker" role="group" aria-label="Server auswählen">
+          <button id="server-beta" data-server="beta" class="server-btn selected">● BETA</button>
+          <button id="server-live" data-server="server1" class="server-btn">● SERVER 1</button>
+        </div>
+        <button class="subtle refresh" id="refresh-button" title="Aktuelle Ansicht aktualisieren">↻ <span>Aktualisieren</span></button>
+        <button class="subtle" id="logout-button">Abmelden</button>
+      </div>
+    </header>
+    <div class="workspace">
+      <div id="server-warning" class="server-warning hidden">⚠ Live-Server 1: Änderungen wirken unmittelbar auf echte Spieler. Jede Aktion wird überprüft und protokolliert.</div>
+      <div id="page-content" aria-live="polite"></div>
+      <footer class="footer"><span>GROW LEGENDS · ADMIN CONTROL CENTER</span><span>Live-Spielstände nur über geprüfte Serveraktionen verändern</span></footer>
+    </div>
+  </main>
+</div>
+</body>
+</html>
