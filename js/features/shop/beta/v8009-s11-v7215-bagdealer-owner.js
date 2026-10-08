@@ -153,8 +153,20 @@ async function adminTestWatch(){
 async function nativeWatch(){
   const ads=window.Capacitor?.Plugins?.GrowLegendsAds;
   if(!ads?.showRewarded)throw new Error('NATIVE_REWARDED_UNAVAILABLE');
-  const result=await ads.showRewarded({placement:'ad_bag'});
-  if(result?.rewarded===false||result?.completed===false)throw new Error('AD_NOT_COMPLETED');
+  const userId=(()=>{try{return (!v073User?.is_anonymous&&v073User?.id)?String(v073User.id):''}catch(_){return''}})();
+  if(!userId)throw new Error('AUTH_REQUIRED');
+  const customData=String(window.GROW_RELEASE_CHANNEL||'beta')==='server1'
+    ?'growlegends_adbag_v1:server1'
+    :'growlegends_adbag_v1';
+  const result=await ads.showRewarded({
+    placement:'ad_bag',
+    userId,
+    customData
+  });
+  const rewarded=String(result?.status||'').toLowerCase()==='rewarded'
+    || result?.rewarded===true
+    || result?.completed===true;
+  if(!rewarded)throw new Error('AD_NOT_COMPLETED');
   return result;
 }
 async function watch(){
@@ -175,7 +187,7 @@ async function watch(){
       try{window.v069SyncCurrencies?.();window.v6213SyncCurrencies?.()}catch(_){}
       try{await window.v7063ItemStageRefresh?.(true)}catch(_){}
       try{await window.v7077ProgressRefresh?.()}catch(_){}
-    }else if(S.data.mode==='prod'){
+    }else if(S.data.mode==='prod'||S.data.mode==='production'){
       toast('Bestätigung wird verarbeitet','info','Die Anzeige wurde beendet. Der Server bestätigt die Belohnung separat.');
     }
   }catch(e){
