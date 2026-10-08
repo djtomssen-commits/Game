@@ -13062,3 +13062,21 @@ Aktueller Release-Status:
 - VIP bleibt weiterhin Beta-only; `v8195-vip.js` wird auf Server 1 nicht geladen.
 - Relevanter Promotion-Commit:
   - `c6e66de556da8edd9ceed8dccbf15332af3efef7`.
+
+### 2026-10-08 – V8.229 Grow Cup: globaler Topbar-Hamburger hart abgesichert (Beta + Server 1)
+- Nutzerfeedback nach Server-1-Sync: globaler Hamburger oben links lässt sich in der Grow-Cup-Lobby weiterhin nicht öffnen.
+- Ursache: mehrere historische Menü-/Click-Owner konkurrieren weiterhin um denselben globalen Hamburger; die normale Topbar-`onclick`-Logik war im geöffneten Cup nicht deterministisch genug.
+- Fix direkt im bestehenden Grow-Cup-Owner `js/features/events/beta/v8198-runehunt.js`:
+  - **kein eigener Cup-Hamburger** wieder eingeführt;
+  - während `body.v8210-growcup-open` fängt ein einmalig registrierter Capture-Handler ausschließlich Klicks auf `#v372TopbarShell .v372-menu` ab;
+  - `preventDefault + stopPropagation + stopImmediatePropagation` verhindert konkurrierende Legacy-Handler;
+  - danach wird ausschließlich das normale `#v032MenuPanel` geöffnet/geschlossen;
+  - `open/show`, `aria-hidden`, Sichtbarkeit, Pointer-Events und Z-Index werden deterministisch gesetzt;
+  - außerhalb des Grow Cups greift der Guard nicht.
+- Bereits vorhandener Menü-Layer über dem Cup-Overlay bleibt aktiv (`z-index 120001`).
+- Fix auf **Beta und Server 1** per Cache-Key `8229cupmenu3` aktiviert.
+- Klassenbalance nicht berührt.
+- Relevante Commits:
+  - Grow-Cup-Owner: `c7273a45c6558a8cf895589a5fd94e9900c395fc`;
+  - Beta Cache: `28ae7a53af8952bed62a190b8b844f402ec2b23d`;
+  - Server 1 Cache: `74ed5736e762fcc44be2e01291e0a9a428ec0e92`.
