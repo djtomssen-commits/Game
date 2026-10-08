@@ -13346,3 +13346,11 @@ Aktueller Release-Status:
 - Beta und Server 1 laden denselben neuen JS-Guide mit Cache-Key `8241dealerreview1`. CSS unverändert.
 - Syntaxprüfung des Guide-Scripts erfolgreich; beide Server-Entrypoints mit dem neuen JS-Pfad/Cachestring geprüft. Manueller Test im Spiel über Hinterhof-Dealer → `?` offen.
 - Guide-Commit: `0342b6335b4f026aba98bb9c8a9b8e98edf4906d`; Beta: `92ac67cc7d929a1e0db6d0aebcb118e96f278aaf`; Server 1: `0940c92ec504e5a5808268c6874e2a8baa4a9963`.
+
+### 2026-10-08 – V8.242 Quest-Zeit-Samen-Fundchance auf 35 %
+- Nutzerfreigabe: bisherige 50 % pro abgeschlossenem Quest → **35 %**, für **Beta und Server 1**, sowohl normale als auch Elite-Quests.
+- Quelle/Authority: `recovery_private.v7044_roll_quest_seed(p_uid,p_source_ref,p_elite)` (Beta) und `server1_private.v7044_roll_quest_seed(p_uid,p_source_ref,p_elite)` (Server 1). Jeweils genau den Zeit-Samen-Roll `if random()<.50 then time_amt:=1; end if;` auf `if random()<.35 then time_amt:=1; end if;` geändert.
+- DB-Migrations: `v8242_quest_time_seed_drop_35_beta` und `v8242_quest_time_seed_drop_35_server1` erfolgreich angewandt. Kein zusätzlicher Client-Roll/Render-Patch; der lokal verbliebene Quest-Zeit-Samen-Wurf wurde bereits in V8.096 entfernt.
+- Keine Änderung an Quest-Gold, EXP, Harz, Items, Grow-Samen (24 % normal / 42 % Elite), Elite-Boni, Quest-Timern, Dampf oder klassenspezifischer Balance.
+- Nachkontrolle direkt über `pg_get_functiondef`: Beide produktiven Serverfunktionen enthalten jeweils exakt einen 35-%-Zeit-Samen-Wurf; 50-%-Zeit-Samen-Wurf ist in beiden nicht mehr enthalten. Keine simulierten Spieler-Belohnungen/RPC-Auszahlungen ausgeführt.
+- Statistischer Erwartungswert: 3,5 Zeit-Samen pro 10 abgeschlossenen Quests statt 5 (ausschließlich dieser Quell-Drop).
