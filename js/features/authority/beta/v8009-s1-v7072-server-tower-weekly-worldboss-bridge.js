@@ -312,7 +312,21 @@ async function v7085AnimateTowerFight(response,beforeRun){
      Keep the combat presentation, but fit it into a short deterministic visual budget
      instead of spending ~640 ms per replay event (which made normal tower clicks take
      6-7 seconds even though the RPC itself returned in ~200 ms). */
-  const cadence=window.v7269DungeonCadence?.(replay.length)||{frameDelay:220,attackDelay:97,settleDelay:123,visualAttackMs:400,visualHitMs:400,visualPopMs:650,startDelayMs:90};
+  /* V8.292: Tower replay ONLY — 10% snappier presentation.
+     Server-authoritative combat outcome, damage, rewards, drop rate and HP
+     are intentionally untouched. Dungeon and PvP cadence remain unchanged. */
+  const originalCadence=window.v7269DungeonCadence?.(replay.length)||{frameDelay:220,attackDelay:97,settleDelay:123,visualAttackMs:400,visualHitMs:400,visualPopMs:650,startDelayMs:90};
+  const faster=(ms,min)=>Math.max(min,Math.round((Number(ms)||min)*.90));
+  const cadence={
+    ...originalCadence,
+    frameDelay:faster(originalCadence.frameDelay,120),
+    attackDelay:faster(originalCadence.attackDelay,60),
+    settleDelay:faster(originalCadence.settleDelay,70),
+    visualAttackMs:faster(originalCadence.visualAttackMs,250),
+    visualHitMs:faster(originalCadence.visualHitMs,250),
+    visualPopMs:faster(originalCadence.visualPopMs,380),
+    startDelayMs:faster(originalCadence.startDelayMs,50)
+  };
   const replayStepMs=cadence.frameDelay;
   const replayAttackMs=cadence.attackDelay;
   const replaySettleMs=cadence.settleDelay;
