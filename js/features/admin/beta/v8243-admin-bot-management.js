@@ -27,6 +27,7 @@
    </div>
    <div class="muted" style="font-size:12px;margin-bottom:10px">Pausieren stoppt neue Aktionen. Angelegte Charaktere bleiben zunächst erhalten. Vollständiges Entfernen benötigt einen geprüften Rückbau einschließlich Gilden und PvP.</div>
    <div id="${P}Feedback" role="status" style="font-size:12px;margin:8px 0"></div>
+   <div id="${P}Trial" class="muted" style="font-size:12px;margin:8px 0">Nebelwolf-Quest-Test wird geladen …</div>
    <div id="${P}List" style="max-height:440px;overflow:auto"><div class="muted">Bot-Profile werden geladen …</div></div>`;
   parent.appendChild(card);
   $('#'+P+'Refresh').onclick=()=>load();
@@ -62,7 +63,22 @@
  async function load(){
   if(!authorized()||busy)return;
   install();
-  try{const data=await rpc({p_action:'status'});render(data);notice('');}
+  try{
+   const data=await rpc({p_action:'status'});
+   render(data);notice('');
+   const trialEl=$('#'+P+'Trial');
+   if(trialEl){
+    const result=await api().rpc('v8249_bot_trial_status');
+    if(result.error||!result.data?.ok){trialEl.textContent='Quest-Teststatus zurzeit nicht verfügbar.';}
+    else{
+     const t=result.data.test||{};
+     const done=t.phase==='completed';
+     trialEl.textContent=done
+      ?'Nebelwolf · Quest-Test abgeschlossen · '+Number(t.xp_awarded||0)+' EXP · '+Number(t.gold_awarded||0)+' Gold · '+Number(t.harz_awarded||0)+' Harz-Taler. Automatischer Scheduler: noch nicht installiert.'
+      :'Nebelwolf · Quest-Test: '+String(t.phase||'unbekannt')+'. Automatischer Scheduler: noch nicht installiert.';
+    }
+   }
+  }
   catch(e){notice('Bot-Status konnte nicht geladen werden: '+(e?.message||String(e)));}
  }
  async function control(action,slot){
