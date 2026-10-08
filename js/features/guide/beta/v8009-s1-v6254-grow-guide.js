@@ -216,6 +216,19 @@
     <button type="button" class="btn" id="v6254TutNext">${step===g.steps.length-1?'Fertig':'Weiter'}</button>
     <button type="button" class="btn" id="v6254TutSkip">Überspringen</button>
    </div>`;
+  if(manual&&currentKey==='world'){
+   const actions=q('v6254TutorialContent')?.querySelector('.v6254-tut-actions');
+   if(actions&&!actions.querySelector('[data-v6254-restart]')){
+    const b=document.createElement('button');
+    b.type='button';b.className='btn secondary v6254-guide-restart';
+    b.dataset.v6254Restart='1';b.textContent='Einführung von Anfang an starten';
+    b.onclick=()=>{const z=state();if(!z||!durable()||!complete())return;
+      z.enabled=true;z.legacy=false;z.welcomeSeen=false;z.pages={};save('guide-manual-restart');
+      close(false);showWelcome();
+    };
+    actions.appendChild(b);
+   }
+  }
   q('v6254TutBack').onclick=()=>{if(step>0){step--;render()}};
   q('v6254TutNext').onclick=()=>{
    if(step<g.steps.length-1){step++;render();return}
@@ -294,6 +307,19 @@
   }
  }
 
+ // The server1 creator does not use the legacy v073SyncProfile completion path.
+ // This is the single canonical post-create handoff after the atomic RPC and hydrate.
+ function onCharacterCreated(id,server){
+  const signedId=String((typeof v073User!=='undefined'&&v073User?.id)||'');
+  const actualServer=String(window.v343CurrentServer||s?.__serverId||window.GROW_RELEASE_CHANNEL||'beta');
+  if(!id||String(id)!==signedId||actualServer!==String(server)||!durable()||!complete())return false;
+  const z=state();if(!z)return false;
+  z.enabled=true;z.legacy=false;z.welcomeSeen=false;z.pages={};z.createdAt=Date.now();
+  save('confirmed-new-character');
+  afterCharacterSync();
+  return true;
+ }
+
  function afterCharacterSync(){
   const z=state(false);
   if(z?.enabled&&complete()&&durable()){
@@ -364,6 +390,7 @@
  setTimeout(()=>{armForNewCharacter();updateHelp()},150);
  setTimeout(()=>{armForNewCharacter();updateHelp()},900);
 
+ window.v6254OnCharacterCreated=onCharacterCreated;
  window.v6254OpenTutorial=(key=currentPage())=>openGuide(key,true);
  window.v6254ResetTutorialForCurrentCharacter=()=>{
   if(!durable()||!complete())return false;
