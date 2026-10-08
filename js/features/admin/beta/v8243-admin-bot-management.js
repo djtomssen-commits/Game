@@ -25,6 +25,7 @@
    <div class="v093-admin-actions" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">
     <button id="${P}Toggle" class="btn secondary" disabled>Autopilot laden …</button>
     <button id="${P}Refresh" class="btn secondary">Aktualisieren</button>
+    <button id="${P}Provision" class="btn secondary" disabled>49 Bot-Konten erstellen und starten</button>
    </div>
    <div class="muted" style="font-size:12px;margin-bottom:10px">Pausieren stoppt neue Aktionen. Angelegte Charaktere bleiben zunächst erhalten. Stilllegen ist vollständig umkehrbar und stoppt spätere Bot-Aktionen. Das dauerhafte Löschen des Spielaccounts wird erst nach vollständiger Prüfung von Gilden, PvP, Nachrichten und Käufen freigegeben.</div>
    <div id="${P}Feedback" role="status" style="font-size:12px;margin:8px 0"></div>
@@ -34,6 +35,7 @@
    <div id="${P}List" style="max-height:440px;overflow:auto"><div class="muted">Bot-Profile werden geladen …</div></div>`;
   parent.appendChild(card);
   $('#'+P+'Refresh').onclick=()=>load();
+  $('#'+P+'Provision').onclick=()=>bulkProvision();
   $('#'+P+'Toggle').onclick=()=>{if(last)control(last.enabled?'disable':'enable');};
   $('#'+P+'DungeonToggle').onclick=()=>{if(lastDungeon)dungeonControl(lastDungeon.enabled?'disable':'enable');};
   $('#'+P+'List').addEventListener('click',event=>{
@@ -50,6 +52,12 @@
   const ready=Number(data.provisioned)||0,active=Number(data.active)||0;
   const global=$('#'+P+'Toggle');
   if(global){global.disabled=busy||(!data.enabled&&(ready===0||active===0||!data.worker_ready));global.textContent=!data.worker_ready?'Autopilot noch nicht bereit':(data.enabled?'Autopilot ausschalten':'Autopilot einschalten');}
+  const provision=$('#'+P+'Provision');
+  if(provision){
+   provision.disabled=busy||ready>=50||!data.worker_ready;
+   provision.textContent=ready>=50?'Alle 50 Bot-Konten angelegt'
+     :'Verbleibende '+Math.max(0,50-ready)+' Bots erstellen und starten';
+  }
   const summary=$('#'+P+'Summary');
   if(summary)summary.textContent=`Vorbereitet: ${data.configured||0} / 50 · Angelegte Charaktere: ${ready} · Spielbereit: ${active} · Autopilot: ${data.enabled?'EIN':'AUS'}${!data.worker_ready?' (Automatik noch nicht installiert)':''}`;
   const dungeonButton=$('#'+P+'DungeonToggle');
@@ -71,7 +79,47 @@
    </div>`;
   }).join('')||'<div class="muted">Keine Bot-Profile vorhanden.</div>';
  }
- async function archive(slot,restore){
+ async function bulkProvision(){
+   if(!authorized()||busy||!last||Number(last.provisioned)>=50)return;
+   const pending=Math.max(0,50-Number(last.provisioned||0));
+   if(!confirm('Jetzt '+pending+' echte Bot-Konten auf Server 1 anlegen und erst nach vollständiger Einrichtung automatisch für Quests starten? Keine PvP-Kämpfe, Käufe oder Chat-Aktionen. Die Erstellung kann auf dem Handy etwas dauern; bleib auf dieser Seite.'))return;
+   busy=true;
+   let made=0;
+   let message='';
+   let success=false;
+   try{
+    for(let batch=0;batch<11;batch++){
+     const {data,error}=await v073Db.functions.invoke('v8256-bot-provision',{body:{limit:5}});
+     if(error)throw Error('Kontenerstellung: '+(error.message||String(error)));
+     if(!data||!data.ok){
+      const failed=(data?.results||[]).find(r=>!r.ok);
+      throw Error('Bot #'+String(failed?.slot||'?')+': '+String(failed?.reason||'Fehler bei der Kontoanlage'));
+     }
+     made+=(data.results||[]).filter(r=>r.ok).length;
+     const current=await rpc({p_action:'status'});
+     render(current);
+     notice('Bot-Konten werden angelegt: '+Number(current.provisioned)+'/50. Bitte diese Seite offen lassen.',true);
+     if(Number(current.provisioned)===50){
+      const {data:activated,error:activateError}=await api().rpc('v8257_activate_bot_roster');
+      if(activateError||!activated?.ok){
+       throw Error('Alle 50 Konten sind da, aber Start noch nicht bestätigt: '+(activateError?.message||activated?.reason||'Unbekannt'));
+      }
+      success=true;
+      message='50 von 50 Bot-Konten erfolgreich angelegt und für automatische Quests aktiviert.';
+      break;
+     }
+     if(!data.processed)throw Error('Keine neuen Konten angelegt; bitte Status prüfen.');
+    }
+    if(!success&&!message)message='Anlage fortgesetzt: '+made+' neue Bots. Bitte erneut ausführen, wenn noch Konten fehlen.';
+   }catch(e){
+    message='Bot-Anlage unterbrochen nach '+made+' neuen Konten: '+(e?.message||String(e))+'. Bereits erstellte Charaktere bleiben erhalten; erneuter Klick setzt die Anlage fort.';
+   }finally{
+    busy=false;
+    await load();
+    notice(message,success);
+   }
+  }
+  async function archive(slot,restore){
   if(!authorized()||busy)return;
   const message=restore
     ?'Bot-Platz '+slot+' wiederherstellen? Der Charakter bleibt erhalten und der Bot wird pausiert.'
