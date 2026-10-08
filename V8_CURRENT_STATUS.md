@@ -13042,3 +13042,23 @@ Aktueller Release-Status:
   - Shop-JS: `23424c168add4fa06b51b92ca9d26c758d5cf147`;
   - Shop-CSS: `a8ee7e9697743437a9ee9833ec01364a15ba69fe`;
   - Beta Cache: `aaa6bb9750e6d1ae657c1258d175c1746ebce178`.
+
+### 2026-10-08 – V8.228 Server 1 auf aktuellen Nicht-Balance-Stand synchronisiert
+- Nutzerauftrag: **Server 1 aktualisieren, Klassenbalance ausdrücklich nicht übernehmen.**
+- `server1.html` lädt jetzt die aktuellen gemeinsamen Nicht-Balance-Owner mit Cache-Key `8228s1sync1`:
+  - globaler Topbar-/Grow-Cup-Menüfix;
+  - Grow-Cup-Client + HD-Bühnen-CSS;
+  - Shop-/Inventar-Vergleich V470;
+  - Shop-Layout/CSS inkl. gestapeltem Grundwerte-vs.-Stein/VZ-Vergleich;
+  - Shop-Renderer inkl. aktuellem Reroll-Button-Rendering.
+- Klassenbalance bewusst **nicht** verändert:
+  - `v318` unverändert;
+  - `v319` unverändert;
+  - `v4156` unverändert;
+  - `v6287` unverändert.
+- Server-1-Trennung bleibt aktiv:
+  - `js/features/account/server1-release-channel.js` weiterhin vor den Gameplay-Ownern geladen;
+  - `GROW_RELEASE_CHANNEL='server1'` bleibt damit wirksam.
+- VIP bleibt weiterhin Beta-only; `v8195-vip.js` wird auf Server 1 nicht geladen.
+- Relevanter Promotion-Commit:
+  - `c6e66de556da8edd9ceed8dccbf15332af3efef7`.
