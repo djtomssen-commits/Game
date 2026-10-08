@@ -116,11 +116,24 @@ async function grant(e){
  if(!Number.isSafeInteger(gold)||!Number.isSafeInteger(harz)||gold<0||gold>100000||harz<0||harz>250||(gold===0&&harz===0))return notice('Ungültiger Betrag.',true);
  if(reason.length<10)return notice('Begründung zu kurz.',true);
  if(prompt('Bestätige '+srv()+' / '+S.player.name+' / +'+gold+' Gold / +'+harz+' Harz-Taler.\nGib exakt '+word+' ein:')!==word)return;
- if(!f.dataset.requestId)f.dataset.requestId=crypto.randomUUID();
+ /* V8.291: survive reload/navigation after an ambiguous network timeout.
+    A matching pending grant ALWAYS reuses its old idempotency UUID. */
+ const storageKey='grow-legends-admin-pending-grant-v8291';
+ const fingerprint=JSON.stringify({server:S.server,recipient:S.player.id,gold,harz,reason});
+ let pending=null;
+ try{pending=JSON.parse(sessionStorage.getItem(storageKey)||'null')}catch(_){}
+ if(pending?.fingerprint===fingerprint&&pending?.requestId){
+   f.dataset.requestId=pending.requestId;
+ }else if(!f.dataset.requestId){
+   f.dataset.requestId=crypto.randomUUID();
+ }
+ try{sessionStorage.setItem(storageKey,JSON.stringify({fingerprint,requestId:f.dataset.requestId}))}catch(_){}
  const btn=f.querySelector('[type=submit]');btn.disabled=true;
  try{
   await rpc('grant',{request_id:f.dataset.requestId,user_id:S.player.id,confirm_player:S.player.id,confirm_server:S.server,gold,harz,reason});
-  delete f.dataset.requestId;notice('Einmalige Gutschrift verbucht.');await open('economy');
+  delete f.dataset.requestId;
+  try{sessionStorage.removeItem(storageKey)}catch(_){}
+  notice('Einmalige Gutschrift verbucht.');await open('economy');
  }catch(err){notice('Unklarer Buchungsstatus: '+errorText(err)+'. Gleiche Vorgangs-ID bleibt für sicheren erneuten Versuch erhalten.',true)}
  finally{btn.disabled=false}
 }
