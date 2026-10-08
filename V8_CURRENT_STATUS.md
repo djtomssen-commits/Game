@@ -13215,3 +13215,26 @@ Aktueller Release-Status:
   - V7215 Live-Refresh: `59f51103b4507073c75d0e81937a80532ec6c4c2`
   - Beta Cache: `35deaafb7340403c4ec942b06af604e5828778f1`
   - Server 1 Cache: `67a74957421d8a2d51eb8fc972da2e6072f61ca0`
+
+### 2026-10-08 – V8.236 Tütchen Rewarded-Ad Serverrouting gehärtet (Beta + Server 1)
+- Nutzerfeedback:
+  - Beta zählt Tütchen-Videos;
+  - Server 1 zählt teilweise/gar nicht.
+- Serverprüfung:
+  - Beta hatte aktuelle `player_ad_bag_events` mit sauberem Fortschritt (u. a. 2→3, 3→4).
+  - Server 1 hatte im gleichen Zeitraum keine Tütchen-Ad-Events.
+  - Gleichzeitig kamen während der Server-1-Tests weitere Events in Beta an.
+- Schlussfolgerung: Der Rewarded-Ad-Callback wurde auf Server 1 teilweise mit Beta-`custom_data` ausgelöst.
+- Fix im kanonischen V7215-Owner:
+  - Serverbestimmung jetzt priorisiert über `window.v343CurrentServer`;
+  - Fallback `window.s?.__serverId`;
+  - erst danach `window.GROW_RELEASE_CHANNEL`;
+  - Server 1 sendet damit zuverlässig `growlegends_adbag_v1:server1`;
+  - Beta sendet `growlegends_adbag_v1`.
+- AdMob-SSV-Edge-Function unterstützt beide Werte bereits und routet per `:server1` nach Schema `server1`.
+- Aktiv auf Beta + Server 1.
+- Cache-Key: `8236bagsroute1`.
+- Relevante Commits:
+  - V7215 Owner: `63c1b6eb8574670141f30f3cb604fba73f9a01f3`
+  - Beta Cache: `46f8491d258dc9f734784e0cbc9ea6e242b16f5d`
+  - Server 1 Cache: `9e79b279d62aa8a8902f3a6f31c0f53209facf25`
