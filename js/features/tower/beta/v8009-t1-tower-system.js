@@ -1157,7 +1157,16 @@ function render(){
    else if(r.mode==='secret')html=secretView(r);
    else html=routeView(r);
 
+   /* V8.288: keep resolved leaderboard DOM through an unrelated tower re-render. */
+   const previousSeasonRank=root.querySelector('#vTRanking')?.innerHTML||'';
+   const previousWednesdayRank=root.querySelector('#vTWednesdayRanking')?.innerHTML||'';
    root.innerHTML=`<div class="vT-wrap">${html}</div>`;
+   const newSeasonRank=root.querySelector('#vTRanking');
+   const newWednesdayRank=root.querySelector('#vTWednesdayRanking');
+   if(newSeasonRank&&previousSeasonRank&&!previousSeasonRank.includes('Rangliste wird geladen'))
+     newSeasonRank.innerHTML=previousSeasonRank;
+   if(newWednesdayRank&&previousWednesdayRank&&!previousWednesdayRank.includes('Rangliste wird geladen'))
+     newWednesdayRank.innerHTML=previousWednesdayRank;
    bind();
    try{window.v8144GameplayI18n?.apply?.('tower')}catch(_){};
    if(flowGuard?.routeBusy&&r?.mode==='battle'&&!flowGuard.arenaWarmQueued){
@@ -1210,23 +1219,31 @@ function render(){
        if(document.getElementById('vTWednesdayRanking'))void loadWednesdayRanking();
        if(document.getElementById('vTWednesdayReward'))void loadWednesdayPlacementReward();
      });
-   }else if(!r?.active&&towerTab==='run'&&!root.dataset.v8009LobbyWarmupQueued){
-     root.dataset.v8009LobbyWarmupQueued='1';
-     const stillIdleLobby=()=> {
-       const liveRoot=document.getElementById('tower');
-       return !!liveRoot?.classList.contains('active') && towerTab==='run' && !ensure().run?.active;
+   }else if(!r?.active&&towerTab==='run'){
+     /* V8.288: The previous root-level warmup flag could outlive the lobby DOM
+        after a run and leave the new leaderboard stuck at "wird geladen".
+        Always schedule against the actual current panel, never the old DOM. */
+     const queueLobbyPanel=(id,loader,delay)=>{
+       if(!root.querySelector('#'+id))return;
+       setTimeout(()=>{
+         try{
+           const liveRoot=document.getElementById('tower');
+           const panel=liveRoot?.querySelector('#'+id);
+           if(liveRoot!==root||!liveRoot.classList.contains('active')||
+              towerTab!=='run'||ensure().run?.active||!panel)return;
+           if(panel.dataset.v8288LoadStarted==='1')return;
+           panel.dataset.v8288LoadStarted='1';
+           void Promise.resolve(loader()).catch(e=>{
+             console.warn('[V8.288] Tower ranking refresh',id,e);
+             if(document.getElementById(id)===panel)
+               panel.innerHTML='<div class="vT-empty">Rangliste momentan nicht erreichbar. Bitte erneut öffnen.</div>';
+           });
+         }catch(e){console.warn('[V8.288] Tower ranking scheduler',id,e)}
+       },delay);
      };
-     const idle=(fn,delay)=>{
-       const fire=()=>{if(stillIdleLobby())try{fn()}catch(_){}};
-       if(typeof requestIdleCallback==='function'){
-         try{return requestIdleCallback(fire,{timeout:Math.max(1200,delay+900)})}catch(_){}
-       }
-       return setTimeout(fire,delay);
-     };
-     idle(loadRanking,1800);
-     if(document.getElementById('vTWednesdayRanking'))idle(loadWednesdayRanking,2150);
-     if(document.getElementById('vTWednesdayReward'))idle(loadWednesdayPlacementReward,2500);
-     setTimeout(()=>{try{delete root.dataset.v8009LobbyWarmupQueued}catch(_){}},3200);
+     queueLobbyPanel('vTRanking',loadRanking,650);
+     queueLobbyPanel('vTWednesdayRanking',loadWednesdayRanking,850);
+     queueLobbyPanel('vTWednesdayReward',loadWednesdayPlacementReward,1050);
    }
    if(r?.mode==='battle'&&!window.v7081UseAuthority?.('tower')&&!r?.v7085ServerReplay)setTimeout(resumeCombat,120);
    else scheduleTowerRecoveryRender();
