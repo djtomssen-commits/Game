@@ -103,15 +103,14 @@
     const x=shopCompare(it);if(!x)return'';
     const c=x.full;
     const css=(x.base?.state)||(c.state==='free'?'empty':c.state);
-    if(c.state==='free')return `<div class="${cls} ${css}"><div class="v470-shop-note">Vergleich: Grundwerte ohne Stein/VZ</div><div class="v470-shop-line better">▲ BESSER · freier Slot</div></div>`;
-    if(c.diff==null)return `<div class="${cls} ${css}"><div class="v470-shop-note">Vergleich: Grundwerte ohne Stein/VZ</div><div class="v470-shop-line worse">${esc(c.label)} · ${esc(c.reason)}</div></div>`;
+    if(c.state==='free')return `<div class="${cls} ${css} v470-shop-dual"><div class="v470-shop-line better"><b>▲ GRUNDWERTE · FREIER SLOT</b></div></div>`;
+    if(c.diff==null)return `<div class="${cls} ${css} v470-shop-dual"><div class="v470-shop-line worse"><b>${esc(c.label)} · ${esc(c.reason)}</b></div></div>`;
     const b=x.base;
     const fullState=c.state==='better'?'better':c.state==='worse'?'worse':'same';
     const fullMark=c.state==='better'?'▲':c.state==='worse'?'▼':'◆';
     return `<div class="${cls} ${css} v470-shop-dual">
-      <div class="v470-shop-note">Grundwerte ohne Stein/VZ</div>
-      <div class="v470-shop-line ${b.state}"><span>Grundwerte</span><b>${b.mark} ${b.label} · ${signed(b.diff)}</b></div>
-      <div class="v470-shop-line ${fullState}"><span>Mit Stein + VZ</span><b>${fullMark} ${esc(c.label)} · ${signed(c.diff)}</b></div>
+      <div class="v470-shop-line ${b.state}"><b>${b.mark} GRUNDWERTE · ${b.label} ${signed(b.diff)}</b></div>
+      <div class="v470-shop-line ${fullState}"><b>${fullMark} MIT STEIN + VZ · ${esc(c.label)} ${signed(c.diff)}</b></div>
     </div>`;
   }
   try{v090ComparisonHtml=function(it){return compactComparisonHtml(it,'v090-shop-compare')};window.v090ComparisonHtml=v090ComparisonHtml}catch(e){}
