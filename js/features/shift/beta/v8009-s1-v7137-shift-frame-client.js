@@ -3,7 +3,7 @@
 if(window.__V7137_SHIFT_FRAME_CLIENT__)return;
 window.__V7137_SHIFT_FRAME_CLIENT__=true;
 const VERSION='V7.145';
-const S={shift:null,frames:null,hours:1,mode:'quest',busy:false,lastShiftReady:'',profileCache:new Map(),shiftFlight:null,frameFlight:null,lastShiftLoad:0,lastFrameLoad:0};
+const S={shift:null,frames:null,frameOwnerId:'',forceAfterFrameFlight:false,hours:1,mode:'quest',busy:false,lastShiftReady:'',profileCache:new Map(),shiftFlight:null,frameFlight:null,lastShiftLoad:0,lastFrameLoad:0};
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const num=v=>Math.max(0,Math.floor(Number(v)||0));
 const fmt=v=>num(v).toLocaleString('de-DE');
@@ -133,13 +133,60 @@ function applyFrame(el,id){
 function ownPortraitTarget(){return document.querySelector('#character #v510HeroRoot .avatar-scene')||document.querySelector('#character .avatar-scene')||document.querySelector('#character #v510HeroRoot .v41-portrait')||document.querySelector('#character .v41-portrait')}
 function applyOwnFrames(){const id=String(S.frames?.active_frame_id||'');document.body?.classList.remove('v7129-referral-frame');applyFrame(ownPortraitTarget(),id);applyFrame(document.querySelector('#world .v366-avatar'),id);applyFrame(document.querySelector('#v072OwnProfile .v646-own-avatar'),id);document.documentElement?.classList.remove('v7154-frame-pending');}
 window.v7137ApplyOwnFrames=applyOwnFrames;
+/* V8.295: Frames are server-authoritative and can change immediately on a VIP purchase.
+   A VIP refresh during an older in-flight frame request must schedule ONE fresh fetch,
+   never leave a stale pre-purchase frame list in the selector. */
 async function loadFrames(force=false){
  if(!logged())return null;
+ const ownerId=String(v073User?.id||'');
+ if(S.frameOwnerId!==ownerId){
+  S.frameOwnerId=ownerId;
+  S.frames=null;
+  S.lastFrameLoad=0;
+  S.frameFlight=null;
+  S.forceAfterFrameFlight=false;
+  window.__V7137_FRAME_STATE__=null;
+ }
  const now=Date.now();
- if(!force&&S.frames&&now-S.lastFrameLoad<60000){applyOwnFrames();return S.frames}
- if(S.frameFlight)return S.frameFlight;
- S.frameFlight=(async()=>{try{const r=await rpc('v7137_avatar_frame_state');if(r?.ok){S.frames=r;S.lastFrameLoad=Date.now();window.__V7137_FRAME_STATE__=r;applyOwnFrames();renderFrameShop();renderFrameSelector();return r}}catch(e){if(force)toast('Rahmen nicht erreichbar','error',String(e?.message||e))}return null})().finally(()=>{S.frameFlight=null});
- return S.frameFlight;
+ if(!force&&S.frames&&now-S.lastFrameLoad<60000){
+  applyOwnFrames();
+  return S.frames;
+ }
+ if(S.frameFlight){
+  if(force)S.forceAfterFrameFlight=true;
+  return S.frameFlight;
+ }
+ let flight;
+ const promise=(async()=>{
+  try{
+   const r=await rpc('v7137_avatar_frame_state');
+   if(!logged()||String(v073User?.id||'')!==ownerId)return null;
+   if(r?.ok){
+    S.frames=r;
+    S.lastFrameLoad=Date.now();
+    window.__V7137_FRAME_STATE__=r;
+    applyOwnFrames();
+    renderFrameShop();
+    renderFrameSelector();
+    return r;
+   }
+  }catch(e){
+   if(force)toast('Rahmen nicht erreichbar','error',String(e?.message||e));
+  }
+  return null;
+ })();
+ flight=promise.finally(()=>{
+  if(S.frameFlight!==flight)return;
+  S.frameFlight=null;
+  if(S.forceAfterFrameFlight){
+   S.forceAfterFrameFlight=false;
+   queueMicrotask(()=>{
+    if(logged()&&S.frameOwnerId===ownerId)void loadFrames(true);
+   });
+  }
+ });
+ S.frameFlight=flight;
+ return flight;
 }
 function ensureDealerFrameTab(){try{window.v7117DealerHubSync?.()}catch(_){}document.querySelectorAll('#harzDealer .v7117-tabs,#goldShop .v7117-tabs').forEach(t=>{const framesOpen=!!t.closest('#harzDealer.v7137-frames-open');if(framesOpen)t.querySelectorAll('[data-v7117-tab]').forEach(b=>b.classList.toggle('active',b.dataset.v7117Tab==='frames'))});}
 function frameDesc(f){if(f.source==='vip')return 'VIP-exklusiv · nur solange dein VIP-Pass aktiv ist.';if(f.source==='referral')return 'Nicht kaufbar · exklusiv aus dem 10-Freunde-Paket.';if(f.effect)return 'Animierter Prestige-Rahmen mit sichtbarem Effekt.';return 'Hochwertiger dauerhafter Prestige-Rahmen.'}
@@ -152,7 +199,17 @@ async function buyFrame(id){if(S.busy)return;const f=S.frames?.frames?.find(x=>x
 async function setFrame(id){if(S.busy)return;S.busy=true;try{const r=await rpc('v7137_set_avatar_frame',{p_frame_id:id||null});if(!r?.ok)throw new Error(String(r?.reason||'FRAME_SET_FAILED'));S.frames=r;applyOwnFrames();renderFrameShop();renderFrameSelector();try{if(document.getElementById('hall')?.classList.contains('active'))await window.v6145HallRefresh?.()}catch(_){}toast(id?'🖼️ Rahmen aktiviert':'Rahmen deaktiviert','success',id?(r.frames?.find(x=>x.id===id)?.name||'Aktiv'):'Kein Rahmen')}catch(e){toast('Rahmen konnte nicht geändert werden','error',String(e?.message||e))}finally{S.busy=false}}
 function ensureFrameSelector(){let ov=document.getElementById('v7137FrameOverlay');if(ov)return ov;ov=document.createElement('div');ov.id='v7137FrameOverlay';ov.innerHTML='<div class="v7137-modal"><div class="v7137-modal-head"><div><small style="color:#75c85a">DEIN LOOK</small><h2>Avatar-Rahmen</h2></div><button class="v7137-close" type="button">×</button></div><div id="v7137FrameSelectBody"></div></div>';document.body.appendChild(ov);ov.querySelector('.v7137-close').onclick=()=>ov.classList.remove('show');ov.addEventListener('click',e=>{if(e.target===ov)ov.classList.remove('show')});return ov}
 function renderFrameSelector(){const body=document.getElementById('v7137FrameSelectBody');if(!body||!S.frames)return;const owned=(S.frames.frames||[]).filter(f=>f.owned);body.innerHTML=`<div class="v7137-frame-guide">Hier aktivierst oder deaktivierst du deine dauerhaft freigeschalteten Rahmen. Änderungen sind sofort auch für andere Spieler sichtbar.</div><div class="v7137-frame-select-grid"><button class="v7137-frame-choice ${!S.frames.active_frame_id?'active':''}" data-v7137-set-frame=""><div class="v7137-no-frame">×</div><div><b>Kein Rahmen</b><small>Avatar ohne Prestige-Rahmen anzeigen.</small></div></button>${owned.map(f=>`<button class="v7137-frame-choice ${f.active?'active':''}" data-v7137-set-frame="${esc(f.id)}">${framePreview(f)}<div><b>${esc(f.name)} ${f.effect?'✨':''}</b><small>${f.active?'Aktiv':'Zum Aktivieren antippen'}</small></div></button>`).join('')}</div><button type="button" class="btn gold" data-v7137-open-frame-shop="1" style="width:100%;margin-top:10px">🛒 Zum Rahmen-Shop</button>`}
-async function openFrameSelector(){const ov=ensureFrameSelector();ov.classList.add('show');if(!S.frames)ov.querySelector('#v7137FrameSelectBody').innerHTML='<div class="v7137-frame-guide">Rahmen werden synchronisiert …</div>';await loadFrames(true);renderFrameSelector()}
+async function openFrameSelector(){
+ const ov=ensureFrameSelector();
+ ov.classList.add('show');
+ if(!S.frames)ov.querySelector('#v7137FrameSelectBody').innerHTML='<div class="v7137-frame-guide">Rahmen werden synchronisiert …</div>';
+ await loadFrames(true);
+ /* If the VIP entitlement arrived while an older fetch was running,
+    the queued refresh will redraw the selector as soon as the fresh data arrives. */
+ if(window.v8195VipState?.active&&!S.frames?.frames?.some(f=>f.id==='vip_crown'&&f.owned))
+  void loadFrames(true);
+ renderFrameSelector();
+}
 
 /* Hall of Haze + public player profiles */
 async function publicFrameRows(ids){
@@ -245,7 +302,11 @@ function watchOwnAvatar(){try{const scene=document.querySelector('#character #v5
 function renameDealer7138(){try{const name=window.__V8195_VIP_CLIENT__===true?'Harz & Gold & Rahmen & VIP Dealer':'Harz & Gold & Rahmen Dealer';document.querySelectorAll('#v032MenuPanel [data-screen="harzDealer"],#v032MenuPanel [data-v341-harz-menu="1"],.top-menu-panel [data-screen="harzDealer"]').forEach(el=>{const icon=el.querySelector('span');if(icon){[...el.childNodes].filter(n=>n.nodeType===3).forEach(n=>n.remove());el.append(' '+name)}else el.textContent='💎 '+name});document.querySelectorAll('#harzDealer .v7117-hub-copy b,#goldShop .v7117-hub-copy b').forEach(el=>el.textContent=name);const h=document.querySelector('#harzDealer .v322-dealer-head h2');if(h)h.textContent=name}catch(_){}}
 function install(){ensureQuest();ensureDealerFrameTab();ensureFrameShop();wrapSocial();wrapGoldShop();installAchievements();renameQuestMenu();renameDealer7138();moveFooterLast();watchOwnAvatar();document.body?.classList.remove('v7129-referral-frame');if(logged()&&!window.v7204StartupQuiet?.()){void loadShift(false);void loadFrames(false)}queueMicrotask(()=>{applyOwnFrames();if(!window.v7204StartupQuiet?.())void decorateHallFrames()})}
 window.addEventListener('growlegends:account-ready',()=>{install();const run=()=>{if(logged()){void loadShift(false);void loadFrames(false)}};if(typeof window.v7204AfterStartupQuiet==='function')window.v7204AfterStartupQuiet(run,1400);else queueMicrotask(run)},{passive:true});
-window.addEventListener('growlegends:vip-state',()=>{void loadFrames(true);void decorateHallFrames();renameDealer7138()},{passive:true});
+window.addEventListener('growlegends:vip-state',()=>{
+ void loadFrames(true);
+ void decorateHallFrames();
+ renameDealer7138();
+},{passive:true});
 window.addEventListener('pageshow',install,{passive:true});
 window.addEventListener('growlegends:navigation-ready',()=>{ensureQuest();ensureDealerFrameTab();renameQuestMenu();renameDealer7138();watchOwnAvatar();applyOwnFrames();moveFooterLast()},{passive:true});
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&logged()&&!window.v7204StartupQuiet?.()){void loadShift(false);void loadFrames(false)}syncShiftTicker()},{passive:true});
