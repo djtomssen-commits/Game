@@ -13310,3 +13310,14 @@ Aktueller Release-Status:
 - Technische Prüfung: JS-Syntax via V8 Function-Kompilierung erfolgreich; simulierte Client-Tests Beta/Server 1 für Popup, Schließen und Unterdrückung wiederholter Anzeige erfolgreich.
 - Gesundheit/Runtime/Player-QA: direkter Zugriff auf die drei internen Diagnose-Tabellen wurde vom Sicherheitssystem blockiert; dieser Teil der Diagnose bleibt offen, nicht als fehlerfrei werten.
 - Manueller Android-Endtest auf beiden Servern offen.
+
+### 2026-10-08 – V8.239 Hinterhof Reward-Dialog über Tabs (Beta + Server 1)
+- Nutzer-Screenshot stammt ausdrücklich von **Server 1**. Der Dialog erschien nach 3/3, aber die beiden Händler-Tabs lagen sichtbar oberhalb seines Titelbereichs.
+- Ursache: Reward-Popup war ein reguläres Element innerhalb des Hinterhof-Seiten-DOMs; die Händler-Tabs lagen in einer übergeordneten CSS-Stacking-Ebene, so dass der Popup-Backdrop allein nicht genügte.
+- Fix **direkt im bestehenden V7215-Tütchen-Owner**: Popup verwendet jetzt natives `<dialog>` mit `showModal()` und damit die Browser-Top-Layer statt einer zusätzlichen Wrapper-/Render-Schicht.
+- Bestehende CSS-Datei `v8009-extracted-v7221-bagdealer-override.css`: native Dialogfläche + `::backdrop` gestylt; die alte verschachtelte Reward-Backdrop-Struktur entfernt.
+- Cache-Key auf **Beta und Server 1**: `8239bagdialogtop1` für Owner und CSS.
+- Funktionsprüfung: JavaScript syntaktisch gültig; simulierter Beta-Render hat `showModal()` aufgerufen und unveränderte echte Receipt-Beträge angezeigt.
+- Server-1-Ereignis für den Screenshot überprüft: `server1.player_ad_bag_events` id 13, 2026-10-08 08:54:57 UTC, `completed=true`, 3/3, **503 Gold + 3 Fragmente**. Die im Screenshot als Vorschau gezeigten Beträge stimmen hier exakt mit dem serverseitig protokollierten Reward überein; keine fehlende Auszahlung.
+- Einschränkung: Die separate server1-RPC für historische exakte Reward-Belege ist nicht verfügbar (Migrationszugriff blockiert). Daher verwendet der Server-1-Client bei neuen Claims weiterhin die vorherige Tütchen-Reward-Vorschau. Nicht als generelle Bestätigung künftiger Summen darstellen.
+- Beides auf Gerät manuell noch prüfen: Modal über den Tabs, danach Weiter-Button, Anzeige bei neuem Reward.
