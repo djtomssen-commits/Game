@@ -13256,3 +13256,29 @@ Aktueller Release-Status:
   - Client: `5a9462c3a5be3588f901ba244a300e459a2319aa`
   - Beta Cache: `2b16c3b4ba6e9c03346158664d6678b8e8e6ec44`
   - Server 1 Cache: `8c069a700800c36e5a95a9f87f6d9758036c7655`
+
+### 2026-10-08 – V8.235 Tütchen-Dealer kompakter + Production-Ad-Modus gefixt
+- Nutzerfeedback:
+  - Vorschau `Danach` soll entfernt werden;
+  - nur `Aktuelles Tütchen` + `So funktioniert es` anzeigen;
+  - Rewarded-Ad-Button war zunächst deaktiviert.
+- Ursache Ad-Button:
+  - Client prüfte nur auf `mode==='prod'`;
+  - Server liefert `mode='production'`;
+  - deshalb wurde der native Rewarded-Ad-Pfad trotz produktiver Serverkonfiguration nicht freigeschaltet.
+- Fix im kanonischen Owner `js/features/shop/beta/v8009-s11-v7215-bagdealer-owner.js`:
+  - Produktionsmodus akzeptiert jetzt `prod` **oder** `production`;
+  - komplette `Danach`-/Next-Bag-Vorschau entfernt;
+  - nur aktuelles Tütchen und Erklärung bleiben sichtbar.
+- Layout:
+  - `v8009-extracted-v7221-bagdealer-override.css` auf einspaltige Tütchen-Ansicht gezwungen.
+- Relevante Commits:
+  - Tütchen-Owner: `f6d3171b073a6582478bb6f173fd5063736270d0`
+  - CSS: `e44fca4283a69ce93886689d7373f864ff0213c8`
+- Nachtest:
+  - Rewarded Ads funktionieren inzwischen auch im Tütchen-Dealer.
+  - Offenes UX-Thema: Fortschritt (z. B. 1/3) aktualisiert sich nach Video nicht immer sofort; Seite wechseln erzwingt Refresh.
+  - Separater Testhinweis: Nutzer vermutet bei Itemvergleich möglicherweise überall positives Vorzeichen; noch nicht bestätigt.
+- Tütchen-Fortschritt ist servergetrennt:
+  - Beta: `public.player_ad_bag_state/events`
+  - Server 1: `server1.player_ad_bag_state/events`
