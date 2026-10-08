@@ -12928,3 +12928,18 @@ Aktueller Release-Status:
 - Relevante Commits:
   - HD-Bühnenasset im CSS: `828891b9c061fcb16676900b7aabe47fd2994224`;
   - Beta Cache: `1898606a79d86c23b8ec68d5e93f7248a714e3ca`.
+
+### 2026-10-08 – V8.223 Grow Cup: Topbar-Dropdown in Lobby repariert (Beta)
+- Nutzerfeedback: In der Grow-Cup-Lobby ließ sich das Dropdown-Menü der globalen Topbar nicht öffnen.
+- Fix direkt im bestehenden Grow-Cup-Owner `js/features/events/beta/v8198-runehunt.js`:
+  - neue zentrale `setMainMenuOpen(...)`-Routine setzt `open/show`, `aria-hidden`, Sichtbarkeit, Pointer-Events und Z-Index konsistent;
+  - interner Cup-Navigationsbutton verwendet dieselbe Routine;
+  - zusätzlicher **nur während geöffnetem Grow Cup aktiver Capture-Handler** für `#v372TopbarShell .v372-menu`;
+  - konkurrierende Click-Handler werden dort gestoppt, damit das globale Menü nicht unmittelbar wieder geschlossen wird;
+  - außerhalb des Grow Cups bleibt die globale Navigation unverändert.
+- Keine neue Patch-Datei, Änderung direkt im kanonischen Event-Owner.
+- Beta Cache-Key für den Grow-Cup-Client: `8223cupmenu1`.
+- Server 1 noch nicht geändert; Beta-Test zuerst.
+- Relevante Commits:
+  - Grow-Cup-Menu-Fix: `0b52f5906ddaf64b44df781371dd28016d1a4999`;
+  - Beta Cache: `927ca5cb57bd6a9247c1698e10795e226b9f73f0`.
