@@ -7,6 +7,7 @@
  const $=s=>document.querySelector(s);
  let busy=false;
  let last=null;
+ let lastDungeon=null;
  const esc=x=>String(x==null?'':x).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
  const labels={pending:'Vorbereitet',active:'Aktiv',paused:'Pausiert',retired:'Stillgelegt'};
  const profiles={casual:'Gelegenheit',balanced:'Ausgeglichen',active:'Vielspieler',explorer:'Entdecker',social:'Gilden'};
@@ -28,10 +29,13 @@
    <div class="muted" style="font-size:12px;margin-bottom:10px">Pausieren stoppt neue Aktionen. Angelegte Charaktere bleiben zunächst erhalten. Stilllegen ist vollständig umkehrbar und stoppt spätere Bot-Aktionen. Das dauerhafte Löschen des Spielaccounts wird erst nach vollständiger Prüfung von Gilden, PvP, Nachrichten und Käufen freigegeben.</div>
    <div id="${P}Feedback" role="status" style="font-size:12px;margin:8px 0"></div>
    <div id="${P}Trial" class="muted" style="font-size:12px;margin:8px 0">Nebelwolf-Quest-Test wird geladen …</div>
+   <div id="${P}DungeonSummary" class="muted" style="font-size:12px;margin:8px 0">Dungeon-Pilot wird geladen …</div>
+   <button id="${P}DungeonToggle" class="btn secondary" disabled>Dungeon-Pilot laden …</button>
    <div id="${P}List" style="max-height:440px;overflow:auto"><div class="muted">Bot-Profile werden geladen …</div></div>`;
   parent.appendChild(card);
   $('#'+P+'Refresh').onclick=()=>load();
   $('#'+P+'Toggle').onclick=()=>{if(last)control(last.enabled?'disable':'enable');};
+  $('#'+P+'DungeonToggle').onclick=()=>{if(lastDungeon)dungeonControl(lastDungeon.enabled?'disable':'enable');};
   $('#'+P+'List').addEventListener('click',event=>{
    const btn=event.target.closest('[data-bot-action]');if(!btn||busy)return;
    const slot=Number(btn.dataset.botSlot);const action=btn.dataset.botAction;
@@ -45,9 +49,11 @@
   last=data;
   const ready=Number(data.provisioned)||0,active=Number(data.active)||0;
   const global=$('#'+P+'Toggle');
-  if(global){global.disabled=busy||ready===0||!data.worker_ready;global.textContent=!data.worker_ready?'Autopilot noch nicht bereit':(data.enabled?'Autopilot ausschalten':'Autopilot einschalten');}
+  if(global){global.disabled=busy||(!data.enabled&&(ready===0||active===0||!data.worker_ready));global.textContent=!data.worker_ready?'Autopilot noch nicht bereit':(data.enabled?'Autopilot ausschalten':'Autopilot einschalten');}
   const summary=$('#'+P+'Summary');
   if(summary)summary.textContent=`Vorbereitet: ${data.configured||0} / 50 · Angelegte Charaktere: ${ready} · Spielbereit: ${active} · Autopilot: ${data.enabled?'EIN':'AUS'}${!data.worker_ready?' (Automatik noch nicht installiert)':''}`;
+  const dungeonButton=$('#'+P+'DungeonToggle');
+  if(dungeonButton&&lastDungeon)dungeonButton.disabled=busy||(!lastDungeon.enabled&&(!lastDungeon.bot_active||!lastDungeon.scheduler_active));
   const list=$('#'+P+'List');if(!list)return;
   list.innerHTML=(data.agents||[]).map(a=>{
    const canPause=a.lifecycle==='active';
@@ -79,6 +85,34 @@
   }catch(e){notice('Bot-Aktion fehlgeschlagen: '+(e?.message||String(e)));}
   finally{busy=false;last=null;load();}
  }
+ function renderDungeon(data){
+  lastDungeon=data;
+  const el=$('#'+P+'DungeonSummary');
+  if(el){
+   const lastRun=data.last_run_id
+     ?' · Letzter Run #'+Number(data.last_run_id)+' ('+(data.last_won?'Sieg':'Niederlage')+')'
+     :' · Noch kein Dungeonversuch';
+   el.textContent='Nebelwolf · Dungeon 1 (kostenlose Versuche) · '+(data.enabled?'AKTIV':'AUS')
+     +' · Heute '+Number(data.attempts_today||0)+'/2'+lastRun;
+  }
+  const btn=$('#'+P+'DungeonToggle');
+  if(btn){
+   btn.textContent=data.enabled?'Dungeon-Pilot ausschalten':'Dungeon-Pilot einschalten';
+   btn.disabled=busy||(!data.enabled&&(!data.bot_active||!data.scheduler_active));
+  }
+ }
+ async function dungeonControl(action){
+  if(!authorized()||busy||!lastDungeon)return;
+  if(action==='enable'&&!confirm('Nebelwolf darf automatisch maximal zwei kostenlose Versuche in Dungeon 1 pro Tag absolvieren. Einschalten?'))return;
+  busy=true;
+  try{
+   const result=await api().rpc('v8253_bot_dungeon_admin',{p_action:action});
+   if(result.error||!result.data?.ok)throw Error(result.error?.message||result.data?.reason||'Dungeon-Pilot fehlgeschlagen');
+   renderDungeon(result.data);
+   notice('Dungeon-Pilot auf Server 1 gespeichert.',true);
+  }catch(e){notice('Dungeon-Pilot: '+(e?.message||String(e)));}
+  finally{busy=false;if(lastDungeon)renderDungeon(lastDungeon);}
+ }
  async function load(){
   if(!authorized()||busy)return;
   install();
@@ -93,10 +127,16 @@
      const t=result.data.test||{};
      const done=t.phase==='completed';
      trialEl.textContent=done
-      ?'Nebelwolf · Quest-Test abgeschlossen · '+Number(t.xp_awarded||0)+' EXP · '+Number(t.gold_awarded||0)+' Gold · '+Number(t.harz_awarded||0)+' Harz-Taler. Automatischer Scheduler: noch nicht installiert.'
-      :'Nebelwolf · Quest-Test: '+String(t.phase||'unbekannt')+'. Automatischer Scheduler: noch nicht installiert.';
+      ?'Nebelwolf · erster Quest-Test: '+Number(t.xp_awarded||0)+' EXP · '+Number(t.gold_awarded||0)+' Gold · '+Number(t.harz_awarded||0)+' Harz-Taler. Quest-Autopilot: '+(data.enabled&&data.worker_ready?'aktiv':'pausiert')+'.'
+      :'Nebelwolf · Quest-Test: '+String(t.phase||'unbekannt')+'. Quest-Autopilot: '+(data.enabled&&data.worker_ready?'aktiv':'pausiert')+'.';
     }
    }
+   const d=await api().rpc('v8253_bot_dungeon_admin',{p_action:'status'});
+   if(d.error||!d.data?.ok){
+    const el=$('#'+P+'DungeonSummary');
+    if(el)el.textContent='Dungeon-Pilotstatus nicht verfügbar.';
+    lastDungeon=null;
+   }else{renderDungeon(d.data);}
   }
   catch(e){notice('Bot-Status konnte nicht geladen werden: '+(e?.message||String(e)));}
  }
