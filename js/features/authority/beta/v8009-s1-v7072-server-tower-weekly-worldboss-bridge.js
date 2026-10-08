@@ -187,10 +187,43 @@ function applySnapshot(snapshot,{paint=true}={}){
   if(Number.isFinite(Number(p.harz)))s.harzTaler=Math.max(0,Number(p.harz));
 
   const it=snapshot.items||{};
-  if(Array.isArray(it.inventory))s.inventory=clone(it.inventory);
-  if(Array.isArray(it.materials))s.materials=clone(it.materials);
-  if(it.equipment&&typeof it.equipment==='object')s.equipment=clone(it.equipment);
-  if(Number.isFinite(Number(it.fragments)))s.v488Forge.fragments=Math.max(0,Number(it.fragments));
+  /* V8.278: Tower owns tower state, not the inventory.
+     A transient/stale empty server item snapshot must never silently erase an
+     already non-empty local character inventory when opening/ending a Tower run.
+     Do NOT upload local items as authoritative; only preserve presentation and
+     flag the mismatch so a verified item-state recovery can be investigated. */
+  const realGearCount=e=>{
+    if(!e||typeof e!=='object'||Array.isArray(e))return 0;
+    return Object.values(e).filter(v=>v&&typeof v==='object'&&Object.keys(v).length>0).length;
+  };
+  const hasIncomingItemState=Array.isArray(it.inventory)&&
+    !!it.equipment&&typeof it.equipment==='object'&&!Array.isArray(it.equipment);
+  const localInventoryCount=Array.isArray(s.inventory)?s.inventory.length:0;
+  const localEquippedCount=realGearCount(s.equipment);
+  const incomingItemConflict=hasIncomingItemState&&
+    it.inventory.length===0&&realGearCount(it.equipment)===0&&
+    (localInventoryCount>0||localEquippedCount>0);
+  if(incomingItemConflict){
+    bridge.itemSnapshotConflict={
+      at:Date.now(),revision:Number(it.revision)||0,
+      localInventoryCount,localEquippedCount,
+      serverInventoryCount:0,serverEquippedCount:0
+    };
+    if(!bridge.itemSnapshotConflictWarned){
+      bridge.itemSnapshotConflictWarned=true;
+      toast('Inventar-Schutz aktiv','warn',
+        'Turm meldet leeres Server-Inventar trotz vorhandener Gegenstände. '+
+        'Lokale Gegenstände bleiben sichtbar; bitte den Spielstand prüfen.');
+    }
+    console.error('[V8.278] Tower item snapshot mismatch; refused local wipe',
+      bridge.itemSnapshotConflict);
+  }else{
+    bridge.itemSnapshotConflict=null;
+    if(Array.isArray(it.inventory))s.inventory=clone(it.inventory);
+    if(Array.isArray(it.materials))s.materials=clone(it.materials);
+    if(it.equipment&&typeof it.equipment==='object')s.equipment=clone(it.equipment);
+    if(Number.isFinite(Number(it.fragments)))s.v488Forge.fragments=Math.max(0,Number(it.fragments));
+  }
 
   const sd=snapshot.seeds||{};
   if(sd.grow_seeds&&typeof sd.grow_seeds==='object')s.grow.seeds=clone(sd.grow_seeds);
