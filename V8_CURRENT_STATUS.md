@@ -13282,3 +13282,18 @@ Aktueller Release-Status:
 - Tütchen-Fortschritt ist servergetrennt:
   - Beta: `public.player_ad_bag_state/events`
   - Server 1: `server1.player_ad_bag_state/events`
+
+### 2026-10-08 – V8.237 Hinterhof-Dealer startet mit Tütchen (Beta + Server 1)
+- Nutzerwunsch: Beim Öffnen der Seite Hinterhof-Dealer zuerst den Tütchen-Tab zeigen, nicht den Harz-Automaten.
+- Kanonischer Tab-Owner direkt angepasst: `js/features/shop/beta/v8010-harz-lotto.js`.
+  - Navigation-Open `bagDealer` ruft `setTab('bags')` statt `setTab('machine')` auf.
+  - Initialisierung startet ebenfalls mit `setTab('bags')`.
+  - Aktiver Tab synchronisiert `aria-selected`; manueller Harz-Automat-Tab und seine `open()`-API bleiben erhalten.
+- Beta und Server 1: HTML-Initialzustand angepasst (Tütchen aktiviert/sichtbar, Harz-Automat inaktiv/versteckt); veraltete Coming-Soon-Startmarkierung und -Beschreibung entfernt.
+- Beide Entrypoints nutzen den neuen Cache-Key `8237bagdefault1` für denselben Owner.
+- CSS-Sichtbarkeitsregel `#v8010LottoPanel[hidden],#v7215BagBody[hidden]{display:none!important}` im bestehenden CSS bestätigt.
+- Keine Änderungen an Tütchen-Rewarded-SSV, Harz-Automat-Rewards, Server-Authority, Klassenbalance oder sonstigem Gameplay.
+- Kanonischer Owner-Commit: `3a28816a36b55c39463214b0aedc7656bc472310`.
+- Beta-Commit: `5fed9867a0bfdf6a2e4e5a910fac5977afde15a7`.
+- Server-1-Commit: `c8ffc7aa716f98473866be6807e8dce93b0d053a`.
+- Manueller Gerätetest (öffnen, in Automat wechseln, zurück, Seite verlassen/erneut öffnen) noch offen.
