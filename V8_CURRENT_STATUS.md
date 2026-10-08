@@ -13200,3 +13200,18 @@ Aktueller Release-Status:
   - Tütchen Owner: `01e0087e6dc039b51d79c079b253484523363452`
   - Beta Cache: `16b5e9163f006a1aa44601eb196eab43c7543ff4`
   - Server 1 Cache: `3b9a3651a9fa598bb1cf9e12f0e25d1075ac3640`
+
+### 2026-10-08 – V8.236 Tütchen-Fortschritt aktualisiert sich direkt nach Rewarded Ad (Beta + Server 1)
+- Nutzerfeedback: Rewarded Ad läuft erfolgreich, aber `0/3` springt erst nach Seitenwechsel auf `1/3`.
+- Ursache: serverseitige Rewarded-Ad-Bestätigung kommt leicht verzögert; der Dealer lud den State direkt nach Videoende nur einmal und damit teilweise zu früh.
+- Fix im kanonischen V7215-Owner:
+  - nach erfolgreichem Video wird der Tütchen-State mehrfach kurz nachgeladen;
+  - sobald `totalAds` steigt, rendert der Dealer sofort den neuen Fortschritt;
+  - Seitenwechsel ist nicht mehr nötig;
+  - falls die Bestätigung länger braucht, bleibt die Info bestehen, dass der Fortschritt automatisch nachzieht.
+- Aktiv auf **Beta + Server 1**.
+- Cache-Key: `8236bagsrefresh1`.
+- Relevante Commits:
+  - V7215 Live-Refresh: `59f51103b4507073c75d0e81937a80532ec6c4c2`
+  - Beta Cache: `35deaafb7340403c4ec942b06af604e5828778f1`
+  - Server 1 Cache: `67a74957421d8a2d51eb8fc972da2e6072f61ca0`
