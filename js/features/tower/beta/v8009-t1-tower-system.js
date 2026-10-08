@@ -73,12 +73,12 @@ function localWednesdayStateFor(key){
  return wednesdayHistory()[key]||null
 }
 const WED_PLACE_REWARDS=[
- {max:1,label:'1. Platz',xp:6000,gold:3500,harz:8,time:6,fragments:80,seeds:5},
- {max:2,label:'2. Platz',xp:5000,gold:2800,harz:7,time:5,fragments:65,seeds:4},
- {max:3,label:'3. Platz',xp:4000,gold:2200,harz:6,time:4,fragments:50,seeds:4},
- {max:10,label:'Platz 4–10',xp:2800,gold:1500,harz:4,time:3,fragments:35,seeds:3},
- {max:25,label:'Platz 11–25',xp:1800,gold:900,harz:3,time:2,fragments:25,seeds:2},
- {max:50,label:'Platz 26–50',xp:1000,gold:500,harz:2,time:1,fragments:15,seeds:1}
+ {max:1,label:'1. Platz',xp:5000,gold:3500,harz:5,time:6,fragments:50,seeds:5},
+ {max:2,label:'2. Platz',xp:4200,gold:2800,harz:4,time:5,fragments:40,seeds:4},
+ {max:3,label:'3. Platz',xp:3500,gold:2200,harz:4,time:4,fragments:35,seeds:4},
+ {max:10,label:'Platz 4–10',xp:2500,gold:1500,harz:3,time:3,fragments:25,seeds:3},
+ {max:25,label:'Platz 11–25',xp:1600,gold:900,harz:2,time:2,fragments:18,seeds:2},
+ {max:50,label:'Platz 26–50',xp:900,gold:500,harz:1,time:1,fragments:10,seeds:1}
 ];
 function wednesdayPlacementReward(rank){
  rank=Math.max(0,Math.floor(Number(rank)||0));
