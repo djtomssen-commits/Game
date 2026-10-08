@@ -9,6 +9,7 @@
  let last=null;
  let lastDungeon=null;
  let buildBySlot={};
+ let worldBySlot={};
  const esc=x=>String(x==null?'':x).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
  const labels={pending:'Vorbereitet',active:'Aktiv',paused:'Pausiert',retired:'Stillgelegt'};
  const profiles={casual:'Gelegenheit',balanced:'Ausgeglichen',active:'Vielspieler',explorer:'Entdecker',social:'Gilden'};
@@ -23,6 +24,7 @@
    <div class="section-title"><div><h3>🤖 Bot-Verwaltung · Server 1</h3>
    <div class="muted">50 individuelle Spielprofile · ausschließlich Server 1</div></div></div>
    <div id="${P}Summary" class="muted" style="margin:10px 0">Lade Status …</div>
+   <div id="${P}WorldSummary" class="muted" style="font-size:12px;margin:7px 0">Gilden und Kämpfe werden geladen …</div>
    <div class="v093-admin-actions" style="display:flex;flex-direction:column;align-items:stretch;gap:7px;margin-bottom:10px">
     <style>
      #v8243BotAdmin .v093-admin-actions > .btn {
@@ -85,6 +87,7 @@
     <div class="muted" style="font-size:12px">${esc(a.class)} · ${esc(profiles[a.playstyle]||a.playstyle)} · Aktivität ${Math.round(Number(a.intensity||0)*100)} % · ${Number(a.total_actions)||0} Aktionen</div>
     ${a.last_action?'<div class="muted" style="font-size:11px">Letzte Aktion: '+esc(a.last_action)+'</div>':''}
     ${buildBySlot[a.slot]?'<div class="muted" style="font-size:11px">Level '+Number(buildBySlot[a.slot].level||0)+' · Attribute: '+Number(buildBySlot[a.slot].attribute_actions||0)+' · Talente: '+Number(buildBySlot[a.slot].talent_actions||0)+' · Items ausgerüstet: '+Number(buildBySlot[a.slot].equip_actions||0)+' · Freie Punkte: '+Number(buildBySlot[a.slot].available_attributes||0)+' / '+Number(buildBySlot[a.slot].available_talents||0)+'</div>':''}
+    ${worldBySlot[a.slot]?'<div class="muted" style="font-size:11px">Gilde: '+esc(worldBySlot[a.slot].guild||'keine')+' · Quests: '+Number(worldBySlot[a.slot].quests_finished||0)+'/'+Number(worldBySlot[a.slot].quests_started||0)+' · PvP: '+Number(worldBySlot[a.slot].pvp_fights||0)+' · Turm: '+Number(worldBySlot[a.slot].tower_actions||0)+' Aktionen · Boss: '+(worldBySlot[a.slot].boss_signed?'angemeldet':'nicht angemeldet')+'</div>':''}
     ${action?'<button class="btn secondary" style="margin-top:6px" data-bot-action="'+action+'" data-bot-slot="'+Number(a.slot)+'">'+(canPause?'Pausieren':'Fortsetzen')+'</button>':''}
     ${canArchive?'<button class="btn secondary" style="margin:6px 0 0 6px" data-bot-action="archive" data-bot-slot="'+Number(a.slot)+'">Stilllegen</button>':''}
     ${canRestore?'<button class="btn secondary" style="margin-top:6px" data-bot-action="restore" data-bot-slot="'+Number(a.slot)+'">Wiederherstellen</button>':''}
@@ -201,6 +204,18 @@
    if(!dev.error&&dev.data?.ok){
     buildBySlot={};
     (dev.data.agents||[]).forEach(x=>{buildBySlot[Number(x.slot)]=x;});
+    render(data);
+   }
+   const world=await api().rpc('v8272_bot_world_status');
+   if(!world.error&&world.data?.ok){
+    worldBySlot={};
+    (world.data.agents||[]).forEach(x=>{worldBySlot[Number(x.slot)]=x;});
+    const overall=world.data.summary||{};
+    const box=$('#'+P+'WorldSummary');
+    if(box)box.textContent='Bot-Gilden: '+Number(overall.bot_guilds||0)
+      +' · Bot-Mitglieder: '+Number(overall.bot_guild_members||0)
+      +' · PvP-Kämpfe: '+Number(overall.bot_only_pvp_fights||0)
+      +' · Bot-Gildenkriege: '+Number(overall.bot_guild_wars||0);
     render(data);
    }
   }
