@@ -34,12 +34,6 @@ function ensure(){
   s.tower.season=(s.tower.season&&typeof s.tower.season==='object')?s.tower.season:{};
   s.v6239WeeklyChest=(s.v6239WeeklyChest&&typeof s.v6239WeeklyChest==='object')?s.v6239WeeklyChest:{};
   s.v110WorldBoss=(s.v110WorldBoss&&typeof s.v110WorldBoss==='object')?s.v110WorldBoss:{};
-  s.v488Forge=(s.v488Forge&&typeof s.v488Forge==='object')?s.v488Forge:{};
-  s.grow=(s.grow&&typeof s.grow==='object')?s.grow:{};
-  s.grow.seeds=(s.grow.seeds&&typeof s.grow.seeds==='object')?s.grow.seeds:{};
-  s.inventory=Array.isArray(s.inventory)?s.inventory:[];
-  s.materials=Array.isArray(s.materials)?s.materials:[];
-  s.equipment=(s.equipment&&typeof s.equipment==='object')?s.equipment:{};
   return true;
 }
 async function rpc(name,args={}){
@@ -49,13 +43,6 @@ async function rpc(name,args={}){
   if(error)throw error;
   return one(data);
 }
-function persistLocal(){
-  try{
-    if(typeof KEY!=='undefined'&&KEY)localStorage.setItem(KEY,JSON.stringify(s));
-    else localStorage.setItem('growLegendsV020',JSON.stringify(s));
-  }catch(_){}
-}
-
 function v7085TowerAsset(path){
   return String(path||'');
 }
@@ -186,50 +173,9 @@ function applySnapshot(snapshot,{paint=true}={}){
   if(Number.isFinite(Number(p.gold)))s.gold=Math.max(0,Number(p.gold));
   if(Number.isFinite(Number(p.harz)))s.harzTaler=Math.max(0,Number(p.harz));
 
-  const it=snapshot.items||{};
-  /* V8.278: Tower owns tower state, not the inventory.
-     A transient/stale empty server item snapshot must never silently erase an
-     already non-empty local character inventory when opening/ending a Tower run.
-     Do NOT upload local items as authoritative; only preserve presentation and
-     flag the mismatch so a verified item-state recovery can be investigated. */
-  const realGearCount=e=>{
-    if(!e||typeof e!=='object'||Array.isArray(e))return 0;
-    return Object.values(e).filter(v=>v&&typeof v==='object'&&Object.keys(v).length>0).length;
-  };
-  const hasIncomingItemState=Array.isArray(it.inventory)&&
-    !!it.equipment&&typeof it.equipment==='object'&&!Array.isArray(it.equipment);
-  const localInventoryCount=Array.isArray(s.inventory)?s.inventory.length:0;
-  const localEquippedCount=realGearCount(s.equipment);
-  const incomingItemConflict=hasIncomingItemState&&
-    it.inventory.length===0&&realGearCount(it.equipment)===0&&
-    (localInventoryCount>0||localEquippedCount>0);
-  if(incomingItemConflict){
-    bridge.itemSnapshotConflict={
-      at:Date.now(),revision:Number(it.revision)||0,
-      localInventoryCount,localEquippedCount,
-      serverInventoryCount:0,serverEquippedCount:0
-    };
-    if(!bridge.itemSnapshotConflictWarned){
-      bridge.itemSnapshotConflictWarned=true;
-      toast('Inventar-Schutz aktiv','warn',
-        'Turm meldet leeres Server-Inventar trotz vorhandener Gegenstände. '+
-        'Lokale Gegenstände bleiben sichtbar; bitte den Spielstand prüfen.');
-    }
-    console.error('[V8.278] Tower item snapshot mismatch; refused local wipe',
-      bridge.itemSnapshotConflict);
-  }else{
-    bridge.itemSnapshotConflict=null;
-    if(Array.isArray(it.inventory))s.inventory=clone(it.inventory);
-    if(Array.isArray(it.materials))s.materials=clone(it.materials);
-    if(it.equipment&&typeof it.equipment==='object')s.equipment=clone(it.equipment);
-    if(Number.isFinite(Number(it.fragments)))s.v488Forge.fragments=Math.max(0,Number(it.fragments));
-  }
-
-  const sd=snapshot.seeds||{};
-  if(sd.grow_seeds&&typeof sd.grow_seeds==='object')s.grow.seeds=clone(sd.grow_seeds);
-  if(Number.isFinite(Number(sd.time_seeds)))s.timeSeeds=Math.max(0,Number(sd.time_seeds));
-
-  persistLocal();
+  /* V8.279: Tower/Weekly/Worldboss state only. Items, equipped gear, materials,
+     seeds and builds belong to their separate canonical authority owners.
+     No full-game local serialization from this Tower bridge. */
   bridge.ready=true;
   bridge.lastSync=Date.now();
   bridge.lastError='';
@@ -237,9 +183,7 @@ function applySnapshot(snapshot,{paint=true}={}){
 
   if(paint){
     try{window.v069SyncCurrencies?.()}catch(_){}
-    try{renderInventory?.()}catch(_){}
     try{window.v441PaintResources?.()}catch(_){}
-    try{window.v488ForgeRender?.()}catch(_){}
     try{window.v6104UpdatePetIndicators?.()}catch(_){}
     try{
       const towerVisible=!!document.getElementById('tower')?.classList.contains('active');
@@ -284,8 +228,25 @@ async function refresh({paint=true,quiet=true}={}){
   })();
   return refreshPromise;
 }
+function refreshOwnedDomains(){
+  const requestUid=uid();
+  if(!requestUid)return;
+  /* Existing owners obtain fresh server-authoritative revisions after rewards.
+     No new painter, timer, wrapper or full-game save lifecycle. */
+  const owners=[
+    ()=>window.v7074ItemAuthorityRefresh?.(true,true),
+    ()=>window.v7065GrowAuthorityRefresh?.(),
+    ()=>window.v7033BuildAuthorityRefresh?.(true)
+  ];
+  void Promise.allSettled(owners.map(run=>Promise.resolve().then(run))).then(results=>{
+    if(uid()!==requestUid)return;
+    if(results.some(r=>r.status==='rejected'))
+      console.warn('[V8.279] Tower post-action domain refresh failed');
+  });
+}
 function applyActionResponse(r){
   if(r?.snapshot?.ok)applySnapshot(r.snapshot);
+  if(r?.ok)refreshOwnedDomains();
 }
 
 function v7191TowerDoorPending(arg){
@@ -872,7 +833,6 @@ try{
       const result=oldEmit(type,detail,token);
       if(keep){
         s.v6239WeeklyChest=keep;
-        persistLocal();
         setTimeout(()=>void refresh({quiet:true,paint:true}),180);
       }
       return result;
