@@ -159,6 +159,7 @@ async function v093AdminLoadLists(){
   }catch(e){console.warn('Admin tickets load',e)}
   try{window.v274InstallEventPresets?.()}catch(e){console.warn('Admin event presets install',e)}
   try{await window.v6346AdminLoadBroadcasts?.()}catch(e){console.warn('Admin broadcasts load',e)}
+  try{window.v8243InstallBotAdmin?.();await window.v8243LoadBotAdmin?.()}catch(e){console.warn('Admin bots load',e)}
 }
 
 async function v093SaveEvent(){
