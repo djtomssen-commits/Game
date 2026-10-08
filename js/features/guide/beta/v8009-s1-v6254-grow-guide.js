@@ -79,10 +79,11 @@
    ['Gold-Event','Ist ein Gold-Event aktiv, wird dessen Bonus direkt in der angezeigten Goldmenge berücksichtigt.']
   ]},
   bagDealer:{label:'Hinterhof-Dealer',icon:'🏪',steps:[
-   ['Tütchen','Im Tütchen-Bereich sammelst du freiwillige Werbe-Fortschritte und erhältst dafür die jeweils angezeigten Belohnungen.'],
-   ['Harz Lotto','Der zweite Tab enthält das wöchentliche Harz Lotto: ein Schein, sechs Zahlen aus 50 und 25 Harz-Taler Einsatz.'],
-   ['Tippschluss & Ziehung','Der Lottoschein muss vor dem Tippschluss bestätigt sein. Danach sind die Zahlen für diese Runde fest.'],
-   ['Gewinne','Nach der Ziehung kannst du einen vorhandenen Gewinn im Lotto-Bereich abholen. Nicht vergebene Anteile fließen nach den Lotto-Regeln weiter.']
+   ['Tütchen & Harz-Automat','Der Hinterhof-Dealer hat zwei Tabs. Beim Öffnen landest du zuerst bei den Tütchen. Zum Harz-Automaten wechselst du über den zweiten Tab.'],
+   ['Tütchen: Anzeigen sammeln','Im Tütchen-Tab kannst du freiwillig Werbevideos ansehen. Nur vollständig bestätigte Anzeigen erhöhen deinen Fortschritt um 1. Das erste Tütchen braucht 3 Anzeigen; spätere Tütchen benötigen mehr.'],
+   ['Tütchen: Belohnung','Ist die nötige Anzahl erreicht, schreibt der Server deine Tütchen-Belohnung automatisch gut. Im Belohnungsfenster siehst du, was du erhalten hast; mit „Weiter“ geht es zum nächsten Tütchen. In weiteren Runden sinkt der Belohnungsfaktor.'],
+   ['Harz-Automat','Wähle einen Einsatz von 5, 10, 25 oder 50 Harz-Talern und wirf ihn ein. Das ausgegebene Päckchen öffnest du per Fingertipp. Je nach Einsatz erhältst du mehr Belohnungen und bessere Garantien.'],
+   ['Chancen & Belohnungen','Beim Harz-Automaten kannst du die möglichen Belohnungen, Wahrscheinlichkeiten und Garantien nachlesen. Es gibt nur virtuelle Spielbelohnungen – keine Echtgeld-Auszahlung und kein Lotto mehr.']
   ]},
   pvp:{label:'PvP-Arena',icon:'⚔️',steps:[
    ['Gegner suchen','Das Matchmaking sucht bevorzugt Spieler in einem ähnlichen Level- und Kampfkraftbereich.'],
