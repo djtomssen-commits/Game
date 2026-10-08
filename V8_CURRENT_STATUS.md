@@ -13156,3 +13156,25 @@ Aktueller Release-Status:
   - alter Coming-Soon-Wrapper entschärft: `c2f3ab3d75298506f9a2a6c0c7fe7466e80ffaa6`
   - Beta aktiviert: `d8472329ac76d9c0f63191a5ded6a11fd35685ff`
   - Server 1 aktiviert: `12d6d53b6f035df24e55ec1f0eb1687ac402f11e`
+
+### 2026-10-08 – V8.235 Tütchen: Rewarded-Ad-Freigabe + Danach entfernt (Beta + Server 1)
+- Nutzerfeedback: Tütchen-Dealer sichtbar, aber keine Ad startbar; außerdem soll nur aktuelles Tütchen + Erklärung angezeigt werden.
+- Ursache für deaktivierten Ad-Button:
+  - Client prüfte nur `mode==='prod'`;
+  - Server liefert produktiv `mode='production'`;
+  - dadurch blieb `canNative=false`, obwohl Ads serverseitig freigeschaltet waren.
+- Fix:
+  - produktiv wird jetzt bei `prod` **oder** `production` erkannt;
+  - komplette `Danach`-/Next-Bag-Vorschau aus dem Render entfernt;
+  - Layout auf einspaltig gestellt.
+- Sichtbar bleiben:
+  - `Aktuelles Tütchen`
+  - Fortschritt / Rewarded-Ad-Button / aktuelle Belohnung
+  - `So funktioniert es`
+- Aktiv auf Beta + Server 1.
+- Cache-Key: `8235bagslive2`.
+- Relevante Commits:
+  - Tütchen-Owner: `f6d3171b073a6582478bb6f173fd5063736270d0`
+  - CSS: `e44fca4283a69ce93886689d7373f864ff0213c8`
+  - Beta Cache: `c904d94d496fa9e72639d3a011b35b6e513d17f2`
+  - Server 1 Cache: `a83d21b9968d624bd10e401205159ab5a72f0864`
