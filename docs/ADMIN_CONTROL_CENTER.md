@@ -26,7 +26,7 @@
 
 - Befehlseigentümer: `public.v8290_admin_console` (Beta) / `server1.v8290_admin_console` (Server1). **Admin-UID-Prüfung bei jedem RPC**, nicht nur im Frontend. `anon` und `PUBLIC` keine Execute-Berechtigung.
 - Admin-Aufträge werden in `recovery_private.v8290_admin_console_actions` / `server1_private.v8290_admin_console_actions` pro Server festgehalten; kein Zugriff von `authenticated` auf private Tabelle.
-- Gutschriften nutzen nur die kanonischen serverseitigen Gold-/Harz-Award-Owner mit UUID-Idempotenz und Ledger, danach Cache-/Save-Mirror aus dem kanonischen Stand. Bei Timeout dieselbe Vorgangs-ID verwenden, **nicht einfach mehrfach neu abschicken**.
+- Gutschriften nutzen nur die kanonischen serverseitigen Gold-/Harz-Award-Owner mit UUID-Idempotenz und Ledger, danach Cache-/Save-Mirror aus dem kanonischen Stand. Bei Timeout dieselbe Vorgangs-ID verwenden, **nicht einfach mehrfach neu abschicken**. Das Admin-JavaScript merkt sich den letzten unbestätigten Auftrag in der Browser-Session und verwendet bei einem erneuten identischen Versuch dieselbe UUID.
 - Einstellungen nutzen einen Revisionsvergleich (CAS), begrenzte Werte, Grund und bestätigte Serverkennung. Settings sind in privaten servergetrennten Tabellen.
 - Ungesicherte Operationen (Player löschen, kompletten Save zurückschreiben, Items direkt setzen, Klassenbalance auf Server1 ändern, Shops/Event-Schema direkt überschreiben, Reset, Server öffnen/schließen, APK/Play Store bauen) bewusst **nicht** als vermeintliche funktionsfähige Buttons umgesetzt.
 - Cloudflare Deployment, E-Mail-/Passwort-Login im tatsächlichen Browser, MFA sowie SSL-/Cache-Verhalten müssen vor Produktionsfreigabe manuell getestet werden; das erfolgreiche SQL-/Stubs-Testprotokoll ersetzt keine reale Browser-QA.
@@ -40,7 +40,7 @@
 4. Beta: beide Quest-Settings testweise ändern, Spielquest durchführen, in Datenbank prüfen, danach Ausgangswerte bewusst wiederherstellen; Server1-Klassenbalance unverändert.
 5. Beta: Supportgutschrift mit eindeutiger ID, Originalspielstand und Ledger prüfen; identische ID erneut senden → keine zweite Gutschrift. Für Live zunächst nur Daten lesen.
 6. Browser-Abbrüche und Re-Login testen, besonders bei Gold-/Harz-Operationen.
-7. Cloudflare-Cache des neuen Admin-Skripts sollte die Version `8291a1` verwenden.
+7. Cloudflare-Cache des neuen Admin-Skripts sollte die Version `8291a2` verwenden.
 
 ## Nächste Ausbaustufen
 
