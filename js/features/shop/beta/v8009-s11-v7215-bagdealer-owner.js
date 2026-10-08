@@ -7,7 +7,7 @@ const BAG_ART={
   normal:'assets/v8-inline/d8723279ac61b4e0.webp',
   premium:'assets/v8-inline/8fe8c1cde9fe6262.webp'
 };
-const S={active:false,busy:false,data:null,lastError:'',help:false};
+const S={active:false,busy:false,data:null,lastError:'',help:false,claim:null,receiptError:''};
 const one=d=>Array.isArray(d)?d[0]:d;
 const db=()=>{try{return (typeof v073Db!=='undefined'&&v073Db)||null}catch(_){return null}};
 const fmt=n=>Math.max(0,Math.round(Number(n)||0).toLocaleString('de-DE'));
@@ -70,6 +70,28 @@ function statusCopy(){
   if(!isNative())return 'Rewarded Ads sind nur in der Android-App verfügbar.';
   return 'Vollständig angesehene Rewarded Ads zählen jeweils genau einmal.';
 }
+function claimId(id){
+  let u='';try{u=String(v073User?.id||'')}catch(_){}
+  const srv=String(window.v343CurrentServer||window.s?.__serverId||window.GROW_RELEASE_CHANNEL||'beta');
+  return 'v8238-bag-claim:'+srv+':'+u+':'+id;
+}
+function offerClaim(id,reward,stage,estimated=false){
+  if(!id||!reward||S.claim)return;
+  const key=claimId(id);
+  try{if(localStorage.getItem(key)==='1')return}catch(_){}
+  S.claim={key,reward,stage,estimated};
+}
+function claimHtml(){
+  if(!S.claim)return '';
+  const r=S.claim.reward;
+  const lines=[['Gold',r.gold],['Fragmente',r.fragments],['Harz-Taler',r.harz],['Zeit-Samen',r.time]].filter(x=>Number(x[1])>0);
+  return `<div class="v7215-help-backdrop v7215-claim-backdrop"><section class="v7215-help-modal v7215-claim-modal" role="dialog" aria-modal="true">
+    <h3>🎁 Tütchen abgeschlossen!</h3><p>Die Belohnung wurde serverseitig gutgeschrieben.</p>
+    <div class="v7215-claim-list">${lines.map(x=>`<div><span>${x[0]}</span><b>+${fmt(x[1])}</b></div>`).join('')}</div>
+    ${S.claim.estimated?'<small>Werte der vorherigen Tütchen-Vorschau.</small>':'<small>Bestätigter Server-Beleg.</small>'}
+    <button type="button" class="btn" data-v7215-claim-ok>Weiter zum nächsten Tütchen</button>
+  </section></div>`;
+}
 function helpHtml(){
   if(!S.help)return '';
   return `<div class="v7215-help-backdrop" data-v7215-help-close>
@@ -96,7 +118,7 @@ function paint(){
   const reward=b.reward||{};
   const canAdminTest=S.data.mode==='test'&&!!S.data.adminTestAllowed;
   const canNative=(S.data.mode==='prod'||S.data.mode==='production')&&isNative();
-  const canWatch=!!S.data.enabled&&(canAdminTest||canNative)&&!S.busy;
+  const canWatch=!!S.data.enabled&&(canAdminTest||canNative)&&!S.busy&&!S.claim;
   root.innerHTML=`<div class="v7219-main-grid">
     <section class="v7219-board">
       <div class="v7219-board-title">Aktuelles Tütchen</div>
@@ -130,7 +152,7 @@ function paint(){
       <div class="v7219-how-row"><b>3.</b><span>Beim Ziel schreibt der Server die Tütchen-Belohnung automatisch gut.</span></div>
     </div>
   </section>
-  ${helpHtml()}`;
+  ${S.claim?'':helpHtml()}${claimHtml()}`;
 }
 async function load(){
   const x=db();if(!x)return;
@@ -198,7 +220,7 @@ async function watch(){
     const confirmed=await waitForRewardedConfirmation(before);
     const after=Number(S.data?.totalAds)||0;
     if(confirmed&&after>before){
-      toast('Tütchen-Fortschritt +1','success','Die Anzeige wurde serverseitig bestätigt.');
+      if(!S.claim)toast('Tütchen-Fortschritt +1','success','Die Anzeige wurde serverseitig bestätigt.');
       try{window.v069SyncCurrencies?.();window.v6213SyncCurrencies?.()}catch(_){}
       try{await window.v7063ItemStageRefresh?.(true)}catch(_){}
       try{await window.v7077ProgressRefresh?.()}catch(_){}
@@ -234,6 +256,9 @@ function bind(){
 }
 
 document.addEventListener('click',e=>{
+  if(e.target?.closest?.('[data-v7215-claim-ok]')){
+    e.preventDefault();if(S.claim){try{localStorage.setItem(S.claim.key,'1')}catch(_){}S.claim=null;paint()}return
+  }
   if(e.target?.closest?.('[data-v7215-watch]')){e.preventDefault();void watch();return}
   if(e.target?.closest?.('[data-v7215-help-close]')){e.preventDefault();S.help=false;paint();return}
 },true);
