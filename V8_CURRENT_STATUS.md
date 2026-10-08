@@ -13115,3 +13115,21 @@ Aktueller Release-Status:
   - Tower-Owner: `fca5bc9778477c0dba0aed33ec552b3f37f9ed4a`
   - Beta Cache: `bf5731a82fe2e5b2a8c38861db71655b21135ac9`
   - Server 1 Cache: `dddfb7c79ca5711cd44af057325876712d9a055b`
+
+### 2026-10-08 – V8.232 Server 1 öffentlich geöffnet
+- Nutzerauftrag: **Server 1 jetzt öffnen.**
+- Supabase `public.game_servers` für `server1` aktualisiert:
+  - `enabled=true`;
+  - `opens_at=now()` (2026-10-08 06:03 UTC / 08:03 Europe/Berlin).
+- Clientseitige Serverauswahl ebenfalls auf sofort offen gestellt:
+  - `V343_SERVER1_FORCE_OPEN=true`;
+  - Server 1 wird ab jetzt als ONLINE/Live-Server dargestellt;
+  - Countdown-/Preview-Sperre greift nicht mehr;
+  - Standardserver ist damit Server 1.
+- Beta bleibt als separater Testserver auswählbar.
+- Server-1-Release-Channel und Klassenbalance unverändert.
+- Cache-Key Serverauswahl: `8232server1open1`.
+- Relevante Commits:
+  - Serverauswahl: `58add4611839cf55b3b0eeed46a1b85e212a64cb`
+  - Beta Cache: `125d3015e21e938361a6011d429344adae55420d`
+  - Server 1 Cache: `94013f49f72d0bde2f6873378d815f753f43a842`
