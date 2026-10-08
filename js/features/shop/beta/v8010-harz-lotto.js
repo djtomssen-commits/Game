@@ -37,6 +37,7 @@ function setTab(tab){
     const bags=b.dataset.v8010Tab==='bags';
     const active=(bags&&tab==='bags')||(!bags&&tab==='machine');
     b.classList.toggle('active',active);
+    b.setAttribute('aria-selected',active?'true':'false');
     b.classList.toggle('coming-soon',bags&&!bagsAllowed);
     b.disabled=bags&&!bagsAllowed;
     b.setAttribute('aria-disabled',bags&&!bagsAllowed?'true':'false');
@@ -288,10 +289,10 @@ document.addEventListener('click',e=>{
 window.addEventListener('growlegends:navigation-ready',renameDealer,{passive:true});
 window.addEventListener('pageshow',renameDealer,{passive:true});
 window.addEventListener('growlegends:navigation-open-v7119',e=>{
-  if(String(e?.detail?.id||'')==='bagDealer'){renameDealer();setTab('machine')}
+  if(String(e?.detail?.id||'')==='bagDealer'){renameDealer();setTab('bags')}
 },{passive:true});
 
 window.v8011HarzMachine={open:()=>setTab('machine'),openBags:()=>setTab('bags'),load,diagnostics:()=>({active:S.active,busy:S.busy,selected:S.selected,pending:!!S.pending})};
 renameDealer();
-setTab('machine');
+setTab('bags');
 })();
