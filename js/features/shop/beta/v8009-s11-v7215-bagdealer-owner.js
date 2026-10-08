@@ -89,13 +89,13 @@ function paint(){
     root.innerHTML='<div class="v7219-loading-card"><div class="v7219-loading-bag">🌿</div><b>Dealer bereitet dein Tütchen vor …</b><span>Fortschritt wird serverseitig geladen.</span></div>';
     return;
   }
-  const b=S.data.bag||{}, next=S.data.nextBag||{};
+  const b=S.data.bag||{};
   const target=Math.max(1,Number(b.target)||1);
   const progress=Math.max(0,Number(S.data.progress)||0);
   const pct=progressPct();
   const reward=b.reward||{};
   const canAdminTest=S.data.mode==='test'&&!!S.data.adminTestAllowed;
-  const canNative=S.data.mode==='prod'&&isNative();
+  const canNative=(S.data.mode==='prod'||S.data.mode==='production')&&isNative();
   const canWatch=!!S.data.enabled&&(canAdminTest||canNative)&&!S.busy;
   root.innerHTML=`<div class="v7219-main-grid">
     <section class="v7219-board">
@@ -120,14 +120,6 @@ function paint(){
       </div>
     </section>
 
-    <aside class="v7219-board v7219-next">
-      <div class="v7219-board-title">Danach</div>
-      <div class="v7219-next-inner">
-        ${packHtml(next,true)}
-        <div class="v7219-next-name">${esc(next.title||'Nächstes Tütchen')}</div>
-        <div class="v7219-next-copy">${esc(rewardLine(next.reward||{}))}</div>
-      </div>
-    </aside>
   </div>
 
   <section class="v7219-how">
