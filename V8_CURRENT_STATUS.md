@@ -12943,3 +12943,33 @@ Aktueller Release-Status:
 - Relevante Commits:
   - Grow-Cup-Menu-Fix: `0b52f5906ddaf64b44df781371dd28016d1a4999`;
   - Beta Cache: `927ca5cb57bd6a9247c1698e10795e226b9f73f0`.
+
+### 2026-10-08 – V8.224 Grow Cup Navigation + Shop-Vergleich überarbeitet (Beta)
+- Grow Cup:
+  - event-eigener Hamburger aus der Lobby entfernt;
+  - es bleibt nur noch der globale Hamburger in der Topbar;
+  - globaler Hamburger öffnet das normale Hauptmenü jetzt auch bei geöffneter Grow-Cup-Lobby;
+  - Ursache war der alte document-level Outside-Click-Closer des Legacy-Menüs: die globale Topbar liegt außerhalb von `#v032TopMenu`, dadurch wurde das Menü im selben Klick wieder geschlossen;
+  - im Cup wird das Öffnen deshalb gezielt auf den nächsten Frame verschoben;
+  - `#v032TopMenu/#v032MenuPanel` werden während des Cups über das Event-Overlay gehoben.
+- Shop-Itemvergleich:
+  - kompakte Shop-Anzeige zeigt jetzt **zwei getrennte Bewertungen**;
+  - Zeile 1: **Grundwerte ohne Stein/VZ** → BESSER / SCHLECHTER / GLEICH;
+  - Zeile 2: **Mit Stein + VZ** → vollständige aktuelle Bewertung;
+  - dadurch kann z. B. direkt sichtbar sein: `Grundwerte ▲ BESSER`, aber `Mit Stein + VZ ▼ SCHLECHTER`;
+  - Grundwert-Bewertung verwendet dieselbe klassenabhängige Stat-Gewichtung wie der bestehende Itemscore, ignoriert aber Edelstein, VZ und Spezialeffekte;
+  - vollständiges Item-Popup/Detailvergleich bleibt unverändert und zeigt weiterhin Stein/VZ/Spezial getrennt;
+  - Vergleichsbereich der Shopkarten wurde höher gemacht und mit Hinweis `Grundwerte ohne Stein/VZ` versehen.
+- Keine neue Patch-Datei; Änderungen direkt in bestehenden kanonischen Ownern.
+- Beta Cache-Keys:
+  - Topbar: `8224cupmenu2`;
+  - Grow Cup JS/CSS: `8224cupmenu2`;
+  - V470 Vergleich + Shop-CSS: `8224shopcompare1`.
+- Server 1 noch nicht geändert; Beta-Test zuerst.
+- Relevante Commits:
+  - Cup-Hamburger entfernt: `f428aaf5506056c8194dcfc3f2366191af3b04ba`;
+  - globaler Topbar-Menüfix: `dd43664f31262fb94f53e226dc12374848d9212a`;
+  - Cup CSS/Menu-Layer: `8af391ac6f1d4bbd4d230593767584e94859c0dd`;
+  - dualer Shopvergleich: `fbdb3a0c6cc169c0c93874f9448a2c9c331358c4`;
+  - Shop-CSS: `81c265a33d7566b3c921b61f69bccd8d78f91b65`;
+  - Beta Cache: `d388918fb66d78ab37a1eb055cdd875146800fdf`.
