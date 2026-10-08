@@ -13080,3 +13080,20 @@ Aktueller Release-Status:
   - Grow-Cup-Owner: `c7273a45c6558a8cf895589a5fd94e9900c395fc`;
   - Beta Cache: `28ae7a53af8952bed62a190b8b844f402ec2b23d`;
   - Server 1 Cache: `74ed5736e762fcc44be2e01291e0a9a428ec0e92`.
+
+### 2026-10-08 – V8.230 Grow Cup: Hauptmenü in Topbar portaliert (Beta + Server 1)
+- Nutzerfeedback zu V8.229: Hamburger reagiert, Navigation öffnet sich aber sichtbar **hinter** der Grow-Cup-Lobby und wird erst nach Schließen der Lobby sichtbar.
+- Damit war klar: Klickpfad funktioniert; Fehler ist ausschließlich die Stacking-/Host-Ebene des normalen `#v032MenuPanel`.
+- Fix direkt im bestehenden Grow-Cup-Owner:
+  - während geöffnetem Grow Cup wird das normale `#v032MenuPanel` aus `#v032TopMenu` in `#v372TopbarShell` verschoben;
+  - die globale Topbar liegt bereits oberhalb der Cup-Lobby, daher rendert das Menü nun garantiert vor dem Event-Overlay;
+  - beim Schließen des Grow Cups wird das Menü wieder zurück in `#v032TopMenu` verschoben;
+  - bestehender V8.229 Capture-Guard bleibt bestehen und öffnet weiterhin ausschließlich das normale Hauptmenü;
+  - kein eigener Cup-Hamburger.
+- Fix auf **Beta und Server 1** aktiviert.
+- Klassenbalance nicht berührt.
+- Cache-Key Grow-Cup-Client: `8230cupmenu4`.
+- Relevante Commits:
+  - Grow-Cup-Owner: `004e85508e7fafd42d4a8e49c02cb8bfc7747ed3`;
+  - Beta Cache: `2e854a6ec481dadc987c6a5acc2e15de24f2ccd8`;
+  - Server 1 Cache: `0c13870a18460720fe1d19d506d907ed6fb5669c`.
