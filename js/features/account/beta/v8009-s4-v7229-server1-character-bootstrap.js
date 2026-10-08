@@ -124,6 +124,9 @@ function showServer1Creator(){
         try{render?.()}catch(_){ }
         try{window.v069SyncCurrencies?.()}catch(_){ }
         try{v200OpenHome?.()}catch(_){ }
+        // Hand the confirmed, hydrated new character to the existing first-visit guide.
+        // No second lifecycle, account-wide tutorial reset, or delayed paint wrapper.
+        try{window.v6254OnCharacterCreated?.(id,'server1')}catch(e){console.warn('[V7.229] onboarding handoff',e)}
         try{v063Toast?.(`${name} wurde erstellt`,'success',`${className} · Server 1`)}catch(_){ }
       }catch(e){
         console.error('[V7.229] server1 character create',e);
