@@ -13133,3 +13133,26 @@ Aktueller Release-Status:
   - Serverauswahl: `58add4611839cf55b3b0eeed46a1b85e212a64cb`
   - Beta Cache: `125d3015e21e938361a6011d429344adae55420d`
   - Server 1 Cache: `94013f49f72d0bde2f6873378d815f753f43a842`
+
+### 2026-10-08 – V8.234 Tütchen-Dealer produktiv aktiviert (Beta + Server 1)
+- AdMob app-ads.txt zuvor im Repo-Root ergänzt:
+  - `google.com, pub-8173685824080775, DIRECT, f08c47fec0942fa0`
+  - Commit: `fe8f90adcc66dc28cd8c61d34d4df9fcd794d0c2`
+- Serverseitiger Tütchen-Status geprüft:
+  - `public.ad_bag_settings`: `enabled=true`, `mode='production'`
+  - `server1.ad_bag_settings`: `enabled=true`, `mode='production'`
+- Clientseitige Release-Sperre entfernt:
+  - `v8010-harz-lotto.js`: `bagsAllowed=true`
+  - Coming-Soon-Umleitung entfällt.
+- Zusätzlich festgestellt: Der kanonische V7215 Rewarded-Tütchen-Owner war in Beta/Server1 HTML nicht mehr geladen.
+  - `js/features/shop/beta/v8009-s11-v7215-bagdealer-owner.js` jetzt wieder explizit geladen.
+  - Dadurch sind State-RPC, Rewarded-Ad-Aufruf, Fortschritt und serverseitige Belohnungen aktiv.
+- V7221 bleibt reine visuelle Schicht; alter Fail-Closed-Code wurde aus der nicht mehr geladenen Wrapper-Datei ebenfalls entfernt.
+- Aktiv auf **Beta + Server 1**.
+- Cache-Key: `8234bagslive1`.
+- Klassenbalance nicht berührt.
+- Relevante Commits:
+  - Tütchen-Tab freigegeben: `425c62c365adeaa47923f8988468557ef21edbf5`
+  - alter Coming-Soon-Wrapper entschärft: `c2f3ab3d75298506f9a2a6c0c7fe7466e80ffaa6`
+  - Beta aktiviert: `d8472329ac76d9c0f63191a5ded6a11fd35685ff`
+  - Server 1 aktiviert: `12d6d53b6f035df24e55ec1f0eb1687ac402f11e`
