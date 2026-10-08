@@ -13423,3 +13423,10 @@ Aktueller Release-Status:
 - Zuvor abgeschlossener manueller Einmaltest Run 57: 70 EXP, 34 Gold, 2 Harz-Taler; idempotente Wiederholung ohne Doppelbelohnung.
 - Migration `v8250_server1_bot_reversible_archive_admin_only` erfolgreich: admin-only RPC `server1.v8250_bot_archive` für reversibles Stilllegen und Wiederherstellen. In kanonischer Admin-JS-Datei integriert; Script-Cache in `server1.html` auf `v=8250botsafe1` erhöht; JS-Syntaxprüfung bestand. Kein automatischer irreversibler Account-Delete verfügbar.
 - **Wichtig offen:** autonomen Reward-Claim und nächste Start/Claim-Schleife nach 16:52 Berlin verifizieren; Bot-Entfernungs-Preflight ist noch nicht vollständig und wurde nicht installiert; geplanter Bot-Account-Rückbau noch ungetestet. Es existieren keine 49 weiteren Bot-Accounts. Keine Änderungen an Beta oder der Klassenbalance.
+
+
+### 2026-10-08 – V8.252 – Nebelwolf Quest 58 autonom vollständig abgeschlossen
+- Um 16:56 Uhr Europe/Berlin live auf Server 1 geprüft: Testbot **Nebelwolf** (Slot 1) hat Run **58** eigenständig per v8251 Cron gestartet (14:40:00 UTC) und **eigenständig am 08.10.2026 um 14:52:00 UTC / 16:52 Berlin** abgeholt. `won=true`, `resolved_at` und `client_acked_at` gesetzt, **90 EXP, 40 Gold, 0 Harz-Taler** serverseitig verbucht. Tageslog `v8251_bot_quest_daily`: `started=1,claimed=1`.
+- Nebelwolf besitzt jetzt **Level 2**, vertrauter Spielstand Level 2, XP 110, Gold 194, Harz-Taler 8. Quest-State ist wieder idle (`active=null`, kein offener Receipt). Bot-Slot `total_actions=4,last_action=quest_claim,last_error=null`.
+- Cron-Job ID 9 `v8251-server1-bot-quest` läuft im Minutentakt, letzte Läufe 14:54–14:56 UTC erfolgreich; `enabled=true,worker_ready=true`. Nächste geplante Bot-Aktion **19:32 UTC / 21:32 Berlin**. Unregelmäßige Pause beabsichtigt.
+- Bots gesamt: **50 vorbereitete Plätze**, genau **1 aktiv (Nebelwolf)**, **49 ausstehend ohne Account**. Nur die Quest-Start/Claim-Schleife ist autonom nachgewiesen, nicht Dungeon/Turm/Growroom/Gilde/Equipment, Account-Autoprovisionierung oder vollständige Hard-Delete-Rückbauprüfung. Weiterhin keine Ausweitung auf 49 Bots vor sicherem Auth-/Rückbaupfad.
