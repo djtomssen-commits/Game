@@ -43,9 +43,9 @@
   last=data;
   const ready=Number(data.provisioned)||0,active=Number(data.active)||0;
   const global=$('#'+P+'Toggle');
-  if(global){global.disabled=busy||ready===0;global.textContent=data.enabled?'Autopilot ausschalten':'Autopilot einschalten';}
+  if(global){global.disabled=busy||ready===0||!data.worker_ready;global.textContent=!data.worker_ready?'Autopilot noch nicht bereit':(data.enabled?'Autopilot ausschalten':'Autopilot einschalten');}
   const summary=$('#'+P+'Summary');
-  if(summary)summary.textContent=`Vorbereitet: ${data.configured||0} / 50 · Angelegte Charaktere: ${ready} · Spielbereit: ${active} · Autopilot: ${data.enabled?'EIN':'AUS'}`;
+  if(summary)summary.textContent=`Vorbereitet: ${data.configured||0} / 50 · Angelegte Charaktere: ${ready} · Spielbereit: ${active} · Autopilot: ${data.enabled?'EIN':'AUS'}${!data.worker_ready?' (Automatik noch nicht installiert)':''}`;
   const list=$('#'+P+'List');if(!list)return;
   list.innerHTML=(data.agents||[]).map(a=>{
    const canPause=a.lifecycle==='active';
