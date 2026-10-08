@@ -28,15 +28,11 @@
       </div>
     </div>`;
   };
-  /* V8.101: Tütchen is intentionally not released yet.
-     Keep every old direct/open entry point fail-closed so no ad/reward flow can run. */
+  /* V8.234: Tütchen is publicly released; legacy entry points delegate to V7215. */
   window.v7215BagDealerOpen = function(){
-    try{window.v063Toast?.('Tütchen · Coming Soon','info','Der Harz-Automat ist bereits verfügbar. Tütchen folgen später.')}catch(_){}
-    try{window.v8010HarzLotto?.open?.()}catch(_){}
-    return false;
+    try{return window.v7215BagDealer?.open?.()!==false}catch(_){return false}
   };
   window.v7215Load = function(){
-    try{window.v8010HarzLotto?.open?.()}catch(_){}
-    return false;
+    try{return window.v7215BagDealer?.load?.()}catch(_){return false}
   };
 })();
