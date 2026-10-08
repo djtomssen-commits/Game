@@ -8,6 +8,7 @@
  let busy=false;
  let last=null;
  let lastDungeon=null;
+ let buildBySlot={};
  const esc=x=>String(x==null?'':x).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
  const labels={pending:'Vorbereitet',active:'Aktiv',paused:'Pausiert',retired:'Stillgelegt'};
  const profiles={casual:'Gelegenheit',balanced:'Ausgeglichen',active:'Vielspieler',explorer:'Entdecker',social:'Gilden'};
@@ -83,6 +84,7 @@
     <div class="v093-admin-item-top"><b>#${a.slot} ${esc(a.name)}</b><span class="pill">${esc(labels[a.lifecycle]||a.lifecycle)}</span></div>
     <div class="muted" style="font-size:12px">${esc(a.class)} · ${esc(profiles[a.playstyle]||a.playstyle)} · Aktivität ${Math.round(Number(a.intensity||0)*100)} % · ${Number(a.total_actions)||0} Aktionen</div>
     ${a.last_action?'<div class="muted" style="font-size:11px">Letzte Aktion: '+esc(a.last_action)+'</div>':''}
+    ${buildBySlot[a.slot]?'<div class="muted" style="font-size:11px">Level '+Number(buildBySlot[a.slot].level||0)+' · Attribute: '+Number(buildBySlot[a.slot].attribute_actions||0)+' · Talente: '+Number(buildBySlot[a.slot].talent_actions||0)+' · Items ausgerüstet: '+Number(buildBySlot[a.slot].equip_actions||0)+' · Freie Punkte: '+Number(buildBySlot[a.slot].available_attributes||0)+' / '+Number(buildBySlot[a.slot].available_talents||0)+'</div>':''}
     ${action?'<button class="btn secondary" style="margin-top:6px" data-bot-action="'+action+'" data-bot-slot="'+Number(a.slot)+'">'+(canPause?'Pausieren':'Fortsetzen')+'</button>':''}
     ${canArchive?'<button class="btn secondary" style="margin:6px 0 0 6px" data-bot-action="archive" data-bot-slot="'+Number(a.slot)+'">Stilllegen</button>':''}
     ${canRestore?'<button class="btn secondary" style="margin-top:6px" data-bot-action="restore" data-bot-slot="'+Number(a.slot)+'">Wiederherstellen</button>':''}
@@ -195,6 +197,12 @@
     if(el)el.textContent='Dungeon-Pilotstatus nicht verfügbar.';
     lastDungeon=null;
    }else{renderDungeon(d.data);}
+   const dev=await api().rpc('v8263_bot_development_status');
+   if(!dev.error&&dev.data?.ok){
+    buildBySlot={};
+    (dev.data.agents||[]).forEach(x=>{buildBySlot[Number(x.slot)]=x;});
+    render(data);
+   }
   }
   catch(e){notice('Bot-Status konnte nicht geladen werden: '+(e?.message||String(e)));}
  }
