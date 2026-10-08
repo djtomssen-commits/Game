@@ -12836,3 +12836,42 @@ Aktueller Release-Status:
   4. Harzschmiede -> Verzaubern öffnen und Runenwallet prüfen.
   5. Klassenkampf/-werte gegen bisherigen Server-1-Stand prüfen; sie dürfen sich durch V8.220 nicht verändert haben.
 
+
+### 2026-10-08 – V8.221 Grow Cup Bühne/Pflanze integriert (Beta)
+- Nutzerfeedback aus Mobile-Screenshot:
+  - Grow-Cup-Hintergrund wirkt sichtbar verschwommen;
+  - separate Cup-Pflanze wirkt wie auf das Bühnenbild aufgeklebt und soll stärker Teil der Szene werden.
+- Ursachenprüfung direkt im bestehenden CSS-Owner `css/features/forge/beta/v8198-rune-enchant.css`:
+  - eingebettetes Bühnen-WebP besitzt tatsächlich nur **180 × 320 px** bei 7.188 Byte;
+  - es wird auf dem mobilen Bühnenpanel stark hochskaliert;
+  - die Unschärfe ist damit primär eine echte Quellauflösungsgrenze und kein CSS-`blur()`-Fehler.
+- Beta-Polish direkt im kanonischen bestehenden Owner, keine neue Patch-/Renderer-Schicht:
+  - Bühnenbild auf eigenes `::before` innerhalb desselben Owners gelegt;
+  - Kontrast/Sättigung/Helligkeit moderat angehoben;
+  - dunkle Overlay-/Vignette reduziert, damit vorhandene Bühnendetails weniger zugedeckt werden;
+  - Pflanze deutlich höher auf die zentrale Podestzone gesetzt;
+  - Größen-/Bottom-Progression für Phase 1–6 neu abgestimmt;
+  - warmes Podest-Kontaktlicht ergänzt;
+  - Kontaktschatten enger/stärker gemacht;
+  - Pflanzen-Drop-Shadow an Goldlicht + grünen Pflanzenakzent angeglichen.
+- Wichtig:
+  - CSS kann die 180×320-Quelle nur klarer darstellen, aber keine verlorenen Bilddetails zurückholen;
+  - echter Schärfefix benötigt das bereits freigegebene hochauflösende Bühnenoriginal als echtes Repo-Asset statt des 180×320-Embeds.
+- Beta Cache-Bust nur für `v8198-rune-enchant.css`: `8221cupstage1`.
+- Server 1 bewusst **noch nicht** auf V8.221 cache-gebustet; zuerst Mobile-Beta-Test.
+- QA:
+  - Grow-Cup-CSS Klammern **336/336**;
+  - neuer Bühnen-`::before` vorhanden;
+  - neues Podest-Kontaktlicht vorhanden;
+  - Phase-1-Position = `bottom:35%`;
+  - Beta lädt den neuen CSS-Key exakt 1×;
+  - Server 1 enthält 0× `8221cupstage1`.
+- Relevante Commits:
+  - CSS Bühne/Pflanze: `5f8ce4611bc558bbfbe2ebbbff239cff933edad1`;
+  - Beta Cache: `a249dd8f1a44f25571693fe722df6af18130f5de`;
+  - Matrix: `294ac8cc76fdaa3d3fd56789ef8544800895d54f`.
+- Manueller Beta-Test offen:
+  1. Grow Cup komplett neu laden;
+  2. prüfen, ob die Pflanze optisch auf dem zentralen Podest sitzt statt im Vordergrund zu schweben;
+  3. Bühne auf wahrgenommene Klarheit prüfen;
+  4. falls Hintergrund weiterhin sichtbar unscharf: hochauflösendes freigegebenes Original als echtes Asset einbinden; nicht weiter mit CSS-Schärfetricks kaschieren.
