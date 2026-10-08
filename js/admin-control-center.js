@@ -23,6 +23,18 @@ function errorText(err){const t=String(err?.message||err||'Unbekannter Fehler');
 async function rpc(action,payload={},server=S.server){const {data,error}=await S.db.schema(server==='beta'?'public':'server1').rpc('v8290_admin_console',{p_action:action,p_payload:payload});if(error)throw error;if(!data?.ok)throw new Error(data?.reason||'Admin-Abfrage fehlgeschlagen');return data}
 function showApp(show){$('app').classList.toggle('hidden',!show);$('login-screen').classList.toggle('hidden',show)}
 async function signIn(e){e.preventDefault();const btn=$('login-button');btn.disabled=true;try{const {data,error}=await S.db.auth.signInWithPassword({email:$('login-email').value.trim(),password:$('login-password').value});if(error)throw error;S.user=data.user;await rpc('whoami');$('login-password').value='';showApp(true);await open('overview')}catch(e){S.user=null;await S.db.auth.signOut().catch(()=>{});showApp(false);notice(errorText(e),true)}finally{btn.disabled=false}}
+async function signInGoogle(){
+ const btn=$('login-google');btn.disabled=true;
+ try{
+  /* Redirect only to this same-origin admin route, never accept an untrusted next URL.
+     The existing Supabase Google provider must whitelist /admin.html as a redirect. */
+  const redirectTo=new URL('./admin.html',window.location.href).href;
+  const {error}=await S.db.auth.signInWithOAuth({
+   provider:'google',options:{redirectTo,queryParams:{prompt:'select_account'}}
+  });
+  if(error)throw error;
+ }catch(e){notice('Google-Anmeldung konnte nicht gestartet werden: '+errorText(e),true);btn.disabled=false}
+}
 async function signOut(){await S.db.auth.signOut();S.user=null;S.player=null;showApp(false)}
 async function changeServer(next){if(next===S.server)return;try{await rpc('whoami',{},next);S.server=next;S.player=null;document.querySelectorAll('[data-server]').forEach(b=>b.classList.toggle('selected',b.dataset.server===next));$('server-warning').classList.toggle('hidden',next!=='server1');notice('Server: '+srv());await open('overview')}catch(e){notice(errorText(e),true)}}
 async function open(page=S.page){
@@ -139,8 +151,9 @@ async function grant(e){
 }
 async function init(){
  if(!window.supabase?.createClient){notice('Admin-Bibliothek konnte nicht geladen werden.',true);return}
- S.db=window.supabase.createClient(API,PUBLIC_KEY,{auth:{storageKey:'grow-legends-admin-v8290',persistSession:true,autoRefreshToken:true,detectSessionInUrl:false}});
+ S.db=window.supabase.createClient(API,PUBLIC_KEY,{auth:{storageKey:'grow-legends-admin-v8290',persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
  $('login-form').addEventListener('submit',signIn);
+ $('login-google').addEventListener('click',signInGoogle);
  $('logout-button').addEventListener('click',signOut);
  $('refresh-button').addEventListener('click',()=>open());
  document.querySelectorAll('[data-page]').forEach(b=>b.addEventListener('click',()=>open(b.dataset.page)));
