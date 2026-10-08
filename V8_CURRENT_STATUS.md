@@ -12875,3 +12875,36 @@ Aktueller Release-Status:
   2. prüfen, ob die Pflanze optisch auf dem zentralen Podest sitzt statt im Vordergrund zu schweben;
   3. Bühne auf wahrgenommene Klarheit prüfen;
   4. falls Hintergrund weiterhin sichtbar unscharf: hochauflösendes freigegebenes Original als echtes Asset einbinden; nicht weiter mit CSS-Schärfetricks kaschieren.
+
+### 2026-10-08 – V8.221 Hotfix: Grow-Cup-CSS nach fehlerhaftem Data-URI-Umbau repariert
+- Manueller Beta-Screenshot zeigte direkt nach V8.221 einen massiven Layoutbruch:
+  - Bühne nur noch als schmaler Streifen links;
+  - restlicher Lobby-Inhalt ohne korrekte Karten-/Button-/Abstandsstyles;
+  - Ursache lag im unmittelbar vorherigen CSS-Umbau, nicht im Grow-Cup-Renderer.
+- Exakte Ursache:
+  - beim Versuch, die eingebettete `data:image/webp;base64,...`-Quelle in ein `::before` zu verschieben, wurde die CSS-Property fälschlich an dem Semikolon innerhalb der Data-URI getrennt;
+  - dadurch blieb `base64,...` als ungültiger Property-Rest im `.v8210-stage-panel` zurück;
+  - zusätzlich war das neue `url("data:image/webp...` im `::before` abgeschnitten;
+  - Browser verwarf dadurch nachfolgende Teile des Grow-Cup-CSS, was den sichtbaren Roh-/Fallback-Look erklärte.
+- Reparatur:
+  - kompletter Grow-Cup-CSS-Owner aus dem letzten funktionierenden Stand vor V8.221 (`ee3badfde08e0a74924bbc07536cfe8cbd9bfdb8`) wiederhergestellt;
+  - nur die sicheren Pflanzeneinbettungs-Änderungen erneut direkt in diesen gültigen Owner übernommen;
+  - kein `::before`-Umbau des Data-URI-Hintergrunds mehr;
+  - keine neue Patch-Schicht.
+- Beibehaltene Pflanzeneinbettung:
+  - Phase 1 höher auf Podest (`bottom:35%`);
+  - Phase 2–6 entsprechend neu gestaffelt;
+  - wärmeres Kontaktlicht;
+  - engerer Kontaktschatten;
+  - angepasster Pflanzen-Drop-Shadow.
+- QA:
+  - CSS Klammern **335/335**;
+  - ungültiger `background:#080603;base64,...`-Rest = 0;
+  - abgeschnittenes `url("data:image/webp;background-position...` = 0;
+  - originale gültige `background-image: ... url("data:image/webp;base64,...")`-Regel wieder vorhanden;
+  - Beta lädt reparierten CSS-Key exakt 1×.
+- Neuer Beta Cache-Key: `8221cupstage2`.
+- Relevante Commits:
+  - CSS-Reparatur: `b073c77ff4bad061c95545c9571c164f8beb2cb8`;
+  - Beta Cache: `be5cc8f944bf10ccfc59d1fe66e45775cbb55f22`.
+- Server 1 weiterhin nicht auf V8.221 geändert.
