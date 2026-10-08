@@ -13297,3 +13297,16 @@ Aktueller Release-Status:
 - Beta-Commit: `5fed9867a0bfdf6a2e4e5a910fac5977afde15a7`.
 - Server-1-Commit: `c8ffc7aa716f98473866be6807e8dce93b0d053a`.
 - Manueller Gerätetest (öffnen, in Automat wechseln, zurück, Seite verlassen/erneut öffnen) noch offen.
+
+### 2026-10-08 – V8.238 Tütchen-Belohnungsfenster nach 3/3 (Beta + Server 1)
+- Nutzer-Repro: Nach 3/3 sprang das Tütchen direkt zur nächsten Stufe, ohne Belohnungsfenster.
+- Servernachweis: In `public.player_ad_bag_events` liegt um 08:34:31 UTC ein bestätigter Abschluss mit `completed=true`, Belohnung 615 Gold + 3 Fragmente, Fortschritt 2→3; serverseitige Auszahlungslogik und Fortschrittsreset sind bereits in `v7215_ad_bag_apply_for` implementiert.
+- Ursache: kanonischer V7215-Client hatte kein Reward-Modal und las abgeschlossene Server-Receipts nicht aus.
+- Beta: read-only RPC `public.v8238_ad_bag_latest_claim()` ergänzt (nur eigenes `auth.uid()`, zuletzt abgeschlossene 7 Tage, nur für authenticated freigegeben); liest vorhandenen Event/Reward, löst **keine neue Auszahlung** aus.
+- Client-Owner `js/features/shop/beta/v8009-s11-v7215-bagdealer-owner.js` ergänzt: zeigt bei abgeschlossenem Tütchen einen Reward-Dialog; Beträge aus Beta-Server-Beleg, Weiter-Button + lokale Anzeige-Quittung gegen Wiederholung, Wechsel zum nächsten Tütchen nach Weiter; account-/servergetrennte Anzeigeschlüssel, keine zusätzlichen Renderer/Monkey-Patches.
+- Server 1: Änderung am gleichen Client-Owner aktiv; bei `totalClaims`-Anstieg direkt sichtbarer Dialog mit der vorherigen serverseitigen Tütchen-Vorschau. Die zusätzliche Server-1-RPC-Migration wurde vom Tool-Zugriffsschutz blockiert, daher noch **keine exakte historische Receipt-Nachladung** auf Server 1. UI kennzeichnet Vorschauwerte als solche. Servertrennung und Klassenspielbalance nicht verändert.
+- Styling direkt in `v8009-extracted-v7221-bagdealer-override.css` ergänzt, keine neue CSS-/Render-Schicht.
+- Beta- und Server-1-Entry auf Cache-Key `8238bagreward1` für Client und CSS aktualisiert.
+- Technische Prüfung: JS-Syntax via V8 Function-Kompilierung erfolgreich; simulierte Client-Tests Beta/Server 1 für Popup, Schließen und Unterdrückung wiederholter Anzeige erfolgreich.
+- Gesundheit/Runtime/Player-QA: direkter Zugriff auf die drei internen Diagnose-Tabellen wurde vom Sicherheitssystem blockiert; dieser Teil der Diagnose bleibt offen, nicht als fehlerfrei werten.
+- Manueller Android-Endtest auf beiden Servern offen.
