@@ -13337,3 +13337,12 @@ Aktueller Release-Status:
 - Beta und Server1 Guide-CSS/JS mit Cache-Key `8240newplayerguide1`; Server1 Creator ebenfalls cache-versioniert.
 - QA (Simulationsprüfung): JavaScript-Parse beider Owner grün, Post-Create Handoff + Welcome grün, bestehender Charakter unverändert, manueller Replay grün, fremde Account-ID abgelehnt. Manueller Android-Neucharakter-Test steht aus.
 - Klassenbalance, Serverautorität, Charakterdaten und bestehende Tutorials nicht global geändert.
+
+### 2026-10-08 – V8.241 Hinterhof-Dealer Guide: altes Harz-Lotto entfernt
+- Nutzerhinweis: Unter dem globalen `?` auf der Hinterhof-Dealer-Seite wurde trotz Umstellung weiter das alte Harz-Lotto (6 aus 50 / Tippschluss / Ziehung) erklärt.
+- Kanonischer Guide-Owner direkt bearbeitet: `js/features/guide/beta/v8009-s1-v6254-grow-guide.js`, Abschnitt `GUIDES.bagDealer`.
+- Neuer 5-Schritte-Guide: (1) Tütchen zuerst, Harz-Automat zweiter Tab; (2) freiwillige Rewarded Ads + serverseitiger Fortschritt; (3) Belohnung nach Ziel automatisch gutgeschrieben und Popup / nächste Stufe; (4) Automat mit Einsätzen 5/10/25/50 Harz-Taler + Päckchen öffnen; (5) Chancen/Garantien und ausschließlich virtuelle Belohnungen.
+- Alle alten Lotto-/Schein-/Tippschluss-/Ziehungsanleitungen aus genau diesem Guide entfernt. Kein neues Tutorial-System, kein Reset vorhandener Guide-Seen-Flags, keine Änderung an Währungen oder Serverrewards.
+- Beta und Server 1 laden denselben neuen JS-Guide mit Cache-Key `8241dealerreview1`. CSS unverändert.
+- Syntaxprüfung des Guide-Scripts erfolgreich; beide Server-Entrypoints mit dem neuen JS-Pfad/Cachestring geprüft. Manueller Test im Spiel über Hinterhof-Dealer → `?` offen.
+- Guide-Commit: `0342b6335b4f026aba98bb9c8a9b8e98edf4906d`; Beta: `92ac67cc7d929a1e0db6d0aebcb118e96f278aaf`; Server 1: `0940c92ec504e5a5808268c6874e2a8baa4a9963`.
