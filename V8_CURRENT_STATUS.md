@@ -13366,3 +13366,13 @@ Aktueller Release-Status:
 - Frontend-JavaScript wurde syntaktisch kompiliert, Script genau einmal im Server-1-Entry und Aufruf im kanonischen Admin-Lifecycle überprüft.
 - Wichtig: **Es wurden noch keine echten Auth-Accounts/Charaktere erstellt, keine Quests oder Kämpfe ausgeführt und kein Scheduler aktiviert.** Der Worker-Versuch wurde vom Tool-Sicherheitssystem blockiert. Nicht als durchgeführte Migration aufführen.
 - **Offen, bevor 50 Bots live gehen dürfen**: Auth-basierter, zulässiger Worker/Provisionierung ohne Session-Impersonation; End-to-End-Spieltest auf separaten Bot-Accounts; Gildenbeitritte, Turm-Runs und echte Itemverwaltung; rückbausichere Behandlung von PvP- und Gildenreferenzen; Admin-Rückbauaktion, die ausschließlich registrierte Bot-IDs entfernt oder zunächst sicher ausblendet; reguläre Prüfung der Spieltransparenz. Kein Test auf bestehenden echten Spieleraccounts.
+
+
+### 2026-10-08 – V8.245 Testbot-Identität / sichere Rückbau-Vorprüfung
+- Nächster Arbeitsschritt aus dem 50-Bot-Wunsch: zunächst exakt einen isolierten Testbot (Slot 1) über einen echten Supabase Auth-Account und vorhandene Server-1-Charakter-/Quest-RPCs entwickeln. Ein eigenes künstliches Auth-Claim-/`set_config`-Impersonation-Verfahren wurde **nicht** eingesetzt.
+- Migration `v8245_server1_testbot_identity_bind_and_removal_preflight` **erfolgreich angewandt**:
+  - `server1.v8245_bind_test_bot(p_slot,p_user)`: ausschließlich Server 1, Slot 1 und service_role; bindet nur einen bestätigten Auth-Account mit internem Bot-Metadatenmarker und vollständig regulär initialisiertem Server-1-Charakter. Ergebnis bleibt `paused`.
+  - `server1.v8245_test_bot_preflight(p_slot)`: ausschließlich service_role; bestätigt Marker/Identität, prüft Gildenmitgliedschaft und -leitung, Einladungen/Anfragen, PvP-Kämpfe, Chat und Google-Play-Käufe, um ungeschützten Rückbau zu verhindern. Die Funktion entfernt selbst keine Spielstände.
+- Der Versuch, die sichere Auth-basierte `v8245-bot-admin` Edge Function für die einmalige Bot-Erstellung und reguläre Quest-RPCs bereitzustellen, wurde **vom Deployment-Tool/Sicherheitszugriff blockiert**. **Nicht** als deployed/aktiv behaupten. Kein Auth-Bot wurde provisioniert.
+- Abschließende aktuelle Datenbankprüfung: **50 Registry-Slots, 0 provisioniert, 0 aktiv, Autopilot AUS, 3 bestehende Server-1-Charaktere**. Die Statusprüfung war rein lesend.
+- Offene Arbeiten: zulässiger abgesicherter Dienst zur echten Auth-Account-Erstellung, reales Quest-Testverfahren, vollständige sichere Entfernen-Funktion (einschließlich Auth und Server-1-Spielerdaten), dann erst schrittweiser Autopilot. Bis dahin weder Livebots aktivieren noch behaupten, dass der Löschweg fertig sei. Manuelles Testen der Admin-Ansicht weiterhin offen.
