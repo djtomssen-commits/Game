@@ -82,12 +82,37 @@
   window.v470CompareItem=compare;
 
   function signed(n){n=Math.round((Number(n)||0)*100)/100;return n>0?'+'+n:String(n)}
+  function shopBaseScore(it){
+    if(!it)return 0;
+    normalize(it);
+    const base=nativeMap(it),cls=String(s?.playerClass||it?.classId||'grower');
+    const primary=cls==='scout'?'geschick':(cls==='bruiser'||cls==='summoner')?'intelligenz':'staerke';
+    const weights={staerke:.35,geschick:.35,intelligenz:.35,ausdauer:2,glueck:1};
+    weights[primary]=6;
+    return Math.round(COMBAT.reduce((sum,k)=>sum+(Number(base?.[k])||0)*(weights[k]??1),0)*10)/10;
+  }
+  function shopCompare(it){
+    const full=compare(it);if(!full)return null;
+    if(full.diff==null)return {full,base:null};
+    const old=s?.equipment?.[it.slot]||null;
+    if(!old)return {full,base:null};
+    const nd=shopBaseScore(it),od=shopBaseScore(old),diff=Math.round((nd-od)*10)/10;
+    return {full,base:{diff,state:diff>0?'better':diff<0?'worse':'same',mark:diff>0?'▲':diff<0?'▼':'◆',label:diff>0?'BESSER':diff<0?'SCHLECHTER':'GLEICH'}};
+  }
   function compactComparisonHtml(it,cls='v090-shop-compare'){
-    const c=compare(it);if(!c)return'';
-    const css=c.state==='free'?'empty':c.state;
-    if(c.state==='free')return `<div class="${cls} ${css}">▲ FREIER SLOT · Verbesserung</div>`;
-    if(c.diff==null)return `<div class="${cls} ${css}">${esc(c.label)} · ${esc(c.reason)}</div>`;
-    return `<div class="${cls} ${css}">${c.mark} ${c.label} · ${signed(c.diff)} Gesamtwert</div>`;
+    const x=shopCompare(it);if(!x)return'';
+    const c=x.full;
+    const css=(x.base?.state)||(c.state==='free'?'empty':c.state);
+    if(c.state==='free')return `<div class="${cls} ${css}"><div class="v470-shop-note">Vergleich: Grundwerte ohne Stein/VZ</div><div class="v470-shop-line better">▲ BESSER · freier Slot</div></div>`;
+    if(c.diff==null)return `<div class="${cls} ${css}"><div class="v470-shop-note">Vergleich: Grundwerte ohne Stein/VZ</div><div class="v470-shop-line worse">${esc(c.label)} · ${esc(c.reason)}</div></div>`;
+    const b=x.base;
+    const fullState=c.state==='better'?'better':c.state==='worse'?'worse':'same';
+    const fullMark=c.state==='better'?'▲':c.state==='worse'?'▼':'◆';
+    return `<div class="${cls} ${css} v470-shop-dual">
+      <div class="v470-shop-note">Grundwerte ohne Stein/VZ</div>
+      <div class="v470-shop-line ${b.state}"><span>Grundwerte</span><b>${b.mark} ${b.label} · ${signed(b.diff)}</b></div>
+      <div class="v470-shop-line ${fullState}"><span>Mit Stein + VZ</span><b>${fullMark} ${esc(c.label)} · ${signed(c.diff)}</b></div>
+    </div>`;
   }
   try{v090ComparisonHtml=function(it){return compactComparisonHtml(it,'v090-shop-compare')};window.v090ComparisonHtml=v090ComparisonHtml}catch(e){}
   try{v089ShopComparison=function(it){return compactComparisonHtml(it,'v089-shop-compare')};window.v089ShopComparison=v089ShopComparison}catch(e){}
