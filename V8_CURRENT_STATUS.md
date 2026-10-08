@@ -12988,3 +12988,20 @@ Aktueller Release-Status:
   - Vergleichsmarkup: `b791d6d6e352432c2aaea4f4e6dd47fa64305e03`;
   - Shop-CSS: `4fd912f01c2ce507a4ef449631686ba9d44e2e6c`;
   - Beta Cache: `e91b7da4309e87ae24fc598d21be921d785c65b2`.
+
+### 2026-10-08 – V8.226 Shopvergleich wirklich untereinander gestapelt (Beta)
+- Nutzer-Screenshot zeigte, dass die beiden Vergleichszeilen trotz V8.225 noch nebeneinander gequetscht wurden.
+- Shop-CSS jetzt explizit auf eine einspaltige Grid-Anordnung gezwungen:
+  - `grid-template-columns:1fr`;
+  - `grid-auto-flow:row`;
+  - jede `.v470-shop-line` belegt `grid-column:1/-1` und 100 % Breite;
+  - Text zentriert und Mobile-Schrift leicht angepasst.
+- Ergebnisziel:
+  - Zeile 1: `▲/▼ GRUNDWERTE · BESSER/SCHLECHTER ±X`;
+  - Zeile 2: `▲/▼ MIT STEIN + VZ · BESSER/SCHLECHTER ±X`;
+  - beide Zeilen vollständig untereinander.
+- Beta Cache-Key Shop-CSS: `8226shopstack1`.
+- Server 1 unverändert.
+- Relevante Commits:
+  - Shop-CSS: `d77d235aa960a254dcb6fcb9133885ccb3eb906e`;
+  - Beta Cache: `6b2d10fa56468ab81c411da8eab776008f92bf81`.
