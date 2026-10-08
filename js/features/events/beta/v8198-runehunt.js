@@ -51,7 +51,7 @@ function wallet(){
  return '<div class="v8210-wallet"><span><i>ᚱ</i><b>'+Math.max(0,Number(st.runes)||0)+'</b><small>Runen</small></span><span><i>✦</i><b>'+Math.max(0,Number(st.rune_shards)||0)+'</b><small>Fragmente</small></span></div>';
 }
 function header(){
- return '<header class="v8210-head"><button type="button" data-cup-menu class="v8210-back" aria-label="Navigation öffnen">☰</button><div class="v8210-title"><small>6-STUNDEN-CUP · JEDEN DONNERSTAG</small><b>GROW CUP</b><span>Jede Woche neue Pflanze · 6 neue Sweet Spots · maximal 600 Punkte</span></div>'+wallet()+'<button type="button" data-cup-close class="v8210-close">×</button></header>'+
+ return '<header class="v8210-head"><div class="v8210-title"><small>6-STUNDEN-CUP · JEDEN DONNERSTAG</small><b>GROW CUP</b><span>Jede Woche neue Pflanze · 6 neue Sweet Spots · maximal 600 Punkte</span></div>'+wallet()+'<button type="button" data-cup-close class="v8210-close">×</button></header>'+
  '<nav class="v8210-tabs"><button data-cup-view="cup" class="'+(S.view==='cup'?'active':'')+'">🌿 CUP</button><button data-cup-view="ranking" class="'+(S.view==='ranking'?'active':'')+'">🏆 RANGLISTE</button></nav>';
 }
 function plantStage(phase=1,status='active'){
@@ -208,7 +208,6 @@ function paint(){
  const box=overlay().querySelector('.v8210-growcup-content');if(!box)return;
  box.innerHTML=header()+'<main class="v8210-main">'+(S.view==='ranking'?ranking():cupBody())+'</main>';
  box.querySelectorAll('[data-cup-close]').forEach(b=>b.onclick=close);
- box.querySelector('[data-cup-menu]')?.addEventListener('click',openMenu);
  box.querySelectorAll('[data-cup-view]').forEach(b=>b.onclick=()=>{S.view=String(b.dataset.cupView||'cup');if(S.view==='ranking'&&!S.ranking)void loadRanking();paint()});
  box.querySelector('[data-cup-start]')?.addEventListener('click',start);
  box.querySelector('[data-cup-submit]')?.addEventListener('click',submitAction);
@@ -245,49 +244,6 @@ async function loadRanking(force=false){
  try{const r=await rpc('v8210_growcup_leaderboard',{p_limit:100});if(r?.ok){S.ranking=r;if(S.opened)paint()}return r}
  catch(e){S.lastError=String(e?.message||e);console.warn('[V8.219 Grow Cup] ranking',e);return null}
 }
-function setMainMenuOpen(open){
- try{
-  window.v4148BuildCompleteMenu?.();
-  const panel=document.querySelector('#v032MenuPanel');
-  if(!panel)return false;
-  panel.classList.toggle('open',!!open);
-  panel.classList.toggle('show',!!open);
-  panel.setAttribute('aria-hidden',open?'false':'true');
-  if(open){
-   panel.style.setProperty('display','block','important');
-   panel.style.setProperty('visibility','visible','important');
-   panel.style.setProperty('opacity','1','important');
-   panel.style.setProperty('pointer-events','auto','important');
-   panel.style.setProperty('z-index','100000','important');
-  }else{
-   panel.style.removeProperty('display');
-   panel.style.removeProperty('visibility');
-   panel.style.removeProperty('opacity');
-   panel.style.removeProperty('pointer-events');
-   panel.style.removeProperty('z-index');
-  }
-  return true;
- }catch(err){console.warn('[V8.223 Grow Cup] main menu state',err);return false}
-}
-function openMenu(e){
- try{
-  e?.preventDefault?.();e?.stopPropagation?.();
-  const panel=document.querySelector('#v032MenuPanel');
-  const open=!(panel?.classList.contains('open')||panel?.classList.contains('show'));
-  setMainMenuOpen(open);
- }catch(err){console.warn('[V8.223 Grow Cup] menu',err)}
-}
-document.addEventListener('click',e=>{
- if(!document.body.classList.contains('v8210-growcup-open'))return;
- const btn=e.target?.closest?.('#v372TopbarShell .v372-menu');
- if(!btn)return;
- e.preventDefault();
- e.stopPropagation();
- e.stopImmediatePropagation?.();
- const panel=document.querySelector('#v032MenuPanel');
- const open=!(panel?.classList.contains('open')||panel?.classList.contains('show'));
- setMainMenuOpen(open);
-},true);
 async function open(){S.opened=true;S.view='cup';document.body.classList.add('v8210-growcup-open');overlay().classList.add('show');paint();await refresh({paintNow:true});void loadRanking()}
 async function start(){
  if(S.busy)return;S.busy=true;paint();
