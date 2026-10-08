@@ -109,8 +109,8 @@
     const fullState=c.state==='better'?'better':c.state==='worse'?'worse':'same';
     const fullMark=c.state==='better'?'▲':c.state==='worse'?'▼':'◆';
     return `<div class="${cls} ${css} v470-shop-dual">
-      <div class="v470-shop-line ${b.state}"><b>${b.mark} GRUNDWERTE · ${b.label} ${signed(b.diff)}</b></div>
-      <div class="v470-shop-line ${fullState}"><b>${fullMark} MIT STEIN + VZ · ${esc(c.label)} ${signed(c.diff)}</b></div>
+      <span class="v470-shop-row ${b.state}">${b.mark} GRUNDWERTE · ${b.label} ${signed(b.diff)}</span>
+      <span class="v470-shop-row ${fullState}">${fullMark} MIT STEIN + VZ · ${esc(c.label)} ${signed(c.diff)}</span>
     </div>`;
   }
   try{v090ComparisonHtml=function(it){return compactComparisonHtml(it,'v090-shop-compare')};window.v090ComparisonHtml=v090ComparisonHtml}catch(e){}
