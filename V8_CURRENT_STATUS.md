@@ -13097,3 +13097,21 @@ Aktueller Release-Status:
   - Grow-Cup-Owner: `004e85508e7fafd42d4a8e49c02cb8bfc7747ed3`;
   - Beta Cache: `2e854a6ec481dadc987c6a5acc2e15de24f2ccd8`;
   - Server 1 Cache: `0c13870a18460720fe1d19d506d907ed6fb5669c`.
+
+### 2026-10-08 – V8.231 Mittwochs-Event Anbau-Turm Belohnungen reduziert (Beta + Server 1)
+- Nutzerwunsch: weniger Harz-Taler, Fragmente und EXP; Platz 1 konkret auf 5 Harz-Taler, 50 Fragmente und 5.000 EXP.
+- Neue Platzierungsbelohnungen:
+  - Platz 1: 5.000 EXP · 3.500 Gold · 5 Harz-Taler · 6 Zeit-Samen · 50 Fragmente · 5 Samen
+  - Platz 2: 4.200 EXP · 2.800 Gold · 4 Harz-Taler · 5 Zeit-Samen · 40 Fragmente · 4 Samen
+  - Platz 3: 3.500 EXP · 2.200 Gold · 4 Harz-Taler · 4 Zeit-Samen · 35 Fragmente · 4 Samen
+  - Platz 4–10: 2.500 EXP · 1.500 Gold · 3 Harz-Taler · 3 Zeit-Samen · 25 Fragmente · 3 Samen
+  - Platz 11–25: 1.600 EXP · 900 Gold · 2 Harz-Taler · 2 Zeit-Samen · 18 Fragmente · 2 Samen
+  - Platz 26–50: 900 EXP · 500 Gold · 1 Harz-Taler · 1 Zeit-Samen · 10 Fragmente · 1 Samen
+- Gold, Zeit-Samen und Samen blieben gegenüber der vorherigen Staffelung unverändert.
+- Keine Items als Mittwochs-Platzierungsbelohnung.
+- Auf Beta + Server 1 aktiviert via Cache-Key `8231wedrewards1`.
+- Klassenbalance nicht berührt.
+- Relevante Commits:
+  - Tower-Owner: `fca5bc9778477c0dba0aed33ec552b3f37f9ed4a`
+  - Beta Cache: `bf5731a82fe2e5b2a8c38861db71655b21135ac9`
+  - Server 1 Cache: `dddfb7c79ca5711cd44af057325876712d9a055b`
