@@ -22,7 +22,17 @@
    <div class="section-title"><div><h3>🤖 Bot-Verwaltung · Server 1</h3>
    <div class="muted">50 individuelle Spielprofile · ausschließlich Server 1</div></div></div>
    <div id="${P}Summary" class="muted" style="margin:10px 0">Lade Status …</div>
-   <div class="v093-admin-actions" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">
+   <div class="v093-admin-actions" style="display:flex;flex-direction:column;align-items:stretch;gap:7px;margin-bottom:10px">
+    <style>
+     #v8243BotAdmin .v093-admin-actions > .btn {
+       display:block !important;width:100% !important;max-width:100% !important;
+       min-width:0 !important;min-height:43px !important;height:auto !important;
+       padding:10px 12px !important;line-height:1.3 !important;
+       white-space:normal !important;overflow-wrap:normal !important;
+       word-break:normal !important;hyphens:none !important;
+       font-size:14px !important;text-align:center !important;
+     }
+    </style>
     <button id="${P}Toggle" class="btn secondary" disabled>Autopilot laden …</button>
     <button id="${P}Refresh" class="btn secondary">Aktualisieren</button>
     <button id="${P}Provision" class="btn secondary" disabled>49 Bot-Konten erstellen und starten</button>
