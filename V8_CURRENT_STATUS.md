@@ -13238,3 +13238,21 @@ Aktueller Release-Status:
   - V7215 Owner: `63c1b6eb8574670141f30f3cb604fba73f9a01f3`
   - Beta Cache: `46f8491d258dc9f734784e0cbc9ea6e242b16f5d`
   - Server 1 Cache: `9e79b279d62aa8a8902f3a6f31c0f53209facf25`
+
+### 2026-10-08 – V8.236 Server 1 Tütchen-Fortschritt / AdMob SSV Routing gefixt
+- Nutzerfeedback: Rewarded Ad läuft auf Server 1, aber der Tütchen-Fortschritt wird dort nicht hochgezählt.
+- Diagnose über Supabase Function Logs:
+  - Beta-Callbacks mit `custom_data=growlegends_adbag_v1` → HTTP 200.
+  - Server-1-Callbacks mit `custom_data=growlegends_adbag_v1%3Aserver1` → HTTP 403.
+- Ursache: Server-1-Kennung mit Doppelpunkt wurde im AdMob-SSV-Callback URL-kodiert (`%3A`) und scheiterte bei der Signaturprüfung.
+- Fix:
+  - Client nutzt für Server 1 jetzt URL-sicher `growlegends_adbag_v1_server1`.
+  - Edge Function `admob-rewarded-ssv` auf Version 5 aktualisiert.
+  - SSV akzeptiert weiterhin die alte `:server1`-Variante und zusätzlich die neue `_server1`-Variante.
+  - Schema-Routing erkennt beide Varianten und schreibt Server-1-Ads nach `server1.v7215_ad_bag_apply_verified`.
+- Beta bleibt bei `growlegends_adbag_v1`.
+- Cache-Key V7215: `8236adbags1`.
+- Relevante Commits:
+  - Client: `5a9462c3a5be3588f901ba244a300e459a2319aa`
+  - Beta Cache: `2b16c3b4ba6e9c03346158664d6678b8e8e6ec44`
+  - Server 1 Cache: `8c069a700800c36e5a95a9f87f6d9758036c7655`
