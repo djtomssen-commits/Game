@@ -169,6 +169,15 @@ async function nativeWatch(){
   if(!rewarded)throw new Error('AD_NOT_COMPLETED');
   return result;
 }
+async function waitForRewardedConfirmation(before){
+  const tries=[0,450,850,1300,1900,2700];
+  for(const delay of tries){
+    if(delay)await new Promise(resolve=>setTimeout(resolve,delay));
+    await load();
+    if((Number(S.data?.totalAds)||0)>before)return true;
+  }
+  return false;
+}
 async function watch(){
   if(S.busy||!S.data?.enabled)return;
   S.busy=true;paint();
@@ -180,15 +189,15 @@ async function watch(){
     }else{
       await nativeWatch();
     }
-    await load();
+    const confirmed=await waitForRewardedConfirmation(before);
     const after=Number(S.data?.totalAds)||0;
-    if(after>before){
+    if(confirmed&&after>before){
       toast('Tütchen-Fortschritt +1','success','Die Anzeige wurde serverseitig bestätigt.');
       try{window.v069SyncCurrencies?.();window.v6213SyncCurrencies?.()}catch(_){}
       try{await window.v7063ItemStageRefresh?.(true)}catch(_){}
       try{await window.v7077ProgressRefresh?.()}catch(_){}
     }else if(S.data.mode==='prod'||S.data.mode==='production'){
-      toast('Bestätigung wird verarbeitet','info','Die Anzeige wurde beendet. Der Server bestätigt die Belohnung separat.');
+      toast('Bestätigung wird verarbeitet','info','Die Anzeige wurde beendet. Der Fortschritt wird gleich automatisch aktualisiert.');
     }
   }catch(e){
     const m=String(e?.message||e);
