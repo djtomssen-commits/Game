@@ -13005,3 +13005,24 @@ Aktueller Release-Status:
 - Relevante Commits:
   - Shop-CSS: `d77d235aa960a254dcb6fcb9133885ccb3eb906e`;
   - Beta Cache: `6b2d10fa56468ab81c411da8eab776008f92bf81`.
+
+### 2026-10-08 – V8.227 Shopvergleich: echte Vollzeilen + höhere Karten (Beta)
+- Nutzer-Screenshot nach V8.226 zeigte:
+  - beide Bewertungen weiterhin optisch in einer Zeile;
+  - Zahlen rechts abgeschnitten.
+- Fix:
+  - Vergleichsmarkup auf zwei eigene `span.v470-shop-row` umgestellt;
+  - jede Zeile wird im Shop-CSS zwingend als `display:block` mit 100 % Breite gerendert;
+  - kein `nowrap/overflow:hidden` mehr;
+  - zweite Zeile bekommt leichte Trennlinie;
+  - Shopkarten auf Mobile/gesamt höher gemacht, damit beide Bewertungen Platz haben.
+- Ziel:
+  - Zeile 1: `▲/▼ GRUNDWERTE · BESSER/SCHLECHTER ±X`;
+  - Zeile 2: `▲/▼ MIT STEIN + VZ · BESSER/SCHLECHTER ±X`;
+  - beide Zeilen vollständig sichtbar.
+- Beta Cache-Key: `8227shopstack2`.
+- Server 1 unverändert.
+- Relevante Commits:
+  - Markup: `ae873310fa969db1f11e606ab02f899d20d87bac`;
+  - Shop-CSS: `b8efa88e7fe26e6a7e013c02c708e148b8bb8f1a`;
+  - Beta Cache: `e36e78863c40767aed892fe4c7a264b5d32c50ab`.
