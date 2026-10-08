@@ -13178,3 +13178,25 @@ Aktueller Release-Status:
   - CSS: `e44fca4283a69ce93886689d7373f864ff0213c8`
   - Beta Cache: `c904d94d496fa9e72639d3a011b35b6e513d17f2`
   - Server 1 Cache: `a83d21b9968d624bd10e401205159ab5a72f0864`
+
+### 2026-10-08 – V8.236 Tütchen Rewarded-Ad-Aufruf an funktionierenden Quest-Flow angeglichen (Beta + Server 1)
+- Nutzerhinweis: Quest-Zeitverkürzung per Rewarded Video funktioniert, Tütchen-Dealer meldete dagegen `Anzeige nicht verfügbar`.
+- Vergleich ergab:
+  - Quest-Aufruf sendet `placement`, `userId` und `customData`;
+  - Tütchen-Aufruf sendete bisher nur `placement:'ad_bag'`.
+- Supabase SSV-Endpunkt `admob-rewarded-ssv` bestätigt als gültige Tütchen-CustomData:
+  - Beta: `growlegends_adbag_v1`
+  - Server 1: `growlegends_adbag_v1:server1`
+- Tütchen-`nativeWatch()` sendet jetzt:
+  - `placement:'ad_bag'`
+  - eingeloggte `userId`
+  - passende `customData` je Release-Channel.
+- Rewarded-Erkennung an Quest-Flow angeglichen:
+  - `status==='rewarded'` oder `rewarded===true` oder `completed===true`.
+- Produktionsmodus-Nachlauf erkennt jetzt sowohl `prod` als auch `production`.
+- Aktiv auf Beta + Server 1.
+- Cache-Key: `8236bagsad1`.
+- Relevante Commits:
+  - Tütchen Owner: `01e0087e6dc039b51d79c079b253484523363452`
+  - Beta Cache: `16b5e9163f006a1aa44601eb196eab43c7543ff4`
+  - Server 1 Cache: `3b9a3651a9fa598bb1cf9e12f0e25d1075ac3640`
