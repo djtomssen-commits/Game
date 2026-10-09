@@ -163,9 +163,9 @@
     if(uri){
       const current=box.querySelector(':scope > img.v470-slot-art,:scope > img.v466-item-art');
       if(current&&box.childElementCount===1&&(
-         box.dataset.v470Uri===uri||
-         (String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta'&&
-          (current.getAttribute('src')===uri||current.src===uri)))){
+         String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta'
+           ?(current.getAttribute('src')===uri||current.src===uri)
+           :box.dataset.v470Uri===uri)){
         /* V8.348: v6102/v4103 may have mounted the exact same artwork.
            Preserve that image node instead of destroying/recreating it. */
         if(box.dataset.v470Uri!==uri)box.dataset.v470Uri=uri;
