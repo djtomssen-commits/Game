@@ -343,6 +343,7 @@ async function checkReadOnlyConsistencyWatch(channel){
     text:window.v8330DataConsistencyText()
   }));
   assert.ok(switched.report.accountSwitches>=1,'Account switch must invalidate previous comparison baselines');
+  assert.equal(switched.report.issues.length,0,'Account switch must clear previous account warning history');
   assert.equal(switched.report.lastConfirmed.energy.value,50,'Second account must own new canonical energy snapshot');
   assert.equal(switched.rpc,0,'Read-only watcher must perform zero server RPCs');
   assert.equal(switched.text.includes('qa-second'),false,'Report must not disclose user IDs');
