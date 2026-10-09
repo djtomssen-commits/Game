@@ -57,5 +57,13 @@
   arrangeCharacter();stamp();
   document.addEventListener('DOMContentLoaded',arrangeCharacter,{once:true});
   window.addEventListener('pageshow',()=>{if(document.getElementById('character')?.classList.contains('active'))arrangeCharacter()},{passive:true});
-  window.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')==='character')arrangeCharacter()},{passive:true});
+  let navTime={at:0,cpuMs:0};
+  window.v444CharacterNavDiagnostics=()=>({...navTime});
+  window.addEventListener('growlegends:navigation-open-v7119',e=>{
+    if(String(e?.detail?.id||'')!=='character')return;
+    const beta=String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta';
+    const start=beta?(performance.now?.()||Date.now()):0;
+    arrangeCharacter();
+    if(beta)navTime={at:Date.now(),cpuMs:Math.round((performance.now?.()||Date.now())-start)};
+  },{passive:true});
 })();
