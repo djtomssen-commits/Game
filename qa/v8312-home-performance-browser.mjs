@@ -60,6 +60,16 @@ async function run(channel){
     full:window.v8009HomeEventDiagnostics().fullRenders
   })).catch(()=>null);
   assert.ok(baseline,channel+' must render the home');
+  if(channel==='beta'){
+    assert.equal(await page.locator('.app > header .v366-topbar').count(),0,
+      'V8.337 Beta Home must not create the retired V366 header');
+    await page.addStyleTag({path:file('v8009-extracted-v372-authoritative-header-css.css')});
+    const legacyDisplay=await page.evaluate(()=>{
+      document.body.classList.add('v8011-beta-unified-headers','v371-game-ui');
+      return getComputedStyle(document.querySelector('.app > header')).display;
+    });
+    assert.equal(legacyDisplay,'none','V8.337 authoritative CSS must eliminate legacy header layout space');
+  }
   const eventLayers=await page.evaluate(()=>{
     /* V8.336: include the genuine body-level HUD DOM shape in the fixture,
        rather than testing only the hidden legacy .app > header. */
@@ -499,6 +509,68 @@ async function checkSampledJsonProfile(){
     restored:true,storageWrites:out.storage.calls}});
   await page.close();
 }
+async function checkDiagnosticReadHotPaths(){
+ const page=await browser.newPage();
+ await page.setContent('<!doctype html><html><body></body></html>');
+ await page.evaluate(()=>{
+   window.GROW_RELEASE_CHANNEL='beta';
+   window.v073User={id:'qa-diagnostic'};
+   window.s={inventory:[],equipment:{},grow:{}};
+   window.v073Db={rpc:async name=>{
+     if(name==='v7081_client_capabilities')return {data:{ok:true,caps:{items:true}}};
+     return {data:{enabled:true,domains:{progress:'off'},extra:{nested:{marker:42}}}};
+   }};
+ });
+ await page.addScriptTag({path:file('js/features/authority/beta/v8009-s1-v7042-unified-authority-bridge.js')});
+ await page.addScriptTag({path:file('js/features/account/beta/v8009-s12-v7081-account-capability-gate.js')});
+ await page.evaluate(async()=>{await window.v7040AuthorityRefresh(false)});
+ const result=await page.evaluate(()=>{
+   const oldParse=JSON.parse,oldStringify=JSON.stringify;
+   let parses=0,stringifies=0;
+   JSON.parse=function(){parses++;return oldParse.apply(this,arguments)};
+   JSON.stringify=function(){stringifies++;return oldStringify.apply(this,arguments)};
+   try{
+     for(let i=0;i<10000;i++){
+       window.v7040AuthorityDiagnostics();
+       window.v7081CapabilitiesDiagnostics();
+     }
+     const d=window.v7040AuthorityDiagnostics();
+     const c=window.v7081CapabilitiesDiagnostics();
+     d.domains.progress='changed-externally';
+     c.caps.items='changed-externally';
+     return {parses,stringifies,frozenRow:Object.isFrozen(d.lastRow),
+       nestedFrozen:Object.isFrozen(d.lastRow?.extra?.nested),
+       isolatedDomains:window.v7040AuthorityDiagnostics().domains.progress==='off',
+       isolatedCaps:window.v7081CapabilitiesDiagnostics().caps.items!=='changed-externally'};
+   }finally{JSON.parse=oldParse;JSON.stringify=oldStringify}
+ });
+ assert.ok(result.parses<=4&&result.stringifies<=4,
+   'V8.337 diagnostics must not JSON deep-clone on each of 10k reads');
+ assert.ok(result.frozenRow&&result.nestedFrozen,'Memoized authority row must be immutable');
+ assert.ok(result.isolatedDomains&&result.isolatedCaps,
+   'Diagnostics snapshots must not modify canonical authority state');
+ scenarios.push({channel:'beta',diagnosticsHotPath:result});
+ await page.close();
+}
+async function checkGhostMenuNavigation(){
+ const page=await browser.newPage();
+ await page.setContent('<!doctype html><html><body><div id="v032MenuPanel" class="top-menu-panel open show" style="display:block!important;visibility:visible!important;opacity:1!important;pointer-events:auto!important;z-index:120001!important"></div><section id="world" class="screen active"></section></body></html>');
+ await page.evaluate(()=>{window.GROW_RELEASE_CHANNEL='beta';window.s={gold:1,harzTaler:2,energy:50}});
+ await page.addScriptTag({path:file('js/features/ui/beta/v8009-s7-v372-authoritative-header.js')});
+ const result=await page.evaluate(()=>{
+   window.dispatchEvent(new CustomEvent('growlegends:navigation-open-v7119',{detail:{id:'world'}}));
+   const panel=document.getElementById('v032MenuPanel');
+   return {open:panel.classList.contains('open')||panel.classList.contains('show'),
+     inlineDisplay:panel.style.getPropertyValue('display'),
+     inlinePointer:panel.style.getPropertyValue('pointer-events'),
+     ariaHidden:panel.getAttribute('aria-hidden'),
+     hud:!!document.getElementById('v372TopbarShell')};
+ });
+ assert.ok(result.hud&&!result.open&&!result.inlineDisplay&&!result.inlinePointer&&result.ariaHidden==='true',
+   'V8.337 world navigation must close and clear the ghost menu overlay');
+ scenarios.push({channel:'beta',ghostMenuNavigation:result});
+ await page.close();
+}
 async function checkPowerPaintEfficiency(channel){
  const page=await browser.newPage();
  await page.setContent('<!doctype html><html><body><main><div id="world" class="screen active"><div class="v366-power"><b>0</b></div></div></main><b id="power"></b><b id="charPower"></b><b id="v358Power"></b><b id="v110Cp"></b></body></html>');
@@ -568,6 +640,8 @@ try{
   await checkPowerPaintEfficiency('beta');
   await checkPowerPaintEfficiency('server1');
   await checkSampledJsonProfile();
+  await checkDiagnosticReadHotPaths();
+  await checkGhostMenuNavigation();
   assert.deepEqual(failures,[],'uncaught browser errors');
   console.log(JSON.stringify({ok:true,scenarios},null,2));
 }catch(e){
