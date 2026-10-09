@@ -79,7 +79,26 @@ function paintSlots(){
       setName:it?.setName||'',mysticSpecial:it?.mysticSpecial||null,
       sell:it&&typeof sellValue==='function'?sellValue(it):0
     });
-    if(el.dataset.v6102Sig!==sig||!el.querySelector('.slot-icon')||(it&&!el.querySelector('.v514-slot-level'))){
+    const iconReady=!!el.querySelector('.slot-icon');
+    const levelReady=!it||!!el.querySelector('.v514-slot-level');
+    const previousSig=el.dataset.v6102Sig||'';
+    if(previousSig!==sig||!iconReady||!levelReady){
+      if(slot==='ring'&&String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta'){
+        const v=window.__V8348_VISUAL_METRICS__||(window.__V8348_VISUAL_METRICS__={});
+        const reason=!previousSig?'initial-slot':!iconReady?'missing-icon':!levelReady?'missing-level':'item-signature-changed';
+        const reasonKey='ringReason'+reason.replace(/[^a-z]/g,'');
+        v[reasonKey]=(Number(v[reasonKey])||0)+1;
+        const changedKeys=[];
+        if(previousSig&&previousSig!==sig){
+          try{
+            const before=JSON.parse(previousSig),after=JSON.parse(sig);
+            Object.keys(after).forEach(key=>{if(JSON.stringify(before?.[key])!==JSON.stringify(after[key]))changedKeys.push(key)});
+          }catch(_){changedKeys.push('unreadable-signature')}
+        }
+        const trace=v.ringRebuildTrace||(v.ringRebuildTrace=[]);
+        trace.push({at:Date.now(),reason,changedKeys:changedKeys.slice(0,12),equipped:!!it});
+        if(trace.length>12)trace.shift();
+      }
       el.innerHTML=
         `<div class="slot-icon">${artHtml(it,fallback)}</div>`+
         `<div class="slot-label">${esc(slot==='weapon2'?'Waffe II · 10 % Attribute':label)}</div>`+
