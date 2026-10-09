@@ -386,6 +386,22 @@
   }
 
   function worldHtml(view=homeViewSnapshot()){
+    /* V8.307: Keep Server 1 on the released layout until the Beta arrangement is approved. */
+    const cupResultsInLower=String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta';
+    const cupResultsSlot=`
+      <!-- V8.306: shown only after the canonical Grow Cup leaderboard is final. -->
+      <section class="v8310-cup-results-slot" hidden aria-label="Abgeschlossener Grow Cup">
+        <button type="button" class="v8310-cup-results-trigger" data-growcup-results="1">
+          <span class="v8310-cup-results-art" aria-hidden="true"><img src="assets/v7198-base64/9880ab938246ad3b3dec.webp" alt=""></span>
+          <span class="v8310-cup-results-copy">
+            <small>🏆 GROW CUP ABGESCHLOSSEN</small>
+            <strong>Rangliste &amp; Belohnungen</strong>
+            <span data-growcup-results-status>Ergebnisse ansehen und Belohnung abholen</span>
+          </span>
+          <span class="v8310-cup-results-arrow" aria-hidden="true">›</span>
+        </button>
+      </section>`;
+
     const {name,power,dg,grow,ac,ev,hc,pets,bossActive,cupActive}=view;
     const avatar=avatarSrc();
     const firstQuestReady=firstQuest();
@@ -436,18 +452,7 @@
 
       ${eventCardHtml(ev)}
 
-      <!-- V8.306: shown only after the canonical Grow Cup leaderboard is final. -->
-      <section class="v8310-cup-results-slot" hidden aria-label="Abgeschlossener Grow Cup">
-        <button type="button" class="v8310-cup-results-trigger" data-growcup-results="1">
-          <span class="v8310-cup-results-art" aria-hidden="true"><img src="assets/v7198-base64/9880ab938246ad3b3dec.webp" alt=""></span>
-          <span class="v8310-cup-results-copy">
-            <small>🏆 GROW CUP ABGESCHLOSSEN</small>
-            <strong>Rangliste &amp; Belohnungen</strong>
-            <span data-growcup-results-status>Ergebnisse ansehen und Belohnung abholen</span>
-          </span>
-          <span class="v8310-cup-results-arrow" aria-hidden="true">›</span>
-        </button>
-      </section>
+      ${cupResultsInLower?'':cupResultsSlot}
 
       <div class="v690-section-title v690-adventure-title"><span>Deine Abenteuer</span><i>🌿</i></div>
 
@@ -469,6 +474,8 @@
         </div></article>
 
         ${specialEventCardHtml(bossActive,cupActive,bossFreeReady)}
+
+        ${cupResultsInLower?cupResultsSlot:''}
 
         <article class="v366-panel v366-feature book"><h2>Illegales Buch</h2><div class="v366-feature-art"></div><div class="v690-mini-status">⭐ ${ac.done}/${ac.total||'—'} Erfolge</div><button class="v366-go" data-book="1">Öffnen</button></article>
 
