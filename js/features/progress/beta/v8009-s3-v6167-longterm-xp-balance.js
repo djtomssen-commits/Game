@@ -25,14 +25,19 @@ try{
   window.xpNeed=xpNeed;
 }catch(e){console.warn('V4.167 xpNeed install',e)}
 
+function note(name){
+  if(String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()!=='beta')return;
+  const metrics=window.__V8348_VISUAL_METRICS__||(window.__V8348_VISUAL_METRICS__={});
+  metrics[name]=(Number(metrics[name])||0)+1;
+}
 function paint(){
   try{
     const lv=Math.max(1,Math.min(MAX,Math.floor(Number(s?.level)||1)));
     if(lv>=MAX){
       if(Number(s.xp)!==0)s.xp=0;
       const beta=String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta';
-      const t=document.querySelector('#centerXpText');if(t&&(!beta||t.textContent!=='MAX LEVEL · 300'))t.textContent='MAX LEVEL · 300';
-      const f=document.querySelector('#centerXpFill');if(f&&(!beta||f.style.width!=='100%'))f.style.width='100%';
+      const t=document.querySelector('#centerXpText');if(t&&(!beta||t.textContent!=='MAX LEVEL · 300')){t.textContent='MAX LEVEL · 300';note('xpTextWrites')}
+      const f=document.querySelector('#centerXpFill');if(f&&(!beta||f.style.width!=='100%')){f.style.width='100%';note('xpBarWrites')}
       const x=document.querySelector('#xp');if(x&&(!beta||x.textContent!=='MAX'))x.textContent='MAX';
       return;
     }
@@ -41,8 +46,8 @@ function paint(){
     const text=`${Math.round(cur).toLocaleString('de-DE')} / ${need.toLocaleString('de-DE')}`;
     const width=pct+'%';
     const short=`${Math.round(cur)}/${need}`;
-    const t=document.querySelector('#centerXpText');if(t&&(!beta||t.textContent!==text))t.textContent=text;
-    const f=document.querySelector('#centerXpFill');if(f&&(!beta||f.style.width!==width))f.style.width=width;
+    const t=document.querySelector('#centerXpText');if(t&&(!beta||t.textContent!==text)){t.textContent=text;note('xpTextWrites')}
+    const f=document.querySelector('#centerXpFill');if(f&&(!beta||f.style.width!==width)){f.style.width=width;note('xpBarWrites')}
     const x=document.querySelector('#xp');if(x&&(!beta||x.textContent!==short))x.textContent=short;
   }catch(e){}
 }
