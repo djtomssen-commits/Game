@@ -134,7 +134,6 @@
             ${bossActive?`<span class="v6118-boss-live"><i></i> EVENT AKTIV</span>
             <div class="v6123-boss-overlay"><small>Mystischer Weltboss</small><b>Smaragd-Koloss</b></div>`:`<div class="v6123-boss-overlay v6123-boss-overlay-closed"><small>Der Slot ruht</small><b>Kein Weltboss aktiv</b></div>`}
           </div>
-          <div class="v6118-boss-name">${bossActive?(bossFreeReady?'Gratisversuch verfügbar':'Mystischer Boss ist offen'):'Das nächste Boss-Event abwarten'}</div>
           <div class="v690-mini-status v6115-boss-status">${bossActive?(bossFreeReady?'1 Gratisversuch bereit':'Nächster Versuch · 10 Harz-Taler'):'Sobald das Event aktiv ist, kannst du den Koloss herausfordern'}</div>
           <button class="v366-go" data-boss="1" ${bossActive?'':'disabled'}>${bossActive?(bossFreeReady?'Öffnen':'Herausfordern'):'Geschlossen'}</button>
         </article>`;
