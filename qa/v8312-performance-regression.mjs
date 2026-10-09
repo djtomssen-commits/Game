@@ -134,7 +134,7 @@ check(tech.includes('CHARAKTER RENDER-STUFEN (V8.342')&&
 /* V8.343 prevent second Frost-owned hub traversal for one shared event only. */
 const frostOwner=read('js/features/character/beta/v8009-s3-v4153-frost-class-avatar-authority.js');
 const postNavOwner=read('js/features/character/beta/v8009-s15-v7119-character-navigation-consolidation.js');
-check(characterHub.includes('e.__v8343CharacterHubRefreshed=true')&&
+check(characterHub.includes("e.__v8343CharacterHubRefreshed=hubReady||!!document.getElementById('v459CharacterShell')")&&
   frostOwner.includes("refreshAll('nav-character',e.__v8343CharacterHubRefreshed===true)")&&
   frostOwner.includes('if(!skipDuplicateHub){'),
   'V8.343 two character owners still render the same inventory on navigation');
