@@ -766,17 +766,16 @@ try{navigator.storage?.estimate?.().then(x=>storageEstimate=x).catch(()=>{})}cat
 window.v4107RunQA=fullReport;window.v4107OpenSystemtechnik=openPage;window.v4102OpenQA=openPage;window.v4102RunQA=(opts={})=>{const r=fullReport();if(opts.open)openPage();return r};
 /* Keep our page integrated with the many historical navigation wrappers. */
 try{if(typeof v032Go==='function'&&!window.__v4107Go){const base=v032Go;const wrap=function(id){ensureScreen();installMenu();if(id==='systemtech'&&(typeof v093IsAdmin==='undefined'||v093IsAdmin!==true))return base.call(this,'world');let p0=null,sig='';try{const pf=window.v4125StableCombatPower;p0=typeof pf==='function'?Number(pf()):(typeof combatPower==='function'?Number(combatPower()):null);sig=corePowerSignature()}catch(e){}const r=base.apply(this,arguments);if(id==='systemtech')setTimeout(runAndRender,0);else lastNav=id||lastNav;setTimeout(()=>{try{if(id!=='systemtech'&&p0!=null&&sig===corePowerSignature()){const pf=window.v4125StableCombatPower;const p1=typeof pf==='function'?Number(pf()):Number(combatPower());if(Number.isFinite(p1)&&p1!==p0)pushErr('POWER_NAVIGATION_DRIFT',`Kampfkraft änderte sich nur durch Seitenwechsel: ${p0} → ${p1}`,'warn')}}catch(e){}},180);return r};v032Go=wrap;window.v032Go=wrap;window.__v4107Go=true}}catch(e){}
-/* V8.320 Beta: the full Systemtechnik sidebar uses expensive synchronous
-   DOM/source diagnostics. It is already rendered on page entry, manual test
-   reruns and meaningful events; do not rebuild it every 6s in Beta.
-   Keep Server1's current behavior until Beta Android retest. */
-const betaLeanSystemtechnik=String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta';
+/* V8.322: Beta-validated lean Systemtechnik refresh released on Server 1.
+   Full sidebar is rendered on page entry/manual rerun and meaningful events;
+   avoid unnecessary full DOM/source diagnostic work every six seconds. */
+const leanSystemtechnikForRelease=['beta','server1'].includes(String(window.GROW_RELEASE_CHANNEL||'').toLowerCase());
 setInterval(()=>{try{
  const st=!!document.getElementById('systemtech')?.classList.contains('active');
  const sm=!!document.getElementById('v141SettingsMenu')?.classList.contains('open');
  if(document.hidden||(!st&&!sm))return;
  installMenu();paintSettingsBadge(last);
- if(st&&!betaLeanSystemtechnik){const r=last||cachedReport();if(r)renderRight(r)}
+ if(st&&!leanSystemtechnikForRelease){const r=last||cachedReport();if(r)renderRight(r)}
 }catch(e){}},6000);
 function stamp(){}
 ensureScreen();installMenu();stamp();
