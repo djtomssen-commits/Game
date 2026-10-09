@@ -48,8 +48,20 @@
  });
 
  /* Repair the character HUD after account load so stale zero values disappear. */
+ /* V8.323 Beta: after account-ready the canonical boot, v4129 and v448
+    already own the playable character/power paint. This historical complete
+    render() fired again 80ms later and accounted for 457ms on Server 1.
+    On Beta only, use the existing targeted authoritative HUD painters.
+    Fall back to the legacy whole-render path until account ownership is ready. */
  function refresh(){
    if(!isHR())return;
+   const beta=String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta';
+   const ready=window.__V200_AUTH_READY__===true&&window.__V483_POWER_READY__===true;
+   if(beta&&ready){
+     try{window.v448PaintPower?.()}catch(_){}
+     try{if(document.getElementById('character')?.classList?.contains('active'))window.v4140PaintAttributes?.()}catch(_){}
+     return;
+   }
    try{render?.()}catch(_){}
    try{window.v448PaintPower?.()}catch(_){}
  }
