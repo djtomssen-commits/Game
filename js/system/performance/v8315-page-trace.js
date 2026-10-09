@@ -20,7 +20,7 @@ function createPage(id){
    added:0,removed:0,mutations:0,rootReplacements:0,currentReplacements:0,
    visibilityChanges:0,layoutShifts:0,longTasks:0,longestTaskMs:0,
    frames:0,jankFrames:0,maxFrameGapMs:0,frameGaps:[],renderMarks:{},
-   navMeasuredMs:[],imageErrors:0
+   navMeasuredMs:[],tabClicks:{},imageErrors:0
  });
 }
 let current='unknown',screenAt=0;
@@ -139,8 +139,19 @@ function onError(e){
  if(!state.running)return;
  log('runtime_error',current,{kind:e?.type==='unhandledrejection'?'promise':'js'});
 }
+function onTabClick(e){
+ if(!state.running||!(e.target instanceof Element))return;
+ const el=e.target.closest('[data-tab],[role="tab"],[data-grow-tab],[data-subtab]');
+ if(!el||isOwn(el))return;
+ const raw=String(el.dataset.tab||el.dataset.growTab||el.dataset.subtab||el.id||'tab');
+ /* Never export arbitrary user content or identifiers from element attributes. */
+ const tab=/^[a-z0-9_-]{1,36}$/i.test(raw)?raw:'tab';
+ const p=createPage(current);p.tabClicks[tab]=(p.tabClicks[tab]||0)+1;
+ log('tab_click',current,{tab});
+}
 function setup(){
  document.addEventListener('visibilitychange',onVisibility,{passive:true});
+ document.addEventListener('click',onTabClick,{capture:true,passive:true});
  window.addEventListener('growlegends:navigation-open-v7119',onNav,{passive:true});
  window.addEventListener('error',onError,{passive:true});
  window.addEventListener('unhandledrejection',onError,{passive:true});
@@ -171,6 +182,7 @@ function setup(){
 function onVisibility(){lastFrame=0;if(!document.hidden)watchCritical();}
 function cleanup(){
  document.removeEventListener('visibilitychange',onVisibility);
+ document.removeEventListener('click',onTabClick,true);
  window.removeEventListener('growlegends:navigation-open-v7119',onNav);
  window.removeEventListener('error',onError);
  window.removeEventListener('unhandledrejection',onError);
@@ -222,7 +234,7 @@ function report(){
   aktuellesReplacements:p.currentReplacements,visibilityChanges:p.visibilityChanges,
   layoutShifts:p.layoutShifts,longTasks:p.longTasks,longestTaskMs:p.longestTaskMs,
   frameCount:p.frames,jankFrames:p.jankFrames,maxFrameGapMs:p.maxFrameGapMs,
-  p95FrameGapMs:percentile(p.frameGaps,0.95),renderMarks:{...p.renderMarks},brokenImages:p.imageErrors
+  p95FrameGapMs:percentile(p.frameGaps,0.95),renderMarks:{...p.renderMarks},tabClicks:{...p.tabClicks},brokenImages:p.imageErrors
  })).filter(p=>p.visits>0);
  return {version:'V8.315',mode:'opt-in-device',server:state.channel,
   running:state.running,sweeping:state.sweeping,elapsedMs:Math.round((state.stoppedAt||clock())-state.startedAt),
