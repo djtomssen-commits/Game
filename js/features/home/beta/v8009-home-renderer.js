@@ -287,65 +287,13 @@
     return true;
   }
 
+  /* V8.337 Beta: the canonical global V372 header is installed later
+     in beta.html. Retire the old V366 renderer rather than constructing a
+     second, hidden HUD which can retain layout space and event listeners.
+     The V372 owner paints all currencies, buttons, navigation and version. */
   function buildHeader(){
-    const h=document.querySelector('.app > header');
-    if(!h)return;
-    h.querySelectorAll(':scope > :not(.v366-topbar)').forEach(el=>{
-      if(el.style.getPropertyValue('display')!=='none'||el.style.getPropertyPriority('display')!=='important'){
-        el.style.setProperty('display','none','important');
-        diagnostics.headerLegacyHideWrites++;
-      }
-    });
-    let bar=h.querySelector('.v366-topbar');
-    if(!bar){
-      bar=document.createElement('div');
-      bar.className='v366-topbar';
-      bar.innerHTML=`
-        <button class="v366-menu" type="button">☰</button>
-        <div class="v366-logo"><strong>🌿 GROW</strong><span>LEGENDS</span><i class="v366-ver">${BETA_VERSION}</i></div>
-        <div class="v366-res"><span class="ico">🪙</span><div><small>Gold</small><span class="val" id="v366Gold"></span></div><button class="v366-plus" data-plus="gold">+</button></div>
-        <div class="v366-res"><span class="ico">💎</span><div><small>Harz</small><span class="val" id="v366Harz"></span></div><button class="v366-plus" data-plus="harz">+</button></div>
-        <div class="v366-res"><span class="ico">💨</span><div><small>Dampf</small><span class="val" id="v366Dampf"></span></div><button class="v366-plus" data-plus="dampf">+</button></div>
-        <button class="v366-iconbtn" data-head="mail">✉️</button>
-        <button class="v366-iconbtn" data-head="friends">👥</button>
-        <button class="v366-iconbtn" data-head="settings">⚙️</button>`;
-      h.appendChild(bar);
-
-      bar.querySelector('.v366-menu').onclick=e=>{e.preventDefault();e.stopPropagation();document.querySelector('#v032MenuPanel')?.classList.toggle('open')};
-      bar.querySelector('[data-plus="harz"]').onclick=()=>{try{v032Go('harzDealer')}catch(e){}};
-      bar.querySelector('[data-plus="gold"]').onclick=()=>{
-        diagnostics.goldDirectOpens++;
-        try{
-          if(typeof window.v7114OpenGoldShop==='function')window.v7114OpenGoldShop();
-          else if(typeof window.v7117OpenDealerTab==='function')window.v7117OpenDealerTab('gold');
-          else if(typeof v032Go==='function')v032Go('goldShop');
-        }catch(e){}
-      };
-      bar.querySelector('[data-plus="dampf"]').onclick=()=>{
-        const b=document.querySelector('#v026RefillBtn'); if(b){try{b.click()}catch(e){}}
-      };
-      bar.querySelector('[data-head="friends"]').onclick=()=>{try{v032Go('friends')}catch(e){}};
-      bar.querySelector('[data-head="mail"]').onclick=()=>{
-        diagnostics.mailDirectOpens++;
-        try{v032Go('mail')}catch(e){}
-      };
-      bar.querySelector('[data-head="settings"]').onclick=()=>{
-        const b=document.querySelector('[data-settings],#settingsBtn,.settings-btn'); if(b){try{b.click()}catch(e){}}
-      };
-    }
-    const writeHeaderText=(el,value)=>{
-      if(!el)return;
-      const next=String(value);
-      if(el.textContent===next)return;
-      el.textContent=next;
-      diagnostics.headerValueWrites++;
-    };
-    const ver=bar.querySelector('.v366-ver');
-    writeHeaderText(ver,BETA_VERSION);
-    const g=bar.querySelector('#v366Gold'),hr=bar.querySelector('#v366Harz'),d=bar.querySelector('#v366Dampf');
-    writeHeaderText(g,num(s?.gold));
-    writeHeaderText(hr,num(s?.harzTaler));
-    writeHeaderText(d,num(s?.energy)+'/'+num(cap()));
+    const legacy=document.querySelector('.app > header .v366-topbar');
+    if(legacy){legacy.remove();diagnostics.headerLegacyHideWrites++}
   }
 
   function homeChecklist(){
