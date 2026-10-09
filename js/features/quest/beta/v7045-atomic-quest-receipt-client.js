@@ -19,6 +19,8 @@ const itemId=it=>String(it?.id||it?.uid||'');
 const mode=()=>{try{return String(window.v7040AuthorityDiagnostics?.()?.domains?.quest||'off')}catch(_){return'off'}};
 const enforced=()=>{
  try{
+  /* V8.304: authenticated users never fall back to local Quest gameplay. */
+  if(typeof v073User!=='undefined'&&v073User?.id)return true;
   if(typeof window.v7081UseAuthority==='function'&&window.v7081UseAuthority('quest'))return true;
   return mode()==='enforce';
  }catch(_){return mode()==='enforce'}
