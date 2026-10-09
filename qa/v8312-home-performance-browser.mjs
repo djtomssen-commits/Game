@@ -469,9 +469,17 @@ async function checkSampledJsonProfile(){
   const from=full.indexOf('function startRuntimeCpuProbe(){');
   const to=full.indexOf('function stopRuntimeProfiler(){',from);
   assert.ok(from>0&&to>from,'Current sampled JSON profiler functions exist');
-  assert.ok(source.includes('match[1]')&&source.includes("':'+match[2]"),
-    'V8.336 returns caller filename+line without URL or payload');
   const source=full.slice(from,to);
+  assert.ok(source.includes("const basename=match[1].split('/').pop().split(/[?#]/)[0]"),
+    'V8.338 extracts the JS filename even with a cache parameter or extensionless SDK');
+  assert.ok(source.includes("const label=safe+':'+match[2]"),
+    'V8.338 returns sanitized caller filename+line without URL or payload');
+  const fixture='at Object.parse (https://game.invalid/js/v8009-s1-v7042-unified-authority-bridge.js?v=8337:280:12)';
+  const callsite=fixture.trim().match(/(?:^|\s|\()([^\s()]+):(\d+):(\d+)\)?$/);
+  assert.equal(callsite?.[1]?.split('/').pop().split(/[?#]/)[0],
+    'v8009-s1-v7042-unified-authority-bridge.js',
+    'V8.338 recognizes cached script locations in Android stack traces');
+  assert.equal(callsite?.[2],'280','V8.338 preserves only the numbered source line');
   const page=await browser.newPage();
   await page.route('https://sampled-profile-test.invalid/',route=>route.fulfill({status:200,contentType:'text/html',body:'<!doctype html><html><body></body></html>'}));
   await page.goto('https://sampled-profile-test.invalid/');
@@ -554,7 +562,7 @@ async function checkDiagnosticReadHotPaths(){
 }
 async function checkGhostMenuNavigation(){
  const page=await browser.newPage();
- await page.setContent('<!doctype html><html><body><div id="v032MenuPanel" class="top-menu-panel open show" style="display:block!important;visibility:visible!important;opacity:1!important;pointer-events:auto!important;z-index:120001!important"></div><section id="world" class="screen active"></section></body></html>');
+ await page.setContent('<!doctype html><html><body class="v8011-beta-unified-headers v371-game-ui v659-native-fullscreen"><div class="app"><header style="display:block!important"></header><main><section id="world" class="screen active"></section></main></div><div id="v032MenuPanel" class="top-menu-panel open show" style="display:block!important;visibility:visible!important;opacity:1!important;pointer-events:auto!important;z-index:120001!important"></div></body></html>');
  await page.evaluate(()=>{window.GROW_RELEASE_CHANNEL='beta';window.s={gold:1,harzTaler:2,energy:50}});
  await page.addStyleTag({path:file('v8009-extracted-v372-authoritative-header-css.css')});
  await page.addScriptTag({path:file('js/features/ui/beta/v8009-s7-v372-authoritative-header.js')});
@@ -566,10 +574,14 @@ async function checkGhostMenuNavigation(){
      inlinePointer:panel.style.getPropertyValue('pointer-events'),
      ariaHidden:panel.getAttribute('aria-hidden'),
      computedDisplay:getComputedStyle(panel).display,
+     legacyDisplay:getComputedStyle(document.querySelector('.app > header')).display,
+     legacyInlinePriority:document.querySelector('.app > header').style.getPropertyPriority('display'),
      hud:!!document.getElementById('v372TopbarShell')};
  });
  assert.ok(result.hud&&!result.open&&!result.inlineDisplay&&!result.inlinePointer&&result.ariaHidden==='true'&&result.computedDisplay==='none',
    'V8.337 world navigation must remove the ghost menu overlay from the visible layout');
+ assert.equal(result.legacyDisplay,'none','V8.338 canonical HUD must retire old inline-important legacy header');
+ assert.equal(result.legacyInlinePriority,'important','V8.338 legacy header must remain hidden despite historical important styles');
  scenarios.push({channel:'beta',ghostMenuNavigation:result});
  await page.close();
 }
