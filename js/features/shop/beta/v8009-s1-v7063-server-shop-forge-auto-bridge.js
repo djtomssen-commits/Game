@@ -237,13 +237,22 @@
       p_kind:kind,
       p_request_id:req('v7083_refresh')
     });
-    if(r?.vip_free_reroll_used){
+    /* V8.297: VIP availability comes from the successful server response.
+       A cached item-only shop signature may skip the full render, so update
+       BOTH price labels in place before any asynchronous VIP-state reload. */
+    if(typeof r?.vip_free_reroll_available==='boolean'){
       try{
+        const available=r.vip_free_reroll_available;
         if(window.v8195VipState&&typeof window.v8195VipState==='object'){
-          window.v8195VipState={...window.v8195VipState,free_reroll_available:false};
+          window.v8195VipState={...window.v8195VipState,free_reroll_available:available};
+        }
+        window.v461SyncRerollControls?.(available);
+        if(window.v8195VipState){
           window.dispatchEvent(new CustomEvent('growlegends:vip-state',{detail:{state:window.v8195VipState}}));
-        }else{window.renderShop?.()}
-      }catch(_){}
+        }
+      }catch(e){console.warn('[V8.297 VIP reroll price sync]',e)}
+    }
+    if(r?.vip_free_reroll_used){
       toast('👑 VIP-Freiwurf','success',kind==='weapon'?'Waffen & Rüstung gratis neu gewürfelt.':'Schmuck & Materialien gratis neu gewürfelt.');
     }else{
       toast(
