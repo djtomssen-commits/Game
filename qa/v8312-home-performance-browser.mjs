@@ -556,6 +556,7 @@ async function checkGhostMenuNavigation(){
  const page=await browser.newPage();
  await page.setContent('<!doctype html><html><body><div id="v032MenuPanel" class="top-menu-panel open show" style="display:block!important;visibility:visible!important;opacity:1!important;pointer-events:auto!important;z-index:120001!important"></div><section id="world" class="screen active"></section></body></html>');
  await page.evaluate(()=>{window.GROW_RELEASE_CHANNEL='beta';window.s={gold:1,harzTaler:2,energy:50}});
+ await page.addStyleTag({path:file('v8009-extracted-v372-authoritative-header-css.css')});
  await page.addScriptTag({path:file('js/features/ui/beta/v8009-s7-v372-authoritative-header.js')});
  const result=await page.evaluate(()=>{
    window.dispatchEvent(new CustomEvent('growlegends:navigation-open-v7119',{detail:{id:'world'}}));
@@ -564,10 +565,11 @@ async function checkGhostMenuNavigation(){
      inlineDisplay:panel.style.getPropertyValue('display'),
      inlinePointer:panel.style.getPropertyValue('pointer-events'),
      ariaHidden:panel.getAttribute('aria-hidden'),
+     computedDisplay:getComputedStyle(panel).display,
      hud:!!document.getElementById('v372TopbarShell')};
  });
- assert.ok(result.hud&&!result.open&&!result.inlineDisplay&&!result.inlinePointer&&result.ariaHidden==='true',
-   'V8.337 world navigation must close and clear the ghost menu overlay');
+ assert.ok(result.hud&&!result.open&&!result.inlineDisplay&&!result.inlinePointer&&result.ariaHidden==='true'&&result.computedDisplay==='none',
+   'V8.337 world navigation must remove the ghost menu overlay from the visible layout');
  scenarios.push({channel:'beta',ghostMenuNavigation:result});
  await page.close();
 }
