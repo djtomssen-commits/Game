@@ -61,6 +61,11 @@ function ensureRewardModal(){
 }
 function showDailyReward(r){
  const ov=ensureRewardModal(),grid=ov.querySelector('#v8195VipRewardGrid');
+ const count=Math.max(1,Math.min(3,Number(r.chests_claimed)||1));
+ const title=ov.querySelector('#v8195VipRewardTitle');
+ if(title)title.textContent=count>1?`${count} VIP-Truhen geöffnet!`:'VIP-Truhe geöffnet!';
+ const intro=ov.querySelector('.v8195-reward-modal > p');
+ if(intro)intro.textContent=count>1?`Gesammelte Belohnungen aus ${count} VIP-Truhen:`:'Das war heute in deiner VIP-Truhe:';
  if(grid)grid.innerHTML=`
   <div class="v8195-reward-card"><i>🟢</i><b>+${fmt(r.harz_awarded)}</b><span>Harz-Taler</span></div>
   <div class="v8195-reward-card"><i>🪙</i><b>+${fmt(r.gold_awarded)}</b><span>Gold</span></div>
@@ -75,6 +80,7 @@ function render(){
  const lvl=(()=>{try{return Math.max(1,Number(s?.level)||1)}catch(_){return 1}})();
  const dg=Math.max(0,(Number(st?.daily_gold_base)||0)+lvl*(Number(st?.daily_gold_per_level)||0));
  const weekly=Math.max(0,Number(st?.weekly_xp_bonus_pct)||10);
+ const pending=yes?Math.max(0,Math.min(3,Math.floor(Number(st?.pending_chests)||0))):0;
  const claimed=st&&!st.daily_claim_available;
  const todayClaim=st?.today_claim||null;
  const publicVisible=st?.public_visible!==false;
@@ -96,7 +102,7 @@ function render(){
    </div>
    <div class="v8195-section-title">Deine VIP-Vorteile</div>
    <div class="v8195-benefits">
-     <div><i>🎁</i><b>Tägliche VIP-Truhe</b><span>${dh} Harz-Taler · ca. ${fmt(dg)} Gold · ${df} Samenfragmente</span></div>
+     <div><i>🎁</i><b>Tägliche VIP-Truhe</b><span>${dh} Harz-Taler · ca. ${fmt(dg)} Gold · ${df} Samenfragmente pro Truhe · bis zu 3 nachholbar</span></div>
      <div><i>📦</i><b>+${weekly}% Wochentruhen-EP</b><span>Auf alle Aktivitäten, die Wochentruhen-EP geben.</span></div>
      <div><i>🔄</i><b>1× Shop neu würfeln gratis</b><span>Ein gemeinsamer Freiwurf pro Berliner Tag – Waffen oder Magier/Schmuck.</span></div>
      <div><i>🏷️</i><b>VIP-Titel</b><span>„Grow VIP“ ist nur während aktivem VIP auswählbar.</span></div>
@@ -105,8 +111,8 @@ function render(){
    </div>
    <div class="v8195-actions">
      <div class="v8195-daily">
-       <div><small>TÄGLICHER BONUS</small><b>🎁 VIP-Truhe</b><span>Reset täglich nach Europe/Berlin.</span></div>
-       <button type="button" class="btn gold" data-v8195-claim ${!yes||S.busy||(claimed&&!todayClaim)?'disabled':''}>${!yes?'VIP erforderlich':claimed&&todayClaim?'Heutige Belohnung ansehen':claimed?'Heute abgeholt':'VIP-Truhe abholen'}</button>
+       <div><small>TÄGLICHER BONUS · ${pending}/3 TRUHEN BEREIT</small><b>🎁 VIP-Truhe</b><span>Bis zu 3 Tagestruhen sammeln · ältere als 3 Tage verfallen · Reset 00:00 Uhr (Berlin).</span></div>
+      <button type="button" class="btn gold" data-v8195-claim ${!yes||S.busy||(!pending&&!todayClaim)?'disabled':''}>${!yes?'VIP erforderlich':pending>1?`${pending} VIP-Truhen abholen`:pending===1?'VIP-Truhe abholen':todayClaim?'Heutige Belohnung ansehen':'Keine Truhe verfügbar'}</button>
      </div>
      <label class="v8195-privacy ${yes?'':'disabled'}"><span><b>VIP öffentlich anzeigen</b><small>Name, VIP-Abzeichen, VIP-Titel und VIP-Rahmen für andere sichtbar.</small></span><input type="checkbox" data-v8195-visible ${publicVisible?'checked':''} ${!yes||S.busy?'disabled':''}></label>
    </div>
@@ -116,7 +122,7 @@ function render(){
 }
 async function claimDaily(){
  if(S.busy||!active())return;
- if(S.state?.daily_claim_available===false&&S.state?.today_claim){showDailyReward(S.state.today_claim);return}
+ if(Number(S.state?.pending_chests||0)===0&&S.state?.today_claim){showDailyReward(S.state.today_claim);return}
  S.busy=true;render();
  try{
   const r=await rpc('v8195_vip_claim_daily');
