@@ -317,7 +317,7 @@ function startRuntimeCpuProbe(){
        or be extensionless SDK bundles (supabase-js_2). The previous
        '.js:<line>' matcher called these 'unknown' even for valid frames.
        Only retain the last path component and numeric source line. */
-    const match=line.trim().match(/(?:^|\\s|\\()([^\\s()]+):(\\d+):(\\d+)\\)?$/);
+    const match=line.trim().match(/(?:^|\s|\()([^\s()]+):(\d+):(\d+)\)?$/);
     if(!match)continue;
     const basename=match[1].split('/').pop().split(/[?#]/)[0];
     const safe=basename.replace(/[^a-zA-Z0-9_.-]/g,'_').slice(0,90);
