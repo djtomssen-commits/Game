@@ -560,6 +560,73 @@ async function checkDiagnosticReadHotPaths(){
  scenarios.push({channel:'beta',diagnosticsHotPath:result});
  await page.close();
 }
+async function checkAuthorityDiagnosticsRecursion(){
+  /* V8.339: execute the shipped owners together in the real account->authority
+     load order. v7133 diagnostics include v4139 diagnostics. Before V8.339
+     the v4139 domain gate called v7133 again and recursively repeated
+     stringify/parse until stack exhaustion, causing large Android LoAFs. */
+  const page=await browser.newPage();
+  const pageErrors=[];
+  page.on('pageerror',e=>pageErrors.push(e.message));
+  await page.setContent('<!doctype html><html><body><div class="app"><main></main></div></body></html>');
+  await page.evaluate(()=>{
+    window.GROW_RELEASE_CHANNEL='beta';
+    window.v073User=null; // no session or real DB/RPC in QA fixture
+    window.s={social:{},equipment:{},inventory:[]};
+    window.v075ResolveCloudAfterLogin=()=>false;
+    window.v075ApplyCloudSave=()=>false;
+    window.v075WriteCloudSave=()=>false;
+    window.v075ScheduleSave=()=>{};
+    window.v213PickNewestSave=()=>null;
+    window.v200FreshState=()=>({});
+    window.v7040AuthorityDiagnostics=()=>({domains:{
+      achievements:'enforce',billing:'enforce',build:'enforce',
+      daily:'enforce',dungeon:'enforce',endgame:'enforce',
+      grow_dealer:'enforce',grow_orders:'enforce',guild:'enforce',
+      items:'enforce',liveops:'enforce',pets:'enforce',
+      profile:'enforce',progress:'enforce',pvp:'enforce',
+      quest:'enforce',seeds:'enforce',shop:'enforce',
+      social:'enforce',tower:'enforce',weekly:'enforce',
+      worldboss:'enforce'
+    }});
+  });
+  await page.addScriptTag({path:file('js/features/account/beta/v8009-s1-v4139-account-switch-authority.js')});
+  await page.addScriptTag({path:file('js/features/authority/beta/v8009-s2-v7133-global-gameplay-authority-lockdown.js')});
+  const result=await page.evaluate(()=>{
+    const original=window.v7133AuthorityDiagnostics;
+    if(typeof original!=='function'||typeof window.v4139LoginAuthorityDiagnostics!=='function')
+      return {loaded:false};
+    let depth=0,maxDepth=0,diagnostics=0,reads=0;
+    window.v7133AuthorityDiagnostics=function(){
+      depth++;maxDepth=Math.max(maxDepth,depth);
+      try{return original()}finally{depth--}
+    };
+    const origParse=JSON.parse,origStringify=JSON.stringify;
+    JSON.parse=function(){reads++;return origParse.apply(this,arguments)};
+    JSON.stringify=function(){reads++;return origStringify.apply(this,arguments)};
+    try{
+      let valid=true;
+      for(let i=0;i<25;i++){
+        const d=window.v7133AuthorityDiagnostics();
+        const login=window.v4139LoginAuthorityDiagnostics();
+        diagnostics+=2;
+        if(d.domains?.progress!=='enforce'||!login.allAuthorityEnforced||!d.accountLogin?.allAuthorityEnforced)valid=false;
+      }
+      return {loaded:true,diagnostics,maxDepth,jsonCalls:reads,valid};
+    }finally{
+      JSON.parse=origParse;
+      JSON.stringify=origStringify;
+      window.v7133AuthorityDiagnostics=original;
+    }
+  });
+  assert.deepEqual(pageErrors,[],'V8.339 diagnostics QA scripts must load without uncaught errors');
+  assert.equal(result.loaded,true,'V8.339 both diagnostic owners must load');
+  assert.equal(result.valid,true,'V8.339 keeps all 22 enforced-domain signals and nested diagnostics');
+  assert.equal(result.maxDepth,1,'V8.339 account diagnostics must never reenter v7133');
+  assert.ok(result.jsonCalls<250,'V8.339 repeated diagnostics must not recursively multiply JSON calls');
+  scenarios.push({channel:'beta',authorityDiagnosticsCycle:result});
+  await page.close();
+}
 async function checkGhostMenuNavigation(){
  const page=await browser.newPage();
  await page.setContent('<!doctype html><html><body class="v8011-beta-unified-headers v371-game-ui v659-native-fullscreen"><div class="app"><header style="display:block!important"></header><main><section id="world" class="screen active"></section></main></div><div id="v032MenuPanel" class="top-menu-panel open show" style="display:block!important;visibility:visible!important;opacity:1!important;pointer-events:auto!important;z-index:120001!important"></div></body></html>');
@@ -655,6 +722,7 @@ try{
   await checkPowerPaintEfficiency('server1');
   await checkSampledJsonProfile();
   await checkDiagnosticReadHotPaths();
+  await checkAuthorityDiagnosticsRecursion();
   await checkGhostMenuNavigation();
   assert.deepEqual(failures,[],'uncaught browser errors');
   console.log(JSON.stringify({ok:true,scenarios},null,2));
