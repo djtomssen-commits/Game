@@ -12,7 +12,7 @@ Stand: 09.10.2026. **Kein allgemeines „99 % optimal“ behaupten, solange kein
 ## Verfügbares Werkzeug
 
 - Kanonischer opt-in Trace-Owner: `js/system/performance/v8315-page-trace.js`.
-- Integration über vorhandenen Systemtest-/Systemtechnik-Owner `js/features/system/beta/v8009-s1-v4106-qa2-performance.js`, nur nach erfolgter Adminprüfung; Beta und Server 1.
+- **V8.316:** Sichtbare Bedienelemente direkt im kanonischen Systemtechnik-Owner `js/features/system/beta/v8009-s1-v4107-systemtechnik.js` unter dem 30-Sekunden-Profil, erreichbar über die Admin-Navigation. Der frühere Settings-QA-Dialog wird hierfür nicht mehr verwendet. Beta und Server 1.
 - Nach Start: kleiner **PERF-MESSUNG / STOP**-Button. Beim Stop Ergebnis mit **Bericht kopieren** und **JSON speichern**.
 - Modi: **Manuell messen** (normal im Spiel navigieren und Tabs auslösen) oder **Alle 17 Seiten prüfen** (nacheinander nur navigieren, 2,5 s Halt je Seite, danach vorherige Seite öffnen; keine Kampf-, Werbe-, Kauf- oder Belohnungs-Klicks).
 - Tracer ist beim normalen Spielstart inert (keine MutationObserver-/PerformanceObserver-/rAF-/Timer-Schleife) und erfasst **keine Account-IDs, Nutzernamen, Chats oder Rohspielstände**.
@@ -45,7 +45,7 @@ Die automatische Runde dauert mindestens ~43 Sekunden plus Seitenübergänge. Si
 
 ## Sofort nutzbarer Ablauf auf dem Android-Gerät
 
-1. App vollständig neu starten, anmelden und **Einstellungen → Systemtest/Systemtechnik** öffnen.
+1. App vollständig neu starten, anmelden und als Admin **Hamburger-Menü → Systemtechnik** öffnen (NICHT Einstellungen). Im Bereich „Code-Diagnose“ unter dem bisherigen 30-Sekunden-Profiler steht **PERFORMANCE JE SEITE** (V8.316).
 2. **Manuell messen** starten, zurück zur Startseite; ca. 30 Sekunden bei `Aktuelles` bleiben, danach 3-mal zwischen Startseite und Charakter/Quest wechseln.
 3. Wenn es flackert, weiterlaufen lassen und danach am unteren **STOP**-Button beenden. **Bericht kopieren** und im Chat einfügen; alternativ JSON speichern.
 4. Zusätzlich **Alle 17 Seiten prüfen** aus der QA öffnen; nach Abschluss die Messdaten ebenfalls sichern.
