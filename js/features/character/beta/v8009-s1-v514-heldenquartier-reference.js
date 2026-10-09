@@ -144,7 +144,16 @@
   window.v514ApplyHeroReference=apply;
 
   window.__v514RenderWrapped='retired';
-  window.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')==='character')apply()});
+  /* V8.344 Beta: stage-only timing for reference hero and slot decoration. */
+  let navTime={at:0,cpuMs:0};
+  window.v514CharacterNavDiagnostics=()=>({...navTime});
+  window.addEventListener('growlegends:navigation-open-v7119',e=>{
+    if(String(e?.detail?.id||'')!=='character')return;
+    const start=performance.now?.()||Date.now();
+    apply();
+    if(String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta')
+      navTime={at:Date.now(),cpuMs:Math.round((performance.now?.()||Date.now())-start)};
+  });
   window.__v514GoWrapped='v7119-event';
 
   apply();
