@@ -97,6 +97,18 @@
   window.addEventListener('growlegends:language-changed',paint,{passive:true});
   window.addEventListener('growlegends:navigation-open-v7119',e=>{
     navigationScreen=String(e?.detail?.id||'');
+    /* V8.337: this authoritative menu must close on screen navigation.
+       A legacy navigation click could strip .open/.show but leave the
+       inline display:block!important written by our own toggle(), keeping
+       its wooden menu panel over the Events card as a ghost surface. */
+    const panel=document.getElementById('v032MenuPanel');
+    if(panel){
+      panel.classList.remove('open','show');
+      panel.setAttribute('aria-hidden','true');
+      for(const prop of ['display','visibility','opacity','pointer-events','z-index']){
+        panel.style.removeProperty(prop);
+      }
+    }
     paint();
     if(navigationScreen==='tower'){
       queueMicrotask(paint);
