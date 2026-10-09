@@ -1,0 +1,43 @@
+name: V8.315 Per-screen render and performance audit
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'qa/v8315-page-audit-browser.mjs'
+      - 'js/system/performance/v8315-page-trace.js'
+      - 'js/features/system/beta/v8009-s1-v4106-qa2-performance.js'
+      - 'js/features/home/beta/v8009-home-renderer.js'
+      - 'beta.html'
+      - 'server1.html'
+      - '.github/workflows/v8315-per-page-audit.yml'
+permissions:
+  contents: read
+jobs:
+  instrumentation-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Parse check for new and owned scripts
+        run: |
+          node --check js/system/performance/v8315-page-trace.js
+          node --check js/features/system/beta/v8009-s1-v4106-qa2-performance.js
+          node --check js/features/home/beta/v8009-home-renderer.js
+          node --check qa/v8315-page-audit-browser.mjs
+      - name: Install headless Chromium
+        run: |
+          npm install --no-save playwright@1.55.0
+          npx playwright install --with-deps chromium --only-shell
+      - name: Verify page trace and synthetic 17-screen navigation
+        run: node qa/v8315-page-audit-browser.mjs
+      - name: Upload measured report and screenshot
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: grow-legends-v8315-per-page-audit
+          path: qa/reports/v8315-per-page-browser.*
+          if-no-files-found: ignore
