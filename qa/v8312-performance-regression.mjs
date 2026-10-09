@@ -32,7 +32,7 @@ for(const entry of ['beta.html','server1.html']){
   }
   check(new Set(scriptPaths).size===scriptPaths.length,entry+' duplicate JS');
   check(new Set(cssPaths).size===cssPaths.length,entry+' duplicate CSS');
-  const homeCache=entry==='beta.html'?'8336-authoritative-hud-debug-beta':'8315-trace-hook';
+  const homeCache=entry==='beta.html'?'8337-retire-legacy-hud-menu-beta':'8315-trace-hook';
   check(html.includes('v8009-home-renderer.js?v='+homeCache),entry+' home cache');
   if(entry==='beta.html')check(html.includes('v7288-home-adaptive-fit-script.js?v=8326-beta-height-stable'),entry+' fit cache');
   check(html.includes('v6118-event-x2-worldboss-design-css.css?v=8312-home-perf1'),entry+' boss cache');
@@ -75,6 +75,22 @@ check(home.includes('world.dataset.v8314CurrentAccount'),'Account-safe grid inva
 check(boss.includes('animation:none!important')&&boss.includes('animation:v6118LiveDot'),'Boss shadow paint fix regressed');
 check(bossCard.includes('flex:0 0 32px!important'),'Boss action-button contract changed');
 check(home.includes("if(!force&&!world.classList.contains('active'))"),'Inactive-world guard removed');
+/* V8.337: no shadow V366 Home HUD or diagnostic serialization hot loops. */
+const capabilities=read('js/features/account/beta/v8009-s12-v7081-account-capability-gate.js');
+const bridge=read('js/features/authority/beta/v8009-s1-v7042-unified-authority-bridge.js');
+const hudCss=read('v8009-extracted-v372-authoritative-header-css.css');
+const hudJs=read('js/features/ui/beta/v8009-s7-v372-authoritative-header.js');
+check(home.includes('legacy.remove()')&&!home.includes("bar.innerHTML="),'Beta Home still builds an obsolete second header');
+check(capabilities.includes('caps:{...C.caps}')&&!capabilities.includes('JSON.parse(JSON.stringify(C))'),'Capability diagnostics still stringify+parse every call');
+check(bridge.includes('diagnosticRowSnapshot')&&bridge.includes('freezeDiagnosticValue'),'Authority diagnostics still deep-clone every read');
+check(hudCss.includes('html body.v8011-beta-unified-headers.v371-game-ui .app > header,'),'Beta legacy header still reserves layout space');
+check(hudJs.includes("panel.classList.remove('open','show')")&&hudJs.includes("panel.style.removeProperty(prop)"),'Navigation does not clear ghost menu inline display');
+const beta=read('beta.html');
+check(beta.includes('v8009-s12-v7081-account-capability-gate.js?v=8337-flat-diag-beta'),'Beta capability hotpath cache not updated');
+check(beta.includes('v8009-s1-v7042-unified-authority-bridge.js?v=8337-memo-diag-beta'),'Beta bridge hotpath cache not updated');
+check(beta.includes('v8009-extracted-v372-authoritative-header-css.css?v=8337-legacy-flow-beta'),'Beta retired header CSS cache not updated');
+check(beta.includes('v8009-s7-v372-authoritative-header.js?v=8337-close-stale-menu-beta'),'Beta menu owner cache not updated');
+
 const largest=[...areas].map(([area,v])=>({area,...v})).sort((a,b)=>b.bytes-a.bytes).slice(0,12);
 const report={version:'V8.312',time:new Date().toISOString(),entryMetrics,
   uniqueJs:scriptFiles.size,uniqueCss:cssFiles.size,jsBytes,cssBytes,largest,
