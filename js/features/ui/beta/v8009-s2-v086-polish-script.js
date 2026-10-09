@@ -303,6 +303,11 @@ function v7207RenderCharacterProgressive(){
         if(!v7207CharacterActive(epoch))return;
         v7207TimedCharacterStage(profile,'inventory',()=>renderInventory?.());
         profile.total=Math.round((performance.now?.()||Date.now())-started);
+        /* V8.342 Beta: stage-only numeric diagnostics for the existing 30s
+           profiler. No item payloads, IDs, DOM copies or state changes. */
+        if(String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta'){
+          window.__V8342_CHARACTER_RENDER_LAST__={at:Date.now(),...profile};
+        }
         try{window.__GL_RUNTIME_WATCHDOG__?.report?.('character_render_profile','info',profile,{screen:'character',incidentKey:'progressive-v7207'})}catch(_){}
       };
       if(typeof requestIdleCallback==='function')requestIdleCallback(inventory,{timeout:240});
@@ -311,6 +316,7 @@ function v7207RenderCharacterProgressive(){
   });
 }
 window.v7207RenderCharacterProgressive=v7207RenderCharacterProgressive;
+window.v7207CharacterRenderDiagnostics=()=>({...window.__V8342_CHARACTER_RENDER_LAST__});
 
 function v6101RenderOpenedScreen(id){
   v6101CommonHud();
