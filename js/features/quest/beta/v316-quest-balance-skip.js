@@ -46,6 +46,11 @@ function v316BalanceVisibleOffers(){
 
 let v316SkipBusy=false;
 async function v316SkipActiveQuest(){
+ /* Legacy Harz/time writes are strictly offline-only; the signed-in owner is v7045. */
+ if(typeof v073User!=='undefined'&&v073User?.id){
+   try{v115Alert?.('Quest-Überspringen wird mit dem Server abgeglichen.')}catch(_){}
+   return false;
+ }
  if(v316SkipBusy)return;
  const q=s.quests?.active;
  if(!q)return;
