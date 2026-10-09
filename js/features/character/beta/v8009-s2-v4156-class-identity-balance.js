@@ -88,7 +88,10 @@
   if(!box){box=document.createElement('div');box.id='v4156ClassPassive';target.appendChild(box)}
   const p=passive[cls()]||passive.grower;
   const icon=cls()==='grower'?'⚔️':cls()==='bruiser'?'🔮':cls()==='scout'?'🏹':cls()==='summoner'?'🕯️':'❄️';
-  box.innerHTML=`<b>${icon} Klassenpassive · ${p.name}</b><br>${p.text}`;
+  const markup=`<b>${icon} Klassenpassive · ${p.name}</b><br>${p.text}`;
+  /* V8.345 Beta: same passive means same DOM. Do not destroy its children
+     on every character navigation or account-ready repaint. */
+  if(String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()!=='beta'||box.innerHTML!==markup)box.innerHTML=markup;
   if(cls()==='frost'){
    const note=root.querySelector('.v4153-dual-note');if(note)note.textContent='❄️ Zweiklingen-Balance: Waffe I zählt 100 %. Waffe II gibt 10 % ihrer Attribute/Verzauberungen und schaltet Nebenhandtreffer frei. Beide Waffen zählen zusammen weiterhin nur als ein Set-Waffenplatz.';
    const p1=document.getElementById('slot-weapon')?.querySelector('.slot-label');if(p1)p1.textContent='Waffe I · 100 %';
@@ -143,8 +146,17 @@
  }catch(e){console.warn('V4.159 QA hook',e)}
 
  function stamp(){}
+ /* V8.345: numeric owner timings on the existing navigation event only. */
+ let navTime={at:0,cpuMs:0};
+ window.v4156CharacterNavDiagnostics=()=>({...navTime});
  try{
-  window.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')==='character'){paintPassive();stamp()}},{passive:true});window.__v4156Go='v7119-event';window.__v4156Render='retired'
+  window.addEventListener('growlegends:navigation-open-v7119',e=>{
+   if(String(e?.detail?.id||'')!=='character')return;
+   const beta=String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta';
+   const start=beta?(performance.now?.()||Date.now()):0;
+   paintPassive();stamp();
+   if(beta)navTime={at:Date.now(),cpuMs:Math.round((performance.now?.()||Date.now())-start)};
+  },{passive:true});window.__v4156Go='v7119-event';window.__v4156Render='retired'
  }catch(e){}
  stamp();paintPassive();
  window.addEventListener('growlegends:account-ready',paintPassive,{passive:true});
