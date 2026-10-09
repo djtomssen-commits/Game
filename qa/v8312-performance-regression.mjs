@@ -89,7 +89,7 @@ check(hudJs.includes("panel.classList.remove('open','show')")&&hudJs.includes("p
 check(hudJs.includes("legacy.style.setProperty('display','none','important')"),'V8.338 must eliminate old header inline-important layout footprint');
 const tech=read('js/features/system/beta/v8009-s1-v4107-systemtechnik.js');
 check(tech.includes("const basename=match[1].split('/').pop().split(/[?#]/)[0]"),'V8.338 must resolve JSON caller cache-query URLs and SDK bundles');
-check(beta.includes('v8009-s1-v4107-systemtechnik.js?v=8348-xp-ring-profile-beta'),'V8.344 profiler cache not updated');
+check(beta.includes('v8009-s1-v4107-systemtechnik.js?v=8349-ring-xp-cause-nav-beta'),'V8.344 profiler cache not updated');
 check(tech.includes('const longShort=long.filter(x=>x.ms>=50&&x.ms<100).length')&&
   tech.includes('...longPrint.map(x=>'),'V8.340 profiler must print measured 50-99ms long tasks');
 check(tech.includes("'LONGTASK-BEREICHE: 50–99 ms '"),'V8.340 profiler must explain longtask thresholds');
@@ -250,12 +250,35 @@ check(xpLayoutOwner.includes('el.nextElementSibling!==next')&&
   tech.includes('V8.348 XP / RING DOM-CHURN'),
   'V8.348 XP layout stabilization or profiler diagnosis missing');
 check(beta.includes('v8009-a1-legacy-state-core.js?v=8348-core-xp-slot-owner-beta')&&
-  beta.includes('v8009-s3-v6167-longterm-xp-balance.js?v=8348-xp-single-painter-beta')&&
-  beta.includes('v8009-s8-v6102-character-equipment-scroll-fix.js?v=8348-equipment-ring-stable-beta')&&
-  beta.includes('v511-character-reference-polish-js.js?v=8348-xp-node-order-beta')&&
+  beta.includes('v8009-s3-v6167-longterm-xp-balance.js?v=8349-xp-cssom-precision-beta')&&
+  beta.includes('v8009-s8-v6102-character-equipment-scroll-fix.js?v=8349-ring-rebuild-reason-beta')&&
+  beta.includes('v511-character-reference-polish-js.js?v=8349-xp-node-navigation-diagnostic-beta')&&
   beta.includes('v7154-character-frame-stability.js?v=8348-hero-single-settle-beta')&&
   beta.includes('v8009-s7-v123-character-equipment-redesign.js?v=8348-rarity-classes-stable-beta'),
   'V8.348 Beta XP/ring owner caches not activated');
+
+/* V8.349: prevent CSSOM percent-rewrite jitter; classify real ring rebuilds
+   without item payloads; profile original nav owners instead of guessing. */
+check(xpOwner.includes('Math.round(pct*1000)/1000')&&
+  xpOwner.includes('xpBarPrecisionSkips')&&
+  xpOwner.includes('Math.abs(beforePct-pct)<0.00051'),
+  'V8.349 CSSOM percentage idempotence missing');
+check(slotOwner.includes('ringRebuildTrace')&&
+  slotOwner.includes("reason=!previousSig?'initial-slot'")&&
+  slotOwner.includes("'item-signature-changed'")&&
+  itemOwner.includes('v4103CharacterNavDiagnostics')&&
+  itemOwner.includes('card.dataset[k]!==value')&&
+  xpLayoutOwner.includes('v511CharacterNavDiagnostics'),
+  'V8.349 ring reasons / metadata stability / nav timings missing');
+check(tech.includes('V8.349 XP-KORREKTUR:')&&
+  tech.includes('V8.349 RING-NEUAUFBAU t+')&&
+  tech.includes('V8.349 NAVIGATION REST-OWNER:')&&
+  tech.includes('v7154CharacterNavDiagnostics'),
+  'V8.349 current profiler telemetry missing');
+check(beta.includes('v8009-s2-v4103-item-ui-consistency.js?v=8349-item-dataset-stability-beta')&&
+  beta.includes('v8009-s1-v4107-systemtechnik.js?v=8349-ring-xp-cause-nav-beta')&&
+  beta.includes('v8009-s3-v6167-longterm-xp-balance.js?v=8349-xp-cssom-precision-beta'),
+  'V8.349 Beta original-owner caches missing');
 
 check(beta.includes('v8009-s12-v7081-account-capability-gate.js?v=8337-flat-diag-beta'),'Beta capability hotpath cache not updated');
 check(beta.includes('v8009-s1-v7042-unified-authority-bridge.js?v=8337-memo-diag-beta'),'Beta bridge hotpath cache not updated');
