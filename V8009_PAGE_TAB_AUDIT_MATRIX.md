@@ -111,3 +111,9 @@ V8.287 – Aktive tägliche Verlustwache
 - Zweite Quittungs-Metadatenabweichung bereinigt: `server1.v8195_vip_claim_daily` verwendet jetzt für Nachholtruhen-Harz-Event-`source_ref` denselben Banktage-Suffix wie Beta statt des aktuellen Kalendertags. Event-ID, Beträge, Belohnungen, Lock, Atomizität, Rechte und Spielerbestand unverändert. Migration `v8298_server1_vip_chest_source_ref_parity`, Quelle `ops/database/v8298_server1_vip_chest_source_ref_parity.sql`.
 - LIVE READ-ONLY Post-QA: `dungeon_exact_parity=true`, `beta_dungeon_fixes_present=true`, `s1_vip_ledger_parity=true`, `shop_reroll_exact_parity=true`, `vip_state_exact_parity=true`. Kein Echtgeld- oder Kampf-Durchlauf für diese Verifikation ausgelöst.
 - Ausnahmen bleiben bewusst: Klassenbalance getrennt und unangetastet; 50 Bot-Spielerkonten/Gilden/Auto-Worker gehören zum Server1-Betrieb, NICHT ungeprüft auf Beta übertragen; Serverdaten und Authority-Schemas isoliert. Vollständige Feature-/Mobile-/Cloudflare-Runtimeparität ist ohne Android- und Live-Endtests nicht bewiesen.
+
+
+### V8.301 – Grow-Cup-Startseitenanzeige (09.10.2026)
+- Frontend-Befund: Renderer `js/features/home/beta/v8009-home-renderer.js` hatte `growCupEventActive()` via `v8210GrowCupSnapshot().run.status==='active'` irrtümlich von einem **individuellen unvollendeten** Donnerstags-Cup abhängig gemacht, selbst am Freitag bei Backend `active:false`.
+- Kanonischer Fix: Ausschließlich berechneter Berlin-Event-Zeitplan steuert Status-Kachel und Startseiten-Spezialkarte; Donnerstag sichtbar, Freitag/Samstag ausgeblendet. Nicht auf Cup-Daten, Spieler-Saves, Belohnungen oder Balance zugegriffen.
+- Beta/Server1: HTML-Cache-Bust jeweils `?v=8301cup-active-schedule`. Regression im vorhandenen Home-Events-Browser-QA-Skript ergänzt; isolierter JS-Funktionstest und HTML-Referenzen geprüft (PASS), echter Android/Playwright-Lauf ausstehend.
