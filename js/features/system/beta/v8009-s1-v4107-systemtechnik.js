@@ -229,14 +229,19 @@ function collectLoaf(entries){
  for(const e of entries||[]){
   if(!runtimeProfile.running||e.startTime<runtimeProfile.startPerf)continue;
   const duration=Math.round(Number(e.duration)||0);
-  const scripts=Array.from(e.scripts||[]).map(x=>({
+  const rawScripts=Array.from(e.scripts||[]);
+  const scripts=rawScripts.map(x=>({
    file:safeScriptName(x.sourceURL),fn:String(x.sourceFunctionName||'').slice(0,65),
    ms:Math.round(Number(x.duration)||0),
    layoutMs:Math.round(Number(x.forcedStyleAndLayoutDuration)||0)
   })).sort((a,b)=>b.ms-a.ms).slice(0,5);
   runtimeProfile.loafFrames.push({
    ms:duration,t:Math.max(0,Math.round(e.startTime-runtimeProfile.startPerf)),
-   screen:currentScreenId(),scripts
+   screen:currentScreenId(),scripts,
+   scriptTotalMs:Math.round(rawScripts.reduce((n,script)=>n+(Number(script.duration)||0),0)),
+   blockingMs:Math.round(Number(e.blockingDuration)||0),
+   renderStartMs:Number(e.renderStart)>Number(e.startTime)?Math.round(e.renderStart-e.startTime):null,
+   styleStartMs:Number(e.styleAndLayoutStart)>Number(e.startTime)?Math.round(e.styleAndLayoutStart-e.startTime):null
   });
   if(runtimeProfile.loafFrames.length>80)runtimeProfile.loafFrames.shift();
  }
@@ -449,14 +454,20 @@ function stopRuntimeProfiler(){
  const characterNav510=isBetaProfile?(window.v510CharacterNavDiagnostics?.()||null):null;
  const characterNav514=isBetaProfile?(window.v514CharacterNavDiagnostics?.()||null):null;
  const characterNav7157=isBetaProfile?(window.v7157CharacterNavDiagnostics?.()||null):null;
+ const characterNav460=isBetaProfile?(window.v460CharacterNavDiagnostics?.()||null):null;
+ const characterNav526=isBetaProfile?(window.v526CharacterNavDiagnostics?.()||null):null;
+ const characterNav7124=isBetaProfile?(window.v7124CharacterNavDiagnostics?.()||null):null;
  const characterNav4156=isBetaProfile?(window.v4156CharacterNavDiagnostics?.()||null):null;
  const characterNav6117=isBetaProfile?(window.v6117CharacterNavDiagnostics?.()||null):null;
  const nav510Same=navFresh&&characterNav510&&Math.abs(Number(characterNav510.at||0)-Number(characterNavEvent.at||0))<3000;
  const nav514Same=navFresh&&characterNav514&&Math.abs(Number(characterNav514.at||0)-Number(characterNavEvent.at||0))<3000;
  const nav7157Same=navFresh&&characterNav7157&&Math.abs(Number(characterNav7157.at||0)-Number(characterNavEvent.at||0))<3000;
+ const nav460Same=navFresh&&characterNav460&&Math.abs(Number(characterNav460.at||0)-Number(characterNavEvent.at||0))<3000;
+ const nav526Same=navFresh&&characterNav526&&Math.abs(Number(characterNav526.at||0)-Number(characterNavEvent.at||0))<3000;
+ const nav7124Same=navFresh&&characterNav7124&&Math.abs(Number(characterNav7124.at||0)-Number(characterNavEvent.at||0))<3000;
  const nav4156Same=navFresh&&characterNav4156&&Math.abs(Number(characterNav4156.at||0)-Number(characterNavEvent.at||0))<3000;
  const nav6117Same=navFresh&&characterNav6117&&Math.abs(Number(characterNav6117.at||0)-Number(characterNavEvent.at||0))<3000;
- const navMeasuredComplete=!!(hubSame&&frostSame&&nav510Same&&nav514Same&&nav7157Same&&nav4156Same&&nav6117Same);
+ const navMeasuredComplete=!!(hubSame&&frostSame&&nav510Same&&nav514Same&&nav7157Same&&nav4156Same&&nav6117Same&&nav460Same&&nav526Same&&nav7124Same);
  const consistencyIssues=(consistencyAfter?.issues||[]).filter(x=>Number(x.at||0)>=runtimeProfile.startEpoch);
  const progressBefore=runtimeProfile.progressBefore||{};
  const progressAfter=isBetaProfile?(window.v7077ProgressDiagnostics?.()||{}):{};
@@ -511,7 +522,11 @@ function stopRuntimeProfiler(){
   'LANGE ANIMATIONSFRAMES (LoAF): '+(runtimeProfile.loafSupported?loaf.length:'NICHT UNTERSTÜTZT'),
   ...loaf.filter(x=>x.ms>=100).sort((a,b)=>b.ms-a.ms).slice(0,20).map(x=>
    'FRAME '+x.ms+' ms | t+'+x.t+' ms | '+x.screen+
-   (x.scripts.length?' | '+x.scripts.map(y=>y.file+':'+(y.fn||'?')+' '+y.ms+' ms (Layout '+y.layoutMs+' ms)').join(' ; '):' | keine Script-Zuordnung')),
+   (x.scripts.length?' | '+x.scripts.map(y=>y.file+':'+(y.fn||'?')+' '+y.ms+' ms (Layout '+y.layoutMs+' ms)').join(' ; '):' | keine Script-Zuordnung')+
+   (isBetaProfile?' | LOAF-PHASEN Scripts gesamt '+Number(x.scriptTotalMs||0)+
+      ' ms; blockierend '+Number(x.blockingMs||0)+' ms; renderStart +'+
+      (x.renderStartMs==null?'n/v':x.renderStartMs)+' ms; style/layoutStart +'+
+      (x.styleStartMs==null?'n/v':x.styleStartMs)+' ms':'')),
   '',
   ...(String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta'?[
    'BOOT/SPLASH-SICHTBARKEIT (Overlay-Klassen + Account-Events, nur diese Messung):',
@@ -571,7 +586,10 @@ function stopRuntimeProfiler(){
     ?'CPU synchron: Avatar '+Number(characterRender.avatar||0)+' ms | Set '+Number(characterRender.set||0)+
       ' ms | Klassen '+Number(characterRender.classes||0)+' ms | Talente '+Number(characterRender.skills||0)+
       ' ms | Inventar '+Number(characterRender.inventory||0)+' ms | Verlauf bis fertig '+Number(characterRender.total||0)+
-      ' ms (enthält Wartezeit zwischen Frames)'
+      ' ms (enthält Wartezeit zwischen Frames)'+
+      ' | V8.346 Frame1-Warten '+(characterRender.firstFrameWaitMs??'n/v')+
+      ' ms; Frame2-Warten '+(characterRender.secondFrameWaitMs??'n/v')+
+      ' ms; Inventar-Idle-Warten '+(characterRender.inventoryWaitMs??'n/v')+' ms'
     :'Kein vollständig protokollierter Charakter-Render im Messfenster.',
    '',
    'CHARAKTER-NAVIGATION LISTENER (V8.343, letzter Event im Messfenster):',
@@ -586,7 +604,10 @@ function stopRuntimeProfiler(){
           (nav514Same?Number(characterNav514.cpuMs||0):0)-
           (nav7157Same?Number(characterNav7157.totalMs||0):0)-
           (nav4156Same?Number(characterNav4156.cpuMs||0):0)-
-          (nav6117Same?Number(characterNav6117.cpuMs||0):0))+
+          (nav6117Same?Number(characterNav6117.cpuMs||0):0)-
+          (nav460Same?Number(characterNav460.cpuMs||0):0)-
+          (nav526Same?Number(characterNav526.cpuMs||0):0)-
+          (nav7124Same?Number(characterNav7124.cpuMs||0):0))+
           ' ms ('+(navMeasuredComplete?'andere Listener/Dispatch':'nicht alle Owner erfasst')+')'
         :'nicht bestimmt')
     :'Kein Charakter-Navigations-Event im Messfenster vollständig erfasst.',
@@ -600,6 +621,9 @@ function stopRuntimeProfiler(){
        ' ms | zusätzliches Hub/Inventar '+Number(characterNavFrost.hubMs||0)+
        ' ms | redundanter Hub-Durchlauf vermieden '+!!characterNavFrost.skippedDuplicateHub
    ]:[]),
+   'V8.346 WEITERE NAV-OWNER: v460 '+(nav460Same?Number(characterNav460.cpuMs||0)+' ms':'nicht erfasst')+
+     ' | v526 '+(nav526Same?Number(characterNav526.cpuMs||0)+' ms':'nicht erfasst')+
+     ' | v7124 '+(nav7124Same?Number(characterNav7124.cpuMs||0)+' ms':'nicht erfasst'),
    'V8.345 KLASSENPASSIVE: v4156 '+(nav4156Same?Number(characterNav4156.cpuMs||0)+' ms':'nicht erfasst')+
      ' | v6117 Reparatur '+(nav6117Same?Number(characterNav6117.cpuMs||0)+' ms':'nicht erfasst')+
      (nav6117Same?' | doppelter Passive-Paint vermieden '+!!characterNav6117.skippedPassive+
