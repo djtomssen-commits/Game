@@ -160,7 +160,7 @@ const tech=()=>window.__V4106_TECH__||{intervals:new Map(),timeouts:new Map(),li
    Only opt-in measurement installs observers; no renderer or gameplay hooks. */
 const runtimeProfile={running:false,startEpoch:0,startPerf:0,timeout:0,before:null,report:'',
   longObserver:null,loafObserver:null,longTasks:[],loafFrames:[],longSupported:false,loafSupported:false,
-  splashObserver:null,splashEvents:[],splashState:'',splashListeners:[],accountQueueBefore:null,authorityBefore:null};
+  splashObserver:null,splashEvents:[],splashState:'',splashListeners:[],accountQueueBefore:null,authorityBefore:null,progressBefore:null};
 function runtimeCounterSnapshot(since=0){
  let raw=null,kind='nicht verfügbar';
  try{
@@ -339,6 +339,14 @@ function stopRuntimeProfiler(){
  const queueAfter=isBetaProfile?(window.v7214AccountReadyQueueDiagnostics?.()||{}):{};
  const authorityBefore=runtimeProfile.authorityBefore||{};
  const authorityAfter=isBetaProfile?(window.v7133AuthorityDiagnostics?.()||{}):{};
+ const progressBefore=runtimeProfile.progressBefore||{};
+ const progressAfter=isBetaProfile?(window.v7077ProgressDiagnostics?.()||{}):{};
+ const hydrateEvents=(authorityAfter.hydrationTrace||[]).filter(x=>Number(x.at)>=runtimeProfile.startEpoch);
+ const hydrateReasonTotals={};
+ for(const ev of hydrateEvents){
+  const label=String(ev.reason||'unknown')+' / '+String(ev.outcome||'unknown');
+  hydrateReasonTotals[label]=(hydrateReasonTotals[label]||0)+1;
+ }
  const oldOwners=new Map((queueBefore.callbackOwners||[]).map(x=>[x.script,x]));
  const queueOwners=(queueAfter.callbackOwners||[]).map(x=>{
   const old=oldOwners.get(x.script)||{cpuMs:0,calls:0};
@@ -395,8 +403,17 @@ function stopRuntimeProfiler(){
    ):['Keine nachträglich ausgeführten Account-ready-Callbacks im Messfenster.']),
    'SERVER-AUTHORITY HYDRATION (V7133, nur Zähler-Delta):',
    'Nachlade-Aufrufe '+Math.max(0,Number(authorityAfter.rehydrates||0)-Number(authorityBefore.rehydrates||0))+
-   ' | doppelte Home-Login-Nachladungen unterdrückt '+
-     Math.max(0,Number(authorityAfter.homePostLoginHydratesSuppressed||0)-Number(authorityBefore.homePostLoginHydratesSuppressed||0)),
+   ' | Home-Login-Nachladungen unterdrückt '+
+     Math.max(0,Number(authorityAfter.homePostLoginHydratesSuppressed||0)-Number(authorityBefore.homePostLoginHydratesSuppressed||0))+
+   ' | davon wartende Login-Listener '+
+     Math.max(0,Number(authorityAfter.homeQueueHydratesSuppressed||0)-Number(authorityBefore.homeQueueHydratesSuppressed||0)),
+   'Tatsächliche Progress-RPC-Antworten '+
+     Math.max(0,Number(progressAfter.refreshes||0)-Number(progressBefore.refreshes||0))+
+   ' | Hydrate-Anforderungen '+Math.max(0,Number(authorityAfter.hydrationRequests||0)-Number(authorityBefore.hydrationRequests||0)),
+   ...Object.entries(hydrateReasonTotals).map(([k,v])=>'HYDRATE '+v+' × '+k),
+   ...hydrateEvents.slice(-20).map(x=>
+     'HYDRATE t+'+Math.max(0,Number(x.at)-runtimeProfile.startEpoch)+' ms | '+x.outcome+
+     ' | '+x.reason+' | '+x.screen+' | wartende Listener '+x.queued),
    '',
    'NETZWERK/RPC-ZEITLINIE (existierender Fetch-Monitor, kein JS-CPU-Profil): '+recentNetwork.length,
    ...recentNetwork.slice(-35).map(x=>'FETCH t+'+x.at+' ms | Dauer '+x.ms+' ms | HTTP '+x.status+' | '+x.endpoint),
@@ -419,7 +436,8 @@ function startRuntimeProfiler(){
  if(String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta'){
   try{runtimeProfile.accountQueueBefore=window.v7214AccountReadyQueueDiagnostics?.()||null}catch(_){runtimeProfile.accountQueueBefore=null}
   try{runtimeProfile.authorityBefore=window.v7133AuthorityDiagnostics?.()||null}catch(_){runtimeProfile.authorityBefore=null}
- }else{runtimeProfile.accountQueueBefore=null;runtimeProfile.authorityBefore=null}
+  try{runtimeProfile.progressBefore=window.v7077ProgressDiagnostics?.()||null}catch(_){runtimeProfile.progressBefore=null}
+ }else{runtimeProfile.accountQueueBefore=null;runtimeProfile.authorityBefore=null;runtimeProfile.progressBefore=null}
  runtimeProfile.longTasks=[];runtimeProfile.loafFrames=[];
  runtimeProfile.splashEvents=[];runtimeProfile.splashState='';runtimeProfile.splashListeners=[];
  runtimeProfile.longSupported=false;runtimeProfile.loafSupported=false;
