@@ -81,7 +81,11 @@ window.v7081UseAuthority=(name)=>{
   return !!(C.ready&&C.caps?.[String(name||'')]);
 };
 window.v7081CapabilitiesRefresh=(force=false)=>refresh(!!force);
-window.v7081CapabilitiesDiagnostics=()=>JSON.parse(JSON.stringify(C));
+/* V8.337 Beta: Diagnostics is read-only and its payload is only scalars
+   plus the flat capability flags. Do not serialize/parse on every poll:
+   rapid authority consumers previously requested thousands of full JSON
+   round-trips in a few seconds. Still return an isolated snapshot. */
+window.v7081CapabilitiesDiagnostics=()=>({...C,caps:{...C.caps}});
 
 function boot(){
   const id=uid();
