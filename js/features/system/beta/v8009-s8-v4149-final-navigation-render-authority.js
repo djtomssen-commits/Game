@@ -11,6 +11,7 @@
  let raf=0,lastBuildAt=0;
  function admin(){try{return typeof v093IsAdmin!=='undefined'&&v093IsAdmin===true&&!!v073User&&!v073User.is_anonymous}catch(e){return false}}
  function available(id){
+  if(id==='growcup')return typeof window.v8210OpenGrowCup==='function';
   if(id==='bagDealer')return !!document.getElementById(id);
   if(document.getElementById(id))return true;
   if(id==='endgame')return typeof window.v457RenderEndgame==='function'||typeof window.renderEndgame==='function';
