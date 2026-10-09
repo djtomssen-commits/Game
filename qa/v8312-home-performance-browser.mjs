@@ -464,6 +464,48 @@ async function checkReadOnlyConsistencyWatch(channel){
   }});
   await page.close();
 }
+async function checkCharacterHeroNavigationSinglePass(){
+  /* V8.344: actual v7157 source should not repeat already registered
+     v510/v514 navigation work; preserve equipment refresh and explicit
+     full stable() fallback. */
+  const page=await browser.newPage();
+  const errors=[];page.on('pageerror',e=>errors.push(e.message));
+  await page.setContent('<!doctype html><html><body><section id="character" class="screen active"><div id="v510HeroRoot"></div></section></body></html>');
+  await page.evaluate(()=>{
+    window.GROW_RELEASE_CHANNEL='beta';
+    window.qaHero={hero:0,ref:0,equipment:0};
+    window.v510BuildCharacter=()=>{window.qaHero.hero++};
+    window.v514ApplyHeroReference=()=>{window.qaHero.ref++};
+    window.v6102PaintEquipmentSlots=()=>{window.qaHero.equipment++};
+    window.__v510GoWrapped='v7119-event';
+    window.__v514GoWrapped='v7119-event';
+  });
+  await page.addScriptTag({path:file('js/features/character/beta/v8009-s15-v7157-character-equipment-scroll-stability.js')});
+  const result=await page.evaluate(()=>{
+    const nav=new CustomEvent('growlegends:navigation-open-v7119',{detail:{id:'character'}});
+    window.dispatchEvent(nav);
+    const afterNav={...window.qaHero,trace:window.v7157CharacterNavDiagnostics?.()};
+    window.v7157CharacterStableSettle();
+    const afterExplicit={...window.qaHero};
+    window.__v510GoWrapped='missing';
+    window.__v514GoWrapped='missing';
+    window.dispatchEvent(new CustomEvent('growlegends:navigation-open-v7119',{detail:{id:'character'}}));
+    return {afterNav,afterExplicit,afterMissing:{...window.qaHero,trace:window.v7157CharacterNavDiagnostics?.()}};
+  });
+  assert.deepEqual(errors,[],'V8.344 real scroll stability source must load');
+  assert.equal(result.afterNav.hero,0,'V8.344 do not duplicate v510 on nav');
+  assert.equal(result.afterNav.ref,0,'V8.344 do not duplicate v514 on nav');
+  assert.equal(result.afterNav.equipment,1,'V8.344 preserve equipment refresh');
+  assert.equal(result.afterNav.trace?.skipped510,true,'V8.344 v510 skip diagnosed');
+  assert.equal(result.afterNav.trace?.skipped514,true,'V8.344 v514 skip diagnosed');
+  assert.deepEqual(result.afterExplicit,{hero:1,ref:1,equipment:2},
+    'V8.344 explicit stable() must continue full repair');
+  assert.equal(result.afterMissing.hero,2,'V8.344 absent v510 nav owner restores fallback');
+  assert.equal(result.afterMissing.ref,2,'V8.344 absent v514 nav owner restores fallback');
+  assert.equal(result.afterMissing.equipment,3,'V8.344 fallback still refreshes equipment');
+  scenarios.push({channel:'beta',characterHeroSinglePass:result});
+  await page.close();
+}
 async function checkCharacterNavigationHubSinglePass(){
   /* V8.343: actual character hub + Frost owner, in shipped order.
      A single character event must refresh the hub once, retain equipment /
@@ -898,6 +940,7 @@ try{
   await checkCharacterNavigationSingleDispatch();
   await checkCharacterInventoryIdempotence();
   await checkCharacterNavigationHubSinglePass();
+  await checkCharacterHeroNavigationSinglePass();
   await checkLongTaskDetailReporting();
   await checkSampledJsonProfile();
   await checkDiagnosticReadHotPaths();
