@@ -160,7 +160,7 @@ const tech=()=>window.__V4106_TECH__||{intervals:new Map(),timeouts:new Map(),li
    Only opt-in measurement installs observers; no renderer or gameplay hooks. */
 const runtimeProfile={running:false,startEpoch:0,startPerf:0,timeout:0,before:null,report:'',
   longObserver:null,loafObserver:null,longTasks:[],loafFrames:[],longSupported:false,loafSupported:false,
-  splashObserver:null,splashEvents:[],splashState:'',splashListeners:[],accountQueueBefore:null,authorityBefore:null,progressBefore:null};
+  splashObserver:null,splashEvents:[],splashState:'',splashListeners:[],accountQueueBefore:null,authorityBefore:null,progressBefore:null,powerBefore:null,cpuProbe:null};
 function runtimeCounterSnapshot(since=0){
  let raw=null,kind='nicht verfügbar';
  try{
@@ -293,6 +293,48 @@ function startRuntimeProfileObservers(){
   }catch(_){runtimeProfile.loafObserver=null}
  }
 }
+/* V8.333 Beta: optional synchronous CPU probes during the existing 30-second
+   manual profile. They report only durations and method names. The browser's
+   internal Response.json and SDK async work are NOT covered by these probes.
+   Restore exact native functions at profile end. Do not record payloads. */
+function startRuntimeCpuProbe(){
+ if(String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()!=='beta')return null;
+ const data={entries:{},slow:[],restore:[]};
+ const setup=(target,name,label)=>{
+  try{
+   const original=target?.[name];
+   if(typeof original!=='function')return;
+   const metrics=data.entries[label]={calls:0,ms:0,maxMs:0,over50ms:0};
+   const wrapped=function(){
+    const started=performance.now();
+    try{return original.apply(this,arguments)}
+    finally{
+     const ms=Math.max(0,performance.now()-started);
+     metrics.calls++;metrics.ms+=ms;metrics.maxMs=Math.max(metrics.maxMs,ms);
+     if(ms>=50)metrics.over50ms++;
+     if(ms>=25){
+      data.slow.push({kind:label,ms,t:Math.max(0,Math.round(performance.now()-runtimeProfile.startPerf)),screen:currentScreenId()});
+      if(data.slow.length>30)data.slow.shift();
+     }
+    }
+   };
+   target[name]=wrapped;
+   if(target[name]===wrapped)data.restore.push(()=>{if(target[name]===wrapped)target[name]=original});
+  }catch(_){}
+ };
+ setup(JSON,'parse','JSON.parse');
+ setup(JSON,'stringify','JSON.stringify');
+ /* Captures write CPU for existing local/session storage operations; it does
+    not invoke, skip, modify or replay writes. Never inspect keys or values. */
+ try{if(typeof Storage!=='undefined')setup(Storage.prototype,'setItem','Storage.setItem')}catch(_){}
+ return data;
+}
+function stopRuntimeCpuProbe(){
+ const data=runtimeProfile.cpuProbe;runtimeProfile.cpuProbe=null;
+ if(!data)return null;
+ for(const restore of data.restore.slice().reverse())try{restore()}catch(_){}
+ return {entries:data.entries,slow:data.slow};
+}
 function stopRuntimeProfiler(){
  if(!runtimeProfile.running)return runtimeProfile.report;
  clearTimeout(runtimeProfile.timeout);runtimeProfile.timeout=0;
@@ -300,6 +342,7 @@ function stopRuntimeProfiler(){
  try{collectLongTasks(runtimeProfile.longObserver?.takeRecords?.())}catch(_){}
  try{collectLoaf(runtimeProfile.loafObserver?.takeRecords?.())}catch(_){}
  runtimeProfile.running=false;
+ const cpuCost=stopRuntimeCpuProbe();
  runtimeProfile.longObserver?.disconnect();runtimeProfile.longObserver=null;
  runtimeProfile.loafObserver?.disconnect();runtimeProfile.loafObserver=null;
  stopRuntimeSplashTrace();
@@ -336,6 +379,11 @@ function stopRuntimeProfiler(){
     These diagnostics are aggregate script-owner timings, not player data. */
  const isBetaProfile=String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta';
  const queueBefore=runtimeProfile.accountQueueBefore||{};
+ const powerBefore=runtimeProfile.powerBefore||{};
+ const powerAfter=isBetaProfile?(window.v4125PowerPaintDiagnostics?.()||{}):{};
+ const powerDelta={};
+ for(const k of ['attempts','writes','coalesced','totalMs'])
+  powerDelta[k]=Math.max(0,Number(powerAfter[k]||0)-Number(powerBefore[k]||0));
  const queueAfter=isBetaProfile?(window.v7214AccountReadyQueueDiagnostics?.()||{}):{};
  const authorityBefore=runtimeProfile.authorityBefore||{};
  const authorityAfter=isBetaProfile?(window.v7133AuthorityDiagnostics?.()||{}):{};
@@ -417,7 +465,21 @@ function stopRuntimeProfiler(){
      'HYDRATE t+'+Math.max(0,Number(x.at)-runtimeProfile.startEpoch)+' ms | '+x.outcome+
      ' | '+x.reason+' | '+x.screen+' | wartende Listener '+x.queued),
    '',
-   'DATENKONSISTENZ (V8.330, nur bestätigte Serverantworten, keine eigenen RPCs):',
+   'SYNCHRONE CPU-KOSTEN (V8.333, nur während dieser 30s; JSON/Storage-Probe):',
+   ...(cpuCost?Object.entries(cpuCost.entries||{}).map(([label,m])=>
+      'SYNC '+label+' | CPU '+Number(m.ms||0).toFixed(1)+' ms | Aufrufe '+m.calls+
+      ' | max '+Number(m.maxMs||0).toFixed(1)+' ms | >50ms '+m.over50ms
+   ):['Nicht verfügbar / nur Beta.']),
+   ...(cpuCost?.slow?.length?cpuCost.slow.slice().sort((a,b)=>b.ms-a.ms).slice(0,12).map(x=>
+      'SYNC-SLOW '+x.kind+' '+x.ms.toFixed(1)+' ms | t+'+x.t+' ms | '+x.screen
+   ):['Keine einzeln messbare JSON/Storage-Operation über 25 ms.']),
+   'Hinweis: JS-Aufruf-CPU, nicht Netzwerk oder native Response.json()-Deserialisierung.',
+   'KAMPFKRAFT REPAINT (V8.333, Beta):',
+   'Aufrufe '+powerDelta.attempts+' | DOM-Schreibvorgänge '+powerDelta.writes+
+      ' | zusammengefasste Repaints '+powerDelta.coalesced+
+      ' | CPU '+Number(powerDelta.totalMs||0).toFixed(1)+' ms',
+   '',
+   'DATENKONSISTENZ (V8.332, nur bestätigte Serverantworten, keine eigenen RPCs):',
    consistencyAfter
     ?'Bestätigungen seit Account-Start '+consistencyAfter.observations+
       ' | Prüfungen '+consistencyAfter.checks+
@@ -449,11 +511,13 @@ function startRuntimeProfiler(){
   try{runtimeProfile.accountQueueBefore=window.v7214AccountReadyQueueDiagnostics?.()||null}catch(_){runtimeProfile.accountQueueBefore=null}
   try{runtimeProfile.authorityBefore=window.v7133AuthorityDiagnostics?.()||null}catch(_){runtimeProfile.authorityBefore=null}
   try{runtimeProfile.progressBefore=window.v7077ProgressDiagnostics?.()||null}catch(_){runtimeProfile.progressBefore=null}
- }else{runtimeProfile.accountQueueBefore=null;runtimeProfile.authorityBefore=null;runtimeProfile.progressBefore=null}
+  try{runtimeProfile.powerBefore=window.v4125PowerPaintDiagnostics?.()||null}catch(_){runtimeProfile.powerBefore=null}
+ }else{runtimeProfile.accountQueueBefore=null;runtimeProfile.authorityBefore=null;runtimeProfile.progressBefore=null;runtimeProfile.powerBefore=null}
  runtimeProfile.longTasks=[];runtimeProfile.loafFrames=[];
  runtimeProfile.splashEvents=[];runtimeProfile.splashState='';runtimeProfile.splashListeners=[];
  runtimeProfile.longSupported=false;runtimeProfile.loafSupported=false;
  runtimeProfile.running=true;
+ runtimeProfile.cpuProbe=startRuntimeCpuProbe();
  startRuntimeProfileObservers();
  startRuntimeSplashTrace();
  runtimeProfile.timeout=setTimeout(stopRuntimeProfiler,30000);
