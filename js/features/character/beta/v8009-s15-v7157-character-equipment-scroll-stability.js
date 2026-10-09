@@ -12,7 +12,14 @@
  function stable(fromCharacterNavigation=false){
    const page=document.getElementById('character');
    const root=document.getElementById('v510HeroRoot');
-   if(!page||!root)return false;
+   if(!page||!root){
+     /* V8.347 diagnostic: distinguish an absent hero root from an
+        uninstalled owner when the opt-in character profiler is running. */
+     if(fromCharacterNavigation&&String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta')
+       lastNav={at:Date.now(),totalMs:0,equipmentMs:0,skipped510:false,skipped514:false,
+         missingRoot:!root,missingPage:!page};
+     return false;
+   }
    const began=performance.now?.()||Date.now();
    const skipped510=fromCharacterNavigation&&window.__v510GoWrapped==='v7119-event';
    const skipped514=fromCharacterNavigation&&window.__v514GoWrapped==='v7119-event';
