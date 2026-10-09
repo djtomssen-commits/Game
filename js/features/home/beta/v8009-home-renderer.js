@@ -389,7 +389,7 @@
     /* V8.308: Both worlds render the finished Cup result with the lower home tiles. */
     const cupResultsSlot=`
       <!-- V8.306: shown only after the canonical Grow Cup leaderboard is final. -->
-      <section class="v8310-cup-results-slot" hidden aria-label="Abgeschlossener Grow Cup">
+      <section class="v366-panel v8310-cup-results-slot" hidden aria-label="Abgeschlossener Grow Cup">
         <button type="button" class="v8310-cup-results-trigger" data-growcup-results="1">
           <span class="v8310-cup-results-art" aria-hidden="true"><img src="assets/v7198-base64/9880ab938246ad3b3dec.webp" alt=""></span>
           <span class="v8310-cup-results-copy">
