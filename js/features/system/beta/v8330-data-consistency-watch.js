@@ -26,7 +26,7 @@ function notify(){try{window.dispatchEvent(new Event('growlegends:consistency-re
 function resetAccount(id){
  if(S.owner===id)return;
  if(S.owner)S.accountSwitches++;
- S.owner=id;S.generation++;S.latest={};S.pending.clear();lastPower=null;
+ S.owner=id;S.generation++;S.latest={};S.pending.clear();S.issues=[];S.history=[];S.seen=0;S.checks=0;lastPower=null;
  clearTimeout(firstTimer);clearTimeout(secondTimer);
  S.history.push({at:Date.now(),source:'account-boundary'});trim(S.history,30);
  notify();
