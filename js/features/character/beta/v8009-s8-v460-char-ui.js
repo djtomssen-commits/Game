@@ -52,17 +52,27 @@
   }
 
   function fixHeroStats(){
+    /* On Beta, v515 owns visible Heldenquartier stats; do not repaint the
+       old donor once the final stage exists. Keep fallback otherwise. */
+    const beta=String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta';
+    if(beta&&typeof window.v515PolishHero==='function'&&
+       document.querySelector('#character #v510HeroRoot .v510-stats .combat-box'))return;
     const boxes=[...document.querySelectorAll('#character .v459-hero-bottom .combat-box')];
     boxes.forEach((box,i)=>{
-      box.classList.remove('hp','power');
+      if(beta){
+        box.classList.toggle('hp',i===0);
+        box.classList.toggle('power',i===1);
+      }else box.classList.remove('hp','power');
       const label=box.querySelector('span');
       if(!label)return;
       if(i===0){
-        box.classList.add('hp');
-        label.innerHTML='<em>❤️</em> Lebenspunkte';
+        if(!beta)box.classList.add('hp');
+        const markup='<em>❤️</em> Lebenspunkte';
+        if(!beta||label.innerHTML!==markup)label.innerHTML=markup;
       }else if(i===1){
-        box.classList.add('power');
-        label.innerHTML='<em>⚔️</em> Kampfkraft';
+        if(!beta)box.classList.add('power');
+        const markup='<em>⚔️</em> Kampfkraft';
+        if(!beta||label.innerHTML!==markup)label.innerHTML=markup;
       }
     });
   }
@@ -87,7 +97,10 @@
   }
 
   function stampVersion(){
-    try{document.querySelector('header .version').textContent=VERSION}catch(e){}
+    try{
+      const el=document.querySelector('header .version');
+      if(el&&(String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()!=='beta'||el.textContent!==VERSION))el.textContent=VERSION
+    }catch(e){}
     try{document.title=document.title.replace(/V4\.59|V4\.60/g,'V4.67')}catch(e){}
   }
 
@@ -102,7 +115,15 @@
   /* Character/Inventory cleanup Phase 3: V460 renderInventory comparison wrapper retired; V470 owns it. */
   /* V8.009: global render polish hook retired.
      Character navigation/pageshow own the remaining hero-stat polish. */
-  window.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')==='character')apply()});
+  let navTime={at:0,cpuMs:0};
+  window.v460CharacterNavDiagnostics=()=>({...navTime});
+  window.addEventListener('growlegends:navigation-open-v7119',e=>{
+    if(String(e?.detail?.id||'')!=='character')return;
+    const beta=String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta';
+    const start=beta?(performance.now?.()||Date.now()):0;
+    apply();
+    if(beta)navTime={at:Date.now(),cpuMs:Math.round((performance.now?.()||Date.now())-start)};
+  });
   window.__v460GoWrapped='v7119-event';
 
   document.addEventListener('DOMContentLoaded',apply,{once:true});
