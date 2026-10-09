@@ -657,6 +657,39 @@ function perfMetrics(){
  const state=score>=85?'OPTIMAL':score>=65?'BEOBACHTEN':'BELASTET';
  return{score,state,dom,ints:t.ints.length,timeouts:t.tos.length,dup:t.dupInts.length,legacy:t.legacy.length,legacyListeners:(typeof legacyListenerInfo==='function'?legacyListenerInfo():[]).length,historicScripts:(typeof historicalScriptCount==='function'?historicalScriptCount():0),stale:t.staleTimeouts.length,listeners:(typeof window.__V4122_LIVE_LISTENER_COUNT__==='function'?window.__V4122_LIVE_LISTENER_COUNT__():tech().listeners.size),long:long.length,renderMax:r.max.ms,renderAvg:r.avg,heap,ls,network:network.calls.length,netErrors:network.errors};
 }
+/* V8.330: passive Beta consistency observations, no new server reads. */
+function v8330RenderGuardPanel(){
+ if(String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()!=='beta')return;
+ const holder=document.getElementById('gl8330GuardReport');
+ if(!holder)return;
+ const data=window.v8330DataConsistencyReport?.();
+ if(!data){holder.textContent='Diagnosemodul noch nicht geladen.';return}
+ const seen=Number(data.observations)||0,issues=data.issues||[];
+ const head=seen===0?'Noch keine bestätigte Serverantwort beobachtet.':seen+' bestätigte Serverantworten, '+data.checks+' Prüfungen.';
+ const details=issues.length
+  ?issues.slice(-8).reverse().map(x=>
+    '<div class="v4107-log-row warn"><b>'+esc(String(x.key||'ABWEICHUNG'))+
+    '</b><small>'+esc(String(x.detail||''))+' · erwartet: '+
+    esc(String(x.expected))+' / beobachtet: '+esc(String(x.actual))+'</small></div>').join('')
+  :'<div class="v4107-clean">Keine anhaltenden Abweichungen in den beobachteten Daten.</div>';
+ holder.innerHTML='<div class="v4107-clean">'+esc(head)+
+  ' · Accountwechsel: '+Number(data.accountSwitches||0)+
+  '</div>'+details+
+  '<small>Nur Verdachtsmeldungen aus frischen Serverbestätigungen; kein vollständiger Datenbankabgleich. Keine automatischen Korrekturen.</small>';
+}
+function v8330CopyGuardReport(){
+ const output=window.v8330DataConsistencyText?.();
+ if(!output)return;
+ try{
+  if(navigator.clipboard?.writeText){void navigator.clipboard.writeText(output);return}
+  const el=document.createElement('textarea');el.value=output;el.style.position='fixed';el.style.opacity='0';
+  document.body.append(el);el.select();document.execCommand('copy');el.remove();
+ }catch(_){}
+}
+window.addEventListener('growlegends:consistency-report',()=>{
+ if(document.getElementById('systemtech')?.classList.contains('active'))v8330RenderGuardPanel();
+},{passive:true});
+
 function ensureScreen(){
  const main=document.querySelector('main');if(!main)return null;
  let sec=document.getElementById('systemtech');if(!sec){sec=document.createElement('section');sec.id='systemtech';sec.className='screen';const footer=document.getElementById('v337LegalFooter');if(footer&&footer.parentElement===main)main.insertBefore(sec,footer);else main.appendChild(sec)}
@@ -670,19 +703,27 @@ function ensureScreen(){
     <button class="v4107-nav" data-v4107-jump="performance"><i>⚙️</i>Performance</button>
     <button class="v4107-nav" data-v4107-jump="errors"><i>🛡️</i>Fehlerlog</button>
     <button class="v4107-nav" data-v4107-jump="codedebug"><i>🔎</i>Code-Diagnose</button>
+    ${String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta'?'<button class="v4107-nav" data-v4107-jump="dataguard"><i>🛡️</i>Datenkonsistenz</button>':''}
     <div class="v4107-left-foot">Die aktuelle Prüfung ist serverautoritativ und lesend. Sie simuliert keine alten lokalen Käufe, Quests oder Dungeon-Fortschritte.</div>
    </aside>
    <div class="v4107-main">
     <div class="v4107-panel" id="v4107Status"><div class="v4110-loading"><b>🧪 Systemtest wird vorbereitet…</b>Letzter gespeicherter Bericht wird geladen. Danach startet die Tiefenprüfung im Hintergrund.</div></div>
     <div class="v4107-panel" id="v4107Groups"><div class="v4110-loading"><b>🎮 Test-Matrix</b>Bereiche werden geladen…</div></div>
     <div class="v4107-panel" id="v4107Tests"><div class="v4110-loading"><b>🛡️ Fehlerdetails</b>Fehler und Warnungen werden hier immer sichtbar aufgelistet.</div></div>
-    <div class="v4107-panel gl-code-diag-shell" id="glCodeDiag"><div class="gl-code-diag-intro"><div><b>🔎 CODE-DIAGNOSE · NUR LESEN</b><span>Findet sichere Konflikte, Timer-/Observer-Hotspots und Owner-Ketten. Es wird nichts gelöscht, repariert oder am Spielstand verändert.</span></div><div class="gl-code-diag-actions"><button class="btn" id="glCodeDiagRun">Diagnose starten</button><button class="btn secondary" id="glCodeDiagCopy" disabled>📋 Bericht kopieren</button></div></div><div id="glCodeDiagBody" class="gl-code-diag-empty">Die Prüfung startet nur auf Knopfdruck, damit im normalen Spiel kein zusätzlicher Hintergrund-Scan läuft.</div><div class="gl-profiler" id="glRuntimeProfiler"><div class="gl-profiler-head"><div><b>⏱️ 30-SEKUNDEN LAUFZEIT-PROFILER · NUR MESSEN</b><span>Misst echte Timer-/MutationObserver-Aufrufe und zentrale Renderer. Während der Messung ruhig durch Startseite → Charakter → Quest → Dungeon → Gilde wechseln.</span></div><div class="gl-profiler-actions"><button class="btn" id="glProfilerStart">▶ 30 s Profil starten</button><button class="btn secondary" id="glProfilerStop" disabled>■ Stop</button><button class="btn secondary" id="glProfilerCopy" disabled>📋 Profil kopieren</button></div></div><div id="glProfilerStatus" class="gl-profiler-status">Noch keine Messung gestartet. Es wird nichts gestoppt, gelöscht oder am Spielstand verändert.</div><div id="glProfilerBody" class="gl-profiler-body"></div></div><div class="gl-profiler" id="gl8315PagePerf"><div class="gl-profiler-head"><div><b>📊 PERFORMANCE JE SEITE · V8.316</b><span>Reale Render-, DOM-, Frame- und Tabwechsel messen. Die Messung ist nur bei Start aktiv und verändert weder Spielstand noch Währungen.</span></div><div class="gl-profiler-actions"><button class="btn" id="gl8315ManualStart" type="button">▶ Manuell messen</button><button class="btn" id="gl8315AllPages" type="button">▶ Alle 17 Seiten prüfen</button><button class="btn secondary" id="gl8315LastReport" type="button">📋 Bericht öffnen</button></div></div><div class="gl-profiler-status">Manuell: startet die Messung und öffnet die Startseite. Anschließend im Spiel auf STOP drücken. Automatisch: öffnet 17 Hauptseiten nacheinander, ohne Käufe oder Kämpfe.</div></div></div>
+    <div class="v4107-panel gl-code-diag-shell" id="glCodeDiag"><div class="gl-code-diag-intro"><div><b>🔎 CODE-DIAGNOSE · NUR LESEN</b><span>Findet sichere Konflikte, Timer-/Observer-Hotspots und Owner-Ketten. Es wird nichts gelöscht, repariert oder am Spielstand verändert.</span></div><div class="gl-code-diag-actions"><button class="btn" id="glCodeDiagRun">Diagnose starten</button><button class="btn secondary" id="glCodeDiagCopy" disabled>📋 Bericht kopieren</button></div></div><div id="glCodeDiagBody" class="gl-code-diag-empty">Die Prüfung startet nur auf Knopfdruck, damit im normalen Spiel kein zusätzlicher Hintergrund-Scan läuft.</div>${String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta'?'<div class="gl-profiler" id="gl8330DataGuard"><div class="gl-profiler-head"><div><b>🛡️ DATENKONSISTENZ · V8.330 · NUR LESEN</b><span>Vergleicht bestätigte Serverantworten mit Währungen, Dampf, Gegenständen, sichtbarer Topbar und lokalem Cache. Meldet nur Verdachtsfälle. Keine zusätzlichen Serverabfragen oder Spielstandkorrekturen.</span></div><div class="gl-profiler-actions"><button class="btn" id="gl8330GuardCheck" type="button">🔎 Jetzt vergleichen</button><button class="btn secondary" id="gl8330GuardCopy" type="button">📋 Bericht kopieren</button></div></div><div id="gl8330GuardReport" class="gl-profiler-body">Wartet auf bestätigte Serverantworten.</div></div>':''}<div class="gl-profiler" id="glRuntimeProfiler"><div class="gl-profiler-head"><div><b>⏱️ 30-SEKUNDEN LAUFZEIT-PROFILER · NUR MESSEN</b><span>Misst echte Timer-/MutationObserver-Aufrufe und zentrale Renderer. Während der Messung ruhig durch Startseite → Charakter → Quest → Dungeon → Gilde wechseln.</span></div><div class="gl-profiler-actions"><button class="btn" id="glProfilerStart">▶ 30 s Profil starten</button><button class="btn secondary" id="glProfilerStop" disabled>■ Stop</button><button class="btn secondary" id="glProfilerCopy" disabled>📋 Profil kopieren</button></div></div><div id="glProfilerStatus" class="gl-profiler-status">Noch keine Messung gestartet. Es wird nichts gestoppt, gelöscht oder am Spielstand verändert.</div><div id="glProfilerBody" class="gl-profiler-body"></div></div><div class="gl-profiler" id="gl8315PagePerf"><div class="gl-profiler-head"><div><b>📊 PERFORMANCE JE SEITE · V8.316</b><span>Reale Render-, DOM-, Frame- und Tabwechsel messen. Die Messung ist nur bei Start aktiv und verändert weder Spielstand noch Währungen.</span></div><div class="gl-profiler-actions"><button class="btn" id="gl8315ManualStart" type="button">▶ Manuell messen</button><button class="btn" id="gl8315AllPages" type="button">▶ Alle 17 Seiten prüfen</button><button class="btn secondary" id="gl8315LastReport" type="button">📋 Bericht öffnen</button></div></div><div class="gl-profiler-status">Manuell: startet die Messung und öffnet die Startseite. Anschließend im Spiel auf STOP drücken. Automatisch: öffnet 17 Hauptseiten nacheinander, ohne Käufe oder Kämpfe.</div></div></div>
    </div>
    <aside class="v4107-right" id="v4107Right"></aside>
   </div>
   <div class="v4107-footerbar" id="v4107Footerbar"></div>
  </div>`;
  sec.addEventListener('click',e=>{
+  if(e.target.closest?.('#gl8330GuardCheck')){
+   e.preventDefault();
+   window.v8330DataConsistencyCheck?.();v8330RenderGuardPanel();return;
+  }
+  if(e.target.closest?.('#gl8330GuardCopy')){
+   e.preventDefault();v8330CopyGuardReport();return;
+  }
   /* V8.318: explicit Server-1 release approval; both production game worlds can profile. */
   const runtimeProfilerAllowed=['beta','server1'].includes(String(window.GROW_RELEASE_CHANNEL||'').toLowerCase());
   if(runtimeProfilerAllowed&&e.target.closest?.('#glProfilerStart')){
@@ -720,7 +761,7 @@ function ensureScreen(){
    else window.v063Toast?.('Performance-Test','error','Messmodul nicht geladen.');
    return;
   }
-  const b=e.target.closest?.('[data-v4107-jump]');if(b){const map={status:'v4107Status',groups:'v4107Groups',tests:'v4107Tests',performance:'v4107PerfCard',errors:'v4107ErrorCard',codedebug:'glCodeDiag'};document.getElementById(map[b.dataset.v4107Jump])?.scrollIntoView({behavior:'smooth',block:'start'});sec.querySelectorAll('.v4107-nav').forEach(x=>x.classList.toggle('active',x===b));return}
+  const b=e.target.closest?.('[data-v4107-jump]');if(b){const map={status:'v4107Status',groups:'v4107Groups',tests:'v4107Tests',performance:'v4107PerfCard',errors:'v4107ErrorCard',codedebug:'glCodeDiag',dataguard:'gl8330DataGuard'};document.getElementById(map[b.dataset.v4107Jump])?.scrollIntoView({behavior:'smooth',block:'start'});sec.querySelectorAll('.v4107-nav').forEach(x=>x.classList.toggle('active',x===b));return}
   const g=e.target.closest?.('[data-v4107-group]');if(g){selectedGroup=decodeURIComponent(g.dataset.v4107Group);renderPage(last||fullReport());document.getElementById('v4107Tests')?.scrollIntoView({behavior:'smooth',block:'start'});return}
   const f=e.target.closest?.('[data-v4107-filter]');if(f){filter=f.dataset.v4107Filter;renderPage(last||fullReport());return}
   if(e.target.closest?.('#v4107Run')){renderLoading();void runAndRender(true);return}
@@ -729,6 +770,7 @@ function ensureScreen(){
   if(e.target.closest?.('#v4107Copy')){copyReport(last||fullReport());return}
  });
  }
+ v8330RenderGuardPanel();
  return sec
 }
 function cachedReport(){
