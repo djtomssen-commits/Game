@@ -37,7 +37,15 @@
  /* Quest and dungeon item rewards share the exact same item presentation. */
  if(typeof v240ItemRewardHtml==='function'&&!window.__v4103RewardRenderer){v240ItemRewardHtml=function(it){return renderItem(it,{slot:it?.slot,context:'reward',extraClass:'v240-loot-item'});};try{window.v240ItemRewardHtml=v240ItemRewardHtml}catch(e){}window.__v4103RewardRenderer=true}
 
- function markCard(card,it,ctx){if(!card||!it)return;card.dataset.v4103ItemCurrent='1';card.dataset.v4103ItemKey=registerItem(it);card.dataset.v4103ItemContext=ctx;card.dataset.v4103Quality=qkey(it)}
+ function markCard(card,it,ctx){
+   if(!card||!it)return;
+   const key=registerItem(it),quality=qkey(it);
+   const beta=String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta';
+   const values={v4103ItemCurrent:'1',v4103ItemKey:key,v4103ItemContext:ctx,v4103Quality:quality};
+   for(const [k,value] of Object.entries(values)){
+     if(!beta||card.dataset[k]!==value)card.dataset[k]=value;
+   }
+ }
  function putArt(box,it,forge=false){if(!box||!it)return;let u='';try{u=window.v466ItemArtUri?.(it)||''}catch(e){}if(!u)return;let img=box.querySelector(':scope > img.v466-item-art');if(!img){img=document.createElement('img');img.className='v466-item-art';box.replaceChildren(img)}
    /* V8.348 Beta: repeated decorate() is not an image change. Do not
       reassign src/alt if already identical (Android image repaint/flicker). */
@@ -53,7 +61,7 @@
   try{document.querySelectorAll('#v057WeaponGrid .shop-item').forEach((c,i)=>{const it=s.weaponShop?.[i];if(it){markCard(c,it,'weapon-shop');putArt(c.querySelector('.shop-icon,.v41-shop-icon'),it)}});document.querySelectorAll('#v057MagicGrid .shop-item').forEach((c,i)=>{const it=s.magicShop?.[i];if(it){markCard(c,it,'magic-shop');putArt(c.querySelector('.shop-icon,.v41-shop-icon'),it)}})}catch(e){}
   try{document.querySelectorAll('#character #v030Materials .inventory-grid > .inv-item').forEach((c,i)=>{const it=s.materials?.[i];if(it)markCard(c,it,'materials')})}catch(e){}
   try{document.querySelectorAll('#v488ForgeInventory [data-v488-key]').forEach(c=>{const key=String(c.dataset.v488Key||''),it=(s.inventory||[]).find(x=>String(x?.id||'')===key);if(it){markCard(c,it,'forge');const box=c.querySelector('.ico');if(box)putArt(box,it,true)}})}catch(e){}
-  try{document.querySelectorAll('.v240-loot-item[data-v4103-item-current="1"],#v074ProfileContent .v4103-item-card').forEach(c=>c.dataset.v4103ItemCurrent='1')}catch(e){}
+  try{document.querySelectorAll('.v240-loot-item[data-v4103-item-current="1"],#v074ProfileContent .v4103-item-card').forEach(c=>{if(String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()!=='beta'||c.dataset.v4103ItemCurrent!=='1')c.dataset.v4103ItemCurrent='1'})}catch(e){}
  }
  window.v4103DecorateItemSurfaces=decorate;
 
@@ -268,7 +276,16 @@
  decorate();upgradeLoginReveal();stamp();
  document.addEventListener('DOMContentLoaded',()=>{decorate();upgradeLoginReveal();stamp()},{once:true});
  window.addEventListener('growlegends:account-ready',()=>{decorate();upgradeLoginReveal();stamp()},{passive:true});
- window.addEventListener('growlegends:navigation-open-v7119',e=>{const id=String(e?.detail?.id||'');if(id==='character'||id==='shop'||id==='forge'||id==='harzForge'){decorate();upgradeLoginReveal();stamp()}},{passive:true});
+ let navTime={at:0,cpuMs:0};
+ window.v4103CharacterNavDiagnostics=()=>({...navTime});
+ window.addEventListener('growlegends:navigation-open-v7119',e=>{
+   const id=String(e?.detail?.id||'');
+   if(id!=='character'&&id!=='shop'&&id!=='forge'&&id!=='harzForge')return;
+   const beta=id==='character'&&String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta';
+   const start=beta?(performance.now?.()||Date.now()):0;
+   decorate();upgradeLoginReveal();stamp();
+   if(beta)navTime={at:Date.now(),cpuMs:Math.round((performance.now?.()||Date.now())-start)};
+ },{passive:true});
  window.addEventListener('pageshow',()=>{decorate();upgradeLoginReveal();stamp()},{passive:true});
  document.addEventListener('visibilitychange',()=>{if(!document.hidden){decorate();runtimeAudit();upgradeLoginReveal();stamp()}},{passive:true});
 })();
